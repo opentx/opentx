@@ -16,7 +16,9 @@ option(AUTOSWITCH "Automatic switch detection in menus" ON)
 
 set(OPT s)
 
-enable_language(ASM)
+if (NOT MSVC)
+  enable_language(ASM)
+endif()
 
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
@@ -657,91 +659,92 @@ endif()
 
 set(SRC ${SRC} ${FIRMWARE_SRC})
 
-include(CMakeForceCompiler)
+if(NOT MSVC)
+  include(CMakeForceCompiler)
 
-set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
+  set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
 
-# trick to remove the -rdynamic issue
-set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
-set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+  # trick to remove the -rdynamic issue
+  set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+  set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 
-if(ARCH STREQUAL ARM)
-  cmake_force_c_compiler(arm-none-eabi-gcc GNU)
-  cmake_force_cxx_compiler(arm-none-eabi-gcc GNU)
-  set(CMAKE_ASM_COMPILER arm-none-eabi-as)
+  if(ARCH STREQUAL ARM)
+    cmake_force_c_compiler(arm-none-eabi-gcc GNU)
+    cmake_force_cxx_compiler(arm-none-eabi-gcc GNU)
+    set(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
-  set(CMAKE_SYSTEM_NAME Generic)
-  set(CMAKE_SYSTEM_VERSION 1)
-  set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
+    set(CMAKE_SYSTEM_NAME Generic)
+    set(CMAKE_SYSTEM_VERSION 1)
+    set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
-  set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
-  set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
-  set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=opentx.map,--cref,--no-warn-mismatch,--gc-sections")
+    set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
+    set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
+    set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=opentx.map,--cref,--no-warn-mismatch,--gc-sections")
 
-  if(PCB STREQUAL TARANIS)
-    add_subdirectory(targets/${TARGET_DIR}/bootloader)
-    add_custom_command(
-      OUTPUT bootloader.bin bootloader.lbm
-      COMMAND arm-none-eabi-objcopy -O binary targets/${TARGET_DIR}/bootloader/bootloader.elf bootloader.bin
-      COMMAND python ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
-      DEPENDS bootloader.elf
+    if(PCB STREQUAL TARANIS)
+      add_subdirectory(targets/${TARGET_DIR}/bootloader)
+      add_custom_command(
+        OUTPUT bootloader.bin bootloader.lbm
+        COMMAND arm-none-eabi-objcopy -O binary targets/${TARGET_DIR}/bootloader/bootloader.elf bootloader.bin
+        COMMAND python ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
+        DEPENDS bootloader.elf
+        )
+      add_custom_target(bootloader DEPENDS bootloader.lbm)
+      set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+    endif()
+
+    add_executable(firmware.elf ${SRC} ${FIRMWARE_HEADERS})
+    add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
+
+    add_custom_target(firmware.bin
+      COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
+      DEPENDS firmware.elf
       )
-    add_custom_target(bootloader DEPENDS bootloader.lbm)
-    set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+  else()
+    cmake_force_c_compiler(avr-gcc GNU)
+    cmake_force_cxx_compiler(avr-gcc GNU)
+
+    set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+
+    include_directories(storage gui/${GUI_DIR})
+
+    set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
+    foreach(FILE ${SRC})
+      file(READ ${FILE} FILE_CONTENT)
+      set(ALLSRC_CONTENT "${ALLSRC_CONTENT}# 1 \"${FILE}\"\n${FILE_CONTENT}")
+    endforeach()
+
+    file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
+
+    add_executable(firmware.elf ${ALLSRC})
+    add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
+
+    add_custom_target(firmware.hex
+      COMMAND avr-objcopy -O ihex -R .eeprom firmware.elf firmware.hex
+      DEPENDS firmware.elf
+      )
+
+    add_custom_target(firmware.bin
+      COMMAND avr-objcopy -O binary firmware.elf firmware.bin
+      DEPENDS firmware.elf
+      )
+
+    add_custom_target(firmware
+      COMMAND avr-size --mcu=${MCU} --format=avr firmware.elf
+      DEPENDS firmware.hex
+      )
   endif()
 
-  add_executable(firmware.elf ${SRC} ${FIRMWARE_HEADERS})
-  add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
-
-  add_custom_target(firmware.bin
-    COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
-    DEPENDS firmware.elf
-    )
-else()
-  cmake_force_c_compiler(avr-gcc GNU)
-  cmake_force_cxx_compiler(avr-gcc GNU)
-
-  set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
-
-  include_directories(storage gui/${GUI_DIR})
-
-  set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-  foreach(FILE ${SRC})
-    file(READ ${FILE} FILE_CONTENT)
-    set(ALLSRC_CONTENT "${ALLSRC_CONTENT}# 1 \"${FILE}\"\n${FILE_CONTENT}")
-  endforeach()
-
-  file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
-
-  add_executable(firmware.elf ${ALLSRC})
-  add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
-
-  add_custom_target(firmware.hex
-    COMMAND avr-objcopy -O ihex -R .eeprom firmware.elf firmware.hex
+  add_custom_target(firmware.lss
+    COMMAND avr-objdump -h -S firmware.elf > firmware.lss
     DEPENDS firmware.elf
     )
 
-  add_custom_target(firmware.bin
-    COMMAND avr-objcopy -O binary firmware.elf firmware.bin
-    DEPENDS firmware.elf
+  if(CPU_FAMILY STREQUAL STM32)
+    add_custom_target(flash
+      COMMAND dfu-util --alt 0 --dfuse-address 0x08000000 -D firmware.bin
+      DEPENDS firmware.bin
     )
-
-  add_custom_target(firmware
-    COMMAND avr-size --mcu=${MCU} --format=avr firmware.elf
-    DEPENDS firmware.hex
-    )
+  endif()
 endif()
-
-add_custom_target(firmware.lss
-  COMMAND avr-objdump -h -S firmware.elf > firmware.lss
-  DEPENDS firmware.elf
-  )
-
-if(CPU_FAMILY STREQUAL STM32)
-  add_custom_target(flash
-    COMMAND dfu-util --alt 0 --dfuse-address 0x08000000 -D firmware.bin
-    DEPENDS firmware.bin
-  )
-endif()
-
