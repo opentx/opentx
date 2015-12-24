@@ -22,7 +22,7 @@ make clean
 rm -rf $DIR/companion-build/
 mkdir -p $_
 cd $_
-cmake ../opentx
+cmake -DPCB=TARANIS ../opentx
 make package
 cp ./companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm ${DESTDIR}
 
