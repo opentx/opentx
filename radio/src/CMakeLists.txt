@@ -651,7 +651,9 @@ endforeach()
 
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
-add_subdirectory(targets/simu)
+if(NOT WIN32)
+  add_subdirectory(targets/simu)
+endif()
 
 set(SRC ${SRC} ${FIRMWARE_SRC})
 

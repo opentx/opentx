@@ -92,19 +92,13 @@ add_custom_command(
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/EHsc /LD")
-  set(INTTYPES_INCLUDE_OPTION -IC:/Programs/msinttypes)
-  include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes)
+  include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
   link_directories(C:/Programs/pthreads/Pre-built.2/lib/)
   set(PTHREAD_LIBRARY pthreadVC2.lib)
 else()
   set(PTHREAD_LIBRARY pthread)
   add_definitions(-Wall)
   link_directories(/usr/local/lib)
-endif()
-
-if(MSVC)
-  message(STATUS "Adding include C:/Programs/dirent/include for dirent.h")
-  include_directories(C:/Programs/dirent/include)
 endif()
 
 set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/radio/src)

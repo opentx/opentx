@@ -1,3 +1,7 @@
+if(MSVC)
+  set(INTTYPES_INCLUDE_OPTION -IC:/Programs/msinttypes)
+endif()
+
 macro(add_lua_export_target target)
   add_custom_command(
     OUTPUT lua_exports_${target}.inc
