@@ -122,7 +122,7 @@ Section "OpenTX Simulator" SecDummy
 
   CreateDirectory "$INSTDIR\lang"
   SetOutPath "$INSTDIR\lang"
-  File "*.qm"
+  File "src\*.qm"
   
   SetOutPath "$INSTDIR"
   ;Store installation folder
