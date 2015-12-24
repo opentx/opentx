@@ -130,7 +130,7 @@ Section "OpenTX Companion" SecDummy
 
   CreateDirectory "$INSTDIR\lang"
   SetOutPath "$INSTDIR\lang"
-  File "*companion/src/.qm"
+  File "companion/src/*.qm"
   
   SetOutPath "$INSTDIR"
   ;Store installation folder
