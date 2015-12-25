@@ -2043,7 +2043,8 @@ enum RFProtocols {
   RF_PROTO_LAST = RF_PROTO_LR12
 };
 
-#define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
+#define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
+#define HAS_RF_PROTOCOL_MODELINDEX(rf) (((rf) == RF_PROTO_X16) || ((rf) == RF_PROTO_LR12))
 
 enum DSM2Protocols {
   DSM2_PROTO_LP45,
