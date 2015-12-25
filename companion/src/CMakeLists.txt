@@ -402,10 +402,6 @@ if(APPLE)
     DEPENDS addframeworks opentx-simulators-bundle)
 endif()
 
-add_custom_target(stamp
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/version.h ${CMAKE_SOURCE_DIR}/../companion.stamp
-  DEPENDS ${CMAKE_BINARY_DIR}/version.h)
-
 if(LUPDATE_FOUND)
   add_custom_target(translations
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
