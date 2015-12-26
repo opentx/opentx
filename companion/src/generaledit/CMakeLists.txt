@@ -4,13 +4,15 @@ set(generaledit_NAMES
   generaledit
   generalsetup
   trainer
-  calibration
+  hardware
 )
 
 set(generaledit_SRCS
+  calibration.cpp
 )
 
 set(generaledit_HDRS
+  calibration.h
 )
 
 set(generaledit_UIS
