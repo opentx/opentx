@@ -296,8 +296,7 @@ bool menuModelExpoOne(evt_t event)
 
   coord_t y = MENU_CONTENT_TOP;
 
-  drawFunction(expoFn);
-
+  drawFunction(expoFn, CURVE_CENTER_X, CURVE_CENTER_Y, CURVE_SIDE_WIDTH);
   drawCurveHorizontalScale();
   drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
 
@@ -319,7 +318,7 @@ bool menuModelExpoOne(evt_t event)
     sprintf(texty, "%d", calcRESXto100(y));
 
     x = divRoundClosest(x*CURVE_SIDE_WIDTH, RESX);
-    y = getCurveYCoord(expoFn, x);
+    y = CURVE_CENTER_Y + getCurveYCoord(expoFn, x, CURVE_SIDE_WIDTH);
 
     lcdDrawSolidFilledRect(CURVE_CENTER_X+x, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, 2, 2*CURVE_SIDE_WIDTH+2, CURVE_CURSOR_COLOR);
     lcdDrawSolidFilledRect(CURVE_CENTER_X-CURVE_SIDE_WIDTH-2, y-1, 2*CURVE_SIDE_WIDTH+2, 2, CURVE_CURSOR_COLOR);

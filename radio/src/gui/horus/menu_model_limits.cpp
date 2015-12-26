@@ -49,7 +49,6 @@ enum LimitsItems {
   ITEM_LIMITS_MAXROW = ITEM_LIMITS_COUNT-1
 };
 
-#if defined(PPM_CENTER_ADJUSTABLE)
   #define LIMITS_NAME_POS         52
   #define LIMITS_OFFSET_POS       160
   #define LIMITS_MIN_POS          220
@@ -59,16 +58,6 @@ enum LimitsItems {
   #define LIMITS_CURVE_POS        350
   #define LIMITS_PPM_CENTER_POS   440
   #define LIMITS_SYMETRICAL_POS   450
-#else
-  #define LIMITS_NAME_POS         44
-  #define LIMITS_OFFSET_POS       136
-  #define LIMITS_MIN_POS          178
-  #define LIMITS_DIRECTION_POS    181
-  #define LIMITS_MAX_POS          218
-  #define LIMITS_REVERT_POS       228
-  #define LIMITS_CURVE_POS        258
-  #define LIMITS_SYMETRICAL_POS   294
-#endif
 
 #define LIMITS_MIN_MAX_OFFSET 1000
 #define CONVERT_US_MIN_MAX(x) (((x)*1280)/250)
@@ -222,11 +211,7 @@ bool menuModelLimits(evt_t event)
         case ITEM_LIMITS_DIRECTION:
         {
           uint8_t revert = ld->revert;
-#if defined(PPM_CENTER_ADJUSTABLE)
           lcdDrawText(LIMITS_REVERT_POS, y, revert ? "\177" : "\176", attr);
-#else
-          lcdDrawTextAtIndex(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
-#endif
           if (active) {
             uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
             if (checkIncDec_Ret && isThrottleOutput(k)) {

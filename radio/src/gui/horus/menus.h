@@ -400,7 +400,7 @@ void pushModelNotes();
 #define EDIT_MODE_INIT                 0 // TODO enum
 
 typedef int (*FnFuncP) (int x);
-void drawFunction(FnFuncP fn, int offset=0);
+void drawFunction(FnFuncP fn, int x, int y, int width);
 
 uint8_t switchToMix(uint8_t source);
 

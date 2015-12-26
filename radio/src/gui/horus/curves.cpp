@@ -20,46 +20,45 @@
 
 #include "../../opentx.h"
 
-coord_t getCurveYCoord(FnFuncP fn, coord_t x)
+coord_t getCurveYCoord(FnFuncP fn, int x, int width)
 {
-  return limit(CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_CENTER_Y - divRoundClosest(fn(divRoundClosest(x * RESX, CURVE_SIDE_WIDTH)) * CURVE_SIDE_WIDTH, RESX), CURVE_CENTER_Y+CURVE_SIDE_WIDTH);
+  return limit(-width, -divRoundClosest(fn(divRoundClosest(x * RESX, width)) * width, RESX), +width);
 }
 
-void drawFunction(FnFuncP fn, int offset)
+void drawFunction(FnFuncP fn, int x, int y, int width)
 {
-  int left = CURVE_CENTER_X-offset-CURVE_SIDE_WIDTH;
-  int right = CURVE_CENTER_X-offset+CURVE_SIDE_WIDTH;
-  int center = CURVE_CENTER_X-offset;
+  int left = x - width;
+  int right = x + width;
 
   // Axis
-  lcdDrawSolidHorizontalLine(left, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2+1, CURVE_AXIS_COLOR);
-  lcdDrawSolidVerticalLine(center, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, CURVE_AXIS_COLOR);
+  lcdDrawSolidHorizontalLine(left, y, width*2+1, CURVE_AXIS_COLOR);
+  lcdDrawSolidVerticalLine(x, y-width, width*2, CURVE_AXIS_COLOR);
 
   // Extra lines
-  lcdDrawVerticalLine(left+CURVE_SIDE_WIDTH/2, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, STASHED, CURVE_AXIS_COLOR);
-  lcdDrawVerticalLine(right-CURVE_SIDE_WIDTH/2, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, STASHED, CURVE_AXIS_COLOR);
-  lcdDrawHorizontalLine(left, CURVE_CENTER_Y-CURVE_SIDE_WIDTH/2, CURVE_SIDE_WIDTH*2+1, STASHED, CURVE_AXIS_COLOR);
-  lcdDrawHorizontalLine(left, CURVE_CENTER_Y+CURVE_SIDE_WIDTH/2, CURVE_SIDE_WIDTH*2+1, STASHED, CURVE_AXIS_COLOR);
+  lcdDrawVerticalLine(left+width/2, y-width, width*2, STASHED, CURVE_AXIS_COLOR);
+  lcdDrawVerticalLine(right-width/2, y-width, width*2, STASHED, CURVE_AXIS_COLOR);
+  lcdDrawHorizontalLine(left, y-width/2, width*2+1, STASHED, CURVE_AXIS_COLOR);
+  lcdDrawHorizontalLine(left, y+width/2, width*2+1, STASHED, CURVE_AXIS_COLOR);
 
   // Outside border
-  lcdDrawSolidVerticalLine(left, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, TEXT_COLOR);
-  lcdDrawSolidVerticalLine(right, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, TEXT_COLOR);
-  lcdDrawSolidHorizontalLine(left, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2+1, TEXT_COLOR);
-  lcdDrawSolidHorizontalLine(left, CURVE_CENTER_Y+CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2+1, TEXT_COLOR);
+  lcdDrawSolidVerticalLine(left, y-width, width*2, TEXT_COLOR);
+  lcdDrawSolidVerticalLine(right, y-width, width*2, TEXT_COLOR);
+  lcdDrawSolidHorizontalLine(left, y-width, width*2+1, TEXT_COLOR);
+  lcdDrawSolidHorizontalLine(left, y+width, width*2+1, TEXT_COLOR);
 
   coord_t prev_yv = (coord_t)-1;
 
-  for (int xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv+=1) {
-    coord_t yv = getCurveYCoord(fn, xv);
+  for (int xv=-width; xv<=width; xv+=1) {
+    coord_t yv = y + getCurveYCoord(fn, xv, width);
     if (prev_yv != (coord_t)-1) {
       if (prev_yv < yv) {
         for (int y=prev_yv; y<=yv; y+=1) {
-          lcdDrawBitmapPattern(CURVE_CENTER_X+xv-offset-2, y-2, LBM_POINT, TEXT_COLOR);
+          lcdDrawBitmapPattern(x+xv-2, y-2, LBM_POINT, TEXT_COLOR);
         }
       }
       else {
         for (int y=yv; y<=prev_yv; y+=1) {
-          lcdDrawBitmapPattern(CURVE_CENTER_X+xv-offset-2, y-2, LBM_POINT, TEXT_COLOR);
+          lcdDrawBitmapPattern(x+xv-2, y-2, LBM_POINT, TEXT_COLOR);
         }
       }
     }

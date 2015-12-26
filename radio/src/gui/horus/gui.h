@@ -79,7 +79,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawSticks();
 
 // Curve functions
-coord_t getCurveYCoord(FnFuncP fn, coord_t x);
+coord_t getCurveYCoord(FnFuncP fn, int x, int width);
 void drawFunction(FnFuncP fn, int offset);
 void drawCurveVerticalScale(int x);
 void drawCurveHorizontalScale();

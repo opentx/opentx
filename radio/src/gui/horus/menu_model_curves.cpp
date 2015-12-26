@@ -49,9 +49,9 @@ point_t getPoint(uint8_t i)
   return result;
 }
 
-void DrawCurve(int offset=0)
+void drawCurve(int x, int y, int width)
 {
-  drawFunction(curveFn, offset);
+  drawFunction(curveFn, x, y, width);
 
   /*int i = 0;
   do {
@@ -209,7 +209,7 @@ bool menuModelCurveOne(evt_t event)
       killEvents(event);
   }
 
-  DrawCurve();
+  drawCurve(CURVE_CENTER_X, CURVE_CENTER_Y, CURVE_SIDE_WIDTH);
   drawCurveHorizontalScale();
   if (menuVerticalPosition < ITEM_CURVE_COORDS1) drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
 
@@ -351,13 +351,13 @@ bool menuModelCurvesAll(evt_t event)
       putsStrIdx(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
       editName(50, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
       CurveInfo & crv = g_model.curves[k];
-      lcdDrawNumber(100, y, 5+crv.points, LEFT, 0, NULL, STR_PTS);
+      lcdDrawNumber(120, y, 5+crv.points, LEFT, 0, NULL, STR_PTS);
     }
   }
 
   if (sub >= 0) {
     s_curveChan = sub;
-    DrawCurve(23);
+    drawCurve(CURVE_CENTER_X, CURVE_CENTER_Y+10, 80);
   }
 
   return true;
