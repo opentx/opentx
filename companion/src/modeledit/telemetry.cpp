@@ -688,6 +688,9 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
 {
   if (!lock) {
     sensor.unit = index;
+    if (sensor.unit == SensorData::UNIT_FAHRENHEIT) {
+      sensor.prec = 0;
+    }
     update();
     emit modified();
   }
