@@ -737,7 +737,7 @@ AppData::AppData()
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
     getset( _outputDisplayDetails,  "outputDisplayDetails"     ,false );
-    getset( _enableBackup,    "backupEnable"            ,false );
+    getset( _enableBackup,    "enableBackup"            ,false );
     getset( _backupOnFlash,   "backupOnFlash"           ,true  );
     getset( _checkHardwareCompatibility,   "checkHardwareCompatibility"           ,true  );
 
