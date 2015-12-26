@@ -106,6 +106,8 @@ class SimulatorInterface
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
 
     virtual void installTraceHook(void (*callback)(const char *)) = 0;
+
+    virtual void setLuaStateReloadPermanentScripts() = 0;
 };
 
 class SimulatorFactory {
