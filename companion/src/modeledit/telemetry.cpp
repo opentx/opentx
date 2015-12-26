@@ -581,6 +581,7 @@ void TelemetrySensorPanel::update()
     if (sensor.unit == SensorData::UNIT_RPMS) {
       ui->offset->setDecimals(0);
       ui->ratio->setDecimals(0);
+      ui->ratio->setSingleStep(1);
       ui->autoOffset->hide();
       ui->ratio->setMinimum(1);
       ui->offset->setMinimum(1);
@@ -588,6 +589,7 @@ void TelemetrySensorPanel::update()
     else {
       ui->offset->setDecimals(sensor.prec);
       ui->ratio->setDecimals(1);
+      ui->ratio->setSingleStep(0.1);
     }
   }
 

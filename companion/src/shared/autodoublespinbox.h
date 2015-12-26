@@ -3,6 +3,11 @@
 
 #include <QDoubleSpinBox>
 #include "modeledit/modeledit.h"
+#if __GNUC__
+  #include <math.h>
+#else
+  #include "../targets/windows/winbuild.h"
+#endif
 
 class AutoDoubleSpinBox: public QDoubleSpinBox
 {
@@ -62,7 +67,7 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     void onValueChanged(double value)
     {
       if (field && !lock) {
-        *field = value * multiplier();
+        *field = round(value * multiplier());
         if (panel) {
           emit panel->modified();
         }
