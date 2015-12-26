@@ -499,6 +499,9 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuHandle
         l_posHorz--;
         break;
       }
+      else {
+        l_posHorz = 0xff;
+      }
 
       do {
         DEC(l_posVert, MENU_FIRST_LINE_EDIT, rowcount-1);
