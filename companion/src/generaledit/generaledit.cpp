@@ -8,6 +8,7 @@
 #include "generalsetup.h"
 #include "trainer.h"
 #include "calibration.h"
+#include "hardware.h"
 #include "../modeledit/customfunctions.h"
 #include "verticalscrollarea.h"
 
@@ -42,7 +43,8 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     addTab(new CustomFunctionsPanel(this, NULL, generalSettings, firmware), tr("Global Functions"));
   }
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
-  addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Hardware / Calibration"));
+  addTab(new HardwarePanel(this, generalSettings, firmware), tr("Hardware"));
+  addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));
 
   ui->tabWidget->setCurrentIndex( g.generalEditTab() );
 }
