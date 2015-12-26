@@ -1,5 +1,7 @@
 # TODO if the files order is different (these 2 SRC sections exchanged), the bootloader hangs for 20s in USB init. Why?
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+
 if(PCBREV STREQUAL REV9E)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}

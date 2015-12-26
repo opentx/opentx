@@ -1,3 +1,6 @@
+include(CMakeForceCompiler)
+include(Bitmaps)
+
 option(PCB "Radio type")
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -14,9 +17,8 @@ option(FAI "Competition mode (no telemetry)" OFF)
 option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 
-set(OPT s)
-
 enable_language(ASM)
+set(OPT s)
 
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
@@ -657,8 +659,6 @@ endif()
 
 set(SRC ${SRC} ${FIRMWARE_SRC})
 
-include(CMakeForceCompiler)
-
 set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
 
 # trick to remove the -rdynamic issue
@@ -697,6 +697,7 @@ if(ARCH STREQUAL ARM)
   add_custom_target(firmware.bin
     COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
     DEPENDS firmware.elf
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 else()
   cmake_force_c_compiler(avr-gcc GNU)
