@@ -137,6 +137,8 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
 
     virtual void installTraceHook(void (*callback)(const char *));
+
+    virtual void setLuaStateReloadPermanentScripts();
 };
 
 }
