@@ -100,9 +100,9 @@ Section "OpenTX Companion" SecDummy
   SetOutPath "$INSTDIR"
   
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
-  File "Release\companion.exe"
-  File "Release\simulator.exe"
-  File "Release\opentx-*-simulator.dll"
+  File "..\Release\companion.exe"
+  File "..\Release\simulator.exe"
+  File "..\Release\opentx-*-simulator.dll"
   ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
   !ifdef PTHREAD_WINDIR
   File "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
