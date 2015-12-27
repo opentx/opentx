@@ -527,6 +527,14 @@ uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
   return 0;
 }
 
+void OpenTxSimulator::setLuaStateReloadPermanentScripts()
+{
+#if defined(LUA)
+  luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+#endif
+}
+
+
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)
 {
 #define SETTRAINER_IMPORT

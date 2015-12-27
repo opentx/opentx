@@ -151,6 +151,7 @@ class SimulatorDialog : public QDialog
     void openTrainerSimulator();
     void openDebugOutput();
     void onDebugOutputClose();
+    void luaReload();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);

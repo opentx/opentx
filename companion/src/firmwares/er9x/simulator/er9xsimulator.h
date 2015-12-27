@@ -60,6 +60,8 @@ class Er9xSimulator : public SimulatorInterface {
 
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) {};
 
+    virtual void setLuaStateReloadPermanentScripts() {};
+
   protected:
 
     Er9xInterface * er9xInterface;
