@@ -644,6 +644,13 @@ void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, ::int16_t value)
 #include "simulatorimport.h"
 }
 
+void OpenTxSimulator::setLuaStateReloadPermanentScripts()
+{
+#if defined(LUA)
+    luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+#endif
+}
+
 void OpenTxSimulator::installTraceHook(void (*callback)(const char *))
 {
   traceCallback = callback;

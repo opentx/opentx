@@ -73,6 +73,7 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   new QShortcut(QKeySequence(Qt::Key_F4), this, SLOT(openTelemetrySimulator()));
   new QShortcut(QKeySequence(Qt::Key_F5), this, SLOT(openTrainerSimulator()));
   new QShortcut(QKeySequence(Qt::Key_F6), this, SLOT(openDebugOutput()));
+  new QShortcut(QKeySequence(Qt::Key_F7), this, SLOT(luaReload()));
   traceCallbackInstance = this;
 }
 
@@ -166,10 +167,17 @@ void SimulatorDialog::openDebugOutput()
   }
 }
 
+void SimulatorDialog::luaReload()
+{
+  // force a reload of the lua environment (as if a standalone script were run)
+  simulator->setLuaStateReloadPermanentScripts();
+}
+
 void SimulatorDialog::onDebugOutputClose()
 {
   DebugOut = 0;
 }
+
 
 void SimulatorDialog::keyPressEvent (QKeyEvent *event)
 {

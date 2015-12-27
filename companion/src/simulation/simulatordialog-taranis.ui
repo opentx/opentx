@@ -1754,6 +1754,13 @@ QPushButton:checked {
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="luaReload">
+       <property name="text">
+        <string>PF7 - Reload Lua Scripts</string>
+       </property>
+      </widget>
+      </item>
     </layout>
    </item>
   </layout>

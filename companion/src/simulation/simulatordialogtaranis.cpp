@@ -80,6 +80,7 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
   connect(ui->teleSim, SIGNAL(released()), this, SLOT(openTelemetrySimulator()));
   connect(ui->trainerSim, SIGNAL(released()), this, SLOT(openTrainerSimulator()));
   connect(ui->debugConsole, SIGNAL(released()), this, SLOT(openDebugOutput()));
+  connect(ui->luaReload, SIGNAL(released()), this, SLOT(luaReload()));
 }
 
 SimulatorDialogTaranis::~SimulatorDialogTaranis()
