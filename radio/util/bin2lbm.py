@@ -10,7 +10,7 @@ fileout = sys.argv[2]
 with open(filename, "rb") as fr:
     sts = fr.read()
 # Parse into chunks of 16 bytes
-sts = [sts[i * 16:(i + 1) * 16] for i in range(len(sts) // 16)]
+sts = [sts[i:i+16] for i in range(0, len(sts), 16)]
 
 with open(fileout, "w") as fw:
     for st in sts:
