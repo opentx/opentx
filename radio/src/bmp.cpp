@@ -422,3 +422,51 @@ const char *writeScreenshot()
 
   return NULL;
 }
+
+
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_ONLY_PNG
+#include "thirdparty/Stb/stb_image.h"
+
+
+const char * pngLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
+{
+  int x,y,n;
+  unsigned char *data = stbi_load(filename, &x, &y, &n, 3);
+  if (!data) {
+    return "stb error";
+  }
+
+  //convert to 565 fromat
+  // todo use dma2d for conversion from 888 to 565
+  unsigned char *p = data;
+  uint16_t * dest = (uint16_t *)bmp;
+
+  *dest++ = min<int>(width, x);
+  *dest++ = min<int>(height, y);
+
+  for(int row = 0; row < min<int>(height, y); ++row) {
+    unsigned char *l = p;
+    for(int col = 0; col < min<int>(width, x); ++col) {
+      *dest = RGB(l[0], l[1], l[2]);
+      ++dest;
+      l += 3;
+    }
+    p += 3 * x;
+  }
+  stbi_image_free(data);
+  return 0;
+//    // ... process data if not NULL ...
+//    // ... x = width, y = height, n = # 8-bit components per pixel ...
+//    // ... replace '0' with '1'..'4' to force that many components per pixel
+//    // ... but 'n' will always be the number that it would have been if you said 0
+//    stbi_image_free(data)
+//
+// Standard parameters:
+//    int *x       -- outputs image width in pixels
+//    int *y       -- outputs image height in pixels
+//    int *comp    -- outputs # of image components in image file
+//    int req_comp -- if non-zero, # of image components requested in result
+
+
+}

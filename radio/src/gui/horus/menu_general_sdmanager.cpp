@@ -366,6 +366,16 @@ bool menuGeneralSdManager(evt_t _event)
     }
     lcdDrawBitmap(LCD_W/2, (LCD_H-MODEL_BITMAP_HEIGHT)/2, modelBitmap);
   }
+
+  if (ext && !strcasecmp(ext, ".png")) {
+    if (lastBitmap != menuVerticalPosition) {
+      lastBitmap = menuVerticalPosition;
+      if (pngLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
+        ((uint32_t *)modelBitmap)[0] = 0;
+      }
+    }
+    lcdDrawBitmap(LCD_W/2, (LCD_H-MODEL_BITMAP_HEIGHT)/2, modelBitmap);
+  }
   
   return true;
 }
