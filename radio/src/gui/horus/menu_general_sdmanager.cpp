@@ -359,9 +359,9 @@ bool menuGeneralSdManager(evt_t _event)
   char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
   if (ext && !strcasecmp(ext, BITMAPS_EXT)) {
     if (lastBitmap != menuVerticalPosition) {
+      lastBitmap = menuVerticalPosition;
       if (bmpLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
         ((uint32_t *)modelBitmap)[0] = 0;
-        lastBitmap = menuVerticalPosition;
       }
     }
     lcdDrawBitmap(LCD_W/2, (LCD_H-MODEL_BITMAP_HEIGHT)/2, modelBitmap);
