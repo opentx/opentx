@@ -426,10 +426,11 @@ const char *writeScreenshot()
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
+#define STBI_ONLY_JPEG
 #include "thirdparty/Stb/stb_image.h"
 
 
-const char * pngLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
+const char * imgLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
 {
   int x,y,n;
   unsigned char *data = stbi_load(filename, &x, &y, &n, 3);
