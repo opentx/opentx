@@ -423,6 +423,7 @@ const char *writeScreenshot()
   return NULL;
 }
 
+#if defined(PCBHORUS)
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -472,3 +473,5 @@ const char * imgLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
 
 
 }
+
+#endif    // if defined(PCBHORUS)
