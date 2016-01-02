@@ -427,6 +427,7 @@ const char *writeScreenshot()
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
+#define STBI_ONLY_BMP
 #include "thirdparty/Stb/stb_image.h"
 
 
