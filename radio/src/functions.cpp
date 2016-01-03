@@ -414,13 +414,13 @@ void evalFunctions()
 
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
-            if (CFN_GVAR_MODE(cfn) == 0) {
+            if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_CONSTANT) {
               SET_GVAR(CFN_GVAR_INDEX(cfn), CFN_PARAM(cfn), mixerCurrentFlightMode);
             }
-            else if (CFN_GVAR_MODE(cfn) == 2) {
-              SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_PARAM(cfn), mixerCurrentFlightMode), mixerCurrentFlightMode);
+            else if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_GVAR) {
+              SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_PARAM(cfn), getGVarFlightPhase(mixerCurrentFlightMode, CFN_PARAM(cfn))), mixerCurrentFlightMode);
             }
-            else if (CFN_GVAR_MODE(cfn) == 3) {
+            else if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_INC) {
               if (!(functionsContext.activeSwitches & switch_mask)) {
 #if defined(PCBSTD)
                 SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + (CFN_PARAM(cfn) ? +1 : -1), mixerCurrentFlightMode);
