@@ -16,6 +16,7 @@
 <li>Fixed Fahrenheit temperature conversion error (if PREC was not 0) (<a href=https://github.com/opentx/opentx/issues/3146>#3146</a>)</li>
 <li>Application Setting 'Enable automatic backup before writing firmware' was not saved (<a href=https://github.com/opentx/opentx/issues/3040>#3040</a>)</li>
 <li>Fixed RPM package problem on Fedora (<a href=https://github.com/opentx/opentx/issues/3130>#3130</a>)</li>
+<li>Fixed conversion errors when loading 2.0.x EEPE (<a href=https://github.com/opentx/opentx/issues/3177>#3177</a>)</li>
 <li>Various texts and translations corrections</li>
 </ul>
 
