@@ -819,7 +819,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   endif
   INCDIRS += targets/sky9x bitmaps bitmaps/9x $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
-  BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp
+  BOARDSRC = main_arm.cpp targets/sky9x/board_sky9x.cpp targets/sky9x/trainer_driver.cpp
   EXTRABOARDSRC = targets/sky9x/lcd_driver.cpp
   SRC += targets/sky9x/core_cm3.c targets/sky9x/board_lowlevel.c targets/sky9x/crt.c targets/sky9x/vectors_sam3s.c
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
