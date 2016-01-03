@@ -422,7 +422,7 @@ void evalFunctions()
             }
             else if (CFN_GVAR_MODE(cfn) == 3) {
               if (!(functionsContext.activeSwitches & switch_mask)) {
-                SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + (CFN_PARAM(cfn) ? +1 : -1), mixerCurrentFlightMode);
+                SET_GVAR(CFN_GVAR_INDEX(cfn), limit(-GVAR_MAX, GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + (CFN_PARAM(cfn) ? +1 : -1), GVAR_MAX), mixerCurrentFlightMode);
               }
             }
             else if (CFN_PARAM(cfn) >= MIXSRC_TrimRud && CFN_PARAM(cfn) <= MIXSRC_TrimAil) {
