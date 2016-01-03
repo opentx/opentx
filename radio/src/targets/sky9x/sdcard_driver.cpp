@@ -18,6 +18,8 @@
  * GNU General Public License for more details.
  */
 
+#include "../../opentx.h"
+
 #define MCI_INITIAL_SPEED   400000
 
 void init_SDcard()

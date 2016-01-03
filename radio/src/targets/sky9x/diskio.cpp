@@ -25,12 +25,8 @@
 /* are platform dependent.                                               */
 /*-----------------------------------------------------------------------*/
 
-#include <string.h>
-#include "debug.h"
+#include "../../opentx.h"
 #include "../FatFs/diskio.h"
-#include "../FatFs/ff.h"
-#include "../CoOS/kernel/CoOS.h"
-#include "board.h"
 
 #define CARD_TYPE_bmHC           (1 << 0)   /**< Bit for High-Capacity(Density) */
 #define CARD_TYPE_bmSDMMC        (0x3 << 1) /**< Bits mask for SD/MMC */

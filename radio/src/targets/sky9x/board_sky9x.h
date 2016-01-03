@@ -155,12 +155,10 @@ extern uint16_t sessionTimer;
 void calcConsumption();
 #endif
 
+// Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
-// #define JACK_PPM_OUT() PIOC->PIO_PDR = PIO_PC22
-// #define JACK_PPM_IN() PIOC->PIO_PER = PIO_PC22
 void checkTrainerSettings();
-
-void setSticksGain(uint8_t gains);
+void init_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
@@ -229,7 +227,8 @@ enum Analogs {
 };
 void adcInit();
 void adcRead(void);
-inline uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint32_t value);
+void setSticksGain(uint8_t gains);
 
 // Buzzer driver
 void buzzerSound(uint8_t duration);
@@ -269,6 +268,11 @@ uint32_t pwrCheck();
 // EEPROM driver
 void eepromInit();
 uint32_t eepromReadStatus();
+extern volatile uint32_t Spi_complete;
+void eepromWriteEnable();
+void eepromBlockErase(uint32_t address);
+void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size);
+void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size);
 
 // Rotary Encoder driver
 void rotencInit();
@@ -287,9 +291,12 @@ void debugPutc(const char c);
 void telemetryPortInit(uint32_t baudrate);
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
+void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 // Second UART driver
 void serial2TelemetryInit(unsigned int protocol);
 bool telemetrySecondPortReceive(uint8_t & data);
+
+extern const uint8_t BootCode[];
 
 #endif // _BOARD_SKY9X_H_

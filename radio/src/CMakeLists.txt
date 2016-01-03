@@ -157,6 +157,67 @@ elseif(PCB STREQUAL TARANIS)
   if(MIXERS_MONITOR)
     add_definitions(-DMIXERS_MONITOR)
   endif()
+elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
+  set(ARCH ARM)
+  if(PCB STREQUAL 9XRPRO)
+    add_definitions(-Dat91sam3s8 -DREVX)
+    set(FLAVOUR 9xrpro)
+    set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
+  elseif(PCB STREQUAL AR9X)
+    add_definitions(-Dat91sam3s8 -DAR9X)
+    set(FLAVOUR ar9x)
+    set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
+  else()
+    set(FLAVOUR sky9x)
+    option(PCBREV "PCB Revision" REVC)
+    set(TARGET_SRC ${TARGET_SRC} coproc_driver.cpp rotenc_driver.cpp)
+    add_definitions(-DROTARY_ENCODERS=1)
+    if(PCBREV STREQUAL REVA)
+      add_definitions(-DDREVA)
+      set(LINKER_SCRIPT targets/sky9x/sam3s2c_flash.ld)
+    elseif(PCBREV STREQUAL REVB)
+      add_definitions(-DDREVB -DCOPROCESSOR)
+      set(LINKER_SCRIPT targets/sky9x/sam3s4c_flash.ld)
+    else()
+      add_definitions(-DDREVC -DCOPROCESSOR)
+      set(LINKER_SCRIPT targets/sky9x/sam3s4c_flash.ld)
+    endif()
+  endif()
+  set(MCU cortex-m3)
+  set(SDCARD YES)
+  set(HAPTIC YES)
+  set(EEPROM EEPROM_RAW)
+  set(GUI_DIR 9x)
+  set(TARGET_DIR sky9x)
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
+  add_definitions(-DPCBSKY9X)
+  add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
+  add_definitions(-DDBLKEYS -DVARIO -DBOLD_FONT -DBATTGRAPH)
+  add_definitions(-DEEPROM_VARIANT=0)
+  set(GUI_SRC ${GUI_SRC} menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} core_cm3.c board_lowlevel.c crt.c vectors_sam3s.c)
+  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp
+    usb/device/core/USBD_UDP.c usb/device/core/USBDDriver.c
+    usb/device/massstorage/MSDDriver.c usb/device/massstorage/MSDDStateMachine.c usb/device/massstorage/MSDLun.c
+    usb/device/massstorage/MSDDriverDescriptors.c usb/device/massstorage/SBCMethods.c usb/common/core/USBEndpointDescriptor.c
+    usb/common/core/USBGenericRequest.c usb/common/core/USBFeatureRequest.c usb/common/core/USBInterfaceRequest.c
+    usb/common/core/USBGetDescriptorRequest.c usb/common/core/USBSetAddressRequest.c usb/common/core/USBSetConfigurationRequest.c
+    usb/common/core/USBConfigurationDescriptor.c usb/common/core/USBGenericDescriptor.c MEDSdcard.c
+    )
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    rtc_driver.cpp
+    board_sky9x.cpp
+    telemetry_driver.cpp
+    serial2_driver.cpp
+    pwr_driver.cpp
+    adc_driver.cpp
+    eeprom_driver.cpp
+    pulses_driver.cpp
+    keys_driver.cpp audio_driver.cpp buzzer_driver.cpp haptic_driver.cpp sdcard_driver.cpp massstorage.cpp
+    )
+  set(SRC ${SRC} debug.cpp)
+  set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
 elseif(PCB STREQUAL 9X OR PCB STREQUAL 9XR)
   set(ARCH AVR)
   set(MCU atmega64)
@@ -217,7 +278,7 @@ if(CPU_FAMILY STREQUAL STM32)
   set(ARCH ARM)
   set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.1.0/Libraries)
   add_definitions(-DCPUSTM32)
-  add_definitions(-DFRSKY -DFRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2 -DSBUS -DCROSSFIRE)
+  add_definitions(-DSBUS -DCROSSFIRE)
   include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
   include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
   include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc)
@@ -256,20 +317,6 @@ if(CPU_FAMILY STREQUAL STM32)
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
     serial.cpp
-    ${FATFS_DIR}/ff.c
-    ${FATFS_DIR}/fattime.c
-    ${FATFS_DIR}/option/ccsbcs.c
-    ${COOS_DIR}/kernel/core.c
-    ${COOS_DIR}/kernel/hook.c
-    ${COOS_DIR}/kernel/task.c
-    ${COOS_DIR}/kernel/event.c
-    ${COOS_DIR}/kernel/time.c
-    ${COOS_DIR}/kernel/timer.c
-    ${COOS_DIR}/kernel/flag.c
-    ${COOS_DIR}/kernel/mutex.c
-    ${COOS_DIR}/kernel/serviceReq.c
-    ${COOS_DIR}/portable/GCC/port.c
-    ${COOS_DIR}/portable/arch.c
     syscalls.c
     targets/taranis/configure_pins.cpp
     )
@@ -335,6 +382,7 @@ if(ARCH STREQUAL ARM)
     set(TARGET_SRC ${TARGET_SRC} haptic_driver.cpp)
   endif()
   add_definitions(-DCPUARM)
+  add_definitions(-DFRSKY -DFRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2)
   include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
   include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
   foreach(LANGUAGE cz de en es fr it pt sk se pl hu) # TODO add nl
@@ -367,10 +415,27 @@ if(ARCH STREQUAL ARM)
     pulses_driver.cpp
     keys_driver.cpp
     adc_driver.cpp
-    trainer_driver.cpp
+    # trainer_driver.cpp
     audio_driver.cpp
     serial2_driver.cpp
     telemetry_driver.cpp
+    )
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    ${FATFS_DIR}/ff.c
+    ${FATFS_DIR}/fattime.c
+    ${FATFS_DIR}/option/ccsbcs.c
+    ${COOS_DIR}/kernel/core.c
+    ${COOS_DIR}/kernel/hook.c
+    ${COOS_DIR}/kernel/task.c
+    ${COOS_DIR}/kernel/event.c
+    ${COOS_DIR}/kernel/time.c
+    ${COOS_DIR}/kernel/timer.c
+    ${COOS_DIR}/kernel/flag.c
+    ${COOS_DIR}/kernel/mutex.c
+    ${COOS_DIR}/kernel/serviceReq.c
+    ${COOS_DIR}/portable/GCC/port.c
+    ${COOS_DIR}/portable/arch.c
     )
   set(PULSES_SRC
     pulses_arm.cpp
@@ -410,6 +475,9 @@ else()
   endif()
   if(BOLD)
     add_definitions(-DBOLD_FONT)
+  endif()
+  if(BATTGRAPH)
+    add_definitions(-DBATTGRAPH)
   endif()
   if(${EXT} STREQUAL OFF)
     add_definitions(-DEXTSTD)
@@ -689,6 +757,8 @@ if(ARCH STREQUAL ARM)
       )
     add_custom_target(bootloader DEPENDS bootloader.lbm)
     set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+  else()
+    file(DOWNLOAD http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm)
   endif()
 
   add_executable(firmware.elf ${SRC} ${FIRMWARE_HEADERS})

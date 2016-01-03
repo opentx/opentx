@@ -468,8 +468,6 @@ void i2cInit()
   NVIC_EnableIRQ(TWI0_IRQn) ;
 }
 
-extern const uint8_t BootCode[];
-
 void boardInit()
 {
   // TODO this is not clean, completely unuseful, but prevents the bootloader from being optimized away...
