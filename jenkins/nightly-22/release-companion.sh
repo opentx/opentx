@@ -24,16 +24,16 @@ mkdir -p $_
 cd $_
 cmake -DPCB=TARANIS ../opentx
 make package
-cp ./companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm ${DESTDIR}
-
-make stamp
-chmod -Rf g+w . || true
+cp ./companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm ${DESTDIR}/linux
+chmod -Rf g+w ${DESTDIR}/linux/companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm
 
 # request companion compilation on Windows
 cd ${DESTDIR}
-wget -qO- http://winbox.open-tx.org/companion-builds/compile.php?branch=${branch}\&suffix=${OPENTX_VERSION_SUFFIX}
-wget -O companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe
-mv $DIR/opentx/companion/companion.stamp ./companion-windows.stamp
+wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=${branch}\&suffix=${OPENTX_VERSION_SUFFIX}
+wget -O windows/companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe
+chmod -Rf g+w windows/companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe
 
-chmod -Rf g+w . || true
+# update windows stamp
+cp $DIR/companion-build/version.h ./companion-windows.stamp
+chmod -Rf g+w ./companion-windows.stamp 
 

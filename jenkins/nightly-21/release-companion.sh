@@ -31,7 +31,7 @@ chmod -Rf g+w . || true
 
 # request companion compilation on Windows
 cd ${DESTDIR}
-wget -qO- http://winbox.open-tx.org/companion-builds/compile.php?branch=${branch}\&suffix=${OPENTX_VERSION_SUFFIX}
+wget -qO- http://winbox.open-tx.org/companion-builds/compile21.php?branch=${branch}\&suffix=${OPENTX_VERSION_SUFFIX}
 wget -O companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe
 mv $DIR/opentx/companion/companion.stamp ./companion-windows.stamp
 

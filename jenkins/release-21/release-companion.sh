@@ -28,7 +28,7 @@ chmod -Rf g+w . || true
 
 # request companion compilation on Windows
 cd /var/www/html/downloads-$version/companion/
-wget -qO- http://winbox.open-tx.org/companion-builds/compile.php?branch=$branch
+wget -qO- http://winbox.open-tx.org/companion-builds/compile21.php?branch=$branch
 wget -O companion-windows-$release.exe http://winbox.open-tx.org/companion-builds/companion-windows-$release.exe
 mv ~opentx/release-$version/opentx/companion/companion.stamp ./companion-windows.stamp
 

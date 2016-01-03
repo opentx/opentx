@@ -4,7 +4,7 @@
 set -e
 
 # make sure we are in the good directory
-cd ~opentx/release/
+cd ~opentx/release-20/
 
 # pull the latest changes
 ./update-repo.sh
@@ -20,7 +20,7 @@ cd ../../..
 tar czf ./opentx.tgz opentx/radio/src opentx/radio/util
 
 # copy the stamp and the release-notes to the http server
-cd ~opentx/release/
+cd ~opentx/release-20/
 cp opentx/radio/src/stamp-opentx.txt /var/www/html/downloads-20/firmware/
 cp opentx/radio/releasenotes.txt /var/www/html/downloads-20/firmware/
 cp opentx/radio/src/lua_fields.txt /var/www/html/downloads-20/firmware/
