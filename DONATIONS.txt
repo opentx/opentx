@@ -48,11 +48,9 @@ R. Scott Page
 Johan Cronje
 Renato Aranghelovici
 Jeffrey Irvin
-John Rodgers
 Kenneth Crump
 Damjan Adamic
 Martin Wilson
-Joe Street
 John Holdsworth
 Daniel Schwartz
 Dean Church (monthly)
@@ -148,7 +146,6 @@ Mike Matheny
 Martin Sniedze
 Fernando Rimoldi
 Sidney Fisher
-Bruce Anderson
 John Rodgers
 Ed Pare
 Thomas Kilduff
@@ -882,3 +879,4 @@ George Carnie
 Philippe Stofleth
 Tim Dzugan 
 Illia Izotov
+Richard Miles (monthly)
