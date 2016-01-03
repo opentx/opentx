@@ -459,19 +459,6 @@ const char * imgLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   }
   stbi_image_free(data);
   return 0;
-//    // ... process data if not NULL ...
-//    // ... x = width, y = height, n = # 8-bit components per pixel ...
-//    // ... replace '0' with '1'..'4' to force that many components per pixel
-//    // ... but 'n' will always be the number that it would have been if you said 0
-//    stbi_image_free(data)
-//
-// Standard parameters:
-//    int *x       -- outputs image width in pixels
-//    int *y       -- outputs image height in pixels
-//    int *comp    -- outputs # of image components in image file
-//    int req_comp -- if non-zero, # of image components requested in result
-
-
 }
 
 #endif    // if defined(PCBHORUS)

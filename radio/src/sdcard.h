@@ -46,6 +46,8 @@
 #define LOGS_EXT            ".csv"
 #define SOUNDS_EXT          ".wav"
 #define BITMAPS_EXT         ".bmp"
+#define PNG_EXT             ".png"
+#define JPG_EXT             ".jpg"
 #define SCRIPTS_EXT         ".lua"
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
