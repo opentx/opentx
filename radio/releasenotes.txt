@@ -35,6 +35,7 @@ and needs to be installed on the radio SD card. Download from http://lua-21.open
 <li>Fixed: Wrong telemetry unit and precision was used for V2 in logical switches (Taranis not affected) (<a href=https://github.com/opentx/opentx/issues/3071>#3071</a>)</li>
 <li>Received value unit for Air speed sensor set to knots (all FrSky sensors send speed in knots) (<a href=https://github.com/opentx/opentx/issues/3043>#3043</a>)</li>
 <li>Added support for FrSky Powerbox sensor (<a href=https://github.com/opentx/opentx/issues/2970>#2970</a>)</li>
+<li>Fixed Special Function - Adjust GVAR: increment/decrement could cause GVAR value to overflow the allowed range (&pm;1024) (<a href=https://github.com/opentx/opentx/issues/2917>#2917</a>)</li>
 </ul>
 
 [All]
