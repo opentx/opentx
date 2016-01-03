@@ -311,6 +311,8 @@ void lcdSetContrast();
 #define lcdOff(...)
 
 const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+const char * imgLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)
