@@ -4,7 +4,7 @@
 set -e
 
 # make sure we are in the good directory
-cd ~opentx/release/
+cd ~opentx/release-20/
 
 # release all components
 ./release-companion.sh
