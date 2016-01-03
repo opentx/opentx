@@ -425,17 +425,71 @@ const char *writeScreenshot()
 
 #if defined(PCBHORUS)
 
+
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
 #define STBI_ONLY_BMP
+#define STBI_NO_STDIO
 #include "thirdparty/Stb/stb_image.h"
+
+
+// fill 'data' with 'size' bytes.  return number of bytes actually read
+int stbc_read(void *user, char *data, int size) 
+{
+  FIL * fp = (FIL *)user;
+  UINT br = 0;
+  FRESULT res = f_read(fp, data, size, &br);
+  if (res == FR_OK) {
+    return (int)br;
+  }
+  return 0;
+}
+
+// skip the next 'n' bytes, or 'unget' the last -n bytes if negative
+void stbc_skip(void *user, int n)
+{
+  FIL * fp = (FIL *)user;
+  f_lseek(fp, f_tell(fp) + n);
+}
+
+// returns nonzero if we are at end of file/data
+int stbc_eof(void *user)
+{
+  FIL * fp = (FIL *)user;
+  return f_eof(fp);
+}
+
+// callbacks for stb-image
+const stbi_io_callbacks stbCallbacks = {
+  stbc_read,
+  stbc_skip,
+  stbc_eof
+};
 
 
 const char * imgLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
 {
+  FIL imgFile;
+
+  // if (width > LCD_W) {
+  //   return STR_INCOMPATIBLE;
+  // }
+
+  FRESULT result = f_open(&imgFile, filename, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  // if (f_size(&bmpFile) < 14) {
+  //   f_close(&bmpFile);
+  //   return STR_INCOMPATIBLE;
+  // }
+
   int x,y,n;
-  unsigned char *data = stbi_load(filename, &x, &y, &n, 3);
+  unsigned char *data = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &x, &y, &n, 3);
+  f_close(&imgFile);
+  
   if (!data) {
     return "stb error";
   }
