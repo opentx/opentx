@@ -1,4 +1,4 @@
-<h2>Version 2.1.7 / 2016-01-03</h2>
+<h2>Version 2.1.7 / 2016-01-04</h2>
 
 <ul>
 <li>Lua 'execute' failed in non-root directory (in Simulator) (<a href=https://github.com/opentx/opentx/issues/3024>#3024</a>)</li>

@@ -1,4 +1,4 @@
-<h2>Version 2.1.7 / 2016-01-03</h2>
+<h2>Version 2.1.7 / 2016-01-04</h2>
 
 Notice: Lua model wizard was fixed (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>) 
 and needs to be installed on the radio SD card. Download from http://lua-21.open-tx.org/wizard.zip
@@ -36,6 +36,7 @@ and needs to be installed on the radio SD card. Download from http://lua-21.open
 <li>Received value unit for Air speed sensor set to knots (all FrSky sensors send speed in knots) (<a href=https://github.com/opentx/opentx/issues/3043>#3043</a>)</li>
 <li>Added support for FrSky Powerbox sensor (<a href=https://github.com/opentx/opentx/issues/2970>#2970</a>)</li>
 <li>Fixed Special Function - Adjust GVAR: increment/decrement could cause GVAR value to overflow the allowed range (&pm;1024) (<a href=https://github.com/opentx/opentx/issues/2917>#2917</a>)</li>
+<li>Bad Value for GVAR When Adjusting GVx to Another GVx in Special Functions (<a href=https://github.com/opentx/opentx/issues/3103>#3103</a>)</li>
 </ul>
 
 [All]
