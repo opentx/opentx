@@ -1,4 +1,4 @@
-<h2>Version 2.0.18 / 2015-11-04</h2>
+<h2>Version 2.0.18 / 2016-01-03</h2>
 <ul>
 <li>Enabled <i>Mixers monitor</i> in Taranis simulator</li>
 <li>Better support for multi-axes in Log Viewer (<a href=https://github.com/opentx/opentx/issues/2267>#2267</a>)</li>
