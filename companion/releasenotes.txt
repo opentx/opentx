@@ -1,13 +1,23 @@
-<h2>Version 2.1.6 / todo</h2>
+<h2>Version 2.1.7 / 2016-01-03</h2>
 
 <ul>
 <li>Lua 'execute' failed in non-root directory (in Simulator) (<a href=https://github.com/opentx/opentx/issues/3024>#3024</a>)</li>
-<li>Header line always visible in Outputs, Logical Switches and Special Functions (<a href=https://github.com/opentx/opentx/issues/2861>#2861</a>)</li>
+<!-- this is disabled until the speed problem is fixed <li>Header line always visible in Outputs, Logical Switches and Special Functions (<a href=https://github.com/opentx/opentx/issues/2861>#2861</a>)</li> -->
 <li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant</li>
 <li>Added Clear option to the flight mode context menu (right click on the Name label) (<a href=https://github.com/opentx/opentx/issues/3026>#3026</a>)</li>
+<li>New features for Telemetry Simulator: log replay, user friendly sensor values (<a href=https://github.com/opentx/opentx/issues/3124>#3124</a>)</li>
+<li>Added F7 key to reload LUA permanent scripts in radio simulator (<a href=https://github.com/opentx/opentx/issues/3141>#3141</a>)</li>
+<li>AR9X firmware flashing fall-back was wrong</li>
+<li>Command line options support added to standalone simulator (try "./simulator21 --help" on Linux and "simulator.exe /help" on Windows for usage) (<a href=https://github.com/opentx/opentx/issues/3160>#3160</a>)</li>
+<li>Various rounding problem fixed: Telemetry sensor Ratio parameter (<a href=https://github.com/opentx/opentx/issues/3117>#3117</a>),
+  Outputs Sub-trim, Min and Max values (<a href=https://github.com/opentx/opentx/issues/3156>#3156</a>)</li>
+<li>Fixed: telemetry sensors Ratio and Offset value increment/decrement step (<a href=https://github.com/opentx/opentx/issues/3121>#3121</a>)</li>
+<li>Hardware/Calibration tab split int two tabs (<a href=https://github.com/opentx/opentx/issues/2974>#2974</a>)</li>
+<li>Fixed Fahrenheit temperature conversion error (if PREC was not 0) (<a href=https://github.com/opentx/opentx/issues/3146>#3146</a>)</li>
+<li>Application Setting 'Enable automatic backup before writing firmware' was not saved (<a href=https://github.com/opentx/opentx/issues/3040>#3040</a>)</li>
+<li>Fixed RPM package problem on Fedora (<a href=https://github.com/opentx/opentx/issues/3130>#3130</a>)</li>
 <li>Various texts and translations corrections</li>
 </ul>
-
 
 
 <h2>Version 2.1.6 / 2015-11-11</h2>
