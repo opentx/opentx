@@ -2,12 +2,12 @@
 
 # stops on first error
 set -e
-
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source $DIR/version.sh
+set -x
 
 # make sure we are in the good directory
-cd ~opentx/release-$version/
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+cd ${DIR}
+source ./version.sh
 
 # release all components
 ./release-companion.sh
