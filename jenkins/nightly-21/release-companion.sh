@@ -21,9 +21,9 @@ cd opentx/radio/src
 make clean
 
 # create companion rpm
-rm -rf ${DIR}/companion-build/
+rm -rf   ${DIR}/companion-build/
 mkdir -p ${DIR}/companion-build/
-cd ${DIR}/companion-build/
+cd       ${DIR}/companion-build/
 cmake ../opentx/companion/src
 make package
 cp ./companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm ${DESTDIR}
