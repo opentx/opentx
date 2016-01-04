@@ -7,10 +7,12 @@ set -x
 # make sure we are in the good directory
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 cd $DIR
-source ./version.sh
 
 # pull the latest changes
 ./update-repo.sh
+
+# retrieve release after the repo update
+source ./version.sh
 
 # make the stamp
 cd opentx/radio/src
@@ -30,9 +32,9 @@ DESTDIR=/var/www/html/downloads-${version}/nightly/firmware
 # copy the stamp and the release-notes to the http server
 cd ${DIR}
 cp opentx/radio/src/stamp-opentx.txt ${DESTDIR}
-cp opentx/radio/releasenotes.txt ${DESTDIR}
+cp opentx/radio/releasenotes.txt     ${DESTDIR}
 cp opentx/radio/src/lua_fields_*.txt ${DESTDIR}
-echo ${OPENTX_VERSION_SUFFIX} > ${DESTDIR}/suffix.txt
+echo ${OPENTX_VERSION_SUFFIX} >      ${DESTDIR}/suffix.txt
 
 # erase all previous builds
 rm -f ${DESTDIR}/binaries/opentx*.hex
