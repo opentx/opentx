@@ -887,7 +887,7 @@
 #define TR_PATH_TOO_LONG       "Cesta je moc dlouhá"
 #define TR_VIEW_TEXT           "Zobrazit text"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoaderu"
-#define TR_FLASH_EXTERNAL_DEVICE "Flash externí krabičky"
+#define TR_FLASH_EXTERNAL_DEVICE "Flash externího zařízení"
 #define TR_FLASH_INTERNAL_MODULE "Flash vnitřního modulu"
 #define TR_WRITING             "\032Zapisuji.."
 #define TR_CONFIRM_FORMAT      "Provést Formát?"
