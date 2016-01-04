@@ -6,11 +6,13 @@ set -x
 
 # make sure we are in the good directory
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-cd $DIR
-source ./version.sh
+cd ${DIR}
 
 # pull the latest changes
 ./update-repo.sh
+
+# retrieve release after the repo update
+source ./version.sh
 
 DESTDIR=/var/www/html/downloads-${version}/nightly/companion
 
@@ -19,9 +21,9 @@ cd opentx/radio/src
 make clean
 
 # create companion rpm
-rm -rf $DIR/companion-build/
+rm -rf   ${DIR}/companion-build/
 mkdir -p $_
-cd $_
+cd       $_
 cmake -DPCB=TARANIS ../opentx
 make package
 cp ./companion${version}-${release}${OPENTX_VERSION_SUFFIX}-i686.rpm ${DESTDIR}/linux
