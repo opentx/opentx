@@ -881,3 +881,7 @@ Tim Dzugan
 Illia Izotov
 Richard Miles (monthly)
 Attila Kapolnai
+Gilles Dando
+Denis Roussille
+Olivier Anken
+Michel Motte
