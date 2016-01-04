@@ -6,7 +6,7 @@ set -x
 
 # make sure we are in the good directory
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-cd $DIR
+cd ${DIR}
 
 # pull the latest changes
 ./update-repo.sh
