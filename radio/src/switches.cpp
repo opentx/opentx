@@ -219,7 +219,8 @@ bool getLogicalSwitch(uint8_t idx)
 #endif
 
   if (ls->func == LS_FUNC_NONE || (s && !getSwitch(s))) {
-    if (ls->func != LS_FUNC_STICKY) {
+    if (ls->func != LS_FUNC_STICKY && ls->func != LS_FUNC_STAY) {
+      // AND switch must not affect STICKY and EDGE (STAY) processing
       LS_LAST_VALUE(mixerCurrentFlightMode, idx) = CS_LAST_VALUE_INIT;
     }
     result = false;
