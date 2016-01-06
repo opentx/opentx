@@ -120,12 +120,12 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
 
   // Call setupPulses only after "rest" period has elapsed.
   // Must do this before toggle PORTB to keep timing accurate.
-  if(IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])|| *((uint16_t*)pulses2MHzRPtr) == 0) {
-    if(!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
+  if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])|| *((uint16_t*)pulses2MHzRPtr) == 0) {
+    if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
       OCR1A = SETUP_PULSES_DURATION;
 #if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
       OCR1B = OCR1A;
-      if( g_model.pulsePol ) TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
+      if ( g_model.pulsePol ) TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
       else TCCR1A |= 3<<COM1B0;
       TCCR1C = 1<<FOC1B;// Strobe FOC1B.
       TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1);// Toggle OC1B on next match.
@@ -136,10 +136,10 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
     return;
   }
 
-  if(s_current_protocol[0] != PROTO_NONE) {
+  if (s_current_protocol[0] != PROTO_NONE) {
 #if !defined(CPUM2560)
     // Original Bit-bang for PPM.
-    if(g_ppmPulsePolarity) {
+    if (g_ppmPulsePolarity) {
       PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       g_ppmPulsePolarity = 0;
     } else {
@@ -148,7 +148,7 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
     }
 #else // defined(CPUM2560)
     // CPUM2560 hardware toggled PPM out.
-    if( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) // Look one step ahead to see if we are currently the "rest" period.
+    if ( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) // Look one step ahead to see if we are currently the "rest" period.
       OCR1B = 0xffff;// Prevent next compare match hence toggle.
     else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
 #endif
@@ -157,8 +157,8 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
   OCR1A = *( (uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
   pulses2MHzRPtr += sizeof(uint16_t); // Non PPM protocols use uint8_t pulse buffer.
 
-  if(dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
-  if(dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
+  if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
+  if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
 }
 
 void setupPulsesPPM(uint8_t proto)
