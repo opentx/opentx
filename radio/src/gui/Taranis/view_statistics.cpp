@@ -37,6 +37,11 @@
 #include "../../opentx.h"
 #include "../../timers.h"
 
+#define STATS_1ST_COLUMN               FW/2
+#define STATS_2ND_COLUMN               12*FW+FW/2
+#define STATS_3RD_COLUMN               24*FW+FW/2
+#define STATS_LABEL_WIDTH              8*FW
+
 void menuStatisticsView(uint8_t event)
 {
   TITLE(STR_MENUSTAT);
@@ -58,21 +63,25 @@ void menuStatisticsView(uint8_t event)
       break;
   }
 
-  lcd_puts(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
-  putsTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
-  putsTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
+  // Session and Total timers
+  lcdDrawText(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
+  putsTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
+  lcdDrawText(STATS_1ST_COLUMN, FH*2+1, "TOT", BOLD);
+  putsTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*2+1, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
 
-  putsTimer(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
-  putsTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
+  // Throttle special timers
+  lcdDrawText(STATS_2ND_COLUMN, FH*0+1, "THR", BOLD);
+  putsTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr, 0, 0);
+  lcdDrawText(STATS_2ND_COLUMN, FH*1+1, "TH%", BOLD);
+  putsTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16, 0, 0);
 
-  putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
-  
-  lcd_puts(    24*FW, FH*0, "TOT");
-  putsTimer(   28*FW+5*FWNUM+1, FH*0, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
-  
-  if (TIMERS == 3) {
-    lcd_puts(    24*FW, FH*1, "TM3");
-    putsTimer(   28*FW+5*FWNUM+1, FH*1, timersStates[2].val, TIMEHOUR, 0);
+  // Timers
+  for (int i=0; i<TIMERS; i++) {
+    putsStrIdx(STATS_3RD_COLUMN, FH*i+1, "TM", i+1, BOLD);
+    if (timersStates[i].val > 3600)
+      putsTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, TIMEHOUR, 0);
+    else
+      putsTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, 0, 0);
   }
 
 #if defined(THRTRACE)
