@@ -127,7 +127,7 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
       OCR1B = OCR1A;
       if ( g_model.pulsePol ) TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
       else TCCR1A |= 3<<COM1B0;
-      TCCR1C = 1<<FOC1B;// Strobe FOC1B.
+      TCCR1C = 1<<FOC1B; // Strobe FOC1B.
       TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1); // Toggle OC1B on next match.
 #endif
     }
