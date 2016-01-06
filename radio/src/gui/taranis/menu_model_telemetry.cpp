@@ -209,8 +209,6 @@ void menuModelSensor(uint8_t event)
 
   putsTelemetryChannelValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), LEFT);
 
-  int sub = menuVerticalPosition;
-
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
@@ -223,10 +221,9 @@ void menuModelSensor(uint8_t event)
       }
     }
 
-    LcdFlags attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (menuVerticalPosition==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (k) {
-
       case SENSOR_FIELD_NAME:
         editSingleName(SENSOR_2ND_COLUMN, y, STR_NAME, sensor->label, TELEM_LABEL_LEN, event, attr);
         break;
@@ -471,8 +468,7 @@ void onSensorMenu(const char *result)
 #if defined(LUA)
 void onTelemetryScriptFileSelectionMenu(const char *result)
 {
-  int sub = menuVerticalPosition;
-  int screenIndex = TELEMETRY_CURRENT_SCREEN(sub);
+  int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition);
 
   if (result == STR_UPDATE_LIST) {
     if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
@@ -499,8 +495,6 @@ void menuModelTelemetry(uint8_t event)
   
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
-  int sub = menuVerticalPosition;
-
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
@@ -510,7 +504,7 @@ void menuModelTelemetry(uint8_t event)
     }
 
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    LcdFlags attr = (sub == k ? blink : 0);
+    LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
 
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;

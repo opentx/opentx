@@ -581,7 +581,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
       x += 13;
   }
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
-  if (att&TIMEBLINK)
+  if (att & TIMEBLINK)
     lcdDrawChar(lcdLastPos, y, separator, BLINK);
   else
     lcdDrawChar(lcdLastPos, y, separator, att&att2);
