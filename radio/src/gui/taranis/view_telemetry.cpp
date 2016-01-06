@@ -105,6 +105,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
 bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 {
   // Custom Screen with numbers
+  const coord_t pos[] = {0, 71, 143, 214};
   uint8_t fields_count = 0;
   for (uint8_t i=0; i<4; i++) {
     for (uint8_t j=0; j<NUM_LINE_ITEMS; j++) {
@@ -121,11 +122,17 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
       }
       if (field) {
+        coord_t x = pos[j+1]-2;
+        coord_t y = (i==3 ? 1+FH+2*FH*i:FH+2*FH*i);
         LcdFlags att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
-        coord_t pos[] = {0, 71, 143, 214};
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           putsStrIdx(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
+          if (timersStates[field-MIXSRC_FIRST_TIMER].val > 3600) {
+            att += TIMEHOUR - DBLSIZE;
+            x -= 3*FW;
+            y += FH/2;
+          }
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
           // we don't display GPS name, no space for it
@@ -144,8 +151,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
 
-        putsChannel(pos[j+1]-2, (i==3 ? 1+FH+2*FH*i:FH+2*FH*i), field, att);
-
+        putsChannel(x, y, field, att);
       }
     }
   }
