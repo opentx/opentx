@@ -128,7 +128,7 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
       if ( g_model.pulsePol ) TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
       else TCCR1A |= 3<<COM1B0;
       TCCR1C = 1<<FOC1B;// Strobe FOC1B.
-      TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1);// Toggle OC1B on next match.
+      TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1); // Toggle OC1B on next match.
 #endif
     }
     setupPulses(); // Does not sei() for setupPulsesPPM.
@@ -151,7 +151,7 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
     // CPUM2560 hardware toggled PPM out.
     if ( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0)
     // Look one step ahead to see if we are currently the "rest" period.
-      OCR1B = 0xffff;// Prevent next compare match hence toggle.
+      OCR1B = 0xffff; // Prevent next compare match hence toggle.
     else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
 #endif
     }
