@@ -110,7 +110,7 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
-#define SETUP_PULSES_DURATION 1000 /*500us*/
+#define SETUP_PULSES_DURATION 1000 // 500us
 uint8_t g_ppmPulsePolarity = 0; // Needed for Bit-bang PPM.
 
 // TIMER1_COMPA_vect used for PPM and DSM2=SERIAL.
@@ -120,7 +120,7 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
 
   // Call setupPulses only after "rest" period has elapsed.
   // Must do this before toggle PORTB to keep timing accurate.
-  if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])|| *((uint16_t*)pulses2MHzRPtr) == 0) {
+  if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
     if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
       OCR1A = SETUP_PULSES_DURATION;
 #if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
@@ -142,13 +142,15 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
     if (g_ppmPulsePolarity) {
       PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       g_ppmPulsePolarity = 0;
-    } else {
+    }
+    else {
       PORTB &= ~(1<<OUT_B_PPM);
       g_ppmPulsePolarity = 1;
     }
 #else // defined(CPUM2560)
     // CPUM2560 hardware toggled PPM out.
-    if ( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) // Look one step ahead to see if we are currently the "rest" period.
+    if ( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0)
+    // Look one step ahead to see if we are currently the "rest" period.
       OCR1B = 0xffff;// Prevent next compare match hence toggle.
     else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
 #endif
