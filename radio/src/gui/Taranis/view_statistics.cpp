@@ -64,15 +64,15 @@ void menuStatisticsView(uint8_t event)
   }
 
   // Session and Total timers
-  lcdDrawText(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
+  lcd_putsAtt(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
   putsTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
-  lcdDrawText(STATS_1ST_COLUMN, FH*2+1, "TOT", BOLD);
+  lcd_putsAtt(STATS_1ST_COLUMN, FH*2+1, "TOT", BOLD);
   putsTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*2+1, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
 
   // Throttle special timers
-  lcdDrawText(STATS_2ND_COLUMN, FH*0+1, "THR", BOLD);
+  lcd_putsAtt(STATS_2ND_COLUMN, FH*0+1, "THR", BOLD);
   putsTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr, 0, 0);
-  lcdDrawText(STATS_2ND_COLUMN, FH*1+1, "TH%", BOLD);
+  lcd_putsAtt(STATS_2ND_COLUMN, FH*1+1, "TH%", BOLD);
   putsTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16, 0, 0);
 
   // Timers
