@@ -361,3 +361,176 @@ TEST(getSwitch, inputWithTrim)
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 }
 #endif
+
+
+#if defined(PCBTARANIS)
+
+/*
+PACK(typedef struct t_LogicalSwitchData { // Logical Switches data
+  int8_t  v1;
+  int16_t v2;
+  int16_t v3;
+  uint8_t func;
+  uint8_t delay;
+  uint8_t duration;
+  int8_t  andsw;
+}) LogicalSwitchData;
+*/
+TEST(getSwitch, edgeInstant)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  // LS1 setup: EDGE SFup  (0:instant)
+  // LS2 setup: (EDGE SFup  (0:instant)) AND SAup
+  g_model.logicalSw[0] = { SWSRC_SF2, -129, -1, LS_FUNC_STAY };
+  g_model.logicalSw[1] = { SWSRC_SF2, -129, -1, LS_FUNC_STAY, 0, 0, SWSRC_SA2 };
+
+  simuSetSwitch(0, -1);   //SA down
+  simuSetSwitch(5, 0);   //SF down
+  // EXPECT_EQ(getSwitch(SWSRC_SF2), false);
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now trigger SFup, LS1 should become true
+  simuSetSwitch(5, 1);    //SF up
+  // EXPECT_EQ(getSwitch(SWSRC_SF2), true);
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now release SA0 and SW2 should stay true
+  simuSetSwitch(5, 0);   //SF down
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now reset logical switches
+  logicalSwitchesReset();
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+
+  // second part with SAup
+
+  simuSetSwitch(0, 1);   //SA up
+  simuSetSwitch(5, 0);   //SF down
+  // EXPECT_EQ(getSwitch(SWSRC_SF2), false);
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now trigger SFup, LS1 should become true
+  simuSetSwitch(5, 1);    //SF up
+  // EXPECT_EQ(getSwitch(SWSRC_SF2), true);
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  // now release SA0 and SW2 should stay true
+  simuSetSwitch(5, 0);   //SF down
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now reset logical switches
+  logicalSwitchesReset();
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  // now bug #2939  
+  // SF is kept up and SA is toggled
+  simuSetSwitch(0, -1);   //SA down
+  simuSetSwitch(5, 1);    //SF up
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  simuSetSwitch(0, 1);   //SA up
+  simuSetSwitch(5, 1);    //SF up
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  simuSetSwitch(0, -1);   //SA down
+  simuSetSwitch(5, 1);    //SF up
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+}
+
+TEST(getSwitch, edgeRelease)
+{
+  MODEL_RESET();
+  MIXER_RESET();
+  // test for issue #2728
+  // LS1 setup: EDGE SFup  (0:release)
+  // LS2 setup: (EDGE SFup  (0:release)) AND SAup
+  g_model.logicalSw[0] = { SWSRC_SF2, -129, 0, LS_FUNC_STAY };
+  g_model.logicalSw[1] = { SWSRC_SF2, -129, 0, LS_FUNC_STAY, 0, 0, SWSRC_SA2 };
+
+  simuSetSwitch(0, -1);   //SA down
+  simuSetSwitch(5, 0);   //SF down
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  simuSetSwitch(5, 1);    //SF up
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  simuSetSwitch(5, 0);   //SF down
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+
+  // second part with SAup
+  simuSetSwitch(0, 1);   //SA up
+  simuSetSwitch(5, 0);   //SF down
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  simuSetSwitch(5, 1);    //SF up
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  simuSetSwitch(5, 0);   //SF down
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  // with switches reset both should remain false
+  logicalSwitchesReset();
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+}
+
+#endif  // #if defined(CPUARM)
+
