@@ -143,37 +143,39 @@ void TelemetrySimulator::closeEvent(QCloseEvent *event)
   event->accept();
 }
 
+#define SET_INSTANCE(control, id, def)  ui->control->setText(QString::number(simulator->getSensorInstance(id, ((def) & 0x1F) + 1)))
+
 void TelemetrySimulator::showEvent(QShowEvent *event)
 {
+  SET_INSTANCE(rxbt_inst,  BATT_ID,                0);
+  SET_INSTANCE(rssi_inst,  RSSI_ID,                24);
+  SET_INSTANCE(swr_inst,   SWR_ID,                 24);
+  SET_INSTANCE(a1_inst,    ADC1_ID,                0);
+  SET_INSTANCE(a2_inst,    ADC2_ID,                0);
+  SET_INSTANCE(a3_inst,    A3_FIRST_ID,            0);
+  SET_INSTANCE(a4_inst,    A4_FIRST_ID,            0);
+  SET_INSTANCE(t1_inst,    T1_FIRST_ID,            0);
+  SET_INSTANCE(t2_inst,    T2_FIRST_ID,            0);
+  SET_INSTANCE(rpm_inst,   RPM_FIRST_ID,           DATA_ID_RPM);
+  SET_INSTANCE(fuel_inst,  FUEL_FIRST_ID,          0);
+  SET_INSTANCE(aspd_inst,  AIR_SPEED_FIRST_ID,     0);
+  SET_INSTANCE(vvspd_inst, VARIO_FIRST_ID,         DATA_ID_VARIO);
+  SET_INSTANCE(valt_inst,  ALT_FIRST_ID,           DATA_ID_VARIO);
+  SET_INSTANCE(fasv_inst,  VFAS_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(fasc_inst,  CURR_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(cells_inst, CELLS_FIRST_ID,         DATA_ID_FLVSS);
+  SET_INSTANCE(gpsa_inst,  GPS_ALT_FIRST_ID,       DATA_ID_GPS);
+  SET_INSTANCE(gpss_inst,  GPS_SPEED_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpsc_inst,  GPS_COURS_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpst_inst,  GPS_TIME_DATE_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(gpsll_inst, GPS_LONG_LATI_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(accx_inst,  ACCX_FIRST_ID,          0);
+  SET_INSTANCE(accy_inst,  ACCY_FIRST_ID,          0);
+  SET_INSTANCE(accz_inst,  ACCZ_FIRST_ID,          0);
 
-  ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID, 1)));
   ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
-  ui->rssi_inst->setText(QString::number(simulator->getSensorInstance(RSSI_ID, 25)));
-  ui->swr_inst->setText(QString::number(simulator->getSensorInstance(SWR_ID, 25)));
-  ui->a1_inst->setText(QString::number(simulator->getSensorInstance(ADC1_ID, 1)));
   ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
-  ui->a2_inst->setText(QString::number(simulator->getSensorInstance(ADC2_ID, 1)));
   ui->A2_ratio->setValue(simulator->getSensorRatio(ADC2_ID) / 10.0);
-  ui->a3_inst->setText(QString::number(simulator->getSensorInstance(A3_FIRST_ID, 1)));
-  ui->a4_inst->setText(QString::number(simulator->getSensorInstance(A4_FIRST_ID, 1)));
-  ui->t1_inst->setText(QString::number(simulator->getSensorInstance(T1_FIRST_ID, 1)));
-  ui->t2_inst->setText(QString::number(simulator->getSensorInstance(T2_FIRST_ID, 1)));
-  ui->rpm_inst->setText(QString::number(simulator->getSensorInstance(RPM_FIRST_ID, 1)));
-  ui->fuel_inst->setText(QString::number(simulator->getSensorInstance(FUEL_FIRST_ID, 1)));
-  ui->aspd_inst->setText(QString::number(simulator->getSensorInstance(AIR_SPEED_FIRST_ID, 1)));
-  ui->vvspd_inst->setText(QString::number(simulator->getSensorInstance(VARIO_FIRST_ID, 1)));
-  ui->valt_inst->setText(QString::number(simulator->getSensorInstance(ALT_FIRST_ID, 1)));
-  ui->fasv_inst->setText(QString::number(simulator->getSensorInstance(VFAS_FIRST_ID, 1)));
-  ui->fasc_inst->setText(QString::number(simulator->getSensorInstance(CURR_FIRST_ID, 1)));
-  ui->cells_inst->setText(QString::number(simulator->getSensorInstance(CELLS_FIRST_ID, 1)));
-  ui->gpsa_inst->setText(QString::number(simulator->getSensorInstance(GPS_ALT_FIRST_ID, 1)));
-  ui->gpss_inst->setText(QString::number(simulator->getSensorInstance(GPS_SPEED_FIRST_ID, 1)));
-  ui->gpsc_inst->setText(QString::number(simulator->getSensorInstance(GPS_COURS_FIRST_ID, 1)));
-  ui->gpst_inst->setText(QString::number(simulator->getSensorInstance(GPS_TIME_DATE_FIRST_ID, 1)));
-  ui->gpsll_inst->setText(QString::number(simulator->getSensorInstance(GPS_LONG_LATI_FIRST_ID, 1)));
-  ui->accx_inst->setText(QString::number(simulator->getSensorInstance(ACCX_FIRST_ID, 1)));
-  ui->accy_inst->setText(QString::number(simulator->getSensorInstance(ACCY_FIRST_ID, 1)));
-  ui->accz_inst->setText(QString::number(simulator->getSensorInstance(ACCZ_FIRST_ID, 1)));
 
   ui->Simulate->setChecked(true);
   onSimulateToggled(true); // not sure why this doesn't fire automatically
