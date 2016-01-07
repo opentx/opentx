@@ -150,8 +150,8 @@ const uint16_t adcCommands[MOUSE1+2] =
   MANUAL_MODE | ( SPI_POT3       << 7 ),
   MANUAL_MODE | ( SPI_SLIDER1    << 7 ),
   MANUAL_MODE | ( SPI_SLIDER2    << 7 ),
-  MANUAL_MODE | ( SPI_SLIDER3    << 7 ),
   MANUAL_MODE | ( SPI_SLIDER4    << 7 ),
+  MANUAL_MODE | ( SPI_SLIDER3    << 7 ),
   MANUAL_MODE | ( SPI_TX_VOLTAGE << 7 ),
   MANUAL_MODE | ( 0 << 7 ),
   MANUAL_MODE | ( 0 << 7 )
@@ -199,7 +199,12 @@ void adcRead()
   // On chip ADC read should have finished
 }
 
-uint16_t getAnalogValue(uint32_t value)
+const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  1,1,  -1,-1, 0,0,0};
+
+uint16_t getAnalogValue(uint32_t index)
 {
-  return adcValues[value];
+  if (ana_direction[index] < 0)
+    return 4096 - adcValues[index];
+  else
+    return adcValues[index];
 }

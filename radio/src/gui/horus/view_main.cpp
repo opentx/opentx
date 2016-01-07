@@ -91,7 +91,7 @@ void drawVerticalStick(coord_t x, int val)
     else
       lcdDrawSolidHorizontalLine(x+2, 56+i, 9, TEXT_COLOR);
   }
-  drawVerticalTrimPosition(x, TRIM_V_Y+val*TRIM_LEN/RESX-6, val);
+  drawVerticalTrimPosition(x, TRIM_V_Y-val*TRIM_LEN/RESX-6, val);
 }
 
 void drawSticks()
@@ -145,7 +145,7 @@ void drawTrims(uint8_t flightMode)
       drawHorizontalTrimPosition(xm-3, ym-2, val);
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+2, trim, TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
         }
       }
     }
