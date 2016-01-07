@@ -608,7 +608,7 @@ void OpenTxSimulator::sendTelemetry(::uint8_t * data, unsigned int len)
 #endif
 }
 
-uint8_t OpenTxSimulator::getSensorInstance(uint16_t id)
+uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
 {
 #if defined(FRSKY_SPORT)
   for (int i = 0; i<MAX_SENSORS; i++) {
@@ -620,7 +620,7 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id)
     }
   }
 #endif
-  return 0;
+  return defaultValue;
 }
 
 uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
