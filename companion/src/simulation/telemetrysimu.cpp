@@ -195,12 +195,9 @@ void setSportPacketCrc(uint8_t * packet)
   //TRACE("crc set: %x", packet[FRSKY_SPORT_PACKET_SIZE-1]);
 }
 
-uint8_t bit(uint8_t position, uint8_t value) 
+uint8_t getBit(uint8_t position, uint8_t value) 
 {
-  if (value & (uint8_t)(1 << position)) {
-    return 1;
-  }
-  return 0;
+  return (value & (uint8_t)(1 << position)) ? 1 : 0;
 }
 
 bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data)
@@ -208,9 +205,9 @@ bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_
   if (dataId > 0x1B ) return false;
   
   // generate Data ID field
-  uint8_t bit5 = bit(0, dataId) ^ bit(1, dataId) ^ bit(2, dataId);
-  uint8_t bit6 = bit(2, dataId) ^ bit(3, dataId) ^ bit(4, dataId);
-  uint8_t bit7 = bit(0, dataId) ^ bit(2, dataId) ^ bit(4, dataId);
+  uint8_t bit5 = getBit(0, dataId) ^ getBit(1, dataId) ^ getBit(2, dataId);
+  uint8_t bit6 = getBit(2, dataId) ^ getBit(3, dataId) ^ getBit(4, dataId);
+  uint8_t bit7 = getBit(0, dataId) ^ getBit(2, dataId) ^ getBit(4, dataId);
 
   packet[0] = (bit7 << 7) + (bit6 << 6) + (bit5 << 5) + dataId;
   // qDebug("dataID: 0x%02x (%d)", packet[0], dataId);
