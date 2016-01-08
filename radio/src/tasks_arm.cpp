@@ -136,6 +136,7 @@ void menusTask(void * pdata)
       break;
     }
     else if (pwr_check == e_power_press) {
+      CoTickDelay(MENU_TASK_PERIOD_TICKS);
       continue;
     }
 #else

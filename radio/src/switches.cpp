@@ -554,7 +554,7 @@ bool getSwitch(swsrc_t swtch)
     result = true;
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
-#if defined(PCBTARANIS) // TODO || defined(PCBFLAMENCO)
+#if defined(PCBTARANIS) || defined(PCBHORUS) // TODO || defined(PCBFLAMENCO)
     if (flags & GETSWITCH_MIDPOS_DELAY)
       result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
     else

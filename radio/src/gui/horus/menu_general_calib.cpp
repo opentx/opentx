@@ -22,10 +22,10 @@
 
 #define XPOT_DELTA                     10
 #define XPOT_DELAY                     10 /* cycles */
-#define BAR_WIDTH                      7
-#define BAR_HEIGHT                     (BOX_WIDTH-9)
-#define BAR_INTERVAL                   20
-#define BAR_BOTTOM                     200
+#define POT_BAR_WIDTH                  7
+#define POT_BAR_HEIGHT                 (BOX_WIDTH-9)
+#define POT_BAR_INTERVAL               20
+#define POT_BAR_BOTTOM                 200
 #define LBOX_CENTERX                   (BOX_WIDTH/2 + 17)
 #define RBOX_CENTERX                   (LCD_W-LBOX_CENTERX)
 
@@ -33,12 +33,12 @@ void drawPotsBars()
 {
   // Optimization by Mike Blandford
   unsigned int x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-(BAR_INTERVAL*NUM_POTS/2), i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=BAR_INTERVAL, i++) {
+  for (x=LCD_W/2-(POT_BAR_INTERVAL*NUM_POTS/2), i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=POT_BAR_INTERVAL, i++) {
     if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      len = ((calibratedStick[i]+RESX)*POT_BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       // TODO 220 constant
-      lcdDrawSolidFilledRect(x, BAR_BOTTOM-len, BAR_WIDTH, len, TEXT_COLOR);
-      putsStickName(x-2, BAR_BOTTOM+5, i, TEXT_COLOR|TINSIZE);
+      lcdDrawSolidFilledRect(x, POT_BAR_BOTTOM-len, POT_BAR_WIDTH, len, TEXT_COLOR);
+      putsStickName(x-2, POT_BAR_BOTTOM+5, i, TEXT_COLOR|TINSIZE);
     }
   }
 }
@@ -169,7 +169,7 @@ bool menuCommonCalib(evt_t event)
             }
           }
           else {
-            g_eeGeneral.potsConfig &= ~(0x03<<(2*idx));
+            // g_eeGeneral.potsConfig &= ~(0x03<<(2*idx));
           }
         }
       }
@@ -196,7 +196,7 @@ bool menuCommonCalib(evt_t event)
       steps = calib->count + 1;
     }
     if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcdDrawNumber(LCD_W/2-(BAR_INTERVAL*NUM_POTS/2)+(BAR_INTERVAL*(i-POT1)), BAR_BOTTOM+15, steps, TEXT_COLOR|TINSIZE, 0, "[", "]");
+      lcdDrawNumber(LCD_W/2-(POT_BAR_INTERVAL*NUM_POTS/2)+(POT_BAR_INTERVAL*(i-POT1)), POT_BAR_BOTTOM+15, steps, TEXT_COLOR|TINSIZE, 0, "[", "]");
     }
   }
 
