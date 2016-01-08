@@ -147,6 +147,13 @@ void readKeysAndTrims()
   case SW_S ## x ## 2: \
     xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
     break
+#define ADD_NEG_2POS_CASE(x) \
+  case SW_S ## x ## 2: \
+    xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
+    break; \
+  case SW_S ## x ## 0: \
+    xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
+    break
 #define ADD_3POS_CASE(x, i) \
   case SW_S ## x ## 0: \
     xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
@@ -177,7 +184,7 @@ bool switchState(EnumKeys enuk)
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);
-    ADD_2POS_CASE(F);
+    ADD_NEG_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
     default:

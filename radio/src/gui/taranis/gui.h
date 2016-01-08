@@ -55,8 +55,8 @@ struct MenuItem {
 };
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
-void displaySplash();
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+void drawSplash();
+void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void displayMenuBar(const MenuItem *menu, int index);
 void drawProgressBar(const char *label);

@@ -24,10 +24,21 @@ const pm_uchar bmp_sleep[] PROGMEM = {
   #include "../../bitmaps/taranis/sleep.lbm"
 };
 
-void displaySleepBitmap()
+void drawSleepBitmap()
 {
   lcdClear();
-  lcd_bmp(76, 2, bmp_sleep, 0, 60);
+  lcdDrawBitmap(76, 2, bmp_sleep, 0, 60);
+  lcdRefresh();
+}
+
+const pm_uchar bmp_shutdown[] PROGMEM = {
+  #include "../../bitmaps/taranis/shutdown.lbm"
+};
+
+void drawShutdownBitmap(uint8_t index)
+{
+  lcdClear();
+  lcdDrawBitmap(76, 2, bmp_shutdown, index * 60, 60);
   lcdRefresh();
 }
 
@@ -58,7 +69,7 @@ void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
     lcdDrawSquare(x, y, 7);
 }
 
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
+void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
   lcdDrawNumber(LCD_W, 0, count, attr);
   coord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);

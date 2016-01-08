@@ -297,10 +297,10 @@ TEST(Lcd, BMPWrapping)
   lcdClear();
   uint8_t bitmap[2+40*40/2];
   bmpLoad(bitmap, "./tests/plane.bmp", 40, 40);
-  lcd_bmp(200, 0, bitmap);
-  lcd_bmp(200, 60, bitmap);
-  lcd_bmp(240, 60, bitmap);     // x too big
-  lcd_bmp(20, 200, bitmap);     // y too big
+  lcdDrawBitmap(200, 0, bitmap);
+  lcdDrawBitmap(200, 60, bitmap);
+  lcdDrawBitmap(240, 60, bitmap);     // x too big
+  lcdDrawBitmap(20, 200, bitmap);     // y too big
   EXPECT_TRUE(checkScreenshot("bmpwrapping"));
 }
 #endif
@@ -359,7 +359,7 @@ public:
 };
 
 #if defined(PCBTARANIS)
-TEST(Lcd, lcd_bmpLoadAndDisplay)
+TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
 {
   lcdClear();
   // Test proper BMP files, they should display correctly
@@ -367,33 +367,33 @@ TEST(Lcd, lcd_bmpLoadAndDisplay)
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(7, 32));
     EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_7x32.bmp", 7, 32), (char *)0);
     bitmap.leakCheck();
-    lcd_bmp(10, 2, bitmap.buffer());
+    lcdDrawBitmap(10, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(6, 32));
     EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/1b_6x32.bmp", 6, 32), (char *)0);
     bitmap.leakCheck();
-    lcd_bmp(20, 2, bitmap.buffer());
+    lcdDrawBitmap(20, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(31, 31));
     EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_31x31.bmp", 31, 31), (char *)0);
     bitmap.leakCheck();
-    lcd_bmp(30, 2, bitmap.buffer());
+    lcdDrawBitmap(30, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(39, 32));
     EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/1b_39x32.bmp", 39, 32), (char *)0);
     bitmap.leakCheck();
-    lcd_bmp(70, 2, bitmap.buffer());
+    lcdDrawBitmap(70, 2, bitmap.buffer());
   }
   {
     TestBuffer<1000>  bitmap(BITMAP_BUFFER_SIZE(20, 20));
     EXPECT_EQ(bmpLoad(bitmap.buffer(), "./tests/4b_20x20.bmp", 20, 20), (char *)0);
     bitmap.leakCheck();
-    lcd_bmp(120, 2, bitmap.buffer());
+    lcdDrawBitmap(120, 2, bitmap.buffer());
   }
-  EXPECT_TRUE(checkScreenshot("lcd_bmpLoadAndDisplay"));
+  EXPECT_TRUE(checkScreenshot("lcdDrawBitmapLoadAndDisplay"));
 
   // Test various bad BMP files, they should not display
   {

@@ -224,7 +224,7 @@ void menuModelSelect(uint8_t event)
   lcdDrawNumber(20*FW, 0, EeFsGetFree(), 0);
   lcdDrawText(21*FW, 0, STR_BYTES);
 
-  displayScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
+  drawScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   TITLE(STR_MENUMODELSEL);
@@ -270,5 +270,5 @@ void menuModelSelect(uint8_t event)
     loadModelBitmap(modelHeaders[sub].bitmap, modelBitmap);
   }
 
-  lcd_bmp(22*FW+2, 2*FH+FH/2, modelBitmap);
+  lcdDrawBitmap(22*FW+2, 2*FH+FH/2, modelBitmap);
 }

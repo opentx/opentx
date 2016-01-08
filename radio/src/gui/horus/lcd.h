@@ -181,6 +181,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t 
 
 void putsStrIdx(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att=0, const char *prefix="");
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
+void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsSwitches(coord_t x, coord_t y, int8_t swtch, LcdFlags att=0);
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
@@ -210,7 +211,6 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 #define STASHED 0x70
 
 #define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
-
 
 inline void lcdDrawPixel(display_t * p, display_t value)
 {
@@ -313,6 +313,8 @@ void lcdSetContrast();
 const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 const char * imgLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 
+void drawSleepBitmap();
+void drawShutdownBitmap(uint8_t index);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)

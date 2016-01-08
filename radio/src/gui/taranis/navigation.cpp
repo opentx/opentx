@@ -394,7 +394,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuHandle
     }
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {
-      displayScreenIndex(curr, menuTabSize, 0);
+      drawScreenIndex(curr, menuTabSize, 0);
     }
 
     lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);

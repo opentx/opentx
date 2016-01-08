@@ -1279,14 +1279,15 @@ int lcdRestoreBackupBuffer()
 }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-void pwrInit() { }
-void pwrOff() { }
-#if defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
 uint32_t pwrPressed() { return false; }
 #else
 uint32_t pwrCheck() { return true; }
 #endif
+
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+void pwrInit() { }
+void pwrOff() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }

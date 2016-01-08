@@ -58,7 +58,7 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
 {
   lcdClear();
-  lcd_bmp(0, 0, asterisk_lbm);
+  lcdDrawBitmap(0, 0, asterisk_lbm);
 
 #define MESSAGE_LCD_OFFSET   60
 

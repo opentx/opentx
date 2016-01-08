@@ -469,7 +469,7 @@
 #define TR_TRIMS_VSRCRAW       TR("TrmR""TrmE""TrmT""TrmA", "\313Rud""\313Ele""\313Thr""\313Ail")
 
 #if defined(PCBHORUS)
-  #define TR_POTS_VSRCRAW      "\310F1\0""\310F2\0""\310F3\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
+  #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\311S3\0""\311S4\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBFLAMENCO)
   #define TR_POTS_VSRCRAW      "SD\0 ""LS\0 ""RS\0 "
@@ -597,7 +597,6 @@
   #define OFS_EXIT             sizeof(TR_ENTER)
 #endif
 
-#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " WHEN DONE"
 #define TR_FREE                "free"
 #define TR_DELETEMODEL         "DELETE" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL        "Copying model..."
@@ -729,10 +728,12 @@
   #define TR_MENUTOSTART       TR_ENTER " TO START"
   #define TR_SETMIDPOINT       "CENTER STICKS/SLIDERS"
   #define TR_MOVESTICKSPOTS    "MOVE STICKS/POTS"
+  #define TR_MENUWHENDONE      TR_ENTER " WHEN DONE"
 #else
   #define TR_MENUTOSTART       CENTER "\010" TR_ENTER " TO START"
   #define TR_SETMIDPOINT       TR(CENTER "\004SET STICKS MIDPOINT", CENTER "\004CENTER STICKS/SLIDERS")
   #define TR_MOVESTICKSPOTS    CENTER "\006MOVE STICKS/POTS"
+  #define TR_MENUWHENDONE      CENTER "\006" TR_ENTER " WHEN DONE"
 #endif
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"

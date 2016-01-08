@@ -20,22 +20,25 @@
 
 #include "../../opentx.h"
 
-#define XPOT_DELTA 10
-#define XPOT_DELAY 10 /* cycles */
-
-#define BAR_HEIGHT    (BOX_WIDTH-9)
-#define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
-#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
+#define XPOT_DELTA                     10
+#define XPOT_DELAY                     10 /* cycles */
+#define BAR_WIDTH                      7
+#define BAR_HEIGHT                     (BOX_WIDTH-9)
+#define BAR_INTERVAL                   20
+#define BAR_BOTTOM                     200
+#define LBOX_CENTERX                   (BOX_WIDTH/2 + 17)
+#define RBOX_CENTERX                   (LCD_W-LBOX_CENTERX)
 
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
   unsigned int x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-9, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=9, i++) {
+  for (x=LCD_W/2-(BAR_INTERVAL*NUM_POTS/2), i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=BAR_INTERVAL, i++) {
     if (IS_POT_AVAILABLE(i)) {
       len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       // TODO 220 constant
-      lcdDrawSolidFilledRect(x, 220-FH-len, 5, len, TEXT_COLOR);
+      lcdDrawSolidFilledRect(x, BAR_BOTTOM-len, BAR_WIDTH, len, TEXT_COLOR);
+      putsStickName(x-2, BAR_BOTTOM+5, i, TEXT_COLOR|TINSIZE);
     }
   }
 }
@@ -63,7 +66,6 @@ bool menuCommonCalib(evt_t event)
       if (IS_POT_WITHOUT_DETENT(i)) {
         reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
       }
-#if 0
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
@@ -92,35 +94,32 @@ bool menuCommonCalib(evt_t event)
           }
         }
       }
-#endif
     }
   }
 
-  calibrationState = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
-
-  switch (event)
-  {
+  switch (event) {
     case EVT_ENTRY:
-      reusableBuffer.calib.state = 0;
+    case EVT_KEY_BREAK(KEY_EXIT):
+      calibrationState = 0;
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      reusableBuffer.calib.state++;
+      calibrationState++;
       break;
   }
 
-  switch (reusableBuffer.calib.state) {
+  switch (calibrationState) {
     case 0:
       // START CALIBRATION
       if (!READ_ONLY()) {
-        lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MENUTOSTART);
+        lcd_putsCenter(MENU_CONTENT_TOP, STR_MENUTOSTART);
       }
       break;
 
     case 1:
       // SET MIDPOINT
-      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_SETMIDPOINT, INVERS);
-      lcd_putsCenter(MENU_CONTENT_TOP+2*FH, STR_MENUWHENDONE);
+      lcd_putsCenter(MENU_CONTENT_TOP, STR_SETMIDPOINT, INVERS);
+      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MENUWHENDONE);
 
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
@@ -136,8 +135,8 @@ bool menuCommonCalib(evt_t event)
     case 2:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
-      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MOVESTICKSPOTS, INVERS);
-      lcd_putsCenter(MENU_CONTENT_TOP+2*FH, STR_MENUWHENDONE);
+      lcd_putsCenter(MENU_CONTENT_TOP, STR_MOVESTICKSPOTS, INVERS);
+      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MENUWHENDONE);
 
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
@@ -151,7 +150,6 @@ bool menuCommonCalib(evt_t event)
       break;
 
     case 3:
-#if 0
       for (int i=POT1; i<=POT_LAST; i++) {
         int idx = i - POT1;
         int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
@@ -171,28 +169,26 @@ bool menuCommonCalib(evt_t event)
             }
           }
           else {
-            g_eeGeneral.potsType &= ~(0x03<<(2*idx));
+            g_eeGeneral.potsConfig &= ~(0x03<<(2*idx));
           }
         }
       }
-#endif
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
-      reusableBuffer.calib.state = 4;
+      calibrationState = 4;
       break;
 
     default:
-      reusableBuffer.calib.state = 0;
+      calibrationState = 0;
       break;
   }
 
   drawSticksPositions();
   drawPotsBars();
 
-#if 0
   for (int i=POT1; i<=POT_LAST; i++) {
     uint8_t steps = 0;
-    if (reusableBuffer.calib.state == 2) {
+    if (calibrationState == 2) {
       steps = reusableBuffer.calib.xpotsCalib[i-POT1].stepsCount;
     }
     else if (IS_POT_MULTIPOS(i)) {
@@ -200,10 +196,9 @@ bool menuCommonCalib(evt_t event)
       steps = calib->count + 1;
     }
     if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcdDrawNumber(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+      lcdDrawNumber(LCD_W/2-(BAR_INTERVAL*NUM_POTS/2)+(BAR_INTERVAL*(i-POT1)), BAR_BOTTOM+15, steps, TEXT_COLOR|TINSIZE, 0, "[", "]");
     }
   }
-#endif
 
   return true;
 }
@@ -211,19 +206,14 @@ bool menuCommonCalib(evt_t event)
 bool menuGeneralCalib(evt_t event)
 {
   SIMPLE_MENU(STR_MENUCALIBRATION, menuTabGeneral, e_Calib, 0, DEFAULT_SCROLLBAR_X);
-
   menuVerticalPosition = -1;
-
-  if (menuEvent) {
-    calibrationState = 0;
-  }
 
   return menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
 bool menuFirstCalib(evt_t event)
 {
-  if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == 4) {
+  if (event == EVT_KEY_BREAK(KEY_EXIT) || calibrationState == 4) {
     calibrationState = 0;
     chainMenu(menuMainView);
     return false;

@@ -146,7 +146,7 @@ void boardInit()
 #if defined(REV9E)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
-    lcd_bmp(76, 2, bmp_lock, 0, 60);
+    lcdDrawBitmap(76, 2, bmp_lock, 0, 60);
     lcdRefresh();
     lcdRefreshWait();
 
@@ -158,10 +158,10 @@ void boardInit()
       if (duration < PWR_PRESS_DURATION_MIN) {
         unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
         lcdClear();
-        lcd_bmp(76, 2, bmp_startup, index*60, 60);
+        lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
       }
       else if (duration >= PWR_PRESS_DURATION_MAX) {
-        displaySleepBitmap();
+        drawSleepBitmap();
         turnBacklightOff();
       }
       else {

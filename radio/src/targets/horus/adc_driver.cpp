@@ -130,14 +130,14 @@ void adcInit()
 #define SPI_STICK2                     1
 #define SPI_STICK3                     2
 #define SPI_STICK4                     3
-#define SPI_POT1                       4
-#define SPI_POT2                       5
-#define SPI_POT3                       6
-#define SPI_SLIDER1                    7
-#define SPI_SLIDER2                    8
+#define SPI_S1                         4
+#define SPI_6POS                       5
+#define SPI_S2                         6
+#define SPI_S3                         7
+#define SPI_S4                         8
 #define SPI_TX_VOLTAGE                 9
-#define SPI_SLIDER3                    10
-#define SPI_SLIDER4                    11
+#define SPI_RS                         10
+#define SPI_LS                         11
 
 const uint16_t adcCommands[MOUSE1+2] =
 {
@@ -145,13 +145,13 @@ const uint16_t adcCommands[MOUSE1+2] =
   MANUAL_MODE | ( SPI_STICK2     << 7 ),
   MANUAL_MODE | ( SPI_STICK3     << 7 ),
   MANUAL_MODE | ( SPI_STICK4     << 7 ),
-  MANUAL_MODE | ( SPI_POT1       << 7 ),
-  MANUAL_MODE | ( SPI_POT2       << 7 ),
-  MANUAL_MODE | ( SPI_POT3       << 7 ),
-  MANUAL_MODE | ( SPI_SLIDER1    << 7 ),
-  MANUAL_MODE | ( SPI_SLIDER2    << 7 ),
-  MANUAL_MODE | ( SPI_SLIDER4    << 7 ),
-  MANUAL_MODE | ( SPI_SLIDER3    << 7 ),
+  MANUAL_MODE | ( SPI_S1         << 7 ),
+  MANUAL_MODE | ( SPI_6POS       << 7 ),
+  MANUAL_MODE | ( SPI_S2         << 7 ),
+  MANUAL_MODE | ( SPI_LS         << 7 ),
+  MANUAL_MODE | ( SPI_RS         << 7 ),
+  MANUAL_MODE | ( SPI_S3         << 7 ),
+  MANUAL_MODE | ( SPI_S4         << 7 ),
   MANUAL_MODE | ( SPI_TX_VOLTAGE << 7 ),
   MANUAL_MODE | ( 0 << 7 ),
   MANUAL_MODE | ( 0 << 7 )
@@ -199,7 +199,7 @@ void adcRead()
   // On chip ADC read should have finished
 }
 
-const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  1,1,  -1,-1, 0,0,0};
+const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  1,1, 0,0,0};
 
 uint16_t getAnalogValue(uint32_t index)
 {

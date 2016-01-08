@@ -129,7 +129,7 @@ void menusTask(void * pdata)
 {
   opentxInit();
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
   while (1) {
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
@@ -158,9 +158,8 @@ void menusTask(void * pdata)
 
   BACKLIGHT_OFF();
 
-#if defined(COLORLCD)
-#elif defined(PCBTARANIS)
-  displaySleepBitmap();
+#if defined(COLORLCD) || defined(PCBTARANIS)
+  drawSleepBitmap();
 #else
   lcdClear();
   displayPopup(STR_SHUTDOWN);

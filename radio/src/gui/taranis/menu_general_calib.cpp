@@ -81,8 +81,7 @@ void menuCommonCalib(uint8_t event)
 
   calibrationState = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
 
-  switch (event)
-  {
+  switch (event) {
     case EVT_ENTRY:
     case EVT_KEY_BREAK(KEY_EXIT):
       reusableBuffer.calib.state = 0;

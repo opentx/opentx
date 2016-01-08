@@ -244,12 +244,15 @@ void generalDefault()
   g_eeGeneral.vBatWarn = 33;
   g_eeGeneral.vBatMin = -60; // 0 is 9.0V
   g_eeGeneral.vBatMax = -78; // 0 is 12.0V
+#elif defined(PCBHORUS)
+  g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
+  g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 
@@ -368,7 +371,7 @@ void applyDefaultTemplate()
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {
-    MixData *mix = mixAddress(i);
+    MixData * mix = mixAddress(i);
     mix->destCh = i;
     mix->weight = 100;
 #if defined(VIRTUALINPUTS)
@@ -989,12 +992,12 @@ bool readonlyUnlocked()
 #if defined(SPLASH)
 void doSplash()
 {
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
   bool refresh = false;
 #endif
 
   if (SPLASH_NEEDED()) {
-    displaySplash();
+    drawSplash();
 
 #if !defined(CPUARM)
     AUDIO_TADA();
@@ -1038,7 +1041,7 @@ void doSplash()
       }
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
       uint32_t pwr_check = pwrCheck();
       if (pwr_check == e_power_off) {
         break;
@@ -1047,7 +1050,7 @@ void doSplash()
         refresh = true;
       }
       else if (pwr_check == e_power_on && refresh) {
-        displaySplash();
+        drawSplash();
         refresh = false;
       }
 #else
@@ -1197,7 +1200,7 @@ void checkTHR()
   // first - display warning; also deletes inputs if any have been before
   MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
   bool refresh = false;
 #endif
 
@@ -1211,7 +1214,7 @@ void checkTHR()
 
     v = calibratedStick[thrchn];
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       break;
@@ -1255,7 +1258,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 {
   MESSAGE(t, s, STR_PRESSANYKEY, sound);
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
   bool refresh = false;
 #endif
 
@@ -1269,7 +1272,7 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
 
     wdt_reset();
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       boardOff();
@@ -2515,7 +2518,7 @@ int main(void)
 #endif
 
 #if defined(PCBTARANIS)
-  displaySplash();
+  drawSplash();
 #endif
 
   sei(); // interrupts needed now
@@ -2592,12 +2595,8 @@ int main(void)
 }
 #endif // !SIMU
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PWR_BUTTON_DELAY)
 #define PWR_PRESS_SHUTDOWN             300 // 3s
-
-const pm_uchar bmp_shutdown[] PROGMEM = {
-  #include "../../bitmaps/taranis/shutdown.lbm"
-};
 
 uint32_t pwr_press_time = 0;
 
@@ -2660,9 +2659,7 @@ uint32_t pwrCheck()
       else {
         lcdRefreshWait();
         unsigned index = pwrPressedDuration() / (PWR_PRESS_SHUTDOWN / 4);
-        lcdClear();
-        lcd_bmp(76, 2, bmp_shutdown, index*60, 60);
-        lcdRefresh();
+        drawShutdownBitmap(index);
         return e_power_press;
       }
     }

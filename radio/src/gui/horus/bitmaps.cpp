@@ -251,3 +251,11 @@ const uint8_t LBM_CURVE_POINT_CENTER[] = {
 const uint8_t LBM_CURVE_COORD_SHADOW[] = {
 #include "mask_coord_shadow.lbm"
 };
+/*
+const uint8_t LBM_SHUTDOWN[] = {
+#include "shutdown.lbm"
+};
+
+const uint8_t LBM_SLEEP[] = {
+#include "sleep.lbm"
+}; */

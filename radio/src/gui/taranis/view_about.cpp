@@ -66,7 +66,7 @@ void menuAboutView(uint8_t event)
       break;
   }
 
-  lcd_bmp(0, 0, about_bmp);
+  lcdDrawBitmap(0, 0, about_bmp);
   lcdDrawText(64, 0, STR_ABOUTUS, DBLSIZE);
   lcdDrawSolidHorizontalLine(ABOUT_X, 18, 120);
   lcdDrawSolidHorizontalLine(ABOUT_X, 19, 130, GREY_DEFAULT);

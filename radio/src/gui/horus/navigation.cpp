@@ -368,7 +368,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
         }
 #endif
       }
-      else {
+      else if (!calibrationState) {
         popMenu();
       }
       break;

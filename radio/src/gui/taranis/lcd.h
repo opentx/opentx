@@ -188,13 +188,16 @@ inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, 
   lcdDrawFilledRect(x, y, w, h, SOLID, att);
 }
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
+{
+  lcdDrawRect(x, y, w, w, SOLID, att);
+}
 
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
-inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0) { lcdDrawRect(x, y, w, w, SOLID, att); }
 
-void displaySleepBitmap();
-
+void drawShutdownBitmap(uint8_t index);
+void drawSleepBitmap();
 void lcdDrawTelemetryTopBar();
 
 #define V_BAR(xx, yy, ll)    \
@@ -204,8 +207,8 @@ void lcdDrawTelemetryTopBar();
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
-void lcd_bmp(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
-#define LCD_ICON(x, y, icon) lcd_bmp(x, y, icons, icon)
+void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
+#define LCD_ICON(x, y, icon) lcdDrawBitmap(x, y, icons, icon)
 
 void lcdSetRefVolt(unsigned char val);
 void lcdClear();

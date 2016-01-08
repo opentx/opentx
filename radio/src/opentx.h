@@ -352,12 +352,12 @@
 
 #if defined(PCBHORUS)
   #define IS_POT_AVAILABLE(x)       (true)
-  #define IS_POT_MULTIPOS(x)        (x==0)
-  #define IS_POT_WITHOUT_DETENT(x)  (x==0)
+  #define IS_POT_MULTIPOS(x)        ((x)==POT2)
+  #define IS_POT_WITHOUT_DETENT(x)  (true)
 #elif defined(PCBFLAMENCO)
   #define IS_POT_AVAILABLE(x)       (true)
-  #define IS_POT_MULTIPOS(x)        (x==0)
-  #define IS_POT_WITHOUT_DETENT(x)  (x==0)
+  #define IS_POT_MULTIPOS(x)        (false)
+  #define IS_POT_WITHOUT_DETENT(x)  (false)
 #elif defined(PCBTARANIS) && defined(REV9E)
   #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
   #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER1 && IS_SLIDER_AVAILABLE(x)))
@@ -377,10 +377,14 @@
   #define IS_POT_WITHOUT_DETENT(x)  (true)
 #endif
 
-#define IS_POT(x)                   ((x)>=POT1 && (x)<=POT_LAST)
+#define IS_POT(x)                      ((x)>=POT1 && (x)<=POT_LAST)
 
-#define GET_LOWRES_POT_POSITION(i)  (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
-#define SAVE_POT_POSITION(i)        g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
+#if defined(PCBFLAMENCO) || defined(PCBHORUS) || (defined(PCBTARANIS) && defined(REV9E))
+  #define PWR_BUTTON_DELAY
+#endif
+
+#define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
+#define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
 
 #if ROTARY_ENCODERS > 0
   #define IF_ROTARY_ENCODERS(x) x,

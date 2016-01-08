@@ -343,7 +343,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   uint8_t bitmap[BITMAP_BUFFER_SIZE(LCD_W/2, LCD_H)]; // width max is LCD_W/2 pixels for saving stack and avoid a malloc here
   const pm_char * error = bmpLoad(bitmap, filename, LCD_W/2, LCD_H);
   if (!error) {
-    lcd_bmp(x, y, bitmap);
+    lcdDrawBitmap(x, y, bitmap);
   }
   return 0;
 }
@@ -464,7 +464,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   int idx = luaL_checkinteger(L, 2);
   int cnt = luaL_checkinteger(L, 3);
 
-  if (cnt) displayScreenIndex(idx-1, cnt, 0);
+  if (cnt) drawScreenIndex(idx-1, cnt, 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
   title(str);
 

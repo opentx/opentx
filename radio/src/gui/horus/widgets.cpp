@@ -323,3 +323,17 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #endif
+
+void drawSleepBitmap()
+{
+/*  lcdClear();
+  lcdDrawBitmap(POPUP_X-80, POPUP_Y-30, LBM_SLEEP);
+  lcdRefresh(); */
+}
+
+void drawShutdownBitmap(uint8_t index)
+{
+  /*lcdClear();
+  lcdDrawBitmap(76, 2, LBM_SHUTDOWN, index * 60, 60);
+  lcdRefresh();*/
+}

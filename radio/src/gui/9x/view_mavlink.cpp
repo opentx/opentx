@@ -182,7 +182,7 @@ void mav_title(const pm_char * s, uint8_t index)
 {
   lcdDrawText(0, 0, PSTR("MAVLINK"), INVERS);
   lcdDrawText(10 * FW, 0, s);
-  displayScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
+  drawScreenIndex(index, MAX_MAVLINK_MENU, INVERS);
   lcdDrawChar(7 * FW, 0, (mav_heartbeat > 0) ? '*' : ' ');
   if (telemetry_data.active)
   	  lcdDrawChar(8 * FW, 0, 'A', BLINK);

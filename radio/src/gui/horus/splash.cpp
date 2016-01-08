@@ -25,7 +25,7 @@ const uint8_t LBM_SPLASH[] = {
 };
 
 #if defined(SPLASH)
-void displaySplash()
+void drawSplash()
 {
   lcdClear();
 

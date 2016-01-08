@@ -63,8 +63,8 @@ extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 bool loadModelBitmap(char * name, uint8_t * bitmap);
 #define LOAD_MODEL_BITMAP()            loadModelBitmap(g_model.header.bitmap, modelBitmap)
 
-void displaySplash();
-void displayScreenIndex(uint8_t index, uint8_t count);
+void drawSplash();
+void drawScreenIndex(uint8_t index, uint8_t count);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, uint16_t count, uint8_t visible);
 void drawHeader(int index);
@@ -124,3 +124,5 @@ extern const uint8_t LBM_POINT[];
 extern const uint8_t LBM_CURVE_POINT[];
 extern const uint8_t LBM_CURVE_POINT_CENTER[];
 extern const uint8_t LBM_CURVE_COORD_SHADOW[];
+extern const uint8_t LBM_SHUTDOWN[];
+extern const uint8_t LBM_SLEEP[];

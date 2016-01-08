@@ -462,6 +462,6 @@ void menuGeneralSdManager(evt_t _event)
         memcpy(modelBitmap, logo_taranis, MODEL_BITMAP_SIZE);
       }
     }
-    lcd_bmp(22*FW+2, 2*FH+FH/2, modelBitmap);
+    lcdDrawBitmap(22*FW+2, 2*FH+FH/2, modelBitmap);
   }
 }

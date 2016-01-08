@@ -27,10 +27,10 @@ const pm_uchar splashdata[] PROGMEM = {
   'S','P','E',0 };
 const pm_uchar * const splash_lbm = splashdata+4;
 
-void displaySplash()
+void drawSplash()
 {
   lcdClear();
-  lcd_bmp(0, 0, splash_lbm);
+  lcdDrawBitmap(0, 0, splash_lbm);
 
 #if MENUS_LOCK == 1
   if (readonly == false) {

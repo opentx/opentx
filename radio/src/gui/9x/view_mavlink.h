@@ -33,7 +33,7 @@
 #define APSIZE (BSS | DBLSIZE)
 
 void menuTelemetryMavlink(uint8_t event);
-void displayScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
+void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mode = 0);
 void mav_title(const pm_char * s, uint8_t index);
 void menuTelemetryMavlinkInfos(void);

@@ -391,7 +391,7 @@ enum BeeperMode {
   int8_t   backgroundVolume;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   #if defined(REV9E)
     #define swconfig_t        uint64_t
     #define swarnstate_t      uint64_t
@@ -427,10 +427,10 @@ enum UartModes {
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:6; \
-    uint8_t  spare:2; \
+    uint8_t  slidersConfig:2; \
     CustomFunctionData customFn[NUM_CFN]; \
     uint32_t switchConfig; \
-    uint8_t  potsType; /*two bits for every pot*/\
+    uint8_t  potsConfig; /* two bits per pot */ \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
     char currModelFilename[LEN_MODEL_FILENAME+1];
@@ -463,7 +463,7 @@ enum UartModes {
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:6; \
     uint8_t  slidersConfig:2; \
-    uint8_t  potsConfig; /*two bits for every pot*/\
+    uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     CustomFunctionData customFn[NUM_CFN]; \
@@ -1926,15 +1926,15 @@ enum MixSources {
 
   MIXSRC_FIRST_POT,
 #if defined(PCBHORUS)
-  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
-  MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
-  MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
+  MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
+  MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
+  MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
   MIXSRC_FIRST_SLIDER,
-  MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
-  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider")
-  MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider")
-  MIXSRC_LAST_POT = MIXSRC_SLIDER4,
+  MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
+  MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
+  MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
+  MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBFLAMENCO)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("sd", "Potentiometer D")
   MIXSRC_SLIDER1,                       LUA_EXPORT("ls", "Left slider")

@@ -44,18 +44,18 @@
 #define ENC_GPIO_PIN_B                  GPIO_Pin_10 // PH.10
 
 // Switches
-#define SWITCHES_GPIO_REG_A_H           GPIOI->IDR
-#define SWITCHES_GPIO_PIN_A_H           GPIO_Pin_15 // PI.15
-#define SWITCHES_GPIO_REG_A_L           GPIOH->IDR
-#define SWITCHES_GPIO_PIN_A_L           GPIO_Pin_9  // PH.09
+#define SWITCHES_GPIO_REG_A_H           GPIOH->IDR
+#define SWITCHES_GPIO_PIN_A_H           GPIO_Pin_9  // PH.09
+#define SWITCHES_GPIO_REG_A_L           GPIOI->IDR
+#define SWITCHES_GPIO_PIN_A_L           GPIO_Pin_15 // PI.15
 #define SWITCHES_GPIO_REG_B_H           GPIOH->IDR
 #define SWITCHES_GPIO_PIN_B_H           GPIO_Pin_12 // PH.12
 #define SWITCHES_GPIO_REG_B_L           GPIOB->IDR
 #define SWITCHES_GPIO_PIN_B_L           GPIO_Pin_12 // PB.12
-#define SWITCHES_GPIO_REG_C_H           GPIOB->IDR
-#define SWITCHES_GPIO_PIN_C_H           GPIO_Pin_15 // PB.15
-#define SWITCHES_GPIO_REG_C_L           GPIOD->IDR
-#define SWITCHES_GPIO_PIN_C_L           GPIO_Pin_11 // PD.11
+#define SWITCHES_GPIO_REG_C_H           GPIOD->IDR
+#define SWITCHES_GPIO_PIN_C_H           GPIO_Pin_11 // PD.11
+#define SWITCHES_GPIO_REG_C_L           GPIOB->IDR
+#define SWITCHES_GPIO_PIN_C_L           GPIO_Pin_15 // PB.15
 #define SWITCHES_GPIO_REG_D_H           GPIOJ->IDR
 #define SWITCHES_GPIO_PIN_D_H           GPIO_Pin_7  // PJ.07
 #define SWITCHES_GPIO_REG_D_L           GPIOG->IDR
@@ -67,9 +67,9 @@
 #define SWITCHES_GPIO_REG_F             GPIOH->IDR
 #define SWITCHES_GPIO_PIN_F             GPIO_Pin_3  // PH.03
 #define SWITCHES_GPIO_REG_G_H           GPIOG->IDR
-#define SWITCHES_GPIO_PIN_G_H           GPIO_Pin_3  // PG.03
+#define SWITCHES_GPIO_PIN_G_H           GPIO_Pin_6  // PG.06
 #define SWITCHES_GPIO_REG_G_L           GPIOG->IDR
-#define SWITCHES_GPIO_PIN_G_L           GPIO_Pin_6  // PG.06
+#define SWITCHES_GPIO_PIN_G_L           GPIO_Pin_3  // PG.03
 #define SWITCHES_GPIO_REG_H             GPIOG->IDR
 #define SWITCHES_GPIO_PIN_H             GPIO_Pin_7  // PG.07
 
@@ -100,13 +100,13 @@
 #define TRIMS_GPIO_PIN_LSU              GPIO_Pin_13 // PB.13
 
 // Index of all keys
-#define KEYS_GPIOB_PINS                 (SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | TRIMS_GPIO_PIN_LSD | TRIMS_GPIO_PIN_LSU)
+#define KEYS_GPIOB_PINS                 (SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_L | TRIMS_GPIO_PIN_LSD | TRIMS_GPIO_PIN_LSU)
 #define KEYS_GPIOC_PINS                 (KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_RIGHT | TRIMS_GPIO_PIN_RHL)
-#define KEYS_GPIOD_PINS                 (SWITCHES_GPIO_PIN_C_L | TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_RSU)
+#define KEYS_GPIOD_PINS                 (SWITCHES_GPIO_PIN_C_H | TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_RSU)
 #define KEYS_GPIOE_PINS                 (SWITCHES_GPIO_PIN_E_L)
 #define KEYS_GPIOG_PINS                 (KEYS_GPIO_PIN_UP | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_RVD)
-#define KEYS_GPIOH_PINS                 (SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_F | ENC_GPIO_PIN_A | ENC_GPIO_PIN_B)
-#define KEYS_GPIOI_PINS                 (KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_DOWN | SWITCHES_GPIO_PIN_A_H | TRIMS_GPIO_PIN_RHR)
+#define KEYS_GPIOH_PINS                 (SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_F | ENC_GPIO_PIN_A | ENC_GPIO_PIN_B)
+#define KEYS_GPIOI_PINS                 (KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_DOWN | SWITCHES_GPIO_PIN_A_L | TRIMS_GPIO_PIN_RHR)
 #define KEYS_GPIOJ_PINS                 (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RSD)
 
 // ADC
@@ -130,8 +130,8 @@
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_GPIO                        GPIOJ
-#define PWR_GPIO_PIN_ON                 GPIO_Pin_0  // PJ.00
-#define PWR_GPIO_PIN_SWITCH             GPIO_Pin_1  // PJ.01
+#define PWR_GPIO_PIN_ON                 GPIO_Pin_1  // PJ.01
+#define PWR_GPIO_PIN_SWITCH             GPIO_Pin_0  // PJ.00
 
 // Led
 #define LED_RCC_AHB1Periph              RCC_AHB1Periph_GPIOI

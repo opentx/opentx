@@ -435,7 +435,7 @@ void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, ui
     }
 
     calibrationState = 0;
-    displayScreenIndex(curr, menuTabSize, attr);
+    drawScreenIndex(curr, menuTabSize, attr);
 
   }
 
