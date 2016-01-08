@@ -9,4 +9,4 @@ add_custom_target(ttf_horus_fonts DEPENDS ttf_horus_tinsize ttf_horus_smlsize tt
 add_bitmaps_target(horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/????[^_]*.png" 480 5/6/5/8)
 add_bitmaps_target(horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/horus/mask_*.png 480 8bits)
 add_bitmaps_target(horus_fonts ${RADIO_SRC_DIRECTORY}/fonts/horus/*.png 480 8bits)
-add_dependencies(horus_bitmaps horus_masks)
+add_dependencies(horus_bitmaps horus_masks horus_fonts)
