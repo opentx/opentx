@@ -24,10 +24,12 @@ const pm_uchar bmp_sleep[] PROGMEM = {
   #include "../../bitmaps/taranis/sleep.lbm"
 };
 
+#define SLEEP_BITMAP_WIDTH             60
+#define SLEEP_BITMAP_HEIGHT            60
 void drawSleepBitmap()
 {
   lcdClear();
-  lcdDrawBitmap(76, 2, bmp_sleep, 0, 60);
+  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, bmp_sleep, 0, SLEEP_BITMAP_WIDTH);
   lcdRefresh();
 }
 
@@ -35,10 +37,12 @@ const pm_uchar bmp_shutdown[] PROGMEM = {
   #include "../../bitmaps/taranis/shutdown.lbm"
 };
 
+#define SHUTDOWN_BITMAP_WIDTH          60
+#define SHUTDOWN_BITMAP_HEIGHT         60
 void drawShutdownBitmap(uint8_t index)
 {
   lcdClear();
-  lcdDrawBitmap(76, 2, bmp_shutdown, index * 60, 60);
+  lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, index * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
   lcdRefresh();
 }
 
