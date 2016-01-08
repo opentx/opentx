@@ -1031,11 +1031,7 @@ void doSplash()
       if (!(g_eeGeneral.splashMode & 0x04)) {
 #endif
 
-#if defined(COLORLCD)
-      if (keyDown()) return;
-#else
       if (keyDown() || inputsMoved()) return;
-#endif
 
 #if defined(FSPLASH)
       }
