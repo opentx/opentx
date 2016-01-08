@@ -1281,7 +1281,7 @@ int lcdRestoreBackupBuffer()
 
 #if defined(PWR_BUTTON_DELAY)
 uint32_t pwrPressed() { return false; }
-#else
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 uint32_t pwrCheck() { return true; }
 #endif
 
