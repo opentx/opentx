@@ -467,6 +467,9 @@ void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
 
 void lcdDrawBitmapDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t * bitmap)
 {
+  if ((uint32_t(bitmap) & 0x03) != 0)
+    return;
+
   uint32_t addr = CurrentFrameBuffer + 2*(LCD_W*y + x);
 
   DMA2D_DeInit();

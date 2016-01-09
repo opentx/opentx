@@ -360,7 +360,7 @@ bool menuGeneralSdManager(evt_t _event)
   if (ext && (!strcasecmp(ext, BITMAPS_EXT) || !strcasecmp(ext, PNG_EXT) || !strcasecmp(ext, JPG_EXT))) {
     if (lastBitmap != menuVerticalPosition) {
       lastBitmap = menuVerticalPosition;
-      if (imgLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
+      if (bmpLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
         ((uint32_t *)modelBitmap)[0] = 0;
       }
     }
