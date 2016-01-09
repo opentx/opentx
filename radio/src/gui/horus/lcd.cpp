@@ -870,17 +870,17 @@ inline void lcdDrawBitmapDMA(coord_t x, coord_t y, coord_t width, coord_t height
 #endif
 
 #if !defined(BOOT)
-void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t width, int scale)
+void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t height, int scale)
 {
-  int w = getBitmapWidth(bmp);
-  int height = getBitmapHeight(bmp);
+  int width = getBitmapWidth(bmp);
+  int h = getBitmapHeight(bmp);
 
-  if (!width || width > w) {
-    width = w;
+  if (!height || height > h) {
+    height = h;
   }
 
-  if (x+width > LCD_W) {
-    width = LCD_W-x;
+  if (x+height > LCD_W) {
+    height = LCD_W-x;
   }
 
   if (width == 0 || height == 0) {
@@ -888,12 +888,12 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
   }
 
   if (scale == 0) {
-    lcdDrawBitmapDMA(x, y, width, height, bmp+4);
+    lcdDrawBitmapDMA(x, y, width, height, bmp + 4 + offset*width*2);
   }
   else if (scale < 0) {
     for (coord_t i=0, row=0; row<height; i+=1, row-=scale) {
       display_t * p = &displayBuf[(y+i)*LCD_W + x];
-      const uint8_t * q = bmp + 4 + (row*w + offset) * 2;
+      const uint8_t * q = bmp + 4 + (offset+row)*width*2;
       for (coord_t col=0; col<width; col-=scale) {
         lcdDrawPixel(p, *((uint16_t *)q));
         p++; q-=2*scale;
@@ -904,7 +904,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
     for (coord_t row=0; row<height; row++) {
       for (int i=0; i<scale; i++) {
         display_t * p = &displayBuf[(y+scale*row+i)*LCD_W + x];
-        const uint8_t * q = bmp + 4 + (row*w + offset) * 2;
+        const uint8_t * q = bmp + 4 + (offset+row)*width*2;
         for (coord_t col=0; col<width; col++) {
           for (int j=0; j<scale; j++) {
             lcdDrawPixel(p, *((uint16_t *)q));

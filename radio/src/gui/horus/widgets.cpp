@@ -324,16 +324,20 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
 }
 #endif
 
+#define SLEEP_BITMAP_WIDTH             60
+#define SLEEP_BITMAP_HEIGHT            60
 void drawSleepBitmap()
 {
-/*  lcdClear();
-  lcdDrawBitmap(POPUP_X-80, POPUP_Y-30, LBM_SLEEP);
-  lcdRefresh(); */
+  lcdClear();
+  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, LBM_SLEEP);
+  lcdRefresh();
 }
 
+#define SHUTDOWN_BITMAP_WIDTH          60
+#define SHUTDOWN_BITMAP_HEIGHT         60
 void drawShutdownBitmap(uint8_t index)
 {
-  /*lcdClear();
-  lcdDrawBitmap(76, 2, LBM_SHUTDOWN, index * 60, 60);
-  lcdRefresh();*/
+  lcdClear();
+  lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, LBM_SHUTDOWN, index*SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
+  lcdRefresh();
 }

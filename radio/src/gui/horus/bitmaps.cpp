@@ -200,31 +200,31 @@ const uint8_t * const LBM_MODEL_ICONS[] = {
  *  Model selection screen bitmaps
  */
 
-const uint8_t LBM_LIBRARY_ICON[] = {
+const uint8_t LBM_LIBRARY_ICON[] __attribute__((aligned(32))) = {
 #include "mask_library.lbm"
 };
 
-const uint8_t LBM_LIBRARY_SLOT[] = {
+const uint8_t LBM_LIBRARY_SLOT[] __attribute__((aligned(32))) = {
 #include "mask_library_slot.lbm"
 };
 
-const uint8_t LBM_LIBRARY_CURSOR[] = {
+const uint8_t LBM_LIBRARY_CURSOR[] __attribute__((aligned(32))) = {
 #include "mask_library_category_index.lbm"
 };
 
-const uint8_t LBM_SCORE0[] = {
+const uint8_t LBM_SCORE0[] __attribute__((aligned(32))) = {
 #include "mask_library_score_0.lbm"
 };
 
-const uint8_t LBM_SCORE1[] = {
+const uint8_t LBM_SCORE1[] __attribute__((aligned(32))) = {
 #include "mask_library_score_1.lbm"
 };
 
-const uint8_t LBM_STAR0[] = {
+const uint8_t LBM_STAR0[] __attribute__((aligned(32))) = {
 #include "mask_library_star_0.lbm"
 };
 
-const uint8_t LBM_STAR1[] = {
+const uint8_t LBM_STAR1[] __attribute__((aligned(32))) = {
 #include "mask_library_star_1.lbm"
 };
 
@@ -232,30 +232,30 @@ const uint8_t LBM_STAR1[] = {
  * Other
  */
 
-const uint8_t LBM_ASTERISK[] = {
+const uint8_t LBM_ASTERISK[] __attribute__((aligned(32))) = {
 #include "asterisk.lbm"
 };
 
-const uint8_t LBM_POINT[] = {
+const uint8_t LBM_POINT[] __attribute__((aligned(32))) = {
 #include "mask_point.lbm"
 };
 
-const uint8_t LBM_CURVE_POINT[] = {
+const uint8_t LBM_CURVE_POINT[] __attribute__((aligned(32))) = {
 #include "mask_cvpoint.lbm"
 };
 
-const uint8_t LBM_CURVE_POINT_CENTER[] = {
+const uint8_t LBM_CURVE_POINT_CENTER[] __attribute__((aligned(32))) = {
 #include "mask_cvpoint_center.lbm"
 };
 
-const uint8_t LBM_CURVE_COORD_SHADOW[] = {
+const uint8_t LBM_CURVE_COORD_SHADOW[] __attribute__((aligned(32))) = {
 #include "mask_coord_shadow.lbm"
 };
-/*
-const uint8_t LBM_SHUTDOWN[] = {
+
+const uint8_t LBM_SHUTDOWN[] __attribute__((aligned(32))) = {
 #include "shutdown.lbm"
 };
 
-const uint8_t LBM_SLEEP[] = {
+const uint8_t LBM_SLEEP[] __attribute__((aligned(32))) = {
 #include "sleep.lbm"
-}; */
+};

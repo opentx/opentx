@@ -119,6 +119,7 @@ extern const uint8_t LBM_STAR0[];
 extern const uint8_t LBM_STAR1[];
 
 // Other icons
+extern const uint8_t LBM_SPLASH[];
 extern const uint8_t LBM_ASTERISK[];
 extern const uint8_t LBM_POINT[];
 extern const uint8_t LBM_CURVE_POINT[];

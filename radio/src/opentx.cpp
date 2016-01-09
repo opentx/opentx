@@ -29,7 +29,7 @@ Clipboard clipboard;
 #endif
 
 #if (defined(PCBTARANIS) || defined(PCBHORUS)) && defined(SDCARD)
-uint8_t modelBitmap[MODEL_BITMAP_SIZE];
+uint8_t modelBitmap[MODEL_BITMAP_SIZE] __attribute__((aligned(32)));
 bool loadModelBitmap(char * name, uint8_t * bitmap)
 {
   uint8_t len = zlen(name, LEN_BITMAP_NAME);

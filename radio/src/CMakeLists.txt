@@ -743,10 +743,10 @@ if(ARCH STREQUAL ARM)
   set(CMAKE_SYSTEM_VERSION 1)
   set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
-  set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=opentx.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
+  set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
   set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
   set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=opentx.map,--cref,--no-warn-mismatch,--gc-sections")
+  set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
   if(PCB STREQUAL TARANIS)
     add_subdirectory(targets/${TARGET_DIR}/bootloader)
@@ -808,6 +808,7 @@ endif()
 add_custom_target(firmware.lss
   COMMAND avr-objdump -h -S firmware.elf > firmware.lss
   DEPENDS firmware.elf
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
 
 if(CPU_FAMILY STREQUAL STM32)

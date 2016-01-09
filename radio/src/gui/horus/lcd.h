@@ -303,7 +303,7 @@ inline int getBitmapScaledSize(int size, int scale)
 
 int getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight);
 int getTextWidth(const pm_char *s, int len=0, LcdFlags flags=0);
-void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0, int scale=0);
+void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t height=0, int scale=0);
 void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0);
 
 #define lcdSetRefVolt(...)

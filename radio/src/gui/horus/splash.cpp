@@ -20,8 +20,8 @@
 
 #include "../../opentx.h"
 
-const uint8_t LBM_SPLASH[] = {
-#include "../../bitmaps/horus/splash.lbm"
+const uint8_t LBM_SPLASH[] __attribute__((aligned(32))) = {
+#include "splash.lbm"
 };
 
 #if defined(SPLASH)
