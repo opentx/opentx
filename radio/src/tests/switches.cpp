@@ -471,6 +471,26 @@ TEST(getSwitch, edgeInstant)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
+  //test what happens when EDGE condition is true and
+  //logical switches are reset - the switch should fire again
+
+  simuSetSwitch(0, 1);   //SA up
+  simuSetSwitch(5, 1);    //SF up
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);  //switch will not trigger, because SF was already up
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
+
+  logicalSwitchesReset();
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), true);
+
+  logicalSwitchesTimerTick();
+  evalLogicalSwitches();
+  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
+  EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
 
 TEST(getSwitch, edgeRelease)
