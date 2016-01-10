@@ -724,6 +724,7 @@ add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
 if(NOT WIN32)
   add_subdirectory(targets/simu)
+  add_subdirectory(tests)
 endif()
 
 set(SRC ${SRC} ${FIRMWARE_SRC})
