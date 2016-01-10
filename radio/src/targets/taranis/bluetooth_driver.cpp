@@ -18,9 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "string.h"
-#include "../../fifo.h"
-#include "board_taranis.h"
+#include "../../opentx.h"
 
 Fifo<64> btTxFifo;
 Fifo<64> btRxFifo;

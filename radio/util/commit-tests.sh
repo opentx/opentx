@@ -4,7 +4,49 @@
 set -e
 set -x
 
-cd radio/src/
+mkdir build
+cd build 
+
+# OpenTX on Taranis and Companion
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
+make -j2
+make -j2 firmware.bin
+make -j2 simu
+make -j2 gtests
+./gtests
+
+# OpenTX on Taranis X9E
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DPCBREV=REV9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
+make -j2 firmware.bin
+make -j2 simu
+make -j2 gtests
+./gtests
+
+# OpenTX on Taranis Plus
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DPCBREV=REVPLUS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
+make -j2 firmware.bin
+make -j2 simu
+make -j2 gtests
+./gtests
+
+# OpenTX on Horus
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES .. 
+make -j2 firmware.bin
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=NO -DDEBUG=YES .. 
+make -j2 simu
+#make gtests
+#./gtests
+
+
+# Old, not yet converted
+
+
+cd ../radio/src/
+
 
 # OpenTX on 9X stock
 make clean
@@ -13,30 +55,11 @@ make simu   PCB=9X EXT=FRSKY HELI=YES
 make gtests EXT=FRSKY HELI=YES
 ./gtests
 
+
 # OpenTX on 9X stock with MAVLINK
 make clean
 make PCB=9X EXT=MAVLINK HELI=YES
 
-# OpenTX on Taranis X9E
-make clean
-make        PCB=TARANIS PCBREV=REV9E HELI=YES GVARS=YES LUA=YES WARNINGS_AS_ERRORS=YES
-make simu   PCB=TARANIS PCBREV=REV9E HELI=YES GVARS=YES LUA=YES
-make gtests PCB=TARANIS PCBREV=REV9E HELI=YES GVARS=YES LUA=YES
-./gtests
-
-# OpenTX on Taranis Plus
-make clean
-make        PCB=TARANIS PCBREV=REVPLUS HELI=YES LUA=YES WARNINGS_AS_ERRORS=YES
-make simu   PCB=TARANIS PCBREV=REVPLUS HELI=YES LUA=YES
-make gtests PCB=TARANIS PCBREV=REVPLUS HELI=YES LUA=YES
-./gtests
-
-# OpenTX on Taranis
-make clean
-make        PCB=TARANIS HELI=YES LUA=YES WARNINGS_AS_ERRORS=YES
-make simu   PCB=TARANIS HELI=YES LUA=YES
-make gtests PCB=TARANIS HELI=YES LUA=YES
-./gtests
 
 # OpenTX on Sky9x
 make clean
@@ -58,7 +81,3 @@ make PCB=MEGA2560
 make clean
 make PCB=MEGA2560 EXT=MAVLINK
 
-# OpenTX on Horus
-make clean
-make        PCB=HORUS HELI=NO USB=SERIAL CLI=YES DEBUG=YES
-make simu   PCB=HORUS

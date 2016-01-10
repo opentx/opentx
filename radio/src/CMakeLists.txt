@@ -79,16 +79,6 @@ if(PCB STREQUAL HORUS)
     led_driver.cpp
     )
   set(STM32LIB_SRC
-    STM32F4xx_StdPeriph_Driver/src/misc.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fmc.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_ltdc.c
@@ -108,6 +98,7 @@ elseif(PCB STREQUAL TARANIS)
     set(FLAVOUR taranis-x9e)
     add_definitions(-DSTM32F40_41xxx -DREVPLUS -DREV9E)
     add_definitions(-DEEPROM_VARIANT=32768)
+    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} top_lcd_driver.cpp bluetooth_driver.cpp)
   elseif(PCBREV STREQUAL REVPLUS)
     set(CPU_TYPE STM32F2)
     set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
@@ -244,6 +235,16 @@ if(CPU_TYPE STREQUAL STM32F4)
   set(STM32LIB_SRC
     ${STM32LIB_SRC}
     CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
+    STM32F4xx_StdPeriph_Driver/src/misc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rtc.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
     )
   set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} system_stm32f4xx.c)
 endif()
