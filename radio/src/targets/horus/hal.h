@@ -207,6 +207,10 @@
 #define SD_SDIO_TRANSFER_CLK_DIV        SD_SDIO_CLK_DIV(24000000)
 
 // Audio
+#define AUDIO_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1ENR_DMA1EN)
+#define AUDIO_RCC_APB1Periph            (RCC_APB1ENR_TIM6EN | RCC_APB1ENR_DACEN)
+#define AUDIO_TIMER                     TIM6
+#define AUDIO_TIMER_DAC_IRQn            TIM6_DAC_IRQn
 
 // I2C Bus: CAT5137
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB

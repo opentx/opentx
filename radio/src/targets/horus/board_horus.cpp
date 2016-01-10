@@ -77,7 +77,6 @@ void interrupt5ms()
   ++pre_scale;
 
   if (pre_scale == 5 || pre_scale == 10) {
-    AUDIO_HEARTBEAT();
 
 #if defined(HAPTIC)
     HAPTIC_HEARTBEAT();
@@ -125,8 +124,8 @@ void pinCheck(GPIO_TypeDef * gpio, uint32_t pin, uint32_t RCC_AHB1Periph)
 
 void boardInit()
 {
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph, ENABLE);
-  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SERIAL_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SERIAL_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | AUDIO_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph, ENABLE);
 
   pwrInit();

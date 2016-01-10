@@ -33,23 +33,20 @@ void setSampleRate(uint32_t frequency)
 {
   register uint32_t timer = (PERI1_FREQUENCY * TIMER_MULT_APB1) / frequency - 1 ;         // MCK/8 and 100 000 Hz
 
-  TIM6->CR1 &= ~TIM_CR1_CEN ;
-  TIM6->CNT = 0 ;
-  TIM6->ARR = limit<uint32_t>(2, timer, 65535) ;
-  TIM6->CR1 |= TIM_CR1_CEN ;
+  AUDIO_TIMER->CR1 &= ~TIM_CR1_CEN ;
+  AUDIO_TIMER->CNT = 0 ;
+  AUDIO_TIMER->ARR = limit<uint32_t>(2, timer, 65535) ;
+  AUDIO_TIMER->CR1 |= TIM_CR1_CEN ;
 }
 
 // Start TIMER6 at 100000Hz, used for DAC trigger
 void dacTimerInit()
 {
-  // Now for timer 6
-  RCC->APB1ENR |= RCC_APB1ENR_TIM6EN ;            // Enable clock
-
-  TIM6->PSC = 0 ;                                                                                                 // Max speed
-  TIM6->ARR = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 100000 - 1 ;        // 10 uS, 100 kHz
-  TIM6->CR2 = 0 ;
-  TIM6->CR2 = 0x20 ;
-  TIM6->CR1 = TIM_CR1_CEN ;
+  AUDIO_TIMER->PSC = 0 ;                                                                                                 // Max speed
+  AUDIO_TIMER->ARR = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 100000 - 1 ;        // 10 uS, 100 kHz
+  AUDIO_TIMER->CR2 = 0 ;
+  AUDIO_TIMER->CR2 = 0x20 ;
+  AUDIO_TIMER->CR1 = TIM_CR1_CEN ;
 }
 
 // Configure DAC0 (or DAC1 for REVA)
@@ -59,10 +56,7 @@ void dacInit()
 {
   dacTimerInit();
 
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
   configure_pins( GPIO_Pin_4, PIN_ANALOG | PIN_PORTA ) ;
-  RCC->APB1ENR |= RCC_APB1ENR_DACEN ;                             // Enable clock
-  RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN ;                    // Enable DMA1 clock
 
   // Chan 7, 16-bit wide, Medium priority, memory increments
   DMA1_Stream5->CR &= ~DMA_SxCR_EN ;              // Disable DMA
@@ -77,13 +71,13 @@ void dacInit()
   DAC->DHR12R1 = 2010 ;
   DAC->SR = DAC_SR_DMAUDR1 ;              // Write 1 to clear flag
   DAC->CR = DAC_CR_TEN1 | DAC_CR_EN1 ;                    // Enable DAC
-  NVIC_EnableIRQ(TIM6_DAC_IRQn); // TODO needed?
-  NVIC_SetPriority(TIM6_DAC_IRQn, 7);
+  NVIC_EnableIRQ(AUDIO_TIMER_DAC_IRQn); // TODO needed?
+  NVIC_SetPriority(AUDIO_TIMER_DAC_IRQn, 7);
   NVIC_EnableIRQ(DMA1_Stream5_IRQn);
   NVIC_SetPriority(DMA1_Stream5_IRQn, 7);
 }
 
-bool dacQueue(AudioBuffer *buffer)
+bool dacQueue(AudioBuffer * buffer)
 {
   if (dacIdle) {
     dacIdle = false;
@@ -123,9 +117,9 @@ void audioInit()
 void audioEnd()
 {
   DAC->CR = 0 ;
-  TIM6->CR1 = 0 ;
+  AUDIO_TIMER->CR1 = 0 ;
   // Also need to turn off any possible interrupts
-  NVIC_DisableIRQ(TIM6_DAC_IRQn) ;
+  NVIC_DisableIRQ(AUDIO_TIMER_DAC_IRQn) ;
   NVIC_DisableIRQ(DMA1_Stream5_IRQn) ;
 }
 
