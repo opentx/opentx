@@ -774,6 +774,7 @@ void SetupPanel::populateThrottleSourceCB()
 
   lock = true;
 
+  ui->throttleSource->clear();
   ui->throttleSource->addItem(QObject::tr("THR"));
 
   if (IS_TARANIS_X9E(GetEepromInterface()->getBoard())) {
