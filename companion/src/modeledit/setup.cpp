@@ -610,6 +610,7 @@ void SetupPanel::populateThrottleSourceCB()
 
   lock = true;
 
+  ui->throttleSource->clear();
   if (IS_TARANIS(GetEepromInterface()->getBoard())) {
     for (i=0; i<6; i++) {
       ui->throttleSource->addItem(sourcesTaranis[i], i);
