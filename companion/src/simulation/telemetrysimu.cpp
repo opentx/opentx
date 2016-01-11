@@ -143,37 +143,39 @@ void TelemetrySimulator::closeEvent(QCloseEvent *event)
   event->accept();
 }
 
+#define SET_INSTANCE(control, id, def)  ui->control->setText(QString::number(simulator->getSensorInstance(id, ((def) & 0x1F) + 1)))
+
 void TelemetrySimulator::showEvent(QShowEvent *event)
 {
+  SET_INSTANCE(rxbt_inst,  BATT_ID,                0);
+  SET_INSTANCE(rssi_inst,  RSSI_ID,                24);
+  SET_INSTANCE(swr_inst,   SWR_ID,                 24);
+  SET_INSTANCE(a1_inst,    ADC1_ID,                0);
+  SET_INSTANCE(a2_inst,    ADC2_ID,                0);
+  SET_INSTANCE(a3_inst,    A3_FIRST_ID,            0);
+  SET_INSTANCE(a4_inst,    A4_FIRST_ID,            0);
+  SET_INSTANCE(t1_inst,    T1_FIRST_ID,            0);
+  SET_INSTANCE(t2_inst,    T2_FIRST_ID,            0);
+  SET_INSTANCE(rpm_inst,   RPM_FIRST_ID,           DATA_ID_RPM);
+  SET_INSTANCE(fuel_inst,  FUEL_FIRST_ID,          0);
+  SET_INSTANCE(aspd_inst,  AIR_SPEED_FIRST_ID,     0);
+  SET_INSTANCE(vvspd_inst, VARIO_FIRST_ID,         DATA_ID_VARIO);
+  SET_INSTANCE(valt_inst,  ALT_FIRST_ID,           DATA_ID_VARIO);
+  SET_INSTANCE(fasv_inst,  VFAS_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(fasc_inst,  CURR_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(cells_inst, CELLS_FIRST_ID,         DATA_ID_FLVSS);
+  SET_INSTANCE(gpsa_inst,  GPS_ALT_FIRST_ID,       DATA_ID_GPS);
+  SET_INSTANCE(gpss_inst,  GPS_SPEED_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpsc_inst,  GPS_COURS_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpst_inst,  GPS_TIME_DATE_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(gpsll_inst, GPS_LONG_LATI_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(accx_inst,  ACCX_FIRST_ID,          0);
+  SET_INSTANCE(accy_inst,  ACCY_FIRST_ID,          0);
+  SET_INSTANCE(accz_inst,  ACCZ_FIRST_ID,          0);
 
-  ui->rxbt_inst->setText(QString::number(simulator->getSensorInstance(BATT_ID)));
   ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
-  ui->rssi_inst->setText(QString::number(simulator->getSensorInstance(RSSI_ID)));
-  ui->swr_inst->setText(QString::number(simulator->getSensorInstance(SWR_ID)));
-  ui->a1_inst->setText(QString::number(simulator->getSensorInstance(ADC1_ID)));
   ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
-  ui->a2_inst->setText(QString::number(simulator->getSensorInstance(ADC2_ID)));
   ui->A2_ratio->setValue(simulator->getSensorRatio(ADC2_ID) / 10.0);
-  ui->a3_inst->setText(QString::number(simulator->getSensorInstance(A3_FIRST_ID)));
-  ui->a4_inst->setText(QString::number(simulator->getSensorInstance(A4_FIRST_ID)));
-  ui->t1_inst->setText(QString::number(simulator->getSensorInstance(T1_FIRST_ID)));
-  ui->t2_inst->setText(QString::number(simulator->getSensorInstance(T2_FIRST_ID)));
-  ui->rpm_inst->setText(QString::number(simulator->getSensorInstance(RPM_FIRST_ID)));
-  ui->fuel_inst->setText(QString::number(simulator->getSensorInstance(FUEL_FIRST_ID)));
-  ui->aspd_inst->setText(QString::number(simulator->getSensorInstance(AIR_SPEED_FIRST_ID)));
-  ui->vvspd_inst->setText(QString::number(simulator->getSensorInstance(VARIO_FIRST_ID)));
-  ui->valt_inst->setText(QString::number(simulator->getSensorInstance(ALT_FIRST_ID)));
-  ui->fasv_inst->setText(QString::number(simulator->getSensorInstance(VFAS_FIRST_ID)));
-  ui->fasc_inst->setText(QString::number(simulator->getSensorInstance(CURR_FIRST_ID)));
-  ui->cells_inst->setText(QString::number(simulator->getSensorInstance(CELLS_FIRST_ID)));
-  ui->gpsa_inst->setText(QString::number(simulator->getSensorInstance(GPS_ALT_FIRST_ID)));
-  ui->gpss_inst->setText(QString::number(simulator->getSensorInstance(GPS_SPEED_FIRST_ID)));
-  ui->gpsc_inst->setText(QString::number(simulator->getSensorInstance(GPS_COURS_FIRST_ID)));
-  ui->gpst_inst->setText(QString::number(simulator->getSensorInstance(GPS_TIME_DATE_FIRST_ID)));
-  ui->gpsll_inst->setText(QString::number(simulator->getSensorInstance(GPS_LONG_LATI_FIRST_ID)));
-  ui->accx_inst->setText(QString::number(simulator->getSensorInstance(ACCX_FIRST_ID)));
-  ui->accy_inst->setText(QString::number(simulator->getSensorInstance(ACCY_FIRST_ID)));
-  ui->accz_inst->setText(QString::number(simulator->getSensorInstance(ACCZ_FIRST_ID)));
 
   ui->Simulate->setChecked(true);
   onSimulateToggled(true); // not sure why this doesn't fire automatically
@@ -193,13 +195,27 @@ void setSportPacketCrc(uint8_t * packet)
   //TRACE("crc set: %x", packet[FRSKY_SPORT_PACKET_SIZE-1]);
 }
 
-void generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data)
+uint8_t getBit(uint8_t position, uint8_t value) 
 {
-  packet[0] = dataId;
+  return (value & (uint8_t)(1 << position)) ? 1 : 0;
+}
+
+bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data)
+{
+  if (dataId > 0x1B ) return false;
+  
+  // generate Data ID field
+  uint8_t bit5 = getBit(0, dataId) ^ getBit(1, dataId) ^ getBit(2, dataId);
+  uint8_t bit6 = getBit(2, dataId) ^ getBit(3, dataId) ^ getBit(4, dataId);
+  uint8_t bit7 = getBit(0, dataId) ^ getBit(2, dataId) ^ getBit(4, dataId);
+
+  packet[0] = (bit7 << 7) + (bit6 << 6) + (bit5 << 5) + dataId;
+  // qDebug("dataID: 0x%02x (%d)", packet[0], dataId);
   packet[1] = prim;
   *((uint16_t *)(packet+2)) = appId;
   *((int32_t *)(packet+4)) = data;
   setSportPacketCrc(packet);
+  return true;
 }
 
 void TelemetrySimulator::generateTelemetryFrame()
@@ -372,7 +388,7 @@ void TelemetrySimulator::generateTelemetryFrame()
       return;
   }
 
-  if (ok && buffer[0])
+  if (ok && (buffer[2] || buffer[3]))
     simulator->sendTelemetry(buffer, FRSKY_SPORT_PACKET_SIZE);
   else
     onTimerEvent();
