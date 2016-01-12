@@ -230,6 +230,10 @@ PXX = NO
 # Values = NO, SERIAL, PPM
 DSM2 = NO
 
+# Multimodule support
+# https://github.com/pascallanger/DIY-Multiprotocol-TX-Module
+MULTIMODULE = NO
+
 # HUBSAN protocol
 # Values = NO, YES
 HUBSAN = NO
@@ -1056,6 +1060,9 @@ ifeq ($(PCB), TARANIS)
   ifeq ($(DSM2), PPM)
     CPPSRC += pulses/dsm2_arm.cpp
   endif
+  ifeq ($(MULTIMODULE), YES)
+    CPPSRC += pulses/multi_arm.cpp
+  endif
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN
     CPPSRC += pulses/hubsan.cpp
@@ -1668,6 +1675,10 @@ endif
 
 ifeq ($(DSM2), PPM)
   CPPDEFS += -DDSM2 -DDSM2_PPM
+endif
+
+ifeq ($(MULTIMODULE), YES)
+  CPPDEFS += -DMULTIMODULE
 endif
 
 ifeq ($(TX_CADDY), YES)
