@@ -256,7 +256,7 @@ void setVolume(uint8_t volume)
   if (!I2C_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
     return;
 
-  I2C_Send7bitAddress(I2C, I2C_ADDRESS_CAT5137, I2C_Direction_Transmitter);
+  I2C_Send7bitAddress(I2C, I2C_ADDRESS_VOLUME, I2C_Direction_Transmitter);
   if (!I2C_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
     return;
 
