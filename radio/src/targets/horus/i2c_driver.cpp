@@ -129,5 +129,5 @@ void setVolume(uint8_t volume)
     volume = VOLUME_LEVEL_MAX;
   }
 
-  i2cWriteRegister(I2C_ADDRESS_CAT5137, 0, volumeScale[volume]);
+  i2cWriteRegister(I2C_ADDRESS_VOLUME, 0, volumeScale[volume]);
 }

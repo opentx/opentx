@@ -212,7 +212,7 @@
 #define AUDIO_TIMER                     TIM6
 #define AUDIO_TIMER_DAC_IRQn            TIM6_DAC_IRQn
 
-// I2C Bus: CAT5137
+// I2C Bus: TPL0401A-10DCK digital pot for volume control
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
@@ -223,7 +223,7 @@
 #define I2C_GPIO_PinSource_SCL          GPIO_PinSource8
 #define I2C_GPIO_PinSource_SDA          GPIO_PinSource9
 #define I2C_SPEED                       400000
-#define I2C_ADDRESS_CAT5137             0x5C
+#define I2C_ADDRESS_VOLUME              0x5C
 
 // Haptic
 #define HAPTIC_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
