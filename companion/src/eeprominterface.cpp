@@ -1524,7 +1524,7 @@ bool ModelData::isGVarLinked(int phaseIdx, int gvarIdx)
   return flightModeData[phaseIdx].gvars[gvarIdx] > 1024;
 }
 
-int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
+int ModelData::getGVarFieldValue(int phaseIdx, int gvarIdx)
 {
   int idx = flightModeData[phaseIdx].gvars[gvarIdx];
   for (int i=0; idx>1024 && i<C9X_MAX_FLIGHT_MODES; i++) {

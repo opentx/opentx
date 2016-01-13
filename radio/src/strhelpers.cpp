@@ -60,7 +60,7 @@ int8_t char2idx(char c)
   return 0;
 }
 
-void str2zchar(char *dest, const char *src, int size)
+void str2zchar(char * dest, const char *src, int size)
 {
   memset(dest, 0, size);
   for (int c=0; c<size && src[c]; c++) {
@@ -68,7 +68,7 @@ void str2zchar(char *dest, const char *src, int size)
   }
 }
 
-int zchar2str(char *dest, const char *src, int size)
+int zchar2str(char * dest, const char *src, int size)
 {
   for (int c=0; c<size; c++) {
     dest[c] = idx2char(src[c]);

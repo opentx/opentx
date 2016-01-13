@@ -637,6 +637,21 @@ PACK(typedef struct {
 #endif
 
 #if defined(PCBTARANIS)
+#define MODELDATA_EXTRA_217 \
+  uint8_t spare:3; \
+  uint8_t trainerMode:3; \
+  uint8_t potsWarnMode:2; \
+  ModuleData moduleData[NUM_MODULES+1]; \
+  char curveNames[MAX_CURVES][6]; \
+  ScriptData scriptsData[MAX_SCRIPTS]; \
+  char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
+  uint8_t potsWarnEnabled; \
+  int8_t potsWarnPosition[NUM_POTS];
+#else
+#define MODELDATA_EXTRA_217 MODELDATA_EXTRA
+#endif
+
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   char name[LEN_MODEL_NAME];
   uint8_t modelId;
@@ -670,7 +685,7 @@ PACK(typedef struct {
   LimitData_v216 limitData[NUM_CHNOUT];
   ExpoData_v216  expoData[MAX_EXPOS];
 
-  CURVDATA  curves[MAX_CURVES];
+  CurveData curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v216 logicalSw[32];
@@ -683,7 +698,7 @@ PACK(typedef struct {
   uint16_t switchWarningState;
   uint8_t  switchWarningEnable;
 
-  global_gvar_t gvars[MAX_GVARS];
+  GVarData gvars[MAX_GVARS];
 
   FrSkyData_v216 frsky;
 
@@ -710,7 +725,7 @@ PACK(typedef struct {
   LimitData limitData[NUM_CHNOUT];
   ExpoData_v217  expoData[MAX_EXPOS];
 
-  CURVDATA  curves[MAX_CURVES];
+  CurveData curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v217 logicalSw[32];
@@ -727,7 +742,7 @@ PACK(typedef struct {
 
   TELEMETRY_DATA
 
-  MODELDATA_EXTRA
+  MODELDATA_EXTRA_217
 
   TelemetrySensor telemetrySensors[MAX_SENSORS];
 
@@ -1291,6 +1306,16 @@ void ConvertModel_217_to_218(ModelData & model)
     newModel.expoData[i].mode = oldModel.expoData[i].mode;
     memcpy(newModel.expoData[i].name, oldModel.expoData[i].name, sizeof(newModel.expoData[i].name));
   }
+  for (int i=0; i<MAX_CURVES; i++) {
+#if defined(XCURVES)
+    newModel.curves[i].type = oldModel.curves[i].type;
+    newModel.curves[i].smooth = oldModel.curves[i].smooth;
+    newModel.curves[i].points = oldModel.curves[i].points;
+    memcpy(newModel.curves[i].name, oldModel.curveNames[i], sizeof(newModel.curves[i].name));
+#else
+    newModel.curves[i] = oldModel.curves[i];
+#endif
+  }
   memcpy(newModel.curves, oldModel.curves, sizeof(newModel.curves));
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
   for (int i=0; i<32; i++) {
@@ -1330,7 +1355,6 @@ void ConvertModel_217_to_218(ModelData & model)
 #if defined(PCBTARANIS)
   newModel.trainerMode = oldModel.trainerMode;
   memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
-  memcpy(newModel.curveNames, oldModel.curveNames, sizeof(newModel.curveNames));
   memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
 #endif
   newModel.potsWarnMode = oldModel.potsWarnMode;

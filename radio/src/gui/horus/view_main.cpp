@@ -321,8 +321,8 @@ bool menuMainView(evt_t event)
 
     case EVT_KEY_FIRST(KEY_EXIT):
 #if defined(GVARS)
-      if (s_gvar_timer > 0) {
-        s_gvar_timer = 0;
+      if (gvarDisplayTimer > 0) {
+        gvarDisplayTimer = 0;
       }
 #endif
       AUDIO_KEYPAD_UP();
@@ -388,12 +388,12 @@ bool menuMainView(evt_t event)
   }
 
 #if 0
-  if (s_gvar_timer > 0) {
-    s_gvar_timer--;
+  if (gvarDisplayTimer > 0) {
+    gvarDisplayTimer--;
     displayMessageBox();
-    putsStrIdx(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, s_gvar_last+1, DBLSIZE|YELLOW);
-    lcdDrawSizedText(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
-    lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), DBLSIZE|LEFT);
+    putsStrIdx(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, gvarLastChanged+1, DBLSIZE|YELLOW);
+    lcdDrawSizedText(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
+    lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), DBLSIZE|LEFT);
   }
 #endif
 

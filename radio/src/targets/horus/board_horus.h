@@ -286,7 +286,9 @@ void i2cInit(void);
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 extern const int8_t volumeScale[];
+void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
+int32_t getVolume(void);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);

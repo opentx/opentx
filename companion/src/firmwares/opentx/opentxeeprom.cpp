@@ -2113,7 +2113,7 @@ class ArmCustomFunctionField: public TransformedField {
       if (fn.swtch.type != SWITCH_TYPE_NONE) {
         _func = fn.func;
 
-        if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
+        if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic || (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast))
           _active = (version >= 216 ? fn.repeatParam : (fn.repeatParam/5));
         else
           _active = (fn.enabled ? 1 : 0);
@@ -2209,7 +2209,7 @@ class ArmCustomFunctionField: public TransformedField {
     {
       fn.func = (AssignFunc)_func;
 
-      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic)
+      if (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic || (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast))
         fn.repeatParam = (version >= 216 ? _active : (_active*5));
       else
         fn.enabled = (_active & 0x01);

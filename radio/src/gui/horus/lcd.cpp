@@ -547,57 +547,80 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
+char * getStringAtIndex(char * dest, const char * s, int idx)
+{
+  uint8_t len = s[0];
+  strncpy(dest, s+1+len*idx, len);
+  dest[len] = '\0';
+  return dest;
+}
+
+char * getStringWithIndex(char * dest, const char * s, int idx)
+{
+  // TODO reimplement without the sprintf
+  sprintf(dest, "%s%d", s, abs(idx));
+  return dest;
+}
+
+char * getSwitchString(char * dest, swsrc_t idx)
 {
   if (idx == SWSRC_NONE) {
-    return lcdDrawTextAtIndex(x, y, STR_VSWITCHES, 0, att);
+    return getStringAtIndex(dest, STR_VSWITCHES, 0);
   }
   else if (idx == SWSRC_OFF) {
-    return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
+    return getStringAtIndex(dest, STR_OFFON, 0);
   }
 
-  char s[8];
-  int pos = 0;
+  char * s = dest;
   if (idx < 0) {
-    s[pos++] = '!';
+    *s++ = '!';
     idx = -idx;
   }
 
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
-      pos = zchar2str(&s[pos], g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
+      zchar2str(s, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
+      // TODO tous zchar2str
     }
     else {
-      s[pos++] = 'S';
-      s[pos++] = 'A'+swinfo.quot;
+      *s++ = 'S';
+      *s++ = 'A'+swinfo.quot;
     }
-    s[pos++] = "\300-\301"[swinfo.rem];
-    s[pos] = '\0';
-    lcdDrawText(x, y, s, att);
+    *s++ = "\300-\301"[swinfo.rem];
+    *s = '\0';
   }
-  /*else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
-    putsStrIdx(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
-  }*/
+    getStringWithIndex(s, "S", swinfo.quot*10+swinfo.rem+11);
+  }
   else if (idx <= SWSRC_LAST_TRIM) {
-    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
+    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1);
   }
   else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
-    putsStrIdx(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
+    getStringWithIndex(s, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1);
   }
   else if (idx <= SWSRC_ONE) {
-    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
+    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS));
   }
   else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    putsStrIdx(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+    getStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);
   }
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
-    lcdDrawText(x, y, "Tele", att);
+    strcpy(s, "Tele");
   }
   else {
-    lcdDrawSizedText(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
+    zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
   }
+
+  return dest;
+}
+
+void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
+{
+  char s[8];
+  getSwitchString(s, idx);
+  lcdDrawText(x, y, s, flags);
 }
 
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)

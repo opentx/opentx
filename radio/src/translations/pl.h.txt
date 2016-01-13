@@ -630,8 +630,6 @@
 #define TR_MODE                INDENT "Tryb"
 #define TR_NOFREEEXPO          "BrakWoln.Expo!"
 #define TR_NOFREEMIXER         "BrakWoln.Mixów!"
-#define TR_INSERTMIX           "WSTAW MIX"
-#define TR_EDITMIX             "EDYTUJ MIX"
 #define TR_SOURCE              INDENT "Źródło"
 #define TR_WEIGHT              "Waga "
 #define TR_EXPO                TR("Expo", "Exponential")
@@ -780,7 +778,6 @@
 #define TR_MENULOGICALSWITCHES   TR("PRZEŁ. LOG.", "PRZEŁ. LOGICZNE")
 #define TR_MENUCUSTOMFUNC      "FUNKCJE SPECJALNE"
 #define TR_MENUCUSTOMSCRIPTS   "WŁASNE SKRYPTY"
-#define TR_MENUCUSTOMSCRIPT    "WŁASNY SKRYPT"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "SZABLONY"
 #define TR_MENUSTAT            "STAT"
@@ -879,7 +876,7 @@
 #define TR_SD_SIZE             "Wielkość:"
 #define TR_TYPE                INDENT TR_SD_TYPE
 #define TR_GLOBAL_VARS         "Zmienne Globalne"
-#define TR_GLOBAL_V            "Zmien.Glob."
+#define TR_GVARS               "Zmien.Glob."
 #define TR_GLOBAL_VAR          "Zmienna Globalna"
 #define TR_MENUGLOBALVARS      "ZMIENNE GLOBALNE"
 #define TR_OWN                 "Własność"
@@ -899,6 +896,7 @@
 #define TR_FAILSAFE            TR(INDENT"Failsafe",INDENT"Tryb Failsafe")
 #define TR_FAILSAFESET         "USTAWIENIE FAILSAFE"
 #define TR_MENUSENSOR          "CZUJNIK"
+#define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Kod regionu"
 #define TR_VOICELANG           "Język głosu"
 #define TR_UNITSSYSTEM         "Jednostki"
@@ -942,6 +940,9 @@
 #define TR_CRITICALALARM       INDENT "Alarm krytyczny"
 #define TR_ENABLE_POPUP        "Aktywuj Popup"
 #define TR_DISABLE_POPUP       "Wyłącz Popup"
+#define TR_POPUP               "Popup"
+#define TR_MIN                 "Min"
+#define TR_MAX                 "Max"
 #define TR_CURVE_PRESET        "Predef..."
 #define TR_PRESET              "Predef."
 #define TR_MIRROR              "Lustro"

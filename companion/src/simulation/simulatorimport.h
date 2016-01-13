@@ -71,7 +71,7 @@ for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
 #if defined(GVARS)
 for (int fm=0; fm<MAX_FLIGHT_MODES; fm++) {
   for (int gv=0; gv<MAX_GVARS; gv++) {
-    outputs.gvars[fm][gv] = GVAR_VALUE(gv, getGVarFlightPhase(fm, gv));
+    outputs.gvars[fm][gv] = GVAR_VALUE(gv, getGVarFlightMode(fm, gv));
   }
 }
 #endif

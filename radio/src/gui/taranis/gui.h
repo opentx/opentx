@@ -70,3 +70,10 @@ extern coord_t scrollbar_X;
 
 extern const pm_uchar sticks[] PROGMEM;
 
+#if defined(FLIGHT_MODES)
+void displayFlightModes(coord_t x, coord_t y, FlightModesType value);
+FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr);
+#else
+  #define displayFlightModes(...)
+#endif
+

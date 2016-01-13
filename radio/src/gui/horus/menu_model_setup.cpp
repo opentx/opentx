@@ -50,7 +50,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_DISPLAY_TRIMS,
   ITEM_MODEL_TRIM_INC,
   ITEM_MODEL_THROTTLE_LABEL,
-  // ITEM_MODEL_THROTTLE_REVERSED,
+  ITEM_MODEL_THROTTLE_REVERSED,
   ITEM_MODEL_THROTTLE_TRACE,
   ITEM_MODEL_THROTTLE_TRIM,
   ITEM_MODEL_PREFLIGHT_LABEL,
@@ -60,6 +60,11 @@ enum menuModelSetupItems {
   ITEM_MODEL_POT_WARNING,
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_USE_GLOBAL_FUNCTIONS,
+  ITEM_MODEL_INTERNAL_MODULE_LABEL,
+  ITEM_MODEL_INTERNAL_MODULE_MODE,
+  ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
+  ITEM_MODEL_INTERNAL_MODULE_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
@@ -134,7 +139,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
   }
 }
 
-#define CURRENT_MODULE_EDITED(k)            (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : EXTERNAL_MODULE)
+#define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 
 int getSwitchWarningsCount()
 {
@@ -147,29 +152,48 @@ int getSwitchWarningsCount()
   return count;
 }
 
+#define INTERNAL_MODULE_MODE_ROWS         (IS_MODULE_XJT(INTERNAL_MODULE) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
+#define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
+#define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+#define IF_TRAINER_ON(x)                  (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)(x) : HIDDEN_ROW)
+#define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
+#define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
+#define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
+#define EXTERNAL_MODULE_CHANNELS_ROWS     IF_EXTERNAL_MODULE_ON((IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_CROSSFIRE(EXTERNAL_MODULE)) ? (uint8_t)0 : (uint8_t)1)
+#define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
+#define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
+#define FAILSAFE_ROWS(x)                  (HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
+#define TIMER_ROWS                        NAVIGATION_LINE_BY_LINE|1, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
+#define EXTERNAL_MODULE_MODE_ROWS         (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+#if TIMERS == 1
+  #define TIMERS_ROWS                     TIMER_ROWS
+#elif TIMERS == 2
+  #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS
+#elif TIMERS == 3
+  #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
+#endif
+#define SW_WARN_ITEMS()                   uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1))
+#define POT_WARN_ITEMS()                  ((g_model.potsWarnMode >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
 bool menuModelSetup(evt_t event)
 {
   horzpos_t l_posHorz = menuHorizontalPosition;
-  #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
-  #define IF_TRAINER_ON(x)                  (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)(x) : HIDDEN_ROW)
-  #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
-  #define IS_D8_RX(x)                       (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
-  #define EXTERNAL_MODULE_CHANNELS_ROWS()   IF_EXTERNAL_MODULE_ON(IS_MODULE_DSM2(EXTERNAL_MODULE) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
-  #define PORT_CHANNELS_ROWS(x)             (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS() : TRAINER_CHANNELS_ROWS())
-  #define FAILSAFE_ROWS(x)                  ((g_model.moduleData[x].rfProtocol==RF_PROTO_X16 || g_model.moduleData[x].rfProtocol==RF_PROTO_LR12) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
-  #define POT_WARN_ITEMS()                  ((g_model.potsWarnMode >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
-  #define TIMER_ROWS                        NAVIGATION_LINE_BY_LINE|1, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
-  #if TIMERS == 1
-    #define TIMERS_ROWS TIMER_ROWS
-  #elif TIMERS == 2
-    #define TIMERS_ROWS TIMER_ROWS, TIMER_ROWS
-  #elif TIMERS == 3
-    #define TIMERS_ROWS TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
-  #endif
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 
-  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, TIMERS_ROWS, 0, 1, 0, 0, LABEL(Throttle), 0, 0, LABEL(PreflightCheck), 0, 0, uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, LABEL(ExternalModule), (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, EXTERNAL_MODULE_CHANNELS_ROWS(), (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2) });
+  MENU(STR_MENUSETUP, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX, DEFAULT_SCROLLBAR_X,
+       { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
+         LABEL(Throttle), 0, 0, 0,
+         LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
+         LABEL(InternalModule),
+         INTERNAL_MODULE_MODE_ROWS,
+         INTERNAL_MODULE_CHANNELS_ROWS,
+         IF_INTERNAL_MODULE_ON(IS_MODULE_XJT(INTERNAL_MODULE) ? (HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1) : (IS_MODULE_PPM(INTERNAL_MODULE) ? (uint8_t)1 : HIDDEN_ROW)),
+         IF_INTERNAL_MODULE_ON((IS_MODULE_XJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW),
+         LABEL(ExternalModule),
+         (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0,
+         EXTERNAL_MODULE_CHANNELS_ROWS,
+         (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
+         IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)),
+         LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2) });
 
 #if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
@@ -227,7 +251,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
-        g_model.timers[0].minuteBeep = onoffMenuItem(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.timers[0].minuteBeep = editCheckBox(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
@@ -252,7 +276,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_TIMER2_MINUTE_BEEP:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
-        g_model.timers[1].minuteBeep = onoffMenuItem(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.timers[1].minuteBeep = editCheckBox(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
@@ -278,7 +302,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_TIMER3_MINUTE_BEEP:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MINUTEBEEP);
-        g_model.timers[2].minuteBeep = onoffMenuItem(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.timers[2].minuteBeep = editCheckBox(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
@@ -294,12 +318,12 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_EXTENDED_LIMITS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ELIMITS);
-        g_model.extendedLimits = onoffMenuItem(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.extendedLimits = editCheckBox(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_EXTENDED_TRIMS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ETRIMS);
-        g_model.extendedTrims = onoffMenuItem(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, menuHorizontalPosition<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
+        g_model.extendedTrims = editCheckBox(g_model.extendedTrims, MODEL_SETUP_2ND_COLUMN, y, menuHorizontalPosition<=0 ? attr : 0, event==EVT_KEY_BREAK(KEY_ENTER) ? event : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+18, y, STR_RESET_BTN, menuHorizontalPosition>0  && !NO_HIGHLIGHT() ? attr : 0);
         if (attr && menuHorizontalPosition>0) {
           s_editMode = 0;
@@ -328,11 +352,10 @@ bool menuModelSetup(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_THROTTLE_LABEL);
         break;
 
-#if 0
       case ITEM_MODEL_THROTTLE_REVERSED:
-        ON_OFF_MENU_ITEM(g_model.throttleReversed, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEREVERSE, attr, event ) ;
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_THROTTLEREVERSE);
+        g_model.throttleReversed = editCheckBox(g_model.throttleReversed, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
-#endif
 
       case ITEM_MODEL_THROTTLE_TRACE:
       {
@@ -349,7 +372,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_THROTTLE_TRIM:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRIM);
-        g_model.thrTrim = onoffMenuItem(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.thrTrim = editCheckBox(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_PREFLIGHT_LABEL:
@@ -358,12 +381,12 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_CHECKLIST_DISPLAY:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CHECKLIST);
-        g_model.displayChecklist = onoffMenuItem(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.displayChecklist = editCheckBox(g_model.displayChecklist, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_WARNING:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_THROTTLEWARNING);
-        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
 
       case ITEM_MODEL_SWITCHES_WARNING:
@@ -379,7 +402,7 @@ bool menuModelSetup(evt_t event)
         }
 
         if (attr && menuHorizontalPosition < 0) {
-          lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, NUM_SWITCHES*18+INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, (NUM_SWITCHES-1)*25+INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
 
         unsigned int newStates = 0;
@@ -395,15 +418,11 @@ bool menuModelSetup(evt_t event)
               color |= INVERS;
             }
             char s[3];
-            s[0] = 'A' + i + (i >= 3 ? 1 : 0 /* skip SD which is a POT*/);
+            s[0] = 'A' + i;
             int max;
             if (state == 0) {
               s[1] = 'x';
               max = 2;
-            }
-            else if (i == 2) {
-              s[1] = '0' + state;
-              max = 6;
             }
             else if (IS_3POS(i)) {
               s[1] = "\300-\301"[state-1];
@@ -414,7 +433,7 @@ bool menuModelSetup(evt_t event)
               max = 2;
             }
             s[2] = '\0';
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+i*18, y, s, color|(menuHorizontalPosition==current ? attr : 0));
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN+i*25, y, s, color|(menuHorizontalPosition==current ? attr : 0));
             if (attr && menuHorizontalPosition==current) CHECK_INCDEC_MODELVAR_ZERO(event, state, max);
             newStates |= (state << (3*i));
             ++current;
@@ -488,9 +507,26 @@ bool menuModelSetup(evt_t event)
         break;
 
       case ITEM_MODEL_USE_GLOBAL_FUNCTIONS:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, "Use Global Funcs");
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_USE_GLOBAL_FUNCS);
         drawCheckBox(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
+        break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_LABEL:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, TR_INTERNALRF);
+        break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_MODE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
+        if (attr) {
+          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+          if (checkIncDec_Ret) {
+            g_model.moduleData[0].type = MODULE_TYPE_XJT;
+            g_model.moduleData[0].channelsStart = 0;
+            g_model.moduleData[0].channelsCount = 0;
+          }
+        }
         break;
 
       case ITEM_MODEL_TRAINER_MODE:
@@ -539,6 +575,7 @@ bool menuModelSetup(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TRAINER);
         break;
 
+      case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_TRAINER_CHANNELS:
       {
@@ -567,6 +604,7 @@ bool menuModelSetup(evt_t event)
         break;
       }
 
+      case ITEM_MODEL_INTERNAL_MODULE_BIND:
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
       case ITEM_MODEL_TRAINER_SETTINGS:
       {
@@ -624,6 +662,7 @@ bool menuModelSetup(evt_t event)
         break;
       }
 
+      case ITEM_MODEL_INTERNAL_MODULE_FAILSAFE:
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);

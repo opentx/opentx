@@ -72,7 +72,7 @@ CurveInfo curveInfo(uint8_t idx)
 
 #if defined(XCURVES)
 #define CUSTOM_POINT_X(points, count, idx) ((idx)==0 ? -100 : (((idx)==(count)-1) ? 100 : points[(count)+(idx)-1]))
-s32 compute_tangent(CurveInfo *crv, int8_t *points, int i)
+s32 compute_tangent(CurveInfo * crv, int8_t * points, int i)
 {
     s32 m=0;
     uint8_t num_points = crv->points + 5;
@@ -238,16 +238,32 @@ int applyCurve(int x, CurveRef & curve)
   switch (curve.type) {
     case CURVE_REF_DIFF:
     {
+#if defined(CPUARM)
+      int curveParam = GET_GVAR_PREC1(curve.value, -100, 100, mixerCurrentFlightMode);
+      if (curveParam > 0 && x < 0)
+        x = (x * (1000 - curveParam)) / 1000;
+      else if (curveParam < 0 && x > 0)
+        x = (x * (1000 + curveParam)) / 1000;
+      return x;
+#else
       int curveParam = calc100to256(GET_GVAR(curve.value, -100, 100, mixerCurrentFlightMode));
       if (curveParam > 0 && x < 0)
         x = (x * (256 - curveParam)) >> 8;
       else if (curveParam < 0 && x > 0)
         x = (x * (256 + curveParam)) >> 8;
       return x;
+#endif
     }
 
     case CURVE_REF_EXPO:
-      return expo(x, GET_GVAR(curve.value, -100, 100, mixerCurrentFlightMode));
+    {
+#if defined(CPUARM)
+      int curveParam = GET_GVAR_PREC1(curve.value, -100, 100, mixerCurrentFlightMode) / 10;
+#else
+      int curveParam = GET_GVAR(curve.value, -100, 100, mixerCurrentFlightMode);
+#endif
+      return expo(x, curveParam);
+    }
 
     case CURVE_REF_FUNC:
       switch (curve.value) {

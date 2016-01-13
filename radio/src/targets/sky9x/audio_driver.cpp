@@ -161,7 +161,7 @@ void audioEnd()
   PMC->PMC_PCER0 &= ~0x40000000L ;		// Disable peripheral clock to DAC
 }
 
-void setVolume(uint8_t volume)
+void setScaledVolume(uint8_t volume)
 {
 #if !defined(NO_HARDWARE_VOLUME)
   volumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
@@ -170,7 +170,6 @@ void setVolume(uint8_t volume)
   __enable_irq() ;
 #endif
 }
-
 
 #endif // #if !defined(SIMU)
 

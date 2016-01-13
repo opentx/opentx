@@ -427,7 +427,7 @@ M128_VARIANT    = +32768
 M2561_VARIANT   = +16384
 EEPROM_VARIANT  = 0
 
-GUIMODELSRC = gui/$(GUIDIRECTORY)/menu_model.cpp gui/$(GUIDIRECTORY)/menu_model_select.cpp gui/$(GUIDIRECTORY)/menu_model_setup.cpp gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp gui/$(GUIDIRECTORY)/menu_model_limits.cpp gui/$(GUIDIRECTORY)/menu_model_logical_switches.cpp gui/$(GUIDIRECTORY)/menu_model_custom_functions.cpp gui/$(GUIDIRECTORY)/menu_model_telemetry.cpp
+GUIMODELSRC = gui/$(GUIDIRECTORY)/menu_model.cpp gui/$(GUIDIRECTORY)/menu_model_select.cpp gui/$(GUIDIRECTORY)/menu_model_setup.cpp gui/$(GUIDIRECTORY)/menu_model_limits.cpp gui/$(GUIDIRECTORY)/menu_model_logical_switches.cpp gui/$(GUIDIRECTORY)/menu_model_custom_functions.cpp gui/$(GUIDIRECTORY)/menu_model_telemetry.cpp
 GUIGENERALSRC = gui/$(GUIDIRECTORY)/menu_general.cpp gui/$(GUIDIRECTORY)/menu_general_setup.cpp gui/$(GUIDIRECTORY)/menu_general_trainer.cpp gui/$(GUIDIRECTORY)/menu_general_version.cpp gui/$(GUIDIRECTORY)/menu_general_calib.cpp
 
 BITMAPS = bitmaps/sticks.lbm 
@@ -455,6 +455,7 @@ ifeq ($(PCB), $(filter $(PCB), STD 9X 9XR))
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9x/splash.lbm bitmaps/9x/asterisk.lbm bitmaps/9x/about.lbm
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   ifeq ($(PCB), 9XR)
@@ -534,6 +535,7 @@ ifeq ($(PCB), $(filter $(PCB), STD128 9X128 9XR128))
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9x/splash.lbm bitmaps/9x/asterisk.lbm bitmaps/9x/about.lbm
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   ifeq ($(PCB), 9XR128)
@@ -609,6 +611,7 @@ ifeq ($(PCB), $(filter $(PCB), 9X2561))
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += debug.cpp
   BITMAPS += bitmaps/9x/splash.lbm bitmaps/9x/asterisk.lbm bitmaps/9x/about.lbm
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   ifeq ($(PCB), 9XR2561)
@@ -682,6 +685,7 @@ ifeq ($(PCB), GRUVIN9X)
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += audio_avr.cpp haptic.cpp debug.cpp
   BITMAPS += bitmaps/9x/splash.lbm bitmaps/9x/asterisk.lbm bitmaps/9x/about.lbm
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   ifeq ($(SDCARD), YES)
@@ -727,6 +731,7 @@ ifeq ($(PCB), MEGA2560)
   PULSESSRC = pulses/pulses_avr.cpp
   CPPSRC += audio_avr.cpp debug.cpp
   BITMAPS += bitmaps/9x/splash.lbm bitmaps/9x/asterisk.lbm bitmaps/9x/about.lbm
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
@@ -838,6 +843,7 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
     CPPDEFS += -DSDCARD -DVOICE
     INCDIRS += $(FATFSDIR) $(FATFSDIR)/option
     CPPSRC += sdcard.cpp logs.cpp
+    GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
     GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
     EXTRABOARDSRC += $(FATFSDIR)/ff.c $(FATFSDIR)/fattime.c $(FATFSDIR)/option/ccsbcs.c targets/sky9x/diskio.cpp
   endif
@@ -1023,6 +1029,7 @@ ifeq ($(PCB), TARANIS)
     NEWLIB_NANO_FLAGS = --specs=nano.specs -u _printf_float
     CPPDEFS += -DNANO
   endif
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs.cpp gui/$(GUIDIRECTORY)/menu_model_mixes.cpp
   ifeq ($(GVARS), YES)
     GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_gvars.cpp
   endif
@@ -1139,6 +1146,7 @@ ifeq ($(PCB), FLAMENCO)
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_ioreq.c
   SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Core/src/usbd_req.c
   EXTRABOARDSRC += targets/flamenco/usbd_usr.cpp
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   SRC += syscalls.c
   ifeq ($(USB), JOYSTICK)
     CPPDEFS += -DUSB_JOYSTICK
@@ -1282,6 +1290,7 @@ ifeq ($(PCB), HORUS)
     SRC += $(STM32USBPATH)/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
     EXTRABOARDSRC += targets/horus/usbd_storage_msd.cpp
   endif
+  GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs.cpp gui/$(GUIDIRECTORY)/menu_model_mixes.cpp
   ifeq ($(GVARS), YES)
     GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_gvars.cpp
   endif

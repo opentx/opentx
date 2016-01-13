@@ -631,8 +631,6 @@
 #define TR_MODE                INDENT "Modus"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
-#define TR_INSERTMIX           "MISCHER Hinz."
-#define TR_EDITMIX             "MISCHER Edit"
 #define TR_SOURCE              INDENT "Quelle"
 #define TR_WEIGHT              "Gewicht"
 #define TR_EXPO                TR("Expo", "Exponential")
@@ -781,7 +779,6 @@
 #define TR_MENULOGICALSWITCHES "LOGIKSCHALTER"
 #define TR_MENUCUSTOMFUNC      TR("SPEZ.-FUNKTIONEN", "SPEZIAL-FUNKTIONEN")
 #define TR_MENUCUSTOMSCRIPTS   "LUA-SCRIPTE"
-#define TR_MENUCUSTOMSCRIPT    "LUA-SCRIPT"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
 #define TR_MENUTEMPLATES       "VORLAGEN"
 #define TR_MENUSTAT            "STAT"
@@ -880,7 +877,7 @@
 #define TR_SD_SIZE             "Größe:"
 #define TR_TYPE                INDENT "Type"
 #define TR_GLOBAL_VARS         "Globale Variablen"
-#define TR_GLOBAL_V            "GLOBALE V."
+#define TR_GVARS               "GLOBALE V."
 #define TR_GLOBAL_VAR          "Globale Variable"
 #define TR_MENUGLOBALVARS      "GLOBALE VARIABLEN"
 #define TR_OWN                 "Eigen"
@@ -900,6 +897,7 @@
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe Mode")
 #define TR_FAILSAFESET         "Failsafe setzen"
 #define TR_MENUSENSOR          "SENSOR"
+#define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landescode"
 #define TR_VOICELANG           "Sprach-Ansage"
 #define TR_UNITSSYSTEM         "Einheiten"
@@ -943,6 +941,9 @@
 #define TR_CRITICALALARM       INDENT "Kritisch-Alarm"
 #define TR_ENABLE_POPUP        "Freigabe Popup-Fenster"
 #define TR_DISABLE_POPUP       "Sperren  Popup-Fenster"
+#define TR_POPUP               "Popup"
+#define TR_MIN                 "Min"
+#define TR_MAX                 "Max"
 #define TR_CURVE_PRESET        "Gerade 0 11 22 33 45"
 #define TR_PRESET              "Preset"
 #define TR_MIRROR              "Spiegeln"

@@ -629,8 +629,6 @@
 #define TR_MODE                INDENT"Modo"
 #define TR_NOFREEEXPO          "Expo pieni!"
 #define TR_NOFREEMIXER         "Mixer pieni!"
-#define TR_INSERTMIX           "INSER. MIX"
-#define TR_EDITMIX             "MOD. MIX"
 #define TR_SOURCE              INDENT"Sorg."
 #define TR_WEIGHT              "Peso"
 #define TR_EXPO                "Espo"
@@ -779,7 +777,6 @@
 #define TR_MENULOGICALSWITCHES TR("INTER. LOGICI","INTERRUTTORI LOGICI")
 #define TR_MENUCUSTOMFUNC      TR("FUNZ. SPECIALI","FUNZIONI SPECIALI")
 #define TR_MENUCUSTOMSCRIPTS   "SCRIPTS UTENTE"
-#define TR_MENUCUSTOMSCRIPT    "SCRIPT UTENTE"
 #define TR_MENUTELEMETRY       "TELEMETRIA"
 #define TR_MENUTEMPLATES       "ESEMPI GUIDA"
 #define TR_MENUSTAT            "STATO"
@@ -878,7 +875,7 @@
 #define TR_SD_SIZE             "Dimens:"
 #define TR_TYPE                INDENT "Tipo"
 #define TR_GLOBAL_VARS         "Variabili Globali"
-#define TR_GLOBAL_V            "V.GLOBALI"
+#define TR_GVARS               "V.GLOBALI"
 #define TR_GLOBAL_VAR          "Variabile globale"
 #define TR_MENUGLOBALVARS      "VARIABILI GLOBALI"
 #define TR_OWN                 "Fase"
@@ -898,6 +895,7 @@
 #define TR_FAILSAFE            "Modo failsafe"
 #define TR_FAILSAFESET         TR("FAILSAFE","IMPOSTAZIONI FAILSAFE")
 #define TR_MENUSENSOR          "SENSOR"
+#define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         TR("Codice Paese","Standard 2.4Ghz")
 #define TR_VOICELANG           "Lingua Voce"
 #define TR_UNITSSYSTEM         "Unità"
@@ -941,6 +939,9 @@
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
 #define TR_ENABLE_POPUP        "Abilita Popup"
 #define TR_DISABLE_POPUP       "Disabilita Popup"
+#define TR_POPUP               "Popup"
+#define TR_MIN                 "Min"
+#define TR_MAX                 "Max"
 #define TR_CURVE_PRESET        "Preimpostate..."
 #define TR_PRESET              "Preimpostate"
 #define TR_MIRROR              "Mirror"

@@ -32,7 +32,7 @@ enum menuModelHeliItems {
   ITEM_HELI_MAX
 };
 
-#define MODEL_HELI_2ND_COLUMN        (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
+#define MODEL_HELI_2ND_COLUMN          (LCD_W-17*FW-MENUS_SCROLLBAR_WIDTH)
 
 void menuModelHeli(uint8_t event)
 {
@@ -42,7 +42,7 @@ void menuModelHeli(uint8_t event)
 
   for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    int k = i+menuVerticalOffset;
+    int k = i + menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
@@ -92,7 +92,6 @@ void menuModelHeli(uint8_t event)
         lcdDrawNumber(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveWeight,  LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.collectiveWeight, -100, 100);
         break;
-
     }
   }
 }

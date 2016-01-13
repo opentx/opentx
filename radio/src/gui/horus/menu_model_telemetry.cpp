@@ -207,19 +207,19 @@ bool menuModelSensor(evt_t event)
   // lcdDrawNumber(MENUS_MARGIN_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
   // putsTelemetryChannelValue(SENSOR_2ND_COLUMN, MENU_FOOTER_TOP, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), HEADER_COLOR|LEFT);
 
-  int sub = menuVerticalPosition;
-
   for (unsigned int i=0; i<NUM_BODY_LINES+1; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     int k = i + menuVerticalOffset;
 
-    for (int j=0; j<=k; j++) {
-      if (mstate_tab[j] == HIDDEN_ROW) {
-        k++;
+    for (int j=0; j<k; j++) {
+      if (mstate_tab[j+1] == HIDDEN_ROW) {
+        if (++k >= (int)DIM(mstate_tab)) {
+          return true;
+        }
       }
     }
 
-    LcdFlags attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (menuVerticalPosition==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (k) {
 
@@ -409,27 +409,27 @@ bool menuModelSensor(evt_t event)
 
       case SENSOR_FIELD_AUTOOFFSET:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUTOOFFSET);
-        sensor->autoOffset = onoffMenuItem(sensor->autoOffset, SENSOR_2ND_COLUMN, y, attr, event);
+        sensor->autoOffset = editCheckBox(sensor->autoOffset, SENSOR_2ND_COLUMN, y, attr, event);
         break;
         
       case SENSOR_FIELD_ONLYPOSITIVE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ONLYPOSITIVE);
-        sensor->onlyPositive = onoffMenuItem(sensor->onlyPositive, SENSOR_2ND_COLUMN, y, attr, event);
+        sensor->onlyPositive = editCheckBox(sensor->onlyPositive, SENSOR_2ND_COLUMN, y, attr, event);
         break;
 
       case SENSOR_FIELD_FILTER:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FILTER);
-        sensor->filter = onoffMenuItem(sensor->filter, SENSOR_2ND_COLUMN, y, attr, event);
+        sensor->filter = editCheckBox(sensor->filter, SENSOR_2ND_COLUMN, y, attr, event);
         break;
         
       case SENSOR_FIELD_PERSISTENT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_PERSISTENT));
-        sensor->persistent = onoffMenuItem(sensor->persistent, SENSOR_2ND_COLUMN, y, attr, event);
+        sensor->persistent = editCheckBox(sensor->persistent, SENSOR_2ND_COLUMN, y, attr, event);
         break;
 
       case SENSOR_FIELD_LOGS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_LOGS);
-        sensor->logs = onoffMenuItem(sensor->logs, SENSOR_2ND_COLUMN, y, attr, event);
+        sensor->logs = editCheckBox(sensor->logs, SENSOR_2ND_COLUMN, y, attr, event);
         if (attr && checkIncDec_Ret) {
           closeLogs();
         }
@@ -478,8 +478,7 @@ void onSensorMenu(const char *result)
 #if defined(LUA)
 void onTelemetryScriptFileSelectionMenu(const char *result)
 {
-  int sub = menuVerticalPosition;
-  int screenIndex = TELEMETRY_CURRENT_SCREEN(sub);
+  int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition);
 
   if (result == STR_UPDATE_LIST) {
     if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
@@ -506,8 +505,6 @@ bool menuModelTelemetry(evt_t event)
   
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, DEFAULT_SCROLLBAR_X, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
-  int sub = menuVerticalPosition;
-
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     int k = i + menuVerticalOffset;
@@ -517,7 +514,7 @@ bool menuModelTelemetry(evt_t event)
     }
 
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    LcdFlags attr = (sub == k ? blink : 0);
+    LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
 
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
@@ -604,7 +601,7 @@ bool menuModelTelemetry(evt_t event)
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_IGNORE_INSTANCE);
-        onoffMenuItem(g_model.ignoreSensorIds, TELEM_COL2, y, attr, event);
+        editCheckBox(g_model.ignoreSensorIds, TELEM_COL2, y, attr, event);
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:

@@ -172,10 +172,10 @@ void menuModelPhaseOne(uint8_t event)
           }
         }
 
-        uint8_t p = getGVarFlightPhase(s_currIdx, idx);
+        uint8_t p = getGVarFlightMode(s_currIdx, idx);
         lcdDrawNumber(21*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
         if (attr && posHorz==2 && ((editMode>0) || p1valdiff)) {
-          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -GVAR_LIMIT, GVAR_LIMIT, EE_MODEL);
+          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -500, 500, EE_MODEL);
         }
 
         break;

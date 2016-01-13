@@ -29,12 +29,13 @@ uint8_t     warningInfoFlags = ZCHAR;
 int16_t     warningInputValue;
 int16_t     warningInputValueMin;
 int16_t     warningInputValueMax;
-void (*popupFunc)(evt_t event) = NULL;
+void        (*popupFunc)(evt_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
-uint8_t s_menu_item = 0;
-uint16_t popupMenuNoItems = 0;
-uint16_t popupMenuOffset = 0;
-void (*popupMenuHandler)(const char *result);
+uint8_t     s_menu_item = 0;
+uint16_t    popupMenuNoItems = 0;
+uint16_t    popupMenuOffset = 0;
+uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
+void        (*popupMenuHandler)(const char * result);
 
 void displayAlertBox()
 {
@@ -61,7 +62,7 @@ void displayMessageBox()
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
 }
 
-void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
+void drawMessageBox(const char * title, const char * t, const char * last, uint8_t sound)
 {
   displayAlertBox();
 
@@ -78,7 +79,11 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
     lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+16, last);
     AUDIO_ERROR_MESSAGE(sound);
   }
+}
 
+void message(const pm_char * title, const pm_char * t, const char * last, uint8_t sound)
+{
+  drawMessageBox(title, t, last, sound);
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
@@ -125,7 +130,8 @@ void displayWarning(evt_t event)
 const char * displayPopupMenu(evt_t event)
 {
   const char * result = NULL;
-  uint8_t display_count = min(popupMenuNoItems, (uint16_t)POPUP_MENU_MAX_LINES);
+
+  uint8_t display_count = min<unsigned int>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
 
   switch (event) {
     case EVT_ROTARY_LEFT:
@@ -139,9 +145,9 @@ const char * displayPopupMenu(evt_t event)
         result = STR_UPDATE_LIST;
       }
       else {
-        s_menu_item = display_count - 1;
-        if (popupMenuNoItems > POPUP_MENU_MAX_LINES) {
-          popupMenuOffset = popupMenuNoItems - display_count;
+        s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
+        if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
+          popupMenuOffset = popupMenuNoItems - MENU_MAX_DISPLAY_LINES;
           result = STR_UPDATE_LIST;
         }
       }
@@ -166,7 +172,7 @@ const char * displayPopupMenu(evt_t event)
       }
       break;
     case EVT_KEY_BREAK(KEY_ENTER):
-      result = popupMenuItems[s_menu_item];
+      result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
@@ -183,10 +189,10 @@ const char * displayPopupMenu(evt_t event)
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
       lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i], TEXT_INVERTED_COLOR);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], TEXT_INVERTED_COLOR);
     }
     else {
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i], 0);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], 0);
     }
   }
 

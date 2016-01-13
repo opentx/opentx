@@ -40,4 +40,4 @@ extern bool isPlaying();
 
 #define VOLUME_LEVEL_MAX  7
 #define VOLUME_LEVEL_DEF  7
-#define setVolume(v)
+#define setScaledVolume(v)

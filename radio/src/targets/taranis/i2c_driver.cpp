@@ -243,12 +243,17 @@ void eepromWaitEepromStandbyState(void)
 }
 
 #if !defined(BOOT)
-void setVolume(uint8_t volume)
+void setScaledVolume(uint8_t volume)
 {
   if (volume > VOLUME_LEVEL_MAX) {
     volume = VOLUME_LEVEL_MAX;
   }
 
+  setVolume(volumeScale[volume]);
+}
+
+void setVolume(uint8_t volume)
+{
   if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
     return;
 
@@ -263,29 +268,15 @@ void setVolume(uint8_t volume)
   I2C_SendData(I2C, 0);
   if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTING))
     return;
-  I2C_SendData(I2C, volumeScale[volume]);
+  I2C_SendData(I2C, volume);
   if (!I2C_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
     return;
 
   I2C_GenerateSTOP(I2C, ENABLE);
 }
-#endif
 
-#if 0
-uint8_t I2C_read_volume()
+int32_t getVolume()
 {
-  uint8_t volume ;
-  I2C_START();
-  I2C_SEND_DATA(I2C_ADDRESS_VOLUME|EE_CMD_WRITE);
-  I2C_WAIT_ACK();
-  I2C_SEND_DATA(0);
-  I2C_WAIT_ACK();
-  I2C_START();
-  I2C_SEND_DATA(I2C_ADDRESS_VOLUME|EE_CMD_READ);
-  I2C_WAIT_ACK();
-  volume = I2C_READ();
-  I2C_NO_ACK();
-  I2C_STOP();
-  return volume ;
+  return 0; // TODO
 }
 #endif

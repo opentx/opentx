@@ -106,14 +106,19 @@ void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 #endif
 
         //========== WEIGHT ===============
+#if defined(CPUARM)
+        int32_t weight = GET_GVAR_PREC1(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
+        v = ((int32_t)v * weight) / 1000;
+#else
         int16_t weight = GET_GVAR(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
         weight = calc100to256(weight);
         v = ((int32_t)v * weight) >> 8;
+#endif
 
 #if defined(VIRTUALINPUTS)
         //========== OFFSET ===============
-        int16_t offset = GET_GVAR(ed->offset, -100, 100, mixerCurrentFlightMode);
-        if (offset) v += calc100toRESX(offset);
+        int32_t offset = GET_GVAR_PREC1(ed->offset, -100, 100, mixerCurrentFlightMode);
+        if (offset) v += calc100toRESX(offset) / 10;
 
         //========== TRIMS ================
         if (ed->carryTrim < TRIM_ON)
@@ -293,7 +298,8 @@ getvalue_t getValue(mixsrc_t i)
   else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
 
 #if defined(GVARS)
-  else if (i<=MIXSRC_LAST_GVAR) return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightPhase(mixerCurrentFlightMode, i-MIXSRC_GVAR1));
+  else if (i<=MIXSRC_LAST_GVAR) return GVAR_VALUE(i-MIXSRC_GVAR1,
+                                                  getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
 #endif
 
 #if defined(CPUARM)
@@ -787,10 +793,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
+#if defined(CPUARM)
+      int32_t weight = GET_GVAR_PREC1(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+      weight = calc100to256_16Bits(weight);
+#else
       // saves 12 bytes code if done here and not together with weight; unknown reason
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
-
+#endif
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
@@ -844,12 +854,20 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
 
       //========== WEIGHT ===============
-      int32_t dv = (int32_t) v * weight;
+      int32_t dv = (int32_t)v * weight;
+#if defined(CPUARM)
+      dv /= 10;
+#endif
 
       //========== OFFSET / AFTER ===============
       if (apply_offset_and_curve) {
+#if defined(CPUARM)
+        int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+        if (offset) dv += int32_t(calc100toRESX_16Bits(offset) / 10) << 8;
+#else
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
+#endif
       }
 
       //========== DIFFERENTIAL =========

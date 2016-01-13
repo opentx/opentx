@@ -328,7 +328,9 @@ void setSampleRate(uint32_t frequency);
 extern const int8_t volumeScale[];
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
+void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
+int32_t getVolume(void);
 
 // Haptic driver
 void hapticInit(void);

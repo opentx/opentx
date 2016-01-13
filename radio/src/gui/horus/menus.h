@@ -123,7 +123,7 @@ const MenuHandlerFunc menuTabModel[] = {
   CASE_TEMPLATES(menuModelTemplates)
 };
 
-enum EnumTabDiag {
+enum EnumTabRadio {
   e_Setup,
   e_Sd,
   e_GeneralCustomFunctions,
@@ -221,7 +221,7 @@ extern const CheckIncDecStops &stopsSwitch;
   (val), (val+1)
 
 int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
-int8_t checkIncDecMovedSwitch(int8_t val);
+swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
@@ -245,7 +245,7 @@ int8_t checkIncDecMovedSwitch(int8_t val);
   CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
 
 #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
-  var = checkIncDec(event, var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
+  var = checkIncDec(event, var, min, max, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event, var, min, max)
@@ -297,20 +297,20 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 typedef int select_menu_value_t;
 
 select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, evt_t event);
-uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event);
 int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t event);
 
 #if defined(GVARS)
-  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, editflags, event)
+  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, editflags, event)
 #else
-  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, event)
+  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, event)
 #endif
 
 #if defined(GVARS)
-  int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, evt_t event);
+  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, evt_t event);
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
-  int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event);
+  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event);
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
@@ -335,10 +335,20 @@ extern uint8_t         warningType;
 #define COPY_MODE 1
 #define MOVE_MODE 2
 extern uint8_t s_copyMode;
-
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern int8_t s_currCh;
+extern uint8_t s_copySrcIdx;
+extern uint8_t s_copySrcCh;
+
+uint8_t getExposCount();
+void deleteExpo(uint8_t idx);
+void insertExpo(uint8_t idx);
+
+uint8_t getMixesCount();
+void deleteMix(uint8_t idx);
+void insertMix(uint8_t idx);
 
 #define MENU_X                 80
 #define MENU_W                 LCD_W-(2*MENU_X)
@@ -362,32 +372,36 @@ extern int16_t warningInputValueMin;
 extern int16_t warningInputValueMax;
 extern uint8_t warningInfoFlags;
 
-#define DISPLAY_WARNING       (*popupFunc)
-#define POPUP_WARNING(s)      (warningText = s, warningInfoText = 0, popupFunc = displayWarning)
-#define POPUP_CONFIRMATION(s) (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
+#define DISPLAY_WARNING                (*popupFunc)
+#define POPUP_WARNING(s)               (warningText = s, warningInfoText = 0, popupFunc = displayWarning)
+#define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
 #define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
-#define WARNING_INFO_FLAGS    warningInfoFlags
-#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
+#define WARNING_INFO_FLAGS             warningInfoFlags
+#define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
 
 #define NAVIGATION_MENUS
-#define POPUP_MENU_ADD_ITEM(s) popupMenuItems[popupMenuNoItems++] = s
-#define POPUP_MENU_MAX_LINES 6
-#define MENU_MAX_DISPLAY_LINES 6
-#define POPUP_MENU_ADD_SD_ITEM(s) POPUP_MENU_ADD_ITEM(s)
-#define MENU_LINE_LENGTH (LEN_MODEL_NAME+12)
+#define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
+#define POPUP_MENU_MAX_LINES           12
+#define MENU_MAX_DISPLAY_LINES         6
+#define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
 #define POPUP_MENU_ITEMS_FROM_BSS()
-extern const char *popupMenuItems[POPUP_MENU_MAX_LINES];
+extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 extern uint16_t popupMenuNoItems;
 extern uint16_t popupMenuOffset;
+enum {
+  MENU_OFFSET_INTERNAL,
+  MENU_OFFSET_EXTERNAL
+};
+extern uint8_t popupMenuOffsetType;
 const char * displayPopupMenu(evt_t event);
-extern void (*popupMenuHandler)(const char *result);
+extern void (*popupMenuHandler)(const char * result);
 
-#define TEXT_FILENAME_MAXLEN  40
+#define TEXT_FILENAME_MAXLEN           40
 extern char s_text_file[TEXT_FILENAME_MAXLEN];
-void pushMenuTextView(const char *filename);
+void pushMenuTextView(const char * filename);
 void pushModelNotes();
 
-#define LABEL(...) (uint8_t)-1
+#define LABEL(...)                     (uint8_t)-1
 
 #define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (event==EVT_ROTARY_RIGHT || EVT_KEY_MASK(event) == KEY_RIGHT)

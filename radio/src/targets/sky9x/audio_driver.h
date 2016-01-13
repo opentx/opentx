@@ -41,6 +41,6 @@ inline void dacStop()
 #define VOLUME_LEVEL_DEF  12
 extern const int8_t volumeScale[];
 
-void setVolume(uint8_t volume);
+void setScaledVolume(uint8_t volume);
 
 #endif // _AUDIO_DRIVER_H_

@@ -198,7 +198,7 @@ void menuGeneralHardware(uint8_t event)
 #if defined(REV9E)
       case ITEM_SETUP_HW_BLUETOOTH:
         lcd_putsLeft(y, "Bluetooth");
-        menu_lcd_onoff(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothEnable, menuHorizontalPosition == 0 ? attr : 0);
+        drawCheckBox(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothEnable, menuHorizontalPosition == 0 ? attr : 0);
         if (attr && menuHorizontalPosition == 0) {
           g_eeGeneral.bluetoothEnable = checkIncDecGen(event, g_eeGeneral.bluetoothEnable, 0, 1);
         }

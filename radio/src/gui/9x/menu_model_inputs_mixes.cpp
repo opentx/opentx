@@ -171,19 +171,6 @@ void copyExpoMix(uint8_t expo, uint8_t idx)
   storageDirty(EE_MODEL);
 }
 
-void memswap(void *a, void *b, uint8_t size)
-{
-  uint8_t *x = (uint8_t*)a;
-  uint8_t *y = (uint8_t*)b;
-  uint8_t temp ;
-
-  while (size--) {
-    temp = *x;
-    *x++ = *y;
-    *y++ = temp;
-  }
-}
-
 bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 {
   void *x, *y;
@@ -449,8 +436,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(uint8_t event)
 {
-  TITLE(s_currCh ? STR_INSERTMIX : STR_EDITMIX);
-  MixData *md2 = mixAddress(s_currIdx) ;
+  TITLE(STR_MIXER);
+  MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastPos+1*FW, 0, md2->destCh+1,0);
 
 #if defined(ROTARY_ENCODERS)
@@ -530,7 +517,7 @@ void menuModelMixOne(uint8_t event)
         if (attr && menuHorizontalPosition==0 && (not_stick || editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
           lcdDrawText(COLUMN_X+MIXES_2ND_COLUMN, y, STR_DREX);
-          menu_lcd_onoff(COLUMN_X+MIXES_2ND_COLUMN+DREX_CHBOX_OFFSET, y, !md2->noExpo, menuHorizontalPosition==1 ? attr : 0);
+          drawCheckBox(COLUMN_X+MIXES_2ND_COLUMN+DREX_CHBOX_OFFSET, y, !md2->noExpo, menuHorizontalPosition==1 ? attr : 0);
           if (attr && menuHorizontalPosition==1 && editMode>0) md2->noExpo = !checkIncDecModel(event, !md2->noExpo, 0, 1);
         }
         else if (attr) {

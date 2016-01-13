@@ -404,22 +404,21 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
         xn = x;
       }
       else if (smlsize) {
-        x -= 2;
-        lcdDrawPoint(x+1, y+5);
+        x -= 1;
+        lcdDrawPoint(x-1, y+5);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x+1, y, 7);
+          lcdDrawSolidVerticalLine(x-1, y, 7);
         }
       }
       else if (tinsize) {
-        x--;
-        lcdDrawPoint(x-1, y+4);
+        x -= 2;
+        lcdDrawPoint(x, y+4);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x-1, y-1, 7);
+          lcdDrawSolidVerticalLine(x, y-1, 7);
         }
-        x--;
       }
       else {
-        x -= 2;
+        x -= (flags & BOLD) ? 3 : 2;
         lcdDrawChar(x, y, '.', f);
       }
     }
@@ -952,10 +951,9 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
   }
   else {
     LcdFlags flags = att;
-    if (telemetrySensor.prec==2)
-      flags |= PREC2;
-    else if (telemetrySensor.prec==1)
-      flags |= PREC1;
+    if (telemetrySensor.prec > 0) {
+      flags |= (telemetrySensor.prec==1 ? PREC1 : PREC2);
+    }
     putsValueWithUnit(x, y, value, telemetrySensor.unit == UNIT_CELLS ? UNIT_VOLTS : telemetrySensor.unit, flags);
   }
 }

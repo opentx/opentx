@@ -68,7 +68,7 @@ extern struct t_voice Voice ;
 
 #define VOLUME_LEVEL_MAX  7
 #define VOLUME_LEVEL_DEF  7
-#define setVolume(v) pushPrompt((v) | 0xFFF0)
+#define setScaledVolume(v) pushPrompt((v) | 0xFFF0)
 
 inline bool isPlaying()
 {

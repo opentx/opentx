@@ -1077,7 +1077,7 @@ class ModelData {
     void setTrimValue(int phaseIdx, int trimIdx, int value);
 
     bool isGVarLinked(int phaseIdx, int gvarIdx);
-    int getGVarValue(int phaseIdx, int gvarIdx);
+    int getGVarFieldValue(int phaseIdx, int gvarIdx);
 
     ModelData removeGlobalVars();
 

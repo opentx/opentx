@@ -26,7 +26,7 @@
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN          (33*FW-3)
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    (34*FW-3)
 
-void onCustomFunctionsFileSelectionMenu(const char *result)
+void onCustomFunctionsFileSelectionMenu(const char * result)
 {
   int  sub = menuVerticalPosition;
   CustomFunctionData * cfn;
@@ -66,7 +66,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
   }
 }
 
-void onCustomFunctionsMenu(const char *result)
+void onCustomFunctionsMenu(const char * result)
 {
   int sub = menuVerticalPosition;
   CustomFunctionData * cfn;
@@ -125,7 +125,7 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
     storageDirty(EE_MODEL);
   }
   else if (result == STR_INCDEC) {
-    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_INC;
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_INCDEC;
     CFN_PARAM(cfn) = 0;
     storageDirty(EE_MODEL);
   }
@@ -133,6 +133,16 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
     onSourceLongEnterPress(result);
   }
 }
+
+enum CustomFunctionsItems {
+  ITEM_CUSTOM_FUNCTIONS_SWITCH,
+  ITEM_CUSTOM_FUNCTIONS_FUNCTION,
+  ITEM_CUSTOM_FUNCTIONS_PARAM1,
+  ITEM_CUSTOM_FUNCTIONS_PARAM2,
+  ITEM_CUSTOM_FUNCTIONS_REPEAT,
+  ITEM_CUSTOM_FUNCTIONS_COUNT,
+  ITEM_CUSTOM_FUNCTIONS_LAST = ITEM_CUSTOM_FUNCTIONS_COUNT-1
+};
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
@@ -170,7 +180,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && s_editMode>0);
       switch (j) {
-        case 0:
+        case ITEM_CUSTOM_FUNCTIONS_SWITCH:
           putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
@@ -178,7 +188,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           }
           break;
 
-        case 1:
+        case ITEM_CUSTOM_FUNCTIONS_FUNCTION:
           if (CFN_SWITCH(cfn)) {
             lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
             if (active) {
@@ -187,14 +197,14 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             }
           }
           else {
-            j = 4; // skip other fields
+            j = ITEM_CUSTOM_FUNCTIONS_LAST; // skip other fields
             if (sub==k && menuHorizontalPosition > 0) {
               REPEAT_LAST_CURSOR_MOVE();
             }
           }
           break;
 
-        case 2:
+        case ITEM_CUSTOM_FUNCTIONS_PARAM1:
         {
           int8_t maxParam = NUM_CHNOUT-1;
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
@@ -204,7 +214,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           else
 #endif
           if (func == FUNC_TRAINER) {
-            maxParam = 4;
+            maxParam = NUM_STICKS;
             putsMixerSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
           }
 #if defined(GVARS)
@@ -228,7 +238,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           break;
         }
 
-        case 3:
+        case ITEM_CUSTOM_FUNCTIONS_PARAM2:
         {
           INCDEC_DECLARE_VARS(eeFlags);
           int16_t val_displayed = CFN_PARAM(cfn);
@@ -335,7 +345,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             switch (CFN_GVAR_MODE(cfn)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
                 val_displayed = (int16_t)CFN_PARAM(cfn);
-                val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
+                val_min = CFN_GVAR_CST_MIN; val_max = CFN_GVAR_CST_MAX;
                 lcdDrawNumber(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
@@ -351,17 +361,12 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
                 putsStrIdx(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
                 break;
               default: // FUNC_ADJUST_GVAR_INC
-#if 0 // TODO 2.2.X
                 val_min = -100; val_max = +100;
                 if (val_displayed < 0)
-                  lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "-=", attr);
+                  lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "-= ", attr);
                 else
-                  lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "+=", attr);
-                lcdDrawNumber(lcdNextPos, y, abs(val_displayed), attr|LEFT);
-#endif
-                val_max = 1;
-                lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
-                break;
+                  lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "+= ", attr);
+                drawGVarValue(lcdNextPos, y, CFN_GVAR_INDEX(cfn), abs(val_displayed), attr|LEFT);
             }
           }
 #endif
@@ -379,7 +384,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
                 POPUP_MENU_ADD_ITEM(STR_MIXSOURCE);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_GVAR)
                 POPUP_MENU_ADD_ITEM(STR_GLOBALVAR);
-              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INC)
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INCDEC)
                 POPUP_MENU_ADD_ITEM(STR_INCDEC);
               popupMenuHandler = onAdjustGvarSourceLongEnterPress;
               s_editMode = EDIT_MODIFY_FIELD;
@@ -388,9 +393,9 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
           break;
         }
 
-        case 4:
+        case ITEM_CUSTOM_FUNCTIONS_REPEAT:
           if (HAS_ENABLE_PARAM(func)) {
-            menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
+            drawCheckBox(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
             if (active) CFN_ACTIVE(cfn) = checkIncDec(event, CFN_ACTIVE(cfn), 0, 1, eeFlags);
           }
           else if (HAS_REPEAT_PARAM(func)) {

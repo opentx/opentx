@@ -341,7 +341,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 
         case 4:
           if (HAS_ENABLE_PARAM(func)) {
-            menu_lcd_onoff(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
+            drawCheckBox(MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
 #if defined(CPUARM)
             if (active) CFN_ACTIVE(cfn) = checkIncDec(event, CFN_ACTIVE(cfn), 0, 1, eeFlags);
 #else

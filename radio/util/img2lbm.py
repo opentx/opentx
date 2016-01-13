@@ -48,6 +48,15 @@ with open(sys.argv[2], "w") as f:
                 pixel = image.pixel(x, y)
                 f.write("0x%1x%1x%1x%1x," % (Qt.qAlpha(pixel) // 16, Qt.qRed(pixel) // 16, Qt.qGreen(pixel) // 16, Qt.qBlue(pixel) // 16))
             f.write("\n")
+    elif what == "5/6/5":
+        colors = []
+        writeSize(f, width, height)
+        for y in range(height):
+            for x in range(width):
+                pixel = image.pixel(x, y)
+                val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
+                f.write("%d,%d," % (val % 256, val // 256))
+            f.write("\n")
     elif what == "5/6/5/8":
         colors = []
         writeSize(f, width, height)
@@ -55,8 +64,7 @@ with open(sys.argv[2], "w") as f:
             for x in range(width):
                 pixel = image.pixel(x, y)
                 val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
-                # f.write("%d,%d,%d," % (val%256, val/256, Qt.qAlpha(pixel) >> 4))
-                f.write("%d,%d," % (val % 256, val // 256))
+                f.write("%d,%d,%d," % (val % 256, val // 256, Qt.qAlpha(pixel)))
             f.write("\n")
     elif what == "4bits":
         colors = []

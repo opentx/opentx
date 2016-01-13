@@ -27,7 +27,6 @@ CustomFunctionsContext modelFunctionsContext = { 0 };
 CustomFunctionsContext globalFunctionsContext = { 0 };
 #endif
 
-
 #if defined(DEBUG)
 /*
  * This is a test function for debugging purpose, you may insert there your code and compile with the option DEBUG=YES
@@ -204,10 +203,8 @@ PLAY_FUNCTION(playValue, source_t idx)
     }
 #else
     default:
-    {
       PLAY_NUMBER(val, 0, 0);
       break;
-    }
 #endif
   }
 #endif
@@ -226,6 +223,27 @@ void playCustomFunctionFile(const CustomFunctionData *sd, uint8_t id)
     PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
   }
 }
+#endif
+
+#if defined(CPUARM)
+bool isRepeatDelayElapsed(const CustomFunctionData * functions, CustomFunctionsContext & functionsContext, uint8_t index)
+{
+  const CustomFunctionData * cfn = &functions[index];
+  tmr10ms_t tmr10ms = get_tmr10ms();
+  uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
+  if (!IS_SILENCE_PERIOD_ELAPSED() && repeatParam == CFN_PLAY_REPEAT_NOSTART) {
+    functionsContext.lastFunctionTime[index] = tmr10ms;
+  }
+  if (!functionsContext.lastFunctionTime[index] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-functionsContext.lastFunctionTime[index])>=100*repeatParam)) {
+    functionsContext.lastFunctionTime[index] = tmr10ms;
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+#else
+#define isRepeatDelayElapsed(...) true
 #endif
 
 #if defined(CPUARM)
@@ -361,10 +379,8 @@ void evalFunctions()
 
 #if defined(CPUARM)
           case FUNC_SET_TIMER:
-          {
             timerSet(CFN_TIMER_INDEX(cfn), CFN_PARAM(cfn));
             break;
-          }
 #endif
 
 #if defined(CPUARM)
@@ -398,30 +414,36 @@ void evalFunctions()
 
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
-            if (CFN_GVAR_MODE(cfn) == 0) {
-              SET_GVAR(CFN_GVAR_INDEX(cfn), CFN_PARAM(cfn), mixerCurrentFlightMode);
-            }
-            else if (CFN_GVAR_MODE(cfn) == 2) {
-              SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_PARAM(cfn), mixerCurrentFlightMode), mixerCurrentFlightMode);
-            }
-            else if (CFN_GVAR_MODE(cfn) == 3) {
-              if (!(functionsContext.activeSwitches & switch_mask)) {
-                SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + (CFN_PARAM(cfn) ? +1 : -1), mixerCurrentFlightMode);
+            if (isRepeatDelayElapsed(functions, functionsContext, i)) {
+              if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_CONSTANT) {
+                SET_GVAR(CFN_GVAR_INDEX(cfn), CFN_PARAM(cfn), mixerCurrentFlightMode);
               }
-            }
-            else if (CFN_PARAM(cfn) >= MIXSRC_TrimRud && CFN_PARAM(cfn) <= MIXSRC_TrimAil) {
-              trimGvar[CFN_PARAM(cfn)-MIXSRC_TrimRud] = CFN_GVAR_INDEX(cfn);
-            }
-#if defined(ROTARY_ENCODERS)
-            else if (CFN_PARAM(cfn) >= MIXSRC_REa && CFN_PARAM(cfn) < MIXSRC_TrimRud) {
-              int8_t scroll = rePreviousValues[CFN_PARAM(cfn)-MIXSRC_REa] - (g_rotenc[CFN_PARAM(cfn)-MIXSRC_REa] / ROTARY_ENCODER_GRANULARITY);
-              if (scroll) {
-                SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightPhase(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + scroll, mixerCurrentFlightMode);
+              else if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_GVAR) {
+                SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_PARAM(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_PARAM(cfn))), mixerCurrentFlightMode);
               }
-            }
+              else if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_INCDEC) {
+#if defined(CPUARM)
+                SET_GVAR(CFN_GVAR_INDEX(cfn), limit(CFN_GVAR_CST_MIN+g_model.gvars[CFN_GVAR_INDEX(cfn)].min, GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + CFN_PARAM(cfn), CFN_GVAR_CST_MAX-g_model.gvars[CFN_GVAR_INDEX(cfn)].max), mixerCurrentFlightMode);
+#else
+                if (!(functionsContext.activeSwitches & switch_mask)) {
+                  SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + (CFN_PARAM(cfn) ? +1 : -1), mixerCurrentFlightMode);
+                }
 #endif
-            else {
-              SET_GVAR(CFN_GVAR_INDEX(cfn), calcRESXto100(getValue(CFN_PARAM(cfn))), mixerCurrentFlightMode);
+              }
+              else if (CFN_PARAM(cfn) >= MIXSRC_TrimRud && CFN_PARAM(cfn) <= MIXSRC_TrimAil) {
+                trimGvar[CFN_PARAM(cfn)-MIXSRC_TrimRud] = CFN_GVAR_INDEX(cfn);
+              }
+#if defined(ROTARY_ENCODERS)
+              else if (CFN_PARAM(cfn) >= MIXSRC_REa && CFN_PARAM(cfn) < MIXSRC_TrimRud) {
+                int8_t scroll = rePreviousValues[CFN_PARAM(cfn)-MIXSRC_REa] - (g_rotenc[CFN_PARAM(cfn)-MIXSRC_REa] / ROTARY_ENCODER_GRANULARITY);
+                if (scroll) {
+                  SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + scroll, mixerCurrentFlightMode);
+                }
+              }
+#endif
+              else {
+                SET_GVAR(CFN_GVAR_INDEX(cfn), calcRESXto100(getValue(CFN_PARAM(cfn))), mixerCurrentFlightMode);
+              }
             }
             break;
 #endif
@@ -447,14 +469,8 @@ void evalFunctions()
           case FUNC_HAPTIC:
 #endif
           {
-            tmr10ms_t tmr10ms = get_tmr10ms();
-            uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
-            if (!IS_SILENCE_PERIOD_ELAPSED() && repeatParam == CFN_PLAY_REPEAT_NOSTART) {
-              functionsContext.lastFunctionTime[i] = tmr10ms;
-            }
-            if (!functionsContext.lastFunctionTime[i] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=100*repeatParam)) {
+            if (isRepeatDelayElapsed(functions, functionsContext, i)) {
               if (!IS_PLAYING(PLAY_INDEX)) {
-                functionsContext.lastFunctionTime[i] = tmr10ms;
                 if (CFN_FUNC(cfn) == FUNC_PLAY_SOUND) {
                   AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(cfn));
                 }
@@ -507,7 +523,7 @@ void evalFunctions()
               else {
 #if defined(GVARS)
                 if (CFN_FUNC(cfn) == FUNC_PLAY_TRACK && param > 250)
-                  param = GVAR_VALUE(param-251, getGVarFlightPhase(mixerCurrentFlightMode, param-251));
+                  param = GVAR_VALUE(param-251, getGVarFlightMode(mixerCurrentFlightMode, param-251));
 #endif
                 PUSH_CUSTOM_PROMPT(active ? param : param+1, PLAY_INDEX);
               }

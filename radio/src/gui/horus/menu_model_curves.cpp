@@ -135,7 +135,7 @@ enum MenuModelCurveOneItems {
 bool menuModelCurveOne(evt_t event)
 {
   static uint8_t pointsOfs = 0;
-  CurveInfo & crv = g_model.curves[s_curveChan];
+  CurveData & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
   SUBMENU(STR_MENUCURVE, crv.type==CURVE_TYPE_CUSTOM ? 6 : 5, 0, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
@@ -144,7 +144,7 @@ bool menuModelCurveOne(evt_t event)
 
   // Curve name
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, STR_NAME);
-  editName(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP, g_model.curveNames[s_curveChan], sizeof(g_model.curveNames[s_curveChan]), event, menuVerticalPosition==ITEM_CURVE_NAME);
+  editName(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP, crv.name, sizeof(crv.name), event, menuVerticalPosition==ITEM_CURVE_NAME);
 
   // Curve type
   LcdFlags attr = (menuVerticalPosition==ITEM_CURVE_TYPE ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
@@ -328,6 +328,9 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
   }
 }
 
+#define CURVES_NAME_POS                60
+#define CURVES_POINTS_POS              120
+
 bool menuModelCurvesAll(evt_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, MAX_CURVES, DEFAULT_SCROLLBAR_X);
@@ -349,9 +352,9 @@ bool menuModelCurvesAll(evt_t event)
     LcdFlags attr = (sub == k ? INVERS : 0);
     {
       putsStrIdx(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
-      editName(50, y, g_model.curveNames[k], sizeof(g_model.curveNames[k]), 0, 0);
-      CurveInfo & crv = g_model.curves[k];
-      lcdDrawNumber(120, y, 5+crv.points, LEFT, 0, NULL, STR_PTS);
+      CurveData & crv = g_model.curves[k];
+      editName(CURVES_NAME_POS, y, crv.name, sizeof(crv.name), 0, 0);
+      lcdDrawNumber(CURVES_POINTS_POS, y, 5+crv.points, LEFT, 0, NULL, STR_PTS);
     }
   }
 

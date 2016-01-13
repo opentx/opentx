@@ -49,13 +49,12 @@ enum menuModelCustomScriptItems {
 
 void menuModelCustomScriptOne(uint8_t event)
 {
-  TITLE(STR_MENUCUSTOMSCRIPT);
+  ScriptData & sd = g_model.scriptsData[s_currIdx];
 
-  ScriptData &sd = g_model.scriptsData[s_currIdx];
+  putsStrIdx(PSIZE(TR_MENUCUSTOMSCRIPTS)*FW+FW, 0, "LUA", s_currIdx+1, 0);
+  lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  putsStrIdx(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
-
-  SUBMENU_NOTITLE(3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
+  SUBMENU(STR_MENUCUSTOMSCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
   int8_t sub = menuVerticalPosition;
 

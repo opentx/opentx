@@ -35,9 +35,9 @@ uint8_t     s_menu_item = 0;
 uint16_t    popupMenuNoItems = 0;
 uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
-void        (*popupMenuHandler)(const char *result);
+void        (*popupMenuHandler)(const char * result);
 
-void displayBox(const char *title)
+void displayBox(const char * title)
 {
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
@@ -45,7 +45,7 @@ void displayBox(const char *title)
   // could be a place for a warningInfoText
 }
 
-void displayPopup(const char *title)
+void displayPopup(const char * title)
 {
   displayBox(title);
   lcdRefresh();
@@ -55,7 +55,7 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
 
-void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
+void drawMessageBox(const pm_char * title, const pm_char * t, const char * last, uint8_t sound)
 {
   lcdClear();
   lcdDrawBitmap(0, 0, asterisk_lbm);
@@ -78,7 +78,11 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   }
 
 #undef MESSAGE_LCD_OFFSET
+}
 
+void message(const pm_char * title, const pm_char * t, const char * last, uint8_t sound)
+{
+  drawMessageBox(title, t, last, sound);
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
@@ -129,7 +133,7 @@ const char * displayPopupMenu(uint8_t event)
     drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, display_count);
   }
 
-  switch(event) {
+  switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
       if (s_menu_item > 0) {

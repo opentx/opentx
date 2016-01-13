@@ -175,7 +175,6 @@ void readKeysAndTrims()
     case SW_S ## x ## 2: \
       xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       break
-  #define ADD_3POS_INVERTED_CASE(x, i) ADD_3POS_CASE(x, i)
 #else
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -200,22 +199,6 @@ void readKeysAndTrims()
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
-  #define ADD_3POS_INVERTED_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_3POS(i)) { \
-        xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_3POS(i)) { \
-        xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      } \
-      break
 #endif
 
 #if !defined(BOOT)
@@ -230,7 +213,7 @@ bool switchState(EnumKeys enuk)
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
-    ADD_3POS_INVERTED_CASE(E, 4);
+    ADD_3POS_CASE(E, 4);
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);

@@ -626,8 +626,6 @@
 #define TR_MODE                INDENT "Mode"
 #define TR_NOFREEEXPO          "Max expos atteint!"
 #define TR_NOFREEMIXER         "Max mixages atteint!"
-#define TR_INSERTMIX           "INSERER MIXAGE"
-#define TR_EDITMIX             "EDITER MIXAGE"
 #define TR_SOURCE              INDENT "Source"
 #define TR_WEIGHT              "Ratio"
 #define TR_EXPO                TR("Expo", "Exponentiel")
@@ -772,7 +770,6 @@
 #define TR_MENULOGICALSWITCHES TR("INTERS LOG.", "INTERS LOGIQUES")
 #define TR_MENUCUSTOMFUNC      TR("FONCTIONS SPEC.", "FONCTIONS SPECIALES")
 #define TR_MENUCUSTOMSCRIPTS   "SCRIPTS PERSOS"
-#define TR_MENUCUSTOMSCRIPT    "SCRIPT PERSO"
 #define TR_MENUTELEMETRY       "TELEMESURE"
 #define TR_MENUTEMPLATES       "GABARITS"
 #define TR_MENUSTAT            TR("STATS", "STATISTIQUES")
@@ -867,7 +864,7 @@
 #define TR_SD_SIZE             "Taille:"
 #define TR_TYPE                INDENT "Type"
 #define TR_GLOBAL_VARS         "Variables Globales"
-#define TR_GLOBAL_V            "V. GLOBALES"
+#define TR_GVARS               "V. GLOBALES"
 #define TR_GLOBAL_VAR          "Variable globale"
 #define TR_MENUGLOBALVARS      "VARIABLES GLOBALES"
 #define TR_OWN                 "Pers"
@@ -887,6 +884,7 @@
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Type failsafe")
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
 #define TR_MENUSENSOR          "CAPTEUR"
+#define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         TR("Zone géo.","Zone géographique")
 #define TR_VOICELANG           TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM         "Unités"
@@ -930,6 +928,9 @@
 #define TR_CRITICALALARM       INDENT "Alarme critique"
 #define TR_ENABLE_POPUP        "Activer Popup"
 #define TR_DISABLE_POPUP       "Désactiver Popup"
+#define TR_POPUP               "Popup"
+#define TR_MIN                 "Min"
+#define TR_MAX                 "Max"
 #define TR_CURVE_PRESET        "Courbe standard..."
 #define TR_PRESET              "Pente"
 #define TR_MIRROR              "Miroir"

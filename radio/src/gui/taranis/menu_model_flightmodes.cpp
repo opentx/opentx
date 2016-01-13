@@ -30,6 +30,36 @@ void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
   }
 }
 
+FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
+{
+  lcd_putsColumnLeft(x, y, STR_FLMODE);
+
+  int posHorz = menuHorizontalPosition;
+
+  for (int p=0; p<MAX_FLIGHT_MODES; p++) {
+    LcdFlags flags = 0;
+    if (attr) {
+      flags |= INVERS;
+      if (posHorz==p) flags |= BLINK;
+    }
+    if (value & (1<<p))
+      lcdDrawChar(x, y, ' ', flags|FIXEDWIDTH);
+    else
+      lcdDrawChar(x, y, '0'+p, flags);
+    x += FW;
+  }
+
+  if (attr) {
+    if (s_editMode && event==EVT_KEY_BREAK(KEY_ENTER)) {
+      s_editMode = 0;
+      value ^= (1<<posHorz);
+      storageDirty(EE_MODEL);
+    }
+  }
+
+  return value;
+}
+
 enum FlightModesItems {
   ITEM_FLIGHT_MODES_NAME,
   ITEM_FLIGHT_MODES_SWITCH,

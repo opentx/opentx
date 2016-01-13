@@ -220,7 +220,7 @@ void FlightModePanel::update()
         gvNames[i]->setText(model->gvars_names[i]);
       }
       gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
-      gvValues[i]->setValue(model->getGVarValue(phaseIdx, i));
+      gvValues[i]->setValue(model->getGVarFieldValue(phaseIdx, i));
       if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 
         gvPopups[i]->setChecked(model->gvars_popups[i]);
       }

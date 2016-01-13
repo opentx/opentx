@@ -47,7 +47,7 @@ extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
-void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
+void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
 typedef void (*MenuHandlerFunc)(uint8_t event);
 
@@ -109,7 +109,7 @@ void menuAboutView(uint8_t event);
 void menuTraceBuffer(uint8_t event);
 #endif
 
-enum EnumTabDiag {
+enum EnumTabRadio {
   e_Setup,
   e_Sd,
   e_GeneralCustomFunctions,
@@ -263,7 +263,7 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
   CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
 
 #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
-  var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
+  var = checkIncDec(event, var, min, max, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event, var, min, max)
@@ -295,6 +295,9 @@ void title(const pm_char * s);
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count)
 
+#define SIMPLE_MENU_FLAGS(title, tab, menu, flags, lines_count, ...) \
+  check(title, event, menu, tab, DIM(tab), NULL, 0, lines_count, flags)
+
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
   check_simple(title, event, menu, tab, DIM(tab), lines_count)
 
@@ -316,22 +319,20 @@ void title(const pm_char * s);
 typedef int select_menu_value_t;
 
 select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event);
-uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event);
 swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event);
 
-#define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = onoffMenuItem(value, x, y, label, attr, event)
+#define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 
 #if defined(GVARS)
-  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, editflags, event)
-#else
-  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) gvarMenuItem(x, y, v, min, max, lcdattr, event)
-#endif
-
-#if defined(GVARS)
-  int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event);
+  void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
+  void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
+  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event);
+  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, editflags, event)
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
-  int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
+  #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, event)
+  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
   #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
 #endif
 
@@ -368,6 +369,18 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern uint8_t s_maxLines;
+extern uint8_t s_copySrcIdx;
+extern uint8_t s_copySrcCh;
+extern int8_t s_currCh;
+
+uint8_t getExposCount();
+void deleteExpo(uint8_t idx);
+void insertExpo(uint8_t idx);
+
+uint8_t getMixesCount();
+void deleteMix(uint8_t idx);
+void insertMix(uint8_t idx);
 
 #define MENU_X                         30
 #define MENU_Y                         16
@@ -400,7 +413,7 @@ extern uint8_t warningInfoFlags;
 #define POPUP_MENU_ADD_SD_ITEM(s)      POPUP_MENU_ADD_ITEM(s)
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
 #define POPUP_MENU_ITEMS_FROM_BSS()
-extern const char *popupMenuItems[POPUP_MENU_MAX_LINES];
+extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 extern uint16_t popupMenuNoItems;
 extern uint16_t popupMenuOffset;
 enum {

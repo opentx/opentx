@@ -46,7 +46,7 @@
 /* lcd text flags */
 #define INVERS          0x02
 #if defined(BOLD_FONT)
-  #define BOLD          0x40
+  #define BOLD          0x04
 #else
   #define BOLD          0x00
 #endif
@@ -71,7 +71,7 @@
 #define FORCE           0x02
 #define ERASE           0x04
 #define ROUND           0x08
-#define FILL_WHITE    0x10
+#define FILL_WHITE      0x10
 
 /* telemetry flags */
 #define NO_UNIT         0x40

@@ -259,3 +259,7 @@ const uint8_t LBM_SHUTDOWN[] __DMA = {
 const uint8_t LBM_SLEEP[] __DMA = {
 #include "sleep.lbm"
 };
+
+const uint8_t LBM_BIGRSCALE[] __DMA = {
+#include "mask_bigrscale.lbm"
+};

@@ -162,7 +162,6 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
 
 #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 
-#if defined(PCBTARANIS)
 int getSwitchWarningsCount()
 {
   int count = 0;
@@ -173,7 +172,6 @@ int getSwitchWarningsCount()
   }
   return count;
 }
-#endif
 
 #if !defined(TARANIS_INTERNAL_PPM)
   #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
@@ -195,7 +193,7 @@ int getSwitchWarningsCount()
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
 #define FAILSAFE_ROWS(x)                  (HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
 #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
-#define EXTERNAL_MODULE_MODE_ROWS       (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+#define EXTERNAL_MODULE_MODE_ROWS         (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
 #if TIMERS == 1
   #define TIMERS_ROWS                     TIMER_ROWS
 #elif TIMERS == 2
@@ -218,8 +216,9 @@ void menuModelSetup(uint8_t event)
   horzpos_t l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 #if defined(TARANIS_INTERNAL_PPM)
-  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
-    NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0, 
+  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
+    LABEL(Throttle), 0, 0, 0,
+    LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
     LABEL(InternalModule), 
     INTERNAL_MODULE_MODE_ROWS, 
     INTERNAL_MODULE_CHANNELS_ROWS,
@@ -300,7 +299,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
-        g_model.timers[0].minuteBeep = onoffMenuItem(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[0].minuteBeep = editCheckBox(g_model.timers[0].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
         break;
 
       case ITEM_MODEL_TIMER1_COUNTDOWN_BEEP:
@@ -321,7 +320,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER2_MINUTE_BEEP:
-        g_model.timers[1].minuteBeep = onoffMenuItem(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[1].minuteBeep = editCheckBox(g_model.timers[1].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
         break;
 
       case ITEM_MODEL_TIMER2_COUNTDOWN_BEEP:
@@ -343,7 +342,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER3_MINUTE_BEEP:
-        g_model.timers[2].minuteBeep = onoffMenuItem(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
+        g_model.timers[2].minuteBeep = editCheckBox(g_model.timers[2].minuteBeep, MODEL_SETUP_2ND_COLUMN, y, STR_MINUTEBEEP, attr, event);
         break;
 
       case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
@@ -427,7 +426,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_THROTTLE_WARNING:
-        g_model.disableThrottleWarning = !onoffMenuItem(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
+        g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
 #if defined(REV9E)
@@ -602,13 +601,14 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_USE_GLOBAL_FUNCTIONS:
         lcd_putsLeft(y, STR_USE_GLOBAL_FUNCS);
-        menu_lcd_onoff(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
+        drawCheckBox(MODEL_SETUP_2ND_COLUMN, y, !g_model.noGlobalFunctions, attr);
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
         lcd_putsLeft(y, TR_INTERNALRF);
         break;
+
 #if defined(TARANIS_INTERNAL_PPM)
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);

@@ -310,14 +310,14 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_MEMORY_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
+        g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
         break;
       }
 
       case ITEM_SETUP_ALARM_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
+        g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
         break;
       }
 
@@ -337,7 +337,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
-        g_eeGeneral.alarmsFlash = onoffMenuItem(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
+        g_eeGeneral.alarmsFlash = editCheckBox(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
@@ -393,7 +393,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_ADJUST_RTC:
-        g_eeGeneral.adjustRTC = onoffMenuItem(g_eeGeneral.adjustRTC, RADIO_SETUP_2ND_COLUMN, y, STR_ADJUST_RTC, attr, event);
+        g_eeGeneral.adjustRTC = editCheckBox(g_eeGeneral.adjustRTC, RADIO_SETUP_2ND_COLUMN, y, STR_ADJUST_RTC, attr, event);
         break;
 
       case ITEM_SETUP_GPSFORMAT:
@@ -425,7 +425,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
-        onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
+        editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
             POPUP_WARNING(PSTR("FAI\001mode blocked!"));

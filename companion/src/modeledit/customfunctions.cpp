@@ -373,8 +373,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     }
     else if (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) {
       if (modified) cfn.adjustMode = fswtchGVmode[i]->currentIndex();
-      widgetsMask |= CUSTOM_FUNCTION_GV_MODE + CUSTOM_FUNCTION_ENABLE;
-      if (cfn.adjustMode==0) {
+      widgetsMask |= CUSTOM_FUNCTION_GV_MODE | (IS_ARM(firmware->getBoard()) ? CUSTOM_FUNCTION_REPEAT : CUSTOM_FUNCTION_ENABLE);
+      if (cfn.adjustMode==0 || cfn.adjustMode==3) {
         if (modified) cfn.param = fswtchParam[i]->value();
         fswtchParam[i]->setDecimals(0);
         fswtchParam[i]->setSingleStep(1);
@@ -676,12 +676,6 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
         break;
       case 2:
         populateSourceCB(b, RawSource(value), generalSettings, model, POPULATE_GVARS);
-        break;
-      case 3:
-        b->clear();
-        b->addItem("-1", 0);
-        b->addItem("+1", 1);
-        b->setCurrentIndex(value);
         break;
     }
   }

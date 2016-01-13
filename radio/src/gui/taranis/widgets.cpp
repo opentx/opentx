@@ -63,7 +63,7 @@ void drawColumnHeader(const char * const *headers, uint8_t index)
   lcdDrawText(17*FW, 0, headers[index], 0);
 }
 
-void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
+void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
   if (value)
     lcdDrawChar(x+1, y, '#');
@@ -133,9 +133,9 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
   return value;
 }
 
-uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
 {
-  menu_lcd_onoff(x, y, value, attr);
+  drawCheckBox(x, y, value, attr);
   return selectMenuItem(x, y, label, NULL, value, 0, 1, attr, event);
 }
 
@@ -160,12 +160,29 @@ bool noZero(int val)
   return val != 0;
 }
 
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)
+void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags)
+{
+  if (ZEXIST(g_model.gvars[index].name))
+    lcdDrawSizedText(x, y, g_model.gvars[index].name, LEN_GVAR_NAME, ZCHAR|flags);
+  else
+    putsStrIdx(x, y, STR_GV, index+1, flags);
+}
+
+void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
+{
+  uint8_t prec = g_model.gvars[gvar].prec;
+  if (prec > 0) {
+    flags |= (prec == 1 ? PREC1 : PREC2);
+  }
+  putsValueWithUnit(x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
+}
+
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
   bool invers = (attr & INVERS);
 
-  // TRACE("gvarMenuItem(val=%d min=%d max=%d)", value, min, max);
+  // TRACE("editGVarFieldValue(val=%d min=%d max=%d)", value, min, max);
 
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
@@ -198,7 +215,8 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
     else {
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
     }
-    putsStrIdx(x, y, STR_GV, idx, attr);
+
+    drawGVarName(x, y, idx-1, attr);
   }
   else {
     lcdDrawNumber(x, y, value, attr);
@@ -207,7 +225,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #else
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
   lcdDrawNumber(x, y, value, attr);
   if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);

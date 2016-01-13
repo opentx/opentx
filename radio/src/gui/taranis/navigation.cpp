@@ -328,11 +328,11 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 }
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row)   ((int8_t)MAXCOL(row) < 0)
-#define MAXCOL_RAW(row) (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-#define MAXCOL(row)     (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
-#define COLATTR(row)    (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define INC(val, min, max) if (val<max) {val++;} else {val=min;}
-#define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
+#define MAXCOL_RAW(row)                  (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row)                      (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+#define COLATTR(row)                     (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
+#define INC(val, min, max)               if (val<max) {val++;} else {val=min;}
+#define DEC(val, min, max)               if (val>min) {val--;} else {val=max;}
 
 coord_t scrollbar_X = DEFAULT_SCROLLBAR_X;
 

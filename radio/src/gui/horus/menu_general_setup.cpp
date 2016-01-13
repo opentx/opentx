@@ -338,7 +338,7 @@ bool menuGeneralSetup(evt_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MEMORYWARNING);
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 #endif
@@ -347,7 +347,7 @@ bool menuGeneralSetup(evt_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARMWARNING);
         uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 
@@ -385,7 +385,7 @@ bool menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_FLASH_BEEP:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARM);
-        g_eeGeneral.alarmsFlash = onoffMenuItem(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, attr, event ) ;
+        g_eeGeneral.alarmsFlash = editCheckBox(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
@@ -462,7 +462,7 @@ bool menuGeneralSetup(evt_t event)
 #if 0
       case ITEM_SETUP_FAI:
         lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
-        g_eeGeneral.fai = onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
             POPUP_WARNING(PSTR("FAI\001mode blocked!"));

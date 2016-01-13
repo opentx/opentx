@@ -499,7 +499,7 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 			if (attr) CHECK_INCDEC_MODELVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);
 			break;
 		case ITEM_MAVLINK_PC_RSSI_EN:
-			g_model.mavlink.pc_rssi_en = onoffMenuItem(g_model.mavlink.pc_rssi_en,
+			g_model.mavlink.pc_rssi_en = editCheckBox(g_model.mavlink.pc_rssi_en,
 				RADIO_SETUP_2ND_COLUMN,
 				y,
 				STR_MAVLINK_PC_RSSI_EN_LABEL,

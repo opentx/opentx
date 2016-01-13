@@ -260,7 +260,7 @@ void menuGeneralSetup(uint8_t event)
           if (checkIncDec_Ret) {
             g_eeGeneral.speakerVolume = (int8_t)b-VOLUME_LEVEL_DEF;
 #if !defined(CPUARM)
-            setVolume(b);
+            setScaledVolume(b);
 #endif
           }
         }
@@ -367,14 +367,14 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_MEMORY_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
+        g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
         break;
       }
 
       case ITEM_SETUP_ALARM_WARNING:
       {
         uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
-        g_eeGeneral.disableAlarmWarning = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
+        g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
         break;
       }
 
@@ -395,7 +395,7 @@ void menuGeneralSetup(uint8_t event)
 #endif
 
       case ITEM_SETUP_INACTIVITY_ALARM:
-        lcd_putsLeft( y,STR_INACTIVITYALARM);
+        lcd_putsLeft(y, STR_INACTIVITYALARM);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT);
         lcdDrawChar(lcdLastPos, y, 'm');
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
@@ -419,7 +419,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
-        g_eeGeneral.alarmsFlash = onoffMenuItem(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
+        g_eeGeneral.alarmsFlash = editCheckBox(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, STR_ALARM, attr, event ) ;
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:
@@ -459,7 +459,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
         uint8_t b = 1-g_eeGeneral.splashMode;
-        g_eeGeneral.splashMode = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
+        g_eeGeneral.splashMode = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
         break;
       }
 #endif
@@ -502,7 +502,7 @@ void menuGeneralSetup(uint8_t event)
 
 #if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
-        onoffMenuItem(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
+        editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
             POPUP_WARNING(PSTR("FAI\001mode blocked!"));

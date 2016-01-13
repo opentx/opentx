@@ -21,6 +21,36 @@
 #include <stdio.h>
 #include "../../opentx.h"
 
+void displayFlightModes(coord_t x, coord_t y, FlightModesType value, uint8_t attr)
+{
+  for (int i=0; i<MAX_FLIGHT_MODES; i++) {
+    LcdFlags flags = ((menuHorizontalPosition==i && attr) ? INVERS : 0);
+    flags |= ((value & (1<<i))) ? TEXT_DISABLE_COLOR : TEXT_COLOR;
+    if (attr && menuHorizontalPosition < 0) flags |= INVERS;
+    char s[] = " ";
+    s[0] = '0' + i;
+    lcdDrawText(x, y, s, flags);
+    x += 12;
+  }
+}
+
+FlightModesType editFlightModes(coord_t x, coord_t y, evt_t event, FlightModesType value, uint8_t attr)
+{
+  int posHorz = menuHorizontalPosition;
+
+  displayFlightModes(x, y, value, attr);
+
+  if (attr) {
+    if (s_editMode && event==EVT_KEY_BREAK(KEY_ENTER)) {
+      s_editMode = 0;
+      value ^= (1<<posHorz);
+      storageDirty(EE_MODEL);
+    }
+  }
+
+  return value;
+}
+
 enum FlightModesItems {
   ITEM_FLIGHT_MODES_NAME,
   ITEM_FLIGHT_MODES_SWITCH,

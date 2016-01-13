@@ -130,9 +130,16 @@ void boardInit()
 
   pwrInit();
   ledInit();
+
+  i2cInit();
+  if (getVolume() < 0)
+    ledRed();
+  else
+    ledBlue();
+
   delaysInit();
 
-  ledRed();
+  // ledRed();
 
   if (0) {
    // pinCheck(SERIAL_GPIO, SERIAL_GPIO_PIN_TX, SERIAL_RCC_AHB1Periph_GPIO);
@@ -143,7 +150,7 @@ void boardInit()
 
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
 
-  ledBlue();
+  // ledBlue();
 
   __enable_irq();
 

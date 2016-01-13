@@ -203,22 +203,6 @@ enum CurveType {
   CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
 };
 
-#if defined(XCURVES)
-PACK(typedef struct {
-  uint8_t type:3;
-  uint8_t smooth:1;
-  uint8_t spare:4;
-  int8_t  points;
-}) CurveInfo;
-#else
-struct CurveInfo {
-  int8_t * crv;
-  uint8_t points;
-  bool custom;
-};
-extern CurveInfo curveInfo(uint8_t idx);
-#endif
-
 #if defined(PCBHORUS)
   #define LEN_MODEL_NAME       15
   #define LEN_TIMER_NAME       8
@@ -227,9 +211,9 @@ extern CurveInfo curveInfo(uint8_t idx);
   #define LEN_EXPOMIX_NAME     6
   #define LEN_CHANNEL_NAME     6
   #define LEN_INPUT_NAME       4
+  #define LEN_CURVE_NAME       3
   #define MAX_CURVES           32
   #define NUM_POINTS           512
-  #define CURVDATA             CurveInfo
 #elif defined(PCBFLAMENCO)
   #define LEN_MODEL_NAME       12
   #define LEN_TIMER_NAME       8
@@ -237,9 +221,9 @@ extern CurveInfo curveInfo(uint8_t idx);
   #define LEN_EXPOMIX_NAME     6
   #define LEN_CHANNEL_NAME     6
   #define LEN_INPUT_NAME       4
+  #define LEN_CURVE_NAME       3
   #define MAX_CURVES           32
   #define NUM_POINTS           512
-  #define CURVDATA             CurveInfo
 #elif defined(PCBTARANIS)
   #define LEN_MODEL_NAME       12
   #define LEN_TIMER_NAME       8
@@ -248,9 +232,9 @@ extern CurveInfo curveInfo(uint8_t idx);
   #define LEN_EXPOMIX_NAME     8
   #define LEN_CHANNEL_NAME     6
   #define LEN_INPUT_NAME       4
+  #define LEN_CURVE_NAME       3
   #define MAX_CURVES           32
   #define NUM_POINTS           512
-  #define CURVDATA             CurveInfo
 #elif defined(CPUARM)
   #define LEN_MODEL_NAME       10
   #define LEN_TIMER_NAME       3
@@ -258,19 +242,31 @@ extern CurveInfo curveInfo(uint8_t idx);
   #define LEN_EXPOMIX_NAME     6
   #define MAX_CURVES           16
   #define NUM_POINTS           512
-  #define CURVDATA             int16_t
 #else
   #define LEN_MODEL_NAME       10
   #define LEN_FLIGHT_MODE_NAME 6
   #define MAX_CURVES           8
   #define NUM_POINTS           (112-MAX_CURVES)
-  #define CURVDATA             int8_t
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
   #define NUM_MODULES          2
 #else
   #define NUM_MODULES          1
+#endif
+
+#if defined(XCURVES)
+PACK(typedef struct {
+  uint8_t type:3;
+  uint8_t smooth:1;
+  uint8_t spare:4;
+  int8_t  points;
+  char name[LEN_CURVE_NAME];
+}) CurveData;
+#elif defined(CPUARM)
+typedef int16_t CurveData;
+#else
+typedef int8_t CurveData;
 #endif
 
 typedef int16_t gvar_t;
@@ -282,14 +278,18 @@ typedef int16_t gvar_t;
 #endif
 
 #if !defined(PCBSTD)
-  #define LEN_GVAR_NAME 6
-  #define GVAR_MAX      1024
-  #define GVAR_LIMIT    500
+  #define LEN_GVAR_NAME                3
+  #define GVAR_MAX                     1024
+  #define GVAR_MIN                     -GVAR_MAX
   PACK(typedef struct {
-    char    name[LEN_GVAR_NAME];
-    uint8_t popup:1;
-    uint8_t spare:7;
-  }) global_gvar_t;
+    char name[LEN_GVAR_NAME];
+    uint32_t min:12;
+    uint32_t max:12;
+    uint32_t popup:1;
+    uint32_t prec:1;
+    uint32_t unit:2;
+    uint32_t spare:4;
+  }) GVarData;
 #endif
 
 #define RESERVE_RANGE_FOR_GVARS 10
@@ -310,9 +310,9 @@ typedef int16_t gvar_t;
   #else
     #define MAX_GVARS 5
   #endif
-  #define MODEL_GVARS_DATA global_gvar_t gvars[MAX_GVARS];
+  #define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
   #define PHASE_GVARS_DATA gvar_t gvars[MAX_GVARS]
-  #define GVAR_VALUE(x, p) g_model.flightModeData[p].gvars[x]
+  #define GVAR_VALUE(gv, fm) g_model.flightModeData[fm].gvars[gv]
 #endif
 
 PACK(typedef struct {
@@ -391,7 +391,10 @@ enum BeeperMode {
   int8_t   backgroundVolume;
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBFLAMENCO)
+  #define swconfig_t          uint16_t
+  #define swarnstate_t        uint32_t
+#elif defined(PCBTARANIS)
   #if defined(REV9E)
     #define swconfig_t        uint64_t
     #define swarnstate_t      uint64_t
@@ -527,7 +530,7 @@ enum PotsWarnMode {
     TRAINER_MODE_SLAVE
   };
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #elif defined(PCBFLAMENCO)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -538,7 +541,7 @@ enum PotsWarnMode {
     TRAINER_MODE_SLAVE
   };
   #define MODELDATA_BITMAP  uint8_t bitmap;
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #elif defined(PCBTARANIS)
   enum ModuleIndex {
     INTERNAL_MODULE,
@@ -554,7 +557,7 @@ enum PotsWarnMode {
   };
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char curveNames[MAX_CURVES][6]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
@@ -646,39 +649,34 @@ enum Functions {
   FUNC_MAX
 };
 
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE)
-#else
-  #define HAS_ENABLE_PARAM(func)    ((func) < FUNC_FIRST_WITHOUT_ENABLE && (func) != FUNC_OVERRIDE_CHANNEL)
-#endif
-
 #if defined(VOICE)
-  #define IS_PLAY_FUNC(func)      ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
+  #define IS_PLAY_FUNC(func)           ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
 #else
-  #define IS_PLAY_FUNC(func)      ((func) == FUNC_PLAY_SOUND)
+  #define IS_PLAY_FUNC(func)           ((func) == FUNC_PLAY_SOUND)
 #endif
 
 #if defined(CPUARM)
-  #define IS_PLAY_BOTH_FUNC(func) (0)
-  #define IS_VOLUME_FUNC(func)    ((func) == FUNC_VOLUME)
+  #define IS_PLAY_BOTH_FUNC(func)      (0)
+  #define IS_VOLUME_FUNC(func)         ((func) == FUNC_VOLUME)
 #else
-  #define IS_PLAY_BOTH_FUNC(func) ((func) == FUNC_PLAY_BOTH)
-  #define IS_VOLUME_FUNC(func)    (0)
+  #define IS_PLAY_BOTH_FUNC(func)      ((func) == FUNC_PLAY_BOTH)
+  #define IS_VOLUME_FUNC(func)         (0)
 #endif
 
 #if defined(GVARS)
-  #define IS_ADJUST_GV_FUNC(func) ((func) == FUNC_ADJUST_GVAR)
+  #define IS_ADJUST_GV_FUNC(func)      ((func) == FUNC_ADJUST_GVAR)
 #else
-  #define IS_ADJUST_GV_FUNC(func) (0)
+  #define IS_ADJUST_GV_FUNC(func)      (0)
 #endif
 
 #if defined(HAPTIC)
-  #define IS_HAPTIC_FUNC(func)    ((func) == FUNC_HAPTIC)
+  #define IS_HAPTIC_FUNC(func)         ((func) == FUNC_HAPTIC)
 #else
-  #define IS_HAPTIC_FUNC(func)    (0)
+  #define IS_HAPTIC_FUNC(func)         (0)
 #endif
 
-#define HAS_REPEAT_PARAM(func)    (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func))
+#define HAS_ENABLE_PARAM(func)         ((func) < FUNC_FIRST_WITHOUT_ENABLE && !IS_ADJUST_GV_FUNC(func))
+#define HAS_REPEAT_PARAM(func)         (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func) || IS_ADJUST_GV_FUNC(func))
 
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
@@ -708,16 +706,16 @@ enum AdjustGvarFunctionParam {
   FUNC_ADJUST_GVAR_CONSTANT,
   FUNC_ADJUST_GVAR_SOURCE,
   FUNC_ADJUST_GVAR_GVAR,
-  FUNC_ADJUST_GVAR_INC,
+  FUNC_ADJUST_GVAR_INCDEC,
 };
 
 #if defined(CPUARM)
 #if defined(PCBTARANIS)
-  #define LEN_CFN_NAME 8
-  #define CFN_SPARE_TYPE int32_t
+  #define LEN_CFN_NAME                 8
+  #define CFN_SPARE_TYPE               int32_t
 #else
-  #define LEN_CFN_NAME 6
-  #define CFN_SPARE_TYPE int16_t
+  #define LEN_CFN_NAME                 6
+  #define CFN_SPARE_TYPE               int16_t
 #endif
 PACK(typedef struct {
   int16_t  swtch:9;
@@ -731,7 +729,7 @@ PACK(typedef struct {
       int16_t val;
       uint8_t mode;
       uint8_t param;
-      CFN_SPARE_TYPE spare2;
+      CFN_SPARE_TYPE spare;
     }) all;
 
     PACK(struct {
@@ -741,20 +739,21 @@ PACK(typedef struct {
   });
   uint8_t active;
 }) CustomFunctionData;
-#define CFN_EMPTY(p)            (!(p)->swtch)
-#define CFN_SWITCH(p)           ((p)->swtch)
-#define CFN_FUNC(p)             ((p)->func)
-#define CFN_ACTIVE(p)           ((p)->active)
-#define CFN_CH_INDEX(p)         ((p)->all.param)
-#define CFN_GVAR_INDEX(p)       ((p)->all.param)
-#define CFN_TIMER_INDEX(p)      ((p)->all.param)
-#define CFN_PLAY_REPEAT(p)      ((p)->active)
-#define CFN_PLAY_REPEAT_MUL     1
-#define CFN_PLAY_REPEAT_NOSTART 0xFF
-#define CFN_GVAR_MODE(p)        ((p)->all.mode)
-#define CFN_PARAM(p)            ((p)->all.val)
-#define CFN_RESET(p)            ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
-#define CFN_GVAR_CST_MAX        GVAR_LIMIT
+#define CFN_EMPTY(p)                   (!(p)->swtch)
+#define CFN_SWITCH(p)                  ((p)->swtch)
+#define CFN_FUNC(p)                    ((p)->func)
+#define CFN_ACTIVE(p)                  ((p)->active)
+#define CFN_CH_INDEX(p)                ((p)->all.param)
+#define CFN_GVAR_INDEX(p)              ((p)->all.param)
+#define CFN_TIMER_INDEX(p)             ((p)->all.param)
+#define CFN_PLAY_REPEAT(p)             ((p)->active)
+#define CFN_PLAY_REPEAT_MUL            1
+#define CFN_PLAY_REPEAT_NOSTART        0xFF
+#define CFN_GVAR_MODE(p)               ((p)->all.mode)
+#define CFN_PARAM(p)                   ((p)->all.val)
+#define CFN_RESET(p)                   ((p)->active=0, (p)->clear.val1=0, (p)->clear.val2=0)
+#define CFN_GVAR_CST_MIN               -GVAR_MAX
+#define CFN_GVAR_CST_MAX               GVAR_MAX
 #elif defined(CPUM2560)
 PACK(typedef struct {
   int8_t  swtch;
@@ -976,9 +975,9 @@ PACK(typedef struct {
   #define LIMIT_EXT_PERCENT   150
   #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
   #define PPM_CENTER_MAX      500
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode)*10 : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode)*10 : lim->min-1000)
-  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR(lim->offset, -1000, 1000, mixerCurrentFlightMode)*10 : lim->offset)
+  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->max+1000)
+  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->min-1000)
+  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR_PREC1(lim->offset, -1000, 1000, mixerCurrentFlightMode) : lim->offset)
   #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
   #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
   #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
@@ -2312,7 +2311,7 @@ PACK(typedef struct {
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
   
-  CURVDATA  curves[MAX_CURVES];
+  CurveData curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
   
   LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
@@ -2325,7 +2324,9 @@ PACK(typedef struct {
   uint8_t thrTraceSrc;
 
   swarnstate_t  switchWarningState;
+#if !defined(COLORLCD)
   swarnenable_t switchWarningEnable;
+#endif
 
   MODEL_GVARS_DATA
 

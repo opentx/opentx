@@ -489,8 +489,8 @@ void menuMainView(uint8_t event)
 
     case EVT_KEY_FIRST(KEY_EXIT):
 #if defined(GVARS)
-      if (s_gvar_timer > 0) {
-        s_gvar_timer = 0;
+      if (gvarDisplayTimer > 0) {
+        gvarDisplayTimer = 0;
       }
 #endif
       AUDIO_KEYPAD_UP();
@@ -553,7 +553,7 @@ void menuMainView(uint8_t event)
   else {
     // Logical Switches
     lcdDrawText(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
-    for (int sw=0; sw<NUM_LOGICAL_SWITCH; ++sw) {
+    for (int sw=0; sw<32; ++sw) {
       div_t qr = div(sw, 10);
       uint8_t y = 13 + 11 * qr.quot;
       uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
@@ -572,14 +572,15 @@ void menuMainView(uint8_t event)
   }
 
 #if defined(GVARS)
-  if (s_gvar_timer > 0) {
-    s_gvar_timer--;
+  if (gvarDisplayTimer > 0) {
+    gvarDisplayTimer--;
     lcdDrawFilledRect(BITMAP_X, BITMAP_Y, 64, 32, SOLID, ERASE);
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
-    putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, s_gvar_last+1);
-    lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[s_gvar_last].name, LEN_GVAR_NAME, ZCHAR);
-    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("[\010]"), BOLD);
-    lcdDrawNumber(BITMAP_X+5*FW+FW/2, BITMAP_Y+2*FH+3, GVAR_VALUE(s_gvar_last, getGVarFlightPhase(mixerCurrentFlightMode, s_gvar_last)), BOLD);
+    putsStrIdx(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, gvarLastChanged+1);
+    lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
+    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("["), BOLD);
+    drawGVarValue(BITMAP_X+2*FW, BITMAP_Y+2*FH+3, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
+    lcdDrawText(lcdLastPos, BITMAP_Y+2*FH+3, PSTR("]"), BOLD);
   }
 #endif
 }

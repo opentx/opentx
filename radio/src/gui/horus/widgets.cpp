@@ -238,7 +238,7 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values,
   return value;
 }
 
-uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event )
 {
   drawCheckBox(x, y, value, attr);
   return selectMenuItem(x, y, NULL, value, 0, 1, attr, event);
@@ -269,12 +269,12 @@ bool noZero(int val)
   return val != 0;
 }
 
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, evt_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, evt_t event)
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
   bool invers = (attr & INVERS);
 
-  // TRACE("gvarMenuItem(val=%d min=%d max=%d)", value, min, max);
+  // TRACE("editGVarFieldValue(val=%d min=%d max=%d)", value, min, max);
 
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
@@ -316,7 +316,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #else
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event)
 {
   if (attr & INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
   lcdDrawNumber(x, y, value, attr, 0, NULL, "%");
@@ -324,8 +324,8 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
 }
 #endif
 
-#define SLEEP_BITMAP_WIDTH             60
-#define SLEEP_BITMAP_HEIGHT            60
+#define SLEEP_BITMAP_WIDTH             110
+#define SLEEP_BITMAP_HEIGHT            110
 void drawSleepBitmap()
 {
   lcdClear();
@@ -333,11 +333,12 @@ void drawSleepBitmap()
   lcdRefresh();
 }
 
-#define SHUTDOWN_BITMAP_WIDTH          60
-#define SHUTDOWN_BITMAP_HEIGHT         60
+#define SHUTDOWN_BITMAP_WIDTH          110
+#define SHUTDOWN_BITMAP_HEIGHT         110
 void drawShutdownBitmap(uint8_t index)
 {
-  lcdClear();
+  // lcdClear();
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, LBM_SHUTDOWN, index*SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
+  lcdDrawBitmapPatternPie((LCD_W-150)/2, (LCD_H-150)/2, LBM_BIGRSCALE, TEXT_COLOR, 0, 360/4*index);
   lcdRefresh();
 }

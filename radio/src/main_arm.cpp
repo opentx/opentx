@@ -69,7 +69,7 @@ void checkSpeakerVolume()
 {
   if (currentSpeakerVolume != requiredSpeakerVolume) {
     currentSpeakerVolume = requiredSpeakerVolume;
-    setVolume(currentSpeakerVolume);
+    setScaledVolume(currentSpeakerVolume);
   }
 }
 

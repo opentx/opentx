@@ -384,10 +384,10 @@ static int luaModelInsertInput(lua_State *L)
   unsigned int first = getFirstInput(chn);
   unsigned int count = getInputsCountFromFirst(chn, first);
 
-  if (chn<MAX_INPUTS && getExpoMixCount(1)<MAX_EXPOS && idx<=count) {
+  if (chn<MAX_INPUTS && getExposCount()<MAX_EXPOS && idx<=count) {
     idx = first + idx;
     s_currCh = chn + 1;
-    insertExpoMix(1, idx);
+    insertExpo(idx);
     ExpoData * expo = expoAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -435,7 +435,7 @@ static int luaModelDeleteInput(lua_State *L)
   unsigned int count = getInputsCountFromFirst(chn, first);
 
   if (idx < count) {
-    deleteExpoMix(1, first+idx);
+    deleteExpo(first+idx);
   }
 
   return 0;
@@ -595,10 +595,10 @@ static int luaModelInsertMix(lua_State *L)
   unsigned int first = getFirstMix(chn);
   unsigned int count = getMixesCountFromFirst(chn, first);
 
-  if (chn<NUM_CHNOUT && getExpoMixCount(0)<MAX_MIXERS && idx<=count) {
+  if (chn<NUM_CHNOUT && getMixesCount()<MAX_MIXERS && idx<=count) {
     idx += first;
     s_currCh = chn+1;
-    insertExpoMix(0, idx);
+    insertMix(idx);
     MixData *mix = mixAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -676,7 +676,7 @@ static int luaModelDeleteMix(lua_State *L)
   unsigned int count = getMixesCountFromFirst(chn, first);
 
   if (idx < count) {
-    deleteExpoMix(0, first+idx);
+    deleteMix(first+idx);
   }
 
   return 0;
@@ -814,33 +814,33 @@ static int luaModelGetCurve(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
   if (idx < MAX_CURVES) {
-    CurveInfo & curveInfo = g_model.curves[idx];
+    CurveData & curveData = g_model.curves[idx];
     lua_newtable(L);
-    lua_pushtablezstring(L, "name", g_model.curveNames[idx]);
-    lua_pushtableinteger(L, "type", curveInfo.type);
-    lua_pushtableboolean(L, "smooth", curveInfo.smooth);
-    lua_pushtableinteger(L, "points", curveInfo.points+5);
+    lua_pushtablezstring(L, "name", curveData.name);
+    lua_pushtableinteger(L, "type", curveData.type);
+    lua_pushtableboolean(L, "smooth", curveData.smooth);
+    lua_pushtableinteger(L, "points", curveData.points + 5);
     lua_pushstring(L, "y");
     lua_newtable(L);
     int8_t * point = curveAddress(idx);
-    for (int i=0; i<curveInfo.points+5; i++) {
+    for (int i=0; i < curveData.points + 5; i++) {
       lua_pushinteger(L, i);
       lua_pushinteger(L, *point++);
       lua_settable(L, -3);
     }
     lua_settable(L, -3);
-    if (curveInfo.type == CURVE_TYPE_CUSTOM) {
+    if (curveData.type == CURVE_TYPE_CUSTOM) {
       lua_pushstring(L, "x");
       lua_newtable(L);
       lua_pushinteger(L, 0);
       lua_pushinteger(L, 0);
       lua_settable(L, -3);
-      for (int i=0; i<curveInfo.points+3; i++) {
+      for (int i=0; i < curveData.points + 3; i++) {
         lua_pushinteger(L, i+1);
         lua_pushinteger(L, *point++);
         lua_settable(L, -3);
       }
-      lua_pushinteger(L, curveInfo.points+4);
+      lua_pushinteger(L, curveData.points + 4);
       lua_pushinteger(L, 100);
       lua_settable(L, -3);
       lua_settable(L, -3);

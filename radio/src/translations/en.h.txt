@@ -129,7 +129,9 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBFLAMENCO)
+#if defined(PCBHORUS)
+  #define TR_RETA123           "RETA12345LR"
+#elif defined(PCBFLAMENCO)
   #define TR_RETA123           "RETA123LR"
 #elif defined(PCBTARANIS) && defined(REV9E)
   #define TR_RETA123           "RETA1234LRLR"
@@ -650,8 +652,6 @@
 #define TR_MODE                INDENT "Mode"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
-#define TR_INSERTMIX           "INSERT MIX "
-#define TR_EDITMIX             "EDIT MIX "
 #define TR_SOURCE              INDENT "Source"
 #define TR_WEIGHT              "Weight"
 #define TR_EXPO                TR("Expo", "Exponential")
@@ -804,7 +804,6 @@
 #define TR_MENULOGICALSWITCHES "LOGICAL SWITCHES"
 #define TR_MENUCUSTOMFUNC      "SPECIAL FUNCTIONS"
 #define TR_MENUCUSTOMSCRIPTS   "CUSTOM SCRIPTS"
-#define TR_MENUCUSTOMSCRIPT    "CUSTOM SCRIPT"
 #define TR_MENUTELEMETRY       "TELEMETRY"
 #define TR_MENUTEMPLATES       "TEMPLATES"
 #define TR_MENUSTAT            "STATS"
@@ -904,7 +903,7 @@
 #define TR_SD_SIZE             "Size:"
 #define TR_TYPE                INDENT "Type"
 #define TR_GLOBAL_VARS         "Global Variables"
-#define TR_GLOBAL_V            "GLOBAL V."
+#define TR_GVARS               "GVARS"
 #define TR_GLOBAL_VAR          "Global Variable"
 #define TR_MENUGLOBALVARS      "GLOBAL VARIABLES"
 #define TR_OWN                 "Own"
@@ -923,7 +922,8 @@
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe mode")
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
-#define TR_MENUSENSOR          "SENSOR"
+#define TR_MENUSENSOR          "SENSORS"
+#define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Country Code"
 #define TR_VOICELANG           "Voice Language"
 #define TR_UNITSSYSTEM         "Units"
@@ -967,6 +967,9 @@
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
 #define TR_ENABLE_POPUP        "Enable Popup"
 #define TR_DISABLE_POPUP       "Disable Popup"
+#define TR_POPUP               "Popup"
+#define TR_MIN                 "Min"
+#define TR_MAX                 "Max"
 #define TR_CURVE_PRESET        "Preset..."
 #define TR_PRESET              "Preset"
 #define TR_MIRROR              "Mirror"

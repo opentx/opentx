@@ -40,6 +40,12 @@ set(M128_VARIANT    32768)
 
 set(FIRMWARE_DEPENDENCIES firmware_translations)
 
+set(9X_GUI_SRC
+  menu_model_inputs_mixes.cpp
+  menu_general_diagkeys.cpp
+  menu_general_diaganas.cpp
+  )
+
 if(PCB STREQUAL HORUS)
   set(CPU_TYPE STM32F4)
   set(HSE_VALUE 12000000)
@@ -60,6 +66,8 @@ if(PCB STREQUAL HORUS)
     ${GUI_SRC}
     curves.cpp
     bitmaps.cpp
+    menu_model_inputs.cpp
+    menu_model_mixes.cpp
     view_channels.cpp
     view_about.cpp
     view_text.cpp
@@ -125,7 +133,7 @@ elseif(PCB STREQUAL TARANIS)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DDBLKEYS -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
   set(SRC ${SRC} bmp.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+  set(GUI_SRC ${GUI_SRC} menu_model_inputs.cpp menu_model_mixes.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
   set(FIRMWARE_TARGET_SRC
@@ -185,7 +193,7 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DDBLKEYS -DVARIO)
   add_definitions(-DEEPROM_VARIANT=0)
-  set(GUI_SRC ${GUI_SRC} menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+  set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
   set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} core_cm3.c board_lowlevel.c crt.c vectors_sam3s.c)
   set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp
     usb/device/core/USBD_UDP.c usb/device/core/USBDDriver.c
@@ -220,7 +228,7 @@ elseif(PCB STREQUAL 9X OR PCB STREQUAL 9XR)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
   add_definitions(-DPCBSTD -DPCB${PCB} -DCPUM64)
   set(TARGET_SRC ${TARGET_SRC} board_stock.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_general_diagkeys.cpp menu_general_diaganas.cpp)
+  set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC})
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
@@ -577,7 +585,6 @@ set(GUI_SRC
   menu_model.cpp
   menu_model_select.cpp
   menu_model_setup.cpp
-  menu_model_inputs_mixes.cpp
   menu_model_limits.cpp
   menu_model_logical_switches.cpp
   menu_model_custom_functions.cpp

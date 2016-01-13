@@ -22,6 +22,18 @@
 
 #define CS_LAST_VALUE_INIT -32768
 
+#if defined(PCBFLAMENCO)
+  #define SWITCH_WARNING_LIST_INTERVAL 20
+#elif defined(PCBHORUS)
+  #define SWITCH_WARNING_LIST_X        WARNING_LINE_X
+  #define SWITCH_WARNING_LIST_Y        WARNING_LINE_Y+3*FH
+  #define SWITCH_WARNING_LIST_INTERVAL 35
+#elif defined(PCBTARANIS)
+  #define SWITCH_WARNING_LIST_X        60
+  #define SWITCH_WARNING_LIST_Y        4*FH+3
+#else
+#endif
+
 #if defined(CPUARM)
 
 enum LogicalSwitchContextState {
@@ -759,7 +771,15 @@ void checkSwitches()
     getMovedSwitch();
   
     bool warn = false;
-#if defined(PCBFLAMENCO)
+#if defined(COLORLCD)
+    for (int i=0; i<NUM_SWITCHES; i++) {
+      if (SWITCH_WARNING_ALLOWED(i)) {
+        unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
+        if (state && state-1 != ((switches_states >> (i*2)) & 0x03)) {
+          warn = true;
+        }
+      }
+    }
 #elif defined(PCBTARANIS)
     for (int i=0; i<NUM_SWITCHES; i++) {
       if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
@@ -807,30 +827,29 @@ void checkSwitches()
 
     // first - display warning
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-#if defined(COLORLCD)
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
-      int x = WARNING_LINE_X, y = WARNING_INFOLINE_Y-5;
-#elif defined(PCBTARANIS)
-    if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
-      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
-      int x = 60, y = 4*FH+3;
-#endif
+      drawMessageBox(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
+      int x = SWITCH_WARNING_LIST_X, y = SWITCH_WARNING_LIST_Y;
       int numWarnings = 0;
       for (int i=0; i<NUM_SWITCHES; ++i) {
-        if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
-          swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
 #if defined(COLORLCD)
-          LcdFlags attr = ((states & mask) == (switches_states & mask)) ? TEXT_COLOR : ALARM_COLOR;
-          if (attr) {
+        if (SWITCH_WARNING_ALLOWED(i)) {
+          unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
+          if (state && state-1 != ((switches_states >> (i*2)) & 0x03)) {
             if (++numWarnings < 6) {
-              putsSwitches(x, y, SWSRC_FIRST_SWITCH+i*3, attr);
-              x += 20;
+              // LcdFlags attr = ((states & mask) == (switches_states & mask)) ? TEXT_COLOR : ALARM_COLOR;
+              LcdFlags attr = ALARM_COLOR;
+              putsSwitches(x, y, SWSRC_FIRST_SWITCH+i*3+state-1, attr);
+              x += SWITCH_WARNING_LIST_INTERVAL;
             }
             else if (numWarnings == 6) {
               lcdDrawText(x, y, "...", ALARM_COLOR);
             }
           }
+        }
 #else
+        if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
+          swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
           LcdFlags attr = ((states & mask) == (switches_states & mask)) ? 0 : INVERS;
           if (attr) {
             if (++numWarnings < 7) {
@@ -843,9 +862,10 @@ void checkSwitches()
               lcdDrawText(x, y, "...", 0);
             }
           }
-#endif
         }
+#endif
       }
+
       if (g_model.potsWarnMode) {
         if (y == 4*FH+3) {
           y = 6*FH-2;
@@ -901,7 +921,11 @@ void checkSwitches()
         x += 3*FW+FW/2;
       }
 #endif
+
       lcdRefresh();
+      lcdSetContrast();
+      clearKeyEvents();
+
       last_bad_switches = switches_states;
     }
 

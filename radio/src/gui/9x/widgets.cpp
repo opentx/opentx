@@ -32,7 +32,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 #undef MARKER_WIDTH
 }
 
-void menu_lcd_onoff(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
+void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
 #if defined(GRAPHICS)
   if (value)
@@ -80,10 +80,10 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
   return value;
 }
 
-uint8_t onoffMenuItem(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
 {
 #if defined(GRAPHICS)
-  menu_lcd_onoff(x, y, value, attr);
+  drawCheckBox(x, y, value, attr);
   return selectMenuItem(x, y, label, NULL, value, 0, 1, attr, event);
 #else
   return selectMenuItem(x, y, label, STR_OFFON, value, 0, 1, attr, event);
@@ -120,12 +120,12 @@ bool noZero(int val)
   return val != 0;
 }
 
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
   bool invers = (attr & INVERS);
 
-  // TRACE("gvarMenuItem(val=%d min=%d max=%d)", value, min, max);
+  // TRACE("editGVarFieldValue(val=%d min=%d max=%d)", value, min, max);
 
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
@@ -167,12 +167,12 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #elif defined(GVARS)
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
   bool invers = (attr & INVERS);
 
-  // TRACE("gvarMenuItem(val=%d min=%d max=%d)", value, min, max);
+  // TRACE("editGVarFieldValue(val=%d min=%d max=%d)", value, min, max);
 
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
@@ -207,7 +207,7 @@ int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t m
   return value;
 }
 #else
-int16_t gvarMenuItem(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
 {
   lcdDrawNumber(x, y, value, attr);
   if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);

@@ -29,9 +29,9 @@ void init_trainer_ppm()
 {
   trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
 
-  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN ;
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN;
   configure_pins( TRAINER_GPIO_PIN_OUT, PIN_PERIPHERAL | PIN_PORTB | PIN_PER_2 | PIN_OS25 | PIN_PUSHPULL ) ;
-  configure_pins( TRAINER_GPIO_PIN_IN, PIN_PORTB | PIN_INPUT ) ;
+  configure_pins( TRAINER_GPIO_PIN_IN, PIN_PORTC | PIN_INPUT ) ;
   RCC->APB1ENR |= RCC_APB1ENR_TIM3EN ;
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN ;
 
@@ -76,7 +76,7 @@ void init_trainer_capture()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
   GPIO_InitStructure.GPIO_Pin = TRAINER_GPIO_PIN_IN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;

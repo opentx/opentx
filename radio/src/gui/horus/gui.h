@@ -78,6 +78,13 @@ void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawSticks();
 
+#if defined(FLIGHT_MODES)
+void displayFlightModes(coord_t x, coord_t y, FlightModesType value, uint8_t attr);
+FlightModesType editFlightModes(coord_t x, coord_t y, evt_t event, FlightModesType value, uint8_t attr);
+#else
+  #define displayFlightModes(...)
+#endif
+
 // Curve functions
 coord_t getCurveYCoord(FnFuncP fn, int x, int width);
 void drawFunction(FnFuncP fn, int offset);
@@ -127,3 +134,4 @@ extern const uint8_t LBM_CURVE_POINT_CENTER[];
 extern const uint8_t LBM_CURVE_COORD_SHADOW[];
 extern const uint8_t LBM_SHUTDOWN[];
 extern const uint8_t LBM_SLEEP[];
+extern const uint8_t LBM_BIGRSCALE[];

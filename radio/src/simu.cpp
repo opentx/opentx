@@ -316,7 +316,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(P, 15, 3);
   SWITCH_KEY(Q, 16, 3);
   SWITCH_KEY(R, 17, 3);
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   SWITCH_KEY(A, 0, 3);
   SWITCH_KEY(B, 1, 3);
   SWITCH_KEY(C, 2, 3);
@@ -360,11 +360,11 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBHORUS)
     static bool rotencAction = false;
-    if (getApp()->getKeyState(KEY_G)) {
+    if (getApp()->getKeyState(KEY_X)) {
       if (!rotencAction) ROTENC_VALUE += ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
-    else if (getApp()->getKeyState(KEY_D)) {
+    else if (getApp()->getKeyState(KEY_W)) {
       if (!rotencAction) ROTENC_VALUE -= ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
@@ -392,7 +392,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(P, 15, 3);
     SWITCH_KEY(Q, 16, 3);
     SWITCH_KEY(R, 17, 3);
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
     SWITCH_KEY(A, 0, 3);
     SWITCH_KEY(B, 1, 3);
     SWITCH_KEY(C, 2, 3);
@@ -545,7 +545,7 @@ uint16_t anaIn(uint8_t chan)
     return th9xSim->sliders[chan]->getValue();
   else if (chan<NUM_STICKS+NUM_POTS)
     return th9xSim->knobs[chan-NUM_STICKS]->getValue();
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   else if (chan == TX_VOLTAGE)
     return 1000;
 #elif defined(PCBSKY9X)

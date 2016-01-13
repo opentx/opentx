@@ -233,6 +233,19 @@ void memclear(void *ptr, uint8_t size)
 }
 #endif
 
+void memswap(void * a, void * b, uint8_t size)
+{
+  uint8_t * x = (uint8_t *)a;
+  uint8_t * y = (uint8_t *)b;
+  uint8_t temp ;
+
+  while (size--) {
+    temp = *x;
+    *x++ = *y;
+    *y++ = temp;
+  }
+}
+
 void generalDefault()
 {
   memclear(&g_eeGeneral, sizeof(g_eeGeneral));
@@ -655,13 +668,13 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
     GVAR_VALUE(idx, phase) = value; \
     storageDirty(EE_MODEL); \
     if (g_model.gvars[idx].popup) { \
-      s_gvar_last = idx; \
-      s_gvar_timer = GVAR_DISPLAY_TIME; \
+      gvarLastChanged = idx; \
+      gvarDisplayTimer = GVAR_DISPLAY_TIME; \
     }
 #endif
 
 #if defined(PCBSTD)
-int16_t getGVarValue(int16_t x, int16_t min, int16_t max)
+int16_t getGVarFieldValue(int16_t x, int16_t min, int16_t max)
 {
   if (GV_IS_GV_VALUE(x, min, max)) {
     int8_t idx = GV_INDEX_CALCULATION(x, max);
@@ -685,44 +698,75 @@ void setGVarValue(uint8_t idx, int8_t value)
   }
 }
 #else
-uint8_t s_gvar_timer = 0;
-uint8_t s_gvar_last = 0;
+uint8_t gvarDisplayTimer = 0;
+uint8_t gvarLastChanged = 0;
 
-uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx)
+uint8_t getGVarFlightMode(uint8_t fm, uint8_t gv) // TODO change params order to be consistent!
 {
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-    if (phase == 0) return 0;
-    int16_t val = GVAR_VALUE(idx, phase); // TODO phase at the end everywhere to be consistent!
-    if (val <= GVAR_MAX) return phase;
+    if (fm == 0) return 0;
+    int16_t val = GVAR_VALUE(gv, fm);
+    if (val <= GVAR_MAX) return fm;
     uint8_t result = val-GVAR_MAX-1;
-    if (result >= phase) result++;
-    phase = result;
+    if (result >= fm) result++;
+    fm = result;
   }
   return 0;
 }
 
-int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase)
+int16_t getGVarValue(int8_t gv, int8_t fm)
 {
-  if (GV_IS_GV_VALUE(x, min, max)) {
-    int8_t idx = GV_INDEX_CALCULATION(x, max);
-    int8_t mul = 1;
-
-    if (idx < 0) {
-      idx = -1-idx;
-      mul = -1;
-    }
-
-    x = GVAR_VALUE(idx, getGVarFlightPhase(phase, idx)) * mul;
+  int8_t mul = 1;
+  if (gv < 0) {
+    gv = -1-gv;
+    mul = -1;
   }
-  return limit(min, x, max);
+  return GVAR_VALUE(gv, getGVarFlightMode(fm, gv)) * mul;
 }
 
-void setGVarValue(uint8_t idx, int16_t value, int8_t phase)
+int32_t getGVarValuePrec1(int8_t gv, int8_t fm)
 {
-  phase = getGVarFlightPhase(phase, idx);
-  if (GVAR_VALUE(idx, phase) != value) {
-    SET_GVAR_VALUE(idx, phase, value);
+  int8_t mul;
+  uint8_t prec = g_model.gvars[gv].prec;
+  if (prec == 0)
+    mul = 10;
+  else
+    mul = 1;
+
+  if (gv < 0) {
+    gv = -1-gv;
+    mul = -mul;
   }
+  return GVAR_VALUE(gv, getGVarFlightMode(fm, gv)) * mul;
+}
+
+void setGVarValue(uint8_t gv, int16_t value, int8_t fm)
+{
+  fm = getGVarFlightMode(fm, gv);
+  if (GVAR_VALUE(gv, fm) != value) {
+    SET_GVAR_VALUE(gv, fm, value);
+  }
+}
+
+int16_t getGVarFieldValue(int16_t val, int16_t min, int16_t max, int8_t fm)
+{
+  if (GV_IS_GV_VALUE(val, min, max)) {
+    int8_t gv = GV_INDEX_CALCULATION(val, max);
+    val = getGVarValue(gv, fm);
+  }
+  return limit(min, val, max);
+}
+
+int32_t getGVarFieldValuePrec1(int16_t val, int16_t min, int16_t max, int8_t fm)
+{
+  if (GV_IS_GV_VALUE(val, min, max)) {
+    int8_t gv = GV_INDEX_CALCULATION(val, max);
+    val = getGVarValuePrec1(gv, fm);
+  }
+  else {
+    val *= 10;
+  }
+  return limit<int>(min*10, val, max*10);
 }
 #endif
 
@@ -1320,7 +1364,7 @@ uint8_t checkTrim(uint8_t event)
 #if defined(PCBSTD)
       phase = 0;
 #else
-      phase = getGVarFlightPhase(mixerCurrentFlightMode, trimGvar[idx]);
+      phase = getGVarFlightMode(mixerCurrentFlightMode, trimGvar[idx]);
 #endif
       before = GVAR_VALUE(trimGvar[idx], phase);
       thro = false;
@@ -2408,7 +2452,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(VOICE)
-  setVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
+  setScaledVolume(g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF);
 #endif
 
 #if defined(CPUARM)

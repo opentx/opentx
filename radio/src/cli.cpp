@@ -156,18 +156,6 @@ int cliStackInfo(const char ** argv)
   return 0;
 }
 
-int cliVolume(const char ** argv)
-{
-  int level = 0;
-  if (toInt(argv, 1, &level) > 0) {
-    setVolume(level);
-  }
-  else {
-    serialPrint("%s: Invalid argument \"%s\"", argv[0], argv[1]);
-  }
-  return 0;
-}
-
 #if defined(PCBFLAMENCO)
 int cliReadBQ24195(const char ** argv)
 {
@@ -229,6 +217,16 @@ int cliSet(const char ** argv)
       serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1], argv[2]);
     }
   }
+  else if (!strcmp(argv[1], "volume")) {
+    int level = 0;
+    if (toInt(argv, 2, &level) > 0) {
+      setVolume(level);
+    }
+    else {
+      serialPrint("%s: Invalid argument \"%s\" \"%s\"", argv[0], argv[1], argv[2]);
+    }
+    return 0;
+  }
   return 0;
 }
 
@@ -279,6 +277,9 @@ int cliDisplay(const char ** argv)
     gettime(&utm);
     serialPrint("rtc = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
   }
+  else if (!strcmp(argv[1], "volume")) {
+    serialPrint("volume = %d", getVolume());
+  }
 #if defined(PCBFLAMENCO)
   else if (!strcmp(argv[1], "bq24195")) {
     {
@@ -326,7 +327,7 @@ int cliDisplay(const char ** argv)
 
 int cliDebugVars(const char ** argv)
 {
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) && !defined(SIMU)
   extern unsigned int ioMutexReq, ioMutexRel;
   extern unsigned int sdReadRetries;
 
@@ -367,7 +368,6 @@ const CliCommand cliCommands[] = {
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
   { "trace", cliTrace, "on | off" },
-  { "volume", cliVolume, "<level>" },
 #if defined(PCBFLAMENCO)
   { "read_bq24195", cliReadBQ24195, "<register>" },
   { "write_bq24195", cliWriteBQ24195, "<register> <data>" },

@@ -281,8 +281,6 @@
   #include "targets/9x/board_stock.h"
 #endif
 
-#include "debug.h"
-
 #if defined(SIMU)
   #include "targets/simu/simpgmspace.h"
 #elif defined(CPUARM)
@@ -319,6 +317,8 @@
   #include <avr/wdt.h>
 #endif
 
+#include "debug.h"
+
 #if defined(PCBFLAMENCO)
   #define NUM_SWITCHES     5
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
@@ -349,6 +349,8 @@
 #else
   #define memclear(p, s) memset(p, 0, s)
 #endif
+
+void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBHORUS)
   #define IS_POT_AVAILABLE(x)       (true)
@@ -457,7 +459,7 @@
   #define MAX_TRAINER_CHANNELS()            (8)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   #if defined(TARANIS_INTERNAL_PPM)
     #define IS_MODULE_PPM(idx)              (idx==TRAINER_MODULE || (idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_PPM)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
     #define IS_MODULE_XJT(idx)              (((idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_XJT)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
@@ -664,8 +666,12 @@ uint16_t evalChkSum();
   #define ALERT(title, msg, sound) alert(title, msg)
 #endif
 
-extern void message(const pm_char *title, const pm_char *s, const char *last MESSAGE_SOUND_ARG);
-extern void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
+// TODO these functions in gui directories
+#if defined(COLORLCD) || defined(PCBTARANIS)
+void drawMessageBox(const pm_char * title, const pm_char * t, const char * last, uint8_t sound);
+#endif
+void message(const pm_char * title, const pm_char * s, const char * last MESSAGE_SOUND_ARG);
+void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
@@ -812,22 +818,27 @@ int getTrimValue(uint8_t phase, uint8_t idx);
 
 #if defined(GVARS)
   #if defined(PCBSTD)
-    int16_t getGVarValue(int16_t x, int16_t min, int16_t max);
+    int16_t getGVarFieldValue(int16_t x, int16_t min, int16_t max);
     void setGVarValue(uint8_t x, int8_t value);
-    #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max)
-    #define SET_GVAR(idx, val, p) setGVarValue(idx, val)  
+    #define GET_GVAR(x, min, max, fm) getGVarFieldValue(x, min, max)
+    #define SET_GVAR(idx, val, fm) setGVarValue(idx, val)
   #else
-    uint8_t getGVarFlightPhase(uint8_t phase, uint8_t idx);
-    int16_t getGVarValue(int16_t x, int16_t min, int16_t max, int8_t phase);
-    void setGVarValue(uint8_t x, int16_t value, int8_t phase);  
-    #define GET_GVAR(x, min, max, p) getGVarValue(x, min, max, p)
-    #define SET_GVAR(idx, val, p) setGVarValue(idx, val, p)      
+    uint8_t getGVarFlightMode(uint8_t fm, uint8_t gv);
+    int16_t getGVarFieldValue(int16_t x, int16_t min, int16_t max, int8_t fm);
+    int32_t getGVarFieldValuePrec1(int16_t x, int16_t min, int16_t max, int8_t fm);
+    int16_t getGVarValue(int8_t gv, int8_t fm);
+    int32_t getGVarValuePrec1(int8_t gv, int8_t fm);
+    void setGVarValue(uint8_t x, int16_t value, int8_t fm);
+    #define GET_GVAR(x, min, max, fm) getGVarFieldValue(x, min, max, fm)
+    #define SET_GVAR(idx, val, fm) setGVarValue(idx, val, fm)
     #define GVAR_DISPLAY_TIME     100 /*1 second*/;
-    extern uint8_t s_gvar_timer;
-    extern uint8_t s_gvar_last;
+    #define GET_GVAR_PREC1(x, min, max, fm) getGVarFieldValuePrec1(x, min, max, fm)
+    extern uint8_t gvarDisplayTimer;
+    extern uint8_t gvarLastChanged;
   #endif
 #else
   #define GET_GVAR(x, ...) (x)
+  #define GET_GVAR_PREC1(x, ...) (x*10)  
 #endif
 
 #if defined(CPUARM)
@@ -1161,6 +1172,17 @@ LimitData *limitAddress(uint8_t idx);
 int8_t *curveAddress(uint8_t idx);
 LogicalSwitchData *lswAddress(uint8_t idx);
 
+#if defined(XCURVES)
+typedef CurveData CurveInfo;
+#else
+struct CurveInfo {
+  int8_t * crv;
+  uint8_t points:7;
+  uint8_t custom:1;
+};
+extern CurveInfo curveInfo(uint8_t idx);
+#endif
+
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
 #if defined(VIRTUALINPUTS)
@@ -1175,10 +1197,6 @@ extern BeepANACenter bpanaCenter;
 
 extern uint8_t s_mixer_first_run_done;
 
-extern int8_t s_currCh;
-uint8_t getExpoMixCount(uint8_t expo);
-void deleteExpoMix(uint8_t expo, uint8_t idx);
-void insertExpoMix(uint8_t expo, uint8_t idx);
 void applyDefaultTemplate();
 
 void incSubtrim(uint8_t idx, int16_t inc);

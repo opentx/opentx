@@ -195,8 +195,8 @@ bool menuCommonCalib(evt_t event)
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
       steps = calib->count + 1;
     }
-    if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcdDrawNumber(LCD_W/2-(POT_BAR_INTERVAL*NUM_POTS/2)+(POT_BAR_INTERVAL*(i-POT1)), POT_BAR_BOTTOM+15, steps, TEXT_COLOR|TINSIZE, 0, "[", "]");
+    if (calibrationState != 0 && steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
+      lcdDrawNumber(LCD_W/2+3-(POT_BAR_INTERVAL*NUM_POTS/2)+(POT_BAR_INTERVAL*(i-POT1)), POT_BAR_BOTTOM+15, steps, TEXT_COLOR|TINSIZE, 0, "[", "]");
     }
   }
 
