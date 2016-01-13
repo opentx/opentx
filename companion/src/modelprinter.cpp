@@ -445,7 +445,16 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   }
   switch (ls.getFunctionFamily()) {
     case LS_FAMILY_EDGE:
-      result += tr("Edge(%1, [%2:%3])").arg(RawSwitch(ls.val1).toString()).arg(ValToTim(ls.val2)).arg(ls.val3<0 ? tr("instant") : QString("%1").arg(ValToTim(ls.val2+ls.val3)));
+      {
+        QString v3 = QString("%1").arg(ValToTim(ls.val2+ls.val3));
+        if (ls.val3 < 0) {
+          v3 = Qt::escape("<<(%1)").arg(tr("instant"));
+        }
+        else if (ls.val3 == 0) {
+          v3 = Qt::escape("--(%1)").arg(tr("infinite")); 
+        }
+        result += tr("Edge(%1, [%2:%3])").arg(RawSwitch(ls.val1).toString()).arg(ValToTim(ls.val2)).arg(v3);
+      }
       break;
     case LS_FAMILY_STICKY:
       result += tr("Sticky(%1, %2)").arg(RawSwitch(ls.val1).toString()).arg(RawSwitch(ls.val2).toString());
