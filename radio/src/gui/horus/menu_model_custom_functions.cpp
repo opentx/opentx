@@ -125,7 +125,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
     coord_t y = MENU_CONTENT_TOP + i*FH;
     unsigned int k = i+menuVerticalOffset;
 
-    putsStrIdx(MENUS_MARGIN_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && menuHorizontalPosition<0) ? INVERS : 0);
+    drawStringWithIndex(MENUS_MARGIN_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && menuHorizontalPosition<0) ? INVERS : 0);
 
     CustomFunctionData *cfn = &functions[k];
     unsigned int func = CFN_FUNC(cfn);
@@ -170,14 +170,14 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             maxParam = MAX_GVARS-1;
-            putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT, y, STR_GV, CFN_GVAR_INDEX(cfn)+1, attr);
+            drawStringWithIndex(MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT, y, STR_GV, CFN_GVAR_INDEX(cfn)+1, attr);
             if (active) CFN_GVAR_INDEX(cfn) = checkIncDec(event, CFN_GVAR_INDEX(cfn), 0, maxParam, eeFlags);
             break;
           }
 #endif
           else if (func == FUNC_SET_TIMER) {
             maxParam = MAX_TIMERS-1;
-            putsStrIdx(MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT, y, STR_TIMER, CFN_TIMER_INDEX(cfn)+1, attr);
+            drawStringWithIndex(MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT, y, STR_TIMER, CFN_TIMER_INDEX(cfn)+1, attr);
             if (active) CFN_TIMER_INDEX(cfn) = checkIncDec(event, CFN_TIMER_INDEX(cfn), 0, maxParam, eeFlags);
             break;
           }
@@ -294,7 +294,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
                 break;
               case FUNC_ADJUST_GVAR_GVAR:
                 val_max = MAX_GVARS-1;
-                putsStrIdx(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
+                drawStringWithIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
                 break;
               default: // FUNC_ADJUST_GVAR_INC
                 val_max = 1;

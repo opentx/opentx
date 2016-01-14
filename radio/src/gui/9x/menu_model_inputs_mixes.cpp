@@ -307,7 +307,7 @@ void menuModelExpoOne(uint8_t event)
       case EXPO_FIELD_CURVE:
         lcd_putsLeft(y, STR_CURVE);
         if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
-          putsCurve(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->curveParam, attr);
+          drawCurveName(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->curveParam, attr);
           if (attr) {
             CHECK_INCDEC_MODELVAR_ZERO(event, ed->curveParam, CURVE_BASE+MAX_CURVES-1);
             if (ed->curveParam) ed->curveMode = MODE_CURVE;
@@ -532,7 +532,7 @@ void menuModelMixOne(uint8_t event)
         lcd_putsColumnLeft(COLUMN_X, y, STR_CURVE);
         int8_t curveParam = md2->curveParam;
         if (md2->curveMode == MODE_CURVE) {
-          putsCurve(COLUMN_X+MIXES_2ND_COLUMN, y, curveParam, attr);
+          drawCurveName(COLUMN_X+MIXES_2ND_COLUMN, y, curveParam, attr);
           if (attr) {
             if (event==EVT_KEY_LONG(KEY_ENTER) && (curveParam<0 || curveParam>=CURVE_BASE)){
               s_curveChan = (curveParam<0 ? -curveParam-1 : curveParam-CURVE_BASE);
@@ -666,7 +666,7 @@ void displayMixInfos(coord_t y, MixData *md)
 {
   if (md->curveParam) {
     if (md->curveMode == MODE_CURVE)
-      putsCurve(MIX_LINE_CURVE_POS, y, md->curveParam);
+      drawCurveName(MIX_LINE_CURVE_POS, y, md->curveParam);
     else
       displayGVar(MIX_LINE_CURVE_POS+3*FW, y, md->curveParam, -100, 100);
   }
@@ -693,7 +693,7 @@ void displayMixLine(coord_t y, MixData *md)
 void displayExpoInfos(coord_t y, ExpoData *ed)
 {
   if (ed->curveMode == MODE_CURVE)
-    putsCurve(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
+    drawCurveName(EXPO_LINE_EXPO_POS-3*FW, y, ed->curveParam);
   else
     displayGVar(EXPO_LINE_EXPO_POS, y, ed->curveParam, -100, 100);
 

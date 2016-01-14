@@ -150,7 +150,7 @@ void menuModelPhaseOne(uint8_t event)
         uint8_t posHorz = menuHorizontalPosition;
         if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
-        putsStrIdx(INDENT_WIDTH, y, STR_GV, idx+1);
+        drawStringWithIndex(INDENT_WIDTH, y, STR_GV, idx+1);
 
         editName(4*FW, y, g_model.gvars[idx].name, LEN_GVAR_NAME, event, posHorz==0 ? attr : 0);
 

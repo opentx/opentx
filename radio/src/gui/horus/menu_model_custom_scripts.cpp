@@ -51,7 +51,7 @@ bool menuModelCustomScriptOne(evt_t event)
 {
   ScriptData &sd = g_model.scriptsData[s_currIdx];
 
-  // putsStrIdx(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
+  // drawStringWithIndex(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
 
   SUBMENU(STR_MENUCUSTOMSCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, 0, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
@@ -141,7 +141,7 @@ bool menuModelCustomScripts(evt_t event)
     ScriptData &sd = g_model.scriptsData[i];
 
     // LUAx header
-    putsStrIdx(MENUS_MARGIN_LEFT, y, "LUA", i+1, sub==i ? INVERS : 0);
+    drawStringWithIndex(MENUS_MARGIN_LEFT, y, "LUA", i+1, sub==i ? INVERS : 0);
 
     // LUA script
     if (ZEXIST(sd.file)) {

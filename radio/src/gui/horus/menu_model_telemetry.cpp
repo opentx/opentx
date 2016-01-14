@@ -392,7 +392,7 @@ bool menuModelSensor(evt_t event)
 
       case SENSOR_FIELD_PARAM4:
       {
-        putsStrIdx(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
+        drawStringWithIndex(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
@@ -695,7 +695,7 @@ bool menuModelTelemetry(evt_t event)
       case ITEM_TELEMETRY_SCREEN_LABEL4:
       {
         uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
-        putsStrIdx(MENUS_MARGIN_LEFT, y, STR_SCREEN, screenIndex+1);
+        drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
         TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_COL2, y, STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {

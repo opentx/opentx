@@ -127,7 +127,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         LcdFlags att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
-          putsStrIdx(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
+          drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
           if (timersStates[field-MIXSRC_FIRST_TIMER].val > 3600) {
             att += TIMEHOUR - DBLSIZE;
             x -= 3*FW;

@@ -238,7 +238,7 @@ void menuModelCurvesAll(uint8_t event)
     uint8_t attr = (sub == k ? INVERS : 0);
 #if defined(GVARS) && defined(PCBSTD)
     if (k >= MAX_CURVES) {
-      putsStrIdx(0, y, STR_GV, k-MAX_CURVES+1);
+      drawStringWithIndex(0, y, STR_GV, k-MAX_CURVES+1);
       if (GVAR_SELECTED()) {
         if (attr && s_editMode>0) attr |= BLINK;
         lcdDrawNumber(10*FW, y, GVAR_VALUE(k-MAX_CURVES, -1), attr);
@@ -248,7 +248,7 @@ void menuModelCurvesAll(uint8_t event)
     else
 #endif
     {
-      putsStrIdx(0, y, STR_CV, k+1, attr);
+      drawStringWithIndex(0, y, STR_CV, k+1, attr);
     }
   }
 

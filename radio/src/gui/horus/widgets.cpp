@@ -302,10 +302,10 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
     if (idx < 0) {
       value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
       idx = -idx;
-      putsStrIdx(x, y, STR_GV, idx, attr, "-");
+      drawStringWithIndex(x, y, STR_GV, idx, attr, "-");
     }
     else {
-      putsStrIdx(x, y, STR_GV, idx, attr);
+      drawStringWithIndex(x, y, STR_GV, idx, attr);
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
     }
   }

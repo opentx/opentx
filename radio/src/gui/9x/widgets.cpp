@@ -158,7 +158,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
     else {
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
     }
-    putsStrIdx(x, y, STR_GV, idx, attr);
+    drawStringWithIndex(x, y, STR_GV, idx, attr);
   }
   else {
     lcdDrawNumber(x, y, value, attr);
@@ -198,7 +198,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
       value = (int16_t) GV_CALC_VALUE_IDX_POS(idx, delta);
       idx++;
     }
-    putsStrIdx(x, y, STR_GV, idx, attr);
+    drawStringWithIndex(x, y, STR_GV, idx, attr);
   }
   else {
     lcdDrawNumber(x, y, value, attr);

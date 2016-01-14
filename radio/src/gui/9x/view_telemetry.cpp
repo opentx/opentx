@@ -110,7 +110,7 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 #if !defined(CPUARM)
 void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
-  putsStrIdx(0, y, STR_A, index+1, 0);
+  drawStringWithIndex(0, y, STR_A, index+1, 0);
   if (TELEMETRY_STREAMING()) {
     putsTelemetryChannelValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
     lcdDrawChar(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
@@ -333,7 +333,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         coord_t pos[] = {0, 65, 130};
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
-          putsStrIdx(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
+          drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
           // we don't display GPS name, no space for it

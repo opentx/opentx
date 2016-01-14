@@ -182,11 +182,11 @@ TEST(Lcd, DblsizeBottomRight)
 }
 
 #if defined(CPUARM)
-TEST(Lcd, Smlsize_putsStrIdx)
+TEST(Lcd, Smlsize_drawStringWithIndex)
 {
   lcdClear();
-  putsStrIdx(0, 0, "FM", 0, SMLSIZE);
-  EXPECT_TRUE(checkScreenshot("smlsize_putsstridx"));
+  drawStringWithIndex(0, 0, "FM", 0, SMLSIZE);
+  EXPECT_TRUE(checkScreenshot("smlsize_drawStringWithIndex"));
 }
 #endif
 

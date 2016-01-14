@@ -52,7 +52,7 @@ bool menuModelGVars(evt_t event)
     int i = l+menuVerticalOffset;
     coord_t y = MENU_CONTENT_TOP + l*FH;
     if (g_model.gvars[i].popup) lcdDrawText(MENUS_MARGIN_LEFT+25, y, "!");
-    putsStrIdx(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && menuHorizontalPosition<0) ? INVERS : 0));
+    drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
       LcdFlags attr = ((sub==i && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);

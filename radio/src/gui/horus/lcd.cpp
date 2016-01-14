@@ -442,7 +442,7 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
   putsVolts(x, y, g_vbat100mV, att);
 }
 
-void putsStrIdx(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att, const char *prefix)
+void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att, const char *prefix)
 {
   // TODO quick & dirty, dangerous
   char s[32];
@@ -503,9 +503,9 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
     putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)
-    putsStrIdx(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
+    drawStringWithIndex(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
-    putsStrIdx(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
+    drawStringWithIndex(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
 #if 0
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
       lcdDrawChar(lcdNextPos, y, ' ', att);
@@ -514,7 +514,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 #endif
   }
   else if (idx <= MIXSRC_LAST_GVAR)
-    putsStrIdx(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
+    drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
   else if (idx < MIXSRC_FIRST_TELEM) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
   }
@@ -540,7 +540,7 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;
   if (len==0) {
-    putsStrIdx(x, y, STR_MODEL, id+1, att|LEADING0);
+    drawStringWithIndex(x, y, STR_MODEL, id+1, att|LEADING0);
   }
   else {
     lcdDrawSizedText(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
@@ -629,7 +629,7 @@ void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att);
   }
   else {
-    putsStrIdx(x, y, STR_FP, abs(idx)-1, att);
+    drawStringWithIndex(x, y, STR_FP, abs(idx)-1, att);
   }
 }
 
@@ -652,27 +652,30 @@ void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att)
         break;
 
       case CURVE_REF_CUSTOM:
-        putsCurve(x, y, curve.value, att);
+        drawCurveName(x, y, curve.value, att);
         break;
     }
   }
 }
 
-void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att)
+void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
   if (idx == 0) {
-    return lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att);
+    return lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, flags);
   }
   bool neg = false;
   if (idx < 0) {
     idx = -idx;
     neg = true;
   }
-  putsStrIdx(x, y, STR_CV, idx, att);
+  if (ZEXIST(g_model.curves[idx-1].name))
+    lcdDrawSizedText(x, y, g_model.curves[idx-1].name, LEN_CURVE_NAME, ZCHAR|flags);
+  else
+    drawStringWithIndex(x, y, STR_CV, idx, flags);
   if (neg) {
-    if ((att&INVERS) && ((~att&BLINK) || BLINK_ON_PHASE))
-      att &= ~(INVERS|BLINK);
-    lcdDrawChar(x-3, y, '!', att);
+    if ((flags&INVERS) && ((~flags&BLINK) || BLINK_ON_PHASE))
+      flags &= ~(INVERS|BLINK);
+    lcdDrawChar(x-3, y, '!', flags);
   }
 }
 

@@ -165,7 +165,7 @@ void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags)
   if (ZEXIST(g_model.gvars[index].name))
     lcdDrawSizedText(x, y, g_model.gvars[index].name, LEN_GVAR_NAME, ZCHAR|flags);
   else
-    putsStrIdx(x, y, STR_GV, index+1, flags);
+    drawStringWithIndex(x, y, STR_GV, index+1, flags);
 }
 
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)

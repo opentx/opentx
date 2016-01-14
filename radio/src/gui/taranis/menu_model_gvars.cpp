@@ -66,7 +66,7 @@ void menuModelGVarOne(uint8_t event)
 {
   GVarData * gvar = &g_model.gvars[s_currIdx];
 
-  putsStrIdx(PSIZE(TR_GVARS)*FW+FW, 0, STR_GV, s_currIdx+1, 0);
+  drawStringWithIndex(PSIZE(TR_GVARS)*FW+FW, 0, STR_GV, s_currIdx+1, 0);
   drawGVarValue(32*FW, 0, s_currIdx, getGVarValue(s_currIdx, getFlightMode()));
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
@@ -107,7 +107,7 @@ void menuModelGVarOne(uint8_t event)
         break;
 
       default:
-        putsStrIdx(0, y, STR_FP, k-GVAR_FIELD_FM0);
+        drawStringWithIndex(0, y, STR_FP, k-GVAR_FIELD_FM0);
         editGVarValue(GVAR_2ND_COLUMN, y, event, s_currIdx, k-GVAR_FIELD_FM0, LEFT|attr);
         break;
     }
@@ -142,7 +142,7 @@ void menuModelGVars(uint8_t event)
   if (after2seconds) {
     menuTitle = STR_GVARS;
     for (int i=0; i<MAX_GVARS; i++) {
-      putsStrIdx(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
+      drawStringWithIndex(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
     }
   }
   else {

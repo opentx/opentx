@@ -44,7 +44,7 @@ void menuGeneralDiagAna(uint8_t event)
 #else
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? 64+5 : 0;
-    putsStrIdx(x, y, PSTR("A"), i+1);
+    drawStringWithIndex(x, y, PSTR("A"), i+1);
     lcdDrawChar(lcdNextPos, y, ':');
 #endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));

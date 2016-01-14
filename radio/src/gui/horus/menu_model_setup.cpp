@@ -105,7 +105,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
   if (attr && menuHorizontalPosition < 0) {
     lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 90+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
-  putsStrIdx(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
+  drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (menuHorizontalPosition<=0 ? attr : 0));
   putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition!=0 ? attr : 0));
   if (attr && s_editMode>0) {
@@ -583,9 +583,9 @@ bool menuModelSetup(evt_t event)
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
-          putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_CH, moduleData.channelsStart+1, menuHorizontalPosition==0 ? attr : 0);
+          drawStringWithIndex(MODEL_SETUP_2ND_COLUMN, y, STR_CH, moduleData.channelsStart+1, menuHorizontalPosition==0 ? attr : 0);
           lcdDrawText(MODEL_SETUP_2ND_COLUMN+30, y, "-");
-          putsStrIdx(MODEL_SETUP_2ND_COLUMN+40, y, STR_CH, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), menuHorizontalPosition==1 ? attr : 0);
+          drawStringWithIndex(MODEL_SETUP_2ND_COLUMN+40, y, STR_CH, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), menuHorizontalPosition==1 ? attr : 0);
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
               case 0:

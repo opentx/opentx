@@ -120,7 +120,7 @@ void onModelSetupBitmapMenu(const char *result)
 void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
 {
   TimerData * timer = &g_model.timers[timerIdx];
-  putsStrIdx(0*FW, y, STR_TIMER, timerIdx+1);
+  drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, menuHorizontalPosition==0 ? attr : 0);
 
   putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, menuHorizontalPosition==1 ? attr : 0, menuHorizontalPosition==2 ? attr : 0);
@@ -357,7 +357,7 @@ void menuModelSetup(uint8_t event)
 #if defined(REV9E)
       case ITEM_MODEL_TOP_LCD_TIMER:
         lcd_putsLeft(y, STR_TOPLCDTIMER);
-        putsStrIdx(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.toplcdTimer+1, attr);
+        drawStringWithIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.toplcdTimer+1, attr);
         if (attr) {
           g_model.toplcdTimer = checkIncDec(event, g_model.toplcdTimer, 0, TIMERS-1, EE_MODEL);
         }

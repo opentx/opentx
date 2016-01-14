@@ -61,7 +61,7 @@ void menuStatisticsView(uint8_t event)
 
   // Timers
   for (int i=0; i<TIMERS; i++) {
-    putsStrIdx(STATS_3RD_COLUMN, FH*i+1, "TM", i+1, BOLD);
+    drawStringWithIndex(STATS_3RD_COLUMN, FH*i+1, "TM", i+1, BOLD);
     if (timersStates[i].val > 3600)
       putsTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, TIMEHOUR, 0);
     else

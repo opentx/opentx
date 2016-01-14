@@ -164,7 +164,7 @@ void drawTimer(coord_t x, coord_t y, int index)
   if (ZLEN(timerData.name) > 0) {
     lcdDrawSizedText(x+78, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
   }
-  putsStrIdx(x+137, y+17, "TMR", index+1, SMLSIZE|TEXT_COLOR);
+  drawStringWithIndex(x+137, y+17, "TMR", index+1, SMLSIZE|TEXT_COLOR);
 }
 
 
@@ -391,7 +391,7 @@ bool menuMainView(evt_t event)
   if (gvarDisplayTimer > 0) {
     gvarDisplayTimer--;
     displayMessageBox();
-    putsStrIdx(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, gvarLastChanged+1, DBLSIZE|YELLOW);
+    drawStringWithIndex(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, gvarLastChanged+1, DBLSIZE|YELLOW);
     lcdDrawSizedText(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
     lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), DBLSIZE|LEFT);
   }

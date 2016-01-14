@@ -179,14 +179,14 @@ void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
 
-void putsStrIdx(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att=0, const char *prefix="");
+void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att=0, const char *prefix="");
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsSwitches(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att=0);
-void putsCurve(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
+void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
 void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 

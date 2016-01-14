@@ -129,7 +129,7 @@ void menuModelCurveOne(uint8_t event)
   int8_t * points = curveAddress(s_curveChan);
 
   lcdDrawText(11*FW+FW/2, 0, TR_PT "\002X\006Y");
-  putsStrIdx(PSIZE(TR_MENUCURVES)*FW+FW, 0, "CV", s_curveChan+1);
+  drawStringWithIndex(PSIZE(TR_MENUCURVES)*FW+FW, 0, "CV", s_curveChan+1);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SIMPLE_SUBMENU(STR_MENUCURVES, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
@@ -260,7 +260,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t
       if (attr && menuHorizontalPosition==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
-      putsCurve(x+5*FW+2, y, curve.value, menuHorizontalPosition==1 ? attr : 0);
+      drawCurveName(x+5*FW+2, y, curve.value, menuHorizontalPosition==1 ? attr : 0);
       if (attr && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
           s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
@@ -294,7 +294,7 @@ void menuModelCurvesAll(uint8_t event)
     int k = i + menuVerticalOffset;
     LcdFlags attr = (sub == k ? INVERS : 0);
     {
-      putsStrIdx(0, y, STR_CV, k+1, attr);
+      drawStringWithIndex(0, y, STR_CV, k+1, attr);
       CurveData & crv = g_model.curves[k];
       editName(4*FW, y, crv.name, sizeof(crv.name), 0, 0);
       lcdDrawNumber(11*FW, y, 5+crv.points, LEFT);

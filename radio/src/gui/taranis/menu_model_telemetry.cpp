@@ -204,7 +204,7 @@ void menuModelSensor(uint8_t event)
 {
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
-  putsStrIdx(PSIZE(TR_MENUSENSOR)*FW+FW, 0, STR_SENSOR, s_currIdx+1);
+  drawStringWithIndex(PSIZE(TR_MENUSENSOR)*FW+FW, 0, STR_SENSOR, s_currIdx+1);
   putsTelemetryChannelValue(32*FW, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx));
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
@@ -389,7 +389,7 @@ void menuModelSensor(uint8_t event)
 
       case SENSOR_FIELD_PARAM4:
       {
-        putsStrIdx(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
+        drawStringWithIndex(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
         int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -MAX_SENSORS, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
@@ -688,7 +688,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_SCREEN_LABEL4:
       {
         uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
-        putsStrIdx(0*FW, y, STR_SCREEN, screenIndex+1);
+        drawStringWithIndex(0*FW, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
         TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {

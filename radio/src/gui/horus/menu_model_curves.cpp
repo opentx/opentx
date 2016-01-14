@@ -314,7 +314,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
       if (attr && menuHorizontalPosition==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
-      putsCurve(lcdNextPos+10, y, curve.value, (menuHorizontalPosition==1 ? attr : 0));
+      drawCurveName(lcdNextPos+10, y, curve.value, (menuHorizontalPosition==1 ? attr : 0));
       if (attr && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
           s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
@@ -351,7 +351,7 @@ bool menuModelCurvesAll(evt_t event)
     uint8_t k = i + menuVerticalOffset;
     LcdFlags attr = (sub == k ? INVERS : 0);
     {
-      putsStrIdx(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
+      drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
       CurveData & crv = g_model.curves[k];
       editName(CURVES_NAME_POS, y, crv.name, sizeof(crv.name), 0, 0);
       lcdDrawNumber(CURVES_POINTS_POS, y, 5+crv.points, LEFT, 0, NULL, STR_PTS);
