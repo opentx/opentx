@@ -2288,6 +2288,15 @@ enum DisplayTrims
   DISPLAY_TRIMS_ALWAYS
 };
 
+#if defined(COLORLCD)
+  #define SWITCHES_WARNING_DATA \
+    swarnstate_t  switchWarningState;
+#else
+  #define SWITCHES_WARNING_DATA \
+    swarnstate_t  switchWarningState; \
+    swarnenable_t switchWarningEnable;
+#endif
+
 PACK(typedef struct {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
@@ -2323,10 +2332,7 @@ PACK(typedef struct {
 
   uint8_t thrTraceSrc;
 
-  swarnstate_t  switchWarningState;
-#if !defined(COLORLCD)
-  swarnenable_t switchWarningEnable;
-#endif
+  SWITCHES_WARNING_DATA
 
   MODEL_GVARS_DATA
 
