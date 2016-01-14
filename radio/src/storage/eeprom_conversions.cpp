@@ -194,18 +194,18 @@ enum Telemetry216Source {
   TELEM216_GPS_TIME,
 };
 
-#if defined(PCBTARANIS)
+#if defined(XCURVES)
 PACK(typedef struct {
-  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
-  uint8_t  chn;
-  int8_t   swtch;
-  uint16_t flightModes;
-  int8_t   weight;
-  uint8_t  curveMode;
-  char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare[2];
-  int8_t   curveParam;
-}) ExpoData_v215;
+  uint8_t type:3;
+  uint8_t smooth:1;
+  uint8_t spare:4;
+  int8_t  points;
+}) CurveData_v216;
+#else
+typedef int16_t CurveData_v216;
+#endif
+
+#if defined(PCBTARANIS)
 PACK(typedef struct {
   uint8_t  srcRaw;
   uint16_t scale;
@@ -235,16 +235,6 @@ PACK(typedef struct {
 }) ExpoData_v217;
 #else
 PACK(typedef struct {
-  uint8_t  mode;         // 0=end, 1=pos, 2=neg, 3=both
-  uint8_t  chn;
-  int8_t   swtch;
-  uint16_t flightModes;
-  int8_t   weight;
-  uint8_t  curveMode;
-  char     name[LEN_EXPOMIX_NAME];
-  int8_t   curveParam;
-}) ExpoData_v215;
-PACK(typedef struct {
   uint8_t  mode:2;         // 0=end, 1=pos, 2=neg, 3=both
   uint8_t  chn:4;
   uint8_t  curveMode:2;
@@ -256,22 +246,6 @@ PACK(typedef struct {
 }) ExpoData_v216;
 typedef ExpoData_v216 ExpoData_v217;
 #endif
-
-#if defined(PCBTARANIS)
-  #define LIMITDATA_V215_EXTRA  char name[LEN_CHANNEL_NAME];
-#else
-  #define LIMITDATA_V215_EXTRA
-#endif
-
-PACK(typedef struct {
-  int8_t  min;
-  int8_t  max;
-  int8_t  ppmCenter;
-  int16_t offset:14;
-  uint16_t symetrical:1;
-  uint16_t revert:1;
-  LIMITDATA_V215_EXTRA
-}) LimitData_v215;
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {
@@ -289,28 +263,6 @@ PACK(typedef struct {
 #endif
 
 #if defined(PCBTARANIS)
-PACK(typedef struct {
-  uint8_t  destCh;
-  uint16_t flightModes;
-  uint8_t  curveMode:1;       // O=curve, 1=differential
-  uint8_t  noExpo:1;
-  int8_t   carryTrim:3;
-  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t  spare1:1;
-  int16_t  weight;
-  int8_t   swtch;
-  int8_t   curveParam;
-  uint8_t  mixWarn:4;         // mixer warning
-  uint8_t  srcVariant:4;
-  uint8_t  delayUp;
-  uint8_t  delayDown;
-  uint8_t  speedUp;
-  uint8_t  speedDown;
-  uint8_t  srcRaw;
-  int16_t  offset;
-  char     name[LEN_EXPOMIX_NAME];
-  uint8_t  spare2[2];
-}) MixData_v215;
 PACK(typedef struct {
   uint8_t  destCh;
   uint16_t flightModes;
@@ -350,27 +302,6 @@ PACK(typedef struct {
 }) MixData_v217;
 #else
 PACK(typedef struct {
-  uint8_t  destCh;
-  uint16_t flightModes;
-  uint8_t  curveMode:1;       // O=curve, 1=differential
-  uint8_t  noExpo:1;
-  int8_t   carryTrim:3;
-  uint8_t  mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t  spare:1;
-  int16_t  weight;
-  int8_t   swtch;
-  int8_t   curveParam;
-  uint8_t  mixWarn:4;         // mixer warning
-  uint8_t  srcVariant:4;
-  uint8_t  delayUp;
-  uint8_t  delayDown;
-  uint8_t  speedUp;
-  uint8_t  speedDown;
-  uint8_t  srcRaw;
-  int16_t  offset;
-  char     name[LEN_EXPOMIX_NAME];
-}) MixData_v215;
-PACK(typedef struct {
   uint8_t  destCh:5;
   uint8_t  mixWarn:3;         // mixer warning
   uint16_t flightModes;
@@ -392,16 +323,6 @@ PACK(typedef struct {
 }) MixData_v216;
 typedef MixData MixData_v217;
 #endif
-
-PACK(typedef struct {
-  int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t  start:12;
-  uint16_t  countdownBeep:1;
-  uint16_t  minuteBeep:1;
-  uint16_t  persistent:1;
-  uint16_t  spare:1;
-  uint16_t  value;
-}) TimerData_v215;
 
 PACK(typedef struct {
   int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
@@ -432,16 +353,7 @@ PACK(typedef struct {
   uint8_t fadeOut;
   int16_t rotaryEncoders[1];
   gvar_t gvars[9];
-}) FlightModeData_v215;
-
-PACK(typedef struct {
-  int16_t v1;
-  int16_t v2;
-  uint8_t func;
-  uint8_t delay;
-  uint8_t duration;
-  int8_t  andsw;
-}) LogicalSwitchData_v215;
+}) FlightModeData_v216;
 
 PACK(typedef struct { // Logical Switches data
   int8_t  v1;
@@ -468,20 +380,6 @@ PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    char name[10];
-    struct {
-      int16_t val;
-      int16_t ext1;
-      int16_t ext2;
-    } composite;
-  }) param;
-  uint8_t mode:2;
-  uint8_t active:6;
-}) CustomFunctionData_v215;
-PACK(typedef struct {
-  int8_t  swtch;
-  uint8_t func;
-  PACK(union {
     PACK(struct {
       char name[8];
     }) play;
@@ -501,20 +399,6 @@ PACK(typedef struct {
   uint8_t active;
 }) CustomFunctionData_v216;
 #else
-PACK(typedef struct {
-  int8_t  swtch;
-  uint8_t func;
-  PACK(union {
-    char name[6];
-    struct {
-      int16_t val;
-      int16_t ext1;
-      int16_t ext2;
-    } composite;
-  }) param;
-  uint8_t mode:2;
-  uint8_t active:6;
-}) CustomFunctionData_v215;
 PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
@@ -543,32 +427,16 @@ PACK(typedef struct {
   uint8_t    source;
   uint8_t    barMin;           // minimum for bar display
   uint8_t    barMax;           // ditto for max display (would usually = ratio)
-}) FrSkyBarData_v215;
+}) FrSkyBarData_v216;
 
 PACK(typedef struct {
   uint8_t    sources[NUM_LINE_ITEMS];
-}) FrSkyLineData_v215;
+}) FrSkyLineData_v216;
 
 typedef union {
-  FrSkyBarData_v215  bars[4];
-  FrSkyLineData_v215 lines[4];
-} FrSkyScreenData_v215;
-
-PACK(typedef struct {
-  FrSkyChannelData channels[2];
-  uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t voltsSource;
-  uint8_t blades;   // How many blades for RPMs, 0=2 blades, 1=3 blades
-  uint8_t currentSource;
-  uint8_t screensType;
-  FrSkyScreenData_v215 screens[3];
-  uint8_t varioSource;
-  int8_t  varioCenterMax;
-  int8_t  varioCenterMin;
-  int8_t  varioMin;
-  int8_t  varioMax;
-  FrSkyRSSIAlarm rssiAlarms[2];
-}) FrSkyData_v215;
+  FrSkyBarData_v216  bars[4];
+  FrSkyLineData_v216 lines[4];
+} FrSkyScreenData_v216;
 
 PACK(typedef struct {
   FrSkyChannelData channels[4];
@@ -578,7 +446,7 @@ PACK(typedef struct {
   int8_t blades;    // How many blades for RPMs, 0=2 blades
   uint8_t currentSource;
   uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
-  FrSkyScreenData_v215 screens[3];
+  FrSkyScreenData_v216 screens[3];
   uint8_t varioSource;
   int8_t  varioCenterMax;
   int8_t  varioCenterMin;
@@ -603,7 +471,7 @@ PACK(typedef struct { // Swash Ring data
   uint8_t   type:5;
   uint8_t   collectiveSource;
   uint8_t   value;
-}) SwashRingData_v215;
+}) SwashRingData_v216;
 
 PACK(typedef struct {
   int8_t  rfProtocol;
@@ -685,13 +553,13 @@ PACK(typedef struct {
   LimitData_v216 limitData[NUM_CHNOUT];
   ExpoData_v216  expoData[MAX_EXPOS];
 
-  CurveData curves[MAX_CURVES];
+  CurveData_v216 curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v216 logicalSw[32];
   CustomFunctionData_v216 customFn[NUM_CFN];
-  SwashRingData_v215 swashR;
-  FlightModeData_v215 flightModeData[MAX_FLIGHT_MODES];
+  SwashRingData_v216 swashR;
+  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES];
 
   uint8_t   thrTraceSrc;
 
@@ -725,13 +593,13 @@ PACK(typedef struct {
   LimitData limitData[NUM_CHNOUT];
   ExpoData_v217  expoData[MAX_EXPOS];
 
-  CurveData curves[MAX_CURVES];
+  CurveData_v216 curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
 
   LogicalSwitchData_v217 logicalSw[32];
   CustomFunctionData_v216 customFn[NUM_CFN];
   SwashRingData swashR;
-  FlightModeData_v215 flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES];
 
   uint8_t thrTraceSrc;
 
@@ -749,140 +617,6 @@ PACK(typedef struct {
   TARANIS_REV9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;
 
-#if defined(PCBTARANIS)
-  #define NUM_POTS_215 4
-#else
-  #define NUM_POTS_215 3
-#endif
-
-PACK(typedef struct {
-  uint8_t   version;
-  uint16_t  variant;
-  int16_t   calibMid[NUM_STICKS+NUM_POTS_215];
-  int16_t   calibSpanNeg[NUM_STICKS+NUM_POTS_215];
-  int16_t   calibSpanPos[NUM_STICKS+NUM_POTS_215];
-  uint16_t  chkSum;
-  int8_t    currModel;
-  uint8_t   contrast;
-  uint8_t   vBatWarn;
-  int8_t    txVoltageCalibration;
-  int8_t    backlightMode;
-  TrainerData trainer;
-  uint8_t   view;            // index of view in main screen
-  int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   fai:1;
-  int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   alarmsFlash:1;
-  uint8_t   disableMemoryWarning:1;
-  uint8_t   disableAlarmWarning:1;
-  uint8_t   stickMode:2;
-  int8_t    timezone:5;
-  uint8_t   spare1:1;
-  uint8_t   inactivityTimer;
-  uint8_t   mavbaud:3;
-  SPLASH_MODE; /* 3bits */
-  int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t   blOffBright:4;
-  uint8_t   blOnBright:4;
-  uint8_t   lightAutoOff;
-  uint8_t   templateSetup;   // RETA order for receiver channels
-  int8_t    PPM_Multiplier;
-  int8_t    hapticLength;
-  uint8_t   reNavigation;    // not used on STOCK board
-  int8_t    beepLength:3;
-  uint8_t   hapticStrength:3;
-  uint8_t   gpsFormat:1;
-  uint8_t   unexpectedShutdown:1;
-  uint8_t   speakerPitch;
-  int8_t    speakerVolume;
-  int8_t    vBatMin;
-  int8_t    vBatMax;
-  uint8_t   backlightBright;
-  int8_t    txCurrentCalibration;
-  int8_t    temperatureWarn;
-  uint8_t   mAhWarn;
-  uint16_t  mAhUsed;
-  uint32_t  globalTimer;
-  int8_t    temperatureCalib;
-  uint8_t   btBaudrate;
-  uint8_t   optrexDisplay;
-  uint8_t   sticksGain;
-  uint8_t   rotarySteps;
-  uint8_t   countryCode;
-  uint8_t   imperial;
-  char      ttsLanguage[2];
-  int8_t    beepVolume;
-  int8_t    wavVolume;
-  int8_t    varioVolume;
-  int8_t    backgroundVolume;
-}) GeneralSettings_v215;
-
-void ConvertGeneralSettings_215_to_216(EEGeneral &settings)
-{
-  GeneralSettings_v215 oldSettings;
-  memcpy(&oldSettings, &settings, sizeof(oldSettings));
-
-  settings.version = 216;
-  for (int i=0, j=0; i<NUM_STICKS+NUM_POTS; i++) {
-    settings.calib[i].mid = oldSettings.calibMid[j];
-    settings.calib[i].spanNeg = oldSettings.calibSpanNeg[j];
-    settings.calib[i].spanPos = oldSettings.calibSpanPos[j];
-#if defined(PCBTARANIS)
-    if (i==POT3) continue;
-#endif
-    j++;
-  }
-  settings.chkSum = evalChkSum();
-
-  memcpy(&settings.currModel, &oldSettings.currModel, sizeof(GeneralSettings_v215)-offsetof(GeneralSettings_v215, currModel));
-
-  settings.hapticStrength = 0; // Haptic strength reset
-}
-
-void ConvertGeneralSettings_216_to_217(EEGeneral & settings)
-{
-  settings.version = 217;
-#if defined(PCBTARANIS)
-  settings.potsConfig = 0x05; // S1 and S2 = pots with detent
-  settings.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
-#endif
-}
-
-void ConvertGeneralSettings_217_to_218(EEGeneral & settings)
-{
-  settings.version = 218;
-}
-
-int ConvertTelemetrySource_215_to_216(int source)
-{
-  // TELEM_TX_TIME and 5 spare added
-  if (source >= TELEM216_TX_TIME)
-    source += 6;
-  // TELEM_RSSI_TX added
-  if (source >= TELEM216_RSSI_TX)
-    source += 1;
-  // Reserve added
-  if (source >= TELEM216_RESERVE0)
-    source += 1;
-  // A3 and A4 added
-  if (source >= TELEM216_A3)
-    source += 2;
-  // ASpd and dTE added + 5 reserve
-  if (source >= TELEM216_ASPEED)
-    source += 7;
-  // A3 and A4 MIN added
-  if (source >= TELEM216_MIN_A3)
-    source += 2;
-  // ASpd+ Cel- Cels- and Vfas- added
-  if (source >= TELEM216_MAX_ASPEED)
-    source += 4;
-  // 5 reserve added
-  if (source >= TELEM216_RESERVE6)
-    source += 5;
-
-  return source;
-}
-
 int ConvertTelemetrySource_216_to_217(int source)
 {
   // TELEM_TIMER3 added
@@ -891,82 +625,6 @@ int ConvertTelemetrySource_216_to_217(int source)
 
   return source;
 }
-
-#if defined(PCBTARANIS)
-int ConvertSource_215_to_216(int source, bool insertZero=false)
-{
-  if (insertZero)
-    source += 1;
-  // Virtual Inputs and Lua Outputs added
-  if (source > 0)
-    source += MAX_INPUTS + MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS;
-  // S3 added
-  if (source > MIXSRC216_POT2)
-    source += 1;
-  // PPM9-PPM16 added
-  if (source > MIXSRC216_FIRST_TRAINER+7)
-    source += 8;
-  // 4 GVARS added
-  if (source > MIXSRC216_GVAR1+4)
-    source += 4;
-  // Telemetry conversions
-  if (source >= MIXSRC216_FIRST_TELEM)
-    source = MIXSRC216_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC216_FIRST_TELEM+1) - 1;
-
-  return source;
-}
-
-int ConvertSwitch_215_to_216(int swtch)
-{
-  if (swtch < 0)
-    return -ConvertSwitch_215_to_216(-swtch);
-  else if (swtch <= SWSRC_LAST_SWITCH)
-    return swtch;
-  else if (swtch > SWSRC_LAST_SWITCH + 32 + 1) {
-    swtch -= (SWSRC_LAST_SWITCH + 32 + 1);
-    if (swtch > SWSRC_ON)
-      swtch = 0;
-    return swtch;
-  }
-  else {
-    swtch += (2*4) + (3*6); // 4 trims and 2 * 6-pos added as switches
-    return swtch;
-  }
-}
-#else
-int ConvertSource_215_to_216(int source, bool insertZero=false)
-{
-  if (insertZero)
-    source += 1;
-  // PPM9-PPM16 added
-  if (source > MIXSRC216_FIRST_TRAINER+7)
-    source += 8;
-  // 4 GVARS added
-  if (source > MIXSRC216_GVAR1+4)
-    source += 4;
-  // Telemetry conversions
-  if (source >= MIXSRC216_FIRST_TELEM)
-    source = MIXSRC216_FIRST_TELEM + ConvertTelemetrySource_215_to_216(source-MIXSRC216_FIRST_TELEM+1) - 1;
-
-  return source;
-}
-
-int ConvertSwitch_215_to_216(int swtch)
-{
-  if (swtch < 0)
-    return -ConvertSwitch_215_to_216(-swtch);
-  else if (swtch <= SWSRC_LAST_SWITCH)
-    return swtch;
-  else {
-    swtch += (2*4) + 1; // 4 trims and REa added
-    if (swtch > SWSRC_ON)
-      swtch -= (9+32+1);
-    if (swtch > SWSRC_ON)
-      swtch = SWSRC_ON;
-    return swtch;
-  }
-}
-#endif
 
 #if defined(PCBTARANIS)
 int ConvertSwitch_216_to_217(int swtch)
@@ -1016,16 +674,6 @@ int ConvertSource_216_to_217(int source)
   return source;
 }
 
-int16_t ConvertGVAR_215_to_216(int16_t var)
-{
-  if (var <= -508)
-    return var + 512 - 4096;
-  else if (var >= 507)
-    return var - 512 + 4096;
-  else
-    return var;
-}
-
 int ConvertGVar_216_to_217(int value)
 {
   if (value < -4096 + 9)
@@ -1035,7 +683,28 @@ int ConvertGVar_216_to_217(int value)
   return value;
 }
 
-void ConvertModel_216_to_217(ModelData &model)
+void ConvertGeneralSettings_216_to_217(EEGeneral & settings)
+{
+  settings.version = 217;
+#if defined(PCBTARANIS)
+  settings.potsConfig = 0x05; // S1 and S2 = pots with detent
+  settings.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
+#endif
+}
+
+void ConvertGeneralSettings_217_to_218(EEGeneral & settings)
+{
+  settings.version = 218;
+  for (int i=0; i<NUM_CFN; i++) {
+    CustomFunctionData_v216 * cf = (CustomFunctionData_v216 *)&settings.customFn[i];
+    int8_t swtch = cf->swtch;
+    uint8_t func = cf->func;
+    settings.customFn[i].swtch = ConvertSwitch_217_to_218(swtch);
+    settings.customFn[i].func = func;
+  }
+}
+
+void ConvertModel_216_to_217(ModelData & model)
 {
   // Timer3 added
   // 32bits Timers
@@ -1417,10 +1086,6 @@ bool eeConvert()
   // General Settings conversion
   eeLoadGeneralSettingsData();
   int version = conversionVersionStart;
-  if (version == 215) {
-    version = 216;
-    ConvertGeneralSettings_215_to_216(g_eeGeneral);
-  }
   if (version == 216) {
     version = 217;
     ConvertGeneralSettings_216_to_217(g_eeGeneral);

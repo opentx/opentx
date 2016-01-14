@@ -23,8 +23,11 @@
 
 // Keys
 #define KEYS_GPIO_REG_MENU              GPIOD->IDR
+#define KEYS_GPIO_PIN_MENU              GPIO_Pin_7  // PD.07
 #define KEYS_GPIO_REG_EXIT              GPIOD->IDR
+#define KEYS_GPIO_PIN_EXIT              GPIO_Pin_2  // PD.02
 #define KEYS_GPIO_REG_PAGE              GPIOD->IDR
+#define KEYS_GPIO_PIN_PAGE              GPIO_Pin_3  // PD.03
 #if defined(REV9E)
   #if defined(SIMU)
     #define KEYS_GPIO_REG_PLUS          GPIOE->IDR
@@ -42,9 +45,6 @@
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_12 // PE.12
 #endif
-#define KEYS_GPIO_PIN_MENU              GPIO_Pin_7  // PD.07
-#define KEYS_GPIO_PIN_PAGE              GPIO_Pin_3  // PD.02
-#define KEYS_GPIO_PIN_EXIT              GPIO_Pin_2  // PD.03
 
 // Rotary Encoder
 #define ENC_GPIO                        GPIOD
