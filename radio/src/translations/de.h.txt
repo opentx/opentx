@@ -134,7 +134,11 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBHORUS)
+  #define TR_RETA123           "SHGQ12345LR"
+#elif defined(PCBFLAMENCO)
+  #define TR_RETA123           "SHGQ123LR"
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define TR_RETA123           "SHGQ1234LRLR"
 #elif defined(PCBTARANIS) || defined(REVX)
   #define TR_RETA123           "SHGQ123LR"

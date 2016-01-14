@@ -129,7 +129,11 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBHORUS)
+  #define TR_RETA123           "SVPK12345LR"
+#elif defined(PCBFLAMENCO)
+  #define TR_RETA123           "SVPK123LR"
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define TR_RETA123           "SVPK1234LRLR"
 #elif defined(PCBTARANIS) || defined(REVX)
   #define TR_RETA123           "SVPK123LR"
