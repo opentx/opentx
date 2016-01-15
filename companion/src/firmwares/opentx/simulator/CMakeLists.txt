@@ -2,7 +2,7 @@ today(DATE)
 now(TIME)
 git_id(GIT_STR)
 
-configure_file(${RADIO_SRC_DIRECTORY}/stamp.h.in ${RADIO_SRC_DIRECTORY}/stamp.h @ONLY)
+configure_file(${RADIO_SRC_DIRECTORY}/stamp.h.in ${CMAKE_BINARY_DIR}/radio/src/stamp.h @ONLY)
 
 set(OPENTX_SRC_FILES
   opentxsimulator.cpp
