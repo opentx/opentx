@@ -1,3 +1,15 @@
+<h2>Version 2.0.19 / 2016-01-15</h2>
+
+[ARM Boards]
+<ul>
+<li>Fixed : Logical switch internal state was being reset by the AND switch, that affected its function 
+      (it looked like AND was applied before the EDGE processing, not after like it is done for other logical switch types) 
+      (<a href=https://github.com/opentx/opentx/issues/2939>#2939</a>)</li>
+<li>SD manager bug when scrolling up fixed (<a href=https://github.com/opentx/opentx/issues/3230>#3230</a>)</li>
+</ul>
+
+
+
 <h2>Version 2.0.18 / 2016-01-03</h2>
 
 [Taranis]

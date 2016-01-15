@@ -1,3 +1,9 @@
+<h2>Version 2.0.19 / 2016-01-15</h2>
+<ul>
+<li>Throttle Source combobox was populated multiple times (<a href=https://github.com/opentx/opentx/issues/3222>#3222</a>)</li>
+</ul>
+
+
 <h2>Version 2.0.18 / 2016-01-03</h2>
 <ul>
 <li>Enabled <i>Mixers monitor</i> in Taranis simulator</li>
