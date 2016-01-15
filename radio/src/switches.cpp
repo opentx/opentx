@@ -774,7 +774,7 @@ void checkSwitches()
 #if defined(COLORLCD)
     for (int i=0; i<NUM_SWITCHES; i++) {
       if (SWITCH_WARNING_ALLOWED(i)) {
-        unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
+        unsigned int state = ((states >> (3*i)) & 0x07);
         if (state && state-1 != ((switches_states >> (i*2)) & 0x03)) {
           warn = true;
         }

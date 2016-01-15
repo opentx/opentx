@@ -444,7 +444,6 @@ void StopMainThread()
 }
 
 #if defined(CPUARM)
-
 struct SimulatorAudio {
   int volumeGain;
   int currentVolume;
@@ -454,19 +453,26 @@ struct SimulatorAudio {
   pthread_t threadPid;
 } simuAudio;
 
-bool dacQueue(AudioBuffer *buffer)
+bool dacQueue(AudioBuffer * buffer)
 {
   return false;
+}
+#endif
+
+#if defined(VOLUME_CHIP)
+void setScaledVolume(uint8_t volume)
+{
+  simuAudio.currentVolume = min<int>((volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)] * simuAudio.volumeGain) / 10, 127);
+  // TRACE("setVolume(): in: %u, out: %u", volume, simuAudio.currentVolume);
 }
 
 void setVolume(uint8_t volume)
 {
 }
 
-void setScaledVolume(uint8_t volume)
+int32_t getVolume()
 {
-  simuAudio.currentVolume = min<int>((volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)] * simuAudio.volumeGain) / 10, 127);
-  // TRACE("setVolume(): in: %u, out: %u", volume, simuAudio.currentVolume);
+  return 0;
 }
 #endif
 
@@ -1344,7 +1350,3 @@ void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }
 uint16_t stackSize() { return 0; }
-
-#if defined(VOLUME_CHIP)
-int32_t getVolume() { return 0; }
-#endif
