@@ -186,7 +186,7 @@ TEST(Lcd, Smlsize_drawStringWithIndex)
 {
   lcdClear();
   drawStringWithIndex(0, 0, "FM", 0, SMLSIZE);
-  EXPECT_TRUE(checkScreenshot("smlsize_drawStringWithIndex"));
+  EXPECT_TRUE(checkScreenshot("smlsize_drawstringwithindex"));
 }
 #endif
 
