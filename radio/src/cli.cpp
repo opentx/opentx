@@ -328,12 +328,14 @@ int cliDisplay(const char ** argv)
 int cliDebugVars(const char ** argv)
 {
 #if defined(PCBHORUS) && !defined(SIMU)
-  extern unsigned int ioMutexReq, ioMutexRel;
-  extern unsigned int sdReadRetries;
+  extern uint32_t ioMutexReq, ioMutexRel;
+  extern uint32_t sdReadRetries;
+  extern uint32_t audioBufferCount;
 
   serialPrint("ioMutexReq=%d", ioMutexReq);
   serialPrint("ioMutexRel=%d", ioMutexRel);
   serialPrint("sdReadRetries=%d", sdReadRetries);
+  serialPrint("audioBufferCount=%d", audioBufferCount);
 #endif
   return 0;
 }

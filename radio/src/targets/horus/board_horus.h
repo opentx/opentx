@@ -284,7 +284,7 @@ void setSampleRate(uint32_t frequency);
 // Fake volume driver
 #define setScaledVolume(...)
 #define setVolume(...)
-#define getVolume(...)                 (-1)
+#define getVolume(...) (-1)
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);

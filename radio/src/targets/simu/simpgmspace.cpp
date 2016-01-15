@@ -1344,4 +1344,7 @@ void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }
 uint16_t stackSize() { return 0; }
+
+#if defined(VOLUME_CHIP)
 int32_t getVolume() { return 0; }
+#endif

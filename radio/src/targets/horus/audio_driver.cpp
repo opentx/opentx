@@ -20,6 +20,8 @@
 
 #include "../../opentx.h"
 
+uint32_t audioBufferCount = 0;
+
 #if !defined(SIMU)
 bool dacIdle = true;
 
@@ -43,9 +45,6 @@ void dacTimerInit()
   AUDIO_TIMER->CR1 = TIM_CR1_CEN ;
 }
 
-// Configure DAC0 (or DAC1 for REVA)
-// Not sure why PB14 has not be allocated to the DAC, although it is an EXTRA function
-// So maybe it is automatically done
 void dacInit()
 {
   dacTimerInit();
@@ -74,6 +73,7 @@ void dacInit()
 bool dacQueue(AudioBuffer * buffer)
 {
   if (dacIdle) {
+    audioBufferCount++;
     dacIdle = false;
     DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
     DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear bits

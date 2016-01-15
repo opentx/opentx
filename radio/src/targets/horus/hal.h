@@ -211,6 +211,8 @@
 #define AUDIO_RCC_APB1Periph            (RCC_APB1ENR_TIM6EN | RCC_APB1ENR_DACEN)
 #define AUDIO_TIMER                     TIM6
 #define AUDIO_TIMER_DAC_IRQn            TIM6_DAC_IRQn
+#define AUDIO_DMA_STREAM                DMA1_Stream5
+#define AUDIO_DMA_IRQn                  DMA1_Stream5_IRQn
 
 // I2C Bus: TPL0401A-10DCK digital pot for volume control
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB

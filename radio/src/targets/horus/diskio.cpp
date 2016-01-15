@@ -36,7 +36,7 @@
 /*-----------------------------------------------------------------------*/
 #if !defined(BOOT)
 static OS_MutexID ioMutex;
-unsigned int ioMutexReq = 0, ioMutexRel = 0;
+uint32_t ioMutexReq = 0, ioMutexRel = 0;
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
   *mutex = ioMutex;
@@ -107,7 +107,7 @@ DSTATUS disk_status (
   return(stat);
 }
 
-unsigned int sdReadRetries = 0;
+uint32_t sdReadRetries = 0;
 
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
