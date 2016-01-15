@@ -425,7 +425,7 @@ if(ARCH STREQUAL ARM)
     keys_driver.cpp
     adc_driver.cpp
     trainer_driver.cpp
-    audio_driver.cpp
+    mp3_driver.cpp
     serial2_driver.cpp
     telemetry_driver.cpp
     )
