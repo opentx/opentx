@@ -281,14 +281,10 @@ void dacStart(void);
 void dacStop(void);
 void setSampleRate(uint32_t frequency);
 
-// I2C driver
-void i2cInit(void);
-#define VOLUME_LEVEL_MAX  23
-#define VOLUME_LEVEL_DEF  12
-extern const int8_t volumeScale[];
-void setScaledVolume(uint8_t volume);
-void setVolume(uint8_t volume);
-int32_t getVolume(void);
+// Fake volume driver
+#define setScaledVolume(...)
+#define setVolume(...)
+#define getVolume(...)                 (-1)
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);

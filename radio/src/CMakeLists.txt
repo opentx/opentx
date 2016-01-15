@@ -80,7 +80,6 @@ if(PCB STREQUAL HORUS)
     sdio_sd.c
     lcd_driver.cpp
     delays.c
-    i2c_driver.cpp
     usb_driver.c
     pwr_driver.c
     sdram_driver.c

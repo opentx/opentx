@@ -20,15 +20,15 @@
 
 #include "../../opentx.h"
 
-#define RADIO_SETUP_2ND_COLUMN  220
-#define YEAR_SEPARATOR_OFFSET   42
-#define MONTH_OFFSET            55
-#define MONTH_SEPARATOR_OFFSET  79
-#define DAY_OFFSET              91
-#define HOUR_SEPARATOR_OFFSET   26
-#define MINUTE_OFFSET           36
-#define MINUTE_SEPARATOR_OFFSET 63
-#define SECOND_OFFSET           75
+#define RADIO_SETUP_2ND_COLUMN         220
+#define YEAR_SEPARATOR_OFFSET          42
+#define MONTH_OFFSET                   55
+#define MONTH_SEPARATOR_OFFSET         79
+#define DAY_OFFSET                     91
+#define HOUR_SEPARATOR_OFFSET          26
+#define MINUTE_OFFSET                  36
+#define MINUTE_SEPARATOR_OFFSET        63
+#define SECOND_OFFSET                  75
 
 #define SLIDER_5POS(y, value, event, attr) { \
   int8_t tmp = value; \
@@ -48,7 +48,6 @@ enum menuGeneralSetupItems {
   // ITEM_SETUP_BATT_RANGE,
   ITEM_SETUP_SOUND_LABEL,
   ITEM_SETUP_BEEP_MODE,
-  ITEM_SETUP_SPEAKER_VOLUME,
   ITEM_SETUP_BEEP_VOLUME,
   ITEM_SETUP_BEEP_LENGTH,
   ITEM_SETUP_SPEAKER_PITCH,
@@ -110,7 +109,7 @@ bool menuGeneralSetup(evt_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   int sub = menuVerticalPosition;
 
@@ -225,20 +224,6 @@ bool menuGeneralSetup(evt_t event)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
         break;
-
-      case ITEM_SETUP_SPEAKER_VOLUME:
-      {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPEAKER_VOLUME);
-        uint8_t b = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
-        drawSlider(RADIO_SETUP_2ND_COLUMN, y, b, VOLUME_LEVEL_MAX, attr);
-        if (attr) {
-          CHECK_INCDEC_GENVAR(event, b, 0, VOLUME_LEVEL_MAX);
-          if (checkIncDec_Ret) {
-            g_eeGeneral.speakerVolume = (int8_t)b-VOLUME_LEVEL_DEF;
-          }
-        }
-        break;
-      }
 
       case ITEM_SETUP_BEEP_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_VOLUME);

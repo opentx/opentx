@@ -124,22 +124,16 @@ void pinCheck(GPIO_TypeDef * gpio, uint32_t pin, uint32_t RCC_AHB1Periph)
 
 void boardInit()
 {
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph, ENABLE);
-  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SERIAL_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | AUDIO_RCC_APB1Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | SERIAL_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | AUDIO_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph, ENABLE);
 
   pwrInit();
   ledInit();
-
-  i2cInit();
-  if (getVolume() < 0)
-    ledRed();
-  else
-    ledBlue();
-
   delaysInit();
 
-  // ledRed();
+  // FrSky removed the volume chip in latest board, that's why it doesn't answer!
+  // i2cInit();
 
   if (0) {
    // pinCheck(SERIAL_GPIO, SERIAL_GPIO_PIN_TX, SERIAL_RCC_AHB1Periph_GPIO);
@@ -150,17 +144,15 @@ void boardInit()
 
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
 
-  // ledBlue();
-
   __enable_irq();
 
   TRACE("Horus started :)");
+  ledBlue();
 
   keysInit();
   adcInit();
   lcdInit();
   audioInit();
-  i2cInit();
   init2MhzTimer();
   init5msTimer();
   usbInit();

@@ -232,6 +232,10 @@
 
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
 
+#if defined(CPUARM) && !defined(PCBHORUS)
+  #define VOLUME_CHIP
+#endif
+
 #if defined(SIMU)
   #ifndef FORCEINLINE
     #define FORCEINLINE

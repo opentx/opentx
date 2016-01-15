@@ -448,7 +448,7 @@ void evalFunctions()
             break;
 #endif
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(VOLUME_CHIP)
           case FUNC_VOLUME:
           {
             getvalue_t raw = getValue(CFN_PARAM(cfn));
