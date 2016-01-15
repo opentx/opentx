@@ -1634,8 +1634,17 @@ lcdint_t applyChannelRatio(source_t channel, lcdint_t val);
 #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
 #endif
 
-getvalue_t div10_and_round(getvalue_t value);
-getvalue_t div100_and_round(getvalue_t value);
+template<int I>
+getvalue_t div_and_round(getvalue_t value)
+{
+  if (value >= 0 ) {
+    value += I / 2;
+  }
+  else {
+    value -= I / 2;
+  }
+  return value / I;
+}
 
 #if defined(FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);

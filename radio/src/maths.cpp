@@ -127,27 +127,6 @@ uint16_t isqrt32(uint32_t n)
    -205 -> -21
    -204 -> -20 
 */
-getvalue_t div10_and_round(getvalue_t value)
-{
-  if (value >= 0 ) {
-    value += 5;
-  }
-  else {
-    value -= 5;
-  }
-  return value/10;
-}
-
-getvalue_t div100_and_round(getvalue_t value)
-{
-  if (value >= 0 ) {
-    value += 50;
-  }
-  else {
-    value -= 50;
-  }
-  return value/100;
-}
 
 #if defined(PCBTARANIS)
 double gpsToDouble(bool neg, int16_t bp, int16_t ap)
