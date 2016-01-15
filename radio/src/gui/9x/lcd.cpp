@@ -731,7 +731,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   if (idx < CURVE_BASE)
     lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, idx, att);
   else
-    putsStrIdx(x, y, STR_CV, idx-CURVE_BASE+1, att);
+    drawStringWithIndex(x, y, STR_CV, idx-CURVE_BASE+1, att);
 }
 
 void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
