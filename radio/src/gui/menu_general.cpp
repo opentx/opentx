@@ -1101,7 +1101,7 @@ void menuGeneralSdManager(uint8_t _event)
           if (isFilenameLower(isfile, fn, reusableBuffer.sdmanager.lines[1]) && isFilenameGreater(isfile, fn, reusableBuffer.sdmanager.lines[0])) {
             memset(reusableBuffer.sdmanager.lines[0], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
             strcpy(reusableBuffer.sdmanager.lines[0], fn);
-            NODE_TYPE(reusableBuffer.sdmanager.lines[6]) = isfile;
+            NODE_TYPE(reusableBuffer.sdmanager.lines[0]) = isfile;
           }
         }
       }
