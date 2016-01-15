@@ -13,33 +13,28 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DHELI=YES -DLUA=YES -DWARNINGS_AS_
 make -j2
 make -j2 firmware.bin
 make -j2 simu
-make -j2 gtests
-./gtests
+make -j2 gtests && ./gtests
 
 # OpenTX on Taranis X9E
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DPCBREV=REV9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
 make -j2 firmware.bin
 make -j2 simu
-make -j2 gtests
-./gtests
+make -j2 gtests && ./gtests
 
 # OpenTX on Taranis Plus
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DPCBREV=REVPLUS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
 make -j2 firmware.bin
 make -j2 simu
-make -j2 gtests
-./gtests
+make -j2 gtests && ./gtests
 
 # OpenTX on Horus
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES .. 
 make -j2 firmware.bin
-cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=NO -DDEBUG=YES .. 
 make -j2 simu
-#make gtests
-#./gtests
+#make -j2 gtests && ./gtests
 
 
 # Old, not yet converted
