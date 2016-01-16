@@ -27,24 +27,6 @@ if(TABLE_LAYOUT)
   message(STATUS "Using QTableWidget")
 endif(TABLE_LAYOUT)
 
-message(STATUS "Looking for XercesC ")
-find_package(XercesC)
-if(XERCESC_FOUND)
-  include_directories(${XERCESC_INCLUDE_DIR})
-  set(LidarFormat_LIBRAIRIES ${LidarFormat_LIBRAIRIES} ${XERCESC_LIBRARIES})
-else()
-  message(FATAL_ERROR "XercesC not found! Please set XercesC path ...")
-endif()
-
-message(STATUS "Looking for Xsd ")
-find_package(Xsd)
-if(XSD_FOUND)
-  include_directories(${XSD_INCLUDE_DIR})
-  message("XSD Include Path: " ${XSD_INCLUDE_DIR})
-else()
-  message(FATAL_ERROR "XSD not found! Please set XSD path ...")
-endif()
-
 message(STATUS "Looking for SDL ")
 find_package(Sdl)
 if(SDL_FOUND)
@@ -81,12 +63,6 @@ endif()
 
 add_definitions(-DQXT_STATIC)
 
-add_custom_command(
-  COMMAND ${XSDCXX_EXECUTABLE} cxx-tree --root-element-all --generate-serialization --output-dir ${PROJECT_BINARY_DIR}/ ${PROJECT_SOURCE_DIR}/radio.xsd
-  OUTPUT ${PROJECT_BINARY_DIR}/radio.hxx ${PROJECT_BINARY_DIR}/radio.cxx
-  DEPENDS ${PROJECT_SOURCE_DIR}/radio.xsd
-)
-
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/EHsc /LD")
   include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
@@ -108,7 +84,6 @@ include_directories(
   ${COMPANION_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/shared
   ${SIMU_SRC_DIRECTORY}
-  ${XSD_INCLUDE_DIR}
   ${COMPANION_SRC_DIRECTORY}/qxtcommandoptions
 )
 
@@ -280,7 +255,7 @@ else()
   add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_QM})
 endif()
 
-target_link_libraries(${COMPANION_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${XERCESC_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
+target_link_libraries(${COMPANION_NAME} generaledit modeledit simulation common qcustomplot shared ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS})
 
 ############# Standalone simu ###############
 
@@ -386,7 +361,6 @@ if(APPLE)
     COMMAND rsync -r --exclude=.svn ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
     COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
     COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
-    COMMAND rsync -r ${XSD_INCLUDE_DIR}/.. companion.app/Contents/Frameworks/
     COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
     COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
     COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
