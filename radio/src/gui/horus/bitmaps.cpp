@@ -49,7 +49,7 @@ const uint8_t LBM_CURRENT_DOT[] = {
  */
 
 const uint8_t LBM_MAINVIEW_BACKGROUND[] = {
-#include "background.lbm"
+#include "bmp_background.lbm"
 };
 
 const uint8_t LBM_TOPMENU_OPENTX[] = {
@@ -233,7 +233,7 @@ const uint8_t LBM_STAR1[] __DMA = {
  */
 
 const uint8_t LBM_ASTERISK[] __DMA = {
-#include "asterisk.lbm"
+#include "bmp_asterisk.lbm"
 };
 
 const uint8_t LBM_POINT[] __DMA = {
@@ -253,13 +253,13 @@ const uint8_t LBM_CURVE_COORD_SHADOW[] __DMA = {
 };
 
 const uint8_t LBM_SHUTDOWN[] __DMA = {
-#include "shutdown.lbm"
+#include "alpha_shutdown.lbm"
 };
 
 const uint8_t LBM_SLEEP[] __DMA = {
-#include "sleep.lbm"
+#include "bmp_sleep.lbm"
 };
 
-const uint8_t LBM_BIGRSCALE[] __DMA = {
-#include "mask_bigrscale.lbm"
+const uint8_t LBM_SHUTDOWN_CIRCLE[] __DMA = {
+#include "mask_shutdown_circle.lbm"
 };

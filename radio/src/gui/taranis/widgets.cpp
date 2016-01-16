@@ -39,8 +39,10 @@ const pm_uchar bmp_shutdown[] PROGMEM = {
 
 #define SHUTDOWN_BITMAP_WIDTH          60
 #define SHUTDOWN_BITMAP_HEIGHT         60
-void drawShutdownBitmap(uint8_t index)
+void drawShutdownBitmap(uint32_t index)
 {
+  index /= (PWR_PRESS_SHUTDOWN / 4);
+  lcdRefreshWait();
   lcdClear();
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, index * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
   lcdRefresh();

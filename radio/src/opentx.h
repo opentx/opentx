@@ -297,17 +297,17 @@
   #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
   #define PSTR(adr) adr
   #define PROGMEM
-  #define pgm_read_adr(x) *(x)
+  #define pgm_read_adr(x)              *(x)
   #define cli()
   #define sei()
   extern void boardInit();
   #if defined(PCBTARANIS)
     extern void boardOff();
   #else
-    #define boardOff()  pwrOff();
+    #define boardOff()                 pwrOff();
   #endif
 #else
-  #define boardOff()  pwrOff();
+  #define boardOff()                   pwrOff();
   #include <avr/io.h>
   #include <avr/pgmspace.h>
   #include "pgmtypes.h"
@@ -315,9 +315,9 @@
   #include <avr/eeprom.h>
   #include <avr/sleep.h>
   #include <avr/interrupt.h>
-  #define F_CPU 16000000UL  // 16 MHz
+  #define F_CPU                        16000000UL  // 16 MHz
   #include <util/delay.h>
-  #define pgm_read_adr(address_short) pgm_read_word(address_short)
+  #define pgm_read_adr(address_short)  pgm_read_word(address_short)
   #include <avr/wdt.h>
 #endif
 
@@ -327,15 +327,15 @@
   #define NUM_SWITCHES     5
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   #if defined(REV9E)
-    #define NUM_SWITCHES   18 // yes, it's a lot!
+    #define NUM_SWITCHES               18 // yes, it's a lot!
   #else
-    #define NUM_SWITCHES   8
+    #define NUM_SWITCHES               8
   #endif
-  #define SWSRC_THR        SWSRC_SF2
-  #define SWSRC_GEA        SWSRC_SG2
-  #define SWSRC_ID0        SWSRC_SA0
-  #define SWSRC_ID1        SWSRC_SA1
-  #define SWSRC_ID2        SWSRC_SA2
+  #define SWSRC_THR                    SWSRC_SF2
+  #define SWSRC_GEA                    SWSRC_SG2
+  #define SWSRC_ID0                    SWSRC_SA0
+  #define SWSRC_ID1                    SWSRC_SA1
+  #define SWSRC_ID2                    SWSRC_SA2
 #else
   #define NUM_SWITCHES     7
   #define IS_3POS(sw)      ((sw) == 0)
@@ -343,23 +343,23 @@
   #define SW_DSM2_BIND     SW_TRN
 #endif
 
-#define NUM_PSWITCH        (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
-#define NUM_POTSSW         (NUM_XPOTS*6)
+#define NUM_PSWITCH                    (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
+#define NUM_POTSSW                     (NUM_XPOTS*6)
 
 #include "myeeprom.h"
 
 #if defined(CPUM64)
   void memclear(void *ptr, uint8_t size);
 #else
-  #define memclear(p, s) memset(p, 0, s)
+  #define memclear(p, s)               memset(p, 0, s)
 #endif
 
 void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBHORUS)
-  #define IS_POT_AVAILABLE(x)       (true)
-  #define IS_POT_MULTIPOS(x)        ((x)==POT2)
-  #define IS_POT_WITHOUT_DETENT(x)  (true)
+  #define IS_POT_AVAILABLE(x)          (true)
+  #define IS_POT_MULTIPOS(x)           ((x)==POT2)
+  #define IS_POT_WITHOUT_DETENT(x)     (true)
 #elif defined(PCBFLAMENCO)
   #define IS_POT_AVAILABLE(x)       (true)
   #define IS_POT_MULTIPOS(x)        (false)
@@ -387,6 +387,7 @@ void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBFLAMENCO) || defined(PCBHORUS) || (defined(PCBTARANIS) && defined(REV9E))
   #define PWR_BUTTON_DELAY
+  #define PWR_PRESS_SHUTDOWN           300 // 3s
 #endif
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)

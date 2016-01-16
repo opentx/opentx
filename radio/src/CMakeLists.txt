@@ -84,6 +84,7 @@ if(PCB STREQUAL HORUS)
     pwr_driver.c
     sdram_driver.c
     led_driver.cpp
+    mp3_driver.cpp
     )
   set(STM32LIB_SRC
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
@@ -425,7 +426,7 @@ if(ARCH STREQUAL ARM)
     keys_driver.cpp
     adc_driver.cpp
     trainer_driver.cpp
-    mp3_driver.cpp
+    audio_driver.cpp
     serial2_driver.cpp
     telemetry_driver.cpp
     )

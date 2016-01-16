@@ -21,7 +21,7 @@
 #include "../../opentx.h"
 
 const uint8_t LBM_SPLASH[] __DMA = {
-#include "splash.lbm"
+#include "bmp_splash.lbm"
 };
 
 #if defined(SPLASH)

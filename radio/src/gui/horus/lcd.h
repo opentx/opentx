@@ -223,16 +223,16 @@ inline void lcdDrawPixel(coord_t x, coord_t y, display_t value)
   lcdDrawPixel(p, value);
 }
 
-void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color);
+void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color);
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
 void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 
-inline void lcdDrawTransparentPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
+inline void lcdDrawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
 {
   display_t * p = PIXEL_PTR(x, y);
-  lcdDrawTransparentPixel(p, opacity, color);
+  lcdDrawAlphaPixel(p, opacity, color);
 }
 
 #if !defined(SIMU)
@@ -305,6 +305,7 @@ int getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight);
 int getTextWidth(const pm_char *s, int len=0, LcdFlags flags=0);
 void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t height=0, int scale=0);
 void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0);
+void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp);
 
 #define lcdSetRefVolt(...)
 void lcdSetContrast();
@@ -314,7 +315,7 @@ const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint
 const char * imgLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 
 void drawSleepBitmap();
-void drawShutdownBitmap(uint8_t index);
+void drawShutdownBitmap(uint32_t index);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)

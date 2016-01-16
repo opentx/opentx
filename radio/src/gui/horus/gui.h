@@ -134,4 +134,4 @@ extern const uint8_t LBM_CURVE_POINT_CENTER[];
 extern const uint8_t LBM_CURVE_COORD_SHADOW[];
 extern const uint8_t LBM_SHUTDOWN[];
 extern const uint8_t LBM_SLEEP[];
-extern const uint8_t LBM_BIGRSCALE[];
+extern const uint8_t LBM_SHUTDOWN_CIRCLE[];

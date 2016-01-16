@@ -324,8 +324,8 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 }
 #endif
 
-#define SLEEP_BITMAP_WIDTH             110
-#define SLEEP_BITMAP_HEIGHT            110
+#define SLEEP_BITMAP_WIDTH             150
+#define SLEEP_BITMAP_HEIGHT            150
 void drawSleepBitmap()
 {
   lcdClear();
@@ -335,10 +335,25 @@ void drawSleepBitmap()
 
 #define SHUTDOWN_BITMAP_WIDTH          110
 #define SHUTDOWN_BITMAP_HEIGHT         110
-void drawShutdownBitmap(uint8_t index)
+#define SHUTDOWN_CIRCLE_DIAMETER       150
+void drawShutdownBitmap(uint32_t index)
 {
-  // lcdClear();
-  lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, LBM_SHUTDOWN, index*SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
-  lcdDrawBitmapPatternPie((LCD_W-150)/2, (LCD_H-150)/2, LBM_BIGRSCALE, TEXT_COLOR, 0, 360/4*index);
+  static uint32_t last_index = UINT32_MAX;
+
+  if (index < last_index) {
+    lcdDrawBlackOverlay();
+    lcdDrawAlphaBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, LBM_SHUTDOWN);
+    lcdStoreBackupBuffer();
+  }
+  else {
+    lcdRestoreBackupBuffer();
+    index /= (PWR_PRESS_SHUTDOWN / 5);
+    if (index >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (index >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (index >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (index >= 4) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+  }
+
   lcdRefresh();
+  last_index = index;
 }

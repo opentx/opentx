@@ -2636,7 +2636,6 @@ int main(void)
 #endif // !SIMU
 
 #if defined(PWR_BUTTON_DELAY)
-#define PWR_PRESS_SHUTDOWN             300 // 3s
 
 uint32_t pwr_press_time = 0;
 
@@ -2697,9 +2696,7 @@ uint32_t pwrCheck()
 #endif
       }
       else {
-        lcdRefreshWait();
-        unsigned index = pwrPressedDuration() / (PWR_PRESS_SHUTDOWN / 4);
-        drawShutdownBitmap(index);
+        drawShutdownBitmap(pwrPressedDuration());
         return e_power_press;
       }
     }

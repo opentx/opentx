@@ -93,7 +93,7 @@ void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags fl
     display_t * p = PIXEL_PTR(x, y+row);
     const uint8_t * q = img + 4 + row*w + offset;
     for (coord_t col=0; col<width; col++) {
-      lcdDrawTransparentPixel(p, *q, color);
+      lcdDrawAlphaPixel(p, *q, color);
       p++; q++;
     }
   }
@@ -798,7 +798,7 @@ void lcdSetContrast()
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-void lcdDrawTransparentPixel(display_t * p, uint8_t opacity, uint16_t color)
+void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
   ASSERT_IN_DISPLAY(p);
 
@@ -836,14 +836,14 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
 
   if (pat == SOLID) {
     while (w--) {
-      lcdDrawTransparentPixel(p, opacity, color);
+      lcdDrawAlphaPixel(p, opacity, color);
       p++;
     }
   }
   else {
     while (w--) {
       if (pat & 1) {
-        lcdDrawTransparentPixel(p, opacity, color);
+        lcdDrawAlphaPixel(p, opacity, color);
         pat = (pat >> 1) | 0x80;
       }
       else {
@@ -867,7 +867,7 @@ void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags 
 
   if (pat == SOLID) {
     while (h--) {
-      lcdDrawTransparentPixel(x, y, opacity, color);
+      lcdDrawAlphaPixel(x, y, opacity, color);
       y++;
     }
   }
@@ -877,7 +877,7 @@ void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags 
     }
     while (h--) {
       if (pat & 1) {
-        lcdDrawTransparentPixel(x, y, opacity, color);
+        lcdDrawAlphaPixel(x, y, opacity, color);
         pat = (pat >> 1) | 0x80;
       }
       else {
@@ -896,6 +896,25 @@ inline void lcdDrawBitmapDMA(coord_t x, coord_t y, coord_t width, coord_t height
 #endif
 
 #if !defined(BOOT)
+void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp)
+{
+  int width = getBitmapWidth(bmp);
+  int height = getBitmapHeight(bmp);
+
+  if (width == 0 || height == 0) {
+    return;
+  }
+
+  for (coord_t line=0; line<height; line++) {
+    display_t * p = &displayBuf[(y+line)*LCD_W + x];
+    const uint8_t * q = bmp + 4 + line*width*3;
+    for (coord_t col=0; col<width; col++) {
+      lcdDrawAlphaPixel(p, q[2]>>4, *((uint16_t *)q));
+      p++; q+=3;
+    }
+  }
+}
+
 void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t height, int scale)
 {
   int width = getBitmapWidth(bmp);
@@ -1095,16 +1114,16 @@ void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFla
     for (int x=w2-1; x>=0; x--) {
       int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
       if (slope >= slopes[0] && slope < slopes[1]) {
-        lcdDrawTransparentPixel(x0+w2+x, y0+h2-y, q[(h2-y)*width + w2+x], color);
+        lcdDrawAlphaPixel(x0+w2+x, y0+h2-y, q[(h2-y)*width + w2+x], color);
       }
       if (-slope >= slopes[0] && -slope < slopes[1]) {
-        lcdDrawTransparentPixel(x0+w2+x, y0+h2+y, q[(h2+y)*width + w2+x], color);
+        lcdDrawAlphaPixel(x0+w2+x, y0+h2+y, q[(h2+y)*width + w2+x], color);
       }
       if (slope >= slopes[2] && slope < slopes[3]) {
-        lcdDrawTransparentPixel(x0+w2-x, y0+h2-y, q[(h2-y)*width + w2-x], color);
+        lcdDrawAlphaPixel(x0+w2-x, y0+h2-y, q[(h2-y)*width + w2-x], color);
       }
       if (-slope >= slopes[2] && -slope < slopes[3]) {
-        lcdDrawTransparentPixel(x0+w2-x, y0+h2+y, q[(h2+y)*width + w2-x], color);
+        lcdDrawAlphaPixel(x0+w2-x, y0+h2+y, q[(h2+y)*width + w2-x], color);
       }
     }
   }
