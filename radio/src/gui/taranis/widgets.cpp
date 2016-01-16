@@ -33,6 +33,7 @@ void drawSleepBitmap()
   lcdRefresh();
 }
 
+#if defined(PWR_BUTTON_DELAY)
 const pm_uchar bmp_shutdown[] PROGMEM = {
   #include "../../bitmaps/taranis/shutdown.lbm"
 };
@@ -47,6 +48,7 @@ void drawShutdownBitmap(uint32_t index)
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, index * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
   lcdRefresh();
 }
+#endif
 
 void drawStick(coord_t centrex, int16_t xval, int16_t yval)
 {
