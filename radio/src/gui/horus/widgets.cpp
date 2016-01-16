@@ -338,7 +338,7 @@ void drawSleepBitmap()
 #define SHUTDOWN_CIRCLE_DIAMETER       150
 void drawShutdownBitmap(uint32_t index)
 {
-  static uint32_t last_index = UINT32_MAX;
+  static uint32_t last_index = 0xffffffff;
 
   if (index < last_index) {
     lcdDrawBlackOverlay();
