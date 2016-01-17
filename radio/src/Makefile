@@ -1241,7 +1241,7 @@ ifeq ($(PCB), HORUS)
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/hid/inc
   INCDIRS += $(STM32USBPATH)/STM32_USB_Device_Library/Class/cdc/inc
   BOARDSRC = main_arm.cpp targets/horus/board_horus.cpp targets/horus/led_driver.cpp
-  EXTRABOARDSRC += targets/horus/lcd_driver.cpp targets/horus/delays.c targets/horus/i2c_driver.cpp targets/taranis/configure_pins.cpp serial.cpp # targets/taranis/flash_driver.cpp 
+  EXTRABOARDSRC += targets/horus/lcd_driver.cpp targets/horus/delays.c targets/taranis/configure_pins.cpp serial.cpp # targets/taranis/flash_driver.cpp
   SRC += $(COOSDIR)/kernel/core.c $(COOSDIR)/kernel/hook.c $(COOSDIR)/kernel/task.c $(COOSDIR)/kernel/event.c $(COOSDIR)/kernel/time.c $(COOSDIR)/kernel/timer.c $(COOSDIR)/kernel/flag.c $(COOSDIR)/kernel/mutex.c $(COOSDIR)/kernel/serviceReq.c $(COOSDIR)/portable/GCC/port.c $(COOSDIR)/portable/arch.c
   SRC += targets/horus/pwr_driver.c targets/horus/usb_driver.c targets/horus/sdram_driver.c
   PULSESSRC = pulses/pulses_arm.cpp pulses/ppm_arm.cpp pulses/pxx_arm.cpp
@@ -1946,8 +1946,11 @@ bitmaps/flamenco/%.lbm: bitmaps/flamenco/%.png
 bitmaps/horus/mask_%.lbm: bitmaps/horus/mask_%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) $(MASKFORMAT)
 
-bitmaps/horus/%.lbm: bitmaps/horus/%.png
+bitmaps/horus/alpha_%.lbm: bitmaps/horus/alpha_%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 5/6/5/8
+
+bitmaps/horus/%.lbm: bitmaps/horus/%.png
+	$(IMG2LBM) $^ $@ $(LCDSIZE) 5/6/5
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp
