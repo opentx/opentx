@@ -67,7 +67,7 @@ extern "C" {
 
 #define PERI1_FREQUENCY                45000000
 #define PERI2_FREQUENCY                90000000
-#define TIMER_MULT_APB1                4
+#define TIMER_MULT_APB1                2
 #define TIMER_MULT_APB2                2
 
 #define PIN_MODE_MASK                  0x0003
