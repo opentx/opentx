@@ -35,6 +35,9 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
 
+  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+  GPIO_Init(GPIOI, &GPIO_InitStructure);
+
   // Init Module PWR
   GPIO_ResetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR);
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_GPIO_PIN_PWR;

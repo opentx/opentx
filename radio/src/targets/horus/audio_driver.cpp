@@ -20,8 +20,6 @@
 
 #include "../../opentx.h"
 
-#if 0
-
 uint32_t audioBufferCount = 0;
 
 #if !defined(SIMU)
@@ -144,5 +142,3 @@ extern "C" void DMA1_Stream5_IRQHandler()
   }
 }
 #endif  // #if !defined(SIMU)
-
-#endif
