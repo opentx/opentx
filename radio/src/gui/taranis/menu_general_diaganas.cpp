@@ -27,28 +27,26 @@ void menuGeneralDiagAna(uint8_t event)
   STICK_SCROLL_DISABLE();
 
   for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
-#if (NUM_STICKS+NUM_POTS) > 9
-    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
-    const uint8_t x_coord[] = {0, 70, 154};
-    uint8_t x = x_coord[i%3];
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
+    uint8_t x = i&1 ? LCD_W/2 + FW : 0;
     lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2);
     lcdDrawChar(x+2*FW-2, y, ':');
-#else
-    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
-    uint8_t x = i&1 ? 64+5 : 0;
-    drawStringWithIndex(x, y, PSTR("A"), i+1);
-    lcdDrawChar(lcdNextPos, y, ':');
-#endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
+#if defined(JITTER_MEASURE)
+    lcdDrawNumber(x+10*FW-1, y, rawJitter[i].get());
+    lcdDrawNumber(x+13*FW-1, y, avgJitter[i].get());
+    lcdDraw8bitsNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#else
     lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#endif
   }
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_BATT_CALIB);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+1+6*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
   uint32_t batCalV = (adcBatt + (adcBatt*g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
   batCalV >>= 11;
   batCalV += 2; // because of the diode
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+5*FH, batCalV, s_editMode > 0 ? BLINK|INVERS : INVERS);
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+6*FH, batCalV, s_editMode > 0 ? BLINK|INVERS : INVERS);
   if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
 }

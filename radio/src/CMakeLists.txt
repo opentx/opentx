@@ -16,6 +16,8 @@ option(DANGEROUS_MODULE_FUNCTIONS "Dangerous module functions (RangeCheck / Bind
 option(FAI "Competition mode (no telemetry)" OFF)
 option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
+option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
+option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 
 enable_language(ASM)
 set(OPT s)
@@ -649,6 +651,15 @@ endif()
 if(AUTOSWITCH)
   add_definitions(-DAUTOSWITCH)
 endif()
+
+if(JITTER_MEASURE)
+  add_definitions(-DJITTER_MEASURE)
+endif()
+
+if(JITTER_FILTER)
+  add_definitions(-DJITTER_FILTER)
+endif()
+
 
 if(SDCARD STREQUAL YES)
   add_definitions(-DSDCARD)
