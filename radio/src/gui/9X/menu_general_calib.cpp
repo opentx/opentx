@@ -39,6 +39,14 @@
 #define XPOT_DELTA 10
 #define XPOT_DELAY 10 /* cycles */
 
+enum CalibrationState {
+  CALIB_START = 0,
+  CALIB_SET_MIDPOINT,
+  CALIB_MOVE_STICKS,
+  CALIB_STORE,
+  CALIB_FINISHED
+};
+
 void menuCommonCalib(uint8_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
@@ -57,7 +65,7 @@ void menuCommonCalib(uint8_t event)
   switch (event)
   {
     case EVT_ENTRY:
-      reusableBuffer.calib.state = 0;
+      reusableBuffer.calib.state = CALIB_START;
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -66,14 +74,14 @@ void menuCommonCalib(uint8_t event)
   }
 
   switch (reusableBuffer.calib.state) {
-    case 0:
+    case CALIB_START:
       // START CALIBRATION
       if (!READ_ONLY()) {
         lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUTOSTART);
       }
       break;
 
-    case 1:
+    case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
       lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
       lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
@@ -85,7 +93,7 @@ void menuCommonCalib(uint8_t event)
       }
       break;
 
-    case 2:
+    case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
       lcd_putsAtt(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
@@ -102,14 +110,14 @@ void menuCommonCalib(uint8_t event)
       }
       break;
 
-    case 3:
+    case CALIB_STORE:
       g_eeGeneral.chkSum = evalChkSum();
       eeDirty(EE_GENERAL);
-      reusableBuffer.calib.state = 4;
+      reusableBuffer.calib.state = CALIB_FINISHED;
       break;
 
     default:
-      reusableBuffer.calib.state = 0;
+      reusableBuffer.calib.state = CALIB_START;
       break;
   }
 
@@ -121,7 +129,7 @@ void menuGeneralCalib(uint8_t event)
   check_simple(event, e_Calib, menuTabGeneral, DIM(menuTabGeneral), 0);
 
   if (menuEvent) {
-    calibrationState = 0;
+    calibrationState = CALIB_START;
   }
 
   TITLE(STR_MENUCALIBRATION);
@@ -130,8 +138,8 @@ void menuGeneralCalib(uint8_t event)
 
 void menuFirstCalib(uint8_t event)
 {
-  if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == 4) {
-    calibrationState = 0;
+  if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == CALIB_FINISHED) {
+    calibrationState = CALIB_START;
     chainMenu(menuMainView);
   }
   else {
