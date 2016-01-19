@@ -750,9 +750,14 @@ set(SRC ${SRC} ${FIRMWARE_SRC})
 
 set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
 
-# trick to remove the -rdynamic issue
+# trick to remove the -rdynamic and --out-implib issues
+set(CMAKE_EXECUTABLE_SUFFIX "")
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
+set(CMAKE_COMMON_FLAGS "")
+set(CMAKE_EXE_LINKER_FLAGS "")
+set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
+set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
 if(ARCH STREQUAL ARM)
   cmake_force_c_compiler(arm-none-eabi-gcc GNU)

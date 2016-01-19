@@ -1,0 +1,204 @@
+;NSIS Modern User Interface
+;Start Menu Folder Selection Example Script
+;Written by Joost Verburg
+
+;--------------------------------
+;Include Modern UI
+
+  !include "MUI2.nsh"
+
+;--------------------------------
+;General
+
+  ;Name and file
+  Name "OpenTX Simulator"
+  OutFile "simulator-windows-@VERSION@.exe"
+
+  ;Default installation folder
+  InstallDir "$PROGRAMFILES\OpenTX"
+  
+  ;Get installation folder from registry if available
+  InstallDirRegKey HKCU "Software\OpenTX" ""
+  
+  ;Compressor options
+  SetCompressor /FINAL /SOLID lzma
+  SetCompressorDictSize 64
+
+  ;Request application privileges for Windows Vista
+  RequestExecutionLevel admin
+
+;--------------------------------
+;Variables
+
+  Var StartMenuFolder
+
+;--------------------------------
+;Interface Settings
+
+  !define MUI_ABORTWARNING
+
+;--------------------------------
+;File Exists Macro
+
+; See http://nsis.sourceforge.net/Check_if_a_file_exists_at_compile_time for documentation
+!macro !defineifexist _VAR_NAME _FILE_NAME
+	!tempfile _TEMPFILE
+	!ifdef NSIS_WIN32_MAKENSIS
+		; Windows - cmd.exe
+		!system 'if exist "${_FILE_NAME}" echo !define ${_VAR_NAME} > "${_TEMPFILE}"'
+	!else
+		; Posix - sh
+		!system 'if [ -e "${_FILE_NAME}" ]; then echo "!define ${_VAR_NAME}" > "${_TEMPFILE}"; fi'
+	!endif
+	!include '${_TEMPFILE}'
+	!delfile '${_TEMPFILE}'
+	!undef _TEMPFILE
+!macroend
+!define !defineifexist "!insertmacro !defineifexist"
+
+;--------------------------------
+;Pages
+
+  !insertmacro MUI_PAGE_LICENSE "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
+  !insertmacro MUI_PAGE_COMPONENTS
+  !insertmacro MUI_PAGE_DIRECTORY
+  
+  ;Start Menu Folder Page Configuration
+  !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
+  !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\OpenTX" 
+  !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+  
+  !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
+  
+  !insertmacro MUI_PAGE_INSTFILES
+  
+  # These indented statements modify settings for MUI_PAGE_FINISH
+    !define MUI_FINISHPAGE_NOAUTOCLOSE
+    !define MUI_FINISHPAGE_RUN
+    !define MUI_FINISHPAGE_RUN_CHECKED
+    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Simulator"
+    !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
+  !insertmacro MUI_PAGE_FINISH
+  
+  !insertmacro MUI_UNPAGE_CONFIRM
+  !insertmacro MUI_UNPAGE_INSTFILES
+
+;--------------------------------
+;Languages
+ 
+  !insertmacro MUI_LANGUAGE "English"
+  !insertmacro MUI_LANGUAGE "French"
+
+;--------------------------------
+;Installer Sections
+
+Section "OpenTX Simulator" SecDummy
+
+  SetOutPath "$INSTDIR"
+  
+  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
+  File "Release\simulator.exe"
+  File "Release\opentx-*-simulator.dll"
+  
+  ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
+  !ifdef PTHREAD_WINDIR
+  File "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
+  !else
+  File "@SYSDIR@\system32\pthreadVC2.dll"
+  !endif
+  File "C:\Programs\xerces-vc\bin\xerces-c_3_1.dll"
+  File "C:\Programs\SDL\lib\SDL.dll"
+  File "@SYSDIR@\msvcp100.dll"
+  File "@SYSDIR@\msvcr100.dll"
+  File "@QT_BINARY_DIR@\QtCore4.dll"
+  File "@QT_BINARY_DIR@\QtGui4.dll"
+  File "@QT_BINARY_DIR@\QtNetwork4.dll"
+  File "@QT_BINARY_DIR@\Phonon4.dll"
+  File "@QT_BINARY_DIR@\QtXml4.dll"
+  
+  CreateDirectory "$INSTDIR\phonon_backend"
+  SetOutPath "$INSTDIR\phonon_backend"
+  File "@QT_BINARY_DIR@\..\plugins\phonon_backend\Phonon_ds94.dll"
+
+  CreateDirectory "$INSTDIR\lang"
+  SetOutPath "$INSTDIR\lang"
+  File "src\*.qm"
+  
+  SetOutPath "$INSTDIR"
+  ;Store installation folder
+  WriteRegStr HKCU "Software\OpenTX" "" $INSTDIR
+  
+  ;Create uninstaller
+  WriteUninstaller "$INSTDIR\Uninstall.exe"
+  
+  ;Registry information for add/remove programs
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayName" "OpenTX Simulator"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "UninstallString" "$\"$INSTDIR\Uninstall.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "DisplayIcon" "$\"$INSTDIR\simulator.exe$\""
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "Publisher" "OpenTX"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX" "URLInfoAbout" "http://www.open-tx.org"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ImageMaker" "QuietUninstallString" "$\"$INSTDIR\Uninstall.exe$\" /S"
+  
+  !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
+    
+  ;Create shortcuts
+  CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\simulator.lnk" "$INSTDIR\simulator.exe"
+  CreateShortCut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+  
+  !insertmacro MUI_STARTMENU_WRITE_END
+
+SectionEnd
+
+;--------------------------------
+;Descriptions
+
+  ;Language strings
+  LangString DESC_SecDummy ${LANG_ENGLISH} "Simulator for OpenTX"
+  LangString DESC_SecDummy ${LANG_FRENCH}  "Simulateur pour OpenTX"
+
+  ;Assign language strings to sections
+  !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
+  !insertmacro MUI_DESCRIPTION_TEXT ${SecDummy} $(DESC_SecDummy)
+  !insertmacro MUI_FUNCTION_DESCRIPTION_END
+ 
+;--------------------------------
+;Uninstaller Section
+
+Section "Uninstall"
+
+  ;ADD YOUR OWN FILES HERE...  
+  
+  Delete "$INSTDIR\license.txt"
+  Delete "$INSTDIR\simulator.exe"
+  Delete "$INSTDIR\pthreadVC2.dll"
+  Delete "$INSTDIR\xerces-c_3_1.dll"
+  Delete "$INSTDIR\SDL.dll"
+  Delete "$INSTDIR\msvcp100.dll"
+  Delete "$INSTDIR\msvcr100.dll"
+  Delete "$INSTDIR\QtCore4.dll"
+  Delete "$INSTDIR\QtGui4.dll"
+  Delete "$INSTDIR\QtXml4.dll"
+  Delete "$INSTDIR\QtNetwork4.dll"
+  Delete "$INSTDIR\Phonon4.dll"
+  Delete "$INSTDIR\Uninstall.exe"
+  Delete "$INSTDIR\lang\*.*"
+  Delete "$INSTDIR\opentx-*-simulator.dll"
+
+  RMDir "$INSTDIR\lang"
+  RMDir "$INSTDIR"
+    
+  !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
+    
+  Delete "$SMPROGRAMS\$StartMenuFolder\simulator.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
+  RMDir "$SMPROGRAMS\$StartMenuFolder"
+  
+  DeleteRegKey /ifempty HKCU "Software\OpenTX"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX"
+
+SectionEnd
+
+Function LaunchLink
+  ExecShell "" "$INSTDIR\simulator.exe"
+FunctionEnd
