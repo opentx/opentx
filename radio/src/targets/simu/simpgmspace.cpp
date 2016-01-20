@@ -453,7 +453,7 @@ struct SimulatorAudio {
   pthread_t threadPid;
 } simuAudio;
 
-bool dacQueue(AudioBuffer * buffer)
+bool audioPushBuffer(AudioBuffer * buffer)
 {
   return false;
 }

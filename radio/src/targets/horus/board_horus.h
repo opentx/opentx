@@ -110,6 +110,7 @@ extern "C" {
 #endif
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+void delay_ms(uint16_t nb);
 #ifdef __cplusplus
 }
 #endif
@@ -147,14 +148,14 @@ uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
 
 // SDRAM driver
-#define SDRAM_BANK_ADDR     ((uint32_t)0xD0000000)
+#define SDRAM_BANK_ADDR                ((uint32_t)0xD0000000)
 void SDRAM_Init(void);
 void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBufferSize);
 void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBufferSize);
 
 // Pulses driver
-#define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR)
-#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR)
+#define EXTERNAL_MODULE_ON()           GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
@@ -276,10 +277,8 @@ void usbSerialPutc(uint8_t c);
 
 // Audio driver
 void audioInit(void);
-void audioEnd(void);
-void dacStart(void);
-void dacStop(void);
-void setSampleRate(uint32_t frequency);
+void audioConsumeCurrentBuffer(void);
+#define setSampleRate(freq)
 
 // Fake volume driver
 #define setScaledVolume(...)

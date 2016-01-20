@@ -83,7 +83,7 @@ void dacInit()
   NVIC_SetPriority(DMA1_Stream5_IRQn, 7);
 }
 
-bool dacQueue(AudioBuffer *buffer)
+bool audioPushBuffer(AudioBuffer * buffer)
 {
   if (dacIdle) {
     dacIdle = false;
@@ -145,7 +145,7 @@ extern "C" void DMA1_Stream5_IRQHandler()
   DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5 ; // Write ones to clear flags
   DMA1_Stream5->CR &= ~DMA_SxCR_EN ;                              // Disable DMA channel
 
-  AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+  AudioBuffer * nextBuffer = audioQueue.getNextFilledBuffer();
   if (nextBuffer) {
     DMA1_Stream5->M0AR = CONVERT_PTR_UINT(nextBuffer->data);
     DMA1_Stream5->NDTR = nextBuffer->size;

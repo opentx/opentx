@@ -207,28 +207,41 @@
 #define SD_SDIO_TRANSFER_CLK_DIV        SD_SDIO_CLK_DIV(24000000)
 
 // Audio
-#define AUDIO_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOA | RCC_AHB1ENR_DMA1EN)
-#define AUDIO_RCC_APB1Periph            (RCC_APB1ENR_TIM6EN | RCC_APB1ENR_DACEN)
-#define AUDIO_TIMER                     TIM6
-#define AUDIO_TIMER_DAC_IRQn            TIM6_DAC_IRQn
-#define AUDIO_DMA_STREAM                DMA1_Stream5
-#define AUDIO_DMA_IRQn                  DMA1_Stream5_IRQn
+#define AUDIO_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOH)
+#define AUDIO_RCC_APB1Periph            (RCC_APB1Periph_SPI2)
 #define AUDIO_SHUTDOWN_GPIO             GPIOI
 #define AUDIO_SHUTDOWN_GPIO_PIN         GPIO_Pin_9  // PI.09
+#define AUDIO_XDCS_GPIO                 GPIOI
+#define AUDIO_XDCS_GPIO_PIN             GPIO_Pin_0  // PI.00
+#define AUDIO_CS_GPIO                   GPIOH
+#define AUDIO_CS_GPIO_PIN               GPIO_Pin_13 // PH.13
+#define AUDIO_DREQ_GPIO                 GPIOH
+#define AUDIO_DREQ_GPIO_PIN             GPIO_Pin_14 // PH.14
+#define AUDIO_RST_GPIO                  GPIOH
+#define AUDIO_RST_GPIO_PIN              GPIO_Pin_15 // PH.15
+#define AUDIO_SPI                       SPI2
+#define AUDIO_SPI_GPIO_AF               GPIO_AF_SPI2
+#define AUDIO_SPI_SCK_GPIO              GPIOI
+#define AUDIO_SPI_SCK_GPIO_PIN          GPIO_Pin_1  // PI.01
+#define AUDIO_SPI_SCK_GPIO_PinSource    GPIO_PinSource1
+#define AUDIO_SPI_MISO_GPIO             GPIOI
+#define AUDIO_SPI_MISO_GPIO_PIN         GPIO_Pin_2  // PI.02
+#define AUDIO_SPI_MISO_GPIO_PinSource   GPIO_PinSource2
+#define AUDIO_SPI_MOSI_GPIO             GPIOI
+#define AUDIO_SPI_MOSI_GPIO_PIN         GPIO_Pin_3  // PI.03
+#define AUDIO_SPI_MOSI_GPIO_PinSource   GPIO_PinSource3
 
-
-// I2C Bus: TPL0401A-10DCK digital pot for volume control
+// I2C Bus
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
 #define I2C_GPIO                        GPIOB
-#define I2C_GPIO_PIN_SCL                GPIO_Pin_8  // PB.08
-#define I2C_GPIO_PIN_SDA                GPIO_Pin_9  // PB.09
+#define I2C_SCL_GPIO_PIN                GPIO_Pin_8  // PB.08
+#define I2C_SDA_GPIO_PIN                GPIO_Pin_9  // PB.09
 #define I2C_GPIO_AF                     GPIO_AF_I2C1
-#define I2C_GPIO_PinSource_SCL          GPIO_PinSource8
-#define I2C_GPIO_PinSource_SDA          GPIO_PinSource9
+#define I2C_SCL_GPIO_PinSource          GPIO_PinSource8
+#define I2C_SDA_GPIO_PinSource          GPIO_PinSource9
 #define I2C_SPEED                       400000
-#define I2C_ADDRESS_VOLUME              0x5C
 
 // Haptic
 #define HAPTIC_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
@@ -248,12 +261,12 @@
 #define INTMODULE_GPIO_PinSource        GPIO_PinSource6
 
 // External Module
-#define EXTMODULE_RCC_AHB1Periph_GPIO   (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB)
-#define EXTMODULE_GPIO_PWR              GPIOB
-#define EXTMODULE_GPIO_PIN_PWR          GPIO_Pin_3   // PB.03
-#define EXTMODULE_GPIO                  GPIOA
-#define EXTMODULE_GPIO_PIN              GPIO_Pin_15  // PA.15
-#define EXTMODULE_GPIO_PinSource        GPIO_PinSource15
+#define EXTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB)
+#define EXTMODULE_PWR_GPIO              GPIOB
+#define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3   // PB.03
+#define EXTMODULE_PPM_GPIO              GPIOA
+#define EXTMODULE_PPM_GPIO_PIN          GPIO_Pin_15  // PA.15
+#define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource15
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC)

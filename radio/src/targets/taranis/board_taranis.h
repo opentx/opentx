@@ -179,10 +179,10 @@ uint32_t isBootloaderStart(const void * buffer);
 // Pulses driver
 #define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR)
 #define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR)
-#define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR)
-#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR)
+#define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR) == Bit_SET)
-#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR) == Bit_SET)
+#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
@@ -331,6 +331,7 @@ extern const int8_t volumeScale[];
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);
+#define audioConsumeCurrentBuffer()
 
 // Haptic driver
 void hapticInit(void);

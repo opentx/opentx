@@ -38,16 +38,16 @@ void init_no_pulses(uint32_t port)
 
   // Timer1, channel 1
   GPIO_InitTypeDef GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(EXTMODULE_RCC_AHB1Periph_GPIO, ENABLE);
+  RCC_AHB1PeriphClockCmd(EXTMODULE_RCC_AHB1Periph, ENABLE);
 
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT ;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_GPIO, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
 
-  GPIO_SetBits(EXTMODULE_GPIO, EXTMODULE_GPIO_PIN) ; // Set high
+  GPIO_SetBits(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PIN) ; // Set high
   
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
 
@@ -93,14 +93,14 @@ void init_pxx(uint32_t port)
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
   GPIO_InitTypeDef GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(EXTMODULE_RCC_AHB1Periph_GPIO, ENABLE);
-  GPIO_PinAFConfig(EXTMODULE_GPIO, EXTMODULE_GPIO_PinSource, GPIO_AF_TIM1);
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_GPIO_PIN;
+  RCC_AHB1PeriphClockCmd(EXTMODULE_RCC_AHB1Periph, ENABLE);
+  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, GPIO_AF_TIM1);
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_GPIO, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
 
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
@@ -156,14 +156,14 @@ void init_dsm2(uint32_t port)
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
   GPIO_InitTypeDef GPIO_InitStructure;
-  RCC_AHB1PeriphClockCmd(EXTMODULE_RCC_AHB1Periph_GPIO, ENABLE);
-  GPIO_PinAFConfig(EXTMODULE_GPIO, EXTMODULE_GPIO_PinSource, GPIO_AF_TIM1);
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_GPIO_PIN;
+  RCC_AHB1PeriphClockCmd(EXTMODULE_RCC_AHB1Periph, ENABLE);
+  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, GPIO_AF_TIM1);
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_GPIO, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
   RCC->AHB1ENR |= RCC_AHB1ENR_DMA2EN ;            // Enable DMA2 clock
 
@@ -224,7 +224,7 @@ void init_ppm(uint32_t port)
   modulePulsesData[EXTERNAL_MODULE].ppm.ptr = modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
 
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN ;           // Enable portA clock
-  configure_pins( EXTMODULE_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
+  configure_pins( EXTMODULE_PPM_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25 | PIN_PUSHPULL ) ;
   RCC->APB2ENR |= RCC_APB2ENR_TIM1EN ;            // Enable clock
   TIM1->CR1 &= ~TIM_CR1_CEN ;
 

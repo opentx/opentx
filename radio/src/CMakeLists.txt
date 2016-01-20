@@ -86,7 +86,6 @@ if(PCB STREQUAL HORUS)
     pwr_driver.c
     sdram_driver.c
     led_driver.cpp
-    # mp3_driver.cpp
     )
   set(STM32LIB_SRC
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c

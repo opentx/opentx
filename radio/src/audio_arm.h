@@ -24,29 +24,55 @@
 #include <stddef.h>
 #include "ff.h"
 
-#define AUDIO_FILENAME_MAXLEN (42)      //max length example: /SOUNDS/fr/123456789012/1234567890-off.wav
-#define AUDIO_QUEUE_LENGTH    (20)
+#define AUDIO_FILENAME_MAXLEN          (42) // max length (example: /SOUNDS/fr/123456789012/1234567890-off.wav)
+#define AUDIO_QUEUE_LENGTH             (20)
 
-#define AUDIO_SAMPLE_RATE     (32000)
-#define AUDIO_BUFFER_DURATION (10)
-#define AUDIO_BUFFER_SIZE     (AUDIO_SAMPLE_RATE*AUDIO_BUFFER_DURATION/1000)
+#define AUDIO_SAMPLE_RATE              (32000)
+#define AUDIO_BUFFER_DURATION          (10)
+#define AUDIO_BUFFER_SIZE              (AUDIO_SAMPLE_RATE*AUDIO_BUFFER_DURATION/1000)
+
 #if defined(SIMU_AUDIO)
-  #define AUDIO_BUFFER_COUNT  (10)      // simulator needs more buffers for smooth audio
+  #define AUDIO_BUFFER_COUNT           (10) // simulator needs more buffers for smooth audio
+#elif defined(PCBHORUS)
+  #define AUDIO_BUFFER_COUNT           (2)
 #else
-  #define AUDIO_BUFFER_COUNT  (3)
+  #define AUDIO_BUFFER_COUNT           (3)
 #endif
 
-#define BEEP_MIN_FREQ         (150)
-#define BEEP_DEFAULT_FREQ     (2250)
-#define BEEP_KEY_UP_FREQ      (BEEP_DEFAULT_FREQ+150)
-#define BEEP_KEY_DOWN_FREQ    (BEEP_DEFAULT_FREQ-150)
+#define BEEP_MIN_FREQ                  (150)
+#define BEEP_DEFAULT_FREQ              (2250)
+#define BEEP_KEY_UP_FREQ               (BEEP_DEFAULT_FREQ+150)
+#define BEEP_KEY_DOWN_FREQ             (BEEP_DEFAULT_FREQ-150)
 
-#define AUDIO_BUFFER_FREE     (0)
-#define AUDIO_BUFFER_FILLED   (1)
-#define AUDIO_BUFFER_PLAYING  (2)
+enum AudioBufferState
+{
+  AUDIO_BUFFER_FREE,
+  AUDIO_BUFFER_FILLED,
+  AUDIO_BUFFER_PLAYING
+};
+
+#if defined(SIMU)
+  typedef uint16_t audio_data_t;
+  #define AUDIO_DATA_SILENCE           0x8000
+  #define AUDIO_DATA_MIN               0
+  #define AUDIO_DATA_MAX               UINT16_MAX
+  #define AUDIO_BITS_PER_SAMPLE        16
+#elif defined(PCBHORUS)
+  typedef int16_t audio_data_t;
+  #define AUDIO_DATA_SILENCE           0
+  #define AUDIO_DATA_MIN               INT16_MIN
+  #define AUDIO_DATA_MAX               INT16_MAX
+  #define AUDIO_BITS_PER_SAMPLE        16
+#else
+  typedef uint16_t audio_data_t;
+  #define AUDIO_DATA_SILENCE           (0x8000 >> 4)
+  #define AUDIO_DATA_MIN               0
+  #define AUDIO_DATA_MAX               0x0fff
+  #define AUDIO_BITS_PER_SAMPLE        12
+#endif
 
 struct AudioBuffer {
-  uint16_t data[AUDIO_BUFFER_SIZE];
+  audio_data_t data[AUDIO_BUFFER_SIZE];
   uint16_t size;
   uint8_t  state;
 };
@@ -140,7 +166,7 @@ class MixedContext {
     int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
 };
 
-bool dacQueue(AudioBuffer *buffer);
+bool audioPushBuffer(AudioBuffer * buffer);
 
 class AudioQueue {
 

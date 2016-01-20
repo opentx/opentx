@@ -497,7 +497,7 @@ void AudioQueue::start()
 #define CODEC_ID_PCM_MULAW  7
 
 #if !defined(SIMU)
-void audioTask(void* pdata)
+void audioTask(void * pdata)
 {
   while (!audioQueue.started()) {
     CoTickDelay(1);
@@ -521,13 +521,9 @@ void audioTask(void* pdata)
 }
 #endif
 
-void mixSample(uint16_t * result, int sample, unsigned int fade)
+void mixSample(audio_data_t * result, int sample, unsigned int fade)
 {
-#if defined(SIMU_AUDIO)
-  *result = limit(0, *result + ((sample >> fade) ), 0xFFFF);
-#else
-  *result = limit(0, *result + ((sample >> fade) >> 4), 4095);
-#endif
+  *result = limit(AUDIO_DATA_MIN, *result + ((sample >> fade) >> (16-AUDIO_BITS_PER_SAMPLE)), AUDIO_DATA_MAX);
 }
 
 #if defined(SDCARD)
@@ -595,7 +591,7 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
         fragment.clear();
       }
 
-      uint16_t * samples = buffer->data;
+      audio_data_t * samples = buffer->data;
       if (state.codec == CODEC_ID_PCM_S16LE) {
         read /= 2;
         for (uint32_t i=0; i<read; i++) {
@@ -715,19 +711,17 @@ int ToneContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
 
 void AudioQueue::wakeup()
 {
-  int result;
-  AudioBuffer *buffer = getEmptyBuffer();
+  audioConsumeCurrentBuffer();
+
+  AudioBuffer * buffer = getEmptyBuffer();
   if (buffer) {
+    int result;
     unsigned int fade = 0;
     int size = 0;
 
     // write silence in the buffer
     for (uint32_t i=0; i<AUDIO_BUFFER_SIZE; i++) {
-#if defined(SIMU_AUDIO)
-      buffer->data[i] = 0x8000; /* silence */
-#else
-      buffer->data[i] = 0x8000 >> 4; /* silence */
-#endif
+      buffer->data[i] = AUDIO_DATA_SILENCE; /* silence */
     }
 
     // mix the priority context (only tones)
@@ -786,7 +780,7 @@ void AudioQueue::wakeup()
       // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
-      buffer->state = dacQueue(buffer) ? AUDIO_BUFFER_PLAYING : AUDIO_BUFFER_FILLED;
+      buffer->state = audioPushBuffer(buffer) ? AUDIO_BUFFER_PLAYING : AUDIO_BUFFER_FILLED;
       __enable_irq();
     }
   }

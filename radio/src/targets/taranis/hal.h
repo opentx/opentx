@@ -342,13 +342,13 @@
 // External Module
 #define EXTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA2)
 #define EXTMODULE_RCC_APB2Periph        RCC_APB2Periph_TIM8
-#define EXTMODULE_GPIO_PWR              GPIOD
-#define EXTMODULE_GPIO_PIN_PWR          GPIO_Pin_8
-#define EXTMODULE_GPIO_PIN              GPIO_Pin_7  // PA.07
-#define EXTMODULE_GPIO                  GPIOA
+#define EXTMODULE_PWR_GPIO              GPIOD
+#define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_8
+#define EXTMODULE_PPM_GPIO_PIN              GPIO_Pin_7  // PA.07
+#define EXTMODULE_PPM_GPIO                  GPIOA
 #define EXTMODULE_TIMER                 TIM8
-#define EXTMODULE_GPIO_AF               GPIO_AF_TIM8
-#define EXTMODULE_GPIO_PinSource        GPIO_PinSource7
+#define EXTMODULE_PPM_GPIO_AF               GPIO_AF_TIM8
+#define EXTMODULE_PPM_GPIO_PinSource        GPIO_PinSource7
 #define EXTMODULE_TIMER_IRQn            TIM8_CC_IRQn
 
 // Trainer Port
@@ -489,12 +489,12 @@
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
 #define I2C_GPIO                        GPIOB
-#define I2C_GPIO_PIN_SCL                GPIO_Pin_6  // PB.06
-#define I2C_GPIO_PIN_SDA                GPIO_Pin_7  // PB.07
+#define I2C_SCL_GPIO_PIN                GPIO_Pin_6  // PB.06
+#define I2C_SDA_GPIO_PIN                GPIO_Pin_7  // PB.07
 #define I2C_GPIO_PIN_WP                 GPIO_Pin_9  // PB.09
 #define I2C_GPIO_AF                     GPIO_AF_I2C1
-#define I2C_GPIO_PinSource_SCL          GPIO_PinSource6
-#define I2C_GPIO_PinSource_SDA          GPIO_PinSource7
+#define I2C_SCL_GPIO_PinSource          GPIO_PinSource6
+#define I2C_SDA_GPIO_PinSource          GPIO_PinSource7
 #if defined(REV4a)
   #define I2C_SPEED                     100000
 #else

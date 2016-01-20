@@ -93,7 +93,7 @@ void dacInit()
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
-bool dacQueue(AudioBuffer *buffer)
+bool audioPushBuffer(AudioBuffer *buffer)
 {
   dacStart();
   return false;

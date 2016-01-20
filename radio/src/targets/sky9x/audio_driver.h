@@ -23,6 +23,7 @@
 
 void audioInit( void ) ;
 void audioEnd( void ) ;
+#define audioConsumeCurrentBuffer()
 
 void setSampleRate( uint32_t frequency ) ;
 

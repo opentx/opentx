@@ -39,10 +39,10 @@ void pwrInit()
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
 
   // Init Module PWR
-  GPIO_ResetBits(EXTMODULE_GPIO_PWR, EXTMODULE_GPIO_PIN_PWR);
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_GPIO_PIN_PWR;
+  GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init(EXTMODULE_GPIO_PWR, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
   pwrOn();
 }
