@@ -40,7 +40,6 @@ inline void dacStop()
 
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
-extern const int8_t volumeScale[];
 
 void setScaledVolume(uint8_t volume);
 

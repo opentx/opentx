@@ -20,6 +20,14 @@
 
 #include "../../opentx.h"
 
+const uint8_t volumeScale[VOLUME_LEVEL_MAX+1] = {
+  254, 127, 110, 100, 90, 80, 70, 60, 50, 40,
+  30, 20, 19, 18, 17, 16, 15, 14, 13, 12,
+  11, 10, 5, 0
+};
+
+#if !defined(SIMU)
+
 #define VS_WRITE_COMMAND 	       0x02
 #define VS_READ_COMMAND 	       0x03
 
@@ -314,6 +322,8 @@ uint8_t audioSoftReset(void)
 
 uint32_t audioSpiWriteData(const uint8_t * buffer, uint32_t size)
 {
+  XDCS_LOW();
+
   uint32_t index = 0;
   while (index < size && READ_DREQ() != 0) {
     for (int i=0; i<MP3_BUFFER_SIZE && index<size; i++) {
@@ -340,6 +350,11 @@ const uint8_t RiffHeader[] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 
+void audioSendRiffHeader()
+{
+  audioSpiWriteBuffer(RiffHeader, sizeof(RiffHeader));
+}
+
 void audioInit()
 {
   audioSpiInit();
@@ -348,13 +363,12 @@ void audioInit()
   audioSpiSetSpeed(SPI_SPEED_8);
 
   delay_01us(10000); // 1ms
-
-  XDCS_LOW();
-  audioSpiWriteBuffer(RiffHeader, sizeof(RiffHeader));
+  audioSendRiffHeader();
 }
 
 uint8_t * currentBuffer = NULL;
 uint32_t currentSize = 0;
+int16_t newVolume = -1;
 
 void audioSetCurrentBuffer(AudioBuffer * buffer)
 {
@@ -364,6 +378,13 @@ void audioSetCurrentBuffer(AudioBuffer * buffer)
 
 void audioConsumeCurrentBuffer()
 {
+  if (newVolume >= 0) {
+    uint8_t value = newVolume;
+    audioSpiWriteCmd(SPI_VOL, (value << 8) + value);
+    // audioSendRiffHeader();
+    newVolume = -1;
+  }
+
   if (currentBuffer) {
     uint32_t written = audioSpiWriteData(currentBuffer, currentSize);
     currentBuffer += written;
@@ -392,3 +413,24 @@ bool audioPushBuffer(AudioBuffer * buffer)
     return false;
   }
 }
+
+void setScaledVolume(uint8_t volume)
+{
+  if (volume > VOLUME_LEVEL_MAX) {
+    volume = VOLUME_LEVEL_MAX;
+  }
+
+  setVolume(volumeScale[volume]);
+}
+
+void setVolume(uint8_t volume)
+{
+  newVolume = volume;
+}
+
+int32_t getVolume()
+{
+  return -1; // TODO
+}
+
+#endif

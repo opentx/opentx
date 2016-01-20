@@ -279,11 +279,11 @@ void usbSerialPutc(uint8_t c);
 void audioInit(void);
 void audioConsumeCurrentBuffer(void);
 #define setSampleRate(freq)
-
-// Fake volume driver
-#define setScaledVolume(...)
-#define setVolume(...)
-#define getVolume(...) (-1)
+void setScaledVolume(uint8_t volume);
+void setVolume(uint8_t volume);
+int32_t getVolume(void);
+#define VOLUME_LEVEL_MAX               23
+#define VOLUME_LEVEL_DEF               12
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
@@ -292,18 +292,17 @@ void sportSendBuffer(uint8_t *buffer, uint32_t count);
 // Haptic driver
 void hapticInit(void);
 void hapticOff(void);
-#define HAPTIC_OFF()    hapticOff()
+#define HAPTIC_OFF()                   hapticOff()
 void hapticOn(uint32_t pwmPercent);
 
 // Second serial port driver
-#define DEBUG_BAUDRATE      115200
+#define DEBUG_BAUDRATE                 115200
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
 void serial2SbusInit(void);
 void serial2Stop(void);
-
-#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+#define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
 void usbJoystickUpdate(void);

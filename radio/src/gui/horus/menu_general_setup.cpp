@@ -30,11 +30,13 @@
 #define MINUTE_SEPARATOR_OFFSET        63
 #define SECOND_OFFSET                  75
 
-#define SLIDER_5POS(y, value, event, attr) { \
-  int8_t tmp = value; \
-  drawSlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
-  value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, NULL, tmp, -2, +2, attr, event); \
+int8_t editSlider(coord_t x, coord_t y, evt_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
+{
+  drawSlider(x, y, value-min, max-min, attr);
+  return selectMenuItem(x, y, NULL, value, min, max, attr, event);
 }
+
+#define SLIDER_5POS(y, val, event, attr) val = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, val, -2, +2, attr)
 
 #if defined(SPLASH) && !defined(FSPLASH)
   #define CASE_SPLASH_PARAM(x) x,
@@ -48,6 +50,7 @@ enum menuGeneralSetupItems {
   // ITEM_SETUP_BATT_RANGE,
   ITEM_SETUP_SOUND_LABEL,
   ITEM_SETUP_BEEP_MODE,
+  ITEM_SETUP_GENERAL_VOLUME,
   ITEM_SETUP_BEEP_VOLUME,
   ITEM_SETUP_BEEP_LENGTH,
   ITEM_SETUP_SPEAKER_PITCH,
@@ -109,7 +112,11 @@ bool menuGeneralSetup(evt_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, LABEL(SOUND), 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE,
+    LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
+    CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)
+    CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
+    LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   int sub = menuVerticalPosition;
 
@@ -225,17 +232,22 @@ bool menuGeneralSetup(evt_t event)
 #endif
         break;
 
+      case ITEM_SETUP_GENERAL_VOLUME:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPEAKER_VOLUME);
+        g_eeGeneral.speakerVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.speakerVolume, -VOLUME_LEVEL_DEF, VOLUME_LEVEL_MAX-VOLUME_LEVEL_DEF, attr);
+        break;
+
       case ITEM_SETUP_BEEP_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_VOLUME);
-        SLIDER_5POS(y, g_eeGeneral.beepVolume, event, attr);
+        g_eeGeneral.beepVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.beepVolume, -4, +4, attr);
         break;
       case ITEM_SETUP_WAV_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WAV_VOLUME);
-        SLIDER_5POS(y, g_eeGeneral.wavVolume, event, attr);
+        g_eeGeneral.wavVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.wavVolume, -4, +4, attr);
         break;
       case ITEM_SETUP_BACKGROUND_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BG_VOLUME);
-        SLIDER_5POS(y, g_eeGeneral.backgroundVolume, event, attr);
+        g_eeGeneral.backgroundVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.backgroundVolume, -4, +4, attr);
         break;
 
       case ITEM_SETUP_BEEP_LENGTH:
@@ -257,7 +269,7 @@ bool menuGeneralSetup(evt_t event)
         break;
       case ITEM_SETUP_VARIO_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, TR_SPEAKER_VOLUME);
-        SLIDER_5POS(y, g_eeGeneral.varioVolume, event, attr);
+        g_eeGeneral.varioVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.varioVolume, -4, +4, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PITCH_AT_ZERO);

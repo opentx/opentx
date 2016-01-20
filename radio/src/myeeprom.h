@@ -382,13 +382,13 @@ enum BeeperMode {
   uint8_t  countryCode; \
   uint8_t  imperial; \
   char     ttsLanguage[2]; \
-  int8_t   beepVolume; \
-  int8_t   wavVolume; \
-  int8_t   varioVolume; \
+  int8_t   beepVolume:4; \
+  int8_t   wavVolume:4; \
+  int8_t   varioVolume:4; \
+  int8_t   backgroundVolume:4; \
   int8_t   varioPitch; \
   int8_t   varioRange; \
-  int8_t   varioRepeat; \
-  int8_t   backgroundVolume;
+  int8_t   varioRepeat;
 #endif
 
 #if defined(PCBHORUS) || defined(PCBFLAMENCO)

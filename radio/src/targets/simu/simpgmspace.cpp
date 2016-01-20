@@ -468,7 +468,7 @@ void audioConsumeCurrentBuffer()
 #if defined(HARDWARE_VOLUME)
 void setScaledVolume(uint8_t volume)
 {
-  simuAudio.currentVolume = min<int>((volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)] * simuAudio.volumeGain) / 10, 127);
+  simuAudio.currentVolume = 127 * volume * simuAudio.volumeGain / VOLUME_LEVEL_MAX / 10;
   // TRACE("setVolume(): in: %u, out: %u", volume, simuAudio.currentVolume);
 }
 
