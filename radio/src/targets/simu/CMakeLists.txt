@@ -3,7 +3,7 @@ foreach(FILE ${SRC})
   set(SIMU_SRC ${SIMU_SRC} ../../${FILE})
 endforeach()
 
-add_definitions(-DSIMU)
+add_definitions(-DSIMU -g)
 add_executable(simu WIN32 ${SIMU_SRC} )
 add_dependencies(simu ${FIRMWARE_DEPENDENCIES})
 
