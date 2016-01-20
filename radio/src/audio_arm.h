@@ -55,7 +55,7 @@ enum AudioBufferState
   typedef uint16_t audio_data_t;
   #define AUDIO_DATA_SILENCE           0x8000
   #define AUDIO_DATA_MIN               0
-  #define AUDIO_DATA_MAX               UINT16_MAX
+  #define AUDIO_DATA_MAX               0xffff
   #define AUDIO_BITS_PER_SAMPLE        16
 #elif defined(PCBHORUS)
   typedef int16_t audio_data_t;

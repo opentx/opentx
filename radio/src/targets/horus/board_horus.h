@@ -291,6 +291,7 @@ void sportSendBuffer(uint8_t *buffer, uint32_t count);
 
 // Haptic driver
 void hapticInit(void);
+void hapticDone(void);
 void hapticOff(void);
 #define HAPTIC_OFF()                   hapticOff()
 void hapticOn(uint32_t pwmPercent);

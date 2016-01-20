@@ -25,7 +25,6 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)

@@ -83,7 +83,7 @@ if(PCB STREQUAL HORUS)
     lcd_driver.cpp
     delays.c
     usb_driver.c
-    pwr_driver.c
+    pwr_driver.cpp
     sdram_driver.c
     led_driver.cpp
     )

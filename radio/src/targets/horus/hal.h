@@ -245,11 +245,11 @@
 
 // Haptic
 #define HAPTIC_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
-#define HAPTIC_RCC_APB2Periph           RCC_APB2ENR_TIM11EN
+#define HAPTIC_RCC_APB2Periph           RCC_APB2ENR_TIM9EN
 #define HAPTIC_GPIO                     GPIOA
 #define HAPTIC_GPIO_PIN                 GPIO_Pin_2
-#define HAPTIC_GPIO_TIMER               TIM11
-#define HAPTIC_GPIO_AF                  GPIO_AF_TIM11
+#define HAPTIC_GPIO_TIMER               TIM9
+#define HAPTIC_GPIO_AF                  GPIO_AF_TIM9
 #define HAPTIC_GPIO_PinSource           GPIO_PinSource2
 
 // Internal Module

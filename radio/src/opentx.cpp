@@ -1996,7 +1996,7 @@ void opentxClose()
   }
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(PCBTARANIS) && !defined(COLORLCD)
   if (storageDirtyMsk & EE_MODEL) {
     displayPopup(STR_SAVEMODEL);
   } 
@@ -2020,8 +2020,6 @@ void opentxClose()
 #endif
 }
 #endif
-
-
 
 #if defined(NAVIGATION_STICKS)
 uint8_t getSticksNavigationEvent() 

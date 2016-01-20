@@ -64,6 +64,9 @@ void pwrOff()
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
   GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
 
+  // Shutdown the Haptic
+  hapticDone();
+
   GPIO_ResetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
 }
 
