@@ -382,7 +382,7 @@ extern uint8_t warningInfoFlags;
 #define NAVIGATION_MENUS
 #define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
 #define POPUP_MENU_MAX_LINES           12
-#define MENU_MAX_DISPLAY_LINES         6
+#define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
 #define POPUP_MENU_ITEMS_FROM_BSS()
 extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];

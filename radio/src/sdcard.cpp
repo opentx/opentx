@@ -114,7 +114,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   fno.lfsize = sizeof(lfn);
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
 #endif
   static uint16_t lastpopupMenuOffset = 0;
