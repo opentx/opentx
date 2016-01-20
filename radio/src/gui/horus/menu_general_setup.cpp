@@ -239,15 +239,15 @@ bool menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_BEEP_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_VOLUME);
-        g_eeGeneral.beepVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.beepVolume, -4, +4, attr);
+        g_eeGeneral.beepVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.beepVolume, -2, +2, attr);
         break;
       case ITEM_SETUP_WAV_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WAV_VOLUME);
-        g_eeGeneral.wavVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.wavVolume, -4, +4, attr);
+        g_eeGeneral.wavVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.wavVolume, -2, +2, attr);
         break;
       case ITEM_SETUP_BACKGROUND_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BG_VOLUME);
-        g_eeGeneral.backgroundVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.backgroundVolume, -4, +4, attr);
+        g_eeGeneral.backgroundVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.backgroundVolume, -2, +2, attr);
         break;
 
       case ITEM_SETUP_BEEP_LENGTH:
@@ -269,7 +269,7 @@ bool menuGeneralSetup(evt_t event)
         break;
       case ITEM_SETUP_VARIO_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, TR_SPEAKER_VOLUME);
-        g_eeGeneral.varioVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.varioVolume, -4, +4, attr);
+        g_eeGeneral.varioVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.varioVolume, -2, +2, attr);
         break;
       case ITEM_SETUP_VARIO_PITCH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PITCH_AT_ZERO);
