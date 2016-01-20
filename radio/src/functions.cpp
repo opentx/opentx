@@ -448,11 +448,11 @@ void evalFunctions()
             break;
 #endif
 
-#if defined(VOLUME_CHIP)
+#if defined(HARDWARE_VOLUME)
           case FUNC_VOLUME:
           {
             getvalue_t raw = getValue(CFN_PARAM(cfn));
-            //only set volume if input changed more than hysteresis
+            // only set volume if input changed more than hysteresis
             if (abs(requiredSpeakerVolumeRawLast - raw) > VOLUME_HYSTERESIS) {
               requiredSpeakerVolumeRawLast = raw;
             }

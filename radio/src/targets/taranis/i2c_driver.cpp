@@ -277,6 +277,6 @@ void setVolume(uint8_t volume)
 
 int32_t getVolume()
 {
-  return 0; // TODO
+  return -1; // TODO
 }
 #endif

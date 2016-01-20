@@ -46,7 +46,7 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_BATT_RANGE,
   ITEM_SETUP_SOUND_LABEL,
   ITEM_SETUP_BEEP_MODE,
-  ITEM_SETUP_SPEAKER_VOLUME,
+  ITEM_SETUP_GENERAL_VOLUME,
   ITEM_SETUP_BEEP_VOLUME,
   ITEM_SETUP_BEEP_LENGTH,
   ITEM_SETUP_SPEAKER_PITCH,
@@ -205,7 +205,7 @@ void menuGeneralSetup(uint8_t event)
 #endif
         break;
 
-      case ITEM_SETUP_SPEAKER_VOLUME:
+      case ITEM_SETUP_GENERAL_VOLUME:
       {
         lcd_putsLeft(y, STR_SPEAKER_VOLUME);
         uint8_t b = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;

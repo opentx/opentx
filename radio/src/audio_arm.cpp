@@ -638,7 +638,7 @@ inline float evalVolumeRatio(int freq, int volume)
   return result;
 }
 
-int ToneContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
+int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
 {
   int duration = 0;
   int result = 0;

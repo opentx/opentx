@@ -459,7 +459,13 @@ bool audioPushBuffer(AudioBuffer * buffer)
 }
 #endif
 
-#if defined(VOLUME_CHIP)
+#if defined(PCBHORUS)
+void audioConsumeCurrentBuffer()
+{
+}
+#endif
+
+#if defined(HARDWARE_VOLUME)
 void setScaledVolume(uint8_t volume)
 {
   simuAudio.currentVolume = min<int>((volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)] * simuAudio.volumeGain) / 10, 127);
