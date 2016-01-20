@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)
@@ -232,8 +233,8 @@
 
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
 
-#if defined(CPUARM) && !defined(PCBHORUS)
-  #define VOLUME_CHIP
+#if defined(CPUARM)
+  #define HARDWARE_VOLUME
 #endif
 
 #if defined(SIMU)
