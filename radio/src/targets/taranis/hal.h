@@ -316,43 +316,42 @@
 #endif
 
 // Power_OFF Delay and LED
-#define PWR_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD)
+#define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOD
 #define PWR_GPIO                        GPIOD
-#define PWR_GPIO_PIN_SWITCH             GPIO_Pin_1  // PD.01
-#define PWR_GPIO_PIN_ON                 GPIO_Pin_0  // PD.00
-#define PWR_GPIO_LED                    GPIOC
-#define PWR_GPIO_PIN_LED                GPIO_Pin_6  // PC.06
+#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_1  // PD.01
+#define PWR_ON_GPIO_PIN                 GPIO_Pin_0  // PD.00
 
 // Internal Module
-#define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA2)
+#define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
 #define INTMODULE_RCC_APB2Periph        RCC_APB2Periph_TIM1
 #if defined(REVPLUS)
-  #define INTMODULE_GPIO_PWR            GPIOC
-  #define INTMODULE_GPIO_PIN_PWR        GPIO_Pin_6
+  #define INTMODULE_PWR_GPIO            GPIOC
+  #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_6  // PC.06
 #else
-  #define INTMODULE_GPIO_PWR            GPIOD
-  #define INTMODULE_GPIO_PIN_PWR        GPIO_Pin_15
+  #define INTMODULE_PWR_GPIO            GPIOD
+  #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_15 // PD.15
 #endif
-#define INTMODULE_GPIO_PIN              GPIO_Pin_10 // PA.10
-#define INTMODULE_GPIO                  GPIOA
-#define INTMODULE_GPIO_PinSource        GPIO_PinSource10
-#define INTMODULE_GPIO_AF               GPIO_AF_TIM1
+#define INTMODULE_PPM_GPIO              GPIOA
+#define INTMODULE_PPM_GPIO_PIN          GPIO_Pin_10 // PA.10
+#define INTMODULE_PPM_GPIO_PinSource    GPIO_PinSource10
+#define INTMODULE_PPM_GPIO_AF           GPIO_AF_TIM1
 #define INTMODULE_TIMER                 TIM1
+#define INTMODULE_TIMER_IRQn            TIM1_CC_IRQn
 
 // External Module
-#define EXTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA2)
+#define EXTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
 #define EXTMODULE_RCC_APB2Periph        RCC_APB2Periph_TIM8
 #define EXTMODULE_PWR_GPIO              GPIOD
-#define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_8
-#define EXTMODULE_PPM_GPIO_PIN              GPIO_Pin_7  // PA.07
-#define EXTMODULE_PPM_GPIO                  GPIOA
+#define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_8  // PD.08
+#define EXTMODULE_PPM_GPIO              GPIOA
+#define EXTMODULE_PPM_GPIO_PIN          GPIO_Pin_7  // PA.07
 #define EXTMODULE_TIMER                 TIM8
-#define EXTMODULE_PPM_GPIO_AF               GPIO_AF_TIM8
-#define EXTMODULE_PPM_GPIO_PinSource        GPIO_PinSource7
+#define EXTMODULE_PPM_GPIO_AF           GPIO_AF_TIM8
+#define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource7
 #define EXTMODULE_TIMER_IRQn            TIM8_CC_IRQn
 
 // Trainer Port
-#define TRAINER_RCC_AHB1Periph          RCC_AHB1Periph_GPIOC
+#define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
 #define TRAINER_RCC_APB1Periph          RCC_APB1Periph_TIM3
 #define TRAINER_GPIO                    GPIOC
 #define TRAINER_GPIO_PIN_IN             GPIO_Pin_8  // PC.08
@@ -380,11 +379,11 @@
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
 #define TELEMETRY_GPIO_DIR              GPIOD
-#define TELEMETRY_GPIO_PIN_DIR          GPIO_Pin_4  // PD.04
+#define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO                  GPIOD
-#define TELEMETRY_GPIO_PIN_TX           GPIO_Pin_5  // PD.05
-#define TELEMETRY_GPIO_PIN_RX           GPIO_Pin_6  // PD.06
+#define TELEMETRY_TX_GPIO_PIN           GPIO_Pin_5  // PD.05
+#define TELEMETRY_RX_GPIO_PIN           GPIO_Pin_6  // PD.06
 #define TELEMETRY_GPIO_PinSource_TX     GPIO_PinSource5
 #define TELEMETRY_GPIO_PinSource_RX     GPIO_PinSource6
 #define TELEMETRY_GPIO_AF               GPIO_AF_USART2

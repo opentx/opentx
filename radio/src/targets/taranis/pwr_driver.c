@@ -27,25 +27,22 @@ void pwrInit()
   // then the same changes must be done in _bootStart()
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_ON;
+  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_SWITCH;
+  GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
-  
-  GPIO_InitStructure.GPIO_Pin = PWR_GPIO_PIN_LED;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init(PWR_GPIO_LED, &GPIO_InitStructure);
 
-  GPIO_ResetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR);
-  GPIO_InitStructure.GPIO_Pin = INTMODULE_GPIO_PIN_PWR;
+  // TODO not here
+  GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init(INTMODULE_GPIO_PWR, &GPIO_InitStructure);
+  GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
   
   GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
@@ -61,12 +58,12 @@ void pwrInit()
 
 void pwrOn()
 {
-  GPIO_SetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
+  GPIO_SetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
 }
 
 void pwrOff()
 {
-  GPIO_ResetBits(PWR_GPIO, PWR_GPIO_PIN_ON);
+  GPIO_ResetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
 
   // disable interrupts
  __disable_irq();
@@ -96,7 +93,7 @@ void pwrOff()
 #if defined(REV9E)
 uint32_t pwrPressed()
 {
-  return GPIO_ReadInputDataBit(PWR_GPIO, PWR_GPIO_PIN_SWITCH) == Bit_RESET;
+  return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }
 #endif
 
@@ -106,7 +103,7 @@ uint32_t pwrCheck()
 #if defined(SIMU)
   return e_power_on;
 #else
-  if (GPIO_ReadInputDataBit(PWR_GPIO, PWR_GPIO_PIN_SWITCH) == Bit_RESET)
+  if (GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET)
     return e_power_on;
   else if (usbPlugged())
     return e_power_usb;

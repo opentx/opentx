@@ -126,12 +126,12 @@ void configure_pins( uint32_t pins, uint16_t config );
 
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()         (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
 
 #if defined(REV9E)
-#define TRAINER_CONNECTED()  (true)
+#define TRAINER_CONNECTED()            (true)
 #else
-#define TRAINER_CONNECTED()  (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
+#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
 #endif
 
 #ifdef __cplusplus
@@ -148,9 +148,9 @@ void delay(uint32_t ms);
 #if !defined(SIMU) || defined(SIMU_DISKIO)
   uint32_t sdIsHC(void);
   uint32_t sdGetSpeed(void);
-  #define SD_IS_HC()              (sdIsHC())
-  #define SD_GET_SPEED()          (sdGetSpeed())
-  #define SD_GET_FREE_BLOCKNR()   (sdGetFreeSectors())
+  #define SD_IS_HC()                   (sdIsHC())
+  #define SD_GET_SPEED()               (sdGetSpeed())
+  #define SD_GET_FREE_BLOCKNR()        (sdGetFreeSectors())
 #else
   #define SD_IS_HC()              (0)
   #define SD_GET_SPEED()          (0)
@@ -165,7 +165,7 @@ void delay(uint32_t ms);
   void sdPoll10ms(void);
   #define sdMountPoll()
   uint32_t sdMounted(void);
-  #define SD_CARD_PRESENT()       (~SD_GPIO_PRESENT->IDR & SD_GPIO_PIN_PRESENT)
+  #define SD_CARD_PRESENT()            (~SD_GPIO_PRESENT->IDR & SD_GPIO_PIN_PRESENT)
 #endif
 
 // Flash Write driver
@@ -177,11 +177,11 @@ uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
 
 // Pulses driver
-#define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR)
-#define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR)
+#define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_GPIO_PWR, INTMODULE_GPIO_PIN_PWR) == Bit_SET)
+#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);

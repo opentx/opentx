@@ -35,18 +35,18 @@ void telemetryPortInit(uint32_t baudrate)
   GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_GPIO_AF);
   GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_TX, TELEMETRY_GPIO_AF);
 
-  GPIO_InitStructure.GPIO_Pin = TELEMETRY_GPIO_PIN_TX | TELEMETRY_GPIO_PIN_RX;
+  GPIO_InitStructure.GPIO_Pin = TELEMETRY_TX_GPIO_PIN | TELEMETRY_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(TELEMETRY_GPIO, &GPIO_InitStructure);
   
-  GPIO_InitStructure.GPIO_Pin = TELEMETRY_GPIO_PIN_DIR;
+  GPIO_InitStructure.GPIO_Pin = TELEMETRY_DIR_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(TELEMETRY_GPIO_DIR, &GPIO_InitStructure);
-  GPIO_ResetBits(TELEMETRY_GPIO_DIR, TELEMETRY_GPIO_PIN_DIR);
+  GPIO_ResetBits(TELEMETRY_GPIO_DIR, TELEMETRY_DIR_GPIO_PIN);
 
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -71,7 +71,7 @@ struct SportTxBuffer
 
 void telemetryPortSetDirectionOutput()
 {
-  TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_GPIO_PIN_DIR;     // output enable
+  TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;           // turn off receiver
 }
 
@@ -105,7 +105,7 @@ extern "C" void TELEMETRY_USART_IRQHandler()
 	
   if ((status & USART_SR_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
     TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE ;	// stop Complete interrupt
-    TELEMETRY_GPIO_DIR->BSRRH = TELEMETRY_GPIO_PIN_DIR ;	// output disable
+    TELEMETRY_GPIO_DIR->BSRRH = TELEMETRY_DIR_GPIO_PIN ;	// output disable
     TELEMETRY_USART->CR1 |= USART_CR1_RE ;
     while (status & (USART_FLAG_RXNE)) {
       status = TELEMETRY_USART->DR;

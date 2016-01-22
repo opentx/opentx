@@ -153,14 +153,14 @@ static void intmoduleNoneStart()
 
   // Timer1, channel 3
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = INTMODULE_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_PPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT ;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(INTMODULE_GPIO, &GPIO_InitStructure);
+  GPIO_Init(INTMODULE_PPM_GPIO, &GPIO_InitStructure);
   
-  GPIO_SetBits(INTMODULE_GPIO, INTMODULE_GPIO_PIN) ; // Set high
+  GPIO_SetBits(INTMODULE_PPM_GPIO, INTMODULE_PPM_GPIO_PIN) ; // Set high
   
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
   INTMODULE_TIMER->ARR = 36000 ;             // 18mS
@@ -176,13 +176,13 @@ static void intmoduleNoneStart()
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN ;
-  NVIC_EnableIRQ(TIM1_CC_IRQn) ;
-  NVIC_SetPriority(TIM1_CC_IRQn, 7);
+  NVIC_EnableIRQ(INTMODULE_TIMER_IRQn) ;
+  NVIC_SetPriority(INTMODULE_TIMER_IRQn, 7);
 }
 
 static void intmoduleNoneStop()
 {
-  NVIC_DisableIRQ(TIM1_CC_IRQn) ;
+  NVIC_DisableIRQ(INTMODULE_TIMER_IRQn) ;
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE ;
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
 }
@@ -274,13 +274,13 @@ static void intmodulePxxStart()
 
   GPIO_InitTypeDef GPIO_InitStructure;
   
-  GPIO_PinAFConfig(INTMODULE_GPIO, INTMODULE_GPIO_PinSource, INTMODULE_GPIO_AF);
-  GPIO_InitStructure.GPIO_Pin = INTMODULE_GPIO_PIN;
+  GPIO_PinAFConfig(INTMODULE_PPM_GPIO, INTMODULE_PPM_GPIO_PinSource, INTMODULE_PPM_GPIO_AF);
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_PPM_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(INTMODULE_GPIO, &GPIO_InitStructure);
+  GPIO_Init(INTMODULE_PPM_GPIO, &GPIO_InitStructure);
   
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
   INTMODULE_TIMER->ARR = 18000 ;                     // 9mS
@@ -308,14 +308,14 @@ static void intmodulePxxStart()
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF ;                             // Clear flag
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN ;
-  NVIC_EnableIRQ(TIM1_CC_IRQn);
-  NVIC_SetPriority(TIM1_CC_IRQn, 7);
+  NVIC_EnableIRQ(INTMODULE_TIMER_IRQn);
+  NVIC_SetPriority(INTMODULE_TIMER_IRQn, 7);
 }
 
 static void intmodulePxxStop()
 {
   DMA2_Stream6->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-  NVIC_DisableIRQ(TIM1_CC_IRQn) ;
+  NVIC_DisableIRQ(INTMODULE_TIMER_IRQn) ;
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE ;
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
   INTERNAL_MODULE_OFF();
@@ -330,7 +330,7 @@ static void intmodulePpmStart()
   INTERNAL_MODULE_ON();
 
   // Timer1
-  configure_pins(INTMODULE_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25);
+  configure_pins(INTMODULE_PPM_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_1 | PIN_OS25);
   
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
 
@@ -355,15 +355,15 @@ static void intmodulePpmStart()
   INTMODULE_TIMER->DIER |= TIM_DIER_UIE ;
 
   INTMODULE_TIMER->CR1 = TIM_CR1_CEN ;
-  NVIC_EnableIRQ(TIM1_CC_IRQn) ;
-  NVIC_SetPriority(TIM1_CC_IRQn, 7);
+  NVIC_EnableIRQ(INTMODULE_TIMER_IRQn) ;
+  NVIC_SetPriority(INTMODULE_TIMER_IRQn, 7);
   NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn) ;
   NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 7);
 }
 
 static void intmodulePpmStop()
 {
-  NVIC_DisableIRQ(TIM1_CC_IRQn) ;
+  NVIC_DisableIRQ(INTMODULE_TIMER_IRQn) ;
   NVIC_DisableIRQ(TIM1_UP_TIM10_IRQn) ;
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE & ~TIM_DIER_UIE ;
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
@@ -416,7 +416,6 @@ void extmodulePxxStart()
 {
   EXTERNAL_MODULE_ON();
 
-  // Timer8
   setupPulsesPXX(EXTERNAL_MODULE);
 
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -430,7 +429,7 @@ void extmodulePxxStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
   EXTMODULE_TIMER->ARR = 18000 ;                     // 9mS
-  EXTMODULE_TIMER->CCR2 = 15000 ;            // Update time
+  EXTMODULE_TIMER->CCR2 = 15000 ;                    // Update time
   EXTMODULE_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1 ;               // 0.5uS from 30MHz
   EXTMODULE_TIMER->CCER = TIM_CCER_CC1NE ;
   EXTMODULE_TIMER->CR2 = TIM_CR2_OIS1 ;                      // O/P idle high
@@ -449,8 +448,6 @@ void extmodulePxxStart()
                                                          | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL ;
   DMA2_Stream2->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->DMAR);
   DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].pxx.pulses[1]);
-//      DMA2_Stream2->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
-//      DMA2_Stream2->NDTR = 100 ;
   DMA2_Stream2->CR |= DMA_SxCR_EN ;               // Enable DMA
 
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0 ;                     // Toggle CC1 o/p
@@ -533,14 +530,10 @@ static void extmoduleDsm2Stop()
 }
 #endif
 
-// PPM output
-// Timer 1, channel 1 on PA8 for prototype
-// Pin is AF1 function for timer 1
 static void extmodulePpmStart()
 {
   EXTERNAL_MODULE_ON();
 
-  // Timer1
   configure_pins(EXTMODULE_PPM_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTA | PIN_PER_3 | PIN_OS25);
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN ;
 

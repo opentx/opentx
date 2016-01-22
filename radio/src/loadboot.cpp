@@ -78,7 +78,7 @@ void _bootStart()
   // If we were to turn it on here indiscriminately, then the radio can go into the 
   // power on/off loop after being powered off by the user. (issue #2790)
   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
-    GPIOD->BSRRL = 1;                                  // set PWR_GPIO_PIN_ON pin to 1
+    GPIOD->BSRRL = 1;                                  // set PWR_ON_GPIO_PIN pin to 1
     GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;    // General purpose output mode
   }
 
@@ -104,7 +104,7 @@ void _bootStart()
   // eventually exhaust and the radio will turn off.
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     // wait here until the power key is pressed
-    while (GPIOD->IDR & PWR_GPIO_PIN_SWITCH) {
+    while (GPIOD->IDR & PWR_SWITCH_GPIO_PIN) {
       bwdt_reset();
     }
   }
