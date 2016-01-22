@@ -103,7 +103,8 @@ void configure_pins( uint32_t pins, uint16_t config );
 
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()         (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
 
 #ifdef __cplusplus
 extern "C" {
@@ -119,9 +120,9 @@ void delay_ms(uint16_t nb);
 #if !defined(SIMU) || defined(SIMU_DISKIO)
   uint32_t sdIsHC(void);
   uint32_t sdGetSpeed(void);
-  #define SD_IS_HC()              (sdIsHC())
-  #define SD_GET_SPEED()          (sdGetSpeed())
-  #define SD_GET_FREE_BLOCKNR()   (sdGetFreeSectors())
+  #define SD_IS_HC()                   (sdIsHC())
+  #define SD_GET_SPEED()               (sdGetSpeed())
+  #define SD_GET_FREE_BLOCKNR()        (sdGetFreeSectors())
 #else
   #define SD_IS_HC()              (0)
   #define SD_GET_SPEED()          (0)
@@ -136,7 +137,7 @@ void delay_ms(uint16_t nb);
   #define sdPoll10ms()
   #define sdMountPoll()
   uint32_t sdMounted(void);
-  #define SD_CARD_PRESENT()       (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
+  #define SD_CARD_PRESENT()            (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
 #endif
 
 // Flash Write driver
@@ -154,8 +155,12 @@ void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBu
 void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBufferSize);
 
 // Pulses driver
-#define EXTERNAL_MODULE_ON()           GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
+#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
@@ -287,7 +292,8 @@ int32_t getVolume(void);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
-void sportSendBuffer(uint8_t *buffer, uint32_t count);
+void telemetryPortSetDirectionOutput(void);
+void sportSendBuffer(uint8_t * buffer, uint32_t count);
 
 // Haptic driver
 void hapticInit(void);
@@ -309,6 +315,7 @@ void serial2Stop(void);
 void usbJoystickUpdate(void);
 #endif
 
+extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
 
 #endif // _BOARD_HORUS_H_

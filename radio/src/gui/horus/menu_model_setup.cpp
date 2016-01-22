@@ -531,7 +531,7 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, TRAINER_MODE_MASTER, TRAINER_MODE_SLAVE, attr, event);
+        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, attr, event);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:

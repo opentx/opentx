@@ -130,8 +130,8 @@
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_GPIO                        GPIOJ
-#define PWR_GPIO_PIN_ON                 GPIO_Pin_1  // PJ.01
-#define PWR_GPIO_PIN_SWITCH             GPIO_Pin_0  // PJ.00
+#define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 // Led
 #define LED_RCC_AHB1Periph              RCC_AHB1Periph_GPIOI
@@ -155,16 +155,26 @@
 #define TELEMETRY_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO_DIR              GPIOD
-#define TELEMETRY_GPIO_PIN_DIR          GPIO_Pin_4  // PD.04
+#define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #define TELEMETRY_GPIO                  GPIOD
-#define TELEMETRY_GPIO_PIN_TX           GPIO_Pin_5  // PD.05
-#define TELEMETRY_GPIO_PIN_RX           GPIO_Pin_6  // PD.06
+#define TELEMETRY_TX_GPIO_PIN           GPIO_Pin_5  // PD.05
+#define TELEMETRY_RX_GPIO_PIN           GPIO_Pin_6  // PD.06
 #define TELEMETRY_GPIO_PinSource_TX     GPIO_PinSource5
 #define TELEMETRY_GPIO_PinSource_RX     GPIO_PinSource6
 #define TELEMETRY_GPIO_AF               GPIO_AF_USART2
 #define TELEMETRY_USART                 USART2
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
+
+// Heartbeat
+#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+// #define HEARTBEAT_RCC_APB2Periph        RCC_APB2Periph_USART3
+#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
+// #define HEARTBEAT_GPIO_PinSource        GPIO_PinSource12
+// #define HEARTBEAT_GPIO_AF               GPIO_AF_USART3
+// #define HEARTBEAT_USART                 USART3
+// #define HEARTBEAT_USART_IRQHandler      USART3_IRQHandler
+// #define HEARTBEAT_USART_IRQn            USART3_IRQn
 
 // USB
 #define USB_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOA
@@ -253,20 +263,38 @@
 #define HAPTIC_GPIO_PinSource           GPIO_PinSource2
 
 // Internal Module
-#define INTMODULE_RCC_AHB1Periph_GPIO   (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB)
-#define INTMODULE_GPIO_PWR              GPIOA
-#define INTMODULE_GPIO_PIN_PWR          GPIO_Pin_8   // PA.08
-#define INTMODULE_GPIO                  GPIOB
-#define INTMODULE_GPIO_PIN              GPIO_Pin_6   // PB.06
-#define INTMODULE_GPIO_PinSource        GPIO_PinSource6
+#define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB)
+#define INTMODULE_RCC_APB2Periph        (RCC_APB2Periph_TIM1 | RCC_APB2Periph_USART1)
+#define INTMODULE_PWR_GPIO              GPIOA
+#define INTMODULE_PWR_GPIO_PIN          GPIO_Pin_8  // PA.08
+#define INTMODULE_TX_GPIO               GPIOB
+#define INTMODULE_TX_GPIO_PIN           GPIO_Pin_6  // PB.06
+#define INTMODULE_RX_GPIO               GPIOB
+#define INTMODULE_RX_GPIO_PIN           GPIO_Pin_7  // PB.07
+#define INTMODULE_TX_GPIO_PinSource     GPIO_PinSource6
+#define INTMODULE_RX_GPIO_PinSource     GPIO_PinSource7
+#define INTMODULE_USART                 USART1
+#define INTMODULE_GPIO_AF               GPIO_AF_USART1
+#define INTMODULE_USART_IRQn            USART1_IRQn
+#define INTMODULE_DMA_STREAM            DMA2_Stream7
+#define INTMODULE_DMA_STREAM_IRQ        DMA2_Stream7_IRQn
+#define INTMODULE_DMA_CHANNEL           DMA_Channel_4
+#define INTMODULE_TIMER                 TIM1
+#define INTMODULE_TIMER_IRQn            TIM1_CC_IRQn
 
 // External Module
 #define EXTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB)
+#define EXTMODULE_RCC_APB1Periph        RCC_APB1Periph_TIM2
+#define EXTMODULE_RCC_APB2Periph        0
 #define EXTMODULE_PWR_GPIO              GPIOB
-#define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3   // PB.03
+#define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3  // PB.03
 #define EXTMODULE_PPM_GPIO              GPIOA
-#define EXTMODULE_PPM_GPIO_PIN          GPIO_Pin_15  // PA.15
+#define EXTMODULE_PPM_GPIO_PIN          GPIO_Pin_15 // PA.15
 #define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource15
+#define EXTMODULE_TIMER                 TIM2
+#define EXTMODULE_PPM_GPIO_AF           GPIO_AF_TIM2
+#define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource15
+// #define EXTMODULE_TIMER_IRQn            TIM2_CC_IRQn
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC)
@@ -290,5 +318,22 @@
 // 2MHz Timer
 #define TIMER_2MHz_APB1Periph           RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
+
+// Bluetooth
+#define BT_USART                        USART6
+#define BT_GPIO_AF                      GPIO_AF_USART6
+#define BT_USART_IRQn                   USART6_IRQn
+#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
+#define BT_GPIO_TXRX                    GPIOG
+#define BT_GPIO_PIN_TX                  GPIO_Pin_14 // PG.14
+#define BT_GPIO_PIN_RX                  GPIO_Pin_9  // PG.09
+#define BT_GPIO_EN                      GPIOB
+#define BT_GPIO_PIN_EN                  GPIO_Pin_10 // PB.10
+#define BT_GPIO_BRTS                    GPIOG
+#define BT_GPIO_PIN_BRTS                GPIO_Pin_10 // PG.10
+#define BT_GPIO_BCTS                    GPIOG
+#define BT_GPIO_PIN_BCTS                GPIO_Pin_11 // PG.11
+#define BT_GPIO_PinSource_TX            GPIO_PinSource14
+#define BT_GPIO_PinSource_RX            GPIO_PinSource9
 
 #endif // _HAL_H_

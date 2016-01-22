@@ -124,9 +124,9 @@ void pinCheck(GPIO_TypeDef * gpio, uint32_t pin, uint32_t RCC_AHB1Periph)
 
 void boardInit()
 {
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph, ENABLE);
   RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | AUDIO_RCC_APB1Periph | SERIAL_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | AUDIO_RCC_APB1Periph, ENABLE);
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph, ENABLE);
 
   pwrInit();
   ledInit();
@@ -211,12 +211,20 @@ void checkTrainerSettings()
   uint8_t requiredTrainerMode = g_model.trainerMode;
   if (requiredTrainerMode != currentTrainerMode) {
     switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER:
+      case TRAINER_MODE_MASTER_TRAINER_JACK:
         stop_trainer_capture();
         break;
       case TRAINER_MODE_SLAVE:
         stop_trainer_ppm();
         break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+        stop_cppm_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+        stop_sbus_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        serial2Stop();
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -224,6 +232,18 @@ void checkTrainerSettings()
       case TRAINER_MODE_SLAVE:
         init_trainer_ppm();
         break;
+      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+        init_cppm_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+        init_sbus_on_heartbeat_capture() ;
+        break;
+      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
+          serial2SbusInit();
+          break;
+        }
+        // no break
       default:
         // master is default
         init_trainer_capture();

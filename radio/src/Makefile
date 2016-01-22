@@ -1231,7 +1231,7 @@ ifeq ($(PCB), HORUS)
   TRGT = arm-none-eabi-
   MCU  = cortex-m4
   OPT = 2
-  CPPDEFS += -DHSE_VALUE=12000000 -DCOLORLCD -DSTM32F429_439xx
+  CPPDEFS += -DHSE_VALUE=12000000 -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL
   BITMAPS += $(patsubst %.png,%.lbm,$(wildcard bitmaps/horus/*.png))
   FONTS = fonts/horus/font_stdsize.lbm fonts/horus/font_tinsize.lbm fonts/horus/font_smlsize.lbm fonts/horus/font_midsize.lbm fonts/horus/font_dblsize.lbm fonts/horus/font_xxlsize.lbm
   SDCARD = YES

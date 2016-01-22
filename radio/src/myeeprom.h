@@ -453,8 +453,6 @@ enum UartModes {
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.serial2Mode==UART_MODE_CPPM_TRAINER*/)
-
   #if defined(REV9E)
     #define BLUETOOTH_FIELDS \
       uint8_t bluetoothEnable; \
@@ -519,19 +517,7 @@ enum PotsWarnMode {
   POTS_WARN_AUTO
 };
 
-#if defined(PCBHORUS)
-  enum ModuleIndex {
-    INTERNAL_MODULE,
-    EXTERNAL_MODULE,
-    TRAINER_MODULE,
-  };
-  enum TrainerMode {
-    TRAINER_MODE_MASTER,
-    TRAINER_MODE_SLAVE
-  };
-  #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
-#elif defined(PCBFLAMENCO)
+#if defined(PCBFLAMENCO)
   enum ModuleIndex {
     EXTERNAL_MODULE,
     TRAINER_MODULE,
@@ -540,9 +526,7 @@ enum PotsWarnMode {
     TRAINER_MODE_MASTER,
     TRAINER_MODE_SLAVE
   };
-  #define MODELDATA_BITMAP  uint8_t bitmap;
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
@@ -556,14 +540,25 @@ enum PotsWarnMode {
     TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
   };
   #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.serial2Mode==UART_MODE_CPPM_TRAINER*/)
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
     EXTRA_MODULE,
     TRAINER_MODULE
   };
+#endif
+
+#if defined(PCBHORUS)
+  #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+#elif defined(PCBFLAMENCO)
+  #define MODELDATA_BITMAP  uint8_t bitmap;
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+#elif defined(PCBTARANIS)
+  #define MODELDATA_BITMAP  char bitmap[LEN_BITMAP_NAME];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+#elif defined(PCBSKY9X)
   #define MODELDATA_BITMAP
   #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
 #else
