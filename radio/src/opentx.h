@@ -1492,6 +1492,14 @@ extern void checkBattery();
 extern void opentxClose();
 extern void opentxInit();
 
+#if defined(PCBHORUS) && !defined(SIMU)
+  #define LED_ERROR_BEGIN()            ledRed()
+  #define LED_ERROR_END()              ledBlue()
+#else
+  #define LED_ERROR_BEGIN()
+  #define LED_ERROR_END()
+#endif
+
 // Re-useable byte array to save having multiple buffers
 #define SD_SCREEN_FILE_LENGTH (64)
 union ReusableBuffer

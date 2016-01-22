@@ -1238,6 +1238,7 @@ void checkTHR()
   }
 
   // first - display warning; also deletes inputs if any have been before
+  LED_ERROR_BEGIN();
   MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
 
 #if defined(PWR_BUTTON_DELAY)
@@ -1281,6 +1282,8 @@ void checkTHR()
     wdt_reset();
   }
 #endif
+
+  LED_ERROR_END();
 }
 
 void checkAlarm() // added by Gohst
@@ -1294,19 +1297,20 @@ void checkAlarm() // added by Gohst
   }
 }
 
-void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
+void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG)
 {
+  LED_ERROR_BEGIN();
+
   MESSAGE(t, s, STR_PRESSANYKEY, sound);
 
 #if defined(PWR_BUTTON_DELAY)
   bool refresh = false;
 #endif
 
-  while(1)
-  {
+  while(1) {
     SIMU_SLEEP(1);
 
-    if (keyDown()) return;  // wait for key release
+    if (keyDown()) break; // wait for key release
 
     doLoopCommonActions();
 
@@ -1330,6 +1334,8 @@ void alert(const pm_char * t, const pm_char *s MESSAGE_SOUND_ARG)
     }
 #endif
   }
+
+  LED_ERROR_END();
 }
 
 #if defined(GVARS)

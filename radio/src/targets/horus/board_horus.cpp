@@ -99,29 +99,6 @@ extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
   interrupt5ms() ;
 }
 
-#if 0
-void pinCheck(GPIO_TypeDef * gpio, uint32_t pin, uint32_t RCC_AHB1Periph)
-{
-  GPIO_InitTypeDef GPIO_InitStruct;
-
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph, ENABLE);
-
-  GPIO_InitStruct.GPIO_Pin = pin;
-  GPIO_InitStruct.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStruct.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStruct.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(gpio, &GPIO_InitStruct);
-
-  for (int i=0; i<10; i++) {
-    GPIO_SetBits(gpio, pin);
-    delay_01us(10);
-    GPIO_ResetBits(gpio, pin);
-    delay_01us(10);
-  }
-}
-#endif
-
 void boardInit()
 {
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | KEYS_RCC_AHB1Periph_GPIO | ADC_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph, ENABLE);
@@ -135,19 +112,11 @@ void boardInit()
   // FrSky removed the volume chip in latest board, that's why it doesn't answer!
   // i2cInit();
 
-  if (0) {
-   // pinCheck(SERIAL_GPIO, SERIAL_GPIO_PIN_TX, SERIAL_RCC_AHB1Periph_GPIO);
-   // pinCheck(EEPROM_GPIO, EEPROM_GPIO_PIN_SCK, RCC_AHB1Periph_GPIOB);
-   // pinCheck(EEPROM_GPIO, EEPROM_GPIO_PIN_MISO, RCC_AHB1Periph_GPIOB);
-   // pinCheck(EEPROM_GPIO, EEPROM_GPIO_PIN_MOSI, RCC_AHB1Periph_GPIOB);
-  }
-
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
 
   __enable_irq();
 
   TRACE("Horus started :)");
-  ledBlue();
 
   keysInit();
   adcInit();
@@ -158,12 +127,13 @@ void boardInit()
   usbInit();
   hapticInit();
 
-  //  rotencInit();
   //  bt_open();
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
+
+  ledBlue();
 }
 #endif
 

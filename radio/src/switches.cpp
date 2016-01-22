@@ -822,8 +822,10 @@ void checkSwitches()
       startupWarningState = STARTUP_WARNING_SWITCHES+1;
       last_bad_switches = 0xff;
 #endif
-      return;
+      break;
     }
+
+    LED_ERROR_BEGIN();
 
     // first - display warning
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
@@ -935,7 +937,7 @@ void checkSwitches()
       last_bad_switches = 0xff;
     }
 #else
-    if (pwrCheck()==e_power_off || keyDown()) return;
+    if (pwrCheck()==e_power_off || keyDown()) break;
 
     doLoopCommonActions();
 
@@ -943,7 +945,9 @@ void checkSwitches()
 
     SIMU_SLEEP(1);
   }
-#endif    
+#endif
+
+  LED_ERROR_END();
 }
 #endif // GUI
 
