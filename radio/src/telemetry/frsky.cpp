@@ -282,7 +282,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
   uint8_t data;
 #if defined(SPORT_FILE_LOG) && !defined(SIMU)
   static tmr10ms_t lastTime = 0;
@@ -609,7 +609,7 @@ void telemetryInit(uint8_t protocol)
   if (protocol == PROTOCOL_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE);
   }
-#if defined(PCBTARANIS)
+#if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE);
     telemetryPortSetDirectionOutput();

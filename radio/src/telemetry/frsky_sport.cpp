@@ -199,7 +199,7 @@ void processSportPacket(uint8_t * packet)
   uint8_t  prim   = packet[1];
   uint16_t id  = *((uint16_t *)(packet+2));
 
-#if defined(PCBTARANIS) && !defined(SIMU)
+#if defined(CPUSTM32) && !defined(SIMU)
   if (sportUpdateState != SPORT_IDLE) {
     processSportUpdatePacket(packet);	// Uses different chksum
     return;
@@ -320,7 +320,7 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instanc
   storageDirty(EE_MODEL);
 }
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
 bool sportWaitState(SportUpdateState state, int timeout)
 {
 #if defined(SIMU)
@@ -375,7 +375,7 @@ bool sportUpdatePowerOn(ModuleIndex module)
 
   sportUpdateState = SPORT_POWERUP_REQ;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   intPwr = IS_INTERNAL_MODULE_ON();
   extPwr = IS_EXTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
@@ -386,7 +386,7 @@ bool sportUpdatePowerOn(ModuleIndex module)
 
   telemetryPortInit(FRSKY_SPORT_BAUDRATE);
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)
     INTERNAL_MODULE_ON();
   else
@@ -501,13 +501,15 @@ void sportFirmwareUpdate(ModuleIndex module, const char *filename)
     POPUP_WARNING("Firmware Update Error");
   }
   
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
+#endif
   
   sportWaitState(SPORT_IDLE, 1000);
 
-  if (intPwr) 
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+  if (intPwr)
     INTERNAL_MODULE_ON();
   if (extPwr)
     EXTERNAL_MODULE_ON();
