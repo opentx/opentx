@@ -35,7 +35,7 @@ void setupPulses(unsigned int port)
   heartbeat |= (HEART_TIMER_PULSES << port);
 
   switch (port) {
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     case INTERNAL_MODULE:
   #if defined(TARANIS_INTERNAL_PPM)
       switch (g_model.moduleData[INTERNAL_MODULE].type) {
@@ -83,7 +83,7 @@ void setupPulses(unsigned int port)
           }
           break;
 #endif
-#if defined(PCBTARANIS) && defined(CROSSFIRE)
+#if defined(CROSSFIRE)
         case MODULE_TYPE_CROSSFIRE:
           required_protocol = PROTO_CROSSFIRE;
           break;

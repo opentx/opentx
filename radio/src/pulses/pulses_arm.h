@@ -104,7 +104,7 @@ inline void startPulses()
 {
   s_pulses_paused = false;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   setupPulses(INTERNAL_MODULE);
   setupPulses(EXTERNAL_MODULE);
 #else
@@ -124,8 +124,9 @@ inline void resumePulses() { s_pulses_paused = false; }
 
 inline void SEND_FAILSAFE_1S()
 {
-  for (int i=0; i<NUM_MODULES; i++)
+  for (int i=0; i<NUM_MODULES; i++) {
     failsafeCounter[i] = 100;
+  }
 }
 
 #endif // _PULSES_ARM_H_
