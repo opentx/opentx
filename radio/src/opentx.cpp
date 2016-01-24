@@ -1447,6 +1447,7 @@ uint16_t BandGap ;
     #error "JITTER_FILTER_STRENGTH and ANALOG_SCALE are too big, their summ should be <= 5 !!!"
   #endif
 #else
+  #define ANALOG_SCALE            0
   #define JITTER_ALPHA            1
   #define ANALOG_MULTIPLIER       1
   #define ANA_FILT(chan)          (s_anaFilt[chan])
