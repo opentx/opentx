@@ -135,3 +135,9 @@ extern const uint8_t LBM_CURVE_COORD_SHADOW[];
 extern const uint8_t LBM_SHUTDOWN[];
 extern const uint8_t LBM_SLEEP[];
 extern const uint8_t LBM_SHUTDOWN_CIRCLE[];
+extern const uint8_t LBM_SLIDER_BAR_LEFT[];
+extern const uint8_t LBM_SLIDER_BAR_RIGHT[];
+extern const uint8_t LBM_SLIDER_POINT_OUT[];
+extern const uint8_t LBM_SLIDER_POINT_MID[];
+extern const uint8_t LBM_SLIDER_POINT_IN[];
+

@@ -253,14 +253,22 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
 
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
-  const int width = 50;
-  lcdDrawHorizontalLine(x, y+5, width, SOLID, TEXT_COLOR);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) {
-    lcdDrawSolidFilledRect(x+value*(width-5)/max, y, 5, 11, TEXT_INVERTED_BGCOLOR);
-  }
-  else {
-    lcdDrawSolidFilledRect(x+value*(width-5)/max, y, 5, 11, LINE_COLOR);
-  }
+  const int width = 100;
+
+  // The bar
+  lcdDrawBitmapPattern(x, y + 10, LBM_SLIDER_BAR_LEFT, value <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
+  int w = value * (width - 8) / max;
+  if (value > 0)
+    lcdDrawSolidFilledRect(x + 4, y + 10, w, 4, TEXT_INVERTED_BGCOLOR);
+  if (value < max)
+    lcdDrawSolidFilledRect(x + 4 + w, y + 10, width - 8 - w, 4, LINE_COLOR);
+  lcdDrawBitmapPattern(x + width - 4, y + 10, LBM_SLIDER_BAR_RIGHT, value >= max ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+
+  // The point
+  lcdDrawBitmapPattern(x + w - 4, y + 5, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+  lcdDrawBitmapPattern(x + w - 4, y + 5, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE))
+    lcdDrawBitmapPattern(x + w - 4, y + 5, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
 }
 
 #if defined(GVARS)

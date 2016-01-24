@@ -263,3 +263,24 @@ const uint8_t LBM_SLEEP[] __DMA = {
 const uint8_t LBM_SHUTDOWN_CIRCLE[] __DMA = {
 #include "mask_shutdown_circle.lbm"
 };
+
+const uint8_t LBM_SLIDER_BAR_LEFT[] __DMA = {
+#include "bar_left.lbm"
+};
+
+const uint8_t LBM_SLIDER_BAR_RIGHT[] __DMA = {
+#include "bar_right.lbm"
+};
+
+const uint8_t LBM_SLIDER_POINT_OUT[] __DMA = {
+#include "point_out.lbm"
+};
+
+const uint8_t LBM_SLIDER_POINT_MID[] __DMA = {
+#include "point_mid.lbm"
+};
+
+const uint8_t LBM_SLIDER_POINT_IN[] __DMA = {
+#include "point_in.lbm"
+};
+
