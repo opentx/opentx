@@ -649,6 +649,7 @@ int zchar2str(char *dest, const char *src, int size);
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 div_t switchInfo(int switchPosition);
+extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
 bool switchState(EnumKeys enuk);

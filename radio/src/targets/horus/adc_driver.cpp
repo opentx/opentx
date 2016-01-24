@@ -199,7 +199,7 @@ void adcRead()
   // On chip ADC read should have finished
 }
 
-const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  1,1, 0,0,0};
+const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
 
 uint16_t getAnalogValue(uint32_t index)
 {

@@ -51,8 +51,8 @@ void init2MhzTimer()
 // Starts TIMER at 200Hz, 5mS period
 void init5msTimer()
 {
-  INTERRUPT_5MS_TIMER->ARR = 999 ;     // 5mS
-  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
+  INTERRUPT_5MS_TIMER->ARR = 999 ;     // 1mS
+  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;  // 1uS from 30MHz
   INTERRUPT_5MS_TIMER->CCER = 0 ;
   INTERRUPT_5MS_TIMER->CCMR1 = 0 ;
   INTERRUPT_5MS_TIMER->EGR = 0 ;
@@ -84,7 +84,7 @@ void interrupt5ms()
 
   }
 
-  if ( pre_scale >= 10 ) {
+  if ( pre_scale == 10 ) {
     pre_scale = 0 ;
     per10ms();
   }

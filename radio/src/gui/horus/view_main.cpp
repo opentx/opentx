@@ -20,13 +20,14 @@
 
 #include "../../opentx.h"
 
-#define TRIM_LH_X                      90
+#define TRIM_LH_X                      10
 #define TRIM_LV_X                      24
 #define TRIM_RV_X                      (LCD_W-35)
-#define TRIM_RH_X                      (LCD_W-95)
-#define TRIM_V_Y                       135
+#define TRIM_RH_X                      (LCD_W-175)
+#define TRIM_V_Y                       55
 #define TRIM_H_Y                       235
 #define TRIM_LEN                       80
+#define POTS_LINE_Y                    252
 
 #define MODELPANEL_LEFT                240
 #define MODELPANEL_TOP                 68
@@ -72,34 +73,90 @@ void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
   // }
 }
 
-void drawHorizontalStick(coord_t x, int val)
+#define OPTION_VERTICAL                0x01
+#define OPTION_BIG_TICKS               0x02
+#define OPTION_TRIM_BUTTON             0x10
+#define OPTION_NUMBER_BUTTON           0x20
+
+void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
-  for (int i=0; i<=160; i+=4) {
-    if (i==0 || i==80 || i==160)
-      lcdDrawSolidVerticalLine(x+i, 250, 13, TEXT_COLOR);
-    else
-      lcdDrawSolidVerticalLine(x+i, 252, 9, TEXT_COLOR);
+  if (steps) {
+    int delta = len / steps;
+    for (int i = 0; i <= len; i += delta) {
+      if ((options & OPTION_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
+        lcdDrawSolidHorizontalLine(x, y + i, 13, TEXT_COLOR);
+      else
+        lcdDrawSolidHorizontalLine(x + 2, y + i, 9, TEXT_COLOR);
+    }
   }
-  drawHorizontalTrimPosition(x+TRIM_LEN+val*TRIM_LEN/RESX-5, TRIM_H_Y+16, val);
+  else {
+    lcdDrawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, TEXT_COLOR);
+    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
+      }
+    } */
+  }
+  y += len - (val - min) * len / (max - min) - 5;
+  if (options & OPTION_TRIM_BUTTON) {
+    drawVerticalTrimPosition(x, y - 2, val);
+  }
+  else if (options & OPTION_NUMBER_BUTTON) {
+    drawTrimSquare(x, y - 2);
+    lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
+  }
+  else {
+    drawTrimSquare(x, y - 2);
+  }
 }
 
-void drawVerticalStick(coord_t x, int val)
+void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
-  for (int i=0; i<=160; i+=4) {
-    if (i==0 || i==80 || i==160)
-      lcdDrawSolidHorizontalLine(x, 56+i, 13, TEXT_COLOR);
-    else
-      lcdDrawSolidHorizontalLine(x+2, 56+i, 9, TEXT_COLOR);
+  if (steps) {
+    int delta = len / steps;
+    for (int i = 0; i <= len; i += delta) {
+      if ((options & OPTION_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
+        lcdDrawSolidVerticalLine(x + i, y, 13, TEXT_COLOR);
+      else
+        lcdDrawSolidVerticalLine(x + i, y + 2, 9, TEXT_COLOR);
+    }
   }
-  drawVerticalTrimPosition(x, TRIM_V_Y-val*TRIM_LEN/RESX-6, val);
+  else {
+    lcdDrawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, TEXT_COLOR);
+    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
+      }
+    } */
+  }
+  x += (val - min) * len / (max - min) - 5;
+  if (options & OPTION_TRIM_BUTTON) {
+    drawHorizontalTrimPosition(x, y - 1, val);
+  }
+  else if (options & OPTION_NUMBER_BUTTON) {
+    drawTrimSquare(x, y - 1);
+    lcdDrawChar(x + 2, y, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
+  }
+  else {
+    drawTrimSquare(x, y - 1);
+  }
 }
 
-void drawSticks()
+void drawSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
-  drawVerticalStick(6, calibratedStick[1]);
-  drawHorizontalStick(TRIM_LH_X-TRIM_LEN+1, calibratedStick[0]);
-  drawVerticalStick(LCD_W-18, calibratedStick[2]);
-  drawHorizontalStick(TRIM_RH_X-TRIM_LEN+1, calibratedStick[3]);
+  if (options & OPTION_VERTICAL)
+    drawVerticalSlider(x, y, len, val, min, max, steps, options);
+  else
+    drawHorizontalSlider(x, y, len, val, min, max, steps, options);
+}
+
+void drawPots()
+{
+  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedStick[9], -RESX, RESX, 40, OPTION_BIG_TICKS);
+  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedStick[4], -RESX, RESX, 40, OPTION_BIG_TICKS);
+  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedStick[10], -RESX, RESX, 40, OPTION_BIG_TICKS);
+  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedStick[6], -RESX, RESX, 40, OPTION_BIG_TICKS);
+  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_NUMBER_BUTTON);
 }
 
 void drawTrims(uint8_t flightMode)
@@ -107,7 +164,7 @@ void drawTrims(uint8_t flightMode)
   g_model.displayTrims = DISPLAY_TRIMS_ALWAYS;
 
   for (uint8_t i=0; i<4; i++) {
-    static coord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
+    static const coord_t x[4] = { TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X };
     static uint8_t vert[4] = {0, 1, 1, 0};
     unsigned int stickIndex = CONVERT_MODE(i);
     coord_t xm = x[stickIndex];
@@ -125,29 +182,15 @@ void drawTrims(uint8_t flightMode)
     }
 
     if (vert[i]) {
-      coord_t ym = TRIM_V_Y;
-      lcdDrawBitmapPattern(xm, ym-TRIM_LEN, LBM_VTRIM_FRAME, TEXT_COLOR);
-      if (i!=2 || !g_model.thrTrim) {
-        // TODO
-      }
-      ym -= val;
-      drawVerticalTrimPosition(xm-1, ym-6, val);
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
-        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          // TODO lcdDrawNumber(trim>0 ? 100 : 200, xm-2, trim, TINSIZE|VERTICAL);
-        }
-      }
+      drawVerticalSlider(xm, TRIM_V_Y, 160, trim, -125, 125, 0, OPTION_TRIM_BUTTON);
     }
     else {
-      coord_t ym = TRIM_H_Y;
-      lcdDrawBitmapPattern(xm-TRIM_LEN, ym, LBM_HTRIM_FRAME, TEXT_COLOR);
-      xm += val;
-      drawHorizontalTrimPosition(xm-3, ym-2, val);
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+      drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, -125, 125, 0, OPTION_TRIM_BUTTON);
+  /*    if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
           lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
         }
-      }
+      }*/
     }
   }
 }
@@ -351,20 +394,14 @@ bool menuMainView(evt_t event)
     lcdDrawSolidFilledRect(390+i*6, 38-height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
   }
 
-  // Flight Mode Name
-  int mode = mixerCurrentFlightMode;
-  for (int i=0; i<MAX_FLIGHT_MODES; i++) {
-    lcdDrawSolidVerticalLine(LCD_W/2-20+5*i, 254, 13, TEXT_COLOR);
-  }
-  drawTrimSquare(LCD_W/2-25+5*mixerCurrentFlightMode, 253);
-  lcdDrawChar(LCD_W/2-23+5*mixerCurrentFlightMode, 254, '0'+mixerCurrentFlightMode, SMLSIZE|TEXT_INVERTED_COLOR);
-  lcdDrawSizedText(LCD_W/2-getTextWidth(g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[mode].name), ZCHAR|SMLSIZE);
+  // Flight mode
+  lcdDrawSizedText(LCD_W/2-getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE);
 
-  // Sticks
-  drawSticks();
+  // Pots and rear sliders positions
+  drawPots();
 
   // Trims
-  drawTrims(mode);
+  drawTrims(mixerCurrentFlightMode);
 
   // Model panel
   TIME_MEASURE_START(filledRect);
