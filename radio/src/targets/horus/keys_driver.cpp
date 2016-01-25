@@ -90,23 +90,18 @@ uint8_t keyDown()
 }
 
 int32_t rotencValue;
+uint32_t rotencPosition;
 void checkRotaryEncoder()
 {
-  static uint32_t Rotary_position;
-  register uint32_t dummy ;
-
-  dummy = ENC_GPIO->IDR ;   // Read Rotary encode
-  dummy >>= 10;            // quick & dirty!
-  dummy &= 0x03 ;         // pick out the two bits
-  if ( dummy != ( Rotary_position & 0x03 ) ) {
-    if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x02) >> 1 ) ) {
+  register uint32_t newpos = ROTARY_ENCODER_POSITION();
+  if (newpos != rotencPosition) {
+    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
       --rotencValue;
     }
     else {
       ++rotencValue;
     }
-    Rotary_position &= ~0x03 ;
-    Rotary_position |= dummy ;
+    rotencPosition = newpos;
   }
 }
 
@@ -227,4 +222,6 @@ void keysInit()
 
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOJ_PINS;
   GPIO_Init(GPIOJ, &GPIO_InitStructure);
+
+  rotencPosition = ROTARY_ENCODER_POSITION();
 }
