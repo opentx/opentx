@@ -306,6 +306,9 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
     else if (input.carryTrim<0) str += " " + Qt::escape(RawSource(SOURCE_TYPE_TRIM, (-(input.carryTrim)-1)).toString(&model));
   }
 
+  if (input.offset)
+    str += " " + Qt::escape(tr("Offset(%1)").arg(getGVarString(input.offset)));
+
   if (firmware->getCapability(HasExpoNames) && input.name[0]) 
     str += Qt::escape(QString(" [%1]").arg(input.name));
 
