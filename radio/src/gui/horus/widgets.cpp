@@ -265,10 +265,10 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
   lcdDrawBitmapPattern(x + width - 4, y + 8, LBM_SLIDER_BAR_RIGHT, value >= max ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
 
   // The point
-  lcdDrawBitmapPattern(x + w - 4, y + 3, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
-  lcdDrawBitmapPattern(x + w - 4, y + 3, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+  lcdDrawBitmapPattern(x + w - 4, y + 2, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+  lcdDrawBitmapPattern(x + w - 4, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE))
-    lcdDrawBitmapPattern(x + w - 4, y + 3, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+    lcdDrawBitmapPattern(x + w - 4, y + 2, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
 }
 
 #if defined(GVARS)
