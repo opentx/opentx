@@ -208,7 +208,7 @@ bool menuModelSetup(evt_t event)
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    int k = i+menuVerticalOffset;
+    int k = i + menuVerticalOffset;
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -39,124 +39,21 @@
 #define TIMER2PANEL_LEFT               TIMER1PANEL_LEFT
 #define TIMER2PANEL_TOP                134
 
-void drawTrimSquare(coord_t x, coord_t y)
+void drawMainPots()
 {
-  lcdDrawSolidFilledRect(x-2, y, 15, 15, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TEXT_COLOR);
-}
+  // The 3 pots
+  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedStick[4], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                                         OPTION_SLIDER_SQUARE_BUTTON);
+  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                                                                                                    OPTION_SLIDER_NUMBER_BUTTON);
+  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedStick[6], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                                         OPTION_SLIDER_SQUARE_BUTTON);
 
-void drawHorizontalTrimPosition(coord_t x, coord_t y, int16_t dir)
-{
-  drawTrimSquare(x, y);
-  if (dir >= 0) {
-    lcdDrawSolidVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
-  }
-  if (dir <= 0) {
-    lcdDrawSolidVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
-  }
-  // if (exttrim) {
-  //  lcdDrawSolidVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
-  // }
-}
-
-void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
-{
-  drawTrimSquare(x, y);
-  if (dir >= 0) {
-    lcdDrawSolidHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
-  }
-  if (dir <= 0) {
-    lcdDrawSolidHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
-  }
-  // if (exttrim) {
-  //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
-  // }
-}
-
-#define OPTION_VERTICAL                0x01
-#define OPTION_BIG_TICKS               0x02
-#define OPTION_TRIM_BUTTON             0x10
-#define OPTION_NUMBER_BUTTON           0x20
-
-void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
-{
-  if (steps) {
-    int delta = len / steps;
-    for (int i = 0; i <= len; i += delta) {
-      if ((options & OPTION_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-        lcdDrawSolidHorizontalLine(x, y + i, 13, TEXT_COLOR);
-      else
-        lcdDrawSolidHorizontalLine(x + 2, y + i, 9, TEXT_COLOR);
-    }
-  }
-  else {
-    lcdDrawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, TEXT_COLOR);
-    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
-      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
-      }
-    } */
-  }
-  y += len - (val - min) * len / (max - min) - 5;
-  if (options & OPTION_TRIM_BUTTON) {
-    drawVerticalTrimPosition(x, y - 2, val);
-  }
-  else if (options & OPTION_NUMBER_BUTTON) {
-    drawTrimSquare(x, y - 2);
-    lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
-  }
-  else {
-    drawTrimSquare(x, y - 2);
-  }
-}
-
-void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
-{
-  if (steps) {
-    int delta = len / steps;
-    for (int i = 0; i <= len; i += delta) {
-      if ((options & OPTION_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-        lcdDrawSolidVerticalLine(x + i, y, 13, TEXT_COLOR);
-      else
-        lcdDrawSolidVerticalLine(x + i, y + 2, 9, TEXT_COLOR);
-    }
-  }
-  else {
-    lcdDrawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, TEXT_COLOR);
-    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
-      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
-      }
-    } */
-  }
-  x += (val - min) * len / (max - min) - 5;
-  if (options & OPTION_TRIM_BUTTON) {
-    drawHorizontalTrimPosition(x, y - 1, val);
-  }
-  else if (options & OPTION_NUMBER_BUTTON) {
-    drawTrimSquare(x, y - 1);
-    lcdDrawChar(x + 2, y, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
-  }
-  else {
-    drawTrimSquare(x, y - 1);
-  }
-}
-
-void drawSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
-{
-  if (options & OPTION_VERTICAL)
-    drawVerticalSlider(x, y, len, val, min, max, steps, options);
-  else
-    drawHorizontalSlider(x, y, len, val, min, max, steps, options);
-}
-
-void drawPots()
-{
-  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedStick[9], -RESX, RESX, 40, OPTION_BIG_TICKS);
-  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedStick[4], -RESX, RESX, 40, OPTION_BIG_TICKS);
-  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedStick[10], -RESX, RESX, 40, OPTION_BIG_TICKS);
-  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedStick[6], -RESX, RESX, 40, OPTION_BIG_TICKS);
-  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_NUMBER_BUTTON);
+  // The 2 rear sliders
+  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedStick[9], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                            OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedStick[10], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                                    OPTION_SLIDER_SQUARE_BUTTON);
 }
 
 void drawTrims(uint8_t flightMode)
@@ -182,10 +79,10 @@ void drawTrims(uint8_t flightMode)
     }
 
     if (vert[i]) {
-      drawVerticalSlider(xm, TRIM_V_Y, 160, trim, -125, 125, 0, OPTION_TRIM_BUTTON);
+      drawVerticalSlider(xm, TRIM_V_Y, 160, trim, -125, 125, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
     }
     else {
-      drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, -125, 125, 0, OPTION_TRIM_BUTTON);
+      drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, -125, 125, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
   /*    if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
           lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
@@ -260,23 +157,6 @@ bool isViewAvailable(int index)
     return true;
   else
     return TELEMETRY_SCREEN_TYPE(index-VIEW_TELEM1) != TELEMETRY_SCREEN_TYPE_NONE;
-}
-
-void displayMainViewIndex()
-{
-  int x = LCD_W - 14;
-
-  for (int i=VIEW_COUNT; i>=0; --i) {
-    if (isViewAvailable(i)) {
-      if (g_eeGeneral.view == i) {
-        lcdDrawSolidFilledRect(x, MENU_FOOTER_TOP+17, 9, 9, TEXT_INVERTED_BGCOLOR);
-      }
-      else {
-        lcdDrawSolidRect(x+1, MENU_FOOTER_TOP+18, 7, 7, TEXT_COLOR);
-      }
-      x -= 11;
-    }
-  }
 }
 
 void onMainViewMenu(const char *result)
@@ -398,7 +278,7 @@ bool menuMainView(evt_t event)
   lcdDrawSizedText(LCD_W/2-getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE);
 
   // Pots and rear sliders positions
-  drawPots();
+  drawMainPots();
 
   // Trims
   drawTrims(mixerCurrentFlightMode);

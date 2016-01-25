@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -32,7 +32,7 @@
 
 int8_t editSlider(coord_t x, coord_t y, evt_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
 {
-  drawSlider(x, y, value-min, max-min, attr);
+  drawHorizontalSlider(x, y, 100, value, min, max, 0, OPTION_SLIDER_DBL_COLOR|attr);
   return selectMenuItem(x, y, NULL, value, min, max, attr, event);
 }
 
@@ -122,7 +122,7 @@ bool menuGeneralSetup(evt_t event)
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    int k = i+menuVerticalOffset;
+    int k = i + menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 

@@ -68,6 +68,7 @@ if(PCB STREQUAL HORUS)
     ${GUI_SRC}
     curves.cpp
     bitmaps.cpp
+    menu_general_hardware.cpp
     menu_model_inputs.cpp
     menu_model_mixes.cpp
     view_channels.cpp

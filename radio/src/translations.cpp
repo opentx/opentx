@@ -39,7 +39,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
     ISTR(TRNMODE)
     ISTR(TRNCHN)
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     ISTR(UART3MODES)
     ISTR(SWTYPES)
     ISTR(POTTYPES)

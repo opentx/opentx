@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -52,18 +52,11 @@ void drawTopmenuDatetime()
   lcdDrawText(DATETIME_LEFT(str), DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR);
 }
 
-void drawStick(coord_t centrex, int16_t xval, int16_t yval)
+#define STICK_PANEL_WIDTH                   68
+void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 {
-#define BOX_CENTERY   (220 - FH - BOX_WIDTH/2)
-#define MARKER_WIDTH  5
-
-  lcdDrawSquare(centrex-BOX_WIDTH/2, BOX_CENTERY-BOX_WIDTH/2, BOX_WIDTH, TEXT_COLOR);
-  lcdDrawVerticalLine(centrex, BOX_CENTERY-1, 3, SOLID, TEXT_COLOR);
-  lcdDrawHorizontalLine(centrex-1, BOX_CENTERY, 3, SOLID, TEXT_COLOR);
-  lcdDrawSquare(centrex + (xval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, BOX_CENTERY - (yval/((2*RESX)/(BOX_WIDTH-MARKER_WIDTH))) - MARKER_WIDTH/2, MARKER_WIDTH, ROUND|TEXT_COLOR);
-
-#undef BOX_CENTERY
-#undef MARKER_WIDTH
+  lcdDrawBitmap(x, y, LBM_STICK_BACKGROUND);
+  lcdDrawAlphaBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, LBM_STICK_POINTER);
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
@@ -134,7 +127,7 @@ void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
   lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
 }
 
-void drawScreenTemplate(const char * title)
+void drawScreenTemplate(const char * title, uint32_t options)
 {
   // Header
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
@@ -148,11 +141,14 @@ void drawScreenTemplate(const char * title)
     lcdDrawText(50, 3, title, MENU_TITLE_COLOR|DBLSIZE);
   }
 
-  // Body
-  lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
-
-  // Footer
-  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
+  // Body and footer (depending on options)
+  if (options & OPTION_MENU_NO_FOOTER) {
+    lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+  }
+  else {
+    lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
+    lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
+  }
 }
 
 void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X)
@@ -187,7 +183,7 @@ void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X)
   }
 }
 
-void drawMenuTemplate(const char * name, uint16_t scrollbar_X)
+void drawMenuTemplate(const char * title, uint16_t scrollbar_X, uint32_t options)
 {
   // clear the screen
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
@@ -221,9 +217,9 @@ void drawMenuTemplate(const char * name, uint16_t scrollbar_X)
 
   drawTopmenuDatetime();
 
-  if (name) {
+  if (title) {
     // must be done at the end so that we can write something at the right of the menu title
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+2, name, MENU_TITLE_COLOR);
+    lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+2, title, MENU_TITLE_COLOR);
   }
 
   if (scrollbar_X && linesCount > NUM_BODY_LINES) {
@@ -251,24 +247,133 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
   return value;
 }
 
-void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+void drawTrimSquare(coord_t x, coord_t y)
 {
-  const int width = 100;
+  lcdDrawSolidFilledRect(x-2, y, 15, 15, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TEXT_COLOR);
+}
 
-  // The bar
-  lcdDrawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, value <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
-  int w = value * (width - 8) / max;
-  if (value > 0)
-    lcdDrawSolidFilledRect(x + 4, y + 8, w, 4, TEXT_INVERTED_BGCOLOR);
-  if (value < max)
-    lcdDrawSolidFilledRect(x + 4 + w, y + 8, width - 8 - w, 4, LINE_COLOR);
-  lcdDrawBitmapPattern(x + width - 4, y + 8, LBM_SLIDER_BAR_RIGHT, value >= max ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+void drawHorizontalTrimPosition(coord_t x, coord_t y, int16_t dir)
+{
+  drawTrimSquare(x, y);
+  if (dir >= 0) {
+    lcdDrawSolidVerticalLine(x+8, y+3, 9, TEXT_INVERTED_COLOR);
+  }
+  if (dir <= 0) {
+    lcdDrawSolidVerticalLine(x+2, y+3, 9, TEXT_INVERTED_COLOR);
+  }
+  // if (exttrim) {
+  //  lcdDrawSolidVerticalLine(xm, ym, 9, TEXT_INVERTED_COLOR);
+  // }
+}
 
-  // The point
-  lcdDrawBitmapPattern(x + w - 4, y + 2, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
-  lcdDrawBitmapPattern(x + w - 4, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE))
-    lcdDrawBitmapPattern(x + w - 4, y + 2, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
+{
+  drawTrimSquare(x, y);
+  if (dir >= 0) {
+    lcdDrawSolidHorizontalLine(x+1, y+4, 9, TEXT_INVERTED_COLOR);
+  }
+  if (dir <= 0) {
+    lcdDrawSolidHorizontalLine(x+1, y+10, 9, TEXT_INVERTED_COLOR);
+  }
+  // if (exttrim) {
+  //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, TEXT_INVERTED_COLOR);
+  // }
+}
+
+void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
+{
+  if (steps) {
+    int delta = len / steps;
+    for (int i = 0; i <= len; i += delta) {
+      if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
+        lcdDrawSolidHorizontalLine(x, y + i, 13, TEXT_COLOR);
+      else
+        lcdDrawSolidHorizontalLine(x + 2, y + i, 9, TEXT_COLOR);
+    }
+  }
+  else {
+    lcdDrawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, TEXT_COLOR);
+    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
+      }
+    } */
+  }
+  y += len - (val - min) * len / (max - min) - 5;
+  if (options & OPTION_SLIDER_TRIM_BUTTON) {
+    drawVerticalTrimPosition(x, y - 2, val);
+  }
+  else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
+    drawTrimSquare(x, y - 2);
+    lcdDrawChar(x + 2, y - 1, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
+  }
+  else {
+    drawTrimSquare(x, y - 2);
+  }
+}
+
+void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
+{
+  int w = (val - min) * len / (max - min);
+  if (options & OPTION_SLIDER_TICKS) {
+    if (steps) {
+      int delta = len / steps;
+      for (int i = 0; i <= len; i += delta) {
+        if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
+          lcdDrawSolidVerticalLine(x + i, y, 13, TEXT_COLOR);
+        else
+          lcdDrawSolidVerticalLine(x + i, y + 2, 9, TEXT_COLOR);
+      }
+    }
+  }
+  else if (options & OPTION_SLIDER_EMPTY_BAR) {
+    lcdDrawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, TEXT_COLOR);
+  }
+  else if (options & OPTION_SLIDER_DBL_COLOR) {
+    lcdDrawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, w <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
+    if (w > 4)
+      lcdDrawSolidFilledRect(x + 4, y + 8, w - 4, 4, TEXT_INVERTED_BGCOLOR);
+    if (w < len - 4)
+      lcdDrawSolidFilledRect(x + w, y + 8, len - w - 4, 4, LINE_COLOR);
+    lcdDrawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, w >= len ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+  }
+  else {
+    lcdDrawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
+    lcdDrawSolidFilledRect(x + 4, y + 8, len - 8, 4, LINE_COLOR);
+    lcdDrawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
+    //
+    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
+      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
+      }
+    } */
+  }
+  x += w - 5;
+  if (options & OPTION_SLIDER_TRIM_BUTTON) {
+    drawHorizontalTrimPosition(x, y - 1, val);
+  }
+  else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
+    drawTrimSquare(x, y - 1);
+    lcdDrawChar(x + 2, y, '0' + val, SMLSIZE | TEXT_INVERTED_COLOR);
+  }
+  else if (options & OPTION_SLIDER_SQUARE_BUTTON) {
+    drawTrimSquare(x, y - 1);
+  }
+  else {
+    lcdDrawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+    lcdDrawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+    if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
+      lcdDrawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+  }
+}
+
+void drawSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
+{
+  if (options & OPTION_SLIDER_VERTICAL)
+    drawVerticalSlider(x, y, len, val, min, max, steps, options);
+  else
+    drawHorizontalSlider(x, y, len, val, min, max, steps, options);
 }
 
 #if defined(GVARS)

@@ -74,8 +74,8 @@ void drawFooter();
 void drawProgressBar(const char *label);
 void updateProgressBar(int num, int den);
 void drawTopmenuDatetime();
-void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X);
-void drawStick(coord_t centrex, int16_t xval, int16_t yval);
+void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X=0);
+void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval);
 void drawSticks();
 
 #if defined(FLIGHT_MODES)
@@ -128,6 +128,7 @@ extern const uint8_t LBM_STAR1[];
 // Calibration screen
 extern const uint8_t LBM_HORUS[];
 extern const uint8_t LBM_STICK_BACKGROUND[];
+extern const uint8_t LBM_STICK_POINTER[];
 
 // Other icons
 extern const uint8_t LBM_SPLASH[];

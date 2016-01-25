@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -22,42 +22,43 @@
 
 #define XPOT_DELTA                     10
 #define XPOT_DELAY                     10 /* cycles */
-#define POT_BAR_WIDTH                  7
-#define POT_BAR_HEIGHT                 (BOX_WIDTH-9)
 #define POT_BAR_INTERVAL               20
 #define POT_BAR_BOTTOM                 200
-#define LBOX_CENTERX                   (BOX_WIDTH/2 + 17)
-#define RBOX_CENTERX                   (LCD_W-LBOX_CENTERX)
+#define STICKS_WIDTH                   90
+#define STICKS_Y                       110
+#define STICK_LEFT_X                   25
+#define STICK_RIGHT_X                  (LCD_W-STICK_LEFT_X-STICKS_WIDTH)
 
-void drawPotsBars()
-{
-  // Optimization by Mike Blandford
-  unsigned int x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-(POT_BAR_INTERVAL*NUM_POTS/2), i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=POT_BAR_INTERVAL, i++) {
-    if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*POT_BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
-      // TODO 220 constant
-      lcdDrawSolidFilledRect(x, POT_BAR_BOTTOM-len, POT_BAR_WIDTH, len, TEXT_COLOR);
-      putsStickName(x-2, POT_BAR_BOTTOM+5, i, TEXT_COLOR|TINSIZE);
-    }
-  }
-}
-
-void drawSticksPositions()
+void drawSticks()
 {
   int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
   if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+  drawStick(STICK_LEFT_X, STICKS_Y, calibratedStick[CONVERT_MODE(0)], calibStickVert);
 
   calibStickVert = calibratedStick[CONVERT_MODE(2)];
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+  drawStick(STICK_RIGHT_X, STICKS_Y, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+}
+
+void drawPots()
+{
+  // The pots which are displayed in the main view
+  extern void drawMainPots();
+  drawMainPots();
+
+  // The 2 main front sliders
+  drawVerticalSlider(125, 120, 120, calibratedStick[7], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                       OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(LCD_W-125-12, 120, 120, calibratedStick[8], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
+                                                                                OPTION_SLIDER_SQUARE_BUTTON);
 }
 
 bool menuCommonCalib(evt_t event)
 {
+  drawScreenTemplate(NULL, OPTION_MENU_NO_FOOTER);
+
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
@@ -112,15 +113,15 @@ bool menuCommonCalib(evt_t event)
     case 0:
       // START CALIBRATION
       if (!READ_ONLY()) {
-        lcd_putsCenter(MENU_CONTENT_TOP, STR_MENUTOSTART);
+        lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
+        lcdDrawText(50, 3+FH, "Press [Enter] to start", MENU_TITLE_COLOR);
       }
       break;
 
     case 1:
       // SET MIDPOINT
-      lcd_putsCenter(MENU_CONTENT_TOP, STR_SETMIDPOINT, INVERS);
-      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MENUWHENDONE);
-
+      lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
+      lcdDrawText(50, 3+FH, "Please center sticks and press [Enter]", MENU_TITLE_COLOR);
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
@@ -134,10 +135,8 @@ bool menuCommonCalib(evt_t event)
 
     case 2:
       // MOVE STICKS/POTS
-      STICK_SCROLL_DISABLE();
-      lcd_putsCenter(MENU_CONTENT_TOP, STR_MOVESTICKSPOTS, INVERS);
-      lcd_putsCenter(MENU_CONTENT_TOP+FH, STR_MENUWHENDONE);
-
+      lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
+      lcdDrawText(50, 3+FH, "Move sticks, pots and sliders and press [Enter]", MENU_TITLE_COLOR);
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
@@ -183,8 +182,9 @@ bool menuCommonCalib(evt_t event)
       break;
   }
 
-  drawSticksPositions();
-  drawPotsBars();
+  lcdDrawBitmap((LCD_W-206)/2, LCD_H-220, LBM_HORUS);
+  drawSticks();
+  drawPots();
 
   for (int i=POT1; i<=POT_LAST; i++) {
     uint8_t steps = 0;
@@ -205,7 +205,16 @@ bool menuCommonCalib(evt_t event)
 
 bool menuGeneralCalib(evt_t event)
 {
-  SIMPLE_MENU(STR_MENUCALIBRATION, menuTabGeneral, e_Calib, 0, DEFAULT_SCROLLBAR_X);
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", STR_MENUCALIBRATION);
+  if (calibrationState == 4) {
+    calibrationState = 0;
+    popMenu();
+    return false;
+  }
+  if (!check_submenu_simple(event, 0)) {
+    return false;
+  }
+
   menuVerticalPosition = -1;
 
   return menuCommonCalib(READ_ONLY() ? 0 : event);
@@ -219,7 +228,6 @@ bool menuFirstCalib(evt_t event)
     return false;
   }
   else {
-    drawScreenTemplate(STR_MENUCALIBRATION);
     return menuCommonCalib(event);
   }
 }

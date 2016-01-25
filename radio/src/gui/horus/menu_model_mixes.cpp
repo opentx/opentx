@@ -313,14 +313,6 @@ void onMixesMenu(const char * result)
   }
 }
 
-void displayHeaderChannelName(uint8_t ch)
-{
-  uint8_t len = zlen(g_model.limitData[ch-1].name, sizeof(g_model.limitData[ch-1].name));
-  if (len) {
-    lcdDrawSizedText(COLUMN_HEADER_X, MENU_FOOTER_TOP, g_model.limitData[ch-1].name, len, HEADER_COLOR|ZCHAR);
-  }
-}
-
 void displayMixInfos(coord_t y, MixData *md)
 {
   putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve);
@@ -506,9 +498,6 @@ bool menuModelMixAll(evt_t event)
         }
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
-          if (attr) {
-            displayHeaderChannelName(ch);
-          }
 
           if (mixCnt > 0) lcdDrawTextAtIndex(6, y, STR_VMLTPX2, md->mltpx, 0);
 
@@ -554,9 +543,6 @@ bool menuModelMixAll(evt_t event)
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
         putsChn(MENUS_MARGIN_LEFT, y, ch, attr); // show CHx
-        if (attr) {
-          displayHeaderChannelName(ch);
-        }
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           lineMixSurround(y);
         }
