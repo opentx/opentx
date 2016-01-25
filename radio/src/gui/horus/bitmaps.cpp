@@ -240,6 +240,10 @@ const uint8_t LBM_STICK_BACKGROUND[] __DMA = {
 #include "bmp_stick_background.lbm"
 };
 
+const uint8_t LBM_STICK_POINTER[] __DMA = {
+#include "alpha_stick_pointer.lbm"
+};
+
 /*
  * Other
  */
