@@ -125,6 +125,10 @@ extern const uint8_t LBM_SCORE1[];
 extern const uint8_t LBM_STAR0[];
 extern const uint8_t LBM_STAR1[];
 
+// Calibration screen
+extern const uint8_t LBM_HORUS[];
+extern const uint8_t LBM_STICK_BACKGROUND[];
+
 // Other icons
 extern const uint8_t LBM_SPLASH[];
 extern const uint8_t LBM_ASTERISK[];

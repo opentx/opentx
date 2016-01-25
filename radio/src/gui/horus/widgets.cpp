@@ -256,19 +256,19 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
   const int width = 100;
 
   // The bar
-  lcdDrawBitmapPattern(x, y + 10, LBM_SLIDER_BAR_LEFT, value <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
+  lcdDrawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, value <= 0 ? LINE_COLOR : TEXT_INVERTED_BGCOLOR);
   int w = value * (width - 8) / max;
   if (value > 0)
-    lcdDrawSolidFilledRect(x + 4, y + 10, w, 4, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(x + 4, y + 8, w, 4, TEXT_INVERTED_BGCOLOR);
   if (value < max)
-    lcdDrawSolidFilledRect(x + 4 + w, y + 10, width - 8 - w, 4, LINE_COLOR);
-  lcdDrawBitmapPattern(x + width - 4, y + 10, LBM_SLIDER_BAR_RIGHT, value >= max ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+    lcdDrawSolidFilledRect(x + 4 + w, y + 8, width - 8 - w, 4, LINE_COLOR);
+  lcdDrawBitmapPattern(x + width - 4, y + 8, LBM_SLIDER_BAR_RIGHT, value >= max ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
 
   // The point
-  lcdDrawBitmapPattern(x + w - 4, y + 5, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
-  lcdDrawBitmapPattern(x + w - 4, y + 5, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
+  lcdDrawBitmapPattern(x + w - 4, y + 3, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
+  lcdDrawBitmapPattern(x + w - 4, y + 3, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
   if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE))
-    lcdDrawBitmapPattern(x + w - 4, y + 5, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+    lcdDrawBitmapPattern(x + w - 4, y + 3, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
 }
 
 #if defined(GVARS)

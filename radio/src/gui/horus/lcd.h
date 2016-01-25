@@ -82,7 +82,7 @@
 #define TO5BITS(x)      ((x) >> 3)
 #define TO6BITS(x)      ((x) >> 2)
 #define RGB(r, g, b)   ((TO5BITS(r) << 11) + (TO6BITS(g) << 5) + (TO5BITS(b) << 0))
-#define WHITE          RGB(0xF0, 0xF0, 0xF0)
+#define WHITE          RGB(0xFF, 0xFF, 0xFF)
 #define BLACK          RGB(0, 0, 0)
 #define YELLOW         RGB(0xF0, 0xD0, 0x10)
 #define BLUE           RGB(0x30, 0xA0, 0xE0)

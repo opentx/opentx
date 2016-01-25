@@ -229,6 +229,18 @@ const uint8_t LBM_STAR1[] __DMA = {
 };
 
 /*
+ * Calibration screen
+ */
+
+const uint8_t LBM_HORUS[] __DMA = {
+#include "bmp_horus.lbm"
+};
+
+const uint8_t LBM_STICK_BACKGROUND[] __DMA = {
+#include "bmp_stick_background.lbm"
+};
+
+/*
  * Other
  */
 
@@ -283,4 +295,5 @@ const uint8_t LBM_SLIDER_POINT_MID[] __DMA = {
 const uint8_t LBM_SLIDER_POINT_IN[] __DMA = {
 #include "point_in.lbm"
 };
+
 
