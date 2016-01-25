@@ -407,9 +407,10 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.unit = QObject::tr("h:m");
       }
       else {      // Timers 1 - 3
-        result.step = singleprec ? 5 : 1;
-        result.max = singleprec ? 255*5 : 60*60;
-        result.unit = singleprec ? QObject::tr("m:s") : QObject::tr("h:m:s");
+        result.step = 1;
+        result.max = (23*60)+59;
+        result.min = -result.max;
+        result.unit = QObject::tr("m:s");
       }
       break;
 

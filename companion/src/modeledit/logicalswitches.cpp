@@ -313,6 +313,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         int maxTime = round(range.max);
         int value = round(range.step*model->logicalSw[i].val2 + range.offset);
         cswitchTOffset[i]->setMaximumTime(QTimeS(maxTime));
+        cswitchTOffset[i]->setMinimumTime(QTimeS(range.min));
         QString format = (maxTime>=3600) ? "hh:mm:ss" : "mm:ss";
         if (!range.unit.isEmpty())
           format += QString("' [%1]'").arg(range.unit);
