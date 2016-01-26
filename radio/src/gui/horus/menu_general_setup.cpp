@@ -47,7 +47,7 @@ int8_t editSlider(coord_t x, coord_t y, evt_t event, int8_t value, int8_t min, i
 enum menuGeneralSetupItems {
   ITEM_SETUP_DATE,
   ITEM_SETUP_TIME,
-  // ITEM_SETUP_BATT_RANGE,
+  ITEM_SETUP_BATT_RANGE,
   ITEM_SETUP_SOUND_LABEL,
   ITEM_SETUP_BEEP_MODE,
   ITEM_SETUP_GENERAL_VOLUME,
@@ -112,11 +112,12 @@ bool menuGeneralSetup(evt_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, { 2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE,
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, DEFAULT_SCROLLBAR_X, {
+    2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, 1|NAVIGATION_LINE_BY_LINE,
     LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
     CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
-    LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, CASE_MAVLINK(0) 0, 0, 0, 0, 1/*to force edit mode*/ });
+    LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   int sub = menuVerticalPosition;
 
@@ -133,7 +134,7 @@ bool menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
-          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 100, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+YEAR_SEPARATOR_OFFSET, y, "-", flags);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+MONTH_SEPARATOR_OFFSET, y, "-", flags);
@@ -172,7 +173,7 @@ bool menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
-          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 85, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 100, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+HOUR_SEPARATOR_OFFSET, y, ":", flags);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN+MINUTE_SEPARATOR_OFFSET, y, ":", flags);
@@ -198,18 +199,18 @@ bool menuGeneralSetup(evt_t event)
         break;
       }
 
-#if 0
       case ITEM_SETUP_BATT_RANGE:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERY_RANGE);
-        LcdFlags color = WHITE;
+        LcdFlags flags = 0;
         if (attr && menuHorizontalPosition < 0) {
-          color = BLACK;
-          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, 90, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+          flags |= INVERS;
+          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 100, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
-        putsVolts(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, color|(menuHorizontalPosition==0 ? attr : 0)|LEFT|NO_UNIT);
-        lcdDrawText(RADIO_SETUP_2ND_COLUMN+20, y, "-");
-        putsVolts(RADIO_SETUP_2ND_COLUMN+28, y, 120+g_eeGeneral.vBatMax, color|(menuHorizontalPosition>0 ? attr : 0)|LEFT|NO_UNIT);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, flags|(menuHorizontalPosition==0 ? attr : 0)|PREC1|LEFT);
+        lcdDrawText(lcdNextPos+8, y, "-", flags);
+        lcdDrawNumber(lcdNextPos+8, y, 120+g_eeGeneral.vBatMax, flags|(menuHorizontalPosition>0 ? attr : 0)|PREC1|LEFT);
+        lcdDrawText(lcdNextPos+1, y, "V", flags);
         if (attr && s_editMode>0) {
           if (menuHorizontalPosition==0)
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
@@ -218,7 +219,6 @@ bool menuGeneralSetup(evt_t event)
         }
         break;
       }
-#endif
 
       case ITEM_SETUP_SOUND_LABEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SOUND_LABEL);
@@ -326,7 +326,7 @@ bool menuGeneralSetup(evt_t event)
 
       case ITEM_SETUP_BATTERY_WARNING:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERYWARNING);
-        putsVolts(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, attr|LEFT);
+        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, UNIT_VOLTS, attr|PREC1|LEFT);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 27, 42); // 2.7-4.2V
         break;
 
