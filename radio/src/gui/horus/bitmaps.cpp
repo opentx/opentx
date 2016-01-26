@@ -76,6 +76,10 @@ const uint8_t LBM_TIMER_BACKGROUND[] = {
 #include "mask_timer_bg.lbm"
 };
 
+const uint8_t LBM_TIMER[] = {
+#include "mask_timer.lbm"
+};  
+
 const uint8_t LBM_RSCALE[] = {
 #include "mask_rscale.lbm"
 };

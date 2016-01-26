@@ -110,6 +110,7 @@ extern const uint8_t LBM_TRIM_SHADOW[];
 extern const uint8_t LBM_RADIO_ICON[];
 extern const uint8_t LBM_MODEL_ICON[];
 extern const uint8_t LBM_TIMER_BACKGROUND[];
+extern const uint8_t LBM_TIMER[];
 extern const uint8_t LBM_RSCALE[];
 
 // Menu icons

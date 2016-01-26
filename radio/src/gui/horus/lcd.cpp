@@ -431,17 +431,6 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
   lcdDrawText(x, y, str, att);
 }
 
-// TODO to be optimized with putsValueWithUnit
-void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
-{
-  lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)), 0, NULL, (~att & NO_UNIT) ? "v" : NULL);
-}
-
-void putsVBat(coord_t x, coord_t y, LcdFlags att)
-{
-  putsVolts(x, y, g_vbat100mV, att);
-}
-
 void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att, const char *prefix)
 {
   // TODO quick & dirty, dangerous

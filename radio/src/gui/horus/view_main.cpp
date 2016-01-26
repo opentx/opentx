@@ -42,18 +42,13 @@
 void drawMainPots()
 {
   // The 3 pots
-  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedStick[4], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                                         OPTION_SLIDER_SQUARE_BUTTON);
-  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                                                                                                    OPTION_SLIDER_NUMBER_BUTTON);
-  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedStick[6], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                                         OPTION_SLIDER_SQUARE_BUTTON);
+  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedStick[4], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
+  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedStick[6], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
 
   // The 2 rear sliders
-  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedStick[9], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                            OPTION_SLIDER_SQUARE_BUTTON);
-  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedStick[10], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                                    OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedStick[9], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedStick[10], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
 }
 
 void drawTrims(uint8_t flightMode)
@@ -100,6 +95,9 @@ void drawTimer(coord_t x, coord_t y, int index)
   if (timerData.start) {
     lcdDrawBitmapPatternPie(x+2, y+3, LBM_RSCALE, TITLE_BGCOLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
   }
+  else {
+    lcdDrawBitmapPattern(x+3, y+4, LBM_TIMER, TITLE_BGCOLOR);
+  }
   putsTimer(x+76, y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
   if (ZLEN(timerData.name) > 0) {
     lcdDrawSizedText(x+78, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
@@ -108,7 +106,7 @@ void drawTimer(coord_t x, coord_t y, int index)
 }
 
 
-void displayMainTelemetryFields()
+void drawMainViewTopBar()
 {
   const int ALTITUDE_Y = 16;
   const int VOLTS_Y = 16+16+30;
@@ -117,7 +115,35 @@ void displayMainTelemetryFields()
   const int ALTITUDE_H = 30;
   const int PADDING = 4;
 
-  if (g_model.frsky.voltsSource) {
+  // Background
+  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
+
+  // Date & Time
+  drawTopmenuDatetime();
+
+  // USB icon
+  if (usbPlugged()) {
+    lcdDrawBitmapPattern(378, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
+  }
+
+  // RSSI
+  const uint8_t rssiBarsValue[] = { 30, 40, 50, 60, 80 };
+  const uint8_t rssiBarsHeight[] = { 5, 10, 15, 21, 31 };
+  for (unsigned int i=0; i<DIM(rssiBarsHeight); i++) {
+    uint8_t height = rssiBarsHeight[i];
+    lcdDrawSolidFilledRect(390+i*6, 38-height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
+  }
+
+  // Radio battery - TODO
+  // putsValueWithUnit(370, 8, g_vbat100mV, UNIT_VOLTS, PREC1|SMLSIZE|MENU_TITLE_COLOR);
+  // lcdDrawSolidRect(300, 3, 20, 50, MENU_TITLE_COLOR);
+  // lcdDrawRect(batt_icon_x+FW, BAR_Y+1, 13, 7);
+  // lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
+
+  // Rx battery
+  if (g_model.frsky.voltsSource) { // TODO should not be in frsky struct
     TelemetryItem & item = telemetryItems[g_model.frsky.voltsSource-1];
     if (item.isAvailable()) {
       int32_t value = item.value;
@@ -137,6 +163,7 @@ void displayMainTelemetryFields()
     }
   }
 
+  // Model altitude
   if (g_model.frsky.altitudeSource) {
     TelemetryItem & item = telemetryItems[g_model.frsky.altitudeSource-1];
     if (item.isAvailable()) {
@@ -259,20 +286,8 @@ bool menuMainView(evt_t event)
   lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
   TIME_MEASURE_STOP(backgroundbitmap);
 
-  // Header
-  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
-  drawTopmenuDatetime();
-  if (usbPlugged()) {
-    lcdDrawBitmapPattern(378, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
-  }
-  const uint8_t rssiBarsValue[] = { 30, 40, 50, 60, 80 };
-  const uint8_t rssiBarsHeight[] = { 5, 10, 15, 21, 31 };
-  for (unsigned int i=0; i<DIM(rssiBarsHeight); i++) {
-    uint8_t height = rssiBarsHeight[i];
-    lcdDrawSolidFilledRect(390+i*6, 38-height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
-  }
+  // Top Bar
+  drawMainViewTopBar();
 
   // Flight mode
   lcdDrawSizedText(LCD_W/2-getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE);
