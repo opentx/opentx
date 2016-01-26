@@ -162,7 +162,7 @@ namespace NAMESPACE {
 #include "radio/src/gui/horus/menu_general_sdmanager.cpp"
 #include "radio/src/gui/horus/menu_general_trainer.cpp"
 #include "radio/src/gui/horus/menu_general_version.cpp"
-// #include "radio/src/gui/horus/menu_general_hardware.cpp"
+#include "radio/src/gui/horus/menu_general_hardware.cpp"
 #include "radio/src/gui/horus/menu_general_calib.cpp"
 #include "radio/src/gui/horus/view_main.cpp"
 #include "radio/src/gui/horus/view_statistics.cpp"
