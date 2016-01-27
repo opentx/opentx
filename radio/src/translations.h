@@ -411,7 +411,7 @@ extern const pm_char STR_HAPTIC_LABEL[];
 extern const pm_char STR_HAPTICSTRENGTH[];
 extern const pm_char STR_CONTRAST[];
 extern const pm_char STR_ALARMS_LABEL[];
-#if defined(BATTGRAPH) || defined(PCBTARANIS)
+#if defined(BATTGRAPH) || defined(CPUARM)
 extern const pm_char STR_BATTERY_RANGE[];
 #endif
 extern const pm_char STR_BATTERYWARNING[];
