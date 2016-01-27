@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -78,7 +78,7 @@ const uint8_t LBM_TIMER_BACKGROUND[] = {
 
 const uint8_t LBM_TIMER[] = {
 #include "mask_timer.lbm"
-};  
+};
 
 const uint8_t LBM_RSCALE[] = {
 #include "mask_rscale.lbm"
@@ -304,4 +304,14 @@ const uint8_t LBM_SLIDER_POINT_IN[] __DMA = {
 #include "point_in.lbm"
 };
 
+const uint8_t LBM_BUTTON_LEFT[] __DMA = {
+#include "bmp_left.lbm"
+};
 
+const uint8_t LBM_BUTTON_MID[] __DMA = {
+#include "bmp_mid.lbm"
+};
+
+const uint8_t LBM_BUTTON_RIGHT[] __DMA = {
+#include "bmp_right.lbm"
+};

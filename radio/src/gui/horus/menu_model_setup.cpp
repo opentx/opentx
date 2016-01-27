@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -80,9 +80,9 @@ enum menuModelSetupItems {
 #define FIELD_PROTOCOL_MAX 1
 
 #define MODEL_SETUP_2ND_COLUMN        200
-#define MODEL_SETUP_BIND_OFS          20
-#define MODEL_SETUP_RANGE_OFS         40
-#define MODEL_SETUP_SET_FAILSAFE_OFS  60
+#define MODEL_SETUP_BIND_OFS          40
+#define MODEL_SETUP_RANGE_OFS         80
+#define MODEL_SETUP_SET_FAILSAFE_OFS  100
 
 void onModelSetupBitmapMenu(const char *result)
 {
@@ -646,8 +646,8 @@ bool menuModelSetup(evt_t event)
             if (attr && l_posHorz==0 && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
             }
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
+            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
             if (attr && l_posHorz>0 && s_editMode>0) {
               if (l_posHorz == 1)

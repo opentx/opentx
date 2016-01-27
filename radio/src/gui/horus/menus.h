@@ -52,8 +52,6 @@ extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
-void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
-
 typedef bool (*MenuHandlerFunc)(evt_t event);
 
 extern MenuHandlerFunc menuHandlers[5];
@@ -266,27 +264,6 @@ bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * men
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
-
-void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h);
-void drawScreenTemplate(const char * title, uint32_t options=0);
-
-#define OPTION_MENU_NO_FOOTER 0x01
-void drawMenuTemplate(const char * title, uint16_t scrollbar_X=0, uint32_t options=0);
-
-#define OPTION_SLIDER_INVERS           INVERS
-#define OPTION_SLIDER_BLINK            BLINK
-#define OPTION_SLIDER_VERTICAL         0x04
-#define OPTION_SLIDER_EMPTY_BAR        0x08
-#define OPTION_SLIDER_DBL_COLOR        0x10
-#define OPTION_SLIDER_TICKS            0x20
-#define OPTION_SLIDER_BIG_TICKS        0x40
-#define OPTION_SLIDER_TRIM_BUTTON      0x80
-#define OPTION_SLIDER_NUMBER_BUTTON    0x100
-#define OPTION_SLIDER_SQUARE_BUTTON    0x200
-
-void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options);
-void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options);
-void drawSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options);
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \

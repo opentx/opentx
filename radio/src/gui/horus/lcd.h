@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -310,9 +310,6 @@ void lcdSetContrast();
 
 const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 const char * imgLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
-
-void drawSleepBitmap();
-void drawShutdownBitmap(uint32_t index);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)

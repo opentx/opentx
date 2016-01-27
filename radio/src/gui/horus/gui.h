@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,6 +20,8 @@
 
 #include "lcd.h"
 #include "menus.h"
+#include "widgets.h"
+#include "bitmaps.h"
 
 #define MENU_HEADER_HEIGHT             45
 #define MENU_TITLE_TOP                 48
@@ -63,21 +65,6 @@ extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 bool loadModelBitmap(char * name, uint8_t * bitmap);
 #define LOAD_MODEL_BITMAP()            loadModelBitmap(g_model.header.bitmap, modelBitmap)
 
-void drawSplash();
-void drawScreenIndex(uint8_t index, uint8_t count);
-void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, uint16_t count, uint8_t visible);
-void drawHeader(int index);
-void drawColumnHeader(const char * const * headers, uint8_t index);
-void drawFooter();
-#define drawStatusLine(...)
-void drawProgressBar(const char *label);
-void updateProgressBar(int num, int den);
-void drawTopmenuDatetime();
-void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X=0);
-void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval);
-void drawSticks();
-
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value, uint8_t attr);
 FlightModesType editFlightModes(coord_t x, coord_t y, evt_t event, FlightModesType value, uint8_t attr);
@@ -92,58 +79,3 @@ void drawCurveVerticalScale(int x);
 void drawCurveHorizontalScale();
 void drawCurveCoord(int x, int y, const char * text, bool active=false);
 void drawCurvePoint(int x, int y, LcdFlags color);
-
-// Header bitmaps
-extern const uint8_t LBM_TOPMENU_POLYGON[];
-extern const uint8_t LBM_DOT[];
-extern const uint8_t LBM_CURRENT_BG[];
-extern const uint8_t LBM_CURRENT_SHADOW[];
-extern const uint8_t LBM_CURRENT_DOT[];
-
-// Main view icons
-extern const uint8_t LBM_MAINVIEW_BACKGROUND[];
-extern const uint8_t LBM_TOPMENU_OPENTX[];
-extern const uint8_t LBM_TOPMENU_USB[];
-extern const uint8_t LBM_HTRIM_FRAME[];
-extern const uint8_t LBM_VTRIM_FRAME[];
-extern const uint8_t LBM_TRIM_SHADOW[];
-extern const uint8_t LBM_RADIO_ICON[];
-extern const uint8_t LBM_MODEL_ICON[];
-extern const uint8_t LBM_TIMER_BACKGROUND[];
-extern const uint8_t LBM_TIMER[];
-extern const uint8_t LBM_RSCALE[];
-
-// Menu icons
-extern const uint8_t * const LBM_RADIO_ICONS[];
-extern const uint8_t * const LBM_MODEL_ICONS[];
-
-// Model selection icons
-extern const uint8_t LBM_LIBRARY_ICON[];
-extern const uint8_t LBM_LIBRARY_SLOT[];
-extern const uint8_t LBM_LIBRARY_CURSOR[];
-extern const uint8_t LBM_SCORE0[];
-extern const uint8_t LBM_SCORE1[];
-extern const uint8_t LBM_STAR0[];
-extern const uint8_t LBM_STAR1[];
-
-// Calibration screen
-extern const uint8_t LBM_HORUS[];
-extern const uint8_t LBM_STICK_BACKGROUND[];
-extern const uint8_t LBM_STICK_POINTER[];
-
-// Other icons
-extern const uint8_t LBM_SPLASH[];
-extern const uint8_t LBM_ASTERISK[];
-extern const uint8_t LBM_POINT[];
-extern const uint8_t LBM_CURVE_POINT[];
-extern const uint8_t LBM_CURVE_POINT_CENTER[];
-extern const uint8_t LBM_CURVE_COORD_SHADOW[];
-extern const uint8_t LBM_SHUTDOWN[];
-extern const uint8_t LBM_SLEEP[];
-extern const uint8_t LBM_SHUTDOWN_CIRCLE[];
-extern const uint8_t LBM_SLIDER_BAR_LEFT[];
-extern const uint8_t LBM_SLIDER_BAR_RIGHT[];
-extern const uint8_t LBM_SLIDER_POINT_OUT[];
-extern const uint8_t LBM_SLIDER_POINT_MID[];
-extern const uint8_t LBM_SLIDER_POINT_IN[];
-

@@ -21,11 +21,6 @@
 #include "../../opentx.h"
 #include <stdio.h>
 
-void drawHeader(const char * header)
-{
-  // TODO ? lcdDrawText(COLUMN_HEADER_X, MENU_FOOTER_TOP, header, HEADER_COLOR);
-}
-
 void drawColumnHeader(const char * const * headers, uint8_t index)
 {
   // TODO ? displayHeader(headers[index]);
@@ -57,6 +52,17 @@ void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 {
   lcdDrawBitmap(x, y, LBM_STICK_BACKGROUND);
   lcdDrawAlphaBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, LBM_STICK_POINTER);
+}
+
+void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
+{
+  int width = getTextWidth(label, attr);
+  lcdDrawBitmap(x, y, LBM_BUTTON_LEFT);
+  for (int i=0; i<width; i++) {
+    lcdDrawBitmap(x+20+i, y, LBM_BUTTON_MID);
+  }
+  lcdDrawBitmap(x+20+width, y, LBM_BUTTON_RIGHT);
+  lcdDrawText(x+23, y+1, label, attr);
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
