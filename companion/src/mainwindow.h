@@ -83,6 +83,7 @@ class MainWindow : public QMainWindow
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void setLanguage(const QString & langString);
+    QString seekCodeString(const QByteArray & qba, const QString & label);
 
   private slots:
     void openDocURL();
@@ -164,7 +165,7 @@ class MainWindow : public QMainWindow
     QMenu * createRecentFileMenu();
     QMenu * createProfilesMenu();
     void autoClose();
-  
+
   private:
     void closeUpdatesWaitDialog();
     void onUpdatesError();
@@ -205,7 +206,7 @@ class MainWindow : public QMainWindow
     downloadDialog * downloadDialog_forWait;
     unsigned int checkForUpdatesState;
     QString firmwareVersionString;
-    
+
     QNetworkAccessManager *networkManager;
 
     QMenu *fileMenu;

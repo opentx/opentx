@@ -1097,25 +1097,10 @@ QString OpenTxFirmware::getFirmwareBaseUrl()
 QString OpenTxFirmware::getFirmwareUrl()
 {
   QString url = getFirmwareBaseUrl();
-  switch (board) {
-    case BOARD_STOCK:
-    case BOARD_M128:
-    case BOARD_GRUVIN9X:
-    case BOARD_MEGA2560:
-      url.append(QString("/getfw.php?fw=%1.hex").arg(id));
-      break;
-    case BOARD_SKY9X:
-    case BOARD_AR9X:
-    case BOARD_9XRPRO:
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
-    case BOARD_TARANIS_X9E:
-      url.append(QString("/getfw.php?fw=%1.bin").arg(id));
-      break;
-    default:
-      url.clear();
-      break;
-  }
+  if (IS_ARM(board))
+    url.append(QString("/getfw.php?fw=%1.bin").arg(id));
+  else
+    url.append(QString("/getfw.php?fw=%1.hex").arg(id));
   return url;
 }
 

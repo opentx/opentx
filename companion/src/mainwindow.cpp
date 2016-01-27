@@ -275,51 +275,57 @@ void MainWindow::closeUpdatesWaitDialog()
   }
 }
 
+QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label)
+{
+  int posLabel = qba.indexOf(label);
+  if (posLabel < 0)
+    return QString::null;
+  int start = qba.indexOf("\"", posLabel + label.length());
+  if (start < 0)
+    return QString::null;
+  int end = qba.indexOf("\"", start + 1);
+  if (end < 0)
+    return QString::null;
+  return qba.mid(start + 1, end - start - 1);
+}
+
 void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 {
     QByteArray qba = reply->readAll();
-    int i = qba.indexOf("VERSION");
-    if (i>0) {
-      QString version = qba.mid(i+14, qba.indexOf("\"", i+14)-i-14);
+    QString version = seekCodeString(qba, "VERSION");
+    if (version.isNull())
+      return onUpdatesError();
 
-      if (version.isNull()) {
-        return onUpdatesError();
-      }
+    int vnum = version2index(version);
 
-      int vnum = version2index(version);
+    QString c9xversion = QString(VERSION);
+    int c9xver = version2index(c9xversion);
 
-      QString c9xversion = QString(VERSION);
-      int c9xver = version2index(c9xversion);
-
-      if (c9xver < vnum) {
+    if (c9xver < vnum) {
 #if defined WIN32 || !defined __GNUC__ // || defined __APPLE__  // OSX should only notify of updates since no update packages are available.
-        int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
-                                                            "Would you like to download it?").arg(version) ,
-                                        QMessageBox::Yes | QMessageBox::No);
+      int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
+                                                          "Would you like to download it?").arg(version) ,
+                                      QMessageBox::Yes | QMessageBox::No);
 
-        if (ret == QMessageBox::Yes) {
-          QDir dir(g.updatesDir());
-          QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), tr("Executable (*.exe)"));
-          if (!fileName.isEmpty()) {
-            g.updatesDir(QFileInfo(fileName).dir().absolutePath());
-            downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
-            installer_fileName = fileName;
-            connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
-            dd->exec();
-          }
+      if (ret == QMessageBox::Yes) {
+        QDir dir(g.updatesDir());
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), tr("Executable (*.exe)"));
+        if (!fileName.isEmpty()) {
+          g.updatesDir(QFileInfo(fileName).dir().absolutePath());
+          downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
+          installer_fileName = fileName;
+          connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
+          dd->exec();
         }
+      }
 #else
-        QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available, please check the OpenTX website!"));
+      QMessageBox::warning(this, tr("New release available"), tr("A new release of Companion is available, please check the OpenTX website!"));
 #endif
-      }
-      else {
-        if (downloadDialog_forWait && checkForUpdatesState==0) {
-          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
-        }
-      }
     }
     else {
-      return onUpdatesError();
+      if (downloadDialog_forWait && checkForUpdatesState==0) {
+        QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+      }
     }
 
     checkForUpdates();
@@ -350,7 +356,7 @@ void MainWindow::firmwareDownloadAccepted()
     QTextStream inputStream(&file);
     QString hline = inputStream.readLine();
     if (hline.startsWith("ERROR:")) {
-      int errnum=hline.mid(6).toInt();
+      int errnum = hline.mid(6).toInt();
       switch(errnum) {
         case 1:
           errormsg = tr("Not enough memory for all the selected firmware options");
@@ -388,114 +394,105 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     bool ignore = false;
 
     QByteArray qba = reply->readAll();
+    QString versionString = seekCodeString(qba, "VERSION");
+    QString dateString = seekCodeString(qba, "DATE");
+    if (versionString.isNull() || dateString.isNull())
+      return onUpdatesError();
 
-    long version = 0;
+    long version = version2index(versionString);
+    if (version <= 0)
+      return onUpdatesError();
 
-    int versionIndex = qba.indexOf("VERS_STR");
-    int dateIndex = qba.indexOf("DATE_STR");
+    QString fullVersionString = QString("%1 (%2)").arg(versionString).arg(dateString);
 
-    QString versionString;
-    if (versionIndex > 0 && dateIndex > 0) {
-      firmwareVersionString = qba.mid(versionIndex+10, qba.indexOf("\"", versionIndex+10)-versionIndex-10);
-      QString dateString = qba.mid(dateIndex+10, 10);
-      version = version2index(firmwareVersionString);
-      versionString = QString("%1 (%2)").arg(firmwareVersionString).arg(dateString);
-    }
-
-    if (version > 0) {
-      if (checkForUpdatesState & AUTOMATIC_DOWNLOAD) {
-        checkForUpdatesState -= AUTOMATIC_DOWNLOAD;
-        download = true;
-      }
-      else {
-        int currentVersion = g.fwRev.get(current_firmware_variant->getId());
-        QString currentVersionString = index2version(currentVersion);
-
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("Companion");
-        QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-        QGridLayout * layout = (QGridLayout*)msgBox.layout();
-        layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
-
-        if (currentVersion == 0) {
-          QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
-          QAbstractButton *rnButton = NULL;
-          msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(versionString));
-          QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-          msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
-          if (!rn.isEmpty()) {
-            rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
-          }
-          msgBox.setIcon(QMessageBox::Question);
-          msgBox.resize(0, 0);
-          msgBox.exec();
-          if (msgBox.clickedButton() == rnButton) {
-            ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
-            dialog->exec();
-            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
-            if (ret2 == QMessageBox::Yes)
-              download = true;
-            else
-              ignore = true;
-          }
-          else if (msgBox.clickedButton() == YesButton ) {
-            download = true;
-          }
-          else {
-            ignore = true;
-          }
-        }
-        else if (version > currentVersion) {
-          QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
-          QAbstractButton *rnButton = NULL;
-          msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(versionString));
-          QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
-          msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
-          if (!rn.isEmpty()) {
-            rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
-          }
-          msgBox.setIcon(QMessageBox::Question);
-          msgBox.resize(0,0);
-          msgBox.exec();
-          if( msgBox.clickedButton() == rnButton ) {
-            ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
-            dialog->exec();
-            int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(versionString),
-                  QMessageBox::Yes | QMessageBox::No);
-            if (ret2 == QMessageBox::Yes) {
-              download = true;
-            }
-            else {
-              ignore = true;
-            }
-          }
-          else if (msgBox.clickedButton() == YesButton ) {
-            download = true;
-          }
-          else {
-            ignore = true;
-          }
-        }
-        else {
-          if (downloadDialog_forWait && checkForUpdatesState==0) {
-            QMessageBox::information(this, "Companion", tr("No updates available at this time."));
-          }
-        }
-      }
-
-      if (ignore) {
-        int res = QMessageBox::question(this, "Companion", tr("Ignore this release %1?").arg(versionString), QMessageBox::Yes | QMessageBox::No);
-        if (res==QMessageBox::Yes)   {
-          g.fwRev.set(current_firmware_variant->getId(), version);
-        }
-      }
-      else if (download == true) {
-        startFirmwareDownload();
-      }
+    if (checkForUpdatesState & AUTOMATIC_DOWNLOAD) {
+      checkForUpdatesState -= AUTOMATIC_DOWNLOAD;
+      download = true;
     }
     else {
-      // TODO remove serverFails config?
-      return onUpdatesError();
+      int currentVersion = g.fwRev.get(current_firmware_variant->getId());
+      QString currentVersionString = index2version(currentVersion);
+
+      QMessageBox msgBox;
+      msgBox.setWindowTitle("Companion");
+      QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+      QGridLayout * layout = (QGridLayout*)msgBox.layout();
+      layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+
+      if (currentVersion == 0) {
+        QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
+        QAbstractButton *rnButton = NULL;
+        msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(fullVersionString));
+        QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
+        msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+        if (!rn.isEmpty()) {
+          rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        }
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.resize(0, 0);
+        msgBox.exec();
+        if (msgBox.clickedButton() == rnButton) {
+          ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
+          dialog->exec();
+          int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
+          if (ret2 == QMessageBox::Yes)
+            download = true;
+          else
+            ignore = true;
+        }
+        else if (msgBox.clickedButton() == YesButton ) {
+          download = true;
+        }
+        else {
+          ignore = true;
+        }
+      }
+      else if (version > currentVersion) {
+        QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
+        QAbstractButton *rnButton = NULL;
+        msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(fullVersionString));
+        QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
+        msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
+        if (!rn.isEmpty()) {
+          rnButton = msgBox.addButton(trUtf8("Release Notes"), QMessageBox::ActionRole);
+        }
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.resize(0,0);
+        msgBox.exec();
+        if( msgBox.clickedButton() == rnButton ) {
+          ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
+          dialog->exec();
+          int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(fullVersionString),
+                QMessageBox::Yes | QMessageBox::No);
+          if (ret2 == QMessageBox::Yes) {
+            download = true;
+          }
+          else {
+            ignore = true;
+          }
+        }
+        else if (msgBox.clickedButton() == YesButton ) {
+          download = true;
+        }
+        else {
+          ignore = true;
+        }
+      }
+      else {
+        if (downloadDialog_forWait && checkForUpdatesState==0) {
+          QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+        }
+      }
+    }
+
+    if (ignore) {
+      int res = QMessageBox::question(this, "Companion", tr("Ignore this release %1?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
+      if (res==QMessageBox::Yes)   {
+        g.fwRev.set(current_firmware_variant->getId(), version);
+      }
+    }
+    else if (download == true) {
+      startFirmwareDownload();
     }
 
     checkForUpdates();
