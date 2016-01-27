@@ -158,6 +158,9 @@ void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
 #define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
+void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
+void putsVBat(coord_t x, coord_t y, LcdFlags att);
+
 #if !defined(BOOT)
 void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
 void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
