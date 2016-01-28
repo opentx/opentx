@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -248,7 +248,7 @@ bool menuModelCurveOne(evt_t event)
       lcdDrawSolidFilledRect(point.x, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, 2, 2*CURVE_SIDE_WIDTH+2, CURVE_CURSOR_COLOR);
 
       char text[5];
-      sprintf(text, "%d", points[i]);
+      strAppendNumber(text, points[i]);
 
       if (point.x >= CURVE_CENTER_X) {
         drawCurveVerticalScale(point.x-15);
@@ -271,7 +271,7 @@ bool menuModelCurveOne(evt_t event)
 
       drawCurvePoint(point.x-3, point.y-4, CURVE_CURSOR_COLOR);
 
-      sprintf(text, "%d", x);
+      strAppendNumber(text, x);
       drawCurveCoord(limit(CURVE_CENTER_X-CURVE_SIDE_WIDTH-1, point.x-CURVE_COORD_WIDTH/2, CURVE_CENTER_X+CURVE_SIDE_WIDTH-CURVE_COORD_WIDTH+1), CURVE_CENTER_Y+CURVE_SIDE_WIDTH+2, text, selectionMode==1);
 
       if (s_editMode > 0) {

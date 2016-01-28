@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -259,7 +259,7 @@ bool menuGeneralSdManager(evt_t _event)
     TCHAR lfn[_MAX_LFN + 1];
     fno.lfname = lfn;
     fno.lfsize = sizeof(lfn);
-    
+
     if (menuVerticalOffset == 0) {
       reusableBuffer.sdmanager.offset = 0;
       memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));
@@ -347,7 +347,11 @@ bool menuGeneralSdManager(evt_t _event)
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) {
         char s[sizeof(reusableBuffer.sdmanager.lines[0])+2];
-        sprintf(s, "[%s]", reusableBuffer.sdmanager.lines[i]);
+        char * ptr = s;
+        *ptr++ = '[';
+        ptr = strAppend(ptr, reusableBuffer.sdmanager.lines[i]);
+        *ptr++ = ']';
+        *ptr = '\0';
         lcdDrawText(MENUS_MARGIN_LEFT, y, s, attr);
       }
       else {
@@ -366,6 +370,6 @@ bool menuGeneralSdManager(evt_t _event)
     }
     lcdDrawBitmap(LCD_W/2, (LCD_H-MODEL_BITMAP_HEIGHT)/2, modelBitmap);
   }
-  
+
   return true;
 }

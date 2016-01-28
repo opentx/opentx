@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -195,7 +195,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
     strcat_zchar(str, s, len);
   else
     strAppend(str, s, len);
-  
+
   const coord_t orig_x = x;
   bool setx = false;
   while (len--) {
@@ -431,11 +431,10 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
   lcdDrawText(x, y, str, att);
 }
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att, const char *prefix)
+void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, int idx, LcdFlags att, const char * prefix)
 {
-  // TODO quick & dirty, dangerous
-  char s[32];
-  sprintf(s, "%s%s%d", prefix, str, abs(idx));
+  char s[64];
+  strAppendNumber(strAppend(strAppend(s, prefix), str), abs(idx));
   lcdDrawText(x, y, s, att);
 }
 
@@ -457,7 +456,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
       s[1+LEN_INPUT_NAME] = '\0';
     }
     else {
-      sprintf(s+1, "%02d", idx);
+      strAppendNumber(s+1, idx, 2);
     }
     lcdDrawText(x, y, s, att);
   }
@@ -546,8 +545,7 @@ char * getStringAtIndex(char * dest, const char * s, int idx)
 
 char * getStringWithIndex(char * dest, const char * s, int idx)
 {
-  // TODO reimplement without the sprintf
-  sprintf(dest, "%s%d", s, abs(idx));
+  strAppendNumber(strAppend(dest, s), abs(idx));
   return dest;
 }
 

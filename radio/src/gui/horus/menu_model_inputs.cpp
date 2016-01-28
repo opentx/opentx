@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -190,17 +190,17 @@ bool menuModelExpoOne(evt_t event)
     char texty[5];
     int x = getValue(ed->srcRaw);
     if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-      sprintf(textx, "%d", calcRESXto100(x));
+      strAppendNumber(textx, calcRESXto100(x));
       // TODO putsTelemetryChannelValue(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x);
       if (ed->scale > 0) x = (x * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
     }
     else {
-      sprintf(textx, "%d", calcRESXto100(x));
+      strAppendNumber(textx, calcRESXto100(x));
     }
 
     x = limit(-1024, x, 1024);
     int y = limit<int>(-1024, expoFn(x), 1024);
-    sprintf(texty, "%d", calcRESXto100(y));
+    strAppendNumber(texty, calcRESXto100(y));
 
     x = divRoundClosest(x*CURVE_SIDE_WIDTH, RESX);
     y = CURVE_CENTER_Y + getCurveYCoord(expoFn, x, CURVE_SIDE_WIDTH);
@@ -569,4 +569,3 @@ bool menuModelExposAll(evt_t event)
 
   return true;
 }
-

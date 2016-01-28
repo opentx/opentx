@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -19,7 +19,7 @@
  */
 
 char * strAppend(char * dest, const char * source, int len=0);
-char * strAppendNumber(char * dest, unsigned int number);
+char * strAppendNumber(char * dest, unsigned int value, uint8_t digits=0, uint8_t radix=10);
 char * strSetCursor(char * dest, int position);
 char * strAppendDate(char * str, bool time=false);
 char * strAppendFilename(char * dest, const char * filename, const int size);

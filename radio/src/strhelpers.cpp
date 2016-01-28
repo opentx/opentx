@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -110,7 +110,7 @@ uint8_t zlen(const char * str, uint8_t size)
   return 0;
 }
 
-char *strcat_zchar(char * dest, const char * name, uint8_t size, const char *defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
+char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * defaultName, uint8_t defaultNameSize, uint8_t defaultIdx)
 {
   int8_t len = 0;
 
@@ -145,13 +145,23 @@ char *strcat_zchar(char * dest, const char * name, uint8_t size, const char *def
 #endif
 #endif
 
-char * strAppendNumber(char * dest, unsigned int value)
+char * strAppendNumber(char * dest, unsigned int value, uint8_t digits, uint8_t radix)
 {
-  div_t qr = div(value, 10);
-  *dest++ = '0' + qr.quot;
-  *dest++ = '0' + qr.rem;
-  *dest = '\0';
-  return dest;
+  if (digits == 0) {
+    unsigned int tmp = value;
+    digits = 1;
+    while (tmp >= 10) {
+      ++digits;
+      tmp /= radix;
+    }
+  }
+  dest[digits] = '\0';
+  while(digits > 0) {
+    div_t qr = div(value, radix);
+    dest[--digits] = (qr.rem >= 10 ? 'A' : '0') + qr.rem;
+    value = qr.quot;
+  }
+  return dest + digits;
 }
 
 #if defined(CPUARM) || defined(SDCARD)
@@ -174,7 +184,7 @@ char * strSetCursor(char * dest, int position)
   return dest;
 }
 
-char * strAppendFilename(char *dest, const char *filename, const int size)
+char * strAppendFilename(char * dest, const char * filename, const int size)
 {
   memset(dest, 0, size);
   for (int i=0; i<size; i++) {

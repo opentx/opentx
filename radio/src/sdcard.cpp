@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -94,7 +94,7 @@ int findNextFileIndex(char * filename, const char * directory)
   char extension[LEN_FILE_EXTENSION+1];
   strncpy(extension, getFileExtension(filename), sizeof(extension));
   do {
-    char * pos = strAppendNumber(indexPos, ++index);
+    char * pos = strAppendNumber(indexPos, ++index, 2);
     strAppend(pos, extension);
     if (!isFileAvailable(filename, directory)) {
       return index;
