@@ -10,6 +10,7 @@ if(EXISTS "${GTEST_SRCDIR}/src/gtest-all.cc")
   add_definitions(-DSIMU)
   set(TESTS_PATH ${RADIO_SRC_DIRECTORY})
   configure_file(${RADIO_SRC_DIRECTORY}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
+  include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
   foreach(FILE ${SRC})
     set(RADIO_SRC ${RADIO_SRC} ../${FILE})
