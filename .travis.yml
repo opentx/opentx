@@ -1,7 +1,7 @@
 language: cpp
 
 before_install:
-    - sudo apt-get remove cmake cmake-data binutils-avr gcc-avr avr-libc --yes
+    - sudo apt-get remove cmake cmake-data --yes
     - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
     - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
     - sudo add-apt-repository ppa:nonolith/avr-toolchain
