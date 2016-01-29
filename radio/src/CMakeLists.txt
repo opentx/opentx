@@ -60,9 +60,10 @@ if(PCB STREQUAL HORUS)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
   set(LUA_EXPORT lua_export_horus)
   set(FLAVOUR horus)
+  set(VIRTUAL_INPUTS YES)
   add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
-  add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
+  add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
   include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus)
   set(GUI_SRC
     ${GUI_SRC}
@@ -131,6 +132,7 @@ elseif(PCB STREQUAL TARANIS)
   set(GUI_DIR taranis)
   set(TARGET_DIR taranis)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
+  set(VIRTUAL_INPUTS YES)
   add_definitions(-DPCBTARANIS)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DDBLKEYS -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
@@ -417,7 +419,6 @@ if(ARCH STREQUAL ARM)
     telemetry/frsky.cpp
     telemetry/frsky_d_arm.cpp
     telemetry/frsky_sport.cpp
-    telemetry/telemetry.cpp
     crc16.cpp
     vario.cpp
     )
@@ -460,7 +461,7 @@ if(ARCH STREQUAL ARM)
     crossfire.cpp
     )
 else()
-  option(EXT "Telemetry extension" OFF)
+  option(EXT "Telemetry protocol" OFF) # TODO rename this EXT option to TELEMETRY
   option(AUDIO "Audio support" OFF)
   option(VOICE "Voice support" OFF)
   option(GRAPHICS "Additional graphics" ON)
@@ -507,7 +508,7 @@ else()
     set(SRC ${SRC} telemetry/jeti.cpp)
   elseif(EXT STREQUAL MAVLINK)
     add_definitions(-DMAVLINK)
-    include_directories(${THIRDPARTY} targets/common_avr)
+    include_directories(${THIRDPARTY_DIR} gui/${GUI_DIR} targets/common_avr)
     set(SRC ${SRC} telemetry/mavlink.cpp targets/common_avr/serial_driver.cpp)
     set(GUI_SRC ${GUI_SRC} view_mavlink.cpp)
     math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${MAVLINK_VARIANT})
@@ -526,6 +527,7 @@ else()
     option(VARIO "Vario support" ON)
     add_definitions(-DFRSKY)
     set(SRC ${SRC} telemetry/frsky.cpp telemetry/frsky_d.cpp)
+    set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/common_avr/telemetry_driver.cpp)
     set(GUI_SRC ${GUI_SRC} view_telemetry.cpp)
     if(FRSKY_HUB)
       add_definitions(-DFRSKY_HUB)
@@ -603,6 +605,18 @@ set(GUI_SRC
   view_statistics.cpp
   )
 
+if(VIRTUAL_INPUTS)
+  add_definitions(-DVIRTUALINPUTS)
+else()
+  option(TEMPLATES "Model Templates Menu" ON)
+endif()
+
+if(TEMPLATES)
+  add_definitions(-DTEMPLATES)
+  set(SRC ${SRC} templates.cpp)
+  set(GUI_SRC ${GUI_SRC} menu_model_templates.cpp)
+endif()
+
 if(LUA)
   add_definitions(-DLUA)
   include_directories(${LUA_DIR})
@@ -662,7 +676,6 @@ endif()
 if(JITTER_FILTER)
   add_definitions(-DJITTER_FILTER)
 endif()
-
 
 if(SDCARD STREQUAL YES)
   add_definitions(-DSDCARD)
@@ -754,7 +767,7 @@ set(SRC ${SRC} ${FIRMWARE_SRC})
 set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
 
 # trick to remove the -rdynamic and --out-implib issues
-set(CMAKE_EXECUTABLE_SUFFIX "")
+set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 set(CMAKE_COMMON_FLAGS "")
@@ -778,27 +791,21 @@ if(ARCH STREQUAL ARM)
 
   if(PCB STREQUAL TARANIS)
     add_subdirectory(targets/${TARGET_DIR}/bootloader)
-    add_custom_command(
-      OUTPUT bootloader.bin bootloader.lbm
-      COMMAND arm-none-eabi-objcopy -O binary targets/${TARGET_DIR}/bootloader/bootloader.elf bootloader.bin
-      COMMAND python ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
-      DEPENDS bootloader.elf
-      )
-    add_custom_target(bootloader DEPENDS bootloader.lbm)
+    include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
     set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
   else()
     # We fetch Mike's bootloader as it is not included inside OpenTX
     file(DOWNLOAD https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER} ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm)
   endif()
 
-  add_executable(firmware.elf ${SRC} ${FIRMWARE_HEADERS})
-  add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
+  add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
+  add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
 
-  add_custom_target(firmware.bin
+  add_custom_command(
+    TARGET firmware POST_BUILD
     COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
-    DEPENDS firmware.elf
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
+  )
 else()
   cmake_force_c_compiler(avr-gcc GNU)
   cmake_force_cxx_compiler(avr-gcc GNU)
@@ -815,30 +822,21 @@ else()
 
   file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
 
-  add_executable(firmware.elf ${ALLSRC})
-  add_dependencies(firmware.elf ${FIRMWARE_DEPENDENCIES})
+  add_executable(firmware ${ALLSRC})
+  add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
 
-  add_custom_target(firmware.hex
+  add_custom_command(
+    TARGET firmware POST_BUILD
     COMMAND avr-objcopy -O ihex -R .eeprom firmware.elf firmware.hex
-    DEPENDS firmware.elf
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-  add_custom_target(firmware.bin
-    COMMAND avr-objcopy -O binary firmware.elf firmware.bin
-    DEPENDS firmware.elf
-    )
-
-  add_custom_target(firmware
-    COMMAND avr-size --mcu=${MCU} --format=avr firmware.elf
-    DEPENDS firmware.hex
+  add_custom_target(firmware.lss
+    COMMAND avr-objdump -h -S firmware.elf > firmware.lss
+    DEPENDS firmware
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endif()
-
-add_custom_target(firmware.lss
-  COMMAND avr-objdump -h -S firmware.elf > firmware.lss
-  DEPENDS firmware.elf
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  )
 
 if(CPU_FAMILY STREQUAL STM32)
   add_custom_target(flash

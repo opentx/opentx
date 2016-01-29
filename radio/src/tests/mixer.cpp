@@ -35,6 +35,7 @@
  */
 
 #include "gtests.h"
+#include "../templates.h"
 
 #define CHECK_NO_MOVEMENT(channel, value, duration) \
     for (int i=1; i<=(duration); i++) { \

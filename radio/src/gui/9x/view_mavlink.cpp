@@ -23,10 +23,9 @@
  *	Contains the menu specific code for Mavlink support.
  */
 
-#include "9x/view_mavlink.h"
+#include "view_mavlink.h"
 
-// Globals declaration
-
+#define VIEW_MAVLINK_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
  
 /*!	\brief Top Mavlink Menu definition
  *	\details Registers button events and handles that info. Buttons select menus,
@@ -494,13 +493,13 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 		switch(k) {	
 		case ITEM_MAVLINK_RC_RSSI_SCALE:
 			lcd_putsLeft(y, STR_MAVLINK_RC_RSSI_SCALE_LABEL);
-			lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, (25 + g_model.mavlink.rc_rssi_scale * 5), attr|LEFT);
+			lcdDrawNumber(VIEW_MAVLINK_2ND_COLUMN, y, (25 + g_model.mavlink.rc_rssi_scale * 5), attr|LEFT);
 			lcdDrawChar(lcdLastPos, y, '%');
 			if (attr) CHECK_INCDEC_MODELVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);
 			break;
 		case ITEM_MAVLINK_PC_RSSI_EN:
 			g_model.mavlink.pc_rssi_en = editCheckBox(g_model.mavlink.pc_rssi_en,
-				RADIO_SETUP_2ND_COLUMN,
+				VIEW_MAVLINK_2ND_COLUMN,
 				y,
 				STR_MAVLINK_PC_RSSI_EN_LABEL,
 				attr,

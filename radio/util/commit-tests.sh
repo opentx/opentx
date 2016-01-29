@@ -7,72 +7,75 @@ set -x
 mkdir build
 cd build 
 
-# OpenTX on Taranis and Companion
+# Companion
 rm -rf *
-cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS ..
 make -j2
-make -j2 firmware.bin
+
+# OpenTX on 9X stock with FrSky telemetry
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=9X -DHELI=YES -DEXT=FRSKY ..
+make -j2 firmware
 make -j2 simu
-make -j2 gtests && ./gtests
+make -j2 gtests ; ./gtests
+
+# OpenTX on 9X stock with Mavlink telemetry
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=9X -DHELI=YES -DEXT=MAVLINK ..
+make -j2 firmware
+
+# OpenTX on Mega2560
+# rm -rf *
+#cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=MEGA2560 -DHELI=YES ..
+#make -j2 firmware
+#make -j2 simu
+#make -j2 gtests ; ./gtests
+
+# OpenTX on Mega2560 with Mavlink telemetry
+# rm -rf *
+#cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=MEGA2560 -DEXT=MAVLINK -DHELI=YES ..
+#make -j2 firmware
+#make -j2 simu
+#make -j2 gtests ; ./gtests
+
+# OpenTX on gruvin9x board
+# rm -rf *
+#cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=GRUVIN9X -DHELI=YES ..
+#make -j2 firmware
+#make -j2 simu
+#make -j2 gtests ; ./gtests
+
+# OpenTX on Sky9x
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=SKY9X -DHELI=YES ..
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
+
+# OpenTX on Taranis
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES ..
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
 
 # OpenTX on Taranis X9E
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DPCBREV=REV9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
-make -j2 firmware.bin
+make -j2 firmware
 make -j2 simu
-make -j2 gtests && ./gtests
+make -j2 gtests ; ./gtests
 
 # OpenTX on Taranis Plus
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS -DPCBREV=REVPLUS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES .. 
-make -j2 firmware.bin
+make -j2 firmware
 make -j2 simu
-make -j2 gtests && ./gtests
+make -j2 gtests ; ./gtests
 
 # OpenTX on Horus
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES .. 
-make -j2 firmware.bin
+make -j2 firmware
 make -j2 simu
-#make -j2 gtests && ./gtests
-
-
-# Old, not yet converted
-
-
-cd ../radio/src/
-
-
-# OpenTX on 9X stock
-make clean
-make        PCB=9X EXT=FRSKY HELI=YES
-make simu   PCB=9X EXT=FRSKY HELI=YES 
-make gtests EXT=FRSKY HELI=YES
-./gtests
-
-
-# OpenTX on 9X stock with MAVLINK
-make clean
-make PCB=9X EXT=MAVLINK HELI=YES
-
-
-# OpenTX on Sky9x
-make clean
-make        PCB=SKY9X HELI=YES WARNINGS_AS_ERRORS=YES
-make simu   PCB=SKY9X HELI=YES
-make gtests PCB=SKY9X HELI=YES
-./gtests
-
-# OpenTX on Gruvin9x
-make clean
-make      PCB=GRUVIN9X EXT=FRSKY SDCARD=YES
-make simu PCB=GRUVIN9X EXT=FRSKY SDCARD=YES
-
-# OpenTX on MEGA2560
-make clean
-make PCB=MEGA2560
-
-# OpenTX on MEGA2560 with MAVLINK
-make clean
-make PCB=MEGA2560 EXT=MAVLINK
-
+#make -j2 gtests ; ./gtests

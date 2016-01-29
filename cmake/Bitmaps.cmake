@@ -15,11 +15,8 @@ endmacro(add_bitmaps_target)
 
 macro(add_truetype_font_target radio name font size bold)
   set(target ${RADIO_SRC_DIRECTORY}/fonts/${radio}/font_${name})
-  add_custom_command(
-    OUTPUT ${target}.png
-    OUTPUT ${target}.specs
+  add_custom_target(ttf_${radio}_${name}
     COMMAND ${RADIO_DIRECTORY}/util/font2png.py ${font} ${size} ${bold} ${target}
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
-  add_custom_target(ttf_${radio}_${name} DEPENDS ${target}.png ${target}.specs)
 endmacro(add_truetype_font_target)

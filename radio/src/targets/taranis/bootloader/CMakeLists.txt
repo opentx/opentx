@@ -67,5 +67,12 @@ add_definitions(-DBOOT -DUSB_MASS_STORAGE)
 
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/taranis/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 
-add_executable(bootloader.elf ${BOOTLOADER_SRC})
-add_dependencies(bootloader.elf taranis_fonts firmware_translations)
+add_executable(bootloader ${BOOTLOADER_SRC})
+add_dependencies(bootloader taranis_fonts firmware_translations)
+
+add_custom_command(
+  TARGET bootloader POST_BUILD
+  COMMAND arm-none-eabi-objcopy -O binary bootloader.elf bootloader.bin
+  COMMAND python ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
+)
+
