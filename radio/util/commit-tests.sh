@@ -10,7 +10,7 @@ cd build
 # Companion
 rm -rf *
 cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=TARANIS ..
-make -j2
+# make -j2
 
 # OpenTX on 9X stock with FrSky telemetry
 rm -rf *
