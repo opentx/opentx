@@ -841,7 +841,7 @@ endif()
 if(CPU_FAMILY STREQUAL STM32)
   add_custom_target(flash
     COMMAND dfu-util --alt 0 --dfuse-address 0x08000000 -D firmware.bin
-    DEPENDS firmware.bin
+    DEPENDS firmware
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
 endif()

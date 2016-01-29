@@ -144,6 +144,10 @@ void delay(uint32_t ms);
 }
 #endif
 
+// CPU Unique ID
+#define LEN_CPU_UID                    (3*8+2)
+void getCPUUniqueID(char * s);
+
 // SD driver
 #if !defined(SIMU) || defined(SIMU_DISKIO)
   uint32_t sdIsHC(void);

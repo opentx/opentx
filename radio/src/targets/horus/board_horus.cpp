@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -37,6 +37,16 @@ void watchdogInit(unsigned int duration)
   IWDG->RLR = duration ;       // 1.5 seconds nominal
   IWDG->KR = 0xAAAA ;      // reload
   IWDG->KR = 0xCCCC ;      // start
+}
+
+void getCPUUniqueID(char * s)
+{
+  uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
+  char * tmp = strAppendNumber(s, cpu_uid[0], 8, 16);
+  *tmp = ' ';
+  tmp = strAppendNumber(tmp+1, cpu_uid[1], 8, 16);
+  *tmp = ' ';
+  strAppendNumber(tmp+1, cpu_uid[2], 8, 16);
 }
 
 // Start TIMER7 at 2000000Hz
@@ -144,19 +154,19 @@ extern USB_OTG_CORE_HANDLE USB_OTG_dev;
   Prepare and send new USB data packet
 
   The format of HID_Buffer is defined by
-  USB endpoint description can be found in 
+  USB endpoint description can be found in
   file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
 */
 void usbJoystickUpdate(void)
 {
   static uint8_t HID_Buffer[HID_IN_PACKET];
-  
+
   //buttons
   HID_Buffer[0] = 0; //buttons
   for (int i = 0; i < 8; ++i) {
     if ( channelOutputs[i+8] > 0 ) {
       HID_Buffer[0] |= (1 << i);
-    } 
+    }
   }
 
   //analog values
@@ -165,7 +175,7 @@ void usbJoystickUpdate(void)
     int16_t value = channelOutputs[i] / 8;
     if ( value > 127 ) value = 127;
     else if ( value < -127 ) value = -127;
-    HID_Buffer[i+1] = static_cast<int8_t>(value);  
+    HID_Buffer[i+1] = static_cast<int8_t>(value);
   }
 
   USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );

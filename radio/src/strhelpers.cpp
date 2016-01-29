@@ -155,13 +155,14 @@ char * strAppendNumber(char * dest, unsigned int value, uint8_t digits, uint8_t 
       tmp /= radix;
     }
   }
-  dest[digits] = '\0';
-  while(digits > 0) {
+  uint8_t idx = digits;
+  while(idx > 0) {
     div_t qr = div(value, radix);
-    dest[--digits] = (qr.rem >= 10 ? 'A' : '0') + qr.rem;
+    dest[--idx] = (qr.rem >= 10 ? 'A'-10 : '0') + qr.rem;
     value = qr.quot;
   }
-  return dest + digits;
+  dest[digits] = '\0';
+  return &dest[digits];
 }
 
 #if defined(CPUARM) || defined(SDCARD)

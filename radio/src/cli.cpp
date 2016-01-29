@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -280,6 +280,13 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "volume")) {
     serialPrint("volume = %d", getVolume());
   }
+#if defined(CPUSTM32)
+  else if (!strcmp(argv[1], "uid")) {
+    char str[LEN_CPU_UID+1];
+    getCPUUniqueID(str);
+    serialPrint("uid = %s", str);
+  }
+#endif
 #if defined(PCBFLAMENCO)
   else if (!strcmp(argv[1], "bq24195")) {
     {
@@ -379,7 +386,7 @@ const CliCommand cliCommands[] = {
 };
 
 int cliHelp(const char ** argv)
-{ 
+{
   for (const CliCommand * command = cliCommands; command->name != NULL; command++) {
     if (argv[1][0] == '\0' || !strcmp(command->name, argv[0])) {
       serialPrint("%s %s", command->name, command->args);
