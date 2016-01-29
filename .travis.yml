@@ -1,13 +1,14 @@
 language: cpp
 
 before_install:
-    - sudo apt-get remove cmake cmake-data --yes
+    - sudo apt-get remove cmake cmake-data binutils-avr gcc-avr avr-libc --yes
     - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
     - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
-    - sudo apt-get update    
+    - sudo add-apt-repository ppa:nonolith/avr-toolchain
+    - sudo apt-get update
 
 install:
-  - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi gcc-avr avr-libc avrdude libqtcore4 libqt4-dev qt4-qmake g++ libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev libfox-1.6-dev libgtest-dev
+  - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi atmel-toolchain-binutils-avr atmel-toolchain-gcc-avr atmel-toolchain-avr-libc avrdude libqtcore4 libqt4-dev qt4-qmake g++ libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev libfox-1.6-dev libgtest-dev
 
 script:
   - radio/util/commit-tests.sh
