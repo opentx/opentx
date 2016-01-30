@@ -71,7 +71,6 @@
 #include "progressdialog.h"
 
 #define OPENTX_COMPANION_DOWNLOADS        "http://downloads-22.open-tx.org/companion"
-#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
@@ -85,8 +84,10 @@
 #if defined WIN32 || !defined __GNUC__
   #include <windows.h>
   #define sleep(x) Sleep(x*1000)
+  #define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/companion/windows"
 #else
   #include <unistd.h>
+  #define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/companion/linux"
 #endif
 
 MainWindow::MainWindow():
