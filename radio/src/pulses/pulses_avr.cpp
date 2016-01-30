@@ -110,58 +110,57 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
-#define SETUP_PULSES_DURATION 1000/*500us*/
+#define SETUP_PULSES_DURATION 1000 // 500us
+uint8_t g_ppmPulsePolarity = 0; // Needed for Bit-bang PPM.
 
-// TIMER1_COMPA_vect used for PPM and DSM2=SERIAL
-uint8_t g_ppmPulsePolarity = 0;
-ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
+// TIMER1_COMPA_vect used for PPM and DSM2=SERIAL.
+ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
 {
-  uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
-  
-  // Call setupPulses only after REST pulse had been sent.
-  // Must do this before toggle PORTB to keep timing accurate
+  uint8_t dt = TCNT1L; // Record Timer1 latency for DEBUG stats display.
+
+  // Call setupPulses only after "rest" period has elapsed.
+  // Must do this before toggle PORTB to keep timing accurate.
   if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
     if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
       OCR1A = SETUP_PULSES_DURATION;
+#if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
+      OCR1B = OCR1A;
+      if (g_model.pulsePol)
+      TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
+      else
+      TCCR1A |= 3<<COM1B0;
+      TCCR1C = 1<<FOC1B; // Strobe FOC1B.
+      TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1); // Toggle OC1B on next match.
+#endif
     }
-    setupPulses(); // does not sei() for setupPulsesPPM
+    setupPulses(); // Does not sei() for setupPulsesPPM.
     heartbeat |= HEART_TIMER_PULSES;
     return;
   }
 
-#if !defined(CPUM2560)
-  // Original bitbang for PPM
   if (s_current_protocol[0] != PROTO_NONE) {
+#if !defined(CPUM2560)
+    // Original Bit-bang for PPM.
     if (g_ppmPulsePolarity) {
-      PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
+      PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       g_ppmPulsePolarity = 0;
     }
     else {
       PORTB &= ~(1<<OUT_B_PPM);
       g_ppmPulsePolarity = 1;
     }
-  }
 #else // defined(CPUM2560)
-  // CPUM2560 zero jitter hardware toggled PPM_out
-  OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
-    
-  // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
-  // so need to use pusePol register to keep track of PPM_out polarity.
-  if (s_current_protocol[0] != PROTO_NONE) {
-    if (g_ppmPulsePolarity) {
-      TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-      g_ppmPulsePolarity = 0;
-    }
-    else {
-      TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-      g_ppmPulsePolarity = 1;
-    }
-  }
+    // CPUM2560 hardware toggled PPM out.
+    if ( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0)
+    // Look one step ahead to see if we are currently the "rest" period.
+      OCR1B = 0xffff; // Prevent next compare match hence toggle.
+    else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
 #endif
+    }
 
-  OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function)
-  pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
-  
+  OCR1A = *( (uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
+  pulses2MHzRPtr += sizeof(uint16_t); // Non PPM protocols use uint8_t pulse buffer.
+
   if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
   if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
 }
