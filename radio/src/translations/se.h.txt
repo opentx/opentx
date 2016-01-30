@@ -1,10 +1,21 @@
 /*
  * Authors (alphabetical order)
+ * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
- * - Bernet Andre <bernet.andre@gmail.com>
- * - Kjell Kernen <kjell.kernen@gmail.com>
- * - Martin Hotar <mhotar@gmail.com>
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Gabriel Birkus
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rob Thomson
  * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -21,35 +32,24 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- *
- *
- *
  * !!!!! DO NOT EDIT se.h - EDIT se.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier se.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is se.h.
- *
  * See translate.py in the util folder for the list of character codes
  *
  * !!!!! DO NOT EDIT se.h - EDIT se.h.txt INSTEAD !!!!!!!
  */
- /* Formatting octal codes available in TR_ strings:
+
+
+
+/* Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
  *  \036             -newline
  *  \035             -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */
-
-
-
-
-
-
-
-
-
-
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
@@ -68,7 +68,7 @@
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "No REaREb"
+#define TR_VRENAVIG            "Av REaREb"
 
 #define LEN_VBLMODE            TR("\005", "\010")
 #define TR_VBLMODE             TR("Av\0  ""Knapp""Spak ""Allt ""På\0  ", "Av\0     ""Knappar ""Spakar\0 ""Allt\0   ""På\0     ")
@@ -129,12 +129,14 @@
 
 #define LEN_RETA123            "\001"
 
-#if defined(PCBFLAMENCO)
-  #define TR_RETA123           "RHGS123HV"
+#if defined(PCBHORUS)
+  #define TR_RETA123           "RHGS12345VH"
+#elif defined(PCBFLAMENCO)
+  #define TR_RETA123           "RHGS123VH"
 #elif defined(PCBTARANIS) && defined(REV9E)
-  #define TR_RETA123           "RHGS1234HVHV"
+  #define TR_RETA123           "RHGS1234VHVH"
 #elif defined(PCBTARANIS) || defined(REVX)
-  #define TR_RETA123           "RHGS123HV"
+  #define TR_RETA123           "RHGS123VH"
 #elif defined(PCBSKY9X)
   #define TR_RETA123           "RHGS123a"
 #elif defined(CPUM2560)
@@ -195,7 +197,7 @@
 #define LEN_VMIXTRIMS          "\003"
 #define TR_VMIXTRIMS           "Av\0""På\0""Rod""Hjd""Gas""Ske"
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
   #define TR_CSWTIMER          "Timer"
   #define TR_CSWSTICKY         "Seg\0 "
   #define TR_CSWRANGE          "Vidd\0"
@@ -267,14 +269,14 @@
   #define TR_SDCLOGS           "[SD Logg]\0"
 #endif
 
-#ifdef GVARS
+#if defined(GVARS)
   #define TR_ADJUST_GVAR       "Justera\0  "
 #else
   #define TR_ADJUST_GVAR       "[Just. GV]"
 #endif
 
 #if defined(LUA)
-  #define TR_SF_PLAY_SCRIPT   "Lua Script"
+  #define TR_SF_PLAY_SCRIPT   "Lua Skript"
 #else
   #define TR_SF_PLAY_SCRIPT   "[Lua]\0    "
 #endif
@@ -325,7 +327,7 @@
   #define TR_FSW_RESET_ROTENC
 #endif
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
   #define TR_FSW_RESET_TIMERS  "Timer 1\0 ""Timer 2\0 ""Timer 3\0 "
 #elif defined(CPUARM)
   #define TR_FSW_RESET_TIMERS  "Tmr1""Tmr2""Tmr3"
@@ -358,7 +360,7 @@
 
 #define TR_ASPD_MAX            TR("ASp+", "ASpd+")
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
   #define TR_TELEM_RSSI_RX     "RSSI\0"
 #else
   #define TR_TELEM_RSSI_RX     TR("Rx\0  ", "Rx\0 ")
@@ -420,16 +422,16 @@
   #define TR_AMPSRC            TR("---""A1\0""A2\0""FAS""Cel", "---\0   ""A1\0    ""A2\0    ""FAS\0   ""Cells\0 ")
 #endif
 
-#define LEN_VARIOSRC           "\005"
+#define LEN_VARIOSRC           "\004"
 #if defined(FRSKY_SPORT)
-  #define TR_VARIOSRC          "Vario""A1\0  ""A2\0"
+  #define TR_VARIOSRC          "VSpd""A1\0 ""A2\0 ""dTE\0"
 #else
   #define TR_VARIOSRC          "Alti\0""Alti+""Vario""A1\0  ""A2\0"
 #endif
 
 #if defined(CPUARM)
   #define LEN_VTELEMSCREENTYPE   "\007"
-  #define TR_VTELEMSCREENTYPE    "Inget\0 ""Siffror""Staplar""Script\0"
+  #define TR_VTELEMSCREENTYPE    "Inget\0 ""Siffror""Staplar""Skript\0"
 #else
   #define LEN_VTELEMSCREENTYPE   "\007"
   #define TR_VTELEMSCREENTYPE    "Siffror""Staplar"
@@ -448,6 +450,9 @@
 #if defined(PCBHORUS)
 #define LEN_VKEYS              "\006"
 #define TR_VKEYS               "Menu\0 ""Exit\0 ""Enter\0""Upp\0  ""Ned\0  ""Höger\0""Vänst"
+#elif defined(PCBFLAMENCO)
+#define LEN_VKEYS              "\005"
+#define TR_VKEYS               "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
 #elif defined(PCBTARANIS)
 #define LEN_VKEYS              "\005"
 #define TR_VKEYS               "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
@@ -461,7 +466,6 @@
 
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
-
 
 #define TR_STICKS_VSRCRAW      TR("Rod\0""Hjd\0""Gas\0""Ske\0", "\307Rod""\307Hjd""\307Gas""\307Ske")
 #define TR_TRIMS_VSRCRAW       TR("TrmR""TrmH""TrmG""TrmS", "\313Rod""\313Hjd""\313Gas""\313Ske")
@@ -503,7 +507,6 @@
   #define TR_ROTENC_SWITCHES
 #endif
 
-
 #if defined(PCBFLAMENCO)
   #define TR_PHYS_SWITCHES     "SA\300""SA-""SA\301""SB\300""SB\301""SC1""SC2""SC3""SC4""SC5""SC6""SE\300""SE\301""SF\300""SF-""SF\301"
 #elif !defined(PCBTARANIS) && !defined(PCBHORUS)
@@ -511,7 +514,6 @@
 #endif
 
 #define TR_ON_ONE_SWITCHES     "På\0""Ett"
-
 
 #if defined(PCBFLAMENCO)
   #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "På\0""Ett"
@@ -597,9 +599,8 @@
   #define OFS_EXIT             sizeof(TR_ENTER)
 #endif
 
-#define TR_MENUWHENDONE        CENTER "\011" TR_ENTER " Avslutar "
 #define TR_FREE                "kvar"
-#define TR_DELETEMODEL         "Radera Modell"
+#define TR_DELETEMODEL         "Radera" BREAKSPACE "Modell"
 #define TR_COPYINGMODEL        "Kopierar Modell "
 #define TR_MOVINGMODEL         "Flyttar Modell "
 #define TR_LOADINGMODEL        "Laddar Modell   "
@@ -608,7 +609,7 @@
 #define TR_PHASENAME           "Lägesnamn "
 #define TR_MIXNAME             "Mixnamn "
 #define TR_INPUTNAME           "Inputnamn"
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   #define TR_EXPONAME          "Radnamn"
 #else
   #define TR_EXPONAME          "Exponamn"
@@ -704,13 +705,13 @@
 #define TR_BLDELAY             INDENT "Av efter"
 #define TR_BLONBRIGHTNESS      INDENT "På Ljusstyrka"
 #define TR_BLOFFBRIGHTNESS     INDENT "Av Ljusstyrka"
-#define TR_SPLASHSCREEN        "Startbild"
 #define TR_BLCOLOR             INDENT "Color"
+#define TR_SPLASHSCREEN        "Startbild"
 #define TR_THROTTLEWARNING     TR("Gasvarning", INDENT "Gasvarning")
 #define TR_SWITCHWARNING       TR("Bryt.varn.", INDENT "Brytarvarning")
 #define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
 #define TR_TIMEZONE            TR("Tidszon", "GPS Tidszon")
-#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_ADJUST_RTC          INDENT "Justera RTC"
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Kanaler i RX"
 #define TR_STICKS              "Sticks"
@@ -718,7 +719,7 @@
 #define TR_SWITCHES            "Switches"
 #define TR_SWITCHES_DELAY      "Brytarfördröjning"
 #define TR_SLAVE               "Elev"
-#define TR_MODESRC             " Läge\004% Källa"
+#define TR_MODESRC             "Läge\006% Källa "
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
@@ -727,10 +728,12 @@
   #define TR_MENUTOSTART       TR_ENTER " Startar "
   #define TR_SETMIDPOINT       "Centrera Allt"
   #define TR_MOVESTICKSPOTS    "Rör Spakar/Rattar"
+  #define TR_MENUWHENDONE      TR_ENTER " Avslutar"
 #else
-  #define TR_MENUTOSTART         CENTER "\011" TR_ENTER " Startar "
-  #define TR_SETMIDPOINT         TR(CENTER "\012Centrera Allt",CENTER "\013Centrera Allt")
-  #define TR_MOVESTICKSPOTS      TR(CENTER "\005Rör Spakar/Rattar",CENTER "\006Rör Spakar/Rattar")
+  #define TR_MENUTOSTART       CENTER "\011" TR_ENTER " Startar "
+  #define TR_SETMIDPOINT       TR(CENTER "\012Centrera Allt",CENTER "\013Centrera Allt")
+  #define TR_MOVESTICKSPOTS    TR(CENTER "\005Rör Spakar/Rattar",CENTER "\006Rör Spakar/Rattar")
+  #define TR_MENUWHENDONE      CENTER "\006" TR_ENTER " Avslutar"
 #endif
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
@@ -783,8 +786,8 @@
 #endif
 #define TR_MENUMODELSEL        TR("MODELL","VÄLJ MODELL")
 #define TR_MENUSETUP           TR("VÄRDEN","MODELLINSTÄLLNINGAR")
-#define TR_MENUFLIGHTPHASE     "FLYGLÄGE"
 #define TR_MENUFLIGHTPHASES    "FLYGLÄGEN"
+#define TR_MENUFLIGHTPHASE     "FLYGLÄGE"
 #define TR_MENUHELISETUP       "HELIKOPTER"
 
 #if defined(VIRTUALINPUTS)
@@ -825,8 +828,8 @@
 #define TR_SAVEMODEL           "Spara modellinställn."
 #define TR_BATT_CALIB          "Kalib. Batteri"
 #define TR_CURRENT_CALIB       "Kalib. Ström"
-#define TR_VOLTAGE             INDENT"Volt"
-#define TR_CURRENT             INDENT"Ampere"
+#define TR_VOLTAGE             TR(INDENT "Volt",INDENT "Spänningskälla")
+#define TR_CURRENT             TR(INDENT "Ampere",INDENT "Strömkälla")
 #define TR_SELECT_MODEL        "Välj Modell"
 #define TR_CREATE_CATEGORY     "Skapa Kategori"
 #define TR_RENAME_CATEGORY     "Byt Kat.namn"
@@ -994,7 +997,7 @@
 #define TR_EEBACKUP            "\004[ENTER Lång] säkerhetskopiera EEPROM"
 #define TR_FACTORYRESET        "\012[MENU Long]: Factory reset"
 #define TR_CONFIRMRESET        "Erase ALL models and settings?"
-#define TR_TO_MANY_LUA_SCRIPTS "För många Lua-scripts!"
+#define TR_TO_MANY_LUA_SCRIPTS "För många Lua-skript!"
 
 #if defined(MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
@@ -1026,6 +1029,7 @@
 #define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Rodertrim ", " Höjdrodertrim ", " Gastrim ", " Skevrodertrim ", " Tona Upp ", " Tona Ned " }
 #define TR_LIMITS_HEADERS      { " Namn ", " Subtrim ", " Min ", " Max ", " Riktning  ", " Kurva ", " PPM-center ", " Subtrim-läge " }
 #define TR_CSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " V2 ", " OCH Brytare ", " Tidslängd ", " Fördröj " }
+
 // About screen
 #define TR_ABOUTUS             "Om Oss"
 
@@ -1117,8 +1121,7 @@
 #define TR_ONLYPOSITIVE        "Positiv"
 #define TR_FILTER              "Filter"
 #define TR_TELEMETRYFULL       "Alla telemetriplatser upptagna!"
-//TODO: translation
-#define TR_INVERTED_SERIAL     INDENT "Invert"
+#define TR_INVERTED_SERIAL     INDENT "Invertera"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Inst.fel", INDENT "Hantera Instansfel")
 #define TR_DISCOVER_SENSORS    INDENT "Sök nya sensorer"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Avbryt sökning"
@@ -1126,8 +1129,8 @@
 #define TR_CONFIRMDELETE       "Ta bort alla?"
 
 #define TR_MENU_INPUTS         "\314Inputs"
-#define TR_MENU_LUA            "\322Lua scripts"
-#define TR_MENU_STICKS         "\307Spakars"
+#define TR_MENU_LUA            "\322Lua skript"
+#define TR_MENU_STICKS         "\307Spakar"
 #define TR_MENU_POTS           "\310Rattar"
 #define TR_MENU_MAX            "\315MAX"
 #define TR_MENU_HELI           "\316Cyclic"
