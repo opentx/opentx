@@ -579,368 +579,6 @@ Może być różny od języka firmware</translation>
     </message>
 </context>
 <context>
-    <name>Calibration</name>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="14"/>
-        <source>Form</source>
-        <translation>Formularz</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="146"/>
-        <source>RS</source>
-        <translation>Prawy Suwak</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="153"/>
-        <source>SB</source>
-        <translation>SB</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="288"/>
-        <source>Rud</source>
-        <translation>SK</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="331"/>
-        <source>Pot. 4</source>
-        <translation>Potencj. 4</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="345"/>
-        <source>Pot. 3</source>
-        <translation>Potencj. 3</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="365"/>
-        <source>Pot. 2</source>
-        <translation>Potencj. 2</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="372"/>
-        <source>Pot. 1</source>
-        <translation>Potencj. 1</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="379"/>
-        <source>PPM 1</source>
-        <translation>PPM 1</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="173"/>
-        <source>Stick 3</source>
-        <translation>Drążek 3</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="386"/>
-        <location filename="../generaledit/calibration.ui" line="840"/>
-        <source>Negative span</source>
-        <translation>Ujemny zakres</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="295"/>
-        <location filename="../generaledit/calibration.ui" line="396"/>
-        <source>Mid value</source>
-        <translation>Wartość środkowa</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="43"/>
-        <source>SQ</source>
-        <translation>SQ</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="57"/>
-        <source>SR</source>
-        <translation>SR</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="91"/>
-        <source>LS2</source>
-        <translation>LS2</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="105"/>
-        <source>SP</source>
-        <translation>SP</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="112"/>
-        <source>SO</source>
-        <translation>SO</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="119"/>
-        <source>S4</source>
-        <translation>S4</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="406"/>
-        <location filename="../generaledit/calibration.ui" line="857"/>
-        <source>Positive span</source>
-        <translation>Dodatni zakres</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="416"/>
-        <source>Stick 1</source>
-        <translation>Drążek 1</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="459"/>
-        <source>Stick 2</source>
-        <translation>Drążek 2</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="531"/>
-        <source>Stick 4</source>
-        <translation>Drążek 4</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="577"/>
-        <source>v</source>
-        <translation>V</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="596"/>
-        <source>PPM Multiplier</source>
-        <translation>Mnożnik PPM</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="703"/>
-        <source>Current Offset</source>
-        <translation>Aktuany ofset</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="867"/>
-        <source>S1</source>
-        <translation>Potencjometr 1</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="874"/>
-        <source>S2</source>
-        <translation>Potencjometr 2</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="881"/>
-        <source>S3</source>
-        <translation>Potencjometr 3</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="895"/>
-        <source>SA</source>
-        <translation>SA</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="902"/>
-        <source>Ele</source>
-        <translation>SW</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="916"/>
-        <source>Ail</source>
-        <translation>Lotki</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="937"/>
-        <source>Thr</source>
-        <translation>Gaz</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="951"/>
-        <source>SC</source>
-        <translation>SC</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="965"/>
-        <source>LS</source>
-        <translation>Lewy Suwak</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="999"/>
-        <source>SD</source>
-        <translation>SD</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1026"/>
-        <source>SE</source>
-        <translation>SE</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1053"/>
-        <source>SF</source>
-        <translation>SF</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1080"/>
-        <source>SG</source>
-        <translation>SG</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1107"/>
-        <source>SH</source>
-        <translation>SH</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1121"/>
-        <source>SI</source>
-        <translation>SI</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1135"/>
-        <source>SJ</source>
-        <translation>SJ</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1149"/>
-        <source>SK</source>
-        <translation>SK</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1163"/>
-        <source>SL</source>
-        <translation>SL</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1177"/>
-        <source>SM</source>
-        <translation>SM</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1210"/>
-        <source>SN</source>
-        <translation>SN</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1237"/>
-        <source>RS2</source>
-        <translation>RS2</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="1533"/>
-        <source>Bluetooth</source>
-        <translation>Bluetooth</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="452"/>
-        <source>PPM 2</source>
-        <translation>PPM 2</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="567"/>
-        <source>Battery Offset</source>
-        <translation>Ofset baterii</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="689"/>
-        <source>PPM 3</source>
-        <translation>PPM 3</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="696"/>
-        <source>PPM 4</source>
-        <translation>PPM 4</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="193"/>
-        <location filename="../generaledit/calibration.ui" line="225"/>
-        <location filename="../generaledit/calibration.ui" line="1387"/>
-        <location filename="../generaledit/calibration.ui" line="1406"/>
-        <location filename="../generaledit/calibration.ui" line="1425"/>
-        <location filename="../generaledit/calibration.ui" line="1444"/>
-        <location filename="../generaledit/calibration.ui" line="1463"/>
-        <location filename="../generaledit/calibration.ui" line="1482"/>
-        <location filename="../generaledit/calibration.ui" line="1501"/>
-        <location filename="../generaledit/calibration.ui" line="1520"/>
-        <source>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</source>
-        <translation>Głośność piknięć
-
-0 -Cicho.  Żadnych piknięć.
-1 - Bez przycisków. Normalne piknięcia ale bez pikania dla przycisków menu.
-2 - Normalna.
-3 - Głośna.
-4 - Bardzo głośna.</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="239"/>
-        <source>OFF</source>
-        <translation>Wyłącz</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="244"/>
-        <source>S-Port Mirror</source>
-        <translation>Kopia S-Port</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="249"/>
-        <source>Telemetry</source>
-        <translation>Telemetria</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="254"/>
-        <source>SBUS Trainer</source>
-        <translation>Trener SBUS</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="259"/>
-        <source>Debug</source>
-        <translation>Debugowanie</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.ui" line="33"/>
-        <source>Serial Port</source>
-        <translation>Port szeregowy</translation>
-    </message>
-</context>
-<context>
-    <name>CalibrationPanel</name>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="11"/>
-        <location filename="../generaledit/calibration.cpp" line="48"/>
-        <location filename="../generaledit/calibration.cpp" line="79"/>
-        <source>None</source>
-        <translation>Brak</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="19"/>
-        <source>2 Positions Toggle</source>
-        <translation>2 Poz. Przełącznik chwilowy</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="20"/>
-        <source>2 Positions</source>
-        <translation>2 Pozycje</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="21"/>
-        <source>3 Positions</source>
-        <translation>3 Pozycje</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="49"/>
-        <source>Pot with detent</source>
-        <translation>Potencj. z zapadką</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="50"/>
-        <source>Multipos switch</source>
-        <translation>Przeł. wielopoz</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="51"/>
-        <source>Pot without detent</source>
-        <translation>Potencjometr bez zapadki</translation>
-    </message>
-    <message>
-        <location filename="../generaledit/calibration.cpp" line="80"/>
-        <source>Slider with detent</source>
-        <translation>Suwak z zapadką</translation>
-    </message>
-</context>
-<context>
     <name>Channels</name>
     <message>
         <location filename="../modeledit/channels.cpp" line="87"/>
@@ -2686,48 +2324,53 @@ These will be relevant for all models in the same EEPROM.</source>
 Będą one obowiązywać dla wszystkich modeli w tym samym EEPROM-ie.</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="40"/>
+        <location filename="../generaledit/generaledit.cpp" line="41"/>
         <source>Setup</source>
         <translation>Ustawienia</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="44"/>
+        <location filename="../generaledit/generaledit.cpp" line="45"/>
         <source>Trainer</source>
         <translation>Trener</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="42"/>
+        <location filename="../generaledit/generaledit.cpp" line="43"/>
         <source>Global Functions</source>
         <translation>Funkcje Globalne</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="45"/>
-        <source>Hardware / Calibration</source>
-        <translation>Kalibracja sprzętu</translation>
+        <location filename="../generaledit/generaledit.cpp" line="46"/>
+        <source>Hardware</source>
+        <translation>Sprzęt</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="135"/>
-        <location filename="../generaledit/generaledit.cpp" line="189"/>
+        <location filename="../generaledit/generaledit.cpp" line="47"/>
+        <source>Calibration</source>
+        <translation>Kalibracja</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/generaledit.cpp" line="137"/>
+        <location filename="../generaledit/generaledit.cpp" line="191"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="135"/>
+        <location filename="../generaledit/generaledit.cpp" line="137"/>
         <source>Wrong data in profile, radio calibration was not retrieved</source>
         <translation>Błędne dane w profilu, kalibracja nie została odzyskana</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="189"/>
+        <location filename="../generaledit/generaledit.cpp" line="191"/>
         <source>Wrong data in profile, hw related parameters were not retrieved</source>
         <translation>Błędne dane w profilu, parametry HW nie zostały odzyskana</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="210"/>
+        <location filename="../generaledit/generaledit.cpp" line="212"/>
         <source>Do you want to store calibration in %1 profile&lt;br&gt;overwriting existing calibration?</source>
         <translation>Chcesz zapamiętać dane kalibracji profilu %1&lt;br&gt; Zastąpią one aktualne dane kalibracji?</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="245"/>
+        <location filename="../generaledit/generaledit.cpp" line="247"/>
         <source>Calibration and HW parameters saved.</source>
         <translation>Kalibracja i parametry HW zapamiętane.</translation>
     </message>
@@ -3319,6 +2962,11 @@ p, li { white-space: pre-wrap; }
         <translation>Tryb FAI</translation>
     </message>
     <message>
+        <location filename="../generaledit/generalsetup.ui" line="661"/>
+        <source>Automatically adjust the radio&apos;s clock if a GPS is connected to telemetry.</source>
+        <translation>Automatycznie ustaw zegar radia jeśli GPS jest podłaczony do telemetri.</translation>
+    </message>
+    <message>
         <location filename="../generaledit/generalsetup.ui" line="1116"/>
         <source>Mode selection:
 
@@ -3511,7 +3159,6 @@ Mode 4:
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="604"/>
-        <location filename="../generaledit/generalsetup.ui" line="661"/>
         <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
         <translation>Jeśli uaktywnisz tryb FAI, utracisz informacje o wariometrze, funkcje odtwarzania i ekrany telemetrii. Ten tryb nie może być dezaktywowany.</translation>
     </message>
@@ -3554,6 +3201,310 @@ Jesteś pewien ?</translation>
         <location filename="../wizarddialog.cpp" line="817"/>
         <source>Yes, controlled by a pot</source>
         <translation>Tak, kontrolowane przez potencjometr</translation>
+    </message>
+</context>
+<context>
+    <name>Hardware</name>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formularz</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="20"/>
+        <source>SQ</source>
+        <translation>SQ</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="34"/>
+        <source>SR</source>
+        <translation>SR</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="55"/>
+        <source>LS2</source>
+        <translation>LS2</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="82"/>
+        <source>SP</source>
+        <translation>SP</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="89"/>
+        <source>SO</source>
+        <translation>SO</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="96"/>
+        <source>S4</source>
+        <translation>S4</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="110"/>
+        <source>RS</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="117"/>
+        <source>SB</source>
+        <translation>SB</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="124"/>
+        <source>PPM 2</source>
+        <translation>PPM 2</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="157"/>
+        <location filename="../generaledit/hardware.ui" line="176"/>
+        <location filename="../generaledit/hardware.ui" line="933"/>
+        <location filename="../generaledit/hardware.ui" line="952"/>
+        <location filename="../generaledit/hardware.ui" line="971"/>
+        <location filename="../generaledit/hardware.ui" line="990"/>
+        <location filename="../generaledit/hardware.ui" line="1009"/>
+        <location filename="../generaledit/hardware.ui" line="1028"/>
+        <location filename="../generaledit/hardware.ui" line="1047"/>
+        <location filename="../generaledit/hardware.ui" line="1066"/>
+        <source>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</source>
+        <translation>Głośność piknięć
+
+0 -Cicho.  Żadnych piknięć.
+1 - Bez przycisków. Normalne piknięcia ale bez pikania dla przycisków menu.
+2 - Normalna.
+3 - Głośna.
+4 - Bardzo głośna.</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="190"/>
+        <source>OFF</source>
+        <translation>Wyłącz</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="195"/>
+        <source>S-Port Mirror</source>
+        <translation>Powielenia S-Port</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="200"/>
+        <source>Telemetry</source>
+        <translation>Telemetria</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="205"/>
+        <source>SBUS Trainer</source>
+        <translation>Trener SBUS</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="210"/>
+        <source>Debug</source>
+        <translation>Debugowanie</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="239"/>
+        <source>Rud</source>
+        <translation>SK</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="256"/>
+        <source>PPM 3</source>
+        <translation>PPM 3</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="270"/>
+        <source>S1</source>
+        <translation>Potencjometr 1</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="284"/>
+        <source>S2</source>
+        <translation>Potencjometr 2</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="291"/>
+        <source>S3</source>
+        <translation>S3</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="298"/>
+        <source>PPM 1</source>
+        <translation>PPM 1</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="324"/>
+        <source>Serial Port</source>
+        <translation>Port szeregowy</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="337"/>
+        <source>v</source>
+        <translation>V</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="356"/>
+        <source>PPM Multiplier</source>
+        <translation>Mnożnik PPM</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="395"/>
+        <source>Current Offset</source>
+        <translation>Aktuany ofset</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="402"/>
+        <source>PPM 4</source>
+        <translation>PPM 4</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="416"/>
+        <source>SA</source>
+        <translation>SA</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="423"/>
+        <source>Ele</source>
+        <translation>SW</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="444"/>
+        <source>Ail</source>
+        <translation>Lotki</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="458"/>
+        <source>Thr</source>
+        <translation>Gaz</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="472"/>
+        <source>SC</source>
+        <translation>SC</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="486"/>
+        <source>LS</source>
+        <translation>LS</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="520"/>
+        <source>SD</source>
+        <translation>SD</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="559"/>
+        <source>Battery Offset</source>
+        <translation>Ofset baterii</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="592"/>
+        <source>SE</source>
+        <translation>SE</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="619"/>
+        <source>SF</source>
+        <translation>SF</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="646"/>
+        <source>SG</source>
+        <translation>SG</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="673"/>
+        <source>SH</source>
+        <translation>SH</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="687"/>
+        <source>SI</source>
+        <translation>SI</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="701"/>
+        <source>SJ</source>
+        <translation>SJ</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="715"/>
+        <source>SK</source>
+        <translation>SK</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="729"/>
+        <source>SL</source>
+        <translation>SL</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="762"/>
+        <source>SM</source>
+        <translation>SM</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="776"/>
+        <source>SN</source>
+        <translation>SN</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="803"/>
+        <source>RS2</source>
+        <translation>RS2</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.ui" line="1079"/>
+        <source>Bluetooth</source>
+        <translation>Bluetooth</translation>
+    </message>
+</context>
+<context>
+    <name>HardwarePanel</name>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="11"/>
+        <location filename="../generaledit/hardware.cpp" line="48"/>
+        <location filename="../generaledit/hardware.cpp" line="79"/>
+        <source>None</source>
+        <translation>Brak</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="19"/>
+        <source>2 Positions Toggle</source>
+        <translation>2 Poz. Przełącznik chwilowy</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="20"/>
+        <source>2 Positions</source>
+        <translation>2 Pozycje</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="21"/>
+        <source>3 Positions</source>
+        <translation>3 Pozycje</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="49"/>
+        <source>Pot with detent</source>
+        <translation>Potencj. z zapadką</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="50"/>
+        <source>Multipos switch</source>
+        <translation>Przeł. wielopoz</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="51"/>
+        <source>Pot without detent</source>
+        <translation>Potencjometr bez zapadki</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/hardware.cpp" line="80"/>
+        <source>Slider with detent</source>
+        <translation>Suwak z zapadką</translation>
     </message>
 </context>
 <context>
@@ -6869,7 +6820,7 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="777"/>
+        <location filename="../modeledit/setup.cpp" line="778"/>
         <source>THR</source>
         <translation>THR</translation>
     </message>
@@ -8538,27 +8489,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2033"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2263"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2271"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2278"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2282"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2264"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2272"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2279"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2283"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX na tej platformie nie dopuszcza tej funkcji</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2954"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2955"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu telemetrii</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3075"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3087"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3094"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3076"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3088"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3095"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX nie obsługuje tego protokołu radiowego</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2967"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2968"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX nie obsługuje tej ilości kanałów</translation>
     </message>
@@ -8667,7 +8618,7 @@ Zespół OpenTX.</translation>
         <translation>Zapis &apos;%1&apos; nieudany</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="629"/>
+        <location filename="../modeledit/telemetry.cpp" line="633"/>
         <source>-%1</source>
         <translation>-%1</translation>
     </message>
@@ -8712,14 +8663,205 @@ Zespół OpenTX.</translation>
         <translation>Nie mogę skasować pliku tymczasowego: %1</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="143"/>
+        <location filename="../simulator.cpp" line="122"/>
+        <source>WARNING: couldn&apos;t initialize SDL:
+%1</source>
+        <translation>Ostrzeżenie: nie mogę uruchomić SDL:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="181"/>
         <source>Radio type</source>
         <translation>Typ radia</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="144"/>
+        <location filename="../simulator.cpp" line="182"/>
         <source>Which radio type do you want to simulate?</source>
         <translation>Które radio chcesz zasymulować ?</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="216"/>
+        <source>ERROR: Simulator %1 not found</source>
+        <translation>BŁĄD: Nie znaleziony Symulator %1</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/calibration.cpp" line="24"/>
+        <source>Negative span</source>
+        <translation>Ujemny zakres</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/calibration.cpp" line="24"/>
+        <source>Mid value</source>
+        <translation>Wartość środkowa</translation>
+    </message>
+    <message>
+        <location filename="../generaledit/calibration.cpp" line="24"/>
+        <source>Positive span</source>
+        <translation>Dodatni zakres</translation>
+    </message>
+</context>
+<context>
+    <name>QxtCommandOptions</name>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="101"/>
+        <source>sets the application GUI style</source>
+        <translation>ustawia styl GUI aplikacji</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="102"/>
+        <source>sets the application stylesheet</source>
+        <translation>ustawia styl arkusza aplikacji</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="103"/>
+        <source>restores the application from an earlier session</source>
+        <translation>odtwarza aplikacji z wcześniejszej sesji</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="104"/>
+        <source>displays debugging information about widgets</source>
+        <translation>wyświetla informacji debugowania widgetów</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="105"/>
+        <source>use right-to-left layout</source>
+        <translation>użyj układu od prawej do lewej</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="107"/>
+        <source>never grab the mouse or keyboard</source>
+        <translation>nigdy nie przechwytuj klawiatury lub myszy</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="110"/>
+        <source>grab the mouse/keyboard even in a debugger</source>
+        <translation>przechwytuj klawiaturę/mysz nawet w debuggerze</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="111"/>
+        <source>run in synchronous mode for debugging</source>
+        <translation>prasuj w trybie synchronicznym w celu debugowania</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="114"/>
+        <source>use Direct3D by default</source>
+        <translation>używaj standardowo Direct3D</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="117"/>
+        <source>sets the X11 display</source>
+        <translation>ustawia wyświetlanie X11</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="118"/>
+        <source>sets the geometry of the first window</source>
+        <translation>ustawia geometrię pierwszego okna</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="120"/>
+        <source>sets the default font</source>
+        <translation>ustawia font podstawowy</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="122"/>
+        <source>sets the default background color</source>
+        <translation>ustawia podstawowy kolor tła</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="124"/>
+        <source>sets the default foreground color</source>
+        <translation>ustawia podstawowy kolor pierwszoplanowy</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="126"/>
+        <source>sets the default button color</source>
+        <translation>ustawia podstawowy kolor przycisków</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="127"/>
+        <source>sets the application name</source>
+        <translation>ustawia nazwę aplikacji</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="128"/>
+        <source>sets the application title</source>
+        <translation>ustawia tytuł aplikacji</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="129"/>
+        <source>sets the X11 visual type</source>
+        <translation>ustawiawia typ wizualizacji X11</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="130"/>
+        <source>limit the number of colors on an 8-bit display</source>
+        <translation>limit palety kolorów na 8bitowy wyświetlacz</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="131"/>
+        <source>use a private color map</source>
+        <translation>użyj prywatnej mapy kolorów</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="132"/>
+        <source>sets the input method server</source>
+        <translation>ustawia metodę wprowadzania serwera</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="133"/>
+        <source>disable the X Input Method</source>
+        <translation>dezaktywuje metodę wprowadzania X</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="134"/>
+        <source>sets the style used by the input method</source>
+        <translation>ustawia styl używany przez metodę wprowadzania</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="238"/>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="252"/>
+        <source>option &quot;%1&quot; not found</source>
+        <translation>opcja %1 nie znaleziona</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="387"/>
+        <source>Short options cannot have optional parameters</source>
+        <translation>Krótkie opcje nie mogą posiadać dodatkowych parametrów</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="399"/>
+        <source>positional() called before parse()</source>
+        <translation>positional() wywoływana przed parse()</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="413"/>
+        <source>unrecognized() called before parse()</source>
+        <translation>unrecognized() wywoływana przed parse()</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="426"/>
+        <source>count() called before parse()</source>
+        <translation>count() wywoływana przed parse()</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="446"/>
+        <source>value() called before parse()</source>
+        <translation>value() wywoływana przed parse()</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="461"/>
+        <source>parameters() called before parse()</source>
+        <translation>parameters() wywoływana przed parse()</translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="752"/>
+        <source>unrecognized parameters: </source>
+        <translation>nieznany parametr: </translation>
+    </message>
+    <message>
+        <location filename="../qxtcommandoptions/qxtcommandoptions.cpp" line="755"/>
+        <source>%1 requires a parameter</source>
+        <translation>%1 wymaga parametru</translation>
     </message>
 </context>
 <context>
@@ -8961,34 +9103,34 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>SimulatorDialog</name>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="423"/>
-        <location filename="../simulation/simulatordialog.cpp" line="445"/>
+        <location filename="../simulation/simulatordialog.cpp" line="431"/>
+        <location filename="../simulation/simulatordialog.cpp" line="453"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="423"/>
+        <location filename="../simulation/simulatordialog.cpp" line="431"/>
         <source>Joystick enabled but not configured correctly</source>
         <translation>Joystick uaktywniony ale nieprawidłowo skonfigurowany</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="445"/>
+        <location filename="../simulation/simulatordialog.cpp" line="453"/>
         <source>Cannot open joystick, joystick disabled</source>
         <translation>Nie mogę otworzyć joysticka, dezaktywowany</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="452"/>
+        <location filename="../simulation/simulatordialog.cpp" line="460"/>
         <source>Simulating Radio (%1)</source>
         <translation>Symulacja Radia (%1)</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="476"/>
-        <location filename="../simulation/simulatordialog.cpp" line="477"/>
+        <location filename="../simulation/simulatordialog.cpp" line="484"/>
+        <location filename="../simulation/simulatordialog.cpp" line="485"/>
         <source>Outputs</source>
         <translation>Wyjścia</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatordialog.cpp" line="639"/>
+        <location filename="../simulation/simulatordialog.cpp" line="647"/>
         <source>Firmware %1 error: %2</source>
         <translation>Firmware %1 błąd: %2</translation>
     </message>
@@ -9131,6 +9273,11 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <location filename="../simulation/simulatordialog-taranis.ui" line="1762"/>
         <source>PF6 - Debug Console Output</source>
         <translation>PF6 -Wyjscie konsoli debugowania</translation>
+    </message>
+    <message>
+        <location filename="../simulation/simulatordialog-taranis.ui" line="1772"/>
+        <source>PF7 - Reload Lua Scripts</source>
+        <translation>PF7 - Przeładuj skrypty LUA</translation>
     </message>
     <message>
         <location filename="../simulation/simulatordialog-taranis.ui" line="77"/>
@@ -9599,99 +9746,99 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="746"/>
+        <location filename="../modeledit/telemetry.cpp" line="753"/>
         <source>Telemetry screen %1</source>
         <translation>Panel Telemetrii %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="817"/>
+        <location filename="../modeledit/telemetry.cpp" line="824"/>
         <source>Low Alarm</source>
         <translation>Alarm niski</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="818"/>
+        <location filename="../modeledit/telemetry.cpp" line="825"/>
         <source>Critical Alarm</source>
         <translation>Alarm krytyczny</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="860"/>
+        <location filename="../modeledit/telemetry.cpp" line="867"/>
         <source>Winged Shadow How High</source>
         <translation>Winged Shadow How High</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="863"/>
+        <location filename="../modeledit/telemetry.cpp" line="870"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (Nie obsługiwane)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="910"/>
-        <location filename="../modeledit/telemetry.cpp" line="918"/>
-        <location filename="../modeledit/telemetry.cpp" line="933"/>
+        <location filename="../modeledit/telemetry.cpp" line="917"/>
+        <location filename="../modeledit/telemetry.cpp" line="925"/>
+        <location filename="../modeledit/telemetry.cpp" line="940"/>
         <source>A1</source>
         <translation>A1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="907"/>
+        <location filename="../modeledit/telemetry.cpp" line="914"/>
         <source>Alti</source>
         <translation>Wysokościomierz</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="794"/>
+        <location filename="../modeledit/telemetry.cpp" line="801"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="795"/>
+        <location filename="../modeledit/telemetry.cpp" line="802"/>
         <source>FrSky D</source>
         <translation>FrSky D</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="797"/>
+        <location filename="../modeledit/telemetry.cpp" line="804"/>
         <source>FrSky D (cable)</source>
         <translation>FrSky D (kabel)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="908"/>
+        <location filename="../modeledit/telemetry.cpp" line="915"/>
         <source>Alti+</source>
         <translation>Wysokościomierz+</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="909"/>
+        <location filename="../modeledit/telemetry.cpp" line="916"/>
         <source>VSpeed</source>
         <translation>Prędkość Pionowa</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="911"/>
-        <location filename="../modeledit/telemetry.cpp" line="919"/>
-        <location filename="../modeledit/telemetry.cpp" line="934"/>
+        <location filename="../modeledit/telemetry.cpp" line="918"/>
+        <location filename="../modeledit/telemetry.cpp" line="926"/>
+        <location filename="../modeledit/telemetry.cpp" line="941"/>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="921"/>
-        <location filename="../modeledit/telemetry.cpp" line="936"/>
+        <location filename="../modeledit/telemetry.cpp" line="928"/>
+        <location filename="../modeledit/telemetry.cpp" line="943"/>
         <source>A3</source>
         <translation>A3</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="922"/>
-        <location filename="../modeledit/telemetry.cpp" line="937"/>
+        <location filename="../modeledit/telemetry.cpp" line="929"/>
+        <location filename="../modeledit/telemetry.cpp" line="944"/>
         <source>A4</source>
         <translation>A4</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="924"/>
-        <location filename="../modeledit/telemetry.cpp" line="939"/>
+        <location filename="../modeledit/telemetry.cpp" line="931"/>
+        <location filename="../modeledit/telemetry.cpp" line="946"/>
         <source>FAS</source>
         <translation>FAS</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="925"/>
+        <location filename="../modeledit/telemetry.cpp" line="932"/>
         <source>Cells</source>
         <translation>Cele</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="932"/>
+        <location filename="../modeledit/telemetry.cpp" line="939"/>
         <source>---</source>
         <translation>---</translation>
     </message>
@@ -10134,11 +10281,6 @@ Znak-czasu</translation>
         <translation>ASpd</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.ui" line="943"/>
-        <source>knots</source>
-        <translation>Węzły</translation>
-    </message>
-    <message>
         <location filename="../simulation/telemetrysimu.ui" line="955"/>
         <source>A3</source>
         <translation>A3</translation>
@@ -10165,6 +10307,7 @@ Znak-czasu</translation>
         <translation>GSpd</translation>
     </message>
     <message>
+        <location filename="../simulation/telemetrysimu.ui" line="943"/>
         <location filename="../simulation/telemetrysimu.ui" line="1123"/>
         <source>km/h</source>
         <translation>km/h</translation>
@@ -10278,17 +10421,17 @@ Znak-czasu</translation>
         <translation>Kiedy aktywne, wysyła jakiekolwiek dane jako symulację danych telemetrii.</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="664"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="681"/>
         <source>Log File</source>
         <translation>Plik Logów</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="664"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="681"/>
         <source>LOG Files (*.csv)</source>
         <translation>Plik Logów (*.csv)</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="668"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="685"/>
         <source>ERROR - invalid file</source>
         <translation>BŁĄĆ - nieprawidłowy plik</translation>
     </message>
