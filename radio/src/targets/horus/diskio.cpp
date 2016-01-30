@@ -294,7 +294,7 @@ DRESULT disk_ioctl (
 // TODO everything here should not be in the driver layer ...
 
 FATFS g_FATFS_Obj;
-#if defined(SPORT_FILE_LOG)
+#if defined(LOG_TELEMETRY)
 FIL g_telemetryFile = {0};
 #endif
 
@@ -312,8 +312,8 @@ void sdInit(void)
 
     referenceSystemAudioFiles();
 
-#if defined(SPORT_FILE_LOG)
-    f_open(&g_telemetryFile, LOGS_PATH "/sport.log", FA_OPEN_ALWAYS | FA_WRITE);
+#if defined(LOG_TELEMETRY)
+    f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
     if (f_size(&g_telemetryFile) > 0) {
       f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
     }
@@ -328,7 +328,7 @@ void sdDone()
 {
   if (sdMounted()) {
     audioQueue.stopSD();
-#if defined(SPORT_FILE_LOG)
+#if defined(LOG_TELEMETRY)
     f_close(&g_telemetryFile);
 #endif
     f_mount(NULL, "", 0); // unmount SD

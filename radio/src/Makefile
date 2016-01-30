@@ -277,9 +277,9 @@ DEBUG = NO
 # Values = NO, YES
 CLI = NO
 
-# Activate writing of SPORT telemetry received data to sport.log file
+# Activate writing of telemetry received data to telemetry.log file
 # Values = YES, NO
-SPORT_FILE_LOG = NO
+LOG_TELEMETRY = NO
 
 # Timers Count
 # Values = 1, 2, 3 (on ARM boards)
@@ -827,8 +827,8 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
     CPPDEFS += -DROTARY_ENCODERS=1
     CPPSRC += targets/sky9x/rotenc_driver.cpp
   endif
-  ifeq ($(SPORT_FILE_LOG), YES)
-    CPPDEFS += -DSPORT_FILE_LOG
+  ifeq ($(LOG_TELEMETRY), YES)
+    CPPDEFS += -DLOG_TELEMETRY
   endif
   INCDIRS += targets/sky9x bitmaps bitmaps/9x $(COOSDIR) $(COOSDIR)/kernel $(COOSDIR)/portable
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_hardware.cpp gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
@@ -908,8 +908,8 @@ ifeq ($(PCB), TARANIS)
     FLAVOUR = taranis
     CPPDEFS = -DREV4
   endif
-  ifeq ($(SPORT_FILE_LOG), YES)
-    CPPDEFS += -DSPORT_FILE_LOG
+  ifeq ($(LOG_TELEMETRY), YES)
+    CPPDEFS += -DLOG_TELEMETRY
   endif
   ifeq ($(TRACE_SD_CARD), YES)
     DEBUG = YES

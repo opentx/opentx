@@ -152,22 +152,22 @@ NOINLINE void processSerialData(uint8_t data)
 #endif
 
 #if defined(PCBTARANIS)
-    if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
-      serial2Putc(data);
-    }
+  if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
+    serial2Putc(data);
+  }
 #endif
 
 #if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
-    #define BLUETOOTH_BUFFER_LENGTH     20
-    static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
-    static uint8_t bluetoothIndex = 0;
-    bluetoothBuffer[bluetoothIndex++] = data;
-    if (bluetoothIndex == BLUETOOTH_BUFFER_LENGTH) {
-      if (bluetoothReady()) {
-        bluetoothWrite(bluetoothBuffer, BLUETOOTH_BUFFER_LENGTH);
-      }
-      bluetoothIndex = 0;
+  #define BLUETOOTH_BUFFER_LENGTH     20
+  static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
+  static uint8_t bluetoothIndex = 0;
+  bluetoothBuffer[bluetoothIndex++] = data;
+  if (bluetoothIndex == BLUETOOTH_BUFFER_LENGTH) {
+    if (bluetoothReady()) {
+      bluetoothWrite(bluetoothBuffer, BLUETOOTH_BUFFER_LENGTH);
     }
+    bluetoothIndex = 0;
+  }
 #endif
 
   switch (dataState)
@@ -284,7 +284,7 @@ void telemetryWakeup()
 
 #if defined(CPUSTM32)
   uint8_t data;
-#if defined(SPORT_FILE_LOG) && !defined(SIMU)
+#if defined(LOG_TELEMETRY) && !defined(SIMU)
   static tmr10ms_t lastTime = 0;
   tmr10ms_t newTime = get_tmr10ms();
   struct gtm utm;
@@ -292,7 +292,7 @@ void telemetryWakeup()
 #endif
   while (telemetryFifo.pop(data)) {
     processSerialData(data);
-#if defined(SPORT_FILE_LOG) && !defined(SIMU)
+#if defined(LOG_TELEMETRY) && !defined(SIMU)
     extern FIL g_telemetryFile;
     if (lastTime != newTime) {
       f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);
