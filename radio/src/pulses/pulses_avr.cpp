@@ -73,8 +73,8 @@ inline void DSM2_EnableTXD(void)
 }
 #endif
 
-void set_timer3_capture( void ) ;
-void set_timer3_ppm( void ) ;
+void set_timer3_capture(void);
+void set_timer3_ppm(void);
 
 void startPulses()
 {
@@ -125,10 +125,12 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
       OCR1A = SETUP_PULSES_DURATION;
 #if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
       OCR1B = OCR1A;
-      if (g_model.pulsePol)
-      TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
-      else
-      TCCR1A |= 3<<COM1B0;
+      if (g_model.pulsePol) {
+        TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
+      }
+      else {
+        TCCR1A |= 3<<COM1B0;
+      }
       TCCR1C = 1<<FOC1B; // Strobe FOC1B.
       TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1); // Toggle OC1B on next match.
 #endif
@@ -151,14 +153,17 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
     }
 #else // defined(CPUM2560)
     // CPUM2560 hardware toggled PPM out.
-    if ( *(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0)
-    // Look one step ahead to see if we are currently the "rest" period.
+    if (*(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) {
+      // Look one step ahead to see if we are currently the "rest" period.
       OCR1B = 0xffff; // Prevent next compare match hence toggle.
-    else OCR1B = *( (uint16_t*) pulses2MHzRPtr);
-#endif
     }
+    else {
+      OCR1B = *((uint16_t*) pulses2MHzRPtr);
+    }
+#endif
+  }
 
-  OCR1A = *( (uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
+  OCR1A = *((uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
   pulses2MHzRPtr += sizeof(uint16_t); // Non PPM protocols use uint8_t pulse buffer.
 
   if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
@@ -241,67 +246,61 @@ const pm_uint16_t CRCTable[] PROGMEM =
     0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
-uint8_t PcmByte ;
-uint8_t PcmBitCount ;
-uint16_t PcmCrc ;
-uint8_t PcmOnesCount ;
+uint8_t PcmByte;
+uint8_t PcmBitCount;
+uint16_t PcmCrc;
+uint8_t PcmOnesCount;
 
-void crc( uint8_t data )
+void crc(uint8_t data)
 {
-    PcmCrc=(PcmCrc<<8)^pgm_read_word(&CRCTable[((PcmCrc>>8)^data) & 0xFF]);
+  PcmCrc = (PcmCrc<<8) ^ pgm_read_word(&CRCTable[((PcmCrc >> 8) ^ data) & 0xFF]);
 }
 
 
-void putPcmPart( uint8_t value )
+void putPcmPart(uint8_t value)
 {
-    PcmByte >>= 2 ;
-    PcmByte |= value ;
-    if ( ++PcmBitCount >= 4 )
-    {
-        *pulses2MHzWPtr++ = PcmByte ;
-        PcmBitCount = PcmByte = 0 ;
-    }
+  PcmByte >>= 2;
+  PcmByte |= value;
+  if (++PcmBitCount >= 4) {
+    *pulses2MHzWPtr++ = PcmByte;
+    PcmBitCount = PcmByte = 0;
+  }
 }
 
 
 void putPcmFlush()
 {
-    while ( PcmBitCount != 0 )
-    {
-        putPcmPart( 0 ) ; // Empty
-    }
-    *pulses2MHzWPtr = 0 ;                               // Mark end
+  while (PcmBitCount != 0) {
+    putPcmPart(0); // Empty
+  }
+  *pulses2MHzWPtr = 0; // Mark end
 }
 
-void putPcmBit( uint8_t bit )
+void putPcmBit(uint8_t bit)
 {
-    if ( bit )
-    {
-        PcmOnesCount += 1 ;
-        putPcmPart( 0x80 ) ;
-    }
-    else
-    {
-        PcmOnesCount = 0 ;
-        putPcmPart( 0xC0 ) ;
-    }
-    if ( PcmOnesCount >= 5 )
-    {
-        putPcmBit( 0 ) ;                                // Stuff a 0 bit in
-    }
+  if (bit) {
+    PcmOnesCount += 1;
+    putPcmPart(0x80);
+  }
+  else {
+    PcmOnesCount = 0;
+    putPcmPart(0xC0);
+  }
+  if (PcmOnesCount >= 5) {
+    putPcmBit(0);                                // Stuff a 0 bit in
+  }
 }
 
-void putPcmByte( uint8_t byte )
+void putPcmByte(uint8_t byte)
 {
-    uint8_t i ;
+  uint8_t i;
 
-    crc( byte ) ;
+  crc(byte);
 
-    for (i=0; i<8; i++)
-    {
-        putPcmBit( byte & 0x80 ) ;
-        byte <<= 1 ;
-    }
+  for (i=0; i<8; i++) {
+    putPcmBit(byte & 0x80);
+    byte <<= 1;
+  }
 }
 
 
@@ -309,57 +308,57 @@ void putPcmHead()
 {
   // send 7E, do not CRC
   // 01111110
-  putPcmPart( 0xC0 ) ;
-  putPcmPart( 0x80 ) ;
-  putPcmPart( 0x80 ) ;
-  putPcmPart( 0x80 ) ;
-  putPcmPart( 0x80 ) ;
-  putPcmPart( 0x80 ) ;
-  putPcmPart( 0x80 ) ;
-  putPcmPart( 0xC0 ) ;
+  putPcmPart(0xC0);
+  putPcmPart(0x80);
+  putPcmPart(0x80);
+  putPcmPart(0x80);
+  putPcmPart(0x80);
+  putPcmPart(0x80);
+  putPcmPart(0x80);
+  putPcmPart(0xC0);
 }
 
-uint16_t scaleForPXX( uint8_t i )
+uint16_t scaleForPXX(uint8_t i)
 {
-  int16_t value = ( ( i < 16 ) ? channelOutputs[i] * 3 / 4 : 0 ) + 1024;
+  int16_t value = ((i < 16) ? channelOutputs[i] * 3 / 4 : 0) + 1024;
   return limit<uint16_t>(1, value, 2046);
 }
 
 void setupPulsesPXX()
 {
-    uint16_t chan ;
-    uint16_t chan_1 ;
+  uint16_t chan;
+  uint16_t chan_1;
 
-    pulses2MHzWPtr = pulses2MHz;
-    pulses2MHzRPtr = pulses2MHz;
+  pulses2MHzWPtr = pulses2MHz;
+  pulses2MHzRPtr = pulses2MHz;
 
-    PcmCrc = 0 ;
-    PcmBitCount = PcmByte = 0 ;
-    PcmOnesCount = 0 ;
-    putPcmHead() ;
-    putPcmByte(g_model.header.modelId[0]);
-    uint8_t flag1 = 0;
-    if (moduleFlag[0] == MODULE_BIND)
-      flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
-    else if (moduleFlag[0] == MODULE_RANGECHECK)
-      flag1 |= PXX_SEND_RANGECHECK;
-    putPcmByte(flag1) ;     // First byte of flags
-    putPcmByte( 0 ) ;     // Second byte of flags
-    for (uint8_t i=0; i<8; i+=2) {              // First 8 channels only
-      chan = scaleForPXX(i);
-      chan_1 = scaleForPXX(i+1);
-      putPcmByte( chan ) ; // Low byte of channel
-      putPcmByte( ( ( chan >> 8 ) & 0x0F ) | ( chan_1 << 4) ) ;  // 4 bits each from 2 channels
-      putPcmByte( chan_1 >> 4 ) ;  // High byte of channel
-    }
-    putPcmByte(0);
-    chan = PcmCrc ;                     // get the crc
-    putPcmByte( chan>>8 ) ;                        // Checksum lo
-    putPcmByte( chan ) ; // Checksum hi
-    putPcmHead( ) ;
-    putPcmFlush() ;
-    OCR1C += 40000 ;            // 20mS on
-    PORTB |= (1<<OUT_B_PPM);
+  PcmCrc = 0;
+  PcmBitCount = PcmByte = 0;
+  PcmOnesCount = 0;
+  putPcmHead();
+  putPcmByte(g_model.header.modelId[0]);
+  uint8_t flag1 = 0;
+  if (moduleFlag[0] == MODULE_BIND)
+    flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
+  else if (moduleFlag[0] == MODULE_RANGECHECK)
+    flag1 |= PXX_SEND_RANGECHECK;
+  putPcmByte(flag1);     // First byte of flags
+  putPcmByte(0);     // Second byte of flags
+  for (uint8_t i=0; i<8; i+=2) {              // First 8 channels only
+    chan = scaleForPXX(i);
+    chan_1 = scaleForPXX(i+1);
+    putPcmByte(chan); // Low byte of channel
+    putPcmByte(((chan >> 8) & 0x0F) | (chan_1 << 4));  // 4 bits each from 2 channels
+    putPcmByte(chan_1 >> 4);  // High byte of channel
+  }
+  putPcmByte(0);
+  chan = PcmCrc;                     // get the crc
+  putPcmByte(chan>>8);                        // Checksum lo
+  putPcmByte(chan); // Checksum hi
+  putPcmHead();
+  putPcmFlush();
+  OCR1C += 40000;            // 20mS on
+  PORTB |= (1<<OUT_B_PPM);
 }
 #endif
 
@@ -368,7 +367,7 @@ void setupPulsesPXX()
 // DSM2 protocol pulled from th9x - Thanks thus!!!
 
 //http://www.rclineforum.de/forum/board49-zubeh-r-elektronik-usw/fernsteuerungen-sender-und-emp/neuer-9-kanal-sender-f-r-70-au/Beitrag_3897736#post3897736
-//(dsm2( LP4DSM aus den RTF ( Ready To Fly ) Sendern von Spektrum.
+//(dsm2(LP4DSM aus den RTF (Ready To Fly) Sendern von Spektrum.
 //http://www.rcgroups.com/forums/showpost.php?p=18554028&postcount=237
 // /home/thus/txt/flieger/PPMtoDSM.c
 /*
@@ -492,30 +491,30 @@ inline void _send_1(uint8_t v)
 #define BITLEN_DSM2 (8*2) //125000 Baud
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
-    bool    lev = 0;
-    uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
-    for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
-        bool nlev = b & 1; //lsb first
-        if (lev == nlev){
-          len += BITLEN_DSM2;
-        }
-        else {
-#if defined(CPUM2560)
-          // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
-          // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
-          _send_1(nlev ? len-5 : len+3);
-#else
-          _send_1(len-1);
-#endif
-          len  = BITLEN_DSM2;
-          lev  = nlev;
-        }
-        b = (b>>1) | 0x80; //shift in stop bit
+  bool lev = 0;
+  uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
+  for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
+    bool nlev = b & 1; //lsb first
+    if (lev == nlev){
+      len += BITLEN_DSM2;
     }
-#if defined (CPUM2560)
-    _send_1(len+BITLEN_DSM2+3); // 2 stop bits
+    else {
+#if defined(CPUM2560)
+      // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
+      // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
+      _send_1(nlev ? len-5 : len+3);
 #else
-    _send_1(len+BITLEN_DSM2-1); // 2 stop bits
+      _send_1(len-1);
+#endif
+      len  = BITLEN_DSM2;
+      lev  = nlev;
+    }
+    b = (b>>1) | 0x80; //shift in stop bit
+  }
+#if defined (CPUM2560)
+  _send_1(len+BITLEN_DSM2+3); // 2 stop bits
+#else
+  _send_1(len+BITLEN_DSM2-1); // 2 stop bits
 #endif
 }
 
@@ -579,9 +578,6 @@ void setupPulsesDSM2()
 
 /****** END DSM2=PPM ********/
 
-
-
-
 #if defined(IRPROTOS)
 static void _send_u8(uint8_t u8)
 {
@@ -594,7 +590,7 @@ static void _send_u8(uint8_t u8)
     : [p]"=z"(pulses2MHzWPtr)
     :    "%[p]"(pulses2MHzWPtr)
     , [u]"r"(u8)
-  );
+ );
 
 #endif
 }
@@ -610,7 +606,7 @@ static void _send_u16(uint16_t u16)
     : [p]"=z"(pulses2MHzWPtr)
     :    "%[p]"(pulses2MHzWPtr)
     , [t0]"r"(u16)
-  );
+ );
 
 #endif
 }
@@ -675,26 +671,31 @@ void picco_sendBn(uint8_t bits, uint8_t n)
   while (n--) picco_sendB1(bits & (1<<n));
 }
 
-
 #define BITS  10
 #define BITS2 (BITS-1)
 
 NOINLINE uint8_t reduce7u(int16_t v, uint8_t sfr)
 {
   v += (1<<BITS2);
-  if(v <  0) v=0;
-  if(v >= (1<<BITS)) v=(1<<BITS)-1;
-  return v>>sfr;
+  if (v < 0) v=0;
+  if (v >= (1<<BITS)) v=(1<<BITS)-1;
+  return v >> sfr;
 }
 
 NOINLINE int8_t reduce7s(int16_t v, uint8_t sfr, uint8_t sf2, int8_t ofs2)
 {
-  v += (1<<BITS2)+sf2;
-  if(v&(1<<BITS)) v = (1<<BITS)-1; //no overflow
+  v += (1<<BITS2) + sf2;
+  if (v & (1<<BITS)) {
+    v = (1<<BITS)-1; // no overflow
+  }
   int8_t  i8 = (uint16_t)v>>sfr;
-  if(i8<=0) i8=1;
-  i8-=ofs2;
-  if(i8>=ofs2) i8=ofs2-1;//no overflow
+  if (i8 <= 0) {
+    i8 = 1;
+  }
+  i8 -= ofs2;
+  if (i8 >= ofs2) {
+    i8 = ofs2-1; //no overflow
+  }
   return i8;
 }
 
@@ -750,21 +751,22 @@ void setupPulses()
   uint8_t required_protocol = g_model.protocol;
 
 #if defined(DEBUG) && !defined(VOICE)
-    PORTH |= 0x80; // PORTH:7 LOW->HIGH signals start of setupPulses()
+  PORTH |= 0x80; // PORTH:7 LOW->HIGH signals start of setupPulses()
 #endif
 
-  if (s_pulses_paused)
+  if (s_pulses_paused) {
     required_protocol = PROTO_NONE;
+  }
 
 #if defined(CPUM2560) && defined(DSM2_PPM) && defined(TX_CADDY)
 // This should be here, executed on every loop, to ensure re-setting of the 
 // TX moudle power control output register, in case of electrical glitch.
 // (Following advice of Atmel for MCU's used  in industrial / mission cricital 
 // applications.)
-    if (IS_DSM2_PROTOCOL(required_protocol))
-      PORTH &= ~0x80;
-    else
-      PORTH |= 0x80;
+  if (IS_DSM2_PROTOCOL(required_protocol))
+    PORTH &= ~0x80;
+  else
+    PORTH |= 0x80;
 #endif
 
   if (s_current_protocol[0] != required_protocol) {
@@ -785,14 +787,13 @@ void setupPulses()
     TIMSK1 &= ~(1<<OCIE1C);               // COMPC1 off
     TIFR1 = 0x2F;
 #else
-    TIMSK &= ~0x3C ;            // All interrupts off
-    ETIMSK &= ~(1<<OCIE1C) ;    // COMPC1 off
-    TIFR = 0x3C ;               // Clear all pending interrupts
-    ETIFR = 0x3F ;              // Clear all pending interrupts
+    TIMSK &= ~0x3C;            // All interrupts off
+    ETIMSK &= ~(1<<OCIE1C);    // COMPC1 off
+    TIFR = 0x3C;               // Clear all pending interrupts
+    ETIFR = 0x3F;              // Clear all pending interrupts
 #endif
 
     switch (required_protocol) {
-
 #if defined(DSM2_PPM) // For DSM2=SERIAL, the default: case is executed, below
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
@@ -842,7 +843,7 @@ void setupPulses()
         TIMSK |= 0x10;                        // Enable COMPA
         TCCR1A = (0<<WGM10);
 #endif
-        TCCR1B = (1 << WGM12) | (2<<CS10) ;   // CTC OCRA, 16MHz / 8
+        TCCR1B = (1 << WGM12) | (2<<CS10);   // CTC OCRA, 16MHz / 8
         setupPulsesPPM(PROTO_PPM16);
         OCR3A = 50000;
         OCR3B = 5000;
@@ -858,7 +859,7 @@ void setupPulses()
         OCR3B = 5000; 
         set_timer3_ppm(); 
         PORTB &= ~(1<<OUT_B_PPM);             // Hold PPM output low
-        break ;
+        break;
 
 #if defined(DSM2_SERIAL) && defined(FRSKY)
       case PROTO_DSM2_LP45:
@@ -890,7 +891,6 @@ void setupPulses()
   }
 
   switch(required_protocol) {
-
 #if defined(PXX)
     case PROTO_PXX:
       // schedule next Mixer calculations
@@ -939,9 +939,8 @@ void setupPulses()
   }
 
 #if defined(DEBUG) && !defined(VOICE)
-    PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
+  PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
 #endif
-
 }
 
 #ifndef SIMU
@@ -950,13 +949,12 @@ void setupPulses()
 ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
 #if defined (CPUM2560)
-
   /*** G9X V4 hardware toggled PPM_out avoids any chance of output timing jitter ***/
 
   // OCR1B output pin (PPM_OUT) is pre-SET in setupPulses -- on every new 
   // frame, for safety -- and then configured to toggle on each OCR1B compare match.
   // Thus, all we need do here is update the compare regisiter(s) ...
-  uint8_t x ;
+  uint8_t x;
   x = *pulses2MHzRPtr++;  // Byte size
   ICR1 = x;
   OCR1B = (uint16_t)x;    // Duplicate capture compare value for OCR1B, because Timer1 is in CTC mode
@@ -964,44 +962,36 @@ ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
                           // pin on OCR1A. Oh well.)
 
 #else // manual bit-bang mode
-
-  uint8_t x ;
+  uint8_t x;
   PORTB ^= (1<<OUT_B_PPM);    // Toggle PPM_OUT
   x = *pulses2MHzRPtr++;      // Byte size
-  ICR1 = x ;
+  ICR1 = x;
   if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up.
-
 #endif
-
 }
 
 #if defined(PXX)
 ISR(TIMER1_COMPB_vect) // PXX main interrupt
 {
-    uint8_t x ;
-    PORTB ^= (1<<OUT_B_PPM) ;
-    x = *pulses2MHzRPtr;      // Byte size
-    if ( ( x & 1 ) == 0 )
-    {
-        OCR1B += 32 ;
+  uint8_t x;
+  PORTB ^= (1<<OUT_B_PPM);
+  x = *pulses2MHzRPtr;      // Byte size
+  if ((x & 1) == 0) {
+    OCR1B += 32;
+  }
+  else {
+    OCR1B += 16;
+  }
+  if ((x >>= 1) == 0) {
+    if (*(++pulses2MHzRPtr) == 0) {
+      OCR1B = OCR1C + 2000;              // 1mS on from OCR1B
     }
-    else
-    {
-        OCR1B += 16 ;
-    }
-    if ( (x >>= 1) == 0 )
-    {
-        if ( *(++pulses2MHzRPtr) == 0 )
-        {
-            OCR1B = OCR1C + 2000 ;              // 1mS on from OCR1B
-        }
-    }
-    else
-    {
-        *pulses2MHzRPtr = x;
-    }
+  }
+  else {
+    *pulses2MHzRPtr = x;
+  }
 
-    heartbeat |= HEART_TIMER_PULSES;
+  heartbeat |= HEART_TIMER_PULSES;
 }
 #endif
 
@@ -1012,7 +1002,7 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 #endif
 
 #if defined(DSM2_PPM)
-    ICR1 = 41536 ; // next frame starts in 22ms 41536 = 2*(22000 - 14*11*8)
+    ICR1 = 41536; // next frame starts in 22ms 41536 = 2*(22000 - 14*11*8)
     if (OCR1C < 255) {
       OCR1C = 39000;  // delay setup pulses by 19.5ms to reduce system latency
     }
@@ -1023,7 +1013,6 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
     }
 
     heartbeat |= HEART_TIMER_PULSES;
-
 #endif
 
 #if defined(DSM2_PPM) && defined(PXX)
@@ -1033,7 +1022,7 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
 
 #if defined(PXX)
     // must be PXX
-    setupPulses() ;
+    setupPulses();
 #endif
 
 #if defined(DSM2_PPM) && defined(PXX)
@@ -1049,38 +1038,38 @@ void set_timer3_capture()
 {
 #ifndef SIMU
 #if defined (CPUM2560) || defined(CPUM2561) // TODO TIMSK3 in #define!
-    TIMSK3 &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
+  TIMSK3 &= ~((1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C));    // Stop compare interrupts
 #else
-    ETIMSK &= ~( (1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C) ) ;    // Stop compare interrupts
+  ETIMSK &= ~((1<<OCIE3A) | (1<<OCIE3B) | (1<<OCIE3C));    // Stop compare interrupts
 #endif
-    // TODO G: This can't work with V3.2/4.x boards. Select and use a different pin
-    //         for secondary 8-ch PPM output (PORTH or Spare1 or Spare2 maybe?)
-    DDRE &= ~0x80;  PORTE |= 0x80 ;     // Bit 7 input + pullup
+  // TODO G: This can't work with V3.2/4.x boards. Select and use a different pin
+  //         for secondary 8-ch PPM output (PORTH or Spare1 or Spare2 maybe?)
+  DDRE &= ~0x80;  PORTE |= 0x80;     // Bit 7 input + pullup
 
-    TCCR3B = 0 ;                        // Stop counter
-    TCCR3A = 0;
-    // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz) (Correct for PCB V4.x+ also)
-    TCCR3B  = (1<<ICNC3) | (0b010 << CS30);
+  TCCR3B = 0;                        // Stop counter
+  TCCR3A = 0;
+  // Noise Canceller enabled, neg. edge, clock at 16MHz / 8 (2MHz) (Correct for PCB V4.x+ also)
+  TCCR3B  = (1<<ICNC3) | (0b010 << CS30);
 
-    RESUME_PPMIN_INTERRUPT();
+  RESUME_PPMIN_INTERRUPT();
 #endif
 }
 
 void set_timer3_ppm()
 {
 #ifndef SIMU
-    PAUSE_PPMIN_INTERRUPT();
+  PAUSE_PPMIN_INTERRUPT();
 
-    DDRE |= 0x80;                                       // Bit 7 output
+  DDRE |= 0x80;                                       // Bit 7 output
 
-    TCCR3B = 0 ;                        // Stop counter
-    TCCR3A = (0<<WGM10);
-    TCCR3B = (1 << WGM12) | (2<<CS10); // CTC OCR1A, 16MHz / 8
+  TCCR3B = 0;                        // Stop counter
+  TCCR3A = (0<<WGM10);
+  TCCR3B = (1 << WGM12) | (2<<CS10); // CTC OCR1A, 16MHz / 8
 
 #if defined (CPUM2560) || defined(CPUM2561)
-    TIMSK3 |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop
+  TIMSK3 |= ((1<<OCIE3A) | (1<<OCIE3B));                    // enable immediately before mainloop
 #else
-    ETIMSK |= ( (1<<OCIE3A) | (1<<OCIE3B) );                    // enable immediately before mainloop
+  ETIMSK |= ((1<<OCIE3A) | (1<<OCIE3B));                    // enable immediately before mainloop
 #endif
 #endif
 }
@@ -1091,39 +1080,39 @@ void set_timer3_ppm()
 // and PPMSIM modes
 ISR(TIMER3_COMPA_vect) //2MHz pulse generation
 {
-    static uint8_t   pulsePol;
-    static uint16_t *pulse2MHzPPM16RPtr = (uint16_t*) &pulses2MHz[PULSES_SIZE/2];
+  static uint8_t pulsePol;
+  static uint16_t * pulse2MHzPPM16RPtr = (uint16_t*) &pulses2MHz[PULSES_SIZE/2];
 
-    if (pulsePol) {
-        PORTE |= 0x80 ; // (1<<OUT_B_PPM);
-        pulsePol = 0;
-    }
-    else {
-        PORTE &= ~0x80; // (1<<OUT_B_PPM);
-        pulsePol = 1;
-    }
+  if (pulsePol) {
+    PORTE |= 0x80; // (1<<OUT_B_PPM);
+    pulsePol = 0;
+  }
+  else {
+    PORTE &= ~0x80; // (1<<OUT_B_PPM);
+    pulsePol = 1;
+  }
 
-    OCR3A = *pulse2MHzPPM16RPtr++;
-    OCR3B = B3_comp_value ;
+  OCR3A = *pulse2MHzPPM16RPtr++;
+  OCR3B = B3_comp_value;
 
-    if (*pulse2MHzPPM16RPtr == 0) {
-        pulse2MHzPPM16RPtr = (uint16_t*) &pulses2MHz[PULSES_SIZE/2];
-        pulsePol = g_model.pulsePol;
-    }
+  if (*pulse2MHzPPM16RPtr == 0) {
+    pulse2MHzPPM16RPtr = (uint16_t*) &pulses2MHz[PULSES_SIZE/2];
+    pulsePol = g_model.pulsePol;
+  }
 
-    heartbeat |= HEART_TIMER_PULSES;
+  heartbeat |= HEART_TIMER_PULSES;
 }
 
 ISR(TIMER3_COMPB_vect) //2MHz pulse generation
 {
-  sei() ;
+  sei();
   if (s_current_protocol[0] != g_model.protocol) {
     if (s_current_protocol[0] == PROTO_PPMSIM) {
       setupPulses();
     }
   }
   else {
-    setupPulsesPPM(g_model.protocol) ;
+    setupPulsesPPM(g_model.protocol);
   }
 }
 
