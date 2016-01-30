@@ -167,7 +167,7 @@ void writeHeader()
 #endif
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   for (uint8_t i=1; i<NUM_STICKS+NUM_POTS+1; i++) {
     const char * p = STR_VSRCRAW + i * STR_VSRCRAW[0] + 2;
     for (uint8_t j=0; j<STR_VSRCRAW[0]-1; ++j) {
@@ -177,10 +177,20 @@ void writeHeader()
     }
     f_putc(',', &g_oLogFile);
   }
-  f_puts("SA,SB,SC,SD,SE,SF,SG,SH\n", &g_oLogFile);
+  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
+  f_puts(STR_SWITCHES_LOG_HEADER ",LS" "\n", &g_oLogFile);
 #else
   f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN\n", &g_oLogFile);
 #endif
+}
+
+uint32_t getLogicalSwitchesStates(uint8_t first)
+{
+  uint32_t result = 0;
+  for (uint8_t i=0; i<32; i++) {
+    result |= (getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+first+i) << i);
+  }
+  return result;
 }
 
 void writeLogs()
@@ -207,8 +217,7 @@ void writeLogs()
       {
         static struct gtm utm;
         static gtime_t lastRtcTime = 0;
-        if ( g_rtcTime != lastRtcTime )
-        {
+        if (g_rtcTime != lastRtcTime) {
           lastRtcTime = g_rtcTime;
           gettime(&utm);
         }
@@ -318,7 +327,7 @@ void writeLogs()
           get2PosState(SE),
           get3PosState(SF));
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
-      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d\n",
+      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,%lu%lu\n",
           get3PosState(SA),
           get3PosState(SB),
           get3PosState(SC),
@@ -326,7 +335,9 @@ void writeLogs()
           get3PosState(SE),
           get2PosState(SF),
           get3PosState(SG),
-          get2PosState(SH));
+          get2PosState(SH),
+          getLogicalSwitchesStates(32),
+          getLogicalSwitchesStates(0));
 #else
       int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d\n",
           get2PosState(THR),
