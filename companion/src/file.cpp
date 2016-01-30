@@ -236,6 +236,9 @@ void RleFile::EeFsSetDat(unsigned int blk, unsigned int ofs, const uint8_t *buf,
 
 unsigned int RleFile::EeFsGetFree()
 {
+  if (IS_HORUS(board))
+    return 0;
+
   unsigned int ret = 0;
   unsigned int i;
   if (IS_ARM(board))
@@ -255,6 +258,9 @@ unsigned int RleFile::EeFsGetFree()
  */
 void RleFile::EeFsFree(unsigned int blk)
 {
+  if (IS_HORUS(board))
+    return;
+
   unsigned int i = blk;
   while (EeFsGetLink(i)) i = EeFsGetLink(i);
   if (IS_ARM(board)) {
@@ -272,6 +278,8 @@ void RleFile::EeFsFree(unsigned int blk)
  */
 unsigned int RleFile::EeFsAlloc()
 {
+  if (IS_HORUS(board))
+    return 0;
   unsigned int ret = (IS_ARM(board) ? eeFsArm->freeList : eeFs->freeList);
   if (ret) {
     if (IS_ARM(board))
@@ -285,12 +293,18 @@ unsigned int RleFile::EeFsAlloc()
 
 unsigned int RleFile::size(unsigned int id)
 {
-  return IS_ARM(board) ? eeFsArm->files[id].size : eeFs->files[id].size;
+  if (IS_HORUS(board))
+    return 0;
+  else
+    return IS_ARM(board) ? eeFsArm->files[id].size : eeFs->files[id].size;
 }
 
 unsigned int RleFile::openRd(unsigned int i_fileId)
 {
-  if (IS_SKY9X(board)) {
+  if (IS_HORUS(board)) {
+    return 1;
+  }
+  else if (IS_SKY9X(board)) {
     if (eepromFatHeader) {
       m_fileId = eepromFatHeader->files[i_fileId].zoneIndex;
       if (eepromFatHeader->files[i_fileId].exists) {
@@ -324,6 +338,9 @@ unsigned int RleFile::openRd(unsigned int i_fileId)
 
 unsigned int RleFile::read(uint8_t *buf, unsigned int i_len)
 {
+  if (IS_HORUS(board))
+    return 0;
+
   unsigned int len = IS_ARM(board) ? eeFsArm->files[m_fileId].size : eeFs->files[m_fileId].size;
   len -= m_pos;
   if (i_len > len) i_len = len;
@@ -344,6 +361,9 @@ unsigned int RleFile::read(uint8_t *buf, unsigned int i_len)
 // G: Read runlength (RLE) compressed bytes into buf.
 unsigned int RleFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
 {
+  if (IS_HORUS(board))
+    return 0;
+
   memset(buf, 0, i_len);
 
   if (IS_SKY9X(board)) {
@@ -525,6 +545,9 @@ void RleFile::closeTrunc()
 
 unsigned int RleFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
+  if (IS_HORUS(board))
+    return 0;
+
   create(i_fileId, typ);
   bool state0 = true;
   uint8_t cnt = 0;
@@ -571,6 +594,9 @@ unsigned int RleFile::writeRlc1(unsigned int i_fileId, unsigned int typ, const u
  */
 unsigned int RleFile::writeRlc2(unsigned int i_fileId, unsigned int typ, const uint8_t *buf, unsigned int i_len)
 {
+  if (IS_HORUS(board))
+    return 0;
+
   if (IS_SKY9X(board)) {
     openRd(i_fileId);
     if (eepromFatHeader) {
