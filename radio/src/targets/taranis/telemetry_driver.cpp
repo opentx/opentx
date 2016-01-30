@@ -72,15 +72,21 @@ struct SportTxBuffer
 void telemetryPortSetDirectionOutput()
 {
   TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
-  TELEMETRY_USART->CR1 &= ~USART_CR1_RE;           // turn off receiver
+  TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
 
-void sportSendBuffer(uint8_t *buffer, uint32_t count)
+void telemetryPortSetDirectionInput()
+{
+  TELEMETRY_GPIO_DIR->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
+  TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
+}
+
+void sportSendBuffer(uint8_t * buffer, uint32_t count)
 {
   sportTxBuffer.ptr = buffer;
   sportTxBuffer.count = count;
   telemetryPortSetDirectionOutput();
-  TELEMETRY_USART->CR1 |= USART_CR1_TXEIE ;
+  TELEMETRY_USART->CR1 |= USART_CR1_TXEIE;
 }
 
 #if !defined(SIMU)
@@ -105,11 +111,10 @@ extern "C" void TELEMETRY_USART_IRQHandler()
 	
   if ((status & USART_SR_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
     TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE ;	// stop Complete interrupt
-    TELEMETRY_GPIO_DIR->BSRRH = TELEMETRY_DIR_GPIO_PIN ;	// output disable
-    TELEMETRY_USART->CR1 |= USART_CR1_RE ;
+    telemetryPortSetDirectionInput();
     while (status & (USART_FLAG_RXNE)) {
       status = TELEMETRY_USART->DR;
-      status = TELEMETRY_USART->SR ;
+      status = TELEMETRY_USART->SR;
     }
   }
 	
