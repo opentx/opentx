@@ -231,7 +231,9 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 
 getvalue_t getValue(mixsrc_t i)
 {
-  if (i==MIXSRC_NONE) return 0;
+  if (i == MIXSRC_NONE) {
+    return 0;
+  }
 
 #if defined(VIRTUALINPUTS)
   else if (i <= MIXSRC_LAST_INPUT) {
@@ -240,7 +242,7 @@ getvalue_t getValue(mixsrc_t i)
 #endif
 
 #if defined(LUAINPUTS)
-  else if (i<MIXSRC_LAST_LUA) {
+  else if (i < MIXSRC_LAST_LUA) {
 #if defined(LUA_MODEL_SCRIPTS)
     div_t qr = div(i-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
     return scriptInputsOutputs[qr.quot].outputs[qr.rem].value;
@@ -251,25 +253,37 @@ getvalue_t getValue(mixsrc_t i)
 #endif
 
 #if defined(LUAINPUTS)
-  else if (i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
+  else if (i <= MIXSRC_LAST_POT) {
+    return calibratedStick[i-MIXSRC_Rud];
+  }
 #else
-  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT) return calibratedStick[i-MIXSRC_Rud];
+  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT) {
+    return calibratedStick[i-MIXSRC_Rud];
+  }
+}
 #endif
 
 #if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(ROTARY_ENCODERS)
-  else if (i<=MIXSRC_LAST_ROTARY_ENCODER) return getRotaryEncoder(i-MIXSRC_REa);
+  else if (i <= MIXSRC_LAST_ROTARY_ENCODER) {
+    return getRotaryEncoder(i-MIXSRC_REa);
+  }
 #endif
 
-  else if (i==MIXSRC_MAX) return 1024;
+  else if (i == MIXSRC_MAX) {
+    return 1024;
+  }
 
-  else if (i<=MIXSRC_CYC3)
+  else if (i <= MIXSRC_CYC3) {
 #if defined(HELI)
-    return cyc_anas[i-MIXSRC_CYC1];
+    return cyc_anas[i - MIXSRC_CYC1];
 #else
     return 0;
 #endif
+  }
 
-  else if (i<=MIXSRC_TrimAil) return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_TrimRud));
+  else if (i <= MIXSRC_TrimAil) {
+    return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_TrimRud));
+  }
 
 #if defined(PCBFLAMENCO)
   else if (i==MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
@@ -289,35 +303,61 @@ getvalue_t getValue(mixsrc_t i)
     }
   }
 #else
-  else if (i==MIXSRC_3POS) return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
+  else if (i == MIXSRC_3POS) {
+    return (getSwitch(SW_ID0-SW_BASE+1) ? -1024 : (getSwitch(SW_ID1-SW_BASE+1) ? 0 : 1024));
+  }
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
-  else if (i<MIXSRC_SW1) return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
+  else if (i < MIXSRC_SW1) {
+    return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
+  }
 #endif
-  else if (i<=MIXSRC_LAST_LOGICAL_SWITCH) return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
-  else if (i<=MIXSRC_LAST_TRAINER) { int16_t x = ppmInput[i-MIXSRC_FIRST_TRAINER]; if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) { x-= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER]; } return x*2; }
-  else if (i<=MIXSRC_LAST_CH) return ex_chans[i-MIXSRC_CH1];
+
+  else if (i <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH+i-MIXSRC_FIRST_LOGICAL_SWITCH) ? 1024 : -1024;
+  }
+  else if (i <= MIXSRC_LAST_TRAINER) {
+    int16_t x = ppmInput[i-MIXSRC_FIRST_TRAINER];
+    if (i<MIXSRC_FIRST_TRAINER+NUM_CAL_PPM) {
+      x -= g_eeGeneral.trainer.calib[i-MIXSRC_FIRST_TRAINER];
+    }
+    return x*2;
+  }
+  else if (i <= MIXSRC_LAST_CH) {
+    return ex_chans[i-MIXSRC_CH1];
+  }
 
 #if defined(GVARS)
-  else if (i<=MIXSRC_LAST_GVAR) return GVAR_VALUE(i-MIXSRC_GVAR1,
-                                                  getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
+  else if (i <= MIXSRC_LAST_GVAR) {
+    return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
+  }
 #endif
 
 #if defined(CPUARM)
-  else if (i==MIXSRC_TX_VOLTAGE) return g_vbat100mV;
-  else if (i<MIXSRC_FIRST_TIMER) // TX_TIME + SPARES
-  #if defined(RTCLOCK)
-     return (g_rtcTime % SECS_PER_DAY) / 60; // number of minutes from midnight
-  #else
-     return 0;
-  #endif
-  else if (i<=MIXSRC_LAST_TIMER) return timersStates[i-MIXSRC_FIRST_TIMER].val;
+  else if (i == MIXSRC_TX_VOLTAGE) {
+    return g_vbat100mV;
+  }
+  else if (i < MIXSRC_FIRST_TIMER) {
+    // TX_TIME + SPARES
+#if defined(RTCLOCK)
+    return (g_rtcTime % SECS_PER_DAY) / 60; // number of minutes from midnight
 #else
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) return g_vbat100mV;
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_TIMER2) return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
+    return 0;
+#endif
+  }
+  else if (i <= MIXSRC_LAST_TIMER) {
+    return timersStates[i-MIXSRC_FIRST_TIMER].val;
+  }
+#else
+  else if (i == MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) {
+    return g_vbat100mV;
+  }
+  else if (i <= MIXSRC_FIRST_TELEM-1+TELEM_TIMER2) {
+    return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
+  }
 #endif
 
 #if defined(CPUARM)
-  else if (i<=MIXSRC_LAST_TELEM) {
+  else if (i <= MIXSRC_LAST_TELEM) {
     i -= MIXSRC_FIRST_TELEM;
     div_t qr = div(i, 3);
     TelemetryItem & telemetryItem = telemetryItems[qr.quot];
