@@ -41,7 +41,7 @@ void drawPotsBars()
 void menuCommonCalib(uint8_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = anaIn(i);
+    int16_t vt = getAnalogValue(i) >> 1;
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -108,7 +108,7 @@ void menuCommonCalib(uint8_t event)
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
-        reusableBuffer.calib.midVals[i] = anaIn(i);
+        reusableBuffer.calib.midVals[i] = getAnalogValue(i) >> 1;
         if (i<NUM_XPOTS) {
           reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
           reusableBuffer.calib.xpotsCalib[i].lastCount = 0;

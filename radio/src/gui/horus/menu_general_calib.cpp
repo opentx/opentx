@@ -60,7 +60,7 @@ bool menuCommonCalib(evt_t event)
   drawScreenTemplate(NULL, OPTION_MENU_NO_FOOTER);
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = anaIn(i);
+    int16_t vt = getAnalogValue(i) >> 1;
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -125,8 +125,8 @@ bool menuCommonCalib(evt_t event)
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
-        reusableBuffer.calib.midVals[i] = anaIn(i);
-        if (i<NUM_XPOTS) {
+        reusableBuffer.calib.midVals[i] = getAnalogValue(i) >> 1;
+        if (i < NUM_XPOTS) {
           reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
           reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
         }
@@ -146,9 +146,6 @@ bool menuCommonCalib(evt_t event)
           g_eeGeneral.calib[i].spanPos = v - v/STICK_TOLERANCE;
         }
       }
-      break;
-
-    case 3:
       for (int i=POT1; i<=POT_LAST; i++) {
         int idx = i - POT1;
         int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
@@ -172,6 +169,9 @@ bool menuCommonCalib(evt_t event)
           }
         }
       }
+      break;
+
+    case 3:
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
       calibrationState = 4;
@@ -185,20 +185,6 @@ bool menuCommonCalib(evt_t event)
   lcdDrawBitmap((LCD_W-206)/2, LCD_H-220, LBM_HORUS);
   drawSticks();
   drawPots();
-
-  for (int i=POT1; i<=POT_LAST; i++) {
-    uint8_t steps = 0;
-    if (calibrationState == 2) {
-      steps = reusableBuffer.calib.xpotsCalib[i-POT1].stepsCount;
-    }
-    else if (IS_POT_MULTIPOS(i)) {
-      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
-      steps = calib->count + 1;
-    }
-    if (calibrationState != 0 && steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcdDrawNumber(LCD_W/2+3-(POT_BAR_INTERVAL*NUM_POTS/2)+(POT_BAR_INTERVAL*(i-POT1)), POT_BAR_BOTTOM+15, steps, TEXT_COLOR|TINSIZE, 0, "[", "]");
-    }
-  }
 
   return true;
 }

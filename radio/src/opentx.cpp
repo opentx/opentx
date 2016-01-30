@@ -1547,37 +1547,25 @@ void getADC()
   for (uint32_t i=0; i<4; i++) {
     adcRead();
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-#if defined(JITTER_MEASURE)
       uint16_t val = getAnalogValue(x);
+#if defined(JITTER_MEASURE)
       if (JITTER_MEASURE_ACTIVE()) {
         rawJitter[x].measure(val);
       }
+#endif
       temp[x] += val;
-#else
-      temp[x] += getAnalogValue(x);
-#endif
     }
-#if defined(VIRTUALINPUTS)
-    if (calibrationState) break;
-#endif
   }
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> 3;
 
-#if defined(VIRTUALINPUTS)
-
-    if (calibrationState) {
-      v = temp[x] >> 1;
-    }
 #if defined(JITTER_FILTER)
-    else {
-      // jitter filter
-      uint16_t diff = (v > s_anaFilt[x]) ? (v - s_anaFilt[x]) : (s_anaFilt[x] - v);
-      if (diff < 10) {
-        // apply filter
-        v = (7 * s_anaFilt[x] + v) >> 3;
-      }
+    // jitter filter
+    uint16_t diff = (v > s_anaFilt[x]) ? (v - s_anaFilt[x]) : (s_anaFilt[x] - v);
+    if (diff < 10) {
+      // apply filter
+      v = (7 * s_anaFilt[x] + v) >> 3;
     }
 #endif
 
@@ -1587,8 +1575,9 @@ void getADC()
     }
 #endif
 
+#if defined(VIRTUALINPUTS)
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (!calibrationState && IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
+    if (IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
       uint8_t vShifted = (v >> 4);
       s_anaFilt[x] = 2*RESX;
       for (int i=0; i<calib->count; i++) {
