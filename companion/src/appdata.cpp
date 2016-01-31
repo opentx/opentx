@@ -312,6 +312,8 @@ QString Profile::speaker()       const { return _speaker;       }
 QString Profile::stickPotCalib() const { return _stickPotCalib; }
 QString Profile::timeStamp()     const { return _timeStamp;     }
 QString Profile::trainerCalib()  const { return _trainerCalib;  }
+QString Profile::controlTypes()  const { return _controlTypes;  }
+QString Profile::controlNames()  const { return _controlNames;  }
 int     Profile::txCurrentCalibration()  const { return _txCurrentCalibration;  }
 int     Profile::gsStickMode()   const { return _gsStickMode;   }
 int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
@@ -342,6 +344,8 @@ void Profile::speaker       (const QString x) { store(x, _speaker,       "Speake
 void Profile::stickPotCalib (const QString x) { store(x, _stickPotCalib, "StickPotCalib"         ,"Profiles", QString("profile%1").arg(index));}
 void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeStamp"             ,"Profiles", QString("profile%1").arg(index));}
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
+void Profile::controlTypes  (const QString x) { store(x, _controlTypes,  "ControlTypes"          ,"Profiles", QString("profile%1").arg(index));}
+void Profile::controlNames  (const QString x) { store(x, _controlNames,  "ControlNames"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::txCurrentCalibration  (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
@@ -378,6 +382,8 @@ Profile& Profile::operator=(const Profile& rhs)
     speaker      ( rhs.speaker()       );
     stickPotCalib( rhs.stickPotCalib() );
     trainerCalib ( rhs.trainerCalib()  );
+    controlTypes ( rhs.controlTypes()  );
+    controlNames ( rhs.controlNames()  );
     txCurrentCalibration ( rhs.txCurrentCalibration()  );
     gsStickMode  ( rhs.gsStickMode()   );
     ppmMultiplier( rhs.ppmMultiplier() );
@@ -423,6 +429,8 @@ void Profile::initFwVariables()
     _stickPotCalib = "";
     _timeStamp =     "";
     _trainerCalib =  "";
+    _controlTypes =  "";
+    _controlNames =  "";
 
     _txCurrentCalibration =  0;
     _gsStickMode =   0;
@@ -483,6 +491,8 @@ void Profile::flush()
     getset( _stickPotCalib, "StickPotCalib"         ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _timeStamp,     "TimeStamp"             ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _controlTypes,  "ControlTypes"          ,""     ,"Profiles", QString("profile%1").arg(index));
+    getset( _controlNames,  "ControlNames"          ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _txCurrentCalibration,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
