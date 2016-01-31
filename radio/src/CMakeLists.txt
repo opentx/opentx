@@ -75,7 +75,7 @@ if(PCB STREQUAL HORUS)
     view_channels.cpp
     view_about.cpp
     view_text.cpp
-    view_telemetry.cpp # TODO remove it
+    screens_setup.cpp
     )
   set(SRC ${SRC} bmp.cpp targets/taranis/rtc_driver.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)

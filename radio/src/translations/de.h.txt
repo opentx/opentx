@@ -920,6 +920,7 @@
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistik und Gas"
 #define TR_ABOUT_US            "Die Programmierer"
+#define TR_SETUP_SCREENS         "Setup screens"
 #define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern 
 #define TR_SF                  "SF" //Spezial Funktionen 
 #define TR_GF                  "GF" // Globale Funktionen

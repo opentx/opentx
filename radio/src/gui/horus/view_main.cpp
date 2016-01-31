@@ -219,6 +219,9 @@ void onMainViewMenu(const char *result)
   else if (result == STR_STATISTICS) {
     chainMenu(menuStatisticsView);
   }
+  else if (result == STR_SETUP_SCREENS) {
+    pushMenu(menuSetupScreensView);
+  }
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
   }
@@ -245,6 +248,7 @@ bool menuMainView(evt_t event)
       }
       POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
+      POPUP_MENU_ADD_ITEM(STR_SETUP_SCREENS);
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
       popupMenuHandler = onMainViewMenu;
       break;

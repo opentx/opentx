@@ -50,6 +50,65 @@ bool isInputAvailable(int input)
 }
 #endif
 
+bool isSensorAvailable(int sensor)
+{
+  if (sensor == 0)
+    return true;
+  else
+    return isTelemetryFieldAvailable(abs(sensor) - 1);
+}
+
+bool isSensorUnit(int sensor, uint8_t unit)
+{
+  if (sensor <= 0 || sensor > MAX_SENSORS ) {
+    return true;
+  }
+  else {
+    return g_model.telemetrySensors[--sensor].unit == unit;
+  }
+}
+
+bool isCellsSensor(int sensor)
+{
+  return isSensorUnit(sensor, UNIT_CELLS);
+}
+
+bool isGPSSensor(int sensor)
+{
+  return isSensorUnit(sensor, UNIT_GPS);
+}
+
+bool isAltSensor(int sensor)
+{
+  return isSensorUnit(sensor, UNIT_DIST) || isSensorUnit(sensor, UNIT_FEET);
+}
+
+bool isVoltsSensor(int sensor)
+{
+  return isSensorUnit(sensor, UNIT_VOLTS) || isSensorUnit(sensor, UNIT_CELLS);
+}
+
+bool isCurrentSensor(int sensor)
+{
+  return isSensorUnit(sensor, UNIT_AMPS);
+}
+
+bool isTelemetryFieldAvailable(int index)
+{
+  TelemetrySensor & sensor = g_model.telemetrySensors[index];
+  return sensor.isAvailable();
+}
+
+bool isTelemetryFieldComparisonAvailable(int index)
+{
+  TelemetrySensor & sensor = g_model.telemetrySensors[index];
+  if (sensor.type == TELEM_TYPE_CALCULATED)
+    return true;
+  if (sensor.unit >= UNIT_DATETIME)
+    return false;
+  return (sensor.id != 0);
+}
+
 bool isChannelUsed(int channel)
 {
   for (int i=0; i<MAX_MIXERS; ++i) {

@@ -29,6 +29,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 #if defined(VIRTUALINPUTS)
 bool isInputAvailable(int input);
 #endif
+
 bool isInputSourceAvailable(int source);
 bool isThrottleSourceAvailable(int source);
 bool isLogicalSwitchFunctionAvailable(int function);
@@ -45,6 +46,16 @@ bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
+
+bool isSensorUnit(int sensor, uint8_t unit);
+bool isCellsSensor(int sensor);
+bool isGPSSensor(int sensor);
+bool isAltSensor(int sensor);
+bool isVoltsSensor(int sensor);
+bool isCurrentSensor(int sensor);
+bool isTelemetryFieldAvailable(int index);
+bool isTelemetryFieldComparisonAvailable(int index);
+bool isSensorAvailable(int sensor);
 
 bool modelHasNotes();
 

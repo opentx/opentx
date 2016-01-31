@@ -942,6 +942,7 @@
 #define TR_RESET_TELEMETRY     "Reset Telemetry"
 #define TR_STATISTICS          "Statistics"
 #define TR_ABOUT_US            "About"
+#define TR_SETUP_SCREENS         "Setup screens"
 #define TR_AND_SWITCH          "AND Switch"
 #define TR_SF                  "SF"
 #define TR_GF                  "GF"

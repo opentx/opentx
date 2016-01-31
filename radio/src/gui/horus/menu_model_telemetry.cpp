@@ -68,29 +68,6 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_VARIO_RANGE,
   ITEM_TELEMETRY_VARIO_CENTER,
 #endif
-  ITEM_TELEMETRY_TOP_BAR_LABEL,
-  ITEM_TELEMETRY_TOP_BAR_VOLTAGE,
-  ITEM_TELEMETRY_TOP_BAR_ALTITUDE,
-  ITEM_TELEMETRY_SCREEN_LABEL1,
-  ITEM_TELEMETRY_SCREEN_LINE1,
-  ITEM_TELEMETRY_SCREEN_LINE2,
-  ITEM_TELEMETRY_SCREEN_LINE3,
-  ITEM_TELEMETRY_SCREEN_LINE4,
-  ITEM_TELEMETRY_SCREEN_LABEL2,
-  ITEM_TELEMETRY_SCREEN_LINE5,
-  ITEM_TELEMETRY_SCREEN_LINE6,
-  ITEM_TELEMETRY_SCREEN_LINE7,
-  ITEM_TELEMETRY_SCREEN_LINE8,
-  ITEM_TELEMETRY_SCREEN_LABEL3,
-  ITEM_TELEMETRY_SCREEN_LINE9,
-  ITEM_TELEMETRY_SCREEN_LINE10,
-  ITEM_TELEMETRY_SCREEN_LINE11,
-  ITEM_TELEMETRY_SCREEN_LINE12,
-  ITEM_TELEMETRY_SCREEN_LABEL4,
-  ITEM_TELEMETRY_SCREEN_LINE13,
-  ITEM_TELEMETRY_SCREEN_LINE14,
-  ITEM_TELEMETRY_SCREEN_LINE15,
-  ITEM_TELEMETRY_SCREEN_LINE16,
   ITEM_TELEMETRY_MAX
 };
 
@@ -110,21 +87,8 @@ enum menuModelTelemetryItems {
   #define VARIO_ROWS
 #endif
 #define RSSI_ROWS                     LABEL(RSSI), 0, 0,
-#if defined(LUA)
-  #define SCREEN_TYPE_ROWS            1
-#else
-  #define SCREEN_TYPE_ROWS            0
-#endif
 #define VARIO_RANGE_ROWS              3
 #define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
-
-#if defined(LUA)
-  #define TELEMETRY_SCREEN_LINE(x)    ((TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE || TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_SCRIPT) ? HIDDEN_ROW : (uint8_t)2)
-#else
-  #define TELEMETRY_SCREEN_LINE(x)    (TELEMETRY_SCREEN_TYPE(x) == TELEMETRY_SCREEN_TYPE_NONE ? HIDDEN_ROW : (uint8_t)2)
-#endif
-#define TELEMETRY_SCREEN_ROWS(x)      SCREEN_TYPE_ROWS, TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x), TELEMETRY_SCREEN_LINE(x)
-#define TELEMETRY_CURRENT_SCREEN(k)   (k < ITEM_TELEMETRY_SCREEN_LABEL2 ? 0 : (k < ITEM_TELEMETRY_SCREEN_LABEL3 ? 1 : (k < ITEM_TELEMETRY_SCREEN_LABEL4 ? 2 : 3)))
 
 enum SensorFields {
   SENSOR_FIELD_NAME,
@@ -145,45 +109,6 @@ enum SensorFields {
   SENSOR_FIELD_MAX
 };
 
-bool isSensorUnit(int sensor, uint8_t unit)
-{
-  if (sensor <= 0 || sensor > MAX_SENSORS ) return true;
-  return g_model.telemetrySensors[--sensor].unit == unit;
-}
-
-bool isCellsSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_CELLS);
-}
-
-bool isGPSSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_GPS);
-}
-
-bool isAltSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_DIST) || isSensorUnit(sensor, UNIT_FEET);
-}
-
-bool isVoltsSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_VOLTS) || isSensorUnit(sensor, UNIT_CELLS);
-}
-
-bool isCurrentSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_AMPS);
-}
-
-bool isSensorAvailable(int sensor)
-{
-  if (sensor == 0)
-    return true;
-  else
-    return isTelemetryFieldAvailable(abs(sensor) - 1);
-}
-
 #define SENSOR_2ND_COLUMN      140
 #define SENSOR_3RD_COLUMN      280
 
@@ -202,7 +127,7 @@ bool menuModelSensor(evt_t event)
 {
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
-  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0 });
+  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0, 0, 0, 0, 0 });
 
   // lcdDrawNumber(MENUS_MARGIN_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
   // putsTelemetryChannelValue(SENSOR_2ND_COLUMN, MENU_FOOTER_TOP, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), HEADER_COLOR|LEFT);
@@ -475,25 +400,6 @@ void onSensorMenu(const char *result)
   }
 }
 
-#if defined(LUA)
-void onTelemetryScriptFileSelectionMenu(const char *result)
-{
-  int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition);
-
-  if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
-      POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-    }
-  }
-  else {
-    // The user choosed a file in the list
-    memcpy(g_model.frsky.screens[screenIndex].script.file, result, sizeof(g_model.frsky.screens[screenIndex].script.file));
-    storageDirty(EE_MODEL);
-    LUA_LOAD_MODEL_SCRIPTS();
-  }
-}
-#endif
-
 bool menuModelTelemetry(evt_t event)
 {
   if (warningResult) {
@@ -503,7 +409,7 @@ bool menuModelTelemetry(evt_t event)
     }
   }
   
-  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, DEFAULT_SCROLLBAR_X, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
+  MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, DEFAULT_SCROLLBAR_X, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
@@ -668,165 +574,6 @@ bool menuModelTelemetry(evt_t event)
         }
         break;
 #endif
-
-      case ITEM_TELEMETRY_TOP_BAR_LABEL:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TOP_BAR);
-        break;
-
-      case ITEM_TELEMETRY_TOP_BAR_VOLTAGE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VOLTAGE);
-        putsMixerSource(TELEM_COL2, y, g_model.frsky.voltsSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.voltsSource-1) : 0, attr);
-        if (attr) {
-          g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
-        }
-        break;
-
-      case ITEM_TELEMETRY_TOP_BAR_ALTITUDE:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALTITUDE);
-        putsMixerSource(TELEM_COL2, y, g_model.frsky.altitudeSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.altitudeSource-1) : 0, attr);
-        if (attr) {
-          g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
-        }
-        break;
-
-      case ITEM_TELEMETRY_SCREEN_LABEL1:
-      case ITEM_TELEMETRY_SCREEN_LABEL2:
-      case ITEM_TELEMETRY_SCREEN_LABEL3:
-      case ITEM_TELEMETRY_SCREEN_LABEL4:
-      {
-        uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
-        drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_SCREEN, screenIndex+1);
-        TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
-        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_COL2, y, STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
-        if (newScreenType != oldScreenType) {
-          g_model.frsky.screensType = (g_model.frsky.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
-          memset(&g_model.frsky.screens[screenIndex], 0, sizeof(g_model.frsky.screens[screenIndex]));
-        }
-#if defined(LUA)
-        if (newScreenType == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-          TelemetryScriptData & scriptData = g_model.frsky.screens[screenIndex].script;
-
-          // TODO better function name for ---
-          // TODO function for these lines
-          if (ZEXIST(scriptData.file))
-            lcdDrawSizedText(TELEM_COL3, y, scriptData.file, sizeof(scriptData.file), (menuHorizontalPosition==1 ? attr : 0));
-          else
-            lcdDrawTextAtIndex(TELEM_COL3, y, STR_VCSWFUNC, 0, (menuHorizontalPosition==1 ? attr : 0));
-
-          if (menuHorizontalPosition==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
-            s_editMode = 0;
-            if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
-              popupMenuHandler = onTelemetryScriptFileSelectionMenu;
-            }
-            else {
-              POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
-            }
-          }
-        }
-        else if (attr) {
-          MOVE_CURSOR_FROM_HERE();
-        }
-#endif
-        break;
-      }
-
-      case ITEM_TELEMETRY_SCREEN_LINE1:
-      case ITEM_TELEMETRY_SCREEN_LINE2:
-      case ITEM_TELEMETRY_SCREEN_LINE3:
-      case ITEM_TELEMETRY_SCREEN_LINE4:
-      case ITEM_TELEMETRY_SCREEN_LINE5:
-      case ITEM_TELEMETRY_SCREEN_LINE6:
-      case ITEM_TELEMETRY_SCREEN_LINE7:
-      case ITEM_TELEMETRY_SCREEN_LINE8:
-      case ITEM_TELEMETRY_SCREEN_LINE9:
-      case ITEM_TELEMETRY_SCREEN_LINE10:
-      case ITEM_TELEMETRY_SCREEN_LINE11:
-      case ITEM_TELEMETRY_SCREEN_LINE12:
-      case ITEM_TELEMETRY_SCREEN_LINE13:
-      case ITEM_TELEMETRY_SCREEN_LINE14:
-      case ITEM_TELEMETRY_SCREEN_LINE15:
-      case ITEM_TELEMETRY_SCREEN_LINE16:
-      {
-        uint8_t screenIndex, lineIndex;
-        if (k < ITEM_TELEMETRY_SCREEN_LABEL2) {
-          screenIndex = 0;
-          lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE1;
-        }
-        else if (k >= ITEM_TELEMETRY_SCREEN_LABEL4) {
-          screenIndex = 3;
-          lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE13;
-        }
-        else if (k >= ITEM_TELEMETRY_SCREEN_LABEL3) {
-          screenIndex = 2;
-          lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE9;
-        }
-        else {
-          screenIndex = 1;
-          lineIndex = k-ITEM_TELEMETRY_SCREEN_LINE5;
-        }
-
-#if defined(GAUGES)
-        if (IS_BARS_SCREEN(screenIndex)) {
-          FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
-          source_t barSource = bar.source;
-          putsMixerSource(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, barSource, (menuHorizontalPosition==0 ? attr : 0));
-          int barMax = getMaximumValue(barSource);
-          int barMin = -barMax;
-          if (barSource) {
-            if (barSource <= MIXSRC_LAST_CH) {
-              putsChannelValue(TELEM_COL2, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              putsChannelValue(TELEM_COL4, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
-            }
-            else {
-              putsChannelValue(TELEM_COL2, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              putsChannelValue(TELEM_COL4, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
-            }
-          }
-          else if (attr) {
-            MOVE_CURSOR_FROM_HERE();
-          }
-          if (attr && s_editMode>0) {
-            switch (menuHorizontalPosition) {
-              case 0:
-                bar.source = checkIncDec(event, barSource, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
-                if (checkIncDec_Ret) {
-                  if (barSource <= MIXSRC_LAST_CH) {
-                    bar.barMin = -100;
-                    bar.barMax = 100;
-                  }
-                  else {
-                    bar.barMin = 0;
-                    bar.barMax = 0;
-                  }
-                }
-                break;
-              case 1:
-                bar.barMin = checkIncDec(event, bar.barMin, barMin, bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
-                break;
-              case 2:
-                bar.barMax = checkIncDec(event, bar.barMax, bar.barMin, barMax, EE_MODEL|NO_INCDEC_MARKS);
-                break;
-            }
-          }
-        }
-        else
-#endif
-        {
-          for (int c=0; c<NUM_LINE_ITEMS; c++) {
-            LcdFlags cellAttr = (menuHorizontalPosition==c ? attr : 0);
-            source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
-            const coord_t pos[] = {MENUS_MARGIN_LEFT+INDENT_WIDTH, TELEM_COL2, TELEM_COL4};
-            putsMixerSource(pos[c], y, value, cellAttr);
-            if (cellAttr && s_editMode>0) {
-              value = checkIncDec(event, value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
-            }
-          }
-          if (attr && menuHorizontalPosition == NUM_LINE_ITEMS) {
-            REPEAT_LAST_CURSOR_MOVE(0);
-          }
-        }
-        break;
-      }
     }
   }
 

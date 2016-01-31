@@ -57,7 +57,7 @@ void drawPots()
 
 bool menuCommonCalib(evt_t event)
 {
-  drawScreenTemplate(NULL, OPTION_MENU_NO_FOOTER);
+  drawMenuTemplate(NULL, 0, OPTION_MENU_NO_FOOTER);
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
     int16_t vt = getAnalogValue(i) >> 1;

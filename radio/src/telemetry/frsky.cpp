@@ -660,3 +660,8 @@ void frskyUpdateCells(void)
   }
 }
 #endif
+
+NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
+{
+  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
+}

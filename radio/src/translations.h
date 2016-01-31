@@ -608,6 +608,7 @@ extern const pm_char STR_DELETE_CATEGORY[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
   extern const pm_char STR_ABOUT_US[];
+extern const pm_char STR_SETUP_SCREENS[];
 #endif
 
 extern const pm_char STR_RESET_BTN[];

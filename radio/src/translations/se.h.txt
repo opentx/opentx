@@ -939,6 +939,7 @@
 #define TR_RESET_TELEMETRY     "Nollställ Telemetri"
 #define TR_STATISTICS          "Statistik"
 #define TR_ABOUT_US            "Om Oss"
+#define TR_SETUP_SCREENS         "Setup screens"
 #define TR_AND_SWITCH          "OCH Brytare"
 #define TR_SF                  "BF"
 #define TR_GF                  "GF"

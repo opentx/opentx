@@ -147,45 +147,6 @@ enum SensorFields {
   SENSOR_FIELD_MAX
 };
 
-bool isSensorUnit(int sensor, uint8_t unit)
-{
-  if (sensor <= 0 || sensor > MAX_SENSORS ) return true;
-  return g_model.telemetrySensors[--sensor].unit == unit;
-}
-
-bool isCellsSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_CELLS);
-}
-
-bool isGPSSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_GPS);
-}
-
-bool isAltSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_DIST) || isSensorUnit(sensor, UNIT_FEET);
-}
-
-bool isVoltsSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_VOLTS) || isSensorUnit(sensor, UNIT_CELLS);
-}
-
-bool isCurrentSensor(int sensor)
-{
-  return isSensorUnit(sensor, UNIT_AMPS);
-}
-
-bool isSensorAvailable(int sensor)
-{
-  if (sensor == 0)
-    return true;
-  else
-    return isTelemetryFieldAvailable(abs(sensor) - 1);
-}
-
 #define SENSOR_2ND_COLUMN      (12*FW)
 #define SENSOR_3RD_COLUMN      (18*FW)
 

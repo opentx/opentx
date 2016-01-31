@@ -66,9 +66,8 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #endif
 
 // Screen templates
-void drawScreenTemplate(const char * title, uint32_t options=0);
-void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X);
 void drawMenuTemplate(const char * title, uint16_t scrollbar_X=0, uint32_t options=0);
+void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X=0);
 void drawSplash();
 void drawSleepBitmap();
 void drawShutdownBitmap(uint32_t index);

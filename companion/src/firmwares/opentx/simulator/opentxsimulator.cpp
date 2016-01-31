@@ -164,10 +164,10 @@ namespace NAMESPACE {
 #include "radio/src/gui/horus/menu_general_version.cpp"
 #include "radio/src/gui/horus/menu_general_hardware.cpp"
 #include "radio/src/gui/horus/menu_general_calib.cpp"
+#include "radio/src/gui/horus/screens_setup.cpp"
 #include "radio/src/gui/horus/view_main.cpp"
 #include "radio/src/gui/horus/view_statistics.cpp"
 #include "radio/src/gui/horus/view_channels.cpp"
-#include "radio/src/gui/horus/view_telemetry.cpp"
 #include "radio/src/gui/horus/view_text.cpp"
 #include "radio/src/gui/horus/view_about.cpp"
 #include "radio/src/gui/horus/lcd.cpp"
@@ -369,6 +369,7 @@ namespace NAMESPACE {
 #include "radio/src/targets/simu/simpgmspace.cpp"
 #include "radio/src/translations.cpp"
 #include "radio/src/telemetry/frsky.cpp"
+
 #if defined(CPUARM)
   #include "radio/src/telemetry/frsky_d_arm.cpp"
 #else
@@ -429,6 +430,11 @@ namespace NAMESPACE {
 #endif
 
 int16_t g_anas[NUM_STICKS+NUM_POTS];
+
+uint16_t getAnalogValue(uint8_t index)
+{
+  return g_anas[index] << 1;
+}
 
 uint16_t anaIn(uint8_t chan)
 {

@@ -158,6 +158,7 @@ bool menuMainViewChannelsMonitor(evt_t event);
 bool menuChannelsView(evt_t event);
 bool menuChannelsView(evt_t event);
 bool menuTextView(evt_t event);
+bool menuSetupScreensView(evt_t event);
 
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(evt_t event);
@@ -264,6 +265,12 @@ bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * men
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
+
+#define MENU_ONE_PAGE(title, lines_count, scrollbar_X, ...) \
+  MENU_TAB(__VA_ARGS__); \
+  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
+  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+  drawMenuTemplate(title, scrollbar_X); \
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \

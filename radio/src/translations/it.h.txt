@@ -918,6 +918,7 @@
 #define TR_RESET_TELEMETRY     "Azzera Telemetria"
 #define TR_STATISTICS          "Statistiche"
 #define TR_ABOUT_US            "Info su"
+#define TR_SETUP_SCREENS         "Setup screens"
 #define TR_AND_SWITCH          "Inter. AND"
 #define TR_SF                  "CF"
 #define TR_GF                  "GF"

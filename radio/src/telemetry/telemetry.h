@@ -153,24 +153,6 @@ class TelemetryItem
 extern TelemetryItem telemetryItems[MAX_SENSORS];
 extern uint8_t allowNewSensors;
 
-bool isGPSSensor(int sensor);
-
-inline bool isTelemetryFieldAvailable(int index)
-{
-  TelemetrySensor & sensor = g_model.telemetrySensors[index];
-  return sensor.isAvailable();
-}
-
-inline bool isTelemetryFieldComparisonAvailable(int index)
-{
-  TelemetrySensor & sensor = g_model.telemetrySensors[index];
-  if (sensor.type == TELEM_TYPE_CALCULATED)
-    return true;
-  if (sensor.unit >= UNIT_DATETIME)
-    return false;
-  return (sensor.id != 0);
-}
-
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
 void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();

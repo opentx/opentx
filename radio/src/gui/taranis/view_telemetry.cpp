@@ -47,11 +47,6 @@ void displayRssiLine()
   }
 }
 
-NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
-{
-  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
-}
-
 int barCoord(int value, int min, int max)
 {
   if (value <= min)

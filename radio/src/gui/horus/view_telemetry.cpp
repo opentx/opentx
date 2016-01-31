@@ -27,11 +27,6 @@
 bar_threshold_t barsThresholds[THLD_MAX];
 #endif
 
-NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
-{
-  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
-}
-
 int barCoord(int value, int min, int max, int width)
 {
   if (value <= min)
@@ -183,4 +178,9 @@ void displayTelemetryScreen(int index, unsigned int evt)
   if (index < MAX_TELEMETRY_SCREENS) {
     return displayCustomTelemetryScreen(index);
   }
+}
+
+NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
+{
+  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
