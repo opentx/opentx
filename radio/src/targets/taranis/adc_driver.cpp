@@ -148,7 +148,7 @@ void adcStop()
 {
 }
 
-uint16_t getAnalogValue(uint32_t index)
+uint16_t getAnalogValue(uint8_t index)
 {
   if (IS_POT(index) && !IS_POT_AVAILABLE(index)) {
     // Use fixed analog value for non-existing and/or non-connected pots.

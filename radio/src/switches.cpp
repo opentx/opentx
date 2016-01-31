@@ -762,8 +762,9 @@ void checkSwitches()
 #define GETADC_COUNT 1
 #endif
 #ifdef GETADC_COUNT
-    for (int i=0; i<GETADC_COUNT; i++)
+    for (uinr8_t i=0; i<GETADC_COUNT; i++) {
       getADC();
+    }
 #undef GETADC_COUNT
 #endif
 #endif  // !defined(MODULE_ALWAYS_SEND_PULSES)

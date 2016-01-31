@@ -112,7 +112,7 @@ void adcRead()
 #endif
 }
 
-uint16_t getAnalogValue(uint32_t value)
+uint16_t getAnalogValue(uint8_t value)
 {
   return adcValues[value];
 }

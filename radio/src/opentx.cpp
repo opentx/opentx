@@ -1544,9 +1544,9 @@ void getADC()
   }
 #endif
 
-  for (uint32_t i=0; i<4; i++) {
+  for (uint8_t i=0; i<4; i++) {
     adcRead();
-    for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
+    for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
       uint16_t val = getAnalogValue(x);
 #if defined(JITTER_MEASURE)
       if (JITTER_MEASURE_ACTIVE()) {
@@ -1557,7 +1557,7 @@ void getADC()
     }
   }
 
-  for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
+  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> 3;
 
 #if defined(JITTER_FILTER)

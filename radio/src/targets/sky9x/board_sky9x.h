@@ -227,7 +227,7 @@ enum Analogs {
 };
 void adcInit();
 void adcRead(void);
-uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
 
 // Buzzer driver

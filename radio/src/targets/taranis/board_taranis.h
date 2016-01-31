@@ -265,7 +265,7 @@ enum Analogs {
 void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUMBER_ANALOG];
-uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint8_t index);
 
 #define BATT_SCALE    150
 

@@ -973,7 +973,7 @@ void checkAlarm();
 void checkAll();
 
 #if !defined(SIMU)
-  void getADC();
+void getADC();
 #endif
 
 #if defined(SBUS)

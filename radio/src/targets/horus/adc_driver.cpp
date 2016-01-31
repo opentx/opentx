@@ -201,7 +201,7 @@ void adcRead()
 
 const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
 
-uint16_t getAnalogValue(uint32_t index)
+uint16_t getAnalogValue(uint8_t index)
 {
   if (ana_direction[index] < 0)
     return 4096 - adcValues[index];
