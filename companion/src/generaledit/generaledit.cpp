@@ -84,12 +84,15 @@ void GeneralEdit::on_calretrieve_PB_clicked()
 {
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   QString calib=g.profile[profile_id].stickPotCalib();
-  int potsnum=GetCurrentFirmware()->getCapability(Pots);
+  int potsnum=GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders);
+  int numSwPots=GetCurrentFirmware()->getCapability(Switches)+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders);
   if (calib.isEmpty()) {
     return;
   }
   else {
     QString trainercalib = g.profile[profile_id].trainerCalib();
+    QString hwtypes = g.profile[profile_id].controlTypes();
+    QString controlNames=g.profile[profile_id].controlNames();
     int8_t txVoltageCalibration = (int8_t)g.profile[profile_id].txVoltageCalibration();
     int8_t txCurrentCalibration = (int8_t)g.profile[profile_id].txCurrentCalibration();
     int8_t PPM_Multiplier = (int8_t)g.profile[profile_id].ppmMultiplier();
@@ -135,6 +138,45 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       generalSettings.PPM_Multiplier=PPM_Multiplier;
     } else {
       QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, radio calibration was not retrieved"));
+    }
+    if (hwtypes.length()==numSwPots) {
+      QString Byte;
+      int16_t byte16;
+      QByteArray qba;
+      int16_t offset;
+      bool ok;
+      for (int i=0; i<NUM_STICKS; i++) {
+        qba = controlNames.mid(3*i,3).toAscii();
+        strcpy(generalSettings.stickName[i], qba.data());
+      }
+      for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {
+        Byte=hwtypes.mid(i,1);
+        byte16=(int16_t)Byte.toInt(&ok,16);
+        qba=controlNames.mid(3*(i+NUM_STICKS),3).toAscii();
+        if (ok)
+          generalSettings.switchConfig[i]=byte16;
+          strcpy(generalSettings.switchName[i], qba.data());
+      }
+      offset = GetCurrentFirmware()->getCapability(Switches);
+      for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
+        Byte=hwtypes.mid(i+offset,1);
+        byte16=(int16_t)Byte.toInt(&ok,16);
+        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toAscii();
+        if (ok)
+          generalSettings.potConfig[i]=byte16;
+          strcpy(generalSettings.potName[i], qba.data());
+      }
+      offset += GetCurrentFirmware()->getCapability(Pots);
+      for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
+        Byte=hwtypes.mid(i+offset,1);
+        byte16=(int16_t)Byte.toInt(&ok,16);
+        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toAscii();
+        if (ok)
+          generalSettings.sliderConfig[i]=byte16;
+          strcpy(generalSettings.sliderName[i], qba.data());
+      }
+    } else {
+      QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, Switch/pot config not retrieved"));
     }
     if ((DisplaySet.length()==6) && (BeeperSet.length()==4) && (HapticSet.length()==6) && (SpeakerSet.length()==6)) {
       generalSettings.stickMode=GSStickMode;
@@ -200,13 +242,15 @@ void GeneralEdit::on_calstore_PB_clicked()
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
 
   QString name=g.profile[profile_id].name();
-  int potsnum=GetCurrentFirmware()->getCapability(Pots);
+  int potsnum=GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders);
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
     return;
   }
   else {
     QString calib=g.profile[profile_id].stickPotCalib();
+    QString hwtypes=g.profile[profile_id].controlTypes();
+    QString controlNames=g.profile[profile_id].controlNames();
     if (!(calib.isEmpty())) {
       int ret = QMessageBox::question(this, "Companion",
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
@@ -227,6 +271,25 @@ void GeneralEdit::on_calstore_PB_clicked()
       calib.append(QString("%1").arg((uint16_t)generalSettings.trainer.calib[i], 4, 16, QChar('0')));
     }
     g.profile[profile_id].trainerCalib( calib );
+    hwtypes.clear();
+    controlNames.clear();
+    for (int i=0; i<NUM_STICKS; i++) {
+      controlNames.append(QString("%1").arg(generalSettings.stickName[i], -3));
+    }
+    for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {
+      hwtypes.append(QString("%1").arg((uint16_t)generalSettings.switchConfig[i], 1));
+      controlNames.append(QString("%1").arg(generalSettings.switchName[i], -3));
+    }
+    for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
+      hwtypes.append(QString("%1").arg((uint16_t)generalSettings.potConfig[i], 1));
+      controlNames.append(QString("%1").arg(generalSettings.potName[i], -3));
+    }
+    for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
+      hwtypes.append(QString("%1").arg((uint16_t)generalSettings.sliderConfig[i], 1));
+      controlNames.append(QString("%1").arg(generalSettings.sliderName[i], -3));
+    }
+    g.profile[profile_id].controlTypes( hwtypes );
+    g.profile[profile_id].controlNames( controlNames );
     g.profile[profile_id].txVoltageCalibration( generalSettings.txVoltageCalibration );
     g.profile[profile_id].txCurrentCalibration( generalSettings.txCurrentCalibration );
     g.profile[profile_id].vBatWarn( generalSettings.vBatWarn );
