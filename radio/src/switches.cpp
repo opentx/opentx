@@ -762,7 +762,7 @@ void checkSwitches()
 #define GETADC_COUNT 1
 #endif
 #ifdef GETADC_COUNT
-    for (uinr8_t i=0; i<GETADC_COUNT; i++) {
+    for (uint8_t i=0; i<GETADC_COUNT; i++) {
       getADC();
     }
 #undef GETADC_COUNT
