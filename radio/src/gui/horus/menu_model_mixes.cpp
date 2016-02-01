@@ -172,14 +172,13 @@ void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, evt_t event
 
 bool menuModelMixOne(evt_t event)
 {
-  MixData *md2 = mixAddress(s_currIdx) ;
+  MixData * md2 = mixAddress(s_currIdx) ;
 
   SUBMENU(STR_MIXER, MIX_FIELD_COUNT, 0, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
-
-  putsChn(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+1, md2->destCh+1, TEXT_COLOR);
+  putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
 
   // The separation line between 2 columns
-  lcdDrawSolidVerticalLine(MENU_COLUMN2_X-20, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
+  lcdDrawSolidVerticalLine(MENU_COLUMN2_X-20, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
 
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
@@ -187,10 +186,10 @@ bool menuModelMixOne(evt_t event)
   for (int k=0; k<2*NUM_BODY_LINES; k++) {
     coord_t y;
     if (k >= NUM_BODY_LINES) {
-      y = MENU_CONTENT_TOP + (k-NUM_BODY_LINES)*FH + 2;
+      y = MENU_CONTENT_TOP - FH + (k-NUM_BODY_LINES)*FH;
     }
     else {
-      y = MENU_CONTENT_TOP + k*FH + 2;
+      y = MENU_CONTENT_TOP - FH + k*FH;
     }
     int8_t i = k;
 
@@ -408,7 +407,7 @@ bool menuModelMixAll(evt_t event)
             pushMenu(menuModelMixOne);
             s_copyMode = 0;
           }
-          else {
+          else if (menuVerticalPosition >= 0) {
             event = 0;
             s_copyMode = 0;
             POPUP_MENU_ADD_ITEM(STR_EDIT);

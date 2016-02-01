@@ -270,7 +270,7 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawMenuTemplate(title, scrollbar_X); \
+  drawSubmenuTemplate(title, scrollbar_X); \
 
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
@@ -287,6 +287,11 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   MENU_TAB(__VA_ARGS__); \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
   drawSubmenuTemplate(title, scrollbar_X);
+
+#define SUBMENU_WITH_OPTIONS(title, lines_count, options, scrollbar_X, ...) \
+  MENU_TAB(__VA_ARGS__); \
+  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+  drawSubmenuTemplate(title, scrollbar_X, options);
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
   if (!check_submenu_simple(event, lines_count)) return false

@@ -42,11 +42,11 @@ void watchdogInit(unsigned int duration)
 void getCPUUniqueID(char * s)
 {
   uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
-  char * tmp = strAppendNumber(s, cpu_uid[0], 8, 16);
+  char * tmp = strAppendUnsigned(s, cpu_uid[0], 8, 16);
   *tmp = ' ';
-  tmp = strAppendNumber(tmp+1, cpu_uid[1], 8, 16);
+  tmp = strAppendUnsigned(tmp+1, cpu_uid[1], 8, 16);
   *tmp = ' ';
-  strAppendNumber(tmp+1, cpu_uid[2], 8, 16);
+  strAppendUnsigned(tmp+1, cpu_uid[2], 8, 16);
 }
 
 // Starts TIMER at 2MHz

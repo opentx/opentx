@@ -434,7 +434,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
 void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, int idx, LcdFlags att, const char * prefix)
 {
   char s[64];
-  strAppendNumber(strAppend(strAppend(s, prefix), str), abs(idx));
+  strAppendUnsigned(strAppend(strAppend(s, prefix), str), abs(idx));
   lcdDrawText(x, y, s, att);
 }
 
@@ -456,7 +456,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
       s[1+LEN_INPUT_NAME] = '\0';
     }
     else {
-      strAppendNumber(s+1, idx, 2);
+      strAppendUnsigned(s+1, idx, 2);
     }
     lcdDrawText(x, y, s, att);
   }
@@ -545,7 +545,7 @@ char * getStringAtIndex(char * dest, const char * s, int idx)
 
 char * getStringWithIndex(char * dest, const char * s, int idx)
 {
-  strAppendNumber(strAppend(dest, s), abs(idx));
+  strAppendUnsigned(strAppend(dest, s), abs(idx));
   return dest;
 }
 

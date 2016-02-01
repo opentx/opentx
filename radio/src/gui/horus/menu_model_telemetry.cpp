@@ -127,13 +127,12 @@ bool menuModelSensor(evt_t event)
 {
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
-  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0, 0, 0, 0, 0 });
-
-  // lcdDrawNumber(MENUS_MARGIN_LEFT+getTextWidth(TR_MENUSENSOR)+5, MENU_FOOTER_TOP, s_currIdx+1, HEADER_COLOR|LEFT);
-  // putsTelemetryChannelValue(SENSOR_2ND_COLUMN, MENU_FOOTER_TOP, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), HEADER_COLOR|LEFT);
+  SUBMENU("SENSOR", SENSOR_FIELD_MAX, DEFAULT_SCROLLBAR_X, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, 0, 0, 0, 0, 0 });
+  lcdDrawNumber(lcdNextPos, 3, s_currIdx+1, MENU_TITLE_COLOR|LEFT);
+  putsTelemetryChannelValue(50, 3+FH, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), MENU_TITLE_COLOR|LEFT);
 
   for (unsigned int i=0; i<NUM_BODY_LINES+1; i++) {
-    coord_t y = MENU_CONTENT_TOP + i*FH;
+    coord_t y = MENU_CONTENT_TOP - FH - 2 + i*FH;
     int k = i + menuVerticalOffset;
 
     for (int j=0; j<k; j++) {
@@ -147,7 +146,6 @@ bool menuModelSensor(evt_t event)
     LcdFlags attr = (menuVerticalPosition==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (k) {
-
       case SENSOR_FIELD_NAME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_NAME);
         editName(SENSOR_2ND_COLUMN, y, sensor->label, TELEM_LABEL_LEN, event, attr);

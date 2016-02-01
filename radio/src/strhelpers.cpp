@@ -145,7 +145,7 @@ char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * d
 #endif
 #endif
 
-char * strAppendNumber(char * dest, unsigned int value, uint8_t digits, uint8_t radix)
+char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits, uint8_t radix)
 {
   if (digits == 0) {
     unsigned int tmp = value;
@@ -163,6 +163,15 @@ char * strAppendNumber(char * dest, unsigned int value, uint8_t digits, uint8_t 
   }
   dest[digits] = '\0';
   return &dest[digits];
+}
+
+char * strAppendSigned(char * dest, int32_t value, uint8_t digits, uint8_t radix)
+{
+  if (value < 0) {
+    *dest++ = '-';
+    value = -value;
+  }
+  return strAppendUnsigned(dest, (uint32_t)value, digits, radix);
 }
 
 #if defined(CPUARM) || defined(SDCARD)

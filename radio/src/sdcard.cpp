@@ -94,7 +94,7 @@ int findNextFileIndex(char * filename, const char * directory)
   char extension[LEN_FILE_EXTENSION+1];
   strncpy(extension, getFileExtension(filename), sizeof(extension));
   do {
-    char * pos = strAppendNumber(indexPos, ++index, 2);
+    char * pos = strAppendUnsigned(indexPos, ++index, 2);
     strAppend(pos, extension);
     if (!isFileAvailable(filename, directory)) {
       return index;

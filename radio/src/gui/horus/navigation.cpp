@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -507,14 +507,16 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
 
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_REPT(KEY_RIGHT):
-      if (s_editMode != 0) break;
-      INC(menuHorizontalPosition, 0, maxcol);
+      if (s_editMode == 0) {
+        INC(menuHorizontalPosition, 0, maxcol);
+      }
       break;
 
     case EVT_KEY_FIRST(KEY_LEFT):
     case EVT_KEY_REPT(KEY_LEFT):
-      if (s_editMode != 0) break;
-      DEC(menuHorizontalPosition, 0, maxcol);
+      if (s_editMode == 0) {
+        DEC(menuHorizontalPosition, 0, maxcol);
+      }
       break;
 
     case EVT_ROTARY_RIGHT:
@@ -570,7 +572,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       if (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)
         menuHorizontalPosition = -1;
       else
-        menuHorizontalPosition = min((uint8_t)menuHorizontalPosition, MAXCOL(menuVerticalPosition));
+        menuHorizontalPosition = MAXCOL(menuVerticalPosition);
       break;
 
     case EVT_KEY_FIRST(KEY_UP):

@@ -24,7 +24,8 @@
 #include "../../opentx.h"
 #include <stdio.h>
 
-#define OPTION_MENU_NO_FOOTER 0x01
+#define OPTION_MENU_NO_FOOTER          0x01
+//#define OPTION_MENU_NO_TITLE_BAR       0x02
 
 #define OPTION_SLIDER_INVERS           INVERS
 #define OPTION_SLIDER_BLINK            BLINK
@@ -67,7 +68,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 
 // Screen templates
 void drawMenuTemplate(const char * title, uint16_t scrollbar_X=0, uint32_t options=0);
-void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X=0);
+void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X=0, uint32_t options=0);
 void drawSplash();
 void drawSleepBitmap();
 void drawShutdownBitmap(uint32_t index);

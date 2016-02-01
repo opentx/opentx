@@ -175,11 +175,13 @@ bool menuModelExpoOne(evt_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
 
-  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, 0, { 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)1 : (uint8_t)0), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER, 0, { 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)1 : (uint8_t)0), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  lcdDrawSizedText(50, 3+FH, g_model.inputNames[ed->chn], LEN_INPUT_NAME, ZCHAR|MENU_TITLE_COLOR);
+  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 230, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
   int sub = menuVerticalPosition;
 
-  coord_t y = MENU_CONTENT_TOP;
+  coord_t y = MENU_CONTENT_TOP-FH-2;
 
   drawFunction(expoFn, CURVE_CENTER_X, CURVE_CENTER_Y, CURVE_SIDE_WIDTH);
   drawCurveHorizontalScale();
@@ -190,17 +192,17 @@ bool menuModelExpoOne(evt_t event)
     char texty[5];
     int x = getValue(ed->srcRaw);
     if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-      strAppendNumber(textx, calcRESXto100(x));
+      strAppendUnsigned(textx, calcRESXto100(x));
       // TODO putsTelemetryChannelValue(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x);
       if (ed->scale > 0) x = (x * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
     }
     else {
-      strAppendNumber(textx, calcRESXto100(x));
+      strAppendSigned(textx, calcRESXto100(x));
     }
 
     x = limit(-1024, x, 1024);
     int y = limit<int>(-1024, expoFn(x), 1024);
-    strAppendNumber(texty, calcRESXto100(y));
+    strAppendSigned(texty, calcRESXto100(y));
 
     x = divRoundClosest(x*CURVE_SIDE_WIDTH, RESX);
     y = CURVE_CENTER_Y + getCurveYCoord(expoFn, x, CURVE_SIDE_WIDTH);
@@ -434,7 +436,7 @@ bool menuModelExposAll(evt_t event)
             pushMenu(menuModelExpoOne);
             s_copyMode = 0;
           }
-          else {
+          else if (menuVerticalPosition >= 0) {
             event = 0;
             s_copyMode = 0;
             POPUP_MENU_ADD_ITEM(STR_EDIT);
