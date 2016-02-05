@@ -1674,7 +1674,7 @@ lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports_taranis.txt"
 	@$(PARSER) -DEXPORT -DCPUARM -DPCBTARANIS -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua_exports_taranis.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
+	@python ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
 	@rm lua_exports_taranis.txt
 
 lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
