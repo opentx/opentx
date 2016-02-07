@@ -38,8 +38,8 @@
 #include "../../timers.h"
 
 #define BIGSIZE       MIDSIZE
-#define LBOX_CENTERX  (BOX_WIDTH/2 + 17)
-#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX)
+#define LBOX_CENTERX  (BOX_WIDTH/2 + 16)
+#define RBOX_CENTERX  (LCD_W-LBOX_CENTERX-1)
 #define MODELNAME_X   (15)
 #define MODELNAME_Y   (11)
 #define VBATT_X       (MODELNAME_X+26)
@@ -564,12 +564,12 @@ void menuMainView(uint8_t event)
       if (g_eeGeneral.view == VIEW_INPUTS) {
         div_t qr2 = div(qr.rem, 5);
         if (i >= 14) qr2.rem += 1;
-        const coord_t x[4] = { 50, 144 };
+        const coord_t x[4] = { 50, 142 };
         const coord_t y[4] = { 25, 42, 25, 42 };
         displaySwitch(x[qr.quot]+qr2.rem*4, y[qr2.quot], 3, i);
       }
       else {
-        displaySwitch(15+qr.rem*6, 25+qr.quot*17, 5, i);
+        displaySwitch(17+qr.rem*6, 25+qr.quot*17, 5, i);
       }
     }
   }
@@ -579,7 +579,7 @@ void menuMainView(uint8_t event)
       if (SWITCH_EXISTS(i)) {
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (index<4 ? 8*FW+3 : 24*FW+1) : (index<4 ? 3*FW+2 : 8*FW-1), (index%4)*FH+3*FH, sw, 0);
+        putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
         index++;
       }
     }
