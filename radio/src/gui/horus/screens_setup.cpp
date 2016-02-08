@@ -44,7 +44,7 @@ ZoneOptionValue editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionV
     }
   }
   else if (option->type == ZoneOption::String) {
-    editName(SCREENS_SETUP_2ND_COLUMN, y, value.stringValue, sizeof(value.stringValue), event, attr|EE_MODEL);
+    editName(SCREENS_SETUP_2ND_COLUMN, y, value.stringValue, sizeof(value.stringValue), event, attr);
   }
   else if (option->type == ZoneOption::TextSize) {
     lcdDrawTextAtIndex(SCREENS_SETUP_2ND_COLUMN, y, "\010StandardTiny\0   Small\0  Mid\0    Double", value.unsignedValue, attr);

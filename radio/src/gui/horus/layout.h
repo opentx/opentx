@@ -93,33 +93,37 @@ void registerLayout(const LayoutFactory * factory);
 class LayoutFactory
 {
   public:
-    LayoutFactory(const char * name, const char * bitmap):
-      name(name),
-      bitmap(bitmap)
+    LayoutFactory(const char * name):
+      name(name)
     {
       registerLayout(this);
     }
     const char * getName() const { return name; }
-    const char * getBitmap() const { return bitmap; }
+    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) = 0;
     virtual const ZoneOption * getOptions() const = 0;
     virtual Layout * create(Layout::PersistentData * persistentData) const = 0;
     virtual Layout * load(Layout::PersistentData * persistentData) const = 0;
 
   protected:
     const char * name;
-    const char * bitmap;
 };
 
 template<class T>
 class BaseLayoutFactory: public LayoutFactory
 {
   public:
-    BaseLayoutFactory(const char * name, const char * bitmap, const ZoneOption * options):
-      LayoutFactory(name, bitmap),
+    BaseLayoutFactory(const char * name, const uint8_t * bitmap, const ZoneOption * options):
+      LayoutFactory(name),
+      bitmap(bitmap),
       options(options)
     {
     }
 
+    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags)
+    {
+      extern void lcdDrawBitmapPattern(int x, int y, const uint8_t * bitmap, uint32_t flags, int width=0, int offset=0);
+      lcdDrawBitmapPattern(x, y, bitmap, flags);
+    }
     virtual const ZoneOption * getOptions() const
     {
       return options;
@@ -140,6 +144,7 @@ class BaseLayoutFactory: public LayoutFactory
     }
 
   protected:
+    const uint8_t * bitmap;
     const ZoneOption * options;
 };
 

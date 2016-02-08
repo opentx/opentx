@@ -100,4 +100,4 @@ void Layout2P1::refresh(bool setup)
   Layout::refresh(setup);
 }
 
-BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", "", Layout2P1::options);
+BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", NULL, Layout2P1::options);

@@ -83,4 +83,4 @@ void Layout2x2::refresh(bool setup)
   Layout::refresh(setup);
 }
 
-BaseLayoutFactory<Layout2x2> layout2x2("Layout2x2", "", Layout2x2::options);
+BaseLayoutFactory<Layout2x2> layout2x2("Layout2x2", NULL, Layout2x2::options);
