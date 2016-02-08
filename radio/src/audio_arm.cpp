@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -353,7 +353,7 @@ void referenceModelAudioFiles()
   sdAvailablePhaseAudioFiles = 0;
   sdAvailableSwitchAudioFiles = 0;
   sdAvailableLogicalSwitchAudioFiles = 0;
-  
+
   char * filename = getModelAudioPath(path);
   *(filename-1) = '\0';
 
@@ -512,7 +512,7 @@ void audioTask(void * pdata)
     sdInit();
     AUDIO_TADA();
   }
-#endif  
+#endif
 
   while (1) {
     audioQueue.wakeup();
@@ -801,7 +801,7 @@ inline unsigned int getToneLength(uint16_t len)
 void AudioQueue::pause(uint16_t len)
 {
   playTone(0, 0, len);
-}	
+}
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
@@ -1058,7 +1058,7 @@ void audioEvent(unsigned int index, unsigned int freq)
         // trim center
         case AU_TRIM_END:
           audioQueue.playTone(freq, 80, 20, PLAY_NOW);
-          break;          
+          break;
         // warning one
         case AU_WARNING1:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);

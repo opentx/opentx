@@ -53,7 +53,7 @@ bool menuModelCustomScriptOne(evt_t event)
 
   // drawStringWithIndex(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
 
-  SUBMENU(STR_MENUCUSTOMSCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, 0, { 0, 0, LABEL(inputs), 0/*repeated*/ });
+  SUBMENU(STR_MENUCUSTOMSCRIPTS, LBM_LUA_SCRIPTS_ICON, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
   int8_t sub = menuVerticalPosition;
 

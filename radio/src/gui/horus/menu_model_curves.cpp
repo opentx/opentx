@@ -98,7 +98,7 @@ void displayPresetChoice(evt_t event)
   }
 }
 
-void onCurveOneMenu(const char *result)
+void onCurveOneMenu(const char * result)
 {
   if (result == STR_CURVE_PRESET) {
     POPUP_INPUT(STR_PRESET, displayPresetChoice, 0, -4, 4);
@@ -138,7 +138,7 @@ bool menuModelCurveOne(evt_t event)
   CurveData & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
-  SUBMENU_WITH_OPTIONS(STR_MENUCURVE, crv.type==CURVE_TYPE_CUSTOM ? 6 : 5, OPTION_MENU_NO_FOOTER, 0, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
+  SUBMENU_WITH_OPTIONS(STR_MENUCURVE, LBM_CURVES_ICON, crv.type==CURVE_TYPE_CUSTOM ? 6 : 5, OPTION_MENU_NO_FOOTER, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
   drawStringWithIndex(50, 3+FH, STR_CV, s_curveChan+1, MENU_TITLE_COLOR);
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 250, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 

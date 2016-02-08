@@ -84,6 +84,8 @@ add_dependencies(opentx-taranisx9e${SUFFIX}-simulator ${dependencies_taranis} lu
 
 add_dependencies(opentx-horus${SUFFIX}-simulator horus_bitmaps horus_fonts firmware_translations lua_export_horus)
 
+add_definitions(-std=c++11)
+
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator
   opentx-9xr${SUFFIX}-simulator
@@ -165,7 +167,7 @@ target_compile_definitions(opentx-taranisx9e${SUFFIX}-simulator PRIVATE PCBTARAN
 target_link_libraries(opentx-taranisx9e${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 
 # Horus
-target_include_directories(opentx-horus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/horus PRIVATE ${RADIO_SRC_DIRECTORY}/fonts/horus PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/horus)
+target_include_directories(opentx-horus${SUFFIX}-simulator PRIVATE ${RADIO_SRC_DIRECTORY}/targets/horus PRIVATE ${RADIO_SRC_DIRECTORY}/gui/horus PRIVATE ${RADIO_SRC_DIRECTORY}/fonts/horus PRIVATE ${CMAKE_BINARY_DIR}/radio/src/bitmaps/horus)
 target_compile_definitions(opentx-horus${SUFFIX}-simulator PRIVATE PCBHORUS CPUARM CPUSTM32 STM32F40_41xxx COLORLCD VOICE SDCARD ${COMMON_DEFINITIONS})
 target_link_libraries(opentx-horus${SUFFIX}-simulator PRIVATE ${COMMON_LIBRARIES})
 

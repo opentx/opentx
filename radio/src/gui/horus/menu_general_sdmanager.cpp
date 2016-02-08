@@ -30,7 +30,7 @@ int lastBitmap;
 
 bool menuGeneralSdManagerInfo(evt_t event)
 {
-  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, 1, DEFAULT_SCROLLBAR_X);
+  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, LBM_SD_BROWSER_ICON, 1);
 
   lcdDrawText(MENUS_MARGIN_LEFT, 2*FH, STR_SD_TYPE);
   lcdDrawText(100, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);

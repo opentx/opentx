@@ -182,6 +182,10 @@ const uint8_t LBM_TELEMETRY_ICON[] = {
 #include "mask_telemetry.lbm"
 };
 
+const uint8_t LBM_MAINVIEWS_ICON[] = {
+#include "mask_mainviews.lbm"
+};
+
 const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_MODEL_ICON,
   LBM_MODEL_SETUP_ICON,
@@ -302,16 +306,4 @@ const uint8_t LBM_SLIDER_POINT_MID[] __DMA = {
 
 const uint8_t LBM_SLIDER_POINT_IN[] __DMA = {
 #include "point_in.lbm"
-};
-
-const uint8_t LBM_BUTTON_LEFT[] __DMA = {
-#include "bmp_left.lbm"
-};
-
-const uint8_t LBM_BUTTON_MID[] __DMA = {
-#include "bmp_mid.lbm"
-};
-
-const uint8_t LBM_BUTTON_RIGHT[] __DMA = {
-#include "bmp_right.lbm"
 };

@@ -91,10 +91,8 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
         with open(filename + ".specs", "w") as f:
             f.write("{ ")
             f.write(",".join(str(tmp) for tmp in coords))
-            if extraWidth:
-                for i in range(1, 14):
-                    f.write(", %d" % (int(coords[-1]) + i * (extraWidth / 12)))
-                # f.write(file("fonts/extra_%dpx.specs" % fontsize).read())
+            for i in range(1, 14):
+                f.write(", %d" % (int(coords[-1]) + i * (extraWidth / 12)))
             f.write(" }")
     return coords
 

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -1524,7 +1524,7 @@ uint16_t anaIn(uint8_t chan)
   return temp;
 #else
   volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
-  return *p;  
+  return *p;
 #endif
 #endif
 }
@@ -1587,7 +1587,7 @@ void getADC()
         }
       }
     }
-    else 
+    else
 #endif
     {
       s_anaFilt[x] = v;
@@ -1880,7 +1880,23 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
+#if defined(COLORLCD)
+void loadCustomScreens()
+{
+  for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
+    char name[sizeof(g_model.screenData[i].layoutName)+1];
+    memset(name, 0, sizeof(name));
+    strncpy(name, g_model.screenData[i].layoutName, sizeof(g_model.screenData[i].layoutName));
+    customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
+  }
 
+  if (customScreens[0] == NULL) {
+    customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
+  }
+}
+#else
+  #define loadCustomScreens()
+#endif
 
 #if defined(NAVIGATION_STICKS)
 uint8_t StickScrollAllowed;
@@ -1914,7 +1930,7 @@ void opentxStart()
 
 #if defined(DEBUG_TRACE_BUFFER)
   trace_event(trace_start, 0x12345678);
-#endif 
+#endif
 
 #if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
   for (int i=0; i<500 && !Card_initialized; i++) {
@@ -1926,6 +1942,8 @@ void opentxStart()
   checkAlarm();
   checkAll();
 #endif
+
+  loadCustomScreens();
 
 #if defined(GUI)
   if (g_eeGeneral.chkSum != evalChkSum()) {
@@ -1994,7 +2012,7 @@ void opentxClose()
 #if !defined(PCBTARANIS) && !defined(COLORLCD)
   if (storageDirtyMsk & EE_MODEL) {
     displayPopup(STR_SAVEMODEL);
-  } 
+  }
 #endif
 
   g_eeGeneral.unexpectedShutdown = 0;
@@ -2017,7 +2035,7 @@ void opentxClose()
 #endif
 
 #if defined(NAVIGATION_STICKS)
-uint8_t getSticksNavigationEvent() 
+uint8_t getSticksNavigationEvent()
 {
   uint8_t evt = 0;
   if (StickScrollAllowed) {
@@ -2198,10 +2216,10 @@ ISR(TIMER_AUDIO_VECT, ISR_NOBLOCK)
 #endif
 
 // Clocks every 10ms
-ISR(TIMER_10MS_VECT, ISR_NOBLOCK) 
+ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
 {
   // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
-  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed  
+  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed
 
 #if defined(AUDIO)
   AUDIO_HEARTBEAT();
@@ -2235,7 +2253,7 @@ ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with IS
   sei(); // enable other interrupts
 
   captureTrainerPulses(capture);
-  
+
   cli(); // disable other interrupts for stack pops before this function's RETI
   RESUME_PPMIN_INTERRUPT();
 }
@@ -2553,6 +2571,8 @@ void opentxInit(OPENTX_INIT_ARGS)
   startPulses();
 
   wdt_enable(WDTO_500MS);
+
+
 }
 
 #if !defined(SIMU)
@@ -2571,11 +2591,11 @@ int main(void)
 #endif
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast=30;
-#endif  
+#endif
   wdt_disable();
 
   boardInit();
-  
+
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
   // TODO remove this
   lcdInit();

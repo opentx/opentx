@@ -843,8 +843,8 @@ int getTrimValue(uint8_t phase, uint8_t idx);
     extern uint8_t gvarLastChanged;
   #endif
 #else
-  #define GET_GVAR(x, ...) (x)
-  #define GET_GVAR_PREC1(x, ...) (x*10)  
+  #define GET_GVAR(x, ...)       (x)
+  #define GET_GVAR_PREC1(x, ...) (x*10)
 #endif
 
 #if defined(CPUARM)

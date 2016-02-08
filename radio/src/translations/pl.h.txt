@@ -1102,6 +1102,9 @@
 #define TR_STOP_DISCOVER_SENSORS INDENT "Szukanie STOP "
 #define TR_DELETE_ALL_SENSORS  INDENT "Usuń czujniki     "
 #define TR_CONFIRMDELETE       "Usunąć wszystkie ?"
+#define TR_SELECT_WIDGET       "Select widget"
+#define TR_REMOVE_WIDGET       "Remove widget"
+#define TR_WIDGET_SETTINGS     "Widget settings"
 
 #define TR_MENU_INPUTS         "\314Wejści"
 #define TR_MENU_LUA            "\322SkryptyLUA"

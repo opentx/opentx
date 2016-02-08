@@ -104,7 +104,7 @@ void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
-  lcdDrawBitmapPattern(x, y, font, flags, offset, width);
+  if (width > 0) lcdDrawBitmapPattern(x, y, font, flags, offset, width);
   lcdNextPos = x + width;
 }
 
@@ -152,9 +152,10 @@ int getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight)
   return min(widthScale, heightScale);
 }
 
-int getTextWidth(const pm_char * s, int len, LcdFlags flags)
+int getTextWidth(const char * s, int len, LcdFlags flags)
 {
   const uint16_t * specs = fontspecsTable[FONTSIZE(flags) >> 8];
+
   int result = 0;
   for (int i=0; len==0 || i<len; ++i) {
     char c;
@@ -179,9 +180,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   const uint16_t * fontspecs = fontspecsTable[fontindex];
 
   if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-    if (COLOR_IDX(flags) == TEXT_COLOR_INDEX) {
-      flags += TEXT_INVERTED_COLOR - TEXT_COLOR;
-    }
+    flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
     if (FONTSIZE(flags) == TINSIZE)
       lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
     else if (FONTSIZE(flags) == SMLSIZE)
@@ -382,7 +381,7 @@ void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlag
 void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
   for (scoord_t i=y; i<y+h; i++) {
-    if ((att&ROUND) && (i==y || i==y+h-1))
+    if ((att & ROUND) && (i==y || i==y+h-1))
       lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
       lcdDrawHorizontalLine(x, i, w, pat, att);
@@ -442,97 +441,6 @@ void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   uint8_t length = STR_VSRCRAW[0];
   lcdDrawSizedText(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
-}
-
-void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
-{
-  if (idx == MIXSRC_NONE) {
-    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
-  }
-  else if (idx <= MIXSRC_LAST_INPUT) {
-    char s[32] = "\314";
-    if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT])) {
-      zchar2str(s+1, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME);
-      s[1+LEN_INPUT_NAME] = '\0';
-    }
-    else {
-      strAppendUnsigned(s+1, idx, 2);
-    }
-    lcdDrawText(x, y, s, att);
-  }
-  else if (idx <= MIXSRC_LAST_LUA) {
-#if defined(LUA_MODEL_SCRIPTS)
-    div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
-    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
-      char s[32] = "\322";
-      s[1] = '1'+qr.quot;
-      strncpy(&s[2], scriptInputsOutputs[qr.quot].outputs[qr.rem].name, 32-2);
-      s[31] = '\0';
-      lcdDrawText(x, y, s, att);
-    }
-#endif
-  }
-  else if (idx <= MIXSRC_LAST_POT) {
-    idx = idx-MIXSRC_Rud;
-    if (ZEXIST(g_eeGeneral.anaNames[idx]))
-      lcdDrawSizedText(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
-    else
-      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx+1, att);
-  }
-  else if (idx >= MIXSRC_FIRST_SWITCH && idx < MIXSRC_FIRST_LOGICAL_SWITCH) {
-    idx = idx-MIXSRC_FIRST_SWITCH;
-    if (ZEXIST(g_eeGeneral.switchNames[idx]))
-      lcdDrawSizedText(x, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
-    else
-      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx+MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1, att);
-  }
-  else if (idx < MIXSRC_SW1)
-    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
-  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
-    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
-  else if (idx < MIXSRC_CH1)
-    drawStringWithIndex(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
-  else if (idx <= MIXSRC_LAST_CH) {
-    drawStringWithIndex(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
-#if 0
-    if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcdDrawChar(lcdNextPos, y, ' ', att);
-      lcdDrawSizedText(lcdNextPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att);
-    }
-#endif
-  }
-  else if (idx <= MIXSRC_LAST_GVAR)
-    drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
-  else if (idx < MIXSRC_FIRST_TELEM) {
-    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
-  }
-  else {
-    idx -= MIXSRC_FIRST_TELEM;
-    div_t qr = div(idx, 3);
-    char s[32];
-    s[0] = '\321';
-    int pos = 1 + zchar2str(&s[1], g_model.telemetrySensors[qr.quot].label, sizeof(g_model.telemetrySensors[qr.quot].label));
-    if (qr.rem) s[pos++] = (qr.rem==2 ? '+' : '-');
-    s[pos] = '\0';
-    lcdDrawText(x, y, s, att);
-  }
-}
-
-void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
-{
-  lcdDrawTextAtIndex(x, y, STR_RETA123, idx-1, att);
-}
-
-void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
-{
-  uint8_t len = sizeof(g_model.header.name);
-  while (len>0 && !name[len-1]) --len;
-  if (len==0) {
-    drawStringWithIndex(x, y, STR_MODEL, id+1, att|LEADING0);
-  }
-  else {
-    lcdDrawSizedText(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
-  }
 }
 
 char * getStringAtIndex(char * dest, const char * s, int idx)
@@ -601,6 +509,104 @@ char * getSwitchString(char * dest, swsrc_t idx)
   }
 
   return dest;
+}
+
+char * getSourceString(char * dest, mixsrc_t idx)
+{
+  if (idx == MIXSRC_NONE) {
+    return getStringAtIndex(dest, STR_VSRCRAW, 0);
+  }
+  else if (idx <= MIXSRC_LAST_INPUT) {
+    idx -= MIXSRC_FIRST_INPUT;
+    *dest++ = '\314';
+    if (ZEXIST(g_model.inputNames[idx])) {
+      zchar2str(dest, g_model.inputNames[idx], LEN_INPUT_NAME);
+      dest[LEN_INPUT_NAME] = '\0';
+    }
+    else {
+      strAppendUnsigned(dest, idx, 2);
+    }
+  }
+  else if (idx <= MIXSRC_LAST_LUA) {
+#if defined(LUA_MODEL_SCRIPTS)
+    div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
+      *dest++ = '\322';
+      // *dest++ = '1'+qr.quot;
+      strncpy(dest, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, sizeof(scriptInputsOutputs[qr.quot].outputs[qr.rem].name));
+      dest[sizeof(scriptInputsOutputs[qr.quot].outputs[qr.rem].name)] = '\0';
+    }
+#endif
+  }
+  else if (idx <= MIXSRC_LAST_POT) {
+    idx -= MIXSRC_Rud;
+    if (ZEXIST(g_eeGeneral.anaNames[idx])) {
+      zchar2str(dest, g_eeGeneral.anaNames[idx], LEN_ANA_NAME);
+      dest[LEN_ANA_NAME] = '\0';
+    }
+    else {
+      getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
+    }
+  }
+  else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
+    idx -= MIXSRC_FIRST_SWITCH;
+    if (ZEXIST(g_eeGeneral.switchNames[idx])) {
+      zchar2str(dest, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME);
+      dest[LEN_SWITCH_NAME] = '\0';
+    }
+    else {
+      getStringAtIndex(dest, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1);
+    }
+  }
+  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    getSwitchString(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
+  }
+  else if (idx <= MIXSRC_LAST_TRAINER) {
+    getStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);
+  }
+  else if (idx <= MIXSRC_LAST_CH) {
+    getStringWithIndex(dest, STR_CH, idx - MIXSRC_CH1 + 1);
+  }
+  else if (idx <= MIXSRC_LAST_GVAR) {
+    getStringWithIndex(dest, STR_GV, idx - MIXSRC_GVAR1 + 1);
+  }
+  else if (idx < MIXSRC_FIRST_TELEM) {
+    getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS);
+  }
+  else {
+    idx -= MIXSRC_FIRST_TELEM;
+    div_t qr = div(idx, 3);
+    dest[0] = '\321';
+    int pos = 1 + zchar2str(&dest[1], g_model.telemetrySensors[qr.quot].label, sizeof(g_model.telemetrySensors[qr.quot].label));
+    if (qr.rem) dest[pos++] = (qr.rem==2 ? '+' : '-');
+    dest[pos] = '\0';
+  }
+
+  return dest;
+}
+
+void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags flags)
+{
+  char s[16];
+  getSourceString(s, idx);
+  lcdDrawText(x, y, s, flags);
+}
+
+void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+{
+  lcdDrawTextAtIndex(x, y, STR_RETA123, idx-1, att);
+}
+
+void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
+{
+  uint8_t len = sizeof(g_model.header.name);
+  while (len>0 && !name[len-1]) --len;
+  if (len==0) {
+    drawStringWithIndex(x, y, STR_MODEL, id+1, att|LEADING0);
+  }
+  else {
+    lcdDrawSizedText(x, y, name, sizeof(g_model.header.name), ZCHAR|att);
+  }
 }
 
 void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
@@ -783,6 +789,21 @@ void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
 void lcdSetContrast()
 {
   lcdSetRefVolt(g_eeGeneral.contrast);
+}
+
+void lcdInvertRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+{
+  display_t color = lcdColorTable[COLOR_IDX(att)];
+  COLOR_SPLIT(color, red, green, blue);
+
+  for (int i=y; i<y+h; i++) {
+    display_t * p = PIXEL_PTR(x, i);
+    for (int j=0; j<w; j++) {
+      ASSERT_IN_DISPLAY(p);
+      COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
+      lcdDrawPixel(p++, COLOR_JOIN(0b11111 + red - bgRed, 0b111111 + green - bgGreen, 0b11111 + blue - bgBlue));
+    }
+  }
 }
 
 void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)

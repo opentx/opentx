@@ -174,7 +174,7 @@ bool menuModelMixOne(evt_t event)
 {
   MixData * md2 = mixAddress(s_currIdx) ;
 
-  SUBMENU(STR_MIXER, MIX_FIELD_COUNT, 0, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
+  SUBMENU_WITH_OPTIONS(STR_MIXER, LBM_MIXER_ICON, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
 
   // The separation line between 2 columns

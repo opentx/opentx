@@ -29,15 +29,7 @@
 #define TRIM_LEN                       80
 #define POTS_LINE_Y                    252
 
-#define MODELPANEL_LEFT                240
-#define MODELPANEL_TOP                 68
-#define MODELPANEL_WIDTH               MODEL_BITMAP_WIDTH
-#define MODELPANEL_HEIGHT              135
-
-#define TIMER1PANEL_LEFT               46
-#define TIMER1PANEL_TOP                55
-#define TIMER2PANEL_LEFT               TIMER1PANEL_LEFT
-#define TIMER2PANEL_TOP                134
+Layout * customScreens[MAX_CUSTOM_SCREENS];
 
 void drawMainPots()
 {
@@ -86,25 +78,6 @@ void drawTrims(uint8_t flightMode)
     }
   }
 }
-
-void drawTimer(coord_t x, coord_t y, int index)
-{
-  TimerData & timerData = g_model.timers[index];
-  TimerState & timerState = timersStates[index];
-  lcdDrawBitmapPattern(x, y, LBM_TIMER_BACKGROUND, TEXT_BGCOLOR);
-  if (timerData.start) {
-    lcdDrawBitmapPatternPie(x+2, y+3, LBM_RSCALE, TITLE_BGCOLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
-  }
-  else {
-    lcdDrawBitmapPattern(x+3, y+4, LBM_TIMER, TITLE_BGCOLOR);
-  }
-  putsTimer(x+76, y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
-  if (ZLEN(timerData.name) > 0) {
-    lcdDrawSizedText(x+78, y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
-  }
-  drawStringWithIndex(x+137, y+17, "TMR", index+1, SMLSIZE|TEXT_COLOR);
-}
-
 
 void drawMainViewTopBar()
 {
@@ -283,55 +256,9 @@ bool menuMainView(evt_t event)
       break;
   }
 
-  // 23ms if 24bits per pixel (with transparency) 5/6/5/8
-  // 6ms if 16bits per pixel 5/6/5 no DMA
-  // 1.2ms with the DMA
-  TIME_MEASURE_START(backgroundbitmap);
-  lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
-  TIME_MEASURE_STOP(backgroundbitmap);
-
-  // Top Bar
-  drawMainViewTopBar();
-
-  // Flight mode
-  lcdDrawSizedText(LCD_W/2-getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE)/2, 237, g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR|SMLSIZE);
-
-  // Pots and rear sliders positions
-  drawMainPots();
-
-  // Trims
-  drawTrims(mixerCurrentFlightMode);
-
-  // Model panel
-  TIME_MEASURE_START(filledRect);
-  lcdDrawFilledRect(MODELPANEL_LEFT, MODELPANEL_TOP, MODELPANEL_WIDTH, MODELPANEL_HEIGHT, SOLID, TEXT_BGCOLOR | OPACITY(5));
-  TIME_MEASURE_STOP(filledRect); // 9ms !
-
-  lcdDrawBitmapPattern(MODELPANEL_LEFT+6, MODELPANEL_TOP+4, LBM_MODEL_ICON, TITLE_BGCOLOR);
-  lcdDrawSizedText(MODELPANEL_LEFT+45, MODELPANEL_TOP+10, g_model.header.name, LEN_MODEL_NAME, ZCHAR|SMLSIZE);
-  lcdDrawSolidHorizontalLine(MODELPANEL_LEFT+39, MODELPANEL_TOP+27, MODELPANEL_WIDTH-48, TITLE_BGCOLOR);
-  int scale = getBitmapScale(modelBitmap, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT);
-  int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
-  int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
-  lcdDrawBitmap(MODELPANEL_LEFT+(MODEL_BITMAP_WIDTH-width)/2, MODELPANEL_TOP+MODELPANEL_HEIGHT-MODEL_BITMAP_HEIGHT/2-height/2, modelBitmap, 0, 0, scale);
-
-  // Timers
-  if (g_model.timers[0].mode) {
-    drawTimer(TIMER1PANEL_LEFT, TIMER1PANEL_TOP, 0);
+  if (customScreens[0]) {
+    customScreens[0]->refresh();
   }
-  if (g_model.timers[1].mode) {
-    drawTimer(TIMER2PANEL_LEFT, TIMER2PANEL_TOP, 1);
-  }
-
-#if 0
-  if (gvarDisplayTimer > 0) {
-    gvarDisplayTimer--;
-    displayMessageBox();
-    drawStringWithIndex(WARNING_LINE_X, WARNING_LINE_Y, STR_GV, gvarLastChanged+1, DBLSIZE|YELLOW);
-    lcdDrawSizedText(WARNING_LINE_X+45, WARNING_LINE_Y, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, DBLSIZE|YELLOW|ZCHAR);
-    lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), DBLSIZE|LEFT);
-  }
-#endif
 
   return true;
 }

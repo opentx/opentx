@@ -56,13 +56,10 @@ void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
-  int width = getTextWidth(label, attr);
-  lcdDrawBitmap(x, y, LBM_BUTTON_LEFT);
-  for (int i=0; i<width; i++) {
-    lcdDrawBitmap(x+20+i, y, LBM_BUTTON_MID);
-  }
-  lcdDrawBitmap(x+20+width, y, LBM_BUTTON_RIGHT);
-  lcdDrawText(x+23, y+1, label, attr);
+  int width = getTextWidth(label, 0, attr);
+  lcdDrawSolidRect(x, y-1, width+16, 20, (attr & INVERS) ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
+  lcdDrawSolidRect(x-1, y-2, width+18, 22, (attr & INVERS) ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
+  lcdDrawText(x+8, y, label, (attr & INVERS) ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
@@ -133,92 +130,74 @@ void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
   lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
 }
 
-void drawMenuTemplate(const char * title, uint16_t scrollbar_X, uint32_t options)
+void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t options)
 {
+  uint8_t linesDisplayed;
+  coord_t bodyTop, bodyBottom;
+
   // Header
   lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
   lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
+  lcdDrawBitmapPattern(5, 7, icon, MENU_TITLE_COLOR);
   drawTopmenuDatetime();
 
-  if (menuPageCount > 0) {
+  // Menu title bar
+  if (options & OPTION_MENU_TITLE_BAR) {
+    linesDisplayed = NUM_BODY_LINES;
+    bodyTop = MENU_BODY_TOP;
     lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
     lcdDrawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
-    if (options & OPTION_MENU_NO_FOOTER) {
-      lcdDrawSolidFilledRect(0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT+MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
-    }
-    else {
-      lcdDrawSolidFilledRect(0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT, TEXT_BGCOLOR);
-      lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
-    }
-    if (menuVerticalPosition < 0) {
-      lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
-    }
-    else {
-      lcdDrawSolidFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
-      lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
-    }
-    const uint8_t * const * icons = (menuVerticalPositions[0] == 0 ? LBM_MODEL_ICONS : LBM_RADIO_ICONS);
-    lcdDrawBitmapPattern(5, 7, icons[0], MENU_TITLE_COLOR);
-    for (int i=0; i<menuPageCount; i++) {
-      lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, icons[i+1], MENU_TITLE_COLOR);
-    }
-    if (menuVerticalPosition < 0) {
-      lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
-      lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
-    }
     if (title) {
       lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+2, title, MENU_TITLE_COLOR);
     }
-    if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-      drawVerticalScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y, DEFAULT_SCROLLBAR_H, menuVerticalOffset, linesCount, NUM_BODY_LINES);
-    }
   }
   else {
-    lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
+    linesDisplayed = NUM_BODY_LINES;
+    bodyTop = MENU_HEADER_HEIGHT;
     if (title) {
-      lcdDrawText(50, 3, title, MENU_TITLE_COLOR|DBLSIZE);
-    }
-    // Body and footer (depending on options)
-    if (options & OPTION_MENU_NO_FOOTER) {
-      lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
-    }
-    else {
-      lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
-      lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
-    }
-    if (scrollbar_X && linesCount > NUM_BODY_LINES+1) {
-      drawVerticalScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+FH, menuVerticalOffset, linesCount, NUM_BODY_LINES+1);
+      lcdDrawText(50, 3, title, MENU_TITLE_COLOR);
     }
   }
-}
 
-void drawSubmenuTemplate(const char * name, uint16_t scrollbar_X, uint32_t options)
-{
-  // clear the screen
-  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-
+  // Footer
   if (options & OPTION_MENU_NO_FOOTER) {
-    lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+    bodyBottom = LCD_H;
   }
   else {
-    lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
+    bodyBottom = MENU_FOOTER_TOP;
     lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
   }
 
+  // Body
+  lcdDrawSolidFilledRect(0, bodyTop, LCD_W, bodyBottom-bodyTop, TEXT_BGCOLOR);
+
+  // Scrollbar
+  if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount>linesDisplayed) {
+    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, bodyTop+3, bodyBottom-bodyTop-6, menuVerticalOffset, linesCount, linesDisplayed);
+  }
+}
+
+void drawMenuTemplate(const char * title, uint16_t scrollbar_X, uint32_t options)
+{
   const uint8_t * const * icons = (menuVerticalPositions[0] == 0 ? LBM_MODEL_ICONS : LBM_RADIO_ICONS);
 
-  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(5, 7, icons[menuPageIndex+1], MENU_TITLE_COLOR);
+  drawScreenTemplate(title, icons[0], OPTION_MENU_TITLE_BAR);
 
-  drawTopmenuDatetime();
-
-  if (name) {
-    // must be done at the end so that we can write something at the right of the menu title
-    lcdDrawText(50, 3, name, MENU_TITLE_COLOR);
+  if (menuVerticalPosition < 0) {
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
+  }
+  else {
+    lcdDrawSolidFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
   }
 
-  if (scrollbar_X && linesCount > NUM_BODY_LINES+1) {
-    drawVerticalScrollbar(scrollbar_X, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+MENU_FOOTER_HEIGHT, menuVerticalOffset, linesCount, NUM_BODY_LINES+1);
+  for (int i=0; i<menuPageCount; i++) {
+    lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, icons[i+1], MENU_TITLE_COLOR);
+  }
+
+  if (menuVerticalPosition < 0) {
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
   }
 }
 
@@ -229,7 +208,7 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values,
   return value;
 }
 
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event)
 {
   drawCheckBox(x, y, value, attr);
   return selectMenuItem(x, y, NULL, value, 0, 1, attr, event);

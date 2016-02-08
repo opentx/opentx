@@ -266,12 +266,6 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#define MENU_ONE_PAGE(title, lines_count, scrollbar_X, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawSubmenuTemplate(title, scrollbar_X); \
-
 #define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
@@ -283,22 +277,22 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   if (!check_simple(event, menu, tab, DIM(tab), lines_count)) return false; \
   drawMenuTemplate(title, scrollbar_X); \
 
-#define SUBMENU(title, lines_count, scrollbar_X, ...) \
+#define SUBMENU(title, icon, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawSubmenuTemplate(title, scrollbar_X);
+  drawScreenTemplate(title, icon);
 
-#define SUBMENU_WITH_OPTIONS(title, lines_count, options, scrollbar_X, ...) \
+#define SUBMENU_WITH_OPTIONS(title, icon, lines_count, options, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawSubmenuTemplate(title, scrollbar_X, options);
+  drawScreenTemplate(title, icon, options);
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
   if (!check_submenu_simple(event, lines_count)) return false
 
-#define SIMPLE_SUBMENU(title, lines_count, scrollbar_X) \
+#define SIMPLE_SUBMENU(title, icon, lines_count) \
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
-  drawSubmenuTemplate(title, scrollbar_X)
+  drawScreenTemplate(title, icon)
 
 typedef int select_menu_value_t;
 

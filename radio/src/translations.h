@@ -826,6 +826,9 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_STOP_DISCOVER_SENSORS[];
   extern const pm_char STR_DELETE_ALL_SENSORS[];
   extern const pm_char STR_CONFIRMDELETE[];
+  extern const pm_char STR_SELECT_WIDGET[];
+  extern const pm_char STR_REMOVE_WIDGET[];
+  extern const pm_char STR_WIDGET_SETTINGS[];
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
@@ -834,9 +837,9 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MODULE[];
   extern const pm_char STR_ENABLE_POPUP[];
   extern const pm_char STR_DISABLE_POPUP[];
-extern const pm_char STR_POPUP[];
-extern const pm_char STR_MIN[];
-extern const pm_char STR_MAX[];
+  extern const pm_char STR_POPUP[];
+  extern const pm_char STR_MIN[];
+  extern const pm_char STR_MAX[];
   extern const pm_char STR_CURVE_PRESET[];
   extern const pm_char STR_PRESET[];
   extern const pm_char STR_MIRROR[];

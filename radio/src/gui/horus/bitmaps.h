@@ -44,6 +44,14 @@ extern const uint8_t LBM_RSCALE[];
 // Menu icons
 extern const uint8_t * const LBM_RADIO_ICONS[];
 extern const uint8_t * const LBM_MODEL_ICONS[];
+extern const uint8_t LBM_RADIO_ICON[];
+extern const uint8_t LBM_SD_BROWSER_ICON[];
+extern const uint8_t LBM_CALIBRATION_ICON[];
+extern const uint8_t LBM_INPUTS_ICON[];
+extern const uint8_t LBM_MIXER_ICON[];
+extern const uint8_t LBM_CURVES_ICON[];
+extern const uint8_t LBM_TELEMETRY_ICON[];
+extern const uint8_t LBM_MAINVIEWS_ICON[];
 
 // Model selection icons
 extern const uint8_t LBM_LIBRARY_ICON[];
@@ -69,11 +77,6 @@ extern const uint8_t LBM_CURVE_COORD_SHADOW[];
 extern const uint8_t LBM_SHUTDOWN[];
 extern const uint8_t LBM_SLEEP[];
 extern const uint8_t LBM_SHUTDOWN_CIRCLE[];
-
-// Button bitmaps
-extern const uint8_t LBM_BUTTON_LEFT[];
-extern const uint8_t LBM_BUTTON_MID[];
-extern const uint8_t LBM_BUTTON_RIGHT[];
 
 // Slider bitmaps
 extern const uint8_t LBM_SLIDER_BAR_LEFT[];

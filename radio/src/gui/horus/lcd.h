@@ -24,7 +24,6 @@
 #define LCD_W           480
 #define LCD_H           272
 
-#define BOX_WIDTH       81
 #define coord_t         int
 #define scoord_t        int
 #define CENTER
@@ -57,7 +56,7 @@
 #define MODE(flags)     ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 
 /* rect, square flags */
-#define ROUND           0x02
+#define ROUND           0x04
 
 /* telemetry flags */
 #define NO_UNIT         0x40
@@ -112,6 +111,7 @@ enum LcdColorIndex
   CURVE_CURSOR_COLOR_INDEX,
   HEADER_BGCOLOR_INDEX,
   TITLE_BGCOLOR_INDEX,
+  CUSTOM_COLOR_INDEX,
   LCD_COLOR_COUNT
 };
 
@@ -141,6 +141,7 @@ void lcdColorsInit();
 #define CURVE_CURSOR_COLOR             COLOR(CURVE_CURSOR_COLOR_INDEX)
 #define TITLE_BGCOLOR                  COLOR(TITLE_BGCOLOR_INDEX)
 #define HEADER_BGCOLOR                 COLOR(HEADER_BGCOLOR_INDEX)
+#define CUSTOM_COLOR                   COLOR(CUSTOM_COLOR_INDEX)
 
 #define COLOR_IDX(att)                 uint8_t((att) >> 16)
 
@@ -233,18 +234,25 @@ inline void lcdDrawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t co
 }
 
 #if !defined(SIMU)
-inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags flags)
 {
-  lcdDrawSolidFilledRectDMA(x, y, w, h, lcdColorTable[COLOR_IDX(att)]);
+  lcdDrawSolidFilledRectDMA(x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
 }
 #else
-void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att);
+void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags flags);
 #endif
+
+inline void lcdSetColor(uint16_t color)
+{
+  lcdColorTable[CUSTOM_COLOR_INDEX] = color;
+}
 
 inline void lcdClear()
 {
   lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, 0);
 }
+
+void lcdInvertRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags flags);
 
 inline void lcdDrawSolidHorizontalLine(coord_t x, scoord_t y, coord_t w, LcdFlags att)
 {
@@ -265,7 +273,7 @@ inline void lcdDrawSolidRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFla
   lcdDrawSolidHorizontalLine(x, y+h-1, w, att);
 }
 
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0);
 void lcdDrawBlackOverlay();
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawCircle(int x0, int y0, int radius);

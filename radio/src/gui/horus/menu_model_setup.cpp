@@ -80,8 +80,8 @@ enum menuModelSetupItems {
 #define FIELD_PROTOCOL_MAX 1
 
 #define MODEL_SETUP_2ND_COLUMN        200
-#define MODEL_SETUP_BIND_OFS          40
-#define MODEL_SETUP_RANGE_OFS         80
+#define MODEL_SETUP_BIND_OFS          30
+#define MODEL_SETUP_RANGE_OFS         60
 #define MODEL_SETUP_SET_FAILSAFE_OFS  100
 
 void onModelSetupBitmapMenu(const char *result)
@@ -615,8 +615,8 @@ bool menuModelSetup(evt_t event)
         if (IS_MODULE_PPM(moduleIdx)) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PPMFRAME);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+70, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0, 0, NULL, "us");
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN+90, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+90, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0, 0, NULL, "us");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+120, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
@@ -648,8 +648,8 @@ bool menuModelSetup(evt_t event)
             if (attr && l_posHorz==0 && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
             }
-            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y-2, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
-            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y-2, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
+            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
+            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
             if (attr && l_posHorz>0 && s_editMode>0) {
               if (l_posHorz == 1)

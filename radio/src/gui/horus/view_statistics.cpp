@@ -38,7 +38,7 @@ bool menuStatisticsView(evt_t event)
       return false;
   }
 
-  drawMenuTemplate("Statistics");
+  drawScreenTemplate("Statistics", LBM_RADIO_ICON, OPTION_MENU_NO_SCROLLBAR);
 
   lcdDrawText(  10, MENU_CONTENT_TOP + FH*0, "\037\145TOT:\037\317BATT:", HEADER_COLOR);
   lcdDrawText(  10, MENU_CONTENT_TOP + FH*1, "TM1:\037\145TM2:", HEADER_COLOR);
@@ -116,7 +116,7 @@ bool menuStatisticsDebug(evt_t event)
       return false;
   }
 
-  drawMenuTemplate(STR_MENUDEBUG);
+  drawScreenTemplate(STR_MENUDEBUG, LBM_RADIO_ICON, OPTION_MENU_NO_SCROLLBAR);
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_FREE_RAM, "Free Mem");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT, 0, NULL, "b");

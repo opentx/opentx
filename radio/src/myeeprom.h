@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -27,7 +27,7 @@
   #define LUA_EXPORT(...)                     LEXP(__VA_ARGS__)
   #define LUA_EXPORT_MULTIPLE(...)            LEXP_MULTIPLE(__VA_ARGS__)
   #define LUA_EXPORT_EXTRA(...)               LEXP_EXTRA(__VA_ARGS__)
-#else 
+#else
   #define LUA_EXPORT(...)
   #define LUA_EXPORT_MULTIPLE(...)
   #define LUA_EXPORT_EXTRA(...)
@@ -105,6 +105,7 @@
   #define NUM_POTS             7
   #define NUM_XPOTS            3
   #define MAX_SENSORS          32
+  #define MAX_CUSTOM_SCREENS   5
 #elif defined(PCBFLAMENCO)
   #define MAX_MODELS           60
   #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
@@ -566,7 +567,7 @@ enum PotsWarnMode {
   #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_BITMAP
-  #define MODELDATA_EXTRA   
+  #define MODELDATA_EXTRA
 #endif
 
 enum BacklightMode {
@@ -1154,16 +1155,16 @@ PACK(union u_gvarint_t {
     uint8_t hi;
   } bytes_t;
   int16_t word;
-	
+
   u_gvarint_t(int8_t l, uint8_t h) {bytes_t.lo=l; bytes_t.hi=h?255:0;} // hi bit is negativ sign
 
 private:
   // prevent unwanted constructors, also saves program
   u_gvarint_t() {}
   u_gvarint_t(const u_gvarint_t&) {}
-}); 
+});
 #define MD_WEIGHT(md) (u_gvarint_t(md->weight,md->weightMode).word)
-  
+
 PACK(union u_int8int16_t {
   struct {
     int8_t  lo;
@@ -1174,7 +1175,7 @@ PACK(union u_int8int16_t {
 
 #define MD_WEIGHT_TO_UNION(md, var) var.bytes_t.lo=md->weight; var.bytes_t.hi=md->weightMode?255:0
 #define MD_UNION_TO_WEIGHT(var, md) md->weight=var.bytes_t.lo; if (var.word<0) md->weightMode=1; else md->weightMode=0
-// #define MD_SETWEIGHT(md, val) md->weight=val; if (val<0) md->weightMode=1; else md->weightMode=0 
+// #define MD_SETWEIGHT(md, val) md->weight=val; if (val<0) md->weightMode=1; else md->weightMode=0
 
 #define MD_OFFSET(md) (u_gvarint_t(md->offset,md->offsetMode).word)
 #define MD_OFFSET_TO_UNION(md, var) var.bytes_t.lo=md->offset; var.bytes_t.hi=md->offsetMode?255:0
@@ -1220,7 +1221,7 @@ enum LogicalSwitchesFunctions {
 typedef int16_t ls_telemetry_value_t;
 PACK(typedef struct { // Logical Switches data
   uint8_t  func;
-  int32_t  v1:10;  
+  int32_t  v1:10;
   int32_t  v3:10;
   int32_t  andsw:9;      // TODO rename to xswtch
   uint32_t andswtype:1;  // TODO rename to xswtchType (AND / OR)
@@ -1327,7 +1328,7 @@ PACK(typedef struct {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   int16_t   offset:12;
   uint16_t  type:4;             // channel unit (0=volts, ...)
-  uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc. 
+  uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
   uint8_t   alarms_level:4;
   uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
   uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
@@ -1662,7 +1663,7 @@ PACK(typedef struct {
   uint8_t   invertELE:1;
   uint8_t   invertAIL:1;
   uint8_t   invertCOL:1;
-  uint8_t   type:5;  
+  uint8_t   type:5;
   uint8_t   collectiveSource;
   uint8_t   value;
 }) SwashRingData;
@@ -2287,12 +2288,20 @@ enum DisplayTrims
 };
 
 #if defined(COLORLCD)
+  #include "layout.h"
   #define SWITCHES_WARNING_DATA \
     swarnstate_t  switchWarningState;
+  PACK(typedef struct {
+    char layoutName[10];
+    Layout::PersistentData layoutData;
+  }) CustomScreenData;
+  #define CUSTOM_SCREENS_DATA \
+    CustomScreenData screenData[MAX_CUSTOM_SCREENS];
 #else
   #define SWITCHES_WARNING_DATA \
     swarnstate_t  switchWarningState; \
     swarnenable_t switchWarningEnable;
+  #define CUSTOM_SCREENS_DATA
 #endif
 
 PACK(typedef struct {
@@ -2317,10 +2326,10 @@ PACK(typedef struct {
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[NUM_CHNOUT];
   ExpoData  expoData[MAX_EXPOS];
-  
+
   CurveData curves[MAX_CURVES];
   int8_t    points[NUM_POINTS];
-  
+
   LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
   CustomFunctionData customFn[NUM_CFN];
   SwashRingData swashR;
@@ -2339,8 +2348,11 @@ PACK(typedef struct {
   MODELDATA_EXTRA
 
   ARM_FIELD(TelemetrySensor telemetrySensors[MAX_SENSORS])
-  
+
   TARANIS_REV9E_FIELD(uint8_t toplcdTimer)
+
+  CUSTOM_SCREENS_DATA
+
 }) ModelData;
 
 extern EEGeneral g_eeGeneral;

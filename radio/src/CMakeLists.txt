@@ -21,6 +21,7 @@ option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 
 enable_language(ASM)
 set(OPT s)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
@@ -64,7 +65,9 @@ if(PCB STREQUAL HORUS)
   add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
-  include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus)
+  include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus gui/${GUI_DIR})
+  file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/layouts/*.cpp)
+  file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/widgets/*.cpp)
   set(GUI_SRC
     ${GUI_SRC}
     curves.cpp
@@ -76,6 +79,10 @@ if(PCB STREQUAL HORUS)
     view_about.cpp
     view_text.cpp
     screens_setup.cpp
+    widget.cpp
+    layout.cpp
+    ${LAYOUTS_SRC}
+    ${WIDGETS_SRC}
     )
   set(SRC ${SRC} bmp.cpp targets/taranis/rtc_driver.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
@@ -777,7 +784,7 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAG
 
 if(ARCH STREQUAL ARM)
   cmake_force_c_compiler(arm-none-eabi-gcc GNU)
-  cmake_force_cxx_compiler(arm-none-eabi-gcc GNU)
+  cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
   set(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
   set(CMAKE_SYSTEM_NAME Generic)
@@ -799,6 +806,7 @@ if(ARCH STREQUAL ARM)
   endif()
 
   add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
+  link_libraries(firmware -lstdc++)
   add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
 
   add_custom_command(
@@ -845,4 +853,3 @@ if(CPU_FAMILY STREQUAL STM32)
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
 endif()
-
