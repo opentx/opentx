@@ -84,8 +84,6 @@ add_dependencies(opentx-taranisx9e${SUFFIX}-simulator ${dependencies_taranis} lu
 
 add_dependencies(opentx-horus${SUFFIX}-simulator horus_bitmaps horus_fonts firmware_translations lua_export_horus)
 
-add_definitions(-std=c++11)
-
 set(OPENTX_LIBRARIES
   opentx-9x${SUFFIX}-simulator
   opentx-9xr${SUFFIX}-simulator
