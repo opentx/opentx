@@ -801,7 +801,7 @@ void lcdInvertRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
     for (int j=0; j<w; j++) {
       ASSERT_IN_DISPLAY(p);
       COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
-      lcdDrawPixel(p++, COLOR_JOIN(0b11111 + red - bgRed, 0b111111 + green - bgGreen, 0b11111 + blue - bgBlue));
+      lcdDrawPixel(p++, COLOR_JOIN(0x1F + red - bgRed, 0x3F + green - bgGreen, 0x1F + blue - bgBlue));
     }
   }
 }
