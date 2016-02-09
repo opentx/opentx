@@ -737,7 +737,7 @@ ifeq ($(PCB), MEGA2560)
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
   EEPROMSRC = storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
-  CPPSRC += audio_avr.cpp debug.cpp
+  CPPSRC += debug.cpp
   BITMAPS += bitmaps/9x/splash.lbm bitmaps/9x/asterisk.lbm bitmaps/9x/about.lbm
   GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
