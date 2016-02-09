@@ -79,4 +79,6 @@ void drawMainViewTopBar();
 void drawMainPots();
 void drawTrims(uint8_t flightMode);
 
+extern uint8_t linesDisplayed;
+
 #endif // _WIDGETS_H_

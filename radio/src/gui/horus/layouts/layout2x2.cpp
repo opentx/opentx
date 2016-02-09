@@ -83,4 +83,8 @@ void Layout2x2::refresh(bool setup)
   Layout::refresh(setup);
 }
 
-BaseLayoutFactory<Layout2x2> layout2x2("Layout2x2", NULL, Layout2x2::options);
+const uint8_t LBM_LAYOUT_2x2[] __DMA = {
+#include "mask_layout2x2.lbm"
+};
+
+BaseLayoutFactory<Layout2x2> layout2x2("Layout2x2", LBM_LAYOUT_2x2, Layout2x2::options);

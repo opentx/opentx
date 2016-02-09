@@ -130,9 +130,10 @@ void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
   lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
 }
 
+uint8_t linesDisplayed;
+
 void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t options)
 {
-  uint8_t linesDisplayed;
   coord_t bodyTop, bodyBottom;
 
   // Header
@@ -152,7 +153,7 @@ void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t optio
     }
   }
   else {
-    linesDisplayed = NUM_BODY_LINES;
+    linesDisplayed = NUM_BODY_LINES + 1;
     bodyTop = MENU_HEADER_HEIGHT;
     if (title) {
       lcdDrawText(50, 3, title, MENU_TITLE_COLOR);

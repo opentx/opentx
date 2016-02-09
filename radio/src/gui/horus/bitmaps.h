@@ -85,4 +85,8 @@ extern const uint8_t LBM_SLIDER_POINT_OUT[];
 extern const uint8_t LBM_SLIDER_POINT_MID[];
 extern const uint8_t LBM_SLIDER_POINT_IN[];
 
+// Carroussel bitmaps
+extern const uint8_t LBM_CARROUSSEL_LEFT[];
+extern const uint8_t LBM_CARROUSSEL_RIGHT[];
+
 #endif // _BITMAPS_H_

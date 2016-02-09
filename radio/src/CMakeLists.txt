@@ -65,7 +65,7 @@ if(PCB STREQUAL HORUS)
   add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
-  include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus gui/${GUI_DIR})
+  include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
   file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/layouts/*.cpp)
   file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/widgets/*.cpp)
   set(GUI_SRC

@@ -307,3 +307,12 @@ const uint8_t LBM_SLIDER_POINT_MID[] __DMA = {
 const uint8_t LBM_SLIDER_POINT_IN[] __DMA = {
 #include "point_in.lbm"
 };
+
+const uint8_t LBM_CARROUSSEL_LEFT[] __DMA = {
+#include "mask_carroussel_left.lbm"
+};
+
+const uint8_t LBM_CARROUSSEL_RIGHT[] __DMA = {
+#include "mask_carroussel_right.lbm"
+};
+

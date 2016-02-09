@@ -99,7 +99,7 @@ class LayoutFactory
       registerLayout(this);
     }
     const char * getName() const { return name; }
-    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) = 0;
+    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) const = 0;
     virtual const ZoneOption * getOptions() const = 0;
     virtual Layout * create(Layout::PersistentData * persistentData) const = 0;
     virtual Layout * load(Layout::PersistentData * persistentData) const = 0;
@@ -119,7 +119,7 @@ class BaseLayoutFactory: public LayoutFactory
     {
     }
 
-    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags)
+    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) const
     {
       extern void lcdDrawBitmapPattern(int x, int y, const uint8_t * bitmap, uint32_t flags, int width=0, int offset=0);
       lcdDrawBitmapPattern(x, y, bitmap, flags);
@@ -152,7 +152,6 @@ class BaseLayoutFactory: public LayoutFactory
 
 extern unsigned int countRegisteredLayouts;
 extern const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS];
-Layout * createLayout(const char * name, Layout::PersistentData * persistentData);
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
 
 #endif // _LAYOUT_H_

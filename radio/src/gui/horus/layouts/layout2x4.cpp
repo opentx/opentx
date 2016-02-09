@@ -30,7 +30,6 @@ class Layout2x4: public Layout
 
     virtual void create()
     {
-      TRACE("create");
       persistentData->options[0].boolValue = true;
       persistentData->options[1].boolValue = true;
       persistentData->options[2].boolValue = true;
@@ -116,4 +115,8 @@ void Layout2x4::refresh(bool setup)
   Layout::refresh(setup);
 }
 
-BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", NULL, Layout2x4::options);
+const uint8_t LBM_LAYOUT_2x4[] __DMA = {
+#include "mask_layout2x4.lbm"
+};
+
+BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", LBM_LAYOUT_2x4, Layout2x4::options);

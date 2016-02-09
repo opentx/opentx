@@ -185,7 +185,8 @@ extern int8_t s_editMode;       // global editmode
 
 // mawrow special values
 #define TITLE_ROW      ((uint8_t)-1)
-#define HIDDEN_ROW     ((uint8_t)-2)
+#define ORPHAN_ROW     ((uint8_t)-2)
+#define HIDDEN_ROW     ((uint8_t)-3)
 
 struct CheckIncDecStops {
   const int count;

@@ -32,7 +32,7 @@ void onWidgetChoiceMenu(const char * result)
 
 ZoneOptionValue editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue value, LcdFlags attr, evt_t event)
 {
-  lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, option->name);
+  lcdDrawText(MENUS_MARGIN_LEFT, y, option->name);
 
   if (option->type == ZoneOption::Bool) {
     value.boolValue = editCheckBox(value.boolValue, SCREENS_SETUP_2ND_COLUMN, y, attr, event);
@@ -162,6 +162,9 @@ bool menuSetupWidgets(evt_t event)
 
 bool menuSetupScreensView(evt_t event)
 {
+  static uint8_t menuHorizontalOffset;
+  static uint8_t lastPositionVertical;
+
   currentScreen = customScreens[0];
 
   unsigned int layoutIndex = 0;
@@ -172,40 +175,77 @@ bool menuSetupScreensView(evt_t event)
     }
   }
 
-  linesCount = 1;
+  linesCount = 3;
   const ZoneOption * options = currentScreen->getFactory()->getOptions();
   for (const ZoneOption * option = options; option->name; option++) {
     linesCount++;
   }
 
-  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { 0, 0, 0 });
+  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { countRegisteredLayouts-1, ORPHAN_ROW, 0, 0, 0, 0 });
 
-  for (int i=0; i<NUM_BODY_LINES+1; i++) {
+  for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
     int k = i + menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
-    if (k == 0) {
-      lcdDrawText(MENUS_MARGIN_LEFT, y, "Layout");
-      lcdDrawText(SCREENS_SETUP_2ND_COLUMN, y, currentScreen->getFactory()->getName(), attr);
-      if (attr) {
-        layoutIndex = checkIncDec(event, layoutIndex, 0, countRegisteredLayouts-1, EE_MODEL);
-        if (checkIncDec_Ret) {
-          customScreens[0] = registeredLayouts[layoutIndex]->create(&g_model.screenData[0].layoutData);
-          strncpy(g_model.screenData[0].layoutName, customScreens[0]->getFactory()->getName(), sizeof(g_model.screenData[0].layoutName));
+    switch(k) {
+      case 0: {
+        lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Layout");
+        if (attr) {
+          if (lastPositionVertical != menuVerticalPosition) {
+            menuHorizontalOffset = max<int>(0, min<int>(layoutIndex - 1, countRegisteredLayouts - 4));
+            menuHorizontalPosition = layoutIndex;
+          }
+          else if (menuHorizontalPosition < menuHorizontalOffset) {
+            menuHorizontalOffset = menuHorizontalPosition;
+          }
+          else if (menuHorizontalPosition > menuHorizontalOffset + 3) {
+            menuHorizontalOffset = menuHorizontalPosition - 3;
+          }
         }
-        else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+        lastPositionVertical = menuVerticalPosition;
+        int lastDisplayedLayout = min<int>(menuHorizontalOffset + 4, countRegisteredLayouts);
+        for (int i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
+          const LayoutFactory * factory = registeredLayouts[i];
+          factory->drawThumb(x, y, currentScreen->getFactory() == factory ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+        }
+        if (menuHorizontalOffset > 0)
+          lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN - 12, y, LBM_CARROUSSEL_LEFT, LINE_COLOR);
+        if (lastDisplayedLayout < countRegisteredLayouts)
+          lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN + 4 * 56, y, LBM_CARROUSSEL_RIGHT, LINE_COLOR);
+        if (attr) {
+          lcdDrawSolidRect(SCREENS_SETUP_2ND_COLUMN + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, TEXT_INVERTED_BGCOLOR);
+          if (menuHorizontalPosition != layoutIndex && event == EVT_KEY_BREAK(KEY_ENTER)) {
+            s_editMode = 0;
+            customScreens[0] = registeredLayouts[menuHorizontalPosition]->create(&g_model.screenData[0].layoutData);
+            strncpy(g_model.screenData[0].layoutName, customScreens[0]->getFactory()->getName(), sizeof(g_model.screenData[0].layoutName));
+            return false;
+          }
+        }
+        break;
+      }
+
+      case 1:
+        break;
+
+      case 2:
+        drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup widgets", attr);
+        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
           pushMenu(menuSetupWidgets);
         }
-      }
-    }
-    else if (k < linesCount) {
-      const ZoneOption * option = &options[k-1];
-      ZoneOptionValue value = currentScreen->getOptionValue(k-1);
-      value = editZoneOption(y, option, value, attr, event);
-      if (attr) {
-        currentScreen->setOptionValue(k-1, value);
-      }
+        break;
+
+      default:
+        if (k < linesCount) {
+          uint8_t index = k - 3;
+          const ZoneOption *option = &options[index];
+          ZoneOptionValue value = currentScreen->getOptionValue(index);
+          value = editZoneOption(y, option, value, attr, event);
+          if (attr) {
+            currentScreen->setOptionValue(index, value);
+          }
+        }
+        break;
     }
   }
 

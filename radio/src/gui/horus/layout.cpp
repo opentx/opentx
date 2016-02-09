@@ -81,15 +81,6 @@ const LayoutFactory * getLayoutFactory(const char * name)
   return NULL;
 }
 
-Layout * createLayout(const char * name, Layout::PersistentData * persistentData)
-{
-  const LayoutFactory * factory = getLayoutFactory(name);
-  if (factory) {
-    return factory->create(persistentData);
-  }
-  return NULL;
-}
-
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
 {
   const LayoutFactory * factory = getLayoutFactory(name);

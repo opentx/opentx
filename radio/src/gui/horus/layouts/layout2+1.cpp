@@ -100,4 +100,8 @@ void Layout2P1::refresh(bool setup)
   Layout::refresh(setup);
 }
 
-BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", NULL, Layout2P1::options);
+const uint8_t LBM_LAYOUT_2P1[] __DMA = {
+#include "mask_layout2+1.lbm"
+};
+
+BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, Layout2P1::options);

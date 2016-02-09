@@ -597,7 +597,6 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
   }
 
   linesCount = rowcount;
-  int maxBodyLines =  (menuTab ? NUM_BODY_LINES : NUM_BODY_LINES+1);
 
   if (menuVerticalPosition <= MENU_FIRST_LINE_EDIT) {
     menuVerticalOffset = 0;
@@ -611,7 +610,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
     }
   }
   else if (horTab) {
-    if (rowcount > maxBodyLines) {
+    if (rowcount > linesDisplayed) {
       while (1) {
         vertpos_t firstLine = 0;
         for (int numLines=0; firstLine<rowcount && numLines<menuVerticalOffset; firstLine++) {
@@ -624,16 +623,16 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
         }
         else {
           vertpos_t lastLine = firstLine;
-          for (int numLines=0; lastLine<rowcount && numLines<maxBodyLines; lastLine++) {
+          for (int numLines=0; lastLine<rowcount && numLines<linesDisplayed; lastLine++) {
             if (lastLine >= horTabMax || horTab[lastLine] != HIDDEN_ROW) {
               numLines++;
             }
           }
-          if (menuVerticalPosition >= lastLine) {
+          if (menuVerticalPosition >= lastLine || horTab[firstLine] == ORPHAN_ROW) {
             menuVerticalOffset++;
           }
           else {
-            linesCount = menuVerticalOffset + maxBodyLines;
+            linesCount = menuVerticalOffset + linesDisplayed;
             for (int i=lastLine; i<rowcount; i++) {
               if (i > horTabMax || horTab[i] != HIDDEN_ROW) {
                 linesCount++;
@@ -646,8 +645,8 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
     }
   }
   else {
-    if (menuVerticalPosition >= maxBodyLines + menuVerticalOffset) {
-      menuVerticalOffset = menuVerticalPosition-maxBodyLines+1;
+    if (menuVerticalPosition >= linesDisplayed + menuVerticalOffset) {
+      menuVerticalOffset = menuVerticalPosition-linesDisplayed+1;
     }
     else if (menuVerticalPosition < menuVerticalOffset) {
       menuVerticalOffset = menuVerticalPosition;
