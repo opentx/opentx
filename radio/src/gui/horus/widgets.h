@@ -43,6 +43,9 @@
 void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawTopmenuDatetime();
 void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval);
+
+#define BUTTON_ON   0x10
+#define BUTTON_OFF  0x20
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr);
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);

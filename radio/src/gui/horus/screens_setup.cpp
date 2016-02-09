@@ -181,7 +181,7 @@ bool menuSetupScreensView(evt_t event)
     linesCount++;
   }
 
-  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { countRegisteredLayouts-1, ORPHAN_ROW, 0, 0, 0, 0 });
+  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { uint8_t(countRegisteredLayouts-1), ORPHAN_ROW, 0, 0, 0, 0 });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;

@@ -316,3 +316,12 @@ const uint8_t LBM_CARROUSSEL_RIGHT[] __DMA = {
 #include "mask_carroussel_right.lbm"
 };
 
+const uint8_t LBM_BUTTON_ON[] __DMA = {
+#include "alpha_button_on.lbm"
+};
+
+const uint8_t LBM_BUTTON_OFF[] __DMA = {
+#include "alpha_button_off.lbm"
+};
+
+

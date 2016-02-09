@@ -57,9 +57,22 @@ void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
   int width = getTextWidth(label, 0, attr);
-  lcdDrawSolidRect(x, y-1, width+16, 20, (attr & INVERS) ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
-  lcdDrawSolidRect(x-1, y-2, width+18, 22, (attr & INVERS) ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
-  lcdDrawText(x+8, y, label, (attr & INVERS) ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
+  int padding = 0;
+  if (attr & (BUTTON_OFF|BUTTON_ON)) {
+    padding = 5;
+  }
+  lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 20, TEXT_COLOR);
+  if (attr & INVERS) {
+    lcdDrawSolidFilledRect(x, y, padding+width+16+padding, 18, TEXT_INVERTED_BGCOLOR);
+    lcdDrawText(x+padding+8, y, label, TEXT_INVERTED_COLOR);
+  }
+  else {
+    lcdDrawText(x+padding+8, y, label, TEXT_COLOR);
+  }
+  if (attr & BUTTON_OFF)
+    lcdDrawAlphaBitmap(x-6, y+3, LBM_BUTTON_OFF);
+  else if (attr & BUTTON_ON)
+    lcdDrawAlphaBitmap(x-6, y+3, LBM_BUTTON_ON);
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)

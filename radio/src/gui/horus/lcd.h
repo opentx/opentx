@@ -42,14 +42,12 @@
 /* lcd common flags */
 #define BLINK           0x01
 
-/* lcd text flags */
+/* lcdDrawText flags */
 #define INVERS          0x02
 #define LEFT            0x08 /* align left */
-
-/* lcd puts flags */
 #define ZCHAR           0x04
 
-/* lcd outdez flags */
+/* lcdDrawNumber flags */
 #define LEADING0        0x10
 #define PREC1           0x20
 #define PREC2           0x30
