@@ -241,10 +241,18 @@ void usbJoystickUpdate(void)
   static uint8_t HID_Buffer[HID_IN_PACKET];
   
   //buttons
-  HID_Buffer[0] = 0; //buttons
+  HID_Buffer[0] = 0;
+  HID_Buffer[1] = 0;
+  HID_Buffer[2] = 0;
   for (int i = 0; i < 8; ++i) {
     if ( channelOutputs[i+8] > 0 ) {
       HID_Buffer[0] |= (1 << i);
+    } 
+    if ( channelOutputs[i+16] > 0 ) {
+      HID_Buffer[1] |= (1 << i);
+    } 
+    if ( channelOutputs[i+24] > 0 ) {
+      HID_Buffer[2] |= (1 << i);
     } 
   }
 
@@ -254,7 +262,7 @@ void usbJoystickUpdate(void)
     int16_t value = channelOutputs[i] / 8;
     if ( value > 127 ) value = 127;
     else if ( value < -127 ) value = -127;
-    HID_Buffer[i+1] = static_cast<int8_t>(value);  
+    HID_Buffer[i+3] = static_cast<int8_t>(value);  
   }
 
   USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );

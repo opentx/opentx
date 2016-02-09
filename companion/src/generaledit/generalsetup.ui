@@ -658,7 +658,7 @@
        <item>
         <widget class="QCheckBox" name="adjustRTC">
          <property name="toolTip">
-          <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
+          <string>Automatically adjust the radio's clock if a GPS is connected to telemetry.</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>

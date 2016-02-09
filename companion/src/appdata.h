@@ -125,6 +125,8 @@ class Profile: protected CompStoreObj
     QString _stickPotCalib;
     QString _timeStamp;
     QString _trainerCalib;
+    QString _controlTypes;
+    QString _controlNames;
     int     _txCurrentCalibration;
     int     _gsStickMode;
     int     _ppmMultiplier;
@@ -156,6 +158,8 @@ class Profile: protected CompStoreObj
     QString stickPotCalib() const;
     QString timeStamp() const;
     QString trainerCalib() const;
+    QString controlTypes() const;
+    QString controlNames() const;
     int     txCurrentCalibration() const;
     int     gsStickMode() const;
     int     ppmMultiplier() const;
@@ -186,6 +190,8 @@ class Profile: protected CompStoreObj
     void stickPotCalib (const QString);
     void timeStamp     (const QString);
     void trainerCalib  (const QString);
+    void controlTypes  (const QString);
+    void controlNames  (const QString);
     void txCurrentCalibration  (const int);
     void gsStickMode   (const int);
     void ppmMultiplier (const int);

@@ -220,16 +220,9 @@ static int luaLcdDrawNumber(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  float val = luaL_checknumber(L, 3);
+  int val = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  int n;
-  if ((att & PREC2) == PREC2)
-    n = val * 100;
-  else if ((att & PREC1) == PREC1)
-    n = val * 10;
-  else
-    n = val;
-  lcd_outdezAtt(x, y, n, att);
+  lcd_outdezAtt(x, y, val, att);
   return 0;
 }
 

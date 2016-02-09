@@ -580,14 +580,18 @@ void TelemetrySensorPanel::update()
 
     if (sensor.unit == SensorData::UNIT_RPMS) {
       ui->offset->setDecimals(0);
+      ui->offset->setSingleStep(1);
       ui->ratio->setDecimals(0);
+      ui->ratio->setSingleStep(1);
       ui->autoOffset->hide();
       ui->ratio->setMinimum(1);
       ui->offset->setMinimum(1);
     }
     else {
       ui->offset->setDecimals(sensor.prec);
+      ui->offset->setSingleStep(pow(0.1, (int)sensor.prec));
       ui->ratio->setDecimals(1);
+      ui->ratio->setSingleStep(0.1);
     }
   }
 
@@ -684,6 +688,9 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
 {
   if (!lock) {
     sensor.unit = index;
+    if (sensor.unit == SensorData::UNIT_FAHRENHEIT) {
+      sensor.prec = 0;
+    }
     update();
     emit modified();
   }

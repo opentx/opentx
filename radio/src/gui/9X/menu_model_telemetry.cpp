@@ -37,6 +37,9 @@
 
 enum menuModelTelemetryItems {
   CASE_CPUARM(ITEM_TELEMETRY_PROTOCOL_TYPE)
+#if defined(REVX)
+  ITEM_TELEMETRY_INVERTED_SERIAL,
+#endif
 #if !defined(CPUARM)
   ITEM_TELEMETRY_A1_LABEL,
   ITEM_TELEMETRY_A1_RANGE,
@@ -184,7 +187,9 @@ enum menuModelTelemetryItems {
   #define VARIO_RANGE_ROWS             3
 #endif
 
-#if defined(CPUARM)
+#if defined(REVX)
+  #define TELEMETRY_TYPE_ROWS          0, 0,
+#elif defined(CPUARM)
   #define TELEMETRY_TYPE_ROWS          0,
 #else
   #define TELEMETRY_TYPE_ROWS
@@ -608,6 +613,11 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
         g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, CASE_PCBSKY9X(PROTOCOL_FRSKY_D_SECONDARY) attr, event);
         break;
+#if defined(REVX)
+      case ITEM_TELEMETRY_INVERTED_SERIAL:
+        ON_OFF_MENU_ITEM(g_model.moduleData[EXTERNAL_MODULE].invertedSerial, TELEM_COL2, y, STR_INVERTED_SERIAL, attr, event);
+        break;
+#endif
 #endif
 
 #if defined(CPUARM)

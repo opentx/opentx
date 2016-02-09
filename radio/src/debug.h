@@ -160,5 +160,35 @@ void dumpTraceBuffer();
 #endif
 
 
+#if defined(JITTER_MEASURE)  && defined(__cplusplus)
+
+template<class T> class JitterMeter {
+public:
+  T min;
+  T max;
+  T measured;
+
+  JitterMeter() : min(~(T)0), max(0), measured(0) {};
+
+  void reset() { 
+    // store mesaurement
+    measured = max - min;
+    //reset - begin new measurement
+    min = ~(T)0; 
+    max = 0; 
+  };
+
+  void measure(T value) { 
+    if (value > max) max = value;
+    if (value < min) min = value;
+  };
+
+  T get() const { 
+    return measured; 
+  };
+};
+
+#endif  // defined(JITTER_MEASURE)
+
 #endif  // #ifndef debug_h
 

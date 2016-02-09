@@ -2,7 +2,7 @@ PROJECT( companion )
 
 SET(C9X_VERSION_MAJOR "2")
 SET(C9X_VERSION_MINOR "1")
-SET(C9X_VERSION_REVISION "6")
+SET(C9X_VERSION_REVISION "7")
 SET(C9X_VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 
 SET(C9X_VERSION ${C9X_VERSION_MAJOR}.${C9X_VERSION_MINOR}.${C9X_VERSION_REVISION}${C9X_VERSION_SUFFIX})
@@ -91,6 +91,8 @@ ELSE()
   MESSAGE( "QT lupdate not found!" )
 ENDIF()
 
+ADD_DEFINITIONS(-DQXT_STATIC)
+
 ADD_CUSTOM_COMMAND(
   COMMAND ${XSDCXX_EXECUTABLE} cxx-tree --root-element-all --generate-serialization --output-dir ${PROJECT_BINARY_DIR}/ ${PROJECT_SOURCE_DIR}/radio.xsd
   OUTPUT ${PROJECT_BINARY_DIR}/radio.hxx ${PROJECT_BINARY_DIR}/radio.cxx
@@ -124,6 +126,7 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/shared
   ${SIMU_SRC_DIRECTORY}
   ${XSD_INCLUDE_DIR}
+  ${PROJECT_SOURCE_DIR}/qxtcommandoptions
 )
 
 add_subdirectory(shared)
@@ -132,6 +135,7 @@ add_subdirectory(generaledit)
 add_subdirectory(simulation)
 add_subdirectory(firmwares/opentx/simulator)
 add_subdirectory(qcustomplot)
+add_subdirectory(qxtcommandoptions)
 
 set(common_SRCS
   eeprominterface.cpp
@@ -347,7 +351,7 @@ else()
   add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS})
 endif()
 
-target_link_libraries(${SIMULATOR_NAME} simulation common ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
+target_link_libraries(${SIMULATOR_NAME} simulation common qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${PHONON_LIBS} ${OPENTX_SIMULATOR_LIBS})
 
 ############# Packaging ####################
 
@@ -481,6 +485,7 @@ else(DPKG_PROGRAM)
   SET(CPACK_RPM_PACKAGE_VERSION ${C9X_VERSION})
   SET(CPACK_RPM_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION_SUMMARY})
   SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${C9X_VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
+  SET(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib /lib/udev /lib/udev/rules.d")
 endif(DPKG_PROGRAM)
 
 INCLUDE(CPack)

@@ -86,9 +86,9 @@ void frskyDProcessPacket(uint8_t *packet)
   {
     case LINKPKT: // A1/A2/RSSI values
     {
-      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A1_ID, 0, packet[1], UNIT_VOLTS, 0);
-      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A2_ID, 0, packet[2], UNIT_VOLTS, 0);
-      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_RSSI_ID, 0, packet[3], UNIT_RAW, 0);
+      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A1_ID, 0, 0, packet[1], UNIT_VOLTS, 0);
+      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A2_ID, 0, 0, packet[2], UNIT_VOLTS, 0);
+      setTelemetryValue(TELEM_PROTO_FRSKY_D, D_RSSI_ID, 0, 0, packet[3], UNIT_RAW, 0);
       frskyData.rssi.set(packet[3]);
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       break;
@@ -257,7 +257,7 @@ void processHubPacket(uint8_t id, int16_t value)
     }
   }
   
-  setTelemetryValue(TELEM_PROTO_FRSKY_D, id, 0, data, unit, precision);
+  setTelemetryValue(TELEM_PROTO_FRSKY_D, id, 0, 0, data, unit, precision);
 }
 
 void frskyDSetDefault(int index, uint16_t id)

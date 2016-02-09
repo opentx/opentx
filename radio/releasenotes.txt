@@ -1,10 +1,14 @@
-<h2>Version 2.1.7 / todo</h2>
+<h2>Version 2.1.7 / 2016-01-04</h2>
+
+Notice: Lua model wizard was fixed (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>) 
+and needs to be installed on the radio SD card. Download from http://lua-21.open-tx.org/wizard.zip
 
 [Taranis]
 <ul>
 <li>Added Crossfire (inverted serial) protocol on S.PORT pin in the module bay (<a href=https://github.com/opentx/opentx/issues/2894>#2894</a>)</li>
 <li>Added telemetry unit conversions from km/h (<a href=https://github.com/opentx/opentx/issues/3059>#3059</a>)</li>
-<li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant</li>
+<li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant, enabled range check in EU mode</li>
+<li>Added support for language-specific chars in model notes</li>
 </ul>
 
 [Lua]
@@ -15,13 +19,31 @@
 <li>Fixed: Close any Lua open files when radio powers off (<a href=https://github.com/opentx/opentx/issues/3062>#3062</a>)</li>
 <li>getValue() now also returns pilot position (<a href=https://github.com/opentx/opentx/issues/2921>#2921</a>)</li>
 <li>Added additional Taranis X9E fields</li>
+<li>Lua getFlightMode() function added (<a href=https://github.com/opentx/opentx/issues/3127>#3127</a>, <a href=https://github.com/opentx/opentx/issues/2921>#2921</a>)</li>
+<li>Fixed: Inputs were not exported as Lua fields</li>
+<li>Fixed: some wizard lines were not visible anymore (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>)</li>
+<li>Lua PREC1 and PREC2 formatting parameters now functioning same as in 2.0 (<a href=https://github.com/opentx/opentx/issues/3150>#3150</a>)</li>
+</ul>
+
+[Sky9x / 9XR-PRO / AR9X]
+<ul>
+<li>Added support for FrSky D with inverted signal for 9XR pro (<a href=https://github.com/opentx/opentx/issues/3139>#3139</a>)</li>
 </ul>
 
 [ARM]
 <ul>
 <li>Fixed: Wrong telemetry unit and precision was used for V2 in logical switches (Taranis not affected) (<a href=https://github.com/opentx/opentx/issues/3071>#3071</a>)</li>
+<li>Received value unit for Air speed sensor set to knots (all FrSky sensors send speed in knots) (<a href=https://github.com/opentx/opentx/issues/3043>#3043</a>)</li>
+<li>Added support for FrSky Powerbox sensor (<a href=https://github.com/opentx/opentx/issues/2970>#2970</a>)</li>
+<li>Fixed Special Function - Adjust GVAR: increment/decrement could cause GVAR value to overflow the allowed range (&pm;1024) (<a href=https://github.com/opentx/opentx/issues/2917>#2917</a>)</li>
+<li>Bad Value for GVAR When Adjusting GVx to Another GVx in Special Functions (<a href=https://github.com/opentx/opentx/issues/3103>#3103</a>)</li>
 </ul>
 
+[All]
+<ul>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
+</ul>
 
 
 <h2>Version 2.1.6 / 2015-11-11</h2>

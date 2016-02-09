@@ -280,3 +280,25 @@ void rtcInit()
   coprocReadData();
 #endif
 }
+
+#if defined(REVX)
+void writeMFP()
+{
+  __disable_irq();
+  Rtc_write_pending |= 2;
+  i2cCheck();
+  __enable_irq();
+}
+
+void setMFP()
+{
+  MFPsetting = 0x80;
+  writeMFP();
+}
+
+void clearMFP()
+{
+  MFPsetting = 0;
+  writeMFP();
+}
+#endif

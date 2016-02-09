@@ -332,6 +332,12 @@ The list of valid sources is available:
 * for OpenTX 2.1.x Taranis and Taranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
 * for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
 
+In OpenTX 2.1.x the telemetry sources no longer have a predefined name. 
+To get a telemetry value simply use it's sensor name. For example:
+ * Altitude sensor has a name "Alt"
+ * to get the current altitude use the source "Alt"
+ * to get the minimum altitude use the source "Alt-", to get the maximum use "Alt+"
+
 @param name (string) name of the field
 
 @retval table information about requested field, table elements:
@@ -365,7 +371,9 @@ Returns the value of a source.
 
 The list of valid sources is available:
 * for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
-* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
+* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt (depreciated)
+* for OpenTX 2.1.x Taranis and Taranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
+* for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
 
 In OpenTX 2.1.x the telemetry sources no longer have a predefined name. 
 To get a telemetry value simply use it's sensor name. For example:
@@ -420,21 +428,28 @@ static int luaGetValue(lua_State *L)
 
 
 /*luadoc
-@function getFlightMode()
+@function getFlightMode(mode)
 
-Return the current flight mode
+Return flight mode data. 
+
+@param mode (number) flight mode number to return (0 - 8). If mode parameter 
+is not specified (or contains invalid value), then the current flight mode data is returned.
 
 @retval multiple returns 2 values:
- * (number) current flight mode number (0 - 7)
- * (string) current flight mode name
+ * (number) (current) flight mode number (0 - 8)
+ * (string) (current) flight mode name
 
 @status current Introduced in 2.1.7
 */
 static int luaGetFlightMode(lua_State *L)
 {
-  lua_pushnumber(L, mixerCurrentFlightMode);
+  int mode = luaL_optinteger(L, 1, -1);
+  if (mode < 0 || mode >= MAX_FLIGHT_MODES) {
+    mode = mixerCurrentFlightMode;
+  }
+  lua_pushnumber(L, mode);
   char name[sizeof(g_model.flightModeData[0].name)+1];
-  zchar2str(name, g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[0].name));
+  zchar2str(name, g_model.flightModeData[mode].name, sizeof(g_model.flightModeData[0].name));
   lua_pushstring(L, name);
   return 2;
 }

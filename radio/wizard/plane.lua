@@ -138,7 +138,7 @@ local function drawEngineMenu()
   lcd.drawText(1, 0, "Has your model got an engine?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, engineModeItems, engineMode, getFieldFlags(0)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if engineMode == 1 then
     -- 1 channel
     lcd.drawPixmap(132, 8, "engine-1.bmp")
@@ -175,7 +175,7 @@ local function drawAileronsMenu()
   lcd.drawText(1, 0, "Has your model got ailerons?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, aileronsModeItems, aileronsMode, getFieldFlags(0)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if aileronsMode == 2 then
     -- 2 channels
     lcd.drawPixmap(112, 8, "ailerons-2.bmp")
@@ -222,7 +222,7 @@ local function drawFlapsMenu()
   lcd.drawText(1, 0, "Has your model got flaps?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, flapsModeItems, flapsMode, getFieldFlags(0)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if flapsMode == 0 then
     -- no flaps
     lcd.drawPixmap(112, 8, "ailerons-0.bmp")
@@ -269,7 +269,7 @@ local function drawBrakesMenu()
   lcd.drawText(1, 0, "Has your model got air brakes?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, brakesModeItems, brakesMode, getFieldFlags(0)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if brakesMode == 0 then
     -- no brakes
     lcd.drawPixmap(112, 8, "ailerons-0.bmp")
@@ -316,7 +316,7 @@ local function drawTailMenu()
   lcd.drawText(1, 0, "Which is the tail config on your model?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, tailModeItems, tailMode, getFieldFlags(0)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   if tailMode == 0 then
     -- Elevator(1ch), no rudder...
@@ -374,7 +374,7 @@ local function drawServoMenu(limits)
   lcd.drawSource(1, 0, MIXSRC_CH1+servoPage, 0)
   lcd.drawText(25, 0, "servo min/max/center/direction?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawPixmap(122, 8, "servo.bmp")
   lcd.drawNumber(140, 35, limits.min, PREC1+getFieldFlags(0));

@@ -51,46 +51,61 @@
 struct FrSkySportSensor {
   const uint16_t firstId;
   const uint16_t lastId;
+  const uint8_t subId;
   const char * name;
   const TelemetryUnit unit;
   const uint8_t prec;
 };
 
 const FrSkySportSensor sportSensors[] = {
-  { RSSI_ID, RSSI_ID, ZSTR_RSSI, UNIT_DB, 0 },
-  { SWR_ID, SWR_ID, ZSTR_SWR, UNIT_RAW, 0 },
-  { ADC1_ID, ADC1_ID, ZSTR_A1, UNIT_VOLTS, 1 },
-  { ADC2_ID, ADC2_ID, ZSTR_A2, UNIT_VOLTS, 1 },
-  { A3_FIRST_ID, A3_LAST_ID, ZSTR_A3, UNIT_VOLTS, 2 },
-  { A4_FIRST_ID, A4_LAST_ID, ZSTR_A4, UNIT_VOLTS, 2 },  
-  { BATT_ID, BATT_ID, ZSTR_BATT, UNIT_VOLTS, 1 },
-  { T1_FIRST_ID, T1_LAST_ID, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
-  { T2_FIRST_ID, T2_LAST_ID, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
-  { RPM_FIRST_ID, RPM_LAST_ID, ZSTR_RPM, UNIT_RPMS, 0 },
-  { FUEL_FIRST_ID, FUEL_LAST_ID, ZSTR_FUEL, UNIT_PERCENT, 0 },
-  { ALT_FIRST_ID, ALT_LAST_ID, ZSTR_ALT, UNIT_METERS, 2 },
-  { VARIO_FIRST_ID, VARIO_LAST_ID, ZSTR_VSPD, UNIT_METERS_PER_SECOND, 2 },
-  { ACCX_FIRST_ID, ACCX_LAST_ID, ZSTR_ACCX, UNIT_G, 2 },
-  { ACCY_FIRST_ID, ACCY_LAST_ID, ZSTR_ACCY, UNIT_G, 2 },
-  { ACCZ_FIRST_ID, ACCZ_LAST_ID, ZSTR_ACCZ, UNIT_G, 2 },
-  { CURR_FIRST_ID, CURR_LAST_ID, ZSTR_CURR, UNIT_AMPS, 1 },
-  { VFAS_FIRST_ID, VFAS_LAST_ID, ZSTR_VFAS, UNIT_VOLTS, 2 },
-  { AIR_SPEED_FIRST_ID, AIR_SPEED_LAST_ID, ZSTR_ASPD, UNIT_KMH, 1 },
-  { GPS_SPEED_FIRST_ID, GPS_SPEED_LAST_ID, ZSTR_GSPD, UNIT_KTS, 3 },
-  { CELLS_FIRST_ID, CELLS_LAST_ID, ZSTR_CELLS, UNIT_CELLS, 2 },
-  { GPS_ALT_FIRST_ID, GPS_ALT_LAST_ID, ZSTR_GPSALT, UNIT_METERS, 2 },
-  { GPS_TIME_DATE_FIRST_ID, GPS_TIME_DATE_LAST_ID, ZSTR_GPSDATETIME, UNIT_DATETIME, 0 },
-  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, ZSTR_GPS, UNIT_GPS, 0 },
-  { FUEL_QTY_FIRST_ID, FUEL_QTY_LAST_ID, ZSTR_FUEL, UNIT_MILLILITERS, 2 },
-  { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, ZSTR_HDG, UNIT_DEGREE, 2 },
-  { 0, 0, NULL, UNIT_RAW, 0 } // sentinel
+  { RSSI_ID, RSSI_ID, 0, ZSTR_RSSI, UNIT_DB, 0 },
+  { SWR_ID, SWR_ID, 0, ZSTR_SWR, UNIT_RAW, 0 },
+  { ADC1_ID, ADC1_ID, 0, ZSTR_A1, UNIT_VOLTS, 1 },
+  { ADC2_ID, ADC2_ID, 0, ZSTR_A2, UNIT_VOLTS, 1 },
+  { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },
+  { A4_FIRST_ID, A4_LAST_ID, 0, ZSTR_A4, UNIT_VOLTS, 2 },  
+  { BATT_ID, BATT_ID, 0, ZSTR_BATT, UNIT_VOLTS, 1 },
+  { T1_FIRST_ID, T1_LAST_ID, 0, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
+  { T2_FIRST_ID, T2_LAST_ID, 0, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
+  { RPM_FIRST_ID, RPM_LAST_ID, 0, ZSTR_RPM, UNIT_RPMS, 0 },
+  { FUEL_FIRST_ID, FUEL_LAST_ID, 0, ZSTR_FUEL, UNIT_PERCENT, 0 },
+  { ALT_FIRST_ID, ALT_LAST_ID, 0, ZSTR_ALT, UNIT_METERS, 2 },
+  { VARIO_FIRST_ID, VARIO_LAST_ID, 0, ZSTR_VSPD, UNIT_METERS_PER_SECOND, 2 },
+  { ACCX_FIRST_ID, ACCX_LAST_ID, 0, ZSTR_ACCX, UNIT_G, 2 },
+  { ACCY_FIRST_ID, ACCY_LAST_ID, 0, ZSTR_ACCY, UNIT_G, 2 },
+  { ACCZ_FIRST_ID, ACCZ_LAST_ID, 0, ZSTR_ACCZ, UNIT_G, 2 },
+  { CURR_FIRST_ID, CURR_LAST_ID, 0, ZSTR_CURR, UNIT_AMPS, 1 },
+  { VFAS_FIRST_ID, VFAS_LAST_ID, 0, ZSTR_VFAS, UNIT_VOLTS, 2 },
+  { AIR_SPEED_FIRST_ID, AIR_SPEED_LAST_ID, 0, ZSTR_ASPD, UNIT_KTS, 1 },
+  { GPS_SPEED_FIRST_ID, GPS_SPEED_LAST_ID, 0, ZSTR_GSPD, UNIT_KTS, 3 },
+  { CELLS_FIRST_ID, CELLS_LAST_ID, 0, ZSTR_CELLS, UNIT_CELLS, 2 },
+  { GPS_ALT_FIRST_ID, GPS_ALT_LAST_ID, 0, ZSTR_GPSALT, UNIT_METERS, 2 },
+  { GPS_TIME_DATE_FIRST_ID, GPS_TIME_DATE_LAST_ID, 0, ZSTR_GPSDATETIME, UNIT_DATETIME, 0 },
+  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS, 0 },
+  { FUEL_QTY_FIRST_ID, FUEL_QTY_LAST_ID, 0, ZSTR_FUEL, UNIT_MILLILITERS, 2 },
+  { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, 0, ZSTR_HDG, UNIT_DEGREE, 2 },
+  { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 0, ZSTR_PBOX1, UNIT_VOLTS, 3 },
+  { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 0, ZSTR_PBOX2, UNIT_VOLTS, 3 },
+  { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 1, ZSTR_PBOX1, UNIT_AMPS, 2 },
+  { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 1, ZSTR_PBOX2, UNIT_AMPS, 2 },
+  { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 0, ZSTR_PBOX1, UNIT_MAH, 0 },
+  { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 1, ZSTR_PBOX2, UNIT_MAH, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 0, ZSTR_RX1_FAILSAFE, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 1, ZSTR_RX1_LOSTFRAME, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 2, ZSTR_RX2_FAILSAFE, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 3, ZSTR_RX2_LOSTFRAME, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 4, ZSTR_RX1_CONN_LOST, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 5, ZSTR_RX2_CONN_LOST, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 6, ZSTR_RX1_NO_SIGNAL, UNIT_RAW, 0 },
+  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 7, ZSTR_RX2_NO_SIGNAL, UNIT_RAW, 0 },
+  { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
-const FrSkySportSensor * getFrSkySportSensor(uint16_t id)
+const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
 {
   const FrSkySportSensor * result = NULL;
   for (const FrSkySportSensor * sensor = sportSensors; sensor->firstId; sensor++) {
-    if (id >= sensor->firstId && id <= sensor->lastId) {
+    if (id >= sensor->firstId && id <= sensor->lastId && subId == sensor->subId) {
       result = sensor;
       break;
     }
@@ -170,11 +185,35 @@ void processSportUpdatePacket(uint8_t *packet)
   }
 }
 
-void processSportPacket(uint8_t *packet)
+void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data)
 {
-  uint8_t  dataId = (packet[0] & 0x1F) + 1;
+  const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
+  TelemetryUnit unit = UNIT_RAW;
+  uint8_t precision = 0;
+  if (sensor) {
+    unit = sensor->unit;
+    precision = sensor->prec;
+  }
+  if (unit == UNIT_CELLS) {
+    uint8_t cellsCount = (data & 0xF0) >> 4;
+    uint8_t cellIndex = (data & 0x0F);
+    uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
+    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
+    if (cellIndex+1 < cellsCount) {
+      mask += (1 << 16);
+      setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
+    }
+  }
+  else {
+    setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, id, subId, instance, data, unit, precision);
+  }
+}
+
+void processSportPacket(uint8_t * packet)
+{
+  uint8_t  instance = (packet[0] & 0x1F) + 1;
   uint8_t  prim   = packet[1];
-  uint16_t appId  = *((uint16_t *)(packet+2));
+  uint16_t id  = *((uint16_t *)(packet+2));
 
 #if defined(PCBTARANIS) && !defined(SIMU)
   if (sportUpdateState != SPORT_IDLE) {
@@ -192,77 +231,77 @@ void processSportPacket(uint8_t *packet)
   if (prim == DATA_FRAME)  {
     uint32_t data = SPORT_DATA_S32(packet);
 
-    if (appId == RSSI_ID) {
+    if (id == RSSI_ID) {
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       data = SPORT_DATA_U8(packet);
       frskyData.rssi.set(data);
     }
 #if defined(PCBTARANIS) && defined(REVPLUS)
-    else if (appId == XJT_VERSION_ID) {
+    else if (id == XJT_VERSION_ID) {
       frskyData.xjtVersion = HUB_DATA_U16(packet);
       if (!IS_VALID_XJT_VERSION()) {
         frskyData.swr.set(0x00);
       }
     }
-    else if (appId == SWR_ID) {
+    else if (id == SWR_ID) {
       if (IS_VALID_XJT_VERSION())
         frskyData.swr.set(SPORT_DATA_U8(packet));
       else
         frskyData.swr.set(0x00);
     }
 #else
-    else if (appId == XJT_VERSION_ID) {
+    else if (id == XJT_VERSION_ID) {
       frskyData.xjtVersion = HUB_DATA_U16(packet);
     }
-    else if (appId == SWR_ID) {
+    else if (id == SWR_ID) {
       frskyData.swr.set(SPORT_DATA_U8(packet));
     }
 #endif
 
     if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
-      if ((appId >> 8) == 0) {
+      if ((id >> 8) == 0) {
         // The old FrSky IDs
-        uint8_t  id = (uint8_t)appId;
-        uint16_t value = HUB_DATA_U16(packet);
-        processHubPacket(id, value);
+        processHubPacket(id, HUB_DATA_U16(packet));
       }
-      else if (!IS_HIDDEN_TELEMETRY_VALUE()) {
-        if (appId == ADC1_ID || appId == ADC2_ID || appId == BATT_ID || appId == SWR_ID) {
+      else if (!IS_HIDDEN_TELEMETRY_VALUE(id)) {
+        if (id == ADC1_ID || id == ADC2_ID || id == BATT_ID || id == SWR_ID) {
           data = SPORT_DATA_U8(packet);
         }
-        const FrSkySportSensor * sensor = getFrSkySportSensor(appId);
-        TelemetryUnit unit = UNIT_RAW;
-        uint8_t precision = 0;
-        if (sensor) {
-          unit = sensor->unit;
-          precision = sensor->prec;
+        if (id >= POWERBOX_BATT1_FIRST_ID && id <= POWERBOX_BATT2_LAST_ID) {
+          processSportPacket(id, 0, instance, data & 0xffff);
+          processSportPacket(id, 1, instance, data >> 16);
         }
-        if (unit == UNIT_CELLS) {
-          uint8_t cellsCount = (data & 0xF0) >> 4;
-          uint8_t cellIndex = (data & 0x0F);
-          uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
-          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
-          if (cellIndex+1 < cellsCount) {
-            mask += (1 << 16);
-            setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
-          }
+        else if (id >= POWERBOX_CNSP_FIRST_ID && id <= POWERBOX_CNSP_LAST_ID) {
+          processSportPacket(id, 0, instance, data & 0xffff);
+          processSportPacket(id, 1, instance, data >> 16);
+        }
+        else if (id >= POWERBOX_STATE_FIRST_ID && id <= POWERBOX_STATE_LAST_ID) {
+          processSportPacket(id, 0, instance, bool(data & 0x0080000));
+          processSportPacket(id, 1, instance, bool(data & 0x0100000));
+          processSportPacket(id, 2, instance, bool(data & 0x0200000));
+          processSportPacket(id, 3, instance, bool(data & 0x0400000));
+          processSportPacket(id, 4, instance, bool(data & 0x0800000));
+          processSportPacket(id, 5, instance, bool(data & 0x1000000));
+          processSportPacket(id, 6, instance, bool(data & 0x2000000));
+          processSportPacket(id, 7, instance, bool(data & 0x4000000));
         }
         else {
-          setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, appId, dataId, data, unit, precision);
+          processSportPacket(id, 0, instance, data);
         }
       }
     }
   }
 }
 
-void frskySportSetDefault(int index, uint16_t id, uint8_t instance)
+void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
 {
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
 
   telemetrySensor.id = id;
+  telemetrySensor.subId = subId;
   telemetrySensor.instance = instance;
 
-  const FrSkySportSensor * sensor = getFrSkySportSensor(id);
+  const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
   if (sensor) {
     TelemetryUnit unit = sensor->unit;
     uint8_t prec = min<uint8_t>(2, sensor->prec);

@@ -1521,6 +1521,11 @@ enum AUDIO_SOUNDS {
 #include "rtc.h"
 #endif
 
+#if defined(REVX)
+void setMFP();
+void clearMFP();
+#endif
+
 #if defined(CPUARM)
 extern uint8_t requiredSpeakerVolume;
 #endif
@@ -1783,5 +1788,10 @@ extern Clipboard clipboard;
 #if !defined(SIMU)
 extern uint16_t s_anaFilt[NUMBER_ANALOG];
 #endif
+
+#if defined(JITTER_MEASURE)
+extern JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
+extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
+#endif  // defined(JITTER_MEASURE)
 
 #endif

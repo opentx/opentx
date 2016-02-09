@@ -175,7 +175,7 @@ void GVarGroup::valuesChanged()
     else if (sb)
       weight = sb->value();
     else
-      weight = dsb->value()/step;
+      weight = round(dsb->value()/step);
   }
 }
 

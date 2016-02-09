@@ -1102,6 +1102,8 @@
 #define TR_ONLYPOSITIVE        "Geen Negatief"
 #define TR_FILTER              "Filter aktief"
 #define TR_TELEMETRYFULL       "Telemetrie slots vol!"
+//TODO: translation
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     TR(INDENT "Neg. ID ","Negeer ID's")
 #define TR_DISCOVER_SENSORS    INDENT "Ontdek nieuwe sensors"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Stop ontdekking"
@@ -1150,3 +1152,13 @@
 #define ZSTR_GPSALT            "GAlt"
 #define ZSTR_GPSDATETIME       "Date"
 #define ZSTR_GPS               "GPS"
+#define ZSTR_PBOX1             "PBx1"
+#define ZSTR_PBOX2             "PBx2"
+#define ZSTR_RX1_FAILSAFE      "Rx1F"
+#define ZSTR_RX1_LOSTFRAME     "Rx1L"
+#define ZSTR_RX1_CONN_LOST     "Rx1C"
+#define ZSTR_RX1_NO_SIGNAL     "Rx1S"
+#define ZSTR_RX2_FAILSAFE      "Rx2F"
+#define ZSTR_RX2_LOSTFRAME     "Rx2L"
+#define ZSTR_RX2_CONN_LOST     "Rx2C"
+#define ZSTR_RX2_NO_SIGNAL     "Rx2S"

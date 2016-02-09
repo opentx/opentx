@@ -122,13 +122,16 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
     virtual void sendTelemetry(uint8_t * data, unsigned int len);
 
-    virtual uint8_t getSensorInstance(uint16_t id);
+    virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0);
 
     virtual uint16_t getSensorRatio(uint16_t id);
 
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
 
     virtual void installTraceHook(void (*callback)(const char *));
+
+    virtual void setLuaStateReloadPermanentScripts();
+
 };
 
 }

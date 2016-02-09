@@ -42,7 +42,8 @@
 #define PIN_PORTC   0x0200
 
 // Sample time should exceed 1uS
-#define SAMPTIME    2   // sample time = 28 cycles
+#define SAMPTIME       2   // sample time = 28 cycles
+#define SAMPTIME_LONG  3   // sample time = 56 cycles
 
 #if defined(REV9E)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
@@ -112,8 +113,8 @@ void adcInit()
   ADC3->SQR1 = (NUMBER_ANALOG_ADC3-1) << 20 ;   // NUMBER_ANALOG Channels
   ADC3->SQR2 = 0; 
   ADC3->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) ; // conversions 1 to 3
-  ADC3->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6);
-  ADC3->SMPR2 = 0;
+  ADC3->SMPR1 = 0;
+  ADC3->SMPR2 = (SAMPTIME_LONG<<(3*ADC_CHANNEL_POT1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER2));
   
   // Enable the DMA channel here, DMA2 stream 1, channel 2
   DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;

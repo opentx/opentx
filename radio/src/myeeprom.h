@@ -422,7 +422,8 @@ PACK(typedef struct {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode;
+  uint8_t failsafeMode:7;
+  uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
   int8_t  ppmDelay:6;
   uint8_t ppmPulsePol:1;
@@ -1286,7 +1287,7 @@ PACK(typedef struct {
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  onlyPositive:1;
-  uint8_t  spare:3;
+  uint8_t  subId:3;
   union {
     PACK(struct {
       uint16_t ratio;
@@ -2042,7 +2043,8 @@ enum RFProtocols {
   RF_PROTO_LAST = RF_PROTO_LR12
 };
 
-#define HAS_RF_PROTOCOL_FAILSAFE(protocol) ((protocol) == RF_PROTO_X16)
+#define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
+#define HAS_RF_PROTOCOL_MODELINDEX(rf) (((rf) == RF_PROTO_X16) || ((rf) == RF_PROTO_LR12))
 
 enum DSM2Protocols {
   DSM2_PROTO_LP45,

@@ -383,26 +383,27 @@ WARNINGS_AS_ERRORS = NO
 # Values = NO, YES
 LUA_COMPILER = NO
 
+# Enable ADC jitter measurement
+# Values = NO, YES
+JITTER_MEASURE = NO
+
+# Enable ADC jitter filtering
+# Values = NO, YES
+JITTER_FILTER = YES
+
 #------- END BUILD OPTIONS ---------------------------
 
 # Define programs and commands.
 SHELL = sh
 
-# Make sure python is Python 2
-ifeq ($(findstring Python 2,$(shell python --version 2>&1)), Python 2)
-  PYTHON := python
-else
-  PYTHON := python2
-endif
-
-IMG2LBM = -$(PYTHON) ../util/img2lbm.py
-BIN2LBM = -$(PYTHON) ../util/bin2lbm.py
-FONT2PNG = -$(PYTHON) ../util/font2png.py
-TRANSLATE = -$(PYTHON) ../util/translate.py
+IMG2LBM = -python ../util/img2lbm.py
+BIN2LBM = -python ../util/bin2lbm.py
+FONT2PNG = -python ../util/font2png.py
+TRANSLATE = -python ../util/translate.py
 
 VERSION_MAJOR = 2
 VERSION_MINOR = 1
-VERSION_REVISION = 6
+VERSION_REVISION = 7
 
 VERSION = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_REVISION)$(OPENTX_VERSION_SUFFIX)
 
@@ -728,7 +729,7 @@ ifeq ($(PCB), MEGA2560)
   BOARDSRC = main_avr.cpp targets/mega2560/board_mega2560.cpp
   EEPROMSRC = eeprom_common.cpp eeprom_rlc.cpp
   PULSESSRC = pulses/pulses_avr.cpp
-  CPPSRC += audio_avr.cpp debug.cpp
+  CPPSRC += debug.cpp
   BITMAPS += bitmaps/9X/splash.lbm bitmaps/9X/asterisk.lbm bitmaps/9X/about.lbm
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
@@ -850,6 +851,8 @@ ifeq ($(PCB), $(filter $(PCB), SKY9X 9XRPRO AR9X))
   ifeq ($(RTCLOCK), YES)
     CPPDEFS += -DRTCLOCK
     CPPSRC += rtc.cpp targets/sky9x/rtc_driver.cpp
+  else ifeq ($(PCB), SKY9X)
+    CPPSRC += targets/sky9x/rtc_driver.cpp
   endif
   ifeq ($(BLUETOOTH), YES)
     CPPDEFS += -DBLUETOOTH
@@ -1071,6 +1074,12 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(WATCHDOG_TEST), YES)
     CPPDEFS += -DWATCHDOG_TEST
+  endif
+  ifeq ($(JITTER_MEASURE), YES)
+    CPPDEFS += -DJITTER_MEASURE
+  endif
+  ifeq ($(JITTER_FILTER), YES)
+    CPPDEFS += -DJITTER_FILTER
   endif
 endif
 
@@ -1523,12 +1532,12 @@ bootloader.lbm: targets/taranis/bootloader/bootloader_ramBoot.bin
 else ifeq ($(PCB), $(filter $(PCB), 9XRPRO AR9X))
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
-	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm
+	wget https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/bootflash8.lbm
 	mv bootflash8.lbm $@
 else ifeq ($(PCB), SKY9X)
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
-	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash4.lbm
+	wget https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/bootflash4.lbm
 	mv bootflash4.lbm $@
 endif
 
@@ -1653,7 +1662,7 @@ bitmaps/Taranis/%.lbm: bitmaps/Taranis/%.png
 	$(IMG2LBM) $^ $@ $(LCDSIZE) 4bits
 
 bitmaps/Taranis/mainmenu.png: ../util/taranisicons.py $(wildcard bitmaps/Taranis/std/*.png)
-	@$(PYTHON) ../util/taranisicons.py
+	@python ../util/taranisicons.py
 
 ifeq ($(OS),Windows_NT)
   PARSER = avr-cpp
@@ -1663,16 +1672,16 @@ endif
 
 lua_exports_taranis.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports_taranis.txt"
-	@$(PARSER) -DEXPORT -DPCBTARANIS -DLUA myeeprom.h | grep LEXP > lua_exports_taranis.txt
+	@$(PARSER) -DEXPORT -DCPUARM -DPCBTARANIS -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua_exports_taranis.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
+	@python ../util/luaexport.py $(VERSION) lua_exports_taranis.txt lua/lua_exports_taranis.inc lua_fields_taranis.txt
 	@rm lua_exports_taranis.txt
 
 lua_exports_taranis_x9e.inc: myeeprom.h ../util/luaexport.py
 	@echo "Generating a list of Lua exported constants in lua_exports_taranis_x9e.txt"
-	@$(PARSER) -DEXPORT -DPCBTARANIS -DREVPLUS -DREV9E -DLUA myeeprom.h | grep LEXP > lua_exports_taranis_x9e.txt
+	@$(PARSER) -DEXPORT -DCPUARM -DPCBTARANIS -DREVPLUS -DREV9E -DLUA -DVIRTUALINPUTS myeeprom.h | grep LEXP > lua_exports_taranis_x9e.txt
 	@echo "Parsing and generating C Lua exports in lua/lua_exports_taranis_x9e.inc"
-	@$(PYTHON) ../util/luaexport.py $(VERSION) lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua_fields_taranis_x9e.txt
+	@python ../util/luaexport.py $(VERSION) lua_exports_taranis_x9e.txt lua/lua_exports_taranis_x9e.inc lua_fields_taranis_x9e.txt
 	@rm lua_exports_taranis_x9e.txt
 
 # Eye candy.

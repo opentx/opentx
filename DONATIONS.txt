@@ -48,11 +48,9 @@ R. Scott Page
 Johan Cronje
 Renato Aranghelovici
 Jeffrey Irvin
-John Rodgers
 Kenneth Crump
 Damjan Adamic
 Martin Wilson
-Joe Street
 John Holdsworth
 Daniel Schwartz
 Dean Church (monthly)
@@ -148,7 +146,6 @@ Mike Matheny
 Martin Sniedze
 Fernando Rimoldi
 Sidney Fisher
-Bruce Anderson
 John Rodgers
 Ed Pare
 Thomas Kilduff
@@ -335,7 +332,6 @@ Jose Sobral
 Heung Jin Choi
 Tomasz Janiak
 Fabien Gagné
-Joe Street
 Micha Ronen
 Albert Blondin
 Klaus Schuebel
@@ -858,3 +854,59 @@ Jerzy Manarczyk
 Gerard Braakhuis
 Nicolas Leblond
 Burt Pickard-Richardson
+Jiri Petrzelka
+RK Custom Homes
+David Semeria
+Philip Lewis
+William Kim
+Dean Berg
+Tim Spurr
+Clifton Hipsher
+Mike Frizell
+Oliver Jacob
+Pawel Stepien
+Thomas Kilduff
+Barry Fox
+Anatoly Bakalenko
+Bruce Anderson
+Jeremy Cowgar
+Edward Hauser
+Stuart Brown
+Anton Glock
+Roger Ritchie
+George Carnie
+Philippe Stofleth
+Tim Dzugan 
+Illia Izotov
+Richard Miles (monthly)
+Attila Kapolnai
+Gilles Dando
+Denis Roussille
+Olivier Anken
+Michel Motte
+David McDonald
+Tauno Rautakorpi
+Carsten Schlassa
+Angel de la Dehesa Calles
+Michel Garbarin
+Algirdas Tamosiunas
+Petr Kysela
+Pascal Roux
+Robert Whitfield
+InTheTubeDeep
+Jaromir Malek
+Joe Street
+Regin Poulsen
+Hervé Laveyssiere
+Walter Fowler 
+Richard Wagner
+Kevin Hyman
+Herald Reichel
+Frederic Rouyre
+David Libby
+Hans Timmermans
+Adrian De Zee
+John Hanagan
+Didier van Steensel
+Julius Vicze
+Cristiano Merighi

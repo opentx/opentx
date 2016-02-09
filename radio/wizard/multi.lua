@@ -125,7 +125,7 @@ local function drawThrottleMenu()
   lcd.drawText(1, 0, "Select multicopter throttle channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-thr.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Throttle", 0);
   lcd.drawText(20, LCD_H-8, "Channel", 0);
@@ -149,7 +149,7 @@ local function drawRollMenu()
   lcd.drawText(1, 0, "Select multicopter roll channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-roll.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Roll", 0);
   lcd.drawText(20, LCD_H-8, "Channel", 0);
@@ -173,7 +173,7 @@ local function drawPitchMenu()
   lcd.drawText(1, 0, "Select multicopter pitch channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-pitch.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Pitch", 0);
   lcd.drawText(20, LCD_H-8, "Channel", 0);
@@ -197,7 +197,7 @@ local function drawYawMenu()
   lcd.drawText(1, 0, "Select multicopter yaw channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H, DOTTED, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-yaw.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Yaw", 0);
   lcd.drawText(20, LCD_H-8, "Channel", 0);

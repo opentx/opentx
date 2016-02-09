@@ -7,7 +7,7 @@
 #include <QDateTime>
 #include <QtCore/qmath.h>
 #include <QFileDialog>
-// #include <QDebug>
+
 #include "simulatorinterface.h"
 
 static double const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
@@ -66,6 +66,7 @@ class TelemetrySimulator : public QDialog
         FASV,
         FASC,
         CELS_GRE,
+        ASPD_KTS,
         ASPD_KMH,
         ASPD_MPH,
         GALT_FEET,

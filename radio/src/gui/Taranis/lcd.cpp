@@ -593,6 +593,8 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     qr.quot = qr2.rem;
     if (att & MIDSIZE)
       x += 17;
+    else if (att & BOLD)
+      x += 15;
     else
       x += 13;
   }

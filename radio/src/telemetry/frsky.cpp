@@ -69,6 +69,9 @@ FrskyData frskyData;
 
 #if defined(CPUARM)
 uint8_t telemetryProtocol = 255;
+#if defined(REVX)
+uint8_t serialInversion = 0;
+#endif
 #define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
 #define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
 #else
@@ -283,7 +286,14 @@ void telemetryWakeup()
 {
 #if defined(CPUARM)
   uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
+#if defined(REVX)
+  uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
+  if (telemetryProtocol != requiredTelemetryProtocol
+    || serialInversion != requiredSerialInversion) {
+    serialInversion = requiredSerialInversion;
+#else
   if (telemetryProtocol != requiredTelemetryProtocol) {
+#endif
     telemetryInit(requiredTelemetryProtocol);
     telemetryProtocol = requiredTelemetryProtocol;
   }
@@ -590,19 +600,19 @@ void telemetryReset()
     switch (sensor.id)
     {
       case RSSI_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, sensor.instance , 75, UNIT_RAW, 0);
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 0, sensor.instance , 75, UNIT_RAW, 0);
         break;
       case ADC1_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, sensor.instance, 100, UNIT_RAW, 0);
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
         break;
       case ADC2_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, sensor.instance, 245, UNIT_RAW, 0);
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, 0, sensor.instance, 245, UNIT_RAW, 0);
         break;
       case SWR_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, sensor.instance, 30, UNIT_RAW, 0);
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 0, sensor.instance, 30, UNIT_RAW, 0);
         break;
       case BATT_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, sensor.instance, 100, UNIT_RAW, 0);
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
         break;
     }
   }
@@ -629,6 +639,15 @@ void telemetryInit(uint8_t protocol)
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   }
+
+#if defined(REVX) && !defined(SIMU)
+  if (serialInversion) {
+    setMFP();
+  }
+  else {
+    clearMFP();
+  }
+#endif
 }
 #else
 void telemetryInit()

@@ -296,7 +296,7 @@ class SourcesConversionTable: public ConversionTable {
             addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
           }
         }
-        else  {
+        else {
           if (afterrelease21March2013) {
             if ((board != BOARD_STOCK && (board!=BOARD_M128 || version<215)) || (variant & GVARS_VARIANT)) {
               for (int i=0; i<MAX_GVARS(board, version); i++) {
@@ -305,25 +305,25 @@ class SourcesConversionTable: public ConversionTable {
             }
           }
 
-          for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
-            if (version < 216) {
-              if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPEED || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+          if (IS_ARM(board)) {
+            addConversion(RawSource(SOURCE_TYPE_SPECIAL, 0), val++); // BATT
+            addConversion(RawSource(SOURCE_TYPE_SPECIAL, 1), val++); // TIME
+            val += 5;
+            addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
+            addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
+          }
+          else {
+            for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
+              if (version < 216) {
+                if (i == TELEMETRY_SOURCE_TX_TIME || i == TELEMETRY_SOURCE_SWR || i == TELEMETRY_SOURCE_A3 ||
+                    i == TELEMETRY_SOURCE_A4 || i == TELEMETRY_SOURCE_ASPEED || i == TELEMETRY_SOURCE_DTE ||
+                    i == TELEMETRY_SOURCE_CELL_MIN || i == TELEMETRY_SOURCE_CELLS_MIN || i == TELEMETRY_SOURCE_VFAS_MIN)
+                  continue;
+              }
+              if (i == TELEMETRY_SOURCE_TX_TIME || i == TELEMETRY_SOURCE_SWR || i == TELEMETRY_SOURCE_A3 ||
+                  i == TELEMETRY_SOURCE_A4 || i == TELEMETRY_SOURCE_A3_MIN || i == TELEMETRY_SOURCE_A4_MIN)
                 continue;
-            }
-            if (!IS_ARM(board)) {
-              if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
-                continue;
-            }
-            addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
-            if (version >= 216 && IS_ARM(board)) {
-              if (i==TELEMETRY_SOURCE_RSSI_RX)
-                val += 1;
-              if (i==TELEMETRY_SOURCE_TX_TIME)
-                val += 5;
-              if (i==TELEMETRY_SOURCE_DTE)
-                val += 5;
-              if (i==TELEMETRY_SOURCE_POWER_MAX)
-                val += 5;
+              addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
             }
           }
         }
@@ -2211,8 +2211,9 @@ class ArmCustomFunctionField: public TransformedField {
         }
       }
       else if (fn.func == FuncPlayValue) {
-        if (version >= 213)
+        if (version >= 213) {
           sourcesConversionTable->importValue(value, (int &)fn.param);
+        }
         else
           SourcesConversionTable::getInstance(board, version, variant, FLAG_NONONE|FLAG_NOSWITCHES)->importValue(value, (int &)fn.param);
       }
@@ -2822,7 +2823,7 @@ class SensorField: public TransformedField {
         _instance = sensor.formula;
         if (sensor.formula == SensorData::TELEM_FORMULA_CELL)
           _param = (sensor.source) + (sensor.index << 8);
-        else if (sensor.formula == SensorData::TELEM_FORMULA_ADD || sensor.formula == SensorData::TELEM_FORMULA_MULTIPLY || sensor.formula == SensorData::TELEM_FORMULA_MIN || sensor.formula == SensorData::TELEM_FORMULA_MAX)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_ADD || sensor.formula == SensorData::TELEM_FORMULA_AVERAGE || sensor.formula == SensorData::TELEM_FORMULA_MULTIPLY || sensor.formula == SensorData::TELEM_FORMULA_MIN || sensor.formula == SensorData::TELEM_FORMULA_MAX)
           _param = ((uint8_t)sensor.sources[0]) + ((uint8_t)sensor.sources[1] << 8) + ((uint8_t)sensor.sources[2] << 16) + ((uint8_t)sensor.sources[3] << 24);
         else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
           _param = (sensor.gps) + (sensor.alt << 8);
@@ -2844,7 +2845,7 @@ class SensorField: public TransformedField {
         sensor.formula = _instance;
         if (sensor.formula == SensorData::TELEM_FORMULA_CELL)
           (sensor.source = _sources[0], sensor.index = _sources[1]);
-        else if (sensor.formula == SensorData::TELEM_FORMULA_ADD || sensor.formula == SensorData::TELEM_FORMULA_MULTIPLY || sensor.formula == SensorData::TELEM_FORMULA_MIN || sensor.formula == SensorData::TELEM_FORMULA_MAX)
+        else if (sensor.formula == SensorData::TELEM_FORMULA_ADD || sensor.formula == SensorData::TELEM_FORMULA_AVERAGE || sensor.formula == SensorData::TELEM_FORMULA_MULTIPLY || sensor.formula == SensorData::TELEM_FORMULA_MIN || sensor.formula == SensorData::TELEM_FORMULA_MAX)
           for (int i=0; i<4; ++i)
             sensor.sources[i] = _sources[i];
         else if (sensor.formula == SensorData::TELEM_FORMULA_DIST)
