@@ -38,7 +38,7 @@ void ModelPanelWidget::refresh()
     lcdDrawBitmapPattern(zone.x + 6, zone.y + 4, LBM_MODEL_ICON, TITLE_BGCOLOR);
     lcdDrawSizedText(zone.x + 45, zone.y + 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
     lcdDrawSolidHorizontalLine(zone.x + 39, zone.y + 27, zone.w - 48, TITLE_BGCOLOR);
-    int scale = getBitmapScale(modelBitmap, zone.w, zone.h);
+    int scale = getBitmapScale(modelBitmap, zone.w, zone.h - 25);
     int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
     int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
     lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + zone.h - height / 2 - height / 2, modelBitmap, 0, 0, scale);

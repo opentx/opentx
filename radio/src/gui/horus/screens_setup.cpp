@@ -217,7 +217,7 @@ bool menuSetupScreensView(evt_t event)
           }
         }
         unsigned int lastDisplayedLayout = min<int>(menuHorizontalOffset + 4, countRegisteredLayouts);
-        for (uint8_t i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
+        for (unsigned int i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
           const LayoutFactory * factory = registeredLayouts[i];
           factory->drawThumb(x, y, currentScreen->getFactory() == factory ? (menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
         }
