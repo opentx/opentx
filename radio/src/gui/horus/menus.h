@@ -175,18 +175,20 @@ extern int8_t checkIncDec_Ret;  // global helper vars
 extern int8_t s_editMode;       // global editmode
 
 // checkIncDec flags
-#define EE_GENERAL      0x01
-#define EE_MODEL        0x02
-#define NO_INCDEC_MARKS 0x04
-#define INCDEC_SWITCH   0x08
-#define INCDEC_SOURCE   0x10
-#define INCDEC_REP10    0x40
-#define NO_DBLKEYS      0x80
+#define EE_GENERAL                     0x01
+#define EE_MODEL                       0x02
+#define NO_INCDEC_MARKS                0x04
+#define INCDEC_SWITCH                  0x08
+#define INCDEC_SOURCE                  0x10
+#define INCDEC_REP10                   0x40
+#define NO_DBLKEYS                     0x80
 
 // mawrow special values
-#define TITLE_ROW      ((uint8_t)-1)
-#define ORPHAN_ROW     ((uint8_t)-2)
-#define HIDDEN_ROW     ((uint8_t)-3)
+#define TITLE_ROW                      ((uint8_t)-1)
+#define ORPHAN_ROW                     ((uint8_t)-2)
+#define HIDDEN_ROW                     ((uint8_t)-3)
+#define NAVIGATION_LINE_BY_LINE        0x40
+#define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
 
 struct CheckIncDecStops {
   const int count;
@@ -251,9 +253,6 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event, var, min, max)
 
-#define NAVIGATION_LINE_BY_LINE        0x40
-#define CURSOR_ON_LINE()               (menuHorizontalPosition<0)
-
 #define INCDEC_DECLARE_VARS(f)         uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
 #define INCDEC_SET_FLAG(f)             incdecFlag = (f)
 #define INCDEC_ENABLE_CHECK(fn)        isValueAvailable = fn
@@ -267,16 +266,16 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#define MENU(title, tab, menu, lines_count, scrollbar_X, ...) \
+#define MENU(title, icons, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawMenuTemplate(title, scrollbar_X); \
+  drawMenuTemplate(title, icons); \
 
-#define SIMPLE_MENU(title, tab, menu, lines_count, scrollbar_X) \
+#define SIMPLE_MENU(title, icons, tab, menu, lines_count) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check_simple(event, menu, tab, DIM(tab), lines_count)) return false; \
-  drawMenuTemplate(title, scrollbar_X); \
+  drawMenuTemplate(title, icons); \
 
 #define SUBMENU(title, icon, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \

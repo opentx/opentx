@@ -352,6 +352,6 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 
 bool menuModelCustomFunctions(evt_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  MENU(STR_MENUCUSTOMFUNC, LBM_MODEL_ICONS, menuTabModel, e_CustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuCustomFunctions(event, g_model.customFn, modelFunctionsContext);
 }

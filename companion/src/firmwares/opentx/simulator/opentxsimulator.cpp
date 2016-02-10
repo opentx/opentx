@@ -175,6 +175,7 @@ namespace NAMESPACE {
 #include "radio/src/gui/horus/widget.cpp"
 #include "radio/src/gui/horus/layout.cpp"
 #include "radio/src/gui/horus/layouts/layout2+1.cpp"
+#include "radio/src/gui/horus/layouts/layout1x1.cpp"
 #include "radio/src/gui/horus/layouts/layout2x2.cpp"
 #include "radio/src/gui/horus/layouts/layout2x4.cpp"
 #include "radio/src/gui/horus/widgets/gauge.cpp"

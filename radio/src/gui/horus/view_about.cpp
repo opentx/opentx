@@ -62,7 +62,7 @@ bool menuAboutView(evt_t event)
       break;
   }
 
-  drawMenuTemplate("About");
+  drawScreenTemplate("About", LBM_TOPMENU_OPENTX);
 
   uint8_t screenDuration = 150;
 

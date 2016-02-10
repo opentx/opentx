@@ -341,7 +341,7 @@ bool menuModelMixAll(evt_t event)
   uint8_t chn = mixAddress(s_currIdx)->destCh + 1;
 
   int linesCount = getMixesLinesCount();
-  SIMPLE_MENU(STR_MIXER, menuTabModel, e_MixAll, linesCount, DEFAULT_SCROLLBAR_X);
+  SIMPLE_MENU(STR_MIXER, LBM_MODEL_ICONS, menuTabModel, e_MixAll, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

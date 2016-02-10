@@ -370,7 +370,7 @@ bool menuModelExposAll(evt_t event)
   uint8_t chn = expoAddress(s_currIdx)->chn + 1;
 
   int linesCount = getExposLinesCount();
-  SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, e_InputsAll, linesCount, DEFAULT_SCROLLBAR_X);
+  SIMPLE_MENU(STR_MENUINPUTS, LBM_MODEL_ICONS, menuTabModel, e_InputsAll, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

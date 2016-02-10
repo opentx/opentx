@@ -34,7 +34,7 @@ void lcdColorsInit()
   lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
   lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
   lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RED;
-  lcdColorTable[LINE_COLOR_INDEX] = RGB(88, 88, 90);
+  lcdColorTable[LINE_COLOR_INDEX] = GREY;
   lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
   lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
   lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
@@ -42,8 +42,8 @@ void lcdColorsInit()
   lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
   lcdColorTable[ALARM_COLOR_INDEX] = RED;
   lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
-  lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = RGB(0x60, 0x60, 0x60);
-  lcdColorTable[CURVE_AXIS_COLOR_INDEX] = RGB(180, 180, 180);
+  lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
+  lcdColorTable[CURVE_AXIS_COLOR_INDEX] = LIGHTGREY;
   lcdColorTable[CURVE_COLOR_INDEX] = RED;
   lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = RED;
   lcdColorTable[TITLE_BGCOLOR_INDEX] = RED;

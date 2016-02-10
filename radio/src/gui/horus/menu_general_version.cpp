@@ -22,7 +22,7 @@
 
 bool menuGeneralVersion(evt_t event)
 {
-  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1, DEFAULT_SCROLLBAR_X);
+  SIMPLE_MENU(STR_MENUVERSION, LBM_RADIO_ICONS, menuTabGeneral, e_Vers, 1);
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, vers_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, date_stamp);

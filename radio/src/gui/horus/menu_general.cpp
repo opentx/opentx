@@ -22,6 +22,6 @@
 
 bool menuGeneralCustomFunctions(evt_t event)
 {
-  MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  MENU(STR_MENUGLOBALFUNCS, LBM_RADIO_ICONS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuCustomFunctions(event, g_eeGeneral.customFn, globalFunctionsContext);
 }

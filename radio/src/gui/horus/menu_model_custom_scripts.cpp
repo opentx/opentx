@@ -126,7 +126,7 @@ bool menuModelCustomScripts(evt_t event)
   // lcdDrawNumber(19*FW, 0, luaGetMemUsed(), 0);
   // lcdDrawText(19*FW+1, 0, STR_BYTES);
 
-  MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, DEFAULT_SCROLLBAR_X, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
+  MENU(STR_MENUCUSTOMSCRIPTS, LBM_MODEL_ICONS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   int8_t  sub = menuVerticalPosition;
 

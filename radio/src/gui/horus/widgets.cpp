@@ -191,10 +191,8 @@ void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t optio
   }
 }
 
-void drawMenuTemplate(const char * title, uint16_t scrollbar_X, uint32_t options)
+void drawMenuTemplate(const char * title, const uint8_t * const * icons, uint32_t options)
 {
-  const uint8_t * const * icons = (menuVerticalPositions[0] == 0 ? LBM_MODEL_ICONS : LBM_RADIO_ICONS);
-
   drawScreenTemplate(title, icons[0], OPTION_MENU_TITLE_BAR);
 
   if (menuVerticalPosition < 0) {

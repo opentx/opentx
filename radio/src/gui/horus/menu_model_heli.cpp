@@ -36,7 +36,7 @@ enum menuModelHeliItems {
 
 bool menuModelHeli(evt_t event)
 {
-  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, ITEM_HELI_MAX, DEFAULT_SCROLLBAR_X);
+  SIMPLE_MENU(STR_MENUHELISETUP, LBM_MODEL_ICONS, menuTabModel, e_Heli, ITEM_HELI_MAX);
 
   int sub = menuVerticalPosition;
 

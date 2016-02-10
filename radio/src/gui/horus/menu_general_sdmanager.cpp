@@ -169,7 +169,7 @@ bool menuGeneralSdManager(evt_t _event)
   }
 
   evt_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
-  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count, DEFAULT_SCROLLBAR_X);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, LBM_RADIO_ICONS, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
 
   int index = menuVerticalPosition-menuVerticalOffset;
 

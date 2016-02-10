@@ -163,7 +163,6 @@ bool menuSetupWidgets(evt_t event)
 bool menuSetupScreensView(evt_t event)
 {
   static uint8_t menuHorizontalOffset;
-  static uint8_t lastPositionVertical;
 
   currentScreen = customScreens[0];
 
@@ -175,13 +174,15 @@ bool menuSetupScreensView(evt_t event)
     }
   }
 
+  bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
+
   linesCount = 3;
   const ZoneOption * options = currentScreen->getFactory()->getOptions();
   for (const ZoneOption * option = options; option->name; option++) {
     linesCount++;
   }
 
-  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { uint8_t(countRegisteredLayouts-1), ORPHAN_ROW, 0, 0, 0, 0 });
+  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1), ORPHAN_ROW, 0, 0, 0, 0 });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -191,34 +192,44 @@ bool menuSetupScreensView(evt_t event)
     switch(k) {
       case 0: {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Layout");
-        if (attr) {
-          if (lastPositionVertical != menuVerticalPosition) {
-            menuHorizontalOffset = max<int>(0, min<int>(layoutIndex - 1, countRegisteredLayouts - 4));
-            menuHorizontalPosition = layoutIndex;
+        if (needsOffsetCheck) {
+          if (layoutIndex < menuHorizontalOffset) {
+            menuHorizontalOffset = layoutIndex;
           }
-          else if (menuHorizontalPosition < menuHorizontalOffset) {
-            menuHorizontalOffset = menuHorizontalPosition;
-          }
-          else if (menuHorizontalPosition > menuHorizontalOffset + 3) {
-            menuHorizontalOffset = menuHorizontalPosition - 3;
+          else if (layoutIndex > menuHorizontalOffset + 3) {
+            menuHorizontalOffset = layoutIndex - 3;
           }
         }
-        lastPositionVertical = menuVerticalPosition;
+        if (attr) {
+          if (menuHorizontalPosition < 0) {
+            lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-3, y-2, 4*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
+          }
+          else {
+            if (needsOffsetCheck) {
+              menuHorizontalPosition = layoutIndex;
+            }
+            else if (menuHorizontalPosition < menuHorizontalOffset) {
+              menuHorizontalOffset = menuHorizontalPosition;
+            }
+            else if (menuHorizontalPosition > menuHorizontalOffset + 3) {
+              menuHorizontalOffset = menuHorizontalPosition - 3;
+            }
+          }
+        }
         int lastDisplayedLayout = min<int>(menuHorizontalOffset + 4, countRegisteredLayouts);
         for (int i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
           const LayoutFactory * factory = registeredLayouts[i];
-          factory->drawThumb(x, y, currentScreen->getFactory() == factory ? TEXT_INVERTED_BGCOLOR : LINE_COLOR);
+          factory->drawThumb(x, y, currentScreen->getFactory() == factory ? (menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
         }
-        if (menuHorizontalOffset > 0)
-          lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN - 12, y, LBM_CARROUSSEL_LEFT, LINE_COLOR);
-        if (lastDisplayedLayout < countRegisteredLayouts)
-          lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN + 4 * 56, y, LBM_CARROUSSEL_RIGHT, LINE_COLOR);
-        if (attr) {
+        lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN - 12, y, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
+        lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN + 4 * 56, y, LBM_CARROUSSEL_RIGHT, lastDisplayedLayout < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
+        if (attr && menuHorizontalPosition >= 0) {
           lcdDrawSolidRect(SCREENS_SETUP_2ND_COLUMN + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, TEXT_INVERTED_BGCOLOR);
           if (menuHorizontalPosition != layoutIndex && event == EVT_KEY_BREAK(KEY_ENTER)) {
             s_editMode = 0;
             customScreens[0] = registeredLayouts[menuHorizontalPosition]->create(&g_model.screenData[0].layoutData);
             strncpy(g_model.screenData[0].layoutName, customScreens[0]->getFactory()->getName(), sizeof(g_model.screenData[0].layoutName));
+            storageDirty(EE_MODEL);
             return false;
           }
         }

@@ -333,7 +333,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
 
 bool menuModelCurvesAll(evt_t event)
 {
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, MAX_CURVES, DEFAULT_SCROLLBAR_X);
+  SIMPLE_MENU(STR_MENUCURVES, LBM_MODEL_ICONS, menuTabModel, e_CurvesAll, MAX_CURVES);
 
   int8_t  sub = menuVerticalPosition;
 

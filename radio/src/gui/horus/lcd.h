@@ -83,7 +83,9 @@
 #define BLACK          RGB(0, 0, 0)
 #define YELLOW         RGB(0xF0, 0xD0, 0x10)
 #define BLUE           RGB(0x30, 0xA0, 0xE0)
-#define DARKGREY       RGB(0x40, 0x40, 0x40)
+#define GREY           RGB(96, 96, 96)
+#define DARKGREY       RGB(64, 64, 64)
+#define LIGHTGREY      RGB(180, 180, 180)
 #define RED            RGB(229, 32, 30)
 #define DARKRED        RGB(160, 0, 6)
 

@@ -41,7 +41,7 @@ void ModelPanelWidget::refresh()
     int scale = getBitmapScale(modelBitmap, zone.w, zone.h);
     int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
     int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
-    lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + zone.h - MODEL_BITMAP_HEIGHT / 2 - height / 2, modelBitmap, 0, 0, scale);
+    lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + zone.h - height / 2 - height / 2, modelBitmap, 0, 0, scale);
   }
   else {
     int scale = getBitmapScale(modelBitmap, zone.w, zone.h);
