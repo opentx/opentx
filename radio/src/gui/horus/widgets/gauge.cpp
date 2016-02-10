@@ -56,12 +56,12 @@ void GaugeWidget::refresh()
   int32_t max = persistentData->options[2].signedValue;
   uint16_t color = persistentData->options[3].unsignedValue;
 
-  getvalue_t value = getValue(index);
-  getvalue_t value_in_range = value;
+  int32_t value = getValue(index);
+  int32_t value_in_range = value;
   if (value < min)
     value_in_range = min;
   else if (value > max)
-    value_in_range;
+    value_in_range = max;
 
   int w = divRoundClosest(zone.w * (value_in_range - min), (max - min));
   int percent = divRoundClosest(100 * (value_in_range - min), (max - min));

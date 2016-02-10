@@ -166,7 +166,7 @@ bool menuSetupScreensView(evt_t event)
 
   currentScreen = customScreens[0];
 
-  unsigned int layoutIndex = 0;
+  int layoutIndex = 0;
   for (unsigned int i=0; i<countRegisteredLayouts; i++) {
     if (registeredLayouts[i] == currentScreen->getFactory()) {
       layoutIndex = i;
@@ -182,7 +182,7 @@ bool menuSetupScreensView(evt_t event)
     linesCount++;
   }
 
-  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1), ORPHAN_ROW, 0, 0, 0, 0 });
+  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -216,8 +216,8 @@ bool menuSetupScreensView(evt_t event)
             }
           }
         }
-        int lastDisplayedLayout = min<int>(menuHorizontalOffset + 4, countRegisteredLayouts);
-        for (int i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
+        unsigned int lastDisplayedLayout = min<int>(menuHorizontalOffset + 4, countRegisteredLayouts);
+        for (uint8_t i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
           const LayoutFactory * factory = registeredLayouts[i];
           factory->drawThumb(x, y, currentScreen->getFactory() == factory ? (menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
         }
