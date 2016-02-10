@@ -21,7 +21,6 @@ option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 
 enable_language(ASM)
 set(OPT s)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
