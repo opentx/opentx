@@ -255,12 +255,15 @@ bool menuScreensTheme(evt_t event)
         break;
     }
   }
+
+  return true;
 }
 
 bool menuScreenAdd(evt_t event)
 {
   int menuItemsCount = updateMainviewsMenu();
   MENU_WITH_OPTIONS("Add main view", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, menuItemsCount-1, 0, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+  return true;
 }
 
 template <int T>
