@@ -20,8 +20,8 @@
 
 #include "../../opentx.h"
 
-vertpos_t menuVerticalOffset;
-vertpos_t menuVerticalPosition;
+int menuVerticalOffset;
+int menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t noHighlightCounter;
@@ -325,10 +325,10 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 }
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
-#define MAXCOL_RAW(row)                ((row) >= 0 && horTab ? pgm_read_byte(horTab+min<int>(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL_RAW(row)                ((row) >= 0 && horTab ? pgm_read_byte(horTab+min<int>(row, (int)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define INC(val, min, max)             if (val<max) {val++;} else {val=min;}
+#define INC(val, min, max)             if (val<max) {val++;} else if (max>=0) {val=min;}
 #define DEC(val, min, max)             if (val>min) {val--;} else {val=max;}
 
 uint8_t menuPageIndex;
@@ -407,7 +407,7 @@ bool navigate(evt_t event, int count, int rows, int columns)
   return (prevPosHorz != menuHorizontalPosition || prevPosVert != menuVerticalPosition);
 }
 
-bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, int rowcount, uint8_t flags)
 {
   uint8_t maxcol = MAXCOL(menuVerticalPosition);
 
@@ -543,6 +543,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       do {
         INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
+
       s_editMode = 0; // if we go down, we must be in this mode
       uint8_t newmaxcol = MAXCOL(menuVerticalPosition);
       if (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE) {
@@ -612,7 +613,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
   else if (horTab) {
     if (rowcount > linesDisplayed) {
       while (1) {
-        vertpos_t firstLine = 0;
+        int firstLine = 0;
         for (int numLines=0; firstLine<rowcount && numLines<menuVerticalOffset; firstLine++) {
           if (firstLine>=horTabMax || horTab[firstLine] != HIDDEN_ROW) {
             numLines++;
@@ -622,7 +623,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
           menuVerticalOffset--;
         }
         else {
-          vertpos_t lastLine = firstLine;
+          int lastLine = firstLine;
           for (int numLines=0; lastLine<rowcount && numLines<linesDisplayed; lastLine++) {
             if (lastLine >= horTabMax || horTab[lastLine] != HIDDEN_ROW) {
               numLines++;
@@ -656,7 +657,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
   return true;
 }
 
-bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, int rowcount)
 {
   return check(event, curr, menuTab, menuTabSize, NULL, 0, rowcount);
 }

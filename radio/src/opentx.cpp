@@ -2602,7 +2602,7 @@ int main(void)
 #endif
 
 #if defined(COLORLCD)
-  lcdColorsInit();
+  theme->load();
 #endif
 
   stackPaint();

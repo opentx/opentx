@@ -29,8 +29,6 @@ extern const uint8_t LBM_CURRENT_SHADOW[];
 extern const uint8_t LBM_CURRENT_DOT[];
 
 // Main view icons
-extern const uint8_t LBM_MAINVIEW_BACKGROUND[];
-extern const uint8_t LBM_TOPMENU_OPENTX[];
 extern const uint8_t LBM_TOPMENU_USB[];
 extern const uint8_t LBM_HTRIM_FRAME[];
 extern const uint8_t LBM_VTRIM_FRAME[];
@@ -51,7 +49,13 @@ extern const uint8_t LBM_INPUTS_ICON[];
 extern const uint8_t LBM_MIXER_ICON[];
 extern const uint8_t LBM_CURVES_ICON[];
 extern const uint8_t LBM_TELEMETRY_ICON[];
+
+// UI (theme / layout / widgets bitmaps
 extern const uint8_t LBM_MAINVIEWS_ICON[];
+extern const uint8_t LBM_MAINVIEWS_TOPBAR_ICON[];
+extern const uint8_t LBM_MAINVIEWS_ITEM_OUT_ICON[];
+extern const uint8_t LBM_MAINVIEWS_ADD_ICON[];
+extern const uint8_t * LBM_MAINVIEWS_ICONS[];
 
 // Model selection icons
 extern const uint8_t LBM_LIBRARY_ICON[];

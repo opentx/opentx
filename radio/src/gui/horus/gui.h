@@ -22,6 +22,7 @@
 #include "menus.h"
 #include "widgets.h"
 #include "bitmaps.h"
+#include "theme.h"
 
 #define MENU_HEADER_HEIGHT             45
 #define MENU_TITLE_TOP                 48

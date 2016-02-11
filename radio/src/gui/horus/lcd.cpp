@@ -28,28 +28,6 @@ display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
 uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
-void lcdColorsInit()
-{
-  lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
-  lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
-  lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
-  lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RED;
-  lcdColorTable[LINE_COLOR_INDEX] = GREY;
-  lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
-  lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
-  lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
-  lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(130, 1, 5);
-  lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
-  lcdColorTable[ALARM_COLOR_INDEX] = RED;
-  lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
-  lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
-  lcdColorTable[CURVE_AXIS_COLOR_INDEX] = LIGHTGREY;
-  lcdColorTable[CURVE_COLOR_INDEX] = RED;
-  lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = RED;
-  lcdColorTable[TITLE_BGCOLOR_INDEX] = RED;
-  lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKRED;
-}
-
 coord_t lcdNextPos;
 
 #define FONT_CHARS_COUNT 103
@@ -973,7 +951,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
 
 void lcdDrawBlackOverlay()
 {
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_COLOR | (8<<24));
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | (8<<24));
 }
 
 void lcdDrawCircle(int x0, int y0, int radius)

@@ -200,10 +200,7 @@ bool menuModelSelect(evt_t event)
   }
 
   // Header
-  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(5, 7, LBM_LIBRARY_ICON, MENU_TITLE_COLOR);
-  drawTopmenuDatetime();
+  theme->drawTopbarBackground(LBM_LIBRARY_ICON);
 
   // Body
   lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, CATEGORIES_WIDTH, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TITLE_BGCOLOR);

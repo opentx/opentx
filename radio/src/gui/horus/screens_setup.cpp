@@ -28,6 +28,7 @@ Widget * currentWidget;
 void onWidgetChoiceMenu(const char * result)
 {
   customScreens[0]->setWidget(menuVerticalPosition, result);
+  storageDirty(EE_MODEL);
 }
 
 ZoneOptionValue editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue value, LcdFlags attr, evt_t event)
@@ -117,6 +118,7 @@ void onZoneMenu(const char * result)
   }
   else if (result == STR_REMOVE_WIDGET) {
     currentScreen->setWidget(menuVerticalPosition, NULL);
+    storageDirty(EE_MODEL);
   }
 }
 
@@ -160,19 +162,111 @@ bool menuSetupWidgets(evt_t event)
   return true;
 }
 
-bool menuSetupScreensView(evt_t event)
+extern MenuHandlerFunc menuTabMainviews[1+MAX_CUSTOM_SCREENS];
+extern int updateMainviewsMenu();
+
+template <class T>
+T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * current, bool needsOffsetCheck, LcdFlags attr, evt_t event)
 {
   static uint8_t menuHorizontalOffset;
 
-  currentScreen = customScreens[0];
-
-  int layoutIndex = 0;
-  for (unsigned int i=0; i<countRegisteredLayouts; i++) {
-    if (registeredLayouts[i] == currentScreen->getFactory()) {
-      layoutIndex = i;
+  int currentIndex = 0;
+  for (unsigned int i=0; i<count; i++) {
+    if (array[i] == current) {
+      currentIndex = i;
       break;
     }
   }
+
+  if (event == EVT_ENTRY) {
+    menuHorizontalOffset = 0;
+    needsOffsetCheck = true;
+  }
+
+  if (needsOffsetCheck) {
+    if (currentIndex < menuHorizontalOffset) {
+      menuHorizontalOffset = currentIndex;
+    }
+    else if (currentIndex > menuHorizontalOffset + 3) {
+      menuHorizontalOffset = currentIndex - 3;
+    }
+  }
+  if (attr) {
+    if (menuHorizontalPosition < 0) {
+      lcdDrawSolidFilledRect(x-3, y-2, min<uint8_t>(4, count)*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
+    }
+    else {
+      if (needsOffsetCheck) {
+        menuHorizontalPosition = currentIndex;
+      }
+      else if (menuHorizontalPosition < menuHorizontalOffset) {
+        menuHorizontalOffset = menuHorizontalPosition;
+      }
+      else if (menuHorizontalPosition > menuHorizontalOffset + 3) {
+        menuHorizontalOffset = menuHorizontalPosition - 3;
+      }
+    }
+  }
+  unsigned int last = min<int>(menuHorizontalOffset + 4, count);
+  for (unsigned int i=menuHorizontalOffset, pos=x; i<last; i++, pos += 56) {
+    T * element = array[i];
+    element->drawThumb(pos, y, current == element ? ((attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
+  }
+  if (count > 4) {
+    lcdDrawBitmapPattern(x - 12, y, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
+    lcdDrawBitmapPattern(x + 4 * 56, y, LBM_CARROUSSEL_RIGHT, last < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
+  }
+  if (attr && menuHorizontalPosition >= 0) {
+    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, TEXT_INVERTED_BGCOLOR);
+    if (menuHorizontalPosition != currentIndex && event == EVT_KEY_BREAK(KEY_ENTER)) {
+      s_editMode = 0;
+      return array[menuHorizontalPosition];
+    }
+  }
+  return NULL;
+}
+
+bool menuScreensTheme(evt_t event)
+{
+  bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
+
+  int menuItemsCount = updateMainviewsMenu();
+  MENU_WITH_OPTIONS("User interface", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, 0, 1, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+
+  for (int i=0; i<NUM_BODY_LINES; i++) {
+    coord_t y = MENU_CONTENT_TOP + i * FH;
+    int k = i + menuVerticalOffset;
+    LcdFlags blink = ((s_editMode > 0) ? BLINK | INVERS : INVERS);
+    LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
+    switch (k) {
+      case 0: {
+        lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Theme");
+        const Theme * new_theme = editThemeChoice<const Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
+        if (new_theme) {
+          theme = new_theme;
+          theme->load();
+          // strncpy(g_model.screenData[T].layoutName, factory->getName(), sizeof(g_model.screenData[T].layoutName));
+          storageDirty(EE_MODEL);
+        }
+        break;
+      }
+
+      case 1:
+        break;
+    }
+  }
+}
+
+bool menuScreenAdd(evt_t event)
+{
+  int menuItemsCount = updateMainviewsMenu();
+  MENU_WITH_OPTIONS("Add main view", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, menuItemsCount-1, 0, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+}
+
+template <int T>
+bool menuScreenSetup(evt_t event)
+{
+  currentScreen = customScreens[T];
 
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
 
@@ -182,7 +276,10 @@ bool menuSetupScreensView(evt_t event)
     linesCount++;
   }
 
-  SUBMENU_WITH_OPTIONS("Main views setup", LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+  char title[] = "Main view X";
+  title[sizeof(title)-2] = '1' + T;
+  int menuItemsCount = updateMainviewsMenu();
+  MENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, T+1, linesCount, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -190,48 +287,14 @@ bool menuSetupScreensView(evt_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
     switch(k) {
-      case 0: {
+      case 0:
+      {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Layout");
-        if (needsOffsetCheck) {
-          if (layoutIndex < menuHorizontalOffset) {
-            menuHorizontalOffset = layoutIndex;
-          }
-          else if (layoutIndex > menuHorizontalOffset + 3) {
-            menuHorizontalOffset = layoutIndex - 3;
-          }
-        }
-        if (attr) {
-          if (menuHorizontalPosition < 0) {
-            lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-3, y-2, 4*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
-          }
-          else {
-            if (needsOffsetCheck) {
-              menuHorizontalPosition = layoutIndex;
-            }
-            else if (menuHorizontalPosition < menuHorizontalOffset) {
-              menuHorizontalOffset = menuHorizontalPosition;
-            }
-            else if (menuHorizontalPosition > menuHorizontalOffset + 3) {
-              menuHorizontalOffset = menuHorizontalPosition - 3;
-            }
-          }
-        }
-        unsigned int lastDisplayedLayout = min<int>(menuHorizontalOffset + 4, countRegisteredLayouts);
-        for (unsigned int i=menuHorizontalOffset, x=SCREENS_SETUP_2ND_COLUMN; i<lastDisplayedLayout; i++, x += 56) {
-          const LayoutFactory * factory = registeredLayouts[i];
-          factory->drawThumb(x, y, currentScreen->getFactory() == factory ? (menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
-        }
-        lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN - 12, y, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
-        lcdDrawBitmapPattern(SCREENS_SETUP_2ND_COLUMN + 4 * 56, y, LBM_CARROUSSEL_RIGHT, lastDisplayedLayout < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
-        if (attr && menuHorizontalPosition >= 0) {
-          lcdDrawSolidRect(SCREENS_SETUP_2ND_COLUMN + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, TEXT_INVERTED_BGCOLOR);
-          if (menuHorizontalPosition != layoutIndex && event == EVT_KEY_BREAK(KEY_ENTER)) {
-            s_editMode = 0;
-            customScreens[0] = registeredLayouts[menuHorizontalPosition]->create(&g_model.screenData[0].layoutData);
-            strncpy(g_model.screenData[0].layoutName, customScreens[0]->getFactory()->getName(), sizeof(g_model.screenData[0].layoutName));
-            storageDirty(EE_MODEL);
-            return false;
-          }
+        const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, registeredLayouts, countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
+        if (factory) {
+          customScreens[T] = factory->create(&g_model.screenData[T].layoutData);
+          strncpy(g_model.screenData[T].layoutName, factory->getName(), sizeof(g_model.screenData[T].layoutName));
+          storageDirty(EE_MODEL);
         }
         break;
       }
@@ -261,4 +324,37 @@ bool menuSetupScreensView(evt_t event)
   }
 
   return true;
+}
+
+MenuHandlerFunc menuTabMainviews[1+MAX_CUSTOM_SCREENS] = {
+  menuScreensTheme,
+  menuScreenSetup<0>,
+  menuScreenSetup<1>,
+  menuScreenSetup<2>,
+  menuScreenSetup<3>,
+  menuScreenSetup<4>
+};
+
+const MenuHandlerFunc menuMainviews[MAX_CUSTOM_SCREENS] = {
+  menuScreenSetup<0>,
+  menuScreenSetup<1>,
+  menuScreenSetup<2>,
+  menuScreenSetup<3>,
+  menuScreenSetup<4>
+};
+
+int updateMainviewsMenu()
+{
+  for (int index=1; index<MAX_CUSTOM_SCREENS; index++) {
+    if (customScreens[index]) {
+      menuTabMainviews[1+index] = menuMainviews[index];
+      LBM_MAINVIEWS_ICONS[2+index] = LBM_MAINVIEWS_ITEM_OUT_ICON;
+    }
+    else {
+      menuTabMainviews[1+index] = menuScreenAdd;
+      LBM_MAINVIEWS_ICONS[2+index] = LBM_MAINVIEWS_ADD_ICON;
+      return 2+index;
+    }
+  }
+  return 1+MAX_CUSTOM_SCREENS;
 }

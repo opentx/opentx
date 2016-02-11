@@ -33,7 +33,7 @@ const char * STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "
 #define DATETIME_LINE2          23
 #define DATETIME_LEFT(s)        (LCD_W+DATETIME_SEPARATOR_X+8-getTextWidth(s, SMLSIZE))/2
 
-void drawTopmenuDatetime()
+void drawTopbarDatetime()
 {
   lcdDrawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
 
@@ -149,11 +149,7 @@ void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t optio
 {
   coord_t bodyTop, bodyBottom;
 
-  // Header
-  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(5, 7, icon, MENU_TITLE_COLOR);
-  drawTopmenuDatetime();
+  theme->drawTopbarBackground(icon);
 
   // Menu title bar
   if (options & OPTION_MENU_TITLE_BAR) {
@@ -196,10 +192,13 @@ void drawMenuTemplate(const char * title, const uint8_t * const * icons, uint32_
   drawScreenTemplate(title, icons[0], OPTION_MENU_TITLE_BAR);
 
   if (menuVerticalPosition < 0) {
-    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, HEADER_CURRENT_BGCOLOR);
+
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TRIM_SHADOW_COLOR);
+    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
   }
   else {
-    lcdDrawSolidFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawSolidFilledRect(58+menuPageIndex*MENU_ICONS_SPACING-9, 0, 32, MENU_HEADER_HEIGHT, HEADER_CURRENT_BGCOLOR);
     lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_DOT, MENU_TITLE_COLOR);
   }
 
@@ -208,8 +207,7 @@ void drawMenuTemplate(const char * title, const uint8_t * const * icons, uint32_
   }
 
   if (menuVerticalPosition < 0) {
-    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TEXT_COLOR);
-    lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
+
   }
 }
 
@@ -235,8 +233,8 @@ int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t e
 
 void drawTrimSquare(coord_t x, coord_t y)
 {
-  lcdDrawSolidFilledRect(x-2, y, 15, 15, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TEXT_COLOR);
+  lcdDrawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);
+  lcdDrawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
 }
 
 void drawHorizontalTrimPosition(coord_t x, coord_t y, int16_t dir)

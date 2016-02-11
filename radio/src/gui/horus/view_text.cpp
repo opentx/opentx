@@ -91,7 +91,7 @@ bool menuTextView(evt_t event)
 {
   static int lines_count;
 
-  drawScreenTemplate("TEXT VIEWER", LBM_TOPMENU_OPENTX);
+  drawScreenTemplate("TEXT VIEWER", NULL);
 
   switch (event) {
     case EVT_ENTRY:

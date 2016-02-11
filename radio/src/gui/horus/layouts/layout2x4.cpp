@@ -75,7 +75,7 @@ const ZoneOption Layout2x4::options[] = {
 
 void Layout2x4::refresh(bool setup)
 {
-  lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
+  theme->drawBackground();
 
   if (persistentData->options[0].boolValue) {
     // Top Bar

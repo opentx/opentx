@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,22 +18,25 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-bool menuGeneralVersion(evt_t event)
+const Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
+unsigned int countRegisteredThemes = 0;
+void registerTheme(const Theme * theme)
 {
-  SIMPLE_MENU(STR_MENUVERSION, LBM_RADIO_ICONS, menuTabGeneral, e_Vers, 0);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, vers_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, date_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, time_stamp);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
-
-  // TODO EEPROM erase + backup
-  // lcd_putsCenter(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
-  // if (event == EVT_KEY_LONG(KEY_ENTER)) {
-  //   backupEeprom();
-  // }
-
-  return true;
+  if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
+    registeredThemes[countRegisteredThemes++] = theme;
+  }
 }
+
+const Theme * getTheme(const char * name)
+{
+  for (unsigned int i=0; i<countRegisteredThemes; i++) {
+    const Theme * theme = registeredThemes[i];
+    if (!strcmp(name, theme->getName())) {
+      return theme;
+    }
+  }
+  return NULL;
+}
+

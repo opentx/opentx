@@ -65,6 +65,7 @@ if(PCB STREQUAL HORUS)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
   include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
+  file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/themes/*.cpp)
   file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/layouts/*.cpp)
   file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/widgets/*.cpp)
   set(GUI_SRC
@@ -78,8 +79,10 @@ if(PCB STREQUAL HORUS)
     view_about.cpp
     view_text.cpp
     screens_setup.cpp
-    widget.cpp
+    theme.cpp
     layout.cpp
+    widget.cpp
+    ${THEMES_SRC}
     ${LAYOUTS_SRC}
     ${WIDGETS_SRC}
     )

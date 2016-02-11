@@ -48,14 +48,6 @@ const uint8_t LBM_CURRENT_DOT[] = {
  * Main view bitmaps
  */
 
-const uint8_t LBM_MAINVIEW_BACKGROUND[] = {
-#include "bmp_background.lbm"
-};
-
-const uint8_t LBM_TOPMENU_OPENTX[] = {
-#include "mask_topmenu_opentx.lbm"
-};
-
 const uint8_t LBM_TOPMENU_USB[] = {
 #include "mask_topmenu_usb.lbm"
 };
@@ -182,10 +174,6 @@ const uint8_t LBM_TELEMETRY_ICON[] = {
 #include "mask_telemetry.lbm"
 };
 
-const uint8_t LBM_MAINVIEWS_ICON[] = {
-#include "mask_mainviews.lbm"
-};
-
 const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_MODEL_ICON,
   LBM_MODEL_SETUP_ICON,
@@ -202,6 +190,36 @@ const uint8_t * const LBM_MODEL_ICONS[] = {
   LBM_LUA_SCRIPTS_ICON,
 #endif
   LBM_TELEMETRY_ICON
+};
+
+/*
+ *  UI (theme / layout / widgets bitmaps
+ */
+
+const uint8_t LBM_MAINVIEWS_ICON[] = {
+#include "mask_mainviews.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_TOPBAR_ICON[] = {
+#include "mask_mainviews_topbar.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_ITEM_OUT_ICON[] = {
+#include "mask_mainviews_item_out.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_ADD_ICON[] = {
+#include "mask_mainviews_add.lbm"
+};
+
+const uint8_t * LBM_MAINVIEWS_ICONS[] = {
+  LBM_MAINVIEWS_ICON,
+  LBM_MAINVIEWS_TOPBAR_ICON,
+  LBM_MAINVIEWS_ITEM_OUT_ICON,
+  LBM_MAINVIEWS_ITEM_OUT_ICON,
+  LBM_MAINVIEWS_ITEM_OUT_ICON,
+  LBM_MAINVIEWS_ITEM_OUT_ICON,
+  LBM_MAINVIEWS_ITEM_OUT_ICON
 };
 
 /*
@@ -323,5 +341,4 @@ const uint8_t LBM_BUTTON_ON[] __DMA = {
 const uint8_t LBM_BUTTON_OFF[] __DMA = {
 #include "alpha_button_off.lbm"
 };
-
 

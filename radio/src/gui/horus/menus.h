@@ -34,17 +34,15 @@
 #define MIXES_2ND_COLUMN       100
 #define COLUMN_HEADER_X        150
 
-typedef int16_t vertpos_t;
-
 typedef evt_t & check_event_t;
 #define horzpos_t int8_t
 
 extern uint8_t menuPageIndex;
 extern uint8_t menuPageCount;
 extern uint16_t linesCount;
-extern vertpos_t menuVerticalPosition;
+extern int menuVerticalPosition;
 extern horzpos_t menuHorizontalPosition;
-extern vertpos_t menuVerticalOffset;
+extern int menuVerticalOffset;
 extern uint8_t calibrationState;
 
 // Temporary no highlight
@@ -158,7 +156,7 @@ bool menuMainViewChannelsMonitor(evt_t event);
 bool menuChannelsView(evt_t event);
 bool menuChannelsView(evt_t event);
 bool menuTextView(evt_t event);
-bool menuSetupScreensView(evt_t event);
+bool menuScreensTheme(evt_t event);
 
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(evt_t event);
@@ -260,17 +258,20 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
                                        checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 bool navigate(evt_t event, int count, int rows, int columns=1);
-bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
-bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
+bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, int maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#define MENU(title, icons, tab, menu, lines_count, ...) \
+#define MENU_WITH_OPTIONS(title, icons, tab, tabCount, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+  if (!check(event, menu, tab, tabCount, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
   drawMenuTemplate(title, icons); \
+
+#define MENU(title, icons, tab, menu, lines_count, ...) \
+  MENU_WITH_OPTIONS(title, icons, tab, DIM(tab), menu, lines_count, __VA_ARGS__)
 
 #define SIMPLE_MENU(title, icons, tab, menu, lines_count) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \

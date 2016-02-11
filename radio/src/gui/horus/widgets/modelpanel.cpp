@@ -34,10 +34,10 @@ class ModelPanelWidget: public Widget
 void ModelPanelWidget::refresh()
 {
   if (zone.h >= MODEL_BITMAP_HEIGHT) {
-    lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, TEXT_BGCOLOR | OPACITY(5));
-    lcdDrawBitmapPattern(zone.x + 6, zone.y + 4, LBM_MODEL_ICON, TITLE_BGCOLOR);
+    lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
+    lcdDrawBitmapPattern(zone.x + 6, zone.y + 4, LBM_MODEL_ICON, MAINVIEW_GRAPHICS_COLOR);
     lcdDrawSizedText(zone.x + 45, zone.y + 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
-    lcdDrawSolidHorizontalLine(zone.x + 39, zone.y + 27, zone.w - 48, TITLE_BGCOLOR);
+    lcdDrawSolidHorizontalLine(zone.x + 39, zone.y + 27, zone.w - 48, MAINVIEW_GRAPHICS_COLOR);
     int scale = getBitmapScale(modelBitmap, zone.w, zone.h - 25);
     int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
     int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
@@ -47,7 +47,7 @@ void ModelPanelWidget::refresh()
     int scale = getBitmapScale(modelBitmap, zone.w, zone.h);
     int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
     int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
-    lcdDrawFilledRect(zone.x, zone.y, zone.w, height, SOLID, TEXT_BGCOLOR | OPACITY(5));
+    lcdDrawFilledRect(zone.x, zone.y, zone.w, height, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
     lcdDrawSizedText(zone.x + 5, zone.y + 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
     lcdDrawBitmap(zone.x + zone.w - width, zone.y, modelBitmap, 0, 0, scale);
   }

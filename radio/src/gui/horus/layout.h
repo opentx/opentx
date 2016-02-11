@@ -124,6 +124,7 @@ class BaseLayoutFactory: public LayoutFactory
       extern void lcdDrawBitmapPattern(int x, int y, const uint8_t * bitmap, uint32_t flags, int width=0, int offset=0);
       lcdDrawBitmapPattern(x, y, bitmap, flags);
     }
+
     virtual const ZoneOption * getOptions() const
     {
       return options;

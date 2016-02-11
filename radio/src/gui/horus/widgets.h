@@ -41,7 +41,7 @@
 
 
 void drawColumnHeader(const char * const * headers, uint8_t index);
-void drawTopmenuDatetime();
+void drawTopbarDatetime();
 void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval);
 
 #define BUTTON_ON   0x10

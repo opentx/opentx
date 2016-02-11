@@ -88,13 +88,7 @@ void drawMainViewTopBar()
   const int ALTITUDE_H = 30;
   const int PADDING = 4;
 
-  // Background
-  lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-  lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
-  lcdDrawBitmapPattern(4, 10, LBM_TOPMENU_OPENTX, MENU_TITLE_COLOR);
-
-  // Date & Time
-  drawTopmenuDatetime();
+  theme->drawTopbarBackground(NULL);
 
   // USB icon
   if (usbPlugged()) {
@@ -193,7 +187,7 @@ void onMainViewMenu(const char *result)
     chainMenu(menuStatisticsView);
   }
   else if (result == STR_SETUP_SCREENS) {
-    pushMenu(menuSetupScreensView);
+    pushMenu(menuScreensTheme);
   }
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);

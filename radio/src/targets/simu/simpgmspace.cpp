@@ -317,7 +317,7 @@ void *eeprom_write_function(void *)
 uint8_t main_thread_running = 0;
 char * main_thread_error = NULL;
 extern void opentxStart();
-void *main_thread(void *)
+void * main_thread(void *)
 {
 #ifdef SIMU_EXCEPTIONS
   signal(SIGFPE, sig);
@@ -327,7 +327,7 @@ void *main_thread(void *)
 #endif
 
 #if defined(PCBHORUS)
-    lcdColorsInit();
+    theme->load();
 #endif
 
 #if defined(CPUARM)

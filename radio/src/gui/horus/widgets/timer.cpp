@@ -44,12 +44,12 @@ void TimerWidget::refresh()
 
   TimerData & timerData = g_model.timers[index];
   TimerState & timerState = timersStates[index];
-  lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, TEXT_BGCOLOR);
+  lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
   if (timerData.start) {
-    lcdDrawBitmapPatternPie(zone.x+2, zone.y+3, LBM_RSCALE, TITLE_BGCOLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
+    lcdDrawBitmapPatternPie(zone.x+2, zone.y+3, LBM_RSCALE, MAINVIEW_GRAPHICS_COLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
   }
   else {
-    lcdDrawBitmapPattern(zone.x+3, zone.y+4, LBM_TIMER, TITLE_BGCOLOR);
+    lcdDrawBitmapPattern(zone.x+3, zone.y+4, LBM_TIMER, MAINVIEW_GRAPHICS_COLOR);
   }
   putsTimer(zone.x+76, zone.y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
   if (ZLEN(timerData.name) > 0) {

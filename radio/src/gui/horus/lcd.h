@@ -36,7 +36,6 @@
 #define LCD_COLS        30
 
 #define BSS             0x00
-#define FIXEDWIDTH      0x00
 #define BOLD            0x00
 
 /* lcd common flags */
@@ -65,7 +64,6 @@
 #define MIDSIZE         0x0300
 #define DBLSIZE         0x0400
 #define XXLSIZE         0x0500
-#define ERASEBG         0x8000
 #define VERTICAL        0x0800
 
 #define TIMEBLINK       0x1000
@@ -91,6 +89,9 @@
 
 #define LcdFlags        uint32_t
 
+#define OPACITY_MAX                    0x0F
+#define OPACITY(x)                     ((x)<<24)
+
 enum LcdColorIndex
 {
   TEXT_COLOR_INDEX,
@@ -110,18 +111,23 @@ enum LcdColorIndex
   CURVE_COLOR_INDEX,
   CURVE_CURSOR_COLOR_INDEX,
   HEADER_BGCOLOR_INDEX,
+  HEADER_ICON_BGCOLOR_INDEX,
+  HEADER_CURRENT_BGCOLOR_INDEX,
   TITLE_BGCOLOR_INDEX,
+  TRIM_BGCOLOR_INDEX,
+  TRIM_SHADOW_COLOR_INDEX,
+  MAINVIEW_PANES_COLOR_INDEX,
+  MAINVIEW_GRAPHICS_COLOR_INDEX,
+  OVERLAY_COLOR_INDEX,
   CUSTOM_COLOR_INDEX,
   LCD_COLOR_COUNT
 };
 
 extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
-void lcdColorsInit();
-
-#define OPACITY_MAX                    0x0F
-#define OPACITY(x)                     ((x)<<24)
 
 #define COLOR(index)                   ((index) << 16)
+#define COLOR_IDX(att)                 uint8_t((att) >> 16)
+
 #define TEXT_COLOR                     COLOR(TEXT_COLOR_INDEX)
 #define TEXT_BGCOLOR                   COLOR(TEXT_BGCOLOR_INDEX)
 #define TEXT_INVERTED_COLOR            COLOR(TEXT_INVERTED_COLOR_INDEX)
@@ -140,10 +146,15 @@ void lcdColorsInit();
 #define CURVE_COLOR                    COLOR(CURVE_COLOR_INDEX)
 #define CURVE_CURSOR_COLOR             COLOR(CURVE_CURSOR_COLOR_INDEX)
 #define TITLE_BGCOLOR                  COLOR(TITLE_BGCOLOR_INDEX)
+#define TRIM_BGCOLOR                   COLOR(TRIM_BGCOLOR_INDEX)
+#define TRIM_SHADOW_COLOR              COLOR(TRIM_SHADOW_COLOR_INDEX)
 #define HEADER_BGCOLOR                 COLOR(HEADER_BGCOLOR_INDEX)
+#define HEADER_ICON_BGCOLOR            COLOR(HEADER_ICON_BGCOLOR_INDEX)
+#define HEADER_CURRENT_BGCOLOR         COLOR(HEADER_CURRENT_BGCOLOR_INDEX)
+#define MAINVIEW_PANES_COLOR           COLOR(MAINVIEW_PANES_COLOR_INDEX)
+#define MAINVIEW_GRAPHICS_COLOR        COLOR(MAINVIEW_GRAPHICS_COLOR_INDEX)
+#define OVERLAY_COLOR                  COLOR(OVERLAY_COLOR_INDEX)
 #define CUSTOM_COLOR                   COLOR(CUSTOM_COLOR_INDEX)
-
-#define COLOR_IDX(att)                 uint8_t((att) >> 16)
 
 #define COLOR_SPLIT(color, r, g, b) \
   uint16_t r = ((color) & 0xF800) >> 11; \
@@ -171,10 +182,10 @@ extern uint32_t CurrentFrameBuffer;
 
 extern coord_t lcdNextPos;
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=TEXT_COLOR);
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=TEXT_COLOR);
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=TEXT_COLOR);
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=TEXT_COLOR);
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=0);
+void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=0);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=0);
+void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=0);
 void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
