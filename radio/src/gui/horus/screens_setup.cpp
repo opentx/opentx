@@ -230,8 +230,8 @@ bool menuScreensTheme(evt_t event)
 {
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
 
-  int menuItemsCount = updateMainviewsMenu();
-  MENU_WITH_OPTIONS("User interface", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, 0, 1, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+  menuPageCount = updateMainviewsMenu();
+  MENU_WITH_OPTIONS("User interface", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, 0, 1, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredThemes-1)), ORPHAN_ROW, 0, 0, 0, 0 });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -261,8 +261,8 @@ bool menuScreensTheme(evt_t event)
 
 bool menuScreenAdd(evt_t event)
 {
-  int menuItemsCount = updateMainviewsMenu();
-  MENU_WITH_OPTIONS("Add main view", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, menuItemsCount-1, 0, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+  menuPageCount = updateMainviewsMenu();
+  MENU_WITH_OPTIONS("Add main view", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, menuPageCount-1, 0, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
   return true;
 }
 
@@ -281,8 +281,8 @@ bool menuScreenSetup(evt_t event)
 
   char title[] = "Main view X";
   title[sizeof(title)-2] = '1' + T;
-  int menuItemsCount = updateMainviewsMenu();
-  MENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICONS, menuTabMainviews, menuItemsCount, T+1, linesCount, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+  menuPageCount = updateMainviewsMenu();
+  MENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, T+1, linesCount, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
