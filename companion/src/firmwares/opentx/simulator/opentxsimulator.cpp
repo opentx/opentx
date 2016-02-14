@@ -89,7 +89,9 @@ namespace NAMESPACE {
 #include "radio/src/audio_arm.cpp"
 #include "radio/src/telemetry/telemetry.cpp"
 #include "radio/src/telemetry/frsky_sport.cpp"
+#if defined (PCBTARANIS)
 #include "radio/src/sbus.cpp"
+#endif
 #include "radio/src/crc16.cpp"
 #else
 #include "radio/src/main_avr.cpp"
