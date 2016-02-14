@@ -39,9 +39,13 @@
 uint8_t serial2Mode = 0;
 Fifo<512> serial2TxFifo;
 extern Fifo<512> telemetryFifo;
-extern Fifo<32> sbusFifo;
 
-void uart3Setup(unsigned int baudrate)
+static uint8_t dma_buf[32];
+static uint8_t dma_read_pos;
+
+#define USART3DMAStream DMA1_Stream1
+
+void uart3Setup(unsigned int baudrate, bool dma)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -64,33 +68,55 @@ void uart3Setup(unsigned int baudrate)
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   
   USART_Init(SERIAL_USART, &USART_InitStructure);
-  USART_Cmd(SERIAL_USART, ENABLE);
-
-  USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
-  USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
-
-  NVIC_SetPriority(SERIAL_USART_IRQn, 7);
-  NVIC_EnableIRQ(SERIAL_USART_IRQn);
+  if (!dma) {
+    USART_Cmd(SERIAL_USART, ENABLE);
+    USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
+    USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
+    NVIC_EnableIRQ(SERIAL_USART_IRQn);
+    NVIC_SetPriority(SERIAL_USART_IRQn, 7);
+  }
+  else {
+    DMA_InitTypeDef DMA_InitStructure;
+    dma_read_pos = 0;
+    USART_ITConfig(SERIAL_USART, USART_IT_RXNE, DISABLE);
+    USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
+    DMA_StructInit(&DMA_InitStructure);
+    DMA_InitStructure.DMA_Channel = DMA_Channel_4;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&SERIAL_USART->DR;
+    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)dma_buf;
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+    DMA_InitStructure.DMA_BufferSize = sizeof(dma_buf);
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_Low;
+    DMA_Init(USART3DMAStream, &DMA_InitStructure);
+    USART_DMACmd(SERIAL_USART, USART_DMAReq_Rx, ENABLE);
+    USART_Cmd(SERIAL_USART, ENABLE);
+    DMA_Cmd(USART3DMAStream, ENABLE);
+  }
 }
 
 void serial2Init(unsigned int mode, unsigned int protocol)
 {
-  USART_DeInit(SERIAL_USART);
+  serial2Stop();
 
   serial2Mode = mode;
 
   switch (mode) {
     case UART_MODE_TELEMETRY_MIRROR:
-      uart3Setup(FRSKY_SPORT_BAUDRATE);
+      uart3Setup(FRSKY_SPORT_BAUDRATE, false);
       break;
 #if !defined(USB_SERIAL) && (defined(DEBUG) || defined(CLI))
     case UART_MODE_DEBUG:
-      uart3Setup(DEBUG_BAUDRATE);
+      uart3Setup(DEBUG_BAUDRATE, false);
       break;
 #endif
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
-        uart3Setup(FRSKY_D_BAUDRATE);
+        uart3Setup(FRSKY_D_BAUDRATE, false);
       }
       break;
   }
@@ -105,12 +131,14 @@ void serial2Putc(char c)
 
 void serial2SbusInit()
 {
-  uart3Setup(SBUS_BAUDRATE);
+  dma_read_pos = 0;
+  uart3Setup(SBUS_BAUDRATE, true);
   SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
 }
 
 void serial2Stop()
 {
+  DMA_DeInit(USART3DMAStream);
   USART_DeInit(SERIAL_USART);
 }
 
@@ -121,6 +149,21 @@ uint8_t serial2TracesEnabled()
 #else
   return false;
 #endif
+}
+
+int serial2DMAPoll(uint8_t *ch)
+{
+  uint32_t n;
+  uint32_t pos;
+
+  n = sizeof(dma_buf)-USART3DMAStream->NDTR;
+  pos = dma_read_pos;
+  if (pos == n) return false;
+  *ch = dma_buf[pos];
+  pos ++;
+  if (pos == sizeof(dma_buf)) pos = 0;
+  dma_read_pos = pos;
+  return true;
 }
 
 #if !defined(SIMU)

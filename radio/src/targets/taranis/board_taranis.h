@@ -223,6 +223,7 @@ void stop_cppm_on_heartbeat_capture(void);
 void init_sbus_on_heartbeat_capture(void);
 void stop_sbus_on_heartbeat_capture(void);
 void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
+int serial_get_sbus_char(uint8_t *ch);
 
 // Keys driver
 void keysInit(void);
@@ -334,6 +335,7 @@ void hapticOff(void);
 #define DEBUG_BAUDRATE                 115200
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
+int serial2DMAPoll(uint8_t *ch);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
 void serial2SbusInit(void);
 void serial2Stop(void);
