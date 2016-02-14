@@ -910,3 +910,6 @@ John Hanagan
 Didier van Steensel
 Julius Vicze
 Cristiano Merighi
+James Holley
+Chris Merry
+Jiri Fojtasek
