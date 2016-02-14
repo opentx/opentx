@@ -57,3 +57,4 @@ make PCB=MEGA2560
 # OpenTX on MEGA2560 with MAVLINK
 make clean
 make PCB=MEGA2560 EXT=MAVLINK
+
