@@ -262,11 +262,11 @@ extern "C" void HEARTBEAT_USART_IRQHandler()
 int serial_get_sbus_char(uint8_t *ch) 
 {
   switch (currentTrainerMode) {
-          case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-                  return sbusFifo.pop(*ch);
-          case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-                  return serial2DMAPoll(ch);
-          default:
-                  return false;
+    case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+      return sbusFifo.pop(*ch);
+    case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+      return serial2DMAPoll(ch);
+    default:
+      return false;
   }
 }
