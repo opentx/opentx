@@ -104,13 +104,48 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF"
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT"
 
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+
+#define LEN_MULTI_PROTOCOLS    "\006"
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi"
+
+#define LEN_SUBTYPE_FLYSKY     "\004"
+#define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912"
+
+// SUBTYPE FOR FRSKY use TR_XJT_PROTOCOLS with offset +1
+
+
+#define LEN_SUBTYPE_HISKY      "\005"
+#define TR_SUBTYPE_HISKY       "HiSky""HK310"
+
+// SUBTYPE FOR DSMX use TR_DSM_PROTOCOLS with offset +1
+
+#define LEN_SUBTYPE_YD717      "\007"
+#define TR_SUBTYPE_YD717       "YD717\0 ""SKYWLKR""SYMAX2\0""XINXUN\0""NIHUI\0  "
+
+#define LEN_SUBTYPE_SYMAX      "\003"
+#define TR_SUBTYPE_SYMAX       "Std""5c\0"
+
+#define LEN_SUBTYPE_CX10       "\007"
+#define TR_SUBTYPE_CX10        "Green\0 ""Blue\0  ""DM007\0 ""Q282\0  ""JC3015a""JC3015b""MK33041""Q242\0  "
+
+#define LEN_SUBTYPE_CG023      "\005"
+#define TR_SUBTYPE_CG023       "CG023""YD829""H3 3d"
+
+#define LEN_SUBTYPE_KN         "\006"
+#define TR_SUBTYPE_KN          "WLtoys""FeiLun"
+
+#define LEN_SUBTYPE_MT99       "\004"
+#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 "
+
+#define LEN_SUBTYPE_MJXQ       "\005"
+#define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D"
 
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo\0 ""ExFine""Fine\0 ""Medium""Coarse", "Exponential""Extra Fine\0""Fine\0      ""Medium\0    ""Coarse\0    ")
@@ -769,7 +804,6 @@
   #define TR_MENUINPUTS        "STICKS"
   #define TR_MENULIMITS        "SERVOS"
 #endif
-
 #define TR_MENUCURVES          "CURVES"
 #define TR_MENUCURVE           "CURVE"
 #define TR_MENULOGICALSWITCH   "LOGICAL SWITCH"
@@ -786,6 +820,8 @@
 #else
   #define TR_RXNUM             "RxNum"
 #endif
+#define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
+#define TR_MULTI_VIDFREQ       INDENT "Video frequency"
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limit"
 #define TR_MINRSSI             "Min Rssi"

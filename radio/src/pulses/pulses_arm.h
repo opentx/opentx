@@ -107,11 +107,15 @@ union TrainerPulsesData {
 
 extern ModulePulsesData modulePulsesData[NUM_MODULES];
 extern TrainerPulsesData trainerPulsesData;
+extern const uint16_t CRCTable[];
 
 void setupPulses(unsigned int port);
 void setupPulsesDSM2(unsigned int port);
+void setupPulsesMultimodule(unsigned int port);
 void setupPulsesPXX(unsigned int port);
 void setupPulsesPPM(unsigned int port);
+void sendByteDsm2(uint8_t b);
+void putDsm2Flush();
 
 void createCrossfireFrame(uint8_t * frame, int16_t * pulses);
 
