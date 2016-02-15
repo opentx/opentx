@@ -109,7 +109,6 @@ Section "OpenTX Companion" SecDummy
   !else
   File "@SYSDIR@\system32\pthreadVC2.dll"
   !endif
-  File "C:\Programs\xerces-vc\bin\xerces-c_3_1.dll"
   File "C:\Programs\SDL\lib\SDL.dll"
   File "@SYSDIR@\msvcp100.dll"
   File "@SYSDIR@\msvcr100.dll"
