@@ -32,8 +32,7 @@ class Layout
   friend class LayoutFactory;
 
   public:
-    struct ZonePersistentData
-    {
+    struct ZonePersistentData {
       char widgetName[10];
       Widget::PersistentData widgetData;
     };
@@ -61,9 +60,17 @@ class Layout
       return widgets[index];
     }
 
-    void setWidget(unsigned int index, const char * name);
+    void setWidget(unsigned int index, Widget * widget)
+    {
+      widgets[index] = widget;
+    }
 
-    virtual void create();
+    void createWidget(unsigned int index, const WidgetFactory * factory);
+
+    virtual void create()
+    {
+      memset(persistentData, 0, sizeof(PersistentData));
+    }
 
     virtual void load();
 

@@ -22,14 +22,9 @@
 
 Layout * currentScreen;
 Widget * currentWidget;
+uint8_t currentZone;
 
 #define SCREENS_SETUP_2ND_COLUMN        200
-
-void onWidgetChoiceMenu(const char * result)
-{
-  customScreens[0]->setWidget(menuVerticalPosition, result);
-  storageDirty(EE_MODEL);
-}
 
 ZoneOptionValue editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue value, LcdFlags attr, evt_t event)
 {
@@ -67,7 +62,7 @@ ZoneOptionValue editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionV
   }
   else if (option->type == ZoneOption::Color) {
     lcdSetColor(value.unsignedValue);
-    lcdDrawSolidRect(SCREENS_SETUP_2ND_COLUMN, y, 40, 15, attr ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
+    lcdDrawSolidRect(SCREENS_SETUP_2ND_COLUMN, y, 40, 15, 1, attr ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN + 1, y + 1, 38, 13, CUSTOM_COLOR);
     if (attr) {
       CHECK_INCDEC_MODELVAR(event, value.unsignedValue, 0, 65535);
@@ -104,13 +99,78 @@ bool menuWidgetSettings(evt_t event)
   return true;
 }
 
+bool menuWidgetChoice(evt_t event)
+{
+  static Widget * previousWidget;
+  static Widget::PersistentData tempData;
+
+  switch (event) {
+    case EVT_ENTRY:
+    {
+      const WidgetFactory * factory;
+      previousWidget = currentScreen->getWidget(currentZone);
+      currentScreen->setWidget(currentZone, NULL);
+      menuHorizontalPosition = 0;
+      if (previousWidget) {
+        factory = previousWidget->getFactory();
+        for (unsigned int i=0; i<countRegisteredWidgets; i++) {
+          if (factory->getName() == registeredWidgets[i]->getName()) {
+            menuHorizontalPosition = i;
+            break;
+          }
+        }
+      }
+      else {
+        factory = registeredWidgets[0];
+      }
+      currentWidget = factory->create(currentScreen->getZone(currentZone), &tempData);
+      break;
+    }
+
+    case EVT_KEY_BREAK(KEY_EXIT):
+      delete currentWidget;
+      currentScreen->setWidget(currentZone, previousWidget);
+      popMenu();
+      return false;
+
+    case EVT_KEY_BREAK(KEY_ENTER):
+      delete previousWidget;
+      currentScreen->createWidget(currentZone, registeredWidgets[menuHorizontalPosition]);
+      storageDirty(EE_MODEL);
+      popMenu();
+      return false;
+
+    case EVT_ROTARY_RIGHT:
+      if (menuHorizontalPosition < countRegisteredWidgets-1) {
+        delete currentWidget;
+        currentWidget = registeredWidgets[++menuHorizontalPosition]->create(currentScreen->getZone(currentZone), &tempData);
+      }
+      break;
+
+    case EVT_ROTARY_LEFT:
+      if (menuHorizontalPosition > 0) {
+        delete currentWidget;
+        currentWidget = registeredWidgets[--menuHorizontalPosition]->create(currentScreen->getZone(currentZone), &tempData);
+      }
+      break;
+  }
+
+  currentScreen->refresh();
+  lcdDrawBlackOverlay();
+  currentWidget->refresh();
+
+  Zone zone = currentScreen->getZone(currentZone);
+  lcdDrawBitmapPattern(zone.x+2, zone.y+zone.h/2-15, LBM_CARROUSSEL_LEFT, menuHorizontalPosition > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
+  lcdDrawBitmapPattern(zone.x+zone.w-8, zone.y+zone.h/2-15, LBM_CARROUSSEL_RIGHT, menuHorizontalPosition < countRegisteredWidgets-1 ? LINE_COLOR : CURVE_AXIS_COLOR);
+
+  return true;
+}
+
 void onZoneMenu(const char * result)
 {
   if (result == STR_SELECT_WIDGET) {
-    for (unsigned int i=0; i<countRegisteredWidgets; i++) {
-      POPUP_MENU_ADD_ITEM(registeredWidgets[i]->getName());
-    }
-    popupMenuHandler = onWidgetChoiceMenu;
+    currentZone = menuVerticalPosition;
+    pushMenu(menuWidgetChoice);
   }
   else if (result == STR_WIDGET_SETTINGS) {
     currentWidget = currentScreen->getWidget(menuVerticalPosition);
@@ -138,8 +198,7 @@ bool menuSetupWidgets(evt_t event)
   for (int i=currentScreen->getZonesCount()-1; i>=0; i--) {
     Zone zone = currentScreen->getZone(i);
     if (menuVerticalPosition == i) {
-      lcdDrawSolidRect(zone.x, zone.y, zone.w, zone.h, TEXT_INVERTED_COLOR);
-      lcdDrawSolidRect(zone.x-1, zone.y-1, zone.w+2, zone.h+2, TEXT_INVERTED_COLOR);
+      lcdDrawSolidRect(zone.x-4, zone.y-4, zone.w+8, zone.h+8, 2, TEXT_INVERTED_BGCOLOR);
       if (event == EVT_KEY_BREAK(KEY_ENTER)) {
         Widget * widget = currentScreen->getWidget(i);
         if (widget) {
@@ -155,14 +214,13 @@ bool menuSetupWidgets(evt_t event)
       }
     }
     else {
-      lcdDrawRect(zone.x, zone.y, zone.w, zone.h, DOTTED, TEXT_INVERTED_COLOR);
+      lcdDrawRect(zone.x-4, zone.y-4, zone.w+8, zone.h+8, 2, 0x3F, TEXT_INVERTED_BGCOLOR);
     }
   }
   navigate(event, currentScreen->getZonesCount(), currentScreen->getZonesCount(), 1);
   return true;
 }
 
-extern MenuHandlerFunc menuTabMainviews[1+MAX_CUSTOM_SCREENS];
 extern int updateMainviewsMenu();
 
 template <class T>
@@ -217,7 +275,7 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
     lcdDrawBitmapPattern(x + 4 * 56, y, LBM_CARROUSSEL_RIGHT, last < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
   }
   if (attr && menuHorizontalPosition >= 0) {
-    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, 1, TEXT_INVERTED_BGCOLOR);
     if (menuHorizontalPosition != currentIndex && event == EVT_KEY_BREAK(KEY_ENTER)) {
       s_editMode = 0;
       return array[menuHorizontalPosition];

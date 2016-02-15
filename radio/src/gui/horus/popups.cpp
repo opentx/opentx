@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -41,24 +41,21 @@ void displayAlertBox()
 {
   lcdClear();
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, ALARM_COLOR);
-  lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, ALARM_COLOR);
+  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
   lcdDrawBitmap(POPUP_X-80, POPUP_Y-30, LBM_ASTERISK);
 }
 
 void displayWarningBox()
 {
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, ALARM_COLOR);
-  lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, ALARM_COLOR);
+  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
 }
 
 void displayMessageBox()
 {
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, WARNING_COLOR);
-  lcdDrawSolidRect(POPUP_X+1, POPUP_Y+1, POPUP_W-2, POPUP_H-2, WARNING_COLOR);
+  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, WARNING_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
 }
 
@@ -184,7 +181,7 @@ const char * displayPopupMenu(evt_t event)
   int y = (LCD_H - (display_count*(FH+1))) / 2;
 
   lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
-  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, ALARM_COLOR);
+  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, 1, ALARM_COLOR);
 
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {

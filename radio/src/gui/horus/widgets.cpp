@@ -61,7 +61,7 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
   if (attr & (BUTTON_OFF|BUTTON_ON)) {
     padding = 5;
   }
-  lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 20, TEXT_COLOR);
+  lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 20, 1, TEXT_COLOR);
   if (attr & INVERS) {
     lcdDrawSolidFilledRect(x, y, padding+width+16+padding, 18, TEXT_INVERTED_BGCOLOR);
     lcdDrawText(x+padding+8, y, label, TEXT_INVERTED_COLOR);
@@ -87,10 +87,10 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   else {
     if (value) {
       lcdDrawSolidFilledRect(x+2, y+5, 7, 7, SCROLLBOX_COLOR);
-      lcdDrawSolidRect(x, y+3, 11, 11, LINE_COLOR);
+      lcdDrawSolidRect(x, y+3, 11, 11, 1, LINE_COLOR);
     }
     else {
-      lcdDrawSolidRect(x, y+3, 11, 11, LINE_COLOR);
+      lcdDrawSolidRect(x, y+3, 11, 11, 1, LINE_COLOR);
     }
   }
 }

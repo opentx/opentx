@@ -330,19 +330,24 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
 }
 #endif
 
-void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness, uint8_t pat, LcdFlags att)
 {
+#if 0
   if (att & ROUND) {
     lcdDrawVerticalLine(x, y+1, h-2, pat, att);
     lcdDrawVerticalLine(x+w-1, y+1, h-2, pat, att);
     lcdDrawHorizontalLine(x+1, y+h-1, w-2, pat, att);
     lcdDrawHorizontalLine(x+1, y, w-2, pat, att);
   }
-  else {
-    lcdDrawVerticalLine(x, y, h, pat, att);
-    lcdDrawVerticalLine(x+w-1, y, h, pat, att);
-    lcdDrawHorizontalLine(x+1, y+h-1, w-2, pat, att);
-    lcdDrawHorizontalLine(x+1, y, w-2, pat, att);
+  else
+#endif
+  {
+    for (int i=0; i<thickness; i++) {
+      lcdDrawVerticalLine(x+i, y, h, pat, att);
+      lcdDrawVerticalLine(x+w-1-i, y, h, pat, att);
+      lcdDrawHorizontalLine(x, y+h-1-i, w, pat, att);
+      lcdDrawHorizontalLine(x, y+i, w, pat, att);
+    }
   }
 }
 

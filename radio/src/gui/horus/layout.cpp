@@ -20,21 +20,11 @@
 
 #include "opentx.h"
 
-void Layout::setWidget(unsigned int index, const char * name)
+void Layout::createWidget(unsigned int index, const WidgetFactory * factory)
 {
   memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
-  if (name) {
-    strncpy(persistentData->zones[index].widgetName, name, sizeof(persistentData->zones[index].widgetName));
-    widgets[index] = createWidget(name, getZone(index), &persistentData->zones[index].widgetData);
-  }
-  else {
-    widgets[index] = NULL;
-  }
-}
-
-void Layout::create()
-{
-  memset(persistentData, 0, sizeof(PersistentData));
+  strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
+  widgets[index] = factory->create(getZone(index), &persistentData->zones[index].widgetData);
 }
 
 void Layout::load()
@@ -50,10 +40,6 @@ void Layout::load()
 
 void Layout::refresh(bool setup)
 {
-  if (setup) {
-    lcdDrawBlackOverlay();
-  }
-
   for (int i = 0; i < MAX_LAYOUT_ZONES; i++) {
     if (widgets[i]) {
       widgets[i]->refresh();
@@ -89,4 +75,3 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
   }
   return NULL;
 }
-

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -35,14 +35,14 @@ void handleUsbConnection()
     /*
       We used to initialize USB peripheral and driver here.
       According to my tests this is way too late. The USB peripheral
-      therefore does not have enough information to start responding to 
-      USB host request, which causes very slow USB device recognition, 
+      therefore does not have enough information to start responding to
+      USB host request, which causes very slow USB device recognition,
       multiple USB device resets, etc...
 
       If we want to change the USB profile, the procedure is simple:
         * USB cable must be disconnected
         * call usbDeInit();
-        * call usbUnit(); which initializes USB with the new profile. 
+        * call usbUnit(); which initializes USB with the new profile.
           Obviously the usbInit() should be modified to have a runtime
           selection of the USB profile.
     */
@@ -55,13 +55,13 @@ void handleUsbConnection()
   if (usbStarted && !usbPlugged()) {
     usbStarted = false;
   }
-  
+
 #if defined(USB_JOYSTICK)
   if (usbStarted ) {
     usbJoystickUpdate();
   }
 #endif
-  
+
 #endif // defined(CPUSTM32) && !defined(SIMU)
 }
 
@@ -108,9 +108,9 @@ void guiMain(evt_t evt)
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
   luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
 
-  // wait for LCD DMA to finish before continuing, because code from this point 
+  // wait for LCD DMA to finish before continuing, because code from this point
   // is allowed to change the contents of LCD buffer
-  // 
+  //
   // WARNING: make sure no code above this line does any change to the LCD display buffer!
   //
   lcdRefreshWait();
@@ -153,8 +153,10 @@ void guiMain(evt_t evt)
             const char * result = displayPopupMenu(evt);
             if (result) {
               popupMenuHandler(result);
-              evt = EVT_REFRESH;
-              continue;
+              if (menuEvent == 0) {
+                evt = EVT_REFRESH;
+                continue;
+              }
             }
           }
           refreshNeeded = true;
@@ -197,7 +199,7 @@ void guiMain(evt_t evt)
 void handleGui(uint8_t event) {
   // if Lua standalone, run it and don't clear the screen (Lua will do it)
   // else if Lua telemetry view, run it and don't clear the screen
-  // else clear scren and show normal menus 
+  // else clear scren and show normal menus
 #if defined(LUA)
   if (luaTask(event, RUN_STNDAL_SCRIPT, true)) {
     // standalone script is active
@@ -217,7 +219,7 @@ void handleGui(uint8_t event) {
     menuHandlers[menuLevel](event);
     // todo     drawStatusLine(); here???
   }
-  else 
+  else
 #endif
   {
     lcdClear();
@@ -249,15 +251,15 @@ void guiMain(evt_t evt)
   }
 #endif //#if defined(LUA)
 
-  // wait for LCD DMA to finish before continuing, because code from this point 
+  // wait for LCD DMA to finish before continuing, because code from this point
   // is allowed to change the contents of LCD buffer
-  // 
+  //
   // WARNING: make sure no code above this line does any change to the LCD display buffer!
   //
   lcdRefreshWait();
 
   if (menuEvent) {
-    // we have a popupMenuActive entry or exit event 
+    // we have a popupMenuActive entry or exit event
     menuVerticalPosition = (menuEvent == EVT_ENTRY_UP) ? menuVerticalPositions[menuLevel] : 0;
     menuHorizontalPosition = 0;
     evt = menuEvent;
@@ -283,7 +285,7 @@ void guiMain(evt_t evt)
     DISPLAY_WARNING(evt);
   }
   else if (popupMenuNoItems > 0) {
-    // popup menu is active display it on top of normal menus 
+    // popup menu is active display it on top of normal menus
     handleGui(0); // suppress events, they are handled by the popup
     if (!inPopupMenu) {
       TRACE("Popup Menu started");

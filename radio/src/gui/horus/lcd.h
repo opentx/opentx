@@ -217,7 +217,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 
 #define SOLID   0xff
 #define DOTTED  0x55
-#define STASHED 0x70
+#define STASHED 0x33
 
 #define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
 
@@ -276,17 +276,17 @@ inline void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, coord_t h, LcdFlags 
   lcdDrawSolidFilledRect(x, y, 1, h, att);
 }
 
-inline void lcdDrawSolidRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+inline void lcdDrawSolidRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t thickness=1, LcdFlags att=0)
 {
-  lcdDrawSolidVerticalLine(x, y, h, att);
-  lcdDrawSolidVerticalLine(x+w-1, y, h, att);
-  lcdDrawSolidHorizontalLine(x, y, w, att);
-  lcdDrawSolidHorizontalLine(x, y+h-1, w, att);
+  lcdDrawSolidFilledRect(x, y, thickness, h, att);
+  lcdDrawSolidFilledRect(x+w-thickness, y, thickness, h, att);
+  lcdDrawSolidFilledRect(x, y, w, thickness, att);
+  lcdDrawSolidFilledRect(x, y+h-thickness, w, thickness, att);
 }
 
 void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0);
 void lcdDrawBlackOverlay();
-void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawCircle(int x0, int y0, int radius);
 void lcdDrawPie(int x0, int y0, int radius, int angle1=0, int angle2=360);
 void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle);

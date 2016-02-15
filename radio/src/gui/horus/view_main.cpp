@@ -187,7 +187,7 @@ void onMainViewMenu(const char *result)
     chainMenu(menuStatisticsView);
   }
   else if (result == STR_SETUP_SCREENS) {
-    pushMenu(menuScreensTheme);
+    pushMenu(menuTabMainviews[1]);
   }
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);

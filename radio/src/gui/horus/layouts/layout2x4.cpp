@@ -30,6 +30,7 @@ class Layout2x4: public Layout
 
     virtual void create()
     {
+      Layout::create();
       persistentData->options[0].boolValue = true;
       persistentData->options[1].boolValue = true;
       persistentData->options[2].boolValue = true;
@@ -49,9 +50,9 @@ class Layout2x4: public Layout
     {
       Zone zone;
       zone.x = (index >= 4) ? 260 : 60;
-      zone.y = 55 + (index % 4) * 40;
+      zone.y = 56 + (index % 4) * 42;
       zone.w = 160;
-      zone.h = 40;
+      zone.h = 32;
       return zone;
     }
 

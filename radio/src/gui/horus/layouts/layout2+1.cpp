@@ -30,6 +30,7 @@ class Layout2P1: public Layout
 
     virtual void create()
     {
+      Layout::create();
       persistentData->options[0].boolValue = true;
       persistentData->options[1].boolValue = true;
       persistentData->options[2].boolValue = true;
@@ -56,8 +57,8 @@ class Layout2P1: public Layout
 
 const Zone Layout2P1::zones[3] = {
   { 240, 60, 192, 145 },
-  { 46, 60, 192, 70 },
-  { 46, 135, 192, 70 }
+  { 46, 60, 182, 66 },
+  { 46, 139, 182, 66 }
 };
 
 const ZoneOption Layout2P1::options[] = {

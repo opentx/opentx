@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -283,7 +283,7 @@ bool menuModelMixOne(evt_t event)
 
 void lineMixSurround(coord_t y, LcdFlags flags=CURVE_AXIS_COLOR)
 {
-  lcdDrawRect(MIX_LINE_SELECT_POS, y-INVERT_VERT_MARGIN+1, MIX_LINE_SELECT_WIDTH, INVERT_LINE_HEIGHT, s_copyMode == COPY_MODE ? SOLID : DOTTED, flags);
+  lcdDrawRect(MIX_LINE_SELECT_POS, y-INVERT_VERT_MARGIN+1, MIX_LINE_SELECT_WIDTH, INVERT_LINE_HEIGHT, 1, s_copyMode == COPY_MODE ? SOLID : DOTTED, flags);
 }
 
 void onMixesMenu(const char * result)

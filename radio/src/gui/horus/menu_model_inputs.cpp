@@ -307,7 +307,7 @@ bool menuModelExpoOne(evt_t event)
 
 void lineExpoSurround(coord_t y, LcdFlags flags=CURVE_AXIS_COLOR)
 {
-  lcdDrawRect(EXPO_LINE_SELECT_POS, y-INVERT_VERT_MARGIN+1, EXPO_LINE_SELECT_WIDTH, INVERT_LINE_HEIGHT, s_copyMode == COPY_MODE ? SOLID : DOTTED, flags);
+  lcdDrawRect(EXPO_LINE_SELECT_POS, y-INVERT_VERT_MARGIN+1, EXPO_LINE_SELECT_WIDTH, INVERT_LINE_HEIGHT, 1, s_copyMode == COPY_MODE ? SOLID : DOTTED, flags);
 }
 
 void onExposMenu(const char * result)

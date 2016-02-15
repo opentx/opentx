@@ -30,6 +30,7 @@ class Layout2x2: public Layout
 
     virtual void create()
     {
+      Layout::create();
       persistentData->options[0].boolValue = true;
     }
 

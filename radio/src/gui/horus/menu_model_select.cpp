@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -70,7 +70,7 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
   }
   lcdDrawSolidHorizontalLine(x+5, y+19, 143, LINE_COLOR);
   if (selected) {
-    lcdDrawSolidRect(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT, TITLE_BGCOLOR);
+    lcdDrawSolidRect(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT, 1, TITLE_BGCOLOR);
     drawShadow(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT);
   }
 }

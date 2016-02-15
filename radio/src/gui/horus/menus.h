@@ -145,6 +145,8 @@ static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuGeneralVersion,
 };
 
+extern MenuHandlerFunc menuTabMainviews[1+MAX_CUSTOM_SCREENS];
+
 bool menuFirstCalib(evt_t event);
 bool menuMainView(evt_t event);
 bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);

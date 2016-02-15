@@ -20,10 +20,10 @@
 
 #include "opentx.h"
 
-class Layout1x1: public Layout
+class Layout2x1: public Layout
 {
   public:
-    Layout1x1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
+    Layout2x1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
     }
@@ -32,25 +32,25 @@ class Layout1x1: public Layout
     {
       Layout::create();
       persistentData->options[0].boolValue = true;
-      persistentData->options[1].boolValue = true;
     }
 
     virtual unsigned int getZonesCount() const
     {
-      return 1;
+      return 4;
     }
 
     virtual Zone getZone(unsigned int index) const
     {
-      Zone zone = { 10, 10, LCD_W - 2*10, LCD_H - 2*10 };
+      Zone zone;
+      zone.w = (LCD_W-3*10) / 2;
+      zone.x = (index & 1) ? 20 + zone.w : 10;
       if (persistentData->options[0].boolValue) {
-        zone.y += MENU_HEADER_HEIGHT;
-        zone.h -= MENU_HEADER_HEIGHT;
+        zone.h = (LCD_H-MENU_HEADER_HEIGHT-2*10);
+        zone.y = MENU_HEADER_HEIGHT + 10;
       }
-      if (persistentData->options[1].boolValue) {
-        zone.x += 35;
-        zone.w -= 2*35;
-        zone.h -= 35;
+      else {
+        zone.h = (LCD_H-2*10);
+        zone.y = 10;
       }
       return zone;
     }
@@ -61,13 +61,12 @@ class Layout1x1: public Layout
 
 };
 
-const ZoneOption Layout1x1::options[] = {
+const ZoneOption Layout2x1::options[] = {
   { "Top bar", ZoneOption::Bool },
-  { "Sliders+Trims", ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 
-void Layout1x1::refresh(bool setup)
+void Layout2x1::refresh(bool setup)
 {
   theme->drawBackground();
 
@@ -76,21 +75,11 @@ void Layout1x1::refresh(bool setup)
     drawMainViewTopBar();
   }
 
-  if (persistentData->options[1].boolValue) {
-    // Sliders + Trims + Flight mode
-    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,  sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE) / 2,
-                     237,
-                     g_model.flightModeData[mixerCurrentFlightMode].name,
-                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
-    drawMainPots();
-    drawTrims(mixerCurrentFlightMode);
-  }
-
   Layout::refresh(setup);
 }
 
-const uint8_t LBM_LAYOUT_1x1[] __DMA = {
-#include "mask_layout1x1.lbm"
+const uint8_t LBM_LAYOUT_2x1[] __DMA = {
+#include "mask_layout2x1.lbm"
 };
 
-BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", LBM_LAYOUT_1x1, Layout1x1::options);
+BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", LBM_LAYOUT_2x1, Layout2x1::options);
