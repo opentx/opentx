@@ -688,13 +688,22 @@ PACK(struct ModuleData {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:7;
+  uint8_t failsafeMode:4;  //only 3 bits neede
+  uint8_t subType:3;
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
-  int8_t  ppmDelay:6;
-  uint8_t ppmPulsePol:1;
-  uint8_t ppmOutputType:1;     // false = open drain, true = push pull
-  int8_t  ppmFrameLength;
+  union {
+    struct {
+      int8_t  ppmDelay:6;
+      uint8_t ppmPulsePol:1;
+      uint8_t ppmOutputType:1;     // false = open drain, true = push pull
+      int8_t  ppmFrameLength;
+        };
+    struct {
+      int8_t multi_rfProtocol;    // can be changed to rfProtocol if rfProtocol gets more bits, currently 5 bits used
+      int8_t optionValue;
+    };
+  };
 });
 
 /*

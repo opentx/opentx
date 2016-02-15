@@ -3,7 +3,12 @@
 from __future__ import print_function
 
 import sys
+
 import clang.cindex
+
+if sys.platform == "darwin":
+    clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents//Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
+
 
 structs = []
 
