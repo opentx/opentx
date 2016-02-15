@@ -422,13 +422,24 @@ PACK(typedef struct {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:7;
+  uint8_t failsafeMode:4;
+  uint8_t subType:3;
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
-  int8_t  ppmDelay:6;
-  uint8_t ppmPulsePol:1;
-  uint8_t ppmOutputType:1;     // false = open drain, true = push pull
-  int8_t  ppmFrameLength;
+  union {
+    struct {
+      int8_t  ppmDelay:6;
+      uint8_t ppmPulsePol:1;
+      uint8_t ppmOutputType:1;     // false = open drain, true = push pull
+      int8_t  ppmFrameLength;
+    };
+   struct {
+      uint8_t rfProtocol:6;    // can be changed to rfProtocol if rfProtocol gets more bits, currently 6 bits used
+      uint8_t autoBindMode:1;
+      uint8_t lowPowerMode:1;
+      int8_t optionValue;
+    } multi;
+  };
 }) ModuleData;
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
@@ -2025,11 +2036,14 @@ enum Protocols {
   PROTO_CROSSFIRE,
 #endif
 #if defined(IRPROTOS)
-  // we will need 4 bytes for proto :(
+  // we will need 4 bits for proto :(
   PROTO_SILV,
   PROTO_TRAC09,
   PROTO_PICZ,
   PROTO_SWIFT,
+#endif
+#if defined(MULTIMODULE)
+  PROTO_MULTIMODULE,
 #endif
   PROTO_MAX,
   PROTO_NONE
@@ -2041,6 +2055,29 @@ enum RFProtocols {
   RF_PROTO_D8,
   RF_PROTO_LR12,
   RF_PROTO_LAST = RF_PROTO_LR12
+};
+
+enum MultiModuleRFProtocols {
+  MM_RF_PROTO_FLYSKY=0,
+  MM_RF_PROTO_FIRST=MM_RF_PROTO_FLYSKY,
+  MM_RF_PROTO_HUBSAN,
+  MM_RF_PROTO_FRSKY,
+  MM_RF_PROTO_HISKY,
+  MM_RF_PROTO_V2X2,
+  MM_RF_PROTO_DSM2,
+  MM_RF_PROTO_DEVO,
+  MM_RF_PROTO_YD717,
+  MM_RF_PROTO_KN,
+  MM_RF_PROTO_SYMAX,
+  MM_RF_PROTO_SLT,
+  MM_RF_PROTO_CX10,
+  MM_RF_PROTO_CG023,
+  MM_RF_PROTO_BAYANG,
+  MM_RF_PROTO_ESky,
+  MM_RF_PROTO_MT99XX,
+  MM_RF_PROTO_MJXQ,
+  MM_RF_PROTO_SHENQI,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_SHENQI
 };
 
 #define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
@@ -2061,6 +2098,9 @@ enum ModuleTypes {
 #endif
 #if defined(CROSSFIRE)
   MODULE_TYPE_CROSSFIRE,
+#endif
+#if defined(MULTIMODULE)
+  MODULE_TYPE_MULTIMODULE,
 #endif
   MODULE_TYPE_COUNT
 };

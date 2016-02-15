@@ -48,7 +48,7 @@ static void intmodulePxxStop( void ) ;
 #endif
 static void extmodulePxxStart( void ) ;
 static void extmodulePxxStop( void ) ;
-#if defined(DSM2)
+#if defined(DSM2) || defined(MULTIMODULE)
 static void extmoduleDsm2Start( void ) ;
 static void extmoduleDsm2Stop( void ) ;
 #endif
@@ -77,7 +77,7 @@ void disable_pxx(uint32_t port)
     extmodulePxxStop() ;
 }
 
-#if defined(DSM2)
+#if defined(DSM2) || defined(MULTIMODULE)
 void init_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
@@ -488,7 +488,7 @@ static void extmodulePxxStop()
   }
 }
 
-#if defined(DSM2)
+#if defined(DSM2) || defined(MULTIMODULE)
 static void extmoduleDsm2Start()
 {
   EXTERNAL_MODULE_ON();
@@ -612,7 +612,9 @@ extern "C" void TIM8_CC_IRQHandler()
     EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE ;  // Enable this interrupt
   }
 #if defined(DSM2)
-  else if (s_current_protocol[EXTERNAL_MODULE] >= PROTO_DSM2_LP45 && s_current_protocol[EXTERNAL_MODULE] <= PROTO_DSM2_DSMX) {
+  else if ((s_current_protocol[EXTERNAL_MODULE] >= PROTO_DSM2_LP45 && s_current_protocol[EXTERNAL_MODULE] <= PROTO_DSM2_DSMX) || IS_MULTIMODULE_PROTOCOL (s_current_protocol[EXTERNAL_MODULE]))
+
+{
     DMA2_Stream2->CR &= ~DMA_SxCR_EN ;              // Disable DMA
     DMA2->LIFCR = DMA_LIFCR_CTCIF2 | DMA_LIFCR_CHTIF2 | DMA_LIFCR_CTEIF2 | DMA_LIFCR_CDMEIF2 | DMA_LIFCR_CFEIF2 ; // Write ones to clear bits
     DMA2_Stream2->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[1]);

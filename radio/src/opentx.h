@@ -503,6 +503,11 @@
   #else
     #define IS_MODULE_CROSSFIRE(idx)        (false)
   #endif
+  #if defined(MULTIMODULE)
+    #define IS_MODULE_MULTIMODULE(idx)        (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_MULTIMODULE)
+  #else
+    #define IS_MODULE_MULTIMODULE(idx)        (false)
+  #endif
   #if defined(TARANIS_INTERNAL_PPM)
     #define MAX_INTERNAL_MODULE_CHANNELS()  ((g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.moduleData[INTERNAL_MODULE].type])
   #else
@@ -510,7 +515,7 @@
   #endif
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
   #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
-  #define NUM_CHANNELS(idx)                 (IS_MODULE_CROSSFIRE(idx) ? CROSSFIRE_CHANNELS_COUNT : (8+g_model.moduleData[idx].channelsCount))
+  #define NUM_CHANNELS(idx)                 ((IS_MODULE_CROSSFIRE(idx) || IS_MODULE_MULTIMODULE(idx)) ? CROSSFIRE_CHANNELS_COUNT : (8+g_model.moduleData[idx].channelsCount))
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)

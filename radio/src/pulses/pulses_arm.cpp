@@ -80,6 +80,11 @@ void setupPulses(unsigned int port)
         case MODULE_TYPE_XJT:
           required_protocol = PROTO_PXX;
           break;
+#if defined(MULTIMODULE)
+      case MODULE_TYPE_MULTIMODULE:
+          required_protocol = PROTO_MULTIMODULE;
+          break;
+#endif
 #if defined(PCBTARANIS) && defined(DSM2)
         case MODULE_TYPE_DSM2:
           required_protocol = limit<uint8_t>(PROTO_DSM2_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTO_DSM2_DSMX);
@@ -140,6 +145,11 @@ void setupPulses(unsigned int port)
         disable_crossfire(port);
         break;
 #endif
+#if defined(MULTIMODULE)
+      case PROTO_MULTIMODULE:
+        disable_dsm2(port);
+        break;
+#endif
       case PROTO_PPM:
         disable_ppm(port);
         break;
@@ -164,6 +174,11 @@ void setupPulses(unsigned int port)
 #if defined(CROSSFIRE)
       case PROTO_CROSSFIRE:
         init_crossfire(port);
+        break;
+#endif
+#if defined(MULTIMODULE)
+    case PROTO_MULTIMODULE:
+        init_dsm2(port);
         break;
 #endif
       case PROTO_PPM:
@@ -198,6 +213,11 @@ void setupPulses(unsigned int port)
       }
       break;
     }
+#endif
+#if defined(MULTIMODULE)
+	case PROTO_MULTIMODULE:
+        setupPulsesMultimodule(port);
+        break;
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);
