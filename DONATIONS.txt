@@ -913,3 +913,5 @@ Cristiano Merighi
 James Holley
 Chris Merry
 Jiri Fojtasek
+Thierry Laligand
+Hassouna Cherif
