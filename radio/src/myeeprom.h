@@ -466,11 +466,14 @@ enum Protocols {
   PROTO_CROSSFIRE,
 #endif
 #if defined(IRPROTOS)
-  // we will need 4 bytes for proto :(
+  // we will need 4 bits for proto :(
   PROTO_SILV,
   PROTO_TRAC09,
   PROTO_PICZ,
   PROTO_SWIFT,
+#endif
+#if defined(MULTIMODULE)
+  PROTO_MULTIMODULE,
 #endif
   PROTO_MAX,
   PROTO_NONE
@@ -482,6 +485,29 @@ enum RFProtocols {
   RF_PROTO_D8,
   RF_PROTO_LR12,
   RF_PROTO_LAST = RF_PROTO_LR12
+};
+
+enum MultiModuleRFProtocols {
+  MM_RF_PROTO_FLYSKY=0,
+  MM_RF_PROTO_FIRST=MM_RF_PROTO_FLYSKY,
+  MM_RF_PROTO_HUBSAN,
+  MM_RF_PROTO_FRSKY,
+  MM_RF_PROTO_HISKY,
+  MM_RF_PROTO_V2X2,
+  MM_RF_PROTO_DSM2,
+  MM_RF_PROTO_DEVO,
+  MM_RF_PROTO_YD717,
+  MM_RF_PROTO_KN,
+  MM_RF_PROTO_SYMAX,
+  MM_RF_PROTO_SLT,
+  MM_RF_PROTO_CX10,
+  MM_RF_PROTO_CG023,
+  MM_RF_PROTO_BAYANG,
+  MM_RF_PROTO_ESky,
+  MM_RF_PROTO_MT99XX,
+  MM_RF_PROTO_MJXQ,
+  MM_RF_PROTO_SHENQI,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_SHENQI
 };
 
 #define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
@@ -502,6 +528,9 @@ enum ModuleTypes {
 #endif
 #if defined(CROSSFIRE)
   MODULE_TYPE_CROSSFIRE,
+#endif
+#if defined(MULTIMODULE)
+  MODULE_TYPE_MULTIMODULE,
 #endif
   MODULE_TYPE_COUNT
 };
