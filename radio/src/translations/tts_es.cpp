@@ -158,13 +158,19 @@ I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     if (number == 0)
       number = -1;
   }
-  if (number >= 100) {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_CIENTO + number/100);
+  if (number > 100) {
+    PUSH_NUMBER_PROMPT(ES_PROMPT_CIENTO + (number/100) - 1);
     number %= 100;
     if (number == 0)
       number = -1;
   }
-  PUSH_NUMBER_PROMPT(ES_PROMPT_ZERO+number);
+  if (number == 100) {
+    PUSH_NUMBER_PROMPT(ES_PROMPT_CIEN);
+    number = -1;
+  }
+  if (number >= 0) {
+    PUSH_NUMBER_PROMPT(ES_PROMPT_ZERO+number);
+  }
 
   if (unit) {
     PUSH_NUMBER_PROMPT(ES_PROMPT_UNITS_BASE+unit-1);
