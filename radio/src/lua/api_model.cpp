@@ -278,7 +278,7 @@ static int luaModelResetTimer(lua_State *L)
 
 static unsigned int getFirstInput(unsigned int chn)
 {
-  for (unsigned int i=0; i<MAX_INPUTS; i++) {
+  for (unsigned int i=0; i<MAX_EXPOS; i++) {
     ExpoData * expo = expoAddress(i);
     if (!expo->srcRaw || expo->chn >= chn) {
       return i;
@@ -290,7 +290,7 @@ static unsigned int getFirstInput(unsigned int chn)
 static unsigned int getInputsCountFromFirst(unsigned int chn, unsigned int first)
 {
   unsigned int count = 0;
-  for (unsigned int i=first; i<MAX_INPUTS; i++) {
+  for (unsigned int i=first; i<MAX_EXPOS; i++) {
     ExpoData * expo = expoAddress(i);
     if (!expo->srcRaw || expo->chn!=chn) break;
     count++;
