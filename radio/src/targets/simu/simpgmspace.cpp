@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -300,7 +300,7 @@ void *eeprom_write_function(void *)
       }
       eeprom_pointer++;
       eeprom_buffer_data++;
-      
+
       if (fp && eeprom_buffer_size == 1) {
         fflush(fp);
       }
@@ -326,14 +326,10 @@ void * main_thread(void *)
   try {
 #endif
 
-#if defined(PCBHORUS)
-    theme->load();
-#endif
-
 #if defined(CPUARM)
     stackPaint();
 #endif
-    
+
     s_current_protocol[0] = 255;
 
     menuLevel = 0;
@@ -415,11 +411,11 @@ void StartMainThread(bool tests)
 #endif
 
   /*
-    g_tmr10ms must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed) 
+    g_tmr10ms must be non-zero otherwise some SF functions (that use this timer as a marker when it was last executed)
     will be executed twice on startup. Normal radio does not see this issue because g_tmr10ms is already a big number
     before the first call to the Special Functions. Not so in the simulator.
 
-    There is another issue, some other function static variables depend on this value. If simulator is started 
+    There is another issue, some other function static variables depend on this value. If simulator is started
     multiple times in one Companion session, they are set to their initial values only first time the simulator
     is started. Therefore g_tmr10ms must also be set to non-zero value only the first time, then it must be left
     alone to continue from the previous simulator session value. See the issue #2446
@@ -428,11 +424,11 @@ void StartMainThread(bool tests)
   if (g_tmr10ms == 0) {
     g_tmr10ms = 1;
   }
-  
+
 #if defined(RTCLOCK)
   g_rtcTime = time(0);
 #endif
-  
+
   main_thread_running = (tests ? 1 : 2);
   pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
 }
@@ -484,10 +480,10 @@ int32_t getVolume()
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
 
-void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples) 
+void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples)
 {
   for(unsigned int i=0; i<samples; i++) {
-    int sample = ((int32_t)(uint32_t)(buff[i]) - 0x8000);  // conversion from uint16_t 
+    int sample = ((int32_t)(uint32_t)(buff[i]) - 0x8000);  // conversion from uint16_t
     *((uint16_t*)dest) = (int16_t)((sample * simuAudio.currentVolume)/127);
     dest += 2;
   }
@@ -579,7 +575,7 @@ void * audioThread(void *)
 }
 
 void StartAudioThread(int volumeGain)
-{ 
+{
   simuAudio.leftoverLen = 0;
   simuAudio.threadRunning = true;
   simuAudio.volumeGain = volumeGain;
@@ -759,7 +755,7 @@ char *findTrueFileName(const char *path)
             strcat(result, ffd.cFileName);
             TRACE("\tfound: %s", ffd.cFileName);
             fileMap.insert(filemap_t:: value_type(path, result));
-            return result;  
+            return result;
           }
         }
       }
@@ -789,7 +785,7 @@ char *findTrueFileName(const char *path)
             TRACE("\tfound: %s", res->d_name);
             fileMap.insert(filemap_t:: value_type(path, result));
             simu::closedir(dir);
-            return result;  
+            return result;
           }
         }
       }
@@ -1047,7 +1043,7 @@ FRESULT f_getfree (const TCHAR* path, DWORD* nclst, FATFS** fatfs)
 {
   // just fake that we always have some clusters free
   *nclst = 10;
-  return FR_OK;  
+  return FR_OK;
 }
 
 #if defined(PCBSKY9X)
@@ -1107,7 +1103,7 @@ void traceDiskStatus()
 {
   if (noDiskStatus > 0) {
     TRACE("disk_status() called %d times", noDiskStatus);
-    noDiskStatus = 0;  
+    noDiskStatus = 0;
   }
 }
 
@@ -1186,7 +1182,7 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
           DWORD noSectors  = buf.st_size / 512;
           *(DWORD*)buff = noSectors;
           TRACE("disk_ioctl(GET_SECTOR_COUNT) = %u", noSectors);
-          return RES_OK; 
+          return RES_OK;
         }
         return RES_ERROR;
       }

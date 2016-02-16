@@ -39,7 +39,7 @@
 #include "opentx.h"
 #include "bin_allocator.h"
 #include "lua/lua_api.h"
- 
+
 #if defined(LUA_COMPILER) && defined(SIMU)
   #include <lundump.h>
   #include <lstate.h>
@@ -185,7 +185,12 @@ void luaRegisterAll()
 
 void luaInit()
 {
+  TRACE("luaInit");
+
+#if !defined(COLORLCD)
   luaClose();
+#endif
+
   if (luaState != INTERPRETER_PANIC) {
 #if defined(USE_BIN_ALLOCATOR)
     L = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
@@ -212,6 +217,10 @@ void luaInit()
       luaDisable();
     }
   }
+
+#if defined(COLORLCD)
+  luaLoadThemes();
+#endif
 }
 
 void luaFree(ScriptInternalData & sid)
@@ -271,7 +280,7 @@ static void luaCompileAndSave(const char *bytecodeName)
 }
 #endif
 
-int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
+int luaLoad(const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
 
@@ -301,7 +310,7 @@ int luaLoad(const char *filename, ScriptInternalData & sid, ScriptInputsOutputs 
       luaL_checktype(L, -1, LUA_TTABLE);
 
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        const char *key = lua_tostring(L, -2);
+        const char * key = lua_tostring(L, -2);
         if (!strcmp(key, "init")) {
           init = luaL_ref(L, LUA_REGISTRYINDEX);
           lua_pushnil(L);
@@ -529,9 +538,12 @@ void luaError(uint8_t error, bool acknowledge)
   }
 }
 
-void luaExec(const char *filename)
+void luaExec(const char * filename)
 {
+#if !defined(COLORLCD)
   luaInit();
+#endif
+
   if (luaState != INTERPRETER_PANIC) {
     standaloneScript.state = SCRIPT_NOFILE;
     int result = luaLoad(filename, standaloneScript);
@@ -618,7 +630,7 @@ void luaDoOneRunStandalone(evt_t evt)
     }
   }
 }
-  
+
 bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
 {
   ScriptInternalData & sid = scriptInternalData[i];
@@ -761,10 +773,12 @@ bool luaTask(uint8_t evt, uint8_t scriptType, bool allowLcdUsage)
     // run permanent scripts
     if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
       luaState = 0;
+#if !defined(COLORLCD)
       luaInit();
       if (luaState == INTERPRETER_PANIC) return false;
       luaLoadPermanentScripts();
       if (luaState == INTERPRETER_PANIC) return false;
+#endif
     }
 
     for (int i=0; i<luaScriptsCount; i++) {
@@ -787,3 +801,152 @@ int luaGetMemUsed()
 {
   return (lua_gc(L, LUA_GCCOUNT, 0) << 10) + lua_gc(L, LUA_GCCOUNTB, 0);
 }
+
+#if defined(COLORLCD)
+#define THEME_FILENAME_MAXLEN          (42) // max length (example: /SCRIPTS/THEMES/mytheme.lua)
+
+class LuaTheme: public Theme
+{
+  friend int luaLoadTheme(const char * filename);
+
+  public:
+    LuaTheme(const char * name, const uint8_t * bitmap):
+      Theme(name, bitmap),
+      loadFunction(0),
+      drawBackgroundFunction(0),
+      drawTopbarBackgroundFunction(0)
+    {
+    }
+
+    void exec(int function) const
+    {
+      if (function) {
+        SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+        lua_rawgeti(L, LUA_REGISTRYINDEX, function);
+        if (lua_pcall(L, 0, 0, 0) != 0) {
+          TRACE("Error in theme %s: %s", name, lua_tostring(L, -1));
+        }
+      }
+    }
+
+    virtual void load() const
+    {
+      luaLcdAllowed = true;
+      exec(loadFunction);
+    }
+
+    virtual void drawBackground() const
+    {
+      exec(drawBackgroundFunction);
+    }
+
+    virtual void drawTopbarBackground(const uint8_t * icon) const
+    {
+      exec(drawTopbarBackgroundFunction);
+    }
+
+  protected:
+    int loadFunction;
+    int drawBackgroundFunction;
+    int drawTopbarBackgroundFunction;
+};
+
+int luaLoadTheme(const char * filename)
+{
+  TRACE("luaLoadTheme from file %s", filename);
+
+  int init = 0;
+
+  if (luaState == INTERPRETER_PANIC) {
+    return SCRIPT_PANIC;
+  }
+
+#if defined(LUA_COMPILER) && defined(SIMU)
+  luaCompileAndSave(filename);
+#endif
+
+  SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
+
+  PROTECT_LUA() {
+    if (luaL_loadfile(L, filename) == 0 &&
+        lua_pcall(L, 0, 1, 0) == 0 &&
+        lua_istable(L, -1)) {
+
+      const char * name=NULL, * bitmap=NULL;
+      int loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
+
+      luaL_checktype(L, -1, LUA_TTABLE);
+
+      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+        const char * key = lua_tostring(L, -2);
+        if (!strcmp(key, "name")) {
+          name = luaL_checkstring(L, -1);
+        }
+        else if (!strcmp(key, "bitmap")) {
+          bitmap = luaL_checkstring(L, -1);
+        }
+        else if (!strcmp(key, "load")) {
+          loadFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+          lua_pushnil(L);
+        }
+        else if (!strcmp(key, "drawBackground")) {
+          drawBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+          lua_pushnil(L);
+        }
+        else if (!strcmp(key, "drawTopbarBackground")) {
+          drawTopbarBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+          lua_pushnil(L);
+        }
+      }
+
+      if (name && bitmap) {
+        char path[THEME_FILENAME_MAXLEN+1] = THEMES_PATH;
+        path[sizeof(THEMES_PATH)-1] = '/';
+        strcpy(path+sizeof(THEMES_PATH), bitmap);
+        uint8_t * bitmapData = (uint8_t *)malloc(BITMAP_BUFFER_SIZE(51, 31));
+        bmpLoad(bitmapData, path, 51, 31);
+        LuaTheme * theme = new LuaTheme(name, bitmapData);
+        theme->loadFunction = loadFunction;
+        theme->drawBackgroundFunction = drawBackgroundFunction;
+        theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
+      }
+    }
+    else {
+      TRACE("Error in script %s: %s", filename, lua_tostring(L, -1));
+    }
+  }
+  else {
+    luaDisable();
+    return SCRIPT_PANIC;
+  }
+  UNPROTECT_LUA();
+}
+
+void luaLoadThemes()
+{
+  char path[THEME_FILENAME_MAXLEN+1] = THEMES_PATH;
+  FILINFO fno;
+  DIR dir;
+  char * fn;   /* This function is assuming non-Unicode cfg. */
+  TCHAR lfn[_MAX_LFN + 1];
+  fno.lfname = lfn;
+  fno.lfsize = sizeof(lfn);
+
+  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);                   /* Read a directory item */
+      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      fn = * fno.lfname ? fno.lfname : fno.fname;
+      uint8_t len = strlen(fn);
+      bool found = false;
+
+      // Eliminates directories / non wav files
+      if (len < 5 || strcasecmp(fn+len-4, SCRIPTS_EXT) || (fno.fattrib & AM_DIR)) continue;
+      path[sizeof(THEMES_PATH)-1] = '/';
+      strcpy(path+sizeof(THEMES_PATH), fn);
+      luaLoadTheme(path);
+    }
+  }
+}
+#endif

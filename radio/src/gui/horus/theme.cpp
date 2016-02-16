@@ -40,3 +40,17 @@ const Theme * getTheme(const char * name)
   return NULL;
 }
 
+void loadTheme(const Theme * new_theme)
+{
+  theme = new_theme;
+  theme->load();
+}
+
+void loadTheme()
+{
+  char name[sizeof(g_eeGeneral.themeName)+1];
+  memset(name, 0, sizeof(name));
+  strncpy(name, g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
+  const Theme * new_theme = getTheme(name);
+  loadTheme(new_theme ? new_theme : theme);
+}

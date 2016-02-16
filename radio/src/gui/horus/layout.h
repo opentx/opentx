@@ -161,5 +161,6 @@ class BaseLayoutFactory: public LayoutFactory
 extern unsigned int countRegisteredLayouts;
 extern const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS];
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
+void loadCustomScreens();
 
 #endif // _LAYOUT_H_

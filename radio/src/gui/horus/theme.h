@@ -61,6 +61,11 @@ extern const Theme * theme;
 
 #define MAX_REGISTERED_THEMES          10
 extern unsigned int countRegisteredThemes;
+void registerTheme(const Theme * theme);
 extern const Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
+
+const Theme * getTheme(const char * name);
+void loadTheme(const Theme * theme);
+void loadTheme();
 
 #endif // _THEME_H_

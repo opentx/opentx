@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -87,9 +87,12 @@ void postModelLoad(bool newModel)
   referenceModelAudioFiles();
 #endif
 
+#if defined(COLORLCD)
+  loadCustomScreens();
+#endif
+
   LOAD_MODEL_BITMAP();
   LUA_LOAD_MODEL_SCRIPTS();
   SEND_FAILSAFE_1S();
   PLAY_MODEL_NAME();
 }
-

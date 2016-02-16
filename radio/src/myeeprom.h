@@ -440,7 +440,8 @@ enum UartModes {
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
     char currModelFilename[LEN_MODEL_FILENAME+1]; \
     uint8_t bluetoothEnable; \
-    char bluetoothName[LEN_BLUETOOTH_NAME];
+    char bluetoothName[LEN_BLUETOOTH_NAME]; \
+    char themeName[8];
 #elif defined(PCBFLAMENCO)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3

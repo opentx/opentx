@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -36,6 +36,7 @@
 #define EEPROMS_PATH        ROOT_PATH "EEPROMS"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
+#define THEMES_PATH         SCRIPTS_PATH "/THEMES"
 #define WIZARD_NAME         "wizard.lua"
 #define TEMPLATES_PATH      SCRIPTS_PATH "/TEMPLATES"
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"

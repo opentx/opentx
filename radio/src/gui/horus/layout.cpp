@@ -75,3 +75,17 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
   }
   return NULL;
 }
+
+void loadCustomScreens()
+{
+  for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
+    char name[sizeof(g_model.screenData[i].layoutName)+1];
+    memset(name, 0, sizeof(name));
+    strncpy(name, g_model.screenData[i].layoutName, sizeof(g_model.screenData[i].layoutName));
+    customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
+  }
+
+  if (customScreens[0] == NULL) {
+    customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
+  }
+}

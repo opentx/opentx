@@ -829,6 +829,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_SELECT_WIDGET[];
   extern const pm_char STR_REMOVE_WIDGET[];
   extern const pm_char STR_WIDGET_SETTINGS[];
+extern const pm_char STR_REMOVE_SCREEN[];
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)

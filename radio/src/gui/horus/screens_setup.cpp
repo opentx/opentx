@@ -301,10 +301,9 @@ bool menuScreensTheme(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Theme");
         const Theme * new_theme = editThemeChoice<const Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
         if (new_theme) {
-          theme = new_theme;
-          theme->load();
-          // strncpy(g_model.screenData[T].layoutName, factory->getName(), sizeof(g_model.screenData[T].layoutName));
-          storageDirty(EE_MODEL);
+          loadTheme(new_theme);
+          strncpy(g_eeGeneral.themeName, new_theme->getName(), sizeof(g_eeGeneral.themeName));
+          storageDirty(EE_GENERAL);
         }
         break;
       }
@@ -317,12 +316,8 @@ bool menuScreensTheme(evt_t event)
   return true;
 }
 
-bool menuScreenAdd(evt_t event)
-{
-  menuPageCount = updateMainviewsMenu();
-  MENU_WITH_OPTIONS("Add main view", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, menuPageCount-1, 0, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
-  return true;
-}
+bool menuScreenAdd(evt_t event);
+void onScreenSetupMenu(const char * result);
 
 template <int T>
 bool menuScreenSetup(evt_t event)
@@ -341,6 +336,8 @@ bool menuScreenSetup(evt_t event)
   title[sizeof(title)-2] = '1' + T;
   menuPageCount = updateMainviewsMenu();
   MENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, T+1, linesCount, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+
+
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -384,6 +381,13 @@ bool menuScreenSetup(evt_t event)
     }
   }
 
+  if (menuVerticalPosition == -1 && T > 0 && event == EVT_KEY_LONG(KEY_ENTER)) {
+    killEvents(KEY_ENTER);
+    menuHorizontalPosition = T;
+    POPUP_MENU_ADD_ITEM(STR_REMOVE_SCREEN);
+    popupMenuHandler = onScreenSetupMenu;
+  }
+
   return true;
 }
 
@@ -418,4 +422,32 @@ int updateMainviewsMenu()
     }
   }
   return 1+MAX_CUSTOM_SCREENS;
+}
+
+bool menuScreenAdd(evt_t event)
+{
+  menuPageCount = updateMainviewsMenu();
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    customScreens[menuPageCount-2] = registeredLayouts[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
+    chainMenu(menuMainviews[menuPageCount-2]);
+    return false;
+  }
+
+  MENU_WITH_OPTIONS("Add main view", LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, menuPageCount-1, 0, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+
+  return true;
+}
+
+void onScreenSetupMenu(const char * result)
+{
+  if (result == STR_REMOVE_SCREEN) {
+    if (menuHorizontalPosition != MAX_CUSTOM_SCREENS-1) {
+      memmove(&g_model.screenData[menuHorizontalPosition], &g_model.screenData[menuHorizontalPosition + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - menuHorizontalPosition - 1));
+      memmove(&customScreens[menuHorizontalPosition], &customScreens[menuHorizontalPosition + 1], sizeof(Layout *) * (MAX_CUSTOM_SCREENS - menuHorizontalPosition - 1));
+    }
+    memset(&g_model.screenData[MAX_CUSTOM_SCREENS-1], 0, sizeof(CustomScreenData));
+    customScreens[MAX_CUSTOM_SCREENS-1] = NULL;
+    chainMenu(menuMainviews[menuHorizontalPosition > 0 ? menuHorizontalPosition-1 : 0]);
+  }
 }

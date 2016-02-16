@@ -498,9 +498,9 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
   }
 }
 
-void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h)
+void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
 {
-  lcdDrawVerticalLine(x, y, h, SOLID);
+  lcdDrawVerticalLine(x, y, h, SOLID, att);
 }
 #endif
 

@@ -1880,24 +1880,6 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-#if defined(COLORLCD)
-void loadCustomScreens()
-{
-  for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
-    char name[sizeof(g_model.screenData[i].layoutName)+1];
-    memset(name, 0, sizeof(name));
-    strncpy(name, g_model.screenData[i].layoutName, sizeof(g_model.screenData[i].layoutName));
-    customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
-  }
-
-  if (customScreens[0] == NULL) {
-    customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
-  }
-}
-#else
-  #define loadCustomScreens()
-#endif
-
 #if defined(NAVIGATION_STICKS)
 uint8_t StickScrollAllowed;
 uint8_t StickScrollTimer;
@@ -1938,12 +1920,15 @@ void opentxStart()
   }
 #endif
 
+#if defined(COLORLCD)
+  luaInit();
+  loadTheme();
+#endif
+
 #if defined(GUI)
   checkAlarm();
   checkAll();
 #endif
-
-  loadCustomScreens();
 
 #if defined(GUI)
   if (g_eeGeneral.chkSum != evalChkSum()) {
@@ -2599,10 +2584,6 @@ int main(void)
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
   // TODO remove this
   lcdInit();
-#endif
-
-#if defined(COLORLCD)
-  theme->load();
 #endif
 
   stackPaint();

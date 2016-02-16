@@ -182,7 +182,7 @@ bool menuCommonCalib(evt_t event)
       break;
   }
 
-  lcdDrawBitmap((LCD_W-206)/2, LCD_H-220, LBM_HORUS);
+  lcdDrawAlphaBitmap((LCD_W-206)/2, LCD_H-220, LBM_HORUS);
   drawSticks();
   drawPots();
 

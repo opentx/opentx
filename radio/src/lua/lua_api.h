@@ -152,8 +152,11 @@ struct LuaField {
   char desc[50];
 };
 bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0);
+void luaLoadThemes();
 #else  // defined(LUA)
+#define luaInit()
 #define LUA_LOAD_MODEL_SCRIPTS()
+#define luaLoadThemes()
 #endif // defined(LUA)
 
 #endif // _LUA_API_H_

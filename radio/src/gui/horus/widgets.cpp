@@ -50,7 +50,7 @@ void drawTopbarDatetime()
 #define STICK_PANEL_WIDTH                   68
 void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 {
-  lcdDrawBitmap(x, y, LBM_STICK_BACKGROUND);
+  lcdDrawAlphaBitmap(x, y, LBM_STICK_BACKGROUND);
   lcdDrawAlphaBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, LBM_STICK_POINTER);
 }
 
@@ -426,7 +426,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 void drawSleepBitmap()
 {
   lcdClear();
-  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, LBM_SLEEP);
+  lcdDrawAlphaBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, LBM_SLEEP);
   lcdRefresh();
 }
 

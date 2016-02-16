@@ -259,11 +259,11 @@ const uint8_t LBM_STAR1[] __DMA = {
  */
 
 const uint8_t LBM_HORUS[] __DMA = {
-#include "bmp_horus.lbm"
+#include "alpha_horus.lbm"
 };
 
 const uint8_t LBM_STICK_BACKGROUND[] __DMA = {
-#include "bmp_stick_background.lbm"
+#include "alpha_stick_background.lbm"
 };
 
 const uint8_t LBM_STICK_POINTER[] __DMA = {
@@ -299,7 +299,7 @@ const uint8_t LBM_SHUTDOWN[] __DMA = {
 };
 
 const uint8_t LBM_SLEEP[] __DMA = {
-#include "bmp_sleep.lbm"
+#include "alpha_sleep.lbm"
 };
 
 const uint8_t LBM_SHUTDOWN_CIRCLE[] __DMA = {
