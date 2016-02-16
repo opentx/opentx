@@ -674,9 +674,9 @@ uint16_t evalChkSum();
 
 // TODO these functions in gui directories
 #if defined(COLORLCD) || defined(PCBTARANIS)
-void drawMessageBox(const pm_char * title, const pm_char * t, const char * last, uint8_t sound);
+void drawAlertBox(const char * title, const char * text, const char * action);
 #endif
-void message(const pm_char * title, const pm_char * s, const char * last MESSAGE_SOUND_ARG);
+void message(const pm_char * title, const pm_char * text, const char * action MESSAGE_SOUND_ARG);
 void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
 
 enum PerOutMode {

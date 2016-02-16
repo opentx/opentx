@@ -275,7 +275,7 @@ const uint8_t LBM_STICK_POINTER[] __DMA = {
  */
 
 const uint8_t LBM_ASTERISK[] __DMA = {
-#include "bmp_asterisk.lbm"
+#include "alpha_asterisk.lbm"
 };
 
 const uint8_t LBM_POINT[] __DMA = {

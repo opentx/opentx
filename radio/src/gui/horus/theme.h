@@ -48,9 +48,11 @@ class Theme
 
     virtual void load() const = 0;
 
-    virtual void drawBackground() const = 0;
+    virtual void drawBackground() const;
 
     virtual void drawTopbarBackground(const uint8_t * icon) const = 0;
+
+    virtual void drawAlertBox(const char * title, const char * text, const char * action) const;
 
   protected:
     const char * name;

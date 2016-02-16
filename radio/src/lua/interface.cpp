@@ -814,7 +814,8 @@ class LuaTheme: public Theme
       Theme(name, bitmap),
       loadFunction(0),
       drawBackgroundFunction(0),
-      drawTopbarBackgroundFunction(0)
+      drawTopbarBackgroundFunction(0),
+      drawAlertBoxFunction(0)
     {
     }
 
@@ -845,10 +846,18 @@ class LuaTheme: public Theme
       exec(drawTopbarBackgroundFunction);
     }
 
+#if 0
+    virtual void drawAlertBox(const char * title, const char * text, const char * action) const
+    {
+      exec(drawAlertBoxFunction);
+    }
+#endif
+
   protected:
     int loadFunction;
     int drawBackgroundFunction;
     int drawTopbarBackgroundFunction;
+    int drawAlertBoxFunction;
 };
 
 int luaLoadTheme(const char * filename)

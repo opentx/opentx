@@ -61,11 +61,6 @@ class DarkblueTheme: public Theme
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
     }
 
-    virtual void drawBackground() const
-    {
-      lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
-    }
-
     void drawTopbarBackground(const uint8_t * icon) const
     {
       lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);

@@ -20,6 +20,34 @@
 
 #include "opentx.h"
 
+void Theme::drawBackground() const
+{
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+}
+
+void Theme::drawAlertBox(const char * title, const char * text, const char * action) const
+{
+  drawBackground();
+  lcdDrawSolidFilledRect(0, POPUP_Y, LCD_W, POPUP_H, TEXT_INVERTED_COLOR | OPACITY(8));
+  lcdDrawAlphaBitmap(POPUP_X-80, POPUP_Y+12, LBM_ASTERISK);
+
+#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|DBLSIZE);
+#else
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, STR_WARNING, ALARM_COLOR|DBLSIZE);
+#endif
+
+  if (text) {
+    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y, text);
+  }
+
+  if (action) {
+    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+16, action);
+  }
+}
+
 const Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
 unsigned int countRegisteredThemes = 0;
 void registerTheme(const Theme * theme)

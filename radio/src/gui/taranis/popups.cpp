@@ -55,7 +55,7 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
 
-void drawMessageBox(const pm_char * title, const pm_char * t, const char * last, uint8_t sound)
+void drawAlertBox(const char * title, const char * text, const char * action)
 {
   lcdClear();
   lcdDrawBitmap(0, 0, asterisk_lbm);
@@ -71,18 +71,22 @@ void drawMessageBox(const pm_char * title, const pm_char * t, const char * last,
 #endif
 
   lcdDrawFilledRect(MESSAGE_LCD_OFFSET, 0, LCD_W-MESSAGE_LCD_OFFSET, 32);
-  if (t) lcdDrawText(MESSAGE_LCD_OFFSET, 5*FH, t);
-  if (last) {
-    lcdDrawText(MESSAGE_LCD_OFFSET, 7*FH, last);
-    AUDIO_ERROR_MESSAGE(sound);
+
+  if (text) {
+    lcdDrawText(MESSAGE_LCD_OFFSET, 5*FH, text);
+  }
+
+  if (action) {
+    lcdDrawText(MESSAGE_LCD_OFFSET, 7*FH, action);
   }
 
 #undef MESSAGE_LCD_OFFSET
 }
 
-void message(const pm_char * title, const pm_char * t, const char * last, uint8_t sound)
+void message(const pm_char * title, const pm_char * text, const char * action, uint8_t sound)
 {
-  drawMessageBox(title, t, last, sound);
+  drawAlertBox(title, text, action);
+  AUDIO_ERROR_MESSAGE(sound);
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();

@@ -37,14 +37,6 @@ uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void        (*popupMenuHandler)(const char * result);
 
-void displayAlertBox()
-{
-  lcdClear();
-  lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
-  lcdDrawBitmap(POPUP_X-80, POPUP_Y-30, LBM_ASTERISK);
-}
-
 void displayWarningBox()
 {
   lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
@@ -59,28 +51,15 @@ void displayMessageBox()
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
 }
 
-void drawMessageBox(const char * title, const char * t, const char * last, uint8_t sound)
+void drawAlertBox(const char * title, const char * text, const char * action)
 {
-  displayAlertBox();
-
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+25, title, ALARM_COLOR|DBLSIZE);
-#else
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+25, STR_WARNING, ALARM_COLOR|DBLSIZE);
-#endif
-
-  if (t) lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y, t);
-  if (last) {
-    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+16, last);
-    AUDIO_ERROR_MESSAGE(sound);
-  }
+  theme->drawAlertBox(title, text, action);
 }
 
-void message(const pm_char * title, const pm_char * t, const char * last, uint8_t sound)
+void message(const pm_char * title, const pm_char * text, const char * action, uint8_t sound)
 {
-  drawMessageBox(title, t, last, sound);
+  drawAlertBox(title, text, action);
+  AUDIO_ERROR_MESSAGE(sound);
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
