@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -196,6 +196,10 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   uint8_t palette[16];
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t *buf = &bmpBuf[0];
+  uint16_t * dest = (uint16_t *)bmp;
+
+  dest[0] = 0;
+  dest[1] = 0;
 
   if (width > LCD_W) {
     return STR_INCOMPATIBLE;
@@ -301,8 +305,6 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
       return SDCARD_ERROR(result);
     }
   }
-
-  uint16_t * dest = (uint16_t *)bmp;
 
   *dest++ = w;
   *dest++ = h;
@@ -435,7 +437,7 @@ const char *writeScreenshot()
 
 
 // fill 'data' with 'size' bytes.  return number of bytes actually read
-int stbc_read(void *user, char *data, int size) 
+int stbc_read(void *user, char *data, int size)
 {
   FIL * fp = (FIL *)user;
   UINT br = 0;
@@ -489,7 +491,7 @@ const char * imgLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   int x,y,n;
   unsigned char *data = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &x, &y, &n, 3);
   f_close(&imgFile);
-  
+
   if (!data) {
     return "stb error";
   }
