@@ -558,7 +558,6 @@
 ** without modifying the main part of the file.
 */
 
-#define LUA_MAX_ROTABLE_NAME      20
+#define LUA_MAX_ROTABLE_NAME      32
 
 #endif
-
