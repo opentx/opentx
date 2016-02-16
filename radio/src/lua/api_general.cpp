@@ -80,7 +80,7 @@ Return OpenTX version
 
 @retval multiple (available since 2.1.7) returns 5 values:
  * (string) OpenTX version (ie "2.1.5")
- * (string) radio version: `taranisx9e`, `taranisplus` or `taranis`. 
+ * (string) radio version: `taranisx9e`, `taranisplus` or `taranis`.
 If running in simulator the "-simu" is added
  * (number) major version (ie 2 if version 2.1.5)
  * (number) minor version (ie 1 if version 2.1.5)
@@ -129,7 +129,7 @@ static int luaGetVersion(lua_State *L)
 
 Return the time since the radio was started in multiple of 10ms
 
-@retval number Number of 10ms ticks since the radio was started Example: 
+@retval number Number of 10ms ticks since the radio was started Example:
 run time: 12.54 seconds, return value: 1254
 
 @status current Introduced in 2.0.0
@@ -340,9 +340,9 @@ The list of valid sources is available:
 @param name (string) name of the field
 
 @retval table information about requested field, table elements:
- * `id`   (number) field identifier 
- * `name` (string) field name 
- * `desc` (string) field description 
+ * `id`   (number) field identifier
+ * `name` (string) field name
+ * `desc` (string) field description
 
 @retval nil the requested field was not found
 
@@ -366,13 +366,13 @@ static int luaGetFieldInfo(lua_State *L)
 /*luadoc
 @function getValue(source)
 
-Returns the value of a source. 
+Returns the value of a source.
 
 The list of valid sources is available:
 * for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
 * for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
 
-In OpenTX 2.1.x the telemetry sources no longer have a predefined name. 
+In OpenTX 2.1.x the telemetry sources no longer have a predefined name.
 To get a telemetry value simply use it's sensor name. For example:
  * Altitude sensor has a name "Alt"
  * to get the current altitude use the source "Alt"
@@ -386,15 +386,15 @@ or a name (string) of the source.
  * for all telemetry source when the telemetry stream is not received
 
 @retval table GPS position is returned in a table:
- * `lat` (number) latitude, positive is North 
+ * `lat` (number) latitude, positive is North
  * `lon` (number) longitude, positive is East
- * `pilot-lat` (number) pilot latitude, positive is North 
+ * `pilot-lat` (number) pilot latitude, positive is North
  * `pilot-lon` (number) pilot longitude, positive is East
 
 @retval table GPS date/time, see getDateTime()
 
-@retval table Cells are returned in a table 
-(except where no cells were detected in which 
+@retval table Cells are returned in a table
+(except where no cells were detected in which
 case the returned value is 0):
  * table has one item for each detected cell:
   * key (number) cell number (1 to number of cells)
@@ -427,9 +427,9 @@ static int luaGetValue(lua_State *L)
 /*luadoc
 @function getFlightMode(mode)
 
-Return flight mode data. 
+Return flight mode data.
 
-@param mode (number) flight mode number to return (0 - 8). If mode parameter 
+@param mode (number) flight mode number to return (0 - 8). If mode parameter
 is not specified (or contains invalid value), then the current flight mode data is returned.
 
 @retval multiple returns 2 values:
@@ -454,7 +454,7 @@ static int luaGetFlightMode(lua_State *L)
 /*luadoc
 @function playFile(name)
 
-Play a file from the SD card 
+Play a file from the SD card
 
 @param path (string) full path to wav file (i.e. “/SOUNDS/en/system/tada.wav”)
 Introduced in 2.1.0: If you use a relative path, the current language is appended
@@ -523,35 +523,35 @@ OpenTX 2.0:
 | 19  | Gee | 152 |   |
 | 20  | Degrees | 128 |   |
 
-    
+
 OpenTX 2.1:
 
-| 2.1 Unit  | Sound | Sound File (.wav) |   
-| --- | --- | --- |   
-| 1 | Volts | 116 |   
-| 2 | Amps  | 118 |   
-| 3 | Milliamps | 120 |   
-| 4 | Knots | 122 |   
-| 5 | Meters per Second | 124 |   
-| 6 | Feet per Second | 126 |   
-| 7 | Kilometers per Hour | 128 |   
-| 8 | Miles per Hour  | 130 |   
-| 9 | Meters  | 132 |   
-| 10  | Feet  | 134 |   
-| 11  | Degrees Celsius | 136 |   
-| 12  | Degrees Fahrenheit  | 138 |   
-| 13  | Percent | 140 |   
-| 14  | Milliamp Hours  | 142 |   
-| 15  | Watts | 144 |   
-| 16  | DB  | 146 |   
-| 17  | RPM | 148 |   
-| 18  | Gee | 150 |   
-| 19  | Degrees | 152 |   
-| 20  | Milliliters | 154 |   
-| 21  | Fluid Ounces  | 156 |   
-| 22  | Hours | 158 |   
-| 23  | Minutes | 160 |   
-| 24  | Seconds | 162 |   
+| 2.1 Unit  | Sound | Sound File (.wav) |
+| --- | --- | --- |
+| 1 | Volts | 116 |
+| 2 | Amps  | 118 |
+| 3 | Milliamps | 120 |
+| 4 | Knots | 122 |
+| 5 | Meters per Second | 124 |
+| 6 | Feet per Second | 126 |
+| 7 | Kilometers per Hour | 128 |
+| 8 | Miles per Hour  | 130 |
+| 9 | Meters  | 132 |
+| 10  | Feet  | 134 |
+| 11  | Degrees Celsius | 136 |
+| 12  | Degrees Fahrenheit  | 138 |
+| 13  | Percent | 140 |
+| 14  | Milliamp Hours  | 142 |
+| 15  | Watts | 144 |
+| 16  | DB  | 146 |
+| 17  | RPM | 148 |
+| 18  | Gee | 150 |
+| 19  | Degrees | 152 |
+| 20  | Milliliters | 154 |
+| 21  | Fluid Ounces  | 156 |
+| 22  | Hours | 158 |
+| 23  | Minutes | 160 |
+| 24  | Seconds | 162 |
 
 */
 static int luaPlayNumber(lua_State *L)
@@ -686,22 +686,22 @@ static int luaGetGeneralSettings(lua_State *L)
 
 Raises a pop-up on screen that allows uses input
 
-@param title (string) text to display 
+@param title (string) text to display
 
-@param event (number) the event variable that is passed in from the 
+@param event (number) the event variable that is passed in from the
 Run function (key pressed)
 
-@param input (number) value that can be adjusted by the +/­- keys 
+@param input (number) value that can be adjusted by the +/­- keys
 
 @param min  (number) min value that input can reach (by pressing the -­ key)
 
-@param max  (number) max value that input can reach 
+@param max  (number) max value that input can reach
 
 @retval number result of the input adjustment
 
-@retval "OK" user pushed ENT key 
+@retval "OK" user pushed ENT key
 
-@retval "CANCEL" user pushed EXIT key 
+@retval "CANCEL" user pushed EXIT key
 
 @notice Use only from stand-alone and telemetry scripts.
 
@@ -751,7 +751,7 @@ static int luaDefaultStick(lua_State *L)
 /*luadoc
 @function defaultChannel(stick)
 
-Get channel assigned to stick. See Default Channel Order in General Settings 
+Get channel assigned to stick. See Default Channel Order in General Settings
 
 @param stick (number) stick number (from 0 to 3)
 
@@ -831,6 +831,68 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
+#if defined(COLORLCD)
+  { "TEXT_COLOR_INDEX", TEXT_COLOR_INDEX },
+  { "TEXT_BGCOLOR_INDEX", TEXT_BGCOLOR_INDEX },
+  { "TEXT_INVERTED_COLOR_INDEX", TEXT_INVERTED_COLOR_INDEX },
+  { "TEXT_INVERTED_BGCOLOR_INDEX", TEXT_INVERTED_BGCOLOR_INDEX },
+  { "LINE_COLOR_INDEX", LINE_COLOR_INDEX },
+  { "SCROLLBOX_COLOR_INDEX", SCROLLBOX_COLOR_INDEX },
+  { "MENU_TITLE_BGCOLOR_INDEX", MENU_TITLE_BGCOLOR_INDEX },
+  { "MENU_TITLE_COLOR_INDEX", MENU_TITLE_COLOR_INDEX },
+  { "MENU_TITLE_DISABLE_COLOR_INDEX", MENU_TITLE_DISABLE_COLOR_INDEX },
+  { "HEADER_COLOR_INDEX", HEADER_COLOR_INDEX },
+  { "ALARM_COLOR_INDEX", ALARM_COLOR_INDEX },
+  { "WARNING_COLOR_INDEX", WARNING_COLOR_INDEX },
+  { "TEXT_DISABLE_COLOR_INDEX", TEXT_DISABLE_COLOR_INDEX },
+  { "HEADER_COLOR_INDEX", HEADER_COLOR_INDEX },
+  { "CURVE_AXIS_COLOR_INDEX", CURVE_AXIS_COLOR_INDEX },
+  { "CURVE_COLOR_INDEX", CURVE_COLOR_INDEX },
+  { "CURVE_CURSOR_COLOR_INDEX", CURVE_CURSOR_COLOR_INDEX },
+  { "TITLE_BGCOLOR_INDEX", TITLE_BGCOLOR_INDEX },
+  { "TRIM_BGCOLOR_INDEX", TRIM_BGCOLOR_INDEX },
+  { "TRIM_SHADOW_COLOR_INDEX", TRIM_SHADOW_COLOR_INDEX },
+  { "MAINVIEW_PANES_COLOR_INDEX", MAINVIEW_PANES_COLOR_INDEX },
+  { "MAINVIEW_GRAPHICS_COLOR_INDEX", MAINVIEW_GRAPHICS_COLOR_INDEX },
+  { "HEADER_BGCOLOR_INDEX", HEADER_BGCOLOR_INDEX },
+  { "HEADER_ICON_BGCOLOR_INDEX", HEADER_ICON_BGCOLOR_INDEX },
+  { "HEADER_CURRENT_BGCOLOR_INDEX", HEADER_CURRENT_BGCOLOR_INDEX },
+  { "OVERLAY_COLOR_INDEX", OVERLAY_COLOR_INDEX },
+  { "TEXT_COLOR", TEXT_COLOR },
+  { "TEXT_BGCOLOR", TEXT_BGCOLOR },
+  { "TEXT_INVERTED_COLOR", TEXT_INVERTED_COLOR },
+  { "TEXT_INVERTED_BGCOLOR", TEXT_INVERTED_BGCOLOR },
+  { "LINE_COLOR", LINE_COLOR },
+  { "SCROLLBOX_COLOR", SCROLLBOX_COLOR },
+  { "MENU_TITLE_BGCOLOR", MENU_TITLE_BGCOLOR },
+  { "MENU_TITLE_COLOR", MENU_TITLE_COLOR },
+  { "MENU_TITLE_DISABLE_COLOR", MENU_TITLE_DISABLE_COLOR },
+  { "HEADER_COLOR", HEADER_COLOR },
+  { "ALARM_COLOR", ALARM_COLOR },
+  { "WARNING_COLOR", WARNING_COLOR },
+  { "TEXT_DISABLE_COLOR", TEXT_DISABLE_COLOR },
+  { "HEADER_COLOR", HEADER_COLOR },
+  { "CURVE_AXIS_COLOR", CURVE_AXIS_COLOR },
+  { "CURVE_COLOR", CURVE_COLOR },
+  { "CURVE_CURSOR_COLOR", CURVE_CURSOR_COLOR },
+  { "TITLE_BGCOLOR", TITLE_BGCOLOR },
+  { "TRIM_BGCOLOR", TRIM_BGCOLOR },
+  { "TRIM_SHADOW_COLOR", TRIM_SHADOW_COLOR },
+  { "MAINVIEW_PANES_COLOR", MAINVIEW_PANES_COLOR },
+  { "MAINVIEW_GRAPHICS_COLOR", MAINVIEW_GRAPHICS_COLOR },
+  { "HEADER_BGCOLOR", HEADER_BGCOLOR },
+  { "HEADER_ICON_BGCOLOR", HEADER_ICON_BGCOLOR },
+  { "HEADER_CURRENT_BGCOLOR", HEADER_CURRENT_BGCOLOR },
+  { "OVERLAY_COLOR", OVERLAY_COLOR },
+  { "MENU_HEADER_HEIGHT", MENU_HEADER_HEIGHT },
+  { "WHITE", WHITE },
+  { "GREY", GREY },
+  { "DARKGREY", DARKGREY },
+  { "BLACK", BLACK },
+  { "YELLOW", YELLOW },
+  { "BLUE", BLUE },
+  { "LIGHTGREY", LIGHTGREY },
+#endif
 #if defined(PCBTARANIS)
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
