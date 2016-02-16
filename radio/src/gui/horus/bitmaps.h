@@ -97,4 +97,8 @@ extern const uint8_t LBM_CARROUSSEL_RIGHT[];
 extern const uint8_t LBM_BUTTON_ON[];
 extern const uint8_t LBM_BUTTON_OFF[];
 
+extern const uint8_t LBM_SWIPE_CIRCLE[];
+extern const uint8_t LBM_SWIPE_LEFT[];
+extern const uint8_t LBM_SWIPE_RIGHT[];
+
 #endif // _BITMAPS_H_

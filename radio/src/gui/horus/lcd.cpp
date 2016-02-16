@@ -352,18 +352,18 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness, 
 }
 
 #if defined(SIMU)
-void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att)
 {
-  for (scoord_t i=y; i<y+h; i++) {
+  for (coord_t i=y; i<y+h; i++) {
     lcdDrawHorizontalLine(x, i, w, SOLID, att);
   }
 }
 #endif
 
 #if !defined(BOOT)
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
-  for (scoord_t i=y; i<y+h; i++) {
+  for (coord_t i=y; i<y+h; i++) {
     if ((att & ROUND) && (i==y || i==y+h-1))
       lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
@@ -774,7 +774,7 @@ void lcdSetContrast()
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-void lcdInvertRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att)
+void lcdInvertRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att)
 {
   display_t color = lcdColorTable[COLOR_IDX(att)];
   COLOR_SPLIT(color, red, green, blue);

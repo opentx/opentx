@@ -156,12 +156,19 @@ bool menuWidgetChoice(evt_t event)
   }
 
   currentScreen->refresh();
-  lcdDrawBlackOverlay();
-  currentWidget->refresh();
 
   Zone zone = currentScreen->getZone(currentZone);
-  lcdDrawBitmapPattern(zone.x+2, zone.y+zone.h/2-15, LBM_CARROUSSEL_LEFT, menuHorizontalPosition > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
-  lcdDrawBitmapPattern(zone.x+zone.w-8, zone.y+zone.h/2-15, LBM_CARROUSSEL_RIGHT, menuHorizontalPosition < countRegisteredWidgets-1 ? LINE_COLOR : CURVE_AXIS_COLOR);
+  lcdDrawFilledRect(0, 0, zone.x-2, LCD_H, SOLID, OVERLAY_COLOR | (8<<24));
+  lcdDrawFilledRect(zone.x+zone.w+2, 0, LCD_W-zone.x-zone.w-2, LCD_H, SOLID, OVERLAY_COLOR | (8<<24));
+  lcdDrawFilledRect(zone.x-2, 0, zone.w+4, zone.y-2, SOLID, OVERLAY_COLOR | (8<<24));
+  lcdDrawFilledRect(zone.x-2, zone.y+zone.h+2, zone.w+4, LCD_H-zone.y-zone.h-2, SOLID, OVERLAY_COLOR | (8<<24));
+
+  currentWidget->refresh();
+
+  lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
+  lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, TEXT_INVERTED_COLOR);
+  lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
+  lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
 
   return true;
 }
@@ -336,8 +343,6 @@ bool menuScreenSetup(evt_t event)
   title[sizeof(title)-2] = '1' + T;
   menuPageCount = updateMainviewsMenu();
   MENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICONS, menuTabMainviews, menuPageCount, T+1, linesCount, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
-
-
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;

@@ -342,3 +342,15 @@ const uint8_t LBM_BUTTON_OFF[] __DMA = {
 #include "alpha_button_off.lbm"
 };
 
+const uint8_t LBM_SWIPE_CIRCLE[] __DMA = {
+  #include "mask_swipe_circle.lbm"
+};
+
+const uint8_t LBM_SWIPE_LEFT[] __DMA = { 
+  #include "mask_swipe_arrow.lbm"
+};
+
+const uint8_t LBM_SWIPE_RIGHT[] __DMA = {
+  #include "mask_swipe_right.lbm"
+};
+
