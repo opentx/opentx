@@ -915,3 +915,4 @@ Chris Merry
 Jiri Fojtasek
 Thierry Laligand
 Hassouna Cherif
+Fred Thijssen
