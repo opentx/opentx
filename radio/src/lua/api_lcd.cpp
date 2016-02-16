@@ -57,7 +57,7 @@ static int luaLcdRefresh(lua_State *L)
 /*luadoc
 @function lcd.clear()
 
-Clear the LCD screen 
+Clear the LCD screen
 
 @status current Introduced in 2.0.0
 
@@ -80,7 +80,7 @@ Draw a single pixel at (x,y) position
 @param y (positive number) y position
 
 @notice Taranis has an LCD display width of 212 pixels and height of 64 pixels.
-Position (0,0) is at top left. Y axis is negative, top line is 0, 
+Position (0,0) is at top left. Y axis is negative, top line is 0,
 bottom line is 63. Drawing on an existing black pixel produces white pixel (TODO check this!)
 
 @status current Introduced in 2.0.0
@@ -121,6 +121,18 @@ static int luaLcdDrawLine(lua_State *L)
   int y2 = luaL_checkinteger(L, 4);
   int pat = luaL_checkinteger(L, 5);
   int flags = luaL_checkinteger(L, 6);
+
+  if (pat == SOLID) {
+    if (x1 == x2) {
+      lcdDrawSolidVerticalLine(x1, y1, y2-y1+1, flags);
+      return 0;
+    }
+    else if (y1 == y2) {
+      lcdDrawSolidHorizontalLine(x1, y1, x2-x1+1, flags);
+      return 0;
+    }
+  }
+  
   lcdDrawLine(x1, y1, x2, y2, pat, flags);
   return 0;
 }
@@ -178,7 +190,7 @@ static int luaLcdDrawText(lua_State *L)
 /*luadoc
 @function lcd.drawTimer(x, y, value [, flags])
 
-Display a value formatted as time at (x,y) 
+Display a value formatted as time at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
@@ -209,14 +221,14 @@ static int luaLcdDrawTimer(lua_State *L)
 /*luadoc
 @function lcd.drawNumber(x, y, value [, flags])
 
-Display a number at (x,y) 
+Display a number at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
 @param value (number) value to display
 
-@param flags (unsigned number) drawing flags: 
- * `0 or not specified` normal representation 
+@param flags (unsigned number) drawing flags:
+ * `0 or not specified` normal representation
  * `PREC1` display with one decimal place (number 386 is displayed as 38.6)
  * `PREC2` display with tow decimal places (number 386 is displayed as 3.86)
  * other general LCD flag also apply
@@ -278,7 +290,7 @@ Draw a text representation of switch at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
-@param switch (number) number of switch to display, negative number 
+@param switch (number) number of switch to display, negative number
 displays negated switch
 
 @param flags (unsigned number) drawing flags, only SMLSIZE, BLINK and INVERS.
@@ -299,7 +311,7 @@ static int luaLcdDrawSwitch(lua_State *L)
 /*luadoc
 @function lcd.drawSource(x, y, source [, flags])
 
-Displays the name of the corresponding input as defined by the source at (x,y)  
+Displays the name of the corresponding input as defined by the source at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
@@ -324,7 +336,7 @@ static int luaLcdDrawSource(lua_State *L)
 /*luadoc
 @function lcd.drawPixmap(x, y, name)
 
-Draw a bitmap at (x,y)  
+Draw a bitmap at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
@@ -352,7 +364,7 @@ static int luaLcdDrawPixmap(lua_State *L)
 /*luadoc
 @function lcd.drawRectangle(x, y, w, h [, flags])
 
-Draw a rectangle from top left corner (x,y) of specified width and height 
+Draw a rectangle from top left corner (x,y) of specified width and height
 
 @param x,y (positive numbers) top left corner position
 
@@ -379,7 +391,7 @@ static int luaLcdDrawRectangle(lua_State *L)
 /*luadoc
 @function lcd.drawFilledRectangle(x, y, w, h [, flags])
 
-Draw a solid rectangle from top left corner (x,y) of specified width and height 
+Draw a solid rectangle from top left corner (x,y) of specified width and height
 
 @param x,y (positive numbers) top left corner position
 
@@ -544,6 +556,27 @@ static int luaLcdDrawCombobox(lua_State *L)
 }
 #endif
 
+#if defined(COLORLCD)
+static int luaLcdSetColor(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  int index = luaL_checkinteger(L, 1);
+  int color = luaL_checkinteger(L, 2);
+  lcdColorTable[index] = color;
+  return 0;
+}
+
+static int luaRGB(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  int r = luaL_checkinteger(L, 1);
+  int g = luaL_checkinteger(L, 2);
+  int b = luaL_checkinteger(L, 3);
+  lua_pushinteger(L, RGB(r, g, b));
+  return 1;
+}
+#endif
+
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
@@ -557,7 +590,10 @@ const luaL_Reg lcdLib[] = {
   { "drawChannel", luaLcdDrawChannel },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
-#if !defined(COLORLCD)
+#if defined(COLORLCD)
+  { "setColor", luaLcdSetColor },
+  { "RGB", luaRGB },
+#else
   { "getLastPos", luaLcdGetLastPos },
   { "drawGauge", luaLcdDrawGauge },
   { "drawPixmap", luaLcdDrawPixmap },
