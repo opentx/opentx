@@ -347,7 +347,7 @@ const uint8_t LBM_SWIPE_CIRCLE[] __DMA = {
 };
 
 const uint8_t LBM_SWIPE_LEFT[] __DMA = { 
-  #include "mask_swipe_arrow.lbm"
+  #include "mask_swipe_left.lbm"
 };
 
 const uint8_t LBM_SWIPE_RIGHT[] __DMA = {

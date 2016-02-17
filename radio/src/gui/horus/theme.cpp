@@ -28,7 +28,7 @@ void Theme::drawBackground() const
 void Theme::drawAlertBox(const char * title, const char * text, const char * action) const
 {
   drawBackground();
-  lcdDrawSolidFilledRect(0, POPUP_Y, LCD_W, POPUP_H, TEXT_INVERTED_COLOR | OPACITY(8));
+  lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, TEXT_INVERTED_COLOR | OPACITY(8));
   lcdDrawAlphaBitmap(POPUP_X-80, POPUP_Y+12, LBM_ASTERISK);
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
