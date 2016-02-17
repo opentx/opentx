@@ -37,6 +37,8 @@
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
 #define THEMES_PATH         SCRIPTS_PATH "/THEMES"
+#define LAYOUTS_PATH        SCRIPTS_PATH "/LAYOUTS"
+#define WIDGETS_PATH        SCRIPTS_PATH "/WIDGETS"
 #define WIZARD_NAME         "wizard.lua"
 #define TEMPLATES_PATH      SCRIPTS_PATH "/TEMPLATES"
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
@@ -100,4 +102,3 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
 #endif // _SDCARD_H_
-
