@@ -1,4 +1,4 @@
-/* German checked 27.09.2015 r096 opentx V2.1.4 für X9D,X9D+, X9E, Th9, 9XR, 9XR-Pro  
+/* German checked 17.02.2016 r102 opentx V2.17 für X9D, X9D+, X9E, Th9, 9XR, 9XR-Pro  
  * Authors (alphabetical order)
  * - Bertrand Songis <bsongis@gmail.com>
  * - Bernet Andre <bernet.andre@gmail.com>
@@ -104,15 +104,10 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"          
-#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF"
+#define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM2""CRSF"
 
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
-  #define LEN_XJT_PROTOCOLS    "\007"
-  #define TR_XJT_PROTOCOLS     "AUS\0   ""D16-EU\0""D8\0    ""LR12-EU"
-#else
-  #define LEN_XJT_PROTOCOLS    "\004"
-  #define TR_XJT_PROTOCOLS     "AUS\0""X16\0""D8\0 ""LR12"
-#endif
+#define LEN_XJT_PROTOCOLS    "\004"
+#define TR_XJT_PROTOCOLS     "AUS\0""D16\0""D8\0 ""LR12"
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"  //LP45 =Low Power 4 und 5 Kanal
