@@ -35,13 +35,12 @@
 #define COLUMN_HEADER_X        150
 
 typedef evt_t & check_event_t;
-#define horzpos_t int8_t
 
 extern uint8_t menuPageIndex;
 extern uint8_t menuPageCount;
 extern uint16_t linesCount;
 extern int menuVerticalPosition;
-extern horzpos_t menuHorizontalPosition;
+extern int menuHorizontalPosition;
 extern int menuVerticalOffset;
 extern uint8_t calibrationState;
 

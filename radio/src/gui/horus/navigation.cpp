@@ -22,7 +22,7 @@
 
 int menuVerticalOffset;
 int menuVerticalPosition;
-horzpos_t menuHorizontalPosition;
+int menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t noHighlightCounter;
 uint8_t calibrationState; // TODO rename this variable

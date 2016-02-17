@@ -82,7 +82,7 @@ bool menuModelFlightModesAll(evt_t event)
 
   int sub = menuVerticalPosition;
 
-  horzpos_t posHorz = menuHorizontalPosition;
+  int posHorz = menuHorizontalPosition;
   if (sub==0 && posHorz == 1) {
     REPEAT_LAST_CURSOR_MOVE(0);
     posHorz = menuHorizontalPosition;

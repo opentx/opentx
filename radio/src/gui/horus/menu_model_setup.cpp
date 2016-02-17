@@ -178,7 +178,7 @@ int getSwitchWarningsCount()
 
 bool menuModelSetup(evt_t event)
 {
-  horzpos_t l_posHorz = menuHorizontalPosition;
+  int l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 
   MENU(STR_MENUSETUP, LBM_MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
@@ -633,7 +633,7 @@ bool menuModelSetup(evt_t event)
           }
         }
         else {
-          horzpos_t l_posHorz = menuHorizontalPosition;
+          int l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
             xOffsetBind = 0;
