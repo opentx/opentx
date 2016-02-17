@@ -141,7 +141,7 @@ bool menuWidgetChoice(evt_t event)
       return false;
 
     case EVT_ROTARY_RIGHT:
-      if (menuHorizontalPosition < countRegisteredWidgets-1) {
+      if (menuHorizontalPosition < int(countRegisteredWidgets-1)) {
         delete currentWidget;
         currentWidget = registeredWidgets[++menuHorizontalPosition]->create(currentScreen->getZone(currentZone), &tempData);
       }
@@ -447,6 +447,7 @@ bool menuScreenAdd(evt_t event)
 void onScreenSetupMenu(const char * result)
 {
   if (result == STR_REMOVE_SCREEN) {
+    delete customScreens[menuHorizontalPosition];
     if (menuHorizontalPosition != MAX_CUSTOM_SCREENS-1) {
       memmove(&g_model.screenData[menuHorizontalPosition], &g_model.screenData[menuHorizontalPosition + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - menuHorizontalPosition - 1));
       memmove(&customScreens[menuHorizontalPosition], &customScreens[menuHorizontalPosition + 1], sizeof(Layout *) * (MAX_CUSTOM_SCREENS - menuHorizontalPosition - 1));

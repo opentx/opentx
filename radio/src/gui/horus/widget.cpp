@@ -40,20 +40,11 @@ const WidgetFactory * getWidgetFactory(const char * name)
   return NULL;
 }
 
-Widget * createWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData)
-{
-  const WidgetFactory * factory = getWidgetFactory(name);
-  if (factory) {
-    return factory->create(zone, persistentData);
-  }
-  return NULL;
-}
-
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData)
 {
   const WidgetFactory * factory = getWidgetFactory(name);
   if (factory) {
-    return factory->load(zone, persistentData);
+    return factory->create(zone, persistentData, false);
   }
   return NULL;
 }

@@ -28,14 +28,14 @@ class TextWidget: public Widget
     {
     }
 
-    void create()
+    virtual void init()
     {
       str2zchar(persistentData->options[0].stringValue, "Label", sizeof(persistentData->options[0].stringValue));
       persistentData->options[1].unsignedValue = RED;
       persistentData->options[2].unsignedValue = 0;
     }
 
-    void refresh();
+    virtual void refresh();
 
     static const ZoneOption options[];
 };
@@ -54,4 +54,4 @@ void TextWidget::refresh()
   lcdDrawSizedText(zone.x, zone.y, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|CUSTOM_COLOR);
 }
 
-BaseWidgetFactory<TextWidget> textWidget("Text", "", TextWidget::options);
+BaseWidgetFactory<TextWidget> textWidget("Text", TextWidget::options);

@@ -28,13 +28,13 @@ class ValueWidget: public Widget
     {
     }
 
-    virtual void create()
+    virtual void init()
     {
       persistentData->options[0].unsignedValue = 1;
       persistentData->options[3].unsignedValue = RED;
     }
 
-    void refresh();
+    virtual void refresh();
 
     static const ZoneOption options[];
 };
@@ -46,9 +46,6 @@ const ZoneOption ValueWidget::options[] = {
 
 void ValueWidget::refresh()
 {
-  const int NUMBERS_W = 56;
-  const int NUMBERS_H = 30;
-  const int NUMBERS_MARGIN = 16;
   const int NUMBERS_PADDING = 4;
 
   mixsrc_t field = persistentData->options[0].unsignedValue;
@@ -96,4 +93,4 @@ void ValueWidget::refresh()
   putsChannel(xValue, yValue, field, attr|DBLSIZE|color);
 }
 
-BaseWidgetFactory<ValueWidget> ValueWidget("Value", "", ValueWidget::options);
+BaseWidgetFactory<ValueWidget> ValueWidget("Value", ValueWidget::options);

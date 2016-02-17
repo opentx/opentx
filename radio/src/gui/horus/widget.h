@@ -70,13 +70,13 @@ class Widget
     {
     }
 
-    virtual void create()
+    virtual ~Widget()
     {
-      memset(persistentData, 0, sizeof(PersistentData));
     }
 
-    virtual void load()
+    virtual void init()
     {
+      memset(persistentData, 0, sizeof(PersistentData));
     }
 
     const WidgetFactory * getFactory() const
@@ -107,9 +107,8 @@ void registerWidget(const WidgetFactory * factory);
 class WidgetFactory
 {
   public:
-    WidgetFactory(const char * name, const char * bitmap):
-      name(name),
-      bitmap(bitmap)
+    WidgetFactory(const char * name):
+      name(name)
     {
       registerWidget(this);
     }
@@ -121,21 +120,18 @@ class WidgetFactory
 
     virtual const ZoneOption * getOptions() const = 0;
 
-    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData) const = 0;
-
-    virtual Widget * load(const Zone & zone, Widget::PersistentData * persistentData) const = 0;
+    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const = 0;
 
   protected:
     const char * name;
-    const char * bitmap;
 };
 
 template<class T>
 class BaseWidgetFactory: public WidgetFactory
 {
   public:
-    BaseWidgetFactory(const char * name, const char * bitmap, const ZoneOption * options):
-      WidgetFactory(name, bitmap),
+    BaseWidgetFactory(const char * name, const ZoneOption * options):
+      WidgetFactory(name),
       options(options)
     {
     }
@@ -145,17 +141,12 @@ class BaseWidgetFactory: public WidgetFactory
       return options;
     }
 
-    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData) const
+    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const
     {
       Widget * widget = new T(this, zone, persistentData);
-      widget->create();
-      return widget;
-    }
-
-    virtual Widget * load(const Zone & zone, Widget::PersistentData * persistentData) const
-    {
-      Widget * widget = new T(this, zone, persistentData);
-      widget->load();
+      if (init) {
+        widget->init();
+      }
       return widget;
     }
 
@@ -166,7 +157,6 @@ class BaseWidgetFactory: public WidgetFactory
 #define MAX_REGISTERED_WIDGETS 10
 extern unsigned int countRegisteredWidgets;
 extern const WidgetFactory * registeredWidgets[MAX_REGISTERED_WIDGETS];
-Widget * createWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
 
 #endif // _WIDGET_H_

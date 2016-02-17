@@ -28,7 +28,7 @@ class ModelPanelWidget: public Widget
     {
     }
 
-    void refresh();
+    virtual void refresh();
 };
 
 void ModelPanelWidget::refresh()
@@ -53,4 +53,4 @@ void ModelPanelWidget::refresh()
   }
 }
 
-BaseWidgetFactory<ModelPanelWidget> modelPanelWidget("ModelPanel", "", NULL);
+BaseWidgetFactory<ModelPanelWidget> modelPanelWidget("ModelPanel", NULL);

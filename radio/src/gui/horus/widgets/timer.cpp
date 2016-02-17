@@ -28,7 +28,7 @@ class TimerWidget: public Widget
     {
     }
 
-    void refresh();
+    virtual void refresh();
 
     static const ZoneOption options[];
 };
@@ -58,4 +58,4 @@ void TimerWidget::refresh()
   drawStringWithIndex(zone.x+137, zone.y+17, "TMR", index+1, SMLSIZE|TEXT_COLOR);
 }
 
-BaseWidgetFactory<TimerWidget> timerWidget("Timer", "", TimerWidget::options);
+BaseWidgetFactory<TimerWidget> timerWidget("Timer", TimerWidget::options);

@@ -28,7 +28,7 @@ class GaugeWidget: public Widget
     {
     }
 
-    virtual void create()
+    virtual void init()
     {
       persistentData->options[0].unsignedValue = 1;
       persistentData->options[1].signedValue = -RESX;
@@ -36,7 +36,7 @@ class GaugeWidget: public Widget
       persistentData->options[3].unsignedValue = RED;
     }
 
-    void refresh();
+    virtual void refresh();
 
     static const ZoneOption options[];
 };
@@ -76,4 +76,4 @@ void GaugeWidget::refresh()
   lcdInvertRect(zone.x + w, zone.y + 15, zone.w - w, 16, CUSTOM_COLOR);
 }
 
-BaseWidgetFactory<GaugeWidget> gaugeWidget("Gauge", "", GaugeWidget::options);
+BaseWidgetFactory<GaugeWidget> gaugeWidget("Gauge", GaugeWidget::options);
