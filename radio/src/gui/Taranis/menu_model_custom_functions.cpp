@@ -272,8 +272,8 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             lcd_putsiAtt(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
           else if (func == FUNC_SET_TIMER) {
-            val_max = 59*60+59;
-            putsTimer(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
+            val_max = 539*60+59; //8:59:59
+            putsTimer(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT|TIMEHOUR, attr);
           }
           else if (func == FUNC_PLAY_SOUND) {
             val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;

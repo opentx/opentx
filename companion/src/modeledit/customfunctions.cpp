@@ -403,7 +403,12 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
       if (modified) cfn.param = QTimeS(fswtchParamTime[i]->time()).seconds();
       fswtchParamTime[i]->setMinimumTime(QTime(0, 0, 0));
-      fswtchParamTime[i]->setMaximumTime(QTime(0, 59, 59));
+      if (IS_TARANIS(firmware->getBoard()))
+        fswtchParamTime[i]->setMaximumTime(QTime(23, 59, 59));
+      else if (IS_ARM(firmware->getBoard()))
+        fswtchParamTime[i]->setMaximumTime(QTime(8, 59, 59));
+      else
+        fswtchParamTime[i]->setMaximumTime(QTime(0, 59, 59));
       fswtchParamTime[i]->setTime(QTimeS(cfn.param));
       widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM + CUSTOM_FUNCTION_ENABLE;
     }
