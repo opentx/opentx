@@ -30,29 +30,30 @@ struct Zone
   uint16_t x, y, w, h;
 };
 
-struct ZoneOption
-{
-  enum Type {
-    Bool,
-    Integer,
-    String,
-    TextSize,
-    Timer,
-    Source,
-    Switch,
-    Color
-  };
-
-  const char * name;
-  Type type;
-};
-
 union ZoneOptionValue
 {
   bool boolValue;
   uint32_t unsignedValue;
   int32_t signedValue;
   char stringValue[8];
+};
+
+struct ZoneOption
+{
+  enum Type {
+    Integer,
+    Source,
+    Bool,
+    String,
+    TextSize,
+    Timer,
+    Switch,
+    Color
+  };
+
+  const char * name;
+  Type type;
+  ZoneOptionValue deflt;
 };
 
 class WidgetFactory;
@@ -72,11 +73,6 @@ class Widget
 
     virtual ~Widget()
     {
-    }
-
-    virtual void init()
-    {
-      memset(persistentData, 0, sizeof(PersistentData));
     }
 
     const WidgetFactory * getFactory() const
@@ -107,23 +103,39 @@ void registerWidget(const WidgetFactory * factory);
 class WidgetFactory
 {
   public:
-    WidgetFactory(const char * name):
-      name(name)
+    WidgetFactory(const char * name, const ZoneOption * options):
+      name(name),
+      options(options)
     {
       registerWidget(this);
     }
 
-    const char * getName() const
+    inline const char * getName() const
     {
         return name;
     }
 
-    virtual const ZoneOption * getOptions() const = 0;
+    inline const ZoneOption * getOptions() const
+    {
+      return options;
+    }
 
+    void initPersistentData(Widget::PersistentData * persistentData) const
+    {
+      memset(persistentData, 0, sizeof(Widget::PersistentData));
+      if (options) {
+        int i = 0;
+        for (const ZoneOption * option = options; option->name; option++) {
+          persistentData->options[i++] = option->deflt;
+        }
+      }
+    }
+    
     virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const = 0;
 
   protected:
     const char * name;
+    const ZoneOption * options;
 };
 
 template<class T>
@@ -131,27 +143,18 @@ class BaseWidgetFactory: public WidgetFactory
 {
   public:
     BaseWidgetFactory(const char * name, const ZoneOption * options):
-      WidgetFactory(name),
-      options(options)
+      WidgetFactory(name, options)
     {
-    }
-
-    virtual const ZoneOption * getOptions() const
-    {
-      return options;
     }
 
     virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const
     {
-      Widget * widget = new T(this, zone, persistentData);
       if (init) {
-        widget->init();
+        initPersistentData(persistentData);
       }
-      return widget;
-    }
 
-  protected:
-    const ZoneOption * options;
+      return new T(this, zone, persistentData);
+    }
 };
 
 #define MAX_REGISTERED_WIDGETS 10

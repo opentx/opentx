@@ -50,6 +50,14 @@ class Layout
       memset(widgets, 0, sizeof(widgets));
     }
 
+    virtual ~Layout()
+    {
+      for (uint8_t i=0; i<MAX_LAYOUT_ZONES; i++) {
+        delete widgets[i];
+      }
+      memset(widgets, 0, sizeof(widgets));
+    }
+
     const LayoutFactory * getFactory() const
     {
       return factory;

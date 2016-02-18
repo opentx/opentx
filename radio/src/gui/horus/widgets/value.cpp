@@ -28,19 +28,13 @@ class ValueWidget: public Widget
     {
     }
 
-    virtual void init()
-    {
-      persistentData->options[0].unsignedValue = 1;
-      persistentData->options[3].unsignedValue = RED;
-    }
-
     virtual void refresh();
 
     static const ZoneOption options[];
 };
 
 const ZoneOption ValueWidget::options[] = {
-  { "Source", ZoneOption::Source },
+  { "Source", ZoneOption::Source, { .unsignedValue = MIXSRC_Rud } },
   { NULL, ZoneOption::Bool }
 };
 

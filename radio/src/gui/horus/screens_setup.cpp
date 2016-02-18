@@ -355,6 +355,7 @@ bool menuScreenSetup(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Layout");
         const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, registeredLayouts, countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
         if (factory) {
+          delete customScreens[T];
           customScreens[T] = factory->create(&g_model.screenData[T].layoutData);
           strncpy(g_model.screenData[T].layoutName, factory->getName(), sizeof(g_model.screenData[T].layoutName));
           storageDirty(EE_MODEL);
@@ -375,7 +376,7 @@ bool menuScreenSetup(evt_t event)
       default:
         if (k < linesCount) {
           uint8_t index = k - 3;
-          const ZoneOption *option = &options[index];
+          const ZoneOption * option = &options[index];
           ZoneOptionValue value = currentScreen->getOptionValue(index);
           value = editZoneOption(y, option, value, attr, event);
           if (attr) {

@@ -812,8 +812,8 @@ const luaR_value_entry opentxConstants[] = {
   { "LEFT", LEFT },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
-  { "VALUE", 0 },
-  { "SOURCE", 1 },
+  { "VALUE", 0 }, // TODO reuse ZoneOption::Integer
+  { "SOURCE", 1 }, // TODO reuse ZoneOption::Source
   { "REPLACE", MLTPX_REP },
   { "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT },
   { "MIXSRC_Rud", MIXSRC_Rud },
@@ -832,6 +832,7 @@ const luaR_value_entry opentxConstants[] = {
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
 #if defined(COLORLCD)
+  { "COLOR", ZoneOption::Color },
   { "TEXT_COLOR_INDEX", TEXT_COLOR_INDEX },
   { "TEXT_BGCOLOR_INDEX", TEXT_BGCOLOR_INDEX },
   { "TEXT_INVERTED_COLOR_INDEX", TEXT_INVERTED_COLOR_INDEX },

@@ -28,24 +28,16 @@ class GaugeWidget: public Widget
     {
     }
 
-    virtual void init()
-    {
-      persistentData->options[0].unsignedValue = 1;
-      persistentData->options[1].signedValue = -RESX;
-      persistentData->options[2].signedValue = RESX;
-      persistentData->options[3].unsignedValue = RED;
-    }
-
     virtual void refresh();
 
     static const ZoneOption options[];
 };
 
 const ZoneOption GaugeWidget::options[] = {
-  { "Source", ZoneOption::Source },
-  { "Min", ZoneOption::Integer },
-  { "Max", ZoneOption::Integer },
-  { "Color", ZoneOption::Color },
+  { "Source", ZoneOption::Source, { .unsignedValue = 1 } },
+  { "Min", ZoneOption::Integer, { .signedValue = -RESX } },
+  { "Max", ZoneOption::Integer, { .signedValue = RESX } },
+  { "Color", ZoneOption::Color, { .unsignedValue = RED } },
   { NULL, ZoneOption::Bool }
 };
 

@@ -183,46 +183,6 @@ void luaRegisterAll()
   luaL_openlibs(L);
 }
 
-void luaInit()
-{
-  TRACE("luaInit");
-
-#if !defined(COLORLCD)
-  luaClose();
-#endif
-
-  if (luaState != INTERPRETER_PANIC) {
-#if defined(USE_BIN_ALLOCATOR)
-    L = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
-#else
-    L = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
-#endif
-    if (L) {
-      // install our panic handler
-      lua_atpanic(L, &custom_lua_atpanic);
-
-      // protect libs and constants registration
-      PROTECT_LUA() {
-        luaRegisterAll();
-      }
-      else {
-        // if we got panic during registration
-        // we disable Lua for this session
-        luaDisable();
-      }
-      UNPROTECT_LUA();
-    }
-    else {
-      /* log error and return */
-      luaDisable();
-    }
-  }
-
-#if defined(COLORLCD)
-  luaLoadThemes();
-#endif
-}
-
 void luaFree(ScriptInternalData & sid)
 {
   PROTECT_LUA() {
@@ -803,11 +763,22 @@ int luaGetMemUsed()
 }
 
 #if defined(COLORLCD)
-#define THEME_FILENAME_MAXLEN          (42) // max length (example: /SCRIPTS/THEMES/mytheme.lua)
+#define LUA_FULLPATH_MAXLEN            (42) // max length (example: /SCRIPTS/THEMES/mytheme.lua)
+
+void exec(int function, int nresults=0)
+{
+  if (function) {
+    SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, function);
+    if (lua_pcall(L, 0, nresults, 0) != 0) {
+      TRACE("Error in theme  %s", lua_tostring(L, -1));
+    }
+  }
+}
 
 class LuaTheme: public Theme
 {
-  friend int luaLoadTheme(const char * filename);
+  friend void luaLoadThemeCallback();
 
   public:
     LuaTheme(const char * name, const uint8_t * bitmap):
@@ -817,17 +788,6 @@ class LuaTheme: public Theme
       drawTopbarBackgroundFunction(0),
       drawAlertBoxFunction(0)
     {
-    }
-
-    void exec(int function) const
-    {
-      if (function) {
-        SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-        lua_rawgeti(L, LUA_REGISTRYINDEX, function);
-        if (lua_pcall(L, 0, 0, 0) != 0) {
-          TRACE("Error in theme %s: %s", name, lua_tostring(L, -1));
-        }
-      }
     }
 
     virtual void load() const
@@ -860,14 +820,218 @@ class LuaTheme: public Theme
     int drawAlertBoxFunction;
 };
 
-int luaLoadTheme(const char * filename)
+void luaLoadThemeCallback()
 {
-  TRACE("luaLoadTheme from file %s", filename);
+  const char * name=NULL, * bitmap=NULL;
+  int loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
 
-  int init = 0;
+  luaL_checktype(L, -1, LUA_TTABLE);
 
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    const char * key = lua_tostring(L, -2);
+    if (!strcmp(key, "name")) {
+      name = luaL_checkstring(L, -1);
+    }
+    else if (!strcmp(key, "bitmap")) {
+      bitmap = luaL_checkstring(L, -1);
+    }
+    else if (!strcmp(key, "load")) {
+      loadFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
+    else if (!strcmp(key, "drawBackground")) {
+      drawBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
+    else if (!strcmp(key, "drawTopbarBackground")) {
+      drawTopbarBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
+  }
+
+  if (name && bitmap) {
+    char path[LUA_FULLPATH_MAXLEN+1];
+    strcpy(path, THEMES_PATH "/");
+    strcpy(path+sizeof(THEMES_PATH), bitmap);
+    uint8_t * bitmapData = (uint8_t *)malloc(BITMAP_BUFFER_SIZE(51, 31));
+    bmpLoad(bitmapData, path, 51, 31);
+    LuaTheme * theme = new LuaTheme(name, bitmapData);
+    theme->loadFunction = loadFunction;
+    theme->drawBackgroundFunction = drawBackgroundFunction;
+    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
+  }
+}
+
+class LuaWidget: public Widget
+{
+  public:
+    LuaWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData, int widgetData):
+      Widget(factory, zone, persistentData),
+      widgetData(widgetData)
+    {
+    }
+
+    virtual ~LuaWidget()
+    {
+      luaL_unref(L, LUA_REGISTRYINDEX, widgetData);
+    }
+
+    virtual void refresh();
+
+  protected:
+    int widgetData;
+};
+
+ZoneOption * createOptionsArray(int reference)
+{
+  int count = 0;
+  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    count++;
+  }
+
+  ZoneOption * options = (ZoneOption *)malloc(sizeof(ZoneOption) * (count+1));
+
+  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
+  ZoneOption * option = options;
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+    luaL_checktype(L, -1, LUA_TTABLE); // value is table
+    // const char * key = NULL;
+    // ZoneOption::Type type = ZoneOption::Integer;
+    // int val = 0;
+    uint8_t field = 0;
+    for (lua_pushnil(L); lua_next(L, -2) && field<3; lua_pop(L, 1), field++) {
+      switch (field) {
+        case 0:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TSTRING); // value is string
+          option->name = lua_tostring(L, -1);
+          break;
+        case 1:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+          option->type = (ZoneOption::Type)lua_tointeger(L, -1);
+          break;
+        case 2:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+          option->deflt.signedValue = lua_tointeger(L, -1);
+          break;
+      }
+    }
+
+    // TRACE("option[%d] = %s %d %d", i, key, type, val);
+    option++;
+    // options[i++]. = (ZoneOption) { key, type, { .signedValue = val } };
+  }
+
+  option->name = NULL; // sentinel
+
+  return options;
+}
+
+void l_pushtableint(const char * key, int value)
+{
+  lua_pushstring(L, key);
+  lua_pushinteger(L, value);
+  lua_settable(L, -3);
+}
+
+class LuaWidgetFactory: public WidgetFactory
+{
+  friend void luaLoadWidgetCallback();
+  friend class LuaWidget;
+
+  public:
+    LuaWidgetFactory(const char * name, int widgetOptions, int createFunction):
+      WidgetFactory(name, createOptionsArray(widgetOptions)),
+      createFunction(createFunction),
+      refreshFunction(0)
+    {
+    }
+
+    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const
+    {
+      if (init) {
+        initPersistentData(persistentData);
+      }
+
+      SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+      lua_rawgeti(L, LUA_REGISTRYINDEX, createFunction);
+
+      lua_newtable(L);
+      l_pushtableint("x", zone.x);
+      l_pushtableint("y", zone.y);
+      l_pushtableint("w", zone.w);
+      l_pushtableint("h", zone.h);
+
+      lua_newtable(L);
+      int i = 0;
+      for (const ZoneOption * option = options; option->name; option++, i++) {
+        l_pushtableint(option->name, persistentData->options[i].signedValue);
+      }
+
+      if (lua_pcall(L, 2, 1, 0) != 0) {
+        TRACE("Error in widget %s: %s", getName(), lua_tostring(L, -1));
+      }
+      int widgetData = luaL_ref(L, LUA_REGISTRYINDEX);
+      Widget * widget = new LuaWidget(this, zone, persistentData, widgetData);
+      return widget;
+    }
+
+  protected:
+    int createFunction;
+    int refreshFunction;
+};
+
+void LuaWidget::refresh()
+{
+  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+  LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
+  lua_rawgeti(L, LUA_REGISTRYINDEX, factory->refreshFunction);
+  lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
+  if (lua_pcall(L, 1, 0, 0) != 0) {
+    TRACE("Error in widget %s: %s", factory->getName(), lua_tostring(L, -1));
+  }
+}
+
+void luaLoadWidgetCallback()
+{
+  const char * name=NULL, * options=NULL;
+  int widgetOptions=0, createFunction=0, refreshFunction=0;
+
+  luaL_checktype(L, -1, LUA_TTABLE);
+
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    const char * key = lua_tostring(L, -2);
+    if (!strcmp(key, "name")) {
+      name = luaL_checkstring(L, -1);
+    }
+    else if (!strcmp(key, "options")) {
+      widgetOptions = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
+    else if (!strcmp(key, "create")) {
+      createFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
+    else if (!strcmp(key, "refresh")) {
+      refreshFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
+  }
+
+  if (name && createFunction) {
+    LuaWidgetFactory * factory = new LuaWidgetFactory(name, widgetOptions, createFunction);
+    factory->refreshFunction = refreshFunction;
+  }
+}
+
+void luaLoadFile(const char * filename, void (*callback)())
+{
   if (luaState == INTERPRETER_PANIC) {
-    return SCRIPT_PANIC;
+    return;
   }
 
 #if defined(LUA_COMPILER) && defined(SIMU)
@@ -880,45 +1044,7 @@ int luaLoadTheme(const char * filename)
     if (luaL_loadfile(L, filename) == 0 &&
         lua_pcall(L, 0, 1, 0) == 0 &&
         lua_istable(L, -1)) {
-
-      const char * name=NULL, * bitmap=NULL;
-      int loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
-
-      luaL_checktype(L, -1, LUA_TTABLE);
-
-      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        const char * key = lua_tostring(L, -2);
-        if (!strcmp(key, "name")) {
-          name = luaL_checkstring(L, -1);
-        }
-        else if (!strcmp(key, "bitmap")) {
-          bitmap = luaL_checkstring(L, -1);
-        }
-        else if (!strcmp(key, "load")) {
-          loadFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-          lua_pushnil(L);
-        }
-        else if (!strcmp(key, "drawBackground")) {
-          drawBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-          lua_pushnil(L);
-        }
-        else if (!strcmp(key, "drawTopbarBackground")) {
-          drawTopbarBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-          lua_pushnil(L);
-        }
-      }
-
-      if (name && bitmap) {
-        char path[THEME_FILENAME_MAXLEN+1] = THEMES_PATH;
-        path[sizeof(THEMES_PATH)-1] = '/';
-        strcpy(path+sizeof(THEMES_PATH), bitmap);
-        uint8_t * bitmapData = (uint8_t *)malloc(BITMAP_BUFFER_SIZE(51, 31));
-        bmpLoad(bitmapData, path, 51, 31);
-        LuaTheme * theme = new LuaTheme(name, bitmapData);
-        theme->loadFunction = loadFunction;
-        theme->drawBackgroundFunction = drawBackgroundFunction;
-        theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
-      }
+      (*callback)();
     }
     else {
       TRACE("Error in script %s: %s", filename, lua_tostring(L, -1));
@@ -926,14 +1052,14 @@ int luaLoadTheme(const char * filename)
   }
   else {
     luaDisable();
-    return SCRIPT_PANIC;
+    return;
   }
   UNPROTECT_LUA();
 }
 
-void luaLoadThemes()
+void luaLoadFiles(const char * directory, void (*callback)())
 {
-  char path[THEME_FILENAME_MAXLEN+1] = THEMES_PATH;
+  char path[LUA_FULLPATH_MAXLEN+1];
   FILINFO fno;
   DIR dir;
   char * fn;   /* This function is assuming non-Unicode cfg. */
@@ -941,21 +1067,64 @@ void luaLoadThemes()
   fno.lfname = lfn;
   fno.lfsize = sizeof(lfn);
 
+  strcpy(path, directory);
+  int pathlen = strlen(path);
+
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
   if (res == FR_OK) {
+    path[pathlen++] = '/';
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       fn = * fno.lfname ? fno.lfname : fno.fname;
       uint8_t len = strlen(fn);
-      bool found = false;
-
       // Eliminates directories / non wav files
       if (len < 5 || strcasecmp(fn+len-4, SCRIPTS_EXT) || (fno.fattrib & AM_DIR)) continue;
-      path[sizeof(THEMES_PATH)-1] = '/';
-      strcpy(path+sizeof(THEMES_PATH), fn);
-      luaLoadTheme(path);
+      strcpy(&path[pathlen], fn);
+      luaLoadFile(path, callback);
     }
   }
 }
+
+void luaInit()
+{
+  TRACE("luaInit");
+
+#if !defined(COLORLCD)
+  luaClose();
+#endif
+
+  if (luaState != INTERPRETER_PANIC) {
+#if defined(USE_BIN_ALLOCATOR)
+    L = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
+#else
+    L = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
+#endif
+    if (L) {
+      // install our panic handler
+      lua_atpanic(L, &custom_lua_atpanic);
+
+      // protect libs and constants registration
+      PROTECT_LUA() {
+        luaRegisterAll();
+      }
+      else {
+        // if we got panic during registration
+        // we disable Lua for this session
+        luaDisable();
+      }
+      UNPROTECT_LUA();
+    }
+    else {
+      /* log error and return */
+      luaDisable();
+    }
+  }
+
+#if defined(COLORLCD)
+  luaLoadFiles(THEMES_PATH, luaLoadThemeCallback);
+  luaLoadFiles(WIDGETS_PATH, luaLoadWidgetCallback);
+#endif
+}
+
 #endif

@@ -336,6 +336,11 @@ void * main_thread(void *)
     menuHandlers[0] = menuMainView;
     menuHandlers[1] = menuModelSelect;
 
+#if defined(COLORLCD)
+    luaInit();
+    loadTheme();
+#endif
+
     storageReadAll(); // load general setup and selected model
 
 #if defined(SIMU_DISKIO)

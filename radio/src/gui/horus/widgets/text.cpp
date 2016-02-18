@@ -28,22 +28,15 @@ class TextWidget: public Widget
     {
     }
 
-    virtual void init()
-    {
-      str2zchar(persistentData->options[0].stringValue, "Label", sizeof(persistentData->options[0].stringValue));
-      persistentData->options[1].unsignedValue = RED;
-      persistentData->options[2].unsignedValue = 0;
-    }
-
     virtual void refresh();
 
     static const ZoneOption options[];
 };
 
 const ZoneOption TextWidget::options[] = {
-  { "Text", ZoneOption::String },
-  { "Color", ZoneOption::Color },
-  { "Size", ZoneOption::TextSize },
+  { "Text", ZoneOption::String, { .stringValue = { '\015', '\347', '\0', '\14', '\377', '\376', '\373', '\364' } } },
+  { "Color", ZoneOption::Color, { .unsignedValue = RED } },
+  { "Size", ZoneOption::TextSize, { .unsignedValue = 0 } },
   { NULL, ZoneOption::Bool }
 };
 

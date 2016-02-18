@@ -1920,11 +1920,6 @@ void opentxStart()
   }
 #endif
 
-#if defined(COLORLCD)
-  luaInit();
-  loadTheme();
-#endif
-
 #if defined(GUI)
   checkAlarm();
   checkAll();
@@ -2475,6 +2470,11 @@ uint16_t stackAvailable()
 void opentxInit(OPENTX_INIT_ARGS)
 {
   TRACE("opentxInit()");
+
+#if defined(COLORLCD)
+  luaInit();
+  loadTheme();
+#endif
 
   storageReadAll();
 
