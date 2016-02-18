@@ -9,9 +9,9 @@ before_install:
   - rsync -av firmware.diydrones.com::Tools/Travis/*.deb ExtraPackages
 
 install:
-  - sudo apt-get remove -y gcc g++
   - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi libqtcore4 libqt4-dev qt4-qmake g++-5 libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev libfox-1.6-dev libgtest-dev
   - sudo dpkg -i ExtraPackages/*.deb || echo "FAILED INSTALL OF EXTRA DEBS"
+  - export CXX="g++-5" CC="gcc-5"
 
 script:
   - radio/util/commit-tests.sh
