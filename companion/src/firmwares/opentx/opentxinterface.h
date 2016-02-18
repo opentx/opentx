@@ -118,6 +118,8 @@ class OpenTxFirmware: public Firmware {
     virtual QString getFirmwareUrl();
 
     virtual int getCapability(const Capability);
+    
+    virtual QTime getMaxTimerStart();
 
     virtual bool isTelemetrySourceAvailable(int source);
 
