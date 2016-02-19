@@ -82,8 +82,8 @@ void uart3Setup(unsigned int baudrate, bool dma)
     USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
     DMA_StructInit(&DMA_InitStructure);
     DMA_InitStructure.DMA_Channel = DMA_Channel_4;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&SERIAL_USART->DR;
-    DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)dma_buf;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&SERIAL_USART->DR);
+    DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(dma_buf);
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
     DMA_InitStructure.DMA_BufferSize = sizeof(dma_buf);
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
