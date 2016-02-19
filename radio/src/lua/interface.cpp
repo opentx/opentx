@@ -1086,6 +1086,8 @@ void luaLoadFiles(const char * directory, void (*callback)())
   }
 }
 
+#endif
+
 void luaInit()
 {
   TRACE("luaInit");
@@ -1106,13 +1108,13 @@ void luaInit()
 
       // protect libs and constants registration
       PROTECT_LUA() {
-        luaRegisterAll();
-      }
-      else {
-        // if we got panic during registration
-        // we disable Lua for this session
-        luaDisable();
-      }
+          luaRegisterAll();
+        }
+        else {
+          // if we got panic during registration
+          // we disable Lua for this session
+          luaDisable();
+        }
       UNPROTECT_LUA();
     }
     else {
@@ -1126,5 +1128,3 @@ void luaInit()
   luaLoadFiles(WIDGETS_PATH, luaLoadWidgetCallback);
 #endif
 }
-
-#endif
