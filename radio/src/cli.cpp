@@ -156,6 +156,14 @@ int cliStackInfo(const char ** argv)
   return 0;
 }
 
+int cliReboot(const char ** argv)
+{
+#if !defined(SIMU)
+  NVIC_SystemReset();
+#endif
+  return 0;
+}
+
 #if defined(PCBFLAMENCO)
 int cliReadBQ24195(const char ** argv)
 {
@@ -372,6 +380,7 @@ const CliCommand cliCommands[] = {
   { "ls", cliLs, "<directory>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
+  { "reboot", cliReboot, "" },
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
   { "trace", cliTrace, "on | off" },
