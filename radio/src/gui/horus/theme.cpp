@@ -20,23 +20,54 @@
 
 #include "opentx.h"
 
+void Theme::init() const
+{
+  memset(&g_eeGeneral.themeData, 0, sizeof(Theme::PersistentData));
+  if (options) {
+    int i = 0;
+    for (const ZoneOption * option = options; option->name; option++, i++) {
+      // TODO compiler bug? The CPU freezes ... g_eeGeneral.themeData.options[i] = &option->deflt;
+      memcpy(&g_eeGeneral.themeData.options[i], &option->deflt, sizeof(ZoneOptionValue));
+    }
+  }
+}
+
+ZoneOptionValue * Theme::getOptionValue(unsigned int index) const
+{
+  return &g_eeGeneral.themeData.options[index];
+}
+
+void Theme::drawThumb(uint16_t x, uint16_t y, uint32_t flags) const
+{
+  lcdDrawBitmap(x, y, bitmap);
+}
+
 void Theme::drawBackground() const
 {
   lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
 }
 
-void Theme::drawAlertBox(const char * title, const char * text, const char * action) const
+void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const
 {
-  drawBackground();
-  lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
-  lcdDrawAlphaBitmap(POPUP_X-80, POPUP_Y+12, LBM_ASTERISK);
+  //if (flags & MESSAGEBOX_TYPE_ALERT) {
+    drawBackground();
+    lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
+  //}
+
+  if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
+    lcdDrawAlphaBitmap(POPUP_X-80, POPUP_Y+12, LBM_ASTERISK);
+  }
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|DBLSIZE);
+  if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
+  }
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|DBLSIZE);
 #else
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, STR_WARNING, ALARM_COLOR|DBLSIZE);
+  if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, STR_WARNING, ALARM_COLOR|DBLSIZE);
+  }
 #endif
 
   if (text) {
@@ -53,6 +84,7 @@ unsigned int countRegisteredThemes = 0;
 void registerTheme(const Theme * theme)
 {
   if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
+    TRACE("register theme %s", theme->getName());
     registeredThemes[countRegisteredThemes++] = theme;
   }
 }
@@ -70,6 +102,7 @@ const Theme * getTheme(const char * name)
 
 void loadTheme(const Theme * new_theme)
 {
+  TRACE("load theme %s", new_theme->getName());
   theme = new_theme;
   theme->load();
 }
@@ -80,5 +113,11 @@ void loadTheme()
   memset(name, 0, sizeof(name));
   strncpy(name, g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
   const Theme * new_theme = getTheme(name);
-  loadTheme(new_theme ? new_theme : theme);
+  if (new_theme) {
+    loadTheme(new_theme);
+  }
+  else {
+    theme->init();
+    theme->load();
+  }
 }

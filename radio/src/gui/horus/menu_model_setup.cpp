@@ -544,9 +544,9 @@ bool menuModelSetup(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, (menuHorizontalPosition==0 ? attr : 0));
         if (IS_MODULE_XJT(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+40, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+70, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+40, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+70, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         if (attr && s_editMode>0) {
           switch (menuHorizontalPosition) {
             case 0:
@@ -672,7 +672,9 @@ bool menuModelSetup(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, TR_FAILSAFE);
         if (IS_MODULE_XJT(moduleIdx)) {
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition==0 ? attr : 0);
-          if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcdDrawText(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, menuHorizontalPosition==1 ? attr : 0);
+          if (moduleData.failsafeMode == FAILSAFE_CUSTOM) {
+            drawButton(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, menuHorizontalPosition==1 ? attr : 0);
+          }
           if (attr) {
             if (moduleData.failsafeMode != FAILSAFE_CUSTOM)
               menuHorizontalPosition = 0;
@@ -700,7 +702,7 @@ bool menuModelSetup(evt_t event)
   }
 
   if (IS_RANGECHECK_ENABLE()) {
-    displayPopup("RSSI :");
+    theme->drawMessageBox("RSSI :", NULL, NULL, 0);
     lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, TELEMETRY_RSSI(), DBLSIZE|LEFT);
   }
 

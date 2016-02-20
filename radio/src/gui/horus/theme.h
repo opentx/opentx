@@ -21,30 +21,46 @@
 #ifndef _THEME_H_
 #define _THEME_H_
 
-class Theme;
+#define MAX_THEME_OPTIONS              5
 
+class Theme;
 void registerTheme(const Theme * theme);
+
+#define MESSAGEBOX_TYPE_INFO           0
+#define MESSAGEBOX_TYPE_QUESTION       1
+#define MESSAGEBOX_TYPE_WARNING        2
+#define MESSAGEBOX_TYPE_ALERT          4
 
 class Theme
 {
   public:
-    Theme(const char * name, const uint8_t * bitmap):
+    struct PersistentData {
+      ZoneOptionValue options[MAX_THEME_OPTIONS];
+    };
+
+    Theme(const char * name, const uint8_t * bitmap, const ZoneOption * options=NULL):
       name(name),
-      bitmap(bitmap)
+      bitmap(bitmap),
+      options(options)
     {
       registerTheme(this);
     }
 
-    const char * getName() const
+    inline const char * getName() const
     {
       return name;
     }
 
-    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) const
+    inline const ZoneOption * getOptions() const
     {
-      extern void lcdDrawBitmap(int x, int y, const uint8_t * bitmap, int offset=0, int height=0, int scale=0);
-      lcdDrawBitmap(x, y, bitmap);
+      return options;
     }
+
+    void init() const;
+
+    ZoneOptionValue * getOptionValue(unsigned int index) const;
+
+    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) const;
 
     virtual void load() const = 0;
 
@@ -52,11 +68,12 @@ class Theme
 
     virtual void drawTopbarBackground(const uint8_t * icon) const = 0;
 
-    virtual void drawAlertBox(const char * title, const char * text, const char * action) const;
+    virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;
 
   protected:
     const char * name;
     const uint8_t * bitmap;
+    const ZoneOption * options;
 };
 
 extern const Theme * theme;

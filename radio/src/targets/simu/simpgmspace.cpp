@@ -337,11 +337,16 @@ void * main_thread(void *)
     menuHandlers[1] = menuModelSelect;
 
 #if defined(COLORLCD)
+    topbar = new Topbar(&g_model.topbarData);
     luaInit();
-    loadTheme();
+    // TODO the theme is not initialized, in case of sdcard error, we should have something strange
 #endif
 
     storageReadAll(); // load general setup and selected model
+
+#if defined(COLORLCD)
+    loadTheme();
+#endif
 
 #if defined(SIMU_DISKIO)
     f_mount(&g_FATFS_Obj, "", 1);

@@ -80,6 +80,7 @@ if(PCB STREQUAL HORUS)
     view_text.cpp
     screens_setup.cpp
     theme.cpp
+    topbar.cpp
     layout.cpp
     widget.cpp
     ${THEMES_SRC}
@@ -256,6 +257,7 @@ if(CPU_TYPE STREQUAL STM32F4)
   include_directories(${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/inc)
   include_directories(${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include)
   include_directories(${STM32LIB_DIR}/CMSIS/include)
+  # add_definitions(-DSTM32F4)
   set(STM32LIB_SRC
     ${STM32LIB_SRC}
     CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s

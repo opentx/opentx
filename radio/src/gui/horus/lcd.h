@@ -306,19 +306,17 @@ inline int getBitmapHeight(const uint8_t * bmp)
   return *(((const uint16_t *)bmp)+1);
 }
 
-inline int getBitmapScaledSize(int size, int scale)
+inline int getBitmapScaledSize(int size, float scale)
 {
-  if (scale >= -1 && scale <= 1)
+  if (scale == 0.0)
     return size;
-  else if (scale < 0)
-    return -(size / scale);
   else
     return size * scale;
 }
 
-int getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight);
+float getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight);
 int getTextWidth(const pm_char *s, int len=0, LcdFlags flags=0);
-void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t height=0, int scale=0);
+void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t height=0, float scale=0);
 void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0);
 void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp);
 

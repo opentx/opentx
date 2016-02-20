@@ -41,21 +41,35 @@ const ZoneOption TimerWidget::options[] = {
 void TimerWidget::refresh()
 {
   uint32_t index = persistentData->options[0].unsignedValue;
-
   TimerData & timerData = g_model.timers[index];
   TimerState & timerState = timersStates[index];
-  lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
-  if (timerData.start) {
-    lcdDrawBitmapPatternPie(zone.x+2, zone.y+3, LBM_RSCALE, MAINVIEW_GRAPHICS_COLOR, 0, timerState.val <= 0 ? 360 : 360*(timerData.start-timerState.val)/timerData.start);
+
+  if (zone.w >= 180 && zone.h >= 70) {
+    lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
+    if (timerData.start) {
+      lcdDrawBitmapPatternPie(
+        zone.x + 2,
+        zone.y + 3, LBM_RSCALE, MAINVIEW_GRAPHICS_COLOR, 0,
+        timerState.val <= 0 ? 360 : 360 * (timerData.start - timerState.val) / timerData.start);
+    }
+    else {
+      lcdDrawBitmapPattern(zone.x + 3, zone.y + 4, LBM_TIMER, MAINVIEW_GRAPHICS_COLOR);
+    }
+    putsTimer(zone.x + 76, zone.y + 31, abs(timerState.val), TEXT_COLOR | DBLSIZE | LEFT);
+    if (ZLEN(timerData.name) > 0) {
+      lcdDrawSizedText(zone.x + 78, zone.y + 20, timerData.name, LEN_TIMER_NAME, ZCHAR | SMLSIZE | TEXT_COLOR);
+    }
+    drawStringWithIndex(zone.x + 137, zone.y + 17, "TMR", index + 1, SMLSIZE | TEXT_COLOR);
   }
   else {
-    lcdDrawBitmapPattern(zone.x+3, zone.y+4, LBM_TIMER, MAINVIEW_GRAPHICS_COLOR);
+    drawStringWithIndex(zone.x, zone.y, "TMR", index + 1, SMLSIZE | TEXT_INVERTED_COLOR);
+    if (zone.w > 100) {
+      putsTimer(zone.x, zone.y + 16, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | MIDSIZE);
+    }
+    else {
+      putsTimer(zone.x, zone.y + 14, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT);
+    }
   }
-  putsTimer(zone.x+76, zone.y+31, abs(timerState.val), TEXT_COLOR|DBLSIZE|LEFT);
-  if (ZLEN(timerData.name) > 0) {
-    lcdDrawSizedText(zone.x+78, zone.y+20, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE|TEXT_COLOR);
-  }
-  drawStringWithIndex(zone.x+137, zone.y+17, "TMR", index+1, SMLSIZE|TEXT_COLOR);
 }
 
 BaseWidgetFactory<TimerWidget> timerWidget("Timer", TimerWidget::options);

@@ -21,86 +21,31 @@
 #ifndef _LAYOUT_H_
 #define _LAYOUT_H_
 
-#include "widget.h"
+#include "widgets_container.h"
 
 #define MAX_LAYOUT_ZONES               10
 #define MAX_LAYOUT_OPTIONS             10
 
 class LayoutFactory;
-class Layout
+
+class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
 {
   friend class LayoutFactory;
 
   public:
-    struct ZonePersistentData {
-      char widgetName[10];
-      Widget::PersistentData widgetData;
-    };
-
-    struct PersistentData {
-      ZonePersistentData zones[MAX_LAYOUT_ZONES];
-      ZoneOptionValue options[MAX_LAYOUT_OPTIONS];
-    };
-
-  public:
     Layout(const LayoutFactory * factory, PersistentData * persistentData):
-      factory(factory),
-      persistentData(persistentData)
+      WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>(persistentData),
+      factory(factory)
     {
-      memset(widgets, 0, sizeof(widgets));
     }
 
-    virtual ~Layout()
-    {
-      for (uint8_t i=0; i<MAX_LAYOUT_ZONES; i++) {
-        delete widgets[i];
-      }
-      memset(widgets, 0, sizeof(widgets));
-    }
-
-    const LayoutFactory * getFactory() const
+    inline const LayoutFactory * getFactory() const
     {
       return factory;
     }
 
-    Widget * getWidget(unsigned int index)
-    {
-      return widgets[index];
-    }
-
-    void setWidget(unsigned int index, Widget * widget)
-    {
-      widgets[index] = widget;
-    }
-
-    void createWidget(unsigned int index, const WidgetFactory * factory);
-
-    virtual void create()
-    {
-      memset(persistentData, 0, sizeof(PersistentData));
-    }
-
-    virtual void load();
-
-    ZoneOptionValue getOptionValue(unsigned int index) const
-    {
-      return persistentData->options[index];
-    }
-
-    void setOptionValue(unsigned int index, ZoneOptionValue value) const
-    {
-      persistentData->options[index] = value;
-    }
-
-    virtual unsigned int getZonesCount() const = 0;
-    virtual Zone getZone(unsigned int index) const = 0;
-
-    virtual void refresh(bool setup=false);
-
   protected:
     const LayoutFactory * factory;
-    Widget * widgets[MAX_LAYOUT_ZONES];
-    PersistentData * persistentData;
 };
 
 void registerLayout(const LayoutFactory * factory);

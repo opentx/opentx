@@ -23,7 +23,7 @@
 
 #include <inttypes.h>
 
-#define MAX_WIDGET_OPTIONS             4
+#define MAX_WIDGET_OPTIONS             5
 
 struct Zone
 {
@@ -45,6 +45,7 @@ struct ZoneOption
     Source,
     Bool,
     String,
+    File,
     TextSize,
     Timer,
     Switch,
@@ -75,19 +76,16 @@ class Widget
     {
     }
 
-    const WidgetFactory * getFactory() const
+    inline const WidgetFactory * getFactory() const
     {
         return factory;
     }
 
-    virtual ZoneOptionValue getOptionValue(unsigned int index) const
-    {
-      return persistentData->options[index];
-    }
+    inline const ZoneOption * getOptions() const;
 
-    virtual void setOptionValue(unsigned int index, ZoneOptionValue value) const
+    inline ZoneOptionValue * getOptionValue(unsigned int index) const
     {
-      persistentData->options[index] = value;
+      return &persistentData->options[index];
     }
 
     virtual void refresh() = 0;
@@ -103,7 +101,7 @@ void registerWidget(const WidgetFactory * factory);
 class WidgetFactory
 {
   public:
-    WidgetFactory(const char * name, const ZoneOption * options):
+    WidgetFactory(const char * name, const ZoneOption * options=NULL):
       name(name),
       options(options)
     {
@@ -126,11 +124,12 @@ class WidgetFactory
       if (options) {
         int i = 0;
         for (const ZoneOption * option = options; option->name; option++) {
-          persistentData->options[i++] = option->deflt;
+          // TODO compiler bug? The CPU freezes ... persistentData->options[i++] = option->deflt;
+          memcpy(&persistentData->options[i++], &option->deflt, sizeof(ZoneOptionValue));
         }
       }
     }
-    
+
     virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const = 0;
 
   protected:
@@ -156,6 +155,11 @@ class BaseWidgetFactory: public WidgetFactory
       return new T(this, zone, persistentData);
     }
 };
+
+inline const ZoneOption * Widget::getOptions() const
+{
+  return getFactory()->getOptions();
+}
 
 #define MAX_REGISTERED_WIDGETS 10
 extern unsigned int countRegisteredWidgets;

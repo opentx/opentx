@@ -2469,14 +2469,24 @@ uint16_t stackAvailable()
 
 void opentxInit(OPENTX_INIT_ARGS)
 {
+#if defined(DEBUG) && defined(USB_SERIAL)
+  CoTickDelay(5000); // 10s
+#endif
+
   TRACE("opentxInit()");
 
+  sdInit();
+
 #if defined(COLORLCD)
+  topbar = new Topbar(&g_model.topbarData);
   luaInit();
-  loadTheme();
 #endif
 
   storageReadAll();
+
+#if defined(COLORLCD)
+  loadTheme();
+#endif
 
 #if defined(CPUARM)
   if (UNEXPECTED_SHUTDOWN()) {

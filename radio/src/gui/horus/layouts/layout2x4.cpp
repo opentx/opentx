@@ -20,6 +20,22 @@
 
 #include "opentx.h"
 
+const uint8_t LBM_LAYOUT_2x4[] = {
+#include "mask_layout2x4.lbm"
+};
+
+const ZoneOption OPTIONS_LAYOUT_2x4[] = {
+  { "Top bar", ZoneOption::Bool },
+  { "Flight mode", ZoneOption::Bool },
+  { "Sliders", ZoneOption::Bool },
+  { "Trims", ZoneOption::Bool },
+  { "Panel1 background", ZoneOption::Bool },
+  { "  Color", ZoneOption::Color },
+  { "Panel2 background", ZoneOption::Bool },
+  { "  Color", ZoneOption::Color },
+  { NULL, ZoneOption::Bool }
+};
+
 class Layout2x4: public Layout
 {
   public:
@@ -56,31 +72,15 @@ class Layout2x4: public Layout
       return zone;
     }
 
-    virtual void refresh(bool setup=false);
-
-    static const ZoneOption options[];
-
+    virtual void refresh();
 };
 
-const ZoneOption Layout2x4::options[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
-  { "Panel1 background", ZoneOption::Bool },
-  { "  Color", ZoneOption::Color },
-  { "Panel2 background", ZoneOption::Bool },
-  { "  Color", ZoneOption::Color },
-  { NULL, ZoneOption::Bool }
-};
-
-void Layout2x4::refresh(bool setup)
+void Layout2x4::refresh()
 {
   theme->drawBackground();
 
   if (persistentData->options[0].boolValue) {
-    // Top Bar
-    drawMainViewTopBar();
+    drawTopBar();
   }
 
   if (persistentData->options[1].boolValue) {
@@ -113,11 +113,7 @@ void Layout2x4::refresh(bool setup)
     lcdDrawSolidFilledRect(250, 50, 180, 170, CUSTOM_COLOR);
   }
 
-  Layout::refresh(setup);
+  Layout::refresh();
 }
 
-const uint8_t LBM_LAYOUT_2x4[] __DMA = {
-#include "mask_layout2x4.lbm"
-};
-
-BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", LBM_LAYOUT_2x4, Layout2x4::options);
+BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", LBM_LAYOUT_2x4, OPTIONS_LAYOUT_2x4);

@@ -222,6 +222,7 @@ uint32_t readTrims(void);
 
 #if defined(REV9E)
 // Rotary Encoder driver
+extern int32_t rotencValue;
 void rotencInit(void);
 void rotencEnd(void);
 void checkRotaryEncoder(void);

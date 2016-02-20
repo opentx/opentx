@@ -53,9 +53,8 @@ extern const uint8_t LBM_TELEMETRY_ICON[];
 // UI (theme / layout / widgets bitmaps
 extern const uint8_t LBM_MAINVIEWS_ICON[];
 extern const uint8_t LBM_MAINVIEWS_TOPBAR_ICON[];
-extern const uint8_t LBM_MAINVIEWS_ITEM_OUT_ICON[];
 extern const uint8_t LBM_MAINVIEWS_ADD_ICON[];
-extern const uint8_t * LBM_MAINVIEWS_ICONS[];
+extern const uint8_t * const LBM_MAINVIEWS_ICONS[];
 
 // Model selection icons
 extern const uint8_t LBM_LIBRARY_ICON[];

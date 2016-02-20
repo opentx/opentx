@@ -440,8 +440,7 @@ enum UartModes {
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
     char currModelFilename[LEN_MODEL_FILENAME+1]; \
     uint8_t bluetoothEnable; \
-    char bluetoothName[LEN_BLUETOOTH_NAME]; \
-    char themeName[8];
+    char bluetoothName[LEN_BLUETOOTH_NAME];
 #elif defined(PCBFLAMENCO)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
@@ -839,7 +838,32 @@ PACK(typedef struct {
   #define SWITCH_EXISTS(x)            true
 #endif
 
-#define ALTERNATE_VIEW 0x10
+#define ALTERNATE_VIEW                0x10
+
+#if defined(COLORLCD)
+  #include "layout.h"
+  #include "theme.h"
+  #include "topbar.h"
+  #define SWITCHES_WARNING_DATA \
+    swarnstate_t  switchWarningState;
+  PACK(typedef struct {
+    char layoutName[10];
+    Layout::PersistentData layoutData;
+  }) CustomScreenData;
+  #define CUSTOM_SCREENS_DATA \
+    CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
+    Topbar::PersistentData topbarData;
+  #define THEME_DATA \
+    char themeName[8]; \
+    Theme::PersistentData themeData;
+#else
+  #define SWITCHES_WARNING_DATA \
+    swarnstate_t  switchWarningState; \
+    swarnenable_t switchWarningEnable;
+  #define CUSTOM_SCREENS_DATA
+  #define THEME_DATA
+#endif
+
 PACK(typedef struct {
   uint8_t   version;
   uint16_t  variant;
@@ -884,6 +908,8 @@ PACK(typedef struct {
   int8_t    vBatMax;
 
   EXTRA_GENERAL_FIELDS
+
+  THEME_DATA
 
 }) EEGeneral;
 
@@ -2287,23 +2313,6 @@ enum DisplayTrims
   DISPLAY_TRIMS_CHANGE,
   DISPLAY_TRIMS_ALWAYS
 };
-
-#if defined(COLORLCD)
-  #include "layout.h"
-  #define SWITCHES_WARNING_DATA \
-    swarnstate_t  switchWarningState;
-  PACK(typedef struct {
-    char layoutName[10];
-    Layout::PersistentData layoutData;
-  }) CustomScreenData;
-  #define CUSTOM_SCREENS_DATA \
-    CustomScreenData screenData[MAX_CUSTOM_SCREENS];
-#else
-  #define SWITCHES_WARNING_DATA \
-    swarnstate_t  switchWarningState; \
-    swarnenable_t switchWarningEnable;
-  #define CUSTOM_SCREENS_DATA
-#endif
 
 PACK(typedef struct {
   ModelHeader header;

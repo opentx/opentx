@@ -44,23 +44,35 @@ void ValueWidget::refresh()
 
   mixsrc_t field = persistentData->options[0].unsignedValue;
 
-  LcdFlags color = TEXT_COLOR;
+  LcdFlags color = TEXT_INVERTED_COLOR;
   int x = zone.x;
   int y = zone.y;
 
-  lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
+  // lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
 
-  int xValue, yValue;
-  LcdFlags attr;
-  if (zone.h < 50) {
+  int xValue, yValue, xLabel, yLabel;
+  LcdFlags attrValue, attrLabel=0;
+  if (zone.w < 120 && zone.h < 50) {
+    xValue = x;
+    yValue = y+14;
+    xLabel = x;
+    yLabel = y;
+    attrValue = LEFT | NO_UNIT | MIDSIZE;
+    attrLabel = SMLSIZE;
+  }
+  else if (zone.h < 50) {
     xValue = x+zone.w-NUMBERS_PADDING;
     yValue = y-2;
-    attr = NO_UNIT;
+    xLabel = x+NUMBERS_PADDING;
+    yLabel = y+2;
+    attrValue = NO_UNIT | DBLSIZE;
   }
   else {
     xValue = x+NUMBERS_PADDING;
     yValue = y+16;
-    attr = LEFT;
+    xLabel = x+NUMBERS_PADDING;
+    yLabel = y+2;
+    attrValue = LEFT | DBLSIZE;
   }
 
   if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER) {
@@ -69,7 +81,7 @@ void ValueWidget::refresh()
       color = ALARM_COLOR;
     }
     putsMixerSource(x+NUMBERS_PADDING, y+2, field, color);
-    putsTimer(xValue, yValue, abs(timerState.val), attr|DBLSIZE|color);
+    putsTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|color);
     return;
   }
 
@@ -83,8 +95,8 @@ void ValueWidget::refresh()
     }
   }
 
-  putsMixerSource(x+NUMBERS_PADDING, y+2, field, color);
-  putsChannel(xValue, yValue, field, attr|DBLSIZE|color);
+  putsMixerSource(xLabel, yLabel, field, attrLabel|color);
+  putsChannel(xValue, yValue, field, attrValue|color);
 }
 
 BaseWidgetFactory<ValueWidget> ValueWidget("Value", ValueWidget::options);

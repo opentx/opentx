@@ -20,15 +20,19 @@
 
 #include "opentx.h"
 
-const uint8_t LBM_TOPMENU_BMP_OPENTX[] = {
+const uint8_t LBM_TOPMENU_BMP_OPENTX[] __DMA = {
 #include "bmp_topmenu_opentx.lbm"
+};
+
+const uint8_t LBM_THEME_DARKBLUE[] __DMA = {
+#include "bmp_darkblue.lbm"
 };
 
 class DarkblueTheme: public Theme
 {
   public:
-    DarkblueTheme(const char * name, const uint8_t * bitmap):
-      Theme(name, bitmap)
+    DarkblueTheme():
+      Theme("Darkblue", LBM_THEME_DARKBLUE)
     {
     }
 
@@ -77,8 +81,4 @@ class DarkblueTheme: public Theme
     }
 };
 
-const uint8_t LBM_THEME_DARKBLUE[] __DMA = {
-#include "bmp_darkblue.lbm"
-};
-
-DarkblueTheme darkblueTheme("Darkblue", LBM_THEME_DARKBLUE);
+DarkblueTheme darkblueTheme;

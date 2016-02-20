@@ -776,13 +776,61 @@ void exec(int function, int nresults=0)
   }
 }
 
+ZoneOption * createOptionsArray(int reference)
+{
+  if (reference == 0) {
+    return NULL;
+  }
+  
+  int count = 0;
+  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    count++;
+  }
+
+  ZoneOption * options = (ZoneOption *)malloc(sizeof(ZoneOption) * (count+1));
+
+  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
+  ZoneOption * option = options;
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+    luaL_checktype(L, -1, LUA_TTABLE); // value is table
+    uint8_t field = 0;
+    for (lua_pushnil(L); lua_next(L, -2) && field<3; lua_pop(L, 1), field++) {
+      switch (field) {
+        case 0:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TSTRING); // value is string
+          option->name = lua_tostring(L, -1);
+          break;
+        case 1:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+          option->type = (ZoneOption::Type)lua_tointeger(L, -1);
+          break;
+        case 2:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+          option->deflt.signedValue = lua_tointeger(L, -1);
+          break;
+      }
+    }
+    TRACE("option %s %d %d", option->name, option->type, option->deflt.signedValue);
+    option++;
+  }
+
+  option->name = NULL; // sentinel
+
+  return options;
+}
+
 class LuaTheme: public Theme
 {
   friend void luaLoadThemeCallback();
 
   public:
-    LuaTheme(const char * name, const uint8_t * bitmap):
-      Theme(name, bitmap),
+    LuaTheme(const char * name, const uint8_t * bitmap, int options):
+      Theme(name, bitmap, createOptionsArray(options)),
       loadFunction(0),
       drawBackgroundFunction(0),
       drawTopbarBackgroundFunction(0),
@@ -823,7 +871,7 @@ class LuaTheme: public Theme
 void luaLoadThemeCallback()
 {
   const char * name=NULL, * bitmap=NULL;
-  int loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
+  int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
 
   luaL_checktype(L, -1, LUA_TTABLE);
 
@@ -834,6 +882,10 @@ void luaLoadThemeCallback()
     }
     else if (!strcmp(key, "bitmap")) {
       bitmap = luaL_checkstring(L, -1);
+    }
+    else if (!strcmp(key, "options")) {
+      themeOptions = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
     }
     else if (!strcmp(key, "load")) {
       loadFunction = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -854,8 +906,9 @@ void luaLoadThemeCallback()
     strcpy(path, THEMES_PATH "/");
     strcpy(path+sizeof(THEMES_PATH), bitmap);
     uint8_t * bitmapData = (uint8_t *)malloc(BITMAP_BUFFER_SIZE(51, 31));
+    TRACE("path=%s bitmapData=%p %d %p", path, bitmapData, BITMAP_BUFFER_SIZE(51, 31), path);
     bmpLoad(bitmapData, path, 51, 31);
-    LuaTheme * theme = new LuaTheme(name, bitmapData);
+    LuaTheme * theme = new LuaTheme(name, bitmapData, themeOptions);
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
     theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
@@ -881,55 +934,6 @@ class LuaWidget: public Widget
   protected:
     int widgetData;
 };
-
-ZoneOption * createOptionsArray(int reference)
-{
-  int count = 0;
-  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
-  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-    count++;
-  }
-
-  ZoneOption * options = (ZoneOption *)malloc(sizeof(ZoneOption) * (count+1));
-
-  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
-  ZoneOption * option = options;
-  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-    luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-    luaL_checktype(L, -1, LUA_TTABLE); // value is table
-    // const char * key = NULL;
-    // ZoneOption::Type type = ZoneOption::Integer;
-    // int val = 0;
-    uint8_t field = 0;
-    for (lua_pushnil(L); lua_next(L, -2) && field<3; lua_pop(L, 1), field++) {
-      switch (field) {
-        case 0:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TSTRING); // value is string
-          option->name = lua_tostring(L, -1);
-          break;
-        case 1:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          option->type = (ZoneOption::Type)lua_tointeger(L, -1);
-          break;
-        case 2:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          option->deflt.signedValue = lua_tointeger(L, -1);
-          break;
-      }
-    }
-
-    // TRACE("option[%d] = %s %d %d", i, key, type, val);
-    option++;
-    // options[i++]. = (ZoneOption) { key, type, { .signedValue = val } };
-  }
-
-  option->name = NULL; // sentinel
-
-  return options;
-}
 
 void l_pushtableint(const char * key, int value)
 {
@@ -998,7 +1002,7 @@ void LuaWidget::refresh()
 
 void luaLoadWidgetCallback()
 {
-  const char * name=NULL, * options=NULL;
+  const char * name=NULL;
   int widgetOptions=0, createFunction=0, refreshFunction=0;
 
   luaL_checktype(L, -1, LUA_TTABLE);
@@ -1071,6 +1075,7 @@ void luaLoadFiles(const char * directory, void (*callback)())
   int pathlen = strlen(path);
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+
   if (res == FR_OK) {
     path[pathlen++] = '/';
     for (;;) {
@@ -1078,11 +1083,14 @@ void luaLoadFiles(const char * directory, void (*callback)())
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       fn = * fno.lfname ? fno.lfname : fno.fname;
       uint8_t len = strlen(fn);
-      // Eliminates directories / non wav files
+      // Eliminates directories / non scripts files
       if (len < 5 || strcasecmp(fn+len-4, SCRIPTS_EXT) || (fno.fattrib & AM_DIR)) continue;
       strcpy(&path[pathlen], fn);
       luaLoadFile(path, callback);
     }
+  }
+  else {
+    TRACE("f_opendir(%s) failed, code=%d", path, res);
   }
 }
 

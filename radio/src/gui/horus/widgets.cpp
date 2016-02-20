@@ -426,7 +426,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 void drawSleepBitmap()
 {
   lcdClear();
-  lcdDrawAlphaBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, LBM_SLEEP);
+  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, LBM_SLEEP);
   lcdRefresh();
 }
 

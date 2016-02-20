@@ -109,24 +109,17 @@ int getFontHeight(LcdFlags flags)
   return heightTable[FONTSIZE(flags) >> 8];
 }
 
-int getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight)
+float getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight)
 {
-  int widthScale, heightScale;
-
   int bmpWidth = getBitmapWidth(bmp);
   int bmpHeight = getBitmapHeight(bmp);
 
   if (bmpWidth == 0 || bmpHeight == 0)
     return 0;
 
-  if (bmpWidth > dstWidth)
-    widthScale = -((bmpWidth+dstWidth-1) / dstWidth);
-  else
-    widthScale = (dstWidth / bmpWidth);
-  if (bmpHeight > dstHeight)
-    heightScale = -((bmpHeight+dstHeight-1) / dstHeight);
-  else
-    heightScale = (dstHeight / bmpHeight);
+  float widthScale = float(dstWidth) / bmpWidth;
+  float heightScale = float(dstHeight) / bmpHeight;
+
   return min(widthScale, heightScale);
 }
 
@@ -882,7 +875,7 @@ void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags 
 #if defined(SIMU)
 inline void lcdDrawBitmapDMA(coord_t x, coord_t y, coord_t width, coord_t height, const uint8_t * img)
 {
-  lcdDrawBitmap(x, y, img-4, 0, 0, -1);
+  lcdDrawBitmap(x, y, img-4, 0, 0, 1.0);
 }
 #endif
 
@@ -906,7 +899,7 @@ void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp)
   }
 }
 
-void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t height, int scale)
+void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t height, float scale)
 {
   int width = getBitmapWidth(bmp);
   int h = getBitmapHeight(bmp);
@@ -926,28 +919,16 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
   if (scale == 0) {
     lcdDrawBitmapDMA(x, y, width, height, bmp + 4 + offset * width * 2);
   }
-  else if (scale < 0) {
-    for (coord_t i=0, row=0; row<height; i+=1, row-=scale) {
-      display_t * p = &displayBuf[(y+i)*LCD_W + x];
-      const uint8_t * q = bmp + 4 + (offset+row)*width*2;
-      for (coord_t col=0; col<width; col-=scale) {
-        lcdDrawPixel(p, *((uint16_t *)q));
-        p++; q-=2*scale;
-      }
-    }
-  }
   else {
-    for (coord_t row=0; row<height; row++) {
-      for (int i=0; i<scale; i++) {
-        display_t * p = &displayBuf[(y+scale*row+i)*LCD_W + x];
-        const uint8_t * q = bmp + 4 + (offset+row)*width*2;
-        for (coord_t col=0; col<width; col++) {
-          for (int j=0; j<scale; j++) {
-            lcdDrawPixel(p, *((uint16_t *)q));
-            p++;
-          }
-          q+=2;
-        }
+    int dstwidth = width * scale;
+    int dstheight = height * scale;
+    for (coord_t i=0; i<dstheight; i++) {
+      display_t * p = &displayBuf[(y+i)*LCD_W + x];
+      const uint8_t * qs = bmp + 4 + (offset+int(i/scale))*width*2;
+      for (coord_t j=0; j<dstwidth; j++) {
+        const uint8_t * q = qs + int(j/scale) * 2;
+        lcdDrawPixel(p, *((uint16_t *)q));
+        p++;
       }
     }
   }
@@ -956,7 +937,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, co
 
 void lcdDrawBlackOverlay()
 {
-  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | (8<<24));
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
 }
 
 void lcdDrawCircle(int x0, int y0, int radius)

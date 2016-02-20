@@ -25,6 +25,7 @@ unsigned int countRegisteredWidgets = 0;
 void registerWidget(const WidgetFactory * factory)
 {
   if (countRegisteredWidgets < MAX_REGISTERED_WIDGETS) {
+    TRACE("register widget %s", factory->getName());
     registeredWidgets[countRegisteredWidgets++] = factory;
   }
 }

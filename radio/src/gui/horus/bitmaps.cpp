@@ -204,22 +204,36 @@ const uint8_t LBM_MAINVIEWS_TOPBAR_ICON[] = {
 #include "mask_mainviews_topbar.lbm"
 };
 
-const uint8_t LBM_MAINVIEWS_ITEM_OUT_ICON[] = {
-#include "mask_mainviews_item_out.lbm"
+const uint8_t LBM_MAINVIEWS_1_ICON[] = {
+#include "mask_mainviews_1.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_2_ICON[] = {
+#include "mask_mainviews_2.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_3_ICON[] = {
+#include "mask_mainviews_3.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_4_ICON[] = {
+#include "mask_mainviews_4.lbm"
+};
+
+const uint8_t LBM_MAINVIEWS_5_ICON[] = {
+#include "mask_mainviews_5.lbm"
 };
 
 const uint8_t LBM_MAINVIEWS_ADD_ICON[] = {
 #include "mask_mainviews_add.lbm"
 };
 
-const uint8_t * LBM_MAINVIEWS_ICONS[] = {
-  LBM_MAINVIEWS_ICON,
-  LBM_MAINVIEWS_TOPBAR_ICON,
-  LBM_MAINVIEWS_ITEM_OUT_ICON,
-  LBM_MAINVIEWS_ITEM_OUT_ICON,
-  LBM_MAINVIEWS_ITEM_OUT_ICON,
-  LBM_MAINVIEWS_ITEM_OUT_ICON,
-  LBM_MAINVIEWS_ITEM_OUT_ICON
+const uint8_t * const LBM_MAINVIEWS_ICONS[] = {
+  LBM_MAINVIEWS_1_ICON,
+  LBM_MAINVIEWS_2_ICON,
+  LBM_MAINVIEWS_3_ICON,
+  LBM_MAINVIEWS_4_ICON,
+  LBM_MAINVIEWS_5_ICON
 };
 
 /*
@@ -299,7 +313,7 @@ const uint8_t LBM_SHUTDOWN[] __DMA = {
 };
 
 const uint8_t LBM_SLEEP[] __DMA = {
-#include "alpha_sleep.lbm"
+#include "bmp_sleep.lbm"
 };
 
 const uint8_t LBM_SHUTDOWN_CIRCLE[] __DMA = {
@@ -346,7 +360,7 @@ const uint8_t LBM_SWIPE_CIRCLE[] __DMA = {
   #include "mask_swipe_circle.lbm"
 };
 
-const uint8_t LBM_SWIPE_LEFT[] __DMA = { 
+const uint8_t LBM_SWIPE_LEFT[] __DMA = {
   #include "mask_swipe_left.lbm"
 };
 

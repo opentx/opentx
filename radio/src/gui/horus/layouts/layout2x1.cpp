@@ -20,6 +20,15 @@
 
 #include "opentx.h"
 
+const uint8_t LBM_LAYOUT_2x1[] = {
+#include "mask_layout2x1.lbm"
+};
+
+const ZoneOption OPTIONS_LAYOUT_2x1[] = {
+  { "Top bar", ZoneOption::Bool },
+  { NULL, ZoneOption::Bool }
+};
+
 class Layout2x1: public Layout
 {
   public:
@@ -55,31 +64,18 @@ class Layout2x1: public Layout
       return zone;
     }
 
-    virtual void refresh(bool setup=false);
-
-    static const ZoneOption options[];
-
+    virtual void refresh();
 };
 
-const ZoneOption Layout2x1::options[] = {
-  { "Top bar", ZoneOption::Bool },
-  { NULL, ZoneOption::Bool }
-};
-
-void Layout2x1::refresh(bool setup)
+void Layout2x1::refresh()
 {
   theme->drawBackground();
 
   if (persistentData->options[0].boolValue) {
-    // Top Bar
-    drawMainViewTopBar();
+    drawTopBar();
   }
 
-  Layout::refresh(setup);
+  Layout::refresh();
 }
 
-const uint8_t LBM_LAYOUT_2x1[] __DMA = {
-#include "mask_layout2x1.lbm"
-};
-
-BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", LBM_LAYOUT_2x1, Layout2x1::options);
+BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", LBM_LAYOUT_2x1, OPTIONS_LAYOUT_2x1);

@@ -53,7 +53,7 @@ void displayMessageBox()
 
 void drawAlertBox(const char * title, const char * text, const char * action)
 {
-  theme->drawAlertBox(title, text, action);
+  theme->drawMessageBox(title, text, action, MESSAGEBOX_TYPE_ALERT);
 }
 
 void message(const pm_char * title, const pm_char * text, const char * action, uint8_t sound)

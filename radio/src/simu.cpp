@@ -352,7 +352,6 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     updateKeysAndSwitches();
 
 #if defined(PCBHORUS)
-    extern rotenc_t rotencValue;
     #define ROTENC_VALUE rotencValue
 #else
     #define ROTENC_VALUE g_rotenc[0]

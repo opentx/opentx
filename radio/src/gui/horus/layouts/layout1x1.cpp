@@ -20,6 +20,16 @@
 
 #include "opentx.h"
 
+const uint8_t LBM_LAYOUT_1x1[] = {
+#include "mask_layout1x1.lbm"
+};
+
+const ZoneOption OPTIONS_LAYOUT_1x1[] = {
+  { "Top bar", ZoneOption::Bool },
+  { "Sliders+Trims", ZoneOption::Bool },
+  { NULL, ZoneOption::Bool }
+};
+
 class Layout1x1: public Layout
 {
   public:
@@ -55,25 +65,15 @@ class Layout1x1: public Layout
       return zone;
     }
 
-    virtual void refresh(bool setup=false);
-
-    static const ZoneOption options[];
-
+    virtual void refresh();
 };
 
-const ZoneOption Layout1x1::options[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Sliders+Trims", ZoneOption::Bool },
-  { NULL, ZoneOption::Bool }
-};
-
-void Layout1x1::refresh(bool setup)
+void Layout1x1::refresh()
 {
   theme->drawBackground();
 
   if (persistentData->options[0].boolValue) {
-    // Top Bar
-    drawMainViewTopBar();
+    drawTopBar();
   }
 
   if (persistentData->options[1].boolValue) {
@@ -86,11 +86,7 @@ void Layout1x1::refresh(bool setup)
     drawTrims(mixerCurrentFlightMode);
   }
 
-  Layout::refresh(setup);
+  Layout::refresh();
 }
 
-const uint8_t LBM_LAYOUT_1x1[] __DMA = {
-#include "mask_layout1x1.lbm"
-};
-
-BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", LBM_LAYOUT_1x1, Layout1x1::options);
+BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", LBM_LAYOUT_1x1, OPTIONS_LAYOUT_1x1);

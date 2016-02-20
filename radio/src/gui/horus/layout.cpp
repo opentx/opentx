@@ -20,40 +20,12 @@
 
 #include "opentx.h"
 
-void Layout::createWidget(unsigned int index, const WidgetFactory * factory)
-{
-  memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
-  strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
-  widgets[index] = factory->create(getZone(index), &persistentData->zones[index].widgetData);
-}
-
-void Layout::load()
-{
-  unsigned int count = getZonesCount();
-  for (unsigned int i=0; i<count; i++) {
-    if (persistentData->zones[i].widgetName[0]) {
-      char name[sizeof(persistentData->zones[i].widgetName)+1];
-      memset(name, 0, sizeof(name));
-      strncpy(name, persistentData->zones[i].widgetName, sizeof(persistentData->zones[i].widgetName));
-      widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
-    }
-  }
-}
-
-void Layout::refresh(bool setup)
-{
-  for (int i = 0; i < MAX_LAYOUT_ZONES; i++) {
-    if (widgets[i]) {
-      widgets[i]->refresh();
-    }
-  }
-}
-
 const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS]; // TODO dynamic
 unsigned int countRegisteredLayouts = 0;
 void registerLayout(const LayoutFactory * factory)
 {
   if (countRegisteredLayouts < MAX_REGISTERED_LAYOUTS) {
+    TRACE("register layout %s", factory->getName());
     registeredLayouts[countRegisteredLayouts++] = factory;
   }
 }
@@ -90,4 +62,6 @@ void loadCustomScreens()
   if (customScreens[0] == NULL) {
     customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
   }
+
+  topbar->load();
 }

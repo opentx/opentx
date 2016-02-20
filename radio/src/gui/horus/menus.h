@@ -144,7 +144,7 @@ static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuGeneralVersion,
 };
 
-extern MenuHandlerFunc menuTabMainviews[1+MAX_CUSTOM_SCREENS];
+extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
 
 bool menuFirstCalib(evt_t event);
 bool menuMainView(evt_t event);
@@ -274,10 +274,13 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 #define MENU(title, icons, tab, menu, lines_count, ...) \
   MENU_WITH_OPTIONS(title, icons, tab, DIM(tab), menu, lines_count, __VA_ARGS__)
 
-#define SIMPLE_MENU(title, icons, tab, menu, lines_count) \
+#define SIMPLE_MENU_WITH_OPTIONS(title, icons, tab, tabCount, menu, lines_count) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
-  if (!check_simple(event, menu, tab, DIM(tab), lines_count)) return false; \
-  drawMenuTemplate(title, icons); \
+  if (!check_simple(event, menu, tab, tabCount, lines_count)) return false; \
+  drawMenuTemplate(title, icons);
+
+#define SIMPLE_MENU(title, icons, tab, menu, lines_count) \
+  SIMPLE_MENU_WITH_OPTIONS(title, icons, tab, DIM(tab), menu, lines_count)
 
 #define SUBMENU(title, icon, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \

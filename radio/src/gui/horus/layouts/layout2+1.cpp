@@ -20,6 +20,24 @@
 
 #include "opentx.h"
 
+const uint8_t LBM_LAYOUT_2P1[] = {
+#include "mask_layout2+1.lbm"
+};
+
+const ZoneOption OPTIONS_LAYOUT_2P1[] = {
+  { "Top bar", ZoneOption::Bool },
+  { "Flight mode", ZoneOption::Bool },
+  { "Sliders", ZoneOption::Bool },
+  { "Trims", ZoneOption::Bool },
+  { NULL, ZoneOption::Bool }
+};
+
+const Zone ZONES_LAYOUT_2P1[3] = {
+  { 240, 60, 192, 152 },
+  { 48, 60, 180, 70 },
+  { 48, 142, 180, 70 }
+};
+
 class Layout2P1: public Layout
 {
   public:
@@ -39,43 +57,23 @@ class Layout2P1: public Layout
 
     virtual unsigned int getZonesCount() const
     {
-      return 3;
+      return DIM(ZONES_LAYOUT_2P1);
     }
 
     virtual Zone getZone(unsigned int index) const
     {
-      return zones[index];
+      return ZONES_LAYOUT_2P1[index];
     }
 
-    virtual void refresh(bool setup=false);
-
-    static const ZoneOption options[];
-
-  protected:
-    static const Zone zones[3];
+    virtual void refresh();
 };
 
-const Zone Layout2P1::zones[3] = {
-  { 240, 60, 192, 145 },
-  { 46, 60, 182, 66 },
-  { 46, 139, 182, 66 }
-};
-
-const ZoneOption Layout2P1::options[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
-  { NULL, ZoneOption::Bool }
-};
-
-void Layout2P1::refresh(bool setup)
+void Layout2P1::refresh()
 {
   theme->drawBackground();
 
   if (persistentData->options[0].boolValue) {
-    // Top Bar
-    drawMainViewTopBar();
+    drawTopBar();
   }
 
   if (persistentData->options[1].boolValue) {
@@ -98,11 +96,7 @@ void Layout2P1::refresh(bool setup)
     drawTrims(mixerCurrentFlightMode);
   }
 
-  Layout::refresh(setup);
+  Layout::refresh();
 }
 
-const uint8_t LBM_LAYOUT_2P1[] __DMA = {
-#include "mask_layout2+1.lbm"
-};
-
-BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, Layout2P1::options);
+BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);

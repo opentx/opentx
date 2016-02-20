@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -27,7 +27,7 @@
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN          440
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    450
 
-void onCustomFunctionsFileSelectionMenu(const char *result)
+void onCustomFunctionsFileSelectionMenu(const char * result)
 {
   int sub = menuVerticalPosition;
   CustomFunctionData * cf = &g_model.customFn[sub];

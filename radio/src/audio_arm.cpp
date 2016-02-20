@@ -249,8 +249,6 @@ void referenceSystemAudioFiles()
       fn = *fno.lfname ? fno.lfname : fno.fname;
       uint8_t len = strlen(fn);
 
-      TRACE("%s", fn);
-
       // Eliminates directories / non wav files
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
 
@@ -509,7 +507,7 @@ void audioTask(void * pdata)
   AUDIO_TADA();
 #elif defined(SDCARD)
   if (!unexpectedShutdown) {
-    sdInit();
+    // sdInit();
     AUDIO_TADA();
   }
 #endif

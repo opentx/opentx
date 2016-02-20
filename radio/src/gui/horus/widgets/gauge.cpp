@@ -63,9 +63,9 @@ void GaugeWidget::refresh()
 
   // Gauge
   lcdSetColor(color);
-  lcdDrawSolidFilledRect(zone.x, zone.y + 15, zone.w, 16, TEXT_INVERTED_COLOR);
-  lcdDrawNumber((percent >= 100 ? 20 : (percent >= 10 ? 10 : 0)) + zone.x+zone.w/2, zone.y + 16, percent, SMLSIZE | CUSTOM_COLOR, 0, NULL, "%");
-  lcdInvertRect(zone.x + w, zone.y + 15, zone.w - w, 16, CUSTOM_COLOR);
+  lcdDrawSolidFilledRect(zone.x, zone.y + 16, zone.w, 16, TEXT_INVERTED_COLOR);
+  lcdDrawNumber((percent >= 100 ? 20 : (percent >= 10 ? 10 : 0)) + zone.x+zone.w/2, zone.y + 17, percent, SMLSIZE | CUSTOM_COLOR, 0, NULL, "%");
+  lcdInvertRect(zone.x + w, zone.y + 16, zone.w - w, 16, CUSTOM_COLOR);
 }
 
 BaseWidgetFactory<GaugeWidget> gaugeWidget("Gauge", GaugeWidget::options);

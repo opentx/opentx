@@ -78,7 +78,7 @@ void drawSleepBitmap();
 void drawShutdownBitmap(uint32_t index);
 
 // Main view standard widgets
-void drawMainViewTopBar();
+void drawTopBar();
 void drawMainPots();
 void drawTrims(uint8_t flightMode);
 
