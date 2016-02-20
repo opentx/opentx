@@ -20,7 +20,7 @@
 
 #include "../../opentx.h"
 
-const uint8_t LBM_SPLASH[] __DMA = {
+const uint8_t LBM_SPLASH[] __ALIGNED = {
 #include "bmp_splash.lbm"
 };
 

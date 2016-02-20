@@ -203,14 +203,14 @@
   #define ROTARY_ENCODER_NAVIGATION
 #endif
 
+#define __ALIGNED __attribute__((aligned(32)))
+
 #if defined(SIMU)
   #define __DMA
-#elif defined(PCBSKY9X)
-  #define __DMA __attribute__((aligned(32)))
 #elif defined(STM32F4)
   #define __DMA __attribute__((section(".ram"), aligned(32)))
 #else
-  #define __DMA __attribute__((aligned(32))) 
+  #define __DMA __ALIGNED
 #endif
  
 #if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472

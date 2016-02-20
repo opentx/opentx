@@ -24,11 +24,11 @@ const uint8_t LBM_TOPMENU_MASK_OPENTX[] = {
 #include "mask_topmenu_opentx.lbm"
 };
 
-const uint8_t LBM_MAINVIEW_BACKGROUND[] = {
+const uint8_t LBM_MAINVIEW_BACKGROUND[] __ALIGNED = {
 #include "bmp_background.lbm"
 };
 
-const uint8_t LBM_THEME_DEFAULT[] __DMA = {
+const uint8_t LBM_THEME_DEFAULT[] __ALIGNED = {
 #include "bmp_default.lbm"
 };
 

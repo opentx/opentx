@@ -20,11 +20,11 @@
 
 #include "opentx.h"
 
-const uint8_t LBM_TOPMENU_BMP_OPENTX[] __DMA = {
+const uint8_t LBM_TOPMENU_BMP_OPENTX[] __ALIGNED = {
 #include "bmp_topmenu_opentx.lbm"
 };
 
-const uint8_t LBM_THEME_DARKBLUE[] __DMA = {
+const uint8_t LBM_THEME_DARKBLUE[] __ALIGNED = {
 #include "bmp_darkblue.lbm"
 };
 

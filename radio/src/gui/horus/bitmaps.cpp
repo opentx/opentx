@@ -240,31 +240,31 @@ const uint8_t * const LBM_MAINVIEWS_ICONS[] = {
  *  Model selection screen bitmaps
  */
 
-const uint8_t LBM_LIBRARY_ICON[] __DMA = {
+const uint8_t LBM_LIBRARY_ICON[] = {
 #include "mask_library.lbm"
 };
 
-const uint8_t LBM_LIBRARY_SLOT[] __DMA = {
+const uint8_t LBM_LIBRARY_SLOT[] = {
 #include "mask_library_slot.lbm"
 };
 
-const uint8_t LBM_LIBRARY_CURSOR[] __DMA = {
+const uint8_t LBM_LIBRARY_CURSOR[] = {
 #include "mask_library_category_index.lbm"
 };
 
-const uint8_t LBM_SCORE0[] __DMA = {
+const uint8_t LBM_SCORE0[] = {
 #include "mask_library_score_0.lbm"
 };
 
-const uint8_t LBM_SCORE1[] __DMA = {
+const uint8_t LBM_SCORE1[] = {
 #include "mask_library_score_1.lbm"
 };
 
-const uint8_t LBM_STAR0[] __DMA = {
+const uint8_t LBM_STAR0[] = {
 #include "mask_library_star_0.lbm"
 };
 
-const uint8_t LBM_STAR1[] __DMA = {
+const uint8_t LBM_STAR1[] = {
 #include "mask_library_star_1.lbm"
 };
 
@@ -272,15 +272,15 @@ const uint8_t LBM_STAR1[] __DMA = {
  * Calibration screen
  */
 
-const uint8_t LBM_HORUS[] __DMA = {
+const uint8_t LBM_HORUS[] = {
 #include "alpha_horus.lbm"
 };
 
-const uint8_t LBM_STICK_BACKGROUND[] __DMA = {
+const uint8_t LBM_STICK_BACKGROUND[] = {
 #include "alpha_stick_background.lbm"
 };
 
-const uint8_t LBM_STICK_POINTER[] __DMA = {
+const uint8_t LBM_STICK_POINTER[] = {
 #include "alpha_stick_pointer.lbm"
 };
 
@@ -288,83 +288,83 @@ const uint8_t LBM_STICK_POINTER[] __DMA = {
  * Other
  */
 
-const uint8_t LBM_ASTERISK[] __DMA = {
+const uint8_t LBM_ASTERISK[] = {
 #include "alpha_asterisk.lbm"
 };
 
-const uint8_t LBM_POINT[] __DMA = {
+const uint8_t LBM_POINT[] = {
 #include "mask_point.lbm"
 };
 
-const uint8_t LBM_CURVE_POINT[] __DMA = {
+const uint8_t LBM_CURVE_POINT[] = {
 #include "mask_cvpoint.lbm"
 };
 
-const uint8_t LBM_CURVE_POINT_CENTER[] __DMA = {
+const uint8_t LBM_CURVE_POINT_CENTER[] = {
 #include "mask_cvpoint_center.lbm"
 };
 
-const uint8_t LBM_CURVE_COORD_SHADOW[] __DMA = {
+const uint8_t LBM_CURVE_COORD_SHADOW[] = {
 #include "mask_coord_shadow.lbm"
 };
 
-const uint8_t LBM_SHUTDOWN[] __DMA = {
+const uint8_t LBM_SHUTDOWN[] = {
 #include "alpha_shutdown.lbm"
 };
 
-const uint8_t LBM_SLEEP[] __DMA = {
+const uint8_t LBM_SLEEP[] __ALIGNED = {
 #include "bmp_sleep.lbm"
 };
 
-const uint8_t LBM_SHUTDOWN_CIRCLE[] __DMA = {
+const uint8_t LBM_SHUTDOWN_CIRCLE[] = {
 #include "mask_shutdown_circle.lbm"
 };
 
-const uint8_t LBM_SLIDER_BAR_LEFT[] __DMA = {
+const uint8_t LBM_SLIDER_BAR_LEFT[] __ALIGNED = {
 #include "bar_left.lbm"
 };
 
-const uint8_t LBM_SLIDER_BAR_RIGHT[] __DMA = {
+const uint8_t LBM_SLIDER_BAR_RIGHT[] __ALIGNED = {
 #include "bar_right.lbm"
 };
 
-const uint8_t LBM_SLIDER_POINT_OUT[] __DMA = {
+const uint8_t LBM_SLIDER_POINT_OUT[] __ALIGNED = {
 #include "point_out.lbm"
 };
 
-const uint8_t LBM_SLIDER_POINT_MID[] __DMA = {
+const uint8_t LBM_SLIDER_POINT_MID[] __ALIGNED = {
 #include "point_mid.lbm"
 };
 
-const uint8_t LBM_SLIDER_POINT_IN[] __DMA = {
+const uint8_t LBM_SLIDER_POINT_IN[] __ALIGNED = {
 #include "point_in.lbm"
 };
 
-const uint8_t LBM_CARROUSSEL_LEFT[] __DMA = {
+const uint8_t LBM_CARROUSSEL_LEFT[] = {
 #include "mask_carroussel_left.lbm"
 };
 
-const uint8_t LBM_CARROUSSEL_RIGHT[] __DMA = {
+const uint8_t LBM_CARROUSSEL_RIGHT[] = {
 #include "mask_carroussel_right.lbm"
 };
 
-const uint8_t LBM_BUTTON_ON[] __DMA = {
+const uint8_t LBM_BUTTON_ON[] = {
 #include "alpha_button_on.lbm"
 };
 
-const uint8_t LBM_BUTTON_OFF[] __DMA = {
+const uint8_t LBM_BUTTON_OFF[] = {
 #include "alpha_button_off.lbm"
 };
 
-const uint8_t LBM_SWIPE_CIRCLE[] __DMA = {
+const uint8_t LBM_SWIPE_CIRCLE[] = {
   #include "mask_swipe_circle.lbm"
 };
 
-const uint8_t LBM_SWIPE_LEFT[] __DMA = {
+const uint8_t LBM_SWIPE_LEFT[] = {
   #include "mask_swipe_left.lbm"
 };
 
-const uint8_t LBM_SWIPE_RIGHT[] __DMA = {
+const uint8_t LBM_SWIPE_RIGHT[] = {
   #include "mask_swipe_right.lbm"
 };
 
