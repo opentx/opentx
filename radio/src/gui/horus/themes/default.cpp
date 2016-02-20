@@ -28,11 +28,22 @@ const uint8_t LBM_MAINVIEW_BACKGROUND[] = {
 #include "bmp_background.lbm"
 };
 
+const uint8_t LBM_THEME_DEFAULT[] __DMA = {
+#include "bmp_default.lbm"
+};
+
+const ZoneOption OPTIONS_THEME_DEFAULT[] = {
+  { "Default background", ZoneOption::Bool, { .boolValue = 1 } },
+  { "Background file", ZoneOption::File, { .stringValue = "\0\0\0\0\0\0\0" } },
+  { "Background color", ZoneOption::Color, { .unsignedValue = RGB(180, 190, 230) } },
+  { NULL, ZoneOption::Bool }
+};
+
 class DefaultTheme: public Theme
 {
   public:
-    DefaultTheme(const char * name, const uint8_t * bitmap):
-      Theme(name, bitmap)
+    DefaultTheme():
+      Theme("Default", LBM_THEME_DEFAULT, OPTIONS_THEME_DEFAULT)
     {
     }
 
@@ -67,7 +78,13 @@ class DefaultTheme: public Theme
 
     virtual void drawBackground() const
     {
-      lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
+      if (g_eeGeneral.themeData.options[0].boolValue) {
+        lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
+      }
+      else {
+        lcdSetColor(g_eeGeneral.themeData.options[2].unsignedValue);
+        lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+      }
     }
 
     virtual void drawTopbarBackground(const uint8_t * icon) const
@@ -86,9 +103,5 @@ class DefaultTheme: public Theme
     }
 };
 
-const uint8_t LBM_THEME_DEFAULT[] __DMA = {
-#include "bmp_default.lbm"
-};
-
-const DefaultTheme defaultTheme("Default", LBM_THEME_DEFAULT);
+const DefaultTheme defaultTheme;
 const Theme * theme = &defaultTheme;
