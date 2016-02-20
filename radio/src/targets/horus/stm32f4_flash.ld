@@ -110,7 +110,7 @@ SECTIONS
 
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM
+  } >CCM
 
   /* Uninitialized data section */
   . = ALIGN(4);
@@ -118,18 +118,30 @@ SECTIONS
   {
     /* This is used by the startup in order to initialize the .bss secion */
     _sbss = .;         /* define a global symbol at bss start */
-    __bss_start__ = _sbss;
+    /* __bss_start__ = _sbss; */
     *(.bss)
     *(.bss*)
     *(COMMON)
 
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
-    __bss_end__ = _ebss;
+    /* __bss_end__ = _ebss; */
+  } >CCM
+
+  /* collect all uninitialized .ccm sections */
+  .ram (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _sram = .;
+    /* __ccm_start__ = _sccm; */
+    *(.ram)
+    . = ALIGN(4);
+    _eram = .;
+    /* __ccm_end__ = _eccm; */
   } >RAM
 
-  PROVIDE ( end = _ebss );
-  PROVIDE ( _end = _ebss );
+  PROVIDE ( end = _eram );
+  PROVIDE ( _end = _eram );
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :

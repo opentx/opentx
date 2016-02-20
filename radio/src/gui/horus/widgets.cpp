@@ -26,7 +26,7 @@ void drawColumnHeader(const char * const * headers, uint8_t index)
   // TODO ? displayHeader(headers[index]);
 }
 
-const char * STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+const char * const STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
 #define DATETIME_SEPARATOR_X    425
 #define DATETIME_LINE1          9
