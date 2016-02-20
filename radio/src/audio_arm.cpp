@@ -507,7 +507,9 @@ void audioTask(void * pdata)
   AUDIO_TADA();
 #elif defined(SDCARD)
   if (!unexpectedShutdown) {
-    // sdInit();
+#if defined(EEPROM)
+    sdInit();
+#endif
     AUDIO_TADA();
   }
 #endif

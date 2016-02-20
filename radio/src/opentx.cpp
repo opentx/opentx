@@ -2475,7 +2475,9 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   TRACE("opentxInit()");
 
+#if !defined(EEPROM)
   sdInit();
+#endif
 
 #if defined(COLORLCD)
   topbar = new Topbar(&g_model.topbarData);
