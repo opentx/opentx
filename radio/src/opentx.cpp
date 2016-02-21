@@ -38,14 +38,13 @@ bool loadModelBitmap(char * name, uint8_t * bitmap)
     char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
     strncpy(lfn+sizeof(BITMAPS_PATH), name, len);
     strcpy(lfn+sizeof(BITMAPS_PATH)+len, BITMAPS_EXT);
-    if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT) == 0) {
+    if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
       return true;
     }
   }
 
   // In all error cases, we set the default logo
   memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
-
   return false;
 }
 #endif

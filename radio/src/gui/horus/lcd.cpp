@@ -509,8 +509,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
     if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
       *dest++ = '\322';
       // *dest++ = '1'+qr.quot;
-      strncpy(dest, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, sizeof(scriptInputsOutputs[qr.quot].outputs[qr.rem].name));
-      dest[sizeof(scriptInputsOutputs[qr.quot].outputs[qr.rem].name)] = '\0';
+      strcpy(dest, scriptInputsOutputs[qr.quot].outputs[qr.rem].name);
     }
 #endif
   }

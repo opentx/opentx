@@ -220,7 +220,7 @@ void lcdSetContrast();
   void lcdRefresh();
 #endif
 
-const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+uint8_t * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 const char * writeScreenshot();
 
 #if defined(BOOT)
