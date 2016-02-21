@@ -182,11 +182,11 @@ namespace NAMESPACE {
 #include "radio/src/gui/horus/layouts/layout2x1.cpp"
 #include "radio/src/gui/horus/layouts/layout2x2.cpp"
 #include "radio/src/gui/horus/layouts/layout2x4.cpp"
-#include "radio/src/gui/horus/widgets/value.cpp"
 #include "radio/src/gui/horus/widgets/gauge.cpp"
-#include "radio/src/gui/horus/widgets/modelpanel.cpp"
+#include "radio/src/gui/horus/widgets/modelbitmap.cpp"
 #include "radio/src/gui/horus/widgets/text.cpp"
 #include "radio/src/gui/horus/widgets/timer.cpp"
+#include "radio/src/gui/horus/widgets/value.cpp"
 #elif defined(PCBFLAMENCO)
 #include "radio/src/gui/Flamenco/fonts.cpp"
 #include "radio/src/gui/Flamenco/widgets.cpp"
