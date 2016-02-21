@@ -207,7 +207,7 @@
 
 #if defined(SIMU)
   #define __DMA
-#elif defined(STM32F4)
+#elif defined(STM32F4) && !defined(BOOT)
   #define __DMA __attribute__((section(".ram"), aligned(32)))
 #else
   #define __DMA __ALIGNED

@@ -210,7 +210,7 @@ void release_spi (void)
 
 #ifdef SD_USE_DMA
 
-#if defined(STM32F4)
+#if defined(STM32F4) && !defined(BOOT)
 WORD rw_workbyte[1] __DMA;
 #endif
 
@@ -227,7 +227,7 @@ void stm32_dma_transfer(
 )
 {
   DMA_InitTypeDef DMA_InitStructure;
-#if defined(STM32F4)
+#if defined(STM32F4) && !defined(BOOT)
   rw_workbyte[0] = 0xffff;
 #else
   WORD rw_workbyte[] = { 0xffff };
@@ -387,7 +387,7 @@ void power_off (void)
 /* Receive a data packet from MMC                                        */
 /*-----------------------------------------------------------------------*/
 
-#if defined(SD_USE_DMA) && defined(STM32F4)
+#if defined(SD_USE_DMA) && defined(STM32F4) && !defined(BOOT)
   uint8_t sd_buff[512] __DMA;
 #endif
 
@@ -410,7 +410,7 @@ BOOL rcvr_datablock (
     return FALSE; /* If not valid data token, return with error */
   }
 
-#if defined(SD_USE_DMA) && defined(STM32F4)
+#if defined(SD_USE_DMA) && defined(STM32F4) && !defined(BOOT)
   stm32_dma_transfer(TRUE, sd_buff, btr);
   memcpy(buff, sd_buff, btr);
 #elif defined(SD_USE_DMA)
@@ -458,7 +458,7 @@ BOOL xmit_datablock (
   xmit_spi(token);                                        /* transmit data token */
   if (token != 0xFD) {    /* Is data token */
 
-#if defined(SD_USE_DMA) && defined(STM32F4)
+#if defined(SD_USE_DMA) && defined(STM32F4) && !defined(BOOT)
   memcpy(sd_buff, buff, 512);
   stm32_dma_transfer(FALSE, sd_buff, 512);
 #elif defined(SD_USE_DMA)
