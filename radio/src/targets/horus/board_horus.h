@@ -252,7 +252,6 @@ uint32_t pwrPressedDuration(void);
 #define UNEXPECTED_SHUTDOWN()   (false) // (g_eeGeneral.unexpectedShutdown)
 
 // Led driver
-void ledInit(void);
 void ledOff(void);
 void ledRed(void);
 void ledBlue(void);

@@ -20,10 +20,8 @@
 
 #include "../horus/board_horus.h"
 
-void ledInit()
+void ledOn()
 {
-  RCC_AHB1PeriphClockCmd(LED_RCC_AHB1Periph, ENABLE);
-
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = LED_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -46,12 +44,12 @@ void ledOff()
 
 void ledRed()
 {
-  ledInit();
+  ledOn();
   GPIO_SetBits(LED_GPIO, LED_GPIO_PIN);
 }
 
 void ledBlue()
 {
-  ledInit();
+  ledOn();
   GPIO_ResetBits(LED_GPIO, LED_GPIO_PIN);
 }
