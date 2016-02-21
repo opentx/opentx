@@ -427,6 +427,7 @@ void SDRAM_Init(void)
   SDRAMTest_InitSequence();
 }
 
+#if 0
 void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBufferSize)
 {
   __IO uint32_t write_pointer = (uint32_t)uwWriteAddress;
@@ -447,7 +448,6 @@ void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBu
 
 }
 
-
 void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBufferSize)
 {
   __IO uint32_t write_pointer = (uint32_t)uwReadAddress;
@@ -463,3 +463,4 @@ void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBuff
     write_pointer += 4;
   }
 }
+#endif
