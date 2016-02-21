@@ -37,15 +37,17 @@
 
 #define LCD_BKLIGHT_PWM_FREQ           300
 
-#define LCD_FIRST_FRAME_BUFFER         SDRAM_BANK_ADDR
-#define LCD_SECOND_FRAME_BUFFER        (SDRAM_BANK_ADDR + DISPLAY_BUFFER_SIZE)
-#define LCD_BACKUP_FRAME_BUFFER        (SDRAM_BANK_ADDR + 2*DISPLAY_BUFFER_SIZE)
+uint8_t LCD_FIRST_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
+uint8_t LCD_SECOND_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
+uint8_t LCD_BACKUP_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 
-uint32_t CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
+uint8_t * CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
 uint32_t CurrentLayer = LCD_FIRST_LAYER;
 
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
 #define NRST_HIGH()  do { LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST; } while(0)
+
+uint8_t modelBitmap[MODEL_BITMAP_SIZE] __SDRAM;
 
 static void LCD_AF_GPIOConfig(void)
 {
@@ -144,6 +146,7 @@ static void LCD_NRSTConfig(void)
   GPIO_Init(LCD_GPIO_NRST, &GPIO_InitStructure);
 }
 
+// TODO delay function
 static void delay3(uint32_t nCount)
 {
   uint32_t index = 0;
@@ -291,7 +294,7 @@ void LCD_LayerInit()
   LTDC_Layer_InitStruct.LTDC_CFBLineNumber = LCD_H;
 
   /* Start Address configuration : the LCD Frame buffer is defined on SDRAM w/ Offset */
-  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FIRST_FRAME_BUFFER;
+  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = (uint32_t)LCD_FIRST_FRAME_BUFFER;
 
   /* Initialize LTDC layer 1 */
   LTDC_LayerInit(LTDC_Layer1, &LTDC_Layer_InitStruct);
@@ -301,7 +304,7 @@ void LCD_LayerInit()
   LTDC_Layer_InitStruct.LTDC_BlendingFactor_2 = LTDC_BlendingFactor2_PAxCA;
 
   /* Start Address configuration : the LCD Frame buffer is defined on SDRAM w/ Offset */
-  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = LCD_FIRST_FRAME_BUFFER + DISPLAY_BUFFER_SIZE;
+  LTDC_Layer_InitStruct.LTDC_CFBStartAdress = (uint32_t)LCD_SECOND_FRAME_BUFFER;
 
   /* Initialize LTDC layer 2 */
   LTDC_LayerInit(LTDC_Layer2, &LTDC_Layer_InitStruct);
@@ -387,14 +390,12 @@ void LCD_Init(void)
   */
 void LCD_SetLayer(uint32_t Layerx)
 {
-  if (Layerx == LCD_FIRST_LAYER)
-  {
+  if (Layerx == LCD_FIRST_LAYER) {
     CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
     CurrentLayer = LCD_FIRST_LAYER;
   }
-  else
-  {
-    CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER + DISPLAY_BUFFER_SIZE;
+  else {
+    CurrentFrameBuffer = LCD_SECOND_FRAME_BUFFER;
     CurrentLayer = LCD_SECOND_LAYER;
   }
 }
@@ -438,7 +439,7 @@ void lcdInit(void)
 
 void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-  uint32_t addr = CurrentFrameBuffer + 2*(LCD_W*y + x);
+  uint32_t addr = (uint32_t)CurrentFrameBuffer + 2*(LCD_W*y + x);
   uint8_t red = (0xF800 & color) >> 11;
   uint8_t blue = 0x001F & color;
   uint8_t green = (0x07E0 & color) >> 5;
@@ -470,7 +471,7 @@ void lcdDrawBitmapDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint
   if ((uint32_t(bitmap) & 0x03) != 0)
     return;
 
-  uint32_t addr = CurrentFrameBuffer + 2*(LCD_W*y + x);
+  uint32_t addr = (uint32_t)CurrentFrameBuffer + 2*(LCD_W*y + x);
 
   DMA2D_DeInit();
 
@@ -538,14 +539,12 @@ void DMAcopy(void * src, void * dest, int len)
 
 void lcdStoreBackupBuffer()
 {
-  uint16_t * src = (uint16_t *)CurrentFrameBuffer, * dest = (uint16_t *)LCD_BACKUP_FRAME_BUFFER;
-  DMAcopy(src, dest, DISPLAY_BUFFER_SIZE);
+  DMAcopy(CurrentFrameBuffer, LCD_BACKUP_FRAME_BUFFER, DISPLAY_BUFFER_SIZE);
 }
 
 int lcdRestoreBackupBuffer()
 {
-  uint16_t * dest = (uint16_t *)CurrentFrameBuffer, * src = (uint16_t *)LCD_BACKUP_FRAME_BUFFER;
-  DMAcopy(src, dest, DISPLAY_BUFFER_SIZE);
+  DMAcopy(LCD_BACKUP_FRAME_BUFFER, CurrentFrameBuffer, DISPLAY_BUFFER_SIZE);
   return 1;
 }
 

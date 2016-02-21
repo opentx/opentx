@@ -170,7 +170,7 @@ extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
 #if defined(SIMU)
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #else
-extern uint32_t CurrentFrameBuffer;
+extern uint8_t * CurrentFrameBuffer;
 #define displayBuf                     ((uint16_t *)CurrentFrameBuffer)
 #endif
 

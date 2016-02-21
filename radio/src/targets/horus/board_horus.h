@@ -153,10 +153,7 @@ uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
 
 // SDRAM driver
-#define SDRAM_BANK_ADDR                ((uint32_t)0xD0000000)
 void SDRAM_Init(void);
-void SDRAM_WriteBuffer(uint32_t* pBuffer, uint32_t uwWriteAddress, uint32_t uwBufferSize);
-void SDRAM_ReadBuffer(uint32_t* pBuffer, uint32_t uwReadAddress, uint32_t uwBufferSize);
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)

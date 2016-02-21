@@ -212,6 +212,12 @@
 #else
   #define __DMA __ALIGNED
 #endif
+
+#if defined(PCBHORUS)
+  #define __SDRAM __attribute__((section(".sdram"), aligned(32)))
+#else
+  #define __SDRAM __DMA
+#endif
  
 #if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
   typedef int32_t int24_t;
