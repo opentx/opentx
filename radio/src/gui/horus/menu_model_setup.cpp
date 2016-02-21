@@ -77,8 +77,6 @@ enum menuModelSetupItems {
   ITEM_MODEL_SETUP_MAX
 };
 
-#define FIELD_PROTOCOL_MAX 1
-
 #define MODEL_SETUP_2ND_COLUMN        200
 #define MODEL_SETUP_BIND_OFS          40
 #define MODEL_SETUP_RANGE_OFS         80
@@ -94,7 +92,6 @@ void onModelSetupBitmapMenu(const char *result)
   else {
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
-    loadModelBitmap(g_model.header.bitmap, modelBitmap);
     storageDirty(EE_MODEL);
   }
 }

@@ -58,13 +58,8 @@
 #define MENU_ICONS_SPACING             31
 #define SUBMENU_LINE_WIDTH             230
 
-#define BITMAP_BUFFER_SIZE(width, height)   (4 + (width)*(height)*3)
-#define MODEL_BITMAP_WIDTH             (3*64)
-#define MODEL_BITMAP_HEIGHT            (3*32)
-#define MODEL_BITMAP_SIZE              BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
-extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
-bool loadModelBitmap(char * name, uint8_t * bitmap);
-#define LOAD_MODEL_BITMAP()            loadModelBitmap(g_model.header.bitmap, modelBitmap)
+#define BITMAP_BUFFER_SIZE(w, h)       (4 + (w)*(h)*3)
+#define LOAD_MODEL_BITMAP()
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value, uint8_t attr);

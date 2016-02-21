@@ -24,30 +24,57 @@ class ModelBitmapWidget: public Widget
 {
   public:
     ModelBitmapWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
-      Widget(factory, zone, persistentData)
+      Widget(factory, zone, persistentData),
+      bitmap(NULL)
     {
+      memset(bitmapFilename, 0, sizeof(bitmapFilename));
+    }
+
+    void loadBitmap()
+    {
+      char filename[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
+      strncpy(filename+sizeof(BITMAPS_PATH), g_model.header.bitmap, sizeof(g_model.header.bitmap));
+      strcat(filename+sizeof(BITMAPS_PATH), BITMAPS_EXT);
+      bitmap = bmpLoad(filename);
+      memcpy(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap));
+      // TODO rescale the bitmap here instead of every refresh!
+    }
+
+    virtual ~ModelBitmapWidget()
+    {
+      free(bitmap);
     }
 
     virtual void refresh();
+
+  protected:
+    char bitmapFilename[sizeof(g_model.header.bitmap)];
+    uint8_t * bitmap;
 };
 
 void ModelBitmapWidget::refresh()
 {
-  if (zone.h >= MODEL_BITMAP_HEIGHT) {
+  if (memcmp(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap)) != 0) {
+    loadBitmap();
+  }
+
+  if (zone.h >= 96) {
     lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
     lcdDrawBitmapPattern(zone.x + 6, zone.y + 4, LBM_MODEL_ICON, MAINVIEW_GRAPHICS_COLOR);
     lcdDrawSizedText(zone.x + 45, zone.y + 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
     lcdDrawSolidFilledRect(zone.x + 39, zone.y + 27, zone.w - 48, 2, MAINVIEW_GRAPHICS_COLOR);
-    float scale = getBitmapScale(modelBitmap, zone.w, zone.h - 25);
-    int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
-    int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
-    lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + zone.h - height / 2 - height / 2, modelBitmap, 0, 0, scale);
+    if (bitmap) {
+      float scale = getBitmapScale(bitmap, zone.w, zone.h - 25);
+      int width = getBitmapScaledSize(getBitmapWidth(bitmap), scale);
+      int height = getBitmapScaledSize(getBitmapHeight(bitmap), scale);
+      lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + zone.h - height / 2 - height / 2, bitmap, 0, 0, scale);
+    }
   }
-  else {
-    float scale = getBitmapScale(modelBitmap, 1000, zone.h);
-    int width = getBitmapScaledSize(getBitmapWidth(modelBitmap), scale);
-    int height = getBitmapScaledSize(getBitmapHeight(modelBitmap), scale);
-    lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + (zone.h - height) / 2, modelBitmap, 0, 0, scale);
+  else if (bitmap) {
+    float scale = getBitmapScale(bitmap, 1000, zone.h);
+    int width = getBitmapScaledSize(getBitmapWidth(bitmap), scale);
+    int height = getBitmapScaledSize(getBitmapHeight(bitmap), scale);
+    lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + (zone.h - height) / 2, bitmap, 0, 0, scale);
   }
 }
 

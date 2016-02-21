@@ -21,37 +21,37 @@
 #include "opentx.h"
 
 #if defined(PCBTARANIS)
-const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
+uint8_t * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
 {
   FIL bmpFile;
   UINT read;
   uint8_t palette[16];
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
-  uint8_t *buf = &bmpBuf[0];
+  uint8_t * buf = &bmpBuf[0];
 
   if (width > LCD_W) {
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
-    return SDCARD_ERROR(result);
+    return NULL;
   }
 
   if (f_size(&bmpFile) < 14) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   result = f_read(&bmpFile, buf, 14, &read);
   if (result != FR_OK || read != 14) {
     f_close(&bmpFile);
-    return SDCARD_ERROR(result);
+    return NULL;
   }
 
   if (buf[0] != 'B' || buf[1] != 'M') {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   uint32_t fsize  = *((uint32_t *)&buf[2]);
@@ -61,7 +61,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   result = f_read(&bmpFile, buf, len, &read);
   if (result != FR_OK || read != len) {
     f_close(&bmpFile);
-    return SDCARD_ERROR(result);
+    return NULL;
   }
 
   uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
@@ -69,7 +69,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   /* invalid header size */
   if (ihsize + 14 > hsize) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   /* sometimes file size is set to some headers size, set a real size in that case */
@@ -79,7 +79,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   /* declared file size less than header size */
   if (fsize <= hsize) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   uint32_t w, h;
@@ -101,17 +101,17 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
       break;
     default:
       f_close(&bmpFile);
-      return STR_INCOMPATIBLE;
+      return NULL;
   }
 
   if (*((uint16_t *)&buf[0]) != 1) { /* planes */
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   if (w > width || h > height) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   uint16_t depth = *((uint16_t *)&buf[2]);
@@ -121,7 +121,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   if (depth == 4) {
     if (f_lseek(&bmpFile, hsize-64) != FR_OK || f_read(&bmpFile, buf, 64, &read) != FR_OK || read != 64) {
       f_close(&bmpFile);
-      return SDCARD_ERROR(result);
+      return NULL;
     }
     for (uint8_t i=0; i<16; i++) {
       palette[i] = buf[4*i] >> 4;
@@ -130,11 +130,11 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   else {
     if (f_lseek(&bmpFile, hsize) != FR_OK) {
       f_close(&bmpFile);
-      return SDCARD_ERROR(result);
+      return NULL;
     }
   }
 
-  uint8_t *dest = bmp;
+  uint8_t * dest = bmp;
 
   *dest++ = w;
   *dest++ = h;
@@ -150,7 +150,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
         result = f_read(&bmpFile, buf, rowSize*2, &read);
         if (result != FR_OK || read != rowSize*2) {
           f_close(&bmpFile);
-          return SDCARD_ERROR(result);
+          return NULL;
         }
 
         for (uint32_t j=0; j<w; j++) {
@@ -169,7 +169,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
         result = f_read(&bmpFile, buf, rowSize, &read);
         if (result != FR_OK || read != rowSize) {
           f_close(&bmpFile);
-          return SDCARD_ERROR(result);
+          return NULL;
         }
         uint8_t * dst = dest + (i/2)*w;
         for (uint32_t j=0; j<w; j++) {
@@ -182,48 +182,40 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
 
     default:
       f_close(&bmpFile);
-      return STR_INCOMPATIBLE;
+      return NULL;
   }
 
   f_close(&bmpFile);
-  return 0;
+  return bmp;
 }
 #elif defined(PCBHORUS)
-const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
+uint8_t * bmpLoad(const char * filename)
 {
   FIL bmpFile;
   UINT read;
   uint8_t palette[16];
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
-  uint8_t *buf = &bmpBuf[0];
-  uint16_t * dest = (uint16_t *)bmp;
-
-  dest[0] = 0;
-  dest[1] = 0;
-
-  if (width > LCD_W) {
-    return STR_INCOMPATIBLE;
-  }
+  uint8_t * buf = &bmpBuf[0];
 
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
-    return SDCARD_ERROR(result);
+    return NULL;
   }
 
   if (f_size(&bmpFile) < 14) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   result = f_read(&bmpFile, buf, 14, &read);
   if (result != FR_OK || read != 14) {
     f_close(&bmpFile);
-    return SDCARD_ERROR(result);
+    return NULL;
   }
 
   if (buf[0] != 'B' || buf[1] != 'M') {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   uint32_t fsize  = *((uint32_t *)&buf[2]);
@@ -233,7 +225,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   result = f_read(&bmpFile, buf, len, &read);
   if (result != FR_OK || read != len) {
     f_close(&bmpFile);
-    return SDCARD_ERROR(result);
+    return NULL;
   }
 
   uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
@@ -241,7 +233,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   /* invalid header size */
   if (ihsize + 14 > hsize) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   /* sometimes file size is set to some headers size, set a real size in that case */
@@ -251,7 +243,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   /* declared file size less than header size */
   if (fsize <= hsize) {
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   uint32_t w, h;
@@ -273,17 +265,12 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
       break;
     default:
       f_close(&bmpFile);
-      return STR_INCOMPATIBLE;
+      return NULL;
   }
 
   if (*((uint16_t *)&buf[0]) != 1) { /* planes */
     f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
-  }
-
-  if (w > width || h > height) {
-    f_close(&bmpFile);
-    return STR_INCOMPATIBLE;
+    return NULL;
   }
 
   uint16_t depth = *((uint16_t *)&buf[2]);
@@ -293,7 +280,7 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   if (depth == 4) {
     if (f_lseek(&bmpFile, hsize-64) != FR_OK || f_read(&bmpFile, buf, 64, &read) != FR_OK || read != 64) {
       f_close(&bmpFile);
-      return SDCARD_ERROR(result);
+      return NULL;
     }
     for (uint8_t i=0; i<16; i++) {
       palette[i] = buf[4*i];
@@ -302,13 +289,19 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
   else {
     if (f_lseek(&bmpFile, hsize) != FR_OK) {
       f_close(&bmpFile);
-      return SDCARD_ERROR(result);
+      return NULL;
     }
+  }
+
+  uint8_t * bmp = (uint8_t *)malloc(BITMAP_BUFFER_SIZE(w, h));
+  uint16_t * dest = (uint16_t *)bmp;
+  if (bmp == NULL) {
+    f_close(&bmpFile);
+    return NULL;
   }
 
   *dest++ = w;
   *dest++ = h;
-
   memset(dest, 0, BITMAP_BUFFER_SIZE(w, h) - 4);
 
   uint32_t rowSize;
@@ -322,7 +315,8 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
           result = f_read(&bmpFile, (uint8_t *)&pixel, 4, &read);
           if (result != FR_OK || read != 4) {
             f_close(&bmpFile);
-            return SDCARD_ERROR(result);
+            free(bmp);
+            return NULL;
           }
           *((uint16_t *)dst) = RGB((pixel>>24) & 0xff, (pixel>>16) & 0xff, (pixel>>8) & 0xff);
           dst += 2;
@@ -339,7 +333,8 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
         result = f_read(&bmpFile, buf, rowSize, &read);
         if (result != FR_OK || read != rowSize) {
           f_close(&bmpFile);
-          return SDCARD_ERROR(result);
+          free(bmp);
+          return NULL;
         }
         uint8_t * dst = ((uint8_t *)dest) + i*w*2;
         for (uint32_t j=0; j<w; j++) {
@@ -354,11 +349,12 @@ const char * bmpLoad(uint8_t * bmp, const char * filename, uint16_t width, uint1
 
     default:
       f_close(&bmpFile);
-      return STR_INCOMPATIBLE;
+      free(bmp);
+      return NULL;
   }
 
   f_close(&bmpFile);
-  return 0;
+  return bmp;
 }
 #endif
 

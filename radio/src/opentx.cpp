@@ -30,9 +30,7 @@ Clipboard clipboard;
 
 #if defined(PCBTARANIS)
 uint8_t modelBitmap[MODEL_BITMAP_SIZE] __DMA;
-#endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
 bool loadModelBitmap(char * name, uint8_t * bitmap)
 {
   uint8_t len = zlen(name, LEN_BITMAP_NAME);
@@ -45,13 +43,8 @@ bool loadModelBitmap(char * name, uint8_t * bitmap)
     }
   }
 
-#if defined(COLORLCD)
-  // TODO only the first bytes can be set to 0
-  memset(bitmap, 0, MODEL_BITMAP_SIZE);
-#else
   // In all error cases, we set the default logo
   memcpy(bitmap, logo_taranis, MODEL_BITMAP_SIZE);
-#endif
 
   return false;
 }

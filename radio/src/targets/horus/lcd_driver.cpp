@@ -47,8 +47,6 @@ uint32_t CurrentLayer = LCD_FIRST_LAYER;
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
 #define NRST_HIGH()  do { LCD_GPIO_NRST->BSRRL = LCD_GPIO_PIN_NRST; } while(0)
 
-uint8_t modelBitmap[MODEL_BITMAP_SIZE] __SDRAM;
-
 static void LCD_AF_GPIOConfig(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;

@@ -324,7 +324,7 @@ void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp);
 void lcdSetContrast();
 #define lcdOff(...)
 
-const char * bmpLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+uint8_t * bmpLoad(const char * filename);
 const char * imgLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 
 #if defined(BOOT)

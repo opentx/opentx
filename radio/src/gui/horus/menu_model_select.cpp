@@ -61,8 +61,10 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
     for (int i=0; i<4; i++) {
       lcdDrawBitmapPattern(x+104+i*11, y+25, LBM_SCORE0, TITLE_BGCOLOR);
     }
-    if (loadModelBitmap(header.bitmap, modelBitmap)) {
-      lcdDrawBitmap(x+5, y+24, modelBitmap, 0, 0, getBitmapScale(modelBitmap, 64, 32));
+    uint8_t * bitmap = bmpLoad(header.bitmap);
+    if (bitmap) {
+      lcdDrawBitmap(x+5, y+24, bitmap, 0, 0, getBitmapScale(bitmap, 64, 32));
+      free(bitmap);
     }
     else {
       lcdDrawBitmapPattern(x+5, y+23, LBM_LIBRARY_SLOT, TEXT_COLOR);

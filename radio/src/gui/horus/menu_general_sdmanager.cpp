@@ -21,12 +21,13 @@
 #include <stdio.h>
 #include "../../opentx.h"
 
-#define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; lastBitmap = -1; } while (0)
+#define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; currentBitmapIndex = -1; } while (0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
 
-int lastBitmap;
+int currentBitmapIndex = 0;
+uint8_t * currentBitmap = NULL;
 
 bool menuGeneralSdManagerInfo(evt_t event)
 {
@@ -362,13 +363,15 @@ bool menuGeneralSdManager(evt_t _event)
 
   char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
   if (ext && (!strcasecmp(ext, BITMAPS_EXT) || !strcasecmp(ext, PNG_EXT) || !strcasecmp(ext, JPG_EXT))) {
-    if (lastBitmap != menuVerticalPosition) {
-      lastBitmap = menuVerticalPosition;
-      if (bmpLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
-        ((uint32_t *)modelBitmap)[0] = 0;
-      }
+    if (currentBitmapIndex != menuVerticalPosition) {
+      currentBitmapIndex = menuVerticalPosition;
+      free(currentBitmap);
+      currentBitmap = bmpLoad(reusableBuffer.sdmanager.lines[index]);
     }
-    lcdDrawBitmap(LCD_W/2, (LCD_H-MODEL_BITMAP_HEIGHT)/2, modelBitmap);
+    if (currentBitmap) {
+      // TODO scale in case of a too large bitmap
+      lcdDrawBitmap(LCD_W / 2, LCD_H / 2, currentBitmap);
+    }
   }
 
   return true;

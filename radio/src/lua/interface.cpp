@@ -905,10 +905,8 @@ void luaLoadThemeCallback()
     char path[LUA_FULLPATH_MAXLEN+1];
     strcpy(path, THEMES_PATH "/");
     strcpy(path+sizeof(THEMES_PATH), bitmap);
-    uint8_t * bitmapData = (uint8_t *)malloc(BITMAP_BUFFER_SIZE(51, 31));
-    TRACE("path=%s bitmapData=%p %d %p", path, bitmapData, BITMAP_BUFFER_SIZE(51, 31), path);
-    bmpLoad(bitmapData, path, 51, 31);
-    LuaTheme * theme = new LuaTheme(name, bitmapData, themeOptions);
+    uint8_t * bitmap = bmpLoad(path/*, 51, 31*/); // TODO rescale
+    LuaTheme * theme = new LuaTheme(name, bitmap, themeOptions);
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
     theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;

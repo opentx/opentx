@@ -173,7 +173,7 @@ const char * displayPopupMenu(evt_t event)
   }
 
   if (popupMenuNoItems > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, POPUP_MENU_MAX_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, POPUP_MENU_MAX_LINES);
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
   }
 
   return result;
