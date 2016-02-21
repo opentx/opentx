@@ -2473,7 +2473,7 @@ uint16_t stackAvailable()
 void opentxInit(OPENTX_INIT_ARGS)
 {
 #if defined(DEBUG) && defined(USB_SERIAL)
-  CoTickDelay(5000); // 10s
+  // CoTickDelay(5000); // 10s
 #endif
 
   TRACE("opentxInit()");

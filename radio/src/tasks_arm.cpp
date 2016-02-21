@@ -159,6 +159,10 @@ void menusTask(void * pdata)
 
   BACKLIGHT_OFF();
 
+#if defined(PCBHORUS)
+  ledOff();
+#endif
+
 #if defined(COLORLCD) || defined(PCBTARANIS)
   drawSleepBitmap();
 #else
