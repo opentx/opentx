@@ -35,7 +35,7 @@ const uint8_t LBM_THEME_DEFAULT[] __ALIGNED = {
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { "Default background", ZoneOption::Bool, { .boolValue = 1 } },
   { "Background file", ZoneOption::File, { .stringValue = "\0\0\0\0\0\0\0" } },
-  { "Background color", ZoneOption::Color, { .unsignedValue = RGB(180, 190, 230) } },
+  { "Background color", ZoneOption::Color, { .unsignedValue = WHITE } },
   { NULL, ZoneOption::Bool }
 };
 
