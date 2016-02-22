@@ -1265,6 +1265,7 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { ret
 void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
 void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
 void RCC_PLLI2SCmd(FunctionalState NewState) { }
