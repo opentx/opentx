@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-option(PCB "Radio type")
+set(PCB "HORUS" CACHE STRING "Radio type")
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
 option(CURVES "Curves" ON)
@@ -301,7 +301,7 @@ endif()
 
 if(CPU_FAMILY STREQUAL STM32)
   option(LUA "Lua scripts")
-  option(USB "USB option (JOYSTICK/MASSSTORAGE/SERIAL)" JOYSTICK)
+  set(USB "JOYSTICK" CACHE STRING "USB option (JOYSTICK/MASSSTORAGE/SERIAL)")
   set(ARCH ARM)
   set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.1.0/Libraries)
   add_definitions(-DCPUSTM32)
