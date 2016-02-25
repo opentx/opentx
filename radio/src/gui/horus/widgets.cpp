@@ -31,7 +31,7 @@ const char * const STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "J
 #define DATETIME_SEPARATOR_X    425
 #define DATETIME_LINE1          9
 #define DATETIME_LINE2          23
-#define DATETIME_LEFT(s)        (LCD_W+DATETIME_SEPARATOR_X+8-getTextWidth(s, SMLSIZE))/2
+#define DATETIME_MIDDLE         (LCD_W+DATETIME_SEPARATOR_X+8)/2
 
 void drawTopbarDatetime()
 {
@@ -41,18 +41,23 @@ void drawTopbarDatetime()
   gettime(&t);
   char str[10];
   sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
-  lcdDrawText(DATETIME_LEFT(str), DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR);
+  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
 
   getTimerString(str, getValue(MIXSRC_TX_TIME));
-  lcdDrawText(DATETIME_LEFT(str), DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR);
+  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
 }
 
+#include "alpha_stick_background.lbm"
+#include "alpha_stick_pointer.lbm"
 #define STICK_PANEL_WIDTH                   68
 void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 {
-  lcdDrawAlphaBitmap(x, y, LBM_STICK_BACKGROUND);
-  lcdDrawAlphaBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, LBM_STICK_POINTER);
+  lcd->drawAlphaBitmap(x, y, &ALPHA_STICK_BACKGROUND);
+  lcd->drawAlphaBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, &ALPHA_STICK_POINTER);
 }
+
+#include "alpha_button_on.lbm"
+#include "alpha_button_off.lbm"
 
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
@@ -70,9 +75,9 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
     lcdDrawText(x+padding+8, y, label, TEXT_COLOR);
   }
   if (attr & BUTTON_OFF)
-    lcdDrawAlphaBitmap(x-6, y+3, LBM_BUTTON_OFF);
+    lcd->drawAlphaBitmap(x-6, y+3, &ALPHA_BUTTON_OFF);
   else if (attr & BUTTON_ON)
-    lcdDrawAlphaBitmap(x-6, y+3, LBM_BUTTON_ON);
+    lcd->drawAlphaBitmap(x-6, y+3, &ALPHA_BUTTON_ON);
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
@@ -383,11 +388,6 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
-    if (attr & LEFT)
-      attr -= LEFT; /* because of ZCHAR */
-    else
-      x -= 20;
-
     attr &= ~PREC1;
 
     int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
@@ -421,25 +421,26 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 }
 #endif
 
-#define SLEEP_BITMAP_WIDTH             150
-#define SLEEP_BITMAP_HEIGHT            150
 void drawSleepBitmap()
 {
-  lcdClear();
-  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, LBM_SLEEP);
+  lcd->clear();
+  const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.bmp"));
+  if (bitmap) {
+    lcd->drawBitmap((LCD_W-bitmap->getWidth())/2, (LCD_H-bitmap->getHeight())/2, bitmap);
+  }
   lcdRefresh();
 }
 
-#define SHUTDOWN_BITMAP_WIDTH          110
-#define SHUTDOWN_BITMAP_HEIGHT         110
+#include "alpha_shutdown.lbm"
+
 #define SHUTDOWN_CIRCLE_DIAMETER       150
 void drawShutdownBitmap(uint32_t index)
 {
   static uint32_t last_index = 0xffffffff;
 
   if (index < last_index) {
-    lcdDrawBlackOverlay();
-    lcdDrawAlphaBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, LBM_SHUTDOWN);
+    theme->drawBackground();
+    lcd->drawAlphaBitmap((LCD_W-ALPHA_SHUTDOWN.getWidth())/2, (LCD_H-ALPHA_SHUTDOWN.getHeight())/2, &ALPHA_SHUTDOWN);
     lcdStoreBackupBuffer();
   }
   else {

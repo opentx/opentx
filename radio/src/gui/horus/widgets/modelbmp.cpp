@@ -25,57 +25,60 @@ class ModelBitmapWidget: public Widget
   public:
     ModelBitmapWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
       Widget(factory, zone, persistentData),
-      bitmap(NULL)
+      buffer(NULL)
     {
-      memset(bitmapFilename, 0, sizeof(bitmapFilename));
-    }
-
-    void loadBitmap()
-    {
-      char filename[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
-      strncpy(filename+sizeof(BITMAPS_PATH), g_model.header.bitmap, sizeof(g_model.header.bitmap));
-      strcat(filename+sizeof(BITMAPS_PATH), BITMAPS_EXT);
-      bitmap = bmpLoad(filename);
-      memcpy(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap));
-      // TODO rescale the bitmap here instead of every refresh!
+      memset(bitmapFilename, 255, sizeof(bitmapFilename));
     }
 
     virtual ~ModelBitmapWidget()
     {
-      free(bitmap);
+      delete buffer;
     }
 
-    virtual void refresh();
+#define DRAW_SCALED_BITMAP_FIT_WIDTH   1
+#define DRAW_SCALED_BITMAP_FIT_HEIGHT  2
+
+    void refreshBuffer()
+    {
+      delete buffer;
+      buffer = new BitmapBuffer(zone.w, zone.h);
+      if (buffer) {
+        buffer->drawBitmap(0, 0, lcd, zone.x, zone.y, zone.w, zone.h);
+        GET_FILENAME(filename, BITMAPS_PATH, g_model.header.bitmap, BITMAPS_EXT);
+        BitmapBuffer * bitmap = BitmapBuffer::load(filename);
+        if (zone.h >= 96 && zone.w >= 120) {
+          buffer->drawFilledRect(0, 0, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
+          buffer->drawBitmapPattern(6, 4, LBM_MODEL_ICON, MAINVIEW_GRAPHICS_COLOR);
+          buffer->drawSizedText(45, 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
+          buffer->drawSolidFilledRect(39, 27, zone.w - 48, 2, MAINVIEW_GRAPHICS_COLOR);
+          if (bitmap) {
+            buffer->drawScaledBitmap(bitmap, 0, 38, zone.w, zone.h - 38);
+          }
+        }
+        else {
+          if (bitmap) {
+            buffer->drawScaledBitmap(bitmap, 0, 0, zone.w, zone.h);
+          }
+        }
+        delete bitmap;
+      }
+    }
+
+    virtual void refresh()
+    {
+      if (memcmp(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap)) != 0) {
+        refreshBuffer();
+        memcpy(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap));
+      }
+
+      if (buffer) {
+        lcd->drawBitmap(zone.x, zone.y, buffer);
+      }
+    }
 
   protected:
     char bitmapFilename[sizeof(g_model.header.bitmap)];
-    uint8_t * bitmap;
+    BitmapBuffer * buffer;
 };
-
-void ModelBitmapWidget::refresh()
-{
-  if (memcmp(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap)) != 0) {
-    loadBitmap();
-  }
-
-  if (zone.h >= 96) {
-    lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
-    lcdDrawBitmapPattern(zone.x + 6, zone.y + 4, LBM_MODEL_ICON, MAINVIEW_GRAPHICS_COLOR);
-    lcdDrawSizedText(zone.x + 45, zone.y + 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
-    lcdDrawSolidFilledRect(zone.x + 39, zone.y + 27, zone.w - 48, 2, MAINVIEW_GRAPHICS_COLOR);
-    if (bitmap) {
-      float scale = getBitmapScale(bitmap, zone.w, zone.h - 25);
-      int width = getBitmapScaledSize(getBitmapWidth(bitmap), scale);
-      int height = getBitmapScaledSize(getBitmapHeight(bitmap), scale);
-      lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + zone.h - height / 2 - height / 2, bitmap, 0, 0, scale);
-    }
-  }
-  else if (bitmap) {
-    float scale = getBitmapScale(bitmap, 1000, zone.h);
-    int width = getBitmapScaledSize(getBitmapWidth(bitmap), scale);
-    int height = getBitmapScaledSize(getBitmapHeight(bitmap), scale);
-    lcdDrawBitmap(zone.x + (zone.w - width) / 2, zone.y + (zone.h - height) / 2, bitmap, 0, 0, scale);
-  }
-}
 
 BaseWidgetFactory<ModelBitmapWidget> modelBitmapWidget("ModelBmp", NULL);

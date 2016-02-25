@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -140,7 +140,7 @@ bool menuStatisticsDebug(evt_t event)
   lcdDrawText(MENU_DEBUG_COL1_OFS+120, MENU_DEBUG_Y_RTOS+1, "[Audio]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS+150, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
 
-  lcd_putsCenter(7*FH+1, STR_MENUTORESET);
+  // TODO lcd_putsCenter(7*FH+1, STR_MENUTORESET);
   // lcdInvertLastLine();
 
   return true;

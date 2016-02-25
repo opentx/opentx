@@ -270,7 +270,7 @@ bool menuModelMixOne(evt_t event)
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#define MIX_LINE_WEIGHT_POS     92
+#define MIX_LINE_WEIGHT_POS     110
 #define MIX_LINE_SRC_POS        115
 #define MIX_LINE_CURVE_POS      162
 #define MIX_LINE_SWITCH_POS     210
@@ -502,7 +502,7 @@ bool menuModelMixAll(evt_t event)
 
           putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
-          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
+          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), event);
 
           displayMixLine(y, md);
 

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -33,7 +33,7 @@ bool menuGeneralTrainer(evt_t event)
   MENU(STR_MENUTRAINER, LBM_RADIO_ICONS, menuTabGeneral, e_Trainer, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
-    lcd_putsCenter(5*FH, STR_SLAVE, TEXT_COLOR);
+    // TODO lcd_putsCenter(5*FH, STR_SLAVE, TEXT_COLOR);
     return true;
   }
 

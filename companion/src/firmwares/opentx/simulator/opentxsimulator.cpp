@@ -134,7 +134,7 @@ namespace NAMESPACE {
 #include "radio/src/trainer_input.cpp"
 
 #if defined(PCBHORUS)
-#include "radio/src/bmp.cpp"
+#include "radio/src/gui/horus/bitmapbuffer.cpp"
 #include "radio/src/gui/horus/bitmaps.cpp"
 #include "radio/src/gui/horus/curves.cpp"
 #include "radio/src/gui/horus/fonts.cpp"
@@ -224,7 +224,7 @@ namespace NAMESPACE {
 #include "radio/src/gui/Flamenco/splash.cpp"
 #include "radio/src/targets/flamenco/tw8823_driver.cpp"
 #elif defined(PCBTARANIS)
-#include "radio/src/bmp.cpp"
+#include "radio/src/gui/taranis/bmp.cpp"
 #include "radio/src/gui/taranis/fonts.cpp"
 #include "radio/src/gui/taranis/widgets.cpp"
 #include "radio/src/gui/taranis/navigation.cpp"

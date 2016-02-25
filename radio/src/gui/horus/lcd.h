@@ -21,14 +21,12 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
+#include "bitmapbuffer.h"
+
 #define LCD_W           480
 #define LCD_H           272
 
-#define coord_t         int
 #define CENTER
-#define CENTER_OFS      0
-#define CONTRAST_MIN    0
-#define CONTRAST_MAX    45
 
 #define lcdint_t        int32_t
 
@@ -40,16 +38,19 @@
 /* lcd common flags */
 #define BLINK           0x01
 
-/* lcdDrawText flags */
+/* drawText flags */
 #define INVERS          0x02
-#define LEFT            0x08 /* align left */
-#define ZCHAR           0x04
+#define LEFT            0x00
+#define CENTERED        0x04 /* align left */
+#define RIGHT           0x08 /* align left */
 
-/* lcdDrawNumber flags */
+/* drawNumber flags */
 #define LEADING0        0x10
 #define PREC1           0x20
 #define PREC2           0x30
 #define MODE(flags)     ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
+
+#define ZCHAR           0x10
 
 /* rect, square flags */
 #define ROUND           0x04
@@ -69,109 +70,14 @@
 #define TIMEHOUR        0x2000
 #define STREXPANDED     0x4000
 
-// remove windows default definitions
-#undef OPAQUE
-#undef RGB
-
-#define TO5BITS(x)      ((x) >> 3)
-#define TO6BITS(x)      ((x) >> 2)
-#define RGB(r, g, b)   ((TO5BITS(r) << 11) + (TO6BITS(g) << 5) + (TO5BITS(b) << 0))
-#define WHITE          RGB(0xFF, 0xFF, 0xFF)
-#define BLACK          RGB(0, 0, 0)
-#define YELLOW         RGB(0xF0, 0xD0, 0x10)
-#define BLUE           RGB(0x30, 0xA0, 0xE0)
-#define GREY           RGB(96, 96, 96)
-#define DARKGREY       RGB(64, 64, 64)
-#define LIGHTGREY      RGB(180, 180, 180)
-#define RED            RGB(229, 32, 30)
-#define DARKRED        RGB(160, 0, 6)
-
-#define LcdFlags        uint32_t
-
-#define OPACITY_MAX                    0x0F
-#define OPACITY(x)                     ((x)<<24)
-
-enum LcdColorIndex
-{
-  TEXT_COLOR_INDEX,
-  TEXT_BGCOLOR_INDEX,
-  TEXT_INVERTED_COLOR_INDEX,
-  TEXT_INVERTED_BGCOLOR_INDEX,
-  LINE_COLOR_INDEX,
-  SCROLLBOX_COLOR_INDEX,
-  MENU_TITLE_BGCOLOR_INDEX,
-  MENU_TITLE_COLOR_INDEX,
-  MENU_TITLE_DISABLE_COLOR_INDEX,
-  HEADER_COLOR_INDEX,
-  ALARM_COLOR_INDEX,
-  WARNING_COLOR_INDEX,
-  TEXT_DISABLE_COLOR_INDEX,
-  CURVE_AXIS_COLOR_INDEX,
-  CURVE_COLOR_INDEX,
-  CURVE_CURSOR_COLOR_INDEX,
-  HEADER_BGCOLOR_INDEX,
-  HEADER_ICON_BGCOLOR_INDEX,
-  HEADER_CURRENT_BGCOLOR_INDEX,
-  TITLE_BGCOLOR_INDEX,
-  TRIM_BGCOLOR_INDEX,
-  TRIM_SHADOW_COLOR_INDEX,
-  MAINVIEW_PANES_COLOR_INDEX,
-  MAINVIEW_GRAPHICS_COLOR_INDEX,
-  OVERLAY_COLOR_INDEX,
-  CUSTOM_COLOR_INDEX,
-  LCD_COLOR_COUNT
-};
-
-extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
-
-#define COLOR(index)                   ((index) << 16)
-#define COLOR_IDX(att)                 uint8_t((att) >> 16)
-
-#define TEXT_COLOR                     COLOR(TEXT_COLOR_INDEX)
-#define TEXT_BGCOLOR                   COLOR(TEXT_BGCOLOR_INDEX)
-#define TEXT_INVERTED_COLOR            COLOR(TEXT_INVERTED_COLOR_INDEX)
-#define TEXT_INVERTED_BGCOLOR          COLOR(TEXT_INVERTED_BGCOLOR_INDEX)
-#define LINE_COLOR                     COLOR(LINE_COLOR_INDEX)
-#define SCROLLBOX_COLOR                COLOR(SCROLLBOX_COLOR_INDEX)
-#define HEADER_SEPARATOR_COLOR         COLOR(HEADER_SEPARATOR_COLOR_INDEX)
-#define MENU_TITLE_BGCOLOR             COLOR(MENU_TITLE_BGCOLOR_INDEX)
-#define MENU_TITLE_COLOR               COLOR(MENU_TITLE_COLOR_INDEX)
-#define MENU_TITLE_DISABLE_COLOR       COLOR(MENU_TITLE_DISABLE_COLOR_INDEX)
-#define HEADER_COLOR                   COLOR(HEADER_COLOR_INDEX)
-#define ALARM_COLOR                    COLOR(ALARM_COLOR_INDEX)
-#define WARNING_COLOR                  COLOR(WARNING_COLOR_INDEX)
-#define TEXT_DISABLE_COLOR             COLOR(TEXT_DISABLE_COLOR_INDEX)
-#define CURVE_AXIS_COLOR               COLOR(CURVE_AXIS_COLOR_INDEX)
-#define CURVE_COLOR                    COLOR(CURVE_COLOR_INDEX)
-#define CURVE_CURSOR_COLOR             COLOR(CURVE_CURSOR_COLOR_INDEX)
-#define TITLE_BGCOLOR                  COLOR(TITLE_BGCOLOR_INDEX)
-#define TRIM_BGCOLOR                   COLOR(TRIM_BGCOLOR_INDEX)
-#define TRIM_SHADOW_COLOR              COLOR(TRIM_SHADOW_COLOR_INDEX)
-#define HEADER_BGCOLOR                 COLOR(HEADER_BGCOLOR_INDEX)
-#define HEADER_ICON_BGCOLOR            COLOR(HEADER_ICON_BGCOLOR_INDEX)
-#define HEADER_CURRENT_BGCOLOR         COLOR(HEADER_CURRENT_BGCOLOR_INDEX)
-#define MAINVIEW_PANES_COLOR           COLOR(MAINVIEW_PANES_COLOR_INDEX)
-#define MAINVIEW_GRAPHICS_COLOR        COLOR(MAINVIEW_GRAPHICS_COLOR_INDEX)
-#define OVERLAY_COLOR                  COLOR(OVERLAY_COLOR_INDEX)
-#define CUSTOM_COLOR                   COLOR(CUSTOM_COLOR_INDEX)
-
-#define COLOR_SPLIT(color, r, g, b) \
-  uint16_t r = ((color) & 0xF800) >> 11; \
-  uint16_t g = ((color) & 0x07E0) >> 5; \
-  uint16_t b = ((color) & 0x001F)
-
-#define COLOR_JOIN(r, g, b) \
-  (((r) << 11) + ((g) << 5) + (b))
-
-#define display_t                      uint16_t
+#include "colors.h"
 #define DISPLAY_PIXELS_COUNT           (LCD_W*LCD_H)
 #define DISPLAY_BUFFER_SIZE            (sizeof(display_t)*DISPLAY_PIXELS_COUNT)
 
 #if defined(SIMU)
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #else
-extern uint8_t * CurrentFrameBuffer;
-#define displayBuf                     ((uint16_t *)CurrentFrameBuffer)
+#define displayBuf                     lcd->data
 #endif
 
 #define lcdRefreshWait()
@@ -184,9 +90,17 @@ extern coord_t lcdNextPos;
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=0);
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=0);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=0);
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=0);
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
-void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr=0);
+
+inline void lcdClear()
+{
+  lcd->clear();
+}
+
+inline void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=0)
+{
+  lcd->drawSizedText(x, y, s, len, attr);
+}
+
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
 
@@ -220,21 +134,18 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 
 #define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
 
-inline void lcdDrawPixel(display_t * p, display_t value)
-{
-  *p = value;
-}
-
-inline void lcdDrawPixel(coord_t x, coord_t y, display_t value)
-{
-  display_t * p = PIXEL_PTR(x, y);
-  lcdDrawPixel(p, value);
-}
-
 void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color);
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
-void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
-void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att=0);
+inline void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0)
+{
+  lcd->drawHorizontalLine(x, y, w, pat, att);
+}
+
+inline void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att=0)
+{
+  lcd->drawVerticalLine(x, y, h, pat, att);
+}
+
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 
 inline void lcdDrawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
@@ -246,7 +157,7 @@ inline void lcdDrawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t co
 #if !defined(SIMU)
 inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
 {
-  lcdDrawSolidFilledRectDMA(x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+  DMAFillRect(lcd->data, LCD_W, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
 }
 #else
 void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags);
@@ -256,13 +167,6 @@ inline void lcdSetColor(uint16_t color)
 {
   lcdColorTable[CUSTOM_COLOR_INDEX] = color;
 }
-
-inline void lcdClear()
-{
-  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, 0);
-}
-
-void lcdInvertRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags);
 
 inline void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
 {
@@ -283,13 +187,21 @@ inline void lcdDrawSolidRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t
   lcdDrawSolidFilledRect(x, y+h-thickness, w, thickness, att);
 }
 
-void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0);
+inline void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0)
+{
+  lcd->drawFilledRect(x, y, w, h, pat, att);
+}
+
 void lcdDrawBlackOverlay();
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, uint8_t pat=SOLID, LcdFlags att=0);
 void lcdDrawCircle(int x0, int y0, int radius);
 void lcdDrawPie(int x0, int y0, int radius, int angle1=0, int angle2=360);
 void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle);
-void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags=0, int startAngle=0, int endAngle=360);
+
+inline void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * bmp, LcdFlags flags=0, int startAngle=0, int endAngle=360)
+{
+  lcd->drawBitmapPatternPie(x0, y0, bmp, flags, startAngle, endAngle);
+}
 
 inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 {
@@ -306,26 +218,18 @@ inline int getBitmapHeight(const uint8_t * bmp)
   return *(((const uint16_t *)bmp)+1);
 }
 
-inline int getBitmapScaledSize(int size, float scale)
-{
-  if (scale == 0.0)
-    return size;
-  else
-    return size * scale;
-}
-
-float getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight);
+char getMappedChar(unsigned char c);
+int getFontHeight(LcdFlags flags);
 int getTextWidth(const pm_char *s, int len=0, LcdFlags flags=0);
-void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t height=0, float scale=0);
-void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0);
-void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp);
+
+inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0)
+{
+  lcd->drawBitmapPattern(x, y, img, flags, offset, width);
+}
 
 #define lcdSetRefVolt(...)
 void lcdSetContrast();
 #define lcdOff(...)
-
-uint8_t * bmpLoad(const char * filename);
-const char * imgLoad(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)

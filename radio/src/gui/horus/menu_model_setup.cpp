@@ -612,7 +612,7 @@ bool menuModelSetup(evt_t event)
         if (IS_MODULE_PPM(moduleIdx)) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PPMFRAME);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+90, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0, 0, NULL, "us");
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+90, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr|RIGHT : RIGHT, 0, NULL, "us");
           lcdDrawText(MODEL_SETUP_2ND_COLUMN+120, y, moduleData.ppmPulsePol ? "+" : "-", (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
@@ -641,7 +641,7 @@ bool menuModelSetup(evt_t event)
             lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RXNUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
-            if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
             if (attr && l_posHorz==0 && s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], IS_MODULE_DSM2(moduleIdx) ? 20 : 63);
             }
@@ -770,13 +770,13 @@ bool menuModelFailsafe(evt_t event)
       }
 #if defined(PPM_UNIT_US)
       uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags);
+      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+val/2, flags|RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
-      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags);
+      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val), PREC1|flags|RIGHT);
 #else
       uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
-      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags);
+      lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(val)/10, flags|RIGHT);
 #endif
 
       // Gauge

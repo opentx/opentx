@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define XPOT_DELTA                     10
 #define XPOT_DELAY                     10 /* cycles */
@@ -54,6 +54,8 @@ void drawPots()
   drawVerticalSlider(LCD_W-125-12, 120, 120, calibratedStick[8], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
                                                                                 OPTION_SLIDER_SQUARE_BUTTON);
 }
+
+#include "alpha_horus.lbm"
 
 bool menuCommonCalib(evt_t event)
 {
@@ -182,7 +184,7 @@ bool menuCommonCalib(evt_t event)
       break;
   }
 
-  lcdDrawAlphaBitmap((LCD_W-206)/2, LCD_H-220, LBM_HORUS);
+  lcd->drawAlphaBitmap((LCD_W-206)/2, LCD_H-220, &ALPHA_HORUS);
   drawSticks();
   drawPots();
 

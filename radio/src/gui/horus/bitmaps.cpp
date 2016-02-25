@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 /*
  *  Header bitmaps
@@ -269,28 +269,8 @@ const uint8_t LBM_STAR1[] = {
 };
 
 /*
- * Calibration screen
- */
-
-const uint8_t LBM_HORUS[] = {
-#include "alpha_horus.lbm"
-};
-
-const uint8_t LBM_STICK_BACKGROUND[] = {
-#include "alpha_stick_background.lbm"
-};
-
-const uint8_t LBM_STICK_POINTER[] = {
-#include "alpha_stick_pointer.lbm"
-};
-
-/*
  * Other
  */
-
-const uint8_t LBM_ASTERISK[] = {
-#include "alpha_asterisk.lbm"
-};
 
 const uint8_t LBM_POINT[] = {
 #include "mask_point.lbm"
@@ -306,14 +286,6 @@ const uint8_t LBM_CURVE_POINT_CENTER[] = {
 
 const uint8_t LBM_CURVE_COORD_SHADOW[] = {
 #include "mask_coord_shadow.lbm"
-};
-
-const uint8_t LBM_SHUTDOWN[] = {
-#include "alpha_shutdown.lbm"
-};
-
-const uint8_t LBM_SLEEP[] __ALIGNED = {
-#include "bmp_sleep.lbm"
 };
 
 const uint8_t LBM_SHUTDOWN_CIRCLE[] = {
@@ -348,14 +320,6 @@ const uint8_t LBM_CARROUSSEL_RIGHT[] = {
 #include "mask_carroussel_right.lbm"
 };
 
-const uint8_t LBM_BUTTON_ON[] = {
-#include "alpha_button_on.lbm"
-};
-
-const uint8_t LBM_BUTTON_OFF[] = {
-#include "alpha_button_off.lbm"
-};
-
 const uint8_t LBM_SWIPE_CIRCLE[] = {
   #include "mask_swipe_circle.lbm"
 };
@@ -367,4 +331,3 @@ const uint8_t LBM_SWIPE_LEFT[] = {
 const uint8_t LBM_SWIPE_RIGHT[] = {
   #include "mask_swipe_right.lbm"
 };
-

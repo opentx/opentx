@@ -61,10 +61,11 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
     for (int i=0; i<4; i++) {
       lcdDrawBitmapPattern(x+104+i*11, y+25, LBM_SCORE0, TITLE_BGCOLOR);
     }
-    uint8_t * bitmap = bmpLoad(header.bitmap);
+    GET_FILENAME(filename, BITMAPS_PATH, header.bitmap, BITMAPS_EXT);
+    const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
     if (bitmap) {
-      lcdDrawBitmap(x+5, y+24, bitmap, 0, 0, getBitmapScale(bitmap, 64, 32));
-      free(bitmap);
+      lcd->drawScaledBitmap(bitmap, x+5, y+24, 64, 32);
+      delete bitmap;
     }
     else {
       lcdDrawBitmapPattern(x+5, y+23, LBM_LIBRARY_SLOT, TEXT_COLOR);

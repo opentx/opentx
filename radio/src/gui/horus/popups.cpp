@@ -39,15 +39,17 @@ void        (*popupMenuHandler)(const char * result);
 
 void displayWarningBox()
 {
-  lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
+  // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_WARNING);
+  // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
+  // lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, ALARM_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
 }
 
 void displayMessageBox()
 {
-  lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
-  lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, WARNING_COLOR);
+  // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_INFO);
+  // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
+  // lcdDrawSolidRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, 2, WARNING_COLOR);
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_MESSAGE);
 }
 
@@ -75,11 +77,12 @@ void displayPopup(const char * title)
 void displayWarning(evt_t event)
 {
   warningResult = false;
+
   if (warningType == WARNING_TYPE_INPUT)
-    displayMessageBox();
+    theme->drawMessageBox(warningText, "", "", MESSAGEBOX_TYPE_INFO);
   else
-    displayWarningBox();
-  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN, DBLSIZE | (warningType == WARNING_TYPE_INPUT ? WARNING_COLOR : ALARM_COLOR));
+    theme->drawMessageBox(warningText, "", "", MESSAGEBOX_TYPE_WARNING);
+
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_INFOLINE_Y, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }

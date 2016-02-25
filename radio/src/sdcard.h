@@ -36,9 +36,9 @@
 #define EEPROMS_PATH        ROOT_PATH "EEPROMS"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
-#define THEMES_PATH         SCRIPTS_PATH "/THEMES"
-#define LAYOUTS_PATH        SCRIPTS_PATH "/LAYOUTS"
-#define WIDGETS_PATH        SCRIPTS_PATH "/WIDGETS"
+#define THEMES_PATH         ROOT_PATH "THEMES"
+#define LAYOUTS_PATH        ROOT_PATH "LAYOUTS"
+#define WIDGETS_PATH        ROOT_PATH "WIDGETS"
 #define WIZARD_NAME         "wizard.lua"
 #define TEMPLATES_PATH      SCRIPTS_PATH "/TEMPLATES"
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
@@ -56,6 +56,13 @@
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
+
+#define GET_FILENAME(filename, path, var, ext) \
+  char filename[sizeof(path) + sizeof(var) + sizeof(ext)]; \
+  memcpy(filename, path, sizeof(path) - 1); \
+  filename[sizeof(path) - 1] = '/'; \
+  memcpy(&filename[sizeof(path)], var, sizeof(var)); \
+  strcat(&filename[sizeof(path)], ext)
 
 extern FATFS g_FATFS_Obj;
 extern FIL g_oLogFile;

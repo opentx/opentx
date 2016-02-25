@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -23,7 +23,7 @@
 
 typedef bool (*IsValueAvailable)(int);
 
-int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable);
+int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 
 #if defined(VIRTUALINPUTS)

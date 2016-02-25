@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -76,9 +76,9 @@ bool menuModelGVars(evt_t event)
           }
           else {
             if (abs(v) >= 1000)
-              lcdDrawNumber(x, y+1, v, TINSIZE|attr);
+              lcdDrawNumber(x, y+1, v, TINSIZE|attr|RIGHT);
             else
-              lcdDrawNumber(x, y, v, attr);
+              lcdDrawNumber(x, y, v, attr|RIGHT);
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
           if (attr) {

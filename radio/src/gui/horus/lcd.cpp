@@ -26,6 +26,7 @@
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
+
 uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
 coord_t lcdNextPos;
@@ -50,31 +51,6 @@ int getFontPatternWidth(const uint16_t * spec, int index)
 int getCharWidth(char c, const uint16_t * spec)
 {
   return getFontPatternWidth(spec, getMappedChar(c));
-}
-
-void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags, coord_t offset, coord_t width)
-{
-  coord_t w = *((uint16_t *)img);
-  coord_t height = *(((uint16_t *)img)+1);
-
-  if (!width || width > w) {
-    width = w;
-  }
-
-  if (x+width > LCD_W) {
-    width = LCD_W-x;
-  }
-
-  display_t color = lcdColorTable[COLOR_IDX(flags)];
-
-  for (coord_t row=0; row<height; row++) {
-    display_t * p = PIXEL_PTR(x, y+row);
-    const uint8_t * q = img + 4 + row*w + offset;
-    for (coord_t col=0; col<width; col++) {
-      lcdDrawAlphaPixel(p, *q, color);
-      p++; q++;
-    }
-  }
 }
 
 #define FONT_MAX_HEIGHT 42
@@ -109,20 +85,6 @@ int getFontHeight(LcdFlags flags)
   return heightTable[FONTSIZE(flags) >> 8];
 }
 
-float getBitmapScale(const uint8_t * bmp, int dstWidth, int dstHeight)
-{
-  int bmpWidth = getBitmapWidth(bmp);
-  int bmpHeight = getBitmapHeight(bmp);
-
-  if (bmpWidth == 0 || bmpHeight == 0)
-    return 0;
-
-  float widthScale = float(dstWidth) / bmpWidth;
-  float heightScale = float(dstHeight) / bmpHeight;
-
-  return min(widthScale, heightScale);
-}
-
 int getTextWidth(const char * s, int len, LcdFlags flags)
 {
   const uint16_t * specs = fontspecsTable[FONTSIZE(flags) >> 8];
@@ -142,79 +104,12 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   return result;
 }
 
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
-{
-  int width = getTextWidth(s, len, flags);
-  int height = getFontHeight(flags);
-  int fontindex = FONTSIZE(flags) >> 8;
-  const pm_uchar * font = fontsTable[fontindex];
-  const uint16_t * fontspecs = fontspecsTable[fontindex];
-
-  if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-    flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
-    if (FONTSIZE(flags) == TINSIZE)
-      lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
-    else if (FONTSIZE(flags) == SMLSIZE)
-      lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN+1, y-INVERT_VERT_MARGIN, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-    else
-      lcdDrawSolidFilledRect(x-INVERT_HORZ_MARGIN, y/*-INVERT_VERT_MARGIN*/, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-  }
-
-  char str[256];
-  if (flags & ZCHAR)
-    strcat_zchar(str, s, len);
-  else
-    strAppend(str, s, len);
-
-  const coord_t orig_x = x;
-  bool setx = false;
-  while (len--) {
-    unsigned char c;
-    if (flags & ZCHAR)
-      c = idx2char(*s);
-    else
-      c = pgm_read_byte(s);
-    if (setx) {
-      x = c;
-      setx = false;
-    }
-    else if (!c) {
-      break;
-    }
-    else if (c >= 0x20) {
-      lcdPutFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
-      x = lcdNextPos;
-    }
-    else if (c == 0x1F) {  // X-coord prefix
-      setx = true;
-    }
-    else if (c == 0x1E) {
-      x = orig_x;
-      y += height;
-    }
-    else if (c == 1) {
-      x += 1;
-    }
-    else {
-      x += 2*(c-1);
-    }
-    s++;
-  }
-  lcdNextPos = x;
-}
-
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
 {
   lcdDrawSizedText(x, y, s, 255, flags);
 }
 
-void lcd_putsCenter(coord_t y, const pm_char * s, LcdFlags attr)
-{
-  int x = (LCD_W - getTextWidth(s)) / 2;
-  lcdDrawText(x, y, s, attr);
-}
-
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags)
 {
   uint8_t length;
   length = pgm_read_byte(s++);
@@ -230,10 +125,6 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
     val >>= 4;
   }
   s[4] = '\0';
-  if (!(flags & LEFT))
-    x -= getTextWidth(s);
-  else
-    flags -= LEFT;
   lcdDrawText(x, y, s, flags);
 }
 
@@ -261,8 +152,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
     }
   } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
   if (neg) *--s = '-';
-  if (!(flags & LEFT))
-    x -= getTextWidth(s, 0, flags);
+
   // TODO needs check on all string lengths ...
   if (prefix) {
     int len = strlen(prefix);
@@ -274,7 +164,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   if (suffix) {
     strncpy(&str[32], suffix, 16);
   }
-  flags &= ~(LEADING0|LEFT);
+  flags &= ~LEADING0;
   lcdDrawText(x, y, s, flags);
 }
 
@@ -349,18 +239,6 @@ void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags
 {
   for (coord_t i=y; i<y+h; i++) {
     lcdDrawHorizontalLine(x, i, w, SOLID, att);
-  }
-}
-#endif
-
-#if !defined(BOOT)
-void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
-{
-  for (coord_t i=y; i<y+h; i++) {
-    if ((att & ROUND) && (i==y || i==y+h-1))
-      lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
-    else
-      lcdDrawHorizontalLine(x, i, w, pat, att);
   }
 }
 #endif
@@ -766,39 +644,6 @@ void lcdSetContrast()
   lcdSetRefVolt(g_eeGeneral.contrast);
 }
 
-void lcdInvertRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att)
-{
-  display_t color = lcdColorTable[COLOR_IDX(att)];
-  COLOR_SPLIT(color, red, green, blue);
-
-  for (int i=y; i<y+h; i++) {
-    display_t * p = PIXEL_PTR(x, i);
-    for (int j=0; j<w; j++) {
-      ASSERT_IN_DISPLAY(p);
-      COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
-      lcdDrawPixel(p++, COLOR_JOIN(0x1F + red - bgRed, 0x3F + green - bgGreen, 0x1F + blue - bgBlue));
-    }
-  }
-}
-
-void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)
-{
-  ASSERT_IN_DISPLAY(p);
-
-  if (opacity == OPACITY_MAX) {
-    lcdDrawPixel(p, color);
-  }
-  else if (opacity != 0) {
-    uint8_t bgWeight = OPACITY_MAX - opacity;
-    COLOR_SPLIT(color, red, green, blue);
-    COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
-    uint16_t r = (bgRed * bgWeight + red * opacity) / OPACITY_MAX;
-    uint16_t g = (bgGreen * bgWeight + green * opacity) / OPACITY_MAX;
-    uint16_t b = (bgBlue * bgWeight + blue * opacity) / OPACITY_MAX;
-    lcdDrawPixel(p, COLOR_JOIN(r, g, b));
-  }
-}
-
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
 {
   display_t * p = PIXEL_PTR(x, y);
@@ -808,294 +653,28 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
   }
 }
 
-void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
-{
-  if (y >= LCD_H) return;
-  if (x+w > LCD_W) { w = LCD_W - x; }
-
-  display_t * p = PIXEL_PTR(x, y);
-  display_t color = lcdColorTable[COLOR_IDX(att)];
-  uint8_t opacity = 0x0F - (att >> 24);
-
-  if (pat == SOLID) {
-    while (w--) {
-      lcdDrawAlphaPixel(p, opacity, color);
-      p++;
-    }
-  }
-  else {
-    while (w--) {
-      if (pat & 1) {
-        lcdDrawAlphaPixel(p, opacity, color);
-        pat = (pat >> 1) | 0x80;
-      }
-      else {
-        pat = pat >> 1;
-      }
-      p++;
-    }
-  }
-}
-
-void lcdDrawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att)
-{
-  if (x >= LCD_W) return;
-  if (y >= LCD_H) return;
-  if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; if (h<=0) return; }
-  if (y+h > LCD_H) { h = LCD_H - y; }
-
-  display_t color = lcdColorTable[COLOR_IDX(att)];
-  uint8_t opacity = 0x0F - (att >> 24);
-
-  if (pat == SOLID) {
-    while (h--) {
-      lcdDrawAlphaPixel(x, y, opacity, color);
-      y++;
-    }
-  }
-  else {
-    if (pat==DOTTED && !(y%2)) {
-      pat = ~pat;
-    }
-    while (h--) {
-      if (pat & 1) {
-        lcdDrawAlphaPixel(x, y, opacity, color);
-        pat = (pat >> 1) | 0x80;
-      }
-      else {
-        pat = pat >> 1;
-      }
-      y++;
-    }
-  }
-}
-
-#if defined(SIMU)
-inline void lcdDrawBitmapDMA(coord_t x, coord_t y, coord_t width, coord_t height, const uint8_t * img)
-{
-  lcdDrawBitmap(x, y, img-4, 0, 0, 1.0);
-}
-#endif
-
-#if !defined(BOOT)
-void lcdDrawAlphaBitmap(coord_t x, coord_t y, const uint8_t * bmp)
-{
-  int width = getBitmapWidth(bmp);
-  int height = getBitmapHeight(bmp);
-
-  if (width == 0 || height == 0) {
-    return;
-  }
-
-  for (coord_t line=0; line<height; line++) {
-    display_t * p = &displayBuf[(y+line)*LCD_W + x];
-    const uint8_t * q = bmp + 4 + line*width*3;
-    for (coord_t col=0; col<width; col++) {
-      lcdDrawAlphaPixel(p, q[2]>>4, *((uint16_t *)q));
-      p++; q+=3;
-    }
-  }
-}
-
-void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bmp, coord_t offset, coord_t height, float scale)
-{
-  int width = getBitmapWidth(bmp);
-  int h = getBitmapHeight(bmp);
-
-  if (!height || height > h) {
-    height = h;
-  }
-
-  if (x+height > LCD_W) {
-    height = LCD_W-x;
-  }
-
-  if (width == 0 || height == 0) {
-    return;
-  }
-
-  if (scale == 0) {
-    lcdDrawBitmapDMA(x, y, width, height, bmp + 4 + offset * width * 2);
-  }
-  else {
-    int dstwidth = width * scale;
-    int dstheight = height * scale;
-    for (coord_t i=0; i<dstheight; i++) {
-      display_t * p = &displayBuf[(y+i)*LCD_W + x];
-      const uint8_t * qs = bmp + 4 + (offset+int(i/scale))*width*2;
-      for (coord_t j=0; j<dstwidth; j++) {
-        const uint8_t * q = qs + int(j/scale) * 2;
-        lcdDrawPixel(p, *((uint16_t *)q));
-        p++;
-      }
-    }
-  }
-}
-#endif
-
 void lcdDrawBlackOverlay()
 {
   lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
 }
 
-void lcdDrawCircle(int x0, int y0, int radius)
-{
-  int x = radius;
-  int y = 0;
-  int decisionOver2 = 1 - x;
+#if defined(SIMU)
+BitmapBuffer _lcd(LCD_W, LCD_H, displayBuf);
+BitmapBuffer * lcd = &_lcd;
 
-  while (y <= x) {
-    lcdDrawPixel(x+x0, y+y0, WHITE);
-    lcdDrawPixel(y+x0, x+y0, WHITE);
-    lcdDrawPixel(-x+x0, y+y0, WHITE);
-    lcdDrawPixel(-y+x0, x+y0, WHITE);
-    lcdDrawPixel(-x+x0, -y+y0, WHITE);
-    lcdDrawPixel(-y+x0, -x+y0, WHITE);
-    lcdDrawPixel(x+x0, -y+y0, WHITE);
-    lcdDrawPixel(y+x0, -x+y0, WHITE);
-    y++;
-    if (decisionOver2 <= 0) {
-      decisionOver2 += 2*y + 1;
-    }
-    else {
-      x--;
-      decisionOver2 += 2 * (y-x) + 1;
+void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+{
+  for (int i=0; i<h; i++) {
+    for (int j=0; j<w; j++) {
+      dest[(y+i)*destw+x+j] = color;
     }
   }
 }
 
-#define PI 3.14159265
-
-bool evalSlopes(int * slopes, int startAngle, int endAngle)
+void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t h)
 {
-  if (startAngle >= 360 || endAngle <= 0)
-    return false;
-
-  if (startAngle == 0) {
-    slopes[1] = 100000;
-    slopes[2] = -100000;
-  }
-  else {
-    float angle1 = float(startAngle) * PI / 180;
-    if (startAngle >= 180) {
-      slopes[1] = -100000;
-      slopes[2] = cos(angle1) * 100 / sin(angle1);
-    }
-    else {
-      slopes[1] = cos(angle1) * 100 / sin(angle1);
-      slopes[2] = -100000;
-    }
-  }
-
-  if (endAngle == 360) {
-    slopes[0] = -100000;
-    slopes[3] = 100000;
-  }
-  else {
-    float angle2 = float(endAngle) * PI / 180;
-    if (endAngle >= 180) {
-      slopes[0] = -100000;
-      slopes[3] = -cos(angle2) * 100 / sin(angle2);
-    }
-    else {
-      slopes[0] = cos(angle2) * 100 / sin(angle2);
-      slopes[3] = -100000;
-    }
-  }
-
-  return true;
-}
-
-void lcdDrawPie(int x0, int y0, int radius, int startAngle, int endAngle)
-{
-  int slopes[4];
-  if (!evalSlopes(slopes, startAngle, endAngle))
-    return;
-
-  for (int y=0; y<=radius; y++) {
-    for (int x=0; x<=radius; x++) {
-      if (x*x+y*y <= radius*radius) {
-        int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
-        if (slope >= slopes[0] && slope < slopes[1]) {
-          lcdDrawPixel(x0+x, y0-y, WHITE);
-        }
-        if (-slope >= slopes[0] && -slope < slopes[1]) {
-          lcdDrawPixel(x0+x, y0+y, WHITE);
-        }
-        if (slope >= slopes[2] && slope < slopes[3]) {
-          lcdDrawPixel(x0-x, y0-y, WHITE);
-        }
-        if (-slope >= slopes[2] && -slope < slopes[3]) {
-          lcdDrawPixel(x0-x, y0+y, WHITE);
-        }
-      }
-    }
+  for (int i=0; i<h; i++) {
+    memcpy(dest+(y+i)*destw+x, src+i*srcw, 2*srcw);
   }
 }
-
-void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle)
-{
-  const uint16_t * q = img;
-  coord_t width = *q++;
-  coord_t height = *q++;
-
-  int slopes[4];
-  if (!evalSlopes(slopes, startAngle, endAngle))
-    return;
-
-  int w2 = width/2;
-  int h2 = height/2;
-
-  for (int y=h2-1; y>=0; y--) {
-    for (int x=w2-1; x>=0; x--) {
-      int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
-      if (slope >= slopes[0] && slope < slopes[1]) {
-        displayBuf[(y0+h2-y)*LCD_W + x0+w2+x] = q[(h2-y)*width + w2+x];
-      }
-      if (-slope >= slopes[0] && -slope < slopes[1]) {
-        displayBuf[(y0+h2+y)*LCD_W + x0+w2+x] = q[(h2+y)*width + w2+x];
-      }
-      if (slope >= slopes[2] && slope < slopes[3]) {
-        displayBuf[(y0+h2-y)*LCD_W + x0+w2-x] = q[(h2-y)*width + w2-x];
-      }
-      if (-slope >= slopes[2] && -slope < slopes[3]) {
-        displayBuf[(y0+h2+y)*LCD_W + x0+w2-x] = q[(h2+y)*width + w2-x];
-      }
-    }
-  }
-}
-
-void lcdDrawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags, int startAngle, int endAngle)
-{
-  coord_t width = *((uint16_t *)img);
-  coord_t height = *(((uint16_t *)img)+1);
-  const uint8_t * q = img+4;
-
-  int slopes[4];
-  if (!evalSlopes(slopes, startAngle, endAngle))
-    return;
-
-  display_t color = lcdColorTable[COLOR_IDX(flags)];
-
-  int w2 = width/2;
-  int h2 = height/2;
-
-  for (int y=h2-1; y>=0; y--) {
-    for (int x=w2-1; x>=0; x--) {
-      int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
-      if (slope >= slopes[0] && slope < slopes[1]) {
-        lcdDrawAlphaPixel(x0+w2+x, y0+h2-y, q[(h2-y)*width + w2+x], color);
-      }
-      if (-slope >= slopes[0] && -slope < slopes[1]) {
-        lcdDrawAlphaPixel(x0+w2+x, y0+h2+y, q[(h2+y)*width + w2+x], color);
-      }
-      if (slope >= slopes[2] && slope < slopes[3]) {
-        lcdDrawAlphaPixel(x0+w2-x, y0+h2-y, q[(h2-y)*width + w2-x], color);
-      }
-      if (-slope >= slopes[2] && -slope < slopes[3]) {
-        lcdDrawAlphaPixel(x0+w2-x, y0+h2+y, q[(h2+y)*width + w2-x], color);
-      }
-    }
-  }
-}
+#endif

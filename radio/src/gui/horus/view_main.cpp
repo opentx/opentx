@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define TRIM_LH_X                      10
 #define TRIM_LV_X                      24
@@ -80,14 +80,6 @@ void drawTrims(uint8_t flightMode)
   }
 }
 
-bool isViewAvailable(int index)
-{
-  if (index <= VIEW_CHANNELS)
-    return true;
-  else
-    return TELEMETRY_SCREEN_TYPE(index-VIEW_TELEM1) != TELEMETRY_SCREEN_TYPE_NONE;
-}
-
 void onMainViewMenu(const char *result)
 {
   if (result == STR_MODEL_SELECT) {
@@ -129,6 +121,16 @@ void onMainViewMenu(const char *result)
   }
 }
 
+int getMainViewsCount()
+{
+  for (int index=1; index<MAX_CUSTOM_SCREENS; index++) {
+    if (!customScreens[index]) {
+      return index;
+    }
+  }
+  return MAX_CUSTOM_SCREENS;
+}
+
 bool menuMainView(evt_t event)
 {
   switch (event) {
@@ -166,13 +168,13 @@ bool menuMainView(evt_t event)
 
     case EVT_KEY_BREAK(KEY_DOWN):
       storageDirty(EE_GENERAL);
-      g_eeGeneral.view = circularIncDec(g_eeGeneral.view, +1, 0, VIEW_COUNT-1, isViewAvailable);
+      g_eeGeneral.view = circularIncDec(g_eeGeneral.view, +1, 0, getMainViewsCount()-1);
       break;
 
     case EVT_KEY_BREAK(KEY_UP):
       killEvents(event);
       storageDirty(EE_GENERAL);
-      g_eeGeneral.view = circularIncDec(g_eeGeneral.view, -1, 0, VIEW_COUNT-1, isViewAvailable);
+      g_eeGeneral.view = circularIncDec(g_eeGeneral.view, -1, 0, getMainViewsCount()-1);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -185,8 +187,8 @@ bool menuMainView(evt_t event)
       break;
   }
 
-  if (customScreens[0]) {
-    customScreens[0]->refresh();
+  if (customScreens[g_eeGeneral.view]) {
+    customScreens[g_eeGeneral.view]->refresh();
   }
 
   return true;

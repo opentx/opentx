@@ -355,11 +355,11 @@ static int luaLcdDrawPixmap(lua_State *L)
 
 #if defined(PCBTARANIS)
   uint8_t bitmap[BITMAP_BUFFER_SIZE(LCD_W/2, LCD_H)]; // width max is LCD_W/2 pixels for saving stack and avoid a malloc here
-  if (bmpLoad(bitmap, filename, LCD_W/2, LCD_H)) {
+  if (lcdLoadBitmap(bitmap, filename, LCD_W/2, LCD_H)) {
     lcdDrawBitmap(x, y, bitmap);
   }
 #else
-  uint8_t * bitmap = bmpLoad(filename);
+  uint8_t * bitmap = lcdLoadBitmap(filename);
   if (bitmap) {
     lcdDrawBitmap(x, y, bitmap);
     free(bitmap);

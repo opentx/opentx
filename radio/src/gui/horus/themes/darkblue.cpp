@@ -20,19 +20,11 @@
 
 #include "opentx.h"
 
-const uint8_t LBM_TOPMENU_BMP_OPENTX[] __ALIGNED = {
-#include "bmp_topmenu_opentx.lbm"
-};
-
-const uint8_t LBM_THEME_DARKBLUE[] __ALIGNED = {
-#include "bmp_darkblue.lbm"
-};
-
 class DarkblueTheme: public Theme
 {
   public:
     DarkblueTheme():
-      Theme("Darkblue", LBM_THEME_DARKBLUE)
+      Theme("Darkblue")
     {
     }
 
@@ -74,11 +66,12 @@ class DarkblueTheme: public Theme
         lcdDrawBitmapPattern(5, 7, icon, MENU_TITLE_COLOR);
       }
       else {
-        lcdDrawBitmap(5, 7, LBM_TOPMENU_BMP_OPENTX);
+        static BitmapBuffer * thumb = BitmapBuffer::load(getFilePath("topmenu_opentx.bmp"));
+        lcd->drawBitmap(5, 7, thumb);
       }
 
       drawTopbarDatetime();
     }
 };
 
-DarkblueTheme darkblueTheme;
+const DarkblueTheme darkblueTheme;

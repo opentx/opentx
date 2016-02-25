@@ -8,9 +8,9 @@ add_custom_target(ttf_horus_fonts DEPENDS ttf_horus_tinsize ttf_horus_smlsize tt
 
 add_bitmaps_target(horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/bmp_*.png" 480 5/6/5)
 add_bitmaps_target(horus_calibration_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/calibration/bmp_*.png" 480 5/6/5)
-add_bitmaps_target(horus_button_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/button/alpha_*.png" 480 5/6/5/8)
-add_bitmaps_target(horus_alpha_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/alpha_*.png" 480 5/6/5/8)
-add_bitmaps_target(horus_alpha_calibration_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/calibration/alpha_*.png" 480 5/6/5/8)
+add_bitmaps_target(horus_button_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/button/alpha_*.png" 480 4/4/4/4)
+add_bitmaps_target(horus_alpha_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/alpha_*.png" 480 4/4/4/4)
+add_bitmaps_target(horus_alpha_calibration_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/calibration/alpha_*.png" 480 4/4/4/4)
 add_bitmaps_target(horus_masks ${RADIO_SRC_DIRECTORY}/bitmaps/horus/mask_*.png 480 8bits)
 add_bitmaps_target(horus_slider_masks "${RADIO_SRC_DIRECTORY}/bitmaps/horus/slider/*.png" 480 8bits)
 add_bitmaps_target(horus_layouts_masks "${RADIO_SRC_DIRECTORY}/gui/horus/layouts/*.png" 480 8bits)

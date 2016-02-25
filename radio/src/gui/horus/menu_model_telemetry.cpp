@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -334,7 +334,7 @@ bool menuModelSensor(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AUTOOFFSET);
         sensor->autoOffset = editCheckBox(sensor->autoOffset, SENSOR_2ND_COLUMN, y, attr, event);
         break;
-        
+
       case SENSOR_FIELD_ONLYPOSITIVE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ONLYPOSITIVE);
         sensor->onlyPositive = editCheckBox(sensor->onlyPositive, SENSOR_2ND_COLUMN, y, attr, event);
@@ -344,7 +344,7 @@ bool menuModelSensor(evt_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FILTER);
         sensor->filter = editCheckBox(sensor->filter, SENSOR_2ND_COLUMN, y, attr, event);
         break;
-        
+
       case SENSOR_FIELD_PERSISTENT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_PERSISTENT));
         sensor->persistent = editCheckBox(sensor->persistent, SENSOR_2ND_COLUMN, y, attr, event);
@@ -381,7 +381,7 @@ void onSensorMenu(const char *result)
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
-      
+
       if (newIndex >= 0) {
         TelemetrySensor & sourceSensor = g_model.telemetrySensors[index];
         TelemetrySensor & newSensor = g_model.telemetrySensors[newIndex];
@@ -390,7 +390,7 @@ void onSensorMenu(const char *result)
         TelemetryItem & newItem = telemetryItems[newIndex];
         newItem = sourceItem;
         storageDirty(EE_MODEL);
-      } 
+      }
       else {
         POPUP_WARNING(STR_TELEMETRYFULL);
       }
@@ -406,7 +406,7 @@ bool menuModelTelemetry(evt_t event)
       delTelemetryIndex(i);
     }
   }
-  
+
   MENU(STR_MENUTELEMETRY, LBM_MODEL_ICONS, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
@@ -477,7 +477,7 @@ bool menuModelTelemetry(evt_t event)
           allowNewSensors = !allowNewSensors;
         }
         break;
-        
+
       case ITEM_TELEMETRY_NEW_SENSOR:
         lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_TELEMETRY_NEWSENSOR), attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER)) {
@@ -492,7 +492,7 @@ bool menuModelTelemetry(evt_t event)
           }
         }
         break;
-        
+
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
         lcdDrawText(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, NO_INDENT(STR_DELETE_ALL_SENSORS), attr);
         if (attr)
@@ -501,7 +501,7 @@ bool menuModelTelemetry(evt_t event)
           killEvents(KEY_ENTER);
           POPUP_CONFIRMATION(STR_CONFIRMDELETE);
         }
-        break;        
+        break;
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_IGNORE_INSTANCE);

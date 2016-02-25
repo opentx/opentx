@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -41,7 +41,6 @@ uint8_t LCD_FIRST_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 uint8_t LCD_SECOND_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 uint8_t LCD_BACKUP_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 
-uint8_t * CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
 uint32_t CurrentLayer = LCD_FIRST_LAYER;
 
 #define NRST_LOW()   do { LCD_GPIO_NRST->BSRRH = LCD_GPIO_PIN_NRST; } while(0)
@@ -381,6 +380,10 @@ void LCD_Init(void)
   LCD_ControlLight(100);
 }
 
+BitmapBuffer lcdBuffer1(LCD_W, LCD_H, (uint16_t *)LCD_FIRST_FRAME_BUFFER);
+BitmapBuffer lcdBuffer2(LCD_W, LCD_H, (uint16_t *)LCD_SECOND_FRAME_BUFFER);
+BitmapBuffer * lcd = &lcdBuffer1;
+
 /**
   * @brief  Sets the LCD Layer.
   * @param  Layerx: specifies the Layer foreground or background.
@@ -389,11 +392,11 @@ void LCD_Init(void)
 void LCD_SetLayer(uint32_t Layerx)
 {
   if (Layerx == LCD_FIRST_LAYER) {
-    CurrentFrameBuffer = LCD_FIRST_FRAME_BUFFER;
+    lcd = &lcdBuffer1;
     CurrentLayer = LCD_FIRST_LAYER;
   }
   else {
-    CurrentFrameBuffer = LCD_SECOND_FRAME_BUFFER;
+    lcd = &lcdBuffer2;
     CurrentLayer = LCD_SECOND_LAYER;
   }
 }
@@ -428,31 +431,26 @@ void lcdInit(void)
   LCD_SetLayer(LCD_FIRST_LAYER);
   // lcdClear();
   LCD_SetTransparency(0);
-  
+
   /* Set Foreground layer */
   LCD_SetLayer(LCD_SECOND_LAYER);
-  lcdClear();
+  lcd->clear();
   LCD_SetTransparency(255);
 }
 
-void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-  uint32_t addr = (uint32_t)CurrentFrameBuffer + 2*(LCD_W*y + x);
-  uint8_t red = (0xF800 & color) >> 11;
-  uint8_t blue = 0x001F & color;
-  uint8_t green = (0x07E0 & color) >> 5;
-
   DMA2D_DeInit();
 
   DMA2D_InitTypeDef DMA2D_InitStruct;
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_R2M;
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
-  DMA2D_InitStruct.DMA2D_OutputGreen = green;
-  DMA2D_InitStruct.DMA2D_OutputBlue = blue;
-  DMA2D_InitStruct.DMA2D_OutputRed = red;
+  DMA2D_InitStruct.DMA2D_OutputGreen = (0x07E0 & color) >> 5;
+  DMA2D_InitStruct.DMA2D_OutputBlue = 0x001F & color;
+  DMA2D_InitStruct.DMA2D_OutputRed = (0xF800 & color) >> 11;
   DMA2D_InitStruct.DMA2D_OutputAlpha = 0x0F;
-  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = addr;
-  DMA2D_InitStruct.DMA2D_OutputOffset = (LCD_W - w);
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
+  DMA2D_InitStruct.DMA2D_OutputOffset = (destw - w);
   DMA2D_InitStruct.DMA2D_NumberOfLine = h;
   DMA2D_InitStruct.DMA2D_PixelPerLine = w;
   DMA2D_Init(&DMA2D_InitStruct);
@@ -464,31 +462,26 @@ void lcdDrawSolidFilledRectDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, u
   while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
-void lcdDrawBitmapDMA(uint16_t x, uint16_t y, uint16_t w, uint16_t h, const uint8_t * bitmap)
+void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t h)
 {
-  if ((uint32_t(bitmap) & 0x03) != 0)
-    return;
-
-  uint32_t addr = (uint32_t)CurrentFrameBuffer + 2*(LCD_W*y + x);
-
   DMA2D_DeInit();
 
   DMA2D_InitTypeDef DMA2D_InitStruct;
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M;
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
-  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = addr;
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
   DMA2D_InitStruct.DMA2D_OutputGreen = 0;
   DMA2D_InitStruct.DMA2D_OutputBlue = 0;
   DMA2D_InitStruct.DMA2D_OutputRed = 0;
   DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
-  DMA2D_InitStruct.DMA2D_OutputOffset = (LCD_W - w);
+  DMA2D_InitStruct.DMA2D_OutputOffset = (destw - srcw);
   DMA2D_InitStruct.DMA2D_NumberOfLine = h;
-  DMA2D_InitStruct.DMA2D_PixelPerLine = w;
+  DMA2D_InitStruct.DMA2D_PixelPerLine = srcw;
   DMA2D_Init(&DMA2D_InitStruct);
 
   DMA2D_FG_InitTypeDef DMA2D_FG_InitStruct;
   DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
-  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(bitmap);
+  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src);
   DMA2D_FG_InitStruct.DMA2D_FGO = 0;
   DMA2D_FG_InitStruct.DMA2D_FGCM = CM_RGB565;
   DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
@@ -537,12 +530,12 @@ void DMAcopy(void * src, void * dest, int len)
 
 void lcdStoreBackupBuffer()
 {
-  DMAcopy(CurrentFrameBuffer, LCD_BACKUP_FRAME_BUFFER, DISPLAY_BUFFER_SIZE);
+  DMAcopy(lcd->data, LCD_BACKUP_FRAME_BUFFER, DISPLAY_BUFFER_SIZE);
 }
 
 int lcdRestoreBackupBuffer()
 {
-  DMAcopy(LCD_BACKUP_FRAME_BUFFER, CurrentFrameBuffer, DISPLAY_BUFFER_SIZE);
+  DMAcopy(LCD_BACKUP_FRAME_BUFFER, lcd->data, DISPLAY_BUFFER_SIZE);
   return 1;
 }
 

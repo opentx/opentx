@@ -238,9 +238,9 @@ bool menuModelCurveOne(evt_t event)
     if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
 
     if (i>=pointsOfs && i<pointsOfs+5) {
-      lcdDrawNumber(posX, MENU_CONTENT_TOP + 5*FH-12, i+1, TEXT_DISABLE_COLOR);
-      lcdDrawNumber(posX, MENU_CONTENT_TOP + 6*FH-10,   x, (selectionMode==1 ? attr : 0));
-      lcdDrawNumber(posX, MENU_CONTENT_TOP + 7*FH-6, points[i], (selectionMode==2 ? attr : 0));
+      lcdDrawNumber(posX, MENU_CONTENT_TOP + 5*FH-12, i+1, TEXT_DISABLE_COLOR|RIGHT);
+      lcdDrawNumber(posX, MENU_CONTENT_TOP + 6*FH-10,   x, RIGHT|(selectionMode==1 ? attr : 0));
+      lcdDrawNumber(posX, MENU_CONTENT_TOP + 7*FH-6, points[i], RIGHT|(selectionMode==2 ? attr : 0));
       posX += 45;
     }
 

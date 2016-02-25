@@ -269,7 +269,12 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check(event, menu, tab, tabCount, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawMenuTemplate(title, icons); \
+  drawMenuTemplate(title, icons);
+
+#define CUSTOM_MENU_WITH_OPTIONS(title, icons, tab, tabCount, menu, lines_count) \
+    if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
+    if (!check(event, menu, tab, tabCount, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+    drawMenuTemplate(title, icons);
 
 #define MENU(title, icons, tab, menu, lines_count, ...) \
   MENU_WITH_OPTIONS(title, icons, tab, DIM(tab), menu, lines_count, __VA_ARGS__)

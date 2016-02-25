@@ -295,7 +295,7 @@ bool menuModelExpoOne(evt_t event)
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#define EXPO_LINE_WEIGHT_POS    92
+#define EXPO_LINE_WEIGHT_POS    110
 #define EXPO_LINE_SRC_POS       115
 #define EXPO_LINE_CURVE_POS     162
 #define EXPO_LINE_SWITCH_POS    210
@@ -527,7 +527,7 @@ bool menuModelExposAll(evt_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
+          GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, RIGHT | attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
           displayExpoLine(y, ed);
 
           if (s_copyMode) {

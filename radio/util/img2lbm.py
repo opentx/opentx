@@ -41,29 +41,32 @@ with open(sys.argv[2], "w") as f:
                 f.write("0x%02x," % value)
             f.write("\n")
     elif what == "4/4/4/4":
-        colors = []
-        f.write("%d,%d,\n" % (width, height))
+        constant = sys.argv[2].upper()[:-4]
+        values = []
         for y in range(height):
             for x in range(width):
                 pixel = image.pixel(x, y)
-                f.write("0x%1x%1x%1x%1x," % (Qt.qAlpha(pixel) // 16, Qt.qRed(pixel) // 16, Qt.qGreen(pixel) // 16, Qt.qBlue(pixel) // 16))
-            f.write("\n")
+                val = ((Qt.qAlpha(pixel) // 16) << 12) + ((Qt.qRed(pixel) // 16) << 8) + ((Qt.qGreen(pixel) // 16) << 4) + ((Qt.qBlue(pixel) // 16) << 0)
+                values.append(str(val))
+        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
+        f.write("const Bitmap %s(%d, %d, __%s);\n" % (constant, width, height, constant))
     elif what == "5/6/5":
-        colors = []
-        writeSize(f, width, height)
+        constant = sys.argv[2].upper()[:-4]
+        values = []
         for y in range(height):
             for x in range(width):
                 pixel = image.pixel(x, y)
                 val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
-                f.write("%d,%d," % (val % 256, val // 256))
-            f.write("\n")
+                values.append(str(val))
+        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
+        f.write("const Bitmap %s(%d, %d, __%s);\n" % (constant, width, height, constant))
     elif what == "5/6/5/8":
         colors = []
         writeSize(f, width, height)
         for y in range(height):
             for x in range(width):
                 pixel = image.pixel(x, y)
-                val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
+                val = ((Qt.qRed(pixel) >> 4) << 12) + ((Qt.qGreen(pixel) >> 4) << 7) + ((Qt.qBlue(pixel) >> 4) << 1)
                 f.write("%d,%d,%d," % (val % 256, val // 256, Qt.qAlpha(pixel)))
             f.write("\n")
     elif what == "4bits":

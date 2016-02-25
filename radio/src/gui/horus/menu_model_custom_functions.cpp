@@ -336,7 +336,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
               lcdDrawText(MODEL_CUSTOM_FUNC_4TH_COLUMN-1, y, "!1x", attr);
             }
             else {
-              lcdDrawNumber(MODEL_CUSTOM_FUNC_4TH_COLUMN+12, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr, 0, NULL, "s");
+              lcdDrawNumber(MODEL_CUSTOM_FUNC_4TH_COLUMN+12, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr|RIGHT, 0, NULL, "s");
             }
           }
           else if (attr) {

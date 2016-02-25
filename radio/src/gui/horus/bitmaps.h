@@ -65,20 +65,12 @@ extern const uint8_t LBM_SCORE1[];
 extern const uint8_t LBM_STAR0[];
 extern const uint8_t LBM_STAR1[];
 
-// Calibration screen
-extern const uint8_t LBM_HORUS[];
-extern const uint8_t LBM_STICK_BACKGROUND[];
-extern const uint8_t LBM_STICK_POINTER[];
-
 // Other icons
 extern const uint8_t LBM_SPLASH[];
-extern const uint8_t LBM_ASTERISK[];
 extern const uint8_t LBM_POINT[];
 extern const uint8_t LBM_CURVE_POINT[];
 extern const uint8_t LBM_CURVE_POINT_CENTER[];
 extern const uint8_t LBM_CURVE_COORD_SHADOW[];
-extern const uint8_t LBM_SHUTDOWN[];
-extern const uint8_t LBM_SLEEP[];
 extern const uint8_t LBM_SHUTDOWN_CIRCLE[];
 
 // Slider bitmaps
@@ -91,10 +83,6 @@ extern const uint8_t LBM_SLIDER_POINT_IN[];
 // Carroussel bitmaps
 extern const uint8_t LBM_CARROUSSEL_LEFT[];
 extern const uint8_t LBM_CARROUSSEL_RIGHT[];
-
-// Button bitmaps
-extern const uint8_t LBM_BUTTON_ON[];
-extern const uint8_t LBM_BUTTON_OFF[];
 
 extern const uint8_t LBM_SWIPE_CIRCLE[];
 extern const uint8_t LBM_SWIPE_LEFT[];

@@ -24,17 +24,7 @@ const uint8_t LBM_TOPMENU_MASK_OPENTX[] = {
 #include "mask_topmenu_opentx.lbm"
 };
 
-const uint8_t LBM_MAINVIEW_BACKGROUND[] __ALIGNED = {
-#include "bmp_background.lbm"
-};
-
-const uint8_t LBM_THEME_DEFAULT[] __ALIGNED = {
-#include "bmp_default.lbm"
-};
-
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
-  { "Default background", ZoneOption::Bool, { .boolValue = 1 } },
-  { "Background file", ZoneOption::File, { .stringValue = "\0\0\0\0\0\0\0" } },
   { "Background color", ZoneOption::Color, { .unsignedValue = WHITE } },
   { NULL, ZoneOption::Bool }
 };
@@ -43,7 +33,7 @@ class DefaultTheme: public Theme
 {
   public:
     DefaultTheme():
-      Theme("Default", LBM_THEME_DEFAULT, OPTIONS_THEME_DEFAULT)
+      Theme("Default", OPTIONS_THEME_DEFAULT)
     {
     }
 
@@ -78,12 +68,21 @@ class DefaultTheme: public Theme
 
     virtual void drawBackground() const
     {
-      if (g_eeGeneral.themeData.options[0].boolValue) {
-        lcdDrawBitmap(0, 0, LBM_MAINVIEW_BACKGROUND);
+      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.bmp"));
+      if (backgroundBitmap) {
+        lcd->drawBitmap(0, 0, backgroundBitmap);
       }
       else {
-        lcdSetColor(g_eeGeneral.themeData.options[2].unsignedValue);
+        lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
         lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+      }
+    }
+
+    virtual void drawAboutBackground() const
+    {
+      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("aboutbg.bmp"));
+      if (backgroundBitmap) {
+        lcd->drawBitmap(0, 0, backgroundBitmap);
       }
     }
 
@@ -103,5 +102,5 @@ class DefaultTheme: public Theme
     }
 };
 
-const DefaultTheme defaultTheme;
-const Theme * theme = &defaultTheme;
+DefaultTheme defaultTheme;
+Theme * theme = &defaultTheme;

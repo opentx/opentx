@@ -27,7 +27,7 @@
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
 
 int currentBitmapIndex = 0;
-uint8_t * currentBitmap = NULL;
+BitmapBuffer * currentBitmap = NULL;
 
 bool menuGeneralSdManagerInfo(evt_t event)
 {
@@ -365,12 +365,12 @@ bool menuGeneralSdManager(evt_t _event)
   if (ext && (!strcasecmp(ext, BITMAPS_EXT) || !strcasecmp(ext, PNG_EXT) || !strcasecmp(ext, JPG_EXT))) {
     if (currentBitmapIndex != menuVerticalPosition) {
       currentBitmapIndex = menuVerticalPosition;
-      free(currentBitmap);
-      currentBitmap = bmpLoad(reusableBuffer.sdmanager.lines[index]);
+      delete currentBitmap;
+      currentBitmap = BitmapBuffer::load(reusableBuffer.sdmanager.lines[index]);
+      // TODO scale in case of a too large bitmap
     }
     if (currentBitmap) {
-      // TODO scale in case of a too large bitmap
-      lcdDrawBitmap(LCD_W / 2, LCD_H / 2, currentBitmap);
+      lcd->drawBitmap(LCD_W / 2, LCD_H / 2, currentBitmap);
     }
   }
 

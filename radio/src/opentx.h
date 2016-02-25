@@ -203,7 +203,11 @@
   #define ROTARY_ENCODER_NAVIGATION
 #endif
 
-#define __ALIGNED __attribute__((aligned(32)))
+#if defined(SIMU)
+  #define __ALIGNED
+#else
+  #define __ALIGNED __attribute__((aligned(32)))
+#endif
 
 #if defined(SIMU)
   #define __DMA
@@ -213,7 +217,7 @@
   #define __DMA __ALIGNED
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) && !defined(SIMU)
   #define __SDRAM __attribute__((section(".sdram"), aligned(32)))
 #else
   #define __SDRAM __DMA

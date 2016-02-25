@@ -37,15 +37,42 @@ ZoneOptionValue * Theme::getOptionValue(unsigned int index) const
   return &g_eeGeneral.themeData.options[index];
 }
 
-void Theme::drawThumb(uint16_t x, uint16_t y, uint32_t flags) const
+const char * Theme::getFilePath(const char * filename) const
 {
-  lcdDrawBitmap(x, y, bitmap);
+  static char path[_MAX_LFN+1] = THEMES_PATH "/";
+  strcpy(path + sizeof(THEMES_PATH), getName());
+  int len = sizeof(THEMES_PATH) + strlen(path + sizeof(THEMES_PATH));
+  path[len] = '/';
+  strcpy(path+len+1, filename);
+  return path;
+}
+
+void Theme::drawThumb(uint16_t x, uint16_t y, uint32_t flags)
+{
+  #define THUMB_WIDTH   51
+  #define THUMB_HEIGHT  31
+  if (!thumb) {
+    thumb = BitmapBuffer::load(getFilePath("thumb.bmp"));
+  }
+  if (thumb) {
+    lcd->drawBitmap(x, y, thumb);
+  }
+  if (flags == LINE_COLOR) {
+    lcdDrawFilledRect(x, y, THUMB_WIDTH, THUMB_HEIGHT, SOLID, OVERLAY_COLOR | OPACITY(10));
+  }
 }
 
 void Theme::drawBackground() const
 {
   lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
 }
+
+void Theme::drawAboutBackground() const
+{
+  drawBackground();
+}
+
+#include "alpha_asterisk.lbm"
 
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const
 {
@@ -55,7 +82,10 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
   //}
 
   if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
-    lcdDrawAlphaBitmap(POPUP_X-80, POPUP_Y+12, LBM_ASTERISK);
+    lcd->drawAlphaBitmap(POPUP_X-80, POPUP_Y+12, &ALPHA_ASTERISK);
+  }
+  else {
+    lcd->drawAlphaBitmap(POPUP_X-80, POPUP_Y+12, &ALPHA_ASTERISK);
   }
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
@@ -79,9 +109,9 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
   }
 }
 
-const Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
+Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
 unsigned int countRegisteredThemes = 0;
-void registerTheme(const Theme * theme)
+void registerTheme(Theme * theme)
 {
   if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
     TRACE("register theme %s", theme->getName());
@@ -89,10 +119,10 @@ void registerTheme(const Theme * theme)
   }
 }
 
-const Theme * getTheme(const char * name)
+Theme * getTheme(const char * name)
 {
   for (unsigned int i=0; i<countRegisteredThemes; i++) {
-    const Theme * theme = registeredThemes[i];
+    Theme * theme = registeredThemes[i];
     if (!strcmp(name, theme->getName())) {
       return theme;
     }
@@ -100,7 +130,7 @@ const Theme * getTheme(const char * name)
   return NULL;
 }
 
-void loadTheme(const Theme * new_theme)
+void loadTheme(Theme * new_theme)
 {
   TRACE("load theme %s", new_theme->getName());
   theme = new_theme;
@@ -112,7 +142,7 @@ void loadTheme()
   char name[sizeof(g_eeGeneral.themeName)+1];
   memset(name, 0, sizeof(name));
   strncpy(name, g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
-  const Theme * new_theme = getTheme(name);
+  Theme * new_theme = getTheme(name);
   if (new_theme) {
     loadTheme(new_theme);
   }

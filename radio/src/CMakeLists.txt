@@ -70,6 +70,7 @@ if(PCB STREQUAL HORUS)
   file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/horus ${RADIO_SRC_DIRECTORY}/gui/horus/widgets/*.cpp)
   set(GUI_SRC
     ${GUI_SRC}
+    bitmapbuffer.cpp
     curves.cpp
     bitmaps.cpp
     menu_general_hardware.cpp
@@ -87,7 +88,7 @@ if(PCB STREQUAL HORUS)
     ${LAYOUTS_SRC}
     ${WIDGETS_SRC}
     )
-  set(SRC ${SRC} bmp.cpp targets/taranis/rtc_driver.cpp)
+  set(SRC ${SRC} targets/taranis/rtc_driver.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
@@ -146,8 +147,7 @@ elseif(PCB STREQUAL TARANIS)
   add_definitions(-DPCBTARANIS)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DDBLKEYS -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
-  set(SRC ${SRC} bmp.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_model_inputs.cpp menu_model_mixes.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+  set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
   set(FIRMWARE_TARGET_SRC
@@ -767,6 +767,7 @@ foreach(FILE ${PULSES_SRC})
 endforeach()
 
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
+add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
 
 if(NOT WIN32)
   add_subdirectory(targets/simu)
@@ -774,8 +775,6 @@ if(NOT WIN32)
 endif()
 
 set(SRC ${SRC} ${FIRMWARE_SRC})
-
-set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
 
 # trick to remove the -rdynamic and --out-implib issues
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
@@ -798,7 +797,7 @@ if(ARCH STREQUAL ARM)
   set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
   set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
   set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
-  set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
+  set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
   if(PCB STREQUAL TARANIS)
     add_subdirectory(targets/${TARGET_DIR}/bootloader)

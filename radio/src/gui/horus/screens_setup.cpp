@@ -57,6 +57,16 @@ void onZoneOptionFileSelectionMenu(const char * result)
   }
 }
 
+int getZoneOptionColumns(const ZoneOption * option)
+{
+  if (option->type == ZoneOption::Color) {
+    return 2;
+  }
+  else {
+    return 0;
+  }
+}
+
 void editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, evt_t event)
 {
   lcdDrawText(MENUS_MARGIN_LEFT, y, option->name);
@@ -115,11 +125,29 @@ void editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     }
   }
   else if (option->type == ZoneOption::Color) {
+    COLOR_SPLIT(value->unsignedValue, r, g, b);
+
     lcdSetColor(value->unsignedValue);
-    lcdDrawSolidRect(SCREENS_SETUP_2ND_COLUMN, y, 40, 15, 1, attr ? TEXT_INVERTED_BGCOLOR : TEXT_COLOR);
-    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN + 1, y + 1, 38, 13, CUSTOM_COLOR);
-    if (attr) {
-      value->unsignedValue = checkIncDec(event, value->unsignedValue, i_flags, 65535, 0);
+    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y-1, 42, 17, TEXT_COLOR);
+    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN, y, 40, 15, CUSTOM_COLOR);
+
+    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 50, y, "R:", TEXT_COLOR);
+    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 70, y, r << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 0) ? attr : 0));
+    if (attr && menuHorizontalPosition == 0) {
+      r = checkIncDec(event, r, 0, (1<<5)-1, i_flags);
+    }
+    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 110, y, "G:", TEXT_COLOR);
+    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 130, y, g << 2, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 1) ? attr : 0));
+    if (attr && menuHorizontalPosition == 1) {
+      g = checkIncDec(event, g, 0, (1<<6)-1, i_flags);
+    }
+    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 170, y, "B:", TEXT_COLOR);
+    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 190, y, b << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 2) ? attr : 0));
+    if (attr && menuHorizontalPosition == 2) {
+      b = checkIncDec(event, b, 0, (1<<5)-1, i_flags);
+    }
+    if (attr && checkIncDec_Ret) {
+      value->unsignedValue = COLOR_JOIN(r, g, b);
     }
   }
 }
@@ -153,11 +181,6 @@ bool menuSettings(const char * title, const T * object, uint32_t i_flags, evt_t 
 bool menuWidgetSettings(evt_t event)
 {
   return menuSettings<Widget>("Widget settings", currentWidget, EE_MODEL, event);
-}
-
-bool menuThemeSettings(evt_t event)
-{
-  return menuSettings<Theme>("Theme settings", theme, EE_GENERAL, event);
 }
 
 bool menuWidgetChoice(evt_t event)
@@ -328,7 +351,7 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
   }
   if (attr) {
     if (menuHorizontalPosition < 0) {
-      lcdDrawSolidFilledRect(x-3, y-2, min<uint8_t>(4, count)*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x-3, y-1, min<uint8_t>(4, count)*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
     }
     else {
       if (needsOffsetCheck) {
@@ -345,15 +368,15 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
   unsigned int last = min<int>(menuHorizontalOffset + 4, count);
   for (unsigned int i=menuHorizontalOffset, pos=x; i<last; i++, pos += 56) {
     T * element = array[i];
-    element->drawThumb(pos, y, current == element ? ((attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
+    element->drawThumb(pos, y+1, current == element ? ((attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
   }
   if (count > 4) {
-    lcdDrawBitmapPattern(x - 12, y, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
-    lcdDrawBitmapPattern(x + 4 * 56, y, LBM_CARROUSSEL_RIGHT, last < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
+    lcdDrawBitmapPattern(x - 12, y+1, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
+    lcdDrawBitmapPattern(x + 4 * 56, y+1, LBM_CARROUSSEL_RIGHT, last < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
   }
   if (attr && menuHorizontalPosition >= 0) {
-    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 2, 57, 35, 1, TEXT_INVERTED_BGCOLOR);
-    if (menuHorizontalPosition != currentIndex && event == EVT_KEY_BREAK(KEY_ENTER)) {
+    lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 1, 57, 35, 1, TEXT_INVERTED_BGCOLOR);
+    if (event == EVT_KEY_BREAK(KEY_ENTER)) {
       s_editMode = 0;
       return array[menuHorizontalPosition];
     }
@@ -361,19 +384,39 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
   return NULL;
 }
 
+int getOptionsCount(const ZoneOption * options)
+{
+  if (options == NULL) {
+    return 0;
+  }
+  else {
+    int count = 0;
+    for (const ZoneOption * option = options; option->name; option++) {
+      count++;
+    }
+    return count;
+  }
+}
+
 enum menuScreensThemeItems {
   ITEM_SCREEN_SETUP_THEME,
-  ITEM_SCREEN_SETUP_THEME_SETTINGS = ITEM_SCREEN_SETUP_THEME+2,
-  ITEM_SCREEN_SETUP_TOPBAR,
-  ITEM_SCREEN_SETUP_MAX
+  ITEM_SCREEN_SETUP_THEME_OPTION1 = ITEM_SCREEN_SETUP_THEME+2
 };
 
 bool menuScreensTheme(evt_t event)
 {
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
+  const ZoneOption * options = theme->getOptions();
+  int optionsCount = getOptionsCount(options);
+  linesCount = ITEM_SCREEN_SETUP_THEME_OPTION1 + optionsCount + 1;
 
   menuPageCount = updateMainviewsMenu();
-  MENU_WITH_OPTIONS("User interface", LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, 0, ITEM_SCREEN_SETUP_MAX, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredThemes-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+  uint8_t mstate_tab[2 + MAX_THEME_OPTIONS + 1] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredThemes-1)), ORPHAN_ROW };
+  for (int i=0; i<optionsCount; i++) {
+    mstate_tab[2+i] = getZoneOptionColumns(&options[i]);
+  }
+  mstate_tab[2+optionsCount] = 0; // The button for the Topbar setup
+  CUSTOM_MENU_WITH_OPTIONS("User interface", LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, 0, linesCount);
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -383,7 +426,7 @@ bool menuScreensTheme(evt_t event)
     switch (k) {
       case ITEM_SCREEN_SETUP_THEME: {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Theme");
-        const Theme * new_theme = editThemeChoice<const Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
+        Theme * new_theme = editThemeChoice<Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
         if (new_theme) {
           new_theme->init();
           loadTheme(new_theme);
@@ -393,31 +436,35 @@ bool menuScreensTheme(evt_t event)
         break;
       }
 
-      case ITEM_SCREEN_SETUP_THEME_SETTINGS:
-        drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Theme settings", attr);
-        if (attr && event == EVT_KEY_BREAK(KEY_ENTER) && theme->getOptions()) {
-          s_editMode = 0;
-          pushMenu(menuThemeSettings);
-        }
+      case ITEM_SCREEN_SETUP_THEME+1:
         break;
 
-      case ITEM_SCREEN_SETUP_TOPBAR:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, "Top bar");
-        drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup", attr);
-        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
-          currentScreen = customScreens[0];
-          currentContainer = topbar;
-          pushMenu(menuWidgetsSetup);
+      default:
+      {
+        uint8_t index = k - ITEM_SCREEN_SETUP_THEME_OPTION1;
+        if (index < optionsCount) {
+          const ZoneOption * option = &options[index];
+          ZoneOptionValue * value = theme->getOptionValue(index);
+          editZoneOption(y, option, value, attr, EE_GENERAL, event);
+        }
+        else if (index == optionsCount) {
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "Top bar");
+          drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup", attr);
+          if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+            currentScreen = customScreens[0];
+            currentContainer = topbar;
+            pushMenu(menuWidgetsSetup);
+          }
         }
         break;
-
+      }
     }
   }
 
   return true;
 }
 
-enum menuScreenSetup {
+enum MenuScreenSetupItems {
   ITEM_SCREEN_SETUP_LAYOUT,
   ITEM_SCREEN_SETUP_WIDGETS_SETUP = ITEM_SCREEN_SETUP_LAYOUT+2,
   ITEM_SCREEN_SETUP_LAYOUT_OPTION1,
@@ -433,16 +480,20 @@ bool menuScreenSetup(int index, evt_t event)
   currentContainer = currentScreen;
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
 
-  linesCount = ITEM_SCREEN_SETUP_LAYOUT_OPTION1;
   const ZoneOption * options = currentScreen->getFactory()->getOptions();
-  for (const ZoneOption * option = options; option->name; option++) {
-    linesCount++;
-  }
+  int optionsCount = getOptionsCount(options);
+  linesCount = ITEM_SCREEN_SETUP_LAYOUT_OPTION1 + optionsCount;
 
   char title[] = "Main view X";
   title[sizeof(title)-2] = '1' + index;
   menuPageCount = updateMainviewsMenu();
-  MENU_WITH_OPTIONS(title, LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, index+1, linesCount, { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW, 0, 0, 0, 0 });
+
+  uint8_t mstate_tab[2 + MAX_LAYOUT_OPTIONS] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW };
+  for (int i=0; i<optionsCount; i++) {
+    mstate_tab[2+i] = getZoneOptionColumns(&options[i]);
+  }
+
+  CUSTOM_MENU_WITH_OPTIONS(title, LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, index+1, linesCount);
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -474,13 +525,15 @@ bool menuScreenSetup(int index, evt_t event)
         break;
 
       default:
-        if (k < linesCount) {
-          uint8_t index = k - ITEM_SCREEN_SETUP_LAYOUT_OPTION1;
+      {
+        uint8_t index = k - ITEM_SCREEN_SETUP_LAYOUT_OPTION1;
+        if (index < optionsCount) {
           const ZoneOption * option = &options[index];
           ZoneOptionValue * value = currentScreen->getOptionValue(index);
           editZoneOption(y, option, value, attr, EE_MODEL, event);
         }
         break;
+      }
     }
   }
 

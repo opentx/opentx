@@ -781,7 +781,7 @@ ZoneOption * createOptionsArray(int reference)
   if (reference == 0) {
     return NULL;
   }
-  
+
   int count = 0;
   lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
   for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -829,8 +829,8 @@ class LuaTheme: public Theme
   friend void luaLoadThemeCallback();
 
   public:
-    LuaTheme(const char * name, const uint8_t * bitmap, int options):
-      Theme(name, bitmap, createOptionsArray(options)),
+    LuaTheme(const char * name, int options):
+      Theme(name, createOptionsArray(options)),
       loadFunction(0),
       drawBackgroundFunction(0),
       drawTopbarBackgroundFunction(0),
@@ -870,7 +870,7 @@ class LuaTheme: public Theme
 
 void luaLoadThemeCallback()
 {
-  const char * name=NULL, * bitmap=NULL;
+  const char * name=NULL;
   int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
 
   luaL_checktype(L, -1, LUA_TTABLE);
@@ -879,9 +879,6 @@ void luaLoadThemeCallback()
     const char * key = lua_tostring(L, -2);
     if (!strcmp(key, "name")) {
       name = luaL_checkstring(L, -1);
-    }
-    else if (!strcmp(key, "bitmap")) {
-      bitmap = luaL_checkstring(L, -1);
     }
     else if (!strcmp(key, "options")) {
       themeOptions = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -901,12 +898,8 @@ void luaLoadThemeCallback()
     }
   }
 
-  if (name && bitmap) {
-    char path[LUA_FULLPATH_MAXLEN+1];
-    strcpy(path, THEMES_PATH "/");
-    strcpy(path+sizeof(THEMES_PATH), bitmap);
-    uint8_t * bitmap = bmpLoad(path/*, 51, 31*/); // TODO rescale
-    LuaTheme * theme = new LuaTheme(name, bitmap, themeOptions);
+  if (name) {
+    LuaTheme * theme = new LuaTheme(name, themeOptions);
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
     theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
@@ -1070,21 +1063,24 @@ void luaLoadFiles(const char * directory, void (*callback)())
   fno.lfsize = sizeof(lfn);
 
   strcpy(path, directory);
-  int pathlen = strlen(path);
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
 
   if (res == FR_OK) {
+    int pathlen = strlen(path);
     path[pathlen++] = '/';
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       fn = * fno.lfname ? fno.lfname : fno.fname;
       uint8_t len = strlen(fn);
-      // Eliminates directories / non scripts files
-      if (len < 5 || strcasecmp(fn+len-4, SCRIPTS_EXT) || (fno.fattrib & AM_DIR)) continue;
-      strcpy(&path[pathlen], fn);
-      luaLoadFile(path, callback);
+      if (len > 0 && fn[0]!='.' && (fno.fattrib & AM_DIR)) {
+        strcpy(&path[pathlen], fn);
+        strcat(&path[pathlen], "/main.lua");
+        if (isFileAvailable(path)) {
+          luaLoadFile(path, callback);
+        }
+      }
     }
   }
   else {

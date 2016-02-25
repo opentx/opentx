@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define RADIO_SETUP_2ND_COLUMN         220
 #define YEAR_SEPARATOR_OFFSET          42

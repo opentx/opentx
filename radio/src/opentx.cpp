@@ -38,7 +38,7 @@ bool loadModelBitmap(char * name, uint8_t * bitmap)
     char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
     strncpy(lfn+sizeof(BITMAPS_PATH), name, len);
     strcpy(lfn+sizeof(BITMAPS_PATH)+len, BITMAPS_EXT);
-    if (bmpLoad(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
+    if (lcdLoadBitmap(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
       return true;
     }
   }
@@ -2606,7 +2606,7 @@ int main(void)
   // lcdSetRefVolt(25);
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   drawSplash();
 #endif
 

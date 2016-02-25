@@ -147,7 +147,7 @@ extern int _getpid ( void )
     return -1 ;
 }
 
-void _init (void)
-{
+//void _init (void)
+//{
   
-}
+//}

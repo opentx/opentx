@@ -22,6 +22,7 @@
 #define _WIDGET_H_
 
 #include <inttypes.h>
+#include <string.h>
 
 #define MAX_WIDGET_OPTIONS             5
 

@@ -458,7 +458,7 @@ void menuGeneralSdManager(evt_t _event)
   char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
   if (ext && !strcasecmp(ext, BITMAPS_EXT)) {
     if (lastPos != menuVerticalPosition) {
-      if (!bmpLoad(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
+      if (!lcdLoadBitmap(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
         memcpy(modelBitmap, logo_taranis, MODEL_BITMAP_SIZE);
       }
     }

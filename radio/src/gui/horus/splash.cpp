@@ -18,18 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-
-const uint8_t LBM_SPLASH[] __ALIGNED = {
+#include "opentx.h"
 #include "bmp_splash.lbm"
-};
 
 #if defined(SPLASH)
 void drawSplash()
 {
-  lcdClear();
-
-  lcdDrawBitmap((LCD_W-256)/2, (LCD_H-256)/2, LBM_SPLASH);
+  lcd->clear();
+  lcd->drawBitmap((LCD_W-BMP_SPLASH.getWidth())/2, (LCD_H-BMP_SPLASH.getHeight())/2, &BMP_SPLASH);
 
 #if MENUS_LOCK == 1
   if (readonly == false) {

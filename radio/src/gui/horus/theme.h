@@ -21,10 +21,12 @@
 #ifndef _THEME_H_
 #define _THEME_H_
 
+#include "bitmapbuffer.h"
+
 #define MAX_THEME_OPTIONS              5
 
 class Theme;
-void registerTheme(const Theme * theme);
+void registerTheme(Theme * theme);
 
 #define MESSAGEBOX_TYPE_INFO           0
 #define MESSAGEBOX_TYPE_QUESTION       1
@@ -38,10 +40,10 @@ class Theme
       ZoneOptionValue options[MAX_THEME_OPTIONS];
     };
 
-    Theme(const char * name, const uint8_t * bitmap, const ZoneOption * options=NULL):
+    Theme(const char * name, const ZoneOption * options=NULL):
       name(name),
-      bitmap(bitmap),
-      options(options)
+      options(options),
+      thumb(NULL)
     {
       registerTheme(this);
     }
@@ -50,6 +52,10 @@ class Theme
     {
       return name;
     }
+
+    const char * getFilePath(const char * filename) const;
+
+    void drawThumb(uint16_t x, uint16_t y, uint32_t flags);
 
     inline const ZoneOption * getOptions() const
     {
@@ -60,11 +66,11 @@ class Theme
 
     ZoneOptionValue * getOptionValue(unsigned int index) const;
 
-    virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) const;
-
     virtual void load() const = 0;
 
     virtual void drawBackground() const;
+
+    virtual void drawAboutBackground() const;
 
     virtual void drawTopbarBackground(const uint8_t * icon) const = 0;
 
@@ -72,19 +78,24 @@ class Theme
 
   protected:
     const char * name;
-    const uint8_t * bitmap;
     const ZoneOption * options;
+    BitmapBuffer * thumb;
 };
 
-extern const Theme * theme;
+extern Theme * theme;
+
+inline const char * getThemePath(const char * filename)
+{
+  return theme->getFilePath(filename);
+}
 
 #define MAX_REGISTERED_THEMES          10
 extern unsigned int countRegisteredThemes;
-void registerTheme(const Theme * theme);
-extern const Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
+void registerTheme(Theme * theme);
+extern Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
 
-const Theme * getTheme(const char * name);
-void loadTheme(const Theme * theme);
+Theme * getTheme(const char * name);
+void loadTheme(Theme * theme);
 void loadTheme();
 
 #endif // _THEME_H_
