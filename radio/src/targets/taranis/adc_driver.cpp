@@ -29,7 +29,9 @@
 #define SAMPTIME       2   // sample time = 28 cycles
 #define SAMPTIME_LONG  3   // sample time = 56 cycles
 
-#if defined(REV9E)
+#if defined(REV9E) && defined(HORUS_STICKS)
+  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+#elif defined(REV9E)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
 #elif defined(REVPLUS)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
