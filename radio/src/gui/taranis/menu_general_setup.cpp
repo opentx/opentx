@@ -460,19 +460,7 @@ void menuGeneralSetup(uint8_t event)
         lcd_putsLeft(y, NO_INDENT(STR_MODE));
         for (uint8_t i=0; i<4; i++) {
           lcd_img((6+4*i)*FW, y, sticks, i, 0);
-#if defined(FRSKY_STICKS)
-          if (g_eeGeneral.stickReverse & (1<<i)) {
-            lcdDrawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
-          }
-#endif
         }
-#if defined(FRSKY_STICKS)
-        if (attr) {
-          s_editMode = 0;
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickReverse, 0, 15);
-          lcdDrawRect(6*FW-1, y-1, 15*FW+2, 9);
-        }
-#endif
         break;
 
       case ITEM_SETUP_STICK_MODE:
