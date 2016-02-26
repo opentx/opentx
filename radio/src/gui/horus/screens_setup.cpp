@@ -37,7 +37,7 @@ uint8_t currentZone;
 
 #define SCREENS_SETUP_2ND_COLUMN        200
 
-char fileSelection[sizeof(ZoneOptionValue::stringValue)];
+char fileSelection[LEN_ZONE_OPTION_STRING];
 uint8_t fileSelectionDone;
 
 int updateMainviewsMenu();
@@ -47,7 +47,7 @@ void onScreenSetupMenu(const char * result);
 void onZoneOptionFileSelectionMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(ZoneOptionValue::stringValue), NULL)) {
+    if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, LEN_ZONE_OPTION_STRING, NULL)) {
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
     }
   }

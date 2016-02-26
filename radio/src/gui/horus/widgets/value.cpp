@@ -34,7 +34,7 @@ class ValueWidget: public Widget
 };
 
 const ZoneOption ValueWidget::options[] = {
-  { "Source", ZoneOption::Source, { .unsignedValue = MIXSRC_Rud } },
+  { "Source", ZoneOption::Source, OPTION_DEFAULT_VALUE({ .unsignedValue = MIXSRC_Rud }) },
   { NULL, ZoneOption::Bool }
 };
 

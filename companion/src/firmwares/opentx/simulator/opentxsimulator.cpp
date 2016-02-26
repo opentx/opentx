@@ -172,6 +172,7 @@ namespace NAMESPACE {
 #include "radio/src/gui/horus/view_about.cpp"
 #include "radio/src/gui/horus/lcd.cpp"
 #include "radio/src/gui/horus/splash.cpp"
+#include "radio/src/gui/horus/topbar.cpp"
 #include "radio/src/gui/horus/theme.cpp"
 #include "radio/src/gui/horus/layout.cpp"
 #include "radio/src/gui/horus/widget.cpp"

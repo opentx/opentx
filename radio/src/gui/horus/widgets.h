@@ -21,7 +21,7 @@
  #ifndef _WIDGETS_H_
  #define _WIDGETS_H_
 
-#include "../../opentx.h"
+#include "opentx.h"
 #include <stdio.h>
 
 #define OPTION_MENU_NO_FOOTER          0x01

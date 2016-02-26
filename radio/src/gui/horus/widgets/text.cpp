@@ -34,9 +34,9 @@ class TextWidget: public Widget
 };
 
 const ZoneOption TextWidget::options[] = {
-  { "Text", ZoneOption::String, { .stringValue = { '\015', '\347', '\0', '\14', '\377', '\376', '\373', '\364' } } },
-  { "Color", ZoneOption::Color, { .unsignedValue = RED } },
-  { "Size", ZoneOption::TextSize, { .unsignedValue = 0 } },
+  { "Text", ZoneOption::String, OPTION_DEFAULT_VALUE({ .stringValue = { '\015', '\347', '\0', '\14', '\377', '\376', '\373', '\364' } }) },
+  { "Color", ZoneOption::Color, OPTION_DEFAULT_VALUE({ .unsignedValue = RED }) },
+  { "Size", ZoneOption::TextSize, OPTION_DEFAULT_VALUE({ .unsignedValue = 0 }) },
   { NULL, ZoneOption::Bool }
 };
 

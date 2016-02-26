@@ -34,7 +34,7 @@ class TimerWidget: public Widget
 };
 
 const ZoneOption TimerWidget::options[] = {
-  { "Timer source", ZoneOption::Timer, { .unsignedValue = 0 } },
+  { "Timer source", ZoneOption::Timer, OPTION_DEFAULT_VALUE({ .unsignedValue = 0 }) },
   { NULL, ZoneOption::Bool }
 };
 

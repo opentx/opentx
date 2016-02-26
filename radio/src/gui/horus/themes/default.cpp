@@ -25,7 +25,7 @@ const uint8_t LBM_TOPMENU_MASK_OPENTX[] = {
 };
 
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
-  { "Background color", ZoneOption::Color, { .unsignedValue = WHITE } },
+  { "Background color", ZoneOption::Color, OPTION_DEFAULT_VALUE({ .unsignedValue = WHITE }) },
   { NULL, ZoneOption::Bool }
 };
 
