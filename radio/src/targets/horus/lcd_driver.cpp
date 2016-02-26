@@ -448,7 +448,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16
   DMA2D_InitStruct.DMA2D_OutputGreen = (0x07E0 & color) >> 5;
   DMA2D_InitStruct.DMA2D_OutputBlue = 0x001F & color;
   DMA2D_InitStruct.DMA2D_OutputRed = (0xF800 & color) >> 11;
-  DMA2D_InitStruct.DMA2D_OutputAlpha = 0x0f;
+  DMA2D_InitStruct.DMA2D_OutputAlpha = 0x0F;
   DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
   DMA2D_InitStruct.DMA2D_OutputOffset = (destw - w);
   DMA2D_InitStruct.DMA2D_NumberOfLine = h;
@@ -547,32 +547,4 @@ void lcdRefresh()
   else
     LCD_SetLayer(LCD_FIRST_LAYER);
   LCD_SetTransparency(0);
-}
-
-
-void lcdDrawBlackOverlay()
-{
-  DMA2D_DeInit();
-
-  DMA2D_InitTypeDef DMA2D_InitStruct;
-  DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M_BLEND;
-  DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
-  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(lcd->data);
-  DMA2D_InitStruct.DMA2D_OutputGreen = 50;
-  DMA2D_InitStruct.DMA2D_OutputBlue = 50;
-  DMA2D_InitStruct.DMA2D_OutputRed = 50;
-  DMA2D_InitStruct.DMA2D_OutputAlpha = 50;
-  DMA2D_InitStruct.DMA2D_OutputOffset = 0;
-  DMA2D_InitStruct.DMA2D_NumberOfLine = LCD_H;
-  DMA2D_InitStruct.DMA2D_PixelPerLine = LCD_W;
-  DMA2D_Init(&DMA2D_InitStruct);
-
-  /* Start Transfer */
-  DMA2D_StartTransfer();
-
-  /* Wait for CTC Flag activation */
-  while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
-
- // DMAFillRect(lcd->data, LCD_W, 0, 0, LCD_W, LCD_H, lcdColorTable[COLOR_IDX(OVERLAY_COLOR)], 8);
-  // lcd->drawFilledRect(0, 0, LCD_W, LCD_H, SOLID, OVERLAY_COLOR | OPACITY(8));
 }
