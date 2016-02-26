@@ -1423,6 +1423,7 @@ void registerOpenTxFirmwares()
   /* Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-taranisx9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
+  firmware->addOption("horussticks", QObject::tr("Horus magnetic sticks"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
