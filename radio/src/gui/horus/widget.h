@@ -31,7 +31,7 @@ struct Zone
   uint16_t x, y, w, h;
 };
 
-#define LEN_ZONE_OPTION_STRING 8
+#define LEN_ZONE_OPTION_STRING         8
 union ZoneOptionValue
 {
   bool boolValue;
@@ -41,9 +41,9 @@ union ZoneOptionValue
 };
 
 #if defined(_MSC_VER)
-  #define OPTION_DEFAULT_VALUE(x)              
+  #define OPTION_DEFAULT_VALUE(...)
 #else
-  #define OPTION_DEFAULT_VALUE(x)              x
+  #define OPTION_DEFAULT_VALUE(x)      x
 #endif
 
 struct ZoneOption
