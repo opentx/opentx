@@ -5,7 +5,7 @@ macro(add_bitmaps_target targetname filter width format)
     set(target ${target}.lbm)
     add_custom_command(
       OUTPUT ${target}
-      COMMAND python ${RADIO_DIRECTORY}/util/img2lbm.py ${bitmap} ${target} ${width} ${format}
+      COMMAND python ${RADIO_DIRECTORY}/util/img2lbm.py ${bitmap} ${target} ${width} ${format} ${ARGN}
       DEPENDS ${bitmap}
     )
     list(APPEND bitmaps_files ${target})
