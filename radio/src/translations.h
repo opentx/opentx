@@ -704,14 +704,7 @@ extern const pm_char STR_CONFIRMRESET[];
 extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
-#if defined(VOICE) && defined(CPUARM)
-
-#if defined(SIMU)
-  #define LP_CONST
-#else
-  #define LP_CONST const
-#endif
-
+#if defined(CPUARM) && defined(VOICE)
   struct LanguagePack {
     const char * id;
     const char * name;
@@ -722,19 +715,20 @@ extern const pm_char STR_BLCOLOR[];
   extern const LanguagePack * currentLanguagePack;
   extern uint8_t currentLanguagePackIdx;
 
-  extern LP_CONST LanguagePack czLanguagePack;
-  extern LP_CONST LanguagePack enLanguagePack;
-  extern LP_CONST LanguagePack esLanguagePack;
-  extern LP_CONST LanguagePack frLanguagePack;
-  extern LP_CONST LanguagePack deLanguagePack;
-  extern LP_CONST LanguagePack itLanguagePack;
-  extern LP_CONST LanguagePack plLanguagePack;
-  extern LP_CONST LanguagePack ptLanguagePack;
-  extern LP_CONST LanguagePack skLanguagePack;
-  extern LP_CONST LanguagePack seLanguagePack;
-  extern LP_CONST LanguagePack huLanguagePack;
-
-  static const LanguagePack * LP_CONST languagePacks[] = {
+  extern const LanguagePack czLanguagePack;
+  extern const LanguagePack enLanguagePack;
+  extern const LanguagePack esLanguagePack;
+  extern const LanguagePack frLanguagePack;
+  extern const LanguagePack deLanguagePack;
+  extern const LanguagePack itLanguagePack;
+  extern const LanguagePack plLanguagePack;
+  extern const LanguagePack ptLanguagePack;
+  extern const LanguagePack skLanguagePack;
+  extern const LanguagePack seLanguagePack;
+  extern const LanguagePack huLanguagePack;
+  extern const LanguagePack * const languagePacks[];
+  #if defined(LANGUAGE_PACKS_DEFINITION)
+  const LanguagePack * const languagePacks[] = {
     // alphabetical order
     &czLanguagePack,
     &deLanguagePack,
@@ -749,11 +743,11 @@ extern const pm_char STR_BLCOLOR[];
     &skLanguagePack,
     NULL
   };
-
+  #endif
 #if defined(SIMU)
-  #define LANGUAGE_PACK_DECLARE(lng, name) LP_CONST LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
+  #define LANGUAGE_PACK_DECLARE(lng, name) const LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
 #else
-  #define LANGUAGE_PACK_DECLARE(lng, name) extern LP_CONST LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
+  #define LANGUAGE_PACK_DECLARE(lng, name) extern const LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
 #endif
   #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); const LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
   inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
@@ -829,7 +823,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_SELECT_WIDGET[];
   extern const pm_char STR_REMOVE_WIDGET[];
   extern const pm_char STR_WIDGET_SETTINGS[];
-extern const pm_char STR_REMOVE_SCREEN[];
+  extern const pm_char STR_REMOVE_SCREEN[];
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)

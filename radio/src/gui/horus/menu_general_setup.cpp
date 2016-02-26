@@ -18,6 +18,8 @@
  * GNU General Public License for more details.
  */
 
+#define LANGUAGE_PACKS_DEFINITION
+
 #include "opentx.h"
 
 #define RADIO_SETUP_2ND_COLUMN         220

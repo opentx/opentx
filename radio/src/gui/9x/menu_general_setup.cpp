@@ -18,7 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#define LANGUAGE_PACKS_DEFINITION
+
+#include "opentx.h"
 
 const pm_uchar sticks[] PROGMEM = {
 #include "sticks.lbm"

@@ -43,7 +43,7 @@ union ZoneOptionValue
 #if defined(_MSC_VER)
   #define OPTION_DEFAULT_VALUE(...)
 #else
-  #define OPTION_DEFAULT_VALUE(x)      x
+  #define OPTION_DEFAULT_VALUE(...)      __VA_ARGS__
 #endif
 
 struct ZoneOption

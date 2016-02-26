@@ -79,6 +79,8 @@
   #define MIXERS_MONITOR
 #endif
 
+#define LANGUAGE_PACKS_DEFINITION
+
 #undef min
 #undef max
 
