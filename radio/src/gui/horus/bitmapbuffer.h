@@ -24,6 +24,8 @@
 #include <inttypes.h>
 #include "colors.h"
 
+#define USE_STB
+ 
 // TODO should go to lcd.h again
 typedef int coord_t;
 typedef uint32_t LcdFlags;
@@ -138,7 +140,15 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags, int startAngle, int endAngle);
 
-    static BitmapBuffer * load(const char * filename);
+    static BitmapBuffer * load_bmp(const char * filename);
+    static BitmapBuffer * load_stb(const char * filename);
+    static BitmapBuffer * load(const char * filename) {
+#if defined(USE_STB)
+      return load_stb(filename);
+#else
+      return load_bmp(filename);
+#endif
+    };
 
     void drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
