@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include <ctype.h>
+#include <malloc.h>
 
 #define CLI_COMMAND_MAX_ARGS           8
 #define CLI_COMMAND_MAX_LEN            256
@@ -153,6 +154,30 @@ int cliStackInfo(const char ** argv)
   serialPrint("[MIXER] %d available / %d", mixerStack.available(), mixerStack.size());
   serialPrint("[AUDIO] %d available / %d", audioStack.available(), audioStack.size());
   serialPrint("[CLI] %d available / %d", cliStack.available(), cliStack.size());
+  return 0;
+}
+
+
+int cliMemoryInfo(const char ** argv)
+{
+  // struct mallinfo {
+  //   int arena;    /* total space allocated from system */
+  //   int ordblks;  /* number of non-inuse chunks */
+  //   int smblks;   /* unused -- always zero */
+  //   int hblks;    /* number of mmapped regions */
+  //   int hblkhd;   /* total space in mmapped regions */
+  //   int usmblks;  /* unused -- always zero */
+  //   int fsmblks;  /* unused -- always zero */
+  //   int uordblks; /* total allocated space */
+  //   int fordblks; /* total non-inuse space */
+  //   int keepcost; /* top-most, releasable (via malloc_trim) space */
+  // };
+  struct mallinfo info = mallinfo();
+  serialPrint("arena %d", info.arena);
+  serialPrint("ordblks %d", info.ordblks);
+  serialPrint("uordblks %d", info.uordblks);
+  serialPrint("fordblks %d", info.fordblks);
+  serialPrint("keepcost %d", info.keepcost);
   return 0;
 }
 
@@ -383,6 +408,7 @@ const CliCommand cliCommands[] = {
   { "reboot", cliReboot, "" },
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
+  { "meminfo", cliMemoryInfo, "" },
   { "trace", cliTrace, "on | off" },
 #if defined(PCBFLAMENCO)
   { "read_bq24195", cliReadBQ24195, "<register>" },
