@@ -388,7 +388,7 @@ void BitmapBuffer::drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * 
   }
 }
 
-BitmapBuffer * BitmapBuffer::load(const char * filename)
+BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
 {
   FIL bmpFile;
   UINT read;
@@ -510,7 +510,7 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
           result = f_read(&bmpFile, (uint8_t *)&pixel, 4, &read);
           if (result != FR_OK || read != 4) {
             f_close(&bmpFile);
-            free(bmp);
+            delete bmp;
             return NULL;
           }
           *((uint16_t *)dst) = RGB((pixel>>24) & 0xff, (pixel>>16) & 0xff, (pixel>>8) & 0xff);
@@ -528,7 +528,7 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
         result = f_read(&bmpFile, buf, rowSize, &read);
         if (result != FR_OK || read != rowSize) {
           f_close(&bmpFile);
-          free(bmp);
+          delete bmp;
           return NULL;
         }
         uint8_t * dst = ((uint8_t *)dest) + i*w*2;
@@ -544,7 +544,7 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
 
     default:
       f_close(&bmpFile);
-      free(bmp);
+      delete bmp;
       return NULL;
   }
 
@@ -557,7 +557,38 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
 #define STBI_ONLY_BMP
+#define STBI_ONLY_GIF
 #define STBI_NO_STDIO
+
+#define TRACE_STB_MALLOC
+
+#if defined(TRACE_STB_MALLOC)
+#define STBI_MALLOC(sz)                     stb_malloc(sz)
+#define STBI_REALLOC_SIZED(p,oldsz,newsz)   stb_realloc(p,oldsz,newsz)
+#define STBI_FREE(p)                        stb_free(p)
+
+void * stb_malloc(unsigned int size)
+{
+  void * res = malloc(size);
+  TRACE("malloc %d = %p", size, res);
+  return res;
+}
+
+void stb_free(void *ptr)
+{
+  TRACE("free %p", ptr);
+  free(ptr);
+}
+
+void *stb_realloc(void *ptr, unsigned int oldsz, unsigned int newsz)
+{
+  void * res =  realloc(ptr, newsz);
+  TRACE("realloc %p, %d -> %d = %p", ptr, oldsz, newsz, res);
+  return res;
+}
+#endif // #if defined(TRACE_STB_MALLOC)
+
+
 #include "thirdparty/Stb/stb_image.h"
 
 
@@ -568,8 +599,10 @@ int stbc_read(void *user, char *data, int size)
   UINT br = 0;
   FRESULT res = f_read(fp, data, size, &br);
   if (res == FR_OK) {
+    TRACE("sr %d", (int)br);
     return (int)br;
   }
+  TRACE("sr NULL");
   return 0;
 }
 
@@ -577,6 +610,7 @@ int stbc_read(void *user, char *data, int size)
 void stbc_skip(void *user, int n)
 {
   FIL * fp = (FIL *)user;
+  TRACE("ss %d", n);
   f_lseek(fp, f_tell(fp) + n);
 }
 
@@ -584,7 +618,9 @@ void stbc_skip(void *user, int n)
 int stbc_eof(void *user)
 {
   FIL * fp = (FIL *)user;
-  return f_eof(fp);
+  int res = f_eof(fp);
+  TRACE("se %d", res);
+  return res;
 }
 
 // callbacks for stb-image
@@ -594,44 +630,55 @@ const stbi_io_callbacks stbCallbacks = {
   stbc_eof
 };
 
-const char * imgLoad(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
+BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
 {
+  TRACE("load_stb()");
   FIL imgFile;
 
   FRESULT result = f_open(&imgFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
-    return SDCARD_ERROR(result);
+    return NULL;
   }
+  TRACE("load_stb() open");
 
-  int x,y,n;
-  unsigned char *data = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &x, &y, &n, 3);
+  int w, h, n;
+  unsigned char *data = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &w, &h, &n, 3);
+  TRACE("load_stb() load");
   f_close(&imgFile);
 
   if (!data) {
-    return "stb error";
+    return NULL;
   }
 
   //convert to 565 fromat
   // todo use dma2d for conversion from 888 to 565
   unsigned char *p = data;
-  uint16_t * dest = (uint16_t *)bmp;
+  BitmapBuffer * bmp = new BitmapBuffer(w, h);
+  TRACE("load_stb() new");
+  uint16_t * dest = bmp->data;
+  if (bmp == NULL) {
+    TRACE("load_stb() new err");
+    stbi_image_free(data);
+    return NULL;
+  }
 
-  *dest++ = min<int>(width, x);
-  *dest++ = min<int>(height, y);
+  *dest++ = w;
+  *dest++ = h;
 
-  for(int row = 0; row < min<int>(height, y); ++row) {
+  for(int row = 0; row < h; ++row) {
     unsigned char *l = p;
-    for(int col = 0; col < min<int>(width, x); ++col) {
+    for(int col = 0; col < w; ++col) {
       *dest = RGB(l[0], l[1], l[2]);
       ++dest;
       l += 3;
     }
-    p += 3 * x;
+    p += 3 * w;
   }
+  TRACE("load_stb() free");
   stbi_image_free(data);
-  return 0;
+  TRACE("load_stb() end");
+  return bmp;
 }
-
 float getBitmapScale(const BitmapBuffer * bitmap, int width, int height)
 {
   float widthScale = float(width) / bitmap->getWidth();
