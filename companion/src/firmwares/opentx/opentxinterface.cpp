@@ -1326,7 +1326,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("sdcard", QObject::tr("Support for SD memory card"));
   firmware->addOption("audio", QObject::tr("Support for radio modified with regular speaker"));
-//firmware->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
+  firmware->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   firmware->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);

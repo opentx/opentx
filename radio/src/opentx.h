@@ -1471,6 +1471,10 @@ enum AUDIO_SOUNDS {
 #include "targets/gruvin9x/somo14d.h"
 #endif
 
+#if defined(PCBMEGA2560) && defined(VOICE)
+#include "targets/mega2560/somo14dmega.h"
+#endif
+
 #include "translations.h"
 #include "fonts.h"
 

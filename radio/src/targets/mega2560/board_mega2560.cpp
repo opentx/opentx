@@ -25,16 +25,16 @@ inline void boardInit()
 {
   // Set up I/O port data directions and initial states (unused pin setting : input, pull-up on)
   DDRA = 0b11111111;  PORTA = 0b00000000; // LCD data
-  DDRB = 0b01110111;  PORTB = 0b10101111; // 7:N/A 6:PPM_OUT, 5:SimCTRL, 4:Buzzer, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
+  DDRB = 0b01110111;  PORTB = 0b00101111; // 7:SOMOBusy, 6:PPM_OUT, 5:SimCTRL, 4:Buzzer, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
   DDRC = 0b11111100;  PORTC = 0b00000011; // 7-3:LCD, 2:BackLight, 1:ID2_SW, 0:ID1_SW
   DDRD = 0b00000000;  PORTD = 0b11111100; // 7:AilDR_SW, 6:N/A, 5:N/A, 4:N/A, 3:RENC2_B, 2:RENC2_A, 1:I2C_SDA, 0:I2C_SCL
-  DDRE = 0b00000010;  PORTE = 0b01111100; // 7:PPM_IN, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:N/A, 2:N/A, 1:TELEM_TX, 0:TELEM_RX
+  DDRE = 0b00001010;  PORTE = 0b01110100; // 7:PPM_IN, 6:N/A, 5:RENC1_B, 4:RENC1_A, 3:SOMOData, 2:N/A, 1:TELEM_TX, 0:TELEM_RX
   DDRF = 0b00000000;  PORTF = 0b11111111; // 7-0:Trim switch inputs
-  DDRG = 0b00000000;  PORTG = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:TCut_SW, 1:Gear_SW, 0: RudDr_SW
-#if defined(PCBMEGA2560) && defined(DEBUG)  
-  DDRH = 0b01011000;  PORTH = 0b11110110; // 7:N/A, 6:RF_Activated, 5:DSC_Activated, 4:Hold_Power, 3:Speaker, 2:N/A, 1:N/A, 0:Haptic
+  DDRG = 0b00100000;  PORTG = 0b11011111; // 7:N/A, 6:N/A, 5:SOMOClock, 4:N/A, 3:N/A, 2:TCut_SW, 1:Gear_SW, 0: RudDr_SW
+#if defined(DEBUG)  
+  DDRH = 0b01011010;  PORTH = 0b11110100; // 7:N/A, 6:RF_Activated, 5:DSC_Activated, 4:Hold_Power, 3:Speaker, 2:N/A, 1:SOMOReset, 0:Haptic
 #else
-  DDRH = 0b00011000;  PORTH = 0b11110110; // 7:N/A, 6:RF_Activated, 5:DSC_Activated, 4:Hold_Power, 3:Speaker, 2:N/A, 1:N/A, 0:Haptic
+  DDRH = 0b00011010;  PORTH = 0b11110100; // 7:N/A, 6:RF_Activated, 5:DSC_Activated, 4:Hold_Power, 3:Speaker, 2:N/A, 1:SOMOReset, 0:Haptic
 #endif  
   DDRJ = 0b00000000;  PORTJ = 0b11111111; // 7:N/A, 6:N/A, 5:N/A, 4:N/A, 3:N/A, 2:N/A, 1:RENC2_push, 0:RENC1_push
   DDRK = 0b00000000;  PORTK = 0b00000000; // Analogic input (no pull-ups)
@@ -49,16 +49,18 @@ inline void boardInit()
   OCR2A   = 156;
   TIMSK2 |= (1<<OCIE2A) |  (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
 
+  #if defined (AUDIO)
   // TIMER4 set into CTC mode, prescaler 16MHz/64=250 kHz 
   // Used for audio tone generation
-  TCCR4B  = (1<<WGM42) | (0b011 << CS00);
+  TCCR4B  = (1<<WGM42) | (0b011 << CS40);
   TCCR4A  = 0x00;
+  #endif
   
-  #if defined (VOICE)     // OLD FROM GRUVIN9X, TO REWRITE
-  // SOMO set-up
-  OCR4A = 0x1F4; //2ms
-  TCCR4B = (1 << WGM42) | (0b011 << CS40); // CTC OCR1A, 16MHz / 64 (4us ticks)
-  TIMSK4 |= (1<<OCIE4A); // Start the interrupt so the unit reset can occur
+  #if defined (VOICE)
+  // SOMO set-up, with TIMER5
+  OCR5A = 0x1F4; //2ms
+  TCCR5B = (1 << WGM52) | (0b011 << CS50); // CTC OCR1A, 16MHz / 64 (4us ticks)
+  TIMSK5 |= (1<<OCIE5A); // Start the interrupt so the unit reset can occur
   #endif
 
   /* Rotary encoder interrupt set-up                 */

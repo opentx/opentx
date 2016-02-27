@@ -756,6 +756,11 @@ ifeq ($(PCB), MEGA2560)
     CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp
   endif
 
+  ifeq ($(BUZZER), YES)
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp
+  endif
+ 
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
     CPPSRC += audio_avr.cpp
@@ -764,14 +769,9 @@ ifeq ($(PCB), MEGA2560)
     BUZZER = YES
   endif
 
-  ifeq ($(BUZZER), YES)
-    CPPDEFS += -DBUZZER
-    CPPSRC += buzzer.cpp
-  endif
-
   ifeq ($(VOICE), YES)
     CPPDEFS += -DVOICE
-    CPPSRC += targets/gruvin9x/somo14d.cpp
+    CPPSRC += targets/mega2560/somo14dmega.cpp
   endif
 
   ifeq ($(HAPTIC), YES)
