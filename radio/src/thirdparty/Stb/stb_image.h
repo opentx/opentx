@@ -3408,20 +3408,28 @@ static stbi_uc *load_jpeg_image(stbi__jpeg *z, int *out_x, int *out_y, int *comp
 
 static unsigned char *stbi__jpeg_load(stbi__context *s, int *x, int *y, int *comp, int req_comp)
 {
-   stbi__jpeg j;
-   j.s = s;
-   stbi__setup_jpeg(&j);
-   return load_jpeg_image(&j, x,y,comp,req_comp);
+   unsigned char * r;
+   stbi__jpeg * j;
+   j = (stbi__jpeg *) stbi__malloc(sizeof(stbi__jpeg));
+   if (!j) return 0;
+   j->s = s;
+   stbi__setup_jpeg(j);
+   r = load_jpeg_image(j, x,y,comp,req_comp);
+   STBI_FREE(j);
+   return r;
 }
 
 static int stbi__jpeg_test(stbi__context *s)
 {
    int r;
-   stbi__jpeg j;
-   j.s = s;
-   stbi__setup_jpeg(&j);
-   r = stbi__decode_jpeg_header(&j, STBI__SCAN_type);
+   stbi__jpeg * j;
+   j = (stbi__jpeg *) stbi__malloc(sizeof(stbi__jpeg));
+   if (!j) return 0;
+   j->s = s;
+   stbi__setup_jpeg(j);
+   r = stbi__decode_jpeg_header(j, STBI__SCAN_type);
    stbi__rewind(s);
+   STBI_FREE(j);
    return r;
 }
 
@@ -3439,9 +3447,14 @@ static int stbi__jpeg_info_raw(stbi__jpeg *j, int *x, int *y, int *comp)
 
 static int stbi__jpeg_info(stbi__context *s, int *x, int *y, int *comp)
 {
-   stbi__jpeg j;
-   j.s = s;
-   return stbi__jpeg_info_raw(&j, x, y, comp);
+   int r;
+   stbi__jpeg * j;
+   j = (stbi__jpeg *) stbi__malloc(sizeof(stbi__jpeg));
+   if (!j) return 0;
+   j->s = s;
+   r = stbi__jpeg_info_raw(j, x, y, comp);
+   STBI_FREE(j);
+   return r;
 }
 #endif
 
@@ -3828,16 +3841,25 @@ static int stbi__do_zlib(stbi__zbuf *a, char *obuf, int olen, int exp, int parse
 
 STBIDEF char *stbi_zlib_decode_malloc_guesssize(const char *buffer, int len, int initial_size, int *outlen)
 {
-   stbi__zbuf a;
+   char * r;
+   stbi__zbuf * a;
+   a = (stbi__zbuf *) stbi__malloc(sizeof(stbi__zbuf));
+   if (!a) return 0; 
    char *p = (char *) stbi__malloc(initial_size);
-   if (p == NULL) return NULL;
-   a.zbuffer = (stbi_uc *) buffer;
-   a.zbuffer_end = (stbi_uc *) buffer + len;
-   if (stbi__do_zlib(&a, p, initial_size, 1, 1)) {
-      if (outlen) *outlen = (int) (a.zout - a.zout_start);
-      return a.zout_start;
+   if (p == NULL) {
+      STBI_FREE(a);
+      return NULL;
+   }
+   a->zbuffer = (stbi_uc *) buffer;
+   a->zbuffer_end = (stbi_uc *) buffer + len;
+   if (stbi__do_zlib(a, p, initial_size, 1, 1)) {
+      if (outlen) *outlen = (int) (a->zout - a->zout_start);
+      r = a->zout_start;
+      STBI_FREE(a);
+      return r;
    } else {
-      STBI_FREE(a.zout_start);
+      STBI_FREE(a->zout_start);
+      STBI_FREE(a);
       return NULL;
    }
 }
@@ -3849,56 +3871,90 @@ STBIDEF char *stbi_zlib_decode_malloc(char const *buffer, int len, int *outlen)
 
 STBIDEF char *stbi_zlib_decode_malloc_guesssize_headerflag(const char *buffer, int len, int initial_size, int *outlen, int parse_header)
 {
-   stbi__zbuf a;
+   char * r;
+   stbi__zbuf * a;
+   a = (stbi__zbuf *) stbi__malloc(sizeof(stbi__zbuf));
+   if (!a) return 0; 
    char *p = (char *) stbi__malloc(initial_size);
-   if (p == NULL) return NULL;
-   a.zbuffer = (stbi_uc *) buffer;
-   a.zbuffer_end = (stbi_uc *) buffer + len;
-   if (stbi__do_zlib(&a, p, initial_size, 1, parse_header)) {
-      if (outlen) *outlen = (int) (a.zout - a.zout_start);
-      return a.zout_start;
+   if (p == NULL) {
+      STBI_FREE(a);
+      return NULL;
+   }
+   a->zbuffer = (stbi_uc *) buffer;
+   a->zbuffer_end = (stbi_uc *) buffer + len;
+   if (stbi__do_zlib(a, p, initial_size, 1, parse_header)) {
+      if (outlen) *outlen = (int) (a->zout - a->zout_start);
+      r = a->zout_start;
+      STBI_FREE(a);
+      return r;
    } else {
-      STBI_FREE(a.zout_start);
+      STBI_FREE(a->zout_start);
+      STBI_FREE(a);
       return NULL;
    }
 }
 
 STBIDEF int stbi_zlib_decode_buffer(char *obuffer, int olen, char const *ibuffer, int ilen)
 {
-   stbi__zbuf a;
-   a.zbuffer = (stbi_uc *) ibuffer;
-   a.zbuffer_end = (stbi_uc *) ibuffer + ilen;
-   if (stbi__do_zlib(&a, obuffer, olen, 0, 1))
-      return (int) (a.zout - a.zout_start);
-   else
+   int r;
+   stbi__zbuf * a;
+   a = (stbi__zbuf *) stbi__malloc(sizeof(stbi__zbuf));
+   if (!a) return -1; 
+   a->zbuffer = (stbi_uc *) ibuffer;
+   a->zbuffer_end = (stbi_uc *) ibuffer + ilen;
+   if (stbi__do_zlib(a, obuffer, olen, 0, 1)) {
+      r = (int) (a->zout - a->zout_start);
+      STBI_FREE(a);
+      return r;
+   }
+   else {
+      STBI_FREE(a);
       return -1;
+   }
 }
 
 STBIDEF char *stbi_zlib_decode_noheader_malloc(char const *buffer, int len, int *outlen)
 {
-   stbi__zbuf a;
+   char * r;
+   stbi__zbuf * a;
+   a = (stbi__zbuf *) stbi__malloc(sizeof(stbi__zbuf));
+   if (!a) return NULL; 
    char *p = (char *) stbi__malloc(16384);
-   if (p == NULL) return NULL;
-   a.zbuffer = (stbi_uc *) buffer;
-   a.zbuffer_end = (stbi_uc *) buffer+len;
-   if (stbi__do_zlib(&a, p, 16384, 1, 0)) {
-      if (outlen) *outlen = (int) (a.zout - a.zout_start);
-      return a.zout_start;
+   if (p == NULL) {
+      STBI_FREE(a);
+      return NULL;
+   }
+   a->zbuffer = (stbi_uc *) buffer;
+   a->zbuffer_end = (stbi_uc *) buffer+len;
+   if (stbi__do_zlib(a, p, 16384, 1, 0)) {
+      if (outlen) *outlen = (int) (a->zout - a->zout_start);
+      r = a->zout_start;
+      STBI_FREE(a);
+      return r;
    } else {
-      STBI_FREE(a.zout_start);
+      STBI_FREE(a->zout_start);
+      STBI_FREE(a);
       return NULL;
    }
 }
 
 STBIDEF int stbi_zlib_decode_noheader_buffer(char *obuffer, int olen, const char *ibuffer, int ilen)
 {
-   stbi__zbuf a;
-   a.zbuffer = (stbi_uc *) ibuffer;
-   a.zbuffer_end = (stbi_uc *) ibuffer + ilen;
-   if (stbi__do_zlib(&a, obuffer, olen, 0, 0))
-      return (int) (a.zout - a.zout_start);
-   else
+   int r;
+   stbi__zbuf * a;
+   a = (stbi__zbuf *) stbi__malloc(sizeof(stbi__zbuf));
+   if (!a) return -1; 
+   a->zbuffer = (stbi_uc *) ibuffer;
+   a->zbuffer_end = (stbi_uc *) ibuffer + ilen;
+   if (stbi__do_zlib(a, obuffer, olen, 0, 0)) {
+      r = (int) (a->zout - a->zout_start);
+      STBI_FREE(a);
+      return r;
+   }
+   else {
+      STBI_FREE(a);
       return -1;
+   }
 }
 #endif
 
@@ -5649,13 +5705,17 @@ static int stbi__gif_header(stbi__context *s, stbi__gif *g, int *comp, int is_in
 
 static int stbi__gif_info_raw(stbi__context *s, int *x, int *y, int *comp)
 {
-   stbi__gif g;
-   if (!stbi__gif_header(s, &g, comp, 1)) {
+   stbi__gif * g;
+   g = (stbi__gif *) stbi__malloc(sizeof(stbi__gif));
+   if (!g) return 0;
+   if (!stbi__gif_header(s, g, comp, 1)) {
       stbi__rewind( s );
+      STBI_FREE(g);
       return 0;
    }
-   if (x) *x = g.w;
-   if (y) *y = g.h;
+   if (x) *x = g->w;
+   if (y) *y = g->h;
+   STBI_FREE(g);
    return 1;
 }
 
@@ -5908,20 +5968,23 @@ static stbi_uc *stbi__gif_load_next(stbi__context *s, stbi__gif *g, int *comp, i
 static stbi_uc *stbi__gif_load(stbi__context *s, int *x, int *y, int *comp, int req_comp)
 {
    stbi_uc *u = 0;
-   stbi__gif g;
-   memset(&g, 0, sizeof(g));
+   stbi__gif * g;
+   g = (stbi__gif *) stbi__malloc(sizeof(stbi__gif));
+   if (!g) return 0;
+   memset(g, 0, sizeof(stbi__gif));
 
-   u = stbi__gif_load_next(s, &g, comp, req_comp);
+   u = stbi__gif_load_next(s, g, comp, req_comp);
    if (u == (stbi_uc *) s) u = 0;  // end of animated gif marker
    if (u) {
-      *x = g.w;
-      *y = g.h;
+      *x = g->w;
+      *y = g->h;
       if (req_comp && req_comp != 4)
-         u = stbi__convert_format(u, 4, req_comp, g.w, g.h);
+         u = stbi__convert_format(u, 4, req_comp, g->w, g->h);
    }
-   else if (g.out)
-      STBI_FREE(g.out);
+   else if (g->out)
+      STBI_FREE(g->out);
 
+   STBI_FREE(g);
    return u;
 }
 
