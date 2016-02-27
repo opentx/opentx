@@ -419,9 +419,9 @@ if(ARCH STREQUAL ARM)
   include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
   foreach(LANGUAGE cz de en es fr it pt sk se pl hu) # TODO add nl
     set(SRC ${SRC} translations/tts_${LANGUAGE}.cpp)
-    string(TOUPPER LANGUAGE_UPPER LANGUAGE)
-    if(TRANSLATIONS STREQUAL LANGUAGE_CAPITALIZED)
-      add_definitions(-DTRANSLATIONS_${LANGUAGE_UPPER})
+    string(TOUPPER ${LANGUAGE} LANGUAGE_CAPITALIZED )
+    if(TRANSLATIONS STREQUAL ${LANGUAGE_CAPITALIZED})
+      add_definitions(-DTRANSLATIONS_${LANGUAGE_CAPITALIZED})
     endif()
   endforeach()
   set(SRC
