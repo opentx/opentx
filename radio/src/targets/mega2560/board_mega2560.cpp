@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -49,14 +49,14 @@ inline void boardInit()
   OCR2A   = 156;
   TIMSK2 |= (1<<OCIE2A) |  (1<<TOIE2); // Enable Output-Compare and Overflow interrrupts
 
-  #if defined (AUDIO)
+  #if defined(AUDIO)
   // TIMER4 set into CTC mode, prescaler 16MHz/64=250 kHz 
   // Used for audio tone generation
   TCCR4B  = (1<<WGM42) | (0b011 << CS40);
   TCCR4A  = 0x00;
   #endif
   
-  #if defined (VOICE)
+  #if defined(VOICE)
   // SOMO set-up, with TIMER5
   OCR5A = 0x1F4; //2ms
   TCCR5B = (1 << WGM52) | (0b011 << CS50); // CTC OCR1A, 16MHz / 64 (4us ticks)

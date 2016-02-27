@@ -1,28 +1,12 @@
 /*
- * Authors (alphabetical order)
- * - Andre Bernet <bernet.andre@gmail.com>
- * - Andreas Weitl
- * - Bertrand Songis <bsongis@gmail.com>
- * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
- * - Cameron Weeks <th9xer@gmail.com>
- * - Christophe Brision (Bracame)
- * - Erez Raviv
- * - Gabriel Birkus
- * - Jean-Pierre Parisy
- * - Karl Szmutny
- * - Michael Blandford
- * - Michal Hlavinka
- * - Pat Mackenzie
- * - Philip Moss
- * - Rob Thomson
- * - Romolo Manfredini <romolo.manfredini@gmail.com>
- * - Thomas Husterer
+ * Copyright (C) OpenTX
  *
- * opentx is based on code named
- * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
- * er9x by Erez Raviv: http://code.google.com/p/er9x/,
- * and the original (and ongoing) project by
- * Thomas Husterer, th9x: http://code.google.com/p/th9x/
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -32,7 +16,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  */
 
 /*
@@ -102,15 +85,15 @@ NOINLINE uint8_t SomoWakeup()
       if (startstop < SOMOSSBIT) { // This stretches the time before we start sending data to allow for the
         // undocumented delay that must exist between playbacks. Unfortunately the
         // device isn't ready even though the busy flag says it is.
-        SOMOClock_off // Start Bit, CLK low for 2ms
+        SOMOClock_off; // Start Bit, CLK low for 2ms
       }
       startstop--;
       return 0;
     }
     // Stop bit
     if (i==16) {
-      SOMOData_off // Data low
-      SOMOClock_on // Stop Bit, CLK high for 2ms
+      SOMOData_off; // Data low
+      SOMOClock_on; // Stop Bit, CLK high for 2ms
       startstop--;
       return 0;
     }
@@ -131,18 +114,18 @@ NOINLINE uint8_t SomoWakeup()
     if (!SOMOCLK) { // Only change data when the CLK is low
       startstop =SOMOSTOP;
       if (somo14_current & 0x8000) {
-        SOMOData_on // Data high
+        SOMOData_on; // Data high
       }
       somo14_current = (somo14_current<<1);
       i++;
       // Data setup delay
 	  _delay_us(1);
-      SOMOClock_on // CLK high
+      SOMOClock_on; // CLK high
     }
 
     else { // Don't alter after sending last bit in preparation for sending stop bit
-      SOMOClock_off // CLK low
-      SOMOData_off // Data low
+      SOMOClock_off; // CLK low
+      SOMOData_off; // Data low
     }
   }
 
@@ -156,9 +139,9 @@ ISR(TIMER5_COMPA_vect) //Every 0.5ms normally, every 2ms during startup reset
   static uint8_t reset_pause=150;
   
   if (reset_dly) 
-	{OCR5A=0x1f4; reset_dly--; SOMOReset_off} // RESET low
+	{OCR5A=0x1f4; reset_dly--; SOMOReset_off;} // RESET low
   else if (reset_pause)
-	{OCR5A=0x1f4; reset_pause--; SOMOReset_on} // RESET high
+	{OCR5A=0x1f4; reset_pause--; SOMOReset_on;} // RESET high
   else 
 	{
 	OCR5A = 0x7d; // another 0.5ms

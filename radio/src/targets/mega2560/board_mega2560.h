@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -33,7 +33,7 @@
 #define KEYS_GPIO_REG_LEFT        pinl                          
 #define KEYS_GPIO_PIN_LEFT        (1<<3)
 #define KEYS_GPIO_REG_UP          pinl                          
-#define KEYS_GPIO_PIN_UP          1<<1)
+#define KEYS_GPIO_PIN_UP          (1<<1)
 #define KEYS_GPIO_REG_DOWN        pinl                          
 #define KEYS_GPIO_PIN_DOWN        (1<<0)
 
@@ -45,7 +45,7 @@
 #define TRIMS_GPIO_REG_RVU        pinf
 #define TRIMS_GPIO_PIN_RVU        (1<<2)
 #define TRIMS_GPIO_REG_RHL        pinf
-#define TRIMS_GPIO_PIN_RHL        1<<1)
+#define TRIMS_GPIO_PIN_RHL        (1<<1)
 #define TRIMS_GPIO_REG_LHR        pinf
 #define TRIMS_GPIO_PIN_LHR        (1<<6)
 #define TRIMS_GPIO_REG_LVU        pinf

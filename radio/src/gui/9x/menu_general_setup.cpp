@@ -262,7 +262,7 @@ void menuGeneralSetup(uint8_t event)
           if (checkIncDec_Ret) {
             g_eeGeneral.speakerVolume = (int8_t)b-VOLUME_LEVEL_DEF;
 #if !defined(CPUARM)
-            setScaledVolume(b);
+            setVolume(b);
 #endif
           }
         }
