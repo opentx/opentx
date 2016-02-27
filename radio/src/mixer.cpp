@@ -65,7 +65,7 @@ int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMa
   int16_t cyc_anas[3] = {0};
 #endif
 
-bool OffsetOnInput = false;       //temporary, this bool will be link to a checkbox in mixer screen
+bool OffsetOnInput = true;       //temporary, this bool will be link to a checkbox in mixer screen
 
 void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
