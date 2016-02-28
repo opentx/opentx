@@ -31,14 +31,6 @@ typedef int coord_t;
 typedef uint32_t LcdFlags;
 typedef uint16_t display_t;
 
-inline int getBitmapScaledSize(int size, float scale)
-{
-  if (scale == 0.0)
-    return size;
-  else
-    return (0.5 + size) * scale;
-}
-
 template<class T>
 class BitmapBufferBase
 {
@@ -214,7 +206,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       coord_t bitmapWidth = bitmap->getWidth();
 
       float scale = float(h) / bitmap->getHeight();
-      int width = getBitmapScaledSize(bitmapWidth, scale);
+      int width = (0.5 + bitmapWidth) * scale;
       if (width > w) {
         int ww = (0.5 + w) / scale;
         drawBitmap(x, y, bitmap, (bitmapWidth - ww)/2, 0, ww, 0, scale);
@@ -244,8 +236,6 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       }
     }
 };
-
-float getBitmapScale(const BitmapBuffer * bitmap, int width, int height);
 
 extern BitmapBuffer * lcd;
 

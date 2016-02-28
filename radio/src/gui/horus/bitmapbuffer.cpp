@@ -552,7 +552,6 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   return bmp;
 }
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
 #define STBI_ONLY_JPEG
@@ -590,7 +589,6 @@ void *stb_realloc(void *ptr, unsigned int oldsz, unsigned int newsz)
 
 
 #include "thirdparty/Stb/stb_image.h"
-
 
 // fill 'data' with 'size' bytes.  return number of bytes actually read
 int stbc_read(void *user, char *data, int size)
@@ -632,18 +630,15 @@ const stbi_io_callbacks stbCallbacks = {
 
 BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
 {
-  TRACE("load_stb()");
   FIL imgFile;
 
   FRESULT result = f_open(&imgFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return NULL;
   }
-  TRACE("load_stb() open");
 
   int w, h, n;
   unsigned char *data = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &w, &h, &n, 3);
-  TRACE("load_stb() load");
   f_close(&imgFile);
 
   if (!data) {
@@ -654,10 +649,9 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
   // todo use dma2d for conversion from 888 to 565
   unsigned char *p = data;
   BitmapBuffer * bmp = new BitmapBuffer(w, h);
-  TRACE("load_stb() new");
   uint16_t * dest = bmp->data;
   if (bmp == NULL) {
-    TRACE("load_stb() new err");
+    TRACE("load_stb() malloc failed");
     stbi_image_free(data);
     return NULL;
   }
@@ -674,14 +668,6 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
     }
     p += 3 * w;
   }
-  TRACE("load_stb() free");
   stbi_image_free(data);
-  TRACE("load_stb() end");
   return bmp;
-}
-float getBitmapScale(const BitmapBuffer * bitmap, int width, int height)
-{
-  float widthScale = float(width) / bitmap->getWidth();
-  float heightScale = float(height) / bitmap->getHeight();
-  return min(widthScale, heightScale);
 }
