@@ -280,7 +280,7 @@ void getSwitchesPosition(bool startup)
   for (int i=0; i<NUM_XPOTS; i++) {
     if (IS_POT_MULTIPOS(POT1+i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
-      if (calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
+      if (IS_MULTIPOS_CALIBRATED(calib)) {
         uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
         uint8_t previousPos = potsPos[i] >> 4;
         uint8_t previousStoredPos = potsPos[i] & 0x0F;

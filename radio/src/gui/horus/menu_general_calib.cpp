@@ -29,6 +29,14 @@
 #define STICK_LEFT_X                   25
 #define STICK_RIGHT_X                  (LCD_W-STICK_LEFT_X-STICKS_WIDTH)
 
+enum CalibrationState {
+  CALIB_START = 0,
+  CALIB_SET_MIDPOINT,
+  CALIB_MOVE_STICKS,
+  CALIB_STORE,
+  CALIB_FINISHED
+};
+
 void drawSticks()
 {
   int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
@@ -62,7 +70,7 @@ bool menuCommonCalib(evt_t event)
   drawScreenTemplate(NULL, LBM_CALIBRATION_ICON, OPTION_MENU_NO_FOOTER);
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = getAnalogValue(i) >> 1;
+    int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -72,6 +80,8 @@ bool menuCommonCalib(evt_t event)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
+        // use raw analog value for multipos calibraton, anaIn() already has multipos decoded value
+        vt = getAnalogValue(i) >> 1;
         if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
           reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
@@ -103,7 +113,7 @@ bool menuCommonCalib(evt_t event)
   switch (event) {
     case EVT_ENTRY:
     case EVT_KEY_BREAK(KEY_EXIT):
-      calibrationState = 0;
+      calibrationState = CALIB_START;
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -112,7 +122,7 @@ bool menuCommonCalib(evt_t event)
   }
 
   switch (calibrationState) {
-    case 0:
+    case CALIB_START:
       // START CALIBRATION
       if (!READ_ONLY()) {
         lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
@@ -120,14 +130,14 @@ bool menuCommonCalib(evt_t event)
       }
       break;
 
-    case 1:
+    case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, "Please center sticks and press [Enter]", MENU_TITLE_COLOR);
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
-        reusableBuffer.calib.midVals[i] = getAnalogValue(i) >> 1;
+        reusableBuffer.calib.midVals[i] = anaIn(i);
         if (i < NUM_XPOTS) {
           reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
           reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
@@ -135,7 +145,7 @@ bool menuCommonCalib(evt_t event)
       }
       break;
 
-    case 2:
+    case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, "Move sticks, pots and sliders and press [Enter]", MENU_TITLE_COLOR);
@@ -173,14 +183,14 @@ bool menuCommonCalib(evt_t event)
       }
       break;
 
-    case 3:
+    case CALIB_STORE:
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
-      calibrationState = 4;
+      calibrationState = CALIB_FINISHED;
       break;
 
     default:
-      calibrationState = 0;
+      calibrationState = CALIB_START;
       break;
   }
 
@@ -194,8 +204,8 @@ bool menuCommonCalib(evt_t event)
 bool menuGeneralCalib(evt_t event)
 {
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", STR_MENUCALIBRATION);
-  if (calibrationState == 4) {
-    calibrationState = 0;
+  if (calibrationState == CALIB_FINISHED) {
+    calibrationState = CALIB_START;
     popMenu();
     return false;
   }
@@ -210,8 +220,8 @@ bool menuGeneralCalib(evt_t event)
 
 bool menuFirstCalib(evt_t event)
 {
-  if (event == EVT_KEY_BREAK(KEY_EXIT) || calibrationState == 4) {
-    calibrationState = 0;
+  if (event == EVT_KEY_BREAK(KEY_EXIT) || calibrationState == CALIB_FINISHED) {
+    calibrationState = CALIB_START;
     chainMenu(menuMainView);
     return false;
   }

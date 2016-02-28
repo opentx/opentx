@@ -133,11 +133,11 @@ void adcInit()
 #define SPI_S1                         4
 #define SPI_6POS                       5
 #define SPI_S2                         6
-#define SPI_S3                         7
-#define SPI_S4                         8
+#define SPI_LS                         7
+#define SPI_RS                         8
 #define SPI_TX_VOLTAGE                 9
-#define SPI_RS                         10
-#define SPI_LS                         11
+#define SPI_L2                         10
+#define SPI_L1                         11
 
 const uint16_t adcCommands[MOUSE1+2] =
 {
@@ -148,13 +148,13 @@ const uint16_t adcCommands[MOUSE1+2] =
   MANUAL_MODE | ( SPI_S1         << 7 ),
   MANUAL_MODE | ( SPI_6POS       << 7 ),
   MANUAL_MODE | ( SPI_S2         << 7 ),
+  MANUAL_MODE | ( SPI_L1         << 7 ),
+  MANUAL_MODE | ( SPI_L2         << 7 ),
   MANUAL_MODE | ( SPI_LS         << 7 ),
   MANUAL_MODE | ( SPI_RS         << 7 ),
-  MANUAL_MODE | ( SPI_S3         << 7 ),
-  MANUAL_MODE | ( SPI_S4         << 7 ),
   MANUAL_MODE | ( SPI_TX_VOLTAGE << 7 ),
-  MANUAL_MODE | ( 0 << 7 ),
-  MANUAL_MODE | ( 0 << 7 )
+  MANUAL_MODE | ( 0 << 7 ),    // small joystick left/right
+  MANUAL_MODE | ( 0 << 7 )     // small joystick up/down
 };
 
 void adcRead()
@@ -170,22 +170,44 @@ void adcRead()
   DMA2_Stream1->CR |= DMA_SxCR_EN;		// Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 
+  // A dummy command to get things started 
+  // (because the sampled data is lagging behind for two command cycles)
   ADC_CS_LOW();
   delay_01us(1);
-  SPIx_ReadWriteByte(*command++);	// Discard
-  ADC_CS_HIGH();
-  delay_01us(1);
-  
-  ADC_CS_LOW();
-  delay_01us(1);
-  SPIx_ReadWriteByte(*command++);	// Discard
+  SPIx_ReadWriteByte(*command);   // still sampling the old MUX channel
   ADC_CS_HIGH();
   delay_01us(1);
 
   for (uint32_t adcIndex=0; adcIndex<MOUSE1; adcIndex++) {
+    // MUX is changed to the channel that was sent in the previous command
+    // but the data is from the old MUX position
     ADC_CS_LOW();
     delay_01us(1);
-    adcValues[adcIndex] = (0x0fff & SPIx_ReadWriteByte(*command++));
+    SPIx_ReadWriteByte(*command);   
+    ADC_CS_HIGH();
+    delay_01us(1);
+
+    // This delay is to allow charging of ADC input capacitor 
+    // after the MUX changes from one channel to the other.
+    // It was determined experimentally. Biggest problem seems to be 
+    // the cross-talk between A4:S1 and A5:MULTIPOS. Changing S1 for one extreme
+    // to the other resulted in A5 change of:
+    //
+    //        delay value       A5 change
+    //          0               76 
+    //        100               26
+    //        300               13
+    //        500               undetectable
+    delay_01us(500);
+    ++command;    // move to the next channel
+
+    // First time the wanted ADC channel is actually sampled.
+    // This is delayed to allow MUX to settle (high input impedance)
+    // Also the MUX channel is set to the next channel here, 
+    // but the actual MUX change will happen in the next round
+    ADC_CS_LOW();
+    delay_01us(1);
+    adcValues[adcIndex] = (0x0fff & SPIx_ReadWriteByte(*command));
     ADC_CS_HIGH();
     delay_01us(1);
   }
