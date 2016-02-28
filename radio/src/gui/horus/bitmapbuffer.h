@@ -84,7 +84,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     ~BitmapBuffer()
     {
-      if (dataAllocated && data) free(data);
+      if (dataAllocated) free(data);
     }
 
     inline void clear()
