@@ -366,11 +366,11 @@ bool menuGeneralSdManager(evt_t _event)
     if (currentBitmapIndex != menuVerticalPosition) {
       currentBitmapIndex = menuVerticalPosition;
       delete currentBitmap;
-      currentBitmap = BitmapBuffer::load(reusableBuffer.sdmanager.lines[index]);
+      currentBitmap = BitmapBuffer::load(reusableBuffer.sdmanager.lines[index], true);
       // TODO scale in case of a too large bitmap
     }
     if (currentBitmap) {
-      lcd->drawBitmap(LCD_W / 2, LCD_H / 2, currentBitmap);
+      lcd->drawAlphaBitmap(LCD_W / 2, LCD_H / 2, currentBitmap);
     }
   }
 

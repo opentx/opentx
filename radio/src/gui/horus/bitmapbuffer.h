@@ -64,22 +64,27 @@ typedef BitmapBufferBase<const uint16_t> Bitmap;
 
 class BitmapBuffer: public BitmapBufferBase<uint16_t>
 {
+  private:
+    bool dataAllocated;
+
   public:
 
     BitmapBuffer(int width, int height):
-      BitmapBufferBase<uint16_t>(width, height, NULL)
+      BitmapBufferBase<uint16_t>(width, height, NULL),
+      dataAllocated(true)
     {
       data = (uint16_t *)malloc(width*height*sizeof(uint16_t));
     }
 
     BitmapBuffer(int width, int height, uint16_t * data):
-      BitmapBufferBase<uint16_t>(width, height, data)
+      BitmapBufferBase<uint16_t>(width, height, data),
+      dataAllocated(false)
     {
     }
 
     ~BitmapBuffer()
     {
-      free(data);
+      if (dataAllocated && data) free(data);
     }
 
     inline void clear()
@@ -132,7 +137,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags, int startAngle, int endAngle);
 
-    static BitmapBuffer * load(const char * filename);
+    static BitmapBuffer * load(const char * filename, bool transparent = false);
 
     void drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
