@@ -480,7 +480,7 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
 
   //convert to 565 fromat
   // todo use dma2d for conversion from 888 to 565
-  unsigned char *p = data;
+  unsigned char * p = data;
   BitmapBuffer * bmp = new BitmapBuffer(w, h);
   uint16_t * dest = bmp->data;
   if (bmp == NULL) {
@@ -488,9 +488,6 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
     stbi_image_free(data);
     return NULL;
   }
-
-  *dest++ = w;
-  *dest++ = h;
 
   for(int row = 0; row < h; ++row) {
     unsigned char *l = p;
