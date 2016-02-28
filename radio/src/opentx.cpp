@@ -1490,7 +1490,11 @@ uint16_t BandGap ;
 JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
 JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
 tmr10ms_t jitterResetTime = 0;
-#define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
+  #if defined(PCBTARANIS)
+    #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
+  #elif defined(CLI)
+    #define JITTER_MEASURE_ACTIVE()   (1)
+  #endif
 #endif  // defined(JITTER_MEASURE)
 
 #if !defined(SIMU)

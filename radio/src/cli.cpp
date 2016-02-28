@@ -157,7 +157,6 @@ int cliStackInfo(const char ** argv)
   return 0;
 }
 
-
 int cliMemoryInfo(const char ** argv)
 {
   // struct mallinfo {
@@ -400,6 +399,24 @@ int cliRepeat(const char ** argv)
   return 0;
 }
 
+#if defined(JITTER_MEASURE)
+int cliShowJitter(const char ** argv)
+{
+  serialPrint(  "#   anaIn   rawJ   avgJ");
+  for (int i=0; i<NUMBER_ANALOG; i++) {
+    serialPrint("A%02d %04X %3d %3d", i, anaIn(i), rawJitter[i].get(), avgJitter[i].get());
+    if (IS_POT_MULTIPOS(i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
+      for (int j=0; j<calib->count; j++) {
+        serialPrint("    s%d %04X", j, calib->steps[j]);
+      }
+    }
+  }
+  return 0;
+}
+#endif
+
+
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
   { "ls", cliLs, "<directory>" },
@@ -417,6 +434,9 @@ const CliCommand cliCommands[] = {
   { "help", cliHelp, "[<command>]" },
   { "debugvars", cliDebugVars, "" },
   { "repeat", cliRepeat, "<interval> <command>" },
+#if defined(JITTER_MEASURE)
+  { "jitter", cliShowJitter, "" },
+#endif
   { NULL, NULL, NULL }  /* sentinel */
 };
 
