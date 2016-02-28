@@ -18,12 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 uint8_t serial2Mode = 0;
-Fifo<512> serial2TxFifo;
-extern Fifo<512> telemetryFifo;
-extern Fifo<32> sbusFifo;
+Fifo<uint8_t, 512> serial2TxFifo;
+extern Fifo<uint8_t, 512> telemetryFifo;
+extern Fifo<uint8_t, 32> sbusFifo;
 
 void uart3Setup(unsigned int baudrate)
 {

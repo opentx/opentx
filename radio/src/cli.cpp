@@ -27,7 +27,7 @@
 
 OS_TID cliTaskId;
 TaskStack<CLI_STACK_SIZE> cliStack;
-Fifo<256> cliRxFifo;
+Fifo<uint8_t, 256> cliRxFifo;
 uint8_t cliTracesEnabled = true;
 // char cliLastLine[CLI_COMMAND_MAX_LEN+1];
 

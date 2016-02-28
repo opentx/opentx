@@ -139,6 +139,8 @@
 #define POWERBOX_STATE_LAST_ID    0x0b2f
 #define POWERBOX_CNSP_FIRST_ID    0x0b30
 #define POWERBOX_CNSP_LAST_ID     0x0b3f
+#define DIY_FIRST_ID              0x5000
+#define DIY_LAST_ID               0x50ff
 #define RSSI_ID                   0xf101
 #define ADC1_ID                   0xf102
 #define ADC2_ID                   0xf103
@@ -343,7 +345,6 @@ struct FrskyData {
   FrskySerialData hub;
 };
 #endif
-
 
 #if defined(PCBTARANIS) && defined(REVPLUS)
   #define IS_VALID_XJT_VERSION()      (frskyData.xjtVersion != 0 && frskyData.xjtVersion != 0xff)
@@ -551,6 +552,16 @@ void processSerialData(uint8_t data);
   #define MODEL_TELEMETRY_PROTOCOL() modelTelemetryProtocol()
 #elif defined(CPUARM)
   #define MODEL_TELEMETRY_PROTOCOL() g_model.telemetryProtocol
+#endif
+
+#if defined(LUA)
+struct LuaTelemetryValue
+{
+  uint8_t id;
+  uint32_t value;
+};
+
+extern Fifo<LuaTelemetryValue, 16> * luaTelemetryFifo;
 #endif
 
 #endif // _FRSKY_H_
