@@ -561,7 +561,8 @@ struct LuaTelemetryValue
   uint32_t value;
 };
 
-extern Fifo<LuaTelemetryValue, 16> * luaTelemetryFifo;
+extern Fifo<LuaTelemetryValue, 16> * luaInputTelemetryFifo;
+extern Fifo<LuaTelemetryValue, 16> * luaOutputTelemetryFifo;
 #endif
 
 #endif // _FRSKY_H_
