@@ -162,14 +162,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         if (y + h > height) {
           h = height - y;
         }
-        if (srcw == w) {
-          DMACopyBitmap(data, width, x, y, &bmp->data[srcw*srcy], srcw, h);
-        }
-        else {
-          for (int i=0; i<h; i++) {
-            DMACopyBitmap(data, width, x, y+i, &bmp->data[srcw*(srcy+i)+srcx], w, 1);
-          }
-        }
+        DMACopyBitmap(data, width, x, y, bmp->data, srcw, srcx, srcy, w, h);
       }
       else {
         int scaledw = w * scale;
@@ -218,14 +211,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         return;
       }
 
-      for (coord_t line=0; line<height; line++) {
-        display_t * p = getPixelPtr(x, y+line);
-        const uint8_t * q = ((uint8_t *)bmp->data) + line*width*2;
-        for (coord_t col=0; col<width; col++) {
-          drawAlphaPixel(p, q[1] >> 4, ((q[1] & 0x0f) << 12) + ((q[0] & 0xf0) << 3) + ((q[0] & 0x0f) << 1));
-          p++; q+=2;
-        }
-      }
+      DMACopyAlphaBitmap(data, this->width, x, y, bmp->data, width, height);
     }
 };
 

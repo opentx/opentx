@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define HBP  42
 #define VBP  12
@@ -462,7 +462,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16
   while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
-void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t h)
+void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
   DMA2D_DeInit();
 
@@ -474,7 +474,40 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, cons
   DMA2D_InitStruct.DMA2D_OutputBlue = 0;
   DMA2D_InitStruct.DMA2D_OutputRed = 0;
   DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
-  DMA2D_InitStruct.DMA2D_OutputOffset = (destw - srcw);
+  DMA2D_InitStruct.DMA2D_OutputOffset = destw - w;
+  DMA2D_InitStruct.DMA2D_NumberOfLine = h;
+  DMA2D_InitStruct.DMA2D_PixelPerLine = w;
+  DMA2D_Init(&DMA2D_InitStruct);
+
+  DMA2D_FG_InitTypeDef DMA2D_FG_InitStruct;
+  DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
+  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src + srcy*srcw + srcx);
+  DMA2D_FG_InitStruct.DMA2D_FGO = srcw - w;
+  DMA2D_FG_InitStruct.DMA2D_FGCM = CM_RGB565;
+  DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
+  DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_VALUE = 0;
+  DMA2D_FGConfig(&DMA2D_FG_InitStruct);
+
+  /* Start Transfer */
+  DMA2D_StartTransfer();
+
+  /* Wait for CTC Flag activation */
+  while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
+}
+
+void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t h)
+{
+  DMA2D_DeInit();
+
+  DMA2D_InitTypeDef DMA2D_InitStruct;
+  DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M_BLEND;
+  DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
+  DMA2D_InitStruct.DMA2D_OutputGreen = 0;
+  DMA2D_InitStruct.DMA2D_OutputBlue = 0;
+  DMA2D_InitStruct.DMA2D_OutputRed = 0;
+  DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
+  DMA2D_InitStruct.DMA2D_OutputOffset = destw - srcw;
   DMA2D_InitStruct.DMA2D_NumberOfLine = h;
   DMA2D_InitStruct.DMA2D_PixelPerLine = srcw;
   DMA2D_Init(&DMA2D_InitStruct);
@@ -483,10 +516,19 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, cons
   DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
   DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src);
   DMA2D_FG_InitStruct.DMA2D_FGO = 0;
-  DMA2D_FG_InitStruct.DMA2D_FGCM = CM_RGB565;
+  DMA2D_FG_InitStruct.DMA2D_FGCM = CM_ARGB4444;
   DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
   DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_VALUE = 0;
   DMA2D_FGConfig(&DMA2D_FG_InitStruct);
+
+  DMA2D_BG_InitTypeDef DMA2D_BG_InitStruct;
+  DMA2D_BG_StructInit(&DMA2D_BG_InitStruct);
+  DMA2D_BG_InitStruct.DMA2D_BGMA = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
+  DMA2D_BG_InitStruct.DMA2D_BGO = destw - srcw;
+  DMA2D_BG_InitStruct.DMA2D_BGCM = CM_RGB565;
+  DMA2D_BG_InitStruct.DMA2D_BGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
+  DMA2D_BG_InitStruct.DMA2D_BGPFC_ALPHA_VALUE = 0;
+  DMA2D_BGConfig(&DMA2D_BG_InitStruct);
 
   /* Start Transfer */
   DMA2D_StartTransfer();
