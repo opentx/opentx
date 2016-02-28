@@ -434,10 +434,8 @@ int stbc_read(void *user, char *data, int size)
   UINT br = 0;
   FRESULT res = f_read(fp, data, size, &br);
   if (res == FR_OK) {
-    TRACE("sr %d", (int)br);
     return (int)br;
   }
-  TRACE("sr NULL");
   return 0;
 }
 
@@ -445,7 +443,6 @@ int stbc_read(void *user, char *data, int size)
 void stbc_skip(void *user, int n)
 {
   FIL * fp = (FIL *)user;
-  TRACE("ss %d", n);
   f_lseek(fp, f_tell(fp) + n);
 }
 
@@ -454,7 +451,6 @@ int stbc_eof(void *user)
 {
   FIL * fp = (FIL *)user;
   int res = f_eof(fp);
-  TRACE("se %d", res);
   return res;
 }
 
