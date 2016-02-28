@@ -28,7 +28,7 @@
 /** Pins description corresponding to Rxd,Txd, (UART pins) */
 #define SECOND_SERIAL_PINS        {PINS_UART}
 
-Fifo<512> serial2RxFifo;
+Fifo<uint8_t, 512> serial2RxFifo;
 
 #if !defined(SIMU)
 /*
