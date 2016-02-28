@@ -394,6 +394,7 @@ void memswap(void * a, void * b, uint8_t size);
 #endif
 
 #define IS_POT(x)                      ((x)>=POT1 && (x)<=POT_LAST)
+#define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 
 #if defined(PCBFLAMENCO) || defined(PCBHORUS) || (defined(PCBTARANIS) && defined(REV9E))
   #define PWR_BUTTON_DELAY

@@ -1487,21 +1487,40 @@ uint16_t BandGap ;
 #endif
 
 #if defined(JITTER_MEASURE)
-JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
-JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
-tmr10ms_t jitterResetTime = 0;
+  JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
+  JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
+  tmr10ms_t jitterResetTime = 0;
   #if defined(PCBTARANIS)
     #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
   #elif defined(CLI)
     #define JITTER_MEASURE_ACTIVE()   (1)
   #endif
-#endif  // defined(JITTER_MEASURE)
+#endif
+
+
+#if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
+  #define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
+  #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-3) (see explanation below)
+
+  #define JITTER_ALPHA            (1<<JITTER_FILTER_STRENGTH)
+  #define ANALOG_MULTIPLIER       (1<<ANALOG_SCALE)
+  #define ANA_FILT(chan)          (s_anaFilt[chan] / (JITTER_ALPHA * ANALOG_MULTIPLIER))
+  #if (JITTER_ALPHA * ANALOG_MULTIPLIER > 32)
+    #error "JITTER_FILTER_STRENGTH and ANALOG_SCALE are too big, their summ should be <= 5 !!!"
+  #endif
+#else
+  #define ANALOG_SCALE            0
+  #define JITTER_ALPHA            1
+  #define ANALOG_MULTIPLIER       1
+  #define ANA_FILT(chan)          (s_anaFilt[chan])
+#endif
+
 
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
 #if defined(VIRTUALINPUTS)
-  return s_anaFilt[chan];
+  return ANA_FILT(chan);
 #elif defined(PCBSKY9X) && !defined(REVA)
   static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
   if (chan == TX_CURRENT) {
@@ -1535,6 +1554,7 @@ void getADC()
 
 #if defined(JITTER_MEASURE)
   if (JITTER_MEASURE_ACTIVE() && jitterResetTime < get_tmr10ms()) {
+    // reset jitter measurement every second
     for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
       rawJitter[x].reset();
       avgJitter[x].reset();
@@ -1556,41 +1576,78 @@ void getADC()
     }
   }
 
-  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
-    uint16_t v = temp[x] >> 3;
+  for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
+    uint16_t v = temp[x] >> (3 - ANALOG_SCALE);
 
-#if defined(JITTER_FILTER)
-    // jitter filter
-    uint16_t diff = (v > s_anaFilt[x]) ? (v - s_anaFilt[x]) : (s_anaFilt[x] - v);
-    if (diff < 10) {
-      // apply filter
-      v = (7 * s_anaFilt[x] + v) >> 3;
-    }
-#endif
-
-#if defined(JITTER_MEASURE)
-    if (JITTER_MEASURE_ACTIVE()) {
-      avgJitter[x].measure(v);
-    }
-#endif
-
-#if defined(VIRTUALINPUTS)
-    StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
-    if (IS_POT_MULTIPOS(x) && calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
-      uint8_t vShifted = (v >> 4);
-      s_anaFilt[x] = 2*RESX;
-      for (int i=0; i<calib->count; i++) {
-        if (vShifted < calib->steps[i]) {
-          s_anaFilt[x] = i*2*RESX/calib->count;
-          break;
-        }
-      }
+#if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
+    // Jitter filter: 
+    //    * pass trough any big change directly
+    //    * for small change use Modified moving average (MMA) filter
+    //
+    // Explanation:
+    //
+    // Normal MMA filter has this formula:   
+    //            <out> = ((ALPHA-1)*<out> + <in>)/ALPHA
+    //
+    // If calculation is done this way with integer arithmetics, then any small change in
+    // input signal is lost. One way to combat that, is to rearrange the formula somewhat,
+    // to store a more precise (larger) number between iterations. The basic idea is to 
+    // store undivided value between iterations. Therefore an new variable <filtered> is 
+    // used. The new formula becomes:
+    //           <filtered> = <filtered> - <filtered>/ALPHA + <in>
+    //           <out> = <filtered>/ALPHA  (use only when out is needed)
+    //
+    // The above formula with a maximum allowed ALPHA value (we are limited by 
+    // the 16 bit s_anaFilt[]) was tested on the radio. The resulting signal still had
+    // some jitter (a value of 1 was observed). The jitter might be bigger on other 
+    // radios.
+    //
+    // So another idea is to use larger input values for filtering. So instead of using
+    // input in a range from 0 to 2047, we use twice larger number (temp[x] is divided less)
+    //
+    // This also means that ALPHA must be lowered (remember 16 bit limit), but test results
+    // have proved that this kind of filtering gives better results. So the recommended values
+    // for filter are:
+    //     JITTER_FILTER_STRENGTH  4
+    //     ANALOG_SCALE            1
+    //
+    // Variables mapping:
+    //   * <in> = v
+    //   * <out> = s_anaFilt[x]
+    uint16_t previous = s_anaFilt[x] / JITTER_ALPHA;
+    uint16_t diff = (v > previous) ? (v - previous) : (previous - v);
+    if (diff < 10 * ANALOG_MULTIPLIER) {
+      // apply jitter filter
+      s_anaFilt[x] = (s_anaFilt[x] - previous) + v;
     }
     else
 #endif
     {
-      s_anaFilt[x] = v;
+    	//use unfiltered value
+      s_anaFilt[x] = v * JITTER_ALPHA;
     }
+
+#if defined(JITTER_MEASURE)
+    if (JITTER_MEASURE_ACTIVE()) {
+      avgJitter[x].measure(ANA_FILT(x));
+    }
+#endif
+
+#if defined(VIRTUALINPUTS)
+    #define ANAFILT_MAX    (2 * RESX * JITTER_ALPHA * ANALOG_MULTIPLIER - 1)
+    StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
+    if (IS_POT_MULTIPOS(x) && IS_MULTIPOS_CALIBRATED(calib)) {
+      // TODO: consider adding another low pass filter to eliminate multipos switching glitches
+      uint8_t vShifted = ANA_FILT(x) >> 4;
+      s_anaFilt[x] = ANAFILT_MAX;
+      for (uint32_t i=0; i<calib->count; i++) {
+        if (vShifted < calib->steps[i]) {
+          s_anaFilt[x] = (i * ANAFILT_MAX) / calib->count;
+          break;
+        }
+      }
+    }
+#endif   // defined(VIRTUALINPUTS)
   }
 }
 #endif

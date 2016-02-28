@@ -25,6 +25,14 @@
 #define BAR_SPACING   12
 #define BAR_HEIGHT    22
 
+enum CalibrationState {
+  CALIB_START = 0,
+  CALIB_SET_MIDPOINT,
+  CALIB_MOVE_STICKS,
+  CALIB_STORE,
+  CALIB_FINISHED
+};
+
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
@@ -41,7 +49,7 @@ void drawPotsBars()
 void menuCommonCalib(uint8_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = getAnalogValue(i) >> 1;
+    int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -51,6 +59,8 @@ void menuCommonCalib(uint8_t event)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
+        // use raw analog value for multipos calibraton, anaIn() already has multipos decoded value
+        vt = getAnalogValue(i) >> 1;
         if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
           reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
@@ -84,7 +94,7 @@ void menuCommonCalib(uint8_t event)
   switch (event) {
     case EVT_ENTRY:
     case EVT_KEY_BREAK(KEY_EXIT):
-      reusableBuffer.calib.state = 0;
+      reusableBuffer.calib.state = CALIB_START;
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -93,14 +103,14 @@ void menuCommonCalib(uint8_t event)
   }
 
   switch (reusableBuffer.calib.state) {
-    case 0:
+    case CALIB_START:
       // START CALIBRATION
       if (!READ_ONLY()) {
         lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUTOSTART);
       }
       break;
 
-    case 1:
+    case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
       lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
@@ -116,7 +126,7 @@ void menuCommonCalib(uint8_t event)
       }
       break;
 
-    case 2:
+    case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
@@ -133,7 +143,7 @@ void menuCommonCalib(uint8_t event)
       }
       break;
 
-    case 3:
+    case CALIB_STORE:
       for (uint8_t i=POT1; i<=POT_LAST; i++) {
         int idx = i - POT1;
         int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
@@ -159,11 +169,11 @@ void menuCommonCalib(uint8_t event)
       }
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
-      reusableBuffer.calib.state = 4;
+      reusableBuffer.calib.state = CALIB_FINISHED;
       break;
 
     default:
-      reusableBuffer.calib.state = 0;
+      reusableBuffer.calib.state = CALIB_START;
       break;
   }
 
@@ -173,7 +183,7 @@ void menuCommonCalib(uint8_t event)
 #if 0
   for (int i=POT1; i<=POT_LAST; i++) {
     uint8_t steps = 0;
-    if (reusableBuffer.calib.state == 2) {
+    if (reusableBuffer.calib.state == CALIB_MOVE_STICKS) {
       steps = reusableBuffer.calib.xpotsCalib[i-POT1].stepsCount;
     }
     else if (IS_POT_MULTIPOS(i)) {
@@ -192,14 +202,14 @@ void menuGeneralCalib(uint8_t event)
   check_simple(STR_MENUCALIBRATION, event, e_Calib, menuTabGeneral, DIM(menuTabGeneral), 0);
   menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
-    calibrationState = 0;
+    calibrationState = CALIB_START;
   }
 }
 
 void menuFirstCalib(uint8_t event)
 {
-  if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == 4) {
-    calibrationState = 0;
+  if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == CALIB_FINISHED) {
+    calibrationState = CALIB_START;
     chainMenu(menuMainView);
   }
   else {

@@ -404,7 +404,7 @@ int cliShowJitter(const char ** argv)
 {
   serialPrint(  "#   anaIn   rawJ   avgJ");
   for (int i=0; i<NUMBER_ANALOG; i++) {
-    serialPrint("A%02d %04X %3d %3d", i, anaIn(i), rawJitter[i].get(), avgJitter[i].get());
+    serialPrint("A%02d %04X %04X %3d %3d", i, getAnalogValue(i), anaIn(i), rawJitter[i].get(), avgJitter[i].get());
     if (IS_POT_MULTIPOS(i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
       for (int j=0; j<calib->count; j++) {
