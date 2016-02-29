@@ -815,7 +815,6 @@ ZoneOption * createOptionsArray(int reference)
           break;
       }
     }
-    TRACE("option %s %d %d", option->name, option->type, option->deflt.signedValue);
     option++;
   }
 
@@ -1086,6 +1085,8 @@ void luaLoadFiles(const char * directory, void (*callback)())
   else {
     TRACE("f_opendir(%s) failed, code=%d", path, res);
   }
+
+  f_closedir(&dir);
 }
 
 #endif
