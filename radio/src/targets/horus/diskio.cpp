@@ -129,7 +129,8 @@ DRESULT disk_read (
     return RES_NOTRDY;
   }
 
-  if ((DWORD)buff < 0x20000000 || (DWORD)buff >= 0x20030000 || ((DWORD)buff & 3)) {
+  if ((DWORD)buff < 0x20000000 /*|| (DWORD)buff >= 0x20030000*/ || ((DWORD)buff & 3)) {
+    TRACE("disk_read bad alignment (%p)", buff);
     while(count--) {
       res = disk_read(drv, (BYTE *)scratch, sector++, 1);
 
@@ -207,7 +208,8 @@ DRESULT disk_write (
   if (SD_Detect() != SD_PRESENT)
     return(RES_NOTRDY);
 
-  if ((DWORD)buff < 0x20000000 || (DWORD)buff >= 0x20030000 || ((DWORD)buff & 3)) {
+  if ((DWORD)buff < 0x20000000 /*|| (DWORD)buff >= 0x20030000*/ || ((DWORD)buff & 3)) {
+    TRACE("disk_write bad alignment (%p)", buff);
     while(count--) {
       memcpy(scratch, buff, BLOCK_SIZE);
 
