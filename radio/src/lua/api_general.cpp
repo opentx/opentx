@@ -504,7 +504,7 @@ OpenTX 2.0:
 
 | Unit  | Sound | File (.wav) | Automatic conversion rules  |
 | --- | --- | --- | --- |
-| 0 |   |   |   |
+| 0 | --- | --- (no unit played) |   |
 | 1 | Volts | 116 |   |
 | 2 | Amps  | 118 |   |
 | 3 | Meters per Second | 120 |   |
@@ -530,7 +530,8 @@ OpenTX 2.0:
 OpenTX 2.1:
 
 | 2.1 Unit  | Sound | Sound File (.wav) |   
-| --- | --- | --- |   
+| --- | --- | --- | --- | 
+| 0 | --- | --- (no unit played) |   |
 | 1 | Volts | 116 |   
 | 2 | Amps  | 118 |   
 | 3 | Milliamps | 120 |   
