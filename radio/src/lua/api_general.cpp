@@ -583,7 +583,7 @@ Play a time value (text to speech)
 static int luaPlayDuration(lua_State *L)
 {
   int duration = luaL_checkinteger(L, 1);
-  bool playTime = (luaL_checkinteger(L, 2) != 0);
+  bool playTime = (luaL_optinteger(L, 2, 0) != 0);
   playDuration(duration, playTime ? PLAY_TIME : 0, 0);
   return 0;
 }
