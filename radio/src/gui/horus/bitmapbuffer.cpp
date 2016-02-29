@@ -461,7 +461,7 @@ const stbi_io_callbacks stbCallbacks = {
   stbc_eof
 };
 
-BitmapBuffer * BitmapBuffer::load(const char * filename, bool transparent)
+BitmapBuffer * BitmapBuffer::load(const char * filename)
 {
   FIL imgFile;
 
@@ -471,46 +471,45 @@ BitmapBuffer * BitmapBuffer::load(const char * filename, bool transparent)
   }
 
   int w, h, n;
-  unsigned char *img = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &w, &h, &n, transparent ? 4 : 3);
+  unsigned char * img = stbi_load_from_callbacks(&stbCallbacks, &imgFile, &w, &h, &n, 4);
   f_close(&imgFile);
 
   if (!img) {
     return NULL;
   }
 
-  //convert to RGB565 or ARGB4444 fromat
-  // todo use dma2d for conversion from 888 to 565
-  unsigned char * p = img;
-  BitmapBuffer * bmp = new BitmapBuffer(w, h);
-  uint16_t * dest = bmp->data;
+  // convert to RGB565 or ARGB4444 format
+  BitmapBuffer * bmp = new BitmapBuffer(n == 4 ? BMP_ARGB4444 : BMP_RGB565, w, h);
   if (bmp == NULL) {
     TRACE("load_stb() malloc failed");
     stbi_image_free(img);
     return NULL;
   }
 
-  if (transparent) {
+#if 0
+  DMABitmapConvert(bmp->data, img, w, h, n == 4 ? DMA2D_ARGB4444 : DMA2D_RGB565);
+#else
+  uint16_t * dest = bmp->getData();
+  const uint8_t * p = img;
+  if (n == 4) {
     for(int row = 0; row < h; ++row) {
-      unsigned char *l = p;
       for(int col = 0; col < w; ++col) {
-        *dest = ARGB(l[3], l[0], l[1], l[2]);
+        *dest = ARGB(p[3], p[0], p[1], p[2]);
         ++dest;
-        l += 4;
+        p += 4;
       }
-      p += 4 * w;
     }
   }
   else {
     for(int row = 0; row < h; ++row) {
-      unsigned char *l = p;
       for(int col = 0; col < w; ++col) {
-        *dest = RGB(l[0], l[1], l[2]);
+        *dest = RGB(p[0], p[1], p[2]);
         ++dest;
-        l += 3;
+        p += 4;
       }
-      p += 3 * w;
     }
   }
+#endif
 
   stbi_image_free(img);
   return bmp;

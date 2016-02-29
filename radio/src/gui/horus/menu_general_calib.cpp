@@ -63,8 +63,6 @@ void drawPots()
                                                                                 OPTION_SLIDER_SQUARE_BUTTON);
 }
 
-#include "alpha_horus.lbm"
-
 bool menuCommonCalib(evt_t event)
 {
   drawScreenTemplate(NULL, LBM_CALIBRATION_ICON, OPTION_MENU_NO_FOOTER);
@@ -194,7 +192,10 @@ bool menuCommonCalib(evt_t event)
       break;
   }
 
-  lcd->drawAlphaBitmap((LCD_W-206)/2, LCD_H-220, &ALPHA_HORUS);
+  static const BitmapBuffer * horus = BitmapBuffer::load(getThemePath("horus.png"));
+  if (horus) {
+    lcd->drawBitmap((LCD_W-horus->getWidth())/2, LCD_H-20-horus->getHeight(), horus);
+  }
   drawSticks();
   drawPots();
 

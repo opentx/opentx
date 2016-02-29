@@ -59,6 +59,7 @@ extern const uint8_t * const LBM_MAINVIEWS_ICONS[];
 // Model selection icons
 extern const uint8_t LBM_LIBRARY_ICON[];
 extern const uint8_t LBM_LIBRARY_SLOT[];
+extern const uint8_t LBM_ACTIVE_MODEL[];
 extern const uint8_t LBM_LIBRARY_CURSOR[];
 extern const uint8_t LBM_SCORE0[];
 extern const uint8_t LBM_SCORE1[];

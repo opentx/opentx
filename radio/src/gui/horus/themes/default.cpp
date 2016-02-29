@@ -68,7 +68,7 @@ class DefaultTheme: public Theme
 
     virtual void drawBackground() const
     {
-      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.bmp"));
+      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.png"));
       if (backgroundBitmap) {
         lcd->drawBitmap(0, 0, backgroundBitmap);
       }
@@ -80,10 +80,8 @@ class DefaultTheme: public Theme
 
     virtual void drawAboutBackground() const
     {
-      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("aboutbg.bmp"));
-      if (backgroundBitmap) {
-        lcd->drawBitmap(0, 0, backgroundBitmap);
-      }
+      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("aboutbg.png"));
+      lcd->drawBitmap(0, 0, backgroundBitmap);
     }
 
     virtual void drawTopbarBackground(const uint8_t * icon) const

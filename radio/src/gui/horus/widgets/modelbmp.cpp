@@ -41,7 +41,7 @@ class ModelBitmapWidget: public Widget
     void refreshBuffer()
     {
       delete buffer;
-      buffer = new BitmapBuffer(zone.w, zone.h);
+      buffer = new BitmapBuffer(BMP_RGB565, zone.w, zone.h);
       if (buffer) {
         buffer->drawBitmap(0, 0, lcd, zone.x, zone.y, zone.w, zone.h);
         GET_FILENAME(filename, BITMAPS_PATH, g_model.header.bitmap, BITMAPS_EXT);
@@ -82,3 +82,4 @@ class ModelBitmapWidget: public Widget
 };
 
 BaseWidgetFactory<ModelBitmapWidget> modelBitmapWidget("ModelBmp", NULL);
+const WidgetFactory * defaultWidget = &modelBitmapWidget;

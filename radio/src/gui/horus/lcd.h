@@ -77,7 +77,7 @@
 #if defined(SIMU)
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #else
-#define displayBuf                     lcd->data
+#define displayBuf                     lcd->getData()
 #endif
 
 #define lcdRefreshWait()
@@ -157,7 +157,7 @@ inline void lcdDrawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t co
 #if !defined(SIMU)
 inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
 {
-  DMAFillRect(lcd->data, LCD_W, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+  DMAFillRect(lcd->getData(), LCD_W, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
 }
 #else
 void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags);

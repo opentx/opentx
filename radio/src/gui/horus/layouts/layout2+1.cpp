@@ -100,3 +100,4 @@ void Layout2P1::refresh()
 }
 
 BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);
+const LayoutFactory * defaultLayout = &layout2P1;

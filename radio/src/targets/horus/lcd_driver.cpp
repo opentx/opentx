@@ -380,8 +380,8 @@ void LCD_Init(void)
   LCD_ControlLight(100);
 }
 
-BitmapBuffer lcdBuffer1(LCD_W, LCD_H, (uint16_t *)LCD_FIRST_FRAME_BUFFER);
-BitmapBuffer lcdBuffer2(LCD_W, LCD_H, (uint16_t *)LCD_SECOND_FRAME_BUFFER);
+BitmapBuffer lcdBuffer1(BMP_RGB565, LCD_W, LCD_H, (uint16_t *)LCD_FIRST_FRAME_BUFFER);
+BitmapBuffer lcdBuffer2(BMP_RGB565, LCD_W, LCD_H, (uint16_t *)LCD_SECOND_FRAME_BUFFER);
 BitmapBuffer * lcd = &lcdBuffer1;
 
 /**
@@ -469,7 +469,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, cons
   DMA2D_InitTypeDef DMA2D_InitStruct;
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M;
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
-  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest + y*destw + x);
   DMA2D_InitStruct.DMA2D_OutputGreen = 0;
   DMA2D_InitStruct.DMA2D_OutputBlue = 0;
   DMA2D_InitStruct.DMA2D_OutputRed = 0;
@@ -495,27 +495,27 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, cons
   while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
-void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t h)
+void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
   DMA2D_DeInit();
 
   DMA2D_InitTypeDef DMA2D_InitStruct;
   DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M_BLEND;
   DMA2D_InitStruct.DMA2D_CMode = DMA2D_RGB565;
-  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest + y*destw + x);
   DMA2D_InitStruct.DMA2D_OutputGreen = 0;
   DMA2D_InitStruct.DMA2D_OutputBlue = 0;
   DMA2D_InitStruct.DMA2D_OutputRed = 0;
   DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
-  DMA2D_InitStruct.DMA2D_OutputOffset = destw - srcw;
+  DMA2D_InitStruct.DMA2D_OutputOffset = destw - w;
   DMA2D_InitStruct.DMA2D_NumberOfLine = h;
-  DMA2D_InitStruct.DMA2D_PixelPerLine = srcw;
+  DMA2D_InitStruct.DMA2D_PixelPerLine = w;
   DMA2D_Init(&DMA2D_InitStruct);
 
   DMA2D_FG_InitTypeDef DMA2D_FG_InitStruct;
   DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
-  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src);
-  DMA2D_FG_InitStruct.DMA2D_FGO = 0;
+  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src + srcy*srcw + srcx);
+  DMA2D_FG_InitStruct.DMA2D_FGO = srcw - w;
   DMA2D_FG_InitStruct.DMA2D_FGCM = CM_ARGB4444;
   DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
   DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_VALUE = 0;
@@ -523,12 +523,45 @@ void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y,
 
   DMA2D_BG_InitTypeDef DMA2D_BG_InitStruct;
   DMA2D_BG_StructInit(&DMA2D_BG_InitStruct);
-  DMA2D_BG_InitStruct.DMA2D_BGMA = CONVERT_PTR_UINT(dest) + 2*(destw*y + x);
-  DMA2D_BG_InitStruct.DMA2D_BGO = destw - srcw;
+  DMA2D_BG_InitStruct.DMA2D_BGMA = CONVERT_PTR_UINT(dest + y*destw + x);
+  DMA2D_BG_InitStruct.DMA2D_BGO = destw - w;
   DMA2D_BG_InitStruct.DMA2D_BGCM = CM_RGB565;
   DMA2D_BG_InitStruct.DMA2D_BGPFC_ALPHA_MODE = NO_MODIF_ALPHA_VALUE;
   DMA2D_BG_InitStruct.DMA2D_BGPFC_ALPHA_VALUE = 0;
   DMA2D_BGConfig(&DMA2D_BG_InitStruct);
+
+  /* Start Transfer */
+  DMA2D_StartTransfer();
+
+  /* Wait for CTC Flag activation */
+  while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
+}
+
+void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format)
+{
+  DMA2D_DeInit();
+
+  DMA2D_InitTypeDef DMA2D_InitStruct;
+  DMA2D_InitStruct.DMA2D_Mode = DMA2D_M2M_PFC;
+  DMA2D_InitStruct.DMA2D_CMode = format;
+  DMA2D_InitStruct.DMA2D_OutputMemoryAdd = CONVERT_PTR_UINT(dest);
+  DMA2D_InitStruct.DMA2D_OutputGreen = 0;
+  DMA2D_InitStruct.DMA2D_OutputBlue = 0;
+  DMA2D_InitStruct.DMA2D_OutputRed = 0;
+  DMA2D_InitStruct.DMA2D_OutputAlpha = 0;
+  DMA2D_InitStruct.DMA2D_OutputOffset = 0;
+  DMA2D_InitStruct.DMA2D_NumberOfLine = h;
+  DMA2D_InitStruct.DMA2D_PixelPerLine = w;
+  DMA2D_Init(&DMA2D_InitStruct);
+
+  DMA2D_FG_InitTypeDef DMA2D_FG_InitStruct;
+  DMA2D_FG_StructInit(&DMA2D_FG_InitStruct);
+  DMA2D_FG_InitStruct.DMA2D_FGMA = CONVERT_PTR_UINT(src);
+  DMA2D_FG_InitStruct.DMA2D_FGO = 0;
+  DMA2D_FG_InitStruct.DMA2D_FGCM = CM_ARGB8888;
+  DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_MODE = REPLACE_ALPHA_VALUE;
+  DMA2D_FG_InitStruct.DMA2D_FGPFC_ALPHA_VALUE = 0;
+  DMA2D_FGConfig(&DMA2D_FG_InitStruct);
 
   /* Start Transfer */
   DMA2D_StartTransfer();
@@ -572,12 +605,12 @@ void DMAcopy(void * src, void * dest, int len)
 
 void lcdStoreBackupBuffer()
 {
-  DMAcopy(lcd->data, LCD_BACKUP_FRAME_BUFFER, DISPLAY_BUFFER_SIZE);
+  DMAcopy(lcd->getData(), LCD_BACKUP_FRAME_BUFFER, DISPLAY_BUFFER_SIZE);
 }
 
 int lcdRestoreBackupBuffer()
 {
-  DMAcopy(LCD_BACKUP_FRAME_BUFFER, lcd->data, DISPLAY_BUFFER_SIZE);
+  DMAcopy(LCD_BACKUP_FRAME_BUFFER, lcd->getData(), DISPLAY_BUFFER_SIZE);
   return 1;
 }
 

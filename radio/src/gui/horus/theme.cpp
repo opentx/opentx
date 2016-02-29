@@ -52,11 +52,9 @@ void Theme::drawThumb(uint16_t x, uint16_t y, uint32_t flags)
   #define THUMB_WIDTH   51
   #define THUMB_HEIGHT  31
   if (!thumb) {
-    thumb = BitmapBuffer::load(getFilePath("thumb.bmp"));
+    thumb = BitmapBuffer::load(getFilePath("thumb.png"));
   }
-  if (thumb) {
-    lcd->drawBitmap(x, y, thumb);
-  }
+  lcd->drawBitmap(x, y, thumb);
   if (flags == LINE_COLOR) {
     lcdDrawFilledRect(x, y, THUMB_WIDTH, THUMB_HEIGHT, SOLID, OVERLAY_COLOR | OPACITY(10));
   }
@@ -72,20 +70,20 @@ void Theme::drawAboutBackground() const
   drawBackground();
 }
 
-#include "alpha_asterisk.lbm"
-
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const
 {
+  static const BitmapBuffer * asterisk = BitmapBuffer::load(getThemePath("asterisk.png"));
+
   //if (flags & MESSAGEBOX_TYPE_ALERT) {
     drawBackground();
     lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
   //}
 
   if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
-    lcd->drawAlphaBitmap(POPUP_X-80, POPUP_Y+12, &ALPHA_ASTERISK);
+    lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, asterisk);
   }
   else {
-    lcd->drawAlphaBitmap(POPUP_X-80, POPUP_Y+12, &ALPHA_ASTERISK);
+    lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, asterisk);
   }
 
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)

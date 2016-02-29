@@ -25,38 +25,54 @@
 #include "colors.h"
 
 #define USE_STB
- 
+
 // TODO should go to lcd.h again
 typedef int coord_t;
 typedef uint32_t LcdFlags;
 typedef uint16_t display_t;
 
+enum BitmapFormats
+{
+  BMP_RGB565,
+  BMP_ARGB4444
+};
+
 template<class T>
 class BitmapBufferBase
 {
   public:
-    BitmapBufferBase(int width, int height, T * data):
+    BitmapBufferBase(uint8_t format, uint16_t width, uint16_t height, T * data):
+      format(format),
       width(width),
       height(height),
       data(data)
     {
     }
 
-    int getWidth() const
+    inline uint8_t getFormat() const
+    {
+      return format;
+    }
+
+    inline uint16_t getWidth() const
     {
       return width;
     }
 
-    int getHeight() const
+    inline uint16_t getHeight() const
     {
       return height;
     }
 
-  protected:
-    int width;
-    int height;
+    inline T * getData() const
+    {
+      return data;
+    }
 
-  public: // TODO protected
+  protected:
+    uint8_t format;
+    uint16_t width;
+    uint16_t height;
     T * data;
 };
 
@@ -69,22 +85,24 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
   public:
 
-    BitmapBuffer(int width, int height):
-      BitmapBufferBase<uint16_t>(width, height, NULL),
+    BitmapBuffer(uint8_t format, uint16_t width, uint16_t height):
+      BitmapBufferBase<uint16_t>(format, width, height, NULL),
       dataAllocated(true)
     {
       data = (uint16_t *)malloc(width*height*sizeof(uint16_t));
     }
 
-    BitmapBuffer(int width, int height, uint16_t * data):
-      BitmapBufferBase<uint16_t>(width, height, data),
+    BitmapBuffer(uint8_t format, uint16_t width, uint16_t height, uint16_t * data):
+      BitmapBufferBase<uint16_t>(format, width, height, data),
       dataAllocated(false)
     {
     }
 
     ~BitmapBuffer()
     {
-      if (dataAllocated) free(data);
+      if (dataAllocated) {
+        free(data);
+      }
     }
 
     inline void clear()
@@ -137,7 +155,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags, int startAngle, int endAngle);
 
-    static BitmapBuffer * load(const char * filename, bool transparent = false);
+    static BitmapBuffer * load(const char * filename);
 
     void drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
@@ -148,6 +166,8 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     template<class T>
     void drawBitmap(coord_t x, coord_t y, const T * bmp, coord_t srcx=0, coord_t srcy=0, coord_t w=0, coord_t h=0, float scale=0)
     {
+      if (!bmp) return;
+
       int srcw = bmp->getWidth();
       int srch = bmp->getHeight();
 
@@ -167,7 +187,12 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         if (y + h > height) {
           h = height - y;
         }
-        DMACopyBitmap(data, width, x, y, bmp->data, srcw, srcx, srcy, w, h);
+        if (bmp->getFormat() == BMP_ARGB4444) {
+          DMACopyAlphaBitmap(data, this->width, x, y, bmp->getData(), srcw, srcx, srcy, w, h);
+        }
+        else {
+          DMACopyBitmap(data, width, x, y, bmp->getData(), srcw, srcx, srcy, w, h);
+        }
       }
       else {
         int scaledw = w * scale;
@@ -180,7 +205,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
         for (int i = 0; i < scaledh; i++) {
           uint16_t * p = &data[(y + i) * width + x];
-          const uint16_t * qstart = &bmp->data[(srcy + int(i / scale)) * bmp->getWidth() + srcx];
+          const uint16_t * qstart = &bmp->getData()[(srcy + int(i / scale)) * bmp->getWidth() + srcx];
           for (int j = 0; j < scaledw; j++) {
             const uint16_t * q = qstart + int(j / scale);
             *p = *q;
@@ -204,19 +229,6 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       else {
         drawBitmap(x+(w-width)/2, y, bitmap, 0, 0, 0, 0, scale);
       }
-    }
-
-    template<class T>
-    void drawAlphaBitmap(coord_t x, coord_t y, const T * bmp)
-    {
-      int width = bmp->getWidth();
-      int height = bmp->getHeight();
-
-      if (width == 0 || height == 0) {
-        return;
-      }
-
-      DMACopyAlphaBitmap(data, this->width, x, y, bmp->data, width, height);
     }
 };
 

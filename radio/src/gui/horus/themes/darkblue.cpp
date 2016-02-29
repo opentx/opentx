@@ -66,7 +66,7 @@ class DarkblueTheme: public Theme
         lcdDrawBitmapPattern(5, 7, icon, MENU_TITLE_COLOR);
       }
       else {
-        static BitmapBuffer * thumb = BitmapBuffer::load(getFilePath("topmenu_opentx.bmp"));
+        static BitmapBuffer * thumb = BitmapBuffer::load(getFilePath("topmenu_opentx.png"));
         lcd->drawBitmap(5, 7, thumb);
       }
 

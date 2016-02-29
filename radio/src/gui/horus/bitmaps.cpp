@@ -248,6 +248,10 @@ const uint8_t LBM_LIBRARY_SLOT[] = {
 #include "mask_library_slot.lbm"
 };
 
+const uint8_t LBM_ACTIVE_MODEL[] = {
+#include "mask_library_active_model.lbm"
+};
+
 const uint8_t LBM_LIBRARY_CURSOR[] = {
 #include "mask_library_category_index.lbm"
 };

@@ -454,6 +454,15 @@ void modelDefault(uint8_t id)
   g_model.header.name[5] = '\033' + id/10;
   g_model.header.name[6] = '\033' + id%10;
 #endif
+
+#if defined(COLORLCD)
+  extern const LayoutFactory * defaultLayout;
+  delete customScreens[0];
+  customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
+  strcpy(g_model.screenData[0].layoutName, "Layout2P1");
+  extern const WidgetFactory * defaultWidget;
+  customScreens[0]->createWidget(0, defaultWidget);
+#endif
 }
 
 #if defined(VIRTUALINPUTS)

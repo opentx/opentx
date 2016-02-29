@@ -52,8 +52,8 @@ void drawTopbarDatetime()
 #define STICK_PANEL_WIDTH                   68
 void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 {
-  lcd->drawAlphaBitmap(x, y, &ALPHA_STICK_BACKGROUND);
-  lcd->drawAlphaBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, &ALPHA_STICK_POINTER);
+  lcd->drawBitmap(x, y, &ALPHA_STICK_BACKGROUND);
+  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, &ALPHA_STICK_POINTER);
 }
 
 #include "alpha_button_on.lbm"
@@ -75,9 +75,9 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
     lcdDrawText(x+padding+8, y, label, TEXT_COLOR);
   }
   if (attr & BUTTON_OFF)
-    lcd->drawAlphaBitmap(x-6, y+3, &ALPHA_BUTTON_OFF);
+    lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_OFF);
   else if (attr & BUTTON_ON)
-    lcd->drawAlphaBitmap(x-6, y+3, &ALPHA_BUTTON_ON);
+    lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_ON);
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
@@ -424,23 +424,24 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 void drawSleepBitmap()
 {
   lcd->clear();
-  const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.bmp"));
+  const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.png"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->getWidth())/2, (LCD_H-bitmap->getHeight())/2, bitmap);
   }
   lcdRefresh();
 }
 
-#include "alpha_shutdown.lbm"
-
 #define SHUTDOWN_CIRCLE_DIAMETER       150
 void drawShutdownBitmap(uint32_t index)
 {
   static uint32_t last_index = 0xffffffff;
+  static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.png"));
 
   if (index < last_index) {
     theme->drawBackground();
-    lcd->drawAlphaBitmap((LCD_W-ALPHA_SHUTDOWN.getWidth())/2, (LCD_H-ALPHA_SHUTDOWN.getHeight())/2, &ALPHA_SHUTDOWN);
+    if (shutdown) {
+      lcd->drawBitmap((LCD_W-shutdown->getWidth())/2, (LCD_H-shutdown->getHeight())/2, shutdown);
+    }
     lcdStoreBackupBuffer();
   }
   else {
