@@ -285,7 +285,7 @@ DRESULT disk_ioctl (
 
 // TODO everything here should not be in the driver layer ...
 
-FATFS g_FATFS_Obj;
+FATFS g_FATFS_Obj __DMA;
 #if defined(LOG_TELEMETRY)
 FIL g_telemetryFile = {0};
 #endif
