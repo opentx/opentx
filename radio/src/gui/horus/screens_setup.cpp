@@ -507,7 +507,7 @@ bool menuScreenSetup(int index, evt_t event)
         const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, registeredLayouts, countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
         if (factory) {
           delete customScreens[index];
-          customScreens[index] = factory->create(&g_model.screenData[index].layoutData);
+          currentScreen = customScreens[index] = factory->create(&g_model.screenData[index].layoutData);
           strncpy(g_model.screenData[index].layoutName, factory->getName(), sizeof(g_model.screenData[index].layoutName));
           storageDirty(EE_MODEL);
         }
