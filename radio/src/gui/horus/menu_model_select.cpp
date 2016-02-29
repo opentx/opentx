@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define CATEGORIES_WIDTH               140
 #define MODELCELL_WIDTH                153
@@ -47,7 +47,7 @@ void drawCategory(coord_t y, const char * name, bool selected)
   lcdDrawText(MENUS_MARGIN_LEFT, y, name, MENU_TITLE_COLOR);
 }
 
-void drawModel(coord_t x, coord_t y, const char * name, bool selected)
+void drawModel(coord_t x, coord_t y, const char * name, bool selected, bool current)
 {
   ModelHeader header;
   const char * error = readModel(name, (uint8_t *)&header, sizeof(header));
@@ -72,6 +72,9 @@ void drawModel(coord_t x, coord_t y, const char * name, bool selected)
     }
   }
   lcdDrawSolidHorizontalLine(x+5, y+19, 143, LINE_COLOR);
+  if (current) {
+    lcdDrawBitmapPattern(x+66, y+42, LBM_ACTIVE_MODEL, TITLE_BGCOLOR);
+  }
   if (selected) {
     lcdDrawSolidRect(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT, 1, TITLE_BGCOLOR);
     drawShadow(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT);
@@ -267,12 +270,13 @@ bool menuModelSelect(evt_t event)
       }
       if (count >= menuVerticalOffset*2 && count < (menuVerticalOffset+3)*2) {
         bool selected = (selectMode==MODE_SELECT_MODEL && menuVerticalPosition*2+menuHorizontalPosition==count);
+        bool current = (strncmp (line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0);
         if (count & 1) {
-          drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+162, y, line, selected);
+          drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+162, y, line, selected, current);
           y += 66;
         }
         else {
-          drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+1, y, line, selected);
+          drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+1, y, line, selected, current);
         }
         if (selected) {
           memcpy(selectedFilename, line, sizeof(selectedFilename));
