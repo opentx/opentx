@@ -53,6 +53,7 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
 void loadCustomScreens()
 {
   for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
+    delete customScreens[i];
     char name[sizeof(g_model.screenData[i].layoutName)+1];
     memset(name, 0, sizeof(name));
     strncpy(name, g_model.screenData[i].layoutName, sizeof(g_model.screenData[i].layoutName));
