@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "diskio.h"
 #include <ctype.h>
 #include <malloc.h>
 
@@ -132,6 +133,94 @@ int cliLs(const char ** argv)
   }
   return 0;
 }
+
+int cliRead(const char ** argv)
+{
+  FIL file;
+  uint32_t bytesRead = 0;
+  int bufferSize; 
+  if (toInt(argv, 2, &bufferSize) == 0 || bufferSize < 0 ) {
+    serialPrint("%s: Invalid buffer size \"%s\"", argv[0], argv[2]);  
+    return 0;
+  }
+
+  uint8_t * buffer = (uint8_t*) malloc(bufferSize);
+  FRESULT result = f_open(&file, argv[1], FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    free(buffer);
+    serialPrint("%s: File not found \"%s\"", argv[0], argv[1]);
+    return 0;
+  }
+
+  tmr10ms_t start = get_tmr10ms();
+
+  while (true) {
+    UINT read;
+    result = f_read(&file, buffer, sizeof(buffer), &read);
+    if (result == FR_OK) {
+      if (read == 0) {
+        // end of file
+        f_close(&file);
+        break;
+      }
+      bytesRead += read;
+    }
+  }
+  uint32_t elapsedTime = (get_tmr10ms() - start) * 10;
+  if (elapsedTime == 0) elapsedTime = 1;
+  uint32_t speed = bytesRead / elapsedTime;
+  serialPrint("Read %d bytes in %d ms, speed %d kB/s", bytesRead, elapsedTime, speed);
+  free(buffer);
+  return 0;
+}
+
+int cliReadSD(const char ** argv)
+{
+  int startSector; 
+  int numberOfSectors;
+  int bufferSectors;
+  if (toInt(argv, 1, &startSector) == 0 || startSector < 0 ) {
+    serialPrint("%s: Invalid start sector \"%s\"", argv[0], argv[1]);  
+    return 0;
+  }
+  if (toInt(argv, 2, &numberOfSectors) == 0 || numberOfSectors < 0 ) {
+    serialPrint("%s: Invalid number of sectors \"%s\"", argv[0], argv[2]);  
+    return 0;
+  }
+
+  if (toInt(argv, 3, &bufferSectors) == 0 || bufferSectors < 0 ) {
+    serialPrint("%s: Invalid number of buffrer sectors \"%s\"", argv[0], argv[3]);  
+    return 0;
+  }
+
+  uint8_t * buffer = (uint8_t*) malloc(512*bufferSectors);
+
+  uint32_t bytesRead = numberOfSectors * 512;
+  tmr10ms_t start = get_tmr10ms();
+
+  while (numberOfSectors > 0) {
+    DRESULT res = disk_read(0, buffer, startSector, bufferSectors);
+    if (res != RES_OK) {
+      serialPrint("disk_read error: %d", res);
+      free(buffer);
+      return 0;
+    }
+    if (numberOfSectors >= bufferSectors) {
+      numberOfSectors -= bufferSectors;
+    }
+    else {
+      numberOfSectors = 0;
+    }
+  }
+
+  uint32_t elapsedTime = (get_tmr10ms() - start) * 10;
+  if (elapsedTime == 0) elapsedTime = 1;
+  uint32_t speed = bytesRead / elapsedTime;
+  serialPrint("Read %d bytes in %d ms, speed %d kB/s", bytesRead, elapsedTime, speed);
+  free(buffer);
+  return 0;
+}
+
 
 int cliTrace(const char ** argv)
 {
@@ -420,6 +509,8 @@ int cliShowJitter(const char ** argv)
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
   { "ls", cliLs, "<directory>" },
+  { "read", cliRead, "<filename>" },
+  { "readsd", cliReadSD, "<start sector> <sectors count> <read buffer size (sectors)>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
   { "reboot", cliReboot, "" },
