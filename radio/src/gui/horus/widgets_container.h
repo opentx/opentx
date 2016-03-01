@@ -96,11 +96,15 @@ class WidgetsContainer: public WidgetsContainerInterface
       if (widgets) {
         unsigned int count = getZonesCount();
         for (unsigned int i=0; i<count; i++) {
+          delete widgets[i];
           if (persistentData->zones[i].widgetName[0]) {
             char name[sizeof(persistentData->zones[i].widgetName)+1];
             memset(name, 0, sizeof(name));
             strncpy(name, persistentData->zones[i].widgetName, sizeof(persistentData->zones[i].widgetName));
             widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
+          }
+          else {
+            widgets[i] = NULL;
           }
         }
       }
