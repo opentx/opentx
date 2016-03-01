@@ -183,8 +183,9 @@ bool menuModelSelect(evt_t event)
         POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
         POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
         POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
-        if (currentCategory > 0)
+        if (currentCategory > 0) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
+        }
         popupMenuHandler = onCategorySelectMenu;
       }
       else if (selectMode == MODE_SELECT_MODEL) {
@@ -192,7 +193,9 @@ bool menuModelSelect(evt_t event)
         ModelHeader header;
         const char * error = readModel(selectedFilename, (uint8_t *)&header, sizeof(header));
         if (!error) {
-          POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
+          if (strncmp(selectedFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) != 0) {
+            POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
+          }
           POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
         }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
@@ -250,7 +253,6 @@ bool menuModelSelect(evt_t event)
     }
     if (selectMode == MODE_SELECT_CATEGORY) {
       if (navigate(event, index, 9)) {
-        TRACE("Refresh 1");
         putEvent(EVT_REFRESH);
         currentCategory = menuVerticalPosition;
       }
@@ -270,7 +272,7 @@ bool menuModelSelect(evt_t event)
       }
       if (count >= menuVerticalOffset*2 && count < (menuVerticalOffset+3)*2) {
         bool selected = (selectMode==MODE_SELECT_MODEL && menuVerticalPosition*2+menuHorizontalPosition==count);
-        bool current = (strncmp (line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0);
+        bool current = (strncmp(line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0);
         if (count & 1) {
           drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+162, y, line, selected, current);
           y += 66;
