@@ -19,7 +19,7 @@
  */
 
 #include <stdio.h>
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; currentBitmapIndex = -1; } while (0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -367,10 +367,21 @@ bool menuGeneralSdManager(evt_t _event)
       currentBitmapIndex = menuVerticalPosition;
       delete currentBitmap;
       currentBitmap = BitmapBuffer::load(reusableBuffer.sdmanager.lines[index]);
-      // TODO scale in case of a too large bitmap
     }
     if (currentBitmap) {
-      lcd->drawBitmap(LCD_W / 2, LCD_H / 2, currentBitmap);
+      uint16_t height = currentBitmap->getHeight();
+      uint16_t width = currentBitmap->getWidth();
+      uint16_t startx = 0;
+      uint16_t starty = 0;
+      if (height > MENU_BODY_HEIGHT-10) {
+        starty = (height - MENU_BODY_HEIGHT - 10) / 2;
+        height = MENU_BODY_HEIGHT - 10;
+      }
+      if (width > LCD_W/2) {
+        startx = (width - LCD_W/2) / 2;
+        width = LCD_W/2;
+      }
+      lcd->drawBitmap(LCD_W / 2 - 20 + LCD_W/4 - width/2, MENU_BODY_TOP + MENU_BODY_HEIGHT/2 - height/2, currentBitmap, startx, starty, width, height);
     }
   }
 
