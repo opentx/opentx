@@ -52,7 +52,7 @@ void Theme::drawThumb(uint16_t x, uint16_t y, uint32_t flags)
   #define THUMB_WIDTH   51
   #define THUMB_HEIGHT  31
   if (!thumb) {
-    thumb = BitmapBuffer::load(getFilePath("thumb.png"));
+    thumb = BitmapBuffer::load(getFilePath("thumb.bmp"));
   }
   lcd->drawBitmap(x, y, thumb);
   if (flags == LINE_COLOR) {
@@ -72,7 +72,7 @@ void Theme::drawAboutBackground() const
 
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const
 {
-  static const BitmapBuffer * asterisk = BitmapBuffer::load(getThemePath("asterisk.png"));
+  static const BitmapBuffer * asterisk = BitmapBuffer::load(getThemePath("asterisk.bmp"));
 
   //if (flags & MESSAGEBOX_TYPE_ALERT) {
     drawBackground();

@@ -105,6 +105,11 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       }
     }
 
+    inline void setFormat(uint8_t format)
+    {
+      this->format = format;
+    }
+
     inline void clear()
     {
       drawSolidFilledRect(0, 0, width, height, 0);
@@ -230,6 +235,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         drawBitmap(x+(w-width)/2, y, bitmap, 0, 0, 0, 0, scale);
       }
     }
+
+  protected:
+    static BitmapBuffer * load_bmp(const char * filename);
+    static BitmapBuffer * load_stb(const char * filename);
 };
 
 extern BitmapBuffer * lcd;

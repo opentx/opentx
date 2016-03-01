@@ -54,20 +54,6 @@ bool isFileAvailable(const char * filename, const char * directory)
   return isFileAvailable(path);
 }
 
-char * getFileExtension(char * filename, int size)
-{
-  int len = strlen(filename);
-  if (size != 0 && size < len) {
-    len = size;
-  }
-  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
-    if (filename[i] == '.') {
-      return &filename[i];
-    }
-  }
-  return NULL;
-}
-
 char * getFileIndex(char * filename, unsigned int & value)
 {
   value = 0;

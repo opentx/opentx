@@ -192,7 +192,7 @@ bool menuCommonCalib(evt_t event)
       break;
   }
 
-  static const BitmapBuffer * horus = BitmapBuffer::load(getThemePath("horus.png"));
+  static const BitmapBuffer * horus = BitmapBuffer::load(getThemePath("horus.bmp"));
   if (horus) {
     lcd->drawBitmap((LCD_W-horus->getWidth())/2, LCD_H-20-horus->getHeight(), horus);
   }

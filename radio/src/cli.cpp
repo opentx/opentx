@@ -176,7 +176,7 @@ int cliRead(const char ** argv)
 
 int cliReadSD(const char ** argv)
 {
-  int startSector; 
+  int startSector;
   int numberOfSectors;
   int bufferSectors;
   if (toInt(argv, 1, &startSector) == 0 || startSector < 0 ) {
@@ -271,9 +271,7 @@ int cliMemoryInfo(const char ** argv)
 
 int cliReboot(const char ** argv)
 {
-#if !defined(SIMU)
   NVIC_SystemReset();
-#endif
   return 0;
 }
 
@@ -455,7 +453,7 @@ int cliDisplay(const char ** argv)
 
 int cliDebugVars(const char ** argv)
 {
-#if defined(PCBHORUS) && !defined(SIMU)
+#if defined(PCBHORUS)
   extern uint32_t ioMutexReq, ioMutexRel;
   extern uint32_t sdReadRetries;
 

@@ -89,7 +89,20 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 #endif
 
 #define LEN_FILE_EXTENSION             4
-char * getFileExtension(char * filename, int size=0);
+template<class T>
+T * getFileExtension(T * filename, int size=0)
+{
+  int len = strlen(filename);
+  if (size != 0 && size < len) {
+    len = size;
+  }
+  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
+    if (filename[i] == '.') {
+      return &filename[i];
+    }
+  }
+  return NULL;
+}
 
 #if defined(PCBTARANIS)
   #define O9X_FOURCC 0x3378396F // o9x for Taranis

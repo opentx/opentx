@@ -424,7 +424,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 void drawSleepBitmap()
 {
   lcd->clear();
-  const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.png"));
+  const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.bmp"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->getWidth())/2, (LCD_H-bitmap->getHeight())/2, bitmap);
   }
@@ -435,7 +435,7 @@ void drawSleepBitmap()
 void drawShutdownBitmap(uint32_t index)
 {
   static uint32_t last_index = 0xffffffff;
-  static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.png"));
+  static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
 
   if (index < last_index) {
     theme->drawBackground();
