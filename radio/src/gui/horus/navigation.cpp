@@ -328,7 +328,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 #define MAXCOL_RAW(row)                ((row) >= 0 && horTab ? pgm_read_byte(horTab+min<int>(row, (int)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define INC(val, min, max)             if (val<max) {val++;} else if (max>=0) {val=min;}
+#define INC(val, min, max)             if (val<max) {val++;} else if (max>min) {val=min;}
 #define DEC(val, min, max)             if (val>min) {val--;} else {val=max;}
 
 uint8_t menuPageIndex;
