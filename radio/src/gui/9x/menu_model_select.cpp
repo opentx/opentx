@@ -158,7 +158,7 @@ void menuModelSelect(uint8_t event)
           sub = menuVerticalPosition = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
           s_copyMode = 0;
         }
-        else if (menuVerticalPosition != g_eeGeneral.currModel) {
+        else if (uint8_t(menuVerticalPosition) != g_eeGeneral.currModel) {
           menuVerticalPosition = g_eeGeneral.currModel;
         }
         else {
