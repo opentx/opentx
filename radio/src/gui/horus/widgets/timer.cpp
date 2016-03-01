@@ -63,7 +63,7 @@ void TimerWidget::refresh()
   }
   else {
     drawStringWithIndex(zone.x, zone.y, "TMR", index + 1, SMLSIZE | TEXT_INVERTED_COLOR);
-    if (zone.w > 100) {
+    if (zone.w > 100 && zone.h > 40) {
       putsTimer(zone.x, zone.y + 16, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | MIDSIZE);
     }
     else {

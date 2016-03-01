@@ -65,7 +65,7 @@ void ValueWidget::refresh()
     yValue = y-2;
     xLabel = x+NUMBERS_PADDING;
     yLabel = y+2;
-    attrValue = NO_UNIT | DBLSIZE;
+    attrValue = RIGHT | NO_UNIT | DBLSIZE;
   }
   else {
     xValue = x+NUMBERS_PADDING;
