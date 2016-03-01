@@ -138,9 +138,9 @@ int cliRead(const char ** argv)
 {
   FIL file;
   uint32_t bytesRead = 0;
-  int bufferSize; 
+  int bufferSize;
   if (toInt(argv, 2, &bufferSize) == 0 || bufferSize < 0 ) {
-    serialPrint("%s: Invalid buffer size \"%s\"", argv[0], argv[2]);  
+    serialPrint("%s: Invalid buffer size \"%s\"", argv[0], argv[2]);
     return 0;
   }
 
@@ -180,16 +180,16 @@ int cliReadSD(const char ** argv)
   int numberOfSectors;
   int bufferSectors;
   if (toInt(argv, 1, &startSector) == 0 || startSector < 0 ) {
-    serialPrint("%s: Invalid start sector \"%s\"", argv[0], argv[1]);  
+    serialPrint("%s: Invalid start sector \"%s\"", argv[0], argv[1]);
     return 0;
   }
   if (toInt(argv, 2, &numberOfSectors) == 0 || numberOfSectors < 0 ) {
-    serialPrint("%s: Invalid number of sectors \"%s\"", argv[0], argv[2]);  
+    serialPrint("%s: Invalid number of sectors \"%s\"", argv[0], argv[2]);
     return 0;
   }
 
   if (toInt(argv, 3, &bufferSectors) == 0 || bufferSectors < 0 ) {
-    serialPrint("%s: Invalid number of buffrer sectors \"%s\"", argv[0], argv[3]);  
+    serialPrint("%s: Invalid number of buffrer sectors \"%s\"", argv[0], argv[3]);
     return 0;
   }
 
@@ -271,7 +271,9 @@ int cliMemoryInfo(const char ** argv)
 
 int cliReboot(const char ** argv)
 {
+#if !defined(SIMU)
   NVIC_SystemReset();
+#endif
   return 0;
 }
 
@@ -453,7 +455,7 @@ int cliDisplay(const char ** argv)
 
 int cliDebugVars(const char ** argv)
 {
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) && !defined(SIMU)
   extern uint32_t ioMutexReq, ioMutexRel;
   extern uint32_t sdReadRetries;
 

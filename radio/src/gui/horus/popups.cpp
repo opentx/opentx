@@ -55,7 +55,7 @@ void displayMessageBox()
 
 void drawAlertBox(const char * title, const char * text, const char * action)
 {
-  theme->drawMessageBox(title, text, action, MESSAGEBOX_TYPE_ALERT);
+  theme->drawMessageBox(title, text, action, WARNING_TYPE_ALERT);
 }
 
 void message(const pm_char * title, const pm_char * text, const char * action, uint8_t sound)
@@ -78,10 +78,7 @@ void displayWarning(evt_t event)
 {
   warningResult = false;
 
-  if (warningType == WARNING_TYPE_INPUT)
-    theme->drawMessageBox(warningText, "", "", MESSAGEBOX_TYPE_INFO);
-  else
-    theme->drawMessageBox(warningText, "", "", MESSAGEBOX_TYPE_WARNING);
+  theme->drawMessageBox(warningText, "", "", warningType);
 
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_INFOLINE_Y, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);

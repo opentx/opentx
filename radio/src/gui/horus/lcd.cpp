@@ -234,15 +234,6 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness, 
   }
 }
 
-#if defined(SIMU)
-void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att)
-{
-  for (coord_t i=y; i<y+h; i++) {
-    lcdDrawHorizontalLine(x, i, w, SOLID, att);
-  }
-}
-#endif
-
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
 {
   putsTimer(x, y, getValue(MIXSRC_TX_TIME), att);

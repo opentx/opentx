@@ -143,8 +143,20 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att);
 
+    inline void drawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
+    {
+      drawSolidFilledRect(x, y, w, 1, att);
+    }
+
+    inline void drawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags att)
+    {
+      drawSolidFilledRect(x, y, 1, h, att);
+    }
+
     inline void drawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
     {
+      if (h==0 || w==0) return;
+      if (h<0) { y+=h; h=-h; }
       DMAFillRect(data, width, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 

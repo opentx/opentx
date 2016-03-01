@@ -82,7 +82,7 @@ void drawCurveHorizontalScale()
 
 void drawCurveCoord(int x, int y, const char * text, bool active)
 {
-  lcdDrawSolidFilledRect(x, y, CURVE_COORD_WIDTH, CURVE_COORD_HEIGHT, CURVE_CURSOR_COLOR);
+  lcd->drawSolidFilledRect(x, y, CURVE_COORD_WIDTH, CURVE_COORD_HEIGHT, CURVE_CURSOR_COLOR);
   lcdDrawText(x+3+(CURVE_COORD_WIDTH-1-getTextWidth(text, SMLSIZE))/2, y+1, text, LEFT|SMLSIZE|TEXT_BGCOLOR);
   if (active) {
     lcdDrawBitmapPattern(x, y, LBM_CURVE_COORD_SHADOW, TEXT_COLOR);

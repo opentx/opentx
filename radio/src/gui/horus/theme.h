@@ -28,11 +28,6 @@
 class Theme;
 void registerTheme(Theme * theme);
 
-#define MESSAGEBOX_TYPE_INFO           0
-#define MESSAGEBOX_TYPE_QUESTION       1
-#define MESSAGEBOX_TYPE_WARNING        2
-#define MESSAGEBOX_TYPE_ALERT          4
-
 class Theme
 {
   public:
@@ -66,7 +61,7 @@ class Theme
 
     ZoneOptionValue * getOptionValue(unsigned int index) const;
 
-    virtual void load() const = 0;
+    virtual void load() const;
 
     virtual void drawBackground() const;
 
@@ -80,6 +75,9 @@ class Theme
     const char * name;
     const ZoneOption * options;
     BitmapBuffer * thumb;
+    static const BitmapBuffer * asterisk;
+    static const BitmapBuffer * question;
+    static const BitmapBuffer * busy;
 };
 
 extern Theme * theme;

@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 uint8_t g_moduleIdx;
 bool menuModelFailsafe(evt_t event);
@@ -699,7 +699,7 @@ bool menuModelSetup(evt_t event)
   }
 
   if (IS_RANGECHECK_ENABLE()) {
-    theme->drawMessageBox("RSSI :", NULL, NULL, 0);
+    theme->drawMessageBox("RSSI :", NULL, NULL, WARNING_TYPE_INFO);
     lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, TELEMETRY_RSSI(), DBLSIZE|LEFT);
   }
 

@@ -26,27 +26,6 @@ void drawColumnHeader(const char * const * headers, uint8_t index)
   // TODO ? displayHeader(headers[index]);
 }
 
-const char * const STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-
-#define DATETIME_SEPARATOR_X    425
-#define DATETIME_LINE1          9
-#define DATETIME_LINE2          23
-#define DATETIME_MIDDLE         (LCD_W+DATETIME_SEPARATOR_X+8)/2
-
-void drawTopbarDatetime()
-{
-  lcdDrawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
-
-  struct gtm t;
-  gettime(&t);
-  char str[10];
-  sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
-  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
-
-  getTimerString(str, getValue(MIXSRC_TX_TIME));
-  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
-}
-
 #include "alpha_stick_background.lbm"
 #include "alpha_stick_pointer.lbm"
 #define STICK_PANEL_WIDTH                   68
@@ -61,7 +40,7 @@ void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
 
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
-  int width = getTextWidth(label, 0, attr);
+  int width = getTextWidth(label, 0, 0);
   int padding = 0;
   if (attr & (BUTTON_OFF|BUTTON_ON)) {
     padding = 5;

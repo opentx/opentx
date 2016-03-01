@@ -64,11 +64,15 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = RED;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RED;
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
+
+      Theme::load();
+
+      if (!backgroundBitmap) backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.bmp"));
+      if (!aboutBackgroundBitmap) aboutBackgroundBitmap = BitmapBuffer::load(getThemePath("aboutbg.bmp"));
     }
 
     virtual void drawBackground() const
     {
-      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.bmp"));
       if (backgroundBitmap) {
         lcd->drawBitmap(0, 0, backgroundBitmap);
       }
@@ -80,8 +84,7 @@ class DefaultTheme: public Theme
 
     virtual void drawAboutBackground() const
     {
-      static BitmapBuffer * backgroundBitmap = BitmapBuffer::load(getThemePath("aboutbg.bmp"));
-      lcd->drawBitmap(0, 0, backgroundBitmap);
+      lcd->drawBitmap(0, 0, aboutBackgroundBitmap);
     }
 
     virtual void drawTopbarBackground(const uint8_t * icon) const
@@ -98,7 +101,14 @@ class DefaultTheme: public Theme
 
       drawTopbarDatetime();
     }
+
+  protected:
+    static const BitmapBuffer * backgroundBitmap;
+    static const BitmapBuffer * aboutBackgroundBitmap;
 };
+
+const BitmapBuffer * DefaultTheme::backgroundBitmap = NULL;
+const BitmapBuffer * DefaultTheme::aboutBackgroundBitmap = NULL;
 
 DefaultTheme defaultTheme;
 Theme * theme = &defaultTheme;

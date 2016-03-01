@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+const BitmapBuffer * Theme::asterisk = NULL;
+const BitmapBuffer * Theme::question = NULL;
+const BitmapBuffer * Theme::busy = NULL;
+
 void Theme::init() const
 {
   memset(&g_eeGeneral.themeData, 0, sizeof(Theme::PersistentData));
@@ -30,6 +34,13 @@ void Theme::init() const
       memcpy(&g_eeGeneral.themeData.options[i], &option->deflt, sizeof(ZoneOptionValue));
     }
   }
+}
+
+void Theme::load() const
+{
+  if (!asterisk) asterisk = BitmapBuffer::load(getThemePath("asterisk.bmp"));
+  if (!question) question = BitmapBuffer::load(getThemePath("question.bmp"));
+  if (!busy) busy = BitmapBuffer::load(getThemePath("busy.bmp"));
 }
 
 ZoneOptionValue * Theme::getOptionValue(unsigned int index) const
@@ -70,40 +81,39 @@ void Theme::drawAboutBackground() const
   drawBackground();
 }
 
-void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const
+void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
 {
-  static const BitmapBuffer * asterisk = BitmapBuffer::load(getThemePath("asterisk.bmp"));
-
   //if (flags & MESSAGEBOX_TYPE_ALERT) {
     drawBackground();
     lcdDrawFilledRect(0, POPUP_Y, LCD_W, POPUP_H, SOLID, TEXT_INVERTED_COLOR | OPACITY(8));
   //}
 
-  if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
+  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
     lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, asterisk);
-  }
-  else {
-    lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, asterisk);
-  }
+  else if (type == WARNING_TYPE_INFO)
+    lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, busy);
+  else
+    lcd->drawBitmap(POPUP_X-80, POPUP_Y+12, question);
 
+  if (type == WARNING_TYPE_ALERT) {
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
-  if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, STR_WARNING, ALARM_COLOR|DBLSIZE);
-  }
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|DBLSIZE);
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, title, ALARM_COLOR|DBLSIZE);
 #else
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
-  if ((flags & MESSAGEBOX_TYPE_ALERT) || (flags & MESSAGEBOX_TYPE_WARNING)) {
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+28, STR_WARNING, ALARM_COLOR|DBLSIZE);
-  }
 #endif
+  }
+  else if (title) {
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, title, ALARM_COLOR|DBLSIZE);
+  }
 
   if (text) {
     lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y, text);
   }
 
   if (action) {
-    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+16, action);
+    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+20, action);
   }
 }
 

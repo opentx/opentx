@@ -35,13 +35,29 @@ Zone Topbar::getZone(unsigned int index) const
   return zone;
 }
 
+const char * const STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+
+void drawTopbarDatetime()
+{
+  lcd->drawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
+
+  struct gtm t;
+  gettime(&t);
+  char str[10];
+  sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
+  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+
+  getTimerString(str, getValue(MIXSRC_TX_TIME));
+  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+}
+
 void drawTopBar()
 {
   theme->drawTopbarBackground(NULL);
 
   // USB icon
   if (usbPlugged()) {
-    lcdDrawBitmapPattern(378, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
+    lcdDrawBitmapPattern(LCD_W-102, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
   }
 
   // RSSI
@@ -49,7 +65,7 @@ void drawTopBar()
   const uint8_t rssiBarsHeight[] = {5, 10, 15, 21, 31};
   for (unsigned int i = 0; i < DIM(rssiBarsHeight); i++) {
     uint8_t height = rssiBarsHeight[i];
-    lcdDrawSolidFilledRect(390 + i * 6, 38 - height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
+    lcdDrawSolidFilledRect(LCD_W-90 + i * 6, 38 - height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
   }
 
   topbar->refresh();

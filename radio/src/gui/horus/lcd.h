@@ -23,14 +23,19 @@
 
 #include "bitmapbuffer.h"
 
-#define LCD_W           480
-#define LCD_H           272
+#if defined(PCBHORUS)
+  #define LCD_W           480
+  #define LCD_H           272
+  #define LCD_COLS        30
+#else
+  #define LCD_W           800
+  #define LCD_H           480
+  #define LCD_COLS        40
+#endif
 
 #define CENTER
 
 #define lcdint_t        int32_t
-
-#define LCD_COLS        30
 
 #define BSS             0x00
 #define BOLD            0x00
@@ -136,6 +141,22 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 
 void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color);
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
+
+inline void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
+{
+  lcd->drawSolidHorizontalLine(x, y, w, att);
+}
+
+inline void lcdDrawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags att)
+{
+  lcd->drawSolidVerticalLine(x, y, h, att);
+}
+
+inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
+{
+  lcd->drawSolidFilledRect(x, y, w, h, flags);
+}
+
 inline void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0)
 {
   lcd->drawHorizontalLine(x, y, w, pat, att);
@@ -154,37 +175,17 @@ inline void lcdDrawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t co
   lcdDrawAlphaPixel(p, opacity, color);
 }
 
-#if !defined(SIMU)
-inline void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
-{
-  DMAFillRect(lcd->getData(), LCD_W, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
-}
-#else
-void lcdDrawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags);
-#endif
-
 inline void lcdSetColor(uint16_t color)
 {
   lcdColorTable[CUSTOM_COLOR_INDEX] = color;
 }
 
-inline void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
-{
-  lcdDrawSolidFilledRect(x, y, w, 1, att);
-}
-
-inline void lcdDrawSolidVerticalLine(coord_t x, coord_t y, coord_t h, LcdFlags att)
-{
-  if (h<0) { y+=h; h=-h; }
-  lcdDrawSolidFilledRect(x, y, 1, h, att);
-}
-
 inline void lcdDrawSolidRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, LcdFlags att=0)
 {
-  lcdDrawSolidFilledRect(x, y, thickness, h, att);
-  lcdDrawSolidFilledRect(x+w-thickness, y, thickness, h, att);
-  lcdDrawSolidFilledRect(x, y, w, thickness, att);
-  lcdDrawSolidFilledRect(x, y+h-thickness, w, thickness, att);
+  lcd->drawSolidFilledRect(x, y, thickness, h, att);
+  lcd->drawSolidFilledRect(x+w-thickness, y, thickness, h, att);
+  lcd->drawSolidFilledRect(x, y, w, thickness, att);
+  lcd->drawSolidFilledRect(x, y+h-thickness, w, thickness, att);
 }
 
 inline void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0)

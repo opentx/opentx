@@ -27,20 +27,19 @@
 #define MENU_HEADER_HEIGHT             45
 #define MENU_TITLE_TOP                 48
 #define MENU_TITLE_HEIGHT              21
-#define MENU_BODY_TOP                  69  // MENU_TITLE_TOP + MENU_TITLE_HEIGHT
-#define MENU_CONTENT_TOP               72
-#define MENU_BODY_HEIGHT               182
-#define MENU_FOOTER_TOP                251 // MENU_BODY_TOP + MENU_BODY_HEIGHT
+#define MENU_BODY_TOP                  (MENU_TITLE_TOP+MENU_TITLE_HEIGHT)
+#define MENU_CONTENT_TOP               (MENU_BODY_TOP+3)
 #define MENU_FOOTER_HEIGHT             21
-
+#define MENU_FOOTER_TOP                (LCD_H-MENU_FOOTER_HEIGHT)
+#define MENU_BODY_HEIGHT               (MENU_FOOTER_TOP-MENU_BODY_TOP)
 #define MENUS_MARGIN_LEFT              6
 
 #define DEFAULT_SCROLLBAR_X            LCD_W-10
 #define DEFAULT_SCROLLBAR_Y            MENU_CONTENT_TOP
 #define DEFAULT_SCROLLBAR_H            (MENU_FOOTER_TOP - DEFAULT_SCROLLBAR_Y - 6)
 
-#define NUM_BODY_LINES                 9
 #define FH                             20
+#define NUM_BODY_LINES                 (MENU_BODY_HEIGHT / FH)
 
 #define INVERT_HORZ_MARGIN             3
 #define INVERT_VERT_MARGIN             1
@@ -52,13 +51,17 @@
 #define CURVE_COORD_WIDTH              36
 #define CURVE_COORD_HEIGHT             17
 
+#define DATETIME_SEPARATOR_X           (LCD_W-55)
+#define DATETIME_LINE1                 9
+#define DATETIME_LINE2                 23
+#define DATETIME_MIDDLE                (LCD_W+DATETIME_SEPARATOR_X+8)/2
+
 #define MENU_TITLE_NEXT_POS            (lcdNextPos + 10)
 #define MENU_INIT_VPOS                 -1
 
 #define MENU_ICONS_SPACING             31
 #define SUBMENU_LINE_WIDTH             230
 
-#define BITMAP_BUFFER_SIZE(w, h)       (4 + (w)*(h)*3)
 #define LOAD_MODEL_BITMAP()
 
 #if defined(FLIGHT_MODES)

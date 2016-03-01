@@ -1045,7 +1045,9 @@ void doSplash()
 #endif
 
   if (SPLASH_NEEDED()) {
+#if !defined(PCBTARANIS) && !defined(PCBHORUS)
     drawSplash();
+#endif
 
 #if !defined(CPUARM)
     AUDIO_TADA();
