@@ -25,9 +25,9 @@
 #define TRIM_RV_X                      (LCD_W-35)
 #define TRIM_RH_X                      (LCD_W-175)
 #define TRIM_V_Y                       55
-#define TRIM_H_Y                       235
+#define TRIM_H_Y                       (LCD_H-37)
 #define TRIM_LEN                       80
-#define POTS_LINE_Y                    252
+#define POTS_LINE_Y                    (LCD_H-20)
 
 Layout * customScreens[MAX_CUSTOM_SCREENS] = { 0, 0, 0, 0, 0 };
 Topbar * topbar;
