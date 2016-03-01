@@ -297,6 +297,10 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
   drawScreenTemplate(title, icon, options);
 
+#define CUSTOM_SUBMENU_WITH_OPTIONS(title, icon, lines_count, options) \
+  if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
+  drawScreenTemplate(title, icon, options);
+
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
   if (!check_submenu_simple(event, lines_count)) return false
 
@@ -332,9 +336,11 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
 
 extern uint8_t s_curveChan;
 
-#define WARNING_TYPE_ASTERISK  0
-#define WARNING_TYPE_CONFIRM   1
-#define WARNING_TYPE_INPUT     2
+#define WARNING_TYPE_ALERT     0
+#define WARNING_TYPE_ASTERISK  1
+#define WARNING_TYPE_CONFIRM   2
+#define WARNING_TYPE_INPUT     3
+#define WARNING_TYPE_INFO      4
 
 extern const pm_char * warningText;
 extern const pm_char * warningInfoText;

@@ -152,16 +152,31 @@ void editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
   }
 }
 
+int getOptionsCount(const ZoneOption * options)
+{
+  if (options == NULL) {
+    return 0;
+  }
+  else {
+    int count = 0;
+    for (const ZoneOption * option = options; option->name; option++) {
+      count++;
+    }
+    return count;
+  }
+}
+
 template <class T>
 bool menuSettings(const char * title, const T * object, uint32_t i_flags, evt_t event)
 {
-  linesCount = 0;
   const ZoneOption * options = object->getOptions();
-  for (const ZoneOption * option = options; option->name; option++) {
-    linesCount++;
+  linesCount = getOptionsCount(options);
+  uint8_t mstate_tab[MAX_WIDGET_OPTIONS];
+  for (int i=0; i<linesCount; i++) {
+    mstate_tab[i] = getZoneOptionColumns(&options[i]);
   }
 
-  SUBMENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR, { 0, 0, 0 });
+  CUSTOM_SUBMENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR);
 
   for (int i=0; i<NUM_BODY_LINES+1; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -384,20 +399,6 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
   return NULL;
 }
 
-int getOptionsCount(const ZoneOption * options)
-{
-  if (options == NULL) {
-    return 0;
-  }
-  else {
-    int count = 0;
-    for (const ZoneOption * option = options; option->name; option++) {
-      count++;
-    }
-    return count;
-  }
-}
-
 enum menuScreensThemeItems {
   ITEM_SCREEN_SETUP_THEME,
   ITEM_SCREEN_SETUP_THEME_OPTION1 = ITEM_SCREEN_SETUP_THEME+2
@@ -490,7 +491,7 @@ bool menuScreenSetup(int index, evt_t event)
 
   uint8_t mstate_tab[2 + MAX_LAYOUT_OPTIONS] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW };
   for (int i=0; i<optionsCount; i++) {
-    mstate_tab[2+i] = getZoneOptionColumns(&options[i]);
+    mstate_tab[3+i] = getZoneOptionColumns(&options[i]);
   }
 
   CUSTOM_MENU_WITH_OPTIONS(title, LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, index+1, linesCount);
