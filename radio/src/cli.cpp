@@ -455,7 +455,7 @@ int cliDisplay(const char ** argv)
 
 int cliDebugVars(const char ** argv)
 {
-#if defined(PCBHORUS) && !defined(SIMU)
+#if defined(PCBHORUS)
   extern uint32_t ioMutexReq, ioMutexRel;
   extern uint32_t sdReadRetries;
 

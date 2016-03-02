@@ -2553,10 +2553,6 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   storageReadAll();
 
-#if defined(COLORLCD)
-  loadTheme();
-#endif
-
 #if defined(CPUARM)
   if (UNEXPECTED_SHUTDOWN()) {
     unexpectedShutdown = 1;
@@ -2594,6 +2590,10 @@ void opentxInit(OPENTX_INIT_ARGS)
 
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit();
+#endif
+
+#if defined(COLORLCD)
+  loadTheme();
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
@@ -2635,8 +2635,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   startPulses();
 
   wdt_enable(WDTO_500MS);
-
-
 }
 
 #if !defined(SIMU)
