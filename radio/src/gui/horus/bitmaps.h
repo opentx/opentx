@@ -48,6 +48,7 @@ extern const uint8_t LBM_CALIBRATION_ICON[];
 extern const uint8_t LBM_INPUTS_ICON[];
 extern const uint8_t LBM_MIXER_ICON[];
 extern const uint8_t LBM_CURVES_ICON[];
+extern const uint8_t LBM_LUA_SCRIPTS_ICON[];
 extern const uint8_t LBM_TELEMETRY_ICON[];
 
 // UI (theme / layout / widgets bitmaps
