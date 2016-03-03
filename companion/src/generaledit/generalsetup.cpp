@@ -275,8 +275,8 @@ void GeneralSetupPanel::populateBacklightCB()
 void GeneralSetupPanel::populateVoiceLangCB()
 {
   QComboBox * b = ui->voiceLang_CB;
-  QString strings[] = { QObject::tr("English"), QObject::tr("Finnish"), QObject::tr("French"), QObject::tr("Italian"), QObject::tr("German"), QObject::tr("Czech"), QObject::tr("Slovak"), QObject::tr("Spanish"), QObject::tr("Polish"), QObject::tr("Portuguese"), QObject::tr("Swedish"), NULL};
-  QString langcode[] = { "en", "fi","fr", "it", "de", "cz", "sk", "es", "pl", "pt", "se", NULL};
+  QString strings[] = { QObject::tr("English"), QObject::tr("Dutch"), QObject::tr("French"), QObject::tr("Italian"), QObject::tr("German"), QObject::tr("Czech"), QObject::tr("Slovak"), QObject::tr("Spanish"), QObject::tr("Polish"), QObject::tr("Portuguese"), QObject::tr("Swedish"), QObject::tr("Hungarian"), NULL};
+  QString langcode[] = { "en", "nl","fr", "it", "de", "cz", "sk", "es", "pl", "pt", "se", "hu", NULL};
 
   b->clear();
   for (int i=0; strings[i]!=NULL; i++) {
