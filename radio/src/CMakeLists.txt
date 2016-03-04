@@ -106,6 +106,7 @@ if(PCB STREQUAL HORUS)
     pwr_driver.cpp
     sdram_driver.c
     led_driver.cpp
+    startup_stm32f40_41xxx.s
     )
   set(STM32LIB_SRC
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
@@ -134,7 +135,12 @@ elseif(PCB STREQUAL TARANIS)
     set(FLAVOUR taranis-x9e)
     add_definitions(-DSTM32F40_41xxx -DREVPLUS -DREV9E)
     add_definitions(-DEEPROM_VARIANT=32768)
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} top_lcd_driver.cpp bluetooth_driver.cpp)
+    set(FIRMWARE_TARGET_SRC 
+      ${FIRMWARE_TARGET_SRC} 
+      top_lcd_driver.cpp 
+      bluetooth_driver.cpp 
+      startup_stm32f40_41xxx.s
+      )
     if(STICKS STREQUAL HORUS)
       add_definitions(-DHORUS_STICKS)
     endif()
@@ -337,7 +343,6 @@ if(CPU_TYPE STREQUAL STM32F4)
   add_definitions(-DSTM32F4)
   set(STM32LIB_SRC
     ${STM32LIB_SRC}
-    CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
     STM32F4xx_StdPeriph_Driver/src/misc.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
