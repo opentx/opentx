@@ -204,8 +204,9 @@ void checkRotaryEncoder(void);
 void watchdogInit(unsigned int duration);
 #define wdt_enable(x) //   watchdogInit(1500)
 #define wdt_reset()   //  IWDG->KR = 0xAAAA
-#define WAS_RESET_BY_WATCHDOG()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
-#define WAS_RESET_BY_SOFTWARE()   (RCC->CSR & RCC_CSR_SFTRSTF)
+#define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
+#define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
+#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 #endif
 
 // ADC driver
@@ -247,6 +248,7 @@ void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
+void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define UNEXPECTED_SHUTDOWN()   (false) // (g_eeGeneral.unexpectedShutdown)

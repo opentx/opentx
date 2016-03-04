@@ -85,3 +85,31 @@ uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }
+
+void pwrResetHandler()
+{
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
+
+  // these two NOPs are needed (see STM32F errata sheet) before the peripheral 
+  // register can be written after the peripheral clock was enabled
+  __ASM volatile ("nop");
+  __ASM volatile ("nop");
+
+  // Turn soft power ON now, but only if we got started because of the watchdog
+  // or software reset. If the radio was started by user pressing the power button
+  // then that button is providing power and we don't need to enable it here.
+  //
+  // If we were to turn it on here indiscriminately, then the radio can go into the 
+  // power on/off loop after being powered off by the user. (issue #2790)
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    GPIO_InitTypeDef GPIO_InitStructure;
+    GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+    GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+
+    pwrOn();
+  }
+}
