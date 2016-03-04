@@ -44,7 +44,7 @@ uint8_t telemetryState = TELEMETRY_INIT;
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-Fifo<512> telemetryFifo; // TODO should be in the driver
+Fifo<uint8_t, 512> telemetryFifo; // TODO should be in the driver
 #endif
 
 uint8_t frskyRxBufferCount = 0;
@@ -665,3 +665,8 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
   return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
+
+#if defined(LUA)
+Fifo<LuaTelemetryValue, 16> * luaInputTelemetryFifo = NULL;
+Fifo<LuaTelemetryValue, 16> * luaOutputTelemetryFifo = NULL;
+#endif

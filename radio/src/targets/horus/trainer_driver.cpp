@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-extern Fifo<32> sbusFifo;
+extern Fifo<uint8_t, 32> sbusFifo;
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 

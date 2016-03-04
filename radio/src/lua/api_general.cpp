@@ -326,6 +326,41 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
   return false;  // not found
 }
 
+static int luaTelemetryPop(lua_State *L)
+{
+  if (!luaInputTelemetryFifo) {
+    luaInputTelemetryFifo = new Fifo<LuaTelemetryValue, 16>();
+    if (!luaInputTelemetryFifo) {
+      return 0;
+    }
+  }
+
+  LuaTelemetryValue value;
+  if (luaInputTelemetryFifo->pop(value)) {
+    lua_pushnumber(L, value.id);
+    lua_pushunsigned(L, value.value);
+    return 2;
+  }
+
+  return 0;
+}
+
+static int luaTelemetryPush(lua_State *L)
+{
+  if (!luaOutputTelemetryFifo) {
+    luaOutputTelemetryFifo = new Fifo<LuaTelemetryValue, 16>();
+    if (!luaOutputTelemetryFifo) {
+      return 0;
+    }
+  }
+
+  unsigned int id = luaL_checkunsigned(L, 1);
+  unsigned int value = luaL_checkunsigned(L, 2);
+
+  luaOutputTelemetryFifo->push((LuaTelemetryValue){ id, value });
+  return 0;
+}
+
 /*luadoc
 @function getFieldInfo(name)
 
@@ -795,6 +830,8 @@ const luaL_Reg opentxLib[] = {
 #if !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
+  { "telemetryPop", luaTelemetryPop },
+  { "telemetryPush", luaTelemetryPush },
   { NULL, NULL }  /* sentinel */
 };
 

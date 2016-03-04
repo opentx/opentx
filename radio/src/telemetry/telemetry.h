@@ -21,7 +21,7 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-extern Fifo<512> telemetryFifo;
+extern Fifo<uint8_t, 512> telemetryFifo;
 
 enum TelemetryProtocol
 {

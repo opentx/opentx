@@ -269,6 +269,13 @@ void processSportPacket(uint8_t * packet)
           processSportPacket(id, 6, instance, bool(data & 0x2000000));
           processSportPacket(id, 7, instance, bool(data & 0x4000000));
         }
+        else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
+#if defined(LUA)
+          if (luaInputTelemetryFifo) {
+            luaInputTelemetryFifo->push((LuaTelemetryValue){(uint8_t)id, data});
+          }
+#endif
+        }
         else {
           processSportPacket(id, 0, instance, data);
         }

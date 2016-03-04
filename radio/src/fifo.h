@@ -21,7 +21,7 @@
 #ifndef _FIFO_H_
 #define _FIFO_H_
 
-template <int N>
+template <class T, int N>
 class Fifo
 {
   public:
@@ -36,20 +36,20 @@ class Fifo
       widx = ridx = 0;
     }
 
-    void push(uint8_t byte) {
+    void push(T element) {
       uint32_t next = (widx+1) & (N-1);
       if (next != ridx) {
-        fifo[widx] = byte;
+        fifo[widx] = element;
         widx = next;
       }
     }
 
-    bool pop(uint8_t & byte) {
+    bool pop(T & element) {
       if (isEmpty()) {
         return false;
       }
       else {
-        byte = fifo[ridx];
+        element = fifo[ridx];
         ridx = (ridx+1) & (N-1);
         return true;
       }
@@ -69,7 +69,7 @@ class Fifo
     }
 
   protected:
-    uint8_t fifo[N];
+    T fifo[N];
     volatile uint32_t widx;
     volatile uint32_t ridx;
 };

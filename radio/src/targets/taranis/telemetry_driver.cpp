@@ -20,7 +20,7 @@
 
 #include "../../opentx.h"
 
-extern Fifo<512> telemetryFifo;
+extern Fifo<uint8_t, 512> telemetryFifo;
 
 void telemetryPortInit(uint32_t baudrate)
 {

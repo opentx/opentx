@@ -33,7 +33,7 @@
 
 #define SBUS_CH_CENTER        0x3E0
 
-Fifo<32> sbusFifo;
+Fifo<uint8_t, 32> sbusFifo;
 uint8_t SbusFrame[SBUS_MAX_FRAME_SIZE];
 uint16_t SbusTimer ;
 uint8_t SbusIndex = 0 ;

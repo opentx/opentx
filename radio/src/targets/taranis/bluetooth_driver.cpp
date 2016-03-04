@@ -20,8 +20,8 @@
 
 #include "../../opentx.h"
 
-Fifo<64> btTxFifo;
-Fifo<64> btRxFifo;
+Fifo<uint8_t, 64> btTxFifo;
+Fifo<uint8_t, 64> btRxFifo;
 
 enum BluetoothState
 {
