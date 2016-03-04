@@ -449,6 +449,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
 
 void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
 {
+  if (w < 0) { x += w; w = -w; }
   lcdDrawHorizontalLine(x, y, w, 0xff, att);
 }
 
