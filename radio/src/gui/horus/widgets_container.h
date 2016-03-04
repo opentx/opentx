@@ -21,6 +21,7 @@
 #ifndef _WIDGETS_CONTAINER_H_
 #define _WIDGETS_CONTAINER_H_
 
+#include <stdlib.h>
 #include "widget.h"
 
 class WidgetsContainerInterface

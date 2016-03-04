@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -281,7 +281,7 @@ bool eepromOpen()
   if (eeFs.mySize != sizeof(eeFs)) {
     TRACE("bad eeFs.mySize (%d instead of %d)", (int)eeFs.mySize, (int)sizeof(eeFs));
   }
-#endif  
+#endif
 
   if (eeFs.version != EEFS_VERS || eeFs.mySize != sizeof(eeFs)) {
     return false;
@@ -349,7 +349,7 @@ uint8_t EFile::read(uint8_t *buf, uint8_t i_len)
   uint8_t remaining = i_len;
   while (remaining) {
     if (!m_currBlk) break;
-  
+
     *buf++ = EeFsGetDat(m_currBlk, m_ofs++);
     if (m_ofs >= BS-sizeof(blkid_t)) {
       m_ofs = 0;
@@ -565,7 +565,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
       if (buf[i])
         buf[i] = idx2char(buf[i]);
       else
-        buf[i] = '_'; 	
+        buf[i] = '_';
     }
     i--;
   }
@@ -881,7 +881,7 @@ bool eeLoadGeneral()
   theFile.openRlc(FILE_GENERAL);
   if (theFile.readRlc((uint8_t*)&g_eeGeneral, 3) == 3 && g_eeGeneral.version == EEPROM_VER) {
     theFile.openRlc(FILE_GENERAL);
-    if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(EEGeneral) && g_eeGeneral.variant == EEPROM_VARIANT) {
+    if (theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral)) <= sizeof(g_eeGeneral) && g_eeGeneral.variant == EEPROM_VARIANT) {
       return true;
     }
   }
@@ -927,7 +927,7 @@ void storageCheck(bool immediately)
   if (storageDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
     storageDirtyMsk -= EE_GENERAL;
-    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(EEGeneral), immediately);
+    theFile.writeRlc(FILE_GENERAL, FILE_TYP_GENERAL, (uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral), immediately);
     if (!immediately) return;
   }
 

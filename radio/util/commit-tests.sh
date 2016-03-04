@@ -4,7 +4,7 @@
 set -e
 set -x
 
-mkdir build
+mkdir build || true
 cd build 
 
 # Companion
@@ -25,25 +25,25 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=9X -DHELI=YES -DEXT=MAVLINK ..
 make -j2 firmware
 
 # OpenTX on Mega2560
-# rm -rf *
-#cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=MEGA2560 -DHELI=YES ..
-#make -j2 firmware
-#make -j2 simu
-#make -j2 gtests ; ./gtests
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=MEGA2560 -DHELI=YES ..
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
 
 # OpenTX on Mega2560 with Mavlink telemetry
-# rm -rf *
-#cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=MEGA2560 -DEXT=MAVLINK -DHELI=YES ..
-#make -j2 firmware
-#make -j2 simu
-#make -j2 gtests ; ./gtests
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=MEGA2560 -DEXT=MAVLINK -DHELI=YES ..
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
 
 # OpenTX on gruvin9x board
-# rm -rf *
-#cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=GRUVIN9X -DHELI=YES ..
-#make -j2 firmware
-#make -j2 simu
-#make -j2 gtests ; ./gtests
+rm -rf *
+cmake -DCMAKE_BUILD_TYPE=Debug -DPCB=GRUVIN9X -DHELI=YES ..
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
 
 # OpenTX on Sky9x
 rm -rf *

@@ -21,7 +21,7 @@
 #ifndef _THEME_H_
 #define _THEME_H_
 
-#include "bitmapbuffer.h"
+class BitmapBuffer;
 
 #define MAX_THEME_OPTIONS              5
 

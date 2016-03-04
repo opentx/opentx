@@ -63,10 +63,11 @@ if(PCB STREQUAL HORUS)
   set(GUI_DIR horus)
   set(TARGET_DIR horus)
   set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps datacopy)
   set(LUA_EXPORT lua_export_horus)
   set(FLAVOUR horus)
   set(VIRTUAL_INPUTS YES)
+  set(RAMBACKUP YES)
   add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
@@ -113,6 +114,12 @@ if(PCB STREQUAL HORUS)
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
     )
+  add_custom_command(
+    OUTPUT datacopy.cpp
+    COMMAND python ${RADIO_DIRECTORY}/util/generate_datacopy.py ${RADIO_DIRECTORY}/src/datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DBACKUP > datacopy.cpp
+    DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
+  )
+  add_custom_target(datacopy DEPENDS datacopy.cpp)
 elseif(PCB STREQUAL TARANIS)
   option(PCBREV "PCB Revision" REVPLUS)
   option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
@@ -694,6 +701,11 @@ set(GUI_SRC
   view_statistics.cpp
   )
 
+if(RAMBACKUP)
+  add_definitions(-DRAMBACKUP)
+  set(SRC ${SRC} storage/rambackup.cpp)
+endif()
+
 if(VIRTUAL_INPUTS)
   add_definitions(-DVIRTUALINPUTS)
   set(TEMPLATES OFF)
@@ -745,10 +757,6 @@ if(GVARS)
   math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${GVARS_VARIANT})
 endif()
 
-if(SDCARD)
-  set(FIRMWARE_SRC ${FIRMWARE_SRC} ${FATFS_SRC})
-endif()
-
 if(FAI STREQUAL YES)
   add_definitions(-DFAI)
 elseif(FAI STREQUAL CHOICE)
@@ -771,11 +779,12 @@ if(JITTER_FILTER)
   add_definitions(-DJITTER_FILTER)
 endif()
 
-if(SDCARD STREQUAL YES)
+if(SDCARD)
   add_definitions(-DSDCARD)
   include_directories(${FATFS_DIR} ${FATFS_DIR}/option)
   set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp)
   set(GUI_SRC ${GUI_SRC} menu_general_sdmanager.cpp)
+  set(FIRMWARE_SRC ${FIRMWARE_SRC} ${FATFS_SRC})
 endif()
 
 if(SHUTDOWN_CONFIRMATION)

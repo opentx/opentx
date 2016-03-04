@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -516,7 +516,13 @@ PACK(typedef struct {
   uint8_t potsWarnEnabled; \
   int8_t potsWarnPosition[NUM_POTS];
 #else
-#define MODELDATA_EXTRA_217 MODELDATA_EXTRA
+#define MODELDATA_EXTRA_217 \
+  uint8_t spare:6; \
+  uint8_t potsWarnMode:2; \
+  ModuleData moduleData[NUM_MODULES+1]; \
+  uint8_t potsWarnEnabled; \
+  int8_t potsWarnPosition[NUM_POTS]; \
+  uint8_t rxBattAlarms[2];
 #endif
 
 #if defined(PCBTARANIS)
@@ -606,9 +612,9 @@ PACK(typedef struct {
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 
-  MODEL_GVARS_DATA
+  GVarData gvars[MAX_GVARS];
 
-  TELEMETRY_DATA
+  FrSkyTelemetryData frsky;
 
   MODELDATA_EXTRA_217
 
@@ -683,7 +689,7 @@ int ConvertGVar_216_to_217(int value)
   return value;
 }
 
-void ConvertGeneralSettings_216_to_217(EEGeneral & settings)
+void ConvertGeneralSettings_216_to_217(RadioData & settings)
 {
   settings.version = 217;
 #if defined(PCBTARANIS)
@@ -692,7 +698,7 @@ void ConvertGeneralSettings_216_to_217(EEGeneral & settings)
 #endif
 }
 
-void ConvertGeneralSettings_217_to_218(EEGeneral & settings)
+void ConvertGeneralSettings_217_to_218(RadioData & settings)
 {
   settings.version = 218;
   for (int i=0; i<NUM_CFN; i++) {

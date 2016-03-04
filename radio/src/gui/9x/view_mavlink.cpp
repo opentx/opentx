@@ -26,7 +26,9 @@
 #include "view_mavlink.h"
 
 #define VIEW_MAVLINK_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
- 
+
+uint8_t MAVLINK_menu = MENU_INFO;
+
 /*!	\brief Top Mavlink Menu definition
  *	\details Registers button events and handles that info. Buttons select menus,
  *	these are launched from the MAVLINK_menu switch statement. Setup menu is

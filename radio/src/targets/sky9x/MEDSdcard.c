@@ -24,7 +24,7 @@
 
 #include <string.h>
 #include "debug.h"
-#include "../FatFs/diskio.h"
+#include "diskio.h"
 #include "board.h"
 #include "Media.h"
 

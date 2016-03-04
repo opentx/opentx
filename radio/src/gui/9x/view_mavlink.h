@@ -25,7 +25,6 @@
 #ifndef _VIEW_MAVLINK_H_
 #define _VIEW_MAVLINK_H_
 
-#include "menus.h"
 #include "opentx.h"
 #include "telemetry/mavlink.h"
 #include "targets/common_avr/serial_driver.h"
@@ -76,6 +75,6 @@ enum menuMavlinkSetupItems {
 };
 
 //! \brief Menu index varible, initialized on info menu.
-uint8_t MAVLINK_menu = MENU_INFO;
+extern uint8_t MAVLINK_menu;
 
 #endif // _VIEW_MAVLINK_H_

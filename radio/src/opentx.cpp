@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "timers.h"
 
-EEGeneral  g_eeGeneral;
+RadioData  g_eeGeneral;
 ModelData  g_model;
 
 #if defined(SDCARD)
@@ -1591,26 +1591,26 @@ void getADC()
     uint16_t v = temp[x] >> (3 - ANALOG_SCALE);
 
 #if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
-    // Jitter filter: 
+    // Jitter filter:
     //    * pass trough any big change directly
     //    * for small change use Modified moving average (MMA) filter
     //
     // Explanation:
     //
-    // Normal MMA filter has this formula:   
+    // Normal MMA filter has this formula:
     //            <out> = ((ALPHA-1)*<out> + <in>)/ALPHA
     //
     // If calculation is done this way with integer arithmetics, then any small change in
     // input signal is lost. One way to combat that, is to rearrange the formula somewhat,
-    // to store a more precise (larger) number between iterations. The basic idea is to 
-    // store undivided value between iterations. Therefore an new variable <filtered> is 
+    // to store a more precise (larger) number between iterations. The basic idea is to
+    // store undivided value between iterations. Therefore an new variable <filtered> is
     // used. The new formula becomes:
     //           <filtered> = <filtered> - <filtered>/ALPHA + <in>
     //           <out> = <filtered>/ALPHA  (use only when out is needed)
     //
-    // The above formula with a maximum allowed ALPHA value (we are limited by 
+    // The above formula with a maximum allowed ALPHA value (we are limited by
     // the 16 bit s_anaFilt[]) was tested on the radio. The resulting signal still had
-    // some jitter (a value of 1 was observed). The jitter might be bigger on other 
+    // some jitter (a value of 1 was observed). The jitter might be bigger on other
     // radios.
     //
     // So another idea is to use larger input values for filtering. So instead of using
@@ -1975,6 +1975,10 @@ uint8_t calcStickScroll( uint8_t index )
 
 void opentxStart()
 {
+#if defined(RAMBACKUP)
+  RamBackupWrite();
+#endif
+
   doSplash();
 
 #if defined(DEBUG_TRACE_BUFFER)

@@ -364,6 +364,7 @@ bool luaLoadFunctionScript(uint8_t index)
   return true;
 }
 
+#if defined(PCBTARANIS)
 bool luaLoadTelemetryScript(uint8_t index)
 {
   TelemetryScreenType screenType = TELEMETRY_SCREEN_TYPE(index);
@@ -391,6 +392,7 @@ bool luaLoadTelemetryScript(uint8_t index)
   }
   return true;
 }
+#endif
 
 uint8_t isTelemetryScriptAvailable(uint8_t index)
 {
@@ -423,12 +425,14 @@ void luaLoadPermanentScripts()
     }
   }
 
+#if defined(PCBTARANIS)
   // Load custom telemetry scripts
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     if (!luaLoadTelemetryScript(i)) {
       return;
     }
   }
+#endif
 }
 
 void displayLuaError(const char * title)
@@ -630,16 +634,12 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
   }
   else {
+#if defined(PCBTARANIS)
 #if defined(SIMU) || defined(DEBUG)
     TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
-    if ((scriptType & RUN_TELEM_FG_SCRIPT) &&
-#if defined(COLORLCD)
-        (menuHandlers[0]==menuMainView && sid.reference==SCRIPT_TELEMETRY_FIRST+g_eeGeneral.view-VIEW_TELEM1)) {
-#else
-        (menuHandlers[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
-#endif
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
       lua_pushinteger(L, evt);
       inputsCount = 1;
@@ -650,6 +650,9 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     else {
       return false;
     }
+#else
+    return false;
+#endif
   }
 
   if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {

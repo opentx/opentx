@@ -50,9 +50,11 @@ void dumpEnd()
   dumpPrintf("\r\n");
 }
 
-void dump(const uint8_t *data, unsigned int size)
+#if defined(DEBUG) || defined(CLI)
+void dump(const uint8_t * data, unsigned int size)
 {
   dumpStart(size);
   dumpBody(data, size);
   dumpEnd();
 }
+#endif

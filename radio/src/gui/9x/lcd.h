@@ -21,6 +21,8 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
+#include <inttypes.h>
+
 #define LCD_W         128
 #define LCD_H         64
 #define BOX_WIDTH     23

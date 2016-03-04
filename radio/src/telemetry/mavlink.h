@@ -32,7 +32,10 @@
 #include "targets/common_avr/serial_driver.h"
 #include "opentx.h"
 
+extern int8_t mav_heartbeat;
 extern mavlink_system_t mavlink_system;
+#define LEN_STATUSTEXT 20
+extern char mav_statustext[LEN_STATUSTEXT];
 
 extern void SERIAL_start_uart_send();
 extern void SERIAL_end_uart_send();

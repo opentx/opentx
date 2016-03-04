@@ -21,6 +21,8 @@
 #ifndef _SERIAL_DRIVER_H_
 #define _SERIAL_DRIVER_H_
 
+#include <inttypes.h>
+
 typedef enum serial_tx_state_ {
 	TX_STATE_EMPTY = 0, //
 	TX_STATE_READY, //

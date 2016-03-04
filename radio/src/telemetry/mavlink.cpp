@@ -39,11 +39,10 @@ mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
 
 // Mavlink message decoded Status Text
 #define PARAM_NB_REPEAT 10
-#define LEN_STATUSTEXT 20
-static char mav_statustext[LEN_STATUSTEXT];
-static int8_t mav_heartbeat = 0;
-static int8_t mav_heartbeat_recv = 0;
-static uint8_t data_stream_start_stop = 0;
+char mav_statustext[LEN_STATUSTEXT];
+int8_t mav_heartbeat = 0;
+int8_t mav_heartbeat_recv = 0;
+uint8_t data_stream_start_stop = 0;
 
 
 // Telemetry data hold

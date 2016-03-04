@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -222,7 +222,7 @@
 #else
   #define __SDRAM __DMA
 #endif
- 
+
 #if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
   typedef int32_t int24_t;
 #else
@@ -334,20 +334,13 @@
 #include "debug.h"
 
 #if defined(PCBFLAMENCO)
-  #define NUM_SWITCHES     5
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
-  #if defined(REV9E)
-    #define NUM_SWITCHES               18 // yes, it's a lot!
-  #else
-    #define NUM_SWITCHES               8
-  #endif
   #define SWSRC_THR                    SWSRC_SF2
   #define SWSRC_GEA                    SWSRC_SG2
   #define SWSRC_ID0                    SWSRC_SA0
   #define SWSRC_ID1                    SWSRC_SA1
   #define SWSRC_ID2                    SWSRC_SA2
 #else
-  #define NUM_SWITCHES     7
   #define IS_3POS(sw)      ((sw) == 0)
   #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
   #define SW_DSM2_BIND     SW_TRN
@@ -597,9 +590,11 @@ enum BaseCurves {
   #define SPLASH_NEEDED() (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
 #endif
 
-#if defined(FSPLASH)
+#if defined(PCBHORUS)
+  #define SPLASH_TIMEOUT  300 /* 3s */
+#elif defined(FSPLASH)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode == 0 ? 60000/*infinite=10mn*/ : ((4*100) * (g_eeGeneral.splashMode & 0x03)))
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
   #define SPLASH_TIMEOUT  (g_eeGeneral.splashMode==-4 ? 1500 : (g_eeGeneral.splashMode<=0 ? (400-g_eeGeneral.splashMode*200) : (400-g_eeGeneral.splashMode*100)))
 #else
   #define SPLASH_TIMEOUT  (4*100)  // 4 seconds

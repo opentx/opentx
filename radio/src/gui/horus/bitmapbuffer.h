@@ -178,7 +178,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags);
 
-    void drawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags);
+    void drawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags);
 
     template<class T>
     void drawBitmap(coord_t x, coord_t y, const T * bmp, coord_t srcx=0, coord_t srcy=0, coord_t w=0, coord_t h=0, float scale=0)
