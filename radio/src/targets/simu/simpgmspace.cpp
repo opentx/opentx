@@ -1311,6 +1311,7 @@ void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { }
 void RTC_TimeStructInit(RTC_TimeTypeDef* RTC_TimeStruct) { }
 void RTC_DateStructInit(RTC_DateTypeDef* RTC_DateStruct) { }
 void PWR_BackupAccessCmd(FunctionalState NewState) { }
+void PWR_BackupRegulatorCmd(FunctionalState NewState) { }
 void RCC_RTCCLKConfig(uint32_t RCC_RTCCLKSource) { }
 void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState) { }
 void RCC_RTCCLKCmd(FunctionalState NewState) { }
