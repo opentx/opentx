@@ -56,14 +56,11 @@ void drawTrims(uint8_t flightMode)
 
     int32_t trim = getTrimValue(flightMode, i);
     int32_t val = trim * TRIM_LEN / 125;
-    bool exttrim = false;
     if (val < -(TRIM_LEN+1)) {
       val = -(TRIM_LEN+1);
-      exttrim = true;
     }
     else if (val > (TRIM_LEN+1)) {
       val = TRIM_LEN+1;
-      exttrim = true;
     }
 
     if (vert[i]) {
