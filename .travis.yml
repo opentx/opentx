@@ -5,6 +5,8 @@ before_install:
   - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
   - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
+  - sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' --yes
+  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
   - sudo apt-get update
   - rsync -av firmware.diydrones.com::Tools/Travis/*.deb ExtraPackages
 
