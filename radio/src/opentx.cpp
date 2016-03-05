@@ -1975,11 +1975,6 @@ uint8_t calcStickScroll( uint8_t index )
 
 void opentxStart()
 {
-#if defined(RAMBACKUP) && defined(SIMU)
-  // TODO just for tests
-  RamBackupWrite();
-#endif
-
   doSplash();
 
 #if defined(DEBUG_TRACE_BUFFER)

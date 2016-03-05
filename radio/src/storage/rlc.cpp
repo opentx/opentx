@@ -1,0 +1,104 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <inttypes.h>
+#include <assert.h>
+#include "debug.h"
+
+unsigned int compress(uint8_t * dst, const uint8_t * src, unsigned int len)
+{
+  uint8_t * cur = dst;
+  bool    run0   = (src[0] == 0);
+  uint8_t cnt    = 1;
+  uint8_t cnt0   = 0;
+
+  for (unsigned int i=1; 1; i++) {
+    bool cur0 = (src[i] == 0);
+    if (i==len || cur0!=run0 || cnt==0x3f || (cnt0 && cnt==0xf)) {
+      if (run0) {
+        assert(cnt0==0);
+        if (cnt<8 && i!=len)
+          cnt0 = cnt;
+        else
+          *cur++ = (cnt|0x40);
+      }
+      else {
+        if (cnt0) {
+          *cur++ = (0x80 | (cnt0<<4) | cnt);
+          cnt0 = 0;
+        }
+        else {
+          *cur++ = cnt;
+        }
+        for (int j=0; j<cnt; j++) {
+          *cur++ = src[i - cnt + j];
+        }
+      }
+      cnt = 0;
+      if (i==len) break;
+      run0 = cur0;
+    }
+    cnt++;
+  }
+
+  return cur-dst;
+}
+
+unsigned int uncompress(uint8_t * dst, const uint8_t * src, unsigned int len)
+{
+  uint8_t * cur = dst;
+  uint8_t zeroes = 0;
+  uint8_t bRlc = 0;
+
+  for( ; 1; ) {
+    if (zeroes > 0) {
+      for (int i = 0; i < zeroes; i++) {
+        *cur++ = 0;
+      }
+      zeroes = 0;
+    }
+
+    if (len == 0)
+      return cur-dst;
+
+    for (int i=0; i<bRlc; i++) {
+      *cur++ = *src++;
+      if (--len == 0)
+        return cur-dst;
+    }
+
+    bRlc = *src++;
+    --len;
+
+    if (!(bRlc & 0x7f)) {
+      TRACE("RLC decoding error");
+      return 0;
+    }
+
+    if (bRlc & 0x80) { // if contains high byte
+      zeroes  = (bRlc>>4) & 0x07;
+      bRlc    = bRlc & 0x0f;
+    }
+    else if (bRlc & 0x40) {
+      zeroes = bRlc & 0x3f;
+      bRlc   = 0;
+    }
+  }
+}

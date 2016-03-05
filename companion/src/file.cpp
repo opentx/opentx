@@ -436,9 +436,11 @@ unsigned int importRlc(QByteArray & dst, QByteArray & src, unsigned int rlcVersi
   dst.resize(0);
 
   for( ; 1; ) {
-    for (int i=0; i<zeroes; i++)
-      dst.append((char)0);
-    zeroes = 0;
+    if (zeroes > 0) {
+      for (int i = 0; i < zeroes; i++)
+        dst.append((char) 0);
+      zeroes = 0;
+    }
 
     if (len == 0)
       return dst.size();

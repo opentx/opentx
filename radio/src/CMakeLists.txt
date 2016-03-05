@@ -703,7 +703,7 @@ set(GUI_SRC
 
 if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
-  set(SRC ${SRC} storage/rambackup.cpp)
+  set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
 endif()
 
 if(VIRTUAL_INPUTS)

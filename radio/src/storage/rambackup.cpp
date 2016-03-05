@@ -23,7 +23,7 @@
 namespace Backup {
 #define BACKUP
 #include "datastructs.h"
-PACK(struct RamBackup {
+PACK(struct RamBackupUncompressed {
   ModelData model;
   RadioData radio;
 });
@@ -32,17 +32,42 @@ PACK(struct RamBackup {
 
 #include "datacopy.cpp"
 
-Backup::RamBackup ramBackup;
+Backup::RamBackupUncompressed ramBackupUncompressed __DMA;
 
-void RamBackupWrite()
+PACK(struct RamBackup {
+  uint16_t size;
+  uint8_t data[4094];
+});
+
+RamBackup ramBackup;
+
+void rambackupWrite()
 {
-  TRACE("RamBackup size=%d vs %d", sizeof(Backup::RamBackup), sizeof(ModelData)+sizeof(RadioData));
-  copyRadioData(&ramBackup.radio, &g_eeGeneral);
-  copyModelData(&ramBackup.model, &g_model);
+  copyRadioData(&ramBackupUncompressed.radio, &g_eeGeneral);
+  copyModelData(&ramBackupUncompressed.model, &g_model);
+  ramBackup.size = compress(ramBackup.data, (const uint8_t *)&ramBackupUncompressed, sizeof(ramBackupUncompressed));
+  TRACE("RamBackupWrite sdsize=%d backupsize=%d rlcsize=%d", sizeof(ModelData)+sizeof(RadioData), sizeof(Backup::RamBackupUncompressed), ramBackup.size);
+
+#if 0
+  // TODO move this code to non regression tests
+  Backup::RamBackupUncompressed ramBackupRestored;
+  if (uncompress((uint8_t *)&ramBackupRestored, ramBackup.data, ramBackup.size) != sizeof(ramBackupUncompressed))
+    TRACE("ERROR size");
+  if (memcmp(&ramBackupUncompressed, &ramBackupRestored, sizeof(ramBackupUncompressed)) != 0)
+    TRACE("ERROR restore");
+#endif
 }
 
-void RamBackupRead()
+bool rambackupRestore()
 {
-  copyRadioData(&g_eeGeneral, &ramBackup.radio);
-  copyModelData(&g_model, &ramBackup.model);
+  if (ramBackup.size == 0)
+    return false;
+
+  if (uncompress((uint8_t *)&ramBackupUncompressed, ramBackup.data, ramBackup.size) != sizeof(ramBackupUncompressed))
+    return false;
+
+  copyRadioData(&g_eeGeneral, &ramBackupUncompressed.radio);
+  copyModelData(&g_model, &ramBackupUncompressed.model);
+  return true;
 }
+

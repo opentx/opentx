@@ -58,8 +58,10 @@ void postModelLoad(bool newModel);
 #endif
 
 #if defined(RAMBACKUP)
-void RamBackupWrite();
-void RamBackupRead();
+void rambackupWrite();
+bool rambackupRestore();
+unsigned int compress(uint8_t * dst, const uint8_t * src, unsigned int len);
+unsigned int uncompress(uint8_t * dst, const uint8_t * src, unsigned int len);
 #endif
 
 #endif // _STORAGE_H_
