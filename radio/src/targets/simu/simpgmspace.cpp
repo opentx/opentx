@@ -893,7 +893,6 @@ UINT f_size(FIL* fil)
 
 FRESULT f_close (FIL * fil)
 {
-  assert(fil);
   TRACE("f_close(%p) (FIL:%p)", fil->fs, fil);
   if (fil->fs) {
     fclose((FILE*)fil->fs);
