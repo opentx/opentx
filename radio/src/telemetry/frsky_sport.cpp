@@ -272,7 +272,10 @@ void processSportPacket(uint8_t * packet)
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo) {
+#if defined __GNUC__
+            // TODO remove this ifdef when we have updated to MSVC recent version
             luaInputTelemetryFifo->push((LuaTelemetryValue){(uint8_t)id, data});
+#endif
           }
 #endif
         }

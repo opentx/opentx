@@ -350,6 +350,12 @@ PACK(struct CustomFunctionData {
 
 typedef int16_t gvar_t;
 
+#if MAX_ROTARY_ENCODERS > 0
+  #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD int16_t rotaryEncoders[MAX_ROTARY_ENCODERS];
+#else
+  #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD
+#endif
+
 #if defined(CPUARM)
 PACK(struct FlightModeData {
   trim_t trim[4];
@@ -358,7 +364,7 @@ PACK(struct FlightModeData {
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
-  int16_t rotaryEncoders[MAX_ROTARY_ENCODERS];
+  FLIGHT_MODE_ROTARY_ENCODERS_FIELD
   gvar_t gvars[MAX_GVARS];
 });
 #elif !defined(PCBSTD)
@@ -368,7 +374,7 @@ PACK(struct FlightModeData {
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
   uint8_t fadeIn:4;
   uint8_t fadeOut:4;
-  int16_t rotaryEncoders[MAX_ROTARY_ENCODERS];
+  FLIGHT_MODE_ROTARY_ENCODERS_FIELD
   gvar_t gvars[MAX_GVARS];
 });
 #else
