@@ -693,12 +693,17 @@ typedef uint16_t BeepANACenter;
 typedef uint8_t BeepANACenter;
 #endif
 
+#if LEN_BITMAP_NAME > 0
+#define MODEL_HEADER_BITMAP_FIELD      NOBACKUP(char bitmap[LEN_BITMAP_NAME]);
+#else
+#define MODEL_HEADER_BITMAP_FIELD
+#endif
+
+
 PACK(struct ModelHeader {
   char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
   uint8_t   modelId[NUM_MODULES];
-#if LEN_BITMAP_NAME > 0
-  NOBACKUP(char bitmap[LEN_BITMAP_NAME]);
-#endif
+  MODEL_HEADER_BITMAP_FIELD
 });
 
 #if defined(COLORLCD)
