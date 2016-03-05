@@ -357,7 +357,11 @@ static int luaTelemetryPush(lua_State *L)
   uint8_t id = luaL_checkunsigned(L, 1);
   uint32_t value = luaL_checkunsigned(L, 2);
 
+#if defined __GNUC__
+  // TODO remove this ifdef when we have updated to MSVC recent version
   luaOutputTelemetryFifo->push((LuaTelemetryValue){ id, value });
+#endif
+
   return 0;
 }
 
