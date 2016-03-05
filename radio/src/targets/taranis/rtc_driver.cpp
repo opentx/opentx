@@ -76,4 +76,9 @@ void rtcInit()
   struct gtm utm;
   rtcGetTime(&utm);
   g_rtcTime = gmktime(&utm);
+
+#if defined(RAMBACKUP)
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_BKPSRAM, ENABLE);
+  PWR_BackupRegulatorCmd(ENABLE);
+#endif
 }

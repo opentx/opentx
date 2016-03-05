@@ -23,10 +23,20 @@
 uint8_t   storageDirtyMsk;
 tmr10ms_t storageDirtyTime10ms;
 
+#if defined(RAMBACKUP)
+uint8_t   rambackupDirtyMsk;
+tmr10ms_t rambackupDirtyTime10ms;
+#endif
+
 void storageDirty(uint8_t msk)
 {
   storageDirtyMsk |= msk;
-  storageDirtyTime10ms = get_tmr10ms() ;
+  storageDirtyTime10ms = get_tmr10ms();
+
+#if defined(RAMBACKUP)
+  rambackupDirtyMsk = storageDirtyMsk;
+  rambackupDirtyTime10ms = storageDirtyTime10ms;
+#endif
 }
 
 void preModelLoad()

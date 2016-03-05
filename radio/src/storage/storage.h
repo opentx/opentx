@@ -22,8 +22,10 @@
 #define _STORAGE_H_
 
 #if defined(SIMU)
-  #define WRITE_DELAY_10MS 200
-#elif defined(PCBTARANIS)
+  #define WRITE_DELAY_10MS 100
+#elif defined(RAMBACKUP)
+  #define WRITE_DELAY_10MS 1500 /* 15s */
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
   #define WRITE_DELAY_10MS 500
 #elif defined(PCBSKY9X) && !defined(REV0)
   #define WRITE_DELAY_10MS 500
@@ -35,8 +37,13 @@
 
 extern uint8_t   storageDirtyMsk;
 extern tmr10ms_t storageDirtyTime10ms;
+#define TIME_TO_WRITE()                (storageDirtyMsk && (tmr10ms_t)(get_tmr10ms() - storageDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
 
-#define TIME_TO_WRITE() (storageDirtyMsk && (tmr10ms_t)(get_tmr10ms() - storageDirtyTime10ms) >= (tmr10ms_t)WRITE_DELAY_10MS)
+#if defined(RAMBACKUP)
+extern uint8_t   rambackupDirtyMsk;
+extern tmr10ms_t rambackupDirtyTime10ms;
+#define TIME_TO_RAMBACKUP()            (rambackupDirtyMsk && (tmr10ms_t)(get_tmr10ms() - rambackupDirtyTime10ms) >= (tmr10ms_t)100)
+#endif
 
 void storageEraseAll(bool warn);
 void storageFormat();

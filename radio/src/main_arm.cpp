@@ -86,8 +86,15 @@ void checkEeprom()
 #else
 void checkEeprom()
 {
-  if (TIME_TO_WRITE())
+#if defined(RAMBACKUP)
+  if (TIME_TO_RAMBACKUP()) {
+    rambackupWrite();
+    rambackupDirtyMsk = 0;
+  }
+#endif
+  if (TIME_TO_WRITE()) {
     storageCheck(false);
+  }
 }
 #endif
 
