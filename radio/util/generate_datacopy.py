@@ -13,10 +13,12 @@ def build_struct(cursor):
             if c.type.get_array_size() > 0:
                 if c.type.get_array_element_type().spelling in structs:
                     print "  for (int i=0; i<%d; i++) {" % c.type.get_array_size()
-                    print "    copy%s(dest->%s[i], src->%s[i]);" % (c.type.get_array_element_type().spelling, c.spelling, c.spelling)
+                    print "    copy%s(&dest->%s[i], &src->%s[i]);" % (c.type.get_array_element_type().spelling, c.spelling, c.spelling)
                     print "  }"
                 else:
                     print "  memcpy(&dest->%s, &src->%s, sizeof(dest->%s));" % (c.spelling, c.spelling, c.spelling)
+            elif c.type.get_declaration().spelling in structs:
+                print "  copy%s(&dest->%s, &src->%s);" % (c.type.get_declaration().spelling, c.spelling, c.spelling)
             else:
                 print "  dest->%s = src->%s;" % (c.spelling, c.spelling)
     print "}\n"

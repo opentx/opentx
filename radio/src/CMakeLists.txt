@@ -116,7 +116,7 @@ if(PCB STREQUAL HORUS)
     )
   add_custom_command(
     OUTPUT datacopy.cpp
-    COMMAND python ${RADIO_DIRECTORY}/util/generate_datacopy.py ${RADIO_DIRECTORY}/src/datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DBACKUP > datacopy.cpp
+    COMMAND python ${RADIO_DIRECTORY}/util/generate_datacopy.py ${RADIO_DIRECTORY}/src/datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DVIRTUALINPUTS -DBACKUP > datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
   add_custom_target(datacopy DEPENDS datacopy.cpp)

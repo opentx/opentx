@@ -26,18 +26,23 @@ namespace Backup {
 PACK(struct RamBackup {
   ModelData model;
   RadioData radio;
-}) ramBackup;
+});
 #undef BACKUP
 };
 
 #include "datacopy.cpp"
 
+Backup::RamBackup ramBackup;
+
 void RamBackupWrite()
 {
   TRACE("RamBackup size=%d vs %d", sizeof(Backup::RamBackup), sizeof(ModelData)+sizeof(RadioData));
+  copyRadioData(&ramBackup.radio, &g_eeGeneral);
+  copyModelData(&ramBackup.model, &g_model);
 }
 
 void RamBackupRead()
 {
-
+  copyRadioData(&g_eeGeneral, &ramBackup.radio);
+  copyModelData(&g_model, &ramBackup.model);
 }
