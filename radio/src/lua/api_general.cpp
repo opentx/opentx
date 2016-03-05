@@ -354,8 +354,8 @@ static int luaTelemetryPush(lua_State *L)
     }
   }
 
-  unsigned int id = luaL_checkunsigned(L, 1);
-  unsigned int value = luaL_checkunsigned(L, 2);
+  uint8_t id = luaL_checkunsigned(L, 1);
+  uint32_t value = luaL_checkunsigned(L, 2);
 
   luaOutputTelemetryFifo->push((LuaTelemetryValue){ id, value });
   return 0;
