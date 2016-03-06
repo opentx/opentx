@@ -391,12 +391,12 @@ int cliDisplay(const char ** argv)
   }
   else if (!strcmp(argv[1], "adc")) {
     for (int i=0; i<NUMBER_ANALOG; i++) {
-      serialPrint("adc[%d] = %04X", i, adcValues[i]);
+      serialPrint("adc[%d] = %04X", i, (int)adcValues[i]);
     }
   }
   else if (!strcmp(argv[1], "outputs")) {
     for (int i=0; i<NUM_CHNOUT; i++) {
-      serialPrint("outputs[%d] = %04X", i, channelOutputs[i]);
+      serialPrint("outputs[%d] = %04d", i, (int)channelOutputs[i]);
     }
   }
   else if (!strcmp(argv[1], "rtc")) {
