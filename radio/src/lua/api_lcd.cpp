@@ -124,11 +124,11 @@ static int luaLcdDrawLine(lua_State *L)
 
   if (pat == SOLID) {
     if (x1 == x2) {
-      lcdDrawSolidVerticalLine(x1, y1, y2-y1+1, flags);
+      lcdDrawSolidVerticalLine(x1, y1, y2 >= y1 ? y2-y1+1 : y2-y1-1, flags);
       return 0;
     }
     else if (y1 == y2) {
-      lcdDrawSolidHorizontalLine(x1, y1, x2-x1+1, flags);
+      lcdDrawSolidHorizontalLine(x1, y1, x2 >= x1 ? x2-x1+1 : x2-x1-1, flags);
       return 0;
     }
   }
