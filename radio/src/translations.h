@@ -567,10 +567,12 @@ extern const pm_char STR_FAS_OFFSET[];
 #endif
 
 #if defined(MULTIMODULE)
-extern const pm_char STR_MULTI_OPT[];
-#endif
+extern const pm_char STR_MULTI_OPTION[];
 extern const pm_char STR_MULTI_VIDFREQ[];
 extern const pm_char STR_MULTI_RFTUNE[];
+extern const pm_char STR_MULTI_AUTOBIND[];
+extern const pm_char STR_MULTI_LOWPOWER[];
+#endif
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
 #endif
