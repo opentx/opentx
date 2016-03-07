@@ -114,7 +114,7 @@ void setupPulsesMultimodule(unsigned int port)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  // 15 is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
+  // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
   // all protos > frskyx are therefore also off by one
   if (type >=15)
     type= type +1;
@@ -127,6 +127,8 @@ void setupPulsesMultimodule(unsigned int port)
     subtype = 0;
   }
 
+  if (g_model.moduleData[port].multi_rfProtocol >= MM_RF_PROTO_CUSTOM)
+    type = g_model.moduleData[port].multi_rfProtocol & 0x1f;
 
   protoByte |= (type & 0x1f);
   sendByteMulti(protoByte);
