@@ -282,6 +282,7 @@
 #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
 #define INTMODULE_TIMER                 TIM1
 #define INTMODULE_TIMER_IRQn            TIM1_CC_IRQn
+#define INTMODULE_TIMER_FREQ            (PERI2_FREQUENCY * TIMER_MULT_APB2)
 
 // External Module
 #define EXTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB)
@@ -295,7 +296,8 @@
 #define EXTMODULE_TIMER                 TIM2
 #define EXTMODULE_PPM_GPIO_AF           GPIO_AF_TIM2
 #define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource15
-// #define EXTMODULE_TIMER_IRQn            TIM2_CC_IRQn
+#define EXTMODULE_TIMER_IRQn            TIM2_IRQn
+#define EXTMODULE_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC)

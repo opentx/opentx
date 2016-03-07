@@ -54,6 +54,7 @@ uint8_t serial2TracesEnabled();
 }
 #endif
 
+#define TRACE_PING(x)         do { debugPrintf(x); } while(0)
 #define TRACE(...)            do { debugPrintf(__VA_ARGS__); debugPrintf("\r\n"); } while(0)
 #define DUMP(data, size)      dump(data, size)
 #define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)

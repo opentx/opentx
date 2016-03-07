@@ -403,6 +403,12 @@ extern OS_MutexID audioMutex;
 
 #if defined(CPUSTM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
+#define TIM_DeInit(...)
+#define TIM_TimeBaseInit(...)
+#define TIM_SetCompare2(...)
+#define TIM_ClearFlag(...)
+#define TIM_Cmd(...)
+#define TIM_ITConfig(...)
 #define GPIO_SetBits(GPIOx, pin) GPIOx->BSRRL |= pin
 #define GPIO_ResetBits(GPIOx, pin) GPIOx->BSRRL &= ~pin
 #define GPIO_ReadInputDataBit(GPIOx, pin) (GPIOx->BSRRL & pin)
