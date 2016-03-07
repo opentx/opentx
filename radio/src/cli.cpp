@@ -272,7 +272,13 @@ int cliMemoryInfo(const char ** argv)
 int cliReboot(const char ** argv)
 {
 #if !defined(SIMU)
-  NVIC_SystemReset();
+  if (!strcmp(argv[1], "wdt")) {
+    // do a user requested watchdog test by pausing mixer thread
+    pausePulses();
+  }
+  else {
+    NVIC_SystemReset();
+  }
 #endif
   return 0;
 }
@@ -385,12 +391,12 @@ int cliDisplay(const char ** argv)
   }
   else if (!strcmp(argv[1], "adc")) {
     for (int i=0; i<NUMBER_ANALOG; i++) {
-      serialPrint("adc[%d] = %04X", i, adcValues[i]);
+      serialPrint("adc[%d] = %04X", i, (int)adcValues[i]);
     }
   }
   else if (!strcmp(argv[1], "outputs")) {
     for (int i=0; i<NUM_CHNOUT; i++) {
-      serialPrint("outputs[%d] = %04X", i, channelOutputs[i]);
+      serialPrint("outputs[%d] = %04d", i, (int)channelOutputs[i]);
     }
   }
   else if (!strcmp(argv[1], "rtc")) {
@@ -444,6 +450,40 @@ int cliDisplay(const char ** argv)
     }
   }
 #endif
+  else if (!strcmp(argv[1], "tim")) {
+    int timerNumber;
+    if (toInt(argv, 2, &timerNumber) > 0) {
+      TIM_TypeDef * tim = TIM1;
+      switch (timerNumber) {
+        case 1: 
+          tim = TIM1;
+          break;
+        case 2:
+          tim = TIM2;
+          break;
+        default:
+          return 0;
+      }
+      serialPrint("TIM%d", timerNumber);
+      serialPrint(" CR1    0x%x", tim->CR1);
+      serialPrint(" CR2    0x%x", tim->CR2);
+      serialPrint(" DIER   0x%x", tim->DIER);
+      serialPrint(" SR     0x%x", tim->SR);
+      serialPrint(" EGR    0x%x", tim->EGR);
+      serialPrint(" CCMR1  0x%x", tim->CCMR1);
+      serialPrint(" CCMR2  0x%x", tim->CCMR2);
+
+      serialPrint(" CNT    0x%x", tim->CNT);
+      serialPrint(" ARR    0x%x", tim->ARR);
+      serialPrint(" PSC    0x%x", tim->PSC);
+
+      serialPrint(" CCER   0x%x", tim->CCER);
+      serialPrint(" CCR1   0x%x", tim->CCR1);
+      serialPrint(" CCR2   0x%x", tim->CCR2);
+      serialPrint(" CCR3   0x%x", tim->CCR3);
+      serialPrint(" CCR4   0x%x", tim->CCR4);
+    }
+  }
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {

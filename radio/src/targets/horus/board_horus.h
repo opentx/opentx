@@ -65,8 +65,9 @@ extern "C" {
 #define BOOTLOADER_SIZE                0x8000
 #define FIRMWARE_ADDRESS               0x08000000
 
-#define PERI1_FREQUENCY                45000000
-#define PERI2_FREQUENCY                90000000
+// HSI is at 168Mhz (over-drive is not enabled!)
+#define PERI1_FREQUENCY                42000000
+#define PERI2_FREQUENCY                84000000
 #define TIMER_MULT_APB1                2
 #define TIMER_MULT_APB2                2
 
@@ -202,10 +203,16 @@ void checkRotaryEncoder(void);
 #if !defined(SIMU)
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#define wdt_enable(x) //   watchdogInit(1500)
-#define wdt_reset()   //  IWDG->KR = 0xAAAA
-#define WAS_RESET_BY_WATCHDOG()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
-#define WAS_RESET_BY_SOFTWARE()   (RCC->CSR & RCC_CSR_SFTRSTF)
+#if defined(WATCHDOG_DISABLED)
+  #define wdt_enable(x)
+  #define wdt_reset()
+#else
+  #define wdt_enable(x)                       watchdogInit(1500)
+  #define wdt_reset()                         IWDG->KR = 0xAAAA
+#endif
+#define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
+#define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
+#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 #endif
 
 // ADC driver
@@ -247,6 +254,7 @@ void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
+void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define UNEXPECTED_SHUTDOWN()   (false) // (g_eeGeneral.unexpectedShutdown)
