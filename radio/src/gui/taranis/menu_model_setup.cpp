@@ -80,6 +80,10 @@ enum menuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_EXTERNAL_MODULE_BIND,
   ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
+#ifdef MULTIMODULE
+  ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
+  ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER,
+#endif
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_CHANNELS,
@@ -192,7 +196,7 @@ int getSwitchWarningsCount()
 #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
 #if defined MULTIMODULE
-#define MULTIMODULE_HASOPTIONS(x)         (x == MM_RF_PROTO_HUBSAN || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_DSM2)
+#define MULTIMODULE_HASOPTIONS(x)         (x == MM_RF_PROTO_HUBSAN || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_DSM2 || x >= MM_RF_PROTO_CUSTOM)
 #define MULTIMODULE_FAILSAFEROWS(x)       (IS_MODULE_MULTIMODULE(x) && (MULTIMODULE_HASOPTIONS(g_model.moduleData[x].multi.rfProtocol))) ? (uint8_t) 1: HIDDEN_ROW
 #else
 #define MULTIMODULE_FAILSAFEROWS(x)       HIDDEN_ROW
@@ -200,11 +204,13 @@ int getSwitchWarningsCount()
 #define FAILSAFE_ROWS(x)                  (IS_MODULE_XJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : MULTIMODULE_FAILSAFEROWS(x))
 #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
 #if defined(MULTIMODULE)
-#define MULTIMODULE_HAS_SUBTYPE(x)       (x == MM_RF_PROTO_FLYSKY || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_HISKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_YD717 || x == MM_RF_PROTO_KN || x == MM_RF_PROTO_SYMAX || x == MM_RF_PROTO_CX10 || x == MM_RF_PROTO_CG023 || x == MM_RF_PROTO_MT99XX || x == MM_RF_PROTO_MJXQ)
-#define MULTIMODULE_MODE_ROWS(x)          MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[x].multi.rfProtocol) ? (uint8_t)2 : (uint8_t)1
+
+#define MULTIMODULE_HAS_SUBTYPE(x)        (x == MM_RF_PROTO_FLYSKY || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_HISKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_YD717 || x == MM_RF_PROTO_KN || x == MM_RF_PROTO_SYMAX || x == MM_RF_PROTO_CX10 || x == MM_RF_PROTO_CG023 || x == MM_RF_PROTO_MT99XX || x == MM_RF_PROTO_MJXQ)
+#define MULTIMODULE_MODE_ROWS(x)          (g_model.moduleData[x].multi.rfProtocol >= MM_RF_PROTO_CUSTOM ) ? (uint8_t) 3 :MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[x].multi.rfProtocol) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_MODULE_ROWS           IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 1 : HIDDEN_ROW, IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 1 : HIDDEN_ROW,
 #else
 #define MULTIMODULE_MODE_ROWS(x) (uint8_t)0
+#define MULTIMODULE_MODULE_ROWS
 #endif
 #define EXTERNAL_MODULE_MODE_ROWS       (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 :  IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
 
@@ -224,6 +230,7 @@ int getSwitchWarningsCount()
   #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
   #define TOPLCD_ROWS
 #endif
+
 
 void menuModelSetup(uint8_t event)
 {
@@ -256,7 +263,7 @@ void menuModelSetup(uint8_t event)
     EXTERNAL_MODULE_MODE_ROWS,
     EXTERNAL_MODULE_CHANNELS_ROWS,
     (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
-    FAILSAFE_ROWS(EXTERNAL_MODULE),
+    FAILSAFE_ROWS(EXTERNAL_MODULE), MULTIMODULE_MODULE_ROWS
     LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #endif
   MENU_CHECK(STR_MENUSETUP, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX);
@@ -681,8 +688,10 @@ void menuModelSetup(uint8_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_MULTI_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, menuHorizontalPosition==1 ? attr : 0);
-          switch(g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol) {
+          int8_t multi_rfProto = min(g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, (uint8_t) MM_RF_PROTO_CUSTOM);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
+
+          switch(multi_rfProto) {
             case MM_RF_PROTO_FLYSKY:
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_FLYSKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
@@ -716,6 +725,10 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_MJXQ:
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_MJXQ, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
+            case MM_RF_PROTO_CUSTOM:
+              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+14*FW, y, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, menuHorizontalPosition==2 ? attr : 0, 2);
+              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+16*FW, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
+              break;
           }
         }
 #endif
@@ -746,7 +759,7 @@ void menuModelSetup(uint8_t event)
               break;
 #if defined(MULTIMODULE)
             case 2:
-              switch (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol) {
+              switch (min(g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, (uint8_t) MM_RF_PROTO_CUSTOM)) {
                 case MM_RF_PROTO_HISKY:
                 case MM_RF_PROTO_DSM2:
                 case MM_RF_PROTO_SYMAX:
@@ -768,7 +781,14 @@ void menuModelSetup(uint8_t event)
                 case MM_RF_PROTO_CX10:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
                   break;
+                case MM_RF_PROTO_CUSTOM:
+                  g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol = 0x20 | checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, 1, 31, EE_MODEL);
+                  break;
               }
+              break;
+            case 3:
+              // Custom protocol, third column is subtype
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
               break;
 #endif
           }
@@ -918,21 +938,34 @@ void menuModelSetup(uint8_t event)
         }
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
-            switch (g_model.moduleData[moduleIdx].multi.rfProtocol) {
-              case MM_RF_PROTO_FRSKY:
-                lcd_putsLeft(y, TR_MULTI_RFTUNE);
-                break;
-              case MM_RF_PROTO_HUBSAN:
-                lcd_putsLeft(y, TR_MULTI_VIDFREQ);
-                break;
-            }
-            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT|attr);
-            if (attr)
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
+          switch (g_model.moduleData[moduleIdx].multi.rfProtocol) {
+            case MM_RF_PROTO_FRSKY:
+              lcd_putsLeft(y, STR_MULTI_RFTUNE);
+              break;
+            case MM_RF_PROTO_HUBSAN:
+              lcd_putsLeft(y, STR_MULTI_VIDFREQ);
+              break;
+            default:
+              lcd_putsLeft(y, STR_MULTI_OPTION);
+              break;
+          }
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT|attr);
+          if (attr)
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
+          }
         }
 #endif
         break;
       }
+#if defined(MULTIMODULE)
+    case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
+      g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
+      break;
+
+    case  ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER:
+      g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
+      break;
+#endif
     }
   }
 
