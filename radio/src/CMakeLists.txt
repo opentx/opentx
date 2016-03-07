@@ -18,6 +18,7 @@ option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
+option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" ON)
 
 enable_language(ASM)
 set(OPT s)
@@ -782,6 +783,10 @@ endif()
 
 if(JITTER_FILTER)
   add_definitions(-DJITTER_FILTER)
+endif()
+
+if(WATCHDOG_DISABLED)
+  add_definitions(-DWATCHDOG_DISABLED)
 endif()
 
 if(SDCARD)

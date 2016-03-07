@@ -272,7 +272,13 @@ int cliMemoryInfo(const char ** argv)
 int cliReboot(const char ** argv)
 {
 #if !defined(SIMU)
-  NVIC_SystemReset();
+  if (!strcmp(argv[1], "wdt")) {
+    // do a user requested watchdog test by pausing mixer thread
+    pausePulses();
+  }
+  else {
+    NVIC_SystemReset();
+  }
 #endif
   return 0;
 }
