@@ -113,7 +113,7 @@
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS    "\006"
-#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi"
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""Custom"
 
 #define LEN_SUBTYPE_FLYSKY     "\004"
 #define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912"
@@ -822,6 +822,9 @@
 #endif
 #define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
 #define TR_MULTI_VIDFREQ       INDENT "Video frequency"
+#define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_AUTOBIND      INDENT "Autobind on power up"
+#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limit"
 #define TR_MINRSSI             "Min Rssi"
