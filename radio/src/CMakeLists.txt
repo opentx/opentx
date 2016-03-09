@@ -18,7 +18,7 @@ option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
-option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" ON)
+option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" ON)  # TODO remove it when it's OK
 
 enable_language(ASM)
 set(OPT s)
@@ -136,10 +136,10 @@ elseif(PCB STREQUAL TARANIS)
     set(FLAVOUR taranis-x9e)
     add_definitions(-DSTM32F40_41xxx -DREVPLUS -DREV9E)
     add_definitions(-DEEPROM_VARIANT=32768)
-    set(FIRMWARE_TARGET_SRC 
-      ${FIRMWARE_TARGET_SRC} 
-      top_lcd_driver.cpp 
-      bluetooth_driver.cpp 
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      top_lcd_driver.cpp
+      bluetooth_driver.cpp
       startup_stm32f40_41xxx.s
       )
     if(STICKS STREQUAL HORUS)
