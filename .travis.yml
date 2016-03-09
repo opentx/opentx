@@ -16,4 +16,4 @@ install:
   - export CXX="g++-5" CC="gcc-5"
 
 script:
-  - radio/util/commit-tests.sh
+  - ./radio/util/commit-tests.sh .
