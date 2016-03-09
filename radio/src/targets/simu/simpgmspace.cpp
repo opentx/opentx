@@ -40,12 +40,17 @@
   #include <SDL.h>
 #endif
 
+uint8_t MCUCSR, MCUSR;
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 const char *eepromFile = NULL;
 FILE *fp = NULL;
 int g_snapshot_idx = 0;
+
+pthread_t main_thread_pid = 0;
+uint8_t main_thread_running = 0;
+char * main_thread_error = NULL;
 
 #if defined(CPUSTM32)
 uint32_t Peri1_frequency, Peri2_frequency;
@@ -85,6 +90,10 @@ char simuSdDirectory[1024] = "";
 
 uint8_t eeprom[EESIZE_SIMU];
 sem_t *eeprom_write_sem;
+
+void lcdInit()
+{
+}
 
 void simuInit()
 {
@@ -314,110 +323,19 @@ void *eeprom_write_function(void *)
 }
 #endif
 
-uint8_t main_thread_running = 0;
-char * main_thread_error = NULL;
-extern void opentxStart();
-void * main_thread(void *)
-{
-#ifdef SIMU_EXCEPTIONS
-  signal(SIGFPE, sig);
-  signal(SIGSEGV, sig);
-
-  try {
-#endif
-
-#if defined(CPUARM)
-    stackPaint();
-#endif
-
-    s_current_protocol[0] = 255;
-
-    menuLevel = 0;
-    menuHandlers[0] = menuMainView;
-    menuHandlers[1] = menuModelSelect;
-
-#if defined(COLORLCD)
-    topbar = new Topbar(&g_model.topbarData);
-    luaInit();
-    // TODO the theme is not initialized, in case of sdcard error, we should have something strange
-#endif
-
-    storageReadAll(); // load general setup and selected model
-
-#if defined(COLORLCD)
-    loadTheme();
-#endif
-
-#if defined(SIMU_DISKIO)
-    f_mount(&g_FATFS_Obj, "", 1);
-    // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
-    sdGetFreeSectors();
-#endif
-
-#if defined(CPUARM) && defined(SDCARD)
-    referenceSystemAudioFiles();
-#endif
-
-    if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
-
-    if (main_thread_running == 1) {
-      opentxStart();
-    }
-
-    s_current_protocol[0] = 0;
-
-#if defined(PCBFLAMENCO)
-    menuEntryTime = get_tmr10ms() - 200;
-#endif
-
-    while (main_thread_running) {
-#if defined(CPUARM)
-      doMixerCalculations();
-#if defined(FRSKY) || defined(MAVLINK)
-      telemetryWakeup();
-#endif
-      checkTrims();
-#endif
-      perMain();
-      sleep(10/*ms*/);
-    }
-
-#if defined(LUA)
-    luaClose();
-#endif
-
-#ifdef SIMU_EXCEPTIONS
-  }
-  catch (...) {
-    main_thread_running = 0;
-  }
-#endif
-
-#if defined(SIMU_DISKIO)
-  if (diskImage) {
-    fclose(diskImage);
-  }
-#endif
-
-  return NULL;
-}
-
 #if defined WIN32 || !defined __GNUC__
 #define chdir  _chdir
 #define getcwd _getcwd
 #endif
 
-pthread_t main_thread_pid;
-void StartMainThread(bool tests)
+void StartSimu(bool tests)
 {
-#if defined(SDCARD)
-  if (strlen(simuSdDirectory) == 0)
-    getcwd(simuSdDirectory, 1024);
-#endif
+  main_thread_running = (tests ? 1 : 2);
 
-#if defined(CPUARM)
-  pthread_mutex_init(&mixerMutex, NULL);
-  pthread_mutex_init(&audioMutex, NULL);
+#if defined(SDCARD)
+  if (strlen(simuSdDirectory) == 0) {
+    getcwd(simuSdDirectory, 1024);
+  }
 #endif
 
   /*
@@ -439,14 +357,30 @@ void StartMainThread(bool tests)
   g_rtcTime = time(0);
 #endif
 
-  main_thread_running = (tests ? 1 : 2);
-  pthread_create(&main_thread_pid, NULL, &main_thread, NULL);
+#if defined(SIMU_EXCEPTIONS)
+  signal(SIGFPE, sig);
+  signal(SIGSEGV, sig);
+  try {
+#endif
+
+#if defined(CPUARM)
+    simuMain();
+#else
+    pthread_create(&main_thread_pid, NULL, &simuMain, NULL);
+#endif
+
+#if defined(SIMU_EXCEPTIONS)
+  }
+  catch (...) {
+  }
+#endif
 }
 
-void StopMainThread()
+void StopSimu()
 {
   main_thread_running = 0;
-  pthread_join(main_thread_pid, NULL);
+  if (main_thread_pid)
+    pthread_join(main_thread_pid, NULL);
 }
 
 #if defined(CPUARM)
@@ -1330,7 +1264,7 @@ void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct) { }
 void I2S_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
 void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) { }
 void RCC_LSEConfig(uint8_t RCC_LSE) { }
-FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return RESET; }
+FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 void unlockFlash() { }
 void lockFlash() { }
@@ -1362,3 +1296,17 @@ void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }
 uint16_t stackSize() { return 0; }
+
+void * start_routine(void * attr)
+{
+  FUNCPtr task = (FUNCPtr)attr;
+  task(NULL);
+  return NULL;
+}
+
+OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, uint32_t stksize)
+{
+  pthread_t tid;
+  pthread_create(&tid, NULL, start_routine, (void *)task);
+  return tid;
+}

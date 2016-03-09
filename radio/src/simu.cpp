@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -117,7 +117,7 @@ Open9xSim::Open9xSim(FXApp* a):
     knobs[i]->setRange(-1024, 1024);
     knobs[i]->setValue(0);
   }
-  
+
   bmf = new FXImageFrame(this,bmp);
 
   updateKeysAndSwitches(true);
@@ -127,10 +127,10 @@ Open9xSim::Open9xSim(FXApp* a):
 
 Open9xSim::~Open9xSim()
 {
-  StopMainThread();
+  StopSimu();
   StopAudioThread();
   StopEepromThread();
-  
+
   delete bmp;
   delete sliders[0];
   delete sliders[1];
@@ -262,7 +262,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
 
 #ifdef __APPLE__
   // gruvin: Can't use Function keys on the Mac -- too many other app conflicts.
-  //         The ordering of these keys, Q/W,E/R,T/Y,U/I matches the on screen 
+  //         The ordering of these keys, Q/W,E/R,T/Y,U/I matches the on screen
   //         order of trim sliders
   static FXuint trimKeys[] = { KEY_E, KEY_R, KEY_U, KEY_I, KEY_R, KEY_E, KEY_Y, KEY_T, KEY_Q, KEY_W };
 #else
@@ -356,7 +356,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 #else
     #define ROTENC_VALUE g_rotenc[0]
 #endif
-    
+
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBHORUS)
     static bool rotencAction = false;
     if (getApp()->getKeyState(KEY_X)) {
@@ -410,7 +410,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(7, 6, 2);
 #endif
   }
-  
+
   per10ms();
   refreshDisplay();
   getApp()->addTimeout(this, 2, 10);
@@ -533,7 +533,7 @@ int main(int argc,char **argv)
 
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
   StartAudioThread();
-  StartMainThread();
+  StartSimu();
 
   return application.run();
 }

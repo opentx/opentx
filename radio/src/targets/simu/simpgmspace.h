@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -349,8 +349,9 @@ void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
 
-void StartMainThread(bool tests=true);
-void StopMainThread();
+void StartSimu(bool tests=true);
+void StopSimu();
+
 void StartEepromThread(const char *filename="eeprom.bin");
 void StopEepromThread();
 #if defined(SIMU_AUDIO) && defined(CPUARM)
@@ -364,6 +365,7 @@ void StopEepromThread();
 extern const char * eepromFile;
 void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
 
+#define wdt_disable(...)  sleep(1/*ms*/)
 #define wdt_enable(...) sleep(1/*ms*/)
 #define wdt_reset() sleep(1/*ms*/)
 #define boardInit()
@@ -380,11 +382,23 @@ extern OS_MutexID audioMutex;
 #define E_OK   0
 #define WDRF   0
 
+void * simuMain(void * args = NULL);
+extern uint8_t MCUCSR, MCUSR;
+
+typedef unsigned int       U32;
+typedef unsigned long long U64;
+typedef void               (*FUNCPtr)(void*);
+
 #define CoInitOS(...)
 #define CoStartOS(...)
-#define CoCreateTask(...)              0
+
+OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, uint32_t stksize);
 #define CoCreateTaskEx(...)            0
+
 #define CoCreateMutex(...)             PTHREAD_MUTEX_INITIALIZER
+#define CoEnterMutexSection(m)         pthread_mutex_lock(&(m))
+#define CoLeaveMutexSection(m)         pthread_mutex_unlock(&(m))
+
 #define CoSetFlag(...)
 #define CoClearFlag(...)
 #define CoSetTmrCnt(...)
@@ -392,8 +406,6 @@ extern OS_MutexID audioMutex;
 #define CoExitISR(...)
 #define CoStartTmr(...)
 #define CoWaitForSingleFlag(...)       0
-#define CoEnterMutexSection(m)         pthread_mutex_lock(&(m))
-#define CoLeaveMutexSection(m)         pthread_mutex_unlock(&(m))
 #define CoTickDelay(...)
 #define CoCreateFlag(...)              0
 #define CoGetOSTime(...)               0
@@ -442,5 +454,7 @@ extern char simuSdDirectory[1024];
 #define sdPoll10ms()
 #define sd_card_ready()  (true)
 #define sdMounted()      (true)
+
+inline void ledOff() { }
 
 #endif // _SIMPGMSPACE_H_

@@ -338,6 +338,15 @@ void perMain()
   if (sticks_evt) evt = sticks_evt;
 #endif
 
+#if defined(RAMBACKUP)
+  if (unexpectedShutdown) {
+    lcd->clear();
+    lcdDrawText(LCD_W/2, LCD_H/2-20, "EMERGENCY MODE", DBLSIZE|CENTERED|TEXT_BGCOLOR);
+    lcdRefresh();
+    return;
+  }
+#endif
+
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
     // disable access to menus

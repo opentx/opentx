@@ -538,12 +538,12 @@ void OpenTxSimulator::start(const char * filename, bool tests)
 
   StartEepromThread(filename);
   StartAudioThread(volumeGain);
-  StartMainThread(tests);
+  StartSimu(tests);
 }
 
 void OpenTxSimulator::stop()
 {
-  StopMainThread();
+  StopSimu();
 #if defined(CPUARM)  
   StopAudioThread();
 #endif

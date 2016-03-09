@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -91,8 +91,6 @@ uint16_t stackAvailable()
 }
 #endif
 
-#if !defined(SIMU)
-
 void mixerTask(void * pdata)
 {
   s_pulses_paused = true;
@@ -146,7 +144,7 @@ void menusTask(void * pdata)
     perMain();
     // TODO remove completely massstorage from sky9x firmware
     U32 runtime = (U32)(CoGetOSTime() - start);
-    // deduct the thread run-time from the wait, if run-time was more than 
+    // deduct the thread run-time from the wait, if run-time was more than
     // desired period, then skip the wait all together
     if (runtime < MENU_TASK_PERIOD_TICKS) {
       CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);
@@ -190,14 +188,12 @@ void tasksStart()
 
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
   menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack.stack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
-  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
-
 #if !defined(SIMU)
+  // TODO move the SIMU audio in this task
+  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
+#endif
   audioMutex = CoCreateMutex();
   mixerMutex = CoCreateMutex();
-#endif
 
   CoStartOS();
 }
-
-#endif // !defined(SIMU)

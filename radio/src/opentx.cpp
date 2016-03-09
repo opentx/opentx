@@ -2543,7 +2543,9 @@ void opentxInit(OPENTX_INIT_ARGS)
   TRACE("opentxInit()");
 
 #if !defined(EEPROM)
-  sdInit();
+  if (!UNEXPECTED_SHUTDOWN()) {
+    sdInit();
+  }
 #endif
 
 #if defined(COLORLCD)
@@ -2551,7 +2553,16 @@ void opentxInit(OPENTX_INIT_ARGS)
   luaInit();
 #endif
 
+#if defined(RAMBACKUP)
+  if (UNEXPECTED_SHUTDOWN()) {
+    rambackupRestore();
+  }
+  else {
+    storageReadAll();
+  }
+#else
   storageReadAll();
+#endif
 
 #if defined(CPUARM)
   if (UNEXPECTED_SHUTDOWN()) {
@@ -2635,10 +2646,20 @@ void opentxInit(OPENTX_INIT_ARGS)
   startPulses();
 
   wdt_enable(WDTO_500MS);
+
+#if defined(GUI)
+  menuHandlers[0] = menuMainView;
+  #if MENUS_LOCK != 2/*no menus*/
+    menuHandlers[1] = menuModelSelect;
+  #endif
+#endif
 }
 
-#if !defined(SIMU)
-int main(void)
+#if defined(SIMU)
+void * simuMain(void *)
+#else
+int main()
+#endif
 {
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
@@ -2663,13 +2684,8 @@ int main(void)
   lcdInit();
 #endif
 
+#if !defined(SIMU)
   stackPaint();
-
-#if defined(GUI)
-  menuHandlers[0] = menuMainView;
-  #if MENUS_LOCK != 2/*no menus*/
-    menuHandlers[1] = menuModelSelect;
-  #endif
 #endif
 
 #if defined(GUI) && !defined(PCBTARANIS)
@@ -2710,19 +2726,16 @@ int main(void)
   init_rotary_sw();
 #endif
 
-#if !defined(CPUARM)
-  opentxInit(mcusr);
-#endif
-
 #if defined(CPUARM)
   tasksStart();
 #else
+  opentxInit(mcusr);
 #if defined(CPUM2560)
   uint8_t shutdown_state = 0;
 #endif
 
 #if defined(PCBFLAMENCO)
-  menuEntryTime = get_tmr10ms() - 200;
+  // TODO not here it's an ARM board ... menuEntryTime = get_tmr10ms() - 200;
 #endif
 
   while (1) {
@@ -2751,8 +2764,11 @@ int main(void)
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif
+
+#if defined(SIMU)
+  return NULL;
+#endif
 }
-#endif // !SIMU
 
 #if defined(PWR_BUTTON_DELAY)
 

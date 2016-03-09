@@ -44,7 +44,7 @@ class ModelCell
         buffer.drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
       }
       else {
-        char timer[LEN_TIMER_STRING];z
+        char timer[LEN_TIMER_STRING];
         buffer.drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
         buffer.drawText(104, 41, timer, TEXT_COLOR);
