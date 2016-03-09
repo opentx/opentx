@@ -71,8 +71,9 @@ bool rambackupRestore()
   if (uncompress((uint8_t *)&ramBackupUncompressed, ramBackup->data, ramBackup->size) != sizeof(ramBackupUncompressed))
     return false;
 
+  memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
+  memset(&g_model, 0, sizeof(g_model));
   copyRadioData(&g_eeGeneral, &ramBackupUncompressed.radio);
   copyModelData(&g_model, &ramBackupUncompressed.model);
   return true;
 }
-
