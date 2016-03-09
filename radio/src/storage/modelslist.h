@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _MODELSLIST_H_
+#define _MODELSLIST_H_
+
 #include <list>
 #include "sdcard.h"
 
@@ -41,8 +44,10 @@ class ModelCell
         buffer.drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
       }
       else {
+        char timer[LEN_TIMER_STRING];z
         buffer.drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
-        // TODO putsTimer(x+104, y+41, 0, TEXT_COLOR|LEFT);
+        getTimerString(timer, 0);
+        buffer.drawText(104, 41, timer, TEXT_COLOR);
         for (int i=0; i<4; i++) {
           buffer.drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
@@ -57,11 +62,6 @@ class ModelCell
         }
       }
       buffer.drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
-
-      // if (selected) {
-      //   lcdDrawSolidRect(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT, 1, TITLE_BGCOLOR);
-      //   drawShadow(x, y, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-      // }
     }
 
     char name[LEN_MODEL_FILENAME+1];
@@ -215,6 +215,7 @@ class ModelsList
   void removeModel(ModelsCategory * category, ModelCell * model)
   {
     category->removeModel(model);
+    save();
   }
 
   std::list<ModelsCategory *> categories;
@@ -224,3 +225,6 @@ class ModelsList
     ModelsCategory * currentCategory;
 
 };
+
+#endif // _MODELSLIST_H_
+
