@@ -113,7 +113,7 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
   }
 
   if (action) {
-    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+20, action);
+    lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+24, action);
   }
 }
 
