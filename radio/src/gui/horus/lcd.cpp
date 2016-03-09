@@ -264,9 +264,8 @@ void getTimerString(char * str, putstime_t tme, LcdFlags att)
 
 void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
 {
-  char str[10]; // "-00:00:00"
+  char str[LEN_TIMER_STRING]; // "-00:00:00"
   getTimerString(str, tme, att);
-  att &= ~LEFT;
   lcdDrawText(x, y, str, att);
 }
 

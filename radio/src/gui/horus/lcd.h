@@ -134,6 +134,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
 
 #define putstime_t int32_t
 
+#define LEN_TIMER_STRING               10
 void getTimerString(char * str, putstime_t tme, LcdFlags att=0);
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
