@@ -811,6 +811,7 @@
 #define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Nový model"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
+#define TR_CHANGE_CATEGORY     "Change category"
 #define TR_COPY_MODEL          "Kopírovat"
 #define TR_MOVE_MODEL          "Přesunout"
 #define TR_BACKUP_MODEL        "Zálohovat na SD"

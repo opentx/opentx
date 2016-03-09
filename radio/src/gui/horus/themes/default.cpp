@@ -35,9 +35,10 @@ class DefaultTheme: public Theme
     DefaultTheme():
       Theme("Default", OPTIONS_THEME_DEFAULT)
     {
+      loadColors();
     }
 
-    virtual void load() const
+    void loadColors() const
     {
       lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
       lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
@@ -64,9 +65,12 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = RED;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RED;
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
+    }
 
+    virtual void load() const
+    {
+      loadColors();
       Theme::load();
-
       if (!backgroundBitmap) backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.bmp"));
       if (!aboutBackgroundBitmap) aboutBackgroundBitmap = BitmapBuffer::load(getThemePath("aboutbg.bmp"));
     }

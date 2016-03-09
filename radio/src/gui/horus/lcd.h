@@ -93,12 +93,17 @@ extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=0);
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags attr=0);
+
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=0);
 
 inline void lcdClear()
 {
   lcd->clear();
+}
+
+inline void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags attr=0)
+{
+  lcd->drawText(x, y, s, attr);
 }
 
 inline void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=0)

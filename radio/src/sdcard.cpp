@@ -60,11 +60,13 @@ char * getFileIndex(char * filename, unsigned int & value)
   char * pos = getFileExtension(filename);
   if (!pos || pos == filename)
     return NULL;
+  int multiplier = 1;
   while (pos > filename) {
     pos--;
     char c = *pos;
     if (c >= '0' && c <= '9') {
-      value = (value * 10) + (c - '\0');
+      value += multiplier * (c - '0');
+      multiplier *= 10;
     }
     else {
       return pos+1;

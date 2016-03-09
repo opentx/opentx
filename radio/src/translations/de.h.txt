@@ -815,6 +815,7 @@
 #define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Neues Modell"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
+#define TR_CHANGE_CATEGORY     "Change category"
 #define TR_COPY_MODEL          "Kopiere Modell"
 #define TR_MOVE_MODEL          "Verschiebe Modell"
 #define TR_BACKUP_MODEL        "Modell auf SD-Karte"  //9XR-Pro

@@ -104,11 +104,6 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   return result;
 }
 
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
-{
-  lcdDrawSizedText(x, y, s, 255, flags);
-}
-
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags)
 {
   uint8_t length;

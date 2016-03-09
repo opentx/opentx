@@ -833,6 +833,7 @@
 #define TR_DELETE_CATEGORY     "Ta Bort Kategori"
 #define TR_CREATE_MODEL        "Skapa Modell"
 #define TR_DUPLICATE_MODEL     "Dupl. Modell"
+#define TR_CHANGE_CATEGORY     "Change category"
 #define TR_COPY_MODEL          "Kopiera Modell"
 #define TR_MOVE_MODEL          "Flytta Modell"
 #define TR_BACKUP_MODEL        "Modell-backup"

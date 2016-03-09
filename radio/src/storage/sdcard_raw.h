@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -28,25 +28,6 @@
 
 const char * readModel(const char * filename, uint8_t * buffer, uint32_t size);
 const char * loadModel(const char * filename);
-const char * createModel(int category);
-
-
-struct StorageModelsList {
-  FIL file;
-};
-
-const char * storageOpenModelsList(StorageModelsList * storage);
-bool storageReadNextModel(StorageModelsList * storage, char * line, int maxlen);
-const char * storageInsertModel(const char * name, int category, int position);
-const char * storageRemoveModel(int category, int position);
-const char * storageRenameModel(const char * name, int category, int position);
-
-const char * storageInsertCategory(const char * name, int position);
-const char * storageRenameCategory(int category, const char * name);
-const char * storageRemoveCategory(int category);
-bool storageReadNextCategory(StorageModelsList * storage, char * line, int maxlen);
-bool storageSeekCategory(StorageModelsList * storage, int category);
+const char * createModel();
 
 #endif // _SDCARD_RAW_H_
-
-

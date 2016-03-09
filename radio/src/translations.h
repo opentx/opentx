@@ -587,9 +587,10 @@ extern const pm_char STR_CURRENT[];
   extern const pm_char STR_SELECT_MODEL[];
   extern const pm_char STR_CREATE_CATEGORY[];
   extern const pm_char STR_RENAME_CATEGORY[];
-extern const pm_char STR_DELETE_CATEGORY[];
+  extern const pm_char STR_DELETE_CATEGORY[];
   extern const pm_char STR_CREATE_MODEL[];
   extern const pm_char STR_DUPLICATE_MODEL[];
+  extern const pm_char STR_CHANGE_CATEGORY[];
   extern const pm_char STR_COPY_MODEL[];
   extern const pm_char STR_MOVE_MODEL[];
   extern const pm_char STR_DELETE_MODEL[];
@@ -608,7 +609,7 @@ extern const pm_char STR_DELETE_CATEGORY[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
   extern const pm_char STR_ABOUT_US[];
-extern const pm_char STR_SETUP_SCREENS[];
+  extern const pm_char STR_SETUP_SCREENS[];
 #endif
 
 extern const pm_char STR_RESET_BTN[];

@@ -110,9 +110,9 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       this->format = format;
     }
 
-    inline void clear()
+    inline void clear(LcdFlags flags=0)
     {
-      drawSolidFilledRect(0, 0, width, height, 0);
+      drawSolidFilledRect(0, 0, width, height, flags);
     }
 
     inline void drawPixel(display_t * p, display_t value)
@@ -177,6 +177,11 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     void drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
     void drawFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags);
+
+    void drawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
+    {
+      drawSizedText(x, y, s, 255, flags);
+    }
 
     void drawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags);
 
