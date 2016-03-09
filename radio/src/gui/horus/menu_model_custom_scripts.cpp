@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void onModelCustomScriptMenu(const char *result)
 {
@@ -130,7 +130,7 @@ bool menuModelCustomScripts(evt_t event)
 
   int8_t  sub = menuVerticalPosition;
 
-  if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+  if (event == EVT_KEY_FIRST(KEY_ENTER) && sub >= 0) {
     s_currIdx = sub;
     pushMenu(menuModelCustomScriptOne);
   }
