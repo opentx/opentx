@@ -183,7 +183,7 @@ class SwitchesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
-    static void Cleanup() 
+    static void Cleanup()
     {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
@@ -370,7 +370,7 @@ class SourcesConversionTable: public ConversionTable {
       internalCache.push_back(element);
       return element.table;
     }
-    static void Cleanup() 
+    static void Cleanup()
     {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
@@ -384,7 +384,7 @@ std::list<SourcesConversionTable::Cache> SourcesConversionTable::internalCache;
 
 void OpenTxEepromCleanup(void)
 {
-  SourcesConversionTable::Cleanup(); 
+  SourcesConversionTable::Cleanup();
   SwitchesConversionTable::Cleanup();
 }
 
@@ -408,14 +408,14 @@ class SwitchField: public ConversionField< SignedField<N> > {
       _switch = sw.toValue();
       ConversionField< SignedField<N> >::beforeExport();
     }
-    
+
     virtual void afterImport()
     {
-      ConversionField< SignedField<N> >::afterImport();	
+      ConversionField< SignedField<N> >::afterImport();
       sw = RawSwitch(_switch);
       eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< SignedField<N> >::internalField.getName()).arg(sw.toString());
-    }    
-    
+    }
+
   protected:
     RawSwitch & sw;
     int _switch;
@@ -553,7 +553,7 @@ template <int N>
 class SourceField: public ConversionField< UnsignedField<N> > {
   public:
     SourceField(RawSource & source, BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0):
-      ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags), 
+      ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags),
             "Source", QObject::tr("Source %1 cannot be exported on this board!").arg(source.toString())),
       source(source),
       _source(0)
@@ -569,13 +569,13 @@ class SourceField: public ConversionField< UnsignedField<N> > {
       _source = source.toValue();
       ConversionField< UnsignedField<N> >::beforeExport();
     }
-    
+
     virtual void afterImport()
     {
-      ConversionField< UnsignedField<N> >::afterImport();	
+      ConversionField< UnsignedField<N> >::afterImport();
       source = RawSource(_source);
       eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< UnsignedField<N> >::internalField.getName()).arg(source.toString());
-    }    
+    }
 
   protected:
     RawSource & source;
@@ -1465,7 +1465,13 @@ class CurvesField: public TransformedField {
       maxPoints(IS_ARM(board) ? 512 : 112-8)
     {
       for (int i=0; i<maxCurves; i++) {
-        if (IS_TARANIS(board) && version >= 216) {
+        if (IS_TARANIS(board) && version >= 218) {
+          internalField.Append(new UnsignedField<1>((unsigned int &)curves[i].type));
+          internalField.Append(new BoolField<1>(curves[i].smooth));
+          internalField.Append(new ConversionField< SignedField<6> >(curves[i].count, -5));
+          internalField.Append(new ZCharField<3>(curves[i].name));
+        }
+        else if (IS_TARANIS(board) && version >= 216) {
           internalField.Append(new UnsignedField<3>((unsigned int &)curves[i].type));
           internalField.Append(new BoolField<1>(curves[i].smooth));
           internalField.Append(new SpareBitsField<4>());
@@ -1622,7 +1628,7 @@ class AndSwitchesConversionTable: public ConversionTable {
     {
       int val=0;
       addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
-      
+
       if (IS_TARANIS(board)) {
         for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
           int s = switchIndex(i, board, version);
@@ -1767,7 +1773,7 @@ class LogicalSwitchField: public TransformedField {
       }
     }
 
-    ~LogicalSwitchField() 
+    ~LogicalSwitchField()
     {
       delete andswitchesConversionTable;
     }
@@ -2529,7 +2535,7 @@ class FrskyScreenField: public DataField {
         else
           numbers.Append(new SpareBitsField<4*8>());
       }
-      
+
       if (IS_TARANIS(board) && version >= 217) {
         script.Append(new CharField<8>(screen.body.script.filename));
         script.Append(new SpareBitsField<16*8>());
@@ -3193,7 +3199,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     }
   }
 
-  if (IS_TARANIS(board)) {
+  if (IS_TARANIS(board) && version < 218) {
     for (int i=0; i<MAX_CURVES(board, version); i++) {
       internalField.Append(new ZCharField<6>(modelData.curves[i].name));
     }
@@ -3221,13 +3227,13 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       }
     }
   }
-  
+
   if (IS_TARANIS(board) && version >= 216) {
     for (int i=0; i<32; i++) {
       internalField.Append(new ZCharField<4>(modelData.inputNames[i]));
     }
   }
-  
+
   if (IS_ARM(board) && version >= 217) {
     for (int i=0; i<8; i++) {
       if (i < MAX_POTS(board, version)+MAX_SLIDERS(board))
@@ -3249,7 +3255,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_ARM(board) && version >= 216) {
     for (int i=0; i < MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
       internalField.Append(new SignedField<8>(modelData.potPosition[i]));
-    }    
+    }
   }
 
   if (IS_ARM(board) && version == 216) {
@@ -3505,7 +3511,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       internalField.Append(new SpareBitsField<64>());
     else if (IS_TARANIS(board))
       internalField.Append(new SpareBitsField<16>());
-      
+
     if (version >= 217) {
       for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
