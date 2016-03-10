@@ -137,7 +137,6 @@ const char * const audioFilenames[] = {
   "thralert",
   "swalert",
   "baddata",
-  "format",
   "lowbatt",
   "inactiv",
   "a1_org",
@@ -155,6 +154,7 @@ const char * const audioFilenames[] = {
   "telemok",
   "trainko",
   "trainok",
+  "sensorko",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",
@@ -992,9 +992,9 @@ void audioEvent(unsigned int index, unsigned int freq)
 #endif
 
   if (index <= AU_ERROR || (index >= AU_WARNING1 && index < AU_FRSKY_FIRST)) {
-    if (g_eeGeneral.alarmsFlash) {
-      flashCounter = FLASH_DURATION;
-    }
+  if (g_eeGeneral.alarmsFlash) {
+    flashCounter = FLASH_DURATION;
+  }
   }
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && index>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && index<=AU_ERROR)) {
@@ -1013,21 +1013,13 @@ void audioEvent(unsigned int index, unsigned int freq)
           break;
         // low battery in tx
         case AU_TX_BATTERY_LOW:
-          audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
-          audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
-          break;
 #if defined(PCBSKY9X)
         case AU_TX_MAH_HIGH:
-          // TODO Rob something better here?
-          audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
-          audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
-          break;
         case AU_TX_TEMP_HIGH:
-          // TODO Rob something better here?
+#endif
           audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
           audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
-#endif
 #if defined(VOICE)
         case AU_THROTTLE_ALERT:
         case AU_SWITCH_ALERT:

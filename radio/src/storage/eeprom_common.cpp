@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -122,7 +122,7 @@ void storageEraseAll(bool warn)
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
 
-  MESSAGE(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_STORAGE_FORMAT);
+  MESSAGE(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
 
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);

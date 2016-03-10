@@ -1087,7 +1087,7 @@ bool eeConvert()
   ALERT(STR_STORAGE_WARNING, msg, AU_BAD_RADIODATA);
 
   // Message
-  MESSAGE(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_STORAGE_FORMAT); // TODO translations
+  MESSAGE(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE); // TODO translations
 
   // General Settings conversion
   eeLoadGeneralSettingsData();
