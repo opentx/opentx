@@ -424,10 +424,10 @@ bool menuModelTelemetry(evt_t event)
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcdDrawNumber(MENUS_MARGIN_LEFT+INDENT_WIDTH, y, index+1, LEFT|attr, 0, NULL, ":");
       lcdDrawSizedText(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
-      if (telemetryItems[index].isFresh()) {
+      TelemetryItem & telemetryItem = telemetryItems[index];
+      if (telemetryItem.isFresh()) {
         lcdDrawText(100, y, "*");
       }
-      TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isAvailable()) {
         LcdFlags color = telemetryItem.isOld() ? ALARM_COLOR : TEXT_COLOR;
         putsTelemetryChannelValue(TELEM_COL2, y, index, getValue(MIXSRC_FIRST_TELEM+3*index), LEFT|color);
