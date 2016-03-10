@@ -1933,7 +1933,7 @@ void doMixerCalculations()
       if (moduleFlag[i] != MODULE_NORMAL_MODE) {
         if (++countRangecheck >= 250) {
           countRangecheck = 0;
-          AUDIO_PLAY(AU_FRSKY_CHEEP);
+          AUDIO_PLAY(AU_SPECIAL_SOUND_CHEEP);
         }
       }
     }

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -67,7 +67,6 @@ class hapticQueue
     uint8_t queueHapticRepeat[HAPTIC_QUEUE_LENGTH];
 };
 
-//wrapper function - dirty but results in a space saving!!!
 extern hapticQueue haptic;
 
 #define IS_HAPTIC_BUSY()     haptic.busy()

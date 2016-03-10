@@ -472,14 +472,16 @@ void evalFunctions()
             if (isRepeatDelayElapsed(functions, functionsContext, i)) {
               if (!IS_PLAYING(PLAY_INDEX)) {
                 if (CFN_FUNC(cfn) == FUNC_PLAY_SOUND) {
-                  AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(cfn));
+                  if (audioQueue.empty()) {
+                    AUDIO_PLAY(AU_SPECIAL_SOUND_FIRST + CFN_PARAM(cfn));
+                  }
                 }
                 else if (CFN_FUNC(cfn) == FUNC_PLAY_VALUE) {
                   PLAY_VALUE(CFN_PARAM(cfn), PLAY_INDEX);
                 }
 #if defined(HAPTIC)
                 else if (CFN_FUNC(cfn) == FUNC_HAPTIC) {
-                  haptic.event(AU_FRSKY_LAST+CFN_PARAM(cfn));
+                  haptic.event(AU_SPECIAL_SOUND_LAST+CFN_PARAM(cfn));
                 }
 #endif
                 else {
@@ -515,7 +517,7 @@ void evalFunctions()
               functionsContext.lastFunctionTime[i] = tmr10ms;
               uint8_t param = CFN_PARAM(cfn);
               if (CFN_FUNC(cfn) == FUNC_PLAY_SOUND) {
-                AUDIO_PLAY(AU_FRSKY_FIRST+param);
+                AUDIO_PLAY(AU_SPECIAL_SOUND_FIRST+param);
               }
               else if (CFN_FUNC(cfn) == FUNC_PLAY_VALUE) {
                 PLAY_VALUE(param, PLAY_INDEX);
@@ -541,7 +543,7 @@ void evalFunctions()
             uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
             if (!functionsContext.lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=1000*repeatParam)) {
               functionsContext.lastFunctionTime[i] = tmr10ms;
-              AUDIO_PLAY(AU_FRSKY_FIRST+CFN_PARAM(cfn));
+              AUDIO_PLAY(AU_SPECIAL_SOUND_FIRST+CFN_PARAM(cfn));
             }
             break;
           }
@@ -560,7 +562,7 @@ void evalFunctions()
             uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
             if (!functionsContext.lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=1000*repeatParam)) {
               functionsContext.lastFunctionTime[i] = tmr10ms;
-              haptic.event(AU_FRSKY_LAST+CFN_PARAM(cfn));
+              haptic.event(AU_SPECIAL_SOUND_LAST+CFN_PARAM(cfn));
             }
             break;
           }

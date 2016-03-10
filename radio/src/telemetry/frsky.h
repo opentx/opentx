@@ -131,14 +131,14 @@
 #define A4_LAST_ID                0x091f
 #define AIR_SPEED_FIRST_ID        0x0a00
 #define AIR_SPEED_LAST_ID         0x0a0f
-#define POWERBOX_BATT1_FIRST_ID   0x0b00
-#define POWERBOX_BATT1_LAST_ID    0x0b0f
-#define POWERBOX_BATT2_FIRST_ID   0x0b10
-#define POWERBOX_BATT2_LAST_ID    0x0b1f
-#define POWERBOX_STATE_FIRST_ID   0x0b20
-#define POWERBOX_STATE_LAST_ID    0x0b2f
-#define POWERBOX_CNSP_FIRST_ID    0x0b30
-#define POWERBOX_CNSP_LAST_ID     0x0b3f
+#define RBOX_BATT1_FIRST_ID       0x0b00
+#define RBOX_BATT1_LAST_ID        0x0b0f
+#define RBOX_BATT2_FIRST_ID       0x0b10
+#define RBOX_BATT2_LAST_ID        0x0b1f
+#define RBOX_STATE_FIRST_ID       0x0b20
+#define RBOX_STATE_LAST_ID        0x0b2f
+#define RBOX_CNSP_FIRST_ID        0x0b30
+#define RBOX_CNSP_LAST_ID         0x0b3f
 #define DIY_FIRST_ID              0x5000
 #define DIY_LAST_ID               0x50ff
 #define RSSI_ID                   0xf101
@@ -503,7 +503,7 @@ typedef enum {
 
 // FrSky D Protocol
 void processHubPacket(uint8_t id, int16_t value);
-void frskyDSendNextAlarm(void);
+void frskyDSendNextAlarm();
 void frskyDProcessPacket(uint8_t *packet);
 
 // FrSky S.PORT Protocol
@@ -511,7 +511,7 @@ void processSportPacket(uint8_t *packet);
 #if defined(PCBTARANIS)
 void sportFirmwareUpdate(ModuleIndex module, const char *filename);
 #endif
-void telemetryWakeup(void);
+void telemetryWakeup();
 void telemetryReset();
 
 #if defined(CPUARM)
@@ -521,7 +521,7 @@ void telemetryInit(uint8_t protocol);
 void telemetryInit(void);
 #endif
 
-void telemetryInterrupt10ms(void);
+void telemetryInterrupt10ms();
 
 #if defined(CPUARM)
   typedef uint16_t frskyCellVoltage_t;
@@ -532,7 +532,7 @@ void telemetryInterrupt10ms(void);
 #if defined(CPUARM) || defined(FRSKY_HUB)
 void frskySetCellsCount(uint8_t cellscount);
 void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
-void frskyUpdateCells(void);
+void frskyUpdateCells();
 #endif
 
 void processSerialData(uint8_t data);

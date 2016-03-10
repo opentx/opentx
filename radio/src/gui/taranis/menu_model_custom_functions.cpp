@@ -271,7 +271,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
             putsTimer(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
           }
           else if (func == FUNC_PLAY_SOUND) {
-            val_max = AU_FRSKY_LAST-AU_FRSKY_FIRST-1;
+            val_max = AU_SPECIAL_SOUND_LAST-AU_SPECIAL_SOUND_FIRST-1;
             lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_FUNCSOUNDS, val_displayed, attr);
           }
 #if defined(HAPTIC)

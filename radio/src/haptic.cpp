@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -101,12 +101,12 @@ void hapticQueue::event(uint8_t e)
       play(5, 0, PLAY_NOW);
     else if (e <= AU_TIMER_LT10)
       play(15, 3, PLAY_NOW);
-    else if (e < AU_FRSKY_FIRST)
+    else if (e < AU_SPECIAL_SOUND_FIRST)
       play(15, 3, (e-AU_TIMER_20+1)|PLAY_NOW);
-    else if (e >= AU_FRSKY_LAST && empty()) {
+    else if (e >= AU_SPECIAL_SOUND_LAST && empty()) {
       play(30, 10, 0);
-      play(10, 50-10*(e-AU_FRSKY_LAST), (e-AU_FRSKY_LAST));
-    }	
+      play(10, 50-10*(e-AU_SPECIAL_SOUND_LAST), (e-AU_SPECIAL_SOUND_LAST));
+    }
   }
 }
 

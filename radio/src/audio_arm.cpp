@@ -155,15 +155,16 @@ const char * const audioFilenames[] = {
   "trainko",
   "trainok",
   "sensorko",
+  "servoko",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",
 #endif
   "error",
-  "keyup",
-  "keydown",
-  "menus",
-  "trim",
+  "keyup", // TODO remove this one
+  "keydown", // TODO remove this one
+  "menus", // TODO remove this one
+  "trim", // TODO remove this one
   "warning1",
   "warning2",
   "warning3",
@@ -235,8 +236,8 @@ void referenceSystemAudioFiles()
 
   uint64_t availableAudioFiles = 0;
 
-  assert(sizeof(audioFilenames)==AU_FRSKY_FIRST*sizeof(char *));
-  assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_FRSKY_FIRST);
+  assert(sizeof(audioFilenames)==AU_SPECIAL_SOUND_FIRST*sizeof(char *));
+  assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_SPECIAL_SOUND_FIRST);
 
   char * filename = getSystemAudioPath(path);
   *(filename-1) = '\0';
@@ -252,7 +253,7 @@ void referenceSystemAudioFiles()
       // Eliminates directories / non wav files
       if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
 
-      for (int i=0; i<AU_FRSKY_FIRST; i++) {
+      for (int i=0; i<AU_SPECIAL_SOUND_FIRST; i++) {
         getSystemAudioFile(path, i);
         if (!strcasecmp(filename, fn)) {
           availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
@@ -991,27 +992,26 @@ void audioEvent(unsigned int index, unsigned int freq)
   }
 #endif
 
-  if (index <= AU_ERROR || (index >= AU_WARNING1 && index < AU_FRSKY_FIRST)) {
-  if (g_eeGeneral.alarmsFlash) {
-    flashCounter = FLASH_DURATION;
-  }
+  if (index <= AU_ERROR || (index >= AU_WARNING1 && index < AU_SPECIAL_SOUND_FIRST)) {
+    if (g_eeGeneral.alarmsFlash) {
+      flashCounter = FLASH_DURATION;
+    }
   }
 
-  if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && index>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && index<=AU_ERROR)) {
+  if (g_eeGeneral.beepMode > 0 || (g_eeGeneral.beepMode == 0 && index >= AU_TRIM_MOVE) ||
+      (g_eeGeneral.beepMode >= -1 && index <= AU_ERROR)) {
 #if defined(SDCARD)
-    char filename[AUDIO_FILENAME_MAXLEN+1];
-    if (index < AU_FRSKY_FIRST && isAudioFileReferenced(index, filename)) {
+    char filename[AUDIO_FILENAME_MAXLEN + 1];
+    if (index < AU_SPECIAL_SOUND_FIRST && isAudioFileReferenced(index, filename)) {
       audioQueue.playFile(filename);
     }
     else
 #endif
-    if (index < AU_FRSKY_FIRST || audioQueue.empty()) {
+    if (index < AU_SPECIAL_SOUND_FIRST) {
       switch (index) {
-        // inactivity timer alert
         case AU_INACTIVITY:
           audioQueue.playTone(2250, 80, 20, PLAY_REPEAT(2));
           break;
-        // low battery in tx
         case AU_TX_BATTERY_LOW:
 #if defined(PCBSKY9X)
         case AU_TX_MAH_HIGH:
@@ -1020,50 +1020,39 @@ void audioEvent(unsigned int index, unsigned int freq)
           audioQueue.playTone(1950, 160, 20, PLAY_REPEAT(2), 1);
           audioQueue.playTone(2550, 160, 20, PLAY_REPEAT(2), -1);
           break;
-#if defined(VOICE)
         case AU_THROTTLE_ALERT:
         case AU_SWITCH_ALERT:
-#endif
         case AU_ERROR:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
           break;
-        // keypad up (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_UP:
           audioQueue.playTone(BEEP_KEY_UP_FREQ, 80, 20, PLAY_NOW);
           break;
-        // keypad down (seems to be used when going left/right through system menu options. 0-100 scales etc)
         case AU_KEYPAD_DOWN:
           audioQueue.playTone(BEEP_KEY_DOWN_FREQ, 80, 20, PLAY_NOW);
           break;
-        // menu display (also used by a few generic beeps)
         case AU_MENUS:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
           break;
-        // trim move
         case AU_TRIM_MOVE:
           audioQueue.playTone(freq, 40, 20, PLAY_NOW);
           break;
-        // trim center
         case AU_TRIM_MIDDLE:
           audioQueue.playTone(freq, 80, 20, PLAY_NOW);
           break;
-        // trim center
         case AU_TRIM_END:
           audioQueue.playTone(freq, 80, 20, PLAY_NOW);
           break;
-        // warning one
         case AU_WARNING1:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
           break;
-        // warning two
         case AU_WARNING2:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 160, 20, PLAY_NOW);
           break;
-        // warning three
         case AU_WARNING3:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
           break;
-        // pot/stick center
+          // TODO remove all these ones
         case AU_STICK1_MIDDLE:
         case AU_STICK2_MIDDLE:
         case AU_STICK3_MIDDLE:
@@ -1076,118 +1065,111 @@ void audioEvent(unsigned int index, unsigned int freq)
 #else
         case AU_POT3_MIDDLE:
 #endif
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 80, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1500, 80, 20, PLAY_NOW);
           break;
-        // mix warning 1
         case AU_MIX_WARNING_1:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1440, 48, 32);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1440, 48, 32);
           break;
-        // mix warning 2
         case AU_MIX_WARNING_2:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1560, 48, 32, PLAY_REPEAT(1));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1560, 48, 32, PLAY_REPEAT(1));
           break;
-        // mix warning 3
         case AU_MIX_WARNING_3:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1680, 48, 32, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1680, 48, 32, PLAY_REPEAT(2));
           break;
-        // timer == 0
         case AU_TIMER_00:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 300, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 300, 20, PLAY_NOW);
           break;
-        // timer <= 10 seconds left
         case AU_TIMER_LT10:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_NOW);
           break;
-        // timer 20 seconds left
         case AU_TIMER_20:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_REPEAT(1) | PLAY_NOW);
           break;
-        // timer 30 seconds left
         case AU_TIMER_30:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+150, 120, 20, PLAY_REPEAT(2)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_REPEAT(2) | PLAY_NOW);
           break;
         case AU_A1_ORANGE:
         case AU_A2_ORANGE:
         case AU_A3_ORANGE:
         case AU_A4_ORANGE:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 600, 200, 20, PLAY_NOW);
           break;
         case AU_A1_RED:
         case AU_A2_RED:
         case AU_A3_RED:
         case AU_A4_RED:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 200, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 600, 200, 20, PLAY_REPEAT(1) | PLAY_NOW);
           break;
         case AU_RSSI_ORANGE:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 800, 20, PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1500, 800, 20, PLAY_NOW);
           break;
         case AU_RSSI_RED:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1800, 800, 20, PLAY_REPEAT(1)|PLAY_NOW);
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1800, 800, 20, PLAY_REPEAT(1) | PLAY_NOW);
           break;
         case AU_SWR_RED:
           audioQueue.playTone(450, 160, 40, PLAY_REPEAT(2), 1);
           break;
-        case AU_FRSKY_BEEP1:
+        case AU_SPECIAL_SOUND_BEEP1:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 60, 20);
           break;
-        case AU_FRSKY_BEEP2:
+        case AU_SPECIAL_SOUND_BEEP2:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 120, 20);
           break;
-        case AU_FRSKY_BEEP3:
+        case AU_SPECIAL_SOUND_BEEP3:
           audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20);
           break;
-        case AU_FRSKY_WARN1:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+600, 120, 40, PLAY_REPEAT(2));
+        case AU_SPECIAL_SOUND_WARN1:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 600, 120, 40, PLAY_REPEAT(2));
           break;
-        case AU_FRSKY_WARN2:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+900, 120, 40, PLAY_REPEAT(2));
+        case AU_SPECIAL_SOUND_WARN2:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 900, 120, 40, PLAY_REPEAT(2));
           break;
-        case AU_FRSKY_CHEEP:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+900, 80, 20, PLAY_REPEAT(2), 2);
+        case AU_SPECIAL_SOUND_CHEEP:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 900, 80, 20, PLAY_REPEAT(2), 2);
           break;
-        case AU_FRSKY_RING:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+750, 40, 80, PLAY_REPEAT(1));
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+750, 40, 20, PLAY_REPEAT(10));
+        case AU_SPECIAL_SOUND_RING:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 750, 40, 20, PLAY_REPEAT(10));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 750, 40, 80, PLAY_REPEAT(1));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 750, 40, 20, PLAY_REPEAT(10));
           break;
-        case AU_FRSKY_SCIFI:
+        case AU_SPECIAL_SOUND_SCIFI:
           audioQueue.playTone(2550, 80, 20, PLAY_REPEAT(2), -1);
           audioQueue.playTone(1950, 80, 20, PLAY_REPEAT(2), 1);
           audioQueue.playTone(2250, 80, 20, 0);
           break;
-        case AU_FRSKY_ROBOT:
-          audioQueue.playTone(2250, 40,  20,  PLAY_REPEAT(1));
+        case AU_SPECIAL_SOUND_ROBOT:
+          audioQueue.playTone(2250, 40, 20, PLAY_REPEAT(1));
           audioQueue.playTone(1650, 120, 20, PLAY_REPEAT(1));
           audioQueue.playTone(2550, 120, 20, PLAY_REPEAT(1));
           break;
-        case AU_FRSKY_CHIRP:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1200, 40, 20, PLAY_REPEAT(2));
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1620, 40, 20, PLAY_REPEAT(3));
+        case AU_SPECIAL_SOUND_CHIRP:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1200, 40, 20, PLAY_REPEAT(2));
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1620, 40, 20, PLAY_REPEAT(3));
           break;
-        case AU_FRSKY_TADA:
+        case AU_SPECIAL_SOUND_TADA:
           audioQueue.playTone(1650, 80, 40);
           audioQueue.playTone(2850, 80, 40);
           audioQueue.playTone(3450, 64, 36, PLAY_REPEAT(2));
           break;
-        case AU_FRSKY_CRICKET:
-          audioQueue.playTone(2550, 40, 80,  PLAY_REPEAT(3));
+        case AU_SPECIAL_SOUND_CRICKET:
+          audioQueue.playTone(2550, 40, 80, PLAY_REPEAT(3));
           audioQueue.playTone(2550, 40, 160, PLAY_REPEAT(1));
-          audioQueue.playTone(2550, 40, 80,  PLAY_REPEAT(3));
+          audioQueue.playTone(2550, 40, 80, PLAY_REPEAT(3));
           break;
-        case AU_FRSKY_SIREN:
+        case AU_SPECIAL_SOUND_SIREN:
           audioQueue.playTone(450, 160, 40, PLAY_REPEAT(2), 2);
           break;
-        case AU_FRSKY_ALARMC:
-          audioQueue.playTone(1650, 32, 68,  PLAY_REPEAT(2));
+        case AU_SPECIAL_SOUND_ALARMC:
+          audioQueue.playTone(1650, 32, 68, PLAY_REPEAT(2));
           audioQueue.playTone(2250, 64, 156, PLAY_REPEAT(1));
-          audioQueue.playTone(1650, 64, 76,  PLAY_REPEAT(2));
+          audioQueue.playTone(1650, 64, 76, PLAY_REPEAT(2));
           audioQueue.playTone(2250, 32, 168, PLAY_REPEAT(1));
           break;
-        case AU_FRSKY_RATATA:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 40, 80, PLAY_REPEAT(10));
+        case AU_SPECIAL_SOUND_RATATA:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1500, 40, 80, PLAY_REPEAT(10));
           break;
-        case AU_FRSKY_TICK:
-          audioQueue.playTone(BEEP_DEFAULT_FREQ+1500, 40, 400, PLAY_REPEAT(2));
+        case AU_SPECIAL_SOUND_TICK:
+          audioQueue.playTone(BEEP_DEFAULT_FREQ + 1500, 40, 400, PLAY_REPEAT(2));
           break;
         default:
           break;

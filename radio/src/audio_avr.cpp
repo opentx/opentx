@@ -150,14 +150,14 @@ void audioQueue::event(uint8_t e, uint8_t f)
   haptic.event(e); //do this before audio to help sync timings
 #endif
 
-  if (e <= AU_ERROR || (e >= AU_WARNING1 && e < AU_FRSKY_FIRST)) {
+  if (e <= AU_ERROR || (e >= AU_WARNING1 && e < AU_SPECIAL_SOUND_FIRST)) {
     if (g_eeGeneral.alarmsFlash) {
       flashCounter = FLASH_DURATION;
     }
   }
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && e>=AU_TRIM_MOVE) || (g_eeGeneral.beepMode>=-1 && e<=AU_ERROR)) {
-    if (e < AU_FRSKY_FIRST || empty()) {
+    if (e < AU_SPECIAL_SOUND_FIRST || empty()) {
       // TODO when VOICE enable some cases here are not needed!
       switch (e) {
 #if !defined(VOICE)
@@ -174,36 +174,36 @@ void audioQueue::event(uint8_t e, uint8_t f)
         case AU_TRIM_MIDDLE:
           play(f, 10, 2, PLAY_NOW);
           break;
-        case AU_FRSKY_RING:
+        case AU_SPECIAL_SOUND_RING:
           play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
           play(BEEP_DEFAULT_FREQ+25, 5, 10, PLAY_REPEAT(1));
           play(BEEP_DEFAULT_FREQ+25, 5, 2, PLAY_REPEAT(10));
           break;
-        case AU_FRSKY_SCIFI:
+        case AU_SPECIAL_SOUND_SCIFI:
           play(80, 10, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(-1));
           play(60, 10, 3, PLAY_REPEAT(2)|PLAY_INCREMENT(1));
           play(70, 10, 1);
           break;
-        case AU_FRSKY_ROBOT:
+        case AU_SPECIAL_SOUND_ROBOT:
           play(70, 5, 1, PLAY_REPEAT(1));
           play(50, 15, 2, PLAY_REPEAT(1));
           play(80, 15, 2, PLAY_REPEAT(1));
           break;
-        case AU_FRSKY_CHIRP:
+        case AU_SPECIAL_SOUND_CHIRP:
           play(BEEP_DEFAULT_FREQ+40, 5, 1, PLAY_REPEAT(2));
           play(BEEP_DEFAULT_FREQ+54, 5, 1, PLAY_REPEAT(3));
           break;
-        case AU_FRSKY_TADA:
+        case AU_SPECIAL_SOUND_TADA:
           play(50, 5, 5);
           play(90, 5, 5);
           play(110, 3, 4, PLAY_REPEAT(2));
           break;
-        case AU_FRSKY_CRICKET:
+        case AU_SPECIAL_SOUND_CRICKET:
           play(80, 5, 10, PLAY_REPEAT(3));
           play(80, 5, 20, PLAY_REPEAT(1));
           play(80, 5, 10, PLAY_REPEAT(3));
           break;
-        case AU_FRSKY_ALARMC:
+        case AU_SPECIAL_SOUND_ALARMC:
           play(50, 4, 10, PLAY_REPEAT(2));
           play(70, 8, 20, PLAY_REPEAT(1));
           play(50, 8, 10, PLAY_REPEAT(2));

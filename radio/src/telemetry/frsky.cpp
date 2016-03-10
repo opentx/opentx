@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -316,7 +316,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if !defined(CPUARM) && !defined(PCBFLAMENCO)
+#if !defined(CPUARM)
   if (IS_FRSKY_D_PROTOCOL()) {
     // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
     static uint8_t frskyTxDelay = 5;
@@ -358,10 +358,12 @@ void telemetryWakeup()
     SCHEDULE_NEXT_ALARMS_CHECK(1/*second*/);
 
     uint8_t now = TelemetryItem::now();
+    bool sensor_lost = false;
     for (int i=0; i<MAX_SENSORS; i++) {
       if (isTelemetryFieldAvailable(i)) {
         uint8_t lastReceived = telemetryItems[i].lastReceived;
         if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
+          sensor_lost = true;
           telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->unit == UNIT_DATETIME) {
@@ -370,6 +372,9 @@ void telemetryWakeup()
           }
         }
       }
+    }
+    if (sensor_lost && TELEMETRY_STREAMING()) {
+      audioEvent(AU_SENSOR_LOST);
     }
 
 #if defined(PCBTARANIS)

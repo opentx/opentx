@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -344,8 +344,6 @@ void audioStart();
 #define AUDIO_RSSI_ORANGE()      audioEvent(AU_RSSI_ORANGE)
 #define AUDIO_RSSI_RED()         audioEvent(AU_RSSI_RED)
 #define AUDIO_SWR_RED()          audioEvent(AU_SWR_RED)
-#define AUDIO_RXBATT_ORANGE()    audioEvent(AU_RXBATT_ORANGE)
-#define AUDIO_RXBATT_RED()       audioEvent(AU_RXBATT_RED)
 #define AUDIO_TELEMETRY_LOST()   audioEvent(AU_TELEMETRY_LOST)
 #define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
 #define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)

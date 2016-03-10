@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 #define PRIM_REQ_POWERUP    (0)
 #define PRIM_REQ_VERSION    (1)
@@ -47,7 +47,7 @@ const FrSkySportSensor sportSensors[] = {
   { ADC1_ID, ADC1_ID, 0, ZSTR_A1, UNIT_VOLTS, 1 },
   { ADC2_ID, ADC2_ID, 0, ZSTR_A2, UNIT_VOLTS, 1 },
   { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },
-  { A4_FIRST_ID, A4_LAST_ID, 0, ZSTR_A4, UNIT_VOLTS, 2 },  
+  { A4_FIRST_ID, A4_LAST_ID, 0, ZSTR_A4, UNIT_VOLTS, 2 },
   { BATT_ID, BATT_ID, 0, ZSTR_BATT, UNIT_VOLTS, 1 },
   { T1_FIRST_ID, T1_LAST_ID, 0, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
   { T2_FIRST_ID, T2_LAST_ID, 0, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
@@ -68,20 +68,14 @@ const FrSkySportSensor sportSensors[] = {
   { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS, 0 },
   { FUEL_QTY_FIRST_ID, FUEL_QTY_LAST_ID, 0, ZSTR_FUEL, UNIT_MILLILITERS, 2 },
   { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, 0, ZSTR_HDG, UNIT_DEGREE, 2 },
-  { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 0, ZSTR_BATT1_VOLTAGE, UNIT_VOLTS, 3 },
-  { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 0, ZSTR_BATT2_VOLTAGE, UNIT_VOLTS, 3 },
-  { POWERBOX_BATT1_FIRST_ID, POWERBOX_BATT1_LAST_ID, 1, ZSTR_BATT1_CURRENT, UNIT_AMPS, 2 },
-  { POWERBOX_BATT2_FIRST_ID, POWERBOX_BATT2_LAST_ID, 1, ZSTR_BATT2_CURRENT, UNIT_AMPS, 2 },
-  { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 0, ZSTR_BATT1_CONSUMPTION, UNIT_MAH, 0 },
-  { POWERBOX_CNSP_FIRST_ID, POWERBOX_CNSP_LAST_ID, 1, ZSTR_BATT2_CONSUMPTION, UNIT_MAH, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 0, ZSTR_RX1_FAILSAFE, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 1, ZSTR_RX1_LOSTFRAME, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 2, ZSTR_RX2_FAILSAFE, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 3, ZSTR_RX2_LOSTFRAME, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 4, ZSTR_RX1_CONN_LOST, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 5, ZSTR_RX2_CONN_LOST, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 6, ZSTR_RX1_NO_SIGNAL, UNIT_RAW, 0 },
-  { POWERBOX_STATE_FIRST_ID, POWERBOX_STATE_LAST_ID, 7, ZSTR_RX2_NO_SIGNAL, UNIT_RAW, 0 },
+  { RBOX_BATT1_FIRST_ID, RBOX_BATT1_LAST_ID, 0, ZSTR_BATT1_VOLTAGE, UNIT_VOLTS, 3 },
+  { RBOX_BATT2_FIRST_ID, RBOX_BATT2_LAST_ID, 0, ZSTR_BATT2_VOLTAGE, UNIT_VOLTS, 3 },
+  { RBOX_BATT1_FIRST_ID, RBOX_BATT1_LAST_ID, 1, ZSTR_BATT1_CURRENT, UNIT_AMPS, 2 },
+  { RBOX_BATT2_FIRST_ID, RBOX_BATT2_LAST_ID, 1, ZSTR_BATT2_CURRENT, UNIT_AMPS, 2 },
+  { RBOX_CNSP_FIRST_ID, RBOX_CNSP_LAST_ID, 0, ZSTR_BATT1_CONSUMPTION, UNIT_MAH, 0 },
+  { RBOX_CNSP_FIRST_ID, RBOX_CNSP_LAST_ID, 1, ZSTR_BATT2_CONSUMPTION, UNIT_MAH, 0 },
+  { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 0, ZSTR_CHANS_STATE, UNIT_RAW, 0 },
+  { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 1, ZSTR_RB_STATE, UNIT_RAW, 0 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -129,6 +123,8 @@ enum SportUpdateState {
 uint8_t  sportUpdateState = SPORT_IDLE;
 uint32_t sportUpdateAddr = 0;
 bool intPwr, extPwr;
+uint16_t servosState;
+uint16_t rboxState;
 
 void processSportUpdatePacket(uint8_t *packet)
 {
@@ -161,7 +157,7 @@ void processSportUpdatePacket(uint8_t *packet)
       case PRIM_END_DOWNLOAD :
         sportUpdateState = SPORT_COMPLETE ;
         break;
-				
+
       case PRIM_DATA_CRC_ERR :
         sportUpdateState = SPORT_FAIL ;
         break;
@@ -218,7 +214,10 @@ void processSportPacket(uint8_t * packet)
     if (id == RSSI_ID) {
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       data = SPORT_DATA_U8(packet);
-      frskyData.rssi.set(data);
+      if (data == 0)
+        frskyData.rssi.reset();
+      else
+        frskyData.rssi.set(data);
     }
 #if defined(PCBTARANIS) && defined(REVPLUS)
     else if (id == XJT_VERSION_ID) {
@@ -251,23 +250,23 @@ void processSportPacket(uint8_t * packet)
         if (id == ADC1_ID || id == ADC2_ID || id == BATT_ID || id == SWR_ID) {
           data = SPORT_DATA_U8(packet);
         }
-        if (id >= POWERBOX_BATT1_FIRST_ID && id <= POWERBOX_BATT2_LAST_ID) {
+        if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
           processSportPacket(id, 0, instance, data & 0xffff);
           processSportPacket(id, 1, instance, data >> 16);
         }
-        else if (id >= POWERBOX_CNSP_FIRST_ID && id <= POWERBOX_CNSP_LAST_ID) {
+        else if (id >= RBOX_CNSP_FIRST_ID && id <= RBOX_CNSP_LAST_ID) {
           processSportPacket(id, 0, instance, data & 0xffff);
           processSportPacket(id, 1, instance, data >> 16);
         }
-        else if (id >= POWERBOX_STATE_FIRST_ID && id <= POWERBOX_STATE_LAST_ID) {
-          processSportPacket(id, 0, instance, bool(data & 0x0080000));
-          processSportPacket(id, 1, instance, bool(data & 0x0100000));
-          processSportPacket(id, 2, instance, bool(data & 0x0200000));
-          processSportPacket(id, 3, instance, bool(data & 0x0400000));
-          processSportPacket(id, 4, instance, bool(data & 0x0800000));
-          processSportPacket(id, 5, instance, bool(data & 0x1000000));
-          processSportPacket(id, 6, instance, bool(data & 0x2000000));
-          processSportPacket(id, 7, instance, bool(data & 0x4000000));
+        else if (id >= RBOX_STATE_FIRST_ID && id <= RBOX_STATE_LAST_ID) {
+          uint16_t newServosState = data & 0xffff;
+          if (servosState == 0 && newServosState != 0) {
+            audioEvent(AU_SERVO_KO);
+          }
+          servosState = newServosState;
+          rboxState = data >> 16;
+          processSportPacket(id, 0, instance, servosState);
+          processSportPacket(id, 1, instance, rboxState);
         }
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
@@ -506,16 +505,16 @@ void sportFirmwareUpdate(ModuleIndex module, const char *filename)
     result = sportUpdateUploadFile(filename);
   if (result)
     result = sportUpdateEnd();
-  
+
   if (result == false) {
     POPUP_WARNING("Firmware Update Error");
   }
-  
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
 #endif
-  
+
   sportWaitState(SPORT_IDLE, 1000);
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
