@@ -49,7 +49,7 @@ union ZoneOptionValue
   #define OPTION_DEFAULT_VALUE_UNSIGNED(x)    { .unsignedValue = (x) }
   #define OPTION_DEFAULT_VALUE_SIGNED(x)      { .signedValue = (x) }
   #define OPTION_DEFAULT_VALUE_BOOL(x)        { .boolValue = (x) }
-  #define OPTION_DEFAULT_VALUE_STRING(...)    { .stringValue = *(ZoneOptionValue *)(const char *)__VA_ARGS__ }
+  #define OPTION_DEFAULT_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)__VA_ARGS__
 #endif
 
 struct ZoneOption
