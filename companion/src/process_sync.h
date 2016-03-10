@@ -1,6 +1,7 @@
 #ifndef SYNCPROCESS_H_
 #define SYNCPROCESS_H_
 
+#include <QObject>
 #include <QString>
 #include <QStringList>
 

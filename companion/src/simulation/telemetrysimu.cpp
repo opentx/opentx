@@ -518,7 +518,7 @@ uint32_t TelemetrySimulator::GPSEmulator::getNextPacketData(uint32_t packetType)
   switch (packetType) {
   case GPS_LONG_LATI_FIRST_ID:
     sendLat = !sendLat;
-    return sendLat ? encodeLatLon(lat, TRUE) : encodeLatLon(lon, FALSE);
+    return sendLat ? encodeLatLon(lat, true) : encodeLatLon(lon, false);
     break;
   case GPS_TIME_DATE_FIRST_ID:
     sendDate = !sendDate;

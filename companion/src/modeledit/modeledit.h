@@ -1,7 +1,7 @@
 #ifndef MODELEDIT_H
 #define MODELEDIT_H
 
-#include <QDialog>
+#include <QtWidgets>
 #include "genericpanel.h"
 
 class RadioData;

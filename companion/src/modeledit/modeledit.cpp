@@ -13,7 +13,6 @@
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
-#include <QScrollArea>
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),

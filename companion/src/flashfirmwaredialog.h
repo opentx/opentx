@@ -1,8 +1,7 @@
 #ifndef FLASH_FIRMWARE_DIALOG_H
 #define FLASH_FIRMWARE_DIALOG_H
 
-#include <QtGui>
-#include <QDialog>
+#include <QtWidgets>
 #include "eeprominterface.h"
 #include "firmwareinterface.h"
 #include "xmlinterface.h"

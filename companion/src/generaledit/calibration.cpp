@@ -14,7 +14,7 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   layout->setContentsMargins(0, 0, 0, 0);
   this->setLayout(layout);
 
-  tableWidget->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+  tableWidget->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
   tableWidget->setColumnCount(3);
   tableWidget->setShowGrid(false);
   tableWidget->setSelectionMode(QAbstractItemView::NoSelection);

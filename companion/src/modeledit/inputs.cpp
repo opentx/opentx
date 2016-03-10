@@ -1,5 +1,4 @@
 #include "inputs.h"
-#include <QMessageBox>
 #include "expodialog.h"
 #include "helpers.h"
 
@@ -199,7 +198,7 @@ void InputsPanel::gm_openExpo(int index)
     if (g->exec())  {
       model->expoData[index] = mixd;
       if (firmware->getCapability(VirtualInputs))
-        strncpy(model->inputNames[mixd.chn], inputName.toAscii().data(), 4);
+        strncpy(model->inputNames[mixd.chn], inputName.toLatin1().data(), 4);
       emit modified();
       update();
     }
@@ -288,8 +287,6 @@ void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropActi
     pasteExpoMimeData(data, idx);
 }
 
-#include <iostream>
-#include <QtGui/qwidget.h>
 void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
 {
   if (mimeData->hasFormat("application/x-companion-expo")) {
@@ -325,11 +322,12 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
 
 void InputsPanel::exposPaste()
 {
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
-    QListWidgetItem *item = ExposlistWidget->currentItem();
-    if (item)
-      pasteExpoMimeData(mimeData, item->data(Qt::UserRole).toByteArray().at(0));
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  QListWidgetItem *item = ExposlistWidget->currentItem();
+  if (item) {
+    pasteExpoMimeData(mimeData, item->data(Qt::UserRole).toByteArray().at(0));
+  }
 }
 
 void InputsPanel::exposDuplicate()

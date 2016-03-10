@@ -3,7 +3,6 @@
 
 #include "helpers.h"
 #include "modeledit.h"
-#include <QSpinBox>
 
 class GVarGroup;
 

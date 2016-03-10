@@ -27,7 +27,7 @@ bool convertEEprom(const QString &sourceEEprom, const QString &destinationEEprom
 
   QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
   std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size));
-  if (!errors.test(NO_ERROR)
+  if (!errors.test(ALL_OK)
     || !currentFirmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version)) {
     return false;
   }

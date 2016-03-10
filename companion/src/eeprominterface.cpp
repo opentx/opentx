@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <list>
 #include <float.h>
+#include <QtWidgets>
 #include "eeprominterface.h"
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/th9x/th9xinterface.h"
@@ -1169,9 +1170,9 @@ GeneralSettings::GeneralSettings()
         byte8u=(uint8_t)t_CountrySet.mid(2,2).toUInt(&ok,16);
         if (ok)
           imperial=byte8u;
-        QString chars=t_CountrySet.mid(4,2);
-        ttsLanguage[0]=chars[0].toAscii();
-        ttsLanguage[1]=chars[1].toAscii();
+        QString chars = t_CountrySet.mid(4, 2);
+        ttsLanguage[0] = chars[0].toLatin1();
+        ttsLanguage[1] = chars[1].toLatin1();
       }
     }
   }
@@ -1685,7 +1686,7 @@ unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int 
 
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, eeprom, size));
-    if (result.test(NO_ERROR)) {
+    if (result.test(ALL_OK)) {
       return result.to_ulong();
     }
     else {
@@ -1705,7 +1706,7 @@ unsigned long LoadBackup(RadioData & radioData, uint8_t * eeprom, int size, int 
 
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadBackup(radioData, eeprom, size, index));
-    if (result.test(NO_ERROR)) {
+    if (result.test(ALL_OK)) {
       return result.to_ulong();
     }
     else {
@@ -1726,7 +1727,7 @@ unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
 
   foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadxml(radioData, doc));
-    if (result.test(NO_ERROR)) {
+    if (result.test(ALL_OK)) {
       return result.to_ulong();
     }
     else {

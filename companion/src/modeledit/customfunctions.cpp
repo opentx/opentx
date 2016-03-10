@@ -43,13 +43,9 @@ void RepeatComboBox::update()
 
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware):
   GenericPanel(parent, model, generalSettings, firmware),
-  functions(model ? model->customFn : generalSettings.customFn)
-#if defined(PHONON)
-  ,
-  phononCurrent(-1),
-  clickObject(NULL),
-  clickOutput(NULL)
-#endif
+  functions(model ? model->customFn : generalSettings.customFn),
+  mediaPlayerCurrent(-1),
+  mediaPlayer(NULL)
 {
   Stopwatch s1("CustomFunctionsPanel - populate"); 
   lock = true;
@@ -178,14 +174,12 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     paramLayout->addWidget(fswtchBLcolor[i]);
     connect(fswtchBLcolor[i], SIGNAL(sliderReleased()), this, SLOT(customFunctionEdited()));
 
-#ifdef PHONON
     playBT[i] = new QPushButton(this);
     playBT[i]->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     playBT[i]->setProperty("index", i);
     playBT[i]->setIcon(playIcon);
     paramLayout->addWidget(playBT[i]);
     connect(playBT[i], SIGNAL(pressed()), this, SLOT(playMusic()));
-#endif
 
     QHBoxLayout * repeatLayout = new QHBoxLayout();
     tableLayout->addLayout(i, 4, repeatLayout);
@@ -220,19 +214,28 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
 {
 }
 
-#ifdef PHONON
-void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::State oldState)
+void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
 {
   if (!lock) {
     lock = true;
-    if ((newState==Phonon::ErrorState || newState==Phonon::StoppedState || newState==Phonon::PausedState) && oldState==Phonon::PlayingState) {
-      clickObject->stop();
-      clickObject->clearQueue();
-      clickObject->clear();
-      if (phononCurrent >= 0) {
-        playBT[phononCurrent]->setIcon(CompanionIcon("play.png"));
-        phononCurrent = -1;
+    if (state==QMediaPlayer::StoppedState || state==QMediaPlayer::PausedState) {
+      mediaPlayer->stop();
+      if (mediaPlayerCurrent >= 0) {
+        playBT[mediaPlayerCurrent]->setIcon(CompanionIcon("play.png"));
+        mediaPlayerCurrent = -1;
       }
+    }
+    lock = false;
+  }
+}
+
+void CustomFunctionsPanel::onMediaPlayerError(QMediaPlayer::Error error)
+{
+  if (!lock) {
+    lock = true;
+    if (mediaPlayerCurrent >= 0) {
+      playBT[mediaPlayerCurrent]->setIcon(CompanionIcon("play.png"));
+      mediaPlayerCurrent = -1;
     }
     lock = false;
   }
@@ -240,15 +243,13 @@ void CustomFunctionsPanel::mediaPlayer_state(Phonon::State newState, Phonon::Sta
 
 void CustomFunctionsPanel::playMusic()
 {
-  if (!clickObject) {
-    clickObject = new Phonon::MediaObject(this);
-    clickOutput = new Phonon::AudioOutput(Phonon::NoCategory, this);
-    Phonon::createPath(clickObject, clickOutput);
-    connect(clickObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)), this, SLOT(mediaPlayer_state(Phonon::State, Phonon::State)));
+  if (!mediaPlayer) {
+    mediaPlayer = new QMediaPlayer(this);
+    connect(mediaPlayer, SIGNAL(stateChanged(QMediaPlayer::State)), this, SLOT(onMediaPlayerStateChanged(QMediaPlayer::State)));
+    connect(mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(onMediaPlayerError(QMediaPlayer::Error)));
   }
 
-  QPushButton * button = qobject_cast<QPushButton*>(sender());
-  int index = button->property("index").toInt();
+  int index = sender()->property("index").toInt();
   QString path = g.profile[g.id()].sdPath();
   QDir qd(path);
   QString track;
@@ -272,29 +273,22 @@ void CustomFunctionsPanel::playMusic()
       return;
     }
 
-    if (phononCurrent == index) {
-      clickObject->stop();
-      clickObject->clear();
+    if (mediaPlayerCurrent == index) {
+      mediaPlayer->stop();
       playBT[index]->setIcon(CompanionIcon("play.png"));
-      phononCurrent = -1;
+      mediaPlayerCurrent = -1;
     }
     else {
-      if (phononCurrent >= 0) {
-        playBT[phononCurrent]->setIcon(CompanionIcon("play.png"));
+      if (mediaPlayerCurrent >= 0) {
+        playBT[mediaPlayerCurrent]->setIcon(CompanionIcon("play.png"));
       }
-      phononCurrent = index;
-      clickObject->clear();
-#ifdef __APPLE__
-      clickObject->setCurrentSource(QUrl("file://"+track));
-#else
-      clickObject->setCurrentSource(QUrl(track));
-#endif
-      clickObject->play();
+      mediaPlayerCurrent = index;
+      mediaPlayer->setMedia(QUrl::fromLocalFile(track));
+      mediaPlayer->play();
       playBT[index]->setIcon(CompanionIcon("stop.png"));
     }
   }
 }
-#endif
 
 #define CUSTOM_FUNCTION_NUMERIC_PARAM  (1<<0)
 #define CUSTOM_FUNCTION_SOURCE_PARAM   (1<<1)
@@ -526,9 +520,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     fswtchRepeat[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_REPEAT);
     fswtchGVmode[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_MODE);
     fswtchBLcolor[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_BL_COLOR);
-#ifdef PHONON
     playBT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_PLAY);
-#endif
 }
 
 void CustomFunctionsPanel::update()

@@ -393,7 +393,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *e
     }
   }
   std::cout << " ok\n";
-  errors.set(NO_ERROR);
+  errors.set(ALL_OK);
   return errors.to_ulong();
 }
 
@@ -973,7 +973,7 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
       return NOT_OPENTX;
   }
 
-  return NO_ERROR;
+  return ALL_OK;
 }
 
 bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int variant)
@@ -1081,7 +1081,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *e
   }
 
   std::cout << " ok\n";
-  errors.set(NO_ERROR);
+  errors.set(ALL_OK);
   return errors.to_ulong();
 }
 

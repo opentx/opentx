@@ -42,8 +42,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui>
-#include <QMainWindow>
+#include <QtWidgets>
 #include <QDateTime>
 #include "downloaddialog.h"
 #include "eeprominterface.h"

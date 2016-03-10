@@ -1,8 +1,7 @@
 #ifndef BURNCONFIGDIALOG_H_
 #define BURNCONFIGDIALOG_H_
 
-#include <QDialog>
-#include <QtGui>
+#include <QtWidgets>
 
 #define MEM_TYPE_EEPROM 1
 #define MEM_TYPE_FLASH  2

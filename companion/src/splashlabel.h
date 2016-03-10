@@ -16,9 +16,7 @@
 #ifndef SPLASHLABEL_H
 #define SPLASHLABEL_H
 
-#include <QLabel>
-#include <QWidget>
-#include <QtGui>
+#include <QtWidgets>
 
 class splashLabel : public QLabel
 {
@@ -28,7 +26,7 @@ class splashLabel : public QLabel
 public:
 
   explicit splashLabel(QDialog * parent = 0) :
-  QLabel(parent)
+    QLabel(parent)
   {
   }
 
@@ -77,5 +75,6 @@ signals:
 private:
   int index;
 };
+
 #endif /* SPLASHLABEL_H */
 

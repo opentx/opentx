@@ -1,7 +1,8 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
-#include <QtGui>
+#include <QCheckBox>
+#include <QSpinBox>
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QDebug>

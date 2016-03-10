@@ -1,7 +1,6 @@
 #ifndef SIMULATORDIALOG_H
 #define SIMULATORDIALOG_H
 
-#include <QDialog>
 #include "modeledit/node.h"
 #include "telemetrysimu.h"
 #include "trainersimu.h"

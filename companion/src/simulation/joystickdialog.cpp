@@ -1,7 +1,6 @@
 #include "joystickdialog.h"
 #include "ui_joystickdialog.h"
 #include "appdata.h"
-#include <QtGui>
 
 joystickDialog::joystickDialog(QWidget *parent, int stick) :
 QDialog(parent),

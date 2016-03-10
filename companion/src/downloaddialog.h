@@ -1,12 +1,11 @@
 #ifndef DOWNLOADDIALOG_H
 #define DOWNLOADDIALOG_H
 
-#include <QDialog>
+#include <QtWidgets>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QFile>
-
 
 namespace Ui {
     class downloadDialog;

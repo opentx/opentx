@@ -1,7 +1,7 @@
 #ifndef FLASHEEPROMDIALOG_H_
 #define FLASHEEPROMDIALOG_H_
 
-#include <QDialog>
+#include <QtWidgets>
 
 #define ER9X_EEPROM_FILE_TYPE          "ER9X_EEPROM_FILE"
 #define EEPE_EEPROM_FILE_HEADER        "EEPE EEPROM FILE"

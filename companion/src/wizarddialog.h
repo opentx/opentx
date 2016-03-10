@@ -14,16 +14,9 @@
 
 #ifndef WIZARDDIALOG_H
 #define WIZARDDIALOG_H
-#include <QWizard>
-#include "wizarddata.h"
 
-QT_BEGIN_NAMESPACE
-class QCheckBox;
-class QLabel;
-class QLineEdit;
-class QRadioButton;
-class QComboBox;
-QT_END_NAMESPACE
+#include <QtWidgets>
+#include "wizarddata.h"
 
 class WizardDialog : public QWizard
 {

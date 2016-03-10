@@ -54,7 +54,8 @@ foreach(name ${modeledit_NAMES})
   set(modeledit_UIS  ${modeledit_UIS}  ${name}.ui)
 endforeach()
  
-qt4_wrap_ui(modeledit_SRCS ${modeledit_UIS})
-qt4_wrap_cpp(modeledit_SRCS ${modeledit_HDRS})
+qt5_wrap_ui(modeledit_SRCS ${modeledit_UIS})
+qt5_wrap_cpp(modeledit_SRCS ${modeledit_HDRS})
 
 add_library(modeledit ${modeledit_SRCS})
+qt5_use_modules(modeledit Widgets Xml Multimedia)

@@ -3,11 +3,6 @@
 #include "node.h"
 #include "edge.h"
 #include "helpers.h"
-#include <QSpinBox>
-#include <QCheckBox>
-#include <QPushButton>
-#include <QMessageBox>
-#include <QAction>
 
 #define GFX_MARGIN 16
 
@@ -491,7 +486,7 @@ void Curves::on_curveSmooth_currentIndexChanged(int index)
 void Curves::on_curveName_editingFinished()
 {
   memset(model->curves[currentCurve].name, 0, sizeof(model->curves[currentCurve].name));
-  strcpy(model->curves[currentCurve].name, ui->curveName->text().toAscii());
+  strcpy(model->curves[currentCurve].name, ui->curveName->text().toLatin1());
   emit modified();
 }
 

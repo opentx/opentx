@@ -86,7 +86,7 @@ void getFileComboBoxValue(QComboBox * b, char * dest, int length)
 {
   memset(dest, 0, length+1);
   if (b->currentText() != "----") {
-    strncpy(dest, b->currentText().toAscii(), length);
+    strncpy(dest, b->currentText().toLatin1(), length);
   }
 }
 

@@ -5,13 +5,14 @@ before_install:
   - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
   - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
+  - sudo add-apt-repository ppa:beineri/opt-qt551 --yes
   - sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' --yes
   - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
-  - sudo apt-get update
+  - sudo apt-get update -qq
   - rsync -av firmware.diydrones.com::Tools/Travis/*.deb ExtraPackages
 
 install:
-  - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi libqtcore4 libqt4-dev qt4-qmake g++-5 libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libphonon-dev phonon libqtwebkit-dev python-qt4 python-qt4-dev libfox-1.6-dev libgtest-dev python-clang-3.8 libclang-3.8-dev
+  - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi qt-latest g++-5 libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libfox-1.6-dev libgtest-dev python-clang-3.8 libclang-3.8-dev python-qt4
   - sudo dpkg -i ExtraPackages/*.deb || echo "FAILED INSTALL OF EXTRA DEBS"
   - export CXX="g++-5" CC="gcc-5"
 

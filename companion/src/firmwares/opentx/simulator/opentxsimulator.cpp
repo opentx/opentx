@@ -491,7 +491,7 @@ OpenTxSimulator::OpenTxSimulator()
 void OpenTxSimulator::setSdPath(const QString &sdPath)
 {
 #if defined(SDCARD)
-  strncpy(simuSdDirectory, sdPath.toAscii().constData(), sizeof(simuSdDirectory)-1);
+  strncpy(simuSdDirectory, sdPath.toLatin1().constData(), sizeof(simuSdDirectory)-1);
   simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';
 #endif
 }

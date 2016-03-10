@@ -159,8 +159,7 @@ void MixerDialog::valuesChanged()
     md->delayUp   = round(ui->delayUpSB->value()*scale);
     md->speedDown = round(ui->slowDownSB->value()*scale);
     md->speedUp   = round(ui->slowUpSB->value()*scale);
-
-    strcpy(md->name, ui->mixerName->text().toAscii());
+    strcpy(md->name, ui->mixerName->text().toLatin1());
 
     md->flightModes = 0;
     for (int i=8; i>=0 ; i--) {

@@ -152,7 +152,7 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     }
   }
   std::cout << "ok\n";
-  errors.set(NO_ERROR);
+  errors.set(ALL_OK);
   return errors.to_ulong();
 }
 
@@ -230,7 +230,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
   }
 
   std::cout << "ok\n";
-  errors.set(NO_ERROR);
+  errors.set(ALL_OK);
   return errors.to_ulong();
 }
 
@@ -305,7 +305,7 @@ QDomElement Ersky9xInterface::getGeneralDataXML(QDomDocument * qdoc, Ersky9xGene
 {
   QDomElement gd = qdoc->createElement("GENERAL_DATA");
   appendNumberElement(qdoc, &gd, "Version", tgen->myVers, true); // have to write value here
-  appendTextElement(qdoc, &gd, "Owner", QString::fromAscii(tgen->ownerName,sizeof(tgen->ownerName)).trimmed());
+  appendTextElement(qdoc, &gd, "Owner", QString::fromLatin1(tgen->ownerName,sizeof(tgen->ownerName)).trimmed());
   appendCDATAElement(qdoc, &gd, "Data", (const char *)tgen,sizeof(Ersky9xGeneral));
   return gd;
 }
@@ -315,7 +315,7 @@ QDomElement Ersky9xInterface::getModelDataXML(QDomDocument * qdoc, Ersky9xModelD
   QDomElement md = qdoc->createElement("MODEL_DATA");
   md.setAttribute("number", modelNum);
   appendNumberElement(qdoc, &md, "Version", mdver, true); // have to write value here
-  appendTextElement(qdoc, &md, "Name", QString::fromAscii(tmod->name,sizeof(tmod->name)).trimmed());
+  appendTextElement(qdoc, &md, "Name", QString::fromLatin1(tmod->name,sizeof(tmod->name)).trimmed());
   appendCDATAElement(qdoc, &md, "Data", (const char *)tmod,sizeof(Ersky9xModelData_v11));
   return md;
 }
@@ -333,7 +333,7 @@ bool Ersky9xInterface::loadGeneralDataXML(QDomDocument * qdoc, Ersky9xGeneral * 
   while (!n.isNull()) {
     if (n.isCDATASection()) {
       QString ds = n.toCDATASection().data();
-      QByteArray ba = QByteArray::fromBase64(ds.toAscii());
+      QByteArray ba = QByteArray::fromBase64(ds.toLatin1());
       const char * data = ba.data();
       memcpy(tgen, data, std::min((unsigned int)ba.size(), (unsigned int)sizeof(Ersky9xGeneral)));
       break;
@@ -373,7 +373,7 @@ bool Ersky9xInterface::loadModelDataXML(QDomDocument * qdoc, ModelData *model, i
   while (!n.isNull()) {
     if (n.isCDATASection()) {
       QString ds = n.toCDATASection().data();
-      QByteArray ba = QByteArray::fromBase64(ds.toAscii());
+      QByteArray ba = QByteArray::fromBase64(ds.toLatin1());
       const char * data = ba.data();
       memcpy(&ersky9xModel, data, std::min(ba.size(), (int)sizeof(ersky9xModel)));
       break;

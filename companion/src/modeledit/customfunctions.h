@@ -3,24 +3,14 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QLabel>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QDoubleSpinBox>
-#include <QPushButton>
-#include <QTimeEdit>
-#ifdef PHONON
-#include <phonon/audiooutput.h>
-#include <phonon/mediaobject.h>
-#include <phonon/mediasource.h>
-#endif
+#include <QtMultimedia>
 
 class RepeatComboBox: public QComboBox
 {
     Q_OBJECT
 
   public:
-    RepeatComboBox(QWidget *parent, int & repeatParam);
+    RepeatComboBox(QWidget * parent, int & repeatParam);
     void update();
 
   signals:
@@ -35,7 +25,7 @@ class RepeatComboBox: public QComboBox
 
 class CustomFunctionsPanel : public GenericPanel
 {
-    Q_OBJECT
+  Q_OBJECT
 
   public:
     CustomFunctionsPanel(QWidget *parent, ModelData * mode, GeneralSettings & generalSettings, Firmware * firmware);
@@ -52,10 +42,9 @@ class CustomFunctionsPanel : public GenericPanel
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
     void onChildModified();
-#ifdef PHONON
     void playMusic();
-    void mediaPlayer_state(Phonon::State newState, Phonon::State oldState);
-#endif
+    void onMediaPlayerStateChanged(QMediaPlayer::State state);
+    void onMediaPlayerError(QMediaPlayer::Error error);
     void fswDelete();
     void fswCopy();
     void fswPaste();
@@ -68,7 +57,7 @@ class CustomFunctionsPanel : public GenericPanel
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
-    int phononCurrent;
+    int mediaPlayerCurrent;
     QComboBox * fswtchSwtch[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchFunc[C9X_MAX_CUSTOM_FUNCTIONS];
     QCheckBox * fswtchParamGV[C9X_MAX_CUSTOM_FUNCTIONS];
@@ -81,10 +70,7 @@ class CustomFunctionsPanel : public GenericPanel
     RepeatComboBox * fswtchRepeat[C9X_MAX_CUSTOM_FUNCTIONS];
     QComboBox * fswtchGVmode[C9X_MAX_CUSTOM_FUNCTIONS];
     QSlider * fswtchBLcolor[C9X_MAX_CUSTOM_FUNCTIONS];
-#ifdef PHONON
-    Phonon::MediaObject *clickObject;
-    Phonon::AudioOutput *clickOutput;
-#endif
+    QMediaPlayer * mediaPlayer;
 
     int selectedFunction;
 

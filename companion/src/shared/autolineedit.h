@@ -44,7 +44,7 @@ class AutoLineEdit: public QLineEdit
     void onEdited()
     {
       if (field && !lock) {
-        strcpy(field, text().toAscii());
+        strcpy(field, text().toLatin1());
         if (panel) {
           emit panel->modified();
         }

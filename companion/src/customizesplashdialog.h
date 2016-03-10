@@ -1,8 +1,7 @@
 #ifndef CUSTOMIZESPLASHDIALOG_H
 #define CUSTOMIZESPLASHDIALOG_H
 
-#include <QtGui>
-#include <QDialog>
+#include <QtWidgets>
 #include "firmwareinterface.h"
 
 namespace Ui

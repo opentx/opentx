@@ -1,7 +1,7 @@
 #ifndef MIXERDIALOG_H
 #define MIXERDIALOG_H
 
-#include <QDialog>
+#include <QtWidgets>
 #include "eeprominterface.h"
 
 class GVarGroup;

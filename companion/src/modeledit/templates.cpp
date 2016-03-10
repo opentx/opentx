@@ -1,6 +1,4 @@
 #include "templates.h"
-#include <QListWidget>
-#include <QMessageBox>
 
 #define CHANNEL_ORDER(x) generalSettings.getDefaultStick(x)
 #define CC(x) (CHANNEL_ORDER(x)) //need to invert this to work with dest

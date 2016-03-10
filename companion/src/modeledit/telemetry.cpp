@@ -648,7 +648,7 @@ void TelemetrySensorPanel::updateSourcesComboBox(AutoComboBox * cb, bool negativ
 void TelemetrySensorPanel::on_name_editingFinished()
 {
   if (!lock) {
-    strcpy(sensor.label, ui->name->text().toAscii());
+    strcpy(sensor.label, ui->name->text().toLatin1());
     emit dataModified();
     emit modified();
   }

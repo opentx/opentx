@@ -1,8 +1,7 @@
 #ifndef debugoutput_h
 #define debugoutput_h
 
-
-#include <QDialog>
+#include <QtWidgets>
 #include "simulatorinterface.h"
 
 namespace Ui {

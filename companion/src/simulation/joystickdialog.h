@@ -1,8 +1,8 @@
 #ifndef JOYSTICKDIALOG_H
 #define JOYSTICKDIALOG_H
 
+#include <QtWidgets>
 #include "joystick.h"
-#include <QDialog>
 
 namespace Ui {
     class joystickDialog;

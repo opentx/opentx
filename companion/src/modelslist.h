@@ -42,8 +42,8 @@
 #ifndef MODELSLIST_H
 #define MODELSLIST_H
 
+#include <QtWidgets>
 #include "eeprominterface.h"
-#include <QListWidget>
 
 struct CurrentSelection
 {
