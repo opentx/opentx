@@ -48,7 +48,9 @@ const char *eepromFile = NULL;
 FILE *fp = NULL;
 int g_snapshot_idx = 0;
 
-pthread_t main_thread_pid = 0;
+#if !defined(CPUARM)
+pthread_t main_thread_pid;
+#endif
 uint8_t main_thread_running = 0;
 char * main_thread_error = NULL;
 
@@ -383,8 +385,9 @@ void StartSimu(bool tests)
 void StopSimu()
 {
   main_thread_running = 0;
-  if (main_thread_pid)
+#if !defined(CPUARM)
     pthread_join(main_thread_pid, NULL);
+#endif
 }
 
 #if defined(CPUARM)

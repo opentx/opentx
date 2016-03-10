@@ -375,7 +375,7 @@ void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
 extern OS_MutexID audioMutex;
 
 #define OS_FlagID uint32_t
-#define OS_TID uint32_t
+#define OS_TID pthread_t
 #define OS_TCID uint32_t
 #define OS_STK uint32_t
 
