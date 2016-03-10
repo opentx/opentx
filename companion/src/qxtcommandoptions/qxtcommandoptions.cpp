@@ -150,19 +150,19 @@ static int isQtOption(const QString& param)
     if (param.left(5) == "-psn_") return 1;
 #endif
     QString name = param.mid(1), value;
-    bool hasEquals;
+    // bool hasEquals;
 
     // Separate the option and the value, if present
     if (name.indexOf('=') != -1)
     {
         value = param.section('=', 1);
         name = param.section('=', 0, 0);
-        hasEquals = true;
+        // hasEquals = true;
     }
     else
     {
         value = "";
-        hasEquals = false;
+        // hasEquals = false;
     }
 
     const char* option;
@@ -540,7 +540,7 @@ void QxtCommandOptionsPrivate::parse(const QStringList& params)
     int ct = params.count();
     int skip = 0;
     bool endFlags = false;
-    bool notUnrecognized, hasEquals;
+    bool /*notUnrecognized, */hasEquals;
     QString name, param, value;
 
     while (pos < ct)
@@ -566,7 +566,7 @@ void QxtCommandOptionsPrivate::parse(const QStringList& params)
                 positional.append(param);
                 continue;
             }
-            notUnrecognized = false;
+            // notUnrecognized = false;
 
             if (flagStyle != QxtCommandOptions::Slash && param == "--")
             {
