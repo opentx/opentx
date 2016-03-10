@@ -34,10 +34,10 @@ class GaugeWidget: public Widget
 };
 
 const ZoneOption GaugeWidget::options[] = {
-  { "Source", ZoneOption::Source, OPTION_DEFAULT_VALUE({ .unsignedValue = 1 }) },
-  { "Min", ZoneOption::Integer, OPTION_DEFAULT_VALUE({ .signedValue = -RESX }) },
-  { "Max", ZoneOption::Integer, OPTION_DEFAULT_VALUE({ .signedValue = RESX }) },
-  { "Color", ZoneOption::Color, OPTION_DEFAULT_VALUE({ .unsignedValue = RED }) },
+  { "Source", ZoneOption::Source, OPTION_DEFAULT_VALUE_UNSIGNED(1) },
+  { "Min", ZoneOption::Integer, OPTION_DEFAULT_VALUE_SIGNED(-RESX) },
+  { "Max", ZoneOption::Integer, OPTION_DEFAULT_VALUE_SIGNED(RESX) },
+  { "Color", ZoneOption::Color, OPTION_DEFAULT_VALUE_UNSIGNED(RED) },
   { NULL, ZoneOption::Bool }
 };
 

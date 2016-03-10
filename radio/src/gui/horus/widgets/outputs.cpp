@@ -34,9 +34,9 @@ class OutputsWidget: public Widget
 };
 
 const ZoneOption OutputsWidget::options[] = {
-  { "Min", ZoneOption::Integer, OPTION_DEFAULT_VALUE({ .unsignedValue = 0 }) },
-  { "Max", ZoneOption::Integer, OPTION_DEFAULT_VALUE({ .unsignedValue = 7 }) },
-  { "Color", ZoneOption::Color, OPTION_DEFAULT_VALUE({ .unsignedValue = RED }) },
+  { "Min", ZoneOption::Integer, OPTION_DEFAULT_VALUE_UNSIGNED(0) },
+  { "Max", ZoneOption::Integer, OPTION_DEFAULT_VALUE_UNSIGNED(7) },
+  { "Color", ZoneOption::Color, OPTION_DEFAULT_VALUE_UNSIGNED(RED) },
   { NULL, ZoneOption::Bool }
 };
 

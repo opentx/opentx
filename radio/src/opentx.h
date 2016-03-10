@@ -1043,7 +1043,10 @@ void checkModelIdUnique(uint8_t index, uint8_t module);
 
 inline int divRoundClosest(const int n, const int d)
 {
-  return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
+  if (d == 0)
+    return 0;
+  else
+    return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
 #define calc100to256_16Bits(x) calc100to256(x)
@@ -1352,7 +1355,6 @@ uint16_t crc16(uint8_t * buf, uint32_t len);
 #define PLAY_BACKGROUND           0x20
 #define PLAY_INCREMENT(x)         ((uint8_t)(((uint8_t)x) << 6))   /* -1, 0, 1, 2 */
 
-/* make sure the defines below always go in numeric order */
 enum AUDIO_SOUNDS {
     AU_TADA,
 #if defined(CPUARM)
@@ -1362,7 +1364,6 @@ enum AUDIO_SOUNDS {
     AU_THROTTLE_ALERT,
     AU_SWITCH_ALERT,
     AU_BAD_RADIODATA,
-    AU_STORAGE_FORMAT,
 #endif
     AU_TX_BATTERY_LOW,
     AU_INACTIVITY,
@@ -1382,6 +1383,7 @@ enum AUDIO_SOUNDS {
     AU_TELEMETRY_BACK,
     AU_TRAINER_LOST,
     AU_TRAINER_BACK,
+    AU_SENSOR_LOST,
 #endif
 #if defined(PCBSKY9X)
     AU_TX_MAH_HIGH,
