@@ -2,6 +2,7 @@ include(CMakeForceCompiler)
 include(Bitmaps)
 
 set(PCB "TARANIS" CACHE STRING "Radio type")
+set(TRANSLATIONS "EN" CACHE STRING "Radio language")
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
 option(CURVES "Curves" ON)
@@ -31,6 +32,8 @@ set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 set(GUI_LANGUAGES cz de en es fr it pt sk se pl hu)  # TODO add nl
 set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu)  # TODO add nl
+
+configure_file(stamp.h.in stamp.h @ONLY)
 
 add_subdirectory(translations)
 add_subdirectory(bitmaps)
@@ -877,8 +880,8 @@ endforeach()
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
 
+add_subdirectory(targets/simu)
 if(NOT WIN32)
-  add_subdirectory(targets/simu)
   add_subdirectory(tests)
 endif()
 

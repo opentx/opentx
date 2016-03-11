@@ -23,5 +23,16 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Xml REQUIRED)
+find_package(Qt5LinguistTools REQUIRED)
+find_package(Qt5PrintSupport REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
+
+include(Macros)
+today(DATE)
+now(TIME)
+git_id(GIT_STR)
+
 add_subdirectory(${RADIO_SRC_DIRECTORY})
 add_subdirectory(${COMPANION_SRC_DIRECTORY})

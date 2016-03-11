@@ -1,6 +1,6 @@
 /*
  * Author - Bertrand Songis <bsongis@gmail.com>
- * 
+ *
  * Based on th9x -> http://code.google.com/p/th9x/
  *
  * This program is free software; you can redistribute it and/or modify
@@ -14,78 +14,16 @@
  *
  */
 
-#ifndef opentx_taranis_simulator_h
-#define opentx_taranis_simulator_h
+#ifndef _OPENTX_SIMULATOR_H_
+#define _OPENTX_SIMULATOR_H_
 
 #include "simulatorinterface.h"
-
-#if defined(PCBHORUS)
-  #define FLAVOUR "horus"
-  #define NAMESPACE HORUS
-  #define EEPROM_VARIANT 0
-#elif defined(PCBFLAMENCO)
-  #define FLAVOUR "flamenco"
-  #define NAMESPACE FLAMENCO
-  #define EEPROM_VARIANT 0
-#elif defined(PCBTARANIS) && defined(REV9E)
-  #define FLAVOUR "taranisx9e"
-  #define NAMESPACE TaranisX9E
-  #define EEPROM_VARIANT 0x8000
-#elif defined(PCBTARANIS) && defined(REVPLUS)
-  #define FLAVOUR "taranisplus"
-  #define NAMESPACE TaranisPlus
-  #define EEPROM_VARIANT 0
-#elif defined(PCBTARANIS)
-  #define FLAVOUR "taranis"
-  #define NAMESPACE Taranis
-  #define EEPROM_VARIANT 0
-#elif defined(PCBSKY9X) && defined(REVX)
-  #define FLAVOUR "9xrpro"
-  #define NAMESPACE Sky9xPro
-  #define EEPROM_VARIANT 0
-#elif defined(PCBSKY9X) && defined(AR9X)
-  #define FLAVOUR "ar9x"
-  #define NAMESPACE Ar9x
-  #define EEPROM_VARIANT 0
-#elif defined(PCBSKY9X)
-  #define FLAVOUR "sky9x"
-  #define NAMESPACE Sky9X
-  #define EEPROM_VARIANT 0
-#elif defined(PCBGRUVIN9X)
-  #define FLAVOUR "gruvin9x"
-  #define NAMESPACE Gruvin9X
-  #define EEPROM_VARIANT 0
-#elif defined(PCBMEGA2560)
-  #define FLAVOUR "mega2560"
-  #define NAMESPACE Mega2560
-  #define EEPROM_VARIANT 0
-#elif defined(PCB9XR) && defined(CPUM128)
-  #define FLAVOUR "9xr128"
-  #define NAMESPACE M128XR
-  #define EEPROM_VARIANT 0x8003
-#elif defined(PCB9X) && defined(CPUM128)
-  #define FLAVOUR "9x128"
-  #define NAMESPACE M128
-  #define EEPROM_VARIANT 0x8003
-#elif defined(PCB9XR) && defined(CPUM64)
-  #define FLAVOUR "9xr"
-  #define NAMESPACE M64XR
-  #define EEPROM_VARIANT 0x0003
-#elif defined(PCB9X) && defined(CPUM64)
-  #define FLAVOUR "9x"
-  #define NAMESPACE M64
-  #define EEPROM_VARIANT 0x0003
-#else
-#error "Unknown board"
-#endif
 
 #if defined __GNUC__
   #define DLLEXPORT
 #else
   #define DLLEXPORT __declspec(dllexport)
 #endif
-
-namespace NAMESPACE {
 
 class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
@@ -141,6 +79,4 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
     virtual void setLuaStateReloadPermanentScripts();
 };
 
-}
-
-#endif
+#endif // _OPENTX_SIMULATOR_H_

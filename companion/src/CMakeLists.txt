@@ -1,5 +1,3 @@
-include(Macros)
-
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(C9X_NAME_SUFFIX ${VERSION_MAJOR}${VERSION_MINOR})
   set(COMPANION_NAME "companion${C9X_NAME_SUFFIX}")
@@ -37,12 +35,6 @@ if(SDL_FOUND)
 else()
   message("SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
 endif()
-
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5LinguistTools REQUIRED)
-find_package(Qt5PrintSupport REQUIRED)
-find_package(Qt5Multimedia REQUIRED)
 
 message(STATUS "Looking for QT lupdate ")
 find_package(Lupdate)
@@ -82,7 +74,6 @@ add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
 add_subdirectory(simulation)
-add_subdirectory(firmwares/opentx/simulator)
 add_subdirectory(qcustomplot)
 add_subdirectory(qxtcommandoptions)
 
@@ -208,9 +199,6 @@ set(companion_RESOURCES
   ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
   )
 
-today(DATE)
-now(TIME)
-
 configure_file(${COMPANION_SRC_DIRECTORY}/version.h.in ${CMAKE_BINARY_DIR}/version.h @ONLY)
 configure_file(${COMPANION_SRC_DIRECTORY}/translations.qrc.in ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc @ONLY)
 configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
@@ -329,7 +317,7 @@ if(WIN32)
 
   add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
     COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    DEPENDS simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+    DEPENDS simulator ${PROJECT_BINARY_DIR}/companion/simulator.nsi
     COMMENT "Simulator Windows NSIS Installer")
 
   add_custom_target(installer

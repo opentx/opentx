@@ -14,8 +14,8 @@
  *
  */
 
-#ifndef simulator_interface_h
-#define simulator_interface_h
+#ifndef _SIMULATOR_INTERFACE_H_
+#define _SIMULATOR_INTERFACE_H_
 
 #include "constants.h"
 #include <inttypes.h>
@@ -128,4 +128,4 @@ void unregisterSimulators();
 SimulatorFactory *getSimulatorFactory(const QString &name);
 extern QMap<QString, SimulatorFactory *> registered_simulators;
 
-#endif
+#endif // _SIMULATOR_INTERFACE_H_

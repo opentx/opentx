@@ -369,7 +369,7 @@ void StopEepromThread();
   #define EESIZE_SIMU EESIZE
 #endif
 
-extern uint8_t eeprom[EESIZE_SIMU];
+extern uint8_t eeprom[];
 extern const char * eepromFile;
 void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
 
