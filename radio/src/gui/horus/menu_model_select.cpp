@@ -176,9 +176,11 @@ bool menuModelSelect(evt_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
       switch (selectMode) {
         case MODE_SELECT_CATEGORY:
-          selectMode = MODE_SELECT_MODEL;
-          menuVerticalPosition = 0;
-          setCurrentModel(menuVerticalPosition);
+          if (currentCategory->size() > 0) {
+            selectMode = MODE_SELECT_MODEL;
+            menuVerticalPosition = 0;
+            setCurrentModel(menuVerticalPosition);
+          }
           break;
       }
       break;
