@@ -79,11 +79,6 @@ Adc Adc0;
   uint8_t * eeprom_buffer_data;
   volatile int32_t eeprom_buffer_size;
   bool eeprom_read_operation;
-  #define EESIZE_SIMU (128*4096) // TODO why here?
-#endif
-
-#if !defined(EESIZE_SIMU)
-  #define EESIZE_SIMU EESIZE
 #endif
 
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
@@ -336,7 +331,10 @@ void *eeprom_write_function(void *)
 
 void StartSimu(bool tests)
 {
-  main_thread_running = (tests ? 1 : 2);
+  s_current_protocol[0] = 255;
+  menuLevel = 0;
+
+  main_thread_running = (tests ? 1 : 2); // TODO rename to simu_run_mode with #define
 
 #if defined(SDCARD)
   if (strlen(simuSdDirectory) == 0) {
@@ -385,7 +383,11 @@ void StartSimu(bool tests)
 void StopSimu()
 {
   main_thread_running = 0;
-#if !defined(CPUARM)
+
+#if defined(CPUARM)
+  pthread_join(mixerTaskId, NULL);
+  pthread_join(menusTaskId, NULL);
+#else
   pthread_join(main_thread_pid, NULL);
 #endif
 }

@@ -336,6 +336,7 @@ extern volatile unsigned char pina, pinb, pinc, pind, pine, pinf, ping, pinh, pi
 extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
+extern char * main_thread_error;
 
 #define getADC()
 #define getADC_bandgap()
@@ -362,6 +363,13 @@ void StopEepromThread();
   #define StopAudioThread()
 #endif
 
+#if !defined(EEPROM_RLC)
+  #define EESIZE_SIMU (128*4096)
+#else
+  #define EESIZE_SIMU EESIZE
+#endif
+
+extern uint8_t eeprom[EESIZE_SIMU];
 extern const char * eepromFile;
 void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
 

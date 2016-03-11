@@ -246,7 +246,10 @@ void generalDefault()
   memclear(&g_eeGeneral, sizeof(g_eeGeneral));
   g_eeGeneral.version  = EEPROM_VER;
   g_eeGeneral.variant = EEPROM_VARIANT;
+
+#if !defined(PCBHORUS)
   g_eeGeneral.contrast = 25;
+#endif
 
 #if defined(PCBFLAMENCO)
   g_eeGeneral.vBatWarn = 33;
@@ -1055,7 +1058,7 @@ void doSplash()
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#elif !defined(PCBTARANIS)
+#elif !defined(PCBHORUS) && !defined(PCBTARANIS)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1105,7 +1108,7 @@ void doSplash()
       }
 #endif
 
-#if !defined(PCBTARANIS) && !defined(PCBSTD)
+#if !defined(PCBHORUS) && !defined(PCBTARANIS) && !defined(PCBSTD)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
@@ -1975,6 +1978,11 @@ uint8_t calcStickScroll( uint8_t index )
 
 void opentxStart()
 {
+#if defined(SIMU)
+  if (main_thread_running == 2)
+    return;
+#endif
+
   doSplash();
 
 #if defined(DEBUG_TRACE_BUFFER)
@@ -2673,7 +2681,7 @@ int main()
   MCUCSR = 0;
 #endif
 #if defined(PCBTARANIS)
-  g_eeGeneral.contrast=30;
+  g_eeGeneral.contrast = 30;
 #endif
   wdt_disable();
 

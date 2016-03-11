@@ -97,6 +97,11 @@ void mixerTask(void * pdata)
 
   while(1) {
 
+#if defined(SIMU)
+    if (main_thread_running == 0)
+      return;
+#endif
+
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
@@ -149,6 +154,11 @@ void menusTask(void * pdata)
     if (runtime < MENU_TASK_PERIOD_TICKS) {
       CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);
     }
+
+#if defined(SIMU)
+    if (main_thread_running == 0)
+      return;
+#endif
   }
 
 #if defined(PCBTARANIS) && defined(REV9E)
