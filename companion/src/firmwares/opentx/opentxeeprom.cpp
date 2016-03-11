@@ -2232,7 +2232,7 @@ class ArmCustomFunctionField: public TransformedField {
 
       if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
         fn.func = AssignFunc(fn.func + index);
-        fn.param = (int8_t)value;
+        fn.param = (int16_t)(uint16_t)value;
       }
       else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
         fn.func = AssignFunc(fn.func + index);
@@ -3403,13 +3403,13 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
   if (IS_9X(board) && version >= 215) {
-    internalField.Append(new UnsignedField<3>(generalData.mavbaud));
-  }
-  else {
-    internalField.Append(new SpareBitsField<1>());
-    internalField.Append(new BoolField<1>(generalData.minuteBeep));
-    internalField.Append(new BoolField<1>(generalData.preBeep));
-  }
+      internalField.Append(new UnsignedField<3>(generalData.mavbaud));
+    }
+    else {
+      internalField.Append(new SpareBitsField<1>());
+      internalField.Append(new BoolField<1>(generalData.minuteBeep));
+      internalField.Append(new BoolField<1>(generalData.preBeep));
+    }
   if (version >= 216 && IS_TARANIS(board))
     internalField.Append(new SignedField<3>(generalData.splashDuration));
   else if (version >= 213 || (!IS_ARM(board) && version >= 212))
@@ -3474,9 +3474,9 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
     if (version >= 215) {
       internalField.Append(new CharField<2>(generalData.ttsLanguage));
-      internalField.Append(new SignedField<8>(generalData.beepVolume));
-      internalField.Append(new SignedField<8>(generalData.wavVolume));
-      internalField.Append(new SignedField<8>(generalData.varioVolume));
+        internalField.Append(new SignedField<8>(generalData.beepVolume));
+        internalField.Append(new SignedField<8>(generalData.wavVolume));
+        internalField.Append(new SignedField<8>(generalData.varioVolume));
       if (version >= 216) {
         internalField.Append(new SignedField<8>(generalData.varioPitch));
         internalField.Append(new SignedField<8>(generalData.varioRange));
