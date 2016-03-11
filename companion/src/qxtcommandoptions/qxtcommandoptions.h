@@ -36,7 +36,7 @@ QT_FORWARD_DECLARE_CLASS(QTextStream)
 QT_FORWARD_DECLARE_CLASS(QIODevice)
 
 
-class QXT_CORE_EXPORT QxtCommandOptions
+class QxtCommandOptions
 {
     Q_DECLARE_TR_FUNCTIONS(QxtCommandOptions)
 
