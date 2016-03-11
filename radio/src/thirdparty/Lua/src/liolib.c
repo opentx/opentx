@@ -253,9 +253,14 @@ static int io_open (lua_State *L) {
   else if (*md == 'a')
     mode = FA_WRITE | FA_OPEN_ALWAYS;       // always open file (create it if necessary) 
   FRESULT result = f_open(&p->f, filename, mode);
-  if (result == FR_OK && *md == 'a')
-    result = f_lseek(&p->f, f_size(&p->f));   // seek to the end of the file
-  return result == FR_OK ? 1 : 0;
+  if (result == FR_OK) {
+    if (*md == 'a')
+      f_lseek(&p->f, f_size(&p->f));   // seek to the end of the file
+    return 1;
+  }
+  else {
+    return luaL_fileresult(L, 0, filename);
+  }
 #else
   const char *mode = md;  /* to traverse/check mode */
   luaL_argcheck(L, lua_checkmode(mode), 2, "invalid mode");

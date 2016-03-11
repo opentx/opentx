@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
@@ -386,7 +386,7 @@ void StopSimu()
 {
   main_thread_running = 0;
 #if !defined(CPUARM)
-    pthread_join(main_thread_pid, NULL);
+  pthread_join(main_thread_pid, NULL);
 #endif
 }
 
@@ -771,12 +771,13 @@ FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
 
 FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
-  char *path = convertSimuPath(name);
+  char * path = convertSimuPath(name);
   char * realPath = findTrueFileName(path);
+  fil->fs = 0;
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
     if (stat(realPath, &tmp)) {
-      TRACE("f_open(%s) = INVALID_NAME", path);
+      TRACE("f_open(%s) = INVALID_NAME (FIL %p)", path, fil);
       return FR_INVALID_NAME;
     }
     fil->fsize = tmp.st_size;
@@ -788,7 +789,7 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
     TRACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->fs, fil);
     return FR_OK;
   }
-  TRACE("f_open(%s) = error %d (%s)", path, errno, strerror(errno));
+  TRACE("f_open(%s) = error %d (%s) (FIL %p)", path, errno, strerror(errno), fil);
   return FR_INVALID_NAME;
 }
 
