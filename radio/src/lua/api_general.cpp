@@ -50,23 +50,10 @@
   #include "lua/lua_exports_taranis.inc"
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  #define RADIO "taranisx9e"
-#elif defined(PCBTARANIS) && defined(REVPLUS)
-  #define RADIO "taranisplus"
-#elif defined(PCBTARANIS)
-  #define RADIO "taranis"
-#elif defined(PCBHORUS)
-  #define RADIO "horus"
-#elif defined(PCBFLAMENCO)
-  #define RADIO "flamenco"
-#error "Unknown board"
-#endif
-
 #if defined(SIMU)
-  #define RADIO_VERSION RADIO"-simu"
+  #define RADIO_VERSION FLAVOUR "-simu"
 #else
-  #define RADIO_VERSION RADIO
+  #define RADIO_VERSION FLAVOUR
 #endif
 
 #define FIND_FIELD_DESC  0x01
@@ -720,6 +707,40 @@ static int luaGetGeneralSettings(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function getLanguage()
+
+Returns the radio language
+
+@retval returns the radio language
+
+@status current Introduced in 2.2.0
+
+*/
+static int luaGetLanguage(lua_State * L)
+{
+  lua_pushstring(L, TRANSLATIONS);
+  return 1;
+}
+
+/*luadoc
+@function getTTSLanguage()
+
+Returns the current TTS language
+
+@retval returns the TTS language
+
+@status current Introduced in 2.2.0
+
+*/
+static int luaGetTTSLanguage(lua_State * L)
+{
+  char ttsLanguage[sizeof(g_eeGeneral.ttsLanguage)+1];
+  memcpy(ttsLanguage, g_eeGeneral.ttsLanguage, sizeof(g_eeGeneral.ttsLanguage));
+  ttsLanguage[sizeof(g_eeGeneral.ttsLanguage)] = '\0';
+  lua_pushstring(L, ttsLanguage);
+  return 1;
+}
 
 /*luadoc
 @function popupInput(title, event, input, min, max)
@@ -820,6 +841,8 @@ const luaL_Reg opentxLib[] = {
   { "getDateTime", luaGetDateTime },
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
+  { "getLanguage", luaGetLanguage },
+  { "getTTSLanguage", luaGetTTSLanguage },
   { "getValue", luaGetValue },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },

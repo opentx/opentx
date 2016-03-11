@@ -29,6 +29,9 @@ set(COOS_DIR ${THIRDPARTY_DIR}/CoOS)
 set(FATFS_DIR ${THIRDPARTY_DIR}/FatFs)
 set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
+set(GUI_LANGUAGES cz de en es fr it pt sk se pl hu)  # TODO add nl
+set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu)  # TODO add nl
+
 add_subdirectory(translations)
 add_subdirectory(bitmaps)
 add_subdirectory(lua)
@@ -497,12 +500,8 @@ if(ARCH STREQUAL ARM)
   add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE)
   include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
   include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
-  foreach(LANGUAGE cz de en es fr it pt sk se pl hu) # TODO add nl
+  foreach(LANGUAGE ${TTS_LANGUAGES})
     set(SRC ${SRC} translations/tts_${LANGUAGE}.cpp)
-    string(TOUPPER ${LANGUAGE} LANGUAGE_CAPITALIZED )
-    if(TRANSLATIONS STREQUAL ${LANGUAGE_CAPITALIZED})
-      add_definitions(-DTRANSLATIONS_${LANGUAGE_CAPITALIZED})
-    endif()
   endforeach()
   set(SRC
     ${SRC}
@@ -654,6 +653,13 @@ else()
     add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
   endif()
 endif()
+
+foreach(LANGUAGE ${GUI_LANGUAGES})
+  string(TOUPPER ${LANGUAGE} LANGUAGE_CAPITALIZED)
+  if(TRANSLATIONS STREQUAL ${LANGUAGE_CAPITALIZED})
+    add_definitions(-DTRANSLATIONS_${LANGUAGE_CAPITALIZED} -DTRANSLATIONS="${LANGUAGE_CAPITALIZED}")
+  endif()
+endforeach()
 
 set(SRC ${SRC} debug.cpp)
 
