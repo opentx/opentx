@@ -1250,8 +1250,26 @@ int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
-void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { }
-void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { }
+void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef * RTC_TimeStruct)
+{
+  time_t tme;
+  time(&tme);
+  struct tm * timeinfo = localtime(&tme);
+  RTC_TimeStruct->RTC_Hours = timeinfo->tm_hour;
+  RTC_TimeStruct->RTC_Minutes = timeinfo->tm_min;
+  RTC_TimeStruct->RTC_Seconds = timeinfo->tm_sec;
+}
+
+void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef * RTC_DateStruct)
+{
+  time_t tme;
+  time(&tme);
+  struct tm * timeinfo = localtime(&tme);
+  RTC_DateStruct->RTC_Year = timeinfo->tm_year - 1900;
+  RTC_DateStruct->RTC_Month = timeinfo->tm_mon + 1;
+  RTC_DateStruct->RTC_Date = timeinfo->tm_mday;
+}
+
 void RTC_TimeStructInit(RTC_TimeTypeDef* RTC_TimeStruct) { }
 void RTC_DateStructInit(RTC_DateTypeDef* RTC_DateStruct) { }
 void PWR_BackupAccessCmd(FunctionalState NewState) { }
