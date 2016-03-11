@@ -200,7 +200,11 @@ extern int32_t rotencValue;
 void checkRotaryEncoder(void);
 
 // WDT driver
-#if !defined(SIMU)
+#if defined(SIMU)
+#define WAS_RESET_BY_WATCHDOG()               (false)
+#define WAS_RESET_BY_SOFTWARE()               (false)
+#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (false)
+#else
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(WATCHDOG_DISABLED)
