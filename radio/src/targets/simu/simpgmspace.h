@@ -414,7 +414,7 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
 #define CoExitISR(...)
 #define CoStartTmr(...)
 #define CoWaitForSingleFlag(...)       0
-#define CoTickDelay(...)
+#define CoTickDelay(x)                 sleep(2*(x))
 #define CoCreateFlag(...)              0
 #define CoGetOSTime(...)               0
 #define UART_Stop(...)
