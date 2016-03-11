@@ -3375,8 +3375,9 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new SignedField<8>(generalData.txVoltageCalibration));
   internalField.Append(new SignedField<8>(generalData.backlightMode));
 
-  for (int i=0; i<NUM_STICKS; i++)
+  for (int i=0; i<NUM_STICKS; i++) {
     internalField.Append(new SignedField<16>(generalData.trainer.calib[i]));
+  }
   for (int i=0; i<NUM_STICKS; i++) {
     internalField.Append(new UnsignedField<6>(generalData.trainer.mix[i].src));
     internalField.Append(new UnsignedField<2>(generalData.trainer.mix[i].mode));
@@ -3385,7 +3386,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   internalField.Append(new UnsignedField<8>(generalData.view, 0, MAX_VIEWS(board)-1));
 
-  internalField.Append(new SpareBitsField<2>());
+  internalField.Append(new SpareBitsField<2>()); // TODO buzzerMode?
   internalField.Append(new BoolField<1>(generalData.fai));
   internalField.Append(new SignedField<2>((int &)generalData.beeperMode));
   internalField.Append(new BoolField<1>(generalData.flashBeep));
@@ -3402,7 +3403,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
 
   internalField.Append(new UnsignedField<8>(generalData.inactivityTimer));
-  if (IS_9X(board) && version >= 215) {
+  if (IS_9X(board)) {
+    if (version >= 215) {
       internalField.Append(new UnsignedField<3>(generalData.mavbaud));
     }
     else {
@@ -3410,6 +3412,10 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       internalField.Append(new BoolField<1>(generalData.minuteBeep));
       internalField.Append(new BoolField<1>(generalData.preBeep));
     }
+  }
+  else {
+    internalField.Append(new SpareBitsField<3>());
+  }
   if (version >= 216 && IS_TARANIS(board))
     internalField.Append(new SignedField<3>(generalData.splashDuration));
   else if (version >= 213 || (!IS_ARM(board) && version >= 212))
@@ -3421,20 +3427,19 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   if (IS_ARM(board))
     internalField.Append(new SignedField<8>(generalData.switchesDelay));
   else
-    internalField.Append(new SpareBitsField<8>());
+    internalField.Append(new SpareBitsField<8>()); // TODO blOffBright + blOnBright
 
   internalField.Append(new UnsignedField<8>(generalData.backlightDelay));
   internalField.Append(new UnsignedField<8>(generalData.templateSetup));
   internalField.Append(new SignedField<8>(generalData.PPM_Multiplier));
   internalField.Append(new SignedField<8>(generalData.hapticLength));
 
-  if (version < 216 || !IS_9X(board)) {
+  if (version < 216 || (version < 218 && !IS_9X(board)) || (!IS_9X(board) && !IS_TARANIS(board))) {
     internalField.Append(new UnsignedField<8>(generalData.reNavigation));
   }
 
   if (version >= 216 && !IS_TARANIS(board)) {
-    internalField.Append(new UnsignedField<4>(generalData.stickReverse));
-    internalField.Append(new SpareBitsField<4>());
+    internalField.Append(new UnsignedField<8>(generalData.stickReverse));
   }
 
   internalField.Append(new SignedField<3>(generalData.beeperLength));
@@ -3456,33 +3461,46 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   if (IS_ARM(board)) {
     internalField.Append(new UnsignedField<8>(generalData.backlightBright));
-    internalField.Append(new SignedField<8>(generalData.txCurrentCalibration));
+    if (version < 218) internalField.Append(new SignedField<8>(generalData.txCurrentCalibration));
     if (version >= 213) {
-      internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
-      internalField.Append(new UnsignedField<8>(generalData.mAhWarn));
-      internalField.Append(new UnsignedField<16>(generalData.mAhUsed));
+      if (version < 218) internalField.Append(new SignedField<8>(generalData.temperatureWarn)); // TODO
+      if (version < 218) internalField.Append(new UnsignedField<8>(generalData.mAhWarn));
+      if (version < 218) internalField.Append(new UnsignedField<16>(generalData.mAhUsed));
       internalField.Append(new UnsignedField<32>(generalData.globalTimer));
-      internalField.Append(new SignedField<8>(generalData.temperatureCalib)); // TODO
+      if (version < 218) internalField.Append(new SignedField<8>(generalData.temperatureCalib)); // TODO
       internalField.Append(new UnsignedField<8>(generalData.btBaudrate)); // TODO
-      internalField.Append(new BoolField<8>(generalData.optrexDisplay)); //TODO
-      internalField.Append(new UnsignedField<8>(generalData.sticksGain)); // TODO
+      if (version < 218) internalField.Append(new BoolField<8>(generalData.optrexDisplay)); //TODO
+      if (version < 218) internalField.Append(new UnsignedField<8>(generalData.sticksGain)); // TODO
     }
     if (version >= 214) {
-      internalField.Append(new UnsignedField<8>(generalData.rotarySteps)); // TODO
+      if (version < 218) internalField.Append(new UnsignedField<8>(generalData.rotarySteps)); // TODO
       internalField.Append(new UnsignedField<8>(generalData.countryCode));
       internalField.Append(new UnsignedField<8>(generalData.imperial));
     }
     if (version >= 215) {
       internalField.Append(new CharField<2>(generalData.ttsLanguage));
+      if (version < 218) {
         internalField.Append(new SignedField<8>(generalData.beepVolume));
         internalField.Append(new SignedField<8>(generalData.wavVolume));
         internalField.Append(new SignedField<8>(generalData.varioVolume));
+      }
+      else {
+        internalField.Append(new SignedField<4>(generalData.beepVolume));
+        internalField.Append(new SignedField<4>(generalData.wavVolume));
+        internalField.Append(new SignedField<4>(generalData.varioVolume));
+        internalField.Append(new SignedField<4>(generalData.backgroundVolume));
+      }
       if (version >= 216) {
         internalField.Append(new SignedField<8>(generalData.varioPitch));
         internalField.Append(new SignedField<8>(generalData.varioRange));
         internalField.Append(new SignedField<8>(generalData.varioRepeat));
       }
-      internalField.Append(new SignedField<8>(generalData.backgroundVolume));
+      if (version < 218) internalField.Append(new SignedField<8>(generalData.backgroundVolume));
+    }
+    if (version >= 218) {
+      for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
+        internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
+      }
     }
     if (IS_TARANIS(board) && version >= 216) {
       if (version >= 217) {
@@ -3508,11 +3526,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     }
 
     if (IS_TARANIS_X9E(board))
-      internalField.Append(new SpareBitsField<64>());
+      internalField.Append(new SpareBitsField<64>()); // switchUnlockStates
     else if (IS_TARANIS(board))
-      internalField.Append(new SpareBitsField<16>());
+      internalField.Append(new SpareBitsField<16>()); // switchUnlockStates
 
-    if (version >= 217) {
+    if (version == 217) {
       for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
       }

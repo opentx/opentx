@@ -52,6 +52,14 @@
   #define TARANIS_REV9E_FIELD(x)
 #endif
 
+#if defined(PCBHORUS)
+  #define N_HORUS_FIELD(x)
+  #define HORUS_FIELD(x) x;
+#else
+  #define N_HORUS_FIELD(x) x;
+  #define HORUS_FIELD(x)
+#endif
+
 #if defined(BACKUP)
   #define NOBACKUP(...)
 #else
@@ -871,27 +879,20 @@ PACK(struct TrainerData {
 
 #if defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS_ARM \
-  NOBACKUP(uint8_t  backlightBright); \
-  /* TODO remove */ NOBACKUP(int8_t   txCurrentCalibration); \
-  /* TODO remove */ NOBACKUP(int8_t   temperatureWarn); \
-  /* TODO remove */ NOBACKUP(uint8_t  mAhWarn); \
-  /* TODO remove */ NOBACKUP(uint16_t mAhUsed); \
-  NOBACKUP(uint32_t globalTimer); \
-  /* TODO remove */ NOBACKUP(int8_t   temperatureCalib); \
-  NOBACKUP(uint8_t  btBaudrate); \
-  /* TODO remove */ NOBACKUP(uint8_t  optrexDisplay); \
-  /* TODO remove */ uint8_t  sticksGain; \
-  /* TODO remove */ NOBACKUP(uint8_t  rotarySteps); \
-  NOBACKUP(uint8_t  countryCode); \
-  NOBACKUP(uint8_t  imperial); \
-  NOBACKUP(char     ttsLanguage[2]); \
-  NOBACKUP(int8_t   beepVolume:4); \
-  NOBACKUP(int8_t   wavVolume:4); \
-  NOBACKUP(int8_t   varioVolume:4); \
-  NOBACKUP(int8_t   backgroundVolume:4); \
-  NOBACKUP(int8_t   varioPitch); \
-  NOBACKUP(int8_t   varioRange); \
-  NOBACKUP(int8_t   varioRepeat);
+    NOBACKUP(uint8_t  backlightBright); \
+    NOBACKUP(uint32_t globalTimer); \
+    NOBACKUP(uint8_t  btBaudrate); \
+    NOBACKUP(uint8_t  countryCode); \
+    NOBACKUP(uint8_t  imperial); \
+    NOBACKUP(char     ttsLanguage[2]); \
+    NOBACKUP(int8_t   beepVolume:4); \
+    NOBACKUP(int8_t   wavVolume:4); \
+    NOBACKUP(int8_t   varioVolume:4); \
+    NOBACKUP(int8_t   backgroundVolume:4); \
+    NOBACKUP(int8_t   varioPitch); \
+    NOBACKUP(int8_t   varioRange); \
+    NOBACKUP(int8_t   varioRepeat); \
+    CustomFunctionData customFn[NUM_CFN];
 #endif
 
 #if defined(PCBHORUS)
@@ -899,7 +900,6 @@ PACK(struct TrainerData {
     EXTRA_GENERAL_FIELDS_ARM \
     NOBACKUP(uint8_t  serial2Mode:6); \
     uint8_t  slidersConfig:2; \
-    CustomFunctionData customFn[NUM_CFN]; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
     NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
@@ -912,7 +912,6 @@ PACK(struct TrainerData {
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:6; \
     uint8_t  spare:2; \
-    CustomFunctionData customFn[NUM_CFN]; \
     uint32_t switchConfig; \
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
@@ -932,17 +931,25 @@ PACK(struct TrainerData {
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
-    CustomFunctionData customFn[NUM_CFN]; \
     swconfig_t switchConfig; \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
     BLUETOOTH_FIELDS
-#elif defined(CPUARM)
+#elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    CustomFunctionData customFn[NUM_CFN];
+    int8_t   txCurrentCalibration; \
+    int8_t   temperatureWarn; \
+    uint8_t  mAhWarn; \
+    uint16_t mAhUsed; \
+    int8_t   temperatureCalib; \
+    uint8_t  optrexDisplay; \
+    uint8_t  sticksGain; \
+    uint8_t  rotarySteps;
+#elif defined(CPUARM)
+  #define EXTRA_GENERAL_FIELDS  EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
-  #define EXTRA_GENERAL_FIELDS uint8_t  countryCode;
+  #define EXTRA_GENERAL_FIELDS uint8_t countryCode;
 #else
   #define EXTRA_GENERAL_FIELDS
 #endif
@@ -961,8 +968,8 @@ PACK(struct RadioData {
   NOBACKUP(uint16_t variant);
   CalibData calib[NUM_STICKS+NUM_POTS];
   NOBACKUP(uint16_t chkSum);
-  /* TODO not horus */ NOBACKUP(int8_t currModel);
-  NOBACKUP(uint8_t contrast);
+  N_HORUS_FIELD(int8_t currModel);
+  N_HORUS_FIELD(uint8_t contrast);
   NOBACKUP(uint8_t vBatWarn);
   NOBACKUP(int8_t txVoltageCalibration);
   NOBACKUP(int8_t backlightMode);
@@ -988,8 +995,8 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t templateSetup);   // RETA order for receiver channels
   NOBACKUP(int8_t PPM_Multiplier);
   NOBACKUP(int8_t hapticLength);
-  /* TODO remove */ N_PCBSTD_FIELD(uint8_t reNavigation)
-  /* TODO not on horus */ N_TARANIS_FIELD(uint8_t stickReverse)
+  N_HORUS_FIELD(N_TARANIS_FIELD(N_PCBSTD_FIELD(uint8_t reNavigation)));
+  N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t stickReverse));
   NOBACKUP(int8_t beepLength:3);
   NOBACKUP(int8_t hapticStrength:3);
   NOBACKUP(uint8_t gpsFormat:1);

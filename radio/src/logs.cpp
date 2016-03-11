@@ -71,7 +71,12 @@ const pm_char * openLogs()
   }
 
   if (len == 0) {
+#if defined(EEPROM)
     uint8_t num = g_eeGeneral.currModel + 1;
+#else
+    // TODO
+    uint8_t num = 1;
+#endif
     strcpy_P(&filename[sizeof(LOGS_PATH)], STR_MODEL);
     filename[sizeof(LOGS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
     filename[sizeof(LOGS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');

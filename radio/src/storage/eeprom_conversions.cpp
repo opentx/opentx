@@ -1080,7 +1080,9 @@ bool eeConvert()
   int conversionVersionStart = g_eeGeneral.version;
 
   // Information to the user and wait for key press
+#if defined(PCBSKY9X)
   g_eeGeneral.optrexDisplay = 0;
+#endif
   g_eeGeneral.backlightMode = e_backlight_mode_on;
   g_eeGeneral.backlightBright = 0;
   g_eeGeneral.contrast = 25;

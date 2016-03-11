@@ -116,7 +116,6 @@ void menuStatisticsDebug(uint8_t event)
   switch(event)
   {
     case EVT_KEY_LONG(KEY_ENTER):
-      g_eeGeneral.mAhUsed = 0;
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
