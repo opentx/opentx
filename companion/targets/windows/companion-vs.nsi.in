@@ -97,6 +97,9 @@
 
 Section "OpenTX Companion" SecDummy
 
+  SetOutPath "$INSTDIR\platforms"
+  File "@QT_DLL_DIR@\platforms\qwindows.dll"
+  
   SetOutPath "$INSTDIR"
 
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
@@ -121,6 +124,9 @@ Section "OpenTX Companion" SecDummy
   File "@QT_DLL_DIR@\icudt54.dll"
   File "@QT_DLL_DIR@\icuin54.dll"
   File "@QT_DLL_DIR@\icuuc54.dll"
+  File "@QT_DLL_DIR@\libEGL.dll"
+  File "@QT_DLL_DIR@\libGLESv2.dll"
+
   File "@SDL_DIR@\SDL.dll"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.exe"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.conf"
