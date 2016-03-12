@@ -18,7 +18,7 @@ def build_struct(cursor):
                     print("    copy%s(&dest->%s[i], &src->%s[i]);" % (c.type.get_array_element_type().spelling, c.spelling, c.spelling))
                     print("  }")
                 else:
-                    print("  memcpy(&dest->%s, &src->%s, sizeof(dest->%s));" % (c.spelling, c.spelling, c.spelling))
+                    print("  memcpy(dest->%s, src->%s, sizeof(dest->%s));" % (c.spelling, c.spelling, c.spelling))
             elif c.type.get_declaration().spelling in structs:
                 print("  copy%s(&dest->%s, &src->%s);" % (c.type.get_declaration().spelling, c.spelling, c.spelling))
             else:
