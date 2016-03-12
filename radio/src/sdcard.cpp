@@ -19,7 +19,6 @@
  */
 
 #include <stdint.h>
-#include "diskio.h"
 #include "opentx.h"
 
 const char * sdCheckAndCreateDirectory(const char * path)

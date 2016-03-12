@@ -4,7 +4,7 @@ endforeach()
 
 set(SIMU_SRC ${SIMU_SRC} simpgmspace.cpp)
 
-add_definitions(-DSIMU -g)
+add_definitions(-DSIMU)
 remove_definitions(-DCLI)
 
 if(Qt5Widgets_FOUND)
@@ -17,6 +17,15 @@ if(Qt5Widgets_FOUND)
   add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
   qt5_use_modules(${SIMULATOR_TARGET} Core)
   add_custom_target(opentx-simulator DEPENDS ${SIMULATOR_TARGET})
+endif()
+
+if(MSVC)
+  set(CMAKE_CXX_FLAGS "/EHsc /LD")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
+  include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
+  target_link_libraries(${SIMULATOR_TARGET} PRIVATE C:/Programs/pthreads/Pre-built.2/lib/pthreadVC2.lib)
+else()
+  add_definitions(-g)
 endif()
 
 if(NOT WIN32)
@@ -48,4 +57,3 @@ if(APPLE)
   endforeach()
   add_custom_target(opentx-simulators-bundle DEPENDS ${SIMULATOR_BUNDLES})
 endif(APPLE)
-

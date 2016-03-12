@@ -26,6 +26,8 @@ extern int g_snapshot_idx;
 #ifndef __GNUC__
 #include <windows.h>
 #define sleep(x) Sleep(x)
+#define strcasecmp  _stricmp
+#define strncasecmp _tcsnicmp
 #else
 #include <unistd.h>
 #define sleep(x) usleep(1000*x)
@@ -321,7 +323,6 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define FE0     0
 
 #define ISR(x, ...)  void x()
-#define asm(x)
 
 #if defined(CPUARM)
 extern uint32_t Master_frequency;

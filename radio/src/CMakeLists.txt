@@ -878,7 +878,10 @@ foreach(FILE ${PULSES_SRC})
 endforeach()
 
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
-add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
+
+if(NOT WIN32)
+  add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
+endif()
 
 add_subdirectory(targets/simu)
 if(NOT WIN32)
