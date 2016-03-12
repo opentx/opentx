@@ -2550,6 +2550,10 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   TRACE("opentxInit()");
 
+#if defined(RTCLOCK) && !defined(COPROCESSOR)
+  rtcInit();    // RTC must be initialized before rambackupRestore() is called
+#endif
+
 #if !defined(EEPROM)
   if (!UNEXPECTED_SHUTDOWN()) {
     sdInit();
@@ -2605,10 +2609,6 @@ void opentxInit(OPENTX_INIT_ARGS)
 
 #if defined(BLUETOOTH)
   btInit();
-#endif
-
-#if defined(RTCLOCK) && !defined(COPROCESSOR)
-  rtcInit();
 #endif
 
 #if defined(COLORLCD)
