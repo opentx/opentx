@@ -98,8 +98,8 @@
 Section "OpenTX Companion" SecDummy
 
   SetOutPath "$INSTDIR\platforms"
-  File "@QT_DLL_DIR@\platforms\qwindows.dll"
-  
+  File "@QT_DLL_DIR@\..\plugins\platforms\qwindows.dll"
+
   SetOutPath "$INSTDIR"
 
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
