@@ -22,7 +22,13 @@
 #include <assert.h>
 #include "debug.h"
 
-unsigned int compress(uint8_t * dst, const uint8_t * src, unsigned int len)
+#define CHECK_DST_SIZE() \
+  if (cur-dst >= dstsize) { \
+    TRACE("RLC encoding size too big"); \
+    return 0; \
+  }
+
+unsigned int compress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, unsigned int srcsize)
 {
   uint8_t * cur = dst;
   bool    run0   = (src[0] == 0);
@@ -31,28 +37,34 @@ unsigned int compress(uint8_t * dst, const uint8_t * src, unsigned int len)
 
   for (unsigned int i=1; 1; i++) {
     bool cur0 = (src[i] == 0);
-    if (i==len || cur0!=run0 || cnt==0x3f || (cnt0 && cnt==0xf)) {
+    if (i==srcsize || cur0!=run0 || cnt==0x3f || (cnt0 && cnt==0xf)) {
       if (run0) {
         assert(cnt0==0);
-        if (cnt<8 && i!=len)
+        if (cnt<8 && i!=srcsize) {
           cnt0 = cnt;
-        else
-          *cur++ = (cnt|0x40);
+        }
+        else {
+          CHECK_DST_SIZE();
+          *cur++ = (cnt | 0x40);
+        }
       }
       else {
         if (cnt0) {
+          CHECK_DST_SIZE();
           *cur++ = (0x80 | (cnt0<<4) | cnt);
           cnt0 = 0;
         }
         else {
+          CHECK_DST_SIZE();
           *cur++ = cnt;
         }
         for (int j=0; j<cnt; j++) {
+          CHECK_DST_SIZE();
           *cur++ = src[i - cnt + j];
         }
       }
       cnt = 0;
-      if (i==len) break;
+      if (i==srcsize) break;
       run0 = cur0;
     }
     cnt++;
@@ -61,7 +73,14 @@ unsigned int compress(uint8_t * dst, const uint8_t * src, unsigned int len)
   return cur-dst;
 }
 
-unsigned int uncompress(uint8_t * dst, const uint8_t * src, unsigned int len)
+#undef CHECK_DST_SIZE
+#define CHECK_DST_SIZE() \
+  if (cur-dst >= dstsize) { \
+    TRACE("RLC decoding size too big"); \
+    return 0; \
+  }
+
+unsigned int uncompress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, unsigned int srcsize)
 {
   uint8_t * cur = dst;
   uint8_t zeroes = 0;
@@ -70,22 +89,26 @@ unsigned int uncompress(uint8_t * dst, const uint8_t * src, unsigned int len)
   for( ; 1; ) {
     if (zeroes > 0) {
       for (int i = 0; i < zeroes; i++) {
+        CHECK_DST_SIZE();
         *cur++ = 0;
       }
       zeroes = 0;
     }
 
-    if (len == 0)
-      return cur-dst;
+    if (srcsize == 0) {
+      return cur - dst;
+    }
 
     for (int i=0; i<bRlc; i++) {
+      CHECK_DST_SIZE();
       *cur++ = *src++;
-      if (--len == 0)
-        return cur-dst;
+      if (--srcsize == 0) {
+        return cur - dst;
+      }
     }
 
     bRlc = *src++;
-    --len;
+    --srcsize;
 
     if (!(bRlc & 0x7f)) {
       TRACE("RLC decoding error");
@@ -102,3 +125,5 @@ unsigned int uncompress(uint8_t * dst, const uint8_t * src, unsigned int len)
     }
   }
 }
+
+#undef CHECK_DST_SIZE
