@@ -167,7 +167,20 @@ void boardInit()
 
   ledBlue();
 }
-#endif
+
+void boardOff()
+{
+  BACKLIGHT_OFF();
+
+  while (pwrPressed()) {
+    wdt_reset();
+  }
+
+  SysTick->CTRL = 0; // turn off systick
+  pwrOff();
+}
+
+#endif // #if !defined(SIMU)
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;

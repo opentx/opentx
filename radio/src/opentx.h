@@ -311,7 +311,7 @@
   #define cli()
   #define sei()
   extern void boardInit();
-  #if defined(PCBTARANIS)
+  #if defined(PCBTARANIS) or defined(PCBHORUS)
     extern void boardOff();
   #else
     #define boardOff()                 pwrOff();
