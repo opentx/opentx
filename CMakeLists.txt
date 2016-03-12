@@ -11,7 +11,6 @@ message(STATUS "OpenTX ${VERSION}")
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0020 NEW)
 cmake_policy(SET CMP0023 OLD)
-cmake_policy(SET CMP0043 NEW)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -23,11 +22,11 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Xml REQUIRED)
-find_package(Qt5LinguistTools REQUIRED)
-find_package(Qt5PrintSupport REQUIRED)
-find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5Widgets)
+find_package(Qt5Xml)
+find_package(Qt5LinguistTools)
+find_package(Qt5PrintSupport)
+find_package(Qt5Multimedia)
 
 include(Macros)
 today(DATE)
@@ -35,4 +34,7 @@ now(TIME)
 git_id(GIT_STR)
 
 add_subdirectory(${RADIO_SRC_DIRECTORY})
-add_subdirectory(${COMPANION_SRC_DIRECTORY})
+
+if(Qt5Widgets_FOUND)
+  add_subdirectory(${COMPANION_SRC_DIRECTORY})
+endif()
