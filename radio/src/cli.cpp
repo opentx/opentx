@@ -238,7 +238,7 @@ int cliTrace(const char ** argv)
 
 int cliStackInfo(const char ** argv)
 {
-  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize());
+  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize() * 4);  // stackSize() returns size in 32bit chunks
   serialPrint("[MENUS] %d available / %d", menusStack.available(), menusStack.size());
   serialPrint("[MIXER] %d available / %d", mixerStack.available(), mixerStack.size());
   serialPrint("[AUDIO] %d available / %d", audioStack.available(), audioStack.size());
@@ -553,7 +553,7 @@ const CliCommand cliCommands[] = {
   { "readsd", cliReadSD, "<start sector> <sectors count> <read buffer size (sectors)>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
-  { "reboot", cliReboot, "" },
+  { "reboot", cliReboot, "[wdt]" },
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
   { "meminfo", cliMemoryInfo, "" },
