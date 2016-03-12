@@ -19,8 +19,11 @@
  */
 
 #include <stdint.h>
-#include "diskio.h"
 #include "opentx.h"
+
+#if !defined(SIMU)
+#include "diskio.h"
+#endif
 
 const char * sdCheckAndCreateDirectory(const char * path)
 {

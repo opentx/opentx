@@ -23,7 +23,7 @@
 #include "debug.h"
 
 #define CHECK_DST_SIZE() \
-  if (cur-dst >= dstsize) { \
+  if (cur-dst >= (int)dstsize) { \
     TRACE("RLC encoding size too big"); \
     return 0; \
   }
@@ -75,7 +75,7 @@ unsigned int compress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, 
 
 #undef CHECK_DST_SIZE
 #define CHECK_DST_SIZE() \
-  if (cur-dst >= dstsize) { \
+  if (cur-dst >= (int)dstsize) { \
     TRACE("RLC decoding size too big"); \
     return 0; \
   }
