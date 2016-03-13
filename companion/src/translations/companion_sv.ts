@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="sv_SE">
+<TS version="2.1" language="sv_SE">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -56,10 +56,6 @@
     <message>
         <source>Radio Profile</source>
         <translation>Radioprofil</translation>
-    </message>
-    <message>
-        <source>Open Folder</source>
-        <translation>Öppna katalog</translation>
     </message>
     <message>
         <source>Default Channel Order</source>
@@ -316,10 +312,6 @@ Behöver inte vara samma som menyspråk</translation>
         <translation>Behåll filer</translation>
     </message>
     <message>
-        <source>Find Executable</source>
-        <translation>Sök Program</translation>
-    </message>
-    <message>
         <source>Google Earth Executable</source>
         <translation>Sökväg till Google Earth</translation>
     </message>
@@ -479,287 +471,13 @@ Behöver inte vara samma som menyspråk</translation>
         <source>Use Companion nightly builds</source>
         <translation>Använd Companions nattliga byggningar</translation>
     </message>
-</context>
-<context>
-    <name>Calibration</name>
     <message>
-        <source>Form</source>
-        <translation>Form</translation>
-    </message>
-    <message>
-        <source>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</source>
-        <translation>Summervolym
-
-0 - Tyst.  Inga pip alls.
-1 - Ej vid knapptryck.  Normala pip, men inte vid knapptryckningar.
-2 - Normalt.
-3 - Högt.
-4 - Extra högt.</translation>
-    </message>
-    <message>
-        <source>RS</source>
-        <translation>RS</translation>
-    </message>
-    <message>
-        <source>SB</source>
-        <translation>SB</translation>
-    </message>
-    <message>
-        <source>Serial Port</source>
-        <translation>Serieport</translation>
-    </message>
-    <message>
-        <source>OFF</source>
-        <translation>Av</translation>
-    </message>
-    <message>
-        <source>S-Port Mirror</source>
-        <translation>Speglad Serieport</translation>
-    </message>
-    <message>
-        <source>Telemetry</source>
-        <translation>Telemetri</translation>
-    </message>
-    <message>
-        <source>SBUS Trainer</source>
-        <translation>SBUS-Lärare</translation>
-    </message>
-    <message>
-        <source>Debug</source>
-        <translation>Debug</translation>
-    </message>
-    <message>
-        <source>Rud</source>
-        <translation>Rod</translation>
-    </message>
-    <message>
-        <source>Pot. 4</source>
-        <translation>Pot. 4</translation>
-    </message>
-    <message>
-        <source>Pot. 3</source>
-        <translation>Pot. 3</translation>
-    </message>
-    <message>
-        <source>Pot. 2</source>
-        <translation>Pot. 2</translation>
-    </message>
-    <message>
-        <source>Pot. 1</source>
-        <translation>Pot. 1</translation>
-    </message>
-    <message>
-        <source>PPM 1</source>
-        <translation>PPM 1</translation>
-    </message>
-    <message>
-        <source>Stick 3</source>
-        <translation>Spak 3</translation>
-    </message>
-    <message>
-        <source>Negative span</source>
-        <translation>Negativa värden</translation>
-    </message>
-    <message>
-        <source>Mid value</source>
-        <translation>Centrumvärde</translation>
-    </message>
-    <message>
-        <source>Positive span</source>
-        <translation>Positiva värden</translation>
-    </message>
-    <message>
-        <source>Stick 1</source>
-        <translation>Spak 1</translation>
-    </message>
-    <message>
-        <source>PPM 2</source>
-        <translation>PPM 2</translation>
-    </message>
-    <message>
-        <source>Stick 2</source>
-        <translation>Spak 2</translation>
-    </message>
-    <message>
-        <source>Stick 4</source>
-        <translation>Spak 4</translation>
-    </message>
-    <message>
-        <source>v</source>
-        <translation>v</translation>
-    </message>
-    <message>
-        <source>PPM Multiplier</source>
-        <translation>PPM Multiplikator</translation>
-    </message>
-    <message>
-        <source>PPM 3</source>
-        <translation>PPM 3</translation>
-    </message>
-    <message>
-        <source>PPM 4</source>
-        <translation>PPM 4</translation>
-    </message>
-    <message>
-        <source>S1</source>
-        <translation>S1</translation>
-    </message>
-    <message>
-        <source>S2</source>
-        <translation>S2</translation>
-    </message>
-    <message>
-        <source>S3</source>
-        <translation>S3</translation>
-    </message>
-    <message>
-        <source>SA</source>
-        <translation>SA</translation>
-    </message>
-    <message>
-        <source>Ele</source>
-        <translation>Hjd</translation>
-    </message>
-    <message>
-        <source>Ail</source>
-        <translation>Ske</translation>
-    </message>
-    <message>
-        <source>Thr</source>
-        <translation>Gas</translation>
-    </message>
-    <message>
-        <source>SC</source>
-        <translation>SC</translation>
-    </message>
-    <message>
-        <source>LS</source>
-        <translation>LS</translation>
-    </message>
-    <message>
-        <source>SD</source>
-        <translation>SD</translation>
-    </message>
-    <message>
-        <source>SE</source>
-        <translation>SE</translation>
-    </message>
-    <message>
-        <source>SF</source>
-        <translation>SF</translation>
-    </message>
-    <message>
-        <source>SG</source>
-        <translation>SG</translation>
-    </message>
-    <message>
-        <source>SH</source>
-        <translation>SH</translation>
-    </message>
-    <message>
-        <source>SI</source>
-        <translation>SI</translation>
-    </message>
-    <message>
-        <source>SJ</source>
-        <translation>SJ</translation>
-    </message>
-    <message>
-        <source>SK</source>
-        <translation>SK</translation>
-    </message>
-    <message>
-        <source>SL</source>
-        <translation>SL</translation>
-    </message>
-    <message>
-        <source>SM</source>
-        <translation>SM</translation>
-    </message>
-    <message>
-        <source>SN</source>
-        <translation>SN</translation>
-    </message>
-    <message>
-        <source>SQ</source>
-        <translation>SQ</translation>
-    </message>
-    <message>
-        <source>SR</source>
-        <translation>SR</translation>
-    </message>
-    <message>
-        <source>LS2</source>
-        <translation>LS2</translation>
-    </message>
-    <message>
-        <source>SP</source>
-        <translation>SP</translation>
-    </message>
-    <message>
-        <source>SO</source>
-        <translation>SO</translation>
-    </message>
-    <message>
-        <source>S4</source>
-        <translation>S4</translation>
-    </message>
-    <message>
-        <source>RS2</source>
-        <translation>RS2</translation>
-    </message>
-    <message>
-        <source>Bluetooth</source>
-        <translation>Blåtand</translation>
-    </message>
-    <message>
-        <source>Battery Offset</source>
+        <source>Select Folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Current Offset</source>
+        <source>Select Executable</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>CalibrationPanel</name>
-    <message>
-        <source>None</source>
-        <translation>Ingen</translation>
-    </message>
-    <message>
-        <source>2 Positions Toggle</source>
-        <translation>2-Läges-brytare</translation>
-    </message>
-    <message>
-        <source>2 Positions</source>
-        <translation>2 Lägen</translation>
-    </message>
-    <message>
-        <source>3 Positions</source>
-        <translation>3 Lägen</translation>
-    </message>
-    <message>
-        <source>Pot with detent</source>
-        <translation>Ratt med mittklick</translation>
-    </message>
-    <message>
-        <source>Multipos switch</source>
-        <translation>Flerlägesväljare</translation>
-    </message>
-    <message>
-        <source>Pot without detent</source>
-        <translation>Ratt utan mittklick</translation>
-    </message>
-    <message>
-        <source>Slider with detent</source>
-        <translation>Skjutpot med mittklick</translation>
     </message>
 </context>
 <context>
@@ -797,16 +515,16 @@ Behöver inte vara samma som menyspråk</translation>
         <translation>Linjärt Subtrim</translation>
     </message>
     <message>
-        <source>Channel %1</source>
-        <translation>Kanal %1</translation>
-    </message>
-    <message>
         <source>---</source>
         <translation>----</translation>
     </message>
     <message>
         <source>INV</source>
         <translation>INV</translation>
+    </message>
+    <message>
+        <source>CH%1</source>
+        <translation type="unfinished">KN%1</translation>
     </message>
 </context>
 <context>
@@ -1233,6 +951,137 @@ Behöver inte vara samma som menyspråk</translation>
     </message>
 </context>
 <context>
+    <name>Er9x::Templates</name>
+    <message>
+        <source>Simple 4-CH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>T-Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky T-Cut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V-Tail</source>
+        <translation type="unfinished">V-stjärt</translation>
+    </message>
+    <message>
+        <source>Elevon\Delta</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup with gyro gain control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gyro gain control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Heli Setup with gyro gain control (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gyro gain control (Futaba&apos;s channel assignment style)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Servo Test</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MultiCopter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Model Config Wizard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply Template?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Apply template &quot;%1&quot;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RUD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>THR</source>
+        <translation type="unfinished">GAS</translation>
+    </message>
+    <message>
+        <source>AIL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>AIL2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ELE2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FLAPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FLAP%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PITCH</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GYRO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPOIL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SPOIL%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RUD2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear Mixes?</source>
+        <translation type="unfinished">Ta bort mixarna?</translation>
+    </message>
+    <message>
+        <source>Really clear existing mixes on CH6?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Really clear existing mixes on CH5?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ExpoDialog</name>
     <message>
         <source>Switch</source>
@@ -1526,6 +1375,10 @@ Behöver inte vara samma som menyspråk</translation>
         <source>Invalid Models and Settings file %1</source>
         <translation>Filen innehåller inte Modeller och Inställningar: %1</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves a dated copy of your eeprom to the backup folder you specified in the Companion settings before writing the current model to the radio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FlashFirmwareDialog</name>
@@ -1790,6 +1643,18 @@ Använd Zadig för att installera drivrutinen.</translation>
         <source>Popup enabled</source>
         <translation>Popup aktiv</translation>
     </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear</source>
+        <translation type="unfinished">Ta Bort</translation>
+    </message>
+    <message>
+        <source>Clear all current Flight Mode properties?</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FlightModesPanel</name>
@@ -2015,8 +1880,16 @@ Dessa inställningar gäller för alla modeller.</translation>
         <translation>Globala Funktioner</translation>
     </message>
     <message>
-        <source>Hardware / Calibration</source>
-        <translation>Hårdvara / Kalibrering</translation>
+        <source>Hardware</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calibration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong data in profile, Switch/pot config not retrieved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2037,7 +1910,7 @@ Dessa inställningar gäller för alla modeller.</translation>
         <source>Measurement Units</source>
         <translation>Måttenheter</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
     </message>
@@ -2662,6 +2535,10 @@ brytare</translation>
         <source>Battery Meter Range</source>
         <translation>Batterimätarens Mätområde</translation>
     </message>
+    <message>
+        <source>Automatically adjust the radio&apos;s clock if a GPS is connected to telemetry.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GeneralSetupPanel</name>
@@ -2687,6 +2564,244 @@ FAI-funktionen kan inte slås av i sändaren.
     <message>
         <source>Yes, controlled by a pot</source>
         <translation>Ja, styrd via en potentiometer</translation>
+    </message>
+</context>
+<context>
+    <name>Hardware</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <source>SQ</source>
+        <translation type="unfinished">SQ</translation>
+    </message>
+    <message>
+        <source>SR</source>
+        <translation type="unfinished">SR</translation>
+    </message>
+    <message>
+        <source>LS2</source>
+        <translation type="unfinished">LS2</translation>
+    </message>
+    <message>
+        <source>SP</source>
+        <translation type="unfinished">SP</translation>
+    </message>
+    <message>
+        <source>SO</source>
+        <translation type="unfinished">SO</translation>
+    </message>
+    <message>
+        <source>S4</source>
+        <translation type="unfinished">S4</translation>
+    </message>
+    <message>
+        <source>RS</source>
+        <translation type="unfinished">RS</translation>
+    </message>
+    <message>
+        <source>SB</source>
+        <translation type="unfinished">SB</translation>
+    </message>
+    <message>
+        <source>PPM 2</source>
+        <translation type="unfinished">PPM 2</translation>
+    </message>
+    <message>
+        <source>Beeper volume
+
+0 - Quiet.  No beeps at all.
+1 - No Keys.  Normal beeps but menu keys do not beep.
+2 - Normal.
+3 - Loud.
+4 - Extra loud.</source>
+        <translation type="unfinished">Summervolym
+
+0 - Tyst.  Inga pip alls.
+1 - Ej vid knapptryck.  Normala pip, men inte vid knapptryckningar.
+2 - Normalt.
+3 - Högt.
+4 - Extra högt.</translation>
+    </message>
+    <message>
+        <source>OFF</source>
+        <translation type="unfinished">Av</translation>
+    </message>
+    <message>
+        <source>S-Port Mirror</source>
+        <translation type="unfinished">Speglad Serieport</translation>
+    </message>
+    <message>
+        <source>Telemetry</source>
+        <translation type="unfinished">Telemetri</translation>
+    </message>
+    <message>
+        <source>SBUS Trainer</source>
+        <translation type="unfinished">SBUS-Lärare</translation>
+    </message>
+    <message>
+        <source>Debug</source>
+        <translation type="unfinished">Debug</translation>
+    </message>
+    <message>
+        <source>Rud</source>
+        <translation type="unfinished">Rod</translation>
+    </message>
+    <message>
+        <source>PPM 3</source>
+        <translation type="unfinished">PPM 3</translation>
+    </message>
+    <message>
+        <source>S1</source>
+        <translation type="unfinished">S1</translation>
+    </message>
+    <message>
+        <source>S2</source>
+        <translation type="unfinished">S2</translation>
+    </message>
+    <message>
+        <source>S3</source>
+        <translation type="unfinished">S3</translation>
+    </message>
+    <message>
+        <source>PPM 1</source>
+        <translation type="unfinished">PPM 1</translation>
+    </message>
+    <message>
+        <source>Serial Port</source>
+        <translation type="unfinished">Serieport</translation>
+    </message>
+    <message>
+        <source>v</source>
+        <translation type="unfinished">v</translation>
+    </message>
+    <message>
+        <source>PPM Multiplier</source>
+        <translation type="unfinished">PPM Multiplikator</translation>
+    </message>
+    <message>
+        <source>Current Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PPM 4</source>
+        <translation type="unfinished">PPM 4</translation>
+    </message>
+    <message>
+        <source>SA</source>
+        <translation type="unfinished">SA</translation>
+    </message>
+    <message>
+        <source>Ele</source>
+        <translation type="unfinished">Hjd</translation>
+    </message>
+    <message>
+        <source>Ail</source>
+        <translation type="unfinished">Ske</translation>
+    </message>
+    <message>
+        <source>Thr</source>
+        <translation type="unfinished">Gas</translation>
+    </message>
+    <message>
+        <source>SC</source>
+        <translation type="unfinished">SC</translation>
+    </message>
+    <message>
+        <source>LS</source>
+        <translation type="unfinished">LS</translation>
+    </message>
+    <message>
+        <source>SD</source>
+        <translation type="unfinished">SD</translation>
+    </message>
+    <message>
+        <source>Battery Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SE</source>
+        <translation type="unfinished">SE</translation>
+    </message>
+    <message>
+        <source>SF</source>
+        <translation type="unfinished">SF</translation>
+    </message>
+    <message>
+        <source>SG</source>
+        <translation type="unfinished">SG</translation>
+    </message>
+    <message>
+        <source>SH</source>
+        <translation type="unfinished">SH</translation>
+    </message>
+    <message>
+        <source>SI</source>
+        <translation type="unfinished">SI</translation>
+    </message>
+    <message>
+        <source>SJ</source>
+        <translation type="unfinished">SJ</translation>
+    </message>
+    <message>
+        <source>SK</source>
+        <translation type="unfinished">SK</translation>
+    </message>
+    <message>
+        <source>SL</source>
+        <translation type="unfinished">SL</translation>
+    </message>
+    <message>
+        <source>SM</source>
+        <translation type="unfinished">SM</translation>
+    </message>
+    <message>
+        <source>SN</source>
+        <translation type="unfinished">SN</translation>
+    </message>
+    <message>
+        <source>RS2</source>
+        <translation type="unfinished">RS2</translation>
+    </message>
+    <message>
+        <source>Bluetooth</source>
+        <translation type="unfinished">Blåtand</translation>
+    </message>
+</context>
+<context>
+    <name>HardwarePanel</name>
+    <message>
+        <source>None</source>
+        <translation type="unfinished">Ingen</translation>
+    </message>
+    <message>
+        <source>2 Positions Toggle</source>
+        <translation type="unfinished">2-Läges-brytare</translation>
+    </message>
+    <message>
+        <source>2 Positions</source>
+        <translation type="unfinished">2 Lägen</translation>
+    </message>
+    <message>
+        <source>3 Positions</source>
+        <translation type="unfinished">3 Lägen</translation>
+    </message>
+    <message>
+        <source>Pot with detent</source>
+        <translation type="unfinished">Ratt med mittklick</translation>
+    </message>
+    <message>
+        <source>Multipos switch</source>
+        <translation type="unfinished">Flerlägesväljare</translation>
+    </message>
+    <message>
+        <source>Pot without detent</source>
+        <translation type="unfinished">Ratt utan mittklick</translation>
+    </message>
+    <message>
+        <source>Slider with detent</source>
+        <translation type="unfinished">Skjutpot med mittklick</translation>
     </message>
 </context>
 <context>
@@ -2929,8 +3044,8 @@ FAI-funktionen kan inte slås av i sändaren.
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <source>(no release)</source>
-        <translation>(release saknas)</translation>
+        <source>(instant)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4149,15 +4264,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Exponential</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exponentiella</translation>
     </message>
     <message>
         <source>Extra Fine</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Extrafina</translation>
     </message>
     <message>
         <source>Fine</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fina</translation>
     </message>
     <message>
         <source>Medium</source>
@@ -4165,7 +4280,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Coarse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grova</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -4353,6 +4468,10 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Slow(u%1:d%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>instant</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4917,11 +5036,11 @@ p, li { white-space: pre-wrap; }
         <source>m</source>
         <translation>m</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation>°</translation>
     </message>
@@ -5000,10 +5119,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Play Sound</source>
         <translation>Spela ljud</translation>
-    </message>
-    <message>
-        <source>Start Logs</source>
-        <translation>Starta loggning</translation>
     </message>
     <message>
         <source>----</source>
@@ -6026,10 +6141,6 @@ p, li { white-space: pre-wrap; }
         <translation>Portugisiska</translation>
     </message>
     <message>
-        <source>Finnish</source>
-        <translation>Finska</translation>
-    </message>
-    <message>
         <source>!Flight mode %1</source>
         <translation>!Flygläge %1</translation>
     </message>
@@ -6411,7 +6522,7 @@ OpenTX-gruppen.</translation>
         <source>Flight</source>
         <translation>Flygning</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°F</source>
         <translation>°F</translation>
     </message>
@@ -6529,6 +6640,190 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>repeat(%1s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SD Logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Positive</source>
+        <translation type="unfinished">Positiv</translation>
+    </message>
+    <message>
+        <source>Negative</source>
+        <translation type="unfinished">Negativ</translation>
+    </message>
+    <message>
+        <source>Switch</source>
+        <translation type="unfinished">Brytare</translation>
+    </message>
+    <message>
+        <source>Switch </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> cannot be exported on this board!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Negative span</source>
+        <translation type="unfinished">Negativa värden</translation>
+    </message>
+    <message>
+        <source>Mid value</source>
+        <translation type="unfinished">Centrumvärde</translation>
+    </message>
+    <message>
+        <source>Positive span</source>
+        <translation type="unfinished">Positiva värden</translation>
+    </message>
+    <message>
+        <source>Dutch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hungarian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WARNING: couldn&apos;t initialize SDL:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR: Simulator %1 not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QxtCommandOptions</name>
+    <message>
+        <source>sets the application GUI style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the application stylesheet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>restores the application from an earlier session</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>displays debugging information about widgets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>use right-to-left layout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>never grab the mouse or keyboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>grab the mouse/keyboard even in a debugger</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>run in synchronous mode for debugging</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>use Direct3D by default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the X11 display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the geometry of the first window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the default font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the default background color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the default foreground color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the default button color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the application name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the application title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the X11 visual type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>limit the number of colors on an 8-bit display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>use a private color map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the input method server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>disable the X Input Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sets the style used by the input method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>option &quot;%1&quot; not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Short options cannot have optional parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>positional() called before parse()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unrecognized() called before parse()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>count() called before parse()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>value() called before parse()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>parameters() called before parse()</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unrecognized parameters: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 requires a parameter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6851,6 +7146,22 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>S4</source>
         <translation>S4</translation>
     </message>
+    <message>
+        <source>PF4 - Telemetry Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PF5- Trainer Simulator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PF6 - Debug Console Output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PF7 - Reload Lua Scripts</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SplashLibraryDialog</name>
@@ -6895,20 +7206,18 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
 </translation>
     </message>
     <message>
-        <source>Copy %1 to %2
-</source>
-        <translation>Kopiera %1 till %2
-</translation>
-    </message>
-    <message>
-        <source>Write %1
-</source>
-        <translation>Skriv %1
-</translation>
-    </message>
-    <message>
         <source>%1/%2 files</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write %1</source>
+        <translation type="unfinished">Skriv %1
+ {1?}</translation>
+    </message>
+    <message>
+        <source>Copy %1 to %2</source>
+        <translation type="unfinished">Kopiera %1 till %2
+ {1 ?} {2?}</translation>
     </message>
 </context>
 <context>
@@ -7158,7 +7467,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>Meters (m or ft)</source>
         <translation>Meter (m eller ft)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Temp (°)</source>
         <translation>Temp (°)</translation>
     </message>
@@ -7455,11 +7764,11 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>ft</source>
         <translation type="unfinished">ft</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°C</source>
         <translation type="unfinished">°C</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°F</source>
         <translation type="unfinished">°F</translation>
     </message>
@@ -7483,7 +7792,7 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <source>g</source>
         <translation type="unfinished">g</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation type="unfinished">°</translation>
     </message>
@@ -7534,116 +7843,12 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>SWR</translation>
     </message>
     <message>
-        <source>simulate</source>
-        <translation>simulera</translation>
-    </message>
-    <message>
         <source>A2</source>
         <translation>A2</translation>
     </message>
     <message>
-        <source>Vario Altitude</source>
-        <translation>Variohöjd</translation>
-    </message>
-    <message>
-        <source>V-ALT</source>
-        <translation>V-ALT</translation>
-    </message>
-    <message>
-        <source>Vario Vertical Speed</source>
-        <translation>Vertikal hastighet från vario</translation>
-    </message>
-    <message>
-        <source>V-VSPD</source>
-        <translation>V-VSPD</translation>
-    </message>
-    <message>
-        <source>ACCZ</source>
-        <translation>ACCZ</translation>
-    </message>
-    <message>
-        <source>GPS Time</source>
-        <translation>GPS-tid</translation>
-    </message>
-    <message>
-        <source>GPS-T</source>
-        <translation>GPS-T</translation>
-    </message>
-    <message>
-        <source>ACCX</source>
-        <translation>ACCX</translation>
-    </message>
-    <message>
-        <source>GPS Lat/Lon</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>GPS-LL</source>
-        <translation>GPS-LL</translation>
-    </message>
-    <message>
         <source>VFAS</source>
         <translation>VFAS</translation>
-    </message>
-    <message>
-        <source>FAS-V</source>
-        <translation>FAS-V</translation>
-    </message>
-    <message>
-        <source>GPS Speed</source>
-        <translation>GPS-hastighet</translation>
-    </message>
-    <message>
-        <source>GPS-S</source>
-        <translation>GPS-S</translation>
-    </message>
-    <message>
-        <source>CELLS</source>
-        <translation>CELLS</translation>
-    </message>
-    <message>
-        <source>ACCY</source>
-        <translation>ACCY</translation>
-    </message>
-    <message>
-        <source>GPS Course</source>
-        <translation>GPS-kurs</translation>
-    </message>
-    <message>
-        <source>GPS-C</source>
-        <translation>GPS-C</translation>
-    </message>
-    <message>
-        <source>GPS Altitude</source>
-        <translation>GPS Höjd</translation>
-    </message>
-    <message>
-        <source>GPS-A</source>
-        <translation>GPS-A</translation>
-    </message>
-    <message>
-        <source>CURRENT</source>
-        <translation>CURRENT</translation>
-    </message>
-    <message>
-        <source>FAS-C</source>
-        <translation>FAS-C</translation>
-    </message>
-    <message>
-        <source>30</source>
-        <translation>30</translation>
-    </message>
-    <message>
-        <source>75</source>
-        <translation>75</translation>
-    </message>
-    <message>
-        <source>FR_ID_AIR_SPEED</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>ASPD</source>
-        <translation>ASPD</translation>
     </message>
     <message>
         <source>A3</source>
@@ -7654,44 +7859,197 @@ Gasen reverseras om alternativet väljs. Tomgång ligger då uppåt. Trim och ga
         <translation>A4</translation>
     </message>
     <message>
-        <source>Temperature 1</source>
-        <translation>Temperatur 1</translation>
-    </message>
-    <message>
-        <source>T1</source>
-        <translation>T1</translation>
-    </message>
-    <message>
-        <source>Temperature 2</source>
-        <translation>Temperatur 2</translation>
-    </message>
-    <message>
-        <source>T2</source>
-        <translation>T2</translation>
-    </message>
-    <message>
         <source>RPM</source>
         <translation>RPM</translation>
-    </message>
-    <message>
-        <source>FUEL</source>
-        <translation>FUEL</translation>
     </message>
     <message>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start with &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt; for hex, &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt; for octal, otherwise decimal.&lt;br/&gt;Numeric entry only. Blank values are not sent.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Inled hextal med &lt;span style=&quot; font-style:italic;&quot;&gt;0x&lt;/span&gt;. Inled octaltal med &lt;span style=&quot; font-style:italic;&quot;&gt;0&lt;/span&gt;. Alla andra tal antas vara decimala.&lt;br/&gt;Enbart numeriska tecken. Tomma tal skickas ej.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <source>Simulate</source>
+        <translation type="unfinished">Simulera</translation>
     </message>
     <message>
-        <source>Instance</source>
-        <translation type="unfinished">Instans</translation>
+        <source>Replay SD Log File</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>2</source>
-        <translation type="unfinished">2</translation>
+        <source>|&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;|</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&gt;</source>
+        <translation type="unfinished">&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation type="unfinished">X</translation>
+    </message>
+    <message>
+        <source>No Log File Currently Loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Replay rate (1/5 -&gt; 5x)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Row # 
+Timestamp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RxBt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>V / ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Volts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Db</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Curr</source>
+        <translation type="unfinished">Ström</translation>
+    </message>
+    <message>
+        <source>Amps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ASpd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>km/h</source>
+        <translation type="unfinished">km/h</translation>
+    </message>
+    <message>
+        <source>GAlt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Meters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GSpd</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tmp1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deg. C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hdg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tmp2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>°C</source>
+        <translation type="unfinished">°C</translation>
+    </message>
+    <message>
+        <source>Date</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dd-MM-yyyy hh:mm:ss</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lat,Lon (dec.deg.)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fuel</source>
+        <translation type="unfinished">Tank</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>AccX</source>
+        <translation type="unfinished">AccX</translation>
+    </message>
+    <message>
+        <source>G</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VSpd</source>
+        <translation type="unfinished">VHastighet</translation>
+    </message>
+    <message>
+        <source>m/s</source>
+        <translation type="unfinished">m/s</translation>
+    </message>
+    <message>
+        <source>AccY</source>
+        <translation type="unfinished">AccY</translation>
+    </message>
+    <message>
+        <source>Alt</source>
+        <translation type="unfinished">Höj</translation>
+    </message>
+    <message>
+        <source>AccZ</source>
+        <translation type="unfinished">AccZ</translation>
+    </message>
+    <message>
+        <source>Log File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>LOG Files (*.csv)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ERROR - invalid file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

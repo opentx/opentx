@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="pl_PL">
+<TS version="2.1" language="pl_PL">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -2349,28 +2349,34 @@ Będą one obowiązywać dla wszystkich modeli w tym samym EEPROM-ie.</translati
         <translation>Kalibracja</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="137"/>
-        <location filename="../generaledit/generaledit.cpp" line="191"/>
+        <location filename="../generaledit/generaledit.cpp" line="140"/>
+        <location filename="../generaledit/generaledit.cpp" line="179"/>
+        <location filename="../generaledit/generaledit.cpp" line="233"/>
         <source>Warning</source>
         <translation>Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="137"/>
+        <location filename="../generaledit/generaledit.cpp" line="140"/>
         <source>Wrong data in profile, radio calibration was not retrieved</source>
         <translation>Błędne dane w profilu, kalibracja nie została odzyskana</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="191"/>
+        <location filename="../generaledit/generaledit.cpp" line="179"/>
+        <source>Wrong data in profile, Switch/pot config not retrieved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../generaledit/generaledit.cpp" line="233"/>
         <source>Wrong data in profile, hw related parameters were not retrieved</source>
         <translation>Błędne dane w profilu, parametry HW nie zostały odzyskana</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="212"/>
+        <location filename="../generaledit/generaledit.cpp" line="256"/>
         <source>Do you want to store calibration in %1 profile&lt;br&gt;overwriting existing calibration?</source>
         <translation>Chcesz zapamiętać dane kalibracji profilu %1&lt;br&gt; Zastąpią one aktualne dane kalibracji?</translation>
     </message>
     <message>
-        <location filename="../generaledit/generaledit.cpp" line="247"/>
+        <location filename="../generaledit/generaledit.cpp" line="310"/>
         <source>Calibration and HW parameters saved.</source>
         <translation>Kalibracja i parametry HW zapamiętane.</translation>
     </message>
@@ -2397,7 +2403,7 @@ Będą one obowiązywać dla wszystkich modeli w tym samym EEPROM-ie.</translati
         <source>Measurement Units</source>
         <translation>Jednostki miar</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../generaledit/generalsetup.ui" line="2090"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation>hh° (N/S) mm&apos; ss&apos;&apos;.dd</translation>
@@ -5483,12 +5489,13 @@ p, li { white-space: pre-wrap; }
         <translation>Nazwa(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="372"/>
+        <location filename="../modelprinter.cpp" line="310"/>
+        <location filename="../modelprinter.cpp" line="375"/>
         <source>Offset(%1)</source>
         <translation>Wyrównanie(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="379"/>
+        <location filename="../modelprinter.cpp" line="382"/>
         <source>Delay(u%1:d%2)</source>
         <translation>Opóźnienie(u%1:d%2)</translation>
     </message>
@@ -5526,7 +5533,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../modelprinter.cpp" line="217"/>
         <location filename="../modelprinter.cpp" line="239"/>
         <location filename="../modelprinter.cpp" line="253"/>
-        <location filename="../modelprinter.cpp" line="408"/>
+        <location filename="../modelprinter.cpp" line="411"/>
         <source>FM%1</source>
         <translation>FM%1</translation>
     </message>
@@ -5562,87 +5569,87 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="305"/>
-        <location filename="../modelprinter.cpp" line="365"/>
+        <location filename="../modelprinter.cpp" line="368"/>
         <source>NoTrim</source>
         <translation>Bez Trymera</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="355"/>
+        <location filename="../modelprinter.cpp" line="358"/>
         <source>Weight(%1)</source>
         <translation>Waga(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="362"/>
+        <location filename="../modelprinter.cpp" line="365"/>
         <source>Switch(%1)</source>
         <translation>Przełącznik(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="370"/>
+        <location filename="../modelprinter.cpp" line="373"/>
         <source>No DR/Expo</source>
         <translation>Bez DR/Expo</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="381"/>
+        <location filename="../modelprinter.cpp" line="384"/>
         <source>Slow(u%1:d%2)</source>
         <translation>Spowolnienie(u%1:d%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="383"/>
+        <location filename="../modelprinter.cpp" line="386"/>
         <source>Warn(%1)</source>
         <translation>(%1)Ostrzeżenie</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="417"/>
+        <location filename="../modelprinter.cpp" line="420"/>
         <source>Disabled in all flight modes</source>
         <translation>Wyłaczone we wszystkich fazach lotu</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="427"/>
+        <location filename="../modelprinter.cpp" line="430"/>
         <source>Flight modes(%1)</source>
         <translation>Fazy lotu(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="429"/>
+        <location filename="../modelprinter.cpp" line="432"/>
         <source>Flight mode(%1)</source>
         <translation>Faza lotu (%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="448"/>
+        <location filename="../modelprinter.cpp" line="451"/>
         <source>Edge(%1, [%2:%3])</source>
         <translation>Brzeg(%1, [%2:%3])</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="448"/>
+        <location filename="../modelprinter.cpp" line="451"/>
         <source>instant</source>
         <translation>natychmiastowy</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="451"/>
+        <location filename="../modelprinter.cpp" line="454"/>
         <source>Sticky(%1, %2)</source>
         <translation>Stały(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="454"/>
+        <location filename="../modelprinter.cpp" line="457"/>
         <source>Timer(%1, %2)</source>
         <translation>Timer(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="547"/>
+        <location filename="../modelprinter.cpp" line="550"/>
         <source>Duration(%1s)</source>
         <translation>Trwanie(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="549"/>
+        <location filename="../modelprinter.cpp" line="552"/>
         <source>Delay(%1s)</source>
         <translation>Opóznienie(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="573"/>
+        <location filename="../modelprinter.cpp" line="576"/>
         <source>Custom</source>
         <translation>Własny</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="573"/>
+        <location filename="../modelprinter.cpp" line="576"/>
         <source>Standard</source>
         <translation>Standard</translation>
     </message>
@@ -6717,13 +6724,13 @@ p, li { white-space: pre-wrap; }
         <source>Time</source>
         <translation>Czas</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../eeprominterface.cpp" line="126"/>
         <location filename="../eeprominterface.cpp" line="263"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../eeprominterface.cpp" line="142"/>
         <location filename="../eeprominterface.cpp" line="269"/>
         <source>°</source>
@@ -6736,7 +6743,7 @@ p, li { white-space: pre-wrap; }
         <source>mph</source>
         <translation>mph</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../eeprominterface.cpp" line="128"/>
         <source>°F</source>
         <translation>°F</translation>
@@ -7143,6 +7150,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1245"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1278"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1335"/>
         <source>Support for radio modified with regular speaker</source>
         <translation>Wsparcie dla modyfikacji radia zwykłym głośnikiem</translation>
     </message>
@@ -7460,8 +7468,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="278"/>
-        <source>Finnish</source>
-        <translation>Fiński</translation>
+        <source>Dutch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../generaledit/generalsetup.cpp" line="278"/>
+        <source>Hungarian</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="334"/>
@@ -9203,55 +9216,72 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
 <context>
     <name>SimulatorDialogTaranis</name>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="26"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="26"/>
         <source>Companion Simulator</source>
         <translation>Symulator Companion</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="245"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="245"/>
         <source>Outputs2</source>
         <translation>Wyjścia2</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="258"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="258"/>
         <source>Gvars</source>
         <translation>Zm-Gl</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1704"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1049"/>
         <source>S3</source>
         <translation>S3</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1751"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1065"/>
         <source>S4</source>
         <translation>S4</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1031"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1259"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1103"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1517"/>
         <source>Hold Y</source>
         <translation>Przytrzymaj Y</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1061"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1289"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1133"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1547"/>
         <source>Fix Y</source>
         <translation>Zablokuj Y</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1091"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1319"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1163"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1577"/>
         <source>Fix X</source>
         <translation>Zablokuj X</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1121"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1349"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1193"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1607"/>
         <source>Hold X</source>
         <translation>Przytrzymaj X</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="939"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1163"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1415"/>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="1481"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1259"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1325"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1425"/>
@@ -9260,16 +9290,19 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>Podwójne kliknięcie PPM w celu zresetowania</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="276"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1742"/>
         <source>PF4 - Telemetry Simulator</source>
         <translation>PF4 - Symulator Telemetri</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="286"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1752"/>
         <source>PF5- Trainer Simulator</source>
         <translation>PF5 - Symulator Trenera</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="296"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="1762"/>
         <source>PF6 - Debug Console Output</source>
         <translation>PF6 -Wyjscie konsoli debugowania</translation>
@@ -9280,11 +9313,13 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <translation>PF7 - Przeładuj skrypty LUA</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="77"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="77"/>
         <source>Taranis Simulator</source>
         <translation>Symulator Taranis</translation>
     </message>
     <message>
+        <location filename="../simulation/simulatordialog-taranis-x9e.ui" line="232"/>
         <location filename="../simulation/simulatordialog-taranis.ui" line="232"/>
         <source>Outputs</source>
         <translation>Wyjścia</translation>
@@ -9347,15 +9382,13 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     </message>
     <message>
         <location filename="../process_sync.cpp" line="97"/>
-        <source>Copy %1 to %2
-</source>
-        <translation>Skopuj %1 do %2</translation>
+        <source>Copy %1 to %2</source>
+        <translation type="unfinished">Skopuj %1 do %2 {1 ?} {2?}</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="123"/>
-        <source>Write %1
-</source>
-        <translation>Zapisz %1</translation>
+        <source>Write %1</source>
+        <translation type="unfinished">Zapisz %1 {1?}</translation>
     </message>
 </context>
 <context>
@@ -9674,7 +9707,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>Meters (m or ft)</source>
         <translation>Wysokość (m albo ft)</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
         <source>Temp (°)</source>
         <translation>Temp (°)</translation>
@@ -9997,12 +10030,12 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>ft</source>
         <translation>ft</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
         <source>°C</source>
         <translation>°C</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
         <source>°F</source>
         <translation>°F</translation>
@@ -10032,7 +10065,7 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
         <source>g</source>
         <translation>g</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
         <source>°</source>
         <translation>°</translation>
@@ -10337,7 +10370,7 @@ Znak-czasu</translation>
         <source>Tmp2</source>
         <translation>Tmp2</translation>
     </message>
-    <message utf8="true">
+    <message>
         <location filename="../simulation/telemetrysimu.ui" line="1285"/>
         <source>°C</source>
         <translation>°C</translation>
