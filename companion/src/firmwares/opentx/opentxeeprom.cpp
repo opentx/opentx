@@ -2170,7 +2170,7 @@ class ArmCustomFunctionField: public TransformedField {
 
       if (fn.func >= FuncOverrideCH1 && fn.func <= FuncOverrideCH32) {
         fn.func = AssignFunc(fn.func + index);
-        fn.param = (int8_t)value;
+        fn.param = (int16_t)(uint16_t)value;
       }
       else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
         fn.func = AssignFunc(fn.func + index);
