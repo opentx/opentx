@@ -697,7 +697,8 @@ Returns (some of) the general radio settings
  * `language` (string) radio language (used for menus)
  * `voice` (string) voice language (used for speech)
 
-@status current Introduced in 2.0.6, `imperial` added in TODO
+@status current Introduced in 2.0.6, `imperial` added in TODO, 
+`language` and `voice` added int 2.2.0.
 
 */
 static int luaGetGeneralSettings(lua_State *L)
