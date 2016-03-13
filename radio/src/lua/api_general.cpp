@@ -694,6 +694,8 @@ Returns (some of) the general radio settings
  * `battMax` (number) radio battery range - maximum value
  * `imperial` (number) set to a value different from 0 if the radio is set to the
  IMPERIAL units
+ * `language` (string) radio language (used for menus)
+ * `voice` (string) voice language (used for speech)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO
 
@@ -704,41 +706,8 @@ static int luaGetGeneralSettings(lua_State *L)
   lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
   lua_pushtablenumber(L, "battMax", double(120+g_eeGeneral.vBatMax)/10);
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
-  return 1;
-}
-
-/*luadoc
-@function getLanguage()
-
-Returns the radio language
-
-@retval returns the radio language
-
-@status current Introduced in 2.2.0
-
-*/
-static int luaGetLanguage(lua_State * L)
-{
-  lua_pushstring(L, TRANSLATIONS);
-  return 1;
-}
-
-/*luadoc
-@function getTTSLanguage()
-
-Returns the current TTS language
-
-@retval returns the TTS language
-
-@status current Introduced in 2.2.0
-
-*/
-static int luaGetTTSLanguage(lua_State * L)
-{
-  char ttsLanguage[sizeof(g_eeGeneral.ttsLanguage)+1];
-  memcpy(ttsLanguage, g_eeGeneral.ttsLanguage, sizeof(g_eeGeneral.ttsLanguage));
-  ttsLanguage[sizeof(g_eeGeneral.ttsLanguage)] = '\0';
-  lua_pushstring(L, ttsLanguage);
+  lua_pushtablestring(L, "language", TRANSLATIONS);
+  lua_pushtablestring(L, "voice", currentLanguagePack->id);
   return 1;
 }
 
@@ -841,8 +810,6 @@ const luaL_Reg opentxLib[] = {
   { "getDateTime", luaGetDateTime },
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
-  { "getLanguage", luaGetLanguage },
-  { "getTTSLanguage", luaGetTTSLanguage },
   { "getValue", luaGetValue },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },
