@@ -94,7 +94,7 @@ QString SyncProcess::updateEntry(const QString & path, const QDir & source, cons
   else {
     if (!destinationInfo.exists()) {
       // qDebug() << "Copy" << path << "to" << destinationPath;
-      progress->addText(tr("Copy %1 to %2\n").arg(path).arg(destinationPath));
+      progress->addText(tr("Copy %1 to %2").arg(path).arg(destinationPath) + "\n");
       if (!QFile::copy(path, destinationPath)) {
         return QObject::tr("Copy '%1' to '%2' failed").arg(path).arg(destinationPath);
       }
@@ -120,7 +120,7 @@ QString SyncProcess::updateEntry(const QString & path, const QDir & source, cons
       if (!destinationFile.open(QFile::WriteOnly)) {
         return QObject::tr("Write '%1' failed").arg(destinationPath);
       }
-      progress->addText(tr("Write %1\n").arg(destinationPath));
+      progress->addText(tr("Write %1").arg(destinationPath) + "\n");
       // qDebug() << "Write" << destinationPath;
       QTextStream destinationStream(&destinationFile);
       destinationStream << sourceContents;
