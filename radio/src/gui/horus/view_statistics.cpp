@@ -18,40 +18,15 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
+#include "stamp.h"
 
-bool menuStatisticsView(evt_t event)
+#define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
+
+bool menuStatsGraph(evt_t event)
 {
-  switch(event) {
-    case EVT_KEY_FIRST(KEY_UP):
-      chainMenu(menuStatisticsDebug);
-      return false;
+  MENU("Throttle graph", LBM_STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
-    case EVT_KEY_LONG(KEY_MENU):
-      g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
-      sessionTimer = 0;
-      break;
-
-    case EVT_KEY_FIRST(KEY_EXIT):
-      chainMenu(menuMainView);
-      return false;
-  }
-
-  drawScreenTemplate("Statistics", LBM_RADIO_ICON, OPTION_MENU_NO_SCROLLBAR);
-
-  lcdDrawText(  10, MENU_CONTENT_TOP + FH*0, "\037\145TOT:\037\317BATT:", HEADER_COLOR);
-  lcdDrawText(  10, MENU_CONTENT_TOP + FH*1, "TM1:\037\145TM2:", HEADER_COLOR);
-  lcdDrawText(  10, MENU_CONTENT_TOP + FH*2, "THR:\037\145TH%:", HEADER_COLOR);
-
-  putsTimer(    45, MENU_CONTENT_TOP + FH*1, timersStates[0].val);
-  putsTimer(   140, MENU_CONTENT_TOP + FH*1, timersStates[1].val);
-  putsTimer(    45, MENU_CONTENT_TOP + FH*2, s_timeCumThr);
-  putsTimer(   140, MENU_CONTENT_TOP + FH*2, s_timeCum16ThrP/16);
-  putsTimer(   140, MENU_CONTENT_TOP + FH*0, sessionTimer);
-  putsTimer(   250, MENU_CONTENT_TOP + 0*FH, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
-
-#if defined(THRTRACE)
   coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const coord_t x = 4;
   const coord_t y = 200;
@@ -67,19 +42,11 @@ bool menuStatisticsView(evt_t event)
     if (traceRd>=MAXTRACE) traceRd = 0;
     if (traceRd==s_traceWr) break;
   }
-#endif
 
   return true;
 }
 
-#define MENU_DEBUG_COL1_OFS   (11*10-2)
-#define MENU_DEBUG_Y_MIXMAX   (MENU_CONTENT_TOP + 2*FH)
-#define MENU_DEBUG_Y_LUA      (MENU_CONTENT_TOP + 3*FH)
-#define MENU_DEBUG_Y_FREE_RAM (MENU_CONTENT_TOP + 4*FH)
-#define MENU_DEBUG_Y_STACK    (MENU_CONTENT_TOP + 5*FH)
-#define MENU_DEBUG_Y_RTOS     (MENU_CONTENT_TOP + 6*FH)
-
-bool menuStatisticsDebug(evt_t event)
+bool menuStatsValue(evt_t event)
 {
   switch(event)
   {
@@ -92,63 +59,110 @@ bool menuStatisticsDebug(evt_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
-#if defined(LUA)
-      maxLuaInterval = 0;
-      maxLuaDuration = 0;
-#endif
       maxMixerDuration  = 0;
       AUDIO_KEYPAD_UP();
       break;
-
-#if defined(DEBUG_TRACE_BUFFER)
-    case EVT_KEY_FIRST(KEY_UP):
-      pushMenu(menuTraceBuffer);
-      return false;
-#endif
-
-    case EVT_KEY_FIRST(KEY_DOWN):
-      chainMenu(menuStatisticsView);
-      return false;
-
-    case EVT_KEY_FIRST(KEY_EXIT):
-      chainMenu(menuMainView);
-      return false;
   }
 
-  drawScreenTemplate(STR_MENUDEBUG, LBM_RADIO_ICON, OPTION_MENU_NO_SCROLLBAR);
+  MENU("Values", LBM_STATS_ICONS, menuTabStats, e_StatsValue, 0, { 0 });
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT, 0, NULL, "b");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Free Mem");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
 
-#if defined(LUA)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_LUA, "Lua scripts");
-  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
-  lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_LUA+1, "[Interval]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
-#endif
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, STR_TMIXMAXMS);
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, STR_FREESTACKMINB);
+  lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH+1, "[Menus]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, menusStack.available(), LEFT);
+  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+2*FH+1, "[Mix]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, mixerStack.available(), LEFT);
+  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+2*FH+1, "[Audio]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, audioStack.available(), LEFT);
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[Menus]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS+30, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
-  lcdDrawText(MENU_DEBUG_COL1_OFS+60, MENU_DEBUG_Y_RTOS+1, "[Mix]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS+90, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
-  lcdDrawText(MENU_DEBUG_COL1_OFS+120, MENU_DEBUG_Y_RTOS+1, "[Audio]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS+150, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
-
-  // TODO lcd_putsCenter(7*FH+1, STR_MENUTORESET);
-  // lcdInvertLastLine();
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
 
   return true;
 }
 
-#if defined(DEBUG_TRACE_BUFFER)
-#include "stamp-opentx.h"
+bool menuStatsTime(evt_t event)
+{
+  switch(event) {
+    case EVT_KEY_LONG(KEY_MENU):
+      g_eeGeneral.globalTimer = 0;
+      storageDirty(EE_GENERAL);
+      sessionTimer = 0;
+      break;
+  }
 
-bool menuTraceBuffer(evt_t event)
+  MENU("Time Stats", LBM_STATS_ICONS, menuTabStats, e_StatsTime, 0, { 0 });
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Battery", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Timer1", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, timersStates[0].val);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Timer2", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, timersStates[2].val);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Timer3", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, timersStates[3].val);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+5*FH, "Throttle", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+5*FH, s_timeCumThr);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+6*FH, "Throttle %", HEADER_COLOR);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+6*FH, s_timeCum16ThrP/16);
+
+  return true;
+}
+
+#if defined(LUA)
+bool menuStatsLua(evt_t event)
+{
+  switch(event)
+  {
+    case EVT_KEY_LONG(KEY_ENTER):
+      g_eeGeneral.globalTimer = 0;
+      storageDirty(EE_GENERAL);
+      sessionTimer = 0;
+      killEvents(event);
+      AUDIO_KEYPAD_UP();
+      break;
+
+    case EVT_KEY_FIRST(KEY_ENTER):
+      maxLuaInterval = 0;
+      maxLuaDuration = 0;
+      AUDIO_KEYPAD_UP();
+      break;
+  }
+
+  MENU("LUA", LBM_STATS_ICONS, menuTabStats, e_StatsLua, 0, { 0 });
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Free Mem");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Duration");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Interval");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+
+  return true;
+}
+#endif
+
+#if defined(DEBUG_TRACE_BUFFER)
+#define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT
+#define STATS_TRACES_TIME_POS          MENUS_MARGIN_LEFT + 4*10
+#define STATS_TRACES_EVENT_POS         MENUS_MARGIN_LEFT + 14*10
+#define STATS_TRACES_DATA_POS          MENUS_MARGIN_LEFT + 20*10
+
+bool menuStatsDebug(evt_t event)
 {
   switch(event)
   {
@@ -158,40 +172,34 @@ bool menuTraceBuffer(evt_t event)
       break;
   }
 
-  SIMPLE_SUBMENU("Trace Buffer " VERSION, TRACE_BUFFER_LEN);
+  SIMPLE_MENU("", LBM_STATS_ICONS, menuTabStats, s_StatsDebug, TRACE_BUFFER_LEN);
 
-  /* RTC time */
-  struct gtm t;
-  gettime(&t);
-  putsTime(LCD_W+1, 0, t, TIMEBLINK);
-
-  uint8_t y = 0;
   uint8_t k = 0;
   int8_t sub = menuVerticalPosition;
 
-  lcdDrawChar(0, FH, '#', TEXT_COLOR);
-  lcdDrawText(4*10, FH, "Time");
-  lcdDrawText(14*10, FH, "Event");
-  lcdDrawText(20*10, FH, "Data");
+  lcdDrawChar(STATS_TRACES_INDEX_POS, MENU_TITLE_TOP+2, '#', MENU_TITLE_COLOR);
+  lcdDrawText(STATS_TRACES_TIME_POS, MENU_TITLE_TOP+2, "Time", MENU_TITLE_COLOR);
+  lcdDrawText(STATS_TRACES_EVENT_POS, MENU_TITLE_TOP+2, "Event", MENU_TITLE_COLOR);
+  lcdDrawText(STATS_TRACES_DATA_POS, MENU_TITLE_TOP+2, "Data", MENU_TITLE_COLOR);
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
-    y = 1 + (i+2)*FH;
+    coord_t y = MENU_CONTENT_TOP + i * FH;
     k = i+menuVerticalOffset;
 
     // item
-    lcdDrawNumber(0, y, k, LEFT | (sub==k ? INVERS : 0));
+    lcdDrawNumber(STATS_TRACES_INDEX_POS, y, k, LEFT | (sub==k ? INVERS : 0));
 
     const struct TraceElement * te = getTraceElement(k);
     if (te) {
-      //time
+      // time
       putstime_t tme = te->time % SECS_PER_DAY;
-      putsTimer(4*10, y, tme, TIMEHOUR|LEFT);
-      //event
-      lcdDrawNumber(14*10, y, te->event, LEADING0|LEFT, 3);
-      //data
-      lcdDrawSizedText  (20*10, y, "0x", 2);
-      lcdDrawHexNumber(22*10-2, y, (uint16_t)(te->data >> 16));
-      lcdDrawHexNumber(25*10, y, (uint16_t)(te->data & 0xFFFF));
+      putsTimer(STATS_TRACES_TIME_POS, y, tme, TIMEHOUR|LEFT);
+      // event
+      lcdDrawNumber(STATS_TRACES_EVENT_POS, y, te->event, LEADING0|LEFT, 3);
+      // data
+      lcdDrawSizedText(STATS_TRACES_DATA_POS, y, "0x", 2);
+      lcdDrawHexNumber(STATS_TRACES_DATA_POS + 20, y, (uint16_t)(te->data >> 16));
+      lcdDrawHexNumber(STATS_TRACES_DATA_POS+ 60, y, (uint16_t)(te->data & 0xFFFF));
     }
 
   }

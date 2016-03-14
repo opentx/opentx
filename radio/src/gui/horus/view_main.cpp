@@ -108,7 +108,7 @@ void onMainViewMenu(const char *result)
     flightReset();
   }
   else if (result == STR_STATISTICS) {
-    chainMenu(menuStatisticsView);
+    pushMenu(menuTabStats[0]);
   }
   else if (result == STR_SETUP_SCREENS) {
     pushMenu(menuTabScreensSetup[1]);
@@ -155,12 +155,12 @@ bool menuMainView(evt_t event)
       break;
 
     case EVT_KEY_BREAK(KEY_MENU):
-      pushMenu(menuModelSetup);
+      pushMenu(menuTabModel[0]);
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
       killEvents(event);
-      pushMenu(menuGeneralSetup);
+      pushMenu(menuTabGeneral[0]);
       break;
 
     case EVT_KEY_BREAK(KEY_DOWN):

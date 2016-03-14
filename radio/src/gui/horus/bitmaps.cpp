@@ -77,6 +77,47 @@ const uint8_t LBM_RSCALE[] = {
 };
 
 /*
+ *  Stats / Debug menu bitmaps
+ */
+
+const uint8_t LBM_STATS_ICON[] = {
+#include "mask_stats.lbm"
+};
+
+const uint8_t LBM_STATS_GRAPH_ICON[] = {
+#include "mask_stats_graph.lbm"
+};
+
+const uint8_t LBM_STATS_VALUE_ICON[] = {
+#include "mask_stats_value.lbm"
+};
+
+const uint8_t LBM_STATS_TIME_ICON[] = {
+#include "mask_stats_time.lbm"
+};
+
+const uint8_t LBM_STATS_LUA_ICON[] = {
+#include "mask_stats_lua.lbm"
+};
+
+const uint8_t LBM_STATS_DEBUG_ICON[] = {
+#include "mask_stats_debug.lbm"
+};
+
+const uint8_t * const LBM_STATS_ICONS[] = {
+  LBM_STATS_ICON,
+  LBM_STATS_GRAPH_ICON,
+  LBM_STATS_VALUE_ICON,
+  LBM_STATS_TIME_ICON,
+#if defined(LUA)
+  LBM_STATS_LUA_ICON,
+#endif
+#if defined(DEBUG_TRACE_BUFFER)
+  LBM_STATS_DEBUG_ICON
+#endif  
+};
+
+/*
  *  Radio menu bitmaps
  */
 

@@ -42,6 +42,7 @@ extern const uint8_t LBM_RSCALE[];
 // Menu icons
 extern const uint8_t * const LBM_RADIO_ICONS[];
 extern const uint8_t * const LBM_MODEL_ICONS[];
+extern const uint8_t * const LBM_STATS_ICONS[];
 extern const uint8_t LBM_RADIO_ICON[];
 extern const uint8_t LBM_SD_BROWSER_ICON[];
 extern const uint8_t LBM_CALIBRATION_ICON[];

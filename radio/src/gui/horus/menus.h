@@ -144,24 +144,49 @@ static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuGeneralVersion,
 };
 
+enum EnumTabDiag
+{
+  e_StatsGraph,
+  e_StatsValue,
+  e_StatsTime,
+#if defined(LUA)
+  e_StatsLua,
+#endif
+#if defined(DEBUG_TRACE_BUFFER)
+  s_StatsDebug,
+#endif
+};
+
+bool menuStatsGraph(evt_t event);
+bool menuStatsValue(evt_t event);
+bool menuStatsTime(evt_t event);
+bool menuStatsLua(evt_t event);
+bool menuStatsDebug(evt_t event);
+
+static const MenuHandlerFunc menuTabStats[] PROGMEM = {
+  menuStatsGraph,
+  menuStatsValue,
+  menuStatsTime,
+#if defined(LUA)
+  menuStatsLua,
+#endif
+#if defined(DEBUG_TRACE_BUFFER)
+  menuStatsDebug,
+#endif
+};
+
 extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
 
 bool menuFirstCalib(evt_t event);
 bool menuMainView(evt_t event);
 bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
 bool menuModelSelect(evt_t event);
-bool menuStatisticsView(evt_t event);
-bool menuStatisticsDebug(evt_t event);
 bool menuAboutView(evt_t event);
 bool menuMainViewChannelsMonitor(evt_t event);
 bool menuChannelsView(evt_t event);
 bool menuChannelsView(evt_t event);
 bool menuTextView(evt_t event);
 bool menuScreensTheme(evt_t event);
-
-#if defined(DEBUG_TRACE_BUFFER)
-void menuTraceBuffer(evt_t event);
-#endif
 
 typedef uint16_t FlightModesType;
 
