@@ -69,6 +69,8 @@ for s, f, a in [(u"trim center", "midtrim", 495),
                 (u"telemetry recovered", "telemok", NO_ALTERNATE),
                 (u"trainer signal lost", "trainko", NO_ALTERNATE),
                 (u"trainer signal recovered", "trainok", NO_ALTERNATE),
+                (u"sensor lost", "sensorko", NO_ALTERNATE),
+                (u"servo overload", "servoko", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, (s, f) in enumerate([(u"gear!, up!", "gearup"),
