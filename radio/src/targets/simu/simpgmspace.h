@@ -28,6 +28,8 @@ extern int g_snapshot_idx;
 #define sleep(x) Sleep(x)
 #define strcasecmp  _stricmp
 #define strncasecmp _tcsnicmp
+#define chdir  _chdir
+#define getcwd _getcwd
 #else
 #include <unistd.h>
 #define sleep(x) usleep(1000*x)

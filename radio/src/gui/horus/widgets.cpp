@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 #include <stdio.h>
 
 void drawColumnHeader(const char * const * headers, uint8_t index)

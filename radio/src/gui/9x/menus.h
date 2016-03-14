@@ -82,7 +82,8 @@ void menuTelemetryMavlinkSetup(uint8_t event);
 
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
-enum EnumTabDiag {
+enum EnumTabDiag
+{
   e_Setup,
   CASE_SDCARD(e_Sd)
   CASE_CPUARM(e_GeneralCustomFunctions)

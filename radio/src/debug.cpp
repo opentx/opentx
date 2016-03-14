@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "stamp.h"
 #include <stdarg.h>
 
 #if defined(SIMU)
@@ -31,7 +32,7 @@ void debugPrintf(const char * format, ...)
 {
   va_list arglist;
   char tmp[PRINTF_BUFFER_SIZE];
-  
+
   va_start(arglist, format);
   vsnprintf(tmp, PRINTF_BUFFER_SIZE, format, arglist);
   va_end(arglist);
@@ -77,7 +78,6 @@ const struct TraceElement * getTraceElement(uint16_t idx)
   return 0;
 }
 
-#include "stamp-opentx.h"
 
 void dumpTraceBuffer()
 {
@@ -88,13 +88,15 @@ void dumpTraceBuffer()
     filltm(&traceBuffer[n].time, &tp);
     TRACE_INFO_WP("%02d  ", n);
     TRACE_INFO_WP("%4d-%02d-%02d,%02d:%02d:%02d.%02d0", tp.tm_year+1900, tp.tm_mon+1, tp.tm_mday, tp.tm_hour, tp.tm_min, tp.tm_sec, traceBuffer[n].time_ms);
-    TRACE("  %03d    0x%08x", traceBuffer[n].event, traceBuffer[n].data);  
+    TRACE("  %03d    0x%08x", traceBuffer[n].event, traceBuffer[n].data);
     if (traceBuffer[n].time == 0 && traceBuffer[n].time_ms == 0) break;
+#if !defined(SIMU)
     if ((n % 5) == 0) {
-      while (!serial2TxFifo.empty()) { 
+      while (!serial2TxFifo.empty()) {
         CoTickDelay(1);
       }
     }
+#endif
   }
   TRACE("End of Trace Buffer dump");
 }

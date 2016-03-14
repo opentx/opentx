@@ -23,9 +23,7 @@
 #include <fcntl.h>
 #include <stdarg.h>
 #include <sys/stat.h>
-#if defined(RTCLOCK)
-  #include <time.h>
-#endif
+#include <sys/time.h>
 
 #if defined WIN32 || !defined __GNUC__
   #include <direct.h>
@@ -94,6 +92,20 @@ void lcdInit()
 
 void toplcdOff()
 {
+}
+
+uint16_t getTmr16KHz()
+{
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return tv.tv_usec * 2 / 125;
+}
+
+uint16_t getTmr2MHz()
+{
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return tv.tv_usec * 2;
 }
 
 void simuInit()
@@ -273,14 +285,9 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   }
 }
 
-uint16_t getTmr16KHz()
-{
-  return get_tmr10ms() * 160;
-}
-
 #if !defined(PCBTARANIS) && !defined(PCBHORUS)
 bool eeprom_thread_running = true;
-void *eeprom_write_function(void *)
+void * eeprom_write_function(void *)
 {
   while (!sem_wait(eeprom_write_sem)) {
     if (!eeprom_thread_running)
@@ -322,11 +329,6 @@ void *eeprom_write_function(void *)
   }
   return 0;
 }
-#endif
-
-#if defined WIN32 || !defined __GNUC__
-#define chdir  _chdir
-#define getcwd _getcwd
 #endif
 
 void StartSimu(bool tests)
@@ -1243,7 +1245,7 @@ uint32_t pwrPressed() { return false; }
 uint32_t pwrCheck() { return true; }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(CPUSTM32)
 void pwrInit() { }
 void pwrOff() { }
 int usbPlugged() { return false; }

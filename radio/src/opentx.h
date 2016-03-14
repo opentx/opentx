@@ -946,9 +946,12 @@ extern uint16_t lastMixerDuration;
   #define RESET_THR_TRACE() s_timeCum16ThrP = s_timeCumThr = 0
 #endif
 
-#if defined(CPUSTM32)
+#if defined(SIMU)
+  uint16_t getTmr2MHz();
+  uint16_t getTmr16KHz();
+#elif defined(CPUSTM32)
   static inline uint16_t getTmr2MHz() { return TIMER_2MHz_TIMER->CNT; }
-#elif defined(CPUARM)
+#elif defined(PCBSKY9X)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
 #else
   uint16_t getTmr16KHz();

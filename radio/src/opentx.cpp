@@ -1983,7 +1983,13 @@ void opentxStart()
     return;
 #endif
 
-  doSplash();
+  bool display_alerts = (g_eeGeneral.chkSum == evalChkSum());
+
+#if defined(GUI)
+  if (display_alerts) {
+    doSplash();
+  }
+#endif
 
 #if defined(DEBUG_TRACE_BUFFER)
   trace_event(trace_start, 0x12345678);
@@ -1996,12 +2002,11 @@ void opentxStart()
 #endif
 
 #if defined(GUI)
-  checkAlarm();
-  checkAll();
-#endif
-
-#if defined(GUI)
-  if (g_eeGeneral.chkSum != evalChkSum()) {
+  if (display_alerts) {
+    checkAlarm();
+    checkAll();
+  }
+  else {
     chainMenu(menuFirstCalib);
   }
 #endif
@@ -2550,6 +2555,13 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   TRACE("opentxInit()");
 
+#if defined(GUI)
+  menuHandlers[0] = menuMainView;
+  #if MENUS_LOCK != 2/*no menus*/
+    menuHandlers[1] = menuModelSelect;
+  #endif
+#endif
+
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit();    // RTC must be initialized before rambackupRestore() is called
 #endif
@@ -2654,13 +2666,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   startPulses();
 
   wdt_enable(WDTO_500MS);
-
-#if defined(GUI)
-  menuHandlers[0] = menuMainView;
-  #if MENUS_LOCK != 2/*no menus*/
-    menuHandlers[1] = menuModelSelect;
-  #endif
-#endif
 }
 
 #if defined(SIMU)
