@@ -19,7 +19,7 @@ QString getRadioInterfaceCmd()
 {
   burnConfigDialog bcd;
   EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_TARANIS(eepromInterface->getBoard())) {
+  if (IS_STM32(eepromInterface->getBoard())) {
     return bcd.getDFU();
   }
   else if (IS_SKY9X(GetEepromInterface()->getBoard())) {

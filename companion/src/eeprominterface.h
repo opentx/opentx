@@ -47,7 +47,9 @@ QString getBoardName(BoardEnum board);
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)  (board==BOARD_TARANIS_X9E)
 #define IS_HORUS(board)        (board==BOARD_HORUS)
-#define IS_ARM(board)          (IS_TARANIS(board) || IS_SKY9X(board) || IS_HORUS(board))
+#define IS_FLAMENCO(board)     (board==BOARD_FLAMENCO)
+#define IS_STM32(board)        (IS_TARANIS(board) || IS_HORUS(board) || IS_FLAMENCO(board))
+#define IS_ARM(board)          (IS_STM32(board) || IS_SKY9X(board))
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
