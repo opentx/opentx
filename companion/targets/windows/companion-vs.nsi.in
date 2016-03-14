@@ -97,6 +97,7 @@
 
 Section "OpenTX Companion" SecDummy
 
+  Delete "$INSTDIR\opentx-*-simulator.dll"
   SetOutPath "$INSTDIR\platforms"
   File "@QT_DLL_DIR@\..\plugins\platforms\qwindows.dll"
 
@@ -112,8 +113,8 @@ Section "OpenTX Companion" SecDummy
   !else
   File "@SYSDIR@\system32\pthreadVC2.dll"
   !endif
-  File "@SYSDIR@\msvcp100.dll"
-  File "@SYSDIR@\msvcr100.dll"
+  File "@SYSDIR@\msvcp140.dll"
+  File "@SYSDIR@\vcruntime140.dll"
   File "@QT_DLL_DIR@\Qt5Core.dll"
   File "@QT_DLL_DIR@\Qt5Gui.dll"
   File "@QT_DLL_DIR@\Qt5Widgets.dll"
@@ -121,11 +122,6 @@ Section "OpenTX Companion" SecDummy
   File "@QT_DLL_DIR@\Qt5Network.dll"
   File "@QT_DLL_DIR@\Qt5Multimedia.dll"
   File "@QT_DLL_DIR@\Qt5Xml.dll"
-  File "@QT_DLL_DIR@\icudt54.dll"
-  File "@QT_DLL_DIR@\icuin54.dll"
-  File "@QT_DLL_DIR@\icuuc54.dll"
-  File "@QT_DLL_DIR@\libEGL.dll"
-  File "@QT_DLL_DIR@\libGLESv2.dll"
 
   File "@SDL_DIR@\SDL.dll"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.exe"
@@ -197,13 +193,15 @@ Section "Uninstall"
   Delete "$INSTDIR\opentx-*-simulator.dll"
   Delete "$INSTDIR\pthreadVC2.dll"
   Delete "$INSTDIR\SDL.dll"
-  Delete "$INSTDIR\msvcp100.dll"
-  Delete "$INSTDIR\msvcr100.dll"
-  Delete "$INSTDIR\QtCore4.dll"
-  Delete "$INSTDIR\QtGui4.dll"
-  Delete "$INSTDIR\QtXml4.dll"
-  Delete "$INSTDIR\QtNetwork4.dll"
-  Delete "$INSTDIR\Phonon4.dll"
+  Delete "$INSTDIR\msvcp140.dll"
+  Delete "$INSTDIR\vcruntime140.dll"
+  Delete "$INSTDIR\Qt5Core.dll"
+  Delete "$INSTDIR\Qt5Gui.dll"
+  Delete "$INSTDIR\Qt5Widgets.dll"
+  Delete "$INSTDIR\Qt5PrintSupport.dll"
+  Delete "$INSTDIR\Qt5Network.dll"
+  Delete "$INSTDIR\Qt5Multimedia.dll"
+  Delete "$INSTDIR\Qt5Xml.dll"
   Delete "$INSTDIR\avrdude.exe"
   Delete "$INSTDIR\avrdude.conf"
   Delete "$INSTDIR\libusb0.dll"
@@ -213,9 +211,11 @@ Section "Uninstall"
 
   Delete "$INSTDIR\lang\*.*"
   Delete "$INSTDIR\phonon_backend\*.*"
+  Delete "$INSTDIR\platforms\*.*"
 
   RMDir "$INSTDIR\lang"
   RMDir "$INSTDIR\phonon_backend"
+  RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR"
 
   ${unregisterExtension} ".bin" "BIN File"
