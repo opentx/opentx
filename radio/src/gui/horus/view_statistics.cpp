@@ -44,10 +44,11 @@ bool menuStatsGraph(evt_t event)
   lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, "[1]", HEADER_COLOR);
   putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val);
   lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+2*FH, "[2]", HEADER_COLOR);
-  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[2].val);
+  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[1].val);
+#if TIMERS > 2
   lcdDrawText(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+2*FH, "[3]", HEADER_COLOR);
-  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[3].val);
-
+  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[2].val);
+#endif
 
   const coord_t x = 10;
   const coord_t y = 240;
