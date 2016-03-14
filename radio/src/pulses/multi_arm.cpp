@@ -30,6 +30,7 @@
 
 #define MULTI_SEND_BIND                     (1 << 7)
 #define MULTI_SEND_RANGECHECK               (1 << 5)
+#define MULTI_SEND_AUTOBIND                 (1 << 6)
 
 
 #define BITLEN_MULTI          (10*2) //100000 Baud => 10uS per bit
@@ -130,13 +131,16 @@ void setupPulsesMultimodule(unsigned int port)
   if (g_model.moduleData[port].multi_rfProtocol >= MM_RF_PROTO_CUSTOM)
     type = g_model.moduleData[port].multi_rfProtocol & 0x1f;
 
-  protoByte |= (type & 0x1f);
+  protoByte |= (type & 0x1f) | (g_model.moduleData[port].autoBindMode << 6);
   sendByteMulti(protoByte);
 
 
   // power always set to high (0 << 7)
   sendByteMulti((g_model.header.modelId[port] & 0x0f)
-                   | (0 << 7) | ((subtype & 0x7)  << 4));
+                | ((subtype & 0x7) << 4)
+                | (g_model.moduleData[port].lowPowerMode << 7)
+                );
+
 
 
   //TODO: option_protocol, use same default as multi module

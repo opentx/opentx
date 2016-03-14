@@ -850,6 +850,8 @@
 #define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
 #define TR_MULTI_VIDFREQ       INDENT "Video frequency"
 #define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_AUTOBIND      INDENT "Autobind on power up"
+#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limit"
 #define TR_MINRSSI             "Min Rssi"

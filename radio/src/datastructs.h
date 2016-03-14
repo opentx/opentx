@@ -700,7 +700,10 @@ PACK(struct ModuleData {
       int8_t  ppmFrameLength;
         };
     struct {
-      int8_t multi_rfProtocol;    // can be changed to rfProtocol if rfProtocol gets more bits, currently 5 bits used
+      int8_t multi_rfProtocol:6;    // can be changed to rfProtocol if rfProtocol gets more bits,
+                                    // currently 6 bits used
+      int8_t autoBindMode:1;
+      int8_t lowPowerMode:1;
       int8_t optionValue;
     };
   };
