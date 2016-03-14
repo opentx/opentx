@@ -204,7 +204,7 @@ int getSwitchWarningsCount()
 #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
 #if defined(MULTIMODULE)
 #define MULTIMODULE_HAS_SUBTYPE(x)        (g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_FLYSKY ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_FRSKY || g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_HISKY || g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_DSM2 ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_YD717 ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_KN ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_SYMAX ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_CX10 ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_CG023 ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_MT99XX ||g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_MJXQ)
-#define MULTIMODULE_MODE_ROWS(x)          (g_model.moduleData[x].multi_rfProtocol >= MM_RF_PROTO_CUSTOM ) ? 3 : MULTIMODULE_HAS_SUBTYPE(x) ? (uint8_t)2 : (uint8_t)1
+#define MULTIMODULE_MODE_ROWS(x)          (g_model.moduleData[x].multi_rfProtocol >= MM_RF_PROTO_CUSTOM ) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(x) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_MODULE_ROWS           IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 1 : HIDDEN_ROW, IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 1 : HIDDEN_ROW,
 #else
 #define MULTIMODULE_MODE_ROWS(x) (uint8_t)0
