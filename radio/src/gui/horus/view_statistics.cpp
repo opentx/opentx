@@ -22,31 +22,68 @@
 #include "stamp.h"
 
 #define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
+#define MENU_STATS_COLUMN2    (LCD_W/2)
+#define MENU_STATS_COLUMN3    (LCD_W/2 + 120)
+
 
 bool menuStatsGraph(evt_t event)
 {
-  MENU("Throttle graph", LBM_STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
+  MENU("Statistics", LBM_STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
-  coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
-  const coord_t x = 4;
-  const coord_t y = 200;
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
+  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP, "Battery");
+  putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Throttle");
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, s_timeCumThr);
+  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+FH, "Throttle %");
+  putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, s_timeCum16ThrP/16);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Timers");
+  lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, "[1]", HEADER_COLOR);
+  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val);
+  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+2*FH, "[2]", HEADER_COLOR);
+  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[2].val);
+  lcdDrawText(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+2*FH, "[3]", HEADER_COLOR);
+  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[3].val);
+
+
+  const coord_t x = 10;
+  const coord_t y = 240;
   lcdDrawHorizontalLine(x-3, y, MAXTRACE+3+3, SOLID, TEXT_COLOR);
   lcdDrawVerticalLine(x, y-96, 96+3, SOLID, TEXT_COLOR);
-
   for (coord_t i=0; i<MAXTRACE; i+=6) {
-    lcdDrawVerticalLine(x+i+6, y-1, 3, SOLID, TEXT_COLOR);
+    lcdDrawVerticalLine(x+i, y-1, 3, SOLID, TEXT_COLOR);
   }
-  for (coord_t i=1; i<=MAXTRACE; i++) {
-    lcdDrawVerticalLine(x+i, y-3*s_traceBuf[traceRd], 3*s_traceBuf[traceRd], SOLID, TEXT_COLOR);
-    traceRd++;
-    if (traceRd>=MAXTRACE) traceRd = 0;
-    if (traceRd==s_traceWr) break;
+
+  uint16_t traceRd = s_traceWr > MAXTRACE ? s_traceWr - MAXTRACE : 0;
+  coord_t prev_yv = (coord_t)-1;
+  for (coord_t i=1; i<=MAXTRACE && traceRd<s_traceWr; i++, traceRd++) {
+    uint8_t h = s_traceBuf[traceRd % MAXTRACE];
+    coord_t yv = y - 2 - 3*h;
+    if (prev_yv != (coord_t)-1) {
+      if (prev_yv < yv) {
+        for (int y=prev_yv; y<=yv; y++) {
+          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, TEXT_COLOR);
+        }
+      }
+      else {
+        for (int y=yv; y<=prev_yv; y++) {
+          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, TEXT_COLOR);
+        }
+      }
+    }
+    else {
+      lcdDrawBitmapPattern(x + i - 3, yv, LBM_POINT, TEXT_COLOR);
+    }
+    prev_yv = yv;
   }
 
   return true;
 }
 
-bool menuStatsValue(evt_t event)
+bool menuStatsDebug(evt_t event)
 {
   switch(event)
   {
@@ -60,11 +97,15 @@ bool menuStatsValue(evt_t event)
 
     case EVT_KEY_FIRST(KEY_ENTER):
       maxMixerDuration  = 0;
+#if defined(LUA)
+      maxLuaInterval = 0;
+      maxLuaDuration = 0;
+#endif
       AUDIO_KEYPAD_UP();
       break;
   }
 
-  MENU("Values", LBM_STATS_ICONS, menuTabStats, e_StatsValue, 0, { 0 });
+  MENU("Debug", LBM_STATS_ICONS, menuTabStats, e_StatsDebug, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Free Mem");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
@@ -80,81 +121,21 @@ bool menuStatsValue(evt_t event)
   lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+2*FH+1, "[Audio]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, audioStack.available(), LEFT);
 
+#if defined(LUA)
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Free Mem");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, availableMemory(), LEFT, 0, NULL, "b");
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Lua duration");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+5*FH, "Lua interval");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+5*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+#endif
+
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
 
   return true;
 }
-
-bool menuStatsTime(evt_t event)
-{
-  switch(event) {
-    case EVT_KEY_LONG(KEY_MENU):
-      g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
-      sessionTimer = 0;
-      break;
-  }
-
-  MENU("Time Stats", LBM_STATS_ICONS, menuTabStats, e_StatsTime, 0, { 0 });
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Battery", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Timer1", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, timersStates[0].val);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Timer2", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, timersStates[2].val);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Timer3", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, timersStates[3].val);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+5*FH, "Throttle", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+5*FH, s_timeCumThr);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+6*FH, "Throttle %", HEADER_COLOR);
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+6*FH, s_timeCum16ThrP/16);
-
-  return true;
-}
-
-#if defined(LUA)
-bool menuStatsLua(evt_t event)
-{
-  switch(event)
-  {
-    case EVT_KEY_LONG(KEY_ENTER):
-      g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
-      sessionTimer = 0;
-      killEvents(event);
-      AUDIO_KEYPAD_UP();
-      break;
-
-    case EVT_KEY_FIRST(KEY_ENTER):
-      maxLuaInterval = 0;
-      maxLuaDuration = 0;
-      AUDIO_KEYPAD_UP();
-      break;
-  }
-
-  MENU("LUA", LBM_STATS_ICONS, menuTabStats, e_StatsLua, 0, { 0 });
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Free Mem");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Duration");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Interval");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
-
-  return true;
-}
-#endif
 
 #if defined(DEBUG_TRACE_BUFFER)
 #define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT
@@ -162,7 +143,7 @@ bool menuStatsLua(evt_t event)
 #define STATS_TRACES_EVENT_POS         MENUS_MARGIN_LEFT + 14*10
 #define STATS_TRACES_DATA_POS          MENUS_MARGIN_LEFT + 20*10
 
-bool menuStatsDebug(evt_t event)
+bool menuStatsTraces(evt_t event)
 {
   switch(event)
   {
@@ -172,7 +153,7 @@ bool menuStatsDebug(evt_t event)
       break;
   }
 
-  SIMPLE_MENU("", LBM_STATS_ICONS, menuTabStats, s_StatsDebug, TRACE_BUFFER_LEN);
+  SIMPLE_MENU("", LBM_STATS_ICONS, menuTabStats, e_StatsTraces, TRACE_BUFFER_LEN);
 
   uint8_t k = 0;
   int8_t sub = menuVerticalPosition;

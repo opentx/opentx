@@ -147,31 +147,21 @@ static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
 enum EnumTabDiag
 {
   e_StatsGraph,
-  e_StatsValue,
-  e_StatsTime,
-#if defined(LUA)
-  e_StatsLua,
-#endif
+  e_StatsDebug,
 #if defined(DEBUG_TRACE_BUFFER)
-  s_StatsDebug,
+  e_StatsTraces,
 #endif
 };
 
 bool menuStatsGraph(evt_t event);
-bool menuStatsValue(evt_t event);
-bool menuStatsTime(evt_t event);
-bool menuStatsLua(evt_t event);
 bool menuStatsDebug(evt_t event);
+bool menuStatsTraces(evt_t event);
 
 static const MenuHandlerFunc menuTabStats[] PROGMEM = {
   menuStatsGraph,
-  menuStatsValue,
-  menuStatsTime,
-#if defined(LUA)
-  menuStatsLua,
-#endif
-#if defined(DEBUG_TRACE_BUFFER)
   menuStatsDebug,
+#if defined(DEBUG_TRACE_BUFFER)
+  menuStatsTraces,
 #endif
 };
 

@@ -1717,13 +1717,7 @@ void flightReset()
 
 #if defined(THRTRACE)
 uint8_t  s_traceBuf[MAXTRACE];
-#if LCD_W >= 255
-  int16_t  s_traceWr;
-  int16_t  s_traceCnt;
-#else
-  uint8_t  s_traceWr;
-  int16_t  s_traceCnt;
-#endif
+uint16_t s_traceWr;
 uint8_t  s_cnt_10s;
 uint16_t s_cnt_samples_thr_10s;
 uint16_t s_sum_samples_thr_10s;
@@ -1918,10 +1912,8 @@ void doMixerCalculations()
           val = s_sum_samples_thr_10s / s_cnt_samples_thr_10s;
           s_sum_samples_thr_10s = 0;
           s_cnt_samples_thr_10s = 0;
-
-          s_traceBuf[s_traceWr++] = val;
-          if (s_traceWr >= MAXTRACE) s_traceWr = 0;
-          if (s_traceCnt >= 0) s_traceCnt++;
+          s_traceBuf[s_traceWr % MAXTRACE] = val;
+          s_traceWr++;
         }
 #endif
 

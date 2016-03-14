@@ -36,15 +36,16 @@ struct point_t {
 point_t getPoint(uint8_t i)
 {
   point_t result = {0, 0};
-  CurveInfo &crv = g_model.curves[s_curveChan];
-  int8_t *points = curveAddress(s_curveChan);
+  CurveInfo & crv = g_model.curves[s_curveChan];
+  int8_t * points = curveAddress(s_curveChan);
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
   uint8_t count = 5+crv.points;
   if (i < count) {
     result.x = CURVE_CENTER_X-1-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH*2/(count-1);
     result.y = CURVE_CENTER_Y - (points[i]) * (CURVE_SIDE_WIDTH-1) / 100;
-    if (custom && i>0 && i<count-1)
-      result.x = CURVE_CENTER_X-1-CURVE_SIDE_WIDTH + (100 + (100 + points[count+i-1]) * (2*CURVE_SIDE_WIDTH)) / 200;
+    if (custom && i>0 && i<count-1) {
+      result.x = CURVE_CENTER_X - 1 - CURVE_SIDE_WIDTH + (100 + (100 + points[count + i - 1]) * (2 * CURVE_SIDE_WIDTH)) / 200;
+    }
   }
   return result;
 }

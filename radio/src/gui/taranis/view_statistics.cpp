@@ -69,20 +69,18 @@ void menuStatisticsView(uint8_t event)
   }
 
 #if defined(THRTRACE)
-  coord_t traceRd = (s_traceCnt < 0 ? s_traceWr : 0);
   const coord_t x = 5;
   const coord_t y = 60;
   lcdDrawSolidHorizontalLine(x-3, y, MAXTRACE+3+3);
   lcdDrawSolidVerticalLine(x, y-32, 32+3);
-
   for (coord_t i=0; i<MAXTRACE; i+=6) {
     lcdDrawSolidVerticalLine(x+i+6, y-1, 3);
   }
-  for (coord_t i=1; i<=MAXTRACE; i++) {
-    lcdDrawSolidVerticalLine(x+i, y-s_traceBuf[traceRd], s_traceBuf[traceRd]);
-    traceRd++;
-    if (traceRd>=MAXTRACE) traceRd = 0;
-    if (traceRd==s_traceWr) break;
+
+  uint16_t traceRd = s_traceWr > MAXTRACE ? s_traceWr - MAXTRACE : 0;
+  for (coord_t i=1; i<=MAXTRACE && traceRd<s_traceWr; i++, traceRd++) {
+    uint8_t h = s_traceBuf[traceRd % MAXTRACE];
+    lcdDrawSolidVerticalLine(x+i, y-h, h);
   }
 #endif
 }
