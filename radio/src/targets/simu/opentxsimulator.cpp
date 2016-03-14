@@ -116,10 +116,6 @@ void OpenTxSimulator::getValues(TxOutputs &outputs)
 #define GETVALUES_IMPORT
 #define g_chans512 channelOutputs
 #include "simulatorimport.h"
-#if defined(PCBSKY9X)
-  outputs.beep = g_beepCnt;
-  g_beepCnt = 0;
-#endif
 }
 
 void OpenTxSimulator::setValues(TxInputs &inputs)
