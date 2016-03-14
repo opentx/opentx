@@ -91,6 +91,9 @@ uint16_t stackAvailable()
 }
 #endif
 
+extern uint64_t nextMixerTime[NUM_MODULES];
+#define GET_MIXER_DELAY(module) int(nextMixerTime[module] - CoGetOSTime())
+
 void mixerTask(void * pdata)
 {
   s_pulses_paused = true;
@@ -122,7 +125,16 @@ void mixerTask(void * pdata)
       if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
     }
 
-    CoTickDelay(1);  // 2ms for now
+    int delay = 10; // 20ms default
+    int moduleDelay = GET_MIXER_DELAY(0);
+    if (moduleDelay >= 0)
+      delay = min(delay, moduleDelay);
+#if NUM_MODULES >= 2
+    moduleDelay = GET_MIXER_DELAY(1);
+    if (moduleDelay >= 0)
+      delay = min(delay, moduleDelay);
+#endif
+    CoTickDelay(delay);
   }
 }
 
