@@ -196,7 +196,8 @@ int getSwitchWarningsCount()
 #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
 #ifdef MULTIMODULE
-#define MULTIMODULE_FAILSAFEROWS(x)       (IS_MODULE_MULTIMODULE(x) && (g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_HUBSAN || g_model.moduleData[x].multi_rfProtocol == MM_RF_PROTO_FRSKY || g_model.moduleData[x].multi_rfProtocol >= MM_RF_PROTO_CUSTOM)) ? (uint8_t) 1: HIDDEN_ROW
+#define MULTIMODULE_HASOPTIONS(x)         (x == MM_RF_PROTO_HUBSAN || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_DSM2 || x >= MM_RF_PROTO_CUSTOM)
+#define MULTIMODULE_FAILSAFEROWS(x)       (IS_MODULE_MULTIMODULE(x) && (MULTIMODULE_HASOPTIONS(g_model.moduleData[x].multi_rfProtocol))) ? (uint8_t) 1: HIDDEN_ROW
 #else
 #define MULTIMODULE_FAILSAFEROWS(x)       HIDDEN_ROW
 #endif
@@ -684,7 +685,7 @@ void menuModelSetup(uint8_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
-          int8_t multi_rfProto = min(g_model.moduleData[EXTERNAL_MODULE].multi_rfProtocol, (int8_t) MM_RF_PROTO_CUSTOM);
+          int8_t multi_rfProto = min(g_model.moduleData[EXTERNAL_MODULE].multi_rfProtocol, (uint8_t) MM_RF_PROTO_CUSTOM);
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
 
           switch(multi_rfProto) {
@@ -755,7 +756,7 @@ void menuModelSetup(uint8_t event)
               break;
 #if defined(MULTIMODULE)
           case 2:
-            switch (min(g_model.moduleData[EXTERNAL_MODULE].multi_rfProtocol, (int8_t) MM_RF_PROTO_CUSTOM)) {
+            switch (min(g_model.moduleData[EXTERNAL_MODULE].multi_rfProtocol, (uint8_t) MM_RF_PROTO_CUSTOM)) {
             case MM_RF_PROTO_HISKY:
             case MM_RF_PROTO_DSM2:
             case MM_RF_PROTO_SYMAX:
@@ -940,26 +941,31 @@ void menuModelSetup(uint8_t event)
               case MM_RF_PROTO_HUBSAN:
                 lcd_putsLeft(y, STR_MULTI_VIDFREQ);
                 break;
+              case MM_RF_PROTO_DSM2:
+                g_model.moduleData[moduleIdx].optionValue = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMFRAME, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].optionValue, 0, 12, attr, event);
+                break;
               default:
                 lcd_putsLeft(y, STR_MULTI_OPTION);
                 break;
             }
-            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].optionValue, LEFT|attr);
-            if (attr)
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].optionValue, -128, 127);
+            if (g_model.moduleData[moduleIdx].multi_rfProtocol!=MM_RF_PROTO_DSM2)
+              {
+                lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].optionValue, LEFT|attr);
+                if (attr)
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].optionValue, -128, 127);
+              }
         }
 #endif
         break;
       }
 #ifdef MULTIMODULE
     case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
-      {
-        g_model.moduleData[EXTERNAL_MODULE].autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
-      }
+      g_model.moduleData[EXTERNAL_MODULE].autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
+      break;
+
     case  ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER:
-      {
-        g_model.moduleData[EXTERNAL_MODULE].lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
-      }
+      g_model.moduleData[EXTERNAL_MODULE].lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
+      break;
 
 #endif
     }
