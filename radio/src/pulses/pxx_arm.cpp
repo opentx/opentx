@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 #define PXX_SEND_BIND                      0x01
 #define PXX_SEND_FAILSAFE                  (1 << 4)
@@ -65,26 +65,38 @@ void crc(uint8_t data, unsigned int port)
   modulePulsesData[port].pxx.pcmCrc = (modulePulsesData[port].pxx.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx.pcmCrc>>8)^data) & 0xFF]);
 }
 
-#if !defined(PPM_PIN_HW_SERIAL)
-
-void putPcmPart(uint8_t value, unsigned int port)
+#if defined(PCBHORUS)
+void putPcmPart(uint8_t byte, unsigned int port)
 {
-  modulePulsesData[port].pxx.pcmValue += 18 ;                                        // Output 1 for this time
-  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;
-  modulePulsesData[port].pxx.pcmValue += 14 ;
-  if (value) {
-    modulePulsesData[port].pxx.pcmValue += 16 ;
+  if (0x7E == byte) {
+    *modulePulsesData[port].pxx.ptr++ = 0x7D;
+    *modulePulsesData[port].pxx.ptr++ = 0x5E;
   }
-  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;  // Output 0 for this time
+  else if (0x7D == byte) {
+    *modulePulsesData[port].pxx.ptr++ = 0x7D;
+    *modulePulsesData[port].pxx.ptr++ = 0x5D;
+  }
+  else {
+    *modulePulsesData[port].pxx.ptr++ = byte;
+  }
 }
 
-void putPcmFlush(unsigned int port)
+void putPcmByte(uint8_t byte, unsigned int port)
 {
-  *modulePulsesData[port].pxx.ptr++ = 18010 ;             // Past the 18000 of the ARR
+  crc(byte, port);
+  putPcmPart(byte, port);
 }
 
-#else
+void putPcmHead(unsigned int port)
+{
+  // send 7E, do not CRC
+  *modulePulsesData[port].pxx.ptr++ = 0x7E;
+}
 
+#define putPcmFlush(port)
+#define putPcmPreamble(port)
+#else
+#if defined(PPM_PIN_HW_SERIAL)
 void putPcmSerialBit(uint8_t bit, unsigned int port)
 {
   modulePulsesData[port].pxx.serialByte >>= 1;
@@ -113,7 +125,22 @@ void putPcmFlush(unsigned int port)
     putPcmSerialBit(1, port);
   }
 }
+#else
+void putPcmPart(uint8_t value, unsigned int port)
+{
+  modulePulsesData[port].pxx.pcmValue += 18 ;                                        // Output 1 for this time
+  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;
+  modulePulsesData[port].pxx.pcmValue += 14 ;
+  if (value) {
+    modulePulsesData[port].pxx.pcmValue += 16 ;
+  }
+  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;  // Output 0 for this time
+}
 
+void putPcmFlush(unsigned int port)
+{
+  *modulePulsesData[port].pxx.ptr++ = 18010 ;             // Past the 18000 of the ARR
+}
 #endif
 
 void putPcmBit(uint8_t bit, unsigned int port)
@@ -134,7 +161,6 @@ void putPcmBit(uint8_t bit, unsigned int port)
 void putPcmByte(uint8_t byte, unsigned int port)
 {
   crc(byte, port);
-
   for (uint8_t i=0; i<8; i++) {
     putPcmBit(byte & 0x80, port);
     byte <<= 1;
@@ -155,6 +181,15 @@ void putPcmHead(unsigned int port)
   putPcmPart(0, port);
 }
 
+void putPcmPreamble(unsigned int port)
+{
+  putPcmPart(0, port);
+  putPcmPart(0, port);
+  putPcmPart(0, port);
+  putPcmPart(0, port);
+}
+#endif
+
 void setupPulsesPXX(unsigned int port)
 {
   uint16_t pulseValue=0, pulseValueLow=0;
@@ -165,10 +200,7 @@ void setupPulsesPXX(unsigned int port)
   modulePulsesData[port].pxx.pcmOnesCount = 0;
 
   /* Preamble */
-  putPcmPart(0, port);
-  putPcmPart(0, port);
-  putPcmPart(0, port);
-  putPcmPart(0, port);
+  putPcmPreamble(port);
 
   /* Sync */
   putPcmHead(port);
