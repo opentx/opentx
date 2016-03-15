@@ -26,6 +26,7 @@ const uint8_t LBM_TOPMENU_MASK_OPENTX[] = {
 
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { "Background color", ZoneOption::Color, OPTION_DEFAULT_VALUE_UNSIGNED(WHITE) },
+  { "Main color", ZoneOption::Color, OPTION_DEFAULT_VALUE_UNSIGNED(RED) },
   { NULL, ZoneOption::Bool }
 };
 
@@ -93,6 +94,21 @@ class DefaultTheme: public Theme
 
     virtual void drawTopbarBackground(const uint8_t * icon) const
     {
+      // TODO should be in updateOptions
+      if (lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] != g_eeGeneral.themeData.options[1].unsignedValue) {
+        lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[SCROLLBOX_COLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[CURVE_COLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[TITLE_BGCOLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[TRIM_BGCOLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue;
+        // TODO quick and really dirty, create a new macro for that ...
+        lcdColorTable[HEADER_BGCOLOR_INDEX] = g_eeGeneral.themeData.options[1].unsignedValue - RGB(69, 32, 30);
+      }
+
       lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
       lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
 
