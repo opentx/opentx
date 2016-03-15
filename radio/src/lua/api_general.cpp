@@ -863,7 +863,9 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SH", MIXSRC_SH },
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
+#if !defined(PCBHORUS)
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
+#endif
 #if defined(COLORLCD)
   { "COLOR", ZoneOption::Color },
   { "TEXT_COLOR_INDEX", TEXT_COLOR_INDEX },

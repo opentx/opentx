@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 int menuVerticalOffset;
 int menuVerticalPosition;
@@ -411,31 +411,32 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
 {
   uint8_t maxcol = MAXCOL(menuVerticalPosition);
 
-  if (menuTab && !calibrationState && menuVerticalPosition<0) {
+  if (menuTab && !calibrationState) {
     int cc = curr;
     switch (event) {
-      case EVT_KEY_BREAK(KEY_RIGHT):
       case EVT_ROTARY_RIGHT:
+        if (menuVerticalPosition >= 0)
+          break;
+        // no break
+      case EVT_KEY_BREAK(KEY_PGDN):
         if (++cc == menuTabSize)
           cc = 0;
         break;
 
-      case EVT_KEY_BREAK(KEY_LEFT):
       case EVT_ROTARY_LEFT:
+        if (menuVerticalPosition >= 0)
+          break;
+        // no break
+      case EVT_KEY_BREAK(KEY_PGUP):
         if (cc-- == 0)
           cc = menuTabSize-1;
         break;
 
       case EVT_KEY_BREAK(KEY_ENTER):
-        if (rowcount > 0) {
+        if (menuVerticalPosition < 0 && rowcount > 0) {
           menuVerticalPosition = MENU_FIRST_LINE_EDIT;
           event = 0;
         }
-        break;
-
-      case EVT_KEY_BREAK(KEY_DOWN):
-      case EVT_KEY_BREAK(KEY_UP):
-        menuHorizontalPosition = -1;
         break;
     }
 
@@ -537,24 +538,6 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
-    case EVT_KEY_REPT(KEY_DOWN):
-    {
-      do {
-        INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
-
-      s_editMode = 0; // if we go down, we must be in this mode
-      uint8_t newmaxcol = MAXCOL(menuVerticalPosition);
-      if (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE) {
-        menuHorizontalPosition = -1;
-      }
-      else if (menuHorizontalPosition < 0 || menuHorizontalPosition > newmaxcol) {
-        menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
-      }
-      break;
-    }
-
     case EVT_ROTARY_LEFT:
       if (s_editMode != 0) break;
       if ((COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
@@ -575,26 +558,6 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       else
         menuHorizontalPosition = MAXCOL(menuVerticalPosition);
       break;
-
-    case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_REPT(KEY_UP):
-    {
-      do {
-        DEC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
-      } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
-      s_editMode = 0; // if we go up, we must be in this mode
-      uint8_t newmaxcol = MAXCOL(menuVerticalPosition);
-      if ((COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
-        menuHorizontalPosition = -1;
-      }
-      else if (menuHorizontalPosition < 0) {
-        menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
-      }
-      else if (menuHorizontalPosition > newmaxcol) {
-        menuHorizontalPosition = min((uint8_t)menuHorizontalPosition, newmaxcol);
-      }
-      break;
-    }
   }
 
   linesCount = rowcount;

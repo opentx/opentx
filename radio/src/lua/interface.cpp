@@ -588,10 +588,13 @@ void luaDoOneRunStandalone(evt_t evt)
       standaloneScript.state = SCRIPT_NOFILE;
       luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
     }
+#if !defined(PCBHORUS)
+  // TODO find another key and add a #define
     else if (evt == EVT_KEY_LONG(KEY_MENU)) {
       killEvents(evt);
       luaDisplayStatistics = !luaDisplayStatistics;
     }
+#endif
   }
 }
 

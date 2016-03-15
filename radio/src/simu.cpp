@@ -229,9 +229,9 @@ void Open9xSim::updateKeysAndSwitches(bool start)
 {
   static int keys1[] = {
 #if defined(PCBHORUS)
-    KEY_Page_Up,   KEY_MENU,
+    KEY_Page_Up,   KEY_PGUP,
+    KEY_Page_Down, KEY_PGDN,
     KEY_Return,    KEY_ENTER,
-    KEY_BackSpace, KEY_EXIT,
     KEY_Up,        KEY_UP,
     KEY_Down,      KEY_DOWN,
     KEY_Right,     KEY_RIGHT,

@@ -107,8 +107,6 @@ const char * displayPopupMenu(evt_t event)
 
   switch (event) {
     case EVT_ROTARY_LEFT:
-    case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_REPT(KEY_UP):
       if (s_menu_item > 0) {
         s_menu_item--;
       }
@@ -126,8 +124,6 @@ const char * displayPopupMenu(evt_t event)
       break;
 
     case EVT_ROTARY_RIGHT:
-    case EVT_KEY_FIRST(KEY_DOWN):
-    case EVT_KEY_REPT(KEY_DOWN):
       if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
         s_menu_item++;
       }

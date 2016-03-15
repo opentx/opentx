@@ -19,7 +19,7 @@
  */
 
 #include <stdio.h>
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN 110
 
@@ -450,41 +450,27 @@ bool menuModelExposAll(evt_t event)
         }
       }
       break;
-    case EVT_KEY_LONG(KEY_LEFT):
-    case EVT_KEY_LONG(KEY_RIGHT):
-      if (s_copyMode && !s_copyTgtOfs) {
-        if (reachExposLimit()) break;
-        s_currCh = chn;
-        if (event == EVT_KEY_LONG(KEY_RIGHT)) { s_currIdx++; menuVerticalPosition++; }
-        insertExpo(s_currIdx);
-        pushMenu(menuModelExpoOne);
-        s_copyMode = 0;
-        killEvents(event);
-      }
-      break;
-    case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_REPT(KEY_UP):
-    case EVT_KEY_FIRST(KEY_DOWN):
-    case EVT_KEY_REPT(KEY_DOWN):
+
+    case EVT_ROTARY_LEFT:
+    case EVT_ROTARY_RIGHT:
       if (s_copyMode) {
-        uint8_t key = (event & 0x1f);
-        uint8_t next_ofs = ((event==EVT_ROTARY_LEFT || key==KEY_UP) ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
+        uint8_t next_ofs = ((event==EVT_ROTARY_LEFT) ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
 
         if (s_copyTgtOfs==0 && s_copyMode==COPY_MODE) {
           // insert a mix on the same channel (just above / just below)
           if (reachExposLimit()) break;
           copyExpo(s_currIdx);
-          if (event==EVT_ROTARY_RIGHT || key==KEY_DOWN) s_currIdx++;
+          if (event==EVT_ROTARY_RIGHT) s_currIdx++;
           else if (sub-menuVerticalOffset >= 6) menuVerticalOffset++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
           deleteExpo(s_currIdx);
-          if (event==EVT_ROTARY_LEFT || key==KEY_UP) s_currIdx--;
+          if (event==EVT_ROTARY_LEFT) s_currIdx--;
         }
         else {
           // only swap the mix with its neighbor
-          if (!swapExpos(s_currIdx, event==EVT_ROTARY_LEFT || key==KEY_UP)) break;
+          if (!swapExpos(s_currIdx, event==EVT_ROTARY_LEFT)) break;
           storageDirty(EE_MODEL);
         }
 

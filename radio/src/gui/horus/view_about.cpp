@@ -49,11 +49,11 @@ bool menuAboutView(evt_t event)
       screenIndex = 0;
       greyIndex = 0;
       break;
-    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_FIRST(KEY_RIGHT):
       screenIndex < ABOUT_PARENTS ? screenIndex++ : screenIndex = ABOUT_OPENTX;
       greyIndex = 0;
       break;
-    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_FIRST(KEY_LEFT):
       screenIndex > ABOUT_OPENTX ? screenIndex-- : screenIndex = ABOUT_PARENTS;
       greyIndex = 0;
       break;

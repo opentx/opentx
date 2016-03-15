@@ -154,21 +154,21 @@ bool menuMainView(evt_t event)
       popupMenuHandler = onMainViewMenu;
       break;
 
-    case EVT_KEY_BREAK(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_MODEL):
       pushMenu(menuTabModel[0]);
       break;
 
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_RADIO):
       killEvents(event);
       pushMenu(menuTabGeneral[0]);
       break;
 
-    case EVT_KEY_BREAK(KEY_DOWN):
+    case EVT_KEY_BREAK(KEY_PGDN):
       storageDirty(EE_GENERAL);
       g_eeGeneral.view = circularIncDec(g_eeGeneral.view, +1, 0, getMainViewsCount()-1);
       break;
 
-    case EVT_KEY_BREAK(KEY_UP):
+    case EVT_KEY_BREAK(KEY_PGUP):
       killEvents(event);
       storageDirty(EE_GENERAL);
       g_eeGeneral.view = circularIncDec(g_eeGeneral.view, -1, 0, getMainViewsCount()-1);

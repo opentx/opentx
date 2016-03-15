@@ -19,7 +19,7 @@
  */
 
 #include <stdio.h>
-#include "../../opentx.h"
+#include "opentx.h"
 
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value, uint8_t attr)
 {

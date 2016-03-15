@@ -25,19 +25,19 @@ uint32_t readKeys()
   uint32_t result = 0;
 
   if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
-    result |= 1 << KEY_MENU;
+    result |= 1 << KEY_PGUP;
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
-    result |= 1 << KEY_EXIT;
+    result |= 1 << KEY_PGDN;
   if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
     result |= 1 << KEY_ENTER;
   if (~KEYS_GPIO_REG_UP & KEYS_GPIO_PIN_UP)
-    result |= 1 << KEY_UP;
+    result |= 1 << KEY_MODEL;
   if (~KEYS_GPIO_REG_DOWN & KEYS_GPIO_PIN_DOWN)
-    result |= 1 << KEY_DOWN;
+    result |= 1 << KEY_EXIT;
   if (~KEYS_GPIO_REG_RIGHT & KEYS_GPIO_PIN_RIGHT)
-    result |= 1 << KEY_RIGHT;
+    result |= 1 << KEY_TELEM;
   if (~KEYS_GPIO_REG_LEFT & KEYS_GPIO_PIN_LEFT)
-    result |= 1 << KEY_LEFT;
+    result |= 1 << KEY_RADIO;
 
   // TRACE("readKeys(): %x", result);
 

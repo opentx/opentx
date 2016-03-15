@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 bool isThrottleOutput(uint8_t ch)
 {
@@ -176,10 +176,12 @@ bool menuModelLimits(evt_t event)
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL, NULL, stops1000);
           }
-          else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
-            copySticksToOffset(k);
-            s_editMode = 0;
-          }
+
+          // TODO with the contextual menu I think
+          // else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
+          //  copySticksToOffset(k);
+          //  s_editMode = 0;
+          // }
           break;
 
         case ITEM_LIMITS_MIN:

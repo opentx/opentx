@@ -205,9 +205,10 @@ bool menuModelCurveOne(evt_t event)
         popupMenuHandler = onCurveOneMenu;
       }
       break;
-    case EVT_KEY_LONG(KEY_MENU):
-      pushMenu(menuChannelsView);
-      killEvents(event);
+    // TODO?
+    // case EVT_KEY_LONG(KEY_MENU):
+    //  pushMenu(menuChannelsView);
+    //  killEvents(event);
   }
 
   drawCurve(CURVE_CENTER_X, CURVE_CENTER_Y, CURVE_SIDE_WIDTH);
