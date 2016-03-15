@@ -17,17 +17,17 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
 #include "opentx.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 
-#if defined WIN32 || !defined __GNUC__
+#if defined(_MSC_VER)
   #include <direct.h>
   #define mkdir(s, f) _mkdir(s)
+#else
+  #include <sys/time.h>
 #endif
 
 #if defined(SIMU_DISKIO)
@@ -96,16 +96,24 @@ void toplcdOff()
 
 uint16_t getTmr16KHz()
 {
+#if defined(_MSC_VER)
+  return get_tmr10ms() * 16;
+#else
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return tv.tv_usec * 2 / 125;
+#endif
 }
 
 uint16_t getTmr2MHz()
 {
+#if defined(_MSC_VER)
+  return get_tmr10ms() * 125;
+#else
   struct timeval tv;
   gettimeofday(&tv, NULL);
   return tv.tv_usec * 2;
+#endif
 }
 
 void simuInit()
