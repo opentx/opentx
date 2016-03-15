@@ -210,7 +210,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_SUBTYPE_KN        (OFS_SUBTYPE_CG023 + sizeof(TR_SUBTYPE_CG023))
   #define OFS_SUBTYPE_MT99      (OFS_SUBTYPE_KN + sizeof(TR_SUBTYPE_KN))
   #define OFS_SUBTYPE_MJXQ      (OFS_SUBTYPE_MT99 + sizeof(TR_SUBTYPE_MT99))
-  #define OFS_VOLTSRC           (OFS_SUBTYPE_MJXQ + sizeof(TR_SUBTYPE_MJXQ))
+  #define OFS_OPTIONS_DSM       (OFS_SUBTYPE_MJXQ + sizeof(TR_SUBTYPE_MJXQ))
+  #define OFS_VOLTSRC           (OFS_OPTIONS_DSM + sizeof(TR_OPTIONS_DSM))
 #else
   #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
 #endif
@@ -339,6 +340,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_SUBTYPE_KN        (STR_OPEN9X + OFS_SUBTYPE_KN)
   #define STR_SUBTYPE_MT99      (STR_OPEN9X + OFS_SUBTYPE_MT99)
   #define STR_SUBTYPE_MJXQ      (STR_OPEN9X + OFS_SUBTYPE_MJXQ)
+  #define STR_OPTIONS_DSM       (STR_OPEN9X + OFS_OPTIONS_DSM)
 #endif
   #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
   #define STR_VSENSORTYPES      (STR_OPEN9X + OFS_VSENSORTYPES)
@@ -572,6 +574,7 @@ extern const pm_char STR_MULTI_VIDFREQ[];
 extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_LOWPOWER[];
+extern const pm_char STR_MULTI_DSMFRAME[];
 #endif
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RXNUM[];
