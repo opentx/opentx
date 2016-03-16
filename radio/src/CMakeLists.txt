@@ -70,7 +70,7 @@ if(PCB STREQUAL HORUS)
   set(GUI_DIR horus)
   set(TARGET_DIR horus)
   set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps datacopy)
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
   set(LUA_EXPORT lua_export_horus)
   set(FLAVOUR horus)
   set(VIRTUAL_INPUTS YES)
@@ -122,12 +122,11 @@ if(PCB STREQUAL HORUS)
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
     )
-  add_custom_command(
-    OUTPUT datacopy.cpp
-    COMMAND python ${RADIO_DIRECTORY}/util/generate_datacopy.py ${RADIO_DIRECTORY}/src/datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DVIRTUALINPUTS -DBACKUP > datacopy.cpp
+  add_custom_target(datacopy
+    WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
+    COMMAND python ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DVIRTUALINPUTS -DBACKUP > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
-  add_custom_target(datacopy DEPENDS datacopy.cpp)
 elseif(PCB STREQUAL TARANIS)
   option(PCBREV "PCB Revision" REVPLUS)
   option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
