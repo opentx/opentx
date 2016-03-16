@@ -154,13 +154,19 @@ bool menuMainView(evt_t event)
       popupMenuHandler = onMainViewMenu;
       break;
 
-    case EVT_KEY_BREAK(KEY_MODEL):
+    case EVT_KEY_LONG(KEY_MODEL):
+      killEvents(event);
       pushMenu(menuTabModel[0]);
       break;
 
-    case EVT_KEY_BREAK(KEY_RADIO):
+    case EVT_KEY_LONG(KEY_RADIO):
       killEvents(event);
       pushMenu(menuTabGeneral[0]);
+      break;
+
+    case EVT_KEY_LONG(KEY_TELEM):
+      killEvents(event);
+      pushMenu(menuTabScreensSetup[1]);
       break;
 
     case EVT_KEY_BREAK(KEY_PGDN):
