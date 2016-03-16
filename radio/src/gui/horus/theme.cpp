@@ -155,7 +155,6 @@ void loadTheme()
     loadTheme(new_theme);
   }
   else {
-    theme->init();
     theme->load();
   }
 }

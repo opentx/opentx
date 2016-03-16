@@ -90,6 +90,10 @@ class Widget
     {
     }
 
+    virtual void update() const 
+    {
+    }
+
     inline const WidgetFactory * getFactory() const
     {
         return factory;

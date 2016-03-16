@@ -25,9 +25,9 @@
 #undef OPAQUE
 #undef RGB
 
-#define TO4BITS(x)                     ((x) >> 4)
-#define TO5BITS(x)                     ((x) >> 3)
-#define TO6BITS(x)                     ((x) >> 2)
+#define TO4BITS(x)                     (uint32_t(limit<int>(0, x, 255)) >> 4)
+#define TO5BITS(x)                     (uint32_t(limit<int>(0, x, 255)) >> 3)
+#define TO6BITS(x)                     (uint32_t(limit<int>(0, x, 255)) >> 2)
 #define RGB(r, g, b)                   ((TO5BITS(r) << 11) + (TO6BITS(g) << 5) + (TO5BITS(b) << 0))
 #define ARGB(a, r, g, b)               ((TO4BITS(a) << 12) + (TO4BITS(r) << 8) + (TO4BITS(g) << 4) + (TO4BITS(b) << 0))
 #define WHITE                          RGB(0xFF, 0xFF, 0xFF)
@@ -114,5 +114,14 @@ extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
 #define COLOR_JOIN(r, g, b) \
   (((r) << 11) + ((g) << 5) + (b))
+
+#define GET_RED(color) \
+  (((color) & 0xF800) >> 8)
+
+#define GET_GREEN(color) \
+  (((color) & 0x07E0) >> 3)
+
+#define GET_BLUE(color) \
+  (((color) & 0x001F) << 3)
 
 #endif // _COLORS_H_

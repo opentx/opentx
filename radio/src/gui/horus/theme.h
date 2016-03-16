@@ -59,6 +59,10 @@ class Theme
 
     void init() const;
 
+    virtual void update() const
+    {
+    }
+
     ZoneOptionValue * getOptionValue(unsigned int index) const;
 
     virtual void load() const;

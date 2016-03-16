@@ -44,6 +44,10 @@ class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
       return factory;
     }
 
+    virtual void update()
+    {
+    }
+
   protected:
     const LayoutFactory * factory;
 };

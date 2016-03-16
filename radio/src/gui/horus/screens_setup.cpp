@@ -67,7 +67,7 @@ int getZoneOptionColumns(const ZoneOption * option)
   }
 }
 
-void editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, evt_t event)
+bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, evt_t event)
 {
   lcdDrawText(MENUS_MARGIN_LEFT, y, option->name);
 
@@ -150,6 +150,8 @@ void editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
       value->unsignedValue = COLOR_JOIN(r, g, b);
     }
   }
+
+  return (attr && checkIncDec_Ret);
 }
 
 int getOptionsCount(const ZoneOption * options)
@@ -186,7 +188,9 @@ bool menuSettings(const char * title, const T * object, uint32_t i_flags, evt_t 
     if (k < linesCount) {
       const ZoneOption * option = &options[k];
       ZoneOptionValue * value = object->getOptionValue(k);
-      editZoneOption(y, option, value, attr, i_flags, event);
+      if (editZoneOption(y, option, value, attr, i_flags, event)) {
+        object->update();
+      }
     }
   }
 
@@ -446,7 +450,9 @@ bool menuScreensTheme(evt_t event)
         if (index < optionsCount) {
           const ZoneOption * option = &options[index];
           ZoneOptionValue * value = theme->getOptionValue(index);
-          editZoneOption(y, option, value, attr, EE_GENERAL, event);
+          if (editZoneOption(y, option, value, attr, EE_GENERAL, event)) {
+            theme->update();
+          }
         }
         else if (index == optionsCount) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, "Top bar");
@@ -531,7 +537,9 @@ bool menuScreenSetup(int index, evt_t event)
         if (index < optionsCount) {
           const ZoneOption * option = &options[index];
           ZoneOptionValue * value = currentScreen->getOptionValue(index);
-          editZoneOption(y, option, value, attr, EE_MODEL, event);
+          if (editZoneOption(y, option, value, attr, EE_MODEL, event)) {
+            currentScreen->update();
+          }
         }
         break;
       }
