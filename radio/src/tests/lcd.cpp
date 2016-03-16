@@ -194,6 +194,16 @@ TEST(Lcd, vline_x_lt0)
 #endif
 
 #if defined(CPUARM)
+TEST(Lcd, SmlsizeDecimalPoint)
+{
+  lcdClear();
+  lcdDrawNumber(0, 1, 105, PREC1|SMLSIZE|LEFT);
+  lcdDrawNumber(0, LCD_H-7, 105, PREC1|SMLSIZE|LEFT|INVERS);
+  lcdDrawNumber(LCD_W, 1, 105, PREC2|SMLSIZE);
+  lcdDrawNumber(LCD_W, LCD_H-7, 105, PREC2|SMLSIZE|INVERS);
+  EXPECT_TRUE(checkScreenshot("SmlsizeDecimalPoint"));
+}
+
 TEST(Lcd, Smlsize)
 {
   lcdClear();
