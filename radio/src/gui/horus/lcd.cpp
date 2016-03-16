@@ -386,7 +386,11 @@ char * getSourceString(char * dest, mixsrc_t idx)
       getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
     }
   }
-  else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
+  else if (idx <= MIXSRC_LAST_TRIM) {
+    idx -= MIXSRC_Rud;
+    getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
+  }
+  else if (idx <= MIXSRC_LAST_SWITCH) {
     idx -= MIXSRC_FIRST_SWITCH;
     if (ZEXIST(g_eeGeneral.switchNames[idx])) {
       zchar2str(dest, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME);
