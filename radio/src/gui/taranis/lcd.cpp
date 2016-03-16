@@ -407,7 +407,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
         x -= 2;
         lcdDrawPoint(x, y+5);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x-1, y, 7);
+          lcdDrawSolidVerticalLine(x, y-1, 8);
         }
       }
       else if (tinsize) {
