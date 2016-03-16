@@ -349,7 +349,7 @@ void onLongMenuPress(const char *result)
 
 tmr10ms_t menuEntryTime;
 
-void check(const char *name, check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+void check(const char * name, check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   vertpos_t l_posVert = menuVerticalPosition;
   horzpos_t l_posHorz = menuHorizontalPosition;
@@ -406,10 +406,10 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuHandle
   {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
+      s_editMode = EDIT_MODE_INIT;
       l_posVert = MENU_FIRST_LINE_EDIT;
       l_posHorz = POS_HORZ_INIT(l_posVert);
       SET_SCROLLBAR_X(LCD_W-1);
-      s_editMode = EDIT_MODE_INIT;
       break;
 
     case EVT_ENTRY_UP:
@@ -423,9 +423,8 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuHandle
       if (s_editMode > 1) break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
-        break;
       }
-      if (READ_ONLY_UNLOCKED()) {
+      else if (READ_ONLY_UNLOCKED()) {
         s_editMode = (s_editMode<=0);
       }
       break;
@@ -436,7 +435,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuHandle
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      if (s_editMode>0) {
+      if (s_editMode > 0) {
         s_editMode = 0;
         break;
       }
@@ -444,8 +443,7 @@ void check(const char *name, check_event_t event, uint8_t curr, const MenuHandle
       if (l_posHorz >= 0 && (COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         l_posHorz = -1;
       }
-      else
-      {
+      else {
         uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
         if (menuVerticalOffset != 0 || l_posVert != posVertInit) {
           menuVerticalOffset = 0;

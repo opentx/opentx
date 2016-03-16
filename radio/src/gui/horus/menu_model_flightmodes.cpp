@@ -121,7 +121,7 @@ bool menuModelFlightModesAll(evt_t event)
       }
       char s[32];
       sprintf(s, "Check FM%d Trims", mixerCurrentFlightMode);
-      // lcd_putsCenter(y, s, attr);
+      lcdDrawText(LCD_W/2, y, s, CENTERED|attr);
       return true;
     }
 

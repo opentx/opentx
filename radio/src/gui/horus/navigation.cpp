@@ -250,8 +250,6 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
       killEvents(event);
       checkIncDecSelection = MIXSRC_NONE;
 
-      TRACE("count items avant = %d", popupMenuNoItems);
-
       if (i_min <= MIXSRC_FIRST_INPUT && i_max >= MIXSRC_FIRST_INPUT) {
         if (getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE) {
           POPUP_MENU_ADD_ITEM(STR_MENU_INPUTS);
@@ -414,29 +412,15 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
   if (menuTab && !calibrationState) {
     int cc = curr;
     switch (event) {
-      case EVT_ROTARY_RIGHT:
-        if (menuVerticalPosition >= 0)
-          break;
-        // no break
       case EVT_KEY_BREAK(KEY_PGDN):
         if (++cc == menuTabSize)
           cc = 0;
         break;
 
-      case EVT_ROTARY_LEFT:
-        if (menuVerticalPosition >= 0)
-          break;
-        // no break
+
       case EVT_KEY_BREAK(KEY_PGUP):
         if (cc-- == 0)
           cc = menuTabSize-1;
-        break;
-
-      case EVT_KEY_BREAK(KEY_ENTER):
-        if (menuVerticalPosition < 0 && rowcount > 0) {
-          menuVerticalPosition = MENU_FIRST_LINE_EDIT;
-          event = 0;
-        }
         break;
     }
 
@@ -451,9 +435,9 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
 
   switch(event) {
     case EVT_ENTRY:
-      menuVerticalPosition = (menuTab ? -1 : MENU_FIRST_LINE_EDIT);
-      menuHorizontalPosition = POS_HORZ_INIT(0);
       s_editMode = EDIT_MODE_INIT;
+      menuVerticalPosition = MENU_FIRST_LINE_EDIT;
+      menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
 
     case EVT_ENTRY_UP:
@@ -466,7 +450,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         menuHorizontalPosition = 0;
       }
-      else if (READ_ONLY_UNLOCKED()) {
+      else if (READ_ONLY_UNLOCKED() && rowcount > 0) {
         s_editMode = (s_editMode<=0);
       }
       break;
@@ -489,20 +473,16 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       if (menuHorizontalPosition >= 0 && (COLATTR(menuVerticalPosition) & NAVIGATION_LINE_BY_LINE)) {
         menuHorizontalPosition = -1;
       }
-      else if (menuTab && menuVerticalPosition >= 0) {
-        menuVerticalPosition = -1;
-        menuHorizontalPosition = 0;
-#if 0
-        int posVertInit = -1;
+      else {
+        uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
         if (menuVerticalOffset != 0 || menuVerticalPosition != posVertInit) {
           menuVerticalOffset = 0;
           menuVerticalPosition = posVertInit;
           menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
         }
-#endif
-      }
-      else if (!calibrationState) {
-        popMenu();
+        else if (!calibrationState) {
+          popMenu();
+        }
       }
       break;
 
