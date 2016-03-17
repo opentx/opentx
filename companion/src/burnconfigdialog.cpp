@@ -21,7 +21,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
     getSettings();
     populateProgrammers();
     EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_TARANIS(eepromInterface->getBoard())) {
+    if (IS_STM32(eepromInterface->getBoard())) {
       setWindowTitle(tr("DFU-UTIL Configuration"));
       ui->avrArgs->hide();
       ui->avrdude_location->hide();
@@ -310,7 +310,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
 {
   EEPROMInterface *eepromInterface = GetEepromInterface();
   if (checked) {
-    if (IS_TARANIS(eepromInterface->getBoard())) {
+    if (IS_STM32(eepromInterface->getBoard())) {
       ui->label_dfu2->show();
       ui->dfuArgs->show();
     }
@@ -327,7 +327,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     }
   }
   else {
-    if (IS_TARANIS(eepromInterface->getBoard())) {
+    if (IS_STM32(eepromInterface->getBoard())) {
       ui->label_dfu2->hide();
       ui->dfuArgs->hide();
     }

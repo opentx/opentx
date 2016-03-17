@@ -203,6 +203,7 @@ void FlashFirmwareDialog::on_useLibrarySplash_clicked()
 void FlashFirmwareDialog::on_burnButton_clicked()
 {
   g.flashDir(QFileInfo(fwName).dir().absolutePath());
+  g.profile[g.id()].fwName(fwName);
   g.checkHardwareCompatibility(ui->checkHardwareCompatibility->isChecked());
   g.backupOnFlash(ui->backupEEprom->isChecked());
 

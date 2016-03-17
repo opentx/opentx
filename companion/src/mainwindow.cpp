@@ -493,6 +493,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       }
     }
     else if (download == true) {
+      firmwareVersionString = versionString;
       startFirmwareDownload();
     }
 
