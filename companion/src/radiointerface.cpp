@@ -102,7 +102,7 @@ QStringList getReadEEpromCmd(const QString &filename)
 {
   QStringList result;
   EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_TARANIS(eepromInterface->getBoard())) {
+  if (IS_STM32(eepromInterface->getBoard())) {
     // impossible
   }
   else if (IS_SKY9X(eepromInterface->getBoard())) {
@@ -117,7 +117,7 @@ QStringList getReadEEpromCmd(const QString &filename)
 QStringList getWriteEEpromCmd(const QString &filename)
 {
   EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_TARANIS(eepromInterface->getBoard())) {
+  if (IS_STM32(eepromInterface->getBoard())) {
     // impossible
     return QStringList();
   }
@@ -132,7 +132,7 @@ QStringList getWriteEEpromCmd(const QString &filename)
 QStringList getWriteFirmwareArgs(const QString &filename)
 {
   EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_TARANIS(eepromInterface->getBoard())) {
+  if (IS_STM32(eepromInterface->getBoard())) {
     return getDfuArgs("-D", filename);
   }
   else if (eepromInterface->getBoard() == BOARD_SKY9X) {
@@ -313,7 +313,7 @@ bool readEeprom(const QString &filename, ProgressWidget *progress)
     }
   }
 
-  if (result == false && !IS_TARANIS(GetCurrentFirmware()->getBoard())) {
+  if (result == false && !IS_STM32(GetCurrentFirmware()->getBoard())) {
     FlashProcess flashProcess(getRadioInterfaceCmd(), getReadEEpromCmd(filename), progress);
     result = flashProcess.run();
   }
