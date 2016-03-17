@@ -60,15 +60,15 @@ QStringList getAvrdudeArgs(const QString &cmd, const QString &filename)
   return args;
 }
 
-QStringList getDfuArgs(const QString &cmd, const QString &filename)
+QStringList getDfuArgs(const QString & cmd, const QString & filename)
 {
   QStringList arguments;
   burnConfigDialog bcd;
-  QString memory="0x08000000";
-  if (cmd=="-U") {
+  QString memory = "0x08000000";
+  if (cmd == "-U") {
     memory.append(QString(":%1").arg(MAX_FSIZE));
   }
-  arguments << bcd.getDFUArgs() << "--dfuse-address" << memory << "-d" << "0483:df11";
+  arguments << bcd.getDFUArgs() << "--dfuse-address" << memory; // removed for Horus, is it really needed? << "-d" << "0483:df11";
   QString fullcmd = cmd + filename;
 
   arguments << "" << fullcmd;
@@ -149,7 +149,7 @@ QStringList getWriteFirmwareArgs(const QString &filename)
 QStringList getReadFirmwareArgs(const QString &filename)
 {
   EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_TARANIS(eepromInterface->getBoard())) {
+  if (IS_STM32(eepromInterface->getBoard())) {
     return getDfuArgs("-U", filename);
   }
   else if (eepromInterface->getBoard() == BOARD_SKY9X) {
