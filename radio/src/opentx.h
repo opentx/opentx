@@ -25,6 +25,7 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "definitions.h"
 
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)
@@ -201,32 +202,6 @@
 
 #if ROTARY_ENCODERS > 0
   #define ROTARY_ENCODER_NAVIGATION
-#endif
-
-#if defined(SIMU)
-  #define __ALIGNED
-#else
-  #define __ALIGNED __attribute__((aligned(32)))
-#endif
-
-#if defined(SIMU)
-  #define __DMA
-#elif defined(STM32F4) && !defined(BOOT)
-  #define __DMA __attribute__((section(".ram"), aligned(32)))
-#else
-  #define __DMA __ALIGNED
-#endif
-
-#if defined(PCBHORUS) && !defined(SIMU)
-  #define __SDRAM __attribute__((section(".sdram"), aligned(32)))
-#else
-  #define __SDRAM __DMA
-#endif
-
-#if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
-  typedef int32_t int24_t;
-#else
-  typedef __int24 int24_t;
 #endif
 
 #if defined(FAI)

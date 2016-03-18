@@ -308,6 +308,7 @@ int32_t getVolume(void);
 void telemetryPortInit(uint32_t baudrate);
 void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t * buffer, uint32_t count);
+int telemetryGetByte(uint8_t * byte);
 
 // Haptic driver
 void hapticInit(void);
@@ -318,12 +319,14 @@ void hapticOn(uint32_t pwmPercent);
 
 // Second serial port driver
 #define DEBUG_BAUDRATE                 115200
+extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
 void serial2SbusInit(void);
 void serial2Stop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+int sbusGetByte(uint8_t * byte);
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
 void usbJoystickUpdate(void);
@@ -331,5 +334,13 @@ void usbJoystickUpdate(void);
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
+
+#if defined(__cplusplus)
+#include "fifo.h"
+#include "dmafifo.h"
+extern DMAFifo<512> telemetryFifo;
+extern DMAFifo<32> serial2RxFifo;
+extern Fifo<uint8_t, 32> sbusFifo;
+#endif
 
 #endif // _BOARD_HORUS_H_

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-extern Fifo<uint8_t, 32> sbusFifo;
+Fifo<uint8_t, 32> sbusFifo;
 
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
@@ -243,3 +243,15 @@ extern "C" void HEARTBEAT_USART_IRQHandler()
   }
 }
 #endif
+
+int sbusGetByte(uint8_t * byte)
+{
+  switch (currentTrainerMode) {
+    case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+      return sbusFifo.pop(*byte);
+    case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+      return serial2RxFifo.pop(*byte);
+    default:
+      return false;
+  }
+}

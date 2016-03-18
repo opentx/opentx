@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -33,7 +33,6 @@
 
 #define SBUS_CH_CENTER        0x3E0
 
-Fifo<uint8_t, 32> sbusFifo;
 uint8_t SbusFrame[SBUS_MAX_FRAME_SIZE];
 uint16_t SbusTimer ;
 uint8_t SbusIndex = 0 ;
@@ -76,7 +75,7 @@ void processSbusInput()
 {
   uint8_t rxchar;
   uint32_t active = 0;
-  while (sbusFifo.pop(rxchar)) {
+  while (sbusGetByte(&rxchar)) {
     active = 1;
     SbusFrame[SbusIndex++] = rxchar;
     if (SbusIndex > SBUS_MAX_FRAME_SIZE-1) {
