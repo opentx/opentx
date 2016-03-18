@@ -123,13 +123,10 @@ bool menuStatsDebug(evt_t event)
   lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, audioStack.available(), LEFT);
 
 #if defined(LUA)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Free Mem");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, availableMemory(), LEFT, 0, NULL, "b");
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Lua duration");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Lua duration");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+5*FH, "Lua interval");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Lua interval");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+5*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
 #endif
 
