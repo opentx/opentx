@@ -321,6 +321,11 @@ void generalDefault()
   strcpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME);
 #endif
 
+#if defined(PCBHORUS)
+  strcpy(g_eeGeneral.themeName, theme->getName());
+  theme->init();
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
