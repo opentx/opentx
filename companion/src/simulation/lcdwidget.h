@@ -62,7 +62,16 @@ class LcdWidget : public QWidget
 
     void makeScreenshot(const QString & fileName)
     {
-      QPixmap buffer(2*lcdWidth, 2*lcdHeight);
+      int width, height;
+      if (lcdDepth < 12) {
+        width = 2 * lcdWidth;
+        height = 2 * lcdHeight;
+      }
+      else {
+        width = lcdWidth;
+        height = lcdHeight;        
+      }
+      QPixmap buffer(width, height);
       QPainter p(&buffer);
       doPaint(p);
       bool toclipboard = g.snapToClpbrd();
