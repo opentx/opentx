@@ -483,6 +483,7 @@
 
 #define TR_ON_ONE_SWITCHES     "ON\0""One"
 
+
 #if defined(PCBTARANIS)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
@@ -527,6 +528,9 @@
 
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Lowest\0""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Highest""Delta\0"
+
+#define LEN_VANTENNATYPES      "\010"
+#define TR_VANTENNATYPES        "Internal""External"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -895,6 +899,7 @@
 #define TR_UNIT                "Unit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
+#define TR_ANTENNASELECTION    INDENT "Antenna selection"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
 #define TR_ENABLE_POPUP        "Enable Popup"

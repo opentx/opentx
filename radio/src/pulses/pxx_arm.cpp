@@ -23,6 +23,7 @@
 #define PXX_SEND_BIND                      0x01
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
+#define PXX_INTERNAL_ANTENNA               0
 
 const uint16_t CRCTable[]=
 {
@@ -300,8 +301,18 @@ void setupPulsesPXX(unsigned int port)
     }
   }
 
-  /* CRC16 */
+  /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
+#if defined(PCBHORUS)
+  uint8_t antenna = PXX_INTERNAL_ANTENNA;
+  if (port == INTERNAL_MODULE) {
+    antenna = g_model.moduleData[INTERNAL_MODULE].ppmPulsePol;
+  }
+  putPcmByte (antenna, port);
+#else
   putPcmByte(0, port);
+#endif
+
+  /* CRC16 */
   pulseValue = modulePulsesData[port].pxx.pcmCrc;
   putPcmByte(pulseValue >> 8, port);
   putPcmByte(pulseValue, port);

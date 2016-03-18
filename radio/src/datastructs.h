@@ -692,7 +692,7 @@ PACK(struct ModuleData {
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
   int8_t  ppmDelay:6;
-  uint8_t ppmPulsePol:1;
+  uint8_t ppmPulsePol:1;       // For PXX: false = internal antenna, true = exetrnal antenna
   uint8_t ppmOutputType:1;     // false = open drain, true = push pull
   int8_t  ppmFrameLength;
 });
