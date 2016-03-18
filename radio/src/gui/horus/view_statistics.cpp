@@ -28,6 +28,17 @@
 
 bool menuStatsGraph(evt_t event)
 {
+  switch(event)
+  {
+    case EVT_KEY_LONG(KEY_ENTER):
+      g_eeGeneral.globalTimer = 0;
+      storageDirty(EE_GENERAL);
+      sessionTimer = 0;
+      killEvents(event);
+      AUDIO_KEYPAD_UP();
+      break;
+  }
+  
   MENU("Statistics", LBM_STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
@@ -81,6 +92,8 @@ bool menuStatsGraph(evt_t event)
     prev_yv = yv;
   }
 
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
+
   return true;
 }
 
@@ -88,14 +101,6 @@ bool menuStatsDebug(evt_t event)
 {
   switch(event)
   {
-    case EVT_KEY_LONG(KEY_ENTER):
-      g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
-      sessionTimer = 0;
-      killEvents(event);
-      AUDIO_KEYPAD_UP();
-      break;
-
     case EVT_KEY_FIRST(KEY_ENTER):
       maxMixerDuration  = 0;
 #if defined(LUA)
