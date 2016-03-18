@@ -257,7 +257,7 @@ void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max
       }
     } */
   }
-  y += len - (val - min) * len / (max - min) - 5;
+  y += len - divRoundClosest(len * (val - min), max - min) - 5;
   if (options & OPTION_SLIDER_TRIM_BUTTON) {
     drawVerticalTrimPosition(x, y - 2, val);
   }
@@ -272,7 +272,7 @@ void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max
 
 void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
-  int w = (val - min) * len / (max - min);
+  int w = divRoundClosest(len * (val - min), max - min);
   if (options & OPTION_SLIDER_TICKS) {
     if (steps) {
       int delta = len / steps;
