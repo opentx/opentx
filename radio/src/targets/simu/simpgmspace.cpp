@@ -1337,6 +1337,10 @@ uint8_t i2cReadBQ24195(uint8_t) { return 0; }
 void i2cWriteBQ24195(uint8_t, uint8_t) { }
 #endif
 
+#if defined(PCBHORUS)
+void LCD_ControlLight(uint16_t dutyCycle) { }
+#endif
+
 void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }

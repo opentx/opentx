@@ -272,11 +272,12 @@ void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y,
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
 void lcdStoreBackupBuffer(void);
 int lcdRestoreBackupBuffer(void);
+void LCD_ControlLight(uint16_t dutyCycle);
 
 // Backlight driver
-#define setBacklight(xx)
-#define backlightEnable()
-#define backlightDisable()
+#define setBacklight(xx)      LCD_ControlLight(xx)
+#define backlightEnable()     setBacklight(100-g_eeGeneral.backlightBright)
+#define backlightDisable()    setBacklight(g_eeGeneral.blOffBright)
 #define isBacklightEnable()   true
 
 // USB driver

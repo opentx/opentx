@@ -320,24 +320,25 @@ void LCD_LayerInit()
 
 void LCD_ControlLight(uint16_t dutyCycle)
 {
+  static uint16_t existingDutyCycle;
+
+  if (dutyCycle == existingDutyCycle) {
+    return;
+  }
+  else {
+    existingDutyCycle = dutyCycle;
+  }
+
   TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
   TIM_OCInitTypeDef  TIM_OCInitStructure;
 
-  uint16_t freq = LCD_BKLIGHT_PWM_FREQ;
-
-  uint32_t temp = 0;
-  temp = 1000000 / freq - 1;
-
-  TIM_TimeBaseStructure.TIM_Prescaler = SystemCoreClock / 1000000 - 1 ;
+  TIM_TimeBaseStructure.TIM_Prescaler = SystemCoreClock / 10000 - 1 ;//1KhZ
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period = temp;
+  TIM_TimeBaseStructure.TIM_Period = 100;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
 
   TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
-
-  unsigned long tempValue;
-  tempValue = (unsigned long)divRoundClosest((temp+1)*(100-dutyCycle), dutyCycle);
 
   TIM_Cmd(TIM8, DISABLE);
 
@@ -345,7 +346,7 @@ void LCD_ControlLight(uint16_t dutyCycle)
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = (uint32_t)tempValue;
+  TIM_OCInitStructure.TIM_Pulse = (100-dutyCycle);
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
   TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
