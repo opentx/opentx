@@ -150,11 +150,6 @@ IF(SDL_LIBRARY_TEMP)
     SET(SDL_LIBRARY_TEMP ${SDL_LIBRARY_TEMP} ${CMAKE_THREAD_LIBS_INIT})
   ENDIF(NOT APPLE)
 
-  # For MinGW library
-  IF(MINGW)
-    SET(SDL_LIBRARY_TEMP ${MINGW32_LIBRARY} ${SDL_LIBRARY_TEMP})
-  ENDIF(MINGW)
-
   # Set the final string here so the GUI reflects the final state.
   SET(SDL_LIBRARY ${SDL_LIBRARY_TEMP} CACHE STRING "Where the SDL Library can be found")
 
