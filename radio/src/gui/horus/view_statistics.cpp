@@ -129,10 +129,10 @@ bool menuStatsDebug(evt_t event)
 
 #if defined(LUA)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Lua duration");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Lua interval");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+5*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
 #endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
