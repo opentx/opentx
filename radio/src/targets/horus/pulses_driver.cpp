@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void setupPulses(unsigned int port);
 void setupPulsesPPM(unsigned int port);
@@ -188,7 +188,7 @@ extern "C" void TIM1_CC_IRQHandler()
     DMA_InitStructure.DMA_BufferSize = (uint8_t *)modulePulsesData[INTERNAL_MODULE].pxx.ptr - (uint8_t *)modulePulsesData[INTERNAL_MODULE].pxx.pulses;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
     DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
     DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
@@ -308,35 +308,6 @@ void intmodulePxxStart()
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-
-#if 0
-  NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = TIM_RF_PRIO;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init( &NVIC_InitStructure );
-
-  // open heartbit ---------------------
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-
-  GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_12;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOD, &GPIO_InitStructure);
-
-  /* Connect EXTI Line12 to PD12 pin */
-  EXTI_InitTypeDef EXTI_InitStructure;
-  SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOD, EXTI_PinSource12);
-  EXTI_InitStructure.EXTI_Line = EXTI_Line12;
-  EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;///////
-  EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
-  EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-  EXTI_Init(&EXTI_InitStructure);
-
-  EXTI15_10_Interrupt_Handler = EXTI15_10_IRQHandler_pxx;
-#endif
 
   // TX Pin
   GPIO_PinAFConfig(INTMODULE_TX_GPIO, INTMODULE_TX_GPIO_PinSource, INTMODULE_GPIO_AF);
@@ -529,7 +500,7 @@ static void extmodulePpmStart()
   // Hardware timer in PWM mode is used for PPM generation
   // Output is OFF if CNT<CCR1(delay) and ON if bigger
   // CCR1 register defines duration of pulse length and is constant
-  // AAR register defines duration of each pulse, it is 
+  // AAR register defines duration of each pulse, it is
   // updated after every pulse in Update interrupt handler.
   // CCR2 register defines duration of no pulses (time between two pulse trains)
   // it is calculated every round to have PPM period constant.
@@ -622,7 +593,7 @@ extern "C" void TIM2_IRQHandler()
       EXTMODULE_TIMER->ARR = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++ ;
       if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
         // we reached the end of PPM pulses
-        // enable CC2 interrupt (which comes before Update in any case) 
+        // enable CC2 interrupt (which comes before Update in any case)
         // to start new PPM cycle and setup pulses
         EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF ;    // Clear CC1 flag
         EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE ;  // Enable CC1 interrupt
