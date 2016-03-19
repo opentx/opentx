@@ -42,7 +42,7 @@ void watchdogInit(unsigned int duration)
 void getCPUUniqueID(char * s)
 {
 #if defined(SIMU)
-  uint32_t cpu_uid[3] = { 0x12345678, 0xAA55AA55AA, 0x87654321};
+  uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
 #else
   uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
 #endif
