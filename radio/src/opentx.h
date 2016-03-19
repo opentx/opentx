@@ -1534,6 +1534,13 @@ union ReusableBuffer
         char originalName[SD_SCREEN_FILE_LENGTH+1];
     } sdmanager;
 #endif
+
+#if defined(PCBTARANIS)
+    struct
+    {
+        char id[27];
+    } version;
+#endif
 };
 
 extern union ReusableBuffer reusableBuffer;

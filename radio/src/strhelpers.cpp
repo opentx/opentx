@@ -157,9 +157,9 @@ char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits, uint8_t ra
   }
   uint8_t idx = digits;
   while(idx > 0) {
-    div_t qr = div(value, radix);
-    dest[--idx] = (qr.rem >= 10 ? 'A'-10 : '0') + qr.rem;
-    value = qr.quot;
+    uint32_t rem = value % radix;
+    dest[--idx] = (rem >= 10 ? 'A'-10 : '0') + rem;
+    value /= radix;
   }
   dest[digits] = '\0';
   return &dest[digits];

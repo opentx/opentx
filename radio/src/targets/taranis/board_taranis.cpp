@@ -41,7 +41,11 @@ void watchdogInit(unsigned int duration)
 
 void getCPUUniqueID(char * s)
 {
+#if defined(SIMU)
+  uint32_t cpu_uid[3] = { 0x12345678, 0xAA55AA55AA, 0x87654321};
+#else
   uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
+#endif
   char * tmp = strAppendUnsigned(s, cpu_uid[0], 8, 16);
   *tmp = ' ';
   tmp = strAppendUnsigned(tmp+1, cpu_uid[1], 8, 16);
