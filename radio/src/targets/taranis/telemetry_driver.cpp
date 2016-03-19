@@ -21,6 +21,7 @@
 #include "opentx.h"
 
 Fifo<uint8_t, 32> telemetryFifo;
+uint32_t telemetryErrors = 0;
 
 void telemetryPortInit(uint32_t baudrate)
 {
@@ -125,7 +126,10 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
   uint32_t status = TELEMETRY_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = TELEMETRY_USART->DR;
-    if (!(status & USART_FLAG_ERRORS)) {
+    if (status & USART_FLAG_ERRORS) {
+      telemetryErrors++;
+    }
+    else {
       telemetryFifo.push(data);
     }
     status = TELEMETRY_USART->SR;
