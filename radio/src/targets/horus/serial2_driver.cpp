@@ -45,7 +45,6 @@ void uart3Setup(unsigned int baudrate, bool dma)
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
-
   USART_Init(SERIAL_USART, &USART_InitStructure);
 
   if (dma) {

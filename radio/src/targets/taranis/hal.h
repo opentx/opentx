@@ -407,6 +407,8 @@
 #define HEARTBEAT_USART                 USART6
 #define HEARTBEAT_USART_IRQHandler      USART6_IRQHandler
 #define HEARTBEAT_USART_IRQn            USART6_IRQn
+#define HEARTBEAT_DMA_Stream            DMA2_Stream2
+#define HEARTBEAT_DMA_Channel           DMA_Channel_5
 
 // USB
 #define USB_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOA
