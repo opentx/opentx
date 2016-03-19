@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-DMAFifo<512> telemetryFifo __DMA (TELEMETRY_DMA_Stream_RX);
+Fifo<uint8_t, 32> telemetryFifo;
 
 void telemetryPortInit(uint32_t baudrate)
 {
@@ -61,32 +61,11 @@ void telemetryPortInit(uint32_t baudrate)
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
-
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
-
-  DMA_InitTypeDef DMA_InitStructure;
-  telemetryFifo.clear();
-  USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, DISABLE);
-  USART_ITConfig(TELEMETRY_USART, USART_IT_TXE, DISABLE);
-  DMA_InitStructure.DMA_Channel = TELEMETRY_DMA_Channel_RX;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&TELEMETRY_USART->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(telemetryFifo.buffer());
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize = telemetryFifo.size();
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_Low;
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(TELEMETRY_DMA_Stream_RX, &DMA_InitStructure);
-  USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Rx, ENABLE);
   USART_Cmd(TELEMETRY_USART, ENABLE);
-  DMA_Cmd(TELEMETRY_DMA_Stream_RX, ENABLE);
+  USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
+  NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
+  NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
 }
 
 void telemetryPortSetDirectionOutput()
@@ -137,6 +116,19 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
     telemetryPortSetDirectionInput();
+  }
+}
+
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+extern "C" void TELEMETRY_USART_IRQHandler(void)
+{
+  uint32_t status = TELEMETRY_USART->SR;
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    uint8_t data = TELEMETRY_USART->DR;
+    if (!(status & USART_FLAG_ERRORS)) {
+      telemetryFifo.push(data);
+    }
+    status = TELEMETRY_USART->SR;
   }
 }
 

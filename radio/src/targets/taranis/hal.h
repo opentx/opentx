@@ -390,13 +390,13 @@
 #define TELEMETRY_GPIO_PinSource_RX     GPIO_PinSource6
 #define TELEMETRY_GPIO_AF               GPIO_AF_USART2
 #define TELEMETRY_USART                 USART2
-#define TELEMETRY_DMA_Stream_RX         DMA1_Stream5
-#define TELEMETRY_DMA_Channel_RX        DMA_Channel_4
 #define TELEMETRY_DMA_Stream_TX         DMA1_Stream6
 #define TELEMETRY_DMA_Channel_TX        DMA_Channel_4
 #define TELEMETRY_DMA_TX_Stream_IRQ     DMA1_Stream6_IRQn
 #define TELEMETRY_DMA_TX_IRQHandler     DMA1_Stream6_IRQHandler
 #define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
+#define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
+#define TELEMETRY_USART_IRQn            USART2_IRQn
 
 // Heartbeat
 #define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOC
@@ -536,6 +536,17 @@
   #define SD_DMA_FLAG_SPI_TC_TX         DMA_FLAG_TCIF4
   #define SD_DMA_Channel_SPI            DMA_Channel_0
 #endif
+
+// Audio
+#define AUDIO_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
+#define AUDIO_RCC_APB1Periph            (RCC_APB1Periph_TIM6 | RCC_APB1Periph_DAC)
+#define AUDIO_DMA_Stream                DMA1_Stream5
+#define AUDIO_DMA_Stream_IRQn           DMA1_Stream5_IRQn
+#define AUDIO_TIM_IRQn                  TIM6_DAC_IRQn
+#define AUDIO_TIM_IRQHandler            TIM6_DAC_IRQHandler
+#define AUDIO_DMA_Stream_IRQHandler     DMA1_Stream5_IRQHandler
+#define AUDIO_TIMER                     TIM6
+#define AUDIO_DMA                       DMA1
 
 // Haptic
 #if defined(REVPLUS)

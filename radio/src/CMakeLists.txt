@@ -441,6 +441,7 @@ if(CPU_FAMILY STREQUAL STM32)
   foreach(FILE ${STM32USB_SRC})
     set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32USB_DIR}/${FILE})
   endforeach()
+  set(SRC ${SRC} sbus.cpp)
 endif()
 
 if(ARCH STREQUAL ARM)
@@ -510,7 +511,6 @@ if(ARCH STREQUAL ARM)
     main_arm.cpp
     tasks_arm.cpp
     audio_arm.cpp
-    sbus.cpp
     telemetry/telemetry.cpp
     telemetry/frsky.cpp
     telemetry/frsky_d_arm.cpp
