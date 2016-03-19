@@ -148,6 +148,7 @@ enum EnumTabDiag
 {
   e_StatsGraph,
   e_StatsDebug,
+  e_StatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   e_StatsTraces,
 #endif
@@ -155,11 +156,13 @@ enum EnumTabDiag
 
 bool menuStatsGraph(evt_t event);
 bool menuStatsDebug(evt_t event);
+bool menuStatsAnalogs(evt_t event);
 bool menuStatsTraces(evt_t event);
 
 static const MenuHandlerFunc menuTabStats[] PROGMEM = {
   menuStatsGraph,
   menuStatsDebug,
+  menuStatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   menuStatsTraces,
 #endif

@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 MenuHandlerFunc menuHandlers[5];
 evt_t menuEvent = 0;

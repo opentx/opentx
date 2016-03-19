@@ -140,6 +140,28 @@ bool menuStatsDebug(evt_t event)
   return true;
 }
 
+bool menuStatsAnalogs(evt_t event)
+{
+  MENU("Analogs", LBM_STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
+
+  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+    coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
+    coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
+    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");
+    lcdDrawHexNumber(x+40, y, anaIn(i));
+#if defined(JITTER_MEASURE)
+    lcdDrawNumber(x+100, y, rawJitter[i].get());
+    lcdDrawNumber(x+140, y, avgJitter[i].get());
+    lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#else
+    lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#endif
+  }
+
+  return true;
+}
+
+
 #if defined(DEBUG_TRACE_BUFFER)
 #define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT
 #define STATS_TRACES_TIME_POS          MENUS_MARGIN_LEFT + 4*10
