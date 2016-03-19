@@ -1765,10 +1765,7 @@ void doMixerCalculations()
   // handle tick10ms overrun
   // correct overflow handling costs a lot of code; happens only each 11 min;
   // therefore forget the exact calculation and use only 1 instead; good compromise
-
-#if !defined(CPUARM)
   lastTMR = tmr10ms;
-#endif
 
   getADC();
 
@@ -1777,10 +1774,6 @@ void doMixerCalculations()
 #endif
 
   getSwitchesPosition(!s_mixer_first_run_done);
-
-#if defined(CPUARM)
-  lastTMR = tmr10ms;
-#endif
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
