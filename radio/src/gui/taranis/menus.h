@@ -333,7 +333,7 @@ swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8
 #else
   #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, event)
   int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
-  #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
+  #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
 extern uint8_t s_curveChan;

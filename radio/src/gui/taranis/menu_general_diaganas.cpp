@@ -35,9 +35,9 @@ void menuGeneralDiagAna(uint8_t event)
 #if defined(JITTER_MEASURE)
     lcdDrawNumber(x+10*FW-1, y, rawJitter[i].get());
     lcdDrawNumber(x+13*FW-1, y, avgJitter[i].get());
-    lcdDraw8bitsNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
 #else
-    lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
 #endif
   }
 

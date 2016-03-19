@@ -295,11 +295,6 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
   }
 }
 
-void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
-{
-  lcdDrawNumber(x, y, val);
-}
-
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 {
   lcdDrawNumber(x, y, val, flags, 0);
