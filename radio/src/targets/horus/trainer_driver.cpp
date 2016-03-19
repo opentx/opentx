@@ -246,3 +246,8 @@ extern "C" void HEARTBEAT_USART_IRQHandler()
   }
 }
 #endif
+
+int sbusGetByte(uint8_t * byte)
+{
+  return false;
+}
