@@ -2153,6 +2153,7 @@ uint8_t getSticksNavigationEvent()
 }
 #endif
 
+#if !defined(CPUARM)
 void checkBattery()
 {
   static uint8_t counter = 0;
@@ -2222,6 +2223,8 @@ void checkBattery()
     }
   }
 }
+#endif // #if !defined(CPUARM)
+
 
 #if !defined(SIMU) && !defined(CPUARM)
 

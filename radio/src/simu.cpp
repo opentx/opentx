@@ -544,9 +544,15 @@ uint16_t anaIn(uint8_t chan)
     return th9xSim->sliders[chan]->getValue();
   else if (chan<NUM_STICKS+NUM_POTS)
     return th9xSim->knobs[chan-NUM_STICKS]->getValue();
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBHORUS)
   else if (chan == TX_VOLTAGE)
-    return 1000;
+    return 1737;      //~10.6V
+#elif (defined(PCBTARANIS) && defined(REV9E))
+  else if (chan == TX_VOLTAGE)
+    return 1420;      //~10.6V
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
+  else if (chan == TX_VOLTAGE)
+    return 1000;      //~7.4V
 #elif defined(PCBSKY9X)
   else if (chan == TX_VOLTAGE)
     return 5.1*1500/11.3;

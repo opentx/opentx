@@ -242,12 +242,7 @@ extern uint16_t adcValues[NUMBER_ANALOG];
 void adcInit(void);
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
-
-#if defined(REV3)
-  #define BATT_SCALE    120
-#else
-  #define BATT_SCALE    150
-#endif
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
