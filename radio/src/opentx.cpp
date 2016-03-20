@@ -2734,6 +2734,11 @@ int main()
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
 #endif
+#if defined(SIMU)
+    sleep(5/*ms*/);
+    if (main_thread_running == 0)
+      return 0;
+#endif
 
     perMain();
 
