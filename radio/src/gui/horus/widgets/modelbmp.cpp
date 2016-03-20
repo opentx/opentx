@@ -70,6 +70,7 @@ class ModelBitmapWidget: public Widget
           memcmp(modelName, g_model.header.name, sizeof(g_model.header.name)) != 0) {
         refreshBuffer();
         memcpy(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap));
+        memcpy(modelName, g_model.header.name, sizeof(g_model.header.name));
       }
 
       if (buffer) {
