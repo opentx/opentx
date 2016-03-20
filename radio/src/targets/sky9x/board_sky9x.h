@@ -228,6 +228,7 @@ enum Analogs {
 void adcInit();
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 void setSticksGain(uint8_t gains);
 
 // Buzzer driver

@@ -2153,6 +2153,7 @@ uint8_t getSticksNavigationEvent()
 }
 #endif
 
+#if !defined(CPUARM)
 void checkBattery()
 {
   static uint8_t counter = 0;
@@ -2166,14 +2167,7 @@ void checkBattery()
   if (counter-- == 0) {
     counter = 10;
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
-    instant_vbat >>= 11;
-    instant_vbat += 2; // because of the diode
-#elif defined(PCBSKY9X)
-    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
-    instant_vbat /= 55296;
-#elif defined(CPUM2560)
+#if defined(CPUM2560)
     instant_vbat = (instant_vbat*1112 + instant_vbat*g_eeGeneral.txVoltageCalibration + (BandGap<<2)) / (BandGap<<3);
 #else
     instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.txVoltageCalibration/8) / BandGap;
@@ -2211,17 +2205,11 @@ void checkBattery()
       if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
-#if defined(PCBSKY9X)
-      else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-        AUDIO_TX_TEMP_HIGH();
-      }
-      else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-        AUDIO_TX_MAH_HIGH();
-      }
-#endif
     }
   }
 }
+#endif // #if !defined(CPUARM)
+
 
 #if !defined(SIMU) && !defined(CPUARM)
 
@@ -2745,6 +2733,11 @@ int main()
 #if defined(CPUM2560)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
+#endif
+#if defined(SIMU)
+    sleep(5/*ms*/);
+    if (main_thread_running == 0)
+      return 0;
 #endif
 
     perMain();

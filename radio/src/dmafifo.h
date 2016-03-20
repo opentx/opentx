@@ -45,6 +45,9 @@ class DMAFifo
 
     bool isEmpty()
     {
+#if defined(SIMU)
+      return true;
+#endif
       return (ridx == N - stream->NDTR);
     }
 

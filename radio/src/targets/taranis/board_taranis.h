@@ -268,6 +268,7 @@ void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUMBER_ANALOG];
 uint16_t getAnalogValue(uint8_t index);
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
 #define BATT_SCALE    150
 
