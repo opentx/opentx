@@ -46,6 +46,7 @@ enum menuGeneralHwItems {
   ITEM_SETUP_HW_SH,
   ITEM_SETUP_HW_BLUETOOTH,
   // ITEM_SETUP_HW_UART3_MODE,
+  ITEM_SETUP_HW_BAT_CAL,
   ITEM_SETUP_HW_MAX
 };
 
@@ -175,6 +176,12 @@ bool menuGeneralHardware(evt_t event)
         }
         break;
 #endif
+
+      case ITEM_SETUP_HW_BAT_CAL:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "Battery cal.");
+        lcdDrawNumber(HW_SETTINGS_COLUMN, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
+        break;
     }
   }
 
