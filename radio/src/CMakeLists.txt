@@ -19,7 +19,7 @@ option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
-option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" ON)  # TODO remove it when it's OK
+option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
 
 enable_language(ASM)
 set(OPT s)
