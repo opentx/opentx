@@ -20,12 +20,6 @@
 
 #include "../../opentx.h"
 
-const uint8_t volumeScale[VOLUME_LEVEL_MAX+1] = {
-  254, 127, 110, 100, 90, 80, 70, 60, 50, 40,
-  30, 20, 19, 18, 17, 16, 15, 14, 13, 12,
-  11, 10, 5, 0
-};
-
 #if !defined(SIMU)
 
 #define VS_WRITE_COMMAND 	       0x02
@@ -414,13 +408,24 @@ bool audioPushBuffer(AudioBuffer * buffer)
   }
 }
 
+// adjust this value for a volume level just above the silence
+// values is attenuation in dB, higher value - less volume
+// max value is 126
+#define VOLUME_MIN_DB     40
+
 void setScaledVolume(uint8_t volume)
 {
   if (volume > VOLUME_LEVEL_MAX) {
     volume = VOLUME_LEVEL_MAX;
   }
-
-  setVolume(volumeScale[volume]);
+  // maximum volume is 0x00 and total silence is 0xFE
+  if (volume == 0) {
+    setVolume(0xFE);  // silence  
+  }
+  else {
+    uint32_t vol = (VOLUME_MIN_DB * 2) - ((uint32_t)volume * (VOLUME_MIN_DB * 2)) / VOLUME_LEVEL_MAX;
+    setVolume(vol);
+  }
 }
 
 void setVolume(uint8_t volume)
