@@ -26,6 +26,5 @@
 #define SBUS_MAX_FRAME_SIZE   28
 
 void processSbusInput();
-void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size);
 
 #endif // _SBUS_H_

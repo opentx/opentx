@@ -73,6 +73,7 @@ void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size)
 
 void processSbusInput()
 {
+#if !defined(SIMU)
   uint8_t rxchar;
   uint32_t active = 0;
   while (sbusGetByte(&rxchar)) {
@@ -94,4 +95,5 @@ void processSbusInput()
       }
     }
   }
+#endif
 }
