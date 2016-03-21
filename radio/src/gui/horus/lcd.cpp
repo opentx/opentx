@@ -20,7 +20,7 @@
 
 #include <math.h>
 #include <stdio.h>
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(SIMU)
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
