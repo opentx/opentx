@@ -42,7 +42,6 @@ void menuGeneralDiagAna(uint8_t event)
   }
 
   lcd_putsLeft(MENU_HEADER_HEIGHT+1+6*FH, STR_BATT_CALIB);
-  uint32_t batCalV = getBatteryVoltage();
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+6*FH, getBatteryVoltage(), (s_editMode > 0 ? BLINK : 0) | INVERS | PREC2);
   if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
 }
