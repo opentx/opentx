@@ -18,12 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-#define MODEL_CUSTOM_FUNC_1ST_COLUMN          50
-#define MODEL_CUSTOM_FUNC_2ND_COLUMN          100
-#define MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT      180
-#define MODEL_CUSTOM_FUNC_3RD_COLUMN          300
+#define MODEL_CUSTOM_FUNC_1ST_COLUMN          60
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN          120
+#define MODEL_CUSTOM_FUNC_2ND_COLUMN_EXT      (lcdNextPos + 5)
+#define MODEL_CUSTOM_FUNC_3RD_COLUMN          295
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN          440
 #define MODEL_CUSTOM_FUNC_4TH_COLUMN_ONOFF    450
 
