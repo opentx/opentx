@@ -35,8 +35,8 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   // TODO move register stuff to driver
   register Pwm *pwmptr = PWM;
   uint32_t pwmCh = (port == EXTERNAL_MODULE ? 3 : 1);
-  pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2; //Stoplen *2
-  if (g_model.moduleData[port].ppmPulsePol)
+  pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppm.delay * 50 + 300) * 2; //Stoplen *2
+  if (g_model.moduleData[port].ppm.pulsePol)
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR &= ~0x00000200 ;  // CPOL
   else
     pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
@@ -48,7 +48,7 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
   ppmPulsesData->ptr = ptr;
 
   int32_t rest = 22500u * 2;
-  rest += (int32_t(g_model.moduleData[port].ppmFrameLength)) * 1000;
+  rest += (int32_t(g_model.moduleData[port].ppm.frameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
@@ -61,19 +61,19 @@ void setupPulsesPPM(unsigned int port)                   // Don't enable interru
 
 #if !defined(PCBSKY9X)
   rest -= 1000;
-  uint32_t ppmDelay = (g_model.moduleData[port].ppmDelay * 50 + 300) * 2;
+  uint32_t ppmDelay = (g_model.moduleData[port].ppm.delay * 50 + 300) * 2;
   // set idle time, ppm delay and ppm polarity
   if (port == TRAINER_MODULE) {
-    set_trainer_ppm_parameters(rest, ppmDelay, !g_model.moduleData[TRAINER_MODULE].ppmPulsePol); // ppmPulsePol: 0 - positive, 1 - negative
+    set_trainer_ppm_parameters(rest, ppmDelay, !g_model.moduleData[TRAINER_MODULE].ppm.pulsePol); // ppmPulsePol: 0 - positive, 1 - negative
   }
   else if (port == EXTERNAL_MODULE) {
-    set_external_ppm_parameters(rest, ppmDelay, !g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol);
+    set_external_ppm_parameters(rest, ppmDelay, !g_model.moduleData[EXTERNAL_MODULE].ppm.pulsePol);
   }
 #endif
 
 #if defined(TARANIS_INTERNAL_PPM)
   else if (port == INTERNAL_MODULE) {
-    set_internal_ppm_parameters(rest, ppmDelay, !g_model.moduleData[INTERNAL_MODULE].ppmPulsePol);
+    set_internal_ppm_parameters(rest, ppmDelay, !g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol);
   }
 #endif // #if defined(TARANIS_INTERNAL_PPM)
 }

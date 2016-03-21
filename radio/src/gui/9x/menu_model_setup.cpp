@@ -562,21 +562,21 @@ void menuModelSetup(uint8_t event)
         if (IS_MODULE_PPM(moduleIdx)) {
           lcd_putsLeft(y, STR_PPMFRAME);
           lcdDrawText(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppmFrameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
           lcdDrawChar(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppmDelay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
-          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppmPulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppm.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppm.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
 
           if (attr && (editMode>0 || p1valdiff)) {
             switch (menuHorizontalPosition) {
               case 0:
-                CHECK_INCDEC_MODELVAR(event, moduleData.ppmFrameLength, -20, 35);
+                CHECK_INCDEC_MODELVAR(event, moduleData.ppm.frameLength, -20, 35);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR(event, moduleData.ppmDelay, -4, 10);
+                CHECK_INCDEC_MODELVAR(event, moduleData.ppm.delay, -4, 10);
                 break;
               case 2:
-                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.ppmPulsePol, 1);
+                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.ppm.pulsePol, 1);
                 break;
             }
           }

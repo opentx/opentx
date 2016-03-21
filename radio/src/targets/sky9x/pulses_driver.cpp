@@ -27,7 +27,7 @@ void module_output_active()
   pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
   pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
 #if defined(REVX)
-  if (g_model.moduleData[EXTERNAL_MODULE].ppmOutputType) {
+  if (g_model.moduleData[EXTERNAL_MODULE].ppm.OutputType) {
     pioptr->PIO_MDDR = PIO_PA17 ;                 // Push Pull O/p in A17
   }
   else {
@@ -52,13 +52,13 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr = PWM ;
   // PWM3 for PPM output
   pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0004000B ;  // CLKA
-  if (!g_model.moduleData[EXTERNAL_MODULE].ppmPulsePol) {
+  if (!g_model.moduleData[EXTERNAL_MODULE].ppm.pulsePol) {
     pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
   }
   pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
   pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.moduleData[EXTERNAL_MODULE].ppmDelay*100+600;    // Duty in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.moduleData[EXTERNAL_MODULE].ppmDelay*100+600; // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.moduleData[EXTERNAL_MODULE].ppm.delay*100+600;    // Duty in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.moduleData[EXTERNAL_MODULE].ppm.delay*100+600; // Duty in half uS
   pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
 
@@ -66,13 +66,13 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   // PWM1 for PPM2
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
-  if (!g_model.moduleData[EXTRA_MODULE].ppmPulsePol) {
+  if (!g_model.moduleData[EXTRA_MODULE].ppm.pulsePol) {
     pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200 ;   // CPOL
   }
   pwmptr->PWM_CH_NUM[1].PWM_CPDR = period ;                       // Period
   pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period ;            // Period
-  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.moduleData[EXTRA_MODULE].ppmDelay*100+600 ;                             // Duty
-  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.moduleData[EXTRA_MODULE].ppmDelay*100+600 ;          // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.moduleData[EXTRA_MODULE].ppm.delay*100+600 ;                             // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.moduleData[EXTRA_MODULE].ppm.delay*100+600 ;          // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID1 ;                                               // Enable channel 1
   pwmptr->PWM_IER1 = PWM_IER1_CHID1 ;
 #endif

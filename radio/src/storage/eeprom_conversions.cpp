@@ -871,9 +871,9 @@ void ConvertModel_216_to_217(ModelData & model)
     for (int j=0; j<NUM_CHNOUT; j++) {
       newModel.moduleData[i].failsafeChannels[j] = oldModel.moduleData[i].failsafeChannels[j];
     }
-    newModel.moduleData[i].ppmDelay = oldModel.moduleData[i].ppmDelay;
-    newModel.moduleData[i].ppmFrameLength = oldModel.moduleData[i].ppmFrameLength;
-    newModel.moduleData[i].ppmPulsePol = oldModel.moduleData[i].ppmPulsePol;
+    newModel.moduleData[i].ppm.delay = oldModel.moduleData[i].ppmDelay;
+    newModel.moduleData[i].ppm.frameLength = oldModel.moduleData[i].ppmFrameLength;
+    newModel.moduleData[i].ppm.pulsePol = oldModel.moduleData[i].ppmPulsePol;
   }
 
 #if defined(PCBTARANIS)
