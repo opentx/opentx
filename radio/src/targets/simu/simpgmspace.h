@@ -429,7 +429,9 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
 #if defined(CPUSTM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
 #define TIM_DeInit(...)
-#define TIM_TimeBaseInit(...)
+#if defined(STM32F4)
+inline void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
+#endif
 #define TIM_SetCompare2(...)
 #define TIM_ClearFlag(...)
 #define TIM_Cmd(...)
