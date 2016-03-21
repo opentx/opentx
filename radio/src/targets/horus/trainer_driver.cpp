@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -177,7 +177,7 @@ void stop_cppm_on_heartbeat_capture(void)
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                             // Stop counter
   NVIC_DisableIRQ(TRAINER_TIMER_IRQn);                            // Stop Interrupt
 
-  if (!IS_PULSES_EXTERNAL_MODULE()) {
+  if (!IS_EXTERNAL_MODULE_PRESENT()) {
     EXTERNAL_MODULE_OFF();
   }
 }
@@ -221,7 +221,7 @@ void stop_sbus_on_heartbeat_capture(void)
   configure_pins(HEARTBEAT_GPIO_PIN, PIN_INPUT | PIN_PORTC);
   NVIC_DisableIRQ(HEARTBEAT_USART_IRQn);
     #endif
-  if (!IS_PULSES_EXTERNAL_MODULE()) {
+  if (!IS_EXTERNAL_MODULE_PRESENT()) {
     EXTERNAL_MODULE_OFF();
   }
 }

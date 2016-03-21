@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -157,7 +157,7 @@ bool isSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
      return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
   }
-    
+
 #if !defined(HELI)
   if (source>=MIXSRC_CYC1 && source<=MIXSRC_CYC3)
     return false;
@@ -227,7 +227,7 @@ bool isInputSourceAvailable(int source)
 
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH)
      return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
-  
+
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
 
@@ -468,6 +468,14 @@ bool isRfProtocolAvailable(int protocol)
   }
 #endif
   return true;
+}
+
+bool isTrainerModeAvailable(int mode)
+{
+  if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+    return false;
+  else
+    return true;
 }
 
 bool modelHasNotes()
