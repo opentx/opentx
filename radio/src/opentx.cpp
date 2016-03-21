@@ -1515,6 +1515,8 @@ uint16_t BandGap ;
     #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
   #elif defined(CLI)
     #define JITTER_MEASURE_ACTIVE()   (1)
+  #else
+    #define JITTER_MEASURE_ACTIVE()   (0)
   #endif
 #endif
 
