@@ -2663,9 +2663,13 @@ int main()
 #if defined(CPUM2560) || defined(CPUM2561)
   uint8_t mcusr = MCUSR; // save the WDT (etc) flags
   MCUSR = 0; // must be zeroed before disabling the WDT
+  MCUCR = 0x80 ;   // Disable JTAG port that can interfere with POT3
+  MCUCR = 0x80 ;   // Must be done twice
 #elif defined(PCBSTD)
   uint8_t mcusr = MCUCSR;
   MCUCSR = 0;
+  MCUCSR = 0x80 ;   // Disable JTAG port that can interfere with POT3
+  MCUCSR = 0x80 ;   // Must be done twice
 #endif
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = 30;
