@@ -805,6 +805,16 @@ int OpenTxFirmware::getCapability(const Capability capability)
   }
 }
 
+QTime OpenTxFirmware::getMaxTimerStart()
+{
+  if (IS_TARANIS(board))
+    return QTime(23, 59, 59);
+  else if (IS_ARM(board))
+    return QTime(8, 59, 59);
+  else
+    return QTime(0, 59, 59);
+}
+
 bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
 {
   if (IS_TARANIS(board) && (source == TELEMETRY_SOURCE_RSSI_TX))

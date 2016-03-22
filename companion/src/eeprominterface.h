@@ -1624,7 +1624,9 @@ class Firmware {
     }
 
     virtual int getCapability(const Capability) = 0;
-
+    
+    virtual QTime getMaxTimerStart() = 0;
+    
     virtual bool isTelemetrySourceAvailable(int source) = 0;
 
     virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;

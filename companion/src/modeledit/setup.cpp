@@ -43,12 +43,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
     ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
   }
   
-  if (IS_TARANIS(board))
-    ui->value->setMaximumTime(QTime(23, 59, 59));
-  else if (IS_ARM(board))
-    ui->value->setMaximumTime(QTime(8, 59, 59));
-  else
-    ui->value->setMaximumTime(QTime(0, 59, 59));
+  ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
   ui->persistent->setField(timer.persistent, this);
   ui->persistent->addItem(tr("Not persistent"), 0);
