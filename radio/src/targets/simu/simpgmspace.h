@@ -396,7 +396,7 @@ extern OS_MutexID audioMutex;
 #define WDRF   0
 
 void * simuMain(void * args = NULL);
-extern uint8_t MCUCSR, MCUSR;
+extern uint8_t MCUCSR, MCUSR, MCUCR;
 
 typedef unsigned int       U32;
 typedef unsigned long long U64;
