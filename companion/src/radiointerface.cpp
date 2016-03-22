@@ -191,7 +191,7 @@ void resetAvrdudeFuses(bool eepromProtect, ProgressWidget *progress)
     QStringList str;
     if (bcd.getMCU() == "m2560") {
       args << "-B8";
-      QString erStr = eepromProtect ? "hfuse:w:0x11:m" : "hfuse:w:0x19:m";
+      QString erStr = eepromProtect ? "hfuse:w:0x51:m" : "hfuse:w:0x59:m";
       str << "-U" << "lfuse:w:0xD7:m" << "-U" << erStr << "-U" << "efuse:w:0xFC:m";
       //use hfuse = 0x81 to prevent eeprom being erased with every flashing
     }
@@ -220,7 +220,7 @@ void resetAvrdudeFuses(bool eepromProtect, ProgressWidget *progress)
         lfuses = "lfuse:w:0x3F:m";
       }
 
-      QString erStr = eepromProtect ? "hfuse:w:0x81:m" : "hfuse:w:0x89:m";
+      QString erStr = eepromProtect ? "hfuse:w:0xC1:m" : "hfuse:w:0xC9:m";
       str << "-U" << lfuses << "-U" << erStr << "-U" << "efuse:w:0xFF:m";
       //use hfuse = 0x81 to prevent eeprom being erased with every flashing
     }
