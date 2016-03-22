@@ -1509,10 +1509,14 @@ uint16_t BandGap ;
   JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
   JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
   tmr10ms_t jitterResetTime = 0;
-  #if defined(PCBTARANIS)
+  #if defined(PCBHORUS)
+    #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
+  #elif defined(PCBTARANIS)
     #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
   #elif defined(CLI)
     #define JITTER_MEASURE_ACTIVE()   (1)
+  #else
+    #define JITTER_MEASURE_ACTIVE()   (0)
   #endif
 #endif
 
@@ -1765,10 +1769,7 @@ void doMixerCalculations()
   // handle tick10ms overrun
   // correct overflow handling costs a lot of code; happens only each 11 min;
   // therefore forget the exact calculation and use only 1 instead; good compromise
-
-#if !defined(CPUARM)
   lastTMR = tmr10ms;
-#endif
 
   getADC();
 
@@ -1777,10 +1778,6 @@ void doMixerCalculations()
 #endif
 
   getSwitchesPosition(!s_mixer_first_run_done);
-
-#if defined(CPUARM)
-  lastTMR = tmr10ms;
-#endif
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
@@ -2160,6 +2157,7 @@ uint8_t getSticksNavigationEvent()
 }
 #endif
 
+#if !defined(CPUARM)
 void checkBattery()
 {
   static uint8_t counter = 0;
@@ -2173,14 +2171,7 @@ void checkBattery()
   if (counter-- == 0) {
     counter = 10;
     int32_t instant_vbat = anaIn(TX_VOLTAGE);
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * BATT_SCALE;
-    instant_vbat >>= 11;
-    instant_vbat += 2; // because of the diode
-#elif defined(PCBSKY9X)
-    instant_vbat = (instant_vbat + instant_vbat*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
-    instant_vbat /= 55296;
-#elif defined(CPUM2560)
+#if defined(CPUM2560)
     instant_vbat = (instant_vbat*1112 + instant_vbat*g_eeGeneral.txVoltageCalibration + (BandGap<<2)) / (BandGap<<3);
 #else
     instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.txVoltageCalibration/8) / BandGap;
@@ -2218,17 +2209,11 @@ void checkBattery()
       if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
         AUDIO_TX_BATTERY_LOW();
       }
-#if defined(PCBSKY9X)
-      else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-        AUDIO_TX_TEMP_HIGH();
-      }
-      else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-        AUDIO_TX_MAH_HIGH();
-      }
-#endif
     }
   }
 }
+#endif // #if !defined(CPUARM)
+
 
 #if !defined(SIMU) && !defined(CPUARM)
 
@@ -2678,9 +2663,13 @@ int main()
 #if defined(CPUM2560) || defined(CPUM2561)
   uint8_t mcusr = MCUSR; // save the WDT (etc) flags
   MCUSR = 0; // must be zeroed before disabling the WDT
+  MCUCR = 0x80 ;   // Disable JTAG port that can interfere with POT3
+  MCUCR = 0x80 ;   // Must be done twice
 #elif defined(PCBSTD)
   uint8_t mcusr = MCUCSR;
   MCUCSR = 0;
+  MCUCSR = 0x80 ;   // Disable JTAG port that can interfere with POT3
+  MCUCSR = 0x80 ;   // Must be done twice
 #endif
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = 30;
@@ -2752,6 +2741,11 @@ int main()
 #if defined(CPUM2560)
     if ((shutdown_state=pwrCheck()) > e_power_trainer)
       break;
+#endif
+#if defined(SIMU)
+    sleep(5/*ms*/);
+    if (main_thread_running == 0)
+      return 0;
 #endif
 
     perMain();

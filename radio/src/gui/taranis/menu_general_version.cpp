@@ -77,10 +77,16 @@ void menuGeneralVersion(uint8_t event)
     exit(0);
 #endif
   }
+
+  if (event == EVT_ENTRY) {
+    getCPUUniqueID(reusableBuffer.version.id);
+  }
   
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
 
   lcd_putsLeft(MENU_HEADER_HEIGHT+1, vers_stamp);
+  lcd_putsLeft(MENU_HEADER_HEIGHT+4*FH+1, "UID\037\033:");
+  lcdDrawText(5*FW+3, MENU_HEADER_HEIGHT+4*FH+1, reusableBuffer.version.id);
 
   lcd_putsLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
   lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);

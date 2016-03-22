@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,14 +18,13 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 uint8_t serial2Mode = 0;
 Fifo<uint8_t, 512> serial2TxFifo;
-extern Fifo<uint8_t, 512> telemetryFifo;
-extern Fifo<uint8_t, 32> sbusFifo;
+DMAFifo<32> serial2RxFifo __DMA (SERIAL_DMA_Stream_RX);
 
-void uart3Setup(unsigned int baudrate)
+void uart3Setup(unsigned int baudrate, bool dma)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -39,42 +38,70 @@ void uart3Setup(unsigned int baudrate)
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(SERIAL_GPIO, &GPIO_InitStructure);
-  
+
   USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
-  
+
   USART_Init(SERIAL_USART, &USART_InitStructure);
-  USART_Cmd(SERIAL_USART, ENABLE);
 
-  USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
-  USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
-
-  NVIC_SetPriority(SERIAL_USART_IRQn, 7);
-  NVIC_EnableIRQ(SERIAL_USART_IRQn);
+  if (dma) {
+    DMA_InitTypeDef DMA_InitStructure;
+    serial2RxFifo.clear();
+    USART_ITConfig(SERIAL_USART, USART_IT_RXNE, DISABLE);
+    USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
+    DMA_InitStructure.DMA_Channel = SERIAL_DMA_Channel_RX;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&SERIAL_USART->DR);
+    DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(serial2RxFifo.buffer());
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+    DMA_InitStructure.DMA_BufferSize = serial2RxFifo.size();
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_Low;
+    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+    DMA_Init(SERIAL_DMA_Stream_RX, &DMA_InitStructure);
+    USART_DMACmd(SERIAL_USART, USART_DMAReq_Rx, ENABLE);
+    USART_Cmd(SERIAL_USART, ENABLE);
+    DMA_Cmd(SERIAL_DMA_Stream_RX, ENABLE);
+  }
+  else {
+#if !defined(USB_SERIAL) && defined(CLI)
+    USART_Cmd(SERIAL_USART, ENABLE);
+    USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
+    USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
+    NVIC_SetPriority(SERIAL_USART_IRQn, 7);
+    NVIC_EnableIRQ(SERIAL_USART_IRQn);
+#endif
+  }
 }
 
 void serial2Init(unsigned int mode, unsigned int protocol)
 {
-  USART_DeInit(SERIAL_USART);
+  serial2Stop();
 
   serial2Mode = mode;
 
   switch (mode) {
     case UART_MODE_TELEMETRY_MIRROR:
-      uart3Setup(FRSKY_SPORT_BAUDRATE);
+      uart3Setup(FRSKY_SPORT_BAUDRATE, false);
       break;
 #if !defined(USB_SERIAL) && (defined(DEBUG) || defined(CLI))
     case UART_MODE_DEBUG:
-      uart3Setup(DEBUG_BAUDRATE);
+      uart3Setup(DEBUG_BAUDRATE, false);
       break;
 #endif
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
-        uart3Setup(FRSKY_D_BAUDRATE);
+        uart3Setup(FRSKY_D_BAUDRATE, true);
       }
       break;
   }
@@ -89,12 +116,13 @@ void serial2Putc(char c)
 
 void serial2SbusInit()
 {
-  uart3Setup(SBUS_BAUDRATE);
+  uart3Setup(SBUS_BAUDRATE, true);
   SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
 }
 
 void serial2Stop()
 {
+  DMA_DeInit(SERIAL_DMA_Stream_RX);
   USART_DeInit(SERIAL_USART);
 }
 
@@ -122,29 +150,21 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     }
   }
 
+#if !defined(USB_SERIAL) && defined(CLI)
   // Receive
   uint32_t status = SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = SERIAL_USART->DR;
-
     if (!(status & USART_FLAG_ERRORS)) {
       switch (serial2Mode) {
-        case UART_MODE_TELEMETRY:
-          telemetryFifo.push(data);
-          break;
-        case UART_MODE_SBUS_TRAINER:
-          sbusFifo.push(data);
-          break;
-#if !defined(USB_SERIAL) && defined(CLI)
         case UART_MODE_DEBUG:
           cliRxFifo.push(data);
           break;
-#endif
       }
     }
-
     status = SERIAL_USART->SR;
   }
-}
 #endif
 
+}
+#endif

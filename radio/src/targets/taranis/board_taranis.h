@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -212,6 +212,7 @@ void stop_cppm_on_heartbeat_capture(void);
 void init_sbus_on_heartbeat_capture(void);
 void stop_sbus_on_heartbeat_capture(void);
 void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
+int sbusGetByte(uint8_t * byte);
 
 // Keys driver
 void keysInit(void);
@@ -267,6 +268,7 @@ void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUMBER_ANALOG];
 uint16_t getAnalogValue(uint8_t index);
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
 #define BATT_SCALE    150
 
@@ -322,7 +324,9 @@ void debugPutc(const char c);
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate);
 void telemetryPortSetDirectionOutput(void);
-void sportSendBuffer(uint8_t *buffer, uint32_t count);
+void sportSendBuffer(uint8_t * buffer, uint32_t count);
+int telemetryGetByte(uint8_t * byte);
+extern uint32_t telemetryErrors;
 
 // Audio driver
 void audioInit(void) ;
@@ -348,6 +352,7 @@ void hapticOff(void);
 
 // Second serial port driver
 #define DEBUG_BAUDRATE                 115200
+extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
@@ -390,5 +395,13 @@ void usbJoystickUpdate(void);
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
+
+#if defined(__cplusplus)
+#include "fifo.h"
+#include "dmafifo.h"
+extern Fifo<uint8_t, 32> telemetryFifo;
+extern DMAFifo<32> serial2RxFifo;
+extern Fifo<uint8_t, 32> sbusFifo;
+#endif
 
 #endif // _BOARD_TARANIS_H_

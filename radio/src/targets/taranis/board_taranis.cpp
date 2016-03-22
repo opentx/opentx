@@ -41,7 +41,11 @@ void watchdogInit(unsigned int duration)
 
 void getCPUUniqueID(char * s)
 {
+#if defined(SIMU)
+  uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
+#else
   uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
+#endif
   char * tmp = strAppendUnsigned(s, cpu_uid[0], 8, 16);
   *tmp = ' ';
   tmp = strAppendUnsigned(tmp+1, cpu_uid[1], 8, 16);
@@ -121,8 +125,8 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 
 void boardInit()
 {
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
 
 #if !defined(REV9E)
@@ -311,4 +315,12 @@ void checkTrainerSettings()
         break;
     }
   }
+}
+
+uint16_t getBatteryVoltage()
+{
+  int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose
+  instant_vbat = (instant_vbat * BATT_SCALE * (128 + g_eeGeneral.txVoltageCalibration) ) / 26214;
+  instant_vbat += 20;  // add 0.2V because of the diode TODO check if this is needed, but removal will beak existing calibrations!!!
+  return (uint16_t)instant_vbat;
 }

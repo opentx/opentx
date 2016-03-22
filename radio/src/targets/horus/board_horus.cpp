@@ -266,3 +266,9 @@ void checkTrainerSettings()
     }
   }
 }
+
+uint16_t getBatteryVoltage()
+{
+  int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose
+  return (uint16_t)((instant_vbat * (1000 + g_eeGeneral.txVoltageCalibration) ) / 1637);
+}

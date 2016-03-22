@@ -98,6 +98,71 @@ void checkEeprom()
 }
 #endif
 
+#define BAT_AVG_SAMPLES       8
+
+void checkBatteryAlarms()
+{
+  // TRACE("checkBatteryAlarms()");
+  if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
+    AUDIO_TX_BATTERY_LOW();
+    // TRACE("checkBatteryAlarms(): battery low");
+  }
+#if defined(PCBSKY9X)
+  else if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
+    AUDIO_TX_TEMP_HIGH();
+  }
+  else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) { // TODO move calculation into board file
+    AUDIO_TX_MAH_HIGH();
+  }
+#endif
+}
+
+void checkBattery()
+{
+  static uint32_t batSum;
+  static uint8_t sampleCount;
+  // filter battery voltage by averaging it
+  if (g_vbat100mV == 0) {
+    g_vbat100mV = (getBatteryVoltage() + 5) / 10;
+    batSum = 0;
+    sampleCount = 0;
+  }
+  else {
+    batSum += getBatteryVoltage();
+    // TRACE("checkBattery(): sampled = %d", getBatteryVoltage());
+    if (++sampleCount >= BAT_AVG_SAMPLES) {
+      g_vbat100mV = (batSum + BAT_AVG_SAMPLES * 5 ) / (BAT_AVG_SAMPLES * 10);
+      batSum = 0;
+      sampleCount = 0;
+      // TRACE("checkBattery(): g_vbat100mV = %d", g_vbat100mV);
+    }
+  }
+}
+
+void periodicTick_1s()
+{
+  checkBattery();
+}
+
+void periodicTick_10s()
+{
+  checkBatteryAlarms();
+}
+
+void periodicTick()
+{
+  static uint8_t count10s;
+  static uint32_t lastTime;
+  if ( (get_tmr10ms() - lastTime) >= 100 ) {
+    lastTime += 100;
+    periodicTick_1s();
+    if (++count10s >= 10) {
+      count10s = 0;
+      periodicTick_10s();
+    }
+  }
+}
+
 #if defined(GUI) && defined(COLORLCD)
 void guiMain(evt_t evt)
 {
@@ -328,7 +393,7 @@ void perMain()
   writeLogs();
   handleUsbConnection();
   checkTrainerSettings();
-  checkBattery();
+  periodicTick();
 
   evt_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on

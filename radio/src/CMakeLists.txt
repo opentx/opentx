@@ -19,7 +19,7 @@ option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
-option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" ON)  # TODO remove it when it's OK
+option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
 
 enable_language(ASM)
 set(OPT s)
@@ -441,6 +441,7 @@ if(CPU_FAMILY STREQUAL STM32)
   foreach(FILE ${STM32USB_SRC})
     set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32USB_DIR}/${FILE})
   endforeach()
+  set(SRC ${SRC} sbus.cpp)
 endif()
 
 if(ARCH STREQUAL ARM)
@@ -510,7 +511,6 @@ if(ARCH STREQUAL ARM)
     main_arm.cpp
     tasks_arm.cpp
     audio_arm.cpp
-    sbus.cpp
     telemetry/telemetry.cpp
     telemetry/frsky.cpp
     telemetry/frsky_d_arm.cpp

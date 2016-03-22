@@ -93,7 +93,7 @@ extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpio
 extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
-extern DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
+extern DMA_Stream_TypeDef dma2_stream2, dma2_stream6, dma1_stream5;
 extern DMA_TypeDef dma2;
 #undef GPIOA
 #undef GPIOB
@@ -145,8 +145,10 @@ extern DMA_TypeDef dma2;
 #define USART3 (&Usart3)
 #undef RCC
 #define RCC (&rcc)
+#undef DMA1_Stream5
 #undef DMA2_Stream2
 #undef DMA2_Stream6
+#define DMA1_Stream5 (&dma1_stream5)
 #define DMA2_Stream2 (&dma2_stream2)
 #define DMA2_Stream6 (&dma2_stream6)
 #undef DMA2
@@ -427,7 +429,9 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
 #if defined(CPUSTM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
 #define TIM_DeInit(...)
-#define TIM_TimeBaseInit(...)
+#if defined(PCBHORUS)
+inline void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
+#endif
 #define TIM_SetCompare2(...)
 #define TIM_ClearFlag(...)
 #define TIM_Cmd(...)
@@ -449,6 +453,8 @@ inline void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, Func
 inline void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct) { }
 inline void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState) { }
 inline FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG) { return RESET; }
+inline ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { return RESET; }
+inline void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { }
 inline void SPI_I2S_DMACmd(SPI_TypeDef* SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState NewState) { }
 inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock) { }
 inline void NVIC_Init(NVIC_InitTypeDef *) { }

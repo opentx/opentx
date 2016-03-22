@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 uint8_t g_moduleIdx;
 void menuModelFailsafe(uint8_t event);
@@ -219,16 +219,16 @@ void menuModelSetup(uint8_t event)
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
     LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
-    LABEL(InternalModule), 
-    INTERNAL_MODULE_MODE_ROWS, 
+    LABEL(InternalModule),
+    INTERNAL_MODULE_MODE_ROWS,
     INTERNAL_MODULE_CHANNELS_ROWS,
     IF_INTERNAL_MODULE_ON(IS_MODULE_XJT(INTERNAL_MODULE) ? (HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1) : (IS_MODULE_PPM(INTERNAL_MODULE) ? (uint8_t)1 : HIDDEN_ROW)),
-    IF_INTERNAL_MODULE_ON((IS_MODULE_XJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW), 
-    LABEL(ExternalModule), 
-    (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0, 
+    IF_INTERNAL_MODULE_ON((IS_MODULE_XJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW),
+    LABEL(ExternalModule),
+    (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0,
     EXTERNAL_MODULE_CHANNELS_ROWS,
     (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
-    IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)), 
+    IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)),
     LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #else
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
@@ -613,7 +613,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcd_putsLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
-        if (IS_MODULE_XJT(INTERNAL_MODULE)) 
+        if (IS_MODULE_XJT(INTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         if (attr && s_editMode>0) {
           switch (menuHorizontalPosition) {
@@ -625,7 +625,7 @@ void menuModelSetup(uint8_t event)
                  g_model.moduleData[INTERNAL_MODULE].channelsCount = 0;
               }
               break;
-            case 1:              
+            case 1:
               g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
@@ -649,7 +649,9 @@ void menuModelSetup(uint8_t event)
         break;
 #endif
       case ITEM_MODEL_TRAINER_MODE:
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MODE, STR_VTRAINERMODES, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, attr, event);
+        lcd_putsLeft(y, STR_MODE);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, attr);
+        if (attr) g_model.trainerMode = checkIncDec(event, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, EE_MODEL, isTrainerModeAvailable);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
@@ -666,7 +668,7 @@ void menuModelSetup(uint8_t event)
         if (attr && s_editMode>0) {
           switch (menuHorizontalPosition) {
             case 0:
-              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
+              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, IS_TRAINER_EXTERNAL_MODULE() ? 0 : MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
@@ -709,7 +711,7 @@ void menuModelSetup(uint8_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
-                
+
 #if defined(TARANIS_INTERNAL_PPM)
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
@@ -875,8 +877,11 @@ void menuModelFailsafe(uint8_t event)
 
   #define COL_W   (LCD_W/2)
   const uint8_t SLIDER_W = 64;
-  // Column separator
-  lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
+
+  if (NUM_CHANNELS(g_moduleIdx) > 8) {
+    // Column separator
+    lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
+  }
 
   lcd_putsCenter(0*FH, FAILSAFESET);
   lcdInvertLine(0);
@@ -949,7 +954,7 @@ void menuModelFailsafe(uint8_t event)
           lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue)/10, flags);
 #endif
         }
-  
+
         // Gauge
         lcdDrawRect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
         unsigned int lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
@@ -960,7 +965,7 @@ void menuModelFailsafe(uint8_t event)
         lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
         lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
         lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
-      }     
+      }
       ch++;
     }
   }

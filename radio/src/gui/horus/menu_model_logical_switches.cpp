@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -19,7 +19,7 @@
  */
 
 #include <stdio.h>
-#include "../../opentx.h"
+#include "opentx.h"
 
 enum LogicalSwitchFields {
   LS_FIELD_FUNCTION,
@@ -33,28 +33,25 @@ enum LogicalSwitchFields {
   LS_FIELD_LAST = LS_FIELD_COUNT-1
 };
 
-#define CSW_1ST_COLUMN  42
-#define CSW_2ND_COLUMN  90
-#define CSW_3RD_COLUMN  140
-#define CSW_4TH_COLUMN  200
-#define CSW_5TH_COLUMN  245
-#define CSW_6TH_COLUMN  300
+#define CSW_1ST_COLUMN  50
+#define CSW_2ND_COLUMN  120
+#define CSW_3RD_COLUMN  200
+#define CSW_4TH_COLUMN  280
+#define CSW_5TH_COLUMN  340
+#define CSW_6TH_COLUMN  390
 
 void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
 {
-  char s[32];
-  div_t left = div(lswTimerValue(cs->v2), 10);
-  char sleft[10];
-  sprintf(sleft, "%d.%d", left.quot, left.rem);
-  div_t right = div(lswTimerValue(cs->v2+cs->v3), 10);
-  char sright[10];
-  sprintf(sright, "%d.%d", right.quot, right.rem);
-  sprintf(s, "[%s:%s]", sleft, sright);
-  lcdDrawText(x-4, y, s);
-  /* if (cs->v3 < 0)
-    lcdDrawText(lcdLastPos+3, y, "<<", rattr);
+  lcdDrawChar(x, y, '[');
+  lcdDrawNumber(lcdNextPos+3, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
+  lcdDrawChar(lcdNextPos+3, y, ':');
+  if (cs->v3 < 0)
+    lcdDrawText(lcdNextPos+3, y, "<<", rattr);
   else if (cs->v3 == 0)
-    lcdDrawText(lcdLastPos+3, y, "--", rattr); */
+    lcdDrawText(lcdNextPos+3, y, "--", rattr);
+  else
+    lcdDrawNumber(lcdNextPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcdDrawChar(lcdNextPos+3, y, ']');
 }
 
 void onLogicalSwitchesMenu(const char *result)
@@ -173,7 +170,7 @@ bool menuModelLogicalSwitches(evt_t event)
         INCDEC_ENABLE_CHECK(NULL);
       }
       v2_max = getMaximumValue(v1_val);
-      v2_min = - v2_min;
+      v2_min = - v2_max;
       putsChannelValue(CSW_3RD_COLUMN, y, v1_val, v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT|attr2);
     }
 

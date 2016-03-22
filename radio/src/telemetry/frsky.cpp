@@ -43,10 +43,6 @@ uint8_t frskyTxBufferCount = 0;
 uint8_t telemetryState = TELEMETRY_INIT;
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-Fifo<uint8_t, 512> telemetryFifo; // TODO should be in the driver
-#endif
-
 uint8_t frskyRxBufferCount = 0;
 
 FrskyData frskyData;

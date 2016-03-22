@@ -148,6 +148,7 @@ enum EnumTabDiag
 {
   e_StatsGraph,
   e_StatsDebug,
+  e_StatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   e_StatsTraces,
 #endif
@@ -155,11 +156,13 @@ enum EnumTabDiag
 
 bool menuStatsGraph(evt_t event);
 bool menuStatsDebug(evt_t event);
+bool menuStatsAnalogs(evt_t event);
 bool menuStatsTraces(evt_t event);
 
 static const MenuHandlerFunc menuTabStats[] PROGMEM = {
   menuStatsGraph,
   menuStatsDebug,
+  menuStatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   menuStatsTraces,
 #endif
@@ -316,12 +319,13 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
   drawScreenTemplate(title, icon, options);
 
-#define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  if (!check_submenu_simple(event, lines_count)) return false
-
 #define SIMPLE_SUBMENU(title, icon, lines_count) \
-  SIMPLE_SUBMENU_NOTITLE(lines_count); \
+  if (!check_submenu_simple(event, lines_count)) return false; \
   drawScreenTemplate(title, icon)
+
+#define SIMPLE_SUBMENU_WITH_OPTIONS(title, icon, lines_count, options) \
+  if (!check_submenu_simple(event, lines_count)) return false; \
+  drawScreenTemplate(title, icon, options)
 
 typedef int select_menu_value_t;
 

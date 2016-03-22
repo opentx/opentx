@@ -18,34 +18,40 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _FIFO_H_
-#define _FIFO_H_
+#ifndef _DMA_FIFO_H_
+#define _DMA_FIFO_H_
 
-template <class T, int N>
-class Fifo
+#include "definitions.h"
+
+template <int N>
+class DMAFifo
 {
   public:
-    Fifo():
-      widx(0),
+    DMAFifo(DMA_Stream_TypeDef * stream):
+      stream(stream),
       ridx(0)
     {
     }
 
     void clear()
     {
-      widx = ridx = 0;
+      ridx = 0;
     }
 
-    void push(T element)
+    uint32_t size()
     {
-      uint32_t next = (widx+1) & (N-1);
-      if (next != ridx) {
-        fifo[widx] = element;
-        widx = next;
-      }
+      return N;
     }
 
-    bool pop(T & element)
+    bool isEmpty()
+    {
+#if defined(SIMU)
+      return true;
+#endif
+      return (ridx == N - stream->NDTR);
+    }
+
+    bool pop(uint8_t & element)
     {
       if (isEmpty()) {
         return false;
@@ -57,26 +63,15 @@ class Fifo
       }
     }
 
-    bool isEmpty()
+    uint8_t * buffer()
     {
-      return (ridx == widx);
-    }
-
-    bool isFull()
-    {
-      uint32_t next = (widx+1) & (N-1);
-      return (next == ridx);
-    }
-
-    void flush()
-    {
-      while (!isEmpty()) {};
+      return fifo;
     }
 
   protected:
-    T fifo[N];
-    volatile uint32_t widx;
+    uint8_t fifo[N];
+    DMA_Stream_TypeDef * stream;
     volatile uint32_t ridx;
 };
 
-#endif // _FIFO_H_
+#endif // _DMA_FIFO_H_

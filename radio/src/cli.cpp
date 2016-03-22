@@ -498,11 +498,13 @@ int cliDebugVars(const char ** argv)
 #if defined(PCBHORUS)
   extern uint32_t ioMutexReq, ioMutexRel;
   extern uint32_t sdReadRetries;
-
   serialPrint("ioMutexReq=%d", ioMutexReq);
   serialPrint("ioMutexRel=%d", ioMutexRel);
   serialPrint("sdReadRetries=%d", sdReadRetries);
+#elif defined(PCBTARANIS)
+  serialPrint("telemetryErrors=%d", telemetryErrors);
 #endif
+
   return 0;
 }
 

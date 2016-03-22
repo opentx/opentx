@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 enum menuModelTelemetryItems {
   ITEM_TELEMETRY_PROTOCOL_TYPE,

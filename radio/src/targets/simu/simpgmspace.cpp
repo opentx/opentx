@@ -57,7 +57,7 @@ uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 RCC_TypeDef rcc;
-DMA_Stream_TypeDef dma2_stream2, dma2_stream6;
+DMA_Stream_TypeDef dma2_stream2, dma2_stream6, dma1_stream5;
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 #elif defined(CPUARM)
@@ -1297,6 +1297,7 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { ret
 void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
 void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
 void RCC_PLLI2SCmd(FunctionalState NewState) { }

@@ -337,9 +337,9 @@ bool sportWaitState(SportUpdateState state, int timeout)
     return true;
 #else
   for (int i=timeout/2; i>=0; i--) {
-    uint8_t data ;
-    while (telemetryFifo.pop(data)) {
-      processSerialData(data);
+    uint8_t byte ;
+    while (telemetryGetByte(&byte)) {
+      processSerialData(byte);
     }
     if (sportUpdateState == state) {
       return true;
@@ -358,7 +358,7 @@ void blankPacket(uint8_t *packet)
   memset(packet+2, 0, 6);
 }
 
-uint8_t sportUpdatePacket[16];
+uint8_t sportUpdatePacket[16] __DMA;
 
 void writePacket(uint8_t * packet)
 {

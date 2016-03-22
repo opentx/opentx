@@ -329,7 +329,7 @@ bool menuGeneralSetup(evt_t event)
       case ITEM_SETUP_BATTERY_WARNING:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERYWARNING);
         putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, UNIT_VOLTS, attr|PREC1|LEFT);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 27, 42); // 2.7-4.2V
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;
 
 #if 0

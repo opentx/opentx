@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -375,12 +375,14 @@
 #define SERIAL_USART                    USART3
 #define SERIAL_USART_IRQHandler         USART3_IRQHandler
 #define SERIAL_USART_IRQn               USART3_IRQn
+#define SERIAL_DMA_Stream_RX            DMA1_Stream1
+#define SERIAL_DMA_Channel_RX           DMA_Channel_4
 
 // Telemetry
-#define TELEMETRY_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
+#define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO_DIR              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
-#define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_GPIO                  GPIOD
 #define TELEMETRY_TX_GPIO_PIN           GPIO_Pin_5  // PD.05
 #define TELEMETRY_RX_GPIO_PIN           GPIO_Pin_6  // PD.06
@@ -388,6 +390,11 @@
 #define TELEMETRY_GPIO_PinSource_RX     GPIO_PinSource6
 #define TELEMETRY_GPIO_AF               GPIO_AF_USART2
 #define TELEMETRY_USART                 USART2
+#define TELEMETRY_DMA_Stream_TX         DMA1_Stream6
+#define TELEMETRY_DMA_Channel_TX        DMA_Channel_4
+#define TELEMETRY_DMA_TX_Stream_IRQ     DMA1_Stream6_IRQn
+#define TELEMETRY_DMA_TX_IRQHandler     DMA1_Stream6_IRQHandler
+#define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
 
@@ -400,6 +407,8 @@
 #define HEARTBEAT_USART                 USART6
 #define HEARTBEAT_USART_IRQHandler      USART6_IRQHandler
 #define HEARTBEAT_USART_IRQn            USART6_IRQn
+#define HEARTBEAT_DMA_Stream            DMA2_Stream2
+#define HEARTBEAT_DMA_Channel           DMA_Channel_5
 
 // USB
 #define USB_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOA
@@ -481,7 +490,7 @@
   #define LCD_GPIO_PIN_NCS              GPIO_Pin_14 // PD.14
   #define LCD_GPIO_PIN_A0               GPIO_Pin_13 // PD.13
   #define LCD_GPIO_PIN_RST              GPIO_Pin_12 // PD.12
-#endif 
+#endif
 
 // I2C Bus: EEPROM and CAT5137 digital pot for volume control
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
@@ -529,6 +538,17 @@
   #define SD_DMA_FLAG_SPI_TC_TX         DMA_FLAG_TCIF4
   #define SD_DMA_Channel_SPI            DMA_Channel_0
 #endif
+
+// Audio
+#define AUDIO_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
+#define AUDIO_RCC_APB1Periph            (RCC_APB1Periph_TIM6 | RCC_APB1Periph_DAC)
+#define AUDIO_DMA_Stream                DMA1_Stream5
+#define AUDIO_DMA_Stream_IRQn           DMA1_Stream5_IRQn
+#define AUDIO_TIM_IRQn                  TIM6_DAC_IRQn
+#define AUDIO_TIM_IRQHandler            TIM6_DAC_IRQHandler
+#define AUDIO_DMA_Stream_IRQHandler     DMA1_Stream5_IRQHandler
+#define AUDIO_TIMER                     TIM6
+#define AUDIO_DMA                       DMA1
 
 // Haptic
 #if defined(REVPLUS)

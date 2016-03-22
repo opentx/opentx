@@ -150,49 +150,53 @@ enum CurveType {
 #define MAX_POINTS             17
 
 #if defined(PCBHORUS)
-  #define LEN_MODEL_NAME       15
-  #define LEN_TIMER_NAME       8
-  #define LEN_FLIGHT_MODE_NAME 10
-  #define LEN_BITMAP_NAME      10
-  #define LEN_EXPOMIX_NAME     6
-  #define LEN_CHANNEL_NAME     6
-  #define LEN_INPUT_NAME       4
-  #define LEN_CURVE_NAME       3
-  #define MAX_CURVES           32
-  #define NUM_POINTS           512
+  #define LEN_MODEL_NAME               15
+  #define LEN_TIMER_NAME               8
+  #define LEN_FLIGHT_MODE_NAME         10
+  #define LEN_BITMAP_NAME              10
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               4
+  #define LEN_CURVE_NAME               3
+  #define LEN_CFN_NAME                 10
+  #define MAX_CURVES                   32
+  #define NUM_POINTS                   512
 #elif defined(PCBFLAMENCO)
-  #define LEN_MODEL_NAME       12
-  #define LEN_TIMER_NAME       8
-  #define LEN_FLIGHT_MODE_NAME 10
-  #define LEN_EXPOMIX_NAME     6
-  #define LEN_CHANNEL_NAME     6
-  #define LEN_INPUT_NAME       4
-  #define LEN_CURVE_NAME       3
-  #define MAX_CURVES           32
-  #define NUM_POINTS           512
+  #define LEN_MODEL_NAME               12
+  #define LEN_TIMER_NAME               8
+  #define LEN_FLIGHT_MODE_NAME         10
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               4
+  #define LEN_CURVE_NAME               3
+  #define LEN_CFN_NAME                 8
+  #define MAX_CURVES                   32
+  #define NUM_POINTS                   512
 #elif defined(PCBTARANIS)
-  #define LEN_MODEL_NAME       12
-  #define LEN_TIMER_NAME       8
-  #define LEN_FLIGHT_MODE_NAME 10
-  #define LEN_BITMAP_NAME      10
-  #define LEN_EXPOMIX_NAME     8
-  #define LEN_CHANNEL_NAME     6
-  #define LEN_INPUT_NAME       4
-  #define LEN_CURVE_NAME       3
-  #define MAX_CURVES           32
-  #define NUM_POINTS           512
+  #define LEN_MODEL_NAME               12
+  #define LEN_TIMER_NAME               8
+  #define LEN_FLIGHT_MODE_NAME         10
+  #define LEN_BITMAP_NAME              10
+  #define LEN_EXPOMIX_NAME             8
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               4
+  #define LEN_CURVE_NAME               3
+  #define LEN_CFN_NAME                 8
+  #define MAX_CURVES                   32
+  #define NUM_POINTS                   512
 #elif defined(CPUARM)
-  #define LEN_MODEL_NAME       10
-  #define LEN_TIMER_NAME       3
-  #define LEN_FLIGHT_MODE_NAME 6
-  #define LEN_EXPOMIX_NAME     6
-  #define MAX_CURVES           16
-  #define NUM_POINTS           512
+  #define LEN_MODEL_NAME               10
+  #define LEN_TIMER_NAME               3
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CFN_NAME                 6
+  #define MAX_CURVES                   16
+  #define NUM_POINTS                   512
 #else
-  #define LEN_MODEL_NAME       10
-  #define LEN_FLIGHT_MODE_NAME 6
-  #define MAX_CURVES           8
-  #define NUM_POINTS           (112-MAX_CURVES)
+  #define LEN_MODEL_NAME               10
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define MAX_CURVES                   8
+  #define NUM_POINTS                   (112-MAX_CURVES)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
@@ -264,6 +268,36 @@ enum BeeperMode {
   e_mode_nokeys,
   e_mode_all
 };
+
+#if defined(PCBFLAMENCO)
+  enum ModuleIndex {
+    EXTERNAL_MODULE,
+    TRAINER_MODULE,
+  };
+  enum TrainerMode {
+    TRAINER_MODE_MASTER,
+    TRAINER_MODE_SLAVE
+  };
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
+  enum ModuleIndex {
+    INTERNAL_MODULE,
+    EXTERNAL_MODULE,
+    TRAINER_MODULE
+  };
+  enum TrainerMode {
+    TRAINER_MODE_MASTER_TRAINER_JACK,
+    TRAINER_MODE_SLAVE,
+    TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
+    TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
+    TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+  };
+#elif defined(PCBSKY9X)
+  enum ModuleIndex {
+    EXTERNAL_MODULE,
+    EXTRA_MODULE,
+    TRAINER_MODULE
+  };
+#endif
 
 enum UartModes {
 #if defined(CLI) || defined(DEBUG)
@@ -498,7 +532,7 @@ enum PotsWarnMode {
   #define GVAR_MIN                     -GVAR_MAX
 #endif
 
-#define RESERVE_RANGE_FOR_GVARS 10
+#define RESERVE_RANGE_FOR_GVARS        10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
 
 #if defined(PCBSTD) && defined(GVARS)
@@ -511,12 +545,6 @@ enum PotsWarnMode {
   #else
     #define MAX_GVARS 5
   #endif
-#endif
-
-#if defined(PCBTARANIS)
-  #define LEN_CFN_NAME                 8
-#elif defined(CPUARM)
-  #define LEN_CFN_NAME                 6
 #endif
 
 enum SwitchSources {

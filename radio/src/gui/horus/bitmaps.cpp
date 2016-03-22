@@ -96,10 +96,15 @@ const uint8_t LBM_STATS_DEBUG_ICON[] = {
 #include "mask_stats_debug.lbm"
 };
 
+const uint8_t LBM_STATS_ANALOGS_ICON[] = {
+#include "mask_analogs.lbm"
+};
+
 const uint8_t * const LBM_STATS_ICONS[] = {
   LBM_STATS_ICON,
   LBM_STATS_GRAPH_ICON,
   LBM_STATS_TIME_ICON,
+  LBM_STATS_ANALOGS_ICON,
 #if defined(DEBUG_TRACE_BUFFER)
   LBM_STATS_DEBUG_ICON
 #endif  

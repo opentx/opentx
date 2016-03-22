@@ -66,9 +66,11 @@ class ModelBitmapWidget: public Widget
 
     virtual void refresh()
     {
-      if (memcmp(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap)) != 0) {
+      if (memcmp(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap)) != 0 ||
+          memcmp(modelName, g_model.header.name, sizeof(g_model.header.name)) != 0) {
         refreshBuffer();
         memcpy(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap));
+        memcpy(modelName, g_model.header.name, sizeof(g_model.header.name));
       }
 
       if (buffer) {
@@ -78,6 +80,7 @@ class ModelBitmapWidget: public Widget
 
   protected:
     char bitmapFilename[sizeof(g_model.header.bitmap)];
+    char modelName[sizeof(g_model.header.name)];
     BitmapBuffer * buffer;
 };
 

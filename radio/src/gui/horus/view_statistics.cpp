@@ -47,18 +47,18 @@ bool menuStatsGraph(evt_t event)
   putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Throttle");
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, s_timeCumThr);
-  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+FH, "Throttle %");
-  putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, s_timeCum16ThrP/16);
+  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, s_timeCumThr, TIMEHOUR);
+  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+FH, "Throttle %", TIMEHOUR);
+  putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, s_timeCum16ThrP/16, TIMEHOUR);
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Timers");
   lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, "[1]", HEADER_COLOR);
-  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val);
+  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val, TIMEHOUR);
   lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+2*FH, "[2]", HEADER_COLOR);
-  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[1].val);
+  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[1].val, TIMEHOUR);
 #if TIMERS > 2
   lcdDrawText(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+2*FH, "[3]", HEADER_COLOR);
-  putsTimer(lcdNextPos+10, MENU_CONTENT_TOP+2*FH, timersStates[2].val);
+  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[2].val, TIMEHOUR);
 #endif
 
   const coord_t x = 10;
@@ -129,16 +129,38 @@ bool menuStatsDebug(evt_t event)
 
 #if defined(LUA)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Lua duration");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Lua interval");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+5*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
 #endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
 
   return true;
 }
+
+bool menuStatsAnalogs(evt_t event)
+{
+  MENU("Analogs", LBM_STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
+
+  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+    coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
+    coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
+    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");
+    lcdDrawHexNumber(x+40, y, anaIn(i));
+#if defined(JITTER_MEASURE)
+    lcdDrawNumber(x+100, y, rawJitter[i].get());
+    lcdDrawNumber(x+140, y, avgJitter[i].get());
+    lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#else
+    lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#endif
+  }
+
+  return true;
+}
+
 
 #if defined(DEBUG_TRACE_BUFFER)
 #define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT
