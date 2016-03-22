@@ -34,11 +34,6 @@ PACK(struct RamBackupUncompressed {
 
 Backup::RamBackupUncompressed ramBackupUncompressed __DMA;
 
-PACK(struct RamBackup {
-  uint16_t size;
-  uint8_t data[4094];
-});
-
 #if defined(SIMU)
 RamBackup _ramBackup;
 RamBackup * ramBackup = &_ramBackup;
@@ -52,15 +47,6 @@ void rambackupWrite()
   copyModelData(&ramBackupUncompressed.model, &g_model);
   ramBackup->size = compress(ramBackup->data, 4094, (const uint8_t *)&ramBackupUncompressed, sizeof(ramBackupUncompressed));
   TRACE("RamBackupWrite sdsize=%d backupsize=%d rlcsize=%d", sizeof(ModelData)+sizeof(RadioData), sizeof(Backup::RamBackupUncompressed), ramBackup->size);
-
-#if 0
-  // TODO move this code to non regression tests
-  Backup::RamBackupUncompressed ramBackupRestored;
-  if (uncompress((uint8_t *)&ramBackupRestored, sizeof(ramBackupRestored), ramBackup->data, ramBackup->size) != sizeof(ramBackupUncompressed))
-    TRACE("ERROR uncompress");
-  if (memcmp(&ramBackupUncompressed, &ramBackupRestored, sizeof(ramBackupUncompressed)) != 0)
-    TRACE("ERROR restore");
-#endif
 }
 
 bool rambackupRestore()

@@ -319,7 +319,7 @@ void getLogicalSwitchAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelAudioPath(filename);
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   *str++ = 'L';
   if (index >= 9) {
     div_t qr = div(index+1, 10);

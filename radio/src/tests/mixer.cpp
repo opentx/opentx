@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -19,7 +19,7 @@
  */
 
 #include "gtests.h"
-#include "../templates.h"
+#include "templates.h"
 
 #define CHECK_NO_MOVEMENT(channel, value, duration) \
     for (int i=1; i<=(duration); i++) { \
@@ -173,7 +173,7 @@ TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
   MODEL_RESET();
   modelDefault(0);
   g_model.thrTrim = 1;
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
 #else
@@ -252,7 +252,7 @@ TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
   modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
 #else
@@ -325,7 +325,7 @@ TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
   EXPECT_EQ(channelOutputs[2], 0);
 }
 
-#if !defined(PCBTARANIS)
+#if !defined(VIRTUALINPUTS)
 TEST(Trims, greaterTrimLink)
 {
   MODEL_RESET();
@@ -395,7 +395,7 @@ TEST(Trims, InstantTrim)
   EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
 }
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
 TEST(Trims, InstantTrimNegativeCurve)
 {
   MODEL_RESET();
@@ -639,7 +639,7 @@ TEST(Mixer, SlowOnSwitch)
   g_model.mixData[0].speedDown = SLOW_STEP*5;
 
   s_mixer_first_run_done = true;
-  
+
   evalFlightModeMixes(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
 
@@ -747,7 +747,7 @@ TEST(Mixer, SlowOnSwitchSource)
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].speedUp = SLOW_STEP*5;
   g_model.mixData[0].speedDown = SLOW_STEP*5;
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x03;
 #endif
 
@@ -818,7 +818,7 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
   g_model.mixData[0].speedDown = SLOW_STEP*5;
 
   s_mixer_first_run_done = true;
-  
+
   simuSetSwitch(3, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
@@ -866,7 +866,7 @@ TEST(Mixer, SlowOnSwitchReplace)
 }
 #endif
 
-#if !defined(PCBTARANIS)
+#if !defined(VIRTUALINPUTS)
 TEST(Mixer, NoTrimOnInactiveMix)
 {
   MODEL_RESET();
@@ -982,7 +982,7 @@ TEST(Heli, Mode2Test)
 }
 #endif
 
-#if defined(HELI) && !defined(PCBTARANIS)
+#if defined(HELI) && !defined(VIRTUALINPUTS)
 TEST(Heli, SimpleTest)
 {
   MODEL_RESET();

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,7 +20,7 @@
 
 #include "gtests.h"
 
-#if !defined(PCBTARANIS)
+#if !defined(VIRTUALINPUTS)
 TEST(getSwitch, undefCSW)
 {
   MODEL_RESET();
@@ -45,9 +45,9 @@ TEST(getSwitch, circularCSW)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
 
-void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16_t _v3 = 0, uint8_t _delay = 0, uint8_t _duration = 0, int8_t _andsw = 0) 
+void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16_t _v3 = 0, uint8_t _delay = 0, uint8_t _duration = 0, int8_t _andsw = 0)
 {
   g_model.logicalSw[index].func = _func;
   g_model.logicalSw[index].v1 = _v1;
@@ -89,214 +89,13 @@ TEST(getSwitch, OldTypeStickyCSW)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
-#endif // #if defined(PCBTARANIS)
+#endif // #if defined(VIRTUALINPUTS)
 
 TEST(getSwitch, nullSW)
 {
   MODEL_RESET();
   EXPECT_EQ(getSwitch(0), true);
 }
-
-#if 0
-TEST(getSwitch, DISABLED_VfasWithDelay)
-{
-  MODEL_RESET();
-  MIXER_RESET();
-  memclear(&frskyData, sizeof(frskyData));
-  /*
-  Test for logical switch:
-      L1  Vfas < 9.6 Delay (0.5s)
-
-  (gdb) print Open9xX9D::g_model.logicalSw[0] 
-  $3 = {v1 = -39 '\331', v2 = 96, v3 = 0, func = 4 '\004', delay = 5 '\005', duration = 0 '\000', andsw = 0 '\000'}
-  */
-  g_model.logicalSw[0] = {int8_t(MIXSRC_FIRST_TELEM+TELEM_VFAS-1), 96, 0, 4, 5, 0, 0};
-  frskyData.hub.vfas = 150;   //unit is 100mV
-
-  //telemetry streaming is FALSE, so L1 should be FALSE no matter what value Vfas has
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //every logicalSwitchesTimerTick() represents 100ms
-  //so now after 5 ticks we should still have a FALSE value
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //now turn on telemetry
-  EXPECT_EQ(TELEMETRY_STREAMING(), false);
-  TELEMETRY_RSSI() = 50;
-  EXPECT_EQ(TELEMETRY_STREAMING(), true);
-
-  //vfas is 15.0V so L1 should still be FALSE
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //now reduce vfas to 9.5V and L1 should become TRUE after 0.5s
-  frskyData.hub.vfas = 95;
-  evalLogicalSwitches();
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-
-  //now stop telemetry, L1 should become FALSE immediatelly
-  TELEMETRY_RSSI() = 0;
-  EXPECT_EQ(TELEMETRY_STREAMING(), false);
-  evalLogicalSwitches();
-
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-}
-
-TEST(getSwitch, DISABLED_RssiWithDuration)
-{
-  MODEL_RESET();
-  MIXER_RESET();
-  memclear(&frskyData, sizeof(frskyData));
-  /*
-  Test for logical switch:
-      L1  RSSI > 10 Duration (0.5s)
-
-  (gdb) print Open9xX9D::g_model.logicalSw[0] 
-  $1 = {v1 = -55 '\311', v2 = 10, v3 = 0, func = 3 '\003', delay = 0 '\000', duration = 5 '\005', andsw = 0 '\000'}
-  */
-
-  g_model.logicalSw[0] = {int8_t(MIXSRC_FIRST_TELEM+TELEM_RSSI_RX-1), 10, 0, 3, 0, 5, 0};
-
-  EXPECT_EQ(TELEMETRY_STREAMING(), false);
-
-  evalLogicalSwitches();
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //now set RSSI to 5, L1 should still be FALSE
-  TELEMETRY_RSSI() = 5;
-  evalLogicalSwitches();
-  EXPECT_EQ(TELEMETRY_STREAMING(), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //now set RSSI to 100, L1 should become TRUE for 0.5s
-  TELEMETRY_RSSI() = 100;
-  evalLogicalSwitches();
-  EXPECT_EQ(TELEMETRY_STREAMING(), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //repeat  telemetry streaming OFF and ON to test for duration processing
-  TELEMETRY_RSSI() = 0;
-  evalLogicalSwitches();
-  EXPECT_EQ(TELEMETRY_STREAMING(), false);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-
-  //now set RSSI to 100, L1 should become TRUE for 0.5s
-  TELEMETRY_RSSI() = 100;
-  evalLogicalSwitches();
-  EXPECT_EQ(TELEMETRY_STREAMING(), true);
-
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), true);
-
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  logicalSwitchesTimerTick();
-  evalLogicalSwitches();
-  EXPECT_EQ(getSwitch(SWSRC_SW1), false);
-}
-#endif // #if defined(PCBTARANIS) && defined(FRSKY)
-
 
 #if !defined(CPUARM)
 TEST(getSwitch, recursiveSW)
@@ -329,7 +128,7 @@ TEST(getSwitch, recursiveSW)
 }
 #endif // #if !defined(CPUARM)
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
 TEST(getSwitch, inputWithTrim)
 {
   MODEL_RESET();
@@ -350,7 +149,7 @@ TEST(getSwitch, inputWithTrim)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
 TEST(evalLogicalSwitches, playFile)
 {
   SYSTEM_RESET();
@@ -361,14 +160,23 @@ TEST(evalLogicalSwitches, playFile)
   extern uint64_t sdAvailableLogicalSwitchAudioFiles;
   sdAvailableLogicalSwitchAudioFiles = 0xffffffffffffffff;
   char filename[AUDIO_FILENAME_MAXLEN+1];
+
+#if defined(EEPROM)
+#define MODELNAME "MODEL01"
+#else
+#define MODELNAME "Model00"
+#endif
+
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_OFF, filename);
-  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-off.wav"), 0);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L1-off.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_ON, filename);
-  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L1-on.wav"), 0);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L1-on.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_OFF, filename);
-  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-off.wav"), 0);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L32-off.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_ON, filename);
-  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/MODEL01/L32-on.wav"), 0);
+  EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L32-on.wav"), 0);
+
+#undef MODELNAME
 }
 
 TEST(getSwitch, edgeInstant)
@@ -443,7 +251,7 @@ TEST(getSwitch, edgeInstant)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
-  // now bug #2939  
+  // now bug #2939
   // SF is kept up and SA is toggled
   simuSetSwitch(0, -1);   //SA down
   simuSetSwitch(5, 1);    //SF up

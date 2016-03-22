@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,7 +20,30 @@
 
 #include "gtests.h"
 
-#if !defined(PCBSKY9X)
+#if !defined(EEPROM) && defined(SDCARD)
+namespace Backup {
+#define BACKUP
+#include "datastructs.h"
+PACK(struct RamBackupUncompressed {
+  ModelData model;
+  RadioData radio;
+});
+#undef BACKUP
+};
+extern Backup::RamBackupUncompressed ramBackupUncompressed;
+TEST(Storage, BackupAndRestore)
+{
+
+  rambackupWrite();
+  Backup::RamBackupUncompressed ramBackupRestored;
+  if (uncompress((uint8_t *)&ramBackupRestored, sizeof(ramBackupRestored), ramBackup->data, ramBackup->size) != sizeof(ramBackupUncompressed))
+    TRACE("ERROR uncompress");
+  if (memcmp(&ramBackupUncompressed, &ramBackupRestored, sizeof(ramBackupUncompressed)) != 0)
+    TRACE("ERROR restore");
+}
+#endif
+
+#if defined(EEPROM_RLC)
 TEST(Eeprom, 100_random_writes)
 {
   eepromFile = NULL; // in memory

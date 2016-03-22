@@ -30,4 +30,11 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size);
 const char * loadModel(const char * filename);
 const char * createModel();
 
+PACK(struct RamBackup {
+  uint16_t size;
+  uint8_t data[4094];
+});
+
+extern RamBackup * ramBackup;
+
 #endif // _SDCARD_RAW_H_
