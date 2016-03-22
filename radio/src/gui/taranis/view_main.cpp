@@ -273,11 +273,14 @@ void displayTopBar()
   }
 
   /* Audio volume */
+  TRACE("%d", requiredSpeakerVolume);
   if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER0);
-  else if (requiredSpeakerVolume < 10)
+  else if (requiredSpeakerVolume <= 6)
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER1);
-  else if (requiredSpeakerVolume < 20)
+  else if (requiredSpeakerVolume <= 12)
+    LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER2);
+  else if (requiredSpeakerVolume <= 18)
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER2);
   else
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER3);

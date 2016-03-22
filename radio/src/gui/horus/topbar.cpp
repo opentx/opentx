@@ -28,7 +28,7 @@ unsigned int Topbar::getZonesCount() const
 Zone Topbar::getZone(unsigned int index) const
 {
   Zone zone;
-  zone.x = 50 + (TOPBAR_ZONE_WIDTH + 2*TOPBAR_ZONE_MARGIN) * index;
+  zone.x = 49 + (TOPBAR_ZONE_WIDTH + 2*TOPBAR_ZONE_MARGIN) * index;
   zone.y = TOPBAR_ZONE_MARGIN;
   zone.w = TOPBAR_ZONE_WIDTH;
   zone.h = MENU_HEADER_HEIGHT - 2*TOPBAR_ZONE_MARGIN;
@@ -56,8 +56,8 @@ void drawTopBar()
   theme->drawTopbarBackground(NULL);
 
   // USB icon
-  if (usbPlugged()) {
-    lcdDrawBitmapPattern(LCD_W-102, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
+  if (1/*usbPlugged()*/) {
+    lcdDrawBitmapPattern(LCD_W-98, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
   }
 
   // RSSI
@@ -66,6 +66,26 @@ void drawTopBar()
   for (unsigned int i = 0; i < DIM(rssiBarsHeight); i++) {
     uint8_t height = rssiBarsHeight[i];
     lcdDrawSolidFilledRect(LCD_W-90 + i * 6, 38 - height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_TITLE_COLOR : MENU_TITLE_DISABLE_COLOR);
+  }
+
+  /* Audio volume */
+  lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_SCALE, MENU_TITLE_DISABLE_COLOR);
+  if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)
+    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_0, MENU_TITLE_COLOR);
+  else if (requiredSpeakerVolume < 7)
+    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_1, MENU_TITLE_COLOR);
+  else if (requiredSpeakerVolume < 13)
+    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_2, MENU_TITLE_COLOR);
+  else if (requiredSpeakerVolume < 19)
+    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_3, MENU_TITLE_COLOR);
+  else
+    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_4, MENU_TITLE_COLOR);
+
+  /* Tx battery */
+  uint8_t bars = limit<int8_t>(0, 6 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 5);
+  lcdDrawBitmapPattern(LCD_W-130, 24, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
+  for (unsigned int i = 0; i < 5; i++) {
+    lcdDrawSolidFilledRect(LCD_W-122+4*i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_TITLE_COLOR);
   }
 
   topbar->refresh();

@@ -52,6 +52,34 @@ const uint8_t LBM_TOPMENU_USB[] = {
 #include "mask_topmenu_usb.lbm"
 };
 
+const uint8_t LBM_TOPMENU_VOLUME_0[] = {
+#include "mask_volume_0.lbm"
+};
+
+const uint8_t LBM_TOPMENU_VOLUME_1[] = {
+#include "mask_volume_1.lbm"
+};
+
+const uint8_t LBM_TOPMENU_VOLUME_2[] = {
+#include "mask_volume_2.lbm"
+};
+
+const uint8_t LBM_TOPMENU_VOLUME_3[] = {
+#include "mask_volume_3.lbm"
+};
+
+const uint8_t LBM_TOPMENU_VOLUME_4[] = {
+#include "mask_volume_4.lbm"
+};
+
+const uint8_t LBM_TOPMENU_VOLUME_SCALE[] = {
+#include "mask_volume_scale.lbm"
+};
+
+const uint8_t LBM_TOPMENU_TXBATT[] = {
+#include "mask_txbat.lbm"
+};
+
 const uint8_t LBM_HTRIM_FRAME[] = {
 #include "mask_htrim_frame.lbm"
 };

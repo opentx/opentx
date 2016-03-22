@@ -51,10 +51,10 @@
 #define CURVE_COORD_WIDTH              36
 #define CURVE_COORD_HEIGHT             17
 
-#define DATETIME_SEPARATOR_X           (LCD_W-55)
+#define DATETIME_SEPARATOR_X           (LCD_W-53)
 #define DATETIME_LINE1                 9
 #define DATETIME_LINE2                 23
-#define DATETIME_MIDDLE                (LCD_W+DATETIME_SEPARATOR_X+8)/2
+#define DATETIME_MIDDLE                (LCD_W+DATETIME_SEPARATOR_X+6)/2
 
 #define MENU_TITLE_NEXT_POS            (lcdNextPos + 10)
 #define MENU_INIT_VPOS                 -1

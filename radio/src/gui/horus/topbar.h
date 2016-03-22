@@ -25,7 +25,7 @@
 
 #define MAX_TOPBAR_ZONES               5
 #define MAX_TOPBAR_OPTIONS             0
-#define TOPBAR_ZONE_WIDTH              60
+#define TOPBAR_ZONE_WIDTH              70
 #define TOPBAR_ZONE_MARGIN             3
 
 class Topbar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
