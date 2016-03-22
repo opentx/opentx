@@ -534,6 +534,11 @@ enum ModuleTypes {
   MODULE_TYPE_COUNT
 };
 
+enum AntennaTypes {
+  XJT_INTERNAL_ANTENNA,
+  XJT_EXTERNAL_ANTENNA
+};
+
 #define IS_PULSES_EXTERNAL_MODULE() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
 
 enum FailsafeModes {

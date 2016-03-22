@@ -947,6 +947,8 @@
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
 #define TR_ANTENNASELECTION    INDENT "Antenna selection"
+#define TR_ANTENNACONFIRM1     "Really switch?"
+#define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
 #define TR_CRITICALALARM       INDENT "Kritisch-Alarm"
 #define TR_ENABLE_POPUP        "Freigabe Popup-Fenster"

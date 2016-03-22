@@ -934,6 +934,8 @@
 #define TR_TELEMETRY_NEWSENSOR TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE        TR(INDENT "Canaux", INDENT "Plage de canaux")
 #define TR_ANTENNASELECTION    INDENT "Choix antenne"
+#define TR_ANTENNACONFIRM1     "Vaiment changer?"
+#define TR_ANTENNACONFIRM2     "Installer l'antenne d'abord!"
 #define TR_LOWALARM            INDENT "Alarme basse"
 #define TR_CRITICALALARM       INDENT "Alarme critique"
 #define TR_ENABLE_POPUP        "Activer Popup"

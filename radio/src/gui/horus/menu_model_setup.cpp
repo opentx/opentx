@@ -179,6 +179,13 @@ bool menuModelSetup(evt_t event)
   int l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 
+  // Switch to external antenna confirmation
+  bool newAntennaSel;
+  if (warningResult) {
+    warningResult = 0;
+    g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = XJT_EXTERNAL_ANTENNA;
+  }
+
   MENU(STR_MENUSETUP, LBM_MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
@@ -532,7 +539,15 @@ bool menuModelSetup(evt_t event)
         
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNASELECTION);
-        g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppmPulsePol, 0, 1, attr, event);
+        newAntennaSel = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppmPulsePol, 0, 1, attr, event);
+        if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].ppmPulsePol && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
+          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
+          const char * w = STR_ANTENNACONFIRM2;
+          SET_WARNING_INFO(w, strlen(w), 0);
+        }
+        else {
+          g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = newAntennaSel;
+        }
         break;
 
       case ITEM_MODEL_TRAINER_MODE:

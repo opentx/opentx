@@ -789,6 +789,8 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MODULE_BIND[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_ANTENNASELECTION[];
+  extern const pm_char STR_ANTENNACONFIRM1[];
+  extern const pm_char STR_ANTENNACONFIRM2[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];

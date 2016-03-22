@@ -966,6 +966,8 @@
 #define TR_TELEMETRY_NEWSENSOR INDENT "Lägg till sensor..."
 #define TR_CHANNELRANGE        INDENT "Kanalområde"
 #define TR_ANTENNASELECTION    INDENT "Antenna selection"
+#define TR_ANTENNACONFIRM1     "Really switch?"
+#define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
 #define TR_ENABLE_POPUP        "Slå på Dialog"
