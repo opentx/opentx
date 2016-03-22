@@ -158,7 +158,7 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 10
+  #define LEN_CFN_NAME                 6
   #define MAX_CURVES                   32
   #define NUM_POINTS                   512
 #elif defined(PCBFLAMENCO)
