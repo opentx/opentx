@@ -211,7 +211,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
 #endif
 #if defined(CPUARM)
           else if (func == FUNC_SET_TIMER) {
-            val_max = 59*60+59;
+            val_max = 539*60+59;
             putsTimer(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
           }
 #endif

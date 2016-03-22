@@ -42,6 +42,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
     ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
     ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
   }
+  
+  ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
   ui->persistent->setField(timer.persistent, this);
   ui->persistent->addItem(tr("Not persistent"), 0);
@@ -66,9 +68,11 @@ TimerPanel::~TimerPanel()
 
 void TimerPanel::update()
 {
-  int min = timer.val / 60;
-  int sec = timer.val % 60;
-  ui->value->setTime(QTime(0, min, sec));
+  int hour = timer.val / 3600;
+  int min = (timer.val - (hour * 3600)) / 60;
+  int sec = (timer.val - (hour * 3600)) % 60;
+
+  ui->value->setTime(QTime(hour, min, sec));
 
   if (firmware->getCapability(PermTimers)) {
     int sign = 1;
@@ -94,7 +98,7 @@ QWidget * TimerPanel::getLastFocus()
 
 void TimerPanel::on_value_editingFinished()
 {
-  timer.val = ui->value->time().minute()*60 + ui->value->time().second();
+  timer.val = ui->value->time().hour()*3600 + ui->value->time().minute()*60 + ui->value->time().second();
   emit modified();
 }
 
