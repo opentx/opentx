@@ -936,3 +936,5 @@ Jonathan Pruett
 Jörg Zieren
 Christopher Rhodes
 Marco Strack
+Stefano Boggia
+Dwayne Myers
