@@ -744,7 +744,9 @@
 #define TR_ALARMSDISABLED      "Alarmy jsou zakázány"
 #define TR_PRESSANYKEY         TR("\006Stiskni klávesu", "Stiskni klávesu")
 #define TR_BADEEPROMDATA       TR("\006Chyba dat EEPROM", "Chyba dat EEPROM")
+#define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    TR("\004Formatování EEPROM", "Formatování EEPROM")
+#define TR_STORAGE_FORMAT      "Storage Preparation"
 #define TR_EEPROMOVERFLOW      "Přetekla EEPROM"
 #define TR_MENURADIOSETUP      "NASTAVENÍ RÁDIA"
 #define TR_MENUDATEANDTIME     "DATUM A čAS"
@@ -823,6 +825,7 @@
 #define TR_INCOMPATIBLE        "Nekompatibilní"
 #define TR_WARNING             "KONTROLA"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "Aktualizuji EEPROM"
 #define TR_THROTTLEWARN        "PLYNU"
 #define TR_ALARMSWARN          "ALARMU"

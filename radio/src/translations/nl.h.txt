@@ -762,7 +762,9 @@
 #define TR_ALARMSDISABLED      "Alarm uitgeschakeld"
 #define TR_PRESSANYKEY         TR("\010Druk een Toets", "Druk een Toets")
 #define TR_BADEEPROMDATA       "EEPROM Ongeldig"
+#define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    "EEPROM Initialiseren"
+#define TR_STORAGE_FORMAT      "Storage Preparation"
 #define TR_EEPROMOVERFLOW      "EEPROM Overflow"
 #define TR_MENURADIOSETUP      TR("ZENDER-INSTELLEN", "ZENDER-BASISINSTELLENGEN")
 
@@ -844,6 +846,7 @@
 #define TR_INCOMPATIBLE        "Niet compatibel"
 #define TR_WARNING             TR("WARNING","WAARSCHUWING")
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "EEPROM Converteren"
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"

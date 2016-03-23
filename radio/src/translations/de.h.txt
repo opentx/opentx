@@ -748,7 +748,9 @@
 #define TR_ALARMSDISABLED      "Alarme ausgeschaltet"
 #define TR_PRESSANYKEY         TR("Taste drücken",CENTER"Taste drücken")
 #define TR_BADEEPROMDATA       "EEPROM ungültig"
+#define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    "EEPROM Initialisieren"
+#define TR_STORAGE_FORMAT      "Storage Preparation"
 #define TR_EEPROMOVERFLOW      "EEPROM Überlauf"
 #define TR_MENURADIOSETUP      TR("SENDER-EINSTELLEN", "SENDER-GRUNDEINSTELLUNGEN")
 #define TR_MENUDATEANDTIME     "DATUM UND ZEIT"
@@ -827,6 +829,7 @@
 #define TR_INCOMPATIBLE        "Nicht kompatibel"
 #define TR_WARNING             "WARNUNG"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "EEPROM Converting"
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"

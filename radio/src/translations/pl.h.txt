@@ -747,7 +747,9 @@
 #define TR_ALARMSDISABLED      "Alarmy wyłączone"
 #define TR_PRESSANYKEY         TR("\010Wciśnij jakiś klawisz","Wciśnij jakiś klawisz")
 #define TR_BADEEPROMDATA       "\006Błąd danych EEPROM"
+#define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    "\004Formatowanie EEPROM"
+#define TR_STORAGE_FORMAT      "Storage Preparation"
 #define TR_EEPROMOVERFLOW      "Przeładowany EEPROM"
 #define TR_MENURADIOSETUP      "USTAWIENIA RADIA"
 #define TR_MENUDATEANDTIME     "DATA I CZAS"
@@ -826,6 +828,7 @@
 #define TR_INCOMPATIBLE        "Niekompatybilne"
 #define TR_WARNING             "UWAGA"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "Konwersja EEPROM"
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "ALARM"
