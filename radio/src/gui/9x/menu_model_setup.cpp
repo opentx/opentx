@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(CPUARM)
 uint8_t g_moduleIdx;
@@ -286,7 +286,7 @@ void menuModelSetup(uint8_t event)
               case 2:
                 qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
                 timer->start -= qr.rem ;
-                if ((int16_t)timer->start < 0) timer->start=0;
+                if ((int16_t)timer->start < 0) timer->start=0; // TODO is it really needed?
                 if ((int32_t)timer->start > 3599) timer->start=3599; // 59:59
                 break;
             }
