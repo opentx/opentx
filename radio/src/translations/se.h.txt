@@ -723,14 +723,18 @@
 #define TR_CAL                 "Kalib."
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
+  #define TR_MENUTOSTART       "Press [Enter] to start"
+  #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
+  #define TR_MOVESTICKSPOTS    "Move sticks, pots and sliders and press [Enter]"
+#elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " Startar "
   #define TR_SETMIDPOINT       "Centrera Allt"
   #define TR_MOVESTICKSPOTS    "Rör Spakar/Rattar"
 #else
-  #define TR_MENUTOSTART         CENTER "\011" TR_ENTER " Startar "
-  #define TR_SETMIDPOINT         TR(CENTER "\012Centrera Allt",CENTER "\013Centrera Allt")
-  #define TR_MOVESTICKSPOTS      TR(CENTER "\005Rör Spakar/Rattar",CENTER "\006Rör Spakar/Rattar")
+  #define TR_MENUTOSTART       CENTER "\011" TR_ENTER " Startar "
+  #define TR_SETMIDPOINT       TR(CENTER "\012Centrera Allt",CENTER "\013Centrera Allt")
+  #define TR_MOVESTICKSPOTS    TR(CENTER "\005Rör Spakar/Rattar",CENTER "\006Rör Spakar/Rattar")
 #endif
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"

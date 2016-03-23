@@ -724,7 +724,11 @@
 #define TR_CAL                 "Cal"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
+  #define TR_MENUTOSTART       "Press [Enter] to start"
+  #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
+  #define TR_MOVESTICKSPOTS    "Move sticks, pots and sliders and press [Enter]"
+#elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " TO START"
   #define TR_SETMIDPOINT       "CENTER STICKS/SLIDERS"
   #define TR_MOVESTICKSPOTS    "MOVE STICKS/POTS"

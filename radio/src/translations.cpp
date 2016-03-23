@@ -126,7 +126,9 @@ const pm_char STR_POPUPS[] PROGMEM = TR_POPUPS;
 #if !defined(OFS_EXIT)
   const pm_char STR_EXIT[] PROGMEM = TR_EXIT;
 #endif
-const pm_char STR_MENUWHENDONE[] PROGMEM = TR_MENUWHENDONE;
+#if !defined(PCBHORUS)
+  const pm_char STR_MENUWHENDONE[] PROGMEM = TR_MENUWHENDONE;
+#endif
 const pm_char STR_FREE[] PROGMEM = TR_FREE;
 const pm_char STR_DELETEMODEL[] PROGMEM = TR_DELETEMODEL;
 const pm_char STR_COPYINGMODEL[] PROGMEM = TR_COPYINGMODEL;

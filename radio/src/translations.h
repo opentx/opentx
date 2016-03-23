@@ -328,7 +328,10 @@ extern const pm_char STR_POPUPS[];
   extern const pm_char STR_EXIT[];
 #endif
 
-extern const pm_char STR_MENUWHENDONE[];
+#if !defined(PCBHORUS)
+  extern const pm_char STR_MENUWHENDONE[];
+#endif
+
 extern const pm_char STR_FREE[];
 #define LEN_FREE PSIZE(TR_FREE)
 extern const pm_char STR_DELETEMODEL[];
