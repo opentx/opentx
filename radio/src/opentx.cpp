@@ -2667,7 +2667,6 @@ int main()
   MCUCR = 0x80 ;   // Must be done twice
 #elif defined(PCBSTD)
   uint8_t mcusr = MCUCSR;
-  MCUCSR = 0;
   MCUCSR = 0x80 ;   // Disable JTAG port that can interfere with POT3
   MCUCSR = 0x80 ;   // Must be done twice
 #endif
