@@ -815,7 +815,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
 
 QTime OpenTxFirmware::getMaxTimerStart()
 {
-  if (IS_TARANIS(board))
+  if (IS_TARANIS(board) || IS_HORUS(board))
     return QTime(23, 59, 59);
   else if (IS_ARM(board))
     return QTime(8, 59, 59);
