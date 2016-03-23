@@ -609,7 +609,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 
 #if defined(CPUARM)
   char separator = ':';
-  if (tme >= 3600 && (~att & DBLSIZE)) {
+  if (tme >= 3600) {
     qr = div(qr.quot, 60);
     separator = CHR_HOUR;
   }
@@ -617,6 +617,10 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #define separator ':'
 #endif
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
+#if defined(CPUARM)
+  if (separator == CHR_HOUR)
+    att &= ~DBLSIZE;
+#endif
 #if defined(CPUARM) && defined(RTCLOCK)
   if (att&TIMEBLINK)
     lcdDrawChar(lcdLastPos, y, separator, BLINK);

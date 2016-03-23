@@ -122,9 +122,8 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
   TimerData * timer = &g_model.timers[timerIdx];
   drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, menuHorizontalPosition==0 ? attr : 0);
-
-  putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, menuHorizontalPosition==1 ? attr : 0, menuHorizontalPosition==2 ? attr : 0);
-  if (attr && menuHorizontalPosition < 0) lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+  putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR, menuHorizontalPosition==2 ? attr|TIMEHOUR : TIMEHOUR);
+  if (attr && menuHorizontalPosition < 0) lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 11*FW, FH+1);
   if (attr && s_editMode>0) {
     div_t qr = div(timer->start, 60);
     switch (menuHorizontalPosition) {
@@ -148,13 +147,14 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
         break;
       }
       case 1:
-        CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
+        qr.quot = checkIncDec(event, qr.quot, 0, 1439, EE_MODEL | NO_INCDEC_MARKS); // 23h59
         timer->start = qr.rem + qr.quot*60;
         break;
       case 2:
         qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
         timer->start -= qr.rem ;
         if ((int16_t)timer->start < 0) timer->start=0;
+        if ((int32_t)timer->start > 86399) timer->start=86399; // 23h59:59
         break;
     }
   }

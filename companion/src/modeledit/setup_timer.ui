@@ -18,7 +18,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <property name="spacing">
-    <number>-1</number>
+    <number>6</number>
    </property>
    <property name="margin">
     <number>0</number>
@@ -39,10 +39,10 @@
       <bool>true</bool>
      </property>
      <property name="currentSection">
-      <enum>QDateTimeEdit::MinuteSection</enum>
+      <enum>QDateTimeEdit::HourSection</enum>
      </property>
      <property name="displayFormat">
-      <string notr="true">mm:ss</string>
+      <string notr="true">hh:mm:ss</string>
      </property>
     </widget>
    </item>
