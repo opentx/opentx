@@ -11,6 +11,7 @@ message(STATUS "OpenTX ${VERSION}")
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0020 NEW)
 cmake_policy(SET CMP0023 OLD)
+cmake_policy(SET CMP0043 NEW)
 
 set(CMAKE_CXX_STANDARD 11)
 
