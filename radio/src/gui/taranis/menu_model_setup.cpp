@@ -123,7 +123,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
   drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, menuHorizontalPosition==0 ? attr : 0);
   putsTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR, menuHorizontalPosition==2 ? attr|TIMEHOUR : TIMEHOUR);
-  if (attr && menuHorizontalPosition < 0) drawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 11*FW, FH+1);
+  if (attr && menuHorizontalPosition < 0) lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 11*FW, FH+1);
   if (attr && s_editMode>0) {
     div_t qr = div(timer->start, 60);
     switch (menuHorizontalPosition) {
