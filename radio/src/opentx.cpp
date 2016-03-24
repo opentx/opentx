@@ -300,6 +300,8 @@ void generalDefault()
 #endif
 
 #if defined(CPUARM)
+  g_eeGeneral.ttsLanguage[0] = 'e';
+  g_eeGeneral.ttsLanguage[1] = 'n';
   g_eeGeneral.wavVolume = 2;
   g_eeGeneral.backgroundVolume = 1;
 #endif
