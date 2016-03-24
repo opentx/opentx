@@ -38,7 +38,6 @@
 #define lcdint_t        int32_t
 
 #define BSS             0x00
-#define BOLD            0x00
 
 /* lcd common flags */
 #define BLINK           0x01
@@ -69,6 +68,7 @@
 #define MIDSIZE         0x0300
 #define DBLSIZE         0x0400
 #define XXLSIZE         0x0500
+#define BOLD            0x0600
 #define VERTICAL        0x0800
 
 #define TIMEBLINK       0x1000

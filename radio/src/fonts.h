@@ -24,7 +24,7 @@
 #if defined(COLORLCD)
 
 extern const uint16_t * const fontspecsTable[16];
-extern const pm_uchar * const fontsTable[16];
+extern const uint8_t * const fontsTable[16];
 
 #else
 

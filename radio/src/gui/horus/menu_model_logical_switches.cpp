@@ -109,7 +109,7 @@ bool menuModelLogicalSwitches(evt_t event)
 
     // CSW name
     unsigned int sw = SWSRC_SW1+k;
-    putsSwitches(MENUS_MARGIN_LEFT, y, sw, (getSwitch(sw) ? 0/*BOLD*/ : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
+    putsSwitches(MENUS_MARGIN_LEFT, y, sw, (getSwitch(sw) ? BOLD : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
 
     // CSW func
     lcdDrawTextAtIndex(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, horz==0 ? attr : 0);

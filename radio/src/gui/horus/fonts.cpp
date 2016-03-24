@@ -18,55 +18,63 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-const uint16_t font_tinsize_specs[] PROGMEM =
+uint16_t font_tinsize_specs[] = {
 #include "font_tinsize.specs"
-;
+};
 
-const pm_uchar font_tinsize[] PROGMEM = {
+pm_uchar font_tinsize[] = {
 #include "font_tinsize.lbm"
 };
 
-const uint16_t font_smlsize_specs[] PROGMEM =
+uint16_t font_smlsize_specs[] = {
 #include "font_smlsize.specs"
-;
+};
 
-const pm_uchar font_smlsize[] PROGMEM = {
+pm_uchar font_smlsize[] = {
 #include "font_smlsize.lbm"
 };
 
-const uint16_t font_stdsize_specs[] PROGMEM =
+uint16_t font_stdsize_specs[] = {
 #include "font_stdsize.specs"
-;
+};
 
-const pm_uchar font_stdsize[] PROGMEM = {
+pm_uchar font_stdsize[] = {
 #include "font_stdsize.lbm"
 };
 
-const uint16_t font_midsize_specs[] PROGMEM =
+uint16_t font_midsize_specs[] = {
 #include "font_midsize.specs"
-;
+};
 
-const pm_uchar font_midsize[] PROGMEM = {
+pm_uchar font_midsize[] = {
 #include "font_midsize.lbm"
 };
 
-const uint16_t font_dblsize_specs[] PROGMEM =
+uint16_t font_dblsize_specs[] = {
 #include "font_dblsize.specs"
-;
+};
 
-const pm_uchar font_dblsize[] PROGMEM = {
+pm_uchar font_dblsize[] = {
 #include "font_dblsize.lbm"
 };
 
-const uint16_t font_xxlsize_specs[] PROGMEM =
+uint16_t font_xxlsize_specs[] = {
 #include "font_xxlsize.specs"
-;
+};
 
-const pm_uchar font_xxlsize[] PROGMEM = {
+pm_uchar font_xxlsize[] = {
 #include "font_xxlsize.lbm"
 };
 
-const uint16_t * const fontspecsTable[16] = { font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs };
-const pm_uchar * const fontsTable[16] = { font_stdsize, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize };
+uint16_t font_stdsizebold_specs[] = {
+#include "font_stdsizebold.specs"
+};
+
+pm_uchar font_stdsizebold[] = {
+#include "font_stdsizebold.lbm"
+};
+
+const uint16_t * const fontspecsTable[16] = { font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsizebold_specs };
+const uint8_t * const fontsTable[16] = { font_stdsize, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsizebold };

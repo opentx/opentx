@@ -1,10 +1,11 @@
 add_truetype_font_target(horus tinsize "DejaVu Sans" 9 False)
 add_truetype_font_target(horus smlsize "DejaVu Sans" 13 False)
 add_truetype_font_target(horus stdsize "DejaVu Sans" 16 False)
+add_truetype_font_target(horus stdsizebold "DejaVu Sans" 16 True)
 add_truetype_font_target(horus midsize "DejaVu Sans" 24 False)
 add_truetype_font_target(horus dblsize "DejaVu Sans" 32 True)
 add_truetype_font_target(horus xxlsize "DejaVu Sans" 48 False)
-add_custom_target(ttf_horus_fonts DEPENDS ttf_horus_tinsize ttf_horus_smlsize ttf_horus_stdsize ttf_horus_midsize ttf_horus_dblsize ttf_horus_xxlsize)
+add_custom_target(ttf_horus_fonts DEPENDS ${ttf_horus_fonts_targets})
 
 add_bitmaps_target(horus_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/bmp_*.png" 480 5/6/5)
 add_bitmaps_target(horus_calibration_bitmaps "${RADIO_SRC_DIRECTORY}/bitmaps/horus/calibration/bmp_*.png" 480 5/6/5)
