@@ -327,7 +327,10 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define FE0     0
 
 #define ISR(x, ...)  void x()
+
+#if !defined(WIN32) && defined(__GNUC__)
 #define asm(...)
+#endif
 
 #if defined(CPUARM)
 extern uint32_t Master_frequency;
