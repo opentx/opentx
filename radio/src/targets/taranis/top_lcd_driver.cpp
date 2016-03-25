@@ -240,7 +240,7 @@ void topLcdInit()
   GPIO_InitStructure.GPIO_Pin = TOPLCD_GPIO_PIN_DATA | TOPLCD_GPIO_PIN_WR |TOPLCD_GPIO_PIN_BL|TOPLCD_GPIO_PIN_CS1|TOPLCD_GPIO_PIN_CS2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(TOPLCD_GPIO, &GPIO_InitStructure);
 

@@ -53,7 +53,7 @@ void uart3Setup(unsigned int baudrate)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_Init(SERIAL_GPIO, &GPIO_InitStructure);
   
   USART_InitStructure.USART_BaudRate = baudrate;
