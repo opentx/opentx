@@ -75,7 +75,7 @@ static void LCD_AF_GPIOConfig(void)
   GPIO_PinAFConfig(GPIOI,GPIO_PinSource14,GPIO_AF_LTDC);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
-  GPIO_InitStructure.GPIO_Speed =GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed =GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode =GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType =GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd =GPIO_PuPd_NOPULL;
@@ -113,7 +113,7 @@ static void LCD_AF_GPIOConfig(void)
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 ;
 
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -125,7 +125,7 @@ static void LCD_Backlight_Config(void)
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = LCD_GPIO_PIN_BL;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(LCD_GPIO_BL, &GPIO_InitStructure);
@@ -137,7 +137,7 @@ static void LCD_NRSTConfig(void)
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = LCD_GPIO_PIN_NRST;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
   GPIO_Init(LCD_GPIO_NRST, &GPIO_InitStructure);
