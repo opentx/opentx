@@ -2,7 +2,16 @@
 
 import os
 import sys
+import subprocess
+import shutil
 from fwoptions import *
+
+# Error codes
+INVALID_FIRMWARE = -1
+UNKNOWN_BOARD = -2
+INVALID_LANGUAGE = -3
+COMPILATION_ERROR = -4
+FIRMWARE_SIZE_TOO_BIG = -5
 
 # Board types
 BOARD_9X = 0
@@ -15,13 +24,16 @@ BOARD_HORUS = 4
 BOARD_FAMILY_AVR = 0
 BOARD_FAMILY_ARM = 1
 
+if len(sys.argv) != 2:
+    exit(INVALID_FIRMWARE)
+
 srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
 filename = sys.argv[1]
 root, ext = os.path.splitext(filename)
 options = root.split("-")
 
-if options[0] != "opentx":
-    sys.exit("Invalid firmware");
+if len(options) < 2 or options[0] != "opentx":
+    exit(INVALID_FIRMWARE)
 
 filename = "opentx-"
 optcount = 1
@@ -116,7 +128,7 @@ elif options[optcount] == "horus":
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
 else:
-    sys.exit("Unknown board")
+    exit(UNKNOWN_BOARD)
 
 filename += options[optcount]
 optcount += 1
@@ -144,7 +156,7 @@ for key in languages:
     if key == options[-1]:
         language = key
 if not language:
-    sys.exit("Invalid language")
+    exit(INVALID_LANGUAGE)
 command_options["TRANSLATIONS"] = language.upper()
 filename += "-" + language
 
@@ -156,24 +168,35 @@ filename += ext
 firmware = "firmware" + ext
 
 # Launch CMake
-cmd = "cmake"
+cmd = ["cmake"]
 for opt, value in command_options.items():
-    cmd += " -D%s=%s" % (opt, value)
-cmd += " " + srcdir
+    cmd.append("-D%s=%s" % (opt, value))
 if "OPENTX_VERSION_SUFFIX" in os.environ:
-    cmd += ' -DVERSION_SUFFIX="%s"' % os.environ["OPENTX_VERSION_SUFFIX"]
-print cmd
-os.system(cmd)
+    cmd.append('-DVERSION_SUFFIX="%s"' % os.environ["OPENTX_VERSION_SUFFIX"])
+cmd.append(srcdir)
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+output, error = proc.communicate()
+if proc.returncode != 0:
+    file("%s.err" % filename, "w").write(output + error)
+    exit(COMPILATION_ERROR)
 
 # Launch make firmware
-cmd = "make firmware"
-os.system(cmd)
+cmd = ["make", "firmware"]
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+output, error = proc.communicate()
+if proc.returncode != 0:
+    file("%s.err" % filename, "w").write(output + error)
+    exit(COMPILATION_ERROR)
 
 # Check binary size
 if board_family == BOARD_FAMILY_ARM:
     size = os.stat(firmware).st_size
 else:
-    os.system("avr-size -A %s | grep Total | cut -f2- -d \" \" > ./size" % firmware)
-    size = file("./size").read().strip()
-if int(size) > maxsize:
-    exit("Invalid size")
+    size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % firmware, shell=True)
+    size = int(size.strip())
+if size > maxsize:
+    exit(FIRMWARE_SIZE_TOO_BIG)
+
+# Copy binary to the binaries directory
+shutil.copyfile(firmware, filename)
+print filename
