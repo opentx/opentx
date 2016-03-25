@@ -12,31 +12,75 @@ if sys.platform == "darwin":
 
 
 structs = []
+extrastructs = []
 
-def build_struct(cursor):
-    structs.append(cursor.spelling)
-    print("template <class A, class B>\nvoid copy%s(A * dest, B * src)\n{" % cursor.spelling)
+def build_struct(cursor, anonymousUnion=False):
+    if not anonymousUnion:
+        structs.append(cursor.spelling)
+        print("template <class A, class B>\nvoid copy%s(A * dest, B * src)\n{" % cursor.spelling)
+
     for c in cursor.get_children():
-        if c.kind == clang.cindex.CursorKind.FIELD_DECL:
-            if c.type.get_array_size() > 0:
-                if c.type.get_array_element_type().spelling in structs:
-                    print("  for (int i=0; i<%d; i++) {" % c.type.get_array_size())
-                    print("    copy%s(&dest->%s[i], &src->%s[i]);" % (c.type.get_array_element_type().spelling, c.spelling, c.spelling))
-                    print("  }")
+        if c.kind == clang.cindex.CursorKind.UNION_DECL:
+            if c.spelling:
+                raise "Cannot handle non anonymous unions"
+
+            copiedUnionMember = False
+            for uc in c.get_children():
+                if not uc.spelling or uc.kind == clang.cindex.CursorKind.PACKED_ATTR:
+                    # Ignore
+                    pass
                 else:
-                    print("  memcpy(dest->%s, src->%s, sizeof(dest->%s));" % (c.spelling, c.spelling, c.spelling))
-            elif c.type.get_declaration().spelling in structs:
-                print("  copy%s(&dest->%s, &src->%s);" % (c.type.get_declaration().spelling, c.spelling, c.spelling))
-            else:
-                print("  dest->%s = src->%s;" % (c.spelling, c.spelling))
-    print("}\n")
+                    # per default we copy only the first member of a union and warn if there are more
+                    # members (declare the other members NOBACKUP)
+                    if copiedUnionMember:
+                        print ("Warning more than one union member (%s) in anynomous union inside struct %s, consider NOBACKUP statements" % (uc.spelling, cursor.spelling), file=sys.stderr)
+                    else:
+                        copy_decl(uc, uc.spelling)
+                        copiedUnionMember = True
+
+        elif c.kind == clang.cindex.CursorKind.FIELD_DECL:
+            copy_decl(c, c.spelling)
+
+
+    if not anonymousUnion:
+        print("}\n")
 
 def build(cursor):
     result = []
     for c in cursor.get_children():
         if c.kind == clang.cindex.CursorKind.STRUCT_DECL:
             build_struct(c)
+    for c, spelling in extrastructs:
+        print("template <class A, class B>\nvoid copy%s(A * dest, B * src)\n{" % spelling)
+        build_struct(c, True)
+        print ("}\n")
+
     return result
+
+
+def copy_decl(c, spelling):
+    childs = [ch for ch in c.get_children()]
+    if c.type.get_array_size() > 0:
+        if c.type.get_array_element_type().spelling in structs:
+            print("  for (int i=0; i<%d; i++) {" % c.type.get_array_size())
+            print("    copy%s(&dest->%s[i], &src->%s[i]);" % (c.type.get_array_element_type().spelling, spelling, spelling))
+            print("  }")
+        else:
+            print("  memcpy(dest->%s, src->%s, sizeof(dest->%s));" % (spelling, spelling, spelling))
+    elif c.type.kind == clang.cindex.TypeKind.UNEXPOSED and len(childs)==1 and childs[0].kind == clang.cindex.CursorKind.STRUCT_DECL:
+        # inline declared structs
+        if c.semantic_parent.spelling:
+            spellingFunc = c.semantic_parent.spelling + "_" + spelling
+        else:
+            spellingFunc = c.semantic_parent.semantic_parent.spelling + "_" + spelling
+
+        extrastructs.append((childs[0], spellingFunc))
+        print("  copy%s(&dest->%s, &src->%s);" % (spellingFunc, spelling, spelling))
+
+    elif c.type.get_declaration().spelling in structs:
+        print("  copy%s(&dest->%s, &src->%s);" % (c.type.get_declaration().spelling, spelling, spelling))
+    else:
+        print("  dest->%s = src->%s;" % (spelling, spelling))
 
 
 def header():
