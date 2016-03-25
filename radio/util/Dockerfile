@@ -20,8 +20,8 @@ RUN         wget -q https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-updat
             tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 && \
             mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
 
-RUN         wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_4.7.2-2_amd64.deb gcc-avr_4.7.2-2_amd64.deb && \
-            wget -q http://ftp.de.debian.org/debian/pool/main/m/mpclib/libmpc2_0.9-4_amd64.deb libmpc2_0.9-4_amd64.deb && \
+RUN         wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_4.7.2-2_amd64.deb && \
+            wget -q http://ftp.de.debian.org/debian/pool/main/m/mpclib/libmpc2_0.9-4_amd64.deb && \
             dpkg -i gcc-avr_4.7.2-2_amd64.deb libmpc2_0.9-4_amd64.deb
 
 ENV         PATH $PATH:/opt/gcc-arm-none-eabi/bin
