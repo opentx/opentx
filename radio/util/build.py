@@ -28,7 +28,7 @@ if len(sys.argv) != 2:
     exit(INVALID_FIRMWARE)
 
 srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
-filename = sys.argv[1]
+directory, filename = os.path.split(sys.argv[1])
 root, ext = os.path.splitext(filename)
 options = root.split("-")
 
@@ -198,5 +198,5 @@ if size > maxsize:
     exit(FIRMWARE_SIZE_TOO_BIG)
 
 # Copy binary to the binaries directory
-shutil.copyfile(firmware, filename)
+shutil.copyfile(firmware, os.path.join(directory, filename))
 print filename

@@ -26,6 +26,4 @@ RUN         wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_
 
 ENV         PATH $PATH:/opt/gcc-arm-none-eabi/bin
 VOLUME      ["/opentx"]
-
-WORKDIR     /opentx/binaries
 ENTRYPOINT  ["python", "/opentx/code/radio/util/build.py"]
