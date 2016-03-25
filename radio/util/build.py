@@ -7,11 +7,11 @@ import shutil
 from fwoptions import *
 
 # Error codes
-INVALID_FIRMWARE = -1
-UNKNOWN_BOARD = -2
-INVALID_LANGUAGE = -3
-COMPILATION_ERROR = -4
-FIRMWARE_SIZE_TOO_BIG = -5
+FIRMWARE_SIZE_TOO_BIG = 1
+COMPILATION_ERROR = 4
+INVALID_FIRMWARE = 5
+INVALID_BOARD = 6
+INVALID_LANGUAGE = 7
 
 # Board types
 BOARD_9X = 0
@@ -128,7 +128,7 @@ elif options[optcount] == "horus":
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
 else:
-    exit(UNKNOWN_BOARD)
+    exit(INVALID_BOARD)
 
 filename += options[optcount]
 optcount += 1
@@ -147,7 +147,7 @@ for opt, value in firmware_options.items():
     else:
         optvalue = value[2]
 
-    if optvalue != None:
+    if optvalue is not None:
         command_options[value[0]] = optvalue
 
 # The firmware display language
