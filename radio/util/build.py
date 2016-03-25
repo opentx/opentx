@@ -167,36 +167,50 @@ else:
 filename += ext
 firmware = "firmware" + ext
 
-# Launch CMake
-cmd = ["cmake"]
-for opt, value in command_options.items():
-    cmd.append("-D%s=%s" % (opt, value))
-if "OPENTX_VERSION_SUFFIX" in os.environ:
-    cmd.append('-DVERSION_SUFFIX="%s"' % os.environ["OPENTX_VERSION_SUFFIX"])
-cmd.append(srcdir)
-proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-output, error = proc.communicate()
-if proc.returncode != 0:
-    file("%s.err" % filename, "w").write(output + error)
+path = os.path.join(directory, filename)
+outpath = path + ".out"
+errpath = path + ".err"
+
+if os.path.isfile(errpath):
     exit(COMPILATION_ERROR)
 
-# Launch make firmware
-cmd = ["make", "firmware"]
-proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-output, error = proc.communicate()
-if proc.returncode != 0:
-    file("%s.err" % filename, "w").write(output + error)
-    exit(COMPILATION_ERROR)
+if not os.path.isfile(path):
+    # Launch CMake
+    cmd = ["cmake"]
+    for opt, value in command_options.items():
+        cmd.append("-D%s=%s" % (opt, value))
+    if "OPENTX_VERSION_SUFFIX" in os.environ:
+        cmd.append('-DVERSION_SUFFIX="%s"' % os.environ["OPENTX_VERSION_SUFFIX"])
+    cmd.append(srcdir)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = proc.communicate()
+    if proc.returncode == 0:
+        file(outpath, "a").write(output + error)
+    else:
+        file(errpath, "w").write(output + error)
+        exit(COMPILATION_ERROR)
 
-# Check binary size
-if board_family == BOARD_FAMILY_ARM:
-    size = os.stat(firmware).st_size
-else:
-    size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % firmware, shell=True)
-    size = int(size.strip())
-if size > maxsize:
-    exit(FIRMWARE_SIZE_TOO_BIG)
+    # Launch make firmware
+    cmd = ["make", "firmware"]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = proc.communicate()
+    if proc.returncode == 0:
+        file(outpath, "a").write(output + error)
+    else:
+        file(errpath, "w").write(output + error)
+        exit(COMPILATION_ERROR)
 
-# Copy binary to the binaries directory
-shutil.copyfile(firmware, os.path.join(directory, filename))
+    # Check binary size
+    if board_family == BOARD_FAMILY_ARM:
+        size = os.stat(firmware).st_size
+    else:
+        size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % firmware, shell=True)
+        size = int(size.strip())
+    if size > maxsize:
+        exit(FIRMWARE_SIZE_TOO_BIG)
+
+    # Copy binary to the binaries directory
+    shutil.copyfile(firmware, path)
+
 print filename
+exit(0)
