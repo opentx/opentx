@@ -697,12 +697,12 @@ PACK(struct ModuleData {
       uint8_t outputType:1;     // false = open drain, true = push pull
       int8_t  frameLength;
     } ppm;
-    struct {
+    NOBACKUP(struct {
       uint8_t rfProtocol:6;    // can be changed to rfProtocol if rfProtocol gets more bits, currently 6 bits used
       uint8_t autoBindMode:1;
       uint8_t lowPowerMode:1;
       int8_t optionValue;
-    } multi;
+    } multi);
   };
 });
 
