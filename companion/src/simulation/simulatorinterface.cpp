@@ -69,7 +69,7 @@ void registerSimulators()
   }
 }
 
-SimulatorFactory *getSimulatorFactory(const QString &name)
+SimulatorFactory * getSimulatorFactory(const QString & name)
 {
   QString simuName = name;
   while(1) {
@@ -85,6 +85,8 @@ SimulatorFactory *getSimulatorFactory(const QString &name)
     if (pos <= 0)
       break;
     simuName = simuName.mid(0, pos);
+    if (simuName.count('-') == 0)
+      break;
   }
   return NULL;
 }
