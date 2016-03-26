@@ -209,7 +209,7 @@ if not os.path.isfile(path):
         if board_family == BOARD_FAMILY_ARM:
             size = os.stat(firmware).st_size
         else:
-            size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % firmware, shell=True)
+            size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % target, shell=True)
             size = int(size.strip())
         if size > maxsize:
             exit(FIRMWARE_SIZE_TOO_BIG)
