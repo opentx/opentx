@@ -72,7 +72,7 @@ QStringList getDfuArgs(const QString & cmd, const QString & filename)
   if (!filename.endsWith(".dfu")) {
     args << "--dfuse-address" << memory;
   }
-  // removed for Horus, is it really needed? args << "-d" << "0483:df11";
+  args << "-d" << "0483:df11";
   QString fullcmd = cmd + filename;
   args << "" << fullcmd;
   return args;
