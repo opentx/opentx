@@ -9,12 +9,12 @@ before_install:
   - sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' --yes
   - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
   - sudo apt-get update -qq
-  - rsync -av firmware.diydrones.com::Tools/Travis/*.deb ExtraPackages
+#  - rsync -av firmware.diydrones.com::Tools/Travis/*.deb ExtraPackages
 
 install:
   - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi qt-latest g++-5 libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libfox-1.6-dev libgtest-dev python-clang-3.8 libclang-3.8-dev python-qt4
-  - sudo dpkg -i ExtraPackages/*.deb || echo "FAILED INSTALL OF EXTRA DEBS"
-  - export CXX="g++-5" CC="gcc-5"
+#  - sudo dpkg -i ExtraPackages/*.deb || echo "FAILED INSTALL OF EXTRA DEBS"
+#  - export CXX="g++-5" CC="gcc-5"
 
 script:
   - ./radio/util/commit-tests.sh .
