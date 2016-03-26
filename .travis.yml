@@ -15,9 +15,9 @@ install:
   - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi qt-latest g++-5 libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libfox-1.6-dev libgtest-dev python-clang-3.8 libclang-3.8-dev python-qt4
 #  - sudo dpkg -i ExtraPackages/*.deb || echo "FAILED INSTALL OF EXTRA DEBS"
 #  - export CXX="g++-5" CC="gcc-5"
-  - wget --quiet --output-document=- http://firmware.ardupilot.org/Tools/Travis/gcc-avr_1%253a4.8-2.1_amd64.deb | dpkg --install -
-  - wget --quiet --output-document=- http://firmware.ardupilot.org/Tools/Travis/avr-libc_1%253a1.8.0-4.1_all.deb | dpkg --install -
-  - wget --quiet --output-document=- http://firmware.ardupilot.org/Tools/Travis/binutils-avr_2.23.1-2.1_amd64.deb | dpkg --install -
+  - sudo wget --quiet --output-document=- http://firmware.ardupilot.org/Tools/Travis/gcc-avr_1%253a4.8-2.1_amd64.deb | dpkg --install -
+  - sudo wget --quiet --output-document=- http://firmware.ardupilot.org/Tools/Travis/avr-libc_1%253a1.8.0-4.1_all.deb | dpkg --install -
+  - sudo wget --quiet --output-document=- http://firmware.ardupilot.org/Tools/Travis/binutils-avr_2.23.1-2.1_amd64.deb | dpkg --install -
 
 script:
   - ./radio/util/commit-tests.sh .
