@@ -14,7 +14,12 @@ RUN         apt-get update && apt-get install -y \
                 avr-libc \
                 build-essential \
                 libfox-1.6-dev \
-                python-qt4
+                python-qt4 \
+                qt5-default \
+                qttools5-dev \
+                qtmultimedia5-dev \
+                qttools5-dev-tools \
+                libsdl1.2-dev
 
 RUN         wget -q https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 && \
             tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 && \
@@ -24,6 +29,5 @@ RUN         wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_
             wget -q http://ftp.de.debian.org/debian/pool/main/m/mpclib/libmpc2_0.9-4_amd64.deb && \
             dpkg -i gcc-avr_4.7.2-2_amd64.deb libmpc2_0.9-4_amd64.deb
 
-ENV         PATH $PATH:/opt/gcc-arm-none-eabi/bin
 VOLUME      ["/opentx"]
-ENTRYPOINT  ["python", "/opentx/code/radio/util/build.py"]
+ENV         PATH $PATH:/opt/gcc-arm-none-eabi/bin:/opentx/code/radio/util
