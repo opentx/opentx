@@ -164,7 +164,7 @@ void pwrOff()
 #endif
 }
 
-FORCEINLINE uint8_t keyDown()
+uint8_t keyDown()
 {
   return ((~PINL) & 0x3F) || ROTENC_DOWN();
 }

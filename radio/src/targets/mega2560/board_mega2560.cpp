@@ -87,7 +87,7 @@ void pwrOff()
   PORTH &= ~0x10;   // PortH-4 set to 0
 }
 
-FORCEINLINE uint8_t keyDown()
+uint8_t keyDown()
 {
   return ((~PINL) & 0x3F) || ROTENC_DOWN();
 }
