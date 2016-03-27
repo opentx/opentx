@@ -82,18 +82,11 @@ bool checkScreenshot(const QString & test)
   QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
   QPainter p(&buffer);
   doPaint(p);
+
   QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-  buffer.save("/tmp/" + filename);
-  QFile screenshot("/tmp/" + filename);
-  if (!screenshot.open(QIODevice::ReadOnly))
-    return false;
-  QFile reference( TESTS_PATH "/tests/" + filename);
-  if (!reference.open(QIODevice::ReadOnly))
-    return false;
-  if (reference.readAll() != screenshot.readAll())
-    return false;
-  screenshot.remove();
-  return true;
+  QImage reference(TESTS_PATH "/tests/" + filename);
+
+  return buffer == reference;
 }
 
 #if defined(COLORLCD)
