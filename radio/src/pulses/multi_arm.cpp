@@ -35,6 +35,23 @@
 
 #define BITLEN_MULTI          (10*2) //100000 Baud => 10uS per bit
 
+#if defined(PPM_PIN_HW_SERIAL)
+static void sendByteMulti(uint8_t b)
+{
+  uint8_t parity = 1;
+
+  putDsm2SerialBit(0);           // Start bit
+  for (uint8_t i=0; i<8; i++) {  // 8 data Bits
+    putDsm2SerialBit(b & 1);
+    parity = parity ^ (b & 1);
+    b >>= 1;
+  }
+  putDsm2SerialBit(parity);      // Even Parity bit
+
+  putDsm2SerialBit(1);           // Stop bit
+  putDsm2SerialBit(1);           // Stop bit
+}
+#else
 static void _send_level(uint8_t v)
 {
     /* Copied over from DSM, this looks doubious and in my logic analyzer
@@ -48,7 +65,6 @@ static void _send_level(uint8_t v)
   *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = (modulePulsesData[EXTERNAL_MODULE].dsm2.index+1) % 2;
 }
-
 
 static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
 {
@@ -73,6 +89,7 @@ static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
   }
   _send_level(len+2*BITLEN_MULTI); // 2Stop bits
 }
+#endif
 
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS

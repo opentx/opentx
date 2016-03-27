@@ -97,6 +97,7 @@ void setupPulsesPXX(unsigned int port);
 void setupPulsesPPM(unsigned int port);
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
+void putDsm2SerialBit(uint8_t bit);
 
 void createCrossfireFrame(uint8_t * frame, int16_t * pulses);
 
