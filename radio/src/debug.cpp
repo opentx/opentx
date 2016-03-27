@@ -102,3 +102,40 @@ void dumpTraceBuffer()
   TRACE("End of Trace Buffer dump");
 }
 #endif
+
+#if defined(DEBUG_INTERRUPTS)
+
+#if defined(PCBHORUS)
+  const char * interruptNames[INT_LAST] = {
+    "Tick ",   // INT_TICK,
+    "1ms  ",   // INT_1MS,
+    "Ser2 ",   // INT_SER2,
+    "TelDm",   // INT_TELEM_DMA,
+    "Sdio ",   // INT_SDIO,
+    "SdDma",   // INT_SDIO_DMA,
+    "D2S7 ",   // INT_DMA2S7,
+    "Tim1 ",   // INT_TIM1CC,
+    "Tim2 ",   // INT_TIM2,
+    "Tim3 ",   // INT_TIM3,
+    "Usb  "   // INT_OTG_FS,
+  };
+#elif defined(PCBTARANIS) 
+  const char * interruptNames[INT_LAST] = {
+    "Tick ",   // INT_TICK,
+    "5ms  ",   // INT_5MS,
+    "Audio",   // INT_AUDIO,
+    "BlueT",   // INT_BLUETOOTH,
+    "Lcd  ",   // INT_LCD,
+    "T1CC ",   // INT_TIM1CC,
+    "Tim1 ",   // INT_TIM1,
+    "Tim8 ",   // INT_TIM8,
+    "Ser2 ",   // INT_SER2,
+    "TelDm",   // INT_TELEM_DMA,
+    "TelUs",   // INT_TELEM_USART,
+    "Train",   // INT_TRAINER,
+    "Usb  ",   // INT_OTG_FS,
+  };
+#endif
+
+struct InterruptCounters interruptCounters;
+#endif //#if defined(DEBUG_INTERRUPTS)

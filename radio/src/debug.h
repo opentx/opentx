@@ -185,5 +185,57 @@ public:
 
 #endif  // defined(JITTER_MEASURE)
 
+
+#if defined(DEBUG_INTERRUPTS) && !defined(BOOT)
+
+#if defined(PCBHORUS)
+enum InterruptNames {
+  INT_TICK,
+  INT_1MS,
+  INT_SER2,
+  INT_TELEM_DMA,
+  INT_SDIO,
+  INT_SDIO_DMA,
+  INT_DMA2S7,
+  INT_TIM1CC,
+  INT_TIM2,
+  INT_TIM3,
+  INT_OTG_FS,
+  INT_LAST
+};
+#elif defined(PCBTARANIS) 
+enum InterruptNames {
+  INT_TICK,
+  INT_5MS,
+  INT_AUDIO,
+  INT_BLUETOOTH,
+  INT_LCD,
+  INT_TIM1CC,
+  INT_TIM1,
+  INT_TIM8,
+  INT_SER2,
+  INT_TELEM_DMA,
+  INT_TELEM_USART,
+  INT_TRAINER,
+  INT_OTG_FS,
+  INT_LAST
+};
+#endif
+
+struct InterruptCounters
+{
+  uint32_t cnt[INT_LAST];
+  uint32_t resetTime;
+};
+
+extern const char * interruptNames[INT_LAST];
+extern struct InterruptCounters interruptCounters;
+
+#define DEBUG_INTERRUPT(int)    (++interruptCounters.cnt[int])
+#else
+#define DEBUG_INTERRUPT(int)
+#endif //#if defined(DEBUG_INTERRUPTS)
+
+
 #endif // _DEBUG_H_
 

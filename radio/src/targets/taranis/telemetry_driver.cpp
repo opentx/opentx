@@ -114,6 +114,7 @@ void sportSendBuffer(uint8_t * buffer, uint32_t count)
 
 extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_TELEM_DMA);
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
     telemetryPortSetDirectionInput();
@@ -123,6 +124,7 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void TELEMETRY_USART_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_TELEM_USART);
   uint32_t status = TELEMETRY_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = TELEMETRY_USART->DR;

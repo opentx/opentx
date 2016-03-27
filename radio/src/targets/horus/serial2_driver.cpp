@@ -134,6 +134,7 @@ uint8_t serial2TracesEnabled()
 #if !defined(SIMU)
 extern "C" void SERIAL_USART_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_SER2);
   // Send
   if (USART_GetITStatus(SERIAL_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;

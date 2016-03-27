@@ -2776,11 +2776,13 @@ OPTIMIZE("O0") uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes
 
 void SDIO_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_SDIO);
   SD_ProcessIRQ();
 }
 
 void SD_SDIO_DMA_IRQHANDLER(void)
 {
+  DEBUG_INTERRUPT(INT_SDIO_DMA);
   SD_ProcessDMAIRQ();
 }
 

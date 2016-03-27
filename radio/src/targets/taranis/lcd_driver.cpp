@@ -199,6 +199,7 @@ void lcdRefresh(bool wait)
 
 extern "C" void DMA1_Stream7_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_LCD);
   //clear interrupt flag
   DMA1_Stream7->CR &= ~DMA_SxCR_TCIE ;  // Stop interrupt
   DMA1->HIFCR |= DMA_HIFCR_CTCIF7;      // Clear interrupt flag

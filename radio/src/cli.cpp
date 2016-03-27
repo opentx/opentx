@@ -357,6 +357,22 @@ int cliSet(const char ** argv)
   return 0;
 }
 
+
+#if defined(DEBUG_INTERRUPTS)
+void printInterrupts() 
+{
+  __disable_irq();
+  struct InterruptCounters ic = interruptCounters;
+  memset(&interruptCounters, 0, sizeof(interruptCounters));
+  interruptCounters.resetTime = get_tmr10ms();
+  __enable_irq();
+  serialPrint("Interrupts count in the last %u ms:", (get_tmr10ms() - ic.resetTime) * 10);
+  for(int n = 0; n < INT_LAST; n++) {
+    serialPrint("%s: %u", interruptNames[n], ic.cnt[n]); 
+  }
+}
+#endif //#if defined(DEBUG_INTERRUPTS)
+
 int cliDisplay(const char ** argv)
 {
   long long int address = 0;
@@ -484,6 +500,11 @@ int cliDisplay(const char ** argv)
       serialPrint(" CCR4   0x%x", tim->CCR4);
     }
   }
+#if defined(DEBUG_INTERRUPTS)
+  else if (!strcmp(argv[1], "int")) {
+    printInterrupts();
+  }
+#endif //#if defined(DEBUG_INTERRUPTS)
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {
