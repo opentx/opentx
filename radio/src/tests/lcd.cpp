@@ -20,8 +20,8 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
-#include <QtGui/QApplication>
-#include <QtGui/QPainter>
+#include <QApplication>
+#include <QPainter>
 #include <math.h>
 #include <gtest/gtest.h>
 
