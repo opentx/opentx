@@ -222,8 +222,8 @@
 #endif
 
 #if defined(SIMU)
-  #ifndef FORCEINLINE
-    #define FORCEINLINE
+  #if !defined(FORCEINLINE)
+    #define FORCEINLINE inline
   #endif
   #if !defined(NOINLINE)
     #define NOINLINE

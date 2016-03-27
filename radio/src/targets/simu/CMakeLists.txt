@@ -20,7 +20,6 @@ endif()
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/EHsc /LD")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /FORCE:MULTIPLE")
   include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
   target_link_libraries(${SIMULATOR_TARGET} PRIVATE C:/Programs/pthreads/Pre-built.2/lib/pthreadVC2.lib)
 else()
