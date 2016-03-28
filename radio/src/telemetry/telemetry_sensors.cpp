@@ -530,6 +530,11 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
         frskyDSetDefault(index, id);
         break;
 #endif
+#if defined(CROSSFIRE)
+      case TELEM_PROTO_CROSSFIRE:
+        crossfireSetDefault(index, id, instance);
+        break;
+#endif
       default:
         return;
     }

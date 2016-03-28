@@ -388,20 +388,6 @@ enum AlarmLevel {
 #define BYTESTUFF               0x7d
 #define STUFF_MASK              0x20
 
-// Receive buffer state machine state enum
-enum FrSkyDataState {
-  STATE_DATA_IDLE,
-  STATE_DATA_START,
-  STATE_DATA_IN_FRAME,
-  STATE_DATA_XOR,
-#if defined(TELEMETREZ)
-  STATE_DATA_PRIVATE_LEN,
-  STATE_DATA_PRIVATE_VALUE
-#endif
-};
-
-#define FRSKY_RX_PACKET_SIZE   19
-
 #if defined(CPUARM)
   #define frskySendAlarms()
 #else
@@ -453,6 +439,7 @@ enum TelemetryProtocol
 {
   TELEM_PROTO_FRSKY_D,
   TELEM_PROTO_FRSKY_SPORT,
+  TELEM_PROTO_CROSSFIRE,
 };
 
 enum TelemAnas {
@@ -495,23 +482,6 @@ void frskyUpdateCells();
 #endif
 
 void processFrskyTelemetryData(uint8_t data);
-
-#if defined(PCBTARANIS)
-  inline uint8_t modelTelemetryProtocol()
-  {
-#if defined(CROSSFIRE)
-    if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
-      return PROTOCOL_PULSES_CROSSFIRE;
-#endif
-    if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
-      return g_model.telemetryProtocol;
-    else
-      return PROTOCOL_FRSKY_SPORT;
-  }
-  #define MODEL_TELEMETRY_PROTOCOL() modelTelemetryProtocol()
-#elif defined(CPUARM)
-  #define MODEL_TELEMETRY_PROTOCOL() g_model.telemetryProtocol
-#endif
 
 #if defined(LUA)
 struct LuaTelemetryValue

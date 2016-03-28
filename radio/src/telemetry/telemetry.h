@@ -21,7 +21,7 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-#if defined (FRSKY)
+#if defined(FRSKY)
   // FrSky Telemetry
   #include "frsky.h"
 #elif defined(JETI)
@@ -36,6 +36,10 @@
 #elif defined(MAVLINK)
   // Mavlink Telemetry
   #include "mavlink.h"
+#endif
+
+#if defined(CROSSFIRE)
+  #include "crossfire.h"
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
@@ -54,6 +58,10 @@ enum TelemetryStates {
 };
 extern uint8_t telemetryState;
 #endif
+
+#define TELEMETRY_RX_PACKET_SIZE       19 // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
+extern uint8_t telemetryRxBufferCount;
 
 #if defined(CPUARM)
 #define TELEMETRY_VALUE_TIMER_CYCLE   200 /*20 seconds*/
@@ -111,6 +119,23 @@ extern uint8_t telemetryProtocol;
 #else
 #define IS_FRSKY_D_PROTOCOL()          (true)
 #define IS_FRSKY_SPORT_PROTOCOL()      (false)
+#endif
+
+#if defined(CPUSTM32)
+inline uint8_t modelTelemetryProtocol()
+{
+#if defined(CROSSFIRE)
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
+    return PROTOCOL_PULSES_CROSSFIRE;
+#endif
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
+    return g_model.telemetryProtocol;
+  else
+    return PROTOCOL_FRSKY_SPORT;
+}
+#define MODEL_TELEMETRY_PROTOCOL()     modelTelemetryProtocol()
+#elif defined(CPUARM)
+#define MODEL_TELEMETRY_PROTOCOL()     g_model.telemetryProtocol
 #endif
 
 #if defined(CPUARM)

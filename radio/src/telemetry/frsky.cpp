@@ -20,9 +20,6 @@
 
 #include "opentx.h"
 
-uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
-uint8_t frskyRxBufferCount = 0;
-
 #if !defined(CPUARM)
 uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
 uint8_t frskyTxBufferCount = 0;
@@ -38,6 +35,18 @@ uint8_t privateDataPos;
 extern uint8_t TrotCount;
 extern uint8_t TezRotary;
 #endif
+
+// Receive buffer state machine state enum
+enum FrSkyDataState {
+  STATE_DATA_IDLE,
+  STATE_DATA_START,
+  STATE_DATA_IN_FRAME,
+  STATE_DATA_XOR,
+#if defined(TELEMETREZ)
+  STATE_DATA_PRIVATE_LEN,
+  STATE_DATA_PRIVATE_VALUE
+#endif
+};
 
 NOINLINE void processFrskyTelemetryData(uint8_t data)
 {
@@ -72,12 +81,12 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
       if (data == START_STOP) {
         if (IS_FRSKY_SPORT_PROTOCOL()) {
           dataState = STATE_DATA_IN_FRAME ;
-          frskyRxBufferCount = 0;
+          telemetryRxBufferCount = 0;
         }
       }
       else {
-        if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
-          frskyRxBuffer[frskyRxBufferCount++] = data;
+        if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+          telemetryRxBuffer[telemetryRxBufferCount++] = data;
         }
         dataState = STATE_DATA_IN_FRAME;
       }
@@ -90,30 +99,30 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
       else if (data == START_STOP) {
         if (IS_FRSKY_SPORT_PROTOCOL()) {
           dataState = STATE_DATA_IN_FRAME ;
-          frskyRxBufferCount = 0;
+          telemetryRxBufferCount = 0;
         }
         else {
           // end of frame detected
-          frskyDProcessPacket(frskyRxBuffer);
+          frskyDProcessPacket(telemetryRxBuffer);
           dataState = STATE_DATA_IDLE;
         }
         break;
       }
-      else if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
-        frskyRxBuffer[frskyRxBufferCount++] = data;
+      else if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+        telemetryRxBuffer[telemetryRxBufferCount++] = data;
       }
       break;
 
     case STATE_DATA_XOR:
-      if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
-        frskyRxBuffer[frskyRxBufferCount++] = data ^ STUFF_MASK;
+      if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+        telemetryRxBuffer[telemetryRxBufferCount++] = data ^ STUFF_MASK;
       }
       dataState = STATE_DATA_IN_FRAME;
       break;
 
     case STATE_DATA_IDLE:
       if (data == START_STOP) {
-        frskyRxBufferCount = 0;
+        telemetryRxBufferCount = 0;
         dataState = STATE_DATA_START;
       }
 #if defined(TELEMETREZ)
@@ -155,8 +164,8 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
   } // switch
 
 #if defined(FRSKY_SPORT)
-  if (IS_FRSKY_SPORT_PROTOCOL() && frskyRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
-    processSportPacket(frskyRxBuffer);
+  if (IS_FRSKY_SPORT_PROTOCOL() && telemetryRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
+    processSportPacket(telemetryRxBuffer);
     dataState = STATE_DATA_IDLE;
   }
 #endif

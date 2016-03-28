@@ -407,11 +407,22 @@ if(CPU_FAMILY STREQUAL STM32)
     STM32_USB_Device_Library/Core/src/usbd_ioreq.c
     STM32_USB_Device_Library/Core/src/usbd_req.c
     )
-  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usb_bsp.c usbd_desc.c usbd_usr.cpp)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    usb_bsp.c
+    usbd_desc.c
+    usbd_usr.cpp
+    )
   if(USB STREQUAL SERIAL)
     add_definitions(-DUSB_SERIAL)
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_cdc.cpp)
-    set(STM32USB_SRC ${STM32USB_SRC} STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      usbd_cdc.cpp
+      )
+    set(STM32USB_SRC
+      ${STM32USB_SRC}
+      STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+      )
   elseif(USB STREQUAL MASSSTORAGE)
     add_definitions(-DUSB_MASS_STORAGE)
     set(STM32USB_SRC
@@ -421,13 +432,22 @@ if(CPU_FAMILY STREQUAL STM32)
       STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
       STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
       )
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_storage_msd.cpp)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      usbd_storage_msd.cpp
+      )
   else()
     add_definitions(-DUSB_JOYSTICK)
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_hid_joystick.c)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      usbd_hid_joystick.c
+      )
   endif()
   if(GVARS)
-    set(GUI_SRC ${GUI_SRC} menu_model_gvars.cpp)
+    set(GUI_SRC
+      ${GUI_SRC}
+      menu_model_gvars.cpp
+      )
   endif()
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
@@ -436,12 +456,22 @@ if(CPU_FAMILY STREQUAL STM32)
     targets/taranis/configure_pins.cpp
     )
   foreach(FILE ${STM32LIB_SRC})
-    set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32LIB_DIR}/${FILE})
+    set(FIRMWARE_SRC
+      ${FIRMWARE_SRC}
+      ${STM32LIB_DIR}/${FILE}
+      )
   endforeach()
   foreach(FILE ${STM32USB_SRC})
-    set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32USB_DIR}/${FILE})
+    set(FIRMWARE_SRC
+      ${FIRMWARE_SRC}
+      ${STM32USB_DIR}/${FILE}
+      )
   endforeach()
-  set(SRC ${SRC} sbus.cpp)
+  set(SRC
+    ${SRC}
+    sbus.cpp
+    telemetry/crossfire.cpp
+    )
 endif()
 
 if(ARCH STREQUAL ARM)

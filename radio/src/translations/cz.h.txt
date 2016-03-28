@@ -376,7 +376,7 @@
   #define LEN_VUNITSSYSTEM     TR("\006", "\010")
   #define TR_VUNITSSYSTEM      TR("Metr.\0""Imper.", "Metrické""Imperial")
   #define LEN_VTELEMUNIT       "\003"
-  #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""dB\0""rpm""g\0 ""@\0 ""ml\0""fOz"
+  #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""ml\0""fOz"
 #else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
@@ -1160,3 +1160,13 @@
 #define ZSTR_BATT2_CONSUMPTION "RB2C"
 #define ZSTR_RB_STATE          "RBS"
 #define ZSTR_CHANS_STATE       "RBCS"
+#define ZSTR_RX_RSSI1          "1RSS"
+#define ZSTR_RX_RSSI2          "2RSS"
+#define ZSTR_RX_QUALITY        "RQly"
+#define ZSTR_RX_SNR            "RSNR"
+#define ZSTR_ANTENNA           "ANT"
+#define ZSTR_RF_MODE           "RFMD"
+#define ZSTR_TX_POWER          "TPWR"
+#define ZSTR_TX_RSSI           "TRSS"
+#define ZSTR_TX_QUALITY        "TQly"
+#define ZSTR_TX_SNR            "TSNR"
