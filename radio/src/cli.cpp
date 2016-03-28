@@ -373,6 +373,60 @@ void printInterrupts()
 }
 #endif //#if defined(DEBUG_INTERRUPTS)
 
+#if defined(DEBUG_TASKS)
+
+void printTaskSwitchLog() 
+{
+  serialPrint("Tasks legend [<task_id>, <task name>]:");
+  for(int n = 0; n <= CFG_MAX_USER_TASKS+1; n++) {
+    if (0 == n) {
+      serialPrint("%d: Idle", n);
+    }
+    if (cliTaskId == n) {
+      serialPrint("%d: CLI", n);
+    }
+    else if (menusTaskId == n) {
+      serialPrint("%d: menus", n);
+    }
+    else if (mixerTaskId == n) {
+      serialPrint("%d: mixer", n);
+    }
+    else if (audioTaskId == n) {
+      serialPrint("%d: audio", n);
+    }
+#if defined(BLUETOOTH)
+    else if (btTaskId == n) {
+      serialPrint("%d: BT", n);
+    }
+#endif
+  }
+  serialCrlf();
+
+  serialPrint("Tasks switch log at %u [<time>, <task_id>]:", get_tmr10ms());
+  uint32_t lastSwitchTime = 0;
+  uint32_t * tsl = new uint32_t[DEBUG_TASKS_LOG_SIZE];
+  memcpy(tsl, taskSwitchLog, sizeof(taskSwitchLog));
+  uint32_t * p = tsl + taskSwitchLogPos;
+  uint32_t * end = tsl + DEBUG_TASKS_LOG_SIZE;
+  for(int n = 0; n < DEBUG_TASKS_LOG_SIZE; n++) {
+    uint32_t taskId = *p >> 24;
+    uint32_t switchTime = *p & 0xFFFFFF;
+    if (lastSwitchTime != switchTime) {
+      serialPrintf("\r\n%06x: ", switchTime);
+      lastSwitchTime = switchTime;
+    }
+    serialPrintf("%u ", taskId);
+    if ( ++p >= end ) {
+      p = tsl;
+    }
+  }
+  delete[] tsl;
+  serialCrlf();
+}
+
+
+#endif // #if defined(DEBUG_TASKS)
+
 int cliDisplay(const char ** argv)
 {
   long long int address = 0;
@@ -505,6 +559,11 @@ int cliDisplay(const char ** argv)
     printInterrupts();
   }
 #endif //#if defined(DEBUG_INTERRUPTS)
+#if defined(DEBUG_TASKS)
+  else if (!strcmp(argv[1], "tsl")) {
+    printTaskSwitchLog();
+  }
+#endif //#if defined(DEBUG_TASKS)
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {

@@ -236,6 +236,25 @@ extern struct InterruptCounters interruptCounters;
 #define DEBUG_INTERRUPT(int)
 #endif //#if defined(DEBUG_INTERRUPTS)
 
+#if defined(DEBUG_TASKS)
+
+#define DEBUG_TASKS_LOG_SIZE    512
+
+// each 32bit is used as:
+//    top 8 bits: task id
+//    botom 24 bits: system tick counter
+extern uint32_t taskSwitchLog[DEBUG_TASKS_LOG_SIZE];
+extern uint16_t taskSwitchLogPos;
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+extern void CoTaskSwitchHook(uint8_t taskID);
+#if defined(__cplusplus)
+}
+#endif
+
+#endif // #if defined(DEBUG_TASKS)
 
 #endif // _DEBUG_H_
 

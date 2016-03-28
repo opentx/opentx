@@ -30,6 +30,7 @@ extern uint8_t cliTracesEnabled;
 extern Fifo<uint8_t, 256> cliRxFifo;
 #include "tasks_arm.h"
 #define CLI_STACK_SIZE                 1000
+extern OS_TID cliTaskId;
 extern TaskStack<CLI_STACK_SIZE> cliStack;
 #endif
 
