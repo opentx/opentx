@@ -23,7 +23,7 @@
 #define _USBD_CONF_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include "../horus/usb_conf.h"
+#include "usb_conf.h"
 
 #define USBD_CFG_MAX_NUM           1
 #define USBD_ITF_MAX_NUM           1

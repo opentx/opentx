@@ -22,8 +22,8 @@
 
 #include "usb_bsp.h"
 
-#include "../horus/board_horus.h"
-#include "../horus/usbd_conf.h"
+#include "board_horus.h"
+#include "usbd_conf.h"
 
 extern uint32_t SystemCoreClock;
 
