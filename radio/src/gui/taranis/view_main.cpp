@@ -273,7 +273,6 @@ void displayTopBar()
   }
 
   /* Audio volume */
-  TRACE("%d", requiredSpeakerVolume);
   if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER0);
   else if (requiredSpeakerVolume <= 6)
