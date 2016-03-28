@@ -1304,7 +1304,8 @@ void evalFunctions();
 #include "telemetry/telemetry.h"
 
 #if defined(CPUARM)
-uint16_t crc16(uint8_t * buf, uint32_t len);
+uint8_t crc8(const uint8_t * ptr, uint32_t len);
+uint16_t crc16(const uint8_t * ptr, uint32_t len);
 #endif
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */

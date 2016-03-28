@@ -68,13 +68,16 @@ void processCrossfireTelemetryFrame(uint8_t id, uint8_t subId, uint32_t value)
 
 bool checkCrossfireTelemetryFrameCRC()
 {
-  // uint8_t length = telemetryRxBuffer[1];
-  return true;
+  uint8_t len = telemetryRxBuffer[1];
+  uint8_t crc = crc8(&telemetryRxBuffer[2], len-1);
+  return (crc == telemetryRxBuffer[len+1]);
 }
 
 void processCrossfireTelemetryFrame()
 {
   if (!checkCrossfireTelemetryFrameCRC()) {
+    TRACE("processCrossfirePacket(): CRC error ");
+    DUMP(telemetryRxBuffer, TELEMETRY_RX_PACKET_SIZE);
     return;
   }
 
@@ -94,7 +97,7 @@ void processCrossfireTelemetryData(uint8_t data)
     return;
   }
 
-  if (telemetryRxBufferCount == 1 && (data <  || data > TELEMETRY_RX_PACKET_SIZE-2)) {
+  if (telemetryRxBufferCount == 1 && (data < 2 || data > TELEMETRY_RX_PACKET_SIZE-2)) {
     telemetryRxBufferCount = 0;
     return;
   }

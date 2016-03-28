@@ -35,5 +35,12 @@ TEST(Crossfire, createCrossfireFrame)
 
   // TODO check
 }
+
+TEST(Crossfire, crc8)
+{
+  uint8_t frame[] = { 0x00, 0x0C, 0x14, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x01, 0x03, 0x00, 0x00, 0x00, 0xF4 };
+  uint8_t crc = crc8(&frame[2], frame[1]-1);
+  ASSERT_EQ(frame[frame[1]+1], crc);
+}
 #endif
 
