@@ -79,7 +79,7 @@ inline void MIXER_RESET()
 inline void TELEMETRY_RESET()
 {
 #if defined(FRSKY)
-  memclear(&frskyData, sizeof(frskyData));
+  memclear(&telemetryData, sizeof(telemetryData));
   TELEMETRY_RSSI() = 100;
 #endif
 #if defined(CPUARM) && defined(FRSKY)

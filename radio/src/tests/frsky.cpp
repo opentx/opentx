@@ -34,7 +34,7 @@ void displayVoltagesScreen();
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
-  frskyData.hub.gpsFix = 1;
+  telemetryData.hub.gpsFix = 1;
 
   uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x14, 0x2c, 0x00, 0x5e, 0x1c, 0x03 };
   uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x13, 0x38, 0x0c, 0x5e, 0x1b };
@@ -50,14 +50,14 @@ TEST(FrSky, gpsNfuel)
   frskyDProcessPacket(pkt5);
   frskyDProcessPacket(pkt6);
   frskyDProcessPacket(pkt7);
-  EXPECT_EQ(frskyData.hub.gpsCourse_bp, 44);
-  EXPECT_EQ(frskyData.hub.gpsCourse_ap, 03);
-  EXPECT_EQ(frskyData.hub.gpsLongitude_bp / 100, 120);
-  EXPECT_EQ(frskyData.hub.gpsLongitude_bp % 100, 15);
-  EXPECT_EQ(frskyData.hub.gpsLongitude_ap, 0x2698);
-  EXPECT_EQ(frskyData.hub.gpsLatitudeNS, 'N');
-  EXPECT_EQ(frskyData.hub.gpsLongitudeEW, 'E');
-  EXPECT_EQ(frskyData.hub.fuelLevel, 100);
+  EXPECT_EQ(telemetryData.hub.gpsCourse_bp, 44);
+  EXPECT_EQ(telemetryData.hub.gpsCourse_ap, 03);
+  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp / 100, 120);
+  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp % 100, 15);
+  EXPECT_EQ(telemetryData.hub.gpsLongitude_ap, 0x2698);
+  EXPECT_EQ(telemetryData.hub.gpsLatitudeNS, 'N');
+  EXPECT_EQ(telemetryData.hub.gpsLongitudeEW, 'E');
+  EXPECT_EQ(telemetryData.hub.fuelLevel, 100);
 }
 
 TEST(FrSky, dateNtime)
@@ -68,17 +68,17 @@ TEST(FrSky, dateNtime)
   frskyDProcessPacket(pkt1);
   frskyDProcessPacket(pkt2);
   frskyDProcessPacket(pkt3);
-  EXPECT_EQ(frskyData.hub.day, 15);
-  EXPECT_EQ(frskyData.hub.month, 07);
-  EXPECT_EQ(frskyData.hub.year, 11);
-  EXPECT_EQ(frskyData.hub.hour, 06);
-  EXPECT_EQ(frskyData.hub.min, 18);
-  EXPECT_EQ(frskyData.hub.sec, 50);
+  EXPECT_EQ(telemetryData.hub.day, 15);
+  EXPECT_EQ(telemetryData.hub.month, 07);
+  EXPECT_EQ(telemetryData.hub.year, 11);
+  EXPECT_EQ(telemetryData.hub.hour, 06);
+  EXPECT_EQ(telemetryData.hub.min, 18);
+  EXPECT_EQ(telemetryData.hub.sec, 50);
 }
 #endif
 
 #if defined(FRSKY) && defined(CPUARM)
-TEST(FrSky, FrskyValueWithMinAveraging)
+TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
     The following expected[] array is filled
@@ -90,7 +90,7 @@ TEST(FrSky, FrskyValueWithMinAveraging)
   uint8_t expected[] = { 10, 12, 17, 25, 35, 45, 55, 65, 75, 85, 92, 97, 100, 100, 100, 100, 100};
   int testPos = 0;
   //test of averaging
-  FrskyValueWithMin testVal;
+  TelemetryValueWithMin testVal;
   testVal.value = 0;
   testVal.set(10);
   EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 10);

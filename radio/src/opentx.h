@@ -1301,26 +1301,7 @@ void evalFunctions();
   extern volatile rotenc_t g_rotenc[1];
 #endif
 
-#if defined(CPUARM)
-  #include "telemetry/telemetry.h"
-#endif
-
-#if defined (FRSKY)
-  // FrSky Telemetry
-  #include "telemetry/frsky.h"
-#elif defined(JETI)
-  // Jeti-DUPLEX Telemetry
-  #include "telemetry/jeti.h"
-#elif defined(ARDUPILOT)
-  // ArduPilot Telemetry
-  #include "telemetry/ardupilot.h"
-#elif defined(NMEA)
-  // NMEA Telemetry
-  #include "telemetry/nmea.h"
-#elif defined(MAVLINK)
-  // Mavlink Telemetry
-  #include "telemetry/mavlink.h"
-#endif
+#include "telemetry/telemetry.h"
 
 #if defined(CPUARM)
 uint16_t crc16(uint8_t * buf, uint32_t len);

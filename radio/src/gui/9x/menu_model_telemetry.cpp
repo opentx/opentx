@@ -609,7 +609,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_A2_LABEL:
         lcd_putsLeft(y, STR_ACHANNEL);
         lcdDrawNumber(2*FW, y, ch+1, 0);
-        putsTelemetryChannelValue(TELEM_COL2+6*FW, y, dest, frskyData.analog[ch].value, LEFT);
+        putsTelemetryChannelValue(TELEM_COL2+6*FW, y, dest, telemetryData.analog[ch].value, LEFT);
         break;
 
       case ITEM_TELEMETRY_A1_RANGE:
@@ -739,7 +739,7 @@ void menuModelTelemetry(uint8_t event)
       case ITEM_TELEMETRY_FAS_OFFSET:
         lcd_putsLeft(y, STR_FAS_OFFSET);
         lcdDrawNumber(TELEM_COL2, y, g_model.frsky.fasOffset, attr|LEFT|PREC1);
-        lcdDrawNumber(TELEM_COL2+6*FW, y, frskyData.hub.current, LEFT|PREC1);
+        lcdDrawNumber(TELEM_COL2+6*FW, y, telemetryData.hub.current, LEFT|PREC1);
         lcdDrawChar(TELEM_COL2+8*FW, y, 'A');
         if (attr) g_model.frsky.fasOffset = checkIncDec(event, g_model.frsky.fasOffset, -120, 120, EE_MODEL);
         break;

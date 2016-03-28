@@ -370,39 +370,39 @@ getvalue_t getValue(mixsrc_t i)
     }
   }
 #elif defined(FRSKY)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return frskyData.rssi[1].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return frskyData.rssi[0].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return frskyData.analog[TELEM_ANA_A1].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A2) return frskyData.analog[TELEM_ANA_A2].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return telemetryData.rssi[1].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return telemetryData.rssi[0].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return telemetryData.analog[TELEM_ANA_A1].value;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A2) return telemetryData.analog[TELEM_ANA_A2].value;
 #if defined(FRSKY_SPORT)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return frskyData.hub.baroAltitude;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return telemetryData.hub.baroAltitude;
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_RELATIVE_BARO_ALT_BP;
 #endif
 #if defined(FRSKY_HUB)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return frskyData.hub.rpm;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_FUEL) return frskyData.hub.fuelLevel;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T1) return frskyData.hub.temperature1;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T2) return frskyData.hub.temperature2;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return telemetryData.hub.rpm;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_FUEL) return telemetryData.hub.fuelLevel;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T1) return telemetryData.hub.temperature1;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T2) return telemetryData.hub.temperature2;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return frskyData.hub.gpsDistance;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return telemetryData.hub.gpsDistance;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_RELATIVE_GPS_ALT_BP;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)TELEMETRY_MIN_CELL_VOLTAGE;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)frskyData.hub.cellsSum;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)frskyData.hub.vfas;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)frskyData.hub.current;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return frskyData.hub.currentConsumption;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_POWER) return frskyData.hub.power;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCx) return frskyData.hub.accelX;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return frskyData.hub.accelY;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return frskyData.hub.accelZ;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return frskyData.hub.gpsCourse_bp;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return frskyData.hub.varioSpeed;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return frskyData.hub.airSpeed;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return frskyData.hub.dTE;
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return frskyData.analog[TELEM_ANA_A1].min;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return frskyData.analog[TELEM_ANA_A2].min;
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&frskyData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)telemetryData.hub.cellsSum;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)telemetryData.hub.vfas;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)telemetryData.hub.current;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return telemetryData.hub.currentConsumption;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_POWER) return telemetryData.hub.power;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCx) return telemetryData.hub.accelX;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return telemetryData.hub.accelY;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return telemetryData.hub.accelZ;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return telemetryData.hub.gpsCourse_bp;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return telemetryData.hub.varioSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return telemetryData.hub.airSpeed;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return telemetryData.hub.dTE;
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return telemetryData.analog[TELEM_ANA_A1].min;
+  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return telemetryData.analog[TELEM_ANA_A2].min;
+  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&telemetryData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
 #endif
 #endif
   else return 0;

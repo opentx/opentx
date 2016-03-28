@@ -512,6 +512,8 @@ if(ARCH STREQUAL ARM)
     tasks_arm.cpp
     audio_arm.cpp
     telemetry/telemetry.cpp
+    telemetry/telemetry_holders.cpp
+    telemetry/telemetry_sensors.cpp
     telemetry/frsky.cpp
     telemetry/frsky_d_arm.cpp
     telemetry/frsky_sport.cpp
@@ -637,7 +639,7 @@ else()
     option(GPS "GPS support" ON)
     option(VARIO "Vario support" ON)
     add_definitions(-DFRSKY)
-    set(SRC ${SRC} telemetry/frsky.cpp telemetry/frsky_d.cpp)
+    set(SRC ${SRC} telemetry/telemetry.cpp telemetry/telemetry_holders.cpp telemetry/frsky.cpp telemetry/frsky_d.cpp)
     set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/common_avr/telemetry_driver.cpp)
     set(GUI_SRC ${GUI_SRC} view_telemetry.cpp)
     if(FRSKY_HUB)

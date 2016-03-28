@@ -73,8 +73,8 @@ void frskyDProcessPacket(uint8_t *packet)
       setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A1_ID, 0, 0, packet[1], UNIT_VOLTS, 0);
       setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A2_ID, 0, 0, packet[2], UNIT_VOLTS, 0);
       setTelemetryValue(TELEM_PROTO_FRSKY_D, D_RSSI_ID, 0, 0, packet[3], UNIT_RAW, 0);
-      frskyData.rssi.set(packet[3]);
-      frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      telemetryData.rssi.set(packet[3]);
+      telemetryStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       break;
     }
 
@@ -178,8 +178,8 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   else if (id == BARO_ALT_AP_ID) {
     if (lastId == BARO_ALT_BP_ID) {
-      if (data > 9 || frskyData.varioHighPrecision) {
-        frskyData.varioHighPrecision = true;
+      if (data > 9 || telemetryData.varioHighPrecision) {
+        telemetryData.varioHighPrecision = true;
         data /= 10;    // map hi precision vario into low precision. Altitude is stored in 0.1m anyways
       }
       data = (int16_t)lastValue * 10 + (((int16_t)lastValue < 0) ? -data : data);
