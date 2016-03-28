@@ -137,10 +137,6 @@ bool menuMainView(evt_t event)
       killEvents(KEY_DOWN);
       break;
 
-    case EVT_ENTRY_UP:
-      LOAD_MODEL_BITMAP();
-      break;
-
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_MODEL_SELECT);
@@ -157,17 +153,17 @@ bool menuMainView(evt_t event)
     case EVT_KEY_LONG(KEY_MODEL):
       killEvents(event);
       pushMenu(menuTabModel[0]);
-      break;
+      return false;
 
     case EVT_KEY_LONG(KEY_RADIO):
       killEvents(event);
       pushMenu(menuTabGeneral[0]);
-      break;
+      return false;
 
     case EVT_KEY_LONG(KEY_TELEM):
       killEvents(event);
       pushMenu(menuTabScreensSetup[1]);
-      break;
+      return false;
 
     case EVT_KEY_BREAK(KEY_PGDN):
       storageDirty(EE_GENERAL);
