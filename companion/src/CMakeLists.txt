@@ -283,7 +283,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(FILES ../targets/linux/45-companion-taranis.rules DESTINATION /lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-taranis.rules)
   # Linux specific code
   set(OperatingSystem "Linux")
-else()
+elseif(WIN32)
   get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
   get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
   get_filename_component(SDL_DIR ${SDL_LIBRARY} PATH)
