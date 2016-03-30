@@ -331,8 +331,8 @@ void ModulePanel::update()
   ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
 
   if (mask & MASK_CHANNELS_RANGE) {
-    ui->channelsStart->setMaximum(32 - ui->channelsCount->value());
-    ui->channelsCount->setMaximum(qMin(16, 32-ui->channelsStart->value()));
+    ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
+    ui->channelsCount->setMaximum(qMin(16, 33-ui->channelsStart->value()));
   }
 }
 
