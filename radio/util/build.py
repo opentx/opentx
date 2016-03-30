@@ -161,7 +161,7 @@ if not language:
 command_options["TRANSLATIONS"] = language.upper()
 
 filename += "-" + language + ext
-srcdir = os.path.dirname(os.path.realpath(__file__)) + "/.."
+srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
 path = os.path.join(directory, filename)
 outpath = path + ".out"
 errpath = path + ".err"
@@ -171,10 +171,10 @@ if os.path.isfile(errpath):
 
 if not os.path.isfile(path):
     # Copy the radio directory locally
-    shutil.copytree(srcdir, ".")
+    shutil.copytree(srcdir, "code")
 
     # Launch make
-    os.chdir("src")
+    os.chdir("code/radio/src")
     cmd = ["make"]
     for opt, value in command_options.items():
         cmd.append("%s=%s" % (opt, value))
@@ -190,7 +190,7 @@ if not os.path.isfile(path):
 
     # Check binary size
     if board_family == BOARD_FAMILY_ARM:
-        size = os.stat(firmware).st_size
+        size = os.stat(target).st_size
     else:
         size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % target, shell=True)
         size = int(size.strip())

@@ -31,3 +31,6 @@ RUN wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_4.7.2-2_
 VOLUME ["/opentx"]
 
 ENV PATH $PATH:/opt/gcc-arm-none-eabi/bin:/opentx/code/radio/util
+ARG OPENTX_VERSION_SUFFIX=
+ENV OPENTX_VERSION_SUFFIX ${OPENTX_VERSION_SUFFIX}
+
