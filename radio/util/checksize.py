@@ -16,7 +16,7 @@ while 1:
     index += 1
 
     os.chdir(srcdir)
-    cmd = ["git", "reset", "--hard", "origin/next~%d" % index]
+    cmd = ["git", "reset", "--hard", "FETCH_HEAD~%d" % index]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode != 0:
@@ -38,7 +38,10 @@ while 1:
         print "HEAD~%d make firmware failed" % index
         continue
 
-    oldsize = int(subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % "firmware.hex", shell=True))
+    if os.path.isfile("firmware.bin"):
+        oldsize = os.stat("firmware.bin").st_size
+    else:
+        oldsize = int(subprocess.check_output('avr-size -A firmware.hex | grep Total | cut -f2- -d " "', shell=True))
     if size:
         if size > oldsize:
             print "HEAD~%d %d: increase by %d bytes" % (index-1, size, size-oldsize)
