@@ -139,6 +139,8 @@ elif what == "libsimulator":
     ext = ".so"
     target = "libopentx-" + options[optcount] + "-simulator.so"
     filename = "libopentx"
+else:
+    exit(INVALID_BOARD)
 
 filename += "-" + options[optcount]
 optcount += 1
@@ -207,7 +209,7 @@ if not os.path.isfile(path):
     if what == "firmware":
         # Check binary size
         if board_family == BOARD_FAMILY_ARM:
-            size = os.stat(firmware).st_size
+            size = os.stat(target).st_size
         else:
             size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % target, shell=True)
             size = int(size.strip())
