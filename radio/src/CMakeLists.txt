@@ -950,7 +950,13 @@ if(ARCH STREQUAL ARM)
 
   set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
   set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -Wimplicit -g")
+  set(CMAKE_C_FLAGS_RELEASE "${COMMON_FLAGS} -Wimplicit")
+  set(CMAKE_C_FLAGS_DEBUG  "${COMMON_FLAGS} -Wimplicit -g")
   set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -g")
+  set(CMAKE_CXX_FLAGS_RELEASE "${COMMON_FLAGS}")
+  set(CMAKE_CXX_FLAGS_DEBUG  "${COMMON_FLAGS} -g")
   set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
   if(PCB STREQUAL TARANIS)
