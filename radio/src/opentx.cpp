@@ -300,6 +300,8 @@ void generalDefault()
 #endif
 
 #if defined(CPUARM)
+  g_eeGeneral.ttsLanguage[0] = 'e';
+  g_eeGeneral.ttsLanguage[1] = 'n';
   g_eeGeneral.wavVolume = 2;
   g_eeGeneral.backgroundVolume = 1;
 #endif
@@ -919,7 +921,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 #endif
 
 #if defined(FRSKY)&& !defined(CPUARM)
-FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
+void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
     if (unit == UNIT_TEMPERATURE) {
@@ -2667,7 +2669,6 @@ int main()
   MCUCR = 0x80 ;   // Must be done twice
 #elif defined(PCBSTD)
   uint8_t mcusr = MCUCSR;
-  MCUCSR = 0;
   MCUCSR = 0x80 ;   // Disable JTAG port that can interfere with POT3
   MCUCSR = 0x80 ;   // Must be done twice
 #endif

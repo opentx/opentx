@@ -38,7 +38,7 @@ void displayRssiLine()
     lcdDrawSolidHorizontalLine(0, 55, 128, 0); // separator
     uint8_t rssi;
 #if !defined(CPUARM)
-    rssi = min((uint8_t)99, frskyData.rssi[1].value);
+    rssi = min((uint8_t)99, telemetryData.rssi[1].value);
     lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcdDrawNumber(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
     lcdDrawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
@@ -59,17 +59,17 @@ void displayRssiLine()
 void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);
-  lcdDrawNumber(CENTER_OFS+6*FW+7, STATUS_BAR_Y, frskyData.hub.hour, att, 2);
+  lcdDrawNumber(CENTER_OFS+6*FW+7, STATUS_BAR_Y, telemetryData.hub.hour, att, 2);
   lcdDrawChar(CENTER_OFS+8*FW+4, STATUS_BAR_Y, ':', att);
-  lcdDrawNumber(CENTER_OFS+9*FW+2, STATUS_BAR_Y, frskyData.hub.min, att, 2);
+  lcdDrawNumber(CENTER_OFS+9*FW+2, STATUS_BAR_Y, telemetryData.hub.min, att, 2);
   lcdDrawChar(CENTER_OFS+11*FW-1, STATUS_BAR_Y, ':', att);
-  lcdDrawNumber(CENTER_OFS+12*FW-3, STATUS_BAR_Y, frskyData.hub.sec, att, 2);
+  lcdDrawNumber(CENTER_OFS+12*FW-3, STATUS_BAR_Y, telemetryData.hub.sec, att, 2);
   lcdInvertLastLine();
 }
 
 void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
-  if (frskyData.hub.gpsFix >= 0) {
+  if (telemetryData.hub.gpsFix >= 0) {
     if (!direction) direction = '-';
     lcdDrawNumber(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'
     lcdDrawChar(lcdLastPos, y, '@');
@@ -107,9 +107,9 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   drawStringWithIndex(0, y, STR_A, index+1, 0);
   if (TELEMETRY_STREAMING()) {
-    putsTelemetryChannelValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, frskyData.analog[index].value, DBLSIZE);
-    lcdDrawChar(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, frskyData.analog[index].min, NO_UNIT);
-    lcdDrawChar(12*FW, y, '>');      putsTelemetryChannelValue(17*FW, y, index+TELEM_A1-1, frskyData.analog[index].max, NO_UNIT);
+    putsTelemetryChannelValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, telemetryData.analog[index].value, DBLSIZE);
+    lcdDrawChar(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, telemetryData.analog[index].min, NO_UNIT);
+    lcdDrawChar(12*FW, y, '>');      putsTelemetryChannelValue(17*FW, y, index+TELEM_A1-1, telemetryData.analog[index].max, NO_UNIT);
   }
 }
 #endif
@@ -142,10 +142,10 @@ void displayVoltagesScreen()
       break;
 #if defined(FRSKY_HUB)
     case FRSKY_VOLTS_SOURCE_FAS:
-      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_VFAS-1, frskyData.hub.vfas, DBLSIZE);
+      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_VFAS-1, telemetryData.hub.vfas, DBLSIZE);
       break;
     case FRSKY_VOLTS_SOURCE_CELLS:
-      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, frskyData.hub.cellsSum, DBLSIZE);
+      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, telemetryData.hub.cellsSum, DBLSIZE);
       break;
 #endif
   }
@@ -159,13 +159,13 @@ void displayVoltagesScreen()
         break;
 #if defined(FRSKY_HUB)
       case FRSKY_CURRENT_SOURCE_FAS:
-        putsTelemetryChannelValue(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, frskyData.hub.current, DBLSIZE);
+        putsTelemetryChannelValue(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, telemetryData.hub.current, DBLSIZE);
         break;
 #endif
     }
 
-    putsTelemetryChannelValue(4, 5*FH, TELEM_POWER-1, frskyData.hub.power, LEFT|DBLSIZE);
-    putsTelemetryChannelValue(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, frskyData.hub.currentConsumption, DBLSIZE);
+    putsTelemetryChannelValue(4, 5*FH, TELEM_POWER-1, telemetryData.hub.power, LEFT|DBLSIZE);
+    putsTelemetryChannelValue(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, telemetryData.hub.currentConsumption, DBLSIZE);
   }
   else {
     displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
@@ -174,11 +174,11 @@ void displayVoltagesScreen()
 
 #if defined(FRSKY_HUB)
   // Cells voltage
-  if (frskyData.hub.cellsCount > 0) {
+  if (telemetryData.hub.cellsCount > 0) {
     uint8_t y = 1*FH;
-    for (uint8_t k=0; k<frskyData.hub.cellsCount && k<6; k++) {
+    for (uint8_t k=0; k<telemetryData.hub.cellsCount && k<6; k++) {
 #if defined(GAUGES)
-      uint8_t attr = (barsThresholds[THLD_CELL] && frskyData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
+      uint8_t attr = (barsThresholds[THLD_CELL] && telemetryData.hub.cellVolts[k] < barsThresholds[THLD_CELL]) ? BLINK|PREC2 : PREC2;
 #else
       uint8_t attr = PREC2;
 #endif
@@ -198,20 +198,20 @@ void displayAfterFlightScreen()
   if (IS_GPS_AVAILABLE()) {
     // Latitude
     lcd_putsLeft(line, STR_LATITUDE);
-    displayGpsCoord(line, frskyData.hub.gpsLatitudeNS, frskyData.hub.gpsLatitude_bp, frskyData.hub.gpsLatitude_ap);
+    displayGpsCoord(line, telemetryData.hub.gpsLatitudeNS, telemetryData.hub.gpsLatitude_bp, telemetryData.hub.gpsLatitude_ap);
     // Longitude
     line+=1*FH+1;
     lcd_putsLeft(line, STR_LONGITUDE);
-    displayGpsCoord(line, frskyData.hub.gpsLongitudeEW, frskyData.hub.gpsLongitude_bp, frskyData.hub.gpsLongitude_ap);
+    displayGpsCoord(line, telemetryData.hub.gpsLongitudeEW, telemetryData.hub.gpsLongitude_bp, telemetryData.hub.gpsLongitude_ap);
     displayGpsTime();
     line+=1*FH+1;
   }
   // Rssi
   lcd_putsLeft(line, STR_MINRSSI);
   lcdDrawText(TELEM_2ND_COLUMN, line, STR_TX);
-  lcdDrawNumber(TELEM_2ND_COLUMN+3*FW, line, frskyData.rssi[1].min, LEFT|LEADING0, 2);
+  lcdDrawNumber(TELEM_2ND_COLUMN+3*FW, line, telemetryData.rssi[1].min, LEFT|LEADING0, 2);
   lcdDrawText(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
-  lcdDrawNumber(TELEM_2ND_COLUMN+9*FW, line, frskyData.rssi[0].min, LEFT|LEADING0, 2);
+  lcdDrawNumber(TELEM_2ND_COLUMN+9*FW, line, telemetryData.rssi[0].min, LEFT|LEADING0, 2);
 }
 #endif
 
@@ -372,9 +372,9 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 #if defined(FRSKY_HUB)
           if (field == TELEM_ACC) {
             lcd_putsLeft(STATUS_BAR_Y, STR_ACCEL);
-            lcdDrawNumber(4*FW, STATUS_BAR_Y, frskyData.hub.accelX, LEFT|PREC2);
-            lcdDrawNumber(10*FW, STATUS_BAR_Y, frskyData.hub.accelY, LEFT|PREC2);
-            lcdDrawNumber(16*FW, STATUS_BAR_Y, frskyData.hub.accelZ, LEFT|PREC2);
+            lcdDrawNumber(4*FW, STATUS_BAR_Y, telemetryData.hub.accelX, LEFT|PREC2);
+            lcdDrawNumber(10*FW, STATUS_BAR_Y, telemetryData.hub.accelY, LEFT|PREC2);
+            lcdDrawNumber(16*FW, STATUS_BAR_Y, telemetryData.hub.accelZ, LEFT|PREC2);
             break;
           }
 #endif

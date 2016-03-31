@@ -162,7 +162,7 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, evt_t event)
+void gvarWeightItem(coord_t x, coord_t y, MixData *md, LcdFlags attr, evt_t event)
 {
   u_int8int16_t weight;
   MD_WEIGHT_TO_UNION(md, weight);

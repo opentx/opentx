@@ -524,7 +524,7 @@ int main(int argc,char **argv)
 #endif
 
 #if defined(FRSKY) && !defined(FRSKY_SPORT)
-  frskyStreaming = 1;
+  telemetryStreaming = 1;
 #endif
 
   printf("Model size = %d\n", (int)sizeof(g_model));

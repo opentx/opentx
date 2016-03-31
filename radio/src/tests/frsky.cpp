@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -34,7 +34,7 @@ void displayVoltagesScreen();
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
-  frskyData.hub.gpsFix = 1;
+  telemetryData.hub.gpsFix = 1;
 
   uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x14, 0x2c, 0x00, 0x5e, 0x1c, 0x03 };
   uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x13, 0x38, 0x0c, 0x5e, 0x1b };
@@ -50,14 +50,14 @@ TEST(FrSky, gpsNfuel)
   frskyDProcessPacket(pkt5);
   frskyDProcessPacket(pkt6);
   frskyDProcessPacket(pkt7);
-  EXPECT_EQ(frskyData.hub.gpsCourse_bp, 44);
-  EXPECT_EQ(frskyData.hub.gpsCourse_ap, 03);
-  EXPECT_EQ(frskyData.hub.gpsLongitude_bp / 100, 120);
-  EXPECT_EQ(frskyData.hub.gpsLongitude_bp % 100, 15);
-  EXPECT_EQ(frskyData.hub.gpsLongitude_ap, 0x2698);
-  EXPECT_EQ(frskyData.hub.gpsLatitudeNS, 'N');
-  EXPECT_EQ(frskyData.hub.gpsLongitudeEW, 'E');
-  EXPECT_EQ(frskyData.hub.fuelLevel, 100);
+  EXPECT_EQ(telemetryData.hub.gpsCourse_bp, 44);
+  EXPECT_EQ(telemetryData.hub.gpsCourse_ap, 03);
+  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp / 100, 120);
+  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp % 100, 15);
+  EXPECT_EQ(telemetryData.hub.gpsLongitude_ap, 0x2698);
+  EXPECT_EQ(telemetryData.hub.gpsLatitudeNS, 'N');
+  EXPECT_EQ(telemetryData.hub.gpsLongitudeEW, 'E');
+  EXPECT_EQ(telemetryData.hub.fuelLevel, 100);
 }
 
 TEST(FrSky, dateNtime)
@@ -68,21 +68,21 @@ TEST(FrSky, dateNtime)
   frskyDProcessPacket(pkt1);
   frskyDProcessPacket(pkt2);
   frskyDProcessPacket(pkt3);
-  EXPECT_EQ(frskyData.hub.day, 15);
-  EXPECT_EQ(frskyData.hub.month, 07);
-  EXPECT_EQ(frskyData.hub.year, 11);
-  EXPECT_EQ(frskyData.hub.hour, 06);
-  EXPECT_EQ(frskyData.hub.min, 18);
-  EXPECT_EQ(frskyData.hub.sec, 50);
+  EXPECT_EQ(telemetryData.hub.day, 15);
+  EXPECT_EQ(telemetryData.hub.month, 07);
+  EXPECT_EQ(telemetryData.hub.year, 11);
+  EXPECT_EQ(telemetryData.hub.hour, 06);
+  EXPECT_EQ(telemetryData.hub.min, 18);
+  EXPECT_EQ(telemetryData.hub.sec, 50);
 }
 #endif
 
 #if defined(FRSKY) && defined(CPUARM)
-TEST(FrSky, FrskyValueWithMinAveraging)
+TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
     The following expected[] array is filled
-    with values that correspond to 4 elements 
+    with values that correspond to 4 elements
     long averaging buffer.
     If length of averaging buffer is changed, this
     values must be adjusted
@@ -90,8 +90,8 @@ TEST(FrSky, FrskyValueWithMinAveraging)
   uint8_t expected[] = { 10, 12, 17, 25, 35, 45, 55, 65, 75, 85, 92, 97, 100, 100, 100, 100, 100};
   int testPos = 0;
   //test of averaging
-  FrskyValueWithMin testVal;
-  testVal.value = 0;  
+  TelemetryValueWithMin testVal;
+  testVal.value = 0;
   testVal.set(10);
   EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 10);
   EXPECT_EQ(testVal.value, expected[testPos++]);
@@ -162,16 +162,16 @@ TEST(FrSky, HubAltNegative)
   // first trigger hi precision, by setting AP above 9
   processHubPacket(BARO_ALT_BP_ID, -1);  // set value of -1.35m
   processHubPacket(BARO_ALT_AP_ID, 35);
-  EXPECT_EQ(telemetryItems[0].value, -13); 
+  EXPECT_EQ(telemetryItems[0].value, -13);
 
   processHubPacket(BARO_ALT_BP_ID, 12);  // set value of 12.35m
   processHubPacket(BARO_ALT_AP_ID, 35);
-  EXPECT_EQ(telemetryItems[0].value, 123); 
+  EXPECT_EQ(telemetryItems[0].value, 123);
 
   // now test with the AP less than 10 to check if hiprecision is still active
   processHubPacket(BARO_ALT_BP_ID, 12);  // set value of 12.05m
   processHubPacket(BARO_ALT_AP_ID, 05);
-  EXPECT_EQ(telemetryItems[0].value, 120); 
+  EXPECT_EQ(telemetryItems[0].value, 120);
 }
 #endif  // #if defined(FRSKY) && defined(CPUARM)
 
@@ -250,7 +250,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   generateSportCellPacket(packet, 3, 0, _V(405), _V(300)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); processSportPacket(packet);
-  
+
   EXPECT_EQ(telemetryItems[0].cells.count, 3);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 405);
   EXPECT_EQ(telemetryItems[0].cells.values[1].value, 300);
@@ -262,10 +262,10 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   generateSportCellPacket(packet, 3, 0, _V(405), _V(250)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); processSportPacket(packet);
-  
+
   generateSportCellPacket(packet, 3, 0, _V(410), _V(420)); processSportPacket(packet);
   generateSportCellPacket(packet, 3, 2, _V(430), _V(  0)); processSportPacket(packet);
-  
+
   EXPECT_EQ(telemetryItems[0].cells.count, 3);
   EXPECT_EQ(telemetryItems[0].cells.values[0].value, 410);
   EXPECT_EQ(telemetryItems[0].cells.values[1].value, 420);
@@ -326,7 +326,10 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   //display test
   lcdClear();
+
+#if !defined(COLORLCD)
   g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+#endif
 }
 
 TEST(FrSkySPORT, StrangeCellsBug)
@@ -401,7 +404,10 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   //display test
   lcdClear();
+
+#if !defined(COLORLCD)
   g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+#endif
 }
 
 void generateSportFasVoltagePacket(uint8_t * packet, uint32_t voltage)

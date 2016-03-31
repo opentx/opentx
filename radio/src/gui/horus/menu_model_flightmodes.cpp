@@ -127,7 +127,7 @@ bool menuModelFlightModesAll(evt_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? 0/*BOLD*/ : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
+    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (int j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       LcdFlags attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);

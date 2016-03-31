@@ -1,4 +1,5 @@
 macro(add_bitmaps_target targetname filter width format)
+  set(bitmaps_files)
   file(GLOB bitmaps ${filter})
   foreach(bitmap ${bitmaps})
     get_filename_component(target ${bitmap} NAME_WE)
@@ -19,4 +20,5 @@ macro(add_truetype_font_target radio name font size bold)
     COMMAND ${RADIO_DIRECTORY}/util/font2png.py ${font} ${size} ${bold} ${target}
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
+  set(ttf_horus_fonts_targets ${ttf_horus_fonts_targets} ttf_${radio}_${name})
 endmacro(add_truetype_font_target)

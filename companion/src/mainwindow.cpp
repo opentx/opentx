@@ -360,16 +360,25 @@ void MainWindow::firmwareDownloadAccepted()
       int errnum = hline.mid(6).toInt();
       switch(errnum) {
         case 1:
-          errormsg = tr("Not enough memory for all the selected firmware options");
+          errormsg = tr("Not enough flash available on this board for all the selected options");
           break;
         case 2:
-          errormsg = tr("Compilation server termporary failure, try later");
+          errormsg = tr("Compilation server temporary failure, try later");
           break;
         case 3:
           errormsg = tr("Compilation server too busy, try later");
           break;
         case 4:
-          errormsg = tr("Compilation server requires registration, please check OpenTX web site");
+          errormsg = tr("Compilation error");
+          break;
+        case 5:
+          errormsg = tr("Invalid firmware");
+          break;
+        case 6:
+          errormsg = tr("Invalid board");
+          break;
+        case 7:
+          errormsg = tr("Invalid language");
           break;
         default:
           errormsg = tr("Unknown server failure, try later");

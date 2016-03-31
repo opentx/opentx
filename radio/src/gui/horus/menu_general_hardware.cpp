@@ -178,7 +178,7 @@ bool menuGeneralHardware(evt_t event)
 #endif
 
       case ITEM_SETUP_HW_BAT_CAL:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, "Battery cal.");
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
         lcdDrawNumber(HW_SETTINGS_COLUMN, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
         break;

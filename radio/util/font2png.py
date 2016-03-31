@@ -89,11 +89,9 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
     image.save(filename + ".png")
     if coordsfile:
         with open(filename + ".specs", "w") as f:
-            f.write("{ ")
             f.write(",".join(str(tmp) for tmp in coords))
             for i in range(1, 14):
                 f.write(", %d" % (int(coords[-1]) + i * (extraWidth / 12)))
-            f.write(" }")
     return coords
 
 if __name__ == "__main__":

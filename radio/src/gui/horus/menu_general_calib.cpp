@@ -124,14 +124,14 @@ bool menuCommonCalib(evt_t event)
       // START CALIBRATION
       if (!READ_ONLY()) {
         lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
-        lcdDrawText(50, 3+FH, "Press [Enter] to start", MENU_TITLE_COLOR);
+        lcdDrawText(50, 3+FH, STR_MENUTOSTART, MENU_TITLE_COLOR);
       }
       break;
 
     case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
-      lcdDrawText(50, 3+FH, "Please center sticks and press [Enter]", MENU_TITLE_COLOR);
+      lcdDrawText(50, 3+FH, STR_SETMIDPOINT, MENU_TITLE_COLOR);
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
@@ -146,7 +146,7 @@ bool menuCommonCalib(evt_t event)
     case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
-      lcdDrawText(50, 3+FH, "Move sticks, pots and sliders and press [Enter]", MENU_TITLE_COLOR);
+      lcdDrawText(50, 3+FH, STR_MOVESTICKSPOTS, MENU_TITLE_COLOR);
       for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];

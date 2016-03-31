@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,8 +20,8 @@
 
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
-#include <QtGui/QApplication>
-#include <QtGui/QPainter>
+#include <QApplication>
+#include <QPainter>
 #include <math.h>
 #include <gtest/gtest.h>
 
@@ -82,20 +82,16 @@ bool checkScreenshot(const QString & test)
   QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
   QPainter p(&buffer);
   doPaint(p);
+
   QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-  buffer.save("/tmp/" + filename);
-  QFile screenshot("/tmp/" + filename);
-  if (!screenshot.open(QIODevice::ReadOnly))
-    return false;
-  QFile reference( TESTS_PATH "/tests/" + filename);
-  if (!reference.open(QIODevice::ReadOnly))
-    return false;
-  if (reference.readAll() != screenshot.readAll())
-    return false;
-  screenshot.remove();
-  return true;
+  QImage reference(TESTS_PATH "/tests/" + filename);
+
+  return buffer == reference;
 }
 
+#if defined(COLORLCD)
+// TODO
+#else
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
@@ -112,7 +108,6 @@ TEST(outdezNAtt, testBigNumbers)
   EXPECT_TRUE(checkScreenshot("big_numbers"));
 }
 #endif // #if defined(CPUARM)
-
 
 TEST(Lcd, Invers_0_0)
 {
@@ -204,7 +199,7 @@ TEST(Lcd, Smlsize)
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcdDrawText(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", SMLSIZE|(invert?INVERS:0));
     invert = !invert;
   }
 
@@ -221,7 +216,7 @@ TEST(Lcd, Stdsize)
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcdDrawText(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", (invert?INVERS:0));
     invert = !invert;
   }
 
@@ -238,7 +233,7 @@ TEST(Lcd, Midsize)
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcdDrawText(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));  
+    lcdDrawText(40+(4*i), 0+(4*i), "ABC", MIDSIZE|(invert?INVERS:0));
     invert = !invert;
   }
 
@@ -255,7 +250,7 @@ TEST(Lcd, Dblsize)
 
   bool invert = false;
   for(int i=0; i<3; i++) {
-    lcdDrawText(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));  
+    lcdDrawText(10+(4*i), 30+(4*i), "ABC", DBLSIZE|(invert?INVERS:0));
     invert = !invert;
   }
 
@@ -329,11 +324,11 @@ public:
   };
   ~TestBuffer() { if (buf) delete[] buf; };
   uint8_t * buffer() { return buf + padding; };
-  void leakCheck() const { 
+  void leakCheck() const {
     uint8_t paddingCompareBuf[padding];
     memset(paddingCompareBuf, 0xA5, padding);
     if (memcmp(buf, paddingCompareBuf, padding) != 0) {
-      ADD_FAILURE() << "buffer leaked low";  
+      ADD_FAILURE() << "buffer leaked low";
     };
     memset(paddingCompareBuf, 0x5A, padding);
     if (memcmp(buf+padding+size, paddingCompareBuf, padding) != 0) {
@@ -397,33 +392,33 @@ TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
 TEST(Lcd, lcdDrawLine)
 {
   int start, length, xOffset;
-  uint8_t pattern; 
+  uint8_t pattern;
 
   lcdClear();
 
   start = 5;
-  pattern = SOLID; 
+  pattern = SOLID;
   length = 40;
   xOffset = 0;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 10;
-  pattern = DOTTED; 
+  pattern = DOTTED;
   length = 40;
   xOffset = 0;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 55;
-  pattern = SOLID; 
+  pattern = SOLID;
   length = -40;
   xOffset = 80;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   start = 50;
-  pattern = DOTTED; 
+  pattern = DOTTED;
   length = -40;
   xOffset = 80;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
@@ -458,4 +453,5 @@ TEST(Lcd, lcdDrawLine)
 
   EXPECT_TRUE(checkScreenshot("lcdDrawLine"));
 }
+#endif
 #endif

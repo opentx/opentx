@@ -164,7 +164,7 @@ void pwrOff()
 #endif
 }
 
-FORCEINLINE uint8_t keyDown()
+uint8_t keyDown()
 {
   return ((~PINL) & 0x3F) || ROTENC_DOWN();
 }
@@ -240,7 +240,7 @@ uint8_t trimDown(uint8_t idx)
   return (in & pgm_read_byte(crossTrim+idx));
 }
 
-FORCEINLINE void readKeysAndTrims()
+void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 

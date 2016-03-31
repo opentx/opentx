@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(CPUARM)
 uint8_t g_moduleIdx;
@@ -205,13 +205,14 @@ void menuModelSetup(uint8_t event)
               break;
             }
             case 1:
-              CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 59);
+              CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 539); // 8:59
               timer->start = qr.rem + qr.quot*60;
               break;
             case 2:
               qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
               timer->start -= qr.rem ;
               if ((int16_t)timer->start < 0) timer->start=0;
+              if ((int16_t)timer->start > 5999) timer->start=32399; // 8:59:59
               break;
           }
         }
@@ -284,7 +285,10 @@ void menuModelSetup(uint8_t event)
                 break;
               case 2:
                 qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-                timer->start -= qr.rem ;
+                if (timer->start >= qr.rem) {
+                  timer->start -= qr.rem ;
+                }
+                if ((int32_t)timer->start > 3599) timer->start=3599; // 59:59
                 break;
             }
           }

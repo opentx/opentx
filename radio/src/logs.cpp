@@ -234,9 +234,9 @@ void writeLogs()
 
 #if defined(FRSKY)
 #if !defined(CPUARM)
-      f_printf(&g_oLogFile, "%d,%d,%d,", frskyStreaming, RAW_FRSKY_MINMAX(frskyData.rssi[0]), RAW_FRSKY_MINMAX(frskyData.rssi[1]));
+      f_printf(&g_oLogFile, "%d,%d,%d,", telemetryStreaming, RAW_FRSKY_MINMAX(telemetryData.rssi[0]), RAW_FRSKY_MINMAX(telemetryData.rssi[1]));
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
-        int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(frskyData.analog[i]));
+        int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(telemetryData.analog[i]));
         f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
       }
 
@@ -245,36 +245,36 @@ void writeLogs()
 
       if (IS_USR_PROTO_FRSKY_HUB()) {
         f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d,%03d.%04d%c,%03d.%04d%c,%03d.%02d," TELEMETRY_GPS_SPEED_FORMAT TELEMETRY_GPS_ALT_FORMAT TELEMETRY_BARO_ALT_FORMAT TELEMETRY_VSPEED_FORMAT TELEMETRY_ASPEED_FORMAT "%d,%d,%d,%d," TELEMETRY_CELLS_FORMAT TELEMETRY_CURRENT_FORMAT "%d," TELEMETRY_VFAS_FORMAT "%d,%d,%d,",
-            frskyData.hub.year+2000,
-            frskyData.hub.month,
-            frskyData.hub.day,
-            frskyData.hub.hour,
-            frskyData.hub.min,
-            frskyData.hub.sec,
-            frskyData.hub.gpsLongitude_bp,
-            frskyData.hub.gpsLongitude_ap,
-            frskyData.hub.gpsLongitudeEW ? frskyData.hub.gpsLongitudeEW : '-',
-            frskyData.hub.gpsLatitude_bp,
-            frskyData.hub.gpsLatitude_ap,
-            frskyData.hub.gpsLatitudeNS ? frskyData.hub.gpsLatitudeNS : '-',
-            frskyData.hub.gpsCourse_bp,
-            frskyData.hub.gpsCourse_ap,
+            telemetryData.hub.year+2000,
+            telemetryData.hub.month,
+            telemetryData.hub.day,
+            telemetryData.hub.hour,
+            telemetryData.hub.min,
+            telemetryData.hub.sec,
+            telemetryData.hub.gpsLongitude_bp,
+            telemetryData.hub.gpsLongitude_ap,
+            telemetryData.hub.gpsLongitudeEW ? telemetryData.hub.gpsLongitudeEW : '-',
+            telemetryData.hub.gpsLatitude_bp,
+            telemetryData.hub.gpsLatitude_ap,
+            telemetryData.hub.gpsLatitudeNS ? telemetryData.hub.gpsLatitudeNS : '-',
+            telemetryData.hub.gpsCourse_bp,
+            telemetryData.hub.gpsCourse_ap,
             TELEMETRY_GPS_SPEED_ARGS
             TELEMETRY_GPS_ALT_ARGS
             TELEMETRY_BARO_ALT_ARGS
             TELEMETRY_VSPEED_ARGS
             TELEMETRY_ASPEED_ARGS
-            frskyData.hub.temperature1,
-            frskyData.hub.temperature2,
-            frskyData.hub.rpm,
-            frskyData.hub.fuelLevel,
+            telemetryData.hub.temperature1,
+            telemetryData.hub.temperature2,
+            telemetryData.hub.rpm,
+            telemetryData.hub.fuelLevel,
             TELEMETRY_CELLS_ARGS
             TELEMETRY_CURRENT_ARGS
-            frskyData.hub.currentConsumption,
+            telemetryData.hub.currentConsumption,
             TELEMETRY_VFAS_ARGS
-            frskyData.hub.accelX,
-            frskyData.hub.accelY,
-            frskyData.hub.accelZ);
+            telemetryData.hub.accelX,
+            telemetryData.hub.accelY,
+            telemetryData.hub.accelZ);
       }
 #endif
 

@@ -328,6 +328,10 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 #define ISR(x, ...)  void x()
 
+#if !defined(WIN32) && defined(__GNUC__)
+#define asm(...)
+#endif
+
 #if defined(CPUARM)
 extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)
@@ -396,7 +400,7 @@ extern OS_MutexID audioMutex;
 #define WDRF   0
 
 void * simuMain(void * args = NULL);
-extern uint8_t MCUCSR, MCUSR;
+extern uint8_t MCUCSR, MCUSR, MCUCR;
 
 typedef unsigned int       U32;
 typedef unsigned long long U64;

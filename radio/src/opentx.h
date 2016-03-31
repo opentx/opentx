@@ -222,8 +222,8 @@
 #endif
 
 #if defined(SIMU)
-  #ifndef FORCEINLINE
-    #define FORCEINLINE
+  #if !defined(FORCEINLINE)
+    #define FORCEINLINE inline
   #endif
   #if !defined(NOINLINE)
     #define NOINLINE
@@ -1301,29 +1301,11 @@ void evalFunctions();
   extern volatile rotenc_t g_rotenc[1];
 #endif
 
-#if defined(CPUARM)
-  #include "telemetry/telemetry.h"
-#endif
-
-#if defined (FRSKY)
-  // FrSky Telemetry
-  #include "telemetry/frsky.h"
-#elif defined(JETI)
-  // Jeti-DUPLEX Telemetry
-  #include "telemetry/jeti.h"
-#elif defined(ARDUPILOT)
-  // ArduPilot Telemetry
-  #include "telemetry/ardupilot.h"
-#elif defined(NMEA)
-  // NMEA Telemetry
-  #include "telemetry/nmea.h"
-#elif defined(MAVLINK)
-  // Mavlink Telemetry
-  #include "telemetry/mavlink.h"
-#endif
+#include "telemetry/telemetry.h"
 
 #if defined(CPUARM)
-uint16_t crc16(uint8_t * buf, uint32_t len);
+uint8_t crc8(const uint8_t * ptr, uint32_t len);
+uint16_t crc16(const uint8_t * ptr, uint32_t len);
 #endif
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */

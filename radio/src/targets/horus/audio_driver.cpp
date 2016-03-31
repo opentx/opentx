@@ -84,7 +84,7 @@ void audioSpiInit(void)
   SPI_InitTypeDef SPI_InitStructure;
 
   GPIO_InitStructure.GPIO_Pin = AUDIO_SPI_MISO_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;

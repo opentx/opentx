@@ -622,9 +622,7 @@ PACK(struct MavlinkTelemetryData {
  */
 
 #if defined(CPUARM)
-// TODO struct as others
-PACK(class TelemetrySensor {
-  public:
+PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
     uint16_t persistentValue;

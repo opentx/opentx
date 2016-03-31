@@ -101,11 +101,11 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
 {
   TimerData * timer = &g_model.timers[timerIdx];
   if (attr && menuHorizontalPosition < 0) {
-    lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 90+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 115+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
   drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (menuHorizontalPosition<=0 ? attr : 0));
-  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition!=0 ? attr : 0));
+  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR));
   if (attr && s_editMode>0) {
     switch (menuHorizontalPosition) {
       case 0:

@@ -279,7 +279,7 @@ uint8_t trimDown(uint8_t idx)
   return trimHelper(~PIND, idx);
 }
 
-FORCEINLINE void readKeysAndTrims()
+void readKeysAndTrims()
 {
   uint8_t enuk = KEY_MENU;
 

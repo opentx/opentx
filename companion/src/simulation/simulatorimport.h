@@ -23,7 +23,7 @@
 #ifdef INIT_IMPORT
 #undef INIT_IMPORT
 #ifdef FRSKY
-frskyStreaming = 20;
+telemetryStreaming = 20;
 #endif
 #endif
 

@@ -38,7 +38,7 @@
   #include <SDL.h>
 #endif
 
-uint8_t MCUCSR, MCUSR;
+uint8_t MCUCSR, MCUSR, MCUCR;
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
@@ -880,7 +880,7 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
 FRESULT f_closedir (DIR * rep)
 {
   TRACE("f_closedir(%p)", rep);
-  simu::closedir((simu::DIR *)rep->fs);
+  if (rep->fs) simu::closedir((simu::DIR *)rep->fs);
   return FR_OK;
 }
 

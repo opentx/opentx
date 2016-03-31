@@ -84,4 +84,4 @@ rm -rf *
 cmake ${COMMON_OPTIONS}  -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
-#make -j2 gtests ; ./gtests
+# make -j2 gtests ; ./gtests

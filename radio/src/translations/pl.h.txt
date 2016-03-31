@@ -1,28 +1,12 @@
 /*
- * Authors (alphabetical order)
- * - Andre Bernet <bernet.andre@gmail.com>
- * - Andreas Weitl
- * - Bertrand Songis <bsongis@gmail.com>
- * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
- * - Cameron Weeks <th9xer@gmail.com>
- * - Erez Raviv
- * - Gabriel Birkus
- * - Jean-Pierre Parisy
- * - Karl Szmutny
- * - Michael Blandford
- * - Michal Hlavinka
- * - Pat Mackenzie
- * - Philip Moss
- * - Rob Thomson
- * - Romolo Manfredini <romolo.manfredini@gmail.com>
- * - Jacek Drewniak <jpdjpd33@gmail.com>
- * - Thomas Husterer
+ * Copyright (C) OpenTX
  *
- * opentx is based on code named
- * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
- * er9x by Erez Raviv: http://code.google.com/p/er9x/,
- * and the original (and ongoing) project by
- * Thomas Husterer, th9x: http://code.google.com/p/th9x/
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -33,6 +17,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ */
+
+// PL translations author: Jacek Drewniak <jpdjpd33@gmail.com>
+
+/*
  * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier pl.h.txt is parsed and national
@@ -43,15 +32,15 @@
  *
  */
 
-
-
-/* Formatting octal codes available in TR_ strings:
+/*
+ * Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
  *  \036             -newline
  *  \035             -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */
+
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
@@ -391,7 +380,7 @@
   #define LEN_VUNITSSYSTEM     TR("\006", "\010") /*8 decimal*/
   #define TR_VUNITSSYSTEM      TR("Metr. ""Imper.", "Metryczn""Imperial")
   #define LEN_VTELEMUNIT       "\003"
-  #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""dB\0""rpm""g\0 ""@\0 ""ml\0""fOz"
+  #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""ml\0""fOz"
 #else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
@@ -462,8 +451,14 @@
 
 #define TR_STICKS_VSRCRAW      TR("SK \0""SW \0""Gaz\0""Lot\0", "\307SK ""\307SW ""\307Gaz""\307Lot")
 #define TR_TRIMS_VSRCRAW       TR("TrSK""TrSW""TrGA""TrLO", "\313SK ""\313SW ""\313Gaz""\313Lot")
- 
-#if defined(PCBTARANIS) && defined(REV9E)
+
+#if defined(PCBHORUS)
+  #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\311S3\0""\311S4\0""\311LS\0""\311RS\0"
+  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+#elif defined(PCBFLAMENCO)
+  #define TR_POTS_VSRCRAW      "SD\0 ""LS\0 ""RS\0 "
+  #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SE\0 ""SF\0 "
+#elif defined(PCBTARANIS) && defined(REV9E)
   #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\310S4\0""\311LS\0""\311RS\0""\311LS2""\311RS2"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
 #elif defined(PCBTARANIS)
@@ -500,7 +495,9 @@
 
 #define TR_ON_ONE_SWITCHES     "ON\0""One"
 
-#if defined(PCBTARANIS)
+#if defined(PCBFLAMENCO)
+  #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #else
@@ -709,14 +706,18 @@
 #define TR_CAL                 "Kal."
 #define TR_VTRIM               "Trym- +"
 #define TR_BG                  "BG:"
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
+  #define TR_MENUTOSTART       "Press [Enter] to start"
+  #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
+  #define TR_MOVESTICKSPOTS    "Move sticks, pots and sliders and press [Enter]"
+#elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " KALIBRUJ"
   #define TR_SETMIDPOINT       "Centruj drażki/potencj"
-  #define TR_MOVESTICKSPOTS      "Poruszaj drążkami/pot"
+  #define TR_MOVESTICKSPOTS    "Poruszaj drążkami/pot"
 #else
   #define TR_MENUTOSTART       CENTER "\010" TR_ENTER " KALIBRUJ"
-  #define TR_SETMIDPOINT         TR(CENTER "\002Cenruj drążki/potencj",CENTER "\010Ustaw drązki/potencj na środku")
-  #define TR_MOVESTICKSPOTS      "Poruszaj drążkami/pot"
+  #define TR_SETMIDPOINT       TR(CENTER "\002Cenruj drążki/potencj",CENTER "\010Ustaw drązki/potencj na środku")
+  #define TR_MOVESTICKSPOTS    "Poruszaj drążkami/pot"
 #endif
 #define TR_RXBATT              "Rx Batt:"
 #define TR_TXnRX               "Tx:\0Rx:"
@@ -750,7 +751,9 @@
 #define TR_ALARMSDISABLED      "Alarmy wyłączone"
 #define TR_PRESSANYKEY         TR("\010Wciśnij jakiś klawisz","Wciśnij jakiś klawisz")
 #define TR_BADEEPROMDATA       "\006Błąd danych EEPROM"
+#define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    "\004Formatowanie EEPROM"
+#define TR_STORAGE_FORMAT      "Storage Preparation"
 #define TR_EEPROMOVERFLOW      "Przeładowany EEPROM"
 #define TR_MENURADIOSETUP      "USTAWIENIA RADIA"
 #define TR_MENUDATEANDTIME     "DATA I CZAS"
@@ -829,6 +832,7 @@
 #define TR_INCOMPATIBLE        "Niekompatybilne"
 #define TR_WARNING             "UWAGA"
 #define TR_EEPROMWARN          "EEPROM"
+#define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "Konwersja EEPROM"
 #define TR_THROTTLEWARN        "GAZ"
 #define TR_ALARMSWARN          "ALARM"
@@ -1163,3 +1167,13 @@
 #define ZSTR_BATT2_CONSUMPTION "RB2C"
 #define ZSTR_RB_STATE          "RBS"
 #define ZSTR_CHANS_STATE       "RBCS"
+#define ZSTR_RX_RSSI1          "1RSS"
+#define ZSTR_RX_RSSI2          "2RSS"
+#define ZSTR_RX_QUALITY        "RQly"
+#define ZSTR_RX_SNR            "RSNR"
+#define ZSTR_ANTENNA           "ANT"
+#define ZSTR_RF_MODE           "RFMD"
+#define ZSTR_TX_POWER          "TPWR"
+#define ZSTR_TX_RSSI           "TRSS"
+#define ZSTR_TX_QUALITY        "TQly"
+#define ZSTR_TX_SNR            "TSNR"

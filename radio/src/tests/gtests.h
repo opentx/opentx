@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -35,7 +35,7 @@ extern uint16_t anaInValues[NUM_STICKS+NUM_POTS];
 
 void doMixerCalculations();
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
 #define RADIO_RESET() \
   g_eeGeneral.switchConfig = 0x00007bff
 #else
@@ -44,7 +44,7 @@ void doMixerCalculations();
 
 inline void SYSTEM_RESET()
 {
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EEPROM)
   memset(modelHeaders, 0, sizeof(modelHeaders));
 #endif
   generalDefault();
@@ -79,7 +79,7 @@ inline void MIXER_RESET()
 inline void TELEMETRY_RESET()
 {
 #if defined(FRSKY)
-  memclear(&frskyData, sizeof(frskyData));
+  memclear(&telemetryData, sizeof(telemetryData));
   TELEMETRY_RSSI() = 100;
 #endif
 #if defined(CPUARM) && defined(FRSKY)

@@ -45,8 +45,13 @@ void TimerWidget::refresh()
   TimerState & timerState = timersStates[index];
 
   if (zone.w >= 180 && zone.h >= 70) {
-    lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
-    if (timerData.start) {
+    if (timerState.val >= 0 || !(timerState.val % 2)) {
+      lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
+    }
+    else {
+      lcdDrawBitmapPattern(zone.x, zone.y, LBM_TIMER_BACKGROUND, HEADER_BGCOLOR);
+    }
+    if (timerData.start && timerState.val >= 0) {
       lcdDrawBitmapPatternPie(
         zone.x + 2,
         zone.y + 3, LBM_RSCALE, MAINVIEW_GRAPHICS_COLOR, 0,
@@ -67,21 +72,24 @@ void TimerWidget::refresh()
     drawStringWithIndex(zone.x + 137, zone.y + 17, "TMR", index + 1, SMLSIZE | TEXT_COLOR);
   }
   else {
-    drawStringWithIndex(zone.x, zone.y, "TMR", index + 1, SMLSIZE | TEXT_INVERTED_COLOR);
+    if (timerState.val < 0 && timerState.val % 2) {
+      lcdDrawSolidFilledRect(zone.x, zone.y, zone.w, zone.h, HEADER_ICON_BGCOLOR);
+    }
+    drawStringWithIndex(zone.x + 2, zone.y, "TMR", index + 1, SMLSIZE | TEXT_INVERTED_COLOR);
     if (zone.w > 100 && zone.h > 40) {
       if (abs(timerState.val) >= 3600) {
-        putsTimer(zone.x, zone.y + 16, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | TIMEHOUR);
+        putsTimer(zone.x + 3, zone.y + 16, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | TIMEHOUR);
       }
       else {
-        putsTimer(zone.x, zone.y + 16, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | MIDSIZE);
+        putsTimer(zone.x + 3, zone.y + 16, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | MIDSIZE);
       }
     }
     else {
       if (abs(timerState.val) >= 3600) {
-        putsTimer(zone.x, zone.y + 14, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | SMLSIZE | TIMEHOUR);
+        putsTimer(zone.x + 3, zone.y + 14, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT | SMLSIZE | TIMEHOUR);
       }
       else {
-        putsTimer(zone.x, zone.y + 14, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT);
+        putsTimer(zone.x + 3, zone.y + 14, abs(timerState.val), TEXT_INVERTED_COLOR | LEFT);
       }
     }
   }
