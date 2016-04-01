@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include <QtGui/QApplication>
+#include <QApplication>
 #include "gtests.h"
 
 int32_t lastAct = 0;

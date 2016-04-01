@@ -1,4 +1,5 @@
 macro(add_bitmaps_target targetname filter width format)
+  set(bitmaps_files)
   file(GLOB bitmaps ${filter})
   foreach(bitmap ${bitmaps})
     get_filename_component(target ${bitmap} NAME_WE)

@@ -21,12 +21,49 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-enum TelemetryProtocol
-{
-  TELEM_PROTO_FRSKY_D,
-  TELEM_PROTO_FRSKY_SPORT,
-};
+#if defined(FRSKY)
+  // FrSky Telemetry
+  #include "frsky.h"
+#elif defined(JETI)
+  // Jeti-DUPLEX Telemetry
+  #include "jeti.h"
+#elif defined(ARDUPILOT)
+  // ArduPilot Telemetry
+  #include "ardupilot.h"
+#elif defined(NMEA)
+  // NMEA Telemetry
+  #include "nmea.h"
+#elif defined(MAVLINK)
+  // Mavlink Telemetry
+  #include "mavlink.h"
+#endif
 
+#if defined(CROSSFIRE)
+  #include "crossfire.h"
+#endif
+
+extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
+
+#if defined(WS_HOW_HIGH)
+extern uint8_t wshhStreaming;
+#endif
+
+extern uint8_t link_counter;
+
+#if defined(CPUARM)
+enum TelemetryStates {
+  TELEMETRY_INIT,
+  TELEMETRY_OK,
+  TELEMETRY_KO
+};
+extern uint8_t telemetryState;
+#endif
+
+#define TELEMETRY_RX_PACKET_SIZE       19 // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
+extern uint8_t telemetryRxBufferCount;
+
+#if defined(CPUARM)
 #define TELEMETRY_VALUE_TIMER_CYCLE   200 /*20 seconds*/
 #define TELEMETRY_VALUE_OLD_THRESHOLD 150 /*15 seconds*/
 #define TELEMETRY_VALUE_UNAVAILABLE   255
@@ -60,108 +97,49 @@ PACK(struct CellValue
   }
 });
 
-class TelemetryItem
-{
-  public:
-    union {
-      int32_t  value;           // value, stored as uint32_t but interpreted accordingly to type
-      uint32_t distFromEarthAxis;
-    };
-
-    union {
-      int32_t  valueMin;        // min store
-      uint32_t pilotLongitude;
-    };
-
-    union {
-      int32_t  valueMax;        // max store
-      uint32_t pilotLatitude;
-    };
-
-    uint8_t lastReceived;       // for detection of sensor loss
-
-    union {
-      struct {
-        int32_t  offsetAuto;
-        int32_t  filterValues[TELEMETRY_AVERAGE_COUNT];
-      } std;
-      struct {
-        uint16_t prescale;
-      } consumption;
-      struct {
-        uint8_t   count;
-        CellValue values[6];
-      } cells;
-      struct {
-        uint8_t  datestate;
-        uint16_t year;
-        uint8_t  month;
-        uint8_t  day;
-        uint8_t  timestate;
-        uint8_t  hour;
-        uint8_t  min;
-        uint8_t  sec;
-      } datetime;
-      struct {
-        uint16_t longitude_bp;
-        uint16_t longitude_ap;
-        char     longitudeEW;
-        uint16_t latitude_bp;
-        uint16_t latitude_ap;
-        char     latitudeNS;
-        // pilot longitude is stored in min
-        // pilot latitude is stored in max
-        // distFromEarthAxis is stored in value
-        void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
-        {
-          div_t qr = div(latitude_bp, 100);
-          *latitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + latitude_ap) * 5) / 3;
-          qr = div(longitude_bp, 100);
-          *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + longitude_ap) * 5) / 3;
-        }
-      } gps;
-    };
-
-    static uint8_t now()
-    {
-      return (get_tmr10ms() / 10) % TELEMETRY_VALUE_TIMER_CYCLE;
-    }
-
-    TelemetryItem()
-    {
-      clear();
-    }
-
-    void clear()
-    {
-      memset(this, 0, sizeof(*this));
-      lastReceived = TELEMETRY_VALUE_UNAVAILABLE;
-    }
-
-    void eval(const TelemetrySensor & sensor);
-    void per10ms(const TelemetrySensor & sensor);
-
-    void setValue(const TelemetrySensor & sensor, int32_t newVal, uint32_t unit, uint32_t prec=0);
-    bool isAvailable();
-    bool isFresh();
-    bool isOld();
-    void gpsReceived();
-};
-
-extern TelemetryItem telemetryItems[MAX_SENSORS];
-extern uint8_t allowNewSensors;
-
 void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
 void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
 int lastUsedTelemetryIndex();
+
 int32_t getTelemetryValue(uint8_t index, uint8_t & prec);
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec);
 
 void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 void frskyDSetDefault(int index, uint16_t id);
+#endif
 
 #define IS_DISTANCE_UNIT(unit)         ((unit) == UNIT_METERS || (unit) == UNIT_FEET)
 #define IS_SPEED_UNIT(unit)            ((unit) >= UNIT_KTS && (unit) <= UNIT_MPH)
+
+#if defined(CPUARM)
+extern uint8_t telemetryProtocol;
+#define IS_FRSKY_D_PROTOCOL()          (telemetryProtocol == PROTOCOL_FRSKY_D)
+#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
+#else
+#define IS_FRSKY_D_PROTOCOL()          (true)
+#define IS_FRSKY_SPORT_PROTOCOL()      (false)
+#endif
+
+#if defined(CPUSTM32)
+inline uint8_t modelTelemetryProtocol()
+{
+#if defined(CROSSFIRE)
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
+    return PROTOCOL_PULSES_CROSSFIRE;
+#endif
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
+    return g_model.telemetryProtocol;
+  else
+    return PROTOCOL_FRSKY_SPORT;
+}
+#define MODEL_TELEMETRY_PROTOCOL()     modelTelemetryProtocol()
+#elif defined(CPUARM)
+#define MODEL_TELEMETRY_PROTOCOL()     g_model.telemetryProtocol
+#endif
+
+#if defined(CPUARM)
+  #include "telemetry_sensors.h"
+#endif
 
 #endif // _TELEMETRY_H_

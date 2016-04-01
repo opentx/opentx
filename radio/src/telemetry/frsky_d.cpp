@@ -23,10 +23,10 @@
 #if (defined(FRSKY_HUB) || defined(WS_HOW_HIGH))
 void checkMinMaxAltitude()
 {
-  if (TELEMETRY_RELATIVE_BARO_ALT_BP > frskyData.hub.maxAltitude)
-    frskyData.hub.maxAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
-  if (TELEMETRY_RELATIVE_BARO_ALT_BP < frskyData.hub.minAltitude)
-    frskyData.hub.minAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
+  if (TELEMETRY_RELATIVE_BARO_ALT_BP > telemetryData.hub.maxAltitude)
+    telemetryData.hub.maxAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
+  if (TELEMETRY_RELATIVE_BARO_ALT_BP < telemetryData.hub.minAltitude)
+    telemetryData.hub.minAltitude = TELEMETRY_RELATIVE_BARO_ALT_BP;
 }
 #endif
 
@@ -71,148 +71,148 @@ void parseTelemHubByte(uint8_t byte)
   state = TS_IDLE;
 
 #if defined(GPS)
-  if ((uint8_t)structPos == offsetof(FrskySerialData, gpsLatitude_bp)) {
+  if ((uint8_t)structPos == offsetof(FrskyTelemetryData, gpsLatitude_bp)) {
     if (lowByte || byte)
-      frskyData.hub.gpsFix = 1;
-    else if (frskyData.hub.gpsFix > 0 && frskyData.hub.gpsLatitude_bp > 1)
-      frskyData.hub.gpsFix = 0;
+      telemetryData.hub.gpsFix = 1;
+    else if (telemetryData.hub.gpsFix > 0 && telemetryData.hub.gpsLatitude_bp > 1)
+      telemetryData.hub.gpsFix = 0;
   }
-  else if ((uint8_t)structPos == offsetof(FrskySerialData, gpsLongitude_bp)) {
+  else if ((uint8_t)structPos == offsetof(FrskyTelemetryData, gpsLongitude_bp)) {
     if (lowByte || byte)
-      frskyData.hub.gpsFix = 1;
-    else if (frskyData.hub.gpsFix > 0 && frskyData.hub.gpsLongitude_bp > 1)
-      frskyData.hub.gpsFix = 0;
+      telemetryData.hub.gpsFix = 1;
+    else if (telemetryData.hub.gpsFix > 0 && telemetryData.hub.gpsLongitude_bp > 1)
+      telemetryData.hub.gpsFix = 0;
   }
   
-  if ((uint8_t)structPos == offsetof(FrskySerialData, gpsAltitude_bp) ||
-      ((uint8_t)structPos >= offsetof(FrskySerialData, gpsAltitude_ap) && (uint8_t)structPos <= offsetof(FrskySerialData, gpsLatitudeNS) && (uint8_t)structPos != offsetof(FrskySerialData, baroAltitude_bp) && (uint8_t)structPos != offsetof(FrskySerialData, baroAltitude_ap))) {
+  if ((uint8_t)structPos == offsetof(FrskyTelemetryData, gpsAltitude_bp) ||
+      ((uint8_t)structPos >= offsetof(FrskyTelemetryData, gpsAltitude_ap) && (uint8_t)structPos <= offsetof(FrskyTelemetryData, gpsLatitudeNS) && (uint8_t)structPos != offsetof(FrskyTelemetryData, baroAltitude_bp) && (uint8_t)structPos != offsetof(FrskyTelemetryData, baroAltitude_ap))) {
     // If we don't have a fix, we may discard the value
-    if (frskyData.hub.gpsFix <= 0)
+    if (telemetryData.hub.gpsFix <= 0)
       return;
   }
 #endif  // #if defined(GPS)
 
-  ((uint8_t*)&frskyData.hub)[structPos] = lowByte;
-  ((uint8_t*)&frskyData.hub)[structPos+1] = byte;
+  ((uint8_t*)&telemetryData.hub)[structPos] = lowByte;
+  ((uint8_t*)&telemetryData.hub)[structPos+1] = byte;
 
   switch ((uint8_t)structPos) {
 
-    case offsetof(FrskySerialData, rpm):
-      frskyData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+2);
-      if (frskyData.hub.rpm > frskyData.hub.maxRpm)
-        frskyData.hub.maxRpm = frskyData.hub.rpm;
+    case offsetof(FrskyTelemetryData, rpm):
+      telemetryData.hub.rpm *= (uint8_t)60/(g_model.frsky.blades+2);
+      if (telemetryData.hub.rpm > telemetryData.hub.maxRpm)
+        telemetryData.hub.maxRpm = telemetryData.hub.rpm;
       break;
 
-    case offsetof(FrskySerialData, temperature1):
-      if (frskyData.hub.temperature1 > frskyData.hub.maxTemperature1)
-        frskyData.hub.maxTemperature1 = frskyData.hub.temperature1;
+    case offsetof(FrskyTelemetryData, temperature1):
+      if (telemetryData.hub.temperature1 > telemetryData.hub.maxTemperature1)
+        telemetryData.hub.maxTemperature1 = telemetryData.hub.temperature1;
       break;
 
-    case offsetof(FrskySerialData, temperature2):
-      if (frskyData.hub.temperature2 > frskyData.hub.maxTemperature2)
-        frskyData.hub.maxTemperature2 = frskyData.hub.temperature2;
+    case offsetof(FrskyTelemetryData, temperature2):
+      if (telemetryData.hub.temperature2 > telemetryData.hub.maxTemperature2)
+        telemetryData.hub.maxTemperature2 = telemetryData.hub.temperature2;
       break;
 
-    case offsetof(FrskySerialData, current):
+    case offsetof(FrskyTelemetryData, current):
 #if defined(FAS_OFFSET) || !defined(CPUM64)
-      if ((int16_t)frskyData.hub.current > 0 && ((int16_t)frskyData.hub.current + g_model.frsky.fasOffset) > 0)
-        frskyData.hub.current += g_model.frsky.fasOffset;
+      if ((int16_t)telemetryData.hub.current > 0 && ((int16_t)telemetryData.hub.current + g_model.frsky.fasOffset) > 0)
+        telemetryData.hub.current += g_model.frsky.fasOffset;
       else
-        frskyData.hub.current = 0;
+        telemetryData.hub.current = 0;
 #endif
-      if (frskyData.hub.current > frskyData.hub.maxCurrent)
-        frskyData.hub.maxCurrent = frskyData.hub.current;
+      if (telemetryData.hub.current > telemetryData.hub.maxCurrent)
+        telemetryData.hub.maxCurrent = telemetryData.hub.current;
       break;
 
-    case offsetof(FrskySerialData, currentConsumption):
+    case offsetof(FrskyTelemetryData, currentConsumption):
       // we receive data from openXsensor. stops the calculation of consumption and power
-      frskyData.hub.openXsensor = 1;
+      telemetryData.hub.openXsensor = 1;
       break;
 
-    case offsetof(FrskySerialData, volts_ap):
+    case offsetof(FrskyTelemetryData, volts_ap):
 #if defined(FAS_BSS)
-      frskyData.hub.vfas = (frskyData.hub.volts_bp * 10 + frskyData.hub.volts_ap);
+      telemetryData.hub.vfas = (telemetryData.hub.volts_bp * 10 + telemetryData.hub.volts_ap);
 #else
-      frskyData.hub.vfas = ((frskyData.hub.volts_bp * 100 + frskyData.hub.volts_ap * 10) * 21) / 110;
+      telemetryData.hub.vfas = ((telemetryData.hub.volts_bp * 100 + telemetryData.hub.volts_ap * 10) * 21) / 110;
 #endif
-      /* TODO later if (!frskyData.hub.minVfas || frskyData.hub.minVfas > frskyData.hub.vfas)
-        frskyData.hub.minVfas = frskyData.hub.vfas; */
+      /* TODO later if (!telemetryData.hub.minVfas || telemetryData.hub.minVfas > telemetryData.hub.vfas)
+        telemetryData.hub.minVfas = telemetryData.hub.vfas; */
       break;
 
-    case offsetof(FrskySerialData, baroAltitude_bp):
+    case offsetof(FrskyTelemetryData, baroAltitude_bp):
       // First received barometer altitude => Altitude offset
-      if (!frskyData.hub.baroAltitudeOffset)
-        frskyData.hub.baroAltitudeOffset = -frskyData.hub.baroAltitude_bp;
-      frskyData.hub.baroAltitude_bp += frskyData.hub.baroAltitudeOffset;
+      if (!telemetryData.hub.baroAltitudeOffset)
+        telemetryData.hub.baroAltitudeOffset = -telemetryData.hub.baroAltitude_bp;
+      telemetryData.hub.baroAltitude_bp += telemetryData.hub.baroAltitudeOffset;
       checkMinMaxAltitude();
       break;
 
 #if defined(GPS)
-    case offsetof(FrskySerialData, gpsAltitude_ap):
-      if (!frskyData.hub.gpsAltitudeOffset)
-        frskyData.hub.gpsAltitudeOffset = -frskyData.hub.gpsAltitude_bp;
-      frskyData.hub.gpsAltitude_bp += frskyData.hub.gpsAltitudeOffset;
-      if (!frskyData.hub.baroAltitudeOffset) {
-        if (frskyData.hub.gpsAltitude_bp > frskyData.hub.maxAltitude)
-          frskyData.hub.maxAltitude = frskyData.hub.gpsAltitude_bp;
-        if (frskyData.hub.gpsAltitude_bp < frskyData.hub.minAltitude)
-          frskyData.hub.minAltitude = frskyData.hub.gpsAltitude_bp;
+    case offsetof(FrskyTelemetryData, gpsAltitude_ap):
+      if (!telemetryData.hub.gpsAltitudeOffset)
+        telemetryData.hub.gpsAltitudeOffset = -telemetryData.hub.gpsAltitude_bp;
+      telemetryData.hub.gpsAltitude_bp += telemetryData.hub.gpsAltitudeOffset;
+      if (!telemetryData.hub.baroAltitudeOffset) {
+        if (telemetryData.hub.gpsAltitude_bp > telemetryData.hub.maxAltitude)
+          telemetryData.hub.maxAltitude = telemetryData.hub.gpsAltitude_bp;
+        if (telemetryData.hub.gpsAltitude_bp < telemetryData.hub.minAltitude)
+          telemetryData.hub.minAltitude = telemetryData.hub.gpsAltitude_bp;
       }
-      if (!frskyData.hub.pilotLatitude && !frskyData.hub.pilotLongitude) {
+      if (!telemetryData.hub.pilotLatitude && !telemetryData.hub.pilotLongitude) {
         // First received GPS position => Pilot GPS position
         getGpsPilotPosition();
       }
-      else if (frskyData.hub.gpsDistNeeded || menuHandlers[menuLevel] == menuTelemetryFrsky) {
+      else if (telemetryData.hub.gpsDistNeeded || menuHandlers[menuLevel] == menuTelemetryFrsky) {
         getGpsDistance();
       }
       break;
 
-    case offsetof(FrskySerialData, gpsSpeed_bp):
+    case offsetof(FrskyTelemetryData, gpsSpeed_bp):
       // Speed => Max speed
-      if (frskyData.hub.gpsSpeed_bp > frskyData.hub.maxGpsSpeed)
-        frskyData.hub.maxGpsSpeed = frskyData.hub.gpsSpeed_bp;
+      if (telemetryData.hub.gpsSpeed_bp > telemetryData.hub.maxGpsSpeed)
+        telemetryData.hub.maxGpsSpeed = telemetryData.hub.gpsSpeed_bp;
       break;
 #endif
 
-    case offsetof(FrskySerialData, volts):
+    case offsetof(FrskyTelemetryData, volts):
       frskyUpdateCells();
       break;
 
 #if defined(GPS)
-    case offsetof(FrskySerialData, hour):
-      frskyData.hub.hour = ((uint8_t)(frskyData.hub.hour + g_eeGeneral.timezone + 24)) % 24;
+    case offsetof(FrskyTelemetryData, hour):
+      telemetryData.hub.hour = ((uint8_t)(telemetryData.hub.hour + g_eeGeneral.timezone + 24)) % 24;
       break;
 #endif
 
-    case offsetof(FrskySerialData, accelX):
-    case offsetof(FrskySerialData, accelY):
-    case offsetof(FrskySerialData, accelZ):
-      *(int16_t*)(&((uint8_t*)&frskyData.hub)[structPos]) /= 10;
+    case offsetof(FrskyTelemetryData, accelX):
+    case offsetof(FrskyTelemetryData, accelY):
+    case offsetof(FrskyTelemetryData, accelZ):
+      *(int16_t*)(&((uint8_t*)&telemetryData.hub)[structPos]) /= 10;
       break;
 
 #if 0
-    case offsetof(FrskySerialData, gpsAltitude_bp):
-    case offsetof(FrskySerialData, fuelLevel):
-    case offsetof(FrskySerialData, gpsLongitude_bp):
-    case offsetof(FrskySerialData, gpsLatitude_bp):
-    case offsetof(FrskySerialData, gpsCourse_bp):
-    case offsetof(FrskySerialData, day):
-    case offsetof(FrskySerialData, year):
-    case offsetof(FrskySerialData, sec):
-    case offsetof(FrskySerialData, gpsSpeed_ap):
-    case offsetof(FrskySerialData, gpsLongitude_ap):
-    case offsetof(FrskySerialData, gpsLatitude_ap):
-    case offsetof(FrskySerialData, gpsCourse_ap):
-    case offsetof(FrskySerialData, gpsLongitudeEW):
-    case offsetof(FrskySerialData, gpsLatitudeNS):
-    case offsetof(FrskySerialData, varioSpeed):
-    case offsetof(FrskySerialData, power): /* because sent by openXsensor */
-    case offsetof(FrskySerialData, vfas):
-    case offsetof(FrskySerialData, volts_bp):
+    case offsetof(FrskyTelemetryData, gpsAltitude_bp):
+    case offsetof(FrskyTelemetryData, fuelLevel):
+    case offsetof(FrskyTelemetryData, gpsLongitude_bp):
+    case offsetof(FrskyTelemetryData, gpsLatitude_bp):
+    case offsetof(FrskyTelemetryData, gpsCourse_bp):
+    case offsetof(FrskyTelemetryData, day):
+    case offsetof(FrskyTelemetryData, year):
+    case offsetof(FrskyTelemetryData, sec):
+    case offsetof(FrskyTelemetryData, gpsSpeed_ap):
+    case offsetof(FrskyTelemetryData, gpsLongitude_ap):
+    case offsetof(FrskyTelemetryData, gpsLatitude_ap):
+    case offsetof(FrskyTelemetryData, gpsCourse_ap):
+    case offsetof(FrskyTelemetryData, gpsLongitudeEW):
+    case offsetof(FrskyTelemetryData, gpsLatitudeNS):
+    case offsetof(FrskyTelemetryData, varioSpeed):
+    case offsetof(FrskyTelemetryData, power): /* because sent by openXsensor */
+    case offsetof(FrskyTelemetryData, vfas):
+    case offsetof(FrskyTelemetryData, volts_bp):
       break;
 
     default:
-      *((uint16_t *)(((uint8_t*)&frskyData.hub) + structPos)) = previousValue;
+      *((uint16_t *)(((uint8_t*)&telemetryData.hub) + structPos)) = previousValue;
       break;
 #endif
   }
@@ -222,16 +222,16 @@ void parseTelemHubByte(uint8_t byte)
 #if defined(WS_HOW_HIGH)
 void parseTelemWSHowHighByte(uint8_t byte)
 {
-  if (frskyUsrStreaming < (WSHH_TIMEOUT10ms - 10)) {
-    ((uint8_t*)&frskyData.hub)[offsetof(FrskySerialData, baroAltitude_bp)] = byte;
+  if (wshhStreaming < (WSHH_TIMEOUT10ms - 10)) {
+    ((uint8_t*)&telemetryData.hub)[offsetof(FrskyTelemetryData, baroAltitude_bp)] = byte;
     checkMinMaxAltitude();
   }
   else {
     // At least 100mS passed since last data received
-    ((uint8_t*)&frskyData.hub)[offsetof(FrskySerialData, baroAltitude_bp)+1] = byte;
+    ((uint8_t*)&telemetryData.hub)[offsetof(FrskyTelemetryData, baroAltitude_bp)+1] = byte;
   }
   // baroAltitude_bp unit here is feet!
-  frskyUsrStreaming = WSHH_TIMEOUT10ms; // reset counter
+  wshhStreaming = WSHH_TIMEOUT10ms; // reset counter
 }
 #endif
 
@@ -242,16 +242,16 @@ void frskyDProcessPacket(uint8_t *packet)
   {
     case LINKPKT: // A1/A2/RSSI values
     {
-      frskyData.analog[TELEM_ANA_A1].set(packet[1], g_model.frsky.channels[TELEM_ANA_A1].type);
-      frskyData.analog[TELEM_ANA_A2].set(packet[2], g_model.frsky.channels[TELEM_ANA_A2].type);
-      frskyData.rssi[0].set(packet[3]);
-      frskyData.rssi[1].set(packet[4] / 2);
-      frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      telemetryData.analog[TELEM_ANA_A1].set(packet[1], g_model.frsky.channels[TELEM_ANA_A1].type);
+      telemetryData.analog[TELEM_ANA_A2].set(packet[2], g_model.frsky.channels[TELEM_ANA_A2].type);
+      telemetryData.rssi[0].set(packet[3]);
+      telemetryData.rssi[1].set(packet[4] / 2);
+      telemetryStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       link_counter += 256 / FRSKY_D_AVERAGING;
 #if defined(VARIO)
       uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
       if (varioSource < 2) {
-        frskyData.hub.varioSpeed = applyChannelRatio(varioSource, frskyData.analog[varioSource].value);
+        telemetryData.hub.varioSpeed = applyChannelRatio(varioSource, telemetryData.analog[varioSource].value);
       }
 #endif
       break;

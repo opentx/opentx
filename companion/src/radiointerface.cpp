@@ -62,18 +62,20 @@ QStringList getAvrdudeArgs(const QString &cmd, const QString &filename)
 
 QStringList getDfuArgs(const QString & cmd, const QString & filename)
 {
-  QStringList arguments;
+  QStringList args;
   burnConfigDialog bcd;
   QString memory = "0x08000000";
   if (cmd == "-U") {
     memory.append(QString(":%1").arg(MAX_FSIZE));
   }
-  arguments << bcd.getDFUArgs() << "--dfuse-address" << memory; // removed for Horus, is it really needed? << "-d" << "0483:df11";
+  args << bcd.getDFUArgs();
+  if (!filename.endsWith(".dfu")) {
+    args << "--dfuse-address" << memory;
+  }
+  args << "-d" << "0483:df11";
   QString fullcmd = cmd + filename;
-
-  arguments << "" << fullcmd;
-
-  return arguments;
+  args << "" << fullcmd;
+  return args;
 }
 
 QStringList getSambaArgs(const QString &tcl)

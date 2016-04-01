@@ -212,32 +212,32 @@ void processSportPacket(uint8_t * packet)
     uint32_t data = SPORT_DATA_S32(packet);
 
     if (id == RSSI_ID) {
-      frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      telemetryStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       data = SPORT_DATA_U8(packet);
       if (data == 0)
-        frskyData.rssi.reset();
+        telemetryData.rssi.reset();
       else
-        frskyData.rssi.set(data);
+        telemetryData.rssi.set(data);
     }
 #if defined(PCBTARANIS) && defined(REVPLUS)
     else if (id == XJT_VERSION_ID) {
-      frskyData.xjtVersion = HUB_DATA_U16(packet);
+      telemetryData.xjtVersion = HUB_DATA_U16(packet);
       if (!IS_VALID_XJT_VERSION()) {
-        frskyData.swr.set(0x00);
+        telemetryData.swr.set(0x00);
       }
     }
     else if (id == SWR_ID) {
       if (IS_VALID_XJT_VERSION())
-        frskyData.swr.set(SPORT_DATA_U8(packet));
+        telemetryData.swr.set(SPORT_DATA_U8(packet));
       else
-        frskyData.swr.set(0x00);
+        telemetryData.swr.set(0x00);
     }
 #else
     else if (id == XJT_VERSION_ID) {
-      frskyData.xjtVersion = HUB_DATA_U16(packet);
+      telemetryData.xjtVersion = HUB_DATA_U16(packet);
     }
     else if (id == SWR_ID) {
-      frskyData.swr.set(SPORT_DATA_U8(packet));
+      telemetryData.swr.set(SPORT_DATA_U8(packet));
     }
 #endif
 
@@ -339,7 +339,7 @@ bool sportWaitState(SportUpdateState state, int timeout)
   for (int i=timeout/2; i>=0; i--) {
     uint8_t byte ;
     while (telemetryGetByte(&byte)) {
-      processSerialData(byte);
+      processFrskyTelemetryData(byte);
     }
     if (sportUpdateState == state) {
       return true;

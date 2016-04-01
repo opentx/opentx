@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,676 +18,441 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
-TelemetryItem telemetryItems[MAX_SENSORS];
-uint8_t allowNewSensors;
+uint8_t telemetryStreaming = 0;
+uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+uint8_t telemetryRxBufferCount = 0;
 
-void TelemetryItem::gpsReceived()
+#if defined(WS_HOW_HIGH)
+uint8_t wshhStreaming = 0;
+#endif
+
+uint8_t link_counter = 0;
+
+#if defined(CPUARM)
+uint8_t telemetryState = TELEMETRY_INIT;
+#endif
+
+TelemetryData telemetryData;
+
+#if defined(CPUARM)
+uint8_t telemetryProtocol = 255;
+#if defined(REVX)
+uint8_t serialInversion = 0;
+#endif
+#endif
+
+#if defined(PCBSKY9X) && defined(REVX)
+uint8_t serialInversion = 0;
+#endif
+
+#if !defined(CPUARM)
+uint16_t getChannelRatio(source_t channel)
 {
-  if (!distFromEarthAxis) {
-    gps.extractLatitudeLongitude(&pilotLatitude, &pilotLongitude);
-    uint32_t lat = pilotLatitude / 10000;
-    uint32_t angle2 = (lat*lat) / 10000;
-    uint32_t angle4 = angle2 * angle2;
-    distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
-  }
-  lastReceived = now();
+  return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
 }
 
-void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
+lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 {
-  int32_t newVal = val;
+  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
+}
+#endif
 
-  if (unit == UNIT_CELLS) {
-    uint32_t data = uint32_t(newVal);
-    uint8_t cellsCount = (data >> 24);
-    uint8_t cellIndex = ((data >> 16) & 0x0F);
-    uint16_t cellValue = (data & 0xFFFF);
-    if (cellsCount == 0) {
-      cellsCount = (cellIndex >= cells.count ? cellIndex + 1 : cells.count);
-      if (cellsCount != cells.count) {
-        clear();
-        cells.count = cellsCount;
-        // we skip this round as we are not sure we received all cells values
-        return;
-      }
-    }
-    else if (cellsCount != cells.count) {
-      clear();
-      cells.count = cellsCount;
-    }
-    cells.values[cellIndex].set(cellValue);
-    if (cellIndex+1 == cells.count) {
-      newVal = 0;
-      for (int i=0; i<cellsCount; i++) {
-        if (cells.values[i].state) {
-          newVal += cells.values[i].value;
-        }
-        else {
-          // we didn't receive all cells values
-          return;
-        }
-      }
-      newVal = sensor.getValue(newVal, UNIT_VOLTS, 2);
+#if defined(CPUSTM32)
+void processTelemetryData(uint8_t data)
+{
+#if defined(CROSSFIRE)
+  if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE)
+    processCrossfireTelemetryData(data);
+#endif
+  processFrskyTelemetryData(data);
+}
+#endif
+
+void telemetryWakeup()
+{
+#if defined(CPUARM)
+  uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
+#if defined(REVX)
+  uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
+  if (telemetryProtocol != requiredTelemetryProtocol || serialInversion != requiredSerialInversion) {
+    serialInversion = requiredSerialInversion;
+#else
+   if (telemetryProtocol != requiredTelemetryProtocol) {
+#endif
+    telemetryInit(requiredTelemetryProtocol);
+    telemetryProtocol = requiredTelemetryProtocol;
+  }
+#endif
+
+#if defined(CPUSTM32)
+  uint8_t data;
+#if defined(LOG_TELEMETRY) && !defined(SIMU)
+  static tmr10ms_t lastTime = 0;
+  tmr10ms_t newTime = get_tmr10ms();
+  struct gtm utm;
+  gettime(&utm);
+#endif
+  while (telemetryFifo.pop(data)) {
+    processTelemetryData(data);
+#if defined(LOG_TELEMETRY) && !defined(SIMU)
+    extern FIL g_telemetryFile;
+    if (lastTime != newTime) {
+      f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);
+      lastTime = newTime;
     }
     else {
-      // we didn't receive all cells values
-      return;
+      f_printf(&g_telemetryFile, " %02X", data);
     }
-  }
-  else if (unit == UNIT_DATETIME) {
-    uint32_t data = uint32_t(newVal);
-    if (data & 0x000000ff) {
-      datetime.year = (uint16_t) ((data & 0xff000000) >> 24);
-      datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
-      datetime.day = (uint8_t) ((data & 0x0000ff00) >> 8);
-      if (datetime.year != 0) {
-        datetime.datestate = 1;
-      }
-#if defined(RTCLOCK)
-      if (g_eeGeneral.adjustRTC && (datetime.datestate == 1)) {
-        struct gtm t;
-        gettime(&t);
-        t.tm_year = datetime.year+4;
-        t.tm_mon = datetime.month-1;
-        t.tm_mday = datetime.day;
-        rtcSetTime(&t);
-      }
 #endif
-    }
-    else {
-      datetime.hour = ((uint8_t) ((data & 0xff000000) >> 24) + g_eeGeneral.timezone + 24) % 24;
-      datetime.min = (uint8_t) ((data & 0x00ff0000) >> 16);
-      datetime.sec = (uint16_t) ((data & 0x0000ff00) >> 8);
-      if (datetime.datestate == 1) {
-        datetime.timestate = 1;
-      }
-#if defined(RTCLOCK)
-      if (g_eeGeneral.adjustRTC && datetime.datestate == 1) {
-        struct gtm t;
-        gettime(&t);
-        if (abs((t.tm_hour-datetime.hour)*3600 + (t.tm_min-datetime.min)*60 + (t.tm_sec-datetime.sec)) > 20) {
-          // we adjust RTC only if difference is > 20 seconds
-          t.tm_hour = datetime.hour;
-          t.tm_min = datetime.min;
-          t.tm_sec = datetime.sec;
-          g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
-          rtcSetTime(&t);
-        }
-      }
-#endif
-    }
-    if (datetime.year == 0) {
-      return;
-    }
-    newVal = 0;
   }
-  else if (unit == UNIT_GPS) {
-    uint32_t gps_long_lati_data = uint32_t(newVal);
-    uint32_t gps_long_lati_b1w, gps_long_lati_a1w;
-    gps_long_lati_b1w = (gps_long_lati_data & 0x3fffffff) / 10000;
-    gps_long_lati_a1w = (gps_long_lati_data & 0x3fffffff) % 10000;
-    switch ((gps_long_lati_data & 0xc0000000) >> 30) {
-      case 0:
-        gps.latitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.latitude_ap = gps_long_lati_a1w;
-        gps.latitudeNS = 'N';
-        break;
-      case 1:
-        gps.latitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.latitude_ap = gps_long_lati_a1w;
-        gps.latitudeNS = 'S';
-        break;
-      case 2:
-        gps.longitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.longitude_ap = gps_long_lati_a1w;
-        gps.longitudeEW = 'E';
-        break;
-      case 3:
-        gps.longitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.longitude_ap = gps_long_lati_a1w;
-        gps.longitudeEW = 'W';
-        break;
-    }
-    if (gps.longitudeEW && gps.latitudeNS) {
-      gpsReceived();
-    }
-    return;
-  }
-  else if (unit >= UNIT_GPS_LONGITUDE && unit <= UNIT_GPS_LATITUDE_NS) {
-    uint32_t data = uint32_t(newVal);
-    switch (unit) {
-      case UNIT_GPS_LONGITUDE:
-        gps.longitude_bp = data >> 16;
-        gps.longitude_ap = data & 0xFFFF;
-        break;
-      case UNIT_GPS_LATITUDE:
-        gps.latitude_bp = data >> 16;
-        gps.latitude_ap = data & 0xFFFF;
-        break;
-      case UNIT_GPS_LONGITUDE_EW:
-        gps.longitudeEW = data;
-        break;
-      case UNIT_GPS_LATITUDE_NS:
-        gps.latitudeNS = data;
-        break;
-    }
-    if (gps.longitudeEW && gps.latitudeNS && gps.longitude_ap && gps.latitude_ap) {
-      gpsReceived();
-    }
-    return;
-  }
-  else if (unit == UNIT_DATETIME_YEAR) {
-    datetime.year = newVal;
-    return;
-  }
-  else if (unit == UNIT_DATETIME_DAY_MONTH) {
-    uint32_t data = uint32_t(newVal);
-    datetime.month = data >> 8;
-    datetime.day = data & 0xFF;
-    datetime.datestate = 1;
-    return;
-  }
-  else if (unit == UNIT_DATETIME_HOUR_MIN) {
-    uint32_t data = uint32_t(newVal);
-    datetime.hour = ((data & 0xFF) + g_eeGeneral.timezone + 24) % 24;
-    datetime.min = data >> 8;
-  }
-  else if (unit == UNIT_DATETIME_SEC) {
-    datetime.sec = newVal & 0xFF;
-    datetime.timestate = 1;
-    newVal = 0;
-  }
-  else if (unit == UNIT_RPMS) {
-    if (sensor.custom.ratio != 0) {
-      newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
+#elif defined(PCBSKY9X)
+  if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
+    uint8_t data;
+    while (telemetrySecondPortReceive(data)) {
+      processFrskyTelemetryData(data);
     }
   }
   else {
-    newVal = sensor.getValue(newVal, unit, prec);
-    if (sensor.autoOffset) {
-      if (!isAvailable()) {
-        std.offsetAuto = -newVal;
-      }
-      newVal += std.offsetAuto;
-    }
-    else if (sensor.filter) {
-      if (!isAvailable()) {
-        for (int i=0; i<TELEMETRY_AVERAGE_COUNT; i++) {
-          std.filterValues[i] = newVal;
-        }
-      }
-      else {
-        // calculate the average from values[] and value
-        // also shift readings in values [] array
-        unsigned int sum = std.filterValues[0];
-        for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
-          int32_t tmp = std.filterValues[i+1];
-          std.filterValues[i] = tmp;
-          sum += tmp;
-        }
-        std.filterValues[TELEMETRY_AVERAGE_COUNT-1] = newVal;
-        sum += newVal;
-        newVal = sum/(TELEMETRY_AVERAGE_COUNT+1);
-      }
-    }
+    // Receive serial data here
+    rxPdcUsart(processFrskyTelemetryData);
   }
+#endif
 
-  if (!isAvailable()) {
-    valueMin = newVal;
-    valueMax = newVal;
-  }
-  else if (newVal < valueMin) {
-    valueMin = newVal;
-  }
-  else if (newVal > valueMax) {
-    valueMax = newVal;
-    if (sensor.unit == UNIT_VOLTS) {
-      valueMin = newVal; // the batt was changed
+#if !defined(CPUARM)
+  if (IS_FRSKY_D_PROTOCOL()) {
+    // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
+    static uint8_t frskyTxDelay = 5;
+    if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
+      frskyTxDelay = 5; // 50ms
+#if !defined(SIMU)
+      frskyDSendNextAlarm();
+#endif
     }
   }
+#endif
 
+#if defined(CPUARM)
   for (int i=0; i<MAX_SENSORS; i++) {
-    TelemetrySensor & it = g_model.telemetrySensors[i];
-    if (it.type == TELEM_TYPE_CALCULATED && it.formula == TELEM_FORMULA_TOTALIZE && &g_model.telemetrySensors[it.consumption.source-1] == &sensor) {
-      TelemetryItem & item = telemetryItems[i];
-      int32_t increment = it.getValue(val, unit, prec);
-      item.setValue(it, item.value+increment, it.unit, it.prec);
+    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    if (sensor.type == TELEM_TYPE_CALCULATED) {
+      telemetryItems[i].eval(sensor);
+    }
+  }
+#endif
+
+#if defined(VARIO)
+  if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
+    varioWakeup();
+  }
+#endif
+
+#if defined(PCBTARANIS) && defined(REVPLUS)
+  #define FRSKY_BAD_ANTENNA() (IS_VALID_XJT_VERSION() && telemetryData.swr.value > 0x33)
+#else
+  #define FRSKY_BAD_ANTENNA() (telemetryData.swr.value > 0x33)
+#endif
+
+#if defined(CPUARM)
+  static tmr10ms_t alarmsCheckTime = 0;
+  #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
+  if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
+
+    SCHEDULE_NEXT_ALARMS_CHECK(1/*second*/);
+
+    uint8_t now = TelemetryItem::now();
+    bool sensor_lost = false;
+    for (int i=0; i<MAX_SENSORS; i++) {
+      if (isTelemetryFieldAvailable(i)) {
+        uint8_t lastReceived = telemetryItems[i].lastReceived;
+        if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
+          sensor_lost = true;
+          telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
+          TelemetrySensor * sensor = & g_model.telemetrySensors[i];
+          if (sensor->unit == UNIT_DATETIME) {
+            telemetryItems[i].datetime.datestate = 0;
+            telemetryItems[i].datetime.timestate = 0;
+          }
+        }
+      }
+    }
+    if (sensor_lost && TELEMETRY_STREAMING()) {
+      audioEvent(AU_SENSOR_LOST);
+    }
+
+#if defined(PCBTARANIS)
+    if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) && FRSKY_BAD_ANTENNA()) {
+      AUDIO_SWR_RED();
+      POPUP_WARNING(STR_ANTENNAPROBLEM);
+      SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+    }
+#endif
+
+    if (TELEMETRY_STREAMING()) {
+      if (getRssiAlarmValue(1) && TELEMETRY_RSSI() < getRssiAlarmValue(1)) {
+        AUDIO_RSSI_RED();
+        SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+      }
+      else if (getRssiAlarmValue(0) && TELEMETRY_RSSI() < getRssiAlarmValue(0)) {
+        AUDIO_RSSI_ORANGE();
+        SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+      }
     }
   }
 
-  value = newVal;
-  lastReceived = now();
+  if (TELEMETRY_STREAMING()) {
+    if (telemetryState == TELEMETRY_KO) {
+      AUDIO_TELEMETRY_BACK();
+    }
+    telemetryState = TELEMETRY_OK;
+  }
+  else if (telemetryState == TELEMETRY_OK) {
+    telemetryState = TELEMETRY_KO;
+    AUDIO_TELEMETRY_LOST();
+  }
+#endif
 }
 
-bool TelemetryItem::isAvailable()
+void telemetryInterrupt10ms()
 {
-  return (lastReceived != TELEMETRY_VALUE_UNAVAILABLE);
-}
+#if defined(FRSKY_HUB) && !defined(CPUARM)
+  uint16_t voltage = 0; /* unit: 1/10 volts */
+  for (uint8_t i=0; i<telemetryData.hub.cellsCount; i++)
+    voltage += telemetryData.hub.cellVolts[i];
+  voltage /= (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
+  telemetryData.hub.cellsSum = voltage;
+  if (telemetryData.hub.cellsSum < telemetryData.hub.minCells) {
+    telemetryData.hub.minCells = telemetryData.hub.cellsSum;
+  }
+#endif
 
-bool TelemetryItem::isFresh()
-{
-  return (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE) && (uint8_t(now() - lastReceived) < 2);
-}
-
-bool TelemetryItem::isOld()
-{
-  return (lastReceived == TELEMETRY_VALUE_OLD);
-}
-
-void TelemetryItem::per10ms(const TelemetrySensor & sensor)
-{
-  switch (sensor.formula) {
-    case TELEM_FORMULA_CONSUMPTION:
-      if (sensor.consumption.source) {
-        TelemetrySensor & currentSensor = g_model.telemetrySensors[sensor.consumption.source-1];
-        TelemetryItem & currentItem = telemetryItems[sensor.consumption.source-1];
-        if (!currentItem.isAvailable()) {
-          return;
+  if (TELEMETRY_STREAMING()) {
+    if (!TELEMETRY_OPENXSENSOR()) {
+#if defined(CPUARM)
+      for (int i=0; i<MAX_SENSORS; i++) {
+        const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+        if (sensor.type == TELEM_TYPE_CALCULATED) {
+          telemetryItems[i].per10ms(sensor);
         }
-        else if (currentItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
-          return;
-        }
-        int32_t current = convertTelemetryValue(currentItem.value, currentSensor.unit, currentSensor.prec, UNIT_AMPS, 1);
-        currentItem.consumption.prescale += current;
-        if (currentItem.consumption.prescale >= 3600) {
-          currentItem.consumption.prescale -= 3600;
-          setValue(sensor, value+1, sensor.unit, sensor.prec);
-        }
-        lastReceived = now();
       }
-      break;
+#else
+      // power calculation
+      uint8_t channel = g_model.frsky.voltsSource;
+      if (channel <= FRSKY_VOLTS_SOURCE_A2) {
+        voltage = applyChannelRatio(channel, telemetryData.analog[channel].value) / 10;
+      }
 
-    default:
-      break;
+#if defined(FRSKY_HUB)
+      else if (channel == FRSKY_VOLTS_SOURCE_FAS) {
+        voltage = telemetryData.hub.vfas;
+      }
+#endif
+
+#if defined(FRSKY_HUB)
+      uint16_t current = telemetryData.hub.current; /* unit: 1/10 amps */
+#else
+      uint16_t current = 0;
+#endif
+
+      channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
+      if (channel < MAX_FRSKY_A_CHANNELS) {
+        current = applyChannelRatio(channel, telemetryData.analog[channel].value) / 10;
+      }
+
+      telemetryData.hub.power = ((current>>1) * (voltage>>1)) / 25;
+
+      telemetryData.hub.currentPrescale += current;
+      if (telemetryData.hub.currentPrescale >= 3600) {
+        telemetryData.hub.currentConsumption += 1;
+        telemetryData.hub.currentPrescale -= 3600;
+      }
+#endif
+    }
+
+#if !defined(CPUARM)
+    if (telemetryData.hub.power > telemetryData.hub.maxPower) {
+      telemetryData.hub.maxPower = telemetryData.hub.power;
+    }
+#endif
+  }
+
+#if defined(WS_HOW_HIGH)
+  if (wshhStreaming > 0) {
+    wshhStreaming--;
+  }
+#endif
+
+  if (telemetryStreaming > 0) {
+    telemetryStreaming--;
+  }
+  else {
+#if !defined(SIMU)
+#if defined(CPUARM)
+    telemetryData.rssi.reset();
+#else
+    telemetryData.rssi[0].set(0);
+    telemetryData.rssi[1].set(0);
+#endif
+#endif
   }
 }
 
-void TelemetryItem::eval(const TelemetrySensor & sensor)
+void telemetryReset()
 {
-  switch (sensor.formula) {
-    case TELEM_FORMULA_CELL:
-      if (sensor.cell.source) {
-        TelemetryItem & cellsItem = telemetryItems[sensor.cell.source-1];
-        if (cellsItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
-        }
-        else {
-          unsigned int index = sensor.cell.index;
-          if (index == TELEM_CELL_INDEX_LOWEST || index == TELEM_CELL_INDEX_HIGHEST || index == TELEM_CELL_INDEX_DELTA) {
-            unsigned int lowest=0, highest=0;
-            for (int i=0; i<cellsItem.cells.count; i++) {
-              if (cellsItem.cells.values[i].state) {
-                if (!lowest || cellsItem.cells.values[i].value < cellsItem.cells.values[lowest-1].value)
-                  lowest = i+1;
-                if (!highest || cellsItem.cells.values[i].value > cellsItem.cells.values[highest-1].value)
-                  highest = i+1;
-              }
-              else {
-                lowest = highest = 0;
-              }
-            }
-            if (lowest) {
-              switch (index) {
-                case TELEM_CELL_INDEX_LOWEST:
-                  setValue(sensor, cellsItem.cells.values[lowest-1].value, UNIT_VOLTS, 2);
-                  break;
-                case TELEM_CELL_INDEX_HIGHEST:
-                  setValue(sensor, cellsItem.cells.values[highest-1].value, UNIT_VOLTS, 2);
-                  break;
-                case TELEM_CELL_INDEX_DELTA:
-                  setValue(sensor, cellsItem.cells.values[highest-1].value - cellsItem.cells.values[lowest-1].value, UNIT_VOLTS, 2);
-                  break;
-              }
-            }
-          }
-          else {
-            index -= 1;
-            if (index < cellsItem.cells.count && cellsItem.cells.values[index].state) {
-              setValue(sensor, cellsItem.cells.values[index].value, UNIT_VOLTS, 2);
-            }
-          }
-        }
-      }
-      break;
+  memclear(&telemetryData, sizeof(telemetryData));
 
-    case TELEM_FORMULA_DIST:
-      if (sensor.dist.gps) {
-        TelemetryItem gpsItem = telemetryItems[sensor.dist.gps-1];
-        TelemetryItem * altItem = NULL;
-        if (!gpsItem.isAvailable()) {
-          return;
-        }
-        else if (gpsItem.isOld()) {
-          lastReceived = TELEMETRY_VALUE_OLD;
-          return;
-        }
-        if (sensor.dist.alt) {
-          altItem = &telemetryItems[sensor.dist.alt-1];
-          if (!altItem->isAvailable()) {
-            return;
-          }
-          else if (altItem->isOld()) {
-            lastReceived = TELEMETRY_VALUE_OLD;
-            return;
-          }
-        }
-        uint32_t latitude, longitude;
-        gpsItem.gps.extractLatitudeLongitude(&latitude, &longitude);
+#if defined(CPUARM)
+  for (int index=0; index<MAX_SENSORS; index++) {
+    telemetryItems[index].clear();
+  }
+#endif
 
-        uint32_t angle = (latitude > gpsItem.pilotLatitude) ? latitude - gpsItem.pilotLatitude : gpsItem.pilotLatitude - latitude;
-        uint32_t dist = EARTH_RADIUS * angle / 1000000;
-        uint32_t result = dist*dist;
+  telemetryStreaming = 0; // reset counter only if valid frsky packets are being detected
+  link_counter = 0;
 
-        angle = (longitude > gpsItem.pilotLongitude) ? longitude - gpsItem.pilotLongitude : gpsItem.pilotLongitude - longitude;
-        dist = gpsItem.distFromEarthAxis * angle / 1000000;
-        result += dist*dist;
+#if defined(CPUARM)
+  telemetryState = TELEMETRY_INIT;
+#endif
 
-        if (altItem) {
-          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
-          result += dist*dist;
-        }
+#if defined(FRSKY_HUB) && !defined(CPUARM)
+  telemetryData.hub.gpsLatitude_bp = 2;
+  telemetryData.hub.gpsLongitude_bp = 2;
+  telemetryData.hub.gpsFix = -1;
+#endif
 
-        setValue(sensor, isqrt32(result), UNIT_METERS);
-      }
-      break;
+#if defined(SIMU)
 
-    case TELEM_FORMULA_ADD:
-    case TELEM_FORMULA_AVERAGE:
-    case TELEM_FORMULA_MIN:
-    case TELEM_FORMULA_MAX:
-    case TELEM_FORMULA_MULTIPLY:
+#if defined(CPUARM)
+  telemetryData.swr.value = 30;
+  telemetryData.rssi.value = 75;
+#else
+  telemetryData.rssi[0].value = 75;
+  telemetryData.rssi[1].value = 75;
+  telemetryData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
+  telemetryData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
+#endif
+
+#if !defined(CPUARM)
+  telemetryData.hub.fuelLevel = 75;
+  telemetryData.hub.rpm = 12000;
+  telemetryData.hub.vfas = 100;
+  telemetryData.hub.minVfas = 90;
+
+#if defined(GPS)
+  telemetryData.hub.gpsFix = 1;
+  telemetryData.hub.gpsLatitude_bp = 4401;
+  telemetryData.hub.gpsLatitude_ap = 7710;
+  telemetryData.hub.gpsLongitude_bp = 1006;
+  telemetryData.hub.gpsLongitude_ap = 8872;
+  telemetryData.hub.gpsSpeed_bp = 200;  //in knots
+  telemetryData.hub.gpsSpeed_ap = 0;
+  getGpsPilotPosition();
+
+  telemetryData.hub.gpsLatitude_bp = 4401;
+  telemetryData.hub.gpsLatitude_ap = 7455;
+  telemetryData.hub.gpsLongitude_bp = 1006;
+  telemetryData.hub.gpsLongitude_ap = 9533;
+  getGpsDistance();
+#endif
+
+  telemetryData.hub.airSpeed = 1000; // 185.1 km/h
+
+  telemetryData.hub.cellsCount = 6;
+  telemetryData.hub.cellVolts[0] = 410/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.cellVolts[1] = 420/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.cellVolts[2] = 430/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.cellVolts[3] = 440/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.cellVolts[4] = 450/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.cellVolts[5] = 460/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.minCellVolts = 250/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
+  telemetryData.hub.minCell = 300;    //unit 10mV
+  telemetryData.hub.minCells = 220;  //unit 100mV
+  //telemetryData.hub.cellsSum = 261;    //calculated from cellVolts[]
+
+  telemetryData.hub.gpsAltitude_bp = 50;
+  telemetryData.hub.baroAltitude_bp = 50;
+  telemetryData.hub.minAltitude = 10;
+  telemetryData.hub.maxAltitude = 500;
+
+  telemetryData.hub.accelY = 100;
+  telemetryData.hub.temperature1 = -30;
+  telemetryData.hub.maxTemperature1 = 100;
+
+  telemetryData.hub.current = 55;
+  telemetryData.hub.maxCurrent = 65;
+#endif
+#endif
+
+/*Add some default sensor values to the simulator*/
+#if defined(CPUARM) && defined(SIMU)
+  for (int i=0; i<MAX_SENSORS; i++) {
+    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
+    switch (sensor.id)
     {
-      int32_t value=0, count=0, available=0, maxitems=4, mulprec=0;
-      if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
-        maxitems = 2;
-        value = 1;
-      }
-      for (int i=0; i<maxitems; i++) {
-        int8_t source = sensor.calc.sources[i];
-        if (source) {
-          unsigned int index = abs(source)-1;
-          TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-          TelemetryItem & telemetryItem = telemetryItems[index];
-          if (sensor.formula == TELEM_FORMULA_AVERAGE) {
-            if (telemetryItem.isAvailable())
-              available = 1;
-            else
-              continue;
-            if (telemetryItem.isOld())
-              continue;
-          }
-          else {
-            if (!telemetryItem.isAvailable()) {
-              return;
-            }
-            else if (telemetryItem.isOld()) {
-              lastReceived = TELEMETRY_VALUE_OLD;
-              return;
-            }
-          }
-          int32_t sensorValue = telemetryItem.value;
-          if (source < 0)
-            sensorValue = -sensorValue;
-          count += 1;
-          if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
-            mulprec += telemetrySensor.prec;
-            value *= convertTelemetryValue(sensorValue, telemetrySensor.unit, 0, sensor.unit, 0);
-          }
-          else {
-            sensorValue = convertTelemetryValue(sensorValue, telemetrySensor.unit, telemetrySensor.prec, sensor.unit, sensor.prec);
-            if (sensor.formula == TELEM_FORMULA_MIN)
-              value = (count==1 ? sensorValue : min<int32_t>(value, sensorValue));
-            else if (sensor.formula == TELEM_FORMULA_MAX)
-              value = (count==1 ? sensorValue : max<int32_t>(value, sensorValue));
-            else
-              value += sensorValue;
-          }
-        }
-      }
-      if (sensor.formula == TELEM_FORMULA_AVERAGE) {
-        if (count == 0) {
-          if (available)
-            lastReceived = TELEMETRY_VALUE_OLD;
-          return;
-        }
-        else {
-          value = (value + count/2) / count;
-        }
-      }
-      else if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
-        if (count == 0)
-          return;
-        value = convertTelemetryValue(value, sensor.unit, mulprec, sensor.unit, sensor.prec);
-      }
-      setValue(sensor, value, sensor.unit, sensor.prec);
-      break;
-    }
-
-    default:
-      break;
-  }
-}
-
-void delTelemetryIndex(uint8_t index)
-{
-  memclear(&g_model.telemetrySensors[index], sizeof(TelemetrySensor));
-  telemetryItems[index].clear();
-  storageDirty(EE_MODEL);
-}
-
-int availableTelemetryIndex()
-{
-  for (int index=0; index<MAX_SENSORS; index++) {
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (!telemetrySensor.isAvailable()) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-int lastUsedTelemetryIndex()
-{
-  for (int index=MAX_SENSORS-1; index>=0; index--) {
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.isAvailable()) {
-      return index;
-    }
-  }
-  return -1;
-}
-
-void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
-{
-  bool available = false;
-
-  for (int index=0; index<MAX_SENSORS; index++) {
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
-      telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
-      available = true;
-      // we continue search here, because sensors can share the same id and instance
-    }
-  }
-
-  if (available || !allowNewSensors) {
-    return;
-  }
-  
-  int index = availableTelemetryIndex();
-  if (index >= 0) {
-    switch (protocol) {
-#if defined(FRSKY_SPORT)
-      case TELEM_PROTO_FRSKY_SPORT:
-        frskySportSetDefault(index, id, subId, instance);
+      case RSSI_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 0, sensor.instance , 75, UNIT_RAW, 0);
         break;
+      case ADC1_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
+        break;
+      case ADC2_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, 0, sensor.instance, 245, UNIT_RAW, 0);
+        break;
+      case SWR_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 0, sensor.instance, 30, UNIT_RAW, 0);
+        break;
+      case BATT_ID:
+        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
+        break;
+    }
+  }
 #endif
-#if defined(FRSKY)
-      case TELEM_PROTO_FRSKY_D:
-        frskyDSetDefault(index, id);
-        break;
+}
+
+#if defined(CPUARM)
+// we don't reset the telemetry here as we would also reset the consumption after model load
+void telemetryInit(uint8_t protocol)
+{
+  if (protocol == PROTOCOL_FRSKY_D) {
+    telemetryPortInit(FRSKY_D_BAUDRATE);
+  }
+#if defined(CROSSFIRE)
+  else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
+    telemetryPortInit(CROSSFIRE_BAUDRATE);
+    telemetryPortSetDirectionOutput();
+  }
 #endif
-      default:
-        return;
-    }
-    telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+  else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
+    telemetryPortInit(0);
+    serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
   else {
-    POPUP_WARNING(STR_TELEMETRYFULL);
+    telemetryPortInit(FRSKY_SPORT_BAUDRATE);
   }
-}
 
-void TelemetrySensor::init(const char * label, uint8_t unit, uint8_t prec)
-{
-  memclear(this->label, TELEM_LABEL_LEN);
-  strncpy(this->label, label, TELEM_LABEL_LEN);
-  this->unit = unit;
-  if (prec > 1 && (IS_DISTANCE_UNIT(unit) || IS_SPEED_UNIT(unit))) {
-    // 2 digits precision is not needed here
-    prec = 1;
-  }
-  this->prec = prec;
-}
-
-void TelemetrySensor::init(uint16_t id)
-{
-  char label[4];
-  label[0] = hex2zchar((id & 0xf000) >> 12);
-  label[1] = hex2zchar((id & 0x0f00) >> 8);
-  label[2] = hex2zchar((id & 0x00f0) >> 4);
-  label[3] = hex2zchar((id & 0x000f) >> 0);
-  init(label);
-}
-
-bool TelemetrySensor::isAvailable() const
-{
-  return ZLEN(label) > 0;
-}
-
-PACK(typedef struct {
-  uint8_t unitFrom;
-  uint8_t unitTo;
-  int16_t multiplier;
-  int16_t divisor;
-}) UnitConversionRule;
-
-const UnitConversionRule unitConversionTable[] = {
-  /* unitFrom     unitTo                    multiplier   divisor */
-  { UNIT_METERS,            UNIT_FEET,             105,   32},
-  { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,   32},
-   
-  { UNIT_KTS, UNIT_KMH,                           1852, 1000}, // 1 knot = 1.85200 kilometers per hour
-  { UNIT_KTS, UNIT_MPH,                           1151, 1000}, // 1 knot = 1.15077945 miles per hour
-  { UNIT_KTS, UNIT_METERS_PER_SECOND,             1000, 1944}, // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
-  { UNIT_KTS, UNIT_FEET_PER_SECOND,               1688, 1000}, // 1 knot = 1.68780986 feet per second
-  
-  { UNIT_KMH, UNIT_KTS,                           1000, 1852}, // 1 km/h = 0.539956803 knots (divide with 1.85200)
-  { UNIT_KMH, UNIT_MPH,                           1000, 1609}, // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
-  { UNIT_KMH, UNIT_METERS_PER_SECOND,               10,   36}, // 1 km/h = 0.277777778 meters / second (divide with 3.6)
-  { UNIT_KMH, UNIT_FEET_PER_SECOND,                911, 1000}, // 1 km/h = 0.911344415 feet per second
-
-  { UNIT_MILLILITERS, UNIT_FLOZ, 100, 2957},
-  { 0, 0, 0, 0}   // termination
-};
-
-int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec)
-{
-  for (int i=prec; i<destPrec; i++)
-    value *= 10;
-
-  if (unit == UNIT_CELSIUS) {
-    if (destUnit == UNIT_FAHRENHEIT) {
-      // T(°F) = T(°C)×1,8 + 32
-      value = 32 + (value*18) / 10;
-    }
+#if defined(REVX) && !defined(SIMU)
+  if (serialInversion) {
+    setMFP();
   }
   else {
-    const UnitConversionRule * p = unitConversionTable;
-    while (p->divisor) {
-      if (p->unitFrom == unit && p->unitTo == destUnit) {
-        value = (value * (int32_t)p->multiplier) / (int32_t)p->divisor;
-        break;
-      }
-      ++p;
-    }
+    clearMFP();
   }
-  
-  for (int i=destPrec; i<prec; i++)
-    value /= 10;
-
-  return value;
+#endif
 }
-
-int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) const
+#else
+void telemetryInit()
 {
-  if (type == TELEM_TYPE_CUSTOM && custom.ratio) {
-    if (this->prec == 2) {
-      value *= 10;
-      prec = 2;
-    }
-    else {
-      prec = 1;
-    }
-    value = (custom.ratio * value + 122) / 255;
-  }
-
-  value = convertTelemetryValue(value, unit, prec, this->unit, this->prec);
-
-  if (type == TELEM_TYPE_CUSTOM) {
-    value += custom.offset;
-    if (value < 0 && onlyPositive) {
-      value = 0;
-    }
-  }
-
-  return value;
+  telemetryPortInit();
 }
+#endif
 
-bool TelemetrySensor::isConfigurable() const
+NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
-  if (type == TELEM_TYPE_CALCULATED) {
-    if (formula >= TELEM_FORMULA_CELL) {
-      return false;
-    }
-  }
-  else {
-    if (unit >= UNIT_FIRST_VIRTUAL)  {
-      return false;
-    }
-  }
-  return true;
+  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
 
-bool TelemetrySensor::isPrecConfigurable() const
-{
-  if (isConfigurable()) {
-    return true;
-  }
-  else if (unit == UNIT_CELLS) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-int32_t TelemetrySensor::getPrecMultiplier() const
-{
-  /*
-    Important: the return type must be signed, otherwise
-    mathematic operations with a negative telemetry value won't work
-  */
-  if (prec == 2) return 1;
-  if (prec == 1) return 10;
-  return 100;
-}
-
-int32_t TelemetrySensor::getPrecDivisor() const
-{
-  if (prec == 2) return 100;
-  if (prec == 1) return 10;
-  return 1;
-}
+#if defined(LUA)
+Fifo<LuaTelemetryValue, 16> * luaInputTelemetryFifo = NULL;
+Fifo<LuaTelemetryValue, 16> * luaOutputTelemetryFifo = NULL;
+#endif

@@ -80,7 +80,7 @@ void varioWakeup()
   if (isFunctionActive(FUNCTION_VARIO)) {
 #if defined(AUDIO)
     cli();
-    int16_t verticalSpeed = frskyData.hub.varioSpeed;
+    int16_t verticalSpeed = telemetryData.hub.varioSpeed;
     sei();
 
 #if defined(PCBSTD)
@@ -126,7 +126,7 @@ void varioWakeup()
 
 #elif defined(BUZZER) // && !defined(AUDIO)
 
-    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(frskyData.hub.varioSpeed/10), (int16_t)+100);
+    int8_t verticalSpeed = limit((int16_t)-100, (int16_t)(telemetryData.hub.varioSpeed/10), (int16_t)+100);
 
     uint16_t interval;
     if (verticalSpeed == 0) {

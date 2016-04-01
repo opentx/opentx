@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(FRSKY)
 
@@ -32,9 +32,6 @@ void telemetryEnableRx(void)
   UCSRB_N(TLM_USART) |= (1 << RXEN_N(TLM_USART));  // enable RX
   UCSRB_N(TLM_USART) |= (1 << RXCIE_N(TLM_USART)); // enable Interrupt
 }
-
-void processSerialData(uint8_t data);
-extern uint8_t frskyRxBufferCount; // TODO not driver, change name
 
 ISR(USART_RX_vect_N(TLM_USART))
 {
@@ -79,10 +76,10 @@ ISR(USART_RX_vect_N(TLM_USART))
 
   if (stat & ((1 << FE_N(TLM_USART)) | (1 << DOR_N(TLM_USART)) | (1 << UPE_N(TLM_USART)))) {
     // discard buffer and start fresh on any comms error
-    frskyRxBufferCount = 0;
+    telemetryRxBufferCount = 0;
   }
   else {
-    processSerialData(data);
+    processFrskyTelemetryData(data);
   }
 
   cli() ;

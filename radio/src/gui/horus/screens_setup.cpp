@@ -487,18 +487,21 @@ bool menuScreenSetup(int index, evt_t event)
   currentContainer = currentScreen;
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
 
-  const ZoneOption * options = currentScreen->getFactory()->getOptions();
-  int optionsCount = getOptionsCount(options);
-  linesCount = ITEM_SCREEN_SETUP_LAYOUT_OPTION1 + optionsCount;
-
   char title[] = "Main view X";
   title[sizeof(title)-2] = '1' + index;
   menuPageCount = updateMainviewsMenu();
 
-  uint8_t mstate_tab[2 + MAX_LAYOUT_OPTIONS] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW };
+  const ZoneOption * options = currentScreen->getFactory()->getOptions();
+  int optionsCount = getOptionsCount(options);
+  linesCount = ITEM_SCREEN_SETUP_LAYOUT_OPTION1 + optionsCount;
+  if (menuPageCount > 3)
+    ++linesCount;
+
+  uint8_t mstate_tab[2 + MAX_LAYOUT_OPTIONS + 1] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW };
   for (int i=0; i<optionsCount; i++) {
     mstate_tab[3+i] = getZoneOptionColumns(&options[i]);
   }
+  mstate_tab[3+optionsCount] = 0; // The remove button
 
   CUSTOM_MENU_WITH_OPTIONS(title, LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, index+1, linesCount);
 
@@ -533,24 +536,31 @@ bool menuScreenSetup(int index, evt_t event)
 
       default:
       {
-        uint8_t index = k - ITEM_SCREEN_SETUP_LAYOUT_OPTION1;
-        if (index < optionsCount) {
-          const ZoneOption * option = &options[index];
-          ZoneOptionValue * value = currentScreen->getOptionValue(index);
+        uint8_t o = k - ITEM_SCREEN_SETUP_LAYOUT_OPTION1;
+        if (o < optionsCount) {
+          const ZoneOption * option = &options[o];
+          ZoneOptionValue * value = currentScreen->getOptionValue(o);
           if (editZoneOption(y, option, value, attr, EE_MODEL, event)) {
             currentScreen->update();
+          }
+        }
+        else if (menuPageCount > 3 && o == optionsCount) {
+          drawButton(SCREENS_SETUP_2ND_COLUMN, y, STR_REMOVE_SCREEN, attr);
+          if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+            delete currentScreen;
+            if (index != MAX_CUSTOM_SCREENS-1) {
+              memmove(&g_model.screenData[index], &g_model.screenData[index + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - index - 1));
+              memmove(&customScreens[index], &customScreens[index + 1], sizeof(Layout *) * (MAX_CUSTOM_SCREENS - index - 1));
+            }
+            memset(&g_model.screenData[MAX_CUSTOM_SCREENS-1], 0, sizeof(CustomScreenData));
+            customScreens[MAX_CUSTOM_SCREENS-1] = NULL;
+            chainMenu(menuTabScreensSetup[index > 0 ? index : 1]);
+            return false;
           }
         }
         break;
       }
     }
-  }
-
-  if (menuVerticalPosition == -1 && index > 0 && event == EVT_KEY_LONG(KEY_ENTER)) {
-    killEvents(KEY_ENTER);
-    menuHorizontalPosition = index;
-    POPUP_MENU_ADD_ITEM(STR_REMOVE_SCREEN);
-    popupMenuHandler = onScreenSetupMenu;
   }
 
   return true;
@@ -592,23 +602,10 @@ bool menuScreenAdd(evt_t event)
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
     customScreens[menuPageCount-2] = registeredLayouts[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
     s_editMode = 0;
+    menuHorizontalPosition = -1;
     return false;
   }
 
   SIMPLE_MENU_WITH_OPTIONS("Add main view", LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, menuPageCount-1, 0);
   return true;
-}
-
-void onScreenSetupMenu(const char * result)
-{
-  if (result == STR_REMOVE_SCREEN) {
-    delete customScreens[menuHorizontalPosition];
-    if (menuHorizontalPosition != MAX_CUSTOM_SCREENS-1) {
-      memmove(&g_model.screenData[menuHorizontalPosition], &g_model.screenData[menuHorizontalPosition + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - menuHorizontalPosition - 1));
-      memmove(&customScreens[menuHorizontalPosition], &customScreens[menuHorizontalPosition + 1], sizeof(Layout *) * (MAX_CUSTOM_SCREENS - menuHorizontalPosition - 1));
-    }
-    memset(&g_model.screenData[MAX_CUSTOM_SCREENS-1], 0, sizeof(CustomScreenData));
-    customScreens[MAX_CUSTOM_SCREENS-1] = NULL;
-    // chainMenu(menuMainviews[menuHorizontalPosition > 0 ? menuHorizontalPosition-1 : 0]);
-  }
 }

@@ -9,10 +9,10 @@ option(CURVES "Curves" ON)
 option(GVARS "Global variables")
 option(GUI "GUI enabled" ON)
 option(SPLASH "Splash enabled" ON)
-option(PPM_UNIT "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)" PERCENT_PREC0)
+set(PPM_UNIT "PERCENT_PREC1" CACHE STRING "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)")
 option(PPM_CENTER_ADJUSTABLE "PPM center adjustable" OFF)
 option(PPM_LIMITS_SYMETRICAL "PPM limits symetrical" OFF)
-option(OVERRIDE_CHANNEL_FUNCTION "OverrideChannel function available" OFF)
+option(OVERRIDE_CHANNEL_FUNCTION "OverrideChannel function available" ON)
 option(DANGEROUS_MODULE_FUNCTIONS "Dangerous module functions (RangeCheck / Bind / Module OFF, etc.) available" OFF)
 option(FAI "Competition mode (no telemetry)" OFF)
 option(AUTOSOURCE "Automatic source detection in menus" ON)
@@ -407,11 +407,22 @@ if(CPU_FAMILY STREQUAL STM32)
     STM32_USB_Device_Library/Core/src/usbd_ioreq.c
     STM32_USB_Device_Library/Core/src/usbd_req.c
     )
-  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usb_bsp.c usbd_desc.c usbd_usr.cpp)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    usb_bsp.c
+    usbd_desc.c
+    usbd_usr.cpp
+    )
   if(USB STREQUAL SERIAL)
     add_definitions(-DUSB_SERIAL)
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_cdc.cpp)
-    set(STM32USB_SRC ${STM32USB_SRC} STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      usbd_cdc.cpp
+      )
+    set(STM32USB_SRC
+      ${STM32USB_SRC}
+      STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+      )
   elseif(USB STREQUAL MASSSTORAGE)
     add_definitions(-DUSB_MASS_STORAGE)
     set(STM32USB_SRC
@@ -421,13 +432,22 @@ if(CPU_FAMILY STREQUAL STM32)
       STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
       STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
       )
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_storage_msd.cpp)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      usbd_storage_msd.cpp
+      )
   else()
     add_definitions(-DUSB_JOYSTICK)
-    set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} usbd_hid_joystick.c)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      usbd_hid_joystick.c
+      )
   endif()
   if(GVARS)
-    set(GUI_SRC ${GUI_SRC} menu_model_gvars.cpp)
+    set(GUI_SRC
+      ${GUI_SRC}
+      menu_model_gvars.cpp
+      )
   endif()
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
@@ -436,12 +456,22 @@ if(CPU_FAMILY STREQUAL STM32)
     targets/taranis/configure_pins.cpp
     )
   foreach(FILE ${STM32LIB_SRC})
-    set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32LIB_DIR}/${FILE})
+    set(FIRMWARE_SRC
+      ${FIRMWARE_SRC}
+      ${STM32LIB_DIR}/${FILE}
+      )
   endforeach()
   foreach(FILE ${STM32USB_SRC})
-    set(FIRMWARE_SRC ${FIRMWARE_SRC} ${STM32USB_DIR}/${FILE})
+    set(FIRMWARE_SRC
+      ${FIRMWARE_SRC}
+      ${STM32USB_DIR}/${FILE}
+      )
   endforeach()
-  set(SRC ${SRC} sbus.cpp)
+  set(SRC
+    ${SRC}
+    sbus.cpp
+    telemetry/crossfire.cpp
+    )
 endif()
 
 if(ARCH STREQUAL ARM)
@@ -512,6 +542,8 @@ if(ARCH STREQUAL ARM)
     tasks_arm.cpp
     audio_arm.cpp
     telemetry/telemetry.cpp
+    telemetry/telemetry_holders.cpp
+    telemetry/telemetry_sensors.cpp
     telemetry/frsky.cpp
     telemetry/frsky_d_arm.cpp
     telemetry/frsky_sport.cpp
@@ -637,7 +669,7 @@ else()
     option(GPS "GPS support" ON)
     option(VARIO "Vario support" ON)
     add_definitions(-DFRSKY)
-    set(SRC ${SRC} telemetry/frsky.cpp telemetry/frsky_d.cpp)
+    set(SRC ${SRC} telemetry/telemetry.cpp telemetry/telemetry_holders.cpp telemetry/frsky.cpp telemetry/frsky_d.cpp)
     set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/common_avr/telemetry_driver.cpp)
     set(GUI_SRC ${GUI_SRC} view_telemetry.cpp)
     if(FRSKY_HUB)
@@ -918,7 +950,13 @@ if(ARCH STREQUAL ARM)
 
   set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
   set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
+  set(CMAKE_C_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -Wimplicit -g")
+  set(CMAKE_C_FLAGS_RELEASE "${COMMON_FLAGS} -Wimplicit")
+  set(CMAKE_C_FLAGS_DEBUG  "${COMMON_FLAGS} -Wimplicit -g")
   set(CMAKE_CXX_FLAGS "${COMMON_FLAGS}")
+  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -g")
+  set(CMAKE_CXX_FLAGS_RELEASE "${COMMON_FLAGS}")
+  set(CMAKE_CXX_FLAGS_DEBUG  "${COMMON_FLAGS} -g")
   set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
   if(PCB STREQUAL TARANIS)

@@ -256,7 +256,7 @@ void BitmapBuffer::drawFontPattern(coord_t x, coord_t y, const uint8_t * font, c
   lcdNextPos = x + width;
 }
 
-void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
+void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags)
 {
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
@@ -278,12 +278,6 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_
     else
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
-
-  char str[256];
-  if (flags & ZCHAR)
-    strcat_zchar(str, s, len);
-  else
-    strAppend(str, s, len);
 
   const coord_t orig_x = x;
   bool setx = false;

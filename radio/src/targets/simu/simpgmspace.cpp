@@ -880,7 +880,7 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
 FRESULT f_closedir (DIR * rep)
 {
   TRACE("f_closedir(%p)", rep);
-  simu::closedir((simu::DIR *)rep->fs);
+  if (rep->fs) simu::closedir((simu::DIR *)rep->fs);
   return FR_OK;
 }
 

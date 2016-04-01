@@ -56,7 +56,7 @@ void drawTopBar()
   theme->drawTopbarBackground(NULL);
 
   // USB icon
-  if (1/*usbPlugged()*/) {
+  if (usbPlugged()) {
     lcdDrawBitmapPattern(LCD_W-98, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
   }
 

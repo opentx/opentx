@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,29 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include "gtests.h"
+#ifndef _CROSSFIRE_H_
+#define _CROSSFIRE_H_
 
-#if defined(CROSSFIRE)
-TEST(Crossfire, createCrossfireFrame)
-{
-  int16_t pulsesStart[NUM_TRAINER];
-  uint8_t crossfire[CROSSFIRE_FRAME_LEN];
+#define LINK_STATS_ID  0x14
 
-  memset(crossfire, 0, sizeof(crossfire));
-  for (int i=0; i<NUM_TRAINER; i++) {
-    pulsesStart[i] = -1024 + (2048 / NUM_TRAINER) * i;
-  }
+void processCrossfireTelemetryData(uint8_t data);
+void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
 
-  createCrossfireFrame(crossfire, pulsesStart);
-
-  // TODO check
-}
-
-TEST(Crossfire, crc8)
-{
-  uint8_t frame[] = { 0x00, 0x0C, 0x14, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x01, 0x03, 0x00, 0x00, 0x00, 0xF4 };
-  uint8_t crc = crc8(&frame[2], frame[1]-1);
-  ASSERT_EQ(frame[frame[1]+1], crc);
-}
-#endif
-
+#endif // _CROSSFIRE_H_

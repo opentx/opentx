@@ -1,28 +1,12 @@
 /*
- * Authors (alphabetical order)
- * - Andre Bernet <bernet.andre@gmail.com>
- * - Andreas Weitl
- * - Bertrand Songis <bsongis@gmail.com>
- * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
- * - Cameron Weeks <th9xer@gmail.com>
- * - Erez Raviv
- * - Gabriel Birkus
- * - Jean-Pierre Parisy
- * - Karl Szmutny
- * - Michael Blandford
- * - Michal Hlavinka
- * - Pat Mackenzie
- * - Philip Moss
- * - Rob Thomson
- * - Romolo Manfredini <romolo.manfredini@gmail.com>
- * - Jacek Drewniak <jpdjpd33@gmail.com>
- * - Thomas Husterer
+ * Copyright (C) OpenTX
  *
- * opentx is based on code named
- * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
- * er9x by Erez Raviv: http://code.google.com/p/er9x/,
- * and the original (and ongoing) project by
- * Thomas Husterer, th9x: http://code.google.com/p/th9x/
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -33,6 +17,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
+ */
+
+// PL translations author: Jacek Drewniak <jpdjpd33@gmail.com>
+
+/*
  * !!!!! DO NOT EDIT pl.h - EDIT pl.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier pl.h.txt is parsed and national
@@ -43,15 +32,15 @@
  *
  */
 
-
-
-/* Formatting octal codes available in TR_ strings:
+/*
+ * Formatting octal codes available in TR_ strings:
  *  \037\x           -sets LCD x-coord (x value in octal)
  *  \036             -newline
  *  \035             -horizontal tab (ARM only)
  *  \001 to \034     -extended spacing (value * FW/2)
  *  \0               -ends current string
  */
+
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
@@ -391,7 +380,7 @@
   #define LEN_VUNITSSYSTEM     TR("\006", "\010") /*8 decimal*/
   #define TR_VUNITSSYSTEM      TR("Metr. ""Imper.", "Metryczn""Imperial")
   #define LEN_VTELEMUNIT       "\003"
-  #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""dB\0""rpm""g\0 ""@\0 ""ml\0""fOz"
+  #define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""ml\0""fOz"
 #else
   #if defined(IMPERIAL_UNITS)
     #define LENGTH_UNIT        LENGTH_UNIT_IMP
@@ -1172,3 +1161,13 @@
 #define ZSTR_BATT2_CONSUMPTION "RB2C"
 #define ZSTR_RB_STATE          "RBS"
 #define ZSTR_CHANS_STATE       "RBCS"
+#define ZSTR_RX_RSSI1          "1RSS"
+#define ZSTR_RX_RSSI2          "2RSS"
+#define ZSTR_RX_QUALITY        "RQly"
+#define ZSTR_RX_SNR            "RSNR"
+#define ZSTR_ANTENNA           "ANT"
+#define ZSTR_RF_MODE           "RFMD"
+#define ZSTR_TX_POWER          "TPWR"
+#define ZSTR_TX_RSSI           "TRSS"
+#define ZSTR_TX_QUALITY        "TQly"
+#define ZSTR_TX_SNR            "TSNR"

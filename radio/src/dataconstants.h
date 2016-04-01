@@ -346,6 +346,7 @@ enum TelemetryUnit {
   UNIT_PERCENT,
   UNIT_MAH,
   UNIT_WATTS,
+  UNIT_MILLIWATTS,
   UNIT_DB,
   UNIT_RPMS,
   UNIT_G,
@@ -473,7 +474,7 @@ enum TelemetryUnit {
   UNIT_SECONDS,
   UNIT_RPMS,
   UNIT_G,
-  UNIT_HDG,
+  UNIT_HDG
 };
 #endif
 

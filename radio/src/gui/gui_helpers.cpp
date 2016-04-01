@@ -457,11 +457,21 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 
 bool isModuleAvailable(int module)
 {
+#if defined(CROSSFIRE)
+  if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF) {
+    return false;
+  }
+#endif
   return true;
 }
 
 bool isRfProtocolAvailable(int protocol)
 {
+#if defined(CROSSFIRE)
+  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
+    return false;
+  }
+#endif
 #if defined(MODULE_D16_EU_ONLY_SUPPORT)
   if (protocol == RF_PROTO_D8) {
     return false;

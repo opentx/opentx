@@ -2,7 +2,16 @@
 
 import os
 import sys
+import subprocess
+import shutil
 from fwoptions import *
+
+# Error codes
+FIRMWARE_SIZE_TOO_BIG = 1
+COMPILATION_ERROR = 4
+INVALID_FIRMWARE = 5
+INVALID_BOARD = 6
+INVALID_LANGUAGE = 7
 
 # Board types
 BOARD_9X = 0
@@ -15,17 +24,18 @@ BOARD_HORUS = 4
 BOARD_FAMILY_AVR = 0
 BOARD_FAMILY_ARM = 1
 
-srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
-filename = sys.argv[1]
+if len(sys.argv) != 3:
+    exit(INVALID_FIRMWARE)
+
+what = sys.argv[1]
+directory, filename = os.path.split(sys.argv[2])
 root, ext = os.path.splitext(filename)
 options = root.split("-")
 
-if options[0] != "opentx":
-    sys.exit("Invalid firmware");
+if len(options) < 2 or options[0] != "opentx":
+    exit(INVALID_FIRMWARE)
 
-filename = "opentx-"
 optcount = 1
-
 command_options = {}
 
 if options[optcount] == "9x":
@@ -116,9 +126,23 @@ elif options[optcount] == "horus":
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
 else:
-    sys.exit("Unknown board")
+    exit(INVALID_BOARD)
 
-filename += options[optcount]
+if what == "firmware":
+    if board_family == BOARD_FAMILY_ARM:
+        ext = ".bin"
+    else:
+        ext = ".hex"
+    target = "firmware" + ext
+    filename = "opentx"
+elif what == "libsimulator":
+    ext = ".so"
+    target = "libopentx-" + options[optcount] + "-simulator.so"
+    filename = "libopentx"
+else:
+    exit(INVALID_BOARD)
+
+filename += "-" + options[optcount]
 optcount += 1
 
 # The firmware options
@@ -135,7 +159,7 @@ for opt, value in firmware_options.items():
     else:
         optvalue = value[2]
 
-    if optvalue != None:
+    if optvalue is not None:
         command_options[value[0]] = optvalue
 
 # The firmware display language
@@ -144,36 +168,57 @@ for key in languages:
     if key == options[-1]:
         language = key
 if not language:
-    sys.exit("Invalid language")
+    exit(INVALID_LANGUAGE)
 command_options["TRANSLATIONS"] = language.upper()
-filename += "-" + language
 
-if board_family == BOARD_FAMILY_ARM:
-    ext = ".bin"
-else:
-    ext = ".hex"
-filename += ext
-firmware = "firmware" + ext
+filename += "-" + language + ext
+srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
+path = os.path.join(directory, filename)
+outpath = path + ".out"
+errpath = path + ".err"
 
-# Launch CMake
-cmd = "cmake"
-for opt, value in command_options.items():
-    cmd += " -D%s=%s" % (opt, value)
-cmd += " " + srcdir
-if "OPENTX_VERSION_SUFFIX" in os.environ:
-    cmd += ' -DVERSION_SUFFIX="%s"' % os.environ["OPENTX_VERSION_SUFFIX"]
-print cmd
-os.system(cmd)
+if os.path.isfile(errpath):
+    exit(COMPILATION_ERROR)
 
-# Launch make firmware
-cmd = "make firmware"
-os.system(cmd)
+if not os.path.isfile(path):
+    # Launch CMake
+    cmd = ["cmake"]
+    for opt, value in command_options.items():
+        cmd.append("-D%s=%s" % (opt, value))
+    if "OPENTX_VERSION_SUFFIX" in os.environ:
+        cmd.append('-DVERSION_SUFFIX="%s"' % os.environ["OPENTX_VERSION_SUFFIX"])
+    cmd.append(srcdir)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = proc.communicate()
+    if proc.returncode == 0:
+        file(outpath, "a").write(output + error)
+    else:
+        file(errpath, "w").write(output + error)
+        exit(COMPILATION_ERROR)
 
-# Check binary size
-if board_family == BOARD_FAMILY_ARM:
-    size = os.stat(firmware).st_size
-else:
-    os.system("avr-size -A %s | grep Total | cut -f2- -d \" \" > ./size" % firmware)
-    size = file("./size").read().strip()
-if int(size) > maxsize:
-    exit("Invalid size")
+    # Launch make
+    cmd = ["make", what]
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = proc.communicate()
+    if proc.returncode == 0:
+        file(outpath, "a").write(output + error)
+    else:
+        file(errpath, "w").write(output + error)
+        exit(COMPILATION_ERROR)
+
+    if what == "firmware":
+        # Check binary size
+        if board_family == BOARD_FAMILY_ARM:
+            size = os.stat(target).st_size
+        else:
+            size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % target, shell=True)
+            size = int(size.strip())
+        if size > maxsize:
+            exit(FIRMWARE_SIZE_TOO_BIG)
+
+
+    # Copy binary to the binaries directory
+    shutil.copyfile(target, path)
+
+print filename
+exit(0)
