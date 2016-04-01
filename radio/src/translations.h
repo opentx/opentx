@@ -195,7 +195,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VFORMULAS         (OFS_VSENSORTYPES + sizeof(TR_VSENSORTYPES))
   #define OFS_VPREC             (OFS_VFORMULAS + sizeof(TR_VFORMULAS))
   #define OFS_VCELLINDEX        (OFS_VPREC + sizeof(TR_VPREC))
-  #define OFS_MAVLINK_BAUDS     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
+  #define OFS_VANTENNATYPES     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
+  #define OFS_MAVLINK_BAUDS     (OFS_VANTENNATYPES + sizeof(TR_VANTENNATYPES))
 #else
   #define OFS_MAVLINK_BAUDS	(OFS_VTRAINERMODES)
 #endif
@@ -309,6 +310,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_VFORMULAS         (STR_OPEN9X + OFS_VFORMULAS)
   #define STR_VPREC             (STR_OPEN9X + OFS_VPREC)
   #define STR_VCELLINDEX        (STR_OPEN9X + OFS_VCELLINDEX)
+  #define STR_VANTENNATYPES     (STR_OPEN9X + OFS_VANTENNATYPES)
 #endif
 
 #if defined(MAVLINK)
@@ -789,6 +791,9 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_TRAINER[];
   extern const pm_char STR_MODULE_BIND[];
   extern const pm_char STR_CHANNELRANGE[];
+  extern const pm_char STR_ANTENNASELECTION[];
+  extern const pm_char STR_ANTENNACONFIRM1[];
+  extern const pm_char STR_ANTENNACONFIRM2[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];

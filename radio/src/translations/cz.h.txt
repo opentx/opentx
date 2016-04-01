@@ -548,6 +548,9 @@
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Nízký\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Nejvíce""Delta\0"
 
+#define LEN_VANTENNATYPES      "\010"
+#define TR_VANTENNATYPES        "Internal""External"
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT               "\007"
@@ -945,6 +948,9 @@
 #define TR_UNIT                "Jednotky"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Přidat senzor ručně"
 #define TR_CHANNELRANGE        INDENT "Rozsah kanálů"
+#define TR_ANTENNASELECTION    INDENT "Antenna selection"
+#define TR_ANTENNACONFIRM1     "Really switch?"
+#define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
 #define TR_ENABLE_POPUP        "Povolit vyskakovací okno"

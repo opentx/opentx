@@ -65,6 +65,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_INTERNAL_MODULE_BIND,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
+  ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
@@ -178,6 +179,13 @@ bool menuModelSetup(evt_t event)
   int l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 
+  // Switch to external antenna confirmation
+  bool newAntennaSel;
+  if (warningResult) {
+    warningResult = 0;
+    g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = XJT_EXTERNAL_ANTENNA;
+  }
+
   MENU(STR_MENUSETUP, LBM_MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
@@ -187,6 +195,7 @@ bool menuModelSetup(evt_t event)
          INTERNAL_MODULE_CHANNELS_ROWS,
          IF_INTERNAL_MODULE_ON(IS_MODULE_XJT(INTERNAL_MODULE) ? (HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1) : (IS_MODULE_PPM(INTERNAL_MODULE) ? (uint8_t)1 : HIDDEN_ROW)),
          IF_INTERNAL_MODULE_ON((IS_MODULE_XJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW),
+         IF_INTERNAL_MODULE_ON(0),
          LABEL(ExternalModule),
          (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0,
          EXTERNAL_MODULE_CHANNELS_ROWS,
@@ -525,6 +534,19 @@ bool menuModelSetup(evt_t event)
             g_model.moduleData[0].channelsStart = 0;
             g_model.moduleData[0].channelsCount = 0;
           }
+        }
+        break;
+        
+      case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNASELECTION);
+        newAntennaSel = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppmPulsePol, 0, 1, attr, event);
+        if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].ppmPulsePol && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
+          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
+          const char * w = STR_ANTENNACONFIRM2;
+          SET_WARNING_INFO(w, strlen(w), 0);
+        }
+        else {
+          g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = newAntennaSel;
         }
         break;
 

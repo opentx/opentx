@@ -300,8 +300,18 @@ void setupPulsesPXX(unsigned int port)
     }
   }
 
-  /* CRC16 */
+  /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
+#if defined(PCBHORUS)
+  uint8_t antenna = XJT_INTERNAL_ANTENNA;
+  if (port == INTERNAL_MODULE) {
+    antenna = g_model.moduleData[INTERNAL_MODULE].ppmPulsePol;
+  }
+  putPcmByte (antenna, port);
+#else
   putPcmByte(0, port);
+#endif
+
+  /* CRC16 */
   pulseValue = modulePulsesData[port].pxx.pcmCrc;
   putPcmByte(pulseValue >> 8, port);
   putPcmByte(pulseValue, port);

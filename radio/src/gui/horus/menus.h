@@ -387,12 +387,12 @@ void insertMix(uint8_t idx);
 
 #define MENU_X                 80
 #define MENU_W                 LCD_W-(2*MENU_X)
-#define POPUP_X                130
+#define POPUP_X                120
 #define POPUP_Y                70
 #define POPUP_W                300
 #define POPUP_H                130
 #define WARNING_LINE_LEN       32
-#define WARNING_LINE_X         (POPUP_X+76)
+#define WARNING_LINE_X         (POPUP_X+66)
 #define WARNING_LINE_Y         (POPUP_Y+9)
 #define WARNING_INFOLINE_Y     (WARNING_LINE_Y+68)
 
