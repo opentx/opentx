@@ -181,10 +181,12 @@ void telemetryWakeup()
       audioEvent(AU_SENSOR_LOST);
     }
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) && FRSKY_BAD_ANTENNA()) {
       AUDIO_SWR_RED();
-      POPUP_WARNING(STR_ANTENNAPROBLEM);
+      POPUP_WARNING(STR_WARNING);
+      const char * w = STR_ANTENNAPROBLEM;
+      SET_WARNING_INFO(w, strlen(w), 0);
       SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
     }
 #endif
