@@ -427,7 +427,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
   return dest;
 }
 
-void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags flags)
+void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags flags)
 {
   char s[16];
   getSourceString(s, idx);
