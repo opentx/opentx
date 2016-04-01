@@ -23,7 +23,7 @@
 
 #include "widgets_container.h"
 
-#define MAX_TOPBAR_ZONES               5
+#define MAX_TOPBAR_ZONES               4
 #define MAX_TOPBAR_OPTIONS             0
 #define TOPBAR_ZONE_WIDTH              70
 #define TOPBAR_ZONE_MARGIN             3
