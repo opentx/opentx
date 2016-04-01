@@ -49,7 +49,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
   
   /* Configure DM and DP Pins */
   GPIO_InitStructure.GPIO_Pin = USB_GPIO_PIN_DM | USB_GPIO_PIN_DP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -60,7 +60,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE *pdev)
   
   /* Configure VBUS Pin */
   GPIO_InitStructure.GPIO_Pin = USB_GPIO_PIN_VBUS;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL ;

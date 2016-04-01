@@ -47,7 +47,7 @@ void bluetoothInit(uint32_t baudrate)
   GPIO_InitStructure.GPIO_Pin = BT_GPIO_PIN_BRTS;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(BT_GPIO_BRTS, &GPIO_InitStructure);
   GPIO_SetBits(BT_GPIO_BRTS, BT_GPIO_PIN_BRTS);
