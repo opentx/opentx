@@ -1746,4 +1746,6 @@ extern JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
 extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
 #endif  // defined(JITTER_MEASURE)
 
+#define WDT_500MS 500
+
 #endif // _OPENTX_H_
