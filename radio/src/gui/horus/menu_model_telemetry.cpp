@@ -426,7 +426,7 @@ bool menuModelTelemetry(evt_t event)
       lcdDrawSizedText(60, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isFresh()) {
-        lcdDrawText(100, y, "*");
+        lcdDrawText(130, y, "*");
       }
       if (telemetryItem.isAvailable()) {
         LcdFlags color = telemetryItem.isOld() ? ALARM_COLOR : TEXT_COLOR;

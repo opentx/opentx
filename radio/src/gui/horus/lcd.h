@@ -118,7 +118,7 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdF
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsSwitches(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
-void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
+void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
