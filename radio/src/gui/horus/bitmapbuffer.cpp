@@ -279,16 +279,19 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 
   if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
     flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
-    if (fontindex == TINSIZE_INDEX) {
+    if (fontindex == STDSIZE_INDEX) {
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      drawSolidFilledRect(x+width, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      fontcache = fontCache[1];
+    }
+    else if (fontindex == TINSIZE_INDEX) {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
     }
     else if (fontindex == SMLSIZE_INDEX) {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y+1, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT-5, TEXT_INVERTED_BGCOLOR);
     }
-    else if (fontindex == STDSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      drawSolidFilledRect(x+width, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      fontcache = fontCache[1];
+    else {
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
     }
   }
   else if (!(flags & NO_FONTCACHE)) {

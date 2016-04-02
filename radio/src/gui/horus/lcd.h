@@ -68,7 +68,8 @@ enum FontSizeIndex {
   SMLSIZE_INDEX,
   MIDSIZE_INDEX,
   DBLSIZE_INDEX,
-  XXLSIZE_INDEX
+  XXLSIZE_INDEX,
+  BOLDSTDSIZE_INDEX,
 };
 
 #define FONTSIZE(x)                    ((x) & 0x0700)
@@ -77,7 +78,8 @@ enum FontSizeIndex {
 #define MIDSIZE                        (MIDSIZE_INDEX << 8)
 #define DBLSIZE                        (DBLSIZE_INDEX << 8)
 #define XXLSIZE                        (XXLSIZE_INDEX << 8)
-#define BOLD                           0x0600
+#define BOLD                           (BOLDSTDSIZE_INDEX << 8)
+
 #define VERTICAL                       0x0800
 #define TIMEBLINK                      0x1000
 #define TIMEHOUR                       0x2000
