@@ -100,7 +100,7 @@ bool menuTextView(evt_t event)
       readTextFile(lines_count);
       break;
 
-    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_ROTARY_LEFT:
       if (menuVerticalOffset == 0)
         break;
       else
@@ -108,7 +108,7 @@ bool menuTextView(evt_t event)
       readTextFile(lines_count);
       break;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_ROTARY_RIGHT:
       if (menuVerticalOffset+NUM_BODY_LINES >= lines_count)
         break;
       else
@@ -116,7 +116,7 @@ bool menuTextView(evt_t event)
       readTextFile(lines_count);
       break;
 
-    case EVT_KEY_BREAK(KEY_EXIT):
+    case EVT_KEY_FIRST(KEY_EXIT):
       popMenu();
       break;
   }
@@ -131,7 +131,7 @@ bool menuTextView(evt_t event)
 #endif
 //   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 
-  drawVerticalScrollbar(LCD_W-5, 30, MENU_FOOTER_TOP-34, menuVerticalOffset, lines_count, NUM_BODY_LINES);
+  drawVerticalScrollbar(LCD_W-5, 50, 195, menuVerticalOffset, lines_count, NUM_BODY_LINES);
 
   return true;
 }

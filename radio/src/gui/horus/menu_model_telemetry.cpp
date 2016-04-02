@@ -505,7 +505,7 @@ bool menuModelTelemetry(evt_t event)
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_IGNORE_INSTANCE);
-        editCheckBox(g_model.ignoreSensorIds, TELEM_COL2, y, attr, event);
+        g_model.ignoreSensorIds = editCheckBox(g_model.ignoreSensorIds, TELEM_COL2, y, attr, event);
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
