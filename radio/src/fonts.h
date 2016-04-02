@@ -26,6 +26,9 @@
 extern const uint16_t * const fontspecsTable[16];
 extern const uint8_t * const fontsTable[16];
 
+extern BitmapBuffer * fontCache[2];
+void loadFontCache();
+
 #else
 
 extern const pm_uchar font_5x7[];

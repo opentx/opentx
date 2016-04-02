@@ -78,3 +78,23 @@ pm_uchar font_stdsizebold[] = {
 
 const uint16_t * const fontspecsTable[16] = { font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsizebold_specs };
 const uint8_t * const fontsTable[16] = { font_stdsize, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsizebold };
+
+BitmapBuffer * fontCache[2];
+
+BitmapBuffer * createFontCache(const uint8_t * font, LcdFlags fg, LcdFlags bg)
+{
+  coord_t width = *((uint16_t *)font);
+  coord_t height = *(((uint16_t *)font)+1);
+
+  BitmapBuffer * buffer = new BitmapBuffer(BMP_RGB565, width, height);
+  buffer->clear(bg);
+  buffer->drawBitmapPattern(0, 0, font, fg);
+
+  return buffer;
+}
+
+void loadFontCache()
+{
+  fontCache[0] = createFontCache(fontsTable[0], TEXT_COLOR, TEXT_BGCOLOR);
+  fontCache[1] = createFontCache(fontsTable[0], TEXT_INVERTED_COLOR, TEXT_INVERTED_BGCOLOR);
+}

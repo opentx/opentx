@@ -247,12 +247,19 @@ void BitmapBuffer::drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, 
   }
 }
 
-#define FONT_MAX_HEIGHT 42
-void BitmapBuffer::drawFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
+void BitmapBuffer::drawCharWithoutCache(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
   if (width > 0) drawBitmapPattern(x, y, font, flags, offset, width);
+  lcdNextPos = x + width;
+}
+
+void BitmapBuffer::drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer * font, const uint16_t * spec, int index, LcdFlags flags)
+{
+  coord_t offset = spec[index];
+  coord_t width = spec[index+1] - offset;
+  drawBitmap(x, y, font, offset, 0, width);
   lcdNextPos = x + width;
 }
 
@@ -263,6 +270,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   int fontindex = FONTSIZE(flags) >> 8;
   const pm_uchar * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
+  BitmapBuffer * fontcache = NULL;
 
   if (flags & RIGHT)
     x -= width;
@@ -271,12 +279,32 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 
   if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
     flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
-    if (FONTSIZE(flags) == TINSIZE)
+    if (fontindex == TINSIZE_INDEX) {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
-    else if (FONTSIZE(flags) == SMLSIZE)
+    }
+    else if (fontindex == SMLSIZE_INDEX) {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y+1, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT-5, TEXT_INVERTED_BGCOLOR);
-    else
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+    }
+    else if (fontindex == STDSIZE_INDEX) {
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      drawSolidFilledRect(x+width, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      fontcache = fontCache[1];
+    }
+  }
+  else if (!(flags & NO_FONTCACHE)) {
+    if (fontindex == STDSIZE_INDEX) {
+      uint16_t fgColor = lcdColorTable[COLOR_IDX(flags)];
+      uint16_t bgColor = *getPixelPtr(x, y);
+      if (fgColor == lcdColorTable[TEXT_COLOR_INDEX] && bgColor == lcdColorTable[TEXT_BGCOLOR_INDEX]) {
+        fontcache = fontCache[0];
+      }
+      else if (fgColor == lcdColorTable[TEXT_INVERTED_COLOR_INDEX] && bgColor == lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX]) {
+        fontcache = fontCache[1];
+      }
+      else {
+        // TRACE("No cache for \"%s\"", s);
+      }
+    }
   }
 
   const coord_t orig_x = x;
@@ -295,7 +323,12 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       break;
     }
     else if (c >= 0x20) {
-      drawFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
+      if (fontcache) {
+        drawCharWithCache(x, y, fontcache, fontspecs, getMappedChar(c), flags);
+      }
+      else {
+        drawCharWithoutCache(x, y, font, fontspecs, getMappedChar(c), flags);
+      }
       x = lcdNextPos;
     }
     else if (c == 0x1F) {  // X-coord prefix

@@ -105,7 +105,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
   }
   drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (menuHorizontalPosition<=0 ? attr : 0));
-  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR));
+  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition!=0 ? attr|TIMEHOUR : TIMEHOUR));
   if (attr && s_editMode>0) {
     switch (menuHorizontalPosition) {
       case 0:
@@ -203,14 +203,10 @@ bool menuModelSetup(evt_t event)
          IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)),
          LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2) });
 
-#if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
     moduleFlag[0] = 0;
-#if NUM_MODULES > 1
     moduleFlag[1] = 0;
-#endif
   }
-#endif
 
   int sub = menuVerticalPosition;
 
