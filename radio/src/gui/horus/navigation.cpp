@@ -412,13 +412,13 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
   if (menuTab && !calibrationState) {
     int cc = curr;
     switch (event) {
-      case EVT_KEY_BREAK(KEY_PGDN):
+      case EVT_KEY_FIRST(KEY_PGDN):
         if (++cc == menuTabSize)
           cc = 0;
         break;
 
 
-      case EVT_KEY_BREAK(KEY_PGUP):
+      case EVT_KEY_FIRST(KEY_PGUP):
         if (cc-- == 0)
           cc = menuTabSize-1;
         break;
