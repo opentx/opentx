@@ -39,7 +39,7 @@ struct TxInputs
     int  switches[C9X_NUM_SWITCHES];
     bool keys[C9X_NUM_KEYS];
     bool rotenc;
-    bool trims[8];
+    bool trims[12];
 };
 
 class TxOutputs

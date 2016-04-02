@@ -135,7 +135,11 @@ enum FailsafeModes {
 #define TRIM_RV_UP 5
 #define TRIM_RH_L  6
 #define TRIM_RH_R  7
-#define TRIM_NONE  8
+#define TRIM_T5_DN 8
+#define TRIM_T5_UP 9
+#define TRIM_T6_DN 10
+#define TRIM_T6_UP 11
+#define TRIM_NONE  12
 
 // Beep center bits
 #define BC_BIT_RUD (0x01)

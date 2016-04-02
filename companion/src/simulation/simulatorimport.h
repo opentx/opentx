@@ -37,7 +37,7 @@ for (int i=0; i<C9X_NUM_SWITCHES; i++)
   simuSetSwitch(i, inputs.switches[i]);
 for (int i=0; i<C9X_NUM_KEYS; i++)
   simuSetKey(i, inputs.keys[i]);
-for (int i=0; i<NUM_STICKS*2; i++)
+for (int i=0; i<(NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
   simuSetTrim(i, inputs.trims[i]);
 
 #ifdef PCBGRUVIN9X

@@ -141,7 +141,12 @@ void SimulatorDialogHorus::getValues()
       trimPressed == TRIM_RV_DN,
       trimPressed == TRIM_RV_UP,
       trimPressed == TRIM_RH_L,
-      trimPressed == TRIM_RH_R
+      trimPressed == TRIM_RH_R,
+      0,0,0,0
+      /*trimPressed == TRIM_T5_DN,
+      trimPressed == TRIM_T5_UP,
+      trimPressed == TRIM_T6_DN,
+      trimPressed == TRIM_T6_UP*/
     }
   };
 
