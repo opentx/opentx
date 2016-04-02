@@ -639,7 +639,11 @@ extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
 bool switchState(EnumKeys enuk);
-uint8_t trimDown(uint8_t idx);
+#if defined(PCBHORUS)
+  uint16_t trimDown(uint16_t idx);
+#else
+  uint8_t trimDown(uint8_t idx);
+#endif
 void readKeysAndTrims();
 
 uint16_t evalChkSum();
@@ -780,7 +784,7 @@ swsrc_t getMovedSwitch();
 #endif
 
 #if defined(GVARS)
-  extern int8_t trimGvar[NUM_STICKS];
+  extern int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS];
   #define TRIM_REUSED(idx) trimGvar[idx] >= 0
 #else
   #define TRIM_REUSED(idx) 0
@@ -1188,7 +1192,7 @@ extern CurveInfo curveInfo(uint8_t idx);
 #endif
 
 extern int16_t  anas [NUM_INPUTS];
-extern int16_t  trims[NUM_STICKS];
+extern int16_t  trims[NUM_STICKS+NUM_AUX_TRIMS];
 extern BeepANACenter bpanaCenter;
 
 extern uint8_t s_mixer_first_run_done;

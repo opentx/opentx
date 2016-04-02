@@ -346,7 +346,7 @@ PACK(typedef struct {
 }) TimerData_v217;
 
 PACK(typedef struct {
-  int16_t trim[4];
+  int16_t trim[NUM_STICKS];
   int8_t swtch;       // swtch of phase[0] is not used
   char name[LEN_FLIGHT_MODE_NAME];
   uint8_t fadeIn;

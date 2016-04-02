@@ -228,7 +228,12 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\003"
-#define TR_VMIXTRIMS           "AUS""EIN""Sei""Höh""Gas""Que" //Mixer Trim Werte
+
+#if defined(PCBHORUS)
+  #define TR_VMIXTRIMS         "AUS""EIN""Sei""Höh""Gas""Que""T5\0""T6\0"
+#else
+  #define TR_VMIXTRIMS         "AUS""EIN""Sei""Höh""Gas""Que" //Mixer Trim Werte
+#endif
 
 #if LCD_W >= 212
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
@@ -490,7 +495,12 @@
 #define LEN_VSRCRAW            "\004"
 
 #define TR_STICKS_VSRCRAW      TR("Sei\0""Höh\0""Gas\0""Qur\0", "\307Sei""\307Höh""\307Gas""\307Qur")
-#define TR_TRIMS_VSRCRAW       TR("TrmS""TrmH""TrmG""TrmQ", "\313Sei""\313Höh""\313Gas""\313Qur")
+
+#if defined(PCBHORUS)
+  #define TR_TRIMS_VSRCRAW     "\313Sei""\313Höh""\313Gas""\313Qur""\313T5\0""\313T6\0"
+#else
+  #define TR_TRIMS_VSRCRAW     TR("TrmS""TrmH""TrmG""TrmQ", "\313Sei""\313Höh""\313Gas""\313Qur")
+#endif
 
 #if defined(PCBHORUS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0"
@@ -516,7 +526,11 @@
   #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#define TR_TRIMS_SWITCHES      TR("tSl""tSr""tHd""tHu""tGd""tGu""tQl""tQr", "\313Sl""\313Sr""\313Hd""\313Hu""\313Gd""\313Gu""\313Ql""\313Qr")
+#if defined(PCBHORUS)
+  #define TR_TRIMS_SWITCHES    "\313Sl""\313Sr""\313Hd""\313Hu""\313Gd""\313Gu""\313Ql""\313Qr""\3135d""\3135u""\3136d""\3136u"
+#else
+  #define TR_TRIMS_SWITCHES    TR("tSl""tSr""tHd""tHu""tGd""tGu""tQl""tQr", "\313Sl""\313Sr""\313Hd""\313Hu""\313Gd""\313Gu""\313Ql""\313Qr")
+#endif
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS   "DGa\0"

@@ -224,7 +224,12 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\004"
-#define TR_VMIXTRIMS           "VYP\0""ZAP\0""Směr""Výšk""Plyn""Křid"
+
+#if defined(PCBHORUS)
+  #define TR_VMIXTRIMS         "VYP\0""ZAP\0""Směr""Výšk""Plyn""Křid""T5\0""T6\0"
+#else
+  #define TR_VMIXTRIMS         "VYP\0""ZAP\0""Směr""Výšk""Plyn""Křid"
+#endif
 
 #if LCD_W >= 212
   #define TR_CSWTIMER          "Timer"
@@ -487,7 +492,12 @@
 #define TR_INPUTNAMES          "Smer""Vysk""Plyn""Krid"
 
 #define TR_STICKS_VSRCRAW      TR("Směr""Výšk""Plyn""Křid", "\307Směr""\307Výšk""\307Plyn""\307Křid")
-#define TR_TRIMS_VSRCRAW       TR("TrmS""TrmV""TrmP""TrmK", "\313Směr""\313Výšk""\313Plyn""\313Křid")
+
+#if defined(PCBHORUS)
+  #define TR_TRIMS_VSRCRAW     "\313Směr""\313Výšk""\313Plyn""\313Křid""\313T5\0 ""\313T6\0 "
+#else
+  #define TR_TRIMS_VSRCRAW     TR("TrmS""TrmV""TrmP""TrmK", "\313Směr""\313Výšk""\313Plyn""\313Křid")
+#endif
 
 #if defined(PCBHORUS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0"
@@ -513,7 +523,11 @@
   #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#define TR_TRIMS_SWITCHES      TR("tSl""tSp""tVd""tVn""tPd""tPn""tKl""tKp", "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp")
+#if defined(PCBHORUS)
+  #define TR_TRIMS_SWITCHES    "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp""\3135d""\3135u""\3136d""\3136u"
+#else
+  #define TR_TRIMS_SWITCHES    TR("tSl""tSp""tVd""tVn""tPd""tPn""tKl""tKp", "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp")
+#endif
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS   "REa\0"

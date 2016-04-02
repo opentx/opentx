@@ -28,7 +28,7 @@
 #endif
 
 int16_t  anas [NUM_INPUTS] = {0};
-int16_t  trims[NUM_STICKS] = {0};
+int16_t  trims[NUM_STICKS+NUM_AUX_TRIMS] = {0};
 int32_t  chans[NUM_CHNOUT] = {0};
 BeepANACenter bpanaCenter = 0;
 
@@ -280,8 +280,8 @@ getvalue_t getValue(mixsrc_t i)
 #endif
   }
 
-  else if (i <= MIXSRC_TrimAil) {
-    return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_TrimRud));
+  else if (i <= MIXSRC_LAST_TRIM) {
+    return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_FIRST_TRIM));
   }
 
 #if defined(PCBFLAMENCO)

@@ -91,7 +91,7 @@ void copytrim_t(A * dest, B * src)
 template <class A, class B>
 void copyFlightModeData(A * dest, B * src)
 {
-  for (int i=0; i<4; i++) {
+  for (int i=0; i<NUM_STICKS; i++) {
     copytrim_t(&dest->trim[i], &src->trim[i]);
   }
   dest->swtch = src->swtch;

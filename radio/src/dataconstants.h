@@ -234,6 +234,12 @@ enum CurveType {
   #define NUM_ROTARY_ENCODERS          0
 #endif
 
+#if defined(PCBHORUS)
+  #define NUM_AUX_TRIMS                2
+#else
+  #define NUM_AUX_TRIMS                0
+#endif
+
 #if defined(COLORLCD)
 enum MainViews {
   VIEW_BLANK,
@@ -660,7 +666,15 @@ enum SwitchSources {
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
+#if defined(PCBHORUS)
+  SWSRC_TrimT5Down,
+  SWSRC_TrimT5Up,
+  SWSRC_TrimT6Down,
+  SWSRC_TrimT6Up,
+  SWSRC_LAST_TRIM = SWSRC_TrimT6Up,
+#else
   SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
+#endif
 
 #if defined(PCBSKY9X)
   SWSRC_REa,
@@ -803,7 +817,13 @@ enum MixSources {
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
   MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
   MIXSRC_TrimAil,                      LUA_EXPORT("trim-ail", "Aileron trim")
+#if defined(PCBHORUS)
+  MIXSRC_TrimT5,                       LUA_EXPORT("trim-t5", "Aux trim T5")
+  MIXSRC_TrimT6,                       LUA_EXPORT("trim-t6", "Aux trim T6")
+  MIXSRC_LAST_TRIM = MIXSRC_TrimT6,
+#else
   MIXSRC_LAST_TRIM = MIXSRC_TrimAil,
+#endif
 
   MIXSRC_FIRST_SWITCH,
 

@@ -58,6 +58,8 @@ enum FlightModesItems {
   ITEM_FLIGHT_MODES_TRIM_ELE,
   ITEM_FLIGHT_MODES_TRIM_THR,
   ITEM_FLIGHT_MODES_TRIM_AIL,
+  ITEM_FLIGHT_MODES_TRIM_T5,
+  ITEM_FLIGHT_MODES_TRIM_T6,
   ITEM_FLIGHT_MODES_FADE_IN,
   ITEM_FLIGHT_MODES_FADE_OUT,
   ITEM_FLIGHT_MODES_COUNT,
@@ -69,12 +71,12 @@ bool isTrimModeAvailable(int mode)
   return (mode < 0 || (mode%2) == 0 || (mode/2) != menuVerticalPosition);
 }
 
-#define FLIGHT_MODES_NAME_COLUMN      60
-#define FLIGHT_MODES_SWITCH_COLUMN    200
-#define FLIGHT_MODES_TRIMS_COLUMN     210
-#define FLIGHT_MODES_TRIM_WIDTH       25
-#define FLIGHT_MODES_FADEIN_COLUMN    400
-#define FLIGHT_MODES_FADEOUT_COLUMN   450
+#define FLIGHT_MODES_NAME_COLUMN      50
+#define FLIGHT_MODES_SWITCH_COLUMN    180
+#define FLIGHT_MODES_TRIMS_COLUMN     175
+#define FLIGHT_MODES_TRIM_WIDTH       26
+#define FLIGHT_MODES_FADEIN_COLUMN    420
+#define FLIGHT_MODES_FADEOUT_COLUMN   460
 
 bool menuModelFlightModesAll(evt_t event)
 {
@@ -149,6 +151,8 @@ bool menuModelFlightModesAll(evt_t event)
         case ITEM_FLIGHT_MODES_TRIM_ELE:
         case ITEM_FLIGHT_MODES_TRIM_THR:
         case ITEM_FLIGHT_MODES_TRIM_AIL:
+        case ITEM_FLIGHT_MODES_TRIM_T5:
+        case ITEM_FLIGHT_MODES_TRIM_T6:
         {
           uint8_t t = j-ITEM_FLIGHT_MODES_TRIM_RUD;
           if (active) {

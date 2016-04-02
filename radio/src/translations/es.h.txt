@@ -224,7 +224,12 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\003"
-#define TR_VMIXTRIMS           "OFF""ON\0""Dir""Ele""Ace""Ale"
+
+#if defined(PCBHORUS)
+  #define TR_VMIXTRIMS         "OFF""ON\0""Dir""Ele""Ace""Ale""T5\0""T6\0"
+#else
+  #define TR_VMIXTRIMS         "OFF""ON\0""Dir""Ele""Ace""Ale"
+#endif
 
 #if defined(PCBTARANIS)
   #define TR_CSWTIMER          "Timer"
@@ -478,6 +483,14 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
+#define TR_STICKS_VSRCRAW      TR("Dir\0""Ele\0""Thr\0""Ale\0", "\307Dir""\307Ele""\307Thr""\307Ale")
+
+#if defined(PCBHORUS)
+  #define TR_TRIMS_VSRCRAW     "\313Dir""\313Ele""\313Thr""\313Ale""\313T5\0""\313T6\0"
+#else
+  #define TR_TRIMS_VSRCRAW     TR("TrmD" "TrmE" "TrmT" "TrmA", "\313Dir""\313Ele""\313Thr""\313Ale")
+#endif
+
 #if defined(PCBHORUS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
@@ -502,7 +515,11 @@
   #define TR_LOGICALSW          "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#define TR_TRIMS_SWITCHES      TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr", "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar")
+#if defined(PCBHORUS)
+  #define TR_TRIMS_SWITCHES    "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar""\3135d""\3135u""\3136d""\3136u"
+#else
+  #define TR_TRIMS_SWITCHES    TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr", "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar")
+#endif
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS   "REa\0"
@@ -536,7 +553,7 @@
   #define TR_CYC_VSRCRAW       "[C1]""[C2]""[C3]"
 #endif
 
-#define TR_VSRCRAW             "---\0""Dir\0""Ele\0""Thr\0""Ale\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmE" "TrmT" "TrmA" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ABS""THs""TH%""THt"
