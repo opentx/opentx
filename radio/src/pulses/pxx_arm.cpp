@@ -304,7 +304,7 @@ void setupPulsesPXX(unsigned int port)
 #if defined(PCBHORUS)
   uint8_t antenna = XJT_INTERNAL_ANTENNA;
   if (port == INTERNAL_MODULE) {
-    antenna = g_model.moduleData[INTERNAL_MODULE].ppmPulsePol;
+    antenna = g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol;
   }
   putPcmByte (antenna, port);
 #else

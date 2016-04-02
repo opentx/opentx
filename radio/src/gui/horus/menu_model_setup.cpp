@@ -183,7 +183,7 @@ bool menuModelSetup(evt_t event)
   bool newAntennaSel;
   if (warningResult) {
     warningResult = 0;
-    g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = XJT_EXTERNAL_ANTENNA;
+    g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol = XJT_EXTERNAL_ANTENNA;
   }
 
   MENU(STR_MENUSETUP, LBM_MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
@@ -539,14 +539,14 @@ bool menuModelSetup(evt_t event)
         
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNASELECTION);
-        newAntennaSel = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppmPulsePol, 0, 1, attr, event);
-        if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].ppmPulsePol && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
+        newAntennaSel = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol, 0, 1, attr, event);
+        if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
           POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
           const char * w = STR_ANTENNACONFIRM2;
           SET_WARNING_INFO(w, strlen(w), 0);
         }
         else {
-          g_model.moduleData[INTERNAL_MODULE].ppmPulsePol = newAntennaSel;
+          g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol = newAntennaSel;
         }
         break;
 
