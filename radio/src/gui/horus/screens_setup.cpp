@@ -89,7 +89,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     else
       lcdDrawTextAtIndex(SCREENS_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr); // TODO define
     if (attr) {
-      if (event==EVT_KEY_BREAK(KEY_ENTER)) {
+      if (event==EVT_KEY_FIRST(KEY_ENTER)) {
         s_editMode = 0;
         if (sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(value->stringValue), value->stringValue, LIST_NONE_SD_FILE)) {
           fileSelectionDone = false;
@@ -230,13 +230,13 @@ bool menuWidgetChoice(evt_t event)
       break;
     }
 
-    case EVT_KEY_BREAK(KEY_EXIT):
+    case EVT_KEY_FIRST(KEY_EXIT):
       delete currentWidget;
       currentContainer->setWidget(currentZone, previousWidget);
       popMenu();
       return false;
 
-    case EVT_KEY_BREAK(KEY_ENTER):
+    case EVT_KEY_FIRST(KEY_ENTER):
       delete previousWidget;
       currentContainer->createWidget(currentZone, registeredWidgets[menuHorizontalPosition]);
       storageDirty(EE_MODEL);
@@ -296,7 +296,8 @@ bool menuWidgetsSetup(evt_t event)
     case EVT_ENTRY:
       menuVerticalPosition = 0;
       break;
-    case EVT_KEY_BREAK(KEY_EXIT):
+    case EVT_KEY_FIRST(KEY_EXIT):
+      killEvents(KEY_EXIT);
       popMenu();
       return false;
   }
@@ -319,7 +320,8 @@ bool menuWidgetsSetup(evt_t event)
     }
     if (menuVerticalPosition == i) {
       lcdDrawSolidRect(zone.x-padding, zone.y-padding, zone.w+2*padding, zone.h+2*padding, thickness, color);
-      if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+      if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+        killEvents(KEY_ENTER);
         currentZone = menuVerticalPosition;
         currentWidget = currentContainer->getWidget(menuVerticalPosition);
         if (currentWidget) {
@@ -395,7 +397,7 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
   }
   if (attr && menuHorizontalPosition >= 0) {
     lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 1, 57, 35, 1, TEXT_INVERTED_BGCOLOR);
-    if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    if (event == EVT_KEY_FIRST(KEY_ENTER)) {
       s_editMode = 0;
       return array[menuHorizontalPosition];
     }
@@ -457,7 +459,7 @@ bool menuScreensTheme(evt_t event)
         else if (index == optionsCount) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, "Top bar");
           drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup", attr);
-          if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+          if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
             currentScreen = customScreens[0];
             currentContainer = topbar;
             pushMenu(menuWidgetsSetup);
@@ -519,6 +521,7 @@ bool menuScreenSetup(int index, evt_t event)
           delete customScreens[index];
           currentScreen = customScreens[index] = factory->create(&g_model.screenData[index].layoutData);
           strncpy(g_model.screenData[index].layoutName, factory->getName(), sizeof(g_model.screenData[index].layoutName));
+          killEvents(KEY_ENTER);
           storageDirty(EE_MODEL);
         }
         break;
@@ -529,7 +532,7 @@ bool menuScreenSetup(int index, evt_t event)
 
       case ITEM_SCREEN_SETUP_WIDGETS_SETUP:
         drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup widgets", attr);
-        if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
           pushMenu(menuWidgetsSetup);
         }
         break;
@@ -546,7 +549,7 @@ bool menuScreenSetup(int index, evt_t event)
         }
         else if (menuPageCount > 3 && o == optionsCount) {
           drawButton(SCREENS_SETUP_2ND_COLUMN, y, STR_REMOVE_SCREEN, attr);
-          if (attr && event == EVT_KEY_BREAK(KEY_ENTER)) {
+          if (attr && event == EVT_KEY_LONG(KEY_ENTER)) {
             delete currentScreen;
             if (index != MAX_CUSTOM_SCREENS-1) {
               memmove(&g_model.screenData[index], &g_model.screenData[index + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - index - 1));
@@ -554,6 +557,7 @@ bool menuScreenSetup(int index, evt_t event)
             }
             memset(&g_model.screenData[MAX_CUSTOM_SCREENS-1], 0, sizeof(CustomScreenData));
             customScreens[MAX_CUSTOM_SCREENS-1] = NULL;
+            killEvents(KEY_ENTER);
             chainMenu(menuTabScreensSetup[index > 0 ? index : 1]);
             return false;
           }
@@ -599,10 +603,11 @@ bool menuScreenAdd(evt_t event)
 {
   menuPageCount = updateMainviewsMenu();
 
-  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+  if (event == EVT_KEY_FIRST(KEY_ENTER)) {
     customScreens[menuPageCount-2] = registeredLayouts[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
     s_editMode = 0;
     menuHorizontalPosition = -1;
+    killEvents(KEY_ENTER);
     return false;
   }
 

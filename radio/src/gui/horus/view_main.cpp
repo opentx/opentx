@@ -165,12 +165,12 @@ bool menuMainView(evt_t event)
       pushMenu(menuTabScreensSetup[1]);
       return false;
 
-    case EVT_KEY_BREAK(KEY_PGDN):
+    case EVT_KEY_FIRST(KEY_PGDN):
       storageDirty(EE_GENERAL);
       g_eeGeneral.view = circularIncDec(g_eeGeneral.view, +1, 0, getMainViewsCount()-1);
       break;
 
-    case EVT_KEY_BREAK(KEY_PGUP):
+    case EVT_KEY_FIRST(KEY_PGUP):
       killEvents(event);
       storageDirty(EE_GENERAL);
       g_eeGeneral.view = circularIncDec(g_eeGeneral.view, -1, 0, getMainViewsCount()-1);
@@ -193,6 +193,7 @@ bool menuMainView(evt_t event)
   return true;
 }
 
+#if 0
 bool menuMainViewChannelsMonitor(evt_t event)
 {
   switch (event) {
@@ -204,3 +205,4 @@ bool menuMainViewChannelsMonitor(evt_t event)
 
   return menuChannelsView(event);
 }
+#endif
