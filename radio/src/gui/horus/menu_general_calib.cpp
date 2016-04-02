@@ -110,11 +110,20 @@ bool menuCommonCalib(evt_t event)
 
   switch (event) {
     case EVT_ENTRY:
-    case EVT_KEY_BREAK(KEY_EXIT):
       calibrationState = CALIB_START;
       break;
+      
+    case EVT_KEY_FIRST(KEY_EXIT):
+      if (calibrationState == CALIB_START) {
+        killEvents(KEY_EXIT);
+        popMenu();
+      }
+      else {
+        calibrationState = CALIB_START;
+      }
+      break;
 
-    case EVT_KEY_BREAK(KEY_ENTER):
+    case EVT_KEY_FIRST(KEY_ENTER):
       calibrationState++;
       break;
   }
