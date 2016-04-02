@@ -296,7 +296,8 @@ bool menuWidgetsSetup(evt_t event)
     case EVT_ENTRY:
       menuVerticalPosition = 0;
       break;
-    case EVT_KEY_BREAK(KEY_EXIT):
+    case EVT_KEY_FIRST(KEY_EXIT):
+      killEvents(KEY_EXIT);
       popMenu();
       return false;
   }

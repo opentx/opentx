@@ -231,8 +231,9 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
               lcdDrawSizedText(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
             else
               lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, 0, attr);
-            if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
-              s_editMode = 0;
+            if (attr) s_editMode = 0;
+            if (attr && event==EVT_KEY_FIRST(KEY_ENTER)) {
+              killEvents(KEY_ENTER);
               char directory[256];
               if (func==FUNC_PLAY_SCRIPT) {
                 strcpy(directory, SCRIPTS_FUNCS_PATH);
