@@ -605,9 +605,11 @@ bool menuScreenAdd(evt_t event)
 
   if (event == EVT_KEY_FIRST(KEY_ENTER)) {
     customScreens[menuPageCount-2] = registeredLayouts[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
+    strncpy(g_model.screenData[menuPageCount-2].layoutName, registeredLayouts[0]->getName(), sizeof(g_model.screenData[menuPageCount-2].layoutName));
     s_editMode = 0;
     menuHorizontalPosition = -1;
     killEvents(KEY_ENTER);
+    storageDirty(EE_MODEL);
     return false;
   }
 
