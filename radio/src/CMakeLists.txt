@@ -20,6 +20,7 @@ option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
+option(SIMU_AUDIO "Enable simulator audio" OFF)
 
 enable_language(ASM)
 set(OPT s)
@@ -856,6 +857,10 @@ endif()
 
 if(WATCHDOG_DISABLED)
   add_definitions(-DWATCHDOG_DISABLED)
+endif()
+
+if(SIMU_AUDIO)
+  add_definitions(-DSIMU_AUDIO)
 endif()
 
 if(SDCARD)

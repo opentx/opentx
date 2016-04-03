@@ -533,6 +533,8 @@ void * audioThread(void *)
   }
   SDL_PauseAudio(0);
 
+  referenceSystemAudioFiles();
+
   while (simuAudio.threadRunning) {
     audioQueue.wakeup();
     sleep(1);
