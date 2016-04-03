@@ -454,6 +454,35 @@ void printDebugTimers()
 }
 #endif
 
+#include "OsMutex.h"
+extern OS_MutexID audioMutex;
+
+void printAudioVars()
+{
+  for(int n = 0; n < AUDIO_BUFFER_COUNT; n++) {
+    serialPrint("Audio Buffer %d: size: %u, state: %u, ", n, (uint32_t)audioBuffers[n].size, (uint32_t)audioBuffers[n].state);
+    dump((uint8_t *)audioBuffers[n].data, 32);
+  }
+  serialPrint("fragments:");
+  for(int n = 0; n < AUDIO_QUEUE_LENGTH; n++) {
+    serialPrint("%d: type %u: id: %u, repeat: %u, ", n, (uint32_t)audioQueue.fragments[n].type, 
+                                                        (uint32_t)audioQueue.fragments[n].id, 
+                                                        (uint32_t)audioQueue.fragments[n].repeat);
+    if ( audioQueue.fragments[n].type == FRAGMENT_FILE) {
+      serialPrint(" file: %s", audioQueue.fragments[n].file);
+    }
+  }
+
+  serialPrint("audioQueue:");
+  serialPrint("  ridx: %d, widx: %d", audioQueue.ridx, audioQueue.widx);
+  serialPrint("  bufferRIdx: %d, bufferWIdx: %d", audioQueue.bufferRIdx, audioQueue.bufferWIdx);
+
+  serialPrint("normalContext: %u", (uint32_t)audioQueue.normalContext.fragment.type);
+
+  serialPrint("audioMutex[%u] = %u", (uint32_t)audioMutex, (uint32_t)MutexTbl[audioMutex].mutexFlag);
+}
+
+
 int cliDisplay(const char ** argv)
 {
   long long int address = 0;
@@ -599,6 +628,9 @@ int cliDisplay(const char ** argv)
     printDebugTimers();
   }
 #endif
+  else if (!strcmp(argv[1], "audio")) {
+    printAudioVars();
+  }
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {
@@ -670,6 +702,7 @@ const CliCommand cliCommands[] = {
   { "readsd", cliReadSD, "<start sector> <sectors count> <read buffer size (sectors)>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
+  { "p", cliDisplay, "<address> [<size>] | <what>" },
   { "reboot", cliReboot, "[wdt]" },
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
