@@ -473,6 +473,10 @@ if(CPU_FAMILY STREQUAL STM32)
     sbus.cpp
     telemetry/crossfire.cpp
     )
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    crossfire.cpp
+    )
 endif()
 
 if(ARCH STREQUAL ARM)
@@ -601,11 +605,11 @@ if(ARCH STREQUAL ARM)
     ${COOS_DIR}/portable/arch.c
     )
   set(PULSES_SRC
+    ${PULSES_SRC}
     pulses_arm.cpp
     ppm_arm.cpp
     pxx_arm.cpp
     dsm2_arm.cpp
-    crossfire.cpp
     )
 else()
   option(EXT "Telemetry protocol" OFF) # TODO rename this EXT option to TELEMETRY
