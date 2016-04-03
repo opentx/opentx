@@ -175,6 +175,8 @@ extern "C" void DMA2_Stream7_IRQHandler(void)
 extern "C" void TIM1_CC_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_TIM1CC);
+  DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
+  DEBUG_TIMER_START(debugTimerIntPulsesDuration);
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;       // stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
 
@@ -206,6 +208,7 @@ extern "C" void TIM1_CC_IRQHandler()
   }
 
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+  DEBUG_TIMER_STOP(debugTimerIntPulsesDuration);
 }
 #endif
 

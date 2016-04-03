@@ -22,18 +22,25 @@
 
 bool menuGeneralVersion(evt_t event)
 {
+  DEBUG_TIMER_START(debugTimerVersion);
+  DEBUG_TIMER_START(debugTimerSimpleMenu);
   SIMPLE_MENU(STR_MENUVERSION, LBM_RADIO_ICONS, menuTabGeneral, e_Vers, 0);
+  DEBUG_TIMER_STOP(debugTimerSimpleMenu);
 
+  DEBUG_TIMER_START(debugTimerDrawText);
+  DEBUG_TIMER_START(debugTimerDrawText1);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, vers_stamp);
+  DEBUG_TIMER_STOP(debugTimerDrawText1);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, date_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, time_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
+  DEBUG_TIMER_STOP(debugTimerDrawText);
 
   // TODO EEPROM erase + backup
   // lcd_putsCenter(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
   // if (event == EVT_KEY_LONG(KEY_ENTER)) {
   //   backupEeprom();
   // }
-
+  DEBUG_TIMER_STOP(debugTimerVersion);
   return true;
 }

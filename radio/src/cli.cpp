@@ -423,9 +423,36 @@ void printTaskSwitchLog()
   delete[] tsl;
   serialCrlf();
 }
-
-
 #endif // #if defined(DEBUG_TASKS)
+
+#if defined(DEBUG_TIMERS)
+
+void printDebugTime(uint32_t time)
+{
+  if (time >= 30000) {
+    serialPrintf("%dms", time/1000);
+  }
+  else {
+    serialPrintf("%d.%03dms", time/1000, time%1000);
+  }
+}
+
+void printDebugTimer(const char * name, DebugTimer & timer) 
+{
+  serialPrintf("%s: ", name);
+  printDebugTime( timer.getMin());
+  serialPrintf(" - ");
+  printDebugTime(timer.getMax());
+  serialCrlf();
+  timer.reset();
+}
+void printDebugTimers()
+{
+  for(int n = 0; n < DEBUG_TIMERS_COUNT; n++) {
+    printDebugTimer(debugTimerNames[n], debugTimers[n]);
+  }
+}
+#endif
 
 int cliDisplay(const char ** argv)
 {
@@ -531,6 +558,9 @@ int cliDisplay(const char ** argv)
         case 2:
           tim = TIM2;
           break;
+        case 13:
+          tim = TIM13;
+          break;
         default:
           return 0;
       }
@@ -558,12 +588,17 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "int")) {
     printInterrupts();
   }
-#endif //#if defined(DEBUG_INTERRUPTS)
+#endif
 #if defined(DEBUG_TASKS)
   else if (!strcmp(argv[1], "tsl")) {
     printTaskSwitchLog();
   }
-#endif //#if defined(DEBUG_TASKS)
+#endif
+#if defined(DEBUG_TIMERS)
+  else if (!strcmp(argv[1], "dt")) {
+    printDebugTimers();
+  }
+#endif
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {

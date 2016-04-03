@@ -82,17 +82,23 @@ void interrupt1ms()
   if (pre_scale == 5 || pre_scale == 10) {
 
 #if defined(HAPTIC)
+    DEBUG_TIMER_START(debugTimerHaptic);
     HAPTIC_HEARTBEAT();
+    DEBUG_TIMER_STOP(debugTimerHaptic);
 #endif
 
   }
 
   if ( pre_scale == 10 ) {
     pre_scale = 0 ;
+    DEBUG_TIMER_START(debugTimerPer10ms);
     per10ms();
+    DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
 
+  DEBUG_TIMER_START(debugTimerRotEnc);
   checkRotaryEncoder();
+  DEBUG_TIMER_STOP(debugTimerRotEnc);
 }
 
 #if !defined(SIMU)

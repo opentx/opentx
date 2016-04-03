@@ -1588,6 +1588,7 @@ void getADC()
   }
 #endif
 
+  DEBUG_TIMER_START(debugTimerAdcRead);
   for (uint8_t i=0; i<4; i++) {
     adcRead();
     for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
@@ -1600,6 +1601,7 @@ void getADC()
       temp[x] += val;
     }
   }
+  DEBUG_TIMER_STOP(debugTimerAdcRead);
 
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> (3 - ANALOG_SCALE);
@@ -1773,13 +1775,17 @@ void doMixerCalculations()
   // therefore forget the exact calculation and use only 1 instead; good compromise
   lastTMR = tmr10ms;
 
+  DEBUG_TIMER_START(debugTimerGetAdc);
   getADC();
+  DEBUG_TIMER_STOP(debugTimerGetAdc);
 
 #if defined(PCBTARANIS)
   processSbusInput();
 #endif
 
+  DEBUG_TIMER_START(debugTimerGetSwitches);
   getSwitchesPosition(!s_mixer_first_run_done);
+  DEBUG_TIMER_STOP(debugTimerGetSwitches);
 
 #if defined(PCBSKY9X) && !defined(REVA) && !defined(SIMU)
   Current_analogue = (Current_analogue*31 + s_anaFilt[8] ) >> 5 ;
@@ -1791,13 +1797,16 @@ void doMixerCalculations()
   adcPrepareBandgap();
 #endif
 
+  DEBUG_TIMER_START(debugTimerEvalMixes);
   evalMixes(tick10ms);
+  DEBUG_TIMER_STOP(debugTimerEvalMixes);
 
 #if !defined(CPUARM)
   // Bandgap has had plenty of time to settle...
   getADC_bandgap();
 #endif
 
+  DEBUG_TIMER_START(debugTimerMixes10ms);
   if (tick10ms) {
 
 #if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
@@ -1942,6 +1951,7 @@ void doMixerCalculations()
     checkTrims();
 #endif
   }
+  DEBUG_TIMER_STOP(debugTimerMixes10ms);
 
   s_mixer_first_run_done = true;
 }

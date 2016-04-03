@@ -105,12 +105,16 @@ void mixerTask(void * pdata)
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
+      DEBUG_TIMER_START(debugTimerMixer);
       CoEnterMutexSection(mixerMutex);
       doMixerCalculations();
       CoLeaveMutexSection(mixerMutex);
+      DEBUG_TIMER_STOP(debugTimerMixer);
 
 #if defined(FRSKY) || defined(MAVLINK)
+      DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
+      DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
 #endif
 
       if (heartbeat == HEART_WDT_CHECK) {
@@ -145,10 +149,12 @@ void menusTask(void * pdata)
 #else
   while (pwrCheck() != e_power_off) {
 #endif
-    U64 start = CoGetOSTime();
+    uint32_t start = (uint32_t)CoGetOSTime();
+    DEBUG_TIMER_START(debugTimerPerMain);
     perMain();
+    DEBUG_TIMER_STOP(debugTimerPerMain);
     // TODO remove completely massstorage from sky9x firmware
-    U32 runtime = (U32)(CoGetOSTime() - start);
+    uint32_t runtime = ((uint32_t)CoGetOSTime() - start);
     // deduct the thread run-time from the wait, if run-time was more than
     // desired period, then skip the wait all together
     if (runtime < MENU_TASK_PERIOD_TICKS) {
