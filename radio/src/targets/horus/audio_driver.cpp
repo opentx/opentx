@@ -396,15 +396,15 @@ void audioConsumeCurrentBuffer()
   }
 }
 
-bool audioPushBuffer(AudioBuffer * buffer)
+void audioPushBuffer(AudioBuffer * buffer)
 {
   if (!currentBuffer) {
+    buffer->state = AUDIO_BUFFER_PLAYING;
     audioSetCurrentBuffer(buffer);
     audioConsumeCurrentBuffer();
-    return true;
   }
   else {
-    return false;
+    buffer->state = AUDIO_BUFFER_FILLED;
   }
 }
 

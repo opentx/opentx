@@ -166,7 +166,7 @@ class MixedContext {
     int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
 };
 
-bool audioPushBuffer(AudioBuffer * buffer);
+void audioPushBuffer(AudioBuffer * buffer);
 
 class AudioQueue {
 
@@ -174,7 +174,9 @@ class AudioQueue {
 #if defined(SIMU_AUDIO)
   friend void *audioThread(void *);
 #endif
-
+#if defined(CLI)
+  friend void printAudioVars();
+#endif
   public:
 
     AudioQueue();

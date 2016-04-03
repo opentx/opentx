@@ -93,10 +93,10 @@ void dacInit()
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
-bool audioPushBuffer(AudioBuffer *buffer)
+void audioPushBuffer(AudioBuffer *buffer)
 {
+  buffer->state = AUDIO_BUFFER_FILLED;
   dacStart();
-  return false;
 }
 
 extern "C" void DAC_IRQHandler()

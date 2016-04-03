@@ -416,9 +416,9 @@ struct SimulatorAudio {
   pthread_t threadPid;
 } simuAudio;
 
-bool audioPushBuffer(AudioBuffer * buffer)
+void audioPushBuffer(AudioBuffer * buffer)
 {
-  return false;
+  buffer->state = AUDIO_BUFFER_FILLED;
 }
 #endif
 

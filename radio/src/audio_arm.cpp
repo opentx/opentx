@@ -781,7 +781,7 @@ void AudioQueue::wakeup()
       // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
-      buffer->state = audioPushBuffer(buffer) ? AUDIO_BUFFER_PLAYING : AUDIO_BUFFER_FILLED;
+      audioPushBuffer(buffer);
       __enable_irq();
     }
   }
