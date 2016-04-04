@@ -451,6 +451,8 @@ void pushModelNotes();
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, int x, int y, int width);
 
+void onSourceLongEnterPress(const char *result);
+
 uint8_t switchToMix(uint8_t source);
 
 #endif // _MENUS_H_
