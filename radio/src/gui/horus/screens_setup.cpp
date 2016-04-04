@@ -438,6 +438,7 @@ bool menuScreensTheme(evt_t event)
           new_theme->init();
           loadTheme(new_theme);
           strncpy(g_eeGeneral.themeName, new_theme->getName(), sizeof(g_eeGeneral.themeName));
+          killEvents(KEY_ENTER);
           storageDirty(EE_GENERAL);
         }
         break;
