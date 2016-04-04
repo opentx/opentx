@@ -567,7 +567,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
               numLines++;
             }
           }
-          if (menuVerticalPosition >= lastLine || horTab[firstLine] == ORPHAN_ROW) {
+          if (menuVerticalPosition >= lastLine || ((firstLine <= horTabMax) && (horTab[firstLine] == ORPHAN_ROW))) {
             menuVerticalOffset++;
           }
           else {
