@@ -83,6 +83,7 @@ void audioPushBuffer(AudioBuffer * buffer)
     AUDIO_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE ;               // Enable DMA channel and interrupt
     DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
     DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
+  }
   else {
     buffer->state = AUDIO_BUFFER_FILLED;
   }
