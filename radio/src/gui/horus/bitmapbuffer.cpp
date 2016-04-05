@@ -326,6 +326,11 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       break;
     }
     else if (c >= 0x20) {
+#if defined(TRANSLATIONS_FR)
+      if (c >= 0x80 && c <= 0x85) {
+        c = 0x20 + 115 + c - 0x80;
+      }
+#endif
       if (fontcache) {
         drawCharWithCache(x, y, fontcache, fontspecs, getMappedChar(c), flags);
       }

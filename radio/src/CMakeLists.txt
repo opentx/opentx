@@ -38,6 +38,7 @@ configure_file(stamp.h.in stamp.h @ONLY)
 
 add_subdirectory(translations)
 add_subdirectory(bitmaps)
+add_subdirectory(fonts)
 add_subdirectory(lua)
 
 set(EEPROM_VARIANT  0)
