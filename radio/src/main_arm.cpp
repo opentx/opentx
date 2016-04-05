@@ -253,7 +253,7 @@ void guiMain(evt_t evt)
       }
 
       if (menuEvent == EVT_ENTRY) {
-        menuVerticalPosition = -1;
+        menuVerticalPosition = 0;
         menuHorizontalPosition = 0;
         evt = menuEvent;
         menuEvent = 0;
