@@ -323,7 +323,8 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 }
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
-#define MAXCOL_RAW(row)                ((row) >= 0 && horTab ? pgm_read_byte(horTab+min<int>(row, (int)horTabMax)) : (const uint8_t)0)
+#define HORTAB(row)                    (int8_t(row) > (int8_t)horTabMax ? horTab[horTabMax] : horTab[row])
+#define MAXCOL_RAW(row)                (horTab ? HORTAB(row) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #define INC(val, min, max)             if (val<max) {val++;} else if (max>min) {val=min;}
@@ -542,7 +543,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
     if (horTab) {
       linesCount = 0;
       for (int i=0; i<rowcount; i++) {
-        if (i>horTabMax || horTab[i] != HIDDEN_ROW) {
+        if (HORTAB(i) != HIDDEN_ROW) {
           linesCount++;
         }
       }
@@ -553,7 +554,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
       while (1) {
         int firstLine = 0;
         for (int numLines=0; firstLine<rowcount && numLines<menuVerticalOffset; firstLine++) {
-          if (firstLine>=horTabMax || horTab[firstLine] != HIDDEN_ROW) {
+          if (HORTAB(firstLine) != HIDDEN_ROW) {
             numLines++;
           }
         }
@@ -563,17 +564,17 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
         else {
           int lastLine = firstLine;
           for (int numLines=0; lastLine<rowcount && numLines<linesDisplayed; lastLine++) {
-            if (lastLine >= horTabMax || horTab[lastLine] != HIDDEN_ROW) {
+            if (HORTAB(lastLine) != HIDDEN_ROW) {
               numLines++;
             }
           }
-          if (menuVerticalPosition >= lastLine || ((firstLine <= horTabMax) && (horTab[firstLine] == ORPHAN_ROW))) {
+          if (menuVerticalPosition >= lastLine || HORTAB(firstLine) == ORPHAN_ROW) {
             menuVerticalOffset++;
           }
           else {
             linesCount = menuVerticalOffset + linesDisplayed;
             for (int i=lastLine; i<rowcount; i++) {
-              if (i > horTabMax || horTab[i] != HIDDEN_ROW) {
+              if (HORTAB(i) != HIDDEN_ROW) {
                 linesCount++;
               }
             }
