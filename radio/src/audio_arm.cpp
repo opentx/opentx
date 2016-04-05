@@ -20,7 +20,8 @@
 
 #include "opentx.h"
 #include <math.h>
-
+#include <strings.h>
+ 
 extern OS_MutexID audioMutex;
 
 const int16_t sineValues[] =
