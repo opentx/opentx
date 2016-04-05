@@ -91,8 +91,11 @@ uint16_t stackAvailable()
 }
 #endif
 
+uint32_t nextMixerTime[NUM_MODULES];
+
 void mixerTask(void * pdata)
 {
+  static uint32_t lastRunTime;
   s_pulses_paused = true;
 
   while(1) {
@@ -102,12 +105,35 @@ void mixerTask(void * pdata)
       return;
 #endif
 
+    CoTickDelay(1);
+
+    uint32_t now = CoGetOSTime();
+    bool run = false;
+    if ((now - lastRunTime) > 10) {     // run at least every 20ms
+      run = true;
+    }
+    else if (now == nextMixerTime[0]) {
+      run = true;
+    }
+#if NUM_MODULES >= 2
+    else if (now == nextMixerTime[1]) {
+      run = true;
+    }
+#endif
+    if (!run) {
+      continue;  // go back to sleep
+    }
+
+    lastRunTime = now;
+
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
 
       DEBUG_TIMER_START(debugTimerMixer);
       CoEnterMutexSection(mixerMutex);
       doMixerCalculations();
+      DEBUG_TIMER_START(debugTimerMixerCalcToUsage);
+      DEBUG_TIMER_SAMPLE(debugTimerMixerIterval);
       CoLeaveMutexSection(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
 
@@ -125,12 +151,18 @@ void mixerTask(void * pdata)
       t0 = getTmr2MHz() - t0;
       if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
     }
-
-    CoTickDelay(1);  // 2ms for now
   }
 }
 
-#define MENU_TASK_PERIOD_TICKS      10    // 20ms
+void scheduleNextMixerCalculation(uint8_t module, uint16_t delay)
+{
+  // Schedule next mixer calculation time, 
+  // for now assume mixer calculation takes 2 ms.
+  nextMixerTime[module] = (uint32_t)CoGetOSTime() + (delay)/2 - 1/*2ms*/;
+  DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
+}
+
+#define MENU_TASK_PERIOD_TICKS      25    // 50ms
 
 void menusTask(void * pdata)
 {

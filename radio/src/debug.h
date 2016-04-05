@@ -324,6 +324,9 @@ enum DebugTimers {
   debugTimerAdcLoop,
   debugTimerAdcWait,
 
+  debugTimerMixerCalcToUsage,
+  debugTimerMixerIterval,
+
   DEBUG_TIMERS_COUNT
 };
 
