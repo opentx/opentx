@@ -38,6 +38,8 @@ class ModelPrinter: public QObject
     QString printTrimIncrementMode();
     QString printThrottleTrimMode();
     static QString printModuleProtocol(unsigned int protocol);
+    static QString printMultiRfProtocol(int rfProtocol);
+    static QString printMultiSubType(int rfProtocol, int subType);
     QString printFlightModeSwitch(int index);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);

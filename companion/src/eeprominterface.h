@@ -849,8 +849,37 @@ enum PulsesProtocol {
   PULSES_PXX_XJT_LR12,
   PULSES_PXX_DJT,
   PULSES_CROSSFIRE,
+  PULSES_MULTIMODULE,
   PULSES_PROTOCOL_LAST
 };
+
+enum MultiModuleRFProtocols {
+  MM_RF_PROTO_FLYSKY=0,
+  MM_RF_PROTO_FIRST=MM_RF_PROTO_FLYSKY,
+  MM_RF_PROTO_HUBSAN,
+  MM_RF_PROTO_FRSKY,
+  MM_RF_PROTO_HISKY,
+  MM_RF_PROTO_V2X2,
+  MM_RF_PROTO_DSM2,
+  MM_RF_PROTO_DEVO,
+  MM_RF_PROTO_YD717,
+  MM_RF_PROTO_KN,
+  MM_RF_PROTO_SYMAX,
+  MM_RF_PROTO_SLT,
+  MM_RF_PROTO_CX10,
+  MM_RF_PROTO_CG023,
+  MM_RF_PROTO_BAYANG,
+  MM_RF_PROTO_ESky,
+  MM_RF_PROTO_MT99XX,
+  MM_RF_PROTO_MJXQ,
+  MM_RF_PROTO_SHENQI,
+  MM_RF_PROTO_FY326,
+  MM_RF_PROTO_SFHSS,
+  MM_RF_PROTO_CUSTOM,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_CUSTOM
+};
+
+unsigned int getNumSubtypes(MultiModuleRFProtocols type);
 
 enum TrainerProtocol {
   TRAINER_MASTER_JACK,
@@ -865,19 +894,39 @@ class ModuleData {
     ModuleData() { clear(); }
     unsigned int modelId;
     int          protocol;
-    int          subprotocol;
+    unsigned int subType;
+    bool         invertedSerial;
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
     int          failsafeChannels[C9X_NUM_CHNOUT];
-    struct {
-      int delay;
-      bool pulsePol;           // false = positive
-      bool outputType;         // false = open drain, true = push pull
-      int frameLength;
-    } ppm;
+
+    // By pure coincidence the struct are unions with the same datatype in Companion
+    // and the firmware itself. If this changes the multi struct needs it own logic in the eeprom interface
+    union {
+      struct {
+        int delay;
+        bool pulsePol;           // false = positive
+        bool outputType;         // false = open drain, true = push pull
+        int frameLength;
+      } ppm;
+      struct {
+        int rfProtocol;
+        bool autoBindMode;
+        bool lowPowerMode;
+        int optionValue;
+      } multi;
+    };
+
+    // Currently the Eeprom read/write code does not work with unions
+    // define a hack for the multi rf Protocol to get the real numbers here
+    // (reverse the int => ms logic of the ppm delay)
+    int getMultiRfProtocol () { return (multi.rfProtocol - 300) / 50; }
+    void setMultiRfProtocol (int val) { multi.rfProtocol = 300 + 50 * val; }
+
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     QString polarityToString() const { return ppm.pulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
+
 };
 
 #define C9X_MAX_SCRIPTS       7
@@ -1632,9 +1681,9 @@ class Firmware {
     }
 
     virtual int getCapability(const Capability) = 0;
-    
+
     virtual QTime getMaxTimerStart() = 0;
-    
+
     virtual bool isTelemetrySourceAvailable(int source) = 0;
 
     virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
