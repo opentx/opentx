@@ -186,7 +186,7 @@ bool menuModelSetup(evt_t event)
     g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol = XJT_EXTERNAL_ANTENNA;
   }
 
-  MENU(STR_MENUSETUP, LBM_MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
+  MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
          LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
@@ -753,7 +753,7 @@ bool menuModelFailsafe(evt_t event)
     }
   }
 
-  SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", LBM_STATS_ANALOGS_ICON, NUM_CHANNELS(g_moduleIdx), OPTION_MENU_NO_SCROLLBAR);
+  SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", ICON_STATS_ANALOGS, NUM_CHANNELS(g_moduleIdx), OPTION_MENU_NO_SCROLLBAR);
   drawStringWithIndex(50, 3+FH, "Module", g_moduleIdx+1, MENU_TITLE_COLOR);
 
   #define COL_W   (LCD_W/2)

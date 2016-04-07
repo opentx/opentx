@@ -31,7 +31,7 @@ BitmapBuffer * currentBitmap = NULL;
 
 bool menuGeneralSdManagerInfo(evt_t event)
 {
-  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, LBM_SD_BROWSER_ICON, 1);
+  SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_BROWSER, 1);
 
   lcdDrawText(MENUS_MARGIN_LEFT, 2*FH, STR_SD_TYPE);
   lcdDrawText(100, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
@@ -170,7 +170,7 @@ bool menuGeneralSdManager(evt_t _event)
   }
 
   evt_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
-  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, LBM_RADIO_ICONS, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
 
   int index = menuVerticalPosition-menuVerticalOffset;
 

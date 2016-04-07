@@ -39,7 +39,7 @@ bool menuStatsGraph(evt_t event)
       break;
   }
   
-  MENU("Statistics", LBM_STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
+  MENU("Statistics", STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
   putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
@@ -111,7 +111,7 @@ bool menuStatsDebug(evt_t event)
       break;
   }
 
-  MENU("Debug", LBM_STATS_ICONS, menuTabStats, e_StatsDebug, 0, { 0 });
+  MENU("Debug", STATS_ICONS, menuTabStats, e_StatsDebug, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Free Mem");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
@@ -142,7 +142,7 @@ bool menuStatsDebug(evt_t event)
 
 bool menuStatsAnalogs(evt_t event)
 {
-  MENU("Analogs", LBM_STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
+  MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
 
   for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
     coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
@@ -178,7 +178,7 @@ bool menuStatsTraces(evt_t event)
       break;
   }
 
-  SIMPLE_MENU("", LBM_STATS_ICONS, menuTabStats, e_StatsTraces, TRACE_BUFFER_LEN);
+  SIMPLE_MENU("", STATS_ICONS, menuTabStats, e_StatsTraces, TRACE_BUFFER_LEN);
 
   uint8_t k = 0;
   int8_t sub = menuVerticalPosition;

@@ -129,11 +129,11 @@ void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
 
 uint8_t linesDisplayed;
 
-void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t options)
+void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, uint32_t options)
 {
   coord_t bodyTop, bodyBottom;
 
-  theme->drawTopbarBackground(icon);
+  theme->drawTopbarBackground(icons ? icons[0] : icon);
 
   // Menu title bar
   if (options & OPTION_MENU_TITLE_BAR) {
@@ -143,6 +143,14 @@ void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t optio
     lcdDrawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
     if (title) {
       lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+2, title, MENU_TITLE_COLOR);
+    }
+    if (icons) {
+      for (int i=0; i<menuPageCount; i++) {
+        if (menuPageIndex != i) {
+          theme->drawMenuIcon(icons[i+1], i, false);
+        }
+      }
+      theme->drawMenuIcon(icons[menuPageIndex+1], menuPageIndex, true);
     }
   }
   else {
@@ -168,19 +176,6 @@ void drawScreenTemplate(const char * title, const uint8_t * icon, uint32_t optio
   // Scrollbar
   if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount>linesDisplayed) {
     drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, bodyTop+3, bodyBottom-bodyTop-6, menuVerticalOffset, linesCount, linesDisplayed);
-  }
-}
-
-void drawMenuTemplate(const char * title, const uint8_t * const * icons, uint32_t options)
-{
-  drawScreenTemplate(title, icons[0], OPTION_MENU_TITLE_BAR);
-
-  lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_BG, HEADER_CURRENT_BGCOLOR);
-  lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING-10, 0, LBM_CURRENT_SHADOW, TRIM_SHADOW_COLOR);
-  lcdDrawBitmapPattern(58+menuPageIndex*MENU_ICONS_SPACING, MENU_TITLE_TOP-9, LBM_CURRENT_DOT, MENU_TITLE_COLOR);
-
-  for (int i=0; i<menuPageCount; i++) {
-    lcdDrawBitmapPattern(50+i*MENU_ICONS_SPACING, 7, icons[i+1], MENU_TITLE_COLOR);
   }
 }
 

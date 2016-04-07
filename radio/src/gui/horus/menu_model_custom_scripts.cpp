@@ -53,7 +53,7 @@ bool menuModelCustomScriptOne(evt_t event)
 
   // drawStringWithIndex(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
 
-  SUBMENU(STR_MENUCUSTOMSCRIPTS, LBM_LUA_SCRIPTS_ICON, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
+  SUBMENU(STR_MENUCUSTOMSCRIPTS, ICON_MODEL_LUA_SCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
   int8_t sub = menuVerticalPosition;
 
@@ -127,7 +127,7 @@ bool menuModelCustomScripts(evt_t event)
   // lcdDrawNumber(19*FW, 0, luaGetMemUsed(), 0);
   // lcdDrawText(19*FW+1, 0, STR_BYTES);
 
-  MENU(STR_MENUCUSTOMSCRIPTS, LBM_MODEL_ICONS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
+  MENU(STR_MENUCUSTOMSCRIPTS, MODEL_ICONS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   int8_t  sub = menuVerticalPosition;
 

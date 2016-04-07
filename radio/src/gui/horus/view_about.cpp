@@ -62,8 +62,8 @@ bool menuAboutView(evt_t event)
       break;
   }
 
-  theme->drawAboutBackground();
-  theme->drawTopbarBackground(NULL);
+  theme->drawBackground();
+  theme->drawTopbarBackground(0);
 
   uint8_t screenDuration = 150;
 

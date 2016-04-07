@@ -60,11 +60,50 @@ extern evt_t menuEvent;
 void chainMenu(MenuHandlerFunc newMenu);
 /// goto given Menu, store current menu in menuStack
 void pushMenu(MenuHandlerFunc newMenu);
-/// return to last menu in menustack
+/// return to last menu in menuStack
 void popMenu();
 
+enum MenuIcons {
+  ICON_OPENTX,
+  ICON_RADIO,
+  ICON_RADIO_SETUP,
+  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_GLOBAL_FUNCTIONS,
+  ICON_RADIO_TRAINER,
+  ICON_RADIO_HARDWARE,
+  ICON_RADIO_CALIBRATION,
+  ICON_RADIO_VERSION,
+  ICON_MODEL,
+  ICON_MODEL_SETUP,
+  ICON_MODEL_HELI,
+  ICON_MODEL_FLIGHT_MODES,
+  ICON_MODEL_INPUTS,
+  ICON_MODEL_MIXER,
+  ICON_MODEL_OUTPUTS,
+  ICON_MODEL_CURVES,
+  ICON_MODEL_GVARS,
+  ICON_MODEL_LOGICAL_SWITCHES,
+  ICON_MODEL_SPECIAL_FUNCTIONS,
+  ICON_MODEL_LUA_SCRIPTS,
+  ICON_MODEL_TELEMETRY,
+  ICON_LIBRARY,
+  ICON_THEME,
+  ICON_THEME_SETUP,
+  ICON_THEME_VIEW1,
+  ICON_THEME_VIEW2,
+  ICON_THEME_VIEW3,
+  ICON_THEME_VIEW4,
+  ICON_THEME_VIEW5,
+  ICON_THEME_ADD_VIEW,
+  ICON_STATS,
+  ICON_STATS_THROTTLE_GRAPH,
+  ICON_STATS_TIMERS,
+  ICON_STATS_ANALOGS,
+  ICON_STATS_DEBUG,
+  MENUS_ICONS_COUNT
+};
+
 enum EnumTabModel {
-  // e_ModelSelect,
   e_ModelSetup,
   CASE_HELI(e_Heli)
   CASE_FLIGHT_MODES(e_FlightModesAll)
@@ -79,6 +118,44 @@ enum EnumTabModel {
   e_CustomScripts,
 #endif
   CASE_FRSKY(e_Telemetry)
+};
+
+const uint8_t RADIO_ICONS[] = {
+  ICON_RADIO,
+  ICON_RADIO_SETUP,
+  ICON_RADIO_SD_BROWSER,
+  ICON_RADIO_GLOBAL_FUNCTIONS,
+  ICON_RADIO_TRAINER,
+  ICON_RADIO_HARDWARE,
+  ICON_RADIO_VERSION
+};
+
+const uint8_t MODEL_ICONS[] = {
+  ICON_MODEL,
+  ICON_MODEL_SETUP,
+  CASE_HELI(ICON_MODEL_HELI)
+  CASE_FLIGHT_MODES(ICON_MODEL_FLIGHT_MODES)
+  ICON_MODEL_INPUTS,
+  ICON_MODEL_MIXER,
+  ICON_MODEL_OUTPUTS,
+  CASE_CURVES(ICON_MODEL_CURVES)
+  CASE_GVARS(ICON_MODEL_GVARS)
+  ICON_MODEL_LOGICAL_SWITCHES,
+  ICON_MODEL_SPECIAL_FUNCTIONS,
+#if defined(LUA_MODEL_SCRIPTS)
+  ICON_MODEL_LUA_SCRIPTS,
+#endif
+  ICON_MODEL_TELEMETRY
+};
+
+const uint8_t STATS_ICONS[] = {
+  ICON_STATS,
+  ICON_STATS_THROTTLE_GRAPH,
+  ICON_STATS_TIMERS,
+  ICON_STATS_ANALOGS,
+#if defined(DEBUG_TRACE_BUFFER)
+  ICON_STATS_DEBUG
+#endif
 };
 
 bool menuModelSetup(evt_t event);
@@ -287,12 +364,12 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
   MENU_TAB(__VA_ARGS__); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check(event, menu, tab, tabCount, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawMenuTemplate(title, icons);
+  drawMenuTemplate(title, 0, icons, OPTION_MENU_TITLE_BAR);
 
 #define CUSTOM_MENU_WITH_OPTIONS(title, icons, tab, tabCount, menu, lines_count) \
     if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
     if (!check(event, menu, tab, tabCount, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-    drawMenuTemplate(title, icons);
+    drawMenuTemplate(title, 0, icons, OPTION_MENU_TITLE_BAR);
 
 #define MENU(title, icons, tab, menu, lines_count, ...) \
   MENU_WITH_OPTIONS(title, icons, tab, DIM(tab), menu, lines_count, __VA_ARGS__)
@@ -300,7 +377,7 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 #define SIMPLE_MENU_WITH_OPTIONS(title, icons, tab, tabCount, menu, lines_count) \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check_simple(event, menu, tab, tabCount, lines_count)) return false; \
-  drawMenuTemplate(title, icons);
+  drawMenuTemplate(title, 0, icons, OPTION_MENU_TITLE_BAR);
 
 #define SIMPLE_MENU(title, icons, tab, menu, lines_count) \
   SIMPLE_MENU_WITH_OPTIONS(title, icons, tab, DIM(tab), menu, lines_count)
@@ -308,24 +385,24 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 #define SUBMENU(title, icon, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawScreenTemplate(title, icon);
+  drawMenuTemplate(title, icon);
 
 #define SUBMENU_WITH_OPTIONS(title, icon, lines_count, options, ...) \
   MENU_TAB(__VA_ARGS__); \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawScreenTemplate(title, icon, options);
+  drawMenuTemplate(title, icon, NULL, options);
 
 #define CUSTOM_SUBMENU_WITH_OPTIONS(title, icon, lines_count, options) \
   if (!check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
-  drawScreenTemplate(title, icon, options);
+  drawMenuTemplate(title, icon, NULL, options);
 
 #define SIMPLE_SUBMENU(title, icon, lines_count) \
   if (!check_submenu_simple(event, lines_count)) return false; \
-  drawScreenTemplate(title, icon)
+  drawMenuTemplate(title, icon, NULL)
 
 #define SIMPLE_SUBMENU_WITH_OPTIONS(title, icon, lines_count, options) \
   if (!check_submenu_simple(event, lines_count)) return false; \
-  drawScreenTemplate(title, icon, options)
+  drawMenuTemplate(title, icon, NULL, options)
 
 typedef int select_menu_value_t;
 

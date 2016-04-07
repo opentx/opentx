@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define TEXT_FILE_MAXSIZE     2048
 
@@ -91,7 +91,7 @@ bool menuTextView(evt_t event)
 {
   static int lines_count;
 
-  drawScreenTemplate("TEXT VIEWER", NULL);
+  drawMenuTemplate("TEXT VIEWER", ICON_OPENTX);
 
   switch (event) {
     case EVT_ENTRY:

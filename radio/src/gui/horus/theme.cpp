@@ -76,11 +76,6 @@ void Theme::drawBackground() const
   lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
 }
 
-void Theme::drawAboutBackground() const
-{
-  drawBackground();
-}
-
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
 {
   //if (flags & MESSAGEBOX_TYPE_ALERT) {
