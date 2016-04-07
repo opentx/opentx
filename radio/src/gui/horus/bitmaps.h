@@ -24,9 +24,6 @@
 // Header bitmaps
 extern const uint8_t LBM_TOPMENU_POLYGON[];
 extern const uint8_t LBM_DOT[];
-extern const uint8_t LBM_CURRENT_BG[];
-extern const uint8_t LBM_CURRENT_SHADOW[];
-extern const uint8_t LBM_CURRENT_DOT[];
 
 // Main view icons
 extern const uint8_t LBM_TOPMENU_USB[];
@@ -40,34 +37,11 @@ extern const uint8_t LBM_TOPMENU_TXBATT[];
 extern const uint8_t LBM_HTRIM_FRAME[];
 extern const uint8_t LBM_VTRIM_FRAME[];
 extern const uint8_t LBM_TRIM_SHADOW[];
-extern const uint8_t LBM_RADIO_ICON[];
-extern const uint8_t LBM_MODEL_ICON[];
 extern const uint8_t LBM_TIMER_BACKGROUND[];
 extern const uint8_t LBM_TIMER[];
 extern const uint8_t LBM_RSCALE[];
 
-// Menu icons
-extern const uint8_t * const LBM_RADIO_ICONS[];
-extern const uint8_t * const LBM_MODEL_ICONS[];
-extern const uint8_t * const LBM_STATS_ICONS[];
-extern const uint8_t LBM_RADIO_ICON[];
-extern const uint8_t LBM_SD_BROWSER_ICON[];
-extern const uint8_t LBM_CALIBRATION_ICON[];
-extern const uint8_t LBM_INPUTS_ICON[];
-extern const uint8_t LBM_MIXER_ICON[];
-extern const uint8_t LBM_CURVES_ICON[];
-extern const uint8_t LBM_LUA_SCRIPTS_ICON[];
-extern const uint8_t LBM_TELEMETRY_ICON[];
-extern const uint8_t LBM_STATS_ANALOGS_ICON[];
-
-// UI (theme / layout / widgets bitmaps
-extern const uint8_t LBM_MAINVIEWS_ICON[];
-extern const uint8_t LBM_MAINVIEWS_TOPBAR_ICON[];
-extern const uint8_t LBM_MAINVIEWS_ADD_ICON[];
-extern const uint8_t * const LBM_MAINVIEWS_ICONS[];
-
 // Model selection icons
-extern const uint8_t LBM_LIBRARY_ICON[];
 extern const uint8_t LBM_LIBRARY_SLOT[];
 extern const uint8_t LBM_ACTIVE_MODEL[];
 extern const uint8_t LBM_LIBRARY_CURSOR[];

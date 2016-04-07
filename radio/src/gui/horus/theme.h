@@ -69,9 +69,9 @@ class Theme
 
     virtual void drawBackground() const;
 
-    virtual void drawAboutBackground() const;
+    virtual void drawTopbarBackground(uint8_t icon) const = 0;
 
-    virtual void drawTopbarBackground(const uint8_t * icon) const = 0;
+    virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const { }
 
     virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;
 

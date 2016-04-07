@@ -222,6 +222,35 @@ void BitmapBuffer::drawPie(int x0, int y0, int radius, int startAngle, int endAn
   }
 }
 
+void BitmapBuffer::drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset, coord_t width)
+{
+  if (mask == NULL) {
+    return;
+  }
+
+  coord_t w = mask->getWidth();
+  coord_t height = mask->getHeight();
+
+  if (!width || width > w) {
+    width = w;
+  }
+
+  if (x+width > this->width) {
+    width = this->width-x;
+  }
+
+  display_t color = lcdColorTable[COLOR_IDX(flags)];
+
+  for (coord_t row=0; row<height; row++) {
+    display_t * p = getPixelPtr(x, y+row);
+    display_t * q = mask->getPixelPtr(offset, row);
+    for (coord_t col=0; col<width; col++) {
+      drawAlphaPixel(p, *((uint8_t *)q), color);
+      p++; q++;
+    }
+  }
+}
+
 void BitmapBuffer::drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset, coord_t width)
 {
   coord_t w = *((uint16_t *)bmp);
@@ -430,6 +459,19 @@ BitmapBuffer * BitmapBuffer::load(const char * filename)
     return load_bmp(filename);
   else
     return load_stb(filename);
+}
+
+BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
+{
+  BitmapBuffer * bitmap = BitmapBuffer::load(filename);
+  if (bitmap) {
+    display_t * p = bitmap->getData();
+    for (int i = bitmap->getWidth() * bitmap->getHeight(); i > 0; i--) {
+      *((uint8_t *)p) = OPACITY_MAX - ((*p) >> 12);
+      p++;
+    }
+  }
+  return bitmap;
 }
 
 FIL imgFile __DMA;

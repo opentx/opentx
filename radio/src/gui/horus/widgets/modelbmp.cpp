@@ -35,20 +35,19 @@ class ModelBitmapWidget: public Widget
       delete buffer;
     }
 
-#define DRAW_SCALED_BITMAP_FIT_WIDTH   1
-#define DRAW_SCALED_BITMAP_FIT_HEIGHT  2
-
     void refreshBuffer()
     {
       delete buffer;
       buffer = new BitmapBuffer(BMP_RGB565, zone.w, zone.h);
+
       if (buffer) {
         buffer->drawBitmap(0, 0, lcd, zone.x, zone.y, zone.w, zone.h);
         GET_FILENAME(filename, BITMAPS_PATH, g_model.header.bitmap, BITMAPS_EXT);
         BitmapBuffer * bitmap = BitmapBuffer::load(filename);
         if (zone.h >= 96 && zone.w >= 120) {
           buffer->drawFilledRect(0, 0, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
-          buffer->drawBitmapPattern(6, 4, LBM_MODEL_ICON, MAINVIEW_GRAPHICS_COLOR);
+          static BitmapBuffer * icon = BitmapBuffer::loadMask(getThemePath("mask_menu_model.png"));
+          buffer->drawMask(6, 4, icon, MAINVIEW_GRAPHICS_COLOR);
           buffer->drawSizedText(45, 10, g_model.header.name, LEN_MODEL_NAME, ZCHAR | SMLSIZE);
           buffer->drawSolidFilledRect(39, 27, zone.w - 48, 2, MAINVIEW_GRAPHICS_COLOR);
           if (bitmap) {

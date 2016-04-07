@@ -175,7 +175,7 @@ bool menuModelExpoOne(evt_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
 
-  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, LBM_INPUTS_ICON, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)1 : (uint8_t)0), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, ICON_MODEL_INPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)1 : (uint8_t)0), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
   lcdDrawSizedText(50, 3+FH, g_model.inputNames[ed->chn], LEN_INPUT_NAME, ZCHAR|MENU_TITLE_COLOR);
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 230, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
@@ -370,7 +370,7 @@ bool menuModelExposAll(evt_t event)
   uint8_t chn = expoAddress(s_currIdx)->chn + 1;
 
   int linesCount = getExposLinesCount();
-  SIMPLE_MENU(STR_MENUINPUTS, LBM_MODEL_ICONS, menuTabModel, e_InputsAll, linesCount);
+  SIMPLE_MENU(STR_MENUINPUTS, MODEL_ICONS, menuTabModel, e_InputsAll, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

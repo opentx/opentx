@@ -24,7 +24,7 @@ bool menuGeneralVersion(evt_t event)
 {
   DEBUG_TIMER_START(debugTimerVersion);
   DEBUG_TIMER_START(debugTimerSimpleMenu);
-  SIMPLE_MENU(STR_MENUVERSION, LBM_RADIO_ICONS, menuTabGeneral, e_Vers, 0);
+  SIMPLE_MENU(STR_MENUVERSION, RADIO_ICONS, menuTabGeneral, e_Vers, 0);
   DEBUG_TIMER_STOP(debugTimerSimpleMenu);
 
   DEBUG_TIMER_START(debugTimerDrawText);
