@@ -293,18 +293,18 @@ void ModulePanel::update()
   // PPM settings fields
   ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmPolarity->setCurrentIndex(module.ppmPulsePol);
+  ui->ppmPolarity->setCurrentIndex(module.ppm.pulsePol);
   ui->label_ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
   ui->ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
-  ui->ppmOutputType->setCurrentIndex(module.ppmOutputType);
+  ui->ppmOutputType->setCurrentIndex(module.ppm.outputType);
   ui->label_ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmDelay->setValue(module.ppmDelay);
+  ui->ppmDelay->setValue(module.ppm.delay);
   ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
-  ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
+  ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
 
   if (firmware->getCapability(HasFailsafe)) {
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
@@ -356,13 +356,13 @@ void ModulePanel::on_protocol_currentIndexChanged(int index)
 
 void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 {
-  module.ppmPulsePol = index;
+  module.ppm.pulsePol = index;
   emit modified();
 }
 
 void ModulePanel::on_ppmOutputType_currentIndexChanged(int index)
 {
-  module.ppmOutputType = index;
+  module.ppm.outputType = index;
   emit modified();
 }
 
@@ -388,7 +388,7 @@ void ModulePanel::on_ppmDelay_editingFinished()
 {
   if (!lock) {
     // TODO only accept valid values
-    module.ppmDelay = ui->ppmDelay->value();
+    module.ppm.delay = ui->ppmDelay->value();
     emit modified();
   }
 }
@@ -401,7 +401,7 @@ void ModulePanel::on_rxNumber_editingFinished()
 
 void ModulePanel::on_ppmFrameLength_editingFinished()
 {
-  module.ppmFrameLength = (ui->ppmFrameLength->value()-22.5) / 0.5;
+  module.ppm.frameLength = (ui->ppmFrameLength->value()-22.5) / 0.5;
   emit modified();
 }
 

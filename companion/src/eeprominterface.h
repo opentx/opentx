@@ -870,12 +870,14 @@ class ModuleData {
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
     int          failsafeChannels[C9X_NUM_CHNOUT];
-    int          ppmDelay;
-    bool         ppmPulsePol;           // false = positive
-    bool         ppmOutputType;         // false = open drain, true = push pull
-    int          ppmFrameLength;
+    struct {
+      int delay;
+      bool pulsePol;           // false = positive
+      bool outputType;         // false = open drain, true = push pull
+      int frameLength;
+    } ppm;
     void clear() { memset(this, 0, sizeof(ModuleData)); }
-    QString polarityToString() const { return ppmPulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
+    QString polarityToString() const { return ppm.pulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
 };
 
 #define C9X_MAX_SCRIPTS       7

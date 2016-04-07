@@ -110,7 +110,7 @@ QString ModelPrinter::printModule(int idx)
   if (module.protocol == PULSES_OFF)
     return printModuleProtocol(module.protocol);
   else if (module.protocol == PULSES_PPM)
-    return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
+    return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount).arg(module.ppm.delay).arg(module.polarityToString());
   else {
     QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
     if (module.protocol != PULSES_PXX_XJT_D8) {
@@ -125,7 +125,7 @@ QString ModelPrinter::printTrainerMode()
   QString result;
   switch (model.trainerMode) {
     case 1:
-      result = tr("Slave/Jack"); // TODO + tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
+      result = tr("Slave/Jack"); // TODO + tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppm.delay).arg(module.polarityToString());
       break;
     case 2:
       result = tr("Master/SBUS Module");
