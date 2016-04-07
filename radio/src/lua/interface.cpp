@@ -838,7 +838,7 @@ class LuaTheme: public Theme
       exec(drawBackgroundFunction);
     }
 
-    virtual void drawTopbarBackground(const uint8_t * icon) const
+    virtual void drawTopbarBackground(uint8_t icon) const
     {
       exec(drawTopbarBackgroundFunction);
     }
