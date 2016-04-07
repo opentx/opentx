@@ -469,10 +469,11 @@ enum Protocols {
   PROTO_DSM2_DSM2,
   PROTO_DSM2_DSMX,
 #endif
-#if defined(CROSSFIRE)
+#if defined(CROSSFIRE) || defined(MULTIMODULE)
   PROTO_CROSSFIRE,
 #endif
 #if defined(IRPROTOS)
+  // only used on AVR
   // we will need 4 bits for proto :(
   PROTO_SILV,
   PROTO_TRAC09,
