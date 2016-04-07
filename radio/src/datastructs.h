@@ -911,11 +911,11 @@ PACK(struct TrainerData {
     uint8_t  slidersConfig:2; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
-    NOBACKUP(uint8_t  blOffBright); \
     NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
     NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
-    NOBACKUP(uint8_t bluetoothEnable); \
+    NOBACKUP(uint8_t bluetoothEnable:1); \
+    NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBFLAMENCO)
   #define EXTRA_GENERAL_FIELDS \
