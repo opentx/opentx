@@ -416,9 +416,9 @@ struct SimulatorAudio {
   pthread_t threadPid;
 } simuAudio;
 
-bool audioPushBuffer(AudioBuffer * buffer)
+void audioPushBuffer(AudioBuffer * buffer)
 {
-  return false;
+  buffer->state = AUDIO_BUFFER_FILLED;
 }
 #endif
 
@@ -532,6 +532,8 @@ void * audioThread(void *)
     return 0;
   }
   SDL_PauseAudio(0);
+
+  referenceSystemAudioFiles();
 
   while (simuAudio.threadRunning) {
     audioQueue.wakeup();
@@ -1333,6 +1335,10 @@ void turnBacklightOff(void)
 void i2cWriteTW8823(unsigned char, unsigned char) { }
 uint8_t i2cReadBQ24195(uint8_t) { return 0; }
 void i2cWriteBQ24195(uint8_t, uint8_t) { }
+#endif
+
+#if defined(PCBHORUS)
+void LCD_ControlLight(uint16_t dutyCycle) { }
 #endif
 
 void serialPrintf(const char * format, ...) { }

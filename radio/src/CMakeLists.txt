@@ -20,6 +20,7 @@ option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
+option(SIMU_AUDIO "Enable simulator audio" OFF)
 
 enable_language(ASM)
 set(OPT s)
@@ -37,6 +38,7 @@ configure_file(stamp.h.in stamp.h @ONLY)
 
 add_subdirectory(translations)
 add_subdirectory(bitmaps)
+add_subdirectory(fonts)
 add_subdirectory(lua)
 
 set(EEPROM_VARIANT  0)
@@ -472,6 +474,10 @@ if(CPU_FAMILY STREQUAL STM32)
     sbus.cpp
     telemetry/crossfire.cpp
     )
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    crossfire.cpp
+    )
 endif()
 
 if(ARCH STREQUAL ARM)
@@ -485,6 +491,10 @@ if(ARCH STREQUAL ARM)
   option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
   option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" OFF)
   option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
+  option(DEBUG_INTERRUPTS "Count interrupts" OFF)
+  option(DEBUG_TASKS "Task switching statistics" OFF)
+  option(DEBUG_TIMERS "Time critical parts of the code" OFF)
+
   if(TIMERS EQUAL 3)
     add_definitions(-DTIMERS=3)
   else()
@@ -510,6 +520,18 @@ if(ARCH STREQUAL ARM)
   endif()
   if(DEBUG_TRACE_BUFFER)
     add_definitions(-DDEBUG_TRACE_BUFFER)
+  endif()
+  if(DEBUG_INTERRUPTS)
+    add_definitions(-DDEBUG_INTERRUPTS)
+    set(DEBUG ON)
+  endif()
+  if(DEBUG_TASKS)
+    add_definitions(-DDEBUG_TASKS)
+    set(DEBUG ON)
+  endif()
+  if(DEBUG_TIMERS)
+    add_definitions(-DDEBUG_TIMERS)
+    set(DEBUG ON)
   endif()
   if(CLI)
     add_definitions(-DCLI)
@@ -584,11 +606,11 @@ if(ARCH STREQUAL ARM)
     ${COOS_DIR}/portable/arch.c
     )
   set(PULSES_SRC
+    ${PULSES_SRC}
     pulses_arm.cpp
     ppm_arm.cpp
     pxx_arm.cpp
     dsm2_arm.cpp
-    crossfire.cpp
     )
 else()
   option(EXT "Telemetry protocol" OFF) # TODO rename this EXT option to TELEMETRY
@@ -840,6 +862,10 @@ endif()
 
 if(WATCHDOG_DISABLED)
   add_definitions(-DWATCHDOG_DISABLED)
+endif()
+
+if(SIMU_AUDIO)
+  add_definitions(-DSIMU_AUDIO)
 endif()
 
 if(SDCARD)

@@ -357,6 +357,132 @@ int cliSet(const char ** argv)
   return 0;
 }
 
+
+#if defined(DEBUG_INTERRUPTS)
+void printInterrupts() 
+{
+  __disable_irq();
+  struct InterruptCounters ic = interruptCounters;
+  memset(&interruptCounters, 0, sizeof(interruptCounters));
+  interruptCounters.resetTime = get_tmr10ms();
+  __enable_irq();
+  serialPrint("Interrupts count in the last %u ms:", (get_tmr10ms() - ic.resetTime) * 10);
+  for(int n = 0; n < INT_LAST; n++) {
+    serialPrint("%s: %u", interruptNames[n], ic.cnt[n]); 
+  }
+}
+#endif //#if defined(DEBUG_INTERRUPTS)
+
+#if defined(DEBUG_TASKS)
+
+void printTaskSwitchLog() 
+{
+  serialPrint("Tasks legend [<task_id>, <task name>]:");
+  for(int n = 0; n <= CFG_MAX_USER_TASKS+1; n++) {
+    if (0 == n) {
+      serialPrint("%d: Idle", n);
+    }
+    if (cliTaskId == n) {
+      serialPrint("%d: CLI", n);
+    }
+    else if (menusTaskId == n) {
+      serialPrint("%d: menus", n);
+    }
+    else if (mixerTaskId == n) {
+      serialPrint("%d: mixer", n);
+    }
+    else if (audioTaskId == n) {
+      serialPrint("%d: audio", n);
+    }
+#if defined(BLUETOOTH)
+    else if (btTaskId == n) {
+      serialPrint("%d: BT", n);
+    }
+#endif
+  }
+  serialCrlf();
+
+  serialPrint("Tasks switch log at %u [<time>, <task_id>]:", get_tmr10ms());
+  uint32_t lastSwitchTime = 0;
+  uint32_t * tsl = new uint32_t[DEBUG_TASKS_LOG_SIZE];
+  memcpy(tsl, taskSwitchLog, sizeof(taskSwitchLog));
+  uint32_t * p = tsl + taskSwitchLogPos;
+  uint32_t * end = tsl + DEBUG_TASKS_LOG_SIZE;
+  for(int n = 0; n < DEBUG_TASKS_LOG_SIZE; n++) {
+    uint32_t taskId = *p >> 24;
+    uint32_t switchTime = *p & 0xFFFFFF;
+    if (lastSwitchTime != switchTime) {
+      serialPrintf("\r\n%06x: ", switchTime);
+      lastSwitchTime = switchTime;
+    }
+    serialPrintf("%u ", taskId);
+    if ( ++p >= end ) {
+      p = tsl;
+    }
+  }
+  delete[] tsl;
+  serialCrlf();
+}
+#endif // #if defined(DEBUG_TASKS)
+
+#if defined(DEBUG_TIMERS)
+
+void printDebugTime(uint32_t time)
+{
+  if (time >= 30000) {
+    serialPrintf("%dms", time/1000);
+  }
+  else {
+    serialPrintf("%d.%03dms", time/1000, time%1000);
+  }
+}
+
+void printDebugTimer(const char * name, DebugTimer & timer) 
+{
+  serialPrintf("%s: ", name);
+  printDebugTime( timer.getMin());
+  serialPrintf(" - ");
+  printDebugTime(timer.getMax());
+  serialCrlf();
+  timer.reset();
+}
+void printDebugTimers()
+{
+  for(int n = 0; n < DEBUG_TIMERS_COUNT; n++) {
+    printDebugTimer(debugTimerNames[n], debugTimers[n]);
+  }
+}
+#endif
+
+#include "OsMutex.h"
+extern OS_MutexID audioMutex;
+
+void printAudioVars()
+{
+  for(int n = 0; n < AUDIO_BUFFER_COUNT; n++) {
+    serialPrint("Audio Buffer %d: size: %u, state: %u, ", n, (uint32_t)audioBuffers[n].size, (uint32_t)audioBuffers[n].state);
+    dump((uint8_t *)audioBuffers[n].data, 32);
+  }
+  serialPrint("fragments:");
+  for(int n = 0; n < AUDIO_QUEUE_LENGTH; n++) {
+    serialPrint("%d: type %u: id: %u, repeat: %u, ", n, (uint32_t)audioQueue.fragments[n].type, 
+                                                        (uint32_t)audioQueue.fragments[n].id, 
+                                                        (uint32_t)audioQueue.fragments[n].repeat);
+    if ( audioQueue.fragments[n].type == FRAGMENT_FILE) {
+      serialPrint(" file: %s", audioQueue.fragments[n].file);
+    }
+  }
+
+  serialPrint("audioQueue:");
+  serialPrint("  ridx: %d, widx: %d", audioQueue.ridx, audioQueue.widx);
+  serialPrint("  bufferRIdx: %d, bufferWIdx: %d", audioQueue.bufferRIdx, audioQueue.bufferWIdx);
+
+  serialPrint("normalContext: %u", (uint32_t)audioQueue.normalContext.fragment.type);
+
+  serialPrint("audioMutex[%u] = %u", (uint32_t)audioMutex, (uint32_t)MutexTbl[audioMutex].mutexFlag);
+}
+
+
 int cliDisplay(const char ** argv)
 {
   long long int address = 0;
@@ -461,6 +587,9 @@ int cliDisplay(const char ** argv)
         case 2:
           tim = TIM2;
           break;
+        case 13:
+          tim = TIM13;
+          break;
         default:
           return 0;
       }
@@ -483,6 +612,24 @@ int cliDisplay(const char ** argv)
       serialPrint(" CCR3   0x%x", tim->CCR3);
       serialPrint(" CCR4   0x%x", tim->CCR4);
     }
+  }
+#if defined(DEBUG_INTERRUPTS)
+  else if (!strcmp(argv[1], "int")) {
+    printInterrupts();
+  }
+#endif
+#if defined(DEBUG_TASKS)
+  else if (!strcmp(argv[1], "tsl")) {
+    printTaskSwitchLog();
+  }
+#endif
+#if defined(DEBUG_TIMERS)
+  else if (!strcmp(argv[1], "dt")) {
+    printDebugTimers();
+  }
+#endif
+  else if (!strcmp(argv[1], "audio")) {
+    printAudioVars();
   }
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
@@ -555,6 +702,7 @@ const CliCommand cliCommands[] = {
   { "readsd", cliReadSD, "<start sector> <sectors count> <read buffer size (sectors)>" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
+  { "p", cliDisplay, "<address> [<size>] | <what>" },
   { "reboot", cliReboot, "[wdt]" },
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },

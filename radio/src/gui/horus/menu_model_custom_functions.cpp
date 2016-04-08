@@ -30,7 +30,18 @@
 void onCustomFunctionsFileSelectionMenu(const char * result)
 {
   int sub = menuVerticalPosition;
-  CustomFunctionData * cf = &g_model.customFn[sub];
+  CustomFunctionData * cf;
+  uint8_t eeFlags;
+  
+  if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
+    cf = &g_model.customFn[sub];
+    eeFlags = EE_MODEL;
+  }
+  else {
+    cf = &g_eeGeneral.customFn[sub];
+    eeFlags = EE_GENERAL;
+  }
+
   uint8_t func = CFN_FUNC(cf);
 
   if (result == STR_UPDATE_LIST) {
@@ -95,6 +106,35 @@ void onCustomFunctionsMenu(const char *result)
   }
 }
 
+void onAdjustGvarSourceLongEnterPress(const char * result)
+{
+  CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
+
+  if (result == STR_CONSTANT) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_CONSTANT;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_MIXSOURCE) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_SOURCE;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_GLOBALVAR) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_GVAR;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_INCDEC) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_INCDEC;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else {
+    onSourceLongEnterPress(result);
+  }
+}
+
 bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
 {
   uint32_t sub = menuVerticalPosition;
@@ -134,7 +174,9 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
       LcdFlags active = (attr && s_editMode>0);
       switch (j) {
         case 0:
-          if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+          if (active || AUTOSWITCH_ENTER_LONG()) {
+            CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+          }
           putsSwitches(MODEL_CUSTOM_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           break;
 
@@ -254,7 +296,10 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_LAST_TELEM;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-            INCDEC_ENABLE_CHECK(isSourceAvailable);
+            if (active) {
+              INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+              INCDEC_ENABLE_CHECK(functions == g_eeGeneral.customFn ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
+            }
           }
 #endif
           else if (func == FUNC_VOLUME) {
@@ -290,26 +335,22 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
                 putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-                INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-                INCDEC_ENABLE_CHECK(isSourceAvailable);
+                if (active) {
+                  INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+                  INCDEC_ENABLE_CHECK(isSourceAvailable);
+                }
                 break;
               case FUNC_ADJUST_GVAR_GVAR:
                 val_max = MAX_GVARS-1;
                 drawStringWithIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
                 break;
               default: // FUNC_ADJUST_GVAR_INC
-                val_max = 1;
-                lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
-                break;
-            }
-
-            if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-              killEvents(event);
-              s_editMode = !s_editMode;
-              active = true;
-              CFN_GVAR_MODE(cfn) += 1;
-              CFN_GVAR_MODE(cfn) &= 0x03;
-              val_displayed = 0;
+                val_min = -100; val_max = +100;
+                if (val_displayed < 0)
+                  lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "-= ", attr);
+                else
+                  lcdDrawText(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "+= ", attr);
+                lcdDrawNumber(lcdNextPos, y, abs(val_displayed), attr|LEFT);
             }
           }
 #endif
@@ -317,8 +358,21 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
             REPEAT_LAST_CURSOR_MOVE(0);
           }
 
-          if (active) {
+          if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
+            if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+              killEvents(event);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_CONSTANT)
+                POPUP_MENU_ADD_ITEM(STR_CONSTANT);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_SOURCE)
+                POPUP_MENU_ADD_ITEM(STR_MIXSOURCE);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_GVAR)
+                POPUP_MENU_ADD_ITEM(STR_GLOBALVAR);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INCDEC)
+                POPUP_MENU_ADD_ITEM(STR_INCDEC);
+              popupMenuHandler = onAdjustGvarSourceLongEnterPress;
+              s_editMode = EDIT_MODIFY_FIELD;
+            }
           }
           break;
         }
@@ -353,6 +407,6 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 
 bool menuModelCustomFunctions(evt_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, LBM_MODEL_ICONS, menuTabModel, e_CustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  MENU(STR_MENUCUSTOMFUNC, MODEL_ICONS, menuTabModel, e_CustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuCustomFunctions(event, g_model.customFn, modelFunctionsContext);
 }

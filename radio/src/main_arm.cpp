@@ -178,22 +178,27 @@ void guiMain(evt_t evt)
   }
 
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
+  DEBUG_TIMER_START(debugTimerLuaBg);
   luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
-
+  DEBUG_TIMER_STOP(debugTimerLuaBg);
   // wait for LCD DMA to finish before continuing, because code from this point
   // is allowed to change the contents of LCD buffer
   //
   // WARNING: make sure no code above this line does any change to the LCD display buffer!
   //
+  DEBUG_TIMER_START(debugTimerLcdRefreshWait);
   lcdRefreshWait();
+  DEBUG_TIMER_STOP(debugTimerLcdRefreshWait);
 
   // draw LCD from menus or from Lua script
   // run Lua scripts that use LCD
 
+  DEBUG_TIMER_START(debugTimerLuaFg);
   refreshNeeded = luaTask(evt, RUN_STNDAL_SCRIPT, true);
   if (!refreshNeeded) {
     refreshNeeded = luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
   }
+  DEBUG_TIMER_STOP(debugTimerLuaFg);
 
   t0 = get_tmr10ms() - t0;
   if (t0 > maxLuaDuration) {
@@ -204,6 +209,7 @@ void guiMain(evt_t evt)
 #endif
 
   if (!refreshNeeded) {
+    DEBUG_TIMER_START(debugTimerMenus);
     while (1) {
       // normal GUI from menus
       const char * warn = warningText;
@@ -241,11 +247,13 @@ void guiMain(evt_t evt)
           }
           popupDisplayed = false;
         }
+        DEBUG_TIMER_START(debugTimerMenuHandlers);
         refreshNeeded = menuHandlers[menuLevel](evt);
+        DEBUG_TIMER_STOP(debugTimerMenuHandlers);
       }
 
       if (menuEvent == EVT_ENTRY) {
-        menuVerticalPosition = -1;
+        menuVerticalPosition = 0;
         menuHorizontalPosition = 0;
         evt = menuEvent;
         menuEvent = 0;
@@ -260,10 +268,13 @@ void guiMain(evt_t evt)
         break;
       }
     }
+    DEBUG_TIMER_STOP(debugTimerMenus);
   }
 
   if (refreshNeeded) {
+    DEBUG_TIMER_START(debugTimerLcdRefresh);
     lcdRefresh();
+    DEBUG_TIMER_STOP(debugTimerLcdRefresh);
   }
 }
 #elif defined(GUI)
@@ -384,6 +395,7 @@ void guiMain(evt_t evt)
 
 void perMain()
 {
+  DEBUG_TIMER_START(debugTimerPerMain1);
 #if defined(PCBSKY9X) && !defined(REVA)
   calcConsumption();
 #endif
@@ -394,6 +406,7 @@ void perMain()
   handleUsbConnection();
   checkTrainerSettings();
   periodicTick();
+  DEBUG_TIMER_STOP(debugTimerPerMain1);
 
   evt_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
@@ -423,7 +436,9 @@ void perMain()
 #endif
 
 #if defined(GUI)
+  DEBUG_TIMER_START(debugTimerGuiMain);
   guiMain(evt);
+  DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 
 #if defined(PCBTARANIS)

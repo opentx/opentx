@@ -105,7 +105,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
   }
   drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, (menuHorizontalPosition<=0 ? attr : 0));
-  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR));
+  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer->start, (menuHorizontalPosition!=0 ? attr|TIMEHOUR : TIMEHOUR));
   if (attr && s_editMode>0) {
     switch (menuHorizontalPosition) {
       case 0:
@@ -186,7 +186,7 @@ bool menuModelSetup(evt_t event)
     g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol = XJT_EXTERNAL_ANTENNA;
   }
 
-  MENU(STR_MENUSETUP, LBM_MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
+  MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
          LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
@@ -203,14 +203,10 @@ bool menuModelSetup(evt_t event)
          IF_EXTERNAL_MODULE_XJT(FAILSAFE_ROWS(EXTERNAL_MODULE)),
          LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2) });
 
-#if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
     moduleFlag[0] = 0;
-#if NUM_MODULES > 1
     moduleFlag[1] = 0;
-#endif
   }
-#endif
 
   int sub = menuVerticalPosition;
 
@@ -757,7 +753,7 @@ bool menuModelFailsafe(evt_t event)
     }
   }
 
-  SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", LBM_STATS_ANALOGS_ICON, NUM_CHANNELS(g_moduleIdx), OPTION_MENU_NO_SCROLLBAR);
+  SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", ICON_STATS_ANALOGS, NUM_CHANNELS(g_moduleIdx), OPTION_MENU_NO_SCROLLBAR);
   drawStringWithIndex(50, 3+FH, "Module", g_moduleIdx+1, MENU_TITLE_COLOR);
 
   #define COL_W   (LCD_W/2)

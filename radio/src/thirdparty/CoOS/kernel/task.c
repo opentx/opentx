@@ -39,6 +39,7 @@
 
 /*---------------------------- Include ---------------------------------------*/
 #include <coocox.h>
+#include "debug.h"
 
 /*---------------------------- Variable Define -------------------------------*/
 
@@ -790,7 +791,12 @@ void Schedule(void)
         CoStkOverflowHook(pCurTcb->taskID);       /* Yes,call handler         */		
     }   
 #endif
- 	
+
+
+#if defined(DEBUG_TASKS)
+    CoTaskSwitchHook(pRdyTcb->taskID);
+#endif
+
     SwitchContext();                              /* Call task context switch */
 }
 

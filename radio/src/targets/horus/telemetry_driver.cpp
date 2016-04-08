@@ -136,6 +136,7 @@ void sportSendBuffer(uint8_t * buffer, uint32_t count)
 
 extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_TELEM_DMA);
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
     telemetryPortSetDirectionInput();

@@ -108,6 +108,7 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 {
   INTERRUPT_5MS_TIMER->SR &= ~TIM_SR_UIF ;
   interrupt5ms() ;
+  DEBUG_INTERRUPT(INT_5MS);
 }
 
 #if defined(REV9E)

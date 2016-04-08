@@ -18,9 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
-#define CROSSFIRE_START_BYTE        0x0F
 #define CROSSFIRE_CH_CENTER         0x3E0
 #define CROSSFIRE_CH_BITS           11
 
@@ -28,7 +27,9 @@
 void createCrossfireFrame(uint8_t * frame, int16_t * pulses)
 {
   uint8_t * buf = frame;
-  *buf++ = CROSSFIRE_START_BYTE;
+  *buf++ = BROADCAST_ADDRESS;
+  *buf++ = 24; // 1(ID) + 22 + 1(CRC)
+  *buf++ = CHANNELS_ID;
 
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
@@ -41,6 +42,5 @@ void createCrossfireFrame(uint8_t * frame, int16_t * pulses)
       bitsavailable -= 8;
     }
   }
-  *buf++ = 0;
-  *buf++ = crc16(frame, 24);
+  *buf = crc8(&frame[2], 24);
 }

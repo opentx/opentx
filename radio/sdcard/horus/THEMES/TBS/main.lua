@@ -1,3 +1,5 @@
+local bitmap = 0
+
 local function load()
   lcd.setColor(TEXT_COLOR_INDEX, WHITE)
   lcd.setColor(TEXT_BGCOLOR_INDEX, BLACK)
@@ -24,11 +26,14 @@ local function load()
   lcd.setColor(HEADER_ICON_BGCOLOR_INDEX, BLACK)
   lcd.setColor(HEADER_CURRENT_BGCOLOR_INDEX, lcd.RGB(10, 78, 121))
   lcd.setColor(OVERLAY_COLOR_INDEX, BLACK)
+  bitmap = lcd.loadBitmap("THEMES/TBS/thumb.bmp")
   return 0
 end
 
 local function drawBackground()
   lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+
+  lcd.drawBitmap(50, 50, bitmap)
 end
 
 local function drawTopbarBackground(icon)

@@ -151,8 +151,8 @@ const char * displayPopupMenu(evt_t event)
 
   int y = (LCD_H - (display_count*(FH+1))) / 2;
 
-  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1), TEXT_BGCOLOR);
-  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, 1, ALARM_COLOR);
+  lcdDrawSolidFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 1, TEXT_BGCOLOR);
+  lcdDrawSolidRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, 1, ALARM_COLOR);
 
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {

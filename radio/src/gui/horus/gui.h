@@ -59,7 +59,12 @@
 #define MENU_TITLE_NEXT_POS            (lcdNextPos + 10)
 #define MENU_INIT_VPOS                 -1
 
+#if defined(HELI) && defined(GVARS) && defined(LUA_MODEL_SCRIPTS)
 #define MENU_ICONS_SPACING             31
+#else
+#define MENU_ICONS_SPACING             33
+#endif
+
 #define SUBMENU_LINE_WIDTH             230
 
 #define LOAD_MODEL_BITMAP()

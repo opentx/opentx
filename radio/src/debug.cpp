@@ -102,3 +102,129 @@ void dumpTraceBuffer()
   TRACE("End of Trace Buffer dump");
 }
 #endif
+
+#if defined(DEBUG_INTERRUPTS)
+
+#if defined(PCBHORUS)
+  const char * interruptNames[INT_LAST] = {
+    "Tick ",   // INT_TICK,
+    "1ms  ",   // INT_1MS,
+    "Ser2 ",   // INT_SER2,
+    "TelDm",   // INT_TELEM_DMA,
+    "Sdio ",   // INT_SDIO,
+    "SdDma",   // INT_SDIO_DMA,
+    "D2S7 ",   // INT_DMA2S7,
+    "Tim1 ",   // INT_TIM1CC,
+    "Tim2 ",   // INT_TIM2,
+    "Tim3 ",   // INT_TIM3,
+    "Usb  "   // INT_OTG_FS,
+  };
+#elif defined(PCBTARANIS) 
+  const char * interruptNames[INT_LAST] = {
+    "Tick ",   // INT_TICK,
+    "5ms  ",   // INT_5MS,
+    "Audio",   // INT_AUDIO,
+    "BlueT",   // INT_BLUETOOTH,
+    "Lcd  ",   // INT_LCD,
+    "T1CC ",   // INT_TIM1CC,
+    "Tim1 ",   // INT_TIM1,
+    "Tim8 ",   // INT_TIM8,
+    "Ser2 ",   // INT_SER2,
+    "TelDm",   // INT_TELEM_DMA,
+    "TelUs",   // INT_TELEM_USART,
+    "Train",   // INT_TRAINER,
+    "Usb  ",   // INT_OTG_FS,
+  };
+#endif
+
+struct InterruptCounters interruptCounters;
+#endif //#if defined(DEBUG_INTERRUPTS)
+
+#if defined(DEBUG_TASKS)
+
+uint32_t taskSwitchLog[DEBUG_TASKS_LOG_SIZE] __SDRAM;
+uint16_t taskSwitchLogPos;
+
+/**
+ *******************************************************************************
+ * @brief      Hook for task switch logging
+ * @param[in]  taskID Task which is now in RUNNING state
+ * @retval     None
+ *
+ * @par Description
+ * @details    This function logs the time when a task entered the RUNNING state.
+ *******************************************************************************
+ */
+void CoTaskSwitchHook(uint8_t taskID)
+{
+  /* Log task switch here */
+  taskSwitchLog[taskSwitchLogPos] = (taskID << 24) + ((uint32_t)CoGetOSTime() & 0xFFFFFF);
+  if(++taskSwitchLogPos >= DEBUG_TASKS_LOG_SIZE) {
+    taskSwitchLogPos = 0;
+  }
+}
+
+#endif // #if defined(DEBUG_TASKS)
+
+#if defined(DEBUG_TIMERS)
+
+void DebugTimer::start()
+{
+  _start_hiprec = getTmr2MHz();
+  _start_loprec = get_tmr10ms();
+}
+
+void DebugTimer::stop()
+{
+  // getTmr2MHz is 16 bit timer, resolution 0.5us, max measurable value 32.7675 milli seconds
+  // tmr10ms_t tmr10ms = get_tmr10ms(); 32 bit timer, resolution 10ms, max measurable value: 42949672.95 s = 1.3 years
+  // if time difference is bigger than 30ms, then use low resolution timer
+  // otherwise use high resolution
+  if ((_start_hiprec == 0) && (_start_loprec == 0)) return;
+
+  last = get_tmr10ms() - _start_loprec;  //use low precision timer
+  if (last < 3) {
+    //use high precision
+    last = (uint16_t)(getTmr2MHz() - _start_hiprec) / 2;
+  }
+  else {
+    last *= 10000ul; //adjust unit to 1us
+  }
+  evalStats(); 
+}
+
+DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
+
+const char * debugTimerNames[DEBUG_TIMERS_COUNT] = {
+   "Pulses int."   // debugTimerIntPulses,
+  ,"Pulses dur."   // debugTimerIntPulsesDuration,
+  ,"10ms dur.  "   // debugTimerPer10ms,
+  ,"Rotary enc."   // debugTimerRotEnc,
+  ,"Haptic     "   // debugTimerHaptic,
+  ,"Mixer calc "   // debugTimerMixer,
+  ,"Tel. wakeup"   // debugTimerTelemetryWakeup,
+  ,"perMain dur"   // debugTimerPerMain,
+  ," perMain s1"   // debugTimerPerMain1,
+  ," guiMain   "   // debugTimerGuiMain,
+  ,"  LUA bg   "   // debugTimerLuaBg,
+  ,"  LCD wait "   // debugTimerLcdRefreshWait,
+  ,"  LUA fg   "   // debugTimerLuaFg,
+  ,"  LCD refr."   // debugTimerLcdRefresh,
+  ,"  Menus    "   // debugTimerMenus,
+  ,"   Menu hnd"   // debugTimerMenuHandlers,
+  ,"Menu Vers. "   // debugTimerVersion,
+  ,"Menu simple"   // debugTimerSimpleMenu,
+  ,"Menu drawte"   // debugTimerDrawText,
+  ,"Menu drawt1"   // debugTimerDrawText1,
+  ,"Mix ADC    "   // debugTimerGetAdc,
+  ,"Mix getsw  "   // debugTimerGetSwitches,
+  ,"Mix eval   "   // debugTimerEvalMixes,
+  ,"Mix 10ms   "   // debugTimerMixes10ms,
+  ,"ADC read   "   // debugTimerAdcRead,
+  ,"ADC loop   "   // debugTimerAdcLoop,
+  ,"ADC wait   "   // debugTimerAdcWait,
+  ,"mix-pulses "   // debugTimerMixerCalcToUsage
+  ,"mix-int.   "   // debugTimerMixerIterval
+};
+
+#endif

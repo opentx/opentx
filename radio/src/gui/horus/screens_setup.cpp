@@ -20,14 +20,15 @@
 
 #include "opentx.h"
 
-const uint8_t * LBM_SCREENS_SETUP_ICONS[] = {
-  LBM_MAINVIEWS_ICON,
-  LBM_MAINVIEWS_TOPBAR_ICON,
-  LBM_MAINVIEWS_ICONS[0],
-  LBM_MAINVIEWS_ICONS[1],
-  LBM_MAINVIEWS_ICONS[2],
-  LBM_MAINVIEWS_ICONS[3],
-  LBM_MAINVIEWS_ICONS[4]
+uint8_t THEME_ICONS[] = {
+  ICON_THEME,
+  ICON_THEME_SETUP,
+  ICON_THEME_VIEW1,
+  ICON_THEME_VIEW2,
+  ICON_THEME_VIEW3,
+  ICON_THEME_VIEW4,
+  ICON_THEME_VIEW5,
+  ICON_THEME_ADD_VIEW,
 };
 
 Layout * currentScreen;
@@ -178,7 +179,7 @@ bool menuSettings(const char * title, const T * object, uint32_t i_flags, evt_t 
     mstate_tab[i] = getZoneOptionColumns(&options[i]);
   }
 
-  CUSTOM_SUBMENU_WITH_OPTIONS(title, LBM_MAINVIEWS_ICON, linesCount, OPTION_MENU_TITLE_BAR);
+  CUSTOM_SUBMENU_WITH_OPTIONS(title, ICON_THEME, linesCount, OPTION_MENU_TITLE_BAR);
 
   for (int i=0; i<NUM_BODY_LINES+1; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -423,7 +424,7 @@ bool menuScreensTheme(evt_t event)
     mstate_tab[2+i] = getZoneOptionColumns(&options[i]);
   }
   mstate_tab[2+optionsCount] = 0; // The button for the Topbar setup
-  CUSTOM_MENU_WITH_OPTIONS("User interface", LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, 0, linesCount);
+  CUSTOM_MENU_WITH_OPTIONS("User interface", THEME_ICONS, menuTabScreensSetup, menuPageCount, 0, linesCount);
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -438,6 +439,7 @@ bool menuScreensTheme(evt_t event)
           new_theme->init();
           loadTheme(new_theme);
           strncpy(g_eeGeneral.themeName, new_theme->getName(), sizeof(g_eeGeneral.themeName));
+          killEvents(KEY_ENTER);
           storageDirty(EE_GENERAL);
         }
         break;
@@ -505,7 +507,7 @@ bool menuScreenSetup(int index, evt_t event)
   }
   mstate_tab[3+optionsCount] = 0; // The remove button
 
-  CUSTOM_MENU_WITH_OPTIONS(title, LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, index+1, linesCount);
+  CUSTOM_MENU_WITH_OPTIONS(title, THEME_ICONS, menuTabScreensSetup, menuPageCount, index+1, linesCount);
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -589,10 +591,10 @@ int updateMainviewsMenu()
 {
   for (int index=1; index<MAX_CUSTOM_SCREENS; index++) {
     if (customScreens[index]) {
-      LBM_SCREENS_SETUP_ICONS[2+index] = LBM_MAINVIEWS_ICONS[index];
+      THEME_ICONS[2+index] = ICON_THEME_VIEW1+index;
     }
     else {
-      LBM_SCREENS_SETUP_ICONS[2+index] = LBM_MAINVIEWS_ADD_ICON;
+      THEME_ICONS[2+index] = ICON_THEME_ADD_VIEW;
       return 2+index;
     }
   }
@@ -613,6 +615,6 @@ bool menuScreenAdd(evt_t event)
     return false;
   }
 
-  SIMPLE_MENU_WITH_OPTIONS("Add main view", LBM_SCREENS_SETUP_ICONS, menuTabScreensSetup, menuPageCount, menuPageCount-1, 0);
+  SIMPLE_MENU_WITH_OPTIONS("Add main view", THEME_ICONS, menuTabScreensSetup, menuPageCount, menuPageCount-1, 0);
   return true;
 }

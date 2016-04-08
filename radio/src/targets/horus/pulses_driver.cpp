@@ -165,6 +165,7 @@ static void intmoduleNoneStop()
 #if !defined(SIMU)
 extern "C" void DMA2_Stream7_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_DMA2S7);
   if(DMA_GetITStatus(INTMODULE_DMA_STREAM, DMA_IT_TCIF7)) {
     // TODO we could send the 8 next channels here (when needed)
     DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, DMA_IT_TCIF7);
@@ -173,6 +174,9 @@ extern "C" void DMA2_Stream7_IRQHandler(void)
 
 extern "C" void TIM1_CC_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_TIM1CC);
+  DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
+  DEBUG_TIMER_START(debugTimerIntPulsesDuration);
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;       // stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
 
@@ -204,6 +208,7 @@ extern "C" void TIM1_CC_IRQHandler()
   }
 
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+  DEBUG_TIMER_STOP(debugTimerIntPulsesDuration);
 }
 #endif
 
@@ -551,6 +556,7 @@ static void extmodulePpmStop()
 
 extern "C" void TIM2_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_TIM2);
   //determine if its CC or UP interrupt
   uint16_t sr = EXTMODULE_TIMER->SR;
   uint16_t dier = EXTMODULE_TIMER->DIER;

@@ -104,6 +104,7 @@ void bluetoothDone()
 
 extern "C" void USART6_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_BLUETOOTH);
   if (USART_GetITStatus(BT_USART, USART_IT_RXNE) != RESET) {
     USART_ClearITPendingBit(BT_USART, USART_IT_RXNE);
     uint8_t byte = USART_ReceiveData(BT_USART);

@@ -179,12 +179,14 @@ void setupPulses(unsigned int port)
   switch (required_protocol) {
     case PROTO_PXX:
       setupPulsesPXX(port);
+      scheduleNextMixerCalculation(port, 9);
       break;
 #if defined(DSM2)
     case PROTO_DSM2_LP45:
     case PROTO_DSM2_DSM2:
     case PROTO_DSM2_DSMX:
       setupPulsesDSM2(port);
+      scheduleNextMixerCalculation(port, 11);
       break;
 #endif
 #if defined(CROSSFIRE)
@@ -194,6 +196,7 @@ void setupPulses(unsigned int port)
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
         createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
         sportSendBuffer(crossfire, CROSSFIRE_FRAME_LEN);
+        // TODO scheduleNextMixerCalculation()
       }
       break;
     }
@@ -205,6 +208,7 @@ void setupPulses(unsigned int port)
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);
+      scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].ppm.frameLength)/2);
       break ;
     default:
       break;

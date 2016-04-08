@@ -375,6 +375,7 @@ static void intmodulePpmStop()
 #if !defined(SIMU)
 extern "C" void TIM1_CC_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_TIM1CC);
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;       // stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
   DMA2_Stream6->CR &= ~DMA_SxCR_EN;    // disable DMA, it will have the whole of the execution time of setupPulses() to actually stop
@@ -402,6 +403,7 @@ extern "C" void TIM1_CC_IRQHandler()
 
 extern "C" void TIM1_UP_TIM10_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_TIM1);
   INTMODULE_TIMER->SR &= ~TIM_SR_UIF ;                               // Clear flag
 
   INTMODULE_TIMER->ARR = *modulePulsesData[INTERNAL_MODULE].ppm.ptr++ ;
@@ -612,6 +614,7 @@ extern "C" void TIM8_CC_IRQHandler()
 
 extern "C" void TIM8_UP_TIM13_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_TIM8);
   EXTMODULE_TIMER->SR &= ~TIM_SR_UIF ;                               // Clear flag
 
   EXTMODULE_TIMER->ARR = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++ ;

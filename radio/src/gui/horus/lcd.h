@@ -24,58 +24,69 @@
 #include "bitmapbuffer.h"
 
 #if defined(PCBHORUS)
-  #define LCD_W           480
-  #define LCD_H           272
-  #define LCD_COLS        30
+  #define LCD_W                        480
+  #define LCD_H                        272
+  #define LCD_COLS                     30
 #else
-  #define LCD_W           800
-  #define LCD_H           480
-  #define LCD_COLS        40
+  #define LCD_W                        800
+  #define LCD_H                        480
+  #define LCD_COLS                     40
 #endif
 
 #define CENTER
 
-#define lcdint_t        int32_t
+#define lcdint_t                       int32_t
 
-#define BSS             0x00
+#define BSS                            0x00
 
 /* lcd common flags */
-#define BLINK           0x01
+#define BLINK                          0x01
 
 /* drawText flags */
-#define INVERS          0x02
-#define LEFT            0x00
-#define CENTERED        0x04 /* align left */
-#define RIGHT           0x08 /* align left */
+#define INVERS                         0x02
+#define LEFT                           0x00
+#define CENTERED                       0x04 /* align left */
+#define RIGHT                          0x08 /* align left */
 
 /* drawNumber flags */
-#define LEADING0        0x10
-#define PREC1           0x20
-#define PREC2           0x30
-#define MODE(flags)     ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
+#define LEADING0                       0x10
+#define PREC1                          0x20
+#define PREC2                          0x30
+#define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 
-#define ZCHAR           0x10
+#define ZCHAR                          0x10
 
 /* rect, square flags */
-#define ROUND           0x04
+#define ROUND                          0x04
 
 /* telemetry flags */
-#define NO_UNIT         0x40
+#define NO_UNIT                        0x40
 
-#define FONTSIZE(x)     ((x) & 0x0700)
-#define TINSIZE         0x0100
-#define SMLSIZE         0x0200
-#define MIDSIZE         0x0300
-#define DBLSIZE         0x0400
-#define XXLSIZE         0x0500
-#define BOLD            0x0600
-#define VERTICAL        0x0800
+enum FontSizeIndex {
+  STDSIZE_INDEX,
+  TINSIZE_INDEX,
+  SMLSIZE_INDEX,
+  MIDSIZE_INDEX,
+  DBLSIZE_INDEX,
+  XXLSIZE_INDEX,
+  BOLDSTDSIZE_INDEX,
+};
 
-#define TIMEBLINK       0x1000
-#define TIMEHOUR        0x2000
-#define STREXPANDED     0x4000
+#define FONTSIZE(x)                    ((x) & 0x0700)
+#define TINSIZE                        (TINSIZE_INDEX << 8)
+#define SMLSIZE                        (SMLSIZE_INDEX << 8)
+#define MIDSIZE                        (MIDSIZE_INDEX << 8)
+#define DBLSIZE                        (DBLSIZE_INDEX << 8)
+#define XXLSIZE                        (XXLSIZE_INDEX << 8)
+#define BOLD                           (BOLDSTDSIZE_INDEX << 8)
+
+#define VERTICAL                       0x0800
+#define TIMEBLINK                      0x1000
+#define TIMEHOUR                       0x2000
+#define NO_FONTCACHE                   0x8000
 
 #include "colors.h"
+
 #define DISPLAY_PIXELS_COUNT           (LCD_W*LCD_H)
 #define DISPLAY_BUFFER_SIZE            (sizeof(display_t)*DISPLAY_PIXELS_COUNT)
 

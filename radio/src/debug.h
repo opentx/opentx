@@ -54,7 +54,7 @@ uint8_t serial2TracesEnabled();
 }
 #endif
 
-#define TRACE_PING(x)         do { debugPrintf(x); } while(0)
+#define TRACE_PING(...)       do { debugPrintf(__VA_ARGS__); } while(0)
 #define TRACE(...)            do { debugPrintf(__VA_ARGS__); debugPrintf("\r\n"); } while(0)
 #define DUMP(data, size)      dump(data, size)
 #define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)
@@ -184,6 +184,169 @@ public:
 };
 
 #endif  // defined(JITTER_MEASURE)
+
+
+#if defined(DEBUG_INTERRUPTS) && !defined(BOOT)
+
+#if defined(PCBHORUS)
+enum InterruptNames {
+  INT_TICK,
+  INT_1MS,
+  INT_SER2,
+  INT_TELEM_DMA,
+  INT_SDIO,
+  INT_SDIO_DMA,
+  INT_DMA2S7,
+  INT_TIM1CC,
+  INT_TIM2,
+  INT_TIM3,
+  INT_OTG_FS,
+  INT_LAST
+};
+#elif defined(PCBTARANIS) 
+enum InterruptNames {
+  INT_TICK,
+  INT_5MS,
+  INT_AUDIO,
+  INT_BLUETOOTH,
+  INT_LCD,
+  INT_TIM1CC,
+  INT_TIM1,
+  INT_TIM8,
+  INT_SER2,
+  INT_TELEM_DMA,
+  INT_TELEM_USART,
+  INT_TRAINER,
+  INT_OTG_FS,
+  INT_LAST
+};
+#endif
+
+struct InterruptCounters
+{
+  uint32_t cnt[INT_LAST];
+  uint32_t resetTime;
+};
+
+extern const char * interruptNames[INT_LAST];
+extern struct InterruptCounters interruptCounters;
+
+#define DEBUG_INTERRUPT(int)    (++interruptCounters.cnt[int])
+#else
+#define DEBUG_INTERRUPT(int)
+#endif //#if defined(DEBUG_INTERRUPTS)
+
+#if defined(DEBUG_TASKS)
+
+#define DEBUG_TASKS_LOG_SIZE    512
+
+// each 32bit is used as:
+//    top 8 bits: task id
+//    botom 24 bits: system tick counter
+extern uint32_t taskSwitchLog[DEBUG_TASKS_LOG_SIZE];
+extern uint16_t taskSwitchLogPos;
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+extern void CoTaskSwitchHook(uint8_t taskID);
+#if defined(__cplusplus)
+}
+#endif
+
+#endif // #if defined(DEBUG_TASKS)
+
+
+#if defined(DEBUG_TIMERS)
+
+#if defined(__cplusplus)
+typedef uint32_t debug_timer_t;
+
+class DebugTimer
+{
+private:
+  debug_timer_t min;
+  debug_timer_t max;
+  // debug_timer_t avg;
+  debug_timer_t last;   //unit 1us
+
+  uint16_t _start_hiprec;
+  uint32_t _start_loprec;
+
+  void evalStats() {
+    if (min > last) min = last;
+    if (max < last) max = last;
+    //todo avg
+  }
+
+public:
+  DebugTimer(): min(-1), max(0), /*avg(0),*/ last(0), _start_hiprec(0), _start_loprec(0) {};
+
+  void start();
+  void stop();
+  void sample() { stop(); start(); }
+
+  void reset() { min = -1;  max = last = 0; }
+
+  debug_timer_t getMin() const { return min; }
+  debug_timer_t getMax() const { return max; }
+  debug_timer_t getLast() const { return last; } 
+};
+
+enum DebugTimers {
+  debugTimerIntPulses,
+  debugTimerIntPulsesDuration,
+  debugTimerPer10ms,
+  debugTimerRotEnc,
+  debugTimerHaptic,
+  debugTimerMixer,
+  debugTimerTelemetryWakeup,
+  debugTimerPerMain,
+  debugTimerPerMain1,
+  debugTimerGuiMain,
+  debugTimerLuaBg,
+  debugTimerLcdRefreshWait,
+  debugTimerLuaFg,
+  debugTimerLcdRefresh,
+  debugTimerMenus,
+  debugTimerMenuHandlers,
+  debugTimerVersion,
+  debugTimerSimpleMenu,
+  debugTimerDrawText,
+  debugTimerDrawText1,
+
+  debugTimerGetAdc,
+  debugTimerGetSwitches,
+  debugTimerEvalMixes,
+  debugTimerMixes10ms,
+
+  debugTimerAdcRead,
+  debugTimerAdcLoop,
+  debugTimerAdcWait,
+
+  debugTimerMixerCalcToUsage,
+  debugTimerMixerIterval,
+
+  DEBUG_TIMERS_COUNT
+};
+
+extern DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
+extern const char * debugTimerNames[DEBUG_TIMERS_COUNT];
+
+#endif // #if defined(__cplusplus)
+
+#define DEBUG_TIMER_START(timer)  debugTimers[timer].start()
+#define DEBUG_TIMER_STOP(timer)   debugTimers[timer].stop()  
+#define DEBUG_TIMER_SAMPLE(timer) debugTimers[timer].sample()
+
+
+#else //#if defined(DEBUG_TIMERS)
+
+#define DEBUG_TIMER_START(timer)
+#define DEBUG_TIMER_STOP(timer)
+#define DEBUG_TIMER_SAMPLE(timer)
+
+#endif //#if defined(DEBUG_TIMERS)
 
 #endif // _DEBUG_H_
 

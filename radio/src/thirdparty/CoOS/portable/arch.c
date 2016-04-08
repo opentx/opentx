@@ -37,6 +37,8 @@
 
 /*---------------------------- Include ---------------------------------------*/
 #include <coocox.h>
+#include "debug.h"
+
 U64     OSTickCnt = 0;                  /*!< Current system tick counter      */ 																			 
 
 /**
@@ -90,6 +92,7 @@ OS_STK *InitTaskContext(FUNCPtr task,void *param,OS_STK *pstk)
  */ 
 void SysTick_Handler(void)
 {
+    DEBUG_INTERRUPT(INT_TICK);
     OSSchedLock++;                  /* Lock scheduler.                        */
     OSTickCnt++;                    /* Increment systerm time.                */
 #if CFG_TASK_WAITTING_EN >0    

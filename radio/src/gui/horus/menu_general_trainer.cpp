@@ -30,7 +30,7 @@ bool menuGeneralTrainer(evt_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, LBM_RADIO_ICONS, menuTabGeneral, e_Trainer, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
+  MENU(STR_MENUTRAINER, RADIO_ICONS, menuTabGeneral, e_Trainer, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
     // TODO lcd_putsCenter(5*FH, STR_SLAVE, TEXT_COLOR);

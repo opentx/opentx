@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_CALIBRATION,
@@ -58,7 +58,7 @@ enum menuGeneralHwItems {
 
 bool menuGeneralHardware(evt_t event)
 {
-  MENU(STR_HARDWARE, LBM_RADIO_ICONS, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = menuVerticalPosition;
 

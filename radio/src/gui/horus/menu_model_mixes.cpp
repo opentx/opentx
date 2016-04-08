@@ -174,7 +174,7 @@ bool menuModelMixOne(evt_t event)
 {
   MixData * md2 = mixAddress(s_currIdx) ;
 
-  SUBMENU_WITH_OPTIONS(STR_MIXER, LBM_MIXER_ICON, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
+  SUBMENU_WITH_OPTIONS(STR_MIXER, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
 
   // The separation line between 2 columns
@@ -201,7 +201,7 @@ bool menuModelMixOne(evt_t event)
         break;
       case MIX_FIELD_SOURCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
+        putsMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
       case MIX_FIELD_WEIGHT:
@@ -341,7 +341,7 @@ bool menuModelMixAll(evt_t event)
   uint8_t chn = mixAddress(s_currIdx)->destCh + 1;
 
   int linesCount = getMixesLinesCount();
-  SIMPLE_MENU(STR_MIXER, LBM_MODEL_ICONS, menuTabModel, e_MixAll, linesCount);
+  SIMPLE_MENU(STR_MIXER, MODEL_ICONS, menuTabModel, e_MixAll, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

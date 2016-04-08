@@ -178,6 +178,7 @@ void adcRead()
   ADC_CS_HIGH();
   delay_01us(1);
 
+  DEBUG_TIMER_START(debugTimerAdcLoop);
   for (uint32_t adcIndex=0; adcIndex<MOUSE1; adcIndex++) {
     // MUX is changed to the channel that was sent in the previous command
     // but the data is from the old MUX position
@@ -211,12 +212,15 @@ void adcRead()
     ADC_CS_HIGH();
     delay_01us(1);
   }
+  DEBUG_TIMER_STOP(debugTimerAdcLoop);
 
+  DEBUG_TIMER_START(debugTimerAdcWait);
   for (uint32_t i=0; i<20000; i++) {
     if (DMA2->LISR & DMA_LISR_TCIF1) {
       break;
     }
   }
+  DEBUG_TIMER_STOP(debugTimerAdcWait);
 
   // On chip ADC read should have finished
 }

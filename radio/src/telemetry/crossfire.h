@@ -21,7 +21,10 @@
 #ifndef _CROSSFIRE_H_
 #define _CROSSFIRE_H_
 
-#define LINK_STATS_ID  0x14
+#define BROADCAST_ADDRESS              0x00
+
+#define LINK_STATS_ID                  0x14
+#define CHANNELS_ID                    0x16
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);

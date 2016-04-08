@@ -218,7 +218,7 @@ bool menuModelSelect(evt_t event)
   }
 
   // Header
-  theme->drawTopbarBackground(LBM_LIBRARY_ICON);
+  theme->drawTopbarBackground(ICON_LIBRARY);
 
   // Body
   lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, CATEGORIES_WIDTH, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TITLE_BGCOLOR);

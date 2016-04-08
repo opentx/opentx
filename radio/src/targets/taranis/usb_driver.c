@@ -20,6 +20,7 @@
 
 #include "board_taranis.h"
 #include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
+#include "debug.h"
 
 int usbPlugged(void)
 {
@@ -46,6 +47,7 @@ USB_OTG_CORE_HANDLE USB_OTG_dev;
 
 void OTG_FS_IRQHandler(void)
 {
+  DEBUG_INTERRUPT(INT_OTG_FS);
   USBD_OTG_ISR_Handler(&USB_OTG_dev);
 }
 

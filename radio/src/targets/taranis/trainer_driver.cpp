@@ -103,6 +103,7 @@ void stop_trainer_capture()
 #if !defined(SIMU)
 extern "C" void TIM3_IRQHandler()
 {
+  DEBUG_INTERRUPT(INT_TRAINER);
   uint16_t capture = 0;
   bool doCapture = false;
 

@@ -53,7 +53,7 @@ void drawTopbarDatetime()
 
 void drawTopBar()
 {
-  theme->drawTopbarBackground(NULL);
+  theme->drawTopbarBackground(0);
 
   // USB icon
   if (usbPlugged()) {
