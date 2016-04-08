@@ -51,15 +51,7 @@ void drawTrims(uint8_t flightMode)
     static uint8_t vert[4] = {0, 1, 1, 0};
     unsigned int stickIndex = CONVERT_MODE(i);
     coord_t xm = x[stickIndex];
-
     int32_t trim = getTrimValue(flightMode, i);
-    int32_t val = trim * TRIM_LEN / 125;
-    if (val < -(TRIM_LEN+1)) {
-      val = -(TRIM_LEN+1);
-    }
-    else if (val > (TRIM_LEN+1)) {
-      val = TRIM_LEN+1;
-    }
 
     if (vert[i]) {
       drawVerticalSlider(xm, TRIM_V_Y, 160, trim, -125, 125, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
