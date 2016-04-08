@@ -24,10 +24,6 @@
  *  Header bitmaps
  */
 
-const uint8_t LBM_TOPMENU_POLYGON[] = {
-#include "mask_topmenu_polygon.lbm"
-};
-
 const uint8_t LBM_DOT[] = {
 #include "mask_dot.lbm"
 };

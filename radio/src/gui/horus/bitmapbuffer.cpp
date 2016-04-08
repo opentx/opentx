@@ -267,33 +267,40 @@ void BitmapBuffer::drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, 
   display_t color = lcdColorTable[COLOR_IDX(flags)];
 
   for (coord_t row=0; row<height; row++) {
-    display_t * p = getPixelPtr(x, y+row);
     const uint8_t * q = bmp + 4 + row*w + offset;
     for (coord_t col=0; col<width; col++) {
+      display_t * p;
+      if (flags & VERTICAL)
+        p = getPixelPtr(x+row, y-col);
+      else
+        p = getPixelPtr(x+col, y+row);
       drawAlphaPixel(p, *q, color);
-      p++; q++;
+      q++;
     }
   }
 }
 
-void BitmapBuffer::drawCharWithoutCache(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
+uint8_t BitmapBuffer::drawCharWithoutCache(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
   if (width > 0) drawBitmapPattern(x, y, font, flags, offset, width);
-  lcdNextPos = x + width;
+  return width;
 }
 
-void BitmapBuffer::drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer * font, const uint16_t * spec, int index, LcdFlags flags)
+uint8_t BitmapBuffer::drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer * font, const uint16_t * spec, int index, LcdFlags flags)
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
   drawBitmap(x, y, font, offset, 0, width);
-  lcdNextPos = x + width;
+  return width;
 }
 
 void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags)
 {
+#define INCREMENT_POS(delta) \
+  do { if (flags & VERTICAL) y -= delta; else x += delta; } while(0)
+
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
   int fontindex = FONTSIZE(flags) >> 8;
@@ -302,9 +309,11 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   BitmapBuffer * fontcache = NULL;
 
   if (flags & RIGHT)
-    x -= width;
+    INCREMENT_POS(-width);
   else if (flags & CENTERED)
-    x -= width/2;
+    INCREMENT_POS(-width/2);
+
+  coord_t & pos = (flags & VERTICAL) ? y : x;
 
   if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
     flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
@@ -339,19 +348,14 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
     }
   }
 
-  const coord_t orig_x = x;
-  bool setx = false;
+  const coord_t orig_pos = pos;
   while (len--) {
     unsigned char c;
     if (flags & ZCHAR)
       c = idx2char(*s);
     else
       c = pgm_read_byte(s);
-    if (setx) {
-      x = c;
-      setx = false;
-    }
-    else if (!c) {
+    if (!c) {
       break;
     }
     else if (c >= 0x20) {
@@ -359,31 +363,34 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       if (c >= 0x80 && c <= 0x85) {
         c = 0x20 + 115 + c - 0x80;
       }
+#elif defined(TRANSLATIONS_DE)
+      if (c >= 0x80 && c <= 0x86) {
+        c = 0x20 + 121 + c - 0x80;
+      }
 #endif
-      if (fontcache) {
-        drawCharWithCache(x, y, fontcache, fontspecs, getMappedChar(c), flags);
-      }
-      else {
-        drawCharWithoutCache(x, y, font, fontspecs, getMappedChar(c), flags);
-      }
-      x = lcdNextPos;
-    }
-    else if (c == 0x1F) {  // X-coord prefix
-      setx = true;
+      uint8_t width;
+      if (fontcache)
+        width = drawCharWithCache(x, y, fontcache, fontspecs, getMappedChar(c), flags);
+      else
+        width = drawCharWithoutCache(x, y, font, fontspecs, getMappedChar(c), flags);
+      INCREMENT_POS(width);
     }
     else if (c == 0x1E) {
-      x = orig_x;
-      y += height;
+      pos = orig_pos;
+      if (flags & VERTICAL)
+        x += height;
+      else
+        y += height;
     }
     else if (c == 1) {
-      x += 1;
+      INCREMENT_POS(1);
     }
     else {
-      x += 2*(c-1);
+      INCREMENT_POS(2*(c-1));
     }
     s++;
   }
-  lcdNextPos = x;
+  lcdNextPos = pos;
 }
 
 void BitmapBuffer::drawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle)

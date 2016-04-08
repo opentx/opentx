@@ -234,6 +234,11 @@ void storageEraseAll(bool warn)
 {
   TRACE("storageEraseAll()");
 
+#if defined(COLORLCD)
+  // the theme has not been loaded before
+  theme->load();
+#endif
+
   generalDefault();
   modelDefault(1);
 

@@ -22,7 +22,6 @@
 #define _BITMAPS_H_
 
 // Header bitmaps
-extern const uint8_t LBM_TOPMENU_POLYGON[];
 extern const uint8_t LBM_DOT[];
 
 // Main view icons
