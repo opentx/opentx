@@ -112,6 +112,7 @@ class DarkblueTheme: public Theme
     {
       loadColors();
       loadMenusIcons();
+      loadFontCache();
     }
 
     void drawTopbarBackground(uint8_t icon) const

@@ -68,16 +68,19 @@ class DefaultTheme: public Theme
     {
       BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
       if (mask) {
+        delete menuIconNormal[index];
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
         menuIconNormal[index]->clear(HEADER_BGCOLOR);
         menuIconNormal[index]->drawMask(0, 0, mask, MENU_TITLE_COLOR);
+        delete menuIconSelected[index];
         menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
         menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
         menuIconSelected[index]->drawMask(0, 0, mask, MENU_TITLE_COLOR);
+        delete mask;
       }
     }
 
-    void loadMenusIcons() const
+    void loadIcons() const
     {
       loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
@@ -86,6 +89,7 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_RADIO_GLOBAL_FUNCTIONS, "mask_radio_global_functions.png");
       loadMenuIcon(ICON_RADIO_TRAINER, "mask_radio_trainer.png");
       loadMenuIcon(ICON_RADIO_HARDWARE, "mask_radio_hardware.png");
+      loadMenuIcon(ICON_RADIO_CALIBRATION, "mask_radio_calibration.png");
       loadMenuIcon(ICON_RADIO_VERSION, "mask_radio_version.png");
       loadMenuIcon(ICON_MODEL, "mask_menu_model.png");
       loadMenuIcon(ICON_MODEL_SETUP, "mask_model_setup.png");
@@ -113,6 +117,7 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_THEME_VIEW4, "mask_theme_view4.png");
       loadMenuIcon(ICON_THEME_VIEW5, "mask_theme_view5.png");
       loadMenuIcon(ICON_THEME_ADD_VIEW, "mask_theme_add_view.png");
+      loadMenuIcon(ICON_LIBRARY, "mask_library.png");
 
       BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
       BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
@@ -126,6 +131,16 @@ class DefaultTheme: public Theme
       currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
       currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
 
+      delete topleftBitmap;
+      topleftBitmap = NULL;
+      BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath("topleft.png"));
+      if (mask) {
+        topleftBitmap = new BitmapBuffer(BMP_RGB565, mask->getWidth(), MENU_HEADER_HEIGHT);
+        topleftBitmap->clear(HEADER_BGCOLOR);
+        topleftBitmap->drawMask(0, 0, mask, TITLE_BGCOLOR);
+        delete mask;
+      }
+
       delete background;
       delete shadow;
       delete dot;
@@ -134,9 +149,10 @@ class DefaultTheme: public Theme
     virtual void load() const
     {
       loadColors();
-      loadMenusIcons();
       Theme::load();
-      if (!backgroundBitmap) backgroundBitmap = BitmapBuffer::load(getThemePath("mainbg.bmp"));
+      if (!backgroundBitmap) {
+        backgroundBitmap = BitmapBuffer::load(getThemePath("background.bmp"));
+      }
       update();
     }
 
@@ -153,6 +169,8 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(GET_RED(color)-69, GET_GREEN(color)-32, GET_BLUE(color)-24);
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
+      loadIcons();
+      loadFontCache();
     }
 
     virtual void drawBackground() const
@@ -168,8 +186,14 @@ class DefaultTheme: public Theme
 
     virtual void drawTopbarBackground(uint8_t icon) const
     {
-      lcdDrawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-      lcdDrawBitmapPattern(0, 0, LBM_TOPMENU_POLYGON, TITLE_BGCOLOR);
+      if (topleftBitmap) {
+        lcd->drawBitmap(0, 0, topleftBitmap);
+        uint16_t width = topleftBitmap->getWidth();
+        lcd->drawSolidFilledRect(width, 0, LCD_W-width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+      }
+      else {
+        lcd->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+      }
 
       if (icon == ICON_OPENTX)
         lcd->drawBitmap(4, 10, menuIconSelected[ICON_OPENTX]);
@@ -192,12 +216,14 @@ class DefaultTheme: public Theme
 
   protected:
     static const BitmapBuffer * backgroundBitmap;
+    static BitmapBuffer * topleftBitmap;
     static BitmapBuffer * menuIconNormal[MENUS_ICONS_COUNT];
     static BitmapBuffer * menuIconSelected[MENUS_ICONS_COUNT];
     static BitmapBuffer * currentMenuBackground;
 };
 
 const BitmapBuffer * DefaultTheme::backgroundBitmap = NULL;
+BitmapBuffer * DefaultTheme::topleftBitmap = NULL;
 BitmapBuffer * DefaultTheme::menuIconNormal[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * DefaultTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * DefaultTheme::currentMenuBackground = NULL;
