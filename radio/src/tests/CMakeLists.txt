@@ -17,7 +17,7 @@ if(EXISTS "${GTEST_SRCDIR}/src/gtest-all.cc")
     file(GLOB TEST_SRC_FILES ${RADIO_SRC_DIRECTORY}/tests/*.cpp)
 
     add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp)
-    # qt5_use_modules(gtests Core Widgets)
+    qt5_use_modules(gtests Core Widgets)
     add_dependencies(gtests ${FIRMWARE_DEPENDENCIES} gtests-lib)
     target_link_libraries(gtests gtests-lib pthread)
     message("Added optional gtests target")
