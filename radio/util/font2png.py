@@ -10,15 +10,14 @@ app = Qt.QApplication(sys.argv)
 for f in glob.glob("fonts/*.ttf"):
     QtGui.QFontDatabase.addApplicationFont(f)
 
-chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~ ≥→←↑↓↗↘↙↖△"""
+chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~|≥→←↑↓↗↘↙↖△"""
 chars_fr = u"""éèàîç"""
+chars_de = u"""ÄäÖöÜüß"""
 
 COUNT_EXTRA_CHARS = 12
 
 chars_extra = u"".join([chr(1+i) for i in range(COUNT_EXTRA_CHARS)])
-chars = chars_en + chars_extra + chars_fr
-
-print len(chars_en + chars_extra)
+chars = chars_en + chars_extra + chars_fr + chars_de
 
 
 def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):

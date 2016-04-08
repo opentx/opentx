@@ -601,7 +601,7 @@
   #define BREAKSPACE           " "
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER             "[MENU]"
@@ -968,10 +968,10 @@
 #define TR_SPEAKER             INDENT "Haut-p."
 #define TR_BUZZER              INDENT "Bipeur"
 #define TR_BYTES               "bytes"
-#define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
-#define TR_MODULE_RANGE        TR("[Prt]", "[Port.]")
-#define TR_RESET_BTN           "[RAZ]"
-#define TR_SET                 "[Déf]"
+#define TR_MODULE_BIND         BUTTON(TR("Bnd", "Bind"))
+#define TR_MODULE_RANGE        BUTTON(TR("Prt", "Port."))
+#define TR_RESET_BTN           BUTTON("RAZ")
+#define TR_SET                 BUTTON("Déf")
 #define TR_TRAINER             "Ecolage"
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED         TR("ID déjà affecté", "No de modèle déjà utilisé")

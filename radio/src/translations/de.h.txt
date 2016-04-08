@@ -605,7 +605,7 @@
   #define BREAKSPACE           " "
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define TR_ENTER             "[ENTER]"
 #else
   #define TR_ENTER             "[MENU]"
@@ -643,7 +643,7 @@
 #define TR_TRIMINC             TR("Trim Schr.", "Trimmschritte")
 #define TR_DISPLAY_TRIMS       TR("Trim anzeig", "Trimwerte anzeigen")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas-Timerquelle")
-#define TR_TTRIM 	       			 TR("Gastrim", INDENT "Gas-Leerlauftrim")  
+#define TR_TTRIM               TR("Gastrim", INDENT "Gas-Leerlauftrim")
 #define TR_BEEPCTR             TR("Mitt.Piep", "Mittelstell. -Pieps")
 #define TR_USE_GLOBAL_FUNCS    TR("Glob. Funkt.", "Globale Funkt verw.")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -663,8 +663,8 @@
 #define TR_DEFAULT             "(Normal)"
 #define TR_CHECKTRIMS          CENTER"\006Check\012Trims"
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
-#define TR_SWASHTYPE			     TR("Typ Taumelsch", "Typ  Taumelscheibe")
-#define TR_COLLECTIVE	         TR("Kollekt. Pitch", "Kollekt. Pitch Quelle")
+#define TR_SWASHTYPE           TR("Typ Taumelsch", "Typ  Taumelscheibe")
+#define TR_COLLECTIVE          TR("Kollekt. Pitch", "Kollekt. Pitch Quelle")
 #define TR_AILERON             "Roll Quelle"
 #define TR_ELEVATOR            "Nick Quelle"
 #define TR_SWASHRING           TR("Ring   Begrenz", "Ring Begrenzung")
@@ -786,10 +786,10 @@
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM voll"
 #define TR_ALERT               "WARNUNG"
-#define TR_PRESSANYKEYTOSKIP	 TR("Taste drücken",CENTER"Taste drücken")	
+#define TR_PRESSANYKEYTOSKIP   TR("Taste drücken", CENTER "Taste drücken")
 #define TR_THROTTLENOTIDLE     "Gas nicht Null!"
 #define TR_ALARMSDISABLED      "Alarme ausgeschaltet"
-#define TR_PRESSANYKEY         TR("Taste drücken",CENTER"Taste drücken")
+#define TR_PRESSANYKEY         TR("Taste drücken", CENTER "Taste drücken")
 #define TR_BADEEPROMDATA       "EEPROM ungültig"
 #define TR_BAD_RADIO_DATA      "Bad Radio Data"
 #define TR_EEPROMFORMATTING    "EEPROM Initialisieren"
@@ -849,7 +849,7 @@
 #define TR_LATITUDE            "Breite:"
 #define TR_LONGITUDE           "Länge:"
 #define TR_GPSCOORD            TR("GPS-Koord.", "GPS-Koordinaten-Format")
-#define TR_VARIO               TR("----Vario--------", "----Variometer----") //9XR-Pro
+#define TR_VARIO               TR("----Vario--------", "----Variometer----") // 9XR-Pro
 #define TR_PITCH_AT_ZERO       INDENT "Niedrigster Ton"
 #define TR_PITCH_AT_MAX        INDENT "Höchster Ton"
 #define TR_REPEAT_AT_ZERO      INDENT "Wiederholrate"
@@ -858,7 +858,7 @@
 #define TR_SAVEMODEL           "Modelleinstellungen speichern"
 #define TR_BATT_CALIB          "Akku Spg messen"
 #define TR_CURRENT_CALIB       "Strom abgl."
-#define TR_VOLTAGE             TR(INDENT "Spg", INDENT "Spannungsquelle")  //9XR-Pro
+#define TR_VOLTAGE             TR(INDENT "Spg", INDENT "Spannungsquelle")  // 9XR-Pro
 #define TR_CURRENT             TR(INDENT "Strom", INDENT "Stromquelle")
 #define TR_SELECT_MODEL        "Modell Wählen"
 #define TR_CREATE_CATEGORY     "Create Category"
@@ -869,7 +869,7 @@
 #define TR_CHANGE_CATEGORY     "Change category"
 #define TR_COPY_MODEL          "Kopiere Modell"
 #define TR_MOVE_MODEL          "Verschiebe Modell"
-#define TR_BACKUP_MODEL        "Modell auf SD-Karte"  //9XR-Pro
+#define TR_BACKUP_MODEL        "Modell auf SD-Karte"  // 9XR-Pro
 #define TR_DELETE_MODEL        "Modell Löschen" // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       "Modell Restore"
 #define TR_SDCARD_ERROR        "SD-Kartenfehler"
@@ -885,7 +885,7 @@
 #define TR_SWITCHWARN          "SCHALTER"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_NO_FAILSAFE         TR("Failsafe not set", "Failsafe nicht programmiert")
-#define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt 
+#define TR_KEYSTUCK            "Taste klemmt"  // Key stuck=Taste klemmt
 #define TR_INVERT_THR          TR("Gas umkehren?", "Vollgas hinten?") // Th9x 9XR 
 #define TR_SPEAKER_VOLUME      INDENT "Lautstärke"
 #define TR_LCD                 "Bildschirm"
@@ -896,7 +896,7 @@
 #define TR_COPROC              "CoProz."
 #define TR_COPROC_TEMP         "MB Temp. \016>"
 #define TR_CAPAWARNING         INDENT "Kapaz. niedrig" // wg 9XR-Pro
-#define TR_TEMPWARNING         INDENT "Temp.   größer"  //wg 9XR-Pro
+#define TR_TEMPWARNING         INDENT "Temp.   größer"  // wg 9XR-Pro
 #define TR_FUNC                "Funktion"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
@@ -921,7 +921,7 @@
 #define TR_REMOVED             " gelöscht"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Formatieren"
-#define TR_NA                  "N/V"	//NV=Nicht Verfügbar  Kurz-Meldung 
+#define TR_NA                  "N/V"	// NV=Nicht Verfügbar  Kurz-Meldung
 #define TR_HARDWARE            TR("Hardware einst. ", "Namen und Hardware einst.")
 #define TR_FORMATTING          "Formatierung..."
 #define TR_TEMP_CALIB          "Temp.  abgl."
@@ -980,10 +980,10 @@
 #define TR_SPEAKER             INDENT "Lautspr"
 #define TR_BUZZER              INDENT "Summer"
 #define TR_BYTES               "Bytes"
-#define TR_MODULE_BIND         TR("Bind","[Bind]")   //9XR-Pro
-#define TR_MODULE_RANGE        TR("Rang", "[Range]")  //9XR-Pro
-#define TR_RESET_BTN           TR("[Reset]", "[Reset Trim]")
-#define TR_SET                 "[Set]"
+#define TR_MODULE_BIND         BUTTON(TR("Bnd", "Bind"))
+#define TR_MODULE_RANGE        BUTTON(TR("Rng", "Range"))
+#define TR_RESET_BTN           BUTTON("Reset")
+#define TR_SET                 BUTTON("Set")
 #define TR_TRAINER             "----DSC Buchse PPM In/Out------" //DSC Buchse Trainer Buchse
 #define TR_ANTENNAPROBLEM      CENTER "TX-Antennenproblem!"
 #define TR_MODELIDUSED         TR("ID schon benutzt", "Modell-ID schon benutzt")
