@@ -73,12 +73,14 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_INACTIVITY_ALARM,
   // ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
-  // ITEM_SETUP_BACKLIGHT_LABEL,
-  // ITEM_SETUP_BACKLIGHT_MODE,
-  // ITEM_SETUP_BACKLIGHT_DELAY,
-  // ITEM_SETUP_BRIGHTNESS,
-  // ITEM_SETUP_FLASH_BEEP,
+  ITEM_SETUP_BACKLIGHT_LABEL,
+  ITEM_SETUP_BACKLIGHT_MODE,
+  ITEM_SETUP_BACKLIGHT_DELAY,
+  ITEM_SETUP_BRIGHTNESS,
+  ITEM_SETUP_DIM_LEVEL,
+  ITEM_SETUP_FLASH_BEEP,
   // CASE_SPLASH_PARAM(ITEM_SETUP_DISABLE_SPLASH)
+  CASE_GPS(ITEM_SETUP_LABEL_GPS)
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   CASE_GPS(ITEM_SETUP_GPSFORMAT)
   CASE_PXX(ITEM_SETUP_COUNTRYCODE)
@@ -119,7 +121,9 @@ bool menuGeneralSetup(evt_t event)
     LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
     CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
-    LABEL(ALARMS), 0, 0, 0, CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
+    LABEL(ALARMS), 0, 0, 0, 
+    LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
+    CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   int sub = menuVerticalPosition;
 
@@ -372,7 +376,6 @@ bool menuGeneralSetup(evt_t event)
         if (attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
-#if 0
       case ITEM_SETUP_BACKLIGHT_LABEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BACKLIGHT_LABEL);
         break;
@@ -394,21 +397,20 @@ bool menuGeneralSetup(evt_t event)
         break;
 
       case ITEM_SETUP_BRIGHTNESS:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BRIGHTNESS);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLONBRIGHTNESS);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
         if (attr) {
           uint8_t b = 100 - g_eeGeneral.backlightBright;
-          CHECK_INCDEC_GENVAR(event, b, 0, 100);
+          CHECK_INCDEC_GENVAR(event, b, 5, 100);
           g_eeGeneral.backlightBright = 100 - b;
         }
         break;
 
-      case ITEM_SETUP_BACKLIGHT_COLOR:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLCOLOR);
-        drawSlider(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.backlightColor, 20, attr);
-        if (attr) g_eeGeneral.backlightColor = checkIncDec(event, g_eeGeneral.backlightColor, 0, 20, EE_GENERAL | NO_INCDEC_MARKS);
+      case ITEM_SETUP_DIM_LEVEL:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLOFFBRIGHTNESS);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.blOffBright, attr|LEFT) ;
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 5, 100);
         break;
-#endif
 
 #if 0
       case ITEM_SETUP_DISABLE_SPLASH:
@@ -424,6 +426,10 @@ bool menuGeneralSetup(evt_t event)
         break;
       }
 #endif
+
+      case ITEM_SETUP_LABEL_GPS:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_GPS);
+        break;
 
       case ITEM_SETUP_TIMEZONE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIMEZONE);

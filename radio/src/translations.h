@@ -465,7 +465,7 @@ extern const pm_char STR_BEEPCOUNTDOWN[];
 extern const pm_char STR_PERSISTENT[];
 extern const pm_char STR_BACKLIGHT_LABEL[];
 extern const pm_char STR_BLDELAY[];
-#if defined(PWM_BACKLIGHT)
+#if defined(PWM_BACKLIGHT) || defined(PCBHORUS)
 extern const pm_char STR_BLONBRIGHTNESS[];
 extern const pm_char STR_BLOFFBRIGHTNESS[];
 #endif
