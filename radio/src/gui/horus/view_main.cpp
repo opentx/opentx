@@ -46,8 +46,6 @@ void drawMainPots()
 
 void drawTrims(uint8_t flightMode)
 {
-  g_model.displayTrims = DISPLAY_TRIMS_ALWAYS;
-
   for (uint8_t i=0; i<4; i++) {
     static const coord_t x[4] = { TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X };
     static uint8_t vert[4] = {0, 1, 1, 0};
