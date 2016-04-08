@@ -276,7 +276,7 @@ void LCD_ControlLight(uint16_t dutyCycle);
 
 // Backlight driver
 #define setBacklight(xx)      LCD_ControlLight(xx)
-#define backlightEnable()     setBacklight(100-g_eeGeneral.backlightBright)
+#define backlightEnable()     setBacklight(UNEXPECTED_SHUTDOWN() ? 100 : 100-g_eeGeneral.backlightBright)
 #define backlightDisable()    setBacklight(g_eeGeneral.blOffBright)
 #define isBacklightEnable()   true
 

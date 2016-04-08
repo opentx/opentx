@@ -398,7 +398,7 @@ bool menuGeneralSetup(evt_t event)
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
         if (attr) {
           uint8_t b = 100 - g_eeGeneral.backlightBright;
-          CHECK_INCDEC_GENVAR(event, b, 0, 100);
+          CHECK_INCDEC_GENVAR(event, b, 5, 100);
           g_eeGeneral.backlightBright = 100 - b;
         }
         break;
@@ -406,7 +406,7 @@ bool menuGeneralSetup(evt_t event)
       case ITEM_SETUP_DIM_LEVEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLOFFBRIGHTNESS);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.blOffBright, attr|LEFT) ;
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 0, 100);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 5, 100);
         break;
 
 #if 0

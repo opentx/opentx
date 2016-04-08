@@ -322,7 +322,7 @@ void LCD_ControlLight(uint16_t dutyCycle)
 {
   static uint16_t existingDutyCycle;
 
-  if (dutyCycle == existingDutyCycle) {
+  if (dutyCycle == existingDutyCycle || dutyCycle < 5) {
     return;
   }
   else {
