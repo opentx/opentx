@@ -157,10 +157,10 @@ const char * displayPopupMenu(evt_t event)
   for (uint8_t i=0; i<display_count; i++) {
     if (i == s_menu_item) {
       lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, FH+1, TEXT_INVERTED_BGCOLOR);
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], TEXT_INVERTED_COLOR);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], TEXT_INVERTED_COLOR);
     }
     else {
-      lcdDrawText(MENU_X+6, i*(FH+1) + y + 4, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], 0);
+      lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], 0);
     }
   }
 

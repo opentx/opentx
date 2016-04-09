@@ -132,7 +132,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
       lcdDrawSizedText(x, y, name, size, flags);
       coord_t left = (editNameCursorPos == 0 ? 0 : getTextWidth(name, editNameCursorPos, flags));
       char s[] = { (flags & ZCHAR) ? idx2char(name[editNameCursorPos]) : name[editNameCursorPos], '\0' };
-      lcdDrawSolidFilledRect(x+left-1, y-INVERT_VERT_MARGIN, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x+left-1, y, getTextWidth(s, 1)+1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
       lcdDrawText(x+left, y, s, TEXT_INVERTED_COLOR);
     }
     else {

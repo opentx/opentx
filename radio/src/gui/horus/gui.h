@@ -28,7 +28,7 @@
 #define MENU_TITLE_TOP                 48
 #define MENU_TITLE_HEIGHT              21
 #define MENU_BODY_TOP                  (MENU_TITLE_TOP+MENU_TITLE_HEIGHT)
-#define MENU_CONTENT_TOP               (MENU_BODY_TOP+3)
+#define MENU_CONTENT_TOP               (MENU_BODY_TOP+1)
 #define MENU_FOOTER_HEIGHT             21
 #define MENU_FOOTER_TOP                (LCD_H-MENU_FOOTER_HEIGHT)
 #define MENU_BODY_HEIGHT               (MENU_FOOTER_TOP-MENU_BODY_TOP)
@@ -43,7 +43,7 @@
 
 #define INVERT_HORZ_MARGIN             3
 #define INVERT_VERT_MARGIN             1
-#define INVERT_LINE_HEIGHT             18
+#define INVERT_LINE_HEIGHT             20
 
 #define CURVE_SIDE_WIDTH               100
 #define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-7)
