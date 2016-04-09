@@ -1356,7 +1356,7 @@ void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG)
 }
 
 #if defined(GVARS)
-int8_t trimGvar[NUM_STICKS] = { -1, -1, -1, -1 };
+int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS] = { -1, -1, -1, -1 };
 #endif
 
 #if defined(CPUARM)
@@ -1740,7 +1740,7 @@ uint16_t s_sum_samples_thr_10s;
 void evalTrims()
 {
   uint8_t phase = mixerCurrentFlightMode;
-  for (uint8_t i=0; i<NUM_STICKS; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
 #if !defined(VIRTUALINPUTS)
@@ -2478,7 +2478,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   }
 
   // reset all trims, except throttle (if throttle trim)
-  for (uint8_t i=0; i<NUM_STICKS; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
     if (i!=THR_STICK || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t phase=0; phase<MAX_FLIGHT_MODES; phase++) {

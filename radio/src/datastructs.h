@@ -366,7 +366,7 @@ typedef int16_t gvar_t;
 
 #if defined(CPUARM)
 PACK(struct FlightModeData {
-  trim_t trim[4];
+  trim_t trim[NUM_STICKS+NUM_AUX_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
@@ -377,7 +377,7 @@ PACK(struct FlightModeData {
 });
 #elif !defined(PCBSTD)
 PACK(struct FlightModeData {
-  trim_t trim[4];
+  trim_t trim[NUM_STICKS];
   int8_t swtch;       // swtch of phase[0] is not used
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
   uint8_t fadeIn:4;
@@ -387,7 +387,7 @@ PACK(struct FlightModeData {
 });
 #else
 PACK(struct FlightModeData {
-  int8_t trim[4];
+  int8_t trim[NUM_STICKS];
   int8_t trim_ext;    // 2 extra bits per trim (10bits)
   int8_t swtch;       // swtch of phase[0] is not used
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);

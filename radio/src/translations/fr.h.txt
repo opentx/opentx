@@ -224,7 +224,12 @@
 #define TR_VMLTPX2             "+=""*="":="
 
 #define LEN_VMIXTRIMS          "\003"
-#define TR_VMIXTRIMS           "OFF""ON\0""Dir""Prf""Gaz""Ail"
+
+#if defined(PCBHORUS)
+  #define TR_VMIXTRIMS         "OFF""ON\0""Dir""Prf""Gaz""Ail""T5\0""T6\0"
+#else
+  #define TR_VMIXTRIMS         "OFF""ON\0""Dir""Prf""Gaz""Ail"
+#endif
 
 #if LCD_W >= 212
   #define TR_CSWTIMER          "Tempo"
@@ -486,7 +491,12 @@
 #define LEN_VSRCRAW            "\004"
 
 #define TR_STICKS_VSRCRAW      TR("Dir\0""Prf\0""Gaz\0""Ail\0", "\307Dir""\307Prf""\307Gaz""\307Ail")
-#define TR_TRIMS_VSRCRAW       TR("TrmD""TrmP""TrmG""TrmA", "\313Dir""\313Prf""\313Gaz""\313Ail")
+
+#if defined(PCBHORUS)
+  #define TR_TRIMS_VSRCRAW     "\313Dir""\313Prf""\313Gaz""\313Ail""\313T5\0""\313T6\0"
+#else
+  #define TR_TRIMS_VSRCRAW     TR("TrmD""TrmP""TrmG""TrmA", "\313Dir""\313Prf""\313Gaz""\313Ail")
+#endif
 
 #if defined(PCBHORUS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0"
@@ -512,7 +522,11 @@
   #define TR_LOGICALSW         "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#define TR_TRIMS_SWITCHES      TR("tDg""tDd""tPb""tPh""tGb""tGh""tAg""tAd", "\313Dg""\313Dd""\313Pb""\313Ph""\313Gb""\313Gh""\313Ag""\313Ad")
+#if defined(PCBHORUS)
+  #define TR_TRIMS_SWITCHES    "\313Dg""\313Dd""\313Pb""\313Ph""\313Gb""\313Gh""\313Ag""\313Ad""\3135d""\3135u""\3136d""\3136u"
+#else
+  #define TR_TRIMS_SWITCHES    TR("tDg""tDd""tPb""tPh""tGb""tGh""tAg""tAd", "\313Dg""\313Dd""\313Pb""\313Ph""\313Gb""\313Gh""\313Ag""\313Ad")
+#endif
 
 #if defined(PCBSKY9X)
   #define TR_ROTARY_ENCODERS   "REa\0"

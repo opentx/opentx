@@ -236,6 +236,13 @@ enum CurveRefType {
 #define TRIM_ELE    (-2)
 #define TRIM_THR    (-3)
 #define TRIM_AIL    (-4)
+#if defined(PCBHORUS)
+  #define TRIM_T5   (-5)
+  #define TRIM_T6   (-6)
+  #define TRIM_LAST TRIM_T6
+#else
+  #define TRIM_LAST TRIM_AIL
+#endif
 
 #define MLTPX_ADD   0
 #define MLTPX_MUL   1

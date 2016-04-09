@@ -64,7 +64,7 @@ uint32_t readTrims()
     result |= 0x40;
   if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
     result |= 0x80;
-#if 0
+#if !defined(SIMU)
   if (~TRIMS_GPIO_REG_LSD & TRIMS_GPIO_PIN_LSD)
     result |= 0x100;
   if (~TRIMS_GPIO_REG_LSU & TRIMS_GPIO_PIN_LSU)
@@ -79,7 +79,7 @@ uint32_t readTrims()
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+uint16_t trimDown(uint16_t idx)
 {
   return readTrims() & (1 << idx);
 }
