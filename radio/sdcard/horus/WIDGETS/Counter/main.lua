@@ -1,13 +1,12 @@
 local options = {
-  { "Source", SOURCE, 1 },
-  { "Min", VALUE, -1024 },
-  { "Max", VALUE, 1024 },
-  { "Color", COLOR, RED }
+  { "Option1", SOURCE, 1 },
+  { "Option2", VALUE, 1000 },
+  { "Option3", COLOR, RED }
 }
 
 local function create(zone, options)
   local pie = { zone=zone, options=options, counter=0 }
-  print(options.Source)
+  print(options.Option2)
   return pie
 end
 
