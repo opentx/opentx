@@ -45,7 +45,7 @@ class GVarGroup: public QObject {
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox *weightGV, QAbstractSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
+    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
 
   protected slots:
     void gvarCBChanged(int);
@@ -71,7 +71,7 @@ class CurveGroup : public QObject {
   Q_OBJECT
 
   public:
-    CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags=0);
+    CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, const ModelData & model, unsigned int flags=0);
     void update();
 
   protected slots:
@@ -85,6 +85,7 @@ class CurveGroup : public QObject {
     QComboBox *curveValueCB;
     QSpinBox *curveValueSB;
     CurveReference & curve;
+    const ModelData & model;
     unsigned int flags;
     bool lock;
     int lastType;
@@ -117,8 +118,7 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase);
 #define GVARS_VARIANT 0x0001
 #define FRSKY_VARIANT 0x0002
 
-// void populateGVarCB(QComboBox *b, int value, int min, int max,int pgvars=5); //TODO: Clean Up
-void populateGVCB(QComboBox *b, int value);
+void populateGVCB(QComboBox & b, int value, const ModelData & model);
 void populateSourceCB(QComboBox *b, const RawSource &source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags);
 QString image2qstring(QImage image);
 int findmult(float value, float base);
