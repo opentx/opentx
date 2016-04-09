@@ -96,7 +96,7 @@ class TelemetrySensorPanel: public ModelPanel
     void on_type_currentIndexChanged(int index);
     void on_formula_currentIndexChanged(int index);
     void on_unit_currentIndexChanged(int index);
-    void on_prec_valueChanged();
+    void on_prec_valueChanged(double value);
 
   protected:
     void updateSourcesComboBox(AutoComboBox * cb, bool negative);

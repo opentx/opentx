@@ -696,10 +696,10 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
   }
 }
 
-void TelemetrySensorPanel::on_prec_valueChanged()
+void TelemetrySensorPanel::on_prec_valueChanged(double value)
 {
   if (!lock) {
-    sensor.prec = ui->prec->value();
+    sensor.prec = value;
     emit dataModified();
     emit modified();
   }
