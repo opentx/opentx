@@ -489,9 +489,6 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_BEEP_CENTER:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCTR);
-        if (attr && menuHorizontalPosition < 0) {
-          lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN, (NUM_STICKS+NUM_POTS)*13+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-        }
         for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
           coord_t x = MODEL_SETUP_2ND_COLUMN+i*13;
           LcdFlags flags = ((menuHorizontalPosition==i && attr) ? INVERS : 0);

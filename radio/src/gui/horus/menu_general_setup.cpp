@@ -23,14 +23,6 @@
 #include "opentx.h"
 
 #define RADIO_SETUP_2ND_COLUMN         220
-#define YEAR_SEPARATOR_OFFSET          42
-#define MONTH_OFFSET                   55
-#define MONTH_SEPARATOR_OFFSET         79
-#define DAY_OFFSET                     91
-#define HOUR_SEPARATOR_OFFSET          26
-#define MINUTE_OFFSET                  36
-#define MINUTE_SEPARATOR_OFFSET        63
-#define SECOND_OFFSET                  75
 
 int8_t editSlider(coord_t x, coord_t y, evt_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
 {
@@ -140,20 +132,19 @@ bool menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
-          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 100, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
-        lcdDrawText(RADIO_SETUP_2ND_COLUMN+YEAR_SEPARATOR_OFFSET, y, "-", flags);
-        lcdDrawText(RADIO_SETUP_2ND_COLUMN+MONTH_SEPARATOR_OFFSET, y, "-", flags);
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_year+1900, LEFT|flags|rowattr);
               if (rowattr && s_editMode>0) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
+              lcdDrawText(lcdNextPos+4, y, "-", flags);
               break;
             case 1:
-              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN+MONTH_OFFSET, y, t.tm_mon+1, LEFT|flags|rowattr|LEADING0, 2);
+              lcdDrawNumber(lcdNextPos+4, y, t.tm_mon+1, LEFT|flags|rowattr|LEADING0, 2);
               if (rowattr && s_editMode>0) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
+              lcdDrawText(lcdNextPos+4, y, "-", flags);
               break;
             case 2:
             {
@@ -161,7 +152,7 @@ bool menuGeneralSetup(evt_t event)
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               static const pm_uint8_t dmon[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += pgm_read_byte(&dmon[t.tm_mon]);
-              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN+DAY_OFFSET, y, t.tm_mday, LEFT|flags|rowattr|LEADING0, 2);
+              lcdDrawNumber(lcdNextPos+4, y, t.tm_mday, LEFT|flags|rowattr|LEADING0, 2);
               if (rowattr && s_editMode>0) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
@@ -179,24 +170,23 @@ bool menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
-          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 100, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
-        lcdDrawText(RADIO_SETUP_2ND_COLUMN+HOUR_SEPARATOR_OFFSET, y, ":", flags);
-        lcdDrawText(RADIO_SETUP_2ND_COLUMN+MINUTE_SEPARATOR_OFFSET, y, ":", flags);
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
               if (rowattr && s_editMode>0) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
               lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_hour, flags|rowattr|LEFT|LEADING0, 2);
+              lcdDrawText(lcdNextPos+4, y, ":", flags);
               break;
             case 1:
               if (rowattr && s_editMode>0) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
-              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN+MINUTE_OFFSET, y, t.tm_min, flags|rowattr|LEFT|LEADING0, 2);
+              lcdDrawNumber(lcdNextPos+4, y, t.tm_min, flags|rowattr|LEFT|LEADING0, 2);
+              lcdDrawText(lcdNextPos+4, y, ":", flags);
               break;
             case 2:
               if (rowattr && s_editMode>0) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
-              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN+SECOND_OFFSET, y, t.tm_sec, flags|rowattr|LEFT|LEADING0, 2);
+              lcdDrawNumber(lcdNextPos+4, y, t.tm_sec, flags|rowattr|LEFT|LEADING0, 2);
               break;
           }
         }
@@ -211,11 +201,10 @@ bool menuGeneralSetup(evt_t event)
         LcdFlags flags = 0;
         if (attr && menuHorizontalPosition < 0) {
           flags |= INVERS;
-          lcdDrawSolidFilledRect(RADIO_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 100, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
         }
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, flags|(menuHorizontalPosition==0 ? attr : 0)|PREC1|LEFT);
-        lcdDrawText(lcdNextPos+8, y, "-", flags);
-        lcdDrawNumber(lcdNextPos+8, y, 120+g_eeGeneral.vBatMax, flags|(menuHorizontalPosition>0 ? attr : 0)|PREC1|LEFT);
+        lcdDrawText(lcdNextPos+4, y, "-", flags);
+        lcdDrawNumber(lcdNextPos+4, y, 120+g_eeGeneral.vBatMax, flags|(menuHorizontalPosition>0 ? attr : 0)|PREC1|LEFT);
         lcdDrawText(lcdNextPos+1, y, "V", flags);
         if (attr && s_editMode>0) {
           if (menuHorizontalPosition==0)

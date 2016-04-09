@@ -318,8 +318,8 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
     flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
     if (fontindex == STDSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      drawSolidFilledRect(x+width, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      drawSolidFilledRect(x+width-1, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
       fontcache = fontCache[1];
     }
     else if (fontindex == TINSIZE_INDEX) {
@@ -375,9 +375,9 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 #endif
       uint8_t width;
       if (fontcache)
-        width = drawCharWithCache(x, y, fontcache, fontspecs, getMappedChar(c), flags);
+        width = drawCharWithCache(x-1, y, fontcache, fontspecs, getMappedChar(c), flags);
       else
-        width = drawCharWithoutCache(x, y, font, fontspecs, getMappedChar(c), flags);
+        width = drawCharWithoutCache(x-1, y, font, fontspecs, getMappedChar(c), flags);
       INCREMENT_POS(width);
     }
     else if (c == 0x1F) {  // X-coord prefix
