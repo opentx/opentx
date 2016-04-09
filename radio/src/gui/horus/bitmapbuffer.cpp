@@ -348,6 +348,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
     }
   }
 
+  bool setpos = false;
   const coord_t orig_pos = pos;
   while (len--) {
     unsigned char c;
@@ -355,7 +356,11 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       c = idx2char(*s);
     else
       c = pgm_read_byte(s);
-    if (!c) {
+    if (setpos) {
+      pos = c;
+      setpos = false;
+    }
+    else if (!c) {
       break;
     }
     else if (c >= 0x20) {
@@ -374,6 +379,9 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       else
         width = drawCharWithoutCache(x, y, font, fontspecs, getMappedChar(c), flags);
       INCREMENT_POS(width);
+    }
+    else if (c == 0x1F) {  // X-coord prefix
+      setpos = true;
     }
     else if (c == 0x1E) {
       pos = orig_pos;
