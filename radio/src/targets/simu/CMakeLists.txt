@@ -30,10 +30,17 @@ if(MSVC)
   include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
   target_link_libraries(${SIMULATOR_TARGET} PRIVATE C:/Programs/pthreads/Pre-built.2/lib/pthreadVC2.lib)
 else()
-  add_definitions(-g)
+  set(CMAKE_C_FLAGS_DEBUG  "${COMMON_FLAGS} -g -O0")
+  set(CMAKE_CXX_FLAGS_DEBUG  "${COMMON_FLAGS} -g -O0")
 endif()
 
 if(NOT WIN32)
+
+  if(SIMU_DISKIO)
+    add_definitions(-DSIMU_DISKIO)
+    set(SIMU_SRC ${SIMU_SRC} ../../thirdparty/FatFs/ff.c ../../thirdparty/FatFs/option/ccsbcs.c)
+  endif()
+
   add_executable(simu WIN32 ${SIMU_SRC} ../../simu.cpp)
   add_dependencies(simu ${FIRMWARE_DEPENDENCIES})
   target_include_directories(simu PUBLIC /usr/local/include/fox-1.6 PUBLIC /usr/include/fox-1.6 /opt/local/include/fox-1.6)

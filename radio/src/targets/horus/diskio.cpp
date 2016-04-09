@@ -112,7 +112,12 @@ uint32_t sdReadRetries = 0;
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 
-DRESULT disk_read (
+#if !defined(DISK_CACHE)
+  #define __disk_read     disk_read
+  #define __disk_write    disk_write
+#endif
+
+DRESULT __disk_read (
   BYTE drv,               /* Physical drive nmuber (0..) */
   BYTE *buff,             /* Data buffer to store read data */
   DWORD sector,   				/* Sector address (LBA) */
@@ -193,7 +198,7 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 
 #if _READONLY == 0
-DRESULT disk_write (
+DRESULT __disk_write (
   BYTE drv,                       /* Physical drive nmuber (0..) */
   const BYTE *buff,       /* Data to be written */
   DWORD sector,           /* Sector address (LBA) */

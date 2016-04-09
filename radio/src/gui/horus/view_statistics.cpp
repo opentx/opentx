@@ -127,12 +127,22 @@ bool menuStatsDebug(evt_t event)
   lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+2*FH+1, "[Audio]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, audioStack.available(), LEFT);
 
-#if defined(LUA)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+3*FH, "Lua duration");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+3*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  int line = 3;
 
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+4*FH, "Lua interval");
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+4*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+#if defined(DISK_CACHE)
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "SD Cache hits");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
+  ++line;
+#endif
+
+#if defined(LUA)
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua duration");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, 10*maxLuaDuration, LEFT, 0, NULL, "ms");
+  ++line;
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua interval");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
+  ++line;
 #endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);

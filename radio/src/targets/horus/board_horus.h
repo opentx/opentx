@@ -133,7 +133,7 @@ void getCPUUniqueID(char * s);
   #define SD_GET_SPEED()          (0)
 #endif
 
-#if defined(SIMU)
+#if defined(SIMU) && !defined(SIMU_DISKIO)
   #define sdInit()
   #define sdDone()
 #else

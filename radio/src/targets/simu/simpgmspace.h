@@ -474,7 +474,9 @@ extern char simuSdDirectory[1024];
 #define sdMountPoll()
 #define sdPoll10ms()
 #define sd_card_ready()  (true)
-#define sdMounted()      (true)
+#if !defined(SIMU_DISKIO)
+	#define sdMounted()      (true)
+#endif
 
 inline void ledOff() { }
 
