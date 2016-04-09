@@ -32,7 +32,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
   int sub = menuVerticalPosition;
   CustomFunctionData * cf;
   uint8_t eeFlags;
-  
+
   if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
     cf = &g_model.customFn[sub];
     eeFlags = EE_MODEL;
@@ -60,7 +60,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
   else {
     // The user choosed a file in the list
     memcpy(cf->play.name, result, sizeof(cf->play.name));
-    storageDirty(EE_MODEL);
+    storageDirty(eeFlags);
     if (func == FUNC_PLAY_SCRIPT) {
       LUA_LOAD_MODEL_SCRIPTS();
     }
