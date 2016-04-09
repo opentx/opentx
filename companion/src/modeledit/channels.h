@@ -9,7 +9,7 @@ class GVarGroup;
 class LimitsGroup
 {
   public:
-    LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row, int col, int & value, int min, int max, int deflt);
+    LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt);
     ~LimitsGroup();
 
     void updateMinMax(int max);

@@ -103,7 +103,7 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightModes));
 }
 
-GVarGroup::GVarGroup(QCheckBox *weightGV, QAbstractSpinBox *weightSB, QComboBox *weightCB, int & weight, const int deflt, const int mini, const int maxi, const double step, bool allowGvars):
+GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars):
   QObject(),
   weightGV(weightGV),
   weightSB(weightSB),
@@ -115,7 +115,7 @@ GVarGroup::GVarGroup(QCheckBox *weightGV, QAbstractSpinBox *weightSB, QComboBox 
   lock(true)
 {
   if (allowGvars && GetCurrentFirmware()->getCapability(Gvars)) {
-    populateGVCB(weightCB, weight);
+    populateGVCB(*weightCB, weight, model);
     connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
     connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   }
@@ -179,13 +179,14 @@ void GVarGroup::valuesChanged()
   }
 }
 
-CurveGroup::CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, unsigned int flags):
+CurveGroup::CurveGroup(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QComboBox * curveValueCB, QSpinBox * curveValueSB, CurveReference & curve, const ModelData & model, unsigned int flags):
   QObject(),
   curveTypeCB(curveTypeCB),
   curveGVarCB(curveGVarCB),
   curveValueCB(curveValueCB),
   curveValueSB(curveValueSB),
   curve(curve),
+  model(model),
   flags(flags),
   lock(false),
   lastType(-1)
@@ -219,7 +220,7 @@ void CurveGroup::update()
       curveGVarCB->setChecked(true);
       if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
         lastType = curve.type;
-        populateGVCB(curveValueCB, curve.value);
+        populateGVCB(*curveValueCB, curve.value, model);
       }
       curveValueCB->show();
       curveValueSB->hide();
@@ -478,33 +479,39 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   b->setMaxVisibleItems(10);
 }
 
-void populateGVCB(QComboBox *b, int value)
+void populateGVCB(QComboBox & b, int value, const ModelData & model)
 {
   bool selected = false;
 
-  b->clear();
+  b.clear();
 
-  int pgvars = GetCurrentFirmware()->getCapability(Gvars);
-  for (int i=-pgvars; i<=-1; i++) {
+  int count = GetCurrentFirmware()->getCapability(Gvars);
+  for (int i=-count; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
-    b->addItem(QObject::tr("-GV%1").arg(-i), gval);
+    if (strlen(model.gvars_names[-i-1]) > 0)
+      b.addItem(QObject::tr("-GV%1 (%2)").arg(-i).arg(model.gvars_names[-i-1]), gval);
+    else
+      b.addItem(QObject::tr("-GV%1").arg(-i), gval);
     if (value == gval) {
-      b->setCurrentIndex(b->count()-1);
+      b.setCurrentIndex(b.count()-1);
       selected = true;
     }
   }
 
-  for (int i=1; i<=pgvars; i++) {
+  for (int i=1; i<=count; i++) {
     int16_t gval = (int16_t)(10000+i);
-    b->addItem(QObject::tr("GV%1").arg(i), gval);
+    if (strlen(model.gvars_names[i-1]) > 0)
+      b.addItem(QObject::tr("GV%1 (%2)").arg(i).arg(model.gvars_names[i-1]), gval);
+    else
+      b.addItem(QObject::tr("GV%1").arg(i), gval);
     if (value == gval) {
-      b->setCurrentIndex(b->count()-1);
+      b.setCurrentIndex(b.count()-1);
       selected = true;
     }
   }
 
   if (!selected) {
-    b->setCurrentIndex(pgvars);
+    b.setCurrentIndex(count);
   }
 }
 
