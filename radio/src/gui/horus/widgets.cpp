@@ -45,14 +45,14 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
   if (attr & (BUTTON_OFF|BUTTON_ON)) {
     padding = 5;
   }
-  lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 20, 1, TEXT_COLOR);
   if (attr & INVERS) {
-    lcdDrawSolidFilledRect(x, y, padding+width+16+padding, 18, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(x, y, padding+width+16+padding, 19, TEXT_INVERTED_BGCOLOR);
     lcdDrawText(x+padding+8, y, label, TEXT_INVERTED_COLOR);
   }
   else {
     lcdDrawText(x+padding+8, y, label, TEXT_COLOR);
   }
+  lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 21, 1, TEXT_COLOR);
   if (attr & BUTTON_OFF)
     lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_OFF);
   else if (attr & BUTTON_ON)
