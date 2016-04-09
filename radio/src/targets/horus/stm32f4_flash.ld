@@ -127,6 +127,13 @@ SECTIONS
     _ebss = .;         /* define a global symbol at bss end */
   } >CCM
 
+  /* Non-zeroed data section */
+  . = ALIGN(4);
+  .noinit (NOLOAD) :
+  {
+    *(.noinit)
+  } >CCM
+
   /* collect all uninitialized .ccm sections */
   .ram (NOLOAD) :
   {
