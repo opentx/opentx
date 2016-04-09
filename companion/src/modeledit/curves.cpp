@@ -498,9 +498,8 @@ void Curves::resizeEvent(QResizeEvent *event)
   ModelPanel::resizeEvent(event);
 }
 
-void Curves::on_curveType_currentIndexChanged()
+void Curves::on_curveType_currentIndexChanged(int index)
 {
-  int index = ui->curveType->currentIndex();
   unsigned int flags = templates[index].flags;
   ui->curveCoeffLabel->setVisible(flags & CURVE_COEFF_ENABLE);
   ui->curveCoeff->setVisible(flags & CURVE_COEFF_ENABLE);

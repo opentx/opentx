@@ -45,7 +45,7 @@ class Curves : public ModelPanel
     void onNodeMoved(int x, int y);
     void onNodeFocus();
     void onNodeUnfocus();
-    void on_curveType_currentIndexChanged();
+    void on_curveType_currentIndexChanged(int index);
     void on_curveApply_clicked();
 
   protected:
