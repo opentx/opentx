@@ -270,6 +270,10 @@
   #include "targets/9x/board_stock.h"
 #endif
 
+#if defined(DISK_CACHE)
+  #include "disk_cache.h"
+#endif
+
 #if defined(SIMU)
   #include "targets/simu/simpgmspace.h"
 #elif defined(CPUARM)

@@ -27,7 +27,7 @@
 #define CLI_COMMAND_MAX_LEN            256
 
 OS_TID cliTaskId;
-TaskStack<CLI_STACK_SIZE> cliStack;
+TaskStack<CLI_STACK_SIZE> _ALIGNED(8) cliStack; // stack must be aligned to 8 bytes otherwise printf for %f does not work!
 Fifo<uint8_t, 256> cliRxFifo;
 uint8_t cliTracesEnabled = true;
 // char cliLastLine[CLI_COMMAND_MAX_LEN+1];
@@ -631,6 +631,13 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "audio")) {
     printAudioVars();
   }
+#if defined(DISK_CACHE)
+  else if (!strcmp(argv[1], "dc")) {
+    DiskCacheStats stats = diskCache.getStats();
+    uint32_t hitRate = diskCache.getHitRate();
+    serialPrint("Disk Cache stats: reads: %u, hits: %u, hit rate: %0.1f%%", (stats.noHits + stats.noMisses), stats.noHits, hitRate/10.0);
+  }
+#endif
   else if (toLongLongInt(argv, 1, &address) > 0) {
     int size = 256;
     if (toInt(argv, 2, &size) >= 0) {

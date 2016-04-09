@@ -21,6 +21,7 @@ option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
 option(SIMU_AUDIO "Enable simulator audio" OFF)
+option(SIMU_DISKIO "Enable disk IO simulation in simulator. Simulator will use FatFs module and simulated IO layer that  uses \"./sdcard.image\" file as image of SD card. This file must contain whole SD card from first to last sector" OFF)
 
 enable_language(ASM)
 set(OPT s)
@@ -77,6 +78,7 @@ if(PCB STREQUAL HORUS)
   set(FLAVOUR horus)
   set(VIRTUAL_INPUTS YES)
   set(RAMBACKUP YES)
+  option(DISK_CACHE "Enable SD card disk cache" YES)
   add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
@@ -105,6 +107,10 @@ if(PCB STREQUAL HORUS)
     ${WIDGETS_SRC}
     )
   set(SRC ${SRC} targets/taranis/rtc_driver.cpp)
+  if(DISK_CACHE)
+    set(SRC ${SRC} disk_cache.cpp)
+    add_definitions(-DDISK_CACHE)
+  endif()
   set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}

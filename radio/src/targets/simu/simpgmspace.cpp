@@ -1032,23 +1032,28 @@ uint32_t Card_CSD[4]; // TODO elsewhere
 FATFS g_FATFS_Obj = { 0};
 #endif
 
+pthread_mutex_t ioMutex;
+
 int ff_cre_syncobj (BYTE vol, _SYNC_t* sobj) /* Create a sync object */
 {
+  pthread_mutex_init(&ioMutex, 0);
   return 1;
 }
 
 int ff_req_grant (_SYNC_t sobj)        /* Lock sync object */
 {
+  pthread_mutex_lock(&ioMutex);
   return 1;
 }
 
 void ff_rel_grant (_SYNC_t sobj)        /* Unlock sync object */
 {
-
+  pthread_mutex_unlock(&ioMutex);
 }
 
 int ff_del_syncobj (_SYNC_t sobj)        /* Delete a sync object */
 {
+  pthread_mutex_destroy(&ioMutex);
   return 1;
 }
 
@@ -1091,7 +1096,12 @@ DSTATUS disk_status (BYTE pdrv)
   return (DSTATUS)0;
 }
 
-DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
+#if !defined(DISK_CACHE)
+  #define __disk_read     disk_read
+  #define __disk_write    disk_write
+#endif
+
+DRESULT __disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
   if (diskImage == 0) return RES_NOTRDY;
   traceDiskStatus();
@@ -1101,7 +1111,7 @@ DRESULT disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
   return RES_OK;
 }
 
-DRESULT disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
+DRESULT __disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
   if (diskImage == 0) return RES_NOTRDY;
   traceDiskStatus();
@@ -1192,6 +1202,48 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
       return RES_PARERR;
   }
   return RES_OK;
+}
+
+void sdInit(void)
+{
+  // ioMutex = CoCreateMutex();
+  // if (ioMutex >= CFG_MAX_MUTEX ) {
+  //   // sd error
+  //   return;
+  // }
+
+  if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
+    // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
+    sdGetFreeSectors();
+
+    referenceSystemAudioFiles();
+
+#if defined(LOG_TELEMETRY)
+    f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
+    if (f_size(&g_telemetryFile) > 0) {
+      f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
+    }
+#endif
+  }
+  else {
+    TRACE("f_mount() failed");
+  }
+}
+
+void sdDone()
+{
+  if (sdMounted()) {
+    audioQueue.stopSD();
+#if defined(LOG_TELEMETRY)
+    f_close(&g_telemetryFile);
+#endif
+    f_mount(NULL, "", 0); // unmount SD
+  }
+}
+
+uint32_t sdMounted()
+{
+  return g_FATFS_Obj.fs_type != 0;
 }
 
 uint32_t sdIsHC()
