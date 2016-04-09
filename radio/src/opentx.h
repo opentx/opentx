@@ -1750,7 +1750,16 @@ extern uint16_t s_anaFilt[NUMBER_ANALOG];
 #if defined(JITTER_MEASURE)
 extern JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
 extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
-#endif  // defined(JITTER_MEASURE)
+#if defined(PCBHORUS)
+  #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
+#elif defined(PCBTARANIS)
+  #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
+#elif defined(CLI)
+  #define JITTER_MEASURE_ACTIVE()   (1)
+#else
+  #define JITTER_MEASURE_ACTIVE()   (0)
+#endif
+#endif
 
 #define WDT_500MS 500
 

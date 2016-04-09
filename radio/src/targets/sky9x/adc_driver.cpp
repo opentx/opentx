@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 uint16_t adcValues[NUMBER_ANALOG];
 
@@ -63,12 +63,13 @@ void adcInit()
 
 // Read 8 (9 for REVB) ADC channels
 // Documented bug, must do them 1 by 1
-void adcRead()
+void adcSingleRead()
 {
   register Adc *padc;
   register uint32_t y;
   register uint32_t x;
 
+  for (uint8_t i=0; i<4; i++)
   padc = ADC;
   y = padc->ADC_ISR; // Clear EOC flags
   for (y = NUMBER_ANALOG+1; --y > 0;) {
@@ -111,6 +112,29 @@ void adcRead()
   }  
 #endif
 }
+
+void adcRead()
+{
+  uint16_t temp[NUMBER_ANALOG] = { 0 };
+
+  for (int i=0; i<4; i++) {
+    adcSingleRead();
+    for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+      uint16_t val = adcValues[x];
+#if defined(JITTER_MEASURE)
+      if (JITTER_MEASURE_ACTIVE()) {
+        rawJitter[x].measure(val);
+      }
+#endif
+      temp[x] += val;
+    }
+  }
+
+  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+    adcValues[x] = temp[x] >> 2;
+  }
+}
+
 
 uint16_t getAnalogValue(uint8_t value)
 {
