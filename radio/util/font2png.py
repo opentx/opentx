@@ -50,7 +50,7 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             if fontsize >= 24:
                 return r.width() + 3
             else:
-                return r.width() + 1
+                return r.width() + r.left() + 1
 
     def getFontWidth():
         width = 0
@@ -90,7 +90,7 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             if fontsize >= 24:
                 painter.drawText(width - rect.left() + 1, fontsize - 2, c)  # fontsize-bottom+1 -17 / 7
             else:
-                painter.drawText(width - rect.left(), fontsize - 1, c)  # fontsize-bottom+1 -17 / 7
+                painter.drawText(width + 1, fontsize - 1, c)  # fontsize-bottom+1 -17 / 7
         width += getCharWidth(c)
 
     coords.append(width)
