@@ -152,7 +152,7 @@ bool menuStatsAnalogs(evt_t event)
 #if defined(JITTER_MEASURE)
     lcdDrawNumber(x+100, y, rawJitter[i].get());
     lcdDrawNumber(x+140, y, avgJitter[i].get());
-    lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*250/256, PREC1);
 #else
     lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
 #endif
