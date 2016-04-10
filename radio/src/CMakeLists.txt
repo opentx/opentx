@@ -986,7 +986,12 @@ if(ARCH STREQUAL ARM)
   set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
   set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
+# Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
+if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
   set(COMMON_CPP_FLAGS "${COMMON_FLAGS} -std=gnu++11")
+else()
+  set(COMMON_CPP_FLAGS ${COMMON_FLAGS})
+endif()
   set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
   set(CMAKE_C_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -Wimplicit -g")
   set(CMAKE_C_FLAGS_RELEASE "${COMMON_FLAGS} -Wimplicit")
