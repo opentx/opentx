@@ -1031,3 +1031,157 @@ PACK(struct RadioData {
 #undef EXTRA_GENERAL_FIELDS
 #undef THEME_DATA
 #undef NOBACKUP
+
+
+#if !defined(BACKUP)
+/* Compile time check to test structure size has not changed *
+   Changing the size of one of the eeprom structs may cause wrong data to
+   be loaded. Error out if the struct size changes.
+   This function tries not avoid checking or using the defines
+   other than the CPU arch and board type so changes in other
+   defines also trigger the struct size changes */
+
+template <typename ToCheck, size_t expectedSize, size_t realSize = sizeof(ToCheck)>
+void check_size() {
+  static_assert(expectedSize == realSize, "struct size changed");
+}
+
+static inline void check_struct()
+{
+#define CHKSIZE(x, y) check_size<struct x, y>()
+#define CHKTYPE(x, y) check_size<x, y>()
+
+#if defined(VIRTUALINPUTS)
+  CHKSIZE(CurveRef, 2);
+#endif
+
+  /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
+  /* Sky9x does not have virtualinputs */
+
+  /* LEN_CFN_NAME is the difference in CustomFunctionData */
+
+#if defined(PCBTARANIS)
+  CHKSIZE(MixData, 22);
+  CHKSIZE(ExpoData, 19);
+  CHKSIZE(LimitData, 13);
+  CHKSIZE(LogicalSwitchData, 9);
+  CHKSIZE(CustomFunctionData, 11);
+  CHKSIZE(FlightModeData, 40);
+  CHKSIZE(TimerData, 16);
+  CHKSIZE(SwashRingData, 8);
+  CHKSIZE(FrSkyBarData, 6);
+  CHKSIZE(FrSkyLineData, 6);
+  CHKTYPE(union FrSkyScreenData, 24);
+  CHKSIZE(FrSkyTelemetryData, 106);
+  CHKSIZE(ModelHeader, 24);
+  CHKSIZE(CurveData, 4);
+
+#if defined(REV9E)
+  CHKSIZE(RadioData, 952);
+  CHKSIZE(ModelData, 6519);
+#else
+  CHKSIZE(RadioData, 872);
+  CHKSIZE(ModelData, 6506);
+#endif
+
+#elif defined(PCBHORUS)
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 17);
+  CHKSIZE(LimitData, 13);
+  CHKSIZE(CustomFunctionData, 9);
+  CHKSIZE(FlightModeData, 40);
+  CHKSIZE(TimerData, 16);
+  CHKSIZE(SwashRingData, 8);
+
+  CHKSIZE(FrSkyTelemetryData, 7);
+  CHKSIZE(ModelHeader, 27);
+  CHKSIZE(CurveData, 4);
+  CHKSIZE(RadioData, 835);
+  CHKSIZE(ModelData, 9335);
+
+#elif defined(PCBSKY9X)
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 11);
+  CHKSIZE(LimitData, 5);
+  CHKSIZE(CustomFunctionData, 9);
+  CHKSIZE(FlightModeData, 38);
+  CHKSIZE(TimerData, 11);
+  CHKSIZE(SwashRingData, 3);
+  CHKSIZE(FrSkyBarData, 5);
+  CHKSIZE(FrSkyLineData, 2);
+  CHKSIZE(FrSkyTelemetryData, 90);
+  CHKSIZE(ModelHeader, 12);
+  CHKTYPE(CurveData, 2);
+  CHKSIZE(RadioData, 685);
+  CHKSIZE(ModelData, 4671);
+#else
+  // Common for all variants
+  CHKSIZE(LimitData, 5);
+  CHKSIZE(SwashRingData, 3);
+  CHKSIZE(FrSkyBarData, 3);
+  CHKSIZE(FrSkyLineData, 2);
+  CHKSIZE(FrSkyTelemetryData, 43);
+  CHKSIZE(ModelHeader, 11);
+  CHKTYPE(CurveData, 1);
+
+  // AVR
+#if defined(CPUM2560) || defined(CPUM2561)
+  CHKSIZE(ExpoData, 5);
+  CHKSIZE(MixData, 10);
+#else
+  CHKSIZE(MixData, 9);
+  CHKSIZE(ExpoData, 4);
+#endif
+
+#if defined(CPUM2560)
+  CHKSIZE(CustomFunctionData, 4);
+  CHKSIZE(TimerData, 6);
+#else
+  CHKSIZE(CustomFunctionData, 3);
+  CHKSIZE(TimerData, 3);
+#endif
+
+#if defined(PCBSTD)
+  CHKSIZE(FlightModeData, 13);
+  CHKSIZE(RadioData, 84);
+#else
+  CHKSIZE(FlightModeData, 30);
+  CHKSIZE(RadioData, 85);
+#endif
+
+#if defined(PCBSTD) && defined (MAVLINK)
+  CHKSIZE(ModelData, 717);
+#elif defined(PCBSTD)
+  CHKSIZE(ModelData, 756);
+#elif defined(MAVLINK)
+  CHKSIZE(ModelData, 978);
+#else
+  CHKSIZE(ModelData, 1017);
+#endif
+
+#endif /* board specific ifdefs*/
+
+#if defined(CPUARM)
+  CHKSIZE(LogicalSwitchData, 9);
+#if !defined(COLORLCD)
+  CHKSIZE(FrSkyChannelData, 7);
+#endif
+  CHKSIZE(TelemetrySensor, 13);
+  CHKSIZE(ModuleData,70);
+#else
+  CHKSIZE(LogicalSwitchData, 3);
+  CHKSIZE(FrSkyChannelData, 6);
+  CHKSIZE(ModuleData, 38);
+#endif
+
+#if !defined(PCBSTD)
+  CHKSIZE(GVarData, 7);
+#endif
+
+  CHKSIZE(FrSkyRSSIAlarm, 1);
+  CHKSIZE(TrainerData, 16);
+
+#undef CHKSIZE
+#undef CHKSIZEUNION
+}
+#endif /* BACKUP */
