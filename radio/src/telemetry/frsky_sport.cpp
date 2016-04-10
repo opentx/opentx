@@ -234,7 +234,7 @@ void processSportPacket(uint8_t * packet)
     if (id == RSSI_ID) {
       frskyStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
       data = SPORT_DATA_U8(packet);
-      if (data == 0) {
+      if (data == 0)
         frskyData.rssi.reset();
       else
         frskyData.rssi.set(data);
