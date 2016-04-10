@@ -1,3 +1,24 @@
+<h2>Version 2.1.8 / 2016-04-10</h2>
+
+<ul>
+<li>Telemetry Simulator sensor instance number fixed (<a href=https://github.com/opentx/opentx/issues/3207>#3207</a>)</li>
+<li>Fixed: Throttle Source combo-box was populated multiple times (<a href=https://github.com/opentx/opentx/issues/3222>#3222</a>)</li>
+<li>RTC option tool-tip corrected (<a href=https://github.com/opentx/opentx/issues/3225>#3225</a>)</li>
+<li>Fixed: Companion was looking for custom scripts at the wrong place (<a href=https://github.com/opentx/opentx/issues/3237>#3237</a>)</li>
+<li>Offset displayed in inputs screen (<a href=https://github.com/opentx/opentx/issues/3248>#3248</a>)</li>
+<li>Import/export handling was broken for Average formula telemetry sensors (<a href=https://github.com/opentx/opentx/issues/3262>#3262</a>)</li>
+<li>Fixed: Hardware Setup control types and names were not stored in profile (<a href=https://github.com/opentx/opentx/issues/3260>#3260</a>)</li>
+<li>Fixed voice language list (<a href=https://github.com/opentx/opentx/issues/3338>#3338</a>)</li>
+<li>Fixed data overflow in Special Functions Override Channel (<a href=https://github.com/opentx/opentx/issues/3347>#3347</a>)</li>
+<li>Fixed: Sync dialog new line problem (only present for some UI languages) (<a href=https://github.com/opentx/opentx/issues/3350>#3350</a>)</li>
+<li>Removed a few legacy timer limitations, fix non-working limit (<a href=https://github.com/opentx/opentx/issues/3301>#3301</a>)</li>
+<li>Default AVR fuse settings changed to disable JTAG interface (<a href=https://github.com/opentx/opentx/issues/3379>#3379</a>)</li>
+<li>Channel range fix (Start, Channels) in Model Settings, Setup page, int/ext module settings</li>
+<li>Use friendly GVAR names in dialogs (if available)  (<a href=https://github.com/opentx/opentx/issues/3353>#3353</a>)</li>
+<li>Various texts and translations corrections</li>
+</ul>
+
+
 <h2>Version 2.1.7 / 2016-01-04</h2>
 
 <ul>

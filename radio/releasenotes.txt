@@ -1,3 +1,41 @@
+<h2>Version 2.1.8 / 2016-04-10</h2>
+
+[Taranis]
+<ul>
+<li>Improvements of Statistics screen (<a href=https://github.com/opentx/opentx/issues/3206>#3206</a>)</li>
+<li>Flight Modes screen layout fix (<a href=https://github.com/opentx/opentx/issues/3307>#3307</a>)</li>
+<li>Fixed: left slider was affecting the value of the right slider on X9E (<a href=https://github.com/opentx/opentx/issues/2639>#2639</a>)</li>
+<li>USB Joystick now supports 24 buttons (CH9-32) (<a href=https://github.com/opentx/opentx/issues/3268>#3268</a>)</li>
+<li>Main view adjustments for 3-char switch names (<a href=https://github.com/opentx/opentx/issues/3278>#3278</a>)</li>
+</ul>
+
+[ARM (Taranis, Sky9x, 9XR-PRO, AR9X)]
+<ul>
+<li>Fixed: EDGE Logical switch internal state was being reset by the AND switch, that affected its function (it looked like AND was applied before the EDGE processing, not after like it is done for other logical switch types) (<a href=https://github.com/opentx/opentx/issues/2939>#2939</a>)</li>
+</ul>
+
+[Lua]
+<ul>
+<li>Some Lua fields were not available to scripts (<a href=https://github.com/opentx/opentx/issues/3223>#3223</a>)</li>
+<li>Fixed: only first 32 input lines (out of 64) were accessible in Lua (<a href=https://github.com/opentx/opentx/issues/3285>#3285</a>)</li>
+<li>playDuration() second parameter is now really optional (<a href=https://github.com/opentx/opentx/issues/3329>#3329</a>)</li>
+</ul>
+
+[Mega2560]
+<ul>
+<li>Fixed: First PPM pulse in the frame was longer (<a href=https://github.com/opentx/opentx/issues/2981>#2981</a>)</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections (se, it, pl, de)</li>
+<li>Text to speech fixes (hu, sp)</li>
+<li>Various small bug-fixes</li>
+<li>PowerBox telemetry sensor names changed</li>
+<li>Removed a few legacy timer limitations, fix non-working limit (<a href=https://github.com/opentx/opentx/issues/3301>#3301</a>)</li>
+</ul>
+
+
 <h2>Version 2.1.7 / 2016-01-04</h2>
 
 Notice: Lua model wizard was fixed (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>) 
