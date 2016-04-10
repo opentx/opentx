@@ -396,6 +396,7 @@
 #endif
 
 #define IS_POT(x)                   ((x)>=POT1 && (x)<=POT_LAST)
+#define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 
 #define GET_LOWRES_POT_POSITION(i)  (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)        g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
