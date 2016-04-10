@@ -1516,7 +1516,7 @@ tmr10ms_t jitterResetTime = 0;
 
 #if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
   #define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
-  #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-3) (see explanation below)
+  #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-1) (see explanation below)
 
   #define JITTER_ALPHA            (1<<JITTER_FILTER_STRENGTH)
   #define ANALOG_MULTIPLIER       (1<<ANALOG_SCALE)
