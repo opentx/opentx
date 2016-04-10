@@ -1045,6 +1045,12 @@ else()
     DEPENDS firmware
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
+
+  add_custom_target(firmware-size
+    COMMAND avr-size --format=avr --mcu=${MCU} firmware.elf
+    DEPENDS firmware
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 endif()
 
 if(CPU_FAMILY STREQUAL STM32)
