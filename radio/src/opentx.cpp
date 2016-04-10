@@ -921,46 +921,6 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 }
 #endif
 
-#if defined(FRSKY)&& !defined(CPUARM)
-FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
-{
-  if (IS_IMPERIAL_ENABLE()) {
-    if (unit == UNIT_TEMPERATURE) {
-      val += 18;
-      val *= 115;
-      val >>= 6;
-    }
-    if (unit == UNIT_DIST) {
-      // m to ft *105/32
-      val = val * 3 + (val >> 2) + (val >> 5);
-    }
-    if (unit == UNIT_FEET) {
-      unit = UNIT_DIST;
-    }
-    if (unit == UNIT_KTS) {
-      // kts to mph
-      unit = UNIT_SPEED;
-      val = (val * 23) / 20;
-    }
-  }
-  else {
-    if (unit == UNIT_KTS) {
-      // kts to km/h
-      unit = UNIT_SPEED;
-#if defined(CPUARM)
-      val = (val * 1852) / 1000;
-#else
-      val = (val * 50) / 27;
-#endif
-    }
-  }
-
-  if (unit == UNIT_HDG) {
-    unit = UNIT_TEMPERATURE;
-  }
-}
-#endif
-
 #define INAC_STICKS_SHIFT   6
 #define INAC_SWITCHES_SHIFT 8
 bool inputsMoved()

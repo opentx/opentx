@@ -1544,14 +1544,6 @@ extern union ReusableBuffer reusableBuffer;
 void checkFlashOnBeep();
 
 #if defined(CPUARM)
-void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
-#elif defined(FRSKY)
-void convertUnit(getvalue_t & val, uint8_t & unit); // TODO check FORCEINLINE on stock
-#else
-#define convertUnit(...)
-#endif
-
-#if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 unsigned int effectiveLen(const char * str, unsigned int size);
@@ -1699,6 +1691,46 @@ void varioWakeup();
   #define IS_IMPERIAL_ENABLE() (1)
 #else
   #define IS_IMPERIAL_ENABLE() (0)
+#endif
+
+#if defined(CPUARM)
+void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
+#elif defined(FRSKY)
+FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
+{
+  if (IS_IMPERIAL_ENABLE()) {
+    if (unit == UNIT_TEMPERATURE) {
+      val += 18;
+      val *= 115;
+      val >>= 6;
+    }
+    if (unit == UNIT_DIST) {
+      // m to ft *105/32
+      val = val * 3 + (val >> 2) + (val >> 5);
+    }
+    if (unit == UNIT_FEET) {
+      unit = UNIT_DIST;
+    }
+    if (unit == UNIT_KTS) {
+      // kts to mph
+      unit = UNIT_SPEED;
+      val = (val * 23) / 20;
+    }
+  }
+  else {
+    if (unit == UNIT_KTS) {
+      // kts to km/h
+      unit = UNIT_SPEED;
+      val = (val * 50) / 27;
+    }
+  }
+
+  if (unit == UNIT_HDG) {
+    unit = UNIT_TEMPERATURE;
+  }
+}
+#else
+#define convertUnit(...)
 #endif
 
 #if !defined(CPUARM)
