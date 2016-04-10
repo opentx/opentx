@@ -922,7 +922,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 #endif
 
 #if defined(FRSKY)&& !defined(CPUARM)
-void convertUnit(getvalue_t & val, uint8_t & unit)
+FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
     if (unit == UNIT_TEMPERATURE) {
