@@ -22,6 +22,7 @@ This bug was introduced in version 2.1.2 and has been fixed in 2.1.8. (<a href=h
 <li>Some Lua fields were not available to scripts (<a href=https://github.com/opentx/opentx/issues/3223>#3223</a>)</li>
 <li>Fixed: only first 32 input lines (out of 64) were accessible in Lua (<a href=https://github.com/opentx/opentx/issues/3285>#3285</a>)</li>
 <li>playDuration() second parameter is now really optional (<a href=https://github.com/opentx/opentx/issues/3329>#3329</a>)</li>
+<li>Fixed Lua io.open() problem for non-existing files (<a href=https://github.com/opentx/opentx/issues/3342>#3342</a>)</li>
 </ul>
 
 [Mega2560]
