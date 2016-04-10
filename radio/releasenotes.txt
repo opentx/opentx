@@ -1,5 +1,8 @@
 <h2>Version 2.1.8 / 2016-04-10</h2>
 
+Notice: EDGE Logical Switch operation has changed. Users should check their setups, if they use EDGE with AND switch. 
+This bug was introduced in version 2.1.2 and has been fixed in 2.1.8. (<a href=https://github.com/opentx/opentx/issues/2939>#2939</a>)
+
 [Taranis]
 <ul>
 <li>Improvements of Statistics screen (<a href=https://github.com/opentx/opentx/issues/3206>#3206</a>)</li>
