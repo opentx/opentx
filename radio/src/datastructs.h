@@ -1149,16 +1149,6 @@ static inline void check_struct()
   CHKSIZE(RadioData, 85);
 #endif
 
-#if defined(PCBSTD) && defined (MAVLINK)
-  CHKSIZE(ModelData, 717);
-#elif defined(PCBSTD)
-  CHKSIZE(ModelData, 756);
-#elif defined(MAVLINK)
-  CHKSIZE(ModelData, 978);
-#else
-  CHKSIZE(ModelData, 1017);
-#endif
-
 #endif /* board specific ifdefs*/
 
 #if defined(CPUARM)
