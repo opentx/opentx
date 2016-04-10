@@ -37,6 +37,7 @@ This bug was introduced in version 2.1.2 and has been fixed in 2.1.8. (<a href=h
 <li>Various small bug-fixes</li>
 <li>PowerBox telemetry sensor names changed</li>
 <li>Removed a few legacy timer limitations, fix non-working limit (<a href=https://github.com/opentx/opentx/issues/3301>#3301</a>)</li>
+<li>Removed the "RF signal low" alert before "Telemetry lost" when powering off the receiver (<a href=https://github.com/opentx/opentx/issues/2616>#2616</a>)</li>
 </ul>
 
 
