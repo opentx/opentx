@@ -321,8 +321,6 @@ enum DebugTimers {
   debugTimerMixes10ms,
 
   debugTimerAdcRead,
-  debugTimerAdcLoop,
-  debugTimerAdcWait,
 
   debugTimerMixerCalcToUsage,
   debugTimerMixerIterval,

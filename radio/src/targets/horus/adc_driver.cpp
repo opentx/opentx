@@ -157,27 +157,24 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
 {
   uint32_t result = 0;
 
-  ADC_CS_LOW();
-  delay_01us(1);
-  SPIx_ReadWriteByte(adcCommands[index]);
-  ADC_CS_HIGH();
   // This delay is to allow charging of ADC input capacitor
   // after the MUX changes from one channel to the other.
   // It was determined experimentally. Biggest problem seems to be
   // the cross-talk between A4:S1 and A5:MULTIPOS. Changing S1 for one extreme
   // to the other resulted in A5 change of:
   //
-  //        delay value       A5 change
-  //          0               76
-  //        100               26
-  //        300               13
-  //        500               undetectable
-  delay_01us(500);
+  //        delay value       A5 change     Time needed for adcRead()
+  //          1               16            0.154ms - 0.156ms
+  //        300               5             0.197ms - 0.199ms
+  //        500               0             0.225ms - 0.243ms
+  delay_01us(300);
 
   for (uint8_t i = 0; i < 4; i++) {
     ADC_CS_LOW();
     delay_01us(1);
-    uint16_t val = (0x0fff & SPIx_ReadWriteByte(adcCommands[index]));
+    // command is changed to the next index for the last two readings 
+    // (because the sampled data is lagging behind for two command cycles)
+    uint16_t val = (0x0fff & SPIx_ReadWriteByte(adcCommands[(i>1) ? index+1 : index]));
 #if defined(JITTER_MEASURE)
     if (JITTER_MEASURE_ACTIVE()) {
       rawJitter[index].measure(val);
@@ -191,7 +188,7 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
   return result >> 2;
 }
 
-void adcStartNextOnChipRead()
+void adcOnChipReadStart()
 {
   DMA2_Stream1->CR &= ~DMA_SxCR_EN;		// Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
@@ -202,25 +199,22 @@ void adcStartNextOnChipRead()
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 }
 
-void adcEndNextOnChipRead()
+bool adcOnChipReadFinished()
 {
-  for (uint32_t i=0; i<20000; i++) {
-    if (DMA2->LISR & DMA_LISR_TCIF1) {
-      break;
-    }
-  }
+  return (DMA2->LISR & DMA_LISR_TCIF1);
 }
 
 void adcRead()
 {
   uint16_t temp[NUMBER_ANALOG-MOUSE1] = { 0 };
+  uint8_t noInternalReads = 0;
 
+  adcOnChipReadStart();
+  adcReadSPIDummy();
   adcReadSPIDummy();
   for (uint32_t index=0; index<MOUSE1; index++) {
-    if (index < 8 && !(index & 1)) adcStartNextOnChipRead();
     adcValues[index] = adcReadNextSPIChannel(index);
-    if (index < 8 && (index & 1)) {
-      adcEndNextOnChipRead();
+    if (noInternalReads < 4 && adcOnChipReadFinished()) { 
       for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
         uint16_t val = adcValues[MOUSE1+x];
 #if defined(JITTER_MEASURE)
@@ -230,8 +224,17 @@ void adcRead()
 #endif
         temp[x] += val;
       }
+      if (++noInternalReads < 4) {
+        adcOnChipReadStart();
+      }
     }
   }
+
+#if defined(DEBUG)
+  if (noInternalReads != 4) {
+    TRACE("Internal ADC problem: reads: %d", noInternalReads);
+  }
+#endif
 
   for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
     adcValues[MOUSE1+x] = temp[x] >> 2;
@@ -243,7 +246,7 @@ const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1,
 uint16_t getAnalogValue(uint8_t index)
 {
   if (ana_direction[index] < 0)
-    return 4096 - adcValues[index];
+    return 4095 - adcValues[index];
   else
     return adcValues[index];
 }

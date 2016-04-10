@@ -185,7 +185,7 @@ uint16_t getAnalogValue(uint8_t index)
   index = ana_mapping[index];
 #endif
   if (ana_direction[index] < 0)
-    return 4096 - adcValues[index];
+    return 4095 - adcValues[index];
   else
     return adcValues[index];
 }
