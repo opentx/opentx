@@ -1463,30 +1463,20 @@ uint16_t BandGap = 225;
 // G: Note that the above would have set the ADC prescaler to 128, equating to
 // 125KHz sample rate. We now sample at 500KHz, with oversampling and other
 // filtering options to produce 11-bit results.
-uint16_t BandGap = 2040 ;
+uint16_t BandGap = 2040;
 #elif defined(PCBSTD)
-uint16_t BandGap ;
+uint16_t BandGap;
 #endif
 
 #if defined(JITTER_MEASURE)
-  JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
-  JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
-  tmr10ms_t jitterResetTime = 0;
-  #if defined(PCBHORUS)
-    #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
-  #elif defined(PCBTARANIS)
-    #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
-  #elif defined(CLI)
-    #define JITTER_MEASURE_ACTIVE()   (1)
-  #else
-    #define JITTER_MEASURE_ACTIVE()   (0)
-  #endif
+JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
+JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
+tmr10ms_t jitterResetTime = 0;
 #endif
-
 
 #if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
   #define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
-  #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-3) (see explanation below)
+  #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-1) (see explanation below)
 
   #define JITTER_ALPHA            (1<<JITTER_FILTER_STRENGTH)
   #define ANALOG_MULTIPLIER       (1<<ANALOG_SCALE)
@@ -1536,8 +1526,6 @@ uint16_t anaIn(uint8_t chan)
 #if defined(CPUARM)
 void getADC()
 {
-  uint16_t temp[NUMBER_ANALOG] = { 0 };
-
 #if defined(JITTER_MEASURE)
   if (JITTER_MEASURE_ACTIVE() && jitterResetTime < get_tmr10ms()) {
     // reset jitter measurement every second
@@ -1550,22 +1538,11 @@ void getADC()
 #endif
 
   DEBUG_TIMER_START(debugTimerAdcRead);
-  for (uint8_t i=0; i<4; i++) {
-    adcRead();
-    for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
-      uint16_t val = getAnalogValue(x);
-#if defined(JITTER_MEASURE)
-      if (JITTER_MEASURE_ACTIVE()) {
-        rawJitter[x].measure(val);
-      }
-#endif
-      temp[x] += val;
-    }
-  }
+  adcRead();
   DEBUG_TIMER_STOP(debugTimerAdcRead);
 
-  for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
-    uint16_t v = temp[x] >> (3 - ANALOG_SCALE);
+  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+    uint16_t v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
 
 #if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
     // Jitter filter:

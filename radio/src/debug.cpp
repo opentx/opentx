@@ -221,8 +221,6 @@ const char * debugTimerNames[DEBUG_TIMERS_COUNT] = {
   ,"Mix eval   "   // debugTimerEvalMixes,
   ,"Mix 10ms   "   // debugTimerMixes10ms,
   ,"ADC read   "   // debugTimerAdcRead,
-  ,"ADC loop   "   // debugTimerAdcLoop,
-  ,"ADC wait   "   // debugTimerAdcWait,
   ,"mix-pulses "   // debugTimerMixerCalcToUsage
   ,"mix-int.   "   // debugTimerMixerIterval
 };

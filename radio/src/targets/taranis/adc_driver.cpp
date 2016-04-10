@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define PIN_ANALOG  0x0003
 #define PIN_PORTA   0x0000
@@ -111,13 +111,14 @@ void adcInit()
 #endif
 }
 
-void adcRead()
+void adcSingleRead()
 {
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-  ADC1->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
-  DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits
-  DMA2_Stream0->CR |= DMA_SxCR_EN ;               // Enable DMA
-  ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
+  DMA2_Stream0->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
+  DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 |
+                DMA_LIFCR_CFEIF0; // Write ones to clear bits
+  DMA2_Stream0->CR |= DMA_SxCR_EN;               // Enable DMA
+  ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
 
 #if defined(REV9E)
   DMA2_Stream1->CR &= ~DMA_SxCR_EN ;    // Disable DMA
@@ -125,7 +126,7 @@ void adcRead()
   DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1 ; // Write ones to clear bits
   DMA2_Stream1->CR |= DMA_SxCR_EN ;   // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
-#endif  // #if defined(REV9E)
+#endif // defined(REV9E)
 
 #if defined(REV9E)
   for (unsigned int i=0; i<10000; i++) {
@@ -136,13 +137,35 @@ void adcRead()
   DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
   DMA2_Stream1->CR &= ~DMA_SxCR_EN ;              // Disable DMA
 #else
-  for (unsigned int i=0; i<10000; i++) {
+  for (unsigned int i = 0; i < 10000; i++) {
     if (DMA2->LISR & DMA_LISR_TCIF0) {
       break;
     }
   }
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  DMA2_Stream0->CR &= ~DMA_SxCR_EN;              // Disable DMA
 #endif
+}
+
+void adcRead()
+{
+  uint16_t temp[NUMBER_ANALOG] = { 0 };
+
+  for (int i=0; i<4; i++) {
+    adcSingleRead();
+    for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+      uint16_t val = adcValues[x];
+#if defined(JITTER_MEASURE)
+      if (JITTER_MEASURE_ACTIVE()) {
+        rawJitter[x].measure(val);
+      }
+#endif
+      temp[x] += val;
+    }
+  }
+
+  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+    adcValues[x] = temp[x] >> 2;
+  }
 }
 
 // TODO
@@ -162,7 +185,7 @@ uint16_t getAnalogValue(uint8_t index)
   index = ana_mapping[index];
 #endif
   if (ana_direction[index] < 0)
-    return 4096 - adcValues[index];
+    return 4095 - adcValues[index];
   else
     return adcValues[index];
 }

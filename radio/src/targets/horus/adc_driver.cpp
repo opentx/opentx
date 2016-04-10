@@ -18,11 +18,23 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
 
+#define SPI_STICK1                     0
+#define SPI_STICK2                     1
+#define SPI_STICK3                     2
+#define SPI_STICK4                     3
+#define SPI_S1                         4
+#define SPI_6POS                       5
+#define SPI_S2                         6
+#define SPI_LS                         7
+#define SPI_RS                         8
+#define SPI_TX_VOLTAGE                 9
+#define SPI_L2                         10
+#define SPI_L1                         11
 #define RESETCMD                       0x4000
 #define MANUAL_MODE                    0x1000 // manual mode channel 0
 
@@ -30,7 +42,7 @@
 
 uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
-static u16 SPIx_ReadWriteByte(uint16_t value)
+uint16_t SPIx_ReadWriteByte(uint16_t value)
 {
   while(SPI_I2S_GetFlagStatus(ADC_SPI,SPI_I2S_FLAG_TXE) == RESET);
   SPI_I2S_SendData(ADC_SPI,value);
@@ -87,27 +99,13 @@ static void ADS7952_Init()
   ADC_CS_LOW();
   SPIx_ReadWriteByte(MANUAL_MODE);
   ADC_CS_HIGH();
-    
-// SPIx_ReadWriteByte(ProgramReg_Auto2 );
-// ADC_CS_HIGH();
-
-// asm("nop");
-// ADC_CS_LOW();
-// SPIx_ReadWriteByte(AutoMode_2);
-// ADC_CS_HIGH();
-
-// asm("nop");
-// ADC_CS_LOW();
-// SPIx_ReadWriteByte(ContinuedSelectMode);
-// ADC_CS_HIGH();
-// asm("nop");
 }
 
 void adcInit()
 {
   ADS7952_Init();
 
-  configure_pins( ADC_GPIO_PIN_MOUSE1 | ADC_GPIO_PIN_MOUSE2, PIN_ANALOG | PIN_PORTF );
+  configure_pins(ADC_GPIO_PIN_MOUSE1 | ADC_GPIO_PIN_MOUSE2, PIN_ANALOG | PIN_PORTF);
 	
   ADC3->CR1 = ADC_CR1_SCAN;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
@@ -126,42 +124,72 @@ void adcInit()
   DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 }
 
-#define SPI_STICK1                     0
-#define SPI_STICK2                     1
-#define SPI_STICK3                     2
-#define SPI_STICK4                     3
-#define SPI_S1                         4
-#define SPI_6POS                       5
-#define SPI_S2                         6
-#define SPI_LS                         7
-#define SPI_RS                         8
-#define SPI_TX_VOLTAGE                 9
-#define SPI_L2                         10
-#define SPI_L1                         11
-
 const uint16_t adcCommands[MOUSE1+2] =
 {
-  MANUAL_MODE | ( SPI_STICK1     << 7 ),
-  MANUAL_MODE | ( SPI_STICK2     << 7 ),
-  MANUAL_MODE | ( SPI_STICK3     << 7 ),
-  MANUAL_MODE | ( SPI_STICK4     << 7 ),
-  MANUAL_MODE | ( SPI_S1         << 7 ),
-  MANUAL_MODE | ( SPI_6POS       << 7 ),
-  MANUAL_MODE | ( SPI_S2         << 7 ),
-  MANUAL_MODE | ( SPI_L1         << 7 ),
-  MANUAL_MODE | ( SPI_L2         << 7 ),
-  MANUAL_MODE | ( SPI_LS         << 7 ),
-  MANUAL_MODE | ( SPI_RS         << 7 ),
-  MANUAL_MODE | ( SPI_TX_VOLTAGE << 7 ),
-  MANUAL_MODE | ( 0 << 7 ),    // small joystick left/right
-  MANUAL_MODE | ( 0 << 7 )     // small joystick up/down
+  MANUAL_MODE | (SPI_STICK1     << 7),
+  MANUAL_MODE | (SPI_STICK2     << 7),
+  MANUAL_MODE | (SPI_STICK3     << 7),
+  MANUAL_MODE | (SPI_STICK4     << 7),
+  MANUAL_MODE | (SPI_S1         << 7),
+  MANUAL_MODE | (SPI_6POS       << 7),
+  MANUAL_MODE | (SPI_S2         << 7),
+  MANUAL_MODE | (SPI_L1         << 7),
+  MANUAL_MODE | (SPI_L2         << 7),
+  MANUAL_MODE | (SPI_LS         << 7),
+  MANUAL_MODE | (SPI_RS         << 7),
+  MANUAL_MODE | (SPI_TX_VOLTAGE << 7),
+  MANUAL_MODE | (0 << 7 ),    // small joystick left/right
+  MANUAL_MODE | (0 << 7 )     // small joystick up/down
 };
 
-void adcRead()
+void adcReadSPIDummy()
 {
-  const uint16_t * command = adcCommands;
+  // A dummy command to get things started
+  // (because the sampled data is lagging behind for two command cycles)
+  ADC_CS_LOW();
+  delay_01us(1);
+  SPIx_ReadWriteByte(adcCommands[0]);
+  ADC_CS_HIGH();
+  delay_01us(1);
+}
 
-  // Start on chip ADC read
+uint32_t adcReadNextSPIChannel(uint8_t index)
+{
+  uint32_t result = 0;
+
+  // This delay is to allow charging of ADC input capacitor
+  // after the MUX changes from one channel to the other.
+  // It was determined experimentally. Biggest problem seems to be
+  // the cross-talk between A4:S1 and A5:MULTIPOS. Changing S1 for one extreme
+  // to the other resulted in A5 change of:
+  //
+  //        delay value       A5 change     Time needed for adcRead()
+  //          1               16            0.154ms - 0.156ms
+  //        300               5             0.197ms - 0.199ms
+  //        500               0             0.225ms - 0.243ms
+  delay_01us(300);
+
+  for (uint8_t i = 0; i < 4; i++) {
+    ADC_CS_LOW();
+    delay_01us(1);
+    // command is changed to the next index for the last two readings 
+    // (because the sampled data is lagging behind for two command cycles)
+    uint16_t val = (0x0fff & SPIx_ReadWriteByte(adcCommands[(i>1) ? index+1 : index]));
+#if defined(JITTER_MEASURE)
+    if (JITTER_MEASURE_ACTIVE()) {
+      rawJitter[index].measure(val);
+    }
+#endif
+    ADC_CS_HIGH();
+    delay_01us(1);
+    result += val;
+  }
+
+  return result >> 2;
+}
+
+void adcOnChipReadStart()
+{
   DMA2_Stream1->CR &= ~DMA_SxCR_EN;		// Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
   DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1; // Write ones to clear bits
@@ -169,60 +197,48 @@ void adcRead()
   DMA2_Stream1->NDTR = 2;
   DMA2_Stream1->CR |= DMA_SxCR_EN;		// Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+}
 
-  // A dummy command to get things started 
-  // (because the sampled data is lagging behind for two command cycles)
-  ADC_CS_LOW();
-  delay_01us(1);
-  SPIx_ReadWriteByte(*command);   // still sampling the old MUX channel
-  ADC_CS_HIGH();
-  delay_01us(1);
+bool adcOnChipReadFinished()
+{
+  return (DMA2->LISR & DMA_LISR_TCIF1);
+}
 
-  DEBUG_TIMER_START(debugTimerAdcLoop);
-  for (uint32_t adcIndex=0; adcIndex<MOUSE1; adcIndex++) {
-    // MUX is changed to the channel that was sent in the previous command
-    // but the data is from the old MUX position
-    ADC_CS_LOW();
-    delay_01us(1);
-    SPIx_ReadWriteByte(*command);   
-    ADC_CS_HIGH();
-    delay_01us(1);
+void adcRead()
+{
+  uint16_t temp[NUMBER_ANALOG-MOUSE1] = { 0 };
+  uint8_t noInternalReads = 0;
 
-    // This delay is to allow charging of ADC input capacitor 
-    // after the MUX changes from one channel to the other.
-    // It was determined experimentally. Biggest problem seems to be 
-    // the cross-talk between A4:S1 and A5:MULTIPOS. Changing S1 for one extreme
-    // to the other resulted in A5 change of:
-    //
-    //        delay value       A5 change
-    //          0               76 
-    //        100               26
-    //        300               13
-    //        500               undetectable
-    delay_01us(500);
-    ++command;    // move to the next channel
-
-    // First time the wanted ADC channel is actually sampled.
-    // This is delayed to allow MUX to settle (high input impedance)
-    // Also the MUX channel is set to the next channel here, 
-    // but the actual MUX change will happen in the next round
-    ADC_CS_LOW();
-    delay_01us(1);
-    adcValues[adcIndex] = (0x0fff & SPIx_ReadWriteByte(*command));
-    ADC_CS_HIGH();
-    delay_01us(1);
-  }
-  DEBUG_TIMER_STOP(debugTimerAdcLoop);
-
-  DEBUG_TIMER_START(debugTimerAdcWait);
-  for (uint32_t i=0; i<20000; i++) {
-    if (DMA2->LISR & DMA_LISR_TCIF1) {
-      break;
+  adcOnChipReadStart();
+  adcReadSPIDummy();
+  adcReadSPIDummy();
+  for (uint32_t index=0; index<MOUSE1; index++) {
+    adcValues[index] = adcReadNextSPIChannel(index);
+    if (noInternalReads < 4 && adcOnChipReadFinished()) { 
+      for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
+        uint16_t val = adcValues[MOUSE1+x];
+#if defined(JITTER_MEASURE)
+        if (JITTER_MEASURE_ACTIVE()) {
+          rawJitter[MOUSE1+x].measure(val);
+        }
+#endif
+        temp[x] += val;
+      }
+      if (++noInternalReads < 4) {
+        adcOnChipReadStart();
+      }
     }
   }
-  DEBUG_TIMER_STOP(debugTimerAdcWait);
 
-  // On chip ADC read should have finished
+#if defined(DEBUG)
+  if (noInternalReads != 4) {
+    TRACE("Internal ADC problem: reads: %d", noInternalReads);
+  }
+#endif
+
+  for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
+    adcValues[MOUSE1+x] = temp[x] >> 2;
+  }
 }
 
 const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
@@ -230,7 +246,7 @@ const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1,
 uint16_t getAnalogValue(uint8_t index)
 {
   if (ana_direction[index] < 0)
-    return 4096 - adcValues[index];
+    return 4095 - adcValues[index];
   else
     return adcValues[index];
 }
