@@ -196,7 +196,7 @@ int getSwitchWarningsCount()
 #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
 #if defined MULTIMODULE
-#define MULTIMODULE_HASOPTIONS(x)         (x == MM_RF_PROTO_HUBSAN || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_DSM2 || x >= MM_RF_PROTO_CUSTOM)
+#define MULTIMODULE_HASOPTIONS(x)         (x == MM_RF_PROTO_HUBSAN || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_SFHSS || x >= MM_RF_PROTO_CUSTOM)
 #define MULTIMODULE_FAILSAFEROWS(x)       (IS_MODULE_MULTIMODULE(x) && (MULTIMODULE_HASOPTIONS(g_model.moduleData[x].multi.rfProtocol))) ? (uint8_t) 1: HIDDEN_ROW
 #else
 #define MULTIMODULE_FAILSAFEROWS(x)       HIDDEN_ROW
@@ -696,7 +696,7 @@ void menuModelSetup(uint8_t event)
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_FLYSKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
             case MM_RF_PROTO_FRSKY:
-              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_XJT_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].subType+1, menuHorizontalPosition==2 ? attr : 0);
+              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_FRSKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
             case MM_RF_PROTO_HISKY:
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_SUBTYPE_HISKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
@@ -764,11 +764,11 @@ void menuModelSetup(uint8_t event)
                 case MM_RF_PROTO_DSM2:
                 case MM_RF_PROTO_SYMAX:
                 case MM_RF_PROTO_KN:
-                case MM_RF_PROTO_FRSKY:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 1);
                   break;
                 case MM_RF_PROTO_CG023:
                 case MM_RF_PROTO_MT99XX:
+                case MM_RF_PROTO_FRSKY:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 2);
                   break;
                 case MM_RF_PROTO_FLYSKY:
@@ -940,6 +940,7 @@ void menuModelSetup(uint8_t event)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
           switch (g_model.moduleData[moduleIdx].multi.rfProtocol) {
             case MM_RF_PROTO_FRSKY:
+            case MM_RF_PROTO_SFHSS:
               lcd_putsLeft(y, STR_MULTI_RFTUNE);
               break;
             case MM_RF_PROTO_HUBSAN:
