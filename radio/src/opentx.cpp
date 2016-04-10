@@ -926,7 +926,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 bool inputsMoved()
 {
   uint8_t sum = 0;
-  for (uint8_t i=0; i<NUM_STICKS; i++)
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++)
     sum += anaIn(i) >> INAC_STICKS_SHIFT;
   for (uint8_t i=0; i<NUM_SWITCHES; i++)
     sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
