@@ -42,5 +42,5 @@ void createCrossfireFrame(uint8_t * frame, int16_t * pulses)
       bitsavailable -= 8;
     }
   }
-  *buf = crc8(&frame[2], 24);
+  *buf = crc8(&frame[2], 23);
 }

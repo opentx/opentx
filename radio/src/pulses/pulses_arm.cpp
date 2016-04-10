@@ -196,7 +196,7 @@ void setupPulses(unsigned int port)
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
         createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
         sportSendBuffer(crossfire, CROSSFIRE_FRAME_LEN);
-        // TODO scheduleNextMixerCalculation()
+        scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
       }
       break;
     }
