@@ -75,6 +75,8 @@ void menuCommonCalib(uint8_t event)
       uint8_t idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
+        // use raw analog value for multipos calibraton, anaIn() already has multipos decoded value
+        vt = getAnalogValue(i) >> 1;
         if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
           reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
