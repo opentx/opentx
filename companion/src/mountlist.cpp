@@ -209,7 +209,7 @@
 
 #ifdef MOUNTED_GETMNTINFO
 
-# if ! HAVE_STRUCT_STATFS_F_FSTYPENAME
+# if defined(MOUNTED_VMOUNT) && ! HAVE_STRUCT_STATFS_F_FSTYPENAME
 static const char *
 fstype_to_string (short int t)
 {
