@@ -96,7 +96,7 @@ void i2cCheck()
 #endif
     TWI0->TWI_RCR = COPROC_RX_BUXSIZE - 1 ;
     if ( TWI0->TWI_SR & TWI_SR_RXRDY ) {
-      (void) TWI0->TWI_RHR ;
+      READ_AND_DISCARD(TWI0->TWI_RHR);
     }
     TWI0->TWI_PTCR = TWI_PTCR_RXTEN ; // Start transfers
     TWI0->TWI_CR = TWI_CR_START ;   // Start Rx

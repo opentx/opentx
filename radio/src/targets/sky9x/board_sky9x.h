@@ -41,6 +41,12 @@
 #include "board.h"
 #include "audio_driver.h"
 
+#if defined(SIMU)
+#define READ_AND_DISCARD(reg)
+#else
+#define READ_AND_DISCARD(reg)                 (void)(reg)
+#endif
+
 extern uint16_t ResetReason;
 
 #define BOOTLOADER_SIZE                0x8000

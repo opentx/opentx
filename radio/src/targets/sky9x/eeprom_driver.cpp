@@ -58,7 +58,7 @@ uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, reg
   condition = SPI_SR_TXEMPTY ;
   spiptr = SPI ;
   spiptr->SPI_CR = 1 ;                    // Enable
-  (void) spiptr->SPI_RDR ;                // Dump any rx data
+  READ_AND_DISCARD(spiptr->SPI_RDR);
   (void) spiptr->SPI_SR ;                 // Clear error flags
   spiptr->SPI_RPR = (uint32_t)discard_rx_command ;
   spiptr->SPI_RCR = comlen ;
@@ -108,8 +108,8 @@ uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
 
   spiptr = SPI;
   spiptr->SPI_CR = 1; // Enable
-  (void) spiptr->SPI_RDR; // Dump any rx data
 
+  READ_AND_DISCARD(spiptr->SPI_RDR);
   spiptr->SPI_TDR = out;
 
   delay = 0;
@@ -119,9 +119,9 @@ uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
       break;
     }
   }
-  
+
   if (skipFirst) {
-    (void) spiptr->SPI_RDR; // Dump the rx data
+    READ_AND_DISCARD(spiptr->SPI_RDR);
     spiptr->SPI_TDR = 0;
     delay = 0;
     while ((spiptr->SPI_SR & SPI_SR_RDRF) == 0) {
@@ -222,8 +222,8 @@ extern "C" void SPI_IRQHandler()
   spiptr = SPI ;
   SPI->SPI_IDR = 0x07FF ;                 // All interrupts off
   spiptr->SPI_CR = 2 ;                    // Disable
-  (void) spiptr->SPI_RDR ;                // Dump any rx data
-  (void) spiptr->SPI_SR ;                 // Clear error flags
+  READ_AND_DISCARD(spiptr->SPI_RDR);
+  READ_AND_DISCARD(spiptr->SPI_SR);       // Clear error flags
   spiptr->SPI_PTCR = SPI_PTCR_RXTDIS | SPI_PTCR_TXTDIS ;  // Stop tramsfers
   Spi_complete = 1 ;                                      // Indicate completion
 
