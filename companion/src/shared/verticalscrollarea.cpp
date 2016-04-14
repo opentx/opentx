@@ -5,8 +5,7 @@
 
 VerticalScrollArea::VerticalScrollArea(QWidget * parent, GenericPanel * panel):
   QScrollArea(parent),
-  panel(panel),
-  parent(parent)
+  panel(panel)
 {
   setWidgetResizable(true);
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
