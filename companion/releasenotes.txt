@@ -1,4 +1,4 @@
-<h2>Version 2.1.8 / 2016-04-10</h2>
+<h2>Version 2.1.8 / 2016-04-14</h2>
 
 <ul>
 <li>Telemetry Simulator sensor instance number fixed (<a href=https://github.com/opentx/opentx/issues/3207>#3207</a>)</li>
