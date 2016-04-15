@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QByteArray>
 
 class QDir;
 class ProgressWidget;
@@ -22,6 +23,7 @@ class SyncProcess : public QObject
     int getFilesCount(const QString & directory);
     QStringList updateDir(const QString & source, const QString & destination);
     QString updateEntry(const QString & path, const QDir & source, const QDir & destination);
+    bool contentsDifferent(const QByteArray & source, const QByteArray & dest);
     QString folder1;
     QString folder2;
     ProgressWidget * progress;

@@ -105,27 +105,38 @@ QString SyncProcess::updateEntry(const QString & path, const QDir & source, cons
       if (!sourceFile.open(QFile::ReadOnly)) {
         return QObject::tr("Open '%1' failed").arg(path);
       }
-      QString sourceContents = sourceFile.readAll();
+      QByteArray sourceContents = sourceFile.readAll();
       sourceFile.close();
-      // try to retrieve destination contents
+
+      // retrieve destination contents
       QFile destinationFile(destinationPath);
-      if (destinationFile.open(QFile::ReadOnly)) {
-        QString destinationContents = destinationFile.readAll();
-        destinationFile.close();
-        if (sourceContents == destinationContents) {
-          // qDebug() << "Skip" << path;
-          return QString();
-        }
+      if (!destinationFile.open(QFile::ReadOnly)) {
+        return QObject::tr("Open '%1' failed").arg(destinationPath);
       }
-      if (!destinationFile.open(QFile::WriteOnly)) {
-        return QObject::tr("Write '%1' failed").arg(destinationPath);
-      }
-      progress->addText(tr("Write %1").arg(destinationPath) + "\n");
-      // qDebug() << "Write" << destinationPath;
-      QTextStream destinationStream(&destinationFile);
-      destinationStream << sourceContents;
+      QByteArray destinationContents = destinationFile.readAll();
       destinationFile.close();
+
+      if (contentsDifferent(sourceContents, destinationContents)) {
+        // copy contents
+        if (!destinationFile.open(QFile::WriteOnly | QIODevice::Truncate)) {
+          return QObject::tr("Write '%1' failed").arg(destinationPath);
+        }
+        progress->addText(tr("Write %1").arg(destinationPath) + "\n");
+        // qDebug() << "Write" << destinationPath;
+        destinationFile.write(sourceContents);
+        destinationFile.close();
+      }
     }
   }
   return QString();
+}
+
+bool SyncProcess::contentsDifferent(const QByteArray & source, const QByteArray & dest) {
+  if (source.size() != dest.size()) return true;
+  for(int n=0; n<source.size(); ++n) {
+    if (source[n] != dest[n]) {
+      return true;
+    }
+  }
+  return false;
 }
