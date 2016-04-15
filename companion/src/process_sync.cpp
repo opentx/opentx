@@ -108,7 +108,7 @@ QString SyncProcess::updateEntry(const QString & path, const QDir & source, cons
       QString sourceContents = sourceFile.readAll();
       sourceFile.close();
       // try to retrieve destination contents
-      QFile destinationFile(path);
+      QFile destinationFile(destinationPath);
       if (destinationFile.open(QFile::ReadOnly)) {
         QString destinationContents = destinationFile.readAll();
         destinationFile.close();
