@@ -63,7 +63,7 @@ void drawSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_
 
 select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, evt_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event);
-int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t event);
+swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, evt_t event);
 #if defined(GVARS)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, evt_t event);
 #else

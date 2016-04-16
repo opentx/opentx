@@ -335,7 +335,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
     getStringWithIndex(s, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1);
   }
   else if (idx <= SWSRC_ONE) {
-    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS));
+    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_ON+2+(SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM));
   }
   else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
     getStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);

@@ -192,7 +192,7 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t e
   return selectMenuItem(x, y, NULL, value, 0, 1, attr, event);
 }
 
-int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, evt_t event)
+swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, evt_t event)
 {
   if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
   putsSwitches(x, y, value, attr);
