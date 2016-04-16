@@ -4,7 +4,7 @@
 # on 2.1 release: make PCB=9X EXT=FRSKY VOICE=YES AUDIO=YES AUTOSOURCE=YES AUTOSWITCH=YES HELI=YES TEMPLATES=YES GAUGES=NO
 #   => 64818 (program) + 3236 (data)
 # on 2.2 release: cmake -DPCB=9X -DEXT=FRSKY -DAUDIO=YES -DVOICE=YES -DHELI=YES -DTEMPLATES=YES ~/git/opentx
-#   => 64832 (program) + 3236 (data)
+#   => 64828 (program) + 3236 (data)
 
 import os
 import sys

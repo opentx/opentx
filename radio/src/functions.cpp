@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include "timers.h"
 
 CustomFunctionsContext modelFunctionsContext = { 0 };
 
@@ -57,16 +56,16 @@ PLAY_FUNCTION(playValue, source_t idx)
     if (telemetrySensor.prec > 0) {
       if (telemetrySensor.prec == 2) {
         if (val >= 5000) {
-          val = div_and_round<100>(val);
+          val = div_and_round(val, 100);
         }
         else {
-          val = div_and_round<10>(val);
+          val = div_and_round(val, 10);
           attr = PREC1;
         }
       }
       else {
         if (val >= 500) {
-          val = div_and_round<10>(val);
+          val = div_and_round(val, 10);
         }
         else {
           attr = PREC1;
@@ -113,7 +112,7 @@ PLAY_FUNCTION(playValue, source_t idx)
       if (TELEMETRY_STREAMING()) {
         idx -= (MIXSRC_FIRST_TELEM+TELEM_A1-1);
         uint8_t att = 0;
-        int16_t converted_value =  div_and_round<10>(applyChannelRatio(idx, val));;
+        int16_t converted_value =  div_and_round(applyChannelRatio(idx, val), 10);
         if (ANA_CHANNEL_UNIT(idx) < UNIT_RAW) {
           att = PREC1;
         }
@@ -122,7 +121,7 @@ PLAY_FUNCTION(playValue, source_t idx)
       break;
     case MIXSRC_FIRST_TELEM+TELEM_CELL-1:
     case MIXSRC_FIRST_TELEM+TELEM_MIN_CELL-1:
-      PLAY_NUMBER(div_and_round<10>(val), 1+UNIT_VOLTS, PREC1);
+      PLAY_NUMBER(div_and_round(val, 10), 1+UNIT_VOLTS, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VFAS-1:
@@ -140,11 +139,11 @@ PLAY_FUNCTION(playValue, source_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_ACCx-1:
     case MIXSRC_FIRST_TELEM+TELEM_ACCy-1:
     case MIXSRC_FIRST_TELEM+TELEM_ACCz-1:
-      PLAY_NUMBER(div_and_round<10>(val), 1+UNIT_G, PREC1);
+      PLAY_NUMBER(div_and_round(val, 10), 1+UNIT_G, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_VSPEED-1:
-      PLAY_NUMBER(div_and_round<10>(val), 1+UNIT_METERS_PER_SECOND, PREC1);
+      PLAY_NUMBER(div_and_round(val, 10), 1+UNIT_METERS_PER_SECOND, PREC1);
       break;
 
     case MIXSRC_FIRST_TELEM+TELEM_ASPEED-1:
@@ -176,9 +175,9 @@ PLAY_FUNCTION(playValue, source_t idx)
     {
       getvalue_t rpm = val;
       if (rpm > 100)
-        rpm = 10 * div_and_round<10>(rpm);
+        rpm = 10 * div_and_round(rpm, 10);
       if (rpm > 1000)
-        rpm = 10 * div_and_round<10>(rpm);
+        rpm = 10 * div_and_round(rpm, 10);
       PLAY_NUMBER(rpm, 1+UNIT_RPMS, 0);
       break;
     }

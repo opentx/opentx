@@ -108,7 +108,7 @@ void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         //========== WEIGHT ===============
 #if defined(CPUARM)
         int32_t weight = GET_GVAR_PREC1(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
-        v = div_and_round<1000>((int32_t)v * weight);
+        v = div_and_round((int32_t)v * weight, 1000);
 #else
         int16_t weight = GET_GVAR(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
         weight = calc100to256(weight);
@@ -118,7 +118,7 @@ void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 #if defined(VIRTUALINPUTS)
         //========== OFFSET ===============
         int32_t offset = GET_GVAR_PREC1(ed->offset, -100, 100, mixerCurrentFlightMode);
-        if (offset) v += div_and_round<10>(calc100toRESX(offset));
+        if (offset) v += div_and_round(calc100toRESX(offset), 10);
 
         //========== TRIMS ================
         if (ed->carryTrim < TRIM_ON)
@@ -895,14 +895,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== WEIGHT ===============
       int32_t dv = (int32_t)v * weight;
 #if defined(CPUARM)
-      dv = div_and_round<10>(dv);
+      dv = div_and_round(dv, 10);
 #endif
 
       //========== OFFSET / AFTER ===============
       if (apply_offset_and_curve) {
 #if defined(CPUARM)
         int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-        if (offset) dv += div_and_round<10>(calc100toRESX_16Bits(offset)) << 8;
+        if (offset) dv += div_and_round(calc100toRESX_16Bits(offset), 10) << 8;
 #else
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
