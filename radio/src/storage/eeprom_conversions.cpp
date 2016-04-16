@@ -689,25 +689,162 @@ int ConvertGVar_216_to_217(int value)
   return value;
 }
 
-void ConvertGeneralSettings_216_to_217(RadioData & settings)
-{
-  settings.version = 217;
+PACK(typedef struct {
+  uint8_t   version;
+  uint16_t  variant;
+  CalibData calib[NUM_STICKS+NUM_POTS];
+  uint16_t  chkSum;
+  int8_t    currModel;
+  uint8_t   contrast;
+  uint8_t   vBatWarn;
+  int8_t    txVoltageCalibration;
+  int8_t    backlightMode;
+  TrainerData trainer;
+  uint8_t   view;            // index of view in main screen
+  int8_t    buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   fai:1;
+  int8_t    beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t   alarmsFlash:1;
+  uint8_t   disableMemoryWarning:1;
+  uint8_t   disableAlarmWarning:1;
+  uint8_t   stickMode:2;
+  int8_t    timezone:5;
+  uint8_t   adjustRTC:1;
+  uint8_t   inactivityTimer;
+  uint8_t   mavbaud:3;
+  int8_t    splashMode:3;
+  int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  int8_t    switchesDelay;
+  uint8_t   lightAutoOff;
+  uint8_t   templateSetup;   // RETA order for receiver channels
+  int8_t    PPM_Multiplier;
+  int8_t    hapticLength;
+  uint8_t   reNavigation;
+  N_TARANIS_FIELD(uint8_t stickReverse)
+  int8_t    beepLength:3;
+  int8_t    hapticStrength:3;
+  uint8_t   gpsFormat:1;
+  uint8_t   unexpectedShutdown:1;
+  uint8_t   speakerPitch;
+  int8_t    speakerVolume;
+  int8_t    vBatMin;
+  int8_t    vBatMax;
+
+  uint8_t  backlightBright;
+  int8_t   txCurrentCalibration;
+  int8_t   temperatureWarn;
+  uint8_t  mAhWarn;
+  uint16_t mAhUsed;
+  uint32_t globalTimer;
+  int8_t   temperatureCalib;
+  uint8_t  btBaudrate;
+  uint8_t  optrexDisplay;
+  uint8_t  sticksGain;
+  uint8_t  rotarySteps;
+  uint8_t  countryCode;
+  uint8_t  imperial;
+  char     ttsLanguage[2];
+  int8_t   beepVolume;
+  int8_t   wavVolume;
+  int8_t   varioVolume;
+  int8_t   varioPitch;
+  int8_t   varioRange;
+  int8_t   varioRepeat;
+  int8_t   backgroundVolume;
+
 #if defined(PCBTARANIS)
-  settings.potsConfig = 0x05; // S1 and S2 = pots with detent
-  settings.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
+  uint8_t  serial2Mode:6;
+  uint8_t  slidersConfig:2;
+  uint8_t  potsConfig;
+  uint8_t  backlightColor;
+  swarnstate_t switchUnlockStates;
+  CustomFunctionData_v216 customFn[NUM_CFN];
+  swconfig_t switchConfig;
+  char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME];
+  char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+#else
+  CustomFunctionData_v216 customFn[NUM_CFN];
+#endif
+
+#if defined(PCBTARANIS) && defined(REV9E)
+  uint8_t bluetoothEnable;
+  char bluetoothName[LEN_BLUETOOTH_NAME];
+#endif
+}) RadioData_v216;
+
+void ConvertRadioData_216_to_217(RadioData & settings)
+{
+  RadioData_v216 * settings_v216 = (RadioData_v216 *)&settings;
+  settings_v216->version = 217;
+#if defined(PCBTARANIS)
+  settings_v216->potsConfig = 0x05; // S1 and S2 = pots with detent
+  settings_v216->switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 }
 
-void ConvertGeneralSettings_217_to_218(RadioData & settings)
+void ConvertRadioData_217_to_218(RadioData & settings)
 {
+  RadioData_v216 * settings_v217 = (RadioData_v216 *)&settings;
+
   settings.version = 218;
+#if !defined(PCBTARANIS)
+  settings.stickReverse = settings_v217->stickReverse;
+#endif
+  settings.beepLength = settings_v217->beepLength;
+  settings.hapticStrength = settings_v217->hapticStrength;
+  settings.gpsFormat = settings_v217->gpsFormat;
+  settings.unexpectedShutdown = settings_v217->unexpectedShutdown;
+  settings.speakerPitch = settings_v217->speakerPitch;
+  settings.speakerVolume = settings_v217->speakerVolume;
+  settings.vBatMin = settings_v217->vBatMin;
+  settings.vBatMax = settings_v217->vBatMax;
+  settings.backlightBright = settings_v217->backlightBright;
+  settings.globalTimer = settings_v217->globalTimer;
+  settings.btBaudrate = settings_v217->btBaudrate;
+  settings.countryCode = settings_v217->countryCode;
+  settings.imperial = settings_v217->imperial;
+  settings.ttsLanguage[0] = settings_v217->ttsLanguage[0];
+  settings.ttsLanguage[1] = settings_v217->ttsLanguage[1];
+  settings.beepVolume = settings_v217->beepVolume;
+  settings.wavVolume = settings_v217->wavVolume;
+  settings.varioVolume = settings_v217->varioVolume;
+  settings.backgroundVolume = settings_v217->backgroundVolume;
+  settings.varioPitch = settings_v217->varioPitch;
+  settings.varioRange = settings_v217->varioRange;
+  settings.varioRepeat = settings_v217->varioRepeat;
   for (int i=0; i<NUM_CFN; i++) {
-    CustomFunctionData_v216 * cf = (CustomFunctionData_v216 *)&settings.customFn[i];
-    int8_t swtch = cf->swtch;
-    uint8_t func = cf->func;
-    settings.customFn[i].swtch = ConvertSwitch_217_to_218(swtch);
-    settings.customFn[i].func = func;
+    CustomFunctionData_v216 & cf = settings_v217->customFn[i];
+    settings.customFn[i].swtch = ConvertSwitch_217_to_218(cf.swtch);
+    memcpy(settings.customFn[i].play.name, settings_v217->customFn[i].play.name, sizeof(settings.customFn[i].play.name));
+    settings.customFn[i].active = cf.active;
   }
+
+#if defined(PCBTARANIS)
+  settings.serial2Mode = settings_v217->serial2Mode;
+  settings.slidersConfig = settings_v217->slidersConfig;
+  settings.potsConfig = settings_v217->potsConfig;
+  settings.backlightColor = settings_v217->backlightColor;
+  settings.switchUnlockStates = settings_v217->switchUnlockStates;
+  settings.switchConfig = settings_v217->switchConfig;
+  memcpy(settings.switchNames, settings_v217->switchNames, sizeof(settings.switchNames));
+  memcpy(settings.anaNames, settings_v217->anaNames, sizeof(settings.anaNames));
+#endif
+
+#if defined(PCBTARANIS) && defined(REV9E)
+  settings.bluetoothEnable = settings_v217->bluetoothEnable;
+  memcpy(settings.bluetoothName, settings_v217->bluetoothName, sizeof(settings.bluetoothName));
+#endif
+
+#if defined(PCBSKY9X)
+  settings.txCurrentCalibration = settings_v217->txCurrentCalibration;
+  settings.temperatureWarn = settings_v217->temperatureWarn;
+  settings.mAhWarn = settings_v217->mAhWarn;
+  settings.mAhUsed = settings_v217->mAhUsed;
+  settings.temperatureCalib = settings_v217->temperatureCalib;
+  settings.optrexDisplay = settings_v217->optrexDisplay;
+  settings.sticksGain = settings_v217->sticksGain;
+  settings.rotarySteps = settings_v217->rotarySteps;
+#endif
 }
 
 void ConvertModel_216_to_217(ModelData & model)
@@ -1089,18 +1226,18 @@ bool eeConvert()
   ALERT(STR_STORAGE_WARNING, msg, AU_BAD_RADIODATA);
 
   // Message
-  MESSAGE(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE); // TODO translations
+  MESSAGE(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE);
 
   // General Settings conversion
   eeLoadGeneralSettingsData();
   int version = conversionVersionStart;
   if (version == 216) {
     version = 217;
-    ConvertGeneralSettings_216_to_217(g_eeGeneral);
+    ConvertRadioData_216_to_217(g_eeGeneral);
   }
   if (version == 217) {
     version = 218;
-    ConvertGeneralSettings_217_to_218(g_eeGeneral);
+    ConvertRadioData_217_to_218(g_eeGeneral);
   }
   storageDirty(EE_GENERAL);
   storageCheck(true);
