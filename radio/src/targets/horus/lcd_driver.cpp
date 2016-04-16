@@ -65,7 +65,7 @@ static void LCD_AF_GPIOConfig(void)
                 |  LCD_TFT HSYNC <-> PI.12  | LCDTFT VSYNC <->  PI.13 |
                 |  LCD_TFT CLK   <-> PI.14  | LCD_TFT DE   <->  PK.07 ///
                  -----------------------------------------------------
-                |LCD_TFT backlight <-> PA.04| LCD_CS <-> PI.10    |LCD_SCK<->PI.11
+                |LCD_TFT backlight <-> PA.05| LCD_CS <-> PI.10    |LCD_SCK<->PI.11
                  -----------------------------------------------------
   */
  /*GPIOI configuration*/
