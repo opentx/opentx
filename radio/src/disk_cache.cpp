@@ -96,6 +96,12 @@ DRESULT DiskCache::read(BYTE drv, BYTE* buff, DWORD sector, UINT count)
   //   return __disk_read(drv, buff, sector, count);  
   // }
 
+  // if read is bigger than cache block, then read it directly without using cache
+  if (count > DISK_CACHE_BLOCK_SECTORS) {
+    TRACE_DISK_CACHE("\t\t big read(%u, %u)", this, (uint32_t)sector, (uint32_t)count);
+    return __disk_read(drv, buff, sector, count);
+  }
+
   for(int n=0; n < DISK_CACHE_BLOCKS_NUM; ++n) {
     if (blocks[n].read(buff, sector, count)) {
       ++stats.noHits;
