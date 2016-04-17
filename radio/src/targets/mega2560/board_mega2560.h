@@ -124,14 +124,18 @@ void sdPoll10ms(void);
 #define ROTENC_DOWN()             (REA_DOWN() || REB_DOWN())            
 
 // LCD driver
-#define PORTA_LCD_DAT             PORTA    
-#define PORTC_LCD_CTRL            PORTC    
-#define OUT_C_LCD_E               7        
-#define OUT_C_LCD_RnW             6        
-#define OUT_C_LCD_A0              5        
-#define OUT_C_LCD_RES             4        
-#define OUT_C_LCD_CS1             3        
-#define OUT_C_LIGHT               2        
+#define PORTA_LCD_DAT            PORTA    
+#define PORTC_LCD_CTRL           PORTC 
+#if defined(LCD_KS108)				// (Bracame) MEGA R/W pin always at 0 state in Opentx then
+#define OUT_C_LCD_CS2            6	//Use this pin to control second KS108
+#else								// And connect LCD R/W pin to ground via a 1k resistor
+#define OUT_C_LCD_RnW            6        
+#endif
+#define OUT_C_LCD_E              7        
+#define OUT_C_LCD_A0             5        
+#define OUT_C_LCD_RES            4        
+#define OUT_C_LCD_CS1            3        
+#define OUT_C_LIGHT              2        
 
 // DBLKeys driver                         
 #define KEYS_PRESSED()            (~PINL)

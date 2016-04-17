@@ -53,7 +53,8 @@ void drawSplash()
 #endif
 
   lcdRefresh();
-
+ #if defined(LCD_KS108)
+  lcdRefresh(); // For the other side
  #endif
 }
 #endif

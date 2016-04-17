@@ -58,7 +58,7 @@ PCB = 9X
 PCBREV =
 
 # LCD
-# Values: DEFAULT, ST7565P, ST7565R, ERC12864FSF, ST7920
+# Values: DEFAULT, ST7565P, ST7565R, ERC12864FSF, ST7920, KS108
 LCD = DEFAULT
 
 # Enable JETI-Telemetry or FrSky Telemetry reception on UART0
@@ -743,8 +743,11 @@ ifeq ($(PCB), MEGA2560)
   GUIMODELSRC += gui/$(GUIDIRECTORY)/menu_model_inputs_mixes.cpp
   GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_diagkeys.cpp gui/$(GUIDIRECTORY)/menu_general_diaganas.cpp
 
+  ifeq ($(LCD), KS108)
+  EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/mega2560/lcd_ks108.cpp targets/common_avr/telemetry_driver.cpp
+  else
   EXTRABOARDSRC = targets/common_avr/adc_driver.cpp targets/9x/lcd_driver.cpp targets/common_avr/telemetry_driver.cpp
-
+  endif
   ifeq ($(PWRMANAGE), YES)
     CPPDEFS += -DPWRMANAGE
   endif
@@ -755,11 +758,6 @@ ifeq ($(PCB), MEGA2560)
     GUIGENERALSRC += gui/$(GUIDIRECTORY)/menu_general_sdmanager.cpp
     CPPSRC += rtc.cpp sdcard.cpp logs.cpp targets/gruvin9x/rtc_driver.cpp
   endif
-
-  ifeq ($(BUZZER), YES)
-    CPPDEFS += -DBUZZER
-    CPPSRC += buzzer.cpp
-  endif
  
   ifeq ($(AUDIO), YES)
     CPPDEFS += -DAUDIO
@@ -767,6 +765,11 @@ ifeq ($(PCB), MEGA2560)
     BUZZER = NO
   else
     BUZZER = YES
+  endif
+
+  ifeq ($(BUZZER), YES)
+    CPPDEFS += -DBUZZER
+    CPPSRC += buzzer.cpp
   endif
 
   ifeq ($(VOICE), YES)
@@ -1319,6 +1322,8 @@ else ifeq ($(LCD), ERC12864FSF)
   CPPDEFS += -DLCD_ERC12864FSF
 else ifeq ($(LCD), ST7920)
   CPPDEFS += -DLCD_ST7920
+else ifeq ($(LCD), KS108)
+  CPPDEFS += -DLCD_KS108  
 endif
 
 ifeq ($(AUTOSWITCH), YES)
