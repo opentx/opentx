@@ -283,6 +283,16 @@ DRESULT disk_ioctl (
       *(WORD*)buff = SDCardInfo.CardBlockSize;
       res = RES_OK;
       break;
+
+    case CTRL_SYNC:
+      while (SD_GetStatus() == SD_TRANSFER_BUSY); /* Complete pending write process (needed at _FS_READONLY == 0) */
+      res = RES_OK;
+      break;
+
+    default:
+      res = RES_OK;
+      break;
+
   }
 
   return res;
