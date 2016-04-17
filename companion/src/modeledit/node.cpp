@@ -82,7 +82,7 @@ void Node::stepToCenter(qreal step)
         if(centerX)
         {
             qreal x = qr.right() - qr.width()/2;
-            if(abs(x-p.x())>xStep)
+            if(fabs(x-p.x())>xStep)
                 p.rx() += p.x()>x ? -xStep : xStep;
             else
                 p.rx() = x;
@@ -91,7 +91,7 @@ void Node::stepToCenter(qreal step)
         if(centerY)
         {
             qreal y = qr.bottom() - qr.height()/2;
-            if(abs(y-p.y())>yStep)
+            if(fabs(y-p.y())>yStep)
                 p.ry() += p.y()>y ? -yStep : yStep;
             else
                 p.ry() = y;

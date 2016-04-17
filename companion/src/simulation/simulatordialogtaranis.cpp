@@ -120,7 +120,7 @@ void SimulatorDialogTaranis::getValues()
     {
       -pots[0]->value(),
       pots[1]->value(),
-      ((flags && SIMULATOR_FLAGS_S3) ? pots[2]->value() : 0),
+      ((flags & SIMULATOR_FLAGS_S3) ? pots[2]->value() : 0),
       -sliders[0]->value(),
       sliders[1]->value()
     },
