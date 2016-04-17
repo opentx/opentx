@@ -296,40 +296,48 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 static int luaTelemetryPop(lua_State *L)
 {
   if (!luaInputTelemetryFifo) {
-    luaInputTelemetryFifo = new Fifo<LuaTelemetryValue, 16>();
+    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, 16>();
     if (!luaInputTelemetryFifo) {
       return 0;
     }
   }
 
-  LuaTelemetryValue value;
-  if (luaInputTelemetryFifo->pop(value)) {
-    lua_pushnumber(L, value.id);
-    lua_pushunsigned(L, value.value);
-    return 2;
+  LuaTelemetryPacket packet;
+  if (luaInputTelemetryFifo->pop(packet)) {
+    lua_pushnumber(L, packet.physicalId);
+    lua_pushnumber(L, packet.primId);
+    lua_pushnumber(L, packet.dataId);
+    lua_pushunsigned(L, packet.value);
+    return 4;
   }
 
   return 0;
 }
 
+#define BIT(x, index) (((x) >> index) & 0x01)
+uint8_t getDataId(uint8_t physicalId)
+{
+  uint8_t result = physicalId;
+  result += (BIT(physicalId, 0) ^ BIT(physicalId, 1) ^ BIT(physicalId, 2)) << 5;
+  result += (BIT(physicalId, 2) ^ BIT(physicalId, 3) ^ BIT(physicalId, 4)) << 6;
+  result += (BIT(physicalId, 0) ^ BIT(physicalId, 2) ^ BIT(physicalId, 4)) << 7;
+  return result;
+}
+
 static int luaTelemetryPush(lua_State *L)
 {
-  if (!luaOutputTelemetryFifo) {
-    luaOutputTelemetryFifo = new Fifo<LuaTelemetryValue, 16>();
-    if (!luaOutputTelemetryFifo) {
-      return 0;
-    }
+  if (luaOutputTelemetryPacket.physicalId != 0x7E) {
+    lua_pushboolean(L, false);
+    return 1;
   }
 
-  uint8_t id = luaL_checkunsigned(L, 1);
-  uint32_t value = luaL_checkunsigned(L, 2);
+  luaOutputTelemetryPacket.physicalId = getDataId(luaL_checkunsigned(L, 1));
+  luaOutputTelemetryPacket.primId = luaL_checkunsigned(L, 2);
+  luaOutputTelemetryPacket.dataId = luaL_checkunsigned(L, 3);
+  luaOutputTelemetryPacket.value = luaL_checkunsigned(L, 4);
 
-#if defined __GNUC__
-  // TODO remove this ifdef when we have updated to MSVC recent version
-  luaOutputTelemetryFifo->push((LuaTelemetryValue){ id, value });
-#endif
-
-  return 0;
+  lua_pushboolean(L, true);
+  return 1;
 }
 
 /*luadoc
