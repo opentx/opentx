@@ -20,10 +20,10 @@
 
 #define PROMPT_CUSTOM_BASE      0
 #define PROMPT_I18N_BASE        256
-#define PROMPT_SYSTEM_BASE      480
+#define PROMPT_SYSTEM_BASE      480 
 
 extern void pushPrompt(uint16_t prompt);
-extern bool isPlaying();
+extern uint8_t isPlaying();
 
 #define I18N_PLAY_FUNCTION(lng, x, ...) void x(__VA_ARGS__)
 #define PLAY_FUNCTION(x, ...) void x(__VA_ARGS__)

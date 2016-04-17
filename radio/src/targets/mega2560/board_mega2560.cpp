@@ -59,7 +59,7 @@ inline void boardInit()
   #if defined(VOICE)
   // SOMO set-up, with TIMER5
   OCR5A = 0x1F4; //2ms
-  TCCR5B = (1 << WGM52) | (0b011 << CS50); // CTC OCR1A, 16MHz / 64 (4us ticks)
+  TCCR5B = (1 << WGM52) | (0b011 << CS50); // CTC OCR5A
   TIMSK5 |= (1<<OCIE5A); // Start the interrupt so the unit reset can occur
   #endif
 
