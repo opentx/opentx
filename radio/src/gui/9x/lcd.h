@@ -235,7 +235,9 @@ void lcdDrawTelemetryTopBar();
   lcdDrawSolidVerticalLine(xx+1,yy-ll,ll)
 
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
-
+#if defined(PCBMEGA2560)
+void lcd_imgfar(coord_t x, coord_t y, const uint32_t * img, uint8_t idx, LcdFlags att); //test bracame progmem "far"
+#endif
 void lcdSetRefVolt(unsigned char val);
 void lcdClear();
 void lcdSetContrast();
