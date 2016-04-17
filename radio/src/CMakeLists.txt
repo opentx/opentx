@@ -1025,6 +1025,11 @@ else()
   cmake_force_cxx_compiler(avr-gcc GNU)
 
   set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+# Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
+if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
+  set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
+endif()
+
 
   include_directories(storage gui/${GUI_DIR})
 
