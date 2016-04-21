@@ -65,6 +65,10 @@ class ModulePanel : public ModelPanel
     void on_failsafeMode_currentIndexChanged(int value);
     void onFailsafeComboIndexChanged(int index);
     void onFailsafeSpinChanged(double value);
+    void on_multiProtocol_currentIndexChanged(int index);
+    void on_multiSubType_currentIndexChanged(int index);
+    void on_autoBind_stateChanged(int state);
+    void on_lowPower_stateChanged(int state);
 
   private:
     ModuleData & module;

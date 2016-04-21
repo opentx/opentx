@@ -181,6 +181,11 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
     }
   }
 
+  for (int i=0; i<=MM_RF_PROTO_LAST; i++)
+  {
+    ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i), (QVariant) i);
+  }
+
   if (firmware->getCapability(HasFailsafe)) {
     for (int i=0; i<maxChannels; i++) {
       QLabel * label = new QLabel(this);
@@ -226,6 +231,7 @@ ModulePanel::~ModulePanel()
 #define MASK_PPM_FIELDS     16
 #define MASK_FAILSAFES      32
 #define MASK_OPEN_DRAIN     64
+#define MASK_MULTIMODULE    128
 
 void ModulePanel::update()
 {
@@ -261,6 +267,9 @@ void ModulePanel::update()
           mask |= MASK_OPEN_DRAIN;
         }
         break;
+      case PULSES_MULTIMODULE:
+        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE;
+        break;
       case PULSES_OFF:
       default:
         break;
@@ -293,18 +302,44 @@ void ModulePanel::update()
   // PPM settings fields
   ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmPolarity->setCurrentIndex(module.ppmPulsePol);
+  ui->ppmPolarity->setCurrentIndex(module.ppm.pulsePol);
   ui->label_ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
   ui->ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
-  ui->ppmOutputType->setCurrentIndex(module.ppmOutputType);
+  ui->ppmOutputType->setCurrentIndex(module.ppm.outputType);
   ui->label_ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmDelay->setValue(module.ppmDelay);
+  ui->ppmDelay->setValue(module.ppm.delay);
   ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
-  ui->ppmFrameLength->setValue(22.5+((double)module.ppmFrameLength)*0.5);
+  ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
+
+  // Multi settings fields
+  ui->label_multiProtocol->setVisible(mask & MASK_MULTIMODULE);
+  ui->multiProtocol->setVisible(mask & MASK_MULTIMODULE);
+  ui->multiProtocol->setCurrentIndex(module.getMultiRfProtocol());
+  ui->label_multiSubType->setVisible(mask & MASK_MULTIMODULE);
+  ui->multiSubType->setVisible(mask & MASK_MULTIMODULE);
+
+  if (mask & MASK_MULTIMODULE) {
+    int numEntries = getNumSubtypes(static_cast<MultiModuleRFProtocols>(module.getMultiRfProtocol()));
+    // Removes extra items
+    ui->multiSubType->setMaxCount(numEntries);
+    for (int i=0; i < numEntries; i++) {
+      if (i < ui->multiSubType->count())
+        ui->multiSubType->setItemText(i, ModelPrinter::printMultiSubType(module.getMultiRfProtocol(), i));
+      else
+        ui->multiSubType->addItem(ModelPrinter::printMultiSubType(module.getMultiRfProtocol(), i), (QVariant) i);
+    }
+  }
+  ui->multiSubType->setCurrentIndex(module.subType);
+
+  ui->cb_autoBind->setVisible(mask & MASK_MULTIMODULE);
+  ui->cb_autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
+  ui->cb_lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->cb_lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
+
 
   if (firmware->getCapability(HasFailsafe)) {
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
@@ -356,13 +391,13 @@ void ModulePanel::on_protocol_currentIndexChanged(int index)
 
 void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 {
-  module.ppmPulsePol = index;
+  module.ppm.pulsePol = index;
   emit modified();
 }
 
 void ModulePanel::on_ppmOutputType_currentIndexChanged(int index)
 {
-  module.ppmOutputType = index;
+  module.ppm.outputType = index;
   emit modified();
 }
 
@@ -388,7 +423,7 @@ void ModulePanel::on_ppmDelay_editingFinished()
 {
   if (!lock) {
     // TODO only accept valid values
-    module.ppmDelay = ui->ppmDelay->value();
+    module.ppm.delay = ui->ppmDelay->value();
     emit modified();
   }
 }
@@ -401,7 +436,7 @@ void ModulePanel::on_rxNumber_editingFinished()
 
 void ModulePanel::on_ppmFrameLength_editingFinished()
 {
-  module.ppmFrameLength = (ui->ppmFrameLength->value()-22.5) / 0.5;
+  module.ppm.frameLength = (ui->ppmFrameLength->value()-22.5) / 0.5;
   emit modified();
 }
 
@@ -433,6 +468,39 @@ void ModulePanel::onFailsafeComboIndexChanged(int index)
     emit modified();
     lock = false;
   }
+}
+
+void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
+{
+  if (!lock) {
+    lock=true;
+    module.setMultiRfProtocol(index);
+    unsigned int maxSubTypes = getNumSubtypes(static_cast<MultiModuleRFProtocols>(index));
+    module.subType = std::min(module.subType, maxSubTypes -1);
+    update();
+    emit modified();
+    lock = false;
+  }
+}
+
+void ModulePanel::on_multiSubType_currentIndexChanged(int index)
+{
+  if (!lock) {
+    lock=true;
+    module.subType = index;
+    update();
+    emit modified();
+    lock =  false;
+  }
+}
+
+void ModulePanel::on_autoBind_stateChanged(int state)
+{
+  module.multi.autoBindMode = (state == Qt::Checked);
+}
+void ModulePanel::on_lowPower_stateChanged(int state)
+{
+  module.multi.lowPowerMode = (state == Qt::Checked);
 }
 
 void ModulePanel::updateFailsafe(int channel)

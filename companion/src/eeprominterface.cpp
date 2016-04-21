@@ -1380,9 +1380,9 @@ void ModelData::clear()
   moduleData[0].channelsCount = 8;
   moduleData[1].channelsStart = 0;
   moduleData[1].channelsCount = 8;
-  moduleData[0].ppmDelay = 300;
-  moduleData[1].ppmDelay = 300;
-  moduleData[2].ppmDelay = 300;
+  moduleData[0].ppm.delay = 300;
+  moduleData[1].ppm.delay = 300;
+  moduleData[2].ppm.delay = 300;
   int board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
     moduleData[0].protocol = PULSES_PXX_XJT_X16;
@@ -1829,4 +1829,33 @@ SimulatorInterface *GetCurrentFirmwareSimulator()
     return factory->create();
   else
     return NULL;
+}
+
+unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
+  switch (type) {
+    case MM_RF_PROTO_HISKY:
+    case MM_RF_PROTO_DSM2:
+    case MM_RF_PROTO_SYMAX:
+    case MM_RF_PROTO_KN:
+      return 2;
+
+    case MM_RF_PROTO_FRSKY:
+    case MM_RF_PROTO_CG023:
+    case MM_RF_PROTO_MT99XX:
+      return 3;
+
+    case MM_RF_PROTO_FLYSKY:
+    case MM_RF_PROTO_MJXQ:
+      return 4;
+
+    case MM_RF_PROTO_YD717:
+      return 5;
+
+    case MM_RF_PROTO_CX10:
+    case MM_RF_PROTO_CUSTOM:
+      return 8;
+    default:
+      return 1;
+  }
+
 }

@@ -373,17 +373,17 @@ t_Er9xModelData::operator ModelData ()
       c9x.moduleData[0].protocol = PULSES_PPM;
       break;
   }
-  c9x.moduleData[0].ppmFrameLength=ppmFrameLength;
+  c9x.moduleData[0].ppm.frameLength=ppmFrameLength;
   c9x.moduleData[0].channelsCount = 8 + 2 * ppmNCH;
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc-2;
-  c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
+  c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.customFn[0].func = FuncInstantTrim;
   if (trimSw) {
     c9x.customFn[0].swtch = er9xToSwitch(trimSw);
   }
   c9x.beepANACenter = beepANACenter;
-  c9x.moduleData[0].ppmPulsePol = pulsePol;
+  c9x.moduleData[0].ppm.pulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.swashRingData.elevatorWeight = swashInvertELE ? -100 : 100;
   c9x.swashRingData.aileronWeight = swashInvertAIL ? -100 : 100;

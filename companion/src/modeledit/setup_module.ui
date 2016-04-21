@@ -534,6 +534,26 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_multiProtocol">
+        <property name="text">
+         <string>Multi Radio Protocol</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QComboBox" name="multiProtocol">
+        <property name="maximumSize">
+         <size>
+          <width>125</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
       <item row="5" column="4">
        <widget class="QLabel" name="label_rxNumber">
         <property name="maximumSize">
@@ -569,6 +589,37 @@
           <string>Push Pull</string>
          </property>
         </item>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label_multiSubType">
+        <property name="text">
+         <string>SubType</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QComboBox" name="multiSubType">
+        <property name="maximumSize">
+         <size>
+          <width>125</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="4">
+       <widget class="QCheckBox" name="cb_autoBind">
+        <property name="text">
+         <string>Autobind</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="5">
+       <widget class="QCheckBox" name="cb_lowPower">
+        <property name="text">
+         <string>Low Power</string>
+        </property>
        </widget>
       </item>
      </layout>

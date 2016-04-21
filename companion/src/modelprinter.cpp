@@ -98,24 +98,83 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
 	  "LP45", "DSM2", "DSMX",
 	  "PPM16", "PPMsim",
 	  "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
-	  "Crossfire"
+	  "Crossfire",
+      "DIY Multiprotocol Module"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);
 }
 
-QString ModelPrinter::printModule(int idx)
+QString ModelPrinter::printMultiRfProtocol(int rfProtocol)
 {
-  const ModuleData & module = model.moduleData[idx];
+  static const char *strings[] = {
+    "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
+    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "Custom"
+  };
+  if (rfProtocol > MM_RF_PROTO_CUSTOM)
+    return "Custom - proto " + QString::number(rfProtocol & 0x1f);
+  else
+    return CHECK_IN_ARRAY(strings, rfProtocol);
+}
+
+QString ModelPrinter::printMultiSubType(int rfProtocol, int subType) {
+  /* custom protocols */
+  if (rfProtocol >= MM_RF_PROTO_CUSTOM) {
+    static const char *custom_subtype_strings[] = {"Subtype 0","Subtype 1","Subtype 2","Subtype 3","Subtype 4","Subtype 5","Subtype 6","Subtype 7"};
+    return CHECK_IN_ARRAY(custom_subtype_strings, subType);
+  }
+  switch (rfProtocol) {
+    case MM_RF_PROTO_FLYSKY:
+      static const char *flysky_strings[] = {"Standard","V9x9","V6x6","V912"};
+      return CHECK_IN_ARRAY(flysky_strings, subType);
+    case MM_RF_PROTO_FRSKY:
+      static const char *frsky_strings[] = {"D16", "D8", "D16 8ch"};
+      return CHECK_IN_ARRAY(frsky_strings, subType);
+    case MM_RF_PROTO_HISKY:
+      static const char *hisky_strings[] = { "HiSky", "HK310" };
+      return CHECK_IN_ARRAY(hisky_strings, subType);
+    case MM_RF_PROTO_DSM2:
+      static const char *dsm2_strings[] = {"DSM2", "DSMX"};
+      return CHECK_IN_ARRAY(dsm2_strings, subType);
+    case MM_RF_PROTO_YD717:
+      static const char *yd717_strings[] = {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
+      return CHECK_IN_ARRAY(yd717_strings, subType);
+    case MM_RF_PROTO_SYMAX:
+      static const char *symax_strings[] = {"Standard", "Syma X5C"};
+      return CHECK_IN_ARRAY(symax_strings, subType);
+    case MM_RF_PROTO_CX10:
+      static const char *cx10_strings[] = {"Green", "Blue", "DM007", "Q282", "JC3015a", "JC3015b", "MK33041", "Q242"};
+      return CHECK_IN_ARRAY(cx10_strings, subType);
+    case MM_RF_PROTO_CG023:
+      static const char *cg023_strings[] = {"CG023", "YD829", "H3 3D"};
+      return CHECK_IN_ARRAY(cg023_strings, subType);
+    case MM_RF_PROTO_KN:
+      static const char* kn_strings[] = {"WLtoys", "FeiLun"};
+      return CHECK_IN_ARRAY(kn_strings, subType);
+    case MM_RF_PROTO_MT99XX:
+      static const char* mt99_strings[] = {"MT99","H7","YZ"};
+      return CHECK_IN_ARRAY(mt99_strings, subType);
+    case MM_RF_PROTO_MJXQ:
+      static const char* mjxq_strings[] = {"WLH08", "X600", "X800", "H26D"};
+      return CHECK_IN_ARRAY(mjxq_strings, subType);
+    default:
+        return "DEFAULT";
+  }
+}
+
+QString ModelPrinter::printModule(int idx) {
+  const ModuleData &module = model.moduleData[idx];
   if (module.protocol == PULSES_OFF)
     return printModuleProtocol(module.protocol);
   else if (module.protocol == PULSES_PPM)
-    return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
+    return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount).arg(module.ppm.delay).arg(module.polarityToString());
   else {
     QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
     if (module.protocol != PULSES_PXX_XJT_D8) {
       result += " " + tr("Receiver number(%1)").arg(module.modelId);
     }
+    if (module.protocol == PULSES_MULTIMODULE)
+      result += " " + tr("radio Protocol %1, subType %2, option value %3").arg(printMultiRfProtocol(module.multi.rfProtocol)).arg(printMultiSubType(module.multi.rfProtocol, module.subType)).arg(module.multi.optionValue);
     return result;
   }
 }
@@ -125,7 +184,7 @@ QString ModelPrinter::printTrainerMode()
   QString result;
   switch (model.trainerMode) {
     case 1:
-      result = tr("Slave/Jack"); // TODO + tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppmDelay).arg(module.polarityToString());
+      result = tr("Slave/Jack"); // TODO + tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppm.delay).arg(module.polarityToString());
       break;
     case 2:
       result = tr("Master/SBUS Module");

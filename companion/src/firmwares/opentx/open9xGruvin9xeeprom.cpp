@@ -455,9 +455,9 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
-  c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
+  c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
-  c9x.moduleData[0].ppmPulsePol = pulsePol;
+  c9x.moduleData[0].ppm.pulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<5; i++) {
@@ -499,7 +499,7 @@ t_Open9xGruvin9xModelData_v207::operator ModelData ()
     c9x.customFn[i] = customFn[i];
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
-  c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
+  c9x.moduleData[0].ppm.frameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
   return c9x;
@@ -533,9 +533,9 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
-  c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
+  c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
-  c9x.moduleData[0].ppmPulsePol = pulsePol;
+  c9x.moduleData[0].ppm.pulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<5; i++) {
@@ -578,7 +578,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   c9x.frsky.varioSource = varioSource;
   c9x.frsky.varioCenterMax = varioSpeedUpMin;
   c9x.frsky.varioCenterMin = varioSpeedDownMin;
-  c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
+  c9x.moduleData[0].ppm.frameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
   for (int i=0; i<16; i++) {
@@ -615,9 +615,9 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
-  c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
+  c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
-  c9x.moduleData[0].ppmPulsePol = pulsePol;
+  c9x.moduleData[0].ppm.pulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<5; i++) {
@@ -661,7 +661,7 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   c9x.frsky.varioCenterMax = varioSpeedUpMin;
   c9x.frsky.varioCenterMin = varioSpeedDownMin;
   c9x.switchWarningStates = switchWarningStates;
-  c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
+  c9x.moduleData[0].ppm.frameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
   for (int i=0; i<16; i++) {
@@ -698,9 +698,9 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
-  c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
+  c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
-  c9x.moduleData[0].ppmPulsePol = pulsePol;
+  c9x.moduleData[0].ppm.pulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<5; i++) {
@@ -744,7 +744,7 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.switchWarningStates = switchWarningStates;
-  c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
+  c9x.moduleData[0].ppm.frameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
   for (int i=0; i<16; i++) {
@@ -785,9 +785,9 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
-  c9x.moduleData[0].ppmDelay = 300 + 50 * ppmDelay;
+  c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
-  c9x.moduleData[0].ppmPulsePol = pulsePol;
+  c9x.moduleData[0].ppm.pulsePol = pulsePol;
   c9x.extendedLimits = extendedLimits;
   c9x.extendedTrims = extendedTrims;
   for (int i=0; i<5; i++) {
@@ -831,7 +831,7 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   c9x.swashRingData = swashR;
   c9x.frsky = frsky;
   c9x.switchWarningStates = switchWarningStates;
-  c9x.moduleData[0].ppmFrameLength = ppmFrameLength;
+  c9x.moduleData[0].ppm.frameLength = ppmFrameLength;
   c9x.thrTraceSrc = thrTraceSrc;
   c9x.moduleData[0].modelId = modelId;
   return c9x;

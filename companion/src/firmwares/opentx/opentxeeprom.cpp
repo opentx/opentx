@@ -3055,14 +3055,14 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
     internalField.Append(new BoolField<1>(modelData.displayChecklist));
   else
-    internalField.Append(new BoolField<1>(modelData.moduleData[0].ppmPulsePol));
+    internalField.Append(new BoolField<1>(modelData.moduleData[0].ppm.pulsePol));
 
   internalField.Append(new BoolField<1>(modelData.extendedLimits));
   internalField.Append(new BoolField<1>(modelData.extendedTrims));
   internalField.Append(new BoolField<1>(modelData.throttleReversed));
 
   if (!IS_ARM(board) || version < 216) {
-    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].ppmDelay, exportPpmDelay, importPpmDelay));
+    internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[0].ppm.delay, exportPpmDelay, importPpmDelay));
   }
 
   if (IS_ARM(board) || IS_2560(board))
@@ -3091,7 +3091,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (!IS_ARM(board) || version < 216) {
-    internalField.Append(new SignedField<8>(modelData.moduleData[0].ppmFrameLength));
+    internalField.Append(new SignedField<8>(modelData.moduleData[0].ppm.frameLength));
   }
 
   internalField.Append(new UnsignedField<8>(modelData.thrTraceSrc, "Throttle Source"));
@@ -3170,31 +3170,33 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_ARM(board) && version >= 215) {
     for (int module=0; module<modulesCount; module++) {
       if (version >= 217) {
-        internalField.Append(new ConversionField< SignedField<4> >(modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
+        internalField.Append(new ConversionField<SignedField<4> >(modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", ::QObject::tr("OpenTX doesn't accept this radio protocol")));
         internalField.Append(new SignedField<4>(subprotocols[module]));
       }
       else {
         internalField.Append(new SignedField<8>(subprotocols[module]));
       }
       internalField.Append(new UnsignedField<8>(modelData.moduleData[module].channelsStart));
-      internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].channelsCount, -8));
-      if (version >= 217)
-        internalField.Append(new UnsignedField<8>(modelData.moduleData[module].failsafeMode));
-      else
+      internalField.Append(new ConversionField<SignedField<8> >(modelData.moduleData[module].channelsCount, -8));
+      if (version >= 217) {
+        internalField.Append(new UnsignedField<4>(modelData.moduleData[module].failsafeMode));
+        internalField.Append(new UnsignedField<3>(modelData.moduleData[module].subType));
+        internalField.Append(new BoolField<1>(modelData.moduleData[module].invertedSerial));
+      } else
         internalField.Append(new ConversionField< UnsignedField<8> >(modelData.moduleData[module].failsafeMode, -1));
       for (int i=0; i<32; i++) {
         internalField.Append(new SignedField<16>(modelData.moduleData[module].failsafeChannels[i]));
       }
       if (version >= 217) {
-        internalField.Append(new ConversionField< SignedField<6> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
-        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmPulsePol));
-        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppmOutputType));
-        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
+        internalField.Append(new ConversionField< SignedField<6> >(modelData.moduleData[module].ppm.delay, exportPpmDelay, importPpmDelay));
+        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppm.pulsePol));
+        internalField.Append(new BoolField<1>(modelData.moduleData[module].ppm.outputType));
+        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppm.frameLength));
       }
       else {
-        internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppmDelay, exportPpmDelay, importPpmDelay));
-        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppmFrameLength));
-        internalField.Append(new BoolField<8>(modelData.moduleData[module].ppmPulsePol));
+        internalField.Append(new ConversionField< SignedField<8> >(modelData.moduleData[module].ppm.delay, exportPpmDelay, importPpmDelay));
+        internalField.Append(new SignedField<8>(modelData.moduleData[module].ppm.frameLength));
+        internalField.Append(new BoolField<8>(modelData.moduleData[module].ppm.pulsePol));
       }
     }
   }
