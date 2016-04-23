@@ -195,7 +195,7 @@ void menusTask(void * pdata)
 
 #if defined(SIMU)
     if (main_thread_running == 0)
-      return;
+      break;
 #endif
   }
 
