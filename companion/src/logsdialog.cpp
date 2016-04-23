@@ -608,7 +608,7 @@ void LogsDialog::setFlightSessions()
   QDateTime lastvalue;
   for (int i = 1; i < n; i++) {
     QDateTime tmp = getRecordTimeStamp(i);
-    if (lastvalue.secsTo(tmp) > 60) {
+    if (!lastvalue.isValid() || lastvalue.secsTo(tmp) > 60) {
       sessions.push_back(i-1);
       // qDebug() << "session index" << i-1;
     }
