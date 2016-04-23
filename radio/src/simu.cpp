@@ -412,7 +412,11 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
   }
 
   per10ms();
-  refreshDisplay();
+  static int timeToRefresh;
+  if (++timeToRefresh >= 5) {
+    timeToRefresh = 0;
+    refreshDisplay();
+  }
   getApp()->addTimeout(this, 2, 10);
   return 0;
 }
@@ -425,11 +429,15 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 
 void Open9xSim::setPixel(int x, int y, FXColor color)
 {
+#if LCD_ZOOM > 1
   for (int i=0; i<LCD_ZOOM; ++i) {
     for (int j=0; j<LCD_ZOOM; ++j) {
       bmp->setPixel(LCD_ZOOM*x+i, LCD_ZOOM*y+j, color);
     }
   }
+#else
+  bmp->setPixel(x, y, color);
+#endif
 }
 
 void Open9xSim::refreshDisplay()
@@ -445,8 +453,16 @@ void Open9xSim::refreshDisplay()
 #if defined(PCBHORUS)
     	display_t z = simuLcdBuf[y * LCD_W + x];
     	if (1) {
-          FXColor color = FXRGB(255*((z&0xF800)>>11)/0x1f, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x01F);
-          setPixel(x, y, color);
+          if (z == 0) {
+            setPixel(x, y, FXRGB(0,0,0));
+          }
+          else if (z == 0xFFFF) {
+            setPixel(x, y, FXRGB(255,255,255));
+          }
+          else {
+            FXColor color = FXRGB(255*((z&0xF800)>>11)/0x1f, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x01F);
+            setPixel(x, y, color);
+          }
     	}
 #elif defined(PCBFLAMENCO)
         display_t z = simuLcdBuf[y * LCD_W + x];
