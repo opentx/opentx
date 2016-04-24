@@ -370,7 +370,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       }
 #elif defined(TRANSLATIONS_DE)
       if (c >= 0x80 && c <= 0x86) {
-        c = 0x20 + 121 + c - 0x80;
+        c = 0x20 + 120 + c - 0x80;
       }
 #endif
       uint8_t width;
