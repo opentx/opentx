@@ -53,7 +53,7 @@ private slots:
   void axisLabelDoubleClick(QCPAxis* axis, QCPAxis::SelectablePart part);
   void legendDoubleClick(QCPLegend* legend, QCPAbstractLegendItem* item);
   void selectionChanged();
-  void mousePress();
+  void mousePress(QMouseEvent * event);
   void mouseWheel();
   void removeAllGraphs();
   void plotLogs();
@@ -76,12 +76,26 @@ private:
   double yAxesRatios[AXES_LIMIT];
   minMax yAxesRanges[AXES_LIMIT];
 
+  QCPItemTracer * tracerMaxAlt;
+  QCPItemTracer * cursorA;
+  QCPItemTracer * cursorB;
+  QCPItemStraightLine * cursorLine;
+
   bool cvsFileParse();
   QList<QStringList> filterGePoints(const QList<QStringList> & input);
   void exportToGoogleEarth();
   QDateTime getRecordTimeStamp(int index);
   QString generateDuration(const QDateTime & start, const QDateTime & end);
   void setFlightSessions();
+
+  void addMaxAltitudeMarker(const coords & c, QCPGraph * graph);
+  void countNumberOfThrows(const coords & c, QCPGraph * graph);
+  void addCursor(QCPItemTracer ** cursor, QCPGraph * graph, const QColor & color);
+  void addCursorLine(QCPItemStraightLine ** line, QCPGraph * graph, const QColor & color);
+  void placeCursor(double x, bool second);
+  QString formatTimeDelta(double timeDelta);
+  void updateCursorsLabel();
+
 
 };
 
