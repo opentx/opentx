@@ -983,9 +983,9 @@ void LogsDialog::plotLogs()
     pen.setColor(colors.at(i % colors.size()));
     ui->customPlot->graph(i)->setPen(pen);
 
-    if (plots.coords.at(i).name.endsWith("(m)") ||
+    if (!tracerMaxAlt && (plots.coords.at(i).name.endsWith("(m)") ||
         plots.coords.at(i).name.endsWith(" Alt") ||
-        plots.coords.at(i).name.endsWith("(ft)")) {
+        plots.coords.at(i).name.endsWith("(ft)"))) {
       addMaxAltitudeMarker(plots.coords.at(i), ui->customPlot->graph(i));
       countNumberOfThrows(plots.coords.at(i), ui->customPlot->graph(i));
       addCursor(&cursorA, ui->customPlot->graph(i), Qt::blue);
