@@ -74,7 +74,7 @@ void frskyDProcessPacket(uint8_t *packet)
       setTelemetryValue(TELEM_PROTO_FRSKY_D, D_A2_ID, 0, 0, packet[2], UNIT_VOLTS, 0);
       setTelemetryValue(TELEM_PROTO_FRSKY_D, D_RSSI_ID, 0, 0, packet[3], UNIT_RAW, 0);
       telemetryData.rssi.set(packet[3]);
-      telemetryStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       break;
     }
 

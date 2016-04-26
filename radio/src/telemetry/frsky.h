@@ -28,7 +28,6 @@
 
 #define FRSKY_SPORT_PACKET_SIZE   9
 
-#define FRSKY_TIMEOUT10ms         100 // 1 second
 #define WSHH_TIMEOUT10ms          60  // 600ms
 
 #define FRSKY_SPORT_AVERAGING     4

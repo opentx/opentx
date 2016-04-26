@@ -141,9 +141,14 @@ void processCrossfireTelemetryFrame()
         processCrossfireTelemetryValue(GPS_SATELLITES_INDEX, value);
       break;
     case LINK_ID:
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       for (int i=0; i<10; i++) {
-        if (getCrossfireTelemetryValue<1>(3+i, value))
+        if (getCrossfireTelemetryValue<1>(3+i, value)) {
           processCrossfireTelemetryValue(i, value);
+          if (i == 2) {
+            telemetryData.rssi.set(value);
+          }
+        }
       }
       break;
     case BATTERY_ID:

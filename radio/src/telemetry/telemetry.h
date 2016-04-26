@@ -59,7 +59,9 @@ enum TelemetryStates {
 extern uint8_t telemetryState;
 #endif
 
-#define TELEMETRY_RX_PACKET_SIZE       19 // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+#define TELEMETRY_TIMEOUT10ms          100 // 1 second
+#define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t telemetryRxBufferCount;
 
@@ -68,7 +70,6 @@ extern uint8_t telemetryRxBufferCount;
 #define TELEMETRY_VALUE_OLD_THRESHOLD 150 /*15 seconds*/
 #define TELEMETRY_VALUE_UNAVAILABLE   255
 #define TELEMETRY_VALUE_OLD           254
-
 #define TELEMETRY_AVERAGE_COUNT       3
 
 enum {

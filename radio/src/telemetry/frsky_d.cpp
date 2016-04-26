@@ -246,7 +246,7 @@ void frskyDProcessPacket(uint8_t *packet)
       telemetryData.analog[TELEM_ANA_A2].set(packet[2], g_model.frsky.channels[TELEM_ANA_A2].type);
       telemetryData.rssi[0].set(packet[3]);
       telemetryData.rssi[1].set(packet[4] / 2);
-      telemetryStreaming = FRSKY_TIMEOUT10ms; // reset counter only if valid frsky packets are being detected
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       link_counter += 256 / FRSKY_D_AVERAGING;
 #if defined(VARIO)
       uint8_t varioSource = g_model.frsky.varioSource - VARIO_SOURCE_A1;
