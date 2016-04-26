@@ -147,15 +147,11 @@ static int luaGetDateTime(lua_State *L)
 static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
-  uint32_t gpsLat = 0;
-  uint32_t gpsLon = 0;
-  telemetryItem.gps.extractLatitudeLongitude(&gpsLat, &gpsLon); /* close, but not the format we want */
-
   lua_createtable(L, 0, 4);
-  lua_pushtablenumber(L, "lat", gpsLat / ((telemetryItem.gps.latitudeNS == 'S') ? -1000000.0 : 1000000.0));
-  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude / ((telemetryItem.gps.latitudeNS == 'S') ? -1000000.0 : 1000000.0));
-  lua_pushtablenumber(L, "lon", gpsLon / ((telemetryItem.gps.longitudeEW == 'W') ? -1000000.0 : 1000000.0));
-  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude / ((telemetryItem.gps.longitudeEW == 'W') ? -1000000.0 : 1000000.0));
+  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude / 1000000.0);
+  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude / 1000000.0);
+  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude / 1000000.0);
+  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude / 1000000.0);
 }
 
 static void luaPushTelemetryDateTime(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)

@@ -23,16 +23,13 @@
 TelemetryItem telemetryItems[MAX_SENSORS];
 uint8_t allowNewSensors;
 
-void TelemetryItem::gpsReceived()
+// TODO in maths
+uint32_t getDistFromEarthAxis(int32_t latitude)
 {
-  if (!distFromEarthAxis) {
-    gps.extractLatitudeLongitude(&pilotLatitude, &pilotLongitude);
-    uint32_t lat = pilotLatitude / 10000;
-    uint32_t angle2 = (lat*lat) / 10000;
-    uint32_t angle4 = angle2 * angle2;
-    distFromEarthAxis = 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
-  }
-  lastReceived = now();
+  uint32_t lat = abs(latitude) / 10000;
+  uint32_t angle2 = (lat*lat) / 10000;
+  uint32_t angle4 = angle2 * angle2;
+  return 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
 }
 
 void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
@@ -123,59 +120,21 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
     newVal = 0;
   }
-  else if (unit == UNIT_GPS) {
-    uint32_t gps_long_lati_data = uint32_t(newVal);
-    uint32_t gps_long_lati_b1w, gps_long_lati_a1w;
-    gps_long_lati_b1w = (gps_long_lati_data & 0x3fffffff) / 10000;
-    gps_long_lati_a1w = (gps_long_lati_data & 0x3fffffff) % 10000;
-    switch ((gps_long_lati_data & 0xc0000000) >> 30) {
-      case 0:
-        gps.latitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.latitude_ap = gps_long_lati_a1w;
-        gps.latitudeNS = 'N';
-        break;
-      case 1:
-        gps.latitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.latitude_ap = gps_long_lati_a1w;
-        gps.latitudeNS = 'S';
-        break;
-      case 2:
-        gps.longitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.longitude_ap = gps_long_lati_a1w;
-        gps.longitudeEW = 'E';
-        break;
-      case 3:
-        gps.longitude_bp = (gps_long_lati_b1w / 60 * 100) + (gps_long_lati_b1w % 60);
-        gps.longitude_ap = gps_long_lati_a1w;
-        gps.longitudeEW = 'W';
-        break;
+  else if (unit == UNIT_GPS_LATITUDE) {
+    if (!pilotLatitude) {
+      pilotLatitude = newVal;
+      distFromEarthAxis = getDistFromEarthAxis(newVal);
     }
-    if (gps.longitudeEW && gps.latitudeNS) {
-      gpsReceived();
-    }
+    gps.latitude = newVal;
+    lastReceived = now();
     return;
   }
-  else if (unit >= UNIT_GPS_LONGITUDE && unit <= UNIT_GPS_LATITUDE_NS) {
-    uint32_t data = uint32_t(newVal);
-    switch (unit) {
-      case UNIT_GPS_LONGITUDE:
-        gps.longitude_bp = data >> 16;
-        gps.longitude_ap = data & 0xFFFF;
-        break;
-      case UNIT_GPS_LATITUDE:
-        gps.latitude_bp = data >> 16;
-        gps.latitude_ap = data & 0xFFFF;
-        break;
-      case UNIT_GPS_LONGITUDE_EW:
-        gps.longitudeEW = data;
-        break;
-      case UNIT_GPS_LATITUDE_NS:
-        gps.latitudeNS = data;
-        break;
+  else if (unit == UNIT_GPS_LONGITUDE) {
+    if (!pilotLongitude) {
+      pilotLongitude = newVal;
     }
-    if (gps.longitudeEW && gps.latitudeNS && gps.longitude_ap && gps.latitude_ap) {
-      gpsReceived();
-    }
+    gps.longitude = newVal;
+    lastReceived = now();
     return;
   }
   else if (unit == UNIT_DATETIME_YEAR) {
@@ -374,14 +333,11 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
             return;
           }
         }
-        uint32_t latitude, longitude;
-        gpsItem.gps.extractLatitudeLongitude(&latitude, &longitude);
-
-        uint32_t angle = (latitude > gpsItem.pilotLatitude) ? latitude - gpsItem.pilotLatitude : gpsItem.pilotLatitude - latitude;
+        uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
         uint32_t dist = EARTH_RADIUS * angle / 1000000;
         uint32_t result = dist*dist;
 
-        angle = (longitude > gpsItem.pilotLongitude) ? longitude - gpsItem.pilotLongitude : gpsItem.pilotLongitude - longitude;
+        angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
         dist = gpsItem.distFromEarthAxis * angle / 1000000;
         result += dist*dist;
 

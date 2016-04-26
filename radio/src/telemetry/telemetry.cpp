@@ -63,8 +63,10 @@ lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 void processTelemetryData(uint8_t data)
 {
 #if defined(CROSSFIRE)
-  if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE)
+  if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE) {
     processCrossfireTelemetryData(data);
+    return;
+  }
 #endif
   processFrskyTelemetryData(data);
 }

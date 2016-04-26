@@ -96,10 +96,7 @@ enum menuModelTelemetryItems {
 
 #define TELEM_COL1                    (1*FW)
 #define TELEM_COL2                    (16*FW)
-#define TELEM_COL3                    (28*FW)
-#define TELEM_BARS_COLMIN             TELEM_COL2
-#define TELEM_BARS_COLMAX             TELEM_COL3
-#define TELEM_SCRTYPE_COL             TELEM_COL2
+#define TELEM_COL3                    (28*FW+2)
 
 #define IF_FAS_OFFSET(x)              x,
 #define IS_RANGE_DEFINED(k)           (g_model.frsky.channels[k].ratio > 0)
@@ -651,7 +648,7 @@ void menuModelTelemetry(uint8_t event)
         uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
         drawStringWithIndex(0*FW, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
-        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
+        TelemetryScreenType newScreenType = (TelemetryScreenType)selectMenuItem(TELEM_COL2, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {
           g_model.frsky.screensType = (g_model.frsky.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
           memset(&g_model.frsky.screens[screenIndex], 0, sizeof(g_model.frsky.screens[screenIndex]));
@@ -663,9 +660,9 @@ void menuModelTelemetry(uint8_t event)
           // TODO better function name for ---
           // TODO function for these lines
           if (ZEXIST(scriptData.file))
-            lcdDrawSizedText(TELEM_SCRTYPE_COL+7*FW, y, scriptData.file, sizeof(scriptData.file), (menuHorizontalPosition==1 ? attr : 0));
+            lcdDrawSizedText(TELEM_COL2+7*FW, y, scriptData.file, sizeof(scriptData.file), (menuHorizontalPosition==1 ? attr : 0));
           else
-            lcdDrawTextAtIndex(TELEM_SCRTYPE_COL+7*FW, y, STR_VCSWFUNC, 0, (menuHorizontalPosition==1 ? attr : 0));
+            lcdDrawTextAtIndex(TELEM_COL2+7*FW, y, STR_VCSWFUNC, 0, (menuHorizontalPosition==1 ? attr : 0));
 
           if (menuHorizontalPosition==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
@@ -728,12 +725,12 @@ void menuModelTelemetry(uint8_t event)
           int barMin = -barMax;
           if (barSource) {
             if (barSource <= MIXSRC_LAST_CH) {
-              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_COL2, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_COL3, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
             }
             else {
-              putsChannelValue(TELEM_BARS_COLMIN, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              putsChannelValue(TELEM_BARS_COLMAX, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_COL2, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+              putsChannelValue(TELEM_COL3, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
             }
           }
           else if (attr) {

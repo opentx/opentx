@@ -131,10 +131,18 @@ const FrSkyDSensor * getFrSkyDSensor(uint8_t id)
   return result;
 }
 
+uint8_t lastId = 0;
+uint16_t lastBPValue = 0;
+uint16_t lastAPValue = 0;
+
+int32_t getFrSkyDProtocolGPSValue(int32_t sign)
+{
+  div_t qr = div(lastBPValue, 100);
+  return sign * (((uint32_t) (qr.quot) * 1000000) + (((uint32_t) (qr.rem) * 10000 + lastAPValue) * 5) / 3);
+}
+
 void processHubPacket(uint8_t id, int16_t value)
 {
-  static uint8_t lastId = 0;
-  static uint16_t lastValue = 0;
   TelemetryUnit unit = UNIT_RAW;
   uint8_t precision = 0;
   int32_t data = value;
@@ -145,36 +153,43 @@ void processHubPacket(uint8_t id, int16_t value)
 
   if (id == GPS_LAT_BP_ID || id == GPS_LONG_BP_ID || id == BARO_ALT_BP_ID || id == VOLTS_BP_ID) {
     lastId = id;
-    lastValue = value;
+    lastBPValue = value;
     return;
   }
 
   if (id == GPS_LAT_AP_ID) {
     if (lastId == GPS_LAT_BP_ID) {
-      data += lastValue << 16;
-      unit = UNIT_GPS_LATITUDE;
+      lastId = id;
+      lastAPValue = data;
     }
-    else {
-      return;
-    }
+    return;
   }
   else if (id == GPS_LONG_AP_ID) {
     if (lastId == GPS_LONG_BP_ID) {
-      data += lastValue << 16;
+      lastId = id;
+      lastAPValue = data;
+    }
+    return;
+  }
+  else if (id == GPS_LAT_NS_ID) {
+    if (lastId == GPS_LONG_BP_ID) {
       id = GPS_LAT_AP_ID;
-      unit = UNIT_GPS_LONGITUDE;
+      unit = UNIT_GPS_LATITUDE;
+      data = getFrSkyDProtocolGPSValue(value == 'N' ? 1 : -1);
     }
     else {
       return;
     }
   }
-  else if (id == GPS_LAT_NS_ID) {
-    id = GPS_LAT_AP_ID;
-    unit = UNIT_GPS_LATITUDE_NS;
-  }
   else if (id == GPS_LONG_EW_ID) {
-    id = GPS_LAT_AP_ID;
-    unit = UNIT_GPS_LONGITUDE_EW;
+    if (lastId == GPS_LONG_BP_ID) {
+      id = GPS_LAT_AP_ID;
+      unit = UNIT_GPS_LONGITUDE;
+      data = getFrSkyDProtocolGPSValue(value == 'E' ? 1 : -1);
+    }
+    else {
+      return;
+    }
   }
   else if (id == BARO_ALT_AP_ID) {
     if (lastId == BARO_ALT_BP_ID) {
@@ -182,7 +197,7 @@ void processHubPacket(uint8_t id, int16_t value)
         telemetryData.varioHighPrecision = true;
         data /= 10;    // map hi precision vario into low precision. Altitude is stored in 0.1m anyways
       }
-      data = (int16_t)lastValue * 10 + (((int16_t)lastValue < 0) ? -data : data);
+      data = (int16_t)lastBPValue * 10 + (((int16_t)lastBPValue < 0) ? -data : data);
       unit = UNIT_METERS;
       precision = 1;
     }
@@ -192,7 +207,7 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   else if (id == VOLTS_AP_ID) {
     if (lastId == VOLTS_BP_ID) {
-      data = ((lastValue * 100 + value * 10) * 210) / 110;
+      data = ((lastBPValue * 100 + value * 10) * 210) / 110;
       unit = UNIT_VOLTS;
       precision = 2;
     }

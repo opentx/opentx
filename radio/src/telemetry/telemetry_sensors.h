@@ -30,13 +30,13 @@ class TelemetryItem
     };
 
     union {
-      int32_t  valueMin;        // min store
-      uint32_t pilotLongitude;
+      int32_t valueMin;         // min store
+      int32_t pilotLongitude;
     };
 
     union {
-      int32_t  valueMax;        // max store
-      uint32_t pilotLatitude;
+      int32_t valueMax;         // max store
+      int32_t pilotLatitude;
     };
 
     uint8_t lastReceived;       // for detection of sensor loss
@@ -64,22 +64,11 @@ class TelemetryItem
         uint8_t  sec;
       } datetime;
       struct {
-        uint16_t longitude_bp;
-        uint16_t longitude_ap;
-        char     longitudeEW;
-        uint16_t latitude_bp;
-        uint16_t latitude_ap;
-        char     latitudeNS;
+        int32_t latitude;
+        int32_t longitude;
         // pilot longitude is stored in min
         // pilot latitude is stored in max
         // distFromEarthAxis is stored in value
-        void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
-        {
-          div_t qr = div(latitude_bp, 100);
-          *latitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + latitude_ap) * 5) / 3;
-          qr = div(longitude_bp, 100);
-          *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + longitude_ap) * 5) / 3;
-        }
       } gps;
     };
 

@@ -21,9 +21,13 @@
 #ifndef _CROSSFIRE_H_
 #define _CROSSFIRE_H_
 
+// Device address
 #define BROADCAST_ADDRESS              0x00
 
-#define LINK_STATS_ID                  0x14
+// Frame id
+#define GPS_ID                         0x02
+#define BATTERY_ID                     0x08
+#define LINK_ID                        0x14
 #define CHANNELS_ID                    0x16
 
 void processCrossfireTelemetryData(uint8_t data);

@@ -291,8 +291,8 @@ void writeLogs()
         TelemetryItem & telemetryItem = telemetryItems[i];
         if (sensor.logs) {
           if (sensor.unit == UNIT_GPS) {
-            if (telemetryItem.gps.longitudeEW && telemetryItem.gps.latitudeNS)
-              f_printf(&g_oLogFile, "%03d.%04d%c %03d.%04d%c,", telemetryItem.gps.longitude_bp, telemetryItem.gps.longitude_ap, telemetryItem.gps.longitudeEW, telemetryItem.gps.latitude_bp, telemetryItem.gps.latitude_ap, telemetryItem.gps.latitudeNS);
+            if (telemetryItem.gps.longitude && telemetryItem.gps.latitude)
+              f_printf(&g_oLogFile, "%f %f,", float(telemetryItem.gps.longitude)/1000000, float(telemetryItem.gps.latitude)/1000000);
             else
               f_printf(&g_oLogFile, ",");
           }

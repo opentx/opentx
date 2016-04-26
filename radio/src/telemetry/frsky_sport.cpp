@@ -65,7 +65,8 @@ const FrSkySportSensor sportSensors[] = {
   { CELLS_FIRST_ID, CELLS_LAST_ID, 0, ZSTR_CELLS, UNIT_CELLS, 2 },
   { GPS_ALT_FIRST_ID, GPS_ALT_LAST_ID, 0, ZSTR_GPSALT, UNIT_METERS, 2 },
   { GPS_TIME_DATE_FIRST_ID, GPS_TIME_DATE_LAST_ID, 0, ZSTR_GPSDATETIME, UNIT_DATETIME, 0 },
-  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS, 0 },
+  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS_LATITUDE, 0 },
+  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 1, ZSTR_GPS, UNIT_GPS_LONGITUDE, 0 },
   { FUEL_QTY_FIRST_ID, FUEL_QTY_LAST_ID, 0, ZSTR_FUEL, UNIT_MILLILITERS, 2 },
   { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, 0, ZSTR_HDG, UNIT_DEGREE, 2 },
   { RBOX_BATT1_FIRST_ID, RBOX_BATT1_LAST_ID, 0, ZSTR_BATT1_VOLTAGE, UNIT_VOLTS, 3 },
@@ -250,7 +251,17 @@ void processSportPacket(uint8_t * packet)
         if (id == ADC1_ID || id == ADC2_ID || id == BATT_ID || id == SWR_ID) {
           data = SPORT_DATA_U8(packet);
         }
-        if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
+        if (id >= GPS_LONG_LATI_FIRST_ID && id <= GPS_LONG_LATI_LAST_ID) {
+          int32_t value = (data & 0x3fffffff);
+          if (data & (1 << 30))
+            value = -value;
+          value = (value * 5) / 3; // min/10000 => deg/1000000
+          if (data & (1 << 31))
+            processSportPacket(id, 0, instance, value); // latitude
+          else
+            processSportPacket(id, 1, instance, value); // longitude
+        }
+        else if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
           processSportPacket(id, 0, instance, data & 0xffff);
           processSportPacket(id, 1, instance, data >> 16);
         }
@@ -271,10 +282,7 @@ void processSportPacket(uint8_t * packet)
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo) {
-#if defined __GNUC__
-            // TODO remove this ifdef when we have updated to MSVC recent version
             luaInputTelemetryFifo->push((LuaTelemetryValue){(uint8_t)id, data});
-#endif
           }
 #endif
         }
@@ -320,6 +328,9 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instanc
       if (IS_IMPERIAL_ENABLE()) {
         telemetrySensor.unit = UNIT_FEET;
       }
+    }
+    else if (unit == UNIT_GPS_LATITUDE || unit == UNIT_GPS_LONGITUDE) {
+      telemetrySensor.unit = UNIT_GPS;
     }
   }
   else {

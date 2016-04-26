@@ -735,7 +735,7 @@
 #define TR_HAPTICSTRENGTH      INDENT "Strength"
 #define TR_CONTRAST            "Contrast"
 #define TR_ALARMS_LABEL        "Alarms"
-#define TR_BATTERY_RANGE       TR("Battery range","Battery meter range")
+#define TR_BATTERY_RANGE       TR("Battery range", "Battery meter range")
 #define TR_BATTERYWARNING      INDENT "Battery Low"
 #define TR_INACTIVITYALARM     INDENT "Inactivity"
 #define TR_MEMORYWARNING       INDENT "Memory Low"
@@ -1225,10 +1225,12 @@
 #define ZSTR_ACCY              "AccY"
 #define ZSTR_ACCZ              "AccZ"
 #define ZSTR_CURR              "Curr"
+#define ZSTR_CAPACITY          "Capa"
 #define ZSTR_VFAS              "VFAS"
 #define ZSTR_ASPD              "ASpd"
 #define ZSTR_GSPD              "GSpd"
 #define ZSTR_HDG               "Hdg"
+#define ZSTR_SATELLITES        "Sats"
 #define ZSTR_CELLS             "Cels"
 #define ZSTR_GPSALT            "GAlt"
 #define ZSTR_GPSDATETIME       "Date"
