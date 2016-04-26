@@ -1674,9 +1674,6 @@ extern uint8_t s_frsky_view;
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194)
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-double gpsToDouble(bool neg, int16_t bp, int16_t ap);
-#endif
 void getGpsPilotPosition();
 void getGpsDistance();
 void varioWakeup();

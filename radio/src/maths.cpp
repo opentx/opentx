@@ -128,18 +128,6 @@ uint16_t isqrt32(uint32_t n)
    -204 -> -20 
 */
 
-#if defined(PCBTARANIS)
-double gpsToDouble(bool neg, int16_t bp, int16_t ap)
-{
-  double result = ap;
-  result /= 10000;
-  result += (bp % 100);
-  result /= 60;
-  result += (bp / 100);
-  return neg?-result:result;
-}
-#endif
-
 #if defined(FRSKY_HUB) && !defined(CPUARM)
 void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
 {
