@@ -1436,7 +1436,7 @@ uint16_t BandGap ;
 #endif
 
 
-#if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
+#if defined(VIRTUALINPUTS)
   #define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
   #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-3) (see explanation below)
 
@@ -1517,7 +1517,7 @@ void getADC()
   for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = temp[x] >> (3 - ANALOG_SCALE);
 
-#if defined(VIRTUALINPUTS) && defined(JITTER_FILTER)
+#if defined(VIRTUALINPUTS)
     // Jitter filter: 
     //    * pass trough any big change directly
     //    * for small change use Modified moving average (MMA) filter
@@ -1554,7 +1554,7 @@ void getADC()
     //   * <out> = s_anaFilt[x]
     uint16_t previous = s_anaFilt[x] / JITTER_ALPHA;
     uint16_t diff = (v > previous) ? (v - previous) : (previous - v);
-    if (diff < 10 * ANALOG_MULTIPLIER) {
+    if (!g_eeGeneral.jitterFilter && diff < (10*ANALOG_MULTIPLIER)) { // g_eeGeneral.jitterFilter is inverted, 0 - active
       // apply jitter filter
       s_anaFilt[x] = (s_anaFilt[x] - previous) + v;
     }
