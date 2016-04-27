@@ -72,6 +72,7 @@ enum menuGeneralHwItems {
   CASE_REV9E(ITEM_SETUP_HW_SR)
   CASE_REV9E(ITEM_SETUP_HW_BLUETOOTH)
   ITEM_SETUP_HW_UART3_MODE,
+  ITEM_SETUP_HW_JITTER_FILTER,
   ITEM_SETUP_HW_MAX
 };
 
@@ -227,6 +228,12 @@ void menuGeneralHardware(uint8_t event)
           serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
         }
         break;
+      case ITEM_SETUP_HW_JITTER_FILTER:
+      {
+        uint8_t b = 1-g_eeGeneral.jitterFilter;
+        g_eeGeneral.jitterFilter = 1 - onoffMenuItem(b, RADIO_SETUP_2ND_COLUMN, y, STR_JITTER_FILTER, attr, event);
+        break;
+      }
     }
   }
 }

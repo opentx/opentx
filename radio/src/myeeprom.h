@@ -335,7 +335,9 @@ enum BeeperMode {
   uint32_t globalTimer; \
   int8_t   temperatureCalib; \
   uint8_t  btBaudrate; \
-  uint8_t  optrexDisplay; \
+  uint8_t  optrexDisplay:1; \
+  uint8_t  jitterFilter:1; /* 0 - active */\ 
+  uint8_t  spareArm:6; \
   uint8_t  sticksGain; \
   uint8_t  rotarySteps; \
   uint8_t  countryCode; \
