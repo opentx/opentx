@@ -922,6 +922,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MENU_TELEMETRY[];
   extern const pm_char STR_MENU_OTHER[];
   extern const pm_char STR_MENU_INVERT[];
+  extern const pm_char STR_JITTER_FILTER[];
 #endif
 
 #if MENUS_LOCK == 1

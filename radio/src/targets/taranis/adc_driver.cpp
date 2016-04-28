@@ -173,6 +173,7 @@ void adcStop()
 {
 }
 
+#if !defined(SIMU)
 uint16_t getAnalogValue(uint8_t index)
 {
   if (IS_POT(index) && !IS_POT_AVAILABLE(index)) {
@@ -189,3 +190,4 @@ uint16_t getAnalogValue(uint8_t index)
   else
     return adcValues[index];
 }
+#endif // #if !defined(SIMU)

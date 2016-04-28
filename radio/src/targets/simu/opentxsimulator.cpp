@@ -24,6 +24,11 @@ uint16_t anaIn(uint8_t chan)
   return g_anas[chan];
 }
 
+uint16_t getAnalogValue(uint8_t index)
+{
+  return anaIn(index);
+}
+
 bool hasExtendedTrims()
 {
   return g_model.extendedTrims;
