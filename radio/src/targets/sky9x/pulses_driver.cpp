@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void module_output_active()
 {
@@ -62,8 +62,22 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
   pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
 
+  NVIC_SetPriority(PWM_IRQn, 3 ) ;
+  NVIC_EnableIRQ(PWM_IRQn) ;
+}
+
+void disable_main_ppm()
+{
+  register Pio * pioptr = PIOA;
+  pioptr->PIO_PER = PIO_PA17;                                            // Assign A17 to PIO
+  PWM->PWM_IDR1 = PWM_IDR1_CHID3;
+}
+
+void init_second_ppm(uint32_t period)
+{
 #if !defined(REVA)
   // PWM1 for PPM2
+  register Pwm * pwmptr = PWM;
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
   if (!g_model.moduleData[EXTRA_MODULE].ppm.pulsePol) {
@@ -76,9 +90,15 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
   pwmptr->PWM_ENA = PWM_ENA_CHID1 ;                                               // Enable channel 1
   pwmptr->PWM_IER1 = PWM_IER1_CHID1 ;
 #endif
+}
 
-  NVIC_SetPriority(PWM_IRQn, 3 ) ;
-  NVIC_EnableIRQ(PWM_IRQn) ;
+void disable_second_ppm()
+{
+#if !defined(REVA)
+  register Pio * pioptr = PIOC;
+  pioptr->PIO_PER = PIO_PC15 ;                                            // Assign C17 to PIO
+  PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
+#endif
 }
 
 void init_no_pulses(uint32_t port)
@@ -107,26 +127,17 @@ void init_ppm(uint32_t port)
     init_main_ppm(3000, 1);
   }
   else {
-    // TODO
+    init_second_ppm(3000);
   }
 }
 
 void disable_ppm(uint32_t port)
 {
-  register Pio *pioptr ;
-
   if (port == EXTERNAL_MODULE) {
-    pioptr = PIOA ;
-    pioptr->PIO_PER = PIO_PA17 ;                                            // Assign A17 to PIO
-    PWM->PWM_IDR1 = PWM_IDR1_CHID3 ;
+    disable_main_ppm();
   }
   else {
-#if !defined(REVA) 
-    pioptr = PIOC ;
-    pioptr->PIO_PER = PIO_PC17 ;                                            // Assign C17 to PIO
-    PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
-    NVIC_DisableIRQ(PWM_IRQn) ;
-#endif
+    disable_second_ppm();
   }
 }
 
@@ -134,17 +145,24 @@ void disable_ppm(uint32_t port)
 // TD is on PA17, peripheral A
 void init_ssc()
 {
-  register Ssc *sscptr ;
+  register Ssc * sscptr ;
 
   PMC->PMC_PCER0 |= 0x00400000L ;               // Enable peripheral clock to SSC
 
-  configure_pins( PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
+  configure_pins(PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA) ;
 
   sscptr = SSC ;
+  sscptr->SSC_THR = 0xFF ;		// Make the output high.
+  sscptr->SSC_TFMR = 0x00000027 ;         //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
   sscptr->SSC_CMR = Master_frequency / (125000*2) ;               // 8uS per bit
   sscptr->SSC_TCMR = 0 ;          //  0000 0000 0000 0000 0000 0000 0000 0000
-  sscptr->SSC_TFMR = 0x00000027 ;         //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
   sscptr->SSC_CR = SSC_CR_TXEN ;
+
+#if defined(REVX)
+  PIOA->PIO_MDER = PIO_PA17;						// Open Drain O/p in A17
+#else
+  PIOA->PIO_MDDR = PIO_PA17;						// Push Pull O/p in A17
+#endif
 }
 
 void disable_ssc()
@@ -207,13 +225,10 @@ void disable_dsm2(uint32_t port)
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
 {
-  register Pwm *pwmptr;
-  register Ssc *sscptr;
+  register Pwm * pwmptr = PWM;
+  uint32_t reason = pwmptr->PWM_ISR1;
   uint32_t period;
-  uint32_t reason;
 
-  pwmptr = PWM;
-  reason = pwmptr->PWM_ISR1 ;
   if (reason & PWM_ISR1_CHID3) {
     // Use the current protocol, don't switch until set_up_pulses
     switch (s_current_protocol[EXTERNAL_MODULE]) {
@@ -232,7 +247,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         else {
           // Kick off serial output here
-          sscptr = SSC;
+          register Ssc * sscptr = SSC;
           sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.pulses);
           sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
@@ -256,7 +271,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         else {
           // Kick off serial output here
-          sscptr = SSC;
+          register Ssc * sscptr = SSC;
           sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);
           sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
@@ -275,8 +290,8 @@ extern "C" void PWM_IRQHandler(void)
 
 #if !defined(REVA)
   if (reason & PWM_ISR1_CHID1) {
-    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;
-    if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
+    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTRA_MODULE].ppm.ptr++;
+    if (*modulePulsesData[EXTRA_MODULE].ppm.ptr == 0) {
       setupPulsesPPM(EXTRA_MODULE);
     }
   }
