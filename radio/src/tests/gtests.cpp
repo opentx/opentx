@@ -47,6 +47,11 @@ uint16_t anaIn(uint8_t chan)
     return 0;
 }
 
+uint16_t getAnalogValue(uint32_t index) 
+{
+  return anaIn(index);
+}
+
 static char _zchar2stringResult[200];
 const char * zchar2string(const char * zstring, int size)
 {
