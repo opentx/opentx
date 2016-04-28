@@ -252,7 +252,7 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 void adcInit(void);
 void adcRead(void);
-inline uint16_t getAnalogValue(uint32_t value);
+uint16_t getAnalogValue(uint32_t value);
 
 #define BATT_SCALE    150
 

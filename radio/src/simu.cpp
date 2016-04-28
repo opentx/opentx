@@ -477,3 +477,8 @@ uint16_t anaIn(uint8_t chan)
   else
     return 0;
 }
+
+uint16_t getAnalogValue(uint32_t index) 
+{
+  return anaIn(index);
+}
