@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 // Start TIMER3 for input capture
 inline void start_timer3()
@@ -73,10 +73,11 @@ void start_timer4()
 
 extern "C" void TC3_IRQHandler() //capture ppm in at 2MHz
 {
-  uint16_t capture = TC1->TC_CHANNEL[0].TC_RA ;
-  (void) TC1->TC_CHANNEL[0].TC_SR ;               // Acknowledge the interrupt
-
-  captureTrainerPulses(capture);
+  uint32_t status = TC1->TC_CHANNEL[0].TC_SR;
+  if (status & TC_SR0_LDRAS) {
+    uint16_t capture = TC1->TC_CHANNEL[0].TC_RA ;
+    captureTrainerPulses(capture);
+  }
 }
 
 void init_trainer_capture()
@@ -85,8 +86,10 @@ void init_trainer_capture()
   start_timer3() ;
 }
 
+#if 0
 void stop_trainer_capture()
 {
   TC1->TC_CHANNEL[0].TC_IDR = TC_IDR0_LDRAS ;
   NVIC_DisableIRQ(TC3_IRQn) ;
 }
+#endif
