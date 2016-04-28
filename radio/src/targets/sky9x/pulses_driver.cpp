@@ -27,7 +27,7 @@ void module_output_active()
   pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
   pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
 #if defined(REVX)
-  if (g_model.moduleData[EXTERNAL_MODULE].ppm.OutputType) {
+  if (g_model.moduleData[EXTERNAL_MODULE].ppm.outputType) {
     pioptr->PIO_MDDR = PIO_PA17 ;                 // Push Pull O/p in A17
   }
   else {

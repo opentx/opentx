@@ -38,9 +38,6 @@ TelemetryData telemetryData;
 
 #if defined(CPUARM)
 uint8_t telemetryProtocol = 255;
-#if defined(REVX)
-uint8_t serialInversion = 0;
-#endif
 #endif
 
 #if defined(PCBSKY9X) && defined(REVX)

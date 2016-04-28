@@ -627,7 +627,7 @@ void menuModelSetup(uint8_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        moduleData.ppmOutputType = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_OUTPUT_TYPE, STR_VOUTPUT_TYPE, moduleData.ppmOutputType, 0, 1, attr, event);
+        moduleData.ppm.outputType = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_OUTPUT_TYPE, STR_VOUTPUT_TYPE, moduleData.ppm.outputType, 0, 1, attr, event);
         break;
       }
 #endif
