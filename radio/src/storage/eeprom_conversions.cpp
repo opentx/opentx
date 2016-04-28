@@ -680,6 +680,16 @@ int ConvertSource_216_to_217(int source)
   return source;
 }
 
+int ConvertSource_217_to_218(int source)
+{
+#if defined(PCBTARANIS)
+  if (source >= MIXSRC_FIRST_LOGICAL_SWITCH + 32)
+    source += 32;
+#endif
+
+  return source;
+}
+
 int ConvertGVar_216_to_217(int value)
 {
   if (value < -4096 + 9)
@@ -814,6 +824,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
   settings.varioRepeat = settings_v217->varioRepeat;
   for (int i=0; i<NUM_CFN; i++) {
     CustomFunctionData_v216 & cf = settings_v217->customFn[i];
+    settings.customFn[i].func = cf.func;
     settings.customFn[i].swtch = ConvertSwitch_217_to_218(cf.swtch);
     memcpy(settings.customFn[i].play.name, settings_v217->customFn[i].play.name, sizeof(settings.customFn[i].play.name));
     settings.customFn[i].active = cf.active;
@@ -958,7 +969,6 @@ void ConvertModel_216_to_217(ModelData & model)
     sw.v3 = oldModel.logicalSw[i].v3;
     sw.delay = oldModel.logicalSw[i].delay;
     sw.duration = oldModel.logicalSw[i].duration;
-    sw.andsw = oldModel.logicalSw[i].andsw;
     uint8_t cstate = lswFamily(sw.func);
     if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
       sw.v1 = ConvertSource_216_to_217((uint8_t)sw.v1);
@@ -1128,16 +1138,30 @@ void ConvertModel_217_to_218(ModelData & model)
     newModel.curves[i] = oldModel.curves[i];
 #endif
   }
-  memcpy(newModel.curves, oldModel.curves, sizeof(newModel.curves));
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
   for (int i=0; i<32; i++) {
-    newModel.logicalSw[i].func = oldModel.logicalSw[i].func;
-    newModel.logicalSw[i].v1 = oldModel.logicalSw[i].v1;
-    newModel.logicalSw[i].v3 = oldModel.logicalSw[i].v3;
+    LogicalSwitchData & sw = newModel.logicalSw[i];
+    sw.func = oldModel.logicalSw[i].func;
+    sw.v1 = oldModel.logicalSw[i].v1;
+    sw.v2 = oldModel.logicalSw[i].v2;
+    sw.v3 = oldModel.logicalSw[i].v3;
     newModel.logicalSw[i].andsw = ConvertSwitch_217_to_218(oldModel.logicalSw[i].andsw);
-    newModel.logicalSw[i].v2 = oldModel.logicalSw[i].v2;
-    newModel.logicalSw[i].delay = oldModel.logicalSw[i].delay;
-    newModel.logicalSw[i].duration = oldModel.logicalSw[i].duration;
+    sw.delay = oldModel.logicalSw[i].delay;
+    sw.duration = oldModel.logicalSw[i].duration;
+    uint8_t cstate = lswFamily(sw.func);
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
+      sw.v1 = ConvertSource_217_to_218((uint8_t)sw.v1);
+      if (cstate == LS_FAMILY_COMP) {
+        sw.v2 = ConvertSource_217_to_218((uint8_t)sw.v2);
+      }
+    }
+    else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
+      sw.v1 = ConvertSwitch_217_to_218(sw.v1);
+      sw.v2 = ConvertSwitch_217_to_218(sw.v2);
+    }
+    else if (cstate == LS_FAMILY_EDGE) {
+      sw.v1 = ConvertSwitch_217_to_218(sw.v1);
+    }
   }
   for (int i=0; i<NUM_CFN; i++) {
     memcpy(&newModel.customFn[i], &oldModel.customFn[i], sizeof(CustomFunctionData));
