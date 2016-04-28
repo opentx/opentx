@@ -800,7 +800,8 @@ void TelemetryPanel::setup()
     if (IS_ARM(firmware->getBoard())) {
       ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
       ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-      if (IS_9XRPRO(firmware->getBoard())) {
+      if (IS_9XRPRO(firmware->getBoard()) || 
+         (IS_TARANIS(firmware->getBoard()) && generalSettings.hw_uartMode == 2)) {
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
