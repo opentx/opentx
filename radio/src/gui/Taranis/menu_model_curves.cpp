@@ -59,7 +59,7 @@ point_t getPoint(uint8_t i)
     result.y = (LCD_H-1) - (100 + points[i]) * (LCD_H-1) / 200;
     if (custom && i>0 && i<count-1)
       result.x = X0-1-WCHART + (100 + (100 + points[count+i-1]) * (2*WCHART)) / 200;
-    }
+  }
   return result;
 }
 
@@ -104,7 +104,6 @@ void resetCustomCurveX(int8_t * points, int noPoints)
 {
   for (int i=0; i<noPoints-2; i++) {
     points[noPoints+i] = getCurveX(noPoints, i+1);
-    TRACE("\t custom point %d: %d", noPoints+i, (int)points[noPoints+i]);
   }
 }
 
@@ -118,13 +117,11 @@ void displayPresetChoice(uint8_t event)
     warningResult = 0;
     CurveInfo & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
-    TRACE("Creating preset curve with %d points, param %d", crv.points, warningInputValue);
     int k = 25 * warningInputValue;
     int dx = 2000 / (5+crv.points-1);
     for (uint8_t i=0; i<5+crv.points; i++) {
       int x = -1000 + i * dx;
       points[i] = div10_and_round(div100_and_round(k * x));
-      TRACE("\t point %d: %d", i, (int)points[i]);
     }
     if (crv.type == CURVE_TYPE_CUSTOM) {
       resetCustomCurveX(points, 5+crv.points);
@@ -177,7 +174,6 @@ void menuModelCurveOne(uint8_t event)
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
       for (int i=1; i<4+crv.points; i++) {
-        TRACE("x: %d", getCurveX(5+crv.points, i));
         points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5+crv.points, i)), s_curveChan));
       }
       moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3+crv.points : -3-crv.points);
