@@ -154,6 +154,12 @@ extern DMA_TypeDef dma2;
 #undef DMA2
 #define DMA2 (&dma2)
 #elif defined(PCBSKY9X)
+extern Pmc pmc;
+#undef PMC
+#define PMC (&pmc)
+extern Ssc ssc;
+#undef SSC
+#define SSC (&ssc)
 extern Pio Pioa, Piob, Pioc;
 extern Twi Twio;
 extern Dacc dacc;

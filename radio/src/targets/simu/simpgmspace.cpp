@@ -62,6 +62,8 @@ DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 #elif defined(CPUARM)
 Pio Pioa, Piob, Pioc;
+Pmc pmc;
+Ssc ssc;
 Pwm pwm;
 Twi Twio;
 Usart Usart0;
