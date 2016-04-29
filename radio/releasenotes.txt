@@ -1,3 +1,18 @@
+<h2>Version 2.1.9 / todo</h2>
+
+[Taranis]
+<ul>
+<li>Fixed USB driver changed interrupt grouping which affected interrupt priorities (fix suggested by Michael Blandford) (<a href=https://github.com/opentx/opentx/issues/3178>#3178</a>)</li>
+<li>ADC Jitter Filter improvements, option added in Hardware settings to turn it on/off (<a href=https://github.com/opentx/opentx/issues/3432>#3432</a>)</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>Fixed: Trainer inputs >TR4 not working (<a href=https://github.com/opentx/opentx/issues/3203>#3203</a>)</li>
+<li>External module output type setting was not visible</li>
+</ul>
+
+
 <h2>Version 2.1.8 / 2016-04-14</h2>
 
 Notice: EDGE Logical Switch operation has changed. Users should check their setups, if they use EDGE with AND switch. 

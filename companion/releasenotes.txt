@@ -1,3 +1,11 @@
+<h2>Version 2.1.9 / todo</h2>
+
+<ul>
+<li>SD sync fixes (<a href=https://github.com/opentx/opentx/issues/3351>#3351</a>)</li>
+<li>Fixed: Telemetry mode "FrSky D (cable)" choice was missing for Taranis (<a href=https://github.com/opentx/opentx/issues/3372>#3372</a>)</li>
+</ul>
+
+
 <h2>Version 2.1.8 / 2016-04-14</h2>
 
 <ul>
