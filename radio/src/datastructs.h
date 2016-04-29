@@ -892,7 +892,9 @@ PACK(struct TrainerData {
     NOBACKUP(uint32_t globalTimer); \
     NOBACKUP(uint8_t  btBaudrate); \
     NOBACKUP(uint8_t  countryCode); \
-    NOBACKUP(uint8_t  imperial); \
+    NOBACKUP(uint8_t  imperial:1); \
+    NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
+    NOBACKUP(uint8_t  spareExtra:6); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
@@ -916,9 +918,7 @@ PACK(struct TrainerData {
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
     NOBACKUP(uint8_t bluetoothEnable:1); \
     NOBACKUP(uint8_t blOffBright:7); \
-    NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]); \
-    uint8_t  jitterFilter:1; /* 0 - active */\
-    uint8_t  spareExtra:7; 
+    NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBFLAMENCO)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
@@ -946,9 +946,7 @@ PACK(struct TrainerData {
     swconfig_t switchConfig; \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
-    BLUETOOTH_FIELDS \
-    uint8_t  jitterFilter:1; /* 0 - active */\
-    uint8_t  spareExtra:7; 
+    BLUETOOTH_FIELDS
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
@@ -1081,10 +1079,10 @@ static inline void check_struct()
   CHKSIZE(CurveData, 4);
 
 #if defined(REV9E)
-  CHKSIZE(RadioData, 953);
+  CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6519);
 #else
-  CHKSIZE(RadioData, 873);
+  CHKSIZE(RadioData, 872);
   CHKSIZE(ModelData, 6506);
 #endif
 
@@ -1100,7 +1098,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 7);
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
-  CHKSIZE(RadioData, 836);
+  CHKSIZE(RadioData, 835);
   CHKSIZE(ModelData, 9371);
 
 #elif defined(PCBSKY9X)
