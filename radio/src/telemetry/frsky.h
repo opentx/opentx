@@ -418,7 +418,8 @@ void frskyDSendNextAlarm();
 void frskyDProcessPacket(uint8_t *packet);
 
 // FrSky S.PORT Protocol
-void processSportPacket(uint8_t *packet);
+void processSportPacket(uint8_t * packet);
+
 #if defined(PCBTARANIS)
 void sportFirmwareUpdate(ModuleIndex module, const char *filename);
 #endif
@@ -483,14 +484,34 @@ void frskyUpdateCells();
 void processFrskyTelemetryData(uint8_t data);
 
 #if defined(LUA)
-struct LuaTelemetryValue
+struct LuaTelemetryPacket
 {
-  uint8_t id;
-  uint32_t value;
+  LuaTelemetryPacket() { };
+  LuaTelemetryPacket(uint8_t physicalId, uint8_t primId, uint16_t dataId, uint32_t value):
+    physicalId(physicalId),
+    primId(primId),
+    dataId(dataId),
+    value(value)
+    {
+    }
+
+  PACK(struct {
+    uint8_t physicalId;
+    union {
+      PACK(struct {
+        uint8_t primId;
+        uint16_t dataId;
+        uint32_t value;
+        uint8_t crc;
+      });
+      uint8_t raw[8];
+    };
+  });
 };
 
-extern Fifo<LuaTelemetryValue, 16> * luaInputTelemetryFifo;
-extern Fifo<LuaTelemetryValue, 16> * luaOutputTelemetryFifo;
+extern Fifo<LuaTelemetryPacket, 16> * luaInputTelemetryFifo;
+extern LuaTelemetryPacket luaOutputTelemetryPacket;
+void sportSendLuaPacket(LuaTelemetryPacket & packet);
 #endif
 
 #endif // _FRSKY_H_

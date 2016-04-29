@@ -127,7 +127,7 @@ bool intPwr, extPwr;
 uint16_t servosState;
 uint16_t rboxState;
 
-void processSportUpdatePacket(uint8_t *packet)
+void processSportUpdatePacket(uint8_t * packet)
 {
   if (packet[0]==0x5E && packet[1]==0x50) {
     switch (packet[2]) {
@@ -190,11 +190,40 @@ void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t d
   }
 }
 
+uint8_t sportUpdatePacket[16] __DMA;
+
+#if defined(LUA)
+// TODO merge it with S.PORT update function when finished
+void sportSendLuaPacket(LuaTelemetryPacket & packet)
+{
+  uint8_t * ptr = sportUpdatePacket;
+  // *ptr++ = 0x7E;
+  // *ptr++ = 0x1A;
+
+  uint16_t crc = 0;
+  for (uint8_t i=0; i<7; i++) {
+    if (packet.raw[i] == 0x7E || packet.raw[i] == 0x7D) {
+      *ptr++ = 0x7D;
+      *ptr++ = 0x20 ^ packet.raw[i];
+    }
+    else {
+      *ptr++ = packet.raw[i];
+    }
+    crc += packet.raw[i];         //0-1FF
+    crc += crc >> 8;   //0-100
+    crc &= 0x00ff;
+  }
+  *ptr++ = 0xFF-crc;
+  sportSendBuffer(sportUpdatePacket, ptr-sportUpdatePacket);
+}
+#endif
+
 void processSportPacket(uint8_t * packet)
 {
-  uint8_t  instance = (packet[0] & 0x1F) + 1;
-  uint8_t  prim   = packet[1];
-  uint16_t id  = *((uint16_t *)(packet+2));
+  uint8_t physicalId = packet[0] & 0x1F;
+  uint8_t primId = packet[1];
+  uint16_t id = *((uint16_t *)(packet+2));
+  uint32_t data = SPORT_DATA_S32(packet);
 
 #if defined(CPUSTM32) && !defined(SIMU)
   if (sportUpdateState != SPORT_IDLE) {
@@ -209,9 +238,8 @@ void processSportPacket(uint8_t * packet)
     return;
   }
 
-  if (prim == DATA_FRAME)  {
-    uint32_t data = SPORT_DATA_S32(packet);
-
+  if (primId == DATA_FRAME) {
+    uint8_t instance = physicalId + 1;
     if (id == RSSI_ID) {
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
@@ -282,7 +310,7 @@ void processSportPacket(uint8_t * packet)
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo) {
-            luaInputTelemetryFifo->push((LuaTelemetryValue){(uint8_t)id, data});
+            luaInputTelemetryFifo->push(LuaTelemetryPacket(physicalId, primId, id, data));
           }
 #endif
         }
@@ -292,6 +320,13 @@ void processSportPacket(uint8_t * packet)
       }
     }
   }
+#if defined(LUA)
+  else if (primId == 0x32) {
+    if (luaInputTelemetryFifo) {
+      luaInputTelemetryFifo->push(LuaTelemetryPacket(physicalId, primId, id, data));
+    }
+  }
+#endif
 }
 
 void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
@@ -364,16 +399,14 @@ bool sportWaitState(SportUpdateState state, int timeout)
 #endif
 }
 
-void blankPacket(uint8_t *packet)
+void blankPacket(uint8_t * packet)
 {
   memset(packet+2, 0, 6);
 }
 
-uint8_t sportUpdatePacket[16] __DMA;
-
 void writePacket(uint8_t * packet)
 {
-  uint8_t *ptr = sportUpdatePacket;
+  uint8_t * ptr = sportUpdatePacket;
   *ptr++ = 0x7E;
   *ptr++ = 0xFF;
   packet[7] = crc16(packet, 7);

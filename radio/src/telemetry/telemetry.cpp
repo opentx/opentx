@@ -454,6 +454,6 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 }
 
 #if defined(LUA)
-Fifo<LuaTelemetryValue, 16> * luaInputTelemetryFifo = NULL;
-Fifo<LuaTelemetryValue, 16> * luaOutputTelemetryFifo = NULL;
+Fifo<LuaTelemetryPacket, 16> * luaInputTelemetryFifo = NULL;
+LuaTelemetryPacket luaOutputTelemetryPacket = { 0x7E, 0x0, 0x0, 0x0 };
 #endif

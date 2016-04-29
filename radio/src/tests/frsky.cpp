@@ -24,7 +24,7 @@ void frskyDProcessPacket(uint8_t *packet);
 
 #if defined(FRSKY_SPORT)
 bool checkSportPacket(uint8_t *packet);
-void processSportPacket(uint8_t *packet);
+void processSportPacket(uint8_t * packet);
 bool checkSportPacket(uint8_t *packet);
 void frskyCalculateCellStats(void);
 void displayVoltagesScreen();
@@ -173,14 +173,17 @@ TEST(FrSky, HubAltNegative)
   processHubPacket(BARO_ALT_AP_ID, 05);
   EXPECT_EQ(telemetryItems[0].value, 120);
 }
-#endif  // #if defined(FRSKY) && defined(CPUARM)
+#endif // defined(FRSKY) && defined(CPUARM)
 
 #if defined(FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
 {
-  // uint8_t pkt[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7D, 0x5E, 0x02, 0x00, 0x00, 0x5F };
-  uint8_t pkt[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7E, 0x02, 0x00, 0x00, 0x5F };
-  EXPECT_EQ(checkSportPacket(pkt+1), true);
+  // Packet downstream
+  uint8_t pkt1[] = { 0x7E, 0x98, 0x10, 0x10, 0x00, 0x7E, 0x02, 0x00, 0x00, 0x5F };
+  EXPECT_EQ(checkSportPacket(pkt1+1), true);
+  // Packet upstream
+  uint8_t pkt2[] = { 0x7E, 0x1C, 0x31, 0x00, 0x10, 0x85, 0x64, 0x00, 0x00, 0xD4 };
+  EXPECT_EQ(checkSportPacket(pkt2+1), true);
 }
 
 void setSportPacketCrc(uint8_t * packet)
