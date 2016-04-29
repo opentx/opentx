@@ -10,7 +10,11 @@
 
 LogsDialog::LogsDialog(QWidget *parent) :
   QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-  ui(new Ui::LogsDialog)
+  ui(new Ui::LogsDialog),
+  tracerMaxAlt(0),
+  cursorA(0),
+  cursorB(0),
+  cursorLine(0)
 {
   csvlog.clear();
 
@@ -78,7 +82,7 @@ LogsDialog::LogsDialog(QWidget *parent) :
   // connect slot that ties some axis selections together (especially opposite axes):
   connect(ui->customPlot, SIGNAL(selectionChangedByUser()), this, SLOT(selectionChanged()));
   // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
-  connect(ui->customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress()));
+  connect(ui->customPlot, SIGNAL(mousePress(QMouseEvent*)), this, SLOT(mousePress(QMouseEvent*)));
   connect(ui->customPlot, SIGNAL(mouseWheel(QWheelEvent*)), this, SLOT(mouseWheel()));
 
   // make left axes transfer its range to right axes:
@@ -419,7 +423,7 @@ void LogsDialog::on_mapsButton_clicked()
   ui->logTable->setDisabled(false);
 }
 
-void LogsDialog::mousePress()
+void LogsDialog::mousePress(QMouseEvent * event)
 {
   // if an axis is selected, only allow the direction of that axis to be dragged
   // if no axis is selected, both directions may be dragged
@@ -430,6 +434,74 @@ void LogsDialog::mousePress()
     axisRect->setRangeDrag(axisRect->axis(QCPAxis::atLeft)->orientation());
   else
     axisRect->setRangeDrag(Qt::Horizontal | Qt::Vertical);
+
+  if (event->button() == Qt::RightButton) {
+    double x = axisRect->axis(QCPAxis::atBottom)->pixelToCoord(event->pos().x());
+    placeCursor(x, event->modifiers() & Qt::ShiftModifier);
+  }
+}
+
+void LogsDialog::placeCursor(double x, bool second)
+{
+  QCPItemTracer * cursor = second ? cursorB : cursorA;
+
+  if (cursor) {
+    cursor->setGraphKey(x);
+    cursor->updatePosition();
+    cursor->setVisible(true);
+  }
+
+  if (cursorA && cursorB) {
+    updateCursorsLabel();
+  }
+}
+
+void LogsDialog::updateCursorsLabel()
+{
+  QString text = QString("Max Altitude: %1 m\n").arg(tracerMaxAlt->position->value(), 0, 'f', 1);
+  if (cursorA->visible() ) {
+    text += tr("Cursor A: %1 m").arg(cursorA->position->value(), 0, 'f', 1) + "\n";
+  }
+  if (cursorB->visible() ) {
+    text += tr("Cursor B: %1 m").arg(cursorB->position->value(), 0, 'f', 1) + "\n";
+  }
+  if (cursorA->visible() && cursorB->visible()) {
+    cursorLine->setVisible(true);
+    // calc deltas
+    double deltaX = cursorB->position->key() - cursorA->position->key();
+    double deltaY = cursorB->position->value() - cursorA->position->value();
+    double slope = 0;
+    if (deltaX != 0) {
+      slope = deltaY / deltaX;
+    }
+    qDebug() << "Cursors: dt:" << formatTimeDelta(deltaX) << "dy:" << deltaY << "rate:" << slope;
+    text += tr("Time delta: %1").arg(formatTimeDelta(deltaX)) + "\n";
+    text += tr("Climb rate: %1 m/s").arg(slope, 0, 'f', 1) + "\n";
+  }
+  ui->labelCursors->setText(text);
+}
+
+QString LogsDialog::formatTimeDelta(double timeDelta) 
+{
+  if (abs(timeDelta) < 10) {
+    return QString("%1 s").arg(timeDelta, 1, 'f', 1);
+  }
+
+  int seconds = (int)round(abs(timeDelta));
+  int hours = seconds / 3600;
+  seconds %= 3600;
+  int minutes = seconds / 60;
+  seconds %= 60;
+
+  if (hours) {
+    return QString("%1h:%2:%3").arg(hours).arg(minutes, 2, 10, QChar('0')).arg(seconds, 2, 10, QChar('0'));
+  }
+  else if (minutes) {
+    return QString("%1m:%2").arg(minutes).arg(seconds, 2, 10, QChar('0'));
+  }
+  else {
+    return QString("%1 s").arg(seconds);
+  }
 }
 
 void LogsDialog::mouseWheel()
@@ -453,6 +525,7 @@ void LogsDialog::mouseWheel()
 void LogsDialog::removeAllGraphs()
 {
   ui->customPlot->clearGraphs();
+  ui->customPlot->clearItems();
   ui->customPlot->legend->setVisible(false);
   rightLegend->clearItems();
   rightLegend->setVisible(false);
@@ -466,6 +539,11 @@ void LogsDialog::removeAllGraphs()
   axisRect->axis(QCPAxis::atRight, 1)->setSelectedParts(QCPAxis::spNone);
   axisRect->axis(QCPAxis::atBottom)->setSelectedParts(QCPAxis::spNone);
   ui->customPlot->replot();
+  tracerMaxAlt = 0;
+  cursorA = 0;
+  cursorB = 0;
+  cursorLine = 0;
+  ui->labelCursors->setText("");
 }
 
 void LogsDialog::on_fileOpen_BT_clicked()
@@ -904,6 +982,17 @@ void LogsDialog::plotLogs()
       plots.coords.at(i).y);
     pen.setColor(colors.at(i % colors.size()));
     ui->customPlot->graph(i)->setPen(pen);
+
+    if (!tracerMaxAlt && (plots.coords.at(i).name.endsWith("(m)") ||
+        plots.coords.at(i).name.endsWith(" Alt") ||
+        plots.coords.at(i).name.endsWith("(ft)"))) {
+      addMaxAltitudeMarker(plots.coords.at(i), ui->customPlot->graph(i));
+      countNumberOfThrows(plots.coords.at(i), ui->customPlot->graph(i));
+      addCursor(&cursorA, ui->customPlot->graph(i), Qt::blue);
+      addCursor(&cursorB, ui->customPlot->graph(i), Qt::red);
+      addCursorLine(&cursorLine, ui->customPlot->graph(i), Qt::black);
+      updateCursorsLabel();
+    }
   }
 
   ui->customPlot->legend->setVisible(true);
@@ -950,4 +1039,71 @@ void LogsDialog::yAxisChangeRanges(QCPRange range)
     yAxesRanges[firstLeft].min = range.lower;
     yAxesRanges[firstLeft].max = range.upper;
   }
+}
+
+
+void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
+  // find max altitude
+  int positionIndex = 0;
+  double maxAlt = -100000;
+
+  for(int i=0; i<c.x.count(); ++i) {
+    double alt = c.y.at(i);
+    if (alt > maxAlt) {
+      maxAlt = alt;
+      positionIndex = i;
+      // qDebug() << "max alt: " << maxAlt << "@" << result;
+    }
+  }
+  // qDebug() << "max alt: " << maxAlt << "@" << positionIndex; 
+
+  // add max altitude marker
+  tracerMaxAlt = new QCPItemTracer(ui->customPlot);
+  ui->customPlot->addItem(tracerMaxAlt);
+  tracerMaxAlt->setGraph(graph);
+  tracerMaxAlt->setInterpolating(true);
+  tracerMaxAlt->setStyle(QCPItemTracer::tsSquare);
+  tracerMaxAlt->setPen(QPen(Qt::blue));
+  tracerMaxAlt->setBrush(Qt::NoBrush);
+  tracerMaxAlt->setSize(7);
+  tracerMaxAlt->setGraphKey(c.x.at(positionIndex));
+  tracerMaxAlt->updatePosition();
+}
+
+void LogsDialog::countNumberOfThrows(const coords & c, QCPGraph * graph) {
+  // find all launches
+  // TODO
+  double startTime = c.x.at(0);
+
+  for(int i=0; i<c.x.count(); ++i) {
+    double alt = c.y.at(i);
+    double time = c.x.at(i);
+  }
+}
+
+void LogsDialog::addCursor(QCPItemTracer ** cursor, QCPGraph * graph, const QColor & color) {
+  QCPItemTracer * c = new QCPItemTracer(ui->customPlot);
+  ui->customPlot->addItem(c);
+  c->setGraph(graph);
+  c->setInterpolating(false);
+  c->setStyle(QCPItemTracer::tsCrosshair);
+  QPen pen(color);
+  pen.setStyle(Qt::DashLine);
+  c->setPen(pen);
+  c->setBrush(color);
+  c->setSize(7);
+  c->setVisible(false);
+  *cursor = c;
+}
+
+void LogsDialog::addCursorLine(QCPItemStraightLine ** line, QCPGraph * graph, const QColor & color) {
+  QCPItemStraightLine * l = new QCPItemStraightLine(ui->customPlot);
+  ui->customPlot->addItem(l);
+  l->point1->setParentAnchor(cursorA->position);
+  l->point2->setParentAnchor(cursorB->position);
+  QPen pen(color);
+  pen.setStyle(Qt::DashLine);
+  l->setPen(pen);
+  l->setVisible(false);
+  *line = l;
 }
