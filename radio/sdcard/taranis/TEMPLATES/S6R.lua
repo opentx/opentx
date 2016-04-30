@@ -95,14 +95,14 @@ local function redrawPage()
   end
 end
 
-local counter = 0
+local telemetryPopTimeout = 0
 local function refreshNext()
   if refreshState == 0 then
     if refreshIndex < #fields then
       field = fields[refreshIndex + 1]
       if telemetryPush(0x1A, 0x30, 0x0C30, field[3]) == true then
         refreshState = 1
-        counter = 0
+        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
       end
     end
   else
@@ -123,10 +123,8 @@ local function refreshNext()
       fields[refreshIndex + 1][4] = value
       refreshIndex = refreshIndex + 1
       refreshState = 0
-    elseif counter == 20 then
+    elseif getTime() > telemetryPopTimeout then
       refreshState = 0
-    else
-      counter = counter + 1
     end
   end
 end
