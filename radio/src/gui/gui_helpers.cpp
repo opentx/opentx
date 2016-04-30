@@ -64,7 +64,7 @@ bool isSensorUnit(int sensor, uint8_t unit)
     return true;
   }
   else {
-    return g_model.telemetrySensors[--sensor].unit == unit;
+    return g_model.telemetrySensors[sensor-1].unit == unit;
   }
 }
 
