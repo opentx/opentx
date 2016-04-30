@@ -207,7 +207,11 @@ void processHubPacket(uint8_t id, int16_t value)
   }
   else if (id == VOLTS_AP_ID) {
     if (lastId == VOLTS_BP_ID) {
+#if defined(FAS_PROTOTYPE)
+      data = lastBPValue * 100 + value * 10;
+#else
       data = ((lastBPValue * 100 + value * 10) * 210) / 110;
+#endif
       unit = UNIT_VOLTS;
       precision = 2;
     }

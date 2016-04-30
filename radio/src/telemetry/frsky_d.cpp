@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 #if (defined(FRSKY_HUB) || defined(WS_HOW_HIGH))
 void checkMinMaxAltitude()
@@ -130,10 +130,10 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskyTelemetryData, volts_ap):
-#if defined(FAS_BSS)
+#if defined(FAS_PROTOTYPE)
       telemetryData.hub.vfas = (telemetryData.hub.volts_bp * 10 + telemetryData.hub.volts_ap);
 #else
-      telemetryData.hub.vfas = ((telemetryData.hub.volts_bp * 100 + telemetryData.hub.volts_ap * 10) * 21) / 110;
+      telemetryData.hub.vfas = ((telemetryData.hub.volts_bp * 10 + telemetryData.hub.volts_ap) * 21) / 11;
 #endif
       /* TODO later if (!telemetryData.hub.minVfas || telemetryData.hub.minVfas > telemetryData.hub.vfas)
         telemetryData.hub.minVfas = telemetryData.hub.vfas; */

@@ -22,6 +22,7 @@ option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
 option(SIMU_AUDIO "Enable simulator audio" OFF)
 option(SIMU_DISKIO "Enable disk IO simulation in simulator. Simulator will use FatFs module and simulated IO layer that  uses \"./sdcard.image\" file as image of SD card. This file must contain whole SD card from first to last sector" OFF)
+option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
 
 enable_language(ASM)
 set(OPT s)
@@ -848,6 +849,10 @@ if(FAI STREQUAL YES)
   add_definitions(-DFAI)
 elseif(FAI STREQUAL CHOICE)
   add_definitions(-DFAI_CHOICE)
+endif()
+
+if(FAS_PROTOTYPE)
+  add_definitions(-DFAS_PROTOTYPE)
 endif()
 
 if(AUTOSOURCE)
