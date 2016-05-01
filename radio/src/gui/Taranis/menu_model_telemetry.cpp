@@ -435,6 +435,9 @@ void menuModelSensor(uint8_t event)
         
       case SENSOR_FIELD_PERSISTENT:
         ON_OFF_MENU_ITEM(sensor->persistent, SENSOR_2ND_COLUMN, y, NO_INDENT(STR_PERSISTENT), attr, event);
+        if (checkIncDec_Ret && !sensor->persistent) {
+          sensor->persistentValue = 0;
+        }
         break;
 
       case SENSOR_FIELD_LOGS:
