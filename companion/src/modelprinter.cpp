@@ -91,15 +91,15 @@ QString ModelPrinter::printThrottleTrimMode()
 QString ModelPrinter::printModuleProtocol(unsigned int protocol)
 {
   static const char * strings[] = {
-      "OFF",
-	  "PPM",
-	  "Silverlit A", "Silverlit B", "Silverlit C",
-	  "CTP1009",
-	  "LP45", "DSM2", "DSMX",
-	  "PPM16", "PPMsim",
-	  "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
-	  "Crossfire",
-      "DIY Multiprotocol Module"
+    "OFF",
+    "PPM",
+    "Silverlit A", "Silverlit B", "Silverlit C",
+    "CTP1009",
+    "LP45", "DSM2", "DSMX",
+    "PPM16", "PPMsim",
+    "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
+    "Crossfire",
+    "DIY Multiprotocol Module"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);
@@ -119,43 +119,44 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol)
 
 QString ModelPrinter::printMultiSubType(int rfProtocol, int subType) {
   /* custom protocols */
+  static const char *custom_subtype_strings[] = {"Subtype 0","Subtype 1","Subtype 2","Subtype 3","Subtype 4","Subtype 5","Subtype 6","Subtype 7"};
+  static const char *flysky_strings[] = {"Standard","V9x9","V6x6","V912"};
+  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch"};
+  static const char *hisky_strings[] = { "HiSky", "HK310" };
+  static const char *dsm2_strings[] = {"DSM2", "DSMX"};
+  static const char *yd717_strings[] = {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
+  static const char *symax_strings[] = {"Standard", "Syma X5C"};
+  static const char *cx10_strings[] = {"Green", "Blue", "DM007", "Q282", "JC3015a", "JC3015b", "MK33041", "Q242"};
+  static const char *cg023_strings[] = {"CG023", "YD829", "H3 3D"};
+  static const char* kn_strings[] = {"WLtoys", "FeiLun"};
+  static const char* mt99_strings[] = {"MT99","H7","YZ"};
+  static const char* mjxq_strings[] = {"WLH08", "X600", "X800", "H26D"};
+  
   if (rfProtocol >= MM_RF_PROTO_CUSTOM) {
-    static const char *custom_subtype_strings[] = {"Subtype 0","Subtype 1","Subtype 2","Subtype 3","Subtype 4","Subtype 5","Subtype 6","Subtype 7"};
     return CHECK_IN_ARRAY(custom_subtype_strings, subType);
   }
   switch (rfProtocol) {
     case MM_RF_PROTO_FLYSKY:
-      static const char *flysky_strings[] = {"Standard","V9x9","V6x6","V912"};
       return CHECK_IN_ARRAY(flysky_strings, subType);
     case MM_RF_PROTO_FRSKY:
-      static const char *frsky_strings[] = {"D16", "D8", "D16 8ch"};
       return CHECK_IN_ARRAY(frsky_strings, subType);
     case MM_RF_PROTO_HISKY:
-      static const char *hisky_strings[] = { "HiSky", "HK310" };
       return CHECK_IN_ARRAY(hisky_strings, subType);
     case MM_RF_PROTO_DSM2:
-      static const char *dsm2_strings[] = {"DSM2", "DSMX"};
       return CHECK_IN_ARRAY(dsm2_strings, subType);
     case MM_RF_PROTO_YD717:
-      static const char *yd717_strings[] = {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
       return CHECK_IN_ARRAY(yd717_strings, subType);
     case MM_RF_PROTO_SYMAX:
-      static const char *symax_strings[] = {"Standard", "Syma X5C"};
       return CHECK_IN_ARRAY(symax_strings, subType);
     case MM_RF_PROTO_CX10:
-      static const char *cx10_strings[] = {"Green", "Blue", "DM007", "Q282", "JC3015a", "JC3015b", "MK33041", "Q242"};
       return CHECK_IN_ARRAY(cx10_strings, subType);
     case MM_RF_PROTO_CG023:
-      static const char *cg023_strings[] = {"CG023", "YD829", "H3 3D"};
       return CHECK_IN_ARRAY(cg023_strings, subType);
     case MM_RF_PROTO_KN:
-      static const char* kn_strings[] = {"WLtoys", "FeiLun"};
       return CHECK_IN_ARRAY(kn_strings, subType);
     case MM_RF_PROTO_MT99XX:
-      static const char* mt99_strings[] = {"MT99","H7","YZ"};
       return CHECK_IN_ARRAY(mt99_strings, subType);
     case MM_RF_PROTO_MJXQ:
-      static const char* mjxq_strings[] = {"WLH08", "X600", "X800", "H26D"};
       return CHECK_IN_ARRAY(mjxq_strings, subType);
     default:
         return "DEFAULT";
