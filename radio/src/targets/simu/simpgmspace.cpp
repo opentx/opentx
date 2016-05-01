@@ -376,8 +376,8 @@ void *main_thread(void *)
       sleep(10/*ms*/);
     }
 
-#if defined(LUA)
-    luaClose();
+#if defined(CPUARM)
+    opentxClose();
 #endif
 
 #ifdef SIMU_EXCEPTIONS
