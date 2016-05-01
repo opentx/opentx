@@ -132,7 +132,7 @@ const int16_t sineValues[] =
 
 #if defined(SDCARD)
 const char * const audioFilenames[] = {
-  "tada",
+  "hello",
   "bye",
   "thralert",
   "swalert",
