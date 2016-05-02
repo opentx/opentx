@@ -5,7 +5,7 @@ set -e
 set -x
 
 cd $1
-SRCDIR = $(pwd)
+SRCDIR=$(pwd)
 
 git fetch
 git checkout next
