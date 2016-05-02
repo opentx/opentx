@@ -1193,6 +1193,7 @@
 #define TR_MENU_TELEMETRY      "\321Telemetrie"
 #define TR_MENU_OTHER          " Weitere"
 #define TR_MENU_INVERT         "Invertieren<!>"
+#define TR_JITTER_FILTER       "ADC Filter"
 // ----------------------------------------------------------------
 #define ZSTR_RSSI              "RSSI"
 #define ZSTR_SWR               "SWR"

@@ -585,6 +585,11 @@ uint16_t anaIn(uint8_t chan)
     return 0;
 }
 
+uint16_t getAnalogValue(uint8_t index)
+{
+  return anaIn(index);
+}
+
 void createBitmap(int index, uint16_t *data, int x, int y, int w, int h)
 {
   th9xSim->createBitmap(index, data, x, y, w, h);

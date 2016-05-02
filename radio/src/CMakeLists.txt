@@ -18,7 +18,6 @@ option(FAI "Competition mode (no telemetry)" OFF)
 option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
-option(JITTER_FILTER "Enable ADC jitter filtering" ON)
 option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
 option(SIMU_AUDIO "Enable simulator audio" OFF)
 option(SIMU_DISKIO "Enable disk IO simulation in simulator. Simulator will use FatFs module and simulated IO layer that  uses \"./sdcard.image\" file as image of SD card. This file must contain whole SD card from first to last sector" OFF)
@@ -865,10 +864,6 @@ endif()
 
 if(JITTER_MEASURE)
   add_definitions(-DJITTER_MEASURE)
-endif()
-
-if(JITTER_FILTER)
-  add_definitions(-DJITTER_FILTER)
 endif()
 
 if(WATCHDOG_DISABLED)

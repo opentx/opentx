@@ -16,6 +16,15 @@ if(EXISTS "${GTEST_SRCDIR}/src/gtest-all.cc")
 
     file(GLOB TEST_SRC_FILES ${RADIO_SRC_DIRECTORY}/tests/*.cpp)
 
+    if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
+      set(COMMON_CPP_FLAGS "${COMMON_FLAGS} -std=gnu++11")
+      message("USING -std=gnu++11")
+    else()
+      set(COMMON_CPP_FLAGS ${COMMON_FLAGS})
+    endif()
+    set(CMAKE_C_FLAGS_DEBUG  "${COMMON_FLAGS} -g -O0")
+    set(CMAKE_CXX_FLAGS_DEBUG  "${COMMON_CPP_FLAGS} -g -O0")
+
     add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp)
     qt5_use_modules(gtests Core Widgets)
     add_dependencies(gtests ${FIRMWARE_DEPENDENCIES} gtests-lib)

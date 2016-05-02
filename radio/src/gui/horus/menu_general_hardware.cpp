@@ -46,6 +46,7 @@ enum menuGeneralHwItems {
   ITEM_SETUP_HW_SH,
   ITEM_SETUP_HW_BLUETOOTH,
   // ITEM_SETUP_HW_UART3_MODE,
+  ITEM_SETUP_HW_JITTER_FILTER,
   ITEM_SETUP_HW_BAT_CAL,
   ITEM_SETUP_HW_MAX
 };
@@ -176,6 +177,14 @@ bool menuGeneralHardware(evt_t event)
         }
         break;
 #endif
+
+      case ITEM_SETUP_HW_JITTER_FILTER:
+      {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_JITTER_FILTER);
+        uint8_t b = 1-g_eeGeneral.jitterFilter;
+        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN, y, attr, event);
+        break;
+      }
 
       case ITEM_SETUP_HW_BAT_CAL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);

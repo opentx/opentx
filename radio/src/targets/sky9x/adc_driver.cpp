@@ -136,7 +136,9 @@ void adcRead()
 }
 
 
+#if !defined(SIMU)
 uint16_t getAnalogValue(uint8_t value)
 {
   return adcValues[value];
 }
+#endif // #if !defined(SIMU)

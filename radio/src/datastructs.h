@@ -892,7 +892,9 @@ PACK(struct TrainerData {
     NOBACKUP(uint32_t globalTimer); \
     NOBACKUP(uint8_t  btBaudrate); \
     NOBACKUP(uint8_t  countryCode); \
-    NOBACKUP(uint8_t  imperial); \
+    NOBACKUP(uint8_t  imperial:1); \
+    NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
+    NOBACKUP(uint8_t  spareExtra:6); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
