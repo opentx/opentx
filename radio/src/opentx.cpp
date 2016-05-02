@@ -1964,10 +1964,6 @@ void opentxClose()
         sensor.persistentValue = telemetryItems[i].value;
         eeDirty(EE_MODEL);
       }
-      else if (!sensor.persistent) {
-        sensor.persistentValue = 0;
-        eeDirty(EE_MODEL);
-      }
     }
   }
 #endif
