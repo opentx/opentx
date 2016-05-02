@@ -877,7 +877,7 @@
 #define TR_CURRENT             TR(INDENT "Strom", INDENT "Stromquelle")
 #define TR_SELECT_MODEL        "Modell Wählen"
 #define TR_CREATE_CATEGORY     "Kategorie erstellen"
-#define TR_RENAME_CATEGORY     "Kategorie umbenenen"
+#define TR_RENAME_CATEGORY     "Kategorie umbenennen"
 #define TR_DELETE_CATEGORY     "Kategorie löschen"
 #define TR_CREATE_MODEL        "Neues Modell"
 #define TR_DUPLICATE_MODEL     "Modell kopieren"
