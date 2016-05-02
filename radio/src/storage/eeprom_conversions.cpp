@@ -792,6 +792,19 @@ void ConvertRadioData_216_to_217(RadioData & settings)
 #endif
 }
 
+void ConvertSpecialFunctions_217_to_218(CustomFunctionData * cf218, CustomFunctionData_v216 * cf216)
+{
+  for (int i=0; i<NUM_CFN; i++) {
+    CustomFunctionData & cf = cf218[i];
+    memcpy(&cf, &cf216[i], sizeof(CustomFunctionData));
+    cf.swtch = ConvertSwitch_217_to_218(cf216[i].swtch);
+    cf.func = cf216[i].func;
+    if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+      cf.all.val = ConvertSource_217_to_218(cf.all.val);
+    }
+  }
+}
+
 void ConvertRadioData_217_to_218(RadioData & settings)
 {
   RadioData_v216 * settings_v217 = (RadioData_v216 *)&settings;
@@ -822,13 +835,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
   settings.varioPitch = settings_v217->varioPitch;
   settings.varioRange = settings_v217->varioRange;
   settings.varioRepeat = settings_v217->varioRepeat;
-  for (int i=0; i<NUM_CFN; i++) {
-    CustomFunctionData_v216 & cf = settings_v217->customFn[i];
-    settings.customFn[i].func = cf.func;
-    settings.customFn[i].swtch = ConvertSwitch_217_to_218(cf.swtch);
-    memcpy(settings.customFn[i].play.name, settings_v217->customFn[i].play.name, sizeof(settings.customFn[i].play.name));
-    settings.customFn[i].active = cf.active;
-  }
+  ConvertSpecialFunctions_217_to_218(settings.customFn, settings_v217->customFn);
 
 #if defined(PCBTARANIS)
   settings.serial2Mode = settings_v217->serial2Mode;
@@ -1163,11 +1170,7 @@ void ConvertModel_217_to_218(ModelData & model)
       sw.v1 = ConvertSwitch_217_to_218(sw.v1);
     }
   }
-  for (int i=0; i<NUM_CFN; i++) {
-    memcpy(&newModel.customFn[i], &oldModel.customFn[i], sizeof(CustomFunctionData));
-    newModel.customFn[i].swtch = ConvertSwitch_217_to_218(oldModel.customFn[i].swtch);
-    newModel.customFn[i].func = oldModel.customFn[i].func;
-  }
+  ConvertSpecialFunctions_217_to_218(newModel.customFn, oldModel.customFn);
   newModel.swashR = oldModel.swashR;
   for (int i=0; i<MAX_FLIGHT_MODES; i++) {
     memcpy(newModel.flightModeData[i].trim, oldModel.flightModeData[i].trim, sizeof(newModel.flightModeData[i].trim));
@@ -1198,6 +1201,9 @@ void ConvertModel_217_to_218(ModelData & model)
   memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
   for (int i=0; i<MAX_SENSORS; i++) {
     newModel.telemetrySensors[i] = oldModel.telemetrySensors[i];
+    if (newModel.telemetrySensors[i].unit > UNIT_WATTS) {
+      newModel.telemetrySensors[i].unit += 1;
+    }
   }
 #if defined(PCBTARANIS) && defined(REV9E)
   newModel.toplcdTimer = oldModel.toplcdTimer;
