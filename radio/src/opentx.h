@@ -1537,7 +1537,7 @@ union ReusableBuffer
   struct
   {
     uint8_t stickMode;
-  } modelSettings;
+  } generalSettings;
 };
 
 extern union ReusableBuffer reusableBuffer;
