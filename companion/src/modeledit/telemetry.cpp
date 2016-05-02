@@ -619,7 +619,7 @@ void TelemetrySensorPanel::update()
   ui->source4->setVisible(sources34FieldsDisplayed);
   ui->autoOffset->setVisible(sensor.unit != SensorData::UNIT_RPMS && isConfigurable);
   ui->filter->setVisible(isConfigurable);
-  ui->persistent->setVisible((sensor.type == SensorData::TELEM_TYPE_CALCULATED && sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION) || isConfigurable);
+  ui->persistent->setVisible(sensor.type == SensorData::TELEM_TYPE_CALCULATED);
 
   lock = false;
 }

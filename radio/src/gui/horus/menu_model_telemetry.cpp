@@ -121,7 +121,7 @@ enum SensorFields {
 #define SENSOR_AUTOOFFSET_ROWS (sensor->unit != UNIT_RPMS && sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_ONLYPOS_ROWS    (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_PERSISTENT_ROWS ((sensor->type == TELEM_TYPE_CALCULATED && sensor->formula == TELEM_FORMULA_CONSUMPTION) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
+#define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW)
 
 bool menuModelSensor(evt_t event)
 {
