@@ -16,7 +16,7 @@ mkdir build || true
 cd build
 rm -rf *
 
-COMMON_OPTIONS=-DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$2
+COMMON_OPTIONS="-DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$2"
 
 cmake ${COMMON_OPTIONS} -DPCB=9X ${SRCDIR}
 make libsimulator
@@ -45,4 +45,4 @@ make libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=HORUS ${SRCDIR}
 make libsimulator
 
-make installer
+make package
