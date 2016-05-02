@@ -539,15 +539,13 @@ typedef struct {
 extern const pm_uint8_t bchout_ar[];
 extern const pm_uint8_t modn12x3[];
 
-extern uint8_t stickMode;
-
 //convert from mode 1 to mode stickMode
 //NOTICE!  =>  0..3 -> 0..3
 #define RUD_STICK 0
 #define ELE_STICK 1
 #define THR_STICK 2
 #define AIL_STICK 3
-#define CONVERT_MODE(x)  (((x)<=AIL_STICK) ? pgm_read_byte(modn12x3 + 4*stickMode + (x)) : (x) )
+#define CONVERT_MODE(x)  (((x)<=AIL_STICK) ? pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + (x)) : (x) )
 
 extern uint8_t channel_order(uint8_t x);
 
@@ -1486,57 +1484,60 @@ extern void opentxInit();
 #define SD_SCREEN_FILE_LENGTH (64)
 union ReusableBuffer
 {
-    // 275 bytes
-    struct
-    {
-        char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
+  // 275 bytes
+  struct
+  {
+    char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
 #if !defined(CPUARM)
-        uint16_t eepromfree;
+    uint16_t eepromfree;
 #endif
 #if defined(SDCARD)
-        char menu_bss[POPUP_MENU_MAX_LINES][MENU_LINE_LENGTH];
-        char mainname[45]; // because reused for SD backup / restore, max backup filename 44 chars: "/MODELS/MODEL0134353-2014-06-19-04-51-27.bin"
+    char menu_bss[POPUP_MENU_MAX_LINES][MENU_LINE_LENGTH];
+    char mainname[45]; // because reused for SD backup / restore, max backup filename 44 chars: "/MODELS/MODEL0134353-2014-06-19-04-51-27.bin"
 #else
-        char mainname[LEN_MODEL_NAME];
+    char mainname[LEN_MODEL_NAME];
 #endif
+  } modelsel;
 
-    } modelsel;
-
-    // 103 bytes
-    struct
-    {
-        int16_t midVals[NUM_STICKS+NUM_POTS];
-        int16_t loVals[NUM_STICKS+NUM_POTS];
-        int16_t hiVals[NUM_STICKS+NUM_POTS];
-        uint8_t state;
+  // 103 bytes
+  struct
+  {
+    int16_t midVals[NUM_STICKS+NUM_POTS];
+    int16_t loVals[NUM_STICKS+NUM_POTS];
+    int16_t hiVals[NUM_STICKS+NUM_POTS];
+    uint8_t state;
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-        struct {
-          uint8_t stepsCount;
-          int16_t steps[XPOTS_MULTIPOS_COUNT];
-          uint8_t lastCount;
-          int16_t lastPosition;
-        } xpotsCalib[NUM_XPOTS];
+    struct {
+      uint8_t stepsCount;
+      int16_t steps[XPOTS_MULTIPOS_COUNT];
+      uint8_t lastCount;
+      int16_t lastPosition;
+    } xpotsCalib[NUM_XPOTS];
 #endif
-    } calib;
+  } calib;
 
 #if defined(SDCARD)
-    // 274 bytes
-    struct
-    {
-        char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
-        uint32_t available;
-        uint16_t offset;
-        uint16_t count;
-        char originalName[SD_SCREEN_FILE_LENGTH+1];
-    } sdmanager;
+  // 274 bytes
+  struct
+  {
+    char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
+    uint32_t available;
+    uint16_t offset;
+    uint16_t count;
+    char originalName[SD_SCREEN_FILE_LENGTH+1];
+  } sdmanager;
 #endif
 
 #if defined(PCBTARANIS)
-    struct
-    {
-        char id[27];
-    } version;
+  struct
+  {
+    char id[27];
+  } version;
 #endif
+  struct
+  {
+    uint8_t stickMode;
+  } generalSettings;
 };
 
 extern union ReusableBuffer reusableBuffer;

@@ -117,6 +117,10 @@ bool menuGeneralSetup(evt_t event)
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
 
+  if (event == EVT_ENTRY) {
+    reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
+  }
+
   int sub = menuVerticalPosition;
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
@@ -496,17 +500,17 @@ bool menuGeneralSetup(evt_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_MODE));
         char s[2] = " ";
-        s[0] = '1'+g_eeGeneral.stickMode;
+        s[0] = '1'+reusableBuffer.generalSettings.stickMode;
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, s, attr);
         for (uint8_t i=0; i<4; i++) {
-          putsMixerSource(RADIO_SETUP_2ND_COLUMN + 40 + 50*i, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + i));
+          putsMixerSource(RADIO_SETUP_2ND_COLUMN + 40 + 50*i, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i));
         }
         if (attr && s_editMode>0) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
+          CHECK_INCDEC_GENVAR(event, reusableBuffer.generalSettings.stickMode, 0, 3);
         }
-        else if (stickMode != g_eeGeneral.stickMode) {
+        else if (reusableBuffer.generalSettings.stickMode != g_eeGeneral.stickMode) {
           pausePulses();
-          stickMode = g_eeGeneral.stickMode;
+          g_eeGeneral.stickMode = reusableBuffer.generalSettings.stickMode;
           checkTHR();
           resumePulses();
           clearKeyEvents();
