@@ -521,9 +521,9 @@ enum TelemetryScreenType {
 #define FAILSAFE_CHANNEL_HOLD          2000
 #define FAILSAFE_CHANNEL_NOPULSE       2001
 
-#define LEN_SCRIPT_FILENAME            8
-#define LEN_SCRIPT_NAME                8
-#define MAX_SCRIPT_INPUTS              8
+#define LEN_SCRIPT_FILENAME            6
+#define LEN_SCRIPT_NAME                6
+#define MAX_SCRIPT_INPUTS              6
 #define MAX_SCRIPT_OUTPUTS             6
 
 enum PotsWarnMode {

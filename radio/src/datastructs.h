@@ -494,7 +494,7 @@ PACK(struct SwashRingData {
 PACK(struct ScriptData {
   char    file[LEN_SCRIPT_FILENAME];
   char    name[LEN_SCRIPT_NAME];
-  int8_t  inputs[MAX_SCRIPT_INPUTS];
+  int16_t  inputs[MAX_SCRIPT_INPUTS];
 });
 #endif
 
