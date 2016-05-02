@@ -141,6 +141,10 @@ void menuGeneralSetup(uint8_t event)
 
   MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX+1, {0, CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1) LABEL(SOUND), CASE_AUDIO(0) CASE_BUZZER(0) CASE_VOICE(0) CASE_CPUARM(0) CASE_CPUARM(0) CASE_CPUARM(0) 0, CASE_AUDIO(0) CASE_VARIO_CPUARM(LABEL(VARIO)) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_VARIO_CPUARM(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_CAPACITY(0) CASE_PCBSKY9X(0) 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, CASE_CPUARM(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) CASE_CPUARM(0) CASE_CPUARM(0) IF_FAI_CHOICE(0) CASE_MAVLINK(0) CASE_CPUARM(0) 0, COL_TX_MODE, 1/*to force edit mode*/});
 
+  if (event == EVT_ENTRY) {
+    reusableBuffer.modelSettings.stickMode = g_eeGeneral.stickMode;
+  }
+
   uint8_t sub = menuVerticalPosition - 1;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
@@ -564,9 +568,9 @@ void menuGeneralSetup(uint8_t event)
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
-        else if (stickMode != g_eeGeneral.stickMode) {
+        else if (reusableBuffer.modelSettings.stickMode != g_eeGeneral.stickMode) {
           pausePulses();
-          stickMode = g_eeGeneral.stickMode;
+          reusableBuffer.modelSettings.stickMode = g_eeGeneral.stickMode;
           checkTHR();
           resumePulses();
           clearKeyEvents();

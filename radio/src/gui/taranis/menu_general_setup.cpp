@@ -116,6 +116,10 @@ void menuGeneralSetup(uint8_t event)
 
   MENU(STR_MENURADIOSETUP, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, { 2, 2, 1, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, 0, CASE_REVPLUS(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, IF_FAI_CHOICE(0) CASE_MAVLINK(0) 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
 
+  if (event == EVT_ENTRY) {
+    reusableBuffer.modelSettings.stickMode = g_eeGeneral.stickMode;
+  }
+
   int sub = menuVerticalPosition;
 
   for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
@@ -473,9 +477,9 @@ void menuGeneralSetup(uint8_t event)
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
-        else if (stickMode != g_eeGeneral.stickMode) {
+        else if (reusableBuffer.modelSettings.stickMode != g_eeGeneral.stickMode) {
           pausePulses();
-          stickMode = g_eeGeneral.stickMode;
+          reusableBuffer.modelSettings.stickMode = g_eeGeneral.stickMode;
           checkTHR();
           resumePulses();
           clearKeyEvents();

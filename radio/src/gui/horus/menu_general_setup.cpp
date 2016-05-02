@@ -117,6 +117,10 @@ bool menuGeneralSetup(evt_t event)
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
 
+  if (event == EVT_ENTRY) {
+    reusableBuffer.modelSettings.stickMode = g_eeGeneral.stickMode;
+  }
+
   int sub = menuVerticalPosition;
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
@@ -504,9 +508,9 @@ bool menuGeneralSetup(evt_t event)
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickMode, 0, 3);
         }
-        else if (stickMode != g_eeGeneral.stickMode) {
+        else if (reusableBuffer.modelSettings.stickMode != g_eeGeneral.stickMode) {
           pausePulses();
-          stickMode = g_eeGeneral.stickMode;
+          reusableBuffer.modelSettings.stickMode = g_eeGeneral.stickMode;
           checkTHR();
           resumePulses();
           clearKeyEvents();

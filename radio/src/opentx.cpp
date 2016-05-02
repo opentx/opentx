@@ -67,8 +67,6 @@ audioQueue  audio;
 
 uint8_t heartbeat;
 
-uint8_t stickMode;
-
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
 safetych_t safetyCh[NUM_CHNOUT];
 #endif

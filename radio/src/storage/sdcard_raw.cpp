@@ -177,8 +177,6 @@ void storageReadAll()
     storageEraseAll(true);
   }
 
-  stickMode = g_eeGeneral.stickMode;
-
 #if defined(CPUARM)
   for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
