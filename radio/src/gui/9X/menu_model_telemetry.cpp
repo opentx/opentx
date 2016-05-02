@@ -278,7 +278,7 @@ bool isSensorAvailable(int sensor)
 #define SENSOR_PARAM4_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_AUTOOFFSET_ROWS (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_PERSISTENT_ROWS (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
+#define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW)
 
 void menuModelSensor(uint8_t event)
 {

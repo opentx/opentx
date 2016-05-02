@@ -1959,11 +1959,9 @@ void opentxClose()
 #if defined(CPUARM)
   for (int i=0; i<MAX_SENSORS; i++) {
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
-    if (sensor.type == TELEM_TYPE_CALCULATED) {
-      if (sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
-        sensor.persistentValue = telemetryItems[i].value;
-        eeDirty(EE_MODEL);
-      }
+    if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
+      sensor.persistentValue = telemetryItems[i].value;
+      eeDirty(EE_MODEL);
     }
   }
 #endif
