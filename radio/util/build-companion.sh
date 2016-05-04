@@ -4,17 +4,7 @@
 set -e
 set -x
 
-cd $1
-SRCDIR=$(pwd)
-
-git fetch
-git checkout next
-git reset --hard origin/next
-
-cd -
-mkdir build || true
-cd build
-rm -rf *
+SRCDIR=$1
 
 COMMON_OPTIONS="-DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$2"
 
