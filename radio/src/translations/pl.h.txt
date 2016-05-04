@@ -1215,6 +1215,7 @@
 #define ZSTR_ASPD              "ASpd"
 #define ZSTR_GSPD              "GSpd"
 #define ZSTR_HDG               "Hdg"
+#define ZSTR_SATELLITES        "Sats"
 #define ZSTR_CELLS             "Cels"
 #define ZSTR_GPSALT            "GAlt"
 #define ZSTR_GPSDATETIME       "Date"
