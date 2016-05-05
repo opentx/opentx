@@ -1,4 +1,4 @@
-SET SRCDIR=%~dp0%
+SET SRCDIR=%~dp0%\..\..
 
 cd %SRCDIR%
 git fetch
