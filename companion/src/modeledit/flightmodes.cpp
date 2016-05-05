@@ -107,14 +107,14 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       reLayout->addWidget(label, i, 0, 1, 1);
       if (phaseIdx > 0) {
         // RE link to another RE
-        QComboBox *link = new QComboBox(ui->gvGB);
-        link->setProperty("index", i);
-        populateGvarUseCB(link, phaseIdx);
-        connect(link, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseREUse_currentIndexChanged(int)));
+        reUse[i] = new QComboBox(ui->reGB);
+        reUse[i]->setProperty("index", i);
+        populateGvarUseCB(reUse[i], phaseIdx);
+        connect(reUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseREUse_currentIndexChanged(int)));
         if (phase.rotaryEncoders[i] > 1024) {
-          link->setCurrentIndex(phase.rotaryEncoders[i] - 1024);
+          reUse[i]->setCurrentIndex(phase.rotaryEncoders[i] - 1024);
         }
-        reLayout->addWidget(link, i, 1, 1, 1);
+        reLayout->addWidget(reUse[i], i, 1, 1, 1);
       }
       // RE value
       reValues[i] = new QSpinBox(ui->reGB);
@@ -149,14 +149,14 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       }
       if (phaseIdx > 0) {
         // GVar link to another GVar
-        QComboBox *link = new QComboBox(ui->gvGB);
-        link->setProperty("index", i);
-        populateGvarUseCB(link, phaseIdx);
+        gvUse[i] = new QComboBox(ui->gvGB);
+        gvUse[i]->setProperty("index", i);
+        populateGvarUseCB(gvUse[i], phaseIdx);
         if (phase.gvars[i] > 1024) {
-          link->setCurrentIndex(phase.gvars[i] - 1024);
+          gvUse[i]->setCurrentIndex(phase.gvars[i] - 1024);
         }
-        connect(link, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVUse_currentIndexChanged(int)));
-        gvLayout->addWidget(link, i, col++, 1, 1);
+        connect(gvUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVUse_currentIndexChanged(int)));
+        gvLayout->addWidget(gvUse[i], i, col++, 1, 1);
       }
       // GVar value
       gvValues[i] = new QSpinBox(ui->gvGB);
@@ -248,9 +248,11 @@ void FlightModePanel::phaseName_editingFinished()
 
 void FlightModePanel::phaseSwitch_currentIndexChanged(int index)
 {
+  if (!lock) {
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     phase.swtch = RawSwitch(comboBox->itemData(index).toInt());
     emit modified();
+  }
 }
 
 void FlightModePanel::phaseFadeIn_editingFinished()
@@ -337,6 +339,7 @@ void FlightModePanel::phaseGVPopupToggled(bool checked)
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
   int gvar = cb->property("index").toInt();
   model->gvars_popups[gvar] = checked;
+  emit modified();
 }
 
 void FlightModePanel::phaseREValue_editingFinished()
@@ -440,8 +443,28 @@ void FlightModePanel::fmClear()
   int res = QMessageBox::question(this, "Companion", tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
     phase.clear();
-    for(int i=0; i < 4; ++i) {
-      model->setTrimValue(phaseIdx, i, 0);
+    if (phaseIdx == 0) {
+      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+        for (int i=0; i < gvCount; ++i) {
+          memset(&model->gvars_names[i], 0, sizeof(model->gvars_names[i]));
+          model->gvars_popups[i] = 0;
+        }
+      }
+    }
+    else {
+      lock = true;
+      QComboBox * pswtch = ui->swtch;
+      RawSwitch item = RawSwitch(SWITCH_TYPE_NONE);
+      pswtch->setCurrentIndex(pswtch->findText(item.toString()));
+      if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes))) {
+        for (int i=0; i<gvCount; i++) {
+          gvUse[i]->setCurrentIndex(0);
+        }
+      }
+      for (int i=0; i<reCount; i++) {
+        reUse[i]->setCurrentIndex(0);
+      }
+      lock = false;
     }
     update();
     emit modified();
