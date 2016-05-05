@@ -9,6 +9,9 @@ OUTDIR=$2
 
 COMMON_OPTIONS="-DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$3"
 
+mkdir build
+cd build
+
 cmake ${COMMON_OPTIONS} -DPCB=9X ${SRCDIR}
 make libsimulator
 
@@ -37,4 +40,5 @@ cmake ${COMMON_OPTIONS} -DPCB=HORUS ${SRCDIR}
 make libsimulator
 
 make package
+
 cp *.deb ${OUTDIR}
