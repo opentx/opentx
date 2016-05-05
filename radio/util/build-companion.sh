@@ -13,32 +13,32 @@ mkdir build
 cd build
 
 cmake ${COMMON_OPTIONS} -DPCB=9X ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=SKY9X ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=9XRPRO ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=TARANIS ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=TARANIS -DPCBREV=REVPLUS ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=TARANIS -DPCBREV=REV9E ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=HORUS ${SRCDIR}
-make libsimulator
+make -j2 libsimulator
 
-make package
+make -j2 package
 
 cp *.deb ${OUTDIR}
