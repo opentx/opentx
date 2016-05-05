@@ -22,6 +22,7 @@ if(Qt5Widgets_FOUND)
   add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
   target_link_libraries(${SIMULATOR_TARGET} ${SDL_LIBRARY})
   qt5_use_modules(${SIMULATOR_TARGET} Core)
+  add_definitions(-std=gnu++11)
   add_custom_target(libsimulator DEPENDS ${SIMULATOR_TARGET})
 endif()
 
@@ -41,7 +42,6 @@ else()
 endif()
 
 if(NOT WIN32)
-
   if(SIMU_DISKIO)
     add_definitions(-DSIMU_DISKIO)
     set(SIMU_SRC ${SIMU_SRC} ../../thirdparty/FatFs/ff.c ../../thirdparty/FatFs/option/ccsbcs.c)
