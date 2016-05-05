@@ -758,8 +758,8 @@
 #define TR_BG                  "BG:"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART       "Presser [Enter] pour commencer"
-  #define TR_SETMIDPOINT       "Centrer manches/pots/sliders et presser [Enter]"
-  #define TR_MOVESTICKSPOTS    "Bouger manches/pots/sliders et presser [Enter]"
+  #define TR_SETMIDPOINT       "Centrer manches/pots/sliders puis [Enter]"
+  #define TR_MOVESTICKSPOTS    "Bouger manches/pots/sliders puis [Enter]"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " POUR DEBUT"
   #define TR_SETMIDPOINT       "REGLER NEUTRES"
@@ -1155,11 +1155,11 @@
 #define TR_FILTER              "Filtrage"
 #define TR_TELEMETRYFULL       "Plus de capteurs libres!"
 #define TR_INVERTED_SERIAL     INDENT "Inverti"
-#define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst.",INDENT "Ignorer instance")
+#define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst.", INDENT "Ignorer instance")
 #define TR_DISCOVER_SENSORS    INDENT "Découvrir capteurs"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Terminer découverte"
-#define TR_DELETE_ALL_SENSORS  TR(INDENT "Suppr. tous capteurs",INDENT "Supprimer tous capteurs")
-#define TR_CONFIRMDELETE       TR("Tout effacer?","Vraiment tout effacer?")
+#define TR_DELETE_ALL_SENSORS  TR(INDENT "Suppr. tous capteurs", INDENT "Supprimer tous capteurs")
+#define TR_CONFIRMDELETE       TR("Tout effacer?", "Vraiment tout effacer?")
 #define TR_SELECT_WIDGET       "Sélect. widget"
 #define TR_REMOVE_WIDGET       "Supprimer widget"
 #define TR_WIDGET_SETTINGS     "Réglages widget"
