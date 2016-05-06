@@ -192,7 +192,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       }
       newVal += std.offsetAuto;
     }
-    else if (sensor.filter) {
+    if (sensor.filter) {
       if (!isAvailable()) {
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT; i++) {
           std.filterValues[i] = newVal;
