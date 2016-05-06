@@ -604,21 +604,19 @@ static int luaPlayDuration(lua_State *L)
 
 Play a tone
 
-@param frequency (number) tone frequency in Hz
+@param frequency (number) tone frequency in Hz (from 150 to 15000)
 
-@param duration (number) length of the tone in (TODO units)
+@param duration (number) length of the tone in milliseconds
 
-@param pause (number) length of the pause in (TODO units)
+@param pause (number) length of the silence after the tone in milliseconds
 
 @param flags (number):
  * `0 or not present` play with normal priority.
- * `PLAY_BACKGROUND` play in background (built in vario function used this context)
+ * `PLAY_BACKGROUND` play in background (built in vario function uses this context)
  * `PLAY_NOW` play immediately
 
 @param freqIncr (number) positive number increases the tone pitch (frequency with time),
 negative number decreases it. Bigger number has more effect
-
-@notice Minimum played frequency is 150Hz even if a lower value is specified.
 
 @status current Introduced in 2.1.0
 */

@@ -657,12 +657,26 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
 
     if (fragment.tone.freq != state.freq) {
       state.freq = fragment.tone.freq;
-      state.step = double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE;
+      state.step = limit<double>(1, double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE, 512);
       state.volume = evalVolumeRatio(fragment.tone.freq, volume);
     }
 
     if (fragment.tone.freqIncr) {
-      fragment.tone.freq += AUDIO_BUFFER_DURATION * fragment.tone.freqIncr;
+      int freqChange = AUDIO_BUFFER_DURATION * fragment.tone.freqIncr;
+      if (freqChange > 0) {
+        fragment.tone.freq += freqChange;
+        if (fragment.tone.freq > BEEP_MAX_FREQ) {
+          fragment.tone.freq = BEEP_MAX_FREQ;
+        }
+      }
+      else {
+        if (fragment.tone.freq > BEEP_MIN_FREQ - freqChange) {
+          fragment.tone.freq += freqChange;
+        }
+        else {
+          fragment.tone.freq = BEEP_MIN_FREQ;  
+        }
+      }
     }
 
     if (remainingDuration > AUDIO_BUFFER_DURATION) {
