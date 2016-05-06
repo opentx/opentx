@@ -37,10 +37,10 @@ char getMappedChar(unsigned char c)
 {
   if (c == 0)
     return 0;
-  else if (c < 0xC0)
-    return c - 0x20;
+  else if (c >= 0x80 && c <= 0x85)
+    return 115 + c - 0x80;
   else
-    return c - 0xC0 + 96;
+    return c - 0x20;
 }
 
 int getFontPatternWidth(const uint16_t * spec, int index)
@@ -207,27 +207,6 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
   }
 }
 #endif
-
-void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness, uint8_t pat, LcdFlags att)
-{
-#if 0
-  if (att & ROUND) {
-    lcdDrawVerticalLine(x, y+1, h-2, pat, att);
-    lcdDrawVerticalLine(x+w-1, y+1, h-2, pat, att);
-    lcdDrawHorizontalLine(x+1, y+h-1, w-2, pat, att);
-    lcdDrawHorizontalLine(x+1, y, w-2, pat, att);
-  }
-  else
-#endif
-  {
-    for (int i=0; i<thickness; i++) {
-      lcdDrawVerticalLine(x+i, y, h, pat, att);
-      lcdDrawVerticalLine(x+w-1-i, y, h, pat, att);
-      lcdDrawHorizontalLine(x, y+h-1-i, w, pat, att);
-      lcdDrawHorizontalLine(x, y+i, w, pat, att);
-    }
-  }
-}
 
 void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
 {

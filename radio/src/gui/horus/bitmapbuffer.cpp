@@ -100,6 +100,16 @@ void BitmapBuffer::drawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat
   }
 }
 
+void BitmapBuffer::drawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness, uint8_t pat, LcdFlags att)
+{
+  for (int i=0; i<thickness; i++) {
+    drawVerticalLine(x+i, y, h, pat, att);
+    drawVerticalLine(x+w-1-i, y, h, pat, att);
+    drawHorizontalLine(x, y+h-1-i, w, pat, att);
+    drawHorizontalLine(x, y+i, w, pat, att);
+  }
+}
+
 void BitmapBuffer::drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
   for (coord_t i=y; i<y+h; i++) {

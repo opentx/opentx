@@ -211,7 +211,11 @@ inline void lcdDrawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_
 }
 
 void lcdDrawBlackOverlay();
-void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, uint8_t pat=SOLID, LcdFlags att=0);
+inline void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, uint8_t pat=SOLID, LcdFlags att=0)
+{
+  lcd->drawRect(x, y, w, h, thickness, pat, att);
+}
+
 void lcdDrawCircle(int x0, int y0, int radius);
 void lcdDrawPie(int x0, int y0, int radius, int angle1=0, int angle2=360);
 void lcdDrawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle);
