@@ -3,6 +3,7 @@
 <ul>
 <li>SD sync fixes (<a href=https://github.com/opentx/opentx/issues/3351>#3351</a>)</li>
 <li>Fixed: Telemetry mode "FrSky D (cable)" choice was missing for Taranis (<a href=https://github.com/opentx/opentx/issues/3372>#3372</a>)</li>
+<li>Show persistent option only for calculated sensors (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
 </ul>
 
 
