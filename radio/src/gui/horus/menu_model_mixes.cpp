@@ -178,7 +178,7 @@ bool menuModelMixOne(evt_t event)
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
 
   // The separation line between 2 columns
-  lcdDrawSolidVerticalLine(MENU_COLUMN2_X-20, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
+  lcdDrawSolidVerticalLine(MENU_COLUMN2_X-10, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
 
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;

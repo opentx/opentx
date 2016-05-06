@@ -23,15 +23,10 @@
 
 #include "../../keys.h"
 
-#if defined(TRANSLATIONS_FR)
-  #define MENU_COLUMNS         1
-  #define COLUMN_X             0
-#else
-  #define MENU_COLUMNS         2
-#endif
+#define MENU_COLUMNS           2
 
 #define MENU_COLUMN2_X         280
-#define MIXES_2ND_COLUMN       100
+#define MIXES_2ND_COLUMN       140
 #define COLUMN_HEADER_X        150
 
 typedef evt_t & check_event_t;
