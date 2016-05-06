@@ -171,16 +171,18 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       }
       newVal += std.offsetAuto;
     }
-    else if (sensor.filter) {
+    if (sensor.filter) {
       if (!isAvailable()) {
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT; i++) {
           std.filterValues[i] = newVal;
         }
       }
       else {
-        // calculate the average from values[] and value
-        // also shift readings in values [] array
-        unsigned int sum = std.filterValues[0];
+        // Calculate the average from values[] and value,
+        // also shift readings in values [] array.
+        // There is a possibility of value overflow in `sum` but
+        // in reality no sensor value should be so big to cause it.
+        int32_t sum = std.filterValues[0];
         for (int i=0; i<TELEMETRY_AVERAGE_COUNT-1; i++) {
           int32_t tmp = std.filterValues[i+1];
           std.filterValues[i] = tmp;
