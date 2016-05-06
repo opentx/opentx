@@ -1201,9 +1201,8 @@ void ConvertModel_217_to_218(ModelData & model)
   memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
   for (int i=0; i<MAX_SENSORS; i++) {
     newModel.telemetrySensors[i] = oldModel.telemetrySensors[i];
-    if (newModel.telemetrySensors[i].unit > UNIT_WATTS) {
+    if (newModel.telemetrySensors[i].unit > UNIT_WATTS)
       newModel.telemetrySensors[i].unit += 1;
-    }
   }
 #if defined(PCBTARANIS) && defined(REV9E)
   newModel.toplcdTimer = oldModel.toplcdTimer;

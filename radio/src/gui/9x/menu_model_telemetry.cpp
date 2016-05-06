@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 enum menuModelTelemetryItems {
   CASE_CPUARM(ITEM_TELEMETRY_PROTOCOL_TYPE)
@@ -411,7 +411,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_AUTOOFFSET:
         ON_OFF_MENU_ITEM(sensor->autoOffset, SENSOR_2ND_COLUMN, y, STR_AUTOOFFSET, attr, event);
         break;
-        
+
       case SENSOR_FIELD_ONLYPOSITIVE:
         ON_OFF_MENU_ITEM(sensor->onlyPositive, SENSOR_2ND_COLUMN, y, STR_ONLYPOSITIVE, attr, event);
         break;
@@ -419,7 +419,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_FILTER:
         ON_OFF_MENU_ITEM(sensor->filter, SENSOR_2ND_COLUMN, y, STR_FILTER, attr, event);
         break;
-        
+
       case SENSOR_FIELD_PERSISTENT:
         ON_OFF_MENU_ITEM(sensor->persistent, SENSOR_2ND_COLUMN, y, NO_INDENT(STR_PERSISTENT), attr, event);
         break;
@@ -450,7 +450,7 @@ void onSensorMenu(const char *result)
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
-      
+
       if (newIndex >= 0) {
         TelemetrySensor & sourceSensor = g_model.telemetrySensors[index];
         TelemetrySensor & newSensor = g_model.telemetrySensors[newIndex];
@@ -459,7 +459,7 @@ void onSensorMenu(const char *result)
         TelemetryItem & newItem = telemetryItems[newIndex];
         newItem = sourceItem;
         storageDirty(EE_MODEL);
-      } 
+      }
       else {
         POPUP_WARNING(STR_TELEMETRYFULL);
       }
@@ -597,7 +597,7 @@ void menuModelTelemetry(uint8_t event)
           killEvents(KEY_ENTER);
           POPUP_CONFIRMATION(STR_CONFIRMDELETE);
         }
-        break;       
+        break;
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
         ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, STR_IGNORE_INSTANCE, attr, event);

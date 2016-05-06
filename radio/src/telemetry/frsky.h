@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -87,7 +87,7 @@
 #define D_A2_ID                   0xF2
 
 #define VFAS_D_HIPREC_OFFSET      2000
- 
+
 
 // FrSky new DATA IDs (2 bytes)
 #define ALT_FIRST_ID              0x0100
@@ -383,17 +383,17 @@ enum AlarmLevel {
 #define TELEMETRY_CELL_VOLTAGE(k)         (telemetryData.hub.cellVolts[k] * TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
 #define TELEMETRY_MIN_CELL_VOLTAGE        (telemetryData.hub.minCellVolts * TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
 
-#define START_STOP              0x7e
-#define BYTESTUFF               0x7d
-#define STUFF_MASK              0x20
+#define START_STOP                        0x7e
+#define BYTESTUFF                         0x7d
+#define STUFF_MASK                        0x20
 
 #if defined(CPUARM)
   #define frskySendAlarms()
 #else
-  #define SEND_RSSI_ALARMS  6
-  #define SEND_MODEL_ALARMS 4
+  #define SEND_RSSI_ALARMS                6
+  #define SEND_MODEL_ALARMS               4
   extern uint8_t frskyAlarmsSendState;
-  #define FRSKY_TX_PACKET_SIZE 12
+  #define FRSKY_TX_PACKET_SIZE            12
   extern uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
   extern uint8_t frskyTxBufferCount;
   inline void frskySendAlarms(void)
