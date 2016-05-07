@@ -232,8 +232,9 @@ void FlightModePanel::update()
     int idx = phase.rotaryEncoders[i];
     FlightModeData *phasere = &phase;
     while (idx > 1024) {
-      idx -= 1025;
-      phasere = &model->flightModeData[idx];
+      int nextPhase = idx - 1025;
+      if (nextPhase >= phaseIdx) nextPhase += 1;
+      phasere = &model->flightModeData[nextPhase];
       idx = phasere->rotaryEncoders[i];
       reValues[i]->setDisabled(true);
     }
