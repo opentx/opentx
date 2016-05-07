@@ -490,7 +490,7 @@ bool menuModelSetup(evt_t event)
       case ITEM_MODEL_BEEP_CENTER:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCTR);
         for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
-          coord_t x = MODEL_SETUP_2ND_COLUMN+i*13;
+          coord_t x = MODEL_SETUP_2ND_COLUMN+i*15;
           LcdFlags flags = ((menuHorizontalPosition==i && attr) ? INVERS : 0);
           flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : TEXT_DISABLE_COLOR;
           if (attr && menuHorizontalPosition < 0) flags |= INVERS;
