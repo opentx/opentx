@@ -37,10 +37,10 @@ char getMappedChar(unsigned char c)
 {
   if (c == 0)
     return 0;
-  else if (c >= 0x80 && c <= 0x85)
-    return 115 + c - 0x80;
-  else
+  else if (c < 0xC0)
     return c - 0x20;
+  else
+    return c - 0xC0 + 96;
 }
 
 int getFontPatternWidth(const uint16_t * spec, int index)
