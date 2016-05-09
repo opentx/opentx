@@ -616,7 +616,8 @@ Play a tone
  * `PLAY_NOW` play immediately
 
 @param freqIncr (number) positive number increases the tone pitch (frequency with time),
-negative number decreases it. Bigger number has more effect
+negative number decreases it. The frequency changes every 10 milliseconds, the change is `freqIncr * 10Hz`.
+The valid range is from -127 to 127.
 
 @status current Introduced in 2.1.0
 */
