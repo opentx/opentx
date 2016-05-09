@@ -26,12 +26,13 @@
 # Portuguese : Romolo Manfredini
 # Spanish    : Romolo Manfredini (With the help of Jose Moreno)
 
-from __future__ import print_function
+# from __future__ import print_function
 
 import os
 import sys
 import subprocess
 import zipfile
+from tts_common import *
 
 try:
     # Python 3
@@ -41,24 +42,6 @@ except ImportError:
     # Python 2
     from httplib import HTTPConnection
     from urllib import urlencode
-
-NO_ALTERNATE = 1024
-
-
-def filename(idx, alternate=0):
-    if "gruvin9x" in sys.argv:
-        ext = ".ad4"
-    else:
-        ext = ".wav"
-    if isinstance(idx, int):
-        result = "%04d%s" % (idx, ext)
-    elif board in ('sky9x', 'taranis'):
-        result = idx + ext
-    else:
-        if alternate >= NO_ALTERNATE:
-            return None
-        result = "%04d%s" % (alternate, ext)
-    return result
 
 
 def wavstrip(filename):
@@ -142,22 +125,7 @@ def generate(str, filename):
 
 if __name__ == "__main__":
 
-    if "sky9x" in sys.argv:
-        board = "sky9x"
-        PROMPT_CUSTOM_BASE = 256
-        PROMPT_SYSTEM_BASE = 0
-    elif "taranis" in sys.argv:
-        board = "taranis"
-        PROMPT_CUSTOM_BASE = 256
-        PROMPT_SYSTEM_BASE = 0
-    elif "gruvin9x" in sys.argv:
-        board = "gruvin9x"
-        PROMPT_CUSTOM_BASE = 0
-        PROMPT_SYSTEM_BASE = 256
-    else:
-        board = "stock"
-        PROMPT_CUSTOM_BASE = 0
-        PROMPT_SYSTEM_BASE = 256
+
 
     if "sapi" in sys.argv:
         import pyTTS

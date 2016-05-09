@@ -2,8 +2,7 @@
 
 # French language sounds configuration
 
-from tts import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
-
+from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
 
 systemSounds = []
 sounds = []
@@ -16,7 +15,7 @@ for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
 for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
-for i, s in enumerate(["volts", u"ampères", u"milli ampères", u"knots", u"mètres seconde", u"pieds par seconde", u"kilomètre heure", u"miles par heure", u"mètres", u"pieds", u"degrés", u"degrés fahrenheit", u"pourcents", u"milli ampères / heure", u"watt", u"milli watt", u"db", u"tours minute", u"g", u"degrés", u"millilitres", u"onces", u"heure", u"minute", u"seconde"]):
+for i, s in enumerate([u"volts", u"ampères", u"milli ampères", u"knots", u"mètres seconde", u"pieds par seconde", u"kilomètre heure", u"miles par heure", u"mètres", u"pieds", u"degrés", u"degrés fahrenheit", u"pourcents", u"milli ampères / heure", u"watt", u"milli watt", u"db", u"tours minute", u"g", u"degrés", u"millilitres", u"onces", u"heure", u"minute", u"seconde"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 125 + i)))
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
@@ -27,17 +26,7 @@ for s, f, a in [(u"Trim centré", "midtrim", 495),
                 (u"Alerte manche des gaz", "thralert", 481),
                 (u"Alerte inters", "swalert", 482),
                 (u"éprome corrompue", "eebad", 483),
-                (u"Bienvenue sur Open TI X!", "tada", 480),
-                (u"vingt secondes", "timer20", 500),
-                (u"trente secondes", "timer30", 501),
-                (u"A1,faible", "a1_org", NO_ALTERNATE),
-                (u"A1,critique", "a1_red", NO_ALTERNATE),
-                (u"A2,faible", "a2_org", NO_ALTERNATE),
-                (u"A2,critique", "a2_red", NO_ALTERNATE),
-                (u"A3,faible", "a3_org", NO_ALTERNATE),
-                (u"A3,critique", "a3_red", NO_ALTERNATE),
-                (u"A4,faible", "a4_org", NO_ALTERNATE),
-                (u"A4,critique", "a4_red", NO_ALTERNATE),
+                (u"Bienvenue sur Open Thé Hix!", "hello", 480),
                 (u"Signal RF, faible", "rssi_org", NO_ALTERNATE),
                 (u"Signal RF, critique", "rssi_red", NO_ALTERNATE),
                 (u"Antenne défectueuse", "swr_red", NO_ALTERNATE),

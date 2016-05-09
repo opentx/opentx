@@ -2,7 +2,7 @@
 
 # Portuguese language sounds configuration
 
-from tts import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
 
 
 systemSounds = []

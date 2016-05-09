@@ -2,7 +2,7 @@
 
 # English language sounds configuration
 
-from tts import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
+from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM_BASE
 
 
 systemSounds = []
@@ -29,6 +29,7 @@ for i, s in enumerate(["volt", "volts",
                        "percent", "percent",
                        "milliamp-hour", "milliamp-hours",
                        "watt", "watts",
+                       "milli-watt", "milli-watts",
                        "db", "db",
                        "r p m", "r p m",
                        "g", "g",
@@ -51,17 +52,7 @@ for s, f, a in [(u"trim center", "midtrim", 495),
                 (u"throttle warning", "thralert", 481),
                 (u"switch warning", "swalert", 482),
                 (u"bad eeprom", "eebad", 483),
-                (u"Welcome to open tea ex!", "tada", 480),
-                (u"twenty. seconds", "timer20", 500),
-                (u"thirty. seconds", "timer30", 501),
-                (u"A1,low", "a1_org", NO_ALTERNATE),
-                (u"A1,critical", "a1_red", NO_ALTERNATE),
-                (u"A2,low", "a2_org", NO_ALTERNATE),
-                (u"A2,critical", "a2_red", NO_ALTERNATE),
-                (u"A3,low", "a3_org", NO_ALTERNATE),
-                (u"A3,critical", "a3_red", NO_ALTERNATE),
-                (u"A4,low", "a4_org", NO_ALTERNATE),
-                (u"A4,critical", "a4_red", NO_ALTERNATE),
+                (u"Welcome to open tea ex!", "hello", 480),
                 (u"RF signal, low", "rssi_org", NO_ALTERNATE),
                 (u"RF signal, critical", "rssi_red", NO_ALTERNATE),
                 (u"radio antenna defective", "swr_red", NO_ALTERNATE),
