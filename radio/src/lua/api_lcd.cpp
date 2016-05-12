@@ -383,7 +383,7 @@ static int luaLcdDrawRectangle(lua_State *L)
   int t = luaL_optinteger(L, 6, 0);
   lcdDrawRect(x, y, w, h, t, 0xff, flags);
   #else
-  lcd_rect(x, y, w, h, 0xff, flags);
+  lcdDrawRect(x, y, w, h, 0xff, flags);
   #endif
   return 0;
 }
