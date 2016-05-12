@@ -391,7 +391,7 @@ void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, uint8_t eve
 void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 {
   int offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-  int weight = abs(GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode));
+  int weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
   int barMin = offset - weight;
   int barMax = offset + weight;
   if (y > 15) {
@@ -402,6 +402,10 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
     lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-8, barMin, LEFT);
     lcdDrawNumber(x+GAUGE_WIDTH+1, y-8, barMax);
 #endif
+  }
+  if (weight < 0) {
+    barMin = -barMin;
+    barMax = -barMax;
   }
   if (barMin < -101)
     barMin = -101;
