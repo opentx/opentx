@@ -367,6 +367,8 @@ Draw a rectangle from top left corner (x,y) of specified width and height
 
 @param flags (unsigned number) drawing flags
 
+@param t (number) thikness in pixels
+
 @status current Introduced in 2.0.0
 */
 static int luaLcdDrawRectangle(lua_State *L)
@@ -377,7 +379,8 @@ static int luaLcdDrawRectangle(lua_State *L)
   int w = luaL_checkinteger(L, 3);
   int h = luaL_checkinteger(L, 4);
   unsigned int flags = luaL_optunsigned(L, 5, 0);
-  lcdDrawRect(x, y, w, h, 0xff, flags);
+  int t = luaL_optinteger(L, 6, 0);
+  lcdDrawRect(x, y, w, h, t, 0xff, flags);
   return 0;
 }
 
