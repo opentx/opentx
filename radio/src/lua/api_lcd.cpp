@@ -367,7 +367,7 @@ Draw a rectangle from top left corner (x,y) of specified width and height
 
 @param flags (unsigned number) drawing flags
 
-@param t (number) thikness in pixels
+@param t (number) thickness in pixels
 
 @status current Introduced in 2.0.0
 */
