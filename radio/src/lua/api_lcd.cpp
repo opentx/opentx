@@ -380,7 +380,7 @@ static int luaLcdDrawRectangle(lua_State *L)
   int h = luaL_checkinteger(L, 4);
   unsigned int flags = luaL_optunsigned(L, 5, 0);
 #if defined(PCBHORUS)
-  int t = luaL_optunsigned(L, 6, 1);
+  unsigned int t = luaL_optunsigned(L, 6, 1);
   lcdDrawRect(x, y, w, h, t, 0xff, flags);
 #else
   lcdDrawRect(x, y, w, h, 0xff, flags);
