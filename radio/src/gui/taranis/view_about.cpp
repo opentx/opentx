@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 const pm_uchar about_bmp[] PROGMEM = {
 #include "../../bitmaps/taranis/about.lbm"

@@ -43,11 +43,9 @@ const pm_uchar font_5x7[] PROGMEM = {
 #endif
 };
 
-#if defined(BOLD_FONT)
 const pm_uchar font_5x7_B[] PROGMEM = {
 #include "font_05x07_B_compressed.lbm"
 };
-#endif
 
 #if !defined(BOOT)
 const pm_uchar font_10x14[] PROGMEM = {

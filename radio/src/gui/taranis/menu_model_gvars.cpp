@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void editGVarValue(coord_t x, coord_t y, uint8_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags)
 {

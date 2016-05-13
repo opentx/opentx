@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 enum menuGeneralHwItems {
   ITEM_SETUP_HW_LABEL_STICKS,

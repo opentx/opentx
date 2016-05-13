@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
 {
