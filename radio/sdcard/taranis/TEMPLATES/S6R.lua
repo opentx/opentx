@@ -1,6 +1,8 @@
 local VALUE = 0
 local COMBO = 1
 
+local COLUMN_2 = 120
+
 local edit = false
 local current = 1
 local refreshState = 0
@@ -10,12 +12,12 @@ local pageOffset = 0
 local fields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
   {"Wing type:", COMBO, 0x80, nil, { "REA", "DELTA", "VTAIL" } },
-  {"", COMBO, 0x81, nil, { "Reverse", "Upright", "Upright reverse" } },
-  {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 0, 255 } },
-  {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 0, 255 } },
-  {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 0, 255 } },
-  {"AIL2 direction:", COMBO, 0x9A, nil, { "Normal", "Invers" }, { 0, 255 } },
-  {"ELE2 direction:", COMBO, 0x9B, nil, { "Normal", "Invers" }, { 0, 255 } },
+  {"Mounting type:", COMBO, 0x81, nil, { "Reverse", "Level reversed", "Upright", "Upright reversed" } },
+  {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"AIL2 direction:", COMBO, 0x9A, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"ELE2 direction:", COMBO, 0x9B, nil, { "Normal", "Invers" }, { 255, 0 } },
   {"AIL stabilize gain:", VALUE, 0x85, nil, 0, 200, "%"},
   {"ELE stabilize gain:", VALUE, 0x86, nil, 0, 200, "%"},
   {"RUD stabilize gain:", VALUE, 0x87, nil, 0, 200, "%"},
@@ -82,13 +84,13 @@ local function redrawPage()
     lcd.drawText(0, 1+8*index, field[1])
 
     if field[4] == nil then
-      lcd.drawText(150, 1+8*index, "---", attr)
+      lcd.drawText(COLUMN_2, 1+8*index, "---", attr)
     else
       if field[2] == VALUE then
-        lcd.drawNumber(150, 1+8*index, field[4], LEFT + attr)
+        lcd.drawNumber(COLUMN_2, 1+8*index, field[4], LEFT + attr)
       elseif field[2] == COMBO then
         if field[4] >= 0 and field[4] < #(field[5]) then
-          lcd.drawText(150, 1+8*index, field[5][1+field[4]], attr)
+          lcd.drawText(COLUMN_2, 1+8*index, field[5][1+field[4]], attr)
         end
       end
     end
