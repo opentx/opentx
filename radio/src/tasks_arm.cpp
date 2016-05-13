@@ -105,6 +105,10 @@ void mixerTask(void * pdata)
       return;
 #endif
 
+#if defined(PCBTARANIS)
+    processSbusInput();
+#endif
+
     CoTickDelay(1);
 
     uint32_t now = CoGetOSTime();

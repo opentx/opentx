@@ -1699,10 +1699,6 @@ void doMixerCalculations()
   getADC();
   DEBUG_TIMER_STOP(debugTimerGetAdc);
 
-#if defined(PCBTARANIS)
-  processSbusInput();
-#endif
-
   DEBUG_TIMER_START(debugTimerGetSwitches);
   getSwitchesPosition(!s_mixer_first_run_done);
   DEBUG_TIMER_STOP(debugTimerGetSwitches);
