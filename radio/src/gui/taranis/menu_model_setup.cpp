@@ -217,16 +217,18 @@ int getSwitchWarningsCount()
 #define EXTERNAL_MODULE_CHANNELS_ROWS     IF_EXTERNAL_MODULE_ON((IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_CROSSFIRE(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)0 : (uint8_t)1)
 #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
+
 #if defined MULTIMODULE
 #define MULTIMODULE_HASOPTIONS(x)         (x == MM_RF_PROTO_HUBSAN || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_SFHSS || x >= MM_RF_PROTO_CUSTOM)
 #define MULTIMODULE_FAILSAFEROWS(x)       (IS_MODULE_MULTIMODULE(x) && (MULTIMODULE_HASOPTIONS(g_model.moduleData[x].multi.rfProtocol))) ? (uint8_t) 1: HIDDEN_ROW
 #else
 #define MULTIMODULE_FAILSAFEROWS(x)       HIDDEN_ROW
 #endif
+
 #define FAILSAFE_ROWS(x)                  (IS_MODULE_XJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : MULTIMODULE_FAILSAFEROWS(x))
 #define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
-#if defined(MULTIMODULE)
 
+#if defined(MULTIMODULE)
 #define MULTIMODULE_HAS_SUBTYPE(x)        (x == MM_RF_PROTO_FLYSKY || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_HISKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_YD717 || x == MM_RF_PROTO_KN || x == MM_RF_PROTO_SYMAX || x == MM_RF_PROTO_CX10 || x == MM_RF_PROTO_CG023 || x == MM_RF_PROTO_MT99XX || x == MM_RF_PROTO_MJXQ)
 #define MULTIMODULE_MODE_ROWS(x)          (g_model.moduleData[x].multi.rfProtocol >= MM_RF_PROTO_CUSTOM ) ? (uint8_t) 3 :MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[x].multi.rfProtocol) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_MODULE_ROWS           IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 1 : HIDDEN_ROW, IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 1 : HIDDEN_ROW,
@@ -234,6 +236,7 @@ int getSwitchWarningsCount()
 #define MULTIMODULE_MODE_ROWS(x) (uint8_t)0
 #define MULTIMODULE_MODULE_ROWS
 #endif
+
 #define EXTERNAL_MODULE_MODE_ROWS       (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 :  IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
 
 #if TIMERS == 1

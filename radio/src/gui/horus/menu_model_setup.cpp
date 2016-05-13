@@ -184,14 +184,16 @@ int getSwitchWarningsCount()
 #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
 #define FAILSAFE_ROWS(x)                  (HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW)
-#define TIMER_ROWS                        NAVIGATION_LINE_BY_LINE|1, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
+#define TIMER_ROWS(x)                     NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
+
 #if TIMERS == 1
-  #define TIMERS_ROWS                     TIMER_ROWS
+  #define TIMERS_ROWS                     TIMER_ROWS(0)
 #elif TIMERS == 2
-  #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS
+  #define TIMERS_ROWS                     TIMER_ROWS(0), TIMER_ROWS(1)
 #elif TIMERS == 3
-  #define TIMERS_ROWS                     TIMER_ROWS, TIMER_ROWS, TIMER_ROWS
+  #define TIMERS_ROWS                     TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
 #endif
+
 #define SW_WARN_ITEMS()                   uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1))
 #define POT_WARN_ITEMS()                  ((g_model.potsWarnMode >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
 
