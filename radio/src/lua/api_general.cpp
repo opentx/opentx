@@ -855,6 +855,7 @@ const luaR_value_entry opentxConstants[] = {
 #endif
 #if defined(COLORLCD)
   { "COLOR", ZoneOption::Color },
+  { "CUSTOM_COLOR_INDEX", CUSTOM_COLOR_INDEX },
   { "TEXT_COLOR_INDEX", TEXT_COLOR_INDEX },
   { "TEXT_BGCOLOR_INDEX", TEXT_BGCOLOR_INDEX },
   { "TEXT_INVERTED_COLOR_INDEX", TEXT_INVERTED_COLOR_INDEX },
@@ -881,6 +882,7 @@ const luaR_value_entry opentxConstants[] = {
   { "HEADER_ICON_BGCOLOR_INDEX", HEADER_ICON_BGCOLOR_INDEX },
   { "HEADER_CURRENT_BGCOLOR_INDEX", HEADER_CURRENT_BGCOLOR_INDEX },
   { "OVERLAY_COLOR_INDEX", OVERLAY_COLOR_INDEX },
+  { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },
   { "TEXT_BGCOLOR", TEXT_BGCOLOR },
   { "TEXT_INVERTED_COLOR", TEXT_INVERTED_COLOR },
@@ -915,6 +917,8 @@ const luaR_value_entry opentxConstants[] = {
   { "YELLOW", (double)YELLOW },
   { "BLUE", (double)BLUE },
   { "LIGHTGREY", (double)LIGHTGREY },
+  { "RED", (double)RED },
+  { "DARKRED", (double)DARKRED },
 #endif
 #if defined(PCBTARANIS)
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
