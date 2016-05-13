@@ -1,7 +1,7 @@
 local VALUE = 0
 local COMBO = 1
 
-local COLUMN_2 = 120
+local COLUMN_2 = 150
 
 local edit = false
 local current = 1
@@ -12,7 +12,7 @@ local pageOffset = 0
 local fields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
   {"Wing type:", COMBO, 0x80, nil, { "REA", "DELTA", "VTAIL" } },
-  {"Mounting type:", COMBO, 0x81, nil, { "Reverse", "Level reversed", "Upright", "Upright reversed" } },
+  {"Mounting type:", COMBO, 0x81, nil, { "Reverse", "Level rev.", "Upright", "Upright rev." } },
   {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
   {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 255, 0 } },
   {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 255, 0 } },
