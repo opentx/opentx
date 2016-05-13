@@ -359,7 +359,6 @@ void guiMain(evt_t evt)
       TRACE("menuEvent 0x%02x", menuEvent);
     }
     menuEvent = 0;
-    AUDIO_MENUS();
   }
 
   if (warningText) {

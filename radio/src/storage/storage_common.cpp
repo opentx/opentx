@@ -59,8 +59,7 @@ void preModelLoad()
 void postModelLoad(bool newModel)
 {
   AUDIO_FLUSH();
-  flightReset();
-  logicalSwitchesReset();
+  flightReset(false);
 
   if (pulsesStarted()) {
 #if defined(GUI)

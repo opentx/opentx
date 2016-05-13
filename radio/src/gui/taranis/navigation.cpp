@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 vertpos_t menuVerticalOffset;
 vertpos_t menuVerticalPosition;
@@ -89,7 +89,7 @@ void onSourceLongEnterPress(const char * result)
         break;
       }
     }
-  }  
+  }
 }
 
 void onSwitchLongEnterPress(const char *result)
@@ -166,14 +166,10 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
         newval++;
       }
     } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
-
     if (newval > i_max) {
       newval = val;
       killEvents(event);
-      AUDIO_WARNING2();
-    }
-    else {
-      AUDIO_KEYPAD_UP();
+      AUDIO_KEY_ERROR();
     }
   }
   else if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
@@ -185,14 +181,10 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
         newval--;
       }
     } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
-
     if (newval < i_min) {
       newval = val;
       killEvents(event);
-      AUDIO_WARNING2();
-    }
-    else {
-      AUDIO_KEYPAD_DOWN();
+      AUDIO_KEY_ERROR();
     }
   }
 
@@ -226,35 +218,28 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   }
 #endif
 
-  if (newval > i_max || newval < i_min) {
-    newval = (newval > i_max ? i_max : i_min);
-    killEvents(event);
-    AUDIO_WARNING2();
-  }
-
   if (newval != val) {
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval)) {
       bool pause = (newval > val ? !stops.contains(newval+1) : !stops.contains(newval-1));
       if (pause) {
         pauseEvents(event); // delay before auto-repeat continues
-        if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
-          AUDIO_KEYPAD_UP();
-        else
-          AUDIO_KEYPAD_DOWN();
       }
     }
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
+    if (!IS_KEY_REPT(event)) {
+      AUDIO_KEY_PRESS();
+    }
   }
   else {
     checkIncDec_Ret = 0;
   }
-  
+
   if (i_flags & INCDEC_SOURCE) {
     if (event == EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
       checkIncDecSelection = MIXSRC_NONE;
-      
+
       if (i_min <= MIXSRC_FIRST_INPUT && i_max >= MIXSRC_FIRST_INPUT) {
         if (getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE) {
           POPUP_MENU_ADD_ITEM(STR_MENU_INPUTS);
@@ -280,7 +265,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (i_min <= MIXSRC_FIRST_GVAR && i_max >= MIXSRC_FIRST_GVAR && isValueAvailable(MIXSRC_FIRST_GVAR)) {
         POPUP_MENU_ADD_ITEM(STR_MENU_GVARS);
       }
-      
+
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
         for (int i = 0; i < MAX_SENSORS; i++) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
@@ -290,7 +275,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
           }
         }
       }
-      popupMenuHandler = onSourceLongEnterPress;
+      POPUP_MENU_START(onSourceLongEnterPress);
     }
     if (checkIncDecSelection != 0) {
       newval = checkIncDecSelection;
@@ -315,7 +300,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       }
       if (isValueAvailable && isValueAvailable(SWSRC_ON))                  POPUP_MENU_ADD_ITEM(STR_MENU_OTHER);
       if (isValueAvailable && isValueAvailable(-newval))                   POPUP_MENU_ADD_ITEM(STR_MENU_INVERT);
-      popupMenuHandler = onSwitchLongEnterPress;
+      POPUP_MENU_START(onSwitchLongEnterPress);
       s_editMode = EDIT_MODIFY_FIELD;
     }
     if (checkIncDecSelection != 0) {
@@ -365,7 +350,7 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
           if (modelHasNotes()) {
             POPUP_MENU_ADD_SD_ITEM(STR_VIEW_CHANNELS);
             POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
-            popupMenuHandler = onLongMenuPress;
+            POPUP_MENU_START(onLongMenuPress);
           }
           else {
             pushMenu(menuChannelsView);
@@ -423,9 +408,11 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
       if (s_editMode > 1) break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
+        AUDIO_KEY_PRESS();
       }
       else if (READ_ONLY_UNLOCKED()) {
         s_editMode = (s_editMode<=0);
+        AUDIO_KEY_PRESS();
       }
       break;
 
@@ -437,11 +424,13 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode > 0) {
         s_editMode = 0;
+        AUDIO_KEY_PRESS();
         break;
       }
 
       if (l_posHorz >= 0 && (COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         l_posHorz = -1;
+        AUDIO_KEY_PRESS();
       }
       else {
         uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
@@ -449,6 +438,7 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
           menuVerticalOffset = 0;
           l_posVert = posVertInit;
           l_posHorz = POS_HORZ_INIT(l_posVert);
+          AUDIO_KEY_PRESS();
         }
         else {
           popMenu();
@@ -457,6 +447,8 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
       break;
 
     case EVT_KEY_FIRST(KEY_RIGHT):
+      AUDIO_KEY_PRESS();
+      // no break
     case EVT_KEY_REPT(KEY_RIGHT):
       if (s_editMode != 0) break;
       if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
@@ -485,6 +477,8 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
       break;
 
     case EVT_KEY_FIRST(KEY_LEFT):
+      AUDIO_KEY_PRESS();
+      // no break
     case EVT_KEY_REPT(KEY_LEFT):
       if (s_editMode != 0) break;
       if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {

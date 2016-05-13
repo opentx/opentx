@@ -184,7 +184,7 @@ void menuGeneralSdManager(uint8_t _event)
           // POPUP_MENU_ADD_ITEM(STR_COPY_FILE);    TODO: Implement
         }
       }
-      popupMenuHandler = onSdManagerMenu;
+      POPUP_MENU_START(onSdManagerMenu);
       break;
   }
 

@@ -284,7 +284,7 @@ enum {
 };
 
 void codecsInit();
-void audioEvent(unsigned int index, unsigned int freq=BEEP_DEFAULT_FREQ);
+void audioEvent(unsigned int index);
 void audioPlay(unsigned int index, uint8_t id=0);
 void audioStart();
 
@@ -304,46 +304,35 @@ void audioStart();
   #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)
 #endif
 
-#define AUDIO_TADA()             audioPlay(AU_TADA)
+void audioKeyPress();
+void audioKeyError();
+void audioTrimPress(int value);
+void audioTimerCountdown(uint8_t timer, int value);
+
+#define AUDIO_KEY_PRESS()        audioKeyPress()
+#define AUDIO_KEY_ERROR()        audioKeyError()
+
+#define AUDIO_HELLO()            audioPlay(AUDIO_HELLO)
 #define AUDIO_BYE()              audioPlay(AU_BYE, ID_PLAY_BYE)
-#define AUDIO_KEYPAD_UP()        AUDIO_BUZZER(audioEvent(AU_KEYPAD_UP), beep(0))
-#define AUDIO_KEYPAD_DOWN()      AUDIO_BUZZER(audioEvent(AU_KEYPAD_DOWN), beep(0))
-#define AUDIO_MENUS()            AUDIO_BUZZER(audioEvent(AU_MENUS), beep(0))
 #define AUDIO_WARNING1()         AUDIO_BUZZER(audioEvent(AU_WARNING1), beep(3))
 #define AUDIO_WARNING2()         AUDIO_BUZZER(audioEvent(AU_WARNING2), beep(2))
 #define AUDIO_TX_BATTERY_LOW()   AUDIO_BUZZER(audioEvent(AU_TX_BATTERY_LOW), beep(4))
 #if defined(PCBSKY9X)
-  #define AUDIO_TX_MAH_HIGH()    audioEvent(AU_TX_MAH_HIGH)
-  #define AUDIO_TX_TEMP_HIGH()   audioEvent(AU_TX_TEMP_HIGH)
+#define AUDIO_TX_MAH_HIGH()      audioEvent(AU_TX_MAH_HIGH)
+#define AUDIO_TX_TEMP_HIGH()     audioEvent(AU_TX_TEMP_HIGH)
 #endif
 #define AUDIO_ERROR()            AUDIO_BUZZER(audioEvent(AU_ERROR), beep(4))
-#define AUDIO_TIMER_30()         AUDIO_BUZZER(audioEvent(AU_TIMER_30), { beepAgain=2; beep(2); })
-#define AUDIO_TIMER_20()         AUDIO_BUZZER(audioEvent(AU_TIMER_20), { beepAgain=1; beep(2); })
-
-#if defined(HAPTIC)
-#define AUDIO_TIMER_LT10(m, x)   do { if (m==COUNTDOWN_VOICE) playNumber(x, 0, 0, 0); else if (m==COUNTDOWN_HAPTIC) haptic.event(AU_TIMER_LT10); else AUDIO_BUZZER(audioEvent(AU_TIMER_LT10), beep(2)); } while(0)
-#define AUDIO_TIMER_00(m)        do { if (m==COUNTDOWN_VOICE) playNumber(0, 0, 0, 0); else if (m==COUNTDOWN_HAPTIC) haptic.event(AU_TIMER_00); else AUDIO_BUZZER(audioEvent(AU_TIMER_00), beep(3)); } while(0)
-#else
-#define AUDIO_TIMER_LT10(m, x)   do { if (m==COUNTDOWN_VOICE) playNumber(x, 0, 0, 0); else AUDIO_BUZZER(audioEvent(AU_TIMER_LT10), beep(2)); } while(0)
-#define AUDIO_TIMER_00(m)        do { if (m==COUNTDOWN_VOICE) playNumber(0, 0, 0, 0); else AUDIO_BUZZER(audioEvent(AU_TIMER_00), beep(3)); } while(0)
-#endif
-
+#define AUDIO_TIMER_COUNTDOWN(idx, val) audioTimerCountdown(idx, val)
+#define AUDIO_TIMER_ELAPSED(idx) AUDIO_BUZZER(audioEvent(AU_TIMER1_ELAPSED+idx), beep(3))
 #define AUDIO_INACTIVITY()       AUDIO_BUZZER(audioEvent(AU_INACTIVITY), beep(3))
 #define AUDIO_MIX_WARNING(x)     AUDIO_BUZZER(audioEvent(AU_MIX_WARNING_1+x-1), beep(1))
 #define AUDIO_POT_MIDDLE(x)      AUDIO_BUZZER(audioEvent(AU_STICK1_MIDDLE+x), beep(2))
-#define AUDIO_TRIM_MIDDLE(f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MIDDLE, f), beep(2))
-#define AUDIO_TRIM_END(f)        AUDIO_BUZZER(audioEvent(AU_TRIM_END, f), beep(2))
-#define AUDIO_TRIM(event, f)     AUDIO_BUZZER(audioEvent(AU_TRIM_MOVE, f), { if (!IS_KEY_FIRST(event)) warble = true; beep(1); })
+#define AUDIO_TRIM_MIDDLE()      AUDIO_BUZZER(audioEvent(AU_TRIM_MIDDLE), beep(2))
+#define AUDIO_TRIM_MIN()         AUDIO_BUZZER(audioEvent(AU_TRIM_MIN), beep(2))
+#define AUDIO_TRIM_MAX()         AUDIO_BUZZER(audioEvent(AU_TRIM_MAX), beep(2))
+#define AUDIO_TRIM_PRESS(val)    audioTrimPress(val)
 #define AUDIO_PLAY(p)            audioEvent(p)
 #define AUDIO_VARIO(fq, t, p, f) audioQueue.playTone(fq, t, p, f)
-#define AUDIO_A1_ORANGE()        audioEvent(AU_A1_ORANGE)
-#define AUDIO_A1_RED()           audioEvent(AU_A1_RED)
-#define AUDIO_A2_ORANGE()        audioEvent(AU_A2_ORANGE)
-#define AUDIO_A2_RED()           audioEvent(AU_A2_RED)
-#define AUDIO_A3_ORANGE()        audioEvent(AU_A3_ORANGE)
-#define AUDIO_A3_RED()           audioEvent(AU_A3_RED)
-#define AUDIO_A4_ORANGE()        audioEvent(AU_A4_ORANGE)
-#define AUDIO_A4_RED()           audioEvent(AU_A4_RED)
 #define AUDIO_RSSI_ORANGE()      audioEvent(AU_RSSI_ORANGE)
 #define AUDIO_RSSI_RED()         audioEvent(AU_RSSI_RED)
 #define AUDIO_SWR_RED()          audioEvent(AU_SWR_RED)

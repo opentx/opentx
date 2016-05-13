@@ -95,7 +95,7 @@ void menuModelLogicalSwitches(uint8_t event)
       POPUP_MENU_ADD_ITEM(STR_PASTE);
     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
       POPUP_MENU_ADD_ITEM(STR_CLEAR);
-    popupMenuHandler = onLogicalSwitchesMenu;
+    POPUP_MENU_START(onLogicalSwitchesMenu);
   }
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {

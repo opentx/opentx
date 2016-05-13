@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define MODELSIZE_POS_X 170
 #define MODELSEL_W 133
@@ -178,7 +178,7 @@ void menuModelSelect(uint8_t event)
             POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
             POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
           }
-          popupMenuHandler = onModelSelectMenu;
+          POPUP_MENU_START(onModelSelectMenu);
         }
         else if (eeModelExists(sub)) {
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);

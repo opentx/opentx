@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -72,7 +72,7 @@ void menuModelCustomScriptOne(uint8_t event)
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
         s_editMode = 0;
         if (sdListFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
-          popupMenuHandler = onModelCustomScriptMenu;
+          POPUP_MENU_START(onModelCustomScriptMenu);
         }
         else {
           POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -262,7 +262,7 @@ void menuGeneralSdManager(evt_t _event)
         killEvents(_event);
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);
         POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
-        popupMenuHandler = onSdManagerMenu;
+        POPUP_MENU_START(onSdManagerMenu);
       }
       break;
 
@@ -333,7 +333,7 @@ void menuGeneralSdManager(evt_t _event)
           if (IS_FILE(line))
             POPUP_MENU_ADD_ITEM(STR_DELETE_FILE);
         }
-        popupMenuHandler = onSdManagerMenu;
+        POPUP_MENU_START(onSdManagerMenu);
       }
       break;
   }
@@ -345,7 +345,7 @@ void menuGeneralSdManager(evt_t _event)
     TCHAR lfn[_MAX_LFN + 1];
     fno.lfname = lfn;
     fno.lfsize = sizeof(lfn);
-    
+
     if (menuVerticalOffset == 0) {
       reusableBuffer.sdmanager.offset = 0;
       memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));

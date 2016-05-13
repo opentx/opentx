@@ -158,7 +158,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
         break;
       }
     }
-    popupMenuHandler = onCustomFunctionsMenu;
+    POPUP_MENU_START(onCustomFunctionsMenu);
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
@@ -285,7 +285,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
                 strncpy(directory+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
               }
               if (sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), cfn->play.name)) {
-                popupMenuHandler = onCustomFunctionsFileSelectionMenu;
+                POPUP_MENU_START(onCustomFunctionsFileSelectionMenu);
               }
               else {
                 POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
@@ -370,7 +370,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
                 POPUP_MENU_ADD_ITEM(STR_GLOBALVAR);
               if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INCDEC)
                 POPUP_MENU_ADD_ITEM(STR_INCDEC);
-              popupMenuHandler = onAdjustGvarSourceLongEnterPress;
+              POPUP_MENU_START(onAdjustGvarSourceLongEnterPress);
               s_editMode = EDIT_MODIFY_FIELD;
             }
           }

@@ -202,7 +202,7 @@ bool menuModelCurveOne(evt_t event)
         POPUP_MENU_ADD_ITEM(STR_CURVE_PRESET);
         POPUP_MENU_ADD_ITEM(STR_MIRROR);
         POPUP_MENU_ADD_ITEM(STR_CLEAR);
-        popupMenuHandler = onCurveOneMenu;
+        POPUP_MENU_START(onCurveOneMenu);
       }
       break;
     // TODO?

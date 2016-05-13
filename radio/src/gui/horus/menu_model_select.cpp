@@ -114,7 +114,7 @@ void onModelSelectMenu(const char * result)
     SET_WARNING_INFO(currentModel->name, LEN_MODEL_FILENAME, 0);
   }
   else if (result == STR_CHANGE_CATEGORY) {
-    
+
   }
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
@@ -194,7 +194,7 @@ bool menuModelSelect(evt_t event)
         if (currentCategoryIndex > 0) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
         }
-        popupMenuHandler = onCategorySelectMenu;
+        POPUP_MENU_START(onCategorySelectMenu);
       }
       else if (selectMode == MODE_SELECT_MODEL) {
         killEvents(event);
@@ -212,7 +212,7 @@ bool menuModelSelect(evt_t event)
         POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
         // POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
         // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
-        popupMenuHandler = onModelSelectMenu;
+        POPUP_MENU_START(onModelSelectMenu);
       }
       break;
   }

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include "timers.h"
 
 #define BIGSIZE       MIDSIZE
 #define LBOX_CENTERX  (BOX_WIDTH/2 + 16)
@@ -460,7 +459,7 @@ void menuMainView(uint8_t event)
       POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
-      popupMenuHandler = onMainViewMenu;
+      POPUP_MENU_START(onMainViewMenu);
       break;
 
 #if MENUS_LOCK != 2/*no menus*/
@@ -481,12 +480,14 @@ void menuMainView(uint8_t event)
         g_eeGeneral.view = 0;
         chainMenu(menuMainViewChannelsMonitor);
       }
+      AUDIO_KEY_PRESS();
       break;
 
     case EVT_KEY_LONG(KEY_PAGE):
       if (!IS_FAI_ENABLED())
         chainMenu(menuTelemetryFrsky);
       killEvents(event);
+      AUDIO_KEY_PRESS();
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -495,7 +496,6 @@ void menuMainView(uint8_t event)
         gvarDisplayTimer = 0;
       }
 #endif
-      AUDIO_KEYPAD_UP();
       break;
   }
 

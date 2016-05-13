@@ -448,11 +448,17 @@ enum SwashType {
 #endif
 
 #if defined(CPUARM)
-#define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
+#define IS_MANUAL_RESET_TIMER(idx)     (g_model.timers[idx].persistent == 2)
 #elif defined(CPUM2560)
-#define IS_MANUAL_RESET_TIMER(idx) (g_model.timers[idx].persistent == 2)
+#define IS_MANUAL_RESET_TIMER(idx)     (g_model.timers[idx].persistent == 2)
 #else
-#define IS_MANUAL_RESET_TIMER(idx) 0
+#define IS_MANUAL_RESET_TIMER(idx)     0
+#endif
+
+#if defined(CPUARM) && !defined(PCBSKY9X)
+#define TIMER_COUNTDOWN_START(x)       (g_model.timers[x].countdownStart > 0 ? 5 : 10 - g_model.timers[x].countdownStart * 10)
+#else
+#define TIMER_COUNTDOWN_START(x)       10
 #endif
 
 enum Protocols {

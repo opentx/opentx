@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -222,7 +222,7 @@ void menuModelMixOne(uint8_t event)
     else
       y = 1 + (k+1)*FH;
     int8_t i = k;
-    
+
 #if MENU_COLUMNS < 2
     i = i + menuVerticalOffset;
 #endif
@@ -457,7 +457,7 @@ void menuModelMixAll(uint8_t event)
             POPUP_MENU_ADD_ITEM(STR_COPY);
             POPUP_MENU_ADD_ITEM(STR_MOVE);
             POPUP_MENU_ADD_ITEM(STR_DELETE);
-            popupMenuHandler = onMixesMenu;
+            POPUP_MENU_START(onMixesMenu);
           }
         }
       }

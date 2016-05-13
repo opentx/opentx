@@ -103,7 +103,7 @@ bool menuModelGVars(evt_t event)
     else
       POPUP_MENU_ADD_ITEM(STR_ENABLE_POPUP);
     POPUP_MENU_ADD_ITEM(STR_CLEAR);
-    popupMenuHandler = onGVARSMenu;
+    POPUP_MENU_START(onGVARSMenu);
   }
 
   return true;

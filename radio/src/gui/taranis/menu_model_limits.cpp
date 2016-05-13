@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -159,7 +159,7 @@ void menuModelLimits(uint8_t event)
       POPUP_MENU_ADD_ITEM(STR_RESET);
       POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
-      popupMenuHandler = onLimitsMenu;
+      POPUP_MENU_START(onLimitsMenu);
     }
 
     for (int j=0; j<ITEM_LIMITS_COUNT; j++) {

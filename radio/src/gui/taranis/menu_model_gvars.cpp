@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -183,6 +183,6 @@ void menuModelGVars(uint8_t event)
     killEvents(event);
     POPUP_MENU_ADD_ITEM(STR_EDIT);
     POPUP_MENU_ADD_ITEM(STR_CLEAR);
-    popupMenuHandler = onGVARSMenu;
+    POPUP_MENU_START(onGVARSMenu);
   }
 }

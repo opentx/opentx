@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -568,7 +568,7 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   if (att & TIMEHOUR) {
     div_t qr2 = div(qr.quot, 60);
     lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, separator, att&att2);
+    lcdDrawChar(lcdLastPos, y, separator, att);
     qr.quot = qr2.rem;
     if (att & MIDSIZE)
       x += 17;
@@ -646,7 +646,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
         lcdDrawChar(x, y, '\307', att); //stick symbol
       else if (idx < MIXSRC_FIRST_SLIDER-MIXSRC_Rud )
         lcdDrawChar(x, y, '\310', att); //pot symbol
-      else 
+      else
         lcdDrawChar(x, y, '\311', att); //slider symbol
       lcdDrawSizedText(lcdNextPos, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
     }
@@ -940,7 +940,9 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
 
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
 {
-  if (channel >= MAX_SENSORS) return;     //Lua luaLcdDrawChannel() can call us with a bad value 
+  if (channel >= MAX_SENSORS)
+    return;     // Lua luaLcdDrawChannel() can call us with a bad value
+
   TelemetryItem & telemetryItem = telemetryItems[channel];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
   if (telemetrySensor.unit == UNIT_DATETIME) {
@@ -948,6 +950,52 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
   }
   else if (telemetrySensor.unit == UNIT_GPS) {
     displayGpsCoords(x, y, telemetryItem, att);
+  }
+  else if (telemetrySensor.unit == UNIT_BITFIELD) {
+    if (IS_FRSKY_SPORT_PROTOCOL()) {
+      if (telemetrySensor.id >= RBOX_STATE_FIRST_ID && telemetrySensor.id <= RBOX_STATE_LAST_ID) {
+        if (telemetrySensor.subId == 0) {
+          if (value == 0) {
+            lcdDrawText(att & LEFT ? x : x-15, att & DBLSIZE ? y+1 : y, "OK");
+          }
+          else {
+            for (uint8_t i=0; i<16; i++) {
+              if (value & (1 << i)) {
+                drawStringWithIndex(att & LEFT ? x : x-40, att & DBLSIZE ? y+1 : y, "CH", i+1);
+                lcdDrawText(lcdLastPos+3, att & DBLSIZE ? y+1 : y, "KO");
+                break;
+              }
+            }
+          }
+        }
+        else {
+          if (value == 0) {
+            lcdDrawText(x, att & DBLSIZE ? y+1 : y, "Rx OK");
+          }
+          else {
+            static const char * const RXS_STATUS[] = {
+              "Rx1 Ovl",
+              "Rx2 Ovl",
+              "SBUS Ovl",
+              "Rx1 FS",
+              "Rx1 LF",
+              "Rx2 FS",
+              "Rx2 LF",
+              "Rx1 Lost",
+              "Rx2 Lost",
+              "Rx1 NS",
+              "Rx2 NS",
+            };
+            for (uint8_t i=0; i<DIM(RXS_STATUS); i++) {
+              if (value & (1<<i)) {
+                lcdDrawText(att & LEFT ? x : x-40, att & DBLSIZE ? y+1 : y, RXS_STATUS[i]);
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
   }
   else {
     LcdFlags flags = att;
@@ -1139,4 +1187,3 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset, co
   }
 }
 #endif
-

@@ -47,6 +47,9 @@ for i, s in enumerate(["point zero", "point one", "point two", "point three",
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 165 + i)))
 for s, f, a in [(u"trim center", "midtrim", 495),
                 (u"maximum trim reached", "endtrim", NO_ALTERNATE),
+                (u"timer 1 elapsed", "timovr1", NO_ALTERNATE),
+                (u"timer 2 elapsed", "timovr2", NO_ALTERNATE),
+                (u"timer 3 elapsed", "timovr3", NO_ALTERNATE),
                 (u"transmitter battery low", "lowbatt", 485),
                 (u"inactivity alarm", "inactiv", 486),
                 (u"throttle warning", "thralert", 481),
@@ -62,6 +65,7 @@ for s, f, a in [(u"trim center", "midtrim", 495),
                 (u"trainer signal recovered", "trainok", NO_ALTERNATE),
                 (u"sensor lost", "sensorko", NO_ALTERNATE),
                 (u"servo overload", "servoko", NO_ALTERNATE),
+                (u"power overload", "rxko", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, (s, f) in enumerate([(u"gear!, up!", "gearup"),

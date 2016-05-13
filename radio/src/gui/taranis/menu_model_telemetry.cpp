@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -373,7 +373,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_FILTER:
         ON_OFF_MENU_ITEM(sensor->filter, SENSOR_2ND_COLUMN, y, STR_FILTER, attr, event);
         break;
-        
+
       case SENSOR_FIELD_PERSISTENT:
         ON_OFF_MENU_ITEM(sensor->persistent, SENSOR_2ND_COLUMN, y, NO_INDENT(STR_PERSISTENT), attr, event);
         if (checkIncDec_Ret && !sensor->persistent) {
@@ -410,7 +410,7 @@ void onSensorMenu(const char *result)
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
-      
+
       if (newIndex >= 0) {
         TelemetrySensor & sourceSensor = g_model.telemetrySensors[index];
         TelemetrySensor & newSensor = g_model.telemetrySensors[newIndex];
@@ -419,7 +419,7 @@ void onSensorMenu(const char *result)
         TelemetryItem & newItem = telemetryItems[newIndex];
         newItem = sourceItem;
         storageDirty(EE_MODEL);
-      } 
+      }
       else {
         POPUP_WARNING(STR_TELEMETRYFULL);
       }
@@ -454,7 +454,7 @@ void menuModelTelemetry(uint8_t event)
       delTelemetryIndex(i);
     }
   }
-  
+
   MENU(STR_MENUTELEMETRY, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
@@ -499,7 +499,7 @@ void menuModelTelemetry(uint8_t event)
           POPUP_MENU_ADD_ITEM(STR_EDIT);
           POPUP_MENU_ADD_ITEM(STR_COPY);
           POPUP_MENU_ADD_ITEM(STR_DELETE);
-          popupMenuHandler = onSensorMenu;
+          POPUP_MENU_START(onSensorMenu);
         }
         else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
           pushMenu(menuModelSensor);
@@ -552,7 +552,7 @@ void menuModelTelemetry(uint8_t event)
           killEvents(KEY_ENTER);
           POPUP_CONFIRMATION(STR_CONFIRMDELETE);
         }
-        break;        
+        break;
 
       case ITEM_TELEMETRY_IGNORE_SENSOR_INSTANCE:
         ON_OFF_MENU_ITEM(g_model.ignoreSensorIds, TELEM_COL2, y, STR_IGNORE_INSTANCE, attr, event);
@@ -670,7 +670,7 @@ void menuModelTelemetry(uint8_t event)
           if (menuHorizontalPosition==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
             if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
-              popupMenuHandler = onTelemetryScriptFileSelectionMenu;
+              POPUP_MENU_START(onTelemetryScriptFileSelectionMenu);
             }
             else {
               POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);

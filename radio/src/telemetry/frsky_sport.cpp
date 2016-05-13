@@ -75,8 +75,8 @@ const FrSkySportSensor sportSensors[] = {
   { RBOX_BATT2_FIRST_ID, RBOX_BATT2_LAST_ID, 1, ZSTR_BATT2_CURRENT, UNIT_AMPS, 2 },
   { RBOX_CNSP_FIRST_ID, RBOX_CNSP_LAST_ID, 0, ZSTR_BATT1_CONSUMPTION, UNIT_MAH, 0 },
   { RBOX_CNSP_FIRST_ID, RBOX_CNSP_LAST_ID, 1, ZSTR_BATT2_CONSUMPTION, UNIT_MAH, 0 },
-  { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 0, ZSTR_CHANS_STATE, UNIT_RAW, 0 },
-  { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 1, ZSTR_RB_STATE, UNIT_RAW, 0 },
+  { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 0, ZSTR_CHANS_STATE, UNIT_BITFIELD, 0 },
+  { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 1, ZSTR_RB_STATE, UNIT_BITFIELD, 0 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -299,11 +299,15 @@ void processSportPacket(uint8_t * packet)
         }
         else if (id >= RBOX_STATE_FIRST_ID && id <= RBOX_STATE_LAST_ID) {
           uint16_t newServosState = data & 0xffff;
-          if (servosState == 0 && newServosState != 0) {
+          if (newServosState != 0 && servosState == 0) {
             audioEvent(AU_SERVO_KO);
           }
+          uint16_t newRboxState = data >> 16;
+          if ((newRboxState & 0x07) && (rboxState & 0x07) == 0) {
+            audioEvent(AU_RX_OVERLOAD);
+          }
           servosState = newServosState;
-          rboxState = data >> 16;
+          rboxState = newRboxState;
           processSportPacket(id, 0, instance, servosState);
           processSportPacket(id, 1, instance, rboxState);
         }

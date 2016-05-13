@@ -35,10 +35,9 @@ bool menuStatsGraph(evt_t event)
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
       killEvents(event);
-      AUDIO_KEYPAD_UP();
       break;
   }
-  
+
   MENU("Statistics", STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
@@ -107,7 +106,6 @@ bool menuStatsDebug(evt_t event)
       maxLuaInterval = 0;
       maxLuaDuration = 0;
 #endif
-      AUDIO_KEYPAD_UP();
       break;
   }
 

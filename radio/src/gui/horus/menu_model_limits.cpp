@@ -149,7 +149,7 @@ bool menuModelLimits(evt_t event)
       POPUP_MENU_ADD_ITEM(STR_RESET);
       POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
-      popupMenuHandler = onLimitsMenu;
+      POPUP_MENU_START(onLimitsMenu);
     }
 
     for (uint8_t j=0; j<ITEM_LIMITS_COUNT; j++) {

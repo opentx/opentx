@@ -540,7 +540,7 @@ void menuModelTelemetry(uint8_t event)
           POPUP_MENU_ADD_ITEM(STR_EDIT);
           POPUP_MENU_ADD_ITEM(STR_COPY);
           POPUP_MENU_ADD_ITEM(STR_DELETE);
-          popupMenuHandler = onSensorMenu;
+          POPUP_MENU_START(onSensorMenu);
         }
         else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
           pushMenu(menuModelSensor);

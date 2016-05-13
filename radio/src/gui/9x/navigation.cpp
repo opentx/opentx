@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 vertpos_t menuVerticalOffset;
 int8_t s_editMode;
@@ -106,37 +106,31 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 #endif
 
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
-	do {
-	  newval++;
-	} while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+	  do {
+	    newval++;
+	  } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
 
-	if (newval > i_max) {
-	  newval = val;
-	  killEvents(event);
-	  AUDIO_WARNING2();
-	}
-	else {
-	  AUDIO_KEYPAD_UP();
-	}
+	  if (newval > i_max) {
+	    newval = val;
+	    killEvents(event);
+	    AUDIO_KEY_ERROR();
+    }
   }
   else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
-	do {
-	  if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-		newval -= min(10, val-i_min);
-	  }
-	  else {
-		newval--;
-	  }
-	} while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+    do {
+	    if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+		    newval -= min(10, val-i_min);
+	    }
+	    else {
+		    newval--;
+	    }
+	  } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
 
-	if (newval < i_min) {
-	  newval = val;
-	  killEvents(event);
-	  AUDIO_WARNING2();
-	}
-	else {
-	  AUDIO_KEYPAD_DOWN();
-	}
+	  if (newval < i_min) {
+	    newval = val;
+	    killEvents(event);
+	    AUDIO_KEY_ERROR();
+	  }
   }
 
   if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
@@ -175,20 +169,11 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   }
 #endif
 
-  if (newval > i_max || newval < i_min) {
-    newval = (newval > i_max ? i_max : i_min);
-    killEvents(event);
-    AUDIO_WARNING2();
-  }
-
   if (newval != val) {
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100) && !IS_ROTARY_EVENT(event)) {
       pauseEvents(event); // delay before auto-repeat continues
-      if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
-        AUDIO_KEYPAD_UP();
-      else
-        AUDIO_KEYPAD_DOWN();
     }
+    AUDIO_KEY_PRESS();
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
   }
@@ -233,11 +218,9 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 
   if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
     newval++;
-    AUDIO_KEYPAD_UP();
   }
   else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
     newval--;
-    AUDIO_KEYPAD_DOWN();
   }
 
   if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
@@ -279,16 +262,15 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
   if (newval > i_max || newval < i_min) {
     newval = (newval > i_max ? i_max : i_min);
     killEvents(event);
-    AUDIO_WARNING2();
+    AUDIO_KEY_ERROR();
   }
 
   if (newval != val) {
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && (newval==0 || newval==-100 || newval==+100) && !IS_ROTARY_EVENT(event)) {
       pauseEvents(event); // delay before auto-repeat continues
-      if (newval>val) // without AUDIO it's optimized, because the 2 sounds are the same
-        AUDIO_KEYPAD_UP();
-      else
-        AUDIO_KEYPAD_DOWN();
+    }
+    if (!IS_KEY_REPT(event)) {
+      AUDIO_KEY_PRESS();
     }
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
@@ -507,6 +489,7 @@ void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, ui
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
+      AUDIO_KEY_PRESS();
 #if defined(ROTARY_ENCODER_NAVIGATION)
       if (s_editMode == 0)
         s_editMode = EDIT_MODE_INIT;
@@ -521,7 +504,6 @@ void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, ui
         popMenu();  // beeps itself
       }
       else {
-        AUDIO_MENUS();
         l_posVert = 0;
         l_posHorz = 0;
       }

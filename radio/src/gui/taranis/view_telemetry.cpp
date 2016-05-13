@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define STATUS_BAR_Y     (7*FH+1)
 #define TELEM_2ND_COLUMN (11*FW)
@@ -135,7 +135,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         else {
           putsMixerSource(pos[j], 1+FH+2*FH*i, field, 0);
         }
-        
+
         if (field >= MIXSRC_FIRST_TELEM) {
           TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
           if (!telemetryItem.isAvailable()) {
@@ -237,7 +237,7 @@ void menuTelemetryFrsky(uint8_t event)
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
       POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
-      popupMenuHandler = onMainViewMenu;
+      POPUP_MENU_START(onMainViewMenu);
       break;
   }
 

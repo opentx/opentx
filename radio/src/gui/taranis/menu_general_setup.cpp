@@ -228,9 +228,11 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_BEEP_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.beepVolume, STR_BEEP_VOLUME, event, attr);
         break;
+
       case ITEM_SETUP_WAV_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.wavVolume, STR_WAV_VOLUME, event, attr);
         break;
+
       case ITEM_SETUP_BACKGROUND_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.backgroundVolume, STR_BG_VOLUME, event, attr);
         break;
@@ -253,21 +255,25 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_VARIO_LABEL:
         lcd_putsLeft(y, STR_VARIO);
         break;
+
       case ITEM_SETUP_VARIO_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.varioVolume, TR_SPEAKER_VOLUME, event, attr);
         break;
+
       case ITEM_SETUP_VARIO_PITCH:
         lcd_putsLeft(y, STR_PITCH_AT_ZERO);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10), attr|LEFT);
         lcdDrawText(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioPitch, -40, 40);
         break;
+
       case ITEM_SETUP_VARIO_RANGE:
         lcd_putsLeft(y, STR_PITCH_AT_MAX);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT);
         lcdDrawText(lcdLastPos, y, "Hz", attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
         break;
+
       case ITEM_SETUP_VARIO_REPEAT:
         lcd_putsLeft(y, STR_REPEAT_AT_ZERO);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT);
@@ -310,7 +316,7 @@ void menuGeneralSetup(uint8_t event)
       case ITEM_SETUP_BATTERY_WARNING:
         lcd_putsLeft(y, STR_BATTERYWARNING);
         putsVolts(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, attr|LEFT);
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); // 4-12V
         break;
 
       case ITEM_SETUP_MEMORY_WARNING:

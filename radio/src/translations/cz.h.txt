@@ -1163,6 +1163,8 @@
 #define TR_ONLYPOSITIVE        "Jen kladné"
 #define TR_FILTER              "Filtr"
 #define TR_TELEMETRYFULL       "Všechny sloty jsou plné!"
+#define TR_SERVOS_OK           "Servos OK"
+#define TR_SERVOS_KO           "Servos KO"
 //TODO: translation
 #define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj chyby ID"

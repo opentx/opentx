@@ -94,7 +94,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
         s_editMode = 0;
         if (sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(value->stringValue), value->stringValue, LIST_NONE_SD_FILE)) {
           fileSelectionDone = false;
-          popupMenuHandler = onZoneOptionFileSelectionMenu;
+          POPUP_MENU_START(onZoneOptionFileSelectionMenu);
         }
         else {
           POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
@@ -330,7 +330,7 @@ bool menuWidgetsSetup(evt_t event)
           if (currentWidget->getFactory()->getOptions())
             POPUP_MENU_ADD_ITEM(STR_WIDGET_SETTINGS);
           POPUP_MENU_ADD_ITEM(STR_REMOVE_WIDGET);
-          popupMenuHandler = onZoneMenu;
+          POPUP_MENU_START(onZoneMenu);
         }
         else {
           onZoneMenu(STR_SELECT_WIDGET);

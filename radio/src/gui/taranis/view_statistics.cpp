@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-#include "../../timers.h"
+#include "opentx.h"
 
 #define STATS_1ST_COLUMN               FW/2
 #define STATS_2ND_COLUMN               12*FW+FW/2
@@ -118,7 +117,6 @@ void menuStatisticsDebug(uint8_t event)
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
       killEvents(event);
-      AUDIO_KEYPAD_UP();
       break;
     case EVT_KEY_FIRST(KEY_ENTER):
 #if defined(LUA)
@@ -126,7 +124,6 @@ void menuStatisticsDebug(uint8_t event)
       maxLuaDuration = 0;
 #endif
       maxMixerDuration  = 0;
-      AUDIO_KEYPAD_UP();
       break;
 
 #if defined(DEBUG_TRACE_BUFFER)

@@ -186,7 +186,7 @@ bool menuGeneralSdManager(evt_t _event)
         killEvents(_event);
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);
         POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
-        popupMenuHandler = onSdManagerMenu;
+        POPUP_MENU_START(onSdManagerMenu);
       }
       break;
 #endif
@@ -248,7 +248,7 @@ bool menuGeneralSdManager(evt_t _event)
           if (IS_FILE(line))
             POPUP_MENU_ADD_ITEM(STR_DELETE_FILE);
         }
-        popupMenuHandler = onSdManagerMenu;
+        POPUP_MENU_START(onSdManagerMenu);
       }
       break;
   }

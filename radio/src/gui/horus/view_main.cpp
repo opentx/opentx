@@ -144,7 +144,7 @@ bool menuMainView(evt_t event)
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
       POPUP_MENU_ADD_ITEM(STR_SETUP_SCREENS);
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
-      popupMenuHandler = onMainViewMenu;
+      POPUP_MENU_START(onMainViewMenu);
       break;
 
     case EVT_KEY_LONG(KEY_MODEL):
@@ -179,7 +179,6 @@ bool menuMainView(evt_t event)
         gvarDisplayTimer = 0;
       }
 #endif
-      AUDIO_KEYPAD_UP();
       break;
   }
 

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 #include <math.h>
- 
+
 extern OS_MutexID audioMutex;
 
 const int16_t sineValues[] =
@@ -139,14 +139,6 @@ const char * const audioFilenames[] = {
   "baddata",
   "lowbatt",
   "inactiv",
-  "a1_org",
-  "a1_red",
-  "a2_org",
-  "a2_red",
-  "a3_org",
-  "a3_red",
-  "a4_org",
-  "a4_red",
   "rssi_org",
   "rssi_red",
   "swr_red",
@@ -156,20 +148,18 @@ const char * const audioFilenames[] = {
   "trainok",
   "sensorko",
   "servoko",
+  "rxko",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",
 #endif
   "error",
-  "keyup", // TODO remove this one
-  "keydown", // TODO remove this one
-  "menus", // TODO remove this one
-  "trim", // TODO remove this one
   "warning1",
   "warning2",
   "warning3",
   "midtrim",
-  "endtrim",
+  "mintrim",
+  "maxtrim",
   "midstck1",
   "midstck2",
   "midstck3",
@@ -187,10 +177,9 @@ const char * const audioFilenames[] = {
   "mixwarn1",
   "mixwarn2",
   "mixwarn3",
-  "timer00",
-  "timer10",
-  "timer20",
-  "timer30"
+  "timovr1",
+  "timovr2",
+  "timovr3"
 };
 
 uint64_t sdAvailableSystemAudioFiles = 0;
@@ -505,13 +494,13 @@ void audioTask(void * pdata)
   setSampleRate(AUDIO_SAMPLE_RATE);
 
 #if !defined(EEPROM)
-  AUDIO_TADA();
+  AUDIO_HELLO();
 #elif defined(SDCARD)
   if (!unexpectedShutdown) {
 #if defined(EEPROM)
     sdInit();
 #endif
-    AUDIO_TADA();
+    AUDIO_HELLO();
   }
 #endif
 
@@ -674,7 +663,7 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
           fragment.tone.freq += freqChange;
         }
         else {
-          fragment.tone.freq = BEEP_MIN_FREQ;  
+          fragment.tone.freq = BEEP_MIN_FREQ;
         }
       }
     }
@@ -995,25 +984,106 @@ void audioPlay(unsigned int index, uint8_t id)
   }
 }
 
-void audioEvent(unsigned int index, unsigned int freq)
+void audioKeyPress()
+{
+  if (g_eeGeneral.beepMode == e_mode_all) {
+    audioQueue.playTone(BEEP_DEFAULT_FREQ, 40, 20, PLAY_NOW);
+  }
+
+#if defined(HAPTIC)
+  if (g_eeGeneral.hapticMode == e_mode_all) {
+    haptic.play(5, 0, PLAY_NOW);
+  }
+#endif
+}
+
+void audioKeyError()
+{
+  if (g_eeGeneral.beepMode >= e_mode_nokeys) {
+    audioQueue.playTone(BEEP_DEFAULT_FREQ, 160, 20, PLAY_NOW);
+  }
+
+#if defined(HAPTIC)
+  if (g_eeGeneral.hapticMode >= e_mode_nokeys) {
+    haptic.play(15, 3, PLAY_NOW);
+  }
+#endif
+}
+
+void audioTrimPress(int value)
+{
+  value = limit(TRIM_MIN, value, TRIM_MAX);
+  value <<= 3;
+  value += 120*16;
+  if (g_eeGeneral.beepMode >= e_mode_nokeys) {
+    audioQueue.playTone(value, 40, 20, PLAY_NOW);
+  }
+}
+
+void audioTimerCountdown(uint8_t timer, int value)
+{
+  if (g_model.timers[timer].countdownBeep == COUNTDOWN_VOICE) {
+    if (value >= 0 && value <= TIMER_COUNTDOWN_START(timer)) {
+      playNumber(value, 0, 0, 0);
+    }
+    else if (value == 30 || value == 20) {
+      playDuration(value, 0, 0);
+    }
+  }
+  else if (g_model.timers[timer].countdownBeep == COUNTDOWN_BEEPS) {
+    if (value == 0) {
+      audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 300, 20, PLAY_NOW);
+    }
+    else if (value > 0 && value <= TIMER_COUNTDOWN_START(timer)) {
+      audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 100, 20, PLAY_NOW);
+    }
+    else if (value == 30) {
+      audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_REPEAT(2));
+    }
+    else if (value == 20) {
+      audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_REPEAT(1));
+    }
+    else if (value == 10) {
+      audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_NOW);
+    }
+  }
+#if defined(HAPTIC)
+  else if (g_model.timers[timer].countdownBeep == COUNTDOWN_HAPTIC) {
+    if (value == 0) {
+      haptic.play(15, 3, PLAY_NOW);
+    }
+    else if (value > 0 && value <= TIMER_COUNTDOWN_START(timer)) {
+      haptic.play(10, 0, PLAY_NOW);
+    }
+    else if (value == 30) {
+      haptic.play(10, 3, PLAY_REPEAT(2) | PLAY_NOW);
+    }
+    else if (value == 20) {
+      haptic.play(10, 3, PLAY_REPEAT(1) | PLAY_NOW);
+    }
+    else if (value == 10) {
+      haptic.play(10, 3, PLAY_NOW);
+    }
+  }
+#endif
+}
+
+void audioEvent(unsigned int index)
 {
   if (index == AU_NONE)
     return;
 
 #if defined(HAPTIC)
-  if (index >= AU_THROTTLE_ALERT) {
-    haptic.event(index); //do this before audio to help sync timings
-  }
+  haptic.event(index); // do this before audio to help sync timings
 #endif
 
-  if (index <= AU_ERROR || (index >= AU_WARNING1 && index < AU_SPECIAL_SOUND_FIRST)) {
+  if (index <= AU_ERROR) {
     if (g_eeGeneral.alarmsFlash) {
       flashCounter = FLASH_DURATION;
     }
   }
 
-  if (g_eeGeneral.beepMode > 0 || (g_eeGeneral.beepMode == 0 && index >= AU_TRIM_MOVE) ||
-      (g_eeGeneral.beepMode >= -1 && index <= AU_ERROR)) {
+  if (g_eeGeneral.beepMode >= e_mode_nokeys || (g_eeGeneral.beepMode >= e_mode_alarms && index <= AU_ERROR)) {
 #if defined(SDCARD)
     char filename[AUDIO_FILENAME_MAXLEN + 1];
     if (index < AU_SPECIAL_SOUND_FIRST && isAudioFileReferenced(index, filename)) {
@@ -1038,23 +1108,14 @@ void audioEvent(unsigned int index, unsigned int freq)
       case AU_ERROR:
         audioQueue.playTone(BEEP_DEFAULT_FREQ, 200, 20, PLAY_NOW);
         break;
-      case AU_KEYPAD_UP:
-        audioQueue.playTone(BEEP_KEY_UP_FREQ, 80, 20, PLAY_NOW);
-        break;
-      case AU_KEYPAD_DOWN:
-        audioQueue.playTone(BEEP_KEY_DOWN_FREQ, 80, 20, PLAY_NOW);
-        break;
-      case AU_MENUS:
-        audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
-        break;
-      case AU_TRIM_MOVE:
-        audioQueue.playTone(freq, 40, 20, PLAY_NOW);
-        break;
       case AU_TRIM_MIDDLE:
-        audioQueue.playTone(freq, 80, 20, PLAY_NOW);
+        audioQueue.playTone(120*16, 80, 20, PLAY_NOW);
         break;
-      case AU_TRIM_END:
-        audioQueue.playTone(freq, 80, 20, PLAY_NOW);
+      case AU_TRIM_MIN:
+        audioQueue.playTone(TRIM_MIN*8 + 120*16, 80, 20, PLAY_NOW);
+        break;
+      case AU_TRIM_MAX:
+        audioQueue.playTone(TRIM_MAX*8 + 120*16, 80, 20, PLAY_NOW);
         break;
       case AU_WARNING1:
         audioQueue.playTone(BEEP_DEFAULT_FREQ, 80, 20, PLAY_NOW);
@@ -1089,29 +1150,10 @@ void audioEvent(unsigned int index, unsigned int freq)
       case AU_MIX_WARNING_3:
         audioQueue.playTone(BEEP_DEFAULT_FREQ + 1680, 48, 32, PLAY_REPEAT(2));
         break;
-      case AU_TIMER_00:
+      case AU_TIMER1_ELAPSED:
+      case AU_TIMER2_ELAPSED:
+      case AU_TIMER3_ELAPSED:
         audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 300, 20, PLAY_NOW);
-        break;
-      case AU_TIMER_LT10:
-        audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_NOW);
-        break;
-      case AU_TIMER_20:
-        audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_REPEAT(1) | PLAY_NOW);
-        break;
-      case AU_TIMER_30:
-        audioQueue.playTone(BEEP_DEFAULT_FREQ + 150, 120, 20, PLAY_REPEAT(2) | PLAY_NOW);
-        break;
-      case AU_A1_ORANGE:
-      case AU_A2_ORANGE:
-      case AU_A3_ORANGE:
-      case AU_A4_ORANGE:
-        audioQueue.playTone(BEEP_DEFAULT_FREQ + 600, 200, 20, PLAY_NOW);
-        break;
-      case AU_A1_RED:
-      case AU_A2_RED:
-      case AU_A3_RED:
-      case AU_A4_RED:
-        audioQueue.playTone(BEEP_DEFAULT_FREQ + 600, 200, 20, PLAY_REPEAT(1) | PLAY_NOW);
         break;
       case AU_RSSI_ORANGE:
         audioQueue.playTone(BEEP_DEFAULT_FREQ + 1500, 800, 20, PLAY_NOW);

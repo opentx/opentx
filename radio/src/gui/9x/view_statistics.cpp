@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-#include "../../timers.h"
+#include "opentx.h"
 
 void menuStatisticsView(uint8_t event)
 {
@@ -51,7 +50,7 @@ void menuStatisticsView(uint8_t event)
   putsTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
 
   putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
-  
+
 #if defined(THRTRACE)
   const coord_t x = 5;
   const coord_t y = 60;
@@ -98,7 +97,6 @@ void menuStatisticsDebug(uint8_t event)
 #endif
       sessionTimer = 0;
       killEvents(event);
-      AUDIO_KEYPAD_UP();
       break;
 #endif
     case EVT_KEY_FIRST(KEY_ENTER):
@@ -107,7 +105,6 @@ void menuStatisticsDebug(uint8_t event)
       g_tmr1Latency_max = 0;
 #endif
       maxMixerDuration  = 0;
-      AUDIO_KEYPAD_UP();
       break;
 
 #if defined(DEBUG_TRACE_BUFFER)

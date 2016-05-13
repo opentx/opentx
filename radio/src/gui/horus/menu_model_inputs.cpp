@@ -445,7 +445,7 @@ bool menuModelExposAll(evt_t event)
             POPUP_MENU_ADD_ITEM(STR_COPY);
             POPUP_MENU_ADD_ITEM(STR_MOVE);
             POPUP_MENU_ADD_ITEM(STR_DELETE);
-            popupMenuHandler = onExposMenu;
+            POPUP_MENU_START(onExposMenu);
           }
         }
       }

@@ -21,6 +21,9 @@ for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virg
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
 for s, f, a in [(u"Trim centré", "midtrim", 495),
                 (u"Trim maximum atteint", "endtrim", NO_ALTERNATE),
+                (u"Chrono 1 à 0", "timovr1", NO_ALTERNATE),
+                (u"Chrono 2 à 0", "timovr2", NO_ALTERNATE),
+                (u"Chrono 3 à 0", "timovr3", NO_ALTERNATE),
                 (u"Batterie radio faible !", "lowbatt", 485),
                 (u"Radio inactive !", "inactiv", 486),
                 (u"Alerte manche des gaz", "thralert", 481),
@@ -36,6 +39,7 @@ for s, f, a in [(u"Trim centré", "midtrim", 495),
                 (u"Signal écolage retrouvé", "trainok", NO_ALTERNATE),
                 (u"Sonde de télémétrie perdue", "sensorko", NO_ALTERNATE),
                 (u"Servo en surcharge", "servoko", NO_ALTERNATE),
+                (u"Surcharge réception", "rxko", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, (s, f) in enumerate([(u"altitude", "altitude"),

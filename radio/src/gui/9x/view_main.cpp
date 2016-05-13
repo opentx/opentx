@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-#include "../../timers.h"
+#include "opentx.h"
 
 #define BIGSIZE       DBLSIZE
 #define LBOX_CENTERX  (LCD_W/4 + 10)
@@ -310,7 +309,7 @@ void menuMainView(uint8_t event)
         g_eeGeneral.view ^= ALTERNATE_VIEW;
 #endif
         storageDirty(EE_GENERAL);
-        AUDIO_KEYPAD_UP();
+        AUDIO_KEY_PRESS();
       }
       break;
 
@@ -339,7 +338,7 @@ void menuMainView(uint8_t event)
 #if defined(CPUARM)
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
 #endif
-      popupMenuHandler = onMainViewMenu;
+      POPUP_MENU_START(onMainViewMenu);
       break;
 #endif
 
@@ -366,7 +365,6 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_DOWN):
       g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
       storageDirty(EE_GENERAL);
-      AUDIO_KEYPAD_UP();
       break;
 
     case EVT_KEY_STATISTICS:
@@ -404,13 +402,11 @@ void menuMainView(uint8_t event)
       if (view == VIEW_TIMER2) {
         timerReset(1);
       }
-      AUDIO_KEYPAD_UP();
       break;
 
 #if !defined(NAVIGATION_MENUS)
     case EVT_KEY_LONG(KEY_EXIT):
       flightReset();
-      AUDIO_KEYPAD_UP();
       break;
 #endif
   }

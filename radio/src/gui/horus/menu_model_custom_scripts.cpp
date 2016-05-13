@@ -72,7 +72,7 @@ bool menuModelCustomScriptOne(evt_t event)
       if (attr && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY()) {
         killEvents(KEY_ENTER);
         if (sdListFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
-          popupMenuHandler = onModelCustomScriptMenu;
+          POPUP_MENU_START(onModelCustomScriptMenu);
         }
         else {
           POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);

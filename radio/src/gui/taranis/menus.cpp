@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 MenuHandlerFunc menuHandlers[5];
 uint8_t menuEvent = 0;
@@ -30,6 +30,7 @@ void popMenu()
   assert(menuLevel>0);
   menuLevel = menuLevel-1;
   menuEvent = EVT_ENTRY_UP;
+  AUDIO_KEY_PRESS();
   TRACE("popMenu(%d)", menuLevel);
 }
 
@@ -37,6 +38,7 @@ void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  AUDIO_KEY_PRESS();
   TRACE("chainMenu(%d, %p)", menuLevel, newMenu);
 }
 
@@ -60,6 +62,7 @@ void pushMenu(MenuHandlerFunc newMenu)
 
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  AUDIO_KEY_PRESS();
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 

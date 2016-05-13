@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -433,7 +433,7 @@ void menuModelExposAll(uint8_t event)
             POPUP_MENU_ADD_ITEM(STR_COPY);
             POPUP_MENU_ADD_ITEM(STR_MOVE);
             POPUP_MENU_ADD_ITEM(STR_DELETE);
-            popupMenuHandler = onExposMenu;
+            POPUP_MENU_START(onExposMenu);
           }
         }
       }

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -481,11 +481,12 @@ void displayWarning(uint8_t event);
 
 #if defined(SDCARD) || (defined(ROTARY_ENCODER_NAVIGATION) && !defined(CPUM64))
   #define NAVIGATION_MENUS
-  #define POPUP_MENU_ADD_ITEM(s) popupMenuItems[popupMenuNoItems++] = s
-  #define POPUP_MENU_MAX_LINES               6
+  #define POPUP_MENU_ADD_ITEM(s)       popupMenuItems[popupMenuNoItems++] = s
+  #define POPUP_MENU_START(func)       do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while(0)
+  #define POPUP_MENU_MAX_LINES         6
   #define MENU_MAX_DISPLAY_LINES       POPUP_MENU_MAX_LINES
   #if defined(SDCARD)
-    #define POPUP_MENU_ADD_SD_ITEM(s)        POPUP_MENU_ADD_ITEM(s)
+    #define POPUP_MENU_ADD_SD_ITEM(s)  POPUP_MENU_ADD_ITEM(s)
   #else
     #define POPUP_MENU_ADD_SD_ITEM(s)
   #endif
@@ -498,7 +499,7 @@ void displayWarning(uint8_t event);
   const char * displayPopupMenu(uint8_t event);
   extern void (*popupMenuHandler)(const char *result);
 #else
-  #define popupMenuNoItems 0
+  #define popupMenuNoItems             0
 #endif
 
 #if defined(SDCARD)

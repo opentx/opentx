@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include "timers.h"
 
 RadioData  g_eeGeneral;
 ModelData  g_model;
@@ -1014,17 +1013,15 @@ void doSplash()
 #endif
 
   if (SPLASH_NEEDED()) {
-#if !defined(PCBTARANIS) && !defined(PCBHORUS)
     drawSplash();
-#endif
 
 #if !defined(CPUARM)
-    AUDIO_TADA();
+    AUDIO_HELLO();
 #endif
 
 #if defined(PCBSTD)
     lcdSetContrast();
-#elif !defined(PCBHORUS) && !defined(PCBTARANIS)
+#elif defined(PCBSKY9X)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -1074,7 +1071,7 @@ void doSplash()
       }
 #endif
 
-#if !defined(PCBHORUS) && !defined(PCBTARANIS) && !defined(PCBSTD)
+#if defined(PCBSKY9X)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
         if (contrast < g_eeGeneral.contrast) {
@@ -1372,16 +1369,22 @@ uint8_t checkTrim(uint8_t event)
     int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc); // TODO flash saving if (trimInc < 0)
     if (thro) v = 4; // if throttle trim and trim trottle then step=4
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
-#if defined(CPUARM)
-    uint8_t beepTrim = 0;
-#else
     bool beepTrim = false;
-#endif
-    for (int16_t mark=TRIM_MIN; mark<=TRIM_MAX; mark+=TRIM_MAX) {
-      if ((mark!=0 || !thro) && ((mark!=TRIM_MIN && after>=mark && before<mark) || (mark!=TRIM_MAX && after<=mark && before>mark))) {
-        after = mark;
-        beepTrim = (mark == 0 ? 1 : 2);
-      }
+
+    if (!thro && after==0 && before!=0) {
+      beepTrim = true;
+      AUDIO_TRIM_MIDDLE();
+      pauseEvents(event);
+    }
+    else if (before>TRIM_MIN && after<=TRIM_MIN) {
+      beepTrim = true;
+      AUDIO_TRIM_MIN();
+      killEvents(event);
+    }
+    else if (before<TRIM_MAX && after>=TRIM_MAX) {
+      beepTrim = true;
+      AUDIO_TRIM_MAX();
+      killEvents(event);
     }
 
     if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
@@ -1412,35 +1415,10 @@ uint8_t checkTrim(uint8_t event)
 #endif
     }
 
-#if defined(AUDIO)
-    // toneFreq higher/lower according to trim position
-    // limit the frequency, range -125 to 125 = toneFreq: 19 to 101
-    if (after > TRIM_MAX)
-      after = TRIM_MAX;
-    if (after < TRIM_MIN)
-      after = TRIM_MIN;
-#if defined(CPUARM)
-    after <<= 3;
-    after += 120*16;
-#else
-    after >>= 2;
-    after += 60;
-#endif
-#endif
+    if (!beepTrim) {
+      AUDIO_TRIM_PRESS(after);
+    }
 
-    if (beepTrim) {
-      if (beepTrim == 1) {
-        AUDIO_TRIM_MIDDLE(after);
-        pauseEvents(event);
-      }
-      else {
-        AUDIO_TRIM_END(after);
-        killEvents(event);
-      }
-    }
-    else {
-      AUDIO_TRIM(event, after);
-    }
 #if !defined(CPUARM)
     return 0;
 #endif
@@ -1632,9 +1610,9 @@ uint8_t trimsDisplayTimer = 0;
 uint8_t trimsDisplayMask = 0;
 #endif
 
-void flightReset()
+void flightReset(uint8_t check)
 {
-  // we don't reset the whole audio here (the tada.wav would be cut, if a prompt is queued before FlightReset, it should be played)
+  // we don't reset the whole audio here (the hello.wav would be cut, if a prompt is queued before FlightReset, it should be played)
   // TODO check if the vario / background music are stopped correctly if switching to a model which doesn't have these functions enabled
 
   if (!IS_MANUAL_RESET_TIMER(0)) {
@@ -1662,6 +1640,12 @@ void flightReset()
   START_SILENCE_PERIOD();
 
   RESET_THR_TRACE();
+
+  logicalSwitchesReset();
+
+  if (check) {
+    checkAll();
+  }
 }
 
 #if defined(THRTRACE)

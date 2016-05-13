@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -240,7 +240,7 @@ void menuModelSelect(uint8_t event)
             POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
             POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
           }
-          popupMenuHandler = onModelSelectMenu;
+          POPUP_MENU_START(onModelSelectMenu);
 #else
           if (g_eeGeneral.currModel != sub) {
             selectModel(sub);

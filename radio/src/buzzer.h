@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -56,45 +56,47 @@ inline void beep(uint8_t) { }
 
 #if defined(BUZZER)
   #if defined(VOICE)
-    #define AUDIO_TADA()           PUSH_SYSTEM_PROMPT(AU_TADA)
+    #define AUDIO_HELLO()           PUSH_SYSTEM_PROMPT(AUDIO_HELLO)
     #define AUDIO_BYE()
     #define AUDIO_TX_BATTERY_LOW() PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW)
     #define AUDIO_INACTIVITY()     PUSH_SYSTEM_PROMPT(AU_INACTIVITY)
     #define AUDIO_ERROR_MESSAGE(e) PUSH_SYSTEM_PROMPT((e))
     #define AUDIO_TIMER_MINUTE(t)  playDuration(t)
+    // TODO
     #define AUDIO_TIMER_30()       PUSH_SYSTEM_PROMPT(AU_TIMER_30)
     #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
   #else
-    #define AUDIO_TADA()
+    #define AUDIO_HELLO()
     #define AUDIO_BYE()
     #define AUDIO_TX_BATTERY_LOW() beep(4)
     #define AUDIO_INACTIVITY()     beep(3)
     #define AUDIO_ERROR_MESSAGE(e) beep(4)
     #define AUDIO_TIMER_MINUTE(t)  beep(2)
+    // TODO
     #define AUDIO_TIMER_30()       { beepAgain=2; beep(2); }
     #define AUDIO_TIMER_20()       { beepAgain=1; beep(2); }
   #endif
 
-  #define AUDIO_KEYPAD_UP()        beep(0)
-  #define AUDIO_KEYPAD_DOWN()      beep(0)
-  #define AUDIO_MENUS()            beep(0)
+  #define AUDIO_KEY_PRESS()        beep(0)
+  #define AUDIO_KEY_ERROR()        beep(2)
   #define AUDIO_WARNING2()         beep(2)
   #define AUDIO_WARNING1()         beep(3)
   #define AUDIO_ERROR()            beep(4)
   #define AUDIO_MIX_WARNING(x)     beep(1)
   #define AUDIO_POT_MIDDLE()       beep(2)
-  #define AUDIO_TIMER_LT10(m, x)   beep(2)
-  #define AUDIO_TIMER_00(m)        beep(3)
+  #define AUDIO_TIMER_COUNTDOWN(idx, val)  beep(2)
+  #define AUDIO_TIMER_ELAPSED(idx) beep(3)
   #define AUDIO_VARIO_UP()         _beep(1)
   #define AUDIO_VARIO_DOWN()       _beep(1)
-  #define AUDIO_TRIM(event, f)     { if (!IS_KEY_FIRST(event)) warble = true; beep(1); }
-  #define AUDIO_TRIM_MIDDLE(f)     beep(2)
-  #define AUDIO_TRIM_END(f)        beep(2)
+  #define AUDIO_TRIM_PRESS(f)      { if (!IS_KEY_FIRST(event)) warble = true; beep(1); }
+  #define AUDIO_TRIM_MIDDLE()      beep(2)
+  #define AUDIO_TRIM_MIN()         beep(2)
+  #define AUDIO_TRIM_MAX()         beep(2)
   #define AUDIO_PLAY(p)            beep(3)
 
   #define IS_AUDIO_BUSY() (g_beepCnt || beepAgain || beepOn)
 #else /* BUZZER */
-  #define AUDIO_TADA()
+  #define AUDIO_HELLO()
   #define AUDIO_BYE()
   #define AUDIO_TX_BATTERY_LOW()
   #define AUDIO_INACTIVITY()

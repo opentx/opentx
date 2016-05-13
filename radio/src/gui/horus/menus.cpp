@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -30,6 +30,7 @@ void popMenu()
   assert(menuLevel>0);
   menuLevel = menuLevel-1;
   menuEvent = EVT_ENTRY_UP;
+  AUDIO_KEY_PRESS();
   TRACE("popMenu(%d)", menuLevel);
 }
 
@@ -37,6 +38,7 @@ void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  AUDIO_KEY_PRESS();
   TRACE("chainMenu(%d, %p)", menuLevel, newMenu);
 }
 
@@ -60,6 +62,7 @@ void pushMenu(MenuHandlerFunc newMenu)
 
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  AUDIO_KEY_PRESS();
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 

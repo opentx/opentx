@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -59,18 +59,18 @@ void perMain()
       t0=getTmr16KHz();
       delta= (nextMixerEndTime - lastMixerDuration) - t0;
     } while ((delta>0) && (delta<MAX_MIXER_DELTA));
-    
+
     // reenabling of the hardware components needed here
     MCUCR&=0x00;  // disable sleep
     ADCSRA|=0x80;  // enable ADC
 #endif
     return;
-  }  
+  }
 
   nextMixerEndTime = t0 + MAX_MIXER_DELTA;
   // this is a very tricky implementation; lastMixerEndTime is just like a default value not to stop mixcalculations totally;
   // the real value for lastMixerEndTime is calculated inside pulses_XXX.cpp which aligns the timestamp to the pulses generated
-  // nextMixerEndTime is actually defined inside pulses_XXX.h  
+  // nextMixerEndTime is actually defined inside pulses_XXX.h
 
   doMixerCalculations();
 
@@ -123,7 +123,6 @@ void perMain()
       menuHorizontalPosition = 0;
       evt = menuEvent;
       menuEvent = 0;
-      AUDIO_MENUS();
     }
     menuHandlers[menuLevel]((warn || popupMenuActive) ? 0 : evt);
 
@@ -138,7 +137,7 @@ void perMain()
 #endif
     drawStatusLine();
   }
-  
+
 #if defined(LCD_ST7920)
   lcdstate = lcdRefresh_ST7920(0);
 #else

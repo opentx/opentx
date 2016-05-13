@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -191,7 +191,7 @@ void menuModelCurveOne(uint8_t event)
         POPUP_MENU_ADD_ITEM(STR_CURVE_PRESET);
         POPUP_MENU_ADD_ITEM(STR_MIRROR);
         POPUP_MENU_ADD_ITEM(STR_CLEAR);
-        popupMenuHandler = onCurveOneMenu;
+        POPUP_MENU_START(onCurveOneMenu);
       }
       break;
     case EVT_KEY_LONG(KEY_MENU):

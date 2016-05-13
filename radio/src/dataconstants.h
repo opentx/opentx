@@ -367,6 +367,7 @@ enum TelemetryUnit {
   UNIT_CELLS = UNIT_FIRST_VIRTUAL,
   UNIT_DATETIME,
   UNIT_GPS,
+  UNIT_BITFIELD,
   // Internal units (not stored in sensor unit)
   UNIT_GPS_LONGITUDE,
   UNIT_GPS_LATITUDE,
