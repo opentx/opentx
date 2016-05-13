@@ -415,9 +415,9 @@ static int luaLcdDrawFilledRectangle(lua_State *L)
   return 0;
 }
 
-#if !defined(COLORLCD)
+
 /*luadoc
-@function lcd.drawGauge(x, y, w, h, fill, maxfill)
+@function lcd.drawGauge(x, y, w, h, fill, maxfill [, flags])
 
 Draw a simple gauge that is filled based upon fill value
 
@@ -444,13 +444,13 @@ static int luaLcdDrawGauge(lua_State *L)
   int h = luaL_checkinteger(L, 4);
   int num = luaL_checkinteger(L, 5);
   int den = luaL_checkinteger(L, 6);
-  // int flags = luaL_checkinteger(L, 7);
+  unsigned int flags = luaL_optunsigned(L, 7, 0);
   lcdDrawRect(x, y, w, h);
   uint8_t len = limit((uint8_t)1, uint8_t(w*num/den), uint8_t(w));
-  lcdDrawSolidFilledRect(x+1, y+1, len, h-2);
+  lcdDrawSolidFilledRect(x+1, y+1, len, h-2, flags);
   return 0;
 }
-#endif
+
 
 #if !defined(COLORLCD)
 /*luadoc
@@ -590,12 +590,12 @@ const luaL_Reg lcdLib[] = {
   { "drawChannel", luaLcdDrawChannel },
   { "drawSwitch", luaLcdDrawSwitch },
   { "drawSource", luaLcdDrawSource },
+  { "drawGauge", luaLcdDrawGauge },
 #if defined(COLORLCD)
   { "setColor", luaLcdSetColor },
   { "RGB", luaRGB },
 #else
   { "getLastPos", luaLcdGetLastPos },
-  { "drawGauge", luaLcdDrawGauge },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
