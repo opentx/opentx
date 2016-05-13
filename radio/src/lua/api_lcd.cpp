@@ -560,8 +560,8 @@ static int luaLcdDrawCombobox(lua_State *L)
 static int luaLcdSetColor(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
-  int index = luaL_checkinteger(L, 1);
-  int color = luaL_checkinteger(L, 2);
+  unsigned int index = luaL_checkunsigned(L, 1) >> 16;
+  unsigned int color = luaL_checkunsigned(L, 2);
   lcdColorTable[index] = color;
   return 0;
 }
