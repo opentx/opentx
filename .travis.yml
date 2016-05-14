@@ -1,18 +1,21 @@
-language: cpp
+sudo: required
+dist: trusty
+language: python
+
+virtualenv:
+  system_site_packages: true
+
+python:
+  - 3.4
 
 before_install:
-  - sudo apt-get remove cmake cmake-data --yes
-  - sudo add-apt-repository ppa:george-edison55/precise-backports --yes
+  - sudo add-apt-repository ppa:ubuntu-sdk-team/ppa --yes
   - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
-  - sudo add-apt-repository ppa:beineri/opt-qt551 --yes
-  - sudo add-apt-repository 'deb http://llvm.org/apt/precise/ llvm-toolchain-precise main' --yes
-  - wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install -y xvfb lcov cmake cmake-data bc curl gcc-arm-none-eabi qt-latest g++-5 libxerces-c-dev xsdcxx libsdl1.2-dev libusb-1.0-0 libfox-1.6-dev libgtest-dev python-clang-3.9 libclang-3.9-dev python-qt4
-  - export CXX="g++-5" CC="gcc-5"
+  - sudo apt-get -y install qtbase5-dev qtmultimedia5-dev qttools5-dev qttools5-dev-tools python3-pyqt5 curl gcc-arm-none-eabi libfox-1.6-dev libgtest-dev
   - wget --quiet http://firmware.ardupilot.org/Tools/Travis/gcc-avr_1%253a4.8-2.1_amd64.deb
   - wget --quiet http://firmware.ardupilot.org/Tools/Travis/libmpfr4_3.1.2-1_amd64.deb
   - wget --quiet http://firmware.ardupilot.org/Tools/Travis/avr-libc_1%253a1.8.0-4.1_all.deb
