@@ -618,6 +618,21 @@ static int luaLcdSetColor(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function lcd.RGB(r, g, b)
+
+Returns a 5/6/5 rgb color code, that can be used with lcd.setColor
+
+@param r (integer) a number between 0x00 and 0xff that expresses te amount of red in the color
+
+@param g (integer) a number between 0x00 and 0xff that expresses te amount of green in the color
+
+@param b (integer) a number between 0x00 and 0xff that expresses te amount of blue in the color
+
+@retval number (integer) rgb color expressed in 5/6/5 format
+
+@status current Introduced in 2.2.0
+*/
 static int luaRGB(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
