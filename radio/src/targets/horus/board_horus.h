@@ -112,7 +112,7 @@ extern "C" {
 #endif
 void delaysInit(void);
 void delay_01us(uint16_t nb);
-void delay_ms(uint16_t nb);
+void delay_ms(uint32_t ms);
 #ifdef __cplusplus
 }
 #endif

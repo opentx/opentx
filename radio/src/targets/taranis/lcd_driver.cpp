@@ -70,7 +70,7 @@ void initLcdSpi()
 static void LCD_Init()
 {
   WriteCommand(0x2F);   //Internal pump control
-  delay(20);
+  delay_ms(20);
   WriteCommand(0x24);   //Temperature compensation
   WriteCommand(0xE9);   //set bias=1/10
   WriteCommand(0x81);   //Set Vop
@@ -105,7 +105,7 @@ static void LCD_Init()
 static void LCD_Init()
 {	
   AspiCmd(0x2B);   //Panel loading set ,Internal VLCD.
-  delay(20);
+  delay_ms(20);
   AspiCmd(0x25);   //Temperature compensation curve definition: 0x25 = -0.05%/oC
   AspiCmd(0xEA);	//set bias=1/10 :Command table NO.27
   AspiCmd(0x81);	//Set Vop
@@ -349,7 +349,7 @@ void lcdOff()
   to re-init LCD without any delay
   */
   AspiCmd(0xAE);    //LCD sleep
-  delay(3);	        //wait for caps to drain
+  delay_ms(3);	        //wait for caps to drain
 }
 
 /*
@@ -357,7 +357,7 @@ void lcdOff()
   soon as possible after the reset because LCD takes a lot of
   time to properly power-on.
 
-  Make sure that delay() is functional before calling this function!
+  Make sure that delay_ms() is functional before calling this function!
 */
 void lcdInit()
 {
@@ -367,7 +367,7 @@ void lcdInit()
 
   //reset LCD module
   LCD_RST_LOW();
-  delay(1);       // only 3 us needed according to data-sheet, we use 1 ms
+  delay_ms(1);       // only 3 us needed according to data-sheet, we use 1 ms
   LCD_RST_HIGH();
 }
 
@@ -404,13 +404,13 @@ void lcdInitFinish()
 #if !defined(BOOT)
     while(g_tmr10ms < (RESET_WAIT_DELAY_MS/10)) {};    //wait measured from the power-on
 #else
-    delay(RESET_WAIT_DELAY_MS);
+    delay_ms(RESET_WAIT_DELAY_MS);
 #endif
   }
   
   LCD_Init();
   AspiCmd(0xAF);	//dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
-  delay(20);      //needed for internal DC-DC converter startup
+  delay_ms(20);      //needed for internal DC-DC converter startup
 }
 
 void lcdSetRefVolt(uint8_t val)
