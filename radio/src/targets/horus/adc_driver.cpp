@@ -165,9 +165,9 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
   //
   //        delay value       A5 change     Time needed for adcRead()
   //          1               16            0.154ms - 0.156ms
-  //        300               5             0.197ms - 0.199ms
-  //        500               0             0.225ms - 0.243ms
-  delay_01us(300);
+  //         38               5             0.197ms - 0.199ms
+  //         62               0             0.225ms - 0.243ms
+  delay_01us(40);
 
   for (uint8_t i = 0; i < 4; i++) {
     ADC_CS_LOW();
