@@ -567,7 +567,6 @@ static int luaLcdDrawCombobox(lua_State *L)
 Set a color for specific area
 
 @param area (unsigned number) specific screen area in the list bellow
-
  * `CUSTOM_COLOR`
  * `TEXT_COLOR`
  * `TEXT_BGCOLOR`
@@ -596,7 +595,6 @@ Set a color for specific area
  * `OVERLAY_COLOR`
 
 @param color (number) color in 5/6/5 rgb format. The following prefined colors are available
-
  * `WHITE`
  * `GREY`
  * `LIGHTGREY`
