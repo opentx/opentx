@@ -49,10 +49,10 @@ void timerSet(int idx, int16_t val)
 
 void initModelTimer(uint32_t idx, uint8_t mode, int16_t start = 0)
 {
-  memset(&g_model.timers[0], 0, sizeof(g_model.timers[0]));
-  g_model.timers[0].mode = mode;
-  g_model.timers[0].start = start;
-  g_model.timers[0].countdownBeep = COUNTDOWN_SILENT;
+  memset(&g_model.timers[idx], 0, sizeof(TimerData));
+  g_model.timers[idx].mode = mode;
+  g_model.timers[idx].start = start;
+  g_model.timers[idx].countdownBeep = COUNTDOWN_SILENT;
 }
 
 /*
