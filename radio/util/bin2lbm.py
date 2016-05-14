@@ -16,6 +16,6 @@ sts = [sts[i:i+16] for i in range(0, len(sts), 16)]
 with open(fileout, "w") as fw:
     for st in sts:
         for b in st:
-            fw.write("0x%02x," % (ord(b) if isinstance(b, basestring) else b))
+            fw.write("0x%02x," % (ord(b) if isinstance(b, str) else b))
         fw.write("\n")
     fw.write("\n")
