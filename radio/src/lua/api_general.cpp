@@ -826,7 +826,9 @@ const luaR_value_entry opentxConstants[] = {
   { "INVERS", INVERS },
   { "BOLD", BOLD },
   { "BLINK", BLINK },
-#if !defined(COLORLCD)
+#if defined(COLORLCD)
+  { "RIGHT", RIGHT },
+#else
   { "FIXEDWIDTH", FIXEDWIDTH },
 #endif
   { "LEFT", LEFT },
