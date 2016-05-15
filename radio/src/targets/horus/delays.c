@@ -18,30 +18,36 @@
  * GNU General Public License for more details.
  */
 
+#include <OsConfig.h>
 #include "board_horus.h"
+
+#define SYSTEM_TICKS_1US    ((CFG_CPU_FREQ + 500000)  / 1000000)      // number of system ticks in 1us
+#define SYSTEM_TICKS_01US   ((CFG_CPU_FREQ + 5000000) / 10000000)     // number of system ticks in 0.1us (rounding needed for sys frequencies that are not multiple of 10MHz)
 
 void delaysInit(void)
 {
-  // Timer13
-  RCC->APB1ENR |= RCC_APB1ENR_TIM13EN;           // Enable clock
-  TIM13->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 10000000 - 1;      // 0.1uS 
-  TIM13->ARR = 0xFFFF;
-  TIM13->EGR = TIM_EGR_UG;    // generate update event
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+  DWT->CYCCNT = 0;
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
 void delay_01us(uint16_t nb)
 {
-  TIM13->EGR = TIM_EGR_UG;    // generate update event (this also resets counter)
-  TIM13->SR &= ~TIM_SR_CC1IF; // clear CC flag
-  TIM13->CCR1 = nb;           // set CC value
-  TIM13->CR1 |= TIM_CR1_CEN;  // start timer
-  while((TIM13->SR & TIM_SR_CC1IF) == 0);
-  TIM13->CR1 &= ~TIM_CR1_CEN; // stop timer
+  volatile uint32_t dwtStart = DWT->CYCCNT;
+  volatile uint32_t dwtTotal = (SYSTEM_TICKS_01US * nb) - 10;
+  while((DWT->CYCCNT - dwtStart) < dwtTotal);
+}
+
+void delay_us(uint16_t nb)
+{
+  volatile uint32_t dwtStart = DWT->CYCCNT;
+  volatile uint32_t dwtTotal = (SYSTEM_TICKS_1US * nb) - 10;
+  while((DWT->CYCCNT - dwtStart) < dwtTotal);
 }
 
 void delay_ms(uint32_t ms)
 {
   while(ms--) {
-    delay_01us(10500);    // delay adjusted for the fact that ideal prescaler would be 8.4 but 8 is used
+    delay_us(1000);
   }
 }
