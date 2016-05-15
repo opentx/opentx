@@ -91,30 +91,30 @@ end
 -- This function returns green at 100%, red bellow 30% and graduate in betwwen
 local function getPercentColor(cpercent)
   if cpercent < 30 then
-    return(lcd.RGB(0xff,0,0))
+    return lcd.RGB(0xff,0,0)
   else
     g = math.floor(0xdf * cpercent / 100)
     r = 0xdf - g
-    return (lcd.RGB(r,g,0))
+    return lcd.RGB(r,g,0)
   end
 end
 
 -- This function returns green at gvalue, red at rvalue and graduate in betwwen
 local function getRangeColor(value, gvalue, rvalue)
-  if (gvalue > rvalue and not range==0) then
+  if gvalue > rvalue and not range==0 then
     range = gvalue - rvalue
-    if value > gvalue then return(lcd.RGB(0,0xdf,0)) end
-    if value < rvalue then return(lcd.RGB(0xdf,0,0)) end
+    if value > gvalue then return lcd.RGB(0,0xdf,0) end
+    if value < rvalue then return lcd.RGB(0xdf,0,0) end
     g = math.floor(0xdf * (value-rvalue) / range)
     r = 0xdf - g
-    return (lcd.RGB(r,g,0))
+    return lcd.RGB(r,g,0)
   else
-  range = rvalue - gvalue
-  if value > gvalue then return(lcd.RGB(0,0xdf,0)) end
-  if value < rvalue then return(lcd.RGB(0xdf,0,0)) end
+    range = rvalue - gvalue
+    if value > gvalue then return lcd.RGB(0,0xdf,0) end
+    if value < rvalue then return lcd.RGB(0xdf,0,0) end
     r = math.floor(0xdf * (value-gvalue) / range)
     g = 0xdf - r
-    return (lcd.RGB(r,g,0))
+    return lcd.RGB(r,g,0)
   end
 end
 
@@ -149,11 +149,11 @@ local function zoneMedium(zone)
   lcd.setColor(TEXT_COLOR, zone.options.Color)
   if type(mySensor) == "table" then
     local percent = getCellPercent(getCellAvg(mySensor))
-    lcd.drawText(zone.zone.x+102, zone.zone.y,percent.."%", LEFT + DBLSIZE + TEXT_COLOR)
+    lcd.drawText(zone.zone.x+102, zone.zone.y, percent.."%", LEFT + DBLSIZE + TEXT_COLOR)
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
     lcd.drawGauge(zone.zone.x+2, zone.zone.y+2, 75, 36 - 4,percent,100, CUSTOM_COLOR)
     mystring = ""
-    pos = {[1]={x=2,y=38},[2]={x=60,y=38},[3]={x=118,y=38},[4]={x=2,y=57},[5]={x=60,y=57},[6]={x=118,y=57}}
+    pos = {{x=2,y=38}, {x=60,y=38}, {x=118,y=38}, {x=2,y=57}, {x=60,y=57}, {x=118,y=57}}
     for i=1,getCellCount(mySensor),1 do
       lcd.setColor(CUSTOM_COLOR, getRangeColor(mySensor[i], getCellMax(mySensor), getCellMax(mySensor) - 0.2))
       lcd.drawFilledRectangle(zone.zone.x + pos[i].x,zone.zone.y + pos[i].y,58,20, CUSTOM_COLOR)
