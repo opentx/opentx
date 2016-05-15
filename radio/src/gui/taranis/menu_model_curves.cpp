@@ -80,6 +80,18 @@ bool moveCurve(uint8_t index, int8_t shift)
   return true;
 }
 
+int8_t getCurveX(int noPoints, int point)
+{
+  return -100 + div10_and_round( (point*2000) / (noPoints-1) );
+}
+
+void resetCustomCurveX(int8_t * points, int noPoints)
+{
+  for (int i=0; i<noPoints-2; i++) {
+    points[noPoints+i] = getCurveX(noPoints, i+1);
+  }
+}
+
 void displayPresetChoice(uint8_t event)
 {
   displayWarning(event);
@@ -90,11 +102,14 @@ void displayPresetChoice(uint8_t event)
     warningResult = 0;
     CurveInfo & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
-    for (uint8_t i=0; i<5+crv.points; i++)
-      points[i] = (i-((5+crv.points)/2)) * warningInputValue * 50 / (4+crv.points);
+    int k = 25 * warningInputValue;
+    int dx = 2000 / (5+crv.points-1);
+    for (uint8_t i=0; i<5+crv.points; i++) {
+      int x = -1000 + i * dx;
+      points[i] = div10_and_round(div100_and_round(k * x));
+    }
     if (crv.type == CURVE_TYPE_CUSTOM) {
-      for (int i=0; i<3+crv.points; i++)
-        points[crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);
+      resetCustomCurveX(points, 5+crv.points);
     }
   }
 }
@@ -116,11 +131,11 @@ void onCurveOneMenu(const char *result)
     for (int i=0; i<5+crv.points; i++)
       points[i] = 0;
     if (crv.type == CURVE_TYPE_CUSTOM) {
-      for (int i=0; i<3+crv.points; i++)
-        points[crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);
+      resetCustomCurveX(points, 5+crv.points);
     }
   }
 }
+
 
 void menuModelCurveOne(uint8_t event)
 {
@@ -143,12 +158,12 @@ void menuModelCurveOne(uint8_t event)
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
-      for (int i=1; i<4+crv.points; i++)
-        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + i*200/(4+crv.points)), s_curveChan));
+      for (int i=1; i<4+crv.points; i++) {
+        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5+crv.points, i)), s_curveChan));
+      }
       moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3+crv.points : -3-crv.points);
       if (newType == CURVE_TYPE_CUSTOM) {
-        for (int i=0; i<3+crv.points; i++)
-          points[5+crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);
+        resetCustomCurveX(points, 5+crv.points);
       }
       crv.type = newType;
     }
@@ -165,12 +180,12 @@ void menuModelCurveOne(uint8_t event)
       newPoints[0] = points[0];
       newPoints[4+count] = points[4+crv.points];
       for (int i=1; i<4+count; i++)
-        newPoints[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + (i*200) / (4+count)), s_curveChan));
+        newPoints[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5+count, i)), s_curveChan));
       moveCurve(s_curveChan, checkIncDec_Ret*(crv.type==CURVE_TYPE_CUSTOM?2:1));
       for (int i=0; i<5+count; i++) {
         points[i] = newPoints[i];
         if (crv.type == CURVE_TYPE_CUSTOM && i!=0 && i!=4+count)
-          points[5+count+i-1] = -100 + (i*200) / (4+count);
+          points[5+count+i-1] = getCurveX(5+count, i);
       }
       crv.points = count;
     }
@@ -217,7 +232,7 @@ void menuModelCurveOne(uint8_t event)
     }
 
     if (i>=pointsOfs && i<pointsOfs+7) {
-      int8_t x = -100 + 200*i/(5+crv.points-1);
+      int8_t x = getCurveX(5+crv.points, i);
       if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
       lcdDrawNumber(6+10*FW+FW/2, posY, i+1, LEFT);
       lcdDrawNumber(3+14*FW, posY, x, LEFT|(selectionMode==1?attr:0));
