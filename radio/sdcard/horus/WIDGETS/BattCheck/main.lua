@@ -136,7 +136,7 @@ local function zoneSmall(zone)
     lcd.drawRectangle(zone.zone.x+i, zone.zone.y+2, 15, zone.zone.h - 4, SOLID + CUSTOM_COLOR,1)
   end
   lcd.drawRectangle(zone.zone.x+2, zone.zone.y+2, 75, zone.zone.h - 4, SOLID + CUSTOM_COLOR,2)
-  lcd.drawRectangle(zone.zone.x+77, zone.zone.y+8, 6, zone.zone.h - 16, SOLID + CUSTOM_COLOR,2)
+  lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, zone.zone.h - 16, SOLID + CUSTOM_COLOR)
   lcd.setColor(CUSTOM_COLOR, BLACK)
   lcd.setColor(TEXT_COLOR, BLACK)
   return
@@ -167,7 +167,7 @@ local function zoneMedium(zone)
     lcd.drawRectangle(zone.zone.x+i, zone.zone.y+2, 15, 32, SOLID + CUSTOM_COLOR,1)
   end
   lcd.drawRectangle(zone.zone.x+2, zone.zone.y+2, 75, 32, SOLID + CUSTOM_COLOR,2)
-  lcd.drawRectangle(zone.zone.x+77, zone.zone.y+8, 6, 20, SOLID + CUSTOM_COLOR,2)
+  lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, 20, SOLID + CUSTOM_COLOR)
   lcd.setColor(CUSTOM_COLOR, BLACK)
   lcd.setColor(TEXT_COLOR, BLACK)
   return
