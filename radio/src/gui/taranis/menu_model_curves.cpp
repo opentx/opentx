@@ -35,8 +35,8 @@ struct point_t {
 point_t getPoint(uint8_t i)
 {
   point_t result = {0, 0};
-  CurveInfo &crv = g_model.curves[s_curveChan];
-  int8_t *points = curveAddress(s_curveChan);
+  CurveInfo & crv = g_model.curves[s_curveChan];
+  int8_t * points = curveAddress(s_curveChan);
   bool custom = (crv.type == CURVE_TYPE_CUSTOM);
   uint8_t count = 5+crv.points;
   if (i < count) {
@@ -82,7 +82,7 @@ bool moveCurve(uint8_t index, int8_t shift)
 
 int8_t getCurveX(int noPoints, int point)
 {
-  return -100 + div10_and_round( (point*2000) / (noPoints-1) );
+  return -100 + div_and_round((point*2000) / (noPoints-1), 10);
 }
 
 void resetCustomCurveX(int8_t * points, int noPoints)
@@ -106,7 +106,7 @@ void displayPresetChoice(uint8_t event)
     int dx = 2000 / (5+crv.points-1);
     for (uint8_t i=0; i<5+crv.points; i++) {
       int x = -1000 + i * dx;
-      points[i] = div10_and_round(div100_and_round(k * x));
+      points[i] = div_and_round(div_and_round(k * x, 100), 10);
     }
     if (crv.type == CURVE_TYPE_CUSTOM) {
       resetCustomCurveX(points, 5+crv.points);
@@ -114,7 +114,7 @@ void displayPresetChoice(uint8_t event)
   }
 }
 
-void onCurveOneMenu(const char *result)
+void onCurveOneMenu(const char * result)
 {
   if (result == STR_CURVE_PRESET) {
     POPUP_INPUT(STR_PRESET, displayPresetChoice, 0, -4, 4);

@@ -53,13 +53,6 @@ point_t getPoint(uint8_t i)
 void drawCurve(int x, int y, int width)
 {
   drawFunction(curveFn, x, y, width);
-
-  /*int i = 0;
-  do {
-    point_t point = getPoint(i++);
-    if (point.x == 0) break;
-    lcdDrawSolidFilledRect(point.x-offset, point.y-1, 3, 3, TEXT_COLOR); // do markup square
-  } while(1);*/
 }
 
 extern int8_t * curveEnd[MAX_CURVES];
@@ -81,6 +74,18 @@ bool moveCurve(uint8_t index, int8_t shift)
   return true;
 }
 
+int8_t getCurveX(int noPoints, int point)
+{
+  return -100 + div_and_round((point*2000) / (noPoints-1), 10);
+}
+
+void resetCustomCurveX(int8_t * points, int noPoints)
+{
+  for (int i=0; i<noPoints-2; i++) {
+    points[noPoints+i] = getCurveX(noPoints, i+1);
+  }
+}
+
 void displayPresetChoice(evt_t event)
 {
   displayWarning(event);
@@ -90,11 +95,14 @@ void displayPresetChoice(evt_t event)
     warningResult = 0;
     CurveInfo & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
-    for (int i=0; i<5+crv.points; i++)
-      points[i] = (i-((5+crv.points)/2)) * warningInputValue * 50 / (4+crv.points);
+    int k = 25 * warningInputValue;
+    int dx = 2000 / (5+crv.points-1);
+    for (uint8_t i=0; i<5+crv.points; i++) {
+      int x = -1000 + i * dx;
+      points[i] = div_and_round(div_and_round(k * x, 100), 10);
+    }
     if (crv.type == CURVE_TYPE_CUSTOM) {
-      for (int i=0; i<3+crv.points; i++)
-        points[crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);
+      resetCustomCurveX(points, 5+crv.points);
     }
   }
 }
@@ -116,8 +124,7 @@ void onCurveOneMenu(const char * result)
     for (int i=0; i<5+crv.points; i++)
       points[i] = 0;
     if (crv.type == CURVE_TYPE_CUSTOM) {
-      for (int i=0; i<3+crv.points; i++)
-        points[crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);
+      resetCustomCurveX(points, 5+crv.points);
     }
   }
 }
@@ -154,12 +161,12 @@ bool menuModelCurveOne(evt_t event)
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
-      for (int i=1; i<4+crv.points; i++)
-        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + i*200/(4+crv.points)), s_curveChan));
+      for (int i=1; i<4+crv.points; i++) {
+        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + i * 200 / (4 + crv.points)), s_curveChan));
+      }
       moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3+crv.points : -3-crv.points);
       if (newType == CURVE_TYPE_CUSTOM) {
-        for (int i=0; i<3+crv.points; i++)
-          points[5+crv.points+i] = -100 + ((i+1)*200) / (4+crv.points);
+        resetCustomCurveX(points, 5+crv.points);
       }
       crv.type = newType;
     }
