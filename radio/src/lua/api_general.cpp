@@ -179,20 +179,23 @@ void luaGetValueAndPush(int src)
   getvalue_t value = getValue(src); // ignored for GPS, DATETIME, and CELLS
 
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
-    src = (src-MIXSRC_FIRST_TELEM) / 3;
+    div_t qr = div(src-MIXSRC_FIRST_TELEM, 3);
     // telemetry values
-    if (TELEMETRY_STREAMING() && telemetryItems[src].isAvailable()) {
-      TelemetrySensor & telemetrySensor = g_model.telemetrySensors[src];
+    if (TELEMETRY_STREAMING() && telemetryItems[qr.quot].isAvailable()) {
+      TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
       switch (telemetrySensor.unit) {
         case UNIT_GPS:
-          luaPushLatLon(telemetrySensor, telemetryItems[src]);
+          luaPushLatLon(telemetrySensor, telemetryItems[qr.quot]);
           break;
         case UNIT_DATETIME:
-          luaPushTelemetryDateTime(telemetrySensor, telemetryItems[src]);
+          luaPushTelemetryDateTime(telemetrySensor, telemetryItems[qr.quot]);
           break;
         case UNIT_CELLS:
-          luaPushCells(telemetrySensor, telemetryItems[src]);
-          break;
+          if (qr.rem == 0) {
+            luaPushCells(telemetrySensor, telemetryItems[qr.quot]);
+            break;
+          }
+          // deliberate no break here to properly return `Cels-` and `Cels+`
         default:
           if (telemetrySensor.prec > 0)
             lua_pushnumber(L, float(value)/telemetrySensor.getPrecDivisor());
@@ -417,6 +420,8 @@ case the returned value is 0):
 @status current Introduced in 2.0.0, changed in 2.1.0
 
 @notice Getting a value by its numerical identifier is faster then by its name.
+While `Cels` sensor returns current values of all cells in a table, a `Cels+` or 
+`Cels-` will return a single value - the maximum or minimum Cels value.
 */
 static int luaGetValue(lua_State *L)
 {
