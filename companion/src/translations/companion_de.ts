@@ -425,12 +425,12 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="877"/>
         <source>Find Executable</source>
-        <translation>Suche die *.EXE-Datei</translation>
+        <translation>Ausführbare Datei auswählen</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="751"/>
         <source>Google Earth Executable</source>
-        <translation>Google Earth *.EXE Datei</translation>
+        <translation>Ausführbare Datei Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="831"/>
