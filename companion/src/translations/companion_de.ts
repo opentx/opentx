@@ -430,7 +430,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../apppreferencesdialog.ui" line="751"/>
         <source>Google Earth Executable</source>
-        <translation>Google Earth *.EXE Datei</translation>
+        <translation>Ausführbare Datei Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="831"/>
