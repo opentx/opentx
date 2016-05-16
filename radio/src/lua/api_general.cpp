@@ -417,7 +417,8 @@ case the returned value is 0):
   * key (number) cell number (1 to number of cells)
   * value (number) current cell voltage
 
-@status current Introduced in 2.0.0, changed in 2.1.0
+@status current Introduced in 2.0.0, changed in 2.1.0, `Cels+` and 
+`Cels-` added in 2.1.9
 
 @notice Getting a value by its numerical identifier is faster then by its name.
 While `Cels` sensor returns current values of all cells in a table, a `Cels+` or 
