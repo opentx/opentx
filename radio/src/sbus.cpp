@@ -24,40 +24,31 @@
 #define SBUS_FRAME_GAP_DELAY   1000 // 500uS
 
 #define SBUS_START_BYTE        0x0F
+#define SBUS_END_BYTE          0x00
 #define SBUS_FLAGS_IDX         23
 #define SBUS_FRAMELOST_BIT     2
 #define SBUS_FAILSAFE_BIT      3
 
-#define SBUS_CH_BITS          11
-#define SBUS_CH_MASK          ((1<<SBUS_CH_BITS)-1)
+#define SBUS_CH_BITS           11
+#define SBUS_CH_MASK           ((1<<SBUS_CH_BITS)-1)
 
-#define SBUS_CH_CENTER        0x3E0
+#define SBUS_CH_CENTER         0x3E0
 
-uint8_t SbusFrame[SBUS_MAX_FRAME_SIZE];
-uint16_t SbusTimer ;
-uint8_t SbusIndex = 0 ;
 
 // Range for pulses (ppm input) is [-512:+512]
 void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size)
 {
-  uint32_t inputbitsavailable = 0;
-  uint32_t inputbits = 0;
-
-  if (sbus[0] != SBUS_START_BYTE) {
+  if (size != SBUS_FRAME_SIZE || sbus[0] != SBUS_START_BYTE || sbus[SBUS_FRAME_SIZE-1] != SBUS_END_BYTE) {
     return; // not a valid SBUS frame
   }
-
-  if (size < SBUS_MIN_FRAME_SIZE) {
-    return;
-  }
-
-  if (size > SBUS_FLAGS_IDX && ((sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FAILSAFE_BIT)) || (sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FRAMELOST_BIT)))) {
+  if (sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FAILSAFE_BIT) || sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FRAMELOST_BIT)) {
     return; // SBUS invalid frame or failsafe mode
   }
 
-  // Skip start byte
-  sbus++;
+  sbus++;   // Skip start byte
 
+  uint32_t inputbitsavailable = 0;
+  uint32_t inputbits = 0;
   for (uint32_t i=0; i<NUM_TRAINER; i++) {
     while (inputbitsavailable < SBUS_CH_BITS) {
       inputbits |= *sbus++ << inputbitsavailable;
@@ -76,11 +67,15 @@ void processSbusInput()
 #if !defined(SIMU)
   uint8_t rxchar;
   uint32_t active = 0;
+  static uint8_t SbusIndex = 0;
+  static uint16_t SbusTimer;
+  static uint8_t SbusFrame[SBUS_FRAME_SIZE];
+
   while (sbusGetByte(&rxchar)) {
     active = 1;
     SbusFrame[SbusIndex++] = rxchar;
-    if (SbusIndex > SBUS_MAX_FRAME_SIZE-1) {
-      SbusIndex = SBUS_MAX_FRAME_SIZE-1;
+    if (SbusIndex > SBUS_FRAME_SIZE-1) {
+      SbusIndex = SBUS_FRAME_SIZE-1;
     }
   }
   if (active) {

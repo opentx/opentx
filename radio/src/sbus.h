@@ -22,8 +22,7 @@
 #define _SBUS_H_
 
 #define SBUS_BAUDRATE         100000
-#define SBUS_MIN_FRAME_SIZE   23
-#define SBUS_MAX_FRAME_SIZE   28
+#define SBUS_FRAME_SIZE       25
 
 void processSbusInput();
 
