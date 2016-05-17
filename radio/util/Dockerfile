@@ -19,7 +19,8 @@ RUN apt-get update && \
       qttools5-dev \
       qttools5-dev-tools \
       software-properties-common \
-      wget
+      wget \
+      zip
 
 RUN wget -q https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 && \
     tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2 && \
