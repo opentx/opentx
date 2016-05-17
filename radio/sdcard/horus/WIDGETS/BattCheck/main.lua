@@ -132,13 +132,15 @@ local function zoneSmall(zone)
     lcd.drawText(zone.zone.x+95, zone.zone.y,percent.."%", LEFT + MIDSIZE + TEXT_COLOR)
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
     lcd.drawGauge(zone.zone.x+2, zone.zone.y+2, 75, zone.zone.h - 4,percent,100, CUSTOM_COLOR)
+    lcd.setColor(CUSTOM_COLOR, WHITE)
+    for i=2,75,15 do
+      lcd.drawRectangle(zone.zone.x+i, zone.zone.y+2, 15, zone.zone.h - 4, SOLID + CUSTOM_COLOR,1)
+    end
+    lcd.drawRectangle(zone.zone.x+2, zone.zone.y+2, 75, zone.zone.h - 4, SOLID + CUSTOM_COLOR,2)
+    lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, zone.zone.h - 16, SOLID + CUSTOM_COLOR)
+  else
+    lcd.drawText(zone.zone.x, zone.zone.y+10, "No Cels sensor data", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
   end
-  lcd.setColor(CUSTOM_COLOR, WHITE)
-  for i=2,75,15 do
-    lcd.drawRectangle(zone.zone.x+i, zone.zone.y+2, 15, zone.zone.h - 4, SOLID + CUSTOM_COLOR,1)
-  end
-  lcd.drawRectangle(zone.zone.x+2, zone.zone.y+2, 75, zone.zone.h - 4, SOLID + CUSTOM_COLOR,2)
-  lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, zone.zone.h - 16, SOLID + CUSTOM_COLOR)
   lcd.setColor(CUSTOM_COLOR, BLACK)
   lcd.setColor(TEXT_COLOR, BLACK)
   return
@@ -163,6 +165,8 @@ local function zoneMedium(zone)
       lcd.drawRectangle(zone.zone.x + pos[i].x,zone.zone.y + pos[i].y,59,20)
     end
     lcd.drawText(zone.zone.x + 2, zone.zone.y + 40, mystring)
+  else
+    lcd.drawText(zone.zone.x, zone.zone.y+35, "No Cels sensor data", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
   end
   lcd.setColor(CUSTOM_COLOR, WHITE)
   for i=2,75,15 do
@@ -172,8 +176,6 @@ local function zoneMedium(zone)
   lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, 20, SOLID + CUSTOM_COLOR)
   lcd.setColor(CUSTOM_COLOR, BLACK)
   lcd.setColor(TEXT_COLOR, BLACK)
-
-  lcd.drawText(zone.zone.x, zone.zone.y+60, "Sensor : "..zone.options.Sensor, LEFT + SMLSIZE + TEXT_COLOR)
   return
 end
 
