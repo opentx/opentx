@@ -755,6 +755,24 @@ static int luaPopupInput(lua_State *L)
 }
 
 /*luadoc
+@function toInt16(value)
+
+Convert an unsigned value to signed
+
+@param value (unsigned number)
+
+@retval number (signed number)
+
+@status current Introduced in 2.0.0
+*/
+static int luaToInt16(lua_State * L)
+{
+  int16_t val = (int16_t)luaL_checkunsigned(L, 1);
+  lua_pushinteger(L, val);
+  return 1;
+}
+
+/*luadoc
 @function defaultStick(channel)
 
 Get stick that is assigned to a channel. See Default Channel Order in General Settings.
@@ -815,6 +833,7 @@ const luaL_Reg opentxLib[] = {
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
   { "killEvents", luaKillEvents },
+  { "toInt16", luaToInt16 },
 #if !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
