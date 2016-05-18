@@ -80,6 +80,7 @@ class TelemetrySimulator : public QDialog
         ACCX,
         ACCY,
         ACCZ,
+        FUEL_QTY,
       };
       QMap<QString, CONVERT_TYPE> colToFuncMap; // contains all 'known' column headings and how they are to be processed
       Ui::TelemetrySimulator * ui;

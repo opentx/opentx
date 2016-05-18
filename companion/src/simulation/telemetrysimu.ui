@@ -1742,6 +1742,51 @@ Timestamp</string>
       </property>
      </widget>
     </item>
+    <item row="13" column="0">
+     <widget class="QLabel" name="label_51">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Fuel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="1">
+     <widget class="QLineEdit" name="fuel_qty_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="2">
+     <widget class="QSpinBox" name="fuel_qty">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="maximum">
+       <double>100000.000000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="3">
+     <widget class="QLabel" name="label_52">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>ml</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
  </widget>
@@ -1812,6 +1857,8 @@ Timestamp</string>
   <tabstop>accy</tabstop>
   <tabstop>accz_inst</tabstop>
   <tabstop>accz</tabstop>
+  <tabstop>fuel_qty_inst</tabstop>
+  <tabstop>fuel_qty</tabstop>
  </tabstops>
  <resources/>
  <connections/>
