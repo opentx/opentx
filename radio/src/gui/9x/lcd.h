@@ -79,6 +79,7 @@
 #define PREC2           0x30
 #define MODE(flags)     ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 #define LEFT            0x80 /* align left */
+#define RIGHT           0x00 /* fake */
 
 /* line, rect, square flags */
 #define FORCE           0x02
