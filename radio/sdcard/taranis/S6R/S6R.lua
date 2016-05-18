@@ -8,8 +8,9 @@ local page = 1
 local current = 1
 local refreshState = 0
 local refreshIndex = 0
+local calibrationState = 0
 local pageOffset = 0
-local calibrationStep = 1
+local calibrationStep = 0
 local pages = { }
 
 local configFields = {
@@ -66,7 +67,7 @@ end
 local function selectPage(step)
   page = 1 + ((page + step - 1 + #pages) % #pages)
   refreshIndex = 0
-  calibrationStep = 1
+  calibrationStep = 0
 end
 
 -- Select the next or previous editable field
@@ -118,58 +119,70 @@ local function redrawFieldsPage()
   end
 end
 
+local function telemetryRead(field)
+  return telemetryPush(0x1A, 0x30, 0x0C30, field)
+end
+
+local function telemetryWrite(field, value)
+  return telemetryPush(0x1A, 0x31, 0x0C30, field + value*256)
+end
+
 local telemetryPopTimeout = 0
 local function refreshNext()
   if refreshState == 0 then
-    if refreshIndex < #fields then
+    if calibrationState == 1 then
+      if telemetryWrite(0x9D, calibrationStep) == true then
+        refreshState = 1
+        calibrationState = 2
+        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
+      end
+    elseif refreshIndex < #fields then
       field = fields[refreshIndex + 1]
-      if telemetryPush(0x1A, 0x30, 0x0C30, field[3]) == true then
+      if telemetryRead(field[3]) == true then
         refreshState = 1
         telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
       end
     end
   elseif refreshState == 1 then
-    field = fields[refreshIndex + 1]
     physicalId, primId, dataId, value = telemetryPop()
-    if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 and value % 256 == field[3] then
-      value = math.floor(value / 256)
-      if field[3] >= 0x9E and field[3] <= 0xA0 then
-        b1 = value % 256
-        b2 = math.floor(value / 256)
-        value = toInt16(b1*256 + b2)
-      end
-      if field[2] == COMBO and #field == 6 then
-        for index = 1, #(field[6]), 1 do
-          if value == field[6][index] then
-            value = index - 1
-            break
-          end
+    if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 then
+      fieldId = value % 256
+      if calibrationState == 2 then
+        if fieldId == 0x9D then
+          refreshState = 0
+          calibrationState = 0
+          calibrationStep = (calibrationStep + 1) % 6
         end
-      elseif field[2] == VALUE and #field == 8 then
-        value = value - field[8] + field[5]
+      else
+        field = fields[refreshIndex + 1]
+        if fieldId == field[3] then
+          value = math.floor(value / 256)
+          if field[3] >= 0x9E and field[3] <= 0xA0 then
+            b1 = value % 256
+            b2 = math.floor(value / 256)
+            value = b1*256 + b2
+            value = value - bit32.band(value, 0x8000) * 2
+          end
+          if field[2] == COMBO and #field == 6 then
+            for index = 1, #(field[6]), 1 do
+              if value == field[6][index] then
+                value = index - 1
+                break
+              end
+            end
+          elseif field[2] == VALUE and #field == 8 then
+            value = value - field[8] + field[5]
+          end
+          fields[refreshIndex + 1][4] = value
+          refreshIndex = refreshIndex + 1
+          refreshState = 0
+        end
       end
-      fields[refreshIndex + 1][4] = value
-      refreshIndex = refreshIndex + 1
-      refreshState = 0
     elseif getTime() > telemetryPopTimeout then
       refreshState = 0
+      calibrationState = 0
     end
-  elseif refreshState == 2 then
-    physicalId, primId, dataId, value = telemetryPop()
-    if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 and value % 256 == 0x9D then
-      refreshState = 0
-      calibrationStep = calibrationStep + 1
-    end  
   end
-end
-
-local function telemetryWrite(field, value)
-  telemetryPush(0x1A, 0x31, 0x0C30, field + value*256)
-end
-
-local function calibrationStart()
-  refreshState = 2
-  telemetryWrite(0x9D, calibrationStep)
 end
 
 local function updateField(field)
@@ -235,11 +248,11 @@ local calibrationPositions = { "up", "down", "left", "right", "forward", "back" 
 local function runCalibrationPage(event)
   fields = calibrationFields
   if refreshIndex == #fields then
-    -- refreshIndex = 0
+    refreshIndex = 0
   end
   lcd.clear()
   lcd.drawScreenTitle("S6R", page, #pages)
-  local position = calibrationPositions[calibrationStep]
+  local position = calibrationPositions[1 + calibrationStep]
   lcd.drawText(0, 9, "Turn the receiver " .. position, 0)
   lcd.drawPixmap(10, 19, position .. ".bmp")
   for index = 1, 3, 1 do
@@ -248,13 +261,13 @@ local function runCalibrationPage(event)
     lcd.drawNumber(90, 12+10*index, field[4]/10, LEFT+PREC2)
   end
 
-  attr = refreshState == 2 and 0 or INVERS
+  attr = calibrationState == 0 and INVERS or 0
   lcd.drawText(0, 56, "Press [Enter] when ready", attr)
-  if refreshState == 0 and event == EVT_ENTER_BREAK then
-    calibrationStart()
+  if event == EVT_ENTER_BREAK then
+    calibrationState = 1
   elseif event == EVT_EXIT_BREAK then
-    if calibrationStep > 1 then
-      calibrationStep = 1
+    if calibrationStep > 0 then
+      calibrationStep = 0
     else
       return 2
     end
@@ -280,6 +293,7 @@ local function run(event)
   elseif event == EVT_PAGE_BREAK then
     selectPage(1)
   elseif event == EVT_PAGE_LONG then
+    killEvents(event);
     selectPage(-1)
   end
 
