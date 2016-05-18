@@ -1372,6 +1372,26 @@ void lcdInvertLine(int8_t y)
 }
 
 #if !defined(BOOT)
+#if defined(PCBMEGA2560)
+void lcd_imgfar(coord_t x, coord_t y,  uint_farptr_t img, uint8_t idx, LcdFlags att) // progmem "far"
+{
+  uint_farptr_t q = img;
+  uint8_t w    = pgm_read_byte_far(q++);
+  uint8_t hb   = (pgm_read_byte_far(q++)+7)/8;
+  bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
+  q += idx*w*hb;
+  for (uint8_t yb = 0; yb < hb; yb++) {
+    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
+    for (coord_t i=0; i<w; i++){
+      uint8_t b = pgm_read_byte_far(q);
+      q++;
+      ASSERT_IN_DISPLAY(p);
+      *p++ = inv ? ~b : b;
+    }
+  }
+}
+#endif
+
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
