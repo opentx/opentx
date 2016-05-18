@@ -1360,7 +1360,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="maximum">
-       <number>65535</number>
+       <number>262143</number>
       </property>
      </widget>
     </item>
