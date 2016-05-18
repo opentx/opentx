@@ -92,12 +92,21 @@ bool checkScreenshot(const QString & test)
 #if defined(COLORLCD)
 // TODO
 #else
+#if defined(PCBTARANIS)
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
   lcdDrawNumber(0, 0, 65530, LEFT);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
+#else
+TEST(outdezNAtt, test_unsigned)
+{
+  lcdClear();
+  lcdDrawNumber(0, 0, 65530, LEFT|UNSIGN);
+  EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
+}
+#endif
 
 #if defined(CPUARM)
 TEST(outdezNAtt, testBigNumbers)
