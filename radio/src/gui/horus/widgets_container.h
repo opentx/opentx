@@ -131,6 +131,17 @@ class WidgetsContainer: public WidgetsContainerInterface
       }
     }
 
+    virtual void background()
+    {
+      if (widgets) {
+        for (int i=0; i<N; i++) {
+          if (widgets[i]) {
+            widgets[i]->background();
+          }
+        }
+      }
+    }
+
   protected:
     PersistentData * persistentData;
 };

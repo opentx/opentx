@@ -90,7 +90,7 @@ class Widget
     {
     }
 
-    virtual void update() const 
+    virtual void update() const
     {
     }
 
@@ -107,6 +107,10 @@ class Widget
     }
 
     virtual void refresh() = 0;
+
+    virtual void background()
+    {
+    }
 
   protected:
     const WidgetFactory * factory;

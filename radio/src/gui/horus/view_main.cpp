@@ -182,8 +182,13 @@ bool menuMainView(evt_t event)
       break;
   }
 
-  if (customScreens[g_eeGeneral.view]) {
-    customScreens[g_eeGeneral.view]->refresh();
+  for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
+    if (customScreens[i]) {
+      if (i == g_eeGeneral.view)
+        customScreens[i]->refresh();
+      else
+        customScreens[i]->background();
+    }
   }
 
   return true;

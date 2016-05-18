@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -911,6 +911,8 @@ class LuaWidget: public Widget
 
     virtual void refresh();
 
+    virtual void background();
+
   protected:
     int widgetData;
 };
@@ -931,7 +933,8 @@ class LuaWidgetFactory: public WidgetFactory
     LuaWidgetFactory(const char * name, int widgetOptions, int createFunction):
       WidgetFactory(name, createOptionsArray(widgetOptions)),
       createFunction(createFunction),
-      refreshFunction(0)
+      refreshFunction(0),
+      backgroundFunction(0)
     {
     }
 
@@ -967,6 +970,7 @@ class LuaWidgetFactory: public WidgetFactory
   protected:
     int createFunction;
     int refreshFunction;
+    int backgroundFunction;
 };
 
 void LuaWidget::refresh()
@@ -980,10 +984,21 @@ void LuaWidget::refresh()
   }
 }
 
+void LuaWidget::background()
+{
+  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+  LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
+  lua_rawgeti(L, LUA_REGISTRYINDEX, factory->backgroundFunction);
+  lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
+  if (lua_pcall(L, 1, 0, 0) != 0) {
+    TRACE("Error in widget %s: %s", factory->getName(), lua_tostring(L, -1));
+  }
+}
+
 void luaLoadWidgetCallback()
 {
   const char * name=NULL;
-  int widgetOptions=0, createFunction=0, refreshFunction=0;
+  int widgetOptions=0, createFunction=0, refreshFunction=0, backgroundFunction=0;
 
   luaL_checktype(L, -1, LUA_TTABLE);
 
@@ -1004,11 +1019,16 @@ void luaLoadWidgetCallback()
       refreshFunction = luaL_ref(L, LUA_REGISTRYINDEX);
       lua_pushnil(L);
     }
+    else if (!strcmp(key, "background")) {
+      backgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
   }
 
   if (name && createFunction) {
     LuaWidgetFactory * factory = new LuaWidgetFactory(name, widgetOptions, createFunction);
     factory->refreshFunction = refreshFunction;
+    factory->backgroundFunction = backgroundFunction;
   }
 }
 
