@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -82,6 +82,7 @@ void menuModelLogicalSwitches(uint8_t event);
 void menuModelCustomFunctions(uint8_t event);
 void menuModelCustomScripts(uint8_t event);
 void menuModelTelemetry(uint8_t event);
+void menuModelDisplay(uint8_t event);
 void menuModelExpoOne(uint8_t event);
 
 void menuGeneralSetup(uint8_t event);
@@ -148,9 +149,9 @@ enum EnumTabModel {
 #if defined(LUA_MODEL_SCRIPTS)
   e_CustomScripts,
 #endif
-  CASE_FRSKY(e_Telemetry)
+  e_Telemetry,
   CASE_MAVLINK(e_MavSetup)
-  CASE_TEMPLATES(e_Templates)
+  e_Display,
 };
 
 const MenuHandlerFunc menuTabModel[] = {
@@ -170,9 +171,9 @@ const MenuHandlerFunc menuTabModel[] = {
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  CASE_FRSKY(menuModelTelemetry)
+  menuModelTelemetry,
   CASE_MAVLINK(menuTelemetryMavlinkSetup)
-  CASE_TEMPLATES(menuModelTemplates)
+  menuModelDisplay
 };
 
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);

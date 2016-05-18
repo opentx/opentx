@@ -184,7 +184,7 @@ elseif(PCB STREQUAL TARANIS)
   add_definitions(-DPCBTARANIS)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DDBLKEYS -DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
-  set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+  set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_model_display.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
   set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
   set(FIRMWARE_TARGET_SRC

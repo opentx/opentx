@@ -23,7 +23,7 @@
 #define STATS_1ST_COLUMN               FW/2
 #define STATS_2ND_COLUMN               12*FW+FW/2
 #define STATS_3RD_COLUMN               24*FW+FW/2
-#define STATS_LABEL_WIDTH              8*FW
+#define STATS_LABEL_WIDTH              4*FW
 
 void menuStatisticsView(uint8_t event)
 {
@@ -176,13 +176,13 @@ void menuStatisticsDebug(uint8_t event)
 
   lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
   lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), UNSIGN|LEFT);
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), LEFT);
 
   lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();

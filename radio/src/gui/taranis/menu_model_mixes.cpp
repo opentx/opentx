@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 uint8_t getMixesCount()
 {
@@ -161,7 +161,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   int barMax = offset + weight;
   if (y > 15) {
     lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
-    lcdDrawNumber(x+gaugeWidth+1, y-6, barMax, TINSIZE);
+    lcdDrawNumber(x+gaugeWidth+1, y-6, barMax, TINSIZE|RIGHT);
   }
   if (weight < 0) {
     barMin = -barMin;
@@ -505,14 +505,14 @@ void menuModelMixAll(uint8_t event)
       break;
   }
 
-  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW+FW/2, 0, getMixesCount());
+  lcdDrawNumber(FW*sizeof(TR_MIXER)+FW+FW/2, 0, getMixesCount(), RIGHT);
   lcdDrawText(FW*sizeof(TR_MIXER)+FW+FW/2, 0, STR_MAX(MAX_MIXERS));
 
   // Value
   uint8_t index = mixAddress(s_currIdx)->destCh;
   if (!s_currCh) {
     displayHeaderChannelName(index);
-    lcdDrawNumber(127, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE);
+    lcdDrawNumber(127, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE|RIGHT);
   }
 
   SIMPLE_MENU(STR_MIXER, menuTabModel, e_MixAll, s_maxLines);
@@ -556,7 +556,7 @@ void menuModelMixAll(uint8_t event)
 
           putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), 0);
+          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
 
           displayMixLine(y, md);
 

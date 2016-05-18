@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -417,11 +417,11 @@ case the returned value is 0):
   * key (number) cell number (1 to number of cells)
   * value (number) current cell voltage
 
-@status current Introduced in 2.0.0, changed in 2.1.0, `Cels+` and 
+@status current Introduced in 2.0.0, changed in 2.1.0, `Cels+` and
 `Cels-` added in 2.1.9
 
 @notice Getting a value by its numerical identifier is faster then by its name.
-While `Cels` sensor returns current values of all cells in a table, a `Cels+` or 
+While `Cels` sensor returns current values of all cells in a table, a `Cels+` or
 `Cels-` will return a single value - the maximum or minimum Cels value.
 */
 static int luaGetValue(lua_State *L)
@@ -690,7 +690,7 @@ Returns (some of) the general radio settings
  * `language` (string) radio language (used for menus)
  * `voice` (string) voice language (used for speech)
 
-@status current Introduced in 2.0.6, `imperial` added in TODO, 
+@status current Introduced in 2.0.6, `imperial` added in TODO,
 `language` and `voice` added int 2.2.0.
 
 */
@@ -755,24 +755,6 @@ static int luaPopupInput(lua_State *L)
 }
 
 /*luadoc
-@function toInt16(value)
-
-Convert an unsigned value to signed
-
-@param value (unsigned number)
-
-@retval number (signed number)
-
-@status current Introduced in 2.0.0
-*/
-static int luaToInt16(lua_State * L)
-{
-  int16_t val = (int16_t)luaL_checkunsigned(L, 1);
-  lua_pushinteger(L, val);
-  return 1;
-}
-
-/*luadoc
 @function defaultStick(channel)
 
 Get stick that is assigned to a channel. See Default Channel Order in General Settings.
@@ -833,7 +815,6 @@ const luaL_Reg opentxLib[] = {
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
   { "killEvents", luaKillEvents },
-  { "toInt16", luaToInt16 },
 #if !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
@@ -851,11 +832,7 @@ const luaR_value_entry opentxConstants[] = {
   { "INVERS", INVERS },
   { "BOLD", BOLD },
   { "BLINK", BLINK },
-#if defined(COLORLCD)
   { "RIGHT", RIGHT },
-#else
-  { "FIXEDWIDTH", FIXEDWIDTH },
-#endif
   { "LEFT", LEFT },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
@@ -877,9 +854,6 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SH", MIXSRC_SH },
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
-#if !defined(PCBHORUS)
-  { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
-#endif
 #if defined(COLORLCD)
   { "COLOR", ZoneOption::Color },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
@@ -918,8 +892,11 @@ const luaR_value_entry opentxConstants[] = {
   { "LIGHTGREY", (double)LIGHTGREY },
   { "RED", (double)RED },
   { "DARKRED", (double)DARKRED },
+#else
+  { "FIXEDWIDTH", FIXEDWIDTH },
 #endif
 #if defined(PCBTARANIS)
+  { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
   { "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS) },

@@ -40,32 +40,22 @@
 #define LCD_LINES       (LCD_H/FH)
 #define LCD_COLS        (LCD_W/FW)
 
-/* lcd common flags */
+/* lcdDrawText flags */
 #define BLINK           0x01
-
-/* lcd text flags */
 #define INVERS          0x02
-#if defined(BOLD_FONT)
-  #define BOLD          0x04
-#else
-  #define BOLD          0x00
-#endif
-
-/* lcd putc flags */
-#define CONDENSED       0x08 // TODO remove on TARANIS
+#define BOLD            0x04
+#define LEFT            0x00
+#define RIGHT           0x08
 #define FIXEDWIDTH      0x10
-/* lcd puts flags */
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
 #define ZCHAR           0x80
 
-/* lcd outdez flags */
-#define UNSIGN          0x08
+/* lcdDrawNumber additional flags */
 #define LEADING0        0x10
 #define PREC1           0x20
 #define PREC2           0x30
 #define MODE(flags)     ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
-#define LEFT            0x80 /* align left */
 
 /* line, rect, square flags */
 #define FORCE           0x02

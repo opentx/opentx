@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void menuChannelsView(uint8_t event)
 {
@@ -91,13 +91,13 @@ void menuChannelsView(uint8_t event)
       // Value
 #if defined(PPM_UNIT_US)
       uint8_t wbar = (longNames ? 54 : 64);
-      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE|RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = (longNames ? 48 : 58);
-      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE|RIGHT);
 #else
       uint8_t wbar = (longNames ? 54 : 64);
-      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
+      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE|RIGHT);
 #endif
 
       // Gauge

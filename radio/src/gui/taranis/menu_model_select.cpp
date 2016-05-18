@@ -220,9 +220,9 @@ void menuModelSelect(uint8_t event)
         break;
   }
 
-  lcdDrawText(27*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
-  lcdDrawNumber(20*FW, 0, EeFsGetFree(), 0);
-  lcdDrawText(21*FW, 0, STR_BYTES);
+  lcdDrawNumber(19*FW, 0, EeFsGetFree(), RIGHT);
+  lcdDrawText(19*FW + 3, 0, STR_BYTES);
+  lcdDrawText(lcdLastPos + 3, 0, STR_FREE);
 
   drawScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
@@ -233,7 +233,7 @@ void menuModelSelect(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    lcdDrawNumber(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+    lcdDrawNumber(3*FW+2, y, k+1, RIGHT|LEADING0|((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
     if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
       if (k == sub) {
@@ -255,7 +255,7 @@ void menuModelSelect(uint8_t event)
 
     if (eeModelExists(k)) {
       putsModelName(4*FW, y, modelHeaders[k].name, k, 0);
-      lcdDrawNumber(20*FW, y, eeModelSize(k), 0);
+      lcdDrawNumber(20*FW, y, eeModelSize(k), RIGHT);
       if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub))
         lcdDrawChar(1, y, '*');
     }

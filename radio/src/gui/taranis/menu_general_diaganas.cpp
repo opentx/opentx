@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void menuGeneralDiagAna(uint8_t event)
 {
@@ -33,11 +33,11 @@ void menuGeneralDiagAna(uint8_t event)
     lcdDrawChar(x+2*FW-2, y, ':');
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
 #if defined(JITTER_MEASURE)
-    lcdDrawNumber(x+10*FW-1, y, rawJitter[i].get());
-    lcdDrawNumber(x+13*FW-1, y, avgJitter[i].get());
-    lcdDrawNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawNumber(x+10*FW-1, y, rawJitter[i].get(), RIGHT);
+    lcdDrawNumber(x+13*FW-1, y, avgJitter[i].get(), RIGHT);
+    lcdDrawNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
 #else
-    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
 #endif
   }
 

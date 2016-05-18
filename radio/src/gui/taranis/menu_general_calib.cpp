@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define XPOT_DELTA    10
 #define XPOT_DELAY    10 /* cycles */
@@ -191,7 +191,7 @@ void menuCommonCalib(uint8_t event)
       steps = calib->count + 1;
     }
     if (steps > 0 && steps <= XPOTS_MULTIPOS_COUNT) {
-      lcdDrawNumber(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE);
+      lcdDrawNumber(LCD_W/2-2+(i-POT1)*5, LCD_H-6, steps, TINSIZE|RIGHT);
     }
   }
 #endif

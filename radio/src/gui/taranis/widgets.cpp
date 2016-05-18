@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 const pm_uchar bmp_sleep[] PROGMEM = {
   #include "../../bitmaps/taranis/sleep.lbm"
@@ -79,10 +79,10 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
-  lcdDrawNumber(LCD_W, 0, count, attr);
+  lcdDrawNumber(LCD_W, 0, count, RIGHT | attr);
   coord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
   lcdDrawChar(x, 0, '/', attr);
-  lcdDrawNumber(x, 0, index+1, attr);
+  lcdDrawNumber(x, 0, index+1, RIGHT | attr);
 }
 
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible)
@@ -198,9 +198,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
-    if (attr & LEFT)
-      attr -= LEFT; /* because of ZCHAR */
-    else
+    if (attr & RIGHT)
       x -= 2*FW+FWNUM;
 
     attr &= ~PREC1;

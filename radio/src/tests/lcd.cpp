@@ -95,7 +95,7 @@ bool checkScreenshot(const QString & test)
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
-  lcdDrawNumber(0, 0, 65530, LEFT|UNSIGN);
+  lcdDrawNumber(0, 0, 65530, LEFT);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
 
@@ -133,7 +133,7 @@ TEST(Lcd, Prec2_Left)
 TEST(Lcd, Prec2_Right)
 {
   lcdClear();
-  lcdDrawNumber(LCD_W, LCD_H-FH, 2, PREC2);
+  lcdDrawNumber(LCD_W, LCD_H-FH, 2, PREC2|RIGHT);
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
 
@@ -141,7 +141,7 @@ TEST(Lcd, Prec2_Right)
 TEST(Lcd, Prec1_Dblsize_Invers)
 {
   lcdClear();
-  lcdDrawNumber(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS);
+  lcdDrawNumber(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS|RIGHT);
   EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
 #endif

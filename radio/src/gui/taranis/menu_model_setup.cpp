@@ -127,8 +127,10 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
   TimerData & timer = g_model.timers[timerIdx];
   drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
   putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer.mode, menuHorizontalPosition==0 ? attr : 0);
-  putsTimer(MODEL_SETUP_3RD_COLUMN+5*FWNUM+2, y, timer.start, menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR, menuHorizontalPosition==2 ? attr|TIMEHOUR : TIMEHOUR);
-  if (attr && menuHorizontalPosition < 0) lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 13*FW-3, FH+1);
+  putsTimer(MODEL_SETUP_3RD_COLUMN, y, timer.start, menuHorizontalPosition==1 ? attr|TIMEHOUR : TIMEHOUR, menuHorizontalPosition==2 ? attr|TIMEHOUR : TIMEHOUR);
+  if (attr && menuHorizontalPosition < 0) {
+    lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 13*FW-3, FH+1);
+  }
   if (attr && s_editMode>0) {
     div_t qr = div(timer.start, 60);
     switch (menuHorizontalPosition) {
@@ -843,7 +845,6 @@ void menuModelSetup(uint8_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
-
 #if defined(TARANIS_INTERNAL_PPM)
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
@@ -868,11 +869,11 @@ void menuModelSetup(uint8_t event)
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         if (IS_MODULE_PPM(moduleIdx)) {
           lcd_putsLeft(y, STR_PPMFRAME);
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
-          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, 'u');
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+8*FW+2, y, (moduleData.ppm.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
-          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+10*FW, y, moduleData.ppm.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
+          lcdDrawText(lcdLastPos, y, STR_MS);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+6*FW, y, (moduleData.ppm.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+          lcdDrawChar(lcdLastPos, y, 'u');
+          lcdDrawChar(MODEL_SETUP_2ND_COLUMN+12*FW, y, moduleData.ppm.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
 
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {

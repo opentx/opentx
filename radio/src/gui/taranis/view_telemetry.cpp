@@ -23,10 +23,6 @@
 #define STATUS_BAR_Y     (7*FH+1)
 #define TELEM_2ND_COLUMN (11*FW)
 
-#if defined(FRSKY_HUB) && defined(GAUGES)
-bar_threshold_t barsThresholds[THLD_MAX];
-#endif
-
 uint8_t s_frsky_view = 0;
 
 #define BAR_LEFT    30
@@ -37,7 +33,8 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcdDrawSolidHorizontalLine(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
-    lcdDrawSizedText(0, STATUS_BAR_Y, STR_RX, 2); lcdDrawNumber(4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcdDrawSizedText(0, STATUS_BAR_Y, STR_RX, 2);
+    lcdDrawNumber(4*FW, STATUS_BAR_Y, rssi, LEADING0|RIGHT, 2);
     lcdDrawRect(BAR_LEFT, 57, 78, 7);
     lcdDrawFilledRect(BAR_LEFT+1, 58, 19*rssi/25, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
@@ -119,7 +116,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
       if (field) {
         coord_t x = pos[j+1]-2;
         coord_t y = (i==3 ? 1+FH+2*FH*i:FH+2*FH*i);
-        LcdFlags att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+        LcdFlags att = RIGHT | (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
@@ -158,11 +155,9 @@ void displayCustomTelemetryScreen(uint8_t index)
 {
   FrSkyScreenData & screen = g_model.frsky.screens[index];
 
-#if defined(GAUGES)
   if (IS_BARS_SCREEN(s_frsky_view)) {
     return displayGaugesTelemetryScreen(screen);
   }
-#endif
 
   displayNumbersTelemetryScreen(screen);
 }

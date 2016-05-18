@@ -1180,6 +1180,7 @@
 #define TR_MENU_CHANNELS       "\320Canaux"
 #define TR_MENU_GVARS          "\311Vars. glob."
 #define TR_MENU_TELEMETRY      "\321Télémesure"
+#define TR_MENU_DISPLAY        "AFFICHAGE"
 #define TR_MENU_OTHER          "Autres"
 #define TR_MENU_INVERT         "Inverser"
 #define TR_JITTER_FILTER       "ADC Filter"

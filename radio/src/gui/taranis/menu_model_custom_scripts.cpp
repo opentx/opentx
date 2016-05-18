@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 void onModelCustomScriptMenu(const char *result)
 {
@@ -111,14 +111,14 @@ void menuModelCustomScriptOne(uint8_t event)
 
     for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {
       putsMixerSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, FH+1+FH+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);
-      lcdDrawNumber(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1);
+      lcdDrawNumber(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1|RIGHT);
     }
   }
 }
 
 void menuModelCustomScripts(uint8_t event)
 {
-  lcdDrawNumber(19*FW, 0, luaGetMemUsed(), 0);
+  lcdDrawNumber(19*FW, 0, luaGetMemUsed(), RIGHT);
   lcdDrawText(19*FW+1, 0, STR_BYTES);
 
   MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
@@ -150,7 +150,7 @@ void menuModelCustomScripts(uint8_t event)
           lcdDrawText(29*FW+2, y, "(killed)");
           break;
         default:
-          lcdDrawNumber(34*FW, y, luaGetCpuUsed(scriptIndex));
+          lcdDrawNumber(34*FW, y, luaGetCpuUsed(scriptIndex), RIGHT);
           lcdDrawChar(34*FW, y, '%');
           break;
       }

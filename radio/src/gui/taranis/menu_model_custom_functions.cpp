@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define MODEL_CUSTOM_FUNC_1ST_COLUMN          (4*FW+2)
 #define MODEL_CUSTOM_FUNC_2ND_COLUMN          (8*FW+2)
@@ -407,7 +407,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               lcdDrawText(MODEL_CUSTOM_FUNC_4TH_COLUMN+2, y, "1x", attr);
             }
             else {
-              lcdDrawNumber(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
+              lcdDrawNumber(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr|RIGHT);
               lcdDrawChar(MODEL_CUSTOM_FUNC_4TH_COLUMN+2+FW, y, 's', attr);
             }
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);

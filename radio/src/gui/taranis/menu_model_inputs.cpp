@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN (LCD_W-8*FW-90)
 #define EXPO_ONE_FM_WIDTH   (9*FW)
@@ -274,12 +274,12 @@ void menuModelExpoOne(uint8_t event)
     if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
   }
   else {
-    lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto1000(x512), PREC1);
+    lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
   }
   x512 = limit(-1024, x512, 1024);
   int y512 = expoFn(x512);
   y512 = limit(-1024, y512, 1024);
-  lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), PREC1);
+  lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
 
   x512 = X0+x512/(RESX/WCHART);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
@@ -481,13 +481,13 @@ void menuModelExposAll(uint8_t event)
       break;
   }
 
-  lcdDrawNumber(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, getExposCount());
+  lcdDrawNumber(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, getExposCount(), RIGHT);
   lcdDrawText(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, STR_MAX(MAX_EXPOS));
 
   // Value
   uint8_t index = expoAddress(s_currIdx)->chn;
   if (!s_currCh) {
-    lcdDrawNumber(127, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE);
+    lcdDrawNumber(127, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE|RIGHT);
   }
 
   SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, e_InputsAll, s_maxLines);
@@ -527,7 +527,7 @@ void menuModelExposAll(uint8_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
+          GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, RIGHT | attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
           displayExpoLine(y, ed);
           if (ed->mode!=3) {
             lcdDrawChar(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);

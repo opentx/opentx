@@ -131,7 +131,7 @@ void onGVARSMenu(const char *result)
 }
 
 #define GVARS_COLUMNS                  (NAVIGATION_LINE_BY_LINE|(MAX_FLIGHT_MODES-1))
-#define GVARS_FM_COLUMN(p)             (7*FW + 9 + (p)*20)
+#define GVARS_FM_COLUMN(p)             (7*FW - 7 + (p)*20)
 
 void menuModelGVars(uint8_t event)
 {
@@ -142,7 +142,7 @@ void menuModelGVars(uint8_t event)
   if (after2seconds) {
     menuTitle = STR_GVARS;
     for (int i=0; i<MAX_GVARS; i++) {
-      drawStringWithIndex(GVARS_FM_COLUMN(i)-16, 1, STR_FP, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
+      drawStringWithIndex(GVARS_FM_COLUMN(i), 1, STR_FP, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
     }
   }
   else {
@@ -166,7 +166,6 @@ void menuModelGVars(uint8_t event)
       LcdFlags attr = ((sub == i && menuHorizontalPosition == j) ? (s_editMode > 0 ? BLINK | INVERS : INVERS) : 0);
       coord_t x = GVARS_FM_COLUMN(j);
       if (v > GVAR_MAX) {
-        x -= 16;
         attr |= SMLSIZE;
       }
       else if (g_model.gvars[i].prec > 0 || abs(v) >= 100) {

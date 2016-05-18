@@ -42,6 +42,30 @@ void lcdClear()
 coord_t lcdLastPos;
 coord_t lcdNextPos;
 
+struct PatternData
+{
+  uint8_t width;
+  uint8_t height;
+  const uint8_t * data;
+};
+
+uint8_t getPatternWidth(const PatternData * pattern)
+{
+  uint8_t result = 0;
+  uint8_t lines = (pattern->height+7)/8;
+  const uint8_t * data = pattern->data;
+  for (int8_t i=0; i<pattern->width; i++) {
+    for (uint8_t j=0; j<lines; j++) {
+      if (data[j] != 0xff) {
+        result += 1;
+        break;
+      }
+    }
+    data += lines;
+  }
+  return result;
+}
+
 void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
 {
   bool blink = false;
@@ -93,10 +117,6 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
             continue;
           }
         }
-        if ((flags & CONDENSED) && i==2) {
-          /*condense the letter by skipping column 3 */
-          continue;
-        }
       }
 
       for (int8_t j=-1; j<=height; j++) {
@@ -127,13 +147,9 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   }
 }
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
-{
-  const pm_uchar * q;
-
-  lcdNextPos = x-1;
-
 #if !defined(BOOT)
+void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
+{
   uint32_t fontsize = FONTSIZE(flags);
   unsigned char c_remapped = 0;
 
@@ -153,48 +169,68 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
   }
 
   if (fontsize == DBLSIZE) {
+    pattern->width = 10;
+    pattern->height = 16;
     if (c >= 0xC0) {
-      q = &font_10x14_extra[((uint16_t)(c-0xC0))*20];
+      pattern->data = &font_10x14_extra[((uint16_t)(c-0xC0))*20];
     }
     else {
       if (c >= 128)
         c_remapped = c - 60;
-      q = &font_10x14[((uint16_t)c_remapped)*20];
+      pattern->data = &font_10x14[((uint16_t)c_remapped)*20];
     }
-    lcdPutPattern(x, y, q, 10, 16, flags);
   }
   else if (fontsize == XXLSIZE) {
-    q = &font_22x38_num[((uint16_t)c-'0'+5)*110];
-    lcdPutPattern(x, y, q, 22, 38, flags);
+    pattern->width = 22;
+    pattern->height = 38;
+    pattern->data = &font_22x38_num[((uint16_t)c-'0'+5)*110];
   }
   else if (fontsize == MIDSIZE) {
-    q = &font_8x10[((uint16_t)c-0x20)*16];
-    lcdPutPattern(x, y, q, 8, 12, flags);
+    pattern->width = 8;
+    pattern->height = 12;
+    pattern->data = &font_8x10[((uint16_t)c-0x20)*16];
   }
   else if (fontsize == SMLSIZE) {
-    q = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
-    lcdPutPattern(x, y, q, 5, 6, flags);
+    pattern->width = 5;
+    pattern->height = 6;
+    pattern->data = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
   }
   else if (fontsize == TINSIZE) {
-    q = &font_3x5[((uint16_t)c-0x20)*3];
-    lcdPutPattern(x, y, q, 3, 5, flags);
+    pattern->width = 3;
+    pattern->height = 5;
+    pattern->data = &font_3x5[((uint16_t)c-0x20)*3];
   }
-#if defined(BOLD_FONT)
   else if (flags & BOLD) {
-    q = &font_5x7_B[c_remapped*5];
-    lcdPutPattern(x, y, q, 5, 7, flags);
+    pattern->width = 5;
+    pattern->height = 7;
+    pattern->data = &font_5x7_B[c_remapped*5];
   }
+  else {
+    pattern->width = 5;
+    pattern->height = 7;
+    pattern->data = (c < 0xC0) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0xC0)*5];
+  }
+}
+
+uint8_t getCharWidth(char c, LcdFlags flags)
+{
+  PatternData pattern;
+  getCharPattern(&pattern, c, flags);
+  return getPatternWidth(&pattern);
+}
 #endif
-  else
-#endif
-  {
-#if !defined(BOOT)
-    q = (c < 0xC0) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0xC0)*5];
+
+void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
+{
+  lcdNextPos = x-1;
+#if defined(BOOT)
+  const uint8_t * data = &font_5x7[(c-0x20)*5];
+  lcdPutPattern(x, y, data, 5, 7, flags);
 #else
-    q = &font_5x7[(c-0x20)*5];
+  PatternData pattern;
+  getCharPattern(&pattern, c, flags);
+  lcdPutPattern(x, y, pattern.data, pattern.width, pattern.height, flags);
 #endif
-    lcdPutPattern(x, y, q, 5, 7, flags);
-  }
 }
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
@@ -202,12 +238,37 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
   lcdDrawChar(x, y, c, 0);
 }
 
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
+#if !defined(BOOT)
+uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
+{
+  uint8_t width = 0;
+  while (len--) {
+    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    if (!c) {
+      break;
+    }
+    width += getCharWidth(c, flags) + 1;
+    s++;
+  }
+  return width;
+}
+#endif
+
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags)
 {
   const coord_t orig_x = x;
   const uint8_t orig_len = len;
   uint32_t fontsize = FONTSIZE(flags);
   bool setx = false;
+  uint8_t width = 0;
+
+#if !defined(BOOT)
+  if (flags & RIGHT) {
+    width = getTextWidth(s, len, flags);
+    x -= width;
+  }
+#endif
+
   while (len--) {
 #if defined(BOOT)
     unsigned char c = *s;
@@ -250,10 +311,16 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
     }
     s++;
   }
+
   lcdLastPos = x;
   lcdNextPos = x;
   if (fontsize == MIDSIZE)
     lcdLastPos += 1;
+
+  if (flags & RIGHT) {
+    lcdLastPos -= width;
+    lcdNextPos -= width;
+  }
 }
 
 void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len)
@@ -285,13 +352,11 @@ void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, Lcd
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
 {
-  x += FWNUM*4+1;
-  for (int i=0; i<4; i++) {
-    x -= FWNUM;
-    char c = val & 0xf;
+  for (int i=12; i>=0; i-=4) {
+    char c = (val >> i) & 0xf;
     c = c>9 ? c+'A'-10 : c+'0';
-    lcdDrawChar(x, y, c, flags|(c>='A' ? CONDENSED : 0));
-    val >>= 4;
+    lcdDrawChar(x, y, c, flags);
+    x = lcdNextPos;
   }
 }
 
@@ -313,10 +378,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   bool tinsize = (fontsize == TINSIZE);
 
   bool neg = false;
-  if (flags & UNSIGN) {
-    flags -= UNSIGN;
-  }
-  else if (val < 0) {
+  if (val < 0) {
     neg = true;
     val = -val;
   }
@@ -349,16 +411,14 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
     fw -= 1;
   }
   else {
-    if (flags & LEFT) {
+    if (!(flags & RIGHT)) {
       if (mode > 0)
         x += 2;
     }
-#if defined(BOLD_FONT)
     if (flags & BOLD) fw += 1;
-#endif
   }
 
-  if (flags & LEFT) {
+  if (!(flags & RIGHT)) {
     x += len * fw;
     if (neg) {
       x += ((xxlsize|dblsize|midsize) ? 7 : FWNUM);
@@ -375,7 +435,6 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
     LcdFlags f = flags;
     lcdDrawChar(x, y, c, f);
     if (mode == i) {
-      flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x - 2;
         if (c>='2' && c<='3') ln++;
@@ -419,9 +478,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
     }
     val = qr.quot;
     x -= fw;
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
     if (i==len && (flags & BOLD)) x += 1;
-#endif
   }
 
   if (xn) {
@@ -525,15 +582,15 @@ void lcdDrawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
-  putsVBat(16*FW+1,0,att);
+  putsVBat(12*FW, 0, att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
-    putsTimer(22*FW+5*FWNUM+3, 0, timersStates[0].val, att, att);
+    putsTimer(22*FW, 0, timersStates[0].val, att, att);
     putsMixerSource(18*FW+2, 1, MIXSRC_TIMER1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
     att = (timersStates[1].val<0 ? BLINK : 0);
-    putsTimer(31*FW+5*FWNUM+3, 0, timersStates[1].val, att, att);
+    putsTimer(31*FW, 0, timersStates[1].val, att, att);
     putsMixerSource(27*FW+2, 1, MIXSRC_TIMER2, SMLSIZE);
   }
   lcdInvertLine(0);
@@ -548,7 +605,8 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 {
   div_t qr;
 
-  if (!(att & LEFT)) {
+  if (att & RIGHT) {
+    att -= RIGHT;
     if (att & DBLSIZE)
       x -= 5*(2*FWNUM)-4;
     else if (att & MIDSIZE)
@@ -577,12 +635,13 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     else
       x += 13;
   }
+
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
   if (att & TIMEBLINK)
     lcdDrawChar(lcdLastPos, y, separator, BLINK);
   else
     lcdDrawChar(lcdLastPos, y, separator, att&att2);
-  lcdDrawNumber(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
+  lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0) & (~RIGHT), 2);
 }
 
 // TODO to be optimized with putsValueWithUnit
@@ -765,10 +824,8 @@ void putsSwitches(coord_t x, coord_t y, int32_t idx, LcdFlags att)
 #if defined(FLIGHT_MODES)
 void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
-  if (idx==0) { lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att); return; }
-  if (idx < 0) { lcdDrawChar(x-2, y, '!', att); idx = -idx; }
-  if (att & CONDENSED)
-    lcdDrawNumber(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
+  if (idx==0)
+    lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att);
   else
     drawStringWithIndex(x, y, STR_FP, idx-1, att);
 }
@@ -956,13 +1013,14 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
       if (telemetrySensor.id >= RBOX_STATE_FIRST_ID && telemetrySensor.id <= RBOX_STATE_LAST_ID) {
         if (telemetrySensor.subId == 0) {
           if (value == 0) {
-            lcdDrawText(att & LEFT ? x : x-15, att & DBLSIZE ? y+1 : y, "OK");
+            lcdDrawText(x, y, "OK", att);
           }
           else {
             for (uint8_t i=0; i<16; i++) {
               if (value & (1 << i)) {
-                drawStringWithIndex(att & LEFT ? x : x-40, att & DBLSIZE ? y+1 : y, "CH", i+1);
-                lcdDrawText(lcdLastPos+3, att & DBLSIZE ? y+1 : y, "KO");
+                char s[] = "CH__ KO";
+                strAppendUnsigned(&s[2], i+1, 2);
+                lcdDrawText(x, att & DBLSIZE ? y+1 : y, s, att & ~DBLSIZE);
                 break;
               }
             }
@@ -970,7 +1028,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
         }
         else {
           if (value == 0) {
-            lcdDrawText(x, att & DBLSIZE ? y+1 : y, "Rx OK");
+            lcdDrawText(x, att & DBLSIZE ? y+1 : y, "Rx OK", att & ~DBLSIZE);
           }
           else {
             static const char * const RXS_STATUS[] = {
@@ -988,7 +1046,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
             };
             for (uint8_t i=0; i<DIM(RXS_STATUS); i++) {
               if (value & (1<<i)) {
-                lcdDrawText(att & LEFT ? x : x-40, att & DBLSIZE ? y+1 : y, RXS_STATUS[i]);
+                lcdDrawText(x, att & DBLSIZE ? y+1 : y, RXS_STATUS[i], att & ~DBLSIZE);
                 break;
               }
             }
