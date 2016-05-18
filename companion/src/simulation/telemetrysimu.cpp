@@ -283,7 +283,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 10:
       if (ui->rpm->value() > 0)
-        generateSportPacket(buffer, ui->rpm_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RPM_FIRST_ID, LIMIT<uint32_t>(0, ui->rpm->value(), 0xFFFF));
+        generateSportPacket(buffer, ui->rpm_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RPM_FIRST_ID, LIMIT<uint32_t>(0, ui->rpm->value(), 0x3FFFF));
       break;
 
     case 11:
