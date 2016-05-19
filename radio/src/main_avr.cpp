@@ -142,6 +142,9 @@ void perMain()
   lcdstate = lcdRefresh_ST7920(0);
 #else
   lcdRefresh();
+#if defined(LCD_KS108)
+  lcdRefresh(); // For the other side
+#endif
 #endif
 
 #endif // defined(GUI)
