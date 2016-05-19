@@ -22,7 +22,6 @@ if(Qt5Widgets_FOUND)
   add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
   target_link_libraries(${SIMULATOR_TARGET} ${SDL_LIBRARY})
   qt5_use_modules(${SIMULATOR_TARGET} Core)
-  add_definitions(-std=gnu++11)
   add_custom_target(libsimulator DEPENDS ${SIMULATOR_TARGET})
 endif()
 
