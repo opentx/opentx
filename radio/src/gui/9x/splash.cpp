@@ -23,7 +23,7 @@
 #if !defined GET_FAR_ADDRESS
 #define GET_FAR_ADDRESS(var)                          \
 ({                                                    \
-    uint_farptr_t tmp;                                \
+    uint32_t tmp;                                \
                                                       \
     __asm__ __volatile__(                             \
                                                       \

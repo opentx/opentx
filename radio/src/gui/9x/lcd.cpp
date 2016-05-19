@@ -1373,9 +1373,9 @@ void lcdInvertLine(int8_t y)
 
 #if !defined(BOOT)
 #if defined(PCBMEGA2560)
-void lcd_imgfar(coord_t x, coord_t y,  uint_farptr_t img, uint8_t idx, LcdFlags att) // progmem "far"
+void lcd_imgfar(coord_t x, coord_t y,  uint32_t img, uint8_t idx, LcdFlags att) // progmem "far"
 {
-  uint_farptr_t q = img;
+  uint32_t q = img;
   uint8_t w    = pgm_read_byte_far(q++);
   uint8_t hb   = (pgm_read_byte_far(q++)+7)/8;
   bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
