@@ -41,11 +41,11 @@ void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size)
   if (size != SBUS_FRAME_SIZE || sbus[0] != SBUS_START_BYTE || sbus[SBUS_FRAME_SIZE-1] != SBUS_END_BYTE) {
     return; // not a valid SBUS frame
   }
-  if (sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FAILSAFE_BIT) || sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FRAMELOST_BIT)) {
+  if ((sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FAILSAFE_BIT)) || (sbus[SBUS_FLAGS_IDX] & (1<<SBUS_FRAMELOST_BIT))) {
     return; // SBUS invalid frame or failsafe mode
   }
 
-  sbus++;   // Skip start byte
+  sbus++;   // skip start byte
 
   uint32_t inputbitsavailable = 0;
   uint32_t inputbits = 0;
@@ -73,10 +73,10 @@ void processSbusInput()
 
   while (sbusGetByte(&rxchar)) {
     active = 1;
-    SbusFrame[SbusIndex++] = rxchar;
     if (SbusIndex > SBUS_FRAME_SIZE-1) {
       SbusIndex = SBUS_FRAME_SIZE-1;
     }
+    SbusFrame[SbusIndex++] = rxchar;
   }
   if (active) {
     SbusTimer = getTmr2MHz();
