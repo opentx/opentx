@@ -37,7 +37,7 @@ void menuGeneralDiagAna(uint8_t event)
     lcdDrawNumber(x+13*FW-1, y, avgJitter[i].get(), RIGHT);
     lcdDrawNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
 #else
-    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
+    lcdDrawNumber(x+11*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
 #endif
   }
 
