@@ -23,7 +23,7 @@ local options = {
 }
 
 local function create(zone, options)
-  local myZone = { zone=zone, options=options }
+  local myZone  = { zone=zone, options=options, counter=0 }
   return myZone
 end
 
@@ -122,65 +122,67 @@ end
 
 --- Size is 160x30
 local function zoneSmall(zone)
+  local myBatt = {["x"]=0, ["y"]=0, ["w"]=75, ["h"]=28, ["segments_w"]=15, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
   local mySensor = getCels(zone.options.Sensor)
 
   lcd.setColor(TEXT_COLOR, zone.options.Color)
   if type(mySensor) == "table" then
     local myString = tostring(getCellSum(mySensor)).."V ("..getCellCount(mySensor).."S)"
     local percent = getCellPercent(getCellAvg(mySensor))
-    lcd.drawText(zone.zone.x+90, zone.zone.y+22, myString, LEFT + SMLSIZE + TEXT_COLOR)
-    lcd.drawText(zone.zone.x+95, zone.zone.y,percent.."%", LEFT + MIDSIZE + TEXT_COLOR)
+    lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y + 22, myString, RIGHT + SMLSIZE + TEXT_COLOR)
+    lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y, percent.."%", RIGHT + MIDSIZE + TEXT_COLOR)
+    -- fils batt
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
     lcd.drawGauge(zone.zone.x+2, zone.zone.y+2, 75, zone.zone.h - 4,percent,100, CUSTOM_COLOR)
+    -- draws bat
     lcd.setColor(CUSTOM_COLOR, WHITE)
-    for i=2,75,15 do
-      lcd.drawRectangle(zone.zone.x+i, zone.zone.y+2, 15, zone.zone.h - 4, SOLID + CUSTOM_COLOR,1)
+    lcd.drawRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y, myBatt.w, myBatt.h, CUSTOM_COLOR, 2)
+    lcd.drawFilledRectangle(zone.zone.x + myBatt.x + myBatt.w, zone.zone.y + myBatt.h/2 - myBatt.cath_h/2, myBatt.cath_w, myBatt.cath_h, CUSTOM_COLOR)
+    for i=1, myBatt.w - myBatt.segments_w, myBatt.segments_w do
+      lcd.drawRectangle(zone.zone.x + myBatt.x + i, zone.zone.y + myBatt.y, myBatt.segments_w, myBatt.h, CUSTOM_COLOR,1)
     end
-    lcd.drawRectangle(zone.zone.x+2, zone.zone.y+2, 75, zone.zone.h - 4, SOLID + CUSTOM_COLOR,2)
-    lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, zone.zone.h - 16, SOLID + CUSTOM_COLOR)
   else
     lcd.drawText(zone.zone.x, zone.zone.y+10, "No Cels sensor data", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
   end
-  lcd.setColor(CUSTOM_COLOR, BLACK)
-  lcd.setColor(TEXT_COLOR, BLACK)
   return
 end
 
 --- Size is 180x70
 local function zoneMedium(zone)
+  local myBatt = {["x"]=0, ["y"]=0, ["w"]=75, ["h"]=32, ["segments_w"]=15, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
   local mySensor = getCels(zone.options.Sensor)
 
   lcd.setColor(TEXT_COLOR, zone.options.Color)
   if type(mySensor) == "table" then
     local percent = getCellPercent(getCellAvg(mySensor))
     lcd.drawText(zone.zone.x+102, zone.zone.y, percent.."%", LEFT + DBLSIZE + TEXT_COLOR)
+    -- fils batt
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
-    lcd.drawGauge(zone.zone.x+2, zone.zone.y+2, 75, 36 - 4,percent,100, CUSTOM_COLOR)
-    mystring = ""
-    pos = {{x=2,y=38}, {x=60,y=38}, {x=118,y=38}, {x=2,y=57}, {x=60,y=57}, {x=118,y=57}}
+    lcd.drawGauge(zone.zone.x + myBatt.x +myBatt.cath_w, zone.zone.y + myBatt.y, myBatt.w, myBatt.h, percent,100, CUSTOM_COLOR)
+    -- draw cells
+    local pos = {{x=2,y=38}, {x=60,y=38}, {x=118,y=38}, {x=2,y=57}, {x=60,y=57}, {x=118,y=57}}
     for i=1,getCellCount(mySensor),1 do
       lcd.setColor(CUSTOM_COLOR, getRangeColor(mySensor[i], getCellMax(mySensor), getCellMax(mySensor) - 0.2))
       lcd.drawFilledRectangle(zone.zone.x + pos[i].x,zone.zone.y + pos[i].y,58,20, CUSTOM_COLOR)
       lcd.drawText(zone.zone.x + pos[i].x+10,zone.zone.y + pos[i].y,string.format("%.2f",mySensor[i]))
       lcd.drawRectangle(zone.zone.x + pos[i].x,zone.zone.y + pos[i].y,59,20)
     end
-    lcd.drawText(zone.zone.x + 2, zone.zone.y + 40, mystring)
   else
     lcd.drawText(zone.zone.x, zone.zone.y+35, "No Cels sensor data", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
   end
+  -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
-  for i=2,75,15 do
-    lcd.drawRectangle(zone.zone.x+i, zone.zone.y+2, 15, 32, SOLID + CUSTOM_COLOR,1)
+  lcd.drawRectangle(zone.zone.x + myBatt.x , zone.zone.y + myBatt.y, myBatt.w, myBatt.h, CUSTOM_COLOR, 2)
+  lcd.drawFilledRectangle(zone.zone.x + myBatt.x + myBatt.w, zone.zone.y + myBatt.h/2 - myBatt.cath_h/2, myBatt.cath_w, myBatt.cath_h, CUSTOM_COLOR)
+  for i=1, myBatt.w - myBatt.segments_w, myBatt.segments_w do
+    lcd.drawRectangle(zone.zone.x + myBatt.x + i, zone.zone.y + myBatt.y, myBatt.segments_w, myBatt.h, CUSTOM_COLOR,1)
   end
-  lcd.drawRectangle(zone.zone.x+2, zone.zone.y+2, 75, 32, SOLID + CUSTOM_COLOR,2)
-  lcd.drawFilledRectangle(zone.zone.x+77, zone.zone.y+8, 6, 20, SOLID + CUSTOM_COLOR)
-  lcd.setColor(CUSTOM_COLOR, BLACK)
-  lcd.setColor(TEXT_COLOR, BLACK)
   return
 end
 
 --- Size is 190x150
 local function zoneLarge(zone)
+  local myBatt = {["x"]=0, ["y"]=18, ["w"]=76, ["h"]=121, ["segments_h"]=30, ["color"]=WHITE, ["cath_w"]=30, ["cath_h"]=10}
   local mySensor = getCels(zone.options.Sensor)
 
   lcd.setColor(TEXT_COLOR, zone.options.Color)
@@ -190,8 +192,11 @@ local function zoneLarge(zone)
     lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y+44, tostring(getCellSum(mySensor)).."V", RIGHT + MIDSIZE + TEXT_COLOR)
     lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y+65, getCellCount(mySensor).."S", RIGHT + MIDSIZE + TEXT_COLOR)
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
-    lcd.drawFilledRectangle(zone.zone.x+2,zone.zone.y+(147-math.floor(percent*1.2)),74,math.floor(percent*1.2), CUSTOM_COLOR)
-    pos = {{x=80,y=90}, {x=138,y=90}, {x=80,y=109}, {x=138,y=109}, {x=80,y=128}, {x=138,y=128}}
+    -- fils batt
+    lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
+    lcd.drawFilledRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.h + myBatt.cath_h - math.floor(percent/100 * myBatt.h), myBatt.w, math.floor(percent/100 * myBatt.h), CUSTOM_COLOR)
+    -- draw cells
+    local pos = {{x=80,y=90}, {x=138,y=90}, {x=80,y=109}, {x=138,y=109}, {x=80,y=128}, {x=138,y=128}}
     for i=1,getCellCount(mySensor),1 do
       lcd.setColor(CUSTOM_COLOR, getRangeColor(mySensor[i], getCellMax(mySensor), getCellMax(mySensor) - 0.2))
       lcd.drawFilledRectangle(zone.zone.x + pos[i].x,zone.zone.y + pos[i].y,58,20, CUSTOM_COLOR)
@@ -201,23 +206,43 @@ local function zoneLarge(zone)
   else
     lcd.drawText(zone.zone.x+5, zone.zone.y, "No Cels sensor data", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
   end
+  -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
-  lcd.drawRectangle(zone.zone.x, zone.zone.y+28, 76, 121, SOLID + CUSTOM_COLOR,2) 
-  lcd.drawFilledRectangle(zone.zone.x+22, zone.zone.y+20, 30, 10, SOLID + CUSTOM_COLOR,2)
-  for i=1,120,30 do
-    lcd.drawRectangle(zone.zone.x, zone.zone.y+28+i, 76, 30, SOLID + CUSTOM_COLOR,1)
+  lcd.drawRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.cath_h , myBatt.w, myBatt.h, CUSTOM_COLOR, 2)
+  lcd.drawFilledRectangle(zone.zone.x + myBatt.x + myBatt.w/2 - myBatt.cath_w/2, zone.zone.y + myBatt.y, myBatt.cath_w, myBatt.cath_h, CUSTOM_COLOR)
+  for i=1, myBatt.h - myBatt.segments_h, myBatt.segments_h do
+    lcd.drawRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.cath_h + i, myBatt.w, myBatt.segments_h, CUSTOM_COLOR,1)
   end
   return
 end
 
 --- Size is 390x170
 local function zoneXLarge(zone)
+  local myBatt = {["x"]=10, ["y"]=20, ["w"]=80, ["h"]=121, ["segments_h"]=30, ["color"]=WHITE, ["cath_w"]=30, ["cath_h"]=10}
+  local mySensor = getCels(zone.options.Sensor)
+
+  lcd.setColor(TEXT_COLOR, zone.options.Color)
+  if type(mySensor) == "table" then
+    local percent = getCellPercent(getCellAvg(mySensor))
+    -- fils batt
+    lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
+    lcd.drawFilledRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.h + myBatt.cath_h - math.floor(percent/100 * myBatt.h), myBatt.w, math.floor(percent/100 * myBatt.h), CUSTOM_COLOR)
+  else
+    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Cels sensor data", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
+  end
+  -- draws bat
+  lcd.setColor(CUSTOM_COLOR, WHITE)
+  lcd.drawRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.cath_h , myBatt.w, myBatt.h, CUSTOM_COLOR, 2)
+  lcd.drawFilledRectangle(zone.zone.x + myBatt.x + myBatt.w/2 - myBatt.cath_w/2, zone.zone.y + myBatt.y, myBatt.cath_w, myBatt.cath_h, CUSTOM_COLOR)
+  for i=1, myBatt.h - myBatt.segments_h, myBatt.segments_h do
+    lcd.drawRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.cath_h + i, myBatt.w, myBatt.segments_h, CUSTOM_COLOR,1)
+  end
   return
 end
 
 function refresh(myZone)
   if myZone.options.Sensor == 1 then
-    lcd.drawText(myZone.zone.x+2, myZone.zone.y+2, "Widget not configured", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
+    lcd.drawText(myZone.zone.x+2, myZone.zone.y+2, "BattCheck not configured", LEFT + SMLSIZE + INVERS + TEXT_COLOR)
     return
   end
   if myZone.zone.w  > 380 and myZone.zone.h > 165 then zoneXLarge(myZone)
@@ -227,4 +252,4 @@ function refresh(myZone)
   end
 end
 
-return { name="BattCheck", options=options, create=create, refresh=refresh }
+return { name="Test", options=options, create=create, refresh=refresh }
