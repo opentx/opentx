@@ -420,7 +420,14 @@ bool menuModelSetup(evt_t event)
           killEvents(event);
           START_NO_HIGHLIGHT();
           getMovedSwitch();
-          g_model.switchWarningState = switches_states;
+          for (int i=0; i<NUM_SWITCHES; i++) {
+            bool enabled = ((g_model.switchWarningState >> (3*i)) & 0x07);
+            if (enabled) {
+              g_model.switchWarningState &= ~(0x07 << (3*i));
+              unsigned int newState = (switches_states >> (2*i) & 0x03) + 1;
+              g_model.switchWarningState |= (newState << (3*i));
+            }
+          }
           AUDIO_WARNING1();
           storageDirty(EE_MODEL);
         }
@@ -433,7 +440,6 @@ bool menuModelSetup(evt_t event)
         for (int i=0, current=0; i<NUM_SWITCHES; i++) {
           if (SWITCH_WARNING_ALLOWED(i)) {
             if (!READ_ONLY() && attr && l_posHorz==current) {
-              // g_model.switchWarningEnable ^= (1 << i);
               storageDirty(EE_MODEL);
             }
             unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
@@ -443,22 +449,10 @@ bool menuModelSetup(evt_t event)
             }
             char s[3];
             s[0] = 'A' + i;
-            int max;
-            if (state == 0) {
-              s[1] = 'x';
-              max = 2;
-            }
-            else if (IS_3POS(i)) {
-              s[1] = "\300-\301"[state-1];
-              max = 3;
-            }
-            else {
-              s[1] = "\300\301"[state-1];
-              max = 2;
-            }
+            s[1] = "x\300-\301"[state];
             s[2] = '\0';
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+i*25, y, s, color|(menuHorizontalPosition==current ? attr : 0));
-            if (attr && menuHorizontalPosition==current) CHECK_INCDEC_MODELVAR_ZERO(event, state, max);
+            if (attr && menuHorizontalPosition==current) CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, state, 3, IS_3POS(i) ? 0 : isSwitchWarningStateAvailable);
             newStates |= (state << (3*i));
             ++current;
           }

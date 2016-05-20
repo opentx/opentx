@@ -470,6 +470,10 @@ void modelDefault(uint8_t id)
   strcpy(g_model.screenData[0].layoutName, "Layout2P1");
   extern const WidgetFactory * defaultWidget;
   customScreens[0]->createWidget(0, defaultWidget);
+  // enable switch warnings
+  for (int i=0; i<NUM_SWITCHES; i++) {
+    g_model.switchWarningState |= (1 << (3*i));
+  }
 #endif
 }
 
