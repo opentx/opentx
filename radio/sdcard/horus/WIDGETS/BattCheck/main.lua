@@ -44,7 +44,7 @@ local function getCels(sensor)
         histCellData[k] = v
       end
     end
-    if #histCellData ~= #liveCellData then
+    if #histCellData ~= #liveCellData then -- this is necessary for simu
       for k, v in pairs(liveCellData) do
         histCellData[k] = v
       end
@@ -267,7 +267,7 @@ local function zoneXLarge(zone)
     -- draw cells for lowest cells
     local pos = {{x=110, y=110}, {x=160, y=110}, {x=210, y=110}, {x=110, y=129}, {x=160, y=129}, {x=210, y=129}}
     for i=1, getCellCount(mySensor), 1 do
-      lcd.setColor(CUSTOM_COLOR, getRangeColor(histCellData[i], getCellMax(histCellData), getCellMax(histCellData) - 0.2))
+      lcd.setColor(CUSTOM_COLOR, getRangeColor(histCellData[i], mySensor[i], mySensor[i] - 0.3))
       lcd.drawFilledRectangle(zone.zone.x + pos[i].x, zone.zone.y + pos[i].y, 58, 20, CUSTOM_COLOR)
       lcd.drawText(zone.zone.x + pos[i].x+10, zone.zone.y + pos[i].y, string.format("%.2f", histCellData[i]))
       lcd.drawRectangle(zone.zone.x + pos[i].x, zone.zone.y + pos[i].y, 59, 20)
