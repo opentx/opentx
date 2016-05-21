@@ -28,6 +28,10 @@ local function create(zone, options)
   return myZone
 end
 
+local function update(myZone, options)
+  myZone.options = options
+end
+
 local function isEmpty(self)
   for _, _ in pairs(self) do
     return false
@@ -303,4 +307,4 @@ function refresh(myZone)
   end
 end
 
-return { name="BattCheck", options=options, create=create, refresh=refresh }
+return { name="BattCheck", options=options, create=create, update=update, refresh=refresh }
