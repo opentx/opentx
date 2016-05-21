@@ -55,7 +55,7 @@ void init_trainer_ppm()
 // TODO - testing
 void stop_trainer_ppm()
 {
-  configure_pins( TRAINER_GPIO_PIN_OUT, PIN_INPUT | PIN_PORTC ); // Pin as input
+  configure_pins(TRAINER_GPIO_PIN_OUT, PIN_INPUT | PIN_PORTC); // Pin as input
   TRAINER_TIMER->DIER = 0;                                     // Stop Interrupt
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                          // Stop counter
   NVIC_DisableIRQ(TRAINER_TIMER_IRQn);                         // Stop Interrupt
