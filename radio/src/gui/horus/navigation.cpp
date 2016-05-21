@@ -110,7 +110,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 {
   int newval = val;
 
-#if defined(DBLKEYS)
+#if 0
   uint32_t in = KEYS_PRESSED();
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
@@ -142,7 +142,6 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
       killEvents(KEY_DOWN);
       killEvents(KEY_RIGHT);
       killEvents(KEY_LEFT);
-      killEvents(KEY_MENU);
       killEvents(KEY_ENTER);
       killEvents(KEY_EXIT);
       event = 0;

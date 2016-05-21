@@ -10,9 +10,13 @@ local function create(zone, options)
   return pie
 end
 
+local function update(pie, options)
+  pie.options = options
+end
+
 function refresh(pie)
   pie.counter = pie.counter + 1
   lcd.drawNumber(pie.zone.x, pie.zone.y, pie.counter, LEFT + DBLSIZE + TEXT_COLOR);
 end
 
-return { name="Counter", options=options, create=create, refresh=refresh }
+return { name="Counter", options=options, create=create, update=update, refresh=refresh }
