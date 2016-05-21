@@ -118,7 +118,8 @@ void boardInit()
                          KEYS_RCC_AHB1Periph_GPIO | 
                          ADC_RCC_AHB1Periph | 
                          SERIAL_RCC_AHB1Periph | 
-                         TELEMETRY_RCC_AHB1Periph | 
+                         TELEMETRY_RCC_AHB1Periph |
+                         TRAINER_RCC_AHB1Periph |
                          AUDIO_RCC_AHB1Periph | 
                          HAPTIC_RCC_AHB1Periph | 
                          INTMODULE_RCC_AHB1Periph | 
