@@ -452,7 +452,7 @@ PACK(struct TimerData {
   uint8_t  countdownBeep:2;
   uint8_t  minuteBeep:1;
   uint8_t  persistent:2;
-  uint8_t  spare:3;
+  uint8_t  countdownStart:3;
   uint16_t value;
 });
 #else

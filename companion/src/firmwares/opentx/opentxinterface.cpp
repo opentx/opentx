@@ -1160,6 +1160,7 @@ void addOpenTxLcdOptions(OpenTxFirmware * firmware)
     { "ST7565R", QObject::tr("ST7565R LCD or compatible") },
     { "ERC12864FSF", QObject::tr("ERC12864FSF LCD") },
     { "ST7920", QObject::tr("ST7920 LCD") },
+    { "KS108", QObject::tr("KS108 LCD") },
     { NULL }
   };
   firmware->addOptions(lcd_options);
@@ -1433,7 +1434,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("sdcard", QObject::tr("Support for SD memory card"));
   firmware->addOption("audio", QObject::tr("Support for radio modified with regular speaker"));
-//firmware->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
+  firmware->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
   firmware->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);

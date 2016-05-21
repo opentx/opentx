@@ -107,6 +107,11 @@ void audioDefevent(uint8_t e);
   #define VOICE_AUDIO_BUZZER(v, a, b)  AUDIO_BUZZER(a, b)
 #endif
 
+void audioKeyPress();
+void audioKeyError();
+void audioTrimPress(int16_t value);
+void audioTimerCountdown(uint8_t timer, int value);
+
 #define AUDIO_KEY_PRESS()        audioKeyPress()
 #define AUDIO_KEY_ERROR()        AUDIO_WARNING2()
 #define AUDIO_WARNING1()         AUDIO_BUZZER(audioDefevent(AU_WARNING1), beep(3))

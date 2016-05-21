@@ -292,11 +292,13 @@ void menuModelSetup(uint8_t event)
                 timer->start = qr.rem + qr.quot*60;
                 break;
               case 2:
-                qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-                if (timer->start >= qr.rem) {
+                qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62) - 2;
+                if ((int16_t)timer->start >= qr.rem) {
                   timer->start -= qr.rem ;
                 }
-                if ((int32_t)timer->start > 3599) timer->start=3599; // 59:59
+                if ((int16_t)timer->start > 3599) {
+                  timer->start = 3599; // 59:59
+                }
                 break;
             }
           }
