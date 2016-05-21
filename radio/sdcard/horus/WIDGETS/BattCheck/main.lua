@@ -297,7 +297,12 @@ local function zoneXLarge(zone)
   lcd.drawText(zone.zone.x + 270, zone.zone.y + 21, "Live data", RIGHT + SMLSIZE + INVERS + TEXT_COLOR)
   lcd.drawRectangle(zone.zone.x + 110, zone.zone.y + 110, 160, 40, CUSTOM_COLOR, 1)
   lcd.drawText(zone.zone.x + 270, zone.zone.y + 93, "Lowest data", RIGHT + SMLSIZE + INVERS + TEXT_COLOR)
+  return
+end
 
+-- This function allow recording of lowest cells when widget is not active
+local function background(myZone)
+  getCels(myZone.options.Sensor)
   return
 end
 
@@ -313,4 +318,5 @@ function refresh(myZone)
   end
 end
 
-return { name="BattCheck", options=options, create=create, update=update, refresh=refresh }
+return { name="BattCheck", options=options, create=create, update=update, background=background, refresh=refresh }
+
