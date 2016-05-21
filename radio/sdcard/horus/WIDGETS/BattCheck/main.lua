@@ -22,16 +22,19 @@ local options = {
   { "Color", COLOR, WHITE }
 }
 
+-- This function is runned once at the creation of the widget
 local function create(zone, options)
   local myZone  = { zone=zone, options=options, counter=0 }
   histCellData = {}
   return myZone
 end
 
+-- This function allow updates when you change widgets settings
 local function update(myZone, options)
   myZone.options = options
 end
 
+-- A quick and dirty check for empty table
 local function isEmpty(self)
   for _, _ in pairs(self) do
     return false
@@ -43,16 +46,19 @@ end
 local function getCels(sensor)
   liveCellData = getValue(sensor)
   if type(liveCellData) == "table" then
+    -- initialize historical table if not done yet
     if isEmpty(histCellData) then
       for k, v in pairs(liveCellData) do
         histCellData[k] = v
       end
     end
-    if #histCellData ~= #liveCellData then -- this is necessary for simu
+    -- this is necessary for simu where cellcount can change
+    if #histCellData ~= #liveCellData then
       for k, v in pairs(liveCellData) do
         histCellData[k] = v
       end
     end
+    -- stores the lowest cell values in historical table
     for k, v in pairs(liveCellData) do
       if v < histCellData[k] then histCellData[k] = v end
     end
@@ -258,8 +264,8 @@ local function zoneXLarge(zone)
     local percent = getCellPercent(getCellAvg(mySensor))
     -- draw right text section
     lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y, percent.."%", RIGHT + XXLSIZE + TEXT_COLOR)
-    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 60, tostring(getCellSum(mySensor)).."V", RIGHT + MIDSIZE + TEXT_COLOR)
-    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 95, getCellCount(mySensor).."S", RIGHT + MIDSIZE + TEXT_COLOR)
+    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 67, tostring(getCellSum(mySensor)).."V", RIGHT + MIDSIZE + TEXT_COLOR)
+    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 110, getCellCount(mySensor).."S", RIGHT + MIDSIZE + TEXT_COLOR)
     -- draw cells
     local pos = {{x=110, y=38}, {x=160, y=38}, {x=210, y=38}, {x=110, y=57}, {x=160, y=57}, {x=210, y=57}}
     for i=1, getCellCount(mySensor), 1 do
