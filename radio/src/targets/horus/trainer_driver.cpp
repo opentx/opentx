@@ -37,8 +37,8 @@ void init_trainer_ppm()
   setupTrainerPulses();
 
   TRAINER_TIMER->ARR = *trainerPulsesData.ppm.ptr++;
-  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1;               // 0.5uS
-  TRAINER_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE;                   // PWM mode 1
+  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
+  TRAINER_TIMER->CCMR1 = TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE; // PWM mode 1
   TRAINER_TIMER->BDTR = TIM_BDTR_MOE;
   TRAINER_TIMER->EGR = 1;
 
@@ -64,8 +64,8 @@ void stop_trainer_ppm()
 void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
 {
   TRAINER_TIMER->CCR1 = idleTime;
-  TRAINER_TIMER->CCR4 = delay;
-  TRAINER_TIMER->CCER = TIM_CCER_CC4E | (positive ? TIM_CCER_CC4P : 0);
+  TRAINER_TIMER->CCR2 = delay;
+  TRAINER_TIMER->CCER = TIM_CCER_CC2E | (positive ? TIM_CCER_CC2P : 0);
 }
 
 // Trainer capture, PC8, Timer 3 channel 3
@@ -82,12 +82,12 @@ void init_trainer_capture()
   GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_GPIO_PinSource_IN, TRAINER_GPIO_AF);
 
   TRAINER_TIMER->ARR = 0xFFFF;
-  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1;               // 0.5uS
+  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
   TRAINER_TIMER->CR2 = 0;
-  TRAINER_TIMER->CCMR2 = TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1 | TIM_CCMR2_CC3S_0;
-  TRAINER_TIMER->CCER = TIM_CCER_CC3E;
-  TRAINER_TIMER->SR &= ~TIM_SR_CC3IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF;  // Clear flags
-  TRAINER_TIMER->DIER |= TIM_DIER_CC3IE;
+  TRAINER_TIMER->CCMR1 = TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_CC1S_0;
+  TRAINER_TIMER->CCER = TIM_CCER_CC1E;
+  TRAINER_TIMER->SR &= ~TIM_SR_CC1IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF; // Clear flags
+  TRAINER_TIMER->DIER |= TIM_DIER_CC1IE;
   TRAINER_TIMER->CR1 = TIM_CR1_CEN;
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
@@ -95,9 +95,9 @@ void init_trainer_capture()
 
 void stop_trainer_capture()
 {
-  TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                          // Stop counter
-  TRAINER_TIMER->DIER = 0;                      // Stop Interrupt
-  NVIC_DisableIRQ(TRAINER_TIMER_IRQn);                         // Stop Interrupt
+  TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
+  TRAINER_TIMER->DIER = 0; // Stop Interrupt
+  NVIC_DisableIRQ(TRAINER_TIMER_IRQn); // Stop Interrupt
 }
 
 #if !defined(SIMU)
@@ -108,15 +108,15 @@ extern "C" void TIM3_IRQHandler()
   bool doCapture = false;
 
   // What mode? in or out?
-  if ( (TRAINER_TIMER->DIER & TIM_DIER_CC3IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC3IF ) ) {
+  if ((TRAINER_TIMER->DIER & TIM_DIER_CC1IE) && (TRAINER_TIMER->SR & TIM_SR_CC1IF)) {
     // capture mode on trainer jack
-    capture = TRAINER_TIMER->CCR3;
+    capture = TRAINER_TIMER->CCR1;
     if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK) {
       doCapture = true;
     }
   }
 
-  if ( ( TRAINER_TIMER->DIER & TIM_DIER_CC2IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC2IF ) ) {
+  if ((TRAINER_TIMER->DIER & TIM_DIER_CC2IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC2IF)) {
     // capture mode on heartbeat pin (external module)
     capture = TRAINER_TIMER->CCR2;
     if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE) {
@@ -129,26 +129,26 @@ extern "C" void TIM3_IRQHandler()
   }
 
   // PPM out compare interrupt
-  if ( ( TRAINER_TIMER->DIER & TIM_DIER_CC1IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC1IF ) ) {
+  if ((TRAINER_TIMER->DIER & TIM_DIER_CC1IE) && (TRAINER_TIMER->SR & TIM_SR_CC1IF)) {
     // compare interrupt
-    TRAINER_TIMER->DIER &= ~TIM_DIER_CC1IE;         // stop this interrupt
-    TRAINER_TIMER->SR &= ~TIM_SR_CC1IF;                             // Clear flag
+    TRAINER_TIMER->DIER &= ~TIM_DIER_CC1IE; // stop this interrupt
+    TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
 
     setupTrainerPulses();
 
     trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
     TRAINER_TIMER->DIER |= TIM_DIER_UDE;
-    TRAINER_TIMER->SR &= ~TIM_SR_UIF;                                       // Clear this flag
-    TRAINER_TIMER->DIER |= TIM_DIER_UIE;                            // Enable this interrupt
+    TRAINER_TIMER->SR &= ~TIM_SR_UIF; // Clear this flag
+    TRAINER_TIMER->DIER |= TIM_DIER_UIE; // Enable this interrupt
   }
 
   // PPM out update interrupt
-  if ( (TRAINER_TIMER->DIER & TIM_DIER_UIE) && ( TRAINER_TIMER->SR & TIM_SR_UIF ) ) {
-    TRAINER_TIMER->SR &= ~TIM_SR_UIF;                               // Clear flag
+  if ((TRAINER_TIMER->DIER & TIM_DIER_UIE) && (TRAINER_TIMER->SR & TIM_SR_UIF)) {
+    TRAINER_TIMER->SR &= ~TIM_SR_UIF; // Clear flag
     TRAINER_TIMER->ARR = *trainerPulsesData.ppm.ptr++;
     if ( *trainerPulsesData.ppm.ptr == 0 ) {
-      TRAINER_TIMER->SR &= ~TIM_SR_CC1IF;                     // Clear this flag
-      TRAINER_TIMER->DIER |= TIM_DIER_CC1IE;  // Enable this interrupt
+      TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear this flag
+      TRAINER_TIMER->DIER |= TIM_DIER_CC1IE; // Enable this interrupt
     }
   }
 }
