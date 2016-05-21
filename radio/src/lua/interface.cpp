@@ -909,6 +909,8 @@ class LuaWidget: public Widget
       luaL_unref(L, LUA_REGISTRYINDEX, widgetData);
     }
 
+    virtual void update() const;
+
     virtual void refresh();
 
     virtual void background();
@@ -933,6 +935,7 @@ class LuaWidgetFactory: public WidgetFactory
     LuaWidgetFactory(const char * name, int widgetOptions, int createFunction):
       WidgetFactory(name, createOptionsArray(widgetOptions)),
       createFunction(createFunction),
+      updateFunction(0),
       refreshFunction(0),
       backgroundFunction(0)
     {
@@ -969,9 +972,28 @@ class LuaWidgetFactory: public WidgetFactory
 
   protected:
     int createFunction;
+    int updateFunction;
     int refreshFunction;
     int backgroundFunction;
 };
+
+void LuaWidget::update() const
+{
+  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+  LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
+  lua_rawgeti(L, LUA_REGISTRYINDEX, factory->updateFunction);
+  lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
+
+  lua_newtable(L);
+  int i = 0;
+  for (const ZoneOption * option = getOptions(); option->name; option++, i++) {
+    l_pushtableint(option->name, persistentData->options[i].signedValue);
+  }
+
+  if (lua_pcall(L, 2, 0, 0) != 0) {
+    TRACE("Error in widget %s: %s", factory->getName(), lua_tostring(L, -1));
+  }
+}
 
 void LuaWidget::refresh()
 {
@@ -998,7 +1020,7 @@ void LuaWidget::background()
 void luaLoadWidgetCallback()
 {
   const char * name=NULL;
-  int widgetOptions=0, createFunction=0, refreshFunction=0, backgroundFunction=0;
+  int widgetOptions=0, createFunction=0, updateFunction=0, refreshFunction=0, backgroundFunction=0;
 
   luaL_checktype(L, -1, LUA_TTABLE);
 
@@ -1015,6 +1037,10 @@ void luaLoadWidgetCallback()
       createFunction = luaL_ref(L, LUA_REGISTRYINDEX);
       lua_pushnil(L);
     }
+    else if (!strcmp(key, "update")) {
+      updateFunction = luaL_ref(L, LUA_REGISTRYINDEX);
+      lua_pushnil(L);
+    }
     else if (!strcmp(key, "refresh")) {
       refreshFunction = luaL_ref(L, LUA_REGISTRYINDEX);
       lua_pushnil(L);
@@ -1027,6 +1053,7 @@ void luaLoadWidgetCallback()
 
   if (name && createFunction) {
     LuaWidgetFactory * factory = new LuaWidgetFactory(name, widgetOptions, createFunction);
+    factory->updateFunction = updateFunction;
     factory->refreshFunction = refreshFunction;
     factory->backgroundFunction = backgroundFunction;
   }
