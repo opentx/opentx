@@ -60,4 +60,8 @@ bool isSensorAvailable(int sensor);
 
 bool modelHasNotes();
 
+#if defined(COLORLCD)
+bool isSwitchWarningStateAvailable(int state);
+#endif // #if defined(COLORLCD)
+
 #endif // _GUI_HELPERS_H_
