@@ -487,7 +487,15 @@ bool isRfProtocolAvailable(int protocol)
   return true;
 }
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(PCBHORUS)
+bool isTrainerModeAvailable(int mode)
+{
+  if (IS_EXTERNAL_MODULE_PRESENT() && mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+    return false;
+  else
+    return true;
+}
+#elif defined(PCBTARANIS)
 bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))

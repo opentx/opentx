@@ -55,9 +55,12 @@
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define IS_TRAINER_EXTERNAL_MODULE() (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER/* || g_eeGeneral.serial2Mode==UART_MODE_CPPM_TRAINER*/)
+#if defined(PCBHORUS)
+  #define IS_TRAINER_EXTERNAL_MODULE()    (g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
+#elif defined(PCBTARANIS)
+  #define IS_TRAINER_EXTERNAL_MODULE()    (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
 #endif
 
 #if defined(VOICE)

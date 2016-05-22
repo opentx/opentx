@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-extern Fifo<uint8_t, 32> sbusFifo;
-
 #define setupTrainerPulses() setupPulsesPPM(TRAINER_MODULE)
 
 void init_trainer_ppm()
@@ -52,7 +50,6 @@ void init_trainer_ppm()
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
 }
 
-// TODO - testing
 void stop_trainer_ppm()
 {
   configure_pins(TRAINER_GPIO_PIN_OUT, PIN_INPUT | PIN_PORTC); // Pin as input
@@ -68,7 +65,6 @@ void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t posi
   TRAINER_TIMER->CCER = TIM_CCER_CC2E | (positive ? TIM_CCER_CC2P : 0);
 }
 
-// Trainer capture, PC8, Timer 3 channel 3
 void init_trainer_capture()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -101,9 +97,10 @@ void stop_trainer_capture()
 }
 
 #if !defined(SIMU)
-extern "C" void TIM3_IRQHandler()
+extern "C" void TRAINER_TIMER_IRQHandler()
 {
-  DEBUG_INTERRUPT(INT_TIM3);
+  DEBUG_INTERRUPT(INT_TRAINER);
+
   uint16_t capture = 0;
   bool doCapture = false;
 
@@ -112,14 +109,6 @@ extern "C" void TIM3_IRQHandler()
     // capture mode on trainer jack
     capture = TRAINER_TIMER->CCR1;
     if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK) {
-      doCapture = true;
-    }
-  }
-
-  if ((TRAINER_TIMER->DIER & TIM_DIER_CC2IE ) && ( TRAINER_TIMER->SR & TIM_SR_CC2IF)) {
-    // capture mode on heartbeat pin (external module)
-    capture = TRAINER_TIMER->CCR2;
-    if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE) {
       doCapture = true;
     }
   }
@@ -146,10 +135,28 @@ extern "C" void TIM3_IRQHandler()
   if ((TRAINER_TIMER->DIER & TIM_DIER_UIE) && (TRAINER_TIMER->SR & TIM_SR_UIF)) {
     TRAINER_TIMER->SR &= ~TIM_SR_UIF; // Clear flag
     TRAINER_TIMER->ARR = *trainerPulsesData.ppm.ptr++;
-    if ( *trainerPulsesData.ppm.ptr == 0 ) {
+    if (*trainerPulsesData.ppm.ptr == 0) {
       TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear this flag
       TRAINER_TIMER->DIER |= TIM_DIER_CC1IE; // Enable this interrupt
     }
+  }
+}
+
+extern "C" void HEARTBEAT_TIMER_IRQHandler()
+{
+  uint16_t capture = 0;
+  bool doCapture = false;
+
+  if ((HEARTBEAT_TIMER->DIER & TIM_DIER_CC2IE ) && (HEARTBEAT_TIMER->SR & TIM_SR_CC2IF)) {
+    // capture mode on heartbeat pin (external module)
+    capture = HEARTBEAT_TIMER->CCR2;
+    if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE) {
+      doCapture = true;
+    }
+  }
+
+  if (doCapture) {
+    captureTrainerPulses(capture);
   }
 }
 #endif
@@ -158,97 +165,27 @@ void init_cppm_on_heartbeat_capture(void)
 {
   EXTERNAL_MODULE_ON();
 
-  configure_pins(HEARTBEAT_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2);
+  configure_pins(HEARTBEAT_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTD | PIN_PER_2);
 
-  TRAINER_TIMER->ARR = 0xFFFF;
-  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1;               // 0.5uS
-  TRAINER_TIMER->CR2 = 0;
-  TRAINER_TIMER->CCMR1 = TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0;
-  TRAINER_TIMER->CCER = TIM_CCER_CC2E;
-  TRAINER_TIMER->SR &= ~TIM_SR_CC2IF;                             // Clear flag
-  TRAINER_TIMER->DIER |= TIM_DIER_CC2IE;
-  TRAINER_TIMER->CR1 = TIM_CR1_CEN;
-  NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
-  NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
+  HEARTBEAT_TIMER->ARR = 0xFFFF;
+  HEARTBEAT_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
+  HEARTBEAT_TIMER->CR2 = 0;
+  HEARTBEAT_TIMER->CCMR1 = TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0;
+  HEARTBEAT_TIMER->CCER = TIM_CCER_CC2E;
+  HEARTBEAT_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  HEARTBEAT_TIMER->DIER |= TIM_DIER_CC2IE;
+  HEARTBEAT_TIMER->CR1 = TIM_CR1_CEN;
+  NVIC_SetPriority(HEARTBEAT_TIMER_IRQn, 7);
+  NVIC_EnableIRQ(HEARTBEAT_TIMER_IRQn);
 }
 
 void stop_cppm_on_heartbeat_capture(void)
 {
-  TRAINER_TIMER->DIER = 0;
-  TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                             // Stop counter
-  NVIC_DisableIRQ(TRAINER_TIMER_IRQn);                            // Stop Interrupt
+  HEARTBEAT_TIMER->DIER = 0;
+  HEARTBEAT_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
+  NVIC_DisableIRQ(HEARTBEAT_TIMER_IRQn); // Stop Interrupt
 
   if (!IS_EXTERNAL_MODULE_PRESENT()) {
     EXTERNAL_MODULE_OFF();
   }
-}
-
-void init_sbus_on_heartbeat_capture()
-{
-  EXTERNAL_MODULE_ON();
-
-  #if 0
-  USART_InitTypeDef USART_InitStructure;
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  GPIO_PinAFConfig(GPIOC, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF);
-
-  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-  USART_InitStructure.USART_BaudRate = 100000;
-  USART_InitStructure.USART_WordLength = USART_WordLength_9b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_Even;
-  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx;
-
-  USART_Init(HEARTBEAT_USART, &USART_InitStructure);
-  USART_Cmd(HEARTBEAT_USART, ENABLE);
-  USART_ITConfig(HEARTBEAT_USART, USART_IT_RXNE, ENABLE);
-
-  NVIC_SetPriority(HEARTBEAT_USART_IRQn, 6);
-  NVIC_EnableIRQ(HEARTBEAT_USART_IRQn);
-    #endif
-}
-
-void stop_sbus_on_heartbeat_capture(void)
-{
-  #if 0
-  configure_pins(HEARTBEAT_GPIO_PIN, PIN_INPUT | PIN_PORTC);
-  NVIC_DisableIRQ(HEARTBEAT_USART_IRQn);
-    #endif
-  if (!IS_EXTERNAL_MODULE_PRESENT()) {
-    EXTERNAL_MODULE_OFF();
-  }
-}
-
-#if 0 // !defined(SIMU) && !defined(REV9E)
-extern "C" void HEARTBEAT_USART_IRQHandler()
-{
-  uint32_t status;
-  uint8_t data;
-
-  status = HEARTBEAT_USART->SR;
-
-  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    data = HEARTBEAT_USART->DR;
-
-    if (!(status & USART_FLAG_ERRORS)) {
-      if (currentTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE)
-        sbusFifo.push(data);
-    }
-
-    status = HEARTBEAT_USART->SR;
-  }
-}
-#endif
-
-int sbusGetByte(uint8_t * byte)
-{
-  return false;
 }

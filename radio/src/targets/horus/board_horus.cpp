@@ -120,6 +120,7 @@ void boardInit()
                          SERIAL_RCC_AHB1Periph | 
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
+                         HEARTBEAT_RCC_AHB1Periph |
                          AUDIO_RCC_AHB1Periph | 
                          HAPTIC_RCC_AHB1Periph | 
                          INTMODULE_RCC_AHB1Periph | 
@@ -237,9 +238,6 @@ void checkTrainerSettings()
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
         stop_cppm_on_heartbeat_capture() ;
         break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_sbus_on_heartbeat_capture() ;
-        break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         serial2Stop();
     }
@@ -251,9 +249,6 @@ void checkTrainerSettings()
         break;
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
         init_cppm_on_heartbeat_capture() ;
-        break;
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        init_sbus_on_heartbeat_capture() ;
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {

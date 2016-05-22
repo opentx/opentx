@@ -174,16 +174,6 @@
 #define TELEMETRY_DMA_TX_IRQHandler     DMA1_Stream6_IRQHandler
 #define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
 
-// Heartbeat
-#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
-// #define HEARTBEAT_RCC_APB2Periph        RCC_APB2Periph_USART3
-#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
-// #define HEARTBEAT_GPIO_PinSource        GPIO_PinSource12
-// #define HEARTBEAT_GPIO_AF               GPIO_AF_USART3
-// #define HEARTBEAT_USART                 USART3
-// #define HEARTBEAT_USART_IRQHandler      USART3_IRQHandler
-// #define HEARTBEAT_USART_IRQn            USART3_IRQn
-
 // USB
 #define USB_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOA
 #define USB_GPIO                        GPIOA
@@ -316,8 +306,16 @@
 #define TRAINER_GPIO_PIN_DETECT         GPIO_Pin_4  // PB.04
 #define TRAINER_TIMER                   TIM3
 #define TRAINER_TIMER_IRQn              TIM3_IRQn
+#define TRAINER_TIMER_IRQHandler        TIM3_IRQHandler
 #define TRAINER_GPIO_PinSource_IN       GPIO_PinSource6
 #define TRAINER_GPIO_AF                 GPIO_AF_TIM3
+
+// Heartbeat
+#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
+#define HEARTBEAT_TIMER                 TIM4
+#define HEARTBEAT_TIMER_IRQn            TIM4_IRQn
+#define HEARTBEAT_TIMER_IRQHandler      TIM4_IRQHandler
 
 // 5ms Interrupt
 #define INTERRUPT_5MS_APB1Periph        RCC_APB1Periph_TIM14

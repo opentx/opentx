@@ -89,6 +89,7 @@ extern "C" {
 #define PIN_PORTA                      0x0000
 #define PIN_PORTB                      0x0100
 #define PIN_PORTC                      0x0200
+#define PIN_PORTD                      0x0300
 #define PIN_PORTF                      0x0500
 #define PIN_PER_1                      0x0010
 #define PIN_PER_2                      0x0020
@@ -182,8 +183,6 @@ void init_trainer_capture(void);
 void stop_trainer_capture(void);
 void init_cppm_on_heartbeat_capture(void);
 void stop_cppm_on_heartbeat_capture(void);
-void init_sbus_on_heartbeat_capture(void);
-void stop_sbus_on_heartbeat_capture(void);
 void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
 
 // Keys driver
