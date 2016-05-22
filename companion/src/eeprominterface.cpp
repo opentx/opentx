@@ -1411,6 +1411,7 @@ void ModelData::clear()
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear();
+    flightModeData[i].setDefaultLinkedFlightModes(i);
   }
   clearInputs();
   clearMixes();
@@ -1843,3 +1844,16 @@ SimulatorInterface *GetCurrentFirmwareSimulator()
   else
     return NULL;
 }
+
+void FlightModeData::setDefaultLinkedFlightModes(const int phase)
+{
+  if (phase != 0) {
+    for (int idx=0; idx<C9X_MAX_GVARS; idx++) {
+      gvars[idx] = 1025;
+    }
+    for (int idx=0; idx<C9X_MAX_ENCODERS; idx++) {
+      rotaryEncoders[idx] = 1025;
+    }
+  }
+}
+
