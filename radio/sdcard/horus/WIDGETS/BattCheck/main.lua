@@ -62,6 +62,9 @@ local function getCels(sensor)
     for k, v in pairs(liveCellData) do
       if v < histCellData[k] then histCellData[k] = v end
     end
+  else
+    -- erase low cell memory when you change lipo
+    histCellData = {}
   end
   return liveCellData
 end
