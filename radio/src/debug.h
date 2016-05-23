@@ -199,7 +199,7 @@ enum InterruptNames {
   INT_DMA2S7,
   INT_TIM1CC,
   INT_TIM2,
-  INT_TIM3,
+  INT_TRAINER,
   INT_OTG_FS,
   INT_LAST
 };
