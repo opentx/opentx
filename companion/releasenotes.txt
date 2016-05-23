@@ -4,6 +4,10 @@
 <li>SD sync fixes (<a href=https://github.com/opentx/opentx/issues/3351>#3351</a>)</li>
 <li>Fixed: Telemetry mode "FrSky D (cable)" choice was missing for Taranis (<a href=https://github.com/opentx/opentx/issues/3372>#3372</a>)</li>
 <li>Show persistent option only for calculated sensors (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
+<li>Fixed Flight mode clear command (<a href=https://github.com/opentx/opentx/issues/3214>#3214</a>)</li>
+<li>Fixed a problem with Rotary encoders linked to flight mode (could freeze Companion) (<a href=https://github.com/opentx/opentx/issues/3459>#3459</a>, <a href=https://github.com/opentx/opentx/issues/3470>#3470</a>)</li>
+<li>Telemetry simulator improvements: added fuel quantity sensor, increased RPM range (<a href=https://github.com/opentx/opentx/issues/3505>#3505</a>, <a href=https://github.com/opentx/opentx/issues/3506>#3506</a>)</li>
+<li>Various texts and translations corrections</li>
 </ul>
 
 

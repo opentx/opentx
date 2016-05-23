@@ -5,6 +5,9 @@
 <li>Fixed: calculated sensors had persistent value set to zero at every shutdown when persistent option was not active (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
 <li>Show persistent option only for calculated sensors (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
 <li>Fixed: sensors with active filter had invalid negative values (<a href=https://github.com/opentx/opentx/issues/3463>#3463</a>)</li>
+<li>Enabled DSM protocols on several raios (<a href=https://github.com/opentx/opentx/issues/3471>#3471</a>)</li>
+<li>Better representation of negative mixer weight in offset bar widget (<a href=https://github.com/opentx/opentx/issues/3476>#3476</a>)</li>
+<li>Fixed several bugs in curve preset function (<a href=https://github.com/opentx/opentx/issues/3451>#3451</a>)</li>
 </ul>
 
 
@@ -20,11 +23,12 @@
 <li>External module output type setting was not visible</li>
 </ul>
 
-
 [Lua]
 <ul>
 <li>Fixed Lua playTone() crash when called with abnormal parameter values. (<a href=https://github.com/opentx/opentx/issues/3462>#3462</a>)</li>
+<li>Return proper values for `Cels-` and `Cels+` (<a href=https://github.com/opentx/opentx/issues/2826>#2826</a>)</li>
 </ul>
+
 
 <h2>Version 2.1.8 / 2016-04-14</h2>
 
