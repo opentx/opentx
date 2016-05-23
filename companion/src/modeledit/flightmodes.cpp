@@ -469,11 +469,11 @@ void FlightModePanel::fmClear()
       pswtch->setCurrentIndex(pswtch->findText(item.toString()));
       if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes))) {
         for (int i=0; i<gvCount; i++) {
-          gvUse[i]->setCurrentIndex((phase.gvars[i] > 1024 ? (phase.gvars[i] - 1024) : phase.gvars[i]));
+          gvUse[i]->setCurrentIndex((phase.gvars[i] > 1024 ? (phase.gvars[i] - 1024) : 0));
         }
       }
       for (int i=0; i<reCount; i++) {
-        reUse[i]->setCurrentIndex((phase.rotaryEncoders[i] > 1024 ? (phase.rotaryEncoders[i] - 1024) : phase.rotaryEncoders[i]));
+        reUse[i]->setCurrentIndex((phase.rotaryEncoders[i] > 1024 ? (phase.rotaryEncoders[i] - 1024) : 0));
       }
       lock = false;
     }
