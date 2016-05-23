@@ -82,7 +82,8 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PULSES_DSMX, val++);
       }
       if (IS_TARANIS(board)) {
-    	addConversion(PULSES_CROSSFIRE, val++);
+        addConversion(PULSES_CROSSFIRE, val++);
+        addConversion(PULSES_MULTIMODULE, val++);
       }
     }
 };
