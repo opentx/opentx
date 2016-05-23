@@ -147,32 +147,32 @@ void TelemetrySimulator::closeEvent(QCloseEvent *event)
 
 void TelemetrySimulator::showEvent(QShowEvent *event)
 {
-  SET_INSTANCE(rxbt_inst,  BATT_ID,                0);
-  SET_INSTANCE(rssi_inst,  RSSI_ID,                24);
-  SET_INSTANCE(swr_inst,   SWR_ID,                 24);
-  SET_INSTANCE(a1_inst,    ADC1_ID,                0);
-  SET_INSTANCE(a2_inst,    ADC2_ID,                0);
-  SET_INSTANCE(a3_inst,    A3_FIRST_ID,            0);
-  SET_INSTANCE(a4_inst,    A4_FIRST_ID,            0);
-  SET_INSTANCE(t1_inst,    T1_FIRST_ID,            0);
-  SET_INSTANCE(t2_inst,    T2_FIRST_ID,            0);
-  SET_INSTANCE(rpm_inst,   RPM_FIRST_ID,           DATA_ID_RPM);
-  SET_INSTANCE(fuel_inst,  FUEL_FIRST_ID,          0);
-  SET_INSTANCE(fuel_qty_inst, FUEL_QTY_FIRST_ID,   0);
-  SET_INSTANCE(aspd_inst,  AIR_SPEED_FIRST_ID,     0);
-  SET_INSTANCE(vvspd_inst, VARIO_FIRST_ID,         DATA_ID_VARIO);
-  SET_INSTANCE(valt_inst,  ALT_FIRST_ID,           DATA_ID_VARIO);
-  SET_INSTANCE(fasv_inst,  VFAS_FIRST_ID,          DATA_ID_FAS);
-  SET_INSTANCE(fasc_inst,  CURR_FIRST_ID,          DATA_ID_FAS);
-  SET_INSTANCE(cells_inst, CELLS_FIRST_ID,         DATA_ID_FLVSS);
-  SET_INSTANCE(gpsa_inst,  GPS_ALT_FIRST_ID,       DATA_ID_GPS);
-  SET_INSTANCE(gpss_inst,  GPS_SPEED_FIRST_ID,     DATA_ID_GPS);
-  SET_INSTANCE(gpsc_inst,  GPS_COURS_FIRST_ID,     DATA_ID_GPS);
-  SET_INSTANCE(gpst_inst,  GPS_TIME_DATE_FIRST_ID, DATA_ID_GPS);
-  SET_INSTANCE(gpsll_inst, GPS_LONG_LATI_FIRST_ID, DATA_ID_GPS);
-  SET_INSTANCE(accx_inst,  ACCX_FIRST_ID,          0);
-  SET_INSTANCE(accy_inst,  ACCY_FIRST_ID,          0);
-  SET_INSTANCE(accz_inst,  ACCZ_FIRST_ID,          0);
+  SET_INSTANCE(rxbt_inst,     BATT_ID,                0);
+  SET_INSTANCE(rssi_inst,     RSSI_ID,                24);
+  SET_INSTANCE(swr_inst,      SWR_ID,                 24);
+  SET_INSTANCE(a1_inst,       ADC1_ID,                0);
+  SET_INSTANCE(a2_inst,       ADC2_ID,                0);
+  SET_INSTANCE(a3_inst,       A3_FIRST_ID,            0);
+  SET_INSTANCE(a4_inst,       A4_FIRST_ID,            0);
+  SET_INSTANCE(t1_inst,       T1_FIRST_ID,            0);
+  SET_INSTANCE(t2_inst,       T2_FIRST_ID,            0);
+  SET_INSTANCE(rpm_inst,      RPM_FIRST_ID,           DATA_ID_RPM);
+  SET_INSTANCE(fuel_inst,     FUEL_FIRST_ID,          0);
+  SET_INSTANCE(fuel_qty_inst, FUEL_QTY_FIRST_ID,      0);
+  SET_INSTANCE(aspd_inst,     AIR_SPEED_FIRST_ID,     0);
+  SET_INSTANCE(vvspd_inst,    VARIO_FIRST_ID,         DATA_ID_VARIO);
+  SET_INSTANCE(valt_inst,     ALT_FIRST_ID,           DATA_ID_VARIO);
+  SET_INSTANCE(fasv_inst,     VFAS_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(fasc_inst,     CURR_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(cells_inst,    CELLS_FIRST_ID,         DATA_ID_FLVSS);
+  SET_INSTANCE(gpsa_inst,     GPS_ALT_FIRST_ID,       DATA_ID_GPS);
+  SET_INSTANCE(gpss_inst,     GPS_SPEED_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpsc_inst,     GPS_COURS_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpst_inst,     GPS_TIME_DATE_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(gpsll_inst,    GPS_LONG_LATI_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(accx_inst,     ACCX_FIRST_ID,          0);
+  SET_INSTANCE(accy_inst,     ACCY_FIRST_ID,          0);
+  SET_INSTANCE(accz_inst,     ACCZ_FIRST_ID,          0);
 
   ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
   ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
