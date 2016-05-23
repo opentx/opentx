@@ -82,8 +82,13 @@ class WidgetsContainer: public WidgetsContainerInterface
     {
       if (widgets) {
         memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
-        strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
-        widgets[index] = factory->create(getZone(index), &persistentData->zones[index].widgetData);
+        if (factory) {
+          strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
+          widgets[index] = factory->create(getZone(index), &persistentData->zones[index].widgetData);
+        }
+        else {
+          widgets[index] = NULL;
+        }
       }
     }
 

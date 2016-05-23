@@ -286,7 +286,7 @@ void onZoneMenu(const char * result)
     pushMenu(menuWidgetSettings);
   }
   else if (result == STR_REMOVE_WIDGET) {
-    currentContainer->setWidget(currentZone, NULL);
+    currentContainer->createWidget(currentZone, NULL);
     storageDirty(EE_MODEL);
   }
 }
