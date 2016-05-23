@@ -1360,7 +1360,7 @@ Timestamp</string>
        </font>
       </property>
       <property name="maximum">
-       <number>65535</number>
+       <number>2147483647</number>
       </property>
      </widget>
     </item>
@@ -1520,23 +1520,20 @@ Timestamp</string>
       </property>
      </widget>
     </item>
-    <item row="11" column="0">
-     <widget class="QLabel" name="label_11">
+   <item row="11" column="0">
+     <widget class="QLabel" name="label_51">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
        </font>
       </property>
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
       <property name="text">
-       <string>VSpd</string>
+       <string>Fuel Qty</string>
       </property>
      </widget>
     </item>
     <item row="11" column="1">
-     <widget class="QLineEdit" name="vvspd_inst">
+     <widget class="QLineEdit" name="fuel_qty_inst">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -1545,35 +1542,26 @@ Timestamp</string>
      </widget>
     </item>
     <item row="11" column="2">
-     <widget class="QDoubleSpinBox" name="vspeed">
+     <widget class="QSpinBox" name="fuel_qty">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
        </font>
       </property>
-      <property name="decimals">
-       <number>2</number>
-      </property>
-      <property name="minimum">
-       <double>-16777215.000000000000000</double>
-      </property>
       <property name="maximum">
-       <double>16777215.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
+       <double>100000.000000000000000</double>
       </property>
      </widget>
     </item>
     <item row="11" column="3">
-     <widget class="QLabel" name="label_48">
+     <widget class="QLabel" name="label_52">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>m/s</string>
+       <string>ml</string>
       </property>
      </widget>
     </item>
@@ -1632,7 +1620,7 @@ Timestamp</string>
      </widget>
     </item>
     <item row="12" column="0">
-     <widget class="QLabel" name="label_12">
+     <widget class="QLabel" name="label_11">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -1642,12 +1630,12 @@ Timestamp</string>
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
-       <string>Alt</string>
+       <string>VSpd</string>
       </property>
      </widget>
     </item>
     <item row="12" column="1">
-     <widget class="QLineEdit" name="valt_inst">
+     <widget class="QLineEdit" name="vvspd_inst">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -1656,7 +1644,7 @@ Timestamp</string>
      </widget>
     </item>
     <item row="12" column="2">
-     <widget class="QDoubleSpinBox" name="valt">
+     <widget class="QDoubleSpinBox" name="vspeed">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
@@ -1677,14 +1665,14 @@ Timestamp</string>
      </widget>
     </item>
     <item row="12" column="3">
-     <widget class="QLabel" name="label_49">
+     <widget class="QLabel" name="label_48">
       <property name="font">
        <font>
         <pointsize>8</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>Meters</string>
+       <string>m/s</string>
       </property>
      </widget>
     </item>
@@ -1742,7 +1730,64 @@ Timestamp</string>
       </property>
      </widget>
     </item>
-   </layout>
+    <item row="13" column="0">
+     <widget class="QLabel" name="label_12">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Alt</string>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="1">
+     <widget class="QLineEdit" name="valt_inst">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="2">
+     <widget class="QDoubleSpinBox" name="valt">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="decimals">
+       <number>2</number>
+      </property>
+      <property name="minimum">
+       <double>-16777215.000000000000000</double>
+      </property>
+      <property name="maximum">
+       <double>16777215.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+     </widget>
+    </item>
+    <item row="13" column="3">
+     <widget class="QLabel" name="label_49">
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Meters</string>
+      </property>
+     </widget>
+    </item>
+  </layout>
   </widget>
  </widget>
  <tabstops>
@@ -1812,6 +1857,8 @@ Timestamp</string>
   <tabstop>accy</tabstop>
   <tabstop>accz_inst</tabstop>
   <tabstop>accz</tabstop>
+  <tabstop>fuel_qty_inst</tabstop>
+  <tabstop>fuel_qty</tabstop>
  </tabstops>
  <resources/>
  <connections/>

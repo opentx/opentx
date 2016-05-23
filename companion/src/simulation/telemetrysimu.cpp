@@ -147,31 +147,32 @@ void TelemetrySimulator::closeEvent(QCloseEvent *event)
 
 void TelemetrySimulator::showEvent(QShowEvent *event)
 {
-  SET_INSTANCE(rxbt_inst,  BATT_ID,                0);
-  SET_INSTANCE(rssi_inst,  RSSI_ID,                24);
-  SET_INSTANCE(swr_inst,   SWR_ID,                 24);
-  SET_INSTANCE(a1_inst,    ADC1_ID,                0);
-  SET_INSTANCE(a2_inst,    ADC2_ID,                0);
-  SET_INSTANCE(a3_inst,    A3_FIRST_ID,            0);
-  SET_INSTANCE(a4_inst,    A4_FIRST_ID,            0);
-  SET_INSTANCE(t1_inst,    T1_FIRST_ID,            0);
-  SET_INSTANCE(t2_inst,    T2_FIRST_ID,            0);
-  SET_INSTANCE(rpm_inst,   RPM_FIRST_ID,           DATA_ID_RPM);
-  SET_INSTANCE(fuel_inst,  FUEL_FIRST_ID,          0);
-  SET_INSTANCE(aspd_inst,  AIR_SPEED_FIRST_ID,     0);
-  SET_INSTANCE(vvspd_inst, VARIO_FIRST_ID,         DATA_ID_VARIO);
-  SET_INSTANCE(valt_inst,  ALT_FIRST_ID,           DATA_ID_VARIO);
-  SET_INSTANCE(fasv_inst,  VFAS_FIRST_ID,          DATA_ID_FAS);
-  SET_INSTANCE(fasc_inst,  CURR_FIRST_ID,          DATA_ID_FAS);
-  SET_INSTANCE(cells_inst, CELLS_FIRST_ID,         DATA_ID_FLVSS);
-  SET_INSTANCE(gpsa_inst,  GPS_ALT_FIRST_ID,       DATA_ID_GPS);
-  SET_INSTANCE(gpss_inst,  GPS_SPEED_FIRST_ID,     DATA_ID_GPS);
-  SET_INSTANCE(gpsc_inst,  GPS_COURS_FIRST_ID,     DATA_ID_GPS);
-  SET_INSTANCE(gpst_inst,  GPS_TIME_DATE_FIRST_ID, DATA_ID_GPS);
-  SET_INSTANCE(gpsll_inst, GPS_LONG_LATI_FIRST_ID, DATA_ID_GPS);
-  SET_INSTANCE(accx_inst,  ACCX_FIRST_ID,          0);
-  SET_INSTANCE(accy_inst,  ACCY_FIRST_ID,          0);
-  SET_INSTANCE(accz_inst,  ACCZ_FIRST_ID,          0);
+  SET_INSTANCE(rxbt_inst,     BATT_ID,                0);
+  SET_INSTANCE(rssi_inst,     RSSI_ID,                24);
+  SET_INSTANCE(swr_inst,      SWR_ID,                 24);
+  SET_INSTANCE(a1_inst,       ADC1_ID,                0);
+  SET_INSTANCE(a2_inst,       ADC2_ID,                0);
+  SET_INSTANCE(a3_inst,       A3_FIRST_ID,            0);
+  SET_INSTANCE(a4_inst,       A4_FIRST_ID,            0);
+  SET_INSTANCE(t1_inst,       T1_FIRST_ID,            0);
+  SET_INSTANCE(t2_inst,       T2_FIRST_ID,            0);
+  SET_INSTANCE(rpm_inst,      RPM_FIRST_ID,           DATA_ID_RPM);
+  SET_INSTANCE(fuel_inst,     FUEL_FIRST_ID,          0);
+  SET_INSTANCE(fuel_qty_inst, FUEL_QTY_FIRST_ID,      0);
+  SET_INSTANCE(aspd_inst,     AIR_SPEED_FIRST_ID,     0);
+  SET_INSTANCE(vvspd_inst,    VARIO_FIRST_ID,         DATA_ID_VARIO);
+  SET_INSTANCE(valt_inst,     ALT_FIRST_ID,           DATA_ID_VARIO);
+  SET_INSTANCE(fasv_inst,     VFAS_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(fasc_inst,     CURR_FIRST_ID,          DATA_ID_FAS);
+  SET_INSTANCE(cells_inst,    CELLS_FIRST_ID,         DATA_ID_FLVSS);
+  SET_INSTANCE(gpsa_inst,     GPS_ALT_FIRST_ID,       DATA_ID_GPS);
+  SET_INSTANCE(gpss_inst,     GPS_SPEED_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpsc_inst,     GPS_COURS_FIRST_ID,     DATA_ID_GPS);
+  SET_INSTANCE(gpst_inst,     GPS_TIME_DATE_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(gpsll_inst,    GPS_LONG_LATI_FIRST_ID, DATA_ID_GPS);
+  SET_INSTANCE(accx_inst,     ACCX_FIRST_ID,          0);
+  SET_INSTANCE(accy_inst,     ACCY_FIRST_ID,          0);
+  SET_INSTANCE(accz_inst,     ACCZ_FIRST_ID,          0);
 
   ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
   ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
@@ -283,7 +284,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 10:
       if (ui->rpm->value() > 0)
-        generateSportPacket(buffer, ui->rpm_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RPM_FIRST_ID, LIMIT<uint32_t>(0, ui->rpm->value(), 0xFFFF));
+        generateSportPacket(buffer, ui->rpm_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RPM_FIRST_ID, LIMIT<uint32_t>(0, ui->rpm->value(), 0x7FFFFFFF));
       break;
 
     case 11:
@@ -381,6 +382,11 @@ void TelemetrySimulator::generateTelemetryFrame()
     case 25:
       if (ui->accz->value() != 0)
         generateSportPacket(buffer, ui->accz_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, ACCZ_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->accz->value() * 100.0, 0x7FFFFFFF));
+      break;
+
+    case 26:
+      if (ui->fuel_qty->value() > 0)
+        generateSportPacket(buffer, ui->fuel_qty_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, FUEL_QTY_FIRST_ID, LIMIT<uint32_t>(0, ui->fuel_qty->value() * 100.0, 0xFFFFFF));
       break;
 
     default:
@@ -596,6 +602,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("Tmp2(@F)", T2_DEGF);
   colToFuncMap.insert("RPM(rpm)", RPM);
   colToFuncMap.insert("Fuel(%)", FUEL);
+  colToFuncMap.insert("Fuel(ml)", FUEL_QTY);
   colToFuncMap.insert("VSpd(m/s)", VSPD_MS);
   colToFuncMap.insert("VSpd(f/s)", VSPD_FS);
   colToFuncMap.insert("Alt(ft)", ALT_FEET);
@@ -889,6 +896,9 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
         break;
       case FUEL:
         ui->fuel->setValue(columnData[info.dataIndex].toDouble());
+        break;
+      case FUEL_QTY:
+        ui->fuel_qty->setValue(columnData[info.dataIndex].toDouble());
         break;
       case VSPD_MS:
         ui->vspeed->setValue(columnData[info.dataIndex].toDouble());
