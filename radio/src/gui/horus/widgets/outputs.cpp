@@ -37,11 +37,11 @@ class OutputsWidget: public Widget
       
       for (uint8_t curChan = firstChan; curChan < lastChan + 1; curChan++)
       {
-        int32_t chanVal = calcRESXto1000(channelOutputs[curChan-1]) / 10;
+        int16_t chanVal = calcRESXto1000(channelOutputs[curChan-1]) / 10;
         
-        sprintf(chanString,"CH%02d", curChan);
+        sprintf(chanString,"CH%02i", curChan);
         lcdDrawText(x, y + (curChan - firstChan) * 20, chanString,SMLSIZE + TEXT_COLOR + LEFT);
-        sprintf(chanString,"%3d", chanVal);
+        sprintf(chanString,"%3i", chanVal);
         lcdDrawText(x + offset - 2, y + (curChan - firstChan) * 20, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
         lcdDrawRect(x + offset, y + (curChan -firstChan) * 20, w - 90, 18);
         lcd->drawSolidVerticalLine(x + offset + floor((w - 90) / 2), y + (curChan - firstChan) * 20, 18, MAINVIEW_GRAPHICS_COLOR);
