@@ -165,6 +165,10 @@ void luaRegisterAll()
 {
   // Init lua
   luaL_openlibs(L);
+
+#if defined(COLORLCD)
+  registerBitmapClass(L);
+#endif
 }
 
 void luaFree(ScriptInternalData & sid)

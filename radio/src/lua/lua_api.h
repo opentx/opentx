@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -137,6 +137,7 @@ struct LuaField {
 };
 bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0);
 void luaLoadThemes();
+void registerBitmapClass(lua_State * L);
 #else  // defined(LUA)
 #define luaInit()
 #define LUA_LOAD_MODEL_SCRIPTS()

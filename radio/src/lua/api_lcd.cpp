@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -116,7 +116,7 @@ static int luaLcdDrawLine(lua_State *L)
       return 0;
     }
   }
-  
+
   lcdDrawLine(x1, y1, x2, y2, pat, flags);
   return 0;
 }
@@ -316,7 +316,75 @@ static int luaLcdDrawSource(lua_State *L)
   return 0;
 }
 
-#if !defined(COLORLCD)
+#if defined(COLORLCD)
+static int luaOpenBitmap(lua_State * L)
+{
+  const char * filename = luaL_checkstring(L, 1);
+
+  BitmapBuffer ** ptr = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
+  *ptr = BitmapBuffer::load(filename);
+
+  luaL_getmetatable(L, "luaL_Bitmap");
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
+static BitmapBuffer * checkBitmap(lua_State * L, int index)
+{
+  return *(BitmapBuffer **)luaL_checkudata(L, index, "luaL_Bitmap");
+}
+
+static int luaGetBitmapSize(lua_State * L)
+{
+  BitmapBuffer * b = checkBitmap(L, 1);
+  if (b) {
+    lua_pushinteger(L, b->getWidth());
+    lua_pushinteger(L, b->getHeight());
+  }
+  else {
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+  }
+  return 2;
+}
+
+static int luaDestroyBitmap(lua_State * L)
+{
+  delete checkBitmap(L, 1);
+  return 0;
+}
+
+const luaL_Reg bitmapFuncs[] = {
+  { "open", luaOpenBitmap },
+  { "getSize", luaGetBitmapSize },
+  { "__gc", luaDestroyBitmap },
+  { NULL, NULL }
+};
+
+void registerBitmapClass(lua_State * L)
+{
+  luaL_newmetatable(L, "luaL_Bitmap");
+  luaL_setfuncs(L, bitmapFuncs, 0);
+  lua_pushvalue(L, -1);
+  lua_setfield(L, -2, "__index");
+  lua_setglobal(L, "Bitmap");
+}
+
+static int luaLcdDrawBitmap(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  const BitmapBuffer * bitmap = checkBitmap(L, 1);
+  int x = luaL_checkinteger(L, 2);
+  int y = luaL_checkinteger(L, 3);
+
+  if (bitmap) {
+    lcd->drawBitmap(x, y, bitmap);
+  }
+
+  return 0;
+}
+#else
 /*luadoc
 @function lcd.drawPixmap(x, y, name)
 
@@ -337,18 +405,10 @@ static int luaLcdDrawPixmap(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
 
-#if defined(PCBTARANIS)
   uint8_t bitmap[BITMAP_BUFFER_SIZE(LCD_W/2, LCD_H)]; // width max is LCD_W/2 pixels for saving stack and avoid a malloc here
   if (lcdLoadBitmap(bitmap, filename, LCD_W/2, LCD_H)) {
     lcdDrawBitmap(x, y, bitmap);
   }
-#else
-  uint8_t * bitmap = lcdLoadBitmap(filename);
-  if (bitmap) {
-    lcdDrawBitmap(x, y, bitmap);
-    free(bitmap);
-  }
-#endif
 
   return 0;
 }
@@ -659,6 +719,7 @@ const luaL_Reg lcdLib[] = {
   { "drawSource", luaLcdDrawSource },
   { "drawGauge", luaLcdDrawGauge },
 #if defined(COLORLCD)
+  { "drawBitmap", luaLcdDrawBitmap },
   { "setColor", luaLcdSetColor },
   { "RGB", luaRGB },
 #else
