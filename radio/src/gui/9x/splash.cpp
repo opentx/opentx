@@ -52,7 +52,7 @@ void drawSplash()
 {
   lcdClear();
 #if defined(PCBMEGA2560) && !defined(SIMU)
-  lcd_imgfar(0, 0, pgm_get_far_address(splash_lbm), 0, 0); // use progmem "far" for splash working with all other options enabled
+  lcd_imgfar(0, 0, (GET_FAR_ADDRESS(splashdata)+4), 0, 0); // use progmem "far" for splash working with all other options enabled
 #else
   lcd_img(0, 0, splash_lbm, 0, 0);  
 #endif
