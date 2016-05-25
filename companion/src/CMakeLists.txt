@@ -228,9 +228,9 @@ if(APPLE)
   set(CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks)
 else()
   add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
-  add_dependencies(${COMPANION_NAME} gen_qrc)
 endif()
 
+add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
 target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared ${PTHREAD_LIBRARY} ${SDL_LIBRARY})
 
@@ -256,9 +256,9 @@ if(APPLE)
   add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${simu_SRCS} ${companion_RCC})
 else()
   add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS} ${companion_RCC})
-  add_dependencies(${SIMULATOR_NAME} gen_qrc)
 endif()
 
+add_dependencies(${SIMULATOR_NAME} gen_qrc)
 # TODO not the same link command than companion?
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS})
 
