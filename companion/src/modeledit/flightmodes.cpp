@@ -452,8 +452,7 @@ void FlightModePanel::fmClear()
 {
   int res = QMessageBox::question(this, "Companion", tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
-    phase.clear();
-    phase.setDefaultLinkedFlightModes(phaseIdx);
+    phase.clear(phaseIdx);
     if (phaseIdx == 0) {
       if (IS_TARANIS(GetEepromInterface()->getBoard())) {
         for (int i=0; i < gvCount; ++i) {
