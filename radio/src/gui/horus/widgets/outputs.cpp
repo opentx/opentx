@@ -42,7 +42,8 @@ class OutputsWidget: public Widget
       for (uint8_t curChan = firstChan; curChan <= lastChan and curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
         
-        sprintf(chanString, "CH%02i", curChan);
+        strAppend(chanString, "CH");
+        strAppendSigned(&chanString[2], curChan, 2);
         lcdDrawText(x, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
         strAppendSigned(chanString, chanVal);
         lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
@@ -59,18 +60,18 @@ class OutputsWidget: public Widget
         }
       }
       return lastChan;
-    };
+    }
 
     void twoColumns()
     {
       uint8_t endColumn = drawChannels(zone.x, zone.y, floor(zone.w / 2), zone.h, persistentData->options[0].unsignedValue);
       drawChannels(zone.x + floor(zone.w / 2) + 2, zone.y, floor(zone.w / 2), zone.h, endColumn + 1);
-    };
-    
+    }
+
     void oneColumn()
     {
       drawChannels(zone.x, zone.y, zone.w, zone.h, persistentData->options[0].unsignedValue);
-    };
+    }
 
     static const ZoneOption options[];
 };
@@ -87,6 +88,6 @@ void OutputsWidget::refresh()
     twoColumns();
   else if (zone.w > 150 and zone.h > 20)
     oneColumn();
-}
+};
 
 BaseWidgetFactory<OutputsWidget> outputsWidget("Outputs", OutputsWidget::options);
