@@ -21,8 +21,8 @@
 #include "opentx.h"
 
 #define RECT_OFFSET 80
-#define RECT_WIDTH (abs(w - RECT_OFFSET) - 8)
-#define RAW_HEIGHT 20
+#define RECT_WIDTH (w - RECT_OFFSET)
+#define ROW_HEIGHT 20
 
 class OutputsWidget: public Widget
 {
@@ -36,58 +36,60 @@ class OutputsWidget: public Widget
     
     uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan)
     {
-      char chanString[]="CH32";
-      uint8_t lastChan = firstChan + floor(h / RAW_HEIGHT);
+      char chanString[] = "CH32";
+      uint8_t lastChan = firstChan + floor(h / ROW_HEIGHT);
       
-      for (uint8_t curChan = firstChan; curChan < lastChan + 1; curChan++)
+      for (uint8_t curChan = firstChan; curChan <= lastChan and curChan < 33; curChan++)
       {
-        int16_t chanVal = calcRESXto1000(channelOutputs[curChan-1]) / 10;
+        int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
         
         sprintf(chanString,"CH%02i", curChan);
-        lcdDrawText(x, y + (curChan - firstChan) * RAW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
-        sprintf(chanString,"%3i", chanVal);
-        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * RAW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
-        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * RAW_HEIGHT, RECT_WIDTH, RAW_HEIGHT);
-        lcd->drawSolidVerticalLine(x + RECT_OFFSET + floor(RECT_WIDTH / 2), y + (curChan - firstChan) * RAW_HEIGHT, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawText(x, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
+        strAppendSigned(chanString,chanVal);
+        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
+        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH, ROW_HEIGHT);
+        lcd->drawSolidVerticalLine(x + RECT_OFFSET + floor(RECT_WIDTH / 2), y + (curChan - firstChan) * ROW_HEIGHT, ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         if (chanVal > 0)
         {
-          lcdDrawSolidFilledRect(x + RECT_OFFSET + floor(RECT_WIDTH / 2),  y + (curChan -firstChan) * RAW_HEIGHT, RECT_WIDTH * chanVal / 200 , RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_OFFSET + floor(RECT_WIDTH / 2),  y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH * chanVal / 200 , ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0)
         {
-          uint16_t endpoint = x + RECT_OFFSET + floor(RECT_WIDTH / 2);
           uint16_t startpoint = x + RECT_OFFSET;
-          uint16_t size = floor(abs((endpoint - startpoint) * chanVal / 100));
-          lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * RAW_HEIGHT, size, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+          uint16_t endpoint = startpoint + floor(RECT_WIDTH / 2);
+          uint16_t size = RECT_WIDTH * abs(chanVal) / 200;
+          lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * ROW_HEIGHT, size, ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
       }
       return lastChan;
     };
 
-    void TwoCollums()
+    void twoColumns()
     {
-      lcd->drawSolidVerticalLine(zone.x + zone.w / 2 - 5, zone.y, zone.h, CUSTOM_COLOR);
-      uint8_t col2FirstChan = drawChannels(zone.x, zone.y, floor(zone.w / 2), zone.h, 1);
-      drawChannels(zone.x + floor(zone.w / 2), zone.y, floor(zone.w / 2), zone.h, col2FirstChan + 1);
+      uint8_t endColumn = drawChannels(zone.x, zone.y, floor(zone.w / 2), zone.h, persistentData->options[0].unsignedValue);
+      drawChannels(zone.x + floor(zone.w / 2) + 2, zone.y, floor(zone.w / 2), zone.h, endColumn + 1);
     };
     
-    void OneCollum()
+    void oneColumn()
     {
-      drawChannels(zone.x, zone.y, zone.w, zone.h, 1);
+      drawChannels(zone.x, zone.y, zone.w, zone.h, persistentData->options[0].unsignedValue);
     };
 
     static const ZoneOption options[];
 };
 
 const ZoneOption OutputsWidget::options[] = {
+  { "First", ZoneOption::Integer, OPTION_DEFAULT_VALUE_UNSIGNED(1) },
   { NULL, ZoneOption::Bool }
 };
 
 
 void OutputsWidget::refresh()
 {
-  if (zone.w > 360 and zone.h > 20) OutputsWidget::TwoCollums();
-  else if (zone.w > 150 and zone.h > 20) OutputsWidget::OneCollum();
+  if (zone.w > 300 and zone.h > 20)
+    twoColumns();
+  else if (zone.w > 150 and zone.h > 20)
+    oneColumn();
 }
 
 BaseWidgetFactory<OutputsWidget> outputsWidget("Outputs", OutputsWidget::options);
