@@ -20,9 +20,9 @@
 
 #include "opentx.h"
 
-#define RECT_OFFSET 80
-#define RECT_WIDTH (w - RECT_OFFSET)
-#define ROW_HEIGHT 20
+#define RECT_OFFSET                    80
+#define RECT_WIDTH                     (w - RECT_OFFSET)
+#define ROW_HEIGHT                     20
 
 class OutputsWidget: public Widget
 {
