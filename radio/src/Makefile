@@ -1256,12 +1256,12 @@ bootloader.lbm: bootloader/bootloader_ramBoot.bin
 else ifeq ($(PCB), 9XRPRO)
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
-	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash8.lbm
+	wget https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/bootflash8.lbm
 	mv bootflash8.lbm $@
 else ifeq ($(PCB), SKY9X)
 bootloader.lbm:
 	@echo "Fetching Mike's bootloader..."
-	wget http://ersky9x.googlecode.com/svn/trunk/src/bootloader/bootflash4.lbm
+	wget https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/bootflash4.lbm
 	mv bootflash4.lbm $@
 endif
 
