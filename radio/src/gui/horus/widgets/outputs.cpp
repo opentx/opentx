@@ -34,9 +34,10 @@ class OutputsWidget: public Widget
 
     virtual void refresh();
     
-    void drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan, uint8_t lastChan)
+    uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan)
     {
       char chanString[]="CH32";
+      uint8_t lastChan = firstChan + floor(h / RAW_HEIGHT);
       
       for (uint8_t curChan = firstChan; curChan < lastChan + 1; curChan++)
       {
@@ -60,25 +61,20 @@ class OutputsWidget: public Widget
           lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * RAW_HEIGHT, size, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
       }
+      return lastChan;
     };
 
-    void zoneXLarge()
+    void TwoCollums()
     {
       lcd->drawSolidVerticalLine(zone.x + zone.w / 2 - 5, zone.y, zone.h, CUSTOM_COLOR);
-      drawChannels(zone.x, zone.y, floor(zone.w / 2), zone.h, 1, 8);
-      drawChannels(zone.x + floor(zone.w / 2), zone.y, floor(zone.w / 2), zone.h, 9, 16);
+      uint8_t col2FirstChan = drawChannels(zone.x, zone.y, floor(zone.w / 2), zone.h, 1);
+      drawChannels(zone.x + floor(zone.w / 2), zone.y, floor(zone.w / 2), zone.h, col2FirstChan + 1);
     };
     
-    void zoneLarge()
+    void OneCollum()
     {
-      drawChannels(zone.x, zone.y, zone.w, zone.h, 1, 8);
+      drawChannels(zone.x, zone.y, zone.w, zone.h, 1);
     };
-
-    void zoneSmall()
-    {
-      drawChannels(zone.x, zone.y, zone.w, zone.h, 1, 4);
-    };
-
 
     static const ZoneOption options[];
 };
@@ -90,9 +86,8 @@ const ZoneOption OutputsWidget::options[] = {
 
 void OutputsWidget::refresh()
 {
-  if (zone.w > 360 and zone.h > 165) OutputsWidget::zoneXLarge();
-  else if (zone.w > 180 and zone.h > 145) OutputsWidget::zoneLarge();
-  else if (zone.w > 170 and zone.h > 65) OutputsWidget::zoneSmall();
+  if (zone.w > 360 and zone.h > 20) OutputsWidget::TwoCollums();
+  else if (zone.w > 150 and zone.h > 20) OutputsWidget::OneCollum();
 }
 
 BaseWidgetFactory<OutputsWidget> outputsWidget("Outputs", OutputsWidget::options);
