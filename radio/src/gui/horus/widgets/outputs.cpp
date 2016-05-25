@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #define RECT_OFFSET 80
-#define RECT_WIDTH 90
+#define RECT_WIDTH 100
 #define RAW_HEIGHT 20
 
 class OutputsWidget: public Widget
@@ -46,15 +46,15 @@ class OutputsWidget: public Widget
         lcdDrawText(x, y + (curChan - firstChan) * RAW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
         sprintf(chanString,"%3i", chanVal);
         lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * RAW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
-        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * RAW_HEIGHT, w - RECT_WIDTH, RAW_HEIGHT);
-        lcd->drawSolidVerticalLine(x + RECT_OFFSET + floor((w - RECT_WIDTH) / 2), y + (curChan - firstChan) * RAW_HEIGHT, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * RAW_HEIGHT, RECT_WIDTH, RAW_HEIGHT);
+        lcd->drawSolidVerticalLine(x + RECT_OFFSET + floor(RECT_WIDTH / 2), y + (curChan - firstChan) * RAW_HEIGHT, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         if (chanVal > 0)
         {
-          lcdDrawSolidFilledRect(x + RECT_OFFSET + floor((w - RECT_WIDTH) / 2),  y + (curChan -firstChan) * RAW_HEIGHT, (w - RECT_WIDTH) * chanVal / 200 , RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_OFFSET + floor(RECT_WIDTH / 2),  y + (curChan -firstChan) * RAW_HEIGHT, RECT_WIDTH * chanVal / 200 , RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0)
         {
-          uint16_t endpoint = x + RECT_OFFSET + (w - RECT_WIDTH) / 2;
+          uint16_t endpoint = x + RECT_OFFSET + floor(RECT_WIDTH / 2);
           uint16_t startpoint = x + RECT_OFFSET;
           uint16_t size = floor(abs((endpoint - startpoint) * chanVal / 100));
           lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * RAW_HEIGHT, size, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
