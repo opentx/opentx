@@ -15,7 +15,7 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get -y install qtbase5-dev qtmultimedia5-dev qttools5-dev qttools5-dev-tools python3-pyqt5 curl gcc-arm-none-eabi libfox-1.6-dev libgtest-dev
+  - sudo apt-get --yes --force-yes install qtbase5-dev qtmultimedia5-dev qttools5-dev qttools5-dev-tools python3-pyqt5 curl gcc-arm-none-eabi libfox-1.6-dev libgtest-dev
   - wget --quiet http://firmware.ardupilot.org/Tools/Travis/gcc-avr_1%253a4.8-2.1_amd64.deb
   - wget --quiet http://firmware.ardupilot.org/Tools/Travis/libmpfr4_3.1.2-1_amd64.deb
   - wget --quiet http://firmware.ardupilot.org/Tools/Travis/avr-libc_1%253a1.8.0-4.1_all.deb
