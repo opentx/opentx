@@ -278,7 +278,6 @@ void CurveGroup::gvarCBChanged(int state)
     if (state) {
       curve.value = 10000+1; // TODO constant in EEpromInterface ...
       lastType = -1; // quickfix for issue #3518: force refresh of curveValueCB at next update() to set current index to GV1
-      
     }
     else {
       curve.value = 0; // TODO could be better
