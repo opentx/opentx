@@ -218,6 +218,7 @@ qt5_wrap_ui(companion_SRCS ${companion_UIS})
 qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 qt5_add_translation(companion_QM ${companion_TS})
 qt5_add_resources(companion_RCC ${companion_RESOURCES})
+add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
 add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
 
@@ -227,6 +228,7 @@ if(APPLE)
   set(CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks)
 else()
   add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
+  add_dependencies(${COMPANION_NAME} gen_qrc)
 endif()
 
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
@@ -254,6 +256,7 @@ if(APPLE)
   add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${simu_SRCS} ${companion_RCC})
 else()
   add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS} ${companion_RCC})
+  add_dependencies(${SIMULATOR_NAME} gen_qrc)
 endif()
 
 # TODO not the same link command than companion?
