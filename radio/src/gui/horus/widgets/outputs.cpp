@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+#define RECT_OFFSET 80
+#define RECT_WIDTH 90
+#define RAW_HEIGHT 20
+
 class OutputsWidget: public Widget
 {
   public:
@@ -33,28 +37,27 @@ class OutputsWidget: public Widget
     void drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan, uint8_t lastChan)
     {
       char chanString[]="CH32";
-      uint8_t offset =80;
       
       for (uint8_t curChan = firstChan; curChan < lastChan + 1; curChan++)
       {
         int16_t chanVal = calcRESXto1000(channelOutputs[curChan-1]) / 10;
         
         sprintf(chanString,"CH%02i", curChan);
-        lcdDrawText(x, y + (curChan - firstChan) * 20, chanString,SMLSIZE + TEXT_COLOR + LEFT);
+        lcdDrawText(x, y + (curChan - firstChan) * RAW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
         sprintf(chanString,"%3i", chanVal);
-        lcdDrawText(x + offset - 2, y + (curChan - firstChan) * 20, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
-        lcdDrawRect(x + offset, y + (curChan -firstChan) * 20, w - 90, 18);
-        lcd->drawSolidVerticalLine(x + offset + floor((w - 90) / 2), y + (curChan - firstChan) * 20, 18, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * RAW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
+        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * RAW_HEIGHT, w - RECT_WIDTH, RAW_HEIGHT);
+        lcd->drawSolidVerticalLine(x + RECT_OFFSET + floor((w - RECT_WIDTH) / 2), y + (curChan - firstChan) * RAW_HEIGHT, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         if (chanVal > 0)
         {
-          lcdDrawSolidFilledRect(x + offset + floor((w - 90) / 2),  y + (curChan -firstChan) * 20, (w - 90) * chanVal / 200 , 18, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_OFFSET + floor((w - RECT_WIDTH) / 2),  y + (curChan -firstChan) * RAW_HEIGHT, (w - RECT_WIDTH) * chanVal / 200 , RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0)
         {
-          uint16_t endpoint = x + offset + (w - 90) / 2;
-          uint16_t startpoint = x + offset;
+          uint16_t endpoint = x + RECT_OFFSET + (w - RECT_WIDTH) / 2;
+          uint16_t startpoint = x + RECT_OFFSET;
           uint16_t size = floor(abs((endpoint - startpoint) * chanVal / 100));
-          lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * 20, size, 18, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * RAW_HEIGHT, size, RAW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
       }
     };
