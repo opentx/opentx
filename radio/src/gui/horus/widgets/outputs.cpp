@@ -39,22 +39,19 @@ class OutputsWidget: public Widget
       char chanString[] = "CH32";
       uint8_t lastChan = firstChan + floor(h / ROW_HEIGHT);
       
-      for (uint8_t curChan = firstChan; curChan <= lastChan and curChan < 33; curChan++)
-      {
+      for (uint8_t curChan = firstChan; curChan <= lastChan and curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
         
-        sprintf(chanString,"CH%02i", curChan);
+        sprintf(chanString, "CH%02i", curChan);
         lcdDrawText(x, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
-        strAppendSigned(chanString,chanVal);
+        strAppendSigned(chanString, chanVal);
         lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
         lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH, ROW_HEIGHT);
         lcd->drawSolidVerticalLine(x + RECT_OFFSET + floor(RECT_WIDTH / 2), y + (curChan - firstChan) * ROW_HEIGHT, ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
-        if (chanVal > 0)
-        {
+        if (chanVal > 0) {
           lcdDrawSolidFilledRect(x + RECT_OFFSET + floor(RECT_WIDTH / 2),  y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH * chanVal / 200 , ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
-        else if (chanVal < 0)
-        {
+        else if (chanVal < 0) {
           uint16_t startpoint = x + RECT_OFFSET;
           uint16_t endpoint = startpoint + floor(RECT_WIDTH / 2);
           uint16_t size = RECT_WIDTH * abs(chanVal) / 200;
