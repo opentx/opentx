@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #define RECT_OFFSET 80
-#define RECT_WIDTH 100
+#define RECT_WIDTH (abs(w - RECT_OFFSET) - 8)
 #define RAW_HEIGHT 20
 
 class OutputsWidget: public Widget
