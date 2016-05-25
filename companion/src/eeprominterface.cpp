@@ -1410,8 +1410,7 @@ void ModelData::clear()
     moduleData[1].protocol = PULSES_OFF;
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
-    flightModeData[i].clear();
-    flightModeData[i].setDefaultLinkedFlightModes(i);
+    flightModeData[i].clear(i);
   }
   clearInputs();
   clearMixes();
@@ -1845,8 +1844,9 @@ SimulatorInterface *GetCurrentFirmwareSimulator()
     return NULL;
 }
 
-void FlightModeData::setDefaultLinkedFlightModes(const int phase)
+void FlightModeData::clear(const int phase)
 {
+  memset(this, 0, sizeof(FlightModeData));
   if (phase != 0) {
     for (int idx=0; idx<C9X_MAX_GVARS; idx++) {
       gvars[idx] = 1025;

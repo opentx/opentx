@@ -632,7 +632,7 @@ class CustomFunctionData { // Function Switches data
 
 class FlightModeData {
   public:
-    FlightModeData() { clear(); }
+    FlightModeData() { clear(0); }
     int trimMode[NUM_STICKS];
     int trimRef[NUM_STICKS];
     int trim[NUM_STICKS];
@@ -642,8 +642,7 @@ class FlightModeData {
     unsigned int fadeOut;
     int rotaryEncoders[C9X_MAX_ENCODERS];
     int gvars[C9X_MAX_GVARS];
-    void clear() { memset(this, 0, sizeof(FlightModeData)); }
-    void setDefaultLinkedFlightModes(const int phase);
+    void clear(const int phase);
 };
 
 class SwashRingData { // Swash Ring data
