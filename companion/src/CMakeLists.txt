@@ -218,6 +218,7 @@ qt5_wrap_ui(companion_SRCS ${companion_UIS})
 qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 qt5_add_translation(companion_QM ${companion_TS})
 qt5_add_resources(companion_RCC ${companion_RESOURCES})
+add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
 add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
 
@@ -229,6 +230,7 @@ else()
   add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
 endif()
 
+add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
 target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared ${PTHREAD_LIBRARY} ${SDL_LIBRARY})
 
@@ -256,6 +258,7 @@ else()
   add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS} ${companion_RCC})
 endif()
 
+add_dependencies(${SIMULATOR_NAME} gen_qrc)
 # TODO not the same link command than companion?
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS})
 
