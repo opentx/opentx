@@ -266,7 +266,7 @@ void audioTrimPress(int16_t value)
 {
   if (g_eeGeneral.beepMode >= e_mode_nokeys) {
 #if defined(AUDIO)
-    value = limit(TRIM_MIN, value, TRIM_MAX);
+    value = limit<int16_t>(TRIM_MIN, value, TRIM_MAX);
     value >>= 2;
     value += 60;
     audio.play(value, 6, 1, PLAY_NOW);
@@ -284,12 +284,12 @@ void audioTimerCountdown(uint8_t timer, int value)
   }
 
 #if defined(CPUM2560)
-  if (g_model.timers[timer].countdownBeep == COUNTDOWN_VOICE) {
-    if (value >= 0 && value <= g_model.timers[timer].countdownStart) {
-      playNumber(value, 0, 0, 0);
+  else if (g_model.timers[timer].countdownBeep == COUNTDOWN_VOICE) {
+    if (value >= 0 && value <= TIMER_COUNTDOWN_START(timer)) {
+      playNumber(value, 0, 0);
     }
     else if (value == 30 || value == 20) {
-      playDuration(value, 0, 0);
+      playDuration(value);
     }
   }
 #endif

@@ -1371,24 +1371,29 @@ void lcdInvertLine(int8_t y)
   }
 }
 
-#if !defined(BOOT)
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
-{
-  const pm_uchar *q = img;
-  uint8_t w    = pgm_read_byte(q++);
-  uint8_t hb   = (pgm_read_byte(q++)+7)/8;
-  bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
-  q += idx*w*hb;
-  for (uint8_t yb = 0; yb < hb; yb++) {
-    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];
-    for (coord_t i=0; i<w; i++){
-      uint8_t b = pgm_read_byte(q);
-      q++;
-      ASSERT_IN_DISPLAY(p);
-      *p++ = inv ? ~b : b;
-    }
-  }
+#define LCD_IMG_FUNCTION(NAME, TYPE, READ_BYTE)                               \
+void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
+{                                                                             \
+  TYPE q = img;                                                               \
+  uint8_t w = READ_BYTE(q++);                                                 \
+  uint8_t hb = (READ_BYTE(q++)+7)/8;                                          \
+  bool inv = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);  \
+  q += idx*w*hb;                                                              \
+  for (uint8_t yb = 0; yb < hb; yb++) {                                       \
+    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];                     \
+    for (coord_t i=0; i<w; i++){                                              \
+      uint8_t b = READ_BYTE(q);                                               \
+      q++;                                                                    \
+      ASSERT_IN_DISPLAY(p);                                                   \
+      *p++ = inv ? ~b : b;                                                    \
+    }                                                                         \
+  }                                                                           \
 }
+
+#if defined(PCBMEGA2560) && !defined(SIMU)
+LCD_IMG_FUNCTION(lcd_imgfar, uint_farptr_t, pgm_read_byte_far)
 #endif
+
+LCD_IMG_FUNCTION(lcd_img, const pm_uchar *, pgm_read_byte)
 
 #endif

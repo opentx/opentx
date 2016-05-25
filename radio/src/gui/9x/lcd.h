@@ -237,6 +237,10 @@ void lcdDrawTelemetryTopBar();
   lcdDrawSolidVerticalLine(xx  ,yy-ll,ll);  \
   lcdDrawSolidVerticalLine(xx+1,yy-ll,ll)
 
+#if defined(PCBMEGA2560) && !defined(SIMU)
+void lcd_imgfar(coord_t x, coord_t y, const uint_farptr_t img, uint8_t idx, LcdFlags att); // progmem "far"
+#endif
+
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 void lcdSetRefVolt(unsigned char val);
