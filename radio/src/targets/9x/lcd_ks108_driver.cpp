@@ -65,8 +65,13 @@ void lcdSetRefVolt(uint8_t val)
 {
 }
 
-void lcdRefreshSide(display_t * p)
+void lcdRefreshSide()
 {
+  static uint8_t change = 0; // toggle left or right lcd writing
+  uint8_t *p;
+  if (change == 0){ CS2_off; CS1_on; p = displayBuf; change = 1;} // Right
+  else{ CS1_off; CS2_on; p = displayBuf + 64; change = 0;} // Left
+  
   for (uint8_t page=0; page < 8; page++) {
     lcdSendCtl(DISPLAY_SET_COLUMN); // Column addr 0
     lcdSendCtl( page | DISPLAY_SET_PAGE); //Page addr
@@ -82,13 +87,6 @@ void lcdRefreshSide(display_t * p)
 
 void lcdRefresh()
 {
-  // Right
-  CS1_on;
-  lcdRefreshSide(displayBuf);
-  CS1_off;
-
-  // Left
-  CS2_on;
-  lcdRefreshSide(displayBuf + 64);
-  CS2_off;
+  lcdRefreshSide();
+  lcdRefreshSide();
 }

@@ -138,7 +138,9 @@ void perMain()
     drawStatusLine();
   }
 
-#if defined(LCD_ST7920)
+#if defined(LCD_KS108)
+  lcdRefreshSide();
+#elif defined(LCD_ST7920)
   lcdstate = lcdRefresh_ST7920(0);
 #else
   lcdRefresh();
