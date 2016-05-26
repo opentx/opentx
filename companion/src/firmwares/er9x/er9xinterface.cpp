@@ -17,7 +17,6 @@
 #include <iostream>
 #include "er9xinterface.h"
 #include "er9xeeprom.h"
-#include "er9xsimulator.h"
 #include "file.h"
 #include "appdata.h"
 

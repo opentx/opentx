@@ -287,15 +287,6 @@ target_link_libraries(companion modeledit simulation common qcustomplot ${QT_LIB
 
 ############# Standalone simu ###############
 
-set(ER9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/er9x)
-add_custom_command(
-  OUTPUT ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${ER9X_CHECKOUT_DIRECTORY}
-  COMMAND cd ${ER9X_CHECKOUT_DIRECTORY} && svn checkout http://er9x.googlecode.com/svn/trunk/src@790 .
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp ${ER9X_CHECKOUT_DIRECTORY}
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/firmwares/er9x/er9xsimulator.cpp
-)
-
 set(ERSKY9X_CHECKOUT_DIRECTORY ${PROJECT_BINARY_DIR}/firmwares/ersky9x)
 add_custom_command(
   OUTPUT ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
@@ -306,7 +297,6 @@ add_custom_command(
 )
 
 set(simu_SRCS
-  ${ER9X_CHECKOUT_DIRECTORY}/er9xsimulator.cpp
   ${ERSKY9X_CHECKOUT_DIRECTORY}/ersky9xsimulator.cpp
   ${RADIO_SRC_DIRECTORY}/bitmaps/sticks.lbm
   ${RADIO_SRC_DIRECTORY}/translations/en.h
