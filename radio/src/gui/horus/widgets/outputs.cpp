@@ -40,24 +40,23 @@ class OutputsWidget: public Widget
       uint8_t lastChan = firstChan + h / ROW_HEIGHT;
       
       for (uint8_t curChan = firstChan; curChan <= lastChan and curChan < 33; curChan++) {
-        int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
-        
+        int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]); 
         strAppend(chanString, "CH");
         strAppendSigned(&chanString[2], curChan, 2);
         lcdDrawText(x, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
         strAppendSigned(chanString, chanVal);
         lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
-        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH, ROW_HEIGHT);
-        lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * ROW_HEIGHT, ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         if (chanVal > 0) {
-          lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH * chanVal / 200 , ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * ROW_HEIGHT, divRoundClosest(RECT_WIDTH * chanVal, 200) , ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0) {
           uint16_t startpoint = x + RECT_OFFSET;
           uint16_t endpoint = startpoint + RECT_WIDTH / 2;
-          uint16_t size = RECT_WIDTH * abs(chanVal) / 200;
+          uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, 200);
           lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * ROW_HEIGHT, size, ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
+        lcdDrawRect(x + RECT_OFFSET, y + (curChan -firstChan) * ROW_HEIGHT, RECT_WIDTH, ROW_HEIGHT);
+        lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * ROW_HEIGHT, ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
       }
       return lastChan;
     }
