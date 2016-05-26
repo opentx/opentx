@@ -17,7 +17,6 @@
 #include <iostream>
 #include "th9xinterface.h"
 #include "th9xeeprom.h"
-#include "th9xsimulator.h"
 #include "file.h"
 #include "appdata.h"
 
