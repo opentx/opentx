@@ -19,7 +19,6 @@
  */
 
 #include "../opentx.h"
-
 uint16_t nextMixerEndTime = 0;
 #define SCHEDULE_MIXER_END(delay) nextMixerEndTime = getTmr16KHz() + (delay) - 2*16/*2ms*/
 
@@ -94,135 +93,140 @@ uint8_t *pulses2MHzWPtr = pulses2MHz;
 #define CTRL_REP_1CMD -3
 #define CTRL_REP_2CMD -6
 
-#define SETUP_PULSES_DURATION 1000/*500us*/
+#define SETUP_PULSES_DURATION 1000 // 500us
+uint8_t g_ppmPulsePolarity = 0; // Needed for Bit-bang PPM.
 
-// TIMER1_COMPA_vect used for PPM and DSM2=SERIAL
-uint8_t g_ppmPulsePolarity = 0;
-ISR(TIMER1_COMPA_vect) //2MHz pulse generation (BLOCKING ISR)
+// TIMER1_COMPA_vect used for PPM and DSM2=SERIAL.
+ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
 {
-  uint8_t dt = TCNT1L; // record Timer1 latency for DEBUG stats display
-  
-  // Call setupPulses only after REST pulse had been sent.
-  // Must do this before toggle PORTB to keep timing accurate
+  uint8_t dt = TCNT1L; // Record Timer1 latency for DEBUG stats display.
+
+  // Call setupPulses only after "rest" period has elapsed.
+  // Must do this before toggle PORTB to keep timing accurate.
   if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
     if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
       OCR1A = SETUP_PULSES_DURATION;
+#if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
+      OCR1B = OCR1A;
+      if (g_model.pulsePol) {
+        TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
+      }
+      else {
+        TCCR1A |= 3<<COM1B0;
+      }
+      TCCR1C = 1<<FOC1B; // Strobe FOC1B.
+      TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1); // Toggle OC1B on next match.
+#endif
     }
-    setupPulses(); // does not sei() for setupPulsesPPM
+    setupPulses(); // Does not sei() for setupPulsesPPM.
     heartbeat |= HEART_TIMER_PULSES;
     return;
   }
 
-#if !defined(CPUM2560)
-  // Original bitbang for PPM
   if (s_current_protocol[0] != PROTO_NONE) {
+#if !defined(CPUM2560)
+    // Original Bit-bang for PPM.
     if (g_ppmPulsePolarity) {
-      PORTB |=  (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
+      PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
       g_ppmPulsePolarity = 0;
     }
     else {
       PORTB &= ~(1<<OUT_B_PPM);
       g_ppmPulsePolarity = 1;
     }
-  }
 #else // defined(CPUM2560)
-  // CPUM2560 zero jitter hardware toggled PPM_out
-  OCR1B = *((uint16_t*)pulses2MHzRPtr); // duplicate capture (Timer1 in CTC mode, so restricted to OCR1A for int vector)
-    
-  // Toggle bit: Can't read PPM_OUT I/O pin when OC1B is connected (on the ATmega2560 -- can on ATmega64A!)
-  // so need to use pusePol register to keep track of PPM_out polarity.
-  if (s_current_protocol[0] != PROTO_NONE) {
-    if (g_ppmPulsePolarity) {
-      TCCR1A = (3<<COM1B0); // SET the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-      g_ppmPulsePolarity = 0;
+    // CPUM2560 hardware toggled PPM out.
+    if (*(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) {
+      // Look one step ahead to see if we are currently the "rest" period.
+      OCR1B = 0xffff; // Prevent next compare match hence toggle.
     }
     else {
-      TCCR1A = (2<<COM1B0); // CLEAR the state of PB6(OC1B)/PPM_out on next TCNT1==OCR1B
-      g_ppmPulsePolarity = 1;
+      OCR1B = *((uint16_t*) pulses2MHzRPtr);
     }
-  }
 #endif
+  }
 
-  OCR1A = *((uint16_t*)pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function)
-  pulses2MHzRPtr += sizeof(uint16_t); // non PPM protocols use uint8_t pulse buffer
-  
+  OCR1A = *((uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
+  pulses2MHzRPtr += sizeof(uint16_t); // Non PPM protocols use uint8_t pulse buffer.
+
   if (dt > g_tmr1Latency_max) g_tmr1Latency_max = dt;
   if (dt < g_tmr1Latency_min) g_tmr1Latency_min = dt;
 }
 
 void setupPulsesPPM(uint8_t proto)
 {
-  // Total frame length is a fixed 22.5msec (more than 9 channels is non-standard and requires this to be extended.)
-  // Each channel's pulse is 0.7 to 1.7ms long, with a 0.3ms stop tail, making each compelte cycle 1 to 2ms.
+    // Total frame length is a fixed 22.5msec (more than 9 channels is non-standard and requires this to be extended.)
+    // Each channel's pulse is 0.7 to 1.7ms long, with a 0.3ms stop tail, making each compelte cycle 1 to 2ms.
 
-  int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec
+    int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;   //range of 0.7..1.7msec
 
-  uint16_t *ptr = (proto == PROTO_PPM ? (uint16_t *)pulses2MHz : (uint16_t *) &pulses2MHz[PULSES_SIZE/2]);
+    uint16_t *ptr = (proto == PROTO_PPM ? (uint16_t *)pulses2MHz : (uint16_t *) &pulses2MHz[PULSES_SIZE/2]);
 
-  //The pulse ISR is 2mhz that's why everything is multiplied by 2
-  uint8_t p = (proto == PROTO_PPM16 ? 16 : 8) + (g_model.ppmNCH * 2); //Channels *2
-  uint16_t q = (g_model.ppmDelay*50+300)*2; // Stoplen *2
-  int32_t rest = 22500u*2 - q;
+    //The pulse ISR is 2mhz that's why everything is multiplied by 2
+    uint8_t p = (proto == PROTO_PPM16 ? 16 : 8) + (g_model.ppmNCH * 2); //Channels *2
+    uint16_t q = (g_model.ppmDelay*50+300)*2; // Stoplen *2
+    int32_t rest = 22500u*2 - q;
 
-  rest += (int32_t(g_model.ppmFrameLength))*1000;
-  for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
-    int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
-    rest -= v;
-    *ptr++ = q;
-    *ptr++ = v - q; // total pulse width includes stop phase
-  }
+    rest += (int32_t(g_model.ppmFrameLength))*1000;
+    for (uint8_t i=(proto==PROTO_PPM16) ? p-8 : 0; i<p; i++) {
+      int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
+      rest -= v;
+      *ptr++ = q;
+      *ptr++ = v - q; // total pulse width includes stop phase
+    }
 
-  *ptr++ = q;
-  if (rest > 65535) rest = 65535; /* prevents overflows */
-  if (rest < 9000)  rest = 9000;
+    *ptr++ = q;  
+    if (rest > 65535) rest = 65535; /* prevents overflows */
+    if (rest < 9000)  rest = 9000;
 
-  if (proto == PROTO_PPM) {
-    *ptr++ = rest - SETUP_PULSES_DURATION;
-    pulses2MHzRPtr = pulses2MHz;
-  }
-  else {
-    *ptr++ = rest;
-    B3_comp_value = rest - SETUP_PULSES_DURATION;               // 500uS before end of sync pulse
-  }
+    if (proto == PROTO_PPM) {
+      *ptr++ = rest - SETUP_PULSES_DURATION;
+      pulses2MHzRPtr = pulses2MHz;
+    }
+    else {
+      *ptr++ = rest;    
+      B3_comp_value = rest - SETUP_PULSES_DURATION;               // 500uS before end of sync pulse
+    }
 
-  *ptr = 0;
+    *ptr = 0;
 }
+
 
 #if defined(PXX)
 const pm_uint16_t CRCTable[] PROGMEM =
 {
-  0x0000,0x1189,0x2312,0x329b,0x4624,0x57ad,0x6536,0x74bf,
-  0x8c48,0x9dc1,0xaf5a,0xbed3,0xca6c,0xdbe5,0xe97e,0xf8f7,
-  0x1081,0x0108,0x3393,0x221a,0x56a5,0x472c,0x75b7,0x643e,
-  0x9cc9,0x8d40,0xbfdb,0xae52,0xdaed,0xcb64,0xf9ff,0xe876,
-  0x2102,0x308b,0x0210,0x1399,0x6726,0x76af,0x4434,0x55bd,
-  0xad4a,0xbcc3,0x8e58,0x9fd1,0xeb6e,0xfae7,0xc87c,0xd9f5,
-  0x3183,0x200a,0x1291,0x0318,0x77a7,0x662e,0x54b5,0x453c,
-  0xbdcb,0xac42,0x9ed9,0x8f50,0xfbef,0xea66,0xd8fd,0xc974,
-  0x4204,0x538d,0x6116,0x709f,0x0420,0x15a9,0x2732,0x36bb,
-  0xce4c,0xdfc5,0xed5e,0xfcd7,0x8868,0x99e1,0xab7a,0xbaf3,
-  0x5285,0x430c,0x7197,0x601e,0x14a1,0x0528,0x37b3,0x263a,
-  0xdecd,0xcf44,0xfddf,0xec56,0x98e9,0x8960,0xbbfb,0xaa72,
-  0x6306,0x728f,0x4014,0x519d,0x2522,0x34ab,0x0630,0x17b9,
-  0xef4e,0xfec7,0xcc5c,0xddd5,0xa96a,0xb8e3,0x8a78,0x9bf1,
-  0x7387,0x620e,0x5095,0x411c,0x35a3,0x242a,0x16b1,0x0738,
-  0xffcf,0xee46,0xdcdd,0xcd54,0xb9eb,0xa862,0x9af9,0x8b70,
-  0x8408,0x9581,0xa71a,0xb693,0xc22c,0xd3a5,0xe13e,0xf0b7,
-  0x0840,0x19c9,0x2b52,0x3adb,0x4e64,0x5fed,0x6d76,0x7cff,
-  0x9489,0x8500,0xb79b,0xa612,0xd2ad,0xc324,0xf1bf,0xe036,
-  0x18c1,0x0948,0x3bd3,0x2a5a,0x5ee5,0x4f6c,0x7df7,0x6c7e,
-  0xa50a,0xb483,0x8618,0x9791,0xe32e,0xf2a7,0xc03c,0xd1b5,
-  0x2942,0x38cb,0x0a50,0x1bd9,0x6f66,0x7eef,0x4c74,0x5dfd,
-  0xb58b,0xa402,0x9699,0x8710,0xf3af,0xe226,0xd0bd,0xc134,
-  0x39c3,0x284a,0x1ad1,0x0b58,0x7fe7,0x6e6e,0x5cf5,0x4d7c,
-  0xc60c,0xd785,0xe51e,0xf497,0x8028,0x91a1,0xa33a,0xb2b3,
-  0x4a44,0x5bcd,0x6956,0x78df,0x0c60,0x1de9,0x2f72,0x3efb,
-  0xd68d,0xc704,0xf59f,0xe416,0x90a9,0x8120,0xb3bb,0xa232,
-  0x5ac5,0x4b4c,0x79d7,0x685e,0x1ce1,0x0d68,0x3ff3,0x2e7a,
-  0xe70e,0xf687,0xc41c,0xd595,0xa12a,0xb0a3,0x8238,0x93b1,
-  0x6b46,0x7acf,0x4854,0x59dd,0x2d62,0x3ceb,0x0e70,0x1ff9,
-  0xf78f,0xe606,0xd49d,0xc514,0xb1ab,0xa022,0x92b9,0x8330,
-  0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
+    0x0000,0x1189,0x2312,0x329b,0x4624,0x57ad,0x6536,0x74bf,
+    0x8c48,0x9dc1,0xaf5a,0xbed3,0xca6c,0xdbe5,0xe97e,0xf8f7,
+    0x1081,0x0108,0x3393,0x221a,0x56a5,0x472c,0x75b7,0x643e,
+    0x9cc9,0x8d40,0xbfdb,0xae52,0xdaed,0xcb64,0xf9ff,0xe876,
+    0x2102,0x308b,0x0210,0x1399,0x6726,0x76af,0x4434,0x55bd,
+    0xad4a,0xbcc3,0x8e58,0x9fd1,0xeb6e,0xfae7,0xc87c,0xd9f5,
+    0x3183,0x200a,0x1291,0x0318,0x77a7,0x662e,0x54b5,0x453c,
+    0xbdcb,0xac42,0x9ed9,0x8f50,0xfbef,0xea66,0xd8fd,0xc974,
+    0x4204,0x538d,0x6116,0x709f,0x0420,0x15a9,0x2732,0x36bb,
+    0xce4c,0xdfc5,0xed5e,0xfcd7,0x8868,0x99e1,0xab7a,0xbaf3,
+    0x5285,0x430c,0x7197,0x601e,0x14a1,0x0528,0x37b3,0x263a,
+    0xdecd,0xcf44,0xfddf,0xec56,0x98e9,0x8960,0xbbfb,0xaa72,
+    0x6306,0x728f,0x4014,0x519d,0x2522,0x34ab,0x0630,0x17b9,
+    0xef4e,0xfec7,0xcc5c,0xddd5,0xa96a,0xb8e3,0x8a78,0x9bf1,
+    0x7387,0x620e,0x5095,0x411c,0x35a3,0x242a,0x16b1,0x0738,
+    0xffcf,0xee46,0xdcdd,0xcd54,0xb9eb,0xa862,0x9af9,0x8b70,
+    0x8408,0x9581,0xa71a,0xb693,0xc22c,0xd3a5,0xe13e,0xf0b7,
+    0x0840,0x19c9,0x2b52,0x3adb,0x4e64,0x5fed,0x6d76,0x7cff,
+    0x9489,0x8500,0xb79b,0xa612,0xd2ad,0xc324,0xf1bf,0xe036,
+    0x18c1,0x0948,0x3bd3,0x2a5a,0x5ee5,0x4f6c,0x7df7,0x6c7e,
+    0xa50a,0xb483,0x8618,0x9791,0xe32e,0xf2a7,0xc03c,0xd1b5,
+    0x2942,0x38cb,0x0a50,0x1bd9,0x6f66,0x7eef,0x4c74,0x5dfd,
+    0xb58b,0xa402,0x9699,0x8710,0xf3af,0xe226,0xd0bd,0xc134,
+    0x39c3,0x284a,0x1ad1,0x0b58,0x7fe7,0x6e6e,0x5cf5,0x4d7c,
+    0xc60c,0xd785,0xe51e,0xf497,0x8028,0x91a1,0xa33a,0xb2b3,
+    0x4a44,0x5bcd,0x6956,0x78df,0x0c60,0x1de9,0x2f72,0x3efb,
+    0xd68d,0xc704,0xf59f,0xe416,0x90a9,0x8120,0xb3bb,0xa232,
+    0x5ac5,0x4b4c,0x79d7,0x685e,0x1ce1,0x0d68,0x3ff3,0x2e7a,
+    0xe70e,0xf687,0xc41c,0xd595,0xa12a,0xb0a3,0x8238,0x93b1,
+    0x6b46,0x7acf,0x4854,0x59dd,0x2d62,0x3ceb,0x0e70,0x1ff9,
+    0xf78f,0xe606,0xd49d,0xc514,0xb1ab,0xa022,0x92b9,0x8330,
+    0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
 uint8_t PcmByte;
@@ -232,7 +236,7 @@ uint8_t PcmOnesCount;
 
 void crc(uint8_t data)
 {
-  PcmCrc = (PcmCrc<<8)^pgm_read_word(&CRCTable[((PcmCrc>>8)^data) & 0xFF]);
+  PcmCrc = (PcmCrc<<8) ^ pgm_read_word(&CRCTable[((PcmCrc >> 8) ^ data) & 0xFF]);
 }
 
 
@@ -252,7 +256,7 @@ void putPcmFlush()
   while (PcmBitCount != 0) {
     putPcmPart(0); // Empty
   }
-  *pulses2MHzWPtr = 0;                               // Mark end
+  *pulses2MHzWPtr = 0; // Mark end
 }
 
 void putPcmBit(uint8_t bit)
@@ -470,7 +474,7 @@ inline void _send_1(uint8_t v)
 #define BITLEN_DSM2 (8*2) //125000 Baud
 void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
 {
-  bool    lev = 0;
+  bool lev = 0;
   uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
   for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
     bool nlev = b & 1; //lsb first
@@ -556,9 +560,6 @@ void setupPulsesDSM2()
 #endif
 
 /****** END DSM2=PPM ********/
-
-
-
 
 #if defined(IRPROTOS)
 static void _send_u8(uint8_t u8)
@@ -653,26 +654,31 @@ void picco_sendBn(uint8_t bits, uint8_t n)
   while (n--) picco_sendB1(bits & (1<<n));
 }
 
-
 #define BITS  10
 #define BITS2 (BITS-1)
 
 NOINLINE uint8_t reduce7u(int16_t v, uint8_t sfr)
 {
   v += (1<<BITS2);
-  if(v <  0) v=0;
-  if(v >= (1<<BITS)) v=(1<<BITS)-1;
-  return v>>sfr;
+  if (v < 0) v=0;
+  if (v >= (1<<BITS)) v=(1<<BITS)-1;
+  return v >> sfr;
 }
 
 NOINLINE int8_t reduce7s(int16_t v, uint8_t sfr, uint8_t sf2, int8_t ofs2)
 {
-  v += (1<<BITS2)+sf2;
-  if(v&(1<<BITS)) v = (1<<BITS)-1; //no overflow
+  v += (1<<BITS2) + sf2;
+  if (v & (1<<BITS)) {
+    v = (1<<BITS)-1; // no overflow
+  }
   int8_t  i8 = (uint16_t)v>>sfr;
-  if(i8<=0) i8=1;
-  i8-=ofs2;
-  if(i8>=ofs2) i8=ofs2-1;//no overflow
+  if (i8 <= 0) {
+    i8 = 1;
+  }
+  i8 -= ofs2;
+  if (i8 >= ofs2) {
+    i8 = ofs2-1; //no overflow
+  }
   return i8;
 }
 
@@ -771,7 +777,6 @@ void setupPulses()
 #endif
 
     switch (required_protocol) {
-
 #if defined(DSM2_PPM) // For DSM2=SERIAL, the default: case is executed, below
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
@@ -869,7 +874,6 @@ void setupPulses()
   }
 
   switch(required_protocol) {
-
 #if defined(PXX)
     case PROTO_PXX:
       // schedule next Mixer calculations
@@ -918,9 +922,8 @@ void setupPulses()
   }
 
 #if defined(DEBUG) && !defined(VOICE)
-    PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
+  PORTH &= ~0x80; // PORTH:7 HIGH->LOW signals end of setupPulses()
 #endif
-
 }
 
 #ifndef SIMU
@@ -929,7 +932,6 @@ void setupPulses()
 ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
 #if defined (CPUM2560)
-
   /*** G9X V4 hardware toggled PPM_out avoids any chance of output timing jitter ***/
 
   // OCR1B output pin (PPM_OUT) is pre-SET in setupPulses -- on every new 
@@ -943,44 +945,36 @@ ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
                           // pin on OCR1A. Oh well.)
 
 #else // manual bit-bang mode
-
   uint8_t x;
   PORTB ^= (1<<OUT_B_PPM);    // Toggle PPM_OUT
   x = *pulses2MHzRPtr++;      // Byte size
   ICR1 = x;
   if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up.
-
 #endif
-
 }
 
 #if defined(PXX)
 ISR(TIMER1_COMPB_vect) // PXX main interrupt
 {
-    uint8_t x;
-    PORTB ^= (1<<OUT_B_PPM);
-    x = *pulses2MHzRPtr;      // Byte size
-    if ((x & 1) == 0)
-    {
-        OCR1B += 32;
+  uint8_t x;
+  PORTB ^= (1<<OUT_B_PPM);
+  x = *pulses2MHzRPtr;      // Byte size
+  if ((x & 1) == 0) {
+    OCR1B += 32;
+  }
+  else {
+    OCR1B += 16;
+  }
+  if ((x >>= 1) == 0) {
+    if (*(++pulses2MHzRPtr) == 0) {
+      OCR1B = OCR1C + 2000;              // 1mS on from OCR1B
     }
-    else
-    {
-        OCR1B += 16;
-    }
-    if ((x >>= 1) == 0)
-    {
-        if (*(++pulses2MHzRPtr) == 0)
-        {
-            OCR1B = OCR1C + 2000;              // 1mS on from OCR1B
-        }
-    }
-    else
-    {
-        *pulses2MHzRPtr = x;
-    }
+  }
+  else {
+    *pulses2MHzRPtr = x;
+  }
 
-    heartbeat |= HEART_TIMER_PULSES;
+  heartbeat |= HEART_TIMER_PULSES;
 }
 #endif
 
@@ -1002,7 +996,6 @@ ISR(TIMER1_COMPC_vect) // DSM2_PPM or PXX end of frame
     }
 
     heartbeat |= HEART_TIMER_PULSES;
-
 #endif
 
 #if defined(DSM2_PPM) && defined(PXX)
@@ -1070,8 +1063,8 @@ void set_timer3_ppm()
 // and PPMSIM modes
 ISR(TIMER3_COMPA_vect) //2MHz pulse generation
 {
-  static uint8_t   pulsePol;
-  static uint16_t *pulse2MHzPPM16RPtr = (uint16_t*) &pulses2MHz[PULSES_SIZE/2];
+  static uint8_t pulsePol;
+  static uint16_t * pulse2MHzPPM16RPtr = (uint16_t*) &pulses2MHz[PULSES_SIZE/2];
 
   if (pulsePol) {
     PORTE |= 0x80; // (1<<OUT_B_PPM);
