@@ -1,3 +1,13 @@
+<h2>Version 2.0.20 / 2016-05-27</h2>
+
+Nothing new (only Firmware build server and Companion fixes)
+
+[9XR-PRO / Sky9x]
+<ul>
+<li>Fixed: location for 9XR-PRO and SKY9X Mike's bootloader has changed (<a href=https://github.com/opentx/opentx/issues/3527>#3527</a>)</li>
+</ul>
+
+
 <h2>Version 2.0.19 / 2016-01-15</h2>
 
 [ARM Boards]
