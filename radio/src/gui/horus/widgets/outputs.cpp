@@ -43,11 +43,11 @@ class OutputsWidget: public Widget
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]); 
         strAppend(chanString, "CH");
         strAppendSigned(&chanString[2], curChan, 2);
-        lcdDrawText(x, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + LEFT);
+        lcdDrawText(x, y + (curChan - firstChan) * ROW_HEIGHT, chanString, SMLSIZE | TEXT_COLOR | LEFT);
         strAppendSigned(chanString, chanVal);
-        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * ROW_HEIGHT, chanString,SMLSIZE + TEXT_COLOR + RIGHT);
+        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * ROW_HEIGHT, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
         if (chanVal > 0) {
-          lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * ROW_HEIGHT, divRoundClosest(RECT_WIDTH * chanVal, 200) , ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * ROW_HEIGHT, divRoundClosest(RECT_WIDTH * chanVal, 200), ROW_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0) {
           uint16_t startpoint = x + RECT_OFFSET;
