@@ -214,10 +214,15 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
     add_definitions(-Dat91sam3s8 -DREVX)
     set(FLAVOUR 9xrpro)
     set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
+    set(TARGET_SRC ${TARGET_SRC} rtc_driver.cpp)
     set(BOOTLOADER bootflash8.lbm)
   elseif(PCB STREQUAL AR9X)
     add_definitions(-Dat91sam3s8 -DAR9X)
     set(FLAVOUR ar9x)
+    include_directories(${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi)
+    set(SRC ${SRC} ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c)
+    set(TARGET_SRC ${TARGET_SRC} i2c_driver.cpp)
+    set(TARGET_SRC ${TARGET_SRC} rtc_ds3231_driver.cpp)
     set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
     set(BOOTLOADER bootflash8.lbm)
   else()
@@ -259,7 +264,6 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
     )
   set(TARGET_SRC
     ${TARGET_SRC}
-    rtc_driver.cpp
     board_sky9x.cpp
     telemetry_driver.cpp
     serial2_driver.cpp
@@ -267,8 +271,13 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
     adc_driver.cpp
     eeprom_driver.cpp
     pulses_driver.cpp
-    keys_driver.cpp audio_driver.cpp buzzer_driver.cpp haptic_driver.cpp sdcard_driver.cpp massstorage.cpp
-    )
+    keys_driver.cpp
+    audio_driver.cpp
+    buzzer_driver.cpp
+    haptic_driver.cpp
+    sdcard_driver.cpp
+    massstorage.cpp
+  )
   set(SRC ${SRC} debug.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
 elseif(PCB STREQUAL 9X OR PCB STREQUAL 9XR OR PCB STREQUAL 9X128 OR PCB STREQUAL 9XR128)
