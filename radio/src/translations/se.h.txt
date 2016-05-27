@@ -583,8 +583,12 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "Av\0""På\0""GAs""GA%""GAt"
 
-#define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Lärare/Uttag\0     ""Elev./Uttag\0      ""Lärare/SBUS-Modul\0""Lärare/CPPM-Modul\0""Lärare/Batteri\0"
+#define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_JACK        "Lärare/Uttag\0     "
+#define TR_VTRAINER_SLAVE_JACK         "Elev./Uttag\0      "
+#define TR_VTRAINER_MASTER_SBUS_MODULE "Lärare/SBUS-Modul\0"
+#define TR_VTRAINER_MASTER_CPPM_MODULE "Lärare/CPPM-Modul\0"
+#define TR_VTRAINER_MASTER_BATTERY     "Lärare/Batteri\0"    
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Ej givet""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"

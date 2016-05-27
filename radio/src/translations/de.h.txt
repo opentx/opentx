@@ -577,8 +577,12 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "AUS""EIN""GSs""GS%""GSt"
 
-#define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Lehrer/Buchse\0    ""Schüler/Buchse\0   ""Lehrer/SBUS Modul\0""Lehrer/CPPM Modul\0""Lehrer/Batterie\0"
+#define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_JACK        "Lehrer/Buchse\0    "
+#define TR_VTRAINER_SLAVE_JACK         "Schüler/Buchse\0   "
+#define TR_VTRAINER_MASTER_SBUS_MODULE "Lehrer/SBUS Modul\0"
+#define TR_VTRAINER_MASTER_CPPM_MODULE "Lehrer/CPPM Modul\0"
+#define TR_VTRAINER_MASTER_BATTERY     "Lehrer/Batterie\0"    
 
 #define LEN_VFAILSAFE          "\015" // "\013" original
 #define TR_VFAILSAFE           "Kein Failsafe""Halte Pos.\0  ""Kanäle\0      ""Kein Signal\0 ""Empfänger\0   "

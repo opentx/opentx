@@ -572,8 +572,12 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "OFF""ON\0""GZs""GZ%""GZt"
 
-#define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Maître/Jack\0      ""Elève/Jack\0       ""Maître/SBUS Module""Maître/CPPM Module""Maître/Batterie\0"
+#define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_JACK        "Maître/Jack\0      "
+#define TR_VTRAINER_SLAVE_JACK         "Elève/Jack\0       "
+#define TR_VTRAINER_MASTER_SBUS_MODULE "Maître/SBUS Module"
+#define TR_VTRAINER_MASTER_CPPM_MODULE "Maître/CPPM Module"
+#define TR_VTRAINER_MASTER_BATTERY     "Maître/Batterie\0"  
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           TR("Pas déf.\0""Maintien\0""Prédéf.\0 ""Pas d'imp""Récepteur", "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur")

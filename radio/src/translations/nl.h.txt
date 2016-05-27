@@ -577,8 +577,12 @@
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "UIT""AAN""THs""TH%""THt"
 
-#define LEN_VTRAINERMODES      "\022"
-#define TR_VTRAINERMODES       "Master/Jack\0      ""Slave/Jack\0       ""Master/SBUS Module""Master/CPPM Module""Master/Battery\0"
+#define LEN_VTRAINERMODES              "\022"
+#define TR_VTRAINER_MASTER_JACK        "Master/Jack\0      "
+#define TR_VTRAINER_SLAVE_JACK         "Slave/Jack\0       "
+#define TR_VTRAINER_MASTER_SBUS_MODULE "Master/SBUS Module"
+#define TR_VTRAINER_MASTER_CPPM_MODULE "Master/CPPM Module"
+#define TR_VTRAINER_MASTER_BATTERY     "Master/Battery\0"
 
 #define LEN_VFAILSAFE          TR("\013","\011")
 #define TR_VFAILSAFE           TR("Niet Gezet\0""Vasthouden\0""Custom\0    ""Geen Pulsen""Ontvanger\0 ","Not Set\0 ""Hold\0    ""Custom\0  ""No Pulses""Receiver\0")
