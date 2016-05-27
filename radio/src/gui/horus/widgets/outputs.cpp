@@ -39,7 +39,7 @@ class OutputsWidget: public Widget
       char chanString[] = "CH32";
       uint8_t lastChan = firstChan + h / ROW_HEIGHT;
       
-      for (uint8_t curChan = firstChan; curChan <= lastChan and curChan < 33; curChan++) {
+      for (uint8_t curChan = firstChan; curChan <= lastChan && curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]); 
         strAppend(chanString, "CH");
         strAppendSigned(&chanString[2], curChan, 2);
@@ -83,9 +83,9 @@ const ZoneOption OutputsWidget::options[] = {
 
 void OutputsWidget::refresh()
 {
-  if (zone.w > 300 and zone.h > 20)
+  if (zone.w > 300 && zone.h > 20)
     twoColumns();
-  else if (zone.w > 150 and zone.h > 20)
+  else if (zone.w > 150 && zone.h > 20)
     oneColumn();
 };
 
