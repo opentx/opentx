@@ -392,6 +392,7 @@ bool menuModelMixAll(evt_t event)
       if (s_copyTgtOfs) {
         s_copyMode = 0;
         s_copyTgtOfs = 0;
+        return true;
       }
       else {
         if (READ_ONLY()) {
@@ -406,6 +407,7 @@ bool menuModelMixAll(evt_t event)
             insertMix(s_currIdx);
             pushMenu(menuModelMixOne);
             s_copyMode = 0;
+            return true;
           }
           else if (menuVerticalPosition >= 0) {
             event = 0;
