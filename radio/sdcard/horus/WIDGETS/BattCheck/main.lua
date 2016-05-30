@@ -179,7 +179,7 @@ local function zoneSmall(zone)
       lcd.drawRectangle(zone.zone.x + myBatt.x + i, zone.zone.y + myBatt.y, myBatt.segments_w, myBatt.h, CUSTOM_COLOR, 1)
     end
   else
-    lcd.drawText(zone.zone.x, zone.zone.y+10, "No Cels sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x, zone.zone.y+10, "No FLVSS sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   end
   return
 end
@@ -206,7 +206,7 @@ local function zoneMedium(zone)
       lcd.drawRectangle(zone.zone.x + pos[i].x, zone.zone.y + pos[i].y, 59, 20, CUSTOM_COLOR,1)
     end
   else
-    lcd.drawText(zone.zone.x, zone.zone.y+35, "No Cels sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x, zone.zone.y+35, "No FLVSS sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   end
   -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
@@ -242,7 +242,7 @@ local function zoneLarge(zone)
       lcd.drawRectangle(zone.zone.x + pos[i].x, zone.zone.y + pos[i].y, 59, 20, CUSTOM_COLOR, 1)
     end
   else
-    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Cels sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x+5, zone.zone.y, "No FLVSS sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   end
   -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
@@ -289,7 +289,7 @@ local function zoneXLarge(zone)
       lcd.drawText(zone.zone.x + pos[i].x+10, zone.zone.y + pos[i].y, string.format("%.2f", histCellData[i]), CUSTOM_COLOR)
     end
   else
-    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Cels sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x+5, zone.zone.y, "No FLVSS sensor data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   end
   -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
@@ -315,6 +315,7 @@ end
 function refresh(myZone)
   if myZone.options.Sensor == 1 then
     lcd.drawText(myZone.zone.x+2, myZone.zone.y+2, "BattCheck not configured", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(myZone.zone.x+2, myZone.zone.y+20, "Requires FLVSS sensor", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
     return
   end
   if myZone.zone.w  > 380 and myZone.zone.h > 165 then zoneXLarge(myZone)
