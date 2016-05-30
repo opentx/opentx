@@ -273,6 +273,8 @@ bool menuWidgetChoice(evt_t event)
   lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, TEXT_INVERTED_COLOR);
   lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
   lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
+  
+  lcdDrawText(LCD_W/2, 15, currentWidget->getFactory()->getName(),TEXT_INVERTED_COLOR | RIGHT);
 
   return true;
 }
