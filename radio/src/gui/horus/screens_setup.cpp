@@ -274,7 +274,7 @@ bool menuWidgetChoice(evt_t event)
   lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
   lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
   
-  lcdDrawText(LCD_W/2, 15, currentWidget->getFactory()->getName(),TEXT_INVERTED_COLOR | RIGHT);
+  lcdDrawText(zone.x, zone.y, currentWidget->getFactory()->getName(), LEFT | TEXT_COLOR | INVERS ); // Please remove me after two seconds :)
 
   return true;
 }
