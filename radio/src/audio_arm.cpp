@@ -23,6 +23,10 @@
 
 extern OS_MutexID audioMutex;
 
+#if defined(SOFTWARE_VOLUME)
+extern uint8_t currentSpeakerVolume;
+#endif
+
 const int16_t sineValues[] =
 {
     0, 196, 392, 588, 784, 980, 1175, 1370, 1564, 1758,
@@ -511,9 +515,16 @@ void audioTask(void * pdata)
 }
 #endif
 
-void mixSample(audio_data_t * result, int sample, unsigned int fade)
+void mixSample(audio_data_t * result, int sample, unsigned int fade, bool swVolumeAdjust = true)
 {
-  *result = limit(AUDIO_DATA_MIN, *result + ((sample >> fade) >> (16-AUDIO_BITS_PER_SAMPLE)), AUDIO_DATA_MAX);
+  *result = limit(AUDIO_DATA_MIN, *result + ((sample >> fade) >> (16 - AUDIO_BITS_PER_SAMPLE)), AUDIO_DATA_MAX);
+
+#if defined(SOFTWARE_VOLUME)
+  if (!swVolumeAdjust)
+    return;
+  int32_t tmpSample = (int32_t) (uint32_t) (*result);  // conversion from uint16_t
+  *((uint16_t*) result) = (int16_t) ((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX);
+#endif
 }
 
 #if defined(SDCARD)
@@ -684,8 +695,12 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
     }
 
     for (int i=0; i<points; i++) {
+
       int16_t sample = sineValues[int(toneIdx)] / state.volume;
-      mixSample(&buffer->data[i], sample, fade);
+#if defined(SOFTWARE_VOLUME)
+      sample *= (float)currentSpeakerVolume / VOLUME_LEVEL_MAX ;
+#endif
+      mixSample(&buffer->data[i], sample, fade, false);
       toneIdx += state.step;
       if ((unsigned int)toneIdx >= DIM(sineValues))
         toneIdx -= DIM(sineValues);

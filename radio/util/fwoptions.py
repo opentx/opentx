@@ -235,7 +235,6 @@ options_ar9x = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     # "rtc": ("RTCLOCK", "YES", "NO"),
-    # "volume": ("HARDWARE_VOLUME", "YES", "NO") # Renove HARDWARE_VOLUME=NO in the commandline below when activating!
 }
 
 options_taranis = {

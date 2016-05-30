@@ -94,7 +94,6 @@ elif options[optcount] == "9xrpro":
 elif options[optcount] == "ar9x":
     command_options["PCB"] = "AR9X"
     command_options["SDCARD"] = "YES"
-    command_options["HARDWARE_VOLUME"] = "NO"
     firmware_options = options_ar9x
     maxsize = 65536 * 4
     board = BOARD_SKY9X

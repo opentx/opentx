@@ -163,7 +163,7 @@ void audioEnd()
 
 void setScaledVolume(uint8_t volume)
 {
-#if !defined(NO_HARDWARE_VOLUME)
+#if !defined(SOFTWARE_VOLUME)
   volumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
   __disable_irq() ;
   i2cCheck() ;
