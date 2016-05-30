@@ -91,7 +91,7 @@ bool menuModelFlightModesAll(evt_t event)
   }
 
   if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
-    drawColumnHeader(STR_PHASES_HEADERS, posHorz);
+    drawColumnHeader(STR_PHASES_HEADERS, NULL, posHorz);
   }
 
   for (int i=0; i<NUM_BODY_LINES; i++) {

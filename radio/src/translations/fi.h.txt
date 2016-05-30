@@ -1042,7 +1042,8 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Direction ", " Curve ", " PPM Center ", " Subtrim mode " }
-#define TR_CSW_HEADERS         { " Function ", " V1 ", " V2 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
+#define TR_LSW_HEADERS         { " Function ", " V1 ", " V2 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
+#define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
 
 // About screen
 #define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")

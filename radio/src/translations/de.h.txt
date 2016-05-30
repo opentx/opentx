@@ -1082,9 +1082,10 @@
 // Taranis Info Zeile Anzeigen
 #define TR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Mitte ", " Min ", " Max ", " Richtung ", " Kurve ", " PPM-Mitte ", " Mitte-Mode " }
-#define TR_CSW_HEADERS         { " Funktion ", " Var1 ", " Var2 ", " Var2 ", " UND-Schalter ", " Dauer ", " Verzögerung " }
+#define TR_LSW_HEADERS         { " Funktion ", " Var1 ", " Var2 ", " Var2 ", " UND-Schalter ", " Dauer ", " Verzögerung " }
+#define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
 
-//Taranis About screen
+// Taranis About screen
 #define TR_ABOUTUS             "Über OpenTx"
 
 #define TR_ABOUT_OPENTX_1      "OpenTX ist Open Source,"

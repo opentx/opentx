@@ -84,7 +84,7 @@ bool menuModelLogicalSwitches(evt_t event)
   int horz = menuHorizontalPosition;
 
   if (sub>= 0 && horz>=0) {
-    drawColumnHeader(STR_CSW_HEADERS, horz);
+    drawColumnHeader(STR_LSW_HEADERS, STR_LSW_DESCRIPTIONS, horz);
   }
 
   if (horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {

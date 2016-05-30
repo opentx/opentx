@@ -1069,9 +1069,10 @@
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nom ", " Inter ", " Trim Dir ", " Trim Prf ", " Trim Gaz ", " Trim Ail ", " Fondu ON ", " Fondu OFF " }
 #define TR_LIMITS_HEADERS      { " Nom ", " Subtrim ", " Min ", " Max ", " Direction ", " Courbe ", " Neutre PPM ", " Mode subtrim " }
-#define TR_CSW_HEADERS         { " Fonction ", " V1 ", " V2 ", " V2 ", " ET suppl. ", " Durée ", " Délai " }
+#define TR_LSW_HEADERS         { " Fonction ", " V1 ", " V2 ", " V2 ", " ET suppl. ", " Durée ", " Délai " }
+#define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
 
-//Taranis About screen
+// Taranis About screen
 #define TR_ABOUTUS             TR(" A PROPOS ", "A PROPOS")
 
 #define TR_ABOUT_OPENTX_1      TR("OpenTX\001est\001libre,\001non-", "OpenTX est libre, non-")

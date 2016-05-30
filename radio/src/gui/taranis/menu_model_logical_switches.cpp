@@ -83,7 +83,7 @@ void menuModelLogicalSwitches(uint8_t event)
   horzpos_t horz = menuHorizontalPosition;
 
   if (horz>=0) {
-    drawColumnHeader(STR_CSW_HEADERS, horz);
+    drawColumnHeader(STR_LSW_HEADERS, horz);
   }
 
   if (horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {

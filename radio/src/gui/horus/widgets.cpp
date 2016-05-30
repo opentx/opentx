@@ -21,9 +21,17 @@
 #include "opentx.h"
 #include <stdio.h>
 
-void drawColumnHeader(const char * const * headers, uint8_t index)
+void drawStatusText(const char * text)
 {
-  // TODO ? displayHeader(headers[index]);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, text, MENU_TITLE_COLOR); // TODO dedicated theme color
+}
+
+void drawColumnHeader(const char * const * headers, const char * const * descriptions, uint8_t index)
+{
+  lcdDrawText(LCD_W, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_TITLE_COLOR);
+  if (descriptions) {
+    drawStatusText(descriptions[index]);
+  }
 }
 
 #include "alpha_stick_background.lbm"
@@ -142,7 +150,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
     lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
     lcdDrawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
     if (title) {
-      lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+2, title, MENU_TITLE_COLOR);
+      lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+1, title, MENU_TITLE_COLOR);
     }
     if (icons) {
       for (int i=0; i<menuPageCount; i++) {

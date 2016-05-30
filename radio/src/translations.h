@@ -828,7 +828,8 @@ extern const pm_char STR_BLCOLOR[];
 #if LCD_W >= 212
   extern const char * const STR_PHASES_HEADERS[];
   extern const char * const STR_LIMITS_HEADERS[];
-  extern const char * const STR_CSW_HEADERS[];
+  extern const char * const STR_LSW_HEADERS[];
+  extern const char * const STR_LSW_DESCRIPTIONS[];
 #endif
 
 #if defined(CPUARM)

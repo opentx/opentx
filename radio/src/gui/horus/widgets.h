@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
- #ifndef _WIDGETS_H_
- #define _WIDGETS_H_
+#ifndef _WIDGETS_H_
+#define _WIDGETS_H_
 
 #include "opentx.h"
 #include <stdio.h>
@@ -39,8 +39,8 @@
 #define OPTION_SLIDER_NUMBER_BUTTON    0x100
 #define OPTION_SLIDER_SQUARE_BUTTON    0x200
 
-
-void drawColumnHeader(const char * const * headers, uint8_t index);
+void drawStatusText(const char * text);
+void drawColumnHeader(const char * const * headers, const char * const * descriptions, uint8_t index);
 void drawTopbarDatetime();
 void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval);
 
