@@ -226,6 +226,7 @@ int cliDisplay(const char ** argv)
   }
 
   if (!strcmp(argv[1], "adc")) {
+    extern uint16_t Analog_values[NUMBER_ANALOG];
     for (int i=0; i<NUMBER_ANALOG; i++) {
       serialPrint("adc[%d] = %04X", i, Analog_values[i]);
     }
