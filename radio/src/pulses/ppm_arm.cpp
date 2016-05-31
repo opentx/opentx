@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
-void setupPulsesPPM(unsigned int port)                   // Don't enable interrupts through here
+void setupPulsesPPM(uint8_t port)                   // Don't enable interrupts through here
 {
   int16_t PPM_range = g_model.extendedLimits ? (512*LIMIT_EXT_PERCENT/100) * 2 : 512 * 2; //range of 0.7..1.7msec
 

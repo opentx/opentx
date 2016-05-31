@@ -164,6 +164,7 @@ void SDRAM_Init(void);
 #define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
+#define IS_UART_MODULE(port)      (port == INTERNAL_MODULE)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
@@ -333,7 +334,7 @@ void checkTrainerSettings(void);
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
-extern DMAFifo<512> telemetryFifo;
+extern Fifo<uint8_t, 32> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 extern Fifo<uint8_t, 32> sbusFifo;
 #endif

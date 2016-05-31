@@ -138,8 +138,7 @@ void boardInit()
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | 
                          ADC_RCC_APB2Periph | 
                          HAPTIC_RCC_APB2Periph | 
-                         INTMODULE_RCC_APB2Periph | 
-                         EXTMODULE_RCC_APB2Periph, ENABLE);
+                         INTMODULE_RCC_APB2Periph, ENABLE);
 
   pwrInit();
   delaysInit();

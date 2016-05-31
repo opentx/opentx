@@ -79,7 +79,7 @@ if(PCB STREQUAL HORUS)
   set(VIRTUAL_INPUTS YES)
   set(RAMBACKUP YES)
   option(DISK_CACHE "Enable SD card disk cache" YES)
-  add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
+  add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_UART -DPPM_PIN_TIMER)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
   include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
@@ -181,7 +181,7 @@ elseif(PCB STREQUAL TARANIS)
   set(TARGET_DIR taranis)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
   set(VIRTUAL_INPUTS YES)
-  add_definitions(-DPCBTARANIS)
+  add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
   set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_model_display.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
@@ -244,7 +244,7 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   set(GUI_DIR 9x)
   set(TARGET_DIR sky9x)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
-  add_definitions(-DPCBSKY9X)
+  add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
@@ -365,6 +365,7 @@ if(CPU_TYPE STREQUAL STM32F4)
     ${STM32LIB_SRC}
     STM32F4xx_StdPeriph_Driver/src/misc.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
+    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
@@ -389,6 +390,7 @@ if(CPU_TYPE STREQUAL STM32F2)
     CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
     STM32F2xx_StdPeriph_Driver/src/misc.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_tim.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c

@@ -345,10 +345,18 @@
 #define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_8  // PD.08
 #define EXTMODULE_PPM_GPIO              GPIOA
 #define EXTMODULE_PPM_GPIO_PIN          GPIO_Pin_7  // PA.07
+#define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource7
 #define EXTMODULE_TIMER                 TIM8
 #define EXTMODULE_PPM_GPIO_AF           GPIO_AF_TIM8
-#define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource7
 #define EXTMODULE_TIMER_IRQn            TIM8_CC_IRQn
+#define EXTMODULE_TIMER_IRQHandler      TIM8_UP_TIM13_IRQHandler
+#define EXTMODULE_TIMER_CC_IRQHandler   TIM8_CC_IRQHandler
+#define EXTMODULE_DMA_CHANNEL           DMA_Channel_7
+#define EXTMODULE_DMA_STREAM            DMA2_Stream1
+#define EXTMODULE_DMA_IRQn              DMA2_Stream1_IRQn
+#define EXTMODULE_DMA_IRQHANDLER        DMA2_Stream1_IRQHandler
+#define EXTMODULE_TIMER_FREQ            (PERI2_FREQUENCY * TIMER_MULT_APB2)
+
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)

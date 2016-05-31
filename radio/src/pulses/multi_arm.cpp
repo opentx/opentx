@@ -35,7 +35,7 @@
 
 #define BITLEN_MULTI          (10*2) //100000 Baud => 10uS per bit
 
-#if defined(PPM_PIN_HW_SERIAL)
+#if defined(PPM_PIN_SERIAL)
 static void sendByteMulti(uint8_t b)
 {
   uint8_t parity = 1;
@@ -99,10 +99,9 @@ static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
 
 #define MULTI_CHANS           16
 #define MULTI_CHAN_BITS       11
-void setupPulsesMultimodule(unsigned int port)
+void setupPulsesMultimodule(uint8_t port)
 {
-
-#if defined(PPM_PIN_HW_SERIAL)
+#if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
