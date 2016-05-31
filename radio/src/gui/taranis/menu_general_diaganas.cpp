@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -22,7 +22,7 @@
 
 void menuGeneralDiagAna(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, e_Ana, 1);
+  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, e_Ana, 0);
 
   STICK_SCROLL_DISABLE();
 
@@ -37,11 +37,11 @@ void menuGeneralDiagAna(uint8_t event)
     lcdDrawNumber(x+13*FW-1, y, avgJitter[i].get(), RIGHT);
     lcdDrawNumber(x+17*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
 #else
-    lcdDrawNumber(x+11*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
+    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
 #endif
   }
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+1+6*FH, STR_BATT_CALIB);
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+6*FH, getBatteryVoltage(), (s_editMode > 0 ? BLINK : 0) | INVERS | PREC2);
-  if (s_editMode > 0) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
+  // SWR
+  lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
+  lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swr.value, RIGHT);
 }

@@ -43,7 +43,6 @@ struct FrSkySportSensor {
 
 const FrSkySportSensor sportSensors[] = {
   { RSSI_ID, RSSI_ID, 0, ZSTR_RSSI, UNIT_DB, 0 },
-  { SWR_ID, SWR_ID, 0, ZSTR_SWR, UNIT_RAW, 0 },
   { ADC1_ID, ADC1_ID, 0, ZSTR_A1, UNIT_VOLTS, 1 },
   { ADC2_ID, ADC2_ID, 0, ZSTR_A2, UNIT_VOLTS, 1 },
   { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },

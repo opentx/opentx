@@ -28,8 +28,7 @@
 
 bool menuStatsGraph(evt_t event)
 {
-  switch(event)
-  {
+  switch(event) {
     case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
@@ -128,7 +127,7 @@ bool menuStatsDebug(evt_t event)
   int line = 3;
 
 #if defined(DISK_CACHE)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "SD Cache hits");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "SD cache hits");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, diskCache.getHitRate(), PREC1|LEFT, 0, NULL, "%");
   ++line;
 #endif
@@ -165,6 +164,10 @@ bool menuStatsAnalogs(evt_t event)
     lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
 #endif
   }
+
+  // SWR
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+6*FH, "RAS");
+  lcdDrawNumber(MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+6*FH, telemetryData.swr.value);
 
   return true;
 }
