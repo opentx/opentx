@@ -742,6 +742,14 @@ class CurveReferenceField: public TransformedField {
     int _curve_value;
 };
 
+static int exportHeliInversionWeight(int source) {
+  return (source < 0) ? 1 : 0;
+}
+
+static int importHeliInversionWeight(int source) {
+  return source ? -100: 100;
+}
+
 class HeliField: public StructField {
   public:
     HeliField(SwashRingData & heli, BoardEnum board, unsigned int version, unsigned int variant)
@@ -757,22 +765,15 @@ class HeliField: public StructField {
         Append(new SignedField<8>(heli.elevatorWeight));
       }
       else {
-        Append(new BoolField<1>(invertELE));
-        Append(new BoolField<1>(invertAIL));
-        Append(new BoolField<1>(invertCOL));
+        Append(new ConversionField< SignedField<1> >(heli.elevatorWeight, exportHeliInversionWeight, importHeliInversionWeight));
+        Append(new ConversionField< SignedField<1> >(heli.aileronWeight, exportHeliInversionWeight, importHeliInversionWeight));
+        Append(new ConversionField< SignedField<1> >(heli.collectiveWeight, exportHeliInversionWeight, importHeliInversionWeight));
         Append(new UnsignedField<5>(heli.type));
         Append(new SourceField<8>(heli.collectiveSource, board, version, variant));
         //, FLAG_NOSWITCHES)); Fix shift in collective
         Append(new UnsignedField<8>(heli.value));
       }
     }
-
-  // TODO before + after
-
-  protected:
-    bool invertELE;
-    bool invertAIL;
-    bool invertCOL;
 };
 
 class FlightModeField: public TransformedField {
