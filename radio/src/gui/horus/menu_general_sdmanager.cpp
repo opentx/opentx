@@ -70,7 +70,7 @@ void getSelectionFullPath(char *lfn)
   strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - menuVerticalOffset]);
 }
 
-void onSdManagerMenu(const char *result)
+void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[_MAX_LFN+1];
 

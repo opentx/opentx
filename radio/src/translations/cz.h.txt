@@ -578,7 +578,7 @@
 #define TR_VTRAINER_SLAVE_JACK         "Žák/Jack\0         "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Učitel/SBUS Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Učitel/CPPM Modul\0"
-#define TR_VTRAINER_MASTER_BATTERY     "Učitel/Bat. slot\0"       
+#define TR_VTRAINER_MASTER_BATTERY     "Učitel/Bat. slot\0"
 
 #define LEN_VFAILSAFE          "\012"
 #define TR_VFAILSAFE           "Nenastaven""Držet\0    ""Vlastní\0  ""Bez pulzů\0""Přijímač\0"
@@ -1141,7 +1141,6 @@
 
 #define TR_BEEP_VOLUME         "Upozornění"
 #define TR_WAV_VOLUME          "Zvuky WAV"
-#define TR_VARIO_VOLUME        "Vario"
 #define TR_BG_VOLUME           "WAV na pozadí"
 
 #define TR_TOP_BAR             "Horní lišta"

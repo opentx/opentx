@@ -21,7 +21,7 @@
 #ifndef _MENUS_H_
 #define _MENUS_H_
 
-#include "../../keys.h"
+#include "keys.h"
 
 #define MENU_COLUMNS           2
 

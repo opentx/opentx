@@ -1140,7 +1140,6 @@
 
 #define TR_BEEP_VOLUME         "Volume Beep"
 #define TR_WAV_VOLUME          "Volume Wav"
-#define TR_VARIO_VOLUME        "Volume Vario"
 #define TR_BG_VOLUME           "Volume Sf"
 
 #define TR_TOP_BAR             "Barra sup."

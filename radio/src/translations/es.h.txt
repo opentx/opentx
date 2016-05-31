@@ -1105,7 +1105,6 @@
 
 #define TR_BEEP_VOLUME         "Volumen Beep"
 #define TR_WAV_VOLUME          "Volumen Wav"
-#define TR_VARIO_VOLUME        "Volumen Vario"
 #define TR_BG_VOLUME           "Volumen Bg"
 
 #define TR_TOP_BAR             "Top Bar"

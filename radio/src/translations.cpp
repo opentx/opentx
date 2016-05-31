@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -416,7 +416,6 @@ const pm_char STR_VOICELANG[] PROGMEM = TR_VOICELANG;
 const pm_char STR_MODELIDUSED[] PROGMEM = TR_MODELIDUSED;
 const pm_char STR_BEEP_VOLUME[] PROGMEM = INDENT TR_BEEP_VOLUME;
 const pm_char STR_WAV_VOLUME[] PROGMEM = INDENT TR_WAV_VOLUME;
-const pm_char STR_VARIO_VOLUME[] PROGMEM = INDENT TR_VARIO_VOLUME;
 const pm_char STR_BG_VOLUME[] PROGMEM = INDENT TR_BG_VOLUME;
 const pm_char STR_PERSISTENT_MAH[] PROGMEM = TR_PERSISTENT_MAH;
 #endif

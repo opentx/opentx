@@ -1105,7 +1105,6 @@
 
 #define TR_BEEP_VOLUME         "Piip Voim"
 #define TR_WAV_VOLUME          "Wav Voim"
-#define TR_VARIO_VOLUME        "Variom Voim"
 #define TR_BG_VOLUME           "Tausta Voim"
 
 #define TR_TOP_BAR             "Ylä palkki"

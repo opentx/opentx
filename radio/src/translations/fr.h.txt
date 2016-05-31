@@ -577,7 +577,7 @@
 #define TR_VTRAINER_SLAVE_JACK         "Elève/Jack\0       "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Maître/SBUS Module"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Maître/CPPM Module"
-#define TR_VTRAINER_MASTER_BATTERY     "Maître/Batterie\0"  
+#define TR_VTRAINER_MASTER_BATTERY     "Maître/Batterie\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           TR("Pas déf.\0""Maintien\0""Prédéf.\0 ""Pas d'imp""Récepteur", "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur")
@@ -1132,7 +1132,6 @@
 
 #define TR_BEEP_VOLUME         "Volume bips"
 #define TR_WAV_VOLUME          "Volume audio"
-#define TR_VARIO_VOLUME        "Volume vario"
 #define TR_BG_VOLUME           "Volume musique"
 
 #define TR_TOP_BAR             "Barre titre"

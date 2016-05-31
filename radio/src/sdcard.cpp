@@ -150,7 +150,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   popupMenuNoItems = 0;
   POPUP_MENU_ITEMS_FROM_BSS();
 
-  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
+  FRESULT res = f_opendir(&dir, path);
   if (res == FR_OK) {
 
     if (flags & LIST_NONE_SD_FILE) {

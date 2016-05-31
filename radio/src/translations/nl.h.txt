@@ -76,7 +76,7 @@
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Geen\0 ""Wissel""2POS\0 ""3POS\0"
 
-#define LEN_POTTYPES           "\021" 
+#define LEN_POTTYPES           "\021"
 #define TR_POTTYPES            "Geen\0            ""Pot met Klik\0    ""Standenschakelaar""Pot zonder Klik\0 "
 
 
@@ -468,7 +468,7 @@
   #define LEN_VTELEMSCREENTYPE "\006"
   #define TR_VTELEMSCREENTYPE  "Geen\0 ""Nums\0 ""Balken""Script"
 #else
-  #define LEN_VTELEMSCREENTYPE "\006" 
+  #define LEN_VTELEMSCREENTYPE "\006"
   #define TR_VTELEMSCREENTYPE  "Nums\0 ""Balken"
 #endif
 
@@ -811,7 +811,7 @@
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM vol"
 #define TR_ALERT               "ALARM"
-#define TR_PRESSANYKEYTOSKIP   "Druk een toets.." 
+#define TR_PRESSANYKEYTOSKIP   "Druk een toets.."
 #define TR_THROTTLENOTIDLE     "Gas niet Dicht!"
 #define TR_ALARMSDISABLED      "Alarm uitgeschakeld"
 #define TR_PRESSANYKEY         TR("\010Druk een Toets", "Druk een Toets")
@@ -872,7 +872,7 @@
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
 #define TR_MULTI_LOWPOWER      INDENT "Low power mode"
 #define TR_SYNCMENU            "Sync [MENU]"
-#define TR_LIMIT               INDENT "Grenzen"   
+#define TR_LIMIT               INDENT "Grenzen"
 #define TR_MINRSSI             "Min. RSSI"
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
@@ -1043,7 +1043,7 @@
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Ptn"
 #define TR_SMOOTH              "Zacht"
-#define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"  
+#define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"
 #define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
 #define TR_INCDEC              "Inc/Decrement"
 #define TR_GLOBALVAR           "Globale Var"
@@ -1154,7 +1154,6 @@
 
 #define TR_BEEP_VOLUME         "Beep-Volume"
 #define TR_WAV_VOLUME          "Wav-Volume"
-#define TR_VARIO_VOLUME        "Vario-Volume"
 #define TR_BG_VOLUME           "Achtergr-Volume"
 
 #define TR_TOP_BAR             "-------Info------"

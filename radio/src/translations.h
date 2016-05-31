@@ -618,18 +618,20 @@ extern const pm_char STR_CURRENT[];
 #endif
 
 #if defined(CPUARM)
-  extern const pm_char STR_CURRENT_CALIB[];
-  #define LEN_CALIB_FIELDS (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
-  extern const pm_char STR_UNITSSYSTEM[];
-  extern const pm_char STR_VOICELANG[];
-  extern const pm_char STR_MODELIDUSED[];
-  extern const pm_char STR_BEEP_VOLUME[];
-  extern const pm_char STR_WAV_VOLUME[];
-  extern const pm_char STR_VARIO_VOLUME[];
-  extern const pm_char STR_BG_VOLUME[];
-  extern const pm_char STR_PERSISTENT_MAH[];
+extern const pm_char STR_CURRENT_CALIB[];
+extern const pm_char STR_UNITSSYSTEM[];
+extern const pm_char STR_VOICELANG[];
+extern const pm_char STR_MODELIDUSED[];
+extern const pm_char STR_BEEP_VOLUME[];
+extern const pm_char STR_WAV_VOLUME[];
+extern const pm_char STR_BG_VOLUME[];
+extern const pm_char STR_PERSISTENT_MAH[];
+#endif
+
+#if defined(PCBSKY9X)
+#define LEN_CALIB_FIELDS               (PSIZE(TR_BATT_CALIB) > PSIZE(TR_CURRENT_CALIB) ? PSIZE(TR_BATT_CALIB) : PSIZE(TR_CURRENT_CALIB))
 #else
-  #define LEN_CALIB_FIELDS PSIZE(TR_BATT_CALIB)
+#define LEN_CALIB_FIELDS               PSIZE(TR_BATT_CALIB)
 #endif
 
 #if defined(NAVIGATION_MENUS)

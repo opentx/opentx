@@ -588,7 +588,7 @@
 #define TR_VTRAINER_SLAVE_JACK         "Elev./Uttag\0      "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Lärare/SBUS-Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Lärare/CPPM-Modul\0"
-#define TR_VTRAINER_MASTER_BATTERY     "Lärare/Batteri\0"    
+#define TR_VTRAINER_MASTER_BATTERY     "Lärare/Batteri\0"
 
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Ej givet""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
@@ -820,7 +820,7 @@
 #define TR_BADEEPROMDATA       "Minnet kan inte tolkas"
 #define TR_BAD_RADIO_DATA      "Data från radion kan inte tolkas"
 #define TR_EEPROMFORMATTING    "Minnet Nollställs"
-#define TR_STORAGE_FORMAT      "SD-Lagring förbereds"  
+#define TR_STORAGE_FORMAT      "SD-Lagring förbereds"
 #define TR_EEPROMOVERFLOW      "Minnesfel"
 #define TR_MENURADIOSETUP      "INSTÄLLNINGAR"
 #define TR_MENUDATEANDTIME     "DAG OCH TID"
@@ -1157,7 +1157,6 @@
 
 #define TR_BEEP_VOLUME         "Volym Pip"
 #define TR_WAV_VOLUME          "Volym Wav"
-#define TR_VARIO_VOLUME        "Volym Vario"
 #define TR_BG_VOLUME           "Volym Bg"
 
 #define TR_TOP_BAR             "Titelraden"
