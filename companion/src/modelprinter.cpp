@@ -202,6 +202,25 @@ QString ModelPrinter::printTrainerMode()
   return result;
 }
 
+QString ModelPrinter::printHeliSwashType ()
+{
+  switch (model.swashRingData.type) {
+    case HELI_SWASH_TYPE_90:
+        return tr("90");
+      case HELI_SWASH_TYPE_120:
+        return tr("120");
+      case HELI_SWASH_TYPE_120X:
+        return tr("120X");
+      case HELI_SWASH_TYPE_140:
+        return tr("140");
+      case HELI_SWASH_TYPE_NONE:
+        return tr("Off");
+      default:
+        return "???";
+    }
+}
+
+
 QString ModelPrinter::printCenterBeep()
 {
   QStringList strl;

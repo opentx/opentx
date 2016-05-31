@@ -128,6 +128,8 @@ QString MultiModelPrinter::print(QTextDocument * document)
 
   QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%' style='font-family: monospace;'>";
   str += printSetup();
+  if (firmware->getCapability(Heli))
+    str += printHeliSetup();
   if (firmware->getCapability(FlightModes))
     str += printFlightModes();
   str += printInputs();
@@ -177,6 +179,57 @@ QString MultiModelPrinter::printSetup()
   columns.append("<br/>");
   columns.appendTitle(tr("Center Beep:"));
   COMPARE(modelPrinter->printCenterBeep());
+  str.append(columns.print());
+  return str;
+}
+
+
+QString MultiModelPrinter::printHeliSetup()
+{
+  bool heliEnabled = false;
+  for (int k=0; k<models.size(); k++) {
+    heliEnabled =  heliEnabled || models[k]->swashRingData.type != HELI_SWASH_TYPE_NONE;
+  }
+
+  if (!heliEnabled)
+    return "";
+
+  QString str = printTitle(tr("Helicopter Setup"));
+  MultiColumns columns(models.size());
+  columns.appendTitle (tr("Swash Type:"));
+  COMPARE(modelPrinter->printHeliSwashType());
+  columns.append ("<br/>");
+
+  columns.appendTitle (tr("Swash Ring:"));
+  COMPARE(model->swashRingData.value);
+
+  columns.append ("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+  columns.append("<tr>");
+  columns.append("<td></td><td><b>" + tr("Input") + "</b></td><td><b>" + tr("Weight") + "</b></td>");
+  columns.append("</tr>");
+
+  columns.append("<tr><td><b>" + tr("Long. cyc") + "</b></td><td>");
+  COMPARE(model->swashRingData.elevatorSource.toString(model));
+  columns.append("</td><td>");
+  COMPARE(model->swashRingData.elevatorWeight)
+  columns.append("</td></tr>");
+
+  columns.append("<tr><td><b>" + tr("Lateral cyc") + "</b></td><td>");
+  COMPARE(model->swashRingData.aileronSource.toString(model));
+  columns.append("</td><td>");
+  COMPARE(model->swashRingData.aileronWeight)
+  columns.append("</td></tr>");
+
+
+  columns.append("<tr><td><b>" + tr("Collective") + "</b></td><td>");
+  COMPARE(model->swashRingData.collectiveSource.toString(model));
+  columns.append("</td><td>");
+  COMPARE(model->swashRingData.collectiveWeight)
+  columns.append("</td></tr>");
+  columns.append("</table>");
+
+
+
   str.append(columns.print());
   return str;
 }
