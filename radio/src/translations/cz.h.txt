@@ -1076,7 +1076,11 @@
 #endif
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
+#if defined(PCBHORUS)
+  #define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Trim 5 ", " Trim 6 ", " Přechod náběhu ", " Přechod konce " }
+#else
+  #define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
+#endif
 #define TR_LIMITS_HEADERS      { " Název ", " Subtrim ", " Min ", " Max ", " Invertovat ", " Křivka ", " Střed PPM ", " Symetrické " }
 #define TR_LSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " Hodnota 2 ", " AND Spínač ", " Trvání ", " Zpoždění " }
 #define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
