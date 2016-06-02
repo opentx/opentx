@@ -1075,8 +1075,20 @@
   #define TR_MAVLINK_LON                        "LON"
 #endif
 
+
+// Horus and Taranis specific column headers
+#define TR_PHASES_HEADERS_NAME         "Název"
+#define TR_PHASES_HEADERS_SW           "Spínač"
+#define TR_PHASES_HEADERS_RUD_TRIM     "Trim směrovky"
+#define TR_PHASES_HEADERS_ELE_TRIM     "Trim výškovky"
+#define TR_PHASES_HEADERS_THT_TRIM     "Trim plynu"
+#define TR_PHASES_HEADERS_AIL_TRIM     "Trim křidélek"
+#define TR_PHASES_HEADERS_CH5_TRIM     "Trim 5"
+#define TR_PHASES_HEADERS_CH6_TRIM     "Trim 6"
+#define TR_PHASES_HEADERS_FAD_IN       "Přechod náběhu"
+#define TR_PHASES_HEADERS_FAD_OUT      "Přechod konce"
+
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
 #define TR_LIMITS_HEADERS      { " Název ", " Subtrim ", " Min ", " Max ", " Invertovat ", " Křivka ", " Střed PPM ", " Symetrické " }
 #define TR_LSW_HEADERS         { " Funkce ", " Hodnota 1 ", " Hodnota 2 ", " Hodnota 2 ", " AND Spínač ", " Trvání ", " Zpoždění " }
 #define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }

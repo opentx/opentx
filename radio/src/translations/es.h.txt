@@ -1039,8 +1039,19 @@
   #define TR_MAVLINK_LON                  "LON"
 #endif
 
+// Horus and Taranis specific column headers
+#define TR_PHASES_HEADERS_NAME         "Nombre"
+#define TR_PHASES_HEADERS_SW           "Interrup"
+#define TR_PHASES_HEADERS_RUD_TRIM     "Rudder Trim"
+#define TR_PHASES_HEADERS_ELE_TRIM     "Elevator Trim"
+#define TR_PHASES_HEADERS_THT_TRIM     "Throttle Trim"
+#define TR_PHASES_HEADERS_AIL_TRIM     "Aileron Trim"
+#define TR_PHASES_HEADERS_CH5_TRIM     "Trim 5"
+#define TR_PHASES_HEADERS_CH6_TRIM     "Trim 6"
+#define TR_PHASES_HEADERS_FAD_IN       "Aparecer"
+#define TR_PHASES_HEADERS_FAD_OUT      "Desparecer"
+
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Nombre ", " Interrup.", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Aparecer ", " Desparecer " }
 #define TR_LIMITS_HEADERS      { " Nombre ", " Compensacion", " Min ", " Max ", " Direccion ", " Curve ", " Centrado PPM ", " Simetrica " }
 #define TR_LSW_HEADERS         { " Funcion ", " V1 ", " V2 ", " V2 ", " AND Interrup. ", " Duracion ", " Retardo " }
 #define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
