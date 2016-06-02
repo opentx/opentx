@@ -38,14 +38,14 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 #if !defined(PPM_PIN_SERIAL)
 void _send_1(uint8_t v)
 {
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index == 0)
-    v -= 2;
-  else
+  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
     v += 2;
+  else
+    v -= 2;
 
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value += v;
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = (modulePulsesData[EXTERNAL_MODULE].dsm2.index+1) % 2;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index += 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest -= v;
 }
 
 void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
@@ -69,7 +69,10 @@ void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
 
 void putDsm2Flush()
 {
-  *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = 44010;  // past the 44000 of the ARR
+  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
+    *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
+  else
+    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
 }
 #else
 void putDsm2SerialBit(uint8_t bit)
@@ -116,16 +119,11 @@ void setupPulsesDSM2(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 0;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 44000;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
-
-#if !defined(PPM_PIN_SERIAL)
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 100;
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-#endif
 
   switch (s_current_protocol[port]) {
     case PROTO_DSM2_LP45:

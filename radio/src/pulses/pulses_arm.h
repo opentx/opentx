@@ -79,8 +79,8 @@ PACK(struct PxxTimerPulsesData {
 PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t pulses[200];
   pulse_duration_t * ptr;
-  uint16_t value;
-  uint16_t index;
+  uint16_t rest;
+  uint8_t index;
 });
 #endif
 

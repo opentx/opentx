@@ -293,6 +293,7 @@
 #define EXTMODULE_PPM_GPIO_PinSource    GPIO_PinSource15
 #define EXTMODULE_TIMER                 TIM2
 #define EXTMODULE_PPM_GPIO_AF           GPIO_AF_TIM2
+#define EXTMODULE_DMA                   DMA1
 #define EXTMODULE_DMA_CHANNEL           DMA_Channel_3
 #define EXTMODULE_DMA_STREAM            DMA1_Stream7
 #define EXTMODULE_DMA_IRQn              DMA1_Stream7_IRQn
