@@ -1075,6 +1075,9 @@
   #define TR_MAVLINK_LON                        "LON"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Trim 5 ", " Trim 6 ", " Přechod náběhu ", " Přechod konce " }
+
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Název ", " Spínač ", " Trim směrovky ", " Trim výškovky ", " Trim plynu ", " Trim křidélek ", " Přechod náběhu ", " Přechod konce " }
 #define TR_LIMITS_HEADERS      { " Název ", " Subtrim ", " Min ", " Max ", " Invertovat ", " Křivka ", " Střed PPM ", " Symetrické " }

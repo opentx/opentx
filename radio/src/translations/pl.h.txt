@@ -1076,6 +1076,9 @@
   #define TR_MAVLINK_LON                  "DLG"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Nazwa", " Przełą.", " Trymer SK   ", " Trymer SW     ", " Trymer Gazu   ", " Trymer Lotek ", " Trymer 5 ", " Trymer 6 ", " Pojawian", " Zanik    " }
+
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Nazwa", " Przełą.", " Trymer SK   ", " Trymer SW     ", " Trymer Gazu   ", " Trymer Lotek ", " Pojawian", " Zanik    " }
 #define TR_LIMITS_HEADERS      { " Nazwa", " Subtrim ", " Min ", " Max ", " Kierunek  ", " Krzywa", " Środek PPM ", " Tryb subtrim " }

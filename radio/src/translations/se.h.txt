@@ -1087,6 +1087,9 @@
   #define TR_MAVLINK_LON                  "LON"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Namn ", " Brytare ", " Rodertrim ", " Höjdrodertrim ", " Gastrim ", " Skevrodertrim ", "Trim 5 ", " Trim 6 ", " Tona Upp ", " Tona Ned " }
+
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Namn ", " Brytare ", " Rodertrim ", " Höjdrodertrim ", " Gastrim ", " Skevrodertrim ", " Tona Upp ", " Tona Ned " }
 #define TR_LIMITS_HEADERS      { " Namn ", " Subtrim ", " Min ", " Max ", " Riktning  ", " Kurva ", " PPM-center ", " Subtrim-läge " }

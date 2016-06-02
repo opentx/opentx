@@ -1035,6 +1035,9 @@
   #define TR_MAVLINK_LON                  "LON"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Trim 5 ", " Trim 6 ", " Fade In ", " Fade Out " }
+
 // Taranis column headers
 #define TR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Offset ", " Min ", " Max ", " Direction ", " Curve ", " PPM Center ", " Symmetrical " }

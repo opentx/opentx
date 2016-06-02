@@ -1079,6 +1079,9 @@
   #define TR_MAVLINK_LON                   "LON"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Trim 5 ", " Trim 6 ", " Fade In ", " Fade Out " }
+
 // Taranis Info Zeile Anzeigen
 #define TR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Mitte ", " Min ", " Max ", " Richtung ", " Kurve ", " PPM-Mitte ", " Mitte-Mode " }
