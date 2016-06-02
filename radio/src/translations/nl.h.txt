@@ -1089,16 +1089,16 @@
 #endif
 
 // Horus and Taranis specific column headers
-#define TR_PHASES_HEADERS_NAME         " Name "
-#define TR_PHASES_HEADERS_SW           " Switch "
-#define TR_PHASES_HEADERS_RUD_TRIM     " Rudder Trim "
-#define TR_PHASES_HEADERS_ELE_TRIM     " Elevator Trim "
-#define TR_PHASES_HEADERS_THT_TRIM     " Throttle Trim "
-#define TR_PHASES_HEADERS_AIL_TRIM     " Aileron Trim "
-#define HR_PHASES_HEADERS_CH5_TRIM     " Trim 5 "
-#define HR_PHASES_HEADERS_CH6_TRIM     " Trim 6 "
-#define TR_PHASES_HEADERS_FAD_IN       " Fade In "
-#define TR_PHASES_HEADERS_FAD_OUT      " Fade Out "
+#define TR_PHASES_HEADERS_NAME         "Name"
+#define TR_PHASES_HEADERS_SW           "Switch"
+#define TR_PHASES_HEADERS_RUD_TRIM     "Rudder Trim"
+#define TR_PHASES_HEADERS_ELE_TRIM     "Elevator Trim"
+#define TR_PHASES_HEADERS_THT_TRIM     "Throttle Trim"
+#define TR_PHASES_HEADERS_AIL_TRIM     "Aileron Trim"
+#define TR_PHASES_HEADERS_CH5_TRIM     "Trim 5"
+#define TR_PHASES_HEADERS_CH6_TRIM     "Trim 6"
+#define TR_PHASES_HEADERS_FAD_IN       "Fade In"
+#define TR_PHASES_HEADERS_FAD_OUT      "Fade Out"
 
 // Taranis column headers
 #define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Richtung ", " Curve ", " PPM-Midden ", " Subtrim Mode " }

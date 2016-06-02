@@ -1081,16 +1081,16 @@
 
 
 // Horus and Taranis specific column headers
-#define TR_PHASES_HEADERS_NAME         " Name "
-#define TR_PHASES_HEADERS_SW           " Schalter "
-#define TR_PHASES_HEADERS_RUD_TRIM     " Trim Seite "
-#define TR_PHASES_HEADERS_ELE_TRIM     " Trim Höhe "
-#define TR_PHASES_HEADERS_THT_TRIM     " Trim Gas "
-#define TR_PHASES_HEADERS_AIL_TRIM     " Trim Quer "
-#define HR_PHASES_HEADERS_CH5_TRIM     " Trim 5 "
-#define HR_PHASES_HEADERS_CH6_TRIM     " Trim 6 "
-#define TR_PHASES_HEADERS_FAD_IN       " Fade In "
-#define TR_PHASES_HEADERS_FAD_OUT      " Fade Out "
+#define TR_PHASES_HEADERS_NAME         "Name "
+#define TR_PHASES_HEADERS_SW           "Schalter"
+#define TR_PHASES_HEADERS_RUD_TRIM     "Trim Seite"
+#define TR_PHASES_HEADERS_ELE_TRIM     "Trim Höhe"
+#define TR_PHASES_HEADERS_THT_TRIM     "Trim Gas"
+#define TR_PHASES_HEADERS_AIL_TRIM     "Trim Quer"
+#define TR_PHASES_HEADERS_CH5_TRIM     "Trim 5"
+#define TR_PHASES_HEADERS_CH6_TRIM     "Trim 6"
+#define TR_PHASES_HEADERS_FAD_IN       "Fade In"
+#define TR_PHASES_HEADERS_FAD_OUT      "Fade Out"
 
 // Taranis Info Zeile Anzeigen
 #define TR_LIMITS_HEADERS      { " Name ", " Mitte ", " Min ", " Max ", " Richtung ", " Kurve ", " PPM-Mitte ", " Mitte-Mode " }

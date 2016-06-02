@@ -1088,16 +1088,16 @@
 #endif
 
 // Horus and Taranis specific column headers
-#define TR_PHASES_HEADERS_NAME         " Namn "
-#define TR_PHASES_HEADERS_SW           " Brytare "
-#define TR_PHASES_HEADERS_RUD_TRIM     " Rodertrim "
-#define TR_PHASES_HEADERS_ELE_TRIM     " Höjdrodertrim "
-#define TR_PHASES_HEADERS_THT_TRIM     " Gastrim "
-#define TR_PHASES_HEADERS_AIL_TRIM     " Skevrodertrim "
-#define HR_PHASES_HEADERS_CH5_TRIM     " Trim 5 "
-#define HR_PHASES_HEADERS_CH6_TRIM     " Trim 6 "
-#define TR_PHASES_HEADERS_FAD_IN       " Tona Upp "
-#define TR_PHASES_HEADERS_FAD_OUT      " Tona Ned "
+#define TR_PHASES_HEADERS_NAME         "Namn"
+#define TR_PHASES_HEADERS_SW           "Brytare"
+#define TR_PHASES_HEADERS_RUD_TRIM     "Rodertrim"
+#define TR_PHASES_HEADERS_ELE_TRIM     "Höjdrodertrim"
+#define TR_PHASES_HEADERS_THT_TRIM     "Gastrim"
+#define TR_PHASES_HEADERS_AIL_TRIM     "Skevrodertrim"
+#define TR_PHASES_HEADERS_CH5_TRIM     "Trim 5"
+#define TR_PHASES_HEADERS_CH6_TRIM     "Trim 6"
+#define TR_PHASES_HEADERS_FAD_IN       "Tona Upp"
+#define TR_PHASES_HEADERS_FAD_OUT      "Tona Ned"
 
 // Taranis column headers
 #define TR_LIMITS_HEADERS      { " Namn ", " Subtrim ", " Min ", " Max ", " Riktning  ", " Kurva ", " PPM-center ", " Subtrim-läge " }

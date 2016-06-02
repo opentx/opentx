@@ -1075,16 +1075,16 @@
 #endif
 
 // Horus and Taranis specific column headers
-#define TR_PHASES_HEADERS_NAME         " Nome "
-#define TR_PHASES_HEADERS_SW           " Inter "
-#define TR_PHASES_HEADERS_RUD_TRIM     " Trim Deriva "
-#define TR_PHASES_HEADERS_ELE_TRIM     " Trim Elevator "
-#define TR_PHASES_HEADERS_THT_TRIM     " Trim Motore "
-#define TR_PHASES_HEADERS_AIL_TRIM     " Trim Alettoni "
-#define HR_PHASES_HEADERS_CH5_TRIM     " Trim 5 "
-#define HR_PHASES_HEADERS_CH6_TRIM     " Trim 6 "
-#define TR_PHASES_HEADERS_FAD_IN       " Disolv. In "
-#define TR_PHASES_HEADERS_FAD_OUT      " Dissolv. Out "
+#define TR_PHASES_HEADERS_NAME         "Nome"
+#define TR_PHASES_HEADERS_SW           "Inter"
+#define TR_PHASES_HEADERS_RUD_TRIM     "Trim Deriva"
+#define TR_PHASES_HEADERS_ELE_TRIM     "Trim Elevator"
+#define TR_PHASES_HEADERS_THT_TRIM     "Trim Motore"
+#define TR_PHASES_HEADERS_AIL_TRIM     "Trim Alettoni"
+#define TR_PHASES_HEADERS_CH5_TRIM     "Trim 5"
+#define TR_PHASES_HEADERS_CH6_TRIM     "Trim 6"
+#define TR_PHASES_HEADERS_FAD_IN       "Disolv. In"
+#define TR_PHASES_HEADERS_FAD_OUT      "Dissolv. Out"
 
 // Taranis column headers
 #define TR_LIMITS_HEADERS      { " Nome ", " Offset ", " Min ", " Max ", " Direzione ", " Curve ", " Centro PPM ", " Simmetria " }
