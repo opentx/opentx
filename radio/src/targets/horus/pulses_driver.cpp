@@ -448,10 +448,10 @@ void extmodulePxxStart()
 
 extern "C" void EXTMODULE_DMA_IRQHandler()
 {
-  if (!DMA_GetITStatus(EXTMODULE_DMA_STREAM, DMA_IT_TCIF1))
+  if (!DMA_GetITStatus(EXTMODULE_DMA_STREAM, EXTMODULE_DMA_FLAG_TC))
     return;
 
-  DMA_ClearITPendingBit(EXTMODULE_DMA_STREAM, DMA_IT_TCIF1);
+  DMA_ClearITPendingBit(EXTMODULE_DMA_STREAM, EXTMODULE_DMA_FLAG_TC);
 
   setupPulses(EXTERNAL_MODULE);
 
