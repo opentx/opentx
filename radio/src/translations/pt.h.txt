@@ -1035,11 +1035,20 @@
   #define TR_MAVLINK_LON                  "LON"
 #endif
 
-// Horus specific column headers
-#define HR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Trim 5 ", " Trim 6 ", " Fade In ", " Fade Out " }
+// Horus and Taranis specific column headers
+#define TR_PHASES_HEADERS_NAME         " Name "
+#define TR_PHASES_HEADERS_SW           " Switch "
+#define TR_PHASES_HEADERS_RUD_TRIM     " Rudder Trim "
+#define TR_PHASES_HEADERS_ELE_TRIM     " Elevator Trim "
+#define TR_PHASES_HEADERS_THT_TRIM     " Throttle Trim "
+#define TR_PHASES_HEADERS_AIL_TRIM     " Aileron Trim "
+#define HR_PHASES_HEADERS_CH5_TRIM     " Trim 5 "
+#define HR_PHASES_HEADERS_CH6_TRIM     " Trim 6 "
+#define TR_PHASES_HEADERS_FAD_IN       " Fade In "
+#define TR_PHASES_HEADERS_FAD_OUT      " Fade Out "
+
 
 // Taranis column headers
-#define TR_PHASES_HEADERS      { " Name ", " Switch ", " Rudder Trim ", " Elevator Trim ", " Throttle Trim ", " Aileron Trim ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Offset ", " Min ", " Max ", " Direction ", " Curve ", " PPM Center ", " Symmetrical " }
 #define TR_LSW_HEADERS         { " Function ", " V1 ", " V2 ", " V2 ", " AND Switch ", " Duration ", " Delay " }
 #define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
