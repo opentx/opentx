@@ -1076,12 +1076,11 @@
   #define TR_MAVLINK_LON                  "DLG"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Nazwa", " Przełą.", " Trymer SK   ", " Trymer SW     ", " Trymer Gazu   ", " Trymer Lotek ", " Trymer 5 ", " Trymer 6 ", " Pojawian", " Zanik    " }
+
 // Taranis column headers
-#if defined(PCBHORUS)
-  #define TR_PHASES_HEADERS      { " Nazwa", " Przełą.", " Trymer SK   ", " Trymer SW     ", " Trymer Gazu   ", " Trymer Lotek ", " Trymer 5 ", " Trymer 6 ", " Pojawian", " Zanik    " }
-#else
-  #define TR_PHASES_HEADERS      { " Nazwa", " Przełą.", " Trymer SK   ", " Trymer SW     ", " Trymer Gazu   ", " Trymer Lotek ", " Pojawian", " Zanik    " }
-#endif
+#define TR_PHASES_HEADERS      { " Nazwa", " Przełą.", " Trymer SK   ", " Trymer SW     ", " Trymer Gazu   ", " Trymer Lotek ", " Pojawian", " Zanik    " }
 #define TR_LIMITS_HEADERS      { " Nazwa", " Subtrim ", " Min ", " Max ", " Kierunek  ", " Krzywa", " Środek PPM ", " Tryb subtrim " }
 #define TR_LSW_HEADERS         { " Funkcja  ", " V1 ", " V2 ", " V2 ", " AND Przełą ", " CzasTrwa ", " Opóźn " }
 #define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }

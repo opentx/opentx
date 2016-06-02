@@ -1079,12 +1079,11 @@
   #define TR_MAVLINK_LON                   "LON"
 #endif
 
+// Horus specific column headers
+#define HR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Trim 5 ", " Trim 6 ", " Fade In ", " Fade Out " }
+
 // Taranis Info Zeile Anzeigen
-#if defined(PCBHORUS)
-  #define TR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Trim 5 ", " Trim 6 ", " Fade In ", " Fade Out " }
-#else
-  #define TR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Fade In ", " Fade Out " }
-#endif
+#define TR_PHASES_HEADERS      { " Name ", " Schalter ", " Trim Seite ", " Trim Höhe ", " Trim Gas ", " Trim Quer ", " Fade In ", " Fade Out " }
 #define TR_LIMITS_HEADERS      { " Name ", " Mitte ", " Min ", " Max ", " Richtung ", " Kurve ", " PPM-Mitte ", " Mitte-Mode " }
 #define TR_LSW_HEADERS         { " Funktion ", " Var1 ", " Var2 ", " Var2 ", " UND-Schalter ", " Dauer ", " Verzögerung " }
 #define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
