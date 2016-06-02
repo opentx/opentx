@@ -556,7 +556,12 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
 #endif
 
-#if LCD_W >= 212
+#if defined(PCBHORUS)
+  const char * const STR_PHASES_HEADERS[] = HR_PHASES_HEADERS;
+  const char * const STR_LIMITS_HEADERS[] = TR_LIMITS_HEADERS;
+  const char * const STR_LSW_HEADERS[] = TR_LSW_HEADERS;
+  const char * const STR_LSW_DESCRIPTIONS[] = TR_LSW_DESCRIPTIONS;
+#elif LCD_W >= 212
   const char * const STR_PHASES_HEADERS[] = TR_PHASES_HEADERS;
   const char * const STR_LIMITS_HEADERS[] = TR_LIMITS_HEADERS;
   const char * const STR_LSW_HEADERS[] = TR_LSW_HEADERS;
