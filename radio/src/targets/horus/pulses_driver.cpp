@@ -508,11 +508,10 @@ static void extmoduleDsm2Start()
   EXTMODULE_TIMER->ARR = 44000;                     // 22mS
   EXTMODULE_TIMER->CCR2 = 40000;            // Update time
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->CCER = TIM_CCER_CC1NE  | TIM_CCER_CC1NP;
-  EXTMODULE_TIMER->CR2 = TIM_CR2_OIS1;                      // O/P idle high
+  EXTMODULE_TIMER->CCER = TIM_CCER_CC1E;
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE;             // Enable outputs
   EXTMODULE_TIMER->CCR1 = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[0];
-  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0;                     // Force O/P high
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;  //EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2; //  | TIM_CCMR1_OC1M_0;                     // Force O/P high
   EXTMODULE_TIMER->EGR = 1;                                                         // Restart
 
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC1DE;          // Enable DMA on CC1 match
@@ -521,13 +520,11 @@ static void extmoduleDsm2Start()
   // Enable the DMA channel here, DMA1 stream 5, channel 3 (TIM2_CH1)
   DMA1_Stream5->CR &= ~DMA_SxCR_EN;              // Disable DMA
   DMA1->HIFCR = DMA_HIFCR_CTCIF5 | DMA_HIFCR_CHTIF5 | DMA_HIFCR_CTEIF5 | DMA_HIFCR_CDMEIF5 | DMA_HIFCR_CFEIF5; // Write ones to clear bits
-  DMA1_Stream5->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_0
-                                                         | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL;
+  DMA1_Stream5->CR = DMA_SxCR_CHSEL_0 | DMA_SxCR_CHSEL_1 | DMA_SxCR_PL_0 | DMA_SxCR_MSIZE_1 | DMA_SxCR_PSIZE_1 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 | DMA_SxCR_PFCTRL;
   DMA1_Stream5->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->DMAR);
   DMA1_Stream5->M0AR = CONVERT_PTR_UINT(&modulePulsesData[EXTERNAL_MODULE].dsm2.pulses[1]);
   DMA1_Stream5->CR |= DMA_SxCR_EN;               // Enable DMA
 
-  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;                     // Toggle CC1 o/p
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;                             // Clear flag
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;  // Enable this interrupt
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
