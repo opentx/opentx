@@ -44,20 +44,34 @@ void setupPulsesPPM(uint8_t port)                   // Don't enable interrupts t
 
   PpmPulsesData * ppmPulsesData = (port == TRAINER_MODULE ? &trainerPulsesData.ppm : &modulePulsesData[port].ppm);
 
+#if defined(CPUSTM32)
   ppmPulsesData->ptr = ppmPulsesData->pulses;
+#else
+  uint16_t * ptr = ppmPulsesData->pulses;
+  ppmPulsesData->ptr = ptr;
+#endif
 
   int32_t rest = 22500u * 2;
   rest += (int32_t(g_model.moduleData[port].ppm.frameLength)) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
+#if defined(CPUSTM32)
     *ppmPulsesData->ptr++ = v; /* as Pat MacKenzie suggests */
+#else
+    *ptr++ = v; /* as Pat MacKenzie suggests */
+#endif
   }
   if (rest > 65535) rest = 65535; /* prevents overflows */
   if (rest < 9000)  rest = 9000;  /* avoids that CCR2 is bigger than ARR which would cause reboot */
+#if defined(CPUSTM32)
   *ppmPulsesData->ptr++ = rest;
+#else
+  *ptr = rest;
+  *(ptr + 1) = 0;
+#endif
 
-#if !defined(PCBSKY9X)
+#if defined(CPUSTM32)
   rest -= 1000;
   uint32_t ppmDelay = (g_model.moduleData[port].ppm.delay * 50 + 300) * 2;
   // set idle time, ppm delay and ppm polarity
