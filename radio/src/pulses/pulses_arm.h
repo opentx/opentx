@@ -27,13 +27,19 @@
   #define MODULES_INIT(...) __VA_ARGS__
 #endif
 
+#if defined(PCBHORUS)
+  #define pulse_duration_t uint32_t
+#else
+  #define pulse_duration_t uint16_t
+#endif
+
 extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
 PACK(struct PpmPulsesData {
-  uint16_t pulses[20];
-  uint16_t * ptr;
+  pulse_duration_t pulses[20];
+  pulse_duration_t * ptr;
 });
 
 #if defined(PPM_PIN_SERIAL)
@@ -64,11 +70,6 @@ PACK(struct PxxUartPulsesData {
 #endif
 
 #if defined(PPM_PIN_TIMER)
-#if defined(PCBHORUS)
-  #define pulse_duration_t uint32_t
-#else
-  #define pulse_duration_t uint16_t
-#endif
 PACK(struct PxxTimerPulsesData {
   pulse_duration_t pulses[200];
   pulse_duration_t * ptr;
