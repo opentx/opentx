@@ -277,6 +277,7 @@
 #define INTMODULE_DMA_STREAM            DMA2_Stream7
 #define INTMODULE_DMA_STREAM_IRQ        DMA2_Stream7_IRQn
 #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream7_IRQHandler
+#define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF7
 #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
 #define INTMODULE_TIMER                 TIM1
 #define INTMODULE_TIMER_IRQn            TIM1_CC_IRQn

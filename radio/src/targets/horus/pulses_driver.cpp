@@ -159,16 +159,16 @@ static void intmoduleNoneStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
-extern "C" void DMA2_Stream7_IRQHandler(void)
+extern "C" void INTMODULE_DMA_STREAM_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_DMA2S7);
-  if(DMA_GetITStatus(INTMODULE_DMA_STREAM, DMA_IT_TCIF7)) {
+  if (DMA_GetITStatus(INTMODULE_DMA_STREAM, INTMODULE_DMA_FLAG_TC)) {
     // TODO we could send the 8 next channels here (when needed)
-    DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, DMA_IT_TCIF7);
+    DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, INTMODULE_DMA_FLAG_TC);
   }
 }
 
-extern "C" void TIM1_CC_IRQHandler()
+extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_TIM1CC);
   DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
@@ -225,7 +225,7 @@ static void extmoduleNoneStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = 40000; // 18mS
+  EXTMODULE_TIMER->ARR = 36000; // 18mS
   EXTMODULE_TIMER->EGR = 1;                                                         // Restart
   EXTMODULE_TIMER->DIER |= TIM_DIER_UIE;  // Enable this interrupt
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
