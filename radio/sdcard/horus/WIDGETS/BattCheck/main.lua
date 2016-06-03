@@ -157,6 +157,22 @@ local function getRangeColor(value, gvalue, rvalue)
   end
 end
 
+-- This size is for top bar widgets
+local function zoneTiny(zone)
+  local mySensor = getCels(zone.options.Sensor)
+  if type(mySensor) == "table" then
+    local myString = string.format("%2.1fV", getCellSum(mySensor))
+    local percent = getCellPercent(getCellAvg(mySensor))
+    lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y + 2, percent.."%", RIGHT + SMLSIZE + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y + 17, myString, RIGHT + SMLSIZE + CUSTOM_COLOR)
+    -- draw batt
+    lcd.drawRectangle(zone.zone.x, zone.zone.y + 6, 16, 25, CUSTOM_COLOR, 2)
+    lcd.drawFilledRectangle(zone.zone.x + 4, zone.zone.y + 4, 6, 3, CUSTOM_COLOR)
+    local rect_h = math.floor(25 * percent / 100)
+    lcd.drawFilledRectangle(zone.zone.x, zone.zone.y + 6 + 25 - rect_h , 16, rect_h, CUSTOM_COLOR)
+   end
+end
+
 --- Size is 160x30
 local function zoneSmall(zone)
   local myBatt = {["x"]=0, ["y"]=0, ["w"]=75, ["h"]=28, ["segments_w"]=15, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
@@ -322,6 +338,7 @@ function refresh(myZone)
   elseif myZone.zone.w  > 180 and myZone.zone.h > 145  then zoneLarge(myZone)
   elseif myZone.zone.w  > 170 and myZone.zone.h > 65 then zoneMedium(myZone)
   elseif myZone.zone.w  > 150 and myZone.zone.h > 28 then zoneSmall(myZone)
+  elseif myZone.zone.w  > 65 and myZone.zone.h > 35 then zoneTiny(myZone)
   end
 end
 
