@@ -137,13 +137,7 @@ void setupPulsesDSM2(uint8_t port)
       break;
   }
 
-#if !defined(PPM_PIN_SERIAL)
-  if (moduleFlag[port] == MODULE_BIND)
-    dsmDat[0] |= DSM2_SEND_BIND;
-  else if (moduleFlag[port] == MODULE_RANGECHECK)
-    dsmDat[0] |= DSM2_SEND_RANGECHECK;
-#else
-#if defined(PCBSKY9X) // TODO needed?
+#if defined(PCBSKY9X)
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
@@ -151,13 +145,18 @@ void setupPulsesDSM2(uint8_t port)
       dsmDat[0] |= DSM2_SEND_BIND;
     }
   }
-  else
-#endif
-  if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleFlag[port] == MODULE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {
     moduleFlag[port] = 0;
+  }
+#else
+  if (moduleFlag[port] == MODULE_BIND) {
+    dsmDat[0] |= DSM2_SEND_BIND;
+  }
+  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+    dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
 #endif
 
