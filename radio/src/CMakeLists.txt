@@ -365,7 +365,6 @@ if(CPU_TYPE STREQUAL STM32F4)
     ${STM32LIB_SRC}
     STM32F4xx_StdPeriph_Driver/src/misc.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
-    STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
     STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
@@ -390,7 +389,6 @@ if(CPU_TYPE STREQUAL STM32F2)
     CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
     STM32F2xx_StdPeriph_Driver/src/misc.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
-    STM32F2xx_StdPeriph_Driver/src/stm32f2xx_tim.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
     STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
