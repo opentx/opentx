@@ -56,14 +56,14 @@ static void _send_level(uint8_t v)
 {
     /* Copied over from DSM, this looks doubious and in my logic analyzer
        output the low->high is about 2 ns late */
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index == 0)
-    v -= 2;
-  else
+  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
     v += 2;
+  else
+    v -= 2;
 
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value += v;
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = (modulePulsesData[EXTERNAL_MODULE].dsm2.index+1) % 2;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index+=1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest -=v;
 }
 
 static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
@@ -105,16 +105,11 @@ void setupPulsesMultimodule(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 0;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 44000;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
-
-#if defined(PCBTARANIS)
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 100;
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-#endif
 
   // header, byte 0, always 0x55
   sendByteMulti(0x55);
