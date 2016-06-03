@@ -233,10 +233,15 @@ void checkRotaryEncoder(void);
 
 // WDT driver
 #if !defined(SIMU)
+#if defined(WATCHDOG_DISABLED)
+  #define wdt_enable(x)
+  #define wdt_reset()
+#else
+  #define wdt_enable(x)                       watchdogInit(x)
+  #define wdt_reset()                         IWDG->KR = 0xAAAA
+#endif
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#define wdt_enable(x)                         watchdogInit(x)
-#define wdt_reset()                           IWDG->KR = 0xAAAA
 #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
 #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
 #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
