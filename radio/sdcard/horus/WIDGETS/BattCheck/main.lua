@@ -161,7 +161,7 @@ end
 local function zoneTiny(zone)
   local mySensor = getCels(zone.options.Sensor)
   if type(mySensor) == "table" then
-    local myString = tostring(getCellSum(mySensor)).."V"
+    local myString = string.format("%2.2fV", getCellSum(mySensor))
     local percent = getCellPercent(getCellAvg(mySensor))
     lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y + 2, percent.."%", RIGHT + SMLSIZE + CUSTOM_COLOR)
     lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y + 17, myString, RIGHT + SMLSIZE + CUSTOM_COLOR)
