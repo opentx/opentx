@@ -79,13 +79,13 @@ PACK(struct PxxTimerPulsesData {
   uint32_t pcmOnesCount;
 });
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
-/* Multimodule uses 3 byte header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
-/* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enoughts */
+/* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
+/* Multimodule reuses some of the DSM2 functions and structs since the protocols are similar enough */
 PACK(struct Dsm2TimerPulsesData {
 #if defined(MULTIMODULE)
-       pulse_duration_t pulses[300];
+  pulse_duration_t pulses[300];
 #else
-       pulse_duration_t pulses[200];
+  pulse_duration_t pulses[200];
 #endif
   pulse_duration_t * ptr;
   uint16_t rest;

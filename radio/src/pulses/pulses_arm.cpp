@@ -202,9 +202,9 @@ void setupPulses(uint8_t port)
     }
 #endif
 #if defined(MULTIMODULE)
-	case PROTO_MULTIMODULE:
-        setupPulsesMultimodule(port);
-        break;
+    case PROTO_MULTIMODULE:
+      setupPulsesMultimodule(port);
+      break;
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);
