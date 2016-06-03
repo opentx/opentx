@@ -314,7 +314,7 @@ end
 
 function refresh(myZone)
   if myZone.options.Sensor == 1 then
-    lcd.drawText(myZone.zone.x+2, myZone.zone.y+2, "BattCheck not configured", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(myZone.zone.x+2, myZone.zone.y+2, "Not configured", LEFT + SMLSIZE + CUSTOM_COLOR)
     lcd.drawText(myZone.zone.x+2, myZone.zone.y+20, "Requires FLVSS sensor", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
     return
   end
