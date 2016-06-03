@@ -334,7 +334,7 @@ void checkTrainerSettings(void);
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
-extern Fifo<uint8_t, 32> telemetryFifo;
+extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 extern Fifo<uint8_t, 32> sbusFifo;
 #endif
