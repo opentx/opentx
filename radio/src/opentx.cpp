@@ -954,8 +954,9 @@ void checkBacklight()
     tmr10ms = x;
     if (inputsMoved()) {
       inactivity.counter = 0;
-      if (g_eeGeneral.backlightMode & e_backlight_mode_sticks)
+      if (g_eeGeneral.backlightMode & e_backlight_mode_sticks) {
         backlightOn();
+      }
     }
 
     bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNCTION_BACKLIGHT));
@@ -2735,6 +2736,10 @@ uint32_t pwrCheck()
       pwr_press_time = get_tmr10ms();
     }
     else {
+      inactivity.counter = 0;
+      if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
+        BACKLIGHT_ON();
+      }
       if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN) {
 #if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
