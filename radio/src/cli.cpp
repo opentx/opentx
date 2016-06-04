@@ -613,6 +613,10 @@ int cliDisplay(const char ** argv)
       serialPrint(" CCR4   0x%x", tim->CCR4);
     }
   }
+  else if (!strcmp(argv[1], "dma")) {
+    serialPrint("DMA1_Stream7");
+    serialPrint(" CR    0x%x", DMA1_Stream7->CR);
+  }
 #if defined(DEBUG_INTERRUPTS)
   else if (!strcmp(argv[1], "int")) {
     printInterrupts();
