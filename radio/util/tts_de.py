@@ -17,7 +17,7 @@ for i, s in enumerate(["", "Volt", "Ampere", "MilliAmpere", "Knoten",
                        "Meter pro sekunde", "Fuesse pro sekunde",
                        "kilometer pro stunde", "Meilen pro Stunde", "Meter",
                        "Fuesse", "Grad", "Grad Fahrenheit", "Prozent",
-                       "Milliampere pro stunde", "Watt", "db", "R P M", "g",
+                       "Milliampere pro stunde", "Watt", "Milli Watt", "db", "R P M", "g", "degree", "radians",
                        "Milliliter", "Unze", "Uhr", "Minuten", "Secunden"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
 for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 486),

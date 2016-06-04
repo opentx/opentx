@@ -29,6 +29,8 @@
 #define BATTERY_ID                     0x08
 #define LINK_ID                        0x14
 #define CHANNELS_ID                    0x16
+#define ATTITUDE_ID                    0x1E
+#define FLIGHT_MODE_ID                 0x21
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);

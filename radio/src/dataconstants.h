@@ -359,6 +359,7 @@ enum TelemetryUnit {
   UNIT_RPMS,
   UNIT_G,
   UNIT_DEGREE,
+  UNIT_RADIANS,
   UNIT_MILLILITERS,
   UNIT_FLOZ,
   UNIT_HOURS,
@@ -370,6 +371,7 @@ enum TelemetryUnit {
   UNIT_DATETIME,
   UNIT_GPS,
   UNIT_BITFIELD,
+  UNIT_TEXT,
   // Internal units (not stored in sensor unit)
   UNIT_GPS_LONGITUDE,
   UNIT_GPS_LATITUDE,

@@ -15,7 +15,33 @@ for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
 for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
-for i, s in enumerate([u"volts", u"ampères", u"milli ampères", u"knots", u"mètres seconde", u"pieds par seconde", u"kilomètre heure", u"miles par heure", u"mètres", u"pieds", u"degrés", u"degrés fahrenheit", u"pourcents", u"milli ampères / heure", u"watt", u"milli watt", u"db", u"tours minute", u"g", u"degrés", u"millilitres", u"onces", u"heure", u"minute", u"seconde"]):
+for i, s in enumerate([u"volts",
+                       u"ampères",
+                       u"milli ampères",
+                       u"knots",
+                       u"mètres seconde",
+                       u"pieds par seconde",
+                       u"kilomètre heure",
+                       u"miles par heure",
+                       u"mètres",
+                       u"pieds",
+                       u"degrés",
+                       u"degrés fahrenheit",
+                       u"pourcents",
+                       u"milli ampères / heure",
+                       u"watt",
+                       u"milli watt",
+                       u"db",
+                       u"tours minute",
+                       u"g",
+                       u"degrés",
+                       u"radians",
+                       u"millilitres",
+                       u"onces",
+                       u"heure",
+                       u"minute",
+                       u"seconde"
+                       ]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 125 + i)))
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))

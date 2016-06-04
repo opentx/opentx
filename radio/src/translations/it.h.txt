@@ -1254,3 +1254,7 @@
 #define ZSTR_TX_RSSI           "TRSS"
 #define ZSTR_TX_QUALITY        "TQly"
 #define ZSTR_TX_SNR            "TSNR"
+#define ZSTR_PITCH             "Ptch"
+#define ZSTR_ROLL              "Roll"
+#define ZSTR_YAW               "Yaw"
+#define ZSTR_FLIGHT_MODE       "FM"
