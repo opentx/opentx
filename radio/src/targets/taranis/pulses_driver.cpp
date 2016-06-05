@@ -27,17 +27,18 @@ void setupPulsesPXX(uint8_t port);
 static void intmoduleStop(void);
 static void extmoduleStop(void);
 
+static void intmoduleNoneStart(void);
 static void intmodulePxxStart(void);
 #if defined(TARANIS_INTERNAL_PPM)
 static void intmodulePpmStart(void);
 #endif
+
+static void extmoduleNoneStart(void);
+static void extmodulePpmStart(void);
 static void extmodulePxxStart(void);
 #if defined(DSM2) || defined(MULTIMODULE)
 static void extmoduleDsm2Start(void);
 #endif
-static void extmodulePpmStart(void);
-static void intmoduleNoneStart(void);
-static void extmoduleNoneStart(void);
 static void extmoduleCrossfireStart(void);
 
 void init_pxx(uint32_t port)
@@ -203,6 +204,7 @@ static void extmoduleStop()
 {
   NVIC_DisableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_DisableIRQ(EXTMODULE_TIMER_CC_IRQn);
+
   EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   EXTMODULE_TIMER->DIER &= ~(TIM_DIER_CC2IE | TIM_DIER_UDE);
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
@@ -233,7 +235,7 @@ static void extmoduleCrossfireStart()
   EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_FRAME_PERIOD) - 1000;
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;  // Enable this interrupt
+  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
@@ -302,8 +304,11 @@ static void intmodulePxxStart()
 
 static void intmoduleStop()
 {
+  INTERNAL_MODULE_OFF();
+
   NVIC_DisableIRQ(INTMODULE_DMA_IRQn);
   NVIC_DisableIRQ(INTMODULE_TIMER_CC_IRQn);
+
   INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   INTMODULE_TIMER->DIER &= ~(TIM_DIER_CC2IE | TIM_DIER_UDE);
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;

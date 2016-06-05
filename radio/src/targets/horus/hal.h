@@ -280,7 +280,7 @@
 #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF7
 #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
 #define INTMODULE_TIMER                 TIM1
-#define INTMODULE_TIMER_IRQn            TIM1_CC_IRQn
+#define INTMODULE_TIMER_CC_IRQn         TIM1_CC_IRQn
 #define INTMODULE_TIMER_CC_IRQHandler   TIM1_CC_IRQHandler
 #define INTMODULE_TIMER_FREQ            (PERI2_FREQUENCY * TIMER_MULT_APB2)
 
