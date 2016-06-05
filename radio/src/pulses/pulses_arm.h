@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -27,17 +27,23 @@
   #define MODULES_INIT(...) __VA_ARGS__
 #endif
 
+#if defined(PCBHORUS)
+  #define pulse_duration_t uint32_t
+#else
+  #define pulse_duration_t uint16_t
+#endif
+
 extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
 PACK(struct PpmPulsesData {
-  uint16_t pulses[20];
-  uint16_t * ptr;
+  pulse_duration_t pulses[20];
+  pulse_duration_t * ptr;
 });
 
-#if defined(PPM_PIN_HW_SERIAL)
-PACK(struct PxxPulsesData {
+#if defined(PPM_PIN_SERIAL)
+PACK(struct PxxSerialPulsesData {
   uint8_t  pulses[64];
   uint8_t  *ptr;
   uint16_t pcmValue;
@@ -46,26 +52,49 @@ PACK(struct PxxPulsesData {
   uint16_t serialByte;
   uint16_t serialBitCount;
 });
-PACK(struct Dsm2PulsesData {
+
+PACK(struct Dsm2SerialPulsesData {
   uint8_t  pulses[64];
   uint8_t *ptr;
   uint8_t  serialByte ;
   uint8_t  serialBitCount;
 });
+#endif
+
+#if defined(PPM_PIN_UART)
+PACK(struct PxxUartPulsesData {
+  uint8_t  pulses[64];
+  uint8_t  * ptr;
+  uint16_t pcmCrc;
+});
+#endif
+
+#if defined(PPM_PIN_TIMER)
+/* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
+/* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
+/* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
+/* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
+#if defined(MULTIMODULE)
+#define NUM_TIMER_PULSES 300
 #else
-PACK(struct PxxPulsesData {
-  uint16_t pulses[400];
-  uint16_t *ptr;
-  uint16_t pcmValue;
+#define NUM_TIMER_PULSES 200
+#endif
+
+PACK(struct PxxTimerPulsesData {
+  pulse_duration_t pulses[NUM_TIMER_PULSES];
+  pulse_duration_t * ptr;
+  uint16_t rest;
   uint16_t pcmCrc;
   uint32_t pcmOnesCount;
 });
-PACK(struct Dsm2PulsesData {
-  uint16_t pulses[400];
-  uint16_t *ptr;
-  uint16_t value;
-  uint16_t index;
+
+PACK(struct Dsm2TimerPulsesData {
+  pulse_duration_t pulses[NUM_TIMER_PULSES];
+  pulse_duration_t * ptr;
+  uint16_t rest;
+  uint8_t index;
 });
+#undef NUM_TIMER_PULSES
 #endif
 
 #define CROSSFIRE_BAUDRATE             400000
@@ -77,8 +106,16 @@ PACK(struct CrossfirePulsesData {
 });
 
 union ModulePulsesData {
-  PxxPulsesData pxx;
-  Dsm2PulsesData dsm2;
+#if defined(PPM_PIN_SERIAL)
+  PxxSerialPulsesData pxx;
+  Dsm2SerialPulsesData dsm2;
+#else
+  PxxTimerPulsesData pxx;
+  Dsm2TimerPulsesData dsm2;
+#endif
+#if defined(PPM_PIN_UART)
+  PxxUartPulsesData pxx_uart;
+#endif
   PpmPulsesData ppm;
   CrossfirePulsesData crossfire;
 };
@@ -91,11 +128,11 @@ extern ModulePulsesData modulePulsesData[NUM_MODULES];
 extern TrainerPulsesData trainerPulsesData;
 extern const uint16_t CRCTable[];
 
-void setupPulses(unsigned int port);
-void setupPulsesDSM2(unsigned int port);
-void setupPulsesMultimodule(unsigned int port);
-void setupPulsesPXX(unsigned int port);
-void setupPulsesPPM(unsigned int port);
+void setupPulses(uint8_t port);
+void setupPulsesDSM2(uint8_t port);
+void setupPulsesMultimodule(uint8_t port);
+void setupPulsesPXX(uint8_t port);
+void setupPulsesPPM(uint8_t port);
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);

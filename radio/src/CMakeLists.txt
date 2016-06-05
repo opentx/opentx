@@ -79,7 +79,7 @@ if(PCB STREQUAL HORUS)
   set(VIRTUAL_INPUTS YES)
   set(RAMBACKUP YES)
   option(DISK_CACHE "Enable SD card disk cache" YES)
-  add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_HW_SERIAL)
+  add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DPPM_PIN_UART -DPPM_PIN_TIMER)
   add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
   include_directories(${RADIO_SRC_DIRECTORY}/fonts/horus gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
@@ -111,7 +111,11 @@ if(PCB STREQUAL HORUS)
     set(SRC ${SRC} disk_cache.cpp)
     add_definitions(-DDISK_CACHE)
   endif()
-  set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    board_horus.cpp
+    extmodule_driver.cpp
+    )
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     sdio_sd.c
@@ -181,12 +185,20 @@ elseif(PCB STREQUAL TARANIS)
   set(TARGET_DIR taranis)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
   set(VIRTUAL_INPUTS YES)
-  add_definitions(-DPCBTARANIS)
+  add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
   set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_model_display.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
-  set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
-  set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    board_taranis.cpp
+    extmodule_driver.cpp
+    rtc_driver.cpp
+    )
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    loadboot.cpp
+    )
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     lcd_driver.cpp
@@ -244,7 +256,7 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   set(GUI_DIR 9x)
   set(TARGET_DIR sky9x)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
-  add_definitions(-DPCBSKY9X)
+  add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)

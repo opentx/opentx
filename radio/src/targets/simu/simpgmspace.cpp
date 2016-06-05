@@ -57,7 +57,7 @@ uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 RCC_TypeDef rcc;
-DMA_Stream_TypeDef dma2_stream2, dma2_stream6, dma1_stream5;
+DMA_Stream_TypeDef dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6;
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 #elif defined(CPUARM)
@@ -1355,6 +1355,11 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
 void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
+void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
+void TIM_OC1Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct) { }
+void TIM_DMAConfig(TIM_TypeDef* TIMx, uint16_t TIM_DMABase, uint16_t TIM_DMABurstLength) { }
+void TIM_DMACmd(TIM_TypeDef* TIMx, uint16_t TIM_DMASource, FunctionalState NewState) { }
+void TIM_CtrlPWMOutputs(TIM_TypeDef* TIMx, FunctionalState NewState) { }
 void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
 void RCC_PLLI2SCmd(FunctionalState NewState) { }
 void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource) { }
@@ -1363,6 +1368,7 @@ void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct) { }
 void I2S_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
 void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) { }
 void RCC_LSEConfig(uint8_t RCC_LSE) { }
+void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks) { };
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 void unlockFlash() { }

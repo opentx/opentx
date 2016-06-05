@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
@@ -28,7 +28,7 @@ uint8_t moduleFlag[NUM_MODULES] = { 0 };
 ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
-void setupPulses(unsigned int port)
+void setupPulses(uint8_t port)
 {
   uint8_t required_protocol;
 
@@ -202,9 +202,10 @@ void setupPulses(unsigned int port)
     }
 #endif
 #if defined(MULTIMODULE)
-	case PROTO_MULTIMODULE:
-        setupPulsesMultimodule(port);
-        break;
+    case PROTO_MULTIMODULE:
+      setupPulsesMultimodule(port);
+      scheduleNextMixerCalculation(port, 11);
+      break;
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);

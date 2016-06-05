@@ -103,7 +103,6 @@ void telemetryPortSetDirectionInput()
 
 void sportSendBuffer(uint8_t * buffer, uint32_t count)
 {
-  #if 0
   telemetryPortSetDirectionOutput();
 
   DMA_InitTypeDef DMA_InitStructure;
@@ -131,7 +130,6 @@ void sportSendBuffer(uint8_t * buffer, uint32_t count)
   // enable interrupt and set it's priority
   NVIC_EnableIRQ(TELEMETRY_DMA_TX_Stream_IRQ) ;
   NVIC_SetPriority(TELEMETRY_DMA_TX_Stream_IRQ, 7);
-    #endif
 }
 
 extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)

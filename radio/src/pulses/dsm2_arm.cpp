@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 #define DSM2_SEND_BIND                     (1 << 7)
 #define DSM2_SEND_RANGECHECK               (1 << 5)
@@ -35,17 +35,17 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 
 #define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
-#if !defined(PPM_PIN_HW_SERIAL)
+#if !defined(PPM_PIN_SERIAL)
 void _send_1(uint8_t v)
 {
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index == 0)
-    v -= 2;
-  else
+  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
     v += 2;
+  else
+    v -= 2;
 
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value += v;
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = (modulePulsesData[EXTERNAL_MODULE].dsm2.index+1) % 2;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index += 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest -= v;
 }
 
 void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
@@ -69,8 +69,10 @@ void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
 
 void putDsm2Flush()
 {
-  modulePulsesData[EXTERNAL_MODULE].dsm2.ptr--; //remove last stopbits and
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = 44010;             // Past the 44000 of the ARR
+  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
+    *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
+  else
+    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
 }
 #else
 void putDsm2SerialBit(uint8_t bit)
@@ -108,25 +110,19 @@ void putDsm2Flush()
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS
 
-//static uint8_t *Dsm2_pulsePtr = pulses2MHz.pbyte ;
-void setupPulsesDSM2(unsigned int port)
+void setupPulsesDSM2(uint8_t port)
 {
-  static uint8_t dsmDat[2+6*2]={0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
+  uint8_t dsmDat[14];
 
-#if defined(PPM_PIN_HW_SERIAL)
+#if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 0;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 44000;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
-
-#if !defined(PPM_PIN_HW_SERIAL)
-  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 100;
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
-#endif
 
   switch (s_current_protocol[port]) {
     case PROTO_DSM2_LP45:
@@ -140,13 +136,7 @@ void setupPulsesDSM2(unsigned int port)
       break;
   }
 
-#if !defined(PPM_PIN_HW_SERIAL)
-  if (moduleFlag[port] == MODULE_BIND)
-    dsmDat[0] |= DSM2_SEND_BIND;
-  else if (moduleFlag[port] == MODULE_RANGECHECK)
-    dsmDat[0] |= DSM2_SEND_RANGECHECK;
-#else
-#if defined(PCBSKY9X) // TODO needed?
+#if defined(PCBSKY9X)
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
@@ -154,13 +144,18 @@ void setupPulsesDSM2(unsigned int port)
       dsmDat[0] |= DSM2_SEND_BIND;
     }
   }
-  else
-#endif
-  if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleFlag[port] == MODULE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {
     moduleFlag[port] = 0;
+  }
+#else
+  if (moduleFlag[port] == MODULE_BIND) {
+    dsmDat[0] |= DSM2_SEND_BIND;
+  }
+  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+    dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
 #endif
 

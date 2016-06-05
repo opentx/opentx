@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -60,44 +60,50 @@ const uint16_t CRCTable[]=
   0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
 
-void crc(uint8_t data, unsigned int port)
-{
-  modulePulsesData[port].pxx.pcmCrc = (modulePulsesData[port].pxx.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx.pcmCrc>>8)^data) & 0xFF]);
-}
-
-#if defined(PCBHORUS)
-void putPcmPart(uint8_t byte, unsigned int port)
+#if defined(PPM_PIN_UART)
+inline void uartPutPcmPart(uint8_t port, uint8_t byte)
 {
   if (0x7E == byte) {
-    *modulePulsesData[port].pxx.ptr++ = 0x7D;
-    *modulePulsesData[port].pxx.ptr++ = 0x5E;
+    *modulePulsesData[port].pxx_uart.ptr++ = 0x7D;
+    *modulePulsesData[port].pxx_uart.ptr++ = 0x5E;
   }
   else if (0x7D == byte) {
-    *modulePulsesData[port].pxx.ptr++ = 0x7D;
-    *modulePulsesData[port].pxx.ptr++ = 0x5D;
+    *modulePulsesData[port].pxx_uart.ptr++ = 0x7D;
+    *modulePulsesData[port].pxx_uart.ptr++ = 0x5D;
   }
   else {
-    *modulePulsesData[port].pxx.ptr++ = byte;
+    *modulePulsesData[port].pxx_uart.ptr++ = byte;
   }
 }
 
-void putPcmByte(uint8_t byte, unsigned int port)
+void uartPutPcmByte(uint8_t port, uint8_t byte)
 {
-  crc(byte, port);
-  putPcmPart(byte, port);
+  modulePulsesData[port].pxx_uart.pcmCrc = (modulePulsesData[port].pxx_uart.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx_uart.pcmCrc>>8)^byte) & 0xFF]);
+  uartPutPcmPart(port, byte);
 }
 
-void putPcmHead(unsigned int port)
+void uartInitPcmArray(uint8_t port)
+{
+  modulePulsesData[port].pxx_uart.ptr = modulePulsesData[port].pxx_uart.pulses;
+  modulePulsesData[port].pxx_uart.pcmCrc = 0;
+}
+
+void uartPutPcmHead(uint8_t port)
 {
   // send 7E, do not CRC
-  *modulePulsesData[port].pxx.ptr++ = 0x7E;
+  *modulePulsesData[port].pxx_uart.ptr++ = 0x7E;
 }
 
-#define putPcmFlush(port)
-#define putPcmPreamble(port)
-#else
-#if defined(PPM_PIN_HW_SERIAL)
-void putPcmSerialBit(uint8_t bit, unsigned int port)
+void uartPutPcmCrc(uint8_t port)
+{
+  uint16_t pulseValue = modulePulsesData[port].pxx_uart.pcmCrc;
+  uartPutPcmByte(port, pulseValue >> 8);
+  uartPutPcmByte(port, pulseValue);
+}
+#endif
+
+#if defined(PPM_PIN_SERIAL)
+void pxxPutPcmSerialBit(uint8_t port, uint8_t bit)
 {
   modulePulsesData[port].pxx.serialByte >>= 1;
   if (bit & 1) {
@@ -110,103 +116,169 @@ void putPcmSerialBit(uint8_t bit, unsigned int port)
 }
 
 // 8uS/bit 01 = 0, 001 = 1
-void putPcmPart(uint8_t value, unsigned int port)
+void pxxPutPcmPart(uint8_t port, uint8_t value)
 {
-  putPcmSerialBit(0, port);
+  pxxPutPcmSerialBit(port, 0);
   if (value) {
-    putPcmSerialBit(0, port);
+    pxxPutPcmSerialBit(port, 0);
   }
-  putPcmSerialBit(1, port);
+  pxxPutPcmSerialBit(port, 1);
 }
 
-void putPcmFlush(unsigned int port)
+void pxxPutPcmTail(uint8_t port)
 {
   while (modulePulsesData[port].pxx.serialBitCount != 0) {
-    putPcmSerialBit(1, port);
+    pxxPutPcmSerialBit(port, 1);
   }
 }
 #else
-void putPcmPart(uint8_t value, unsigned int port)
+void pxxPutPcmPart(uint8_t port, uint8_t value)
 {
-  modulePulsesData[port].pxx.pcmValue += 18 ;                                        // Output 1 for this time
-  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;
-  modulePulsesData[port].pxx.pcmValue += 14 ;
-  if (value) {
-    modulePulsesData[port].pxx.pcmValue += 16 ;
-  }
-  *modulePulsesData[port].pxx.ptr++ = modulePulsesData[port].pxx.pcmValue ;  // Output 0 for this time
+  pulse_duration_t duration = value ? 48 : 32;
+  *modulePulsesData[port].pxx.ptr++ = duration;
+  modulePulsesData[port].pxx.rest -= duration + 1;
 }
 
-void putPcmFlush(unsigned int port)
+void pxxPutPcmTail(uint8_t port)
 {
-  *modulePulsesData[port].pxx.ptr++ = 18010 ;             // Past the 18000 of the ARR
+  *(modulePulsesData[port].pxx.ptr-1) += modulePulsesData[port].pxx.rest;
 }
 #endif
 
-void putPcmBit(uint8_t bit, unsigned int port)
+void pxxPutPcmBit(uint8_t port, uint8_t bit)
 {
   if (bit) {
-    modulePulsesData[port].pxx.pcmOnesCount += 1;
-    putPcmPart(1, port);
+    pxxPutPcmPart(port, 1);
+    if (++modulePulsesData[port].pxx.pcmOnesCount == 5) {
+      modulePulsesData[port].pxx.pcmOnesCount = 0;
+      pxxPutPcmPart(port, 0);                                // Stuff a 0 bit in
+    }
   }
   else {
+    pxxPutPcmPart(port, 0);
     modulePulsesData[port].pxx.pcmOnesCount = 0;
-    putPcmPart(0, port);
   }
-  if (modulePulsesData[port].pxx.pcmOnesCount >= 5) {
-    putPcmBit(0, port);                                // Stuff a 0 bit in
-  }
+
 }
 
-void putPcmByte(uint8_t byte, unsigned int port)
+void pxxPutPcmByte(uint8_t port, uint8_t byte)
 {
-  crc(byte, port);
+  modulePulsesData[port].pxx.pcmCrc = (modulePulsesData[port].pxx.pcmCrc<<8) ^ (CRCTable[((modulePulsesData[port].pxx.pcmCrc>>8)^byte) & 0xFF]);
   for (uint8_t i=0; i<8; i++) {
-    putPcmBit(byte & 0x80, port);
+    pxxPutPcmBit(port, byte & 0x80);
     byte <<= 1;
   }
 }
 
-void putPcmHead(unsigned int port)
+void pxxInitPcmArray(uint8_t port)
+{
+  modulePulsesData[port].pxx.ptr = modulePulsesData[port].pxx.pulses;
+#if defined(PPM_PIN_SERIAL)
+  modulePulsesData[port].pxx.pcmValue = 0;
+#else
+  modulePulsesData[port].pxx.rest = 18000;
+#endif
+  modulePulsesData[port].pxx.pcmCrc = 0;
+  modulePulsesData[port].pxx.pcmOnesCount = 0;
+}
+
+void pxxPutPcmHead(uint8_t port)
 {
   // send 7E, do not CRC
   // 01111110
-  putPcmPart(0, port);
-  putPcmPart(1, port);
-  putPcmPart(1, port);
-  putPcmPart(1, port);
-  putPcmPart(1, port);
-  putPcmPart(1, port);
-  putPcmPart(1, port);
-  putPcmPart(0, port);
+  pxxPutPcmPart(port, 0);
+  pxxPutPcmPart(port, 1);
+  pxxPutPcmPart(port, 1);
+  pxxPutPcmPart(port, 1);
+  pxxPutPcmPart(port, 1);
+  pxxPutPcmPart(port, 1);
+  pxxPutPcmPart(port, 1);
+  pxxPutPcmPart(port, 0);
 }
 
-void putPcmPreamble(unsigned int port)
+void pxxPutPcmCrc(uint8_t port)
 {
-  putPcmPart(0, port);
-  putPcmPart(0, port);
-  putPcmPart(0, port);
-  putPcmPart(0, port);
+  uint16_t pulseValue = modulePulsesData[port].pxx.pcmCrc;
+  pxxPutPcmByte(port, pulseValue >> 8);
+  pxxPutPcmByte(port, pulseValue);
+}
+
+#if defined(PPM_PIN_UART)
+inline void initPcmArray(uint8_t port)
+{
+  if (IS_UART_MODULE(port))
+    uartInitPcmArray(port);
+  else
+    pxxInitPcmArray(port);
+}
+
+inline void putPcmHead(uint8_t port)
+{
+  if (IS_UART_MODULE(port))
+    uartPutPcmHead(port);
+  else
+    pxxPutPcmHead(port);
+}
+
+inline void putPcmByte(uint8_t port, uint8_t byte)
+{
+  if (IS_UART_MODULE(port))
+    uartPutPcmByte(port, byte);
+  else
+    pxxPutPcmByte(port, byte);
+}
+
+inline void putPcmCrc(uint8_t port)
+{
+  if (IS_UART_MODULE(port))
+    uartPutPcmCrc(port);
+  else
+    pxxPutPcmCrc(port);
+}
+
+inline void putPcmTail(uint8_t port)
+{
+  if (!IS_UART_MODULE(port))
+    pxxPutPcmTail(port);
+}
+#else
+inline void initPcmArray(uint8_t port)
+{
+  pxxInitPcmArray(port);
+}
+
+inline void putPcmHead(uint8_t port)
+{
+  pxxPutPcmHead(port);
+}
+
+inline void putPcmByte(uint8_t port, uint8_t byte)
+{
+  pxxPutPcmByte(port, byte);
+}
+
+inline void putPcmCrc(uint8_t port)
+{
+  pxxPutPcmCrc(port);
+}
+
+inline void putPcmTail(uint8_t port)
+{
+  pxxPutPcmTail(port);
 }
 #endif
 
-void setupPulsesPXX(unsigned int port)
+void setupPulsesPXX(uint8_t port)
 {
   uint16_t pulseValue=0, pulseValueLow=0;
 
-  modulePulsesData[port].pxx.ptr = modulePulsesData[port].pxx.pulses;
-  modulePulsesData[port].pxx.pcmValue = 0 ;
-  modulePulsesData[port].pxx.pcmCrc = 0;
-  modulePulsesData[port].pxx.pcmOnesCount = 0;
-
-  /* Preamble */
-  putPcmPreamble(port);
+  initPcmArray(port);
 
   /* Sync */
   putPcmHead(port);
 
   /* Rx Number */
-  putPcmByte(g_model.header.modelId[port], port);
+  putPcmByte(port, g_model.header.modelId[port]);
 
   /* FLAG1 */
   uint8_t flag1 = (g_model.moduleData[port].rfProtocol << 6);
@@ -226,10 +298,10 @@ void setupPulsesPXX(unsigned int port)
     }
   }
 
-  putPcmByte(flag1, port);
+  putPcmByte(port, flag1);
 
   /* FLAG2 */
-  putPcmByte(0, port);
+  putPcmByte(port, 0);
 
   /* PPM */
   static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
@@ -291,9 +363,9 @@ void setupPulsesPXX(unsigned int port)
     }
 
     if (i & 1) {
-      putPcmByte(pulseValueLow, port); // Low byte of channel
-      putPcmByte(((pulseValueLow >> 8) & 0x0F) | (pulseValue << 4), port);  // 4 bits each from 2 channels
-      putPcmByte(pulseValue >> 4, port);  // High byte of channel
+      putPcmByte(port, pulseValueLow); // Low byte of channel
+      putPcmByte(port, ((pulseValueLow >> 8) & 0x0F) | (pulseValue << 4));  // 4 bits each from 2 channels
+      putPcmByte(port, pulseValue >> 4);  // High byte of channel
     }
     else {
       pulseValueLow = pulseValue;
@@ -306,18 +378,16 @@ void setupPulsesPXX(unsigned int port)
   if (port == INTERNAL_MODULE) {
     antenna = g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol;
   }
-  putPcmByte (antenna, port);
+  putPcmByte(port, antenna);
 #else
-  putPcmByte(0, port);
+  putPcmByte(port, 0);
 #endif
 
-  /* CRC16 */
-  pulseValue = modulePulsesData[port].pxx.pcmCrc;
-  putPcmByte(pulseValue >> 8, port);
-  putPcmByte(pulseValue, port);
+  /* CRC */
+  putPcmCrc(port);
 
   /* Sync */
   putPcmHead(port);
 
-  putPcmFlush(port);
+  putPcmTail(port);
 }
