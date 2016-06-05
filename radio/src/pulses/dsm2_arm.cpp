@@ -110,10 +110,9 @@ void putDsm2Flush()
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS
 
-//static uint8_t *Dsm2_pulsePtr = pulses2MHz.pbyte ;
 void setupPulsesDSM2(uint8_t port)
 {
-  static uint8_t dsmDat[2+6*2]={0xFF,0x00, 0x00,0xAA, 0x05,0xFF, 0x09,0xFF, 0x0D,0xFF, 0x13,0x54, 0x14,0xAA};
+  uint8_t dsmDat[14];
 
 #if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;

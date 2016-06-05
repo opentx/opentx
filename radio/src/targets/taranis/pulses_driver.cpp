@@ -182,7 +182,7 @@ void intmodulePxxStart()
   INTMODULE_TIMER->ARR = 18000;
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3NE;
   INTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
-  INTMODULE_TIMER->CCR3 = 18;
+  INTMODULE_TIMER->CCR3 = 16;
   INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_0; // Force O/P high
   INTMODULE_TIMER->EGR = 1; // Restart
   INTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
@@ -272,7 +272,7 @@ extern "C" void INTMODULE_DMA_IRQHandler()
   DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, INTMODULE_DMA_FLAG_TC);
 
   uint32_t arr = INTMODULE_TIMER->ARR;
-  if (arr > 4000) {
+  if (arr > 5000) {
     INTMODULE_TIMER->CCR2 = arr - 4000; // 2mS in advance
     INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
     INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt

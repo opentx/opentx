@@ -134,9 +134,9 @@ void pxxPutPcmTail(uint8_t port)
 #else
 void pxxPutPcmPart(uint8_t port, uint8_t value)
 {
-  pulse_duration_t duration = value ? 47 : 31;
+  pulse_duration_t duration = value ? 48 : 32;
   *modulePulsesData[port].pxx.ptr++ = duration;
-  modulePulsesData[port].pxx.rest -= duration;
+  modulePulsesData[port].pxx.rest -= duration + 1;
 }
 
 void pxxPutPcmTail(uint8_t port)
@@ -148,16 +148,17 @@ void pxxPutPcmTail(uint8_t port)
 void pxxPutPcmBit(uint8_t port, uint8_t bit)
 {
   if (bit) {
-    modulePulsesData[port].pxx.pcmOnesCount += 1;
     pxxPutPcmPart(port, 1);
+    if (++modulePulsesData[port].pxx.pcmOnesCount == 5) {
+      modulePulsesData[port].pxx.pcmOnesCount = 0;
+      pxxPutPcmPart(port, 0);                                // Stuff a 0 bit in
+    }
   }
   else {
-    modulePulsesData[port].pxx.pcmOnesCount = 0;
     pxxPutPcmPart(port, 0);
+    modulePulsesData[port].pxx.pcmOnesCount = 0;
   }
-  if (modulePulsesData[port].pxx.pcmOnesCount >= 5) {
-    pxxPutPcmPart(port, 0);                                // Stuff a 0 bit in
-  }
+
 }
 
 void pxxPutPcmByte(uint8_t port, uint8_t byte)
