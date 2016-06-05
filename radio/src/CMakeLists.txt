@@ -111,10 +111,13 @@ if(PCB STREQUAL HORUS)
     set(SRC ${SRC} disk_cache.cpp)
     add_definitions(-DDISK_CACHE)
   endif()
-  set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    board_horus.cpp
+    extmodule_driver.cpp
+    )
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
-    extmodule_driver.cpp
     sdio_sd.c
     lcd_driver.cpp
     delays.c
@@ -186,11 +189,18 @@ elseif(PCB STREQUAL TARANIS)
   add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
   add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
   set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_model_display.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
-  set(TARGET_SRC ${TARGET_SRC} board_taranis.cpp rtc_driver.cpp)
-  set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    board_taranis.cpp
+    extmodule_driver.cpp
+    rtc_driver.cpp
+    )
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    loadboot.cpp
+    )
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
-    extmodule_driver.cpp
     lcd_driver.cpp
     delays.c
     i2c_driver.cpp
