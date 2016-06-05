@@ -74,14 +74,8 @@ PACK(struct PxxUartPulsesData {
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
 /* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
 /* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
-#if defined(MULTIMODULE)
-#define NUM_TIMER_PULSES 300
-#else
-#define NUM_TIMER_PULSES 200
-#endif
-
 PACK(struct PxxTimerPulsesData {
-  pulse_duration_t pulses[NUM_TIMER_PULSES];
+  pulse_duration_t pulses[200];
   pulse_duration_t * ptr;
   uint16_t rest;
   uint16_t pcmCrc;
@@ -89,12 +83,15 @@ PACK(struct PxxTimerPulsesData {
 });
 
 PACK(struct Dsm2TimerPulsesData {
-  pulse_duration_t pulses[NUM_TIMER_PULSES];
+#if defined(MULTIMODULE)
+  pulse_duration_t pulses[300];
+#else
+  pulse_duration_t pulses[200];
+#endif
   pulse_duration_t * ptr;
   uint16_t rest;
   uint8_t index;
 });
-#undef NUM_TIMER_PULSES
 #endif
 
 #define CROSSFIRE_BAUDRATE             400000

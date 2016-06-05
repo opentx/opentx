@@ -65,7 +65,7 @@ void setupPulses(uint8_t port)
           required_protocol = PROTO_PXX;
           break;
 #if defined(MULTIMODULE)
-      case MODULE_TYPE_MULTIMODULE:
+        case MODULE_TYPE_MULTIMODULE:
           required_protocol = PROTO_MULTIMODULE;
           break;
 #endif
@@ -209,6 +209,8 @@ void setupPulses(uint8_t port)
 #endif
     case PROTO_PPM:
       setupPulsesPPM(port);
+      // 45 ms is the worst case length of the PPM frame length (800 µs between channels and 16 channels
+      // with 2000 µs => 16*2800 µs = 44.8 ms)
       scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].ppm.frameLength)/2);
       break ;
     default:
