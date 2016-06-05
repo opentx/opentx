@@ -114,6 +114,7 @@ if(PCB STREQUAL HORUS)
   set(TARGET_SRC ${TARGET_SRC} board_horus.cpp)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
+    extmodule_driver.cpp
     sdio_sd.c
     lcd_driver.cpp
     delays.c
@@ -189,6 +190,7 @@ elseif(PCB STREQUAL TARANIS)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
+    extmodule_driver.cpp
     lcd_driver.cpp
     delays.c
     i2c_driver.cpp
