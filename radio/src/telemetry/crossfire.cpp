@@ -78,7 +78,7 @@ const CrossfireSensor crossfireSensors[] = {
   {ATTITUDE_ID,    0, ZSTR_PITCH,       UNIT_RADIANS,       3},
   {ATTITUDE_ID,    1, ZSTR_ROLL,        UNIT_RADIANS,       3},
   {ATTITUDE_ID,    2, ZSTR_YAW,         UNIT_RADIANS,       3},
-  {FLIGHT_MODE_ID, 2, ZSTR_FLIGHT_MODE, UNIT_TEXT,          0},
+  {FLIGHT_MODE_ID, 0, ZSTR_FLIGHT_MODE, UNIT_TEXT,          0},
   {0,              0, "UNKNOWN",        UNIT_RAW,           0},
 };
 
@@ -184,9 +184,14 @@ void processCrossfireTelemetryFrame()
       break;
 
     case FLIGHT_MODE_ID:
-      // TODO
+    {
+      const CrossfireSensor & sensor = crossfireSensors[FLIGHT_MODE_INDEX];
+      for (int i=0; i<min<int>(16, telemetryRxBuffer[1]-2); i+=4) {
+        uint32_t value = *((uint32_t *)&telemetryRxBuffer[3+i]);
+        setTelemetryValue(TELEM_PROTO_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, i);
+      }
       break;
-
+    }
   }
 }
 

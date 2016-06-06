@@ -70,6 +70,7 @@ class TelemetryItem
         // pilot latitude is stored in max
         // distFromEarthAxis is stored in value
       } gps;
+      char text[16];
     };
 
     static uint8_t now()

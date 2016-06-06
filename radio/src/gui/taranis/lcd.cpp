@@ -1055,6 +1055,9 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
       }
     }
   }
+  else if (telemetrySensor.unit == UNIT_TEXT) {
+    lcdDrawSizedText(x, att & DBLSIZE ? y+1 : y, telemetryItem.text, sizeof(telemetryItem.text), att & ~DBLSIZE);
+  }
   else {
     LcdFlags flags = att;
     if (telemetrySensor.prec > 0) {

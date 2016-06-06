@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -162,6 +162,11 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     if (sensor.custom.ratio != 0) {
       newVal = (newVal * sensor.custom.offset) / sensor.custom.ratio;
     }
+  }
+  else if (unit == UNIT_TEXT) {
+    *((uint32_t*)&text[prec]) = newVal;
+    lastReceived = now();
+    return;
   }
   else {
     newVal = sensor.getValue(newVal, unit, prec);
@@ -474,7 +479,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
   if (available || !allowNewSensors) {
     return;
   }
-  
+
   int index = availableTelemetryIndex();
   if (index >= 0) {
     switch (protocol) {
@@ -541,12 +546,12 @@ const UnitConversionRule unitConversionTable[] = {
   /* unitFrom     unitTo                    multiplier   divisor */
   { UNIT_METERS,            UNIT_FEET,             105,   32},
   { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,   32},
-   
+
   { UNIT_KTS, UNIT_KMH,                           1852, 1000}, // 1 knot = 1.85200 kilometers per hour
   { UNIT_KTS, UNIT_MPH,                           1151, 1000}, // 1 knot = 1.15077945 miles per hour
   { UNIT_KTS, UNIT_METERS_PER_SECOND,             1000, 1944}, // 1 knot = 0.514444444 meters / second (divide with 1.94384449)
   { UNIT_KTS, UNIT_FEET_PER_SECOND,               1688, 1000}, // 1 knot = 1.68780986 feet per second
-  
+
   { UNIT_KMH, UNIT_KTS,                           1000, 1852}, // 1 km/h = 0.539956803 knots (divide with 1.85200)
   { UNIT_KMH, UNIT_MPH,                           1000, 1609}, // 1 km/h = 0.621371192 miles per hour (divide with 1.60934400)
   { UNIT_KMH, UNIT_METERS_PER_SECOND,               10,   36}, // 1 km/h = 0.277777778 meters / second (divide with 3.6)
@@ -577,7 +582,7 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
       ++p;
     }
   }
-  
+
   for (int i=destPrec; i<prec; i++)
     value /= 10;
 
