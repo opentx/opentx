@@ -270,9 +270,9 @@
 #define ADC_CHANNEL_STICK_LH            ADC_Channel_2  // ADC1_IN2
 #define ADC_CHANNEL_STICK_LV            ADC_Channel_3  // ADC1_IN3
 #define ADC1_DMA                        DMA2
-#define ADC1_DMA_Stream                 DMA2_Stream0
-#define ADC1_DMA_FLAGS                  (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
-#define ADC1_DMA_FLAG_TC                DMA_LISR_TCIF0
+#define ADC1_DMA_Stream                 DMA2_Stream4
+#define ADC1_DMA_FLAGS                  (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
+#define ADC1_DMA_FLAG_TC                DMA_HISR_TCIF4
 #if defined(REV9E)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_8  // PF.08
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00
@@ -293,9 +293,9 @@
   #define ADC_CHANNEL_SLIDER4           ADC_Channel_9  // ADC1_IN9
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
   #define ADC3_DMA                      DMA2
-  #define ADC3_DMA_Stream               DMA2_Stream1
-  #define ADC3_DMA_FLAGS                (DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 | DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1)
-  #define ADC3_DMA_FLAG_TC              DMA_LISR_TCIF1
+  #define ADC3_DMA_Stream               DMA2_Stream0
+  #define ADC3_DMA_FLAGS                (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
+  #define ADC3_DMA_FLAG_TC              DMA_LISR_TCIF0
 #elif defined(REVPLUS)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_6  // PA.06
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00

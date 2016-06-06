@@ -112,35 +112,35 @@ void adcInit()
 
 void adcSingleRead()
 {
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
-  ADC1_DMA->LIFCR = ADC1_DMA_FLAGS; // Write ones to clear bits
-  ADC1_DMA_Stream->CR |= DMA_SxCR_EN;               // Enable DMA
+  ADC1_DMA->HIFCR = ADC1_DMA_FLAGS; // Write ones to clear bits
+  ADC1_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
   ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
 
 #if defined(REV9E)
-  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN;    // Disable DMA
+  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
   ADC3_DMA->LIFCR = ADC3_DMA_FLAGS; // Write ones to clear bits
-  ADC3_DMA_Stream->CR |= DMA_SxCR_EN;   // Enable DMA
+  ADC3_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 #endif // defined(REV9E)
 
 #if defined(REV9E)
   for (unsigned int i=0; i<10000; i++) {
-    if ((ADC1_DMA->LISR & ADC1_DMA_FLAG_TC) && (ADC3_DMA->LISR & ADC3_DMA_FLAG_TC)) {
+    if ((ADC1_DMA->HISR & ADC1_DMA_FLAG_TC) && (ADC3_DMA->LISR & ADC3_DMA_FLAG_TC)) {
       break;
     }
   }
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
-  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #else
   for (unsigned int i = 0; i < 10000; i++) {
-    if (ADC1_DMA->LISR & ADC1_DMA_FLAG_TC) {
+    if (ADC1_DMA->HISR & ADC1_DMA_FLAG_TC) {
       break;
     }
   }
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #endif
 }
 
