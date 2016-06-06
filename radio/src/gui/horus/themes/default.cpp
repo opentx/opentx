@@ -64,25 +64,29 @@ class DefaultTheme: public Theme
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
     }
 
-    void loadMenuIcon(uint8_t index, const char * filename) const
+    void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_TITLE_COLOR) const
     {
       BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
       if (mask) {
         delete menuIconNormal[index];
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
         menuIconNormal[index]->clear(HEADER_BGCOLOR);
-        menuIconNormal[index]->drawMask(0, 0, mask, MENU_TITLE_COLOR);
+        menuIconNormal[index]->drawMask(0, 0, mask, color);
         delete menuIconSelected[index];
         menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
         menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
-        menuIconSelected[index]->drawMask(0, 0, mask, MENU_TITLE_COLOR);
+        menuIconSelected[index]->drawMask(0, 0, mask, color);
         delete mask;
       }
     }
 
     void loadIcons() const
     {
+#if defined(TELEMETRY_LOGS) || defined(WATCHDOG_DISABLED)
+      loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
+#else
       loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
+#endif
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
       loadMenuIcon(ICON_RADIO_SD_BROWSER, "mask_radio_sd_browser.png");
