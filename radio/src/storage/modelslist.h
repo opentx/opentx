@@ -47,7 +47,7 @@ class ModelCell
         char timer[LEN_TIMER_STRING];
         buffer.drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
-        buffer.drawText(104, 41, timer, TEXT_COLOR);
+        buffer.drawText(101, 40, timer, TEXT_COLOR);
         for (int i=0; i<4; i++) {
           buffer.drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
@@ -75,7 +75,6 @@ class ModelsCategory: public std::list<ModelCell *>
     {
       strncpy(this->name, name, sizeof(this->name));
     }
-
 
     ModelCell * addModel(const char * name)
     {
@@ -123,11 +122,14 @@ class ModelsList
         delete *it;
       }
       categories.clear();
+      currentCategory = NULL;
+      currentModel = NULL;
     }
 
     bool load()
     {
       char line[LEN_MODEL_FILENAME+1];
+      ModelsCategory * category = NULL;
 
       clear();
 
@@ -140,12 +142,16 @@ class ModelsList
         int len = strlen(line); // TODO could be returned by readNextLine
         if (len > 2 && line[0] == '[' && line[len-1] == ']') {
           line[len-1] = '\0';
-          currentCategory = new ModelsCategory(&line[1]);
-          categories.push_back(currentCategory);
+          category = new ModelsCategory(&line[1]);
+          categories.push_back(category);
         }
-        else if (len > 0) {
+        else if (category && len > 0) {
           ModelCell * model = new ModelCell(line);
-          currentCategory->push_back(model);
+          category->push_back(model);
+          if (!strncmp(line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME)) {
+            currentCategory = category;
+            currentModel = model;
+          }
         }
       }
 
@@ -219,12 +225,11 @@ class ModelsList
   }
 
   std::list<ModelsCategory *> categories;
+  ModelsCategory * currentCategory;
+  ModelCell * currentModel;
 
   protected:
     FIL file;
-    ModelsCategory * currentCategory;
-
 };
 
 #endif // _MODELSLIST_H_
-
