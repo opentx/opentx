@@ -82,7 +82,7 @@ class DefaultTheme: public Theme
 
     void loadIcons() const
     {
-#if defined(TELEMETRY_LOGS) || defined(WATCHDOG_DISABLED)
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
       loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
 #else
       loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
