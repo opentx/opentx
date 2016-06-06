@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 extern uint8_t s_curveChan;
 
@@ -64,16 +64,14 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
   if (active) {
     if (s_editMode > 0) {
       int8_t c = name[editNameCursorPos];
+      if (!(flags & ZCHAR)) {
+        c = char2idx(c);
+      }
       int8_t v = c;
 
       if (event==EVT_ROTARY_RIGHT || event==EVT_ROTARY_LEFT) {
-        if (flags & ZCHAR) {
-          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
-          if (c <= 0) v = -v;
-        }
-        else {
-          v = checkIncDec(event, abs(v), '0', 'z', 0);
-        }
+        v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
+        if (c <= 0) v = -v;
       }
 
       switch (event) {
@@ -97,7 +95,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
           break;
 
         case EVT_KEY_LONG(KEY_ENTER):
-          if (v == ((flags & ZCHAR) ? 0 : ' ')) {
+          if (v == 0) {
             s_editMode = 0;
             killEvents(event);
             break;
@@ -106,25 +104,19 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint
 
         case EVT_KEY_LONG(KEY_LEFT):
         case EVT_KEY_LONG(KEY_RIGHT):
-          if (flags & ZCHAR) {
-            if (v>=-26 && v<=26) {
-              v = -v; // toggle case
-              if (event==EVT_KEY_LONG(KEY_LEFT))
-                killEvents(KEY_LEFT);
-            }
-          }
-          else {
-            if (v>='A' && v<='Z') {
-              v = 'a'+v-'A'; // toggle case
-            }
-            else if (v>='a' && v<='z') {
-              v = 'A'+v-'a'; // toggle case
-            }
+          if (v>=-26 && v<=26) {
+            v = -v; // toggle case
+            if (event==EVT_KEY_LONG(KEY_LEFT))
+              killEvents(KEY_LEFT);
           }
           break;
       }
 
       if (c != v) {
+        if (!(flags & ZCHAR)) {
+          if (v != '\0' || name[editNameCursorPos+1] != '\0')
+            v = idx2char(v);
+        }
         name[editNameCursorPos] = v;
         storageDirty(menuVerticalPositions[0] == 0 ? EE_MODEL : EE_GENERAL);
       }
