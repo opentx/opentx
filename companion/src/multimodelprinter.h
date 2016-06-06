@@ -43,6 +43,7 @@ class MultiModelPrinter: public QObject
 
     QString printTitle(const QString & label);
     QString printSetup();
+    QString printHeliSetup();
     QString printFlightModes();
     QString printLimits();
     QString printInputs();
