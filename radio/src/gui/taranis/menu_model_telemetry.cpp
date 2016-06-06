@@ -127,7 +127,7 @@ void menuModelSensor(uint8_t event)
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
   drawStringWithIndex(PSIZE(TR_MENUSENSOR)*FW+FW, 0, STR_SENSOR, s_currIdx+1);
-  putsTelemetryChannelValue(32*FW, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx));
+  putsTelemetryChannelValue(25*FW, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx));
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
