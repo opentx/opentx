@@ -269,6 +269,8 @@
 #define ADC_CHANNEL_STICK_RH            ADC_Channel_1  // ADC1_IN1
 #define ADC_CHANNEL_STICK_LH            ADC_Channel_2  // ADC1_IN2
 #define ADC_CHANNEL_STICK_LV            ADC_Channel_3  // ADC1_IN3
+#define ADC1_DMA_Stream                 DMA2_Stream0
+#define ADC3_DMA_Stream                 DMA2_Stream1
 #if defined(REV9E)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_8  // PF.08
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00

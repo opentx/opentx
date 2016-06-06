@@ -85,13 +85,13 @@ void adcInit()
   ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
   ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27) ;
 
-  ADC->CCR = 0 ; //ADC_CCR_ADCPRE_0 ;             // Clock div 2
+  ADC->CCR = 0 ;
 
-  DMA2_Stream0->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  DMA2_Stream0->PAR = CONVERT_PTR_UINT(&ADC1->DR);
-  DMA2_Stream0->M0AR = CONVERT_PTR_UINT(adcValues);
-  DMA2_Stream0->NDTR = NUMBER_ANALOG_ADC1;
-  DMA2_Stream0->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  ADC1_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  ADC1_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_MAIN_DMA->DR);
+  ADC1_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues);
+  ADC1_DMA_Stream->NDTR = NUMBER_ANALOG_ADC1;
+  ADC1_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 
 #if defined(REV9E)
   ADC3->CR1 = ADC_CR1_SCAN ;
@@ -103,28 +103,28 @@ void adcInit()
   ADC3->SMPR2 = (SAMPTIME_LONG<<(3*ADC_CHANNEL_POT1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER2));
   
   // Enable the DMA channel here, DMA2 stream 1, channel 2
-  DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  DMA2_Stream1->PAR = CONVERT_PTR_UINT(&ADC3->DR);
-  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(adcValues + NUMBER_ANALOG_ADC1);
-  DMA2_Stream1->NDTR = NUMBER_ANALOG_ADC3;
-  DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  ADC3_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  ADC3_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC3->DR);
+  ADC3_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues + NUMBER_ANALOG_ADC1);
+  ADC3_DMA_Stream->NDTR = NUMBER_ANALOG_ADC3;
+  ADC3_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
 #endif
 }
 
 void adcSingleRead()
 {
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
   ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 |
                 DMA_LIFCR_CFEIF0; // Write ones to clear bits
-  DMA2_Stream0->CR |= DMA_SxCR_EN;               // Enable DMA
+  ADC1_DMA_Stream->CR |= DMA_SxCR_EN;               // Enable DMA
   ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
 
 #if defined(REV9E)
-  DMA2_Stream1->CR &= ~DMA_SxCR_EN ;    // Disable DMA
+  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN ;    // Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
   DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1 ; // Write ones to clear bits
-  DMA2_Stream1->CR |= DMA_SxCR_EN ;   // Enable DMA
+  ADC3_DMA_Stream->CR |= DMA_SxCR_EN ;   // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
 #endif // defined(REV9E)
 
@@ -134,15 +134,15 @@ void adcSingleRead()
       break;
     }
   }
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-  DMA2_Stream1->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN ;              // Disable DMA
 #else
   for (unsigned int i = 0; i < 10000; i++) {
     if (DMA2->LISR & DMA_LISR_TCIF0) {
       break;
     }
   }
-  DMA2_Stream0->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
 #endif
 }
 
