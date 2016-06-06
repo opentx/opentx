@@ -45,7 +45,7 @@
     #define NUMBER_ANALOG_ADC1      10
     #define NUMBER_ANALOG_ADC3      3
     // mapping from adcValues order to enum Analogs
-    const uint8_t ana_mapping[NUMBER_ANALOG] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/, 
+    const uint8_t ana_mapping[NUMBER_ANALOG] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
                                                  10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
                                                  11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
                                                  9 /*TX_VOLTAGE*/ };
@@ -74,7 +74,7 @@ void adcInit()
 
   ADC1->CR1 = ADC_CR1_SCAN;
   ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC1->SQR1 = (NUMBER_ANALOG_ADC1-1) << 20 ; // bits 23:20 = number of conversions
+  ADC1->SQR1 = (NUMBER_ANALOG_ADC1-1) << 20; // bits 23:20 = number of conversions
 #if defined(REV9E)
   ADC1->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
   ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
@@ -83,31 +83,30 @@ void adcInit()
   ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
 #endif
   ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
-  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27) ;
+  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27);
 
-  ADC->CCR = 0 ;
+  ADC->CCR = 0;
 
   ADC1_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   ADC1_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC1->DR);
   ADC1_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues);
   ADC1_DMA_Stream->NDTR = NUMBER_ANALOG_ADC1;
-  ADC1_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  ADC1_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
 #if defined(REV9E)
-  ADC3->CR1 = ADC_CR1_SCAN ;
-  ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS ;
-  ADC3->SQR1 = (NUMBER_ANALOG_ADC3-1) << 20 ;   // NUMBER_ANALOG Channels
-  ADC3->SQR2 = 0; 
-  ADC3->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) ; // conversions 1 to 3
+  ADC3->CR1 = ADC_CR1_SCAN;
+  ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC3->SQR1 = (NUMBER_ANALOG_ADC3-1) << 20;   // NUMBER_ANALOG Channels
+  ADC3->SQR2 = 0;
+  ADC3->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10); // conversions 1 to 3
   ADC3->SMPR1 = 0;
   ADC3->SMPR2 = (SAMPTIME_LONG<<(3*ADC_CHANNEL_POT1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER2));
-  
-  // Enable the DMA channel here, DMA2 stream 1, channel 2
+
   ADC3_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   ADC3_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC3->DR);
   ADC3_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues + NUMBER_ANALOG_ADC1);
   ADC3_DMA_Stream->NDTR = NUMBER_ANALOG_ADC3;
-  ADC3_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  ADC3_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 #endif
 }
 
@@ -115,30 +114,29 @@ void adcSingleRead()
 {
   ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
   ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
-  DMA2->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 |
-                DMA_LIFCR_CFEIF0; // Write ones to clear bits
+  ADC1_DMA->LIFCR = ADC1_DMA_FLAGS; // Write ones to clear bits
   ADC1_DMA_Stream->CR |= DMA_SxCR_EN;               // Enable DMA
   ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
 
 #if defined(REV9E)
-  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN ;    // Disable DMA
-  ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR ) ;
-  DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1 ; // Write ones to clear bits
-  ADC3_DMA_Stream->CR |= DMA_SxCR_EN ;   // Enable DMA
-  ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART ;
+  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN;    // Disable DMA
+  ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
+  ADC3_DMA->LIFCR = ADC3_DMA_FLAGS; // Write ones to clear bits
+  ADC3_DMA_Stream->CR |= DMA_SxCR_EN;   // Enable DMA
+  ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 #endif // defined(REV9E)
 
 #if defined(REV9E)
   for (unsigned int i=0; i<10000; i++) {
-    if ((DMA2->LISR & DMA_LISR_TCIF0) && (DMA2->LISR & DMA_LISR_TCIF1)) {
+    if ((ADC1_DMA->LISR & ADC1_DMA_FLAG_TC) && (ADC3_DMA->LISR & ADC3_DMA_FLAG_TC)) {
       break;
     }
   }
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN ;              // Disable DMA
-  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN ;              // Disable DMA
+  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
+  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN;              // Disable DMA
 #else
   for (unsigned int i = 0; i < 10000; i++) {
-    if (DMA2->LISR & DMA_LISR_TCIF0) {
+    if (ADC1_DMA->LISR & ADC1_DMA_FLAG_TC) {
       break;
     }
   }
