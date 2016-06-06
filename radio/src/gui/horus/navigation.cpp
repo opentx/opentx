@@ -207,7 +207,7 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
     }
   }
 #endif
-  
+
   if (newval != val) {
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
@@ -321,7 +321,7 @@ bool navigate(evt_t event, int count, int rows, int columns)
   }
 
   switch (event) {
-    case EVT_KEY_FIRST(KEY_RIGHT):
+    /*case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_REPT(KEY_RIGHT):
       INC(menuHorizontalPosition, 0, maxcol);
       break;
@@ -346,6 +346,7 @@ bool navigate(evt_t event, int count, int rows, int columns)
         menuHorizontalPosition = maxlastcol;
       }
       break;
+      */
 
     case EVT_ROTARY_LEFT:
       if (menuHorizontalPosition > 0) {
