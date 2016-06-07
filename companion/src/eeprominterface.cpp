@@ -1510,9 +1510,7 @@ int ModelData::getTrimValue(int phaseIdx, int trimIdx)
       }
       else {
         phaseIdx = phase.trimRef[trimIdx];
-        if (phase.trimMode[trimIdx] == 0)
-          result = 0;
-        else
+        if (phase.trimMode[trimIdx] != 0)
           result += phase.trim[trimIdx];
       }
     }
