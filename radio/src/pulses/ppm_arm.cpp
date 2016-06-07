@@ -31,17 +31,6 @@ void setupPulsesPPM(uint8_t port)                   // Don't enable interrupts t
   uint32_t firstCh = g_model.moduleData[port].channelsStart;
   uint32_t lastCh = min<unsigned int>(NUM_CHNOUT, firstCh + 8 + g_model.moduleData[port].channelsCount);
 
-#if defined(PCBSKY9X)
-  // TODO move register stuff to driver
-  register Pwm *pwmptr = PWM;
-  uint32_t pwmCh = (port == EXTERNAL_MODULE ? 3 : 1);
-  pwmptr->PWM_CH_NUM[pwmCh].PWM_CDTYUPD = (g_model.moduleData[port].ppm.delay * 50 + 300) * 2; //Stoplen *2
-  if (g_model.moduleData[port].ppm.pulsePol)
-    pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR &= ~0x00000200 ;  // CPOL
-  else
-    pwmptr->PWM_CH_NUM[pwmCh].PWM_CMR |= 0x00000200 ;   // CPOL
-#endif
-
   PpmPulsesData * ppmPulsesData = (port == TRAINER_MODULE ? &trainerPulsesData.ppm : &modulePulsesData[port].ppm);
 
 #if defined(CPUSTM32)
@@ -70,22 +59,4 @@ void setupPulsesPPM(uint8_t port)                   // Don't enable interrupts t
   *ptr = rest;
   *(ptr + 1) = 0;
 #endif
-
-#if defined(CPUSTM32)
-  rest -= 1000;
-  uint32_t ppmDelay = (g_model.moduleData[port].ppm.delay * 50 + 300) * 2;
-  // set idle time, ppm delay and ppm polarity
-  if (port == TRAINER_MODULE) {
-    set_trainer_ppm_parameters(rest, ppmDelay, !g_model.moduleData[TRAINER_MODULE].ppm.pulsePol); // ppmPulsePol: 0 - positive, 1 - negative
-  }
-  else if (port == EXTERNAL_MODULE) {
-    set_external_ppm_parameters(rest, ppmDelay, !g_model.moduleData[EXTERNAL_MODULE].ppm.pulsePol);
-  }
-#endif
-
-#if defined(TARANIS_INTERNAL_PPM)
-  else if (port == INTERNAL_MODULE) {
-    set_internal_ppm_parameters(rest, ppmDelay, !g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol);
-  }
-#endif // #if defined(TARANIS_INTERNAL_PPM)
 }

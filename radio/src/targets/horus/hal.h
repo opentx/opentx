@@ -305,18 +305,26 @@
 #define EXTMODULE_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
 // Trainer Port
-#define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC)
+#define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
 #define TRAINER_RCC_APB1Periph          RCC_APB1Periph_TIM3
 #define TRAINER_GPIO                    GPIOC
 #define TRAINER_GPIO_PIN_IN             GPIO_Pin_6  // PC.06
+#define TRAINER_GPIO_PinSource_IN       GPIO_PinSource6
 #define TRAINER_GPIO_PIN_OUT            GPIO_Pin_7  // PC.07
+#define TRAINER_GPIO_PinSource_OUT      GPIO_PinSource7
 #define TRAINER_GPIO_DETECT             GPIOB
 #define TRAINER_GPIO_PIN_DETECT         GPIO_Pin_4  // PB.04
 #define TRAINER_TIMER                   TIM3
 #define TRAINER_TIMER_IRQn              TIM3_IRQn
 #define TRAINER_TIMER_IRQHandler        TIM3_IRQHandler
-#define TRAINER_GPIO_PinSource_IN       GPIO_PinSource6
 #define TRAINER_GPIO_AF                 GPIO_AF_TIM3
+#define TRAINER_DMA                     DMA1
+#define TRAINER_DMA_CHANNEL             DMA_Channel_5
+#define TRAINER_DMA_STREAM              DMA1_Stream2
+#define TRAINER_DMA_IRQn                DMA1_Stream2_IRQn
+#define TRAINER_DMA_IRQHandler          DMA1_Stream2_IRQHandler
+#define TRAINER_DMA_FLAG_TC             DMA_IT_TCIF2
+#define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
 // Heartbeat
 #define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD

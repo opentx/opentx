@@ -377,13 +377,23 @@
 #define TRAINER_RCC_APB1Periph          RCC_APB1Periph_TIM3
 #define TRAINER_GPIO                    GPIOC
 #define TRAINER_GPIO_PIN_IN             GPIO_Pin_8  // PC.08
+#define TRAINER_GPIO_PinSource_IN       GPIO_PinSource8
 #define TRAINER_GPIO_PIN_OUT            GPIO_Pin_9  // PC.09
+#define TRAINER_GPIO_PinSource_OUT      GPIO_PinSource9
 #define TRAINER_GPIO_DETECT             GPIOA
 #define TRAINER_GPIO_PIN_DETECT         GPIO_Pin_8  // PA.08
 #define TRAINER_TIMER                   TIM3
 #define TRAINER_TIMER_IRQn              TIM3_IRQn
-#define TRAINER_GPIO_PinSource_IN       GPIO_PinSource8
 #define TRAINER_GPIO_AF                 GPIO_AF_TIM3
+#define TRAINER_DMA                     DMA1
+#define TRAINER_DMA_CHANNEL             DMA_Channel_5
+#define TRAINER_DMA_STREAM              DMA1_Stream2
+#define TRAINER_DMA_IRQn                DMA1_Stream2_IRQn
+#define TRAINER_DMA_IRQHandler          DMA1_Stream2_IRQHandler
+#define TRAINER_DMA_FLAG_TC             DMA_IT_TCIF2
+#define TRAINER_TIMER_IRQn              TIM3_IRQn
+#define TRAINER_TIMER_IRQHandler        TIM3_IRQHandler
+#define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
 // Serial Port
 #define SERIAL_RCC_AHB1Periph           RCC_AHB1Periph_GPIOB
