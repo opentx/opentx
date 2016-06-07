@@ -459,17 +459,17 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
       }
       else if (smlsize) {
         x -= 2;
-        lcdDrawPoint(x, y+5);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x, y-1, 8);
+          lcdDrawSolidVerticalLine(x, y-1, 8, INVERS);
         }
+        lcdDrawPoint(x, y+5);
       }
       else if (tinsize) {
         x -= 2;
-        lcdDrawPoint(x, y+4);
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x, y-1, 7);
+          lcdDrawSolidVerticalLine(x, y-1, 7, INVERS);
         }
+        lcdDrawPoint(x, y+4);
       }
       else {
         x -= (flags & BOLD) ? 3 : 2;
