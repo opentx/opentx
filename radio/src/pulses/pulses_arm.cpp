@@ -65,7 +65,7 @@ void setupPulses(uint8_t port)
           required_protocol = PROTO_PXX;
           break;
 #if defined(MULTIMODULE)
-      case MODULE_TYPE_MULTIMODULE:
+        case MODULE_TYPE_MULTIMODULE:
           required_protocol = PROTO_MULTIMODULE;
           break;
 #endif
