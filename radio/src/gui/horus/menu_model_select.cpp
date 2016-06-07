@@ -126,6 +126,12 @@ void onModelSelectMenu(const char * result)
   else if (result == STR_CHANGE_CATEGORY) {
 
   }
+  else if (result == STR_CREATE_MODEL) {
+    storageCheck(true);
+    currentModel = modelslist.currentModel = modelslist.addModel(currentCategory, createModel());
+    selectMode = MODE_SELECT_MODEL;
+    setCurrentModel(currentCategory->size() - 1);
+  }
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
     memcpy(duplicatedFilename, currentModel->name, sizeof(duplicatedFilename));
@@ -146,21 +152,31 @@ void initModelsList()
   modelslist.load();
 
   categoriesVerticalOffset = 0;
+  bool found = false;
   int index = 0;
   for (std::list<ModelsCategory *>::iterator it = modelslist.categories.begin(); it != modelslist.categories.end(); ++it, ++index) {
     if (*it == modelslist.currentCategory) {
       setCurrentCategory(index);
+      found = true;
       break;
     }
   }
+  if (!found) {
+    setCurrentCategory(0);
+  }
 
   modelsVerticalOffset = 0;
+  found = false;
   index = 0;
   for (ModelsCategory::iterator it = currentCategory->begin(); it != currentCategory->end(); ++it, ++index) {
     if (*it == modelslist.currentModel) {
       setCurrentModel(index);
+      found = true;
       break;
     }
+  }
+  if (!found) {
+    setCurrentModel(0);
   }
 }
 
@@ -174,8 +190,8 @@ bool menuModelSelect(evt_t event)
     event = EVT_REFRESH;
     if (modelIndex > 0) {
       modelIndex--;
-      setCurrentModel(modelIndex);
     }
+    setCurrentModel(modelIndex);
   }
 
   switch(event) {
@@ -232,13 +248,15 @@ bool menuModelSelect(evt_t event)
           if (currentModel != modelslist.currentModel) {
             POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
           }
+          POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
           POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
         }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
         // POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
         POPUP_MENU_ADD_ITEM(STR_CHANGE_CATEGORY);
-        POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
-        // POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+        if (currentModel != modelslist.currentModel) {
+          POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
+        }
         // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
         POPUP_MENU_START(onModelSelectMenu);
       }
