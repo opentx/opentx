@@ -769,7 +769,7 @@ char *findTrueFileName(const char *path)
   return result;
 }
 
-FRESULT f_stat (const TCHAR * name, FILINFO *)
+FRESULT f_stat (const TCHAR * name, FILINFO *fno)
 {
   char *path = convertSimuPath(name);
   char * realPath = findTrueFileName(path);
@@ -780,6 +780,9 @@ FRESULT f_stat (const TCHAR * name, FILINFO *)
   }
   else {
     TRACE("f_stat(%s) = OK", path);
+    if (fno) {
+      fno->fattrib = (tmp.st_mode & S_IFDIR) ? AM_DIR : 0;
+    }
     return FR_OK;
   }
 }
