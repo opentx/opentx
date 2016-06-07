@@ -807,6 +807,16 @@ ZoneOption * createOptionsArray(int reference)
           luaL_checktype(L, -1, LUA_TNUMBER); // value is number
           option->deflt.signedValue = lua_tointeger(L, -1);
           break;
+        case 3:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+          option->min.signedValue = lua_tointeger(L, -1);
+          break;
+        case 4:
+          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
+          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
+          option->max.signedValue = lua_tointeger(L, -1);
+          break;
       }
     }
     option++;

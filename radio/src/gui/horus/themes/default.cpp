@@ -21,8 +21,8 @@
 #include "opentx.h"
 
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
-  { "Background color", ZoneOption::Color, OPTION_DEFAULT_VALUE_UNSIGNED(WHITE) },
-  { "Main color", ZoneOption::Color, OPTION_DEFAULT_VALUE_UNSIGNED(RED) },
+  { "Background color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(WHITE) },
+  { "Main color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
   { NULL, ZoneOption::Bool }
 };
 

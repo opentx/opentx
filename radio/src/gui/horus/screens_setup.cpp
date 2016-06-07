@@ -78,7 +78,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
   else if (option->type == ZoneOption::Integer) {
     lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN, y, value->signedValue, attr | LEFT);
     if (attr) {
-      CHECK_INCDEC_MODELVAR(event, value->signedValue, -30000, 30000); // TODO i_flags
+      CHECK_INCDEC_MODELVAR(event, value->signedValue, option->min.signedValue, option->max.signedValue); // TODO i_flags
     }
   }
   else if (option->type == ZoneOption::String) {
@@ -129,8 +129,8 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     COLOR_SPLIT(value->unsignedValue, r, g, b);
 
     lcdSetColor(value->unsignedValue);
-    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y-1, 42, 17, TEXT_COLOR);
-    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN, y, 40, 15, CUSTOM_COLOR);
+    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y+1, 42, 17, TEXT_COLOR);
+    lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN, y+2, 40, 15, CUSTOM_COLOR);
 
     lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 50, y, "R:", TEXT_COLOR);
     lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 70, y, r << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 0) ? attr : 0));
@@ -273,7 +273,7 @@ bool menuWidgetChoice(evt_t event)
   lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, TEXT_INVERTED_COLOR);
   lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
   lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
-  lcdDrawText(zone.x + zone.w, zone.y, currentWidget->getFactory()->getName(), RIGHT | TEXT_COLOR | INVERS);
+  lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | TEXT_COLOR | SMLSIZE | INVERS);
 
   return true;
 }
