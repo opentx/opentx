@@ -362,7 +362,7 @@ bool menuGeneralSdManager(evt_t _event)
   }
 
   char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
-  if (ext && (!strcasecmp(ext, BITMAPS_EXT) || !strcasecmp(ext, PNG_EXT) || !strcasecmp(ext, JPG_EXT))) {
+  if (ext && (!strcasecmp(ext, BMP_EXT) || !strcasecmp(ext, PNG_EXT) || !strcasecmp(ext, JPG_EXT))) {
     if (currentBitmapIndex != menuVerticalPosition) {
       currentBitmapIndex = menuVerticalPosition;
       delete currentBitmap;

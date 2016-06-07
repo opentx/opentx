@@ -480,7 +480,7 @@ void BitmapBuffer::drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * 
 BitmapBuffer * BitmapBuffer::load(const char * filename)
 {
   const char * ext = getFileExtension(filename);
-  if (!strcmp(ext, ".bmp"))
+  if (ext && !strcmp(ext, ".bmp"))
     return load_bmp(filename);
   else
     return load_stb(filename);

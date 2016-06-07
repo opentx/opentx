@@ -53,7 +53,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define MODELS_EXT          ".bin"
 #define LOGS_EXT            ".csv"
 #define SOUNDS_EXT          ".wav"
-#define BITMAPS_EXT         ".bmp"
+#define BMP_EXT             ".bmp"
 #define PNG_EXT             ".png"
 #define JPG_EXT             ".jpg"
 #define SCRIPTS_EXT         ".lua"
@@ -62,11 +62,18 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
 
+#if defined(PCBHORUS)
+#define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
+#else
+#define BITMAPS_EXT         BMP_EXT
+#endif
+
 #define GET_FILENAME(filename, path, var, ext) \
   char filename[sizeof(path) + sizeof(var) + sizeof(ext)]; \
   memcpy(filename, path, sizeof(path) - 1); \
   filename[sizeof(path) - 1] = '/'; \
   memcpy(&filename[sizeof(path)], var, sizeof(var)); \
+  filename[sizeof(path)+sizeof(var)] = '\0'; \
   strcat(&filename[sizeof(path)], ext)
 
 extern FATFS g_FATFS_Obj;
@@ -124,6 +131,7 @@ const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);
 
 #define LIST_NONE_SD_FILE   1
+#define LIST_SD_FILE_EXT    2
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
 #endif // _SDCARD_H_

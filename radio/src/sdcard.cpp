@@ -91,6 +91,21 @@ int findNextFileIndex(char * filename, const char * directory)
   return 0;
 }
 
+bool isExtensionMatching(const char * extension, const char * pattern, uint8_t flags)
+{
+  if (flags & LIST_SD_FILE_EXT) {
+    for (int i=0; pattern[i]!='\0'; i+=LEN_FILE_EXTENSION) {
+      if (strncasecmp(extension, &pattern[i], LEN_FILE_EXTENSION) == 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+  else {
+    return strcasecmp(extension, pattern) == 0;
+  }
+}
+
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags)
 {
   FILINFO fno;
@@ -116,8 +131,10 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
     strcpy(reusableBuffer.modelsel.menu_bss[0], path);
     strcat(reusableBuffer.modelsel.menu_bss[0], "/");
     strncat(reusableBuffer.modelsel.menu_bss[0], selection, maxlen);
-    strcat(reusableBuffer.modelsel.menu_bss[0], extension);
-    if (f_stat(reusableBuffer.modelsel.menu_bss[0], &fno) != FR_OK) {
+    if (!(flags & LIST_SD_FILE_EXT)) {
+      strcat(reusableBuffer.modelsel.menu_bss[0], extension);
+    }
+    if (f_stat(reusableBuffer.modelsel.menu_bss[0], &fno) != FR_OK || (fno.fattrib & AM_DIR)) {
       selection = NULL;
     }
   }
@@ -159,7 +176,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
         lastpopupMenuOffset++;
       }
       else if (popupMenuOffset==0 || popupMenuOffset < lastpopupMenuOffset) {
-        char *line = reusableBuffer.modelsel.menu_bss[0];
+        char * line = reusableBuffer.modelsel.menu_bss[0];
         memset(line, 0, MENU_LINE_LENGTH);
         strcpy(line, "---");
         popupMenuItems[0] = line;
@@ -177,10 +194,14 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 #endif
 
       uint8_t len = strlen(fn);
-      if (len < 5 || len > maxlen+4 || strcasecmp(fn+len-4, extension) || (fno.fattrib & AM_DIR)) continue;
+      uint8_t maxlen_with_extension = (flags & LIST_SD_FILE_EXT) ? maxlen : maxlen+LEN_FILE_EXTENSION;
+      if (len < LEN_FILE_EXTENSION+1 || len > maxlen_with_extension || !isExtensionMatching(fn+len-LEN_FILE_EXTENSION, extension, flags) || (fno.fattrib & AM_DIR)) continue;
 
       popupMenuNoItems++;
-      fn[len-4] = '\0';
+
+      if (!(flags & LIST_SD_FILE_EXT)) {
+        fn[len-LEN_FILE_EXTENSION] = '\0';
+      }
 
       if (popupMenuOffset == 0) {
         if (selection && strncasecmp(fn, selection, maxlen) < 0) {
@@ -188,7 +209,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
         }
         else {
           for (uint8_t i=0; i<MENU_MAX_DISPLAY_LINES; i++) {
-            char *line = reusableBuffer.modelsel.menu_bss[i];
+            char * line = reusableBuffer.modelsel.menu_bss[i];
             if (line[0] == '\0' || strcasecmp(fn, line) < 0) {
               if (i < MENU_MAX_DISPLAY_LINES-1) memmove(reusableBuffer.modelsel.menu_bss[i+1], line, sizeof(reusableBuffer.modelsel.menu_bss[i]) * (MENU_MAX_DISPLAY_LINES-1-i));
               memset(line, 0, MENU_LINE_LENGTH);
@@ -204,7 +225,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
       }
       else if (lastpopupMenuOffset == 0xffff) {
         for (int i=MENU_MAX_DISPLAY_LINES-1; i>=0; i--) {
-          char *line = reusableBuffer.modelsel.menu_bss[i];
+          char * line = reusableBuffer.modelsel.menu_bss[i];
           if (line[0] == '\0' || strcasecmp(fn, line) > 0) {
             if (i > 0) memmove(reusableBuffer.modelsel.menu_bss[0], reusableBuffer.modelsel.menu_bss[1], sizeof(reusableBuffer.modelsel.menu_bss[i]) * i);
             memset(line, 0, MENU_LINE_LENGTH);

@@ -42,7 +42,7 @@ class ModelBitmapWidget: public Widget
 
       if (buffer) {
         buffer->drawBitmap(0, 0, lcd, zone.x, zone.y, zone.w, zone.h);
-        GET_FILENAME(filename, BITMAPS_PATH, g_model.header.bitmap, BITMAPS_EXT);
+        GET_FILENAME(filename, BITMAPS_PATH, g_model.header.bitmap, "");
         BitmapBuffer * bitmap = BitmapBuffer::load(filename);
         if (zone.h >= 96 && zone.w >= 120) {
           buffer->drawFilledRect(0, 0, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));

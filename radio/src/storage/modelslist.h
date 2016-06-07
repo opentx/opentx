@@ -51,7 +51,7 @@ class ModelCell
         for (int i=0; i<4; i++) {
           buffer.drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
-        GET_FILENAME(filename, BITMAPS_PATH, header.bitmap, BITMAPS_EXT);
+        GET_FILENAME(filename, BITMAPS_PATH, header.bitmap, "");
         const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
         if (bitmap) {
           buffer.drawScaledBitmap(bitmap, 5, 24, 56, 32);

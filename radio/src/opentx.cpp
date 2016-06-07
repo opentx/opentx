@@ -36,7 +36,7 @@ bool loadModelBitmap(char * name, uint8_t * bitmap)
   if (len > 0) {
     char lfn[] = BITMAPS_PATH "/xxxxxxxxxx.bmp";
     strncpy(lfn+sizeof(BITMAPS_PATH), name, len);
-    strcpy(lfn+sizeof(BITMAPS_PATH)+len, BITMAPS_EXT);
+    strcpy(lfn+sizeof(BITMAPS_PATH)+len, BMP_EXT);
     if (lcdLoadBitmap(bitmap, lfn, MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {
       return true;
     }
