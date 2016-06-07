@@ -115,13 +115,20 @@ union ModulePulsesData {
 #endif
   PpmPulsesData ppm;
   CrossfirePulsesData crossfire;
-};
+} __DMA;
+
+/* The __DMA keyword is required to align the struct inside the modulePulsesData below,
+ * which is also defined to be __DMA aligned.
+ * Arrays in C/C++ are always defined to be *contiguously*. The first byte of the second element is therefore always
+ * sizeof(ModulePulsesData). __DMA is required for sizeof(ModulePulsesData) to be a multiple of the alignment.
+ */
+
+extern ModulePulsesData modulePulsesData[NUM_MODULES];
 
 union TrainerPulsesData {
   PpmPulsesData ppm;
 };
 
-extern ModulePulsesData modulePulsesData[NUM_MODULES];
 extern TrainerPulsesData trainerPulsesData;
 extern const uint16_t CRCTable[];
 
