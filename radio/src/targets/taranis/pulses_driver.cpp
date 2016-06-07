@@ -230,13 +230,6 @@ void intmodulePpmStart()
   NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
 }
-
-void set_internal_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
-{
-  INTMODULE_TIMER->CCR2 = idleTime;
-  INTMODULE_TIMER->CCR3 = delay;
-  INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (positive ? TIM_CCER_CC3P : 0);
-}
 #endif // defined(TARANIS_INTERNAL_PPM)
 
 void intmoduleSendNextFrame()
@@ -251,6 +244,8 @@ void intmoduleSendNextFrame()
   }
 #if defined(TARANIS_INTERNAL_PPM)
   else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
+    INTMODULE_TIMER->CCR3 = GET_PPM_DEAY(INTERNAL_MODULE)*2;
+    INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol ? 0 : TIM_CCER_CC3P);
     INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);

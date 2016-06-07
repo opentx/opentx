@@ -20,50 +20,68 @@
 
 #include "opentx.h"
 
+void setExternalModulePolarity()
+{
+  register Pwm * pwmptr = PWM;
+  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = GET_PPM_DELAY(EXTERNAL_MODULE) * 2; // Duty in half uS
+  if (g_model.moduleData[EXTERNAL_MODULE].ppm.pulsePol)
+    pwmptr->PWM_CH_NUM[3].PWM_CMR &= ~0x00000200; // CPOL
+  else
+    pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200; // CPOL
+}
+
+void setExtraModulePolarity()
+{
+  register Pwm * pwmptr = PWM;
+  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = GET_PPM_DELAY(EXTRA_MODULE) * 2; // Duty in half uS
+  if (g_model.moduleData[EXTRA_MODULE].ppm.pulsePol)
+    pwmptr->PWM_CH_NUM[1].PWM_CMR &= ~0x00000200; // CPOL
+  else
+    pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200; // CPOL
+}
+
 void module_output_active()
 {
-  register Pio *pioptr = PIOA ;
-  pioptr->PIO_ABCDSR[0] &= ~PIO_PA17 ;            // Peripheral C
-  pioptr->PIO_ABCDSR[1] |= PIO_PA17 ;             // Peripheral C
-  pioptr->PIO_PDR = PIO_PA17 ;                    // Disable bit A17 Assign to peripheral
+  register Pio *pioptr = PIOA;
+  pioptr->PIO_ABCDSR[0] &= ~PIO_PA17;            // Peripheral C
+  pioptr->PIO_ABCDSR[1] |= PIO_PA17;             // Peripheral C
+  pioptr->PIO_PDR = PIO_PA17;                    // Disable bit A17 Assign to peripheral
 #if defined(REVX)
   if (g_model.moduleData[EXTERNAL_MODULE].ppm.outputType) {
-    pioptr->PIO_MDDR = PIO_PA17 ;                 // Push Pull O/p in A17
+    pioptr->PIO_MDDR = PIO_PA17;                 // Push Pull O/p in A17
   }
   else {
-    pioptr->PIO_MDER = PIO_PA17 ;                 // Open Drain O/p in A17
+    pioptr->PIO_MDER = PIO_PA17;                 // Open Drain O/p in A17
   }
 #else
-  pioptr->PIO_MDDR = PIO_PA17 ;                                           // Push Pull O/p in A17
+  pioptr->PIO_MDDR = PIO_PA17;                                           // Push Pull O/p in A17
 #endif
-  pioptr->PIO_PUER = PIO_PA17 ;                   // With pull up
+  pioptr->PIO_PUER = PIO_PA17;                   // With pull up
 }
 
 void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
-  register Pwm *pwmptr ;
+  register Pwm * pwmptr;
 
-  setupPulsesPPM(EXTERNAL_MODULE) ;
+  setupPulsesPPM(EXTERNAL_MODULE);
 
   if (out_enable) {
     module_output_active();
   }
 
-  pwmptr = PWM ;
+  pwmptr = PWM;
   // PWM3 for PPM output
-  pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0004000B ;  // CLKA
-  if (!g_model.moduleData[EXTERNAL_MODULE].ppm.pulsePol) {
-    pwmptr->PWM_CH_NUM[3].PWM_CMR |= 0x00000200 ;               // CPOL
-  }
-  pwmptr->PWM_CH_NUM[3].PWM_CPDR = period ;                     // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period ;                  // Period in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTY = g_model.moduleData[EXTERNAL_MODULE].ppm.delay*100+600;    // Duty in half uS
-  pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = g_model.moduleData[EXTERNAL_MODULE].ppm.delay*100+600; // Duty in half uS
-  pwmptr->PWM_ENA = PWM_ENA_CHID3 ;                             // Enable channel 3
-  pwmptr->PWM_IER1 = PWM_IER1_CHID3 ;
+  pwmptr->PWM_CH_NUM[3].PWM_CMR = 0x0004000B;  // CLKA
+  pwmptr->PWM_CH_NUM[3].PWM_CPDR = period;                     // Period in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period;                  // Period in half uS
+  pwmptr->PWM_CH_NUM[3].PWM_CDTY = GET_PPM_DELAY(EXTERNAL_MODULE) * 2; // Duty in half uS
+  pwmptr->PWM_ENA = PWM_ENA_CHID3;                             // Enable channel 3
+  pwmptr->PWM_IER1 = PWM_IER1_CHID3;
 
-  NVIC_SetPriority(PWM_IRQn, 3 ) ;
-  NVIC_EnableIRQ(PWM_IRQn) ;
+  setExternalModulePolarity();
+
+  NVIC_SetPriority(PWM_IRQn, 3 );
+  NVIC_EnableIRQ(PWM_IRQn);
 }
 
 void disable_main_ppm()
@@ -78,17 +96,17 @@ void init_second_ppm(uint32_t period)
 #if !defined(REVA)
   // PWM1 for PPM2
   register Pwm * pwmptr = PWM;
-  configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP ) ;
-  pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B ;    // CLKB
+  configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP );
+  pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B;    // CLKB
   if (!g_model.moduleData[EXTRA_MODULE].ppm.pulsePol) {
-    pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200 ;   // CPOL
+    pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200;   // CPOL
   }
-  pwmptr->PWM_CH_NUM[1].PWM_CPDR = period ;                       // Period
-  pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period ;            // Period
-  pwmptr->PWM_CH_NUM[1].PWM_CDTY = g_model.moduleData[EXTRA_MODULE].ppm.delay*100+600 ;                             // Duty
-  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = g_model.moduleData[EXTRA_MODULE].ppm.delay*100+600 ;          // Duty
-  pwmptr->PWM_ENA = PWM_ENA_CHID1 ;                                               // Enable channel 1
-  pwmptr->PWM_IER1 = PWM_IER1_CHID1 ;
+  pwmptr->PWM_CH_NUM[1].PWM_CPDR = period;                       // Period
+  pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period;            // Period
+  pwmptr->PWM_CH_NUM[1].PWM_CDTY = GET_PPM_DELAY(EXTRA_MODULE)*2; // Duty
+  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = GET_PPM_DELAY(EXTRA_MODULE)*2; // Duty
+  pwmptr->PWM_ENA = PWM_ENA_CHID1; // Enable channel 1
+  pwmptr->PWM_IER1 = PWM_IER1_CHID1;
 #endif
 }
 
@@ -96,8 +114,8 @@ void disable_second_ppm()
 {
 #if !defined(REVA)
   register Pio * pioptr = PIOC;
-  pioptr->PIO_PER = PIO_PC15 ;                                            // Assign C17 to PIO
-  PWM->PWM_IDR1 = PWM_IDR1_CHID1 ;
+  pioptr->PIO_PER = PIO_PC15;                                            // Assign C17 to PIO
+  PWM->PWM_IDR1 = PWM_IDR1_CHID1;
 #endif
 }
 
@@ -145,18 +163,18 @@ void disable_ppm(uint32_t port)
 // TD is on PA17, peripheral A
 void init_ssc()
 {
-  register Ssc * sscptr ;
+  register Ssc * sscptr;
 
-  PMC->PMC_PCER0 |= 0x00400000L ;               // Enable peripheral clock to SSC
+  PMC->PMC_PCER0 |= 0x00400000L;               // Enable peripheral clock to SSC
 
-  configure_pins(PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA) ;
+  configure_pins(PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA);
 
-  sscptr = SSC ;
-  sscptr->SSC_THR = 0xFF ;		// Make the output high.
-  sscptr->SSC_TFMR = 0x00000027 ;         //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
-  sscptr->SSC_CMR = Master_frequency / (125000*2) ;               // 8uS per bit
-  sscptr->SSC_TCMR = 0 ;          //  0000 0000 0000 0000 0000 0000 0000 0000
-  sscptr->SSC_CR = SSC_CR_TXEN ;
+  sscptr = SSC;
+  sscptr->SSC_THR = 0xFF;		// Make the output high.
+  sscptr->SSC_TFMR = 0x00000027;         //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
+  sscptr->SSC_CMR = Master_frequency / (125000*2);               // 8uS per bit
+  sscptr->SSC_TCMR = 0;          //  0000 0000 0000 0000 0000 0000 0000 0000
+  sscptr->SSC_CR = SSC_CR_TXEN;
 
 #if defined(REVX)
   PIOA->PIO_MDER = PIO_PA17;						// Open Drain O/p in A17
@@ -167,15 +185,15 @@ void init_ssc()
 
 void disable_ssc()
 {
-  register Pio *pioptr ;
-  register Ssc *sscptr ;
+  register Pio *pioptr;
+  register Ssc *sscptr;
 
   // Revert back to pwm output
-  pioptr = PIOA ;
-  pioptr->PIO_PER = PIO_PA17 ;                                         // Assign A17 to PIO
+  pioptr = PIOA;
+  pioptr->PIO_PER = PIO_PA17;                                         // Assign A17 to PIO
 
-  sscptr = SSC ;
-  sscptr->SSC_CR = SSC_CR_TXDIS ;
+  sscptr = SSC;
+  sscptr->SSC_CR = SSC_CR_TXDIS;
 }
 
 void init_pxx(uint32_t port)
@@ -244,6 +262,7 @@ extern "C" void PWM_IRQHandler(void)
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
         if (period != 2500 * 2) {
           setupPulses(EXTERNAL_MODULE);
+          setExternalModulePolarity();
         }
         else {
           // Kick off serial output here
@@ -281,6 +300,7 @@ extern "C" void PWM_IRQHandler(void)
       default:
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;
         if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
+          setExternalModulePolarity();
           setupPulses(EXTERNAL_MODULE);
         }
         break;
@@ -293,6 +313,7 @@ extern "C" void PWM_IRQHandler(void)
     pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTRA_MODULE].ppm.ptr++;
     if (*modulePulsesData[EXTRA_MODULE].ppm.ptr == 0) {
       setupPulsesPPM(EXTRA_MODULE);
+      setExtraModulePolarity();
     }
   }
 #endif

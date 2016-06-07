@@ -53,6 +53,7 @@
   #define GVAR_VALUE(gv, fm) g_model.flightModeData[fm].gvars[gv]
 #endif
 
+#define GET_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
