@@ -28,7 +28,7 @@ void drawStatusText(const char * text)
 
 void drawColumnHeader(const char * const * headers, const char * const * descriptions, uint8_t index)
 {
-  lcdDrawText(LCD_W, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_TITLE_COLOR);
+  lcdDrawText(LCD_W-MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 2, headers[index], RIGHT | SMLSIZE | MENU_TITLE_COLOR);
   if (descriptions) {
     drawStatusText(descriptions[index]);
   }
