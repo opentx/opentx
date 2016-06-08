@@ -60,6 +60,7 @@ PACK(struct Dsm2SerialPulsesData {
   uint8_t * ptr;
   uint8_t  serialByte ;
   uint8_t  serialBitCount;
+  uint16_t _alignment;
 });
 #endif
 
@@ -68,6 +69,7 @@ PACK(struct PxxUartPulsesData {
   uint8_t  pulses[64];
   uint8_t  * ptr;
   uint16_t pcmCrc;
+  uint16_t _alignment;
 });
 #endif
 
@@ -128,7 +130,7 @@ union ModulePulsesData {
 extern ModulePulsesData modulePulsesData[NUM_MODULES];
 
 union TrainerPulsesData {
-  PpmPulsesData<uint16_t> ppm;
+  PpmPulsesData<trainer_pulse_duration_t> ppm;
 };
 
 extern TrainerPulsesData trainerPulsesData;

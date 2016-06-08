@@ -96,9 +96,12 @@ void extmodulePpmStart()
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->ARR = 45000;
   // CH1 PWM mode 1, CH1 out is OFF if CNT<CCR1(delay) and ON if bigger (up to AAR,which is pulse length)
-  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE;        // PWM mode 1
-  EXTMODULE_TIMER->EGR = 1; // Reloads register vales now
+  EXTMODULE_TIMER->CCR1 = GET_PPM_DELAY(EXTERNAL_MODULE)*2;
+  EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | (GET_PPM_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC1P : 0);
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
+  EXTMODULE_TIMER->EGR = 1; // Reloads register values now
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Update DMA request
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE;        // PWM mode 1
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN; // Start timer
 
   extmoduleSendNextFrame();
@@ -107,13 +110,6 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
-}
-
-void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive)
-{
-  EXTMODULE_TIMER->CCR2 = idleTime;
-  EXTMODULE_TIMER->CCR1 = delay;
-  EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | (positive ? 0 : TIM_CCER_CC1P);
 }
 
 void extmodulePxxStart()
@@ -217,6 +213,8 @@ void extmoduleCrossfireStart()
 void extmoduleSendNextFrame()
 {
   if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
+    EXTMODULE_TIMER->CCR1 = GET_PPM_DELAY(EXTERNAL_MODULE)*2;
+    EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | (GET_PPM_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC1P : 0);
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     EXTMODULE_DMA_STREAM->CR |= EXTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_1 | DMA_SxCR_MSIZE_1 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     EXTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
@@ -253,7 +251,7 @@ extern "C" void EXTMODULE_DMA_IRQHandler()
   DMA_ClearITPendingBit(EXTMODULE_DMA_STREAM, EXTMODULE_DMA_FLAG_TC);
 
   uint32_t arr = EXTMODULE_TIMER->ARR;
-  if (arr > 4000) {
+  if (0 && arr > 5000) {
     EXTMODULE_TIMER->CCR2 = arr - 4000; // 2mS in advance
     EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
     EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
