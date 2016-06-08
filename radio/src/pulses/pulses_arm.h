@@ -93,7 +93,6 @@ PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t * ptr;
   uint16_t rest;
   uint8_t index;
-  uint8_t _alignment;
 });
 #endif
 
@@ -118,12 +117,12 @@ union ModulePulsesData {
 #endif
   PpmPulsesData<pulse_duration_t> ppm;
   CrossfirePulsesData crossfire;
-};
+} __ALIGNED;
 
-/* The __DMA keyword is required to align the struct inside the modulePulsesData below,
- * which is also defined to be __DMA aligned.
+/* The __ALIGNED keyword is required to align the struct inside the modulePulsesData below,
+ * which is also defined to be __DMA  (which includes __ALIGNED) aligned.
  * Arrays in C/C++ are always defined to be *contiguously*. The first byte of the second element is therefore always
- * sizeof(ModulePulsesData). __DMA is required for sizeof(ModulePulsesData) to be a multiple of the alignment.
+ * sizeof(ModulePulsesData). __ALIGNED is required for sizeof(ModulePulsesData) to be a multiple of the alignment.
  */
 
 extern ModulePulsesData modulePulsesData[NUM_MODULES];
