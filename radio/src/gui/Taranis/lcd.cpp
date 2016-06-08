@@ -422,14 +422,14 @@ void lcd_outdezNAtt(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t 
       else if (smlsize) {
         x -= 2;
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcd_vline(x, y-1, 8, INVERS);
+          lcd_vlineStip(x, y-1, 8, SOLID, INVERS);
         }
         lcd_plot(x, y+5);
       }
       else if (tinsize) {
         x--;
         if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcd_vline(x-1, y-1, 7, INVERS);
+          lcd_vlineStip(x-1, y-1, 7, SOLID, INVERS);
         }
         lcd_plot(x-1, y+4);
         x--;
