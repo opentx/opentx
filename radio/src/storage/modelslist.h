@@ -38,7 +38,13 @@ class ModelCell
       strncpy(this->name, name, sizeof(this->name));
 
       ModelHeader header;
-      const char * error = readModel(name, (uint8_t *)&header, sizeof(header));
+      const char * error = NULL;
+
+      if (strncmp(name, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0)
+        header = g_model.header;
+      else
+        error = readModel(name, (uint8_t *)&header, sizeof(header));
+
       if (error) {
         buffer.drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
         buffer.drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
