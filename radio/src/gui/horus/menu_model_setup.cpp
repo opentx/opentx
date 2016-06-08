@@ -503,12 +503,12 @@ bool menuModelSetup(evt_t event)
 
       case ITEM_MODEL_BEEP_CENTER:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCTR);
+        lcdNextPos = MODEL_SETUP_2ND_COLUMN - 3;
         for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
-          coord_t x = MODEL_SETUP_2ND_COLUMN+i*15;
           LcdFlags flags = ((menuHorizontalPosition==i && attr) ? INVERS : 0);
-          flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : TEXT_DISABLE_COLOR;
+          flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : (TEXT_DISABLE_COLOR | NO_FONTCACHE);
           if (attr && menuHorizontalPosition < 0) flags |= INVERS;
-          lcdDrawTextAtIndex(x, y, STR_RETA123, i, flags);
+          lcdDrawTextAtIndex(lcdNextPos+3, y, STR_RETA123, i, flags);
         }
         if (attr && CURSOR_ON_CELL) {
           if (event==EVT_KEY_BREAK(KEY_ENTER)) {
