@@ -93,7 +93,7 @@ extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpio
 extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
-extern DMA_Stream_TypeDef dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6;
+extern DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6;
 extern DMA_TypeDef dma2;
 #undef GPIOA
 #undef GPIOB
@@ -145,12 +145,14 @@ extern DMA_TypeDef dma2;
 #define USART3 (&Usart3)
 #undef RCC
 #define RCC (&rcc)
+#undef DMA1_Stream2
 #undef DMA1_Stream5
 #undef DMA1_Stream7
 #undef DMA2_Stream1
 #undef DMA2_Stream2
 #undef DMA2_Stream5
 #undef DMA2_Stream6
+#define DMA1_Stream2 (&dma1_stream2)
 #define DMA1_Stream5 (&dma1_stream5)
 #define DMA1_Stream7 (&dma1_stream7)
 #define DMA2_Stream1 (&dma2_stream1)
