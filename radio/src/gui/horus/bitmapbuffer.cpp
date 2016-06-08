@@ -326,11 +326,19 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   coord_t & pos = (flags & VERTICAL) ? y : x;
 
   if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-    flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
+    uint16_t fgColor = lcdColorTable[COLOR_IDX(flags)];
+    if (fgColor == lcdColorTable[TEXT_COLOR_INDEX]) {
+      flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
+    }
     if (fontindex == STDSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      drawSolidFilledRect(x+width-1, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      fontcache = fontCache[1];
+      if (fgColor == lcdColorTable[TEXT_COLOR_INDEX]) {
+        drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+        drawSolidFilledRect(x+width-1, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+        fontcache = fontCache[1];
+      }
+      else {
+        drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
+      }
     }
     else if (fontindex == TINSIZE_INDEX) {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN+2, y-INVERT_VERT_MARGIN+2, width+2*INVERT_HORZ_MARGIN-5, INVERT_LINE_HEIGHT-7, TEXT_INVERTED_BGCOLOR);
