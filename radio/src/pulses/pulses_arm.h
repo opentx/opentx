@@ -22,30 +22,32 @@
 #define _PULSES_ARM_H_
 
 #if NUM_MODULES == 2
-  #define MODULES_INIT(...) __VA_ARGS__, __VA_ARGS__
+  #define MODULES_INIT(...)            __VA_ARGS__, __VA_ARGS__
 #else
-  #define MODULES_INIT(...) __VA_ARGS__
+  #define MODULES_INIT(...)            __VA_ARGS__
 #endif
 
 #if defined(PCBHORUS)
-  #define pulse_duration_t uint32_t
+  #define pulse_duration_t             uint32_t
+  #define trainer_pulse_duration_t     uint16_t
 #else
-  #define pulse_duration_t uint16_t
+  #define pulse_duration_t             uint16_t
+  #define trainer_pulse_duration_t     uint16_t
 #endif
 
 extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
-PACK(struct PpmPulsesData {
-  pulse_duration_t pulses[20];
-  pulse_duration_t * ptr;
+PACK(template<class T> struct PpmPulsesData {
+  T pulses[20];
+  T * ptr;
 });
 
 #if defined(PPM_PIN_SERIAL)
 PACK(struct PxxSerialPulsesData {
   uint8_t  pulses[64];
-  uint8_t  *ptr;
+  uint8_t  * ptr;
   uint16_t pcmValue;
   uint16_t pcmCrc;
   uint32_t pcmOnesCount;
@@ -55,7 +57,7 @@ PACK(struct PxxSerialPulsesData {
 
 PACK(struct Dsm2SerialPulsesData {
   uint8_t  pulses[64];
-  uint8_t *ptr;
+  uint8_t * ptr;
   uint8_t  serialByte ;
   uint8_t  serialBitCount;
 });
@@ -113,7 +115,7 @@ union ModulePulsesData {
 #if defined(PPM_PIN_UART)
   PxxUartPulsesData pxx_uart;
 #endif
-  PpmPulsesData ppm;
+  PpmPulsesData<pulse_duration_t> ppm;
   CrossfirePulsesData crossfire;
 } __DMA;
 
@@ -126,7 +128,7 @@ union ModulePulsesData {
 extern ModulePulsesData modulePulsesData[NUM_MODULES];
 
 union TrainerPulsesData {
-  PpmPulsesData ppm;
+  PpmPulsesData<uint16_t> ppm;
 };
 
 extern TrainerPulsesData trainerPulsesData;
@@ -136,7 +138,8 @@ void setupPulses(uint8_t port);
 void setupPulsesDSM2(uint8_t port);
 void setupPulsesMultimodule(uint8_t port);
 void setupPulsesPXX(uint8_t port);
-void setupPulsesPPM(uint8_t port);
+void setupPulsesPPMModule(uint8_t port);
+void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);

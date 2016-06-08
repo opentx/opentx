@@ -159,8 +159,6 @@ void intmodulePxxStart()
 
   INTERNAL_MODULE_ON();
 
-  setupPulsesPXX(INTERNAL_MODULE);
-
   NVIC_InitStructure.NVIC_IRQChannel = INTMODULE_DMA_STREAM_IRQ;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; /* Not used as 4 bits are used for the pre-emption priority. */;
@@ -195,17 +193,16 @@ void intmodulePxxStart()
 
   // Timer
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  INTMODULE_TIMER->ARR = 18000;                     // 9mS
-  INTMODULE_TIMER->CCR2 = 15000;            // Update time
+  INTMODULE_TIMER->ARR = 18000; // 9mS
+  INTMODULE_TIMER->CCR2 = 15000; // Update time
   INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
-
   INTMODULE_TIMER->CCMR2 = 0;
-  INTMODULE_TIMER->EGR = 1;                                                         // Restart
+  INTMODULE_TIMER->EGR = 1; // Restart
 
-  INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_0;                     // Toggle CC1 o/p
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;                             // Clear flag
+  INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_0; // Toggle CC1 o/p
+  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;  // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
@@ -227,7 +224,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
   DEBUG_INTERRUPT(INT_TIM1CC);
   DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
   DEBUG_TIMER_START(debugTimerIntPulsesDuration);
-  INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;       // stop this interrupt
+  // INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;       // stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
 
   setupPulses(INTERNAL_MODULE);
@@ -239,7 +236,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
     DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&INTMODULE_USART->DR);
     DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
     DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(modulePulsesData[INTERNAL_MODULE].pxx_uart.pulses);
-    DMA_InitStructure.DMA_BufferSize = (uint8_t *)modulePulsesData[INTERNAL_MODULE].pxx_uart.ptr - (uint8_t *)modulePulsesData[INTERNAL_MODULE].pxx_uart.pulses;
+    DMA_InitStructure.DMA_BufferSize = modulePulsesData[INTERNAL_MODULE].pxx_uart.ptr - modulePulsesData[INTERNAL_MODULE].pxx_uart.pulses;
     DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
@@ -256,6 +253,6 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
     USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
   }
 
-  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+  // INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
   DEBUG_TIMER_STOP(debugTimerIntPulsesDuration);
 }

@@ -166,14 +166,10 @@ void SDRAM_Init(void);
 #define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_UART_MODULE(port)      (port == INTERNAL_MODULE)
 
-// void setupPulses(uint8_t port);
-// void setupPulsesPPM(uint8_t port);
-// void setupPulsesPXX(uint8_t port);
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm( uint32_t module_index );
 void disable_ppm( uint32_t module_index );
-void set_external_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
 void init_pxx( uint32_t module_index );
 void disable_pxx( uint32_t module_index );
 void init_dsm2( uint32_t module_index );
@@ -188,7 +184,6 @@ void init_trainer_capture(void);
 void stop_trainer_capture(void);
 void init_cppm_on_heartbeat_capture(void);
 void stop_cppm_on_heartbeat_capture(void);
-void set_trainer_ppm_parameters(uint32_t idleTime, uint32_t delay, uint32_t positive);
 
 // Keys driver
 void keysInit(void);

@@ -94,14 +94,13 @@ void extmodulePpmStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop timer
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = 41000;
+  EXTMODULE_TIMER->ARR = 45000;
   // CH1 PWM mode 1, CH1 out is OFF if CNT<CCR1(delay) and ON if bigger (up to AAR,which is pulse length)
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE;        // PWM mode 1
   EXTMODULE_TIMER->EGR = 1; // Reloads register vales now
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Update DMA request
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN; // Start timer
 
-  setupPulsesPPM(EXTERNAL_MODULE);
   extmoduleSendNextFrame();
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
@@ -143,7 +142,6 @@ void extmodulePxxStart()
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
-  setupPulsesPXX(EXTERNAL_MODULE);
   extmoduleSendNextFrame();
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
@@ -179,7 +177,6 @@ void extmoduleDsm2Start()
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
-  setupPulsesDSM2(EXTERNAL_MODULE);
   extmoduleSendNextFrame();
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -28,16 +28,14 @@ uint8_t moduleFlag[NUM_MODULES] = { 0 };
 ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
-void setupPulses(uint8_t port)
+uint8_t getRequiredProtocol(uint8_t port)
 {
   uint8_t required_protocol;
-
-  heartbeat |= (HEART_TIMER_PULSES << port);
 
   switch (port) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     case INTERNAL_MODULE:
-  #if defined(TARANIS_INTERNAL_PPM)
+#if defined(TARANIS_INTERNAL_PPM)
       switch (g_model.moduleData[INTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
@@ -49,9 +47,9 @@ void setupPulses(uint8_t port)
           required_protocol = PROTO_NONE;
           break;
       }
-  #else
+#else
       required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
-  #endif
+#endif
       break;
 #endif
 
@@ -111,12 +109,23 @@ void setupPulses(uint8_t port)
   }
 #endif
 
-  if (s_current_protocol[port] != required_protocol) {
+  return required_protocol;
+}
 
+void setupPulses(uint8_t port)
+{
+  bool init_needed = false;
+  uint8_t required_protocol = getRequiredProtocol(port);
+
+  heartbeat |= (HEART_TIMER_PULSES << port);
+
+  if (s_current_protocol[port] != required_protocol) {
+    init_needed = true;
     switch (s_current_protocol[port]) { // stop existing protocol hardware
       case PROTO_PXX:
         disable_pxx(port);
         break;
+
 #if defined(DSM2)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
@@ -124,55 +133,28 @@ void setupPulses(uint8_t port)
         disable_dsm2(port);
         break;
 #endif
+
 #if defined(CROSSFIRE)
       case PROTO_CROSSFIRE:
         disable_crossfire(port);
         break;
 #endif
+
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
         disable_dsm2(port);
         break;
 #endif
+
       case PROTO_PPM:
         disable_ppm(port);
         break;
+
       default:
         disable_no_pulses(port);
         break;
     }
-
     s_current_protocol[port] = required_protocol;
-
-    switch (required_protocol) { // Start new protocol hardware here
-      case PROTO_PXX:
-        init_pxx(port);
-        break;
-#if defined(DSM2)
-      case PROTO_DSM2_LP45:
-      case PROTO_DSM2_DSM2:
-      case PROTO_DSM2_DSMX:
-        init_dsm2(port);
-        break;
-#endif
-#if defined(CROSSFIRE)
-      case PROTO_CROSSFIRE:
-        init_crossfire(port);
-        break;
-#endif
-#if defined(MULTIMODULE)
-    case PROTO_MULTIMODULE:
-        init_dsm2(port);
-        break;
-#endif
-      case PROTO_PPM:
-        init_ppm(port);
-        break;
-
-      default:
-        init_no_pulses(port);
-        break;
-    }
   }
 
   // Set up output data here
@@ -181,6 +163,7 @@ void setupPulses(uint8_t port)
       setupPulsesPXX(port);
       scheduleNextMixerCalculation(port, 9);
       break;
+
 #if defined(DSM2)
     case PROTO_DSM2_LP45:
     case PROTO_DSM2_DSM2:
@@ -189,29 +172,67 @@ void setupPulses(uint8_t port)
       scheduleNextMixerCalculation(port, 11);
       break;
 #endif
+
 #if defined(CROSSFIRE)
     case PROTO_CROSSFIRE:
-    {
-      if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE) {
+      if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE && !init_needed) {
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
         createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
         sportSendBuffer(crossfire, CROSSFIRE_FRAME_LEN);
-        scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
       }
+      scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
       break;
-    }
 #endif
+
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
       setupPulsesMultimodule(port);
       scheduleNextMixerCalculation(port, 11);
       break;
 #endif
+
     case PROTO_PPM:
-      setupPulsesPPM(port);
+      setupPulsesPPMModule(port);
       scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].ppm.frameLength)/2);
-      break ;
+      break;
+
     default:
       break;
+  }
+
+  if (init_needed) {
+    switch (required_protocol) { // Start new protocol hardware here
+      case PROTO_PXX:
+        init_pxx(port);
+        break;
+
+#if defined(DSM2)
+      case PROTO_DSM2_LP45:
+      case PROTO_DSM2_DSM2:
+      case PROTO_DSM2_DSMX:
+        init_dsm2(port);
+        break;
+#endif
+
+#if defined(CROSSFIRE)
+      case PROTO_CROSSFIRE:
+        init_crossfire(port);
+        break;
+#endif
+
+#if defined(MULTIMODULE)
+    case PROTO_MULTIMODULE:
+        init_dsm2(port);
+        break;
+#endif
+
+      case PROTO_PPM:
+        init_ppm(port);
+        break;
+
+      default:
+        init_no_pulses(port);
+        break;
+    }
   }
 }

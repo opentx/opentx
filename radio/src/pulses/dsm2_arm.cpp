@@ -43,7 +43,7 @@ void _send_1(uint8_t v)
   else
     v -= 2;
 
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v - 1;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index += 1;
   modulePulsesData[EXTERNAL_MODULE].dsm2.rest -= v;
 }

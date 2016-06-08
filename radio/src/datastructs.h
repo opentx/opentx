@@ -694,7 +694,7 @@ PACK(struct ModuleData {
   union {
     struct {
       int8_t  delay:6;
-      uint8_t pulsePol:1;      // For PXX: false = internal antenna, true = exetrnal antenna
+      uint8_t pulsePol:1;      // For PXX: false = internal antenna, true = external antenna
       uint8_t outputType:1;    // false = open drain, true = push pull
       int8_t  frameLength;
     } ppm;
