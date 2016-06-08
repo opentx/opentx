@@ -93,6 +93,7 @@ PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t * ptr;
   uint16_t rest;
   uint8_t index;
+  uint8_t _alignment;
 });
 #endif
 
@@ -117,7 +118,7 @@ union ModulePulsesData {
 #endif
   PpmPulsesData<pulse_duration_t> ppm;
   CrossfirePulsesData crossfire;
-} __DMA;
+};
 
 /* The __DMA keyword is required to align the struct inside the modulePulsesData below,
  * which is also defined to be __DMA aligned.
