@@ -123,9 +123,6 @@ void onModelSelectMenu(const char * result)
     POPUP_CONFIRMATION(STR_DELETEMODEL);
     SET_WARNING_INFO(currentModel->name, LEN_MODEL_FILENAME, 0);
   }
-  else if (result == STR_CHANGE_CATEGORY) {
-
-  }
   else if (result == STR_CREATE_MODEL) {
     storageCheck(true);
     currentModel = modelslist.currentModel = modelslist.addModel(currentCategory, createModel());
@@ -253,7 +250,7 @@ bool menuModelSelect(evt_t event)
         }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
         // POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
-        POPUP_MENU_ADD_ITEM(STR_CHANGE_CATEGORY);
+        // POPUP_MENU_ADD_ITEM(STR_CHANGE_CATEGORY);
         if (currentModel != modelslist.currentModel) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
         }
@@ -283,7 +280,7 @@ bool menuModelSelect(evt_t event)
         lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN+1, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
         editName(MENUS_MARGIN_LEFT, y, currentCategory->name, LEN_MODEL_FILENAME, event, 1, 0);
         if (s_editMode == 0 || event == EVT_KEY_BREAK(KEY_EXIT)) {
-          // storageRenameCategory(currentCategory, selectedCategory);
+          modelslist.save();
           selectMode = MODE_SELECT_CATEGORY;
           putEvent(EVT_REFRESH);
         }
