@@ -515,9 +515,9 @@ void audioTask(void * pdata)
 }
 #endif
 
-void mixSample(audio_data_t * result, int sample, unsigned int fade, bool swVolumeAdjust = true)
+void mixSample(audio_data_t * result, int sample, unsigned int fade)
 {
-  *result = limit(AUDIO_DATA_MIN, *result + ((sample >> fade) >> (16 - AUDIO_BITS_PER_SAMPLE)), AUDIO_DATA_MAX);
+  *result = limit(AUDIO_DATA_MIN, *result + ((sample >> fade) >> (16-AUDIO_BITS_PER_SAMPLE)), AUDIO_DATA_MAX);
 }
 
 #if defined(SDCARD)
@@ -688,9 +688,8 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
     }
 
     for (int i=0; i<points; i++) {
-
       int16_t sample = sineValues[int(toneIdx)] / state.volume;
-      mixSample(&buffer->data[i], sample, fade, false);
+      mixSample(&buffer->data[i], sample, fade);
       toneIdx += state.step;
       if ((unsigned int)toneIdx >= DIM(sineValues))
         toneIdx -= DIM(sineValues);
