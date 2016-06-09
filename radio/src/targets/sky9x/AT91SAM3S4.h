@@ -5325,16 +5325,30 @@ typedef struct {
 #define   TWI_MMR_IADRSZ_1_BYTE (0x1 << 8) /**< \brief (TWI_MMR) One-byte internal device address */
 #define   TWI_MMR_IADRSZ_2_BYTE (0x2 << 8) /**< \brief (TWI_MMR) Two-byte internal device address */
 #define   TWI_MMR_IADRSZ_3_BYTE (0x3 << 8) /**< \brief (TWI_MMR) Three-byte internal device address */
+#define TWI_MMR_IADRSZ_Msk  (0x3u << TWI_MMR_IADRSZ_Pos)
+#define TWI_MMR_IADRSZ_Pos  8
 #define TWI_MMR_MREAD (0x1 << 12) /**< \brief (TWI_MMR) Master Read Direction */
-#define TWI_MMR_DADR (0x7f << 16) /**< \brief (TWI_MMR) Device Address */
+#define TWI_MMR_DADR_Pos 16
+#define TWI_MMR_DADR_Msk (0x7fu << TWI_MMR_DADR_Pos) /**< \brief (TWI_MMR) Device Address */
+#define TWI_MMR_DADR(value) ((TWI_MMR_DADR_Msk & ((value) << TWI_MMR_DADR_Pos)))
 /* -------- TWI_SMR : (TWI Offset: 0x08) Slave Mode Register -------- */
-#define TWI_SMR_SADR (0x7f << 16) /**< \brief (TWI_SMR) Slave Address */
+#define TWI_SMR_SADR_Pos 16
+#define TWI_SMR_SADR_Msk (0x7fu << TWI_SMR_SADR_Pos) /**< \brief (TWI_SMR) Slave Address */
+#define TWI_SMR_SADR(value) ((TWI_SMR_SADR_Msk & ((value) << TWI_SMR_SADR_Pos)))
 /* -------- TWI_IADR : (TWI Offset: 0x0C) Internal Address Register -------- */
-#define TWI_IADR_IADR (0xffffff << 0) /**< \brief (TWI_IADR) Internal Address */
+#define TWI_IADR_IADR_Pos 0
+#define TWI_IADR_IADR_Msk (0xffffffu << TWI_IADR_IADR_Pos) /**< \brief (TWI_IADR) Internal Address */
+#define TWI_IADR_IADR(value) ((TWI_IADR_IADR_Msk & ((value) << TWI_IADR_IADR_Pos)))
 /* -------- TWI_CWGR : (TWI Offset: 0x10) Clock Waveform Generator Register -------- */
-#define TWI_CWGR_CLDIV (0xff << 0) /**< \brief (TWI_CWGR) Clock Low Divider */
-#define TWI_CWGR_CHDIV (0xff << 8) /**< \brief (TWI_CWGR) Clock High Divider */
-#define TWI_CWGR_CKDIV (0x7 << 16) /**< \brief (TWI_CWGR) Clock Divider */
+#define TWI_CWGR_CLDIV_Pos 0
+#define TWI_CWGR_CLDIV_Msk (0xffu << TWI_CWGR_CLDIV_Pos) /**< \brief (TWI_CWGR) Clock Low Divider */
+#define TWI_CWGR_CLDIV(value) ((TWI_CWGR_CLDIV_Msk & ((value) << TWI_CWGR_CLDIV_Pos)))
+#define TWI_CWGR_CHDIV_Pos 8
+#define TWI_CWGR_CHDIV_Msk (0xffu << TWI_CWGR_CHDIV_Pos) /**< \brief (TWI_CWGR) Clock High Divider */
+#define TWI_CWGR_CHDIV(value) ((TWI_CWGR_CHDIV_Msk & ((value) << TWI_CWGR_CHDIV_Pos)))
+#define TWI_CWGR_CKDIV_Pos 16
+#define TWI_CWGR_CKDIV_Msk (0x7u << TWI_CWGR_CKDIV_Pos) /**< \brief (TWI_CWGR) Clock Divider */
+#define TWI_CWGR_CKDIV(value) ((TWI_CWGR_CKDIV_Msk & ((value) << TWI_CWGR_CKDIV_Pos)))
 /* -------- TWI_SR : (TWI Offset: 0x20) Status Register -------- */
 #define TWI_SR_TXCOMP (0x1 << 0) /**< \brief (TWI_SR) Transmission Completed (automatically set / reset) */
 #define TWI_SR_RXRDY (0x1 << 1) /**< \brief (TWI_SR) Receive Holding Register Ready (automatically set / reset) */

@@ -19,6 +19,9 @@
  */
 
 #include "../../opentx.h"
+#ifdef AR9X
+#include "i2c_driver.h"
+#endif
 
 uint16_t ResetReason;
 uint32_t Master_frequency ;
@@ -367,6 +370,7 @@ void opentxBootloader();
 
 // Set up for volume control (TWI0)
 // Need PA3 and PA4 set to peripheral A
+#ifndef AR9X
 void i2cInit()
 {
   register Pio *pioptr;
@@ -392,6 +396,7 @@ void i2cInit()
   TWI0->TWI_MMR = 0x002F0000 ;          // Device 5E (>>1) and master is writing
   NVIC_EnableIRQ(TWI0_IRQn) ;
 }
+#endif
 
 void boardInit()
 {
