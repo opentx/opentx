@@ -218,7 +218,7 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
 
 #if defined(CPUARM)
-  #define HARDWARE_VOLUME
+  #define MASTER_VOLUME
 #endif
 
 #if defined(SIMU)

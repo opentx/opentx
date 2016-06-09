@@ -447,7 +447,7 @@ void evalFunctions()
             break;
 #endif
 
-#if defined(HARDWARE_VOLUME)
+#if defined(MASTER_VOLUME)
           case FUNC_VOLUME:
           {
             getvalue_t raw = getValue(CFN_PARAM(cfn));

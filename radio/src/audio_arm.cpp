@@ -23,6 +23,10 @@
 
 extern OS_MutexID audioMutex;
 
+#if defined(SOFTWARE_VOLUME)
+extern uint8_t currentSpeakerVolume;
+#endif
+
 const int16_t sineValues[] =
 {
     0, 196, 392, 588, 784, 980, 1175, 1370, 1564, 1758,
@@ -784,6 +788,12 @@ void AudioQueue::wakeup()
       // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
+#if defined(SOFTWARE_VOLUME)
+      for(uint32_t i=0; i<buffer->size; ++i) {
+        int32_t tmpSample = (int32_t) ((uint32_t) (buffer->data[i]) - AUDIO_DATA_SILENCE);  // conversion from uint16_t
+        buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
+      }
+#endif
       audioPushBuffer(buffer);
       __enable_irq();
     }
