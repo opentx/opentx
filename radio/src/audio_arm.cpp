@@ -790,7 +790,7 @@ void AudioQueue::wakeup()
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
 #if defined(SOFTWARE_VOLUME)
-      for(uint32_t i=0; i<buffer->size;++i) {
+      for(uint32_t i=0; i<buffer->size; ++i) {
         int32_t tmpSample = (int32_t) ((uint32_t) (buffer->data[i]) - AUDIO_DATA_SILENCE);  // conversion from uint16_t
         buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
       }
