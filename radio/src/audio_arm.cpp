@@ -518,13 +518,6 @@ void audioTask(void * pdata)
 void mixSample(audio_data_t * result, int sample, unsigned int fade, bool swVolumeAdjust = true)
 {
   *result = limit(AUDIO_DATA_MIN, *result + ((sample >> fade) >> (16 - AUDIO_BITS_PER_SAMPLE)), AUDIO_DATA_MAX);
-
-#if defined(SOFTWARE_VOLUME)
-  if (!swVolumeAdjust)
-    return;
-  int32_t tmpSample = (int32_t) (uint32_t) (*result);  // conversion from uint16_t
-  *((uint16_t*) result) = (int16_t) ((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX);
-#endif
 }
 
 #if defined(SDCARD)
@@ -697,9 +690,6 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
     for (int i=0; i<points; i++) {
 
       int16_t sample = sineValues[int(toneIdx)] / state.volume;
-#if defined(SOFTWARE_VOLUME)
-      sample *= (float)currentSpeakerVolume / VOLUME_LEVEL_MAX ;
-#endif
       mixSample(&buffer->data[i], sample, fade, false);
       toneIdx += state.step;
       if ((unsigned int)toneIdx >= DIM(sineValues))
@@ -799,6 +789,12 @@ void AudioQueue::wakeup()
       // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
+#if defined(SOFTWARE_VOLUME)
+      for(uint32_t i=0; i<buffer->size;++i) {
+        int32_t tmpSample = (int32_t) ((uint32_t) (buffer->data[i]) - AUDIO_DATA_SILENCE);  // conversion from uint16_t
+        buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
+      }
+#endif
       audioPushBuffer(buffer);
       __enable_irq();
     }
