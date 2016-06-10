@@ -106,6 +106,7 @@ void onCategorySelectMenu(const char * result)
   }
   else if (result == STR_DELETE_CATEGORY) {
     modelslist.removeCategory(currentCategory);
+    modelslist.save();
     setCurrentCategory(currentCategoryIndex-1);
   }
 }
@@ -260,6 +261,11 @@ bool menuModelSelect(evt_t event)
       break;
   }
 
+  if (currentCategory && currentCategory->size() == 0) {
+    selectMode = MODE_SELECT_CATEGORY;
+    currentModel = NULL;
+  }
+
   // Header
   theme->drawTopbarBackground(ICON_LIBRARY);
 
@@ -320,21 +326,15 @@ bool menuModelSelect(evt_t event)
     }
   }
   if (selectMode == MODE_SELECT_MODEL) {
-    if (index == 0) {
-      selectMode = MODE_SELECT_CATEGORY;
+    menuVerticalPosition = modelsVerticalPosition;
+    menuHorizontalPosition = modelsHorizontalPosition;
+    menuVerticalOffset = modelsVerticalOffset;
+    if (navigate(event, index, 3, 2)) {
+      modelsVerticalPosition = menuVerticalPosition;
+      modelsHorizontalPosition = menuHorizontalPosition;
+      modelsVerticalOffset = menuVerticalOffset;
       putEvent(EVT_REFRESH);
-    }
-    else {
-      menuVerticalPosition = modelsVerticalPosition;
-      menuHorizontalPosition = modelsHorizontalPosition;
-      menuVerticalOffset = modelsVerticalOffset;
-      if (navigate(event, index, 3, 2)) {
-        modelsVerticalPosition = menuVerticalPosition;
-        modelsHorizontalPosition = menuHorizontalPosition;
-        modelsVerticalOffset = menuVerticalOffset;
-        putEvent(EVT_REFRESH);
-        setCurrentModel(MODEL_INDEX());
-      }
+      setCurrentModel(MODEL_INDEX());
     }
     if (currentModel) {
       lcd->drawText(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT, MENU_FOOTER_TOP+2, currentModel->name, TEXT_INVERTED_COLOR);
