@@ -28,12 +28,12 @@ void BitmapBuffer::drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color
   }
   else if (opacity != 0) {
     uint8_t bgWeight = OPACITY_MAX - opacity;
-    COLOR_SPLIT(color, red, green, blue);
-    COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
+    RGB_SPLIT(color, red, green, blue);
+    RGB_SPLIT(*p, bgRed, bgGreen, bgBlue);
     uint16_t r = (bgRed * bgWeight + red * opacity) / OPACITY_MAX;
     uint16_t g = (bgGreen * bgWeight + green * opacity) / OPACITY_MAX;
     uint16_t b = (bgBlue * bgWeight + blue * opacity) / OPACITY_MAX;
-    drawPixel(p, COLOR_JOIN(r, g, b));
+    drawPixel(p, RGB_JOIN(r, g, b));
   }
 }
 
@@ -123,14 +123,14 @@ void BitmapBuffer::drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, ui
 void BitmapBuffer::invertRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags att)
 {
   display_t color = lcdColorTable[COLOR_IDX(att)];
-  COLOR_SPLIT(color, red, green, blue);
+  RGB_SPLIT(color, red, green, blue);
 
   for (int i=y; i<y+h; i++) {
     display_t * p = getPixelPtr(x, i);
     for (int j=0; j<w; j++) {
       // TODO ASSERT_IN_DISPLAY(p);
-      COLOR_SPLIT(*p, bgRed, bgGreen, bgBlue);
-      drawPixel(p++, COLOR_JOIN(0x1F + red - bgRed, 0x3F + green - bgGreen, 0x1F + blue - bgBlue));
+      RGB_SPLIT(*p, bgRed, bgGreen, bgBlue);
+      drawPixel(p++, RGB_JOIN(0x1F + red - bgRed, 0x3F + green - bgGreen, 0x1F + blue - bgBlue));
     }
   }
 }

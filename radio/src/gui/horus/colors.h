@@ -107,12 +107,18 @@ extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
 #define OVERLAY_COLOR                  COLOR(OVERLAY_COLOR_INDEX)
 #define CUSTOM_COLOR                   COLOR(CUSTOM_COLOR_INDEX)
 
-#define COLOR_SPLIT(color, r, g, b) \
+#define ARGB_SPLIT(color, a, r, g, b) \
+  uint16_t a = ((color) & 0xF000) >> 12; \
+  uint16_t r = ((color) & 0x0F00) >> 8; \
+  uint16_t g = ((color) & 0x00F0) >> 4; \
+  uint16_t b = ((color) & 0x000F)
+
+#define RGB_SPLIT(color, r, g, b) \
   uint16_t r = ((color) & 0xF800) >> 11; \
   uint16_t g = ((color) & 0x07E0) >> 5; \
   uint16_t b = ((color) & 0x001F)
 
-#define COLOR_JOIN(r, g, b) \
+#define RGB_JOIN(r, g, b) \
   (((r) << 11) + ((g) << 5) + (b))
 
 #define GET_RED(color) \

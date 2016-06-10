@@ -238,7 +238,13 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
           const uint16_t * qstart = &bmp->getData()[(srcy + int(i / scale)) * bmp->getWidth() + srcx];
           for (int j = 0; j < scaledw; j++) {
             const uint16_t * q = qstart + int(j / scale);
-            *p = *q;
+            if (bmp->getFormat() == BMP_ARGB4444) {
+              ARGB_SPLIT(*q, a, r, g, b);
+              drawAlphaPixel(p, a, RGB_JOIN(r<<1, g<<2, b<<1));
+            }
+            else {
+              drawPixel(p, *q);
+            }
             p++;
           }
         }

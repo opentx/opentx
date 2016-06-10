@@ -126,7 +126,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     }
   }
   else if (option->type == ZoneOption::Color) {
-    COLOR_SPLIT(value->unsignedValue, r, g, b);
+    RGB_SPLIT(value->unsignedValue, r, g, b);
 
     lcdSetColor(value->unsignedValue);
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y+1, 42, 17, TEXT_COLOR);
@@ -148,7 +148,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
       b = checkIncDec(event, b, 0, (1<<5)-1, i_flags);
     }
     if (attr && checkIncDec_Ret) {
-      value->unsignedValue = COLOR_JOIN(r, g, b);
+      value->unsignedValue = RGB_JOIN(r, g, b);
     }
   }
 
