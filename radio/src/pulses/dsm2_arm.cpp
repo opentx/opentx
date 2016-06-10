@@ -48,23 +48,23 @@ void _send_1(uint8_t v)
   modulePulsesData[EXTERNAL_MODULE].dsm2.rest -= v;
 }
 
-void sendByteDsm2(uint8_t b) //max 10 changes 0 10 10 10 10 1
+void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
 {
   bool    lev = 0;
-  uint8_t len = BITLEN_DSM2; //max val: 9*16 < 256
-  for (uint8_t i=0; i<=8; i++) { //8Bits + Stop=1
-    bool nlev = b & 1; //lsb first
+  uint8_t len = BITLEN_DSM2; // max val: 9*16 < 256
+  for (uint8_t i=0; i<=8; i++) { // 8Bits + Stop=1
+    bool nlev = b & 1; // lsb first
     if (lev == nlev) {
       len += BITLEN_DSM2;
     }
     else {
-      _send_1(len); // _send_1(nlev ? len-5 : len+3);
+      _send_1(len);
       len  = BITLEN_DSM2;
       lev  = nlev;
     }
-    b = (b>>1) | 0x80; //shift in stop bit
+    b = (b>>1) | 0x80; // shift in stop bit
   }
-  _send_1(len+BITLEN_DSM2); // _send_1(len+BITLEN_DSM2+3); // 2 stop bits
+  _send_1(len+BITLEN_DSM2); // stop bit
 }
 
 void putDsm2Flush()

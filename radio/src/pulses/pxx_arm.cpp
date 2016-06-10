@@ -141,6 +141,7 @@ void pxxPutPcmPart(uint8_t port, uint8_t value)
 
 void pxxPutPcmTail(uint8_t port)
 {
+  // rest min value is 18000 - 200 * 48 = 8400 (4.2ms)
   *(modulePulsesData[port].pxx.ptr-1) += modulePulsesData[port].pxx.rest;
 }
 #endif

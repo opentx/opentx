@@ -233,6 +233,7 @@ void intmodulePpmStart()
 void intmoduleSendNextFrame()
 {
   if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
+    INTMODULE_TIMER->CCR2 = *(modulePulsesData[INTERNAL_MODULE].pxx.ptr - 1) - 4000; // 2mS in advance
     INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
@@ -244,6 +245,7 @@ void intmoduleSendNextFrame()
   else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
     INTMODULE_TIMER->CCR3 = GET_PPM_DEAY(INTERNAL_MODULE)*2;
     INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
+    INTMODULE_TIMER->CCR2 = *(modulePulsesData[INTERNAL_MODULE].ppm.ptr - 1) - 4000; // 2mS in advance
     INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
@@ -264,16 +266,8 @@ extern "C" void INTMODULE_DMA_IRQHandler()
 
   DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, INTMODULE_DMA_FLAG_TC);
 
-  uint32_t arr = INTMODULE_TIMER->ARR;
-  if (arr > 5000) {
-    INTMODULE_TIMER->CCR2 = arr - 4000; // 2mS in advance
-    INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-    INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
-  }
-  else {
-    setupPulses(INTERNAL_MODULE);
-    intmoduleSendNextFrame();
-  }
+  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
 }
 
 extern "C" void INTMODULE_TIMER_CC_IRQHandler()

@@ -50,8 +50,7 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
     *ptr++ = v; /* as Pat MacKenzie suggests */
 #endif
   }
-  if (rest > 65535) rest = 65535; /* prevents overflows */
-  if (rest < 9000)  rest = 9000;  /* avoids that CCR2 is bigger than ARR which would cause reboot */
+  rest = limit<int32_t>(9000, rest, 65535); /* avoids that CCR2 is bigger than ARR which would cause reboot */
 #if defined(CPUSTM32)
   *ppmPulsesData->ptr++ = rest;
 #else

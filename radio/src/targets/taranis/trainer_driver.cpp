@@ -101,6 +101,7 @@ void trainerSendNextFrame()
 {
   TRAINER_TIMER->CCR4 = GET_PPM_DELAY(TRAINER_MODULE)*2;
   TRAINER_TIMER->CCER = TIM_CCER_CC4E | (GET_PPM_POLARITY(TRAINER_MODULE) ? 0 : TIM_CCER_CC4P);
+  TRAINER_TIMER->CCR1 = *(trainerPulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
 
   TRAINER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   TRAINER_DMA_STREAM->CR |= TRAINER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
@@ -117,16 +118,8 @@ extern "C" void TRAINER_DMA_IRQHandler()
 
   DMA_ClearITPendingBit(TRAINER_DMA_STREAM, TRAINER_DMA_FLAG_TC);
 
-  uint32_t arr = TRAINER_TIMER->ARR;
-  if (arr > 5000) {
-    TRAINER_TIMER->CCR1 = arr - 4000; // 2mS in advance
-    TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
-    TRAINER_TIMER->DIER |= TIM_DIER_CC1IE; // Enable this interrupt
-  }
-  else {
-    setupPulsesPPMTrainer();
-    trainerSendNextFrame();
-  }
+  TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
+  TRAINER_TIMER->DIER |= TIM_DIER_CC1IE; // Enable this interrupt
 }
 
 extern "C" void TRAINER_TIMER_IRQHandler()

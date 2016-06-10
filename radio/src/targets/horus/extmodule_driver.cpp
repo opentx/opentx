@@ -253,6 +253,7 @@ extern "C" void EXTMODULE_DMA_IRQHandler()
 
   DMA_ClearITPendingBit(EXTMODULE_DMA_STREAM, EXTMODULE_DMA_FLAG_TC);
 
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
 }
 
