@@ -87,10 +87,7 @@ void ValueWidget::refresh()
 
   if (field >= MIXSRC_FIRST_TELEM) {
     TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
-    if (!telemetryItem.isAvailable()) {
-      return;
-    }
-    else if (telemetryItem.isOld()) {
+    if (!telemetryItem.isAvailable() || telemetryItem.isOld()) {
       color = ALARM_COLOR;
     }
   }
