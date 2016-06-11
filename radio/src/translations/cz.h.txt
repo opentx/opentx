@@ -955,6 +955,7 @@
 #define TR_MENUGLOBALVARS      "GLOBÁLNÍ PROMěNNÉ"
 #define TR_OWN                 " \043 "
 #define TR_DATE                "Datum"
+#define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
 #define TR_ROTARY_ENCODER      "R.Encs"
 #define TR_CHANNELS_MONITOR    "MONITOR KANÁLU"
 #define TR_MIXERS_MONITOR      "MONITOR MIXU"

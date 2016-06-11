@@ -968,6 +968,7 @@
 #define TR_MENUGLOBALVARS      "GLOBALE VARIABELEN"
 #define TR_OWN                 "Eigen"
 #define TR_DATE                "Datum:"
+#define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
 #define TR_ROTARY_ENCODER      "Draaischakelaar"
 #define TR_CHANNELS_MONITOR    "Kanaal-Monitor==>"
 #define TR_MIXERS_MONITOR      "==>Mixer Monitor"

@@ -959,6 +959,7 @@
 #define TR_MENUGLOBALVARS      "GLOBALE VARIABLEN"
 #define TR_OWN                 "Eigen"
 #define TR_DATE                "Datum:"
+#define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
 #define TR_ROTARY_ENCODER      "Drehgeber"
 #define TR_CHANNELS_MONITOR    "Kanal-Monitor==>"
 #define TR_MIXERS_MONITOR      "==>Mischer Monitor"

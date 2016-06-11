@@ -35,7 +35,7 @@ Zone Topbar::getZone(unsigned int index) const
   return zone;
 }
 
-const char * const STR_MONTHS[] = { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+const char * const STR_MONTHS[] = TR_MONTHS;
 
 void drawTopbarDatetime()
 {
