@@ -810,7 +810,7 @@ set(GUI_SRC
   menu_model_custom_functions.cpp
   menu_model_telemetry.cpp
   menu_general.cpp
-  menu_general_setup.cpp
+  radio_setup.cpp
   menu_general_trainer.cpp
   menu_general_version.cpp
   radio_calibration.cpp
