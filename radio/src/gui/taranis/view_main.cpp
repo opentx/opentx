@@ -480,9 +480,9 @@ void menuMainView(uint8_t event)
 
     case EVT_KEY_BREAK(KEY_PAGE):
       storageDirty(EE_GENERAL);
-      g_eeGeneral.view += 1;
-      if (g_eeGeneral.view >= VIEW_COUNT) {
-        g_eeGeneral.view = 0;
+      g_model.view += 1;
+      if (g_model.view >= VIEW_COUNT) {
+        g_model.view = 0;
         chainMenu(menuMainViewChannelsMonitor);
       }
       break;
@@ -524,7 +524,7 @@ void menuMainView(uint8_t event)
   if (getSwitchCount() > 8) {
     for (int i=0; i<NUM_SWITCHES; ++i) {
       div_t qr = div(i, 9);
-      if (g_eeGeneral.view == VIEW_INPUTS) {
+      if (g_model.view == VIEW_INPUTS) {
         div_t qr2 = div(qr.rem, 5);
         if (i >= 14) qr2.rem += 1;
         const coord_t x[4] = { 50, 142 };
@@ -542,16 +542,16 @@ void menuMainView(uint8_t event)
       if (SWITCH_EXISTS(i)) {
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        putsSwitches((g_eeGeneral.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
+        putsSwitches((g_model.view == VIEW_INPUTS) ? (index<4 ? 8*FW+1 : 23*FW+2) : (index<4 ? 3*FW+1 : 8*FW-2), (index%4)*FH+3*FH, sw, 0);
         index++;
       }
     }
   }
 
-  if (g_eeGeneral.view == VIEW_TIMERS) {
+  if (g_model.view == VIEW_TIMERS) {
     displayTimers();
   }
-  else if (g_eeGeneral.view == VIEW_INPUTS) {
+  else if (g_model.view == VIEW_INPUTS) {
     // Sticks
     doMainScreenGraphics();
   }

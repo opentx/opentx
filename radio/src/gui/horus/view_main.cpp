@@ -164,13 +164,13 @@ bool menuMainView(evt_t event)
 
     case EVT_KEY_FIRST(KEY_PGDN):
       storageDirty(EE_GENERAL);
-      g_eeGeneral.view = circularIncDec(g_eeGeneral.view, +1, 0, getMainViewsCount()-1);
+      g_model.view = circularIncDec(g_model.view, +1, 0, getMainViewsCount()-1);
       break;
 
     case EVT_KEY_FIRST(KEY_PGUP):
       killEvents(event);
       storageDirty(EE_GENERAL);
-      g_eeGeneral.view = circularIncDec(g_eeGeneral.view, -1, 0, getMainViewsCount()-1);
+      g_model.view = circularIncDec(g_model.view, -1, 0, getMainViewsCount()-1);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -182,9 +182,13 @@ bool menuMainView(evt_t event)
       break;
   }
 
+  if (g_model.view >= getMainViewsCount()) {
+    g_model.view = 0;
+  }
+
   for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
     if (customScreens[i]) {
-      if (i == g_eeGeneral.view)
+      if (i == g_model.view)
         customScreens[i]->refresh();
       else
         customScreens[i]->background();

@@ -780,7 +780,11 @@ PACK(struct CustomScreenData {
 });
 #define CUSTOM_SCREENS_DATA \
   NOBACKUP(CustomScreenData screenData[MAX_CUSTOM_SCREENS]); \
-  NOBACKUP(Topbar::PersistentData topbarData);
+  NOBACKUP(Topbar::PersistentData topbarData); \
+  NOBACKUP(uint8_t view);
+#elif defined(PCBTARANIS)
+#define CUSTOM_SCREENS_DATA \
+  NOBACKUP(uint8_t view);
 #else
 #define CUSTOM_SCREENS_DATA
 // TODO other boards could have their custom screens here as well
@@ -987,7 +991,7 @@ PACK(struct RadioData {
   NOBACKUP(int8_t txVoltageCalibration);
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
-  NOBACKUP(uint8_t view);            // index of view in main screen
+  NOBACKUP(uint8_t _view);            // index of view in main screen
   NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
@@ -1081,10 +1085,10 @@ static inline void check_struct()
 
 #if defined(REV9E)
   CHKSIZE(RadioData, 952);
-  CHKSIZE(ModelData, 6519);
+  CHKSIZE(ModelData, 6520);
 #else
   CHKSIZE(RadioData, 872);
-  CHKSIZE(ModelData, 6506);
+  CHKSIZE(ModelData, 6507);
 #endif
 
 #elif defined(PCBHORUS)
@@ -1100,7 +1104,7 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
   CHKSIZE(RadioData, 835);
-  CHKSIZE(ModelData, 9371);
+  CHKSIZE(ModelData, 9372);
 
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
