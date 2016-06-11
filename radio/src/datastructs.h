@@ -991,7 +991,7 @@ PACK(struct RadioData {
   NOBACKUP(int8_t txVoltageCalibration);
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
-  NOBACKUP(uint8_t _view);            // index of view in main screen
+  NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
