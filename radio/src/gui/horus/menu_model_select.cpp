@@ -114,7 +114,6 @@ void onCategorySelectMenu(const char * result)
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
-    memcpy(g_eeGeneral.currModelFilename, currentModel->name, LEN_MODEL_FILENAME);
     storageDirty(EE_GENERAL);
     storageCheck(true);
     loadModel(g_eeGeneral.currModelFilename);
