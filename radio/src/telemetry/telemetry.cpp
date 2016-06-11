@@ -433,7 +433,9 @@ void telemetryInit(uint8_t protocol)
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+#if defined(LUA)
     luaOutputTelemetryPacket.sport.clear();
+#endif
   }
 
 #if defined(REVX) && !defined(SIMU)
