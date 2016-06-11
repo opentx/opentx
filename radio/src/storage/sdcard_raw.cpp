@@ -130,8 +130,6 @@ const char * loadModel(const char * filename)
 
   postModelLoad(newModel);
 
-  memcpy(g_eeGeneral.currModelFilename, filename, LEN_MODEL_FILENAME);
-
   return error;
 }
 

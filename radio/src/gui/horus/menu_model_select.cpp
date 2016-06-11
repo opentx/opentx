@@ -114,9 +114,12 @@ void onCategorySelectMenu(const char * result)
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
+    // we store the latest changes if any
+    storageCheck(true);
+    memcpy(g_eeGeneral.currModelFilename, currentModel->name, LEN_MODEL_FILENAME);
+    loadModel(g_eeGeneral.currModelFilename);
     storageDirty(EE_GENERAL);
     storageCheck(true);
-    loadModel(g_eeGeneral.currModelFilename);
     chainMenu(menuMainView);
   }
   else if (result == STR_DELETE_MODEL) {
