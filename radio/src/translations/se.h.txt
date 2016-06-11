@@ -1091,7 +1091,7 @@
   #define TR_MAVLINK_LON                  "LON"
 #endif
 
-// Horus and Taranis specific column headers
+// Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Namn"
 #define TR_PHASES_HEADERS_SW           "Brytare"
 #define TR_PHASES_HEADERS_RUD_TRIM     "Rodertrim"
@@ -1103,10 +1103,24 @@
 #define TR_PHASES_HEADERS_FAD_IN       "Tona Upp"
 #define TR_PHASES_HEADERS_FAD_OUT      "Tona Ned"
 
-// Taranis column headers
-#define TR_LIMITS_HEADERS      { " Namn ", " Subtrim ", " Min ", " Max ", " Riktning  ", " Kurva ", " PPM-center ", " Subtrim-läge " }
-#define TR_LSW_HEADERS         { " Funktion ", " V1 ", " V2 ", " V2 ", " OCH Brytare ", " Tidslängd ", " Fördröj " }
-#define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
+#define TR_LIMITS_HEADERS_NAME         "Namn"
+#define TR_LIMITS_HEADERS_SUBTRIM      "Subtrim"
+#define TR_LIMITS_HEADERS_MIN          "Min"
+#define TR_LIMITS_HEADERS_MAX          "Max"
+#define TR_LIMITS_HEADERS_DIRECTION    "Riktning"
+#define TR_LIMITS_HEADERS_CURVE        "Kurva"
+#define TR_LIMITS_HEADERS_PPMCENTER    "PPM-center"
+#define TR_LIMITS_HEADERS_SUBTRIMMODE  "Subtrim-läge"
+
+#define TR_LSW_HEADERS_FUNCTION        "Funktion"
+#define TR_LSW_HEADERS_V1              "V1"
+#define TR_LSW_HEADERS_V2              "V2"
+#define TR_LSW_HEADERS_ANDSW           "OCH Brytare"
+#define TR_LSW_HEADERS_DURATION        "Tidslängd"
+#define TR_LSW_HEADERS_DELAY           "Fördröj"
+
+// Horus footer descriptions
+#define TR_LSW_DESCRIPTIONS    { "Comparison type or function", "First variable", "Second variable or constant", "Second variable or constant", "Additional condition for line to be enabled", "Minimum ON duration of the logical switch", "Minimum TRUE duration for the switch to become ON" }
 
 // About screen
 #define TR_ABOUTUS             "Om Oss"

@@ -1084,7 +1084,7 @@
 #endif
 
 
-// Horus and Taranis specific column headers
+// Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Name "
 #define TR_PHASES_HEADERS_SW           "Schalter"
 #define TR_PHASES_HEADERS_RUD_TRIM     "Trim Seite"
@@ -1096,10 +1096,24 @@
 #define TR_PHASES_HEADERS_FAD_IN       "Fade In"
 #define TR_PHASES_HEADERS_FAD_OUT      "Fade Out"
 
-// Taranis Info Zeile Anzeigen
-#define TR_LIMITS_HEADERS      { " Name ", " Mitte ", " Min ", " Max ", " Richtung ", " Kurve ", " PPM-Mitte ", " Mitte-Mode " }
-#define TR_LSW_HEADERS         { " Funktion ", " Var1 ", " Var2 ", " Var2 ", " UND-Schalter ", " Dauer ", " Verzögerung " }
-#define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
+#define TR_LIMITS_HEADERS_NAME         "Name"
+#define TR_LIMITS_HEADERS_SUBTRIM      "Mitte"
+#define TR_LIMITS_HEADERS_MIN          "Min"
+#define TR_LIMITS_HEADERS_MAX          "Max"
+#define TR_LIMITS_HEADERS_DIRECTION    "Richtung"
+#define TR_LIMITS_HEADERS_CURVE        "Kurve"
+#define TR_LIMITS_HEADERS_PPMCENTER    "PPM-Mitte"
+#define TR_LIMITS_HEADERS_SUBTRIMMODE  "Mitte-Mode"
+
+#define TR_LSW_HEADERS_FUNCTION        "Funktion"
+#define TR_LSW_HEADERS_V1              "Var1"
+#define TR_LSW_HEADERS_V2              "Var2"
+#define TR_LSW_HEADERS_ANDSW           "UND-Schalter"
+#define TR_LSW_HEADERS_DURATION        "Dauer"
+#define TR_LSW_HEADERS_DELAY           "Verzögerung"
+
+// Horus footer descriptions
+#define TR_LSW_DESCRIPTIONS    { "Comparison type or function", "First variable", "Second variable or constant", "Second variable or constant", "Additional condition for line to be enabled", "Minimum ON duration of the logical switch", "Minimum TRUE duration for the switch to become ON" }
 
 // Taranis About screen
 #define TR_ABOUTUS             "Über OpenTx"

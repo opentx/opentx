@@ -1092,7 +1092,7 @@
   #define TR_MAVLINK_LON                   "LON"
 #endif
 
-// Horus and Taranis specific column headers
+// Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Name"
 #define TR_PHASES_HEADERS_SW           "Switch"
 #define TR_PHASES_HEADERS_RUD_TRIM     "Rudder Trim"
@@ -1104,10 +1104,24 @@
 #define TR_PHASES_HEADERS_FAD_IN       "Fade In"
 #define TR_PHASES_HEADERS_FAD_OUT      "Fade Out"
 
-// Taranis column headers
-#define TR_LIMITS_HEADERS      { " Name ", " Subtrim ", " Min ", " Max ", " Richtung ", " Curve ", " PPM-Midden ", " Subtrim Mode " }
-#define TR_LSW_HEADERS         { " Funktie ", " Var1 ", " Var2 ", " Var2 ", " EN-Schakelaar ", " Duur ", " Vertraging " }
-#define TR_LSW_DESCRIPTIONS    { "Choose the function name", "", "", "", "Choose an AND condition", "Logical switch duration", "Logical switch delay" }
+#define TR_LIMITS_HEADERS_NAME         "Name"
+#define TR_LIMITS_HEADERS_SUBTRIM      "Subtrim"
+#define TR_LIMITS_HEADERS_MIN          "Min"
+#define TR_LIMITS_HEADERS_MAX          "Max"
+#define TR_LIMITS_HEADERS_DIRECTION    "Richtung"
+#define TR_LIMITS_HEADERS_CURVE        "Curve"
+#define TR_LIMITS_HEADERS_PPMCENTER    "PPM-Midden"
+#define TR_LIMITS_HEADERS_SUBTRIMMODE  "Subtrim mode"
+
+#define TR_LSW_HEADERS_FUNCTION        "Funktie"
+#define TR_LSW_HEADERS_V1              "Var1"
+#define TR_LSW_HEADERS_V2              "Var2"
+#define TR_LSW_HEADERS_ANDSW           "EN-Schakelaar"
+#define TR_LSW_HEADERS_DURATION        "Duur"
+#define TR_LSW_HEADERS_DELAY           "Vertraging"
+
+// Horus footer descriptions
+#define TR_LSW_DESCRIPTIONS    { "Comparison type or function", "First variable", "Second variable or constant", "Second variable or constant", "Additional condition for line to be enabled", "Minimum ON duration of the logical switch", "Minimum TRUE duration for the switch to become ON" }
 
 // About screen
 #define TR_ABOUTUS             TR(" ABOUT ", "ABOUT")
