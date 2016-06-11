@@ -134,10 +134,7 @@ int main(int argc, char *argv[])
   }
 
   QString splashScreen;
-  if ( g.profile[g.id()].fwType().contains("taranis"))     splashScreen = ":/images/splash-taranis.png";
-  else if ( g.profile[g.id()].fwType().contains("9xrpro")) splashScreen = ":/images/splash-9xrpro.png";
-  else if ( g.profile[g.id()].fwType().contains("9xr"))    splashScreen = ":/images/splash-9xr.png";
-  else  splashScreen = ":/images/splash-9x.png";
+  splashScreen = ":/images/splash.png";
 
   QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
