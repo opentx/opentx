@@ -813,7 +813,7 @@ set(GUI_SRC
   menu_general_setup.cpp
   menu_general_trainer.cpp
   menu_general_version.cpp
-  menu_general_calib.cpp
+  radio_calibration.cpp
   view_main.cpp
   view_statistics.cpp
   )
