@@ -421,7 +421,9 @@ void telemetryInit(uint8_t protocol)
 #if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE);
+#if defined(LUA)
     luaOutputTelemetryPacket.crossfire.clear();
+#endif
     telemetryPortSetDirectionOutput();
   }
 #endif
