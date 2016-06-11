@@ -848,9 +848,10 @@
 #define TR_MENUSTAT            "STATISTIKA"
 #define TR_MENUDEBUG           "DIAG"
 #if defined(CPUARM)
-  #define TR_RXNUM             TR(INDENT "RX číslo", INDENT "Číslo přijímače")
+  #define TR_RECEIVER_NUM      TR(INDENT "RX číslo", INDENT "Číslo přijímače")
+#define TR_RECEIVER            INDENT "Receiver"
 #else
-  #define TR_RXNUM             "RX číslo"
+  #define TR_RECEIVER_NUM      "RX číslo"
 #endif
 #define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
 #define TR_MULTI_VIDFREQ       INDENT "Video frequency"
@@ -968,6 +969,8 @@
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            "Mód Failsafe"
 #define TR_FAILSAFESET         "NASTAVENÍ FAILSAFE"
+#define TR_HOLD                "HOLD"
+#define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENZOR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Kód regionu"

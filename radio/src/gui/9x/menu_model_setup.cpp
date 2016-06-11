@@ -596,11 +596,11 @@ void menuModelSetup(uint8_t event)
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
             xOffsetBind = 0;
-            lcd_putsLeft(y, INDENT "Receiver");
+            lcd_putsLeft(y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
           }
           else {
-            lcd_putsLeft(y, STR_RXNUM);
+            lcd_putsLeft(y, STR_RECEIVER_NUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
@@ -773,7 +773,7 @@ void menuModelSetup(uint8_t event)
           if (attr && menuHorizontalPosition > 1) {
             REPEAT_LAST_CURSOR_MOVE(); // limit 3 column row to 2 colums (Rx_Num and RANGE fields)
           }
-          lcd_putsLeft(y, STR_RXNUM);
+          lcd_putsLeft(y, STR_RECEIVER_NUM);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[0], (menuHorizontalPosition<=0 ? attr : 0) | LEADING0|LEFT, 2);
           if (attr && (menuHorizontalPosition==0 && (editMode>0 || p1valdiff))) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[0], 99);

@@ -849,9 +849,10 @@
 #define TR_MENUSTAT            "STAT"
 #define TR_MENUDEBUG           "DEBUG"
 #if defined(CPUARM)
-  #define TR_RXNUM               TR( INDENT "Nr RX",INDENT "Nr odbiornika")
+  #define TR_RECEIVER_NUM               TR( INDENT "Nr RX",INDENT "Nr odbiornika")
+#define TR_RECEIVER            INDENT "Receiver"
 #else
-  #define TR_RXNUM             "NumOdb"
+  #define TR_RECEIVER_NUM             "NumOdb"
 #endif
 #define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
 #define TR_MULTI_VIDFREQ       INDENT "Video frequency"
@@ -969,6 +970,8 @@
 #define TR_EXTERNALRF          "Zewn.Moduł RF"
 #define TR_FAILSAFE            TR(INDENT"Failsafe",INDENT"Tryb Failsafe")
 #define TR_FAILSAFESET         "USTAWIENIE FAILSAFE"
+#define TR_HOLD                "HOLD"
+#define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "CZUJNIK"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Kod regionu"

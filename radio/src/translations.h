@@ -583,7 +583,8 @@ extern const pm_char STR_MULTI_LOWPOWER[];
 extern const pm_char STR_MULTI_DSMFRAME[];
 #endif
 #if defined(DSM2) || defined(PXX)
-extern const pm_char STR_RXNUM[];
+extern const pm_char STR_RECEIVER_NUM[];
+extern const pm_char STR_RECEIVER[];
 #endif
 
 #if defined(PXX) || defined(CPUARM)
@@ -592,6 +593,8 @@ extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
+extern const pm_char STR_HOLD[];
+extern const pm_char STR_NONE[];
 extern const pm_char STR_MENUSENSOR[];
 extern const pm_char STR_SENSOR[];
 extern const pm_char STR_COUNTRYCODE[];

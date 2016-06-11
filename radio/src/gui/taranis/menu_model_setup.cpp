@@ -894,11 +894,11 @@ void menuModelSetup(uint8_t event)
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == RF_PROTO_D8) {
             xOffsetBind = 0;
-            lcd_putsLeft(y, INDENT "Receiver");
+            lcd_putsLeft(y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
           }
           else {
-            lcd_putsLeft(y, STR_RXNUM);
+            lcd_putsLeft(y, STR_RECEIVER_NUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx) || IS_MODULE_MULTIMODULE(moduleIdx)) {
             if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
@@ -1105,21 +1105,22 @@ void menuModelFailsafe(uint8_t event)
         uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
 #endif
 
+        uint8_t xValue = x+COL_W-4-wbar-ofs;
         if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-          lcdDrawText(x+COL_W-4-wbar-ofs-16, y, "HOLD", flags);
+          lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
           failsafeValue = 0;
         }
         else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-          lcdDrawText(x+COL_W-4-wbar-ofs-16, y, "NONE", flags);
+          lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
           failsafeValue = 0;
         }
         else {
 #if defined(PPM_UNIT_US)
-          lcdDrawNumber(x+COL_W-4-wbar-ofs, y, PPM_CH_CENTER(ch)+failsafeValue/2, flags);
+          lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue), PREC1|flags);
+          lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
 #else
-          lcdDrawNumber(x+COL_W-4-wbar-ofs, y, calcRESXto1000(failsafeValue)/10, flags);
+          lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue)/10, RIGHT|flags);
 #endif
         }
 

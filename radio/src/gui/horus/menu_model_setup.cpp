@@ -662,11 +662,11 @@ bool menuModelSetup(evt_t event)
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
             xOffsetBind = 0;
-            lcdDrawText(MENUS_MARGIN_LEFT, y, INDENT "Receiver");
+            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
           }
           else {
-            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RXNUM);
+            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RECEIVER_NUM);
           }
           if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_DSM2(moduleIdx)) {
             if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);

@@ -842,7 +842,13 @@
 #define TR_MENUTEMPLATES       "GABARITS"
 #define TR_MENUSTAT            TR("STATS", "STATISTIQUES")
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               TR(INDENT "NumRx", INDENT "No. récepteur")
+#if defined(CPUARM)
+  #define TR_RECEIVER_NUM      TR(INDENT "NumRx", INDENT "No. récepteur")
+  #define TR_RECEIVER          INDENT "Récepteur"
+#else
+  #define TR_RECEIVER_NUM      "Récepteur"
+  #define TR_RECEIVER          "Récepteur"
+#endif
 #define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
 #define TR_MULTI_VIDFREQ       INDENT "Video frequency"
 #define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
@@ -959,6 +965,8 @@
 #define TR_EXTERNALRF          "HF externe"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Type failsafe")
 #define TR_FAILSAFESET         "REGLAGES FAILSAFE"
+#define TR_HOLD                "HOLD"
+#define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "CAPTEUR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         TR("Zone géo.","Zone géographique")

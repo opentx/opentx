@@ -815,7 +815,8 @@
 #define TR_MENUTEMPLATES       "PLANTILLAS"
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
-#define TR_RXNUM               TR("RxNum", INDENT"Receptor No.")
+#define TR_RECEIVER_NUM        TR("RxNum", INDENT"Receptor No.")
+#define TR_RECEIVER            INDENT "Receiver"
 #define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
 #define TR_MULTI_VIDFREQ       INDENT "Video frequency"
 #define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
@@ -932,6 +933,8 @@
 #define TR_EXTERNALRF          "Externa RF"
 #define TR_FAILSAFE            INDENT"Modo sgdad."
 #define TR_FAILSAFESET         "AJUSTES SGDAD."
+#define TR_HOLD                "HOLD"
+#define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Codigo Pais"

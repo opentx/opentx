@@ -368,7 +368,8 @@ const pm_char STR_MENUDEBUG[] PROGMEM = TR_MENUDEBUG;
 const pm_char STR_MENUGLOBALVARS[] PROGMEM = TR_MENUGLOBALVARS;
 
 #if defined(DSM2) || defined(PXX)
-const pm_char STR_RXNUM[] PROGMEM = TR_RXNUM;
+const pm_char STR_RECEIVER_NUM[] PROGMEM = TR_RECEIVER_NUM;
+const pm_char STR_RECEIVER[] PROGMEM = TR_RECEIVER;
 #endif
 
 #if defined(PXX) || defined(CPUARM)
@@ -378,6 +379,8 @@ const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;
 const pm_char STR_COUNTRYCODE[] PROGMEM = TR_COUNTRYCODE;
 const pm_char STR_FAILSAFE[] PROGMEM = TR_FAILSAFE;
 const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
+const pm_char STR_HOLD[] PROGMEM = TR_HOLD;
+const pm_char STR_NONE[] PROGMEM = TR_NONE;
 const pm_char STR_MENUSENSOR[] PROGMEM = TR_MENUSENSOR;
 const pm_char STR_SENSOR[] PROGMEM = TR_SENSOR;
 #endif
