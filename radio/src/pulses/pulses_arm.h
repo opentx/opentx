@@ -100,10 +100,10 @@ PACK(struct Dsm2TimerPulsesData {
 
 #define CROSSFIRE_BAUDRATE             400000
 #define CROSSFIRE_FRAME_PERIOD         4 // 4ms
-#define CROSSFIRE_FRAME_LEN            (3+22+1)
+#define CROSSFIRE_FRAME_MAXLEN         64
 #define CROSSFIRE_CHANNELS_COUNT       16
 PACK(struct CrossfirePulsesData {
-  uint8_t pulses[CROSSFIRE_FRAME_LEN];
+  uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
 });
 
 union ModulePulsesData {
@@ -145,8 +145,6 @@ void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
-
-void createCrossfireFrame(uint8_t * frame, int16_t * pulses);
 
 #if defined(HUBSAN)
 void Hubsan_Init();

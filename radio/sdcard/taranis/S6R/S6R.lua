@@ -120,11 +120,11 @@ local function redrawFieldsPage()
 end
 
 local function telemetryRead(field)
-  return telemetryPush(0x1A, 0x30, 0x0C30, field)
+  return sportTelemetryPush(0x1A, 0x30, 0x0C30, field)
 end
 
 local function telemetryWrite(field, value)
-  return telemetryPush(0x1A, 0x31, 0x0C30, field + value*256)
+  return sportTelemetryPush(0x1A, 0x31, 0x0C30, field + value*256)
 end
 
 local telemetryPopTimeout = 0
@@ -144,7 +144,7 @@ local function refreshNext()
       end
     end
   elseif refreshState == 1 then
-    physicalId, primId, dataId, value = telemetryPop()
+    physicalId, primId, dataId, value = sportTelemetryPop()
     if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 then
       fieldId = value % 256
       if calibrationState == 2 then

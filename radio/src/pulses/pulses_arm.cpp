@@ -28,6 +28,10 @@ uint8_t moduleFlag[NUM_MODULES] = { 0 };
 ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
+#if defined(CROSSFIRE)
+uint8_t createCrossfireFrame(uint8_t * frame, int16_t * pulses, LuaTelemetryPacket * telemetry);
+#endif
+
 uint8_t getRequiredProtocol(uint8_t port)
 {
   uint8_t required_protocol;
@@ -177,8 +181,8 @@ void setupPulses(uint8_t port)
     case PROTO_CROSSFIRE:
       if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE && !init_needed) {
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
-        createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
-        sportSendBuffer(crossfire, CROSSFIRE_FRAME_LEN);
+        uint8_t len = createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart], &luaOutputTelemetryPacket);
+        sportSendBuffer(crossfire, len);
       }
       scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
       break;

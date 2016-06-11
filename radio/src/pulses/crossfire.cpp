@@ -24,24 +24,39 @@
 #define CROSSFIRE_CH_BITS           11
 
 // Range for pulses (channels output) is [-1024:+1024]
-void createCrossfireFrame(uint8_t * frame, int16_t * pulses)
+uint8_t createCrossfireFrame(uint8_t * frame, int16_t * pulses, LuaTelemetryPacket * telemetryPacket)
 {
   uint8_t * buf = frame;
-  *buf++ = BROADCAST_ADDRESS;
-  *buf++ = 24; // 1(ID) + 22 + 1(CRC)
-  *buf++ = CHANNELS_ID;
+  *buf++ = MODULE_ADDRESS;
 
-  uint32_t bits = 0;
-  uint8_t bitsavailable = 0;
-  for (int i=0; i<CROSSFIRE_CHANNELS_COUNT; i++) {
-    uint32_t val = limit(0, CROSSFIRE_CH_CENTER + (((pulses[i]) * 4) / 5), 2*CROSSFIRE_CH_CENTER);
-    bits |= val << bitsavailable;
-    bitsavailable += CROSSFIRE_CH_BITS;
-    while (bitsavailable >= 8) {
-      *buf++ = bits;
-      bits >>= 8;
-      bitsavailable -= 8;
+  if (telemetryPacket->crossfire.command) {
+    *buf++ = 2 + telemetryPacket->crossfire.length; // 1(ID) + telemetryPacket->crossfire.length + 1(CRC)
+    uint8_t * crc_start = buf;
+    *buf++ = telemetryPacket->crossfire.command;
+    for (int i=0; i<telemetryPacket->crossfire.length; i++) {
+      *buf++ = telemetryPacket->crossfire.data[i];
     }
+    *buf++ = crc8(crc_start, telemetryPacket->crossfire.length + 1);
+    telemetryPacket->crossfire.clear();
   }
-  *buf = crc8(&frame[2], 23);
+  else {
+    *buf++ = 24; // 1(ID) + 22 + 1(CRC)
+    uint8_t * crc_start = buf;
+    *buf++ = CHANNELS_ID;
+    uint32_t bits = 0;
+    uint8_t bitsavailable = 0;
+    for (int i=0; i<CROSSFIRE_CHANNELS_COUNT; i++) {
+      uint32_t val = limit(0, CROSSFIRE_CH_CENTER + (((pulses[i]) * 4) / 5), 2*CROSSFIRE_CH_CENTER);
+      bits |= val << bitsavailable;
+      bitsavailable += CROSSFIRE_CH_BITS;
+      while (bitsavailable >= 8) {
+        *buf++ = bits;
+        bits >>= 8;
+        bitsavailable -= 8;
+      }
+    }
+    *buf++ = crc8(crc_start, 23);
+  }
+
+  return buf - frame;
 }

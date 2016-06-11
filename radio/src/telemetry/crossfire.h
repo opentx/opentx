@@ -23,6 +23,7 @@
 
 // Device address
 #define BROADCAST_ADDRESS              0x00
+#define MODULE_ADDRESS                 0xEE
 
 // Frame id
 #define GPS_ID                         0x02
@@ -31,6 +32,9 @@
 #define CHANNELS_ID                    0x16
 #define ATTITUDE_ID                    0x1E
 #define FLIGHT_MODE_ID                 0x21
+#define PING_DEVICES_ID                0x28
+#define DEVICE_INFO_ID                 0x29
+#define REQUEST_SETTINGS_ID            0x2A
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);

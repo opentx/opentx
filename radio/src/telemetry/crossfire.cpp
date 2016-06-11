@@ -192,6 +192,21 @@ void processCrossfireTelemetryFrame()
       }
       break;
     }
+
+#if defined(LUA)
+    default:
+      if (luaInputTelemetryFifo) {
+        LuaTelemetryPacket luaPacket;
+        luaPacket.crossfire.command = id;
+        luaPacket.crossfire.length = telemetryRxBuffer[1]-2;
+        for (int i=0; i<min<int>(sizeof(luaPacket.crossfire.data), luaPacket.crossfire.length); i++) {
+          luaPacket.crossfire.data[i] = telemetryRxBuffer[3+i];
+        }
+        luaInputTelemetryFifo->push(luaPacket);
+      }
+      break;
+#endif
+
   }
 }
 

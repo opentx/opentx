@@ -85,7 +85,7 @@ minor: 1
 rev: 7
 ```
 */
-static int luaGetVersion(lua_State *L)
+static int luaGetVersion(lua_State * L)
 {
   lua_pushstring(L, VERSION);
   lua_pushstring(L, RADIO_VERSION);
@@ -105,13 +105,13 @@ run time: 12.54 seconds, return value: 1254
 
 @status current Introduced in 2.0.0
 */
-static int luaGetTime(lua_State *L)
+static int luaGetTime(lua_State * L)
 {
   lua_pushunsigned(L, get_tmr10ms());
   return 1;
 }
 
-static void luaPushDateTime(lua_State *L, uint32_t year, uint32_t mon, uint32_t day,
+static void luaPushDateTime(lua_State * L, uint32_t year, uint32_t mon, uint32_t day,
                             uint32_t hour, uint32_t min, uint32_t sec)
 {
   lua_createtable(L, 0, 6);
@@ -136,7 +136,7 @@ Return current system date and time that is kept by the RTC unit
  * `min` (number) minutes
  * `sec` (number) seconds
 */
-static int luaGetDateTime(lua_State *L)
+static int luaGetDateTime(lua_State * L)
 {
   struct gtm utm;
   gettime(&utm);
@@ -296,7 +296,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
   return false;  // not found
 }
 
-static int luaTelemetryPop(lua_State *L)
+static int luaSportTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
     luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, 16>();
@@ -307,10 +307,10 @@ static int luaTelemetryPop(lua_State *L)
 
   LuaTelemetryPacket packet;
   if (luaInputTelemetryFifo->pop(packet)) {
-    lua_pushnumber(L, packet.physicalId);
-    lua_pushnumber(L, packet.primId);
-    lua_pushnumber(L, packet.dataId);
-    lua_pushunsigned(L, packet.value);
+    lua_pushnumber(L, packet.sport.physicalId);
+    lua_pushnumber(L, packet.sport.primId);
+    lua_pushnumber(L, packet.sport.dataId);
+    lua_pushunsigned(L, packet.sport.value);
     return 4;
   }
 
@@ -327,17 +327,61 @@ uint8_t getDataId(uint8_t physicalId)
   return result;
 }
 
-static int luaTelemetryPush(lua_State *L)
+static int luaSportTelemetryPush(lua_State * L)
 {
-  if (luaOutputTelemetryPacket.physicalId != 0x7E) {
+  if (luaOutputTelemetryPacket.sport.physicalId != 0x7E) {
     lua_pushboolean(L, false);
     return 1;
   }
 
-  luaOutputTelemetryPacket.physicalId = getDataId(luaL_checkunsigned(L, 1));
-  luaOutputTelemetryPacket.primId = luaL_checkunsigned(L, 2);
-  luaOutputTelemetryPacket.dataId = luaL_checkunsigned(L, 3);
-  luaOutputTelemetryPacket.value = luaL_checkunsigned(L, 4);
+  luaOutputTelemetryPacket.sport.physicalId = getDataId(luaL_checkunsigned(L, 1));
+  luaOutputTelemetryPacket.sport.primId = luaL_checkunsigned(L, 2);
+  luaOutputTelemetryPacket.sport.dataId = luaL_checkunsigned(L, 3);
+  luaOutputTelemetryPacket.sport.value = luaL_checkunsigned(L, 4);
+
+  lua_pushboolean(L, true);
+  return 1;
+}
+
+static int luaCrossfireTelemetryPop(lua_State * L)
+{
+  if (!luaInputTelemetryFifo) {
+    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, 16>();
+    if (!luaInputTelemetryFifo) {
+      return 0;
+    }
+  }
+
+  LuaTelemetryPacket packet;
+  if (luaInputTelemetryFifo->pop(packet)) {
+    lua_pushnumber(L, packet.crossfire.command);
+    lua_newtable(L);
+    for (int i=0; i<packet.crossfire.length; i++) {
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, packet.crossfire.data[i]);
+      lua_settable(L, -3);
+    }
+    lua_settable(L, -3);
+    return 2;
+  }
+
+  return 0;
+}
+
+static int luaCrossfireTelemetryPush(lua_State * L)
+{
+  if (luaOutputTelemetryPacket.crossfire.command != 0) {
+    lua_pushboolean(L, false);
+    return 1;
+  }
+
+  luaOutputTelemetryPacket.crossfire.command = luaL_checkunsigned(L, 1);
+  luaL_checktype(L, 2, LUA_TTABLE);
+  luaOutputTelemetryPacket.crossfire.length = min<int>(sizeof(luaOutputTelemetryPacket.crossfire.data), luaL_len(L, 2));
+  for (int i=0; i<luaOutputTelemetryPacket.crossfire.length; i++) {
+    lua_rawgeti(L, 2, i+1);
+    luaOutputTelemetryPacket.crossfire.data[i] = luaL_checkunsigned(L, -1);
+  }
 
   lua_pushboolean(L, true);
   return 1;
@@ -365,7 +409,7 @@ The list of valid sources is available:
 
 @status current Introduced in 2.0.8
 */
-static int luaGetFieldInfo(lua_State *L)
+static int luaGetFieldInfo(lua_State * L)
 {
   const char * what = luaL_checkstring(L, 1);
   LuaField field;
@@ -424,7 +468,7 @@ case the returned value is 0):
 While `Cels` sensor returns current values of all cells in a table, a `Cels+` or
 `Cels-` will return a single value - the maximum or minimum Cels value.
 */
-static int luaGetValue(lua_State *L)
+static int luaGetValue(lua_State * L)
 {
   int src = 0;
   if (lua_isnumber(L, 1)) {
@@ -458,7 +502,7 @@ is not specified (or contains invalid value), then the current flight mode data 
 
 @status current Introduced in 2.1.7
 */
-static int luaGetFlightMode(lua_State *L)
+static int luaGetFlightMode(lua_State * L)
 {
   int mode = luaL_optinteger(L, 1, -1);
   if (mode < 0 || mode >= MAX_FLIGHT_MODES) {
@@ -482,7 +526,7 @@ to the path (example: for English language: `/SOUNDS/en` is appended)
 
 @status current Introduced in 2.0.0, changed in 2.1.0
 */
-static int luaPlayFile(lua_State *L)
+static int luaPlayFile(lua_State * L)
 {
   const char * filename = luaL_checkstring(L, 1);
   if (filename[0] != '/') {
@@ -575,7 +619,7 @@ OpenTX 2.1:
 | 24  | Seconds | 162 |
 
 */
-static int luaPlayNumber(lua_State *L)
+static int luaPlayNumber(lua_State * L)
 {
   int number = luaL_checkinteger(L, 1);
   int unit = luaL_checkinteger(L, 2);
@@ -597,7 +641,7 @@ Play a time value (text to speech)
 
 @status current Introduced in 2.1.0
 */
-static int luaPlayDuration(lua_State *L)
+static int luaPlayDuration(lua_State * L)
 {
   int duration = luaL_checkinteger(L, 1);
   bool playTime = (luaL_optinteger(L, 2, 0) != 0);
@@ -627,7 +671,7 @@ The valid range is from -127 to 127.
 
 @status current Introduced in 2.1.0
 */
-static int luaPlayTone(lua_State *L)
+static int luaPlayTone(lua_State * L)
 {
   int frequency = luaL_checkinteger(L, 1);
   int length = luaL_checkinteger(L, 2);
@@ -649,7 +693,7 @@ Stops key state machine.
 
 TODO table of events/masks
 */
-static int luaKillEvents(lua_State *L)
+static int luaKillEvents(lua_State * L)
 {
   uint8_t key = EVT_KEY_MASK(luaL_checkinteger(L, 1));
   // prevent killing maskable keys (only in telemetry scripts)
@@ -669,7 +713,7 @@ Returns gray value which can be used in LCD functions
 @retval (number) a value that represents amount of *greyness* (from 0 to 15)
 
 */
-static int luaGrey(lua_State *L)
+static int luaGrey(lua_State * L)
 {
   int index = luaL_checkinteger(L, 1);
   lua_pushunsigned(L, GREY(index));
@@ -694,7 +738,7 @@ Returns (some of) the general radio settings
 `language` and `voice` added int 2.2.0.
 
 */
-static int luaGetGeneralSettings(lua_State *L)
+static int luaGetGeneralSettings(lua_State * L)
 {
   lua_newtable(L);
   lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
@@ -731,7 +775,7 @@ Run function (key pressed)
 
 @status current Introduced in 2.0.0
 */
-static int luaPopupInput(lua_State *L)
+static int luaPopupInput(lua_State * L)
 {
   uint8_t event = luaL_checkinteger(L, 2);
   warningInputValue = luaL_checkinteger(L, 3);
@@ -765,7 +809,7 @@ Get stick that is assigned to a channel. See Default Channel Order in General Se
 
 @status current Introduced in 2.0.0
 */
-static int luaDefaultStick(lua_State *L)
+static int luaDefaultStick(lua_State * L)
 {
   uint8_t channel = luaL_checkinteger(L, 1);
   lua_pushinteger(L, channel_order(channel+1)-1);
@@ -785,7 +829,7 @@ Get channel assigned to stick. See Default Channel Order in General Settings
 
 @status current Introduced in 2.0.0
 */
-static int luaDefaultChannel(lua_State *L)
+static int luaDefaultChannel(lua_State * L)
 {
   uint8_t stick = luaL_checkinteger(L, 1);
   for (int i=1; i<=4; i++) {
@@ -818,8 +862,12 @@ const luaL_Reg opentxLib[] = {
 #if !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
-  { "telemetryPop", luaTelemetryPop },
-  { "telemetryPush", luaTelemetryPush },
+  { "sportTelemetryPop", luaSportTelemetryPop },
+  { "sportTelemetryPush", luaSportTelemetryPush },
+#if defined(CROSSFIRE)
+  { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
+  { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
+#endif
   { NULL, NULL }  /* sentinel */
 };
 

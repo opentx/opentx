@@ -201,14 +201,14 @@ void sportSendLuaPacket(LuaTelemetryPacket & packet)
 
   uint16_t crc = 0;
   for (uint8_t i=0; i<7; i++) {
-    if (packet.raw[i] == 0x7E || packet.raw[i] == 0x7D) {
+    if (packet.sport.raw[i] == 0x7E || packet.sport.raw[i] == 0x7D) {
       *ptr++ = 0x7D;
-      *ptr++ = 0x20 ^ packet.raw[i];
+      *ptr++ = 0x20 ^ packet.sport.raw[i];
     }
     else {
-      *ptr++ = packet.raw[i];
+      *ptr++ = packet.sport.raw[i];
     }
-    crc += packet.raw[i];         //0-1FF
+    crc += packet.sport.raw[i];         //0-1FF
     crc += crc >> 8;   //0-100
     crc &= 0x00ff;
   }
@@ -313,7 +313,12 @@ void processSportPacket(uint8_t * packet)
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo) {
-            luaInputTelemetryFifo->push(LuaTelemetryPacket(physicalId, primId, id, data));
+            LuaTelemetryPacket luaPacket;
+            luaPacket.sport.physicalId = physicalId;
+            luaPacket.sport.primId = primId;
+            luaPacket.sport.dataId = id;
+            luaPacket.sport.value = data;
+            luaInputTelemetryFifo->push(luaPacket);
           }
 #endif
         }
@@ -326,7 +331,12 @@ void processSportPacket(uint8_t * packet)
 #if defined(LUA)
   else if (primId == 0x32) {
     if (luaInputTelemetryFifo) {
-      luaInputTelemetryFifo->push(LuaTelemetryPacket(physicalId, primId, id, data));
+      LuaTelemetryPacket luaPacket;
+      luaPacket.sport.physicalId = physicalId;
+      luaPacket.sport.primId = primId;
+      luaPacket.sport.dataId = id;
+      luaPacket.sport.value = data;
+      luaInputTelemetryFifo->push(luaPacket);
     }
   }
 #endif
@@ -543,7 +553,7 @@ bool sportUpdateEnd()
   return sportWaitState(SPORT_COMPLETE, 2000);
 }
 
-void sportFirmwareUpdate(ModuleIndex module, const char *filename)
+void sportFirmwareUpdate(ModuleIndex module, const char * filename)
 {
   bool result = sportUpdatePowerOn(module);
   if (result)

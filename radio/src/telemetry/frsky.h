@@ -422,7 +422,7 @@ void frskyDProcessPacket(uint8_t *packet);
 void processSportPacket(uint8_t * packet);
 
 #if defined(PCBTARANIS)
-void sportFirmwareUpdate(ModuleIndex module, const char *filename);
+void sportFirmwareUpdate(ModuleIndex module, const char * filename);
 #endif
 void telemetryWakeup();
 void telemetryReset();
@@ -487,27 +487,38 @@ void processFrskyTelemetryData(uint8_t data);
 #if defined(LUA)
 struct LuaTelemetryPacket
 {
-  LuaTelemetryPacket() { };
-  LuaTelemetryPacket(uint8_t physicalId, uint8_t primId, uint16_t dataId, uint32_t value):
-    physicalId(physicalId),
-    primId(primId),
-    dataId(dataId),
-    value(value)
-    {
-    }
+  LuaTelemetryPacket()
+  {
+  }
 
-  PACK(struct {
-    uint8_t physicalId;
-    union {
-      PACK(struct {
-        uint8_t primId;
-        uint16_t dataId;
-        uint32_t value;
-        uint8_t crc;
-      });
-      uint8_t raw[8];
-    };
-  });
+  union {
+    struct {
+      uint8_t physicalId;
+      union {
+        struct {
+          uint8_t primId;
+          uint16_t dataId;
+          uint32_t value;
+          uint8_t crc;
+        };
+        uint8_t raw[8];
+      };
+      void clear()
+      {
+        physicalId = 0x7E;
+      }
+    } sport;
+
+    struct {
+      uint8_t command;
+      uint8_t length;
+      uint8_t data[8];
+      void clear()
+      {
+        command = 0x00;
+      }
+    } crossfire;
+  };
 };
 
 extern Fifo<LuaTelemetryPacket, 16> * luaInputTelemetryFifo;

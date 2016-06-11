@@ -147,9 +147,9 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 #if defined(LUA)
       if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
         static uint8_t prevdata;
-        if (prevdata == 0x7E && data == luaOutputTelemetryPacket.physicalId) {
+        if (prevdata == 0x7E && data == luaOutputTelemetryPacket.sport.physicalId) {
           sportSendLuaPacket(luaOutputTelemetryPacket);
-          luaOutputTelemetryPacket.physicalId = 0x7E;
+          luaOutputTelemetryPacket.sport.clear();
         }
         prevdata = data;
       }

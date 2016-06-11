@@ -421,6 +421,7 @@ void telemetryInit(uint8_t protocol)
 #if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE);
+    luaOutputTelemetryPacket.crossfire.clear();
     telemetryPortSetDirectionOutput();
   }
 #endif
@@ -430,6 +431,7 @@ void telemetryInit(uint8_t protocol)
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+    luaOutputTelemetryPacket.sport.clear();
   }
 
 #if defined(REVX) && !defined(SIMU)
@@ -455,5 +457,5 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 
 #if defined(LUA)
 Fifo<LuaTelemetryPacket, 16> * luaInputTelemetryFifo = NULL;
-LuaTelemetryPacket luaOutputTelemetryPacket = { 0x7E, 0x0, 0x0, 0x0 };
+LuaTelemetryPacket luaOutputTelemetryPacket;
 #endif
