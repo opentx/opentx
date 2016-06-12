@@ -350,7 +350,7 @@ static BitmapBuffer * checkBitmap(lua_State * L, int index)
 /*luadoc
 @function Bitmap.getSize(name)
 
-Return width, heigh of bitmap in memory
+Return width, heigh of a bitmap in memory
 
 @param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
 
