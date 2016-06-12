@@ -227,18 +227,11 @@ void FlightModePanel::update()
     }
   }
 
-  for (int i=0; i<reCount; i++) {    
-    reValues[i]->setDisabled(false);
-    int idx = phase.rotaryEncoders[i];
-    FlightModeData *phasere = &phase;
-    while (idx > 1024) {
-      int nextPhase = idx - 1025;
-      if (nextPhase >= phaseIdx) nextPhase += 1;
-      phasere = &model->flightModeData[nextPhase];
-      idx = phasere->rotaryEncoders[i];
-      reValues[i]->setDisabled(true);
+  if (ui->reGB->isVisible()) {
+    for (int i=0; i<reCount; i++) {    
+      reValues[i]->setDisabled(model->isRELinked(phaseIdx, i));
+      reValues[i]->setValue(model->getREValue(phaseIdx, i));
     }
-    reValues[i]->setValue(phasere->rotaryEncoders[i]);
   }
 }
 
@@ -339,6 +332,8 @@ void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
       phase.gvars[gvar] = 1024 + index;
     }
     update();
+    if (model->isGVarLinkedCircular(phaseIdx,gvar))
+      QMessageBox::warning(this, "Companion", tr("Warning: Global variable links back to itself. Flight Mode 0 value used."));
     emit modified();
     lock = false;
   }
@@ -375,8 +370,10 @@ void FlightModePanel::phaseREUse_currentIndexChanged(int index)
       phase.rotaryEncoders[re] = 1024 + index;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;
     }
     update();
-    lock = false;
+    if (model->isRELinkedCircular(phaseIdx,re))
+      QMessageBox::warning(this, "Companion", tr("Warning: Rotary encoder links back to itself. Flight Mode 0 value used."));
     emit modified();
+    lock = false;
   }
 }
 
