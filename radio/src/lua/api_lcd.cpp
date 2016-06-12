@@ -317,6 +317,17 @@ static int luaLcdDrawSource(lua_State *L)
 }
 
 #if defined(COLORLCD)
+/*luadoc
+@function Bitmap.open(name)
+
+Loads a bitmap in memory, for later use with lcd.drawBitmap()
+
+@param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
+
+@notice Only available on color screens
+
+@status current Introduced in 2.2.0
+*/
 static int luaOpenBitmap(lua_State * L)
 {
   const char * filename = luaL_checkstring(L, 1);
@@ -335,6 +346,18 @@ static BitmapBuffer * checkBitmap(lua_State * L, int index)
   return *(BitmapBuffer **)luaL_checkudata(L, index, "luaL_Bitmap");
 }
 
+
+/*luadoc
+@function Bitmap.getSize(name)
+
+Return width, heigh of a bitmap in memory
+
+@param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
+
+@notice Only available on color screens
+
+@status current Introduced in 2.2.0
+*/
 static int luaGetBitmapSize(lua_State * L)
 {
   BitmapBuffer * b = checkBitmap(L, 1);
@@ -371,6 +394,19 @@ void registerBitmapClass(lua_State * L)
   lua_setglobal(L, "Bitmap");
 }
 
+/*luadoc
+@function lcd.drawBitmap(bitmap, x, y)
+
+Displays a bitmap at (x,y)
+
+@param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
+
+@param x,y (positive numbers) starting coordinate
+
+@notice Only available on color screens
+
+@status current Introduced in 2.2.0
+*/
 static int luaLcdDrawBitmap(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
@@ -392,7 +428,7 @@ Draw a bitmap at (x,y)
 
 @param x,y (positive numbers) starting coordinate
 
-@param name (string) full path to the bitmap on SD card (i.e. “/BMP/test.bmp”)
+@param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
 @notice Only available on monochrome screens
 
