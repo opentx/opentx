@@ -1078,7 +1078,12 @@ class ModelData {
     void setTrimValue(int phaseIdx, int trimIdx, int value);
 
     bool isGVarLinked(int phaseIdx, int gvarIdx);
+    bool isGVarLinkedCircular(int phaseIdx, int gvarIdx);
     int getGVarValue(int phaseIdx, int gvarIdx);
+
+    bool isRELinked(int phaseIdx, int reIdx);
+    bool isRELinkedCircular(int phaseIdx, int reIdx);
+    int getREValue(int phaseIdx, int reIdx);
 
     ModelData removeGlobalVars();
 
