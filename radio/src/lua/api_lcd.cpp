@@ -395,13 +395,15 @@ void registerBitmapClass(lua_State * L)
 }
 
 /*luadoc
-@function lcd.drawBitmap(bitmap, x, y)
+@function lcd.drawBitmap(bitmap, x, y [, scale])
 
 Displays a bitmap at (x,y)
 
 @param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
 
 @param x,y (positive numbers) starting coordinate
+
+@param scale (positive numbers) scale in %, 50 divide size by two, 100 is unchanged, 200 doubles size
 
 @notice Only available on color screens
 
@@ -413,9 +415,10 @@ static int luaLcdDrawBitmap(lua_State *L)
   const BitmapBuffer * bitmap = checkBitmap(L, 1);
   int x = luaL_checkinteger(L, 2);
   int y = luaL_checkinteger(L, 3);
+  unsigned scale = luaL_optunsigned(L, 4, 100);
 
   if (bitmap) {
-    lcd->drawBitmap(x, y, bitmap);
+    lcd->drawBitmap(x, y, bitmap, 0, 0, 0, 0, (float) scale/100);
   }
 
   return 0;
