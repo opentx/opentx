@@ -181,7 +181,11 @@ void setupPulses(uint8_t port)
     case PROTO_CROSSFIRE:
       if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE && !init_needed) {
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
+#if defined(LUA)
         uint8_t len = createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart], &luaOutputTelemetryPacket);
+#else
+        uint8_t len = createCrossfireFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart], NULL);
+#endif
         sportSendBuffer(crossfire, len);
       }
       scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
