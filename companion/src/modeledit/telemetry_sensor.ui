@@ -167,6 +167,11 @@
        <string>Dist</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Constant</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -562,6 +567,13 @@
     <widget class="QLabel" name="multiplierLabel">
      <property name="text">
       <string>Multiplier</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="valueLabel">
+     <property name="text">
+      <string>Value</string>
      </property>
     </widget>
    </item>

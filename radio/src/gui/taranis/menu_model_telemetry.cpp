@@ -111,10 +111,10 @@ enum SensorFields {
 #define SENSOR_2ND_COLUMN      (12*FW)
 #define SENSOR_3RD_COLUMN      (18*FW)
 
-#define SENSOR_UNIT_ROWS       ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
+#define SENSOR_UNIT_ROWS       (sensor->isUnitConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PREC_ROWS       (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PARAM1_ROWS     (sensor->unit >= UNIT_FIRST_VIRTUAL ? HIDDEN_ROW : (uint8_t)0)
-#define SENSOR_PARAM2_ROWS     (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && (sensor->formula==TELEM_FORMULA_CONSUMPTION || sensor->formula==TELEM_FORMULA_TOTALIZE)) ? HIDDEN_ROW : (uint8_t)0)
+#define SENSOR_PARAM2_ROWS     (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && (sensor->formula==TELEM_FORMULA_CONSUMPTION || sensor->formula==TELEM_FORMULA_TOTALIZE) || sensor->formula==TELEM_FORMULA_CONSTANT) ? HIDDEN_ROW : (uint8_t)0)
 #define SENSOR_PARAM3_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_PARAM4_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
 #define SENSOR_AUTOOFFSET_ROWS (sensor->unit != UNIT_RPMS && sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
@@ -256,6 +256,14 @@ void menuModelSensor(uint8_t event)
             }
             break;
           }
+          else if (sensor->formula == TELEM_FORMULA_CONSTANT) {
+            lcd_putsLeft(y, STR_VALUE);
+            if (attr) sensor->custom.offset = checkIncDec(event, sensor->constant.value, -30000, +30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
+            if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
+            lcdDrawNumber(SENSOR_2ND_COLUMN, y, sensor->constant.value, LEFT|attr);
+            break;
+          }
+
         }
         else {
           if (sensor->unit == UNIT_RPMS) {

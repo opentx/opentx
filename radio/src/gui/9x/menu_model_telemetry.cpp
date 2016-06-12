@@ -344,6 +344,14 @@ void menuModelSensor(uint8_t event)
             }
             break;
           }
+          else if (sensor->formula == TELEM_FORMULA_CONSTANT) {
+            lcd_putsLeft(y, STR_VALUE);
+            if (attr)
+              sensor->custom.offset = checkIncDec(event, sensor->constant.value, -30000, +30000, EE_MODEL|NO_INCDEC_MARKS|INCDEC_REP10);
+            if (sensor->prec > 0) attr |= (sensor->prec == 2 ? PREC2 : PREC1);
+            lcdDrawNumber(SENSOR_2ND_COLUMN, y, sensor->constant.value, LEFT|attr);
+            break;
+          }
         }
         else {
           if (sensor->unit == UNIT_RPMS) {

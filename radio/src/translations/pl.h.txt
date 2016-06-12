@@ -597,7 +597,7 @@
 #define TR_VSENSORTYPES        "Użytkownik""Obliczone "
 
 #define LEN_VFORMULAS          "\010" /*8 decimal*/
-#define TR_VFORMULAS           "Dodaj\0  ""Średnie\0""Min\0    ""Max\0    ""Mnóż\0   ""Zliczani""Komórka\0""Zużycie\0""Zasięg\0 "
+#define TR_VFORMULAS           "Dodaj\0  ""Średnie\0""Min\0    ""Max\0    ""Mnóż\0   ""Zliczani""Komórka\0""Zużycie\0""Zasięg\0 ""Constant"
 
 #define LEN_VPREC              "\004"
 #define TR_VPREC               "0.--""0.0 ""0.00"
