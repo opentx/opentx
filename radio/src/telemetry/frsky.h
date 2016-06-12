@@ -524,8 +524,6 @@ struct LuaTelemetryPacket
 extern Fifo<LuaTelemetryPacket, 16> * luaInputTelemetryFifo;
 extern LuaTelemetryPacket luaOutputTelemetryPacket;
 void sportSendLuaPacket(LuaTelemetryPacket & packet);
-#else
-#define LuaTelemetryPacket void
 #endif
 
 #endif // _FRSKY_H_

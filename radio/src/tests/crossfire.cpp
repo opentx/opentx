@@ -21,17 +21,18 @@
 #include "gtests.h"
 
 #if defined(CROSSFIRE)
-TEST(Crossfire, createCrossfireFrame)
+uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
+TEST(Crossfire, createCrossfireChannelsFrame)
 {
   int16_t pulsesStart[NUM_TRAINER];
-  uint8_t crossfire[CROSSFIRE_FRAME_LEN];
+  uint8_t crossfire[CROSSFIRE_FRAME_MAXLEN];
 
   memset(crossfire, 0, sizeof(crossfire));
   for (int i=0; i<NUM_TRAINER; i++) {
     pulsesStart[i] = -1024 + (2048 / NUM_TRAINER) * i;
   }
 
-  createCrossfireFrame(crossfire, pulsesStart);
+  createCrossfireChannelsFrame(crossfire, pulsesStart);
 
   // TODO check
 }
