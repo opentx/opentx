@@ -401,9 +401,9 @@ Displays a bitmap at (x,y)
 
 @param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
 
-@param x,y (positive numbers) starting coordinate
+@param x,y (positive numbers) starting coordinates
 
-@param scale (positive numbers) scale in %, 50 divide size by two, 100 is unchanged, 200 doubles size
+@param scale (positive numbers) scale in %, 50 divides size by two, 100 is unchanged, 200 doubles size
 
 @notice Only available on color screens
 
@@ -415,10 +415,10 @@ static int luaLcdDrawBitmap(lua_State *L)
   const BitmapBuffer * bitmap = checkBitmap(L, 1);
   int x = luaL_checkinteger(L, 2);
   int y = luaL_checkinteger(L, 3);
-  unsigned scale = luaL_optunsigned(L, 4, 100);
+  unsigned scale = luaL_optunsigned(L, 4, 0);
 
   if (bitmap) {
-    lcd->drawBitmap(x, y, bitmap, 0, 0, 0, 0, (float) scale/100);
+    lcd->drawBitmap(x, y, bitmap, 0, 0, 0, 0, (scale) ? (float) scale/100 : 0);
   }
 
   return 0;
