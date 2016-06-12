@@ -45,7 +45,7 @@ for i, s in enumerate(["volt", "volts",
 for i, s in enumerate(["point zero", "point one", "point two", "point three",
                        "point four", "point five", "point six",
                        "point seven", "point eight", "point nine"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 165 + i)))
+    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 167 + i)))
 for s, f, a in [(u"trim center", "midtrim", 495),
                 (u"maximum trim reached", "endtrim", NO_ALTERNATE),
                 (u"timer 1 elapsed", "timovr1", NO_ALTERNATE),
