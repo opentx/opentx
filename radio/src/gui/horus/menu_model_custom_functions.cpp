@@ -247,7 +247,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           }
 #endif
 #if defined(DANGEROUS_MODULE_FUNCTIONS)
-          else if (func >= FUNC_RANGECHECK && func <= FUNC_MODULE_OFF) {
+          else if (func >= FUNC_RANGECHECK && func <= FUNC_BIND) {
             val_max = NUM_MODULES-1;
             lcdDrawTextAtIndex(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
