@@ -7,6 +7,13 @@
 <li>Fixed Flight mode clear command (<a href=https://github.com/opentx/opentx/issues/3214>#3214</a>)</li>
 <li>Fixed a problem with Rotary encoders linked to flight mode (could freeze Companion) (<a href=https://github.com/opentx/opentx/issues/3459>#3459</a>, <a href=https://github.com/opentx/opentx/issues/3470>#3470</a>)</li>
 <li>Telemetry simulator improvements: added fuel quantity sensor, increased RPM range (<a href=https://github.com/opentx/opentx/issues/3505>#3505</a>, <a href=https://github.com/opentx/opentx/issues/3506>#3506</a>)</li>
+<li>Implemented minimal support for the DYI Multimodule (<a href=https://github.com/opentx/opentx/issues/3526>#3526</a>)</li>
+<li>Fixed: GVar combo-box not being refreshed when GV check-box (re-)selected (<a href=https://github.com/opentx/opentx/issues/3518>#3518</a>)</li>
+<li>Fixed: Heli inversion not correctly shown/saved from Companion on Radios without virtual inputs (<a href=https://github.com/opentx/opentx/issues/3510>#3510</a>)</li>
+<li>Implemented print functions for the hell setup screen (<a href=https://github.com/opentx/opentx/issues/3554>#3554</a>)</li>
+<li>Fixed: Flight modes linked trims display value (<a href=https://github.com/opentx/opentx/issues/3547>#3547</a>, <a href=https://github.com/opentx/opentx/issues/3568>#3568</a>)</li>
+<li>Fixed: New model global variables and rotary encoders initialisation (<a href=https://github.com/opentx/opentx/issues/3473>#3473</a>)</li>
+<li>Fixes: Prevent circular linked global variables and rotary encoders. () (<a href=https://github.com/opentx/opentx/issues/3472>#3472</a>)</li>
 <li>Various texts and translations corrections</li>
 </ul>
 
