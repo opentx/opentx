@@ -150,28 +150,20 @@ int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags
 #endif
 
   if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
-    do {
-      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval += min(10, i_max-val);
-      }
-      else {
-        newval++;
-      }
-    } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+    newval += min<int>(rotencSpeed, i_max-val);
+    while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
+      newval++;
+    }
     if (newval > i_max) {
       newval = val;
       AUDIO_KEY_ERROR();
     }
   }
   else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
-    do {
-      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval -= min(10, val-i_min);
-      }
-      else {
-        newval--;
-      }
-    } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+    newval -= min<int>(rotencSpeed, val-i_min);
+    while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
+      newval--;
+    }
     if (newval < i_min) {
       newval = val;
       AUDIO_KEY_ERROR();

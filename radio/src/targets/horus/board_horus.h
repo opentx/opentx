@@ -196,6 +196,10 @@ uint32_t readTrims(void);
 #define DBLKEYS_PRESSED_RGT_UP(in)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
 #define DBLKEYS_PRESSED_LFT_DWN(in) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 extern int32_t rotencValue;
+extern uint32_t rotencSpeed;
+#define ROTENC_LOWSPEED                1
+#define ROTENC_MIDSPEED                10
+#define ROTENC_HIGHSPEED               100
 void checkRotaryEncoder(void);
 
 // WDT driver

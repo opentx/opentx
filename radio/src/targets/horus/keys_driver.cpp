@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 uint32_t readKeys()
 {
@@ -91,6 +91,11 @@ uint8_t keyDown()
 
 int32_t rotencValue;
 uint32_t rotencPosition;
+uint32_t rotencSpeed = ROTENC_LOWSPEED;
+
+#define ROTENC_DELAY_MIDSPEED          10
+#define ROTENC_DELAY_HIGHSPEED         5
+
 void checkRotaryEncoder()
 {
   register uint32_t newpos = ROTARY_ENCODER_POSITION();
@@ -119,6 +124,7 @@ void readKeysAndTrims()
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (rotencValue / 2);
   int8_t scrollRE = reNewValue - rePreviousValue;
+  static uint32_t lastTick = 0;
   if (scrollRE) {
     rePreviousValue = reNewValue;
     if (scrollRE < 0) {
@@ -127,6 +133,14 @@ void readKeysAndTrims()
     else {
       putEvent(EVT_ROTARY_RIGHT);
     }
+    uint32_t delay = get_tmr10ms() - lastTick;
+    lastTick = get_tmr10ms();
+    if (delay < ROTENC_DELAY_HIGHSPEED)
+      rotencSpeed = ROTENC_HIGHSPEED;
+    else if (delay < ROTENC_DELAY_MIDSPEED)
+      rotencSpeed = ROTENC_MIDSPEED;
+    else
+      rotencSpeed = ROTENC_LOWSPEED;
   }
 
   in = readTrims();
