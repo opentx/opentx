@@ -93,8 +93,8 @@ int32_t rotencValue;
 uint32_t rotencPosition;
 uint32_t rotencSpeed = ROTENC_LOWSPEED;
 
-#define ROTENC_DELAY_MIDSPEED          10
-#define ROTENC_DELAY_HIGHSPEED         5
+#define ROTENC_DELAY_MIDSPEED          4
+#define ROTENC_DELAY_HIGHSPEED         2
 
 void checkRotaryEncoder()
 {

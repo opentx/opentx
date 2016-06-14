@@ -198,8 +198,8 @@ uint32_t readTrims(void);
 extern int32_t rotencValue;
 extern uint32_t rotencSpeed;
 #define ROTENC_LOWSPEED                1
-#define ROTENC_MIDSPEED                10
-#define ROTENC_HIGHSPEED               100
+#define ROTENC_MIDSPEED                5
+#define ROTENC_HIGHSPEED               50
 void checkRotaryEncoder(void);
 
 // WDT driver
