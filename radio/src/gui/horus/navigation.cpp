@@ -375,6 +375,12 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
 {
   uint8_t maxcol = MAXCOL(menuVerticalPosition);
 
+  if (menuTab == menuTabModel && event == EVT_KEY_FIRST(KEY_MODEL)) {
+    killEvents(event);
+    pushMenu(menuTabChannels[lastChannelsPage]);
+    return false;
+  }
+
   if (menuTab && !calibrationState) {
     int cc = curr;
     switch (event) {
@@ -382,7 +388,6 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
         if (++cc == menuTabSize)
           cc = 0;
         break;
-
 
       case EVT_KEY_FIRST(KEY_PGUP):
         if (cc-- == 0)

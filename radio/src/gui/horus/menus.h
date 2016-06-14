@@ -113,6 +113,7 @@ enum EnumTabModel {
   e_CustomScripts,
 #endif
   CASE_FRSKY(e_Telemetry)
+  e_TabModelPagesCount
 };
 
 const uint8_t RADIO_ICONS[] = {
@@ -168,27 +169,7 @@ bool menuModelCustomScripts(evt_t event);
 bool menuModelTelemetry(evt_t event);
 bool menuModelExpoOne(evt_t event);
 
-const MenuHandlerFunc menuTabModel[] = {
-//   menuModelSelect,
-  menuModelSetup,
-  CASE_HELI(menuModelHeli)
-  CASE_FLIGHT_MODES(menuModelFlightModesAll)
-  menuModelExposAll,
-  menuModelMixAll,
-  menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
-#if defined(GVARS) && defined(FLIGHT_MODES)
-  CASE_GVARS(menuModelGVars)
-#endif
-  menuModelLogicalSwitches,
-  menuModelCustomFunctions,
-#if defined(LUA_MODEL_SCRIPTS)
-  menuModelCustomScripts,
-#endif
-  CASE_FRSKY(menuModelTelemetry)
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
-  CASE_TEMPLATES(menuModelTemplates)
-};
+extern const MenuHandlerFunc menuTabModel[e_TabModelPagesCount];
 
 enum EnumTabRadio {
   e_Setup,
@@ -197,6 +178,7 @@ enum EnumTabRadio {
   e_Trainer,
   e_Hardware,
   e_Vers,
+  e_TabRadioPagesCount
 };
 
 bool menuGeneralSetup(evt_t event);
@@ -207,14 +189,7 @@ bool menuGeneralVersion(evt_t event);
 bool menuGeneralHardware(evt_t event);
 bool menuGeneralCalib(evt_t event);
 
-static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
-  menuGeneralSetup,
-  menuGeneralSdManager,
-  menuGeneralCustomFunctions,
-  menuGeneralTrainer,
-  menuGeneralHardware,
-  menuGeneralVersion,
-};
+extern const MenuHandlerFunc menuTabGeneral[e_TabRadioPagesCount];
 
 enum EnumTabDiag
 {
@@ -240,6 +215,16 @@ static const MenuHandlerFunc menuTabStats[] PROGMEM = {
 #endif
 };
 
+enum EnumTabChannels
+{
+  e_Channels1,
+  e_Channels2,
+  e_TabChannelsPagesCount
+};
+
+extern const MenuHandlerFunc menuTabChannels[e_TabChannelsPagesCount];
+extern uint8_t lastChannelsPage;
+
 extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
 
 bool menuFirstCalib(evt_t event);
@@ -248,8 +233,6 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
 bool menuModelSelect(evt_t event);
 bool menuAboutView(evt_t event);
 bool menuMainViewChannelsMonitor(evt_t event);
-bool menuChannelsView(evt_t event);
-bool menuChannelsView(evt_t event);
 bool menuTextView(evt_t event);
 bool menuScreensTheme(evt_t event);
 

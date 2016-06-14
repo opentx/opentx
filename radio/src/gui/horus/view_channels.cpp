@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,91 +18,33 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-bool isChannelUsed(int channel);
-int getChannelsUsed();
+bool menuChannels1(evt_t event);
+bool menuChannels2(evt_t event);
 
-bool menuChannelsView(evt_t event)
+const MenuHandlerFunc menuTabChannels[] PROGMEM = {
+  menuChannels1,
+  menuChannels2,
+};
+
+uint8_t lastChannelsPage = 0;
+
+bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
-  const int CHANNEL_MARGIN = 16;
-  const int CHANNEL_HEIGHT = 25;
-  const int CHANNEL_WIDTH = (LCD_W - 3*CHANNEL_MARGIN) / 2;
-  const int CHANNEL_PADDING_HORZ = 4;
-  const int CHANNEL_PADDING_VERT = 2;
-  const int BAR_WIDTH = CHANNEL_WIDTH-2*CHANNEL_PADDING_HORZ;
-
-  static int view = 0;
-  int x=CHANNEL_MARGIN, y=CHANNEL_MARGIN;
-
-  int viewMax = (getChannelsUsed() - 1) / 8;
-  if (viewMax <= 0 || view > viewMax) {
-    view = 0;
-  }
-  else {
-    switch (event) {
-      case EVT_KEY_FIRST(KEY_RIGHT):
-        if (++view > viewMax)
-          view = 0;
-        break;
-      case EVT_KEY_FIRST(KEY_LEFT):
-        if (--view < 0)
-          view = viewMax;
-        break;
-    }
-  }
-
-  int skipCount = view*8;
-  for (int ch=0, index=0; index<skipCount+8 && ch<NUM_CHNOUT; ++ch) {
-    if (isChannelUsed(ch)) {
-      if (++index > skipCount) {
-        // The black background
-        lcdDrawSolidFilledRect(x, y, CHANNEL_WIDTH, CHANNEL_HEIGHT, TEXT_BGCOLOR);
-
-        // The label
-        unsigned int lenLabel = ZLEN(g_model.limitData[ch].name);
-        if (lenLabel > 0)
-          lcdDrawSizedText(x+CHANNEL_PADDING_HORZ, y+CHANNEL_PADDING_VERT, g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name), ZCHAR);
-        else
-          putsChn(x+CHANNEL_PADDING_HORZ, y+CHANNEL_PADDING_VERT, ch+1, 0);
-
-        int32_t val = channelOutputs[ch];
-
-        // The bar
-        lcdDrawSolidFilledRect(x+CHANNEL_PADDING_HORZ, y+15, BAR_WIDTH, 6, TEXT_INVERTED_BGCOLOR);
-        unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
-        unsigned int len = limit<unsigned int>(1, (abs(val) * BAR_WIDTH/2 + lim/2) / lim, BAR_WIDTH/2);
-        unsigned int x0 = (val>0) ? x+CHANNEL_PADDING_HORZ-1+BAR_WIDTH/2 : x+CHANNEL_PADDING_HORZ+BAR_WIDTH/2+1-len;
-        lcdDrawSolidFilledRect(x0, y+16, len, 4, TEXT_BGCOLOR);
-
-        y += CHANNEL_HEIGHT + CHANNEL_MARGIN;
-        if (y >= 4*(CHANNEL_HEIGHT + CHANNEL_MARGIN)) {
-          x += CHANNEL_WIDTH + CHANNEL_MARGIN;
-          y = CHANNEL_MARGIN;
-        }
-      }
-    }
-  }
-
-#if 0
-  
-#if defined(CHANNELS_MONITOR_INV_HIDE)
-      //if channel output is inverted, show it with oposite sign
-      if (g_model.limitData[ch].revert) val = -val;
-#endif
-
-      // Value
-#if defined(PPM_UNIT_US)
-      uint8_t wbar = (longNames ? 54 : 64);
-      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
-      uint8_t wbar = (longNames ? 48 : 58);
-      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE);
-#else
-      uint8_t wbar = (longNames ? 54 : 64);
-      lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE); // G: Don't like the decimal part*
-#endif
-#endif
-
   return true;
+}
+
+bool menuChannels1(evt_t event)
+{
+  MENU("Channels monitor 1-16", STATS_ICONS, menuTabChannels, e_Channels1, 0, { 0 });
+  lastChannelsPage = e_Channels1;
+  return menuChannelsMonitor(event, 0);
+}
+
+bool menuChannels2(evt_t event)
+{
+  MENU("Channels monitor 17-32", STATS_ICONS, menuTabChannels, e_Channels2, 0, { 0 });
+  lastChannelsPage = e_Channels2;
+  return menuChannelsMonitor(event, 1);
 }

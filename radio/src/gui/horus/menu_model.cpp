@@ -20,6 +20,27 @@
 
 #include "opentx.h"
 
+const MenuHandlerFunc menuTabModel[] = {
+  menuModelSetup,
+  CASE_HELI(menuModelHeli)
+  CASE_FLIGHT_MODES(menuModelFlightModesAll)
+  menuModelExposAll,
+  menuModelMixAll,
+  menuModelLimits,
+  CASE_CURVES(menuModelCurvesAll)
+#if defined(GVARS) && defined(FLIGHT_MODES)
+  CASE_GVARS(menuModelGVars)
+#endif
+  menuModelLogicalSwitches,
+  menuModelCustomFunctions,
+#if defined(LUA_MODEL_SCRIPTS)
+  menuModelCustomScripts,
+#endif
+  CASE_FRSKY(menuModelTelemetry)
+  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  CASE_TEMPLATES(menuModelTemplates)
+};
+
 extern uint8_t s_curveChan;
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr);
