@@ -424,6 +424,15 @@ void perMain()
   }
 #endif
 
+#if !defined(EEPROM)
+  if (!SD_CARD_PRESENT()) {
+    lcd->clear();
+    lcdDrawText(LCD_W/2, LCD_H/2-20, STR_NO_SDCARD, DBLSIZE|CENTERED|TEXT_BGCOLOR);
+    lcdRefresh();
+    return;
+  }
+#endif
+
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
     // disable access to menus

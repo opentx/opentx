@@ -129,25 +129,22 @@ void getCPUUniqueID(char * s);
   #define SD_IS_HC()                   (sdIsHC())
   #define SD_GET_SPEED()               (sdGetSpeed())
   #define SD_GET_FREE_BLOCKNR()        (sdGetFreeSectors())
-#else
-  #define SD_IS_HC()              (0)
-  #define SD_GET_SPEED()          (0)
-#endif
-
-#if defined(SIMU) && !defined(SIMU_DISKIO)
-  #define sdInit()
-  #define sdDone()
-#else
+  #define SD_CARD_PRESENT()            (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
   void sdInit(void);
   void sdDone(void);
   #define sdPoll10ms()
   #define sdMountPoll()
   uint32_t sdMounted(void);
-  #define SD_CARD_PRESENT()            (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
+#else
+  #define SD_IS_HC()                   (0)
+  #define SD_GET_SPEED()               (0)
+  #define sdInit()
+  #define sdDone()
+  #define SD_CARD_PRESENT()            true
 #endif
 
 // Flash Write driver
-#define FLASH_PAGESIZE 256
+#define FLASH_PAGESIZE                 256
 void unlockFlash(void);
 void lockFlash(void);
 void writeFlash(uint32_t * address, uint32_t * buffer);
@@ -259,6 +256,7 @@ void pwrOff(void);
 void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
+#define pwroffPressed()         pwrPressed()
 #define UNEXPECTED_SHUTDOWN()   (WAS_RESET_BY_WATCHDOG())
 
 // Led driver
