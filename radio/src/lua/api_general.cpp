@@ -299,7 +299,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 static int luaSportTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
-    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, 16>();
+    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE>();
     if (!luaInputTelemetryFifo) {
       return 0;
     }
@@ -346,7 +346,7 @@ static int luaSportTelemetryPush(lua_State * L)
 static int luaCrossfireTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
-    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, 16>();
+    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE>();
     if (!luaInputTelemetryFifo) {
       return 0;
     }
@@ -361,7 +361,6 @@ static int luaCrossfireTelemetryPop(lua_State * L)
       lua_pushinteger(L, packet.crossfire.data[i]);
       lua_settable(L, -3);
     }
-    lua_settable(L, -3);
     return 2;
   }
 

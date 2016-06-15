@@ -60,7 +60,13 @@ extern uint8_t telemetryState;
 #endif
 
 #define TELEMETRY_TIMEOUT10ms          100 // 1 second
+
+#if defined(CROSSFIRE)
+#define TELEMETRY_RX_PACKET_SIZE       40
+#else
 #define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+#endif
+
 
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t telemetryRxBufferCount;

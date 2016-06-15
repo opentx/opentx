@@ -509,19 +509,22 @@ struct LuaTelemetryPacket
       }
     } sport;
 
+#if defined(CROSSFIRE)
     struct {
       uint8_t command;
       uint8_t length;
-      uint8_t data[8];
+      uint8_t data[32];
       void clear()
       {
         command = 0x00;
       }
     } crossfire;
+#endif
   };
 };
 
-extern Fifo<LuaTelemetryPacket, 16> * luaInputTelemetryFifo;
+#define LUA_TELEMETRY_FIFO_SIZE 8
+extern Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE> * luaInputTelemetryFifo;
 extern LuaTelemetryPacket luaOutputTelemetryPacket;
 void sportSendLuaPacket(LuaTelemetryPacket & packet);
 #endif
