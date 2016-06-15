@@ -105,15 +105,11 @@ uint32_t pwroffPressed()
 #if !defined(REV9E)
 uint32_t pwrCheck()
 {
-#if defined(SIMU)
-  return e_power_on;
-#else
   if (!pwroffPressed())
     return e_power_on;
   else if (usbPlugged())
     return e_power_usb;
   else
     return e_power_off;
-#endif
 }
 #endif

@@ -1310,8 +1310,8 @@ int lcdRestoreBackupBuffer()
 }
 #endif
 
+uint32_t pwroffPressed() { return false; }
 #if defined(PWR_BUTTON_DELAY)
-uint32_t pwrPressed() { return false; }
 #elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 uint32_t pwrCheck() { return true; }
 #endif
