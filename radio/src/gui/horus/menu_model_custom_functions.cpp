@@ -305,8 +305,10 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
             putsMixerSource(MODEL_CUSTOM_FUNC_3RD_COLUMN, y, val_displayed, attr);
-            INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-            INCDEC_ENABLE_CHECK(isSourceAvailable);
+            if (active) {
+              INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+              INCDEC_ENABLE_CHECK(isSourceAvailable);
+            }
           }
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
