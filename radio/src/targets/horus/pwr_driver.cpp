@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include "../../pwr.h"
-#include "../horus/board_horus.h"
+#include "pwr.h"
+#include "board_horus.h"
 
 void pwrInit()
 {
@@ -85,7 +85,7 @@ void pwrResetHandler()
 {
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOJEN;
 
-  // these two NOPs are needed (see STM32F errata sheet) before the peripheral 
+  // these two NOPs are needed (see STM32F errata sheet) before the peripheral
   // register can be written after the peripheral clock was enabled
   __ASM volatile ("nop");
   __ASM volatile ("nop");
@@ -94,7 +94,7 @@ void pwrResetHandler()
   // or software reset. If the radio was started by user pressing the power button
   // then that button is providing power and we don't need to enable it here.
   //
-  // If we were to turn it on here indiscriminately, then the radio can go into the 
+  // If we were to turn it on here indiscriminately, then the radio can go into the
   // power on/off loop after being powered off by the user. (issue #2790)
   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     GPIO_InitTypeDef GPIO_InitStructure;
