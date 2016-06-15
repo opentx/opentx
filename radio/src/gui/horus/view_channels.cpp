@@ -30,6 +30,7 @@
 bool menuChannels1(evt_t event);
 bool menuChannels2(evt_t event);
 const BitmapBuffer *locked_bmp = NULL;
+const BitmapBuffer *inver_bmp = NULL;
 const BitmapBuffer *outL_bmp = NULL;
 const BitmapBuffer *outR_bmp = NULL;
 
@@ -53,6 +54,7 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
   LimitData *ld = limitAddress(Chan);
   
   if (!locked_bmp) locked_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_lockch.png"));
+  if (!inver_bmp) inver_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_inver.png"));
   if (!outL_bmp) outL_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_outL.png"));
   if (!outR_bmp) outR_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
       
@@ -78,17 +80,13 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
   lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
   lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(chanVal), y + 11, BAR_HEIGHT , HEADER_BGCOLOR);
 
-
-  if (safetyCh[Chan] != OVERRIDE_CHANNEL_UNDEFINED) {
-    lcd->drawBitmap(x + 3,y + 5,locked_bmp);
-    if (chanVal < -limits / 2) {
-      lcd->drawBitmap(x + 17,y + 8,outL_bmp);
-      chanVal = - limits / 2;
-    }
-    if (chanVal > limits / 2){
-      lcd->drawBitmap(x + 17,y + 8,outR_bmp);
-      chanVal = limits / 2;
-    }
+  if (chanVal < -limits / 2) {
+    lcd->drawBitmap(x + X_OFFSET + COLLUMN_SIZE / 2 - 55, y + 8, outL_bmp);
+    chanVal = - limits / 2;
+  }
+  if (chanVal > limits / 2){
+    lcd->drawBitmap(x + X_OFFSET + COLLUMN_SIZE / 2 + 55, y + 8, outR_bmp);
+    chanVal = limits / 2;
   }
     
   if(posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))){
@@ -99,6 +97,9 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
     lcdDrawSolidFilledRect(endpoint - size,  y + 11, size, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
+  
+  if (safetyCh[Chan] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x + 3, y + 5, locked_bmp);
+  if (ld->revert) lcd->drawBitmap(x + 16, y + 5, inver_bmp);
   lcd->drawSolidVerticalLine(x + X_OFFSET + COLLUMN_SIZE / 2, y + 11, BAR_HEIGHT , TEXT_COLOR);
 }
 
