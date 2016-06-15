@@ -70,7 +70,6 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
     
   lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(222, 222, 222);
   lcdDrawSolidFilledRect(x + X_OFFSET, y + 11, COLLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
-  printf("Chan %d, %d - %d\n", Chan, ld->min, ld->max);
   
   lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(180, 180, 180);
   lcdDrawText(x + X_OFFSET + posOnBar(-100 + ld->min/10)+2, y + 10, "]",TINSIZE| TEXT_COLOR | RIGHT);
