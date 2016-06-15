@@ -93,7 +93,7 @@ uint16_t stackAvailable()
 
 uint32_t timeForcePowerOffPressed = 0;
 
-void resetForcePowerRequest()
+void resetForcePowerOffRequest()
 {
   timeForcePowerOffPressed = 0;
 }
@@ -112,7 +112,7 @@ bool isForcePowerOffRequested()
     }
   }
   else {
-    resetForcePowerRequest();
+    resetForcePowerOffRequest();
   }
   return false;
 }
@@ -227,7 +227,7 @@ void menusTask(void * pdata)
       CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);
     }
 
-    resetForcePowerRequest();
+    resetForcePowerOffRequest();
 
 #if defined(SIMU)
     if (main_thread_running == 0)
