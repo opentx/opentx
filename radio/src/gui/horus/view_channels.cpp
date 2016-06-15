@@ -55,12 +55,6 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
   if (!locked_bmp) locked_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_lockch.png"));
   if (!outL_bmp) outL_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_outL.png"));
   if (!outR_bmp) outR_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
-
-  if (safetyCh[Chan] != OVERRIDE_CHANNEL_UNDEFINED) {
-    lcd->drawBitmap(x + 3,y + 5,locked_bmp);
-    if (chanVal < -limits / 2)lcd->drawBitmap(x + 17,y + 8,outL_bmp);
-    if (chanVal > limits / 2)lcd->drawBitmap(x + 17,y + 8,outR_bmp);
-  }
       
   strAppend(chanString, "Ch ");
   strAppendSigned(&chanString[3], Chan + 1, 2);
@@ -91,7 +85,20 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
   }
   lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
   lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(chanVal), y + 11, BAR_HEIGHT , HEADER_BGCOLOR);
-  
+
+
+  if (safetyCh[Chan] != OVERRIDE_CHANNEL_UNDEFINED) {
+    lcd->drawBitmap(x + 3,y + 5,locked_bmp);
+    if (chanVal < -limits / 2) {
+      lcd->drawBitmap(x + 17,y + 8,outL_bmp);
+      chanVal = - limits / 2;
+    }
+    if (chanVal > limits / 2){
+      lcd->drawBitmap(x + 17,y + 8,outR_bmp);
+      chanVal = limits / 2;
+    }
+  }
+    
   if(posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))){
     lcdDrawSolidFilledRect(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)),  y + 11, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
