@@ -259,6 +259,7 @@ void pwrOff(void);
 void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
+#define pwroffPressed()         pwrPressed()
 #define UNEXPECTED_SHUTDOWN()   (WAS_RESET_BY_WATCHDOG())
 
 // Led driver

@@ -286,6 +286,9 @@ void pwrOff(void);
 #if defined(REV9E)
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
+#define pwroffPressed() pwrPressed()
+#else
+uint32_t pwroffPressed(void);
 #endif
 #define UNEXPECTED_SHUTDOWN()   (g_eeGeneral.unexpectedShutdown)
 

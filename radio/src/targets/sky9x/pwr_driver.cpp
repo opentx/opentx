@@ -18,7 +18,16 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
+
+uint32_t pwroffPressed()
+{
+#if defined(SIMU) || defined(REVA)
+  return false;
+#else
+  return !(PIOC->PIO_PDSR & PIO_PC17);
+#endif
+}
 
 uint32_t pwrCheck()
 {
@@ -32,7 +41,7 @@ uint32_t pwrCheck()
   else
     return e_power_on;
 #elif defined(REVB)
-  if (PIOC->PIO_PDSR & PIO_PC17)
+  if (!pwroffPressed())
     return e_power_on;
   else if (usbPlugged())
     return e_power_usb;
@@ -41,7 +50,7 @@ uint32_t pwrCheck()
   else
     return e_power_off;
 #else
-  if (PIOC->PIO_PDSR & PIO_PC17)
+  if (!pwroffPressed())
     return e_power_on;
   else if (PIOA->PIO_PDSR & PIO_PA8)
     return e_power_trainer;
