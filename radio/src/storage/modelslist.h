@@ -140,28 +140,35 @@ class ModelsList
       clear();
 
       FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_OPEN_EXISTING | FA_READ);
-      if (result != FR_OK) {
-        return false;
-      }
-
-      while (readNextLine(line, LEN_MODEL_FILENAME)) {
-        int len = strlen(line); // TODO could be returned by readNextLine
-        if (len > 2 && line[0] == '[' && line[len-1] == ']') {
-          line[len-1] = '\0';
-          category = new ModelsCategory(&line[1]);
-          categories.push_back(category);
-        }
-        else if (category && len > 0) {
-          ModelCell * model = new ModelCell(line);
-          category->push_back(model);
-          if (!strncmp(line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME)) {
-            currentCategory = category;
-            currentModel = model;
+      if (result == FR_OK) {
+        while (readNextLine(line, LEN_MODEL_FILENAME)) {
+          int len = strlen(line); // TODO could be returned by readNextLine
+          if (len > 2 && line[0] == '[' && line[len-1] == ']') {
+            line[len-1] = '\0';
+            category = new ModelsCategory(&line[1]);
+            categories.push_back(category);
+          }
+          else if (len > 0) {
+            ModelCell * model = new ModelCell(line);
+            if (!category) {
+              category = new ModelsCategory("Unknown");
+              categories.push_back(category);
+            }
+            category->push_back(model);
+            if (!strncmp(line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME)) {
+              currentCategory = category;
+              currentModel = model;
+            }
           }
         }
+        f_close(&file);
       }
 
-      f_close(&file);
+      if (categories.size() == 0) {
+        category = new ModelsCategory("Models");
+        categories.push_back(category);
+      }
+
       return true;
     }
 
