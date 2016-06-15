@@ -21,9 +21,8 @@
 #include "opentx.h"
 
 #define RECT_OFFSET                    80
-#define ROW_HEIGHT                     21
-#define BAR_HEIGHT                     10
-#define COLLUMN_SIZE                   180
+#define RECT_WIDTH                     (w - RECT_OFFSET)
+#define ROW_HEIGHT                     17
 
 class OutputsWidget: public Widget
 {
@@ -35,66 +34,44 @@ class OutputsWidget: public Widget
 
     virtual void refresh();
 
-    void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
+    uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan)
     {
-      char chanString[] = "CH 32";
-      int16_t chanVal = calcRESXto100(channelOutputs[Chan]);
-      LimitData *ld = limitAddress(Chan);
-      
-      strAppend(chanString, "Ch ");
-      strAppendSigned(&chanString[3], Chan + 1, 2);
-      lcdDrawText(x, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
-      
-      lcdDrawSizedText(x+50, y + 1, g_model.limitData[Chan].name, sizeof(g_model.limitData[Chan].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
-      strAppendSigned(chanString, chanVal);
-      lcdDrawText(x + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT);
-      
-      lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(222, 222, 222);
-      lcdDrawSolidFilledRect(x, y + 11, COLLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
-      lcd->drawSolidVerticalLine(x + COLLUMN_SIZE / 2 + calcRESXto100(ld->offset), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
-      
-      lcd->drawSolidVerticalLine(x + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), 200), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
-      if (ld->min > 3) {
-        lcd->drawSolidHorizontalLine(x + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), 200) - 3, y + 11, 3 , MAINVIEW_GRAPHICS_COLOR);
-        lcd->drawSolidHorizontalLine(x + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), 200) - 3, y + 10 + BAR_HEIGHT, 3 , MAINVIEW_GRAPHICS_COLOR);
-      }
-        
-      lcd->drawSolidVerticalLine(x + COLLUMN_SIZE + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->max), 200), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
-      if (ld->max < -3) {
-        lcd->drawSolidHorizontalLine(x + COLLUMN_SIZE + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->max), 200), y + 11, 3 , MAINVIEW_GRAPHICS_COLOR);
-        lcd->drawSolidHorizontalLine(x + COLLUMN_SIZE + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->max), 200), y + 10 + BAR_HEIGHT, 3 , MAINVIEW_GRAPHICS_COLOR);
-      }
-      
-      lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(26, 148, 49);
-      
-      if (chanVal > 0) {
-        lcdDrawSolidFilledRect(x + COLLUMN_SIZE / 2,  y + 11, divRoundClosest(COLLUMN_SIZE * chanVal, 200), BAR_HEIGHT, CUSTOM_COLOR);
-      }
-      else if (chanVal < 0) {
-        uint16_t endpoint = x + COLLUMN_SIZE / 2;
-        uint16_t size = divRoundClosest(- COLLUMN_SIZE * chanVal, 200);
-        lcdDrawSolidFilledRect(endpoint - size,  y + 11, size, BAR_HEIGHT, CUSTOM_COLOR);
-      }
-    }
+      char chanString[] = "CH32";
+      uint8_t numChan = h / ROW_HEIGHT;
+      uint8_t row_height = (h - numChan * ROW_HEIGHT >= numChan ? ROW_HEIGHT + 1 : ROW_HEIGHT);
+      uint8_t lastChan = firstChan + numChan;
 
+      for (uint8_t curChan = firstChan; curChan < lastChan && curChan < 33; curChan++) {
+        int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
+        strAppend(chanString, "CH");
+        strAppendSigned(&chanString[2], curChan, 2);
+        lcdDrawText(x, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+        strAppendSigned(chanString, chanVal);
+        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+        if (chanVal > 0) {
+          lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height, MAINVIEW_GRAPHICS_COLOR);
+        }
+        else if (chanVal < 0) {
+          uint16_t startpoint = x + RECT_OFFSET;
+          uint16_t endpoint = startpoint + RECT_WIDTH / 2;
+          uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, 200);
+          lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * row_height, size, row_height, MAINVIEW_GRAPHICS_COLOR);
+        }
+        lcdDrawRect(x + RECT_OFFSET, y + (curChan - firstChan) * row_height, RECT_WIDTH, row_height+1);
+        lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * row_height, row_height, MAINVIEW_GRAPHICS_COLOR);
+      }
+      return lastChan;
+    }
 
     void twoColumns()
     {
-      lcdColorTable[CUSTOM_COLOR_INDEX]= WHITE;
-      lcdDrawSolidFilledRect(zone.x, zone.y, zone.w, zone.h, CUSTOM_COLOR);
-      
-      int8_t Chan;
-      uint16_t x,y;
-      for(Chan=0, x=zone.x, y=zone.y;Chan < 8;Chan++, y+=ROW_HEIGHT){
-        drawSingleOutputBar(x,y, Chan);
-      }
-      for(Chan=8, x=zone.x + zone.w/2, y=zone.y;Chan < 16;Chan++, y+=ROW_HEIGHT){
-        drawSingleOutputBar(x,y, Chan);
-      }
+      uint8_t endColumn = drawChannels(zone.x, zone.y, zone.w / 2, zone.h, persistentData->options[0].unsignedValue);
+      drawChannels(zone.x + zone.w / 2 + 2, zone.y, zone.w / 2, zone.h, endColumn + 1);
     }
 
     void oneColumn()
     {
+      drawChannels(zone.x, zone.y, zone.w, zone.h, persistentData->options[0].unsignedValue);
     }
 
     static const ZoneOption options[];

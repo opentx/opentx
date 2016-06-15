@@ -20,6 +20,13 @@
 
 #include "opentx.h"
 
+#define RECT_OFFSET                    80
+#define ROW_HEIGHT                     21
+#define BAR_HEIGHT                     10
+#define COLLUMN_SIZE                   180
+#define X_OFFSET                       30
+#define Y_OFFSET                       75
+
 bool menuChannels1(evt_t event);
 bool menuChannels2(evt_t event);
 
@@ -30,6 +37,48 @@ const MenuHandlerFunc menuTabChannels[] PROGMEM = {
 
 uint8_t lastChannelsPage = 0;
 
+void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
+{
+  char chanString[] = "CH 32";
+  int16_t chanVal = calcRESXto100(channelOutputs[Chan]);
+  LimitData *ld = limitAddress(Chan);
+      
+  strAppend(chanString, "Ch ");
+  strAppendSigned(&chanString[3], Chan + 1, 2);
+  lcdDrawText(x, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
+    
+  lcdDrawSizedText(x+50, y + 1, g_model.limitData[Chan].name, sizeof(g_model.limitData[Chan].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
+  strAppendSigned(chanString, chanVal);
+  lcdDrawText(x + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT);
+    
+  lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(222, 222, 222);
+  lcdDrawSolidFilledRect(x, y + 11, COLLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
+  lcd->drawSolidVerticalLine(x + COLLUMN_SIZE / 2 + calcRESXto100(ld->offset), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
+      
+  lcd->drawSolidVerticalLine(x + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), 200), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
+  if (ld->min > 3) {
+    lcd->drawSolidHorizontalLine(x + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), 200) - 3, y + 11, 3 , MAINVIEW_GRAPHICS_COLOR);
+    lcd->drawSolidHorizontalLine(x + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), 200) - 3, y + 10 + BAR_HEIGHT, 3 , MAINVIEW_GRAPHICS_COLOR);
+  }
+        
+  lcd->drawSolidVerticalLine(x + COLLUMN_SIZE + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->max), 200), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
+  if (ld->max < -3) {
+    lcd->drawSolidHorizontalLine(x + COLLUMN_SIZE + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->max), 200), y + 11, 3 , MAINVIEW_GRAPHICS_COLOR);
+    lcd->drawSolidHorizontalLine(x + COLLUMN_SIZE + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->max), 200), y + 10 + BAR_HEIGHT, 3 , MAINVIEW_GRAPHICS_COLOR);
+  }
+      
+  lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(26, 148, 49);
+    
+  if (chanVal > 0) {
+    lcdDrawSolidFilledRect(x + COLLUMN_SIZE / 2,  y + 11, divRoundClosest(COLLUMN_SIZE * chanVal, 200), BAR_HEIGHT, CUSTOM_COLOR);
+  }
+  else if (chanVal < 0) {
+    uint16_t endpoint = x + COLLUMN_SIZE / 2;
+    uint16_t size = divRoundClosest(- COLLUMN_SIZE * chanVal, 200);
+    lcdDrawSolidFilledRect(endpoint - size,  y + 11, size, BAR_HEIGHT, CUSTOM_COLOR);
+  }
+}
+
 bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
   return true;
@@ -39,6 +88,16 @@ bool menuChannels1(evt_t event)
 {
   MENU("Channels monitor 1-16", MONITOR_ICONS, menuTabChannels, e_Channels1, 0, { 0 });
   lastChannelsPage = e_Channels1;
+  
+  int8_t Chan;
+  uint16_t x,y;
+  for(Chan=0, x=X_OFFSET, y=Y_OFFSET;Chan < 8;Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x,y, Chan);
+  }
+  for(Chan=8, x=X_OFFSET + LCD_W/2, y=Y_OFFSET;Chan < 16;Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x,y, Chan);
+  }
+  
   return menuChannelsMonitor(event, 0);
 }
 
@@ -46,5 +105,15 @@ bool menuChannels2(evt_t event)
 {
   MENU("Channels monitor 17-32", MONITOR_ICONS, menuTabChannels, e_Channels2, 0, { 0 });
   lastChannelsPage = e_Channels2;
+
+  int8_t Chan;
+  uint16_t x,y;
+  for(Chan=16, x=X_OFFSET, y=Y_OFFSET;Chan < 24;Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x,y, Chan);
+  }
+  for(Chan=24, x=X_OFFSET + LCD_W/2, y=Y_OFFSET;Chan < 32;Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x,y, Chan);
+  }  
+  
   return menuChannelsMonitor(event, 1);
 }
