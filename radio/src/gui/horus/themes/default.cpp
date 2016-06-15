@@ -122,7 +122,10 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_THEME_VIEW5, "mask_theme_view5.png");
       loadMenuIcon(ICON_THEME_ADD_VIEW, "mask_theme_add_view.png");
       loadMenuIcon(ICON_LIBRARY, "mask_library.png");
-
+      loadMenuIcon(ICON_MONITOR, "mask_monitor.png");
+      loadMenuIcon(ICON_MONITOR_OUTPUTS1, "mask_monitor_outputs1.png");
+      loadMenuIcon(ICON_MONITOR_OUTPUTS2, "mask_monitor_outputs2.png");
+      
       BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
       BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
       BitmapBuffer * dot = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_dot.png"));

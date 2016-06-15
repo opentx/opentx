@@ -37,14 +37,14 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
 
 bool menuChannels1(evt_t event)
 {
-  MENU("Channels monitor 1-16", STATS_ICONS, menuTabChannels, e_Channels1, 0, { 0 });
+  MENU("Channels monitor 1-16", MONITOR_ICONS, menuTabChannels, e_Channels1, 0, { 0 });
   lastChannelsPage = e_Channels1;
   return menuChannelsMonitor(event, 0);
 }
 
 bool menuChannels2(evt_t event)
 {
-  MENU("Channels monitor 17-32", STATS_ICONS, menuTabChannels, e_Channels2, 0, { 0 });
+  MENU("Channels monitor 17-32", MONITOR_ICONS, menuTabChannels, e_Channels2, 0, { 0 });
   lastChannelsPage = e_Channels2;
   return menuChannelsMonitor(event, 1);
 }
