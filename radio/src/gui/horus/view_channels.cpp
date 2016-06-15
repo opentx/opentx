@@ -70,7 +70,6 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
     
   lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(222, 222, 222);
   lcdDrawSolidFilledRect(x + X_OFFSET, y + 11, COLLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
-  lcd->drawSolidVerticalLine(x + X_OFFSET + COLLUMN_SIZE / 2, y + 11, BAR_HEIGHT , TEXT_COLOR);
       
   lcd->drawSolidVerticalLine(x + X_OFFSET + divRoundClosest(COLLUMN_SIZE * calcRESXto100(ld->min), limits), y + 11, BAR_HEIGHT , HEADER_BGCOLOR);
   if (ld->min > 3) {
@@ -107,6 +106,7 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
     lcdDrawSolidFilledRect(endpoint - size,  y + 11, size, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
+  lcd->drawSolidVerticalLine(x + X_OFFSET + COLLUMN_SIZE / 2, y + 11, BAR_HEIGHT , TEXT_COLOR);
 }
 
 bool menuChannelsMonitor(evt_t event, uint8_t page)
