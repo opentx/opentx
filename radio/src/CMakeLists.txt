@@ -807,7 +807,7 @@ set(GUI_SRC
   menu_model_setup.cpp
   menu_model_limits.cpp
   menu_model_logical_switches.cpp
-  menu_model_custom_functions.cpp
+  model_special_functions.cpp
   menu_model_telemetry.cpp
   menu_general.cpp
   radio_setup.cpp
