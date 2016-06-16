@@ -1311,11 +1311,14 @@ int lcdRestoreBackupBuffer()
 #endif
 
 uint32_t pwroffPressed() { return false; }
+
 #if defined(CPUARM) && !defined(PWR_BUTTON_DELAY)
 uint32_t pwrCheck() { return true; }
 #endif
 
+#if !defined(pwrOff)
 void pwrOff() { }
+#endif
 
 #if defined(CPUSTM32)
 void pwrInit() { }
