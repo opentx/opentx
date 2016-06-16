@@ -1316,7 +1316,7 @@ uint32_t pwroffPressed() { return false; }
 uint32_t pwrCheck() { return true; }
 #endif
 
-#if !defined(pwrOff)
+#if defined(CPUARM)
 void pwrOff() { }
 #endif
 
