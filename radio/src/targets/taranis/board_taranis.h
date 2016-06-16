@@ -401,7 +401,9 @@ void checkTrainerSettings(void);
 #if defined(__cplusplus)
 #include "fifo.h"
 #include "dmafifo.h"
-extern Fifo<uint8_t, 64> telemetryFifo;
+
+#define TELEMETRY_FIFO_SIZE 64
+extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 extern Fifo<uint8_t, 32> sbusFifo;
 #endif
