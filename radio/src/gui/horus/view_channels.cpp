@@ -42,8 +42,7 @@ const MenuHandlerFunc menuTabChannels[] PROGMEM = {
 uint8_t lastChannelsPage = 0;
 
 uint16_t posOnBar(int16_t value_to100){
-  uint8_t limits = (g_model.extendedLimits ? 150 : 100);
-  return divRoundClosest((value_to100 + limits) * COLLUMN_SIZE, limits*2);
+  return divRoundClosest((value_to100 + (g_model.extendedLimits ? 150 : 100)) * COLLUMN_SIZE, (g_model.extendedLimits ? 150 : 100)*2);
 }
 
 void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
@@ -63,13 +62,7 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
   lcdDrawText(x + X_OFFSET, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
     
   lcdDrawSizedText(x + X_OFFSET + 50, y + 1, g_model.limitData[Chan].name, sizeof(g_model.limitData[Chan].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
-  strAppendSigned(chanString, chanVal);
-  if ((chanVal > - limits/2) && (chanVal < limits/2)) {
-    lcdDrawText(x + X_OFFSET + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT);
-  } else {
-    lcdDrawText(x + X_OFFSET + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT | INVERS);
-  }
-    
+
   lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(222, 222, 222);
   lcdDrawSolidFilledRect(x + X_OFFSET, y + 11, COLLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
   
@@ -80,20 +73,24 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
   lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)), y + 11, BAR_HEIGHT , MAINVIEW_GRAPHICS_COLOR);
   lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(chanVal), y + 11, BAR_HEIGHT , HEADER_BGCOLOR);
 
+  strAppendSigned(chanString, chanVal);
   if (chanVal < -limits / 2) {
     lcd->drawBitmap(x + X_OFFSET + COLLUMN_SIZE / 2 - 55, y + 8, outL_bmp);
     chanVal = - limits / 2;
-  }
-  if (chanVal > limits / 2){
+    lcdDrawText(x + X_OFFSET + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT | INVERS);
+  } else if (chanVal > limits / 2){
     lcd->drawBitmap(x + X_OFFSET + COLLUMN_SIZE / 2 + 55, y + 8, outR_bmp);
     chanVal = limits / 2;
+    lcdDrawText(x + X_OFFSET + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT | INVERS);
+  } else {
+    lcdDrawText(x + X_OFFSET + COLLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT);
   }
     
   if(posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))){
     lcdDrawSolidFilledRect(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)),  y + 11, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
   else if (posOnBar(chanVal) < posOnBar(calcRESXto100(ld->offset))) {
-    uint16_t endpoint =x + X_OFFSET + posOnBar(calcRESXto100(ld->offset));
+    uint16_t endpoint = x + X_OFFSET + posOnBar(calcRESXto100(ld->offset));
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
     lcdDrawSolidFilledRect(endpoint - size,  y + 11, size, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
@@ -115,11 +112,11 @@ bool menuChannels1(evt_t event)
   
   int8_t Chan;
   uint16_t x=0,y=0;
-  for(Chan=0, x=1, y=Y_OFFSET;Chan < 8;Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x,y, Chan);
+  for(Chan=0, x=1, y=Y_OFFSET;Chan < 8; Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x, y, Chan);
   }
-  for(Chan=8, x=1 + LCD_W/2, y=Y_OFFSET;Chan < 16;Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x,y, Chan);
+  for(Chan=8, x=1 + LCD_W/2, y=Y_OFFSET; Chan < 16;Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x, y, Chan);
   }
   return menuChannelsMonitor(event, 0);
 }
@@ -131,11 +128,11 @@ bool menuChannels2(evt_t event)
 
   int8_t Chan;
   uint16_t x,y;
-  for(Chan=16, x=1, y=Y_OFFSET;Chan < 24;Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x,y, Chan);
+  for(Chan=16, x=1, y=Y_OFFSET; Chan < 24; Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x, y, Chan);
   }
-  for(Chan=24, x=1 + LCD_W/2, y=Y_OFFSET;Chan < 32;Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x,y, Chan);
+  for(Chan=24, x=1 + LCD_W/2, y=Y_OFFSET; Chan < 32; Chan++, y+=ROW_HEIGHT){
+    drawSingleOutputBar(x, y, Chan);
   }  
   
   return menuChannelsMonitor(event, 1);
