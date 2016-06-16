@@ -25,7 +25,6 @@
 #define MENU_STATS_COLUMN2    (LCD_W/2)
 #define MENU_STATS_COLUMN3    (LCD_W/2 + 120)
 
-
 bool menuStatsGraph(evt_t event)
 {
   switch(event) {
