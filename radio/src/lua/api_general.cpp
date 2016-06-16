@@ -357,7 +357,7 @@ static int luaCrossfireTelemetryPop(lua_State * L)
     lua_pushnumber(L, packet.crossfire.command);
     lua_newtable(L);
     for (int i=0; i<packet.crossfire.length; i++) {
-      lua_pushinteger(L, i);
+      lua_pushinteger(L, i+1);
       lua_pushinteger(L, packet.crossfire.data[i]);
       lua_settable(L, -3);
     }
