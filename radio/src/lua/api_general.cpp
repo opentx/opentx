@@ -369,18 +369,18 @@ static int luaCrossfireTelemetryPop(lua_State * L)
 
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
-  if (luaOutputTelemetryPacket.crossfire.command != 0) {
+  if (luaOutputTelemetryPacket.crossfire.command != 0x00) {
     lua_pushboolean(L, false);
     return 1;
   }
 
-  luaOutputTelemetryPacket.crossfire.command = luaL_checkunsigned(L, 1);
   luaL_checktype(L, 2, LUA_TTABLE);
   luaOutputTelemetryPacket.crossfire.length = min<int>(sizeof(luaOutputTelemetryPacket.crossfire.data), luaL_len(L, 2));
   for (int i=0; i<luaOutputTelemetryPacket.crossfire.length; i++) {
     lua_rawgeti(L, 2, i+1);
     luaOutputTelemetryPacket.crossfire.data[i] = luaL_checkunsigned(L, -1);
   }
+  luaOutputTelemetryPacket.crossfire.command = luaL_checkunsigned(L, 1);
 
   lua_pushboolean(L, true);
   return 1;

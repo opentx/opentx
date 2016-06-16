@@ -87,24 +87,12 @@ void telemetryWakeup()
 
 #if defined(CPUSTM32)
   uint8_t data;
-#if defined(LOG_TELEMETRY) && !defined(SIMU)
-  static tmr10ms_t lastTime = 0;
-  tmr10ms_t newTime = get_tmr10ms();
-  struct gtm utm;
-  gettime(&utm);
-#endif
+  if (!telemetryFifo.isEmpty()) {
+    LOG_TELEMETRY_WRITE_START();
+  }
   while (telemetryFifo.pop(data)) {
     processTelemetryData(data);
-#if defined(LOG_TELEMETRY) && !defined(SIMU)
-    extern FIL g_telemetryFile;
-    if (lastTime != newTime) {
-      f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0: %02X", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100, data);
-      lastTime = newTime;
-    }
-    else {
-      f_printf(&g_telemetryFile, " %02X", data);
-    }
-#endif
+    LOG_TELEMETRY_WRITE_BYTE(data);
   }
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
@@ -458,6 +446,26 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
   return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
+
+#if defined(LOG_TELEMETRY) && !defined(SIMU)
+extern FIL g_telemetryFile;
+void logTelemetryWriteStart()
+{
+  static tmr10ms_t lastTime = 0;
+  tmr10ms_t newTime = get_tmr10ms();
+  if (lastTime != newTime) {
+    struct gtm utm;
+    gettime(&utm);
+    f_printf(&g_telemetryFile, "\r\n%4d-%02d-%02d,%02d:%02d:%02d.%02d0:", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
+    lastTime = newTime;
+  }
+}
+
+void logTelemetryWriteByte(uint8_t data)
+{
+  f_printf(&g_telemetryFile, " %02X", data);
+}
+#endif
 
 #if defined(LUA)
 Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE> * luaInputTelemetryFifo = NULL;

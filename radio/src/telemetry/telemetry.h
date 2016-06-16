@@ -67,7 +67,6 @@ extern uint8_t telemetryState;
 #define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 #endif
 
-
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t telemetryRxBufferCount;
 
@@ -147,6 +146,16 @@ inline uint8_t modelTelemetryProtocol()
 
 #if defined(CPUARM)
   #include "telemetry_sensors.h"
+#endif
+
+#if defined(LOG_TELEMETRY) && !defined(SIMU)
+void logTelemetryWriteStart();
+void logTelemetryWriteByte(uint8_t data);
+#define LOG_TELEMETRY_WRITE_START()    logTelemetryWriteStart()
+#define LOG_TELEMETRY_WRITE_BYTE(data) logTelemetryWriteByte(data)
+#else
+#define LOG_TELEMETRY_WRITE_START()
+#define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
 #endif // _TELEMETRY_H_

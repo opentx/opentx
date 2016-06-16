@@ -39,8 +39,14 @@ def ParseAttitude(payload):
 def ParseFlightMode(payload):
     return '[Flight Mode] "%s"' % "".join([chr(c) for c in payload[:-1]])
 
+def ParsePingDevices(_):
+    return '[Ping Devices]'
+
 def ParseDevice(payload):
     return '[Device] "%s" %d parameters' % ("".join([chr(c) for c in payload[2:-14]]), payload[-1])
+
+def ParseFieldsRequest(payload):
+    return '[Fields request] Device=0x%02x' % payload[0]
 
 parsers = (
     (0x02, ParseGPS),
@@ -48,7 +54,9 @@ parsers = (
     (0x14, ParseLinkStatistics),
     (0x1E, ParseAttitude),
     (0x21, ParseFlightMode),
-    (0x29, ParseDevice)
+    (0x28, ParsePingDevices),
+    (0x29, ParseDevice),
+    (0x2a, ParseFieldsRequest),
 )
 
 def ParsePacket(packet):
@@ -71,12 +79,12 @@ def ParseData(data):
     crossfireDataBuff += binData
     # process whole packets
     while len(crossfireDataBuff) > 4:
-        if crossfireDataBuff[0] != 0x00:
+        if crossfireDataBuff[0] != 0x00 and crossfireDataBuff[0] != 0xee and crossfireDataBuff[0] != 0xea:
             print("Skipped 1 byte", dump(crossfireDataBuff[:1]))
             crossfireDataBuff = crossfireDataBuff[1:]
             continue
         length = crossfireDataBuff[1]
-        if length < 2 or length > 100-2:
+        if length < 2 or length > 0x32:
             print("Skipped 2 bytes", dump(crossfireDataBuff[:2]))
             crossfireDataBuff = crossfireDataBuff[2:]
             continue
@@ -84,7 +92,6 @@ def ParseData(data):
             break
         ParsePacket(crossfireDataBuff[:length+2])
         crossfireDataBuff = crossfireDataBuff[length+2:]
-
 
 inputFile = None
 

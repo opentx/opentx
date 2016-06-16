@@ -190,6 +190,10 @@ void setupPulses(uint8_t port)
         if (luaOutputTelemetryPacket.crossfire.command) {
           len = createCrossfireRequestFrame(crossfire, &luaOutputTelemetryPacket);
           luaOutputTelemetryPacket.crossfire.clear();
+          LOG_TELEMETRY_WRITE_START();
+          for (uint32_t i=0; i<len; i++) {
+            LOG_TELEMETRY_WRITE_BYTE(crossfire[i]);
+          }
         }
         else
 #endif
