@@ -91,7 +91,7 @@ uint16_t stackAvailable()
 }
 #endif
 
-uint32_t timeForcePowerOffPressed = 0;
+volatile uint16_t timeForcePowerOffPressed = 0;
 
 void resetForcePowerOffRequest()
 {
@@ -105,7 +105,7 @@ bool isForcePowerOffRequested()
       timeForcePowerOffPressed = get_tmr10ms();
     }
     else {
-      uint32_t delay = get_tmr10ms() - timeForcePowerOffPressed;
+      uint16_t delay = (uint16_t)get_tmr10ms() - timeForcePowerOffPressed;
       if (delay > 1000/*10s*/) {
         return true;
       }
