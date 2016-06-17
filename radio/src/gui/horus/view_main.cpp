@@ -152,6 +152,11 @@ bool menuMainView(evt_t event)
       pushMenu(menuTabModel[0]);
       return false;
 
+    case EVT_KEY_FIRST(KEY_MODEL):
+      killEvents(event);
+      pushMenu(menuTabChannels[lastChannelsPage]);
+      return false;
+
     case EVT_KEY_LONG(KEY_RADIO):
       killEvents(event);
       pushMenu(menuTabGeneral[0]);
@@ -198,16 +203,4 @@ bool menuMainView(evt_t event)
   return true;
 }
 
-#if 0
-bool menuMainViewChannelsMonitor(evt_t event)
-{
-  switch (event) {
-    case EVT_KEY_BREAK(KEY_EXIT):
-      chainMenu(menuMainView);
-      event = 0;
-      return false;
-  }
 
-  return menuChannelsView(event);
-}
-#endif
