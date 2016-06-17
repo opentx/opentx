@@ -98,6 +98,10 @@ enum MenuIcons {
   ICON_MONITOR,
   ICON_MONITOR_OUTPUTS1,
   ICON_MONITOR_OUTPUTS2,
+  ICON_MONITOR_MIXERS1,
+  ICON_MONITOR_MIXERS2,
+/*  ICON_MONITOR_LOGIC_SWITCHES1,
+  ICON_MONITOR_LOGIC_SWITCHES2,*/
   MENUS_ICONS_COUNT
 };
 
@@ -160,7 +164,11 @@ const uint8_t STATS_ICONS[] = {
 const uint8_t MONITOR_ICONS[] = {
   ICON_MONITOR,
   ICON_MONITOR_OUTPUTS1,
-  ICON_MONITOR_OUTPUTS2
+  ICON_MONITOR_OUTPUTS2,
+  ICON_MONITOR_MIXERS1,
+  ICON_MONITOR_MIXERS2,
+/*  ICON_MONITOR_LOGIC_SWITCHES1,
+  ICON_MONITOR_LOGIC_SWITCHES2*/
 };
 
 bool menuModelSetup(evt_t event);
@@ -224,15 +232,19 @@ static const MenuHandlerFunc menuTabStats[] PROGMEM = {
 #endif
 };
 
-enum EnumTabChannels
+enum EnumTabMonitors
 {
-  e_Channels1,
-  e_Channels2,
+  e_Outputs1,
+  e_Outputs2,
+  e_Mixers1,
+  e_Mixers2,
+/*  e_LogicSwitches1,
+  e_LogicSwitches2,*/
   e_TabChannelsPagesCount
 };
 
-extern const MenuHandlerFunc menuTabChannels[e_TabChannelsPagesCount];
-extern uint8_t lastChannelsPage;
+extern const MenuHandlerFunc menuTabMonitors[e_TabChannelsPagesCount];
+extern uint8_t lastMonitorPage;
 
 extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
 
