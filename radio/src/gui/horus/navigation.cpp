@@ -377,7 +377,7 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
 
   if (menuTab == menuTabModel && event == EVT_KEY_FIRST(KEY_MODEL)) {
     killEvents(event);
-    pushMenu(menuTabChannels[lastChannelsPage]);
+    pushMenu(menuTabMonitors[lastMonitorPage]);
     return false;
   }
 

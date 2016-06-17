@@ -34,12 +34,24 @@ const BitmapBuffer *inver_bmp = NULL;
 const BitmapBuffer *outL_bmp = NULL;
 const BitmapBuffer *outR_bmp = NULL;
 
-const MenuHandlerFunc menuTabChannels[] PROGMEM = {
-  menuChannels1,
-  menuChannels2,
+bool menuOutputs1(evt_t);
+bool menuOutputs2(evt_t);
+
+extern bool menuLogicSwitches1(evt_t);
+extern bool menuLogicSwitches2(evt_t);
+extern bool menuMixers1(evt_t);
+extern bool menuMixers2(evt_t);
+
+const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
+  menuOutputs1,
+  menuOutputs2,
+  menuMixers1,
+  menuMixers2,
+  menuLogicSwitches1,
+  menuLogicSwitches2
 };
 
-uint8_t lastChannelsPage = 0;
+uint8_t lastMonitorPage = 0;
 
 uint16_t posOnBar(int16_t value_to100){
   return divRoundClosest((value_to100 + (g_model.extendedLimits ? 150 : 100)) * COLLUMN_SIZE, (g_model.extendedLimits ? 150 : 100)*2);
@@ -105,10 +117,10 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
   return true;
 }
 
-bool menuChannels1(evt_t event)
+bool menuOutputs1(evt_t event)
 {
-  MENU("Channels monitor 1-16", MONITOR_ICONS, menuTabChannels, e_Channels1, 0, { 0 });
-  lastChannelsPage = e_Channels1;
+  MENU("Output monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Outputs1, 0, { 0 });
+  lastMonitorPage = e_Outputs1;
   
   int8_t Chan;
   uint16_t x=0,y=0;
@@ -121,10 +133,10 @@ bool menuChannels1(evt_t event)
   return menuChannelsMonitor(event, 0);
 }
 
-bool menuChannels2(evt_t event)
+bool menuOutputs2(evt_t event)
 {
-  MENU("Channels monitor 17-32", MONITOR_ICONS, menuTabChannels, e_Channels2, 0, { 0 });
-  lastChannelsPage = e_Channels2;
+  MENU("Output monitor 17-32", MONITOR_ICONS, menuTabMonitors, e_Outputs2, 0, { 0 });
+  lastMonitorPage = e_Outputs2;
 
   int8_t Chan;
   uint16_t x,y;
@@ -136,4 +148,21 @@ bool menuChannels2(evt_t event)
   }  
   
   return menuChannelsMonitor(event, 1);
+}
+
+
+bool menuMixers1(evt_t event)
+{
+  MENU("Mixer monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers1, 0, { 0 });
+  lastMonitorPage = e_Mixers1;
+  
+  return menuChannelsMonitor(event, 2);
+}
+
+bool menuMixers2(evt_t event)
+{
+  MENU("Mixer monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers2, 0, { 0 });
+  lastMonitorPage = e_Mixers2;
+  
+  return menuChannelsMonitor(event, 2);
 }
