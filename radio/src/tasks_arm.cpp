@@ -91,6 +91,32 @@ uint16_t stackAvailable()
 }
 #endif
 
+volatile uint16_t timeForcePowerOffPressed = 0;
+
+void resetForcePowerOffRequest()
+{
+  timeForcePowerOffPressed = 0;
+}
+
+bool isForcePowerOffRequested()
+{
+  if (pwroffPressed()) {
+    if (timeForcePowerOffPressed == 0) {
+      timeForcePowerOffPressed = get_tmr10ms();
+    }
+    else {
+      uint16_t delay = (uint16_t)get_tmr10ms() - timeForcePowerOffPressed;
+      if (delay > 1000/*10s*/) {
+        return true;
+      }
+    }
+  }
+  else {
+    resetForcePowerOffRequest();
+  }
+  return false;
+}
+
 uint32_t nextMixerTime[NUM_MODULES];
 
 void mixerTask(void * pdata)
@@ -110,6 +136,10 @@ void mixerTask(void * pdata)
 #endif
 
     CoTickDelay(1);
+
+    if (isForcePowerOffRequested()) {
+      pwrOff();
+    }
 
     uint32_t now = CoGetOSTime();
     bool run = false;
@@ -160,7 +190,7 @@ void mixerTask(void * pdata)
 
 void scheduleNextMixerCalculation(uint8_t module, uint16_t delay)
 {
-  // Schedule next mixer calculation time, 
+  // Schedule next mixer calculation time,
   // for now assume mixer calculation takes 2 ms.
   nextMixerTime[module] = (uint32_t)CoGetOSTime() + (delay)/2 - 1/*2ms*/;
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
@@ -196,6 +226,8 @@ void menusTask(void * pdata)
     if (runtime < MENU_TASK_PERIOD_TICKS) {
       CoTickDelay(MENU_TASK_PERIOD_TICKS - runtime);
     }
+
+    resetForcePowerOffRequest();
 
 #if defined(SIMU)
     if (main_thread_running == 0)

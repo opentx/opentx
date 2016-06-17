@@ -264,6 +264,7 @@ void btPushByte(uint8_t data);
 void pwrInit();
 void pwrOff();
 uint32_t pwrCheck();
+uint32_t pwroffPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // EEPROM driver
