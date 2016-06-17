@@ -29,10 +29,10 @@
 
 bool menuChannels1(evt_t event);
 bool menuChannels2(evt_t event);
-const BitmapBuffer *locked_bmp = NULL;
-const BitmapBuffer *inver_bmp = NULL;
-const BitmapBuffer *outL_bmp = NULL;
-const BitmapBuffer *outR_bmp = NULL;
+const BitmapBuffer * locked_bmp = NULL;
+const BitmapBuffer * inver_bmp = NULL;
+const BitmapBuffer * outL_bmp = NULL;
+const BitmapBuffer * outR_bmp = NULL;
 
 bool menuOutputs1(evt_t);
 bool menuOutputs2(evt_t);
@@ -91,23 +91,22 @@ void drawSingleMixerBar(uint16_t x, uint16_t y, uint8_t Chan)
   lcd->drawSolidVerticalLine(x + X_OFFSET + COLUMN_SIZE / 2, y + 11, BAR_HEIGHT , TEXT_COLOR);
 }
 
-void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
+void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t channel)
 {
-  char chanString[] = "CH 32";
+  char chanString[] = "Ch 32";
   uint16_t limits = (g_model.extendedLimits ? 300 : 200);
-  int16_t chanVal = calcRESXto100(channelOutputs[Chan]);
-  LimitData *ld = limitAddress(Chan);
+  int16_t chanVal = calcRESXto100(channelOutputs[channel]);
+  LimitData * ld = limitAddress(channel);
   
-  if (!locked_bmp) locked_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_lockch.png"));
-  if (!inver_bmp) inver_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_inver.png"));
-  if (!outL_bmp) outL_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_outL.png"));
-  if (!outR_bmp) outR_bmp =  BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
-      
-  strAppend(chanString, "Ch ");
-  strAppendSigned(&chanString[3], Chan + 1, 2);
+  if (!locked_bmp) locked_bmp = BitmapBuffer::load(getThemePath("mask_monitor_lockch.png"));
+  if (!inver_bmp) inver_bmp = BitmapBuffer::load(getThemePath("mask_monitor_inver.png"));
+  if (!outL_bmp) outL_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outL.png"));
+  if (!outR_bmp) outR_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
+
+  strAppendSigned(&chanString[3], channel + 1, 2);
   lcdDrawText(x + X_OFFSET, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
     
-  lcdDrawSizedText(x + X_OFFSET + 50, y + 1, g_model.limitData[Chan].name, sizeof(g_model.limitData[Chan].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
+  lcdDrawSizedText(x + X_OFFSET + 50, y + 1, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
 
   lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(222, 222, 222);
   lcdDrawSolidFilledRect(x + X_OFFSET, y + 11, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
@@ -123,11 +122,13 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
     lcd->drawBitmap(x + X_OFFSET + COLUMN_SIZE / 2 - 55, y + 8, outL_bmp);
     chanVal = - limits / 2;
     lcdDrawText(x + X_OFFSET + COLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT | INVERS);
-  } else if (chanVal > limits / 2){
+  }
+  else if (chanVal > limits / 2) {
     lcd->drawBitmap(x + X_OFFSET + COLUMN_SIZE / 2 + 55, y + 8, outR_bmp);
     chanVal = limits / 2;
     lcdDrawText(x + X_OFFSET + COLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT | INVERS);
-  } else {
+  }
+  else {
     lcdDrawText(x + X_OFFSET + COLUMN_SIZE - 2, y + 1, chanString, TINSIZE | TEXT_COLOR | RIGHT);
   }
       
@@ -140,13 +141,23 @@ void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t Chan)
     lcdDrawSolidFilledRect(endpoint - size,  y + 11, size, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
   
-  if (safetyCh[Chan] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x + 3, y + 5, locked_bmp);
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x + 3, y + 5, locked_bmp);
   if (ld->revert) lcd->drawBitmap(x + 16, y + 5, inver_bmp);
   lcd->drawSolidVerticalLine(x + X_OFFSET + COLUMN_SIZE / 2, y + 11, BAR_HEIGHT , TEXT_COLOR);
 }
 
-bool menuChannelsMonitor(evt_t event, uint8_t page)
+bool menuOutputsMonitor(evt_t event, uint8_t page)
 {
+  uint8_t channel = 16*page;
+  uint16_t x=1, y=Y_OFFSET;
+  for (uint8_t i=0; i<8; i++, channel++, y+=ROW_HEIGHT) {
+    drawSingleOutputBar(x, y, channel);
+  }
+  x = 1 + LCD_W/2;
+  y = Y_OFFSET;
+  for(uint8_t i=0; i<8; i++, channel++, y+=ROW_HEIGHT) {
+    drawSingleOutputBar(x, y, channel);
+  }
   return true;
 }
 
@@ -154,66 +165,41 @@ bool menuOutputs1(evt_t event)
 {
   MENU("Output monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Outputs1, 0, { 0 });
   lastMonitorPage = e_Outputs1;
-  
-  int8_t Chan;
-  uint16_t x=0,y=0;
-  for(Chan=0, x=1, y=Y_OFFSET;Chan < 8; Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x, y, Chan);
-  }
-  for(Chan=8, x=1 + LCD_W/2, y=Y_OFFSET; Chan < 16;Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x, y, Chan);
-  }
-  return menuChannelsMonitor(event, 0);
+  return menuOutputsMonitor(event, 0);
 }
 
 bool menuOutputs2(evt_t event)
 {
   MENU("Output monitor 17-32", MONITOR_ICONS, menuTabMonitors, e_Outputs2, 0, { 0 });
   lastMonitorPage = e_Outputs2;
-
-  int8_t Chan;
-  uint16_t x,y;
-  for(Chan=16, x=1, y=Y_OFFSET; Chan < 24; Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x, y, Chan);
-  }
-  for(Chan=24, x=1 + LCD_W/2, y=Y_OFFSET; Chan < 32; Chan++, y+=ROW_HEIGHT){
-    drawSingleOutputBar(x, y, Chan);
-  }  
-  
-  return menuChannelsMonitor(event, 1);
+  return menuOutputsMonitor(event, 1);
 }
 
+bool menuMixersMonitor(evt_t event, uint8_t page)
+{
+  uint8_t channel = 16*page;
+  uint16_t x=1, y=Y_OFFSET;
+  for (uint8_t i=0; i<8; i++, channel++, y+=ROW_HEIGHT) {
+    drawSingleMixerBar(x, y, channel);
+  }
+  x = 1 + LCD_W/2;
+  y = Y_OFFSET;
+  for(uint8_t i=0; i<8; i++, channel++, y+=ROW_HEIGHT) {
+    drawSingleMixerBar(x, y, channel);
+  }
+  return true;
+}
 
 bool menuMixers1(evt_t event)
 {
   MENU("Mixer monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers1, 0, { 0 });
   lastMonitorPage = e_Mixers1;
-  
-  int8_t Chan;
-  uint16_t x=0,y=0;
-  for(Chan=0, x=1, y=Y_OFFSET;Chan < 8; Chan++, y+=ROW_HEIGHT){
-    drawSingleMixerBar(x, y, Chan);
-  }
-  for(Chan=8, x=1 + LCD_W/2, y=Y_OFFSET; Chan < 16;Chan++, y+=ROW_HEIGHT){
-    drawSingleMixerBar(x, y, Chan);
-  }
-  
-  return menuChannelsMonitor(event, 2);
+  return menuMixersMonitor(event, 0);
 }
 
 bool menuMixers2(evt_t event)
 {
   MENU("Mixer monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers2, 0, { 0 });
   lastMonitorPage = e_Mixers2;
-  
-  int8_t Chan;
-  uint16_t x,y;
-  for(Chan=16, x=1, y=Y_OFFSET; Chan < 24; Chan++, y+=ROW_HEIGHT){
-    drawSingleMixerBar(x, y, Chan);
-  }
-  for(Chan=24, x=1 + LCD_W/2, y=Y_OFFSET; Chan < 32; Chan++, y+=ROW_HEIGHT){
-    drawSingleMixerBar(x, y, Chan);
-  }
-  
-  return menuChannelsMonitor(event, 2);
+  return menuMixersMonitor(event, 1);
 }
