@@ -100,8 +100,8 @@ enum MenuIcons {
   ICON_MONITOR_OUTPUTS2,
   ICON_MONITOR_MIXERS1,
   ICON_MONITOR_MIXERS2,
-  ICON_MONITOR_LOGIC_SWITCHES1,
-  ICON_MONITOR_LOGIC_SWITCHES2,
+/*  ICON_MONITOR_LOGIC_SWITCHES1,
+  ICON_MONITOR_LOGIC_SWITCHES2,*/
   MENUS_ICONS_COUNT
 };
 
@@ -167,8 +167,8 @@ const uint8_t MONITOR_ICONS[] = {
   ICON_MONITOR_OUTPUTS2,
   ICON_MONITOR_MIXERS1,
   ICON_MONITOR_MIXERS2,
-  ICON_MONITOR_LOGIC_SWITCHES1,
-  ICON_MONITOR_LOGIC_SWITCHES2
+/*  ICON_MONITOR_LOGIC_SWITCHES1,
+  ICON_MONITOR_LOGIC_SWITCHES2*/
 };
 
 bool menuModelSetup(evt_t event);
@@ -238,8 +238,8 @@ enum EnumTabMonitors
   e_Outputs2,
   e_Mixers1,
   e_Mixers2,
-  e_LogicSwitches1,
-  e_LogicSwitches2,
+/*  e_LogicSwitches1,
+  e_LogicSwitches2,*/
   e_TabChannelsPagesCount
 };
 

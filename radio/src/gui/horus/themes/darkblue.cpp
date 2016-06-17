@@ -109,10 +109,10 @@ class DarkblueTheme: public Theme
       loadMenuIcon(ICON_MONITOR, "mask_monitor.png");
       loadMenuIcon(ICON_MONITOR_OUTPUTS1, "mask_monitor_outputs1.png");
       loadMenuIcon(ICON_MONITOR_OUTPUTS2, "mask_monitor_outputs2.png");
-      loadMenuIcon(ICON_MONITOR_MIXERS1, "mask_monitor_outputs2.png");
-      loadMenuIcon(ICON_MONITOR_MIXERS2, "mask_monitor_outputs2.png");
-      loadMenuIcon(ICON_MONITOR_LOGIC_SWITCHES1, "mask_monitor_outputs1.png");
-      loadMenuIcon(ICON_MONITOR_LOGIC_SWITCHES2, "mask_monitor_outputs1.png");
+      loadMenuIcon(ICON_MONITOR_MIXERS1, "mask_monitor_mixes1.png");
+      loadMenuIcon(ICON_MONITOR_MIXERS2, "mask_monitor_mixes2.png");
+/*      loadMenuIcon(ICON_MONITOR_LOGIC_SWITCHES1, "mask_monitor_outputs1.png");
+      loadMenuIcon(ICON_MONITOR_LOGIC_SWITCHES2, "mask_monitor_outputs1.png");*/
     }
 
     virtual void load() const

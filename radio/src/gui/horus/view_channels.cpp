@@ -47,8 +47,8 @@ const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
   menuOutputs2,
   menuMixers1,
   menuMixers2,
-  menuLogicSwitches1,
-  menuLogicSwitches2
+/*  menuLogicSwitches1,
+  menuLogicSwitches2*/
 };
 
 uint8_t lastMonitorPage = 0;

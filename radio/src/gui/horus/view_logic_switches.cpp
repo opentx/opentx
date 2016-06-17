@@ -20,7 +20,12 @@
 
 #include "opentx.h"
 
+/*
 extern bool menuChannelsMonitor(evt_t, uint8_t);
+
+uint8_t drawLS_Table(uint16_t x, uint16_t y){
+
+}
 
 bool menuLogicSwitches1(evt_t event)
 {
@@ -34,4 +39,4 @@ bool menuLogicSwitches2(evt_t event)
   MENU("Logic Switches 33-64",MONITOR_ICONS, menuTabMonitors, e_LogicSwitches2, 0, { 0 });
   lastMonitorPage = e_LogicSwitches2;
   return menuChannelsMonitor(event, 5);
-}
+}*/
