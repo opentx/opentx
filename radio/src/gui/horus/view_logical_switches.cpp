@@ -120,7 +120,7 @@ bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
   uint8_t col, lsIdx, line;
   LcdFlags attr;
 
-  lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(160,160,160);
+  lcdColorTable[CUSTOM_COLOR_INDEX]= RGB(160, 160, 160);
   scrollLogicalSwitchesMonitor(event);
   for (line = 1, lsIdx=1; line < 9; line++){   
     for(col=1; col < 9 ; col++, lsIdx++){
@@ -129,8 +129,8 @@ bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
       LogicalSwitchData * cs = lswAddress(lsIdx-1);
       attr = (CENTERED);
       if (cs->func == LS_FUNC_NONE) attr += (CUSTOM_COLOR);
-      else if (getSwitch(SWSRC_SW1+lsIdx-1)) attr += (BOLD);
-      if (lsIdx == (lsScrollIdx+1)) attr+= (INVERS);
+      else if (getSwitch(SWSRC_SW1 + lsIdx - 1)) attr += (BOLD);
+      if (lsIdx == (lsScrollIdx + 1)) attr+= (INVERS);
       lcdDrawText(X_OFF + col * LS_COL_WIDTH, Y_OFF + line * LS_LINE_HEIGHT, lsString, attr);
     }
   }
