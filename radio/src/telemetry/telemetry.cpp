@@ -410,7 +410,8 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE);
 #if defined(LUA)
-    luaOutputTelemetryPacket.crossfire.clear();
+    outputTelemetryBufferSize = 0;
+    outputTelemetryBufferTrigger = 0;
 #endif
     telemetryPortSetDirectionOutput();
   }
@@ -422,7 +423,8 @@ void telemetryInit(uint8_t protocol)
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE);
 #if defined(LUA)
-    luaOutputTelemetryPacket.sport.clear();
+    outputTelemetryBufferSize = 0;
+    outputTelemetryBufferTrigger = 0x7E;
 #endif
   }
 
@@ -467,7 +469,10 @@ void logTelemetryWriteByte(uint8_t data)
 }
 #endif
 
+uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
+uint8_t outputTelemetryBufferSize = 0;
+uint8_t outputTelemetryBufferTrigger = 0;
+
 #if defined(LUA)
-Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE> * luaInputTelemetryFifo = NULL;
-LuaTelemetryPacket luaOutputTelemetryPacket;
+Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;
 #endif

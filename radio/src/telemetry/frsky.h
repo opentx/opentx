@@ -484,49 +484,18 @@ void frskyUpdateCells();
 
 void processFrskyTelemetryData(uint8_t data);
 
-#if defined(LUA)
-struct LuaTelemetryPacket
+PACK(union SportTelemetryPacket
 {
-  LuaTelemetryPacket()
-  {
-  }
-
-  union {
-    struct {
-      uint8_t physicalId;
-      union {
-        struct {
-          uint8_t primId;
-          uint16_t dataId;
-          uint32_t value;
-          uint8_t crc;
-        };
-        uint8_t raw[8];
-      };
-      void clear()
-      {
-        physicalId = 0x7E;
-      }
-    } sport;
-
-#if defined(CROSSFIRE)
-    struct {
-      uint8_t command;
-      uint8_t length;
-      uint8_t data[32];
-      void clear()
-      {
-        command = 0x00;
-      }
-    } crossfire;
-#endif
+  struct {
+    uint8_t physicalId;
+    uint8_t primId;
+    uint16_t dataId;
+    uint32_t value;
   };
-};
+  uint8_t raw[8];
+});
 
-#define LUA_TELEMETRY_FIFO_SIZE 8
-extern Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE> * luaInputTelemetryFifo;
-extern LuaTelemetryPacket luaOutputTelemetryPacket;
-void sportSendLuaPacket(LuaTelemetryPacket & packet);
-#endif
+bool isSportOutputBufferAvailable();
+void sportOutputPushPacket(SportTelemetryPacket & packet);
 
 #endif // _FRSKY_H_

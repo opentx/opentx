@@ -189,33 +189,38 @@ void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t d
   }
 }
 
-uint8_t sportUpdatePacket[16] __DMA;
-
-#if defined(LUA)
-// TODO merge it with S.PORT update function when finished
-void sportSendLuaPacket(LuaTelemetryPacket & packet)
+void sportOutputPushByte(uint8_t byte)
 {
-  uint8_t * ptr = sportUpdatePacket;
-  // *ptr++ = 0x7E;
-  // *ptr++ = 0x1A;
+  if (byte == 0x7E || byte == 0x7D) {
+    telemetryOutputPushByte(0x7D);
+    telemetryOutputPushByte(0x20 ^ byte);
+  }
+  else {
+    telemetryOutputPushByte(byte);
+  }
+}
 
+bool isSportOutputBufferAvailable()
+{
+  return (outputTelemetryBufferSize == 0 && outputTelemetryBufferTrigger == 0x7E);
+}
+
+// TODO merge it with S.PORT update function when finished
+void sportOutputPushPacket(SportTelemetryPacket & packet)
+{
   uint16_t crc = 0;
-  for (uint8_t i=0; i<7; i++) {
-    if (packet.sport.raw[i] == 0x7E || packet.sport.raw[i] == 0x7D) {
-      *ptr++ = 0x7D;
-      *ptr++ = 0x20 ^ packet.sport.raw[i];
-    }
-    else {
-      *ptr++ = packet.sport.raw[i];
-    }
-    crc += packet.sport.raw[i];         //0-1FF
-    crc += crc >> 8;   //0-100
+
+  for (uint8_t i=1; i<sizeof(packet); i++) {
+    uint8_t byte = packet.raw[i];
+    sportOutputPushByte(byte);
+    crc += byte; // 0-1FF
+    crc += crc >> 8; // 0-100
     crc &= 0x00ff;
   }
-  *ptr++ = 0xFF-crc;
-  sportSendBuffer(sportUpdatePacket, ptr-sportUpdatePacket);
+
+  telemetryOutputPushByte(0xFF-crc);
+  telemetryOutputSetTrigger(packet.raw[0]); // physicalId
 }
-#endif
 
 void processSportPacket(uint8_t * packet)
 {
@@ -313,12 +318,14 @@ void processSportPacket(uint8_t * packet)
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo) {
-            LuaTelemetryPacket luaPacket;
-            luaPacket.sport.physicalId = physicalId;
-            luaPacket.sport.primId = primId;
-            luaPacket.sport.dataId = id;
-            luaPacket.sport.value = data;
-            luaInputTelemetryFifo->push(luaPacket);
+            SportTelemetryPacket luaPacket;
+            luaPacket.physicalId = physicalId;
+            luaPacket.primId = primId;
+            luaPacket.dataId = id;
+            luaPacket.value = data;
+            for (uint8_t i=0; i<sizeof(luaPacket); i++) {
+              luaInputTelemetryFifo->push(luaPacket.raw[i]);
+            }
           }
 #endif
         }
@@ -331,12 +338,14 @@ void processSportPacket(uint8_t * packet)
 #if defined(LUA)
   else if (primId == 0x32) {
     if (luaInputTelemetryFifo) {
-      LuaTelemetryPacket luaPacket;
-      luaPacket.sport.physicalId = physicalId;
-      luaPacket.sport.primId = primId;
-      luaPacket.sport.dataId = id;
-      luaPacket.sport.value = data;
-      luaInputTelemetryFifo->push(luaPacket);
+      SportTelemetryPacket luaPacket;
+      luaPacket.physicalId = physicalId;
+      luaPacket.primId = primId;
+      luaPacket.dataId = id;
+      luaPacket.value = data;
+      for (uint8_t i=0; i<sizeof(luaPacket); i++) {
+        luaInputTelemetryFifo->push(luaPacket.raw[i]);
+      }
     }
   }
 #endif
@@ -417,9 +426,10 @@ void blankPacket(uint8_t * packet)
   memset(packet+2, 0, 6);
 }
 
+// TODO merge this function
 void writePacket(uint8_t * packet)
 {
-  uint8_t * ptr = sportUpdatePacket;
+  uint8_t * ptr = outputTelemetryBuffer;
   *ptr++ = 0x7E;
   *ptr++ = 0xFF;
   packet[7] = crc16(packet, 7);
@@ -432,7 +442,7 @@ void writePacket(uint8_t * packet)
       *ptr++ = packet[i];
     }
   }
-  sportSendBuffer(sportUpdatePacket, ptr-sportUpdatePacket);
+  sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
 }
 
 bool sportUpdatePowerOn(ModuleIndex module)

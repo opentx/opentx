@@ -140,7 +140,7 @@
 #define LED_GPIO_PIN                    GPIO_Pin_5  // PI.05
 
 // Serial Port (DEBUG)
-#define SERIAL_RCC_AHB1Periph           RCC_AHB1Periph_GPIOB
+#define SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
 #define SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
 #define SERIAL_GPIO                     GPIOB
 #define SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
