@@ -36,19 +36,17 @@ const BitmapBuffer * outR_bmp = NULL;
 
 bool menuOutputs1(evt_t);
 bool menuOutputs2(evt_t);
+bool menuMixers1(evt_t);
+bool menuMixers2(evt_t);
 
-extern bool menuLogicSwitches1(evt_t);
-extern bool menuLogicSwitches2(evt_t);
-extern bool menuMixers1(evt_t);
-extern bool menuMixers2(evt_t);
+extern bool menuLogicalSwitches(evt_t);
 
 const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
   menuOutputs1,
   menuOutputs2,
   menuMixers1,
   menuMixers2,
-/*  menuLogicSwitches1,
-  menuLogicSwitches2*/
+  menuLogicalSwitches
 };
 
 uint8_t lastMonitorPage = 0;
