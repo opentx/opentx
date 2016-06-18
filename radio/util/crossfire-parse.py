@@ -10,6 +10,21 @@ import sys
 lineNumber = 0
 crossfireDataBuff = []
 
+crossfire_types = [
+    "UINT8",
+    "INT8",
+    "UINT16",
+    "INT16",
+    "UINT32",
+    "INT32",
+    "UINT64",
+    "INT64",
+    "FLOAT",
+    "TEXT_SELECTION",
+    "STRING",
+    "FOLDER"
+]
+
 def dump(data, maxLen=None):
     if maxLen and len(data) > maxLen:
         data = data[:maxLen]
@@ -43,10 +58,22 @@ def ParsePingDevices(_):
     return '[Ping Devices]'
 
 def ParseDevice(payload):
-    return '[Device] "%s" %d parameters' % ("".join([chr(c) for c in payload[2:-14]]), payload[-1])
+    return '[Device] 0x%02x "%s" %d parameters' % (payload[1], "".join([chr(c) for c in payload[2:-14]]), payload[-1])
 
 def ParseFieldsRequest(payload):
-    return '[Fields request] Device=0x%02x' % payload[0]
+    return '[Fields request]'
+
+def ParseFieldRequest(payload):
+    return '[Field request] device=0x%02x field=%d' % (payload[1], payload[2])
+
+def ParseField(payload):
+    name = ""
+    i = 5
+    while payload[i] != 0:
+        name += chr(payload[i])
+        i += 1
+    i += 1
+    return '[Field] %s device=0x%02x field=%d parent=%d type=%s' % (name, payload[1], payload[2], payload[3], crossfire_types[payload[4]])
 
 parsers = (
     (0x02, ParseGPS),
@@ -57,6 +84,8 @@ parsers = (
     (0x28, ParsePingDevices),
     (0x29, ParseDevice),
     (0x2a, ParseFieldsRequest),
+    (0x2b, ParseField),
+    (0x2c, ParseFieldRequest),
 )
 
 def ParsePacket(packet):

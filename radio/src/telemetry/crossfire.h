@@ -23,6 +23,7 @@
 
 // Device address
 #define BROADCAST_ADDRESS              0x00
+#define RADIO_ADDRESS                  0xEA
 #define MODULE_ADDRESS                 0xEE
 
 // Frame id
@@ -38,5 +39,6 @@
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
+bool isCrossfireOutputBufferAvailable();
 
 #endif // _CROSSFIRE_H_

@@ -73,6 +73,22 @@ class Fifo
       while (!isEmpty()) {};
     }
 
+    uint32_t size()
+    {
+      return (N + widx - ridx) & (N-1);
+    }
+
+    bool probe(T & element)
+    {
+      if (isEmpty()) {
+        return false;
+      }
+      else {
+        element = fifo[ridx];
+        return true;
+      }
+    }
+
   protected:
     T fifo[N];
     volatile uint32_t widx;

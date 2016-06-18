@@ -32,10 +32,6 @@ TrainerPulsesData trainerPulsesData __DMA;
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 #endif
 
-#if defined(CROSSFIRE) && defined(LUA)
-uint8_t createCrossfireRequestFrame(uint8_t * frame, LuaTelemetryPacket * telemetry);
-#endif
-
 uint8_t getRequiredProtocol(uint8_t port)
 {
   uint8_t required_protocol;
@@ -187,13 +183,11 @@ void setupPulses(uint8_t port)
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
         uint8_t len;
 #if defined(LUA)
-        if (luaOutputTelemetryPacket.crossfire.command) {
-          len = createCrossfireRequestFrame(crossfire, &luaOutputTelemetryPacket);
-          luaOutputTelemetryPacket.crossfire.clear();
-          LOG_TELEMETRY_WRITE_START();
-          for (uint32_t i=0; i<len; i++) {
-            LOG_TELEMETRY_WRITE_BYTE(crossfire[i]);
-          }
+        if (outputTelemetryBufferTrigger != 0x00 && outputTelemetryBufferSize > 0) {
+          memcpy(crossfire, outputTelemetryBuffer, outputTelemetryBufferSize);
+          len = outputTelemetryBufferSize;
+          outputTelemetryBufferTrigger = 0x00;
+          outputTelemetryBufferSize = 0;
         }
         else
 #endif

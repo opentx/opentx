@@ -57,17 +57,19 @@ local function drawDevicePage(page)
   -- end
 
   for index = 1, 7, 1 do
-    field = page["fields"][pageOffset+index]
+    field = page.fields[pageOffset+index]
     if field == nil then
       break
     end
     
-    if field["name"] == nil then
+    if field.name == nil then
       lcd.drawText(0, 1+8*index, "...")
     else
       attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
-
-      lcd.drawText(0, 1+8*index, field["name"])
+      lcd.drawText(0, 1+8*index, field.name)
+      if field.functions ~= nil then
+        field.functions.display(field, 1+8*index, attr)
+      end
 
       -- if field[4] == nil then
       --   lcd.drawText(COLUMN_2, 1+8*index, "---", attr)
@@ -88,19 +90,19 @@ local function createPage(id, name, fields_count)
   newpage = {
     id = id,
     name = name,
-    state = 0,
-    timeout = 0,
-    fields = {}
+    pagetimeout = 0,
+    fields = {},
+    fieldstimeout = 0,
   }
   for i=1, fields_count do
-    newpage["fields"][i] = { name=nil }
+    newpage.fields[i] = { name=nil }
   end
   return newpage
 end
 
 local function getPage(name)
   for i=1, #pages do
-    if pages[i]["name"] == name then
+    if pages[i].name == name then
       return pages[i]
     end
   end
@@ -118,21 +120,74 @@ local function parseDeviceInfoMessage(data)
   fields_count = data[i+13]
   pg = getPage(name)
   if pg == nil then
-    pg = createPage(id, name, fields_count)
+    pg = createPage(id, name, fields_count-1) -- TODO fields_count should be different
     pages[#pages + 1] = pg
   end
-  pg["timeout"] = time + 3000 -- 30s
+  pg.pagetimeout = time + 3000 -- 30s
 end
+
+function split(inputstr)
+  local t={}; i=1
+  for str in string.gmatch(inputstr, "([^;]+)") do
+    t[i] = str
+    i = i + 1
+  end
+  return t
+end
+
+local function fieldTextSelectionLoad(field, data, offset)
+  values = ""
+  while data[offset] ~= 0 do
+    values = values .. string.char(data[offset])
+    offset = offset + 1
+  end
+  field.values = split(values)
+  offset = offset + 1
+  field.value = data[offset]
+end
+
+local function fieldTextSelectionDisplay(field, y, attr)
+  lcd.drawText(COLUMN_2, y, field.values[field.value+1], attr)
+end
+
+local types_functions = {
+  nil,
+  nil,
+  nil,
+  nil,
+  nil,
+  nil,
+  nil,
+  nil,
+  nil,
+  { load=fieldTextSelectionLoad, display=fieldTextSelectionDisplay },
+  nil,
+  nil
+}
 
 local function parseParameterInfoMessage(data)
   index = data[3]
+  field = pages[page].fields[index]
+  field.parent = data[4]
+  field.type = data[5]
+  field.functions = types_functions[field.type+1]
+  parent = field.parent
   name = ""
+  while parent ~= 0 do
+    name = name .. " "
+    parent = pages[page].fields[parent].parent
+  end
   i = 6
   while data[i] ~= 0 do
     name = name .. string.char(data[i])
     i = i + 1
   end
-  pages[page]["fields"][index+1]["name"] = name
+  i = i + 1
+  field.name = name
+  if field.functions ~= nil then
+    field.functions.load(field, data, i)
+  end
+  pages[page].fieldstimeout = 0
 end
 
 local telemetryPopTimeout = 0
@@ -148,9 +203,14 @@ local function refreshNext()
         devicesRefreshTimeout = time + 1000 -- 10s
       end
       crossfireTelemetryPush(0x28, { 0x00, 0xEA })
-    elseif page <= #pages and pages[page]["state"] == 0 and time > pages[page]["timeout"] then
-      crossfireTelemetryPush(0x2A, { pages[page]["id"], 0xEA })
-      pages[page]["timeout"] = time + 100 -- 1s
+    elseif page <= #pages and time > pages[page].fieldstimeout then
+      for i=1, #pages[page].fields do
+        field = pages[page].fields[i]
+        if field.name == nil then
+          crossfireTelemetryPush(0x2C, { pages[page].id, 0xEA, i })
+          pages[page].fieldstimeout = time + 200 -- 2s
+        end
+      end
     end
   elseif command == 0x29 then
     parseDeviceInfoMessage(data)
@@ -260,7 +320,7 @@ end
 
 local function runDevicePage(index, event)
   lcd.clear()
-  lcd.drawScreenTitle(pages[index]["name"], index, #pages)
+  lcd.drawScreenTitle(pages[index].name, index, #pages)
   drawDevicePage(pages[index])
   return 0
 end

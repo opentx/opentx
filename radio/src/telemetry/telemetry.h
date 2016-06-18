@@ -62,7 +62,7 @@ extern uint8_t telemetryState;
 #define TELEMETRY_TIMEOUT10ms          100 // 1 second
 
 #if defined(CROSSFIRE)
-#define TELEMETRY_RX_PACKET_SIZE       40
+#define TELEMETRY_RX_PACKET_SIZE       64
 #else
 #define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 #endif
@@ -156,6 +156,26 @@ void logTelemetryWriteByte(uint8_t data);
 #else
 #define LOG_TELEMETRY_WRITE_START()
 #define LOG_TELEMETRY_WRITE_BYTE(data)
+#endif
+
+#define TELEMETRY_OUTPUT_FIFO_SIZE 16
+extern uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
+extern uint8_t outputTelemetryBufferSize;
+extern uint8_t outputTelemetryBufferTrigger;
+
+inline void telemetryOutputPushByte(uint8_t byte)
+{
+  outputTelemetryBuffer[outputTelemetryBufferSize++] = byte;
+}
+
+inline void telemetryOutputSetTrigger(uint8_t byte)
+{
+  outputTelemetryBufferTrigger = byte;
+}
+
+#if defined(LUA)
+#define LUA_TELEMETRY_INPUT_FIFO_SIZE  256
+extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
 #endif // _TELEMETRY_H_

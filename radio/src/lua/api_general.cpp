@@ -299,18 +299,21 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 static int luaSportTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
-    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE>();
+    luaInputTelemetryFifo = new Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE>();
     if (!luaInputTelemetryFifo) {
       return 0;
     }
   }
 
-  LuaTelemetryPacket packet;
-  if (luaInputTelemetryFifo->pop(packet)) {
-    lua_pushnumber(L, packet.sport.physicalId);
-    lua_pushnumber(L, packet.sport.primId);
-    lua_pushnumber(L, packet.sport.dataId);
-    lua_pushunsigned(L, packet.sport.value);
+  if (luaInputTelemetryFifo->size() >= sizeof(SportTelemetryPacket)) {
+    SportTelemetryPacket packet;
+    for (uint8_t i=0; i<sizeof(packet); i++) {
+      luaInputTelemetryFifo->pop(packet.raw[i]);
+    }
+    lua_pushnumber(L, packet.physicalId);
+    lua_pushnumber(L, packet.primId);
+    lua_pushnumber(L, packet.dataId);
+    lua_pushunsigned(L, packet.value);
     return 4;
   }
 
@@ -329,36 +332,41 @@ uint8_t getDataId(uint8_t physicalId)
 
 static int luaSportTelemetryPush(lua_State * L)
 {
-  if (luaOutputTelemetryPacket.sport.physicalId != 0x7E) {
-    lua_pushboolean(L, false);
-    return 1;
+  if (isSportOutputBufferAvailable()) {
+    SportTelemetryPacket packet;
+    packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
+    packet.primId = luaL_checkunsigned(L, 2);
+    packet.dataId = luaL_checkunsigned(L, 3);
+    packet.value = luaL_checkunsigned(L, 4);
+    sportOutputPushPacket(packet);
+    lua_pushboolean(L, true);
   }
-
-  luaOutputTelemetryPacket.sport.physicalId = getDataId(luaL_checkunsigned(L, 1));
-  luaOutputTelemetryPacket.sport.primId = luaL_checkunsigned(L, 2);
-  luaOutputTelemetryPacket.sport.dataId = luaL_checkunsigned(L, 3);
-  luaOutputTelemetryPacket.sport.value = luaL_checkunsigned(L, 4);
-
-  lua_pushboolean(L, true);
+  else {
+    lua_pushboolean(L, false);
+  }
   return 1;
 }
 
 static int luaCrossfireTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
-    luaInputTelemetryFifo = new Fifo<LuaTelemetryPacket, LUA_TELEMETRY_FIFO_SIZE>();
+    luaInputTelemetryFifo = new Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE>();
     if (!luaInputTelemetryFifo) {
       return 0;
     }
   }
 
-  LuaTelemetryPacket packet;
-  if (luaInputTelemetryFifo->pop(packet)) {
-    lua_pushnumber(L, packet.crossfire.command);
+  uint8_t length, data;
+  if (luaInputTelemetryFifo->probe(length) && luaInputTelemetryFifo->size() >= uint32_t(length)) {
+    // length value includes the length field
+    luaInputTelemetryFifo->pop(length);
+    luaInputTelemetryFifo->pop(data); // command
+    lua_pushnumber(L, data);
     lua_newtable(L);
-    for (int i=0; i<packet.crossfire.length; i++) {
-      lua_pushinteger(L, i+1);
-      lua_pushinteger(L, packet.crossfire.data[i]);
+    for (uint8_t i=1; i<length-1; i++) {
+      luaInputTelemetryFifo->pop(data);
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, data);
       lua_settable(L, -3);
     }
     return 2;
@@ -369,20 +377,24 @@ static int luaCrossfireTelemetryPop(lua_State * L)
 
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
-  if (luaOutputTelemetryPacket.crossfire.command != 0x00) {
+  if (isCrossfireOutputBufferAvailable()) {
+    uint8_t command = luaL_checkunsigned(L, 1);
+    luaL_checktype(L, 2, LUA_TTABLE);
+    uint8_t length = luaL_len(L, 2);
+    telemetryOutputPushByte(MODULE_ADDRESS);
+    telemetryOutputPushByte(2 + length); // 1(COMMAND) + data length + 1(CRC)
+    telemetryOutputPushByte(command); // COMMAND
+    for (int i=0; i<length; i++) {
+      lua_rawgeti(L, 2, i+1);
+      telemetryOutputPushByte(luaL_checkunsigned(L, -1));
+    }
+    telemetryOutputPushByte(crc8(outputTelemetryBuffer+2, 1 + length));
+    telemetryOutputSetTrigger(command);
+    lua_pushboolean(L, true);
+  }
+  else {
     lua_pushboolean(L, false);
-    return 1;
   }
-
-  luaL_checktype(L, 2, LUA_TTABLE);
-  luaOutputTelemetryPacket.crossfire.length = min<int>(sizeof(luaOutputTelemetryPacket.crossfire.data), luaL_len(L, 2));
-  for (int i=0; i<luaOutputTelemetryPacket.crossfire.length; i++) {
-    lua_rawgeti(L, 2, i+1);
-    luaOutputTelemetryPacket.crossfire.data[i] = luaL_checkunsigned(L, -1);
-  }
-  luaOutputTelemetryPacket.crossfire.command = luaL_checkunsigned(L, 1);
-
-  lua_pushboolean(L, true);
   return 1;
 }
 

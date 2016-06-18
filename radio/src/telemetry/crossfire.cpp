@@ -196,27 +196,30 @@ void processCrossfireTelemetryFrame()
 #if defined(LUA)
     default:
       if (luaInputTelemetryFifo) {
-        LuaTelemetryPacket luaPacket;
-        luaPacket.crossfire.command = id;
-        luaPacket.crossfire.length = telemetryRxBuffer[1]-2;
-        for (int i=0; i<min<int>(sizeof(luaPacket.crossfire.data), luaPacket.crossfire.length); i++) {
-          luaPacket.crossfire.data[i] = telemetryRxBuffer[3+i];
+        for (uint8_t i=1; i<telemetryRxBufferCount-1; i++) {
+          // destination address and CRC are skipped
+          luaInputTelemetryFifo->push(telemetryRxBuffer[i]);
         }
-        luaInputTelemetryFifo->push(luaPacket);
       }
       break;
 #endif
-
   }
+}
+
+bool isCrossfireOutputBufferAvailable()
+{
+  return outputTelemetryBufferSize == 0;
 }
 
 void processCrossfireTelemetryData(uint8_t data)
 {
-  if (telemetryRxBufferCount == 0 && data != 0x00) {
+  if (telemetryRxBufferCount == 0 && data != RADIO_ADDRESS) {
+    TRACE("processCrossfirePacket(): address 0x%02X error", data);
     return;
   }
 
   if (telemetryRxBufferCount == 1 && (data < 2 || data > TELEMETRY_RX_PACKET_SIZE-2)) {
+    TRACE("processCrossfirePacket(): length 0x%02X error", data);
     telemetryRxBufferCount = 0;
     return;
   }
@@ -225,8 +228,7 @@ void processCrossfireTelemetryData(uint8_t data)
     telemetryRxBuffer[telemetryRxBufferCount++] = data;
   }
   else {
-    TRACE("processCrossfirePacket(): length error ");
-    DUMP(telemetryRxBuffer, TELEMETRY_RX_PACKET_SIZE);
+    TRACE("processCrossfirePacket(): array size error, %d", telemetryRxBufferCount);
     telemetryRxBufferCount = 0;
   }
 
