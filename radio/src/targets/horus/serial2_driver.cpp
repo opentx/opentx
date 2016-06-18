@@ -73,7 +73,7 @@ void uart3Setup(unsigned int baudrate, bool dma)
     DMA_Cmd(SERIAL_DMA_Stream_RX, ENABLE);
   }
   else {
-#if !defined(USB_SERIAL) && defined(CLI)
+#if !defined(USB_SERIAL) && (defined(CLI) || defined(DEBUG))
     USART_Cmd(SERIAL_USART, ENABLE);
     USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
     USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
@@ -115,7 +115,6 @@ void serial2Putc(char c)
 
 void serial2SbusInit()
 {
-  // TODO is it possible on Horus?
   uart3Setup(SBUS_BAUDRATE, true);
   SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
 }
@@ -128,10 +127,13 @@ void serial2Stop()
 
 uint8_t serial2TracesEnabled()
 {
-  return 1; // TODO (serial2Mode == 0);
+#if defined(DEBUG)
+  return (serial2Mode == UART_MODE_DEBUG);
+#else
+  return false;
+#endif
 }
 
-#if !defined(SIMU)
 extern "C" void SERIAL_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_SER2);
@@ -162,6 +164,4 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     status = SERIAL_USART->SR;
   }
 #endif
-
 }
-#endif
