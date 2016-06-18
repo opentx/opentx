@@ -142,7 +142,7 @@ bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
 
 bool menuLogicalSwitches(evt_t event)
 {
-  MENU("LOGICAL SWITCHES MONITOR", MONITOR_ICONS, menuTabMonitors, e_LogicSwitches, 0, { 0 });
+  MENU(TR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_LogicSwitches, 0, { 0 });
   lastMonitorPage = e_LogicSwitches;
   return menuLogicalSwitchesMonitor(event, 4);
 }

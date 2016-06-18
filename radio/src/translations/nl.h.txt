@@ -860,6 +860,11 @@
 #define TR_MENUTEMPLATES       "SJABLONEN"
 #define TR_MENUSTAT            "STAT"
 #define TR_MENUDEBUG           "DEBUG"
+#define TR_MONITOR_OUTPUTS1    "OUTPUTS MONITOR 1/16"
+#define TR_MONITOR_OUTPUTS2    "OUTPUTS MONITOR 17/32"
+#define TR_MONITOR_SWITCHES    "LOGICAL SWITCHES MONITOR"
+#define TR_MONITOR_MIXERS1     "MIXERS MONITOR 1/16"
+#define TR_MONITOR_MIXERS2     "MIXERS MONITOR 17/32"
 #if defined(CPUARM)
   #define TR_RECEIVER_NUM             TR(INDENT "RxNum", INDENT "Receiver No.")
 #define TR_RECEIVER            INDENT "Receiver"
@@ -971,7 +976,7 @@
 #define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
 #define TR_ROTARY_ENCODER      "Draaischakelaar"
 #define TR_CHANNELS_MONITOR    "Kanaal-Monitor==>"
-#define TR_MIXERS_MONITOR      "==>Mixer Monitor"
+#define TR_MIXERS_MONITOR      "==>MIXERS MONitor"
 #define TR_PATH_TOO_LONG       "Pad te Lang"
 #define TR_VIEW_TEXT           "Lees Tekst"
 #define TR_FLASH_BOOTLOADER      "Flash BootLoader"
