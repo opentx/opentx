@@ -239,8 +239,6 @@ void menusTask(void * pdata)
   toplcdOff();
 #endif
 
-  BACKLIGHT_OFF();
-
 #if defined(PCBHORUS)
   ledOff();
 #endif
