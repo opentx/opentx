@@ -161,14 +161,14 @@ bool menuOutputsMonitor(evt_t event, uint8_t page)
 
 bool menuOutputs1(evt_t event)
 {
-  MENU("Output monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Outputs1, 0, { 0 });
+  MENU("OUTPUTS MONITOR 1-16", MONITOR_ICONS, menuTabMonitors, e_Outputs1, 0, { 0 });
   lastMonitorPage = e_Outputs1;
   return menuOutputsMonitor(event, 0);
 }
 
 bool menuOutputs2(evt_t event)
 {
-  MENU("Output monitor 17-32", MONITOR_ICONS, menuTabMonitors, e_Outputs2, 0, { 0 });
+  MENU("OUTPUTS MONITOR 17-32", MONITOR_ICONS, menuTabMonitors, e_Outputs2, 0, { 0 });
   lastMonitorPage = e_Outputs2;
   return menuOutputsMonitor(event, 1);
 }
@@ -190,14 +190,14 @@ bool menuMixersMonitor(evt_t event, uint8_t page)
 
 bool menuMixers1(evt_t event)
 {
-  MENU("Mixer monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers1, 0, { 0 });
+  MENU("MIXERS MONITOR 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers1, 0, { 0 });
   lastMonitorPage = e_Mixers1;
   return menuMixersMonitor(event, 0);
 }
 
 bool menuMixers2(evt_t event)
 {
-  MENU("Mixer monitor 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers2, 0, { 0 });
+  MENU("MIXERS MONITOR 1-16", MONITOR_ICONS, menuTabMonitors, e_Mixers2, 0, { 0 });
   lastMonitorPage = e_Mixers2;
   return menuMixersMonitor(event, 1);
 }

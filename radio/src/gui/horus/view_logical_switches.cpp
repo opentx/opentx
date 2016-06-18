@@ -60,6 +60,8 @@ bool scrollLogicalSwitchesMonitor(evt_t event) {
     }
     killEvents(event);
     break;
+     case EVT_KEY_FIRST(KEY_EXIT):
+     popMenu();
   }
   return true;
 }
@@ -140,7 +142,7 @@ bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
 
 bool menuLogicalSwitches(evt_t event)
 {
-  MENU("Logical Switches monitor", MONITOR_ICONS, menuTabMonitors, e_LogicSwitches, 0, { 0 });
+  MENU("LOGICAL SWITCHES MONITOR", MONITOR_ICONS, menuTabMonitors, e_LogicSwitches, 0, { 0 });
   lastMonitorPage = e_LogicSwitches;
   return menuLogicalSwitchesMonitor(event, 4);
 }
