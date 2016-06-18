@@ -89,8 +89,9 @@ local function createPage(id, name, fields_count)
     id = id,
     name = name,
     state = 0,
-    timeout = 0,
-    fields = {}
+    pagetimeout = 0,
+    fields = {},
+    fieldstimeout = 0,
   }
   for i=1, fields_count do
     newpage["fields"][i] = { name=nil }
@@ -118,21 +119,28 @@ local function parseDeviceInfoMessage(data)
   fields_count = data[i+13]
   pg = getPage(name)
   if pg == nil then
-    pg = createPage(id, name, fields_count)
+    pg = createPage(id, name, fields_count-1) -- TODO fields_count should be different
     pages[#pages + 1] = pg
   end
-  pg["timeout"] = time + 3000 -- 30s
+  pg["pagetimeout"] = time + 3000 -- 30s
 end
 
 local function parseParameterInfoMessage(data)
   index = data[3]
+  parent = data[4]
+  pages[page].fields[index].parent = parent
   name = ""
+  while parent ~= 0 do
+    name = name .. " "
+    parent = pages[page].fields[parent].parent
+  end
   i = 6
   while data[i] ~= 0 do
     name = name .. string.char(data[i])
     i = i + 1
   end
-  pages[page]["fields"][index+1]["name"] = name
+  pages[page].fields[index].name = name
+  pages[page].fieldstimeout = 0
 end
 
 local telemetryPopTimeout = 0
@@ -148,9 +156,14 @@ local function refreshNext()
         devicesRefreshTimeout = time + 1000 -- 10s
       end
       crossfireTelemetryPush(0x28, { 0x00, 0xEA })
-    elseif page <= #pages and pages[page]["state"] == 0 and time > pages[page]["timeout"] then
-      crossfireTelemetryPush(0x2A, { pages[page]["id"], 0xEA })
-      pages[page]["timeout"] = time + 100 -- 1s
+    elseif page <= #pages and pages[page]["state"] == 0 and time > pages[page]["fieldstimeout"] then
+      for i=1, #pages[page]["fields"] do
+        field = pages[page]["fields"][i]
+        if field["name"] == nil then
+          crossfireTelemetryPush(0x2C, { pages[page]["id"], 0xEA, i })
+          pages[page]["fieldstimeout"] = time + 200 -- 2s
+        end
+      end
     end
   elseif command == 0x29 then
     parseDeviceInfoMessage(data)
