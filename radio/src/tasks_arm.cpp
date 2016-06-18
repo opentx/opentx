@@ -192,8 +192,6 @@ void menusTask(void * pdata)
   topLcdOff();
 #endif
 
-  BACKLIGHT_OFF();
-
 #if defined(PCBTARANIS)
   displaySleepBitmap();
 #else
