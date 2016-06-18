@@ -311,6 +311,8 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 #define INCREMENT_POS(delta) \
   do { if (flags & VERTICAL) y -= delta; else x += delta; } while(0)
 
+  if ((flags & TINSIZE) && (flags & BOLD)) flags &= ~(BOLD); //TINSIZE | BOLD segfault, so preventing it
+
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
   int fontindex = FONTSIZE(flags) >> 8;
