@@ -74,7 +74,7 @@ void uart3Setup(unsigned int baudrate, bool dma)
     DMA_Cmd(SERIAL_DMA_Stream_RX, ENABLE);
   }
   else {
-#if !defined(USB_SERIAL) && defined(CLI)
+#if !defined(USB_SERIAL) && (defined(CLI) || defined(DEBUG))
     USART_Cmd(SERIAL_USART, ENABLE);
     USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
     USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
@@ -135,7 +135,6 @@ uint8_t serial2TracesEnabled()
 #endif
 }
 
-#if !defined(SIMU)
 extern "C" void SERIAL_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_SER2);
@@ -166,6 +165,4 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     status = SERIAL_USART->SR;
   }
 #endif
-
 }
-#endif
