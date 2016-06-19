@@ -999,6 +999,7 @@
 #define TR_STATISTICS          "Statystyki"
 #define TR_ABOUT_US            "O nas"
 #define TR_SETUP_SCREENS         "Setup screens"
+#define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "Przełącznik AND"
 #define TR_SF                  "FS"
 #define TR_GF                  "FG"

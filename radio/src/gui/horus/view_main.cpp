@@ -113,6 +113,9 @@ void onMainViewMenu(const char *result)
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
   }
+  else if (result == STR_MONITOR_SCREENS) {
+    pushMenu(menuTabMonitors[lastMonitorPage]);
+  }
 }
 
 int getMainViewsCount()
@@ -140,9 +143,9 @@ bool menuMainView(evt_t event)
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
+      POPUP_MENU_ADD_ITEM(STR_MONITOR_SCREENS);
       POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
-      POPUP_MENU_ADD_ITEM(STR_SETUP_SCREENS);
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
       POPUP_MENU_START(onMainViewMenu);
       break;
