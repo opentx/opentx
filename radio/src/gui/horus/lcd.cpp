@@ -66,7 +66,7 @@ void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
-  int fontindex = FONTSIZE(flags) >> 8;
+  uint32_t fontindex = FONTINDEX(flags);
   const pm_uchar * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   lcdPutFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
@@ -81,15 +81,15 @@ uint8_t getStringInfo(const char *s)
   return result;
 }
 
-int getFontHeight(LcdFlags flags)
+uint8_t getFontHeight(LcdFlags flags)
 {
-  static const int heightTable[16] = { 12, 10, 11, 14, 32, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
-  return heightTable[FONTSIZE(flags) >> 8];
+  static const uint8_t heightTable[16] = { 12, 10, 11, 14, 32, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
+  return heightTable[FONTINDEX(flags)];
 }
 
 int getTextWidth(const char * s, int len, LcdFlags flags)
 {
-  const uint16_t * specs = fontspecsTable[FONTSIZE(flags) >> 8];
+  const uint16_t * specs = fontspecsTable[FONTINDEX(flags)];
 
   int result = 0;
   for (int i=0; len==0 || i<len; ++i) {

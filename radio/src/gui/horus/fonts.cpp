@@ -76,8 +76,15 @@ pm_uchar font_stdsizebold[] = {
 #include "font_stdsizebold.lbm"
 };
 
-const uint16_t * const fontspecsTable[16] = { font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsizebold_specs };
-const uint8_t * const fontsTable[16] = { font_stdsize, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsizebold };
+const uint16_t * const fontspecsTable[16] = {
+  font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs,
+  font_stdsizebold_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs
+};
+
+const uint8_t * const fontsTable[16] = {
+  font_stdsize, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize,
+  font_stdsizebold, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize
+};
 
 BitmapBuffer * fontCache[2] = { NULL, NULL };
 

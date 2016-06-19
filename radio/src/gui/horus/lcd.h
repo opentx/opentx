@@ -69,20 +69,30 @@ enum FontSizeIndex {
   MIDSIZE_INDEX,
   DBLSIZE_INDEX,
   XXLSIZE_INDEX,
-  BOLDSTDSIZE_INDEX,
+  SPARE6_INDEX,
+  SPARE7_INDEX,
+  STDSIZE_BOLD_INDEX,
+  SPARE9_INDEX,
+  SPAREa_INDEX,
+  SPAREb_INDEX,
+  SPAREc_INDEX,
+  SPAREd_INDEX,
+  SPAREe_INDEX,
+  SPAREf_INDEX,
 };
 
-#define FONTSIZE(x)                    ((x) & 0x0700)
 #define TINSIZE                        (TINSIZE_INDEX << 8)
 #define SMLSIZE                        (SMLSIZE_INDEX << 8)
 #define MIDSIZE                        (MIDSIZE_INDEX << 8)
 #define DBLSIZE                        (DBLSIZE_INDEX << 8)
 #define XXLSIZE                        (XXLSIZE_INDEX << 8)
-#define BOLD                           (BOLDSTDSIZE_INDEX << 8)
+#define BOLD                           (STDSIZE_BOLD_INDEX << 8)
+#define FONTSIZE(flags)                ((flags) & 0x0f00)
+#define FONTINDEX(flags)               (FONTSIZE(flags) >> 8)
 
-#define VERTICAL                       0x0800
 #define TIMEBLINK                      0x1000
 #define TIMEHOUR                       0x2000
+#define VERTICAL                       0x4000
 #define NO_FONTCACHE                   0x8000
 
 #include "colors.h"
@@ -241,7 +251,7 @@ inline int getBitmapHeight(const uint8_t * bmp)
 }
 
 char getMappedChar(unsigned char c);
-int getFontHeight(LcdFlags flags);
+uint8_t getFontHeight(LcdFlags flags);
 int getTextWidth(const pm_char *s, int len=0, LcdFlags flags=0);
 
 inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0)

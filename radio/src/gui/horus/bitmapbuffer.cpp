@@ -311,11 +311,9 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 #define INCREMENT_POS(delta) \
   do { if (flags & VERTICAL) y -= delta; else x += delta; } while(0)
 
-  if ((flags & TINSIZE) && (flags & BOLD)) flags &= ~(BOLD); //TINSIZE | BOLD segfault, so preventing it
-
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
-  int fontindex = FONTSIZE(flags) >> 8;
+  uint32_t fontindex = FONTINDEX(flags);
   const pm_uchar * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   BitmapBuffer * fontcache = NULL;
@@ -327,7 +325,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 
   coord_t & pos = (flags & VERTICAL) ? y : x;
 
-  if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
+  if ((flags & INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
     uint16_t fgColor = lcdColorTable[COLOR_IDX(flags)];
     if (fgColor == lcdColorTable[TEXT_COLOR_INDEX]) {
       flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
