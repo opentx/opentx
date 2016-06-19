@@ -998,6 +998,7 @@
 #define TR_STATISTICS          "Statistika"
 #define TR_ABOUT_US            "O nás"
 #define TR_SETUP_SCREENS       "Setup screens"
+#define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "AND Spínač"
 #define TR_SF                  "SF"
 #define TR_GF                  "GF"

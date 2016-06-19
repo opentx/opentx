@@ -962,6 +962,7 @@
 #define TR_STATISTICS          "Estadisticas"
 #define TR_ABOUT_US            "Nosotros"
 #define TR_SETUP_SCREENS         "Setup screens"
+#define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "AND Inter."
 #define TR_SF                  "CF"
 #define TR_GF                  "GF"
