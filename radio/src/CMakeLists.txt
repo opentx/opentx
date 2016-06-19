@@ -95,7 +95,7 @@ if(PCB STREQUAL HORUS)
     menu_model_inputs.cpp
     menu_model_mixes.cpp
     view_channels.cpp
-    view_logic_switches.cpp
+    view_logical_switches.cpp
     view_about.cpp
     view_text.cpp
     screens_setup.cpp
