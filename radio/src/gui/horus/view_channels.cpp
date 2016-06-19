@@ -51,12 +51,13 @@ const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
 
 uint8_t lastMonitorPage = 0;
 
-uint16_t posOnBar(int16_t value_to100){
+uint16_t posOnBar(int16_t value_to100)
+{
   return divRoundClosest((value_to100 + (g_model.extendedLimits ? 150 : 100)) * COLUMN_SIZE, (g_model.extendedLimits ? 150 : 100)*2);
 }
 
 
-void drawSingleMixerBar(uint16_t x, uint16_t y, uint8_t Chan)
+void drawSingleMixerBar(coord_t x, coord_t y, uint8_t Chan)
 {
   char chanString[] = "CH 32";
 
@@ -89,7 +90,7 @@ void drawSingleMixerBar(uint16_t x, uint16_t y, uint8_t Chan)
   lcd->drawSolidVerticalLine(x + X_OFFSET + COLUMN_SIZE / 2, y + 11, BAR_HEIGHT , TEXT_COLOR);
 }
 
-void drawSingleOutputBar(uint16_t x, uint16_t y, uint8_t channel)
+void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 {
   char chanString[] = "Ch 32";
   uint16_t limits = (g_model.extendedLimits ? 300 : 200);
@@ -161,15 +162,15 @@ bool menuOutputsMonitor(evt_t event, uint8_t page)
 
 bool menuOutputs1(evt_t event)
 {
-  MENU(TR_MONITOR_OUTPUTS1, MONITOR_ICONS, menuTabMonitors, e_Outputs1, 0, { 0 });
-  lastMonitorPage = e_Outputs1;
+  MENU(STR_MONITOR_OUTPUTS1, MONITOR_ICONS, menuTabMonitors, e_MonOutputs1, 0, { 0 });
+  lastMonitorPage = e_MonOutputs1;
   return menuOutputsMonitor(event, 0);
 }
 
 bool menuOutputs2(evt_t event)
 {
-  MENU(TR_MONITOR_OUTPUTS2, MONITOR_ICONS, menuTabMonitors, e_Outputs2, 0, { 0 });
-  lastMonitorPage = e_Outputs2;
+  MENU(STR_MONITOR_OUTPUTS2, MONITOR_ICONS, menuTabMonitors, e_MonOutputs2, 0, { 0 });
+  lastMonitorPage = e_MonOutputs2;
   return menuOutputsMonitor(event, 1);
 }
 
@@ -190,14 +191,14 @@ bool menuMixersMonitor(evt_t event, uint8_t page)
 
 bool menuMixers1(evt_t event)
 {
-  MENU(TR_MONITOR_MIXERS1, MONITOR_ICONS, menuTabMonitors, e_Mixers1, 0, { 0 });
-  lastMonitorPage = e_Mixers1;
+  MENU(STR_MONITOR_MIXERS1, MONITOR_ICONS, menuTabMonitors, e_MonMixers1, 0, { 0 });
+  lastMonitorPage = e_MonMixers1;
   return menuMixersMonitor(event, 0);
 }
 
 bool menuMixers2(evt_t event)
 {
-  MENU(TR_MONITOR_MIXERS2, MONITOR_ICONS, menuTabMonitors, e_Mixers2, 0, { 0 });
-  lastMonitorPage = e_Mixers2;
+  MENU(STR_MONITOR_MIXERS2, MONITOR_ICONS, menuTabMonitors, e_MonMixers2, 0, { 0 });
+  lastMonitorPage = e_MonMixers2;
   return menuMixersMonitor(event, 1);
 }

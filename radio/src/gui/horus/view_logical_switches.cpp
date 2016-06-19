@@ -34,39 +34,44 @@
 #define CSW_4TH_COLUMN                 280
 #define CSW_5TH_COLUMN                 340
 #define CSW_6TH_COLUMN                 390
+#define NUM_LOGICAL_SWITCH             64
+
 
 int lsScrollIdx=0;
 bool menuLogicalSwitchesMonitor(evt_t, uint8_t);
 extern void putsEdgeDelayParam(coord_t, coord_t, LogicalSwitchData *, uint8_t, uint8_t);
 
-bool scrollLogicalSwitchesMonitor(evt_t event) {
+bool scrollLogicalSwitchesMonitor(evt_t event)
+{
   switch (event) {
     case EVT_ROTARY_LEFT:
-    if (lsScrollIdx > 0) {
-      lsScrollIdx--;
-    }
-    else {
-     lsScrollIdx = 63;
-    }
-    killEvents(event);
+      if (lsScrollIdx > 0) {
+        lsScrollIdx--;
+      }
+      else {
+        lsScrollIdx = NUM_LOGICAL_SWITCH - 1;
+      }
+      killEvents(event);
     break;
     
     case EVT_ROTARY_RIGHT:
-    if (lsScrollIdx < 63) {
-      lsScrollIdx++;
-    }
-    else {
-      lsScrollIdx = 0;
-    }
-    killEvents(event);
+      if (lsScrollIdx < NUM_LOGICAL_SWITCH - 1) {
+        lsScrollIdx++;
+      }
+      else {
+        lsScrollIdx = 0;
+      }
+      killEvents(event);
     break;
-     case EVT_KEY_FIRST(KEY_EXIT):
-     popMenu();
+    
+    case EVT_KEY_FIRST(KEY_EXIT):
+      popMenu();
   }
   return true;
 }
 
-void displayLogicalSwitchedDetails(uint8_t x, uint8_t y, uint8_t idx){
+void displayLogicalSwitchedDetails(coord_t  x, coord_t y, uint8_t idx)
+{
   LogicalSwitchData * cs = lswAddress(idx);
   lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, cs->func, 0);
   // CSW params
@@ -104,19 +109,19 @@ void displayLogicalSwitchedDetails(uint8_t x, uint8_t y, uint8_t idx){
 
   // CSW delay
   if (cstate == LS_FAMILY_EDGE) {
-   lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
-
-    }
-    else if (cs->delay > 0) {
-      lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, PREC1|LEFT);
-    }
-    else {
-      lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, 0);
-    }
+    lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
+  }
+  else if (cs->delay > 0) {
+    lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, PREC1|LEFT);
+  }
+  else {
+    lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, 0);
+  }
 }
 
-bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
-  char lsString[] = "L64";
+bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page)
+{
+  char lsString[]= "L64";
   uint8_t col, lsIdx, line;
   LcdFlags attr;
 
@@ -124,7 +129,6 @@ bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
   scrollLogicalSwitchesMonitor(event);
   for (line = 1, lsIdx=1; line < 9; line++){   
     for(col=1; col < 9 ; col++, lsIdx++){
-      strAppend(lsString, "L");
       strAppendSigned(&lsString[1], lsIdx, 2);
       LogicalSwitchData * cs = lswAddress(lsIdx-1);
       attr = (CENTERED);
@@ -142,8 +146,8 @@ bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page){
 
 bool menuLogicalSwitches(evt_t event)
 {
-  MENU(TR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_LogicSwitches, 0, { 0 });
-  lastMonitorPage = e_LogicSwitches;
+  MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 0, { 0 });
+  lastMonitorPage = e_MonLogicalSwitches;
   return menuLogicalSwitchesMonitor(event, 4);
 }
 
