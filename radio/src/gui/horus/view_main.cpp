@@ -29,8 +29,6 @@
 #define TRIM_LEN                       80
 #define POTS_LINE_Y                    (LCD_H-20)
 
-extern uint8_t lastMonitorPage;
-
 Layout * customScreens[MAX_CUSTOM_SCREENS] = { 0, 0, 0, 0, 0 };
 Topbar * topbar;
 
