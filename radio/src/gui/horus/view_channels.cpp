@@ -57,17 +57,16 @@ uint16_t posOnBar(int16_t value_to100)
 }
 
 
-void drawSingleMixerBar(coord_t x, coord_t y, uint8_t Chan)
+void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
 {
-  char chanString[] = "CH 32";
-
-  int16_t chanVal = calcRESXto100(ex_chans[Chan]);
+  char chanString[] = "Ch 32";
+  int16_t chanVal = calcRESXto100(ex_chans[chan]);
 
   strAppend(chanString, "Ch ");
-  strAppendSigned(&chanString[3], Chan + 1, 2);
+  strAppendSigned(&chanString[3], chan + 1, 2);
   lcdDrawText(x + X_OFFSET, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
 
-  lcdDrawSizedText(x + X_OFFSET + 50, y + 1, g_model.limitData[Chan].name, sizeof(g_model.limitData[Chan].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
+  lcdDrawSizedText(x + X_OFFSET + 50, y + 1, g_model.limitData[chan].name, sizeof(g_model.limitData[chan].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
 
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(222, 222, 222);
   lcdDrawSolidFilledRect(x + X_OFFSET, y + 11, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
