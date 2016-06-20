@@ -27,8 +27,6 @@
 #define X_OFFSET                       30
 #define Y_OFFSET                       75
 
-bool menuChannels1(evt_t event);
-bool menuChannels2(evt_t event);
 bool menuOutputs1(evt_t);
 bool menuOutputs2(evt_t);
 bool menuMixers1(evt_t);
