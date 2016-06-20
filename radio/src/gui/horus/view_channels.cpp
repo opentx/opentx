@@ -29,17 +29,11 @@
 
 bool menuChannels1(evt_t event);
 bool menuChannels2(evt_t event);
-const BitmapBuffer * locked_bmp = NULL;
-const BitmapBuffer * inver_bmp = NULL;
-const BitmapBuffer * outL_bmp = NULL;
-const BitmapBuffer * outR_bmp = NULL;
-
 bool menuOutputs1(evt_t);
 bool menuOutputs2(evt_t);
 bool menuMixers1(evt_t);
 bool menuMixers2(evt_t);
-
-extern bool menuLogicalSwitches(evt_t);
+bool menuLogicalSwitches(evt_t);
 
 const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
   menuOutputs1,
@@ -62,7 +56,6 @@ void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
   char chanString[] = "Ch 32";
   int16_t chanVal = calcRESXto100(ex_chans[chan]);
 
-  strAppend(chanString, "Ch ");
   strAppendSigned(&chanString[3], chan + 1, 2);
   lcdDrawText(x + X_OFFSET, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
 
@@ -96,10 +89,10 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
 
-  if (!locked_bmp) locked_bmp = BitmapBuffer::load(getThemePath("mask_monitor_lockch.png"));
-  if (!inver_bmp) inver_bmp = BitmapBuffer::load(getThemePath("mask_monitor_inver.png"));
-  if (!outL_bmp) outL_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outL.png"));
-  if (!outR_bmp) outR_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
+  static const BitmapBuffer * locked_bmp = BitmapBuffer::load(getThemePath("mask_monitor_lockch.png"));
+  static const BitmapBuffer * inver_bmp = BitmapBuffer::load(getThemePath("mask_monitor_inver.png"));
+  static const BitmapBuffer * outL_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outL.png"));
+  static const BitmapBuffer * outR_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
 
   strAppendSigned(&chanString[3], channel + 1, 2);
   lcdDrawText(x + X_OFFSET, y + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
