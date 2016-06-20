@@ -45,27 +45,16 @@ bool scrollLogicalSwitchesMonitor(evt_t event)
 {
   switch (event) {
     case EVT_ROTARY_LEFT:
-      if (lsScrollIdx > 0) {
-        lsScrollIdx--;
-      }
-      else {
-        lsScrollIdx = NUM_LOGICAL_SWITCH - 1;
-      }
+      if (lsScrollIdx > 0) lsScrollIdx--;
+      else lsScrollIdx = NUM_LOGICAL_SWITCH - 1;
       killEvents(event);
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (lsScrollIdx < NUM_LOGICAL_SWITCH - 1) {
-        lsScrollIdx++;
-      }
-      else {
-        lsScrollIdx = 0;
-      }
+      if (lsScrollIdx < NUM_LOGICAL_SWITCH - 1) lsScrollIdx++;
+      else lsScrollIdx = 0;
       killEvents(event);
       break;
-
-    case EVT_KEY_FIRST(KEY_EXIT):
-      popMenu();
   }
   return true;
 }
@@ -119,7 +108,7 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
   }
 }
 
-bool menuLogicalSwitchesMonitor(evt_t event, uint8_t page)
+bool menuLogicalSwitchesMonitor(evt_t event)
 {
   char lsString[] = "L64";
   uint8_t col, lsIdx, line;
@@ -148,7 +137,6 @@ bool menuLogicalSwitches(evt_t event)
 {
   MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 0, { 0 });
   lastMonitorPage = e_MonLogicalSwitches;
-  return menuLogicalSwitchesMonitor(event, 4);
+  return menuLogicalSwitchesMonitor(event);
 }
-
 
