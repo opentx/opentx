@@ -36,7 +36,6 @@
 #define CSW_6TH_COLUMN                 390
 #define NUM_LOGICAL_SWITCH             64
 
-bool menuLogicalSwitchesMonitor(evt_t, uint8_t);
 extern void putsEdgeDelayParam(coord_t, coord_t, LogicalSwitchData *, uint8_t, uint8_t);
 
 void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
@@ -106,7 +105,7 @@ bool menuLogicalSwitchesMonitor(evt_t event)
   if (lswAddress(menuHorizontalPosition)->func != LS_FUNC_NONE) {
     displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, menuHorizontalPosition);
   }
-  if (s_editMode) s_editMode = 0;
+  s_editMode = 0;
   return true;
 }
 
