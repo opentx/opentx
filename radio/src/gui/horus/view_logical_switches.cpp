@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 
-#define X_OFF                          15
-#define Y_OFF                          55
+#define X_OFF                          45
+#define Y_OFF                          70
 #define HLINE_Y_OFF                    215
 #define LS_COL_WIDTH                   50
 #define LS_LINE_HEIGHT                 17
@@ -36,28 +36,8 @@
 #define CSW_6TH_COLUMN                 390
 #define NUM_LOGICAL_SWITCH             64
 
-
-int lsScrollIdx = 0;
 bool menuLogicalSwitchesMonitor(evt_t, uint8_t);
 extern void putsEdgeDelayParam(coord_t, coord_t, LogicalSwitchData *, uint8_t, uint8_t);
-
-bool scrollLogicalSwitchesMonitor(evt_t event)
-{
-  switch (event) {
-    case EVT_ROTARY_LEFT:
-      if (lsScrollIdx > 0) lsScrollIdx--;
-      else lsScrollIdx = NUM_LOGICAL_SWITCH - 1;
-      killEvents(event);
-      break;
-
-    case EVT_ROTARY_RIGHT:
-      if (lsScrollIdx < NUM_LOGICAL_SWITCH - 1) lsScrollIdx++;
-      else lsScrollIdx = 0;
-      killEvents(event);
-      break;
-  }
-  return true;
-}
 
 void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
 {
@@ -111,32 +91,28 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
 bool menuLogicalSwitchesMonitor(evt_t event)
 {
   char lsString[] = "L64";
-  uint8_t col, lsIdx, line;
-  LcdFlags attr;
-
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(160, 160, 160);
-  scrollLogicalSwitchesMonitor(event);
-  for (line = 1, lsIdx = 1; line < 9; line++) {
-    for (col = 1; col < 9; col++, lsIdx++) {
-      strAppendSigned(&lsString[1], lsIdx, 2);
-      LogicalSwitchData * cs = lswAddress(lsIdx - 1);
-      attr = (CENTERED);
-      if (cs->func == LS_FUNC_NONE) attr += (CUSTOM_COLOR);
-      else if (getSwitch(SWSRC_SW1 + lsIdx - 1)) attr += (BOLD);
-      if (lsIdx == (lsScrollIdx + 1)) attr += (INVERS);
-      lcdDrawText(X_OFF + col * LS_COL_WIDTH, Y_OFF + line * LS_LINE_HEIGHT, lsString, attr);
-    }
+  for (uint8_t i = 0; i < NUM_LOGICAL_SWITCH; i++) {
+    LcdFlags attr = (menuHorizontalPosition == i ? INVERS : 0) | LEFT;
+    LogicalSwitchData * cs = lswAddress(i);
+    strAppendSigned(&lsString[1], i + 1, 2);
+    if (cs->func == LS_FUNC_NONE)
+      attr += CUSTOM_COLOR;
+    else if (getSwitch(SWSRC_SW1 + i))
+      attr += BOLD;
+    lcdDrawText(X_OFF + (i & 0x07) * LS_COL_WIDTH, Y_OFF + (i >> 3) * LS_LINE_HEIGHT, lsString, attr);
   }
   lcdDrawHorizontalLine(0, HLINE_Y_OFF, LCD_W, SOLID);
-  displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, lsScrollIdx);
-
+  if (lswAddress(menuHorizontalPosition)->func != LS_FUNC_NONE) {
+    displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, menuHorizontalPosition);
+  }
+  if (s_editMode) s_editMode = 0;
   return true;
 }
 
 bool menuLogicalSwitches(evt_t event)
 {
-  MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 0, { 0 });
+  MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 1, { NUM_LOGICAL_SWITCH - 1 });
   lastMonitorPage = e_MonLogicalSwitches;
   return menuLogicalSwitchesMonitor(event);
 }
-
