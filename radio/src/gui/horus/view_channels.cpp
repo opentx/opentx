@@ -106,14 +106,14 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 
   strAppendSigned(chanString, chanVal);
   if (chanVal < -limits / 2) {
-    lcd->drawBitmap(x + COLUMN_SIZE / 2 - 55, y + 15, outL_bmp);
     chanVal = -limits / 2;
     lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT | INVERS);
+    lcd->drawBitmap(x + COLUMN_SIZE / 2 + 5, y + 16, outL_bmp);
   }
   else if (chanVal > limits / 2) {
-    lcd->drawBitmap(x + COLUMN_SIZE / 2 + 55, y + 15, outR_bmp);
     chanVal = limits / 2;
     lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT | INVERS);
+    lcd->drawBitmap(x + COLUMN_SIZE / 2 - 5, y + 16, outR_bmp);
   }
   else {
     lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
