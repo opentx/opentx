@@ -119,13 +119,14 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
     lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
   }
 
+  lcdColorTable[CUSTOM_COLOR_INDEX] = RED;
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
-    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, CUSTOM_COLOR);
   }
   else if (posOnBar(chanVal) < posOnBar(calcRESXto100(ld->offset))) {
     uint16_t endpoint = x + posOnBar(calcRESXto100(ld->offset));
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
-    lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+    lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, CUSTOM_COLOR);
   }
 
   if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x -X_OFFSET + 7, y + 7, locked_bmp);
