@@ -86,12 +86,14 @@ PACK(struct PxxTimerPulsesData {
   uint32_t pcmOnesCount;
 });
 
-PACK(struct Dsm2TimerPulsesData {
 #if defined(MULTIMODULE)
-  pulse_duration_t pulses[300];
+#define MAX_PULSES_TRANSITIONS 300
 #else
-  pulse_duration_t pulses[200];
+#define MAX_PULSES_TRANSITIONS 200
 #endif
+
+PACK(struct Dsm2TimerPulsesData {
+  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
   pulse_duration_t * ptr;
   uint16_t rest;
   uint8_t index;
