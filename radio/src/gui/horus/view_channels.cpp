@@ -56,21 +56,21 @@ void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
   int16_t chanVal = calcRESXto100(ex_chans[chan]);
 
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(222, 222, 222);
-  lcdDrawSolidFilledRect(x + X_OFFSET, y, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
+  lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
 
-  lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(chanVal), y, BAR_HEIGHT, HEADER_BGCOLOR);
+  lcd->drawSolidVerticalLine(x + posOnBar(chanVal), y, BAR_HEIGHT, HEADER_BGCOLOR);
 
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(25, 150, 50);
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + X_OFFSET + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, CUSTOM_COLOR);
+    lcdDrawSolidFilledRect(x + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, CUSTOM_COLOR);
   }
   else if (chanVal < 0) {
-    uint16_t endpoint = x + X_OFFSET + COLUMN_SIZE / 2;
+    uint16_t endpoint = x + COLUMN_SIZE / 2;
     uint16_t size = divRoundClosest(-chanVal * COLUMN_SIZE, 200);
     lcdDrawSolidFilledRect(endpoint - size, y, size, BAR_HEIGHT, CUSTOM_COLOR);
   }
 
-  lcd->drawSolidVerticalLine(x + X_OFFSET + COLUMN_SIZE / 2, y, BAR_HEIGHT, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y, BAR_HEIGHT, TEXT_COLOR);
 }
 
 void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
@@ -86,62 +86,62 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   static const BitmapBuffer * outR_bmp = BitmapBuffer::load(getThemePath("mask_monitor_outR.png"));
 
   strAppendSigned(&chanString[2], channel + 1, 2);
-  lcdDrawText(x + X_OFFSET, y, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+  lcdDrawText(x, y, chanString, SMLSIZE | TEXT_COLOR | LEFT);
 
-  lcdDrawSizedText(x + X_OFFSET + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
+  lcdDrawSizedText(x + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
   int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
   strAppendSigned(chanString, usValue);
   if (usValue < 1000) strAppend(&chanString[3], STR_US);
   else strAppend(&chanString[4], STR_US);
-  lcdDrawText(x + X_OFFSET + 155, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+  lcdDrawText(x + 155, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
 
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(222, 222, 222);
-  lcdDrawSolidFilledRect(x + X_OFFSET, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
+  lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
 
-  lcdDrawText(x + X_OFFSET + posOnBar(-100 + ld->min / 10) + 2, y + Y_OUTBAR, "]", TINSIZE | TEXT_COLOR | RIGHT);
-  lcdDrawText(x + X_OFFSET + posOnBar(100 + ld->max / 10), y + Y_OUTBAR, "[", TINSIZE | TEXT_COLOR);
+  lcdDrawText(x + posOnBar(-100 + ld->min / 10) + 2, y + Y_OUTBAR, "]", TINSIZE | TEXT_COLOR | RIGHT);
+  lcdDrawText(x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR, "[", TINSIZE | TEXT_COLOR);
 
-  lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
-  lcd->drawSolidVerticalLine(x + X_OFFSET + posOnBar(chanVal), y + Y_OUTBAR, BAR_HEIGHT, HEADER_BGCOLOR);
+  lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+  lcd->drawSolidVerticalLine(x + posOnBar(chanVal), y + Y_OUTBAR, BAR_HEIGHT, HEADER_BGCOLOR);
 
   strAppendSigned(chanString, chanVal);
   if (chanVal < -limits / 2) {
-    lcd->drawBitmap(x + X_OFFSET + COLUMN_SIZE / 2 - 55, y + 15, outL_bmp);
+    lcd->drawBitmap(x + COLUMN_SIZE / 2 - 55, y + 15, outL_bmp);
     chanVal = -limits / 2;
-    lcdDrawText(x + X_OFFSET + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT | INVERS);
+    lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT | INVERS);
   }
   else if (chanVal > limits / 2) {
-    lcd->drawBitmap(x + X_OFFSET + COLUMN_SIZE / 2 + 55, y + 15, outR_bmp);
+    lcd->drawBitmap(x + COLUMN_SIZE / 2 + 55, y + 15, outR_bmp);
     chanVal = limits / 2;
-    lcdDrawText(x + X_OFFSET + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT | INVERS);
+    lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT | INVERS);
   }
   else {
-    lcdDrawText(x + X_OFFSET + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+    lcdDrawText(x + COLUMN_SIZE - 2, y + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
   }
 
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
-    lcdDrawSolidFilledRect(x + X_OFFSET + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
   else if (posOnBar(chanVal) < posOnBar(calcRESXto100(ld->offset))) {
-    uint16_t endpoint = x + X_OFFSET + posOnBar(calcRESXto100(ld->offset));
+    uint16_t endpoint = x + posOnBar(calcRESXto100(ld->offset));
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
     lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
   }
 
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x + 7, y + 7, locked_bmp);
-  if (ld->revert) lcd->drawBitmap(x + 7, y + 25, inver_bmp);
-  lcd->drawSolidVerticalLine(x + X_OFFSET + COLUMN_SIZE / 2, y + Y_OUTBAR, BAR_HEIGHT, TEXT_COLOR);
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x -X_OFFSET + 7, y + 7, locked_bmp);
+  if (ld->revert) lcd->drawBitmap(x -X_OFFSET + 7, y + 25, inver_bmp);
+  lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y + Y_OUTBAR, BAR_HEIGHT, TEXT_COLOR);
 }
 
 bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
   uint8_t channel = 8 * page;
-  uint16_t x = 1, y = Y_OFFSET;
+  uint16_t x = X_OFFSET, y = Y_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
     drawSingleOutputBar(x, y, channel);
     drawSingleMixerBar(x, y + Y_MIXBAR, channel);
   }
-  x = 1 + LCD_W / 2;
+  x = 1 + LCD_W / 2 + X_OFFSET;
   y = Y_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
     drawSingleOutputBar(x, y, channel);
