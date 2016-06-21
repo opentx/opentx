@@ -232,10 +232,10 @@ static const MenuHandlerFunc menuTabStats[] PROGMEM = {
 
 enum EnumTabMonitors
 {
-  e_MonOutputs1,
-  e_MonOutputs2,
-  e_MonMixers1,
-  e_MonMixers2,
+  e_MonChannels1,
+  e_MonChannels2,
+  e_MonChannels3,
+  e_MonChannels4,
   e_MonLogicalSwitches,
   e_MonTabChannelsPagesCount
 };
