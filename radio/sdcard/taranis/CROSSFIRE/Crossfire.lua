@@ -1,63 +1,47 @@
-local VALUE = 0
-local COMBO = 1
-
-local COLUMN_2 = 150
+local COLUMN_2 = 140
 
 local edit = false
-local page = 1
-local current = 1
-local refreshState = 0
-local refreshIndex = 0
-local calibrationState = 0
+local pageIndex = 1
+local fieldIndex = 1
 local pageOffset = 0
-local calibrationStep = 0
 local pages = { }
 
 -- Change display attribute to current field
 local function addField(step)
-  field = fields[current]
-  if field[2] == VALUE then
-    min = field[5]
-    max = field[6]
-  elseif field[2] == COMBO then
+  local fields = pages[pageIndex].fields
+  local field = fields[fieldIndex]
+  if field.type == 9 then
     min = 0
-    max = #(field[5]) - 1
+    max = #field.values - 1
   end
-  if (step < 0 and field[4] > min) or (step > 0 and field[4] < max) then
-    field[4] = field[4] + step
+  if (step < 0 and field.value > min) or (step > 0 and field.value < max) then
+    field.value = field.value + step
   end
 end
 
 -- Select the next or previous page
 local function selectPage(step)
-  page = 1 + ((page + step - 1 + #pages) % #pages)
-  refreshIndex = 0
-  calibrationStep = 0
+  pageIndex = 1 + ((pageIndex + step - 1 + #pages) % #pages)
 end
 
 -- Select the next or previous editable field
 local function selectField(step)
-  current = 1 + ((current + step - 1 + #fields) % #fields)
-  if current > 7 + pageOffset then
-    pageOffset = current - 7
-  elseif current <= pageOffset then
-    pageOffset = current - 1
+  local fields = pages[pageIndex].fields
+  local newFieldIndex = fieldIndex
+  repeat
+    newFieldIndex = 1 + ((newFieldIndex + step - 1 + #fields) % #fields)
+  until newFieldIndex == fieldIndex or (pages[pageIndex].fields[newFieldIndex].type ~= 11 and pages[pageIndex].fields[newFieldIndex].name ~= nil)
+  fieldIndex = newFieldIndex
+  if fieldIndex > 7 + pageOffset then
+    pageOffset = fieldIndex - 7
+  elseif fieldIndex <= pageOffset then
+    pageOffset = fieldIndex - 1
   end
 end
 
-local function drawProgressBar()
-  local width = (140 * refreshIndex) / #fields
-  lcd.drawRectangle(30, 1, 144, 6)
-  lcd.drawFilledRectangle(32, 3, width, 2);
-end
-
 local function drawDevicePage(page)
-  -- if refreshIndex < #fields then
-  --   drawProgressBar()
-  -- end
-
   for index = 1, 7, 1 do
-    field = page.fields[pageOffset+index]
+    local field = page.fields[pageOffset+index]
     if field == nil then
       break
     end
@@ -65,7 +49,7 @@ local function drawDevicePage(page)
     if field.name == nil then
       lcd.drawText(0, 1+8*index, "...")
     else
-      attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
+      attr = fieldIndex == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
       lcd.drawText(0, 1+8*index, field.name)
       if field.functions ~= nil then
         field.functions.display(field, 1+8*index, attr)
@@ -120,7 +104,7 @@ local function parseDeviceInfoMessage(data)
   fields_count = data[i+13]
   pg = getPage(name)
   if pg == nil then
-    pg = createPage(id, name, fields_count-1) -- TODO fields_count should be different
+    pg = createPage(id, name, fields_count)
     pages[#pages + 1] = pg
   end
   pg.pagetimeout = time + 3000 -- 30s
@@ -146,6 +130,10 @@ local function fieldTextSelectionLoad(field, data, offset)
   field.value = data[offset]
 end
 
+local function fieldTextSelectionSave(fieldIndex)
+  crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, fieldIndex, pages[pageIndex].fields[fieldIndex].value })
+end
+
 local function fieldTextSelectionDisplay(field, y, attr)
   lcd.drawText(COLUMN_2, y, field.values[field.value+1], attr)
 end
@@ -160,24 +148,25 @@ local types_functions = {
   nil,
   nil,
   nil,
-  { load=fieldTextSelectionLoad, display=fieldTextSelectionDisplay },
+  { load=fieldTextSelectionLoad, save=fieldTextSelectionSave, display=fieldTextSelectionDisplay },
   nil,
   nil
 }
 
 local function parseParameterInfoMessage(data)
-  index = data[3]
-  field = pages[page].fields[index]
+  local page = pages[pageIndex]
+  local index = data[3]
+  local field = page.fields[index]
   field.parent = data[4]
   field.type = data[5]
   field.functions = types_functions[field.type+1]
-  parent = field.parent
-  name = ""
+  local parent = field.parent
+  local name = ""
   while parent ~= 0 do
     name = name .. " "
-    parent = pages[page].fields[parent].parent
+    parent = page.fields[parent].parent
   end
-  i = 6
+  local i = 6
   while data[i] ~= 0 do
     name = name .. string.char(data[i])
     i = i + 1
@@ -187,10 +176,12 @@ local function parseParameterInfoMessage(data)
   if field.functions ~= nil then
     field.functions.load(field, data, i)
   end
-  pages[page].fieldstimeout = 0
+  if field.type ~= 11 and page.fields[fieldIndex].type == 11 then
+    fieldIndex = index
+  end
+  page.fieldstimeout = 0
 end
 
-local telemetryPopTimeout = 0
 local devicesRefreshTimeout = 0
 local function refreshNext()
   command, data = crossfireTelemetryPop()
@@ -203,12 +194,12 @@ local function refreshNext()
         devicesRefreshTimeout = time + 1000 -- 10s
       end
       crossfireTelemetryPush(0x28, { 0x00, 0xEA })
-    elseif page <= #pages and time > pages[page].fieldstimeout then
-      for i=1, #pages[page].fields do
-        field = pages[page].fields[i]
+    elseif pageIndex <= #pages and time > pages[pageIndex].fieldstimeout then
+      for i=1, #pages[pageIndex].fields do
+        local field = pages[pageIndex].fields[i]
         if field.name == nil then
-          crossfireTelemetryPush(0x2C, { pages[page].id, 0xEA, i })
-          pages[page].fieldstimeout = time + 200 -- 2s
+          crossfireTelemetryPush(0x2C, { pages[pageIndex].id, 0xEA, i })
+          pages[pageIndex].fieldstimeout = time + 200 -- 2s
         end
       end
     end
@@ -217,82 +208,28 @@ local function refreshNext()
   elseif command == 0x2B then
     parseParameterInfoMessage(data)
   end
-
---  if refreshState == 0 then
---    if calibrationState == 1 then
---      if telemetryWrite(0x9D, calibrationStep) == true then
---        refreshState = 1
---        calibrationState = 2
---        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
---      end
---    elseif refreshIndex < #fields then
---      field = fields[refreshIndex + 1]
---      if telemetryRead(field[3]) == true then
---        refreshState = 1
---        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
---      end
---    end
---  elseif refreshState == 1 then
---    physicalId, primId, dataId, value = telemetryPop()
---    if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 then
---      fieldId = value % 256
---      if calibrationState == 2 then
---        if fieldId == 0x9D then
---          refreshState = 0
---          calibrationState = 0
---          calibrationStep = (calibrationStep + 1) % 6
---        end
---      else
---        field = fields[refreshIndex + 1]
---        if fieldId == field[3] then
---          value = math.floor(value / 256)
---          if field[3] >= 0x9E and field[3] <= 0xA0 then
---            b1 = value % 256
---            b2 = math.floor(value / 256)
---            value = b1*256 + b2
---            value = value - bit32.band(value, 0x8000) * 2
---          end
---          if field[2] == COMBO and #field == 6 then
---            for index = 1, #(field[6]), 1 do
---              if value == field[6][index] then
---                value = index - 1
---                break
---              end
---            end
---          elseif field[2] == VALUE and #field == 8 then
---            value = value - field[8] + field[5]
---          end
---          fields[refreshIndex + 1][4] = value
---          refreshIndex = refreshIndex + 1
---          refreshState = 0
---        end
---      end
---    elseif getTime() > telemetryPopTimeout then
---      refreshState = 0
---      calibrationState = 0
---    end
---  end
-end
-
-local function updateField(field)
-  value = field[4]
-  if field[2] == COMBO and #field == 6 then
-    value = field[6][1+value]
-  elseif field[2] == VALUE and #field == 8 then
-    value = value + field[8] - field[5]
-  end
-  telemetryWrite(field[3], value)
 end
 
 -- Main
-local function runFieldsPage(event)
+local function runNoDevicesPage(event)
+  if event == EVT_EXIT_BREAK then
+    return 2
+  end
+  lcd.clear()
+  lcd.drawText(24, 28, "Waiting for Crossfire devices...")
+  return 0
+end
+
+local function runDevicePage(index, event)
+  local page = pages[index]
   if event == EVT_EXIT_BREAK then             -- exit script
     return 2
   elseif event == EVT_ENTER_BREAK then        -- toggle editing/selecting current field
-    if fields[current][4] ~= nil then
+    local field = page.fields[fieldIndex]
+    if field.name ~= nil then
       edit = not edit
-      if edit == false then
-        updateField(fields[current])
+      if edit == false and field.functions.save ~= nil then
+        field.functions.save(fieldIndex)
       end
     end
   elseif edit then
@@ -308,26 +245,16 @@ local function runFieldsPage(event)
       selectField(-1)
     end
   end
-  redrawFieldsPage()
-  return 0
-end
 
-local function runNoDevicesPage(event)
   lcd.clear()
-  lcd.drawText(24, 28, "Waiting for Crossfire devices...")
-  return 0
-end
-
-local function runDevicePage(index, event)
-  lcd.clear()
-  lcd.drawScreenTitle(pages[index].name, index, #pages)
-  drawDevicePage(pages[index])
+  lcd.drawScreenTitle(page.name, index, #pages)
+  drawDevicePage(page)
   return 0
 end
 
 -- Init
 local function init()
-  current, edit, refreshState, refreshIndex = 1, false, 0, 0
+  fieldIndex, edit = 1, false
 end
 
 -- Main
@@ -340,14 +267,12 @@ local function run(event)
   elseif event == EVT_PAGE_LONG then
     killEvents(event);
     selectPage(-1)
-  elseif event == EVT_EXIT_BREAK then
-    return 2
   end
 
   if #pages == 0 then
     result = runNoDevicesPage(event)
   else
-    result = runDevicePage(page, event)
+    result = runDevicePage(pageIndex, event)
   end
 
   refreshNext()
