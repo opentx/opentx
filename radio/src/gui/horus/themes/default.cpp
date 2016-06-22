@@ -123,10 +123,10 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_THEME_ADD_VIEW, "mask_theme_add_view.png");
       loadMenuIcon(ICON_LIBRARY, "mask_library.png");
       loadMenuIcon(ICON_MONITOR, "mask_monitor.png");
-      loadMenuIcon(ICON_MONITOR_CHANNELS1, "mask_monitor_channel1.png");
-      loadMenuIcon(ICON_MONITOR_CHANNELS2, "mask_monitor_channel2.png");
-      loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channel3.png");
-      loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channel4.png");
+      loadMenuIcon(ICON_MONITOR_CHANNELS1, "mask_monitor_channels1.png");
+      loadMenuIcon(ICON_MONITOR_CHANNELS2, "mask_monitor_channels2.png");
+      loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channels3.png");
+      loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "/mask_monitor_logsw.png");
       
       BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
