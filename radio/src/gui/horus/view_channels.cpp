@@ -137,7 +137,7 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
   uint8_t channel = 8 * page;
-  uint16_t x = X_OFFSET, y = Y_OFFSET;
+  coord_t x = X_OFFSET, y = Y_OFFSET;
   
   drawStatusText(STR_MONITOR_CHANNELS_DESC);
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
