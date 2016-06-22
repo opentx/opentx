@@ -569,6 +569,7 @@ extern const pm_char STR_MONITOR_CHANNELS2[];
 extern const pm_char STR_MONITOR_SWITCHES[];
 extern const pm_char STR_MONITOR_CHANNELS3[];
 extern const pm_char STR_MONITOR_CHANNELS4[];
+extern const pm_char STR_MONITOR_CHANNELS_DESC[];
 extern const pm_char STR_MENUGLOBALVARS[];
 extern const pm_char STR_INVERT_THR[];
 extern const pm_char STR_AND_SWITCH[];

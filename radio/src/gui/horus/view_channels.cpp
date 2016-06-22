@@ -138,6 +138,8 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
   uint8_t channel = 8 * page;
   uint16_t x = X_OFFSET, y = Y_OFFSET;
+  
+  drawStatusText(STR_MONITOR_CHANNELS_DESC);
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
     drawSingleOutputBar(x, y, channel);
     drawSingleMixerBar(x, y + Y_MIXBAR, channel);

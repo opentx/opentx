@@ -851,6 +851,7 @@
 #define TR_MONITOR_SWITCHES    "LOGICAL SWITCHES MONITOR"
 #define TR_MONITOR_CHANNELS3   "CHANNELS MONITOR 17/24"
 #define TR_MONITOR_CHANNELS4   "CHANNELS MONITOR 25/32"
+#define TR_MONITOR_CHANNELS_DESC "RED : Outputs, GREEN : Mixers"
 #if defined(CPUARM)
   #define TR_RECEIVER_NUM             TR(INDENT "RxNum", INDENT "Ricevente No.")
 #define TR_RECEIVER            INDENT "Receiver"
