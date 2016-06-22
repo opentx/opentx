@@ -29,17 +29,22 @@
 #define Y_OUTBAR                       15
 #define Y_MIXBAR                       28
 
-bool menuChannels1(evt_t);
-bool menuChannels2(evt_t);
-bool menuChannels3(evt_t);
-bool menuChannels4(evt_t);
+bool menuChannelsMonitor(evt_t event, uint8_t page);
 bool menuLogicalSwitches(evt_t);
 
+template<int index>
+bool menuChannelsMonitor(evt_t event)
+{
+  lastMonitorPage = e_MonChannelsFirst + index;
+  MENU(STR_MONITOR_CHANNELS[index], MONITOR_ICONS, menuTabMonitors, lastMonitorPage, 0, { 0 });
+  return menuChannelsMonitor(event, index);
+}
+
 const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
-  menuChannels1,
-  menuChannels2,
-  menuChannels3,
-  menuChannels4,
+  menuChannelsMonitor<0>,
+  menuChannelsMonitor<1>,
+  menuChannelsMonitor<2>,
+  menuChannelsMonitor<3>,
   menuLogicalSwitches
 };
 
@@ -151,33 +156,4 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
     drawSingleMixerBar(x, y + Y_MIXBAR, channel);
   }
   return true;
-}
-
-bool menuChannels1(evt_t event)
-{
-  MENU(STR_MONITOR_CHANNELS1, MONITOR_ICONS, menuTabMonitors, e_MonChannels1, 0, { 0 });
-  lastMonitorPage = e_MonChannels1;
-  return menuChannelsMonitor(event, 0);
-}
-
-bool menuChannels2(evt_t event)
-{
-  MENU(STR_MONITOR_CHANNELS2, MONITOR_ICONS, menuTabMonitors, e_MonChannels2, 0, { 0 });
-  lastMonitorPage = e_MonChannels2;
-  return menuChannelsMonitor(event, 1);
-}
-
-
-bool menuChannels3(evt_t event)
-{
-  MENU(STR_MONITOR_CHANNELS3, MONITOR_ICONS, menuTabMonitors, e_MonChannels3, 0, { 0 });
-  lastMonitorPage = e_MonChannels3;
-  return menuChannelsMonitor(event, 2);
-}
-
-bool menuChannels4(evt_t event)
-{
-  MENU(STR_MONITOR_CHANNELS4, MONITOR_ICONS, menuTabMonitors, e_MonChannels4, 0, { 0 });
-  lastMonitorPage = e_MonChannels4;
-  return menuChannelsMonitor(event, 3);
 }
