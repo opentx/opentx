@@ -618,11 +618,15 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
   }
   else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {
     CustomFunctionData & fn = g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST];
-    if (!getSwitch(fn.swtch)) return false;
 #if defined(SIMU) || defined(DEBUG)
     filename = fn.play.name;
 #endif
-    lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+    if (getSwitch(fn.swtch))
+      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+    else if (sid.background)
+      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
+    else
+      return false;
   }
   else {
 #if defined(PCBTARANIS)
