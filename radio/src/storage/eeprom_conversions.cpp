@@ -761,25 +761,20 @@ PACK(typedef struct {
   int8_t   varioRange;
   int8_t   varioRepeat;
   int8_t   backgroundVolume;
+ 
+  TARANIS_FIELD(uint8_t  serial2Mode : 6)
+  TARANIS_FIELD(uint8_t  slidersConfig : 2)
+  TARANIS_FIELD(uint8_t  potsConfig)
+  TARANIS_FIELD(uint8_t  backlightColor)
+  TARANIS_FIELD(swarnstate_t switchUnlockStates)
+  TARANIS_FIELD(CustomFunctionData_v216 customFn[NUM_CFN])
+  TARANIS_FIELD(swconfig_t switchConfig)
+  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
+  TARANIS_FIELD(char anaNames[NUM_STICKS + NUM_POTS][LEN_ANA_NAME])
+  N_TARANIS_FIELD(CustomFunctionData_v216 customFn[NUM_CFN])
 
-#if defined(PCBTARANIS)
-  uint8_t  serial2Mode:6;
-  uint8_t  slidersConfig:2;
-  uint8_t  potsConfig;
-  uint8_t  backlightColor;
-  swarnstate_t switchUnlockStates;
-  CustomFunctionData_v216 customFn[NUM_CFN];
-  swconfig_t switchConfig;
-  char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME];
-  char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
-#else
-  CustomFunctionData_v216 customFn[NUM_CFN];
-#endif
-
-#if defined(PCBTARANIS) && defined(REV9E)
-  uint8_t bluetoothEnable;
-  char bluetoothName[LEN_BLUETOOTH_NAME];
-#endif
+  TARANIS_REV9E_FIELD(uint8_t bluetoothEnable)
+  TARANIS_REV9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME])
 }) RadioData_v216;
 
 void ConvertRadioData_216_to_217(RadioData & settings)
