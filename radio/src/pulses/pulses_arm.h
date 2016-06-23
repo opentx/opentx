@@ -39,10 +39,10 @@ extern uint8_t s_current_protocol[NUM_MODULES];
 extern uint8_t s_pulses_paused;
 extern uint16_t failsafeCounter[NUM_MODULES];
 
-PACK(template<class T> struct PpmPulsesData {
+template<class T> struct PpmPulsesData {
   T pulses[20];
   T * ptr;
-});
+};
 
 #if defined(PPM_PIN_SERIAL)
 PACK(struct PxxSerialPulsesData {
