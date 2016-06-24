@@ -68,8 +68,6 @@ void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
 
   lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
 
-  lcd->drawSolidVerticalLine(x + posOnBar(chanVal), y, BAR_HEIGHT, HEADER_BGCOLOR);
-
   strAppendSigned(chanString, displayVal);
   strAppend(&chanString[strlen(chanString)], "%");
 
@@ -113,7 +111,6 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   lcdDrawText(x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR, "[", TINSIZE | TEXT_COLOR);
 
   lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
-  lcd->drawSolidVerticalLine(x + posOnBar(chanVal), y + Y_OUTBAR, BAR_HEIGHT, HEADER_BGCOLOR);
 
   strAppendSigned(chanString, chanVal);
   strAppend(&chanString[strlen(chanString)], "%");
