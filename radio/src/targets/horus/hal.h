@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -121,8 +121,8 @@
 #define ADC_SPI_PIN_MOSI                GPIO_Pin_6
 #define ADC_SPI_PIN_MISO                GPIO_Pin_5
 #define ADC_SPI_PinSource_SCK           GPIO_PinSource2
-#define ADC_SPI_PinSource_MISO		GPIO_PinSource5
-#define ADC_SPI_PinSource_MOSI		GPIO_PinSource6
+#define ADC_SPI_PinSource_MISO		      GPIO_PinSource5
+#define ADC_SPI_PinSource_MOSI		      GPIO_PinSource6
 #define ADC_GPIO_PIN_MOUSE1             GPIO_Pin_8 // PF.8 ADC3_IN6 J5 MOUSE_X
 #define ADC_GPIO_PIN_MOUSE2             GPIO_Pin_9 // PF.9 ADC3_IN7 J6 MOUSE_Y
 #define ADC_IN_MOUSE1                   6
@@ -325,13 +325,6 @@
 #define TRAINER_DMA_IRQHandler          DMA1_Stream2_IRQHandler
 #define TRAINER_DMA_FLAG_TC             DMA_IT_TCIF2
 #define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
-
-// Heartbeat
-#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
-#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
-#define HEARTBEAT_TIMER                 TIM4
-#define HEARTBEAT_TIMER_IRQn            TIM4_IRQn
-#define HEARTBEAT_TIMER_IRQHandler      TIM4_IRQHandler
 
 // 5ms Interrupt
 #define INTERRUPT_5MS_APB1Periph        RCC_APB1Periph_TIM14

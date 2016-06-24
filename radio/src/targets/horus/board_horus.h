@@ -50,12 +50,12 @@ extern "C" {
   #include "usbd_msc_core.h"
   #include "usbd_hid_core.h"
   #include "usbd_usr.h"
-  #include "../horus/usbd_desc.h"
-  #include "../horus/usb_conf.h"
-  #include "../horus/usbd_conf.h"
+  #include "usbd_desc.h"
+  #include "usb_conf.h"
+  #include "usbd_conf.h"
 #endif
 
-#include "../horus/hal.h"
+#include "hal.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -179,8 +179,6 @@ void init_trainer_ppm(void);
 void stop_trainer_ppm(void);
 void init_trainer_capture(void);
 void stop_trainer_capture(void);
-void init_cppm_on_heartbeat_capture(void);
-void stop_cppm_on_heartbeat_capture(void);
 
 // Keys driver
 void keysInit(void);

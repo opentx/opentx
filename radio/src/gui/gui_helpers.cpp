@@ -490,10 +490,7 @@ bool isRfProtocolAvailable(int protocol)
 #if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
 {
-  if (IS_EXTERNAL_MODULE_PRESENT() && mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-    return false;
-  else
-    return true;
+  return true;
 }
 #elif defined(PCBTARANIS)
 bool isTrainerModeAvailable(int mode)

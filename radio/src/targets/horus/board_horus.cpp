@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -31,12 +31,12 @@ extern "C" {
 
 void watchdogInit(unsigned int duration)
 {
-  IWDG->KR = 0x5555 ;      // Unlock registers
-  IWDG->PR = 3 ;           // Divide by 32 => 1kHz clock
-  IWDG->KR = 0x5555 ;      // Unlock registers
-  IWDG->RLR = duration ;       // 1.5 seconds nominal
-  IWDG->KR = 0xAAAA ;      // reload
-  IWDG->KR = 0xCCCC ;      // start
+  IWDG->KR = 0x5555;      // Unlock registers
+  IWDG->PR = 3;           // Divide by 32 => 1kHz clock
+  IWDG->KR = 0x5555;      // Unlock registers
+  IWDG->RLR = duration;       // 1.5 seconds nominal
+  IWDG->KR = 0xAAAA;      // reload
+  IWDG->KR = 0xCCCC;      // start
 }
 
 void getCPUUniqueID(char * s)
@@ -52,7 +52,7 @@ void getCPUUniqueID(char * s)
 // Start TIMER7 at 2000000Hz
 void init2MhzTimer()
 {
-  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1 ;       // 0.5 uS, 2 MHz
+  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1;       // 0.5 uS, 2 MHz
   TIMER_2MHz_TIMER->ARR = 65535;
   TIMER_2MHz_TIMER->CR2 = 0;
   TIMER_2MHz_TIMER->CR1 = TIM_CR1_CEN;
@@ -61,21 +61,21 @@ void init2MhzTimer()
 // Starts TIMER at 1000Hz
 void init1msTimer()
 {
-  INTERRUPT_5MS_TIMER->ARR = 999 ;     // 1mS
-  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;  // 1uS from 30MHz
-  INTERRUPT_5MS_TIMER->CCER = 0 ;
-  INTERRUPT_5MS_TIMER->CCMR1 = 0 ;
-  INTERRUPT_5MS_TIMER->EGR = 0 ;
-  INTERRUPT_5MS_TIMER->CR1 = 5 ;
-  INTERRUPT_5MS_TIMER->DIER |= 1 ;
-  NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn) ;
+  INTERRUPT_5MS_TIMER->ARR = 999;     // 1mS
+  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;  // 1uS from 30MHz
+  INTERRUPT_5MS_TIMER->CCER = 0;
+  INTERRUPT_5MS_TIMER->CCMR1 = 0;
+  INTERRUPT_5MS_TIMER->EGR = 0;
+  INTERRUPT_5MS_TIMER->CR1 = 5;
+  INTERRUPT_5MS_TIMER->DIER |= 1;
+  NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
   NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 7);
 }
 
 // TODO use the same than board_sky9x.cpp
 void interrupt1ms()
 {
-  static uint32_t pre_scale ;       // Used to get 10 Hz counter
+  static uint32_t pre_scale;       // Used to get 10 Hz counter
 
   ++pre_scale;
 
@@ -89,8 +89,8 @@ void interrupt1ms()
 
   }
 
-  if ( pre_scale == 10 ) {
-    pre_scale = 0 ;
+  if (pre_scale == 10) {
+    pre_scale = 0;
     DEBUG_TIMER_START(debugTimerPer10ms);
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
@@ -104,40 +104,39 @@ void interrupt1ms()
 #if !defined(SIMU)
 extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
 {
-  TIM14->SR &= ~TIM_SR_UIF ;
-  interrupt1ms() ;
+  TIM14->SR &= ~TIM_SR_UIF;
+  interrupt1ms();
   DEBUG_INTERRUPT(INT_1MS);
 }
 
 void boardInit()
 {
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | 
-                         LED_RCC_AHB1Periph | 
-                         LCD_RCC_AHB1Periph | 
-                         AUDIO_RCC_AHB1Periph | 
-                         KEYS_RCC_AHB1Periph_GPIO | 
-                         ADC_RCC_AHB1Periph | 
-                         SERIAL_RCC_AHB1Periph | 
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
+                         LED_RCC_AHB1Periph |
+                         LCD_RCC_AHB1Periph |
+                         AUDIO_RCC_AHB1Periph |
+                         KEYS_RCC_AHB1Periph_GPIO |
+                         ADC_RCC_AHB1Periph |
+                         SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
-                         HEARTBEAT_RCC_AHB1Periph |
-                         AUDIO_RCC_AHB1Periph | 
-                         HAPTIC_RCC_AHB1Periph | 
-                         INTMODULE_RCC_AHB1Periph | 
-                         EXTMODULE_RCC_AHB1Periph, 
+                         AUDIO_RCC_AHB1Periph |
+                         HAPTIC_RCC_AHB1Periph |
+                         INTMODULE_RCC_AHB1Periph |
+                         EXTMODULE_RCC_AHB1Periph,
                          ENABLE);
-  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph | 
-                         TIMER_2MHz_APB1Periph | 
-                         AUDIO_RCC_APB1Periph | 
-                         SERIAL_RCC_APB1Periph | 
+  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_APB1Periph |
+                         TIMER_2MHz_APB1Periph |
+                         AUDIO_RCC_APB1Periph |
+                         SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
-                         AUDIO_RCC_APB1Periph | 
-                         EXTMODULE_RCC_APB1Periph, 
+                         AUDIO_RCC_APB1Periph |
+                         EXTMODULE_RCC_APB1Periph,
                          ENABLE);
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | 
-                         ADC_RCC_APB2Periph | 
-                         HAPTIC_RCC_APB2Periph | 
+  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
+                         ADC_RCC_APB2Periph |
+                         HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph, ENABLE);
 
   pwrInit();
@@ -201,7 +200,7 @@ void usbJoystickUpdate(void)
   //buttons
   HID_Buffer[0] = 0; //buttons
   for (int i = 0; i < 8; ++i) {
-    if ( channelOutputs[i+8] > 0 ) {
+    if (channelOutputs[i+8] > 0) {
       HID_Buffer[0] |= (1 << i);
     }
   }
@@ -210,12 +209,12 @@ void usbJoystickUpdate(void)
   //uint8_t * p = HID_Buffer + 1;
   for (int i = 0; i < 8; ++i) {
     int16_t value = channelOutputs[i] / 8;
-    if ( value > 127 ) value = 127;
-    else if ( value < -127 ) value = -127;
+    if (value > 127) value = 127;
+    else if (value < -127) value = -127;
     HID_Buffer[i+1] = static_cast<int8_t>(value);
   }
 
-  USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
+  USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
 }
 
 #endif //#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
@@ -234,9 +233,6 @@ void checkTrainerSettings()
       case TRAINER_MODE_SLAVE:
         stop_trainer_ppm();
         break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_cppm_on_heartbeat_capture() ;
-        break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         serial2Stop();
     }
@@ -245,9 +241,6 @@ void checkTrainerSettings()
     switch (requiredTrainerMode) {
       case TRAINER_MODE_SLAVE:
         init_trainer_ppm();
-        break;
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        init_cppm_on_heartbeat_capture() ;
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
@@ -266,5 +259,5 @@ void checkTrainerSettings()
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE);  // using filtered ADC value on purpose
-  return (uint16_t)((instant_vbat * (1000 + g_eeGeneral.txVoltageCalibration) ) / 1629);
+  return (uint16_t)((instant_vbat * (1000 + g_eeGeneral.txVoltageCalibration)) / 1629);
 }
