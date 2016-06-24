@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -253,11 +253,11 @@ getvalue_t getValue(mixsrc_t i)
 #endif
 
 #if defined(LUAINPUTS)
-  else if (i <= MIXSRC_LAST_POT) {
+  else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
     return calibratedStick[i-MIXSRC_Rud];
   }
 #else
-  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT) {
+  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
     return calibratedStick[i-MIXSRC_Rud];
   }
 #endif
@@ -424,13 +424,13 @@ void evalInputs(uint8_t mode)
   }
 #endif
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS+NUM_ROTARY_ENCODERS; i++) {
 
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
 
 #if defined(ROTARY_ENCODERS)
-    int16_t v = ((i < NUM_STICKS+NUM_POTS) ? anaIn(i) : getRotaryEncoder(i-(NUM_STICKS+NUM_POTS)));
+    int16_t v = ((i < NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS) ? anaIn(i) : getRotaryEncoder(i-(NUM_STICKS+NUM_POTS)));
 #else
     int16_t v = anaIn(i);
 #endif
@@ -484,10 +484,12 @@ void evalInputs(uint8_t mode)
       if (tmp <= 1) anaCenter |= (tmp==0 ? mask : (bpanaCenter & mask));
 #endif
     }
-    else {
+#if defined(ROTARY_ENCODERS)
+    else if (i >= NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS) {
       // rotary encoders
       if (v == 0) anaCenter |= mask;
     }
+#endif
 
     if (ch < NUM_STICKS) { //only do this for sticks
 #if defined(VIRTUALINPUTS)
@@ -552,7 +554,7 @@ int getStickTrimValue(int stick, int stickValue)
 {
   if (stick < 0)
     return 0;
-    
+
   int trim = trims[stick];
   if (stick == THR_STICK) {
     if (g_model.thrTrim) {
@@ -1021,7 +1023,7 @@ void evalMixes(uint8_t tick10ms)
   static ACTIVE_PHASES_TYPE flightModesFade = 0;
 
   LS_RECURSIVE_EVALUATION_RESET();
-  
+
   uint8_t fm = getFlightMode();
 
   if (lastFlightMode != fm) {

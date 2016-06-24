@@ -217,10 +217,7 @@ enum CurveType {
 
 #define XPOTS_MULTIPOS_COUNT           6
 
-#if defined(PCBTARANIS)
-  #define MAX_ROTARY_ENCODERS          0
-  #define NUM_ROTARY_ENCODERS          0
-#elif defined(REVX)
+#if defined(PCBSKY9X) && defined(REVX)
   #define MAX_ROTARY_ENCODERS          1
   #define NUM_ROTARY_ENCODERS          0
 #elif defined(PCBSKY9X)
@@ -236,8 +233,10 @@ enum CurveType {
 
 #if defined(PCBHORUS)
   #define NUM_AUX_TRIMS                2
+  #define NUM_MOUSE_ANALOGS            2
 #else
   #define NUM_AUX_TRIMS                0
+  #define NUM_MOUSE_ANALOGS            0
 #endif
 
 #if defined(COLORLCD)
@@ -792,6 +791,11 @@ enum MixSources {
   MIXSRC_P2,
     MIXSRC_P3,
     MIXSRC_LAST_POT = MIXSRC_P3,
+#endif
+
+#if defined(PCBHORUS)
+  MIXSRC_MOUSE1,
+  MIXSRC_MOUSE2,
 #endif
 
 #if defined(PCBSKY9X)

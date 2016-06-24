@@ -487,7 +487,6 @@ if(CPU_FAMILY STREQUAL STM32)
     ${FIRMWARE_SRC}
     serial.cpp
     syscalls.c
-    targets/taranis/configure_pins.cpp
     )
   foreach(FILE ${STM32LIB_SRC})
     set(FIRMWARE_SRC

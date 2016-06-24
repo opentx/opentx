@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -105,23 +105,29 @@ void adcInit()
 {
   ADS7952_Init();
 
-  configure_pins(ADC_GPIO_PIN_MOUSE1 | ADC_GPIO_PIN_MOUSE2, PIN_ANALOG | PIN_PORTF);
-	
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = ADC_GPIO_PIN_MOUSE1 | ADC_GPIO_PIN_MOUSE2;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(ADC_GPIO_MOUSE, &GPIO_InitStructure);
+
   ADC3->CR1 = ADC_CR1_SCAN;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
   ADC3->SQR1 = (2-1) << 20; // NUMBER_ANALOG Channels
+  ADC3->SQR2 = 0;
   ADC3->SQR3 = ADC_IN_MOUSE1 + (ADC_IN_MOUSE2<<5);
-  ADC3->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
-								+ (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
-  ADC3->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12)
-								+ (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27);
+  ADC3->SMPR1 = 0;
+  ADC3->SMPR2 = 3 + (3<<3); // TODO SAMPTIME constant
   ADC->CCR = 0; // ADC_CCR_ADCPRE_0; Clock div 2
-	
+
   // Enable the DMA channel here, DMA2 stream 1, channel 2
-  DMA2_Stream1->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  DMA2_Stream1->PAR = CONVERT_PTR_UINT(&ADC3->DR);
-  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
-  DMA2_Stream1->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
+  ADC_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  ADC_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC3->DR);
+  ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
+  ADC_DMA_Stream->NDTR = 2;
+  ADC_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 }
 
 const uint16_t adcCommands[MOUSE1+2] =
@@ -172,7 +178,7 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
   for (uint8_t i = 0; i < 4; i++) {
     ADC_CS_LOW();
     delay_01us(1);
-    // command is changed to the next index for the last two readings 
+    // command is changed to the next index for the last two readings
     // (because the sampled data is lagging behind for two command cycles)
     uint16_t val = (0x0fff & SPIx_ReadWriteByte(adcCommands[(i>1) ? index+1 : index]));
 #if defined(JITTER_MEASURE)
@@ -190,18 +196,18 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
 
 void adcOnChipReadStart()
 {
-  DMA2_Stream1->CR &= ~DMA_SxCR_EN;		// Disable DMA
+  ADC_DMA_Stream->CR &= ~DMA_SxCR_EN;		// Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
-  DMA2->LIFCR = DMA_LIFCR_CTCIF1 | DMA_LIFCR_CHTIF1 |DMA_LIFCR_CTEIF1 | DMA_LIFCR_CDMEIF1 | DMA_LIFCR_CFEIF1; // Write ones to clear bits
-  DMA2_Stream1->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
-  DMA2_Stream1->NDTR = 2;
-  DMA2_Stream1->CR |= DMA_SxCR_EN;		// Enable DMA
+  ADC_DMA->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits
+  ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
+  ADC_DMA_Stream->NDTR = 2;
+  ADC_DMA_Stream->CR |= DMA_SxCR_EN;		// Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 }
 
 bool adcOnChipReadFinished()
 {
-  return (DMA2->LISR & DMA_LISR_TCIF1);
+  return (ADC_DMA->LISR & DMA_LISR_TCIF0);
 }
 
 void adcRead()
@@ -214,7 +220,7 @@ void adcRead()
   adcReadSPIDummy();
   for (uint32_t index=0; index<MOUSE1; index++) {
     adcValues[index] = adcReadNextSPIChannel(index);
-    if (noInternalReads < 4 && adcOnChipReadFinished()) { 
+    if (noInternalReads < 4 && adcOnChipReadFinished()) {
       for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
         uint16_t val = adcValues[MOUSE1+x];
 #if defined(JITTER_MEASURE)
