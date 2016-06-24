@@ -55,6 +55,9 @@ class DarkblueTheme: public Theme
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = BLACK;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RGB(10, 78, 121);
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
+      lcdColorTable[BARGRAPH_COLOR_1_INDEX] = RED;
+      lcdColorTable[BARGRAPH_COLOR_2_INDEX] = GREEN;
+      lcdColorTable[BARGRAPH_BACKGROUND_INDEX] = RGB(222, 222, 222);
     }
 
     void loadMenuIcon(uint8_t index, const char * filename) const

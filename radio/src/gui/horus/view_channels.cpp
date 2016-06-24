@@ -65,24 +65,21 @@ void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
   if (chanVal < -100) chanVal = -100;
   else if (chanVal > 100) chanVal = 100;
 
-  lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(222, 222, 222);
-  lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
+  lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BACKGROUND);
 
   lcd->drawSolidVerticalLine(x + posOnBar(chanVal), y, BAR_HEIGHT, HEADER_BGCOLOR);
-
-  lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(25, 150, 50);
 
   strAppendSigned(chanString, displayVal);
   strAppend(&chanString[strlen(chanString)], "%");
 
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, CUSTOM_COLOR);
+    lcdDrawSolidFilledRect(x + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, BARGRAPH_COLOR_2);
     lcdDrawText(x - 10 + COLUMN_SIZE / 2, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
   }
   else if (chanVal < 0) {
     uint16_t endpoint = x + COLUMN_SIZE / 2;
     uint16_t size = divRoundClosest(-chanVal * COLUMN_SIZE, 200);
-    lcdDrawSolidFilledRect(endpoint - size, y, size, BAR_HEIGHT, CUSTOM_COLOR);
+    lcdDrawSolidFilledRect(endpoint - size, y, size, BAR_HEIGHT, BARGRAPH_COLOR_2);
     lcdDrawText(x + 10 + COLUMN_SIZE / 2, y, chanString, SMLSIZE | TEXT_COLOR);
   }
 
@@ -109,8 +106,7 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   else strAppend(&chanString[4], STR_US);
   lcdDrawText(x + COLUMN_SIZE, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
 
-  lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(222, 222, 222);
-  lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, CUSTOM_COLOR);
+  lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BACKGROUND);
 
   lcdDrawText(x + posOnBar(-100 + ld->min / 10) + 2, y + Y_OUTBAR, "]", TINSIZE | TEXT_COLOR | RIGHT);
   lcdDrawText(x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR, "[", TINSIZE | TEXT_COLOR);
@@ -128,12 +124,12 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 
   lcdColorTable[CUSTOM_COLOR_INDEX] = RED;
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
-    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, CUSTOM_COLOR);
+    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, BARGRAPH_COLOR_1);
   }
   else if (posOnBar(chanVal) < posOnBar(calcRESXto100(ld->offset))) {
     uint16_t endpoint = x + posOnBar(calcRESXto100(ld->offset));
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
-    lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, CUSTOM_COLOR);
+    lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, BARGRAPH_COLOR_1);
   }
 
   if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x - X_OFFSET + 7, y + 7, locked_bmp);

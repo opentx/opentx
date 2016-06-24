@@ -39,6 +39,7 @@
 #define LIGHTGREY                      RGB(180, 180, 180)
 #define RED                            RGB(229, 32, 30)
 #define DARKRED                        RGB(160, 0, 6)
+#define GREEN                          RGB(25, 150, 50)
 
 #define OPACITY_MAX                    0x0F
 #define OPACITY(x)                     ((x)<<24)
@@ -71,6 +72,9 @@ enum LcdColorIndex
   MAINVIEW_GRAPHICS_COLOR_INDEX,
   OVERLAY_COLOR_INDEX,
   CUSTOM_COLOR_INDEX,
+  BARGRAPH_COLOR_1_INDEX,
+  BARGRAPH_COLOR_2_INDEX,
+  BARGRAPH_BACKGROUND_INDEX,
   LCD_COLOR_COUNT
 };
 
@@ -105,6 +109,9 @@ extern uint16_t lcdColorTable[LCD_COLOR_COUNT];
 #define MAINVIEW_PANES_COLOR           COLOR(MAINVIEW_PANES_COLOR_INDEX)
 #define MAINVIEW_GRAPHICS_COLOR        COLOR(MAINVIEW_GRAPHICS_COLOR_INDEX)
 #define OVERLAY_COLOR                  COLOR(OVERLAY_COLOR_INDEX)
+#define BARGRAPH_COLOR_1               COLOR(BARGRAPH_COLOR_1_INDEX)
+#define BARGRAPH_COLOR_2               COLOR(BARGRAPH_COLOR_2_INDEX)
+#define BARGRAPH_BACKGROUND            COLOR(BARGRAPH_BACKGROUND_INDEX)
 #define CUSTOM_COLOR                   COLOR(CUSTOM_COLOR_INDEX)
 
 #define ARGB_SPLIT(color, a, r, g, b) \
