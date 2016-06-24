@@ -28,6 +28,7 @@
 #define Y_OFFSET                       75
 #define Y_OUTBAR                       15
 #define Y_MIXBAR                       28
+#define LEG_COLORBOX                   15
 
 bool menuChannelsMonitor(evt_t event, uint8_t page);
 bool menuLogicalSwitches(evt_t);
@@ -142,11 +143,11 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
   uint8_t channel = 8 * page;
   coord_t x = X_OFFSET, y = Y_OFFSET;
 
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP + 2, 17, 17, BARGRAPH_BGCOLOR);
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 1, MENU_FOOTER_TOP + 3, 15, 15, BARGRAPH1_COLOR);
+  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP + 2, LEG_COLORBOX + 2, LEG_COLORBOX + 2, BARGRAPH_BGCOLOR);
+  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 1, MENU_FOOTER_TOP + 3, LEG_COLORBOX, LEG_COLORBOX, BARGRAPH1_COLOR);
   lcdDrawText(MENUS_MARGIN_LEFT + 20, MENU_FOOTER_TOP, STR_MONITOR_OUTPUT_DESC, TEXT_STATUSBAR_COLOR);
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 25 + getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP + 2, 17, 17, BARGRAPH_BGCOLOR);
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 26 + getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP + 3, 15, 15, BARGRAPH2_COLOR);
+  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 25 + getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP + 2, LEG_COLORBOX + 2, LEG_COLORBOX + 2, BARGRAPH_BGCOLOR);
+  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 26 + getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP + 3, LEG_COLORBOX, LEG_COLORBOX, BARGRAPH2_COLOR);
   lcdDrawText(MENUS_MARGIN_LEFT + 45 + +getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP, STR_MONITOR_MIXER_DESC, TEXT_STATUSBAR_COLOR);
 
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
