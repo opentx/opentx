@@ -63,14 +63,10 @@ void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
   int16_t chanVal = calcRESXto100(ex_chans[chan]);
   int16_t displayVal = chanVal;
 
-  if (chanVal < -100) chanVal = -100;
-  else if (chanVal > 100) chanVal = 100;
+  chanVal = limit<int16_t>(-100, chanVal, 100);
+  strAppend(strAppendSigned(chanString, displayVal), "%");
 
   lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
-
-  strAppendSigned(chanString, displayVal);
-  strAppend(&chanString[strlen(chanString)], "%");
-
   if (chanVal > 0) {
     lcdDrawSolidFilledRect(x + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, BARGRAPH2_COLOR);
     lcdDrawText(x - 10 + COLUMN_SIZE / 2, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
@@ -112,15 +108,12 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 
   lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
 
-  strAppendSigned(chanString, chanVal);
-  strAppend(&chanString[strlen(chanString)], "%");
+  strAppend(strAppendSigned(chanString, displayVal), "%");
   if (chanVal > 0) lcdDrawText(x - 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
   else lcdDrawText(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR);
 
   if (chanVal < -limits / 2) chanVal = -limits / 2;
   else if (chanVal > limits / 2) chanVal = limits / 2;
-
-  lcdColorTable[CUSTOM_COLOR_INDEX] = RED;
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
     lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, BARGRAPH1_COLOR);
   }
