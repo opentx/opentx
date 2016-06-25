@@ -135,18 +135,23 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y + Y_OUTBAR, BAR_HEIGHT, TEXT_COLOR);
 }
 
+coord_t drawChannelsMonitorLegend(coord_t x, const pm_char * s, int color)
+{
+  lcdDrawSolidFilledRect(x, MENU_FOOTER_TOP + 2, LEG_COLORBOX + 2, LEG_COLORBOX + 2, BARGRAPH_BGCOLOR);
+  lcdDrawSolidFilledRect(x + 1, MENU_FOOTER_TOP + 3, LEG_COLORBOX, LEG_COLORBOX, color);
+  lcdDrawText(x + 20, MENU_FOOTER_TOP, s, TEXT_STATUSBAR_COLOR);
+  return x + 25 + getTextWidth(s);
+}
+
 bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
   uint8_t channel = 8 * page;
   coord_t x = X_OFFSET, y = Y_OFFSET;
 
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP + 2, LEG_COLORBOX + 2, LEG_COLORBOX + 2, BARGRAPH_BGCOLOR);
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 1, MENU_FOOTER_TOP + 3, LEG_COLORBOX, LEG_COLORBOX, BARGRAPH1_COLOR);
-  lcdDrawText(MENUS_MARGIN_LEFT + 20, MENU_FOOTER_TOP, STR_MONITOR_OUTPUT_DESC, TEXT_STATUSBAR_COLOR);
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 25 + getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP + 2, LEG_COLORBOX + 2, LEG_COLORBOX + 2, BARGRAPH_BGCOLOR);
-  lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT + 26 + getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP + 3, LEG_COLORBOX, LEG_COLORBOX, BARGRAPH2_COLOR);
-  lcdDrawText(MENUS_MARGIN_LEFT + 45 + +getTextWidth(STR_MONITOR_OUTPUT_DESC), MENU_FOOTER_TOP, STR_MONITOR_MIXER_DESC, TEXT_STATUSBAR_COLOR);
+  x = drawChannelsMonitorLegend(MENUS_MARGIN_LEFT, STR_MONITOR_OUTPUT_DESC, BARGRAPH1_COLOR);
+  drawChannelsMonitorLegend(x, STR_MONITOR_MIXER_DESC, BARGRAPH2_COLOR);
 
+  x = X_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
     drawSingleOutputBar(x, y, channel);
     drawSingleMixerBar(x, y + Y_MIXBAR, channel);
