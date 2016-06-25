@@ -64,7 +64,7 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RED;
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
       lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
-      lcdColorTable[BARGRAPH2_COLOR_INDEX] = GREEN;
+      lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(167, 167, 167);
       lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(222, 222, 222);
     }
 

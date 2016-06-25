@@ -22,7 +22,7 @@
 
 #define RECT_OFFSET                    80
 #define ROW_HEIGHT                     42
-#define BAR_HEIGHT                     14
+#define BAR_HEIGHT                     13
 #define COLUMN_SIZE                   200
 #define X_OFFSET                       25
 #define Y_OFFSET                       75
@@ -154,13 +154,13 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
   x = X_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
     drawSingleOutputBar(x, y, channel);
-    drawSingleMixerBar(x, y + Y_MIXBAR, channel);
+    drawSingleMixerBar(x, y + Y_MIXBAR + 1, channel);
   }
   x = 1 + LCD_W / 2 + X_OFFSET;
   y = Y_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
     drawSingleOutputBar(x, y, channel);
-    drawSingleMixerBar(x, y + Y_MIXBAR, channel);
+    drawSingleMixerBar(x, y + Y_MIXBAR + 1, channel);
   }
   return true;
 }
