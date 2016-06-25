@@ -119,8 +119,8 @@ void adcInit()
   ADC3->SQR2 = 0;
   ADC3->SQR3 = ADC_IN_MOUSE1 + (ADC_IN_MOUSE2<<5);
   ADC3->SMPR1 = 0;
-  ADC3->SMPR2 = 3 + (3<<3); // TODO SAMPTIME constant
-  ADC->CCR = 0; // ADC_CCR_ADCPRE_0; Clock div 2
+  ADC3->SMPR2 = (ADC_SAMPTIME<<(3*ADC_IN_MOUSE1)) + (ADC_SAMPTIME<<(3*ADC_IN_MOUSE2));
+  ADC->CCR = 0;
 
   // Enable the DMA channel here, DMA2 stream 1, channel 2
   ADC_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;

@@ -150,7 +150,7 @@ bool menuStatsAnalogs(evt_t event)
 {
   MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
+  for (uint8_t i=0; i<NUMBER_ANALOG; i++) {
     coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
     coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
     lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");

@@ -130,6 +130,7 @@
 #define ADC_IN_MOUSE2                   7
 #define ADC_DMA                         DMA2
 #define ADC_DMA_Stream                  DMA2_Stream0
+#define ADC_SAMPTIME                    3
 
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
