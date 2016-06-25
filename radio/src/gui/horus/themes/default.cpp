@@ -125,7 +125,6 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_THEME_VIEW4, "mask_theme_view4.png");
       loadMenuIcon(ICON_THEME_VIEW5, "mask_theme_view5.png");
       loadMenuIcon(ICON_THEME_ADD_VIEW, "mask_theme_add_view.png");
-      loadMenuIcon(ICON_LIBRARY, "mask_library.png");
       loadMenuIcon(ICON_MONITOR, "mask_monitor.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS1, "mask_monitor_channels1.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS2, "mask_monitor_channels2.png");
@@ -145,14 +144,31 @@ class DefaultTheme: public Theme
       currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
       currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
 
-      delete topleftBitmap;
-      topleftBitmap = NULL;
-      BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath("topleft.png"));
-      if (mask) {
-        topleftBitmap = new BitmapBuffer(BMP_RGB565, mask->getWidth(), MENU_HEADER_HEIGHT);
-        topleftBitmap->clear(HEADER_BGCOLOR);
-        topleftBitmap->drawMask(0, 0, mask, TITLE_BGCOLOR);
-        delete mask;
+      {
+        delete topleftBitmap;
+        topleftBitmap = NULL;
+        BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath("topleft.png"));
+        if (mask) {
+          topleftBitmap = new BitmapBuffer(BMP_RGB565, mask->getWidth(), MENU_HEADER_HEIGHT);
+          topleftBitmap->clear(HEADER_BGCOLOR);
+          topleftBitmap->drawMask(0, 0, mask, TITLE_BGCOLOR);
+          delete mask;
+        }
+      }
+
+      {
+        delete modelselIconBitmap;
+        modelselIconBitmap = NULL;
+        BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath("modelsel/mask_iconback.png"));
+        if (mask) {
+          modelselIconBitmap = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
+          modelselIconBitmap->clear(TEXT_BGCOLOR);
+          modelselIconBitmap->drawMask(0, 0, mask, TITLE_BGCOLOR);
+          BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
+          modelselIconBitmap->drawBitmap(25, 8, bitmap);
+          delete bitmap;
+          delete mask;
+        }
       }
 
       delete background;

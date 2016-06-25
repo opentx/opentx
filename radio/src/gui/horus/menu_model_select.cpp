@@ -21,10 +21,11 @@
 #include "opentx.h"
 #include "storage/modelslist.h"
 
-#define CATEGORIES_WIDTH               140
+#define CATEGORIES_WIDTH               127
+#define MODELS_LEFT                    147
+#define MODELS_COLUMN_WIDTH            162
 
 enum ModelSelectMode {
-  MODE_SELECT_CATEGORY,
   MODE_SELECT_MODEL,
   MODE_RENAME_CATEGORY,
 };
@@ -39,13 +40,12 @@ ModelCell * currentModel;
 void drawCategory(coord_t y, const char * name, bool selected)
 {
   if (selected) {
-    lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-1, INVERT_LINE_HEIGHT+2, HEADER_BGCOLOR);
-    lcdDrawBitmapPattern(CATEGORIES_WIDTH-14, y+2, LBM_LIBRARY_CURSOR, MENU_TITLE_COLOR);
-    if (selectMode == MODE_SELECT_CATEGORY) {
-      drawShadow(0, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT+2);
-    }
+    lcdDrawSolidFilledRect(5, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, TEXT_INVERTED_BGCOLOR);
+    lcdDrawText(10, y, name, TEXT_COLOR | INVERS);
   }
-  lcdDrawText(MENUS_MARGIN_LEFT, y, name, MENU_TITLE_COLOR);
+  else {
+    lcdDrawText(10, y, name, TEXT_COLOR);
+  }
 }
 
 void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selected)
@@ -62,10 +62,17 @@ void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selec
 
 uint16_t categoriesVerticalOffset = 0;
 uint16_t categoriesVerticalPosition = 0;
-uint16_t modelsVerticalOffset = 0;
-uint16_t modelsVerticalPosition = 0;
-uint16_t modelsHorizontalPosition = 0;
-#define MODEL_INDEX()       (modelsVerticalPosition*2+modelsHorizontalPosition)
+#define MODEL_INDEX()       (menuVerticalPosition*2+menuHorizontalPosition)
+
+void setCurrentModel(unsigned int index)
+{
+  std::list<ModelCell *>::iterator it = currentCategory->begin();
+  std::advance(it, index);
+  currentModel = *it;
+  menuVerticalPosition = index / 2;
+  menuHorizontalPosition = index & 1;
+  menuVerticalOffset = limit<int>(menuVerticalPosition-2, menuVerticalOffset, min<int>(menuVerticalPosition, max<int>(0, (currentCategory->size()-7)/2)));
+}
 
 void setCurrentCategory(unsigned int index)
 {
@@ -74,41 +81,11 @@ void setCurrentCategory(unsigned int index)
   std::advance(it, index);
   currentCategory = *it;
   categoriesVerticalPosition = index;
-  categoriesVerticalOffset = limit<int>(categoriesVerticalPosition-9, categoriesVerticalOffset, min<int>(categoriesVerticalPosition, max<int>(0, modelslist.categories.size()-10)));
-}
-
-void setCurrentModel(unsigned int index)
-{
-  std::list<ModelCell *>::iterator it = currentCategory->begin();
-  std::advance(it, index);
-  currentModel = *it;
-  modelsVerticalPosition = index / 2;
-  modelsHorizontalPosition = index & 1;
-  modelsVerticalOffset = limit<int>(modelsVerticalPosition-2, modelsVerticalOffset, min<int>(modelsVerticalPosition, max<int>(0, (currentCategory->size()-5)/2)));
-}
-
-void onCategorySelectMenu(const char * result)
-{
-  if (result == STR_CREATE_MODEL) {
-    storageCheck(true);
-    currentModel = modelslist.addModel(currentCategory, createModel());
-    selectMode = MODE_SELECT_MODEL;
-    setCurrentModel(currentCategory->size() - 1);
-  }
-  else if (result == STR_CREATE_CATEGORY) {
-    currentCategory = modelslist.createCategory();
-    setCurrentCategory(modelslist.categories.size() - 1);
-  }
-  else if (result == STR_RENAME_CATEGORY) {
-    selectMode = MODE_RENAME_CATEGORY;
-    s_editMode = EDIT_MODIFY_STRING;
-    editNameCursorPos = 0;
-  }
-  else if (result == STR_DELETE_CATEGORY) {
-    modelslist.removeCategory(currentCategory);
-    modelslist.save();
-    setCurrentCategory(currentCategoryIndex-1);
-  }
+  categoriesVerticalOffset = limit<int>(categoriesVerticalPosition-4, categoriesVerticalOffset, min<int>(categoriesVerticalPosition, max<int>(0, modelslist.categories.size()-10)));
+  if (currentCategory->size() > 0)
+    setCurrentModel(0);
+  else
+    currentModel = NULL;
 }
 
 void onModelSelectMenu(const char * result)
@@ -145,6 +122,20 @@ void onModelSelectMenu(const char * result)
       POPUP_WARNING("Invalid File");
     }
   }
+  else if (result == STR_CREATE_CATEGORY) {
+    currentCategory = modelslist.createCategory();
+    setCurrentCategory(modelslist.categories.size() - 1);
+  }
+  else if (result == STR_RENAME_CATEGORY) {
+    selectMode = MODE_RENAME_CATEGORY;
+    s_editMode = EDIT_MODIFY_STRING;
+    editNameCursorPos = 0;
+  }
+  else if (result == STR_DELETE_CATEGORY) {
+    modelslist.removeCategory(currentCategory);
+    modelslist.save();
+    setCurrentCategory(currentCategoryIndex-1);
+  }
 }
 
 void initModelsList()
@@ -165,7 +156,7 @@ void initModelsList()
     setCurrentCategory(0);
   }
 
-  modelsVerticalOffset = 0;
+  menuVerticalOffset = 0;
   found = false;
   index = 0;
   for (ModelsCategory::iterator it = currentCategory->begin(); it != currentCategory->end(); ++it, ++index) {
@@ -206,144 +197,121 @@ bool menuModelSelect(evt_t event)
 
     case EVT_KEY_FIRST(KEY_EXIT):
       switch (selectMode) {
-        case MODE_SELECT_CATEGORY:
+        case MODE_SELECT_MODEL:
           chainMenu(menuMainView);
           return false;
-        case MODE_SELECT_MODEL:
-          selectMode = MODE_SELECT_CATEGORY;
-          break;
       }
       break;
 
-    case EVT_KEY_BREAK(KEY_ENTER):
-    case EVT_KEY_FIRST(KEY_RIGHT):
-      if (selectMode == MODE_SELECT_CATEGORY && currentCategory->size() > 0) {
-        selectMode = MODE_SELECT_MODEL;
-        setCurrentModel(0);
-      }
+    case EVT_KEY_FIRST(KEY_PGUP):
+      if (categoriesVerticalPosition == 0)
+        categoriesVerticalPosition = modelslist.categories.size() - 1;
+      else
+        categoriesVerticalPosition -= 1;
+      setCurrentCategory(categoriesVerticalPosition);
+      putEvent(EVT_REFRESH);
       break;
 
-    case EVT_KEY_FIRST(KEY_LEFT):
-      if (selectMode == MODE_SELECT_MODEL) {
-        selectMode = MODE_SELECT_CATEGORY;
-      }
+    case EVT_KEY_FIRST(KEY_PGDN):
+      categoriesVerticalPosition += 1;
+      if (categoriesVerticalPosition >= modelslist.categories.size())
+        categoriesVerticalPosition = 0;
+      setCurrentCategory(categoriesVerticalPosition);
+      putEvent(EVT_REFRESH);
       break;
+
+
+      /*if (selectMode == MODE_SELECT_CATEGORY) {
+        menuVerticalPosition = categoriesVerticalPosition;
+        menuVerticalOffset = categoriesVerticalOffset;
+        if (navigate(event, modelslist.categories.size(), 10)) {
+          categoriesVerticalPosition = menuVerticalPosition;
+          categoriesVerticalOffset = menuVerticalOffset;
+          putEvent(EVT_REFRESH);
+          setCurrentCategory(categoriesVerticalPosition);
+        }
+      }*/
 
     case EVT_KEY_LONG(KEY_ENTER):
-      if (selectMode == MODE_SELECT_CATEGORY) {
+      if (selectMode == MODE_SELECT_MODEL) {
         killEvents(event);
+        if (currentModel && currentModel != modelslist.currentModel) {
+          POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
+        }
         POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+        if (currentModel) {
+          POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
+        }
         POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
         POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
-        if (currentCategoryIndex > 0) {
+        if (modelslist.categories.size() > 1) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
-        }
-        POPUP_MENU_START(onCategorySelectMenu);
-      }
-      else if (selectMode == MODE_SELECT_MODEL) {
-        killEvents(event);
-        ModelHeader header;
-        const char * error = readModel(currentModel->name, (uint8_t *)&header, sizeof(header));
-        if (!error) {
-          if (currentModel != modelslist.currentModel) {
-            POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
-          }
-          POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
-          POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
         }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
         // POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
         // POPUP_MENU_ADD_ITEM(STR_CHANGE_CATEGORY);
-        if (currentModel != modelslist.currentModel) {
+        if (currentModel && currentModel != modelslist.currentModel) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
         }
         // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
         POPUP_MENU_START(onModelSelectMenu);
       }
       break;
+
   }
 
-  if (currentCategory && currentCategory->size() == 0) {
-    selectMode = MODE_SELECT_CATEGORY;
-    currentModel = NULL;
-  }
-
-  // Header
-  theme->drawTopbarBackground(ICON_LIBRARY);
-
-  // Body
-  lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, CATEGORIES_WIDTH, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_DISABLE_COLOR);
-  lcdDrawSolidFilledRect(CATEGORIES_WIDTH, MENU_HEADER_HEIGHT, LCD_W-CATEGORIES_WIDTH, LCD_H-MENU_HEADER_HEIGHT-MENU_FOOTER_HEIGHT, TEXT_BGCOLOR);
-
-  // Footer
-  lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  lcd->drawBitmap(0, 0, modelselIconBitmap);
 
   // Categories
   int index = 0;
-  coord_t y = MENU_HEADER_HEIGHT+3;
-  drawVerticalScrollbar(CATEGORIES_WIDTH-1, MENU_HEADER_HEIGHT, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT, categoriesVerticalOffset, modelslist.categories.size(), 10);
+  coord_t y = 97;
+  drawVerticalScrollbar(CATEGORIES_WIDTH-1, MENU_HEADER_HEIGHT, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT, categoriesVerticalOffset, modelslist.categories.size(), 5);
   for (std::list<ModelsCategory *>::iterator it = modelslist.categories.begin(); it != modelslist.categories.end(); ++it, ++index) {
-    if (index >= categoriesVerticalOffset && index < categoriesVerticalOffset+10) {
+    if (index >= categoriesVerticalOffset && index < categoriesVerticalOffset+5) {
       if (selectMode == MODE_RENAME_CATEGORY && currentCategory == *it) {
         lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN+1, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
         editName(MENUS_MARGIN_LEFT, y, currentCategory->name, LEN_MODEL_FILENAME, event, 1, 0);
         if (s_editMode == 0 || event == EVT_KEY_BREAK(KEY_EXIT)) {
           modelslist.save();
-          selectMode = MODE_SELECT_CATEGORY;
+          selectMode = MODE_SELECT_MODEL;
           putEvent(EVT_REFRESH);
         }
       }
       else {
         drawCategory(y, (*it)->name, currentCategory==*it);
       }
-      y += FH;
-    }
-  }
-
-  if (selectMode == MODE_SELECT_CATEGORY) {
-    menuVerticalPosition = categoriesVerticalPosition;
-    menuVerticalOffset = categoriesVerticalOffset;
-    if (navigate(event, modelslist.categories.size(), 10)) {
-      categoriesVerticalPosition = menuVerticalPosition;
-      categoriesVerticalOffset = menuVerticalOffset;
-      putEvent(EVT_REFRESH);
-      setCurrentCategory(categoriesVerticalPosition);
+      lcdDrawSolidHorizontalLine(5, y+FH+3, CATEGORIES_WIDTH-10, LINE_COLOR);
+      y += FH+7;
     }
   }
 
   // Models
   index = 0;
-  y = MENU_HEADER_HEIGHT+7;
+  y = 5;
   for (ModelsCategory::iterator it = currentCategory->begin(); it != currentCategory->end(); ++it, ++index) {
-    if (index >= modelsVerticalOffset*2 && index < (modelsVerticalOffset+3)*2) {
-      bool selected = (selectMode==MODE_SELECT_MODEL && index==modelsVerticalPosition*2+modelsHorizontalPosition);
+    if (index >= menuVerticalOffset*2 && index < (menuVerticalOffset+4)*2) {
+      bool selected = (selectMode==MODE_SELECT_MODEL && index==menuVerticalPosition*2+menuHorizontalPosition);
       bool current = !strncmp((*it)->name, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
       if (index & 1) {
-        drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+162, y, *it, current, selected);
+        drawModel(MODELS_LEFT + MODELS_COLUMN_WIDTH, y, *it, current, selected);
         y += 66;
       }
       else {
-        drawModel(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT+1, y, *it, current, selected);
+        drawModel(MODELS_LEFT, y, *it, current, selected);
       }
     }
   }
-  if (selectMode == MODE_SELECT_MODEL) {
-    menuVerticalPosition = modelsVerticalPosition;
-    menuHorizontalPosition = modelsHorizontalPosition;
-    menuVerticalOffset = modelsVerticalOffset;
-    if (navigate(event, index, 3, 2)) {
-      modelsVerticalPosition = menuVerticalPosition;
-      modelsHorizontalPosition = menuHorizontalPosition;
-      modelsVerticalOffset = menuVerticalOffset;
+
+  // Navigation
+  if (selectMode == MODE_SELECT_MODEL && currentModel) {
+    if (navigate(event, index, 4, 2)) {
       putEvent(EVT_REFRESH);
       setCurrentModel(MODEL_INDEX());
     }
-    if (currentModel) {
-      lcd->drawText(CATEGORIES_WIDTH+MENUS_MARGIN_LEFT, MENU_FOOTER_TOP+2, currentModel->name, TEXT_INVERTED_COLOR);
-    }
   }
 
-  drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, MENU_HEADER_HEIGHT+7, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT-15, modelsVerticalOffset, (index+1)/2, 3);
+  drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, 7, LCD_H-15, menuVerticalOffset, (index+1)/2, 4);
 
   return true;
 }

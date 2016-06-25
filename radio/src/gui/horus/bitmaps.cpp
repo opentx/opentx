@@ -100,10 +100,6 @@ const uint8_t LBM_ACTIVE_MODEL[] = {
 #include "mask_library_active_model.lbm"
 };
 
-const uint8_t LBM_LIBRARY_CURSOR[] = {
-#include "mask_library_category_index.lbm"
-};
-
 const uint8_t LBM_SCORE0[] = {
 #include "mask_library_score_0.lbm"
 };
@@ -183,3 +179,5 @@ const uint8_t LBM_SWIPE_LEFT[] = {
 const uint8_t LBM_SWIPE_RIGHT[] = {
   #include "mask_swipe_right.lbm"
 };
+
+BitmapBuffer * modelselIconBitmap = NULL;

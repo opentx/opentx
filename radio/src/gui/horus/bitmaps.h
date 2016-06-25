@@ -43,7 +43,6 @@ extern const uint8_t LBM_RSCALE[];
 // Model selection icons
 extern const uint8_t LBM_LIBRARY_SLOT[];
 extern const uint8_t LBM_ACTIVE_MODEL[];
-extern const uint8_t LBM_LIBRARY_CURSOR[];
 extern const uint8_t LBM_SCORE0[];
 extern const uint8_t LBM_SCORE1[];
 extern const uint8_t LBM_STAR0[];
@@ -71,5 +70,7 @@ extern const uint8_t LBM_CARROUSSEL_RIGHT[];
 extern const uint8_t LBM_SWIPE_CIRCLE[];
 extern const uint8_t LBM_SWIPE_LEFT[];
 extern const uint8_t LBM_SWIPE_RIGHT[];
+
+extern BitmapBuffer * modelselIconBitmap;
 
 #endif // _BITMAPS_H_
