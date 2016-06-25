@@ -521,7 +521,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   }
 #endif
 
-  static int16_t sourcesStates[NUM_STICKS+NUM_POTS];
+  static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
   if (result == 0) {
     for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
       if (abs(calibratedStick[i] - sourcesStates[i]) > 512) {
@@ -677,7 +677,7 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
   g_rotenc[idx] += inc;
   int16_t *value = &(flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
-  *value = limit((int16_t)-1024, (int16_t)(*value + (inc * 8)), (int16_t)+1024);
+  *value = limit((int16_t)-RESX, (int16_t)(*value + (inc * 8)), (int16_t)+RESX);
   storageDirty(EE_MODEL);
 }
 #endif

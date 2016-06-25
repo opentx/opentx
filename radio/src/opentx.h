@@ -1159,7 +1159,7 @@ int16_t applyLimits(uint8_t channel, int32_t value);
 
 void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
-extern int16_t calibratedStick[NUM_STICKS+NUM_POTS];
+extern int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
 
 #define FLASH_DURATION 20 /*200ms*/
 
@@ -1495,9 +1495,9 @@ union ReusableBuffer
   // 103 bytes
   struct
   {
-    int16_t midVals[NUM_STICKS+NUM_POTS];
-    int16_t loVals[NUM_STICKS+NUM_POTS];
-    int16_t hiVals[NUM_STICKS+NUM_POTS];
+    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
+    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
+    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
     uint8_t state;
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     struct {

@@ -22,10 +22,8 @@
 
 #define XPOT_DELTA                     10
 #define XPOT_DELAY                     10 /* cycles */
-#define POT_BAR_INTERVAL               20
-#define POT_BAR_BOTTOM                 200
 #define STICKS_WIDTH                   90
-#define STICKS_Y                       110
+#define STICKS_Y                       60
 #define STICK_LEFT_X                   25
 #define STICK_RIGHT_X                  (LCD_W-STICK_LEFT_X-STICKS_WIDTH)
 
@@ -36,6 +34,17 @@ enum CalibrationState {
   CALIB_STORE,
   CALIB_FINISHED
 };
+
+#define STICK_PANEL_WIDTH                   68
+
+void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
+{
+  static const BitmapBuffer * stick_background = BitmapBuffer::load(getThemePath("stick_background.png"));
+  static const BitmapBuffer * stick_pointer = BitmapBuffer::load(getThemePath("stick_pointer.png"));
+
+  lcd->drawBitmap(x, y, stick_background);
+  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, stick_pointer);
+}
 
 void drawSticks()
 {
@@ -63,12 +72,17 @@ void drawPots()
                                                                                 OPTION_SLIDER_SQUARE_BUTTON);
 }
 
+void drawMouse()
+{
+  drawStick(STICK_LEFT_X, STICKS_Y+100, calibratedStick[11], calibratedStick[12]);
+}
+
 bool menuCommonCalib(evt_t event)
 {
   drawMenuTemplate(NULL, ICON_RADIO_CALIBRATION, NULL, OPTION_MENU_NO_FOOTER);
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = anaIn(i);
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
+    int16_t vt = i<NUM_STICKS+NUM_POTS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -141,10 +155,10 @@ bool menuCommonCalib(evt_t event)
       // SET MIDPOINT
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, STR_SETMIDPOINT, MENU_TITLE_COLOR);
-      for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+      for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
-        reusableBuffer.calib.midVals[i] = anaIn(i);
+        reusableBuffer.calib.midVals[i] = i<NUM_STICKS+NUM_POTS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS);
         if (i < NUM_XPOTS) {
           reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
           reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
@@ -156,7 +170,7 @@ bool menuCommonCalib(evt_t event)
       // MOVE STICKS/POTS
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, STR_MOVESTICKSPOTS, MENU_TITLE_COLOR);
-      for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+      for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
@@ -205,8 +219,10 @@ bool menuCommonCalib(evt_t event)
   if (horus) {
     lcd->drawBitmap((LCD_W-horus->getWidth())/2, LCD_H-20-horus->getHeight(), horus);
   }
+
   drawSticks();
   drawPots();
+  drawMouse();
 
   return true;
 }

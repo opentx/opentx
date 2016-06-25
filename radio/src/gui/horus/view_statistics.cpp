@@ -160,7 +160,10 @@ bool menuStatsAnalogs(evt_t event)
     lcdDrawNumber(x+140, y, avgJitter[i].get());
     lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*250/256, PREC1);
 #else
-    lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    if (i < NUM_STICKS+NUM_POTS)
+      lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    else if (i >= MOUSE1)
+      lcdDrawNumber(x+100, y, (int16_t)calibratedStick[NUM_STICKS+NUM_POTS+i-MOUSE1]*25/256);
 #endif
   }
 

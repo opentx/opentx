@@ -42,7 +42,6 @@
 void drawStatusText(const char * text);
 void drawColumnHeader(const char * const * headers, const char * const * descriptions, uint8_t index);
 void drawTopbarDatetime();
-void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval);
 
 #define BUTTON_ON   0x10
 #define BUTTON_OFF  0x20

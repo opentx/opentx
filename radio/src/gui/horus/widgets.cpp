@@ -34,15 +34,6 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
   }
 }
 
-#include "alpha_stick_background.lbm"
-#include "alpha_stick_pointer.lbm"
-#define STICK_PANEL_WIDTH                   68
-void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
-{
-  lcd->drawBitmap(x, y, &ALPHA_STICK_BACKGROUND);
-  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, &ALPHA_STICK_POINTER);
-}
-
 #include "alpha_button_on.lbm"
 #include "alpha_button_off.lbm"
 

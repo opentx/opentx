@@ -41,7 +41,7 @@ uint8_t mixWarning;
   uint8_t startupWarningState;
 #endif
 
-int16_t calibratedStick[NUM_STICKS+NUM_POTS];
+int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
 int16_t channelOutputs[NUM_CHNOUT] = {0};
 int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain;
 
@@ -424,27 +424,19 @@ void evalInputs(uint8_t mode)
   }
 #endif
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS+NUM_ROTARY_ENCODERS; i++) {
-
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
     // normalization [0..2048] -> [-1024..1024]
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
-
-#if defined(ROTARY_ENCODERS)
-    int16_t v = ((i < NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS) ? anaIn(i) : getRotaryEncoder(i-(NUM_STICKS+NUM_POTS)));
-#else
     int16_t v = anaIn(i);
-#endif
 
 #if !defined(SIMU)
-    if (i < NUM_STICKS+NUM_POTS) {
-      if (IS_POT_MULTIPOS(i)) {
-        v -= RESX;
-      }
-      else {
-        CalibData * calib = &g_eeGeneral.calib[i];
-        v -= calib->mid;
-        v = v * (int32_t)RESX / (max((int16_t)100, (v>0 ? calib->spanPos : calib->spanNeg)));
-      }
+    if (IS_POT_MULTIPOS(i)) {
+      v -= RESX;
+    }
+    else {
+      CalibData * calib = &g_eeGeneral.calib[i];
+      v -= calib->mid;
+      v = v * (int32_t) RESX / (max((int16_t) 100, (v > 0 ? calib->spanPos : calib->spanNeg)));
     }
 #endif
 
@@ -463,35 +455,26 @@ void evalInputs(uint8_t mode)
 
     BeepANACenter mask = (BeepANACenter)1 << ch;
 
-    if (i < NUM_STICKS+NUM_POTS) {
+    calibratedStick[ch] = v; // for show in expo
 
-      calibratedStick[ch] = v; // for show in expo
-
-      // filtering for center beep
-      uint8_t tmp = (uint16_t)abs(v) / 16;
+    // filtering for center beep
+    uint8_t tmp = (uint16_t)abs(v) / 16;
 #if defined(CPUARM)
-      if (mode == e_perout_mode_normal) {
-        if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
-          anaCenter |= mask;
-          if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !calibrationState) {
-            if (!IS_POT(i) || IS_POT_AVAILABLE(i)) {
-              AUDIO_POT_MIDDLE(i);
-            }
+    if (mode == e_perout_mode_normal) {
+      if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
+        anaCenter |= mask;
+        if ((g_model.beepANACenter & mask) && !(bpanaCenter & mask) && !calibrationState) {
+          if (!IS_POT(i) || IS_POT_AVAILABLE(i)) {
+            AUDIO_POT_MIDDLE(i);
           }
         }
       }
+    }
 #else
-      if (tmp <= 1) anaCenter |= (tmp==0 ? mask : (bpanaCenter & mask));
-#endif
-    }
-#if defined(ROTARY_ENCODERS)
-    else if (i >= NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS) {
-      // rotary encoders
-      if (v == 0) anaCenter |= mask;
-    }
+    if (tmp <= 1) anaCenter |= (tmp==0 ? mask : (bpanaCenter & mask));
 #endif
 
-    if (ch < NUM_STICKS) { //only do this for sticks
+    if (ch < NUM_STICKS) { // only do this for sticks
 #if defined(VIRTUALINPUTS)
       if (mode & e_perout_mode_nosticks) {
         v = 0;
@@ -519,20 +502,40 @@ void evalInputs(uint8_t mode)
         }
       }
 
-
 #if defined(VIRTUALINPUTS)
       calibratedStick[ch] = v;
 #else
-  #if defined(HELI)
+#if defined(HELI)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
         v = (int32_t(v) * calc100toRESX(g_model.swashR.value)) / int32_t(d);
       }
-  #endif
+#endif
       rawAnas[ch] = v;
       anas[ch] = v; // set values for mixer
 #endif
     }
   }
+
+#if defined(ROTARY_ENCODERS)
+  for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
+    if (getRotaryEncoder(i) == 0) {
+      anaCenter |= ((BeepANACenter)1 << (NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS+i));
+    }
+  }
+#endif
+
+#if NUM_MOUSE_ANALOGS > 0
+  for (uint8_t i=0; i<NUM_MOUSE_ANALOGS; i++) {
+    uint8_t ch = NUM_STICKS+NUM_POTS+i;
+    int16_t v = anaIn(MOUSE1+i);
+    CalibData * calib = &g_eeGeneral.calib[ch];
+    v -= calib->mid;
+    v = v * (int32_t) RESX / (max((int16_t) 100, (v > 0 ? calib->spanPos : calib->spanNeg)));
+    if (v < -RESX) v = -RESX;
+    if (v >  RESX) v =  RESX;
+    calibratedStick[ch] = v;
+  }
+#endif
 
   /* EXPOs */
   applyExpos(anas, mode);

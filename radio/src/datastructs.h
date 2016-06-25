@@ -983,7 +983,7 @@ PACK(struct TrainerData {
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
-  CalibData calib[NUM_STICKS+NUM_POTS];
+  CalibData calib[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
   NOBACKUP(uint16_t chkSum);
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -1103,7 +1103,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 7);
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
-  CHKSIZE(RadioData, 835);
+  CHKSIZE(RadioData, 847);
   CHKSIZE(ModelData, 9380);
 
 #elif defined(PCBSKY9X)
