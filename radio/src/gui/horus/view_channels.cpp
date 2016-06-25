@@ -109,11 +109,15 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
 
   strAppend(strAppendSigned(chanString, chanVal), "%");
-  if (chanVal > 0) lcdDrawText(x - 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
-  else lcdDrawText(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR);
+  if (chanVal > 0)
+    lcdDrawText(x - 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+  else
+    lcdDrawText(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR);
 
-  if (chanVal < -limits / 2) chanVal = -limits / 2;
-  else if (chanVal > limits / 2) chanVal = limits / 2;
+  if (chanVal < -limits / 2)
+    chanVal = -limits / 2;
+  else if (chanVal > limits / 2)
+    chanVal = limits / 2;
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
     lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, BARGRAPH1_COLOR);
   }
