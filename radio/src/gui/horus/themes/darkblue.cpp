@@ -34,6 +34,7 @@ class DarkblueTheme: public Theme
       lcdColorTable[TEXT_BGCOLOR_INDEX] = RGB(10, 78, 121);
       lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RGB(32, 34, 42);
+      lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
@@ -55,6 +56,9 @@ class DarkblueTheme: public Theme
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = BLACK;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RGB(10, 78, 121);
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
+      lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
+      lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(167, 167, 167);
+      lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(222, 222, 222);
     }
 
     void loadMenuIcon(uint8_t index, const char * filename) const

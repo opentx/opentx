@@ -847,7 +847,8 @@
 #define TR_MONITOR_CHANNELS3   "VOIES 17-24"
 #define TR_MONITOR_CHANNELS4   "VOIES 25-32"
 #define TR_MONITOR_SWITCHES    "INTERS LOGIQUES"
-#define TR_MONITOR_CHANNELS_DESC "RED : Outputs, GREEN : Mixers"
+#define TR_MONITOR_OUTPUT_DESC "Outputs"
+#define TR_MONITOR_MIXER_DESC  "Mixers"
 #if defined(CPUARM)
   #define TR_RECEIVER_NUM      TR(INDENT "NumRx", INDENT "No. récepteur")
   #define TR_RECEIVER          INDENT "Récepteur"

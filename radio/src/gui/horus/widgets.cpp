@@ -23,7 +23,7 @@
 
 void drawStatusText(const char * text)
 {
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, text, MENU_TITLE_COLOR); // TODO dedicated theme color
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, text, TEXT_STATUSBAR_COLOR);
 }
 
 void drawColumnHeader(const char * const * headers, const char * const * descriptions, uint8_t index)
