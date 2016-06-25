@@ -146,7 +146,7 @@ coord_t drawChannelsMonitorLegend(coord_t x, const pm_char * s, int color)
 bool menuChannelsMonitor(evt_t event, uint8_t page)
 {
   uint8_t channel = 8 * page;
-  coord_t x = X_OFFSET, y = Y_OFFSET;
+  coord_t x, y = Y_OFFSET;
 
   x = drawChannelsMonitorLegend(MENUS_MARGIN_LEFT, STR_MONITOR_OUTPUT_DESC, BARGRAPH1_COLOR);
   drawChannelsMonitorLegend(x, STR_MONITOR_MIXER_DESC, BARGRAPH2_COLOR);
