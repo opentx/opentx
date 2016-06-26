@@ -106,10 +106,7 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 
   lcdDrawSizedText(x + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
   int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
-  strAppendSigned(chanString, usValue);
-  if (usValue < 1000) strAppend(&chanString[3], STR_US);
-  else strAppend(&chanString[4], STR_US);
-  lcdDrawText(x + COLUMN_SIZE, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+  lcdDrawNumber(x + COLUMN_SIZE, y, usValue, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, STR_US);
 
   lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
   lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
