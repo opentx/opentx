@@ -56,6 +56,16 @@ uint16_t posOnBar(int16_t value_to100)
   return divRoundClosest((value_to100 + (g_model.extendedLimits ? 150 : 100)) * COLUMN_SIZE, (g_model.extendedLimits ? 150 : 100) * 2);
 }
 
+void drawOutputBarLimits(coord_t left, coord_t right, coord_t y)
+{
+  lcd->drawSolidVerticalLine(left, y, BAR_HEIGHT, TEXT_COLOR);
+  lcd->drawSolidHorizontalLine(left, y, 3, TEXT_COLOR);
+  lcd->drawSolidHorizontalLine(left, y + BAR_HEIGHT - 1, 3, TEXT_COLOR);
+
+  lcd->drawSolidVerticalLine(--right, y, BAR_HEIGHT, TEXT_COLOR);
+  lcd->drawSolidHorizontalLine(right - 3, y, 3, TEXT_COLOR);
+  lcd->drawSolidHorizontalLine(right - 3, y + BAR_HEIGHT - 1, 3, TEXT_COLOR);
+}
 
 void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
 {
@@ -102,10 +112,6 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   lcdDrawText(x + COLUMN_SIZE, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
 
   lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
-
-  lcdDrawText(x + posOnBar(-100 + ld->min / 10) + 2, y + Y_OUTBAR, "]", TINSIZE | TEXT_COLOR | RIGHT);
-  lcdDrawText(x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR, "[", TINSIZE | TEXT_COLOR);
-
   lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
 
   strAppend(strAppendSigned(chanString, chanVal), "%");
@@ -114,10 +120,7 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   else
     lcdDrawText(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR);
 
-  if (chanVal < -limits / 2)
-    chanVal = -limits / 2;
-  else if (chanVal > limits / 2)
-    chanVal = limits / 2;
+  chanVal = limit<int16_t>(-limits / 2, chanVal, limits / 2);
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
     lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, BARGRAPH1_COLOR);
   }
@@ -127,6 +130,7 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
     lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, BARGRAPH1_COLOR);
   }
 
+  drawOutputBarLimits(x + posOnBar(-100 + ld->min / 10), x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR);
   if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x - X_OFFSET + 7, y + 7, locked_bmp);
   if (ld->revert) lcd->drawBitmap(x - X_OFFSET + 7, y + 25, inver_bmp);
   lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y + Y_OUTBAR, BAR_HEIGHT, TEXT_COLOR);
