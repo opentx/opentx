@@ -69,23 +69,21 @@ void drawOutputBarLimits(coord_t left, coord_t right, coord_t y)
 
 void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
 {
-  char chanString[] = "-500%";
   int16_t chanVal = calcRESXto100(ex_chans[chan]);
   int16_t displayVal = chanVal;
 
   chanVal = limit<int16_t>(-100, chanVal, 100);
-  strAppend(strAppendSigned(chanString, displayVal), "%");
-
+  
   lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
     lcdDrawSolidFilledRect(x + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, BARGRAPH2_COLOR);
-    lcdDrawText(x - 10 + COLUMN_SIZE / 2, y, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+    lcdDrawNumber(x - 10 + COLUMN_SIZE / 2, y, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
     uint16_t endpoint = x + COLUMN_SIZE / 2;
     uint16_t size = divRoundClosest(-chanVal * COLUMN_SIZE, 200);
     lcdDrawSolidFilledRect(endpoint - size, y, size, BAR_HEIGHT, BARGRAPH2_COLOR);
-    lcdDrawText(x + 10 + COLUMN_SIZE / 2, y, chanString, SMLSIZE | TEXT_COLOR);
+    lcdDrawNumber(x + 10 + COLUMN_SIZE / 2, y, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
   }
 
   lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y, BAR_HEIGHT, TEXT_COLOR);
@@ -93,7 +91,7 @@ void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
 
 void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 {
-  char chanString[] = "Ch32  ";
+  char chanString[] = "Ch32 ";
   uint16_t limits = (g_model.extendedLimits ? 300 : 200);
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
@@ -111,11 +109,10 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
   lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
   lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
 
-  strAppend(strAppendSigned(chanString, chanVal), "%");
   if (chanVal > 0)
-    lcdDrawText(x - 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+    lcdDrawNumber(x - 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   else
-    lcdDrawText(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanString, SMLSIZE | TEXT_COLOR);
+    lcdDrawNumber(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
 
   chanVal = limit<int16_t>(-limits / 2, chanVal, limits / 2);
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
