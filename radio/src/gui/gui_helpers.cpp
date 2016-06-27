@@ -230,6 +230,11 @@ bool isInputSourceAvailable(int source)
 
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
+    
+  if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
+    return (cs->func != LS_FUNC_NONE);
+  }
 
   if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
     return true;
