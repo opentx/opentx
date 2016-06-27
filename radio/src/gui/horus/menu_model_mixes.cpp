@@ -332,7 +332,10 @@ void displayMixLine(coord_t y, MixData *md)
 
 BitmapBuffer * displayMixConvertMask(const BitmapBuffer * source)
 {
-  static BitmapBuffer * dest = new BitmapBuffer(BMP_RGB565, source->getWidth(), source->getHeight());
+  static BitmapBuffer * dest;
+  
+  delete dest;
+  dest = new BitmapBuffer(BMP_RGB565, source->getWidth(), source->getHeight());
   dest->clear(HEADER_BGCOLOR);
   dest->drawMask(0, 0, (BitmapBuffer *) source, MENU_TITLE_COLOR);
   return dest;
@@ -348,12 +351,13 @@ void displayMixStatus(uint8_t channel)
   drawStatusText(chanString);
   drawSingleMixerBar(MENUS_MARGIN_LEFT + 45, MENU_FOOTER_TOP + 4, 140, 13, channel);
 
-  lcd->drawBitmap(MENUS_MARGIN_LEFT + 220, MENU_FOOTER_TOP, displayMixConvertMask(output_mask));
   lcd->drawBitmap(MENUS_MARGIN_LEFT + 205, MENU_FOOTER_TOP, displayMixConvertMask(to_mask));
+  lcd->drawBitmap(MENUS_MARGIN_LEFT + 220, MENU_FOOTER_TOP, displayMixConvertMask(output_mask));
+
 
   lcdDrawSizedText(MENUS_MARGIN_LEFT + 244, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
   
-  drawSingleOutputBar(MENUS_MARGIN_LEFT + 320, MENU_FOOTER_TOP + 4, 120, 13, channel);
+  drawSingleOutputBar(MENUS_MARGIN_LEFT + 320, MENU_FOOTER_TOP + 4, 140, 13, channel);
 }
 
 bool menuModelMixAll(evt_t event)
