@@ -272,7 +272,7 @@ bool menuModelMixOne(evt_t event)
 
 #define MIX_LINE_WEIGHT_POS     110
 #define MIX_LINE_SRC_POS        115
-#define MIX_LINE_CURVE_POS      162
+#define MIX_LINE_CURVE_POS      165
 #define MIX_LINE_SWITCH_POS     210
 #define MIX_LINE_DELAY_POS      255
 #define MIX_LINE_FM_POS         270
@@ -354,10 +354,8 @@ void displayMixStatus(uint8_t channel)
   static const BitmapBuffer * mixer_mask = BitmapBuffer::loadMask(getThemePath("mask_sbar_mixer.png"));
   static const BitmapBuffer * to_mask = BitmapBuffer::loadMask(getThemePath("mask_sbar_to.png"));
   static const BitmapBuffer * output_mask = BitmapBuffer::loadMask(getThemePath("mask_sbar_output.png")); 
-  char chanString[] = "Ch32 ";
   
-  strAppendSigned(&chanString[2], channel + 1, 2);
-  drawStatusText(chanString);
+  lcdDrawNumber(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, channel + 1, MENU_TITLE_COLOR, 0, "CH", NULL);
   drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
   lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, displayMixConvertMask(mixer_mask));
@@ -520,7 +518,7 @@ bool menuModelMixAll(evt_t event)
         }
         else if (sub == cur) {
           s_currIdx = i;
-          displayMixStatus(i);
+          displayMixStatus(ch - 1);
         }
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
