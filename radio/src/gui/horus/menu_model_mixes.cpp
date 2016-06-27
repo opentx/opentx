@@ -281,11 +281,12 @@ bool menuModelMixOne(evt_t event)
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
 #define MIX_STATUS_MARGIN_LEFT  MENUS_MARGIN_LEFT + 45
+#define MIX_STATUS_ICON_MIXER   MENUS_MARGIN_LEFT + 185
 #define MIX_STATUS_ICON_TO      MENUS_MARGIN_LEFT + 205
-#define MIX_STATUS_ICON_OUTPUT  MENUS_MARGIN_LEFT + 220
-#define MIX_STATUS_OUT_NAME     MENUS_MARGIN_LEFT + 245
+#define MIX_STATUS_ICON_OUTPUT  MENUS_MARGIN_LEFT + 240
+#define MIX_STATUS_OUT_NAME     MENUS_MARGIN_LEFT + 265
 #define MIX_STATUS_OUT_BAR      MENUS_MARGIN_LEFT + 320
-#define MIX_STATUS_BAR_W        140
+#define MIX_STATUS_BAR_W        130
 #define MIX_STATUS_BAR_H        13
 
 void lineMixSurround(coord_t y, LcdFlags flags=CURVE_AXIS_COLOR)
@@ -350,6 +351,7 @@ BitmapBuffer * displayMixConvertMask(const BitmapBuffer * source)
 
 void displayMixStatus(uint8_t channel)
 {
+  static const BitmapBuffer * mixer_mask = BitmapBuffer::loadMask(getThemePath("mask_sbar_mixer.png"));
   static const BitmapBuffer * to_mask = BitmapBuffer::loadMask(getThemePath("mask_sbar_to.png"));
   static const BitmapBuffer * output_mask = BitmapBuffer::loadMask(getThemePath("mask_sbar_output.png")); 
   char chanString[] = "Ch32 ";
@@ -358,6 +360,7 @@ void displayMixStatus(uint8_t channel)
   drawStatusText(chanString);
   drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
+  lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, displayMixConvertMask(mixer_mask));
   lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, displayMixConvertMask(to_mask));
   lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, displayMixConvertMask(output_mask));
 
