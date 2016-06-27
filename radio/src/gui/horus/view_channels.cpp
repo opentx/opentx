@@ -67,29 +67,50 @@ void drawOutputBarLimits(coord_t left, coord_t right, coord_t y)
   lcd->drawSolidHorizontalLine(right - 3, y + BAR_HEIGHT - 1, 3, TEXT_COLOR);
 }
 
-void drawSingleMixerBar(coord_t x, coord_t y, uint8_t chan)
+void drawSingleMixerBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
 {
-  int16_t chanVal = calcRESXto100(ex_chans[chan]);
+  int16_t chanVal = calcRESXto100(ex_chans[channel]);
+  int16_t displayVal = chanVal;
+  chanVal = limit<int16_t>(-100, chanVal, 100);
+  
+  lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
+  if (chanVal > 0) {
+    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200),h, BARGRAPH2_COLOR);
+    lcdDrawNumber(x - 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+  }
+  else if (chanVal < 0) {
+    uint16_t endpoint = x + w / 2;
+    uint16_t size = divRoundClosest(-chanVal * w, 200);
+    lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH2_COLOR);
+    lcdDrawNumber(x + 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+  }
+
+  lcd->drawSolidVerticalLine(x + w / 2, y, h, TEXT_COLOR);
+}
+
+void drawSingleOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
+{
+  int16_t chanVal = calcRESXto100(channelOutputs[channel]);  
   int16_t displayVal = chanVal;
 
   chanVal = limit<int16_t>(-100, chanVal, 100);
   
-  lcdDrawSolidFilledRect(x, y, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
+  lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + COLUMN_SIZE / 2, y, divRoundClosest(chanVal * COLUMN_SIZE, 200), BAR_HEIGHT, BARGRAPH2_COLOR);
-    lcdDrawNumber(x - 10 + COLUMN_SIZE / 2, y, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200),h, BARGRAPH1_COLOR);
+    lcdDrawNumber(x - 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
-    uint16_t endpoint = x + COLUMN_SIZE / 2;
-    uint16_t size = divRoundClosest(-chanVal * COLUMN_SIZE, 200);
-    lcdDrawSolidFilledRect(endpoint - size, y, size, BAR_HEIGHT, BARGRAPH2_COLOR);
-    lcdDrawNumber(x + 10 + COLUMN_SIZE / 2, y, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    uint16_t endpoint = x + w / 2;
+    uint16_t size = divRoundClosest(-chanVal * w, 200);
+    lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH1_COLOR);
+    lcdDrawNumber(x + 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
   }
 
-  lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y, BAR_HEIGHT, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(x + w / 2, y, h, TEXT_COLOR);
 }
 
-void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
+void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
 {
   char chanString[] = "Ch32 ";
   uint16_t limits = (g_model.extendedLimits ? 300 : 200);
@@ -104,30 +125,30 @@ void drawSingleOutputBar(coord_t x, coord_t y, uint8_t channel)
 
   lcdDrawSizedText(x + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
   int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
-  lcdDrawNumber(x + COLUMN_SIZE, y, usValue, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, STR_US);
+  lcdDrawNumber(x + w, y, usValue, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, STR_US);
 
-  lcdDrawSolidFilledRect(x, y + Y_OUTBAR, COLUMN_SIZE, BAR_HEIGHT, BARGRAPH_BGCOLOR);
-  lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, BAR_HEIGHT, MAINVIEW_GRAPHICS_COLOR);
+  lcdDrawSolidFilledRect(x, y + Y_OUTBAR, w, h, BARGRAPH_BGCOLOR);
+  lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, h, MAINVIEW_GRAPHICS_COLOR);
 
   if (chanVal > 0)
-    lcdDrawNumber(x - 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawNumber(x - 10 + w / 2, y + h, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   else
-    lcdDrawNumber(x + 10 + COLUMN_SIZE / 2, y + BAR_HEIGHT, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    lcdDrawNumber(x + 10 + w / 2, y + h, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
 
   chanVal = limit<int16_t>(-limits / 2, chanVal, limits / 2);
   if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
-    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), BAR_HEIGHT, BARGRAPH1_COLOR);
+    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), h, BARGRAPH1_COLOR);
   }
   else if (posOnBar(chanVal) < posOnBar(calcRESXto100(ld->offset))) {
     uint16_t endpoint = x + posOnBar(calcRESXto100(ld->offset));
     uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
-    lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, BAR_HEIGHT, BARGRAPH1_COLOR);
+    lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, h, BARGRAPH1_COLOR);
   }
 
   drawOutputBarLimits(x + posOnBar(-100 + ld->min / 10), x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR);
   if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x - X_OFFSET + 7, y + 7, locked_bmp);
   if (ld->revert) lcd->drawBitmap(x - X_OFFSET + 7, y + 25, inver_bmp);
-  lcd->drawSolidVerticalLine(x + COLUMN_SIZE / 2, y + Y_OUTBAR, BAR_HEIGHT, TEXT_COLOR);
+  lcd->drawSolidVerticalLine(x + w / 2, y + Y_OUTBAR, h, TEXT_COLOR);
 }
 
 coord_t drawChannelsMonitorLegend(coord_t x, const pm_char * s, int color)
@@ -148,14 +169,14 @@ bool menuChannelsMonitor(evt_t event, uint8_t page)
 
   x = X_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
-    drawSingleOutputBar(x, y, channel);
-    drawSingleMixerBar(x, y + Y_MIXBAR + 1, channel);
+    drawComboOutputBar(x, y, COLUMN_SIZE, BAR_HEIGHT, channel);
+    drawSingleMixerBar(x, y + Y_MIXBAR + 1, COLUMN_SIZE, BAR_HEIGHT, channel);
   }
   x = 1 + LCD_W / 2 + X_OFFSET;
   y = Y_OFFSET;
   for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
-    drawSingleOutputBar(x, y, channel);
-    drawSingleMixerBar(x, y + Y_MIXBAR + 1, channel);
+    drawComboOutputBar(x, y, COLUMN_SIZE, BAR_HEIGHT, channel);
+    drawSingleMixerBar(x, y + Y_MIXBAR + 1, COLUMN_SIZE, BAR_HEIGHT, channel);
   }
   return true;
 }

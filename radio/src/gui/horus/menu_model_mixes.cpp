@@ -330,6 +330,16 @@ void displayMixLine(coord_t y, MixData *md)
   displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes, 0);
 }
 
+void displayMixStatus(uint8_t channel)
+{
+  char chanString[] = "Ch32 ";
+  
+  strAppendSigned(&chanString[2], channel + 1, 2);
+  drawStatusText(chanString);
+  drawSingleMixerBar(MENUS_MARGIN_LEFT + 45, MENU_FOOTER_TOP + 4, 120, 13, channel);
+  drawSingleOutputBar(MENUS_MARGIN_LEFT + 320, MENU_FOOTER_TOP + 4, 120, 13, channel);
+}
+
 bool menuModelMixAll(evt_t event)
 {
   int sub = menuVerticalPosition;
@@ -482,6 +492,7 @@ bool menuModelMixAll(evt_t event)
         }
         else if (sub == cur) {
           s_currIdx = i;
+          displayMixStatus(i);
         }
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
