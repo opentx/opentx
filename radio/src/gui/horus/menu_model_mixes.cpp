@@ -280,6 +280,13 @@ bool menuModelMixOne(evt_t event)
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
+#define MIX_STATUS_MARGIN_LEFT  MENUS_MARGIN_LEFT + 45
+#define MIX_STATUS_ICON_TO      MENUS_MARGIN_LEFT + 205
+#define MIX_STATUS_ICON_OUTPUT  MENUS_MARGIN_LEFT + 220
+#define MIX_STATUS_OUT_NAME     MENUS_MARGIN_LEFT + 245
+#define MIX_STATUS_OUT_BAR      MENUS_MARGIN_LEFT + 320
+#define MIX_STATUS_BAR_W        140
+#define MIX_STATUS_BAR_H        13
 
 void lineMixSurround(coord_t y, LcdFlags flags=CURVE_AXIS_COLOR)
 {
@@ -349,15 +356,13 @@ void displayMixStatus(uint8_t channel)
   
   strAppendSigned(&chanString[2], channel + 1, 2);
   drawStatusText(chanString);
-  drawSingleMixerBar(MENUS_MARGIN_LEFT + 45, MENU_FOOTER_TOP + 4, 140, 13, channel);
+  drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
-  lcd->drawBitmap(MENUS_MARGIN_LEFT + 205, MENU_FOOTER_TOP, displayMixConvertMask(to_mask));
-  lcd->drawBitmap(MENUS_MARGIN_LEFT + 220, MENU_FOOTER_TOP, displayMixConvertMask(output_mask));
+  lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, displayMixConvertMask(to_mask));
+  lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, displayMixConvertMask(output_mask));
 
-
-  lcdDrawSizedText(MENUS_MARGIN_LEFT + 244, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
-  
-  drawSingleOutputBar(MENUS_MARGIN_LEFT + 320, MENU_FOOTER_TOP + 4, 140, 13, channel);
+  lcdDrawSizedText(MIX_STATUS_OUT_NAME, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
+  drawSingleOutputBar(MIX_STATUS_OUT_BAR, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 }
 
 bool menuModelMixAll(evt_t event)
