@@ -37,26 +37,25 @@ enum CalibrationState {
 
 #define STICK_PANEL_WIDTH                   68
 
-void drawStick(coord_t x, coord_t y, int16_t xval, int16_t yval)
+void drawStick(coord_t x, coord_t y, const BitmapBuffer * background, int16_t xval, int16_t yval)
 {
-  static const BitmapBuffer * stick_background = BitmapBuffer::load(getThemePath("stick_background.png"));
-  static const BitmapBuffer * stick_pointer = BitmapBuffer::load(getThemePath("stick_pointer.png"));
-
-  lcd->drawBitmap(x, y, stick_background);
-  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, stick_pointer);
+  static const BitmapBuffer * stick = BitmapBuffer::load(getThemePath("stick_pointer.png"));
+  lcd->drawBitmap(x, y, background);
+  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, stick);
 }
 
 void drawSticks()
 {
+  static const BitmapBuffer * background = BitmapBuffer::load(getThemePath("stick_background.png"));
   int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
   if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(STICK_LEFT_X, STICKS_Y, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+  drawStick(STICK_LEFT_X, STICKS_Y, background, calibratedStick[CONVERT_MODE(0)], calibStickVert);
 
   calibStickVert = calibratedStick[CONVERT_MODE(2)];
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(STICK_RIGHT_X, STICKS_Y, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+  drawStick(STICK_RIGHT_X, STICKS_Y, background, calibratedStick[CONVERT_MODE(3)], calibStickVert);
 }
 
 void drawPots()
@@ -74,7 +73,8 @@ void drawPots()
 
 void drawMouse()
 {
-  drawStick(STICK_LEFT_X, STICKS_Y+100, calibratedStick[11], calibratedStick[12]);
+  static const BitmapBuffer * background = BitmapBuffer::load(getThemePath("trackp_background.png"));
+  drawStick(STICK_LEFT_X, STICKS_Y+100, background, calibratedStick[11], calibratedStick[12]);
 }
 
 bool menuCommonCalib(evt_t event)
