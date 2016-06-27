@@ -10,6 +10,7 @@
 <li>Fixed several bugs in curve preset function (<a href=https://github.com/opentx/opentx/issues/3451>#3451</a>)</li>
 <li>Fixed flight modes rotary encoders initialization when creating new model (only for radios with rotary encoders) (<a href=https://github.com/opentx/opentx/issues/3473>#3473</a>)</li>
 <li>Fixed: show value of persistent sensor after power on, before the telemetry is received (<a href=https://github.com/opentx/opentx/issues/3595>#3595</a>)</li>
+<li>Fixed: LSs weren't selectable as input source (<a href=https://github.com/opentx/opentx/issues/3632>#3632>/a>)</li>
 </ul>
 
 
