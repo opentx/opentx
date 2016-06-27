@@ -95,7 +95,7 @@ def ParsePacket(packet):
     crc = packet[-1]
     for id, parser in parsers:
         if id == command:
-            print("(%d)" % lineNumber, dump(packet), parser(payload))
+            print("[%s]" % timeData, dump(packet), parser(payload))
             return
     print("(%d)" % lineNumber, dump(packet))
 
@@ -146,6 +146,7 @@ while True:
     if len(parts) < 2:
         print("weird data: \"%s\" at line %d" % (line, lineNumber))
         continue
+    timeData = parts[0].strip()
     crossfireData = parts[1].strip()
     # print "sd: %s" % sportData
     ParseData(crossfireData)
