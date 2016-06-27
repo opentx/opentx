@@ -72,17 +72,17 @@ void drawSingleMixerBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   int16_t chanVal = calcRESXto100(ex_chans[channel]);
   int16_t displayVal = chanVal;
   chanVal = limit<int16_t>(-100, chanVal, 100);
-  
+
   lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200),h, BARGRAPH2_COLOR);
-    lcdDrawNumber(x - 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200), h, BARGRAPH2_COLOR);
+    lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
     uint16_t endpoint = x + w / 2;
     uint16_t size = divRoundClosest(-chanVal * w, 200);
     lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH2_COLOR);
-    lcdDrawNumber(x + 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
   }
 
   lcd->drawSolidVerticalLine(x + w / 2, y, h, TEXT_COLOR);
@@ -90,21 +90,21 @@ void drawSingleMixerBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
 
 void drawSingleOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
 {
-  int16_t chanVal = calcRESXto100(channelOutputs[channel]);  
+  int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   int16_t displayVal = chanVal;
 
   chanVal = limit<int16_t>(-100, chanVal, 100);
-  
+
   lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200),h, BARGRAPH1_COLOR);
-    lcdDrawNumber(x - 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200), h, BARGRAPH1_COLOR);
+    lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
     uint16_t endpoint = x + w / 2;
     uint16_t size = divRoundClosest(-chanVal * w, 200);
     lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH1_COLOR);
-    lcdDrawNumber(x + 10 + w / 2, y, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
+    lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
   }
 
   lcd->drawSolidVerticalLine(x + w / 2, y, h, TEXT_COLOR);
