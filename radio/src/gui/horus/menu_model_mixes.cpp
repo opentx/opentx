@@ -273,10 +273,10 @@ bool menuModelMixOne(evt_t event)
 #define MIX_LINE_WEIGHT_POS     110
 #define MIX_LINE_SRC_POS        115
 #define MIX_LINE_CURVE_POS      165
-#define MIX_LINE_SWITCH_POS     210
-#define MIX_LINE_DELAY_POS      255
-#define MIX_LINE_FM_POS         270
-#define MIX_LINE_NAME_POS       384
+#define MIX_LINE_SWITCH_POS     230
+#define MIX_LINE_DELAY_POS      270
+#define MIX_LINE_FM_POS         300
+#define MIX_LINE_NAME_POS       410
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
