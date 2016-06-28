@@ -183,7 +183,7 @@ void writeHeader()
     f_putc(',', &g_oLogFile);
   }
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
-  f_puts(STR_SWITCHES_LOG_HEADER ",LS" "\n", &g_oLogFile);
+  f_puts(STR_SWITCHES_LOG_HEADER ",LSW" "\n", &g_oLogFile);
 #else
   f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN\n", &g_oLogFile);
 #endif
@@ -332,7 +332,7 @@ void writeLogs()
           get2PosState(SE),
           get3PosState(SF));
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
-      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,%lu%lu\n",
+      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X\n",
           get3PosState(SA),
           get3PosState(SB),
           get3PosState(SC),
