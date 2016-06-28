@@ -239,46 +239,53 @@ class ModelsList
       }
     }
 
-  ModelsCategory * createCategory()
-  {
-    ModelsCategory * result = new ModelsCategory("Category");
-    categories.push_back(result);
-    save();
-    return result;
-  }
+    ModelsCategory * createCategory()
+    {
+      ModelsCategory * result = new ModelsCategory("Category");
+      categories.push_back(result);
+      save();
+      return result;
+    }
 
-  ModelCell * addModel(ModelsCategory * category, const char * name)
-  {
-    ModelCell * result = category->addModel(name);
-    modelsCount++;
-    save();
-    return result;
-  }
+    ModelCell * addModel(ModelsCategory * category, const char * name)
+    {
+      ModelCell * result = category->addModel(name);
+      modelsCount++;
+      save();
+      return result;
+    }
 
-  void removeCategory(ModelsCategory * category)
-  {
-    modelsCount -= category->size();
-    delete category;
-    categories.remove(category);
-  }
+    void removeCategory(ModelsCategory * category)
+    {
+      modelsCount -= category->size();
+      delete category;
+      categories.remove(category);
+    }
 
-  void removeModel(ModelsCategory * category, ModelCell * model)
-  {
-    category->removeModel(model);
-    modelsCount--;
-    save();
-  }
+    void removeModel(ModelsCategory * category, ModelCell * model)
+    {
+      category->removeModel(model);
+      modelsCount--;
+      save();
+    }
 
-  void moveModel(ModelsCategory * category, ModelCell * model, int8_t step)
-  {
-    category->moveModel(model, step);
-    save();
-  }
+    void moveModel(ModelsCategory * category, ModelCell * model, int8_t step)
+    {
+      category->moveModel(model, step);
+      save();
+    }
 
-  std::list<ModelsCategory *> categories;
-  ModelsCategory * currentCategory;
-  ModelCell * currentModel;
-  unsigned int modelsCount;
+    void moveModel(ModelCell * model, ModelsCategory * previous_category, ModelsCategory * new_category)
+    {
+      previous_category->remove(model);
+      new_category->push_back(model);
+      save();
+    }
+
+    std::list<ModelsCategory *> categories;
+    ModelsCategory * currentCategory;
+    ModelCell * currentModel;
+    unsigned int modelsCount;
 
   protected:
     FIL file;

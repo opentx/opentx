@@ -203,6 +203,11 @@ bool menuModelSelect(evt_t event)
       initModelsList();
       break;
 
+    case EVT_KEY_BREAK(KEY_ENTER):
+      if (selectMode == MODE_MOVE_MODEL)
+        selectMode = MODE_SELECT_MODEL;
+      break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       switch (selectMode) {
         case MODE_MOVE_MODEL:
@@ -215,33 +220,39 @@ bool menuModelSelect(evt_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_PGUP):
-      if (categoriesVerticalPosition == 0)
-        categoriesVerticalPosition = modelslist.categories.size() - 1;
-      else
+      if (selectMode == MODE_SELECT_MODEL) {
+        if (categoriesVerticalPosition == 0)
+          categoriesVerticalPosition = modelslist.categories.size() - 1;
+        else
+          categoriesVerticalPosition -= 1;
+        setCurrentCategory(categoriesVerticalPosition);
+      }
+      else if (selectMode == MODE_MOVE_MODEL && categoriesVerticalPosition > 0) {
+        ModelsCategory * previous_category = currentCategory;
+        ModelCell * model = currentModel;
         categoriesVerticalPosition -= 1;
-      setCurrentCategory(categoriesVerticalPosition);
-      putEvent(EVT_REFRESH);
+        setCurrentCategory(categoriesVerticalPosition);
+        modelslist.moveModel(model, previous_category, currentCategory);
+        setCurrentModel(currentCategory->size()-1);
+      }
       break;
 
     case EVT_KEY_FIRST(KEY_PGDN):
-      categoriesVerticalPosition += 1;
-      if (categoriesVerticalPosition >= modelslist.categories.size())
-        categoriesVerticalPosition = 0;
-      setCurrentCategory(categoriesVerticalPosition);
-      putEvent(EVT_REFRESH);
+      if (selectMode == MODE_SELECT_MODEL) {
+        categoriesVerticalPosition += 1;
+        if (categoriesVerticalPosition >= modelslist.categories.size())
+          categoriesVerticalPosition = 0;
+        setCurrentCategory(categoriesVerticalPosition);
+      }
+      else if (selectMode == MODE_MOVE_MODEL && categoriesVerticalPosition < modelslist.categories.size()-1) {
+        ModelsCategory * previous_category = currentCategory;
+        ModelCell * model = currentModel;
+        categoriesVerticalPosition += 1;
+        setCurrentCategory(categoriesVerticalPosition);
+        modelslist.moveModel(model, previous_category, currentCategory);
+        setCurrentModel(currentCategory->size()-1);
+      }
       break;
-
-
-      /*if (selectMode == MODE_SELECT_CATEGORY) {
-        menuVerticalPosition = categoriesVerticalPosition;
-        menuVerticalOffset = categoriesVerticalOffset;
-        if (navigate(event, modelslist.categories.size(), 10)) {
-          categoriesVerticalPosition = menuVerticalPosition;
-          categoriesVerticalOffset = menuVerticalOffset;
-          putEvent(EVT_REFRESH);
-          setCurrentCategory(categoriesVerticalPosition);
-        }
-      }*/
 
     case EVT_KEY_LONG(KEY_ENTER):
       if (selectMode == MODE_SELECT_MODEL) {
