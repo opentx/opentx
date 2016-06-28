@@ -183,10 +183,12 @@ void writeHeader()
     f_putc(',', &g_oLogFile);
   }
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
-  f_puts(STR_SWITCHES_LOG_HEADER ",LSW" "\n", &g_oLogFile);
+  f_puts(STR_SWITCHES_LOG_HEADER ",LSW,", &g_oLogFile);
 #else
-  f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN\n", &g_oLogFile);
+  f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN,", &g_oLogFile);
 #endif
+
+  f_puts("TxBat(V)\n", &g_oLogFile);
 }
 
 uint32_t getLogicalSwitchesStates(uint8_t first)
@@ -325,14 +327,14 @@ void writeLogs()
       }
 
 #if defined(PCBFLAMENCO)
-      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d\n",
+      f_printf(&g_oLogFile, "%d,%d,%d,%d,",
           get3PosState(SA),
           get3PosState(SB),
           // get3PosState(SC),
           get2PosState(SE),
           get3PosState(SF));
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
-      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X\n",
+      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X,",
           get3PosState(SA),
           get3PosState(SB),
           get3PosState(SC),
@@ -344,7 +346,7 @@ void writeLogs()
           getLogicalSwitchesStates(32),
           getLogicalSwitchesStates(0));
 #else
-      int result = f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d\n",
+      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,",
           get2PosState(THR),
           get2PosState(RUD),
           get2PosState(ELE),
@@ -353,6 +355,9 @@ void writeLogs()
           get2PosState(GEA),
           get2PosState(TRN));
 #endif
+
+      div_t qr = div(g_vbat100mV, 10);
+      int result = f_printf(&g_oLogFile, "%d.%d\n", abs(qr.quot), abs(qr.rem));
 
       if (result<0 && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
