@@ -275,8 +275,8 @@ bool menuModelMixOne(evt_t event)
 #define MIX_LINE_CURVE_POS      165
 #define MIX_LINE_SWITCH_POS     230
 #define MIX_LINE_DELAY_POS      270
-#define MIX_LINE_FM_POS         300
-#define MIX_LINE_NAME_POS       410
+#define MIX_LINE_FM_POS         290
+#define MIX_LINE_NAME_POS       405
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
@@ -338,14 +338,14 @@ void displayMixLine(coord_t y, MixData *md)
   displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes, 0);
 }
 
-BitmapBuffer * displayMixConvertMask(const BitmapBuffer * source)
+BitmapBuffer * displayMixConvertMask(const BitmapBuffer * source, int color, int bgcolor)
 {
   static BitmapBuffer * dest;
   
   delete dest;
   dest = new BitmapBuffer(BMP_RGB565, source->getWidth(), source->getHeight());
-  dest->clear(HEADER_BGCOLOR);
-  dest->drawMask(0, 0, (BitmapBuffer *) source, MENU_TITLE_COLOR);
+  dest->clear(bgcolor);
+  dest->drawMask(0, 0, (BitmapBuffer *) source, color);
   return dest;
 }
 
@@ -358,9 +358,9 @@ void displayMixStatus(uint8_t channel)
   lcdDrawNumber(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, channel + 1, MENU_TITLE_COLOR, 0, "CH", NULL);
   drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
-  lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, displayMixConvertMask(mixer_mask));
-  lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, displayMixConvertMask(to_mask));
-  lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, displayMixConvertMask(output_mask));
+  lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, displayMixConvertMask(mixer_mask, MENU_TITLE_COLOR, HEADER_BGCOLOR));
+  lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, displayMixConvertMask(to_mask, MENU_TITLE_COLOR, HEADER_BGCOLOR));
+  lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, displayMixConvertMask(output_mask, MENU_TITLE_COLOR, HEADER_BGCOLOR));
 
   lcdDrawSizedText(MIX_STATUS_OUT_NAME, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
   drawSingleOutputBar(MIX_STATUS_OUT_BAR, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
@@ -368,6 +368,13 @@ void displayMixStatus(uint8_t channel)
 
 bool menuModelMixAll(evt_t event)
 {
+  static const BitmapBuffer * mpx_mode[] = {
+    BitmapBuffer::loadMask(getThemePath("mask_mplex_add.png")),
+    BitmapBuffer::loadMask(getThemePath("mask_mplex_multi.png")),
+    BitmapBuffer::loadMask(getThemePath("mask_mplex_replace.png"))
+  };
+  
+
   int sub = menuVerticalPosition;
 
   if (s_editMode > 0) {
@@ -523,7 +530,7 @@ bool menuModelMixAll(evt_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          if (mixCnt > 0) lcdDrawTextAtIndex(6, y, STR_VMLTPX2, md->mltpx, 0);
+          if (mixCnt > 0) lcd->drawBitmap(6, y, displayMixConvertMask(mpx_mode[md->mltpx], TEXT_COLOR, TEXT_BGCOLOR));
 
           putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
