@@ -298,8 +298,10 @@ uint8_t menuPageIndex;
 uint8_t menuPageCount;
 uint16_t linesCount;
 
-bool navigate(evt_t event, int count, int rows, int columns)
+int8_t navigate(evt_t event, int count, int rows, int columns, bool loop)
 {
+  int8_t result = 0;
+
   int prevPosHorz = menuHorizontalPosition;
   int prevPosVert = menuVerticalPosition;
 
@@ -313,49 +315,32 @@ bool navigate(evt_t event, int count, int rows, int columns)
   }
 
   switch (event) {
-    /*case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_KEY_REPT(KEY_RIGHT):
-      INC(menuHorizontalPosition, 0, maxcol);
-      break;
-
-    case EVT_KEY_FIRST(KEY_LEFT):
-    case EVT_KEY_REPT(KEY_LEFT):
-      DEC(menuHorizontalPosition, 0, maxcol);
-      break;
-
-    case EVT_KEY_FIRST(KEY_DOWN):
-    case EVT_KEY_REPT(KEY_DOWN):
-      INC(menuVerticalPosition, 0, maxrow);
-      if (menuVerticalPosition == maxrow && menuHorizontalPosition > maxlastcol)  {
-        menuHorizontalPosition = maxlastcol;
-      }
-      break;
-
-    case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_REPT(KEY_UP):
-      DEC(menuVerticalPosition, 0, maxrow);
-      if (menuVerticalPosition == maxrow && menuHorizontalPosition > maxlastcol)  {
-        menuHorizontalPosition = maxlastcol;
-      }
-      break;
-      */
-
     case EVT_ROTARY_LEFT:
+      result = -1;
       if (menuHorizontalPosition > 0) {
         menuHorizontalPosition--;
       }
-      else {
+      else if (loop) {
         DEC(menuVerticalPosition, 0, maxrow);
         menuHorizontalPosition = (menuVerticalPosition != maxrow ? columns-1 : maxlastcol);
+      }
+      else if (menuVerticalPosition > 0) {
+        menuVerticalPosition -= 1;
+        menuHorizontalPosition = columns-1;
       }
       break;
 
     case EVT_ROTARY_RIGHT:
+      result = +1;
       if (menuHorizontalPosition < maxcol) {
         menuHorizontalPosition++;
       }
-      else {
+      else if (loop) {
         INC(menuVerticalPosition, 0, maxrow);
+        menuHorizontalPosition = 0;
+      }
+      else if (menuVerticalPosition < maxrow) {
+        menuVerticalPosition += 1;
         menuHorizontalPosition = 0;
       }
       break;
@@ -368,7 +353,7 @@ bool navigate(evt_t event, int count, int rows, int columns)
     menuVerticalOffset = menuVerticalPosition - rows + 1;
   }
 
-  return (prevPosHorz != menuHorizontalPosition || prevPosVert != menuVerticalPosition);
+  return (prevPosHorz != menuHorizontalPosition || prevPosVert != menuVerticalPosition) ? result : 0;
 }
 
 bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, int rowcount, uint8_t flags)

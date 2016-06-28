@@ -349,7 +349,7 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define CHECK_INCDEC_PARAM(event, var, min, max) \
                                        checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
-bool navigate(evt_t event, int count, int rows, int columns=1);
+int8_t navigate(evt_t event, int count, int rows, int columns=1, bool loop=true);
 bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
 bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, int maxrow);
 bool check_submenu_simple(check_event_t event, uint8_t maxrow);

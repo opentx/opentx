@@ -72,5 +72,9 @@ extern const uint8_t LBM_SWIPE_LEFT[];
 extern const uint8_t LBM_SWIPE_RIGHT[];
 
 extern BitmapBuffer * modelselIconBitmap;
+extern BitmapBuffer * modelselSdFreeBitmap;
+extern BitmapBuffer * modelselModelQtyBitmap;
+extern BitmapBuffer * modelselModelMoveBackground;
+extern BitmapBuffer * modelselModelMoveIcon;
 
 #endif // _BITMAPS_H_

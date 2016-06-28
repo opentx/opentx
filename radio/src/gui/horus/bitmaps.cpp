@@ -181,3 +181,7 @@ const uint8_t LBM_SWIPE_RIGHT[] = {
 };
 
 BitmapBuffer * modelselIconBitmap = NULL;
+BitmapBuffer * modelselSdFreeBitmap = NULL;
+BitmapBuffer * modelselModelQtyBitmap = NULL;
+BitmapBuffer * modelselModelMoveBackground = NULL;
+BitmapBuffer * modelselModelMoveIcon = NULL;
