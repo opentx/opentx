@@ -260,7 +260,6 @@ bool menuModelSelect(evt_t event)
           POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
         }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-        // POPUP_MENU_ADD_ITEM(STR_CHANGE_CATEGORY);
         if (currentModel && currentModel != modelslist.currentModel) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
         }
