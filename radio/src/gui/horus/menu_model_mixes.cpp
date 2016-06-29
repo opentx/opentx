@@ -369,9 +369,9 @@ void displayMixStatus(uint8_t channel)
 bool menuModelMixAll(evt_t event)
 {
   static const BitmapBuffer * mpx_mode[] = {
-    BitmapBuffer::load(getThemePath("mask_mplex_add.png")),
-    BitmapBuffer::load(getThemePath("mask_mplex_multi.png")),
-    BitmapBuffer::load(getThemePath("mask_mplex_replace.png"))
+    BitmapBuffer::loadAndConvertMask(getThemePath("mask_mplex_add.png"), TEXT_COLOR, TEXT_BGCOLOR),
+    BitmapBuffer::loadAndConvertMask(getThemePath("mask_mplex_multi.png"), TEXT_COLOR, TEXT_BGCOLOR),
+    BitmapBuffer::loadAndConvertMask(getThemePath("mask_mplex_replace.png"), TEXT_COLOR, TEXT_BGCOLOR)
   };
   
 
