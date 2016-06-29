@@ -21,6 +21,7 @@
 #include <math.h>
 #include "opentx.h"
 
+
 void BitmapBuffer::drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
   if (opacity == OPACITY_MAX) {
@@ -508,18 +509,18 @@ BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
 }
 
 
-BitmapBuffer * BitmapBuffer::loadAndConvertMask(const char * filename, int color, int bgcolor)
+BitmapBuffer * BitmapBuffer::loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background)
 {
-  BitmapBuffer * source = BitmapBuffer::loadMask(filename);
-  static BitmapBuffer * dest;
-  
-  dest = new BitmapBuffer(BMP_RGB565, source->getWidth(), source->getHeight());
-  dest->clear(bgcolor);
-  dest->drawMask(0, 0, (BitmapBuffer *) source, color);
-  delete source;
-  return dest;
+  BitmapBuffer * result = NULL;
+  BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
+  if (mask) {
+    result = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
+    result->clear(background);
+    result->drawMask(0, 0, mask, foreground);
+    delete mask;
+  }
+  return result;
 }
-
 
 FIL imgFile __DMA;
 

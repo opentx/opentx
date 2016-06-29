@@ -26,18 +26,6 @@ const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { NULL, ZoneOption::Bool }
 };
 
-BitmapBuffer * loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background)
-{
-  BitmapBuffer * result = NULL;
-  BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
-  if (mask) {
-    result = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-    result->clear(background);
-    result->drawMask(0, 0, mask, foreground);
-    delete mask;
-  }
-  return result;
-}
 
 class DefaultTheme: public Theme
 {
@@ -158,11 +146,11 @@ class DefaultTheme: public Theme
       currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
 
       delete topleftBitmap;
-      topleftBitmap = loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
+      topleftBitmap = BitmapBuffer::loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
 
       // Model Selection screen
       delete modelselIconBitmap;
-      modelselIconBitmap = loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
+      modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
       if (modelselIconBitmap) {
         BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
         modelselIconBitmap->drawBitmap(25, 8, bitmap);
@@ -170,10 +158,10 @@ class DefaultTheme: public Theme
       }
 
       delete modelselSdFreeBitmap;
-      modelselSdFreeBitmap = loadMaskOnBackground("modelsel/mask_sdfree.png", TEXT_COLOR, TEXT_BGCOLOR);
+      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", TEXT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelQtyBitmap;
-      modelselModelQtyBitmap = loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
+      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
 
       delete modelselModelMoveBackground;
       modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
