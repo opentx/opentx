@@ -296,6 +296,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
       zchar2str(s, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
+      s+=LEN_SWITCH_NAME;
       // TODO tous zchar2str
     }
     else {
