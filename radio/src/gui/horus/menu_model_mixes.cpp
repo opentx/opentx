@@ -486,7 +486,7 @@ bool menuModelMixAll(evt_t event)
 
   char str[6];
   sprintf(str, "%d/%d", getMixesCount(), MAX_MIXERS);
-  lcdDrawText(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, str, HEADER_COLOR);
+  lcdDrawText(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+1, str, HEADER_COLOR);
 
   sub = menuVerticalPosition;
   s_currCh = 0;
@@ -519,7 +519,7 @@ bool menuModelMixAll(evt_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          if (mixCnt > 0) lcd->drawBitmap(6, y, mpx_mode[md->mltpx]);
+          if (mixCnt > 0) lcd->drawBitmap(10, y, mpx_mode[md->mltpx]);
 
           putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
