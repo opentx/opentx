@@ -177,6 +177,8 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     static BitmapBuffer * load(const char * filename);
 
     static BitmapBuffer * loadMask(const char * filename);
+    
+    static BitmapBuffer * loadAndConvertMask(const char * filename, int color, int bgcolor);
 
     void drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
