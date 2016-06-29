@@ -295,7 +295,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
-      zchar2str(s, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
+      s += zchar2str(s, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
       // TODO tous zchar2str
     }
     else {
