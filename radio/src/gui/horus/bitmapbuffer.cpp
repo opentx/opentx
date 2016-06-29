@@ -507,6 +507,20 @@ BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
   return bitmap;
 }
 
+
+BitmapBuffer * BitmapBuffer::loadAndConvertMask(const char * filename, int color, int bgcolor)
+{
+  BitmapBuffer * source = BitmapBuffer::loadMask(filename);
+  static BitmapBuffer * dest;
+  
+  dest = new BitmapBuffer(BMP_RGB565, source->getWidth(), source->getHeight());
+  dest->clear(bgcolor);
+  dest->drawMask(0, 0, (BitmapBuffer *) source, color);
+  delete source;
+  return dest;
+}
+
+
 FIL imgFile __DMA;
 
 BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
