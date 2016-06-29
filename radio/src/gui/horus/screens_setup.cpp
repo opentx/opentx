@@ -58,10 +58,10 @@ void onZoneOptionFileSelectionMenu(const char * result)
   }
 }
 
-int getZoneOptionColumns(const ZoneOption * option)
+uint8_t getZoneOptionColumns(const ZoneOption * option)
 {
   if (option->type == ZoneOption::Color) {
-    return 2;
+    return uint8_t(2 | NAVIGATION_LINE_BY_LINE);
   }
   else {
     return 0;
@@ -128,22 +128,26 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
   else if (option->type == ZoneOption::Color) {
     RGB_SPLIT(value->unsignedValue, r, g, b);
 
+    if (attr && menuHorizontalPosition < 0) {
+      lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-3, y-1, 230, FH+1, TEXT_INVERTED_BGCOLOR);
+    }
+
     lcdSetColor(value->unsignedValue);
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y+1, 42, 17, TEXT_COLOR);
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN, y+2, 40, 15, CUSTOM_COLOR);
 
-    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 50, y, "R:", TEXT_COLOR);
-    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 70, y, r << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 0) ? attr : 0));
+    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 50, y, "R:", menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_COLOR);
+    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 70, y, r << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition <= 0) ? attr : 0));
     if (attr && menuHorizontalPosition == 0) {
       r = checkIncDec(event, r, 0, (1<<5)-1, i_flags);
     }
-    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 110, y, "G:", TEXT_COLOR);
-    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 130, y, g << 2, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 1) ? attr : 0));
+    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 110, y, "G:", menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_COLOR);
+    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 130, y, g << 2, LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == 1)) ? attr : 0));
     if (attr && menuHorizontalPosition == 1) {
       g = checkIncDec(event, g, 0, (1<<6)-1, i_flags);
     }
-    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 170, y, "B:", TEXT_COLOR);
-    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 190, y, b << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition == 2) ? attr : 0));
+    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 170, y, "B:", menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_COLOR);
+    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 190, y, b << 3, LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == 2)) ? attr : 0));
     if (attr && menuHorizontalPosition == 2) {
       b = checkIncDec(event, b, 0, (1<<5)-1, i_flags);
     }

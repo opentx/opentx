@@ -853,7 +853,6 @@
 #define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Crear Modelo"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
-#define TR_CHANGE_CATEGORY     "Change category"
 #define TR_COPY_MODEL          "Copiar Modelo"
 #define TR_MOVE_MODEL          "Mover Modelo"
 #define TR_BACKUP_MODEL        "Copia Sgdad Mod."

@@ -656,7 +656,6 @@ extern const pm_char STR_PERSISTENT_MAH[];
   extern const pm_char STR_DELETE_CATEGORY[];
   extern const pm_char STR_CREATE_MODEL[];
   extern const pm_char STR_DUPLICATE_MODEL[];
-  extern const pm_char STR_CHANGE_CATEGORY[];
   extern const pm_char STR_COPY_MODEL[];
   extern const pm_char STR_MOVE_MODEL[];
   extern const pm_char STR_DELETE_MODEL[];

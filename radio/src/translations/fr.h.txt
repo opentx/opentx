@@ -885,7 +885,6 @@
 #define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Créer Modèle"
 #define TR_DUPLICATE_MODEL     "Duplicate Model"
-#define TR_CHANGE_CATEGORY     "Change category"
 #define TR_COPY_MODEL          "Copier Modèle"
 #define TR_MOVE_MODEL          "Déplacer Modèle"
 #define TR_BACKUP_MODEL        "Archiver Modèle"

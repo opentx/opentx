@@ -26,6 +26,19 @@ const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { NULL, ZoneOption::Bool }
 };
 
+BitmapBuffer * loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background)
+{
+  BitmapBuffer * result = NULL;
+  BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
+  if (mask) {
+    result = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
+    result->clear(background);
+    result->drawMask(0, 0, mask, foreground);
+    delete mask;
+  }
+  return result;
+}
+
 class DefaultTheme: public Theme
 {
   public:
@@ -131,7 +144,7 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channels3.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "/mask_monitor_logsw.png");
-      
+
       BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
       BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
       BitmapBuffer * dot = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_dot.png"));
@@ -144,32 +157,29 @@ class DefaultTheme: public Theme
       currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
       currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
 
-      {
-        delete topleftBitmap;
-        topleftBitmap = NULL;
-        BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath("topleft.png"));
-        if (mask) {
-          topleftBitmap = new BitmapBuffer(BMP_RGB565, mask->getWidth(), MENU_HEADER_HEIGHT);
-          topleftBitmap->clear(HEADER_BGCOLOR);
-          topleftBitmap->drawMask(0, 0, mask, TITLE_BGCOLOR);
-          delete mask;
-        }
+      delete topleftBitmap;
+      topleftBitmap = loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
+
+      // Model Selection screen
+      delete modelselIconBitmap;
+      modelselIconBitmap = loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
+      if (modelselIconBitmap) {
+        BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
+        modelselIconBitmap->drawBitmap(25, 8, bitmap);
+        delete bitmap;
       }
 
-      {
-        delete modelselIconBitmap;
-        modelselIconBitmap = NULL;
-        BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath("modelsel/mask_iconback.png"));
-        if (mask) {
-          modelselIconBitmap = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-          modelselIconBitmap->clear(TEXT_BGCOLOR);
-          modelselIconBitmap->drawMask(0, 0, mask, TITLE_BGCOLOR);
-          BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
-          modelselIconBitmap->drawBitmap(25, 8, bitmap);
-          delete bitmap;
-          delete mask;
-        }
-      }
+      delete modelselSdFreeBitmap;
+      modelselSdFreeBitmap = loadMaskOnBackground("modelsel/mask_sdfree.png", TEXT_COLOR, TEXT_BGCOLOR);
+
+      delete modelselModelQtyBitmap;
+      modelselModelQtyBitmap = loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
+
+      delete modelselModelMoveBackground;
+      modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
+
+      delete modelselModelMoveIcon;
+      modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
 
       delete background;
       delete shadow;

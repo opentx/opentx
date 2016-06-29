@@ -95,6 +95,33 @@ class ModelsCategory: public std::list<ModelCell *>
       remove(model);
     }
 
+    void moveModel(ModelCell * model, int8_t step)
+    {
+      ModelsCategory::iterator current = begin();
+      for (; current != end(); current++) {
+        if (*current == model) {
+          break;
+        }
+      }
+
+      ModelsCategory::iterator new_position = current;
+      if (step > 0) {
+        while (step >= 0 && new_position != end()) {
+          new_position++;
+          step--;
+        }
+      }
+      else {
+        while (step < 0 && new_position != begin()) {
+          new_position--;
+          step++;
+        }
+      }
+
+      insert(new_position, 1, *current);
+      erase(current);
+    }
+
     void save(FIL * file)
     {
       f_puts("[", file);
@@ -130,6 +157,7 @@ class ModelsList
       categories.clear();
       currentCategory = NULL;
       currentModel = NULL;
+      modelsCount = 0;
     }
 
     bool load()
@@ -159,6 +187,7 @@ class ModelsList
               currentCategory = category;
               currentModel = model;
             }
+            modelsCount += 1;
           }
         }
         f_close(&file);
@@ -210,36 +239,53 @@ class ModelsList
       }
     }
 
-  ModelsCategory * createCategory()
-  {
-    ModelsCategory * result = new ModelsCategory("Category");
-    categories.push_back(result);
-    save();
-    return result;
-  }
+    ModelsCategory * createCategory()
+    {
+      ModelsCategory * result = new ModelsCategory("Category");
+      categories.push_back(result);
+      save();
+      return result;
+    }
 
-  ModelCell * addModel(ModelsCategory * category, const char * name)
-  {
-    ModelCell * result = category->addModel(name);
-    save();
-    return result;
-  }
+    ModelCell * addModel(ModelsCategory * category, const char * name)
+    {
+      ModelCell * result = category->addModel(name);
+      modelsCount++;
+      save();
+      return result;
+    }
 
-  void removeCategory(ModelsCategory * category)
-  {
-    delete category;
-    categories.remove(category);
-  }
+    void removeCategory(ModelsCategory * category)
+    {
+      modelsCount -= category->size();
+      delete category;
+      categories.remove(category);
+    }
 
-  void removeModel(ModelsCategory * category, ModelCell * model)
-  {
-    category->removeModel(model);
-    save();
-  }
+    void removeModel(ModelsCategory * category, ModelCell * model)
+    {
+      category->removeModel(model);
+      modelsCount--;
+      save();
+    }
 
-  std::list<ModelsCategory *> categories;
-  ModelsCategory * currentCategory;
-  ModelCell * currentModel;
+    void moveModel(ModelsCategory * category, ModelCell * model, int8_t step)
+    {
+      category->moveModel(model, step);
+      save();
+    }
+
+    void moveModel(ModelCell * model, ModelsCategory * previous_category, ModelsCategory * new_category)
+    {
+      previous_category->remove(model);
+      new_category->push_back(model);
+      save();
+    }
+
+    std::list<ModelsCategory *> categories;
+    ModelsCategory * currentCategory;
+    ModelCell * currentModel;
+    unsigned int modelsCount;
 
   protected:
     FIL file;
