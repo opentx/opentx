@@ -369,9 +369,9 @@ void displayMixStatus(uint8_t channel)
 bool menuModelMixAll(evt_t event)
 {
   static const BitmapBuffer * mpx_mode[] = {
-    BitmapBuffer::loadMask(getThemePath("mask_mplex_add.png")),
-    BitmapBuffer::loadMask(getThemePath("mask_mplex_multi.png")),
-    BitmapBuffer::loadMask(getThemePath("mask_mplex_replace.png"))
+    BitmapBuffer::load(getThemePath("mask_mplex_add.png")),
+    BitmapBuffer::load(getThemePath("mask_mplex_multi.png")),
+    BitmapBuffer::load(getThemePath("mask_mplex_replace.png"))
   };
   
 
@@ -530,7 +530,7 @@ bool menuModelMixAll(evt_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          if (mixCnt > 0) lcd->drawBitmap(6, y, displayMixConvertMask(mpx_mode[md->mltpx], TEXT_COLOR, TEXT_BGCOLOR));
+          if (mixCnt > 0) lcd->drawBitmap(6, y, mpx_mode[md->mltpx]);
 
           putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
