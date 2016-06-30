@@ -56,9 +56,9 @@ class DarkblueTheme: public Theme
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = BLACK;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RGB(10, 78, 121);
       lcdColorTable[OVERLAY_COLOR_INDEX] = BLACK;
-      lcdColorTable[BARGRAPH1_COLOR_INDEX] = RED;
+      lcdColorTable[BARGRAPH1_COLOR_INDEX] = RGB(15, 150, 250);
       lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(167, 167, 167);
-      lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(222, 222, 222);
+      lcdColorTable[BARGRAPH_BGCOLOR_INDEX] = RGB(97, 97, 102);
     }
 
     void loadMenuIcon(uint8_t index, const char * filename) const
@@ -116,7 +116,10 @@ class DarkblueTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channels3.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "/mask_monitor_logsw.png");
-      
+    }
+    
+    void loadThemeBitmaps() const
+    {          
       // Channels monitor screen
       delete chanMonLockedBitmap;
       chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
@@ -143,12 +146,12 @@ class DarkblueTheme: public Theme
       delete mixerSetupReplaceBitmap;
       mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR); 
     }
-    
 
     virtual void load() const
     {
       loadColors();
       loadMenusIcons();
+      loadThemeBitmaps();
       loadFontCache();
     }
 

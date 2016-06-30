@@ -143,10 +143,17 @@ class DefaultTheme: public Theme
       currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
       currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
       currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
-
+      
       delete topleftBitmap;
       topleftBitmap = BitmapBuffer::loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
 
+      delete background;
+      delete shadow;
+      delete dot;
+    }
+
+    void loadThemeBitmaps() const
+    {
       // Model Selection screen
       delete modelselIconBitmap;
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
@@ -194,9 +201,6 @@ class DefaultTheme: public Theme
       delete mixerSetupReplaceBitmap;
       mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR); 
       
-      delete background;
-      delete shadow;
-      delete dot;
     }
 
     virtual void load() const
@@ -223,6 +227,7 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
       loadIcons();
+      loadThemeBitmaps();
       loadFontCache();
     }
 
