@@ -111,22 +111,18 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       for (int i=0; i<(NUM_STICKS+potsnum); i++) {
         Byte=calib.mid(i*12,4);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        if (ok)
-          generalSettings.calibMid[i]=byte16;
+        if (ok) generalSettings.calibMid[i]=byte16;
         Byte=calib.mid(4+i*12,4);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        if (ok)
-          generalSettings.calibSpanNeg[i]=byte16;
+        if (ok) generalSettings.calibSpanNeg[i]=byte16;
         Byte=calib.mid(8+i*12,4);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        if (ok)
-          generalSettings.calibSpanPos[i]=byte16;
+        if (ok) generalSettings.calibSpanPos[i]=byte16;
       }
       for (int i=0; i<4; i++) {
         Byte=trainercalib.mid(i*4,4);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        if (ok)
-          generalSettings.trainer.calib[i]=byte16;
+        if (ok) generalSettings.trainer.calib[i]=byte16;
       }
       generalSettings.txCurrentCalibration=txCurrentCalibration;
       generalSettings.txVoltageCalibration=txVoltageCalibration;
@@ -153,27 +149,30 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         Byte=hwtypes.mid(i,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
         qba=controlNames.mid(3*(i+NUM_STICKS),3).toAscii();
-        if (ok)
+        if (ok) {
           generalSettings.switchConfig[i]=byte16;
           strcpy(generalSettings.switchName[i], qba.data());
+        }
       }
       offset = GetCurrentFirmware()->getCapability(Switches);
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
         qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toAscii();
-        if (ok)
+        if (ok) {
           generalSettings.potConfig[i]=byte16;
           strcpy(generalSettings.potName[i], qba.data());
+        }
       }
       offset += GetCurrentFirmware()->getCapability(Pots);
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
         qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toAscii();
-        if (ok)
+        if (ok) {
           generalSettings.sliderConfig[i]=byte16;
           strcpy(generalSettings.sliderName[i], qba.data());
+        }
       }
     } else {
       QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, Switch/pot config not retrieved"));
@@ -185,45 +184,32 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       QString chars;
       bool ok;
       byte8=(int8_t)DisplaySet.mid(0,2).toInt(&ok,16);
-      if (ok)
-        generalSettings.optrexDisplay=(byte8==1 ? true : false);
+      if (ok) generalSettings.optrexDisplay=(byte8==1 ? true : false);
       byte8u=(uint8_t)DisplaySet.mid(2,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.contrast=byte8u;
+      if (ok) generalSettings.contrast=byte8u;
       byte8u=(uint8_t)DisplaySet.mid(4,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.backlightBright=byte8u;
+      if (ok) generalSettings.backlightBright=byte8u;
       byte8=(int8_t)BeeperSet.mid(0,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.beeperMode = (GeneralSettings::BeeperMode)byte8;
+      if (ok) generalSettings.beeperMode = (GeneralSettings::BeeperMode)byte8;
       byte8=(int8_t)BeeperSet.mid(2,2).toInt(&ok,16);
-      if (ok)
-        generalSettings.beeperLength=byte8;
+      if (ok) generalSettings.beeperLength=byte8;
       byte8=(int8_t)HapticSet.mid(0,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.hapticMode=(GeneralSettings::BeeperMode)byte8;
+      if (ok) generalSettings.hapticMode=(GeneralSettings::BeeperMode)byte8;
       byte8=(int8_t)HapticSet.mid(2,2).toInt(&ok,16);
-      if (ok)
-        generalSettings.hapticStrength=byte8;
+      if (ok) generalSettings.hapticStrength=byte8;
       byte8=(int8_t)HapticSet.mid(4,2).toInt(&ok,16);
-      if (ok)
-        generalSettings.hapticLength=byte8;
+      if (ok) generalSettings.hapticLength=byte8;
       byte8u=(uint8_t)SpeakerSet.mid(0,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.speakerMode=byte8u;
+      if (ok) generalSettings.speakerMode=byte8u;
       byte8u=(uint8_t)SpeakerSet.mid(2,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.speakerPitch=byte8u;
+      if (ok) generalSettings.speakerPitch=byte8u;
       byte8u=(uint8_t)SpeakerSet.mid(4,2).toUInt(&ok,16);
-      if (ok)
-        generalSettings.speakerVolume=byte8u;
+      if (ok) generalSettings.speakerVolume=byte8u;
       if (CountrySet.length()==6) {
         byte8u=(uint8_t)CountrySet.mid(0,2).toUInt(&ok,16);
-        if (ok)
-          generalSettings.countryCode=byte8u;
+        if (ok) generalSettings.countryCode=byte8u;
         byte8u=(uint8_t)CountrySet.mid(2,2).toUInt(&ok,16);
-        if (ok)
-          generalSettings.imperial=byte8u;
+        if (ok) generalSettings.imperial=byte8u;
         chars=CountrySet.mid(4,2);
         generalSettings.ttsLanguage[0]=chars[0].toAscii();
         generalSettings.ttsLanguage[1]=chars[1].toAscii();
