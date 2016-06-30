@@ -21,6 +21,7 @@
 #ifndef _FRSKY_H_
 #define _FRSKY_H_
 
+#include "../definitions.h"
 #include "telemetry_holders.h"
 
 #define FRSKY_SPORT_BAUDRATE      57600

@@ -26,6 +26,7 @@
 #include <iostream>
 #include <bitset>
 #include "constants.h"
+#include "../../radio/src/definitions.h"
 #include "simulatorinterface.h"
 
 #define EESIZE_STOCK           2048

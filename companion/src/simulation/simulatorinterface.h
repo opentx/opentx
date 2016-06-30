@@ -24,12 +24,7 @@
 #include <QMap>
 #include <algorithm>
 
-#if __GNUC__
-  #define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
-#else
-  #include "../targets/windows/winbuild.h"
-#endif
-
+// TODO can be removed?
 template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
 
 struct TxInputs

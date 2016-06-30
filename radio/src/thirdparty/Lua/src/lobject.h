@@ -8,13 +8,9 @@
 #ifndef lobject_h
 #define lobject_h
 
-#ifndef PACK
-#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
-#endif
-
 #include <stdarg.h>
 
-
+#include "definitions.h"
 #include "llimits.h"
 #include "lua.h"
 

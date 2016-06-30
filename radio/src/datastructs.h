@@ -66,12 +66,6 @@
   #define NOBACKUP(...)                __VA_ARGS__
 #endif
 
-#if __GNUC__
-  #define PACK( __Declaration__ )      __Declaration__ __attribute__((__packed__))
-#else
-  #define PACK( __Declaration__ )      __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
-#endif
-
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 typedef uint16_t source_t;
 #else

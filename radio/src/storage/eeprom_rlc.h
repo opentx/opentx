@@ -21,10 +21,7 @@
 #ifndef _EEPROM_RLC_H_
 #define _EEPROM_RLC_H_
 
-// TODO duplicated
-#ifndef PACK
-#define PACK( __Declaration__ ) __Declaration__ __attribute__((__packed__))
-#endif
+#include "definitions.h"
 
 #if defined(PCBTARANIS)
   #define blkid_t    uint16_t

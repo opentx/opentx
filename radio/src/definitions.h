@@ -42,9 +42,24 @@
 #endif
 
 #if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
-  typedef int32_t int24_t;
+typedef int32_t int24_t;
 #else
-  typedef __int24 int24_t;
+typedef __int24 int24_t;
+#endif
+
+#if __GNUC__
+#define PACK( __Declaration__ )      __Declaration__ __attribute__((__packed__))
+#else
+#define PACK( __Declaration__ )      __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+#endif
+
+#if defined(WIN32)
+#define FORCEINLINE inline
+#define NOINLINE
+#define round(x)    floor(x+0.5)
+#define strcasecmp  _stricmp
+#define strncasecmp _tcsnicmp
+#define snprintf    _snprintf
 #endif
 
 #endif // _DEFINITIONS_H_
