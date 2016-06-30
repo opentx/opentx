@@ -116,7 +116,10 @@ class DarkblueTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channels3.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "/mask_monitor_logsw.png");
-      
+    }
+    
+    void loadThemeBitmaps() const
+    {          
       // Channels monitor screen
       delete chanMonLockedBitmap;
       chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
@@ -143,12 +146,12 @@ class DarkblueTheme: public Theme
       delete mixerSetupReplaceBitmap;
       mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR); 
     }
-    
 
     virtual void load() const
     {
       loadColors();
       loadMenusIcons();
+      loadThemeBitmaps();
       loadFontCache();
     }
 
