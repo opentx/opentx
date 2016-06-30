@@ -86,7 +86,7 @@ void setCurrentCategory(unsigned int index)
   std::advance(it, index);
   currentCategory = *it;
   categoriesVerticalPosition = index;
-  categoriesVerticalOffset = limit<int>(categoriesVerticalPosition-4, categoriesVerticalOffset, min<int>(categoriesVerticalPosition, max<int>(0, modelslist.categories.size()-10)));
+  categoriesVerticalOffset = limit<int>(categoriesVerticalPosition-4, categoriesVerticalOffset, min<int>(categoriesVerticalPosition, max<int>(0, modelslist.categories.size()-5)));
   if (currentCategory->size() > 0)
     setCurrentModel(0);
   else
@@ -287,9 +287,12 @@ bool menuModelSelect(evt_t event)
   // Categories
   int index = 0;
   coord_t y = 97;
-  drawVerticalScrollbar(CATEGORIES_WIDTH-1, MENU_HEADER_HEIGHT, MENU_FOOTER_TOP-MENU_HEADER_HEIGHT, categoriesVerticalOffset, modelslist.categories.size(), 5);
+  drawVerticalScrollbar(CATEGORIES_WIDTH-1, y-1, 5*(FH+7)-5, categoriesVerticalOffset, modelslist.categories.size(), 5);
   for (std::list<ModelsCategory *>::iterator it = modelslist.categories.begin(); it != modelslist.categories.end(); ++it, ++index) {
     if (index >= categoriesVerticalOffset && index < categoriesVerticalOffset+5) {
+      if (index != categoriesVerticalOffset) {
+        lcdDrawSolidHorizontalLine(5, y-4, CATEGORIES_WIDTH-10, LINE_COLOR);
+      }
       if (selectMode == MODE_RENAME_CATEGORY && currentCategory == *it) {
         lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN+1, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
         editName(MENUS_MARGIN_LEFT, y, currentCategory->name, LEN_MODEL_FILENAME, event, 1, 0);
@@ -302,7 +305,6 @@ bool menuModelSelect(evt_t event)
       else {
         drawCategory(y, (*it)->name, currentCategory==*it);
       }
-      lcdDrawSolidHorizontalLine(5, y+FH+3, CATEGORIES_WIDTH-10, LINE_COLOR);
       y += FH+7;
     }
   }
