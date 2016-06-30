@@ -117,8 +117,8 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
 
-  static const BitmapBuffer * locked_bmp = BitmapBuffer::loadAndConvertMask(getThemePath("mask_monitor_lockch.png"), TEXT_COLOR, TEXT_BGCOLOR);
-  static const BitmapBuffer * inver_bmp = BitmapBuffer::loadAndConvertMask(getThemePath("mask_monitor_inver.png"), TEXT_COLOR, TEXT_BGCOLOR);
+  static const BitmapBuffer * locked_bmp = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
+  static const BitmapBuffer * inver_bmp = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", TEXT_COLOR, TEXT_BGCOLOR);
 
   strAppendSigned(&chanString[2], channel + 1, 2);
   lcdDrawText(x, y, chanString, SMLSIZE | TEXT_COLOR | LEFT);
