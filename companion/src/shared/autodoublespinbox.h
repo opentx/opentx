@@ -5,8 +5,6 @@
 #include "modeledit/modeledit.h"
 #if __GNUC__
   #include <math.h>
-#else
-  #include "../targets/windows/winbuild.h"
 #endif
 
 class AutoDoubleSpinBox: public QDoubleSpinBox

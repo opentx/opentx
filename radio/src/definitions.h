@@ -63,7 +63,9 @@ typedef __int24 int24_t;
 #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
 #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
 #else
-#define FORCEINLINE inline __attribute__ ((always_inline))
+#if !defined(_MSC_VER) || (_MSC_VER < 1200)
+  #define FORCEINLINE inline __attribute__ ((always_inline))
+#endif
 #define NOINLINE __attribute__ ((noinline))
 #define SIMU_SLEEP(x)
 #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
@@ -74,7 +76,6 @@ typedef __int24 int24_t;
 #define round(x)    floor(x+0.5)
 #define strcasecmp  _stricmp
 #define strncasecmp _tcsnicmp
-#define snprintf    _snprintf
 #endif
 
 #endif // _DEFINITIONS_H_
