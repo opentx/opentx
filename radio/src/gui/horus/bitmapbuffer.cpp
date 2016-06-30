@@ -507,7 +507,6 @@ BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
   return bitmap;
 }
 
-
 BitmapBuffer * BitmapBuffer::loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background)
 {
   BitmapBuffer * result = NULL;
@@ -520,7 +519,6 @@ BitmapBuffer * BitmapBuffer::loadMaskOnBackground(const char * filename, LcdFlag
   }
   return result;
 }
-
 
 FIL imgFile __DMA;
 
