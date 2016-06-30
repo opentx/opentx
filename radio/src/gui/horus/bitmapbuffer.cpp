@@ -507,6 +507,19 @@ BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
   return bitmap;
 }
 
+BitmapBuffer * BitmapBuffer::loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background)
+{
+  BitmapBuffer * result = NULL;
+  BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
+  if (mask) {
+    result = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
+    result->clear(background);
+    result->drawMask(0, 0, mask, foreground);
+    delete mask;
+  }
+  return result;
+}
+
 FIL imgFile __DMA;
 
 BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
