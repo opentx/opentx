@@ -167,7 +167,33 @@ class DefaultTheme: public Theme
 
       delete modelselModelMoveIcon;
       modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
+      
+      // Channels monitor screen
+      delete chanMonLockedBitmap;
+      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
+      
+      delete chanMonInvertedBitmap;
+      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", TEXT_COLOR, TEXT_BGCOLOR);
+      
+      // Mixer setup screen
+      delete mixerSetupMixerBitmap;
+      mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
+      
+      delete mixerSetupToBitmap;
+      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_TITLE_COLOR, HEADER_BGCOLOR); 
 
+      delete mixerSetupOutputBitmap;
+      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);      
+
+      delete mixerSetupAddBitmap;
+      mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", TEXT_COLOR, TEXT_BGCOLOR);
+      
+      delete mixerSetupMultiBitmap;
+      mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", TEXT_COLOR, TEXT_BGCOLOR);
+      
+      delete mixerSetupReplaceBitmap;
+      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR); 
+      
       delete background;
       delete shadow;
       delete dot;

@@ -339,17 +339,13 @@ void displayMixLine(coord_t y, MixData *md)
 }
 
 void displayMixStatus(uint8_t channel)
-{
-  static const BitmapBuffer * mixer_bmp = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
-  static const BitmapBuffer * to_bmp = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
-  static const BitmapBuffer * output_bmp = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR); 
-  
+{  
   lcdDrawNumber(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, channel + 1, MENU_TITLE_COLOR, 0, "CH", NULL);
   drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
-  lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, mixer_bmp);
-  lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, to_bmp);
-  lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, output_bmp);
+  lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, mixerSetupMixerBitmap);
+  lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, mixerSetupToBitmap);
+  lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, mixerSetupOutputBitmap);
 
   lcdDrawSizedText(MIX_STATUS_OUT_NAME, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
   drawSingleOutputBar(MIX_STATUS_OUT_BAR, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
@@ -357,10 +353,10 @@ void displayMixStatus(uint8_t channel)
 
 bool menuModelMixAll(evt_t event)
 {
-  static const BitmapBuffer * mpx_mode[] = {
-    BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", TEXT_COLOR, TEXT_BGCOLOR),
-    BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", TEXT_COLOR, TEXT_BGCOLOR),
-    BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR)
+  BitmapBuffer * mpx_mode[] = {
+    mixerSetupAddBitmap,
+    mixerSetupMultiBitmap,
+    mixerSetupReplaceBitmap
   };
   
 

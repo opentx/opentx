@@ -117,9 +117,6 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
 
-  static const BitmapBuffer * locked_bmp = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
-  static const BitmapBuffer * inver_bmp = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", TEXT_COLOR, TEXT_BGCOLOR);
-
   strAppendSigned(&chanString[2], channel + 1, 2);
   lcdDrawText(x, y, chanString, SMLSIZE | TEXT_COLOR | LEFT);
 
@@ -146,8 +143,8 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   }
 
   drawOutputBarLimits(x + posOnBar(-100 + ld->min / 10), x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR);
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x - X_OFFSET + 7, y + 7, locked_bmp);
-  if (ld->revert) lcd->drawBitmap(x - X_OFFSET + 7, y + 25, inver_bmp);
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x - X_OFFSET + 7, y + 7, chanMonLockedBitmap);
+  if (ld->revert) lcd->drawBitmap(x - X_OFFSET + 7, y + 25, chanMonInvertedBitmap);
   lcd->drawSolidVerticalLine(x + w / 2, y + Y_OUTBAR, h, TEXT_COLOR);
 }
 

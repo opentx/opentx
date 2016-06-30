@@ -77,4 +77,16 @@ extern BitmapBuffer * modelselModelQtyBitmap;
 extern BitmapBuffer * modelselModelMoveBackground;
 extern BitmapBuffer * modelselModelMoveIcon;
 
+// Channels monitor bitmaps
+extern BitmapBuffer * chanMonLockedBitmap;
+extern BitmapBuffer * chanMonInvertedBitmap;
+
+// Mixer setup bitmaps
+extern BitmapBuffer * mixerSetupMixerBitmap;
+extern BitmapBuffer * mixerSetupToBitmap;
+extern BitmapBuffer * mixerSetupOutputBitmap;
+extern BitmapBuffer * mixerSetupAddBitmap;
+extern BitmapBuffer * mixerSetupMultiBitmap;
+extern BitmapBuffer * mixerSetupReplaceBitmap;
+
 #endif // _BITMAPS_H_
