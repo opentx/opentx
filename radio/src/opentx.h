@@ -221,23 +221,6 @@
   #define MASTER_VOLUME
 #endif
 
-#if defined(SIMU)
-  #if !defined(FORCEINLINE)
-    #define FORCEINLINE inline
-  #endif
-  #if !defined(NOINLINE)
-    #define NOINLINE
-  #endif
-  #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
-  #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
-#else
-  #define FORCEINLINE inline __attribute__ ((always_inline))
-  #define NOINLINE __attribute__ ((noinline))
-  #define SIMU_SLEEP(x)
-  #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
-  #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
-#endif
-
 #if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
     //  code cost is about 16 bytes for higher throttle accuracy for timer
     //  would not be noticable anyway, because all version up to this change had only 16 steps;

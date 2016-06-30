@@ -53,9 +53,24 @@ typedef __int24 int24_t;
 #define PACK( __Declaration__ )      __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
 #endif
 
-#if defined(WIN32)
+#if defined(SIMU)
+#if !defined(FORCEINLINE)
 #define FORCEINLINE inline
+#endif
+#if !defined(NOINLINE)
 #define NOINLINE
+#endif
+#define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
+#define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
+#else
+#define FORCEINLINE inline __attribute__ ((always_inline))
+#define NOINLINE __attribute__ ((noinline))
+#define SIMU_SLEEP(x)
+#define CONVERT_PTR_UINT(x) ((uint32_t)(x))
+#define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
+#endif
+
+#if defined(WIN32)
 #define round(x)    floor(x+0.5)
 #define strcasecmp  _stricmp
 #define strncasecmp _tcsnicmp
