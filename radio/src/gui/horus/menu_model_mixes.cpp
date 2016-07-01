@@ -271,13 +271,11 @@ bool menuModelMixOne(evt_t event)
 #define STR_MAX(x) _STR_MAX(x)
 
 #define MIX_LINE_WEIGHT_POS     110
-#define MIX_LINE_SRC_POS        115
-#define MIX_LINE_CURVE_POS      165
-#define MIX_LINE_SWITCH_POS     230
-#define MIX_LINE_DELAY_POS      270
-#define MIX_LINE_FM_POS         290
-#define MIX_LINE_NAME_POS       405
-#define MIX_LINE_SELECT_POS     50
+#define MIX_LINE_SRC_POS        125
+#define MIX_LINE_CURVE_POS      190
+#define MIX_LINE_SWITCH_POS     265
+#define MIX_LINE_DELAY_POS      315
+#define MIX_LINE_NAME_FM_POS    340
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
 #define MIX_STATUS_MARGIN_LEFT  MENUS_MARGIN_LEFT + 45
@@ -331,11 +329,21 @@ void displayMixInfos(coord_t y, MixData *md)
 
 void displayMixLine(coord_t y, MixData *md)
 {
-  if (md->name[0]) {
-    lcdDrawSizedText(MIX_LINE_NAME_POS, y+2, md->name, sizeof(md->name), ZCHAR | SMLSIZE);
+  if (md->name[0] && md->flightModes)
+  {
+    if (BLINK_ON_PHASE)
+      displayFlightModes(MIX_LINE_NAME_FM_POS, y, md->flightModes, 0);
+    else
+      lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
+  }
+  else
+  {
+    if (md->name[0])
+      lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
+    else
+      displayFlightModes(MIX_LINE_NAME_FM_POS, y, md->flightModes, 0);
   }
   displayMixInfos(y, md);
-  displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes, 0);
 }
 
 void displayMixStatus(uint8_t channel)
