@@ -88,5 +88,9 @@ extern BitmapBuffer * mixerSetupOutputBitmap;
 extern BitmapBuffer * mixerSetupAddBitmap;
 extern BitmapBuffer * mixerSetupMultiBitmap;
 extern BitmapBuffer * mixerSetupReplaceBitmap;
+extern BitmapBuffer * mixerSetupLabelBitmap;
+extern BitmapBuffer * mixerSetupCurveBitmap;
+extern BitmapBuffer * mixerSetupSwitchBitmap;
+extern BitmapBuffer * mixerSetupDelaySlowBitmap;
 
 #endif // _BITMAPS_H_

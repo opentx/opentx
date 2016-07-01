@@ -193,3 +193,8 @@ BitmapBuffer * mixerSetupOutputBitmap = NULL;
 BitmapBuffer * mixerSetupAddBitmap = NULL;
 BitmapBuffer * mixerSetupMultiBitmap = NULL;
 BitmapBuffer * mixerSetupReplaceBitmap = NULL;
+BitmapBuffer * mixerSetupLabelBitmap = NULL;
+BitmapBuffer * mixerSetupCurveBitmap = NULL;
+BitmapBuffer * mixerSetupSwitchBitmap = NULL;
+BitmapBuffer * mixerSetupDelaySlowBitmap = NULL;
+
