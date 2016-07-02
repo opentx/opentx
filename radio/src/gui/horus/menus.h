@@ -515,9 +515,7 @@ void pushModelNotes();
 
 #define CURSOR_MOVED_LEFT(event)       (event==EVT_ROTARY_LEFT || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (event==EVT_ROTARY_RIGHT || EVT_KEY_MASK(event) == KEY_RIGHT)
-
-#define REPEAT_LAST_CURSOR_MOVE(defaultPosition)  { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else menuHorizontalPosition = (defaultPosition); }
-#define MOVE_CURSOR_FROM_HERE()        if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE(0)
+#define REPEAT_LAST_CURSOR_MOVE(last, refresh) { if (CURSOR_MOVED_RIGHT(event)) menuHorizontalPosition = (menuHorizontalPosition >= (last) ? 0 : menuHorizontalPosition + 1); else menuHorizontalPosition = (menuHorizontalPosition <= (0) ? last : menuHorizontalPosition - 1); if (refresh) putEvent(EVT_REFRESH); }
 
 #define MENU_FIRST_LINE_EDIT           (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0)
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)

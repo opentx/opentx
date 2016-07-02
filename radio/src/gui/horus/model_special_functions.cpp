@@ -29,16 +29,15 @@
 
 void onCustomFunctionsFileSelectionMenu(const char * result)
 {
-  int sub = menuVerticalPosition;
   CustomFunctionData * cf;
   uint8_t eeFlags;
 
   if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
-    cf = &g_model.customFn[sub];
+    cf = &g_model.customFn[menuVerticalPosition];
     eeFlags = EE_MODEL;
   }
   else {
-    cf = &g_eeGeneral.customFn[sub];
+    cf = &g_eeGeneral.customFn[menuVerticalPosition];
     eeFlags = EE_GENERAL;
   }
 
@@ -69,16 +68,15 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 
 void onCustomFunctionsMenu(const char *result)
 {
-  int sub = menuVerticalPosition;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
   if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
-    cfn = &g_model.customFn[sub];
+    cfn = &g_model.customFn[menuVerticalPosition];
     eeFlags = EE_MODEL;
   }
   else {
-    cfn = &g_eeGeneral.customFn[sub];
+    cfn = &g_eeGeneral.customFn[menuVerticalPosition];
     eeFlags = EE_GENERAL;
   }
 
@@ -95,12 +93,12 @@ void onCustomFunctionsMenu(const char *result)
     storageDirty(eeFlags);
   }
   else if (result == STR_INSERT) {
-    memmove(cfn+1, cfn, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
+    memmove(cfn+1, cfn, (NUM_CFN-menuVerticalPosition-1)*sizeof(CustomFunctionData));
     memset(cfn, 0, sizeof(CustomFunctionData));
     storageDirty(eeFlags);
   }
   else if (result == STR_DELETE) {
-    memmove(cfn, cfn+1, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
+    memmove(cfn, cfn+1, (NUM_CFN-menuVerticalPosition-1)*sizeof(CustomFunctionData));
     memset(&g_model.customFn[NUM_CFN-1], 0, sizeof(CustomFunctionData));
     storageDirty(eeFlags);
   }
@@ -135,15 +133,23 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
   }
 }
 
+enum SpecialFunctionsItems {
+  ITEM_SPECIAL_FUNCTIONS_SWITCH,
+  ITEM_SPECIAL_FUNCTIONS_FUNCTION,
+  ITEM_SPECIAL_FUNCTIONS_PARAM,
+  ITEM_SPECIAL_FUNCTIONS_VALUE,
+  ITEM_SPECIAL_FUNCTIONS_ENABLE,
+  ITEM_SPECIAL_FUNCTIONS_COUNT,
+  ITEM_SPECIAL_FUNCTIONS_LAST = ITEM_SPECIAL_FUNCTIONS_COUNT-1
+};
+
 bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext)
 {
-  uint32_t sub = menuVerticalPosition;
-
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
 
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
-    CustomFunctionData *cfn = &functions[sub];
+    CustomFunctionData *cfn = &functions[menuVerticalPosition];
     if (!CFN_EMPTY(cfn))
       POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
@@ -152,7 +158,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
       POPUP_MENU_ADD_ITEM(STR_INSERT);
     if (!CFN_EMPTY(cfn))
       POPUP_MENU_ADD_ITEM(STR_CLEAR);
-    for (int i=sub+1; i<NUM_CFN; i++) {
+    for (int i=menuVerticalPosition+1; i<NUM_CFN; i++) {
       if (!CFN_EMPTY(&functions[i])) {
         POPUP_MENU_ADD_ITEM(STR_DELETE);
         break;
@@ -161,26 +167,26 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
     POPUP_MENU_START(onCustomFunctionsMenu);
   }
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    unsigned int k = i+menuVerticalOffset;
+    int k = i+menuVerticalOffset;
 
-    drawStringWithIndex(MENUS_MARGIN_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && menuHorizontalPosition<0) ? INVERS : 0);
+    drawStringWithIndex(MENUS_MARGIN_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (menuVerticalPosition==k && menuHorizontalPosition<0) ? INVERS : 0);
 
-    CustomFunctionData *cfn = &functions[k];
+    CustomFunctionData * cfn = &functions[k];
     unsigned int func = CFN_FUNC(cfn);
-    for (int j=0; j<5; j++) {
-      LcdFlags attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+    for (int j=0; j<ITEM_SPECIAL_FUNCTIONS_COUNT; j++) {
+      LcdFlags attr = ((menuVerticalPosition==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       LcdFlags active = (attr && s_editMode>0);
       switch (j) {
-        case 0:
+        case ITEM_SPECIAL_FUNCTIONS_SWITCH:
           if (active || AUTOSWITCH_ENTER_LONG()) {
             CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           }
           putsSwitches(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           break;
 
-        case 1:
+        case ITEM_SPECIAL_FUNCTIONS_FUNCTION:
           if (CFN_SWITCH(cfn)) {
             if (active) {
               func = CFN_FUNC(cfn) = checkIncDec(event, CFN_FUNC(cfn), 0, FUNC_MAX-1, eeFlags, isAssignableFunctionAvailable);
@@ -189,14 +195,14 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
             lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_2ND_COLUMN, y, STR_VFSWFUNC, func, attr);
           }
           else {
-            j = 4; // skip other fields
-            if (sub==k && menuHorizontalPosition > 0) {
-              REPEAT_LAST_CURSOR_MOVE(0);
+            j = ITEM_SPECIAL_FUNCTIONS_ENABLE; // skip other fields
+            while (menuVerticalPosition==k && menuHorizontalPosition > 0) {
+              REPEAT_LAST_CURSOR_MOVE(ITEM_SPECIAL_FUNCTIONS_LAST, true);
             }
           }
           break;
 
-        case 2:
+        case ITEM_SPECIAL_FUNCTIONS_PARAM:
         {
           int8_t maxParam = NUM_CHNOUT-1;
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
@@ -224,13 +230,13 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
             break;
           }
           else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE(0);
+            REPEAT_LAST_CURSOR_MOVE(ITEM_SPECIAL_FUNCTIONS_LAST, true);
           }
           if (active) CHECK_INCDEC_MODELVAR_ZERO(event, CFN_CH_INDEX(cfn), maxParam);
           break;
         }
 
-        case 3:
+        case ITEM_SPECIAL_FUNCTIONS_VALUE:
         {
           INCDEC_DECLARE_VARS(eeFlags);
           int16_t val_displayed = CFN_PARAM(cfn);
@@ -357,7 +363,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           }
 #endif
           else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE(0);
+            REPEAT_LAST_CURSOR_MOVE(ITEM_SPECIAL_FUNCTIONS_LAST, true);
           }
 
           if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -379,7 +385,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
           break;
         }
 
-        case 4:
+        case ITEM_SPECIAL_FUNCTIONS_ENABLE:
           if (HAS_ENABLE_PARAM(func)) {
             if (active) CFN_ACTIVE(cfn) = checkIncDec(event, CFN_ACTIVE(cfn), 0, 1, eeFlags);
             drawCheckBox(MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
@@ -397,7 +403,7 @@ bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunc
             }
           }
           else if (attr) {
-            REPEAT_LAST_CURSOR_MOVE(0);
+            REPEAT_LAST_CURSOR_MOVE(ITEM_SPECIAL_FUNCTIONS_LAST, true);
           }
           break;
       }

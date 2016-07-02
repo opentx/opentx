@@ -36,14 +36,12 @@ void displayFlightModes(coord_t x, coord_t y, FlightModesType value, uint8_t att
 
 FlightModesType editFlightModes(coord_t x, coord_t y, evt_t event, FlightModesType value, uint8_t attr)
 {
-  int posHorz = menuHorizontalPosition;
-
   displayFlightModes(x, y, value, attr);
 
   if (attr) {
     if (s_editMode && event==EVT_KEY_BREAK(KEY_ENTER)) {
       s_editMode = 0;
-      value ^= (1<<posHorz);
+      value ^= (1<<menuHorizontalPosition);
       storageDirty(EE_MODEL);
     }
   }
@@ -82,26 +80,22 @@ bool menuModelFlightModesAll(evt_t event)
 {
   MENU(STR_MENUFLIGHTPHASES, MODEL_ICONS, menuTabModel, e_FlightModesAll, MAX_FLIGHT_MODES+1, { NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
 
-  int sub = menuVerticalPosition;
-
-  int posHorz = menuHorizontalPosition;
-  if (sub==0 && posHorz == 1) {
-    REPEAT_LAST_CURSOR_MOVE(0);
-    posHorz = menuHorizontalPosition;
+  if (menuVerticalPosition==0 && menuHorizontalPosition==ITEM_FLIGHT_MODES_SWITCH) {
+    menuHorizontalPosition += CURSOR_MOVED_LEFT(event) ? -1 : +1;
   }
 
-  if (sub<MAX_FLIGHT_MODES && posHorz>=0) {
-    drawColumnHeader(STR_PHASES_HEADERS, NULL, posHorz);
+  if (menuVerticalPosition<MAX_FLIGHT_MODES && menuHorizontalPosition>=0) {
+    drawColumnHeader(STR_PHASES_HEADERS, NULL, menuHorizontalPosition);
   }
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     int k = i+menuVerticalOffset;
 
     if (k==MAX_FLIGHT_MODES) {
       // last line available - add the "check trims" line
       LcdFlags attr = 0;
-      if (sub==MAX_FLIGHT_MODES) {
+      if (menuVerticalPosition==MAX_FLIGHT_MODES) {
         if (!trimsCheckTimer) {
           if (event == EVT_KEY_FIRST(KEY_ENTER)) {
             trimsCheckTimer = 200; // 2 seconds trims cancelled
@@ -129,10 +123,10 @@ bool menuModelFlightModesAll(evt_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
+    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((menuVerticalPosition==k && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (int j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
-      LcdFlags attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      LcdFlags attr = ((menuVerticalPosition==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       LcdFlags active = (attr && s_editMode>0) ;
       switch (j) {
         case ITEM_FLIGHT_MODES_NAME:

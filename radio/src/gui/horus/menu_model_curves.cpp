@@ -150,6 +150,21 @@ bool menuModelCurveOne(evt_t event)
   drawStringWithIndex(50, 3+FH, STR_CV, s_curveChan+1, MENU_TITLE_COLOR);
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 250, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
+  if (crv.type==CURVE_TYPE_CUSTOM && menuVerticalPosition == ITEM_CURVE_COORDS1) {
+    if (menuHorizontalPosition == 0) {
+      if (CURSOR_MOVED_RIGHT(event))
+        menuHorizontalPosition = 1;
+      else
+        menuVerticalPosition -= 1;
+    }
+    else if (menuHorizontalPosition == 4+crv.points) {
+      if (CURSOR_MOVED_RIGHT(event))
+        (menuHorizontalPosition = 0, menuVerticalPosition += 1);
+      else
+        menuHorizontalPosition -= 1;
+    }
+  }
+
   // Curve name
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP-FH, STR_NAME);
   editName(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP-FH, crv.name, sizeof(crv.name), event, menuVerticalPosition==ITEM_CURVE_NAME);
@@ -232,15 +247,6 @@ bool menuModelCurveOne(evt_t event)
         selectionMode = (crv.type==CURVE_TYPE_CUSTOM ? 1 : 2);
       else if (menuVerticalPosition == ITEM_CURVE_COORDS2)
         selectionMode = 2;
-    }
-
-    if (selectionMode == 1) {
-      if (menuHorizontalPosition == 0) {
-        REPEAT_LAST_CURSOR_MOVE(1);
-      }
-      else if (menuHorizontalPosition == 4+crv.points) {
-        REPEAT_LAST_CURSOR_MOVE(3+crv.points);
-      }
     }
 
     int8_t x = -100 + 200*i/(5+crv.points-1);

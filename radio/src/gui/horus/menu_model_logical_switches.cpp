@@ -56,8 +56,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 void onLogicalSwitchesMenu(const char *result)
 {
-  int8_t sub = menuVerticalPosition;
-  LogicalSwitchData * cs = lswAddress(sub);
+  LogicalSwitchData * cs = lswAddress(menuVerticalPosition);
 
   if (result == STR_COPY) {
     clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
@@ -79,17 +78,19 @@ bool menuModelLogicalSwitches(evt_t event)
 
   MENU(STR_MENULOGICALSWITCHES, MODEL_ICONS, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/} );
 
-  int k = 0;
-  int sub = menuVerticalPosition;
-  int horz = menuHorizontalPosition;
-
-  if (sub>= 0 && horz>=0) {
-    drawColumnHeader(STR_LSW_HEADERS, STR_LSW_DESCRIPTIONS, horz);
+  LogicalSwitchData * cs = lswAddress(menuVerticalPosition);
+  uint8_t cstate = lswFamily(cs->func);
+  if ((cstate == LS_FAMILY_EDGE && menuHorizontalPosition == LS_FIELD_DELAY) ||
+      (cstate != LS_FAMILY_EDGE && menuHorizontalPosition == LS_FIELD_V3)) {
+    REPEAT_LAST_CURSOR_MOVE(LS_FIELD_LAST, false);
   }
 
-  if (horz<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+  if (menuVerticalPosition>= 0 && menuHorizontalPosition>=0) {
+    drawColumnHeader(STR_LSW_HEADERS, STR_LSW_DESCRIPTIONS, menuHorizontalPosition);
+  }
+
+  if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
-    LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
       POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
@@ -101,21 +102,21 @@ bool menuModelLogicalSwitches(evt_t event)
 
   for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    k = i+menuVerticalOffset;
-    LcdFlags attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
-    LcdFlags attr1 = (horz==1 ? attr : 0);
-    LcdFlags attr2 = (horz==2 ? attr : 0);
-    LogicalSwitchData * cs = lswAddress(k);
+    int k = i+menuVerticalOffset;
+    LcdFlags attr = (menuVerticalPosition==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);
+    LcdFlags attr1 = (menuHorizontalPosition==1 ? attr : 0);
+    LcdFlags attr2 = (menuHorizontalPosition==2 ? attr : 0);
+    cs = lswAddress(k);
 
     // CSW name
     unsigned int sw = SWSRC_SW1+k;
-    putsSwitches(MENUS_MARGIN_LEFT, y, sw, (getSwitch(sw) ? BOLD : 0) | ((sub==k && CURSOR_ON_LINE()) ? INVERS : 0));
+    putsSwitches(MENUS_MARGIN_LEFT, y, sw, (getSwitch(sw) ? BOLD : 0) | ((menuVerticalPosition==k && CURSOR_ON_LINE()) ? INVERS : 0));
 
     // CSW func
-    lcdDrawTextAtIndex(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, horz==0 ? attr : 0);
+    lcdDrawTextAtIndex(CSW_1ST_COLUMN, y, STR_VCSWFUNC, cs->func, menuHorizontalPosition==0 ? attr : 0);
 
     // CSW params
-    unsigned int cstate = lswFamily(cs->func);
+    cstate = lswFamily(cs->func);
     int v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM;
     int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
     int v3_min=-1, v3_max=100;
@@ -130,11 +131,11 @@ bool menuModelLogicalSwitches(evt_t event)
     }
     else if (cstate == LS_FAMILY_EDGE) {
       putsSwitches(CSW_2ND_COLUMN, y, cs->v1, attr1);
-      putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, attr2, (horz==LS_FIELD_V3 ? attr : 0));
+      putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, attr2, (menuHorizontalPosition==LS_FIELD_V3 ? attr : 0));
       v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
       v2_min=-129; v2_max = 122;
       v3_max = 222 - cs->v2;
-      if (horz == 1) {
+      if (menuHorizontalPosition == 1) {
         INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
         INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
       }
@@ -161,7 +162,7 @@ bool menuModelLogicalSwitches(evt_t event)
     else {
       v1_val = cs->v1;
       putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
-      if (horz == 1) {
+      if (menuHorizontalPosition == 1) {
         INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
         INCDEC_ENABLE_CHECK(isSourceAvailableInCustomSwitches);
       }
@@ -175,34 +176,27 @@ bool menuModelLogicalSwitches(evt_t event)
     }
 
     // CSW AND switch
-    putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, horz==LS_FIELD_ANDSW ? attr : 0);
+    putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, menuHorizontalPosition==LS_FIELD_ANDSW ? attr : 0);
 
     // CSW duration
     if (cs->duration > 0)
-      lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
+      lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, (menuHorizontalPosition==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
     else
-      lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
+      lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, menuHorizontalPosition==LS_FIELD_DURATION ? attr : 0);
 
     // CSW delay
     if (cstate == LS_FAMILY_EDGE) {
       lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
-      if (attr && horz == LS_FIELD_DELAY) {
-        REPEAT_LAST_CURSOR_MOVE(0);
-      }
     }
     else if (cs->delay > 0) {
-      lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
+      lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, (menuHorizontalPosition==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
     }
     else {
-      lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);
-    }
-
-    if (attr && horz == LS_FIELD_V3 && cstate != LS_FAMILY_EDGE) {
-      REPEAT_LAST_CURSOR_MOVE(0);
+      lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, menuHorizontalPosition==LS_FIELD_DELAY ? attr : 0);
     }
 
     if (s_editMode>0 && attr) {
-      switch (horz) {
+      switch (menuHorizontalPosition) {
         case LS_FIELD_FUNCTION:
         {
           cs->func = checkIncDec(event, cs->func, 0, LS_FUNC_MAX, EE_MODEL, isLogicalSwitchFunctionAvailable);
