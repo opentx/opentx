@@ -21,15 +21,15 @@
 /* Includes ------------------------------------------------------------------*/
 #include "../../opentx.h"
 #include "../../thirdparty/FatFs/diskio.h"
-#include "../horus/board_horus.h"
-#include "../horus/sdio_sd.h"
+#include "board_horus.h"
+#include "sdio_sd.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
 
 #include "usbd_msc_mem.h"
-#include "../horus/usb_conf.h"
+#include "usb_conf.h"
 
 /* SD card only when not running bootloader */
 #define STORAGE_LUN_NBR    1
@@ -130,7 +130,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   return 0;
 }
 
-uint8_t lunReady[1] ;
+uint8_t lunReady[STORAGE_LUN_NBR] ;
 
 void usbPluggedIn()
 {

@@ -171,11 +171,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   return 0;
 }
 
-#if defined(BOOT)
-uint8_t lunReady[2] ;
-#else
-uint8_t lunReady[1] ;
-#endif
+uint8_t lunReady[STORAGE_LUN_NBR];
 
 void usbPluggedIn()
 {
