@@ -276,7 +276,8 @@ bool menuModelMixOne(evt_t event)
 #define MIX_LINE_CURVE_POS      195
 #define MIX_LINE_SWITCH_ICON    263
 #define MIX_LINE_SWITCH_POS     285
-#define MIX_LINE_DELAY_SLOW_POS 340
+#define MIX_LINE_DELAY_POS      335
+#define MIX_LINE_SLOW_POS       350
 #define MIX_LINE_NAME_FM_ICON   372
 #define MIX_LINE_NAME_FM_POS    390
 #define MIX_LINE_SELECT_POS     50
@@ -335,7 +336,7 @@ void displayMixInfos(coord_t y, MixData *md)
 void displayMixSmallFlightModes(coord_t x, coord_t y, FlightModesType value)
 {
   for (int i=0; i<MAX_FLIGHT_MODES; i++) {
-    LcdFlags flags = ((value & (1<<i))) ? TEXT_DISABLE_COLOR : TEXT_COLOR;
+    LcdFlags flags = ((value & (1<<i))) ? INVERS : TEXT_COLOR; //TEXT_DISABLE_COLOR doesnt work well in small, hence the INVERS
     char s[] = " ";
     s[0] = '0' + i;
     lcdDrawText(x, y, s, flags | SMLSIZE);
@@ -347,7 +348,7 @@ void displayMixLine(coord_t y, MixData *md)
 {
   if (md->name[0] && md->flightModes)
   {
-    if (BLINK_ON_PHASE) {
+    if (SLOW_BLINK_ON_PHASE) {
       lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
       displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
     }
@@ -553,8 +554,15 @@ bool menuModelMixAll(evt_t event)
 
           displayMixLine(y, md);
           
-          if (md->speedDown || md->speedUp || md->delayUp || md->delayDown)
-            lcd->drawBitmap(MIX_LINE_DELAY_SLOW_POS, y + 2, mixerSetupDelaySlowBitmap);;
+          if (md->delayUp || md->delayDown || md->speedDown || md->speedUp)
+            lcd->drawBitmap(MIX_LINE_DELAY_POS, y + 2, mixerSetupDelaySlowBitmap);
+          /* 3djc uint16_t themeColor = lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX]; 
+          lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = BLACK;
+          if (md->speedDown || md->speedUp)
+            lcdDrawText(MIX_LINE_SLOW_POS, y, "S", NO_FONTCACHE | TEXT_BGCOLOR | INVERS);
+          if (md->delayUp || md->delayDown)
+            lcdDrawText(MIX_LINE_DELAY_POS, y, "D", NO_FONTCACHE | TEXT_BGCOLOR | INVERS);
+          lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = themeColor;*/
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
