@@ -987,7 +987,7 @@ add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 if(NOT WIN32)
   add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
 else()
-  add_definitions(-D_TIMESPEC_DEFINED)
+  add_definitions(-DHAVE_STRUCT_TIMESPEC)
 endif()
 
 add_subdirectory(targets/simu)
