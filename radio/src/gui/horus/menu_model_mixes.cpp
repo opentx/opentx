@@ -270,15 +270,15 @@ bool menuModelMixOne(evt_t event)
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#define MIX_LINE_WEIGHT_POS     110
-#define MIX_LINE_SRC_POS        125
-#define MIX_LINE_CURVE_ICON     180
-#define MIX_LINE_CURVE_POS      195
-#define MIX_LINE_SWITCH_ICON    263
-#define MIX_LINE_SWITCH_POS     285
-#define MIX_LINE_DELAY_POS      335
-#define MIX_LINE_SLOW_POS       350
-#define MIX_LINE_NAME_FM_ICON   372
+#define MIX_LINE_WEIGHT_POS     105
+#define MIX_LINE_SRC_POS        120
+#define MIX_LINE_CURVE_ICON     175
+#define MIX_LINE_CURVE_POS      190
+#define MIX_LINE_SWITCH_ICON    260
+#define MIX_LINE_SWITCH_POS     280
+#define MIX_LINE_DELAY_POS      330
+#define MIX_LINE_SLOW_POS       345
+#define MIX_LINE_NAME_FM_ICON   370
 #define MIX_LINE_NAME_FM_POS    390
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
@@ -336,10 +336,10 @@ void displayMixInfos(coord_t y, MixData *md)
 void displayMixSmallFlightModes(coord_t x, coord_t y, FlightModesType value)
 {
   for (int i=0; i<MAX_FLIGHT_MODES; i++) {
-    LcdFlags flags = ((value & (1<<i))) ? INVERS : TEXT_COLOR; //TEXT_DISABLE_COLOR doesnt work well in small, hence the INVERS
     char s[] = " ";
     s[0] = '0' + i;
-    lcdDrawText(x, y, s, flags | SMLSIZE);
+    if (value & (1<<i)) lcd->drawFilledRect(x, y+2, 8, 12 , SOLID, CURVE_AXIS_COLOR);
+    lcdDrawText(x, y, s, SMLSIZE);
     x += 8;
   }
 }
@@ -363,8 +363,10 @@ void displayMixLine(coord_t y, MixData *md)
       lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupLabelBitmap);
       lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
     }
-    if (md->flightModes)
-      displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y, md->flightModes);
+    if (md->flightModes) {
+      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
+      displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
+    }
   }
   displayMixInfos(y, md);
 }
@@ -553,16 +555,11 @@ bool menuModelMixAll(evt_t event)
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), event);
 
           displayMixLine(y, md);
-          
-          if (md->delayUp || md->delayDown || md->speedDown || md->speedUp)
-            lcd->drawBitmap(MIX_LINE_DELAY_POS, y + 2, mixerSetupDelaySlowBitmap);
-          /* 3djc uint16_t themeColor = lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX]; 
-          lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = BLACK;
+
           if (md->speedDown || md->speedUp)
-            lcdDrawText(MIX_LINE_SLOW_POS, y, "S", NO_FONTCACHE | TEXT_BGCOLOR | INVERS);
+            lcd->drawBitmap(MIX_LINE_SLOW_POS, y + 2, mixerSetupSlowBitmap);
           if (md->delayUp || md->delayDown)
-            lcdDrawText(MIX_LINE_DELAY_POS, y, "D", NO_FONTCACHE | TEXT_BGCOLOR | INVERS);
-          lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = themeColor;*/
+            lcd->drawBitmap(MIX_LINE_DELAY_POS, y + 2, mixerSetupDelayBitmap);
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
