@@ -500,6 +500,13 @@
   #define LCD_GPIO_PIN_NCS              GPIO_Pin_15 // PA.15
   #define LCD_GPIO_PIN_A0               GPIO_Pin_11 // PC.11
   #define LCD_GPIO_PIN_RST              GPIO_Pin_15 // PD.15
+  #define LCD_DMA                       DMA1
+  #define LDC_DMA_Stream                DMA1_Stream7
+  #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
+  #define LCD_DMA_Stream_IRQHandler     DMA1_Stream7_IRQHandler
+  #define LCD_DMA_FLAGS                 (DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7)
+  #define LCD_DMA_FLAG_INT              DMA_HIFCR_CTCIF7
+  #define LCD_SPI                       SPI3
 #elif defined(REVPLUS)
   #define LCD_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
   #define LCD_RCC_APB1Periph            RCC_APB1Periph_SPI3
@@ -511,6 +518,13 @@
   #define LCD_GPIO_PIN_NCS              GPIO_Pin_15 // PA.15
   #define LCD_GPIO_PIN_A0               GPIO_Pin_11 // PC.11
   #define LCD_GPIO_PIN_RST              GPIO_Pin_12 // PD.12
+  #define LCD_DMA                       DMA1
+  #define LDC_DMA_Stream                DMA1_Stream7
+  #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
+  #define LCD_DMA_Stream_IRQHandler     DMA1_Stream7_IRQHandler
+  #define LCD_DMA_FLAGS                 (DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7)
+  #define LCD_DMA_FLAG_INT              DMA_HIFCR_CTCIF7
+  #define LCD_SPI                       SPI3
 #else
   #define LCD_RCC_AHB1Periph            RCC_AHB1Periph_GPIOD
   #define LCD_RCC_APB1Periph            0

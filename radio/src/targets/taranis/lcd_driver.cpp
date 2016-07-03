@@ -42,29 +42,26 @@ void lcdInitFinish();
 void initLcdSpi()
 {
   // APB1 clock / 2 = 133nS per clock
-  SPI3->CR1 = 0 ;		// Clear any mode error
-  SPI3->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_CPOL | SPI_CR1_CPHA ;
-  SPI3->CR2 = 0 ;
-  SPI3->CR1 |= SPI_CR1_MSTR ;	// Make sure in case SSM/SSI needed to be set first
-  SPI3->CR1 |= SPI_CR1_SPE ;
+  LCD_SPI->CR1 = 0 ;		// Clear any mode error
+  LCD_SPI->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_CPOL | SPI_CR1_CPHA ;
+  LCD_SPI->CR2 = 0 ;
+  LCD_SPI->CR1 |= SPI_CR1_MSTR ;	// Make sure in case SSM/SSI needed to be set first
+  LCD_SPI->CR1 |= SPI_CR1_SPE ;
 
   configure_pins( LCD_GPIO_PIN_NCS, PIN_OUTPUT | PIN_PORTA | PIN_OS25) ;
   configure_pins( LCD_GPIO_PIN_RST, PIN_OUTPUT | PIN_PORTD | PIN_OS25) ;
   configure_pins( LCD_GPIO_PIN_A0,  PIN_OUTPUT | PIN_PORTC | PIN_OS50) ;
   configure_pins( LCD_GPIO_PIN_MOSI|LCD_GPIO_PIN_CLK, PIN_PORTC | PIN_OS50 | PIN_PER_6 | PIN_PERIPHERAL ) ;
 
-  // NVIC_SetPriority( DMA1_Stream7_IRQn, 8 ) ;
-  NVIC_EnableIRQ(DMA1_Stream7_IRQn) ;
-  DMA1->HIFCR |= DMA_HIFCR_CTCIF7; //clear interrupt flag
-  DMA1->LISR |= DMA_HISR_TCIF7;    //enable DMA TX end interrupt
+  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN ;    // Disable DMA
+  LCD_DMA->HIFCR = LCD_DMA_FLAGS ; // Write ones to clear bits
+  LDC_DMA_Stream->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 ;
+  LDC_DMA_Stream->PAR = (uint32_t) &LCD_SPI->DR ;
+  LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
+  LDC_DMA_Stream->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
+  LDC_DMA_Stream->NDTR = LCD_W*LCD_H/8*4 ;
 
-  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
-  DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
-  DMA1_Stream7->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0 ;
-  DMA1_Stream7->PAR = (uint32_t) &SPI3->DR ;
-  DMA1_Stream7->M0AR = (uint32_t)displayBuf;
-  DMA1_Stream7->FCR = 0x05 ; //DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0 ;
-  DMA1_Stream7->NDTR = LCD_W*LCD_H/8*4 ;
+  NVIC_EnableIRQ(LCD_DMA_Stream_IRQn) ;
 }
 
 static void LCD_Init()
@@ -184,29 +181,29 @@ void lcdRefresh(bool wait)
   LCD_NCS_LOW();
   LCD_A0_HIGH();
 
-  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
-  DMA1->HIFCR = DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7 ; // Write ones to clear bits
+  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN ;    // Disable DMA
+  LCD_DMA->HIFCR = LCD_DMA_FLAGS ; // Write ones to clear bits
 
 #if defined(LCD_DUAL_BUFFER)
   //switch LCD buffer
-  DMA1_Stream7->M0AR = (uint32_t)displayBuf;
+  LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
   displayBuf = (displayBuf == displayBuf1) ? displayBuf2 : displayBuf1;
 #endif
 
-  DMA1_Stream7->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE;		// Enable DMA & tXe interrupt
-  SPI3->CR2 |= SPI_CR2_TXDMAEN ;
+  LDC_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE;		// Enable DMA & TC interrupts
+  LCD_SPI->CR2 |= SPI_CR2_TXDMAEN ;
 }
 
-extern "C" void DMA1_Stream7_IRQHandler()
+extern "C" void LCD_DMA_Stream_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_LCD);
   //clear interrupt flag
-  DMA1_Stream7->CR &= ~DMA_SxCR_TCIE ;  // Stop interrupt
-  DMA1->HIFCR |= DMA_HIFCR_CTCIF7;      // Clear interrupt flag
-  SPI3->CR2 &= ~SPI_CR2_TXDMAEN ;
-  DMA1_Stream7->CR &= ~DMA_SxCR_EN ;    // Disable DMA
+  LDC_DMA_Stream->CR &= ~DMA_SxCR_TCIE ;  // Stop interrupt
+  LCD_DMA->HIFCR |= LCD_DMA_FLAG_INT;     // Clear interrupt flag
+  LCD_SPI->CR2 &= ~SPI_CR2_TXDMAEN ;
+  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN ;    // Disable DMA
 
-  while ( SPI3->SR & SPI_SR_BSY ) {
+  while ( LCD_SPI->SR & SPI_SR_BSY ) {
     /* Wait for SPI to finish sending data 
     The DMA TX End interrupt comes two bytes before the end of SPI transmission,
     therefore we have to wait here.
