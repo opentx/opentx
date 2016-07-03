@@ -44,10 +44,10 @@ uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 uint16_t SPIx_ReadWriteByte(uint16_t value)
 {
-  while(SPI_I2S_GetFlagStatus(ADC_SPI,SPI_I2S_FLAG_TXE) == RESET);
-  SPI_I2S_SendData(ADC_SPI,value);
+  while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_TXE) == RESET);
+  SPI_I2S_SendData(ADC_SPI, value);
 
-  while(SPI_I2S_GetFlagStatus(ADC_SPI,SPI_I2S_FLAG_RXNE) ==RESET);
+  while (SPI_I2S_GetFlagStatus(ADC_SPI, SPI_I2S_FLAG_RXNE) == RESET);
   return SPI_I2S_ReceiveData(ADC_SPI);
 }
 
@@ -56,8 +56,8 @@ static void ADS7952_Init()
   GPIO_InitTypeDef GPIO_InitStructure;
   SPI_InitTypeDef SPI_InitStructure;
 
-  GPIO_InitStructure.GPIO_Pin = ADC_SPI_PIN_MISO|ADC_SPI_PIN_SCK|ADC_SPI_PIN_MOSI;
-  GPIO_InitStructure.GPIO_Speed =GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Pin = ADC_SPI_PIN_MISO | ADC_SPI_PIN_SCK | ADC_SPI_PIN_MOSI;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
@@ -85,10 +85,10 @@ static void ADS7952_Init()
   SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_8;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
-  SPI_Init(ADC_SPI,&SPI_InitStructure);
-  SPI_Cmd(ADC_SPI,ENABLE);
-  SPI_I2S_ITConfig(ADC_SPI,SPI_I2S_IT_TXE,DISABLE);
-  SPI_I2S_ITConfig(ADC_SPI,SPI_I2S_IT_RXNE,DISABLE);
+  SPI_Init(ADC_SPI, &SPI_InitStructure);
+  SPI_Cmd(ADC_SPI, ENABLE);
+  SPI_I2S_ITConfig(ADC_SPI, SPI_I2S_IT_TXE, DISABLE);
+  SPI_I2S_ITConfig(ADC_SPI, SPI_I2S_IT_RXNE, DISABLE);
 
   ADC_CS_HIGH();
   delay_01us(1);
@@ -132,20 +132,20 @@ void adcInit()
 
 const uint16_t adcCommands[MOUSE1+2] =
 {
-  MANUAL_MODE | (SPI_STICK1     << 7),
-  MANUAL_MODE | (SPI_STICK2     << 7),
-  MANUAL_MODE | (SPI_STICK3     << 7),
-  MANUAL_MODE | (SPI_STICK4     << 7),
-  MANUAL_MODE | (SPI_S1         << 7),
-  MANUAL_MODE | (SPI_6POS       << 7),
-  MANUAL_MODE | (SPI_S2         << 7),
-  MANUAL_MODE | (SPI_L1         << 7),
-  MANUAL_MODE | (SPI_L2         << 7),
-  MANUAL_MODE | (SPI_LS         << 7),
-  MANUAL_MODE | (SPI_RS         << 7),
+  MANUAL_MODE | (SPI_STICK1 << 7),
+  MANUAL_MODE | (SPI_STICK2 << 7),
+  MANUAL_MODE | (SPI_STICK3 << 7),
+  MANUAL_MODE | (SPI_STICK4 << 7),
+  MANUAL_MODE | (SPI_S1 << 7),
+  MANUAL_MODE | (SPI_6POS << 7),
+  MANUAL_MODE | (SPI_S2 << 7),
+  MANUAL_MODE | (SPI_L1 << 7),
+  MANUAL_MODE | (SPI_L2 << 7),
+  MANUAL_MODE | (SPI_LS << 7),
+  MANUAL_MODE | (SPI_RS << 7),
   MANUAL_MODE | (SPI_TX_VOLTAGE << 7),
-  MANUAL_MODE | (0 << 7 ),    // small joystick left/right
-  MANUAL_MODE | (0 << 7 )     // small joystick up/down
+  MANUAL_MODE | (0 << 7),     // small joystick left/right
+  MANUAL_MODE | (0 << 7)      // small joystick up/down
 };
 
 void adcReadSPIDummy()
@@ -196,12 +196,12 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
 
 void adcOnChipReadStart()
 {
-  ADC_DMA_Stream->CR &= ~DMA_SxCR_EN;		// Disable DMA
-  ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
-  ADC_DMA->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 |DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0 ; // Write ones to clear bits
+  ADC_DMA_Stream->CR &= ~DMA_SxCR_EN;           // Disable DMA
+  ADC3->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
+  ADC_DMA->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0; // Write ones to clear bits
   ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
   ADC_DMA_Stream->NDTR = 2;
-  ADC_DMA_Stream->CR |= DMA_SxCR_EN;		// Enable DMA
+  ADC_DMA_Stream->CR |= DMA_SxCR_EN;            // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 }
 

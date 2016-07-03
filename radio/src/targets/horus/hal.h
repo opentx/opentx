@@ -116,13 +116,13 @@
 #define ADC_SPI                         SPI4
 #define ADC_GPIO_AF                     GPIO_AF_SPI4
 #define ADC_SPI_GPIO                    GPIOE
-#define ADC_SPI_PIN_SCK                 GPIO_Pin_2
-#define ADC_SPI_PIN_CS	                GPIO_Pin_4
-#define ADC_SPI_PIN_MOSI                GPIO_Pin_6
-#define ADC_SPI_PIN_MISO                GPIO_Pin_5
+#define ADC_SPI_PIN_SCK                 GPIO_Pin_2 // PE.02
+#define ADC_SPI_PIN_CS                  GPIO_Pin_4 // PE.04
+#define ADC_SPI_PIN_MOSI                GPIO_Pin_6 // PE.06
+#define ADC_SPI_PIN_MISO                GPIO_Pin_5 // PE.05
 #define ADC_SPI_PinSource_SCK           GPIO_PinSource2
-#define ADC_SPI_PinSource_MISO		GPIO_PinSource5
-#define ADC_SPI_PinSource_MOSI		GPIO_PinSource6
+#define ADC_SPI_PinSource_MISO          GPIO_PinSource5
+#define ADC_SPI_PinSource_MOSI          GPIO_PinSource6
 #define ADC_GPIO_PIN_MOUSE1             GPIO_Pin_8 // PF.08 ADC3_IN6 J5 MOUSE_X
 #define ADC_GPIO_PIN_MOUSE2             GPIO_Pin_9 // PF.09 ADC3_IN7 J6 MOUSE_Y
 #define ADC_GPIO_MOUSE                  GPIOF
