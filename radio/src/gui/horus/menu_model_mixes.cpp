@@ -553,13 +553,14 @@ bool menuModelMixAll(evt_t event)
 
           displayMixLine(y, md);
 
-          BitmapBuffer * delayslow = 0;
+          BitmapBuffer *delayslowbmp[] = {mixerSetupSlowBitmap, mixerSetupDelayBitmap, mixerSetupDelaySlowBitmap}; 
+          uint8_t delayslow = 0;
           if (md->speedDown || md->speedUp)
-            delayslow = mixerSetupSlowBitmap;
+            delayslow = 1;
           if (md->delayUp || md->delayDown)
-            delayslow = (delayslow ? mixerSetupDelaySlowBitmap : mixerSetupDelayBitmap );
+            delayslow += 2;
           if (delayslow)
-            lcd->drawBitmap(MIX_LINE_DELAY_SLOW_POS, y + 2, delayslow);
+            lcd->drawBitmap(MIX_LINE_DELAY_SLOW_POS, y + 2, delayslowbmp[delayslow - 1]);
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
