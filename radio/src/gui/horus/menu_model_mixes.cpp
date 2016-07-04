@@ -273,11 +273,10 @@ bool menuModelMixOne(evt_t event)
 #define MIX_LINE_WEIGHT_POS     105
 #define MIX_LINE_SRC_POS        120
 #define MIX_LINE_CURVE_ICON     175
-#define MIX_LINE_CURVE_POS      190
+#define MIX_LINE_CURVE_POS      195
 #define MIX_LINE_SWITCH_ICON    260
 #define MIX_LINE_SWITCH_POS     280
-#define MIX_LINE_DELAY_POS      330
-#define MIX_LINE_SLOW_POS       345
+#define MIX_LINE_DELAY_SLOW_POS 340
 #define MIX_LINE_NAME_FM_ICON   370
 #define MIX_LINE_NAME_FM_POS    390
 #define MIX_LINE_SELECT_POS     50
@@ -556,10 +555,13 @@ bool menuModelMixAll(evt_t event)
 
           displayMixLine(y, md);
 
+          BitmapBuffer * delayslow = 0;
           if (md->speedDown || md->speedUp)
-            lcd->drawBitmap(MIX_LINE_SLOW_POS, y + 2, mixerSetupSlowBitmap);
+            delayslow = mixerSetupSlowBitmap;
           if (md->delayUp || md->delayDown)
-            lcd->drawBitmap(MIX_LINE_DELAY_POS, y + 2, mixerSetupDelayBitmap);
+            delayslow = (delayslow ? mixerSetupDelaySlowBitmap : mixerSetupDelayBitmap );
+          if (delayslow)
+            lcd->drawBitmap(MIX_LINE_DELAY_SLOW_POS, y + 2, delayslow);
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {

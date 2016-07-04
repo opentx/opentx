@@ -218,6 +218,9 @@ class DefaultTheme: public Theme
       
       delete mixerSetupDelayBitmap;
       mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", TEXT_COLOR, TEXT_BGCOLOR);
+      
+      delete mixerSetupDelaySlowBitmap;
+      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_BGCOLOR, TEXT_COLOR);
     }
 
     virtual void load() const

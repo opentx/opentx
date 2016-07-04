@@ -161,6 +161,9 @@ class DarkblueTheme: public Theme
       delete mixerSetupDelayBitmap;
       mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", TEXT_COLOR, TEXT_BGCOLOR);  
       
+      delete mixerSetupDelaySlowBitmap;
+      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_BGCOLOR, TEXT_COLOR);
+      
       delete mixerSetupFlightmodeBitmap;
       mixerSetupFlightmodeBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_fm.png", TEXT_COLOR, TEXT_BGCOLOR);
     }
