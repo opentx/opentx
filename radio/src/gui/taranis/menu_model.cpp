@@ -20,6 +20,28 @@
 
 #include "opentx.h"
 
+const MenuHandlerFunc menuTabModel[] = {
+  menuModelSelect,
+  menuModelSetup,
+  CASE_HELI(menuModelHeli)
+  CASE_FLIGHT_MODES(menuModelFlightModesAll)
+  menuModelExposAll,
+  menuModelMixAll,
+  menuModelLimits,
+  CASE_CURVES(menuModelCurvesAll)
+#if defined(GVARS) && defined(FLIGHT_MODES)
+  CASE_GVARS(menuModelGVars)
+#endif
+  menuModelLogicalSwitches,
+  menuModelCustomFunctions,
+#if defined(LUA_MODEL_SCRIPTS)
+  menuModelCustomScripts,
+#endif
+  menuModelTelemetry,
+  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  menuModelDisplay
+};
+
 #if MENU_COLUMNS > 1
 uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {

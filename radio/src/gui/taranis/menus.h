@@ -68,33 +68,6 @@ void menuFirstCalib(uint8_t event);
 
 void onMainViewMenu(const char *result);
 
-void menuModelSelect(uint8_t event);
-void menuModelSetup(uint8_t event);
-void menuModelHeli(uint8_t event);
-void menuModelFlightModesAll(uint8_t event);
-void menuModelExposAll(uint8_t event);
-void menuModelMixAll(uint8_t event);
-void menuModelLimits(uint8_t event);
-void menuModelCurvesAll(uint8_t event);
-void menuModelCurveOne(uint8_t event);
-void menuModelGVars(uint8_t event);
-void menuModelLogicalSwitches(uint8_t event);
-void menuModelCustomFunctions(uint8_t event);
-void menuModelCustomScripts(uint8_t event);
-void menuModelTelemetry(uint8_t event);
-void menuModelDisplay(uint8_t event);
-void menuModelExpoOne(uint8_t event);
-
-void menuGeneralSetup(uint8_t event);
-void menuGeneralSdManager(uint8_t event);
-void menuGeneralCustomFunctions(uint8_t event);
-void menuGeneralTrainer(uint8_t event);
-void menuGeneralVersion(uint8_t event);
-void menuGeneralDiagKeys(uint8_t event);
-void menuGeneralDiagAna(uint8_t event);
-void menuGeneralHardware(uint8_t event);
-void menuGeneralCalib(uint8_t event);
-
 void menuMainViewChannelsMonitor(uint8_t event);
 void menuChannelsView(uint8_t event);
 void menuMainView(uint8_t event);
@@ -119,20 +92,21 @@ enum EnumTabRadio {
   e_Keys,
   e_Ana,
   e_Hardware,
-  e_Calib
+  e_Calib,
+  e_TabRadioPagesCount
 };
 
-const MenuHandlerFunc menuTabGeneral[] = {
-  menuGeneralSetup,
-  menuGeneralSdManager,
-  menuGeneralCustomFunctions,
-  menuGeneralTrainer,
-  menuGeneralVersion,
-  menuGeneralDiagKeys,
-  menuGeneralDiagAna,
-  menuGeneralHardware,
-  menuGeneralCalib
-};
+void menuGeneralSetup(uint8_t event);
+void menuGeneralSdManager(uint8_t event);
+void menuGeneralCustomFunctions(uint8_t event);
+void menuGeneralTrainer(uint8_t event);
+void menuGeneralVersion(uint8_t event);
+void menuGeneralDiagKeys(uint8_t event);
+void menuGeneralDiagAna(uint8_t event);
+void menuGeneralHardware(uint8_t event);
+void menuGeneralCalib(uint8_t event);
+
+extern const MenuHandlerFunc menuTabGeneral[e_TabRadioPagesCount];
 
 enum EnumTabModel {
   e_ModelSelect,
@@ -152,29 +126,27 @@ enum EnumTabModel {
   e_Telemetry,
   CASE_MAVLINK(e_MavSetup)
   e_Display,
+  e_TabModelPagesCount
 };
 
-const MenuHandlerFunc menuTabModel[] = {
-  menuModelSelect,
-  menuModelSetup,
-  CASE_HELI(menuModelHeli)
-  CASE_FLIGHT_MODES(menuModelFlightModesAll)
-  menuModelExposAll,
-  menuModelMixAll,
-  menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
-#if defined(GVARS) && defined(FLIGHT_MODES)
-  CASE_GVARS(menuModelGVars)
-#endif
-  menuModelLogicalSwitches,
-  menuModelCustomFunctions,
-#if defined(LUA_MODEL_SCRIPTS)
-  menuModelCustomScripts,
-#endif
-  menuModelTelemetry,
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
-  menuModelDisplay
-};
+void menuModelSelect(uint8_t event);
+void menuModelSetup(uint8_t event);
+void menuModelHeli(uint8_t event);
+void menuModelFlightModesAll(uint8_t event);
+void menuModelExposAll(uint8_t event);
+void menuModelMixAll(uint8_t event);
+void menuModelLimits(uint8_t event);
+void menuModelCurvesAll(uint8_t event);
+void menuModelCurveOne(uint8_t event);
+void menuModelGVars(uint8_t event);
+void menuModelLogicalSwitches(uint8_t event);
+void menuModelCustomFunctions(uint8_t event);
+void menuModelCustomScripts(uint8_t event);
+void menuModelTelemetry(uint8_t event);
+void menuModelDisplay(uint8_t event);
+void menuModelExpoOne(uint8_t event);
+
+extern const MenuHandlerFunc menuTabModel[e_TabModelPagesCount];
 
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 

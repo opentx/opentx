@@ -20,6 +20,18 @@
 
 #include "opentx.h"
 
+const MenuHandlerFunc menuTabGeneral[] = {
+  menuGeneralSetup,
+  menuGeneralSdManager,
+  menuGeneralCustomFunctions,
+  menuGeneralTrainer,
+  menuGeneralVersion,
+  menuGeneralDiagKeys,
+  menuGeneralDiagAna,
+  menuGeneralHardware,
+  menuGeneralCalib
+};
+
 void menuGeneralCustomFunctions(uint8_t event)
 {
   MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
