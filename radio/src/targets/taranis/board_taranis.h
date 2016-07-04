@@ -413,7 +413,6 @@ void checkTrainerSettings(void);
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
-extern Fifo<uint8_t, 32> sbusFifo;
 #endif
 
 #endif // _BOARD_TARANIS_H_
