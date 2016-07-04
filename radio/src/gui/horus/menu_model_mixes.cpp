@@ -345,8 +345,7 @@ void displayMixSmallFlightModes(coord_t x, coord_t y, FlightModesType value)
 
 void displayMixLine(coord_t y, MixData *md)
 {
-  if (md->name[0] && md->flightModes)
-  {
+  if (md->name[0] && md->flightModes) {
     if (SLOW_BLINK_ON_PHASE) {
       lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
       displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
@@ -356,8 +355,7 @@ void displayMixLine(coord_t y, MixData *md)
       lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
     }
   }
-  else
-  {
+  else {
     if (md->name[0]) {
       lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupLabelBitmap);
       lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
