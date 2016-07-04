@@ -270,14 +270,15 @@ bool menuModelMixOne(evt_t event)
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#define MIX_LINE_WEIGHT_POS     110
-#define MIX_LINE_SRC_POS        115
-#define MIX_LINE_CURVE_POS      165
-#define MIX_LINE_SWITCH_POS     230
-#define MIX_LINE_DELAY_POS      270
-#define MIX_LINE_FM_POS         290
-#define MIX_LINE_NAME_POS       405
-#define MIX_LINE_SELECT_POS     50
+#define MIX_LINE_WEIGHT_POS     105
+#define MIX_LINE_SRC_POS        120
+#define MIX_LINE_CURVE_ICON     175
+#define MIX_LINE_CURVE_POS      195
+#define MIX_LINE_SWITCH_ICON    260
+#define MIX_LINE_SWITCH_POS     280
+#define MIX_LINE_DELAY_SLOW_POS 340
+#define MIX_LINE_NAME_FM_ICON   370
+#define MIX_LINE_NAME_FM_POS    390
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
 #define MIX_STATUS_MARGIN_LEFT  MENUS_MARGIN_LEFT + 45
@@ -322,20 +323,51 @@ void onMixesMenu(const char * result)
 
 void displayMixInfos(coord_t y, MixData *md)
 {
+  if (md->curve.value != 0 ) lcd->drawBitmap(MIX_LINE_CURVE_ICON, y + 2, mixerSetupCurveBitmap);
   putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve);
 
   if (md->swtch) {
+    lcd->drawBitmap(MIX_LINE_SWITCH_ICON, y + 2, mixerSetupSwitchBitmap);
     putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+  }
+}
+
+void displayMixSmallFlightModes(coord_t x, coord_t y, FlightModesType value)
+{
+  for (int i=0; i<MAX_FLIGHT_MODES; i++) {
+    char s[] = " ";
+    s[0] = '0' + i;
+    if (value & (1<<i)) lcd->drawFilledRect(x, y+2, 8, 12 , SOLID, CURVE_AXIS_COLOR);
+    lcdDrawText(x, y, s, SMLSIZE);
+    x += 8;
   }
 }
 
 void displayMixLine(coord_t y, MixData *md)
 {
-  if (md->name[0]) {
-    lcdDrawSizedText(MIX_LINE_NAME_POS, y+2, md->name, sizeof(md->name), ZCHAR | SMLSIZE);
+  if (md->name[0] && md->flightModes)
+  {
+    if (SLOW_BLINK_ON_PHASE) {
+      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
+      displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
+    }
+    else {
+      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupLabelBitmap);
+      lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
+    }
+  }
+  else
+  {
+    if (md->name[0]) {
+      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupLabelBitmap);
+      lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
+    }
+    if (md->flightModes) {
+      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
+      displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
+    }
   }
   displayMixInfos(y, md);
-  displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes, 0);
 }
 
 void displayMixStatus(uint8_t channel)
@@ -523,12 +555,13 @@ bool menuModelMixAll(evt_t event)
 
           displayMixLine(y, md);
 
-          char cs[] = " ";
+          BitmapBuffer * delayslow = 0;
           if (md->speedDown || md->speedUp)
-            cs[0] = 'S';
+            delayslow = mixerSetupSlowBitmap;
           if (md->delayUp || md->delayDown)
-            cs[0] = (cs[0] =='S' ? '*' : 'D');
-          lcdDrawText(MIX_LINE_DELAY_POS, y, cs);
+            delayslow = (delayslow ? mixerSetupDelaySlowBitmap : mixerSetupDelayBitmap );
+          if (delayslow)
+            lcd->drawBitmap(MIX_LINE_DELAY_SLOW_POS, y + 2, delayslow);
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {

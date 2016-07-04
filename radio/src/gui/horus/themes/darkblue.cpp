@@ -145,6 +145,27 @@ class DarkblueTheme: public Theme
       
       delete mixerSetupReplaceBitmap;
       mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR); 
+      
+      delete mixerSetupLabelBitmap;
+      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", TEXT_COLOR, TEXT_BGCOLOR); 
+      
+      delete mixerSetupCurveBitmap;
+      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR); 
+      
+      delete mixerSetupSwitchBitmap;
+      mixerSetupSwitchBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_switch.png", TEXT_COLOR, TEXT_BGCOLOR); 
+      
+      delete mixerSetupSlowBitmap;
+      mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);
+      
+      delete mixerSetupDelayBitmap;
+      mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", TEXT_COLOR, TEXT_BGCOLOR);  
+      
+      delete mixerSetupDelaySlowBitmap;
+      mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_BGCOLOR, TEXT_COLOR);
+      
+      delete mixerSetupFlightmodeBitmap;
+      mixerSetupFlightmodeBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_fm.png", TEXT_COLOR, TEXT_BGCOLOR);
     }
 
     virtual void load() const

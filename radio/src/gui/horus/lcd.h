@@ -267,6 +267,7 @@ void lcdSetContrast();
   #define BLINK_ON_PHASE               (0)
 #else
   #define BLINK_ON_PHASE               (g_blinkTmr10ms & (1<<6))
+  #define SLOW_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<7))
 #endif
 
 #endif // _LCD_H_
