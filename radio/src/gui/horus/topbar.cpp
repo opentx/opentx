@@ -20,6 +20,9 @@
 
 #include "opentx.h"
 
+
+static Topbar * topbar;
+
 unsigned int Topbar::getZonesCount() const
 {
   return MAX_TOPBAR_ZONES;
@@ -88,6 +91,9 @@ void drawTopBar()
     lcdDrawSolidFilledRect(LCD_W-122+4*i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_TITLE_COLOR);
   }
 
+  if (!topbar) {
+    topbar = new Topbar(&g_model.topbarData);  
+  }
   topbar->refresh();
 
 #if 0

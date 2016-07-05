@@ -2509,7 +2509,6 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(COLORLCD)
-  topbar = new Topbar(&g_model.topbarData);
   luaInit();
 #endif
 
