@@ -64,5 +64,5 @@ void loadCustomScreens()
     customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
   }
 
-  topbar->load();
+  loadTopBar();
 }

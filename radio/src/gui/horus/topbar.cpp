@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 
-static Topbar * topbar;
+static Topbar * topbar = 0;
 
 unsigned int Topbar::getZonesCount() const
 {
@@ -52,6 +52,19 @@ void drawTopbarDatetime()
 
   getTimerString(str, getValue(MIXSRC_TX_TIME));
   lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+}
+
+Topbar * getTopBar()
+{
+  return topbar;
+}
+
+void loadTopBar()
+{
+  if (!topbar) {
+    topbar = new Topbar(&g_model.topbarData);  
+  }
+  topbar->load();
 }
 
 void drawTopBar()

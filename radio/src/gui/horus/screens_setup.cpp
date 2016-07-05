@@ -314,7 +314,7 @@ bool menuWidgetsSetup(evt_t event)
     Zone zone = currentContainer->getZone(i);
     LcdFlags color;
     int padding, thickness;
-    if (currentContainer == topbar) {
+    if (currentContainer == getTopBar()) {
       color = MENU_TITLE_COLOR;
       padding = 2;
       thickness = 1;
@@ -468,7 +468,7 @@ bool menuScreensTheme(evt_t event)
           drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup", attr);
           if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
             currentScreen = customScreens[0];
-            currentContainer = topbar;
+            currentContainer = getTopBar();
             pushMenu(menuWidgetsSetup);
           }
         }
