@@ -2492,7 +2492,7 @@ void opentxInit(OPENTX_INIT_ARGS)
     unexpectedShutdown = 1;
   }
   else {
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(PCBMEGA2560)
     sdInit();
 #endif
   }
