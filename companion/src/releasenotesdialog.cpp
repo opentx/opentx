@@ -2,7 +2,7 @@
 #include "ui_htmldialog.h"
 
 ReleaseNotesDialog::ReleaseNotesDialog(QWidget * parent) :
-  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  QDialog(parent),
   ui(new Ui::HtmlDialog)
 {
   ui->setupUi(this);

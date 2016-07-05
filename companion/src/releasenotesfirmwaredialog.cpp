@@ -3,7 +3,7 @@
 #include "helpers.h"
 
 ReleaseNotesFirmwareDialog::ReleaseNotesFirmwareDialog(QWidget * parent, const QString & rnurl):
-  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  QDialog(parent),
   ui(new Ui::HtmlDialog)
 {
   ui->setupUi(this);
