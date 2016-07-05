@@ -171,8 +171,6 @@ void storageCheck(bool immediately)
 
 void storageReadAll()
 {
-  sdInit();
-
   if (loadGeneralSettings() != NULL) {
     storageEraseAll(true);
   }
