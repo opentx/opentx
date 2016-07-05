@@ -14,9 +14,13 @@ local function update(pie, options)
   pie.options = options
 end
 
+local function background(pie)
+  pie.counter = pie.counter + 1
+end
+
 function refresh(pie)
   pie.counter = pie.counter + 1
   lcd.drawNumber(pie.zone.x, pie.zone.y, pie.counter, LEFT + DBLSIZE + TEXT_COLOR);
 end
 
-return { name="Counter", options=options, create=create, update=update, refresh=refresh }
+return { name="Counter", options=options, create=create, update=update, refresh=refresh, background=background }
