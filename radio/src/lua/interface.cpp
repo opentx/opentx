@@ -981,7 +981,7 @@ class LuaWidgetFactory: public WidgetFactory
       }
 
       if (lua_pcall(L, 2, 1, 0) != 0) {
-        TRACE("Error in create() of widget %s: %s", getName(), lua_tostring(L, -1));
+        TRACE("Error in widget %s create() function : %s", getName(), lua_tostring(L, -1));
       }
       int widgetData = luaL_ref(L, LUA_REGISTRYINDEX);
       Widget * widget = new LuaWidget(this, zone, persistentData, widgetData);
@@ -1009,7 +1009,7 @@ void LuaWidget::update() const
   }
 
   if (lua_pcall(L, 2, 0, 0) != 0) {
-    TRACE("Error in update() of widget %s: %s", factory->getName(), lua_tostring(L, -1));
+    TRACE("Error in widget %s update() function : %s", factory->getName(), lua_tostring(L, -1));
   }
 }
 
@@ -1020,7 +1020,7 @@ void LuaWidget::refresh()
   lua_rawgeti(L, LUA_REGISTRYINDEX, factory->refreshFunction);
   lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
   if (lua_pcall(L, 1, 0, 0) != 0) {
-    TRACE("Error in refresh() of widget %s: %s", factory->getName(), lua_tostring(L, -1));
+    TRACE("Error in widget %s refresh() function : %s", factory->getName(), lua_tostring(L, -1));
   }
 }
 
@@ -1031,7 +1031,7 @@ void LuaWidget::background()
   lua_rawgeti(L, LUA_REGISTRYINDEX, factory->backgroundFunction);
   lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
   if (lua_pcall(L, 1, 0, 0) != 0) {
-    TRACE("Error in background() of widget %s: %s", factory->getName(), lua_tostring(L, -1));
+    TRACE("Error in widget %s background() function : %s", factory->getName(), lua_tostring(L, -1));
   }
 }
 
