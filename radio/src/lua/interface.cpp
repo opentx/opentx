@@ -1028,10 +1028,12 @@ void LuaWidget::background()
 {
   SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
   LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
-  lua_rawgeti(L, LUA_REGISTRYINDEX, factory->backgroundFunction);
-  lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
-  if (lua_pcall(L, 1, 0, 0) != 0) {
-    TRACE("Error in widget %s background() function : %s", factory->getName(), lua_tostring(L, -1));
+  if (factory->backgroundFunction) {
+    lua_rawgeti(L, LUA_REGISTRYINDEX, factory->backgroundFunction);
+    lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
+    if (lua_pcall(L, 1, 0, 0) != 0) {
+      TRACE("Error in widget %s background() function : %s", factory->getName(), lua_tostring(L, -1));
+    }
   }
 }
 
