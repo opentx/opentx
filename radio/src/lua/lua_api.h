@@ -127,7 +127,7 @@ extern uint16_t maxLuaInterval;
 extern uint16_t maxLuaDuration;
 
 #if defined(PCBTARANIS)
-  #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER && (key) != KEY_PAGE)
+  #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER && ((luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) || (key) != KEY_PAGE))
 #elif defined(PCBHORUS)
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
 #endif
