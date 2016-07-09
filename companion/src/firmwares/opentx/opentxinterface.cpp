@@ -1133,7 +1133,6 @@ QString OpenTxFirmware::getStampUrl()
 void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 {
   firmware->addOption("ppmus", QObject::tr("Channel values displayed in us"));
-  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   firmware->addOption("nooverridech", QObject::tr("No OverrideCH functions available"));
   Option fai_options[] = { { "faichoice", QObject::tr("Possibility to enable FAI MODE (no telemetry) at field") }, { "faimode", QObject::tr("FAI MODE (no telemetry) always enabled") }, { NULL } };
   firmware->addOptions(fai_options);
@@ -1151,6 +1150,7 @@ void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
   firmware->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015"));
   firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
   firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
 }
 
 void addOpenTxLcdOptions(OpenTxFirmware * firmware)
@@ -1222,6 +1222,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("battgraph", QObject::tr("Battery graph"));
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1250,6 +1251,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
   firmware->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   firmware->addOption("imperial", QObject::tr("Imperial units"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1283,6 +1285,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nogps", QObject::tr("No GPS support"));
   firmware->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   firmware->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1319,6 +1322,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nogauges", QObject::tr("No gauges in the custom telemetry screen"));
   firmware->addOption("fasoffset", QObject::tr("Allow compensating for offset errors in FrSky FAS current sensors"));
   firmware->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1349,6 +1353,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("thrtrace", QObject::tr("Enable the throttle trace in Statistics"));
   firmware->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   firmware->addOption("imperial", QObject::tr("Imperial units"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1370,6 +1375,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("battgraph", QObject::tr("Battery graph"));
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
 //  firmware->addOption("rtc", QObject::tr("Optional RTC added"));
 //  firmware->addOption("volume", QObject::tr("i2c volume control added"));
   addOpenTxCommonOptions(firmware);
@@ -1393,6 +1399,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("battgraph", QObject::tr("Battery graph"));
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1418,6 +1425,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   firmware->addOption("imperial", QObject::tr("Imperial units"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
@@ -1448,6 +1456,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("pgbar", QObject::tr("EEprom write Progress bar"));
   firmware->addOption("imperial", QObject::tr("Imperial units"));
+  firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
