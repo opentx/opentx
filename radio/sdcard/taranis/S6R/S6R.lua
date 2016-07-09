@@ -11,7 +11,8 @@ local refreshIndex = 0
 local calibrationState = 0
 local pageOffset = 0
 local calibrationStep = 0
-local pages = { }
+local pages = {}
+local fields = {}
 
 local configFields = {
   {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
@@ -50,7 +51,8 @@ local calibrationFields = {
 
 -- Change display attribute to current field
 local function addField(step)
-  field = fields[current]
+  local field = fields[current]
+  local min, max
   if field[2] == VALUE then
     min = field[5]
     max = field[6]
@@ -68,6 +70,7 @@ local function selectPage(step)
   page = 1 + ((page + step - 1 + #pages) % #pages)
   refreshIndex = 0
   calibrationStep = 0
+  pageOffset = 0
 end
 
 -- Select the next or previous editable field
@@ -96,12 +99,12 @@ local function redrawFieldsPage()
   end
 
   for index = 1, 7, 1 do
-    field = fields[pageOffset+index]
+    local field = fields[pageOffset+index]
     if field == nil then
       break
     end
 
-    attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
+    local attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
 
     lcd.drawText(0, 1+8*index, field[1])
 
@@ -137,16 +140,16 @@ local function refreshNext()
         telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
       end
     elseif refreshIndex < #fields then
-      field = fields[refreshIndex + 1]
+      local field = fields[refreshIndex + 1]
       if telemetryRead(field[3]) == true then
         refreshState = 1
         telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
       end
     end
   elseif refreshState == 1 then
-    physicalId, primId, dataId, value = sportTelemetryPop()
+    local physicalId, primId, dataId, value = sportTelemetryPop()
     if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 then
-      fieldId = value % 256
+      local fieldId = value % 256
       if calibrationState == 2 then
         if fieldId == 0x9D then
           refreshState = 0
@@ -154,12 +157,12 @@ local function refreshNext()
           calibrationStep = (calibrationStep + 1) % 6
         end
       else
-        field = fields[refreshIndex + 1]
+        local field = fields[refreshIndex + 1]
         if fieldId == field[3] then
-          value = math.floor(value / 256)
+          local value = math.floor(value / 256)
           if field[3] >= 0x9E and field[3] <= 0xA0 then
-            b1 = value % 256
-            b2 = math.floor(value / 256)
+            local b1 = value % 256
+            local b2 = math.floor(value / 256)
             value = b1*256 + b2
             value = value - bit32.band(value, 0x8000) * 2
           end
@@ -186,7 +189,7 @@ local function refreshNext()
 end
 
 local function updateField(field)
-  value = field[4]
+  local value = field[4]
   if field[2] == COMBO and #field == 6 then
     value = field[6][1+value]
   elseif field[2] == VALUE and #field == 8 then
@@ -228,7 +231,7 @@ local mountBitmaps = { "horz.bmp", "horz-r.bmp", "vert.bmp", "vert-r.bmp" }
 
 local function runConfigPage(event)
   fields = configFields
-  result = runFieldsPage(event)
+  local result = runFieldsPage(event)
   if fields[1][4] ~= nil then
     lcd.drawPixmap(20, 28, wingBitmaps[1 + fields[1][4]])
   end
@@ -256,12 +259,12 @@ local function runCalibrationPage(event)
   lcd.drawText(0, 9, "Turn the receiver " .. position, 0)
   lcd.drawPixmap(10, 19, position .. ".bmp")
   for index = 1, 3, 1 do
-    field = fields[pageOffset+index]
+    local field = fields[index]
     lcd.drawText(80, 12+10*index, field[1], 0)
     lcd.drawNumber(90, 12+10*index, field[4]/10, LEFT+PREC2)
   end
 
-  attr = calibrationState == 0 and INVERS or 0
+  local attr = calibrationState == 0 and INVERS or 0
   lcd.drawText(0, 56, "Press [Enter] when ready", attr)
   if event == EVT_ENTER_BREAK then
     calibrationState = 1
@@ -297,7 +300,7 @@ local function run(event)
     selectPage(-1)
   end
 
-  result = pages[page](event)
+  local result = pages[page](event)
   refreshNext()
 
   return result
