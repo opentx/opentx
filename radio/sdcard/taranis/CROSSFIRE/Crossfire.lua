@@ -7,10 +7,14 @@ local pageOffset = 0
 local pages = { }
 
 -- Change display attribute to current field
-local function addField(step)
+local function incrField(step)
   local fields = pages[pageIndex].fields
   local field = fields[fieldIndex]
-  if field.type == 9 then
+  local min, max = 0, 0
+  if field.type <= 5 then
+    min = field.min
+    max = field.max
+  elseif field.type == 9 then
     min = 0
     max = #field.values - 1
   end
@@ -49,7 +53,7 @@ local function drawDevicePage(page)
     if field.name == nil then
       lcd.drawText(0, 1+8*index, "...")
     else
-      attr = fieldIndex == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
+      local attr = fieldIndex == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
       lcd.drawText(0, 1+8*index, field.name)
       if field.functions ~= nil then
         field.functions.display(field, 1+8*index, attr)
@@ -71,7 +75,7 @@ local function drawDevicePage(page)
 end
 
 local function createPage(id, name, fields_count)
-  newpage = {
+  local newpage = {
     id = id,
     name = name,
     pagetimeout = 0,
@@ -94,24 +98,26 @@ local function getPage(name)
 end
 
 local function parseDeviceInfoMessage(data)
-  id = data[2]
-  name = ""
-  i = 3
+  local id = data[2]
+  local name = ""
+  local i = 3
   while data[i] ~= 0 do
     name = name .. string.char(data[i])
     i = i + 1
   end
-  fields_count = data[i+13]
-  pg = getPage(name)
+  local fields_count = data[i+13]
+  local pg = getPage(name)
   if pg == nil then
     pg = createPage(id, name, fields_count)
     pages[#pages + 1] = pg
   end
+  local time = getTime()
   pg.pagetimeout = time + 3000 -- 30s
 end
 
-function split(inputstr)
-  local t={}; i=1
+local function split(inputstr)
+  local t={}
+  local i=1
   for str in string.gmatch(inputstr, "([^;]+)") do
     t[i] = str
     i = i + 1
@@ -119,14 +125,62 @@ function split(inputstr)
   return t
 end
 
-local function fieldTextSelectionLoad(field, data, offset)
-  values = ""
+local function fieldGetString(data, offset)
+  local result = ""
   while data[offset] ~= 0 do
-    values = values .. string.char(data[offset])
+    result = result .. string.char(data[offset])
     offset = offset + 1
   end
-  field.values = split(values)
   offset = offset + 1
+  return result, offset
+end
+
+-- UINT8
+local function fieldUint8SelectionLoad(field, data, offset)
+  field.value = data[offset]
+  field.min = data[offset+1]
+  field.max = data[offset+2]
+  field.unit, offset = fieldGetString(data, offset+4)
+end
+
+local function fieldUint8SelectionSave(fieldIndex)
+  crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, fieldIndex, pages[pageIndex].fields[fieldIndex].value })
+end
+
+local function fieldIntSelectionDisplay(field, y, attr)
+  lcd.drawNumber(COLUMN_2, y, field.value, LEFT + attr)
+  lcd.drawText(lcd.getLastPos(), y, field.unit, attr)
+end
+
+-- UINT16
+local function fieldUint16SelectionLoad(field, data, offset)
+  field.value = bit32.lshift(data[offset], 8) + data[offset+1]
+  field.min = bit32.lshift(data[offset+2], 8) + data[offset+3]
+  field.max = bit32.lshift(data[offset+4], 8) + data[offset+5]
+  field.unit, offset = fieldGetString(data, offset+6)
+end
+
+local function fieldUint16SelectionSave(fieldIndex)
+  crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, fieldIndex, bit32.rshift(pages[pageIndex].fields[fieldIndex].value, 8), pages[pageIndex].fields[fieldIndex].value % 255 })
+end
+
+-- UINT32
+local function fieldUint32SelectionLoad(field, data, offset)
+  field.value = bit32.lshift(data[offset], 24) + bit32.lshift(data[offset+1], 16) + bit32.lshift(data[offset+2], 8) + data[offset+3]
+  field.min = bit32.lshift(data[offset+4], 24) + bit32.lshift(data[offset+5], 16) + bit32.lshift(data[offset+6], 8) + data[offset+7]
+  field.max = bit32.lshift(data[offset+8], 24) + bit32.lshift(data[offset+9], 16) + bit32.lshift(data[offset+10], 8) + data[offset+11]
+  field.unit, offset = fieldGetString(data, offset+12)
+end
+
+local function fieldUint32SelectionSave(fieldIndex)
+  crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, fieldIndex, bit32.rshift(pages[pageIndex].fields[fieldIndex].value, 24), bit32.rshift(pages[pageIndex].fields[fieldIndex].value, 16) % 255, bit32.rshift(pages[pageIndex].fields[fieldIndex].value, 8) % 255, pages[pageIndex].fields[fieldIndex].value % 255 })
+end
+
+-- TEXT SELECTION
+local function fieldTextSelectionLoad(field, data, offset)
+  local values
+  values, offset = fieldGetString(data, offset)
+  field.values = split(values)
   field.value = data[offset]
 end
 
@@ -138,19 +192,37 @@ local function fieldTextSelectionDisplay(field, y, attr)
   lcd.drawText(COLUMN_2, y, field.values[field.value+1], attr)
 end
 
+-- STRING
+local function fieldStringSelectionLoad(field, data, offset)
+  field.value, offset = fieldGetString(data, offset)
+  if #data >= offset then
+    field.maxlen = data[offset]
+  end
+end
+
+local function fieldStringSelectionSave(fieldIndex)
+  -- crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, fieldIndex,  })
+end
+
+local function fieldStringSelectionDisplay(field, y, attr)
+  lcd.drawText(COLUMN_2, y, field.value, attr)
+end
+
 local types_functions = {
-  nil,
-  nil,
-  nil,
-  nil,
-  nil,
-  nil,
+  { load=fieldUint8SelectionLoad, save=fieldUint8SelectionSave, display=fieldIntSelectionDisplay },
+  { load=fieldUint8SelectionLoad, save=fieldUint8SelectionSave, display=fieldIntSelectionDisplay },
+  { load=fieldUint16SelectionLoad, save=fieldUint16SelectionSave, display=fieldIntSelectionDisplay },
+  { load=fieldUint16SelectionLoad, save=fieldUint16SelectionSave, display=fieldIntSelectionDisplay },
+  { load=fieldUint32SelectionLoad, save=fieldUint32SelectionSave, display=fieldIntSelectionDisplay },
+  { load=fieldUint32SelectionLoad, save=fieldUint32SelectionSave, display=fieldIntSelectionDisplay },
   nil,
   nil,
   nil,
   { load=fieldTextSelectionLoad, save=fieldTextSelectionSave, display=fieldTextSelectionDisplay },
+  { load=fieldStringSelectionLoad, save=fieldStringSelectionSave, display=fieldStringSelectionDisplay },
   nil,
-  nil
+  { load=fieldStringSelectionLoad, save=fieldStringSelectionSave, display=fieldStringSelectionDisplay },
+  
 }
 
 local function parseParameterInfoMessage(data)
@@ -184,9 +256,9 @@ end
 
 local devicesRefreshTimeout = 0
 local function refreshNext()
-  command, data = crossfireTelemetryPop()
+  local command, data = crossfireTelemetryPop()
   if command == nil then
-    time = getTime()
+    local time = getTime()
     if time > devicesRefreshTimeout then
       if #pages == 0 then
         devicesRefreshTimeout = time + 100 -- 1s
@@ -234,9 +306,9 @@ local function runDevicePage(index, event)
     end
   elseif edit then
     if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT then
-      addField(1)
+      incrField(1)
     elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT then
-      addField(-1)
+      incrField(-1)
     end
   else
     if event == EVT_MINUS_FIRST then
@@ -269,6 +341,7 @@ local function run(event)
     selectPage(-1)
   end
 
+  local result
   if #pages == 0 then
     result = runNoDevicesPage(event)
   else
