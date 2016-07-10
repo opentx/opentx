@@ -971,3 +971,4 @@ Benjamin Johnson
 Brad Kelley
 Michel Biancki
 Lynn Laycock
+Claude Godefroy
