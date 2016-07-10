@@ -606,7 +606,7 @@
 #define TR_VSENSORTYPES        "Egen\0   ""Beräknad"
 
 #define LEN_VFORMULAS          "\014"
-#define TR_VFORMULAS           "Addera\0     ""Medelvärde\0 ""Min\0        ""Max\0        ""Multiplicera""Totalsumma\0 ""Cell\0       ""Förbrukning ""Sträcka    "
+#define TR_VFORMULAS           "Addera\0     ""Medelvärde\0 ""Min\0        ""Max\0        ""Multiplicera""Totalsumma\0 ""Cell\0       ""Förbrukning ""Sträcka    ""Constant\0   "
 
 #define LEN_VPREC              "\004"
 #define TR_VPREC               "0.--""0.0 ""0.00"

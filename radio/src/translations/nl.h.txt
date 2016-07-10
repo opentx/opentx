@@ -600,7 +600,7 @@
 #define TR_VSENSORTYPES        "Custom\0 ""Berekend"
 
 #define LEN_VFORMULAS          "\014"
-#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0        ""Vermenigvuld""Totaal\0     ""Cellen\0     ""Verbruik\0   ""Afstand\0    "
+#define TR_VFORMULAS           "Optellen\0   ""Gemiddeld\0  ""Min\0        ""Max\0        ""Vermenigvuld""Totaal\0     ""Cellen\0     ""Verbruik\0   ""Afstand\0    ""Constant\0   "
 
 
 

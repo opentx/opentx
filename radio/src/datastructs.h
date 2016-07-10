@@ -658,6 +658,10 @@ PACK(struct TelemetrySensor {
       uint8_t alt;
       uint16_t spare;
     }) dist;
+    PACK(struct {
+      uint8_t spare[2];
+      int16_t value;
+    }) constant;
     uint32_t param;
   };
   NOBACKUP(
@@ -667,6 +671,7 @@ PACK(struct TelemetrySensor {
   int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
   bool isConfigurable() const;
   bool isPrecConfigurable() const;
+  bool isUnitConfigurable() const;
   int32_t getPrecMultiplier() const;
   int32_t getPrecDivisor() const);
 });

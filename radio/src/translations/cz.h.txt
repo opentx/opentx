@@ -596,7 +596,7 @@
 #define TR_VSENSORTYPES        "Vlastní\0 ""Vypočtený"
 
 #define LEN_VFORMULAS          "\012"
-#define TR_VFORMULAS           "Součet\0   ""Průměr\0   ""Min\0      ""Max\0      ""Násobení  ""Totalize  ""Článek\0   ""Spotřeba  ""Vzdálenost"
+#define TR_VFORMULAS           "Součet\0   ""Průměr\0   ""Min\0      ""Max\0      ""Násobení  ""Totalize  ""Článek\0   ""Spotřeba  ""Vzdálenost""Constant\0   "
 
 #define LEN_VPREC              "\004"
 #define TR_VPREC               "X   ""X.X ""X.XX"

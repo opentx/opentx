@@ -600,7 +600,7 @@
 #define TR_VSENSORTYPES        "Sensor\0   ""Berechnung"
 
 #define LEN_VFORMULAS          "\014"  // "\10" ursprünglich
-#define TR_VFORMULAS           "Addieren\0   ""Mittelwert\0 ""Min\0        ""Max\0        ""Multiplizier""Gesamt\0     ""Zelle\0      ""Verbrauch\0  ""Distanz\0    "
+#define TR_VFORMULAS           "Addieren\0   ""Mittelwert\0 ""Min\0        ""Max\0        ""Multiplizier""Gesamt\0     ""Zelle\0      ""Verbrauch\0  ""Distanz\0    ""Konstante\0  "
 
 #define LEN_VPREC              "\004"  //  "\005"  Prec0 Prec1 Prec2 ursprünglich
 #define TR_VPREC               "0.--""0.0 ""0.00"

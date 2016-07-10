@@ -428,6 +428,9 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       setValue(sensor, value, sensor.unit, sensor.prec);
       break;
     }
+    case TELEM_FORMULA_CONSTANT:
+      setValue(sensor, sensor.constant.value, sensor.unit, sensor.prec);
+      break;
 
     default:
       break;
@@ -629,12 +632,28 @@ bool TelemetrySensor::isConfigurable() const
   return true;
 }
 
+bool TelemetrySensor::isUnitConfigurable() const
+{
+  if (isConfigurable()) {
+    return true;
+  }
+  else if (type == TELEM_TYPE_CALCULATED && (formula == TELEM_FORMULA_DIST || formula == TELEM_FORMULA_CONSTANT)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 bool TelemetrySensor::isPrecConfigurable() const
 {
   if (isConfigurable()) {
     return true;
   }
   else if (unit == UNIT_CELLS) {
+    return true;
+  }
+  else if (type == TELEM_TYPE_CALCULATED && formula == TELEM_FORMULA_CONSTANT) {
     return true;
   }
   else {

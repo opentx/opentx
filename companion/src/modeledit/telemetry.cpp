@@ -529,13 +529,16 @@ TelemetrySensorPanel::~TelemetrySensorPanel()
 void TelemetrySensorPanel::update()
 {
   bool isConfigurable = false;
+  bool isUnitConfigurable = false;
+  bool isPrecConfigurable = false;
   bool gpsFieldsDisplayed = false;
   bool cellsFieldsDisplayed = false;
-  bool consFieldsDisplayed = false;
+  bool consumptionFieldsDisplayed = false;
   bool ratioFieldsDisplayed = false;
   bool totalizeFieldsDisplayed = false;
   bool sources12FieldsDisplayed = false;
   bool sources34FieldsDisplayed = false;
+  bool constantFieldDisplayed = false;
 
   lock = true;
   ui->name->setText(sensor.label);
@@ -552,12 +555,15 @@ void TelemetrySensorPanel::update()
     ui->formula->show();
     ui->formula->setCurrentIndex(sensor.formula);
     isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
+    isUnitConfigurable = isConfigurable || (sensor.formula == SensorData::TELEM_FORMULA_DIST || sensor.formula == SensorData::TELEM_FORMULA_CONSTANT);
+    isPrecConfigurable = isUnitConfigurable || sensor.unit == SensorData::UNIT_CELLS;
     gpsFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_DIST);
     cellsFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CELL);
-    consFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION);
+    consumptionFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION);
     sources12FieldsDisplayed = (sensor.formula <= SensorData::TELEM_FORMULA_MULTIPLY);
     sources34FieldsDisplayed = (sensor.formula < SensorData::TELEM_FORMULA_MULTIPLY);
     totalizeFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE);
+    constantFieldDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_CONSTANT);
     updateSourcesComboBox(ui->source1, true);
     updateSourcesComboBox(ui->source2, true);
     updateSourcesComboBox(ui->source3, true);
@@ -600,16 +606,17 @@ void TelemetrySensorPanel::update()
   ui->ratio->setVisible(ratioFieldsDisplayed);
   ui->offsetLabel->setVisible(ratioFieldsDisplayed && sensor.unit != SensorData::UNIT_RPMS);
   ui->multiplierLabel->setVisible(sensor.unit == SensorData::UNIT_RPMS);
-  ui->offset->setVisible(ratioFieldsDisplayed);
-  ui->precLabel->setVisible(isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
-  ui->prec->setVisible(isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
-  ui->unit->setVisible((sensor.type == SensorData::TELEM_TYPE_CALCULATED && (sensor.formula == SensorData::TELEM_FORMULA_DIST)) || isConfigurable);
+  ui->valueLabel->setVisible(constantFieldDisplayed);
+  ui->offset->setVisible(ratioFieldsDisplayed || constantFieldDisplayed );
+  ui->precLabel->setVisible(isPrecConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
+  ui->prec->setVisible(isPrecConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT);
+  ui->unit->setVisible(isUnitConfigurable);
   ui->gpsSensorLabel->setVisible(gpsFieldsDisplayed);
   ui->gpsSensor->setVisible(gpsFieldsDisplayed);
   ui->altSensorLabel->setVisible(gpsFieldsDisplayed);
   ui->altSensor->setVisible(gpsFieldsDisplayed);
-  ui->ampsSensorLabel->setVisible(consFieldsDisplayed || totalizeFieldsDisplayed);
-  ui->ampsSensor->setVisible(consFieldsDisplayed || totalizeFieldsDisplayed);
+  ui->ampsSensorLabel->setVisible(consumptionFieldsDisplayed || totalizeFieldsDisplayed);
+  ui->ampsSensor->setVisible(consumptionFieldsDisplayed || totalizeFieldsDisplayed);
   ui->cellsSensorLabel->setVisible(cellsFieldsDisplayed);
   ui->cellsSensor->setVisible(cellsFieldsDisplayed);
   ui->cellsIndex->setVisible(cellsFieldsDisplayed);
