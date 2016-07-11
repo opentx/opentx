@@ -13,6 +13,7 @@ local pageOffset = 0
 local calibrationStep = 0
 local pages = {}
 local fields = {}
+local modifications = {}
 
 local configFields = {
   {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
@@ -139,6 +140,9 @@ local function refreshNext()
         calibrationState = 2
         telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
       end
+    elseif #modifications > 0 then
+      telemetryWrite(modifications[1][1], modifications[1][2])
+      modifications[1] = nil
     elseif refreshIndex < #fields then
       local field = fields[refreshIndex + 1]
       if telemetryRead(field[3]) == true then
@@ -195,7 +199,7 @@ local function updateField(field)
   elseif field[2] == VALUE and #field == 8 then
     value = value + field[8] - field[5]
   end
-  telemetryWrite(field[3], value)
+  modifications[#modifications+1] = { field[3], value }
 end
 
 -- Main
@@ -256,7 +260,7 @@ local function runCalibrationPage(event)
   lcd.clear()
   lcd.drawScreenTitle("S6R", page, #pages)
   local position = calibrationPositions[1 + calibrationStep]
-  lcd.drawText(0, 9, "Turn the receiver " .. position, 0)
+  lcd.drawText(0, 9, "Turn the S6R " .. position, 0)
   lcd.drawPixmap(10, 19, position .. ".bmp")
   for index = 1, 3, 1 do
     local field = fields[index]
