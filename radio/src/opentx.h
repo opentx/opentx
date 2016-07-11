@@ -449,9 +449,9 @@ void memswap(void * a, void * b, uint8_t size);
     #define IS_MODULE_CROSSFIRE(idx)        (false)
   #endif
   #if defined(MULTIMODULE)
-    #define IS_MODULE_MULTIMODULE(idx)        (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_MULTIMODULE)
+    #define IS_MODULE_MULTIMODULE(idx)      (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_MULTIMODULE)
   #else
-    #define IS_MODULE_MULTIMODULE(idx)        (false)
+    #define IS_MODULE_MULTIMODULE(idx)      (false)
   #endif
   #if defined(TARANIS_INTERNAL_PPM)
     #define MAX_INTERNAL_MODULE_CHANNELS()  ((g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.moduleData[INTERNAL_MODULE].type])

@@ -608,14 +608,14 @@
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
-  #define INDENT               "\007"
-  #define LEN_INDENT           1
+  #define INDENT               "   "
+  #define LEN_INDENT           3
   #define INDENT_WIDTH         12
   #define BREAKSPACE           "\036"
 #else
-  #define INDENT                 "\001"
-  #define LEN_INDENT             1
-  #define INDENT_WIDTH           (FW/2)
+  #define INDENT               "\001"
+  #define LEN_INDENT           1
+  #define INDENT_WIDTH         (FW/2)
   #define BREAKSPACE           " "
 #endif
 
