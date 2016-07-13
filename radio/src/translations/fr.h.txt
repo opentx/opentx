@@ -824,7 +824,7 @@
 #define TR_MENUFLIGHTPHASES    "PHASES DE VOL"
 #define TR_MENUHELISETUP       TR("CONF.HELI", "CONFIGURATION HELICO")
 
-#if defined(PCBTARANIS)
+#if defined(VIRTUALINPUTS)
   #define TR_MENUINPUTS        "ENTREES"
   #define TR_MENULIMITS        "SORTIES"
 #else
