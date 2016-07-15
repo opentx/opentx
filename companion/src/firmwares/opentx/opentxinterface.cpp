@@ -857,6 +857,8 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_DSMX:
           case PULSES_CROSSFIRE:
             return 1;
+          case PULSES_MULTIMODULE:
+            return id.contains("multimodule") ? 1 : 0;
           default:
             return 0;
         }
@@ -1155,6 +1157,7 @@ void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
   firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   firmware->addOption("eu", QObject::tr("Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015"));
   firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
+  firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
 }
 
 void addOpenTxLcdOptions(OpenTxFirmware * firmware)
