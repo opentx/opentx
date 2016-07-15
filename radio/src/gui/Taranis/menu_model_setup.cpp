@@ -760,8 +760,14 @@ void menuModelSetup(uint8_t event)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
               else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, MM_RF_PROTO_FIRST, MM_RF_PROTO_LAST);
-                if (checkIncDec_Ret)
-                  g_model.moduleData[EXTERNAL_MODULE].subType=0;
+                if (checkIncDec_Ret) {
+                  g_model.moduleData[EXTERNAL_MODULE].subType = 0;
+                  // Sensible default for DSM2 (same as for ppm): 6ch@11ms
+                  if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
+                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 6;
+                  else
+                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
+                }
               }
               else
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
@@ -922,9 +928,9 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        lcd_putsLeft(y, TR_FAILSAFE);
         if (IS_MODULE_XJT(moduleIdx)) {
+          ModuleData & moduleData = g_model.moduleData[moduleIdx];
+          lcd_putsLeft(y, TR_FAILSAFE);
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition==0 ? attr : 0);
           if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, menuHorizontalPosition==1 ? attr : 0);
           if (attr) {
