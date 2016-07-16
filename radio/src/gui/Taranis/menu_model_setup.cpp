@@ -937,7 +937,7 @@ void menuModelSetup(uint8_t event)
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         if (IS_MODULE_XJT(moduleIdx)) {
           ModuleData & moduleData = g_model.moduleData[moduleIdx];
-          lcd_putsLeft(y, TR_FAILSAFE);
+          lcd_putsLeft(y, STR_FAILSAFE);
           lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition==0 ? attr : 0);
           if (moduleData.failsafeMode == FAILSAFE_CUSTOM) lcd_putsAtt(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, menuHorizontalPosition==1 ? attr : 0);
           if (attr) {

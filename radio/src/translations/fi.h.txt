@@ -148,7 +148,7 @@
 #define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D"
 
 #define LEN_OPTIONS_DSM        "\011"
-#define TR_OPTIONS_DSM         " 4ch 22ms"" 5ch 22ms"" 6ch 22ms"" 7ch 22ms"" 4ch 11ms"" 5ch 11ms"" 6ch 11ms"" 7ch 11ms"" 8ch 22ms"" 9ch 22ms""10ch 22ms""11ch 22ms""12ch 22ms"
+#define TR_OPTIONS_DSM         "4ch 22ms\0""5ch 22ms\0""6ch 22ms\0""7ch 22ms\0""4ch 11ms\0""5ch 11ms\0""6ch 11ms\0""7ch 11ms\0""8ch 22ms\0""9ch 22ms\0""10ch 22ms""11ch 22ms""12ch 22ms"
 
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo\0 ""EriHie""Hieno\0""Keski\0""Karkea", "Exponential""Eri Hieno\0 ""Hieno\0     ""Keski\0     ""Karkea\0    ")
