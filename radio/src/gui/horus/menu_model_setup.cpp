@@ -659,8 +659,20 @@ bool menuModelSetup(evt_t event)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
               else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, MM_RF_PROTO_FIRST, MM_RF_PROTO_LAST);
-                if (checkIncDec_Ret)
-                  g_model.moduleData[EXTERNAL_MODULE].subType=0;
+                if (checkIncDec_Ret) {
+                  // When in custom protocol mode the highest bit (0x20) is set to indicate the protocl we might be way above MM_RF_PROTO_LAST.
+                  // Reset to MM_RF_PROTO_LAST-1 in that case
+                  if (checkIncDec_Ret == -1 && g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol >= MM_RF_PROTO_LAST)
+                  {
+                    g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol = MM_RF_PROTO_LAST-1;
+                  }
+                  g_model.moduleData[EXTERNAL_MODULE].subType = 0;
+                  // Sensible default for DSM2 (same as for ppm): 6ch@11ms
+                  if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
+                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 6;
+                  else
+                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
+                }
               }
               else
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
@@ -694,6 +706,7 @@ bool menuModelSetup(evt_t event)
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
                   break;
                 case MM_RF_PROTO_CUSTOM:
+                  //custom protocol using the highest bit 0x20 to indicate that the protocol and the lower bits as the rfProtocol
                   g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol = 0x20 | checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, 1, 31, EE_MODEL);
                   break;
               }
@@ -803,9 +816,9 @@ bool menuModelSetup(evt_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+        if (IS_MODULE_XJT(moduleIdx)) {
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FAILSAFE);
-        if (IS_MODULE_XJT(moduleIdx)) {
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition==0 ? attr : 0);
           if (moduleData.failsafeMode == FAILSAFE_CUSTOM) {
             drawButton(MODEL_SETUP_2ND_COLUMN + MODEL_SETUP_SET_FAILSAFE_OFS, y, STR_SET, menuHorizontalPosition==1 ? attr : 0);
