@@ -761,6 +761,12 @@ void menuModelSetup(uint8_t event)
               else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, MM_RF_PROTO_FIRST, MM_RF_PROTO_LAST);
                 if (checkIncDec_Ret) {
+                  // When in custom protocol mode the highest bit (0x20) is set to indicate the protocl we might be way above MM_RF_PROTO_LAST.
+                  // Reset to MM_RF_PROTO_LAST-1 in that case
+                  if (checkIncDec_Ret == -1 && g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol >= MM_RF_PROTO_LAST)
+                  {
+                    g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol = MM_RF_PROTO_LAST-1;
+                  }
                   g_model.moduleData[EXTERNAL_MODULE].subType = 0;
                   // Sensible default for DSM2 (same as for ppm): 6ch@11ms
                   if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
@@ -801,6 +807,7 @@ void menuModelSetup(uint8_t event)
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
                   break;
                 case MM_RF_PROTO_CUSTOM:
+                  //custom protocol using the highest bit 0x20 to indicate that the protocol and the lower bits as the rfProtocol
                   g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol = 0x20 | checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, 1, 31, EE_MODEL);
                   break;
               }
