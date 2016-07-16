@@ -18,6 +18,7 @@
 <ul>
 <li>Fixed USB driver changed interrupt grouping which affected interrupt priorities (fix suggested by Michael Blandford) (<a href=https://github.com/opentx/opentx/issues/3178>#3178</a>)</li>
 <li>ADC Jitter Filter improvements, option added in Hardware settings to turn it on/off (<a href=https://github.com/opentx/opentx/issues/3432>#3432</a>)</li>
+<li>Added multimodule support</li>
 </ul>
 
 [9XR-PRO]
