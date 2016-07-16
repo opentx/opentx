@@ -109,7 +109,7 @@
 #define LEN_SUBTYPE_FLYSKY     "\004"
 #define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912"
 
-#define LEN_SUBTYPE_FRSKY      "007"
+#define LEN_SUBTYPE_FRSKY      "\007"
 #define TR_SUBTYPE_FRSKY       "D16\0   ""D8\0    ""D16 8ch"
 
 #define LEN_SUBTYPE_HISKY      "\005"
