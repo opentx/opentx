@@ -105,7 +105,7 @@ void setupPulsesMultimodule(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 44000;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 18000;  // 9ms refresh
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
 #endif
 
