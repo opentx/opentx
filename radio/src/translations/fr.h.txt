@@ -995,7 +995,7 @@
 #define TR_STATISTICS          "Statistiques"
 #define TR_ABOUT_US            "A propos"
 #define TR_SETUP_SCREENS       "Configuration écrans"
-#define TR_MONITOR_SCREENS     "Monitors"
+#define TR_MONITOR_SCREENS     "Moniteurs"
 #define TR_AND_SWITCH          "ET suppl."
 #define TR_SF                  "FS"
 #define TR_GF                  "FG"
