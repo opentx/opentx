@@ -41,6 +41,9 @@
 #if defined(CROSSFIRE)
   #include "crossfire.h"
 #endif
+#if defined(MULTIMODULE)
+  #include "spektrum.h"
+#endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 
@@ -61,10 +64,15 @@ extern uint8_t telemetryState;
 
 #define TELEMETRY_TIMEOUT10ms          100 // 1 second
 
+enum TelemetrySerialMode {
+  TELEMETRY_SERIAL_8N1,
+  TELEMETRY_SERIAL_8E2
+};
+
 #if defined(CROSSFIRE)
 #define TELEMETRY_RX_PACKET_SIZE       64
 #else
-#define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
+#define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1), multimodule Spektrum telemetry is 18 bytes
 #endif
 
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
@@ -134,10 +142,21 @@ inline uint8_t modelTelemetryProtocol()
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
     return PROTOCOL_PULSES_CROSSFIRE;
 #endif
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
-  else
+#if defined(MULTIMODULE)
+  } else if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+    if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
+      return PROTOCOL_SPEKTRUM;
+    else if ((g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == 1))
+      // D8
+      return PROTOCOL_FRSKY_D;
+    else
+      return PROTOCOL_FRSKY_SPORT;
+#endif
+  } else {
     return PROTOCOL_FRSKY_SPORT;
+  }
 }
 #define MODEL_TELEMETRY_PROTOCOL()     modelTelemetryProtocol()
 #elif defined(CPUARM)

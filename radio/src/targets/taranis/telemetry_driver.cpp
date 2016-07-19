@@ -23,8 +23,7 @@
 Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 uint32_t telemetryErrors = 0;
 
-void telemetryPortInit(uint32_t baudrate)
-{
+void telemetryPortInit(uint32_t baudrate, int mode) {
   if (baudrate == 0) {
     USART_DeInit(TELEMETRY_USART);
     return;
@@ -57,9 +56,15 @@ void telemetryPortInit(uint32_t baudrate)
   GPIO_ResetBits(TELEMETRY_GPIO_DIR, TELEMETRY_DIR_GPIO_PIN);
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
+  if (mode == TELEMETRY_SERIAL_8E2) {
+    USART_InitStructure.USART_WordLength = USART_WordLength_9b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_2;
+    USART_InitStructure.USART_Parity = USART_Parity_Even;
+  } else {
+    USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_No;
+  }
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);

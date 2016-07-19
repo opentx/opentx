@@ -460,7 +460,7 @@ bool sportUpdatePowerOn(ModuleIndex module)
 
   sportWaitState(SPORT_IDLE, 500);
 
-  telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)

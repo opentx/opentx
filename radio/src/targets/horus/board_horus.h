@@ -271,7 +271,7 @@ int32_t getVolume(void);
 #define VOLUME_LEVEL_DEF               12
 
 // Telemetry driver
-void telemetryPortInit(uint32_t baudrate);
+void telemetryPortInit(uint32_t baudrate, int mode);
 void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t * buffer, uint32_t count);
 int telemetryGetByte(uint8_t * byte);

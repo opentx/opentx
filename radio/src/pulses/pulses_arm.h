@@ -86,6 +86,7 @@ PACK(struct PxxTimerPulsesData {
   uint32_t pcmOnesCount;
 });
 
+#define MULTIMODULE_BAUDRATE 100000
 #if defined(MULTIMODULE)
 #define MAX_PULSES_TRANSITIONS 300
 #else
