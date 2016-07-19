@@ -203,7 +203,7 @@ void setupPulses(uint8_t port)
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
       setupPulsesMultimodule(port);
-      scheduleNextMixerCalculation(port, 11);
+      scheduleNextMixerCalculation(port, 4);
       break;
 #endif
 
