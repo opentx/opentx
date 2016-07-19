@@ -2488,16 +2488,14 @@ void opentxInit(OPENTX_INIT_ARGS)
   rtcInit();    // RTC must be initialized before rambackupRestore() is called
 #endif
 
-#if !defined(EEPROM)
-  if (!UNEXPECTED_SHUTDOWN()) {
-    sdInit();
+  if (UNEXPECTED_SHUTDOWN()) {
+    unexpectedShutdown = 1;
   }
+  else {
+#if defined(SDCARD) && !defined(PCBMEGA2560)
+    sdInit();
 #endif
-
-#if defined(COLORLCD)
-  topbar = new Topbar(&g_model.topbarData);
-  luaInit();
-#endif
+  }
 
 #if defined(RAMBACKUP)
   if (UNEXPECTED_SHUTDOWN()) {
@@ -2510,10 +2508,8 @@ void opentxInit(OPENTX_INIT_ARGS)
   storageReadAll();
 #endif
 
-#if defined(CPUARM)
-  if (UNEXPECTED_SHUTDOWN()) {
-    unexpectedShutdown = 1;
-  }
+#if defined(COLORLCD)
+  luaInit();
 #endif
 
 #if defined(PCBTARANIS)
@@ -2552,13 +2548,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
-  if (UNEXPECTED_SHUTDOWN()) {
-#if !defined(CPUARM)
-    // is done above on ARM
-    unexpectedShutdown = 1;
-#endif
-  }
-  else {
+  if (!UNEXPECTED_SHUTDOWN()) {
     opentxStart();
   }
 
