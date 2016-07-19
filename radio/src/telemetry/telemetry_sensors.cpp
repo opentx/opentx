@@ -576,6 +576,10 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
       // T(°F) = T(°C)×1,8 + 32
       value = 32 + (value*18) / 10;
     }
+  } else if (unit == UNIT_FAHRENHEIT) {
+    if (destUnit == UNIT_CELSIUS) {
+      value = (value - 32) * 10/18;
+    }
   }
   else {
     const UnitConversionRule * p = unitConversionTable;
