@@ -39,6 +39,12 @@ else()
   message("SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
 endif()
 
+message(STATUS "Looking for FOX ")
+find_package(FOX)
+if ((NOT FOX_FOUND) AND (NOT WIN32))
+  message("Libfox not found, simu target will not be available")
+endif()
+
 include(Macros)
 today(DATE)
 now(TIME)
