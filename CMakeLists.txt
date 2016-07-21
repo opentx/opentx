@@ -40,7 +40,7 @@ else()
 endif()
 
 message(STATUS "Looking for FOX ")
-find_package(FOX)
+find_package(Fox)
 if ((NOT FOX_FOUND) AND (NOT WIN32))
   message("Libfox not found, simu target will not be available")
 endif()
