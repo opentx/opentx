@@ -59,10 +59,10 @@
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "No REaREb"
+#define TR_VRENAVIG            "IngREaREb"
 
 #define LEN_VBLMODE            TR("\005", "\010")
-#define TR_VBLMODE             TR("Av\0  ""Knapp""Spak ""Allt ""På\0  ", "Av\0     ""Knappar ""Spakar\0 ""Allt\0   ""På\0     ")
+#define TR_VBLMODE             TR("Av\0  ""Knapp""Spak\0""Allt\0""På\0  ", "Av\0     ""Knappar\0""Spakar\0 ""Allt\0   ""På\0     ")
 
 #define LEN_TRNMODE            "\002"
 #define TR_TRNMODE             "Av""+="":="
@@ -74,13 +74,13 @@
 #define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetri\0        ""SBUS Trainer\0     ""Debug\0"
 
 #define LEN_SWTYPES            "\006"
-#define TR_SWTYPES             "Ingen\0""Flipp ""2Pos\0 ""3Pos\0"
+#define TR_SWTYPES             "Ingen\0""Flipp\0""2Pos\0 ""3Pos\0"
 
 #define LEN_POTTYPES           "\020"
 #define TR_POTTYPES            "Ingen\0          ""Mittläges-pot\0  ""Flerlägesväljare""Potentiometer\0"
 
-#define LEN_SLIDERTYPES        "\006"
-#define TR_SLIDERTYPES         "Ingen\0""Slider"
+#define LEN_SLIDERTYPES        "\010"
+#define TR_SLIDERTYPES         "Ingen\0  ""Skjutpot"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -148,7 +148,7 @@
 #define TR_VDISPLAYTRIMS       "Nej\0 ""Ändra""Ja\0  "
 
 #define LEN_VBEEPCOUNTDOWN     "\007"
-#define TR_VBEEPCOUNTDOWN      "Tyst\0  Pip\0   Röst\0  Vibrera"
+#define TR_VBEEPCOUNTDOWN      "Tyst\0  ""Pip\0   ""Röst\0  ""Vibrera"
 
 #define LEN_VVARIOCENTER       "\004"
 #define TR_VVARIOCENTER        "Pip\0""Tyst"
@@ -477,7 +477,7 @@
 #define TR_VTEMPLATES          "Nolla Mixar\0\0""Enkel 4kanal\0""Gasklippning\0""V-Stjärt    \0""Deltavinge  \0""eCCPM       \0""Helikopter  \0""Servotest   \0"
 
 #define LEN_VSWASHTYPE         "\004"
-#define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
+#define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0 "
 
 #if defined(PCBHORUS)
 #define LEN_VKEYS              "\006"
@@ -672,7 +672,7 @@
 #define TR_TTRACE              TR("Följ Gas", INDENT "Följ Gas")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gastrim")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
-#define TR_USE_GLOBAL_FUNCS    TR("Glob. Funk","Globala Funktioner")
+#define TR_USE_GLOBAL_FUNCS    TR("Glob.Funkt", "Använd Global Funk.")
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
