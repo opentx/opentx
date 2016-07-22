@@ -230,7 +230,7 @@ bool isInputSourceAvailable(int source)
 
   if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
     return true;
-    
+
   if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
     LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
@@ -467,6 +467,12 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
+#if defined(PCBFLAMENCO)
+bool isModuleAvailable(int module)
+{
+    return true;
+}
+#else
 bool isModuleAvailable(int module)
 {
 #if defined(CROSSFIRE)
@@ -476,6 +482,7 @@ bool isModuleAvailable(int module)
 #endif
   return true;
 }
+#endif
 
 bool isRfProtocolAvailable(int protocol)
 {

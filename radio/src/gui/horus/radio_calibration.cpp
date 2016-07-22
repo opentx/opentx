@@ -170,7 +170,7 @@ bool menuCommonCalib(evt_t event)
       // MOVE STICKS/POTS
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, STR_MOVESTICKSPOTS, MENU_TITLE_COLOR);
-      for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];

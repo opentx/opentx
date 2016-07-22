@@ -1070,7 +1070,9 @@ void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
   tracerMaxAlt->updatePosition();
 }
 
-void LogsDialog::countNumberOfThrows(const coords & c, QCPGraph * graph) {
+void LogsDialog::countNumberOfThrows(const coords & c, QCPGraph * graph)
+{
+#if 0
   // find all launches
   // TODO
   double startTime = c.x.at(0);
@@ -1079,6 +1081,7 @@ void LogsDialog::countNumberOfThrows(const coords & c, QCPGraph * graph) {
     double alt = c.y.at(i);
     double time = c.x.at(i);
   }
+#endif
 }
 
 void LogsDialog::addCursor(QCPItemTracer ** cursor, QCPGraph * graph, const QColor & color) {
