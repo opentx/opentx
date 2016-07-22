@@ -179,6 +179,10 @@
 // Global Fr-Sky telemetry data variables
 extern uint8_t frskyStreaming; // >0 (true) == data is streaming in. 0 = nodata detected for some time
 
+#define FRSKY_RX_PACKET_SIZE   19
+extern uint8_t frskyRxBufferCount;
+extern uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];
+
 #if defined(WS_HOW_HIGH)
 extern uint8_t frskyUsrStreaming;
 #endif
@@ -553,6 +557,17 @@ void frskyUpdateCells(void);
 #if defined(PCBTARANIS)
   inline uint8_t modelTelemetryProtocol()
   {
+#if defined(MULTIMODULE)
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+    if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
+      return PROTOCOL_SPEKTRUM;
+    else if ((g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType != 1))
+      // D8
+      return PROTOCOL_FRSKY_SPORT;
+    else
+      return PROTOCOL_FRSKY_D;
+  }
+#endif      
 #if defined(CROSSFIRE)
     if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
       return PROTOCOL_PULSES_CROSSFIRE;

@@ -79,6 +79,7 @@ PACK(struct PxxPulsesData {
   uint16_t pcmCrc;
   uint32_t pcmOnesCount;
 });
+
 PACK(struct Dsm2PulsesData {
   uint16_t pulses[400];
   uint16_t *ptr;
@@ -86,6 +87,8 @@ PACK(struct Dsm2PulsesData {
   uint16_t index;
 });
 #endif
+
+#define MULTIMODULE_BAUDRATE 100000
 
 #define CROSSFIRE_BAUDRATE             200000
 #define CROSSFIRE_FRAME_LEN            25

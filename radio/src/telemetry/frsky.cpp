@@ -36,6 +36,10 @@
 
 #include "../opentx.h"
 
+#if defined(MULTIMODULE)
+  #include "telemetry/spektrum.h"
+#endif
+
 uint8_t frskyStreaming = 0;
 
 #if defined(WS_HOW_HIGH)
@@ -72,11 +76,6 @@ uint8_t telemetryProtocol = 255;
 #if defined(REVX)
 uint8_t serialInversion = 0;
 #endif
-#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
-#define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
-#else
-#define IS_FRSKY_D_PROTOCOL()     (true)
-#define IS_FRSKY_SPORT_PROTOCOL() (false)
 #endif
 
 #if defined(CPUARM)
@@ -185,7 +184,12 @@ NOINLINE void processSerialData(uint8_t data)
       bluetoothIndex = 0;
     }
 #endif
-
+#if defined(MULTIMODULE)
+  if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
+    processSpektrumTelemetryData(data);
+    return;
+  }
+#endif
   switch (dataState)
   {
     case STATE_DATA_START:
@@ -294,7 +298,7 @@ void telemetryWakeup()
 #else
   if (telemetryProtocol != requiredTelemetryProtocol) {
 #endif
-    telemetryInit(requiredTelemetryProtocol);
+      telemetryInit(requiredTelemetryProtocol);
     telemetryProtocol = requiredTelemetryProtocol;
   }
 #endif
@@ -623,21 +627,28 @@ void telemetryReset()
 // we don't reset the telemetry here as we would also reset the consumption after model load
 void telemetryInit(uint8_t protocol)
 {
+#if defined(MULTIMODULE)
+  // TODO: Is there a better way to communicate this to this function?
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+    // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
+    telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
+  } else
+#endif    
   if (protocol == PROTOCOL_FRSKY_D) {
-    telemetryPortInit(FRSKY_D_BAUDRATE);
+    telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_8N1);
   }
 #if defined(PCBTARANIS)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
-    telemetryPortInit(CROSSFIRE_BAUDRATE);
+    telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_8N1);
     telemetryPortSetDirectionOutput();
   }
 #endif
   else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    telemetryPortInit(0);
+    telemetryPortInit(0, TELEMETRY_SERIAL_8N1);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
   else {
-    telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+    telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
   }
 
 #if defined(REVX) && !defined(SIMU)

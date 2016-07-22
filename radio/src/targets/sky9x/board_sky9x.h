@@ -291,7 +291,7 @@ void rotencEnd();
 void debugPutc(const char c);
 
 // Telemetry driver
-void telemetryPortInit(uint32_t baudrate);
+void telemetryPortInit(uint32_t baudrate, int mode);
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 

@@ -1062,7 +1062,7 @@ ifeq ($(PCB), TARANIS)
   endif
   ifeq ($(MULTIMODULE), YES)
 	CPPDEFS += -DMULTIMODULE
-    CPPSRC += pulses/multi_arm.cpp
+    CPPSRC += pulses/multi_arm.cpp telemetry/spektrum.cpp
   endif
   ifeq ($(HUBSAN), YES)
     CPPDEFS += -DHUBSAN

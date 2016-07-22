@@ -37,10 +37,26 @@
 #ifndef TELEMETRY_H
 #define TELEMETRY_H
 
+#if defined(CPUARM)
+#define IS_FRSKY_D_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_D)
+#define IS_FRSKY_SPORT_PROTOCOL()  (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
+#define IS_SPEKTRUM_PROTOCOL()     (telemetryProtocol == PROTOCOL_SPEKTRUM)
+#else
+#define IS_FRSKY_D_PROTOCOL()     (true)
+#define IS_FRSKY_SPORT_PROTOCOL() (false)
+#define IS_SPEKTRUM_PROTOCOL()    (false)
+#endif
+
 enum TelemetryProtocol
 {
   TELEM_PROTO_FRSKY_D,
   TELEM_PROTO_FRSKY_SPORT,
+  TELEM_PROTO_SPEKTRUM
+};
+
+enum TelemetrySerialMode {
+  TELEMETRY_SERIAL_8N1,
+  TELEMETRY_SERIAL_8E2
 };
 
 #define TELEMETRY_VALUE_TIMER_CYCLE   200 /*20 seconds*/
