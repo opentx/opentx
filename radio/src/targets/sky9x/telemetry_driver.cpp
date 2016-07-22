@@ -34,7 +34,7 @@ uint16_t DsmRxTimeout;
 // USART0 configuration
 // Work in Progress, UNTESTED
 // Uses PA5 and PA6 (RXD and TXD)
-void UART2_Configure(uint32_t baudrate, uint32_t masterClock)
+void UART2_Configure(uint32_t baudrate, uint32_t masterClock, int mode)
 {
   register Usart *pUsart = SECOND_USART;
 
@@ -48,7 +48,10 @@ void UART2_Configure(uint32_t baudrate, uint32_t masterClock)
   pUsart->US_CR = US_CR_RSTRX | US_CR_RSTTX | US_CR_RXDIS | US_CR_TXDIS;
 
   // Configure mode
-  pUsart->US_MR =  0x000008C0 ;  // NORMAL, No Parity, 8 bit
+  if (mode == TELEMETRY_SERIAL_8E2)
+    pUsart->US_MR =  0x000020C0 ;
+  else
+    pUsart->US_MR =  0x000008C0 ;  // NORMAL, No Parity, 8 bit
 
   // Configure baudrate
   // Asynchronous, no oversampling
@@ -163,10 +166,10 @@ uint32_t telemetryTransmitPending()
   return x ;
 }
 
-void telemetryPortInit(uint32_t baudrate)
+void telemetryPortInit(uint32_t baudrate, int mode)
 {
 #if !defined(SIMU)
-  UART2_Configure(baudrate, Master_frequency);
+  UART2_Configure(baudrate, Master_frequency, mode);
   startPdcUsartReceive();
 #endif
 }

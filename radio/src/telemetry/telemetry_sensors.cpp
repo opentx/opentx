@@ -498,6 +498,11 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
         crossfireSetDefault(index, id, instance);
         break;
 #endif
+#if defined(MULTIMODULE)
+      case TELEM_PROTO_SPEKTRUM:
+        spektrumSetDefault(index, id, subId, instance);
+        break;
+#endif
       default:
         return;
     }
@@ -570,6 +575,10 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
     if (destUnit == UNIT_FAHRENHEIT) {
       // T(°F) = T(°C)×1,8 + 32
       value = 32 + (value*18) / 10;
+    }
+  } else if (unit == UNIT_FAHRENHEIT) {
+    if (destUnit == UNIT_CELSIUS) {
+      value = (value - 32) * 10/18;
     }
   }
   else {

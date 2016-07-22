@@ -65,6 +65,12 @@ void processTelemetryData(uint8_t data)
     return;
   }
 #endif
+#if defined(MULTIMODULE)
+  if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
+    processSpektrumTelemetryData(data);
+    return;
+  }
+#endif
   processFrskyTelemetryData(data);
 }
 #endif
@@ -401,14 +407,20 @@ void telemetryReset()
 
 #if defined(CPUARM)
 // we don't reset the telemetry here as we would also reset the consumption after model load
-void telemetryInit(uint8_t protocol)
-{
+void telemetryInit(uint8_t protocol) {
+#if defined(MULTIMODULE)
+  // TODO: Is there a better way to communicate this to this function?
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+    // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
+    telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
+  } else
+#endif
   if (protocol == PROTOCOL_FRSKY_D) {
-    telemetryPortInit(FRSKY_D_BAUDRATE);
+    telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_8N1);
   }
 #if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
-    telemetryPortInit(CROSSFIRE_BAUDRATE);
+    telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_8N1);
 #if defined(LUA)
     outputTelemetryBufferSize = 0;
     outputTelemetryBufferTrigger = 0;
@@ -417,11 +429,11 @@ void telemetryInit(uint8_t protocol)
   }
 #endif
   else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    telemetryPortInit(0);
+    telemetryPortInit(0, TELEMETRY_SERIAL_8N1);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
   else {
-    telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+    telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
 #if defined(LUA)
     outputTelemetryBufferSize = 0;
     outputTelemetryBufferTrigger = 0x7E;
