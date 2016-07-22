@@ -71,7 +71,7 @@
 #define TR_VRENAVIG            "IngREaREb"
 
 #define LEN_VBLMODE            TR("\005", "\010")
-#define TR_VBLMODE             TR("Av\0""Knapp""Spak\0""Båda\0""På\0  ", "Av\0     ""Knapp\0  ""Spakar\0 ""Båda\0   ""På\0     ")
+#define TR_VBLMODE             TR("Av\0  ""Knapp""Spak\0""Båda\0""På\0  ", "Av\0     ""Knapp\0  ""Spakar\0 ""Båda\0   ""På\0     ")
 
 #define LEN_TRNMODE            "\002"
 #define TR_TRNMODE             "Av""+="":="
