@@ -125,7 +125,7 @@ bool RleFile::searchFat()
   uint32_t bestFatIndex = 0;
   for (int i=0; i<EEPROM_ZONE_SIZE/EEPROM_FAT_SIZE; i++) {
     EepromHeader * header = (EepromHeader *)(eeprom+i*EEPROM_FAT_SIZE);
-    if (header->mark == EEPROM_MARK && (int)header->index >= bestFatIndex) {
+    if (header->mark == EEPROM_MARK && header->index >= bestFatIndex) {
       eepromFatHeader = header;
       bestFatIndex = header->index;
     }

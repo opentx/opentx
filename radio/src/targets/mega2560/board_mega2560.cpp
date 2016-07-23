@@ -18,11 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-#ifndef SIMU
-inline void boardInit()
+void boardInit()
 {
+#if !defined(SIMU)
   // Set up I/O port data directions and initial states (unused pin setting : input, pull-up on)
   DDRA = 0b11111111;  PORTA = 0b00000000; // LCD data
   DDRB = 0b01110111;  PORTB = 0b00101111; // 7:WTV20SDBusy, 6:PPM_OUT, 5:SimCTRL, 4:Buzzer, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
@@ -72,8 +72,8 @@ inline void boardInit()
   EICRA = (1<<ISC30) | (1<<ISC20);
   EIFR = (3<<INTF2);
   EIMSK = (3<<INT4) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
-}              
-#endif // !SIMU
+#endif // !defined(SIMU)
+}
 
 uint8_t pwrCheck()
 {

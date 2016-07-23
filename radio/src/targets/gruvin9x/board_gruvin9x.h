@@ -23,6 +23,10 @@
 
 #include "../common_avr/board_avr.h"
 
+// Board driver
+void boardInit(void);
+#define boardOff()  pwrOff()
+
 // Keys
 #define KEYS_GPIO_REG_MENU         pinl
 #define KEYS_GPIO_PIN_MENU         (1<<4)

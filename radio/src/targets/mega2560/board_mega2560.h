@@ -23,9 +23,12 @@
 
 #include "../common_avr/board_avr.h"
 
-
 //Mods for futur use ? Beta tester love it 
 //#define ROTENC_DIV2 // rotenc resolution/2
+
+// Board driver
+void boardInit(void);
+#define boardOff()  pwrOff()
 
 // Keys
 #define KEYS_GPIO_REG_MENU        pinl                          

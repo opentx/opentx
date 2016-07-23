@@ -471,7 +471,7 @@ void modelDefault(uint8_t id)
   g_model.header.name[6] = '\033' + id%10;
 #endif
 
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
   extern const LayoutFactory * defaultLayout;
   delete customScreens[0];
   customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
@@ -1913,6 +1913,8 @@ uint8_t calcStickScroll( uint8_t index )
 
 void opentxStart()
 {
+  TRACE("opentxStart()");
+
 #if defined(SIMU)
   if (main_thread_running == 2)
     return;
@@ -1950,6 +1952,8 @@ void opentxStart()
 #if defined(CPUARM) || defined(CPUM2560)
 void opentxClose()
 {
+  TRACE("opentxClose()");
+
 #if defined(CPUARM)
   watchdogSetTimeout(2000/*20s*/);
 #endif
@@ -2494,7 +2498,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
   topbar = new Topbar(&g_model.topbarData);
   luaInit();
 #endif
@@ -2545,7 +2549,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   btInit();
 #endif
 
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
   loadTheme();
   loadFontCache();
 #endif

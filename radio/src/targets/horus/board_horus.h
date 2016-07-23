@@ -79,11 +79,17 @@ extern uint16_t sessionTimer;
 #define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
 #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
 
+// Board driver
+void boardInit(void);
+void boardOff(void);
+
+// Delays driver
 #ifdef __cplusplus
 extern "C" {
 #endif
 void delaysInit(void);
 void delay_01us(uint16_t nb);
+void delay_us(uint16_t nb);
 void delay_ms(uint32_t ms);
 #ifdef __cplusplus
 }
@@ -169,14 +175,9 @@ extern uint32_t rotencSpeed;
 void checkRotaryEncoder(void);
 
 // WDT driver
-#if defined(SIMU)
-#define WAS_RESET_BY_WATCHDOG()               (false)
-#define WAS_RESET_BY_SOFTWARE()               (false)
-#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (false)
-#else
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#if defined(WATCHDOG_DISABLED)
+#if defined(WATCHDOG_DISABLED) || defined(SIMU)
   #define wdt_enable(x)
   #define wdt_reset()
 #else
@@ -186,7 +187,6 @@ void watchdogInit(unsigned int duration);
 #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
 #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
 #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
-#endif
 
 // ADC driver
 enum Analogs {

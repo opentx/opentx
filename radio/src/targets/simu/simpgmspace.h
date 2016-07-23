@@ -396,11 +396,11 @@ extern uint8_t eeprom[];
 extern const char * eepromFile;
 void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
 
+#if !defined(CPUARM)
 #define wdt_disable(...)  sleep(1/*ms*/)
-#define wdt_enable(...) sleep(1/*ms*/)
-#define wdt_reset() sleep(1/*ms*/)
-#define boardInit()
-#define boardOff()
+#define wdt_enable(...)   sleep(1/*ms*/)
+#define wdt_reset()       sleep(1/*ms*/)
+#endif
 
 #define OS_MutexID pthread_mutex_t
 extern OS_MutexID audioMutex;

@@ -62,6 +62,10 @@
 //       -      -       -       O       i               i       i
 //                            SIM_CTL  ID1      Haptic      RF_POW RuddDR
 
+// Board driver
+void boardInit(void);
+#define boardOff()  pwrOff()
+
 // Keys
 #define KEYS_GPIO_REG_MENU         pinb
 #define KEYS_GPIO_PIN_MENU         (1<<1)

@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include "usb_bsp.h"
-
 #include "board_horus.h"
 #include "usbd_conf.h"
 

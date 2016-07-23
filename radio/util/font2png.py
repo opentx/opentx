@@ -32,11 +32,11 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
     extraFilename = "fonts/extra_%dpx.png" % fontsize
     extraImage = QtGui.QImage(extraFilename)
     if extraImage.isNull():
-        print("No extra font file", extraFilename)
+        # print("No extra font file", extraFilename)
         extraImage = None
-        extraWidth = 0
+        extraWidth, extraHeight = 0, 0
     else:
-        extraWidth = extraImage.size().width() / COUNT_EXTRA_CHARS
+        extraWidth, extraHeight = extraImage.size().width() / COUNT_EXTRA_CHARS, extraImage.size().height()
 
     def getCharWidth(c):
         if c in chars_extra:
@@ -78,9 +78,14 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
     width = 0
     for c in chars:
         coords.append(width)
+        painter.setOpacity(1.0)
         if c in chars_extra:
             if extraImage and c == chars_extra[0]:
-                painter.drawImage(QtCore.QPoint(width, 0), extraImage)
+                for x in range(extraWidth * COUNT_EXTRA_CHARS):
+                    for y in range(extraHeight):
+                        rgb = extraImage.pixel(x, y)
+                        painter.setOpacity(1.0 - float(QtGui.qGray(rgb)) / 256)
+                        painter.drawPoint(x+width, y)
         elif c == " ":
             pass
         elif c == "." and fontsize <= 8:

@@ -272,14 +272,7 @@
   #define pgm_read_adr(x)              *(x)
   #define cli()
   #define sei()
-  extern void boardInit();
-  #if defined(PCBTARANIS) or defined(PCBHORUS)
-    extern void boardOff();
-  #else
-    #define boardOff()                 pwrOff();
-  #endif
 #else
-  #define boardOff()                   pwrOff();
   #include <avr/io.h>
   #include <avr/pgmspace.h>
   #include "pgmtypes.h"

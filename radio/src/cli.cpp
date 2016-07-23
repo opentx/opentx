@@ -359,7 +359,7 @@ int cliSet(const char ** argv)
 
 
 #if defined(DEBUG_INTERRUPTS)
-void printInterrupts() 
+void printInterrupts()
 {
   __disable_irq();
   struct InterruptCounters ic = interruptCounters;
@@ -368,14 +368,14 @@ void printInterrupts()
   __enable_irq();
   serialPrint("Interrupts count in the last %u ms:", (get_tmr10ms() - ic.resetTime) * 10);
   for(int n = 0; n < INT_LAST; n++) {
-    serialPrint("%s: %u", interruptNames[n], ic.cnt[n]); 
+    serialPrint("%s: %u", interruptNames[n], ic.cnt[n]);
   }
 }
 #endif //#if defined(DEBUG_INTERRUPTS)
 
 #if defined(DEBUG_TASKS)
 
-void printTaskSwitchLog() 
+void printTaskSwitchLog()
 {
   serialPrint("Tasks legend [<task_id>, <task name>]:");
   for(int n = 0; n <= CFG_MAX_USER_TASKS+1; n++) {
@@ -437,7 +437,7 @@ void printDebugTime(uint32_t time)
   }
 }
 
-void printDebugTimer(const char * name, DebugTimer & timer) 
+void printDebugTimer(const char * name, DebugTimer & timer)
 {
   serialPrintf("%s: ", name);
   printDebugTime( timer.getMin());
@@ -465,8 +465,8 @@ void printAudioVars()
   }
   serialPrint("fragments:");
   for(int n = 0; n < AUDIO_QUEUE_LENGTH; n++) {
-    serialPrint("%d: type %u: id: %u, repeat: %u, ", n, (uint32_t)audioQueue.fragments[n].type, 
-                                                        (uint32_t)audioQueue.fragments[n].id, 
+    serialPrint("%d: type %u: id: %u, repeat: %u, ", n, (uint32_t)audioQueue.fragments[n].type,
+                                                        (uint32_t)audioQueue.fragments[n].id,
                                                         (uint32_t)audioQueue.fragments[n].repeat);
     if ( audioQueue.fragments[n].type == FRAGMENT_FILE) {
       serialPrint(" file: %s", audioQueue.fragments[n].file);
@@ -552,9 +552,9 @@ int cliDisplay(const char ** argv)
       serialPrint(reg & 0x02 ? "Thermal sensor bad" : "Thermal sensor ok");
       serialPrint(reg & 0x04 ? "Power ok" : "Power bad");
       serialPrint(reg & 0x08 ? "Connected to charger" : "Not connected to charger");
-      const char * CHARGE_STATUS[] = { "Not Charging", "Precharge", "Fast Charging", "Charge done" };
+      static const char * const CHARGE_STATUS[] = { "Not Charging", "Precharge", "Fast Charging", "Charge done" };
       serialPrint(CHARGE_STATUS[(reg & 0x30) >> 4]);
-      const char * INPUT_STATUS[] = { "Unknown input", "USB host input", "USB adapter port input", "OTG input" };
+      static const char * const INPUT_STATUS[] = { "Unknown input", "USB host input", "USB adapter port input", "OTG input" };
       serialPrint(INPUT_STATUS[(reg & 0xC0) >> 6]);
     }
     {
@@ -581,7 +581,7 @@ int cliDisplay(const char ** argv)
     if (toInt(argv, 2, &timerNumber) > 0) {
       TIM_TypeDef * tim = TIM1;
       switch (timerNumber) {
-        case 1: 
+        case 1:
           tim = TIM1;
           break;
         case 2:

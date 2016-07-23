@@ -168,7 +168,7 @@
 
 #define ALTERNATE_VIEW                0x10
 
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
   #include "layout.h"
   #include "theme.h"
   #include "topbar.h"

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -26,8 +26,10 @@
 extern const uint16_t * const fontspecsTable[16];
 extern const uint8_t * const fontsTable[16];
 
+#if defined(PCBHORUS)
 extern BitmapBuffer * fontCache[2];
 void loadFontCache();
+#endif
 
 #else
 

@@ -557,6 +557,7 @@ PACK(struct FrSkyChannelData {
   uint8_t   multiplier;         // 0=no multiplier, 1=*2 multiplier
 });
 
+// TODO remove this also on Taranis
 PACK(struct FrSkyTelemetryData {
   uint8_t voltsSource;
   uint8_t altitudeSource;
@@ -965,7 +966,7 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
-#if defined(COLORLCD)
+#if defined(PCBHORUS)
   #include "gui/horus/theme.h"
   #define THEME_DATA \
     NOBACKUP(char themeName[8]); \
@@ -1084,6 +1085,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 872);
   CHKSIZE(ModelData, 6507);
 #endif
+
+#elif defined(PCBFLAMENCO)
 
 #elif defined(PCBHORUS)
   CHKSIZE(MixData, 20);

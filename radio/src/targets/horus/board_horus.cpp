@@ -101,7 +101,6 @@ void interrupt1ms()
   DEBUG_TIMER_STOP(debugTimerRotEnc);
 }
 
-#if !defined(SIMU)
 extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
 {
   TIM14->SR &= ~TIM_SR_UIF;
@@ -111,6 +110,7 @@ extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
 
 void boardInit()
 {
+#if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph |
@@ -167,6 +167,7 @@ void boardInit()
 #endif
 
   ledBlue();
+#endif
 }
 
 void boardOff()
@@ -180,8 +181,6 @@ void boardOff()
   SysTick->CTRL = 0; // turn off systick
   pwrOff();
 }
-
-#endif // #if !defined(SIMU)
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;
@@ -217,7 +216,7 @@ void usbJoystickUpdate(void)
   USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
 }
 
-#endif //#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
+#endif // #defined(USB_JOYSTICK) && !defined(SIMU)
 
 
 uint8_t currentTrainerMode = 0xff;

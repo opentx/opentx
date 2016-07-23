@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
 
@@ -77,9 +77,9 @@ void rotencPoll()
 #define ROTENC_DOWN() (0)
 #endif // ROTARY_ENCODER_NAVIGATION
 
-#ifndef SIMU
-inline void boardInit()
+void boardInit()
 {
+#if !defined(SIMU)
   // Set up I/O port data directions and initial states
   DDRA = 0xff;  PORTA = 0x00; // LCD data
   DDRB = 0x81;  PORTB = 0x7e; //pullups keys+nc
@@ -137,8 +137,8 @@ inline void boardInit()
     TIMSK |= (1<<OCIE0) | (1<<TOIE0); // Enable Output-Compare and Overflow interrrupts
   #endif
 #endif
+#endif // !defined(SIMU)
 }
-#endif
 
 #ifndef SIMU
 FORCEINLINE

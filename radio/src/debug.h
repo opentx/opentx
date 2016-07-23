@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -56,6 +56,7 @@ uint8_t serial2TracesEnabled();
 
 #define TRACE_PING(...)       do { debugPrintf(__VA_ARGS__); } while(0)
 #define TRACE(...)            do { debugPrintf(__VA_ARGS__); debugPrintf("\r\n"); } while(0)
+#define TRACE_WP(...)         debugPrintf(__VA_ARGS__)
 #define DUMP(data, size)      dump(data, size)
 #define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)
 #define TRACE_DEBUG_WP(...)   debugPrintf(__VA_ARGS__)
@@ -165,21 +166,21 @@ public:
 
   JitterMeter() : min(~(T)0), max(0), measured(0) {};
 
-  void reset() { 
+  void reset() {
     // store mesaurement
     measured = max - min;
     //reset - begin new measurement
-    min = ~(T)0; 
-    max = 0; 
+    min = ~(T)0;
+    max = 0;
   };
 
-  void measure(T value) { 
+  void measure(T value) {
     if (value > max) max = value;
     if (value < min) min = value;
   };
 
-  T get() const { 
-    return measured; 
+  T get() const {
+    return measured;
   };
 };
 
@@ -203,7 +204,7 @@ enum InterruptNames {
   INT_OTG_FS,
   INT_LAST
 };
-#elif defined(PCBTARANIS) 
+#elif defined(PCBTARANIS)
 enum InterruptNames {
   INT_TICK,
   INT_5MS,
@@ -290,7 +291,7 @@ public:
 
   debug_timer_t getMin() const { return min; }
   debug_timer_t getMax() const { return max; }
-  debug_timer_t getLast() const { return last; } 
+  debug_timer_t getLast() const { return last; }
 };
 
 enum DebugTimers {

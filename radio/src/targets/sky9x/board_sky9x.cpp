@@ -18,8 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-#ifdef AR9X
+#include "opentx.h"
+
+#if defined(AR9X)
 #include "i2c_driver.h"
 #endif
 
@@ -370,7 +371,7 @@ void opentxBootloader();
 
 // Set up for volume control (TWI0)
 // Need PA3 and PA4 set to peripheral A
-#ifndef AR9X
+#if !defined(AR9X)
 void i2cInit()
 {
   register Pio *pioptr;
@@ -488,6 +489,10 @@ void boardInit()
 #endif
 
   init_SDcard();
+}
+#else
+void boardInit()
+{
 }
 #endif
 

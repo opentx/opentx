@@ -31,6 +31,11 @@ extern uint16_t ResetReason;
 #define FIRMWARE_SIZE                  (256*1024)
 #define FIRMWARE_ADDRESS               0x00400000
 
+// Board driver
+void boardInit(void);
+#define boardOff()  pwrOff()
+
+// Keys
 #if defined(REVA)
   #define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
   #define KEYS_GPIO_REG_EXIT           PIOA->PIO_PDSR
@@ -197,7 +202,11 @@ void disable_dsm2(uint32_t port);
 #endif
 
 // WDT driver
-#if !defined(SIMU)
+#if defined(SIMU)
+  #define wdt_disable()
+  #define wdt_enable(x)
+  #define wdt_reset()
+#else
   #define wdt_disable()
   #define wdt_enable(x)                WDT->WDT_MR = 0x3FFF207F
   #define wdt_reset()                  WDT->WDT_CR = 0xA5000001

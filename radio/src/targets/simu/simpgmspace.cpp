@@ -120,6 +120,10 @@ uint16_t getTmr2MHz()
 
 void simuInit()
 {
+#if defined(CPUSTM32)
+  RCC->CSR = 0;
+#endif
+
   for (int i = 0; i <= 17; i++) {
     simuSetSwitch(i, 0);
     simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
@@ -1361,8 +1365,8 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
 void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
-void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
-void TIM_OC1Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct) { }
+// void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
+// void TIM_OC1Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct) { }
 void TIM_DMAConfig(TIM_TypeDef* TIMx, uint16_t TIM_DMABase, uint16_t TIM_DMABurstLength) { }
 void TIM_DMACmd(TIM_TypeDef* TIMx, uint16_t TIM_DMASource, FunctionalState NewState) { }
 void TIM_CtrlPWMOutputs(TIM_TypeDef* TIMx, FunctionalState NewState) { }

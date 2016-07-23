@@ -136,17 +136,26 @@ extern uint8_t telemetryProtocol;
 #define IS_FRSKY_SPORT_PROTOCOL()      (false)
 #endif
 
-#if defined(CPUSTM32)
+#if defined(PCBFLAMENCO)
+inline uint8_t modelTelemetryProtocol()
+{
+  return g_model.telemetryProtocol;
+}
+#elif defined(CPUSTM32)
 inline uint8_t modelTelemetryProtocol()
 {
 #if defined(CROSSFIRE)
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE)
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return PROTOCOL_PULSES_CROSSFIRE;
+  }
 #endif
+     
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
+  }
+  
 #if defined(MULTIMODULE)
-  } else if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
       return PROTOCOL_SPEKTRUM;
     else if ((g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == 1))
@@ -154,10 +163,11 @@ inline uint8_t modelTelemetryProtocol()
       return PROTOCOL_FRSKY_D;
     else
       return PROTOCOL_FRSKY_SPORT;
-#endif
-  } else {
-    return PROTOCOL_FRSKY_SPORT;
   }
+#endif
+
+  // default choice
+  return PROTOCOL_FRSKY_SPORT;
 }
 #define MODEL_TELEMETRY_PROTOCOL()     modelTelemetryProtocol()
 #elif defined(CPUARM)

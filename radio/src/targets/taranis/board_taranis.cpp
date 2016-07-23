@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -110,22 +110,24 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
   interrupt5ms() ;
   DEBUG_INTERRUPT(INT_5MS);
 }
+#endif
 
 #if defined(REV9E)
-  #define PWR_PRESS_DURATION_MIN       200 // 2s
-  #define PWR_PRESS_DURATION_MAX       500 // 5s
+#define PWR_PRESS_DURATION_MIN       200 // 2s
+#define PWR_PRESS_DURATION_MAX       500 // 5s
 
-  const pm_uchar bmp_startup[] PROGMEM = {
-    #include "../../bitmaps/taranis/startup.lbm"
-  };
+const pm_uchar bmp_startup[] PROGMEM = {
+  #include "../../bitmaps/taranis/startup.lbm"
+};
 
-  const pm_uchar bmp_lock[] PROGMEM = {
-    #include "../../bitmaps/taranis/lock.lbm"
-  };
+const pm_uchar bmp_lock[] PROGMEM = {
+  #include "../../bitmaps/taranis/lock.lbm"
+};
 #endif
 
 void boardInit()
 {
+#if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
@@ -202,6 +204,7 @@ void boardInit()
 #else
   backlightInit();
 #endif
+#endif // !defined(SIMU)
 }
 
 void boardOff()
@@ -221,9 +224,6 @@ void boardOff()
   SysTick->CTRL = 0; // turn off systick
   pwrOff();
 }
-
-#endif   // #if !defined(SIMU)
-
 
 #if defined(USB_JOYSTICK) && !defined(SIMU)
 extern USB_OTG_CORE_HANDLE USB_OTG_dev;

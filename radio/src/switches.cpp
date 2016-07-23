@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -23,6 +23,8 @@
 #define CS_LAST_VALUE_INIT -32768
 
 #if defined(PCBFLAMENCO)
+  #define SWITCH_WARNING_LIST_X        60
+  #define SWITCH_WARNING_LIST_Y        4*FH+3
   #define SWITCH_WARNING_LIST_INTERVAL 20
 #elif defined(PCBHORUS)
   #define SWITCH_WARNING_LIST_X        WARNING_LINE_X
@@ -56,7 +58,7 @@ PACK(typedef struct {
 LogicalSwitchesFlightModeContext lswFm[MAX_FLIGHT_MODES];
 
 #define LS_LAST_VALUE(fm, idx) lswFm[fm].lsw[idx].lastValue
-        
+
 #else
 
 int16_t lsLastValue[NUM_LOGICAL_SWITCH];
@@ -518,7 +520,7 @@ DurationAndDelayProcessing:
           context.timerState = SWITCH_DELAY;
           context.timer = (ls->func == LS_FUNC_EDGE ? 0 : ls->delay);
         }
-        
+
         if (context.timerState == SWITCH_DELAY) {
           if (context.timer) {
             result = false;   // return false while delay timer running
@@ -529,7 +531,7 @@ DurationAndDelayProcessing:
             context.timer = ls->duration;
           }
         }
-        
+
         if (context.timerState == SWITCH_ENABLE) {
           result = (ls->duration==0 || context.timer>0); // return false after duration timer runs out
           if (!result && ls->func == LS_FUNC_STICKY) {
@@ -541,7 +543,7 @@ DurationAndDelayProcessing:
       else if (context.timerState == SWITCH_ENABLE && ls->duration > 0 && context.timer > 0) {
         result = true;
       }
-      else {        
+      else {
         context.timerState = SWITCH_START;
         context.timer = 0;
       }
@@ -652,8 +654,8 @@ bool getSwitch(swsrc_t swtch)
       else {
         s_last_switch_value &= ~mask;
       }
-    }      
-#endif    
+    }
+#endif
   }
 
   return swtch > 0 ? result : !result;
@@ -732,7 +734,7 @@ swsrc_t getMovedSwitch()
     // don't use getSwitch here to always get the proper value, even getSwitch manipulates
     bool next = switchState((EnumKeys)(SW_BASE+i-1));
     if (prev != next) {
-      if (((i<NUM_PSWITCH) && (i>3)) || next==true) 
+      if (((i<NUM_PSWITCH) && (i>3)) || next==true)
         result = next ? i : -i;
       if (i<=3 && result==0) result = 1;
       switches_states ^= mask;
@@ -757,7 +759,7 @@ void checkSwitches()
   swarnstate_t last_bad_switches = 0xff;
 #endif
   swarnstate_t states = g_model.switchWarningState;
-  
+
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
@@ -780,7 +782,7 @@ void checkSwitches()
 #endif  // !defined(MODULE_ALWAYS_SEND_PULSES)
 
     getMovedSwitch();
-  
+
     bool warn = false;
 #if defined(COLORLCD)
     for (int i=0; i<NUM_SWITCHES; i++) {
@@ -1031,7 +1033,7 @@ void logicalSwitchesTimerTick()
           lastValue.duration = 0;
         }
       }
-      
+
       // decrement delay/duration timer
       LogicalSwitchContext &context = lswFm[fm].lsw[i];
       if (context.timer) {

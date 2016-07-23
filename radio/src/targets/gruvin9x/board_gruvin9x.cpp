@@ -18,11 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-#ifndef SIMU
-inline void boardInit()
+void boardInit()
 {
+#if !defined(SIMU)
   // Set up I/O port data directions and initial states
   DDRA = 0xff;  PORTA = 0x00; // LCD data
   DDRB = 0b11000111;  PORTB = 0b00111111; // 7:SPKR, 6:PPM_OUT,  5:TrainSW,  4:IDL2_SW, SDCARD[3:MISO 2:MOSI 1:SCK 0:CS]
@@ -88,7 +88,7 @@ inline void boardInit()
 #endif
   /***************************************************/
 
-#if defined (VOICE)
+#if defined(VOICE)
   /*
    * SOMO set-up (V4 board only)
    */
@@ -108,10 +108,10 @@ inline void boardInit()
   UCSR1B = (1<<RXEN1)|(0<<TXEN1)|(1<<UCSZ12);
   UCSR1B |= 1 << RXCIE1; //enable interrupt on rx
 #endif
+#endif // !defined(SIMU)
 }
 
 #if ROTARY_ENCODERS > 2
-
 uint8_t vpotToChange = 0;
 uint8_t vpot_mod_state = 0;
 
@@ -146,7 +146,6 @@ ISR(USART1_RX_vect)
   }
 }
 #endif
-#endif // !SIMU
 
 uint8_t pwrCheck()
 {
