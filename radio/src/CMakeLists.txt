@@ -429,7 +429,6 @@ if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
   set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
 endif()
 
-
   include_directories(storage gui/${GUI_DIR})
 
   set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
