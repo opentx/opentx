@@ -335,7 +335,7 @@ extern const char * debugTimerNames[DEBUG_TIMERS_COUNT];
 #endif // #if defined(__cplusplus)
 
 #define DEBUG_TIMER_START(timer)  debugTimers[timer].start()
-#define DEBUG_TIMER_STOP(timer)   debugTimers[timer].stop()  
+#define DEBUG_TIMER_STOP(timer)   debugTimers[timer].stop()
 #define DEBUG_TIMER_SAMPLE(timer) debugTimers[timer].sample()
 
 

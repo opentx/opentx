@@ -1497,7 +1497,7 @@ union ReusableBuffer
   } sdmanager;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUSTM32)
   struct
   {
     char id[27];

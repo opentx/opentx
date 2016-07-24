@@ -25,8 +25,8 @@
 /*-----------------------------------------------------------------------*/
 
 #include "diskio.h"
-#include <string.h> // memcpy
-#include "../../opentx.h"
+#include <string.h>
+#include "opentx.h"
 #include "sdio_sd.h"
 
 #define BLOCK_SIZE            512 /* Block Size in Bytes */

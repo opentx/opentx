@@ -136,12 +136,7 @@ extern uint8_t telemetryProtocol;
 #define IS_FRSKY_SPORT_PROTOCOL()      (false)
 #endif
 
-#if defined(PCBFLAMENCO)
-inline uint8_t modelTelemetryProtocol()
-{
-  return g_model.telemetryProtocol;
-}
-#elif defined(CPUSTM32)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
 inline uint8_t modelTelemetryProtocol()
 {
 #if defined(CROSSFIRE)

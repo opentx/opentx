@@ -468,5 +468,11 @@ if(CPU_FAMILY STREQUAL STM32)
     DEPENDS firmware
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   )
+
+  add_custom_target(jtag-flash
+    COMMAND st-flash --reset write firmware.bin 0x8000000
+    DEPENDS firmware
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
 endif()
 endif()

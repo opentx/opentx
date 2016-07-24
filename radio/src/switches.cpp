@@ -151,28 +151,6 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SE);
   CHECK_3POS(1, SW_SF);
   switchesPos = newPos;
-
-  int i = 0;
-  StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
-  if (calib->count>0 && calib->count<XPOTS_MULTIPOS_COUNT) {
-    uint8_t pos = anaIn(POT1+i) / (2*RESX/calib->count);
-    uint8_t previousPos = potsPos[i] >> 4;
-    uint8_t previousStoredPos = potsPos[i] & 0x0F;
-    if (startup) {
-      potsPos[i] = (pos << 4) | pos;
-    }
-    else if (pos != previousPos) {
-      potsLastposStart[i] = get_tmr10ms();
-      potsPos[i] = (pos << 4) | previousStoredPos;
-    }
-    else if (g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (tmr10ms_t)(get_tmr10ms() - potsLastposStart[i]) > SWITCHES_DELAY()) {
-      potsLastposStart[i] = 0;
-      potsPos[i] = (pos << 4) | pos;
-      if (previousStoredPos != pos) {
-        PLAY_SWITCH_MOVED(SWSRC_LAST_SWITCH+i*XPOTS_MULTIPOS_COUNT+pos);
-      }
-    }
-  }
 }
 #endif
 
