@@ -101,6 +101,9 @@
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT"
 
+#define LEN_TELEMETRY_PROTOCOLS "\017"
+#define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  FrSky D\0       FrSky D (cable)Spektrum\0      "
+
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
 
@@ -199,6 +202,7 @@
 #if defined(IRPROTOS)
   #define TR_IRPROTOS          "SILV  TRAC09PICZ  SWIFT\0"
 #else
+
   #define TR_IRPROTOS
 #endif
 

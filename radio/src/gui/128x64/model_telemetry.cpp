@@ -553,7 +553,9 @@ void menuModelTelemetry(uint8_t event)
     switch (k) {
 #if defined(CPUARM)
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
-        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, CASE_PCBSKY9X(PROTOCOL_FRSKY_D_SECONDARY) attr, event);
+        lcd_putsLeft(y, STR_TELEMETRY_TYPE);
+        lcdDrawTextAtIndex(TELEM_COL2, y, STR_TELEMETRY_PROTOCOLS, g_model.telemetryProtocol, attr);
+        g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
         break;
 #if defined(REVX)
       case ITEM_TELEMETRY_INVERTED_SERIAL:

@@ -463,7 +463,9 @@ void menuModelTelemetry(uint8_t event)
 
     switch (k) {
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
-        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, STR_TELEMETRY_TYPE, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, g_eeGeneral.serial2Mode==UART_MODE_TELEMETRY ? PROTOCOL_FRSKY_D_SECONDARY : PROTOCOL_FRSKY_D, attr, event);
+        lcd_putsLeft(y, STR_TELEMETRY_TYPE);
+        lcdDrawTextAtIndex(TELEM_COL2, y, STR_TELEMETRY_PROTOCOLS, g_model.telemetryProtocol, attr);
+        g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
         break;
 
       case ITEM_TELEMETRY_SENSORS_LABEL:

@@ -519,6 +519,30 @@ bool isRfProtocolAvailable(int protocol)
   return true;
 }
 
+#if defined(CPUARM)
+bool isTelemetryProtocolAvailable(int protocol)
+{
+
+#if defined(PCBTARANIS)
+  if(protocol == PROTOCOL_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode !=UART_MODE_TELEMETRY)
+    return false;
+#endif
+  if (protocol== PROTOCOL_PULSES_CROSSFIRE)
+    return false;
+
+#if !defined(MULTIMODULE)
+  if (protocol== PROTOCOL_SPEKTRUM)
+    return false;
+#endif
+#if defined(PBHORUS)
+  if (protocol == PROTOCOL_FRSKY_D_SECONDARY)
+    return false;
+#endif
+
+  return true;
+}
+#endif
+
 #if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
 {
