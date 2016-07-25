@@ -655,6 +655,7 @@
 #define TR_AILDIRECTION        "AIL Sentido"
 #define TR_COLDIRECTION        "COL Sentido"
 #define TR_MODE                INDENT"Modo"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
 #define TR_SOURCE              INDENT"Fonte"
@@ -820,12 +821,12 @@
 #define TR_RECEIVER_NUM               "RxNum"
 #define TR_RECEIVER            INDENT "Receiver"
 #define TR_SYNCMENU            "Sync [MENU]"
-#define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
-#define TR_MULTI_VIDFREQ       INDENT "Video frequency"
-#define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
-#define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
+#define TR_MULTI_DSMFRAME      TR(INDENT "DSM frame", INDENT "DSM frame format")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
-#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
+#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_LIMIT               INDENT"Limite"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Latitude"

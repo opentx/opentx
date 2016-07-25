@@ -699,6 +699,7 @@
 #define TR_AILDIRECTION        "SKEV Riktning"
 #define TR_COLDIRECTION        "PITCH Riktn. "
 #define TR_MODE                INDENT"Läge"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expo saknas!"
 #define TR_NOFREEMIXER         "Mixer saknas!"
 #define TR_SOURCE              INDENT"Källa"
@@ -873,12 +874,12 @@
   #define TR_RECEIVER_NUM             "RxNum"
 #endif
 #define TR_SYNCMENU            "Synk [MENU]"
-#define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
-#define TR_MULTI_VIDFREQ       INDENT "Video frequency"
-#define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
-#define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
+#define TR_MULTI_DSMFRAME      TR(INDENT "DSM frame", INDENT "DSM frame format")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
-#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
+#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_LIMIT               INDENT "Nivå"
 #define TR_MINRSSI             "Min Rssi"
 #define TR_LATITUDE            "Breddgrad"

@@ -704,6 +704,7 @@
 #define TR_AILDIRECTION        TR("Roll   Richtung", "Roll   Servo Richtung") 
 #define TR_COLDIRECTION        TR("Pitch Richtung", "Pitch Servo Richtung") 
 #define TR_MODE                INDENT "Modus"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
 #define TR_SOURCE              INDENT "Quelle"
@@ -879,12 +880,12 @@
   #define TR_RECEIVER_NUM      "Empf Nr."
   #define TR_RECEIVER          "Empf Nr."
 #endif
-#define TR_MULTI_RFTUNE        INDENT "RF Freq. Feintuning"
-#define TR_MULTI_VIDFREQ       INDENT "Video Frequenz"
-#define TR_MULTI_DSMFRAME      INDENT "DSM Rahmenformat"
-#define TR_MULTI_OPTION        INDENT "Optionswert"
+#define TR_MULTI_RFTUNE        TR(INDENT "RF Freq.", INDENT "RF Freq. Feintuning")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Vid. Freq.", INDENT "Video Frequenz")
+#define TR_MULTI_DSMFRAME      TR(INDENT "DSM Frm", INDENT "DSM Rahmenformat")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Optionswert")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
-#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
+#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Grenzen"   
 #define TR_MINRSSI             "Min. RSSI"

@@ -587,6 +587,9 @@ extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_LOWPOWER[];
 extern const pm_char STR_MULTI_DSMFRAME[];
+#if defined(PCBSKY9X)
+extern const pm_char STR_SUBTYPE[];
+#endif
 #endif
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RECEIVER_NUM[];

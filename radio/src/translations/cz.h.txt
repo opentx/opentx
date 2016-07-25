@@ -687,6 +687,7 @@
 #define TR_AILDIRECTION        "\012Křidélka"
 #define TR_COLDIRECTION        "\012Kolektiv"
 #define TR_MODE                INDENT"Mód"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Není volné expo!"
 #define TR_NOFREEMIXER         "Není volný mix!"
 #define TR_SOURCE              INDENT"Zdroj"
@@ -860,12 +861,12 @@
 #else
   #define TR_RECEIVER_NUM      "RX číslo"
 #endif
-#define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
-#define TR_MULTI_VIDFREQ       INDENT "Video frequency"
-#define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
-#define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
+#define TR_MULTI_DSMFRAME      TR(INDENT "DSM frame", INDENT "DSM frame format")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
-#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
+#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"

@@ -686,6 +686,7 @@
 #define TR_AILDIRECTION        TR("Inv. latéral", "Inversion latéral")
 #define TR_COLDIRECTION        TR("Inv. collectif", "Inversion collectif")
 #define TR_MODE                INDENT "Mode"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Max expos atteint!"
 #define TR_NOFREEMIXER         "Max mixages atteint!"
 #define TR_SOURCE              INDENT "Source"
@@ -859,9 +860,9 @@
 #define TR_MULTI_RFTUNE        INDENT "Ajustement fréq."
 #define TR_MULTI_VIDFREQ       INDENT "Fréquence vidéo"
 #define TR_MULTI_DSMFRAME      INDENT "Format trame DSM"
-#define TR_MULTI_OPTION        INDENT "Option perso"
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option perso")
 #define TR_MULTI_AUTOBIND      INDENT "Bind automatique"
-#define TR_MULTI_LOWPOWER      INDENT "Mode basse puiss."
+#define TR_MULTI_LOWPOWER      TR( INDENT "low power", INDENT "Mode basse puiss.")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Limite"
 #define TR_MINRSSI             "RSSI Min."
