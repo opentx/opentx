@@ -482,22 +482,27 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
-#if defined(PCBFLAMENCO)
-bool isModuleAvailable(int module)
-{
-    return true;
-}
-#else
+
 bool isModuleAvailable(int module)
 {
 #if defined(CROSSFIRE)
   if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF) {
     return false;
   }
+#else
+  if (module == MODULE_TYPE_CROSSFIRE)
+    return false;
+#endif
+#if !defined(DSM2)
+  if (module == MODULE_TYPE_DSM2)
+     return false;
+#endif
+#if !defined(MULTIMODULE)
+  if (module == MODULE_TYPE_MULTIMODULE)
+     return false;
 #endif
   return true;
 }
-#endif
 
 bool isRfProtocolAvailable(int protocol)
 {

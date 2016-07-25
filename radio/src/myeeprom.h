@@ -545,15 +545,9 @@ enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
   MODULE_TYPE_XJT,
-#if defined(DSM2)
   MODULE_TYPE_DSM2,
-#endif
-#if defined(CROSSFIRE)
   MODULE_TYPE_CROSSFIRE,
-#endif
-#if defined(MULTIMODULE)
   MODULE_TYPE_MULTIMODULE,
-#endif
   MODULE_TYPE_COUNT
 };
 
