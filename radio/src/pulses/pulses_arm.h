@@ -73,6 +73,7 @@ PACK(struct PxxUartPulsesData {
 });
 #endif
 
+#define MULTIMODULE_BAUDRATE 100000
 #if defined(PPM_PIN_TIMER)
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
@@ -86,7 +87,6 @@ PACK(struct PxxTimerPulsesData {
   uint32_t pcmOnesCount;
 });
 
-#define MULTIMODULE_BAUDRATE 100000
 #if defined(MULTIMODULE)
 #define MAX_PULSES_TRANSITIONS 300
 #else
