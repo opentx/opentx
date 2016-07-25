@@ -58,6 +58,13 @@ make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
+# OpenTX on AR9X
+rm -rf *
+cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES ${SRCDIR}
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
+
 # OpenTX on Taranis
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=TARANIS -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}

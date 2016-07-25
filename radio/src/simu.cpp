@@ -339,7 +339,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
 long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 {
   if (hasFocus()) {
-#if defined(PCBSKY9X) && !defined(REVX)
+#if defined(COPROCESSOR)
     Coproc_temp = 23;
     Coproc_maxtemp = 28;
 #endif
