@@ -9,6 +9,17 @@ RUN apt-get update && \
       cmake \
       gcc \
       git \
+      subversion \
+      libqtcore4 \
+      libqt4-dev \
+      qt4-qmake \
+      libxerces-c-dev \
+      xsdcxx \
+      libusb-1.0-0 \
+      libphonon-dev \
+      phonon \
+      libqtwebkit-dev \
+      python-qt4-dev \
       lib32ncurses5 \
       lib32z1 \
       libfox-1.6-dev \
