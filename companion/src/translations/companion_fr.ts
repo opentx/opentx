@@ -8070,8 +8070,8 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1156"/>
-        <source>Removes D8 and LR12 FrSky protocols that are not legal for use in the EU on radios sold after Jan 1st, 2015</source>
-        <translation>Supprime les protocoles RF D8 et LR12 qui ne sont plus utilisable légalementen Europe sur les radios vendues après le 1er janvier 2015</translation>
+        <source>Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015</source>
+        <translation>Supprime le protocole RF D8 qui n&apos;est plus utilisable légalement en Europe sur les radios vendues après le 1er janvier 2015</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
