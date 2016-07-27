@@ -77,6 +77,9 @@
 #undef min
 #undef max
 
+// some C++ headers must be included outside the custom namespace (fails to compile in gcc-6)
+#include <math.h>
+
 namespace NAMESPACE {
 
 #if defined(CPUARM)

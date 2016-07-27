@@ -450,6 +450,14 @@ void modelDefault(uint8_t id)
   }
 #endif
 
+#if defined(FLIGHT_MODES) && defined(ROTARY_ENCODERS)
+  for (int p=1; p<MAX_FLIGHT_MODES; p++) {
+    for (int i=0; i<ROTARY_ENCODERS; i++) {
+      g_model.flightModeData[p].rotaryEncoders[i] = ROTARY_ENCODER_MAX+1;
+    }
+  }
+#endif
+
 #if defined(MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
@@ -1936,6 +1944,11 @@ void opentxStart()
 #if defined(CPUARM) || defined(CPUM2560)
 void opentxClose()
 {
+#if defined(CPUARM)
+  watchdogSetTimeout(2000/*20s*/);
+#endif
+  pausePulses();   // stop mixer task to disable trims processing while in shutdown
+
   AUDIO_BYE();
 
 #if defined(FRSKY)

@@ -113,10 +113,10 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         reUse[i] = new QComboBox(ui->reGB);
         reUse[i]->setProperty("index", i);
         populateGvarUseCB(reUse[i], phaseIdx);
-        connect(reUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseREUse_currentIndexChanged(int)));
         if (phase.rotaryEncoders[i] > 1024) {
           reUse[i]->setCurrentIndex(phase.rotaryEncoders[i] - 1024);
         }
+        connect(reUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseREUse_currentIndexChanged(int)));
         reLayout->addWidget(reUse[i], i, 1, 1, 1);
       }
       // RE value
@@ -227,18 +227,11 @@ void FlightModePanel::update()
     }
   }
 
-  for (int i=0; i<reCount; i++) {    
-    reValues[i]->setDisabled(false);
-    int idx = phase.rotaryEncoders[i];
-    FlightModeData *phasere = &phase;
-    while (idx > 1024) {
-      int nextPhase = idx - 1025;
-      if (nextPhase >= phaseIdx) nextPhase += 1;
-      phasere = &model->flightModeData[nextPhase];
-      idx = phasere->rotaryEncoders[i];
-      reValues[i]->setDisabled(true);
+  if (ui->reGB->isVisible()) {
+    for (int i=0; i<reCount; i++) {    
+      reValues[i]->setDisabled(model->isRELinked(phaseIdx, i));
+      reValues[i]->setValue(model->getREValue(phaseIdx, i));
     }
-    reValues[i]->setValue(phasere->rotaryEncoders[i]);
   }
 }
 
@@ -293,8 +286,14 @@ void FlightModePanel::trimUpdate(unsigned int trim)
       trimsUse[trim]->setCurrentIndex(1 + 2*phase.trimRef[chn] + phase.trimMode[chn] - (phase.trimRef[chn] > phaseIdx ? 1 : 0));
     else
       trimsUse[trim]->setCurrentIndex(phase.trimRef[chn]);
-    trimsValue[trim]->setEnabled(true);
-    trimsSlider[trim]->setEnabled(true);
+    if (phaseIdx == 0 || phase.trimRef[chn] == phaseIdx || (IS_TARANIS(board) && phase.trimMode[chn] != 0)) {
+      trimsValue[trim]->setEnabled(true);
+      trimsSlider[trim]->setEnabled(true);
+    }
+    else {
+      trimsValue[trim]->setEnabled(false);
+      trimsSlider[trim]->setEnabled(false);
+    }
   }
   lock = false;
 }
@@ -333,6 +332,8 @@ void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
       phase.gvars[gvar] = 1024 + index;
     }
     update();
+    if (model->isGVarLinkedCircular(phaseIdx,gvar))
+      QMessageBox::warning(this, "Companion", tr("Warning: Global variable links back to itself. Flight Mode 0 value used."));
     emit modified();
     lock = false;
   }
@@ -369,8 +370,10 @@ void FlightModePanel::phaseREUse_currentIndexChanged(int index)
       phase.rotaryEncoders[re] = 1024 + index;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ;
     }
     update();
-    lock = false;
+    if (model->isRELinkedCircular(phaseIdx,re))
+      QMessageBox::warning(this, "Companion", tr("Warning: Rotary encoder links back to itself. Flight Mode 0 value used."));
     emit modified();
+    lock = false;
   }
 }
 
@@ -446,7 +449,7 @@ void FlightModePanel::fmClear()
 {
   int res = QMessageBox::question(this, "Companion", tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
-    phase.clear();
+    phase.clear(phaseIdx);
     if (phaseIdx == 0) {
       if (IS_TARANIS(GetEepromInterface()->getBoard())) {
         for (int i=0; i < gvCount; ++i) {
@@ -462,11 +465,11 @@ void FlightModePanel::fmClear()
       pswtch->setCurrentIndex(pswtch->findText(item.toString()));
       if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes))) {
         for (int i=0; i<gvCount; i++) {
-          gvUse[i]->setCurrentIndex(0);
+          gvUse[i]->setCurrentIndex((phase.gvars[i] > 1024 ? (phase.gvars[i] - 1024) : 0));
         }
       }
       for (int i=0; i<reCount; i++) {
-        reUse[i]->setCurrentIndex(0);
+        reUse[i]->setCurrentIndex((phase.rotaryEncoders[i] > 1024 ? (phase.rotaryEncoders[i] - 1024) : 0));
       }
       lock = false;
     }

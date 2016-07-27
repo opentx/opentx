@@ -68,10 +68,10 @@
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
 
 #define LEN_VRENAVIG           "\003"
-#define TR_VRENAVIG            "Ingen REaREb"
+#define TR_VRENAVIG            "IngREaREb"
 
 #define LEN_VBLMODE            TR("\005", "\010")
-#define TR_VBLMODE             TR("Av\0""Knapp""Spak\0""Båda\0""På\0  ", "Av\0     ""Knapp\0  ""Spakar\0 ""Båda\0   ""På\0     ")
+#define TR_VBLMODE             TR("Av\0  ""Knapp""Spak\0""Båda\0""På\0  ", "Av\0     ""Knapp\0  ""Spakar\0 ""Båda\0   ""På\0     ")
 
 #define LEN_TRNMODE            "\002"
 #define TR_TRNMODE             "Av""+="":="
@@ -88,8 +88,8 @@
 #define LEN_POTTYPES           "\020"
 #define TR_POTTYPES            "Ingen\0          ""Mittläges-pot\0  ""Flerlägesväljare""Potentiometer\0"
 
-#define LEN_SLIDERTYPES        "\008"
-#define TR_SLIDERTYPES         "Ingen\0""Skjutpot"
+#define LEN_SLIDERTYPES        "\010"
+#define TR_SLIDERTYPES         "Ingen\0  ""Skjutpot"
 
 #define LEN_DATETIME           "\005"
 #define TR_DATETIME            "DAG: ""TID: "
@@ -119,7 +119,7 @@
 #define TR_VDISPLAYTRIMS       "No\0   ""Change""Yes\0"
 
 #define LEN_VBEEPCOUNTDOWN     "\007"
-#define TR_VBEEPCOUNTDOWN      "Tyst\0  Pip\0   Röst\0  Vibrera"
+#define TR_VBEEPCOUNTDOWN      "Tyst\0  ""Pip\0   ""Röst\0  ""Vibrera"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tone\0 ""Silent"
@@ -441,7 +441,7 @@
 #define TR_VTEMPLATES          "Nolla Mixar\0\0""Enkel 4kanal\0""Gasklippning\0""V-Stjärt    \0""Deltavinge  \0""eCCPM       \0""Helikopter  \0""Servotest   \0"
 
 #define LEN_VSWASHTYPE         "\004"
-#define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"
+#define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0 "
 
 #define LEN_VKEYS              "\005"
 #define TR_VKEYS               TR("Menu\0""Exit\0""Ned\0 ""Upp\0 ""Höger""Vänst", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
@@ -512,7 +512,7 @@
   #define TR_EXTRA_VSRCRAW
 #endif
 
-#define TR_VSRCRAW             "---\0""Rod\0""Hjd\0""Gas\0""Ske\0" TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW "TrmR" "TrmH" "TrmG" "TrmS" TR_SW_VSRCRAW
+#define TR_VSRCRAW             "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
 #define LEN_VTMRMODES          "\003"
 #define TR_VTMRMODES           "Av\0""På\0""GAs""GA%""GAt"
@@ -597,7 +597,7 @@
 #define TR_TTRACE              TR("Följ Gas", INDENT "Följ Gas")
 #define TR_TTRIM               TR("Gastrim", INDENT "Gastrim")
 #define TR_BEEPCTR             TR("Cent.pip", "Centerpip")
-#define TR_USE_GLOBAL_FUNCS    TR("Glob.Funkt", "Använd Global Funktioner")
+#define TR_USE_GLOBAL_FUNCS    TR("Glob.Funkt", "Använd Global Funk.")
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif

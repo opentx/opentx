@@ -8,6 +8,9 @@
 <li>Enabled DSM protocols on several raios (<a href=https://github.com/opentx/opentx/issues/3471>#3471</a>)</li>
 <li>Better representation of negative mixer weight in offset bar widget (<a href=https://github.com/opentx/opentx/issues/3476>#3476</a>)</li>
 <li>Fixed several bugs in curve preset function (<a href=https://github.com/opentx/opentx/issues/3451>#3451</a>)</li>
+<li>Fixed flight modes rotary encoders initialization when creating new model (only for radios with rotary encoders) (<a href=https://github.com/opentx/opentx/issues/3473>#3473</a>)</li>
+<li>Fixed: show value of persistent sensor after power on, before the telemetry is received (<a href=https://github.com/opentx/opentx/issues/3595>#3595</a>)</li>
+<li>Fixed: LSs weren't selectable as input source (<a href=https://github.com/opentx/opentx/issues/3632>#3632>/a>)</li>
 </ul>
 
 
@@ -25,8 +28,9 @@
 
 [Lua]
 <ul>
-<li>Fixed Lua playTone() crash when called with abnormal parameter values. (<a href=https://github.com/opentx/opentx/issues/3462>#3462</a>)</li>
+<li>Fixed playTone() crash when called with abnormal parameter values (<a href=https://github.com/opentx/opentx/issues/3462>#3462</a>)</li>
 <li>Return proper values for `Cels-` and `Cels+` (<a href=https://github.com/opentx/opentx/issues/2826>#2826</a>)</li>
+<li>Fixed lcd.drawNumber() display when INVERS flag was used (<a href=https://github.com/opentx/opentx/issues/3569>#3569</a>)</li>
 </ul>
 
 

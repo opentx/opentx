@@ -44,6 +44,7 @@ class ModelPrinter: public QObject
     QString printModule(int idx);
     QString printTrainerMode();
     QString printCenterBeep();
+    QString printHeliSwashType();
     QString printTrim(int flightModeIndex, int stickIndex);
     QString printGlobalVar(int flightModeIndex, int gvarIndex);
     QString printRotaryEncoder(int flightModeIndex, int reIndex);

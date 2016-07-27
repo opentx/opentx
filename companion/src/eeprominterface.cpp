@@ -1410,7 +1410,7 @@ void ModelData::clear()
     moduleData[1].protocol = PULSES_OFF;
   }
   for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
-    flightModeData[i].clear();
+    flightModeData[i].clear(i);
   }
   clearInputs();
   clearMixes();
@@ -1523,9 +1523,7 @@ int ModelData::getTrimValue(int phaseIdx, int trimIdx)
       }
       else {
         phaseIdx = phase.trimRef[trimIdx];
-        if (phase.trimMode[trimIdx] == 0)
-          result = 0;
-        else
+        if (phase.trimMode[trimIdx] != 0)
           result += phase.trim[trimIdx];
       }
     }
@@ -1538,16 +1536,57 @@ bool ModelData::isGVarLinked(int phaseIdx, int gvarIdx)
   return flightModeData[phaseIdx].gvars[gvarIdx] > 1024;
 }
 
-int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
+bool ModelData::isGVarLinkedCircular(int phaseIdx, int gvarIdx)
 {
-  int idx = flightModeData[phaseIdx].gvars[gvarIdx];
-  for (int i=0; idx>1024 && i<C9X_MAX_FLIGHT_MODES; i++) {
-    int nextPhase = idx - 1025;
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
+    int val = flightModeData[phaseIdx].gvars[gvarIdx];
+    if ((phaseIdx==0) || (val<=1024)) return false;
+    int nextPhase = val - 1025;
     if (nextPhase >= phaseIdx) nextPhase += 1;
     phaseIdx = nextPhase;
-    idx = flightModeData[phaseIdx].gvars[gvarIdx];
   }
-  return idx;
+  return true;
+}
+
+int ModelData::getGVarValue(int phaseIdx, int gvarIdx)
+{
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
+    int val = flightModeData[phaseIdx].gvars[gvarIdx];
+    if ((phaseIdx==0) || (val<=1024)) return val;
+    int nextPhase = val - 1025;
+    if (nextPhase >= phaseIdx) nextPhase += 1;
+    phaseIdx = nextPhase;
+  }
+  return flightModeData[0].gvars[gvarIdx];  // circular linked
+}
+
+bool ModelData::isRELinked(int phaseIdx, int reIdx)
+{
+  return flightModeData[phaseIdx].rotaryEncoders[reIdx] > 1024;
+}
+
+bool ModelData::isRELinkedCircular(int phaseIdx, int reIdx)
+{
+  for (int i=0; i<C9X_MAX_ENCODERS; i++) {
+    int val = flightModeData[phaseIdx].rotaryEncoders[reIdx];
+    if ((phaseIdx==0) || (val<=1024)) return false;
+    int nextPhase = val - 1025;
+    if (nextPhase >= phaseIdx) nextPhase += 1;
+    phaseIdx = nextPhase;
+  }
+  return true;
+}
+
+int ModelData::getREValue(int phaseIdx, int reIdx)
+{
+  for (int i=0; i<C9X_MAX_ENCODERS; i++) {
+    int val = flightModeData[phaseIdx].rotaryEncoders[reIdx];
+    if ((phaseIdx==0) || (val<=1024)) return val;
+    int nextPhase = val - 1025;
+    if (nextPhase >= phaseIdx) nextPhase += 1;
+    phaseIdx = nextPhase;
+  }
+  return flightModeData[0].rotaryEncoders[reIdx];  // circular linked
 }
 
 void ModelData::setTrimValue(int phaseIdx, int trimIdx, int value)
@@ -1843,3 +1882,17 @@ SimulatorInterface *GetCurrentFirmwareSimulator()
   else
     return NULL;
 }
+
+void FlightModeData::clear(const int phase)
+{
+  memset(this, 0, sizeof(FlightModeData));
+  if (phase != 0) {
+    for (int idx=0; idx<C9X_MAX_GVARS; idx++) {
+      gvars[idx] = 1025;
+    }
+    for (int idx=0; idx<C9X_MAX_ENCODERS; idx++) {
+      rotaryEncoders[idx] = 1025;
+    }
+  }
+}
+
