@@ -235,8 +235,7 @@ DRESULT __disk_write (
     Status = SD_WriteMultiBlocks((uint8_t *)buff, sector, BLOCK_SIZE, count); // 4GB Compliant
   }
 
-  if (Status == SD_OK)
-  {
+  if (Status == SD_OK) {
     SDTransferState State;
 
     Status = SD_WaitWriteOperation(); // Check if the Transfer is finished
