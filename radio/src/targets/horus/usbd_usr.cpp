@@ -19,7 +19,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../opentx.h"
+#include "opentx.h"
 
 extern "C" {
 #include "usbd_usr.h"
@@ -112,7 +112,8 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
-#if !defined(BOOT) && defined(USB_MASS_STORAGE)
+#if !defined(BOOT) && defined(USB_MASS_STORAGE) && !defined(PCBHORUS)
+  // TODO is it really needed if we didn't write the EEPROM?
   NVIC_SystemReset();
 #endif
 }

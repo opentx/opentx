@@ -27,7 +27,7 @@ extern "C" {
 }
 #endif
 
-#define MENUS_STACK_SIZE       4000
+#define MENUS_STACK_SIZE       2000
 #define MIXER_STACK_SIZE       500
 #define AUDIO_STACK_SIZE       500
 #define BLUETOOTH_STACK_SIZE   500
