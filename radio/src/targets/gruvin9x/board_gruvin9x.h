@@ -21,7 +21,7 @@
 #ifndef _BOARD_GRUVIN9X_H_
 #define _BOARD_GRUVIN9X_H_
 
-#include "../common_avr/board_avr.h"
+#include "../common/avr/board_avr.h"
 
 // Board driver
 void boardInit(void);

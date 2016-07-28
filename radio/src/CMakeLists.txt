@@ -107,21 +107,21 @@ if(NOT PCB STREQUAL 9XR AND NOT PCB STREQUAL 9XRPRO)
 endif()
 
 if(CPU_TYPE STREQUAL STM32F4)
-  include(common/arm/stm32/f4/CMakeLists.txt)
+  include(targets/common/arm/stm32/f4/CMakeLists.txt)
 endif()
 
 if(CPU_TYPE STREQUAL STM32F2)
-  include(common/arm/stm32/f2/CMakeLists.txt)
+  include(targets/common/arm/stm32/f2/CMakeLists.txt)
 endif()
 
 if(CPU_FAMILY STREQUAL STM32)
-  include(common/arm/stm32/CMakeLists.txt)
+  include(targets/common/arm/stm32/CMakeLists.txt)
 endif()
 
 if(ARCH STREQUAL ARM)
-  include(common/arm/CMakeLists.txt)
+  include(targets/common/arm/CMakeLists.txt)
 else()
-  include(common/avr/CMakeLists.txt)
+  include(targets/common/avr/CMakeLists.txt)
 endif()
 
 foreach(LANGUAGE ${GUI_LANGUAGES})

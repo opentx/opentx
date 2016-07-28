@@ -21,7 +21,7 @@
 #ifndef _BOARD_STOCK_H_
 #define _BOARD_STOCK_H_
 
-#include "../common_avr/board_avr.h"
+#include "../common/avr/board_avr.h"
 
 //
 //                  elev                        thr

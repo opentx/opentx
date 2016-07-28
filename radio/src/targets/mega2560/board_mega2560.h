@@ -21,7 +21,7 @@
 #ifndef _BOARD_MEGA2560_H_
 #define _BOARD_MEGA2560_H_
 
-#include "../common_avr/board_avr.h"
+#include "../common/avr/board_avr.h"
 
 //Mods for futur use ? Beta tester love it 
 //#define ROTENC_DIV2 // rotenc resolution/2
