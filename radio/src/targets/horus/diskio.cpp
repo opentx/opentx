@@ -162,7 +162,6 @@ DRESULT __disk_read (
       Status = SD_ReadMultiBlocks(buff, sector, BLOCK_SIZE, count); // 4GB Compliant
     }
 
-#if defined(SD_DMA_MODE)
     if (Status == SD_OK) {
       SDTransferState State;
 
@@ -183,7 +182,6 @@ DRESULT __disk_read (
       TRACE("Status(ReadBlock)=%d", Status);
       res = RES_ERROR;
     }
-#endif
 
     if (res == RES_OK)
       break;
