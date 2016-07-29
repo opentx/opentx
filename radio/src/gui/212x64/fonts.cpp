@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 const pm_uchar font_5x7[] PROGMEM = {
 #include "font_05x07.lbm"
