@@ -276,7 +276,7 @@ if(SDCARD)
   add_definitions(-DSDCARD)
   include_directories(${FATFS_DIR} ${FATFS_DIR}/option)
   set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_general_sdmanager.cpp)
+  set(GUI_SRC ${GUI_SRC} radio_sdmanager.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} ${FATFS_SRC})
 endif()
 
