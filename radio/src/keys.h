@@ -130,7 +130,7 @@ enum EnumKeys {
   SW_SH0,
   SW_SH1,
   SW_SH2,
-#if defined(REV9E)
+#if defined(PCBX9E)
   SW_SI0,
   SW_SI1,
   SW_SI2,

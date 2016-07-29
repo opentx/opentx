@@ -160,7 +160,7 @@ void OpenTxSimulator::wheelEvent(int steps)
     rotencValue -= 2;
   else
     rotencValue += 2;
-#elif defined(REV9E)
+#elif defined(PCBX9E)
   if (steps == 255)
     rotencValue -= 2;
   else

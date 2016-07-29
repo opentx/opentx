@@ -299,7 +299,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
   // SWITCH_KEY(D, 3, 3);
   SWITCH_KEY(E, 4, 2);
   SWITCH_KEY(F, 5, 3);
-#elif defined(PCBTARANIS) && defined(REV9E)
+#elif defined(PCBX9E)
   SWITCH_KEY(A, 0, 3);
   SWITCH_KEY(B, 1, 3);
   SWITCH_KEY(C, 2, 3);
@@ -374,7 +374,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     }
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
     SWITCH_KEY(A, 0, 3);
     SWITCH_KEY(B, 1, 3);
     SWITCH_KEY(C, 2, 3);
@@ -565,7 +565,7 @@ uint16_t anaIn(uint8_t chan)
 #if defined(PCBHORUS)
   else if (chan == TX_VOLTAGE)
     return 1737;      //~10.6V
-#elif (defined(PCBTARANIS) && defined(REV9E))
+#elif defined(PCBX9E)
   else if (chan == TX_VOLTAGE)
     return 1420;      //~10.6V
 #elif defined(PCBTARANIS) || defined(PCBFLAMENCO)

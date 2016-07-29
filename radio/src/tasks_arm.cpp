@@ -235,7 +235,7 @@ void menusTask(void * pdata)
 #endif
   }
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
   toplcdOff();
 #endif
 

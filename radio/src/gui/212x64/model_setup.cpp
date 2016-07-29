@@ -45,7 +45,7 @@ enum menuModelSetupItems {
   ITEM_MODEL_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_TIMER3_COUNTDOWN_BEEP,
 #endif
-#if defined(REV9E)
+#if defined(PCBX9E)
   ITEM_MODEL_TOP_LCD_TIMER,
 #endif
   ITEM_MODEL_EXTENDED_LIMITS,
@@ -60,12 +60,12 @@ enum menuModelSetupItems {
   ITEM_MODEL_CHECKLIST_DISPLAY,
   ITEM_MODEL_THROTTLE_WARNING,
   ITEM_MODEL_SWITCHES_WARNING,
-#if defined(REV9E)
+#if defined(PCBX9E)
   ITEM_MODEL_SWITCHES_WARNING2,
   ITEM_MODEL_SWITCHES_WARNING3,
 #endif
   ITEM_MODEL_POTS_WARNING,
-#if defined(REV9E)
+#if defined(PCBX9E)
   ITEM_MODEL_POTS_WARNING2,
 #endif
   ITEM_MODEL_BEEP_CENTER,
@@ -248,7 +248,7 @@ int getSwitchWarningsCount()
 #elif TIMERS == 3
   #define TIMERS_ROWS                     TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
 #endif
-#if defined(REV9E)
+#if defined(PCBX9E)
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsCount() > 16 ? TITLE_ROW : HIDDEN_ROW)
   #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
   #define TOPLCD_ROWS                     0,
@@ -402,7 +402,7 @@ void menuModelSetup(uint8_t event)
         break;
 #endif
 
-#if defined(REV9E)
+#if defined(PCBX9E)
       case ITEM_MODEL_TOP_LCD_TIMER:
         lcd_putsLeft(y, STR_TOPLCDTIMER);
         drawStringWithIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER, g_model.toplcdTimer+1, attr);
@@ -477,7 +477,7 @@ void menuModelSetup(uint8_t event)
         g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
-#if defined(REV9E)
+#if defined(PCBX9E)
       case ITEM_MODEL_SWITCHES_WARNING2:
       case ITEM_MODEL_SWITCHES_WARNING3:
       case ITEM_MODEL_POTS_WARNING2:
@@ -492,7 +492,7 @@ void menuModelSetup(uint8_t event)
 
       case ITEM_MODEL_SWITCHES_WARNING:
       {
-#if defined(REV9E)
+#if defined(PCBX9E)
         if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 8*(NUM_BODY_LINES-i)) {
           if (CURSOR_MOVED_LEFT(event))
             menuVerticalOffset--;
@@ -544,7 +544,7 @@ void menuModelSetup(uint8_t event)
           states >>= 2;
         }
         if (attr && menuHorizontalPosition < 0) {
-#if defined(REV9E)
+#if defined(PCBX9E)
           lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+7)/8));
 #else
           lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, current*(2*FW+1), FH+1);
@@ -554,7 +554,7 @@ void menuModelSetup(uint8_t event)
       }
 
       case ITEM_MODEL_POTS_WARNING:
-#if defined(REV9E)
+#if defined(PCBX9E)
         if (i==NUM_BODY_LINES-1 && g_model.potsWarnMode) {
           if (CURSOR_MOVED_LEFT(event))
             menuVerticalOffset--;
@@ -597,7 +597,7 @@ void menuModelSetup(uint8_t event)
               if (attr && (menuHorizontalPosition==i+1)) REPEAT_LAST_CURSOR_MOVE();
             }
             else {
-#if defined(REV9E)
+#if defined(PCBX9E)
               if (i == NUM_XPOTS) {
                 y += FH;
                 x = MODEL_SETUP_2ND_COLUMN;
@@ -615,7 +615,7 @@ void menuModelSetup(uint8_t event)
           }
         }
         if (attr && menuHorizontalPosition < 0) {
-#if defined(REV9E)
+#if defined(PCBX9E)
           lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-FH-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, 2*FH+1);
 #else
           lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);

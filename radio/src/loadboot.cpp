@@ -60,7 +60,7 @@ const uint8_t BootCode[] = {
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart()
 {
-#if defined(REV9E)
+#if defined(PCBX9E)
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOGEN | RCC_AHB1ENR_GPIODEN;
 #else
   RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN | RCC_AHB1ENR_GPIOEEN | RCC_AHB1ENR_GPIODEN;
@@ -86,7 +86,7 @@ void _bootStart()
   // TRIMS_GPIO_PIN_RHL is on PC1 on all versions
   // turn on pull-ups on trim keys 
   GPIOC->PUPDR = 0x00000004;
-#if defined(REV9E)
+#if defined(PCBX9E)
   GPIOG->PUPDR = 0x00000001;
 #else
   GPIOE->PUPDR = 0x00000040;

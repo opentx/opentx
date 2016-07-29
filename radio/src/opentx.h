@@ -181,16 +181,16 @@
   #define CASE_GVARS(x)
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
-  #define CASE_REVPLUS(x) x,
+#if defined(PCBX9DP) || defined(PCBX9E)
+  #define CASE_PCBX9E_PCBX9DP(x) x,
 #else
-  #define CASE_REVPLUS(x)
+  #define CASE_PCBX9E_PCBX9DP(x)
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  #define CASE_REV9E(x) x,
+#if defined(PCBX9E)
+  #define CASE_PCBX9E(x) x,
 #else
-  #define CASE_REV9E(x)
+  #define CASE_PCBX9E(x)
 #endif
 
 #if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
@@ -308,12 +308,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_POT_AVAILABLE(x)       (true)
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (false)
-#elif defined(PCBTARANIS) && defined(REV9E)
+#elif defined(PCBX9E)
   #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
   #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER1 && IS_SLIDER_AVAILABLE(x)))
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
-#elif defined(PCBTARANIS) && defined(REVPLUS)
+#elif defined(PCBX9DP)
   #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_NONE)
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
@@ -330,7 +330,7 @@ void memswap(void * a, void * b, uint8_t size);
 #define IS_POT(x)                      ((x)>=POT1 && (x)<=POT_LAST)
 #define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 
-#if defined(PCBFLAMENCO) || defined(PCBHORUS) || (defined(PCBTARANIS) && defined(REV9E))
+#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E)
   #define PWR_BUTTON_DELAY
   #define PWR_PRESS_SHUTDOWN           300 // 3s
 #endif

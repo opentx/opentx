@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "timers.h"
 
-#if defined(REVPLUS) && defined(LCD_DUAL_BUFFER)
+#if (defined(PCBX9E) || defined(PCBX9DP)) && defined(LCD_DUAL_BUFFER)
   display_t displayBuf1[DISPLAY_BUFFER_SIZE] __DMA;
   display_t displayBuf2[DISPLAY_BUFFER_SIZE] __DMA;
   display_t * displayBuf = displayBuf1;

@@ -29,11 +29,11 @@
 #define SAMPTIME       2   // sample time = 28 cycles
 #define SAMPTIME_LONG  3   // sample time = 56 cycles
 
-#if defined(REV9E) && defined(HORUS_STICKS)
+#if defined(PCBX9E) && defined(HORUS_STICKS)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
-#elif defined(REV9E)
+#elif defined(PCBX9E)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
-#elif defined(REVPLUS)
+#elif defined(PCBX9DP)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
 #elif defined(REV4a)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
@@ -41,7 +41,7 @@
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
 
-#if defined(REV9E)
+#if defined(PCBX9E)
     #define NUMBER_ANALOG_ADC1      10
     #define NUMBER_ANALOG_ADC3      3
     // mapping from adcValues order to enum Analogs
@@ -57,12 +57,12 @@ uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 void adcInit()
 {
-#if defined(REV9E)
+#if defined(PCBX9E)
   configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_SLIDER3, PIN_ANALOG | PIN_PORTA);
   configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SLIDER4, PIN_ANALOG | PIN_PORTB);
   configure_pins(ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_POT4 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
   configure_pins(ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2, PIN_ANALOG | PIN_PORTF);
-#elif defined(REVPLUS)
+#elif defined(PCBX9DP)
   configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1, PIN_ANALOG | PIN_PORTA);
   configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3, PIN_ANALOG | PIN_PORTB);
   configure_pins(ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
@@ -75,7 +75,7 @@ void adcInit()
   ADC1->CR1 = ADC_CR1_SCAN;
   ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
   ADC1->SQR1 = (NUMBER_ANALOG_ADC1-1) << 20; // bits 23:20 = number of conversions
-#if defined(REV9E)
+#if defined(PCBX9E)
   ADC1->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
   ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
 #else
@@ -93,7 +93,7 @@ void adcInit()
   ADC1_DMA_Stream->NDTR = NUMBER_ANALOG_ADC1;
   ADC1_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   ADC3->CR1 = ADC_CR1_SCAN;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
   ADC3->SQR1 = (NUMBER_ANALOG_ADC3-1) << 20;   // NUMBER_ANALOG Channels
@@ -118,15 +118,15 @@ void adcSingleRead()
   ADC1_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
   ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
   ADC3_DMA->LIFCR = ADC3_DMA_FLAGS; // Write ones to clear bits
   ADC3_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
-#endif // defined(REV9E)
+#endif
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   for (unsigned int i=0; i<10000; i++) {
     if ((ADC1_DMA->HISR & ADC1_DMA_FLAG_TC) && (ADC3_DMA->LISR & ADC3_DMA_FLAG_TC)) {
       break;
@@ -180,7 +180,7 @@ uint16_t getAnalogValue(uint8_t index)
     // which produces ghost readings on these inputs.
     return 0;
   }
-#if defined(REV9E)
+#if defined(PCBX9E)
   index = ana_mapping[index];
 #endif
   if (ana_direction[index] < 0)

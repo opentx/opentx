@@ -140,7 +140,7 @@ void simuInit()
       break;
 
 #if defined(CPUARM)
-  #if defined(PCBTARANIS) && !defined(REV9E)
+  #if defined(PCBTARANIS) && !defined(PCBX9E)
     #define SWITCH_CASE NEG_CASE
   #else
     #define SWITCH_CASE POS_CASE
@@ -247,7 +247,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_CASE(5, SWITCHES_GPIO_REG_F, SWITCHES_GPIO_PIN_F)
     SWITCH_3_CASE(6,  SWITCHES_GPIO_REG_G_L, SWITCHES_GPIO_REG_G_H, SWITCHES_GPIO_PIN_G_L, SWITCHES_GPIO_PIN_G_H)
     SWITCH_CASE(7, SWITCHES_GPIO_REG_H, SWITCHES_GPIO_PIN_H)
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     SWITCH_3_CASE(8,  SWITCHES_GPIO_REG_I_L, SWITCHES_GPIO_REG_I_H, SWITCHES_GPIO_PIN_I_L, SWITCHES_GPIO_PIN_I_H)
     SWITCH_3_CASE(9,  SWITCHES_GPIO_REG_J_L, SWITCHES_GPIO_REG_J_H, SWITCHES_GPIO_PIN_J_L, SWITCHES_GPIO_PIN_J_H)
     SWITCH_3_CASE(10, SWITCHES_GPIO_REG_K_L, SWITCHES_GPIO_REG_K_H, SWITCHES_GPIO_PIN_K_L, SWITCHES_GPIO_PIN_K_H)
@@ -1385,7 +1385,7 @@ void unlockFlash() { }
 void lockFlash() { }
 void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 uint32_t isBootloaderStart(const void *block) { return 1; }
-#if defined(REVPLUS)
+#if defined(PCBX9DP) || defined(PCBX9E)
 void turnBacklightOn(uint8_t level, uint8_t color)
 {
   TIM4->CCR4 = (100-level)*color;

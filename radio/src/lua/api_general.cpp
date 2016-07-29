@@ -28,7 +28,7 @@
   #include "lua/lua_exports_horus.inc"   // this line must be after lua headers
 #elif defined(PCBFLAMENCO)
   #include "lua/lua_exports_flamenco.inc"
-#elif defined(PCBTARANIS) && defined(REV9E)
+#elif defined(PCBX9E)
   #include "lua/lua_exports_taranis_x9e.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_taranis.inc"

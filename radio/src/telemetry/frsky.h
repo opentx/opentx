@@ -272,7 +272,7 @@ PACK(struct FrskyTelemetryData {
 #endif
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
+#if defined(PCBX9DP) || defined(PCBX9E)
   #define IS_VALID_XJT_VERSION()      (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
 #else
   #define IS_VALID_XJT_VERSION()      (1)

@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
@@ -80,7 +80,7 @@ extern "C" {
 #define BOOTLOADER_SIZE    0x8000
 #define FIRMWARE_ADDRESS   0x08000000
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   #define PERI1_FREQUENCY  42000000
   #define PERI2_FREQUENCY  84000000
 #else
@@ -130,7 +130,7 @@ extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
 
-#if defined(REV9E)
+#if defined(PCBX9E)
 #define TRAINER_CONNECTED()            (true)
 #else
 #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
@@ -224,7 +224,7 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()            (readTrims())
 #define KEYS_PRESSED()             (readKeys())
 
-#if defined(REV9E)
+#if defined(PCBX9E)
 // Rotary Encoder driver
 extern int32_t rotencValue;
 void rotencInit(void);
@@ -255,7 +255,7 @@ enum Analogs {
   POT1,
   POT2,
   POT3,
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     POT4,
     POT_LAST = POT4,
   #else
@@ -263,7 +263,7 @@ enum Analogs {
   #endif
   SLIDER1,
   SLIDER2,
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     SLIDER3,
     SLIDER4,
   #endif
@@ -287,7 +287,7 @@ void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
-#if defined(REV9E)
+#if defined(PCBX9E)
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define pwroffPressed() pwrPressed()
@@ -298,7 +298,7 @@ uint32_t pwroffPressed(void);
 
 // Backlight driver
 void backlightInit(void);
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
   void turnBacklightOn(uint8_t level, uint8_t color);
   void turnBacklightOff(void);
   #define setBacklight(xx)         turnBacklightOn(xx, g_eeGeneral.backlightColor)
@@ -353,7 +353,7 @@ int32_t getVolume(void);
 // Haptic driver
 void hapticInit(void);
 void hapticOff(void);
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
   void hapticOn(uint32_t pwmPercent);
 #else
   void hapticOn(void);
@@ -384,7 +384,7 @@ void lcdInitFinish(void);
 void lcdOff(void);
 
 // Top LCD driver
-#if defined(REV9E)
+#if defined(PCBX9E)
 void toplcdInit(void);
 void toplcdOff(void);
 void toplcdRefreshStart(void);

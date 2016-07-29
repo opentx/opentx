@@ -141,7 +141,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
+#if defined(PCBX9DP) || defined(PCBX9E)
   #define FRSKY_BAD_ANTENNA() (IS_VALID_XJT_VERSION() && telemetryData.swr.value > 0x33)
 #else
   #define FRSKY_BAD_ANTENNA() (telemetryData.swr.value > 0x33)

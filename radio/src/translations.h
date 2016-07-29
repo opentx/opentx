@@ -621,7 +621,7 @@ extern const pm_char STR_SHUTDOWN[];
 extern const pm_char STR_SAVEMODEL[];
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
 extern const pm_char STR_POWEROFF[];
 #endif
 

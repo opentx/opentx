@@ -252,7 +252,7 @@ void processSportPacket(uint8_t * packet)
       else
         telemetryData.rssi.set(data);
     }
-#if defined(PCBTARANIS) && defined(REVPLUS)
+#if defined(PCBX9DP) || defined(PCBX9E)
     else if (id == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
       if (!IS_VALID_XJT_VERSION()) {

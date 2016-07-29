@@ -46,10 +46,10 @@
   #define TARANIS_FIELD(x)
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  #define TARANIS_REV9E_FIELD(x)       x;
+#if defined(PCBX9E)
+  #define TARANIS_PCBX9E_FIELD(x)       x;
 #else
-  #define TARANIS_REV9E_FIELD(x)
+  #define TARANIS_PCBX9E_FIELD(x)
 #endif
 
 #if defined(PCBHORUS)
@@ -728,7 +728,7 @@ PACK(struct ModelHeader {
 #if defined(COLORLCD)
 typedef uint16_t swconfig_t;
 typedef uint32_t swarnstate_t;
-#elif defined(PCBTARANIS) && defined(REV9E)
+#elif defined(PCBX9E)
 typedef uint64_t swconfig_t;
 typedef uint64_t swarnstate_t;
 typedef uint32_t swarnenable_t;
@@ -842,7 +842,7 @@ PACK(struct ModelData {
 
   ARM_FIELD(NOBACKUP(TelemetrySensor telemetrySensors[MAX_SENSORS]))
 
-  TARANIS_REV9E_FIELD(uint8_t toplcdTimer)
+  TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
   CUSTOM_SCREENS_DATA
 
@@ -929,7 +929,7 @@ PACK(struct TrainerData {
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
 #elif defined(PCBTARANIS)
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     #define BLUETOOTH_FIELDS \
       uint8_t bluetoothEnable; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
@@ -1078,7 +1078,7 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
 #else

@@ -413,7 +413,7 @@ void menuChannelsView(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#if defined(REV9E) && !defined(SIMU)
+#if defined(PCBX9E) && !defined(SIMU)
   #define KEY_UP                       KEY_MINUS
   #define KEY_DOWN                     KEY_PLUS
   #define KEY_RIGHT                    KEY_PLUS

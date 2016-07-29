@@ -18,12 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define	WriteData(x)	 AspiData(x)
 #define	WriteCommand(x)	 AspiCmd(x)
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
   #define CONTRAST_OFS 160
   #define RESET_WAIT_DELAY_MS      300        //wait time after LCD reset before first command
   #define WAIT_FOR_DMA_END()       { while(lcd_busy) {}; }
@@ -36,7 +36,7 @@
 bool lcdInitFinished = false;
 void lcdInitFinish();
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
 
 // New hardware SPI driver for LCD
 void initLcdSpi()
@@ -155,7 +155,7 @@ void Set_Address(u8 x, u8 y)
   LCD_CLK_HIGH(); \
   LCD_CLK_HIGH();
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
 
 volatile bool lcd_busy;
 
@@ -213,7 +213,7 @@ extern "C" void LCD_DMA_Stream_IRQHandler()
   lcd_busy = false;
 }
 
-#else     // #if defined(REVPLUS)
+#else // #if defined(PCBX9E) || defined(PCBX9DP)
 void lcdRefresh()
 {  
   if (!lcdInitFinished) {
@@ -252,7 +252,7 @@ void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   
-#if defined(REV9E)
+#if defined(PCBX9E)
   GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN_1|BACKLIGHT_GPIO_PIN_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -269,7 +269,7 @@ void backlightInit()
   BACKLIGHT_TIMER->CCR1 = 100 ;
   BACKLIGHT_TIMER->EGR = 0 ;
   BACKLIGHT_TIMER->CR1 = TIM_CR1_CEN ;            // Counter enable
-#elif defined(REVPLUS)
+#elif defined(PCBX9DP)
   GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN_1|BACKLIGHT_GPIO_PIN_2;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -376,7 +376,7 @@ void lcdInitFinish()
 {
   lcdInitFinished = true;
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
   initLcdSpi();
 #endif
   
@@ -420,7 +420,7 @@ void lcdSetRefVolt(uint8_t val)
   AspiCmd(val+CONTRAST_OFS);		//0--255
 }
 
-#if defined(REV9E)
+#if defined(PCBX9E)
 void turnBacklightOn(uint8_t level, uint8_t color)
 {
   BACKLIGHT_TIMER->CCR1 = ((100-level)*(20-color))/20;
@@ -432,7 +432,7 @@ void turnBacklightOff(void)
   BACKLIGHT_TIMER->CCR1 = 0;
   BACKLIGHT_TIMER->CCR2 = 0;
 }
-#elif defined(REVPLUS)
+#elif defined(PCBX9DP)
 void turnBacklightOn(uint8_t level, uint8_t color)
 {
   BACKLIGHT_TIMER->CCR4 = ((100-level)*(20-color))/20;

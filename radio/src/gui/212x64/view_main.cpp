@@ -50,11 +50,11 @@
 #define MARKER_WIDTH  5
 
 const pm_uchar logo_taranis[] PROGMEM = {
-#include "../../bitmaps/212x64/logo.lbm"
+#include "logo.lbm"
 };
 
 const pm_uchar icons[] PROGMEM = {
-#include "../../bitmaps/212x64/icons.lbm"
+#include "icons.lbm"
 };
 
 #define ICON_RSSI     0, 9
@@ -162,7 +162,7 @@ void displayTrims(uint8_t phase)
 void drawSliders()
 {
   for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
-#if defined(REV9E)
+#if defined(PCBX9E)
     if (i < SLIDER1) continue;  // TODO change and display more values
     coord_t x = ((i==SLIDER1 || i==SLIDER3) ? 3 : LCD_W-5);
     int8_t y = (i<SLIDER3 ? LCD_H/2+1 : 1);

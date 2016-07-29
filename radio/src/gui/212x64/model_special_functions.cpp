@@ -332,7 +332,7 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
               lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
             }
           }
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
           else if (func == FUNC_BACKLIGHT) {
             drawSlider(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 100, attr);
             if (active) INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);

@@ -502,7 +502,7 @@ int cliDisplay(const char ** argv)
       name[len] = '\0';
       serialPrint("[%s] = %s", name, switchState(EnumKeys(i)) ? "on" : "off");
     }
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(REV9E) || defined(PCBHORUS) || defined(PCBFLAMENCO)
+#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9E) || defined(PCBHORUS) || defined(PCBFLAMENCO)
     serialPrint("[Enc.] = %d", rotencValue / 2);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {

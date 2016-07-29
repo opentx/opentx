@@ -67,7 +67,7 @@
 
 #if defined(PCBTARANIS)
   #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERSION
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     #define BOOT_KEY_UP		KEY_MINUS
     #define BOOT_KEY_DOWN	KEY_PLUS
   #else
@@ -155,7 +155,7 @@ extern void init_spi(void);
 extern void writeBlock(void);
 extern void usbPluggedIn();
 
-#if defined(REV9E)
+#if defined(PCBX9E)
 typedef int32_t rotenc_t;
 extern rotenc_t rotencValue;
 #endif
@@ -172,7 +172,7 @@ void interrupt10ms(void)
     ++enuk;
   }
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   checkRotaryEncoder();
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (rotencValue / 2);
@@ -672,7 +672,7 @@ int main()
     }
 
     if (state != ST_FLASHING && state != ST_USB) {
-#if defined(REV9E)
+#if defined(PCBX9E)
       if (pwrPressed()) {
 #else
       if (pwrCheck() == e_power_off) {

@@ -39,7 +39,7 @@
     return	readValue;
 }*/
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
 void AspiCmd(uint8_t Command_Byte)
 {
   LCD_A0_LOW() ;
