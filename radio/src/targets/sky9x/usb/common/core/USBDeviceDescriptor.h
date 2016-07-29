@@ -42,7 +42,7 @@
 #ifndef USBDEVICEDESCRIPTOR_H
 #define USBDEVICEDESCRIPTOR_H
 
-#include "radio/src/targets/sky9x/board_lowlevel.h"
+#include "board_lowlevel.h"
 //------------------------------------------------------------------------------
 //         Definitions
 //------------------------------------------------------------------------------

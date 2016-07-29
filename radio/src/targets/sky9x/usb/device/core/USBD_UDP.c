@@ -41,7 +41,7 @@
 //      Headers
 //------------------------------------------------------------------------------
 
-#include "radio/src/targets/sky9x/board_lowlevel.h"
+#include "board_lowlevel.h"
 #include "../../../usb/common/core/USBEndpointDescriptor.h"
 #include "../../../usb/common/core/USBGenericRequest.h"
 #include "../../../usb/device/core/USBD.h"
