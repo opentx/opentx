@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB "TARANIS" CACHE STRING "Radio type")
+set(PCB "X9D+" CACHE STRING "Radio type")
 set(TRANSLATIONS "EN" CACHE STRING "Radio language")
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -402,7 +402,7 @@ endif()
   set(CMAKE_CXX_FLAGS_DEBUG "${COMMON_CPP_FLAGS} -g")
   set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
-  if(PCB STREQUAL TARANIS)
+  if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E)
     add_subdirectory(targets/${TARGET_DIR}/bootloader)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
     set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
