@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _GUI_H_
+#define _GUI_H_
+
 #if defined(CPUARM)
 #include "gui_helpers.h"
 #endif
@@ -52,3 +55,5 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 
 #define SET_SCROLLBAR_X(x)
 #define LOAD_MODEL_BITMAP()
+
+#endif // _GUI_H_

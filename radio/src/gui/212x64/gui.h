@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _GUI_H_
+#define _GUI_H_
+
 #include "gui_helpers.h"
 #include "lcd.h"
 #include "menus.h"
@@ -77,3 +80,4 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
   #define displayFlightModes(...)
 #endif
 
+#endif // _GUI_H_

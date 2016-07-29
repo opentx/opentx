@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _GUI_H_
+#define _GUI_H_
+
 #include "gui_helpers.h"
 #include "lcd.h"
 #include "menus.h"
@@ -87,3 +90,5 @@ void drawCurvePoint(int x, int y, LcdFlags color);
 
 extern Layout * customScreens[MAX_CUSTOM_SCREENS];
 extern Topbar * topbar;
+
+#endif // _GUI_H_
