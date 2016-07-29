@@ -112,7 +112,7 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
-#if !defined(BOOT) && defined(USB_MASS_STORAGE) && !defined(PCBHORUS)
+#if !defined(BOOT) && defined(USB_MASS_STORAGE) && defined(EEPROM)
   // TODO is it really needed if we didn't write the EEPROM?
   NVIC_SystemReset();
 #endif

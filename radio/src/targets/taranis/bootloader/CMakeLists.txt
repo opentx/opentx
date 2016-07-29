@@ -50,13 +50,13 @@ set(BOOTLOADER_SRC
   ../i2c_driver.cpp
   ../flash_driver.cpp
   ../diskio.cpp
-  ../usbd_usr.cpp
+  ../../common/arm/stm32/usbd_usr.cpp
   ../usbd_storage_msd.cpp
   ../delays.c
-  ../usbd_desc.c
+  ../../common/arm/stm32/usbd_desc.c
   ../aspi.c
-  ../usb_bsp.c
-  ../usb_driver.c
+  ../../common/arm/stm32/usb_bsp.c
+  ../../common/arm/stm32/usb_driver.c
   ../pwr_driver.c
   init.c
   boot.cpp

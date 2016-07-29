@@ -23,7 +23,7 @@
 
 #include <string.h>
 
-#include "board_horus.h"
+#include "board.h"
 #include "usbd_conf.h"
 #include "usbd_core.h"
 #include "usbd_req.h"
@@ -60,17 +60,17 @@
 
 #if defined(USB_JOYSTICK)
   #define USBD_PID                        0x5710
-  #define USBD_PRODUCT_FS_STRING          "FrSky Horus Joystick"
+  #define USBD_PRODUCT_FS_STRING          USB_NAME " Joystick"
   #define USBD_CONFIGURATION_FS_STRING    "HID Config"
   #define USBD_INTERFACE_FS_STRING        "HID Interface"
 #elif defined(USB_SERIAL)
   #define USBD_PID                        0x5740      // do not change, this ID is used by the ST USB driver for Windows
-  #define USBD_PRODUCT_FS_STRING          "FrSky Horus Serial Port"
+  #define USBD_PRODUCT_FS_STRING          USB_NAME " Serial Port"
   #define USBD_CONFIGURATION_FS_STRING    "VSP Config"
   #define USBD_INTERFACE_FS_STRING        "VSP Interface"
 #elif defined(USB_MASS_STORAGE)
   #define USBD_PID                        0x5720
-  #define USBD_PRODUCT_FS_STRING          "FrSky Horus Mass Storage"
+  #define USBD_PRODUCT_FS_STRING          USB_NAME " Mass Storage"
   #define USBD_CONFIGURATION_FS_STRING    "MSC Config"
   #define USBD_INTERFACE_FS_STRING        "MSC Interface"
 #endif

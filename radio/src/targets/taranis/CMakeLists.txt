@@ -2,6 +2,7 @@ option(PCBREV "PCB Revision" REVPLUS)
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
+add_definitions(-DUSB_NAME="FrSky Taranis")
 if(PCBREV STREQUAL REV9E)
   option(STICKS "Sticks type" STANDARD)
   set(CPU_TYPE STM32F4)
@@ -49,7 +50,7 @@ add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
 set(GUI_SRC ${GUI_SRC} bmp.cpp menu_model_inputs.cpp menu_model_mixes.cpp menu_model_display.cpp menu_general_diagkeys.cpp menu_general_diaganas.cpp menu_general_hardware.cpp view_channels.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
 set(TARGET_SRC
   ${TARGET_SRC}
-  board_taranis.cpp
+  board.cpp
   extmodule_driver.cpp
   rtc_driver.cpp
   )
@@ -62,7 +63,6 @@ set(FIRMWARE_TARGET_SRC
   lcd_driver.cpp
   delays.c
   i2c_driver.cpp
-  usb_driver.c
   pwr_driver.c
   configure_pins.cpp
   flash_driver.cpp

@@ -4,6 +4,7 @@ set(ARCH ARM)
 set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.1.0/Libraries)
 add_definitions(-DCPUSTM32)
 add_definitions(-DSBUS -DCROSSFIRE)
+include_directories(${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32)
 include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc)
@@ -19,9 +20,10 @@ set(STM32USB_SRC
   )
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
-  usb_bsp.c
-  usbd_desc.c
-  usbd_usr.cpp
+  ../common/arm/stm32/usb_bsp.c
+  ../common/arm/stm32/usbd_desc.c
+  ../common/arm/stm32/usbd_usr.cpp
+  ../common/arm/stm32/usb_driver.c
   )
 if(USB STREQUAL SERIAL)
   add_definitions(-DUSB_SERIAL)
@@ -50,7 +52,7 @@ else()
   add_definitions(-DUSB_JOYSTICK)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
-    usbd_hid_joystick.c
+    ../common/arm/stm32/usbd_hid_joystick.c
     )
 endif()
 if(GVARS)

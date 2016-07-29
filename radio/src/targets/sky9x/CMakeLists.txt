@@ -53,7 +53,7 @@ set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp pwr_driver.cpp
   )
 set(TARGET_SRC
   ${TARGET_SRC}
-  board_sky9x.cpp
+  board.cpp
   telemetry_driver.cpp
   serial2_driver.cpp
   adc_driver.cpp

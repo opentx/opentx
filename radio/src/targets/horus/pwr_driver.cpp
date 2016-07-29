@@ -19,7 +19,7 @@
  */
 
 #include "pwr.h"
-#include "board_horus.h"
+#include "board.h"
 
 void pwrInit()
 {

@@ -42,7 +42,7 @@
 #include "../../../usb/common/core/USBSetAddressRequest.h"
 #include "../../../usb/common/core/USBSetConfigurationRequest.h"
 #include "../../../usb/device/core/USBD.h"
-#include "../../../board.h"
+#include "radio/src/targets/sky9x/board_lowlevel.h"
 #include "../../../usb/common/core/USBConfigurationDescriptor.h"
 #include "../../../usb/common/core/USBDeviceDescriptor.h"
 #include "../../../usb/common/core/USBDeviceQualifierDescriptor.h"

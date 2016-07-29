@@ -237,21 +237,7 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#if defined(PCBHORUS)
-  #include "targets/horus/board_horus.h"
-#elif defined(PCBFLAMENCO)
-  #include "targets/flamenco/board_flamenco.h"
-#elif defined(PCBTARANIS)
-  #include "targets/taranis/board_taranis.h"
-#elif defined(PCBSKY9X)
-  #include "targets/sky9x/board_sky9x.h"
-#elif defined(PCBGRUVIN9X)
-  #include "targets/gruvin9x/board_gruvin9x.h"
-#elif defined(PCBMEGA2560)
-  #include "targets/mega2560/board_mega2560.h"
-#else
-  #include "targets/9x/board_stock.h"
-#endif
+#include "board.h"
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"

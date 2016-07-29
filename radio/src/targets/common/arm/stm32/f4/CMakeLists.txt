@@ -18,5 +18,5 @@ set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_pwr.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
   )
-set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} system_stm32f4xx.c)
+set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} ../common/arm/stm32/f4/system_stm32f4xx.c)
 

@@ -4,9 +4,7 @@
 set -e
 set -x
 
-cd $1
-SRCDIR=$(pwd)
-cd -
+SRCDIR=$(dirname "$0")/..
 
 mkdir build || true
 cd build 
