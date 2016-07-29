@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include "gui_helpers.h"
 #include "lcd.h"
 #include "menus.h"
 
