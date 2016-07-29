@@ -26,7 +26,7 @@
 #endif
 
 #if defined(PCBHORUS)
-  #include "horus/gui.h"
+  #include "480x272/gui.h"
 #elif defined(PCBFLAMENCO)
   #include "flamenco/gui.h"
 #elif defined(PCBTARANIS)

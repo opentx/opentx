@@ -1,1 +1,1 @@
-add_subdirectory(horus)
+add_subdirectory(480x272)
