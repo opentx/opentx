@@ -175,6 +175,7 @@ extern uint32_t rotencSpeed;
 void checkRotaryEncoder(void);
 
 // WDT driver
+#define WDTO_500MS                            500
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(WATCHDOG_DISABLED) || defined(SIMU)

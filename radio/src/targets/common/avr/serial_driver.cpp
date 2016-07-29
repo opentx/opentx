@@ -292,8 +292,12 @@ void SERIAL_Init(void) {
 	// set 8N1
 	UCSR0B = 0 | (0 << RXCIE0) | (0 << TXCIE0) | (0 << UDRIE0) | (0 << RXEN0) | (0 << TXEN0) | (0 << UCSZ02);
 	UCSR0C = 0 | (1 << UCSZ01) | (1 << UCSZ00);
-	while (UCSR0A & (1 << RXC0))
-	  UDR0; // flush receive buffer
+
+#if !defined(SIMU)
+        while (UCSR0A & (1 << RXC0)) {
+          UDR0; // flush receive buffer
+        }
+#endif
 
 	SERIAL_EnableTXD();
 	SERIAL_EnableRXD();
