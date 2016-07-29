@@ -16,6 +16,7 @@
 
 #include "opentxsimulator.h"
 #include "opentx.h"
+#include "simulcd.h"
 
 int16_t g_anas[NUM_STICKS+NUM_POTS];
 
