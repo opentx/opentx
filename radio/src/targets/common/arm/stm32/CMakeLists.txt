@@ -58,7 +58,7 @@ endif()
 if(GVARS)
   set(GUI_SRC
     ${GUI_SRC}
-    menu_model_gvars.cpp
+    model_gvars.cpp
     )
 endif()
 set(FIRMWARE_SRC
