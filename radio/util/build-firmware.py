@@ -106,14 +106,12 @@ elif options[optcount] == "taranis":
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "taranisplus":
     command_options["PCB"] = "X9D+"
-    command_options["PCBREV"] = "REVPLUS"
     firmware_options = options_taranisplus
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "taranisx9e":
     command_options["PCB"] = "X9E"
-    command_options["PCBREV"] = "REV9E"
     firmware_options = options_taranisx9e
     maxsize = 65536 * 8
     board = BOARD_TARANIS
