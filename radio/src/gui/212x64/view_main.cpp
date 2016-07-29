@@ -50,11 +50,11 @@
 #define MARKER_WIDTH  5
 
 const pm_uchar logo_taranis[] PROGMEM = {
-#include "../../bitmaps/taranis/logo.lbm"
+#include "../../bitmaps/212x64/logo.lbm"
 };
 
 const pm_uchar icons[] PROGMEM = {
-#include "../../bitmaps/taranis/icons.lbm"
+#include "../../bitmaps/212x64/icons.lbm"
 };
 
 #define ICON_RSSI     0, 9

@@ -28,8 +28,8 @@ endif()
 
 set(BOOTLOADER_SRC
   ${BOOTLOADER_SRC}
-  ../../../gui/taranis/lcd.cpp
-  ../../../gui/taranis/fonts.cpp
+  ../../../gui/212x64/lcd.cpp
+  ../../../gui/212x64/fonts.cpp
   ../../../keys.cpp
   ../../../strhelpers.cpp
   ../../../${STM32USB_DIR}/STM32_USB_OTG_Driver/src/usb_core.c

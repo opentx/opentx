@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 const pm_uchar bmp_sleep[] PROGMEM = {
-  #include "../../bitmaps/taranis/sleep.lbm"
+  #include "../../bitmaps/212x64/sleep.lbm"
 };
 
 #define SLEEP_BITMAP_WIDTH             60

@@ -30,7 +30,7 @@
 #elif defined(PCBFLAMENCO)
   #include "flamenco/gui.h"
 #elif defined(PCBTARANIS)
-  #include "taranis/gui.h"
+  #include "212x64/gui.h"
 #else
   #include "9x/gui.h"
 #endif
