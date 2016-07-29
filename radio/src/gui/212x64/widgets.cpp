@@ -35,7 +35,7 @@ void drawSleepBitmap()
 
 #if defined(PWR_BUTTON_DELAY)
 const pm_uchar bmp_shutdown[] PROGMEM = {
-  #include "../../bitmaps/taranis/shutdown.lbm"
+  #include "../../bitmaps/212x64/shutdown.lbm"
 };
 
 #define SHUTDOWN_BITMAP_WIDTH          60

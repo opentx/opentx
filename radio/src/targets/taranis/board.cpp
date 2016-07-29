@@ -117,11 +117,11 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 #define PWR_PRESS_DURATION_MAX       500 // 5s
 
 const pm_uchar bmp_startup[] PROGMEM = {
-  #include "../../bitmaps/taranis/startup.lbm"
+  #include "../../bitmaps/212x64/startup.lbm"
 };
 
 const pm_uchar bmp_lock[] PROGMEM = {
-  #include "../../bitmaps/taranis/lock.lbm"
+  #include "../../bitmaps/212x64/lock.lbm"
 };
 #endif
 
