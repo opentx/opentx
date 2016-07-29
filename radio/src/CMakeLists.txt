@@ -124,6 +124,8 @@ else()
   include(targets/common/avr/CMakeLists.txt)
 endif()
 
+include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
+
 foreach(LANGUAGE ${GUI_LANGUAGES})
   string(TOUPPER ${LANGUAGE} LANGUAGE_CAPITALIZED)
   if(TRANSLATIONS STREQUAL ${LANGUAGE_CAPITALIZED})
