@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <math.h>
 #include <gtest/gtest.h>
+#include "simulcd.h"
 
 #define SWAP_DEFINED
 #include "opentx.h"
