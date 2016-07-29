@@ -41,7 +41,7 @@ set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
 add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
 add_definitions(-DEEPROM_VARIANT=0)
-set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} radio_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
 set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} core_cm3.c board_lowlevel.c crt.c vectors_sam3s.c)
 set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp pwr_driver.cpp
   usb/device/core/USBD_UDP.c usb/device/core/USBDDriver.c
