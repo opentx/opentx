@@ -69,12 +69,12 @@ add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
 set(GUI_SRC ${GUI_SRC}
-  menu_model_inputs.cpp
-  menu_model_mixes.cpp
-  menu_model_display.cpp
-  menu_general_diagkeys.cpp
-  menu_general_diaganas.cpp
-  menu_general_hardware.cpp
+  model_inputs.cpp
+  model_mixes.cpp
+  model_display.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
+  radio_hardware.cpp
   view_channels.cpp
   view_telemetry.cpp
   view_text.cpp

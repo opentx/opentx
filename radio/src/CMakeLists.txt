@@ -53,9 +53,9 @@ set(M128_VARIANT    32768)
 set(FIRMWARE_DEPENDENCIES firmware_translations)
 
 set(9X_GUI_SRC
-  menu_model_inputs_mixes.cpp
-  menu_general_diagkeys.cpp
-  menu_general_diaganas.cpp
+  model_inputs_mixes.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
   )
 
 set(FATFS_SRC
@@ -171,16 +171,16 @@ set(GUI_SRC
 set(GUI_SRC
   ${GUI_SRC}
   menu_model.cpp
-  menu_model_select.cpp
-  menu_model_setup.cpp
-  menu_model_limits.cpp
-  menu_model_logical_switches.cpp
+  model_select.cpp
+  model_setup.cpp
+  model_outputs.cpp
+  model_logical_switches.cpp
   model_special_functions.cpp
-  menu_model_telemetry.cpp
-  menu_general.cpp
+  model_telemetry.cpp
+  menu_radio.cpp
   radio_setup.cpp
-  menu_general_trainer.cpp
-  menu_general_version.cpp
+  radio_trainer.cpp
+  radio_version.cpp
   radio_calibration.cpp
   view_main.cpp
   view_statistics.cpp
@@ -201,7 +201,7 @@ endif()
 if(TEMPLATES)
   add_definitions(-DTEMPLATES)
   set(SRC ${SRC} templates.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_model_templates.cpp)
+  set(GUI_SRC ${GUI_SRC} model_templates.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
@@ -210,7 +210,7 @@ if(NOT LUA STREQUAL NO)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${LUA_EXPORT})
   if(LUA STREQUAL YES)
     add_definitions(-DLUA_MODEL_SCRIPTS)
-    set(GUI_SRC ${GUI_SRC} menu_model_custom_scripts.cpp)
+    set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
   endif()
   set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
   set(LUA_SRC lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c
@@ -224,17 +224,17 @@ endif()
 
 if(HELI)
   add_definitions(-DHELI)
-  set(GUI_SRC ${GUI_SRC} menu_model_heli.cpp)
+  set(GUI_SRC ${GUI_SRC} model_heli.cpp)
 endif()
 
 if(FLIGHT_MODES)
   add_definitions(-DFLIGHT_MODES)
-  set(GUI_SRC ${GUI_SRC} menu_model_flightmodes.cpp)
+  set(GUI_SRC ${GUI_SRC} model_flightmodes.cpp)
 endif()
 
 if(CURVES)
   add_definitions(-DCURVES)
-  set(GUI_SRC ${GUI_SRC} menu_model_curves.cpp)
+  set(GUI_SRC ${GUI_SRC} model_curves.cpp)
 endif()
 
 if(GVARS)

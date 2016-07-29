@@ -25,9 +25,9 @@ set(GUI_SRC
   bitmapbuffer.cpp
   curves.cpp
   bitmaps.cpp
-  menu_general_hardware.cpp
-  menu_model_inputs.cpp
-  menu_model_mixes.cpp
+  radio_hardware.cpp
+  model_inputs.cpp
+  model_mixes.cpp
   view_channels.cpp
   view_logical_switches.cpp
   view_about.cpp
