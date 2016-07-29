@@ -29,7 +29,7 @@ if(USB STREQUAL SERIAL)
   add_definitions(-DUSB_SERIAL)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
-    ./common/arm/stm32/usbd_cdc.cpp
+    ../common/arm/stm32/usbd_cdc.cpp
     )
   set(STM32USB_SRC
     ${STM32USB_SRC}
