@@ -5,16 +5,10 @@ set -e
 set -x
 
 SRCDIR=$(dirname "$0")/..
+COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55"
 
 mkdir build || true
 cd build 
-
-COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55"
-
-# Companion
-rm -rf *
-cmake ${COMMON_OPTIONS} ${SRCDIR}
-make -j2
 
 # OpenTX on 9X stock with FrSky telemetry
 rm -rf *
@@ -83,3 +77,8 @@ cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES
 make -j2 firmware
 make -j2 simu
 # make -j2 gtests ; ./gtests
+
+# Companion
+rm -rf *
+cmake ${COMMON_OPTIONS} ${SRCDIR}
+make -j2
