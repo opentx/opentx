@@ -4,7 +4,8 @@
 set -e
 set -x
 
-SRCDIR=$(dirname "$0")/..
+SCRIPT=$(readlink -f "$0")
+SRCDIR=$(dirname "$SCRIPT")/..
 COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55"
 
 mkdir build || true
