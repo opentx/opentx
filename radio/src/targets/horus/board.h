@@ -46,13 +46,13 @@ extern "C" {
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
 
 #if !defined(SIMU)
-  #include "usbd_cdc_core.h"
-  #include "usbd_msc_core.h"
-  #include "usbd_hid_core.h"
-  #include "usbd_usr.h"
-  #include "usbd_desc.h"
-  #include "usb_conf.h"
-  #include "usbd_conf.h"
+#include "usbd_cdc_core.h"
+#include "usbd_msc_core.h"
+#include "usbd_hid_core.h"
+#include "usbd_usr.h"
+#include "usbd_desc.h"
+#include "usb_conf.h"
+#include "usbd_conf.h"
 #endif
 
 #include "hal.h"
@@ -255,6 +255,9 @@ int usbPlugged(void);
 void usbInit(void);
 void usbDeInit(void);
 void usbSerialPutc(uint8_t c);
+#define USB_NAME                       "FrSky Horus"
+#define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+#define USB_PRODUCT                    'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
 
 #if defined(__cplusplus) && !defined(SIMU)
 }

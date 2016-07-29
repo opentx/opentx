@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-#include "../../thirdparty/FatFs/diskio.h"
-#include "../../thirdparty/FatFs/ff.h"
+#include "opentx.h"
+#include "FatFs/diskio.h"
+#include "FatFs/ff.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0    (0x40+0)        /* GO_IDLE_STATE */
@@ -720,8 +720,6 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
   return count ? -1 : 0;
 }
 
-#if _FS_READONLY == 0
-
 DRESULT disk_write (
         BYTE drv,                       /* Physical drive number (0) */
         const BYTE *buff,       /* Pointer to the data to be written */
@@ -736,8 +734,6 @@ DRESULT disk_write (
   TRACE_SD_CARD_EVENT((res != 0), sd_disk_write, (count << 24) + (sector & 0x00FFFFFF));
   return (res != 0) ? RES_ERROR : RES_OK;
 }
-#endif /* _READONLY == 0 */
-
 
 
 /*-----------------------------------------------------------------------*/
@@ -798,7 +794,8 @@ DRESULT disk_ioctl (
         if ((csd[0] >> 6) == 1) {       /* SDC version 2.00 */
           csize = csd[9] + ((WORD)csd[8] << 8) + 1;
           *(DWORD*)buff = (DWORD)csize << 10;
-        } else {                                        /* SDC version 1.XX or MMC*/
+        }
+        else {                                        /* SDC version 1.XX or MMC*/
           n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
           csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
           *(DWORD*)buff = (DWORD)csize << (n - 9);

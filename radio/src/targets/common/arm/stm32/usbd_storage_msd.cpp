@@ -19,9 +19,8 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "../../opentx.h"
-#include "../../thirdparty/FatFs/diskio.h"
-#include "board.h"
+#include "opentx.h"
+#include "FatFs/diskio.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -30,12 +29,14 @@ extern "C" {
 #include "usbd_msc_mem.h"
 #include "usb_conf.h"
 
-#if defined(BOOT)
-#define STORAGE_LUN_NBR    2
-#else
-/* SD card only when not running bootloader */
-#define STORAGE_LUN_NBR    1
+enum MassstorageLuns {
+  STORAGE_SDCARD_LUN,
+#if defined(EEPROM) && defined(BOOT)
+  STORAGE_EEPROM_LUN,
 #endif
+  STORAGE_LUN_NBR
+};
+
 #define BLOCKSIZE          512
 
 /* USB Mass storage Standard Inquiry Data */
@@ -50,11 +51,11 @@ const unsigned char STORAGE_Inquirydata[] = {//36
   0x00,
   0x00,	
   0x00,
-  'F', 'r', 'S', 'k', 'y', ' ', ' ', ' ',  /* Manufacturer : 8 bytes */
-  'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
+  USB_MANUFACTURER,                        /* Manufacturer : 8 bytes */
+  USB_PRODUCT,                             /* Product      : 16 Bytes */
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0', '0',                      /* Version      : 4 Bytes */
-#if defined(BOOT)
+#if defined(EEPROM) && defined(BOOT)
   /* LUN 1 */
   0x00,		
   0x80,		
@@ -64,16 +65,16 @@ const unsigned char STORAGE_Inquirydata[] = {//36
   0x00,
   0x00,	
   0x00,
-  'F', 'r', 'S', 'k', 'y', ' ', ' ', ' ',  /* Manufacturer : 8 bytes */
-  'T', 'a', 'r', 'a', 'n', 'i', 's', ' ',  /* Product      : 16 Bytes */
+  USB_MANUFACTURER,                        /* Manufacturer : 8 bytes */
+  USB_PRODUCT,                             /* Product      : 16 Bytes */
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
 #endif  
 }; 
 
-#if defined(BOOT)
-int32_t fat12Write( const uint8_t *buffer, uint16_t sector, uint16_t count ) ;
-int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count ) ;
+#if defined(EEPROM) && defined(BOOT)
+int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count);
+int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count );
 #endif
 
 int8_t STORAGE_Init (uint8_t lun);
@@ -144,29 +145,28 @@ int8_t STORAGE_Init (uint8_t lun)
   */
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
-#if defined(BOOT)
-  if (lun == 1)	{
+#if defined(EEPROM) && defined(BOOT)
+  if (lun == STORAGE_EEPROM_LUN) {
     *block_size = BLOCKSIZE;
     *block_num  = 3 + EESIZE/BLOCKSIZE + FLASHSIZE/BLOCKSIZE;
+    return 0;
   }
-  else 
 #endif
-  {
-    if (!SD_CARD_PRESENT())
-      return -1;
   
-    *block_size = BLOCKSIZE;
+  if (!SD_CARD_PRESENT())
+    return -1;
+  
+  *block_size = BLOCKSIZE;
 
-    static DWORD sector_count = 0;
-    if (sector_count == 0) {
-      if (disk_ioctl(0, GET_SECTOR_COUNT, &sector_count) != RES_OK) {
-        sector_count = 0;
-        return -1;
-      }
+  static DWORD sector_count = 0;
+  if (sector_count == 0) {
+    if (disk_ioctl(0, GET_SECTOR_COUNT, &sector_count) != RES_OK) {
+      sector_count = 0;
+      return -1;
     }
-
-    *block_num  = sector_count;
   }
+
+  *block_num  = sector_count;
 
   return 0;
 }
@@ -175,12 +175,13 @@ uint8_t lunReady[STORAGE_LUN_NBR];
 
 void usbPluggedIn()
 {
-  if (lunReady[0] == 0) {
-    lunReady[0] = 1;
+  if (lunReady[STORAGE_SDCARD_LUN] == 0) {
+    lunReady[STORAGE_SDCARD_LUN] = 1;
   }
-#if defined(BOOT)
-  if (lunReady[1] == 0) {
-    lunReady[1] = 1;
+  
+#if defined(EEPROM) && defined(BOOT)
+  if (lunReady[STORAGE_EEPROM_LUN] == 0) {
+    lunReady[STORAGE_EEPROM_LUN] = 1;
   }
 #endif
 }
@@ -192,21 +193,13 @@ void usbPluggedIn()
   */
 int8_t  STORAGE_IsReady (uint8_t lun)
 { 
-#if defined(BOOT)
-  if (lun == 1) {
-    if (lunReady[1] == 0) {
-      return -1 ;
-    }
-    return 0 ;
+#if defined(EEPROM) && defined(BOOT)
+  if (lun == STORAGE_EEPROM_LUN) {
+    return (lunReady[STORAGE_EEPROM_LUN] != 0) ? 0 : -1;
   }
-  else 
 #endif
-    {
-    if (lunReady[0] == 0) {
-      return -1 ;
-    }
-    return SD_CARD_PRESENT() ? 0 : -1;
-  }
+
+  return (lunReady[STORAGE_SDCARD_LUN] != 0 && SD_CARD_PRESENT()) ? 0 : -1;
 }
 
 /**
@@ -228,27 +221,18 @@ int8_t  STORAGE_IsWriteProtected (uint8_t lun)
   * @retval Status
   */
 
-int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count);
-
 int8_t STORAGE_Read (uint8_t lun, 
                  uint8_t *buf, 
                  uint32_t blk_addr,                       
                  uint16_t blk_len)
 {
-#if defined(BOOT)
-  if (lun == 1) {
-    if (fat12Read(buf, blk_addr, blk_len) != 0)
-      return -1;
+#if defined(EEPROM) && defined(BOOT)
+  if (lun == STORAGE_EEPROM_LUN) {
+    return (fat12Read(buf, blk_addr, blk_len) == 0) ? 0 : -1;
   }
-  else 
 #endif
-    {
-    if (SD_ReadSectors(buf, blk_addr, blk_len) != 0) {
-      return -1;
-    }
-  }
-
-  return 0;
+  
+  return (disk_read(0, buf, blk_addr, blk_len) == RES_OK) ? 0 : -1;
 }
 /**
   * @brief  Write data to the medium
@@ -259,26 +243,18 @@ int8_t STORAGE_Read (uint8_t lun,
   * @retval Status
   */
 
-int8_t SD_WriteSectors(const uint8_t *buf, uint32_t sector, uint32_t count);
-
 int8_t STORAGE_Write (uint8_t lun, 
                   uint8_t *buf, 
                   uint32_t blk_addr,
                   uint16_t blk_len)
 {
-#if defined(BOOT)
-  if (lun == 1)	{
-    if (fat12Write(buf, blk_addr, blk_len) != 0)
-      return -1;
+#if defined(EEPROM) && defined(BOOT)
+  if (lun == STORAGE_EEPROM_LUN)	{
+    return (fat12Write(buf, blk_addr, blk_len) == 0) ? 0 : -1;
   }
-  else 
 #endif
-    {
-    if (SD_WriteSectors(buf, blk_addr, blk_len) != 0)
-      return -1;
-  }
 
-  return (0);
+  return (disk_write(0, buf, blk_addr, blk_len) == RES_OK) ? 0 : -1;
 }
 
 /**
@@ -292,7 +268,7 @@ int8_t STORAGE_GetMaxLun (void)
   return STORAGE_LUN_NBR - 1;
 }
 
-#if defined(BOOT)
+#if defined(EEPROM) && defined(BOOT)
 //------------------------------------------------------------------------------
 /**
  * FAT12 boot sector partition.
@@ -460,7 +436,7 @@ typedef struct
 const FATDirEntry_t g_DIRroot[16] =
 {
     {
-        { 'T', 'A', 'R', 'A', 'N', 'I', 'S', ' '},
+        { USB_PRODUCT },
         { ' ', ' ', ' '},
         0x08,		// Volume
         0x00,
@@ -702,10 +678,9 @@ const FATDirEntry_t g_DIRroot[16] =
 };
 
 // count is number of 512 byte sectors
-int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
+int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
 {
-  while ( count )
-  {
+  while(count) {
     if (sector == 0) {
       memcpy(buffer, g_FATboot, BLOCKSIZE ) ;
     }
@@ -733,7 +708,7 @@ int32_t fat12Read( uint8_t *buffer, uint16_t sector, uint16_t count )
   return 0 ;
 }
 
-int32_t fat12Write(const uint8_t *buffer, uint16_t sector, uint16_t count)
+int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
 {
   enum FatWriteOperation {
     FATWRITE_NONE,

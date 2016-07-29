@@ -51,7 +51,7 @@ set(BOOTLOADER_SRC
   ../flash_driver.cpp
   ../diskio.cpp
   ../../common/arm/stm32/usbd_usr.cpp
-  ../usbd_storage_msd.cpp
+  ../../common/arm/stm32/usbd_storage_msd.cpp
   ../delays.c
   ../../common/arm/stm32/usbd_desc.c
   ../aspi.c

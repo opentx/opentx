@@ -317,6 +317,9 @@ int usbPlugged(void);
 void usbInit(void);
 void usbDeInit(void);
 void usbSerialPutc(uint8_t c);
+#define USB_NAME                       "FrSky Taranis"
+#define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+#define USB_PRODUCT                    'T', 'a', 'r', 'a', 'n', 'i', 's', ' '  /* 8 Bytes */
 
 #if defined(__cplusplus) && !defined(SIMU)
 }

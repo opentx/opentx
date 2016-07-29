@@ -46,7 +46,7 @@ elseif(USB STREQUAL MASSSTORAGE)
     )
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
-    usbd_storage_msd.cpp
+    ../common/arm/stm32/usbd_storage_msd.cpp
     )
 else()
   add_definitions(-DUSB_JOYSTICK)
