@@ -162,7 +162,6 @@ set(GUI_SRC
   lcd.cpp
   splash.cpp
   fonts.cpp
-  helpers.cpp
   navigation.cpp
   popups.cpp
   widgets.cpp
