@@ -485,7 +485,7 @@ typedef struct {
 } CustomFunctionsContext;
 
 #include "strhelpers.h"
-#include "gui/gui.h"
+#include "gui.h"
 
 #if defined(TEMPLATES)
   #include "templates.h"

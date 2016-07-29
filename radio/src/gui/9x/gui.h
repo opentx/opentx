@@ -18,6 +18,10 @@
  * GNU General Public License for more details.
  */
 
+#if defined(CPUARM)
+#include "gui_helpers.h"
+#endif
+
 #include "lcd.h"
 #include "menus.h"
 

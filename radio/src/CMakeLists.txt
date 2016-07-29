@@ -66,7 +66,7 @@ set(FATFS_SRC
 
 if(PCB STREQUAL HORUS)
   include(targets/horus/CMakeLists.txt)
-elseif(PCB STREQUAL TARANIS)
+elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL X7D)
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   include(targets/sky9x/CMakeLists.txt)
@@ -98,6 +98,8 @@ elseif(PCB STREQUAL MEGA2560)
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
+
+include_directories(gui gui/${GUI_DIR})
 
 if(NOT PCB STREQUAL 9XR AND NOT PCB STREQUAL 9XRPRO)
   option(DBLKEYS "Double Keys" ON)
