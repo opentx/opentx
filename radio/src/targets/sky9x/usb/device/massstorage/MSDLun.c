@@ -33,7 +33,7 @@
 
 
 #include "../../../usb/device/massstorage/MSDLun.h"
-
+#include "board_lowlevel.h"
 #include "../../../usb/device/core/USBD.h"
 #include "debug.h"
 
@@ -42,7 +42,7 @@
 //------------------------------------------------------------------------------
 
 /// Default LUN block size in bytes
-#define     DEFAULT_LUN_BLOCK_SIZE      512
+#define     DEFAULT_LUN_BLOCK_SIZE      BLOCK_SIZE
 
 //------------------------------------------------------------------------------
 //         Internal variables

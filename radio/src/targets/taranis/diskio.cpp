@@ -628,12 +628,35 @@ DSTATUS disk_status (
 }
 
 
+#if defined(STM32F4) && !defined(BOOT)
+DWORD scratch[BLOCK_SIZE / 4] __DMA;
+#endif
+
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
+int8_t SD_ReadSectors(uint8_t * buff, uint32_t sector, uint32_t count)
 {
+#if defined(STM32F4) && !defined(BOOT)
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
+    TRACE("disk_read bad alignment (%p)", buff);
+    while (count--) {
+      int8_t res = SD_ReadSectors((BYTE *)scratch, sector++, 1);
+
+      if (res != 0) {
+        return res;
+      }
+
+      memcpy(buff, scratch, BLOCK_SIZE);
+
+      buff += BLOCK_SIZE;
+    }
+
+    return 0;
+  }
+#endif
+
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
   if (count == 1) {       /* Single block read */
@@ -686,8 +709,27 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
+int8_t SD_WriteSectors(const uint8_t * buff, uint32_t sector, uint32_t count)
 {
+#if defined(STM32F4) && !defined(BOOT)
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
+    TRACE("disk_write bad alignment (%p)", buff);
+    while (count--) {
+      memcpy(scratch, buff, BLOCK_SIZE);
+    
+      int8_t res = SD_WriteSectors((const uint8_t *)scratch, sector++, 1);
+
+      if (res != 0) {
+        return res;
+      }
+
+      buff += BLOCK_SIZE;
+    }
+
+    return 0;
+  }
+#endif
+    
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
   if (count == 1) {       /* Single block write */

@@ -157,6 +157,7 @@ void delay_ms(uint32_t ms);
 void getCPUUniqueID(char * s);
 
 // SD driver
+#define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
   uint32_t sdIsHC(void);
   uint32_t sdGetSpeed(void);
@@ -164,8 +165,8 @@ void getCPUUniqueID(char * s);
   #define SD_GET_SPEED()               (sdGetSpeed())
   #define SD_GET_FREE_BLOCKNR()        (sdGetFreeSectors())
 #else
-  #define SD_IS_HC()              (0)
-  #define SD_GET_SPEED()          (0)
+  #define SD_IS_HC()                   (0)
+  #define SD_GET_SPEED()               (0)
 #endif
 
 #if defined(SIMU)

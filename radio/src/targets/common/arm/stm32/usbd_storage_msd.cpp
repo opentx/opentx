@@ -37,8 +37,6 @@ enum MassstorageLuns {
   STORAGE_LUN_NBR
 };
 
-#define BLOCKSIZE          512
-
 /* USB Mass storage Standard Inquiry Data */
 const unsigned char STORAGE_Inquirydata[] = {//36
   
@@ -147,8 +145,8 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
 {
 #if defined(EEPROM) && defined(BOOT)
   if (lun == STORAGE_EEPROM_LUN) {
-    *block_size = BLOCKSIZE;
-    *block_num  = 3 + EESIZE/BLOCKSIZE + FLASHSIZE/BLOCKSIZE;
+    *block_size = BLOCK_SIZE;
+    *block_num  = 3 + EESIZE/BLOCK_SIZE + FLASHSIZE/BLOCK_SIZE;
     return 0;
   }
 #endif
@@ -156,7 +154,7 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   if (!SD_CARD_PRESENT())
     return -1;
   
-  *block_size = BLOCKSIZE;
+  *block_size = BLOCK_SIZE;
 
   static DWORD sector_count = 0;
   if (sector_count == 0) {
@@ -273,7 +271,7 @@ int8_t STORAGE_GetMaxLun (void)
 /**
  * FAT12 boot sector partition.
  */
-const char g_FATboot[BLOCKSIZE] =
+const char g_FATboot[BLOCK_SIZE] =
 {
   0xeb, 0x3c, 0x90, // Jump instruction.
   0x39, 0x58, 0x20, 0x54, 0x45, 0x41, 0x4D, 0x00, // OEM Name
@@ -283,7 +281,7 @@ const char g_FATboot[BLOCKSIZE] =
 
   0x01, // Number of FATs
   0x10, 0x00, // Number of root directory entries
-  3+(EESIZE/BLOCKSIZE), (FLASHSIZE/BLOCKSIZE)>>8, // Total sectors
+  3+(EESIZE/BLOCK_SIZE), (FLASHSIZE/BLOCK_SIZE)>>8, // Total sectors
   0xf8, // Media descriptor
   0x01, 0x00, // Sectors per FAT table
   0x20, 0x00, // Sectors per track
@@ -332,7 +330,7 @@ const char g_FATboot[BLOCKSIZE] =
 };
 
 #if defined(REV4a)
-const char g_FAT[BLOCKSIZE] =
+const char g_FAT[BLOCK_SIZE] =
 {
   0xF8, 0xFF, 0xFF, 0x03, 0x40, 0x00, 0x05, 0x60, 0x00, 0x07, 0x80, 0x00, 0x09, 0xA0, 0x00, 0x0B,
   0xC0, 0x00, 0x0D, 0xE0, 0x00, 0x0F, 0x00, 0x01, 0x11, 0xF0, 0xFF, 0x13, 0x40, 0x01, 0x15, 0x60,
@@ -368,7 +366,7 @@ const char g_FAT[BLOCKSIZE] =
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 };
 #else
-const char g_FAT[BLOCKSIZE] =
+const char g_FAT[BLOCK_SIZE] =
 {
   0xF8, 0xFF, 0xFF, 0x03, 0x40, 0x00, 0x05, 0x60, 0x00, 0x07, 0x80, 0x00, 0x09, 0xF0, 0xFF, 0x0B,
   0xC0, 0x00, 0x0D, 0xE0, 0x00, 0x0F, 0x00, 0x01, 0x11, 0x20, 0x01, 0x13, 0x40, 0x01, 0x15, 0x60,
@@ -477,7 +475,7 @@ const FATDirEntry_t g_DIRroot[16] =
         0x0000,
         0xA302,
         0x3D55,
-        0x0002 + (EESIZE/BLOCKSIZE)/8,
+        0x0002 + (EESIZE/BLOCK_SIZE)/8,
         FLASHSIZE
     },
     {
@@ -682,26 +680,26 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
 {
   while(count) {
     if (sector == 0) {
-      memcpy(buffer, g_FATboot, BLOCKSIZE ) ;
+      memcpy(buffer, g_FATboot, BLOCK_SIZE ) ;
     }
     else if (sector == 1/*Reserved sector count*/) {
       // FAT table.
-      memcpy(buffer, g_FAT, BLOCKSIZE);
+      memcpy(buffer, g_FAT, BLOCK_SIZE);
     }
     else if (sector == 2) {
-      memcpy(buffer, g_DIRroot, BLOCKSIZE ) ;
+      memcpy(buffer, g_DIRroot, BLOCK_SIZE ) ;
     }
-    else if (sector < 3 + (EESIZE/BLOCKSIZE)) {
-      eepromReadBlock(buffer, (sector-3)*BLOCKSIZE, BLOCKSIZE);
+    else if (sector < 3 + (EESIZE/BLOCK_SIZE)) {
+      eepromReadBlock(buffer, (sector-3)*BLOCK_SIZE, BLOCK_SIZE);
     }
-    else if (sector < 3 + (EESIZE/BLOCKSIZE) + (FLASHSIZE/BLOCKSIZE)) {
+    else if (sector < 3 + (EESIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
       uint32_t address;
-      address = sector - 3 - (EESIZE/BLOCKSIZE);
-      address *= BLOCKSIZE;
+      address = sector - 3 - (EESIZE/BLOCK_SIZE);
+      address *= BLOCK_SIZE;
       address += FIRMWARE_ADDRESS;
-      memcpy(buffer, (uint8_t *)address, BLOCKSIZE);
+      memcpy(buffer, (uint8_t *)address, BLOCK_SIZE);
     }
-    buffer += BLOCKSIZE ;
+    buffer += BLOCK_SIZE ;
     sector++ ;
     count-- ;
   }
@@ -723,7 +721,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
   if (sector < 3) {
     // reserved, read-only
   }
-  else if (sector < 3 + (EESIZE/BLOCKSIZE)) {
+  else if (sector < 3 + (EESIZE/BLOCK_SIZE)) {
     // eeprom
     while (count) {
       if (operation == FATWRITE_NONE && isEepromStart(buffer)) {
@@ -731,25 +729,25 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
         operation = FATWRITE_EEPROM;
       }
       if (operation == FATWRITE_EEPROM) {
-        eepromWriteBlock((uint8_t *)buffer, (sector-3)*BLOCKSIZE, BLOCKSIZE);
+        eepromWriteBlock((uint8_t *)buffer, (sector-3)*BLOCK_SIZE, BLOCK_SIZE);
       }
-      buffer += BLOCKSIZE;
+      buffer += BLOCK_SIZE;
       sector++;
       count--;
-      if (sector-3 >= (EESIZE/BLOCKSIZE)) {
+      if (sector-3 >= (EESIZE/BLOCK_SIZE)) {
         TRACE("EEPROM end written at sector %d", sector-1);
         operation = FATWRITE_NONE;
       }
     }
   }
-  else if (sector < 3 + (EESIZE/BLOCKSIZE) + (FLASHSIZE/BLOCKSIZE)) {
+  else if (sector < 3 + (EESIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
     // firmware
     uint32_t address;
-    address = sector - 3 - (EESIZE/BLOCKSIZE);
-    address *= BLOCKSIZE;
+    address = sector - 3 - (EESIZE/BLOCK_SIZE);
+    address *= BLOCK_SIZE;
     address += FIRMWARE_ADDRESS;
     while (count) {
-      for (uint32_t i=0; i<BLOCKSIZE/FLASH_PAGESIZE; i++) {
+      for (uint32_t i=0; i<BLOCK_SIZE/FLASH_PAGESIZE; i++) {
         if (address >= FIRMWARE_ADDRESS+BOOTLOADER_SIZE/*protect bootloader*/ && address <= FIRMWARE_ADDRESS+FLASHSIZE-FLASH_PAGESIZE) {
           if (address == FIRMWARE_ADDRESS+BOOTLOADER_SIZE && isFirmwareStart(buffer)) {
             TRACE("FIRMWARE start found in sector %d", sector);
@@ -764,7 +762,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
       }
       sector++;
       count--;
-      if (sector-3-(EESIZE/BLOCKSIZE) >= (FLASHSIZE/BLOCKSIZE)) {
+      if (sector-3-(EESIZE/BLOCK_SIZE) >= (FLASHSIZE/BLOCK_SIZE)) {
         TRACE("FIRMWARE end written at sector %d", sector-1);
         operation = FATWRITE_NONE;
       }

@@ -24,6 +24,8 @@
 
 #include "board.h"
 
+#define BLOCK_SIZE            512 /* Block Size in Bytes */
+
 #ifdef __cplusplus
  extern "C" {
 #endif

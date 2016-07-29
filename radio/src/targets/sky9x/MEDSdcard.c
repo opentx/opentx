@@ -34,7 +34,6 @@
 
 /// Number of SD Slots
 #define NUM_SD_SLOTS            1
-#define SD_BLOCK_SIZE           512
 
 //------------------------------------------------------------------------------
 /// Checks if the device is write protected.
@@ -224,7 +223,7 @@ unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
     media->handler = 0;
     media->flush = 0;
 
-    media->blockSize = SD_BLOCK_SIZE;
+    media->blockSize = BLOCK_SIZE;
     media->baseAddress = 0;
 
     media->size = SD_GET_BLOCKNR();
