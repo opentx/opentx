@@ -18,10 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if defined(MAVLINK)
-#include "gui/9x/view_mavlink.h"
+#include "view_mavlink.h"
 #endif
 
 uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
