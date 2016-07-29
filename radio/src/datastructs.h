@@ -767,8 +767,8 @@ typedef uint8_t swarnenable_t;
 #endif
 
 #if defined(PCBHORUS)
-#include "gui/horus/layout.h"
-#include "gui/horus/topbar.h"
+#include "gui/480x272/layout.h"
+#include "gui/480x272/topbar.h"
 PACK(struct CustomScreenData {
   char layoutName[10];
   Layout::PersistentData layoutData;
@@ -967,7 +967,7 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(PCBHORUS)
-  #include "gui/horus/theme.h"
+  #include "gui/480x272/theme.h"
   #define THEME_DATA \
     NOBACKUP(char themeName[8]); \
     NOBACKUP(Theme::PersistentData themeData);

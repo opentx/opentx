@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB "TARANIS" CACHE STRING "Radio type")
+set(PCB "X9D+" CACHE STRING "Radio type")
 set(TRANSLATIONS "EN" CACHE STRING "Radio language")
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -53,9 +53,9 @@ set(M128_VARIANT    32768)
 set(FIRMWARE_DEPENDENCIES firmware_translations)
 
 set(9X_GUI_SRC
-  menu_model_inputs_mixes.cpp
-  menu_general_diagkeys.cpp
-  menu_general_diaganas.cpp
+  model_inputs_mixes.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
   )
 
 set(FATFS_SRC
@@ -66,7 +66,7 @@ set(FATFS_SRC
 
 if(PCB STREQUAL HORUS)
   include(targets/horus/CMakeLists.txt)
-elseif(PCB STREQUAL TARANIS)
+elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL X7D)
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   include(targets/sky9x/CMakeLists.txt)
@@ -78,11 +78,11 @@ elseif(PCB STREQUAL 9X2561)
   string(TOLOWER ${PCB} FLAVOUR)
   set(EEPROM EEPROM_RLC)
   add_definitions(-DEEPROM_VARIANT=${M2561_VARIANT})
-  set(GUI_DIR 9x)
+  set(GUI_DIR 128x64)
   set(TARGET_DIR 9x)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
   add_definitions(-DPCBSTD -DPCB${PCB} -DCPUM2561)
-  set(TARGET_SRC ${TARGET_SRC} board_stock.cpp)
+  set(TARGET_SRC ${TARGET_SRC} board.cpp)
   set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC})
   if(SP22)
     add_definitions(-DSP22)
@@ -98,6 +98,8 @@ elseif(PCB STREQUAL MEGA2560)
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
+
+include_directories(gui gui/${GUI_DIR})
 
 if(NOT PCB STREQUAL 9XR AND NOT PCB STREQUAL 9XRPRO)
   option(DBLKEYS "Double Keys" ON)
@@ -123,6 +125,8 @@ if(ARCH STREQUAL ARM)
 else()
   include(targets/common/avr/CMakeLists.txt)
 endif()
+
+include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
 
 foreach(LANGUAGE ${GUI_LANGUAGES})
   string(TOUPPER ${LANGUAGE} LANGUAGE_CAPITALIZED)
@@ -158,7 +162,6 @@ set(GUI_SRC
   lcd.cpp
   splash.cpp
   fonts.cpp
-  helpers.cpp
   navigation.cpp
   popups.cpp
   widgets.cpp
@@ -168,16 +171,16 @@ set(GUI_SRC
 set(GUI_SRC
   ${GUI_SRC}
   menu_model.cpp
-  menu_model_select.cpp
-  menu_model_setup.cpp
-  menu_model_limits.cpp
-  menu_model_logical_switches.cpp
+  model_select.cpp
+  model_setup.cpp
+  model_outputs.cpp
+  model_logical_switches.cpp
   model_special_functions.cpp
-  menu_model_telemetry.cpp
-  menu_general.cpp
+  model_telemetry.cpp
+  menu_radio.cpp
   radio_setup.cpp
-  menu_general_trainer.cpp
-  menu_general_version.cpp
+  radio_trainer.cpp
+  radio_version.cpp
   radio_calibration.cpp
   view_main.cpp
   view_statistics.cpp
@@ -198,7 +201,7 @@ endif()
 if(TEMPLATES)
   add_definitions(-DTEMPLATES)
   set(SRC ${SRC} templates.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_model_templates.cpp)
+  set(GUI_SRC ${GUI_SRC} model_templates.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
@@ -207,7 +210,7 @@ if(NOT LUA STREQUAL NO)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${LUA_EXPORT})
   if(LUA STREQUAL YES)
     add_definitions(-DLUA_MODEL_SCRIPTS)
-    set(GUI_SRC ${GUI_SRC} menu_model_custom_scripts.cpp)
+    set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
   endif()
   set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
   set(LUA_SRC lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c
@@ -221,17 +224,17 @@ endif()
 
 if(HELI)
   add_definitions(-DHELI)
-  set(GUI_SRC ${GUI_SRC} menu_model_heli.cpp)
+  set(GUI_SRC ${GUI_SRC} model_heli.cpp)
 endif()
 
 if(FLIGHT_MODES)
   add_definitions(-DFLIGHT_MODES)
-  set(GUI_SRC ${GUI_SRC} menu_model_flightmodes.cpp)
+  set(GUI_SRC ${GUI_SRC} model_flightmodes.cpp)
 endif()
 
 if(CURVES)
   add_definitions(-DCURVES)
-  set(GUI_SRC ${GUI_SRC} menu_model_curves.cpp)
+  set(GUI_SRC ${GUI_SRC} model_curves.cpp)
 endif()
 
 if(GVARS)
@@ -273,7 +276,7 @@ if(SDCARD)
   add_definitions(-DSDCARD)
   include_directories(${FATFS_DIR} ${FATFS_DIR}/option)
   set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp)
-  set(GUI_SRC ${GUI_SRC} menu_general_sdmanager.cpp)
+  set(GUI_SRC ${GUI_SRC} radio_sdmanager.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} ${FATFS_SRC})
 endif()
 
@@ -399,7 +402,7 @@ endif()
   set(CMAKE_CXX_FLAGS_DEBUG "${COMMON_CPP_FLAGS} -g")
   set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
-  if(PCB STREQUAL TARANIS)
+  if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E)
     add_subdirectory(targets/${TARGET_DIR}/bootloader)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
     set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)

@@ -20,7 +20,7 @@
 
 #include "i2c_driver.h"
 #include "twi.h"
-#include "board.h"
+#include "board_lowlevel.h"
 #include "stdlib.h"
 
 #define I2C_CLK_FAST  400000

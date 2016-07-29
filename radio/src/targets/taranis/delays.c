@@ -19,7 +19,7 @@
  */
 
 #include <OsConfig.h>
-#include "board_taranis.h"
+#include "board.h"
 #if !defined(REV9E)
   #include "dwt.h"    // the old ST library that we use does not define DWT register for STM32F2xx
 #endif

@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "board_taranis.h"
+#include "board.h"
 
 void eepromPageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite);
 void eepromWaitEepromStandbyState(void);

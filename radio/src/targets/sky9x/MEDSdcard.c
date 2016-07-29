@@ -25,7 +25,7 @@
 #include <string.h>
 #include "debug.h"
 #include "diskio.h"
-#include "board.h"
+#include "board_lowlevel.h"
 #include "Media.h"
 
 //------------------------------------------------------------------------------

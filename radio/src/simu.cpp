@@ -26,6 +26,8 @@
 #include "opentx.h"
 #include <time.h>
 #include <ctype.h>
+#include "targets/simu/simulcd.h"
+
 #if defined(SIMU_AUDIO)
   #include <SDL.h>
 #endif

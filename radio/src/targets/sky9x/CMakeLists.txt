@@ -35,13 +35,13 @@ set(MCU cortex-m3)
 set(SDCARD YES)
 set(HAPTIC YES)
 set(EEPROM EEPROM_RAW)
-set(GUI_DIR 9x)
+set(GUI_DIR 128x64)
 set(TARGET_DIR sky9x)
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
 add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
 add_definitions(-DEEPROM_VARIANT=0)
-set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} menu_general_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
+set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC} radio_hardware.cpp view_telemetry.cpp view_text.cpp view_about.cpp)
 set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} core_cm3.c board_lowlevel.c crt.c vectors_sam3s.c)
 set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp pwr_driver.cpp
   usb/device/core/USBD_UDP.c usb/device/core/USBDDriver.c
@@ -53,7 +53,7 @@ set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp pwr_driver.cpp
   )
 set(TARGET_SRC
   ${TARGET_SRC}
-  board_sky9x.cpp
+  board.cpp
   telemetry_driver.cpp
   serial2_driver.cpp
   adc_driver.cpp

@@ -21,8 +21,6 @@
 #ifndef _SIMPGMSPACE_H_
 #define _SIMPGMSPACE_H_
 
-extern int g_snapshot_idx;
-
 #ifndef __GNUC__
 #include <windows.h>
 #define sleep(x) Sleep(x)

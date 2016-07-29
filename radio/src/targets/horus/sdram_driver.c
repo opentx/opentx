@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../horus/board_horus.h"
+#include "board.h"
 
 #define SDRAM_MEMORY_WIDTH    FMC_SDMemory_Width_16b 
 

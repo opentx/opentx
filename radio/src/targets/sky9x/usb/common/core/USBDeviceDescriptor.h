@@ -42,7 +42,7 @@
 #ifndef USBDEVICEDESCRIPTOR_H
 #define USBDEVICEDESCRIPTOR_H
 
-#include "../../../board.h"
+#include "board_lowlevel.h"
 //------------------------------------------------------------------------------
 //         Definitions
 //------------------------------------------------------------------------------

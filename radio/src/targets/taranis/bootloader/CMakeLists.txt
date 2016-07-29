@@ -2,10 +2,10 @@
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(PCBREV STREQUAL REV9E)
+if(PCB STREQUAL X9E)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
-    ../system_stm32f4xx.c
+    ../../common/arm/stm32/f4/system_stm32f4xx.c
     ../../../${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
     ../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
     ../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
@@ -16,7 +16,7 @@ if(PCBREV STREQUAL REV9E)
 else()
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
-    ../system_stm32f2xx.c
+    ../../common/arm/stm32/f2/system_stm32f2xx.c
     ../../../${STM32LIB_DIR}/CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
     ../../../${STM32LIB_DIR}/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
     ../../../${STM32LIB_DIR}/STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
@@ -28,8 +28,8 @@ endif()
 
 set(BOOTLOADER_SRC
   ${BOOTLOADER_SRC}
-  ../../../gui/taranis/lcd.cpp
-  ../../../gui/taranis/fonts.cpp
+  ../../../gui/212x64/lcd.cpp
+  ../../../gui/212x64/fonts.cpp
   ../../../keys.cpp
   ../../../strhelpers.cpp
   ../../../${STM32USB_DIR}/STM32_USB_OTG_Driver/src/usb_core.c
@@ -50,13 +50,13 @@ set(BOOTLOADER_SRC
   ../i2c_driver.cpp
   ../flash_driver.cpp
   ../diskio.cpp
-  ../usbd_usr.cpp
+  ../../common/arm/stm32/usbd_usr.cpp
   ../usbd_storage_msd.cpp
   ../delays.c
-  ../usbd_desc.c
+  ../../common/arm/stm32/usbd_desc.c
   ../aspi.c
-  ../usb_bsp.c
-  ../usb_driver.c
+  ../../common/arm/stm32/usb_bsp.c
+  ../../common/arm/stm32/usb_driver.c
   ../pwr_driver.c
   init.c
   boot.cpp

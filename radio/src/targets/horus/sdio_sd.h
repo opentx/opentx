@@ -22,7 +22,7 @@
 #ifndef _SDIO_SD_H_
 #define _SDIO_SD_H_
 
-#include "board_horus.h"
+#include "board.h"
 
 #ifdef __cplusplus
  extern "C" {

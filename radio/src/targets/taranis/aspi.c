@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "board_taranis.h"
+#include "board.h"
 
 /**
 **********send command to lcd**************

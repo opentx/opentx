@@ -36,7 +36,7 @@
 #include "../../../usb/common/core/USBStringDescriptor.h"
 #include "../../../usb/common/massstorage/MSDeviceDescriptor.h"
 #include "../../../usb/common/massstorage/MSInterfaceDescriptor.h"
-#include "../../../board.h"
+#include "board_lowlevel.h"
 #include "../../../usb/common/core/USBConfigurationDescriptor.h"
 #include "../../../usb/common/core/USBDeviceDescriptor.h"
 #include "../../../usb/common/core/USBEndpointDescriptor.h"

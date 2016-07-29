@@ -23,7 +23,7 @@
 #if defined(PCBSKY9X)
   #include "AT91SAM3S4.h"
 #else
-  #include "targets/taranis/board_taranis.h"
+  #include "targets/taranis/board.h"
 #endif
 
 #if defined(PCBTARANIS)

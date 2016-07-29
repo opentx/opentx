@@ -53,8 +53,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../../../gui/taranis/lcd.h"
-#include "../../taranis/board_taranis.h"
+#include "../../../gui/212x64/lcd.h"
+#include "board.h"
 #include "storage/eeprom_rlc.h"
 #include "pwr.h"
 #include "keys.h"
