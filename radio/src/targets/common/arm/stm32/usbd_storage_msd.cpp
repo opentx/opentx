@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "opentx.h"
 #include "FatFs/diskio.h"
+#include "sdio_sd.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -38,8 +39,7 @@ enum MassstorageLuns {
 };
 
 /* USB Mass storage Standard Inquiry Data */
-const unsigned char STORAGE_Inquirydata[] = {//36
-  
+const unsigned char STORAGE_Inquirydata[] = { //36
   /* LUN 0 */
   0x00,		
   0x80,		
