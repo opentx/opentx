@@ -1460,7 +1460,7 @@ void registerOpenTxFirmwares()
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  default_firmware_variant = GetFirmware("opentx-taranisplus-en");
+  default_firmware_variant = GetFirmware("opentx-x9d+");
   current_firmware_variant = default_firmware_variant;
 }
 
