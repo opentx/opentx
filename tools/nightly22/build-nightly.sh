@@ -7,8 +7,13 @@ docker=nightly22
 workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightly
 
+
+# Incrementnightly index
 index=`cat index.txt`
+index=`expr $index + 1`
+echo $index > index.txt
 suffix="N$index"
+
 cd ${workdir}
 
 # Call sdcard generation
