@@ -40,7 +40,6 @@ set(GUI_SRC
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
   )
-set(SRC ${SRC} targets/taranis/rtc_driver.cpp)
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)
@@ -49,6 +48,7 @@ set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
   extmodule_driver.cpp
+  ../common/arm/stm32/rtc_driver.cpp
   )
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}

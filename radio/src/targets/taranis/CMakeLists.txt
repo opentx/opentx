@@ -84,7 +84,7 @@ set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
   extmodule_driver.cpp
-  rtc_driver.cpp
+  ../common/arm/stm32/rtc_driver.cpp
   )
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}
