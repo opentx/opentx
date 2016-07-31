@@ -1105,11 +1105,6 @@ DSTATUS disk_status (BYTE pdrv)
   return (DSTATUS)0;
 }
 
-#if !defined(DISK_CACHE)
-  #define __disk_read     disk_read
-  #define __disk_write    disk_write
-#endif
-
 DRESULT __disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
   if (diskImage == 0) return RES_NOTRDY;

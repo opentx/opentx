@@ -13,4 +13,4 @@ endmacro(add_lua_export_target)
 
 add_lua_export_target(taranis     -DCPUARM -DPCBTARANIS          -DLUA -DVIRTUALINPUTS)
 add_lua_export_target(taranis_x9e -DCPUARM -DPCBTARANIS -DPCBX9E -DLUA -DVIRTUALINPUTS)
-add_lua_export_target(horus       -DCPUARM -DPCBHORUS            -DLUA -DVIRTUALINPUTS -I${RADIO_SRC_DIRECTORY}/gui/horus)
+add_lua_export_target(horus       -DCPUARM -DPCBHORUS            -DLUA -DVIRTUALINPUTS -I${RADIO_SRC_DIRECTORY}/gui/480x272)

@@ -24,9 +24,6 @@
 #if defined(SIMU) && !defined(SIMU_DISKIO)
   #define __disk_read(...)    (RES_OK)
   #define __disk_write(...)   (RES_OK)
-#else
-  extern DRESULT __disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count);
-  extern DRESULT __disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count);
 #endif
 
 #if 0     // set to 1 to enable traces
@@ -37,8 +34,8 @@
 
 DiskCache diskCache;
 
-DiskCacheBlock::DiskCacheBlock() 
-  : startSector(0), 
+DiskCacheBlock::DiskCacheBlock():
+  startSector(0),
   endSector(0) 
 {
 }
@@ -79,8 +76,8 @@ bool DiskCacheBlock::empty() const
   return (endSector == 0);
 }
 
-DiskCache::DiskCache() 
-  : lastBlock(0) 
+DiskCache::DiskCache():
+  lastBlock(0)
 {
   stats.noHits = 0;
   stats.noMisses = 0;
@@ -102,7 +99,7 @@ DRESULT DiskCache::read(BYTE drv, BYTE * buff, DWORD sector, UINT count)
   }
   
   // if block + cache block size is beyond the end of the disk, then read it directly without using cache
-  if (sector+DISK_CACHE_BLOCK_SECTORS >= SDCardInfo.CardCapacity / SDCardInfo.CardBlockSize) {
+  if (sector+DISK_CACHE_BLOCK_SECTORS >= sdGetNoSectors()) {
     TRACE_DISK_CACHE("\t\t cache would be beyond end of disk(%u)", this, (uint32_t)sector);
     return __disk_read(drv, buff, sector, count);
   }

@@ -229,7 +229,8 @@ int8_t STORAGE_Read (uint8_t lun,
   }
 #endif
   
-  return (disk_read(0, buf, blk_addr, blk_len) == RES_OK) ? 0 : -1;
+  // read without cache
+  return (__disk_read(0, buf, blk_addr, blk_len) == RES_OK) ? 0 : -1;
 }
 /**
   * @brief  Write data to the medium
@@ -250,8 +251,9 @@ int8_t STORAGE_Write (uint8_t lun,
     return (fat12Write(buf, blk_addr, blk_len) == 0) ? 0 : -1;
   }
 #endif
-
-  return (disk_write(0, buf, blk_addr, blk_len) == RES_OK) ? 0 : -1;
+  
+  // write without cache
+  return (__disk_write(0, buf, blk_addr, blk_len) == RES_OK) ? 0 : -1;
 }
 
 /**

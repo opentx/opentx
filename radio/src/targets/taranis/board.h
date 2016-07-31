@@ -159,26 +159,27 @@ void getCPUUniqueID(char * s);
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
-  uint32_t sdIsHC(void);
-  uint32_t sdGetSpeed(void);
-  #define SD_IS_HC()                   (sdIsHC())
-  #define SD_GET_SPEED()               (sdGetSpeed())
-  #define SD_GET_FREE_BLOCKNR()        (sdGetFreeSectors())
+uint32_t sdIsHC(void);
+uint32_t sdGetSpeed(void);
+#define SD_IS_HC()                     (sdIsHC())
+#define SD_GET_SPEED()                 (sdGetSpeed())
+#define SD_GET_FREE_BLOCKNR()          (sdGetFreeSectors())
 #else
-  #define SD_IS_HC()                   (0)
-  #define SD_GET_SPEED()               (0)
+#define SD_IS_HC()                     (0)
+#define SD_GET_SPEED()                 (0)
 #endif
-
+#define __disk_read                    disk_read
+#define __disk_write                   disk_write
 #if defined(SIMU)
-  #define sdInit()
-  #define sdDone()
+#define sdInit()
+#define sdDone()
 #else
-  void sdInit(void);
-  void sdDone(void);
-  void sdPoll10ms(void);
-  #define sdMountPoll()
-  uint32_t sdMounted(void);
-  #define SD_CARD_PRESENT()            (~SD_GPIO_PRESENT->IDR & SD_GPIO_PIN_PRESENT)
+void sdInit(void);
+void sdDone(void);
+void sdPoll10ms(void);
+#define sdMountPoll()
+uint32_t sdMounted(void);
+#define SD_CARD_PRESENT()              (~SD_GPIO_PRESENT->IDR & SD_GPIO_PIN_PRESENT)
 #endif
 
 // Flash Write driver
