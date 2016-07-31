@@ -497,16 +497,13 @@ void audioTask(void * pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
-#if !defined(EEPROM)
-  AUDIO_HELLO();
-#elif defined(SDCARD)
+  while (!sdMounted()) {
+    CoTickDelay(10);
+  }
+  
   if (!unexpectedShutdown) {
-#if defined(EEPROM)
-    sdInit();
-#endif
     AUDIO_HELLO();
   }
-#endif
 
   while (1) {
     audioQueue.wakeup();
