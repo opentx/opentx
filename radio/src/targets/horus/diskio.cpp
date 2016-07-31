@@ -130,7 +130,7 @@ DRESULT __disk_read(
   if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
     TRACE("disk_read bad alignment (%p)", buff);
     while (count--) {
-      res = disk_read(drv, (BYTE *)scratch, sector++, 1);
+      res = __disk_read(drv, (BYTE *)scratch, sector++, 1);
 
       if (res != RES_OK) {
         TRACE("disk_read() status=%d", res);
@@ -209,7 +209,7 @@ DRESULT __disk_write(
     while(count--) {
       memcpy(scratch, buff, BLOCK_SIZE);
 
-      res = disk_write(drv, (BYTE *)scratch, sector++, 1);
+      res = __disk_write(drv, (BYTE *)scratch, sector++, 1);
 
       if (res != RES_OK)
         break;
