@@ -52,7 +52,7 @@ void storageDirty(uint8_t msk);
 void storageCheck(bool immediately);
 
 void preModelLoad();
-void postModelLoad(bool newModel);
+void postModelLoad(bool alarms);
 
 #if defined(EEPROM_RLC)
 #include "eeprom_common.h"

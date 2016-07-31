@@ -44,14 +44,14 @@ void eeLoadModel(uint8_t index)
     }
 #endif
 
-    bool newModel = false;
+    bool alarms = true;
     if (size < EEPROM_MIN_MODEL_SIZE) { // if not loaded a fair amount
       modelDefault(index) ;
       storageCheck(true);
-      newModel = true;
+      alarms = false;
     }
 
-    postModelLoad(newModel);
+    postModelLoad(alarms);
   }
 }
 
