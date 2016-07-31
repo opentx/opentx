@@ -31,7 +31,7 @@ extern "C" {
 
 enum MassstorageLuns {
   STORAGE_SDCARD_LUN,
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   STORAGE_EEPROM_LUN,
 #endif
   STORAGE_LUN_NBR
@@ -52,7 +52,7 @@ const unsigned char STORAGE_Inquirydata[] = { //36
   USB_PRODUCT,                             /* Product      : 16 Bytes */
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0', '0',                      /* Version      : 4 Bytes */
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   /* LUN 1 */
   0x00,		
   0x80,		
@@ -69,7 +69,7 @@ const unsigned char STORAGE_Inquirydata[] = { //36
 #endif  
 }; 
 
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
 int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count);
 int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count );
 #endif
@@ -142,7 +142,7 @@ int8_t STORAGE_Init (uint8_t lun)
   */
 int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   if (lun == STORAGE_EEPROM_LUN) {
     *block_size = BLOCK_SIZE;
     *block_num  = 3 + EESIZE/BLOCK_SIZE + FLASHSIZE/BLOCK_SIZE;
@@ -176,7 +176,7 @@ void usbPluggedIn()
     lunReady[STORAGE_SDCARD_LUN] = 1;
   }
   
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   if (lunReady[STORAGE_EEPROM_LUN] == 0) {
     lunReady[STORAGE_EEPROM_LUN] = 1;
   }
@@ -190,7 +190,7 @@ void usbPluggedIn()
   */
 int8_t  STORAGE_IsReady (uint8_t lun)
 { 
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   if (lun == STORAGE_EEPROM_LUN) {
     return (lunReady[STORAGE_EEPROM_LUN] != 0) ? 0 : -1;
   }
@@ -223,7 +223,7 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint32_t blk_addr,                       
                  uint16_t blk_len)
 {
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   if (lun == STORAGE_EEPROM_LUN) {
     return (fat12Read(buf, blk_addr, blk_len) == 0) ? 0 : -1;
   }
@@ -246,7 +246,7 @@ int8_t STORAGE_Write (uint8_t lun,
                   uint32_t blk_addr,
                   uint16_t blk_len)
 {
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
   if (lun == STORAGE_EEPROM_LUN)	{
     return (fat12Write(buf, blk_addr, blk_len) == 0) ? 0 : -1;
   }
@@ -267,7 +267,7 @@ int8_t STORAGE_GetMaxLun (void)
   return STORAGE_LUN_NBR - 1;
 }
 
-#if defined(EEPROM) && defined(BOOT)
+#if defined(EEPROM)
 //------------------------------------------------------------------------------
 /**
  * FAT12 boot sector partition.
