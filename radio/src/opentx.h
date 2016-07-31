@@ -1423,9 +1423,9 @@ extern uint8_t requiredSpeakerVolume;
 extern uint8_t requestScreenshot;
 #endif
 
-extern void checkBattery();
-extern void opentxClose();
-extern void opentxInit();
+void checkBattery();
+void opentxClose(uint8_t shutdown=true);
+void opentxInit();
 
 #if defined(PCBHORUS) && !defined(SIMU)
   #define LED_ERROR_BEGIN()            ledRed()

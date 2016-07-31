@@ -1951,31 +1951,29 @@ void opentxStart()
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
-void opentxClose()
+void opentxClose(uint8_t shutdown)
 {
   TRACE("opentxClose()");
 
+  if (shutdown) {
 #if defined(CPUARM)
-  watchdogSetTimeout(2000/*20s*/);
+    watchdogSetTimeout(2000/*20s*/);
 #endif
-  pausePulses();   // stop mixer task to disable trims processing while in shutdown
-
-  AUDIO_BYE();
-
+    pausePulses();   // stop mixer task to disable trims processing while in shutdown
+    AUDIO_BYE();
 #if defined(FRSKY)
-  // TODO needed? telemetryEnd();
+    // TODO needed? telemetryEnd();
 #endif
-
 #if defined(LUA)
-  luaClose();
+    luaClose();
 #endif
-
+#if defined(HAPTIC)
+    hapticOff();
+#endif
+  }
+  
 #if defined(SDCARD)
   closeLogs();
-#endif
-
-#if defined(HAPTIC)
-  hapticOff();
 #endif
 
   saveTimers();
@@ -2023,7 +2021,6 @@ void opentxClose()
   while (IS_PLAYING(ID_PLAY_BYE)) {
     CoTickDelay(10);
   }
-
   CoTickDelay(50);
 #endif
 

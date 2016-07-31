@@ -48,7 +48,7 @@ void handleUsbConnection()
     */
 
 #if defined(USB_MASS_STORAGE)
-    opentxClose();
+    opentxClose(false);
     usbPluggedIn();
 #endif
   }
