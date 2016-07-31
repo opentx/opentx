@@ -21,7 +21,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "opentx.h"
 #include "FatFs/diskio.h"
-#include "sdio_sd.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
