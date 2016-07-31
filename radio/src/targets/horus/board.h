@@ -109,6 +109,7 @@ uint32_t sdGetSpeed(void);
 #define SD_GET_FREE_BLOCKNR()          (sdGetFreeSectors())
 #define SD_CARD_PRESENT()              (~SD_PRESENT_GPIO->IDR & SD_PRESENT_GPIO_PIN)
 void sdInit(void);
+void sdMount(void);
 void sdDone(void);
 #define sdPoll10ms()
 #define sdMountPoll()

@@ -843,6 +843,8 @@ const char * sdEnum()
 
 void sdInit()
 {
+  TRACE("sdInit");
+  
   const char * result;
   uint8_t i;
 

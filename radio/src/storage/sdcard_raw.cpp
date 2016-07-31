@@ -29,6 +29,8 @@ void getModelPath(char * path, const char * filename)
 
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
+  TRACE("writeFile(%s)", filename);
+  
   FIL file;
   char buf[8];
   UINT written;
@@ -68,6 +70,8 @@ const char * writeModel()
 
 const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
 {
+  TRACE("loadFile(%s)", filename);
+  
   FIL file;
   char buf[8];
   UINT read;
@@ -171,8 +175,8 @@ void storageCheck(bool immediately)
 
 void storageReadAll()
 {
-  sdInit();
-
+  TRACE("storageReadAll");
+  
   if (loadGeneralSettings() != NULL) {
     storageEraseAll(true);
   }
@@ -230,7 +234,7 @@ const char * createModel()
 
 void storageEraseAll(bool warn)
 {
-  TRACE("storageEraseAll()");
+  TRACE("storageEraseAll");
 
 #if defined(COLORLCD)
   // the theme has not been loaded before

@@ -151,9 +151,9 @@ uint32_t unlocked = 0;
 
 extern uint32_t EepromBlocked;
 
-extern void init_spi(void);
-extern void writeBlock(void);
-extern void usbPluggedIn();
+void init_spi(void);
+void writeBlock(void);
+void usbPluggedIn();
 
 #if defined(PCBX9E)
 typedef int32_t rotenc_t;

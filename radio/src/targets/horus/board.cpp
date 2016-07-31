@@ -149,7 +149,7 @@ void boardInit()
 
   __enable_irq();
 
-  TRACE("Horus started :)");
+  TRACE("\nHorus board started :)");
 
   keysInit();
   adcInit();
