@@ -2039,6 +2039,7 @@ void opentxClose(uint8_t shutdown)
 }
 #endif
 
+#if defined(USB_MASS_STORAGE)
 void opentxResume()
 {
   TRACE("opentxResume");
@@ -2063,6 +2064,7 @@ void opentxResume()
   }
 #endif
 }
+#endif
 
 #if defined(NAVIGATION_STICKS)
 uint8_t getSticksNavigationEvent()
