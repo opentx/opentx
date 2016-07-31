@@ -328,6 +328,8 @@ void sdMount()
 
 void sdDone()
 {
+  TRACE("sdDone");
+  
   if (sdMounted()) {
     audioQueue.stopSD();
 #if defined(LOG_TELEMETRY)

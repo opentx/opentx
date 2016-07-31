@@ -1962,7 +1962,7 @@ void opentxStart(OPENTX_START_ARGS)
 #if defined(CPUARM) || defined(CPUM2560)
 void opentxClose(uint8_t shutdown)
 {
-  TRACE("opentxClose()");
+  TRACE("opentxClose");
 
   if (shutdown) {
 #if defined(CPUARM)
