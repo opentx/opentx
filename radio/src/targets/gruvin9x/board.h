@@ -73,6 +73,7 @@ void boardInit(void);
 #define JACK_PPM_IN()              PORTG &= ~(1<<OUT_G_SIM_CTL)
 
 // SD driver
+#define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #define sdDone()
 #define SD_IS_HC()               (0)
 #define SD_GET_SPEED()           (0)
