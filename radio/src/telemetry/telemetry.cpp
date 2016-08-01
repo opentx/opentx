@@ -140,12 +140,8 @@ void telemetryWakeup()
     varioWakeup();
   }
 #endif
-
-#if defined(PCBX9DP) || defined(PCBX9E)
-  #define FRSKY_BAD_ANTENNA() (IS_VALID_XJT_VERSION() && telemetryData.swr.value > 0x33)
-#else
-  #define FRSKY_BAD_ANTENNA() (telemetryData.swr.value > 0x33)
-#endif
+  
+#define FRSKY_BAD_ANTENNA()            (IS_SWR_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
 #if defined(CPUARM)
   static tmr10ms_t alarmsCheckTime = 0;

@@ -273,9 +273,9 @@ PACK(struct FrskyTelemetryData {
 #endif
 
 #if defined(PCBX9DP) || defined(PCBX9E)
-  #define IS_VALID_XJT_VERSION()      (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
+  #define IS_SWR_VALUE_VALID()         (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
 #else
-  #define IS_VALID_XJT_VERSION()      (1)
+  #define IS_SWR_VALUE_VALID()         (true)
 #endif
 
 #define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == SWR_ID))
