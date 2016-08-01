@@ -252,27 +252,18 @@ void processSportPacket(uint8_t * packet)
       else
         telemetryData.rssi.set(data);
     }
-#if defined(PCBX9DP) || defined(PCBX9E)
     else if (id == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
-      if (!IS_VALID_XJT_VERSION()) {
+      if (!IS_SWR_VALUE_VALID()) {
         telemetryData.swr.set(0x00);
       }
     }
     else if (id == SWR_ID) {
-      if (IS_VALID_XJT_VERSION())
+      if (IS_SWR_VALUE_VALID())
         telemetryData.swr.set(SPORT_DATA_U8(packet));
       else
         telemetryData.swr.set(0x00);
     }
-#else
-    else if (id == XJT_VERSION_ID) {
-      telemetryData.xjtVersion = HUB_DATA_U16(packet);
-    }
-    else if (id == SWR_ID) {
-      telemetryData.swr.set(SPORT_DATA_U8(packet));
-    }
-#endif
 
     if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
       if ((id >> 8) == 0) {
