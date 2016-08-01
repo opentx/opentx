@@ -498,6 +498,21 @@ static int luaGetValue(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function getRAS()
+
+Return the RAS value
+
+@retval number representing RAS value. Values bellow 50 are all ok, values higher indicate an issue
+
+@status current Introduced in 2.2.0
+*/
+static int luaGetRAS(lua_State * L)
+{
+  lua_pushinteger(L, telemetryData.swr.value);
+  return 1;
+}
+
 
 /*luadoc
 @function getFlightMode(mode)
@@ -860,6 +875,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
+  { "getRAS", luaGetRAS },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },
   { "playFile", luaPlayFile },
