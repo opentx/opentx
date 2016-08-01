@@ -506,7 +506,9 @@
   #define LCD_RCC_APB1Periph            RCC_APB1Periph_SPI3
   #define LCD_SPI_GPIO                  GPIOC
   #define LCD_MOSI_GPIO_PIN             GPIO_Pin_12 // PC.12
+  #define LCD_MOSI_GPIO_PinSource       GPIO_PinSource12
   #define LCD_CLK_GPIO_PIN              GPIO_Pin_10 // PC.10
+  #define LCD_CLK_GPIO_PinSource        GPIO_PinSource10
   #define LCD_A0_GPIO_PIN               GPIO_Pin_11 // PC.11
   #define LCD_NCS_GPIO                  GPIOA
   #define LCD_NCS_GPIO_PIN              GPIO_Pin_15 // PA.15
