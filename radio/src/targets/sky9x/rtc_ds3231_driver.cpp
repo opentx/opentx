@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include "opentx.h"
 #include "rtc.h"
 #include "i2c_driver.h"
 
@@ -26,8 +27,9 @@
 void readRtc()
 {
   uint8_t buffer[7];
+  uint8_t readBuffer[7];
   gtm utm;
-  int res = i2cReadBuffer(DS3231_I2C_ADDR, 0, 2, buffer, 7);
+  int res = i2cReadBuffer(DS3231_I2C_ADDR, readBuffer, 2, buffer, 7);
   if (res != 0)
     return;
 
@@ -46,6 +48,7 @@ void writeRtc(gtm* ptr)
   g_rtcTime = gmktime(ptr);
   g_ms100 = 0; // start of next second begins now
   uint8_t buffer[7];
+  uint8_t read_buffer[7];
 
   buffer[0] = toBCD(ptr->tm_sec);
   buffer[1] = toBCD(ptr->tm_min);
@@ -55,7 +58,7 @@ void writeRtc(gtm* ptr)
   buffer[5] = toBCD(ptr->tm_mon + 1);
   uint8_t offset = ptr->tm_year >= 100 ? 100 : 0;
   buffer[6] = toBCD(ptr->tm_year - offset);
-  i2cWriteBuffer(DS3231_I2C_ADDR, 0, 1, buffer, 7);
+  i2cWriteBuffer(DS3231_I2C_ADDR, read_buffer, 1, buffer, 7);
 }
 
 void rtcSetTime(struct gtm * t)
