@@ -332,7 +332,7 @@ if(GUI)
     keys.cpp
     maths.cpp
     translations.cpp
-    gui/gui_helpers.cpp
+    gui/gui_common_arm.cpp
     )
   foreach(FILE ${GUI_SRC})
     set(SRC ${SRC} gui/${GUI_DIR}/${FILE})

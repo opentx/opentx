@@ -18,9 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _GUI_HELPERS_H_
-#define _GUI_HELPERS_H_
+#ifndef _GUI_COMMON_H_
+#define _GUI_COMMON_H_
 
+#if defined(CPUARM)
 typedef bool (*IsValueAvailable)(int);
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
@@ -59,6 +60,7 @@ bool isTelemetryFieldComparisonAvailable(int index);
 bool isSensorAvailable(int sensor);
 
 bool modelHasNotes();
+#endif
 
 #if defined(COLORLCD)
 bool isSwitchWarningStateAvailable(int state);
@@ -70,4 +72,4 @@ bool isSwitchWarningStateAvailable(int state);
 #define IS_INSTANT_TRIM_ALLOWED()      true
 #endif
 
-#endif // _GUI_HELPERS_H_
+#endif // _GUI_COMMON_H_

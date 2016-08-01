@@ -21,10 +21,7 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
-#if defined(CPUARM)
-#include "gui_helpers.h"
-#endif
-
+#include "gui_common.h"
 #include "lcd.h"
 #include "menus.h"
 
