@@ -501,16 +501,20 @@ static int luaGetValue(lua_State * L)
 /*luadoc
 @function getRAS()
 
-Return the RAS value
+Return the RAS value or nil in case of issue 
 
-@retval number representing RAS value. Values bellow 50 are all ok, values higher indicate an issue
+@retval number representing RAS value or nil if if there is an hardware issue
 This is just a hardware pass/fail measure and does not represent the quality of the radio link
 
 @status current Introduced in 2.2.0
 */
 static int luaGetRAS(lua_State * L)
 {
-  lua_pushinteger(L, telemetryData.swr.value);
+  if (telemetryData.swr.value > 0x33) {
+    lua_pushnil(L);
+  } else {
+    lua_pushinteger(L, telemetryData.swr.value);  
+  }
   return 1;
 }
 
