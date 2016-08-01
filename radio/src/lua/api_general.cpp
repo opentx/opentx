@@ -513,7 +513,8 @@ static int luaGetRAS(lua_State * L)
 {
   if (IS_SWR_VALUE_VALID()) { 
     lua_pushinteger(L, telemetryData.swr.value);
-  } else {
+  }
+  else {
     lua_pushnil(L);  
   }
   return 1;
