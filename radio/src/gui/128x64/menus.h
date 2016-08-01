@@ -445,7 +445,7 @@ extern uint8_t s_curveChan;
 #define WARNING_LINE_X                 16
 #define WARNING_LINE_Y                 3*FH
 
-void displayBox();
+void drawMessageBox();
 void displayPopup(const pm_char * pstr);
 void displayWarning(uint8_t event);
 
@@ -496,7 +496,7 @@ void displayWarning(uint8_t event);
   extern uint16_t popupMenuNoItems;
   extern uint8_t popupMenuFlags;
   extern uint16_t popupMenuOffset;
-  const char * displayPopupMenu(uint8_t event);
+  const char * runPopupMenu(uint8_t event);
   extern void (*popupMenuHandler)(const char *result);
 #else
   #define popupMenuNoItems             0

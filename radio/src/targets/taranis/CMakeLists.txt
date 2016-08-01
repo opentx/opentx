@@ -24,7 +24,7 @@ if(PCB STREQUAL X9E)
   set(GUI_DIR 212x64)
   set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
-  set(VIRTUAL_INPUTS YES)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
 elseif(PCB STREQUAL X9D+)
   set(CPU_TYPE STM32F2)
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
@@ -36,7 +36,7 @@ elseif(PCB STREQUAL X9D+)
   set(GUI_DIR 212x64)
   set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
-  set(VIRTUAL_INPUTS YES)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
@@ -47,7 +47,7 @@ elseif(PCB STREQUAL X9D)
   set(GUI_DIR 212x64)
   set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
-  set(VIRTUAL_INPUTS YES)
+  set(LCD_DRIVER lcd_driver_aspi.cpp)
 elseif(PCB STREQUAL X7D)
   set(CPU_TYPE STM32F2)
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
@@ -58,16 +58,19 @@ elseif(PCB STREQUAL X7D)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 128x64)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
-  set(VIRTUAL_INPUTS NO)
+  set(LCD_DRIVER lcd_driver_spi2.cpp)
 endif()
 
 set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM EEPROM_RLC)
+set(VIRTUAL_INPUTS YES)
 set(TARGET_DIR taranis)
+
 add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
-add_definitions(-DVIRTUALINPUTS -DLUAINPUTS -DXCURVES -DVARIO)
+add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
+
 set(GUI_SRC ${GUI_SRC}
   model_inputs.cpp
   model_mixes.cpp
@@ -79,33 +82,39 @@ set(GUI_SRC ${GUI_SRC}
   view_telemetry.cpp
   view_text.cpp
   view_about.cpp
+  ../screenshot.cpp
   )
+
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
   extmodule_driver.cpp
   ../common/arm/stm32/rtc_driver.cpp
   )
+
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}
   loadboot.cpp
   )
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
-  lcd_driver.cpp
+  ${LCD_DRIVER}
+  backlight_driver.cpp
   delays.c
   i2c_driver.cpp
   pwr_driver.c
-  configure_pins.cpp
   flash_driver.cpp
-  aspi.c
   )
+
 if(LCD_DUAL_BUFFER)
   add_definitions(-DLCD_DUAL_BUFFER)
 endif()
+
 if(TARANIS_INTERNAL_PPM)
   add_definitions(-DTARANIS_INTERNAL_PPM)
 endif()
+
 if(MIXERS_MONITOR)
   add_definitions(-DMIXERS_MONITOR)
 endif()

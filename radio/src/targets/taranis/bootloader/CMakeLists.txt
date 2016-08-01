@@ -44,8 +44,8 @@ set(BOOTLOADER_SRC
   ../../../${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
   ../../../${FATFS_DIR}/ff.c
   ../../../${FATFS_DIR}/option/ccsbcs.c
-  ../lcd_driver.cpp
-  ../configure_pins.cpp
+  ../${LCD_DRIVER}
+  ../backlight_driver.cpp
   ../keys_driver.cpp
   ../i2c_driver.cpp
   ../flash_driver.cpp
@@ -54,7 +54,6 @@ set(BOOTLOADER_SRC
   ../../common/arm/stm32/usbd_storage_msd.cpp
   ../delays.c
   ../../common/arm/stm32/usbd_desc.c
-  ../aspi.c
   ../../common/arm/stm32/usb_bsp.c
   ../../common/arm/stm32/usb_driver.c
   ../pwr_driver.c

@@ -362,8 +362,8 @@ void insertMix(uint8_t idx);
 #define WARNING_LINE_X                 16
 #define WARNING_LINE_Y                 3*FH
 
-void displayBox(const char *title);
-void displayPopup(const char *title);
+void drawMessageBox(const char * title);
+void displayPopup(const char * title);
 void displayWarning(uint8_t event);
 
 extern void (*popupFunc)(uint8_t event);
@@ -395,7 +395,7 @@ enum {
   MENU_OFFSET_EXTERNAL
 };
 extern uint8_t popupMenuOffsetType;
-const char * displayPopupMenu(uint8_t event);
+const char * runPopupMenu(uint8_t event);
 extern void (*popupMenuHandler)(const char *result);
 
 #define STATUS_LINE_LENGTH             32

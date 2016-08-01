@@ -283,6 +283,10 @@
   #define ADC_GPIO_PIN_SLIDER3          GPIO_Pin_6  // PA.06
   #define ADC_GPIO_PIN_SLIDER4          GPIO_Pin_1  // PB.01
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
+  #define ADC_GPIOA_PINS (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_SLIDER3)
+  #define ADC_GPIOB_PINS (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SLIDER4)
+  #define ADC_GPIOC_PINS (ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_POT4 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
+  #define ADC_GPIOF_PINS (ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2)
   #define ADC_CHANNEL_POT1              ADC_Channel_6  // ADC3_IN6
   #define ADC_CHANNEL_POT2              ADC_Channel_8  // ADC1_IN8
   #define ADC_CHANNEL_POT3              ADC_Channel_15 // ADC1_IN15
@@ -303,6 +307,9 @@
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_4  // PC.04
   #define ADC_GPIO_PIN_SLIDER2          GPIO_Pin_5  // PC.05
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
+  #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1)
+  #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3)
+  #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
   #define ADC_CHANNEL_POT1              ADC_Channel_6
   #define ADC_CHANNEL_POT2              ADC_Channel_8
   #define ADC_CHANNEL_POT3              ADC_Channel_9
@@ -315,6 +322,9 @@
   #define ADC_GPIO_PIN_SLIDER1          GPIO_Pin_4  // PC.04
   #define ADC_GPIO_PIN_SLIDER2          GPIO_Pin_5  // PC.05
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
+  #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1)
+  #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_POT2)
+  #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
   #define ADC_CHANNEL_POT1              ADC_Channel_6
   #define ADC_CHANNEL_POT2              ADC_Channel_8
   #define ADC_CHANNEL_POT3              ADC_Channel_9
@@ -433,9 +443,11 @@
 // Heartbeat
 #define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOC
 #define HEARTBEAT_RCC_APB2Periph        RCC_APB2Periph_USART6
+#define HEARTBEAT_GPIO                  GPIOC
 #define HEARTBEAT_GPIO_PIN              GPIO_Pin_7  // PC.07
 #define HEARTBEAT_GPIO_PinSource        GPIO_PinSource7
-#define HEARTBEAT_GPIO_AF               GPIO_AF_USART6
+#define HEARTBEAT_GPIO_AF_SBUS          GPIO_AF_USART6
+#define HEARTBEAT_GPIO_AF_CAPTURE       GPIO_AF_TIM3
 #define HEARTBEAT_USART                 USART6
 #define HEARTBEAT_USART_IRQHandler      USART6_IRQHandler
 #define HEARTBEAT_USART_IRQn            USART6_IRQn
@@ -492,14 +504,14 @@
 #if defined(PCBX9E)
   #define LCD_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
   #define LCD_RCC_APB1Periph            RCC_APB1Periph_SPI3
-  #define LCD_GPIO_SPI                  GPIOC
-  #define LCD_GPIO_NCS                  GPIOA
-  #define LCD_GPIO_RST                  GPIOD
-  #define LCD_GPIO_PIN_MOSI             GPIO_Pin_12 // PC.12
-  #define LCD_GPIO_PIN_CLK              GPIO_Pin_10 // PC.10
-  #define LCD_GPIO_PIN_NCS              GPIO_Pin_15 // PA.15
-  #define LCD_GPIO_PIN_A0               GPIO_Pin_11 // PC.11
-  #define LCD_GPIO_PIN_RST              GPIO_Pin_15 // PD.15
+  #define LCD_SPI_GPIO                  GPIOC
+  #define LCD_MOSI_GPIO_PIN             GPIO_Pin_12 // PC.12
+  #define LCD_CLK_GPIO_PIN              GPIO_Pin_10 // PC.10
+  #define LCD_A0_GPIO_PIN               GPIO_Pin_11 // PC.11
+  #define LCD_NCS_GPIO                  GPIOA
+  #define LCD_NCS_GPIO_PIN              GPIO_Pin_15 // PA.15
+  #define LCD_RST_GPIO                  GPIOD
+  #define LCD_RST_GPIO_PIN              GPIO_Pin_15 // PD.15
   #define LCD_DMA                       DMA1
   #define LDC_DMA_Stream                DMA1_Stream7
   #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
@@ -510,14 +522,16 @@
 #elif defined(PCBX9DP)
   #define LCD_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
   #define LCD_RCC_APB1Periph            RCC_APB1Periph_SPI3
-  #define LCD_GPIO_SPI                  GPIOC
-  #define LCD_GPIO_NCS                  GPIOA
-  #define LCD_GPIO_RST                  GPIOD
-  #define LCD_GPIO_PIN_MOSI             GPIO_Pin_12 // PC.12
-  #define LCD_GPIO_PIN_CLK              GPIO_Pin_10 // PC.10
-  #define LCD_GPIO_PIN_NCS              GPIO_Pin_15 // PA.15
-  #define LCD_GPIO_PIN_A0               GPIO_Pin_11 // PC.11
-  #define LCD_GPIO_PIN_RST              GPIO_Pin_12 // PD.12
+  #define LCD_SPI_GPIO                  GPIOC
+  #define LCD_MOSI_GPIO_PIN             GPIO_Pin_12 // PC.12
+  #define LCD_MOSI_GPIO_PinSource       GPIO_PinSource12
+  #define LCD_CLK_GPIO_PIN              GPIO_Pin_10 // PC.10
+  #define LCD_CLK_GPIO_PinSource        GPIO_PinSource10
+  #define LCD_A0_GPIO_PIN               GPIO_Pin_11 // PC.11
+  #define LCD_NCS_GPIO                  GPIOA
+  #define LCD_NCS_GPIO_PIN              GPIO_Pin_15 // PA.15
+  #define LCD_RST_GPIO                  GPIOD
+  #define LCD_RST_GPIO_PIN              GPIO_Pin_12 // PD.12
   #define LCD_DMA                       DMA1
   #define LDC_DMA_Stream                DMA1_Stream7
   #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
@@ -525,17 +539,18 @@
   #define LCD_DMA_FLAGS                 (DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7)
   #define LCD_DMA_FLAG_INT              DMA_HIFCR_CTCIF7
   #define LCD_SPI                       SPI3
+  #define LCD_GPIO_AF                   GPIO_AF_SPI3
 #else
   #define LCD_RCC_AHB1Periph            RCC_AHB1Periph_GPIOD
   #define LCD_RCC_APB1Periph            0
-  #define LCD_GPIO_SPI                  GPIOD
-  #define LCD_GPIO_NCS                  GPIOD
-  #define LCD_GPIO_RST                  GPIOD
-  #define LCD_GPIO_PIN_MOSI             GPIO_Pin_10 // PD.10
-  #define LCD_GPIO_PIN_CLK              GPIO_Pin_11 // PD.11
-  #define LCD_GPIO_PIN_NCS              GPIO_Pin_14 // PD.14
-  #define LCD_GPIO_PIN_A0               GPIO_Pin_13 // PD.13
-  #define LCD_GPIO_PIN_RST              GPIO_Pin_12 // PD.12
+  #define LCD_SPI_GPIO                  GPIOD
+  #define LCD_MOSI_GPIO_PIN             GPIO_Pin_10 // PD.10
+  #define LCD_CLK_GPIO_PIN              GPIO_Pin_11 // PD.11
+  #define LCD_A0_GPIO_PIN               GPIO_Pin_13 // PD.13
+  #define LCD_NCS_GPIO                  GPIOD
+  #define LCD_NCS_GPIO_PIN              GPIO_Pin_14 // PD.14
+  #define LCD_RST_GPIO                  GPIOD
+  #define LCD_RST_GPIO_PIN              GPIO_Pin_12 // PD.12
 #endif
 
 // I2C Bus: EEPROM and CAT5137 digital pot for volume control
@@ -588,6 +603,8 @@
 // Audio
 #define AUDIO_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
 #define AUDIO_RCC_APB1Periph            (RCC_APB1Periph_TIM6 | RCC_APB1Periph_DAC)
+#define AUDIO_OUTPUT_GPIO               GPIOA
+#define AUDIO_OUTPUT_GPIO_PIN           GPIO_Pin_4  // PA.04
 #define AUDIO_DMA_Stream                DMA1_Stream5
 #define AUDIO_DMA_Stream_IRQn           DMA1_Stream5_IRQn
 #define AUDIO_TIM_IRQn                  TIM6_DAC_IRQn

@@ -20,11 +20,6 @@
 
 #include "opentx.h"
 
-#define PIN_ANALOG  0x0003
-#define PIN_PORTA   0x0000
-#define PIN_PORTB   0x0100
-#define PIN_PORTC   0x0200
-
 // Sample time should exceed 1uS
 #define SAMPTIME       2   // sample time = 28 cycles
 #define SAMPTIME_LONG  3   // sample time = 56 cycles
@@ -57,19 +52,23 @@ uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 void adcInit()
 {
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = ADC_GPIOA_PINS;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(GPIOA, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = ADC_GPIOB_PINS;
+  GPIO_Init(GPIOB, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = ADC_GPIOC_PINS;
+  GPIO_Init(GPIOC, &GPIO_InitStructure);
+
 #if defined(PCBX9E)
-  configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_SLIDER3, PIN_ANALOG | PIN_PORTA);
-  configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SLIDER4, PIN_ANALOG | PIN_PORTB);
-  configure_pins(ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_POT4 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
-  configure_pins(ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2, PIN_ANALOG | PIN_PORTF);
-#elif defined(PCBX9DP)
-  configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1, PIN_ANALOG | PIN_PORTA);
-  configure_pins(ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_POT3, PIN_ANALOG | PIN_PORTB);
-  configure_pins(ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
-#else
-  configure_pins(ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1, PIN_ANALOG | PIN_PORTA);
-  configure_pins(ADC_GPIO_PIN_POT2, PIN_ANALOG|PIN_PORTB);
-  configure_pins(ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT, PIN_ANALOG | PIN_PORTC);
+  GPIO_InitStructure.GPIO_Pin = ADC_GPIOF_PINS;
+  GPIO_Init(GPIOF, &GPIO_InitStructure);
 #endif
 
   ADC1->CR1 = ADC_CR1_SCAN;

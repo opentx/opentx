@@ -20,24 +20,24 @@
 
 #include "opentx.h"
 
-const char *warningText = NULL;
-const char *warningInfoText;
-uint8_t     warningInfoLength;
-uint8_t     warningType;
-uint8_t     warningResult = 0;
-uint8_t     warningInfoFlags = ZCHAR;
-int16_t     warningInputValue;
-int16_t     warningInputValueMin;
-int16_t     warningInputValueMax;
-void        (*popupFunc)(uint8_t event) = NULL;
-const char *popupMenuItems[POPUP_MENU_MAX_LINES];
-uint8_t     s_menu_item = 0;
-uint16_t    popupMenuNoItems = 0;
-uint16_t    popupMenuOffset = 0;
-uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
-void        (*popupMenuHandler)(const char * result);
+const char * warningText = NULL;
+const char * warningInfoText;
+uint8_t      warningInfoLength;
+uint8_t      warningType;
+uint8_t      warningResult = 0;
+uint8_t      warningInfoFlags = ZCHAR;
+int16_t      warningInputValue;
+int16_t      warningInputValueMin;
+int16_t      warningInputValueMax;
+void         (*popupFunc)(uint8_t event) = NULL;
+const char * popupMenuItems[POPUP_MENU_MAX_LINES];
+uint8_t      s_menu_item = 0;
+uint16_t     popupMenuNoItems = 0;
+uint16_t     popupMenuOffset = 0;
+uint8_t      popupMenuOffsetType = MENU_OFFSET_INTERNAL;
+void         (*popupMenuHandler)(const char * result);
 
-void displayBox(const char * title)
+void drawMessageBox(const char * title)
 {
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
@@ -47,7 +47,7 @@ void displayBox(const char * title)
 
 void displayPopup(const char * title)
 {
-  displayBox(title);
+  drawMessageBox(title);
   lcdRefresh();
 }
 
@@ -95,7 +95,7 @@ void message(const pm_char * title, const pm_char * text, const char * action, u
 void displayWarning(uint8_t event)
 {
   warningResult = false;
-  displayBox(warningText);
+  drawMessageBox(warningText);
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
@@ -119,11 +119,11 @@ void displayWarning(uint8_t event)
   }
 }
 
-const char * displayPopupMenu(uint8_t event)
+const char * runPopupMenu(uint8_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<unsigned int>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<uint8_t>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);

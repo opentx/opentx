@@ -91,4 +91,8 @@ void drawCurvePoint(int x, int y, LcdFlags color);
 extern Layout * customScreens[MAX_CUSTOM_SCREENS];
 extern Topbar * topbar;
 
+#define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
+#define IS_TELEMETRY_VIEW_DISPLAYED()  false
+#define IS_OTHER_VIEW_DISPLAYED()      false
+
 #endif // _GUI_H_

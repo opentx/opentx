@@ -554,7 +554,7 @@ void menuMainView(uint8_t event)
   if (gvarDisplayTimer > 0) {
     gvarDisplayTimer--;
     warningText = STR_GLOBAL_VAR;
-    displayBox();
+    drawMessageBox();
     lcdDrawSizedText(16, 5*FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(16+7*FW, 5*FH, PSTR("[\010]"), BOLD);
 

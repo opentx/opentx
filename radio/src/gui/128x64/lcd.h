@@ -268,4 +268,6 @@ uint8_t	lcdRefresh_ST7920(uint8_t full);
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
+const char * writeScreenshot();
+
 #endif // _LCD_H_

@@ -99,7 +99,7 @@ void displayWarning(evt_t event)
   }
 }
 
-const char * displayPopupMenu(evt_t event)
+const char * runPopupMenu(evt_t event)
 {
   const char * result = NULL;
 

@@ -231,7 +231,7 @@ void guiMain(evt_t evt)
           popupDisplayed = lcdRestoreBackupBuffer();
           if (warn) DISPLAY_WARNING(evt);
           if (menu) {
-            const char * result = displayPopupMenu(evt);
+            const char * result = runPopupMenu(evt);
             if (result) {
               popupMenuHandler(result);
               if (menuEvent == 0) {
@@ -376,7 +376,7 @@ void guiMain(evt_t evt)
       TRACE("Popup Menu started");
       inPopupMenu = true;
     }
-    const char * result = displayPopupMenu(evt);
+    const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
       popupMenuHandler(result);

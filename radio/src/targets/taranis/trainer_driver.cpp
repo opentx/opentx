@@ -164,16 +164,25 @@ void init_cppm_on_heartbeat_capture(void)
 {
   EXTERNAL_MODULE_ON();
 
-  configure_pins(HEARTBEAT_GPIO_PIN, PIN_PERIPHERAL | PIN_PORTC | PIN_PER_2);
+  GPIO_PinAFConfig(HEARTBEAT_GPIO, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF_CAPTURE);
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
 
   TRAINER_TIMER->ARR = 0xFFFF;
-  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1;               // 0.5uS
+  TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
   TRAINER_TIMER->CR2 = 0;
   TRAINER_TIMER->CCMR1 = TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0;
   TRAINER_TIMER->CCER = TIM_CCER_CC2E;
-  TRAINER_TIMER->SR &= ~TIM_SR_CC2IF;                             // Clear flag
+  TRAINER_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   TRAINER_TIMER->DIER |= TIM_DIER_CC2IE;
   TRAINER_TIMER->CR1 = TIM_CR1_CEN;
+
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
 }
@@ -196,7 +205,7 @@ void init_sbus_on_heartbeat_capture()
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  GPIO_PinAFConfig(GPIOC, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF);
+  GPIO_PinAFConfig(GPIOC, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF_SBUS);
 
   GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -240,7 +249,6 @@ void init_sbus_on_heartbeat_capture()
 
 void stop_sbus_on_heartbeat_capture(void)
 {
-  configure_pins(HEARTBEAT_GPIO_PIN, PIN_INPUT | PIN_PORTC);
   NVIC_DisableIRQ(HEARTBEAT_USART_IRQn);
 
   if (!IS_EXTERNAL_MODULE_PRESENT()) {

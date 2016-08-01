@@ -218,4 +218,14 @@ const char * writeScreenshot();
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
+inline display_t getPixel(unsigned int x, unsigned int y)
+{
+  if (x>=LCD_W || y>=LCD_H) {
+    return 0;
+  }
+
+  display_t * p = &displayBuf[y / 2 * LCD_W + x];
+  return (y & 1) ? (*p >> 4) : (*p & 0x0F);
+}
+
 #endif // _LCD_H_

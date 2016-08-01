@@ -503,7 +503,7 @@ enum {
   MENU_OFFSET_EXTERNAL
 };
 extern uint8_t popupMenuOffsetType;
-const char * displayPopupMenu(evt_t event);
+const char * runPopupMenu(evt_t event);
 extern void (*popupMenuHandler)(const char * result);
 
 #define TEXT_FILENAME_MAXLEN           40

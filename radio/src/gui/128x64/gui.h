@@ -39,21 +39,38 @@ extern const pm_uchar sticks[] PROGMEM;
 #define X0                             (LCD_W-WCHART-2)
 #define Y0                             (LCD_H/2)
 
-#if LCD_W >= 212
-  #define MIXES_2ND_COLUMN             (18*FW)
-#else
-  #define MIXES_2ND_COLUMN             (12*FW)
-#endif
+#define MIXES_2ND_COLUMN               (12*FW)
 
 void drawSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
+void drawProgressBar(const char * label)
+{
+  // TODO
+}
+void updateProgressBar(int num, int den)
+{
+  // TODO
+}
+void drawSleepBitmap()
+{
+  // TODO
+}
 
 #if !defined(CPUM64)
   void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 #endif
 
+
 #define SET_SCROLLBAR_X(x)
 #define LOAD_MODEL_BITMAP()
+
+#define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
+#if defined(FRSKY)
+#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuTelemetryFrsky
+#else
+#define IS_TELEMETRY_VIEW_DISPLAYED()  false
+#endif
+#define IS_OTHER_VIEW_DISPLAYED()      false
 
 #endif // _GUI_H_

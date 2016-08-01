@@ -61,8 +61,8 @@ struct MenuItem {
 void drawSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-void displayMenuBar(const MenuItem *menu, int index);
-void drawProgressBar(const char *label);
+void displayMenuBar(const MenuItem * menu, int index);
+void drawProgressBar(const char * label);
 void updateProgressBar(int num, int den);
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 void drawColumnHeader(const char * const * headers, uint8_t index);
@@ -79,5 +79,9 @@ FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModes
 #else
   #define displayFlightModes(...)
 #endif
+
+#define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
+#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuTelemetryFrsky
+#define IS_OTHER_VIEW_DISPLAYED()      (menuHandlers[0] == menuMainViewChannelsMonitor || menuHandlers[0] == menuChannelsView)
 
 #endif // _GUI_H_

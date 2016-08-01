@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 const pm_char * warningText = NULL;
 const pm_char * warningInfoText;
@@ -33,7 +33,7 @@ int16_t         warningInputValueMin;
 int16_t         warningInputValueMax;
 #endif
 
-void displayBox()
+void drawMessageBox()
 {
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
@@ -48,7 +48,7 @@ void displayBox()
 void displayPopup(const pm_char * pstr)
 {
   warningText = pstr;
-  displayBox();
+  drawMessageBox();
   warningText = NULL;
   lcdRefresh();
 }
@@ -89,7 +89,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 void displayWarning(uint8_t event)
 {
   warningResult = false;
-  displayBox();
+  drawMessageBox();
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
@@ -133,7 +133,7 @@ uint16_t popupMenuNoItems = 0;
 uint8_t popupMenuFlags = 0;
 uint16_t popupMenuOffset = 0;
 void (*popupMenuHandler)(const char *result);
-const char * displayPopupMenu(uint8_t event)
+const char * runPopupMenu(uint8_t event)
 {
   const char * result = NULL;
 

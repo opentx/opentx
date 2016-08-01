@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #if !defined(SIMU)
 bool dacIdle = true;
@@ -50,7 +50,13 @@ void dacInit()
 {
   dacTimerInit();
 
-  configure_pins( GPIO_Pin_4, PIN_ANALOG | PIN_PORTA ) ;
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = AUDIO_OUTPUT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(AUDIO_OUTPUT_GPIO, &GPIO_InitStructure);
 
   // Chan 7, 16-bit wide, Medium priority, memory increments
   AUDIO_DMA_Stream->CR &= ~DMA_SxCR_EN ;              // Disable DMA

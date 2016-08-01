@@ -129,7 +129,7 @@ void perMain()
     if (warn) DISPLAY_WARNING(evt);
 #if defined(NAVIGATION_MENUS)
     if (popupMenuActive) {
-      const char * result = displayPopupMenu(evt);
+      const char * result = runPopupMenu(evt);
       if (result) {
         popupMenuHandler(result);
       }
