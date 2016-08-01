@@ -125,12 +125,6 @@ bool menuTextView(evt_t event)
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, s_text_screen[i]);
   }
 
-  char * title = s_text_file;
-#if defined(SIMU)
-  if (!strncmp(title, "./", 2)) title += 2;
-#endif
-//   lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
-
   drawVerticalScrollbar(LCD_W-5, 50, 195, menuVerticalOffset, lines_count, NUM_BODY_LINES);
 
   return true;
