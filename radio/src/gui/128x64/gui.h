@@ -41,15 +41,15 @@ extern const pm_uchar sticks[] PROGMEM;
 void drawSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
-void drawProgressBar(const char * label)
+inline void drawProgressBar(const char * label)
 {
   // TODO
 }
-void updateProgressBar(int num, int den)
+inline void updateProgressBar(int num, int den)
 {
   // TODO
 }
-void drawSleepBitmap()
+inline void drawSleepBitmap()
 {
   // TODO
 }
