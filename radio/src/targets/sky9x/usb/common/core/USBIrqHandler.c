@@ -39,7 +39,7 @@
 //------------------------------------------------------------------------------
 #include <exceptions.h>
 
-#include "../../../board.h"
+#include "radio/src/targets/sky9x/board_lowlevel.h"
 #include "../../../usb/device/core/USBD.h"
 
 //------------------------------------------------------------------------------

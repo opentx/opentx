@@ -155,7 +155,7 @@ void getSwitchesPosition(bool startup)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#if defined(REV9E)
+#if defined(PCBX9E)
 tmr10ms_t switchesMidposStart[16];
 #else
 tmr10ms_t switchesMidposStart[6]; // TODO constant
@@ -242,7 +242,7 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(5, SW_SG);
   CHECK_2POS(SW_SH);
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   CHECK_3POS(6, SW_SI);
   CHECK_3POS(7, SW_SJ);
   CHECK_3POS(8, SW_SK);

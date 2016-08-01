@@ -48,7 +48,7 @@ void handleUsbConnection()
     */
 
 #if defined(USB_MASS_STORAGE)
-    opentxClose();
+    opentxClose(false);
     usbPluggedIn();
 #endif
   }
@@ -456,7 +456,7 @@ void perMain()
   }
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
+#if defined(PCBX9E) && !defined(SIMU)
   toplcdRefreshStart();
   setTopFirstTimer(getValue(MIXSRC_FIRST_TIMER+g_model.toplcdTimer));
   setTopSecondTimer(g_eeGeneral.globalTimer + sessionTimer);
@@ -466,7 +466,7 @@ void perMain()
   toplcdRefreshEnd();
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E) && !defined(SIMU)
+#if defined(PCBX9E) && !defined(SIMU)
   bluetoothWakeup();
 #endif
 

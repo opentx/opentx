@@ -73,7 +73,7 @@
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     #define NUM_POTS           8
     #define NUM_XPOTS          4
   #else
@@ -207,7 +207,7 @@ enum CurveType {
 
 #if defined(PCBFLAMENCO)
   #define NUM_SWITCHES                 5
-#elif defined(PCBTARANIS) && defined(REV9E)
+#elif defined(PCBX9E)
   #define NUM_SWITCHES                 18 // yes, it's a lot!
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   #define NUM_SWITCHES                 8
@@ -606,7 +606,7 @@ enum SwitchSources {
   SWSRC_SH1,
   SWSRC_SH2,
   SWSRC_TRAINER = SWSRC_SH2,
-#if defined(REV9E)
+#if defined(PCBX9E)
   SWSRC_SI0,
   SWSRC_SI1,
   SWSRC_SI2,
@@ -773,13 +773,13 @@ enum MixSources {
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     MIXSRC_POT4,                        LUA_EXPORT("s4", "Potentiometer 4 (X9E only)")
   #endif
   MIXSRC_FIRST_SLIDER,
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  #if defined(REV9E)
+  #if defined(PCBX9E)
     MIXSRC_SLIDER3,                     LUA_EXPORT("lcs", "Left center slider (X9E only)")
     MIXSRC_SLIDER4,                     LUA_EXPORT("rcs", "Right center slider (X9E only)")
     MIXSRC_LAST_POT = MIXSRC_SLIDER4,
@@ -851,7 +851,7 @@ enum MixSources {
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
-#if defined(REV9E)
+#if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I (X9E only)")
   MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J (X9E only)")
   MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K (X9E only)")

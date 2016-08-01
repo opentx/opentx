@@ -33,7 +33,7 @@ uint32_t readKeys()
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
 
-#if !defined(REV9E) || defined(SIMU)
+#if !defined(PCBX9E) || defined(SIMU)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
@@ -81,7 +81,7 @@ uint8_t keyDown()
   return readKeys();
 }
 
-#if defined(REV9E)
+#if defined(PCBX9E)
 uint32_t Rotary_position;
 rotenc_t rotencValue;
 void checkRotaryEncoder()
@@ -116,7 +116,7 @@ void readKeysAndTrims()
     keys[enuk++].input(in & i);
   }
 
-#if defined(REV9E) && !defined(SIMU)
+#if defined(PCBX9E) && !defined(SIMU)
   #define X9E_RE_TIMEOUT 5
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (rotencValue / 2);
@@ -157,7 +157,7 @@ void readKeysAndTrims()
   }
 }
 
-#if defined(REV9E)
+#if defined(PCBX9E)
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 2: \
       xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
@@ -217,7 +217,7 @@ bool switchState(EnumKeys enuk)
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
-#if defined(REV9E)
+#if defined(PCBX9E)
     ADD_3POS_CASE(I, 8);
     ADD_3POS_CASE(J, 9);
     ADD_3POS_CASE(K, 10);

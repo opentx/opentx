@@ -22,7 +22,7 @@
 #ifndef _SDIO_SD_H_
 #define _SDIO_SD_H_
 
-#include "../horus/board_horus.h"
+#include "board.h"
 
 #ifdef __cplusplus
  extern "C" {
@@ -309,12 +309,6 @@ typedef struct
 #define SD_CMD_SD_APP_CHANGE_SECURE_AREA           ((uint8_t)49) /*!< For SD Card only */
 #define SD_CMD_SD_APP_SECURE_WRITE_MKB             ((uint8_t)48) /*!< For SD Card only */
 
-/* Uncomment the following line to select the SDIO Data transfer mode */
-#if !defined (SD_DMA_MODE) && !defined (SD_POLLING_MODE)
-#define SD_DMA_MODE                                ((uint32_t)0x00000000)
-/*#define SD_POLLING_MODE                            ((uint32_t)0x00000002)*/
-#endif
-
 /**
   * @brief  SD detection on its memory slot
   */
@@ -381,24 +375,4 @@ SD_Error SD_WaitWriteOperation(void);
 extern SD_CardInfo SDCardInfo;
 
 #endif // _SDIO_SD_H_
-/**
-  * @}
-  */
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

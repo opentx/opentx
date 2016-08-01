@@ -405,7 +405,7 @@ const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 const pm_char STR_SAVEMODEL[] PROGMEM = TR_SAVEMODEL;
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
 const pm_char STR_POWEROFF[] PROGMEM = TR_POWEROFF;
 #endif
 

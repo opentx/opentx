@@ -620,7 +620,7 @@ PACK(typedef struct {
 
   TelemetrySensor telemetrySensors[MAX_SENSORS];
 
-  TARANIS_REV9E_FIELD(uint8_t toplcdTimer)
+  TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;
 
 int ConvertTelemetrySource_216_to_217(int source)
@@ -668,7 +668,7 @@ int ConvertSwitch_217_to_218(int swtch)
 
 int ConvertSource_216_to_217(int source)
 {
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
   // SI to SR switches added
   if (source >= MIXSRC_SI)
     source += 10;
@@ -773,8 +773,8 @@ PACK(typedef struct {
   TARANIS_FIELD(char anaNames[NUM_STICKS + NUM_POTS][LEN_ANA_NAME])
   N_TARANIS_FIELD(CustomFunctionData_v216 customFn[NUM_CFN])
 
-  TARANIS_REV9E_FIELD(uint8_t bluetoothEnable)
-  TARANIS_REV9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME])
+  TARANIS_PCBX9E_FIELD(uint8_t bluetoothEnable)
+  TARANIS_PCBX9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME])
 }) RadioData_v216;
 
 void ConvertRadioData_216_to_217(RadioData & settings)
@@ -843,7 +843,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
   memcpy(settings.anaNames, settings_v217->anaNames, sizeof(settings.anaNames));
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
   settings.bluetoothEnable = settings_v217->bluetoothEnable;
   memcpy(settings.bluetoothName, settings_v217->bluetoothName, sizeof(settings.bluetoothName));
 #endif
@@ -1199,7 +1199,7 @@ void ConvertModel_217_to_218(ModelData & model)
     if (newModel.telemetrySensors[i].unit > UNIT_WATTS)
       newModel.telemetrySensors[i].unit += 1;
   }
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
   newModel.toplcdTimer = oldModel.toplcdTimer;
 #endif
 }

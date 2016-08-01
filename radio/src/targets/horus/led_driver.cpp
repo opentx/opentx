@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../horus/board_horus.h"
+#include "board.h"
 
 void ledOn()
 {

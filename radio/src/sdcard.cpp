@@ -326,7 +326,7 @@ uint32_t sdGetNoSectors()
 
 uint32_t sdGetSize()
 {
-  return (sdGetNoSectors() * 512) / 1000000;
+  return (sdGetNoSectors() * BLOCK_SIZE) / 1000000;
 }
 
 uint32_t sdGetFreeSectors()

@@ -40,8 +40,8 @@
 
 #include "opentx.h"
 
-#if defined(PCBTARANIS)
-  #pragma message("Templates with virtual inputs (FrSky Taranis) are not implemented!")
+#if defined(VIRTUALINPUTS)
+  #pragma message("Templates with VIRTUALINPUTS enabled are not implemented!")
 #endif
 
 MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)

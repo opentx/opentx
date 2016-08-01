@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "board_taranis.h"
+#include "board.h"
 
 /**
 **********send command to lcd**************
@@ -39,7 +39,7 @@
     return	readValue;
 }*/
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
 void AspiCmd(uint8_t Command_Byte)
 {
   LCD_A0_LOW() ;

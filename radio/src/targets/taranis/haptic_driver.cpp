@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
-#if defined(REVPLUS)
+#if defined(PCBX9E) || defined(PCBX9DP)
 void hapticOff(void)
 {
   HAPTIC_TIMER->CCR1 = 0;
@@ -58,7 +58,7 @@ void hapticInit(void)
 
 #else
 
-// No PWM before REVPLUS
+// No PWM before X9D+
 void hapticInit(void)
 {
   GPIO_InitTypeDef GPIO_InitStructure;

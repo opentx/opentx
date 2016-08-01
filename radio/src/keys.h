@@ -50,6 +50,7 @@ enum EnumKeys {
   KEY_MINUS,
 #else
   KEY_MENU,
+  KEY_ENTER=KEY_MENU,
   KEY_EXIT,
   KEY_DOWN,
   KEY_UP,
@@ -129,7 +130,7 @@ enum EnumKeys {
   SW_SH0,
   SW_SH1,
   SW_SH2,
-#if defined(REV9E)
+#if defined(PCBX9E)
   SW_SI0,
   SW_SI1,
   SW_SI2,

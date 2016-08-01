@@ -175,8 +175,9 @@ void per10ms()
 #endif
 
 #if defined(FRSKY) || defined(JETI)
-  if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]))
+  if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
     telemetryInterrupt10ms();
+  }
 #endif
 
   // These moved here from evalFlightModeMixes() to improve beep trigger reliability.
@@ -265,7 +266,7 @@ void generalDefault()
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
   // NI-MH 9.6V
   g_eeGeneral.vBatWarn = 87;
   g_eeGeneral.vBatMin = -5;
@@ -312,7 +313,7 @@ void generalDefault()
   }
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
+#if defined(PCBX9E)
   const int8_t defaultName[] = { 20, -1, -18, -1, -14, -9, -19 };
   memcpy(g_eeGeneral.bluetoothName, defaultName, sizeof(defaultName));
 #endif
@@ -1950,31 +1951,29 @@ void opentxStart()
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
-void opentxClose()
+void opentxClose(uint8_t shutdown)
 {
   TRACE("opentxClose()");
 
+  if (shutdown) {
 #if defined(CPUARM)
-  watchdogSetTimeout(2000/*20s*/);
+    watchdogSetTimeout(2000/*20s*/);
 #endif
-  pausePulses();   // stop mixer task to disable trims processing while in shutdown
-
-  AUDIO_BYE();
-
+    pausePulses();   // stop mixer task to disable trims processing while in shutdown
+    AUDIO_BYE();
 #if defined(FRSKY)
-  // TODO needed? telemetryEnd();
+    // TODO needed? telemetryEnd();
 #endif
-
 #if defined(LUA)
-  luaClose();
+    luaClose();
 #endif
-
+#if defined(HAPTIC)
+    hapticOff();
+#endif
+  }
+  
 #if defined(SDCARD)
   closeLogs();
-#endif
-
-#if defined(HAPTIC)
-  hapticOff();
 #endif
 
   saveTimers();
@@ -2022,7 +2021,6 @@ void opentxClose()
   while (IS_PLAYING(ID_PLAY_BYE)) {
     CoTickDelay(10);
   }
-
   CoTickDelay(50);
 #endif
 
@@ -2592,7 +2590,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   startPulses();
 
-  wdt_enable(WDT_500MS);
+  wdt_enable(WDTO_500MS);
 }
 
 #if defined(SIMU)

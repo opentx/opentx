@@ -29,8 +29,6 @@
 #include "opentx.h"
 #include "sdio_sd.h"
 
-#define BLOCK_SIZE            512 /* Block Size in Bytes */
-
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */
 /*-----------------------------------------------------------------------*/
@@ -112,15 +110,10 @@ uint32_t sdReadRetries = 0;
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 
-#if !defined(DISK_CACHE)
-  #define __disk_read     disk_read
-  #define __disk_write    disk_write
-#endif
-
-DRESULT __disk_read (
+DRESULT __disk_read(
   BYTE drv,               /* Physical drive nmuber (0..) */
-  BYTE *buff,             /* Data buffer to store read data */
-  DWORD sector,   				/* Sector address (LBA) */
+  BYTE * buff,            /* Data buffer to store read data */
+  DWORD sector,   	  /* Sector address (LBA) */
   UINT count              /* Number of sectors to read (1..255) */
 )
 {
@@ -134,10 +127,10 @@ DRESULT __disk_read (
     return RES_NOTRDY;
   }
 
-  if ((DWORD)buff < 0x20000000 /*|| (DWORD)buff >= 0x20030000*/ || ((DWORD)buff & 3)) {
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
     TRACE("disk_read bad alignment (%p)", buff);
-    while(count--) {
-      res = disk_read(drv, (BYTE *)scratch, sector++, 1);
+    while (count--) {
+      res = __disk_read(drv, (BYTE *)scratch, sector++, 1);
 
       if (res != RES_OK) {
         TRACE("disk_read() status=%d", res);
@@ -162,7 +155,6 @@ DRESULT __disk_read (
       Status = SD_ReadMultiBlocks(buff, sector, BLOCK_SIZE, count); // 4GB Compliant
     }
 
-#if defined(SD_DMA_MODE)
     if (Status == SD_OK) {
       SDTransferState State;
 
@@ -183,7 +175,6 @@ DRESULT __disk_read (
       TRACE("Status(ReadBlock)=%d", Status);
       res = RES_ERROR;
     }
-#endif
 
     if (res == RES_OK)
       break;
@@ -198,10 +189,10 @@ DRESULT __disk_read (
 /* Write Sector(s)                                                       */
 
 #if _READONLY == 0
-DRESULT __disk_write (
+DRESULT __disk_write(
   BYTE drv,                       /* Physical drive nmuber (0..) */
-  const BYTE *buff,       /* Data to be written */
-  DWORD sector,           /* Sector address (LBA) */
+  const BYTE *buff,               /* Data to be written */
+  DWORD sector,                   /* Sector address (LBA) */
   UINT count                      /* Number of sectors to write (1..255) */
 )
 {
@@ -213,12 +204,12 @@ DRESULT __disk_write (
   if (SD_Detect() != SD_PRESENT)
     return(RES_NOTRDY);
 
-  if ((DWORD)buff < 0x20000000 /*|| (DWORD)buff >= 0x20030000*/ || ((DWORD)buff & 3)) {
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
     TRACE("disk_write bad alignment (%p)", buff);
     while(count--) {
       memcpy(scratch, buff, BLOCK_SIZE);
 
-      res = disk_write(drv, (BYTE *)scratch, sector++, 1);
+      res = __disk_write(drv, (BYTE *)scratch, sector++, 1);
 
       if (res != RES_OK)
         break;
@@ -235,8 +226,7 @@ DRESULT __disk_write (
     Status = SD_WriteMultiBlocks((uint8_t *)buff, sector, BLOCK_SIZE, count); // 4GB Compliant
   }
 
-  if (Status == SD_OK)
-  {
+  if (Status == SD_OK) {
     SDTransferState State;
 
     Status = SD_WaitWriteOperation(); // Check if the Transfer is finished
@@ -254,9 +244,6 @@ DRESULT __disk_write (
   return res;
 }
 #endif /* _READONLY */
-
-
-
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */

@@ -181,16 +181,16 @@
   #define CASE_GVARS(x)
 #endif
 
-#if defined(PCBTARANIS) && defined(REVPLUS)
-  #define CASE_REVPLUS(x) x,
+#if defined(PCBX9DP) || defined(PCBX9E)
+  #define CASE_PCBX9E_PCBX9DP(x) x,
 #else
-  #define CASE_REVPLUS(x)
+  #define CASE_PCBX9E_PCBX9DP(x)
 #endif
 
-#if defined(PCBTARANIS) && defined(REV9E)
-  #define CASE_REV9E(x) x,
+#if defined(PCBX9E)
+  #define CASE_PCBX9E(x) x,
 #else
-  #define CASE_REV9E(x)
+  #define CASE_PCBX9E(x)
 #endif
 
 #if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
@@ -237,21 +237,7 @@
 #define RESXul     1024ul
 #define RESXl      1024l
 
-#if defined(PCBHORUS)
-  #include "targets/horus/board_horus.h"
-#elif defined(PCBFLAMENCO)
-  #include "targets/flamenco/board_flamenco.h"
-#elif defined(PCBTARANIS)
-  #include "targets/taranis/board_taranis.h"
-#elif defined(PCBSKY9X)
-  #include "targets/sky9x/board_sky9x.h"
-#elif defined(PCBGRUVIN9X)
-  #include "targets/gruvin9x/board_gruvin9x.h"
-#elif defined(PCBMEGA2560)
-  #include "targets/mega2560/board_mega2560.h"
-#else
-  #include "targets/9x/board_stock.h"
-#endif
+#include "board.h"
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
@@ -322,12 +308,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_POT_AVAILABLE(x)       (true)
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (false)
-#elif defined(PCBTARANIS) && defined(REV9E)
+#elif defined(PCBX9E)
   #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
   #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER1 && IS_SLIDER_AVAILABLE(x)))
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
-#elif defined(PCBTARANIS) && defined(REVPLUS)
+#elif defined(PCBX9DP)
   #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_NONE)
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
@@ -344,7 +330,7 @@ void memswap(void * a, void * b, uint8_t size);
 #define IS_POT(x)                      ((x)>=POT1 && (x)<=POT_LAST)
 #define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 
-#if defined(PCBFLAMENCO) || defined(PCBHORUS) || (defined(PCBTARANIS) && defined(REV9E))
+#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E)
   #define PWR_BUTTON_DELAY
   #define PWR_PRESS_SHUTDOWN           300 // 3s
 #endif
@@ -499,7 +485,7 @@ typedef struct {
 } CustomFunctionsContext;
 
 #include "strhelpers.h"
-#include "gui/gui.h"
+#include "gui.h"
 
 #if defined(TEMPLATES)
   #include "templates.h"
@@ -1437,9 +1423,9 @@ extern uint8_t requiredSpeakerVolume;
 extern uint8_t requestScreenshot;
 #endif
 
-extern void checkBattery();
-extern void opentxClose();
-extern void opentxInit();
+void checkBattery();
+void opentxClose(uint8_t shutdown=true);
+void opentxInit();
 
 #if defined(PCBHORUS) && !defined(SIMU)
   #define LED_ERROR_BEGIN()            ledRed()
@@ -1769,7 +1755,5 @@ extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
   #define JITTER_MEASURE_ACTIVE()   (0)
 #endif
 #endif
-
-#define WDT_500MS 500
 
 #endif // _OPENTX_H_

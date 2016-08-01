@@ -19,7 +19,7 @@
  */
 
 #include "pwr.h"
-#include "board_taranis.h"
+#include "board.h"
 
 void pwrInit()
 {
@@ -70,7 +70,7 @@ void pwrOff()
 
   while(1) {
     wdt_reset();
-#if defined(REV9E)
+#if defined(PCBX9E)
     // 9E needs watchdog reset because CPU is still running while
     // the power key is held pressed by the user.
     // The power key should be released by now, but we must make sure
@@ -90,7 +90,7 @@ void pwrOff()
   // this function must not return!
 }
 
-#if defined(REV9E)
+#if defined(PCBX9E)
 uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
@@ -102,7 +102,7 @@ uint32_t pwroffPressed()
 }
 #endif
 
-#if !defined(REV9E)
+#if !defined(PCBX9E)
 uint32_t pwrCheck()
 {
   if (!pwroffPressed())

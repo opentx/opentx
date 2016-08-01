@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
-#include "../../thirdparty/FatFs/diskio.h"
-#include "../../thirdparty/FatFs/ff.h"
+#include "opentx.h"
+#include "FatFs/diskio.h"
+#include "FatFs/ff.h"
 
 /* Definitions for MMC/SDC command */
 #define CMD0    (0x40+0)        /* GO_IDLE_STATE */
@@ -628,12 +628,35 @@ DSTATUS disk_status (
 }
 
 
+#if defined(STM32F4) && !defined(BOOT)
+DWORD scratch[BLOCK_SIZE / 4] __DMA;
+#endif
+
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 /*-----------------------------------------------------------------------*/
 
-int8_t SD_ReadSectors(uint8_t *buff, uint32_t sector, uint32_t count)
+int8_t SD_ReadSectors(uint8_t * buff, uint32_t sector, uint32_t count)
 {
+#if defined(STM32F4) && !defined(BOOT)
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
+    TRACE("disk_read bad alignment (%p)", buff);
+    while (count--) {
+      int8_t res = SD_ReadSectors((BYTE *)scratch, sector++, 1);
+
+      if (res != 0) {
+        return res;
+      }
+
+      memcpy(buff, scratch, BLOCK_SIZE);
+
+      buff += BLOCK_SIZE;
+    }
+
+    return 0;
+  }
+#endif
+
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
   if (count == 1) {       /* Single block read */
@@ -686,8 +709,27 @@ DRESULT disk_read (
 /* Write Sector(s)                                                       */
 /*-----------------------------------------------------------------------*/
 
-int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
+int8_t SD_WriteSectors(const uint8_t * buff, uint32_t sector, uint32_t count)
 {
+#if defined(STM32F4) && !defined(BOOT)
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
+    TRACE("disk_write bad alignment (%p)", buff);
+    while (count--) {
+      memcpy(scratch, buff, BLOCK_SIZE);
+    
+      int8_t res = SD_WriteSectors((const uint8_t *)scratch, sector++, 1);
+
+      if (res != 0) {
+        return res;
+      }
+
+      buff += BLOCK_SIZE;
+    }
+
+    return 0;
+  }
+#endif
+    
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
   if (count == 1) {       /* Single block write */
@@ -720,8 +762,6 @@ int8_t SD_WriteSectors(const uint8_t *buff, uint32_t sector, uint32_t count)
   return count ? -1 : 0;
 }
 
-#if _FS_READONLY == 0
-
 DRESULT disk_write (
         BYTE drv,                       /* Physical drive number (0) */
         const BYTE *buff,       /* Pointer to the data to be written */
@@ -736,8 +776,6 @@ DRESULT disk_write (
   TRACE_SD_CARD_EVENT((res != 0), sd_disk_write, (count << 24) + (sector & 0x00FFFFFF));
   return (res != 0) ? RES_ERROR : RES_OK;
 }
-#endif /* _READONLY == 0 */
-
 
 
 /*-----------------------------------------------------------------------*/
@@ -798,7 +836,8 @@ DRESULT disk_ioctl (
         if ((csd[0] >> 6) == 1) {       /* SDC version 2.00 */
           csize = csd[9] + ((WORD)csd[8] << 8) + 1;
           *(DWORD*)buff = (DWORD)csize << 10;
-        } else {                                        /* SDC version 1.XX or MMC*/
+        }
+        else {                                        /* SDC version 1.XX or MMC*/
           n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
           csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
           *(DWORD*)buff = (DWORD)csize << (n - 9);

@@ -22,9 +22,9 @@
 #define _DISK_CACHE_H_
 
 #include "diskio.h"
+#include "sdio_sd.h"
 
 // tunable parameters
-#define BLOCK_SIZE                512   // sector Size in Bytes
 #define DISK_CACHE_BLOCKS_NUM       8   // no cache blocks
 #define DISK_CACHE_BLOCK_SECTORS   16   // no sectors
 

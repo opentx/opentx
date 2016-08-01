@@ -666,7 +666,7 @@ static int8_t SCSI_ProcessRead (uint8_t lun)
 {
   uint32_t len;
   
-  len = MIN(SCSI_blk_len , MSC_MEDIA_PACKET); 
+  len = MIN(SCSI_blk_len , MSC_MEDIA_PACKET);
   
   if( USBD_STORAGE_fops->Read(lun ,
                               MSC_BOT_Data, 

@@ -1133,9 +1133,6 @@ OPTIMIZE("O0") SD_Error SD_SelectDeselect(uint32_t addr)
 OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize)
 {
   SD_Error errorstatus = SD_OK;
-#if defined (SD_POLLING_MODE)
-  uint32_t count = 0, *tempbuff = (uint32_t *)readbuff;
-#endif
 
   TransferError = SD_OK;
   TransferEnd = 0;
@@ -1143,12 +1140,10 @@ OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint1
   DMAEndOfTransfer = 0;
 
   SDIO->DCTRL = 0x0;
-
-#if defined (SD_DMA_MODE)
+  
   SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
   SDIO_DMACmd(ENABLE);
   SD_LowLevel_DMA_RxConfig((uint32_t *)readbuff, BlockSize);
-#endif
   
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
     BlockSize = 512;
@@ -1192,58 +1187,6 @@ OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint1
   {
     return(errorstatus);
   }
-
-#if defined (SD_POLLING_MODE)
-  /*!< In case of single block transfer, no need of stop transfer at all.*/
-  /*!< Polling mode */
-  while (!(SDIO->STA &(SDIO_FLAG_RXOVERR | SDIO_FLAG_DCRCFAIL | SDIO_FLAG_DTIMEOUT | SDIO_FLAG_DBCKEND | SDIO_FLAG_STBITERR)))
-  {
-    if (SDIO_GetFlagStatus(SDIO_FLAG_RXFIFOHF) != RESET)
-    {
-      for (count = 0; count < 8; count++)
-      {
-        *(tempbuff + count) = SDIO_ReadData();
-      }
-      tempbuff += 8;
-    }
-  }
-
-  if (SDIO_GetFlagStatus(SDIO_FLAG_DTIMEOUT) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_DTIMEOUT);
-    errorstatus = SD_DATA_TIMEOUT;
-    return(errorstatus);
-  }
-  else if (SDIO_GetFlagStatus(SDIO_FLAG_DCRCFAIL) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_DCRCFAIL);
-    errorstatus = SD_DATA_CRC_FAIL;
-    return(errorstatus);
-  }
-  else if (SDIO_GetFlagStatus(SDIO_FLAG_RXOVERR) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_RXOVERR);
-    errorstatus = SD_RX_OVERRUN;
-    return(errorstatus);
-  }
-  else if (SDIO_GetFlagStatus(SDIO_FLAG_STBITERR) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_STBITERR);
-    errorstatus = SD_START_BIT_ERR;
-    return(errorstatus);
-  }
-  count = SD_DATATIMEOUT;
-  while ((SDIO_GetFlagStatus(SDIO_FLAG_RXDAVL) != RESET) && (count > 0))
-  {
-    *tempbuff = SDIO_ReadData();
-    tempbuff++;
-    count--;
-  }
-
-  /*!< Clear all the static flags */
-  SDIO_ClearFlag(SDIO_STATIC_FLAGS);
-
-#endif
 
   return(errorstatus);
 }
@@ -1394,22 +1337,15 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
 {
   SD_Error errorstatus = SD_OK;
 
-#if defined (SD_POLLING_MODE)
-  uint32_t bytestransferred = 0, count = 0, restwords = 0;
-  uint32_t *tempbuff = (uint32_t *)writebuff;
-#endif
-
   TransferError = SD_OK;
   TransferEnd = 0;
   StopCondition = 0;
 
   SDIO->DCTRL = 0x0;
-
-#if defined (SD_DMA_MODE)
+  
   SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
   SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, BlockSize);
   SDIO_DMACmd(ENABLE);
-#endif
 
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
     BlockSize = 512;
@@ -1453,58 +1389,7 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
   SDIO_DataConfig(&SDIO_DataInitStructure);
-
-  /*!< In case of single data block transfer no need of stop command at all */
-#if defined (SD_POLLING_MODE)
-  while (!(SDIO->STA & (SDIO_FLAG_DBCKEND | SDIO_FLAG_TXUNDERR | SDIO_FLAG_DCRCFAIL | SDIO_FLAG_DTIMEOUT | SDIO_FLAG_STBITERR)))
-  {
-    if (SDIO_GetFlagStatus(SDIO_FLAG_TXFIFOHE) != RESET)
-    {
-      if ((512 - bytestransferred) < 32)
-      {
-        restwords = ((512 - bytestransferred) % 4 == 0) ? ((512 - bytestransferred) / 4) : (( 512 -  bytestransferred) / 4 + 1);
-        for (count = 0; count < restwords; count++, tempbuff++, bytestransferred += 4)
-        {
-          SDIO_WriteData(*tempbuff);
-        }
-      }
-      else
-      {
-        for (count = 0; count < 8; count++)
-        {
-          SDIO_WriteData(*(tempbuff + count));
-        }
-        tempbuff += 8;
-        bytestransferred += 32;
-      }
-    }
-  }
-  if (SDIO_GetFlagStatus(SDIO_FLAG_DTIMEOUT) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_DTIMEOUT);
-    errorstatus = SD_DATA_TIMEOUT;
-    return(errorstatus);
-  }
-  else if (SDIO_GetFlagStatus(SDIO_FLAG_DCRCFAIL) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_DCRCFAIL);
-    errorstatus = SD_DATA_CRC_FAIL;
-    return(errorstatus);
-  }
-  else if (SDIO_GetFlagStatus(SDIO_FLAG_TXUNDERR) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_TXUNDERR);
-    errorstatus = SD_TX_UNDERRUN;
-    return(errorstatus);
-  }
-  else if (SDIO_GetFlagStatus(SDIO_FLAG_STBITERR) != RESET)
-  {
-    SDIO_ClearFlag(SDIO_FLAG_STBITERR);
-    errorstatus = SD_START_BIT_ERR;
-    return(errorstatus);
-  }
-#endif
-
+  
   return(errorstatus);
 }
 

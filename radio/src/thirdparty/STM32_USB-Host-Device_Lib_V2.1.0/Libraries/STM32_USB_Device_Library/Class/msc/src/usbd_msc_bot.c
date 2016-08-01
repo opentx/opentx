@@ -78,7 +78,9 @@ uint8_t              MSC_BOT_Status;
     #pragma data_alignment=4   
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint8_t              MSC_BOT_Data[MSC_MEDIA_PACKET] __ALIGN_END ;
+
+#include "definitions.h"
+uint8_t              MSC_BOT_Data[MSC_MEDIA_PACKET] __DMA;
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */

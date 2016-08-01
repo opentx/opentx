@@ -69,9 +69,9 @@ Idle task stack size(word).
 /*!< 
 System frequency (Hz).	                 	         
 */    
-#if defined(PCBFLAMENCO) || (defined(PCBTARANIS) && defined(REV9E)) || defined(PCBHORUS)
+#if defined(STM32F4)
 #define CFG_CPU_FREQ            (168000000)
-#elif defined(PCBTARANIS)
+#elif defined(STM32)
 #define CFG_CPU_FREQ            (120000000)
 #else
 #define CFG_CPU_FREQ            (36000000)  // TODO check if really correct for sky9x?

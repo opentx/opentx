@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 #ifndef SIMU
 
@@ -26,12 +26,6 @@ extern "C" {
 #include "usb/device/massstorage/MSDDriver.h"
 extern unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID);
 }
-
-/** Size of one block in bytes. */
-#define BLOCK_SIZE          512
-
-/** Size of the MSD IO buffer in bytes (6K, more the better). */
-#define MSD_BUFFER_SIZE     (12*BLOCK_SIZE)
 
 /** LUN read/write buffer. */
 unsigned char msdBuffer[MSD_BUFFER_SIZE];

@@ -24,9 +24,6 @@
 #if defined(SIMU) && !defined(SIMU_DISKIO)
   #define __disk_read(...)    (RES_OK)
   #define __disk_write(...)   (RES_OK)
-#else
-  extern DRESULT __disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count);
-  extern DRESULT __disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count);
 #endif
 
 #if 0     // set to 1 to enable traces
@@ -37,13 +34,13 @@
 
 DiskCache diskCache;
 
-DiskCacheBlock::DiskCacheBlock() 
-  : startSector(0), 
+DiskCacheBlock::DiskCacheBlock():
+  startSector(0),
   endSector(0) 
 {
 }
 
-bool DiskCacheBlock::read(BYTE* buff, DWORD sector, UINT count)
+bool DiskCacheBlock::read(BYTE * buff, DWORD sector, UINT count)
 {
   if (sector >= startSector && (sector+count) <= endSector) {
     TRACE_DISK_CACHE("\tcache read(%u, %u) from %p", (uint32_t)sector, (uint32_t)count, this);
@@ -53,9 +50,8 @@ bool DiskCacheBlock::read(BYTE* buff, DWORD sector, UINT count)
   return false;
 }
 
-DRESULT DiskCacheBlock::fill(BYTE drv, BYTE* buff, DWORD sector, UINT count) 
+DRESULT DiskCacheBlock::fill(BYTE drv, BYTE * buff, DWORD sector, UINT count)
 {
-  // TODO: check if trying to read beyond the end of disk
   DRESULT res = __disk_read(drv, data, sector, DISK_CACHE_BLOCK_SECTORS);
   if (res != RES_OK) {
     return res;
@@ -80,15 +76,15 @@ bool DiskCacheBlock::empty() const
   return (endSector == 0);
 }
 
-DiskCache::DiskCache() 
-  : lastBlock(0) 
+DiskCache::DiskCache():
+  lastBlock(0)
 {
   stats.noHits = 0;
   stats.noMisses = 0;
   blocks = new DiskCacheBlock[DISK_CACHE_BLOCKS_NUM];
 }
 
-DRESULT DiskCache::read(BYTE drv, BYTE* buff, DWORD sector, UINT count)
+DRESULT DiskCache::read(BYTE drv, BYTE * buff, DWORD sector, UINT count)
 {
   // TODO: check if not caching first sectors would improve anything
   // if (sector < 1000) {
@@ -101,8 +97,14 @@ DRESULT DiskCache::read(BYTE drv, BYTE* buff, DWORD sector, UINT count)
     TRACE_DISK_CACHE("\t\t big read(%u, %u)", this, (uint32_t)sector, (uint32_t)count);
     return __disk_read(drv, buff, sector, count);
   }
+  
+  // if block + cache block size is beyond the end of the disk, then read it directly without using cache
+  if (sector+DISK_CACHE_BLOCK_SECTORS >= sdGetNoSectors()) {
+    TRACE_DISK_CACHE("\t\t cache would be beyond end of disk(%u)", this, (uint32_t)sector);
+    return __disk_read(drv, buff, sector, count);
+  }
 
-  for(int n=0; n < DISK_CACHE_BLOCKS_NUM; ++n) {
+  for (int n=0; n<DISK_CACHE_BLOCKS_NUM; ++n) {
     if (blocks[n].read(buff, sector, count)) {
       ++stats.noHits;
       return RES_OK;
@@ -112,7 +114,7 @@ DRESULT DiskCache::read(BYTE drv, BYTE* buff, DWORD sector, UINT count)
   ++stats.noMisses;
 
   // find free block
-  for(int n=0; n < DISK_CACHE_BLOCKS_NUM; ++n) {
+  for (int n=0; n<DISK_CACHE_BLOCKS_NUM; ++n) {
     if (blocks[n].empty()) {
       TRACE_DISK_CACHE("\t\t using free block");
       return blocks[n].fill(drv, buff, sector, count);
@@ -124,6 +126,7 @@ DRESULT DiskCache::read(BYTE drv, BYTE* buff, DWORD sector, UINT count)
   if (++lastBlock >= DISK_CACHE_BLOCKS_NUM) {
     lastBlock = 0;
   }
+  
   return blocks[lastBlock].fill(drv, buff, sector, count);
 }
 
@@ -147,13 +150,13 @@ int DiskCache::getHitRate() const
   return (stats.noHits * 1000) / all;
 }
 
-DRESULT disk_read (BYTE drv, BYTE *buff, DWORD sector, UINT count)
+DRESULT disk_read(BYTE drv, BYTE * buff, DWORD sector, UINT count)
 {
   return diskCache.read(drv, buff, sector, count);
 }
 
 
-DRESULT disk_write (BYTE drv, const BYTE *buff, DWORD sector, UINT count)
+DRESULT disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count)
 {
   return diskCache.write(drv, buff, sector, count);
 }
