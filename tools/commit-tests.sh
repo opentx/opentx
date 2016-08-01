@@ -67,7 +67,7 @@ make -j2 gtests ; ./gtests
 
 # OpenTX on Taranis X9E
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES --DPPM_UNIT_PERCENT_PREC1=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT_PERCENT_PREC1=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
