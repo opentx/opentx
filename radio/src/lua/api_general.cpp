@@ -504,7 +504,7 @@ static int luaGetValue(lua_State * L)
 
 Return the RAS value or nil if no valid hardware found
 
-@retval number representing RAS value. Value bellow 33 are all ok, value above 33 indicate a hardware antenna issue.
+@retval number representing RAS value. Value bellow 0x33 (51 decimal) are all ok, value above 0x33 indicate a hardware antenna issue.
 This is just a hardware pass/fail measure and does not represent the quality of the radio link
 
 @status current Introduced in 2.2.0
