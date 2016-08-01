@@ -187,18 +187,22 @@ void disable_dsm2(uint32_t port);
 
 // SD driver
 #if defined(SIMU)
-  #define sdInit()
-  #define sdDone()
+#define sdInit()
+#define sdDone()
 #else
-  #define sdPoll10ms()
-  void sdMountPoll();
-  extern "C" {
-    void init_SDcard();
-    void sdInit();
-    void sdDone();
-    uint32_t sd_card_ready();
-    uint32_t sdMounted();
-  }
+#define sdPoll10ms()
+void sdMountPoll();
+#if defined(__cplusplus)
+extern "C" {
+#endif
+  void init_SDcard();
+  void sdInit();
+  void sdDone();
+  uint32_t sd_card_ready();
+  uint32_t sdMounted();
+#if defined(__cplusplus)
+}
+#endif
 #endif
 
 // WDT driver
@@ -251,7 +255,9 @@ void i2cCheck();
 // Coproc driver
 void coprocInit();
 void coprocWriteData(uint8_t *data, uint32_t size);
+#if defined(__cplusplus)
 void coprocReadData(bool onlytemp=false);
+#endif
 extern int8_t volumeRequired;
 extern uint8_t Coproc_read;
 extern int8_t Coproc_valid;
@@ -306,7 +312,9 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 // Second UART driver
 void serial2TelemetryInit(unsigned int protocol);
+#if defined(__cplusplus)
 bool telemetrySecondPortReceive(uint8_t & data);
+#endif
 
 extern const uint8_t BootCode[];
 

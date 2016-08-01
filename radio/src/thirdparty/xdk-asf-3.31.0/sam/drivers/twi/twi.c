@@ -129,7 +129,7 @@ uint32_t twi_master_init(Twi *p_twi, const twi_options_t *p_opt)
 	uint32_t status = TWI_SUCCESS;
 
 	/* Disable TWI interrupts */
-	p_twi->TWI_IDR = ~0UL;
+	p_twi->TWI_IDR = ~(uint32_t)0;
 
 	/* Dummy read in status register */
 	p_twi->TWI_SR;
@@ -494,7 +494,7 @@ void twi_disable_slave_mode(Twi *p_twi)
 void twi_slave_init(Twi *p_twi, uint32_t ul_device_addr)
 {
 	/* Disable TWI interrupts */
-	p_twi->TWI_IDR = ~0UL;
+	p_twi->TWI_IDR = ~(uint32_t)0;
 	p_twi->TWI_SR;
 
 	/* Reset TWI */

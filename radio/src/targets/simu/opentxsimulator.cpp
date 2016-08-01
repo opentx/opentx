@@ -96,10 +96,10 @@ void OpenTxSimulator::start(QByteArray & ee, bool tests)
 
 void OpenTxSimulator::start(const char * filename, bool tests)
 {
-#if defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X)
+#if ROTARY_ENCODERS > 0
   g_rotenc[0] = 0;
-#elif defined(PCBGRUVIN9X)
-  g_rotenc[0] = 0;
+#endif
+#if ROTARY_ENCODERS > 1
   g_rotenc[1] = 0;
 #endif
 
@@ -165,7 +165,7 @@ void OpenTxSimulator::wheelEvent(int steps)
     rotencValue -= 2;
   else
     rotencValue += 2;
-#elif defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X)
+#elif defined(PCBSKY9X) && ROTARY_ENCODERS > 0
   g_rotenc[0] += steps*4;
 #elif defined(PCBGRUVIN9X)
   g_rotenc[0] += steps;

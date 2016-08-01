@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include "rtc.h"
 #include "i2c_driver.h"
 
 #define DS3231_I2C_ADDR 0x68
