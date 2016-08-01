@@ -29,6 +29,8 @@ void getModelPath(char * path, const char * filename)
 
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
+  TRACE("writeFile(%s)", filename);
+  
   FIL file;
   char buf[8];
   UINT written;
@@ -68,6 +70,8 @@ const char * writeModel()
 
 const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
 {
+  TRACE("loadFile(%s)", filename);
+  
   FIL file;
   char buf[8];
   UINT read;
@@ -112,7 +116,7 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
   return loadFile(path, buffer, size);
 }
 
-const char * loadModel(const char * filename)
+const char * loadModel(const char * filename, bool alarms)
 {
   preModelLoad();
 
@@ -120,15 +124,14 @@ const char * loadModel(const char * filename)
   if (error) {
     TRACE("loadModel error=%s", error);
   }
-
-  bool newModel = false;
+  
   if (error) {
     modelDefault(0) ;
     storageCheck(true);
-    newModel = true;
+    alarms = false;
   }
 
-  postModelLoad(newModel);
+  postModelLoad(alarms);
 
   return error;
 }
@@ -171,8 +174,8 @@ void storageCheck(bool immediately)
 
 void storageReadAll()
 {
-  sdInit();
-
+  TRACE("storageReadAll");
+  
   if (loadGeneralSettings() != NULL) {
     storageEraseAll(true);
   }
@@ -186,7 +189,7 @@ void storageReadAll()
   }
 #endif
 
-  loadModel(g_eeGeneral.currModelFilename);
+  loadModel(g_eeGeneral.currModelFilename, false);
 }
 
 void storageCreateModelsList()
@@ -223,14 +226,14 @@ const char * createModel()
     storageDirty(EE_MODEL);
     storageCheck(true);
   }
-  postModelLoad(true);
+  postModelLoad(false);
 
   return g_eeGeneral.currModelFilename;
 }
 
 void storageEraseAll(bool warn)
 {
-  TRACE("storageEraseAll()");
+  TRACE("storageEraseAll");
 
 #if defined(COLORLCD)
   // the theme has not been loaded before

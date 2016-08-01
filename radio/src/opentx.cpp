@@ -1912,19 +1912,28 @@ uint8_t calcStickScroll( uint8_t index )
 }
 #endif
 
-void opentxStart()
-{
-  TRACE("opentxStart()");
-
-#if defined(SIMU)
-  if (main_thread_running == 2)
-    return;
+#if defined(CPUARM)
+  #define OPENTX_START_ARGS            uint8_t splash=true
+  #define OPENTX_START_SPLASH_NEEDED() (splash)
+#else
+  #define OPENTX_START_ARGS
+  #define OPENTX_START_SPLASH_NEEDED() true
 #endif
 
-  bool display_alerts = (g_eeGeneral.chkSum == evalChkSum());
+void opentxStart(OPENTX_START_ARGS)
+{
+  TRACE("opentxStart");
+
+#if defined(SIMU)
+  if (main_thread_running == 2) {
+    return;
+  }
+#endif
+
+  uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (display_alerts) {
+  if (!calibration_needed && OPENTX_START_SPLASH_NEEDED()) {
     doSplash();
   }
 #endif
@@ -1940,12 +1949,12 @@ void opentxStart()
 #endif
 
 #if defined(GUI)
-  if (display_alerts) {
-    checkAlarm();
-    checkAll();
+  if (calibration_needed) {
+    chainMenu(menuFirstCalib);
   }
   else {
-    chainMenu(menuFirstCalib);
+    checkAlarm();
+    checkAll();
   }
 #endif
 }
@@ -1953,7 +1962,7 @@ void opentxStart()
 #if defined(CPUARM) || defined(CPUM2560)
 void opentxClose(uint8_t shutdown)
 {
-  TRACE("opentxClose()");
+  TRACE("opentxClose");
 
   if (shutdown) {
 #if defined(CPUARM)
@@ -2026,6 +2035,33 @@ void opentxClose(uint8_t shutdown)
 
 #if defined(SDCARD)
   sdDone();
+#endif
+}
+#endif
+
+#if defined(USB_MASS_STORAGE)
+void opentxResume()
+{
+  TRACE("opentxResume");
+  
+  menuHandlers[0] = menuMainView;
+  
+  sdMount();
+  
+  storageReadAll();
+
+#if defined(PCBHORUS)
+  loadTheme();
+  loadFontCache();
+#endif
+  
+  opentxStart(false);
+
+#if defined(CPUARM) || defined(CPUM2560)
+  if (!g_eeGeneral.unexpectedShutdown) {
+    g_eeGeneral.unexpectedShutdown = 1;
+    storageDirty(EE_GENERAL);
+  }
 #endif
 }
 #endif
@@ -2477,7 +2513,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   // CoTickDelay(5000); // 10s
 #endif
 
-  TRACE("opentxInit()");
+  TRACE("opentxInit");
 
 #if defined(GUI)
   menuHandlers[0] = menuMainView;
@@ -2490,11 +2526,14 @@ void opentxInit(OPENTX_INIT_ARGS)
   rtcInit();    // RTC must be initialized before rambackupRestore() is called
 #endif
 
-#if !defined(EEPROM)
-  if (!UNEXPECTED_SHUTDOWN()) {
-    sdInit();
+  if (UNEXPECTED_SHUTDOWN()) {
+    unexpectedShutdown = 1;
   }
+  else {
+#if defined(SDCARD) && !defined(PCBMEGA2560)
+    sdInit();
 #endif
+  }
 
 #if defined(PCBHORUS)
   topbar = new Topbar(&g_model.topbarData);
@@ -2510,12 +2549,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #else
   storageReadAll();
-#endif
-
-#if defined(CPUARM)
-  if (UNEXPECTED_SHUTDOWN()) {
-    unexpectedShutdown = 1;
-  }
 #endif
 
 #if defined(PCBTARANIS)
@@ -2554,13 +2587,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
-  if (UNEXPECTED_SHUTDOWN()) {
-#if !defined(CPUARM)
-    // is done above on ARM
-    unexpectedShutdown = 1;
-#endif
-  }
-  else {
+  if (!UNEXPECTED_SHUTDOWN()) {
     opentxStart();
   }
 

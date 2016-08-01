@@ -54,6 +54,9 @@ void handleUsbConnection()
   }
   if (usbStarted && !usbPlugged()) {
     usbStarted = false;
+#if defined(USB_MASS_STORAGE) && !defined(EEPROM)
+    opentxResume();
+#endif
   }
 
 #if defined(USB_JOYSTICK)

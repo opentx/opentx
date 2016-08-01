@@ -1426,6 +1426,7 @@ extern uint8_t requestScreenshot;
 void checkBattery();
 void opentxClose(uint8_t shutdown=true);
 void opentxInit();
+void opentxResume();
 
 #if defined(PCBHORUS) && !defined(SIMU)
   #define LED_ERROR_BEGIN()            ledRed()
@@ -1704,7 +1705,7 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 #endif
 
 #if defined(USB_MASS_STORAGE)
-  extern void usbPluggedIn();
+void usbPluggedIn();
 #endif
 
 #include "lua/lua_api.h"

@@ -992,6 +992,8 @@ void sdInit(void)
 // TODO shouldn't be there!
 void sdInit(void)
 {
+  TRACE("sdInit");
+  
   ioMutex = CoCreateMutex();
   if (ioMutex >= CFG_MAX_MUTEX ) {
     //sd error

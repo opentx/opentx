@@ -56,14 +56,14 @@ void preModelLoad()
   pauseMixerCalculations();
 }
 
-void postModelLoad(bool newModel)
+void postModelLoad(bool alarms)
 {
   AUDIO_FLUSH();
   flightReset(false);
 
   if (pulsesStarted()) {
 #if defined(GUI)
-    if (!newModel) {
+    if (alarms) {
       checkAll();
     }
 #endif
