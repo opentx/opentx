@@ -504,6 +504,7 @@ static int luaGetValue(lua_State * L)
 Return the RAS value
 
 @retval number representing RAS value. Values bellow 50 are all ok, values higher indicate an issue
+This is just a hardware pass/fail measure and does not represent the quality of the radio link
 
 @status current Introduced in 2.2.0
 */
