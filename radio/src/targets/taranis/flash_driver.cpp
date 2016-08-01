@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 //After reset, write is not allowed in the Flash control register (FLASH_CR) to protect the
 //Flash memory against possible unwanted operations due, for example, to electric

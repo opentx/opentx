@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define STATUS_BAR_Y     (7*FH+1)
 #define TELEM_2ND_COLUMN (10*FW)

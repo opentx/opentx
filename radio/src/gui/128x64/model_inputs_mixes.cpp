@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN (7*FW+3*FW+2)
 #define EXPO_ONE_FM_WIDTH   (5*FW)

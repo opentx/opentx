@@ -35,7 +35,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 enum SwedishPrompts {
   SE_PROMPT_NUMBERS_BASE = 0,

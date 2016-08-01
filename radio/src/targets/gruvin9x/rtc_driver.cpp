@@ -21,8 +21,8 @@
 /*--------------------------------------------------------------------------*/
 /*  RTC controls                                                            */
 
-#include "../opentx.h"
-#include "../FatFs/integer.h"
+#include "opentx.h"
+#include "FatFs/integer.h"
 
 typedef struct {
         WORD    year;   /* 2000..2099 */

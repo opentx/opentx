@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define TRAINER_COLUMN_WIDTH   60
 #define TRAINER_COLUMN_1       MENUS_MARGIN_LEFT+80

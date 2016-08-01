@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define ADC_VREF_TYPE (1 << REFS0) // AVCC with external capacitor at AREF pin
 

@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 enum HungarianPrompts {
   HU_PROMPT_NUMBERS_BASE = 0,

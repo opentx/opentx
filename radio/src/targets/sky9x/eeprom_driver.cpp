@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 volatile uint32_t Spi_complete;
 uint8_t Spi_tx_buf[24] ;

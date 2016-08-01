@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 #define MODELSIZE_POS_X  170
 #define MODELSEL_W       LCD_W

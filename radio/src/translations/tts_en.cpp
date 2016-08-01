@@ -34,7 +34,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 enum EnglishPrompts {
   EN_PROMPT_NUMBERS_BASE = 0,

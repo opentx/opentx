@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 Fifo<uint8_t, 64> btTxFifo;
 Fifo<uint8_t, 64> btRxFifo;

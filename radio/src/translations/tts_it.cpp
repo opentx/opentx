@@ -20,7 +20,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 enum ItalianPrompts {
   IT_PROMPT_NUMBERS_BASE = 0,

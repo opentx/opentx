@@ -20,7 +20,7 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 enum CzechPrompts {
   CZ_PROMPT_NUMBERS_BASE = 0,

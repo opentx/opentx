@@ -20,7 +20,7 @@
 
 // driver adapted from somo14d driver for gruvin9x board for driving WTV20SDMini module
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 // Start and stop bits need to be 2ms in duration. Start bit is low, stop bit is high
 #define WTV20SD_STOP_TIME    68 // This is the needed 2ms (4) + 30ms (60) to allow for the

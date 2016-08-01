@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../../opentx.h"
+#include "opentx.h"
 
 const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {

@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 uint8_t   storageDirtyMsk;
 tmr10ms_t storageDirtyTime10ms;
