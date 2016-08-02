@@ -385,7 +385,7 @@ bool getLogicalSwitch(uint8_t idx)
     }
     else {
       mixsrc_t v1 = ls->v1;
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
 #if defined(CPUARM)
@@ -485,7 +485,7 @@ bool getLogicalSwitch(uint8_t idx)
     }
   }
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 DurationAndDelayProcessing:
 #endif
 

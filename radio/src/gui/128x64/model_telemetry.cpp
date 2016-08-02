@@ -121,7 +121,7 @@ enum menuModelTelemetryItems {
   ITEM_TELEMETRY_MAX
 };
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   #define TELEM_COL1                   INDENT_WIDTH
   #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
     #define TELEM_COL2                 (9*FW)

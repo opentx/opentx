@@ -70,7 +70,7 @@ void varioWakeup()
   }
 }
 
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
 
 void varioWakeup()
 {

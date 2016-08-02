@@ -30,7 +30,7 @@ void frskyCalculateCellStats(void);
 void displayVoltagesScreen();
 #endif
 
-#if defined(FRSKY) && !defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) && !defined(CPUARM)
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
@@ -77,7 +77,7 @@ TEST(FrSky, dateNtime)
 }
 #endif
 
-#if defined(FRSKY) && defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) && defined(CPUARM)
 TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
@@ -173,7 +173,7 @@ TEST(FrSky, HubAltNegative)
   processHubPacket(BARO_ALT_AP_ID, 05);
   EXPECT_EQ(telemetryItems[0].value, 120);
 }
-#endif // defined(FRSKY) && defined(CPUARM)
+#endif // defined(TELEMETRY_FRSKY) && defined(CPUARM)
 
 #if defined(FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)

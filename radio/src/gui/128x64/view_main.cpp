@@ -81,7 +81,7 @@ void displayTrims(uint8_t phase)
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
 
-#if !defined(CPUM64) || !defined(FRSKY)
+#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
     int16_t dir = val;
     bool exttrim = false;
     if (val < TRIM_MIN || val > TRIM_MAX) {
@@ -106,7 +106,7 @@ void displayTrims(uint8_t phase)
         lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
       }
       ym -= val;
-#if !defined(CPUM64) || !defined(FRSKY)
+#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
       lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
@@ -132,7 +132,7 @@ void displayTrims(uint8_t phase)
       lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
       lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
       xm += val;
-#if !defined(CPUM64) || !defined(FRSKY)
+#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
       lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
@@ -249,12 +249,12 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER3);
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
   }
 #endif
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
   }
@@ -328,7 +328,7 @@ void menuMainView(uint8_t event)
 #else
       POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
       POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
       POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
       POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
@@ -373,7 +373,7 @@ void menuMainView(uint8_t event)
       break;
 
     case EVT_KEY_TELEMETRY:
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
       if (!IS_FAI_ENABLED())
         chainMenu(menuTelemetryFrsky);
 #elif defined(JETI)

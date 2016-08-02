@@ -368,7 +368,7 @@ getvalue_t getValue(mixsrc_t i)
         return telemetryItem.value;
     }
   }
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return telemetryData.rssi[1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return telemetryData.rssi[0].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return telemetryData.analog[TELEM_ANA_A1].value;

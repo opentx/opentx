@@ -915,7 +915,7 @@ void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
   putsChannelValue(x, y, channel, value, att);
 }
 
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
 void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   convertUnit(val, unit);
@@ -954,7 +954,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
       att &= ~NO_UNIT;
       putsTimer(x, y, val, att, att);
       break;
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
 #if defined(CPUARM)
@@ -1073,7 +1073,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     }
   }
 }
-#else // defined(FRSKY)
+#else // defined(TELEMETRY_FRSKY)
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {

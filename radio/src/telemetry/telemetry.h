@@ -21,7 +21,7 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   // FrSky Telemetry
   #include "frsky.h"
 #elif defined(JETI)

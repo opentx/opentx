@@ -141,7 +141,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VFSWRESET          (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
 #define OFS_FUNCSOUNDS         (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
     #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
@@ -272,7 +272,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_FUNCSOUNDS          (STR_OPEN9X + OFS_FUNCSOUNDS)
 #define STR_VTELEMCHNS          (STR_OPEN9X + OFS_VTELEMCHNS)
 
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     #define STR_VTELEMUNIT      (STR_OPEN9X + OFS_VTELEMUNIT)
     #define STR_VOLTSRC         (STR_OPEN9X + OFS_VOLTSRC)
@@ -606,7 +606,7 @@ extern const pm_char STR_SENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 extern const pm_char STR_LIMIT[];
 #endif
 
@@ -627,7 +627,7 @@ extern const pm_char STR_POWEROFF[];
 
 extern const pm_char STR_BATT_CALIB[];
 
-#if defined(CPUARM) || defined(FRSKY)
+#if defined(CPUARM) || defined(TELEMETRY_FRSKY)
 extern const pm_char STR_VOLTAGE[];
 extern const pm_char STR_CURRENT[];
 #endif

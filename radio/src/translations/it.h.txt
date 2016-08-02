@@ -347,7 +347,7 @@
 
 #define LEN_VFSWRESET          TR("\004", "\011")
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetr.")
 #else
   #define TR_FSW_RESET_TELEM

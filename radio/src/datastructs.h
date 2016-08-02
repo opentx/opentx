@@ -760,7 +760,7 @@ typedef uint8_t swarnenable_t;
 
 #if defined(MAVLINK)
   #define TELEMETRY_DATA MavlinkTelemetryData mavlink;
-#elif defined(FRSKY) || !defined(PCBSTD)
+#elif defined(TELEMETRY_FRSKY) || !defined(PCBSTD)
   #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky);
 #else
   #define TELEMETRY_DATA

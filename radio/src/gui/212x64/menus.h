@@ -71,7 +71,7 @@ void onMainViewMenu(const char *result);
 void menuMainViewChannelsMonitor(uint8_t event);
 void menuChannelsView(uint8_t event);
 void menuMainView(uint8_t event);
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 void menuTelemetryFrsky(uint8_t event);
 #endif
 void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
