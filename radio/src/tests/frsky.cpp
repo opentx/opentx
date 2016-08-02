@@ -22,7 +22,7 @@
 
 void frskyDProcessPacket(uint8_t *packet);
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
 bool checkSportPacket(uint8_t *packet);
 void processSportPacket(uint8_t * packet);
 bool checkSportPacket(uint8_t *packet);
@@ -175,7 +175,7 @@ TEST(FrSky, HubAltNegative)
 }
 #endif // defined(TELEMETRY_FRSKY) && defined(CPUARM)
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
 {
   // Packet downstream
@@ -516,4 +516,4 @@ TEST(FrSkySPORT, frskyCurrent)
   EXPECT_EQ(telemetryItems[0].valueMax, 505);
 }
 
-#endif  //#if defined(FRSKY_SPORT)
+#endif  //#if defined(TELEMETRY_FRSKY_SPORT)

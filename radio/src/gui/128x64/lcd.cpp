@@ -1044,7 +1044,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
       putsValueWithUnit(x, y, val, UNIT_HDG, att);
       break;
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
     case TELEM_ALT-1:
       putsValueWithUnit(x, y, div_and_round(val, 10), UNIT_DIST, att|PREC1);
       break;

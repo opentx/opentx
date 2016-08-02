@@ -379,7 +379,7 @@ void menuMainView(uint8_t event)
 #elif defined(JETI)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
       chainMenu(menuTelemetryJeti);
-#elif defined(ARDUPILOT)
+#elif defined(TELEMETRY_ARDUPILOT)
       ARDUPILOT_EnableRXD(); // enable ArduPilot-Telemetry reception
       chainMenu(menuTelemetryArduPilot);
 #elif defined(NMEA)

@@ -541,7 +541,7 @@ int main(int argc,char **argv)
   th9xSim->show(); // Otherwise the main window gets centred across my two monitors, split down the middle.
 #endif
 
-#if defined(TELEMETRY_FRSKY) && !defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY) && !defined(TELEMETRY_FRSKY_SPORT)
   telemetryStreaming = 1;
 #endif
 

@@ -483,7 +483,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
   int index = availableTelemetryIndex();
   if (index >= 0) {
     switch (protocol) {
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
       case TELEM_PROTO_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
         break;

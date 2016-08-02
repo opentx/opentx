@@ -27,7 +27,7 @@
 #elif defined(JETI)
   // Jeti-DUPLEX Telemetry
   #include "jeti.h"
-#elif defined(ARDUPILOT)
+#elif defined(TELEMETRY_ARDUPILOT)
   // ArduPilot Telemetry
   #include "ardupilot.h"
 #elif defined(NMEA)

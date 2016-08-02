@@ -461,7 +461,7 @@
 #endif
 
 #define LEN_VARIOSRC           "\004"
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   #define TR_VARIOSRC          "Vspd""A1\0 ""A2\0 ""dTE\0"
 #else
   #define TR_VARIOSRC          "Alt\0""Alt+""Vspd""A1\0 ""A2\0 "

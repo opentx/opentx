@@ -373,7 +373,7 @@ getvalue_t getValue(mixsrc_t i)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return telemetryData.rssi[0].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return telemetryData.analog[TELEM_ANA_A1].value;
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A2) return telemetryData.analog[TELEM_ANA_A2].value;
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return telemetryData.hub.baroAltitude;
 #elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
   else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_RELATIVE_BARO_ALT_BP;
