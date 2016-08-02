@@ -597,7 +597,7 @@ bool menuModelSetup(evt_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
-          int8_t multi_rfProto = min(g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, (uint8_t) MM_RF_PROTO_CUSTOM);
+          uint8_t multi_rfProto = min(g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol, (uint8_t) MM_RF_PROTO_CUSTOM);
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
 
           switch(multi_rfProto) {
@@ -662,20 +662,20 @@ bool menuModelSetup(evt_t event)
                 if (checkIncDec_Ret) {
                   // When in custom protocol mode the highest bit (0x20) is set to indicate the protocl we might be way above MM_RF_PROTO_LAST.
                   // Reset to MM_RF_PROTO_LAST-1 in that case
-                  if (checkIncDec_Ret == -1 && g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol >= MM_RF_PROTO_LAST)
-                  {
+                  if (checkIncDec_Ret == -1 && g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol >= MM_RF_PROTO_LAST) {
                     g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol = MM_RF_PROTO_LAST-1;
                   }
                   g_model.moduleData[EXTERNAL_MODULE].subType = 0;
                   // Sensible default for DSM2 (same as for ppm): 6ch@11ms
                   if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
-                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 6;
+                    g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = MM_RF_DSM2_11MS_6CH_OPTION;
                   else
                     g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = 0;
                 }
               }
-              else
+              else {
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
+              }
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsCount = MAX_EXTERNAL_MODULE_CHANNELS();
@@ -846,7 +846,8 @@ bool menuModelSetup(evt_t event)
         }
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
-          switch (g_model.moduleData[moduleIdx].multi.rfProtocol) {
+          switch (g_model.moduleData[moduleIdx].multi.rfProtocol)
+          {
             case MM_RF_PROTO_FRSKY:
               lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_RFTUNE);
               break;

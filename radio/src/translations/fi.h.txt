@@ -97,6 +97,9 @@
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT"
 
+#define LEN_TELEMETRY_PROTOCOLS "\017"
+#define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  FrSky D\0       FrSky D (cable)Spektrum\0      "
+
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
 
@@ -660,6 +663,7 @@
 #define TR_AILDIRECTION        TR("AIL Direction","Lateral cyc. direction")
 #define TR_COLDIRECTION        TR("PIT Direction","Coll. pitch direction")
 #define TR_MODE                INDENT"Mode"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"
 #define TR_SOURCE              INDENT"Source"
@@ -824,12 +828,12 @@
 #define TR_MONITOR_MIXER_DESC  "Mixers"
 #define TR_RECEIVER_NUM               TR("RxNum", INDENT"Receiver No.")
 #define TR_RECEIVER            INDENT "Receiver"
-#define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
-#define TR_MULTI_VIDFREQ       INDENT "Video frequency"
-#define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
-#define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
+#define TR_MULTI_DSMFRAME      TR(INDENT "DSM frame", INDENT "DSM frame format")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
-#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
+#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"

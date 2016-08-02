@@ -436,7 +436,7 @@ bool menuModelTelemetry(evt_t event)
         lcdDrawText(TELEM_COL2, y, "---"); // TODO shortcut
       }
       TelemetrySensor * sensor = & g_model.telemetrySensors[index];
-#ifdef MULTIMODULE
+#if defined(MULTIMODULE)
       if (IS_SPEKTRUM_PROTOCOL()) {
           // Spektrum does not (yet?) really support multiple sensor of the same type. But a lot of
           // different sensor display the same information (e.g. voltage, capacity). Show the id
@@ -467,7 +467,8 @@ bool menuModelTelemetry(evt_t event)
     switch (k) {
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TELEMETRY_TYPE);
-        g_model.telemetryProtocol = selectMenuItem(TELEM_COL2, y, "\017FrSky S.PORT\0  FrSky D\0       FrSky D (cable)", g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_FRSKY_D, attr, event);
+        lcdDrawTextAtIndex(TELEM_COL2, y, STR_TELEMETRY_PROTOCOLS, g_model.telemetryProtocol, attr);
+        g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
         break;
 
       case ITEM_TELEMETRY_SENSORS_LABEL:

@@ -210,7 +210,7 @@ static int32_t bcdToInt8(uint8_t bcd) {
 }
 
 static int32_t bcdToInt32(uint32_t bcd) {
-  return bcdToInt16(bcd >> 16) + 10000 * bcdToInt32(bcd);
+  return bcdToInt16(bcd >> 16) + 10000 * bcdToInt16(bcd);
 }
 
 // Spektrum uses Big Endian data types

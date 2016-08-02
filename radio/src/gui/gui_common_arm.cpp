@@ -482,22 +482,30 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
-#if defined(PCBFLAMENCO)
-bool isModuleAvailable(int module)
-{
-    return true;
-}
-#else
+
 bool isModuleAvailable(int module)
 {
 #if defined(CROSSFIRE)
   if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF) {
     return false;
   }
+#else
+  if (module == MODULE_TYPE_CROSSFIRE) {
+    return false;
+  }
+#endif
+#if !defined(DSM2)
+  if (module == MODULE_TYPE_DSM2) {
+     return false;
+  }
+#endif
+#if !defined(MULTIMODULE)
+  if (module == MODULE_TYPE_MULTIMODULE) {
+     return false;
+  }
 #endif
   return true;
 }
-#endif
 
 bool isRfProtocolAvailable(int protocol)
 {
@@ -513,6 +521,30 @@ bool isRfProtocolAvailable(int protocol)
 #endif
   return true;
 }
+
+#if defined(CPUARM)
+bool isTelemetryProtocolAvailable(int protocol)
+{
+
+#if defined(PCBTARANIS)
+  if(protocol == PROTOCOL_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode != UART_MODE_TELEMETRY)
+    return false;
+#endif
+  if (protocol== PROTOCOL_PULSES_CROSSFIRE)
+    return false;
+
+#if !defined(MULTIMODULE)
+  if (protocol== PROTOCOL_SPEKTRUM)
+    return false;
+#endif
+#if defined(PBHORUS)
+  if (protocol == PROTOCOL_FRSKY_D_SECONDARY)
+    return false;
+#endif
+
+  return true;
+}
+#endif
 
 #if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
