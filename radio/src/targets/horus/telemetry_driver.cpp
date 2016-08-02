@@ -97,13 +97,13 @@ void telemetryPortInit(uint32_t baudrate, int mode)
 
 void telemetryPortSetDirectionOutput()
 {
-  TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
+  TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
 
 void telemetryPortSetDirectionInput()
 {
-  TELEMETRY_GPIO_DIR->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
+  TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
 
