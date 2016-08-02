@@ -284,7 +284,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_CASE(5, ping, 1<<INP_G_Gear)
     SWITCH_CASE(6, pinb, 1<<INP_L_Trainer)
 #else // PCB9X
-#if defined(JETI) || defined(FRSKY) || defined(NMEA) || defined(ARDUPILOT) || defined(MAVLINK)
+#if defined(TELEMETRY_JETI) || defined(TELEMETRY_FRSKY) || defined(TELEMETRY_NMEA) || defined(TELEMETRY_ARDUPILOT) || defined(TELEMETRY_MAVLINK)
     SWITCH_CASE(0, pinc, 1<<INP_C_ThrCt)
     SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
 #else

@@ -55,7 +55,7 @@ void displayRssiLine()
   }
 }
 
-#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS) && !defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) && defined(FRSKY_HUB) && defined(GPS) && !defined(CPUARM)
 void displayGpsTime()
 {
   uint8_t att = (TELEMETRY_STREAMING() ? LEFT|LEADING0 : LEFT|LEADING0|BLINK);

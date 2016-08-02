@@ -13,14 +13,19 @@ cd build
 
 # OpenTX on 9X stock with FrSky telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DEXT=FRSKY ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=FRSKY ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
-# OpenTX on 9X stock with Mavlink telemetry
+# OpenTX on 9X stock with Ardupilot telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DEXT=MAVLINK ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=ARDUPILOT ${SRCDIR}
+make -j2 firmware
+
+# OpenTX on 9X stock with JETI telemetry
+rm -rf *
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=JETI ${SRCDIR}
 make -j2 firmware
 
 # OpenTX on Mega2560
@@ -32,7 +37,7 @@ make -j2 gtests ; ./gtests
 
 # OpenTX on Mega2560 with Mavlink telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DEXT=MAVLINK -DHELI=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTELEMETRY=MAVLINK -DHELI=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests

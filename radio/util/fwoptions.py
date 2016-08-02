@@ -26,12 +26,12 @@ tts_avr = {
     }
 
 options_9x_ext = {
-    "nmea": ("EXT", "NMEA", None),
-    "frsky": ("EXT", "FRSKY", None),
-    "telemetrez": ("EXT", "TELEMETREZ", None),
-    "jeti": ("EXT", "JETI", None),
-    "ardupilot": ("EXT", "ARDUPILOT", None),
-    "mavlink": ("EXT", "MAVLINK", None),
+    "nmea": ("TELEMETRY", "NMEA", None),
+    "frsky": ("TELEMETRY", "FRSKY", None),
+    "telemetrez": ("TELEMETRY", "TELEMETREZ", None),
+    "jeti": ("TELEMETRY", "JETI", None),
+    "ardupilot": ("TELEMETRY", "ARDUPILOT", None),
+    "mavlink": ("TELEMETRY", "MAVLINK", None),
 }
 
 options_9x = {

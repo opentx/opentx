@@ -390,7 +390,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
       if (mode > 0)
         x += 2;
     }
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (flags & BOLD) fw += 1;
 #endif
   }
@@ -462,7 +462,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
     if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) x-=2;
     val = qr.quot;
     x -= fw;
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(EXTSTD)
+#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (i==len && (flags & BOLD)) x += 1;
 #endif
   }
@@ -915,7 +915,7 @@ void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
   putsChannelValue(x, y, channel, value, att);
 }
 
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
 void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   convertUnit(val, unit);
@@ -954,7 +954,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
       att &= ~NO_UNIT;
       putsTimer(x, y, val, att, att);
       break;
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
 #if defined(CPUARM)
@@ -1044,7 +1044,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
       putsValueWithUnit(x, y, val, UNIT_HDG, att);
       break;
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
     case TELEM_ALT-1:
       putsValueWithUnit(x, y, div_and_round(val, 10), UNIT_DIST, att|PREC1);
       break;
@@ -1073,7 +1073,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     }
   }
 }
-#else // defined(FRSKY)
+#else // defined(TELEMETRY_FRSKY)
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {

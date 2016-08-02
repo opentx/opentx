@@ -153,7 +153,7 @@ void per10ms()
   }
 #endif
 
-#if defined(FRSKY) || defined(JETI)
+#if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_JETI)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
     telemetryInterrupt10ms();
   }
@@ -440,7 +440,7 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
 #endif
@@ -787,7 +787,7 @@ getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value)
   return value;
 }
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 ls_telemetry_value_t minTelemValue(source_t channel)
 {
   return 0;
@@ -804,7 +804,7 @@ ls_telemetry_value_t max8bitsTelemValue(source_t channel)
   return 30000;
 }
 
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
 
 /*
 ls_telemetry_value_t minTelemValue(uint8_t channel)
@@ -858,7 +858,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
     case TELEM_TIMER2:
       result = value * 5;
       break;
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
     case TELEM_ALT:
     case TELEM_GPSALT:
     case TELEM_MAX_ALT:
@@ -1624,7 +1624,7 @@ void flightReset(uint8_t check)
   }
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   telemetryReset();
 #endif
 
@@ -1949,7 +1949,7 @@ void opentxClose(uint8_t shutdown)
 #endif
     pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
     // TODO needed? telemetryEnd();
 #endif
 #if defined(LUA)
@@ -2273,7 +2273,7 @@ FORCEINLINE void DSM2_USART_vect()
 
 #if !defined(SIMU) && !defined(CPUARM)
 
-#if defined (FRSKY)
+#if defined (TELEMETRY_FRSKY)
 
 FORCEINLINE void FRSKY_USART_vect()
 {
@@ -2288,14 +2288,14 @@ FORCEINLINE void FRSKY_USART_vect()
 // USART0/1 Transmit Data Register Emtpy ISR
 ISR(USART_UDRE_vect_N(TLM_USART))
 {
-#if defined(FRSKY) && defined(DSM2_SERIAL)
+#if defined(TELEMETRY_FRSKY) && defined(DSM2_SERIAL)
   if (IS_DSM2_PROTOCOL(g_model.protocol)) { // TODO not s_current_protocol?
     DSM2_USART_vect();
   }
   else {
     FRSKY_USART_vect();
   }
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
   FRSKY_USART_vect();
 #else
   DSM2_USART_vect();
@@ -2646,11 +2646,11 @@ int main()
 
   sei(); // interrupts needed now
 
-#if !defined(CPUARM) && defined(FRSKY) && !defined(DSM2_SERIAL)
+#if !defined(CPUARM) && defined(TELEMETRY_FRSKY) && !defined(DSM2_SERIAL)
   telemetryInit();
 #endif
 
-#if defined(DSM2_SERIAL) && !defined(FRSKY)
+#if defined(DSM2_SERIAL) && !defined(TELEMETRY_FRSKY)
   DSM2_Init();
 #endif
 

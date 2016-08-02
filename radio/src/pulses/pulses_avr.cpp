@@ -762,7 +762,7 @@ void setupPulses()
 
   if (s_current_protocol[0] != required_protocol) {
 
-#if defined(DSM2_SERIAL) && defined(FRSKY)
+#if defined(DSM2_SERIAL) && defined(TELEMETRY_FRSKY)
     if (s_current_protocol[0] == 255 || IS_DSM2_PROTOCOL(s_current_protocol[0])) {
       telemetryInit();
     }
@@ -852,7 +852,7 @@ void setupPulses()
         PORTB &= ~(1<<OUT_B_PPM);             // Hold PPM output low
         break;
 
-#if defined(DSM2_SERIAL) && defined(FRSKY)
+#if defined(DSM2_SERIAL) && defined(TELEMETRY_FRSKY)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:

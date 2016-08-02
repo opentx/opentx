@@ -192,14 +192,14 @@ const char * OpenTxSimulator::getError()
 
 void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
 {
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   processSportPacket(data);
 #endif
 }
 
 uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
 {
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i<MAX_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
@@ -214,7 +214,7 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
 
 uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
 {
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   for (int i = 0; i<MAX_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];

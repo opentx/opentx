@@ -151,7 +151,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           INCDEC_ENABLE_CHECK(isSourceAvailable);
         }
         else {
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
 #if defined(CPUARM)
             putsChannelValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
@@ -380,7 +380,7 @@ void menuModelLogicalSwitches(uint8_t event)
       putsChannelValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
       v2_min = -30000;
       v2_max = 30000;
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
       if (v1_val >= MIXSRC_FIRST_TELEM) {
         putsTelemetryChannelValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);

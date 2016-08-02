@@ -21,19 +21,19 @@
 #ifndef _TELEMETRY_H_
 #define _TELEMETRY_H_
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   // FrSky Telemetry
   #include "frsky.h"
-#elif defined(JETI)
+#elif defined(TELEMETRY_JETI)
   // Jeti-DUPLEX Telemetry
   #include "jeti.h"
-#elif defined(ARDUPILOT)
+#elif defined(TELEMETRY_ARDUPILOT)
   // ArduPilot Telemetry
   #include "ardupilot.h"
-#elif defined(NMEA)
+#elif defined(TELEMETRY_NMEA)
   // NMEA Telemetry
   #include "nmea.h"
-#elif defined(MAVLINK)
+#elif defined(TELEMETRY_MAVLINK)
   // Mavlink Telemetry
   #include "mavlink.h"
 #endif

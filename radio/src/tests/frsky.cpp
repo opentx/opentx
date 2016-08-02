@@ -22,7 +22,7 @@
 
 void frskyDProcessPacket(uint8_t *packet);
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
 bool checkSportPacket(uint8_t *packet);
 void processSportPacket(uint8_t * packet);
 bool checkSportPacket(uint8_t *packet);
@@ -30,7 +30,7 @@ void frskyCalculateCellStats(void);
 void displayVoltagesScreen();
 #endif
 
-#if defined(FRSKY) && !defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) && !defined(CPUARM)
 TEST(FrSky, gpsNfuel)
 {
   g_model.frsky.usrProto = 1;
@@ -77,7 +77,7 @@ TEST(FrSky, dateNtime)
 }
 #endif
 
-#if defined(FRSKY) && defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) && defined(CPUARM)
 TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
@@ -173,9 +173,9 @@ TEST(FrSky, HubAltNegative)
   processHubPacket(BARO_ALT_AP_ID, 05);
   EXPECT_EQ(telemetryItems[0].value, 120);
 }
-#endif // defined(FRSKY) && defined(CPUARM)
+#endif // defined(TELEMETRY_FRSKY) && defined(CPUARM)
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)
 {
   // Packet downstream
@@ -516,4 +516,4 @@ TEST(FrSkySPORT, frskyCurrent)
   EXPECT_EQ(telemetryItems[0].valueMax, 505);
 }
 
-#endif  //#if defined(FRSKY_SPORT)
+#endif  //#if defined(TELEMETRY_FRSKY_SPORT)

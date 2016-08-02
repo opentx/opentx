@@ -385,7 +385,7 @@ void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, uint8_t eve
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
-#if !defined(CPUM64) || !defined(FRSKY)
+#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
 #define GAUGE_WIDTH  33
 #define GAUGE_HEIGHT 6
 void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
@@ -506,7 +506,7 @@ void menuModelMixOne(uint8_t event)
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
-#if !defined(CPUM64) || !defined(FRSKY)
+#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
         drawOffsetBar(COLUMN_X+MIXES_2ND_COLUMN+22, y, md2);
 #endif
         break;

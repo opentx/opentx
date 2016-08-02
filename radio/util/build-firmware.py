@@ -66,14 +66,14 @@ elif options[optcount] == "9xr128":
     board_family = BOARD_FAMILY_AVR
 elif options[optcount] == "gruvin9x":
     command_options["PCB"] = "GRUVIN9X"
-    command_options["EXT"] = "FRSKY"
+    command_options["TELEMETRY"] = "FRSKY"
     firmware_options = options_gruvin9x
     maxsize = 65536 * 4
     board = BOARD_GRUVIN9X
     board_family = BOARD_FAMILY_AVR
 elif options[optcount] == "mega2560":
     command_options["PCB"] = "MEGA2560"
-    command_options["EXT"] = "FRSKY"
+    command_options["TELEMETRY"] = "FRSKY"
     firmware_options = options_mega2560
     maxsize = 65536 * 4
     board = BOARD_GRUVIN9X

@@ -78,11 +78,11 @@ inline void MIXER_RESET()
 
 inline void TELEMETRY_RESET()
 {
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   memclear(&telemetryData, sizeof(telemetryData));
   TELEMETRY_RSSI() = 100;
 #endif
-#if defined(CPUARM) && defined(FRSKY)
+#if defined(CPUARM) && defined(TELEMETRY_FRSKY)
   for (int i=0; i<MAX_SENSORS; i++) {
     telemetryItems[i].clear();
   }

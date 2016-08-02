@@ -380,14 +380,14 @@ enum TelemetrySensorFormula
 #endif
 
 enum VarioSource {
-#if !defined(FRSKY_SPORT)
+#if !defined(TELEMETRY_FRSKY_SPORT)
   VARIO_SOURCE_ALTI,
   VARIO_SOURCE_ALTI_PLUS,
 #endif
   VARIO_SOURCE_VSPEED,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   VARIO_SOURCE_DTE,
 #endif
   VARIO_SOURCE_COUNT,

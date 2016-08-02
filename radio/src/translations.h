@@ -141,7 +141,7 @@ extern const pm_char STR_OPEN9X[];
 #define OFS_VFSWRESET          (OFS_VFSWFUNC + sizeof(TR_VFSWFUNC))
 #define OFS_FUNCSOUNDS         (OFS_VFSWRESET + sizeof(TR_VFSWRESET))
 #define OFS_VTELEMCHNS         (OFS_FUNCSOUNDS + sizeof(TR_FUNCSOUNDS))
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     #define OFS_VTELEMUNIT      (OFS_VTELEMCHNS + sizeof(TR_VTELEMCHNS))
     #define OFS_VALARM          (OFS_VTELEMUNIT + sizeof(TR_VTELEMUNIT))
@@ -231,7 +231,7 @@ extern const pm_char STR_OPEN9X[];
 #else
   #define OFS_MAVLINK_BAUDS	(OFS_VTRAINERMODES)
 #endif
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define OFS_MAVLINK_AC_MODES	(OFS_MAVLINK_BAUDS + sizeof(TR_MAVLINK_BAUDS))
   #define OFS_MAVLINK_AP_MODES	(OFS_MAVLINK_AC_MODES + sizeof(TR_MAVLINK_AC_MODES))
   #define OFS_SPARE		(OFS_MAVLINK_AP_MODES + sizeof(TR_MAVLINK_AP_MODES))
@@ -273,7 +273,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_FUNCSOUNDS          (STR_OPEN9X + OFS_FUNCSOUNDS)
 #define STR_VTELEMCHNS          (STR_OPEN9X + OFS_VTELEMCHNS)
 
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
   #if defined(CPUARM)
     #define STR_VTELEMUNIT      (STR_OPEN9X + OFS_VTELEMUNIT)
     #define STR_VOLTSRC         (STR_OPEN9X + OFS_VOLTSRC)
@@ -359,7 +359,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_VANTENNATYPES     (STR_OPEN9X + OFS_VANTENNATYPES)
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define STR_MAVLINK_BAUDS	(STR_OPEN9X + OFS_MAVLINK_BAUDS)
   #define STR_MAVLINK_AC_MODES	(STR_OPEN9X + OFS_MAVLINK_AC_MODES)
   #define STR_MAVLINK_AP_MODES	(STR_OPEN9X + OFS_MAVLINK_AP_MODES)
@@ -611,7 +611,7 @@ extern const pm_char STR_SENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 extern const pm_char STR_LIMIT[];
 #endif
 
@@ -632,7 +632,7 @@ extern const pm_char STR_POWEROFF[];
 
 extern const pm_char STR_BATT_CALIB[];
 
-#if defined(CPUARM) || defined(FRSKY)
+#if defined(CPUARM) || defined(TELEMETRY_FRSKY)
 extern const pm_char STR_VOLTAGE[];
 extern const pm_char STR_CURRENT[];
 #endif
@@ -975,7 +975,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MODULE_RANGE[];
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   extern const pm_char STR_MAVLINK_RC_RSSI_SCALE_LABEL[];
   extern const pm_char STR_MAVLINK_PC_RSSI_EN_LABEL[];
   extern const pm_char STR_MAVMENUSETUP_TITLE[];

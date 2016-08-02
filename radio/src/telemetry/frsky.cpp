@@ -163,7 +163,7 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
 #endif
   } // switch
 
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   if (IS_FRSKY_SPORT_PROTOCOL() && telemetryRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
     processSportPacket(telemetryRxBuffer);
     dataState = STATE_DATA_IDLE;

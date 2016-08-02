@@ -215,7 +215,7 @@ void menuGeneralSetup(uint8_t event)
 
       case ITEM_SETUP_BEEP_MODE:
         g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
         break;
@@ -402,7 +402,7 @@ void menuGeneralSetup(uint8_t event)
       }
 #endif
 
-#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
+#if defined(TELEMETRY_FRSKY) && defined(FRSKY_HUB) && defined(GPS)
       case ITEM_SETUP_LABEL_GPS:
         lcd_putsLeft(y, STR_GPS);
         break;
@@ -456,7 +456,7 @@ void menuGeneralSetup(uint8_t event)
         break;
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
       case ITEM_MAVLINK_BAUD:
         g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
         break;

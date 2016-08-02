@@ -218,7 +218,7 @@ bool isSourceAvailableInCustomSwitches(int source)
 {
   bool result = isSourceAvailable(source);
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   if (result && source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
     div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
     result = isTelemetryFieldComparisonAvailable(qr.quot);

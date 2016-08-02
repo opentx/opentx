@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 
 void telemetryEnableTx(void)
 {

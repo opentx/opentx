@@ -22,7 +22,7 @@
 
 #ifdef INIT_IMPORT
 #undef INIT_IMPORT
-#ifdef FRSKY
+#ifdef TELEMETRY_FRSKY
 telemetryStreaming = 20;
 #endif
 #endif

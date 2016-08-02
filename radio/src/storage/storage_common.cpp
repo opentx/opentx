@@ -89,7 +89,7 @@ void postModelLoad(bool alarms)
   resumeMixerCalculations();
   // TODO pulses should be started after mixer calculations ...
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   frskySendAlarms();
 #endif
 

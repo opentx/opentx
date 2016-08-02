@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
 #include "view_mavlink.h"
 #endif
 

@@ -439,7 +439,7 @@ enum TelemetrySource {
   TELEM_GPS_TIME,
   TELEM_CSW_MAX = TELEM_MAX_POWER,
   TELEM_NOUSR_MAX = TELEM_A2,
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
 #else
   TELEM_DISPLAY_MAX = TELEM_TIMER2, // because used also in PlayValue
@@ -452,9 +452,9 @@ enum TelemetrySource {
   #define NUM_TELEMETRY      TELEM_CSW_MAX
 #elif defined(WS_HOW_HIGH)
   #define NUM_TELEMETRY      TELEM_ALT
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
   #define NUM_TELEMETRY      TELEM_A2
-#elif defined(MAVLINK)
+#elif defined(TELEMETRY_MAVLINK)
   #define NUM_TELEMETRY      4
 #else
   #define NUM_TELEMETRY      TELEM_TIMER2
@@ -1018,7 +1018,7 @@ enum ResetFunctionParam {
   FUNC_RESET_TIMER3,
 #endif
   FUNC_RESET_FLIGHT,
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   FUNC_RESET_TELEMETRY,
 #endif
 #if ROTARY_ENCODERS > 0

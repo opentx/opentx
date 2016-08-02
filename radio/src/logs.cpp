@@ -136,7 +136,7 @@ void writeHeader()
   f_puts("Time,", &g_oLogFile);
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 #if !defined(CPUARM)
   f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
 #if defined(FRSKY_HUB)
@@ -234,7 +234,7 @@ void writeLogs()
       f_printf(&g_oLogFile, "%d,", tmr10ms);
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 #if !defined(CPUARM)
       f_printf(&g_oLogFile, "%d,%d,%d,", telemetryStreaming, RAW_FRSKY_MINMAX(telemetryData.rssi[0]), RAW_FRSKY_MINMAX(telemetryData.rssi[1]));
       for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {

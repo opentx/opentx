@@ -191,7 +191,7 @@ void processMultiplexAna()
 #if !defined(SIMU) && (defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED))
   #define THR_STATE()   pf7_digital[PF7_THR]
   #define AIL_STATE()   pf7_digital[PF7_AIL]
-#elif defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
+#elif defined(TELEMETRY_JETI) || defined(TELEMETRY_FRSKY) || defined(TELEMETRY_ARDUPILOT) || defined(TELEMETRY_NMEA) || defined(TELEMETRY_MAVLINK)
   #define THR_STATE()   (PINC & (1<<INP_C_ThrCt))
   #define AIL_STATE()   (PINC & (1<<INP_C_AileDR))
 #else

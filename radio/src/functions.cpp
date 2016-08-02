@@ -98,7 +98,7 @@ PLAY_FUNCTION(playValue, source_t idx)
     case MIXSRC_FIRST_TELEM+TELEM_TIMER2-1:
       PLAY_DURATION(val, 0);
       break;
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
     case MIXSRC_FIRST_TELEM+TELEM_RSSI_TX-1:
     case MIXSRC_FIRST_TELEM+TELEM_RSSI_RX-1:
       PLAY_NUMBER(val, 1+UNIT_DB, 0);
@@ -341,7 +341,7 @@ void evalFunctions()
               case FUNC_RESET_FLIGHT:
                 flightReset();
                 break;
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
               case FUNC_RESET_TELEMETRY:
                 telemetryReset();
                 break;
@@ -537,7 +537,7 @@ void evalFunctions()
           }
 #endif
 
-#if defined(FRSKY) && defined(VARIO)
+#if defined(TELEMETRY_FRSKY) && defined(VARIO)
           case FUNC_VARIO:
             newActiveFunctions |= (1 << FUNCTION_VARIO);
             break;

@@ -604,7 +604,7 @@ PACK(struct FrSkyTelemetryData {
  * MAVLINK Telemetry structure
  */
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
 PACK(struct MavlinkTelemetryData {
   uint8_t rc_rssi_scale:4;
   uint8_t pc_rssi_en:1;
@@ -758,9 +758,9 @@ typedef uint8_t swarnenable_t;
   #define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define TELEMETRY_DATA MavlinkTelemetryData mavlink;
-#elif defined(FRSKY) || !defined(PCBSTD)
+#elif defined(TELEMETRY_FRSKY) || !defined(PCBSTD)
   #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky);
 #else
   #define TELEMETRY_DATA

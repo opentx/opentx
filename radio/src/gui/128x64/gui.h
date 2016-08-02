@@ -63,7 +63,7 @@ inline void drawSleepBitmap()
 #define LOAD_MODEL_BITMAP()
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 #define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuTelemetryFrsky
 #else
 #define IS_TELEMETRY_VIEW_DISPLAYED()  false

@@ -352,7 +352,7 @@
 
 #define LEN_VFSWRESET          TR("\004", "\011")  /*9 decimal*/
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   #define TR_FSW_RESET_TELEM   TR("Telm", "Telemetra")
 #else
   #define TR_FSW_RESET_TELEM
@@ -462,7 +462,7 @@
 #endif
 
 #define LEN_VARIOSRC           "\004"
-#if defined(FRSKY_SPORT)
+#if defined(TELEMETRY_FRSKY_SPORT)
   #define TR_VARIOSRC          "VSpd""A1\0 ""A2\0 ""dTE\0"
 #else
   #define TR_VARIOSRC          "Wys\0""Wys+""VSpd""A1\0 ""A2\0"
@@ -587,7 +587,7 @@
 #define LEN_VFAILSAFE          "\011" /*9 decimal*/
 #define TR_VFAILSAFE           "Brak   \0 ""Utrzymuj\0""Własne  \0""0 sygnału""Odbiornik"
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
   #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
   #define LEN_MAVLINK_AC_MODES "\011" /*9 decimal*/
@@ -1065,7 +1065,7 @@
 #define TR_CONFIRMRESET        "WYkasować wszytkie modele?    "
 #define TR_TO_MANY_LUA_SCRIPTS "Za dużo skryptów Lua!"
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "MaksRSSI"
   #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
   #define TR_MAVMENUSETUP_TITLE           "Ustaw.Mavlink"

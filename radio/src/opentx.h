@@ -97,7 +97,7 @@
   #define CASE_PWM_BACKLIGHT(x)
 #endif
 
-#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
+#if defined(TELEMETRY_FRSKY) && defined(FRSKY_HUB) && defined(GPS)
   #define CASE_GPS(x) x,
 #else
   #define CASE_GPS(x)
@@ -121,13 +121,13 @@
   #define CASE_SPLASH(x)
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   #define CASE_FRSKY(x) x,
 #else
   #define CASE_FRSKY(x)
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define CASE_MAVLINK(x) x,
 #else
   #define CASE_MAVLINK(x)
@@ -1555,7 +1555,7 @@ extern bar_threshold_t barsThresholds[THLD_MAX];
 #define FILL_THRESHOLD(idx, val)
 #endif
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
   ls_telemetry_value_t minTelemValue(source_t channel);
   ls_telemetry_value_t maxTelemValue(source_t channel);
 #else
@@ -1581,7 +1581,7 @@ getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
   #define maxBarTelemValue(channel) maxTelemValue(channel)
 #endif
 
-#if defined(FRSKY) || defined(CPUARM)
+#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
 lcdint_t applyChannelRatio(source_t channel, lcdint_t val);
 #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
 #endif
@@ -1600,7 +1600,7 @@ inline int div_and_round(int num, int den)
   return num / den;
 }
 
-#if defined(FRSKY)
+#if defined(TELEMETRY_FRSKY)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
 
 extern const pm_uint8_t bchunit_ar[];
@@ -1652,7 +1652,7 @@ void varioWakeup();
 
 #if defined(CPUARM)
 void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
-#elif defined(FRSKY)
+#elif defined(TELEMETRY_FRSKY)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
   if (IS_IMPERIAL_ENABLE()) {
@@ -1695,7 +1695,7 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
   #define IS_USR_PROTO_WS_HOW_HIGH() (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
 #endif
 
-#if defined(FRSKY) && defined(FRSKY_HUB) && defined(GPS)
+#if defined(TELEMETRY_FRSKY) && defined(FRSKY_HUB) && defined(GPS)
   #define IS_GPS_AVAILABLE()         IS_USR_PROTO_FRSKY_HUB()
 #else
   #define IS_GPS_AVAILABLE()         (0)
