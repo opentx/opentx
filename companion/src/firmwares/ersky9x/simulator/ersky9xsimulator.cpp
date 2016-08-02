@@ -22,7 +22,7 @@
 #define PCBSKY9X
 #define PCBSKY
 #define STAMP
-#define FRSKY
+#define TELEMETRY_FRSKY
 #define FRSKY_HUB
 #define WS_HOW_HIGH
 #define TEMPLATES

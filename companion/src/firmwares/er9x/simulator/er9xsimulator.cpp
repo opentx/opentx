@@ -19,7 +19,7 @@
 
 #define SIMU
 #define SIMU_EXCEPTIONS
-#define FRSKY
+#define TELEMETRY_FRSKY
 #define PHASES
 #undef min
 #undef max
