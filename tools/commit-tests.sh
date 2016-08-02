@@ -18,9 +18,14 @@ make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
-# OpenTX on 9X stock with Mavlink telemetry
+# OpenTX on 9X stock with Ardupilot telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=MAVLINK ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=ARDUPILOT ${SRCDIR}
+make -j2 firmware
+
+# OpenTX on 9X stock with JETI telemetry
+rm -rf *
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=JETI ${SRCDIR}
 make -j2 firmware
 
 # OpenTX on Mega2560
