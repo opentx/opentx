@@ -76,7 +76,7 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
-  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
 
   int k = 0;
   int sub = menuVerticalPosition;

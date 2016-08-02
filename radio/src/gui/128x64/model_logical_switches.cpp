@@ -81,7 +81,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
     uint8_t cstate = lswFamily(cs->func);
     switch(i) {
       case LS_FIELD_FUNCTION:
-        lcd_putsLeft(y, STR_FUNC);
+        lcdDrawTextAlignedLeft(y, STR_FUNC);
         lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
         if (attr) {
           cs->func = checkIncDec(event, cs->func, 0, LS_FUNC_MAX, EE_MODEL, isLogicalSwitchFunctionAvailable);
@@ -101,7 +101,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
         break;
       case LS_FIELD_V1:
       {
-        lcd_putsLeft(y, STR_V1);
+        lcdDrawTextAlignedLeft(y, STR_V1);
         int v1_min=0, v1_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_EDGE) {
           putsSwitches(CSWONE_2ND_COLUMN, y, v1_val, attr);
@@ -125,7 +125,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
       }
       case LS_FIELD_V2:
       {
-        lcd_putsLeft(y, STR_V2);
+        lcdDrawTextAlignedLeft(y, STR_V2);
         int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
           putsSwitches(CSWONE_2ND_COLUMN, y, cs->v2, attr);
@@ -185,12 +185,12 @@ void menuModelLogicalSwitchOne(uint8_t event)
         break;
       }
       case LS_FIELD_ANDSW:
-        lcd_putsLeft(y, STR_AND_SWITCH);
+        lcdDrawTextAlignedLeft(y, STR_AND_SWITCH);
         putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW);
         break;
       case LS_FIELD_DURATION:
-        lcd_putsLeft(y, STR_DURATION);
+        lcdDrawTextAlignedLeft(y, STR_DURATION);
         if (cs->duration > 0)
           lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->duration, attr|PREC1|LEFT);
         else
@@ -198,7 +198,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
         break;
       case LS_FIELD_DELAY:
-        lcd_putsLeft(y, STR_DELAY);
+        lcdDrawTextAlignedLeft(y, STR_DELAY);
         if (cs->delay > 0)
           lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->delay, attr|PREC1|LEFT);
         else
@@ -211,7 +211,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
 void menuModelLogicalSwitches(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1);
+  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH+1);
 
   coord_t y = 0;
   uint8_t k = 0;
@@ -290,7 +290,7 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
-  MENU(STR_MENULOGICALSWITCHES, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
 
   uint8_t   k = 0;
   int8_t    sub = menuVerticalPosition - 1;

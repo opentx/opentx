@@ -23,7 +23,7 @@
 
 void NMEA_Init(void);
 void NMEA_EnableRXD (void);
-void menuTelemetryNMEA(uint8_t event);
+void menuViewTelemetryNMEA(uint8_t event);
 
 #endif // _NMEA_H_
 

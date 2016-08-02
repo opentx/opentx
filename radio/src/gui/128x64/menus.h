@@ -21,10 +21,12 @@
 #ifndef _MENUS_H_
 #define _MENUS_H_
 
-#define MENUS_SCROLLBAR_WIDTH  0
-#define MENU_COLUMNS           1
-#define COLUMN_X               0
-#define lcd_putsColumnLeft(x, y, str) lcd_putsLeft(y, str)
+#include "keys.h"
+
+#define MENUS_SCROLLBAR_WIDTH          0
+#define MENU_COLUMNS                   1
+#define COLUMN_X                       0
+#define drawFieldLabel(x, y, str)      lcdDrawTextAlignedLeft(y, str)
 
 // Menus related stuff ...
 #if defined(SDCARD)
@@ -33,7 +35,6 @@
   typedef uint8_t vertpos_t;
 #endif
 
-typedef uint8_t check_event_t;
 #define horzpos_t uint8_t
 
 #if defined(CPUARM)
@@ -77,60 +78,62 @@ void menuFirstCalib(uint8_t event);
 
 void onMainViewMenu(const char * result);
 void menuMainView(uint8_t event);
-void menuTelemetryFrsky(uint8_t event);
-void menuTelemetryMavlinkSetup(uint8_t event);
+void menuViewTelemetryFrsky(uint8_t event);
+void menuViewTelemetryMavlink(uint8_t event);
 
-void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
+void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
-enum EnumTabDiag
+enum MenuRadioIndexes
 {
-  e_Setup,
-  CASE_SDCARD(e_Sd)
-  CASE_CPUARM(e_GeneralCustomFunctions)
-  e_Trainer,
-  e_Vers,
-  e_Keys,
-  e_Ana,
-  CASE_CPUARM(e_Hardware)
-  e_Calib
+  MENU_RADIO_SETUP,
+  CASE_SDCARD(MENU_RADIO_SD_MANAGER)
+  CASE_CPUARM(MENU_RADIO_SPECIAL_FUNCTIONS)
+  MENU_RADIO_TRAINER,
+  MENU_RADIO_VERSION,
+  MENU_RADIO_DIAG_KEYS,
+  MENU_RADIO_DIAG_ANALOGS,
+  CASE_CPUARM(MENU_RADIO_HARDWARE)
+  MENU_RADIO_CALIBRATION,
+  MENU_RADIO_PAGES_COUNT
 };
 
-void menuGeneralSetup(uint8_t event);
-void menuGeneralSdManager(uint8_t event);
-void menuGeneralCustomFunctions(uint8_t event);
-void menuGeneralTrainer(uint8_t event);
-void menuGeneralVersion(uint8_t event);
-void menuGeneralDiagKeys(uint8_t event);
-void menuGeneralDiagAna(uint8_t event);
-void menuGeneralHardware(uint8_t event);
-void menuGeneralCalib(uint8_t event);
+void menuRadioSetup(uint8_t event);
+void menuRadioSdManager(uint8_t event);
+void menuRadioSpecialFunctions(uint8_t event);
+void menuRadioTrainer(uint8_t event);
+void menuRadioVersion(uint8_t event);
+void menuRadioDiagKeys(uint8_t event);
+void menuRadioDiagAnalogs(uint8_t event);
+void menuRadioHardware(uint8_t event);
+void menuRadioCalibration(uint8_t event);
 
 static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
-  menuGeneralSetup,
-  CASE_SDCARD(menuGeneralSdManager)
-  CASE_CPUARM(menuGeneralCustomFunctions)
-  menuGeneralTrainer,
-  menuGeneralVersion,
-  menuGeneralDiagKeys,
-  menuGeneralDiagAna,
-  CASE_CPUARM(menuGeneralHardware)
-  menuGeneralCalib
+  menuRadioSetup,
+  CASE_SDCARD(menuRadioSdManager)
+  CASE_CPUARM(menuRadioSpecialFunctions)
+  menuRadioTrainer,
+  menuRadioVersion,
+  menuRadioDiagKeys,
+  menuRadioDiagAnalogs,
+  CASE_CPUARM(menuRadioHardware)
+  menuRadioCalibration
 };
 
 enum EnumTabModel {
-  e_ModelSelect,
-  e_ModelSetup,
-  CASE_HELI(e_Heli)
-  CASE_FLIGHT_MODES(e_FlightModesAll)
-  e_InputsAll,
-  e_MixAll,
-  e_Limits,
-  CASE_CURVES(e_CurvesAll)
-  e_LogicalSwitches,
-  e_CustomFunctions,
-  CASE_FRSKY(e_Telemetry)
-  CASE_MAVLINK(e_MavSetup)
-  CASE_TEMPLATES(e_Templates)
+  MENU_MODEL_SELECT,
+  MENU_MODEL_SETUP,
+  CASE_HELI(MENU_MODEL_HELI)
+  CASE_FLIGHT_MODES(MENU_MODEL_FLIGHT_MODES)
+  MENU_MODEL_INPUTS,
+  MENU_MODEL_MIXES,
+  MENU_MODEL_OUTPUTS,
+  CASE_CURVES(MENU_MODEL_CURVES)
+  MENU_MODEL_LOGICAL_SWITCHES,
+  MENU_MODEL_SPECIAL_FUNCTIONS,
+  CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
+  CASE_MAVLINK(MENU_MODEL_TELEMETRY_MAVLINK)
+  CASE_TEMPLATES(MENU_MODEL_TEMPLATES)
+  MENU_MODEL_PAGES_COUNT
 };
 
 void menuModelSelect(uint8_t event);
@@ -144,8 +147,9 @@ void menuModelCurvesAll(uint8_t event);
 void menuModelCurveOne(uint8_t event);
 void menuModelGVars(uint8_t event);
 void menuModelLogicalSwitches(uint8_t event);
-void menuModelCustomFunctions(uint8_t event);
-void menuModelTelemetry(uint8_t event);
+void menuModelSpecialFunctions(uint8_t event);
+void menuModelTelemetryFrsky(uint8_t event);
+void menuModelTelemetryMavlink(uint8_t event);
 void menuModelTemplates(uint8_t event);
 void menuModelExpoOne(uint8_t event);
 
@@ -159,9 +163,9 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelLimits,
   CASE_CURVES(menuModelCurvesAll)
   menuModelLogicalSwitches,
-  menuModelCustomFunctions,
-  CASE_FRSKY(menuModelTelemetry)
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  menuModelSpecialFunctions,
+  CASE_FRSKY(menuModelTelemetryFrsky)
+  CASE_MAVLINK(menuModelTelemetryMavlink)
   CASE_TEMPLATES(menuModelTemplates)
 };
 
@@ -334,9 +338,9 @@ int8_t checkIncDecMovedSwitch(int8_t val);
 #define NAVIGATION_LINE_BY_LINE  0
 #define CURSOR_ON_LINE()         (0)
 
-void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
-void check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
-void check_submenu_simple(check_event_t event, uint8_t maxrow);
+void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
+void check_submenu_simple(event_t event, uint8_t maxrow);
 
 void title(const pm_char * s);
 #define TITLE(str) title(str)
@@ -446,8 +450,8 @@ extern uint8_t s_curveChan;
 #define WARNING_LINE_Y                 3*FH
 
 void drawMessageBox();
-void displayPopup(const pm_char * pstr);
-void displayWarning(uint8_t event);
+void showMessageBox(const pm_char * pstr);
+void runPopupWarning(uint8_t event);
 
 #if defined(CPUARM)
   extern void (*popupFunc)(uint8_t event);
@@ -466,13 +470,13 @@ void displayWarning(uint8_t event);
   #define SET_WARNING_INFO(...)
 #elif defined(CPUARM)
   #define DISPLAY_WARNING              (*popupFunc)
-  #define POPUP_WARNING(s)             (warningText = s, warningInfoText = 0, popupFunc = displayWarning)
-  #define POPUP_CONFIRMATION(s)        (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
+  #define POPUP_WARNING(s)             (warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
+  #define POPUP_CONFIRMATION(s)        (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = runPopupWarning)
   #define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
   #define WARNING_INFO_FLAGS           warningInfoFlags
   #define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
 #else
-  #define DISPLAY_WARNING              displayWarning
+  #define DISPLAY_WARNING              runPopupWarning
   #define POPUP_WARNING(s)             warningText = s
   #define POPUP_CONFIRMATION(s)        (warningText = s, warningType = WARNING_TYPE_CONFIRM)
   #define WARNING_INFO_FLAGS           ZCHAR

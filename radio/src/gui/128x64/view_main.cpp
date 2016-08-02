@@ -356,7 +356,7 @@ void menuMainView(uint8_t event)
 
     CASE_EVT_ROTARY_LONG
     case EVT_KEY_GENERAL_MENU:
-      pushMenu(menuGeneralSetup);
+      pushMenu(menuRadioSetup);
       killEvents(event);
       break;
 #endif
@@ -375,18 +375,18 @@ void menuMainView(uint8_t event)
     case EVT_KEY_TELEMETRY:
 #if defined(TELEMETRY_FRSKY)
       if (!IS_FAI_ENABLED())
-        chainMenu(menuTelemetryFrsky);
+        chainMenu(menuViewTelemetryFrsky);
 #elif defined(TELEMETRY_JETI)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
-      chainMenu(menuTelemetryJeti);
+      chainMenu(menuViewTelemetryJeti);
 #elif defined(TELEMETRY_ARDUPILOT)
       ARDUPILOT_EnableRXD(); // enable ArduPilot-Telemetry reception
-      chainMenu(menuTelemetryArduPilot);
+      chainMenu(menuViewTelemetryArduPilot);
 #elif defined(TELEMETRY_NMEA)
       NMEA_EnableRXD(); // enable NMEA-Telemetry reception
-      chainMenu(menuTelemetryNMEA);
+      chainMenu(menuViewTelemetryNMEA);
 #elif defined(TELEMETRY_MAVLINK)
-      chainMenu(menuTelemetryMavlink);
+      chainMenu(menuViewTelemetryMavlink);
 #else
       chainMenu(menuStatisticsDebug);
 #endif

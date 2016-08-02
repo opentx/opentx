@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuModelTelemetryItems {
+enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_PROTOCOL_TYPE,
   ITEM_TELEMETRY_RSSI_LABEL,
   ITEM_TELEMETRY_RSSI_ALARM1,
@@ -123,7 +123,7 @@ enum SensorFields {
 #define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW)
 
-bool menuModelSensor(evt_t event)
+bool menuModelSensor(event_t event)
 {
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
@@ -398,7 +398,7 @@ void onSensorMenu(const char *result)
   }
 }
 
-bool menuModelTelemetry(evt_t event)
+bool menuModelTelemetryFrsky(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
@@ -407,7 +407,7 @@ bool menuModelTelemetry(evt_t event)
     }
   }
 
-  MENU(STR_MENUTELEMETRY, MODEL_ICONS, menuTabModel, e_Telemetry, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
+  MENU(STR_MENUTELEMETRY, MODEL_ICONS, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;

@@ -366,7 +366,7 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
 
 bool isSwitchAvailableInCustomFunctions(int swtch)
 {
-  if (menuHandlers[menuLevel] == menuModelCustomFunctions)
+  if (menuHandlers[menuLevel] == menuModelSpecialFunctions)
     return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
@@ -418,7 +418,7 @@ bool isLogicalSwitchFunctionAvailable(int function)
 bool isAssignableFunctionAvailable(int function)
 {
 #if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
-  bool modelFunctions = (menuHandlers[menuLevel] == menuModelCustomFunctions);
+  bool modelFunctions = (menuHandlers[menuLevel] == menuModelSpecialFunctions);
 #endif
 
   switch (function) {
@@ -525,21 +525,26 @@ bool isRfProtocolAvailable(int protocol)
 #if defined(CPUARM)
 bool isTelemetryProtocolAvailable(int protocol)
 {
-
 #if defined(PCBTARANIS)
-  if(protocol == PROTOCOL_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode != UART_MODE_TELEMETRY)
+  if (protocol == PROTOCOL_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode != UART_MODE_TELEMETRY) {
     return false;
+  }
 #endif
-  if (protocol== PROTOCOL_PULSES_CROSSFIRE)
+  
+  if (protocol== PROTOCOL_PULSES_CROSSFIRE) {
     return false;
+  }
 
 #if !defined(MULTIMODULE)
-  if (protocol== PROTOCOL_SPEKTRUM)
+  if (protocol== PROTOCOL_SPEKTRUM) {
     return false;
+  }
 #endif
+  
 #if defined(PBHORUS)
-  if (protocol == PROTOCOL_FRSKY_D_SECONDARY)
+  if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     return false;
+  }
 #endif
 
   return true;

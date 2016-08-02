@@ -98,7 +98,7 @@ void menuModelPhaseOne(uint8_t event)
         fm->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, fm->swtch, attr, event);
         break;
       case ITEM_MODEL_PHASE_TRIMS:
-        lcd_putsLeft(y, STR_TRIMS);
+        lcdDrawTextAlignedLeft(y, STR_TRIMS);
         for (uint8_t t=0; t<NUM_STICKS; t++) {
           putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
           if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
@@ -115,7 +115,7 @@ void menuModelPhaseOne(uint8_t event)
 
 #if ROTARY_ENCODERS > 0
       case ITEM_MODEL_PHASE_ROTARY_ENCODERS:
-        lcd_putsLeft(y, STR_ROTARY_ENCODER);
+        lcdDrawTextAlignedLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
           if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
@@ -141,7 +141,7 @@ void menuModelPhaseOne(uint8_t event)
 
 #if defined(GVARS) && !defined(PCBSTD)
       case ITEM_MODEL_PHASE_GVARS_LABEL:
-        lcd_putsLeft(y, STR_GLOBAL_VARS);
+        lcdDrawTextAlignedLeft(y, STR_GLOBAL_VARS);
         break;
 
       default:
@@ -205,7 +205,7 @@ void menuModelPhaseOne(uint8_t event)
 
 void menuModelFlightModesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, e_FlightModesAll, 1+MAX_FLIGHT_MODES+1);
+  SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, MENU_MODEL_FLIGHT_MODES, 1+MAX_FLIGHT_MODES+1);
 
   int8_t sub = menuVerticalPosition - 1;
 
@@ -262,7 +262,7 @@ void menuModelFlightModesAll(uint8_t event)
   if (menuVerticalOffset != MAX_FLIGHT_MODES-(LCD_LINES-2)) return;
 #endif
 
-  lcd_putsLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
+  lcdDrawTextAlignedLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
   putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
   if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
     lcdInvertLastLine();

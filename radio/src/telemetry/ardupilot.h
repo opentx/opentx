@@ -22,6 +22,6 @@
 #define _ARDUPILOT_H_
 void ARDUPILOT_Init(void);
 void ARDUPILOT_EnableRXD (void);
-void menuTelemetryArduPilot(uint8_t event);
+void menuViewTelemetryArduPilot(uint8_t event);
 #endif // _ARDUPILOT_H_
 

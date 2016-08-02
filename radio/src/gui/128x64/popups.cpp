@@ -45,7 +45,7 @@ void drawMessageBox()
   // could be a place for a warningInfoText
 }
 
-void displayPopup(const pm_char * pstr)
+void showMessageBox(const pm_char * pstr)
 {
   warningText = pstr;
   drawMessageBox();
@@ -57,7 +57,7 @@ const pm_uchar asterisk_lbm[] PROGMEM = {
 #include "asterisk.lbm"
 };
 
-void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SOUND_ARG)
+void showAlertBox(const pm_char * title, const pm_char * text, const char * action ALERT_SOUND_ARG)
 {
   lcdClear();
   lcd_img(2, 0, asterisk_lbm, 0, 0);
@@ -73,11 +73,13 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
 #endif
 
   lcdDrawFilledRect(0, 0, LCD_W, 32);
-  if (t) lcd_putsLeft(5*FH, t);
-  if (last) {
-    lcd_putsLeft(7*FH, last);
-    AUDIO_ERROR_MESSAGE(sound);
+  if (text) {
+    lcdDrawTextAlignedLeft(5*FH, text);
   }
+  if (action) {
+    lcdDrawTextAlignedLeft(7*FH, action);
+  }
+  AUDIO_ERROR_MESSAGE(sound);
 
 #undef MESSAGE_LCD_OFFSET
 
@@ -86,7 +88,7 @@ void message(const pm_char *title, const pm_char *t, const char *last MESSAGE_SO
   clearKeyEvents();
 }
 
-void displayWarning(uint8_t event)
+void runPopupWarning(uint8_t event)
 {
   warningResult = false;
   drawMessageBox();

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuGeneralHwItems {
+enum menuRadioHwItems {
   ITEM_SETUP_HW_CALIBRATION,
   ITEM_SETUP_HW_LABEL_STICKS,
   ITEM_SETUP_HW_STICK1,
@@ -57,9 +57,9 @@ enum menuGeneralHwItems {
 #define BLUETOOTH_ROWS                 1,
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
-bool menuGeneralHardware(evt_t event)
+bool menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_SETUP_HW_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -75,7 +75,7 @@ bool menuGeneralHardware(evt_t event)
       case ITEM_SETUP_HW_CALIBRATION:
         lcdDrawText(MENUS_MARGIN_LEFT, y, "Calibration", attr);
         if (attr && s_editMode>0) {
-          pushMenu(menuGeneralCalib);
+          pushMenu(menuRadioCalibration);
         }
         break;
       case ITEM_SETUP_HW_LABEL_STICKS:

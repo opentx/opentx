@@ -83,7 +83,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 
 void menuModelDisplay(uint8_t event)
 {
-  MENU(STR_MENU_DISPLAY, menuTabModel, e_Display, ITEM_DISPLAY_MAX, { LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
+  MENU(STR_MENU_DISPLAY, menuTabModel, MENU_MODEL_DISPLAY, ITEM_DISPLAY_MAX, { LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
@@ -98,11 +98,11 @@ void menuModelDisplay(uint8_t event)
 
     switch (k) {
       case ITEM_DISPLAY_TOP_BAR_LABEL:
-        lcd_putsLeft(y, STR_TOP_BAR);
+        lcdDrawTextAlignedLeft(y, STR_TOP_BAR);
         break;
 
       case ITEM_DISPLAY_TOP_BAR_VOLTAGE:
-        lcd_putsLeft(y, STR_VOLTAGE);
+        lcdDrawTextAlignedLeft(y, STR_VOLTAGE);
         putsMixerSource(DISPLAY_COL2, y, g_model.frsky.voltsSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.voltsSource-1) : 0, attr);
         if (attr) {
           g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
@@ -110,7 +110,7 @@ void menuModelDisplay(uint8_t event)
         break;
 
       case ITEM_DISPLAY_TOP_BAR_ALTITUDE:
-        lcd_putsLeft(y, STR_ALTITUDE);
+        lcdDrawTextAlignedLeft(y, STR_ALTITUDE);
         putsMixerSource(DISPLAY_COL2, y, g_model.frsky.altitudeSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.altitudeSource-1) : 0, attr);
         if (attr) {
           g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);

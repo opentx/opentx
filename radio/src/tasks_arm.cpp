@@ -247,7 +247,7 @@ void menusTask(void * pdata)
   drawSleepBitmap();
 #else
   lcdClear();
-  displayPopup(STR_SHUTDOWN);
+  showMessageBox(STR_SHUTDOWN);
 #endif
 
   opentxClose();

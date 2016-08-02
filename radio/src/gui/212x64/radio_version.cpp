@@ -65,11 +65,11 @@ void backupEeprom()
   storageCheck(true);
 }
 
-void menuGeneralVersion(uint8_t event)
+void menuRadioVersion(uint8_t event)
 {
   if (warningResult) {
     warningResult = 0;
-    displayPopup(STR_STORAGE_FORMAT);
+    showMessageBox(STR_STORAGE_FORMAT);
     storageEraseAll(false);
 #if !defined(SIMU)
     NVIC_SystemReset();
@@ -82,14 +82,14 @@ void menuGeneralVersion(uint8_t event)
     getCPUUniqueID(reusableBuffer.version.id);
   }
   
-  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
+  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+1, vers_stamp);
-  lcd_putsLeft(MENU_HEADER_HEIGHT+4*FH+1, "UID\037\033:");
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1, vers_stamp);
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+4*FH+1, "UID\037\033:");
   lcdDrawText(5*FW+3, MENU_HEADER_HEIGHT+4*FH+1, reusableBuffer.version.id);
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
-  lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
   lcdDrawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {

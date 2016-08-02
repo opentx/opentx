@@ -32,20 +32,20 @@ const MenuHandlerFunc menuTabModel[] = {
   CASE_GVARS(menuModelGVars)
 #endif
   menuModelLogicalSwitches,
-  menuModelCustomFunctions,
+  menuModelSpecialFunctions,
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  CASE_FRSKY(menuModelTelemetry)
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  CASE_FRSKY(menuModelTelemetryFrsky)
+  CASE_MAVLINK(menuModelTelemetryMavlink)
   CASE_TEMPLATES(menuModelTemplates)
 };
 
 extern uint8_t s_curveChan;
 
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr);
 
-uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, uint8_t delay)
+uint8_t editDelay(const coord_t x, const coord_t y, const event_t event, const uint8_t attr, uint8_t delay)
 {
   lcdDrawNumber(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
@@ -60,7 +60,7 @@ uint8_t s_copySrcCh;
 
 uint8_t editNameCursorPos = 0;
 
-void editName(coord_t x, coord_t y, char * name, uint8_t size, evt_t event, uint8_t active, LcdFlags flags)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags flags)
 {
   if (active && s_editMode <= 0) {
     flags |= INVERS;

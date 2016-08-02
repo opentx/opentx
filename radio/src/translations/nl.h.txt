@@ -829,7 +829,7 @@
 
 #define TR_MENUDATEANDTIME     "DATUM EN TIJD"
 #define TR_MENUTRAINER         "LERAAR/LEERLING"
-#define TR_MENUGLOBALFUNCS     "GLOBALE FUNKTIES"
+#define TR_MENUSPECIALFUNCS    "GLOBALE FUNKTIES"
 #define TR_MENUVERSION         "VERSIE"
 #define TR_MENUDIAG            TR("Schak.", "Schakelaar-Test")
 #define TR_MENUANA             "Analoog-Test"

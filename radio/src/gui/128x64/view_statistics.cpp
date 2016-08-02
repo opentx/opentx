@@ -132,25 +132,25 @@ void menuStatisticsDebug(uint8_t event)
 
 #if defined(TX_CAPACITY_MEASUREMENT)
   // current
-  lcd_putsLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_CURRENT, STR_CPU_CURRENT);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CURRENT, getCurrent(), UNIT_MILLIAMPS, LEFT);
   uint32_t current_scale = 488 + g_eeGeneral.txCurrentCalibration;
   lcdDrawChar(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CURRENT, '>');
   putsValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CURRENT, Current_max*10*current_scale/8192, UNIT_RAW, LEFT);
   // consumption
-  lcd_putsLeft(MENU_DEBUG_Y_MAH, STR_CPU_MAH);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MAH, STR_CPU_MAH);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MAH, g_eeGeneral.mAhUsed + Current_used*current_scale/8192/36, UNIT_MAH, LEFT|PREC1);
 #endif
 
 #if defined(PCBSKY9X)
-  lcd_putsLeft(MENU_DEBUG_Y_CPU_TEMP, STR_CPU_TEMP);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_CPU_TEMP, STR_CPU_TEMP);
   putsValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CPU_TEMP, getTemperature(), UNIT_TEMPERATURE, LEFT);
   lcdDrawChar(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, '>');
   putsValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CPU_TEMP, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
 #endif
 
 #if defined(COPROCESSOR)
-  lcd_putsLeft(MENU_DEBUG_Y_COPROC, STR_COPROC_TEMP);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_COPROC, STR_COPROC_TEMP);
 
   if (Coproc_read==0) {
     lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Co Proc NACK"),INVERS);
@@ -168,13 +168,13 @@ void menuStatisticsDebug(uint8_t event)
 #endif
 
 #if defined(CPUARM)
-  lcd_putsLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcdDrawText(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
 #if defined(CPUARM)
-  lcd_putsLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, menusStack.available(), UNSIGN|LEFT|TINSIZE);
   lcdDrawText(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
   lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
@@ -183,15 +183,15 @@ void menuStatisticsDebug(uint8_t event)
 #endif
 
 #if !defined(CPUARM)
-  lcd_putsLeft(1*FH, STR_TMR1LATMAXUS);
+  lcdDrawTextAlignedLeft(1*FH, STR_TMR1LATMAXUS);
   lcdDraw8bitsNumber(MENU_DEBUG_COL1_OFS , 1*FH, g_tmr1Latency_max/2 );
-  lcd_putsLeft(2*FH, STR_TMR1LATMINUS);
+  lcdDrawTextAlignedLeft(2*FH, STR_TMR1LATMINUS);
   lcdDraw8bitsNumber(MENU_DEBUG_COL1_OFS , 2*FH, g_tmr1Latency_min/2 );
-  lcd_putsLeft(3*FH, STR_TMR1JITTERUS);
+  lcdDrawTextAlignedLeft(3*FH, STR_TMR1JITTERUS);
   lcdDraw8bitsNumber(MENU_DEBUG_COL1_OFS , 3*FH, (g_tmr1Latency_max - g_tmr1Latency_min) /2 );
-  lcd_putsLeft(4*FH, STR_TMIXMAXMS);
+  lcdDrawTextAlignedLeft(4*FH, STR_TMIXMAXMS);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, 4*FH, DURATION_MS_PREC2(maxMixerDuration), PREC2);
-  lcd_putsLeft(5*FH, STR_FREESTACKMINB);
+  lcdDrawTextAlignedLeft(5*FH, STR_FREESTACKMINB);
   lcdDrawNumber(14*FW, 5*FH, stackAvailable(), UNSIGN) ;
 #endif
 

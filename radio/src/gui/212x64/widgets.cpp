@@ -97,7 +97,7 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
 
 void drawProgressBar(const char *label)
 {
-  lcd_putsLeft(4*FH, label);
+  lcdDrawTextAlignedLeft(4*FH, label);
   lcdDrawRect(3, 6*FH+4, 204, 7);
   lcdRefresh();
 }
@@ -131,7 +131,7 @@ void title(const pm_char * s)
 
 select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event)
 {
-  lcd_putsColumnLeft(x, y, label);
+  drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
   if (attr) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
@@ -145,7 +145,7 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, 
 
 swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event)
 {
-  lcd_putsColumnLeft(x, y, STR_SWITCH);
+  drawFieldLabel(x, y, STR_SWITCH);
   putsSwitches(x,  y, value, attr);
   if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
   return value;

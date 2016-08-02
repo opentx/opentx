@@ -213,30 +213,30 @@ void menuModelExpoOne(uint8_t event)
         break;
 
       case EXPO_FIELD_SOURCE:
-        lcd_putsLeft(y, NO_INDENT(STR_SOURCE));
+        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
         putsMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
         if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         break;
 
       case EXPO_FIELD_SCALE:
-        lcd_putsLeft(y, STR_SCALE);
+        lcdDrawTextAlignedLeft(y, STR_SCALE);
         putsTelemetryChannelValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
         if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
 
       case EXPO_FIELD_WEIGHT:
-        lcd_putsLeft(y, STR_WEIGHT);
+        lcdDrawTextAlignedLeft(y, STR_WEIGHT);
         ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, LEFT|attr, 0, event);
         break;
 
       case EXPO_FIELD_OFFSET:
-        lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
+        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_OFFSET));
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 
 #if defined(CURVES)
       case EXPO_FIELD_CURVE:
-        lcd_putsLeft(y, STR_CURVE);
+        lcdDrawTextAlignedLeft(y, STR_CURVE);
         editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, event, attr);
         break;
 #endif
@@ -258,7 +258,7 @@ void menuModelExpoOne(uint8_t event)
       case EXPO_FIELD_TRIM:
         uint8_t not_stick = (ed->srcRaw > MIXSRC_Ail);
         int8_t carryTrim = -ed->carryTrim;
-        lcd_putsLeft(y, STR_TRIM);
+        lcdDrawTextAlignedLeft(y, STR_TRIM);
         lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, menuHorizontalPosition==0 ? attr : 0);
         if (attr) ed->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
         break;
@@ -490,7 +490,7 @@ void menuModelExposAll(uint8_t event)
     lcdDrawNumber(127, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE|RIGHT);
   }
 
-  SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, e_InputsAll, s_maxLines);
+  SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, MENU_MODEL_INPUTS, s_maxLines);
 
   // Gauge
   if (!s_currCh) {

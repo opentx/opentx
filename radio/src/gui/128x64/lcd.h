@@ -156,7 +156,7 @@ void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, Lc
 void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len, LcdFlags flags);
 void lcdDrawText(coord_t x, coord_t y, const pm_char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
-void lcd_putsLeft(coord_t y, const pm_char * s);
+void lcdDrawTextAlignedLeft(coord_t y, const pm_char * s);
 
 #define lcd_putsCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
 

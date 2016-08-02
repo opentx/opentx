@@ -1125,7 +1125,7 @@ void checkAll()
 
 #if defined(CPUARM)
   if (!clearKeyEvents()) {
-    displayPopup(STR_KEYSTUCK);
+    showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
 #if defined(SIMU)
@@ -1186,7 +1186,7 @@ void checkTHR()
       rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
     }
 #endif
-    MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+    RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
   }
 #else
   if (g_model.disableThrottleWarning) {
@@ -1204,7 +1204,7 @@ void checkTHR()
 
   // first - display warning; also deletes inputs if any have been before
   LED_ERROR_BEGIN();
-  MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+  RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
 
 #if defined(PWR_BUTTON_DELAY)
   bool refresh = false;
@@ -1229,7 +1229,7 @@ void checkTHR()
       refresh = true;
     }
     else if (pwr_check == e_power_on && refresh) {
-      MESSAGE(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_NONE);
+      RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_NONE);
       refresh = false;
     }
 #else
@@ -1262,11 +1262,11 @@ void checkAlarm() // added by Gohst
   }
 }
 
-void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG)
+void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG)
 {
   LED_ERROR_BEGIN();
 
-  MESSAGE(t, s, STR_PRESSANYKEY, sound);
+  RAISE_ALERT(t, s, STR_PRESSANYKEY, sound);
 
 #if defined(PWR_BUTTON_DELAY)
   bool refresh = false;
@@ -1290,7 +1290,7 @@ void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG)
       refresh = true;
     }
     else if (pwr_check == e_power_on && refresh) {
-      MESSAGE(t, s, STR_PRESSANYKEY, AU_NONE);
+      RAISE_ALERT(t, s, STR_PRESSANYKEY, AU_NONE);
       refresh = false;
     }
 #else
@@ -1310,7 +1310,7 @@ int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS] = { -1, -1, -1, -1 };
 #if defined(CPUARM)
 void checkTrims()
 {
-  evt_t event = getEvent(true);
+  event_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
 #else
@@ -1996,7 +1996,7 @@ void opentxClose(uint8_t shutdown)
 
 #if !defined(PCBTARANIS) && !defined(COLORLCD)
   if (storageDirtyMsk & EE_MODEL) {
-    displayPopup(STR_SAVEMODEL);
+    showMessageBox(STR_SAVEMODEL);
   }
 #endif
 
@@ -2120,7 +2120,7 @@ void checkBattery()
   static uint8_t counter = 0;
 #if defined(GUI) && !defined(COLORLCD)
   // TODO not the right menu I think ...
-  if (menuHandlers[menuLevel] == menuGeneralDiagAna) {
+  if (menuHandlers[menuLevel] == menuRadioDiagAnalogs) {
     g_vbat100mV = 0;
     counter = 0;
   }
@@ -2273,7 +2273,7 @@ FORCEINLINE void DSM2_USART_vect()
 
 #if !defined(SIMU) && !defined(CPUARM)
 
-#if defined (TELEMETRY_FRSKY)
+#if defined(TELEMETRY_FRSKY)
 
 FORCEINLINE void FRSKY_USART_vect()
 {
@@ -2709,7 +2709,7 @@ int main()
 #if defined(CPUM2560)
   // Time to switch off
   lcdClear();
-  displayPopup(STR_SHUTDOWN);
+  showMessageBox(STR_SHUTDOWN);
   opentxClose();
   lcdClear() ;
   lcdRefresh() ;
@@ -2768,7 +2768,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
           POPUP_CONFIRMATION("Confirm Shutdown");
-          evt_t evt = getEvent(false);
+          event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
           if (warningResult == true) {

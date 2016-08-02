@@ -162,7 +162,7 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-void gvarWeightItem(coord_t x, coord_t y, MixData *md, LcdFlags attr, evt_t event)
+void gvarWeightItem(coord_t x, coord_t y, MixData *md, LcdFlags attr, event_t event)
 {
   u_int8int16_t weight;
   MD_WEIGHT_TO_UNION(md, weight);
@@ -170,7 +170,7 @@ void gvarWeightItem(coord_t x, coord_t y, MixData *md, LcdFlags attr, evt_t even
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
-bool menuModelMixOne(evt_t event)
+bool menuModelMixOne(event_t event)
 {
   MixData * md2 = mixAddress(s_currIdx) ;
 
@@ -381,7 +381,7 @@ void displayMixStatus(uint8_t channel)
   drawSingleOutputBar(MIX_STATUS_OUT_BAR, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 }
 
-bool menuModelMixAll(evt_t event)
+bool menuModelMixAll(event_t event)
 {
   BitmapBuffer * mpx_mode[] = {
     mixerSetupAddBitmap,
@@ -399,7 +399,7 @@ bool menuModelMixAll(evt_t event)
   uint8_t chn = mixAddress(s_currIdx)->destCh + 1;
 
   int linesCount = getMixesLinesCount();
-  SIMPLE_MENU(STR_MIXER, MODEL_ICONS, menuTabModel, e_MixAll, linesCount);
+  SIMPLE_MENU(STR_MIXER, MODEL_ICONS, menuTabModel, MENU_MODEL_MIXES, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

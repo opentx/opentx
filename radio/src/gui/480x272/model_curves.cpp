@@ -86,9 +86,9 @@ void resetCustomCurveX(int8_t * points, int noPoints)
   }
 }
 
-void displayPresetChoice(evt_t event)
+void displayPresetChoice(event_t event)
 {
-  displayWarning(event);
+  runPopupWarning(event);
   lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y-10, 45*warningInputValue/4, LEFT|INVERS, 0, NULL, "@");
 
   if (warningResult) {
@@ -140,7 +140,7 @@ enum MenuModelCurveOneItems {
   ITEM_CURVE_COORDS2,
 };
 
-bool menuModelCurveOne(evt_t event)
+bool menuModelCurveOne(event_t event)
 {
   static uint8_t pointsOfs = 0;
   CurveData & crv = g_model.curves[s_curveChan];
@@ -312,7 +312,7 @@ bool menuModelCurveOne(evt_t event)
   return true;
 }
 
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr)
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr)
 {
   lcdDrawTextAtIndex(x, y, "\004DiffExpoFuncCstm", curve.type, (menuHorizontalPosition==0 ? attr : 0));
   if (attr && menuHorizontalPosition==0) {
@@ -346,9 +346,9 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t a
 #define CURVES_NAME_POS                60
 #define CURVES_POINTS_POS              120
 
-bool menuModelCurvesAll(evt_t event)
+bool menuModelCurvesAll(event_t event)
 {
-  SIMPLE_MENU(STR_MENUCURVES, MODEL_ICONS, menuTabModel, e_CurvesAll, MAX_CURVES);
+  SIMPLE_MENU(STR_MENUCURVES, MODEL_ICONS, menuTabModel, MENU_MODEL_CURVES, MAX_CURVES);
 
   int8_t  sub = menuVerticalPosition;
 

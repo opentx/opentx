@@ -256,12 +256,12 @@ class Key
 extern Key keys[NUM_KEYS];
 
 #if defined(COLORLCD)
-typedef uint16_t evt_t;
+typedef uint16_t event_t;
 #else
-typedef uint8_t evt_t;
+typedef uint8_t event_t;
 #endif
 
-extern evt_t s_evt;
+extern event_t s_evt;
 
 #define putEvent(evt) s_evt = evt
 
@@ -270,10 +270,10 @@ void killEvents(uint8_t enuk);
 
 #if defined(CPUARM)
   bool clearKeyEvents();
-  evt_t getEvent(bool trim=false);
+  event_t getEvent(bool trim=false);
 #else
   void clearKeyEvents();
-  evt_t getEvent();
+  event_t getEvent();
 #endif
 
 uint8_t keyDown();

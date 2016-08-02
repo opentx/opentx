@@ -20,9 +20,9 @@
 
 #include "opentx.h"
 
-void menuGeneralDiagAna(uint8_t event)
+void menuRadioDiagAnalogs(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, e_Ana, 0);
+  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, MENU_RADIO_DIAG_ANALOGS, 0);
 
   STICK_SCROLL_DISABLE();
 
@@ -42,6 +42,6 @@ void menuGeneralDiagAna(uint8_t event)
   }
 
   // SWR
-  lcd_putsLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
   lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swr.value, RIGHT);
 }

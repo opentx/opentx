@@ -25,18 +25,18 @@
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
 
-void menuGeneralSdManagerInfo(evt_t event)
+void menuRadioSdManagerInfo(event_t event)
 {
   SIMPLE_SUBMENU(STR_SD_INFO_TITLE, 1);
 
-  lcd_putsLeft(2*FH, STR_SD_TYPE);
+  lcdDrawTextAlignedLeft(2*FH, STR_SD_TYPE);
   lcdDrawText(10*FW, 2*FH, SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD);
 
-  lcd_putsLeft(3*FH, STR_SD_SIZE);
+  lcdDrawTextAlignedLeft(3*FH, STR_SD_SIZE);
   lcdDrawNumber(10*FW, 3*FH, sdGetSize(), LEFT);
   lcdDrawChar(lcdLastPos, 3*FH, 'M');
 
-  lcd_putsLeft(4*FH, STR_SD_SECTORS);
+  lcdDrawTextAlignedLeft(4*FH, STR_SD_SECTORS);
 #if defined(SD_GET_FREE_BLOCKNR)
   lcdDrawNumber(10*FW, 4*FH,  SD_GET_FREE_BLOCKNR()/1000, LEFT);
   lcdDrawChar(lcdLastPos, 4*FH, '/');
@@ -46,7 +46,7 @@ void menuGeneralSdManagerInfo(evt_t event)
 #endif
   lcdDrawChar(lcdLastPos, 4*FH, 'k');
 
-  lcd_putsLeft(5*FH, STR_SD_SPEED);
+  lcdDrawTextAlignedLeft(5*FH, STR_SD_SPEED);
   lcdDrawNumber(10*FW, 5*FH, SD_GET_SPEED()/1000, LEFT);
   lcdDrawText(lcdLastPos, 5*FH, "kb/s");
 }
@@ -147,7 +147,7 @@ void onSdManagerMenu(const char *result)
   char *line = reusableBuffer.sdmanager.lines[index];
 
   if (result == STR_SD_INFO) {
-    pushMenu(menuGeneralSdManagerInfo);
+    pushMenu(menuRadioSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
     POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
@@ -227,11 +227,11 @@ void onSdManagerMenu(const char *result)
 #endif
 }
 
-void menuGeneralSdManager(evt_t _event)
+void menuRadioSdManager(event_t _event)
 {
   if (warningResult) {
     warningResult = 0;
-    displayPopup(STR_FORMATTING);
+    showMessageBox(STR_FORMATTING);
     closeLogs();
     audioQueue.stopSD();
     if (f_mkfs(0, 1, 0) == FR_OK) {
@@ -245,8 +245,8 @@ void menuGeneralSdManager(evt_t _event)
 
   int lastPos = menuVerticalPosition;
 
-  evt_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
-  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
+  event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdmanager.count);
 
   int index = menuVerticalPosition-menuVerticalOffset;
 

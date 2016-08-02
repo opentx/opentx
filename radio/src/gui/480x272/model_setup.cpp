@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 uint8_t g_moduleIdx;
-bool menuModelFailsafe(evt_t event);
+bool menuModelFailsafe(event_t event);
 
 enum menuModelSetupItems {
   ITEM_MODEL_NAME,
@@ -103,7 +103,7 @@ void onModelSetupBitmapMenu(const char *result)
   }
 }
 
-void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
+void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 {
   TimerData & timer = g_model.timers[timerIdx];
   if (attr && menuHorizontalPosition < 0) {
@@ -143,7 +143,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
   }
 }
 
-void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, evt_t event)
+void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 {
   TimerData & timer = g_model.timers[timerIdx];
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCOUNTDOWN);
@@ -219,7 +219,7 @@ int getSwitchWarningsCount()
 #define SW_WARN_ITEMS()                   uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1))
 #define POT_WARN_ITEMS()                  ((g_model.potsWarnMode >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
 
-bool menuModelSetup(evt_t event)
+bool menuModelSetup(event_t event)
 {
   int l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
@@ -231,7 +231,7 @@ bool menuModelSetup(evt_t event)
     g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol = XJT_EXTERNAL_ANTENNA;
   }
 
-  MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, e_ModelSetup, ITEM_MODEL_SETUP_MAX,
+  MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
          LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
@@ -892,7 +892,7 @@ bool menuModelSetup(evt_t event)
   return true;
 }
 
-bool menuModelFailsafe(evt_t event)
+bool menuModelFailsafe(event_t event)
 {
   uint8_t ch = 0;
   uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;

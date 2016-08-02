@@ -313,7 +313,7 @@ int menuFlashFile(uint32_t index, uint8_t event)
 {
   FRESULT fr;
 
-  lcd_putsLeft(4*FH, "\012Hold [ENT] to start writing");
+  lcdDrawTextAlignedLeft(4*FH, "\012Hold [ENT] to start writing");
 
   if (Valid == 0) {
     // Validate file here
@@ -335,9 +335,9 @@ int menuFlashFile(uint32_t index, uint8_t event)
 
   if (Valid == 2) {
     if (memoryType == MEM_FLASH)
-      lcd_putsLeft(4*FH,  "\011Not a valid firmware file!        ");
+      lcdDrawTextAlignedLeft(4*FH,  "\011Not a valid firmware file!        ");
     else
-      lcd_putsLeft(4*FH,  "\011Not a valid EEPROM file!          ");    
+      lcdDrawTextAlignedLeft(4*FH,  "\011Not a valid EEPROM file!          ");
     if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
       return 0;
     }
@@ -405,7 +405,7 @@ int main()
 
   lcdClear();
   lcdDrawSizedText(0, 0, (const char *)bootloaderVersion, 0); // trick to avoid bootloaderVersion to be optimized out ...
-  lcd_putsLeft(0, BOOTLOADER_TITLE);
+  lcdDrawTextAlignedLeft(0, BOOTLOADER_TITLE);
   lcdInvertLine(0);
   lcdRefresh();
 
@@ -429,7 +429,7 @@ int main()
 
       lcdRefreshWait();
       lcdClear();
-      lcd_putsLeft(0, BOOTLOADER_TITLE);
+      lcdDrawTextAlignedLeft(0, BOOTLOADER_TITLE);
       lcdInvertLine(0);
 
       uint8_t event = getEvent();
@@ -446,11 +446,11 @@ int main()
       }
 
       if (state == ST_START) {
-        lcd_putsLeft(2*FH, "\010Write Firmware");
-        lcd_putsLeft(3*FH, "\010Restore EEPROM");
-        lcd_putsLeft(4*FH, "\010Exit");
+        lcdDrawTextAlignedLeft(2*FH, "\010Write Firmware");
+        lcdDrawTextAlignedLeft(3*FH, "\010Restore EEPROM");
+        lcdDrawTextAlignedLeft(4*FH, "\010Exit");
         lcdInvertLine(2+vpos);
-        lcd_putsLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
+        lcdDrawTextAlignedLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
           vpos == 2 ? vpos = 0 : vpos = vpos+1;
         }
@@ -472,7 +472,7 @@ int main()
       }
 
       if (state == ST_USB) {
-        lcd_putsLeft(4*FH, "\026USB Connected");
+        lcdDrawTextAlignedLeft(4*FH, "\026USB Connected");
         if (usbPlugged() == 0) {
           vpos = 0;
           if (unlocked) {
@@ -498,7 +498,7 @@ int main()
           state = ST_OPEN_DIR;
         }
         else {
-          lcd_putsLeft(2*FH, INDENT "Directory is missing!");
+          lcdDrawTextAlignedLeft(2*FH, INDENT "Directory is missing!");
           if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
             vpos = 0;
             state = ST_START;
@@ -609,7 +609,7 @@ int main()
 
       else if (state == ST_FLASHING) {
         // commit to flashing
-        lcd_putsLeft(4*FH, "\032Writing...");
+        lcdDrawTextAlignedLeft(4*FH, "\032Writing...");
         
         if (!unlocked && (memoryType == MEM_FLASH)) {
           unlocked = 1;
@@ -650,7 +650,7 @@ int main()
           lockFlash();
           unlocked = 0;
         }
-        lcd_putsLeft(4*FH, "\024Writing Complete");
+        lcdDrawTextAlignedLeft(4*FH, "\024Writing Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
           vpos = 0;

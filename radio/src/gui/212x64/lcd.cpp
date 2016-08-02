@@ -338,7 +338,7 @@ void lcdDrawText(coord_t x, coord_t y, const pm_char * s)
   lcdDrawText(x, y, s, 0);
 }
 
-void lcd_putsLeft(coord_t y, const pm_char * s)
+void lcdDrawTextAlignedLeft(coord_t y, const pm_char * s)
 {
   lcdDrawText(0, y, s);
 }

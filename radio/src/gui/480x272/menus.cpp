@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 MenuHandlerFunc menuHandlers[5];
-evt_t menuEvent = 0;
+event_t menuEvent = 0;
 uint8_t menuVerticalPositions[4];
 uint8_t menuLevel = 0;
 
@@ -47,7 +47,7 @@ void pushMenu(MenuHandlerFunc newMenu)
   killEvents(KEY_ENTER);
 
   if (menuLevel == 0) {
-    if (newMenu == menuGeneralSetup)
+    if (newMenu == menuRadioSetup)
       menuVerticalPositions[0] = 1;
     if (newMenu == menuModelSetup)
       menuVerticalPositions[0] = 0;
@@ -66,7 +66,7 @@ void pushMenu(MenuHandlerFunc newMenu)
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 
-bool menuModelNotes(evt_t event)
+bool menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
     strcpy(s_text_file, MODELS_PATH "/");

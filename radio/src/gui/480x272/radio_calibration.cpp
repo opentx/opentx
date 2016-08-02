@@ -77,7 +77,7 @@ void drawMouse()
   drawStick(STICK_LEFT_X, STICKS_Y+100, background, calibratedStick[11], calibratedStick[12]);
 }
 
-bool menuCommonCalib(evt_t event)
+bool menuCommonCalib(event_t event)
 {
   drawMenuTemplate(NULL, ICON_RADIO_CALIBRATION, NULL, OPTION_MENU_NO_FOOTER);
 
@@ -227,7 +227,7 @@ bool menuCommonCalib(evt_t event)
   return true;
 }
 
-bool menuGeneralCalib(evt_t event)
+bool menuRadioCalibration(event_t event)
 {
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", STR_MENUCALIBRATION);
   if (calibrationState == CALIB_FINISHED) {
@@ -244,7 +244,7 @@ bool menuGeneralCalib(evt_t event)
   return menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
-bool menuFirstCalib(evt_t event)
+bool menuFirstCalib(event_t event)
 {
   if (event == EVT_KEY_BREAK(KEY_EXIT) || calibrationState == CALIB_FINISHED) {
     calibrationState = CALIB_START;

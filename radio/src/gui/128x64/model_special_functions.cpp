@@ -37,7 +37,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
-  if (menuHandlers[menuLevel] == menuModelCustomFunctions) {
+  if (menuHandlers[menuLevel] == menuModelSpecialFunctions) {
     cfn = &g_model.customFn[sub];
     eeFlags = EE_MODEL;
   }
@@ -70,7 +70,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 }
 #endif
 
-void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
+void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
   int8_t sub = menuVerticalPosition - 1;
 
@@ -375,8 +375,8 @@ void menuCustomFunctions(uint8_t event, CustomFunctionData * functions, CustomFu
   }
 }
 
-void menuModelCustomFunctions(uint8_t event)
+void menuModelSpecialFunctions(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, menuTabModel, e_CustomFunctions, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
-  return menuCustomFunctions(event, g_model.customFn, &modelFunctionsContext);
+  MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
+  return menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 }

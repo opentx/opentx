@@ -234,19 +234,19 @@ void menuModelMixOne(uint8_t event)
         break;
 
       case MIX_FIELD_SOURCE:
-        lcd_putsLeft(y, NO_INDENT(STR_SOURCE));
+        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
         putsMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
 
       case MIX_FIELD_WEIGHT:
-        lcd_putsLeft(y, STR_WEIGHT);
+        lcdDrawTextAlignedLeft(y, STR_WEIGHT);
         gvarWeightItem(MIXES_2ND_COLUMN, y, md2, attr|LEFT, event);
         break;
 
       case MIX_FIELD_OFFSET:
       {
-        lcd_putsLeft(y, NO_INDENT(STR_OFFSET));
+        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_OFFSET));
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
@@ -256,14 +256,14 @@ void menuModelMixOne(uint8_t event)
       }
 
       case MIX_FIELD_TRIM:
-        lcd_putsLeft(y, STR_TRIM);
+        lcdDrawTextAlignedLeft(y, STR_TRIM);
         drawCheckBox(MIXES_2ND_COLUMN, y, !md2->carryTrim, attr);
         if (attr) md2->carryTrim = !checkIncDecModel(event, !md2->carryTrim, 0, 1);
         break;
 
 #if defined(CURVES)
       case MIX_FIELD_CURVE:
-        lcd_putsLeft(y, STR_CURVE);
+        lcdDrawTextAlignedLeft(y, STR_CURVE);
         editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, event, attr);
         break;
 #endif
@@ -279,7 +279,7 @@ void menuModelMixOne(uint8_t event)
         break;
 
       case MIX_FIELD_WARNING:
-        lcd_putsColumnLeft(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
+        drawFieldLabel(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
         if (md2->mixWarn)
           lcdDrawNumber(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
         else
@@ -515,7 +515,7 @@ void menuModelMixAll(uint8_t event)
     lcdDrawNumber(127, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE|RIGHT);
   }
 
-  SIMPLE_MENU(STR_MIXER, menuTabModel, e_MixAll, s_maxLines);
+  SIMPLE_MENU(STR_MIXER, menuTabModel, MENU_MODEL_MIXES, s_maxLines);
 
   // Gauge
   if (!s_currCh) {

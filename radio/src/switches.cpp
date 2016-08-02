@@ -904,7 +904,7 @@ void checkSwitches()
       last_bad_pots = bad_pots;
 #else
     if (last_bad_switches != switches_states) {
-      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
+      RAISE_ALERT(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);
       uint8_t x = 2;
       for (uint8_t i=0; i<NUM_SWITCHES-1; i++) {
         uint8_t attr;

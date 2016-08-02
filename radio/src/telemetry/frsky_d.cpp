@@ -162,7 +162,7 @@ void parseTelemHubByte(uint8_t byte)
         // First received GPS position => Pilot GPS position
         getGpsPilotPosition();
       }
-      else if (telemetryData.hub.gpsDistNeeded || menuHandlers[menuLevel] == menuTelemetryFrsky) {
+      else if (telemetryData.hub.gpsDistNeeded || menuHandlers[menuLevel] == menuViewTelemetryFrsky) {
         getGpsDistance();
       }
       break;

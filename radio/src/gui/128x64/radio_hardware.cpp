@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuGeneralHwItems {
+enum menuRadioHwItems {
   ITEM_SETUP_HW_OPTREX_DISPLAY,
   ITEM_SETUP_HW_STICKS_GAINS_LABELS,
   ITEM_SETUP_HW_STICK_LV_GAIN,
@@ -33,9 +33,9 @@ enum menuGeneralHwItems {
 };
 
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
-void menuGeneralHardware(uint8_t event)
+void menuRadioHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
 
   uint8_t sub = menuVerticalPosition - 1;
 
@@ -51,7 +51,7 @@ void menuGeneralHardware(uint8_t event)
         break;
 
       case ITEM_SETUP_HW_STICKS_GAINS_LABELS:
-        lcd_putsLeft(y, PSTR("Sticks"));
+        lcdDrawTextAlignedLeft(y, PSTR("Sticks"));
         break;
 
       case ITEM_SETUP_HW_STICK_LV_GAIN:

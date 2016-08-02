@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuGeneralHwItems {
+enum menuRadioHwItems {
   ITEM_SETUP_HW_LABEL_STICKS,
   ITEM_SETUP_HW_STICK1,
   ITEM_SETUP_HW_STICK2,
@@ -81,9 +81,9 @@ enum menuGeneralHwItems {
 #define SWITCH_TYPE_MAX(sw)   ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
 
-void menuGeneralHardware(uint8_t event)
+void menuRadioHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, e_Hardware, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -97,7 +97,7 @@ void menuGeneralHardware(uint8_t event)
     LcdFlags attr = (sub == k ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch (k) {
       case ITEM_SETUP_HW_LABEL_STICKS:
-        lcd_putsLeft(y, STR_STICKS);
+        lcdDrawTextAlignedLeft(y, STR_STICKS);
         break;
       case ITEM_SETUP_HW_STICK1:
       case ITEM_SETUP_HW_STICK2:
@@ -133,7 +133,7 @@ void menuGeneralHardware(uint8_t event)
       }
 #endif
       case ITEM_SETUP_HW_LABEL_POTS:
-        lcd_putsLeft(y, STR_POTS);
+        lcdDrawTextAlignedLeft(y, STR_POTS);
         break;
       case ITEM_SETUP_HW_POT1:
       case ITEM_SETUP_HW_POT2:
@@ -159,7 +159,7 @@ void menuGeneralHardware(uint8_t event)
         break;
       }
       case ITEM_SETUP_HW_LABEL_SWITCHES:
-        lcd_putsLeft(y, STR_SWITCHES);
+        lcdDrawTextAlignedLeft(y, STR_SWITCHES);
         break;
       case ITEM_SETUP_HW_SA:
       case ITEM_SETUP_HW_SB:
@@ -198,7 +198,7 @@ void menuGeneralHardware(uint8_t event)
       }
 #if defined(PCBX9E)
       case ITEM_SETUP_HW_BLUETOOTH:
-        lcd_putsLeft(y, "Bluetooth");
+        lcdDrawTextAlignedLeft(y, "Bluetooth");
         drawCheckBox(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothEnable, menuHorizontalPosition == 0 ? attr : 0);
         if (attr && menuHorizontalPosition == 0) {
           g_eeGeneral.bluetoothEnable = checkIncDecGen(event, g_eeGeneral.bluetoothEnable, 0, 1);

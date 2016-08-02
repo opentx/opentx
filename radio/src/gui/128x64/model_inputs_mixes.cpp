@@ -27,7 +27,7 @@
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);
 FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
 {
-  lcd_putsColumnLeft(x, y, STR_FLMODE);
+  drawFieldLabel(x, y, STR_FLMODE);
 
   uint8_t posHorz = menuHorizontalPosition;
 
@@ -288,12 +288,12 @@ void menuModelExpoOne(uint8_t event)
 #endif
 
       case EXPO_FIELD_WEIGHT:
-        lcd_putsLeft(y, STR_WEIGHT);
+        lcdDrawTextAlignedLeft(y, STR_WEIGHT);
         ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr, 0, event);
         break;
 
       case EXPO_FIELD_EXPO:
-        lcd_putsLeft(y, STR_EXPO);
+        lcdDrawTextAlignedLeft(y, STR_EXPO);
         if (ed->curveMode==MODE_EXPO || ed->curveParam==0) {
           ed->curveMode = MODE_EXPO;
           ed->curveParam = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->curveParam, -100, 100, attr, 0, event);
@@ -305,7 +305,7 @@ void menuModelExpoOne(uint8_t event)
 
 #if defined(CURVES)
       case EXPO_FIELD_CURVE:
-        lcd_putsLeft(y, STR_CURVE);
+        lcdDrawTextAlignedLeft(y, STR_CURVE);
         if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
           drawCurveName(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->curveParam, attr);
           if (attr) {
@@ -491,17 +491,17 @@ void menuModelMixOne(uint8_t event)
         break;
 #endif
       case MIX_FIELD_SOURCE:
-        lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_SOURCE));
+        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_SOURCE));
         putsMixerSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
       case MIX_FIELD_WEIGHT:
-        lcd_putsColumnLeft(COLUMN_X, y, STR_WEIGHT);
+        drawFieldLabel(COLUMN_X, y, STR_WEIGHT);
         gvarWeightItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2, attr|LEFT, event);
         break;
       case MIX_FIELD_OFFSET:
       {
-        lcd_putsColumnLeft(COLUMN_X, y, NO_INDENT(STR_OFFSET));
+        drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_OFFSET));
         u_int8int16_t offset;
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
@@ -516,7 +516,7 @@ void menuModelMixOne(uint8_t event)
       {
         uint8_t not_stick = (md2->srcRaw > NUM_STICKS);
         int8_t carryTrim = -md2->carryTrim;
-        lcd_putsColumnLeft(COLUMN_X, y, STR_TRIM);
+        drawFieldLabel(COLUMN_X, y, STR_TRIM);
         lcdDrawTextAtIndex((not_stick ? COLUMN_X+MIXES_2ND_COLUMN : COLUMN_X+6*FW-3), y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, menuHorizontalPosition==0 ? attr : 0);
         if (attr && menuHorizontalPosition==0 && (not_stick || editMode>0)) md2->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_AIL);
         if (!not_stick) {
@@ -533,7 +533,7 @@ void menuModelMixOne(uint8_t event)
 #if defined(CURVES)
       case MIX_FIELD_CURVE:
       {
-        lcd_putsColumnLeft(COLUMN_X, y, STR_CURVE);
+        drawFieldLabel(COLUMN_X, y, STR_CURVE);
         int8_t curveParam = md2->curveParam;
         if (md2->curveMode == MODE_CURVE) {
           drawCurveName(COLUMN_X+MIXES_2ND_COLUMN, y, curveParam, attr);
@@ -573,7 +573,7 @@ void menuModelMixOne(uint8_t event)
         md2->swtch = switchMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
         break;
       case MIX_FIELD_WARNING:
-        lcd_putsColumnLeft(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
+        drawFieldLabel(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
         if (md2->mixWarn)
           lcdDrawNumber(COLUMN_X+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
         else
@@ -877,7 +877,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   lcdDrawNumber(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, getExpoMixCount(expo));
   lcdDrawText(FW*max(sizeof(TR_MENUINPUTS), sizeof(TR_MIXER))+FW+FW/2, 0, expo ? STR_MAX(MAX_EXPOS) : STR_MAX(MAX_MIXERS));
 
-  SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXER, menuTabModel, expo ? e_InputsAll : e_MixAll, s_maxLines);
+  SIMPLE_MENU(expo ? STR_MENUINPUTS : STR_MIXER, menuTabModel, expo ? MENU_MODEL_INPUTS : MENU_MODEL_MIXES, s_maxLines);
 
   sub = menuVerticalPosition;
   s_currCh = 0;

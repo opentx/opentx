@@ -440,7 +440,7 @@ void displayLuaError(const char * title)
   }
 }
 
-void displayAcknowledgeLuaError(evt_t event)
+void displayAcknowledgeLuaError(event_t event)
 {
   warningResult = false;
   displayLuaError(warningText);
@@ -510,7 +510,7 @@ void luaExec(const char * filename)
   }
 }
 
-void luaDoOneRunStandalone(evt_t evt)
+void luaDoOneRunStandalone(event_t evt)
 {
   static uint8_t luaDisplayStatistics = false;
 
@@ -634,7 +634,7 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
-    if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
+    if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuViewTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
       lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
       lua_pushinteger(L, evt);
       inputsCount = 1;

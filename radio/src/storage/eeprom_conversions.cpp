@@ -1247,10 +1247,10 @@ bool eeConvert()
   g_eeGeneral.backlightMode = e_backlight_mode_on;
   g_eeGeneral.backlightBright = 0;
   g_eeGeneral.contrast = 25;
+
   ALERT(STR_STORAGE_WARNING, msg, AU_BAD_RADIODATA);
 
-  // Message
-  MESSAGE(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE);
+  RAISE_ALERT(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE);
 
   // General Settings conversion
   eeLoadGeneralSettingsData();

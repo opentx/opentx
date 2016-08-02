@@ -20,19 +20,19 @@
 
 #include "opentx.h"
 
-void menuGeneralVersion(uint8_t event)
+void menuRadioVersion(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, e_Vers, 1);
+  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
 
-  lcd_putsLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
 
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
-     lcd_putsLeft(6*FH, PSTR("CoPr:"));
+     lcdDrawTextAlignedLeft(6*FH, PSTR("CoPr:"));
      lcdDraw8bitsNumber(10*FW, 6*FH, Coproc_read);
   }
   else {
-     lcd_putsLeft(6*FH, PSTR("CoPr: ---"));
+     lcdDrawTextAlignedLeft(6*FH, PSTR("CoPr: ---"));
   }
 #endif
 }

@@ -614,25 +614,17 @@ void readKeysAndTrims();
 uint16_t evalChkSum();
 
 #if !defined(GUI)
-  #define MESSAGE_SOUND_ARG
-  #define MESSAGE(...)
+  #define RAISE_ALERT(...)
   #define ALERT(...)
 #elif defined(VOICE)
-  #define MESSAGE_SOUND_ARG , uint8_t sound
-  #define MESSAGE(title, msg, info, sound) message(title, msg, info, sound)
+  #define RAISE_ALERT(title, msg, info, sound) showAlertBox(title, msg, info, sound)
   #define ALERT(title, msg, sound) alert(title, msg, sound)
 #else
-  #define MESSAGE_SOUND_ARG
-  #define MESSAGE(title, msg, info, sound) message(title, msg, info)
+  #define RAISE_ALERT(title, msg, info, sound) showAlertBox(title, msg, info)
   #define ALERT(title, msg, sound) alert(title, msg)
 #endif
 
-// TODO these functions in gui directories
-#if defined(COLORLCD) || defined(PCBTARANIS)
-void drawAlertBox(const char * title, const char * text, const char * action);
-#endif
-void message(const pm_char * title, const pm_char * text, const char * action MESSAGE_SOUND_ARG);
-void alert(const pm_char * t, const pm_char * s MESSAGE_SOUND_ARG);
+void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG);
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
@@ -1750,7 +1742,7 @@ extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
 #if defined(PCBHORUS)
   #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
 #elif defined(PCBTARANIS)
-  #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuGeneralDiagAna)
+  #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuRadioDiagAnalogs)
 #elif defined(CLI)
   #define JITTER_MEASURE_ACTIVE()   (1)
 #else

@@ -25,12 +25,12 @@
 #define TRAINER_COLUMN_2       TRAINER_COLUMN_1+TRAINER_COLUMN_WIDTH
 #define TRAINER_COLUMN_3       TRAINER_COLUMN_2+TRAINER_COLUMN_WIDTH
 
-bool menuGeneralTrainer(evt_t event)
+bool menuRadioTrainer(event_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, RADIO_ICONS, menuTabGeneral, e_Trainer, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
+  MENU(STR_MENUTRAINER, RADIO_ICONS, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
     // TODO lcd_putsCenter(5*FH, STR_SLAVE, TEXT_COLOR);

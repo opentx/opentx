@@ -29,7 +29,7 @@ uint8_t     warningInfoFlags = ZCHAR;
 int16_t     warningInputValue;
 int16_t     warningInputValueMin;
 int16_t     warningInputValueMax;
-void        (*popupFunc)(evt_t event) = NULL;
+void        (*popupFunc)(event_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     s_menu_item = 0;
 uint16_t    popupMenuNoItems = 0;
@@ -37,7 +37,7 @@ uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void        (*popupMenuHandler)(const char * result);
 
-void displayWarningBox()
+void runPopupWarningBox()
 {
   // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_WARNING);
   // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
@@ -58,7 +58,7 @@ void drawAlertBox(const char * title, const char * text, const char * action)
   theme->drawMessageBox(title, text, action, WARNING_TYPE_ALERT);
 }
 
-void message(const pm_char * title, const pm_char * text, const char * action, uint8_t sound)
+void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound)
 {
   drawAlertBox(title, text, action);
   AUDIO_ERROR_MESSAGE(sound);
@@ -67,14 +67,14 @@ void message(const pm_char * title, const pm_char * text, const char * action, u
   clearKeyEvents();
 }
 
-void displayPopup(const char * title)
+void showMessageBox(const char * title)
 {
   // displayMessageBox();
   lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
   lcdRefresh();
 }
 
-void displayWarning(evt_t event)
+void runPopupWarning(event_t event)
 {
   warningResult = false;
 
@@ -99,7 +99,7 @@ void displayWarning(evt_t event)
   }
 }
 
-const char * runPopupMenu(evt_t event)
+const char * runPopupMenu(event_t event)
 {
   const char * result = NULL;
 

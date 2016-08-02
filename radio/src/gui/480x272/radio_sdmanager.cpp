@@ -29,7 +29,7 @@
 int currentBitmapIndex = 0;
 BitmapBuffer * currentBitmap = NULL;
 
-bool menuGeneralSdManagerInfo(evt_t event)
+bool menuRadioSdManagerInfo(event_t event)
 {
   SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_BROWSER, 1);
 
@@ -80,7 +80,7 @@ void onSdManagerMenu(const char * result)
   char *line = reusableBuffer.sdmanager.lines[index];
 
   if (result == STR_SD_INFO) {
-    pushMenu(menuGeneralSdManagerInfo);
+    pushMenu(menuRadioSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
     POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
@@ -153,11 +153,11 @@ void onSdManagerMenu(const char * result)
 #endif
 }
 
-bool menuGeneralSdManager(evt_t _event)
+bool menuRadioSdManager(event_t _event)
 {
   if (warningResult) {
     warningResult = 0;
-    displayPopup(STR_FORMATTING);
+    showMessageBox(STR_FORMATTING);
     closeLogs();
     audioQueue.stopSD();
     if (f_mkfs(0, 1, 0) == FR_OK) {
@@ -169,8 +169,8 @@ bool menuGeneralSdManager(evt_t _event)
     }
   }
 
-  evt_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
-  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, e_Sd, reusableBuffer.sdmanager.count);
+  event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdmanager.count);
 
   int index = menuVerticalPosition-menuVerticalOffset;
 

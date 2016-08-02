@@ -20,13 +20,13 @@
 
 #include "opentx.h"
 
-evt_t s_evt;
+event_t s_evt;
 struct t_inactivity inactivity = {0};
 
 #if defined(CPUARM)
-evt_t getEvent(bool trim)
+event_t getEvent(bool trim)
 {
-  evt_t evt = s_evt;
+  event_t evt = s_evt;
   int8_t k = EVT_KEY_MASK(s_evt) - TRM_BASE;
   bool trim_evt = (k>=0 && k<TRM_LAST-TRM_BASE+1);
 
@@ -39,9 +39,9 @@ evt_t getEvent(bool trim)
   }
 }
 #else
-evt_t getEvent()
+event_t getEvent()
 {
-  evt_t evt = s_evt;
+  event_t evt = s_evt;
   s_evt = 0;
   return evt;
 }

@@ -72,11 +72,11 @@ void onLogicalSwitchesMenu(const char *result)
   }
 }
 
-bool menuModelLogicalSwitches(evt_t event)
+bool menuModelLogicalSwitches(event_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
-  MENU(STR_MENULOGICALSWITCHES, MODEL_ICONS, menuTabModel, e_LogicalSwitches, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/} );
+  MENU(STR_MENULOGICALSWITCHES, MODEL_ICONS, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/} );
 
   LogicalSwitchData * cs = lswAddress(menuVerticalPosition);
   uint8_t cstate = lswFamily(cs->func);

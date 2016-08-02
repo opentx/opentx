@@ -35,7 +35,7 @@ uint8_t MAVLINK_menu = MENU_INFO;
  *	lanuched by the menu button. On exit (with exit button) the mavlink
  *	extension is reinitialized.
  */
-void menuTelemetryMavlink(uint8_t event) {
+void menuViewTelemetryMavlink(uint8_t event) {
 	
 	switch (event) // new event received, branch accordingly
 	{
@@ -481,9 +481,9 @@ void menuTelemetryMavlinkDump(uint8_t event) {
  *	This funcion is called from the model setup menus, not directly by the
  *	telemetry menus
  */
-void menuTelemetryMavlinkSetup(uint8_t event) {
+void menuModelTelemetryMavlink(uint8_t event) {
 	
-	MENU(STR_MAVMENUSETUP_TITLE, menuTabModel, e_MavSetup, ITEM_MAVLINK_MAX + 1, {0, 0, 1/*to force edit mode*/});
+	MENU(STR_MAVMENUSETUP_TITLE, menuTabModel, MENU_MODEL_TELEMETRY_MAVLINK, ITEM_MAVLINK_MAX + 1, {0, 0, 1/*to force edit mode*/});
 	
 	uint8_t sub = menuVerticalPosition - 1;
 
@@ -494,7 +494,7 @@ void menuTelemetryMavlinkSetup(uint8_t event) {
 		uint8_t attr = (sub == k ? blink : 0);
 		switch(k) {	
 		case ITEM_MAVLINK_RC_RSSI_SCALE:
-			lcd_putsLeft(y, STR_MAVLINK_RC_RSSI_SCALE_LABEL);
+			lcdDrawTextAlignedLeft(y, STR_MAVLINK_RC_RSSI_SCALE_LABEL);
 			lcdDrawNumber(VIEW_MAVLINK_2ND_COLUMN, y, (25 + g_model.mavlink.rc_rssi_scale * 5), attr|LEFT);
 			lcdDrawChar(lcdLastPos, y, '%');
 			if (attr) CHECK_INCDEC_MODELVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);

@@ -167,7 +167,7 @@ void periodicTick()
 }
 
 #if defined(GUI) && defined(COLORLCD)
-void guiMain(evt_t evt)
+void guiMain(event_t evt)
 {
   bool refreshNeeded = false;
 
@@ -296,7 +296,7 @@ void handleGui(uint8_t event) {
     // so Lua telemetry script can fully use them
     if (event) {
       uint8_t key = EVT_KEY_MASK(event);
-      // no need to filter out MENU and ENT(short), because they are not used by menuTelemetryFrsky()
+      // no need to filter out MENU and ENT(short), because they are not used by menuViewTelemetryFrsky()
       if (key == KEY_PLUS || key == KEY_MINUS || (!IS_KEY_LONG(event) && key == KEY_EXIT)) {
         // TRACE("Telemetry script event 0x%02x killed", event);
         event = 0;
@@ -316,7 +316,7 @@ void handleGui(uint8_t event) {
 
 bool inPopupMenu = false;
 
-void guiMain(evt_t evt)
+void guiMain(event_t evt)
 {
 #if defined(LUA)
   // TODO better lua stopwatch
@@ -410,7 +410,7 @@ void perMain()
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
-  evt_t evt = getEvent(false);
+  event_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
   doLoopCommonActions();
 #if defined(NAVIGATION_STICKS)

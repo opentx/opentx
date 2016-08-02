@@ -106,14 +106,14 @@ void menuCommonCalib(uint8_t event)
     case CALIB_START:
       // START CALIBRATION
       if (!READ_ONLY()) {
-        lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUTOSTART);
+        lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUTOSTART);
       }
       break;
 
     case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
-      lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
+      lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
@@ -130,7 +130,7 @@ void menuCommonCalib(uint8_t event)
       // MOVE STICKS/POTS
       STICK_SCROLL_DISABLE();
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
-      lcd_putsLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
+      lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
@@ -197,9 +197,9 @@ void menuCommonCalib(uint8_t event)
 #endif
 }
 
-void menuGeneralCalib(uint8_t event)
+void menuRadioCalibration(uint8_t event)
 {
-  check_simple(STR_MENUCALIBRATION, event, e_Calib, menuTabGeneral, DIM(menuTabGeneral), 0);
+  check_simple(STR_MENUCALIBRATION, event, MENU_RADIO_CALIBRATION, menuTabGeneral, DIM(menuTabGeneral), 0);
   menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
     calibrationState = CALIB_START;

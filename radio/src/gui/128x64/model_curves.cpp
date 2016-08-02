@@ -171,7 +171,7 @@ void menuModelCurveOne(uint8_t event)
       break;
   }
 
-  lcd_putsLeft(7*FH, STR_TYPE);
+  lcdDrawTextAlignedLeft(7*FH, STR_TYPE);
   uint8_t attr = (s_editMode <= 0 ? INVERS : 0);
   lcdDrawNumber(5*FW-2, 7*FH, crv.points, LEFT|attr);
   lcdDrawText(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
@@ -212,9 +212,9 @@ void menuModelCurveOne(uint8_t event)
 void menuModelCurvesAll(uint8_t event)
 {
 #if defined(GVARS) && defined(PCBSTD)
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES+MAX_GVARS);
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, MENU_MODEL_CURVES, 1+MAX_CURVES+MAX_GVARS);
 #else
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, 1+MAX_CURVES);
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, MENU_MODEL_CURVES, 1+MAX_CURVES);
 #endif
 
   int8_t  sub = menuVerticalPosition - 1;

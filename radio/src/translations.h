@@ -546,7 +546,7 @@ extern const pm_char STR_TRIMS2OFFSETS[];
 extern const pm_char STR_MENURADIOSETUP[];
 extern const pm_char STR_MENUDATEANDTIME[];
 extern const pm_char STR_MENUTRAINER[];
-extern const pm_char STR_MENUGLOBALFUNCS[];
+extern const pm_char STR_MENUSPECIALFUNCS[];
 extern const pm_char STR_MENUVERSION[];
 extern const pm_char STR_MENUDIAG[];
 extern const pm_char STR_MENUANA[];

@@ -34,9 +34,9 @@ enum menuModelHeliItems {
 
 #define MODEL_HELI_2ND_COLUMN (230)
 
-bool menuModelHeli(evt_t event)
+bool menuModelHeli(event_t event)
 {
-  SIMPLE_MENU(STR_MENUHELISETUP, MODEL_ICONS, menuTabModel, e_Heli, ITEM_HELI_MAX);
+  SIMPLE_MENU(STR_MENUHELISETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_HELI, ITEM_HELI_MAX);
 
   int sub = menuVerticalPosition;
 

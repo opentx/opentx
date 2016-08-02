@@ -26,9 +26,9 @@ void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
   lcdDrawChar(x, y, t+'0', t ? INVERS : 0);
 }
 
-void menuGeneralDiagKeys(uint8_t event)
+void menuRadioDiagKeys(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUDIAG, menuTabGeneral, e_Keys, 1);
+  SIMPLE_MENU(STR_MENUDIAG, menuTabGeneral, MENU_RADIO_DIAG_KEYS, 1);
 
   lcdDrawText(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 

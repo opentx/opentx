@@ -87,7 +87,7 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
   }
 }
 
-bool menuLogicalSwitchesMonitor(evt_t event)
+bool menuLogicalSwitchesMonitor(event_t event)
 {
   char lsString[] = "L64";
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(160, 160, 160);
@@ -109,7 +109,7 @@ bool menuLogicalSwitchesMonitor(evt_t event)
   return true;
 }
 
-bool menuLogicalSwitches(evt_t event)
+bool menuLogicalSwitches(event_t event)
 {
   MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 1, { NUM_LOGICAL_SWITCH - 1 });
   lastMonitorPage = e_MonLogicalSwitches;

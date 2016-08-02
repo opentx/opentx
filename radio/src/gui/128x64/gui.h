@@ -55,16 +55,27 @@ inline void drawSleepBitmap()
 }
 
 #if !defined(CPUM64)
-  void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
+void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 #endif
 
+#if defined(PCBTARANIS)
+void drawAlertBox(const char * title, const char * text, const char * action);
+#endif
+
+#if defined(VOICE)
+ #define ALERT_SOUND_ARG , uint8_t sound
+#else
+ #define ALERT_SOUND_ARG
+#endif
+
+void showAlertBox(const pm_char * title, const pm_char * text, const char * action ALERT_SOUND_ARG);
 
 #define SET_SCROLLBAR_X(x)
 #define LOAD_MODEL_BITMAP()
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
 #if defined(TELEMETRY_FRSKY)
-#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuTelemetryFrsky
+#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetryFrsky
 #else
 #define IS_TELEMETRY_VIEW_DISPLAYED()  false
 #endif

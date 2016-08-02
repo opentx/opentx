@@ -128,7 +128,7 @@ void menuModelSelect(uint8_t event)
           }
         }
         else if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
-          displayPopup(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
+          showMessageBox(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
           storageCheck(true); // force writing of current model data before this is changed
 
           uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
@@ -224,7 +224,7 @@ void menuModelSelect(uint8_t event)
   lcdDrawText(19*FW + 3, 0, STR_BYTES);
   lcdDrawText(lcdLastPos + 3, 0, STR_FREE);
 
-  drawScreenIndex(e_ModelSelect, DIM(menuTabModel), 0);
+  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   TITLE(STR_MENUMODELSEL);

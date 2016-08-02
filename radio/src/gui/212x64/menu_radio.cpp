@@ -21,19 +21,19 @@
 #include "opentx.h"
 
 const MenuHandlerFunc menuTabGeneral[] = {
-  menuGeneralSetup,
-  menuGeneralSdManager,
-  menuGeneralCustomFunctions,
-  menuGeneralTrainer,
-  menuGeneralVersion,
-  menuGeneralDiagKeys,
-  menuGeneralDiagAna,
-  menuGeneralHardware,
-  menuGeneralCalib
+  menuRadioSetup,
+  menuRadioSdManager,
+  menuRadioSpecialFunctions,
+  menuRadioTrainer,
+  menuRadioVersion,
+  menuRadioDiagKeys,
+  menuRadioDiagAnalogs,
+  menuRadioHardware,
+  menuRadioCalibration
 };
 
-void menuGeneralCustomFunctions(uint8_t event)
+void menuRadioSpecialFunctions(uint8_t event)
 {
-  MENU(STR_MENUGLOBALFUNCS, menuTabGeneral, e_GeneralCustomFunctions, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
-  return menuCustomFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
+  MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  return menuSpecialFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
 }

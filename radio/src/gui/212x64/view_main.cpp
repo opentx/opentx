@@ -411,12 +411,12 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
 }
 
 const MenuItem MAIN_MENU[] = {
-  { "RADIO SETTINGS", menuGeneralSetup },
+  { "RADIO SETTINGS", menuRadioSetup },
   { "MODEL SELECT", menuModelSelect },
   { "MODEL SETTINGS", menuModelSetup },
   { "CHECKLIST", menuModelNotes },
-  { "SD MANAGER", menuGeneralSdManager },
-  { "VERSION", menuGeneralVersion }
+  { "SD MANAGER", menuRadioSdManager },
+  { "VERSION", menuRadioVersion }
 };
 
 bool isMenuAvailable(int index)
@@ -473,7 +473,7 @@ void menuMainView(uint8_t event)
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
-      pushMenu(menuGeneralSetup);
+      pushMenu(menuRadioSetup);
       killEvents(event);
       break;
 #endif
@@ -489,7 +489,7 @@ void menuMainView(uint8_t event)
 
     case EVT_KEY_LONG(KEY_PAGE):
       if (!IS_FAI_ENABLED())
-        chainMenu(menuTelemetryFrsky);
+        chainMenu(menuViewTelemetryFrsky);
       killEvents(event);
       break;
 

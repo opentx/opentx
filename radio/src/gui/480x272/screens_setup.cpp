@@ -42,7 +42,7 @@ char fileSelection[LEN_ZONE_OPTION_STRING];
 uint8_t fileSelectionDone;
 
 int updateMainviewsMenu();
-bool menuScreenAdd(evt_t event);
+bool menuScreenAdd(event_t event);
 void onScreenSetupMenu(const char * result);
 
 void onZoneOptionFileSelectionMenu(const char * result)
@@ -68,7 +68,7 @@ uint8_t getZoneOptionColumns(const ZoneOption * option)
   }
 }
 
-bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, evt_t event)
+bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, event_t event)
 {
   lcdDrawText(MENUS_MARGIN_LEFT, y, option->name);
 
@@ -174,7 +174,7 @@ int getOptionsCount(const ZoneOption * options)
 }
 
 template <class T>
-bool menuSettings(const char * title, const T * object, uint32_t i_flags, evt_t event)
+bool menuSettings(const char * title, const T * object, uint32_t i_flags, event_t event)
 {
   const ZoneOption * options = object->getOptions();
   linesCount = getOptionsCount(options);
@@ -202,12 +202,12 @@ bool menuSettings(const char * title, const T * object, uint32_t i_flags, evt_t 
   return true;
 }
 
-bool menuWidgetSettings(evt_t event)
+bool menuWidgetSettings(event_t event)
 {
   return menuSettings<Widget>("Widget settings", currentWidget, EE_MODEL, event);
 }
 
-bool menuWidgetChoice(evt_t event)
+bool menuWidgetChoice(event_t event)
 {
   static Widget * previousWidget;
   static Widget::PersistentData tempData;
@@ -296,7 +296,7 @@ void onZoneMenu(const char * result)
   }
 }
 
-bool menuWidgetsSetup(evt_t event)
+bool menuWidgetsSetup(event_t event)
 {
   switch (event) {
     case EVT_ENTRY:
@@ -351,7 +351,7 @@ bool menuWidgetsSetup(evt_t event)
 }
 
 template <class T>
-T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * current, bool needsOffsetCheck, LcdFlags attr, evt_t event)
+T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * current, bool needsOffsetCheck, LcdFlags attr, event_t event)
 {
   static uint8_t menuHorizontalOffset;
 
@@ -416,7 +416,7 @@ enum menuScreensThemeItems {
   ITEM_SCREEN_SETUP_THEME_OPTION1 = ITEM_SCREEN_SETUP_THEME+2
 };
 
-bool menuScreensTheme(evt_t event)
+bool menuScreensTheme(event_t event)
 {
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
   const ZoneOption * options = theme->getOptions();
@@ -486,7 +486,7 @@ enum MenuScreenSetupItems {
   ITEM_SCREEN_SETUP_LAYOUT_OPTION1,
 };
 
-bool menuScreenSetup(int index, evt_t event)
+bool menuScreenSetup(int index, event_t event)
 {
   if (customScreens[index] == NULL) {
     return menuScreenAdd(event);
@@ -578,7 +578,7 @@ bool menuScreenSetup(int index, evt_t event)
 }
 
 template<int N>
-bool menuCustomScreenSetup(evt_t event)
+bool menuCustomScreenSetup(event_t event)
 {
   return menuScreenSetup(N, event);
 }
@@ -606,7 +606,7 @@ int updateMainviewsMenu()
   return 1+MAX_CUSTOM_SCREENS;
 }
 
-bool menuScreenAdd(evt_t event)
+bool menuScreenAdd(event_t event)
 {
   menuPageCount = updateMainviewsMenu();
 

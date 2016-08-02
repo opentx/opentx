@@ -33,7 +33,7 @@ enum menuModelHeliItems {
 
 void menuModelHeli(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, 7);
+  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, MENU_MODEL_HELI, 7);
 
   uint8_t sub = menuVerticalPosition - 1;
 
@@ -51,7 +51,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_SWASHRING:
-        lcd_putsLeft(y, STR_SWASHRING);
+        lcdDrawTextAlignedLeft(y, STR_SWASHRING);
         lcdDrawNumber(HELI_PARAM_OFS, y, g_model.swashR.value,  LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.swashR.value, 100);
         break;

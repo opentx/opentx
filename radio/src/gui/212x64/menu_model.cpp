@@ -33,12 +33,12 @@ const MenuHandlerFunc menuTabModel[] = {
   CASE_GVARS(menuModelGVars)
 #endif
   menuModelLogicalSwitches,
-  menuModelCustomFunctions,
+  menuModelSpecialFunctions,
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  menuModelTelemetry,
-  CASE_MAVLINK(menuTelemetryMavlinkSetup)
+  menuModelTelemetryFrsky,
+  CASE_MAVLINK(menuModelTelemetryMavlink)
   menuModelDisplay
 };
 
@@ -53,7 +53,7 @@ uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const u
 #else
 uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
 {
-  lcd_putsLeft(y, str);
+  lcdDrawTextAlignedLeft(y, str);
   lcdDrawNumber(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
   if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, delay, DELAY_MAX);
   return delay;
@@ -161,7 +161,7 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uin
 
 void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
-  lcd_putsLeft(y, label);
+  lcdDrawTextAlignedLeft(y, label);
   editName(x, y, name, size, event, active);
 }
 

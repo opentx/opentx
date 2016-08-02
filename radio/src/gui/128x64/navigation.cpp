@@ -316,7 +316,7 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 tmr10ms_t menuEntryTime;
 #endif
 
-void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
+void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
   vertpos_t l_posVert = menuVerticalPosition;
   horzpos_t l_posHorz = menuHorizontalPosition;
@@ -671,12 +671,12 @@ void check(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, ui
 #endif
 }
 
-void check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
+void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow)
 {
   check(event, curr, menuTab, menuTabSize, 0, 0, maxrow);
 }
 
-void check_submenu_simple(check_event_t event, uint8_t maxrow)
+void check_submenu_simple(event_t event, uint8_t maxrow)
 {
   check_simple(event, 0, 0, 0, maxrow);
 }

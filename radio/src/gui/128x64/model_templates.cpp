@@ -22,7 +22,7 @@
 
 void menuModelTemplates(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, e_Templates, 1+TMPL_COUNT);
+  SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, MENU_MODEL_TEMPLATES, 1+TMPL_COUNT);
 
   uint8_t sub = menuVerticalPosition - 1;
 

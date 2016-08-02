@@ -30,11 +30,11 @@
 #define Y_MIXBAR                       28
 #define LEG_COLORBOX                   15
 
-bool menuChannelsMonitor(evt_t event, uint8_t page);
-bool menuLogicalSwitches(evt_t);
+bool menuChannelsMonitor(event_t event, uint8_t page);
+bool menuLogicalSwitches(event_t);
 
 template<int index>
-bool menuChannelsMonitor(evt_t event)
+bool menuChannelsMonitor(event_t event)
 {
   lastMonitorPage = e_MonChannelsFirst + index;
   MENU(STR_MONITOR_CHANNELS[index], MONITOR_ICONS, menuTabMonitors, lastMonitorPage, 0, { 0 });
@@ -158,7 +158,7 @@ coord_t drawChannelsMonitorLegend(coord_t x, const pm_char * s, int color)
   return x + 25 + getTextWidth(s);
 }
 
-bool menuChannelsMonitor(evt_t event, uint8_t page)
+bool menuChannelsMonitor(event_t event, uint8_t page)
 {
   uint8_t channel = 8 * page;
   coord_t x, y = Y_OFFSET;

@@ -794,7 +794,7 @@ static int luaPopupInput(lua_State * L)
   warningInputValueMax = luaL_checkinteger(L, 5);
   warningText = luaL_checkstring(L, 1);
   warningType = WARNING_TYPE_INPUT;
-  displayWarning(event);
+  runPopupWarning(event);
   if (warningResult) {
     warningResult = 0;
     lua_pushstring(L, "OK");

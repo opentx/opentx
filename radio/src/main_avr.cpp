@@ -97,7 +97,7 @@ void perMain()
   writeLogs();
 #endif
 
-  evt_t evt = getEvent();
+  event_t evt = getEvent();
   evt = checkTrim(evt);
 
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on

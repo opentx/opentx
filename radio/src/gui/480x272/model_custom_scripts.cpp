@@ -47,7 +47,7 @@ enum menuModelCustomScriptItems {
 #define SCRIPT_ONE_2ND_COLUMN_POS  (120)
 #define SCRIPT_ONE_3RD_COLUMN_POS  (240)
 
-bool menuModelCustomScriptOne(evt_t event)
+bool menuModelCustomScriptOne(event_t event)
 {
   ScriptData &sd = g_model.scriptsData[s_currIdx];
 
@@ -122,12 +122,12 @@ bool menuModelCustomScriptOne(evt_t event)
 #define SCRIPTS_COLUMN_NAME  160
 #define SCRIPTS_COLUMN_STATE 300
 
-bool menuModelCustomScripts(evt_t event)
+bool menuModelCustomScripts(event_t event)
 {
   // lcdDrawNumber(19*FW, 0, luaGetMemUsed(), 0);
   // lcdDrawText(19*FW+1, 0, STR_BYTES);
 
-  MENU(STR_MENUCUSTOMSCRIPTS, MODEL_ICONS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
+  MENU(STR_MENUCUSTOMSCRIPTS, MODEL_ICONS, menuTabModel, MENU_MODEL_CUSTOM_SCRIPTS, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   int8_t  sub = menuVerticalPosition;
 

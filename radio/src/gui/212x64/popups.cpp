@@ -45,7 +45,7 @@ void drawMessageBox(const char * title)
   // could be a place for a warningInfoText
 }
 
-void displayPopup(const char * title)
+void showMessageBox(const char * title)
 {
   drawMessageBox(title);
   lcdRefresh();
@@ -83,7 +83,7 @@ void drawAlertBox(const char * title, const char * text, const char * action)
 #undef MESSAGE_LCD_OFFSET
 }
 
-void message(const pm_char * title, const pm_char * text, const char * action, uint8_t sound)
+void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound)
 {
   drawAlertBox(title, text, action);
   AUDIO_ERROR_MESSAGE(sound);
@@ -92,7 +92,7 @@ void message(const pm_char * title, const pm_char * text, const char * action, u
   clearKeyEvents();
 }
 
-void displayWarning(uint8_t event)
+void runPopupWarning(uint8_t event)
 {
   warningResult = false;
   drawMessageBox(warningText);
@@ -111,10 +111,11 @@ void displayWarning(uint8_t event)
       warningType = WARNING_TYPE_ASTERISK;
       break;
     default:
-      if (warningType != WARNING_TYPE_INPUT) break;
-      s_editMode = EDIT_MODIFY_FIELD;
-      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
-      s_editMode = EDIT_SELECT_FIELD;
+      if (warningType == WARNING_TYPE_INPUT) {
+        s_editMode = EDIT_MODIFY_FIELD;
+        warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
+        s_editMode = EDIT_SELECT_FIELD;
+      }
       break;
   }
 }

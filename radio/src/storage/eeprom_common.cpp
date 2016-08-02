@@ -69,7 +69,7 @@ uint8_t eeFindEmptyModel(uint8_t id, bool down)
 void selectModel(uint8_t sub)
 {
 #if !defined(COLORLCD)
-  displayPopup(STR_LOADINGMODEL);
+  showMessageBox(STR_LOADINGMODEL);
 #endif
   saveTimers();
   storageCheck(true); // force writing of current model data before this is changed
@@ -120,7 +120,7 @@ void storageEraseAll(bool warn)
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
 
-  MESSAGE(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
+  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
 
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);

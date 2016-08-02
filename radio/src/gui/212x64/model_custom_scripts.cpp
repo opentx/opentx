@@ -64,7 +64,7 @@ void menuModelCustomScriptOne(uint8_t event)
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
-      lcd_putsLeft(y, STR_SCRIPT);
+      lcdDrawTextAlignedLeft(y, STR_SCRIPT);
       if (ZEXIST(sd.file))
         lcdDrawSizedText(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
@@ -80,11 +80,11 @@ void menuModelCustomScriptOne(uint8_t event)
       }
     }
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_NAME) {
-      lcd_putsLeft(y, TR_NAME);
+      lcdDrawTextAlignedLeft(y, TR_NAME);
       editName(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.name, sizeof(sd.name), event, attr);
     }
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL) {
-      lcd_putsLeft(y, STR_INPUTS);
+      lcdDrawTextAlignedLeft(y, STR_INPUTS);
     }
     else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount) {
       int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
@@ -121,7 +121,7 @@ void menuModelCustomScripts(uint8_t event)
   lcdDrawNumber(19*FW, 0, luaGetMemUsed(), RIGHT);
   lcdDrawText(19*FW+1, 0, STR_BYTES);
 
-  MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, e_CustomScripts, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
+  MENU(STR_MENUCUSTOMSCRIPTS, menuTabModel, MENU_MODEL_CUSTOM_SCRIPTS, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });
 
   coord_t y;
   int8_t  sub = menuVerticalPosition;

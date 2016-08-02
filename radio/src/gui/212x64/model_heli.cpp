@@ -36,7 +36,7 @@ enum menuModelHeliItems {
 
 void menuModelHeli(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, e_Heli, ITEM_HELI_MAX);
+  SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, MENU_MODEL_HELI, ITEM_HELI_MAX);
 
   int sub = menuVerticalPosition;
 
@@ -52,13 +52,13 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_SWASHRING:
-        lcd_putsLeft(y, STR_SWASHRING);
+        lcdDrawTextAlignedLeft(y, STR_SWASHRING);
         lcdDrawNumber(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.value, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.swashR.value, 100);
         break;
 
       case ITEM_HELI_ELE:
-        lcd_putsLeft(y, STR_ELEVATOR);
+        lcdDrawTextAlignedLeft(y, STR_ELEVATOR);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
@@ -70,7 +70,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_AIL:
-        lcd_putsLeft(y, STR_AILERON);
+        lcdDrawTextAlignedLeft(y, STR_AILERON);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
@@ -82,7 +82,7 @@ void menuModelHeli(uint8_t event)
         break;
 
       case ITEM_HELI_COL:
-        lcd_putsLeft(y, STR_COLLECTIVE);
+        lcdDrawTextAlignedLeft(y, STR_COLLECTIVE);
         putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         break;

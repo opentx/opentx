@@ -106,7 +106,7 @@ void onSwitchLongEnterPress(const char *result)
     checkIncDecSelection = SWSRC_INVERT;
 }
 
-int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
 
@@ -298,7 +298,7 @@ uint8_t menuPageIndex;
 uint8_t menuPageCount;
 uint16_t linesCount;
 
-int8_t navigate(evt_t event, int count, int rows, int columns, bool loop)
+int8_t navigate(event_t event, int count, int rows, int columns, bool loop)
 {
   int8_t result = 0;
 
@@ -356,7 +356,7 @@ int8_t navigate(evt_t event, int count, int rows, int columns, bool loop)
   return (prevPosHorz != menuHorizontalPosition || prevPosVert != menuVerticalPosition) ? result : 0;
 }
 
-bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, int rowcount, uint8_t flags)
+bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, int rowcount, uint8_t flags)
 {
   uint8_t maxcol = MAXCOL(menuVerticalPosition);
 
@@ -563,17 +563,17 @@ bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, u
   return true;
 }
 
-bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, int rowcount)
+bool check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, int rowcount)
 {
   return check(event, curr, menuTab, menuTabSize, NULL, 0, rowcount);
 }
 
-bool check_submenu_simple(check_event_t event, uint8_t rowcount)
+bool check_submenu_simple(event_t event, uint8_t rowcount)
 {
   return check_simple(event, 0, NULL, 0, rowcount);
 }
 
-void repeatLastCursorMove(evt_t event)
+void repeatLastCursorMove(event_t event)
 {
   if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
     putEvent(event);

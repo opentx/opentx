@@ -24,12 +24,9 @@
 #include "keys.h"
 
 #define MENU_COLUMNS           2
-
 #define MENU_COLUMN2_X         280
 #define MIXES_2ND_COLUMN       140
 #define COLUMN_HEADER_X        150
-
-typedef evt_t & check_event_t;
 
 extern uint8_t menuPageIndex;
 extern uint8_t menuPageCount;
@@ -44,12 +41,12 @@ extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
-typedef bool (*MenuHandlerFunc)(evt_t event);
+typedef bool (*MenuHandlerFunc)(event_t event);
 
 extern MenuHandlerFunc menuHandlers[5];
 extern uint8_t menuVerticalPositions[4];
 extern uint8_t menuLevel;
-extern evt_t menuEvent;
+extern event_t menuEvent;
 
 /// goto given Menu, but substitute current menu in menuStack
 void chainMenu(MenuHandlerFunc newMenu);
@@ -104,21 +101,21 @@ enum MenuIcons {
 };
 
 enum EnumTabModel {
-  e_ModelSetup,
-  CASE_HELI(e_Heli)
-  CASE_FLIGHT_MODES(e_FlightModesAll)
-  e_InputsAll,
-  e_MixAll,
-  e_Limits,
-  CASE_CURVES(e_CurvesAll)
-  CASE_GVARS(e_GVars)
-  e_LogicalSwitches,
-  e_CustomFunctions,
+  MENU_MODEL_SETUP,
+  CASE_HELI(MENU_MODEL_HELI)
+  CASE_FLIGHT_MODES(MENU_MODEL_FLIGHT_MODES)
+  MENU_MODEL_INPUTS,
+  MENU_MODEL_MIXES,
+  MENU_MODEL_OUTPUTS,
+  CASE_CURVES(MENU_MODEL_CURVES)
+  CASE_GVARS(MENU_MODEL_GVARS)
+  MENU_MODEL_LOGICAL_SWITCHES,
+  MENU_MODEL_SPECIAL_FUNCTIONS,
 #if defined(LUA_MODEL_SCRIPTS)
-  e_CustomScripts,
+  MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
-  CASE_FRSKY(e_Telemetry)
-  e_TabModelPagesCount
+  CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
+  MENU_MODEL_PAGES_COUNT
 };
 
 const uint8_t RADIO_ICONS[] = {
@@ -168,44 +165,44 @@ const uint8_t MONITOR_ICONS[] = {
   ICON_MONITOR_LOGICAL_SWITCHES
 };
 
-bool menuModelSetup(evt_t event);
-bool menuModelHeli(evt_t event);
-bool menuModelFlightModesAll(evt_t event);
-bool menuModelExposAll(evt_t event);
-bool menuModelMixAll(evt_t event);
-bool menuModelLimits(evt_t event);
-bool menuModelCurvesAll(evt_t event);
-bool menuModelCurveOne(evt_t event);
-bool menuModelGVars(evt_t event);
-bool menuModelLogicalSwitches(evt_t event);
-bool menuModelCustomFunctions(evt_t event);
-bool menuModelCustomScripts(evt_t event);
-bool menuModelTelemetry(evt_t event);
-bool menuModelExpoOne(evt_t event);
+bool menuModelSetup(event_t event);
+bool menuModelHeli(event_t event);
+bool menuModelFlightModesAll(event_t event);
+bool menuModelExposAll(event_t event);
+bool menuModelMixAll(event_t event);
+bool menuModelLimits(event_t event);
+bool menuModelCurvesAll(event_t event);
+bool menuModelCurveOne(event_t event);
+bool menuModelGVars(event_t event);
+bool menuModelLogicalSwitches(event_t event);
+bool menuModelSpecialFunctions(event_t event);
+bool menuModelCustomScripts(event_t event);
+bool menuModelTelemetryFrsky(event_t event);
+bool menuModelExpoOne(event_t event);
 
-extern const MenuHandlerFunc menuTabModel[e_TabModelPagesCount];
+extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 
 enum EnumTabRadio {
-  e_Setup,
-  e_Sd,
-  e_GeneralCustomFunctions,
-  e_Trainer,
-  e_Hardware,
-  e_Vers,
-  e_TabRadioPagesCount
+  MENU_RADIO_SETUP,
+  MENU_RADIO_SD_MANAGER,
+  MENU_RADIO_SPECIAL_FUNCTIONS,
+  MENU_RADIO_TRAINER,
+  MENU_RADIO_HARDWARE,
+  MENU_RADIO_VERSION,
+  MENU_RADIO_PAGES_COUNT
 };
 
-bool menuGeneralSetup(evt_t event);
-bool menuGeneralSdManager(evt_t event);
-bool menuGeneralCustomFunctions(evt_t event);
-bool menuGeneralTrainer(evt_t event);
-bool menuGeneralVersion(evt_t event);
-bool menuGeneralHardware(evt_t event);
-bool menuGeneralCalib(evt_t event);
+bool menuRadioSetup(event_t event);
+bool menuRadioSdManager(event_t event);
+bool menuRadioSpecialFunctions(event_t event);
+bool menuRadioTrainer(event_t event);
+bool menuRadioVersion(event_t event);
+bool menuRadioHardware(event_t event);
+bool menuRadioCalibration(event_t event);
 
-extern const MenuHandlerFunc menuTabGeneral[e_TabRadioPagesCount];
+extern const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT];
 
-enum EnumTabDiag
+enum MenuRadioIndexes
 {
   e_StatsGraph,
   e_StatsDebug,
@@ -215,10 +212,10 @@ enum EnumTabDiag
 #endif
 };
 
-bool menuStatsGraph(evt_t event);
-bool menuStatsDebug(evt_t event);
-bool menuStatsAnalogs(evt_t event);
-bool menuStatsTraces(evt_t event);
+bool menuStatsGraph(event_t event);
+bool menuStatsDebug(event_t event);
+bool menuStatsAnalogs(event_t event);
+bool menuStatsTraces(event_t event);
 
 static const MenuHandlerFunc menuTabStats[] PROGMEM = {
   menuStatsGraph,
@@ -247,14 +244,14 @@ extern void drawSingleOutputBar(coord_t, coord_t, coord_t, coord_t, uint8_t);
 
 extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
 
-bool menuFirstCalib(evt_t event);
-bool menuMainView(evt_t event);
-bool menuCustomFunctions(evt_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
-bool menuModelSelect(evt_t event);
-bool menuAboutView(evt_t event);
-bool menuMainViewChannelsMonitor(evt_t event);
-bool menuTextView(evt_t event);
-bool menuScreensTheme(evt_t event);
+bool menuFirstCalib(event_t event);
+bool menuMainView(event_t event);
+bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext & functionsContext);
+bool menuModelSelect(event_t event);
+bool menuAboutView(event_t event);
+bool menuMainViewChannelsMonitor(event_t event);
+bool menuTextView(event_t event);
+bool menuScreensTheme(event_t event);
 
 typedef uint16_t FlightModesType;
 
@@ -315,7 +312,7 @@ extern const CheckIncDecStops &stopsSwitch;
 #define CATEGORY_END(val)                                          \
   (val), (val+1)
 
-int checkIncDec(evt_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
 swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
@@ -351,10 +348,10 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 #define CHECK_INCDEC_PARAM(event, var, min, max) \
                                        checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
-int8_t navigate(evt_t event, int count, int rows, int columns=1, bool loop=true);
-bool check(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
-bool check_simple(check_event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, int maxrow);
-bool check_submenu_simple(check_event_t event, uint8_t maxrow);
+int8_t navigate(event_t event, int count, int rows, int columns=1, bool loop=true);
+bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
+bool check_simple(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, int maxrow);
+bool check_submenu_simple(event_t event, uint8_t maxrow);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
@@ -404,8 +401,8 @@ bool check_submenu_simple(check_event_t event, uint8_t maxrow);
 
 typedef int select_menu_value_t;
 
-select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, evt_t event);
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t event);
+select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, event_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, event_t event);
 
 #if defined(GVARS)
   #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, editflags, event)
@@ -414,18 +411,18 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, evt_t e
 #endif
 
 #if defined(GVARS)
-  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, evt_t event);
+  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
   #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
-  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, evt_t event);
+  int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
 extern uint8_t editNameCursorPos;
-void editName(coord_t x, coord_t y, char *name, uint8_t size, evt_t event, uint8_t active, LcdFlags flags=ZCHAR);
+void editName(coord_t x, coord_t y, char *name, uint8_t size, event_t event, uint8_t active, LcdFlags flags=ZCHAR);
 
-uint8_t editDelay(const coord_t x, const coord_t y, const evt_t event, const uint8_t attr, uint8_t delay);
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, evt_t event, uint8_t attr);
+uint8_t editDelay(const coord_t x, const coord_t y, const event_t event, const uint8_t attr, uint8_t delay);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr);
 
 extern uint8_t s_curveChan;
 
@@ -472,18 +469,18 @@ void insertMix(uint8_t idx);
 
 void copySelection(char * dst, const char * src, uint8_t size);
 
-void displayPopup(const char * title);
-void displayWarning(evt_t event);
+void showMessageBox(const char * title);
+void runPopupWarning(event_t event);
 
-extern void (* popupFunc)(evt_t event);
+extern void (* popupFunc)(event_t event);
 extern int16_t warningInputValue;
 extern int16_t warningInputValueMin;
 extern int16_t warningInputValueMax;
 extern uint8_t warningInfoFlags;
 
 #define DISPLAY_WARNING                (*popupFunc)
-#define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = displayWarning)
-#define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = displayWarning)
+#define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
+#define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
 #define WARNING_INFO_FLAGS             warningInfoFlags
 #define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
@@ -503,7 +500,7 @@ enum {
   MENU_OFFSET_EXTERNAL
 };
 extern uint8_t popupMenuOffsetType;
-const char * runPopupMenu(evt_t event);
+const char * runPopupMenu(event_t event);
 extern void (*popupMenuHandler)(const char * result);
 
 #define TEXT_FILENAME_MAXLEN           40

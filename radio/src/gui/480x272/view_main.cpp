@@ -128,7 +128,7 @@ int getMainViewsCount()
   return MAX_CUSTOM_SCREENS;
 }
 
-bool menuMainView(evt_t event)
+bool menuMainView(event_t event)
 {
   switch (event) {
     case EVT_ENTRY:
@@ -202,7 +202,7 @@ bool menuMainView(evt_t event)
 }
 
 #if 0
-bool menuMainViewChannelsMonitor(evt_t event)
+bool menuMainViewChannelsMonitor(event_t event)
 {
   switch (event) {
     case EVT_KEY_BREAK(KEY_EXIT):

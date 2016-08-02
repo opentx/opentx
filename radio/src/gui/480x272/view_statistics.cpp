@@ -25,7 +25,7 @@
 #define MENU_STATS_COLUMN2    (LCD_W/2)
 #define MENU_STATS_COLUMN3    (LCD_W/2 + 120)
 
-bool menuStatsGraph(evt_t event)
+bool menuStatsGraph(event_t event)
 {
   switch(event) {
     case EVT_KEY_LONG(KEY_ENTER):
@@ -94,7 +94,7 @@ bool menuStatsGraph(evt_t event)
   return true;
 }
 
-bool menuStatsDebug(evt_t event)
+bool menuStatsDebug(event_t event)
 {
   switch(event)
   {
@@ -146,7 +146,7 @@ bool menuStatsDebug(evt_t event)
   return true;
 }
 
-bool menuStatsAnalogs(evt_t event)
+bool menuStatsAnalogs(event_t event)
 {
   MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
 
@@ -181,7 +181,7 @@ bool menuStatsAnalogs(evt_t event)
 #define STATS_TRACES_EVENT_POS         MENUS_MARGIN_LEFT + 14*10
 #define STATS_TRACES_DATA_POS          MENUS_MARGIN_LEFT + 20*10
 
-bool menuStatsTraces(evt_t event)
+bool menuStatsTraces(event_t event)
 {
   switch(event)
   {

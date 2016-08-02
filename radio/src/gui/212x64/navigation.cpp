@@ -334,7 +334,7 @@ void onLongMenuPress(const char *result)
 
 tmr10ms_t menuEntryTime;
 
-void check(const char * name, check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   vertpos_t l_posVert = menuVerticalPosition;
   horzpos_t l_posHorz = menuHorizontalPosition;
@@ -579,12 +579,12 @@ void check(const char * name, check_event_t event, uint8_t curr, const MenuHandl
 }
 
 
-void check_simple(const char * name, check_event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
+void check_simple(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t rowcount)
 {
   check(name, event, curr, menuTab, menuTabSize, 0, 0, rowcount);
 }
 
-void check_submenu_simple(const char * name, check_event_t event, uint8_t rowcount)
+void check_submenu_simple(const char * name, event_t event, uint8_t rowcount)
 {
   check_simple(name, event, 0, 0, 0, rowcount);
 }

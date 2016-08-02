@@ -22,12 +22,12 @@
 
 #define TRAINER_CALIB_POS 8
 
-void menuGeneralTrainer(uint8_t event)
+void menuRadioTrainer(uint8_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabGeneral, e_Trainer, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
 
   if (slave) {
     lcdDrawText(7*FW, 4*FH, STR_SLAVE);
@@ -71,7 +71,7 @@ void menuGeneralTrainer(uint8_t event)
     }
 
     attr = (menuVerticalPosition==5) ? blink : 0;
-    lcd_putsLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
+    lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
     lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 

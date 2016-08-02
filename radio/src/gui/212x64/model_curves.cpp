@@ -94,7 +94,7 @@ void resetCustomCurveX(int8_t * points, int noPoints)
 
 void displayPresetChoice(uint8_t event)
 {
-  displayWarning(event);
+  runPopupWarning(event);
   lcdDrawNumber(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*warningInputValue/4, LEFT|INVERS);
   lcdDrawChar(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
 
@@ -149,11 +149,11 @@ void menuModelCurveOne(uint8_t event)
 
   SIMPLE_SUBMENU(STR_MENUCURVES, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
 
-  lcd_putsLeft(FH+1, STR_NAME);
+  lcdDrawTextAlignedLeft(FH+1, STR_NAME);
   editName(INDENT_WIDTH, 2*FH+1, crv.name, sizeof(crv.name), event, menuVerticalPosition==0);
 
   uint8_t attr = (menuVerticalPosition==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcd_putsLeft(3*FH+1, STR_TYPE);
+  lcdDrawTextAlignedLeft(3*FH+1, STR_TYPE);
   lcdDrawTextAtIndex(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
@@ -170,7 +170,7 @@ void menuModelCurveOne(uint8_t event)
   }
 
   attr = (menuVerticalPosition==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcd_putsLeft(5*FH+1, STR_COUNT);
+  lcdDrawTextAlignedLeft(5*FH+1, STR_COUNT);
   lcdDrawNumber(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
   lcdDrawText(lcdLastPos, 6*FH+1, STR_PTS, attr);
   if (attr) {
@@ -191,7 +191,7 @@ void menuModelCurveOne(uint8_t event)
     }
   }
 
-  lcd_putsLeft(7*FH+1, STR_SMOOTH);
+  lcdDrawTextAlignedLeft(7*FH+1, STR_SMOOTH);
   drawCheckBox(7 * FW, 7 * FH + 1, crv.smooth, menuVerticalPosition == 3 ? INVERS : 0);
   if (menuVerticalPosition==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
 
@@ -291,7 +291,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t
 
 void menuModelCurvesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, e_CurvesAll, MAX_CURVES);
+  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, MENU_MODEL_CURVES, MAX_CURVES);
 
   int  sub = menuVerticalPosition;
 

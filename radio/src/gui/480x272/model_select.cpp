@@ -179,7 +179,7 @@ void initModelsList()
   }
 }
 
-bool menuModelSelect(evt_t event)
+bool menuModelSelect(event_t event)
 {
   if (warningResult) {
     warningResult = 0;

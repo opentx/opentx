@@ -39,7 +39,7 @@ void displayRssiLine()
     uint8_t rssi;
 #if !defined(CPUARM)
     rssi = min((uint8_t)99, telemetryData.rssi[1].value);
-    lcd_putsLeft(STATUS_BAR_Y, STR_TX); lcdDrawNumber(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
+    lcdDrawTextAlignedLeft(STATUS_BAR_Y, STR_TX); lcdDrawNumber(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
     lcdDrawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #endif
@@ -197,17 +197,17 @@ void displayAfterFlightScreen()
   uint8_t line=1*FH+1;
   if (IS_GPS_AVAILABLE()) {
     // Latitude
-    lcd_putsLeft(line, STR_LATITUDE);
+    lcdDrawTextAlignedLeft(line, STR_LATITUDE);
     displayGpsCoord(line, telemetryData.hub.gpsLatitudeNS, telemetryData.hub.gpsLatitude_bp, telemetryData.hub.gpsLatitude_ap);
     // Longitude
     line+=1*FH+1;
-    lcd_putsLeft(line, STR_LONGITUDE);
+    lcdDrawTextAlignedLeft(line, STR_LONGITUDE);
     displayGpsCoord(line, telemetryData.hub.gpsLongitudeEW, telemetryData.hub.gpsLongitude_bp, telemetryData.hub.gpsLongitude_ap);
     displayGpsTime();
     line+=1*FH+1;
   }
   // Rssi
-  lcd_putsLeft(line, STR_MINRSSI);
+  lcdDrawTextAlignedLeft(line, STR_MINRSSI);
   lcdDrawText(TELEM_2ND_COLUMN, line, STR_TX);
   lcdDrawNumber(TELEM_2ND_COLUMN+3*FW, line, telemetryData.rssi[1].min, LEFT|LEADING0, 2);
   lcdDrawText(TELEM_2ND_COLUMN+6*FW, line, STR_RX);
@@ -371,7 +371,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         if (TELEMETRY_STREAMING()) {
 #if defined(FRSKY_HUB)
           if (field == TELEM_ACC) {
-            lcd_putsLeft(STATUS_BAR_Y, STR_ACCEL);
+            lcdDrawTextAlignedLeft(STATUS_BAR_Y, STR_ACCEL);
             lcdDrawNumber(4*FW, STATUS_BAR_Y, telemetryData.hub.accelX, LEFT|PREC2);
             lcdDrawNumber(10*FW, STATUS_BAR_Y, telemetryData.hub.accelY, LEFT|PREC2);
             lcdDrawNumber(16*FW, STATUS_BAR_Y, telemetryData.hub.accelZ, LEFT|PREC2);
@@ -490,7 +490,7 @@ void incrTelemetryScreen()
 }
 #endif
 
-void menuTelemetryFrsky(uint8_t event)
+void menuViewTelemetryFrsky(uint8_t event)
 {
 #if defined(CPUARM)
   enum NavigationDirection direction = none;

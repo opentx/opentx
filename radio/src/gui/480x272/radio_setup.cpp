@@ -24,7 +24,7 @@
 
 #define RADIO_SETUP_2ND_COLUMN         220
 
-int8_t editSlider(coord_t x, coord_t y, evt_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
+int8_t editSlider(coord_t x, coord_t y, event_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
 {
   drawHorizontalSlider(x, y, 100, value, min, max, 0, OPTION_SLIDER_DBL_COLOR|attr);
   return selectMenuItem(x, y, NULL, value, min, max, attr, event);
@@ -38,7 +38,7 @@ int8_t editSlider(coord_t x, coord_t y, evt_t event, int8_t value, int8_t min, i
   #define CASE_SPLASH_PARAM(x)
 #endif
 
-enum menuGeneralSetupItems {
+enum menuRadioSetupItems {
   ITEM_SETUP_DATE,
   ITEM_SETUP_TIME,
   ITEM_SETUP_BATT_RANGE,
@@ -86,7 +86,7 @@ enum menuGeneralSetupItems {
   ITEM_SETUP_MAX
 };
 
-bool menuGeneralSetup(evt_t event)
+bool menuRadioSetup(event_t event)
 {
 #if defined(RTCLOCK)
   struct gtm t;
@@ -108,7 +108,7 @@ bool menuGeneralSetup(evt_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, RADIO_ICONS, menuTabGeneral, e_Setup, ITEM_SETUP_MAX, {
+  MENU(STR_MENURADIOSETUP, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, {
     2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, 1|NAVIGATION_LINE_BY_LINE,
     LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
     CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)

@@ -171,7 +171,7 @@ enum ExposFields {
 
 #define CURVE_ROWS 1
 
-bool menuModelExpoOne(evt_t event)
+bool menuModelExpoOne(event_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
 
@@ -359,7 +359,7 @@ void displayExpoLine(coord_t y, ExpoData *ed)
   }
 }
 
-bool menuModelExposAll(evt_t event)
+bool menuModelExposAll(event_t event)
 {
   int sub = menuVerticalPosition;
 
@@ -370,7 +370,7 @@ bool menuModelExposAll(evt_t event)
   uint8_t chn = expoAddress(s_currIdx)->chn + 1;
 
   int linesCount = getExposLinesCount();
-  SIMPLE_MENU(STR_MENUINPUTS, MODEL_ICONS, menuTabModel, e_InputsAll, linesCount);
+  SIMPLE_MENU(STR_MENUINPUTS, MODEL_ICONS, menuTabModel, MENU_MODEL_INPUTS, linesCount);
 
   switch (event) {
     case EVT_ENTRY:

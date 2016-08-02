@@ -87,7 +87,7 @@ void readTextFile(int & lines_count)
   }
 }
 
-bool menuTextView(evt_t event)
+bool menuTextView(event_t event)
 {
   static int lines_count;
 
