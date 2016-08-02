@@ -1,7 +1,6 @@
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
-add_definitions(-DUSB_NAME="FrSky Taranis")
 
 if(PCB STREQUAL X9E)
   option(STICKS "Sticks type" STANDARD)
@@ -58,7 +57,7 @@ elseif(PCB STREQUAL X7D)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 128x64)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
-  set(LCD_DRIVER lcd_driver_spi2.cpp)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
 set(HSE_VALUE 12000000)

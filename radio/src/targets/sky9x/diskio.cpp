@@ -1001,7 +1001,6 @@ void sdMountPoll()
 
     case SD_ST_DATA:
       if (!usbPlugged() && f_mount(0, &g_FATFS_Obj) == FR_OK) {
-        referenceSystemAudioFiles();
         Card_state = SD_ST_MOUNTED;
       }
       break;
@@ -1071,8 +1070,6 @@ void sdInit()
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
-
-    referenceSystemAudioFiles();
     Card_state = SD_ST_MOUNTED;
   }
 

@@ -1003,8 +1003,6 @@ void sdInit(void)
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
-
-    referenceSystemAudioFiles();
     
 #if defined(LOG_TELEMETRY)
     f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);

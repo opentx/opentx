@@ -312,8 +312,6 @@ void sdMount()
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
 
-    referenceSystemAudioFiles();
-
 #if defined(LOG_TELEMETRY)
     f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
     if (f_size(&g_telemetryFile) > 0) {

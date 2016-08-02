@@ -51,29 +51,16 @@ void lcdWriteCommand(uint8_t Command_Byte)
   LCD_NCS_HIGH();
 }
 
-void lcdInitSpi()
+void lcdHardwareInit()
 {
+  GPIO_InitTypeDef GPIO_InitStructure;
+
   // APB1 clock / 2 = 133nS per clock
   LCD_SPI->CR1 = 0; // Clear any mode error
   LCD_SPI->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_CPOL | SPI_CR1_CPHA;
   LCD_SPI->CR2 = 0;
   LCD_SPI->CR1 |= SPI_CR1_MSTR;	// Make sure in case SSM/SSI needed to be set first
   LCD_SPI->CR1 |= SPI_CR1_SPE;
-  
-  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
-  LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
-  LDC_DMA_Stream->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0;
-  LDC_DMA_Stream->PAR = (uint32_t) &LCD_SPI->DR;
-  LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
-  LDC_DMA_Stream->FCR = 0x05; // DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
-  LDC_DMA_Stream->NDTR = LCD_W*LCD_H/8*4;
-
-  NVIC_EnableIRQ(LCD_DMA_Stream_IRQn);
-}
-
-void lcdHardwareInit()
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
   
   LCD_NCS_HIGH();
   
@@ -97,6 +84,16 @@ void lcdHardwareInit()
   
   GPIO_PinAFConfig(LCD_SPI_GPIO, LCD_MOSI_GPIO_PinSource, LCD_GPIO_AF);
   GPIO_PinAFConfig(LCD_SPI_GPIO, LCD_CLK_GPIO_PinSource, LCD_GPIO_AF);
+
+  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
+  LDC_DMA_Stream->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0;
+  LDC_DMA_Stream->PAR = (uint32_t)&LCD_SPI->DR;
+  LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
+  LDC_DMA_Stream->FCR = 0x05; // DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
+  LDC_DMA_Stream->NDTR = LCD_W*LCD_H/8*4;
+
+  NVIC_EnableIRQ(LCD_DMA_Stream_IRQn);
 }
 
 void lcdStart()
@@ -246,8 +243,6 @@ void lcdInitFinish()
 {
   lcdInitFinished = true;
 
-  lcdInitSpi();
-  
   /*
     LCD needs longer time to initialize in low temperatures. The data-sheet 
     mentions a time of at least 150 ms. The delay of 1300 ms was obtained 

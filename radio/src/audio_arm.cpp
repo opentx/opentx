@@ -496,10 +496,6 @@ void audioTask(void * pdata)
   }
 
   setSampleRate(AUDIO_SAMPLE_RATE);
-
-  while (!sdMounted()) {
-    CoTickDelay(10);
-  }
   
   if (!unexpectedShutdown) {
     AUDIO_HELLO();

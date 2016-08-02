@@ -173,7 +173,7 @@ class AudioQueue {
 
   friend void audioTask(void* pdata);
 #if defined(SIMU_AUDIO)
-  friend void *audioThread(void *);
+  friend void * audioThread(void *);
 #endif
 #if defined(CLI)
   friend void printAudioVars();
@@ -231,7 +231,8 @@ class AudioQueue {
       return NULL;
     }
 
-    bool filledAtleast(int noBuffers) {
+    bool filledAtleast(int noBuffers)
+    {
       int count = 0;
       for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
         if (audioBuffers[n].state == AUDIO_BUFFER_FILLED) {

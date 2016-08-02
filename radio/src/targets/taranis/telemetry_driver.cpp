@@ -23,7 +23,8 @@
 Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 uint32_t telemetryErrors = 0;
 
-void telemetryPortInit(uint32_t baudrate, int mode) {
+void telemetryPortInit(uint32_t baudrate, int mode)
+{
   if (baudrate == 0) {
     USART_DeInit(TELEMETRY_USART);
     return;
@@ -52,15 +53,16 @@ void telemetryPortInit(uint32_t baudrate, int mode) {
   GPIO_InitStructure.GPIO_Pin = TELEMETRY_DIR_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(TELEMETRY_GPIO_DIR, &GPIO_InitStructure);
-  GPIO_ResetBits(TELEMETRY_GPIO_DIR, TELEMETRY_DIR_GPIO_PIN);
+  GPIO_Init(TELEMETRY_DIR_GPIO, &GPIO_InitStructure);
+  GPIO_ResetBits(TELEMETRY_DIR_GPIO, TELEMETRY_DIR_GPIO_PIN);
 
   USART_InitStructure.USART_BaudRate = baudrate;
   if (mode == TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     USART_InitStructure.USART_StopBits = USART_StopBits_2;
     USART_InitStructure.USART_Parity = USART_Parity_Even;
-  } else {
+  }
+  else {
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -76,13 +78,13 @@ void telemetryPortInit(uint32_t baudrate, int mode) {
 
 void telemetryPortSetDirectionOutput()
 {
-  TELEMETRY_GPIO_DIR->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
+  TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
 
 void telemetryPortSetDirectionInput()
 {
-  TELEMETRY_GPIO_DIR->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
+  TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
 
@@ -129,7 +131,6 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
     }
   }
 }
-
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void TELEMETRY_USART_IRQHandler(void)

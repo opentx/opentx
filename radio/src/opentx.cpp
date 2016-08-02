@@ -2546,6 +2546,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(CPUARM)
+  referenceSystemAudioFiles();
   audioQueue.start();
   setBacklight(g_eeGeneral.backlightBright);
 #endif
