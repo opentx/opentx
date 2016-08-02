@@ -153,7 +153,7 @@ void per10ms()
   }
 #endif
 
-#if defined(TELEMETRY_FRSKY) || defined(JETI)
+#if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_JETI)
   if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
     telemetryInterrupt10ms();
   }
@@ -440,7 +440,7 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
 #endif

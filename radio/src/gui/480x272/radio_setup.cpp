@@ -470,7 +470,7 @@ bool menuGeneralSetup(evt_t event)
         break;
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
       case ITEM_MAVLINK_BAUD:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAVLINK_BAUD_LABEL);
         g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);

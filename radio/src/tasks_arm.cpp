@@ -171,7 +171,7 @@ void mixerTask(void * pdata)
       CoLeaveMutexSection(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
 
-#if defined(TELEMETRY_FRSKY) || defined(MAVLINK)
+#if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);

@@ -454,7 +454,7 @@ enum TelemetrySource {
   #define NUM_TELEMETRY      TELEM_ALT
 #elif defined(TELEMETRY_FRSKY)
   #define NUM_TELEMETRY      TELEM_A2
-#elif defined(MAVLINK)
+#elif defined(TELEMETRY_MAVLINK)
   #define NUM_TELEMETRY      4
 #else
   #define NUM_TELEMETRY      TELEM_TIMER2

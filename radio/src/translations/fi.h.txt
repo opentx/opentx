@@ -568,7 +568,7 @@
 #define LEN_VFAILSAFE          "\011"
 #define TR_VFAILSAFE           "Not set\0 ""Hold\0    ""Custom\0  ""No pulses""Receiver\0"
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
   #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
   #define LEN_MAVLINK_AC_MODES "\011"
@@ -1024,7 +1024,7 @@
 #define TR_CONFIRMRESET        "Erase ALL models and settings?"
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL  "Max RSSI"
   #define TR_MAVLINK_PC_RSSI_EN_LABEL     "PC RSSI EN"
   #define TR_MAVMENUSETUP_TITLE           "Mavlink Setup"

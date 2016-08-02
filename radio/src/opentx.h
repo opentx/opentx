@@ -127,7 +127,7 @@
   #define CASE_FRSKY(x)
 #endif
 
-#if defined(MAVLINK)
+#if defined(TELEMETRY_MAVLINK)
   #define CASE_MAVLINK(x) x,
 #else
   #define CASE_MAVLINK(x)

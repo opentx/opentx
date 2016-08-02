@@ -103,7 +103,7 @@ void perMain()
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
   doLoopCommonActions();
 
-#if defined(TELEMETRY_FRSKY) || defined(MAVLINK)
+#if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
   telemetryWakeup();
 #endif
 
