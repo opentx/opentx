@@ -410,9 +410,9 @@ void memswap(void * a, void * b, uint8_t size);
 #endif
 
 #if defined(MULTIMODULE)
-#define IS_MODULE_MULTIMODULE(idx)      (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_MULTIMODULE)
+  #define IS_MODULE_MULTIMODULE(idx)        (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_MULTIMODULE)
 #else
-#define IS_MODULE_MULTIMODULE(idx)      (false)
+  #define IS_MODULE_MULTIMODULE(idx)        (false)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)

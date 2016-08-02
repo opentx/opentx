@@ -490,16 +490,19 @@ bool isModuleAvailable(int module)
     return false;
   }
 #else
-  if (module == MODULE_TYPE_CROSSFIRE)
+  if (module == MODULE_TYPE_CROSSFIRE) {
     return false;
+  }
 #endif
 #if !defined(DSM2)
-  if (module == MODULE_TYPE_DSM2)
+  if (module == MODULE_TYPE_DSM2) {
      return false;
+  }
 #endif
 #if !defined(MULTIMODULE)
-  if (module == MODULE_TYPE_MULTIMODULE)
+  if (module == MODULE_TYPE_MULTIMODULE) {
      return false;
+  }
 #endif
   return true;
 }
@@ -524,7 +527,7 @@ bool isTelemetryProtocolAvailable(int protocol)
 {
 
 #if defined(PCBTARANIS)
-  if(protocol == PROTOCOL_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode !=UART_MODE_TELEMETRY)
+  if(protocol == PROTOCOL_FRSKY_D_SECONDARY && g_eeGeneral.serial2Mode != UART_MODE_TELEMETRY)
     return false;
 #endif
   if (protocol== PROTOCOL_PULSES_CROSSFIRE)

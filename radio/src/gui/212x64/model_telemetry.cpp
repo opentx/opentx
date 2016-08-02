@@ -433,7 +433,7 @@ void menuModelTelemetry(uint8_t event)
         lcdDrawText(TELEM_COL2, y, "---", 0); // TODO shortcut
       }
       TelemetrySensor * sensor = & g_model.telemetrySensors[index];
-#ifdef MULTIMODULE
+#if defined(MULTIMODULE)
       if (IS_SPEKTRUM_PROTOCOL()) {
         // Spektrum does not (yet?) really support multiple sensor of the same type. But a lot of
         // different sensor display the same information (e.g. voltage, capacity). Show the id
