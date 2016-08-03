@@ -1200,6 +1200,8 @@ void registerOpenTxFirmwares()
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  Option usb_options[] = { { "massstorage", QObject::tr("Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)") }, { "cli", QObject::tr("Instead of Joystick emulation, USB connection is Command Line Interface") }, { NULL } };
+  firmware->addOptions(usb_options);
   /* untested */
   //firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
   addOpenTxCommonOptions(firmware);
