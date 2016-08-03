@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-
 #include "spektrum.h"
 
 /*
@@ -40,8 +39,6 @@
  *  id = i2c address <<8 | start byte
  */
 
-
-
 #define I2C_PSEUDO_TX 0xf0
 #define SPEKTRUM_TELEMETRY_LENGTH 18
 
@@ -50,7 +47,6 @@
 #define I2C_GPS2 0x17
 #define I2C_CELLS 0x3a
 #define I2C_QOS 0x7f
-
 
 enum SpektrumDataType : uint8_t {
   int8,
@@ -163,16 +159,14 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_CELLS,        8,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
   {I2C_CELLS,        10, uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
   {I2C_CELLS,        12, uint16,    ZSTR_TEMP2,             UNIT_CELSIUS,                2},
-
-
+  
   // Vario-S
   {0x40,             0,  int16,     ZSTR_ALT,               UNIT_METERS,                 1},
   {0x40,             2,  int16,     ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
-
-
+  
   // 0x7d are transmitter channels frame data [7], probably only available on the Spektrum
   // telemetry bus on the model itself
 
@@ -200,22 +194,26 @@ const SpektrumSensor spektrumSensors[] = {
 };
 
 // The bcd int parameter has wrong endian
-static int32_t bcdToInt16(uint16_t bcd) {
+static int32_t bcdToInt16(uint16_t bcd)
+{
   return (bcd & 0x0f00) + 10 * (bcd & 0xf000) + 100 * (bcd & 0x000f) + 1000 * (bcd & 0x00f0);
 }
 
 // The bcd int parameter has wrong endian
-static int32_t bcdToInt8(uint8_t bcd) {
+static int32_t bcdToInt8(uint8_t bcd)
+{
   return (bcd & 0xf) + 10 * (bcd & 0xf0);
 }
 
-static int32_t bcdToInt32(uint32_t bcd) {
+static int32_t bcdToInt32(uint32_t bcd)
+{
   return bcdToInt16(bcd >> 16) + 10000 * bcdToInt16(bcd);
 }
 
 // Spektrum uses Big Endian data types
-static int32_t spektrumGetValue(uint8_t *packet, int startByte, SpektrumDataType type) {
-  uint8_t *data = packet + startByte;
+static int32_t spektrumGetValue(uint8_t *packet, int startByte, SpektrumDataType type)
+{
+  uint8_t * data = packet + startByte;
   switch (type) {
     case uint8:
       return *((uint8_t *) (data));
@@ -230,17 +228,18 @@ static int32_t spektrumGetValue(uint8_t *packet, int startByte, SpektrumDataType
     case uint32:
       return ((uint32_t) (data[3] + (data[2] << 8) + (data[1] << 16) + (data[0] << 24)));
     case uint16bcd:
-      return bcdToInt16(*(uint16_t *) (data));
+      return bcdToInt16(*(uint16_t *)data);
     case uint8bcd:
-      return bcdToInt8(*(uint8_t *) (data));
+      return bcdToInt8(*(uint8_t *)data);
     case uint32bcd:
-      return bcdToInt32(*(uint32_t *) data);
+      return bcdToInt32(*(uint32_t *)data);
     default:
       return -1;
   }
 }
 
-bool isSpektrumValidValue(int32_t value, const SpektrumDataType type) {
+bool isSpektrumValidValue(int32_t value, const SpektrumDataType type)
+{
   switch (type) {
     case uint16:
       return value != 0xffff;
@@ -255,15 +254,15 @@ bool isSpektrumValidValue(int32_t value, const SpektrumDataType type) {
   }
 }
 
-void processSpektrumPacket(uint8_t *packet) {
-
+void processSpektrumPacket(uint8_t *packet)
+{
   setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 1, 0, 0, packet[1], UNIT_RAW, 0);
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
   uint8_t instance = packet[3];
 
   bool handled = false;
-  for (const SpektrumSensor *sensor = spektrumSensors; sensor->i2caddress; sensor++) {
+  for (const SpektrumSensor * sensor = spektrumSensors; sensor->i2caddress; sensor++) {
     if (i2cAddress == sensor->i2caddress) {
       handled = true;
 
@@ -275,7 +274,6 @@ void processSpektrumPacket(uint8_t *packet) {
 
       if (i2cAddress == I2C_CELLS && sensor->unit == UNIT_VOLTS) {
         // Map to FrSky style cell values
-
         int cellIndex = (sensor->startByte / 2) << 16;
         value = value | cellIndex;
       }
@@ -284,7 +282,6 @@ void processSpektrumPacket(uint8_t *packet) {
         // Spektrum's documents talks says: Resolution: 300A/2048 = 0.196791 A/tick
         // Note that 300/2048 = 0,1464. DeviationTX also uses the 0.196791 figure
         value = value * 196791 / 100000;
-
       else if (sensor->i2caddress == I2C_GPS2 && sensor->unit == UNIT_DATETIME) {
         // Frsky time is HH:MM:SS:00 bcd encodes while spektrum uses 0HH:MM:SS.S
         value = (value & 0xfffffff0) << 4;
@@ -297,15 +294,15 @@ void processSpektrumPacket(uint8_t *packet) {
             spektrumGetValue(packet + 4, 6, uint16) == 0x8000 &&
             spektrumGetValue(packet + 4, 8, uint16) == 0x8000) {
           telemetryData.rssi.set(value);
-        } else {
+        }
+        else {
           // Otherwise use the received signal strength of the telemetry packet as indicator
           // Range is 0-31, multiply by 3 to get an almost full reading for 0x1f, the maximum the cyrf chip reports
           telemetryData.rssi.set(packet[1] * 3);
         }
         telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       }
-
-
+      
       uint16_t pseudoId = (sensor->i2caddress << 8 | sensor->startByte);
       setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, sensor->unit, sensor->precision);
     }
@@ -313,8 +310,7 @@ void processSpektrumPacket(uint8_t *packet) {
   if (!handled) {
     // If we see a sensor that is not handled at all, add the raw values of this sensor to show its existance to
     // the user and help debugging/implementing these sensors
-
-    for (int startByte=0;startByte <14; startByte+=2) {
+    for (int startByte=0; startByte<14; startByte+=2) {
       int32_t value = spektrumGetValue(packet + 4, startByte, uint16);
       uint16_t pseudoId = i2cAddress << 8 | startByte;
       setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, UNIT_RAW, 0);
@@ -322,7 +318,8 @@ void processSpektrumPacket(uint8_t *packet) {
   }
 }
 
-void processSpektrumTelemetryData(uint8_t data) {
+void processSpektrumTelemetryData(uint8_t data)
+{
   if (telemetryRxBufferCount == 0 && data != 0xAA) {
     TRACE("[SPK] invalid start byte 0x%02X", data);
     return;
@@ -337,10 +334,9 @@ void processSpektrumTelemetryData(uint8_t data) {
   }
 
   if (telemetryRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
-
     debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",
                 telemetryRxBuffer[0], telemetryRxBuffer[1], telemetryRxBuffer[2], telemetryRxBuffer[3]);
-    for (int i = 4; i < SPEKTRUM_TELEMETRY_LENGTH; i += 4) {
+    for (int i=4; i<SPEKTRUM_TELEMETRY_LENGTH; i+=4) {
       debugPrintf("%02X%02X %02X%02X  ", telemetryRxBuffer[i], telemetryRxBuffer[i + 1],
                   telemetryRxBuffer[i + 2], telemetryRxBuffer[i + 3]);
     }
@@ -350,17 +346,20 @@ void processSpektrumTelemetryData(uint8_t data) {
   }
 }
 
-const SpektrumSensor *getSpektrumSensor(uint16_t pseudoId) {
+const SpektrumSensor *getSpektrumSensor(uint16_t pseudoId)
+{
   uint8_t startByte = (uint8_t) (pseudoId & 0xff);
   uint8_t i2cadd = (uint8_t) (pseudoId >> 8);
-  for (const SpektrumSensor *sensor = spektrumSensors; sensor->i2caddress; sensor++) {
-    if (i2cadd == sensor->i2caddress && startByte == sensor->startByte)
+  for (const SpektrumSensor * sensor = spektrumSensors; sensor->i2caddress; sensor++) {
+    if (i2cadd == sensor->i2caddress && startByte == sensor->startByte) {
       return sensor;
+    }
   }
   return nullptr;
 }
 
-void spektrumSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance) {
+void spektrumSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
+{
   TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
   telemetrySensor.id = id;
   telemetrySensor.subId = subId;
@@ -375,17 +374,20 @@ void spektrumSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
     if (unit == UNIT_RPMS) {
       telemetrySensor.custom.ratio = 1;
       telemetrySensor.custom.offset = 1;
-    } else if (unit == UNIT_FAHRENHEIT) {
+    }
+    else if (unit == UNIT_FAHRENHEIT) {
       if (!IS_IMPERIAL_ENABLE()) {
         telemetrySensor.unit = UNIT_CELSIUS;
       }
 
-    } else if (unit == UNIT_METERS) {
+    }
+    else if (unit == UNIT_METERS) {
       if (IS_IMPERIAL_ENABLE()) {
         telemetrySensor.unit = UNIT_FEET;
       }
     }
-  } else {
+  }
+  else {
     telemetrySensor.init(id);
   }
 
