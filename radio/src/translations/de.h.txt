@@ -113,7 +113,7 @@
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"  //LP45 =Low Power 4 und 5 Kanal
 
 #define LEN_MULTI_PROTOCOLS    "\006"
-#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""Custom"
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Custom"
 
 #define LEN_SUBTYPE_FLYSKY     "\004"
 #define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912"
@@ -142,7 +142,7 @@
 #define TR_SUBTYPE_KN          "WLtoys""FeiLun"
 
 #define LEN_SUBTYPE_MT99       "\004"
-#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 "
+#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 ""LS\0 "
 
 #define LEN_SUBTYPE_MJXQ       "\005"
 #define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D"
@@ -662,6 +662,7 @@
 #define TR_AILDIRECTION        TR("Roll   Richtung", "Roll   Servo Richtung") 
 #define TR_COLDIRECTION        TR("Pitch Richtung", "Pitch Servo Richtung") 
 #define TR_MODE                INDENT "Modus"
+#define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
 #define TR_INSERTMIX           "MISCHER Hinz."
@@ -824,12 +825,12 @@
 #else
   #define TR_RXNUM             "Empf Nr."
 #endif
-#define TR_MULTI_RFTUNE        INDENT "RF Freq. Feintuning"
-#define TR_MULTI_VIDFREQ       INDENT "Video Frequenz"
-#define TR_MULTI_DSMFRAME      INDENT "DSM Rahmenformat"
-#define TR_MULTI_OPTION        INDENT "Optionswert"
+#define TR_MULTI_RFTUNE        TR(INDENT "RF Freq.", INDENT "RF Freq. Feintuning")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Vid. Freq.", INDENT "Video Frequenz")
+#define TR_MULTI_DSMFRAME      TR(INDENT "DSM Frm", INDENT "DSM Rahmenformat")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Optionswert")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
-#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
+#define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Grenzen"   
 #define TR_MINRSSI             "Min. RSSI"
