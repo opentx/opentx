@@ -262,8 +262,10 @@ void processSpektrumPacket(uint8_t *packet) {
   uint8_t i2cAddress = (packet[2] & 0x7f);
   uint8_t instance = packet[3];
 
+  bool handled = false;
   for (const SpektrumSensor *sensor = spektrumSensors; sensor->i2caddress; sensor++) {
     if (i2cAddress == sensor->i2caddress) {
+      handled = true;
 
       // Extract value, skip header
       int32_t value = spektrumGetValue(packet + 4, sensor->startByte, sensor->dataType);
@@ -306,6 +308,16 @@ void processSpektrumPacket(uint8_t *packet) {
 
       uint16_t pseudoId = (sensor->i2caddress << 8 | sensor->startByte);
       setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, sensor->unit, sensor->precision);
+    }
+  }
+  if (!handled) {
+    // If we see a sensor that is not handled at all, add the raw values of this sensor to show its existance to
+    // the user and help debugging/implementing these sensors
+
+    for (int startByte=0;startByte <14; startByte+=2) {
+      int32_t value = spektrumGetValue(packet + 4, startByte, uint16);
+      uint16_t pseudoId = i2cAddress << 8 | startByte;
+      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, UNIT_RAW, 0);
     }
   }
 }
