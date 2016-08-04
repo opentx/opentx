@@ -767,7 +767,7 @@ void menuModelSetup(uint8_t event)
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsCount = 0;
+                g_model.moduleData[EXTERNAL_MODULE].channelsCount = min<int8_t>(0, MAX_EXTERNAL_MODULE_CHANNELS());
               }
               break;
             case 1:
