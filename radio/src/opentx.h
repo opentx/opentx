@@ -481,7 +481,8 @@
 #endif
 
 #if defined(CPUARM)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8 }; // relative to 8!
+// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi)
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 8 }; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define MAX_TRAINER_CHANNELS()            (8)
 #endif
