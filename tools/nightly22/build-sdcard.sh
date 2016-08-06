@@ -39,8 +39,8 @@ unzip english-american-taranis.zip -d  ${workdir}/sdcard/horus
 mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-american
 unzip english-english-taranis -d  ${workdir}/sdcard/horus
 unzip french-taranis.zip -d  ${workdir}/sdcard/horus
-wget -O ${workdir}/sdcard/horus/SOUNDS/en/english.cvs http://winbox.open-tx.org/voice-builds/english-english-taranis.csv
-wget -O ${workdir}/sdcard/horus/SOUNDS/fr/french.cvs http://winbox.open-tx.org/voice-builds/french-taranis.csv
+wget -O ${workdir}/sdcard/horus/SOUNDS/en/english.csv http://winbox.open-tx.org/voice-builds/english-english-taranis.csv
+wget -O ${workdir}/sdcard/horus/SOUNDS/fr/french.csv http://winbox.open-tx.org/voice-builds/french-taranis.csv
 
 # Duplicate for Taranis and create sdcards.zip
 mkdir ${workdir}/sdcard/taranis/SOUNDS
