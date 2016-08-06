@@ -1109,10 +1109,12 @@ QString OpenTxFirmware::getFirmwareBaseUrl()
 QString OpenTxFirmware::getFirmwareUrl()
 {
   QString url = getFirmwareBaseUrl();
+  QByteArray data = QUrl::toPercentEncoding(id);
+  
   if (IS_ARM(board))
-    url.append(QString("/getfw.php?fw=%1.bin").arg(id));
+    url.append(QString("/getfw.php?fw=%1.bin").arg((QString)data));
   else
-    url.append(QString("/getfw.php?fw=%1.hex").arg(id));
+    url.append(QString("/getfw.php?fw=%1.hex").arg((QString)data));
   return url;
 }
 
