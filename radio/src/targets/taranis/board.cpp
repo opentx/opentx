@@ -221,7 +221,9 @@ void boardOff()
 #endif
 
   lcdOff();
+#if !defined(SIMU)
   SysTick->CTRL = 0; // turn off systick
+#endif
   pwrOff();
 }
 
