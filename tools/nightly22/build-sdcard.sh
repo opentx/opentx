@@ -25,7 +25,6 @@ wget http://winbox.open-tx.org/voice-builds/english-irish-taranis.zip
 wget http://winbox.open-tx.org/voice-builds/english-scottish-taranis.zip
 wget http://winbox.open-tx.org/voice-builds/english-american-taranis.zip
 wget http://winbox.open-tx.org/voice-builds/english-australian-taranis.zip
-wget http://winbox.open-tx.org/voice-builds/english-english-taranis.zip
 wget http://winbox.open-tx.org/voice-builds/french-taranis.zip
 
 # Prepare the sdcard zip files for Horus
@@ -35,11 +34,9 @@ unzip english-scottish-taranis.zip -d  ${workdir}/sdcard/horus
 mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-scottish
 unzip english-australian-taranis.zip -d  ${workdir}/sdcard/horus
 mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-australian
-unzip english-american-taranis.zip -d  ${workdir}/sdcard/horus
-mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-american
-unzip english-english-taranis -d  ${workdir}/sdcard/horus
+unzip english-american-taranis -d  ${workdir}/sdcard/horus
 unzip french-taranis.zip -d  ${workdir}/sdcard/horus
-wget -O ${workdir}/sdcard/horus/SOUNDS/en/english.csv http://winbox.open-tx.org/voice-builds/english-english-taranis.csv
+wget -O ${workdir}/sdcard/horus/SOUNDS/en/english.csv http://winbox.open-tx.org/voice-builds/english-american-taranis.csv
 wget -O ${workdir}/sdcard/horus/SOUNDS/fr/french.csv http://winbox.open-tx.org/voice-builds/french-taranis.csv
 
 # Duplicate for Taranis and create sdcards.zip
