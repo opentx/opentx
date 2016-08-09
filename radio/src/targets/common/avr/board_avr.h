@@ -19,6 +19,9 @@
  */
 
 // ADC driver
+#define NUM_POTS                       3
+#define NUM_SLIDERS                    0
+#define NUM_XPOTS                      0
 enum Analogs {
   STICK1,
   STICK2,
@@ -44,6 +47,72 @@ void adcInit();
 void adcPrepareBandgap();
 void getADC();
 void getADC_bandgap();
+
+// Keys driver
+#define NUM_SWITCHES                   7
+enum EnumKeys
+{
+  KEY_MENU,
+  KEY_ENTER=KEY_MENU,
+  KEY_EXIT,
+  KEY_DOWN,
+  KEY_UP,
+  KEY_RIGHT,
+  KEY_LEFT,
+  
+  TRM_BASE,
+  TRM_LH_DWN = TRM_BASE,
+  TRM_LH_UP,
+  TRM_LV_DWN,
+  TRM_LV_UP,
+  TRM_RV_DWN,
+  TRM_RV_UP,
+  TRM_RH_DWN,
+  TRM_RH_UP,
+  TRM_LAST = TRM_RH_UP,
+
+#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
+  BTN_REa,
+#endif
+#if ROTARY_ENCODERS > 0
+  BTN_REb,
+#endif
+  
+  NUM_KEYS
+};
+
+enum EnumSwitches
+{
+  SW_ID0,
+  SW_ID1,
+  SW_ID2,
+  SW_THR,
+  SW_RUD,
+  SW_ELE,
+  SW_AIL,
+  SW_GEA,
+  SW_TRN,
+};
+#define IS_3POS(sw)                    ((sw) == 0)
+#define IS_TOGGLE(sw)                  ((sw) == SWSRC_TRN)
+uint8_t keyState(uint8_t index);
+uint8_t switchState(uint8_t index);
+
+// LCD driver
+void lcdRefresh(void);
+#define lcdRefreshWait()
+void lcdSetRefVolt(unsigned char val);
+void lcdSetContrast(void);
+void lcdInit(void);
+#define lcdOff()
+
+#if defined(LCD_KS108)
+void lcdRefreshSide();
+#endif
+
+#if defined(LCD_ST7920)
+uint8_t	lcdRefresh_ST7920(uint8_t full);
+#endif
 
 // USART driver (static register dispatcher)
 #define RXD_DDR1 DDRD

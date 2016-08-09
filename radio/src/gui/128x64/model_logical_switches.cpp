@@ -66,7 +66,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
   uint8_t sw = SWSRC_SW1+s_currIdx;
   putsSwitches(14*FW, 0, sw, (getSwitch(sw) ? BOLD : 0));
 
-  SUBMENU_NOTITLE(LS_FIELD_COUNT, {0, 0, 1, 0 /*, 0...*/});
+  SUBMENU_NOTITLE(LS_FIELD_COUNT, { 0, 0, 1, 0 /*, 0...*/ });
 
   int8_t sub = menuVerticalPosition;
 
@@ -79,7 +79,8 @@ void menuModelLogicalSwitchOne(uint8_t event)
     uint8_t i = k + menuVerticalOffset;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     uint8_t cstate = lswFamily(cs->func);
-    switch(i) {
+    
+    switch (i) {
       case LS_FIELD_FUNCTION:
         lcdDrawTextAlignedLeft(y, STR_FUNC);
         lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_VCSWFUNC, cs->func, attr);
@@ -99,6 +100,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           }
         }
         break;
+        
       case LS_FIELD_V1:
       {
         lcdDrawTextAlignedLeft(y, STR_V1);
@@ -123,6 +125,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
         }
         break;
       }
+      
       case LS_FIELD_V2:
       {
         lcdDrawTextAlignedLeft(y, STR_V2);
@@ -184,11 +187,13 @@ void menuModelLogicalSwitchOne(uint8_t event)
         }
         break;
       }
+      
       case LS_FIELD_ANDSW:
         lcdDrawTextAlignedLeft(y, STR_AND_SWITCH);
         putsSwitches(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW);
         break;
+        
       case LS_FIELD_DURATION:
         lcdDrawTextAlignedLeft(y, STR_DURATION);
         if (cs->duration > 0)
@@ -197,6 +202,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
           lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
         break;
+        
       case LS_FIELD_DELAY:
         lcdDrawTextAlignedLeft(y, STR_DELAY);
         if (cs->delay > 0)
@@ -211,17 +217,19 @@ void menuModelLogicalSwitchOne(uint8_t event)
 
 void menuModelLogicalSwitches(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH+1);
+  SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, HEADER_LINE+NUM_LOGICAL_SWITCH);
 
   coord_t y = 0;
   uint8_t k = 0;
-  int8_t sub = menuVerticalPosition - 1;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
 
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
+#if !defined(PCBX7D)
     case EVT_KEY_FIRST(KEY_RIGHT):
+#endif
     case EVT_KEY_FIRST(KEY_ENTER):
       if (sub >= 0) {
         s_currIdx = sub;
@@ -232,7 +240,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     y = 1 + (i+1)*FH;
-    k = i+menuVerticalOffset;
+    k = i + menuVerticalOffset;
     LogicalSwitchData * cs = lswAddress(k);
 
     // CSW name
@@ -290,10 +298,10 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
-  MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH+1, {0, NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, HEADER_LINE+NUM_LOGICAL_SWITCH, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/});
 
   uint8_t   k = 0;
-  int8_t    sub = menuVerticalPosition - 1;
+  int8_t    sub = menuVerticalPosition - HEADER_LINE;
   horzpos_t horz = menuHorizontalPosition;
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {

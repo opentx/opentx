@@ -32,7 +32,7 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
   uint32_t firstCh = g_model.moduleData[port].channelsStart;
   uint32_t lastCh = min<unsigned int>(NUM_CHNOUT, firstCh + 8 + g_model.moduleData[port].channelsCount);
 
-#if defined(CPUSTM32)
+#if defined(STM32)
   ppmPulsesData->ptr = ppmPulsesData->pulses;
 #else
   uint16_t * ptr = ppmPulsesData->pulses;
@@ -44,14 +44,14 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
   for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
-#if defined(CPUSTM32)
+#if defined(STM32)
     *ppmPulsesData->ptr++ = v; /* as Pat MacKenzie suggests */
 #else
     *ptr++ = v; /* as Pat MacKenzie suggests */
 #endif
   }
   rest = limit<int32_t>(9000, rest, 65535); /* avoids that CCR2 is bigger than ARR which would cause reboot */
-#if defined(CPUSTM32)
+#if defined(STM32)
   *ppmPulsesData->ptr++ = rest;
 #else
   *ptr = rest;

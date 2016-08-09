@@ -106,8 +106,6 @@ extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #define displayBuf                     lcd->getData()
 #endif
 
-#define lcdRefreshWait()
-
 #define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
@@ -140,11 +138,9 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsSwitches(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
 void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
-void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
+void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
 #define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
@@ -258,10 +254,6 @@ inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdF
 {
   lcd->drawBitmapPattern(x, y, img, flags, offset, width);
 }
-
-#define lcdSetRefVolt(...)
-void lcdSetContrast();
-#define lcdOff(...)
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)

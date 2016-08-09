@@ -318,7 +318,7 @@ uint16_t evalChkSum()
   return sum;
 }
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
 void clearInputs()
 {
   memset(g_model.expoData, 0, sizeof(g_model.expoData)); // clear all expos
@@ -360,7 +360,7 @@ inline void applyDefaultTemplate()
 #else
 void applyDefaultTemplate()
 {
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   defaultInputs(); // calls storageDirty internally
 #else
   storageDirty(EE_MODEL);
@@ -370,7 +370,7 @@ void applyDefaultTemplate()
     MixData * mix = mixAddress(i);
     mix->destCh = i;
     mix->weight = 100;
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
     mix->srcRaw = i+1;
 #else
     mix->srcRaw = MIXSRC_Rud - 1 + channel_order(i+1);
@@ -465,7 +465,7 @@ void modelDefault(uint8_t id)
 #endif
 }
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
 bool isInputRecursive(int index)
 {
   ExpoData * line = expoAddress(0);
@@ -487,7 +487,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   int8_t result = 0;
   static tmr10ms_t s_move_last_time = 0;
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   static int16_t inputsStates[MAX_INPUTS];
   if (min <= MIXSRC_FIRST_INPUT) {
     for (uint8_t i=0; i<MAX_INPUTS; i++) {
@@ -501,9 +501,9 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   }
 #endif
 
-  static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
+  static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
   if (result == 0) {
-    for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+    for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
       if (abs(calibratedStick[i] - sourcesStates[i]) > 512) {
         result = MIXSRC_Rud+i;
         break;
@@ -517,7 +517,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   }
 
   if (result || recent) {
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
     memcpy(inputsStates, anas, sizeof(inputsStates));
 #endif
     memcpy(sourcesStates, calibratedStick, sizeof(sourcesStates));
@@ -543,7 +543,7 @@ uint8_t getFlightMode()
 
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
-  FlightModeData *p = flightModeAddress(phase);
+  FlightModeData * p = flightModeAddress(phase);
 #if defined(PCBSTD)
   return (((trim_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
 #else
@@ -553,7 +553,7 @@ trim_t getRawTrimValue(uint8_t phase, uint8_t idx)
 
 int getTrimValue(uint8_t phase, uint8_t idx)
 {
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   int result = 0;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     trim_t v = getRawTrimValue(phase, idx);
@@ -579,7 +579,7 @@ int getTrimValue(uint8_t phase, uint8_t idx)
 #endif
 }
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
 bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
 {
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
@@ -618,7 +618,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
 }
 #endif
 
-#if !defined(VIRTUALINPUTS)
+#if !defined(CPUARM)
 uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 {
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
@@ -915,7 +915,7 @@ getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
 bool inputsMoved()
 {
   uint8_t sum = 0;
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++)
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++)
     sum += anaIn(i) >> INAC_STICKS_SHIFT;
   for (uint8_t i=0; i<NUM_SWITCHES; i++)
     sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
@@ -950,9 +950,9 @@ void checkBacklight()
     bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNCTION_BACKLIGHT));
     if (flashCounter) backlightOn = !backlightOn;
     if (backlightOn)
-      BACKLIGHT_ON();
+      BACKLIGHT_ENABLE();
     else
-      BACKLIGHT_OFF();
+      BACKLIGHT_DISABLE();
 
 #if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
     Voice.voice_process() ;
@@ -1168,10 +1168,10 @@ void checkLowEEPROM()
 
 void checkTHR()
 {
-  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
+  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS+NUM_SLIDERS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
   // throttle channel is either the stick according stick mode (already handled in evalInputs)
   // or P1 to P3;
-  // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS) we assume the throttle stick is the input
+  // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS+NUM_SLIDERS) we assume the throttle stick is the input
   // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
@@ -1181,7 +1181,7 @@ void checkTHR()
   }
   else {
     calibratedStick[thrchn] = -1024;
-#if !defined(VIRTUALINPUTS)
+#if !defined(VIRTUAL_INPUTS)
     if (thrchn < NUM_STICKS) {
       rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
     }
@@ -1342,7 +1342,7 @@ uint8_t checkTrim(uint8_t event)
     }
     else {
       phase = getTrimFlightPhase(mixerCurrentFlightMode, idx);
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
       before = getTrimValue(phase, idx);
 #else
       before = getRawTrimValue(phase, idx);
@@ -1351,7 +1351,7 @@ uint8_t checkTrim(uint8_t event)
     }
 #else
     phase = getTrimFlightPhase(mixerCurrentFlightMode, idx);
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
     before = getTrimValue(phase, idx);
 #else
     before = getRawTrimValue(phase, idx);
@@ -1398,7 +1398,7 @@ uint8_t checkTrim(uint8_t event)
     else
 #endif
     {
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
       if (!setTrimValue(phase, idx, after)) {
         // we don't play a beep, so we exit now the function
         return;
@@ -1443,7 +1443,7 @@ JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
 tmr10ms_t jitterResetTime = 0;
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   #define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
   #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-1) (see explanation below)
 
@@ -1464,15 +1464,8 @@ tmr10ms_t jitterResetTime = 0;
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   return ANA_FILT(chan);
-#elif defined(PCBSKY9X) && !defined(REVA)
-  static const uint8_t crossAna[]={1,5,7,0,4,6,2,3};
-  if (chan == TX_CURRENT) {
-    return Current_analogue ;
-  }
-  volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
-  return *p;
 #else
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
   static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,0/* shouldn't be used */,TX_VOLTAGE};
@@ -1513,7 +1506,7 @@ void getADC()
   for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
     uint16_t v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
     // Jitter filter:
     //    * pass trough any big change directly
     //    * for small change use Modified moving average (MMA) filter
@@ -1567,7 +1560,7 @@ void getADC()
     }
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
     #define ANAFILT_MAX    (2 * RESX * JITTER_ALPHA * ANALOG_MULTIPLIER - 1)
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
     if (IS_POT_MULTIPOS(x) && IS_MULTIPOS_CALIBRATED(calib)) {
@@ -1581,7 +1574,7 @@ void getADC()
         }
       }
     }
-#endif   // defined(VIRTUALINPUTS)
+#endif // defined(CPUARM)
   }
 }
 #endif
@@ -1655,7 +1648,7 @@ void evalTrims()
   for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
-#if !defined(VIRTUALINPUTS)
+#if !defined(CPUARM)
     if (i==THR_STICK && g_model.thrTrim) {
       int16_t trimMin = g_model.extendedTrims ? TRIM_EXTENDED_MIN : TRIM_MIN;
       trim = (((g_model.throttleReversed)?(int32_t)(trim+trimMin):(int32_t)(trim-trimMin)) * (RESX-anas[i])) >> (RESX_SHIFT+1);
@@ -1728,8 +1721,8 @@ void doMixerCalculations()
     /* Throttle trace */
     int16_t val;
 
-    if (g_model.thrTraceSrc > NUM_POTS) {
-      uint8_t ch = g_model.thrTraceSrc-NUM_POTS-1;
+    if (g_model.thrTraceSrc > NUM_POTS+NUM_SLIDERS) {
+      uint8_t ch = g_model.thrTraceSrc-NUM_POTS+NUM_SLIDERS-1;
       val = channelOutputs[ch];
 
       LimitData *lim = limitAddress(ch);
@@ -1765,7 +1758,7 @@ void doMixerCalculations()
       if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
     }
     else {
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
       val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
 #else
       val = RESX + (g_model.thrTraceSrc == 0 ? rawAnas[THR_STICK] : calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1]);
@@ -1985,7 +1978,7 @@ void opentxClose(uint8_t shutdown)
 
 #if defined(PCBTARANIS)
   if (g_model.potsWarnMode == POTS_WARN_AUTO) {
-    for (int i=0; i<NUM_POTS; i++) {
+    for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
       if (!(g_model.potsWarnEnabled & (1 << i))) {
         SAVE_POT_POSITION(i);
       }
@@ -2304,7 +2297,7 @@ ISR(USART_UDRE_vect_N(TLM_USART))
 #endif
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define INSTANT_TRIM_MARGIN 10 /* around 1% */
 #else
   #define INSTANT_TRIM_MARGIN 15 /* around 1.5% */
@@ -2312,7 +2305,7 @@ ISR(USART_UDRE_vect_N(TLM_USART))
 
 void instantTrim()
 {
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   int16_t  anas_0[NUM_INPUTS];
   evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
   memcpy(anas_0, anas, sizeof(anas_0));
@@ -2324,7 +2317,7 @@ void instantTrim()
     if (stick!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightPhase(mixerCurrentFlightMode, stick);
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
       int16_t delta = 0;
       for (int e=0; e<MAX_EXPOS; e++) {
         ExpoData * ed = expoAddress(e);
@@ -2426,7 +2419,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     if (i!=THR_STICK || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t phase=0; phase<MAX_FLIGHT_MODES; phase++) {
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
         trim_t trim = getRawTrimValue(phase, i);
         if (trim.mode / 2 == phase)
           setTrimValue(phase, i, trim.value - original_trim);
@@ -2531,7 +2524,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(PCBTARANIS)
-  BACKLIGHT_ON();
+  BACKLIGHT_ENABLE();
 #endif
 
 #if MENUS_LOCK == 1
@@ -2548,7 +2541,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(CPUARM)
   referenceSystemAudioFiles();
   audioQueue.start();
-  setBacklight(g_eeGeneral.backlightBright);
+  BACKLIGHT_ENABLE();
 #endif
 
 #if defined(PCBSKY9X)
@@ -2583,7 +2576,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
   backlightOn();
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
+#if defined(SERIAL2)
   serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
 #endif
 
@@ -2760,7 +2753,7 @@ uint32_t pwrCheck()
     else {
       inactivity.counter = 0;
       if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
-        BACKLIGHT_ON();
+        BACKLIGHT_ENABLE();
       }
       if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN) {
 #if defined(SHUTDOWN_CONFIRMATION)
@@ -2788,7 +2781,7 @@ uint32_t pwrCheck()
 #endif
       }
       else {
-        drawShutdownBitmap(pwrPressedDuration());
+        // TODO drawShutdownBitmap(pwrPressedDuration());
         return e_power_press;
       }
     }

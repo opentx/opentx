@@ -59,7 +59,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
     }
     if (!sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-      popupMenuFlags = 0;
+      POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
   else {
@@ -72,7 +72,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 
 void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
-  int8_t sub = menuVerticalPosition - 1;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
 
 #if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -80,11 +80,11 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
   uint8_t eeFlags = EE_MODEL;
 #endif
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    CustomFunctionData *cfn = &functions[k];
+    CustomFunctionData * cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -234,7 +234,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
               }
               else {
                 POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-                popupMenuFlags = 0;
+                POPUP_MENU_UNSET_BSS_FLAG();
               }
             }
             break;

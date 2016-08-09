@@ -138,7 +138,7 @@ bool checkSlaveMode();
 #define JACK_PPM_OUT()             PORTG &= ~(1<<OUT_G_SIM_CTL)
 #define JACK_PPM_IN()              PORTG |=  (1<<OUT_G_SIM_CTL)
 
-// PWM Backlight driver
+// Backlight driver
 #define OUT_B_LIGHT   7
 #if defined(PWM_BACKLIGHT)
   void backlightEnable();
@@ -153,6 +153,13 @@ bool checkSlaveMode();
   #define backlightEnable()        PORTB |=  (1<<OUT_B_LIGHT)
   #define backlightDisable()       PORTB &= ~(1<<OUT_B_LIGHT)
   #define isBacklightEnable()      (PORTB &  (1<<OUT_B_LIGHT))
+#endif
+#if defined(VOICE) && !defined(SIMU)
+  #define BACKLIGHT_ENABLE()           Voice.Backlight = 1
+  #define BACKLIGHT_DISABLE()          Voice.Backlight = 0
+#else
+  #define BACKLIGHT_ENABLE()           backlightEnable()
+  #define BACKLIGHT_DISABLE()          backlightDisable()
 #endif
 
 #define OUT_B_PPM     0

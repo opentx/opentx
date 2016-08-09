@@ -318,9 +318,9 @@ void LCD_LayerInit()
   LTDC_DitherCmd(ENABLE);
 }
 
-void LCD_ControlLight(uint16_t dutyCycle)
+void backlightEnable(uint8_t dutyCycle)
 {
-  static uint16_t existingDutyCycle;
+  static uint8_t existingDutyCycle;
 
   if (dutyCycle == existingDutyCycle || dutyCycle < 5) {
     return;
@@ -374,11 +374,12 @@ void LCD_Init(void)
 
   LCD_Init_LTDC();
 
-  //config backlight
+  // TODO split backlight from LCD
+  // Config backlight
   LCD_Backlight_Config();
 
-  //Max Value
-  LCD_ControlLight(100);
+  // Max Value
+  backlightEnable(100);
 }
 
 BitmapBuffer lcdBuffer1(BMP_RGB565, LCD_W, LCD_H, (uint16_t *)LCD_FIRST_FRAME_BUFFER);

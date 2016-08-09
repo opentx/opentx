@@ -71,7 +71,7 @@ uint8_t s_copySrcCh;
 
 uint8_t editNameCursorPos = 0;
 
-void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr)
 {
   uint8_t mode = 0;
   if (active) {

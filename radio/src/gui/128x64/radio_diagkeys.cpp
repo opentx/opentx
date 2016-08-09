@@ -20,45 +20,55 @@
 
 #include "opentx.h"
 
-void displayKeyState(uint8_t x, uint8_t y, EnumKeys key)
+void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
 {
-  uint8_t t = switchState(key);
+  uint8_t t = keyState(key);
   lcdDrawChar(x, y, t+'0', t ? INVERS : 0);
 }
 
 void menuRadioDiagKeys(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUDIAG, menuTabGeneral, MENU_RADIO_DIAG_KEYS, 1);
+  SIMPLE_MENU(STR_MENU_RADIO_SWITCHES, menuTabGeneral, MENU_RADIO_SWITCHES_TEST, 1);
 
   lcdDrawText(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 
-  for(uint8_t i=0; i<9; i++) {
+  for (uint8_t i=0; i<9; i++) {
     coord_t y;
 
-    if (i<8) {
+    if (i < 8) {
       y = MENU_HEADER_HEIGHT + FH*3 + FH*(i/2);
       if (i&1) lcd_img(14*FW, y, sticks, i/2, 0);
-      displayKeyState(i&1? 20*FW : 18*FW, y, (EnumKeys)(TRM_BASE+i));
+      displayKeyState(i&1? 20*FW : 18*FW, y, TRM_BASE+i);
     }
 
-    if (i<6) {
-      y = i*FH+MENU_HEADER_HEIGHT+FH;
+    if (i < 6) {
+      y = MENU_HEADER_HEIGHT + FH + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (5-i), 0);
-      displayKeyState(5*FW+2, y, (EnumKeys)(KEY_MENU+(5-i)));
+      displayKeyState(5*FW+2, y, KEY_MENU+(5-i));
     }
-
-    if (i != SW_ID0-SW_BASE) {
-      y = MENU_HEADER_HEIGHT+i*FH-2*FH;
-      putsSwitches(8*FW, y, i+1, 0); //ohne off,on
-      displayKeyState(11*FW+2, y, (EnumKeys)(SW_BASE+i));
+  
+#if defined(PCBTARANIS)
+    if (i < NUM_SWITCHES) {
+      if (SWITCH_EXISTS(i)) {
+        getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
+        getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
+        putsSwitches(8*FW, y, sw, 0);
+      }
     }
+#else
+    if (i != SW_ID0) {
+      y = MENU_HEADER_HEIGHT +i*FH - 2*FH;
+      putsSwitches(8*FW, y, i+1, 0);
+      displayKeyState(11*FW+2, y, i);
+    }
+#endif
   }
 
-#if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
-  for(uint8_t i=0; i<DIM(g_rotenc); i++) {
+#if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION) // TODO || defined(PCBX7D)
+  for (uint8_t i=0; i<DIM(g_rotenc); i++) {
     coord_t y = MENU_HEADER_HEIGHT /* ??? + 1 ??? */ + i*FH;
     lcdDrawTextAtIndex(14*FW, y, STR_VRENCODERS, i, 0);
-    lcdDrawNumber(18*FW, y, g_rotenc[i], LEFT|(switchState((EnumKeys)(BTN_REa+i)) ? INVERS : 0));
+    lcdDrawNumber(18*FW, y, g_rotenc[i], LEFT|(keyState(BTN_REa+i) ? INVERS : 0));
   }
 #endif
 

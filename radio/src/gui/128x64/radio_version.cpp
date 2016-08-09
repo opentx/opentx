@@ -22,6 +22,21 @@
 
 void menuRadioVersion(uint8_t event)
 {
+#if defined(CPUARM) && defined(EEPROM_RLC)
+  if (warningResult) {
+    warningResult = 0;
+    showMessageBox(STR_STORAGE_FORMAT);
+    storageEraseAll(false);
+    NVIC_SystemReset();
+  }
+#endif
+  
+#if defined(STM32)
+  if (event == EVT_ENTRY) {
+    getCPUUniqueID(reusableBuffer.version.id);
+  }
+#endif
+  
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
 
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
@@ -33,6 +48,17 @@ void menuRadioVersion(uint8_t event)
   }
   else {
      lcdDrawTextAlignedLeft(6*FH, PSTR("CoPr: ---"));
+  }
+#elif defined(CPUARM) && defined(EEPROM_RLC)
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
+  lcdDrawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);
+  
+  if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    eepromBackup();
+  }
+  else if (event == EVT_KEY_LONG(KEY_MENU)) {
+    POPUP_CONFIRMATION(STR_CONFIRMRESET);
   }
 #endif
 }

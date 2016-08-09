@@ -23,7 +23,7 @@
 uint8_t g_moduleIdx;
 void menuModelFailsafe(uint8_t event);
 
-enum menuModelSetupItems {
+enum MenuModelSetupItems {
   ITEM_MODEL_NAME,
   ITEM_MODEL_BITMAP,
   ITEM_MODEL_TIMER1,
@@ -250,11 +250,11 @@ int getSwitchWarningsCount()
 #endif
 #if defined(PCBX9E)
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 8 ? TITLE_ROW : HIDDEN_ROW), uint8_t(getSwitchWarningsCount() > 16 ? TITLE_ROW : HIDDEN_ROW)
-  #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
+  #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|(NUM_POTS+NUM_SLIDERS) : 0), uint8_t(g_model.potsWarnMode ? TITLE_ROW : HIDDEN_ROW)
   #define TOPLCD_ROWS                     0,
 #else
   #define SW_WARN_ITEMS()                 uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount())
-  #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|NUM_POTS : 0)
+  #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|(NUM_POTS+NUM_SLIDERS) : 0)
   #define TOPLCD_ROWS
 #endif
 
@@ -266,7 +266,7 @@ void menuModelSetup(uint8_t event)
 #if defined(TARANIS_INTERNAL_PPM)
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
-    LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
+    LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     INTERNAL_MODULE_CHANNELS_ROWS,
@@ -280,7 +280,7 @@ void menuModelSetup(uint8_t event)
     LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
 #else
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0, LABEL(Throttle), 0, 0, 0, LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(),
-    NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
+    NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     INTERNAL_MODULE_CHANNELS_ROWS,
@@ -451,12 +451,12 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_THROTTLE_TRACE:
       {
         lcdDrawTextAlignedLeft(y, STR_TTRACE);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, g_model.thrTraceSrc, NUM_POTS+NUM_CHNOUT, isThrottleSourceAvailable);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, g_model.thrTraceSrc, NUM_POTS+NUM_SLIDERS+NUM_CHNOUT, isThrottleSourceAvailable);
         uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
         if (idx > MIXSRC_Thr)
           idx += 1;
-        if (idx >= MIXSRC_FIRST_POT+NUM_POTS)
-          idx += MIXSRC_CH1 - MIXSRC_FIRST_POT - NUM_POTS;
+        if (idx >= MIXSRC_FIRST_POT+NUM_POTS+NUM_SLIDERS)
+          idx += MIXSRC_CH1 - MIXSRC_FIRST_POT - NUM_POTS - NUM_SLIDERS;
         putsMixerSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
         break;
       }
@@ -592,8 +592,8 @@ void menuModelSetup(uint8_t event)
         }
         if (g_model.potsWarnMode) {
           coord_t x = MODEL_SETUP_2ND_COLUMN+28;
-          for (int i=0; i<NUM_POTS; ++i) {
-            if (i<NUM_XPOTS && !IS_POT_AVAILABLE(POT1+i)) {
+          for (int i=0; i<NUM_POTS+NUM_SLIDERS; ++i) {
+            if (i<NUM_XPOTS && !IS_POT_OR_SLIDER_AVAILABLE(POT1+i)) {
               if (attr && (menuHorizontalPosition==i+1)) REPEAT_LAST_CURSOR_MOVE();
             }
             else {
@@ -627,8 +627,8 @@ void menuModelSetup(uint8_t event)
       {
         lcdDrawTextAlignedLeft(y, STR_BEEPCTR);
         coord_t x = MODEL_SETUP_2ND_COLUMN;
-        for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS; i++) {
-          if (i>=POT1 && i<POT1+NUM_XPOTS && !IS_POT_AVAILABLE(i)) {
+        for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS; i++) {
+          if (i>=POT1 && i<POT1+NUM_XPOTS && !IS_POT_OR_SLIDER_AVAILABLE(i)) {
             if (attr && menuHorizontalPosition == i) REPEAT_LAST_CURSOR_MOVE();
             continue;
           }

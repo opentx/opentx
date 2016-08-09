@@ -1,0 +1,31 @@
+set(GUI_SRC
+  ${GUI_SRC}
+  lcd.cpp
+  ../common/widgets.cpp
+  splash.cpp
+  fonts.cpp
+  navigation.cpp
+  popups.cpp
+  widgets.cpp
+  menus.cpp
+  menu_model.cpp
+  model_select.cpp
+  model_setup.cpp
+  model_outputs.cpp
+  model_logical_switches.cpp
+  model_special_functions.cpp
+  model_telemetry.cpp
+  menu_radio.cpp
+  radio_setup.cpp
+  radio_trainer.cpp
+  radio_version.cpp
+  radio_calibration.cpp
+  view_main.cpp
+  view_statistics.cpp
+  )
+
+include_directories(gui gui/${GUI_DIR})
+
+if(GUI_DIR STREQUAL 128x64 OR GUI_DIR STREQUAL 212x64)
+  include(gui/common/stdlcd/CMakeLists.txt)
+endif()

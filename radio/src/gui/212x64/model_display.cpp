@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuModelDisplayItems {
+enum MenuModelDisplayItems {
   ITEM_DISPLAY_TOP_BAR_LABEL,
   ITEM_DISPLAY_TOP_BAR_VOLTAGE,
   ITEM_DISPLAY_TOP_BAR_ALTITUDE,

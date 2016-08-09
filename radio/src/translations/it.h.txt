@@ -648,7 +648,7 @@
 #define TR_PHASENAME           "Nome fase"
 #define TR_MIXNAME             "Nome mix"
 #define TR_INPUTNAME           "Nome Ingr."
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_EXPONAME          "Nome expo"
 #else
   #define TR_EXPONAME          "Nome Expo"
@@ -682,8 +682,8 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Tipo Ciclico"
 #define TR_COLLECTIVE          TR("Collettivo","Origine Collettivo")
-#define TR_AILERON             "Lateral cyc. source"
-#define TR_ELEVATOR            "Long. cyc. source"
+#define TR_AILERON             TR("Lateral cyc.", "Lateral cyc. source")
+#define TR_ELEVATOR            TR("Long. cyc.", "Long. cyc. source")
 #define TR_SWASHRING           "Anello Ciclico"
 #define TR_ELEDIRECTION        TR("Direzione ELE","Direzione Long. cyc.")
 #define TR_AILDIRECTION        TR("Direzione AIL","Direzione Lateral cyc.")
@@ -818,8 +818,8 @@
 #define TR_MENUTRAINER         "MAESTRO/ALLIEVO"
 #define TR_MENUSPECIALFUNCS    "FUNZIONI GLOBALI"
 #define TR_MENUVERSION         "VERSIONE"
-#define TR_MENUDIAG            "DIAG"
-#define TR_MENUANA             "ANAS"
+#define TR_MENU_RADIO_SWITCHES            "DIAG"
+#define TR_MENU_RADIO_ANALOGS             "ANAS"
 #define TR_MENUCALIBRATION     "CALIBRAZIONE"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims >> Subtrims"
@@ -828,11 +828,11 @@
 #endif
 #define TR_MENUMODELSEL        "MODELLI"
 #define TR_MENUSETUP           "CONFIGURA"
-#define TR_MENUFLIGHTPHASE     "FASE DI VOLO"
-#define TR_MENUFLIGHTPHASES    "FASI DI VOLO"
+#define TR_MENUFLIGHTMODE     "FASE DI VOLO"
+#define TR_MENUFLIGHTMODES    "FASI DI VOLO"
 #define TR_MENUHELISETUP       "CONFIGURA ELI"
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_MENUINPUTS        "INGRESSI"
   #define TR_MENULIMITS        "USCITE"
 #else

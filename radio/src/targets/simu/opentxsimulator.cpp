@@ -18,7 +18,7 @@
 #include "opentx.h"
 #include "simulcd.h"
 
-int16_t g_anas[NUM_STICKS+NUM_POTS];
+int16_t g_anas[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
 
 uint16_t anaIn(uint8_t chan)
 {

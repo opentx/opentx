@@ -31,7 +31,7 @@ telemetryStreaming = 20;
 #undef SETVALUES_IMPORT
 for (int i=0; i<NUM_STICKS; i++)
   g_anas[i] = inputs.sticks[i];
-for (int i=0; i<NUM_POTS; i++)
+for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++)
   g_anas[NUM_STICKS+i] = inputs.pots[i];
 for (int i=0; i<C9X_NUM_SWITCHES; i++)
   simuSetSwitch(i, inputs.switches[i]);

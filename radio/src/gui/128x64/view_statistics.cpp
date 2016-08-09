@@ -24,8 +24,7 @@ void menuStatisticsView(uint8_t event)
 {
   TITLE(STR_MENUSTAT);
 
-  switch(event)
-  {
+  switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
       chainMenu(menuStatisticsDebug);
       break;
@@ -68,7 +67,7 @@ void menuStatisticsView(uint8_t event)
 #endif
 }
 
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
   #define MENU_DEBUG_COL1_OFS   (11*FW-3)
   #define MENU_DEBUG_COL2_OFS   (17*FW)
   #define MENU_DEBUG_Y_CURRENT  (1*FH)
@@ -85,20 +84,20 @@ void menuStatisticsDebug(uint8_t event)
 {
   TITLE(STR_MENUDEBUG);
 
-  switch(event)
-  {
+  switch (event) {
 #if defined(CPUARM)
     case EVT_KEY_LONG(KEY_ENTER):
-      g_eeGeneral.mAhUsed = 0;
-      g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
 #if defined(PCBSKY9X)
+      g_eeGeneral.mAhUsed = 0;
       Current_used = 0;
 #endif
+      g_eeGeneral.globalTimer = 0;
       sessionTimer = 0;
+      storageDirty(EE_GENERAL);
       killEvents(event);
       break;
 #endif
+      
     case EVT_KEY_FIRST(KEY_ENTER):
 #if !defined(CPUARM)
       g_tmr1Latency_min = 0xff;
@@ -116,6 +115,7 @@ void menuStatisticsDebug(uint8_t event)
     case EVT_KEY_FIRST(KEY_DOWN):
       chainMenu(menuStatisticsView);
       break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;

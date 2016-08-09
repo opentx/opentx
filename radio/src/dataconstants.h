@@ -44,8 +44,6 @@
   #define MAX_SCRIPTS          9
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #define NUM_POTS             7
-  #define NUM_XPOTS            3
   #define MAX_SENSORS          32
   #define MAX_CUSTOM_SCREENS   5
 #elif defined(PCBFLAMENCO)
@@ -59,8 +57,9 @@
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #define NUM_POTS             4
-  #define NUM_XPOTS            0
+  #define NUM_POTS             4 // TODO board.h
+  #define NUM_SLIDERS          0 // TODO board.h
+  #define NUM_XPOTS            0 // TODO board.h
   #define MAX_SENSORS          32
 #elif defined(PCBTARANIS)
   #define MAX_MODELS           60
@@ -73,13 +72,6 @@
   #define MAX_SCRIPTS          7
   #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #if defined(PCBX9E)
-    #define NUM_POTS           8
-    #define NUM_XPOTS          4
-  #else
-    #define NUM_POTS           5
-    #define NUM_XPOTS          3
-  #endif
   #define MAX_SENSORS          32
 #elif defined(PCBSKY9X)
   #define MAX_MODELS           60
@@ -89,9 +81,8 @@
   #define MAX_EXPOS            32
   #define NUM_LOGICAL_SWITCH   64 // number of custom switches
   #define NUM_CFN              64 // number of functions assigned to switches
+  #define MAX_INPUTS           32
   #define NUM_TRAINER          16
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
   #define MAX_SENSORS          32
 #elif defined(CPUM2560) || defined(CPUM2561)
   #define MAX_MODELS           30
@@ -102,8 +93,6 @@
   #define NUM_LOGICAL_SWITCH   12 // number of custom switches
   #define NUM_CFN              24 // number of functions assigned to switches
   #define NUM_TRAINER          8
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
   #define MAX_SENSORS          0
 #elif defined(CPUM128)
   #define MAX_MODELS           30
@@ -114,8 +103,6 @@
   #define NUM_LOGICAL_SWITCH   12 // number of custom switches
   #define NUM_CFN              24 // number of functions assigned to switches
   #define NUM_TRAINER          8
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
   #define MAX_SENSORS          0
 #else
   #define MAX_MODELS           16
@@ -126,8 +113,6 @@
   #define NUM_LOGICAL_SWITCH   12 // number of custom switches
   #define NUM_CFN              16 // number of functions assigned to switches
   #define NUM_TRAINER          8
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
   #define MAX_SENSORS          0
 #endif
 
@@ -172,6 +157,17 @@ enum CurveType {
   #define LEN_CFN_NAME                 8
   #define MAX_CURVES                   32
   #define NUM_POINTS                   512
+#elif defined(PCBSKY9X) || defined(PCBX7D)
+  #define LEN_MODEL_NAME               10
+  #define LEN_TIMER_NAME               3
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               4
+  #define LEN_CURVE_NAME               3
+  #define LEN_CFN_NAME                 6
+  #define MAX_CURVES                   16
+  #define NUM_POINTS                   512
 #elif defined(PCBTARANIS)
   #define LEN_MODEL_NAME               12
   #define LEN_TIMER_NAME               8
@@ -183,14 +179,6 @@ enum CurveType {
   #define LEN_CURVE_NAME               3
   #define LEN_CFN_NAME                 8
   #define MAX_CURVES                   32
-  #define NUM_POINTS                   512
-#elif defined(CPUARM)
-  #define LEN_MODEL_NAME               10
-  #define LEN_TIMER_NAME               3
-  #define LEN_FLIGHT_MODE_NAME         6
-  #define LEN_EXPOMIX_NAME             6
-  #define LEN_CFN_NAME                 6
-  #define MAX_CURVES                   16
   #define NUM_POINTS                   512
 #else
   #define LEN_MODEL_NAME               10
@@ -206,13 +194,7 @@ enum CurveType {
 #endif
 
 #if defined(PCBFLAMENCO)
-  #define NUM_SWITCHES                 5
-#elif defined(PCBX9E)
-  #define NUM_SWITCHES                 18 // yes, it's a lot!
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-  #define NUM_SWITCHES                 8
-#else
-  #define NUM_SWITCHES                 7
+  #define NUM_SWITCHES                 5 // TODO in board.h
 #endif
 
 #define XPOTS_MULTIPOS_COUNT           6
@@ -250,7 +232,7 @@ enum MainViews {
   VIEW_TELEM4,
   VIEW_COUNT
 };
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) && !defined(PCBX7D) // TODO LCD_W >= 212
 enum MainViews {
   VIEW_TIMERS,
   VIEW_INPUTS,
@@ -325,10 +307,7 @@ enum UartModes {
   #define LEN_ANA_NAME                 3
   #define LEN_MODEL_FILENAME           16
   #define LEN_BLUETOOTH_NAME           10
-#elif defined(PCBFLAMENCO)
-  #define LEN_SWITCH_NAME              3
-  #define LEN_ANA_NAME                 3
-#elif defined(PCBTARANIS)
+#elif defined(CPUARM)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
@@ -487,7 +466,7 @@ enum TelemetryUnit {
 };
 #endif
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
   #define NUM_LINE_ITEMS 3
 #else
   #define NUM_LINE_ITEMS 2
@@ -739,10 +718,12 @@ enum SwitchSources {
 enum MixSources {
   MIXSRC_NONE,
 
-#if defined(VIRTUALINPUTS)
-  MIXSRC_FIRST_INPUT,             LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
+#if defined(VIRTUAL_INPUTS)
+  MIXSRC_FIRST_INPUT,                   LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
-
+#endif
+  
+#if defined(LUA_INPUTS)
   MIXSRC_FIRST_LUA,
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif

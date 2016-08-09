@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 
-extern void checkBattery();
-extern uint8_t checkTrim(uint8_t event);
+void checkBattery();
+uint8_t checkTrim(uint8_t event);
 
 void perMain()
 {
@@ -30,6 +30,9 @@ void perMain()
 #endif
 #if defined(LCD_ST7920)
   uint8_t lcdstate=0;
+  #define IS_LCD_REFRESH_ALLOWED()       (0==lcdstate)
+#else
+  #define IS_LCD_REFRESH_ALLOWED()       (1)
 #endif
   uint16_t t0 = getTmr16KHz();
   int16_t delta = (nextMixerEndTime - lastMixerDuration) - t0;

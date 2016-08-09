@@ -19,8 +19,6 @@
  */
 
 #include "gtests.h"
-#include "opentx.h"
-#include "timers.h"
 
 #if !defined(CPUARM)
 #undef timerSet

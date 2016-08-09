@@ -80,7 +80,7 @@ bool isTrimModeAvailable(int mode)
 
 void menuModelFlightModesAll(uint8_t event)
 {
-  MENU(STR_MENUFLIGHTPHASES, menuTabModel, MENU_MODEL_FLIGHT_MODES, MAX_FLIGHT_MODES+1, { NAVIGATION_LINE_BY_LINE|(ITEM_FLIGHT_MODES_LAST-1), NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0 });
+  MENU(STR_MENUFLIGHTMODES, menuTabModel, MENU_MODEL_FLIGHT_MODES, MAX_FLIGHT_MODES+1, { NAVIGATION_LINE_BY_LINE|(ITEM_FLIGHT_MODES_LAST-1), NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0 });
 
   int8_t sub = menuVerticalPosition;
 
@@ -95,11 +95,11 @@ void menuModelFlightModesAll(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    if (k==MAX_FLIGHT_MODES) {
+    if (k == MAX_FLIGHT_MODES) {
       // last line available - add the "check trims" line
       lcdDrawTextAlignedLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-      putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
-      if (sub==MAX_FLIGHT_MODES) {
+      drawFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
+      if (sub == MAX_FLIGHT_MODES) {
         if (!trimsCheckTimer) {
           if (event == EVT_KEY_FIRST(KEY_ENTER)) {
             trimsCheckTimer = 200; // 2 seconds trims cancelled
@@ -124,7 +124,7 @@ void menuModelFlightModesAll(uint8_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
+    drawFlightMode(0, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((sub==k && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (uint8_t j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       uint8_t attr = ((sub==k && posHorz==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -147,7 +147,7 @@ void menuModelFlightModesAll(uint8_t event)
         case ITEM_FLIGHT_MODES_TRIM_AIL:
         {
           uint8_t t = j-ITEM_FLIGHT_MODES_TRIM_RUD;
-          putsTrimMode((4+LEN_FLIGHT_MODE_NAME)*FW+j*(5*FW/2), y, k, t, attr);
+          drawTrimMode((4+LEN_FLIGHT_MODE_NAME)*FW+j*(5*FW/2), y, k, t, attr);
           if (active) {
             trim_t & v = p->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);

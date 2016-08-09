@@ -336,9 +336,9 @@ void onExposMenu(const char * result)
   }
 }
 
-void displayExpoInfos(coord_t y, ExpoData *ed)
+void displayExpoInfos(coord_t y, ExpoData * ed)
 {
-  putsCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve);
+  drawCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve);
   if (ed->swtch) {
     putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch);
   }
@@ -347,7 +347,7 @@ void displayExpoInfos(coord_t y, ExpoData *ed)
   }
 }
 
-void displayExpoLine(coord_t y, ExpoData *ed)
+void displayExpoLine(coord_t y, ExpoData * ed)
 {
   putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw);
 

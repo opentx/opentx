@@ -17,6 +17,7 @@ if(PCB STREQUAL X9E)
     bluetooth_driver.cpp
     startup_stm32f40_41xxx.s
     )
+  set(SERIAL2_DRIVER serial2_driver.cpp)
   if(STICKS STREQUAL HORUS)
     add_definitions(-DHORUS_STICKS)
   endif()
@@ -36,21 +37,24 @@ elseif(PCB STREQUAL X9D+)
   set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)
+  set(SERIAL2_DRIVER serial2_driver.cpp)
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC NO)
   set(LUA_EXPORT lua_export_taranis)
   set(FLAVOUR x9d)
+  add_definitions(-DPCBX9D)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 212x64)
   set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} taranis_bitmaps)
   set(LCD_DRIVER lcd_driver_aspi.cpp)
+  set(SERIAL2_DRIVER serial2_driver.cpp)
 elseif(PCB STREQUAL X7D)
   set(CPU_TYPE STM32F2)
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
-  set(HAPTIC NO)
+  set(HAPTIC YES)
   set(LUA_EXPORT lua_export_taranis)
   set(FLAVOUR x7d)
   add_definitions(-DPCBX7D)
@@ -63,12 +67,10 @@ endif()
 set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM EEPROM_RLC)
-set(VIRTUAL_INPUTS YES)
 set(TARGET_DIR taranis)
 
 add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
-add_definitions(-DLUAINPUTS -DXCURVES -DVARIO)
 
 set(GUI_SRC ${GUI_SRC}
   model_inputs.cpp
@@ -84,9 +86,15 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
+if(PCB STREQUAL X7D)
+  set(LED_DRIVER led_driver.cpp)
+endif()
+
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
+  ${LED_DRIVER}
+  backlight_driver.cpp
   extmodule_driver.cpp
   ../common/arm/stm32/rtc_driver.cpp
   )
@@ -99,10 +107,8 @@ set(FIRMWARE_SRC
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
-  backlight_driver.cpp
-  delays.c
   i2c_driver.cpp
-  pwr_driver.c
+  pwr_driver.cpp
   flash_driver.cpp
   )
 

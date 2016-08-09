@@ -23,42 +23,7 @@
 #define EXPO_ONE_2ND_COLUMN (7*FW+3*FW+2)
 #define EXPO_ONE_FM_WIDTH   (5*FW)
 
-#if defined(FLIGHT_MODES)
-void displayFlightModes(coord_t x, coord_t y, FlightModesType value);
-FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
-{
-  drawFieldLabel(x, y, STR_FLMODE);
-
-  uint8_t posHorz = menuHorizontalPosition;
-
-#if defined(CPUARM)
-  bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-5*FW);
-#endif
-
-  for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-#if defined(CPUARM)
-    if (expoMenu && ((attr && p < posHorz-4) || (x > EXPO_ONE_2ND_COLUMN-FW)))
-      continue;
-#endif
-    lcdDrawChar(x, y, '0'+p, ((posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
-    x += FW;
-  }
-
-  if (attr) {
-    if (s_editMode && ((event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff))) {
-      s_editMode = 0;
-      value ^= (1<<posHorz);
-      storageDirty(EE_MODEL);
-    }
-  }
-
-  return value;
-}
-#else
-  #define displayFlightModes(...)
-#endif
-
-int16_t expoFn(int16_t x)
+int expoFn(int x)
 {
   ExpoData *ed = expoAddress(s_currIdx);
   int16_t anas[NUM_INPUTS] = {0};
@@ -69,20 +34,20 @@ int16_t expoFn(int16_t x)
 
 void drawFunction(FnFuncP fn, uint8_t offset)
 {
-  lcdDrawVerticalLine(X0-offset, 0, LCD_H, 0xee);
-  lcdDrawHorizontalLine(X0-WCHART-offset, Y0, WCHART*2, 0xee);
+  lcdDrawVerticalLine(CURVE_CENTER_X-offset, 0, LCD_H, 0xee);
+  lcdDrawHorizontalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee);
 
   coord_t prev_yv = (coord_t)-1;
 
-  for (int8_t xv=-WCHART; xv<=WCHART; xv++) {
-    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
+  for (int8_t xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv++) {
+    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/CURVE_SIDE_WIDTH))) / 2 * (LCD_H-1) / RESX);
     if (prev_yv != (coord_t)-1) {
       if (abs((int8_t)yv-prev_yv) <= 1) {
-        lcdDrawPoint(X0+xv-offset-1, prev_yv, FORCE);
+        lcdDrawPoint(CURVE_CENTER_X+xv-offset-1, prev_yv, FORCE);
       }
       else {
         uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcdDrawSolidVerticalLine(X0+xv-offset-1, yv+tmp, prev_yv-yv);
+        lcdDrawSolidVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv);
       }
     }
     prev_yv = yv;
@@ -266,7 +231,7 @@ enum ExposFields {
 
 void menuModelExpoOne(uint8_t event)
 {
-  ExpoData *ed = expoAddress(s_currIdx);
+  ExpoData * ed = expoAddress(s_currIdx);
   putsMixerSource(7*FW+FW/2, 0, MIXSRC_Rud+ed->chn, 0);
 
   SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {CASE_CPUARM(0) 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
@@ -279,8 +244,7 @@ void menuModelExpoOne(uint8_t event)
 
   for (uint8_t i=0; i<EXPO_FIELD_MAX+1; i++) {
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    switch(i)
-    {
+    switch (i) {
 #if defined(CPUARM)
       case EXPO_FIELD_NAME:
         editSingleName(EXPO_ONE_2ND_COLUMN-sizeof(ed->name)*FW, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
@@ -289,7 +253,7 @@ void menuModelExpoOne(uint8_t event)
 
       case EXPO_FIELD_WEIGHT:
         lcdDrawTextAlignedLeft(y, STR_WEIGHT);
-        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr, 0, event);
+        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN-4*FW, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr, 0, event);
         break;
 
       case EXPO_FIELD_EXPO:
@@ -348,10 +312,10 @@ void menuModelExpoOne(uint8_t event)
   lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
 
 #if defined(CPUARM)
-  x512 = X0+x512/(RESX/WCHART);
+  x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
 #else
-  x512 = X0+x512/(RESXu/WCHART);
+  x512 = CURVE_CENTER_X+x512/(RESXu/CURVE_SIDE_WIDTH);
   y512 = (LCD_H-1) - (uint16_t)((y512+RESX)/2) * (LCD_H-1) / RESX;
 #endif
 
@@ -457,34 +421,15 @@ void menuModelMixOne(uint8_t event)
   SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 1, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #endif
 
-#if MENU_COLUMNS > 1
-  lcdDrawSolidVerticalLine(MENU_COLUMN2_X-4, FH+1, LCD_H-FH-1);
-#endif
-
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
-  for (uint8_t k=0; k<MENU_COLUMNS*(LCD_LINES-1); k++) {
-
-#if MENU_COLUMNS > 1
-    coord_t y;
-    coord_t COLUMN_X;
-    if (k >= LCD_LINES-1) {
-      y = 1 + (k-LCD_LINES+2)*FH;
-      COLUMN_X = MENU_COLUMN2_X;
-    }
-    else {
-      y = 1 + (k+1)*FH;
-      COLUMN_X = 0;
-    }
-    int8_t i = k;
-#else
+  for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int8_t i = k + menuVerticalOffset;
-#endif
 
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    switch(i) {
+    switch (i) {
 #if defined(CPUARM)
       case MIX_FIELD_NAME:
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
@@ -598,10 +543,6 @@ void menuModelMixOne(uint8_t event)
     }
   }
 }
-
-static uint8_t s_maxLines = 8;
-static uint8_t s_copySrcIdx;
-static uint8_t s_copySrcCh;
 
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)

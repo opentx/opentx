@@ -281,9 +281,8 @@
   #define SWSRC_ID0                    SWSRC_SA0
   #define SWSRC_ID1                    SWSRC_SA1
   #define SWSRC_ID2                    SWSRC_SA2
+  #define IS_MOMENTARY(sw)             false // TODO
 #else
-  #define IS_3POS(sw)      ((sw) == 0)
-  #define IS_MOMENTARY(sw) (sw == SWSRC_TRN)
   #define SW_DSM2_BIND     SW_TRN
 #endif
 
@@ -301,36 +300,35 @@
 void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBHORUS)
-  #define IS_POT_AVAILABLE(x)          (true)
   #define IS_POT_MULTIPOS(x)           ((x)==POT2)
   #define IS_POT_WITHOUT_DETENT(x)     (true)
 #elif defined(PCBFLAMENCO)
-  #define IS_POT_AVAILABLE(x)       (true)
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (false)
 #elif defined(PCBX9E)
   #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
-  #define IS_POT_AVAILABLE(x)       ((x)<POT1 || ((x)<=POT_LAST && ((g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=0)) || ((x)>=SLIDER1 && IS_SLIDER_AVAILABLE(x)))
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #elif defined(PCBX9DP)
-  #define IS_POT_AVAILABLE(x)       ((x)!=POT3 || (g_eeGeneral.potsConfig & (0x03 << (2*((x)-POT1))))!=POT_NONE)
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #elif defined(PCBTARANIS)
-  #define IS_POT_AVAILABLE(x)       ((x)!=POT3)
   #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #else
-  #define IS_POT_AVAILABLE(x)       (true)
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (true)
 #endif
 
-#define IS_POT(x)                      ((x)>=POT1 && (x)<=POT_LAST)
+#if defined(PCBTARANIS)
+  #define IS_POT_OR_SLIDER_AVAILABLE(x)          (IS_POT(x) || IS_SLIDER(x))
+#else
+  #define IS_POT_OR_SLIDER_AVAILABLE(x)          (true)
+#endif
+
 #define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 
-#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E)
+#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7D)
   #define PWR_BUTTON_DELAY
   #define PWR_PRESS_SHUTDOWN           300 // 3s
 #endif
@@ -395,13 +393,6 @@ void memswap(void * a, void * b, uint8_t size);
 #include "timers.h"
 #include "storage/storage.h"
 #include "pulses/pulses.h"
-
-#if defined(XCURVES)
-  void loadCurves();
-  #define LOAD_MODEL_CURVES() loadCurves()
-#else
-  #define LOAD_MODEL_CURVES()
-#endif
 
 #if defined(CPUARM)
 // Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi)
@@ -513,17 +504,6 @@ extern const pm_uint8_t modn12x3[];
 
 extern uint8_t channel_order(uint8_t x);
 
-enum BaseCurves {
-  CURVE_NONE,
-  CURVE_X_GT0,
-  CURVE_X_LT0,
-  CURVE_ABS_X,
-  CURVE_F_GT0,
-  CURVE_F_LT0,
-  CURVE_ABS_F,
-  CURVE_BASE
-};
-
 #define THRCHK_DEADBAND 16
 
 #if defined(COLORLCD)
@@ -604,9 +584,8 @@ div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
-bool switchState(EnumKeys enuk);
 #if defined(PCBHORUS)
-  uint16_t trimDown(uint16_t idx);
+  uint16_t trimDown(uint16_t idx); // TODO why?
 #else
   uint8_t trimDown(uint8_t idx);
 #endif
@@ -720,7 +699,7 @@ void logicalSwitchesReset();
 extern swarnstate_t switches_states;
 swsrc_t getMovedSwitch();
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define GET_MOVED_SOURCE_PARAMS uint8_t min
   int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS);
   #define GET_MOVED_SOURCE(min, max) getMovedSource(min)
@@ -736,7 +715,7 @@ swsrc_t getMovedSwitch();
   #define getFlightMode() 0
 #endif
 
-#if !defined(VIRTUALINPUTS)
+#if !defined(CPUARM)
   uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx);
 #else
   #define getTrimFlightPhase(phase, idx) (phase)
@@ -752,7 +731,7 @@ swsrc_t getMovedSwitch();
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(CPUARM)
   bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #else
   void setTrimValue(uint8_t phase, uint8_t idx, int trim);
@@ -890,7 +869,7 @@ extern uint16_t lastMixerDuration;
 #if defined(SIMU)
   uint16_t getTmr2MHz();
   uint16_t getTmr16KHz();
-#elif defined(CPUSTM32)
+#elif defined(STM32)
   static inline uint16_t getTmr2MHz() { return TIMER_2MHz_TIMER->CNT; }
 #elif defined(PCBSKY9X)
   static inline uint16_t getTmr2MHz() { return TC1->TC_CHANNEL[0].TC_CV; }
@@ -933,14 +912,6 @@ void getADC();
 void backlightOn();
 void checkBacklight();
 void doLoopCommonActions();
-
-#if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
-  #define BACKLIGHT_ON()    (Voice.Backlight = 1)
-  #define BACKLIGHT_OFF()   (Voice.Backlight = 0)
-#else
-  #define BACKLIGHT_ON()    backlightEnable()
-  #define BACKLIGHT_OFF()   backlightDisable()
-#endif
 
 #define BITMASK(bit) (1<<(bit))
 
@@ -1060,22 +1031,13 @@ extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of th
 extern int16_t            channelOutputs[NUM_CHNOUT];
 extern uint16_t           BandGap;
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define NUM_INPUTS      (MAX_INPUTS)
 #else
   #define NUM_INPUTS      (NUM_STICKS)
 #endif
 
-int intpol(int x, uint8_t idx);
 int expo(int x, int k);
-
-#if defined(CURVES) && defined(XCURVES)
-  int applyCurve(int x, CurveRef & curve);
-#elif defined(CURVES)
-  int applyCurve(int x, int8_t idx);
-#else
-  #define applyCurve(x, idx) (x)
-#endif
 
 #if defined(CPUARM)
   inline int getMaximumValue(int source)
@@ -1091,13 +1053,54 @@ int expo(int x, int k);
   }
 #endif
 
-#if defined(XCURVES)
-  int applyCustomCurve(int x, uint8_t idx);
+// Curves
+enum BaseCurves {
+  CURVE_NONE,
+  CURVE_X_GT0,
+  CURVE_X_LT0,
+  CURVE_ABS_X,
+  CURVE_F_GT0,
+  CURVE_F_LT0,
+  CURVE_ABS_F,
+  CURVE_BASE
+};
+int8_t * curveAddress(uint8_t idx);
+struct point_t
+{
+  coord_t x;
+  coord_t y;
+};
+point_t getPoint(uint8_t i);
+#if !defined(CURVES)
+#define LOAD_MODEL_CURVES()
+#define applyCurve(x, idx) (x)
+#elif defined(CPUARM)
+typedef CurveData CurveInfo;
+void loadCurves();
+#define LOAD_MODEL_CURVES() loadCurves()
+int intpol(int x, uint8_t idx);
+int applyCurve(int x, CurveRef & curve);
+int applyCustomCurve(int x, uint8_t idx);
+int applyCurrentCurve(int x);
+int8_t getCurveX(int noPoints, int point);
+void resetCustomCurveX(int8_t * points, int noPoints);
+bool moveCurve(uint8_t index, int8_t shift); // TODO bool?
 #else
-  #define applyCustomCurve(x, idx) intpol(x, idx)
+struct CurveInfo {
+  int8_t * crv;
+  uint8_t points:7;
+  uint8_t custom:1;
+};
+CurveInfo curveInfo(uint8_t idx);
+int intpol(int x, uint8_t idx);
+int applyCurve(int x, int8_t idx);
+#define LOAD_MODEL_CURVES()
+#define applyCustomCurve(x, idx) intpol(x, idx)
+int applyCurrentCurve(int x);
+bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0);
 #endif
 
-#if defined(XCURVES)
+#if defined(CPUARM)
   #define APPLY_EXPOS_EXTRA_PARAMS_INC , uint8_t ovwrIdx=0, int16_t ovwrValue=0
   #define APPLY_EXPOS_EXTRA_PARAMS     , uint8_t ovwrIdx, int16_t ovwrValue
 #else
@@ -1105,17 +1108,17 @@ int expo(int x, int k);
   #define APPLY_EXPOS_EXTRA_PARAMS
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
 void clearInputs();
 void defaultInputs();
 #endif
 
-void applyExpos(int16_t *anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
+void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
 int16_t applyLimits(uint8_t channel, int32_t value);
 
 void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
-extern int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
+extern int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
 
 #define FLASH_DURATION 20 /*200ms*/
 
@@ -1128,30 +1131,18 @@ FlightModeData *flightModeAddress(uint8_t idx);
 ExpoData *expoAddress(uint8_t idx);
 MixData *mixAddress(uint8_t idx);
 LimitData *limitAddress(uint8_t idx);
-int8_t *curveAddress(uint8_t idx);
 LogicalSwitchData *lswAddress(uint8_t idx);
-
-#if defined(XCURVES)
-typedef CurveData CurveInfo;
-#else
-struct CurveInfo {
-  int8_t * crv;
-  uint8_t points:7;
-  uint8_t custom:1;
-};
-extern CurveInfo curveInfo(uint8_t idx);
-#endif
 
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   extern int8_t  virtualInputsTrims[NUM_INPUTS];
 #else
   extern int16_t rawAnas[NUM_INPUTS];
 #endif
 
-extern int16_t  anas [NUM_INPUTS];
-extern int16_t  trims[NUM_STICKS+NUM_AUX_TRIMS];
+extern int16_t anas [NUM_INPUTS];
+extern int16_t trims[NUM_STICKS+NUM_AUX_TRIMS];
 extern BeepANACenter bpanaCenter;
 
 extern uint8_t s_mixer_first_run_done;
@@ -1191,10 +1182,10 @@ PACK(typedef struct {
 }) SwOn;
 #endif
 
-extern SwOn   swOn  [MAX_MIXERS];
-extern int24_t act   [MAX_MIXERS];
+extern SwOn   swOn[MAX_MIXERS];
+extern int24_t act[MAX_MIXERS];
 
-#ifdef BOLD_FONT
+#if defined(BOLD_FONT)
   inline bool isExpoActive(uint8_t expo)
   {
     return swOn[expo].activeExpo;
@@ -1209,7 +1200,7 @@ extern int24_t act   [MAX_MIXERS];
   #define isMixActive(x) false
 #endif
 
-enum CswFunctionFamilies {
+enum LogicalSwitchFamilies {
   LS_FAMILY_OFS,
   LS_FAMILY_BOOL,
   LS_FAMILY_COMP,
@@ -1422,7 +1413,7 @@ void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
 
-#if defined(PCBHORUS) && !defined(SIMU)
+#if defined(PCBHORUS) || defined(PCBX7D)
   #define LED_ERROR_BEGIN()            ledRed()
   #define LED_ERROR_END()              ledBlue()
 #else
@@ -1452,9 +1443,9 @@ union ReusableBuffer
   // 103 bytes
   struct
   {
-    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
-    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
-    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
+    int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+    int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+    int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     uint8_t state;
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     struct {
@@ -1478,7 +1469,7 @@ union ReusableBuffer
   } sdmanager;
 #endif
 
-#if defined(CPUSTM32)
+#if defined(STM32)
   struct
   {
     char id[27];

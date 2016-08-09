@@ -126,8 +126,6 @@
 
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
-#define lcdRefreshWait()
-
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
@@ -170,14 +168,22 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode, uint8_t le
 void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
-void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
-void putsSwitches(coord_t x, coord_t y, int8_t swtch, LcdFlags att=0);
-void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
-void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
+void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx, LcdFlags att=0);
+void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
+#if !defined(BOOT) // TODO not here ...
+void putsSwitches(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
+void putsMixerSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
+#endif
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
+
+void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
+#if defined(CPUARM)
+void drawShortTrimMode(coord_t x, coord_t y, uint8_t mode, uint8_t idx, LcdFlags att);
+#else
+#define drawShortTrimMode drawTrimMode
+#endif
+
 #if defined(ROTARY_ENCODERS)
   void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 #endif
@@ -241,26 +247,8 @@ void lcdDrawTelemetryTopBar();
 void lcd_imgfar(coord_t x, coord_t y, const uint_farptr_t img, uint8_t idx, LcdFlags att); // progmem "far"
 #endif
 
+void lcdClear(void);
 void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
-
-void lcdSetRefVolt(unsigned char val);
-void lcdClear();
-void lcdSetContrast();
-void lcdInit();
-#define lcdOff()
-
-void lcdRefresh();
-
-#if defined(LCD_KS108)
-void lcdRefreshSide();
-#endif
-
-#if defined(LCD_ST7920)
-uint8_t	lcdRefresh_ST7920(uint8_t full);
-#define IS_LCD_REFRESH_ALLOWED() (0==lcdstate)
-#else 
-#define IS_LCD_REFRESH_ALLOWED() (1)
-#endif
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE (0)
@@ -268,6 +256,15 @@ uint8_t	lcdRefresh_ST7920(uint8_t full);
   #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
 #endif
 
+inline display_t getPixel(uint8_t x, uint8_t y)
+{
+  if (x>=LCD_W || y>=LCD_H) {
+    return 0;
+  }
+  
+  display_t * p = &displayBuf[y / 2 * LCD_W + x];
+  return (y & 1) ? (*p >> 4) : (*p & 0x0F);
+}
 const char * writeScreenshot();
 
 #endif // _LCD_H_

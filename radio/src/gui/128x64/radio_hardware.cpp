@@ -20,22 +20,24 @@
 
 #include "opentx.h"
 
-enum menuRadioHwItems {
-  ITEM_SETUP_HW_OPTREX_DISPLAY,
-  ITEM_SETUP_HW_STICKS_GAINS_LABELS,
-  ITEM_SETUP_HW_STICK_LV_GAIN,
-  ITEM_SETUP_HW_STICK_LH_GAIN,
-  ITEM_SETUP_HW_STICK_RV_GAIN,
-  ITEM_SETUP_HW_STICK_RH_GAIN,
-  IF_ROTARY_ENCODERS(ITEM_SETUP_HW_ROTARY_ENCODER)
-  CASE_BLUETOOTH(ITEM_SETUP_HW_BT_BAUDRATE)
-  ITEM_SETUP_HW_MAX
+enum MenuRadioHardwareItems {
+  ITEM_RADIO_HARDWARE_OPTREX_DISPLAY,
+  ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS,
+  ITEM_RADIO_HARDWARE_STICK_LV_GAIN,
+  ITEM_RADIO_HARDWARE_STICK_LH_GAIN,
+  ITEM_RADIO_HARDWARE_STICK_RV_GAIN,
+  ITEM_RADIO_HARDWARE_STICK_RH_GAIN,
+  IF_ROTARY_ENCODERS(ITEM_RADIO_HARDWARE_ROTARY_ENCODER)
+  CASE_BLUETOOTH(ITEM_RADIO_HARDWARE_BT_BAUDRATE)
+  ITEM_RADIO_HARDWARE_MAX
 };
 
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuRadioHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_SETUP_HW_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
+#if defined(PCBX7D)
+#else
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
 
   uint8_t sub = menuVerticalPosition - 1;
 
@@ -46,22 +48,22 @@ void menuRadioHardware(uint8_t event)
     uint8_t attr = (sub == k ? blink : 0);
 
     switch(k) {
-      case ITEM_SETUP_HW_OPTREX_DISPLAY:
+      case ITEM_RADIO_HARDWARE_OPTREX_DISPLAY:
         g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
         break;
 
-      case ITEM_SETUP_HW_STICKS_GAINS_LABELS:
+      case ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS:
         lcdDrawTextAlignedLeft(y, PSTR("Sticks"));
         break;
 
-      case ITEM_SETUP_HW_STICK_LV_GAIN:
-      case ITEM_SETUP_HW_STICK_LH_GAIN:
-      case ITEM_SETUP_HW_STICK_RV_GAIN:
-      case ITEM_SETUP_HW_STICK_RH_GAIN:
+      case ITEM_RADIO_HARDWARE_STICK_LV_GAIN:
+      case ITEM_RADIO_HARDWARE_STICK_LH_GAIN:
+      case ITEM_RADIO_HARDWARE_STICK_RV_GAIN:
+      case ITEM_RADIO_HARDWARE_STICK_RH_GAIN:
       {
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, PSTR("\002LVLHRVRH"), k-ITEM_SETUP_HW_STICK_LV_GAIN, 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, PSTR("\002LVLHRVRH"), k-ITEM_RADIO_HARDWARE_STICK_LV_GAIN, 0);
         lcdDrawText(INDENT_WIDTH+3*FW, y, PSTR("Gain"));
-        uint8_t mask = (1<<(k-ITEM_SETUP_HW_STICK_LV_GAIN));
+        uint8_t mask = (1<<(k-ITEM_RADIO_HARDWARE_STICK_LV_GAIN));
         uint8_t val = (g_eeGeneral.sticksGain & mask ? 1 : 0);
         lcdDrawChar(GENERAL_HW_PARAM_OFS, y, val ? '2' : '1', attr);
         if (attr) {
@@ -75,20 +77,20 @@ void menuRadioHardware(uint8_t event)
       }
 
 #if defined(ROTARY_ENCODERS)
-      case ITEM_SETUP_HW_ROTARY_ENCODER:
+      case ITEM_RADIO_HARDWARE_ROTARY_ENCODER:
         g_eeGeneral.rotarySteps = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
         break;
 #endif
 
 #if defined(BLUETOOTH)
-      case ITEM_SETUP_HW_BT_BAUDRATE:
+      case ITEM_RADIO_HARDWARE_BT_BAUDRATE:
         g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
         break;
 #endif
-
     }
   }
+#endif
 }

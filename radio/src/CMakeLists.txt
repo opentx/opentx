@@ -18,10 +18,11 @@ option(FAI "Competition mode (no telemetry)" OFF)
 option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
-option(WATCHDOG_DISABLED "Disable hardware Watchdog on Horus" OFF)  # TODO remove it when it's OK
+option(WATCHDOG_DISABLED "Disable hardware Watchdog" OFF)
 option(SIMU_AUDIO "Enable simulator audio" OFF)
 option(SIMU_DISKIO "Enable disk IO simulation in simulator. Simulator will use FatFs module and simulated IO layer that  uses \"./sdcard.image\" file as image of SD card. This file must contain whole SD card from first to last sector" OFF)
 option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
+option(TEMPLATES "Model templates menu" OFF)
 
 enable_language(ASM)
 set(OPT s)
@@ -52,12 +53,6 @@ set(M128_VARIANT    32768)
 
 set(FIRMWARE_DEPENDENCIES firmware_translations)
 
-set(9X_GUI_SRC
-  model_inputs_mixes.cpp
-  radio_diagkeys.cpp
-  radio_diaganas.cpp
-  )
-
 set(FATFS_SRC
   ${FATFS_DIR}/ff.c
   ${FATFS_DIR}/fattime.c
@@ -83,7 +78,11 @@ elseif(PCB STREQUAL 9X2561)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
   add_definitions(-DPCBSTD -DPCB${PCB} -DCPUM2561)
   set(TARGET_SRC ${TARGET_SRC} board.cpp)
-  set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC})
+  set(GUI_SRC
+    ${GUI_SRC}
+    model_inputs_mixes.cpp
+    radio_diagkeys.cpp
+    radio_diaganas.cpp)
   if(SP22)
     add_definitions(-DSP22)
   endif()
@@ -98,8 +97,6 @@ elseif(PCB STREQUAL MEGA2560)
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
-
-include_directories(gui gui/${GUI_DIR})
 
 if(NOT PCB STREQUAL 9XR AND NOT PCB STREQUAL 9XRPRO)
   option(DBLKEYS "Double Keys" ON)
@@ -157,45 +154,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 
-set(GUI_SRC
-  ${GUI_SRC}
-  lcd.cpp
-  splash.cpp
-  fonts.cpp
-  navigation.cpp
-  popups.cpp
-  widgets.cpp
-  menus.cpp
-  )
-
-set(GUI_SRC
-  ${GUI_SRC}
-  menu_model.cpp
-  model_select.cpp
-  model_setup.cpp
-  model_outputs.cpp
-  model_logical_switches.cpp
-  model_special_functions.cpp
-  model_telemetry.cpp
-  menu_radio.cpp
-  radio_setup.cpp
-  radio_trainer.cpp
-  radio_version.cpp
-  radio_calibration.cpp
-  view_main.cpp
-  view_statistics.cpp
-  )
+include(gui/CMakeLists.txt)
 
 if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
   set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
-endif()
-
-if(VIRTUAL_INPUTS)
-  add_definitions(-DVIRTUALINPUTS)
-  set(TEMPLATES OFF)
-else()
-  option(TEMPLATES "Model Templates Menu" ON)
 endif()
 
 if(TEMPLATES)
@@ -224,7 +187,6 @@ endif()
 
 if(HELI)
   add_definitions(-DHELI)
-  set(GUI_SRC ${GUI_SRC} model_heli.cpp)
 endif()
 
 if(FLIGHT_MODES)
@@ -234,7 +196,6 @@ endif()
 
 if(CURVES)
   add_definitions(-DCURVES)
-  set(GUI_SRC ${GUI_SRC} model_curves.cpp)
 endif()
 
 if(GVARS)
@@ -318,12 +279,18 @@ set(SRC
   functions.cpp
   strhelpers.cpp
   switches.cpp
-  curves.cpp
   mixer.cpp
   stamp.cpp
   timers.cpp
   trainer_input.cpp
   )
+
+if(CURVES)
+  set(SRC
+    ${SRC}
+    curves.cpp
+    )
+endif()
 
 if(GUI)
   add_definitions(-DGUI)
@@ -402,7 +369,7 @@ endif()
   set(CMAKE_CXX_FLAGS_DEBUG "${COMMON_CPP_FLAGS} -g")
   set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
-  if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E)
+  if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7D)
     add_subdirectory(targets/${TARGET_DIR}/bootloader)
     include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
     set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)

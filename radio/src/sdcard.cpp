@@ -120,6 +120,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
 #endif
+  
   static uint16_t lastpopupMenuOffset = 0;
 
 #if defined(CPUARM)
@@ -165,7 +166,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   }
 
   popupMenuNoItems = 0;
-  POPUP_MENU_ITEMS_FROM_BSS();
+  POPUP_MENU_SET_BSS_FLAG();
 
   FRESULT res = f_opendir(&dir, path);
   if (res == FR_OK) {

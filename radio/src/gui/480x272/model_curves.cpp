@@ -21,69 +21,9 @@
 #include <stdio.h>
 #include "opentx.h"
 
-uint8_t s_curveChan;
-
-int curveFn(int x)
-{
-  return applyCustomCurve(x, s_curveChan);
-}
-
-struct point_t {
-  coord_t x;
-  coord_t y;
-};
-
-point_t getPoint(uint8_t i)
-{
-  point_t result = {0, 0};
-  CurveInfo & crv = g_model.curves[s_curveChan];
-  int8_t * points = curveAddress(s_curveChan);
-  bool custom = (crv.type == CURVE_TYPE_CUSTOM);
-  uint8_t count = 5+crv.points;
-  if (i < count) {
-    result.x = CURVE_CENTER_X-1-CURVE_SIDE_WIDTH+i*CURVE_SIDE_WIDTH*2/(count-1);
-    result.y = CURVE_CENTER_Y - (points[i]) * (CURVE_SIDE_WIDTH-1) / 100;
-    if (custom && i>0 && i<count-1) {
-      result.x = CURVE_CENTER_X - 1 - CURVE_SIDE_WIDTH + (100 + (100 + points[count + i - 1]) * (2 * CURVE_SIDE_WIDTH)) / 200;
-    }
-  }
-  return result;
-}
-
 void drawCurve(int x, int y, int width)
 {
-  drawFunction(curveFn, x, y, width);
-}
-
-extern int8_t * curveEnd[MAX_CURVES];
-bool moveCurve(uint8_t index, int8_t shift)
-{
-  if (curveEnd[MAX_CURVES-1] + shift > g_model.points + sizeof(g_model.points)) {
-    AUDIO_WARNING2();
-    return false;
-  }
-
-  int8_t *nextCrv = curveAddress(index+1);
-  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+curveEnd[MAX_CURVES-1]-curveEnd[index]);
-  if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
-  while (index<MAX_CURVES) {
-    curveEnd[index++] += shift;
-  }
-
-  storageDirty(EE_MODEL);
-  return true;
-}
-
-int8_t getCurveX(int noPoints, int point)
-{
-  return -100 + div_and_round((point*2000) / (noPoints-1), 10);
-}
-
-void resetCustomCurveX(int8_t * points, int noPoints)
-{
-  for (int i=0; i<noPoints-2; i++) {
-    points[noPoints+i] = getCurveX(noPoints, i+1);
-  }
+  drawFunction(applyCurrentCurve, x, y, width);
 }
 
 void displayPresetChoice(event_t event)

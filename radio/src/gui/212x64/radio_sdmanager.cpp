@@ -250,7 +250,7 @@ void menuRadioSdManager(event_t _event)
 
   int index = menuVerticalPosition-menuVerticalOffset;
 
-  switch(_event) {
+  switch (_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
       REFRESH_FILES();
@@ -366,7 +366,7 @@ void menuRadioSdManager(event_t _event)
 
     reusableBuffer.sdmanager.count = 0;
 
-    FRESULT res = f_opendir(&dir, ".");        /* Open the directory */
+    FRESULT res = f_opendir(&dir, "."); // Open the directory
     if (res == FR_OK) {
       for (;;) {
         res = f_readdir(&dir, &fno);                   /* Read a directory item */
@@ -384,8 +384,8 @@ void menuRadioSdManager(event_t _event)
         bool isfile = !(fno.fattrib & AM_DIR);
 
         if (menuVerticalOffset == 0) {
-          for (int i=0; i<NUM_BODY_LINES; i++) {
-            char *line = reusableBuffer.sdmanager.lines[i];
+          for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+            char * line = reusableBuffer.sdmanager.lines[i];
             if (line[0] == '\0' || isFilenameLower(isfile, fn, line)) {
               if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.sdmanager.lines[i+1], line, sizeof(reusableBuffer.sdmanager.lines[i]) * (NUM_BODY_LINES-1-i));
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
@@ -397,7 +397,7 @@ void menuRadioSdManager(event_t _event)
         }
         else if (reusableBuffer.sdmanager.offset == menuVerticalOffset) {
           for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
-            char *line = reusableBuffer.sdmanager.lines[i];
+            char * line = reusableBuffer.sdmanager.lines[i];
             if (line[0] == '\0' || isFilenameGreater(isfile, fn, line)) {
               if (i > 0) memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], sizeof(reusableBuffer.sdmanager.lines[0]) * i);
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
@@ -427,7 +427,7 @@ void menuRadioSdManager(event_t _event)
 
   reusableBuffer.sdmanager.offset = menuVerticalOffset;
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     lcdNextPos = 0;
     LcdFlags attr = (index == i ? INVERS : 0);

@@ -79,7 +79,7 @@ void stackPaint()
 #endif
 }
 
-#if defined(CPUSTM32) && !defined(SIMU)
+#if defined(STM32) && !defined(SIMU)
 uint16_t stackSize()
 {
   return ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;

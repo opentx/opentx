@@ -29,7 +29,7 @@ void serialPutc(char c)
 {
 #if defined(USB_SERIAL)
   usbSerialPutc(c);
-#else
+#elif defined(SERIAL2)
   serial2Putc(c);
 #endif
 }

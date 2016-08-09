@@ -38,25 +38,25 @@ void doPaint(QPainter & p)
   p.eraseRect(0, 0, LCD_W, LCD_H);
 
   if (1) {
-#if !defined(PCBTARANIS)
+#if LCD_W < 212
     rgb = qRgb(0, 0, 0);
     p.setPen(rgb);
     p.setBrush(QBrush(rgb));
 #endif
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
     unsigned int previousDepth = 0xFF;
 #endif
 
     for (int y=0; y<LCD_H; y++) {
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
       unsigned int idx = (y/2) * LCD_W;
 #else
       unsigned int idx = (y/8) * LCD_W;
       unsigned int mask = (1 << (y%8));
 #endif
       for (int x=0; x<LCD_W; x++, idx++) {
-#if !defined(PCBTARANIS)
+#if LCD_W < 212
         if (simuLcdBuf[idx] & mask) {
           p.drawPoint(x, y);
         }
@@ -93,7 +93,7 @@ bool checkScreenshot(const QString & test)
 #if defined(COLORLCD)
 // TODO
 #else
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(outdezNAtt, test_unsigned)
 {
   lcdClear();
@@ -268,7 +268,7 @@ TEST(Lcd, Dblsize)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, DrawSwitch)
 {
   lcdClear();
@@ -280,7 +280,7 @@ TEST(Lcd, DrawSwitch)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, BMPWrapping)
 {
   lcdClear();
@@ -294,7 +294,7 @@ TEST(Lcd, BMPWrapping)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, lcdDrawHorizontalLine)
 {
   lcdClear();
@@ -307,7 +307,7 @@ TEST(Lcd, lcdDrawHorizontalLine)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, lcdDrawVerticalLine)
 {
   lcdClear();
@@ -347,7 +347,7 @@ public:
   };
 };
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
 {
   lcdClear();
@@ -398,7 +398,7 @@ TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, lcdDrawLine)
 {
   int start, length, xOffset;

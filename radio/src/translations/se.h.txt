@@ -831,8 +831,8 @@
 #define TR_MENUTRAINER         "TRAINER (PPM IN)"
 #define TR_MENUSPECIALFUNCS    "GLOBALA FUNKTIONER"
 #define TR_MENUVERSION         "VERSION"
-#define TR_MENUDIAG            TR("BRYTARE","TEST AV BRYTARE")
-#define TR_MENUANA             "ANALOGA VÄRDEN"
+#define TR_MENU_RADIO_SWITCHES            TR("BRYTARE","TEST AV BRYTARE")
+#define TR_MENU_RADIO_ANALOGS             "ANALOGA VÄRDEN"
 #define TR_MENUCALIBRATION     "KALIBRERING"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "[Spara Trimvärden]"
@@ -841,11 +841,11 @@
 #endif
 #define TR_MENUMODELSEL        TR("MODELL","VÄLJ MODELL")
 #define TR_MENUSETUP           TR("VÄRDEN","MODELLINSTÄLLNINGAR")
-#define TR_MENUFLIGHTPHASE     "FLYGLÄGE"
-#define TR_MENUFLIGHTPHASES    "FLYGLÄGEN"
+#define TR_MENUFLIGHTMODE     "FLYGLÄGE"
+#define TR_MENUFLIGHTMODES    "FLYGLÄGEN"
 #define TR_MENUHELISETUP       "HELIKOPTER"
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_MENUINPUTS        "INPUT"
   #define TR_MENULIMITS        "SERVON"
 #else

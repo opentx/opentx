@@ -78,7 +78,7 @@ bool isTrimModeAvailable(int mode)
 
 bool menuModelFlightModesAll(event_t event)
 {
-  MENU(STR_MENUFLIGHTPHASES, MODEL_ICONS, menuTabModel, MENU_MODEL_FLIGHT_MODES, MAX_FLIGHT_MODES+1, { NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
+  MENU(STR_MENUFLIGHTMODES, MODEL_ICONS, menuTabModel, MENU_MODEL_FLIGHT_MODES, MAX_FLIGHT_MODES+1, { NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, NAVIGATION_LINE_BY_LINE|ITEM_FLIGHT_MODES_LAST, 0});
 
   if (menuVerticalPosition==0 && menuHorizontalPosition==ITEM_FLIGHT_MODES_SWITCH) {
     menuHorizontalPosition += CURSOR_MOVED_LEFT(event) ? -1 : +1;
@@ -123,7 +123,7 @@ bool menuModelFlightModesAll(event_t event)
 
     FlightModeData *p = flightModeAddress(k);
 
-    putsFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((menuVerticalPosition==k && menuHorizontalPosition<0) ? INVERS : 0));
+    drawFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((menuVerticalPosition==k && menuHorizontalPosition<0) ? INVERS : 0));
 
     for (int j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       LcdFlags attr = ((menuVerticalPosition==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -153,7 +153,7 @@ bool menuModelFlightModesAll(event_t event)
             trim_t & v = p->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
           }
-          putsTrimMode(FLIGHT_MODES_TRIMS_COLUMN+j*FLIGHT_MODES_TRIM_WIDTH, y, k, t, attr);
+          drawTrimMode(FLIGHT_MODES_TRIMS_COLUMN+j*FLIGHT_MODES_TRIM_WIDTH, y, k, t, attr);
           break;
         }
 

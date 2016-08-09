@@ -534,7 +534,7 @@ void menuViewTelemetryFrsky(uint8_t event)
   }
 
   lcdDrawTelemetryTopBar();
-  lcdDrawText(8*FW, 3*FH, "No Telemetry Screens");
+  lcdDrawText(2*FW, 3*FH, "No Telemetry Screens");
   displayRssiLine();
 #else
   if (!displayTelemetryScreen()) {

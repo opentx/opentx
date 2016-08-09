@@ -340,7 +340,7 @@ void storageFormat()
 void eepromWriteWait(EepromWriteState state/* = EEPROM_IDLE*/)
 {
   while (eepromWriteState != state) {
-#if defined(CPUSTM32)
+#if defined(STM32)
     // Waits a little bit for CS transitions
     CoTickDelay(1/*2ms*/);
 #endif

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,73 +20,6 @@
 
 #include "opentx.h"
 
-uint8_t s_curveChan;
-
-int16_t curveFn(int16_t x)
-{
-  return applyCustomCurve(x, s_curveChan);
-}
-
-struct point_t {
-  coord_t x;
-  coord_t y;
-};
-
-point_t getPoint(uint8_t i)
-{
-  point_t result = {0, 0};
-  CurveInfo crv = curveInfo(s_curveChan);
-  int8_t *points = crv.crv;
-  bool custom = crv.custom;
-  uint8_t count = crv.points;
-  if (i < count) {
-    result.x = X0-1-WCHART+i*WCHART/(count/2);
-    result.y = (LCD_H-1) - (100 + points[i]) * (LCD_H-1) / 200;
-    if (custom && i>0 && i<count-1)
-      result.x = X0-1-WCHART + (100 + (100 + points[count+i-1]) * (2*WCHART)) / 200;
-  }
-  return result;
-}
-
-void DrawCurve(uint8_t offset=0)
-{
-  drawFunction(curveFn, offset);
-
-  uint8_t i = 0;
-  do {
-    point_t point = getPoint(i);
-    i++;
-    if (point.x == 0) break;
-    lcdDrawFilledRect(point.x-offset, point.y-1, 3, 3, SOLID, FORCE); // do markup square
-  } while(1);
-}
-
-bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0)
-{
-  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-5*MAX_CURVES) {
-    AUDIO_WARNING2();
-    return false;
-  }
-
-  int8_t *crv = curveAddress(index);
-  if (shift < 0) {
-    for (uint8_t i=0; i<custom; i++)
-      crv[i] = crv[2*i];
-  }
-
-  int8_t *nextCrv = curveAddress(index+1);
-  memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]-g_model.curves[index]);
-  if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
-  while (index<MAX_CURVES)
-    g_model.curves[index++] += shift;
-
-  for (uint8_t i=0; i<custom-2; i++)
-    crv[custom+i] = -100 + ((200 * (i+1) + custom/2) / (custom-1)) ;
-
-  storageDirty(EE_MODEL);
-  return true;
-}
-
 void menuModelCurveOne(uint8_t event)
 {
   TITLE(STR_MENUCURVE);
@@ -95,10 +28,11 @@ void menuModelCurveOne(uint8_t event)
 
   CurveInfo crv = curveInfo(s_curveChan);
 
-  switch(event) {
+  switch (event) {
     case EVT_ENTRY:
       s_editMode = 1;
       break;
+      
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode <= 0)
@@ -108,6 +42,7 @@ void menuModelCurveOne(uint8_t event)
       else
         s_editMode = 1;
       break;
+      
     case EVT_KEY_LONG(KEY_ENTER):
       if (s_editMode <= 0) {
         if (int8_t(++menuHorizontalPosition) > 4)
@@ -118,6 +53,7 @@ void menuModelCurveOne(uint8_t event)
         killEvents(event);
       }
       break;
+      
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode > 0) {
         if (--s_editMode == 0)
@@ -176,7 +112,7 @@ void menuModelCurveOne(uint8_t event)
   lcdDrawNumber(5*FW-2, 7*FH, crv.points, LEFT|attr);
   lcdDrawText(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
 
-  DrawCurve();
+  drawCurve();
 
   if (s_editMode>0) {
     uint8_t i = menuHorizontalPosition;
@@ -199,61 +135,5 @@ void menuModelCurveOne(uint8_t event)
 
     if (i>0 && i<crv.points-1 && s_editMode==2 && (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_LEFT) || event==EVT_KEY_REPT(KEY_RIGHT)))
       CHECK_INCDEC_MODELVAR(event, crv.crv[crv.points+i-1], i==1 ? -99 : crv.crv[crv.points+i-2]+1, i==crv.points-2 ? 99 : crv.crv[crv.points+i]-1);  // edit X on left/right
-  }
-}
-
-#if defined(GVARS)
-  #define CURVE_SELECTED() (sub >= 0 && sub < MAX_CURVES)
-  #define GVAR_SELECTED()  (sub >= MAX_CURVES)
-#else
-  #define CURVE_SELECTED() (sub >= 0)
-#endif
-
-void menuModelCurvesAll(uint8_t event)
-{
-#if defined(GVARS) && defined(PCBSTD)
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, MENU_MODEL_CURVES, 1+MAX_CURVES+MAX_GVARS);
-#else
-  SIMPLE_MENU(STR_MENUCURVES, menuTabModel, MENU_MODEL_CURVES, 1+MAX_CURVES);
-#endif
-
-  int8_t  sub = menuVerticalPosition - 1;
-
-  switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_BREAK:
-#endif
-    case EVT_KEY_FIRST(KEY_RIGHT):
-    case EVT_KEY_FIRST(KEY_ENTER):
-      if (CURVE_SELECTED() && !READ_ONLY()) {
-        s_curveChan = sub;
-        pushMenu(menuModelCurveOne);
-      }
-      break;
-  }
-
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i + menuVerticalOffset;
-    uint8_t attr = (sub == k ? INVERS : 0);
-#if defined(GVARS) && defined(PCBSTD)
-    if (k >= MAX_CURVES) {
-      drawStringWithIndex(0, y, STR_GV, k-MAX_CURVES+1);
-      if (GVAR_SELECTED()) {
-        if (attr && s_editMode>0) attr |= BLINK;
-        lcdDrawNumber(10*FW, y, GVAR_VALUE(k-MAX_CURVES, -1), attr);
-        if (attr) g_model.gvars[k-MAX_CURVES] = checkIncDec(event, g_model.gvars[k-MAX_CURVES], -1000, 1000, EE_MODEL);
-      }
-    }
-    else
-#endif
-    {
-      drawStringWithIndex(0, y, STR_CV, k+1, attr);
-    }
-  }
-
-  if (CURVE_SELECTED()) {
-    s_curveChan = sub;
-    DrawCurve(23);
   }
 }

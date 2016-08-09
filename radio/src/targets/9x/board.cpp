@@ -199,14 +199,16 @@ void processMultiplexAna()
   #define AIL_STATE()   (PINE & (1<<INP_E_AileDR))
 #endif
 
-bool switchState(EnumKeys enuk)
+uint8_t keyState(uint8_t index)
 {
-  uint8_t result = 0 ;
+  return keys[index].state();
+}
 
-  if (enuk < (int)DIM(keys))
-    return keys[enuk].state();
+uint8_t switchState(uint8_t index)
+{
+  uint8_t result = 0;
 
-  switch(enuk){
+  switch (index) {
     case SW_ELE:
       result = PINE & (1<<INP_E_ElevDR);
       break;
@@ -281,25 +283,25 @@ uint8_t trimDown(uint8_t idx)
 
 void readKeysAndTrims()
 {
-  uint8_t enuk = KEY_MENU;
+  uint8_t index = KEY_MENU;
 
   // User buttons ...
   uint8_t in = ~PINB;
   for (int i=1; i<7; i++) {
-    keys[enuk].input(in & (1<<i));
-    ++enuk;
+    keys[index].input(in & (1<<i));
+    ++index;
   }
 
   // Trims ...
   in = ~PIND;
   for (int i=0; i<8; i++) {
     // INP_D_TRM_RH_UP   0 .. INP_D_TRM_LH_UP   7
-    keys[enuk].input(trimHelper(in, i));
-    ++enuk;
+    keys[index].input(trimHelper(in, i));
+    ++index;
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  keys[enuk].input(ROTENC_DOWN()); // Rotary Enc. Switch
+  keys[index].input(ROTENC_DOWN()); // Rotary Enc. Switch
 #endif
 
 #if defined(NAVIGATION_STICKS)

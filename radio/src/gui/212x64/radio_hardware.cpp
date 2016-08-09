@@ -21,43 +21,43 @@
 #include "opentx.h"
 
 enum menuRadioHwItems {
-  ITEM_SETUP_HW_LABEL_STICKS,
-  ITEM_SETUP_HW_STICK1,
-  ITEM_SETUP_HW_STICK2,
-  ITEM_SETUP_HW_STICK3,
-  ITEM_SETUP_HW_STICK4,
-  ITEM_SETUP_HW_LABEL_POTS,
-  ITEM_SETUP_HW_POT1,
-  ITEM_SETUP_HW_POT2,
-  CASE_PCBX9E_PCBX9DP(ITEM_SETUP_HW_POT3)
-  CASE_PCBX9E(ITEM_SETUP_HW_POT4)
-  ITEM_SETUP_HW_LS,
-  ITEM_SETUP_HW_RS,
-  CASE_PCBX9E(ITEM_SETUP_HW_LS2)
-  CASE_PCBX9E(ITEM_SETUP_HW_RS2)
-  ITEM_SETUP_HW_LABEL_SWITCHES,
-  ITEM_SETUP_HW_SA,
-  ITEM_SETUP_HW_SB,
-  ITEM_SETUP_HW_SC,
-  ITEM_SETUP_HW_SD,
-  ITEM_SETUP_HW_SE,
-  ITEM_SETUP_HW_SF,
-  ITEM_SETUP_HW_SG,
-  ITEM_SETUP_HW_SH,
-  CASE_PCBX9E(ITEM_SETUP_HW_SI)
-  CASE_PCBX9E(ITEM_SETUP_HW_SJ)
-  CASE_PCBX9E(ITEM_SETUP_HW_SK)
-  CASE_PCBX9E(ITEM_SETUP_HW_SL)
-  CASE_PCBX9E(ITEM_SETUP_HW_SM)
-  CASE_PCBX9E(ITEM_SETUP_HW_SN)
-  CASE_PCBX9E(ITEM_SETUP_HW_SO)
-  CASE_PCBX9E(ITEM_SETUP_HW_SP)
-  CASE_PCBX9E(ITEM_SETUP_HW_SQ)
-  CASE_PCBX9E(ITEM_SETUP_HW_SR)
-  CASE_PCBX9E(ITEM_SETUP_HW_BLUETOOTH)
-  ITEM_SETUP_HW_UART3_MODE,
-  ITEM_SETUP_HW_JITTER_FILTER,
-  ITEM_SETUP_HW_MAX
+  ITEM_RADIO_HARDWARE_LABEL_STICKS,
+  ITEM_RADIO_HARDWARE_STICK1,
+  ITEM_RADIO_HARDWARE_STICK2,
+  ITEM_RADIO_HARDWARE_STICK3,
+  ITEM_RADIO_HARDWARE_STICK4,
+  ITEM_RADIO_HARDWARE_LABEL_POTS,
+  ITEM_RADIO_HARDWARE_POT1,
+  ITEM_RADIO_HARDWARE_POT2,
+  CASE_PCBX9E_PCBX9DP(ITEM_RADIO_HARDWARE_POT3)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_POT4)
+  ITEM_RADIO_HARDWARE_LS,
+  ITEM_RADIO_HARDWARE_RS,
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_LS2)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_RS2)
+  ITEM_RADIO_HARDWARE_LABEL_SWITCHES,
+  ITEM_RADIO_HARDWARE_SA,
+  ITEM_RADIO_HARDWARE_SB,
+  ITEM_RADIO_HARDWARE_SC,
+  ITEM_RADIO_HARDWARE_SD,
+  ITEM_RADIO_HARDWARE_SE,
+  ITEM_RADIO_HARDWARE_SF,
+  ITEM_RADIO_HARDWARE_SG,
+  ITEM_RADIO_HARDWARE_SH,
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SI)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SJ)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SK)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SL)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SM)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SN)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SO)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SP)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SQ)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_SR)
+  CASE_PCBX9E(ITEM_RADIO_HARDWARE_BLUETOOTH)
+  ITEM_RADIO_HARDWARE_UART3_MODE,
+  ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_HARDWARE_MAX
 };
 
 #define HW_SETTINGS_COLUMN 15*FW
@@ -83,7 +83,7 @@ enum menuRadioHwItems {
 
 void menuRadioHardware(uint8_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_SETUP_HW_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -96,17 +96,17 @@ void menuRadioHardware(uint8_t event)
     }
     LcdFlags attr = (sub == k ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
     switch (k) {
-      case ITEM_SETUP_HW_LABEL_STICKS:
+      case ITEM_RADIO_HARDWARE_LABEL_STICKS:
         lcdDrawTextAlignedLeft(y, STR_STICKS);
         break;
-      case ITEM_SETUP_HW_STICK1:
-      case ITEM_SETUP_HW_STICK2:
-      case ITEM_SETUP_HW_STICK3:
-      case ITEM_SETUP_HW_STICK4:
-      case ITEM_SETUP_HW_LS:
-      case ITEM_SETUP_HW_RS:
+      case ITEM_RADIO_HARDWARE_STICK1:
+      case ITEM_RADIO_HARDWARE_STICK2:
+      case ITEM_RADIO_HARDWARE_STICK3:
+      case ITEM_RADIO_HARDWARE_STICK4:
+      case ITEM_RADIO_HARDWARE_LS:
+      case ITEM_RADIO_HARDWARE_RS:
       {
-        int idx = (k<=ITEM_SETUP_HW_STICK4 ? k-ITEM_SETUP_HW_STICK1 : k-ITEM_SETUP_HW_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
+        int idx = (k<=ITEM_RADIO_HARDWARE_STICK4 ? k-ITEM_RADIO_HARDWARE_STICK1 : k-ITEM_RADIO_HARDWARE_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
         if (ZEXIST(g_eeGeneral.anaNames[idx]) || attr)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, attr);
@@ -115,10 +115,10 @@ void menuRadioHardware(uint8_t event)
         break;
       }
 #if defined(PCBX9E)
-      case ITEM_SETUP_HW_LS2:
-      case ITEM_SETUP_HW_RS2:
+      case ITEM_RADIO_HARDWARE_LS2:
+      case ITEM_RADIO_HARDWARE_RS2:
       {
-        int idx = k - ITEM_SETUP_HW_LS2;
+        int idx = k - ITEM_RADIO_HARDWARE_LS2;
         uint8_t mask = (0x01 << idx);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_XPOTS+2+idx+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx]) || (attr && menuHorizontalPosition == 0))
@@ -132,19 +132,19 @@ void menuRadioHardware(uint8_t event)
         break;
       }
 #endif
-      case ITEM_SETUP_HW_LABEL_POTS:
+      case ITEM_RADIO_HARDWARE_LABEL_POTS:
         lcdDrawTextAlignedLeft(y, STR_POTS);
         break;
-      case ITEM_SETUP_HW_POT1:
-      case ITEM_SETUP_HW_POT2:
+      case ITEM_RADIO_HARDWARE_POT1:
+      case ITEM_RADIO_HARDWARE_POT2:
 #if defined(PCBX9DP) || defined(PCBX9E)
-      case ITEM_SETUP_HW_POT3:
+      case ITEM_RADIO_HARDWARE_POT3:
 #endif
 #if defined(PCBX9E)
-      case ITEM_SETUP_HW_POT4:
+      case ITEM_RADIO_HARDWARE_POT4:
 #endif
       {
-        int idx = k - ITEM_SETUP_HW_POT1;
+        int idx = k - ITEM_RADIO_HARDWARE_POT1;
         uint8_t shift = (2*idx);
         uint8_t mask = (0x03 << shift);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
@@ -158,31 +158,31 @@ void menuRadioHardware(uint8_t event)
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
       }
-      case ITEM_SETUP_HW_LABEL_SWITCHES:
+      case ITEM_RADIO_HARDWARE_LABEL_SWITCHES:
         lcdDrawTextAlignedLeft(y, STR_SWITCHES);
         break;
-      case ITEM_SETUP_HW_SA:
-      case ITEM_SETUP_HW_SB:
-      case ITEM_SETUP_HW_SC:
-      case ITEM_SETUP_HW_SD:
-      case ITEM_SETUP_HW_SE:
-      case ITEM_SETUP_HW_SF:
-      case ITEM_SETUP_HW_SG:
-      case ITEM_SETUP_HW_SH:
+      case ITEM_RADIO_HARDWARE_SA:
+      case ITEM_RADIO_HARDWARE_SB:
+      case ITEM_RADIO_HARDWARE_SC:
+      case ITEM_RADIO_HARDWARE_SD:
+      case ITEM_RADIO_HARDWARE_SE:
+      case ITEM_RADIO_HARDWARE_SF:
+      case ITEM_RADIO_HARDWARE_SG:
+      case ITEM_RADIO_HARDWARE_SH:
 #if defined(PCBX9E)
-      case ITEM_SETUP_HW_SI:
-      case ITEM_SETUP_HW_SJ:
-      case ITEM_SETUP_HW_SK:
-      case ITEM_SETUP_HW_SL:
-      case ITEM_SETUP_HW_SM:
-      case ITEM_SETUP_HW_SN:
-      case ITEM_SETUP_HW_SO:
-      case ITEM_SETUP_HW_SP:
-      case ITEM_SETUP_HW_SQ:
-      case ITEM_SETUP_HW_SR:
+      case ITEM_RADIO_HARDWARE_SI:
+      case ITEM_RADIO_HARDWARE_SJ:
+      case ITEM_RADIO_HARDWARE_SK:
+      case ITEM_RADIO_HARDWARE_SL:
+      case ITEM_RADIO_HARDWARE_SM:
+      case ITEM_RADIO_HARDWARE_SN:
+      case ITEM_RADIO_HARDWARE_SO:
+      case ITEM_RADIO_HARDWARE_SP:
+      case ITEM_RADIO_HARDWARE_SQ:
+      case ITEM_RADIO_HARDWARE_SR:
 #endif
       {
-        int index = k-ITEM_SETUP_HW_SA;
+        int index = k-ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && menuHorizontalPosition == 0))
@@ -197,7 +197,7 @@ void menuRadioHardware(uint8_t event)
         break;
       }
 #if defined(PCBX9E)
-      case ITEM_SETUP_HW_BLUETOOTH:
+      case ITEM_RADIO_HARDWARE_BLUETOOTH:
         lcdDrawTextAlignedLeft(y, "Bluetooth");
         drawCheckBox(HW_SETTINGS_COLUMN, y, g_eeGeneral.bluetoothEnable, menuHorizontalPosition == 0 ? attr : 0);
         if (attr && menuHorizontalPosition == 0) {
@@ -206,13 +206,13 @@ void menuRadioHardware(uint8_t event)
         editName(HW_SETTINGS_COLUMN+5*FW, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, menuHorizontalPosition == 1 ? attr : 0);
         break;
 #endif
-      case ITEM_SETUP_HW_UART3_MODE:
+      case ITEM_RADIO_HARDWARE_UART3_MODE:
         g_eeGeneral.serial2Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
         }
         break;
-      case ITEM_SETUP_HW_JITTER_FILTER:
+      case ITEM_RADIO_HARDWARE_JITTER_FILTER:
       {
         uint8_t b = 1-g_eeGeneral.jitterFilter;
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN, y, STR_JITTER_FILTER, attr, event);

@@ -25,7 +25,7 @@ vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t noHighlightCounter;
-uint8_t calibrationState;
+uint8_t menuCalibrationState;
 int checkIncDecSelection = 0;
 
 #if defined(AUTOSWITCH)
@@ -35,7 +35,7 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val)
     swsrc_t swtch = getMovedSwitch();
     if (swtch) {
       div_t info = switchInfo(swtch);
-      if (IS_TOGGLE(info.quot)) {
+      if (IS_CONFIG_TOGGLE(info.quot)) {
         if (info.rem != 0) {
           val = (val == swtch ? swtch-2 : swtch);
         }
@@ -374,7 +374,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
         break;
     }
 
-    if (!calibrationState && cc != curr) {
+    if (!menuCalibrationState && cc != curr) {
       chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
     }
 
@@ -387,8 +387,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
-  switch(event)
-  {
+  switch (event) {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
       s_editMode = EDIT_MODE_INIT;

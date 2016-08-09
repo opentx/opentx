@@ -648,6 +648,89 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, uint8_t idx, 
   lcdDrawNumber(lcdNextPos, y, idx, att|LEFT, 2);
 }
 
+#if defined(CPUARM)
+void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
+{
+  if (idx == MIXSRC_NONE) {
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
+  }
+  else if (idx <= MIXSRC_LAST_INPUT) {
+    lcdDrawChar(x+2, y+1, CHR_INPUT, TINSIZE);
+    lcdDrawFilledRect(x, y, 7, 7);
+    if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT]))
+      lcdDrawSizedText(x+8, y, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME, ZCHAR|att);
+    else
+      lcdDrawNumber(x+8, y, idx, att|LEADING0|LEFT, 2);
+  }
+#if defined(LUA_INPUTS)
+  else if (idx <= MIXSRC_LAST_LUA) {
+    div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+#if defined(LUA_MODEL_SCRIPTS)
+    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
+      lcdDrawChar(x+2, y+1, '1'+qr.quot, TINSIZE);
+      lcdDrawFilledRect(x, y, 7, 7);
+      lcdDrawSizedText(x+8, y, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
+    }
+    else
+#endif
+    {
+      drawStringWithIndex(x, y, "LUA", qr.quot+1, att);
+      lcdDrawChar(lcdLastPos, y, 'a'+qr.rem, att);
+    }
+  }
+#endif
+  else if (idx < MIXSRC_LAST_POT) {
+    idx = idx - MIXSRC_Rud;
+    if (ZEXIST(g_eeGeneral.anaNames[idx])) {
+      if (idx < MIXSRC_FIRST_POT-MIXSRC_Rud )
+        lcdDrawChar(x, y, '\307', att); // stick symbol
+      else if (idx <= MIXSRC_LAST_POT-MIXSRC_Rud )
+        lcdDrawChar(x, y, '\310', att); // pot symbol
+      else
+        lcdDrawChar(x, y, '\311', att); // slider symbol
+      lcdDrawSizedText(lcdNextPos, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, ZCHAR|att);
+    }
+    else {
+      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx + 1, att);
+    }
+  }
+  else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
+    idx = idx-MIXSRC_FIRST_SWITCH;
+    if (ZEXIST(g_eeGeneral.switchNames[idx])) {
+      lcdDrawChar(x, y, '\312', att); //switch symbol
+      lcdDrawSizedText(lcdNextPos, y, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME, ZCHAR|att);
+    }
+    else {
+      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1, att);
+    }
+  }
+  else if (idx < MIXSRC_SW1)
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
+  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
+    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
+  else if (idx < MIXSRC_CH1)
+    drawStringWithIndex(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
+  else if (idx <= MIXSRC_LAST_CH) {
+    drawStringWithIndex(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
+    if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
+      lcdDrawChar(lcdLastPos, y, ' ', att|SMLSIZE);
+      lcdDrawSizedText(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
+    }
+  }
+  else if (idx <= MIXSRC_LAST_GVAR) {
+    drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
+  }
+  else if (idx < MIXSRC_FIRST_TELEM) {
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
+  }
+  else {
+    idx -= MIXSRC_FIRST_TELEM;
+    div_t qr = div(idx, 3);
+    lcdDrawSizedText(x, y, g_model.telemetrySensors[qr.quot].label, TELEM_LABEL_LEN, ZCHAR|att);
+    if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
+  }
+}
+#else
 void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   if (idx < MIXSRC_THR)
@@ -680,6 +763,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     lcdDrawTextAtIndex(x, y, STR_VTELEMCHNS, idx-MIXSRC_FIRST_TELEM+1, att);
 #endif
 }
+#endif
 
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
@@ -698,7 +782,63 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
+#if defined(PCBTARANIS)
+void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
+{
+  if (idx == SWSRC_NONE) {
+    return lcdDrawTextAtIndex(x, y, STR_VSWITCHES, 0, att);
+  }
+  else if (idx == SWSRC_OFF) {
+    return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
+  }
+
+  if (idx < 0) {
+    lcdDrawChar(x-2, y, '!', att);
+    idx = -idx;
+  }
+
+  if (idx <= SWSRC_LAST_SWITCH) {
+    div_t swinfo = switchInfo(idx);
+    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
+      lcdDrawSizedText(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
+    }
+    else {
+      lcdDrawSizedText(x, y, TR_SW_VSRCRAW+4*swinfo.quot+1, 2, att);
+    }
+    char c = "\300-\301"[swinfo.rem];
+    lcdDrawChar(lcdNextPos, y, c, att);
+  }
+  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    drawStringWithIndex(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
+  }
+  else if (idx <= SWSRC_LAST_TRIM) {
+    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
+  }
+  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
+    drawStringWithIndex(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
+  }
+  else if (idx <= SWSRC_ONE) {
+    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
+  }
+  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
+    drawStringWithIndex(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
+  else if (idx == SWSRC_TELEMETRY_STREAMING) {
+    lcdDrawText(x, y, "Tele", att);
+  }
+  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
+    drawStringWithIndex(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
+  }
+  else if (idx == SWSRC_TELEMETRY_STREAMING) {
+    lcdDrawText(x, y, "Tele", att);
+  }
+  else {
+    lcdDrawSizedText(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
+  }
+}
+#else
+void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
 {
   if (idx == SWSRC_OFF)
     return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
@@ -712,17 +852,6 @@ void putsSwitches(coord_t x, coord_t y, int8_t idx, LcdFlags att)
   }
 #endif
   return lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx, att);
-}
-
-#if defined(FLIGHT_MODES)
-void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
-{
-  if (idx==0) { lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att); return; }
-  if (idx < 0) { lcdDrawChar(x-2, y, '!', att); idx = -idx; }
-  if (att & CONDENSED)
-    lcdDrawNumber(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
-  else
-    drawStringWithIndex(x, y, STR_FP, idx-1, att);
 }
 #endif
 
@@ -749,19 +878,49 @@ void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
   putsSwitches(x, y, mode, att);
 }
 
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
+#if defined(CPUARM)
+void drawTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags att)
 {
-  trim_t v = getRawTrimValue(phase, idx);
+  trim_t v = getRawTrimValue(fm, idx);
+  uint8_t mode = v.mode;
+  uint8_t p = mode >> 1;
+  char s[] = "--";
+  if (mode != TRIM_MODE_NONE) {
+    if (mode % 2 == 0)
+      s[0] = ':';
+    else
+      s[0] = '+';
+    s[1] = '0'+p;
+  }
+  lcdDrawText(x, y, s, att);
+}
+void drawShortTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags att)
+{
+  trim_t v = getRawTrimValue(fm, idx);
+  uint8_t mode = v.mode;
+  uint8_t p = v.mode >> 1;
+  if (mode == TRIM_MODE_NONE) {
+    putsChnLetter(x, y, idx+1, att);
+  }
+  else {
+    lcdDrawChar(x, y, '0'+p, att);
+  }
+}
+#else
+void drawTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags att)
+{
+  trim_t v = getRawTrimValue(fm, idx);
 
   if (v > TRIM_EXTENDED_MAX) {
     uint8_t p = v - TRIM_EXTENDED_MAX - 1;
-    if (p >= phase) p++;
+    if (p >= fm) p++;
     lcdDrawChar(x, y, '0'+p, att);
   }
   else {
     putsChnLetter(x, y, idx+1, att);
   }
 }
+#endif
 
 #if ROTARY_ENCODERS > 0
 void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
@@ -1251,44 +1410,6 @@ void lcdDrawChar(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 }
 #endif
 
-void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att)
-{
-  ASSERT_IN_DISPLAY(p);
-
-  if (att & FORCE)
-    *p |= mask;
-  else if (att & ERASE)
-    *p &= ~mask;
-  else
-    *p ^= mask;
-}
-
-void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
-{
-  uint8_t *p = &displayBuf[ y / 8 * LCD_W + x ];
-  if (p<DISPLAY_END)
-    lcdMaskPoint(p, BITMASK(y%8), att);
-}
-
-void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
-{
-  if (y >= LCD_H) return;
-  if (x+w > LCD_W) { w = LCD_W - x; }
-
-  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  uint8_t msk = BITMASK(y%8);
-  while (w--) {
-    if(pat&1) {
-      lcdMaskPoint(p, msk, att);
-      pat = (pat >> 1) | 0x80;
-    }
-    else {
-      pat = pat >> 1;
-    }
-    p++;
-  }
-}
-
 #if defined(CPUM64)
 void lcdDrawVerticalLine(coord_t x, int8_t y, int8_t h, uint8_t pat)
 {
@@ -1323,6 +1444,84 @@ void lcdDrawVerticalLine(coord_t x, int8_t y, int8_t h, uint8_t pat)
 }
 #else
 // allows the att parameter...
+
+#endif
+
+#define LCD_IMG_FUNCTION(NAME, TYPE, READ_BYTE)                               \
+void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
+{                                                                             \
+  TYPE q = img;                                                               \
+  uint8_t w = READ_BYTE(q++);                                                 \
+  uint8_t hb = (READ_BYTE(q++)+7)/8;                                          \
+  bool inv = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);  \
+  q += idx*w*hb;                                                              \
+  for (uint8_t yb = 0; yb < hb; yb++) {                                       \
+    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];                     \
+    for (coord_t i=0; i<w; i++){                                              \
+      uint8_t b = READ_BYTE(q);                                               \
+      q++;                                                                    \
+      ASSERT_IN_DISPLAY(p);                                                   \
+      *p++ = inv ? ~b : b;                                                    \
+    }                                                                         \
+  }                                                                           \
+}
+
+#if defined(PCBMEGA2560) && !defined(SIMU)
+LCD_IMG_FUNCTION(lcd_imgfar, uint_farptr_t, pgm_read_byte_far)
+#endif
+
+LCD_IMG_FUNCTION(lcd_img, const pm_uchar *, pgm_read_byte)
+
+#endif
+
+void lcdMaskPoint(uint8_t * p, uint8_t mask, LcdFlags att)
+{
+  ASSERT_IN_DISPLAY(p);
+  
+  if (att & FORCE)
+    *p |= mask;
+  else if (att & ERASE)
+    *p &= ~mask;
+  else
+    *p ^= mask;
+}
+
+void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
+{
+  uint8_t * p = &displayBuf[ y / 8 * LCD_W + x ];
+  if (p < DISPLAY_END) {
+    lcdMaskPoint(p, BITMASK(y % 8), att);
+  }
+}
+
+void lcdInvertLine(int8_t y)
+{
+  uint8_t *p  = &displayBuf[y * LCD_W];
+  for (coord_t x=0; x<LCD_W; x++) {
+    ASSERT_IN_DISPLAY(p);
+    *p++ ^= 0xff;
+  }
+}
+
+void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
+{
+  if (y >= LCD_H) return;
+  if (x+w > LCD_W) { w = LCD_W - x; }
+  
+  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
+  uint8_t msk = BITMASK(y%8);
+  while (w--) {
+    if(pat&1) {
+      lcdMaskPoint(p, msk, att);
+      pat = (pat >> 1) | 0x80;
+    }
+    else {
+      pat = pat >> 1;
+    }
+    p++;
+  }
+}
+
 void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 {
   if (x >= LCD_W) return;
@@ -1360,40 +1559,3 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
     lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
   }
 }
-#endif
-
-void lcdInvertLine(int8_t y)
-{
-  uint8_t *p  = &displayBuf[y * LCD_W];
-  for (coord_t x=0; x<LCD_W; x++) {
-    ASSERT_IN_DISPLAY(p);
-    *p++ ^= 0xff;
-  }
-}
-
-#define LCD_IMG_FUNCTION(NAME, TYPE, READ_BYTE)                               \
-void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
-{                                                                             \
-  TYPE q = img;                                                               \
-  uint8_t w = READ_BYTE(q++);                                                 \
-  uint8_t hb = (READ_BYTE(q++)+7)/8;                                          \
-  bool inv = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);  \
-  q += idx*w*hb;                                                              \
-  for (uint8_t yb = 0; yb < hb; yb++) {                                       \
-    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];                     \
-    for (coord_t i=0; i<w; i++){                                              \
-      uint8_t b = READ_BYTE(q);                                               \
-      q++;                                                                    \
-      ASSERT_IN_DISPLAY(p);                                                   \
-      *p++ = inv ? ~b : b;                                                    \
-    }                                                                         \
-  }                                                                           \
-}
-
-#if defined(PCBMEGA2560) && !defined(SIMU)
-LCD_IMG_FUNCTION(lcd_imgfar, uint_farptr_t, pgm_read_byte_far)
-#endif
-
-LCD_IMG_FUNCTION(lcd_img, const pm_uchar *, pgm_read_byte)
-
-#endif

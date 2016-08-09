@@ -36,10 +36,9 @@ enum CalibrationState {
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
-  uint8_t x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-(NUM_POTS/2)*BAR_SPACING+BAR_SPACING/2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=BAR_SPACING, i++) {
-    if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+  for (uint8_t x=LCD_W/2-(NUM_POTS+NUM_SLIDERS/2)*BAR_SPACING+BAR_SPACING/2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=BAR_SPACING, i++) {
+    if (IS_POT_OR_SLIDER_AVAILABLE(i)) {
+      uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
       putsStickName(x-2, LCD_H-6, i, TINSIZE);
     }
@@ -48,7 +47,7 @@ void drawPotsBars()
 
 void menuCommonCalib(uint8_t event)
 {
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) { // get low and high vals for sticks and trims
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
@@ -89,7 +88,7 @@ void menuCommonCalib(uint8_t event)
     }
   }
 
-  calibrationState = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
+  menuCalibrationState = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
 
   switch (event) {
     case EVT_ENTRY:
@@ -115,7 +114,7 @@ void menuCommonCalib(uint8_t event)
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
       lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
-      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
         reusableBuffer.calib.midVals[i] = getAnalogValue(i) >> 1;
@@ -132,7 +131,7 @@ void menuCommonCalib(uint8_t event)
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
       lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
 
-      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
@@ -202,14 +201,14 @@ void menuRadioCalibration(uint8_t event)
   check_simple(STR_MENUCALIBRATION, event, MENU_RADIO_CALIBRATION, menuTabGeneral, DIM(menuTabGeneral), 0);
   menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
-    calibrationState = CALIB_START;
+    menuCalibrationState = CALIB_START;
   }
 }
 
 void menuFirstCalib(uint8_t event)
 {
   if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == CALIB_FINISHED) {
-    calibrationState = CALIB_START;
+    menuCalibrationState = CALIB_START;
     chainMenu(menuMainView);
   }
   else {

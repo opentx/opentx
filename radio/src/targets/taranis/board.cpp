@@ -98,7 +98,8 @@ void interrupt5ms()
     per10ms();
   }
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
+  // TODO define ROTARY_ENCODER
   checkRotaryEncoder();
 #endif
 }
@@ -137,16 +138,23 @@ void boardInit()
   pwrInit();
 #endif
 
+#if defined(PCBX7D)
+  ledInit();
+  ledGreen();
+#endif
+  
   keysInit();
   adcInit();
   delaysInit();
-  lcdInit();    // delaysInit() must be called before
+  lcdInit(); // delaysInit() must be called before
   audioInit();
   init2MhzTimer();
   init5msTimer();
   __enable_irq();
   i2cInit();
   usbInit();
+  
+  modulesInit();
   
 #if defined(HAPTIC)  
   hapticInit();
@@ -179,7 +187,7 @@ void boardInit()
       }
       else if (duration >= PWR_PRESS_DURATION_MAX) {
         drawSleepBitmap();
-        turnBacklightOff();
+        backlightDisable();
       }
       else {
         if (pwr_on != 1) {
@@ -209,7 +217,12 @@ void boardInit()
 
 void boardOff()
 {
-  BACKLIGHT_OFF();
+#if defined(PCBX7D)
+  ledOff();
+#endif
+  
+  BACKLIGHT_DISABLE();
+
 #if defined(PCBX9E)
   toplcdOff();
 #endif
@@ -267,7 +280,7 @@ void usbJoystickUpdate(void)
   USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
 }
 
-#endif //#if defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
+#endif // defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
 
 
 uint8_t currentTrainerMode = 0xff;
@@ -289,8 +302,10 @@ void checkTrainerSettings()
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
         stop_sbus_on_heartbeat_capture() ;
         break;
+#if defined(SERIAL2)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         serial2Stop();
+#endif
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -304,12 +319,14 @@ void checkTrainerSettings()
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
          init_sbus_on_heartbeat_capture() ;
          break;
+#if defined(SERIAL2)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
           serial2SbusInit();
           break;
         }
         // no break
+#endif
       default:
         // master is default
         init_trainer_capture();

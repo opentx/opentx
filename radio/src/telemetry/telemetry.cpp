@@ -56,7 +56,7 @@ lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 }
 #endif
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 #define IS_TELEMETRY_INTERNAL_MODULE (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
 #else
 #define IS_TELEMETRY_INTERNAL_MODULE (false)
@@ -96,7 +96,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(CPUSTM32)
+#if defined(STM32)
   uint8_t data;
   if (!telemetryFifo.isEmpty()) {
     LOG_TELEMETRY_WRITE_START();
@@ -429,10 +429,12 @@ void telemetryInit(uint8_t protocol) {
     telemetryPortSetDirectionOutput();
   }
 #endif
+#if defined(SERIAL2)
   else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0, TELEMETRY_SERIAL_8N1);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
+#endif
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
 #if defined(LUA)

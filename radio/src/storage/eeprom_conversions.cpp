@@ -194,15 +194,13 @@ enum Telemetry216Source {
   TELEM216_GPS_TIME,
 };
 
-#if defined(XCURVES)
+#if defined(CPUARM)
 PACK(typedef struct {
   uint8_t type:3;
   uint8_t smooth:1;
   uint8_t spare:4;
   int8_t  points;
 }) CurveData_v216;
-#else
-typedef int16_t CurveData_v216;
 #endif
 
 #if defined(PCBTARANIS)
@@ -493,14 +491,14 @@ PACK(typedef struct {
   ScriptData_v216 scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS]; \
+  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t spare[2];
 #elif defined(PCBSKY9X)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
   ModuleData_v216 moduleData[NUM_MODULES+1]; \
   uint8_t nPotsToWarn; \
-  int8_t potPosition[NUM_POTS]; \
+  int8_t potPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
 #endif
 
@@ -514,18 +512,18 @@ PACK(typedef struct {
   ScriptData scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
   uint8_t potsWarnEnabled; \
-  int8_t potsWarnPosition[NUM_POTS];
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #else
 #define MODELDATA_EXTRA_217 \
   uint8_t spare:6; \
   uint8_t potsWarnMode:2; \
   ModuleData moduleData[NUM_MODULES+1]; \
   uint8_t potsWarnEnabled; \
-  int8_t potsWarnPosition[NUM_POTS]; \
+  int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
 PACK(typedef struct {
   char name[LEN_MODEL_NAME];
   uint8_t modelId;
@@ -702,7 +700,7 @@ int ConvertGVar_216_to_217(int value)
 PACK(typedef struct {
   uint8_t   version;
   uint16_t  variant;
-  CalibData calib[NUM_STICKS+NUM_POTS];
+  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
   uint16_t  chkSum;
   int8_t    currModel;
   uint8_t   contrast;
@@ -770,7 +768,7 @@ PACK(typedef struct {
   TARANIS_FIELD(CustomFunctionData_v216 customFn[NUM_CFN])
   TARANIS_FIELD(swconfig_t switchConfig)
   TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
-  TARANIS_FIELD(char anaNames[NUM_STICKS + NUM_POTS][LEN_ANA_NAME])
+  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME])
   N_TARANIS_FIELD(CustomFunctionData_v216 customFn[NUM_CFN])
 
   TARANIS_PCBX9E_FIELD(uint8_t bluetoothEnable)
@@ -881,7 +879,7 @@ void ConvertModel_216_to_217(ModelData & model)
 
   newModel.header.modelId[0] = oldModel.header.modelId;
   memcpy(newModel.header.name, oldModel.header.name, LEN_MODEL_NAME);
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && LCD_W >= 212
   memcpy(newModel.header.bitmap, oldModel.header.bitmap, LEN_BITMAP_NAME);
 #endif
 
@@ -917,9 +915,9 @@ void ConvertModel_216_to_217(ModelData & model)
 #if defined(PCBTARANIS)
     newModel.mixData[i].curve = oldModel.mixData[i].curve;
 #else
-    newModel.mixData[i].curveMode = oldModel.mixData[i].curveMode;
-    newModel.mixData[i].noExpo = oldModel.mixData[i].noExpo;
-    newModel.mixData[i].curveParam = oldModel.mixData[i].curveParam;
+    // TODO newModel.mixData[i].curveMode = oldModel.mixData[i].curveMode;
+    // TODO newModel.mixData[i].noExpo = oldModel.mixData[i].noExpo;
+    // TODO newModel.mixData[i].curveParam = oldModel.mixData[i].curveParam;
 #endif
     newModel.mixData[i].delayUp = oldModel.mixData[i].delayUp;
     newModel.mixData[i].delayDown = oldModel.mixData[i].delayDown;
@@ -1092,9 +1090,9 @@ void ConvertModel_217_to_218(ModelData & model)
 #if defined(PCBTARANIS)
     newModel.mixData[i].curve = oldModel.mixData[i].curve;
 #else
-    newModel.mixData[i].curveMode = oldModel.mixData[i].curveMode;
-    newModel.mixData[i].noExpo = oldModel.mixData[i].noExpo;
-    newModel.mixData[i].curveParam = oldModel.mixData[i].curveParam;
+    // newModel.mixData[i].curveMode = oldModel.mixData[i].curveMode;
+    // newModel.mixData[i].noExpo = oldModel.mixData[i].noExpo;
+    // newModel.mixData[i].curveParam = oldModel.mixData[i].curveParam;
 #endif
     newModel.mixData[i].delayUp = oldModel.mixData[i].delayUp;
     newModel.mixData[i].delayDown = oldModel.mixData[i].delayDown;
@@ -1120,8 +1118,8 @@ void ConvertModel_217_to_218(ModelData & model)
     newModel.expoData[i].curve = oldModel.expoData[i].curve;
     newModel.expoData[i].offset = oldModel.expoData[i].offset;
 #else
-    newModel.expoData[i].curveMode = oldModel.expoData[i].curveMode;
-    newModel.expoData[i].curveParam = oldModel.expoData[i].curveParam;
+    // TODO newModel.expoData[i].curveMode = oldModel.expoData[i].curveMode;
+    // TODO newModel.expoData[i].curveParam = oldModel.expoData[i].curveParam;
 #endif
     newModel.expoData[i].chn = oldModel.expoData[i].chn;
     newModel.expoData[i].swtch = ConvertSwitch_217_to_218(oldModel.expoData[i].swtch);
@@ -1131,13 +1129,13 @@ void ConvertModel_217_to_218(ModelData & model)
     memcpy(newModel.expoData[i].name, oldModel.expoData[i].name, sizeof(newModel.expoData[i].name));
   }
   for (int i=0; i<MAX_CURVES; i++) {
-#if defined(XCURVES)
+#if defined(PCBTARANIS)
     newModel.curves[i].type = oldModel.curves[i].type;
     newModel.curves[i].smooth = oldModel.curves[i].smooth;
     newModel.curves[i].points = oldModel.curves[i].points;
     memcpy(newModel.curves[i].name, oldModel.curveNames[i], sizeof(newModel.curves[i].name));
 #else
-    newModel.curves[i] = oldModel.curves[i];
+    // TODO newModel.curves[i] = oldModel.curves[i];
 #endif
   }
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
@@ -1194,7 +1192,7 @@ void ConvertModel_217_to_218(ModelData & model)
   newModel.potsWarnMode = oldModel.potsWarnMode;
   newModel.potsWarnEnabled = oldModel.potsWarnEnabled;
   memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (uint8_t i=0; i<MAX_SENSORS; i++) {
     newModel.telemetrySensors[i] = oldModel.telemetrySensors[i];
     if (newModel.telemetrySensors[i].unit > UNIT_WATTS)
       newModel.telemetrySensors[i].unit += 1;

@@ -51,7 +51,6 @@ int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isVa
   return 0;
 }
 
-#if defined(VIRTUALINPUTS)
 bool isInputAvailable(int input)
 {
   for (int i=0; i<MAX_EXPOS; i++) {
@@ -63,7 +62,6 @@ bool isInputAvailable(int input)
   }
   return false;
 }
-#endif
 
 bool isSensorAvailable(int sensor)
 {
@@ -149,24 +147,22 @@ int getChannelsUsed()
 
 bool isSourceAvailable(int source)
 {
-#if defined(VIRTUALINPUTS)
   if (source>=MIXSRC_FIRST_INPUT && source<=MIXSRC_LAST_INPUT) {
     return isInputAvailable(source - MIXSRC_FIRST_INPUT);
   }
-#endif
 
 #if defined(LUA_MODEL_SCRIPTS)
   if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA) {
     div_t qr = div(source-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
     return (qr.rem<scriptInputsOutputs[qr.quot].outputsCount);
   }
-#elif defined(VIRTUALINPUTS)
+#elif defined(LUA_INPUTS)
   if (source>=MIXSRC_FIRST_LUA && source<=MIXSRC_LAST_LUA)
     return false;
 #endif
 
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
-    return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+    return IS_POT_OR_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
@@ -231,7 +227,7 @@ bool isSourceAvailableInCustomSwitches(int source)
 bool isInputSourceAvailable(int source)
 {
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
-    return IS_POT_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+    return IS_POT_OR_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
@@ -300,11 +296,12 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     if (!SWITCH_EXISTS(swinfo.quot)) {
       return false;
     }
-    if (!IS_3POS(swinfo.quot)) {
+    if (!IS_CONFIG_3POS(swinfo.quot)) {
       if (negative) {
         return false;
       }
-      if (IS_3POS_MIDDLE(swinfo.rem)) {
+      if (swinfo.rem == 1) {
+        // mid position not available for 2POS switches
         return false;
       }
     }
@@ -404,7 +401,7 @@ bool isSwitchAvailableInTimers(int swtch)
 
 bool isThrottleSourceAvailable(int source)
 {
-  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS && !IS_POT_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
+  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS+NUM_SLIDERS && !IS_POT_OR_SLIDER_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
     return false;
   else
     return true;

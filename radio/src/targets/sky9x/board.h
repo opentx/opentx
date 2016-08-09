@@ -35,7 +35,54 @@ extern uint16_t ResetReason;
 void boardInit(void);
 #define boardOff()  pwrOff()
 
-// Keys
+// Keys driver
+#define NUM_SWITCHES                   7
+enum EnumKeys
+{
+  KEY_MENU,
+  KEY_ENTER=KEY_MENU,
+  KEY_EXIT,
+  KEY_DOWN,
+  KEY_UP,
+  KEY_RIGHT,
+  KEY_LEFT,
+  
+  TRM_BASE,
+  TRM_LH_DWN = TRM_BASE,
+  TRM_LH_UP,
+  TRM_LV_DWN,
+  TRM_LV_UP,
+  TRM_RV_DWN,
+  TRM_RV_UP,
+  TRM_RH_DWN,
+  TRM_RH_UP,
+  TRM_LAST = TRM_RH_UP,
+
+#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
+  BTN_REa,
+#endif
+#if ROTARY_ENCODERS > 0
+  BTN_REb,
+#endif
+  
+  NUM_KEYS
+};
+
+enum EnumSwitches
+{
+  SW_ID0,
+  SW_ID1,
+  SW_ID2,
+  SW_THR,
+  SW_RUD,
+  SW_ELE,
+  SW_AIL,
+  SW_GEA,
+  SW_TRN,
+};
+#define IS_3POS(sw)                    ((sw) == 0)
+#define IS_TOGGLE(sw)                  ((sw) == SWSRC_TRN)
+
 #if defined(REVA)
   #define KEYS_GPIO_REG_MENU           PIOB->PIO_PDSR
   #define KEYS_GPIO_REG_EXIT           PIOA->PIO_PDSR
@@ -113,6 +160,14 @@ void boardInit(void);
   #define TRIMS_GPIO_PIN_RHR           0x00000200
 #endif
 
+// LCD driver
+void lcdInit(void);
+void lcdRefresh(void);
+#define lcdRefreshWait()
+void lcdSetRefVolt(uint8_t val);
+void lcdSetContrast(void);
+
+// USB driver
 void usbMassStorage();
 
 #define PIN_ENABLE                     0x001
@@ -170,8 +225,10 @@ void init_trainer_capture();
 void writeFlash(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
-extern uint32_t readKeys();
-extern uint32_t readTrims();
+uint8_t keyState(uint8_t index);
+uint32_t switchState(uint8_t index);
+uint32_t readKeys(void);
+uint32_t readTrims(void);
 #define TRIMS_PRESSED()                readTrims()
 #define KEYS_PRESSED()                 readKeys()
 
@@ -206,7 +263,7 @@ extern "C" {
 #endif
 
 // WDT driver
-#if defined(SIMU)
+#if defined(WATCHDOG_DISABLED) || defined(SIMU)
   #define wdt_disable()
   #define wdt_enable(x)
   #define wdt_reset()
@@ -217,18 +274,23 @@ extern "C" {
 #endif
 
 // Backlight driver
-#define setBacklight(xx)               (PWM->PWM_CH_NUM[0].PWM_CDTYUPD = xx)
 #define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define backlightDisable()             (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #define isBacklightEnable()            (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
+#define BACKLIGHT_ENABLE()             backlightEnable()
+#define BACKLIGHT_DISABLE()            backlightDisable()
 
 // ADC driver
+#define NUM_POTS                       3
+#define NUM_SLIDERS                    0
+#define NUM_XPOTS                      0
 enum Analogs {
   STICK1,
   STICK2,
   STICK3,
   STICK4,
-  POT1,
+  POT_FIRST,
+  POT1 = POT_FIRST,
   POT2,
   POT3,
   POT_LAST = POT3,
@@ -238,6 +300,8 @@ enum Analogs {
 #endif
   NUMBER_ANALOG
 };
+#define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
+#define IS_SLIDER(x)                   false
 void adcInit();
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);

@@ -28,7 +28,7 @@ void editGVarValue(coord_t x, coord_t y, uint8_t event, uint8_t gvar, uint8_t fl
   if (v > GVAR_MAX) {
     uint8_t fm = v - GVAR_MAX - 1;
     if (fm >= flightMode) fm++;
-    putsFlightMode(x, y, fm + 1, flags&(~LEFT));
+    drawFlightMode(x, y, fm + 1, flags&(~LEFT));
     vmin = GVAR_MAX + 1;
     vmax = GVAR_MAX + MAX_FLIGHT_MODES - 1;
   }

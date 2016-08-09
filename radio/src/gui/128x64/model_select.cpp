@@ -49,7 +49,7 @@ void onModelSelectMenu(const char *result)
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
     if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-      popupMenuFlags = 0;
+      POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
 #endif
@@ -92,7 +92,7 @@ void menuModelSelect(uint8_t event)
 
   int8_t oldSub = menuVerticalPosition;
 
-  check_submenu_simple(_event_, MAX_MODELS-1);
+  check_submenu_simple(_event_, MAX_MODELS-HEADER_LINE);
 
 #if defined(NAVIGATION_POT2)
   if (event==0 && p2valdiff<0) {
@@ -110,8 +110,7 @@ void menuModelSelect(uint8_t event)
 
   int8_t sub = menuVerticalPosition;
 
-  switch (event)
-  {
+  switch (event) {
       case EVT_ENTRY:
         menuVerticalPosition = sub = g_eeGeneral.currModel;
         if (sub >= LCD_LINES-1) menuVerticalOffset = sub-LCD_LINES+2;
@@ -253,7 +252,17 @@ void menuModelSelect(uint8_t event)
           s_copySrcRow = -1;
         }
         break;
+  
+#if defined(PCBX7D)
+      case EVT_KEY_LONG(KEY_PAGE):
+        chainMenu(menuTabModel[DIM(menuTabModel)-1]);
+        killEvents(event);
+        break;
 
+      case EVT_KEY_BREAK(KEY_PAGE):
+        chainMenu(menuModelSetup);
+        break;
+#else
 #if defined(ROTARY_ENCODER_NAVIGATION)
       case EVT_ROTARY_LEFT:
       case EVT_ROTARY_RIGHT:
@@ -273,6 +282,7 @@ void menuModelSelect(uint8_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
         }
         // no break
+#endif
 #endif
 
       case EVT_KEY_FIRST(KEY_UP):
@@ -302,13 +312,15 @@ void menuModelSelect(uint8_t event)
         break;
   }
 
-#if !defined(PCBSKY9X)
+#if !defined(PCBSKY9X) && !defined(PCBX7D)
   lcdDrawText(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
   lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
 #endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
+  
+#if defined(PCBX7D)
+  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
+#elif defined(ROTARY_ENCODER_NAVIGATION)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_RE_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
 #else
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);

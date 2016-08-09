@@ -51,14 +51,14 @@ void showMessageBox(const char * title)
   lcdRefresh();
 }
 
-const pm_uchar asterisk_lbm[] PROGMEM = {
+const pm_uchar ASTERISK_BITMAP[] PROGMEM = {
 #include "asterisk.lbm"
 };
 
 void drawAlertBox(const char * title, const char * text, const char * action)
 {
   lcdClear();
-  lcdDrawBitmap(0, 0, asterisk_lbm);
+  lcdDrawBitmap(0, 0, ASTERISK_BITMAP);
 
 #define MESSAGE_LCD_OFFSET   60
 

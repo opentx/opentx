@@ -10,7 +10,12 @@ set(TARGET_DIR 9x)
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
 add_definitions(-DPCBSTD -DPCB${PCB} -DCPUM64)
 set(TARGET_SRC ${TARGET_SRC} board.cpp)
-set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC})
+set(GUI_SRC
+  ${GUI_SRC}
+  model_inputs_mixes.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
+  )
 if(SP22)
   add_definitions(-DSP22)
 endif()

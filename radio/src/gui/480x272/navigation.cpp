@@ -25,7 +25,7 @@ int menuVerticalPosition;
 int menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t noHighlightCounter;
-uint8_t calibrationState; // TODO rename this variable
+uint8_t menuCalibrationState; // TODO rename this variable
 int checkIncDecSelection = 0;
 
 #if defined(AUTOSWITCH)
@@ -35,7 +35,7 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val)
     swsrc_t swtch = getMovedSwitch();
     if (swtch) {
       div_t info = switchInfo(swtch);
-      if (IS_TOGGLE(info.quot)) {
+      if (IS_CONFIG_TOGGLE(info.quot)) {
         if (info.rem != 0) {
           val = (val == swtch ? swtch-2 : swtch);
         }
@@ -366,7 +366,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     return false;
   }
 
-  if (menuTab && !calibrationState) {
+  if (menuTab && !menuCalibrationState) {
     int cc = curr;
     switch (event) {
       case EVT_KEY_FIRST(KEY_PGDN):
@@ -436,7 +436,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
           menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
           AUDIO_KEY_PRESS();
         }
-        else if (!calibrationState) {
+        else if (!menuCalibrationState) {
           popMenu();
         }
       }

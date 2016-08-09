@@ -217,7 +217,7 @@ int getSwitchWarningsCount()
 #endif
 
 #define SW_WARN_ITEMS()                   uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1))
-#define POT_WARN_ITEMS()                  ((g_model.potsWarnMode >> 6) ? (uint8_t)NUM_POTS : (uint8_t)0)
+#define POT_WARN_ITEMS()                  ((g_model.potsWarnMode >> 6) ? uint8_t(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
 
 bool menuModelSetup(event_t event)
 {
@@ -234,7 +234,7 @@ bool menuModelSetup(event_t event)
   MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
-         LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_ROTARY_ENCODERS-1), 0,
+         LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
          LABEL(InternalModule),
          INTERNAL_MODULE_MODE_ROWS,
          INTERNAL_MODULE_CHANNELS_ROWS,
@@ -406,12 +406,12 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_THROTTLE_TRACE:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRACE);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_CHNOUT);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_SLIDERS+NUM_CHNOUT);
         uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
         if (idx > MIXSRC_Thr)
           idx += 1;
-        if (idx >= MIXSRC_FIRST_POT+NUM_POTS)
-          idx += MIXSRC_CH1 - MIXSRC_FIRST_POT - NUM_POTS;
+        if (idx >= MIXSRC_FIRST_POT+NUM_POTS+NUM_SLIDERS)
+          idx += MIXSRC_CH1 - MIXSRC_FIRST_POT - NUM_POTS - NUM_SLIDERS;
         putsMixerSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
         break;
       }
@@ -508,7 +508,7 @@ bool menuModelSetup(event_t event)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
         if (g_model.potsWarnMode) {
           coord_t x = MODEL_SETUP_2ND_COLUMN+30;
-          for (int i=0; i<NUM_POTS; ++i) {
+          for (int i=0; i<NUM_POTS+NUM_SLIDERS; ++i) {
             LcdFlags flags = (((menuHorizontalPosition==i+1) && attr) ? INVERS : 0);
             flags |= (g_model.potsWarnEnabled & (1 << i)) ? TEXT_DISABLE_COLOR : TEXT_COLOR;
             lcdDrawTextAtIndex(x, y, STR_VSRCRAW, NUM_STICKS+1+i, flags);
@@ -526,7 +526,7 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_BEEP_CENTER:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEPCTR);
         lcdNextPos = MODEL_SETUP_2ND_COLUMN - 3;
-        for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+        for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
           LcdFlags flags = ((menuHorizontalPosition==i && attr) ? INVERS : 0);
           flags |= (g_model.beepANACenter & ((BeepANACenter)1<<i)) ? TEXT_COLOR : (TEXT_DISABLE_COLOR | NO_FONTCACHE);
           if (attr && menuHorizontalPosition < 0) flags |= INVERS;

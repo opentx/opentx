@@ -97,12 +97,6 @@
   extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
-#if (defined(PCBX9E) || defined(PCBX9DP)) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
-  void lcdRefreshWait();
-#else
-  #define lcdRefreshWait()
-#endif
-
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
@@ -136,13 +130,9 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
-void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-#if !defined(BOOT)
-void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att);
-#endif
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att=0);
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
+void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
 #define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
@@ -199,15 +189,7 @@ void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags a
 void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
 #define LCD_ICON(x, y, icon) lcdDrawBitmap(x, y, icons, icon)
 
-void lcdSetRefVolt(unsigned char val);
 void lcdClear();
-void lcdSetContrast();
-
-#if (defined(PCBX9E) || defined(PCBX9DP)) && !defined(SIMU)
-  void lcdRefresh(bool wait=true);
-#else
-  void lcdRefresh();
-#endif
 
 uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 const char * writeScreenshot();

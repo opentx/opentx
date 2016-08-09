@@ -548,13 +548,13 @@ extern const pm_char STR_MENUDATEANDTIME[];
 extern const pm_char STR_MENUTRAINER[];
 extern const pm_char STR_MENUSPECIALFUNCS[];
 extern const pm_char STR_MENUVERSION[];
-extern const pm_char STR_MENUDIAG[];
-extern const pm_char STR_MENUANA[];
+extern const pm_char STR_MENU_RADIO_SWITCHES[];
+extern const pm_char STR_MENU_RADIO_ANALOGS[];
 extern const pm_char STR_MENUCALIBRATION[];
 extern const pm_char STR_MENUMODELSEL[];
 extern const pm_char STR_MENUSETUP[];
-extern const pm_char STR_MENUFLIGHTPHASE[];
-extern const pm_char STR_MENUFLIGHTPHASES[];
+extern const pm_char STR_MENUFLIGHTMODE[];
+extern const pm_char STR_MENUFLIGHTMODES[];
 extern const pm_char STR_MENUHELISETUP[];
 extern const pm_char STR_MENUINPUTS[];
 extern const pm_char STR_MENULIMITS[];
@@ -834,7 +834,7 @@ extern const pm_char STR_BLCOLOR[];
   #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name)
 #endif
 
-#if LCD_W >= 212
+#if defined(CPUARM)
   extern const pm_char STR_MODELNAME[];
   extern const pm_char STR_PHASENAME[];
   extern const pm_char STR_MIXNAME[];
@@ -913,7 +913,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_REMOVE_SCREEN[];
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(CPUARM)
   extern const pm_char STR_BYTES[];
   extern const pm_char STR_ANTENNAPROBLEM[];
   extern const pm_char STR_MODULE[];

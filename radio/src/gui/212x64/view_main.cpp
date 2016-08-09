@@ -161,7 +161,7 @@ void displayTrims(uint8_t phase)
 
 void drawSliders()
 {
-  for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; i++) {
+  for (uint8_t i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
 #if defined(PCBX9E)
     if (i < SLIDER1) continue;  // TODO change and display more values
     coord_t x = ((i==SLIDER1 || i==SLIDER3) ? 3 : LCD_W-5);

@@ -439,41 +439,6 @@ void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
-void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
-{
-  if (idx==0) {
-    lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att);
-  }
-  else {
-    drawStringWithIndex(x, y, STR_FP, abs(idx)-1, att);
-  }
-}
-
-void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att)
-{
-  if (curve.value != 0) {
-    switch (curve.type) {
-      case CURVE_REF_DIFF:
-        lcdDrawText(x, y, "D", att);
-        GVAR_MENU_ITEM(lcdNextPos, y, curve.value, -100, 100, LEFT|att, 0, 0);
-        break;
-
-      case CURVE_REF_EXPO:
-        lcdDrawText(x, y, "E", att);
-        GVAR_MENU_ITEM(lcdNextPos, y, curve.value, -100, 100, LEFT|att, 0, 0);
-        break;
-
-      case CURVE_REF_FUNC:
-        lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, att);
-        break;
-
-      case CURVE_REF_CUSTOM:
-        drawCurveName(x, y, curve.value, att);
-        break;
-    }
-  }
-}
-
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
   if (idx == 0) {
@@ -506,7 +471,7 @@ void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
   putsSwitches(x, y, mode, att);
 }
 
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
+void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
   trim_t v = getRawTrimValue(phase, idx);
   unsigned int mode = v.mode;

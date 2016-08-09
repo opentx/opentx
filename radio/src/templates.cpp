@@ -40,8 +40,8 @@
 
 #include "opentx.h"
 
-#if defined(VIRTUALINPUTS)
-  #pragma message("Templates with VIRTUALINPUTS enabled are not implemented!")
+#if defined(CPUARM)
+  #pragma message("Templates are not implemented on this board")
 #endif
 
 MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)

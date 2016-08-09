@@ -46,10 +46,9 @@
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
-  uint8_t x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-5, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=5, i++) {
-    if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+  for (uint8_t x=LCD_W/2 - (NUM_POTS+NUM_SLIDERS-1) * 5 / 2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=5, i++) {
+    if (IS_POT_OR_SLIDER_AVAILABLE(i)) {
+      uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
     }
   }
@@ -220,11 +219,22 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
-#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
-#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
-#define EVT_KEY_CONTEXT_MENU EVT_KEY_BREAK(KEY_MENU)
+#if defined(PCBX7D)
+#define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
+#define EVT_KEY_MODEL_MENU             EVT_KEY_BREAK(KEY_MENU)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_MENU)
+#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_PAGE)
+#else
+#define EVT_KEY_CONTEXT_MENU           EVT_KEY_BREAK(KEY_MENU)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_UP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_DOWN)
+#define EVT_KEY_MODEL_MENU             EVT_KEY_LONG(KEY_RIGHT)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_LEFT)
+#define EVT_KEY_LAST_MENU              EVT_KEY_LONG(KEY_MENU)
+#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_DOWN)
+#define EVT_KEY_STATISTICS             EVT_KEY_LONG(KEY_UP)
+#endif
 
 #if defined(NAVIGATION_MENUS)
 void onMainViewMenu(const char *result)
@@ -280,8 +290,7 @@ void menuMainView(uint8_t event)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
-  switch(event) {
-
+  switch (event) {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
@@ -300,7 +309,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (view_base <= VIEW_INPUTS) {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
         if (view_base == VIEW_INPUTS)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
@@ -343,11 +352,13 @@ void menuMainView(uint8_t event)
 #endif
 
 #if MENUS_LOCK != 2 /*no menus*/
-    case EVT_KEY_LONG(KEY_MENU):// go to last menu
+#if defined(EVT_KEY_LAST_MENU)
+    case EVT_KEY_LAST_MENU:
       pushMenu(lastPopMenu());
       killEvents(event);
       break;
-
+#endif
+      
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
@@ -360,17 +371,28 @@ void menuMainView(uint8_t event)
       killEvents(event);
       break;
 #endif
-
-    case EVT_KEY_BREAK(KEY_UP):
-    case EVT_KEY_BREAK(KEY_DOWN):
-      g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+  
+#if defined(EVT_KEY_PREVIOUS_VIEW)
+      // TODO try to split those 2 cases on 9X
+    case EVT_KEY_PREVIOUS_VIEW:
+    case EVT_KEY_NEXT_VIEW:
+      // TODO try to split those 2 cases on 9X
+      g_eeGeneral.view = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
       storageDirty(EE_GENERAL);
       break;
-
+#else
+    case EVT_KEY_NEXT_VIEW:
+      g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT-1 : view_base-1);
+      storageDirty(EE_GENERAL);
+      break;
+#endif
+  
+#if defined(EVT_KEY_STATISTICS)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
       break;
+#endif
 
     case EVT_KEY_TELEMETRY:
 #if defined(TELEMETRY_FRSKY)
@@ -432,7 +454,7 @@ void menuMainView(uint8_t event)
   if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 #else
     lcdDrawSolidHorizontalLine((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
@@ -440,7 +462,7 @@ void menuMainView(uint8_t event)
 
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
 #else
       uint8_t chan = (g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i;
@@ -448,8 +470,7 @@ void menuMainView(uint8_t event)
 
       int16_t val = channelOutputs[chan];
 
-      switch(view_base)
-      {
+      switch (view_base) {
         case VIEW_OUTPUTS_VALUES:
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
@@ -464,21 +485,21 @@ void menuMainView(uint8_t event)
 
         case VIEW_OUTPUTS_BARS:
 #define WBAR2 (50/2)
-          x0       = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
-          y0       = 38+(i%4)*5;
+          x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
+          y0 = 38+(i%4)*5;
 
           uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
           int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
 
-          if(len>WBAR2)  len = WBAR2;  // prevent bars from going over the end - comment for debugging
+          if (len>WBAR2) len = WBAR2; // prevent bars from going over the end - comment for debugging
           lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
-          lcdDrawSolidVerticalLine(x0,y0-2,5);
-          if (val>0)
-            x0+=1;
+          lcdDrawSolidVerticalLine(x0, y0-2,5 );
+          if (val > 0)
+            x0 += 1;
           else
-            x0-=len;
-          lcdDrawSolidHorizontalLine(x0,y0+1,len);
-          lcdDrawSolidHorizontalLine(x0,y0-1,len);
+            x0 -= len;
+          lcdDrawSolidHorizontalLine(x0, y0+1, len);
+          lcdDrawSolidHorizontalLine(x0, y0-1, len);
           break;
       }
     }
@@ -489,15 +510,17 @@ void menuMainView(uint8_t event)
       doMainScreenGraphics();
 
       // Switches
+#if !defined(PCBX7D)
       for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
         int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
         uint8_t x = 2*FW-2, y = i*FH+1;
-        if (i>=SWSRC_AIL) {
+        if (i >= SWSRC_AIL) {
           x = 17*FW-1;
           y -= 3*FH;
         }
         putsSwitches(x, y, sw, getSwitch(i) ? INVERS : 0);
       }
+#endif
     }
     else {
 #if defined(PCBMEGA2560) && defined(ROTARY_ENCODERS)
@@ -515,7 +538,7 @@ void menuMainView(uint8_t event)
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
       // Logical Switches
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);

@@ -324,7 +324,7 @@ void onMixesMenu(const char * result)
 void displayMixInfos(coord_t y, MixData *md)
 {
   if (md->curve.value != 0 ) lcd->drawBitmap(MIX_LINE_CURVE_ICON, y + 2, mixerSetupCurveBitmap);
-  putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve);
+  drawCurveRef(MIX_LINE_CURVE_POS, y, md->curve);
 
   if (md->swtch) {
     lcd->drawBitmap(MIX_LINE_SWITCH_ICON, y + 2, mixerSetupSwitchBitmap);

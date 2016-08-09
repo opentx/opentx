@@ -31,7 +31,7 @@
 #define CHANNEL_MAX (1024*256)
 
 extern int32_t lastAct;
-extern uint16_t anaInValues[NUM_STICKS+NUM_POTS];
+extern uint16_t anaInValues[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
 
 void doMixerCalculations();
 

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuModelHeliItems {
+enum MenuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
   ITEM_HELI_SWASHRING,
   ITEM_HELI_ELE,
@@ -37,10 +37,10 @@ enum menuModelHeliItems {
 bool menuModelHeli(event_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_HELI, ITEM_HELI_MAX);
+  
+  uint8_t sub = menuVerticalPosition;
 
-  int sub = menuVerticalPosition;
-
-  for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     int k = i+menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);

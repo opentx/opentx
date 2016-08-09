@@ -509,7 +509,11 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#define TR_STICKS_VSRCRAW      TR("Rud\0""Ele\0""Thr\0""Ail\0", "\307Rud""\307Ele""\307Thr""\307Ail")
+#if defined(CPUARM)
+#define TR_STICKS_VSRCRAW      "\307Rud""\307Ele""\307Thr""\307Ail"
+#else
+#define TR_STICKS_VSRCRAW      "Rud\0""Ele\0""Thr\0""Ail\0"
+#endif
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW     "\313Rud""\313Ele""\313Thr""\313Ail""\313T5\0""\313T6\0"
@@ -526,6 +530,9 @@
 #elif defined(PCBX9E)
   #define TR_POTS_VSRCRAW      "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
+#elif defined(PCBX7D)
+  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
 #elif defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
@@ -666,12 +673,8 @@
 #define TR_MODELNAME           "Model name"
 #define TR_PHASENAME           "Mode name"
 #define TR_MIXNAME             "Mix name"
-#define TR_INPUTNAME           "Input name"
-#if defined(VIRTUALINPUTS)
-  #define TR_EXPONAME          "Line name"
-#else
-  #define TR_EXPONAME          "Expo name"
-#endif
+#define TR_INPUTNAME           TR("Input", "Input name")
+#define TR_EXPONAME            TR("Name", "Line name")
 #define TR_BITMAP              "Model image"
 #define TR_TIMER               TR("Timer", "Timer ")
 #define TR_ELIMITS             TR("E.Limits", "Extended limits")
@@ -701,8 +704,8 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Swash Type"
 #define TR_COLLECTIVE          TR("Collective", "Coll. pitch source")
-#define TR_AILERON             "Lateral cyc. source"
-#define TR_ELEVATOR            "Long. cyc. source"
+#define TR_AILERON             TR("Lateral cyc.", "Lateral cyc. source")
+#define TR_ELEVATOR            TR("Long. cyc.", "Long. cyc. source")
 #define TR_SWASHRING           "Swash Ring"
 #define TR_ELEDIRECTION        "ELE Direction"
 #define TR_AILDIRECTION        "AIL Direction"
@@ -839,8 +842,8 @@
 #define TR_MENUTRAINER         "TRAINER"
 #define TR_MENUSPECIALFUNCS    "GLOBAL FUNCTIONS"
 #define TR_MENUVERSION         "VERSION"
-#define TR_MENUDIAG            TR("SWITCHES", "SWITCH TEST")
-#define TR_MENUANA             TR("ANAS", "ANALOG INPUTS")
+#define TR_MENU_RADIO_SWITCHES TR("SWITCHES", "SWITCHES TEST")
+#define TR_MENU_RADIO_ANALOGS         TR("ANALOGS", "ANALOGS TEST")
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims >> Subtrims"
@@ -849,11 +852,11 @@
 #endif
 #define TR_MENUMODELSEL        TR("MODELSEL", "MODEL SELECTION")
 #define TR_MENUSETUP           TR("SETUP", "MODEL SETUP")
-#define TR_MENUFLIGHTPHASES    "FLIGHT MODES"
-#define TR_MENUFLIGHTPHASE     "FLIGHT MODE"
+#define TR_MENUFLIGHTMODES    "FLIGHT MODES"
+#define TR_MENUFLIGHTMODE     "FLIGHT MODE"
 #define TR_MENUHELISETUP       "HELI SETUP"
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_MENUINPUTS        "INPUTS"
   #define TR_MENULIMITS        "OUTPUTS"
 #else
@@ -1083,10 +1086,10 @@
 #define TR_EEBACKUP            "EEPROM backup"
 #define TR_FACTORYRESET        "Factory reset"
 #else
-#define TR_EEBACKUP            "\012[ENTER Long]: EEPROM backup"
-#define TR_FACTORYRESET        "\012[MENU Long]: Factory reset"
+#define TR_EEBACKUP            TR("\006[ENTER Long]: EEPROM backup", "\012[ENTER Long]: EEPROM backup")
+#define TR_FACTORYRESET        TR("\006[MENU Long]: Factory reset", "\012[MENU Long]: Factory reset")
 #endif
-#define TR_CONFIRMRESET        "Erase ALL models and settings?"
+#define TR_CONFIRMRESET        TR("Erase ALL", "Erase ALL models and settings?")
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 
 #if defined(TELEMETRY_MAVLINK)

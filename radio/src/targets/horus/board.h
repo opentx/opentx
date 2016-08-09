@@ -77,7 +77,7 @@ extern "C" {
 extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
-#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
+#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 
 // Board driver
 void boardInit(void);
@@ -168,7 +168,82 @@ void init_trainer_capture(void);
 void stop_trainer_capture(void);
 
 // Keys driver
+#define NUM_SWITCHES                   8
+enum EnumKeys
+{
+  KEY_PGUP,
+  KEY_PGDN,
+  KEY_ENTER,
+  KEY_MODEL,
+  KEY_UP = KEY_MODEL,
+  KEY_EXIT,
+  KEY_DOWN = KEY_EXIT,
+  KEY_TELEM,
+  KEY_RIGHT = KEY_TELEM,
+  KEY_RADIO,
+  KEY_LEFT = KEY_RADIO,
+  
+  TRM_BASE,
+  TRM_LH_DWN = TRM_BASE,
+  TRM_LH_UP,
+  TRM_LV_DWN,
+  TRM_LV_UP,
+  TRM_RV_DWN,
+  TRM_RV_UP,
+  TRM_RH_DWN,
+  TRM_RH_UP,
+  TRM_LS_DWN,
+  TRM_LS_UP,
+  TRM_RS_DWN,
+  TRM_RS_UP,
+  TRM_LAST = TRM_RS_UP,
+  
+  NUM_KEYS
+};
+
+enum EnumSwitches
+{
+  SW_SA,
+  SW_SB,
+  SW_SC,
+  SW_SD,
+  SW_SE,
+  SW_SF,
+  SW_SG,
+  SW_SH
+};
+#define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
+
+enum EnumSwitchesPositions
+{
+  SW_SA0,
+  SW_SA1,
+  SW_SA2,
+  SW_SB0,
+  SW_SB1,
+  SW_SB2,
+  SW_SC0,
+  SW_SC1,
+  SW_SC2,
+  SW_SD0,
+  SW_SD1,
+  SW_SD2,
+  SW_SE0,
+  SW_SE1,
+  SW_SE2,
+  SW_SF0,
+  SW_SF1,
+  SW_SF2,
+  SW_SG0,
+  SW_SG1,
+  SW_SG2,
+  SW_SH0,
+  SW_SH1,
+  SW_SH2,
+};
 void keysInit(void);
+uint8_t keyState(uint8_t index);
+uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
 #define TRIMS_PRESSED() (readTrims())
@@ -200,15 +275,19 @@ void watchdogInit(unsigned int duration);
 #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 
 // ADC driver
+#define NUM_POTS                       3
+#define NUM_SLIDERS                    4
+#define NUM_XPOTS                      3
 enum Analogs {
   STICK1,
   STICK2,
   STICK3,
   STICK4,
-  POT1,
+  POT_FIRST,
+  POT1 = POT_FIRST,
   POT2,
   POT3,
-  POT_LAST=POT3,
+  POT_LAST = POT3,
   SLIDER1,
   SLIDER2,
   SLIDER3,
@@ -218,6 +297,8 @@ enum Analogs {
   MOUSE2,
   NUMBER_ANALOG
 };
+#define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
+#define IS_SLIDER(x)                   ((x)>=SLIDER1 && (x)<=SLIDER4)
 extern uint16_t adcValues[NUMBER_ANALOG];
 void adcInit(void);
 void adcRead(void);
@@ -253,12 +334,19 @@ void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y,
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
 void lcdStoreBackupBuffer(void);
 int lcdRestoreBackupBuffer(void);
-void LCD_ControlLight(uint16_t dutyCycle);
+void lcdSetContrast();
+#define lcdOff(...)
+#define lcdSetRefVolt(...)
+#define lcdRefreshWait(...)
 
 // Backlight driver
-#define setBacklight(xx)      LCD_ControlLight(xx)
-#define backlightEnable()     setBacklight(UNEXPECTED_SHUTDOWN() ? 100 : 100-g_eeGeneral.backlightBright)
-#define backlightDisable()    setBacklight(g_eeGeneral.blOffBright)
+#if defined(SIMU)
+#define backlightEnable(...)
+#else
+void backlightEnable(uint8_t dutyCycle);
+#endif
+#define BACKLIGHT_ENABLE()    backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : 100-g_eeGeneral.backlightBright)
+#define BACKLIGHT_DISABLE()   backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : g_eeGeneral.blOffBright)
 #define isBacklightEnable()   true
 
 // USB driver

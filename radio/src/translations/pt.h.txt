@@ -651,8 +651,8 @@
 #define OFS_CHECKTRIMS         (9*FW)
 #define TR_SWASHTYPE           "Ciclico Tipo"
 #define TR_COLLECTIVE          "Coletivo"
-#define TR_AILERON             "Lateral cyc. source"
-#define TR_ELEVATOR            "Long. cyc. source"
+#define TR_AILERON             TR("Lateral cyc.", "Lateral cyc. source")
+#define TR_ELEVATOR            TR("Long. cyc.", "Long. cyc. source")
 #define TR_SWASHRING           "Anel Coletivo"
 #define TR_ELEDIRECTION        "PFD Sentido"
 #define TR_AILDIRECTION        "AIL Sentido"
@@ -783,14 +783,14 @@
 #define TR_MENUTRAINER         "TRAINER"
 #define TR_MENUSPECIALFUNCS    "GLOBAL FUNCTIONS"
 #define TR_MENUVERSION         "VERSAO"
-#define TR_MENUDIAG            "DIAGNOST"
-#define TR_MENUANA             "ANALOGICOS"
+#define TR_MENU_RADIO_SWITCHES            "DIAGNOST"
+#define TR_MENU_RADIO_ANALOGS             "ANALOGICOS"
 #define TR_MENUCALIBRATION     "CALIBRAGEM"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
 #define TR_MENUMODELSEL        "MODELOS"
 #define TR_MENUSETUP           "SETUP"
-#define TR_MENUFLIGHTPHASE     "MODO DE VOO"
-#define TR_MENUFLIGHTPHASES    "MODOS DE VOO"
+#define TR_MENUFLIGHTMODE     "MODO DE VOO"
+#define TR_MENUFLIGHTMODES    "MODOS DE VOO"
 #define TR_MENUHELISETUP       "HELI SETUP"
 
 

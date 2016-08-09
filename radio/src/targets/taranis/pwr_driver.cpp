@@ -38,21 +38,6 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
 
-  // TODO not here
-  GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
-
-  GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
-
-  GPIO_InitStructure.GPIO_Pin = TRAINER_GPIO_PIN_DETECT;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(TRAINER_GPIO_DETECT, &GPIO_InitStructure);
-
   pwrOn();
 }
 
@@ -66,12 +51,12 @@ void pwrOff()
   GPIO_ResetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
 
   // disable interrupts
- __disable_irq();
+  __disable_irq();
 
-  while(1) {
+  while (1) {
     wdt_reset();
-#if defined(PCBX9E)
-    // 9E needs watchdog reset because CPU is still running while
+#if defined(PWR_PRESS_BUTTON)
+    // X9E/X7D needs watchdog reset because CPU is still running while
     // the power key is held pressed by the user.
     // The power key should be released by now, but we must make sure
     if (!pwrPressed()) {
@@ -90,7 +75,7 @@ void pwrOff()
   // this function must not return!
 }
 
-#if defined(PCBX9E)
+#if defined(PWR_PRESS_BUTTON)
 uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
@@ -100,9 +85,6 @@ uint32_t pwroffPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) != Bit_RESET;
 }
-#endif
-
-#if !defined(PCBX9E)
 uint32_t pwrCheck()
 {
   if (!pwroffPressed())

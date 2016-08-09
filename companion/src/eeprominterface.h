@@ -154,23 +154,6 @@ enum FailsafeModes {
 #define BC_BIT_REA (0x80)
 #define BC_BIT_REB (0x100)
 
-// TODO remove this enum!
-enum EnumKeys {
-  KEY_MENU,
-  KEY_EXIT,
-#if defined(PCBTARANIS)
-  KEY_ENTER,
-  KEY_PAGE,
-  KEY_PLUS,
-  KEY_MINUS,
-#else
-  KEY_DOWN,
-  KEY_UP,
-  KEY_RIGHT,
-  KEY_LEFT,
-#endif
-};
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 

@@ -20,14 +20,12 @@
 
 #include "opentx.h"
 
-#define TRAINER_CALIB_POS 8
-
 void menuRadioTrainer(uint8_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 1 : 7), {0, 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? HEADER_LINE : HEADER_LINE+6), {HEADER_LINE_COLUMNS 2, 2, 2, 2, 0/*, 0*/});
 
   if (slave) {
     lcdDrawText(7*FW, 4*FH, STR_SLAVE);
@@ -40,7 +38,7 @@ void menuRadioTrainer(uint8_t event)
 
     y = MENU_HEADER_HEIGHT + 1 + FH;
 
-    for (uint8_t i=1; i<=NUM_STICKS; i++) {
+    for (uint8_t i=HEADER_LINE; i<HEADER_LINE+NUM_STICKS; i++) {
       uint8_t chan = channel_order(i);
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
@@ -50,7 +48,7 @@ void menuRadioTrainer(uint8_t event)
 
         attr = ((menuVerticalPosition==i && menuHorizontalPosition==j) ? blink : 0);
 
-        switch(j) {
+        switch (j) {
           case 0:
             lcdDrawTextAtIndex(4*FW, y, STR_TRNMODE, td->mode, attr);
             if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
@@ -70,20 +68,20 @@ void menuRadioTrainer(uint8_t event)
       y += FH;
     }
 
-    attr = (menuVerticalPosition==5) ? blink : 0;
+    attr = (menuVerticalPosition==HEADER_LINE+4) ? blink : 0;
     lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
     lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-    attr = (menuVerticalPosition==6) ? INVERS : 0;
-    if (attr) s_editMode = 0;
+    attr = (menuVerticalPosition==HEADER_LINE+5) ? INVERS : 0;
     lcdDrawText(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
-      uint8_t x = (i*TRAINER_CALIB_POS+16)*FW/2;
+      uint8_t x = (i*8+16)*FW/2;
       lcdDrawNumber(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
     }
 
     if (attr) {
+      s_editMode = 0;
       if (event==EVT_KEY_LONG(KEY_ENTER)){
         memcpy(g_eeGeneral.trainer.calib, ppmInput, sizeof(g_eeGeneral.trainer.calib));
         storageDirty(EE_GENERAL);
