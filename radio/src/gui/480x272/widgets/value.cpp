@@ -35,6 +35,7 @@ class ValueWidget: public Widget
 
 const ZoneOption ValueWidget::options[] = {
   { "Source", ZoneOption::Source, OPTION_VALUE_UNSIGNED(MIXSRC_Rud) },
+  { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
   { NULL, ZoneOption::Bool }
 };
 
@@ -44,7 +45,7 @@ void ValueWidget::refresh()
 
   mixsrc_t field = persistentData->options[0].unsignedValue;
 
-  LcdFlags color = TEXT_INVERTED_COLOR;
+  LcdFlags color = persistentData->options[1].unsignedValue;
   int x = zone.x;
   int y = zone.y;
 
