@@ -35,7 +35,7 @@ class ValueWidget: public Widget
 
 const ZoneOption ValueWidget::options[] = {
   { "Source", ZoneOption::Source, OPTION_VALUE_UNSIGNED(MIXSRC_Rud) },
-  { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
+  { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(WHITE) },
   { NULL, ZoneOption::Bool }
 };
 
@@ -44,8 +44,8 @@ void ValueWidget::refresh()
   const int NUMBERS_PADDING = 4;
 
   mixsrc_t field = persistentData->options[0].unsignedValue;
-
-  LcdFlags color = persistentData->options[1].unsignedValue;
+  lcdSetColor(persistentData->options[1].unsignedValue);
+  
   int x = zone.x;
   int y = zone.y;
 
@@ -79,22 +79,26 @@ void ValueWidget::refresh()
   if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER) {
     TimerState & timerState = timersStates[field-MIXSRC_FIRST_TIMER];
     if (timerState.val < 0) {
-      color = ALARM_COLOR;
+      lcdSetColor(ALARM_COLOR_INDEX);
     }
-    putsMixerSource(x+NUMBERS_PADDING, y+2, field, color);
-    putsTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|color);
+    putsMixerSource(x+NUMBERS_PADDING, y+2, field, CUSTOM_COLOR);
+    putsMixerSource(x+NUMBERS_PADDING + 1, y + 3, field, BLACK);
+    putsTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|CUSTOM_COLOR);
     return;
   }
 
   if (field >= MIXSRC_FIRST_TELEM) {
     TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
     if (!telemetryItem.isAvailable() || telemetryItem.isOld()) {
-      color = ALARM_COLOR;
+      lcdSetColor(ALARM_COLOR_INDEX);
     }
   }
 
-  putsMixerSource(xLabel, yLabel, field, attrLabel|color);
-  putsChannel(xValue, yValue, field, attrValue|color);
+  putsMixerSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
+  putsMixerSource(xLabel, yLabel, field, attrLabel|CUSTOM_COLOR);
+  putsChannel(xValue + 1, yValue + 1, field, attrValue|BLACK);
+  putsChannel(xValue, yValue, field, attrValue|CUSTOM_COLOR);
+  
 }
 
 BaseWidgetFactory<ValueWidget> ValueWidget("Value", ValueWidget::options);
