@@ -15,6 +15,8 @@ for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
 for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
+    
+# The list bellow MUST be kept in sync with /radio/src/translate/tts_fr.cpp
 for s, f,a in [(u"volts","volts"),  
              (u"ampères", "amps"),
              (u"milli ampères", "mamps"),
@@ -43,6 +45,7 @@ for s, f,a in [(u"volts","volts"),
              (u"seconde""seconde"),
              ]:
     systemSounds.append((s, filename(f, NO_ALTERNATE)))
+
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
 for s, f, a in [(u"Trim centré", "midtrim", 495),

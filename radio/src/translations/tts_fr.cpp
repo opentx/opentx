@@ -56,6 +56,7 @@ enum FrenchPrompts {
 
 #define FEMININ 0x80
 
+/* The list bellow MUST be kept in sync with /radio/util/tts_fr.py */
 char const * frUnitsFilenames[] = {
   "volts",
   "amps",
