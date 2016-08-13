@@ -1235,6 +1235,20 @@ void audioEvent(unsigned int index)
   }
 }
 
+
+void pushUnit(char * unitname, uint8_t id=0)
+{
+#if defined(SDCARD)
+  //TRACE("AUDIO : trying unint : %s", unitname);
+  char filename[AUDIO_FILENAME_MAXLEN+1];
+  strcpy(filename, SOUNDS_PATH "/");
+  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+  strcat(filename, unitname);
+  strcat(filename, SOUNDS_EXT);  
+  audioQueue.playFile(filename, 0, id);
+#endif
+}
+
 void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)

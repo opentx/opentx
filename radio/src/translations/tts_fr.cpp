@@ -56,6 +56,36 @@ enum FrenchPrompts {
 
 #define FEMININ 0x80
 
+char const * frUnitsFilenames[] = {
+  "volts",
+  "amps",
+  "mamps",
+  "knots",
+  "ms",
+  "ps",
+  "kmh",
+  "mh",
+  "metres",
+  "pieds",
+  "deg",
+  "degf",
+  "pourcents",
+  "mamph",
+  "watt",
+  "mwatt",
+  "db",
+  "tpm",
+  "g",
+  "deg",
+  "rad",
+  "m",
+  "onces",
+  "heure",
+  "minute",
+  "seconde"
+};
+
+
 I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
@@ -133,7 +163,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(FR_PROMPT_UNITS_BASE+unit);
+    PUSH_UNIT_PROMPT((char *)frUnitsFilenames[unit-1]);
   }
 }
 
