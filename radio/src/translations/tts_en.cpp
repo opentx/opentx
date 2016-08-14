@@ -115,10 +115,10 @@ char const * enUnitsFilenames[] = {
 
 I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
+  if (number <= 1)
+    PUSH_UNIT_PROMPT((char *)enUnitsFilenames[unitprompt]);
   else
-    PUSH_NUMBER_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT((char *)enUnitsFilenames[unitprompt+1]);
 }
 
 I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -184,7 +184,7 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    EN_PUSH_UNIT_PROMPT(tmp, EN_PROMPT_UNITS_BASE + unit*2);
+    EN_PUSH_UNIT_PROMPT(tmp, (unit-1)*2);
   }
 }
 
