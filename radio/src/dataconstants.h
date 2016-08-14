@@ -466,7 +466,7 @@ enum TelemetryUnit {
 };
 #endif
 
-#if LCD_W >= 212
+#if defined(PCBTARANIS) && !defined(PCBX7D) // TODO LCD_W >= 212
   #define NUM_LINE_ITEMS 3
 #else
   #define NUM_LINE_ITEMS 2
