@@ -17,35 +17,34 @@ for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
     
 # The list bellow MUST be kept in sync with /radio/src/translate/tts_fr.cpp
-for s, f,a in [(u"volts","volts"),  
-             (u"ampères", "amps"),
-             (u"milli ampères", "mamps"),
-             (u"knots", "knots"),
-             (u"mètres seconde", "ms");
-             (u"pieds par seconde", "ps"),
-             (u"kilomètre heure", "kmh"),
-             (u"miles par heure","mh"),
-             (u"mètres","m"),
-             (u"pieds","pieds"),
-             (u"degrés","deg"),
-             (u"degrés fahrenheit","degf"),
-             (u"pourcents","pourcent"),
-             (u"milli ampères / heure","mamph"),
-             (u"watt","watt"),
-             (u"milli watt","mwatt"),
-             (u"db","db"),
-             (u"tours minute","tpm"),
-             (u"g","g"),"
-             (u"degrés","deg"),
-             (u"radians","rad"),
-             (u"millilitres","ml"),
-             (u"onces","onces"),
-             (u"heure","heure"),
-             (u"minute","minute"),
-             (u"seconde""seconde"),
+for s, f, a in [(u"volts","volts", NO_ALTERNATE),  
+             (u"ampères", "amps", NO_ALTERNATE),
+             (u"milli ampères", "mamps", NO_ALTERNATE),
+             (u"knots", "knots", NO_ALTERNATE),
+             (u"mètres seconde", "ms", NO_ALTERNATE),
+             (u"pieds par seconde", "ps", NO_ALTERNATE),
+             (u"kilomètre heure", "kmh", NO_ALTERNATE),
+             (u"miles par heure", "mh", NO_ALTERNATE),
+             (u"mètres", "m", NO_ALTERNATE),
+             (u"pieds", "pieds", NO_ALTERNATE),
+             (u"degrés", "deg", NO_ALTERNATE),
+             (u"degrés fahrenheit", "degf", NO_ALTERNATE),
+             (u"pourcents", "pourcent", NO_ALTERNATE),
+             (u"milli ampères heure", "mamph", NO_ALTERNATE),
+             (u"watt", "watt", NO_ALTERNATE),
+             (u"milli watt", "mwatt", NO_ALTERNATE),
+             (u"db", "db", NO_ALTERNATE),
+             (u"tours minute", "tpm", NO_ALTERNATE),
+             (u"g", "g", NO_ALTERNATE),
+             (u"degrés", "deg", NO_ALTERNATE),
+             (u"radians", "rad", NO_ALTERNATE),
+             (u"millilitres", "ml", NO_ALTERNATE),
+             (u"onces", "onces", NO_ALTERNATE),
+             (u"heure", "heure", NO_ALTERNATE),
+             (u"minute", "minute", NO_ALTERNATE),
+             (u"seconde", "seconde", NO_ALTERNATE),
              ]:
-    systemSounds.append((s, filename(f, NO_ALTERNATE)))
-
+    systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
 for s, f, a in [(u"Trim centré", "midtrim", 495),
