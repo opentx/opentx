@@ -50,6 +50,63 @@ enum EnglishPrompts {
 
 #if defined(VOICE)
 
+/* The list bellow MUST be kept in sync with /radio/util/tts_en.py */
+char const * enUnitsFilenames[] = {
+  "volt",
+  "volts",
+  "amp",
+  "amps",
+  "mamp",
+  "mamps",
+  "knot",
+  "knots",
+  "mps",
+  "msps",
+  "footps",
+  "feetps",
+  "kph",
+  "ksph",
+  "mph",
+  "msph",
+  "meter",
+  "meters",
+  "foot",
+  "feet",
+  "degc",
+  "degsc",
+  "degf",
+  "degsf",
+  "percent",
+  "percent",
+  "mamph",
+  "mamphs",
+  "watt",
+  "watts",
+  "mwatt",
+  "mwatts",
+  "db",
+  "db",
+  "rpm",
+  "rpm",
+  "g",
+  "g",
+  "degree",
+  "degrees",
+  "radian",
+  "radians",
+  "mm",
+  "mms",
+  "founce",
+  "founces",
+  "hour",
+  "hours",
+  "minute",
+  "minutes",
+  "second"
+  "seconds"
+};
+
+
 #if defined(CPUARM)
   #define EN_PUSH_UNIT_PROMPT(p, u) en_pushUnitPrompt((p), (u), id)
 #else
