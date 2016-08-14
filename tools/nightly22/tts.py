@@ -114,7 +114,7 @@ if __name__ == "__main__":
                     os.remove(f)
             
     if "files" in sys.argv:
-              path = "./SOUNDS/" + directory + "/SYSTEM/"
+              path = "/tmp/SOUNDS/" + directory + "/SYSTEM/"
               if not os.path.exists(path):
                 os.makedirs(path)
               os.chdir(path)
