@@ -227,7 +227,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       }
 
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
-        for (int i = 0; i < MAX_SENSORS; i++) {
+        for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->isAvailable()) {
             POPUP_MENU_ADD_ITEM(STR_MENU_TELEMETRY);
@@ -254,7 +254,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (i_min <= SWSRC_FIRST_SWITCH && i_max >= SWSRC_LAST_SWITCH)       POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= SWSRC_FIRST_TRIM && i_max >= SWSRC_LAST_TRIM)           POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= SWSRC_FIRST_LOGICAL_SWITCH && i_max >= SWSRC_LAST_LOGICAL_SWITCH) {
-        for (int i = 0; i < NUM_LOGICAL_SWITCH; i++) {
+        for (int i = 0; i < MAX_LOGICAL_SWITCHES; i++) {
           if (isValueAvailable && isValueAvailable(SWSRC_FIRST_LOGICAL_SWITCH+i)) {
             POPUP_MENU_ADD_ITEM(STR_MENU_LOGICAL_SWITCHES);
             break;
@@ -538,7 +538,6 @@ tmr10ms_t menuEntryTime;
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
 coord_t scrollbar_X = DEFAULT_SCROLLBAR_X;
-// void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
 {
   vertpos_t l_posVert = menuVerticalPosition;
@@ -1015,7 +1014,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       s_editMode = 0; // if we go down, we must be in this mode
 #endif
 
-      l_posHorz = min(l_posHorz, MAXCOL(l_posVert));
+      l_posHorz = min<horzpos_t>(l_posHorz, MAXCOL(l_posVert));
       break;
 #endif
 

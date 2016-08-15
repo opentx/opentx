@@ -53,7 +53,7 @@ PACK(typedef struct {
 }) LogicalSwitchContext;
 
 PACK(typedef struct {
-  LogicalSwitchContext lsw[NUM_LOGICAL_SWITCH];
+  LogicalSwitchContext lsw[MAX_LOGICAL_SWITCHES];
 }) LogicalSwitchesFlightModeContext;
 LogicalSwitchesFlightModeContext lswFm[MAX_FLIGHT_MODES];
 
@@ -61,7 +61,7 @@ LogicalSwitchesFlightModeContext lswFm[MAX_FLIGHT_MODES];
 
 #else
 
-int16_t lsLastValue[NUM_LOGICAL_SWITCH];
+int16_t lsLastValue[MAX_LOGICAL_SWITCHES];
 #define LS_LAST_VALUE(fm, idx) lsLastValue[idx]
 
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
@@ -634,7 +634,7 @@ bool getSwitch(swsrc_t swtch)
 */
 void evalLogicalSwitches(bool isCurrentPhase)
 {
-  for (unsigned int idx=0; idx<NUM_LOGICAL_SWITCH; idx++) {
+  for (unsigned int idx=0; idx<MAX_LOGICAL_SWITCHES; idx++) {
     LogicalSwitchContext & context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
     if (isCurrentPhase) {
@@ -839,7 +839,7 @@ void checkSwitches()
           if (attr) {
             if (++numWarnings < 7) {
               char c = "\300-\301"[(states & mask) >> (i*2)];
-              putsMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
+              drawMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
               lcdDrawChar(lcdNextPos, y, c, attr);
               x = lcdNextPos + 3;
             }
@@ -939,7 +939,7 @@ void logicalSwitchesTimerTick()
 #if defined(CPUARM)
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 #endif
-    for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
+    for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
       LogicalSwitchData * ls = lswAddress(i);
       if (ls->func == LS_FUNC_TIMER) {
         int16_t *lastValue = &LS_LAST_VALUE(fm, i);
@@ -1053,7 +1053,7 @@ void logicalSwitchesReset()
 #if defined(CPUARM)
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 #endif
-    for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
+    for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
       LS_LAST_VALUE(fm, i) = CS_LAST_VALUE_INIT;
     }
 #if defined(CPUARM)

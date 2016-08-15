@@ -503,7 +503,7 @@ bool menuRadioSetup(event_t event)
         s[0] = '1'+reusableBuffer.generalSettings.stickMode;
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, s, attr);
         for (uint8_t i=0; i<4; i++) {
-          putsMixerSource(RADIO_SETUP_2ND_COLUMN + 40 + 50*i, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i));
+          drawMixerSource(RADIO_SETUP_2ND_COLUMN + 40 + 50*i, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i));
         }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, reusableBuffer.generalSettings.stickMode, 0, 3);

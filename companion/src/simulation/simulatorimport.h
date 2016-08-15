@@ -16,8 +16,8 @@
 
 #include <stdint.h>
 
-#if !defined(NUM_LOGICAL_SWITCH) && defined(NUM_CSW)
-#define NUM_LOGICAL_SWITCH NUM_CSW
+#if !defined(MAX_LOGICAL_SWITCHES) && defined(NUM_CSW)
+#define MAX_LOGICAL_SWITCHES NUM_CSW
 #endif
 
 #ifdef INIT_IMPORT
@@ -60,7 +60,7 @@ if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
 memset(outputs.chans, 0, sizeof(outputs.chans));
 for (unsigned int i=0; i<DIM(g_chans512); i++)
   outputs.chans[i] = g_chans512[i];
-for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
+for (int i=0; i<MAX_LOGICAL_SWITCHES; i++)
 #if defined(BOLD_FONT)
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i);
 #else

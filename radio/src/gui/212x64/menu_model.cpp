@@ -159,7 +159,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
   }
 }
 
-void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active)
+void editSingleName(coord_t x, coord_t y, const pm_char * label, char *name, uint8_t size, uint8_t event, uint8_t active)
 {
   lcdDrawTextAlignedLeft(y, label);
   editName(x, y, name, size, event, active);

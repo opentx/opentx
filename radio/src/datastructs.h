@@ -102,7 +102,7 @@ PACK(struct MixData {
 });
 #elif defined(CPUM2560) || defined(CPUM2561)
 PACK(struct MixData {
-  uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
+  uint8_t destCh:4;          // 0, 1..MAX_OUTPUT_CHANNELS
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
   uint8_t weightMode:1;
@@ -124,7 +124,7 @@ PACK(struct MixData {
 });
 #else
 PACK(struct MixData {
-  uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
+  uint8_t destCh:4;          // 0, 1..MAX_OUTPUT_CHANNELS
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
   uint8_t weightMode:1;
@@ -652,7 +652,7 @@ PACK(struct ModuleData {
   uint8_t failsafeMode:4;  //only 3 bits used
   uint8_t subType:3;
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
-  int16_t failsafeChannels[NUM_CHNOUT];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   union {
     struct {
       int8_t  delay:6;
@@ -784,14 +784,14 @@ PACK(struct ModelData {
   AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;
   MixData   mixData[MAX_MIXERS];
-  LimitData limitData[NUM_CHNOUT];
+  LimitData limitData[MAX_OUTPUT_CHANNELS];
   ExpoData  expoData[MAX_EXPOS];
 
   CurveData curves[MAX_CURVES];
-  int8_t    points[NUM_POINTS];
+  int8_t    points[MAX_CURVE_POINTS];
 
-  LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
-  CustomFunctionData customFn[NUM_CFN];
+  LogicalSwitchData logicalSw[MAX_LOGICAL_SWITCHES];
+  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
@@ -807,7 +807,7 @@ PACK(struct ModelData {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(NOBACKUP(TelemetrySensor telemetrySensors[MAX_SENSORS]))
+  ARM_FIELD(NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS]))
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
@@ -870,7 +870,7 @@ PACK(struct TrainerData {
     NOBACKUP(int8_t   varioPitch); \
     NOBACKUP(int8_t   varioRange); \
     NOBACKUP(int8_t   varioRepeat); \
-    CustomFunctionData customFn[NUM_CFN];
+    CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 #endif
 
 #if defined(PCBHORUS)

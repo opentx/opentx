@@ -493,6 +493,15 @@ void ledGreen(void);
 void ledBlue(void);
 
 // LCD driver
+#if defined(PCBX7D)
+#define LCD_W                          128
+#define LCD_H                          64
+#define LCD_DEPTH                      1
+#else
+#define LCD_W                          212
+#define LCD_H                          64
+#define LCD_DEPTH                      4
+#endif
 void lcdInit(void);
 void lcdInitFinish(void);
 void lcdOff(void);

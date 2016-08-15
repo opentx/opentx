@@ -23,7 +23,7 @@
 #if defined(CPUARM)
 void menuRadioSpecialFunctions(uint8_t event)
 {
-  MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, HEADER_LINE+NUM_CFN, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuSpecialFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
 }
 #endif

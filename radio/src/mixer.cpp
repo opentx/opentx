@@ -29,7 +29,7 @@
 
 int16_t  anas [NUM_INPUTS] = {0};
 int16_t  trims[NUM_STICKS+NUM_AUX_TRIMS] = {0};
-int32_t  chans[NUM_CHNOUT] = {0};
+int32_t  chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;
 
 int24_t act   [MAX_MIXERS] = {0};
@@ -42,8 +42,8 @@ uint8_t mixWarning;
 #endif
 
 int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
-int16_t channelOutputs[NUM_CHNOUT] = {0};
-int16_t ex_chans[NUM_CHNOUT] = {0}; // Outputs (before LIMITS) of the last perMain;
+int16_t channelOutputs[MAX_OUTPUT_CHANNELS] = {0};
+int16_t ex_chans[MAX_OUTPUT_CHANNELS] = {0}; // Outputs (before LIMITS) of the last perMain;
 
 #if defined(HELI)
   int16_t cyc_anas[3] = {0};
@@ -227,7 +227,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   return ofs;
 }
 
-// TODO same naming convention than the putsMixerSource
+// TODO same naming convention than the drawMixerSource
 
 getvalue_t getValue(mixsrc_t i)
 {
@@ -1004,7 +1004,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
   mixWarning = lv_mixWarning;
 }
 
-int32_t sum_chans512[NUM_CHNOUT] = {0};
+int32_t sum_chans512[MAX_OUTPUT_CHANNELS] = {0};
 
 
 #define MAX_ACT 0xffff
@@ -1075,7 +1075,7 @@ void evalMixes(uint8_t tick10ms)
       if (flightModesFade & ((ACTIVE_PHASES_TYPE)1 << p)) {
         mixerCurrentFlightMode = p;
         evalFlightModeMixes(p==fm ? e_perout_mode_normal : e_perout_mode_inactive_flight_mode, p==fm ? tick10ms : 0);
-        for (uint8_t i=0; i<NUM_CHNOUT; i++)
+        for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++)
           sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
         weight += fp_act[p];
       }
@@ -1108,7 +1108,7 @@ void evalMixes(uint8_t tick10ms)
   }
 
   //========== LIMITS ===============
-  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*256
     // later we multiply by the limit (up to 100) and then we need to normalize
     // at the end chans[i] = chans[i]/256 =>  -1024..1024

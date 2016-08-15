@@ -83,7 +83,7 @@ inline void TELEMETRY_RESET()
   TELEMETRY_RSSI() = 100;
 #endif
 #if defined(CPUARM) && defined(TELEMETRY_FRSKY)
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
 #endif

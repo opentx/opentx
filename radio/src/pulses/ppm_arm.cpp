@@ -30,7 +30,7 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
   // The pulse ISR is 2mhz that's why everything is multiplied by 2
 
   uint32_t firstCh = g_model.moduleData[port].channelsStart;
-  uint32_t lastCh = min<unsigned int>(NUM_CHNOUT, firstCh + 8 + g_model.moduleData[port].channelsCount);
+  uint32_t lastCh = min<unsigned int>(MAX_OUTPUT_CHANNELS, firstCh + 8 + g_model.moduleData[port].channelsCount);
 
 #if defined(STM32)
   ppmPulsesData->ptr = ppmPulsesData->pulses;

@@ -21,73 +21,72 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
-#define LCD_W         212
-#define LCD_H         64
-#define BOX_WIDTH     31
-#define coord_t       int
-#define scoord_t      int
-#define CENTER        "\015"
-#define CENTER_OFS    (7*FW-FW/2)
-#define CONTRAST_MIN  0
-#define CONTRAST_MAX  45
 
-#define lcdint_t      int32_t
+#define BOX_WIDTH                      31
+#define coord_t                        int
+#define scoord_t                       int
+#define CENTER                         "\015"
+#define CENTER_OFS                     (7*FW-FW/2)
+#define CONTRAST_MIN                   0
+#define CONTRAST_MAX                   45
 
-#define FW              6
-#define FWNUM           5
-#define FH              8
+#define lcdint_t                       int32_t
 
-#define LCD_LINES       (LCD_H/FH)
-#define LCD_COLS        (LCD_W/FW)
+#define FW                             6
+#define FWNUM                          5
+#define FH                             8
+
+#define LCD_LINES                      (LCD_H/FH)
+#define LCD_COLS                       (LCD_W/FW)
 
 /* lcdDrawText flags */
-#define BLINK           0x01
-#define INVERS          0x02
-#define BOLD            0x04
-#define LEFT            0x00
-#define RIGHT           0x08
-#define FIXEDWIDTH      0x10
+#define BLINK                          0x01
+#define INVERS                         0x02
+#define BOLD                           0x04
+#define LEFT                           0x00
+#define RIGHT                          0x08
+#define FIXEDWIDTH                     0x10
 /* no 0x80 here because of "GV"1 which is aligned LEFT */
 /* no 0x10 here because of "MODEL"01 which uses LEADING0 */
-#define ZCHAR           0x80
+#define ZCHAR                          0x80
 
 /* lcdDrawNumber additional flags */
-#define LEADING0        0x10
-#define PREC1           0x20
-#define PREC2           0x30
-#define MODE(flags)     ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
+#define LEADING0                       0x10
+#define PREC1                          0x20
+#define PREC2                          0x30
+#define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 
 /* line, rect, square flags */
-#define FORCE           0x02
-#define ERASE           0x04
-#define ROUND           0x08
-#define FILL_WHITE      0x10
+#define FORCE                          0x02
+#define ERASE                          0x04
+#define ROUND                          0x08
+#define FILL_WHITE                     0x10
 
 /* telemetry flags */
-#define NO_UNIT         0x40
+#define NO_UNIT                        0x40
 
-#define FONTSIZE(x)   ((x) & 0x0700)
-#define TINSIZE       0x0100
-#define SMLSIZE       0x0200
-#define MIDSIZE       0x0300
-#define DBLSIZE       0x0400
-#define XXLSIZE       0x0500
-#define ERASEBG       0x8000
-#define VERTICAL      0x0800
+#define FONTSIZE(x)                    ((x) & 0x0700)
+#define TINSIZE                        0x0100
+#define SMLSIZE                        0x0200
+#define MIDSIZE                        0x0300
+#define DBLSIZE                        0x0400
+#define XXLSIZE                        0x0500
+#define ERASEBG                        0x8000
+#define VERTICAL                       0x0800
 
-#define TIMEBLINK     0x1000
-#define TIMEHOUR      0x2000
-#define STREXPANDED   0x4000
+#define TIMEBLINK                      0x1000
+#define TIMEHOUR                       0x2000
+#define STREXPANDED                    0x4000
 
-#define GREY(x)              ((x) * 0x010000)
-#define WHITE                GREY(0xf)
-#define GREY_DEFAULT         GREY(11)
-#define COLOUR_MASK(x)       ((x) & 0x0F0000)
+#define GREY(x)                        ((x) * 0x010000)
+#define WHITE                          GREY(0xf)
+#define GREY_DEFAULT                   GREY(11)
+#define COLOUR_MASK(x)                 ((x) & 0x0F0000)
 
-#define LcdFlags             uint32_t
+#define LcdFlags                       uint32_t
 
-#define display_t            uint8_t
-#define DISPLAY_BUFFER_SIZE  (LCD_W*LCD_H*4/8)
+#define display_t                      uint8_t
+#define DISPLAY_BUFFER_SIZE            (LCD_W*LCD_H*4/8)
 
 #if (defined(PCBX9E) || defined(PCBX9DP)) && defined(LCD_DUAL_BUFFER)
   extern display_t displayBuf1[DISPLAY_BUFFER_SIZE];
@@ -100,8 +99,8 @@
 extern coord_t lcdLastPos;
 extern coord_t lcdNextPos;
 
-#define DISPLAY_END            (displayBuf + DISPLAY_BUFFER_SIZE)
-#define ASSERT_IN_DISPLAY(p)   assert((p) >= displayBuf && (p) < DISPLAY_END)
+#define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
+#define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 #if defined(BOOT)
 // TODO quick & dirty :(
@@ -129,12 +128,12 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, uint8_t idx, 
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsSwitches(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
-void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
+void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att=0);
+void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att=0);
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
-#define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
+#define putsChn(x, y, idx, att) drawMixerSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
@@ -148,11 +147,11 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
 
 #define putstime_t int32_t
 
-void putsRtcTime(coord_t x, coord_t y, LcdFlags att);
-void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
 
-#define SOLID  0xff
-#define DOTTED 0x55
+#define SOLID                          0xff
+#define DOTTED                         0x55
 
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att=0);
@@ -177,7 +176,7 @@ void lcdInvertLine(int8_t line);
 
 void drawShutdownBitmap(uint32_t index);
 void drawSleepBitmap();
-void lcdDrawTelemetryTopBar();
+void drawTelemetryTopBar();
 
 #define V_BAR(xx, yy, ll)    \
   lcdDrawSolidVerticalLine(xx-1,yy-ll,ll);  \

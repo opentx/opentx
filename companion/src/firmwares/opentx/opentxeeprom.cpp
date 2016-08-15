@@ -26,7 +26,7 @@
 #define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)            (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 32 : 16) : 8)
 #define MAX_GVARS(board, version)             ((IS_ARM(board) && version >= 216) ? 9 : 5)
-#define MAX_SENSORS(board, version)           (32)
+#define MAX_TELEMETRY_SENSORS(board, version) (32)
 #define NUM_PPM_INPUTS(board, version)        ((IS_ARM(board) && version >= 216) ? 16 : 8)
 #define ROTENC_COUNT(board, version)          (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 218) ? 0 : 1) : (IS_2560(board) ? 2 : 0))
 
@@ -3271,7 +3271,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   }
 
   if (IS_ARM(board) && version >= 217) {
-    for (int i=0; i<MAX_SENSORS(board, version); ++i) {
+    for (int i=0; i<MAX_TELEMETRY_SENSORS(board, version); ++i) {
       internalField.Append(new SensorField(modelData.sensorData[i], board, version));
     }
   }

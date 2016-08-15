@@ -31,52 +31,14 @@ void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
   } while (p!=0);
 }
 
-#if defined(CPUARM)
-FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
-{
-  drawFieldLabel(x, y, STR_FLMODE);
-
-  int posHorz = menuHorizontalPosition;
-
-  for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-    LcdFlags flags = 0;
-    if (attr) {
-      flags |= INVERS;
-      if (posHorz==p) flags |= BLINK;
-    }
-    if (value & (1<<p))
-      lcdDrawChar(x, y, ' ', flags|FIXEDWIDTH);
-    else
-      lcdDrawChar(x, y, '0'+p, flags);
-    x += FW;
-  }
-
-  if (attr) {
-    if (s_editMode && event==EVT_KEY_BREAK(KEY_ENTER)) {
-      s_editMode = 0;
-      value ^= (1<<posHorz);
-      storageDirty(EE_MODEL);
-    }
-  }
-
-  return value;
-}
-#else
+#if !defined(CPUARM)
 FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
 {
   drawFieldLabel(x, y, STR_FLMODE);
 
   uint8_t posHorz = menuHorizontalPosition;
-
-#if defined(CPUARM)
-  bool expoMenu = (x==EXPO_ONE_2ND_COLUMN-5*FW);
-#endif
-
+  
   for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
-#if defined(CPUARM)
-    if (expoMenu && ((attr && p < posHorz-4) || (x > EXPO_ONE_2ND_COLUMN-FW)))
-      continue;
-#endif
     lcdDrawChar(x, y, '0'+p, ((posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
     x += FW;
   }

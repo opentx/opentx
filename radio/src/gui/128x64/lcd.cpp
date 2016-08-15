@@ -116,6 +116,103 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   }
 }
 
+#if defined(CPUARM) && !defined(BOOT)
+struct PatternData
+{
+  uint8_t width;
+  uint8_t height;
+  const uint8_t * data;
+};
+
+uint8_t getPatternWidth(const PatternData * pattern)
+{
+  uint8_t result = 0;
+  uint8_t lines = (pattern->height+7)/8;
+  const uint8_t * data = pattern->data;
+  for (int8_t i=0; i<pattern->width; i++) {
+    for (uint8_t j=0; j<lines; j++) {
+      if (data[j] != 0xff) {
+        result += 1;
+        break;
+      }
+    }
+    data += lines;
+  }
+  return result;
+}
+
+void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
+{
+  uint32_t fontsize = FONTSIZE(flags);
+  unsigned char c_remapped = 0;
+
+  if (fontsize == DBLSIZE || (flags&BOLD)) {
+    // To save space only some DBLSIZE and BOLD chars are available
+    // c has to be remapped. All non existing chars mapped to 0 (space)
+    if (c>=',' && c<=':')
+      c_remapped = c - ',' + 1;
+    else if (c>='A' && c<='Z')
+      c_remapped = c - 'A' + 16;
+    else if (c>='a' && c<='z')
+      c_remapped = c - 'a' + 42;
+    else if (c=='_')
+      c_remapped = 4;
+    else if (c!=' ')
+      flags &= ~BOLD;
+  }
+
+  if (fontsize == DBLSIZE) {
+    pattern->width = 10;
+    pattern->height = 16;
+    if (c >= 0xC0) {
+      pattern->data = &font_10x14_extra[((uint16_t)(c-0xC0))*20];
+    }
+    else {
+      if (c >= 128)
+        c_remapped = c - 60;
+      pattern->data = &font_10x14[((uint16_t)c_remapped)*20];
+    }
+  }
+  else if (fontsize == XXLSIZE) {
+    pattern->width = 22;
+    pattern->height = 38;
+    pattern->data = &font_22x38_num[((uint16_t)c-'0'+5)*110];
+  }
+  else if (fontsize == MIDSIZE) {
+    pattern->width = 8;
+    pattern->height = 12;
+    pattern->data = &font_8x10[((uint16_t)c-0x20)*16];
+  }
+  else if (fontsize == SMLSIZE) {
+    pattern->width = 5;
+    pattern->height = 6;
+    pattern->data = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
+  }
+  else if (fontsize == TINSIZE) {
+    pattern->width = 3;
+    pattern->height = 5;
+    pattern->data = &font_3x5[((uint16_t)c-0x20)*3];
+  }
+  else if (flags & BOLD) {
+    pattern->width = 5;
+    pattern->height = 7;
+    pattern->data = &font_5x7_B[c_remapped*5];
+  }
+  else {
+    pattern->width = 5;
+    pattern->height = 7;
+    pattern->data = (c < 0xC0) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0xC0)*5];
+  }
+}
+
+uint8_t getCharWidth(char c, LcdFlags flags)
+{
+  PatternData pattern;
+  getCharPattern(&pattern, c, flags);
+  return getPatternWidth(&pattern);
+}
+#endif
+
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
   const pm_uchar * q;
@@ -192,13 +289,39 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
   lcdDrawChar(x, y, c, 0);
 }
 
+#if defined(CPUARM) && !defined(BOOT)
+uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
+{
+  uint8_t width = 0;
+  while (len--) {
+    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    if (!c) {
+      break;
+    }
+    width += getCharWidth(c, flags) + 1;
+    s++;
+  }
+  return width;
+}
+#endif
+
 void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
 {
   const coord_t orig_x = x;
+
 #if defined(CPUARM)
   const uint8_t orig_len = len;
   uint32_t fontsize = FONTSIZE(flags);
 #endif
+  
+#if defined(CPUARM) && !defined(BOOT)
+  uint8_t width = 0;
+  if (flags & RIGHT) {
+    width = getTextWidth(s, len, flags);
+    x -= width;
+  }
+#endif
+  
   bool setx = false;
   while (len--) {
     unsigned char c;
@@ -259,9 +382,14 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   }
   lcdLastPos = x;
   lcdNextPos = x;
-#if defined(CPUARM)
-  if (fontsize == MIDSIZE)
+#if defined(CPUARM) && !defined(BOOT)
+  if (fontsize == MIDSIZE) {
     lcdLastPos += 1;
+  }
+  if (flags & RIGHT) {
+    lcdLastPos -= width;
+    lcdNextPos -= width;
+  }
 #endif
 }
 
@@ -334,6 +462,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
   flags &= ~LEADING0;
+  
 #if defined(CPUARM)
   uint32_t fontsize = FONTSIZE(flags);
   bool dblsize = (fontsize == DBLSIZE);
@@ -386,16 +515,17 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
     fw -= 1;
   }
   else {
-    if (flags & LEFT) {
-      if (mode > 0)
+    if (IS_LEFT_ALIGNED(flags)) {
+      if (mode > 0) {
         x += 2;
+      }
     }
 #if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (flags & BOLD) fw += 1;
 #endif
   }
 
-  if (flags & LEFT) {
+  if (IS_LEFT_ALIGNED(flags)) {
     x += len * fw;
     if (neg) {
       x += ((xxlsize|dblsize|midsize) ? 7 : FWNUM);
@@ -568,30 +698,31 @@ void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat,
 #endif
 }
 
-void lcdDrawTelemetryTopBar()
+void drawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
   putsVBat(14*FW,0,att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
-    putsTimer(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
+    drawTimer(17*FW+5*FWNUM+1, 0, timersStates[0].val, att, att);
   }
   lcdInvertLine(0);
 }
 
 #if defined(CPUARM) && defined(RTCLOCK)
-void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
+void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 {
-  putsTimer(x, y, getValue(MIXSRC_TX_TIME), att, att);
+  drawTimer(x, y, getValue(MIXSRC_TX_TIME), att, att);
 }
 #endif
 
-void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
 
-  if (!(att & LEFT)) {
+  if (IS_RIGHT_ALIGNED(att)) {
+    att -= RIGHT;
     if (att & DBLSIZE)
       x -= 5*(2*FWNUM)-4;
     else if (att & MIDSIZE)
@@ -622,12 +753,12 @@ void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     att &= ~DBLSIZE;
 #endif
 #if defined(CPUARM) && defined(RTCLOCK)
-  if (att&TIMEBLINK)
+  if (att & TIMEBLINK)
     lcdDrawChar(lcdLastPos, y, separator, BLINK);
   else
 #endif
   lcdDrawChar(lcdLastPos, y, separator, att&att2);
-  lcdDrawNumber(lcdNextPos, y, qr.rem, att2|LEADING0|LEFT, 2);
+  lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0|LEFT) & (~RIGHT), 2);
 }
 
 // TODO to be optimized with putsValueWithUnit
@@ -642,14 +773,8 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
   putsVolts(x, y, g_vbat100mV, att);
 }
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att)
-{
-  lcdDrawText(x, y, str, att & ~LEADING0);
-  lcdDrawNumber(lcdNextPos, y, idx, att|LEFT, 2);
-}
-
 #if defined(CPUARM)
-void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
+void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 {
   if (idx == MIXSRC_NONE) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
@@ -721,7 +846,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
   }
   else if (idx < MIXSRC_FIRST_TELEM) {
-    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
   }
   else {
     idx -= MIXSRC_FIRST_TELEM;
@@ -731,7 +856,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   }
 }
 #else
-void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+void drawMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   if (idx < MIXSRC_THR)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx, att);
@@ -749,7 +874,7 @@ void putsMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
 #endif
   else if (idx < MIXSRC_FIRST_TELEM) {
-    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-(MIXSRC_SW1-MIXSRC_THR)-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-(MIXSRC_SW1-MIXSRC_THR)-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
   }
 #if defined(CPUARM)
   else {
@@ -867,7 +992,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     drawStringWithIndex(x, y, STR_CV, idx-CURVE_BASE+1, att);
 }
 
-void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
@@ -1029,7 +1154,7 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
 
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att)
 {
-  if (channel >= MAX_SENSORS) return;
+  if (channel >= MAX_TELEMETRY_SENSORS) return;
   TelemetryItem & telemetryItem = telemetryItems[channel];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
   if (telemetrySensor.unit == UNIT_DATETIME) {
@@ -1055,7 +1180,7 @@ void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, Lc
     putsTelemetryChannelValue(x, y, channel, value, att);
   }
   else if (channel >= MIXSRC_FIRST_TIMER || channel == MIXSRC_TX_TIME) {
-    putsTimer(x, y, value, att, att);
+    drawTimer(x, y, value, att, att);
   }
   else if (channel == MIXSRC_TX_VOLTAGE) {
     lcdDrawNumber(x, y, value, att|PREC1);
@@ -1100,10 +1225,8 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
   switch (channel) {
 #if defined(CPUARM) && defined(RTCLOCK)
     case TELEM_TX_TIME-1:
-    {
-      putsRtcTime(x, y, att);
+      drawRtcTime(x, y, att);
       break;
-    }
 #endif
     case TELEM_TIMER1-1:
     case TELEM_TIMER2-1:
@@ -1111,7 +1234,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     case TELEM_TIMER3-1:
 #endif
       att &= ~NO_UNIT;
-      putsTimer(x, y, val, att, att);
+      drawTimer(x, y, val, att, att);
       break;
 #if defined(TELEMETRY_FRSKY)
     case TELEM_MIN_A1-1:
@@ -1239,7 +1362,7 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     case TELEM_TIMER1-1:
     case TELEM_TIMER2-1:
       att &= ~NO_UNIT;
-      putsTimer(x, y, val, att, att);
+      drawTimer(x, y, val, att, att);
       break;
 
     case TELEM_TX_VOLTAGE-1:

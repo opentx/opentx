@@ -110,8 +110,8 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, event_t event)
     lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN-INVERT_HORZ_MARGIN, y-INVERT_VERT_MARGIN+1, 115+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
   }
   drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_TIMER, timerIdx+1);
-  putsTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer.mode, (menuHorizontalPosition<=0 ? attr : 0));
-  putsTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer.start, (menuHorizontalPosition!=0 ? attr|TIMEHOUR : TIMEHOUR));
+  drawTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer.mode, (menuHorizontalPosition<=0 ? attr : 0));
+  drawTimer(MODEL_SETUP_2ND_COLUMN+50, y, timer.start, (menuHorizontalPosition!=0 ? attr|TIMEHOUR : TIMEHOUR));
   if (attr && s_editMode>0) {
     switch (menuHorizontalPosition) {
       case 0:
@@ -406,13 +406,13 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_THROTTLE_TRACE:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRACE);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_SLIDERS+NUM_CHNOUT);
+        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTraceSrc, NUM_POTS+NUM_SLIDERS+MAX_OUTPUT_CHANNELS);
         uint8_t idx = g_model.thrTraceSrc + MIXSRC_Thr;
         if (idx > MIXSRC_Thr)
           idx += 1;
         if (idx >= MIXSRC_FIRST_POT+NUM_POTS+NUM_SLIDERS)
           idx += MIXSRC_CH1 - MIXSRC_FIRST_POT - NUM_POTS - NUM_SLIDERS;
-        putsMixerSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
+        drawMixerSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
         break;
       }
 

@@ -326,6 +326,9 @@ void ledRed(void);
 void ledBlue(void);
 
 // LCD driver
+#define LCD_W                          480
+#define LCD_H                          272
+#define LCD_DEPTH                      16
 void lcdInit(void);
 void lcdRefresh(void);
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);

@@ -49,13 +49,17 @@ void menuRadioDiagAnalogs(uint8_t event)
     lcdDrawChar(lcdNextPos, y, ':');
 #endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
+#if defined(CPUARM)
+    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
+#else
     lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+#endif
   }
 
 #if !defined(CPUARM)
   // Display raw BandGap result (debug)
   lcdDrawText(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
-  lcdDrawNumber(64+5+6*FW-3, 1+4*FH, BandGap, 0);
+  lcdDrawNumber(64+5+6*FW-3, 1+4*FH, BandGap, RIGHT);
 #endif
 
 #if defined(PCBSKY9X)

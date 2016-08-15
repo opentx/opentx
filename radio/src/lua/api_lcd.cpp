@@ -195,9 +195,9 @@ static int luaLcdDrawTimer(lua_State *L)
   int seconds = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
 #if defined(COLORLCD)
-  putsTimer(x, y, seconds, att|LEFT);
+  drawTimer(x, y, seconds, att|LEFT);
 #else
-  putsTimer(x, y, seconds, att|LEFT, att);
+  drawTimer(x, y, seconds, att|LEFT, att);
 #endif
   return 0;
 }
@@ -312,7 +312,7 @@ static int luaLcdDrawSource(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  putsMixerSource(x, y, s, att);
+  drawMixerSource(x, y, s, att);
   return 0;
 }
 

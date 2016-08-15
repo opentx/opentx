@@ -59,7 +59,7 @@ bool moveCurve(uint8_t index, int8_t shift) // TODO bool?
   
   int8_t * nextCrv = curveAddress(index+1);
   memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+curveEnd[MAX_CURVES-1]-curveEnd[index]);
-  if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
+  if (shift < 0) memclear(&g_model.points[MAX_CURVE_POINTS-1] + shift, -shift);
   while (index<MAX_CURVES) {
     curveEnd[index++] += shift;
   }
@@ -104,7 +104,7 @@ CurveInfo curveInfo(uint8_t idx)
 
 bool moveCurve(uint8_t index, int8_t shift, int8_t custom) // TODO move?
 {
-  if (g_model.curves[MAX_CURVES-1] + shift > NUM_POINTS-5*MAX_CURVES) {
+  if (g_model.curves[MAX_CURVES-1] + shift > MAX_CURVE_POINTS-5*MAX_CURVES) {
     AUDIO_WARNING2();
     return false;
   }
@@ -117,7 +117,7 @@ bool moveCurve(uint8_t index, int8_t shift, int8_t custom) // TODO move?
 
   int8_t * nextCrv = curveAddress(index+1);
   memmove(nextCrv+shift, nextCrv, 5*(MAX_CURVES-index-1)+g_model.curves[MAX_CURVES-1]-g_model.curves[index]);
-  if (shift < 0) memclear(&g_model.points[NUM_POINTS-1] + shift, -shift);
+  if (shift < 0) memclear(&g_model.points[MAX_CURVE_POINTS-1] + shift, -shift);
   while (index<MAX_CURVES) {
     g_model.curves[index++] += shift;
   }

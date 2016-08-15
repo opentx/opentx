@@ -73,7 +73,7 @@ bool isSensorAvailable(int sensor)
 
 bool isSensorUnit(int sensor, uint8_t unit)
 {
-  if (sensor <= 0 || sensor > MAX_SENSORS ) {
+  if (sensor <= 0 || sensor > MAX_TELEMETRY_SENSORS ) {
     return true;
   }
   else {

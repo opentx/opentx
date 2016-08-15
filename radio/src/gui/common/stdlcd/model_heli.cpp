@@ -76,7 +76,7 @@ void menuModelHeli(uint8_t event)
 #if defined(VIRTUAL_INPUTS)
       case ITEM_HELI_ELE:
         lcdDrawTextAlignedLeft(y, STR_ELEVATOR);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
+        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -88,7 +88,7 @@ void menuModelHeli(uint8_t event)
 
       case ITEM_HELI_AIL:
         lcdDrawTextAlignedLeft(y, STR_AILERON);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
+        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -100,7 +100,7 @@ void menuModelHeli(uint8_t event)
 
       case ITEM_HELI_COL:
         lcdDrawTextAlignedLeft(y, STR_COLLECTIVE);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
+        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -112,7 +112,7 @@ void menuModelHeli(uint8_t event)
 #else
       case ITEM_HELI_COLLECTIVE:
         g_model.swashR.collectiveSource = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
+        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         break;
 
       case ITEM_HELI_ELEDIRECTION:

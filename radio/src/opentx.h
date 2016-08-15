@@ -398,7 +398,7 @@ void memswap(void * a, void * b, uint8_t size);
 // Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi)
   static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 8 }; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
-  #define MAX_TRAINER_CHANNELS()            (8)
+  #define MAX_TRAINER_CHANNELS_M8()    (MAX_TRAINER_CHANNELS-8)
 #endif
 
 #if defined(MULTIMODULE)
@@ -431,7 +431,7 @@ void memswap(void * a, void * b, uint8_t size);
     #define MAX_INTERNAL_MODULE_CHANNELS()  (maxChannelsXJT[1+g_model.moduleData[INTERNAL_MODULE].rfProtocol])
   #endif
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
-  #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
+  #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8()))
   #define NUM_CHANNELS(idx)                 ((IS_MODULE_CROSSFIRE(idx) || IS_MODULE_MULTIMODULE(idx)) ? CROSSFIRE_CHANNELS_COUNT : (8+g_model.moduleData[idx].channelsCount))
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
@@ -439,14 +439,14 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
   #define MAX_EXTRA_MODULE_CHANNELS()       (8) // Only PPM (16ch PPM)
-  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : (idx==EXTRA_MODULE ? MAX_EXTRA_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS()))
+  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : (idx==EXTRA_MODULE ? MAX_EXTRA_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8()))
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
 #else
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)
   #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
-  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS())
+  #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8())
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
 #endif
 
@@ -464,7 +464,7 @@ void memswap(void * a, void * b, uint8_t size);
 typedef struct {
   MASK_FUNC_TYPE activeFunctions;
   MASK_CFN_TYPE  activeSwitches;
-  tmr10ms_t lastFunctionTime[NUM_CFN];
+  tmr10ms_t lastFunctionTime[MAX_SPECIAL_FUNCTIONS];
 
   inline bool isFunctionActive(uint8_t func)
   {
@@ -822,7 +822,7 @@ extern uint16_t s_timeCum16ThrP;
   typedef int8_t safetych_t;
   #define OVERRIDE_CHANNEL_UNDEFINED -128
 #endif
-extern safetych_t safetyCh[NUM_CHNOUT];
+extern safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
 #endif
 
 extern uint8_t trimsCheckTimer;
@@ -1026,9 +1026,9 @@ extern uint8_t            g_beepVal[5];
 
 #include "trainer_input.h"
 
-extern int32_t            chans[NUM_CHNOUT];
-extern int16_t            ex_chans[NUM_CHNOUT]; // Outputs (before LIMITS) of the last perMain
-extern int16_t            channelOutputs[NUM_CHNOUT];
+extern int32_t            chans[MAX_OUTPUT_CHANNELS];
+extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain
+extern int16_t            channelOutputs[MAX_OUTPUT_CHANNELS];
 extern uint16_t           BandGap;
 
 #if defined(CPUARM)
@@ -1429,7 +1429,7 @@ union ReusableBuffer
   struct
   {
     char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
-#if !defined(CPUARM)
+#if defined(EEPROM_RLC) && LCD_W < 212
     uint16_t eepromfree;
 #endif
 #if defined(SDCARD)

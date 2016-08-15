@@ -407,7 +407,7 @@ void luaLoadPermanentScripts()
   }
 
   // Load custom function scripts
-  for (int i=0; i<NUM_CFN; i++) {
+  for (int i=0; i<MAX_SPECIAL_FUNCTIONS; i++) {
     if (!luaLoadFunctionScript(i)) {
       return;
     }

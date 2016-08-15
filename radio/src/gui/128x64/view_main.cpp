@@ -167,7 +167,7 @@ void displayTimers()
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     LcdFlags att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
-    putsTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
+    drawTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
     uint8_t xLabel = (timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7);
 #if defined(CPUARM)
     uint8_t len = zlen(g_model.timers[0].name, LEN_TIMER_NAME);
@@ -176,10 +176,10 @@ void displayTimers()
       lcdDrawSizedText(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
     }
     else {
-      putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+      drawTimerMode(xLabel, FH*3, g_model.timers[0].mode);
     }
 #else
-    putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+    drawTimerMode(xLabel, FH*3, g_model.timers[0].mode);
 #endif
   }
 }
@@ -187,7 +187,7 @@ void displayTimers()
 void displayBattVoltage()
 {
 #if defined(BATTGRAPH)
-  putsVBat(VBATT_X-8, VBATT_Y+1, 0);
+  putsVBat(VBATT_X-8, VBATT_Y+1, RIGHT);
   lcdDrawFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X-4, VBATT_Y+10, 3);
   uint8_t count = GET_TXBATT_BARS();
@@ -206,10 +206,10 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
+    putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
+    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else {
     displayBattVoltage();
@@ -475,11 +475,11 @@ void menuMainView(uint8_t event)
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
 #if defined(PPM_UNIT_US)
-          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, 0);
+          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), PREC1);
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), RIGHT|PREC1);
 #else
-          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
 #endif
           break;
 
@@ -539,20 +539,20 @@ void menuMainView(uint8_t event)
 
       // Logical Switches
 #if defined(CPUARM)
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);
         lcdDrawSolidVerticalLine(x-1, VSWITCH_Y-len, len);
         lcdDrawSolidVerticalLine(x,   VSWITCH_Y-len, len);
       }
 #elif defined(CPUM2560)
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
         putsSwitches(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
         putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
         putsSwitches(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
@@ -563,8 +563,8 @@ void menuMainView(uint8_t event)
 #else
   #define TMR2_LBL_COL (20-FW/2+5)
 #endif
-    putsTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
-    putsTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
+    drawTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE|RIGHT, DBLSIZE);
+    drawTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
     // lcdDrawNumber(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 

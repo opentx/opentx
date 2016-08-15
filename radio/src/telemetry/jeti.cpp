@@ -192,7 +192,7 @@ void JETI_put_stop (void)
 
 void menuViewTelemetryJeti(uint8_t event)
 {
-  lcdDrawTelemetryTopBar();
+  drawTelemetryTopBar();
 
   for (uint8_t i=0; i<16; i++) {
     lcdDrawChar((i+2)*FW, 3*FH, jetiRxBuffer[i], BSS);

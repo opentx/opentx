@@ -312,10 +312,14 @@ void menuModelSelect(uint8_t event)
         break;
   }
 
-#if !defined(PCBSKY9X) && !defined(PCBX7D)
+#if defined(EEPROM_RLC) && defined(CPUARM)
+  lcdDrawText(9*FW-(LEN_FREE-4)*FW-4, 0, STR_FREE);
+  if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
+  lcdDrawNumber(lcdLastPos+3, 0, reusableBuffer.modelsel.eepromfree, LEFT);
+#elif defined(EEPROM_RLC)
   lcdDrawText(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
-  lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
+  lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, RIGHT);
 #endif
   
 #if defined(PCBX7D)
@@ -332,7 +336,7 @@ void menuModelSelect(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    lcdDrawNumber(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+    lcdDrawNumber(3*FW+2, y, k+1, RIGHT+LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
     if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
       if (k == sub) {
@@ -359,10 +363,11 @@ void menuModelSelect(uint8_t event)
       char * name = reusableBuffer.modelsel.listnames[i];
       if (event) eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
-      lcdDrawNumber(20*FW, y, eeModelSize(k), 0);
+      lcdDrawNumber(20*FW, y, eeModelSize(k), RIGHT);
 #endif
-      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub))
+      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub)) {
         lcdDrawChar(1, y, '*');
+      }
     }
 
     if (s_copyMode && (vertpos_t)sub==i+menuVerticalOffset) {

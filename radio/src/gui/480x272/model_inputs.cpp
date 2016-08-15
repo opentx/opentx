@@ -233,7 +233,7 @@ bool menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_SOURCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, menuHorizontalPosition==0 ? attr : 0);
+        drawMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, menuHorizontalPosition==0 ? attr : 0);
         if (attr && menuHorizontalPosition==0) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
           putsTelemetryChannelValue(EXPO_ONE_2ND_COLUMN+60, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|(menuHorizontalPosition==1?attr:0));
@@ -349,7 +349,7 @@ void displayExpoInfos(coord_t y, ExpoData * ed)
 
 void displayExpoLine(coord_t y, ExpoData * ed)
 {
-  putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw);
+  drawMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw);
 
   displayExpoInfos(y, ed);
   displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes, 0);
@@ -493,7 +493,7 @@ bool menuModelExposAll(event_t event)
     coord_t y = MENU_CONTENT_TOP + (cur-menuVerticalOffset)*FH;
     if ((i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed))) {
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-        putsMixerSource(MENUS_MARGIN_LEFT, y, ch);
+        drawMixerSource(MENUS_MARGIN_LEFT, y, ch);
       }
       uint8_t mixCnt = 0;
       do {
@@ -544,7 +544,7 @@ bool menuModelExposAll(event_t event)
         }
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-        putsMixerSource(MENUS_MARGIN_LEFT, y, ch, attr);
+        drawMixerSource(MENUS_MARGIN_LEFT, y, ch, attr);
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           lineExpoSurround(y);
         }

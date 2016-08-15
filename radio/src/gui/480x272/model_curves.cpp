@@ -134,7 +134,7 @@ bool menuModelCurveOne(event_t event)
   if (attr) {
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
-      int newPoints[MAX_POINTS];
+      int newPoints[MAX_POINTS_PER_CURVE];
       newPoints[0] = points[0];
       newPoints[4+count] = points[4+crv.points];
       for (int i=1; i<4+count; i++)

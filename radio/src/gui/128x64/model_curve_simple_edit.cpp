@@ -72,7 +72,7 @@ void menuModelCurveOne(uint8_t event)
         if (crv.custom) {
           moveCurve(s_curveChan, -crv.points+2);
         }
-        else if (crv.points > MIN_POINTS) {
+        else if (crv.points > MIN_POINTS_PER_CURVE) {
           moveCurve(s_curveChan, -1, (crv.points+1)/2);
         }
         else {
@@ -90,7 +90,7 @@ void menuModelCurveOne(uint8_t event)
         if (!crv.custom) {
           moveCurve(s_curveChan, crv.points-2, crv.points);
         }
-        else if (crv.points < MAX_POINTS) {
+        else if (crv.points < MAX_POINTS_PER_CURVE) {
           if (moveCurve(s_curveChan, 1)) {
             for (int8_t i=crv.points+crv.points-2; i>=0; i--) {
               if (i%2)

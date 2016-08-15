@@ -46,7 +46,7 @@ audioQueue  audio;
 uint8_t heartbeat;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-safetych_t safetyCh[NUM_CHNOUT];
+safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
 #endif
 
 union ReusableBuffer reusableBuffer;
@@ -1960,7 +1960,7 @@ void opentxClose(uint8_t shutdown)
   saveTimers();
 
 #if defined(CPUARM)
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
       sensor.persistentValue = telemetryItems[i].value;
@@ -2391,18 +2391,18 @@ void copyTrimsToOffset(uint8_t ch)
 
 void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 {
-  int16_t zeros[NUM_CHNOUT];
+  int16_t zeros[MAX_OUTPUT_CHANNELS];
 
   pauseMixerCalculations();
 
   evalFlightModeMixes(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
-  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
   evalFlightModeMixes(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
-  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     int16_t output = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
     if (g_model.limitData[i].revert) output = -output;
@@ -2495,7 +2495,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
-  rtcInit();    // RTC must be initialized before rambackupRestore() is called
+  rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
 
   if (UNEXPECTED_SHUTDOWN()) {

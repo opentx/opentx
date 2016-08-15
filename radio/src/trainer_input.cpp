@@ -20,7 +20,7 @@
 
 #include "trainer_input.h"
 
-int16_t ppmInput[NUM_TRAINER];
+int16_t ppmInput[MAX_TRAINER_CHANNELS];
 uint8_t ppmInputValidityTimer;
 
 

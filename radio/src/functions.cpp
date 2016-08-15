@@ -262,7 +262,7 @@ void evalFunctions()
   MASK_CFN_TYPE  newActiveSwitches = 0;
 
 #if defined(CPUARM)
-  uint8_t playFirstIndex = (functions == g_model.customFn ? 1 : 1+NUM_CFN);
+  uint8_t playFirstIndex = (functions == g_model.customFn ? 1 : 1+MAX_SPECIAL_FUNCTIONS);
   #define PLAY_INDEX   (i+playFirstIndex)
 #else
   #define PLAY_INDEX   (i+1)
@@ -273,7 +273,7 @@ void evalFunctions()
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-  for (uint8_t i=0; i<NUM_CHNOUT; i++) {
+  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     safetyCh[i] = OVERRIDE_CHANNEL_UNDEFINED;
   }
 #endif
@@ -284,7 +284,7 @@ void evalFunctions()
   }
 #endif
 
-  for (uint8_t i=0; i<NUM_CFN; i++) {
+  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS; i++) {
     const CustomFunctionData * cfn = &functions[i];
     int8_t swtch = CFN_SWITCH(cfn);
     if (swtch) {
@@ -358,7 +358,7 @@ void evalFunctions()
 #if defined(CPUARM)
             if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
               uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
-              if (item < MAX_SENSORS) {
+              if (item < MAX_TELEMETRY_SENSORS) {
                 telemetryItems[item].clear();
               }
             }
@@ -376,7 +376,7 @@ void evalFunctions()
           {
             unsigned int moduleIndex = CFN_PARAM(cfn);
             if (moduleIndex < NUM_MODULES) {
-              for (int ch=0; ch<NUM_CHNOUT; ch++) {
+              for (int ch=0; ch<MAX_OUTPUT_CHANNELS; ch++) {
                 if (ch < g_model.moduleData[moduleIndex].channelsStart || ch >= NUM_CHANNELS(moduleIndex) + g_model.moduleData[moduleIndex].channelsStart) {
                   g_model.moduleData[moduleIndex].failsafeChannels[ch] = 0;
                 }

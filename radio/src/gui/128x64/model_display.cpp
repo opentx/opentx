@@ -66,7 +66,7 @@ enum MenuModelDisplayItems {
 #if defined(LUA)
 void onTelemetryScriptFileSelectionMenu(const char *result)
 {
-  int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition);
+  int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition - HEADER_LINE);
 
   if (result == STR_UPDATE_LIST) {
     if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
@@ -84,18 +84,21 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 
 void menuModelDisplay(uint8_t event)
 {
-  MENU(STR_MENU_DISPLAY, menuTabModel, MENU_MODEL_DISPLAY, ITEM_DISPLAY_MAX, { TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
+  MENU(STR_MENU_DISPLAY, menuTabModel, MENU_MODEL_DISPLAY, HEADER_LINE + ITEM_DISPLAY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
+  
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
     for (int j=0; j<=k; j++) {
-      if (mstate_tab[j] == HIDDEN_ROW)
+      if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
         k++;
+      }
     }
 
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
+    LcdFlags attr = (sub == k ? blink : 0);
 
     switch (k) {
       case ITEM_DISPLAY_SCREEN_LABEL1:
@@ -177,7 +180,7 @@ void menuModelDisplay(uint8_t event)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           source_t barSource = bar.source;
-          putsMixerSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
+          drawMixerSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
           int barMax = getMaximumValue(barSource);
           int barMin = -barMax;
           if (barSource) {
@@ -222,7 +225,7 @@ void menuModelDisplay(uint8_t event)
             LcdFlags cellAttr = (menuHorizontalPosition==c ? attr : 0);
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
             const coord_t pos[] = {DISPLAY_COL1, DISPLAY_COL2, DISPLAY_COL3};
-            putsMixerSource(pos[c], y, value, cellAttr);
+            drawMixerSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {
               value = checkIncDec(event, value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
             }

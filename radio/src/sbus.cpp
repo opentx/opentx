@@ -49,7 +49,7 @@ void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size)
 
   uint32_t inputbitsavailable = 0;
   uint32_t inputbits = 0;
-  for (uint32_t i=0; i<NUM_TRAINER; i++) {
+  for (uint32_t i=0; i<MAX_TRAINER_CHANNELS; i++) {
     while (inputbitsavailable < SBUS_CH_BITS) {
       inputbits |= *sbus++ << inputbitsavailable;
       inputbitsavailable += 8;

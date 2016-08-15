@@ -521,7 +521,7 @@ int cliDisplay(const char ** argv)
     }
   }
   else if (!strcmp(argv[1], "outputs")) {
-    for (int i=0; i<NUM_CHNOUT; i++) {
+    for (int i=0; i<MAX_OUTPUT_CHANNELS; i++) {
       serialPrint("outputs[%d] = %04d", i, (int)channelOutputs[i]);
     }
   }

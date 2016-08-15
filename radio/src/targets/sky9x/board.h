@@ -161,6 +161,9 @@ enum EnumSwitches
 #endif
 
 // LCD driver
+#define LCD_W                          128
+#define LCD_H                          64
+#define LCD_DEPTH                      1
 void lcdInit(void);
 void lcdRefresh(void);
 #define lcdRefreshWait()

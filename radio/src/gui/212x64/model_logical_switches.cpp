@@ -76,7 +76,7 @@ void menuModelLogicalSwitches(uint8_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
-  MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, NUM_LOGICAL_SWITCH, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
+  MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, MAX_LOGICAL_SWITCHES, { NAVIGATION_LINE_BY_LINE|LS_FIELD_LAST/*repeated...*/ });
 
   int k = 0;
   int sub = menuVerticalPosition;
@@ -144,8 +144,8 @@ void menuModelLogicalSwitches(uint8_t event)
     }
     else if (cstate == LS_FAMILY_COMP) {
       v1_val = cs->v1;
-      putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
-      putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
+      drawMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
+      drawMixerSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
       INCDEC_ENABLE_CHECK(isSourceAvailable);
     }
@@ -159,7 +159,7 @@ void menuModelLogicalSwitches(uint8_t event)
     }
     else {
       v1_val = cs->v1;
-      putsMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
+      drawMixerSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       if (horz == 1) {
         INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
         INCDEC_ENABLE_CHECK(isSourceAvailableInCustomSwitches);

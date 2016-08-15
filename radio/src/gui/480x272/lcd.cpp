@@ -210,9 +210,9 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
 }
 #endif
 
-void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
+void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 {
-  putsTimer(x, y, getValue(MIXSRC_TX_TIME), att);
+  drawTimer(x, y, getValue(MIXSRC_TX_TIME), att);
 }
 
 void getTimerString(char * str, putstime_t tme, LcdFlags att)
@@ -243,7 +243,7 @@ void getTimerString(char * str, putstime_t tme, LcdFlags att)
   *str = '\0';
 }
 
-void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
 {
   char str[LEN_TIMER_STRING]; // "-00:00:00"
   getTimerString(str, tme, att);
@@ -394,7 +394,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
     getStringWithIndex(dest, STR_GV, idx - MIXSRC_GVAR1 + 1);
   }
   else if (idx < MIXSRC_FIRST_TELEM) {
-    getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS);
+    getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS);
   }
   else {
     idx -= MIXSRC_FIRST_TELEM;
@@ -408,7 +408,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
   return dest;
 }
 
-void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags flags)
+void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags flags)
 {
   char s[16];
   getSourceString(s, idx);
@@ -460,7 +460,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
   }
 }
 
-void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
@@ -548,7 +548,7 @@ void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t value, Lcd
     putsTelemetryChannelValue(x, y, channel, value, att);
   }
   else if (channel >= MIXSRC_FIRST_TIMER || channel == MIXSRC_TX_TIME) {
-    putsTimer(x, y, value, att);
+    drawTimer(x, y, value, att);
   }
   else if (channel == MIXSRC_TX_VOLTAGE) {
     lcdDrawNumber(x, y, value, att|PREC1);

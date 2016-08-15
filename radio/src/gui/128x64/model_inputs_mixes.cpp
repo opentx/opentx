@@ -185,7 +185,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
     }
 
     if (tgt_idx == MAX_MIXERS) {
-      if (((MixData *)x)->destCh == NUM_CHNOUT-1)
+      if (((MixData *)x)->destCh == MAX_OUTPUT_CHANNELS-1)
         return false;
       ((MixData *)x)->destCh++;
       return true;
@@ -199,7 +199,7 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
         else return false;
       }
       else {
-        if (destCh<NUM_CHNOUT-1) ((MixData *)x)->destCh++;
+        if (destCh<MAX_OUTPUT_CHANNELS-1) ((MixData *)x)->destCh++;
         else return false;
       }
       return true;
@@ -232,7 +232,7 @@ enum ExposFields {
 void menuModelExpoOne(uint8_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
-  putsMixerSource(7*FW+FW/2, 0, MIXSRC_Rud+ed->chn, 0);
+  drawMixerSource(7*FW+FW/2, 0, MIXSRC_Rud+ed->chn, 0);
 
   SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {CASE_CPUARM(0) 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
@@ -437,7 +437,7 @@ void menuModelMixOne(uint8_t event)
 #endif
       case MIX_FIELD_SOURCE:
         drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
+        drawMixerSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
       case MIX_FIELD_WEIGHT:
@@ -825,13 +825,13 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   uint8_t cur = 1;
   uint8_t i = 0;
 
-  for (uint8_t ch=1; ch<=(expo ? NUM_INPUTS : NUM_CHNOUT); ch++) {
+  for (uint8_t ch=1; ch<=(expo ? NUM_INPUTS : MAX_OUTPUT_CHANNELS); ch++) {
     void *pointer = NULL; MixData * &md = (MixData * &)pointer; ExpoData * &ed = (ExpoData * &)pointer;
     coord_t y = MENU_HEADER_HEIGHT-FH+1+(cur-menuVerticalOffset)*FH;
     if (expo ? (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) : (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch)) {
       if (menuVerticalOffset < cur && cur-menuVerticalOffset < LCD_LINES) {
         if (expo) {
-          putsMixerSource(0, y, MIXSRC_Rud+ch-1, 0);
+          drawMixerSource(0, y, MIXSRC_Rud+ch-1, 0);
         }
         else {
           putsChn(0, y, ch, 0); // show CHx
@@ -864,7 +864,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
           else {
             if (mixCnt > 0) lcdDrawTextAtIndex(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-            putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
+            drawMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
             gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, attr | (isMixActive(i) ? BOLD : 0), event);
 
@@ -906,7 +906,7 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
       }
       if (menuVerticalOffset < cur && cur-menuVerticalOffset < LCD_LINES) {
         if (expo) {
-          putsMixerSource(0, y, MIXSRC_Rud+ch-1, attr);
+          drawMixerSource(0, y, MIXSRC_Rud+ch-1, attr);
         }
         else {
           putsChn(0, y, ch, attr); // show CHx

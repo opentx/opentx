@@ -1,3 +1,8 @@
+set(GUI_SRC
+  ${GUI_SRC}
+  ../common/stdlcd/widgets.cpp
+  )
+
 if(HELI)
   set(GUI_SRC ${GUI_SRC} ../common/stdlcd/model_heli.cpp)
 endif()

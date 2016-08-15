@@ -41,7 +41,6 @@ configure_file(stamp.h.in stamp.h @ONLY)
 add_subdirectory(translations)
 add_subdirectory(bitmaps)
 add_subdirectory(fonts)
-add_subdirectory(lua)
 
 set(EEPROM_VARIANT  0)
 set(GVARS_VARIANT   1)
@@ -154,6 +153,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 
+add_subdirectory(lua)
 include(gui/CMakeLists.txt)
 
 if(RAMBACKUP)

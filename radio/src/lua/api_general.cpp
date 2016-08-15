@@ -269,7 +269,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 
   // search in telemetry
   field.desc[0] = '\0';
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
       char sensorName[TELEM_LABEL_LEN+1];
       int len = zchar2str(sensorName, g_model.telemetrySensors[i].label, TELEM_LABEL_LEN);

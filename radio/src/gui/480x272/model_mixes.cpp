@@ -24,7 +24,7 @@
 int getMixesLinesCount()
 {
   int lastch = -1;
-  uint8_t count = NUM_CHNOUT;
+  uint8_t count = MAX_OUTPUT_CHANNELS;
   for (int i=0; i<MAX_MIXERS; i++) {
     bool valid = mixAddress(i)->srcRaw;
     if (!valid)
@@ -116,7 +116,7 @@ bool swapMixes(uint8_t & idx, uint8_t up)
   }
 
   if (tgt_idx == MAX_MIXERS) {
-    if (x->destCh == NUM_CHNOUT-1)
+    if (x->destCh == MAX_OUTPUT_CHANNELS-1)
       return false;
     x->destCh++;
     return true;
@@ -130,7 +130,7 @@ bool swapMixes(uint8_t & idx, uint8_t up)
       else return false;
     }
     else {
-      if (destCh<NUM_CHNOUT-1) x->destCh++;
+      if (destCh<MAX_OUTPUT_CHANNELS-1) x->destCh++;
       else return false;
     }
     return true;
@@ -201,7 +201,7 @@ bool menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_SOURCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
+        drawMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
       case MIX_FIELD_WEIGHT:
@@ -519,7 +519,7 @@ bool menuModelMixAll(event_t event)
   int cur = 0;
   int i = 0;
 
-  for (int ch=1; ch<=NUM_CHNOUT; ch++) {
+  for (int ch=1; ch<=MAX_OUTPUT_CHANNELS; ch++) {
     MixData * md;
     coord_t y = MENU_CONTENT_TOP + (cur-menuVerticalOffset)*FH;
     if (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch) {
@@ -547,7 +547,7 @@ bool menuModelMixAll(event_t event)
 
           if (mixCnt > 0) lcd->drawBitmap(10, y, mpx_mode[md->mltpx]);
 
-          putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
+          drawMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), event);
 

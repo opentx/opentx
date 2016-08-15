@@ -75,7 +75,7 @@ void postModelLoad(bool alarms)
   restoreTimers();
 
 #if defined(CPUARM)
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent) {
       telemetryItems[i].value = sensor.persistentValue;

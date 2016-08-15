@@ -39,7 +39,7 @@
 #define TIMERS_H      25
 #define TIMERS_R      193
 #define REBOOT_X      (LCD_W-FW)
-#define VSWITCH_X(i)  (((i>=NUM_LOGICAL_SWITCH*3/4) ? BITMAP_X+28 : ((i>=NUM_LOGICAL_SWITCH/2) ? BITMAP_X+25 : ((i>=NUM_LOGICAL_SWITCH/4) ? 21 : 18))) + 3*i)
+#define VSWITCH_X(i)  (((i>=MAX_LOGICAL_SWITCHES*3/4) ? BITMAP_X+28 : ((i>=MAX_LOGICAL_SWITCHES/2) ? BITMAP_X+25 : ((i>=MAX_LOGICAL_SWITCHES/4) ? 21 : 18))) + 3*i)
 #define VSWITCH_Y     (LCD_H-9)
 #define TRIM_LH_X     (32+9)
 #define TRIM_LV_X     10
@@ -220,7 +220,7 @@ void displayTopBar()
     altitude_icon_x = batt_icon_x+7*FW+3;
     if (g_model.frsky.voltsSource) {
       uint8_t item = g_model.frsky.voltsSource-1;
-      if (item < MAX_SENSORS) {
+      if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & voltsItem = telemetryItems[item];
         if (voltsItem.isAvailable()) {
           putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, item, voltsItem.value, LEFT);
@@ -232,7 +232,7 @@ void displayTopBar()
     /* Altitude */
     if (g_model.frsky.altitudeSource) {
       uint8_t item = g_model.frsky.altitudeSource-1;
-      if (item < MAX_SENSORS) {
+      if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & altitudeItem = telemetryItems[item];
         if (altitudeItem.isAvailable()) {
           LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
@@ -289,7 +289,7 @@ void displayTopBar()
     LCD_ICON(BAR_VOLUME_X, BAR_Y, ICON_SPEAKER3);
 
   /* RTC time */
-  putsRtcTime(BAR_TIME_X, BAR_Y+1, LEFT|TIMEBLINK);
+  drawRtcTime(BAR_TIME_X, BAR_Y+1, LEFT|TIMEBLINK);
 
   /* The background */
   lcdDrawFilledRect(BAR_X, BAR_Y, BAR_W, BAR_H, SOLID, FILL_WHITE|GREY(12)|ROUND);
@@ -315,9 +315,9 @@ void displayTimers()
         lcdDrawSizedText(TIMERS_X, y-7, timerData.name, LEN_TIMER_NAME, ZCHAR|SMLSIZE);
       }
       else {
-        putsTimerMode(TIMERS_X, y-7, timerData.mode, SMLSIZE);
+        drawTimerMode(TIMERS_X, y-7, timerData.mode, SMLSIZE);
       }
-      putsTimer(TIMERS_X, y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
+      drawTimer(TIMERS_X, y, timerState.val, TIMEHOUR|MIDSIZE|LEFT, TIMEHOUR|MIDSIZE|LEFT);
       if (timerData.persistent) {
         lcdDrawChar(TIMERS_R, y+1, 'P', SMLSIZE);
       }

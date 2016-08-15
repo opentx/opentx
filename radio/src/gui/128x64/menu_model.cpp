@@ -48,7 +48,7 @@ uint8_t s_copySrcCh;
 #if defined(PCBX7D)
 void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, uint8_t active/* TODO, uint8_t attr*/)
 {
-  uint8_t attr = ZCHAR; // TODO in args
+  LcdFlags attr = ZCHAR; // TODO in args
   uint8_t mode = 0;
   if (active) {
     if (s_editMode <= 0)
@@ -221,7 +221,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
 #endif
 
 #if !defined(CPUM64)
-void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active)
+void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, uint8_t event, uint8_t active)
 {
   lcdDrawTextAlignedLeft(y, label);
   editName(x, y, name, size, event, active);

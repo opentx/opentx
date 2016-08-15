@@ -59,7 +59,7 @@ void GaugeWidget::refresh()
   int percent = divRoundClosest(100 * (value_in_range - min), (max - min));
 
   // Gauge label
-  putsMixerSource(zone.x, zone.y, index, SMLSIZE | TEXT_INVERTED_COLOR);
+  drawMixerSource(zone.x, zone.y, index, SMLSIZE | TEXT_INVERTED_COLOR);
 
   // Gauge
   lcdSetColor(color);

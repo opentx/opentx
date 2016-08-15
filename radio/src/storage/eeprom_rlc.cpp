@@ -539,7 +539,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
-  char *buf = reusableBuffer.modelsel.mainname;
+  char * buf = reusableBuffer.modelsel.mainname;
   UINT written;
 
   // we must close the logs as we reuse the same FIL structure
@@ -622,7 +622,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 {
-  char *buf = reusableBuffer.modelsel.mainname;
+  char * buf = reusableBuffer.modelsel.mainname;
   UINT read;
 
   // we must close the logs as we reuse the same FIL structure

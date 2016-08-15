@@ -42,7 +42,7 @@ void menuRadioTrainer(uint8_t event)
       uint8_t chan = channel_order(i);
       volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-      putsMixerSource(0, y, MIXSRC_Rud-1+chan, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
+      drawMixerSource(0, y, MIXSRC_Rud-1+chan, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
       for (uint8_t j=0; j<3; j++) {
 
@@ -55,7 +55,7 @@ void menuRadioTrainer(uint8_t event)
             break;
 
           case 1:
-            lcdDrawNumber(11*FW, y, td->studWeight, attr);
+            lcdDrawNumber(11*FW, y, td->studWeight, attr|RIGHT);
             if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->studWeight, -125, 125);
             break;
 
@@ -70,14 +70,14 @@ void menuRadioTrainer(uint8_t event)
 
     attr = (menuVerticalPosition==HEADER_LINE+4) ? blink : 0;
     lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
-    lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1);
+    lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1|RIGHT);
     if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
     attr = (menuVerticalPosition==HEADER_LINE+5) ? INVERS : 0;
     lcdDrawText(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
     for (uint8_t i=0; i<4; i++) {
       uint8_t x = (i*8+16)*FW/2;
-      lcdDrawNumber(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, 0);
+      lcdDrawNumber(x, MENU_HEADER_HEIGHT+1+6*FH, (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, RIGHT);
     }
 
     if (attr) {

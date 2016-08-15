@@ -23,14 +23,10 @@
 
 #include "bitmapbuffer.h"
 
-#if defined(PCBHORUS)
-  #define LCD_W                        480
-  #define LCD_H                        272
-  #define LCD_COLS                     30
-#else
-  #define LCD_W                        800
-  #define LCD_H                        480
+#if LCD_W >= 480
   #define LCD_COLS                     40
+#else
+  #define LCD_COLS                     30
 #endif
 
 #define CENTER
@@ -137,12 +133,12 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdF
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void putsSwitches(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
-void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
+void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
-void putsTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
+void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
-#define putsChn(x, y, idx, att) putsMixerSource(x, y, MIXSRC_CH1+idx-1, att)
+#define putsChn(x, y, idx, att) drawMixerSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
@@ -153,8 +149,8 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t va
 
 #define LEN_TIMER_STRING               10
 void getTimerString(char * str, putstime_t tme, LcdFlags att=0);
-void putsRtcTime(coord_t x, coord_t y, LcdFlags att=0);
-void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
+void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 
 #define SOLID   0xff
 #define DOTTED  0x55

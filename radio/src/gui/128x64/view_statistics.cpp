@@ -42,13 +42,14 @@ void menuStatisticsView(uint8_t event)
   }
 
   lcdDrawText(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
-  putsTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, 0, 0);
-  putsTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, 0, 0);
+  
+  drawTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, RIGHT, 0);
+  drawTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, RIGHT, 0);
 
-  putsTimer(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, 0, 0);
-  putsTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, 0, 0);
+  drawTimer(    5*FW+5*FWNUM+1, FH*2, s_timeCumThr, RIGHT, 0);
+  drawTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, RIGHT, 0);
 
-  putsTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, 0, 0);
+  drawTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, RIGHT, 0);
 
 #if defined(THRTRACE)
   const coord_t x = 5;
@@ -68,16 +69,16 @@ void menuStatisticsView(uint8_t event)
 }
 
 #if defined(CPUARM)
-  #define MENU_DEBUG_COL1_OFS   (11*FW-3)
-  #define MENU_DEBUG_COL2_OFS   (17*FW)
-  #define MENU_DEBUG_Y_CURRENT  (1*FH)
-  #define MENU_DEBUG_Y_MAH      (2*FH)
-  #define MENU_DEBUG_Y_CPU_TEMP (3*FH)
-  #define MENU_DEBUG_Y_COPROC   (4*FH)
-  #define MENU_DEBUG_Y_MIXMAX   (5*FH)
-  #define MENU_DEBUG_Y_RTOS     (6*FH)
+  #define MENU_DEBUG_COL1_OFS          (11*FW-3)
+  #define MENU_DEBUG_COL2_OFS          (17*FW)
+  #define MENU_DEBUG_Y_CURRENT         (1*FH)
+  #define MENU_DEBUG_Y_MAH             (2*FH)
+  #define MENU_DEBUG_Y_CPU_TEMP        (3*FH)
+  #define MENU_DEBUG_Y_COPROC          (4*FH)
+  #define MENU_DEBUG_Y_MIXMAX          (5*FH)
+  #define MENU_DEBUG_Y_RTOS            (6*FH)
 #else
-  #define MENU_DEBUG_COL1_OFS   (14*FW)
+  #define MENU_DEBUG_COL1_OFS          (14*FW)
 #endif
 
 void menuStatisticsDebug(uint8_t event)

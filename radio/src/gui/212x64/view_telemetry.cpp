@@ -69,7 +69,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
     }
     if (source && barMax > barMin) {
       int y = barHeight+6+i*(barHeight+6);
-      putsMixerSource(0, y+barHeight-5, source, 0);
+      drawMixerSource(0, y+barHeight-5, source, 0);
       lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
       getvalue_t value = getValue(source);
       putsChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source, LEFT);
@@ -130,7 +130,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           // we don't display GPS name, no space for it
         }
         else {
-          putsMixerSource(pos[j], 1+FH+2*FH*i, field, 0);
+          drawMixerSource(pos[j], 1+FH+2*FH*i, field, 0);
         }
 
         if (field >= MIXSRC_FIRST_TELEM) {
@@ -186,7 +186,7 @@ bool displayTelemetryScreen()
     return false;
   }
 
-  lcdDrawTelemetryTopBar();
+  drawTelemetryTopBar();
 
   if (s_frsky_view < MAX_TELEMETRY_SCREENS) {
     displayCustomTelemetryScreen(s_frsky_view);
@@ -253,7 +253,7 @@ void menuViewTelemetryFrsky(uint8_t event)
     }
   }
 
-  lcdDrawTelemetryTopBar();
+  drawTelemetryTopBar();
   lcdDrawText(8*FW, 3*FH, "No Telemetry Screens");
   displayRssiLine();
 }

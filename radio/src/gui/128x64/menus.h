@@ -23,7 +23,15 @@
 
 #include "keys.h"
 
-typedef uint8_t   horzpos_t;
+#if defined(PCBX7D)
+typedef int8_t horzpos_t;
+#define NAVIGATION_LINE_BY_LINE        0x40
+#define IS_LINE_SELECTED(sub, k)       ((sub)==(k) && menuHorizontalPosition < 0)
+#else
+typedef uint8_t horzpos_t;
+#define NAVIGATION_LINE_BY_LINE        0
+#define IS_LINE_SELECTED(sub, k)       (false)
+#endif
 
 #if defined(SDCARD)
 typedef uint16_t vertpos_t;

@@ -183,7 +183,7 @@ void menuModelExpoOne(uint8_t event)
   }
 
   ExpoData * ed = expoAddress(s_currIdx);
-  putsMixerSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
+  drawMixerSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
@@ -214,7 +214,7 @@ void menuModelExpoOne(uint8_t event)
 
       case EXPO_FIELD_SOURCE:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
+        drawMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
         if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         break;
 
@@ -243,6 +243,7 @@ void menuModelExpoOne(uint8_t event)
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
+        drawFieldLabel(EXPO_ONE_2ND_COLUMN, y, STR_FLMODE);
         ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN, y, event, ed->flightModes, attr);
         break;
 #endif
@@ -335,7 +336,7 @@ void displayExpoInfos(coord_t y, ExpoData * ed)
 
 void displayExpoLine(coord_t y, ExpoData * ed)
 {
-  putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
+  drawMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
 
   if (ed->carryTrim != TRIM_ON) {
     lcdDrawChar(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
@@ -507,7 +508,7 @@ void menuModelExposAll(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) {
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-        putsMixerSource(0, y, ch, 0);
+        drawMixerSource(0, y, ch, 0);
       }
       uint8_t mixCnt = 0;
       do {
@@ -561,7 +562,7 @@ void menuModelExposAll(uint8_t event)
         }
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-        putsMixerSource(0, y, ch, attr);
+        drawMixerSource(0, y, ch, attr);
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           lcdDrawRect(EXPO_LINE_SELECT_POS, y-1, LCD_W-EXPO_LINE_SELECT_POS, 9, DOTTED);
         }

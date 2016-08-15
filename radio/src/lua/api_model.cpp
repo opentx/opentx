@@ -579,7 +579,7 @@ static int luaModelInsertMix(lua_State *L)
   unsigned int first = getFirstMix(chn);
   unsigned int count = getMixesCountFromFirst(chn, first);
 
-  if (chn<NUM_CHNOUT && getMixesCount()<MAX_MIXERS && idx<=count) {
+  if (chn<MAX_OUTPUT_CHANNELS && getMixesCount()<MAX_MIXERS && idx<=count) {
     idx += first;
     s_currCh = chn+1;
     insertMix(idx);
@@ -702,7 +702,7 @@ Get Logical Switch parameters
 static int luaModelGetLogicalSwitch(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_LOGICAL_SWITCH) {
+  if (idx < MAX_LOGICAL_SWITCHES) {
     LogicalSwitchData * sw = lswAddress(idx);
     lua_newtable(L);
     lua_pushtableinteger(L, "func", sw->func);
@@ -736,7 +736,7 @@ that parameter remains unchanged.
 static int luaModelSetLogicalSwitch(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_LOGICAL_SWITCH) {
+  if (idx < MAX_LOGICAL_SWITCHES) {
     LogicalSwitchData * sw = lswAddress(idx);
     memclear(sw, sizeof(LogicalSwitchData));
     luaL_checktype(L, -1, LUA_TTABLE);
@@ -859,7 +859,7 @@ Get Custom Function parameters
 static int luaModelGetCustomFunction(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CFN) {
+  if (idx < MAX_SPECIAL_FUNCTIONS) {
     CustomFunctionData * cfn = &g_model.customFn[idx];
     lua_newtable(L);
     lua_pushtableinteger(L, "switch", CFN_SWITCH(cfn));
@@ -897,7 +897,7 @@ that parameter remains unchanged.
 static int luaModelSetCustomFunction(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CFN) {
+  if (idx < MAX_SPECIAL_FUNCTIONS) {
     CustomFunctionData * cfn = &g_model.customFn[idx];
     memclear(cfn, sizeof(CustomFunctionData));
     luaL_checktype(L, -1, LUA_TTABLE);
@@ -959,7 +959,7 @@ Get servo parameters
 static int luaModelGetOutput(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CHNOUT) {
+  if (idx < MAX_OUTPUT_CHANNELS) {
     LimitData * limit = limitAddress(idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", limit->name);
@@ -997,7 +997,7 @@ that parameter remains unchanged.
 static int luaModelSetOutput(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  if (idx < NUM_CHNOUT) {
+  if (idx < MAX_OUTPUT_CHANNELS) {
     LimitData * limit = limitAddress(idx);
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
