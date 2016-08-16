@@ -221,9 +221,9 @@ void menuModelLimits(uint8_t event)
 #if defined(PPM_LIMITS_SYMETRICAL)
         case ITEM_OUTPUTS_SYMETRICAL:
 #if defined(CPUARM)
-          lcdDrawChar(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ld->symetrical ? '=' : '\306', attr);
+          lcdDrawChar(LCD_W-FW, y, ld->symetrical ? '=' : '\306', attr);
 #else
-          lcdDrawChar(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, ld->symetrical ? '=' : '^', attr);
+          lcdDrawChar(LCD_W-FW, y, ld->symetrical ? '=' : '^', attr);
 #endif
           if (active) {
             CHECK_INCDEC_MODELVAR_ZERO(event, ld->symetrical, 1);

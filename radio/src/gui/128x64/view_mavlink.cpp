@@ -25,7 +25,7 @@
 
 #include "view_mavlink.h"
 
-#define VIEW_MAVLINK_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
+#define VIEW_MAVLINK_2ND_COLUMN  (LCD_W-6*FW-3)
 
 uint8_t MAVLINK_menu = MENU_INFO;
 

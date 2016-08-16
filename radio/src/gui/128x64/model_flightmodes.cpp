@@ -299,7 +299,7 @@ void menuModelFlightModesAll(uint8_t event)
     }
 
     if (p->fadeIn || p->fadeOut) {
-      lcdDrawChar(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
+      lcdDrawChar(LCD_W-FW, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
     }
   }
 

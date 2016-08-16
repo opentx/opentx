@@ -236,8 +236,6 @@ void menuModelExpoOne(uint8_t event)
 
   SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {CASE_CPUARM(0) 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
-  SET_SCROLLBAR_X(EXPO_ONE_2ND_COLUMN+10*FW);
-
   int8_t sub = menuVerticalPosition;
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
@@ -554,7 +552,7 @@ void menuModelMixOne(uint8_t event)
   #define EXPO_LINE_SIDE_POS   14*FW+2
   #define EXPO_LINE_SELECT_POS 24
   #define EXPO_LINE_FM_POS
-  #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
+  #define EXPO_LINE_NAME_POS   LCD_W-LEN_EXPOMIX_NAME*FW
   #define MIX_LINE_SRC_POS     4*FW-1
   #define MIX_LINE_WEIGHT_POS  11*FW+3
   #define MIX_LINE_CURVE_POS   12*FW+2
@@ -569,7 +567,7 @@ void menuModelMixOne(uint8_t event)
   #else
     #define EXPO_LINE_SIDE_POS 15*FW+2
   #endif
-  #define EXPO_LINE_FM_POS     LCD_W-FW-MENUS_SCROLLBAR_WIDTH
+  #define EXPO_LINE_FM_POS     LCD_W-FW
   #define EXPO_LINE_SELECT_POS 24
   #define MIX_LINE_SRC_POS     4*FW-1
   #define MIX_LINE_WEIGHT_POS  11*FW+3

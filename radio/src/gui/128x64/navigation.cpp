@@ -537,7 +537,7 @@ tmr10ms_t menuEntryTime;
 #define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
-coord_t scrollbar_X = DEFAULT_SCROLLBAR_X;
+
 void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
 {
   vertpos_t l_posVert = menuVerticalPosition;
@@ -599,14 +599,12 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       s_editMode = EDIT_MODE_INIT;
       l_posVert = MENU_FIRST_LINE_EDIT;
       l_posHorz = POS_HORZ_INIT(l_posVert);
-      SET_SCROLLBAR_X(LCD_W-1);
       break;
 
     case EVT_ENTRY_UP:
       menuEntryTime = get_tmr10ms();
       s_editMode = 0;
       l_posHorz = POS_HORZ_INIT(l_posVert);
-      SET_SCROLLBAR_X(LCD_W-1);
       break;
 
     case EVT_ROTARY_BREAK:
@@ -771,10 +769,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     }
   }
 
-  if (scrollbar_X && linesCount > NUM_BODY_LINES) {
-    drawVerticalScrollbar(scrollbar_X, MENU_HEADER_HEIGHT, LCD_H-MENU_HEADER_HEIGHT, menuVerticalOffset, linesCount, NUM_BODY_LINES);
-  }
-
   // TODO if (name) {
   //  title(name);
   // }
@@ -908,7 +902,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 #endif
       l_posVert = 0;
       l_posHorz = POS_HORZ_INIT(l_posVert);
-      SET_SCROLLBAR_X(LCD_W-1);
 #if defined(ROTARY_ENCODER_NAVIGATION)
       if (menuTab) {
         s_editMode = EDIT_MODE_INIT;
@@ -923,7 +916,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ENTRY_UP:
       s_editMode = 0;
-      SET_SCROLLBAR_X(LCD_W-1);
       break;
 
     case EVT_ROTARY_BREAK:

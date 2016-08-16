@@ -102,7 +102,7 @@ enum MenuModelSetupItems {
   #define FIELD_PROTOCOL_MAX             1
 #endif
 
-#define MODEL_SETUP_2ND_COLUMN           (LCD_W-11*FW-MENUS_SCROLLBAR_WIDTH)
+#define MODEL_SETUP_2ND_COLUMN           (LCD_W-11*FW)
 #define MODEL_SETUP_BIND_OFS             2*FW+1
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
@@ -902,7 +902,7 @@ void menuModelSetup(uint8_t event)
               }
             }
             else {
-              lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W - MODEL_SETUP_2ND_COLUMN - MENUS_SCROLLBAR_WIDTH, 8);
+              lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W - MODEL_SETUP_2ND_COLUMN, 8);
             }
           }
         }
@@ -1095,8 +1095,6 @@ void menuModelFailsafe(uint8_t event)
   }
 
   SIMPLE_SUBMENU_NOTITLE(MAX_OUTPUT_CHANNELS);
-
-  SET_SCROLLBAR_X(0);
 
   #define COL_W   (LCD_W)
   const uint8_t SLIDER_W = 90;

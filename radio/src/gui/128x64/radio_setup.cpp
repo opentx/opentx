@@ -26,9 +26,9 @@ const pm_uchar sticks[] PROGMEM = {
 #include "sticks.lbm"
 };
 
-#define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3-MENUS_SCROLLBAR_WIDTH)
-#define RADIO_SETUP_DATE_COLUMN (FW*15+7-MENUS_SCROLLBAR_WIDTH)
-#define RADIO_SETUP_TIME_COLUMN (FW*15+9-MENUS_SCROLLBAR_WIDTH)
+#define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3)
+#define RADIO_SETUP_DATE_COLUMN (FW*15+7)
+#define RADIO_SETUP_TIME_COLUMN (FW*15+9)
 
 #if !defined(CPUM64)
   #define SLIDER_5POS(y, value, label, event, attr) { \

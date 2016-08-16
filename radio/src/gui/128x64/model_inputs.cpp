@@ -187,8 +187,6 @@ void menuModelExpoOne(uint8_t event)
   
   SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CASE_CURVES(LABEL(Curve)) CASE_CURVES(1) CASE_FLIGHT_MODES(LABEL(Flight Mode)) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
-  SET_SCROLLBAR_X(EXPO_ONE_2ND_COLUMN+10*FW);
-
   int8_t sub = menuVerticalPosition;
 
   coord_t y = MENU_HEADER_HEIGHT + 1;

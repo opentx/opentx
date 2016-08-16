@@ -313,7 +313,7 @@ void menuModelMixOne(uint8_t event)
 #define MIX_LINE_SWITCH_POS            16*FW
 #define MIX_LINE_FM_POS                13*FW+3
 #define MIX_LINE_DELAY_POS             20*FW
-#define MIX_LINE_NAME_POS              LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
+#define MIX_LINE_NAME_POS              LCD_W-LEN_EXPOMIX_NAME*FW
 
 void onMixesMenu(const char * result)
 {

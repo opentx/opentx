@@ -25,11 +25,7 @@
 #include "menus.h"
 #include "popups.h"
 
-#if defined(CPUARM)
-#define MENUS_SCROLLBAR_WIDTH          2
-#else
 #define MENUS_SCROLLBAR_WIDTH          0
-#endif
 
 #if defined(PCBX7D)
   #define HEADER_LINE                  0
@@ -46,7 +42,6 @@
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
 #define MENU_INIT_VPOS                 0
-#define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 
 #define CURVE_SIDE_WIDTH               (LCD_H/2)
 #define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-2)
