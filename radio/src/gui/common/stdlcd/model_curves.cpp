@@ -83,18 +83,24 @@ void menuModelCurvesAll(uint8_t event)
 #endif
     {
       drawStringWithIndex(0, y, STR_CV, k+1, attr);
-#if defined(CPUARM) && LCD_W >= 212
+#if defined(CPUARM)
       CurveData & crv = g_model.curves[k];
       editName(4*FW, y, crv.name, sizeof(crv.name), 0, 0);
+#if LCD_W >= 212
       lcdDrawNumber(11*FW, y, 5+crv.points, LEFT);
       lcdDrawText(lcdLastPos, y, STR_PTS, 0);
+#endif
 #endif
     }
   }
 
   if (CURVE_SELECTED()) {
     s_curveChan = sub;
+#if !defined(CPUARM) || LCD_W >= 212
     drawCurve(23);
+#else
+    drawCurve(10);
+#endif
   }
 }
 

@@ -8,6 +8,7 @@ if(HELI)
 endif()
 
 if(ARCH STREQUAL ARM)
+  add_definitions(-DGRAPHICS)
   set(CURVE_EDIT_SRC ../common/stdlcd/model_curve_edit.cpp)
 else()
   set(CURVE_EDIT_SRC model_curve_simple_edit.cpp)

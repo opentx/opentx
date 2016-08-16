@@ -64,36 +64,38 @@ void onCurveOneMenu(const char * result)
   }
 }
 
-
 void menuModelCurveOne(uint8_t event)
 {
   static uint8_t pointsOfs = 0;
   CurveData & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
-  lcdDrawText(11*FW+FW/2, 0, TR_PT "\002X\006Y");
   drawStringWithIndex(PSIZE(TR_MENUCURVES)*FW+FW, 0, "CV", s_curveChan+1);
+
 #if LCD_W >= 212
+  lcdDrawText(11*FW+FW/2, 0, TR_PT "\002X\006Y");
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 #endif
 
   SIMPLE_SUBMENU(STR_MENUCURVES, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
 
-  lcdDrawTextAlignedLeft(FH+1, STR_NAME);
-  editName(INDENT_WIDTH, 2*FH+1, crv.name, sizeof(crv.name), event, menuVerticalPosition==0);
-
-  uint8_t attr = (menuVerticalPosition==1 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcdDrawTextAlignedLeft(3*FH+1, STR_TYPE);
-  lcdDrawTextAtIndex(INDENT_WIDTH, 4*FH+1, STR_CURVE_TYPES, crv.type, attr);
+  // Curve name
+  lcdDrawTextAlignedLeft(FH + 1, STR_NAME);
+  editName(INDENT_WIDTH, 2 * FH + 1, crv.name, sizeof(crv.name), event, menuVerticalPosition == 0);
+  
+  // Curve type
+  lcdDrawTextAlignedLeft(3 * FH + 1, NO_INDENT(STR_TYPE));
+  LcdFlags attr = (menuVerticalPosition == 1 ? (s_editMode > 0 ? INVERS | BLINK : INVERS) : 0);
+  lcdDrawTextAtIndex(INDENT_WIDTH, 4 * FH + 1, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
-      for (int i=1; i<4+crv.points; i++) {
-        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5+crv.points, i)), s_curveChan));
+      for (int i = 1; i < 4 + crv.points; i++) {
+        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5 + crv.points, i)), s_curveChan));
       }
-      moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3+crv.points : -3-crv.points);
+      moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3 + crv.points : -3 - crv.points);
       if (newType == CURVE_TYPE_CUSTOM) {
-        resetCustomCurveX(points, 5+crv.points);
+        resetCustomCurveX(points, 5 + crv.points);
       }
       crv.type = newType;
     }
@@ -169,7 +171,9 @@ void menuModelCurveOne(uint8_t event)
 
     if (i>=pointsOfs && i<pointsOfs+7) {
       int8_t x = getCurveX(5+crv.points, i);
-      if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
+      if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) {
+        x = points[5+crv.points+i-1];
+      }
       lcdDrawNumber(6+10*FW+FW/2, posY, i+1, LEFT);
       lcdDrawNumber(3+14*FW, posY, x, LEFT|(selectionMode==1?attr:0));
       lcdDrawNumber(3+18*FW, posY, points[i], LEFT|(selectionMode==2?attr:0));
