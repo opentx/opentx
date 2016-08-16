@@ -227,7 +227,7 @@ void boardOff()
   toplcdOff();
 #endif
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
   while (pwrPressed()) {
     wdt_reset();
   }
