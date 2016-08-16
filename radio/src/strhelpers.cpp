@@ -160,6 +160,26 @@ char * getStringWithIndex(char * dest, const char * s, int idx)
   return dest;
 }
 
+char * getCurveString(char * dest, int idx)
+{
+  if (idx == 0) {
+    return getStringAtIndex(dest, STR_MMMINV, 0);
+  }
+  
+  char * s = dest;
+  if (idx < 0) {
+    *s++ = '!';
+    idx = -idx;
+  }
+  
+  if (ZEXIST(g_model.curves[idx - 1].name))
+    zchar2str(s, g_model.curves[idx - 1].name, LEN_CURVE_NAME);
+  else
+    getStringWithIndex(s, STR_CV, idx);
+    
+  return dest;
+}
+
 char * getSwitchString(char * dest, swsrc_t idx)
 {
   if (idx == SWSRC_NONE) {

@@ -31,6 +31,7 @@ char * strAppendFilename(char * dest, const char * filename, const int size);
 #if defined(CPUARM) && !defined(BOOT)
 char * getStringAtIndex(char * dest, const char * s, int idx);
 char * getStringWithIndex(char * dest, const char * s, int idx);
+char * getCurveString(char * dest, int idx);
 char * getSwitchString(char * dest, swsrc_t idx);
 char * getSourceString(char * dest, mixsrc_t idx);
 #endif

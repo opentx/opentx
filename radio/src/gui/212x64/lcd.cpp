@@ -769,19 +769,9 @@ void drawSwitch(coord_t x, coord_t y, int32_t idx, LcdFlags flags)
 
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
-  if (idx == 0) {
-    return lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, flags);
-  }
-
-  if (idx < 0) {
-    lcdDrawChar(x-3, y, '!', flags);
-    idx = -idx;
-  }
-
-  if (ZEXIST(g_model.curves[idx-1].name))
-    lcdDrawSizedText(x, y, g_model.curves[idx-1].name, LEN_CURVE_NAME, ZCHAR|flags);
-  else
-    drawStringWithIndex(x, y, STR_CV, idx, flags);
+  char s[8];
+  getCurveString(s, idx);
+  lcdDrawText(x, y, s, flags);
 }
 
 void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)

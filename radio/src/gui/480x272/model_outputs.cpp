@@ -23,7 +23,7 @@
 bool isThrottleOutput(uint8_t ch)
 {
   for (uint8_t i=0; i<MAX_MIXERS; i++) {
-    MixData *mix = mixAddress(i);
+    MixData * mix = mixAddress(i);
     if (mix->destCh==ch && mix->srcRaw==MIXSRC_Thr)
       return true;
   }
@@ -49,15 +49,15 @@ enum LimitsItems {
   ITEM_LIMITS_MAXROW = ITEM_LIMITS_COUNT-1
 };
 
-  #define LIMITS_NAME_POS         52
-  #define LIMITS_OFFSET_POS       160
-  #define LIMITS_MIN_POS          220
-  #define LIMITS_DIRECTION_POS    240
-  #define LIMITS_MAX_POS          300
-  #define LIMITS_REVERT_POS       320
-  #define LIMITS_CURVE_POS        350
-  #define LIMITS_PPM_CENTER_POS   440
-  #define LIMITS_SYMETRICAL_POS   450
+#define LIMITS_NAME_POS         52
+#define LIMITS_OFFSET_POS       160
+#define LIMITS_MIN_POS          220
+#define LIMITS_DIRECTION_POS    235
+#define LIMITS_MAX_POS          300
+#define LIMITS_REVERT_POS       312
+#define LIMITS_CURVE_POS        340
+#define LIMITS_PPM_CENTER_POS   440
+#define LIMITS_SYMETRICAL_POS   450
 
 #define LIMITS_MIN_MAX_OFFSET 1000
 #define CONVERT_US_MIN_MAX(x) (((x)*1280)/250)

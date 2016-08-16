@@ -118,6 +118,7 @@ uint32_t sdMounted(void);
 #define SD_IS_HC()                     (0)
 #define SD_GET_SPEED()                 (0)
 #define sdInit()
+#define sdMount()
 #define sdDone()
 #define SD_CARD_PRESENT()              true
 #endif
