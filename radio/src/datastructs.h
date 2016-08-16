@@ -256,7 +256,7 @@ PACK(struct CustomFunctionData {
   uint16_t func:7;
   PACK(union {
     NOBACKUP(PACK(struct {
-      char name[LEN_CFN_NAME];
+      char name[LEN_FUNCTION_NAME];
     }) play);
 
     PACK(struct {
@@ -1029,7 +1029,7 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* Sky9x does not have virtualinputs */
 
-  /* LEN_CFN_NAME is the difference in CustomFunctionData */
+  /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
 #if defined(PCBX7D)
   // TODO
@@ -1091,7 +1091,7 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
   CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5284);
+  CHKSIZE(ModelData, 5252);
 #else
   // Common for all variants
   CHKSIZE(LimitData, 5);

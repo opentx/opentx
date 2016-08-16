@@ -518,7 +518,7 @@ void menuMainView(uint8_t event)
           x = 17*FW-1;
           y -= 3*FH;
         }
-        putsSwitches(x, y, sw, getSwitch(i) ? INVERS : 0);
+        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0);
       }
 #endif
     }
@@ -547,13 +547,13 @@ void menuMainView(uint8_t event)
       }
 #elif defined(CPUM2560)
       for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
-        putsSwitches(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+        drawSwitch(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
       for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+        drawSwitch(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
       for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
-        putsSwitches(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+        drawSwitch(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
   }

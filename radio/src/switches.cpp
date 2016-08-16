@@ -824,7 +824,7 @@ void checkSwitches()
             if (++numWarnings < 6) {
               // LcdFlags attr = ((states & mask) == (switches_states & mask)) ? TEXT_COLOR : ALARM_COLOR;
               LcdFlags attr = ALARM_COLOR;
-              putsSwitches(x, y, SWSRC_FIRST_SWITCH+i*3+state-1, attr);
+              drawSwitch(x, y, SWSRC_FIRST_SWITCH+i*3+state-1, attr);
               x += SWITCH_WARNING_LIST_INTERVAL;
             }
             else if (numWarnings == 6) {
@@ -839,7 +839,7 @@ void checkSwitches()
           if (attr) {
             if (++numWarnings < 7) {
               char c = "\300-\301"[(states & mask) >> (i*2)];
-              drawMixerSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
+              drawSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
               lcdDrawChar(lcdNextPos, y, c, attr);
               x = lcdNextPos + 3;
             }
@@ -902,7 +902,7 @@ void checkSwitches()
         else
           attr = (states & (1 << (i+1))) == (switches_states & (1 << (i+1))) ? 0 : INVERS;
         if (!(g_model.switchWarningEnable & (1<<i)))
-          putsSwitches(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);
+          drawSwitch(x, 5*FH, (i>0?(i+3):(states&0x3)+1), attr);
         x += 3*FW+FW/2;
       }
 #endif

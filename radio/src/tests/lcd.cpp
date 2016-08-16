@@ -272,10 +272,10 @@ TEST(Lcd, Dblsize)
 TEST(Lcd, DrawSwitch)
 {
   lcdClear();
-  putsSwitches(0,  10, SWSRC_SA0, 0);
-  putsSwitches(30, 10, SWSRC_SA0, SMLSIZE);
-  // putsSwitches(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
-  putsSwitches(90, 10, SWSRC_SA0, DBLSIZE);
+  drawSwitch(0,  10, SWSRC_SA0, 0);
+  drawSwitch(30, 10, SWSRC_SA0, SMLSIZE);
+  // drawSwitch(60, 10, SWSRC_SA0, MIDSIZE); missing arrows in this font
+  drawSwitch(90, 10, SWSRC_SA0, DBLSIZE);
   EXPECT_TRUE(checkScreenshot("drawswitch"));
 }
 #endif

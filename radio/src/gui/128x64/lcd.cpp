@@ -774,7 +774,7 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
 }
 
 #if defined(CPUARM)
-void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
+void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 {
   if (idx == MIXSRC_NONE) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
@@ -832,7 +832,7 @@ void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx < MIXSRC_SW1)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
-    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
+    drawSwitch(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)
     drawStringWithIndex(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
@@ -856,14 +856,14 @@ void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   }
 }
 #else
-void drawMixerSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
+void drawSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   if (idx < MIXSRC_THR)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx, att);
   else if (idx < MIXSRC_SW1)
-    putsSwitches(x, y, idx-MIXSRC_THR+1+3*(1), att);
+    drawSwitch(x, y, idx-MIXSRC_THR+1+3*(1), att);
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
-    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
+    drawSwitch(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)
     drawStringWithIndex(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
@@ -907,63 +907,15 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-#if defined(PCBTARANIS)
-void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
+#if defined(CPUARM)
+void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
 {
-  if (idx == SWSRC_NONE) {
-    return lcdDrawTextAtIndex(x, y, STR_VSWITCHES, 0, att);
-  }
-  else if (idx == SWSRC_OFF) {
-    return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
-  }
-
-  if (idx < 0) {
-    lcdDrawChar(x-2, y, '!', att);
-    idx = -idx;
-  }
-
-  if (idx <= SWSRC_LAST_SWITCH) {
-    div_t swinfo = switchInfo(idx);
-    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
-      lcdDrawSizedText(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
-    }
-    else {
-      lcdDrawSizedText(x, y, TR_SW_VSRCRAW+4*swinfo.quot+1, 2, att);
-    }
-    char c = "\300-\301"[swinfo.rem];
-    lcdDrawChar(lcdNextPos, y, c, att);
-  }
-  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
-    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
-    drawStringWithIndex(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
-  }
-  else if (idx <= SWSRC_LAST_TRIM) {
-    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
-  }
-  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
-    drawStringWithIndex(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
-  }
-  else if (idx <= SWSRC_ONE) {
-    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
-  }
-  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    drawStringWithIndex(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  }
-  else if (idx == SWSRC_TELEMETRY_STREAMING) {
-    lcdDrawText(x, y, "Tele", att);
-  }
-  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    drawStringWithIndex(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  }
-  else if (idx == SWSRC_TELEMETRY_STREAMING) {
-    lcdDrawText(x, y, "Tele", att);
-  }
-  else {
-    lcdDrawSizedText(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
-  }
+  char s[8];
+  getSwitchString(s, idx);
+  lcdDrawText(x, y, s, flags);
 }
 #else
-void putsSwitches(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
+void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
 {
   if (idx == SWSRC_OFF)
     return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
@@ -1000,7 +952,7 @@ void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
     else
       mode -= (TMRMODE_COUNT-1);
   }
-  putsSwitches(x, y, mode, att);
+  drawSwitch(x, y, mode, att);
 }
 
 #if defined(CPUARM)
@@ -1682,3 +1634,17 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
     lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
   }
 }
+
+#if defined(PWR_PRESS_BUTTON)
+void drawShutdownAnimation(uint32_t index)
+{
+  lcdClear();
+  int quarter = index / (PWR_PRESS_SHUTDOWN / 5);
+  for (int i=1; i<=4; i++) {
+    if (quarter >= i) {
+      lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+    }
+  }
+  lcdRefresh();
+}
+#endif

@@ -201,7 +201,7 @@ bool menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_SOURCE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, NO_INDENT(STR_SOURCE));
-        drawMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
+        drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
       case MIX_FIELD_WEIGHT:
@@ -328,7 +328,7 @@ void displayMixInfos(coord_t y, MixData *md)
 
   if (md->swtch) {
     lcd->drawBitmap(MIX_LINE_SWITCH_ICON, y + 2, mixerSetupSwitchBitmap);
-    putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+    drawSwitch(MIX_LINE_SWITCH_POS, y, md->swtch);
   }
 }
 
@@ -547,7 +547,7 @@ bool menuModelMixAll(event_t event)
 
           if (mixCnt > 0) lcd->drawBitmap(10, y, mpx_mode[md->mltpx]);
 
-          drawMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw);
+          drawSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), event);
 

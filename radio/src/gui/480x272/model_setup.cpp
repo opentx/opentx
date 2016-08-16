@@ -412,7 +412,7 @@ bool menuModelSetup(event_t event)
           idx += 1;
         if (idx >= MIXSRC_FIRST_POT+NUM_POTS+NUM_SLIDERS)
           idx += MIXSRC_CH1 - MIXSRC_FIRST_POT - NUM_POTS - NUM_SLIDERS;
-        drawMixerSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
+        drawSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
         break;
       }
 

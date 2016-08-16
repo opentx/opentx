@@ -227,7 +227,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   return ofs;
 }
 
-// TODO same naming convention than the drawMixerSource
+// TODO same naming convention than the drawSource
 
 getvalue_t getValue(mixsrc_t i)
 {

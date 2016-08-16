@@ -183,7 +183,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           if (active || AUTOSWITCH_ENTER_LONG()) {
             CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           }
-          putsSwitches(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           break;
 
         case ITEM_SPECIAL_FUNCTIONS_FUNCTION:
@@ -213,7 +213,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 #endif
           if (func == FUNC_TRAINER) {
             maxParam = 4;
-            drawMixerSource(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            drawSource(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
@@ -301,7 +301,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           }
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_LAST_TELEM;
-            drawMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             if (active) {
               INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
               INCDEC_ENABLE_CHECK(functions == g_eeGeneral.customFn ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
@@ -310,7 +310,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 #endif
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
-            drawMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             if (active) {
               INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
               INCDEC_ENABLE_CHECK(isSourceAvailable);
@@ -342,7 +342,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
-                drawMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+                drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
                 if (active) {
                   INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
                   INCDEC_ENABLE_CHECK(isSourceAvailable);

@@ -180,7 +180,7 @@ void menuModelDisplay(uint8_t event)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           source_t barSource = bar.source;
-          drawMixerSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
+          drawSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
           int barMax = getMaximumValue(barSource);
           int barMin = -barMax;
           if (barSource) {
@@ -225,7 +225,7 @@ void menuModelDisplay(uint8_t event)
             LcdFlags cellAttr = (menuHorizontalPosition==c ? attr : 0);
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
             const coord_t pos[] = {DISPLAY_COL1, DISPLAY_COL2, DISPLAY_COL3};
-            drawMixerSource(pos[c], y, value, cellAttr);
+            drawSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {
               value = checkIncDec(event, value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
             }

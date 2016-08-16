@@ -252,7 +252,7 @@ bool menuModelCurveOne(event_t event)
   return true;
 }
 
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr)
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags attr)
 {
   lcdDrawTextAtIndex(x, y, "\004DiffExpoFuncCstm", curve.type, (menuHorizontalPosition==0 ? attr : 0));
   if (attr && menuHorizontalPosition==0) {

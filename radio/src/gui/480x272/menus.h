@@ -422,7 +422,7 @@ extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char *name, uint8_t size, event_t event, uint8_t active, LcdFlags flags=ZCHAR);
 
 uint8_t editDelay(const coord_t x, const coord_t y, const event_t event, const uint8_t attr, uint8_t delay);
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
 extern uint8_t s_curveChan;
 

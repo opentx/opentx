@@ -60,7 +60,7 @@ bool menuModelHeli(event_t event)
 
       case ITEM_HELI_ELE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ELEVATOR);
-        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
+        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -72,7 +72,7 @@ bool menuModelHeli(event_t event)
 
       case ITEM_HELI_AIL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AILERON);
-        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
+        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -84,7 +84,7 @@ bool menuModelHeli(event_t event)
 
       case ITEM_HELI_COL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_COLLECTIVE);
-        drawMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
+        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         break;
 

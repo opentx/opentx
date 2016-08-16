@@ -43,7 +43,7 @@ const MenuHandlerFunc menuTabModel[] = {
 
 extern uint8_t s_curveChan;
 
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags attr);
 
 uint8_t editDelay(const coord_t x, const coord_t y, const event_t event, const uint8_t attr, uint8_t delay)
 {

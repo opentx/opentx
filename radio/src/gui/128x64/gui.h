@@ -458,8 +458,8 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
 #define IS_OTHER_VIEW_DISPLAYED()      false
 
 #if defined(CPUARM)
-void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att);
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr);
+void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags flags);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, LcdFlags flags);
 #endif
 
 #if defined(FLIGHT_MODES)

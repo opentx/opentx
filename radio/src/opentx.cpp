@@ -2781,7 +2781,7 @@ uint32_t pwrCheck()
 #endif
       }
       else {
-        // TODO drawShutdownBitmap(pwrPressedDuration());
+        drawShutdownAnimation(pwrPressedDuration());
         return e_power_press;
       }
     }

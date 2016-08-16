@@ -52,13 +52,13 @@ void menuRadioDiagKeys(uint8_t event)
       if (SWITCH_EXISTS(i)) {
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-        putsSwitches(8*FW, y, sw, 0);
+        drawSwitch(8*FW, y, sw, 0);
       }
     }
 #else
     if (i != SW_ID0) {
       y = MENU_HEADER_HEIGHT +i*FH - 2*FH;
-      putsSwitches(8*FW, y, i+1, 0);
+      drawSwitch(8*FW, y, i+1, 0);
       displayKeyState(11*FW+2, y, i);
     }
 #endif

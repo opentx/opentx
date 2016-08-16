@@ -138,7 +138,7 @@ bool menuModelFlightModesAll(event_t event)
           if (k == 0)
             lcdDrawText(FLIGHT_MODES_SWITCH_COLUMN, y, "N/A");
           else
-            putsSwitches(FLIGHT_MODES_SWITCH_COLUMN, y, p->swtch, attr);
+            drawSwitch(FLIGHT_MODES_SWITCH_COLUMN, y, p->swtch, attr);
           break;
 
         case ITEM_FLIGHT_MODES_TRIM_RUD:

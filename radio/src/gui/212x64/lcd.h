@@ -126,14 +126,14 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
 
 void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
-void putsSwitches(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
+void drawSwitch(coord_t x, coord_t y, int32_t swtch, LcdFlags att=0);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
-void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
+void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att=0);
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
-#define putsChn(x, y, idx, att) drawMixerSource(x, y, MIXSRC_CH1+idx-1, att)
+#define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
@@ -174,7 +174,7 @@ inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
 
-void drawShutdownBitmap(uint32_t index);
+void drawShutdownAnimation(uint32_t index);
 void drawSleepBitmap();
 void drawTelemetryTopBar();
 

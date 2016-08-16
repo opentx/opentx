@@ -132,13 +132,13 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t 
 void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, int idx, LcdFlags att=0, const char *prefix="");
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
-void putsSwitches(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
-void drawMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
+void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
+void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att=0);
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 
-#define putsChn(x, y, idx, att) drawMixerSource(x, y, MIXSRC_CH1+idx-1, att)
+#define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);

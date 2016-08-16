@@ -236,7 +236,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
     if (source && barMax > barMin) {
       uint8_t y = barHeight+6+i*(barHeight+6);
 #if defined(CPUARM)
-      drawMixerSource(0, y+barHeight-5, source, 0);
+      drawSource(0, y+barHeight-5, source, 0);
 #else
       lcdDrawTextAtIndex(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
 #endif
@@ -334,7 +334,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           // we don't display GPS name, no space for it
         }
         else {
-          drawMixerSource(pos[j], 1+FH+2*FH*i, field, 0);
+          drawSource(pos[j], 1+FH+2*FH*i, field, 0);
         }
         
         if (field >= MIXSRC_FIRST_TELEM) {

@@ -145,6 +145,165 @@ char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * d
 #endif
 #endif
 
+#if defined(CPUARM) && !defined(BOOT)
+char * getStringAtIndex(char * dest, const char * s, int idx)
+{
+  uint8_t len = s[0];
+  strncpy(dest, s+1+len*idx, len);
+  dest[len] = '\0';
+  return dest;
+}
+
+char * getStringWithIndex(char * dest, const char * s, int idx)
+{
+  strAppendUnsigned(strAppend(dest, s), abs(idx));
+  return dest;
+}
+
+char * getSwitchString(char * dest, swsrc_t idx)
+{
+  if (idx == SWSRC_NONE) {
+    return getStringAtIndex(dest, STR_VSWITCHES, 0);
+  }
+  else if (idx == SWSRC_OFF) {
+    return getStringAtIndex(dest, STR_OFFON, 0);
+  }
+  
+  char * s = dest;
+  if (idx < 0) {
+    *s++ = '!';
+    idx = -idx;
+  }
+  
+#if defined(PCBSKY9X)
+  if (idx <= SWSRC_LAST_SWITCH) {
+    getStringAtIndex(s, STR_VSWITCHES, idx);
+  }
+#else
+  if (idx <= SWSRC_LAST_SWITCH) {
+    div_t swinfo = switchInfo(idx);
+    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
+      s += zchar2str(s, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME);
+      // TODO tous zchar2str
+    }
+    else {
+      *s++ = 'S';
+      *s++ = 'A'+swinfo.quot;
+    }
+    *s++ = "\300-\301"[swinfo.rem];
+    *s = '\0';
+  }
+#endif
+#if NUM_XPOTS > 0
+  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    getStringWithIndex(s, "S", swinfo.quot*10+swinfo.rem+11);
+  }
+#endif
+  else if (idx <= SWSRC_LAST_TRIM) {
+    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1);
+  }
+  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
+    getStringWithIndex(s, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1);
+  }
+  else if (idx <= SWSRC_ONE) {
+    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_ON+2+(SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM));
+  }
+  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
+    getStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);
+  }
+  else if (idx == SWSRC_TELEMETRY_STREAMING) {
+    strcpy(s, "Tele");
+  }
+  else {
+    zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
+  }
+  
+  return dest;
+}
+
+char * getSourceString(char * dest, mixsrc_t idx)
+{
+  if (idx == MIXSRC_NONE) {
+    return getStringAtIndex(dest, STR_VSRCRAW, 0);
+  }
+  else if (idx <= MIXSRC_LAST_INPUT) {
+    idx -= MIXSRC_FIRST_INPUT;
+    *dest++ = '\314';
+    if (ZEXIST(g_model.inputNames[idx])) {
+      zchar2str(dest, g_model.inputNames[idx], LEN_INPUT_NAME);
+      dest[LEN_INPUT_NAME] = '\0';
+    }
+    else {
+      strAppendUnsigned(dest, idx, 2);
+    }
+  }
+#if defined(LUA_INPUTS)
+  else if (idx <= MIXSRC_LAST_LUA) {
+#if defined(LUA_MODEL_SCRIPTS)
+    div_t qr = div(idx-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
+    if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
+      *dest++ = '\322';
+      // *dest++ = '1'+qr.quot;
+      strcpy(dest, scriptInputsOutputs[qr.quot].outputs[qr.rem].name);
+    }
+#else
+    strcpy(dest, "N/A");
+#endif
+  }
+#endif
+  else if (idx <= MIXSRC_LAST_POT) {
+    idx -= MIXSRC_Rud;
+    if (ZEXIST(g_eeGeneral.anaNames[idx])) {
+      zchar2str(dest, g_eeGeneral.anaNames[idx], LEN_ANA_NAME);
+      dest[LEN_ANA_NAME] = '\0';
+    }
+    else {
+      getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
+    }
+  }
+  else if (idx <= MIXSRC_LAST_TRIM) {
+    idx -= MIXSRC_Rud;
+    getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
+  }
+  else if (idx <= MIXSRC_LAST_SWITCH) {
+    idx -= MIXSRC_FIRST_SWITCH;
+    if (ZEXIST(g_eeGeneral.switchNames[idx])) {
+      zchar2str(dest, g_eeGeneral.switchNames[idx], LEN_SWITCH_NAME);
+      dest[LEN_SWITCH_NAME] = '\0';
+    }
+    else {
+      getStringAtIndex(dest, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1);
+    }
+  }
+  else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    getSwitchString(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
+  }
+  else if (idx <= MIXSRC_LAST_TRAINER) {
+    getStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);
+  }
+  else if (idx <= MIXSRC_LAST_CH) {
+    getStringWithIndex(dest, STR_CH, idx - MIXSRC_CH1 + 1);
+  }
+  else if (idx <= MIXSRC_LAST_GVAR) {
+    getStringWithIndex(dest, STR_GV, idx - MIXSRC_GVAR1 + 1);
+  }
+  else if (idx < MIXSRC_FIRST_TELEM) {
+    getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS);
+  }
+  else {
+    idx -= MIXSRC_FIRST_TELEM;
+    div_t qr = div(idx, 3);
+    dest[0] = '\321';
+    int pos = 1 + zchar2str(&dest[1], g_model.telemetrySensors[qr.quot].label, sizeof(g_model.telemetrySensors[qr.quot].label));
+    if (qr.rem) dest[pos++] = (qr.rem==2 ? '+' : '-');
+    dest[pos] = '\0';
+  }
+  
+  return dest;
+}
+#endif
+
 char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits, uint8_t radix)
 {
   if (digits == 0) {

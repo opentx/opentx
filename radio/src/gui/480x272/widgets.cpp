@@ -180,7 +180,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
 
 select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, event_t event)
 {
-  if (attr) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr & (~RIGHT)) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
   return value;
 }
@@ -194,7 +194,7 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, event_t
 swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event)
 {
   if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
-  putsSwitches(x, y, value, attr);
+  drawSwitch(x, y, value, attr);
   return value;
 }
 
@@ -395,7 +395,7 @@ void drawSleepBitmap()
 }
 
 #define SHUTDOWN_CIRCLE_DIAMETER       150
-void drawShutdownBitmap(uint32_t index)
+void drawShutdownAnimation(uint32_t index)
 {
   static uint32_t last_index = 0xffffffff;
   static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));

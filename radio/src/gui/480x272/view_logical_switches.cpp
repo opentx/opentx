@@ -46,28 +46,28 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
   unsigned int cstate = lswFamily(cs->func);
 
   if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
-    putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
-    putsSwitches(CSW_3RD_COLUMN, y, cs->v2, 0);
+    drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSwitch(CSW_3RD_COLUMN, y, cs->v2, 0);
   }
   else if (cstate == LS_FAMILY_EDGE) {
-    putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
     putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
   }
   else if (cstate == LS_FAMILY_COMP) {
-    drawMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-    drawMixerSource(CSW_3RD_COLUMN, y, cs->v2, 0);
+    drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSource(CSW_3RD_COLUMN, y, cs->v2, 0);
   }
   else if (cstate == LS_FAMILY_TIMER) {
     lcdDrawNumber(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT | PREC1);
     lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT | PREC1);
   }
   else {
-    drawMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
     putsChannelValue(CSW_3RD_COLUMN, y, cs->v1, cs->v1 <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT);
   }
 
   // CSW AND switch
-  putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, 0);
+  drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, 0);
 
   // CSW duration
   if (cs->duration > 0)

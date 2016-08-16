@@ -288,7 +288,7 @@ static int luaLcdDrawSwitch(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  putsSwitches(x, y, s, att);
+  drawSwitch(x, y, s, att);
   return 0;
 }
 
@@ -312,7 +312,7 @@ static int luaLcdDrawSource(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int s = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  drawMixerSource(x, y, s, att);
+  drawSource(x, y, s, att);
   return 0;
 }
 

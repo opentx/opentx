@@ -40,7 +40,7 @@ const pm_uchar bmp_shutdown[] PROGMEM = {
 
 #define SHUTDOWN_BITMAP_WIDTH          60
 #define SHUTDOWN_BITMAP_HEIGHT         60
-void drawShutdownBitmap(uint32_t index)
+void drawShutdownAnimation(uint32_t index)
 {
   index /= (PWR_PRESS_SHUTDOWN / 4);
   lcdRefreshWait();
@@ -133,7 +133,7 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
-  if (attr) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr & (~RIGHT)) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
 }
 
@@ -146,8 +146,8 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, 
 swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event)
 {
   drawFieldLabel(x, y, STR_SWITCH);
-  putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
+  drawSwitch(x,  y, value, attr);
+  if (attr & (~RIGHT)) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
   return value;
 }
 

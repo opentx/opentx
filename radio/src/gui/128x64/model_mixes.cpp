@@ -228,7 +228,7 @@ void menuModelMixOne(uint8_t event)
 
       case MIX_FIELD_SOURCE:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
-        drawMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
+        drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
 
@@ -307,12 +307,12 @@ void menuModelMixOne(uint8_t event)
 #define _STR_MAX(x)                     PSTR("/" #x)
 #define STR_MAX(x)                     _STR_MAX(x)
 
-#define MIX_LINE_WEIGHT_POS            6*FW+10
-#define MIX_LINE_SRC_POS               7*FW+5
-#define MIX_LINE_CURVE_POS             13*FW+3
-#define MIX_LINE_SWITCH_POS            16*FW
+#define MIX_LINE_WEIGHT_POS            6*FW+8
+#define MIX_LINE_SRC_POS               7*FW+3
+#define MIX_LINE_CURVE_POS             12*FW
+#define MIX_LINE_SWITCH_POS            16*FW+4
 #define MIX_LINE_FM_POS                13*FW+3
-#define MIX_LINE_DELAY_POS             20*FW
+#define MIX_LINE_DELAY_POS             20*FW+2
 #define MIX_LINE_NAME_POS              LCD_W-LEN_EXPOMIX_NAME*FW
 
 void onMixesMenu(const char * result)
@@ -354,7 +354,7 @@ void displayMixInfos(coord_t y, MixData * md)
   drawCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
 
   if (md->swtch) {
-    putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+    drawSwitch(MIX_LINE_SWITCH_POS, y, md->swtch);
   }
   
   char cs = ' ';
@@ -556,7 +556,7 @@ void menuModelMixAll(uint8_t event)
 
           if (mixCnt > 0) lcdDrawTextAtIndex(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-          drawMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
+          drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
 

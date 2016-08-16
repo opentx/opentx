@@ -99,25 +99,34 @@ void menuModelCurvesAll(uint8_t event)
 }
 
 #if defined(CPUARM)
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr)
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, LcdFlags flags)
 {
-  lcdDrawTextAtIndex(x, y, "\004DiffExpoFuncCstm", curve.type, menuHorizontalPosition==0 ? attr : 0);
-  if (attr && menuHorizontalPosition==0) {
+  coord_t x1 = x;
+  if (flags & RIGHT) {
+    x1 -= 8*FW;
+    flags -= RIGHT;
+  }
+  else {
+    x += 8*FW;
+  }
+  
+  lcdDrawTextAtIndex(x1, y, "\004DiffExpoFuncCstm", curve.type, menuHorizontalPosition==0 ? flags : 0);
+  if (flags && menuHorizontalPosition==0) {
     CHECK_INCDEC_MODELVAR_ZERO(event, curve.type, CURVE_REF_CUSTOM);
     if (checkIncDec_Ret) curve.value = 0;
   }
   switch (curve.type) {
     case CURVE_REF_DIFF:
     case CURVE_REF_EXPO:
-      curve.value = GVAR_MENU_ITEM(x+5*FW+2, y, curve.value, -100, 100, menuHorizontalPosition==1 ? LEFT|attr : LEFT, 0, event);
+      curve.value = GVAR_MENU_ITEM(x, y, curve.value, -100, 100, RIGHT | (menuHorizontalPosition==1 ? flags : 0), 0, event);
       break;
     case CURVE_REF_FUNC:
-      lcdDrawTextAtIndex(x+5*FW+2, y, STR_VCURVEFUNC, curve.value, menuHorizontalPosition==1 ? attr : 0);
-      if (attr && menuHorizontalPosition==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
+      lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
+      if (flags && menuHorizontalPosition==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
-      drawCurveName(x+5*FW+2, y, curve.value, menuHorizontalPosition==1 ? attr : 0);
-      if (attr && menuHorizontalPosition==1) {
+      drawCurveName(x, y, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
+      if (flags && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
           s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
           pushMenu(menuModelCurveOne);

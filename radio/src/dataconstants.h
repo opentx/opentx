@@ -150,7 +150,7 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 6
+  #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
 #elif defined(PCBFLAMENCO)
@@ -161,7 +161,7 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 8
+  #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
 #elif defined(PCBSKY9X) || defined(PCBX7D)
@@ -170,9 +170,9 @@ enum CurveType {
   #define LEN_FLIGHT_MODE_NAME         6
   #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
-  #define LEN_INPUT_NAME               4
+  #define LEN_INPUT_NAME               3
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 6
+  #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   16
   #define MAX_CURVE_POINTS             512
 #elif defined(PCBTARANIS)
@@ -184,7 +184,7 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 8
+  #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
 #else
