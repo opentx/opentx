@@ -30,10 +30,12 @@
   #define SWITCH_WARNING_LIST_X        WARNING_LINE_X
   #define SWITCH_WARNING_LIST_Y        WARNING_LINE_Y+3*FH
   #define SWITCH_WARNING_LIST_INTERVAL 35
-#elif defined(PCBTARANIS)
+#elif LCD_W >= 212
   #define SWITCH_WARNING_LIST_X        60
   #define SWITCH_WARNING_LIST_Y        4*FH+3
 #else
+  #define SWITCH_WARNING_LIST_X        4
+  #define SWITCH_WARNING_LIST_Y        4*FH+4
 #endif
 
 #if defined(CPUARM)
@@ -746,7 +748,7 @@ void checkSwitches()
     }
 #undef GETADC_COUNT
 #endif
-#endif  // !defined(MODULE_ALWAYS_SEND_PULSES)
+#endif // !defined(MODULE_ALWAYS_SEND_PULSES)
 
     getMovedSwitch();
 

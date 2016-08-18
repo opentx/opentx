@@ -757,23 +757,29 @@ enum MixSources {
   MIXSRC_SLIDER1,                       LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   MIXSRC_LAST_POT = MIXSRC_SLIDER2,
+#elif defined(PCBX9E)
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
+  MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
+  MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
+  MIXSRC_POT4,                          LUA_EXPORT("s4", "Potentiometer 4 (X9E only)")
+  MIXSRC_FIRST_SLIDER,
+  MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
+  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
+  MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider (X9E only)")
+  MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider (X9E only)")
+  MIXSRC_LAST_POT = MIXSRC_SLIDER4,
+#elif defined(PCBX7D)
+  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
+  MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
+  MIXSRC_LAST_POT = MIXSRC_POT2,
 #elif defined(PCBTARANIS)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
-  #if defined(PCBX9E)
-    MIXSRC_POT4,                        LUA_EXPORT("s4", "Potentiometer 4 (X9E only)")
-  #endif
   MIXSRC_FIRST_SLIDER,
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  #if defined(PCBX9E)
-    MIXSRC_SLIDER3,                     LUA_EXPORT("lcs", "Left center slider (X9E only)")
-    MIXSRC_SLIDER4,                     LUA_EXPORT("rcs", "Right center slider (X9E only)")
-    MIXSRC_LAST_POT = MIXSRC_SLIDER4,
-  #else
-    MIXSRC_LAST_POT = MIXSRC_SLIDER2,
-  #endif
+  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
