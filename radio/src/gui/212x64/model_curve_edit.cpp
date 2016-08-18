@@ -72,10 +72,8 @@ void menuModelCurveOne(uint8_t event)
 
   drawStringWithIndex(PSIZE(TR_MENUCURVES)*FW+FW, 0, "CV", s_curveChan+1);
 
-#if LCD_W >= 212
   lcdDrawText(11*FW+FW/2, 0, TR_PT "\002X\006Y");
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
-#endif
 
   SIMPLE_SUBMENU(STR_MENUCURVES, 4 + 5+crv.points + (crv.type==CURVE_TYPE_CUSTOM ? 5+crv.points-2 : 0));
 
@@ -101,6 +99,7 @@ void menuModelCurveOne(uint8_t event)
     }
   }
 
+  // Curve points
   attr = (menuVerticalPosition==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcdDrawTextAlignedLeft(5*FH+1, STR_COUNT);
   lcdDrawNumber(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
@@ -123,6 +122,7 @@ void menuModelCurveOne(uint8_t event)
     }
   }
 
+  // Curve smooth
   lcdDrawTextAlignedLeft(7*FH+1, STR_SMOOTH);
   drawCheckBox(7 * FW, 7 * FH + 1, crv.smooth, menuVerticalPosition == 3 ? INVERS : 0);
   if (menuVerticalPosition==3) crv.smooth = checkIncDecModel(event, crv.smooth, 0, 1);
@@ -143,13 +143,10 @@ void menuModelCurveOne(uint8_t event)
       }
       break;
 
-#if defined(PCBTARANIS) && LCD >= 212
-    // TODO   
     case EVT_KEY_LONG(KEY_MENU):
       pushMenu(menuChannelsView);
       killEvents(event);
       break;
-#endif
   }
 
   drawCurve(FW);
@@ -181,7 +178,7 @@ void menuModelCurveOne(uint8_t event)
     }
 
     if (selectionMode > 0) {
-      // do selection square
+      // Selection square
       lcdDrawFilledRect(point.x-FW-1, point.y-2, 5, 5, SOLID, FORCE);
       lcdDrawFilledRect(point.x-FW, point.y-1, 3, 3, SOLID);
       if (s_editMode > 0) {
