@@ -26,7 +26,7 @@ uint8_t requestScreenshot = false;
 
 void handleUsbConnection()
 {
-#if defined(CPUSTM32) && !defined(SIMU)
+#if defined(STM32) && !defined(SIMU)
   static bool usbStarted = false;
 
   if (!usbStarted && usbPlugged()) {
@@ -65,7 +65,7 @@ void handleUsbConnection()
   }
 #endif
 
-#endif // defined(CPUSTM32) && !defined(SIMU)
+#endif // defined(STM32) && !defined(SIMU)
 }
 
 void checkSpeakerVolume()
@@ -349,18 +349,6 @@ void guiMain(event_t evt)
     menuVerticalPosition = (menuEvent == EVT_ENTRY_UP) ? menuVerticalPositions[menuLevel] : 0;
     menuHorizontalPosition = 0;
     evt = menuEvent;
-    if (menuEvent == EVT_ENTRY_UP) {
-      TRACE("menuEvent EVT_ENTRY_UP");
-    }
-    // else if (menuEvent == EVT_MENU_UP) {
-    //   TRACE("menuEvent EVT_MENU_UP");
-    // }
-    else if (menuEvent == EVT_ENTRY) {
-      TRACE("menuEvent EVT_ENTRY");
-    }
-    else {
-      TRACE("menuEvent 0x%02x", menuEvent);
-    }
     menuEvent = 0;
   }
 

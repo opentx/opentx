@@ -11,6 +11,31 @@ macro(add_lua_export_target target)
   add_custom_target(lua_export_${target} DEPENDS lua_exports_${target}.inc)
 endmacro(add_lua_export_target)
 
-add_lua_export_target(taranis     -DCPUARM -DPCBTARANIS          -DLUA -DVIRTUALINPUTS)
-add_lua_export_target(taranis_x9e -DCPUARM -DPCBTARANIS -DPCBX9E -DLUA -DVIRTUALINPUTS)
-add_lua_export_target(horus       -DCPUARM -DPCBHORUS            -DLUA -DVIRTUALINPUTS -I${RADIO_SRC_DIRECTORY}/gui/480x272)
+set(LUA_INCLUDES
+  -DCPUARM -DLUA -DVIRTUAL_INPUTS -DLUA_INPUTS
+  -I${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}
+  -I${RADIO_SRC_DIRECTORY}/thirdparty
+  -I${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32
+  -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/include
+  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_OTG_Driver/inc
+  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc
+  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/cdc/inc
+  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc
+  -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc
+  )
+
+set(LUA_INCLUDES_STM32F2
+  ${LUA_INCLUDES}
+  -DSTM32F2
+  -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/Device/ST/STM32F2xx/Include
+  )
+
+set(LUA_INCLUDES_STM32F4
+  ${LUA_INCLUDES}
+  -DSTM32F4
+  -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include
+  )
+
+add_lua_export_target(taranis     ${LUA_INCLUDES_STM32F2} -DPCBTARANIS           )
+add_lua_export_target(taranis_x9e ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E -DSTM32F40_41xxx  )
+add_lua_export_target(horus       ${LUA_INCLUDES_STM32F4} -DPCBHORUS -DSTM32F40_41xxx -I${RADIO_SRC_DIRECTORY}/gui/480x272)

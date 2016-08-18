@@ -72,9 +72,9 @@ if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
   set(SRC ${SRC} pulses/multi_arm.cpp telemetry/spektrum.cpp)
 endif()
-add_definitions(-DCPUARM)
+add_definitions(-DCPUARM -DVIRTUAL_INPUTS)
 add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2)
-add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE)
+add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE -DGAUGES)
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
 foreach(LANGUAGE ${TTS_LANGUAGES})
   set(SRC ${SRC} translations/tts_${LANGUAGE}.cpp)
@@ -104,8 +104,8 @@ set(TARGET_SRC
   adc_driver.cpp
   trainer_driver.cpp
   audio_driver.cpp
-  serial2_driver.cpp
   telemetry_driver.cpp
+  ${SERIAL2_DRIVER}
   )
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}

@@ -29,7 +29,7 @@
 #if defined(PCBTARANIS)
 void bwdt_reset()
 {
-  IWDG->KR = 0xAAAA;		// reload
+  IWDG->KR = 0xAAAA; // reload
 }
 #endif
 
@@ -82,7 +82,7 @@ void _bootStart()
     GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;    // General purpose output mode
   }
 
-  // TRIMS_GPIO_PIN_LHR is on PG0 on 9XE and on PE3 on Taranis
+  // TRIMS_GPIO_PIN_LHR is on PG0 on X9E and on PE3 on Taranis
   // TRIMS_GPIO_PIN_RHL is on PC1 on all versions
   // turn on pull-ups on trim keys 
   GPIOC->PUPDR = 0x00000004;

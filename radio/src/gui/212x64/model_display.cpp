@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuModelDisplayItems {
+enum MenuModelDisplayItems {
   ITEM_DISPLAY_TOP_BAR_LABEL,
   ITEM_DISPLAY_TOP_BAR_VOLTAGE,
   ITEM_DISPLAY_TOP_BAR_ALTITUDE,
@@ -103,17 +103,17 @@ void menuModelDisplay(uint8_t event)
 
       case ITEM_DISPLAY_TOP_BAR_VOLTAGE:
         lcdDrawTextAlignedLeft(y, STR_VOLTAGE);
-        putsMixerSource(DISPLAY_COL2, y, g_model.frsky.voltsSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.voltsSource-1) : 0, attr);
+        drawSource(DISPLAY_COL2, y, g_model.frsky.voltsSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.voltsSource-1) : 0, attr);
         if (attr) {
-          g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
+          g_model.frsky.voltsSource = checkIncDec(event, g_model.frsky.voltsSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isVoltsSensor);
         }
         break;
 
       case ITEM_DISPLAY_TOP_BAR_ALTITUDE:
         lcdDrawTextAlignedLeft(y, STR_ALTITUDE);
-        putsMixerSource(DISPLAY_COL2, y, g_model.frsky.altitudeSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.altitudeSource-1) : 0, attr);
+        drawSource(DISPLAY_COL2, y, g_model.frsky.altitudeSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.altitudeSource-1) : 0, attr);
         if (attr) {
-          g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
+          g_model.frsky.altitudeSource = checkIncDec(event, g_model.frsky.altitudeSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isAltSensor);
         }
         break;
 
@@ -196,7 +196,7 @@ void menuModelDisplay(uint8_t event)
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
           source_t barSource = bar.source;
-          putsMixerSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
+          drawSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
           int barMax = getMaximumValue(barSource);
           int barMin = -barMax;
           if (barSource) {
@@ -241,7 +241,7 @@ void menuModelDisplay(uint8_t event)
             LcdFlags cellAttr = (menuHorizontalPosition==c ? attr : 0);
             source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
             const coord_t pos[] = {DISPLAY_COL1, DISPLAY_COL2, DISPLAY_COL3};
-            putsMixerSource(pos[c], y, value, cellAttr);
+            drawSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {
               value = checkIncDec(event, value, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
             }

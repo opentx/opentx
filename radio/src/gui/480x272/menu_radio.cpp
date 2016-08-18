@@ -31,6 +31,6 @@ const MenuHandlerFunc menuTabGeneral[] = {
 
 bool menuRadioSpecialFunctions(event_t event)
 {
-  MENU(STR_MENUSPECIALFUNCS, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  MENU(STR_MENUSPECIALFUNCS, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, MAX_SPECIAL_FUNCTIONS, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuSpecialFunctions(event, g_eeGeneral.customFn, globalFunctionsContext);
 }

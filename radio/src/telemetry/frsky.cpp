@@ -57,7 +57,7 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(SERIAL2)
   if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
     serial2Putc(data);
   }

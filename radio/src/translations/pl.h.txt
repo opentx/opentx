@@ -650,7 +650,7 @@
 #define TR_PHASENAME           "Nazwa Fazy"
 #define TR_MIXNAME             "Nazwa Mix"
 #define TR_INPUTNAME           "Wpisz Nazw"
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_EXPONAME          "LiniaNazw"
 #else
   #define TR_EXPONAME          "Nazwa Exp"
@@ -684,8 +684,8 @@
 #define OFS_CHECKTRIMS         CENTER_OFS+(9*FW)
 #define TR_SWASHTYPE           "Typ tarczy"
 #define TR_COLLECTIVE          TR("Kolektyw", "Źródło Kolektywu")
-#define TR_AILERON             "Lateral cyc. source"
-#define TR_ELEVATOR            "Long. cyc. source"
+#define TR_AILERON             TR("Lateral cyc.", "Lateral cyc. source")
+#define TR_ELEVATOR            TR("Long. cyc.", "Long. cyc. source")
 #define TR_SWASHRING           "Tarcza    "
 #define TR_ELEDIRECTION        TR("Ster Wysokośc","Dług. Kierunku cyklu")
 #define TR_AILDIRECTION        TR("Kierunek Lotk","Lateral cyc. direction")
@@ -820,8 +820,8 @@
 #define TR_MENUTRAINER         "TRENER"
 #define TR_MENUSPECIALFUNCS    "FUNKCJE GLOBALNE"
 #define TR_MENUVERSION         "WERSJA"
-#define TR_MENUDIAG            TR("PRZEŁ","TEST PRZEŁ")
-#define TR_MENUANA             TR("WE-ANA","WEJŚCIA ANALOG.")
+#define TR_MENU_RADIO_SWITCHES            TR("PRZEŁ","TEST PRZEŁ")
+#define TR_MENU_RADIO_ANALOGS             TR("WE-ANA","WEJŚCIA ANALOG.")
 #define TR_MENUCALIBRATION     "KALIBRACJA"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trymery >> Subtrimy"
@@ -830,11 +830,11 @@
 #endif
 #define TR_MENUMODELSEL        TR("WYB.MODEL","WYBÓR MODELU")
 #define TR_MENUSETUP           TR("USTAW","USTAW MODELU")
-#define TR_MENUFLIGHTPHASE     "FAZA LOTU"
-#define TR_MENUFLIGHTPHASES    "FAZY LOTU"
+#define TR_MENUFLIGHTMODE     "FAZA LOTU"
+#define TR_MENUFLIGHTMODES    "FAZY LOTU"
 #define TR_MENUHELISETUP       "USTAW HELI"
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_MENUINPUTS        "WEJŚCIA"
   #define TR_MENULIMITS        "WYJŚCIA"
 #else

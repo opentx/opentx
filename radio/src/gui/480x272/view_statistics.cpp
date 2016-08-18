@@ -39,23 +39,23 @@ bool menuStatsGraph(event_t event)
   MENU("Statistics", STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
+  drawTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
   lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP, "Battery");
-  putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
+  drawTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Throttle");
-  putsTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, s_timeCumThr, TIMEHOUR);
+  drawTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, s_timeCumThr, TIMEHOUR);
   lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+FH, "Throttle %", TIMEHOUR);
-  putsTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, s_timeCum16ThrP/16, TIMEHOUR);
+  drawTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, s_timeCum16ThrP/16, TIMEHOUR);
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Timers");
   lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, "[1]", HEADER_COLOR);
-  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val, TIMEHOUR);
+  drawTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val, TIMEHOUR);
   lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+2*FH, "[2]", HEADER_COLOR);
-  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[1].val, TIMEHOUR);
+  drawTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[1].val, TIMEHOUR);
 #if TIMERS > 2
   lcdDrawText(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+2*FH, "[3]", HEADER_COLOR);
-  putsTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[2].val, TIMEHOUR);
+  drawTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[2].val, TIMEHOUR);
 #endif
 
   const coord_t x = 10;
@@ -160,10 +160,10 @@ bool menuStatsAnalogs(event_t event)
     lcdDrawNumber(x+140, y, avgJitter[i].get());
     lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*250/256, PREC1);
 #else
-    if (i < NUM_STICKS+NUM_POTS)
+    if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
       lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
     else if (i >= MOUSE1)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedStick[NUM_STICKS+NUM_POTS+i-MOUSE1]*25/256);
+      lcdDrawNumber(x+100, y, (int16_t)calibratedStick[NUM_STICKS+NUM_POTS+NUM_SLIDERS+i-MOUSE1]*25/256);
 #endif
   }
 
@@ -212,7 +212,7 @@ bool menuStatsTraces(event_t event)
     if (te) {
       // time
       putstime_t tme = te->time % SECS_PER_DAY;
-      putsTimer(STATS_TRACES_TIME_POS, y, tme, TIMEHOUR|LEFT);
+      drawTimer(STATS_TRACES_TIME_POS, y, tme, TIMEHOUR|LEFT);
       // event
       lcdDrawNumber(STATS_TRACES_EVENT_POS, y, te->event, LEADING0|LEFT, 3);
       // data

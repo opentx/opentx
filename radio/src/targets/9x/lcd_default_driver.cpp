@@ -22,7 +22,7 @@ void lcdSendCtl(uint8_t val)
 {
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_CS1);
 #if defined(LCD_MULTIPLEX)
-  DDRA = 0xFF; //Set LCD_DAT pins to output
+  DDRA = 0xFF; // Set LCD_DAT pins to output
 #endif
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_A0);
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RnW);
@@ -31,7 +31,7 @@ void lcdSendCtl(uint8_t val)
   PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_E);
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_A0);
 #if defined(LCD_MULTIPLEX)
-  DDRA = 0x00; //Set LCD_DAT pins to input
+  DDRA = 0x00; // Set LCD_DAT pins to input
 #endif
   PORTC_LCD_CTRL |=  (1<<OUT_C_LCD_CS1);
 }
@@ -85,9 +85,9 @@ const static pm_uchar lcdInitSequence[] PROGMEM =
 void lcdInit()
 {
   LCD_LOCK();
-  PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES);  //LCD reset
+  PORTC_LCD_CTRL &= ~(1<<OUT_C_LCD_RES); // LCD reset
   _delay_us(2);
-  PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES);  //LCD normal operation
+  PORTC_LCD_CTRL |= (1<<OUT_C_LCD_RES); // LCD normal operation
   _delay_us(1500);
   for (uint8_t i=0; i<DIM(lcdInitSequence); i++) {
     lcdSendCtl(pgm_read_byte(&lcdInitSequence[i])) ;
@@ -107,7 +107,6 @@ void lcdSetRefVolt(uint8_t val)
   lcdSendCtl(val);
   LCD_UNLOCK();
 }
-
 
 void lcdRefresh()
 {

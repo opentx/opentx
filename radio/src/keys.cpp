@@ -117,9 +117,9 @@ void Key::input(bool val)
   }
 }
 
-EnumKeys Key::key() const 
-{ 
-  return static_cast<EnumKeys>(this - keys);
+uint8_t Key::key() const
+{
+  return (this - keys);
 }
 
 void pauseEvents(uint8_t event)

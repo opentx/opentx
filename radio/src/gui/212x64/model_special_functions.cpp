@@ -94,13 +94,13 @@ void onCustomFunctionsMenu(const char * result)
     storageDirty(eeFlags);
   }
   else if (result == STR_INSERT) {
-    memmove(cfn+1, cfn, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
+    memmove(cfn+1, cfn, (MAX_SPECIAL_FUNCTIONS-sub-1)*sizeof(CustomFunctionData));
     memset(cfn, 0, sizeof(CustomFunctionData));
     storageDirty(eeFlags);
   }
   else if (result == STR_DELETE) {
-    memmove(cfn, cfn+1, (NUM_CFN-sub-1)*sizeof(CustomFunctionData));
-    memset(&g_model.customFn[NUM_CFN-1], 0, sizeof(CustomFunctionData));
+    memmove(cfn, cfn+1, (MAX_SPECIAL_FUNCTIONS-sub-1)*sizeof(CustomFunctionData));
+    memset(&g_model.customFn[MAX_SPECIAL_FUNCTIONS-1], 0, sizeof(CustomFunctionData));
     storageDirty(eeFlags);
   }
 }
@@ -155,11 +155,11 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
       POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
       POPUP_MENU_ADD_ITEM(STR_PASTE);
-    if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[NUM_CFN-1]))
+    if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[MAX_SPECIAL_FUNCTIONS-1]))
       POPUP_MENU_ADD_ITEM(STR_INSERT);
     if (!CFN_EMPTY(cfn))
       POPUP_MENU_ADD_ITEM(STR_CLEAR);
-    for (int i=sub+1; i<NUM_CFN; i++) {
+    for (int i=sub+1; i<MAX_SPECIAL_FUNCTIONS; i++) {
       if (!CFN_EMPTY(&functions[i])) {
         POPUP_MENU_ADD_ITEM(STR_DELETE);
         break;
@@ -181,7 +181,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
       uint8_t active = (attr && s_editMode>0);
       switch (j) {
         case ITEM_CUSTOM_FUNCTIONS_SWITCH:
-          putsSwitches(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
             func = CFN_FUNC(cfn) = func+1;
@@ -206,7 +206,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 
         case ITEM_CUSTOM_FUNCTIONS_PARAM1:
         {
-          int8_t maxParam = NUM_CHNOUT-1;
+          int8_t maxParam = MAX_OUTPUT_CHANNELS-1;
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           if (func == FUNC_OVERRIDE_CHANNEL) {
             putsChn(lcdNextPos, y, CFN_CH_INDEX(cfn)+1, attr);
@@ -215,7 +215,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 #endif
           if (func == FUNC_TRAINER) {
             maxParam = NUM_STICKS;
-            putsMixerSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            drawSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
           }
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
@@ -268,7 +268,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
           }
           else if (func == FUNC_SET_TIMER) {
             val_max = 539*60+59; //8:59:59
-            putsTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT|TIMEHOUR, attr);
+            drawTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT|TIMEHOUR, attr);
           }
           else if (func == FUNC_PLAY_SOUND) {
             val_max = AU_SPECIAL_SOUND_LAST-AU_SPECIAL_SOUND_FIRST-1;
@@ -308,7 +308,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
           }
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_LAST_TELEM;
-            putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             if (active) {
               INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
               INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
@@ -317,7 +317,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 #endif
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
-            putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             if (active) {
               INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
               INCDEC_ENABLE_CHECK(isSourceAvailable);
@@ -350,7 +350,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
-                putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+                drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
                 if (active) {
                   INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
                   INCDEC_ENABLE_CHECK(isSourceAvailable);
@@ -423,6 +423,6 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 
 void menuModelSpecialFunctions(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, NUM_CFN, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
+  MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, MAX_SPECIAL_FUNCTIONS, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 }

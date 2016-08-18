@@ -314,8 +314,9 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
 
   lcdLastPos = x;
   lcdNextPos = x;
-  if (fontsize == MIDSIZE)
+  if (fontsize == MIDSIZE) {
     lcdLastPos += 1;
+  }
 
   if (flags & RIGHT) {
     lcdLastPos -= width;
@@ -578,30 +579,30 @@ void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat,
   }
 }
 
-void lcdDrawTelemetryTopBar()
+void drawTelemetryTopBar()
 {
   putsModelName(0, 0, g_model.header.name, g_eeGeneral.currModel, 0);
   uint8_t att = (IS_TXBATT_WARNING() ? BLINK : 0);
   putsVBat(12*FW, 0, att);
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
-    putsTimer(22*FW, 0, timersStates[0].val, att, att);
-    putsMixerSource(18*FW+2, 1, MIXSRC_TIMER1, SMLSIZE);
+    drawTimer(22*FW, 0, timersStates[0].val, att, att);
+    drawSource(18*FW+2, 1, MIXSRC_TIMER1, SMLSIZE);
   }
   if (g_model.timers[1].mode) {
     att = (timersStates[1].val<0 ? BLINK : 0);
-    putsTimer(31*FW, 0, timersStates[1].val, att, att);
-    putsMixerSource(27*FW+2, 1, MIXSRC_TIMER2, SMLSIZE);
+    drawTimer(31*FW, 0, timersStates[1].val, att, att);
+    drawSource(27*FW+2, 1, MIXSRC_TIMER2, SMLSIZE);
   }
   lcdInvertLine(0);
 }
 
-void putsRtcTime(coord_t x, coord_t y, LcdFlags att)
+void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 {
-  putsTimer(x, y, getValue(MIXSRC_TX_TIME), att, att);
+  drawTimer(x, y, getValue(MIXSRC_TX_TIME), att, att);
 }
 
-void putsTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
 
@@ -656,19 +657,13 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att)
   putsVolts(x, y, g_vbat100mV, att);
 }
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char *str, uint8_t idx, LcdFlags att)
-{
-  lcdDrawText(x, y, str, att & ~LEADING0);
-  lcdDrawNumber(lcdNextPos, y, idx, att|LEFT, 2);
-}
-
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   uint8_t length = STR_VSRCRAW[0];
   lcdDrawSizedText(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
 }
 
-void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
+void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 {
   if (idx == MIXSRC_NONE) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, 0, att); // TODO macro
@@ -724,7 +719,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx < MIXSRC_SW1)
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1, att);
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH)
-    putsSwitches(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
+    drawSwitch(x, y, SWSRC_SW1+idx-MIXSRC_SW1, att);
   else if (idx < MIXSRC_CH1)
     drawStringWithIndex(x, y, STR_PPM_TRAINER, idx-MIXSRC_FIRST_TRAINER+1, att);
   else if (idx <= MIXSRC_LAST_CH) {
@@ -738,7 +733,7 @@ void putsMixerSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
   }
   else if (idx < MIXSRC_FIRST_TELEM) {
-    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-NUM_LOGICAL_SWITCH-NUM_TRAINER-NUM_CHNOUT-MAX_GVARS, att);
+    lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
   }
   else {
     idx -= MIXSRC_FIRST_TELEM;
@@ -765,115 +760,21 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
-void putsSwitches(coord_t x, coord_t y, int32_t idx, LcdFlags att)
+void drawSwitch(coord_t x, coord_t y, int32_t idx, LcdFlags flags)
 {
-  if (idx == SWSRC_NONE) {
-    return lcdDrawTextAtIndex(x, y, STR_VSWITCHES, 0, att);
-  }
-  else if (idx == SWSRC_OFF) {
-    return lcdDrawTextAtIndex(x, y, STR_OFFON, 0, att);
-  }
-
-  if (idx < 0) {
-    lcdDrawChar(x-2, y, '!', att);
-    idx = -idx;
-  }
-
-  if (idx <= SWSRC_LAST_SWITCH) {
-    div_t swinfo = switchInfo(idx);
-    if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
-      lcdDrawSizedText(x, y, g_eeGeneral.switchNames[swinfo.quot], LEN_SWITCH_NAME, ZCHAR|att);
-    }
-    else {
-      lcdDrawChar(x, y, 'S', att);
-      lcdDrawChar(lcdNextPos, y, 'A'+swinfo.quot, att);
-    }
-    char c = "\300-\301"[swinfo.rem];
-    lcdDrawChar(lcdNextPos, y, c, att);
-  }
-  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
-    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
-    drawStringWithIndex(x, y, "S", swinfo.quot*10+swinfo.rem+11, att);
-  }
-  else if (idx <= SWSRC_LAST_TRIM) {
-    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1, att);
-  }
-  else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
-    drawStringWithIndex(x, y, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1, att);
-  }
-  else if (idx <= SWSRC_ONE) {
-    lcdDrawTextAtIndex(x, y, STR_VSWITCHES, idx-SWSRC_ON+1+(2*NUM_STICKS), att);
-  }
-  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    drawStringWithIndex(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  }
-  else if (idx == SWSRC_TELEMETRY_STREAMING) {
-    lcdDrawText(x, y, "Tele", att);
-  }
-  else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    drawStringWithIndex(x, y, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE, att);
-  }
-  else if (idx == SWSRC_TELEMETRY_STREAMING) {
-    lcdDrawText(x, y, "Tele", att);
-  }
-  else {
-    lcdDrawSizedText(x, y, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN, ZCHAR|att);
-  }
-}
-
-#if defined(FLIGHT_MODES)
-void putsFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
-{
-  if (idx==0)
-    lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att);
-  else
-    drawStringWithIndex(x, y, STR_FP, idx-1, att);
-}
-#endif
-
-void putsCurveRef(coord_t x, coord_t y, CurveRef &curve, LcdFlags att)
-{
-  if (curve.value != 0) {
-    switch (curve.type) {
-      case CURVE_REF_DIFF:
-        lcdDrawChar(x, y, 'D', att);
-        GVAR_MENU_ITEM(x+FW, y, curve.value, -100, 100, LEFT|att, 0, 0);
-        break;
-
-      case CURVE_REF_EXPO:
-        lcdDrawChar(x, y, 'E', att);
-        GVAR_MENU_ITEM(x+FW, y, curve.value, -100, 100, LEFT|att, 0, 0);
-        break;
-
-      case CURVE_REF_FUNC:
-        lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, att);
-        break;
-
-      case CURVE_REF_CUSTOM:
-        drawCurveName(x, y, curve.value, att);
-        break;
-    }
-  }
+  char s[8];
+  getSwitchString(s, idx);
+  lcdDrawText(x, y, s, flags);
 }
 
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
-  if (idx == 0) {
-    return lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, flags);
-  }
-
-  if (idx < 0) {
-    lcdDrawChar(x-3, y, '!', flags);
-    idx = -idx;
-  }
-
-  if (ZEXIST(g_model.curves[idx-1].name))
-    lcdDrawSizedText(x, y, g_model.curves[idx-1].name, LEN_CURVE_NAME, ZCHAR|flags);
-  else
-    drawStringWithIndex(x, y, STR_CV, idx, flags);
+  char s[8];
+  getCurveString(s, idx);
+  lcdDrawText(x, y, s, flags);
 }
 
-void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
+void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
@@ -881,10 +782,10 @@ void putsTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
     else
       mode -= (TMRMODE_COUNT-1);
   }
-  putsSwitches(x, y, mode, att);
+  drawSwitch(x, y, mode, att);
 }
 
-void putsTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
+void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
 {
   trim_t v = getRawTrimValue(phase, idx);
   unsigned int mode = v.mode;
@@ -997,7 +898,7 @@ void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFl
 
 void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
 {
-  if (channel >= MAX_SENSORS)
+  if (channel >= MAX_TELEMETRY_SENSORS)
     return;     // Lua luaLcdDrawChannel() can call us with a bad value
 
   TelemetryItem & telemetryItem = telemetryItems[channel];
@@ -1074,7 +975,7 @@ void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t value, Lcd
     putsTelemetryChannelValue(x, y, channel, value, att);
   }
   else if (channel >= MIXSRC_FIRST_TIMER || channel == MIXSRC_TX_TIME) {
-    putsTimer(x, y, value, att, att);
+    drawTimer(x, y, value, att, att);
   }
   else if (channel == MIXSRC_TX_VOLTAGE) {
     lcdDrawNumber(x, y, value, att|PREC1);

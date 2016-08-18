@@ -120,7 +120,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     }
   }
   else if (option->type == ZoneOption::Source) {
-    putsMixerSource(SCREENS_SETUP_2ND_COLUMN, y, value->unsignedValue, attr);
+    drawSource(SCREENS_SETUP_2ND_COLUMN, y, value->unsignedValue, attr);
     if (attr) {
       CHECK_INCDEC_MODELSOURCE(event, value->unsignedValue, 1, MIXSRC_LAST_TELEM);
     }

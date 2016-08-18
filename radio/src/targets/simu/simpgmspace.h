@@ -86,7 +86,7 @@ typedef const uint8_t pm_uint8_t;
 typedef const int16_t pm_int16_t;
 typedef const int8_t pm_int8_t;
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
@@ -349,6 +349,7 @@ extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)
 #define NVIC_DisableIRQ(x)
 #define NVIC_SetPriority(...)
+#define NVIC_SystemReset() exit(0)
 #define __disable_irq()
 #define __enable_irq()
 #endif
@@ -442,7 +443,7 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
 #define UART3_Stop(...)
 #define USART_GetITStatus(...)         0
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
 #define TIM_DeInit(...)
 #define TIM_SetCompare2(...)
@@ -484,9 +485,7 @@ extern char simuSdDirectory[1024];
 #define sdPoll10ms()
 #define sd_card_ready()  (true)
 #if !defined(SIMU_DISKIO)
-	#define sdMounted()      (true)
+  #define sdMounted()      (true)
 #endif
-
-inline void ledOff() { }
 
 #endif // _SIMPGMSPACE_H_

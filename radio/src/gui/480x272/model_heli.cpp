@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-enum menuModelHeliItems {
+enum MenuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
   ITEM_HELI_SWASHRING,
   ITEM_HELI_ELE,
@@ -37,10 +37,10 @@ enum menuModelHeliItems {
 bool menuModelHeli(event_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_HELI, ITEM_HELI_MAX);
+  
+  uint8_t sub = menuVerticalPosition;
 
-  int sub = menuVerticalPosition;
-
-  for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     int k = i+menuVerticalOffset;
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
@@ -60,7 +60,7 @@ bool menuModelHeli(event_t event)
 
       case ITEM_HELI_ELE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ELEVATOR);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
+        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.elevatorSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -72,7 +72,7 @@ bool menuModelHeli(event_t event)
 
       case ITEM_HELI_AIL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_AILERON);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
+        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.aileronSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.aileronSource, 0, MIXSRC_LAST_CH);
         break;
 
@@ -84,7 +84,7 @@ bool menuModelHeli(event_t event)
 
       case ITEM_HELI_COL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_COLLECTIVE);
-        putsMixerSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
+        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH);
         break;
 

@@ -229,7 +229,7 @@ void processSportPacket(uint8_t * packet)
   uint16_t id = *((uint16_t *)(packet+2));
   uint32_t data = SPORT_DATA_S32(packet);
 
-#if defined(CPUSTM32) && !defined(SIMU)
+#if defined(STM32) && !defined(SIMU)
   if (sportUpdateState != SPORT_IDLE) {
     processSportUpdatePacket(packet);	// Uses different chksum
     return;
@@ -388,7 +388,7 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instanc
   storageDirty(EE_MODEL);
 }
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 bool sportWaitState(SportUpdateState state, int timeout)
 {
 #if defined(SIMU)

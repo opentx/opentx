@@ -76,7 +76,7 @@ typedef uint8_t source_t;
  * Mixer structure
  */
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
 PACK(struct CurveRef {
   uint8_t type;
   int8_t  value;
@@ -100,29 +100,9 @@ PACK(struct MixData {
   uint8_t  speedDown;
   NOBACKUP(char name[LEN_EXPOMIX_NAME]);
 });
-#elif defined(CPUARM)
-PACK(struct MixData {
-  uint8_t  destCh:5;
-  uint8_t  mixWarn:3;         // mixer warning
-  uint16_t flightModes:9;
-  uint16_t curveMode:1;
-  uint16_t noExpo:1;
-  int16_t  carryTrim:3;
-  uint16_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  int16_t  weight;
-  int8_t   swtch;
-  int8_t   curveParam;
-  uint8_t  delayUp;
-  uint8_t  delayDown;
-  uint8_t  speedUp;
-  uint8_t  speedDown;
-  uint8_t  srcRaw;
-  int16_t  offset;
-  NOBACKUP(char name[LEN_EXPOMIX_NAME]);
-});
 #elif defined(CPUM2560) || defined(CPUM2561)
 PACK(struct MixData {
-  uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
+  uint8_t destCh:4;          // 0, 1..MAX_OUTPUT_CHANNELS
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
   uint8_t weightMode:1;
@@ -144,7 +124,7 @@ PACK(struct MixData {
 });
 #else
 PACK(struct MixData {
-  uint8_t destCh:4;          // 0, 1..NUM_CHNOUT
+  uint8_t destCh:4;          // 0, 1..MAX_OUTPUT_CHANNELS
   uint8_t curveMode:1;       // O=curve, 1=differential
   uint8_t noExpo:1;
   uint8_t weightMode:1;
@@ -169,7 +149,7 @@ PACK(struct MixData {
  * Expo/Input structure
  */
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
 PACK(struct ExpoData {
   uint16_t mode:2;
   uint16_t scale:14;
@@ -183,17 +163,6 @@ PACK(struct ExpoData {
   NOBACKUP(char name[LEN_EXPOMIX_NAME]);
   int8_t   offset;
   CurveRef curve;
-});
-#elif defined(CPUARM)
-PACK(struct ExpoData {
-  uint16_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
-  uint16_t chn:3;
-  uint16_t curveMode:2;
-  uint16_t flightModes:9;
-  int8_t   swtch;
-  int8_t   weight;
-  NOBACKUP(char name[LEN_EXPOMIX_NAME]);
-  int8_t   curveParam;
 });
 #elif defined(CPUM2560) || defined(CPUM2561)
 PACK(struct ExpoData {
@@ -222,7 +191,7 @@ PACK(struct ExpoData {
  * Limit structure
  */
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
 PACK(struct LimitData {
   int32_t min:11;
   int32_t max:11;
@@ -287,7 +256,7 @@ PACK(struct CustomFunctionData {
   uint16_t func:7;
   PACK(union {
     NOBACKUP(PACK(struct {
-      char name[LEN_CFN_NAME];
+      char name[LEN_FUNCTION_NAME];
     }) play);
 
     PACK(struct {
@@ -341,14 +310,14 @@ PACK(struct CustomFunctionData {
  * FlightMode structure
  */
 
- #if defined(VIRTUALINPUTS)
- PACK(struct trim_t {
-   int16_t  value:11;
-   uint16_t mode:5;
- });
- #else
- typedef int16_t trim_t;
- #endif
+#if defined(CPUARM)
+PACK(struct trim_t {
+  int16_t  value:11;
+  uint16_t mode:5;
+});
+#else
+typedef int16_t trim_t;
+#endif
 
 typedef int16_t gvar_t;
 
@@ -394,15 +363,13 @@ PACK(struct FlightModeData {
  * Curve structure
  */
 
-#if defined(XCURVES)
+#if defined(CPUARM)
 PACK(struct CurveData {
   uint8_t type:1;
   uint8_t smooth:1;
   int8_t  points:6; // TODO conversion
   NOBACKUP(char name[LEN_CURVE_NAME]);
 });
-#elif defined(CPUARM)
-typedef int16_t CurveData;
 #else
 typedef int8_t CurveData;
 #endif
@@ -463,7 +430,7 @@ PACK(struct TimerData {
  * Swash Ring structure
  */
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
 PACK(struct SwashRingData {
   uint8_t   type;
   uint8_t   value;
@@ -685,7 +652,7 @@ PACK(struct ModuleData {
   uint8_t failsafeMode:4;  //only 3 bits used
   uint8_t subType:3;
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
-  int16_t failsafeChannels[NUM_CHNOUT];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   union {
     struct {
       int8_t  delay:6;
@@ -786,13 +753,13 @@ PACK(struct CustomScreenData {
 #endif
 
 #if defined(PCBHORUS)
-  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS]);
+  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
 #elif defined(PCBFLAMENCO)
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #elif defined(PCBTARANIS)
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS];
+  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #elif defined(PCBSKY9X)
-  #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_EXTRA
 #endif
@@ -817,14 +784,14 @@ PACK(struct ModelData {
   AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;
   MixData   mixData[MAX_MIXERS];
-  LimitData limitData[NUM_CHNOUT];
+  LimitData limitData[MAX_OUTPUT_CHANNELS];
   ExpoData  expoData[MAX_EXPOS];
 
   CurveData curves[MAX_CURVES];
-  int8_t    points[NUM_POINTS];
+  int8_t    points[MAX_CURVE_POINTS];
 
-  LogicalSwitchData logicalSw[NUM_LOGICAL_SWITCH];
-  CustomFunctionData customFn[NUM_CFN];
+  LogicalSwitchData logicalSw[MAX_LOGICAL_SWITCHES];
+  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
@@ -840,7 +807,7 @@ PACK(struct ModelData {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(NOBACKUP(TelemetrySensor telemetrySensors[MAX_SENSORS]))
+  ARM_FIELD(NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS]))
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
@@ -903,7 +870,7 @@ PACK(struct TrainerData {
     NOBACKUP(int8_t   varioPitch); \
     NOBACKUP(int8_t   varioRange); \
     NOBACKUP(int8_t   varioRepeat); \
-    CustomFunctionData customFn[NUM_CFN];
+    CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 #endif
 
 #if defined(PCBHORUS)
@@ -914,7 +881,7 @@ PACK(struct TrainerData {
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
     NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
-    NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]); \
+    NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
     NOBACKUP(uint8_t bluetoothEnable:1); \
     NOBACKUP(uint8_t blOffBright:7); \
@@ -927,7 +894,7 @@ PACK(struct TrainerData {
     uint32_t switchConfig; \
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME];
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
 #elif defined(PCBTARANIS)
   #if defined(PCBX9E)
     #define BLUETOOTH_FIELDS \
@@ -945,7 +912,7 @@ PACK(struct TrainerData {
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS][LEN_ANA_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]; \
     BLUETOOTH_FIELDS
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
@@ -957,7 +924,9 @@ PACK(struct TrainerData {
     int8_t   temperatureCalib; \
     uint8_t  optrexDisplay; \
     uint8_t  sticksGain; \
-    uint8_t  rotarySteps;
+    uint8_t  rotarySteps; \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS  EXTRA_GENERAL_FIELDS_ARM
 #elif defined(PXX)
@@ -978,7 +947,7 @@ PACK(struct TrainerData {
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS];
+  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
   NOBACKUP(uint16_t chkSum);
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -1053,16 +1022,18 @@ static inline void check_struct()
 #define CHKSIZE(x, y) check_size<struct x, y>()
 #define CHKTYPE(x, y) check_size<x, y>()
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   CHKSIZE(CurveRef, 2);
 #endif
 
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* Sky9x does not have virtualinputs */
 
-  /* LEN_CFN_NAME is the difference in CustomFunctionData */
+  /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBTARANIS)
+#if defined(PCBX7D)
+  // TODO
+#elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);
   CHKSIZE(LimitData, 13);
@@ -1081,6 +1052,9 @@ static inline void check_struct()
 #if defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
+#elif defined(PCBX7D)
+  CHKSIZE(RadioData, 839);
+  CHKSIZE(ModelData, 6504);
 #else
   CHKSIZE(RadioData, 872);
   CHKSIZE(ModelData, 6507);
@@ -1105,19 +1079,19 @@ static inline void check_struct()
 
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
-  CHKSIZE(ExpoData, 11);
-  CHKSIZE(LimitData, 5);
+  CHKSIZE(ExpoData, 17);
+  CHKSIZE(LimitData, 13);
   CHKSIZE(CustomFunctionData, 9);
   CHKSIZE(FlightModeData, 38);
   CHKSIZE(TimerData, 11);
-  CHKSIZE(SwashRingData, 3);
+  CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
   CHKSIZE(FrSkyLineData, 2);
   CHKSIZE(FrSkyTelemetryData, 90);
   CHKSIZE(ModelHeader, 12);
-  CHKTYPE(CurveData, 2);
-  CHKSIZE(RadioData, 685);
-  CHKSIZE(ModelData, 4671);
+  CHKTYPE(CurveData, 4);
+  CHKSIZE(RadioData, 727);
+  CHKSIZE(ModelData, 5252);
 #else
   // Common for all variants
   CHKSIZE(LimitData, 5);

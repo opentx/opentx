@@ -19,12 +19,11 @@
  */
 
 #include "gtests.h"
-#include "templates.h"
 
 #define CHECK_NO_MOVEMENT(channel, value, duration) \
     for (int i=1; i<=(duration); i++) { \
       evalFlightModeMixes(e_perout_mode_normal, 1); \
-      EXPECT_EQ(chans[(channel)], (value)); \
+      GTEST_ASSERT_EQ((value), chans[(channel)]); \
     }
 
 #define CHECK_SLOW_MOVEMENT(channel, sign, duration) \
@@ -32,7 +31,7 @@
     for (int i=1; i<=(duration); i++) { \
       evalFlightModeMixes(e_perout_mode_normal, 1); \
       lastAct = lastAct + (sign) * (1<<19)/500; /* 100 on ARM */ \
-      EXPECT_EQ(chans[(channel)], 256 * (lastAct >> 8)); \
+      GTEST_ASSERT_EQ(256 * (lastAct >> 8), chans[(channel)]); \
     } \
     } while (0)
 
@@ -41,7 +40,7 @@
       int32_t value = chans[(channel)]; \
       for (int i=1; i<=(duration); i++) { \
         evalFlightModeMixes(e_perout_mode_normal, 1); \
-        EXPECT_EQ(chans[(channel)], value); \
+        GTEST_ASSERT_EQ(chans[(channel)], value); \
       } \
     } while (0)
 
@@ -173,7 +172,7 @@ TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
   MODEL_RESET();
   modelDefault(0);
   g_model.thrTrim = 1;
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
 #else
@@ -252,7 +251,7 @@ TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
   modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
 #else
@@ -325,7 +324,7 @@ TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
   EXPECT_EQ(channelOutputs[2], 0);
 }
 
-#if !defined(VIRTUALINPUTS)
+#if !defined(VIRTUAL_INPUTS)
 TEST(Trims, greaterTrimLink)
 {
   MODEL_RESET();
@@ -395,7 +394,7 @@ TEST(Trims, InstantTrim)
   EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
 }
 
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
 TEST(Trims, InstantTrimNegativeCurve)
 {
   MODEL_RESET();
@@ -743,7 +742,11 @@ TEST(Mixer, SlowOnSwitchSource)
   MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = TR(MIXSRC_THR, MIXSRC_SA);
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+  g_model.mixData[0].srcRaw = MIXSRC_SA;
+#else
+  g_model.mixData[0].srcRaw = MIXSRC_THR;
+#endif
   g_model.mixData[0].weight = 100;
   g_model.mixData[0].speedUp = SLOW_STEP*5;
   g_model.mixData[0].speedDown = SLOW_STEP*5;
@@ -784,7 +787,11 @@ TEST(Mixer, DelayOnSwitch)
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
   g_model.mixData[0].weight = 100;
-  g_model.mixData[0].swtch = TR(SWSRC_THR, SWSRC_SA2);
+#if defined(PCBTARANIS)
+  g_model.mixData[0].swtch = SWSRC_SA2;
+#else
+  g_model.mixData[0].swtch = SWSRC_THR;
+#endif
   g_model.mixData[0].delayUp = DELAY_STEP*5;
   g_model.mixData[0].delayDown = DELAY_STEP*5;
 
@@ -866,7 +873,7 @@ TEST(Mixer, SlowOnSwitchReplace)
 }
 #endif
 
-#if !defined(VIRTUALINPUTS)
+#if !defined(VIRTUAL_INPUTS)
 TEST(Mixer, NoTrimOnInactiveMix)
 {
   MODEL_RESET();
@@ -919,7 +926,7 @@ TEST(Mixer, SlowOnMultiply)
 }
 
 
-#if defined(HELI) && defined(VIRTUALINPUTS)
+#if defined(HELI) && defined(VIRTUAL_INPUTS)
 TEST(Heli, BasicTest)
 {
   MODEL_RESET();
@@ -982,7 +989,7 @@ TEST(Heli, Mode2Test)
 }
 #endif
 
-#if defined(HELI) && !defined(VIRTUALINPUTS)
+#if defined(HELI) && !defined(VIRTUAL_INPUTS)
 TEST(Heli, SimpleTest)
 {
   MODEL_RESET();

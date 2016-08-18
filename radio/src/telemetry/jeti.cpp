@@ -28,10 +28,10 @@ void telemetryInterrupt10ms()
 {
   if (jetiReady) {
     jetiKeys = JETI_KEY_NOCHANGE;
-    if (switchState((EnumKeys)(KEY_UP))) jetiKeys &= JETI_KEY_UP;
-    if (switchState((EnumKeys)(KEY_DOWN))) jetiKeys &= JETI_KEY_DOWN;
-    if (switchState((EnumKeys)(KEY_LEFT))) jetiKeys &= JETI_KEY_LEFT;
-    if (switchState((EnumKeys)(KEY_RIGHT))) jetiKeys &= JETI_KEY_RIGHT;
+    if (switchState(KEY_UP)) jetiKeys &= JETI_KEY_UP;
+    if (switchState(KEY_DOWN)) jetiKeys &= JETI_KEY_DOWN;
+    if (switchState(KEY_LEFT)) jetiKeys &= JETI_KEY_LEFT;
+    if (switchState(KEY_RIGHT)) jetiKeys &= JETI_KEY_RIGHT;
 
     jetiReady = 0;    // invalidate buffer
 
@@ -192,7 +192,7 @@ void JETI_put_stop (void)
 
 void menuViewTelemetryJeti(uint8_t event)
 {
-  lcdDrawTelemetryTopBar();
+  drawTelemetryTopBar();
 
   for (uint8_t i=0; i<16; i++) {
     lcdDrawChar((i+2)*FW, 3*FH, jetiRxBuffer[i], BSS);

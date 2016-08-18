@@ -48,23 +48,23 @@ void menuStatisticsView(uint8_t event)
 
   // Session and Total timers
   lcdDrawText(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
-  putsTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
+  drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
   lcdDrawText(STATS_1ST_COLUMN, FH*2+1, "TOT", BOLD);
-  putsTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*2+1, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+  drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*2+1, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
 
   // Throttle special timers
   lcdDrawText(STATS_2ND_COLUMN, FH*0+1, "THR", BOLD);
-  putsTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr, 0, 0);
+  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr, 0, 0);
   lcdDrawText(STATS_2ND_COLUMN, FH*1+1, "TH%", BOLD);
-  putsTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16, 0, 0);
+  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16, 0, 0);
 
   // Timers
   for (int i=0; i<TIMERS; i++) {
     drawStringWithIndex(STATS_3RD_COLUMN, FH*i+1, "TM", i+1, BOLD);
     if (timersStates[i].val > 3600)
-      putsTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, TIMEHOUR, 0);
+      drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, TIMEHOUR, 0);
     else
-      putsTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, 0, 0);
+      drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, 0, 0);
   }
 
 #if defined(THRTRACE)
@@ -228,7 +228,7 @@ void menuTraceBuffer(uint8_t event)
     if (te) {
       //time
       putstime_t tme = te->time % SECS_PER_DAY;
-      putsTimer(4*FW, y, tme, TIMEHOUR|LEFT, TIMEHOUR|LEFT);
+      drawTimer(4*FW, y, tme, TIMEHOUR|LEFT, TIMEHOUR|LEFT);
       //event
       lcdDrawNumber(14*FW, y, te->event, LEADING0|LEFT, 3);
       //data

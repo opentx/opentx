@@ -100,7 +100,7 @@ extern uint16_t sessionTimer;
 #if defined(PCBX9E)
 #define TRAINER_CONNECTED()            (true)
 #else
-#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_GPIO_DETECT, TRAINER_GPIO_PIN_DETECT) == Bit_RESET)
+#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
 
 // Board driver
@@ -158,6 +158,7 @@ uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
 
 // Pulses driver
+void modulesInit(void);
 #define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
@@ -187,13 +188,133 @@ void stop_sbus_on_heartbeat_capture(void);
 int sbusGetByte(uint8_t * byte);
 
 // Keys driver
+enum EnumKeys
+{
+  KEY_MENU,
+  KEY_EXIT,
+  KEY_ENTER,
+  KEY_PAGE,
+  KEY_PLUS,
+  KEY_MINUS,
+  
+  TRM_BASE,
+  TRM_LH_DWN = TRM_BASE,
+  TRM_LH_UP,
+  TRM_LV_DWN,
+  TRM_LV_UP,
+  TRM_RV_DWN,
+  TRM_RV_UP,
+  TRM_RH_DWN,
+  TRM_RH_UP,
+  TRM_LAST = TRM_RH_UP,
+  
+  NUM_KEYS
+};
+
+#if defined(PCBX9E) && !defined(SIMU)
+  #define KEY_UP                       KEY_MINUS
+  #define KEY_DOWN                     KEY_PLUS
+  #define KEY_RIGHT                    KEY_PLUS
+  #define KEY_LEFT                     KEY_MINUS
+#else
+  #define KEY_UP                       KEY_PLUS
+  #define KEY_DOWN                     KEY_MINUS
+  #define KEY_RIGHT                    KEY_MINUS
+  #define KEY_LEFT                     KEY_PLUS
+#endif
+
+enum EnumSwitches
+{
+  SW_SA,
+  SW_SB,
+  SW_SC,
+  SW_SD,
+  SW_SE,
+  SW_SF,
+  SW_SG,
+  SW_SH
+};
+#define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
+
+enum EnumSwitchesPositions
+{
+  SW_SA0,
+  SW_SA1,
+  SW_SA2,
+  SW_SB0,
+  SW_SB1,
+  SW_SB2,
+  SW_SC0,
+  SW_SC1,
+  SW_SC2,
+  SW_SD0,
+  SW_SD1,
+  SW_SD2,
+#if !defined(PCBX7D)
+  SW_SE0,
+  SW_SE1,
+  SW_SE2,
+#endif
+  SW_SF0,
+  SW_SF1,
+  SW_SF2,
+#if !defined(PCBX7D)
+  SW_SG0,
+  SW_SG1,
+  SW_SG2,
+#endif
+  SW_SH0,
+  SW_SH1,
+  SW_SH2,
+#if defined(PCBX9E)
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+  SW_SJ0,
+  SW_SJ1,
+  SW_SJ2,
+  SW_SK0,
+  SW_SK1,
+  SW_SK2,
+  SW_SL0,
+  SW_SL1,
+  SW_SL2,
+  SW_SM0,
+  SW_SM1,
+  SW_SM2,
+  SW_SN0,
+  SW_SN1,
+  SW_SN2,
+  SW_SO0,
+  SW_SO1,
+  SW_SO2,
+  SW_SP0,
+  SW_SP1,
+  SW_SP2,
+  SW_SQ0,
+  SW_SQ1,
+  SW_SQ2,
+  SW_SR0,
+  SW_SR1,
+  SW_SR2,
+#endif
+};
+#if defined(PCBX7D)
+  #define NUM_SWITCHES                 6
+#elif defined(PCBX9E)
+  #define NUM_SWITCHES                 18 // yes, it's a lot!
+#else
+  #define NUM_SWITCHES                 8
+#endif
 void keysInit(void);
+uint8_t keyState(uint8_t index);
+uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
 #define TRIMS_PRESSED()            (readTrims())
 #define KEYS_PRESSED()             (readKeys())
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
 // Rotary Encoder driver
 extern int32_t rotencValue;
 void rotencInit(void);
@@ -222,24 +343,37 @@ enum Analogs {
   STICK2,
   STICK3,
   STICK4,
-  POT1,
+  POT_FIRST,
+  POT1 = POT_FIRST,
   POT2,
+#if defined(PCBX7D)
+  POT_LAST = POT2,
+#elif defined(PCBX9E)
   POT3,
-  #if defined(PCBX9E)
-    POT4,
-    POT_LAST = POT4,
-  #else
-    POT_LAST = POT3,
-  #endif
+  POT4,
+  POT_LAST = POT4,
   SLIDER1,
   SLIDER2,
-  #if defined(PCBX9E)
-    SLIDER3,
-    SLIDER4,
-  #endif
+  SLIDER3,
+  SLIDER4,
+#else
+  POT3,
+  POT_LAST = POT3,
+  SLIDER1,
+  SLIDER2,
+#endif
   TX_VOLTAGE,
   NUMBER_ANALOG
 };
+#define NUM_POTS                       (POT_LAST-POT_FIRST+1)
+#define NUM_SLIDERS                    (TX_VOLTAGE-POT_FIRST-NUM_POTS)
+#define NUM_XPOTS                      NUM_POTS
+#if defined(PCBX9D)
+  #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT2) // POT3 is only defined in software
+#else
+  #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT_LAST)
+#endif
+#define IS_SLIDER(x)                   ((x)>POT_LAST && (x)<TX_VOLTAGE)
 void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUMBER_ANALOG];
@@ -257,29 +391,26 @@ void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
-#if defined(PCBX9E)
+#if defined(PWR_PRESS_BUTTON)
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define pwroffPressed() pwrPressed()
 #else
 uint32_t pwroffPressed(void);
 #endif
-#define UNEXPECTED_SHUTDOWN()   (g_eeGeneral.unexpectedShutdown)
+#define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
 void backlightInit(void);
+void backlightDisable(void);
+#define BACKLIGHT_DISABLE()            backlightDisable()
+uint8_t isBacklightEnable(void);
 #if defined(PCBX9E) || defined(PCBX9DP)
-  void turnBacklightOn(uint8_t level, uint8_t color);
-  void turnBacklightOff(void);
-  #define setBacklight(xx)         turnBacklightOn(xx, g_eeGeneral.backlightColor)
-  #define backlightEnable()        turnBacklightOn(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
-  #define backlightDisable()       turnBacklightOff()
-  #define isBacklightEnable()      ((BACKLIGHT_TIMER->CCR4 != 0) || (BACKLIGHT_TIMER->CCR2 != 0))
+  void backlightEnable(uint8_t level, uint8_t color);
+  #define BACKLIGHT_ENABLE()           backlightEnable(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
 #else
-  #define setBacklight(xx)         BACKLIGHT_TIMER->CCR1 = 100-xx
-  #define backlightEnable()        BACKLIGHT_TIMER->CCR1 = 100-g_eeGeneral.backlightBright
-  #define backlightDisable()       BACKLIGHT_TIMER->CCR1 = 0
-  #define isBacklightEnable()      (BACKLIGHT_TIMER->CCR1 != 0)
+  void backlightEnable(uint8_t level);
+  #define BACKLIGHT_ENABLE()           backlightEnable(g_eeGeneral.backlightBright)
 #endif
 
 // USB driver
@@ -334,12 +465,15 @@ void hapticOff(void);
 
 // Second serial port driver
 #define DEBUG_BAUDRATE                 115200
+#if !defined(PCBX7D)
+#define SERIAL2
 extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
 void serial2SbusInit(void);
 void serial2Stop(void);
+#endif
 
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
@@ -351,10 +485,40 @@ void bluetoothWriteString(const char * str);
 int bluetoothRead(void * buffer, int len);
 void bluetoothWakeup(void);
 
+// LED driver
+void ledInit(void);
+void ledOff(void);
+void ledRed(void);
+void ledGreen(void);
+void ledBlue(void);
+
 // LCD driver
+#if defined(PCBX7D)
+#define LCD_W                          128
+#define LCD_H                          64
+#define LCD_DEPTH                      1
+#else
+#define LCD_W                          212
+#define LCD_H                          64
+#define LCD_DEPTH                      4
+#endif
 void lcdInit(void);
 void lcdInitFinish(void);
 void lcdOff(void);
+
+// TODO lcdRefreshWait() stub in simpgmspace and remove LCD_DUAL_BUFFER
+#if (defined(PCBX9E) || defined(PCBX9DP) || defined(PCBX7D)) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
+void lcdRefreshWait();
+#else
+#define lcdRefreshWait()
+#endif
+#if defined(PCBX9D) || defined(SIMU) || !defined(__cplusplus)
+void lcdRefresh(void);
+#else
+void lcdRefresh(bool wait=true); // TODO uint8_t wait to simplify this
+#endif
+void lcdSetRefVolt(unsigned char val);
+void lcdSetContrast(void);
 
 // Top LCD driver
 #if defined(PCBX9E)

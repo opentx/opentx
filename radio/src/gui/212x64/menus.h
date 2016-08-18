@@ -23,15 +23,16 @@
 
 #include "keys.h"
 
-typedef uint16_t vertpos_t;
 typedef int8_t   horzpos_t;
+typedef uint16_t vertpos_t;
+
 typedef void (*MenuHandlerFunc)(uint8_t event);
 
 extern tmr10ms_t menuEntryTime;
 extern vertpos_t menuVerticalPosition;
 extern horzpos_t menuHorizontalPosition;
 extern vertpos_t menuVerticalOffset;
-extern uint8_t calibrationState;
+extern uint8_t menuCalibrationState;
 
 extern MenuHandlerFunc menuHandlers[5];
 extern uint8_t menuVerticalPositions[4];
@@ -48,9 +49,7 @@ void menuFirstCalib(uint8_t event);
 void menuMainViewChannelsMonitor(uint8_t event);
 void menuChannelsView(uint8_t event);
 void menuMainView(uint8_t event);
-#if defined(TELEMETRY_FRSKY)
 void menuViewTelemetryFrsky(uint8_t event);
-#endif
 void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 void menuModelNotes(uint8_t event);
 void menuStatisticsView(uint8_t event);
@@ -60,14 +59,14 @@ void menuAboutView(uint8_t event);
 void menuTraceBuffer(uint8_t event);
 #endif
 
-enum EnumTabRadio {
+enum MenuRadioIndexes {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_VERSION,
-  MENU_RADIO_DIAG_KEYS,
-  MENU_RADIO_DIAG_ANALOGS,
+  MENU_RADIO_SWITCHES_TEST,
+  MENU_RADIO_ANALOGS_TEST,
   MENU_RADIO_HARDWARE,
   MENU_RADIO_CALIBRATION,
   MENU_RADIO_PAGES_COUNT
@@ -85,7 +84,7 @@ void menuRadioCalibration(uint8_t event);
 
 extern const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT];
 
-enum EnumTabModel {
+enum MenuModelIndexes {
   MENU_MODEL_SELECT,
   MENU_MODEL_SETUP,
   CASE_HELI(MENU_MODEL_HELI)

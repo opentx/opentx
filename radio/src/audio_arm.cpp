@@ -388,7 +388,7 @@ void referenceModelAudioFiles()
       }
 
       // Logical Switches Audio Files <switchname>-[on|off].wav
-      for (int i=0; i<NUM_LOGICAL_SWITCH && !found; i++) {
+      for (int i=0; i<MAX_LOGICAL_SWITCHES && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
           // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);

@@ -31,7 +31,31 @@ void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
   } while (p!=0);
 }
 
-enum menuModelPhaseItems {
+#if !defined(CPUARM)
+FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
+{
+  drawFieldLabel(x, y, STR_FLMODE);
+
+  uint8_t posHorz = menuHorizontalPosition;
+  
+  for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
+    lcdDrawChar(x, y, '0'+p, ((posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
+    x += FW;
+  }
+
+  if (attr) {
+    if (s_editMode && ((event==EVT_KEY_BREAK(KEY_ENTER) || p1valdiff))) {
+      s_editMode = 0;
+      value ^= (1<<posHorz);
+      storageDirty(EE_MODEL);
+    }
+  }
+
+  return value;
+}
+#endif
+
+enum MenuModelPhaseItems {
   ITEM_MODEL_PHASE_NAME,
   ITEM_MODEL_PHASE_SWITCH,
   ITEM_MODEL_PHASE_TRIMS,
@@ -55,22 +79,27 @@ enum menuModelPhaseItems {
   ITEM_MODEL_PHASE_MAX
 };
 
+bool isTrimModeAvailable(int mode)
+{
+  return (mode < 0 || (mode%2) == 0 || (mode/2) != s_currIdx);
+}
+
 void menuModelPhaseOne(uint8_t event)
 {
-  FlightModeData *fm = flightModeAddress(s_currIdx);
-  putsFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
+  FlightModeData * fm = flightModeAddress(s_currIdx);
+  drawFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS) && !defined(GVARS_IN_CURVES_SCREEN)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
   check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0));
 
-  TITLE(STR_MENUFLIGHTPHASE);
+  TITLE(STR_MENUFLIGHTMODE);
 
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #else
-  SUBMENU(STR_MENUFLIGHTPHASE, 3 + (s_currIdx==0 ? 0 : 2 + (bool)NUM_ROTARY_ENCODERS), {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0/*, 0*/});
+  SUBMENU(STR_MENUFLIGHTMODE, 3 + (s_currIdx==0 ? 0 : 2 + (bool)NUM_ROTARY_ENCODERS), {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0/*, 0*/});
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #endif
 
@@ -90,27 +119,41 @@ void menuModelPhaseOne(uint8_t event)
     if (s_currIdx == 0 && i==ITEM_MODEL_PHASE_SWITCH) i = ITEM_MODEL_PHASE_FADE_IN;
     uint8_t attr = (sub==k ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #endif
-    switch(i) {
+    switch (i) {
       case ITEM_MODEL_PHASE_NAME:
         editSingleName(MIXES_2ND_COLUMN, y, STR_PHASENAME, fm->name, sizeof(fm->name), event, attr);
         break;
+
       case ITEM_MODEL_PHASE_SWITCH:
         fm->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, fm->swtch, attr, event);
         break;
+
       case ITEM_MODEL_PHASE_TRIMS:
         lcdDrawTextAlignedLeft(y, STR_TRIMS);
-        for (uint8_t t=0; t<NUM_STICKS; t++) {
-          putsTrimMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
-          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
+#if defined(CPUARM)
+        for (uint8_t t = 0; t < NUM_STICKS; t++) {
+          drawTrimMode(MIXES_2ND_COLUMN + (t*2*FW), y, s_currIdx, t, menuHorizontalPosition == t ? attr : 0);
+          if (s_editMode && attr && menuHorizontalPosition == t) {
+            trim_t & v = fm->trim[t];
+            v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
+          }
+        }
+#else
+        for (uint8_t t = 0; t < NUM_STICKS; t++) {
+          drawTrimMode(MIXES_2ND_COLUMN + (t*FW), y, s_currIdx, t, menuHorizontalPosition == t ? attr : 0);
+          if (attr && menuHorizontalPosition == t && ((editMode > 0) || p1valdiff)) {
             int16_t v = getRawTrimValue(s_currIdx, t);
-            if (v < TRIM_EXTENDED_MAX) v = TRIM_EXTENDED_MAX;
-            v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
+            if (v < TRIM_EXTENDED_MAX)
+              v = TRIM_EXTENDED_MAX;
+            v = checkIncDec(event, v, TRIM_EXTENDED_MAX, TRIM_EXTENDED_MAX + MAX_FLIGHT_MODES - 1, EE_MODEL);
             if (checkIncDec_Ret) {
-              if (v == TRIM_EXTENDED_MAX) v = 0;
+              if (v == TRIM_EXTENDED_MAX)
+                v = 0;
               setTrimValue(s_currIdx, t, v);
             }
           }
         }
+#endif
         break;
 
 #if ROTARY_ENCODERS > 0
@@ -158,7 +201,7 @@ void menuModelPhaseOne(uint8_t event)
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          putsFlightMode(11*FW, y, p+1, posHorz==1 ? attr : 0);
+          drawFlightMode(11*FW, y, p+1, posHorz==1 ? attr : 0);
         }
         else {
           lcdDrawText(11*FW, y, STR_OWN, posHorz==1 ? attr : 0);
@@ -187,27 +230,27 @@ void menuModelPhaseOne(uint8_t event)
 
 #if defined(ROTARY_ENCODERS)
   #if ROTARY_ENCODERS > 2
-    #define NAME_OFS (-4-12)
-    #define SWITCH_OFS (-FW/2-2-13)
-    #define TRIMS_OFS  (-FW/2-4-15)
-    #define ROTARY_ENC_OFS (0)
+    #define NAME_OFS                   (-4-12)
+    #define SWITCH_OFS                 (-FW/2-2-13)
+    #define TRIMS_OFS                  (-FW/2-4-15)
+    #define ROTARY_ENC_OFS             (0)
   #else
-    #define NAME_OFS (-4)
-    #define SWITCH_OFS (-FW/2-2)
-    #define TRIMS_OFS  (-FW/2-4)
-    #define ROTARY_ENC_OFS (2)
+    #define NAME_OFS                   (-4)
+    #define SWITCH_OFS                 (-FW/2-2)
+    #define TRIMS_OFS                  (-FW/2-4)
+    #define ROTARY_ENC_OFS             (2)
   #endif
 #else
-  #define NAME_OFS 0
-  #define SWITCH_OFS (FW/2)
-  #define TRIMS_OFS  (FW/2)
+  #define NAME_OFS                     0
+  #define SWITCH_OFS                   (FW/2)
+  #define TRIMS_OFS                    (FW/2)
 #endif
 
 void menuModelFlightModesAll(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUFLIGHTPHASES, menuTabModel, MENU_MODEL_FLIGHT_MODES, 1+MAX_FLIGHT_MODES+1);
+  SIMPLE_MENU(STR_MENUFLIGHTMODES, menuTabModel, MENU_MODEL_FLIGHT_MODES, HEADER_LINE+MAX_FLIGHT_MODES+1);
 
-  int8_t sub = menuVerticalPosition - 1;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
 
   switch (event) {
     CASE_EVT_ROTARY_BREAK
@@ -217,7 +260,9 @@ void menuModelFlightModesAll(uint8_t event)
         trimsCheckTimer = 200; // 2 seconds
       }
       // no break
+#if !defined(PCBX7D)
     case EVT_KEY_FIRST(KEY_RIGHT):
+#endif
       if (sub >= 0 && sub < MAX_FLIGHT_MODES) {
         s_currIdx = sub;
         pushMenu(menuModelPhaseOne);
@@ -234,17 +279,17 @@ void menuModelFlightModesAll(uint8_t event)
     uint8_t y = 1 + (i+1)*FH;
 #endif
     att = (i==sub ? INVERS : 0);
-    FlightModeData *p = flightModeAddress(i);
-    putsFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
+    FlightModeData * p = flightModeAddress(i);
+    drawFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
 
     lcdDrawSizedText(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
     if (i == 0) {
       lcdDrawText((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
     }
     else {
-      putsSwitches((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
+      drawSwitch((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
-        putsTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
+        drawShortTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
       }
 #if defined(CPUM2560)
       for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
@@ -254,7 +299,7 @@ void menuModelFlightModesAll(uint8_t event)
     }
 
     if (p->fadeIn || p->fadeOut) {
-      lcdDrawChar(LCD_W-FW-MENUS_SCROLLBAR_WIDTH, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
+      lcdDrawChar(LCD_W-FW, y, (p->fadeIn && p->fadeOut) ? '*' : (p->fadeIn ? 'I' : 'O'));
     }
   }
 
@@ -263,7 +308,7 @@ void menuModelFlightModesAll(uint8_t event)
 #endif
 
   lcdDrawTextAlignedLeft((LCD_LINES-1)*FH+1, STR_CHECKTRIMS);
-  putsFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
+  drawFlightMode(OFS_CHECKTRIMS, (LCD_LINES-1)*FH+1, mixerCurrentFlightMode+1);
   if (sub==MAX_FLIGHT_MODES && !trimsCheckTimer) {
     lcdInvertLastLine();
   }

@@ -10,7 +10,12 @@ set(TARGET_DIR mega2560)
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
 add_definitions(-DPCB${PCB} -DCPUM2560 -DROTARY_ENCODERS=2)
 set(TARGET_SRC ${TARGET_SRC} board.cpp)
-set(GUI_SRC ${GUI_SRC} ${9X_GUI_SRC})
+set(GUI_SRC
+  ${GUI_SRC}
+  model_inputs_mixes.cpp
+  radio_diagkeys.cpp
+  radio_diaganas.cpp
+  )
 set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/9x/lcd_driver.cpp)
 if(PWRMANAGE)
   add_definitions(-DPWRMANAGE)

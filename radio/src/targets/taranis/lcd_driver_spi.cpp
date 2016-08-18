@@ -20,9 +20,9 @@
 
 #include "opentx.h"
 
-#define CONTRAST_OFS 160
+#define CONTRAST_OFS                   160
 #define RESET_WAIT_DELAY_MS            300 // Wait time after LCD reset before first command
-#define WAIT_FOR_DMA_END()       { while(lcd_busy) {}; }
+#define WAIT_FOR_DMA_END()             do { } while (lcd_busy)
 
 #define LCD_NCS_HIGH()                 LCD_NCS_GPIO->BSRRL = LCD_NCS_GPIO_PIN
 #define LCD_NCS_LOW()                  LCD_NCS_GPIO->BSRRH = LCD_NCS_GPIO_PIN
@@ -36,16 +36,16 @@
 bool lcdInitFinished = false;
 void lcdInitFinish();
 
-void lcdWriteCommand(uint8_t Command_Byte)
+void lcdWriteCommand(uint8_t byte)
 {
   LCD_A0_LOW();
   LCD_NCS_LOW();
-  while ( ( SPI3->SR & SPI_SR_TXE ) == 0 ) {
+  while ((SPI3->SR & SPI_SR_TXE) == 0) {
     // Wait
   }
-  (void)SPI3->DR;		// Clear receive
-  SPI3->DR = Command_Byte;
-  while ( ( SPI3->SR & SPI_SR_RXNE ) == 0 ) {
+  (void)SPI3->DR; // Clear receive
+  LCD_SPI->DR = byte;
+  while ((SPI3->SR & SPI_SR_RXNE) == 0) {
     // Wait
   }
   LCD_NCS_HIGH();
@@ -89,13 +89,33 @@ void lcdHardwareInit()
   LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
   LDC_DMA_Stream->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0;
   LDC_DMA_Stream->PAR = (uint32_t)&LCD_SPI->DR;
+#if defined(PCBX7D)
+  LDC_DMA_Stream->NDTR = LCD_W;
+#else
   LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
-  LDC_DMA_Stream->FCR = 0x05; // DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
   LDC_DMA_Stream->NDTR = LCD_W*LCD_H/8*4;
+#endif
+  LDC_DMA_Stream->FCR = 0x05; // DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
   NVIC_EnableIRQ(LCD_DMA_Stream_IRQn);
 }
 
+#if defined(PCBX7D)
+void lcdStart()
+{
+  lcdWriteCommand(0xe2); // (14) Soft reset
+  lcdWriteCommand(0xa0); // Set seg direct
+  lcdWriteCommand(0xc8); // Set com direct
+  lcdWriteCommand(0xf8); // Set booster
+  lcdWriteCommand(0x00); // 5x
+  lcdWriteCommand(0xa3); // Set bias=1/6
+  lcdWriteCommand(0x22); // Set internal rb/ra=5.0
+  lcdWriteCommand(0x2f); // All built-in power circuits on
+  lcdWriteCommand(0x81); // Set contrast
+  lcdWriteCommand(0x36); // Set Vop
+  lcdWriteCommand(0xa6); // Set display mode
+}
+#else
 void lcdStart()
 {
   lcdWriteCommand(0x2F); // Internal pump control
@@ -139,11 +159,12 @@ void lcdWriteAddress(uint8_t x, uint8_t y)
   lcdWriteCommand((y&0x0F) | 0x60); // Set Row Address LSB RA [3:0]
   lcdWriteCommand(((y>>4) & 0x0F) | 0x70); // Set Row Address MSB RA [7:4]
 }
+#endif
 
 volatile bool lcd_busy;
 
 #if !defined(LCD_DUAL_BUFFER)
-void lcdRefreshWait() 
+void lcdRefreshWait()
 {
   WAIT_FOR_DMA_END();
 }
@@ -155,6 +176,29 @@ void lcdRefresh(bool wait)
     lcdInitFinish();
   }
 
+#if defined(PCBX7D)
+  uint8_t * p = displayBuf;
+  for (uint8_t y=0; y < 8; y++, p+=LCD_W) {
+    lcdWriteCommand(0x10); // Column addr 0
+    lcdWriteCommand(0xB0 | y); // Page addr y
+    lcdWriteCommand(0x00);
+    
+    LCD_NCS_LOW();
+    LCD_A0_HIGH();
+
+    lcd_busy = true;
+    LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+    LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
+    LDC_DMA_Stream->M0AR = (uint32_t)p;
+    LDC_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
+    LCD_SPI->CR2 |= SPI_CR2_TXDMAEN;
+  
+    WAIT_FOR_DMA_END();
+
+    LCD_NCS_HIGH();
+    LCD_A0_HIGH();
+  }
+#else
   // Wait if previous DMA transfer still active
   WAIT_FOR_DMA_END();
   lcd_busy = true;
@@ -175,6 +219,7 @@ void lcdRefresh(bool wait)
 
   LDC_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
   LCD_SPI->CR2 |= SPI_CR2_TXDMAEN;
+#endif
 }
 
 extern "C" void LCD_DMA_Stream_IRQHandler()
@@ -186,8 +231,8 @@ extern "C" void LCD_DMA_Stream_IRQHandler()
   LCD_SPI->CR2 &= ~SPI_CR2_TXDMAEN;
   LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 
-  while ( LCD_SPI->SR & SPI_SR_BSY ) {
-    /* Wait for SPI to finish sending data 
+  while (LCD_SPI->SR & SPI_SR_BSY) {
+    /* Wait for SPI to finish sending data
     The DMA TX End interrupt comes two bytes before the end of SPI transmission,
     therefore we have to wait here.
     */
@@ -204,18 +249,22 @@ void lcdOff()
 {
   WAIT_FOR_DMA_END();
 
-  /* 
+  /*
   LCD Sleep mode is also good for draining capacitors and enables us
   to re-init LCD without any delay
   */
-  lcdWriteCommand(0xAE);    //LCD sleep
-  delay_ms(3);	        //wait for caps to drain
+  lcdWriteCommand(0xAE); // LCD sleep
+  delay_ms(3); // Wait for caps to drain
 }
 
 void lcdReset()
 {
   LCD_RST_LOW();
-  delay_ms(1);       // only 3 us needed according to data-sheet, we use 1 ms
+#if defined(PCBX7D)
+  delay_ms(150);
+#else
+  delay_ms(1); // Only 3 us needed according to data-sheet, we use 1 ms
+#endif
   LCD_RST_HIGH();
 }
 
@@ -236,7 +285,7 @@ void lcdInit()
 }
 
 /*
-  Finishes LCD initialization. It is called auto-magically when first LCD command is 
+  Finishes LCD initialization. It is called auto-magically when first LCD command is
   issued by the other parts of the code.
 */
 void lcdInitFinish()
@@ -244,19 +293,19 @@ void lcdInitFinish()
   lcdInitFinished = true;
 
   /*
-    LCD needs longer time to initialize in low temperatures. The data-sheet 
-    mentions a time of at least 150 ms. The delay of 1300 ms was obtained 
+    LCD needs longer time to initialize in low temperatures. The data-sheet
+    mentions a time of at least 150 ms. The delay of 1300 ms was obtained
     experimentally. It was tested down to -10 deg Celsius.
 
-    The longer initialization time seems to only be needed for regular Taranis, 
+    The longer initialization time seems to only be needed for regular Taranis,
     the Taranis Plus (9XE) has been tested to work without any problems at -18 deg Celsius.
     Therefore the delay for T+ is lower.
     
     If radio is reset by watchdog or boot-loader the wait is skipped, but the LCD
-    is initialized in any case. 
+    is initialized in any case.
 
-    This initialization is needed in case the user moved power switch to OFF and 
-    then immediately to ON position, because lcdOff() was called. In any case the LCD 
+    This initialization is needed in case the user moved power switch to OFF and
+    then immediately to ON position, because lcdOff() was called. In any case the LCD
     initialization (without reset) is also recommended by the data sheet.
   */
 
@@ -279,8 +328,10 @@ void lcdSetRefVolt(uint8_t val)
     lcdInitFinish();
   }
 
+#if !defined(PCBX7D)
   WAIT_FOR_DMA_END();
   
   lcdWriteCommand(0x81); // Set Vop
   lcdWriteCommand(val+CONTRAST_OFS); // 0-255
+#endif
 }

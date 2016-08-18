@@ -99,7 +99,7 @@ class TelemetryItem
     void gpsReceived();
 };
 
-extern TelemetryItem telemetryItems[MAX_SENSORS];
+extern TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 extern uint8_t allowNewSensors;
 
 #endif // _TELEMETRY_SENSORS_H_

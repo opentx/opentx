@@ -115,10 +115,10 @@ void readKeysAndTrims()
 {
   register uint32_t i;
 
-  uint8_t enuk = 0;
+  uint8_t index = 0;
   uint32_t in = readKeys();
   for (i = 0; i < TRM_BASE; i++) {
-    keys[enuk++].input(in & (1 << i));
+    keys[index++].input(in & (1 << i));
   }
 
   static rotenc_t rePreviousValue;
@@ -145,7 +145,7 @@ void readKeysAndTrims()
 
   in = readTrims();
   for (i = 1; i < 4096; i <<= 1) {
-    keys[enuk++].input(in & i);
+    keys[index++].input(in & i);
   }
 }
 
@@ -181,13 +181,16 @@ void readKeysAndTrims()
     break
 
 #if !defined(BOOT)
-bool switchState(EnumKeys enuk)
+uint8_t keyState(uint8_t index)
+{
+  return keys[index].state();
+}
+
+uint32_t switchState(uint8_t index)
 {
   register uint32_t xxx = 0;
-
-  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
-
-  switch ((uint8_t) enuk) {
+  
+  switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
@@ -200,7 +203,7 @@ bool switchState(EnumKeys enuk)
       break;
   }
 
-  // TRACE("switch %d => %d", enuk, xxx);
+  // TRACE("switch %d => %d", index, xxx);
   return xxx;
 }
 #endif

@@ -500,18 +500,18 @@ int cliDisplay(const char ** argv)
       uint8_t len = STR_VKEYS[0];
       strncpy(name, STR_VKEYS+1+len*i, len);
       name[len] = '\0';
-      serialPrint("[%s] = %s", name, switchState(EnumKeys(i)) ? "on" : "off");
+      serialPrint("[%s] = %s", name, keyState(i) ? "on" : "off");
     }
 #if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9E) || defined(PCBHORUS) || defined(PCBFLAMENCO)
     serialPrint("[Enc.] = %d", rotencValue / 2);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
-      serialPrint("[Trim%d] = %s", i-TRM_BASE, switchState(EnumKeys(i)) ? "on" : "off");
+      serialPrint("[Trim%d] = %s", i-TRM_BASE, keyState(i) ? "on" : "off");
     }
     for (int i=MIXSRC_FIRST_SWITCH; i<=MIXSRC_LAST_SWITCH; i++) {
       mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
       if (SWITCH_EXISTS(sw)) {
-        serialPrint("[S%c] = %s", 'A'+sw, (switchState((EnumKeys)(SW_BASE+(3*sw))) ? "down" : (switchState((EnumKeys)(SW_BASE+(3*sw)+1)) ? "mid" : "up")));
+        serialPrint("[S%c] = %s", 'A'+sw, (switchState(3*sw) ? "down" : (switchState(3*sw+1) ? "mid" : "up")));
       }
     }
   }
@@ -521,7 +521,7 @@ int cliDisplay(const char ** argv)
     }
   }
   else if (!strcmp(argv[1], "outputs")) {
-    for (int i=0; i<NUM_CHNOUT; i++) {
+    for (int i=0; i<MAX_OUTPUT_CHANNELS; i++) {
       serialPrint("outputs[%d] = %04d", i, (int)channelOutputs[i]);
     }
   }
@@ -533,7 +533,7 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "volume")) {
     serialPrint("volume = %d", getVolume());
   }
-#if defined(CPUSTM32)
+#if defined(STM32)
   else if (!strcmp(argv[1], "uid")) {
     char str[LEN_CPU_UID+1];
     getCPUUniqueID(str);

@@ -17,6 +17,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
+
 #include "opentx.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -52,7 +53,7 @@ pthread_t main_thread_pid;
 uint8_t main_thread_running = 0;
 char * main_thread_error = NULL;
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
@@ -120,7 +121,7 @@ uint16_t getTmr2MHz()
 
 void simuInit()
 {
-#if defined(CPUSTM32)
+#if defined(STM32)
   RCC->CSR = 0;
 #endif
 
@@ -169,7 +170,8 @@ void simuInit()
 
 void simuSetKey(uint8_t key, bool state)
 {
-  // TRACE("simuSetKey(%d, %d)", key, state);
+  // if (state) TRACE("simuSetKey(%d, %d)", key, state);
+  
   switch (key) {
 #if !defined(PCBHORUS)
     KEY_CASE(KEY_MENU, KEYS_GPIO_REG_MENU, KEYS_GPIO_PIN_MENU)
@@ -230,6 +232,7 @@ void simuSetTrim(uint8_t trim, bool state)
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // TRACE("simuSetSwitch(%d, %d)", swtch, state);
+  
   switch (swtch) {
 #if defined(PCBFLAMENCO)
     // SWITCH_3_CASE(0, SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
@@ -243,11 +246,15 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_3_CASE(1,  SWITCHES_GPIO_REG_B_L, SWITCHES_GPIO_REG_B_H, SWITCHES_GPIO_PIN_B_L, SWITCHES_GPIO_PIN_B_H)
     SWITCH_3_CASE(2,  SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
     SWITCH_3_CASE(3,  SWITCHES_GPIO_REG_D_L, SWITCHES_GPIO_REG_D_H, SWITCHES_GPIO_PIN_D_L, SWITCHES_GPIO_PIN_D_H)
+#if !defined(PCBX7D)
     SWITCH_3_CASE(4,  SWITCHES_GPIO_REG_E_L, SWITCHES_GPIO_REG_E_H, SWITCHES_GPIO_PIN_E_L, SWITCHES_GPIO_PIN_E_H)
+#endif
     SWITCH_CASE(5, SWITCHES_GPIO_REG_F, SWITCHES_GPIO_PIN_F)
+#if !defined(PCBX7D)
     SWITCH_3_CASE(6,  SWITCHES_GPIO_REG_G_L, SWITCHES_GPIO_REG_G_H, SWITCHES_GPIO_PIN_G_L, SWITCHES_GPIO_PIN_G_H)
+#endif
     SWITCH_CASE(7, SWITCHES_GPIO_REG_H, SWITCHES_GPIO_PIN_H)
-  #if defined(PCBX9E)
+#if defined(PCBX9E)
     SWITCH_3_CASE(8,  SWITCHES_GPIO_REG_I_L, SWITCHES_GPIO_REG_I_H, SWITCHES_GPIO_PIN_I_L, SWITCHES_GPIO_PIN_I_H)
     SWITCH_3_CASE(9,  SWITCHES_GPIO_REG_J_L, SWITCHES_GPIO_REG_J_H, SWITCHES_GPIO_PIN_J_L, SWITCHES_GPIO_PIN_J_H)
     SWITCH_3_CASE(10, SWITCHES_GPIO_REG_K_L, SWITCHES_GPIO_REG_K_H, SWITCHES_GPIO_PIN_K_L, SWITCHES_GPIO_PIN_K_H)
@@ -258,7 +265,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_3_CASE(15, SWITCHES_GPIO_REG_P_L, SWITCHES_GPIO_REG_P_H, SWITCHES_GPIO_PIN_P_L, SWITCHES_GPIO_PIN_P_H)
     SWITCH_3_CASE(16, SWITCHES_GPIO_REG_Q_L, SWITCHES_GPIO_REG_Q_H, SWITCHES_GPIO_PIN_Q_L, SWITCHES_GPIO_PIN_Q_H)
     SWITCH_3_CASE(17, SWITCHES_GPIO_REG_R_L, SWITCHES_GPIO_REG_R_H, SWITCHES_GPIO_PIN_R_L, SWITCHES_GPIO_PIN_R_H)
-  #endif
+#endif
 #elif defined(PCBSKY9X)
     SWITCH_CASE(0, PIOC->PIO_PDSR, 1<<20)
     SWITCH_CASE(1, PIOA->PIO_PDSR, 1<<15)
@@ -1315,7 +1322,7 @@ uint32_t pwrCheck() { return true; }
 void pwrOff() { }
 #endif
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 void pwrInit() { }
 int usbPlugged() { return false; }
 void USART_DeInit(USART_TypeDef* ) { }
@@ -1376,21 +1383,7 @@ void unlockFlash() { }
 void lockFlash() { }
 void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 uint32_t isBootloaderStart(const void *block) { return 1; }
-#if defined(PCBX9DP) || defined(PCBX9E)
-void turnBacklightOn(uint8_t level, uint8_t color)
-{
-  TIM4->CCR4 = (100-level)*color;
-  TIM4->CCR2 = (100-level)*(100-color);
-}
-
-void turnBacklightOff(void)
-{
-  TIM4->CCR4 = 0;
-  TIM4->CCR2 = 0;
-}
-#endif
-
-#endif  // #if defined(PCBTARANIS)
+#endif // defined(PCBTARANIS)
 
 #if defined(PCBFLAMENCO)
 void i2cWriteTW8823(unsigned char, unsigned char) { }

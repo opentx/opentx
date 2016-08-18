@@ -81,9 +81,9 @@ void ValueWidget::refresh()
     if (timerState.val < 0) {
       lcdSetColor(ALARM_COLOR_INDEX);
     }
-    putsMixerSource(x+NUMBERS_PADDING, y+2, field, CUSTOM_COLOR);
-    putsMixerSource(x+NUMBERS_PADDING + 1, y + 3, field, BLACK);
-    putsTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|CUSTOM_COLOR);
+    drawSource(x+NUMBERS_PADDING, y+2, field, CUSTOM_COLOR);
+    drawSource(x+NUMBERS_PADDING + 1, y + 3, field, BLACK);
+    drawTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|CUSTOM_COLOR);
     return;
   }
 
@@ -94,8 +94,8 @@ void ValueWidget::refresh()
     }
   }
 
-  putsMixerSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
-  putsMixerSource(xLabel, yLabel, field, attrLabel|CUSTOM_COLOR);
+  drawSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
+  drawSource(xLabel, yLabel, field, attrLabel|CUSTOM_COLOR);
   putsChannel(xValue + 1, yValue + 1, field, attrValue|BLACK);
   putsChannel(xValue, yValue, field, attrValue|CUSTOM_COLOR);
   

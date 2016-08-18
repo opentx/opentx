@@ -81,8 +81,8 @@ bool menuCommonCalib(event_t event)
 {
   drawMenuTemplate(NULL, ICON_RADIO_CALIBRATION, NULL, OPTION_MENU_NO_FOOTER);
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = i<NUM_STICKS+NUM_POTS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS);
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
+    int16_t vt = i<NUM_STICKS+NUM_POTS+NUM_SLIDERS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS-NUM_SLIDERS);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -124,25 +124,25 @@ bool menuCommonCalib(event_t event)
 
   switch (event) {
     case EVT_ENTRY:
-      calibrationState = CALIB_START;
+      menuCalibrationState = CALIB_START;
       break;
       
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (calibrationState == CALIB_START) {
+      if (menuCalibrationState == CALIB_START) {
         killEvents(KEY_EXIT);
         popMenu();
       }
       else {
-        calibrationState = CALIB_START;
+        menuCalibrationState = CALIB_START;
       }
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
-      calibrationState++;
+      menuCalibrationState++;
       break;
   }
 
-  switch (calibrationState) {
+  switch (menuCalibrationState) {
     case CALIB_START:
       // START CALIBRATION
       if (!READ_ONLY()) {
@@ -155,10 +155,10 @@ bool menuCommonCalib(event_t event)
       // SET MIDPOINT
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, STR_SETMIDPOINT, MENU_TITLE_COLOR);
-      for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
+      for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
-        reusableBuffer.calib.midVals[i] = i<NUM_STICKS+NUM_POTS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS);
+        reusableBuffer.calib.midVals[i] = i<NUM_STICKS+NUM_POTS+NUM_SLIDERS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS+NUM_SLIDERS);
         if (i < NUM_XPOTS) {
           reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
           reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
@@ -170,7 +170,7 @@ bool menuCommonCalib(event_t event)
       // MOVE STICKS/POTS
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, STR_MOVESTICKSPOTS, MENU_TITLE_COLOR);
-      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_MOUSE_ANALOGS; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) {
         if (abs(reusableBuffer.calib.loVals[i]-reusableBuffer.calib.hiVals[i]) > 50) {
           g_eeGeneral.calib[i].mid = reusableBuffer.calib.midVals[i];
           int16_t v = reusableBuffer.calib.midVals[i] - reusableBuffer.calib.loVals[i];
@@ -207,11 +207,11 @@ bool menuCommonCalib(event_t event)
     case CALIB_STORE:
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
-      calibrationState = CALIB_FINISHED;
+      menuCalibrationState = CALIB_FINISHED;
       break;
 
     default:
-      calibrationState = CALIB_START;
+      menuCalibrationState = CALIB_START;
       break;
   }
 
@@ -230,8 +230,8 @@ bool menuCommonCalib(event_t event)
 bool menuRadioCalibration(event_t event)
 {
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", STR_MENUCALIBRATION);
-  if (calibrationState == CALIB_FINISHED) {
-    calibrationState = CALIB_START;
+  if (menuCalibrationState == CALIB_FINISHED) {
+    menuCalibrationState = CALIB_START;
     popMenu();
     return false;
   }
@@ -246,8 +246,8 @@ bool menuRadioCalibration(event_t event)
 
 bool menuFirstCalib(event_t event)
 {
-  if (event == EVT_KEY_BREAK(KEY_EXIT) || calibrationState == CALIB_FINISHED) {
-    calibrationState = CALIB_START;
+  if (event == EVT_KEY_BREAK(KEY_EXIT) || menuCalibrationState == CALIB_FINISHED) {
+    menuCalibrationState = CALIB_START;
     chainMenu(menuMainView);
     return false;
   }

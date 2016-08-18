@@ -25,7 +25,7 @@ vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t noHighlightCounter;
-uint8_t calibrationState;
+uint8_t menuCalibrationState;
 int checkIncDecSelection = 0;
 
 #if defined(AUTOSWITCH)
@@ -35,7 +35,7 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val)
     swsrc_t swtch = getMovedSwitch();
     if (swtch) {
       div_t info = switchInfo(swtch);
-      if (IS_TOGGLE(info.quot)) {
+      if (IS_CONFIG_TOGGLE(info.quot)) {
         if (info.rem != 0) {
           val = (val == swtch ? swtch-2 : swtch);
         }
@@ -82,7 +82,7 @@ void onSourceLongEnterPress(const char * result)
   else if (result == STR_MENU_GVARS)
     checkIncDecSelection = MIXSRC_FIRST_GVAR;
   else if (result == STR_MENU_TELEMETRY) {
-    for (int i = 0; i < MAX_SENSORS; i++) {
+    for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
       TelemetrySensor * sensor = & g_model.telemetrySensors[i];
       if (sensor->isAvailable()) {
         checkIncDecSelection = MIXSRC_FIRST_TELEM + 3*i;
@@ -99,7 +99,7 @@ void onSwitchLongEnterPress(const char *result)
   else if (result == STR_MENU_TRIMS)
     checkIncDecSelection = SWSRC_FIRST_TRIM;
   else if (result == STR_MENU_LOGICAL_SWITCHES)
-    checkIncDecSelection = SWSRC_FIRST_LOGICAL_SWITCH + getFirstAvailable(0, NUM_LOGICAL_SWITCH, isLogicalSwitchAvailable);
+    checkIncDecSelection = SWSRC_FIRST_LOGICAL_SWITCH + getFirstAvailable(0, MAX_LOGICAL_SWITCHES, isLogicalSwitchAvailable);
   else if (result == STR_MENU_OTHER)
     checkIncDecSelection = SWSRC_ON;
   else if (result == STR_MENU_INVERT)
@@ -267,7 +267,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       }
 
       if (i_min <= MIXSRC_FIRST_TELEM && i_max >= MIXSRC_FIRST_TELEM) {
-        for (int i = 0; i < MAX_SENSORS; i++) {
+        for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
           if (sensor->isAvailable()) {
             POPUP_MENU_ADD_ITEM(STR_MENU_TELEMETRY);
@@ -291,7 +291,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       if (i_min <= SWSRC_FIRST_SWITCH && i_max >= SWSRC_LAST_SWITCH)       POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= SWSRC_FIRST_TRIM && i_max >= SWSRC_LAST_TRIM)           POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= SWSRC_FIRST_LOGICAL_SWITCH && i_max >= SWSRC_LAST_LOGICAL_SWITCH) {
-        for (int i = 0; i < NUM_LOGICAL_SWITCH; i++) {
+        for (int i = 0; i < MAX_LOGICAL_SWITCHES; i++) {
           if (isValueAvailable && isValueAvailable(SWSRC_FIRST_LOGICAL_SWITCH+i)) {
             POPUP_MENU_ADD_ITEM(STR_MENU_LOGICAL_SWITCHES);
             break;
@@ -374,7 +374,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
         break;
     }
 
-    if (!calibrationState && cc != curr) {
+    if (!menuCalibrationState && cc != curr) {
       chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
     }
 
@@ -387,8 +387,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
-  switch(event)
-  {
+  switch (event) {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();
       s_editMode = EDIT_MODE_INIT;

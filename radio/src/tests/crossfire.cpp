@@ -24,12 +24,12 @@
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 TEST(Crossfire, createCrossfireChannelsFrame)
 {
-  int16_t pulsesStart[NUM_TRAINER];
+  int16_t pulsesStart[MAX_TRAINER_CHANNELS];
   uint8_t crossfire[CROSSFIRE_FRAME_MAXLEN];
 
   memset(crossfire, 0, sizeof(crossfire));
-  for (int i=0; i<NUM_TRAINER; i++) {
-    pulsesStart[i] = -1024 + (2048 / NUM_TRAINER) * i;
+  for (int i=0; i<MAX_TRAINER_CHANNELS; i++) {
+    pulsesStart[i] = -1024 + (2048 / MAX_TRAINER_CHANNELS) * i;
   }
 
   createCrossfireChannelsFrame(crossfire, pulsesStart);

@@ -34,7 +34,7 @@
 #define CSW_4TH_COLUMN                 280
 #define CSW_5TH_COLUMN                 340
 #define CSW_6TH_COLUMN                 390
-#define NUM_LOGICAL_SWITCH             64
+#define MAX_LOGICAL_SWITCHES             64
 
 extern void putsEdgeDelayParam(coord_t, coord_t, LogicalSwitchData *, uint8_t, uint8_t);
 
@@ -46,28 +46,28 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
   unsigned int cstate = lswFamily(cs->func);
 
   if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
-    putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
-    putsSwitches(CSW_3RD_COLUMN, y, cs->v2, 0);
+    drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSwitch(CSW_3RD_COLUMN, y, cs->v2, 0);
   }
   else if (cstate == LS_FAMILY_EDGE) {
-    putsSwitches(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
     putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
   }
   else if (cstate == LS_FAMILY_COMP) {
-    putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-    putsMixerSource(CSW_3RD_COLUMN, y, cs->v2, 0);
+    drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSource(CSW_3RD_COLUMN, y, cs->v2, 0);
   }
   else if (cstate == LS_FAMILY_TIMER) {
     lcdDrawNumber(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT | PREC1);
     lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT | PREC1);
   }
   else {
-    putsMixerSource(CSW_2ND_COLUMN, y, cs->v1, 0);
+    drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
     putsChannelValue(CSW_3RD_COLUMN, y, cs->v1, cs->v1 <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT);
   }
 
   // CSW AND switch
-  putsSwitches(CSW_4TH_COLUMN, y, cs->andsw, 0);
+  drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, 0);
 
   // CSW duration
   if (cs->duration > 0)
@@ -91,7 +91,7 @@ bool menuLogicalSwitchesMonitor(event_t event)
 {
   char lsString[] = "L64";
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(160, 160, 160);
-  for (uint8_t i = 0; i < NUM_LOGICAL_SWITCH; i++) {
+  for (uint8_t i = 0; i < MAX_LOGICAL_SWITCHES; i++) {
     LcdFlags attr = (menuHorizontalPosition == i ? INVERS : 0) | LEFT;
     LogicalSwitchData * cs = lswAddress(i);
     strAppendSigned(&lsString[1], i + 1, 2);
@@ -111,7 +111,7 @@ bool menuLogicalSwitchesMonitor(event_t event)
 
 bool menuLogicalSwitches(event_t event)
 {
-  MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 1, { NUM_LOGICAL_SWITCH - 1 });
+  MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 1, { MAX_LOGICAL_SWITCHES - 1 });
   lastMonitorPage = e_MonLogicalSwitches;
   return menuLogicalSwitchesMonitor(event);
 }

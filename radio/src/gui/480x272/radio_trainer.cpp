@@ -52,7 +52,7 @@ bool menuRadioTrainer(event_t event)
     uint8_t chan = channel_order(i);
     volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
 
-    putsMixerSource(MENUS_MARGIN_LEFT, y, MIXSRC_Rud-1+chan, ((sub==i && CURSOR_ON_LINE()) ? INVERS : 0));
+    drawSource(MENUS_MARGIN_LEFT, y, MIXSRC_Rud-1+chan, ((sub==i && CURSOR_ON_LINE()) ? INVERS : 0));
 
     for (int j=0; j<3; j++) {
 

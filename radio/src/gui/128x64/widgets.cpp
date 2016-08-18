@@ -49,10 +49,10 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr)
 {
-  lcdDrawNumber(LCD_W, 0, count, attr);
+  lcdDrawNumber(LCD_W, 0, count, RIGHT | attr);
   coord_t x = 1+LCD_W-FW*(count>9 ? 3 : 2);
   lcdDrawChar(x, 0, '/', attr);
-  lcdDrawNumber(x, 0, index+1, attr);
+  lcdDrawNumber(x, 0, index+1, RIGHT | attr);
 }
 
 #if !defined(CPUM64)
@@ -76,7 +76,7 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
-  if (attr) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr & (~RIGHT)) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
   return value;
 }
 
@@ -93,8 +93,8 @@ uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, 
 int8_t switchMenuItem(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t event)
 {
   drawFieldLabel(x, y, STR_SWITCH);
-  putsSwitches(x,  y, value, attr);
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
+  drawSwitch(x,  y, value, attr);
+  if (attr & (~RIGHT)) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
   return value;
 }
 

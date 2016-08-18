@@ -46,10 +46,9 @@
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
-  uint8_t x, i, len ;  // declare temporary variables
-  for (x=LCD_W/2-5, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS; x+=5, i++) {
-    if (IS_POT_AVAILABLE(i)) {
-      len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+  for (uint8_t x=LCD_W/2 - (NUM_POTS+NUM_SLIDERS-1) * 5 / 2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=5, i++) {
+    if (IS_POT_OR_SLIDER_AVAILABLE(i)) {
+      uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
     }
   }
@@ -168,7 +167,7 @@ void displayTimers()
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
     LcdFlags att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
-    putsTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
+    drawTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
     uint8_t xLabel = (timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7);
 #if defined(CPUARM)
     uint8_t len = zlen(g_model.timers[0].name, LEN_TIMER_NAME);
@@ -177,10 +176,10 @@ void displayTimers()
       lcdDrawSizedText(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
     }
     else {
-      putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+      drawTimerMode(xLabel, FH*3, g_model.timers[0].mode);
     }
 #else
-    putsTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+    drawTimerMode(xLabel, FH*3, g_model.timers[0].mode);
 #endif
   }
 }
@@ -188,7 +187,7 @@ void displayTimers()
 void displayBattVoltage()
 {
 #if defined(BATTGRAPH)
-  putsVBat(VBATT_X-8, VBATT_Y+1, 0);
+  putsVBat(VBATT_X-8, VBATT_Y+1, RIGHT);
   lcdDrawFilledRect(VBATT_X-25, VBATT_Y+9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X-4, VBATT_Y+10, 3);
   uint8_t count = GET_TXBATT_BARS();
@@ -207,10 +206,10 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_eeGeneral.temperatureWarn && getTemperature() >= g_eeGeneral.temperatureWarn) {
-    putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE);
+    putsValueWithUnit(6*FW-1, 2*FH, getTemperature(), UNIT_TEMPERATURE, BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE);
+    putsValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else {
     displayBattVoltage();
@@ -220,11 +219,22 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#define EVT_KEY_MODEL_MENU   EVT_KEY_LONG(KEY_RIGHT)
-#define EVT_KEY_GENERAL_MENU EVT_KEY_LONG(KEY_LEFT)
-#define EVT_KEY_TELEMETRY    EVT_KEY_LONG(KEY_DOWN)
-#define EVT_KEY_STATISTICS   EVT_KEY_LONG(KEY_UP)
-#define EVT_KEY_CONTEXT_MENU EVT_KEY_BREAK(KEY_MENU)
+#if defined(PCBX7D)
+#define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
+#define EVT_KEY_MODEL_MENU             EVT_KEY_BREAK(KEY_MENU)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_MENU)
+#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_PAGE)
+#else
+#define EVT_KEY_CONTEXT_MENU           EVT_KEY_BREAK(KEY_MENU)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_UP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_DOWN)
+#define EVT_KEY_MODEL_MENU             EVT_KEY_LONG(KEY_RIGHT)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_LEFT)
+#define EVT_KEY_LAST_MENU              EVT_KEY_LONG(KEY_MENU)
+#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_DOWN)
+#define EVT_KEY_STATISTICS             EVT_KEY_LONG(KEY_UP)
+#endif
 
 #if defined(NAVIGATION_MENUS)
 void onMainViewMenu(const char *result)
@@ -280,8 +290,7 @@ void menuMainView(uint8_t event)
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
-  switch(event) {
-
+  switch (event) {
     case EVT_ENTRY:
       killEvents(KEY_EXIT);
       killEvents(KEY_UP);
@@ -300,7 +309,7 @@ void menuMainView(uint8_t event)
     case EVT_KEY_BREAK(KEY_RIGHT):
     case EVT_KEY_BREAK(KEY_LEFT):
       if (view_base <= VIEW_INPUTS) {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
         if (view_base == VIEW_INPUTS)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
@@ -343,11 +352,13 @@ void menuMainView(uint8_t event)
 #endif
 
 #if MENUS_LOCK != 2 /*no menus*/
-    case EVT_KEY_LONG(KEY_MENU):// go to last menu
+#if defined(EVT_KEY_LAST_MENU)
+    case EVT_KEY_LAST_MENU:
       pushMenu(lastPopMenu());
       killEvents(event);
       break;
-
+#endif
+      
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
@@ -360,17 +371,28 @@ void menuMainView(uint8_t event)
       killEvents(event);
       break;
 #endif
-
-    case EVT_KEY_BREAK(KEY_UP):
-    case EVT_KEY_BREAK(KEY_DOWN):
-      g_eeGeneral.view = (event == EVT_KEY_BREAK(KEY_UP) ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
+  
+#if defined(EVT_KEY_PREVIOUS_VIEW)
+      // TODO try to split those 2 cases on 9X
+    case EVT_KEY_PREVIOUS_VIEW:
+    case EVT_KEY_NEXT_VIEW:
+      // TODO try to split those 2 cases on 9X
+      g_eeGeneral.view = (event == EVT_KEY_PREVIOUS_VIEW ? (view_base == VIEW_COUNT-1 ? 0 : view_base+1) : (view_base == 0 ? VIEW_COUNT-1 : view_base-1));
       storageDirty(EE_GENERAL);
       break;
-
+#else
+    case EVT_KEY_NEXT_VIEW:
+      g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT-1 : view_base-1);
+      storageDirty(EE_GENERAL);
+      break;
+#endif
+  
+#if defined(EVT_KEY_STATISTICS)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
       killEvents(event);
       break;
+#endif
 
     case EVT_KEY_TELEMETRY:
 #if defined(TELEMETRY_FRSKY)
@@ -432,7 +454,7 @@ void menuMainView(uint8_t event)
   if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
     lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
 #else
     lcdDrawSolidHorizontalLine((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
@@ -440,7 +462,7 @@ void menuMainView(uint8_t event)
 
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
 #else
       uint8_t chan = (g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i;
@@ -448,37 +470,36 @@ void menuMainView(uint8_t event)
 
       int16_t val = channelOutputs[chan];
 
-      switch(view_base)
-      {
+      switch (view_base) {
         case VIEW_OUTPUTS_VALUES:
           x0 = (i%4*9+3)*FW/2;
           y0 = i/4*FH+40;
 #if defined(PPM_UNIT_US)
-          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, 0);
+          lcdDrawNumber(x0+4*FW , y0, PPM_CH_CENTER(chan)+val/2, RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), PREC1);
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val), RIGHT|PREC1);
 #else
-          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, 0); // G: Don't like the decimal part*
+          lcdDrawNumber(x0+4*FW , y0, calcRESXto1000(val)/10, RIGHT); // G: Don't like the decimal part*
 #endif
           break;
 
         case VIEW_OUTPUTS_BARS:
 #define WBAR2 (50/2)
-          x0       = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
-          y0       = 38+(i%4)*5;
+          x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
+          y0 = 38+(i%4)*5;
 
           uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
           int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
 
-          if(len>WBAR2)  len = WBAR2;  // prevent bars from going over the end - comment for debugging
+          if (len>WBAR2) len = WBAR2; // prevent bars from going over the end - comment for debugging
           lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
-          lcdDrawSolidVerticalLine(x0,y0-2,5);
-          if (val>0)
-            x0+=1;
+          lcdDrawSolidVerticalLine(x0, y0-2,5 );
+          if (val > 0)
+            x0 += 1;
           else
-            x0-=len;
-          lcdDrawSolidHorizontalLine(x0,y0+1,len);
-          lcdDrawSolidHorizontalLine(x0,y0-1,len);
+            x0 -= len;
+          lcdDrawSolidHorizontalLine(x0, y0+1, len);
+          lcdDrawSolidHorizontalLine(x0, y0-1, len);
           break;
       }
     }
@@ -489,15 +510,17 @@ void menuMainView(uint8_t event)
       doMainScreenGraphics();
 
       // Switches
+#if !defined(PCBX7D)
       for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
         int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
         uint8_t x = 2*FW-2, y = i*FH+1;
-        if (i>=SWSRC_AIL) {
+        if (i >= SWSRC_AIL) {
           x = 17*FW-1;
           y -= 3*FH;
         }
-        putsSwitches(x, y, sw, getSwitch(i) ? INVERS : 0);
+        drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0);
       }
+#endif
     }
     else {
 #if defined(PCBMEGA2560) && defined(ROTARY_ENCODERS)
@@ -515,22 +538,22 @@ void menuMainView(uint8_t event)
 #endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
       // Logical Switches
-#if defined(PCBSKY9X)
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++) {
+#if defined(CPUARM)
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
         int8_t len = getSwitch(SWSRC_SW1+i) ? BAR_HEIGHT : 1;
         uint8_t x = VSWITCH_X(i);
         lcdDrawSolidVerticalLine(x-1, VSWITCH_Y-len, len);
         lcdDrawSolidVerticalLine(x,   VSWITCH_Y-len, len);
       }
 #elif defined(CPUM2560)
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
-        putsSwitches(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
+        drawSwitch(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #elif !defined(PCBSTD)
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
-        putsSwitches(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
+        drawSwitch(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #else
-      for (uint8_t i=0; i<NUM_LOGICAL_SWITCH; i++)
-        putsSwitches(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
+      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++)
+        drawSwitch(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
 #endif
     }
   }
@@ -540,8 +563,8 @@ void menuMainView(uint8_t event)
 #else
   #define TMR2_LBL_COL (20-FW/2+5)
 #endif
-    putsTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE, DBLSIZE);
-    putsTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
+    drawTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE|RIGHT, DBLSIZE);
+    drawTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
     // lcdDrawNumber(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
   }
 

@@ -125,7 +125,7 @@ void menuTextView(uint8_t event)
     lcdDrawText(0, i*FH+FH+1, s_text_screen[i], FIXEDWIDTH);
   }
 
-  char *title = s_text_file;
+  char * title = s_text_file;
 #if defined(SIMU)
   if (!strncmp(title, "./", 2)) title += 2;
 #else

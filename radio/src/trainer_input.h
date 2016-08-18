@@ -24,7 +24,7 @@
 #include "opentx.h"
 
 // Trainer input channels
-extern int16_t ppmInput[NUM_TRAINER];
+extern int16_t ppmInput[MAX_TRAINER_CHANNELS];
 
 // Timer gets decremented in per10ms()
 #define PPM_IN_VALID_TIMEOUT 100 // 1s
@@ -56,7 +56,7 @@ inline void captureTrainerPulses(uint16_t capture)
     channelNumber = 1; // triggered
   }
   else {
-    if ((channelNumber > 0) && (channelNumber <= NUM_TRAINER)) {
+    if ((channelNumber > 0) && (channelNumber <= MAX_TRAINER_CHANNELS)) {
       if (val>800 && val<2200) {
         ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
         ppmInput[channelNumber++ - 1] =

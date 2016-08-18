@@ -539,7 +539,7 @@ bool RlcFile::copy(uint8_t i_fileDst, uint8_t i_fileSrc)
 #if defined(SDCARD)
 const pm_char * eeBackupModel(uint8_t i_fileSrc)
 {
-  char *buf = reusableBuffer.modelsel.mainname;
+  char * buf = reusableBuffer.modelsel.mainname;
   UINT written;
 
   // we must close the logs as we reuse the same FIL structure
@@ -622,7 +622,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
 const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 {
-  char *buf = reusableBuffer.modelsel.mainname;
+  char * buf = reusableBuffer.modelsel.mainname;
   UINT read;
 
   // we must close the logs as we reuse the same FIL structure
@@ -973,5 +973,54 @@ void eeDeleteModel(uint8_t idx)
 {
   EFile::rm(FILE_MODEL(idx));
   memset(&modelHeaders[idx], 0, sizeof(ModelHeader));
+}
+#endif
+
+#if defined(SDCARD)
+void eepromBackup()
+{
+  char filename[60];
+  uint8_t buffer[1024];
+  FIL file;
+  
+  lcdClear();
+  drawProgressBar(STR_WRITING);
+  
+  // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
+  g_eeGeneral.unexpectedShutdown = 0;
+  storageDirty(EE_GENERAL);
+  storageCheck(true);
+  
+  // create the directory if needed...
+  const char * error = sdCheckAndCreateDirectory(EEPROMS_PATH);
+  if (error) {
+    POPUP_WARNING(error);
+    return;
+  }
+  
+  // prepare the filename...
+  char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
+#if defined(RTCLOCK)
+  tmp = strAppendDate(tmp, true);
+#endif
+  strAppend(tmp, EEPROM_EXT);
+  
+  // open the file for writing...
+  f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
+  
+  for (int i=0; i<EESIZE; i+=1024) {
+    UINT count;
+    eepromReadBlock(buffer, i, 1024);
+    f_write(&file, buffer, 1024, &count);
+    updateProgressBar(i, EESIZE);
+    SIMU_SLEEP(100/*ms*/);
+  }
+  
+  f_close(&file);
+  
+  //set back unexpectedShutdown
+  g_eeGeneral.unexpectedShutdown = 1;
+  storageDirty(EE_GENERAL);
+  storageCheck(true);
 }
 #endif

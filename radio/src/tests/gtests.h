@@ -31,7 +31,7 @@
 #define CHANNEL_MAX (1024*256)
 
 extern int32_t lastAct;
-extern uint16_t anaInValues[NUM_STICKS+NUM_POTS];
+extern uint16_t anaInValues[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
 
 void doMixerCalculations();
 
@@ -83,7 +83,7 @@ inline void TELEMETRY_RESET()
   TELEMETRY_RSSI() = 100;
 #endif
 #if defined(CPUARM) && defined(TELEMETRY_FRSKY)
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
 #endif

@@ -138,7 +138,7 @@
 #define CFN_GVAR_CST_MAX    125
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLAMENCO)
   enum SwitchConfig {
     SWITCH_NONE,
     SWITCH_TOGGLE,
@@ -157,11 +157,12 @@
   };
   #define SWITCH_CONFIG(x)            ((g_eeGeneral.switchConfig >> (2*(x))) & 0x03)
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
-  #define IS_3POS(x)                  (SWITCH_CONFIG(x) == SWITCH_3POS)
-  #define IS_TOGGLE(x)                (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
-  #define IS_3POS_MIDDLE(x)           ((x) == 1)
-  #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_TOGGLE(x))
+  #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
+  #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
+  #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !IS_CONFIG_TOGGLE(x))
 #else
+  #define IS_CONFIG_3POS(x)           IS_3POS(x)
+  #define IS_CONFIG_TOGGLE(x)         IS_TOGGLE(x)
   #define switchInfo(x)               ((x) >= 3 ? (x)-2 : 0)
   #define SWITCH_EXISTS(x)            true
 #endif
@@ -187,18 +188,14 @@ enum CurveRefType {
   CURVE_REF_CUSTOM
 };
 
-#if !defined(XCURVES)
+#if !defined(CPUARM)
   #define MODE_DIFFERENTIAL  0
   #define MODE_EXPO          0
   #define MODE_CURVE         1
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
 #define MIN_EXPO_WEIGHT         -100
-#define EXPO_VALID(ed)          ((ed)->mode)
-#define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
-#elif defined(CPUARM)
-#define MIN_EXPO_WEIGHT         0
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #elif defined(CPUM2560) || defined(CPUM2561)
@@ -211,7 +208,7 @@ enum CurveRefType {
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define limit_min_max_t     int16_t
   #define LIMIT_EXT_PERCENT   150
   #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
@@ -447,7 +444,7 @@ enum SwashType {
   #define TRIMS_ARRAY_SIZE  5
 #else
   #define TRIMS_ARRAY_SIZE  8
-  #if defined(VIRTUALINPUTS)
+  #if defined(CPUARM)
     #define TRIM_MODE_NONE  0x1F  // 0b11111
   #endif
 #endif

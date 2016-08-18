@@ -79,6 +79,8 @@ void boardInit(void);
 #define backlightEnable()         PORTC |= (1<<OUT_C_LIGHT)
 #define backlightDisable()        PORTC &= ~(1<<OUT_C_LIGHT)
 #define isBacklightEnable()       PORTC & (1<<OUT_C_LIGHT)
+#define BACKLIGHT_ENABLE()             backlightEnable()
+#define BACKLIGHT_DISABLE()            backlightDisable()
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
@@ -143,7 +145,7 @@ void sdPoll10ms(void);
 #define OUT_C_LCD_A0             5        
 #define OUT_C_LCD_RES            4        
 #define OUT_C_LCD_CS1            3        
-#define OUT_C_LIGHT              2        
+#define OUT_C_LIGHT              2
 
 // DBLKeys driver                         
 #define KEYS_PRESSED()            (~PINL)

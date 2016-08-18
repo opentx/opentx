@@ -26,12 +26,12 @@ const pm_char * g_logError = NULL;
 uint8_t logDelay;
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-  #define get2PosState(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
+  #define GET_2POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
 #else
-  #define get2PosState(sw) (switchState(SW_ ## sw) ? -1 : 1)
+  #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
 #endif
 
-#define get3PosState(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
+#define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
 
 const pm_char * openLogs()
 {
@@ -155,7 +155,7 @@ void writeHeader()
 
 #if defined(CPUARM)
   char label[TELEM_LABEL_LEN+7];
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.logs) {
       memset(label, 0, sizeof(label));
@@ -173,7 +173,7 @@ void writeHeader()
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  for (uint8_t i=1; i<NUM_STICKS+NUM_POTS+1; i++) {
+  for (uint8_t i=1; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+1; i++) {
     const char * p = STR_VSRCRAW + i * STR_VSRCRAW[0] + 2;
     for (uint8_t j=0; j<STR_VSRCRAW[0]-1; ++j) {
       if (!*p) break;
@@ -182,7 +182,11 @@ void writeHeader()
     }
     f_putc(',', &g_oLogFile);
   }
+#if defined(PCBX7D)
+  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
+#else
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
+#endif
   f_puts(STR_SWITCHES_LOG_HEADER ",LSW,", &g_oLogFile);
 #else
   f_puts("Rud,Ele,Thr,Ail,P1,P2,P3,THR,RUD,ELE,3POS,AIL,GEA,TRN,", &g_oLogFile);
@@ -288,7 +292,7 @@ void writeLogs()
 #endif
 
 #if defined(CPUARM)
-      for (int i=0; i<MAX_SENSORS; i++) {
+      for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
         TelemetrySensor & sensor = g_model.telemetrySensors[i];
         TelemetryItem & telemetryItem = telemetryItems[i];
         if (sensor.logs) {
@@ -322,38 +326,42 @@ void writeLogs()
 #endif
 #endif
 
-      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
         f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
       }
 
 #if defined(PCBFLAMENCO)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,",
-          get3PosState(SA),
-          get3PosState(SB),
-          // get3PosState(SC),
-          get2PosState(SE),
-          get3PosState(SF));
+          GET_3POS_STATE(SA),
+          GET_3POS_STATE(SB),
+          // GET_3POS_STATE(SC),
+          GET_2POS_STATE(SE),
+          GET_3POS_STATE(SF));
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X,",
-          get3PosState(SA),
-          get3PosState(SB),
-          get3PosState(SC),
-          get3PosState(SD),
-          get3PosState(SE),
-          get2PosState(SF),
-          get3PosState(SG),
-          get2PosState(SH),
+          GET_3POS_STATE(SA),
+          GET_3POS_STATE(SB),
+          GET_3POS_STATE(SC),
+          GET_3POS_STATE(SD),
+#if !defined(PCBX7D)
+          GET_3POS_STATE(SE),
+#endif
+          GET_2POS_STATE(SF),
+#if !defined(PCBX7D)
+          GET_3POS_STATE(SG),
+#endif
+          GET_2POS_STATE(SH),
           getLogicalSwitchesStates(32),
           getLogicalSwitchesStates(0));
 #else
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,",
-          get2PosState(THR),
-          get2PosState(RUD),
-          get2PosState(ELE),
-          get3PosState(ID),
-          get2PosState(AIL),
-          get2PosState(GEA),
-          get2PosState(TRN));
+          GET_2POS_STATE(THR),
+          GET_2POS_STATE(RUD),
+          GET_2POS_STATE(ELE),
+          GET_3POS_STATE(ID),
+          GET_2POS_STATE(AIL),
+          GET_2POS_STATE(GEA),
+          GET_2POS_STATE(TRN));
 #endif
 
       div_t qr = div(g_vbat100mV, 10);

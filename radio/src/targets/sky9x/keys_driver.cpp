@@ -113,34 +113,34 @@ void readKeysAndTrims()
   keys[BTN_REa].input(REA_DOWN());
 #endif
 
-  uint8_t enuk = KEY_MENU;
+  uint8_t index = KEY_MENU;
   uint8_t in = readKeys();
   for (i = 1; i < 7; i++) {
-    keys[enuk].input(in & (1 << i));
-    ++enuk;
+    keys[index].input(in & (1 << i));
+    ++index;
   }
 
   in = readTrims();
 
   for (i = 1; i < 256; i <<= 1) {
-    keys[enuk].input(in & i);
-    ++enuk;
+    keys[index].input(in & i);
+    ++index;
   }
 }
 
-bool switchState(EnumKeys enuk)
+uint8_t keyState(uint8_t index)
 {
-  register uint32_t a;
-  register uint32_t c;
+  return keys[index].state();
+}
+
+uint32_t switchState(uint8_t index)
+{
+  register uint32_t a = PIOA->PIO_PDSR;
+  register uint32_t c = PIOC->PIO_PDSR;
 
   uint32_t xxx = 0;
 
-  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
-
-  a = PIOA->PIO_PDSR ;
-  c = PIOC->PIO_PDSR ;
-
-  switch ((uint8_t) enuk) {
+  switch (index) {
 #if defined(REVA)
     case SW_ELE:
       xxx = a & 0x00000100; // ELE_DR   PA8

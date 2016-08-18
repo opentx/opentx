@@ -53,14 +53,14 @@ void showMessageBox(const pm_char * pstr)
   lcdRefresh();
 }
 
-const pm_uchar asterisk_lbm[] PROGMEM = {
+const pm_uchar ASTERISK_BITMAP[] PROGMEM = {
 #include "asterisk.lbm"
 };
 
-void showAlertBox(const pm_char * title, const pm_char * text, const char * action ALERT_SOUND_ARG)
+void drawAlertBox(const pm_char * title, const pm_char * text, const char * action)
 {
   lcdClear();
-  lcd_img(2, 0, asterisk_lbm, 0, 0);
+  lcd_img(2, 0, ASTERISK_BITMAP, 0, 0);
 
 #define MESSAGE_LCD_OFFSET   6*FW
 
@@ -71,7 +71,7 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
   lcdDrawText(MESSAGE_LCD_OFFSET, 0, title, DBLSIZE);
   lcdDrawText(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
-
+  
   lcdDrawFilledRect(0, 0, LCD_W, 32);
   if (text) {
     lcdDrawTextAlignedLeft(5*FH, text);
@@ -79,10 +79,16 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
   if (action) {
     lcdDrawTextAlignedLeft(7*FH, action);
   }
-  AUDIO_ERROR_MESSAGE(sound);
-
+  
 #undef MESSAGE_LCD_OFFSET
+}
 
+void showAlertBox(const pm_char * title, const pm_char * text, const char * action ALERT_SOUND_ARG)
+{
+  drawAlertBox(title, text, action);
+  
+  AUDIO_ERROR_MESSAGE(sound);
+  
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
@@ -134,7 +140,12 @@ uint8_t s_menu_item = 0;
 uint16_t popupMenuNoItems = 0;
 uint8_t popupMenuFlags = 0;
 uint16_t popupMenuOffset = 0;
-void (*popupMenuHandler)(const char *result);
+void (*popupMenuHandler)(const char * result);
+
+#if defined(CPUARM)
+uint8_t      popupMenuOffsetType = MENU_OFFSET_INTERNAL;
+#endif
+
 const char * runPopupMenu(uint8_t event)
 {
   const char * result = NULL;

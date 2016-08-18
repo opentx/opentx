@@ -29,6 +29,9 @@ make -j2 libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=9XRPRO ${SRCDIR}
 make -j2 libsimulator
 
+cmake -DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$3 -DGVARS=NO -DHELI=YES -DPCB=X7D ${SRCDIR}
+make -j2 libsimulator
+ 
 cmake ${STM32_OPTIONS} -DPCB=X9D ${SRCDIR}
 make -j2 libsimulator
 

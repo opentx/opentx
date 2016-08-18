@@ -24,9 +24,10 @@
 #undef min
 #undef max
 
-#define NUM_POTS  3
-#define NUM_CSW   12
-#define SWSRC_SW1 10
+#define NUM_POTS                       3
+#define NUM_SLIDERS                    0
+#define NUM_CSW                        12
+#define SWSRC_SW1                      10
 
 #include <exception>
 #include <algorithm>

@@ -26,10 +26,10 @@ void trainerSendNextFrame();
 
 void init_trainer_ppm()
 {
-  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_GPIO_PinSource_OUT, TRAINER_GPIO_AF);
+  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_OUT_GPIO_PinSource, TRAINER_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = TRAINER_GPIO_PIN_OUT;
+  GPIO_InitStructure.GPIO_Pin = TRAINER_OUT_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -66,10 +66,10 @@ void stop_trainer_ppm()
 
 void init_trainer_capture()
 {
-  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_GPIO_PinSource_IN, TRAINER_GPIO_AF);
+  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_IN_GPIO_PinSource, TRAINER_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = TRAINER_GPIO_PIN_IN;
+  GPIO_InitStructure.GPIO_Pin = TRAINER_IN_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -261,8 +261,10 @@ int sbusGetByte(uint8_t * byte)
   switch (currentTrainerMode) {
     case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
       return heartbeatFifo.pop(*byte);
+#if defined(SERIAL2)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
       return serial2RxFifo.pop(*byte);
+#endif
     default:
       return false;
   }

@@ -87,10 +87,12 @@ void sdPoll10ms();
 #define speakerOff()               TCCR0A &= ~(1 << COM0A0)
 
 // Backlight driver
-#define OUT_C_LIGHT                0
-#define backlightEnable()          PORTC |=  (1<<OUT_C_LIGHT)
-#define backlightDisable()         PORTC &= ~(1<<OUT_C_LIGHT)
-#define isBacklightEnable()        (PORTC & (1<<OUT_C_LIGHT))
+#define OUT_C_LIGHT                    0
+#define backlightEnable()              PORTC |=  (1<<OUT_C_LIGHT)
+#define backlightDisable()             PORTC &= ~(1<<OUT_C_LIGHT)
+#define isBacklightEnable()            (PORTC & (1<<OUT_C_LIGHT))
+#define BACKLIGHT_ENABLE()             backlightEnable()
+#define BACKLIGHT_DISABLE()            backlightDisable()
 
 #define INP_E_PPM_IN      7
 #define INP_E_ROT_ENC_1_B 6

@@ -42,7 +42,7 @@ const pm_uchar sticks[] PROGMEM = {
   #define CASE_SPLASH_PARAM(x)
 #endif
 
-enum menuRadioSetupItems {
+enum MenuRadioSetupItems {
   CASE_RTCLOCK(ITEM_SETUP_DATE)
   CASE_RTCLOCK(ITEM_SETUP_TIME)
   ITEM_SETUP_BATTERY_CALIB,
@@ -123,13 +123,13 @@ void menuRadioSetup(uint8_t event)
 
   int sub = menuVerticalPosition;
 
-  for (unsigned int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
+    uint8_t k = i + menuVerticalOffset;
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     uint8_t attr = (sub == k ? blink : 0);
 
-    switch(k) {
+    switch (k) {
       case ITEM_SETUP_DATE:
         lcdDrawTextAlignedLeft(y, STR_DATE);
         lcdDrawChar(RADIO_SETUP_DATE_COLUMN, y, '-'); lcdDrawChar(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, '-');
@@ -183,8 +183,9 @@ void menuRadioSetup(uint8_t event)
           }
         }
         if (attr && menuHorizontalPosition < 0) lcdDrawFilledRect(RADIO_SETUP_2ND_COLUMN, y, LCD_W-RADIO_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
-        if (attr && checkIncDec_Ret)
+        if (attr && checkIncDec_Ret) {
           g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
+        }
         break;
 
      case ITEM_SETUP_BATTERY_CALIB:

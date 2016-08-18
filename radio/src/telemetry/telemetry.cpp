@@ -56,7 +56,7 @@ lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 }
 #endif
 
-#if defined(CPUSTM32)
+#if defined(STM32)
 #define IS_TELEMETRY_INTERNAL_MODULE (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
 #else
 #define IS_TELEMETRY_INTERNAL_MODULE (false)
@@ -96,7 +96,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(CPUSTM32)
+#if defined(STM32)
   uint8_t data;
   if (!telemetryFifo.isEmpty()) {
     LOG_TELEMETRY_WRITE_START();
@@ -132,7 +132,7 @@ void telemetryWakeup()
 #endif
 
 #if defined(CPUARM)
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     const TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED) {
       telemetryItems[i].eval(sensor);
@@ -157,7 +157,7 @@ void telemetryWakeup()
 
     uint8_t now = TelemetryItem::now();
     bool sensor_lost = false;
-    for (int i=0; i<MAX_SENSORS; i++) {
+    for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       if (isTelemetryFieldAvailable(i)) {
         uint8_t lastReceived = telemetryItems[i].lastReceived;
         if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
@@ -226,7 +226,7 @@ void telemetryInterrupt10ms()
   if (TELEMETRY_STREAMING()) {
     if (!TELEMETRY_OPENXSENSOR()) {
 #if defined(CPUARM)
-      for (int i=0; i<MAX_SENSORS; i++) {
+      for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
         const TelemetrySensor & sensor = g_model.telemetrySensors[i];
         if (sensor.type == TELEM_TYPE_CALCULATED) {
           telemetryItems[i].per10ms(sensor);
@@ -299,7 +299,7 @@ void telemetryReset()
   memclear(&telemetryData, sizeof(telemetryData));
 
 #if defined(CPUARM)
-  for (int index=0; index<MAX_SENSORS; index++) {
+  for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     telemetryItems[index].clear();
   }
 #endif
@@ -382,7 +382,7 @@ void telemetryReset()
 
 /*Add some default sensor values to the simulator*/
 #if defined(CPUARM) && defined(SIMU)
-  for (int i=0; i<MAX_SENSORS; i++) {
+  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     const TelemetrySensor & sensor = g_model.telemetrySensors[i];
     switch (sensor.id)
     {
@@ -429,10 +429,12 @@ void telemetryInit(uint8_t protocol) {
     telemetryPortSetDirectionOutput();
   }
 #endif
+#if defined(SERIAL2)
   else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0, TELEMETRY_SERIAL_8N1);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
+#endif
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
 #if defined(LUA)

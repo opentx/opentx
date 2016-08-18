@@ -34,7 +34,7 @@ extern uint16_t linesCount;
 extern int menuVerticalPosition;
 extern int menuHorizontalPosition;
 extern int menuVerticalOffset;
-extern uint8_t calibrationState;
+extern uint8_t menuCalibrationState;
 
 // Temporary no highlight
 extern uint8_t noHighlightCounter;
@@ -422,7 +422,7 @@ extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char *name, uint8_t size, event_t event, uint8_t active, LcdFlags flags=ZCHAR);
 
 uint8_t editDelay(const coord_t x, const coord_t y, const event_t event, const uint8_t attr, uint8_t delay);
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, uint8_t attr);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
 extern uint8_t s_curveChan;
 
@@ -491,7 +491,7 @@ extern uint8_t warningInfoFlags;
 #define POPUP_MENU_MAX_LINES           12
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
-#define POPUP_MENU_ITEMS_FROM_BSS()
+#define POPUP_MENU_SET_BSS_FLAG()
 extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 extern uint16_t popupMenuNoItems;
 extern uint16_t popupMenuOffset;

@@ -24,6 +24,10 @@
 #include "gui_common.h"
 #include "lcd.h"
 #include "menus.h"
+#include "popups.h"
+
+#define HEADER_LINE                    0
+#define HEADER_LINE_COLUMNS
 
 #define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 #define NUM_BODY_LINES                 (LCD_LINES-1)
@@ -36,9 +40,9 @@
 #define MODEL_BITMAP_SIZE              BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)
 #define LOAD_MODEL_BITMAP()            loadModelBitmap(g_model.header.bitmap, modelBitmap)
 
-#define WCHART                         (LCD_H/2)
-#define X0                             (LCD_W-WCHART-2)
-#define Y0                             (LCD_H/2)
+#define CURVE_SIDE_WIDTH               (LCD_H/2)
+#define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-2)
+#define CURVE_CENTER_Y                 (LCD_H/2)
 
 #if defined(TRANSLATIONS_FR)
   #define MENU_COLUMNS                 1
@@ -84,13 +88,13 @@ void updateProgressBar(int num, int den);
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
+void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att);
 
 void drawAlertBox(const char * title, const char * text, const char * action);
 #define ALERT_SOUND_ARG , uint8_t sound
 void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound);
 
 void doMainScreenGraphics();
-
 
 typedef uint16_t FlightModesType;
 
@@ -254,7 +258,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #endif
 
 extern uint8_t s_curveChan;
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, uint8_t attr);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, LcdFlags flags);
 
 extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr=ZCHAR);
@@ -299,49 +303,6 @@ uint8_t getMixesCount();
 void deleteMix(uint8_t idx);
 void insertMix(uint8_t idx);
 
-#define MENU_X                         30
-#define MENU_Y                         16
-#define MENU_W                         LCD_W-(2*MENU_X)
-#define WARNING_LINE_LEN               32
-#define WARNING_LINE_X                 16
-#define WARNING_LINE_Y                 3*FH
-
-void drawMessageBox(const char * title);
-void showMessageBox(const char * title);
-void runPopupWarning(uint8_t event);
-
-extern void (*popupFunc)(uint8_t event);
-extern int16_t warningInputValue;
-extern int16_t warningInputValueMin;
-extern int16_t warningInputValueMax;
-extern uint8_t warningInfoFlags;
-
-#define DISPLAY_WARNING                (*popupFunc)
-#define POPUP_WARNING(s)               (warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
-#define WARNING_INFO_FLAGS             warningInfoFlags
-#define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
-
-#define NAVIGATION_MENUS
-#define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
-#define POPUP_MENU_START(func)         do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while(0)
-#define POPUP_MENU_MAX_LINES           12
-#define MENU_MAX_DISPLAY_LINES         6
-#define POPUP_MENU_ADD_SD_ITEM(s)      POPUP_MENU_ADD_ITEM(s)
-#define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
-#define POPUP_MENU_ITEMS_FROM_BSS()
-extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
-extern uint16_t popupMenuNoItems;
-extern uint16_t popupMenuOffset;
-enum {
-  MENU_OFFSET_INTERNAL,
-  MENU_OFFSET_EXTERNAL
-};
-extern uint8_t popupMenuOffsetType;
-const char * runPopupMenu(uint8_t event);
-extern void (*popupMenuHandler)(const char *result);
-
 #define STATUS_LINE_LENGTH             32
 extern char statusLineMsg[STATUS_LINE_LENGTH];
 void showStatusLine();
@@ -357,21 +318,8 @@ void menuChannelsView(uint8_t event);
 
 #define LABEL(...) (uint8_t)-1
 
-#if defined(PCBX9E) && !defined(SIMU)
-#define KEY_UP                       KEY_MINUS
-  #define KEY_DOWN                     KEY_PLUS
-  #define KEY_RIGHT                    KEY_PLUS
-  #define KEY_LEFT                     KEY_MINUS
-  #define CURSOR_MOVED_LEFT(event)     (EVT_KEY_MASK(event) == KEY_LEFT)
-  #define CURSOR_MOVED_RIGHT(event)    (EVT_KEY_MASK(event) == KEY_RIGHT)
-#else
-  #define KEY_UP                       KEY_PLUS
-  #define KEY_DOWN                     KEY_MINUS
-  #define KEY_RIGHT                    KEY_MINUS
-  #define KEY_LEFT                     KEY_PLUS
-  #define CURSOR_MOVED_LEFT(event)     (EVT_KEY_MASK(event) == KEY_LEFT)
-  #define CURSOR_MOVED_RIGHT(event)    (EVT_KEY_MASK(event) == KEY_RIGHT)
-#endif
+#define CURSOR_MOVED_LEFT(event)       (EVT_KEY_MASK(event) == KEY_LEFT)
+#define CURSOR_MOVED_RIGHT(event)      (EVT_KEY_MASK(event) == KEY_RIGHT)
 
 #define REPEAT_LAST_CURSOR_MOVE()      { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else menuHorizontalPosition = 0; }
 #define MOVE_CURSOR_FROM_HERE()        if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
@@ -380,7 +328,7 @@ void menuChannelsView(uint8_t event);
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
 
-typedef int16_t (*FnFuncP) (int16_t x);
+typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
 
 void onSourceLongEnterPress(const char *result);
@@ -396,7 +344,7 @@ extern const pm_uchar sticks[] PROGMEM;
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);
 FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr);
 #else
-  #define displayFlightModes(...)
+#define displayFlightModes(...)
 #endif
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView

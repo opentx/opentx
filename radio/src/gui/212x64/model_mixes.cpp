@@ -96,7 +96,7 @@ bool swapMixes(uint8_t & idx, uint8_t up)
   }
 
   if (tgt_idx == MAX_MIXERS) {
-    if (x->destCh == NUM_CHNOUT-1)
+    if (x->destCh == MAX_OUTPUT_CHANNELS-1)
       return false;
     x->destCh++;
     return true;
@@ -110,7 +110,7 @@ bool swapMixes(uint8_t & idx, uint8_t up)
       else return false;
     }
     else {
-      if (destCh<NUM_CHNOUT-1) x->destCh++;
+      if (destCh<MAX_OUTPUT_CHANNELS-1) x->destCh++;
       else return false;
     }
     return true;
@@ -235,7 +235,7 @@ void menuModelMixOne(uint8_t event)
 
       case MIX_FIELD_SOURCE:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
+        drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
 
@@ -270,6 +270,7 @@ void menuModelMixOne(uint8_t event)
 
 #if defined(FLIGHT_MODES)
       case MIX_FIELD_FLIGHT_MODE:
+        drawFieldLabel(MIXES_2ND_COLUMN, y, STR_FLMODE);
         md2->flightModes = editFlightModes(MIXES_2ND_COLUMN, y, event, md2->flightModes, attr);
         break;
 #endif
@@ -355,16 +356,16 @@ void displayHeaderChannelName(uint8_t ch)
   }
 }
 
-void displayMixInfos(coord_t y, MixData *md)
+void displayMixInfos(coord_t y, MixData * md)
 {
-  putsCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
+  drawCurveRef(MIX_LINE_CURVE_POS, y, md->curve, 0);
 
   if (md->swtch) {
-    putsSwitches(MIX_LINE_SWITCH_POS, y, md->swtch);
+    drawSwitch(MIX_LINE_SWITCH_POS, y, md->swtch);
   }
 }
 
-void displayMixLine(coord_t y, MixData *md)
+void displayMixLine(coord_t y, MixData * md)
 {
   if (md->name[0])
     lcdDrawSizedText(MIX_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
@@ -372,6 +373,13 @@ void displayMixLine(coord_t y, MixData *md)
     displayMixInfos(y, md);
   else
     displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
+  
+  char cs = ' ';
+  if (md->speedDown || md->speedUp)
+    cs = 'S';
+  if (md->delayUp || md->delayDown)
+    cs = (cs == 'S' ? '*' : 'D');
+  lcdDrawChar(MIX_LINE_DELAY_POS, y, cs);
 }
 
 void menuModelMixAll(uint8_t event)
@@ -527,7 +535,7 @@ void menuModelMixAll(uint8_t event)
   int cur = 0;
   int i = 0;
 
-  for (int ch=1; ch<=NUM_CHNOUT; ch++) {
+  for (int ch=1; ch<=MAX_OUTPUT_CHANNELS; ch++) {
     MixData * md;
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch) {
@@ -554,19 +562,12 @@ void menuModelMixAll(uint8_t event)
 
           if (mixCnt > 0) lcdDrawTextAtIndex(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
-          putsMixerSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
+          drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
 
           displayMixLine(y, md);
-
-          char cs = ' ';
-          if (md->speedDown || md->speedUp)
-            cs = 'S';
-          if (md->delayUp || md->delayDown)
-            cs = (cs =='S' ? '*' : 'D');
-          lcdDrawChar(MIX_LINE_DELAY_POS, y, cs);
-
+          
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
               /* draw a border around the raw on selection mode (copy/move) */

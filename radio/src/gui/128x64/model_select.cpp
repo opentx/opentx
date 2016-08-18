@@ -49,7 +49,7 @@ void onModelSelectMenu(const char *result)
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
     if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-      popupMenuFlags = 0;
+      POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
 #endif
@@ -92,7 +92,7 @@ void menuModelSelect(uint8_t event)
 
   int8_t oldSub = menuVerticalPosition;
 
-  check_submenu_simple(_event_, MAX_MODELS-1);
+  check_submenu_simple(_event_, MAX_MODELS-HEADER_LINE);
 
 #if defined(NAVIGATION_POT2)
   if (event==0 && p2valdiff<0) {
@@ -110,8 +110,7 @@ void menuModelSelect(uint8_t event)
 
   int8_t sub = menuVerticalPosition;
 
-  switch (event)
-  {
+  switch (event) {
       case EVT_ENTRY:
         menuVerticalPosition = sub = g_eeGeneral.currModel;
         if (sub >= LCD_LINES-1) menuVerticalOffset = sub-LCD_LINES+2;
@@ -253,7 +252,17 @@ void menuModelSelect(uint8_t event)
           s_copySrcRow = -1;
         }
         break;
+  
+#if defined(PCBX7D)
+      case EVT_KEY_LONG(KEY_PAGE):
+        chainMenu(menuTabModel[DIM(menuTabModel)-1]);
+        killEvents(event);
+        break;
 
+      case EVT_KEY_BREAK(KEY_PAGE):
+        chainMenu(menuModelSetup);
+        break;
+#else
 #if defined(ROTARY_ENCODER_NAVIGATION)
       case EVT_ROTARY_LEFT:
       case EVT_ROTARY_RIGHT:
@@ -273,6 +282,7 @@ void menuModelSelect(uint8_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
         }
         // no break
+#endif
 #endif
 
       case EVT_KEY_FIRST(KEY_UP):
@@ -302,13 +312,19 @@ void menuModelSelect(uint8_t event)
         break;
   }
 
-#if !defined(PCBSKY9X)
+#if defined(EEPROM_RLC) && defined(CPUARM)
+  lcdDrawText(9*FW-(LEN_FREE-4)*FW-4, 0, STR_FREE);
+  if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
+  lcdDrawNumber(lcdLastPos+3, 0, reusableBuffer.modelsel.eepromfree, LEFT);
+#elif defined(EEPROM_RLC)
   lcdDrawText(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
-  lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, 0);
+  lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, RIGHT);
 #endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
+  
+#if defined(PCBX7D)
+  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
+#elif defined(ROTARY_ENCODER_NAVIGATION)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_RE_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
 #else
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
@@ -320,7 +336,7 @@ void menuModelSelect(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    lcdDrawNumber(3*FW+2, y, k+1, LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+    lcdDrawNumber(3*FW+2, y, k+1, RIGHT+LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
     if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
       if (k == sub) {
@@ -347,10 +363,11 @@ void menuModelSelect(uint8_t event)
       char * name = reusableBuffer.modelsel.listnames[i];
       if (event) eeLoadModelName(k, name);
       putsModelName(4*FW, y, name, k, 0);
-      lcdDrawNumber(20*FW, y, eeModelSize(k), 0);
+      lcdDrawNumber(20*FW, y, eeModelSize(k), RIGHT);
 #endif
-      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub))
+      if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub)) {
         lcdDrawChar(1, y, '*');
+      }
     }
 
     if (s_copyMode && (vertpos_t)sub==i+menuVerticalOffset) {

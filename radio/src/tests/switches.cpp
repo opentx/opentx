@@ -20,7 +20,7 @@
 
 #include "gtests.h"
 
-#if !defined(VIRTUALINPUTS)
+#if !defined(VIRTUAL_INPUTS)
 TEST(getSwitch, undefCSW)
 {
   MODEL_RESET();
@@ -45,8 +45,7 @@ TEST(getSwitch, circularCSW)
 }
 #endif
 
-#if defined(VIRTUALINPUTS)
-
+#if defined(VIRTUAL_INPUTS)
 void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16_t _v3 = 0, uint8_t _delay = 0, uint8_t _duration = 0, int8_t _andsw = 0)
 {
   g_model.logicalSw[index].func = _func;
@@ -57,7 +56,9 @@ void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16
   g_model.logicalSw[index].duration = _duration;
   g_model.logicalSw[index].andsw = _andsw;
 }
+#endif
 
+#if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)
 {
   RADIO_RESET();
@@ -89,7 +90,7 @@ TEST(getSwitch, OldTypeStickyCSW)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 }
-#endif // #if defined(VIRTUALINPUTS)
+#endif
 
 TEST(getSwitch, nullSW)
 {
@@ -128,7 +129,7 @@ TEST(getSwitch, recursiveSW)
 }
 #endif // #if !defined(CPUARM)
 
-#if defined(VIRTUALINPUTS)
+#if defined(PCBTARANIS)
 TEST(getSwitch, inputWithTrim)
 {
   MODEL_RESET();
@@ -149,7 +150,7 @@ TEST(getSwitch, inputWithTrim)
 }
 #endif
 
-#if defined(VIRTUALINPUTS)
+#if defined(PCBTARANIS)
 TEST(evalLogicalSwitches, playFile)
 {
   SYSTEM_RESET();
@@ -178,7 +179,9 @@ TEST(evalLogicalSwitches, playFile)
 
 #undef MODELNAME
 }
+#endif
 
+#if defined(PCBTARANIS) && !defined(PCBX7D)
 TEST(getSwitch, edgeInstant)
 {
   MODEL_RESET();
@@ -186,7 +189,7 @@ TEST(getSwitch, edgeInstant)
   // LS1 setup: EDGE SFup  (0:instant)
   // LS2 setup: (EDGE SFup  (0:instant)) AND SAup
   setLogicalSwitch(0, LS_FUNC_EDGE, SWSRC_SF2, -129, -1);
-  setLogicalSwitch(1, LS_FUNC_EDGE, SWSRC_SF2, -129, -1, 0, 0, SWSRC_SA2 );
+  setLogicalSwitch(1, LS_FUNC_EDGE, SWSRC_SF2, -129, -1, 0, 0, SWSRC_SA2);
 
   simuSetSwitch(0, -1);   //SA down
   simuSetSwitch(5, 0);   //SF down
@@ -354,5 +357,4 @@ TEST(getSwitch, edgeRelease)
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
 
 }
-
-#endif  // #if defined(CPUARM)
+#endif // defined(PCBTARANIS)

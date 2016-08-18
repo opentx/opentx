@@ -648,7 +648,7 @@
 #define TR_PHASENAME           "Nom phase"
 #define TR_MIXNAME             TR("Nom mix.", "Nom du mixeur")
 #define TR_INPUTNAME           "Nom entrée"
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_EXPONAME          "Nom ligne"
 #else
   #define TR_EXPONAME          "Nom expo"
@@ -818,17 +818,17 @@
 #define TR_MENUTRAINER         "ECOLAGE"
 #define TR_MENUSPECIALFUNCS    "FONCTIONS GLOBALES"
 #define TR_MENUVERSION         "VERSION"
-#define TR_MENUDIAG            TR("INTERS", "TEST INTERRUPTEURS")
-#define TR_MENUANA             TR("ANAS", "ENTREES ANALOGIQUES")
+#define TR_MENU_RADIO_SWITCHES            TR("INTERS", "TEST INTERRUPTEURS")
+#define TR_MENU_RADIO_ANALOGS             TR("ANAS", "ENTREES ANALOGIQUES")
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "\005Trims => Subtrims"
 #define TR_MENUMODELSEL        "MODELES"
 #define TR_MENUSETUP           TR("CONF. MODELE", "CONFIGURATION")
-#define TR_MENUFLIGHTPHASE     "PHASE DE VOL"
-#define TR_MENUFLIGHTPHASES    "PHASES DE VOL"
+#define TR_MENUFLIGHTMODE     "PHASE DE VOL"
+#define TR_MENUFLIGHTMODES    "PHASES DE VOL"
 #define TR_MENUHELISETUP       TR("CONF.HELI", "CONFIGURATION HELICO")
 
-#if defined(VIRTUALINPUTS)
+#if defined(CPUARM)
   #define TR_MENUINPUTS        "ENTREES"
   #define TR_MENULIMITS        "SORTIES"
 #else

@@ -13,38 +13,38 @@ cd build
 
 # OpenTX on 9X stock with FrSky telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=FRSKY ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=FRSKY ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
 # OpenTX on 9X stock with Ardupilot telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=ARDUPILOT ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=ARDUPILOT ${SRCDIR}
 make -j2 firmware
 
 # OpenTX on 9X stock with JETI telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTELEMETRY=JETI ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=JETI ${SRCDIR}
 make -j2 firmware
 
 # OpenTX on Mega2560
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DHELI=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTEMPLATES=YES -DHELI=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
 # OpenTX on Mega2560 with Mavlink telemetry
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTELEMETRY=MAVLINK -DHELI=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTELEMETRY=MAVLINK -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
 # OpenTX on gruvin9x board
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X -DHELI=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests

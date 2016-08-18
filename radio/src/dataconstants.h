@@ -21,133 +21,125 @@
 #ifndef _DATACONSTANTS_H_
 #define _DATACONSTANTS_H_
 
+#include "board.h"
+
+#define NUM_STICKS                     4
+
 #if defined(EXPORT)
-  #define LUA_EXPORT(...)                     LEXP(__VA_ARGS__)
-  #define LUA_EXPORT_MULTIPLE(...)            LEXP_MULTIPLE(__VA_ARGS__)
-  #define LUA_EXPORT_EXTRA(...)               LEXP_EXTRA(__VA_ARGS__)
+  #define LUA_EXPORT(...)              LEXP(__VA_ARGS__)
+  #define LUA_EXPORT_MULTIPLE(...)     LEXP_MULTIPLE(__VA_ARGS__)
+  #define LUA_EXPORT_EXTRA(...)        LEXP_EXTRA(__VA_ARGS__)
 #else
   #define LUA_EXPORT(...)
   #define LUA_EXPORT_MULTIPLE(...)
   #define LUA_EXPORT_EXTRA(...)
 #endif
 
-#define NUM_STICKS             4
-
 #if defined(PCBHORUS)
-  #define MAX_MODELS           60
-  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES     9
-  #define MAX_MIXERS           64
-  #define MAX_EXPOS            64
-  #define NUM_LOGICAL_SWITCH   64 // number of custom switches
-  #define NUM_CFN              64 // number of functions assigned to switches
-  #define MAX_SCRIPTS          9
-  #define MAX_INPUTS           32
-  #define NUM_TRAINER          16
-  #define NUM_POTS             7
-  #define NUM_XPOTS            3
-  #define MAX_SENSORS          32
-  #define MAX_CUSTOM_SCREENS   5
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  9
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_CUSTOM_SCREENS           5
 #elif defined(PCBFLAMENCO)
-  #define MAX_MODELS           60
-  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES     9
-  #define MAX_MIXERS           64
-  #define MAX_EXPOS            64
-  #define NUM_LOGICAL_SWITCH   32 // number of custom switches
-  #define NUM_CFN              64 // number of functions assigned to switches
-  #define MAX_SCRIPTS          7
-  #define MAX_INPUTS           32
-  #define NUM_TRAINER          16
-  #define NUM_POTS             4
-  #define NUM_XPOTS            0
-  #define MAX_SENSORS          32
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         32
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  7
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define NUM_POTS                     4 // TODO board.h
+  #define NUM_SLIDERS                  0 // TODO board.h
+  #define NUM_XPOTS                    0 // TODO board.h
+  #define MAX_TELEMETRY_SENSORS        32
 #elif defined(PCBTARANIS)
-  #define MAX_MODELS           60
-  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES     9
-  #define MAX_MIXERS           64
-  #define MAX_EXPOS            64
-  #define NUM_LOGICAL_SWITCH   64 // number of logical switches
-  #define NUM_CFN              64 // number of functions assigned to switches
-  #define MAX_SCRIPTS          7
-  #define MAX_INPUTS           32
-  #define NUM_TRAINER          16
-  #if defined(PCBX9E)
-    #define NUM_POTS           8
-    #define NUM_XPOTS          4
-  #else
-    #define NUM_POTS           5
-    #define NUM_XPOTS          3
-  #endif
-  #define MAX_SENSORS          32
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  7
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        32
 #elif defined(PCBSKY9X)
-  #define MAX_MODELS           60
-  #define NUM_CHNOUT           32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES     9
-  #define MAX_MIXERS           64
-  #define MAX_EXPOS            32
-  #define NUM_LOGICAL_SWITCH   64 // number of custom switches
-  #define NUM_CFN              64 // number of functions assigned to switches
-  #define NUM_TRAINER          16
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
-  #define MAX_SENSORS          32
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    32
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        32
 #elif defined(CPUM2560) || defined(CPUM2561)
-  #define MAX_MODELS           30
-  #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES     6
-  #define MAX_MIXERS           32
-  #define MAX_EXPOS            16
-  #define NUM_LOGICAL_SWITCH   12 // number of custom switches
-  #define NUM_CFN              24 // number of functions assigned to switches
-  #define NUM_TRAINER          8
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
-  #define MAX_SENSORS          0
+  #define MAX_MODELS                   30
+  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
+  #define MAX_FLIGHT_MODES             6
+  #define MAX_MIXERS                   32
+  #define MAX_EXPOS                    16
+  #define MAX_LOGICAL_SWITCHES         12
+  #define MAX_SPECIAL_FUNCTIONS        24 // number of functions assigned to switches
+  #define MAX_TRAINER_CHANNELS         8
+  #define MAX_TELEMETRY_SENSORS        0
 #elif defined(CPUM128)
-  #define MAX_MODELS           30
-  #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES     5
-  #define MAX_MIXERS           32
-  #define MAX_EXPOS            14
-  #define NUM_LOGICAL_SWITCH   12 // number of custom switches
-  #define NUM_CFN              24 // number of functions assigned to switches
-  #define NUM_TRAINER          8
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
-  #define MAX_SENSORS          0
+  #define MAX_MODELS                   30
+  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
+  #define MAX_FLIGHT_MODES             5
+  #define MAX_MIXERS                   32
+  #define MAX_EXPOS                    14
+  #define MAX_LOGICAL_SWITCHES         12
+  #define MAX_SPECIAL_FUNCTIONS        24 // number of functions assigned to switches
+  #define MAX_TRAINER_CHANNELS         8
+  #define MAX_TELEMETRY_SENSORS        0
 #else
-  #define MAX_MODELS           16
-  #define NUM_CHNOUT           16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES     5
-  #define MAX_MIXERS           32
-  #define MAX_EXPOS            14
-  #define NUM_LOGICAL_SWITCH   12 // number of custom switches
-  #define NUM_CFN              16 // number of functions assigned to switches
-  #define NUM_TRAINER          8
-  #define NUM_POTS             3
-  #define NUM_XPOTS            0
-  #define MAX_SENSORS          0
+  #define MAX_MODELS                   16
+  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
+  #define MAX_FLIGHT_MODES             5
+  #define MAX_MIXERS                   32
+  #define MAX_EXPOS                    14
+  #define MAX_LOGICAL_SWITCHES         12
+  #define MAX_SPECIAL_FUNCTIONS        16 // number of functions assigned to switches
+  #define MAX_TRAINER_CHANNELS         8
+  #define MAX_TELEMETRY_SENSORS        0
 #endif
 
 #if defined(CPUARM)
-  #define MAX_TIMERS           3
+  #define MAX_TIMERS                   3
 #else
-  #define MAX_TIMERS           2
+  #define MAX_TIMERS                   2
 #endif
 
-#define NUM_CYC                3
-#define NUM_CAL_PPM            4
+#define NUM_CYC                        3
+#define NUM_CAL_PPM                    4
 
 enum CurveType {
   CURVE_TYPE_STANDARD,
   CURVE_TYPE_CUSTOM,
   CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
 };
+  
+#if defined(CPUARM)
+#define MIN_POINTS_PER_CURVE           3
+#else
+#define MIN_POINTS_PER_CURVE           3
+#endif
 
-#define MIN_POINTS             3
-#define MAX_POINTS             17
+#define MAX_POINTS_PER_CURVE           17
 
 #if defined(PCBHORUS)
   #define LEN_MODEL_NAME               15
@@ -158,9 +150,9 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 6
+  #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   32
-  #define NUM_POINTS                   512
+  #define MAX_CURVE_POINTS             512
 #elif defined(PCBFLAMENCO)
   #define LEN_MODEL_NAME               12
   #define LEN_TIMER_NAME               8
@@ -169,9 +161,20 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 8
+  #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
-  #define NUM_POINTS                   512
+  #define MAX_CURVE_POINTS             512
+#elif defined(PCBSKY9X) || defined(PCBX7D)
+  #define LEN_MODEL_NAME               10
+  #define LEN_TIMER_NAME               3
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               3
+  #define LEN_CURVE_NAME               3
+  #define LEN_FUNCTION_NAME            6
+  #define MAX_CURVES                   16
+  #define MAX_CURVE_POINTS             512
 #elif defined(PCBTARANIS)
   #define LEN_MODEL_NAME               12
   #define LEN_TIMER_NAME               8
@@ -181,22 +184,14 @@ enum CurveType {
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
-  #define LEN_CFN_NAME                 8
+  #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
-  #define NUM_POINTS                   512
-#elif defined(CPUARM)
-  #define LEN_MODEL_NAME               10
-  #define LEN_TIMER_NAME               3
-  #define LEN_FLIGHT_MODE_NAME         6
-  #define LEN_EXPOMIX_NAME             6
-  #define LEN_CFN_NAME                 6
-  #define MAX_CURVES                   16
-  #define NUM_POINTS                   512
+  #define MAX_CURVE_POINTS             512
 #else
   #define LEN_MODEL_NAME               10
   #define LEN_FLIGHT_MODE_NAME         6
   #define MAX_CURVES                   8
-  #define NUM_POINTS                   (112-MAX_CURVES)
+  #define MAX_CURVE_POINTS             (112-MAX_CURVES)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
@@ -206,13 +201,7 @@ enum CurveType {
 #endif
 
 #if defined(PCBFLAMENCO)
-  #define NUM_SWITCHES                 5
-#elif defined(PCBX9E)
-  #define NUM_SWITCHES                 18 // yes, it's a lot!
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-  #define NUM_SWITCHES                 8
-#else
-  #define NUM_SWITCHES                 7
+  #define NUM_SWITCHES                 5 // TODO in board.h
 #endif
 
 #define XPOTS_MULTIPOS_COUNT           6
@@ -250,7 +239,7 @@ enum MainViews {
   VIEW_TELEM4,
   VIEW_COUNT
 };
-#elif defined(PCBTARANIS)
+#elif LCD_W >= 212
 enum MainViews {
   VIEW_TIMERS,
   VIEW_INPUTS,
@@ -325,10 +314,7 @@ enum UartModes {
   #define LEN_ANA_NAME                 3
   #define LEN_MODEL_FILENAME           16
   #define LEN_BLUETOOTH_NAME           10
-#elif defined(PCBFLAMENCO)
-  #define LEN_SWITCH_NAME              3
-  #define LEN_ANA_NAME                 3
-#elif defined(PCBTARANIS)
+#elif defined(CPUARM)
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
@@ -487,7 +473,7 @@ enum TelemetryUnit {
 };
 #endif
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
   #define NUM_LINE_ITEMS 3
 #else
   #define NUM_LINE_ITEMS 2
@@ -699,7 +685,7 @@ enum SwitchSources {
   SWSRC_SWA,
   SWSRC_SWB,
   SWSRC_SWC,
-  SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
+  SWSRC_LAST_LOGICAL_SWITCH = SWSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
 
   SWSRC_ON,
   SWSRC_ONE,
@@ -710,7 +696,7 @@ enum SwitchSources {
 
   SWSRC_TELEMETRY_STREAMING,
   SWSRC_FIRST_SENSOR,
-  SWSRC_LAST_SENSOR = SWSRC_FIRST_SENSOR+MAX_SENSORS-1,
+  SWSRC_LAST_SENSOR = SWSRC_FIRST_SENSOR+MAX_TELEMETRY_SENSORS-1,
 #endif
 
   SWSRC_COUNT,
@@ -739,10 +725,12 @@ enum SwitchSources {
 enum MixSources {
   MIXSRC_NONE,
 
-#if defined(VIRTUALINPUTS)
-  MIXSRC_FIRST_INPUT,             LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
+#if defined(VIRTUAL_INPUTS)
+  MIXSRC_FIRST_INPUT,                   LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
-
+#endif
+  
+#if defined(LUA_INPUTS)
   MIXSRC_FIRST_LUA,
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
@@ -877,18 +865,18 @@ enum MixSources {
   MIXSRC_LAST_SWITCH = MIXSRC_TRN,
 #endif
   MIXSRC_FIRST_LOGICAL_SWITCH,
-  MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", NUM_LOGICAL_SWITCH)
+  MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", MAX_LOGICAL_SWITCHES)
   MIXSRC_SW9 = MIXSRC_SW1 + 8,
   MIXSRC_SWA,
   MIXSRC_SWB,
   MIXSRC_SWC,
-  MIXSRC_LAST_LOGICAL_SWITCH = MIXSRC_FIRST_LOGICAL_SWITCH+NUM_LOGICAL_SWITCH-1,
+  MIXSRC_LAST_LOGICAL_SWITCH = MIXSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
 
-  MIXSRC_FIRST_TRAINER,                     LUA_EXPORT_MULTIPLE("trn", "Trainer input %d", NUM_TRAINER)
-  MIXSRC_LAST_TRAINER = MIXSRC_FIRST_TRAINER+NUM_TRAINER-1,
+  MIXSRC_FIRST_TRAINER,                     LUA_EXPORT_MULTIPLE("trn", "Trainer input %d", MAX_TRAINER_CHANNELS)
+  MIXSRC_LAST_TRAINER = MIXSRC_FIRST_TRAINER+MAX_TRAINER_CHANNELS-1,
 
   MIXSRC_FIRST_CH,
-  MIXSRC_CH1 = MIXSRC_FIRST_CH,             LUA_EXPORT_MULTIPLE("ch", "Channel CH%d", NUM_CHNOUT)
+  MIXSRC_CH1 = MIXSRC_FIRST_CH,             LUA_EXPORT_MULTIPLE("ch", "Channel CH%d", MAX_OUTPUT_CHANNELS)
   MIXSRC_CH2,
   MIXSRC_CH3,
   MIXSRC_CH4,
@@ -904,7 +892,7 @@ enum MixSources {
   MIXSRC_CH14,
   MIXSRC_CH15,
   MIXSRC_CH16,
-  MIXSRC_LAST_CH = MIXSRC_CH1+NUM_CHNOUT-1,
+  MIXSRC_LAST_CH = MIXSRC_CH1+MAX_OUTPUT_CHANNELS-1,
 
   MIXSRC_FIRST_GVAR,
   MIXSRC_GVAR1 = MIXSRC_FIRST_GVAR,         LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
@@ -927,7 +915,7 @@ enum MixSources {
 
   MIXSRC_FIRST_TELEM,
 #if defined(CPUARM)
-  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_SENSORS-1
+  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 #else
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1
 #endif
@@ -1029,7 +1017,7 @@ enum ResetFunctionParam {
 #endif
 #if defined(CPUARM)
   FUNC_RESET_PARAM_FIRST_TELEM,
-  FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + MAX_SENSORS,
+  FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + MAX_TELEMETRY_SENSORS,
 #endif
   FUNC_RESET_PARAMS_COUNT,
   FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1,

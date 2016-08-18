@@ -32,7 +32,7 @@ void varioWakeup()
     int verticalSpeed = 0;
     if (g_model.frsky.varioSource) {
       uint8_t item = g_model.frsky.varioSource-1;
-      if (item < MAX_SENSORS) {
+      if (item < MAX_TELEMETRY_SENSORS) {
         verticalSpeed = telemetryItems[item].value * g_model.telemetrySensors[item].getPrecMultiplier();
       }
     }

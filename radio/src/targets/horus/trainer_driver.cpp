@@ -24,10 +24,10 @@ void trainerSendNextFrame();
 
 void init_trainer_ppm()
 {
-  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_GPIO_PinSource_OUT, TRAINER_GPIO_AF);
+  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_OUT_GPIO_PinSource, TRAINER_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = TRAINER_GPIO_PIN_OUT;
+  GPIO_InitStructure.GPIO_Pin = TRAINER_OUT_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -69,13 +69,13 @@ void init_trainer_capture()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
 
-  GPIO_InitStructure.GPIO_Pin = TRAINER_GPIO_PIN_IN;
+  GPIO_InitStructure.GPIO_Pin = TRAINER_IN_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(TRAINER_GPIO, &GPIO_InitStructure);
-  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_GPIO_PinSource_IN, TRAINER_GPIO_AF);
+  GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_IN_GPIO_PinSource, TRAINER_GPIO_AF);
 
   TRAINER_TIMER->ARR = 0xFFFF;
   TRAINER_TIMER->PSC = TRAINER_TIMER_FREQ / 2000000 - 1; // 0.5uS

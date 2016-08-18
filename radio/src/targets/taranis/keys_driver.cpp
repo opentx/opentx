@@ -33,14 +33,14 @@ uint32_t readKeys()
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
 
-#if !defined(PCBX9E) || defined(SIMU)
+#if (!defined(PCBX9E) && !defined(PCBX7D)) || defined(SIMU)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
     result |= 1 << KEY_MINUS;
 #endif
 
-  // TRACE("readKeys(): result=0x%02x", result);
+  // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
 
   return result;
 }
@@ -81,42 +81,43 @@ uint8_t keyDown()
   return readKeys();
 }
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
 uint32_t Rotary_position;
 rotenc_t rotencValue;
 void checkRotaryEncoder()
 {
-  register uint32_t dummy ;
+  register uint32_t dummy = ENC_GPIO->IDR; // Read Rotary encoder
 
-   dummy = ENC_GPIO->IDR;   // Read Rotary encoder
-   dummy >>= 12;            // quick & dirty!
-   dummy &= 0x03;
-   if ( dummy != ( Rotary_position & 0x03 ) )
-   {
-      if ( ( Rotary_position & 0x01 ) ^ ( ( dummy & 0x02) >> 1 ) )
-      {
-         --rotencValue;
-      }
-      else
-      {
-         ++rotencValue;
-      }
-      Rotary_position &= ~0x03 ;
-      Rotary_position |= dummy ;
-   }
+  // TODO quick & dirty!
+#if defined(PCBX9E)
+  dummy >>= 12;
+  dummy &= 0x03;
+#else
+  dummy = ((dummy >> 11) & 0x01) + ((dummy >> 8) & 0x02);
+#endif
+  if (dummy != (Rotary_position & 0x03)) {
+    if ((Rotary_position & 0x01) ^ ((dummy & 0x02) >> 1)) {
+      --rotencValue;
+    }
+    else {
+      ++rotencValue;
+    }
+    Rotary_position &= ~0x03 ;
+    Rotary_position |= dummy ;
+  }
 }
 #endif
 
 /* TODO common to ARM */
 void readKeysAndTrims()
 {
-  uint8_t enuk = 0;
+  uint8_t index = 0;
   uint32_t in = readKeys();
   for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
-    keys[enuk++].input(in & i);
+    keys[index++].input(in & i);
   }
 
-#if defined(PCBX9E) && !defined(SIMU)
+#if (defined(PCBX9E) || defined(PCBX7D)) && !defined(SIMU)
   #define X9E_RE_TIMEOUT 5
   static rotenc_t rePreviousValue;
   rotenc_t reNewValue = (rotencValue / 2);
@@ -148,12 +149,11 @@ void readKeysAndTrims()
     putEvent(EVT_KEY_BREAK(lastkey));
     lastkey = 0;
   }
-    
 #endif
 
   in = readTrims();
   for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
-    keys[enuk++].input(in & i);
+    keys[index++].input(in & i);
   }
 }
 
@@ -186,7 +186,7 @@ void readKeysAndTrims()
   #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_3POS(i)) { \
+      if (IS_CONFIG_3POS(i)) { \
         xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break; \
@@ -195,28 +195,36 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 2: \
       xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
-      if (IS_3POS(i)) { \
+      if (IS_CONFIG_3POS(i)) { \
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
 #endif
 
 #if !defined(BOOT)
-bool switchState(EnumKeys enuk)
+uint8_t keyState(uint8_t index)
+{
+  return keys[index].state();
+}
+
+uint32_t switchState(uint8_t index)
 {
   register uint32_t xxx = 0;
-
-  if (enuk < (int) DIM(keys)) return keys[enuk].state() ? 1 : 0;
-
-  switch ((uint8_t) enuk) {
+  
+  switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
+#if defined(PCBX7D)
+    ADD_2POS_CASE(F);
+    ADD_2POS_CASE(H);
+#else
     ADD_3POS_CASE(E, 4);
     ADD_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
+#endif
 #if defined(PCBX9E)
     ADD_3POS_CASE(I, 8);
     ADD_3POS_CASE(J, 9);
@@ -234,7 +242,7 @@ bool switchState(EnumKeys enuk)
       break;
   }
 
-  // TRACE("switch %d => %d", enuk, xxx);
+  // TRACE("switch %d => %d", index, xxx);
   return xxx;
 }
 #endif

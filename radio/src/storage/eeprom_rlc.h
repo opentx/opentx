@@ -263,6 +263,8 @@ inline bool isEepromStart(const void * buffer)
 
   return false;
 }
+
+void eepromBackup();
 #endif
 
 #endif // _EEPROM_RLC_H_

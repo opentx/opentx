@@ -21,16 +21,16 @@
 #ifndef _GUI_COMMON_H_
 #define _GUI_COMMON_H_
 
+#include "lcd.h"
+
 #if defined(CPUARM)
 typedef bool (*IsValueAvailable)(int);
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 
-#if defined(VIRTUALINPUTS)
+bool isTrimModeAvailable(int mode);
 bool isInputAvailable(int input);
-#endif
-
 bool isInputSourceAvailable(int source);
 bool isThrottleSourceAvailable(int source);
 bool isLogicalSwitchFunctionAvailable(int function);
@@ -72,5 +72,15 @@ bool isSwitchWarningStateAvailable(int state);
 #else
 #define IS_INSTANT_TRIM_ALLOWED()      true
 #endif
+
+#if defined(FLIGHT_MODES)
+void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
+#endif
+
+#if defined(CPUARM)
+void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att=0);
+#endif
+
+void drawCurve(coord_t offset=0);
 
 #endif // _GUI_COMMON_H_

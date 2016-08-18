@@ -65,7 +65,7 @@ class Open9xSim: public FXMainWindow
 
   public:
     FXSlider      *sliders[NUM_STICKS];
-    FXKnob        *knobs[NUM_POTS];
+    FXKnob        *knobs[NUM_POTS+NUM_SLIDERS];
 };
 
 // Message Map
@@ -114,7 +114,7 @@ Open9xSim::Open9xSim(FXApp* a):
     sliders[i]->setValue(0);
   }
 
-  for(int i=0; i<NUM_POTS; i++){
+  for(int i=0; i<NUM_POTS+NUM_SLIDERS; i++){
     knobs[i]= new FXKnob(hf11,NULL,0,KNOB_TICKS|LAYOUT_LEFT);
     knobs[i]->setRange(-1024, 1024);
     knobs[i]->setValue(0);
@@ -139,7 +139,7 @@ Open9xSim::~Open9xSim()
   delete sliders[2];
   delete sliders[3];
 
-  for(int i=0; i<NUM_POTS; i++){
+  for(int i=0; i<NUM_POTS+NUM_SLIDERS; i++){
     delete knobs[i];
   }
 
@@ -423,7 +423,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
   return 0;
 }
 
-#if defined(PCBTARANIS)
+#if LCD_W >= 212
   #define BL_COLOR FXRGB(47, 123, 227)
 #else
   #define BL_COLOR FXRGB(150, 200, 152)
@@ -472,7 +472,7 @@ void Open9xSim::refreshDisplay()
           FXColor color = FXRGB(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
           setPixel(x, y, color);
         }
-#elif defined(PCBTARANIS)
+#elif LCD_W >= 212
         display_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
         if (z) {
@@ -560,7 +560,7 @@ uint16_t anaIn(uint8_t chan)
 {
   if (chan<NUM_STICKS)
     return th9xSim->sliders[chan]->getValue();
-  else if (chan<NUM_STICKS+NUM_POTS)
+  else if (chan<NUM_STICKS+NUM_POTS+NUM_SLIDERS)
     return th9xSim->knobs[chan-NUM_STICKS]->getValue();
 #if defined(PCBHORUS)
   else if (chan == TX_VOLTAGE)

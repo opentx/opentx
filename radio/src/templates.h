@@ -42,7 +42,6 @@
 
 #include <inttypes.h>
 
-
 #define STK_RUD  1
 #define STK_ELE  2
 #define STK_THR  3

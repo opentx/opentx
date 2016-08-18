@@ -22,10 +22,10 @@
 #include "gtests.h"
 
 int32_t lastAct = 0;
-uint16_t anaInValues[NUM_STICKS+NUM_POTS] = { 0 };
+uint16_t anaInValues[NUM_STICKS+NUM_POTS+NUM_SLIDERS] = { 0 };
 uint16_t anaIn(uint8_t chan)
 {
-  if (chan < NUM_STICKS+NUM_POTS)
+  if (chan < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
     return anaInValues[chan];
   else
     return 0;

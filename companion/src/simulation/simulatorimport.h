@@ -16,8 +16,8 @@
 
 #include <stdint.h>
 
-#if !defined(NUM_LOGICAL_SWITCH) && defined(NUM_CSW)
-#define NUM_LOGICAL_SWITCH NUM_CSW
+#if !defined(MAX_LOGICAL_SWITCHES) && defined(NUM_CSW)
+#define MAX_LOGICAL_SWITCHES NUM_CSW
 #endif
 
 #ifdef INIT_IMPORT
@@ -31,7 +31,7 @@ telemetryStreaming = 20;
 #undef SETVALUES_IMPORT
 for (int i=0; i<NUM_STICKS; i++)
   g_anas[i] = inputs.sticks[i];
-for (int i=0; i<NUM_POTS; i++)
+for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++)
   g_anas[NUM_STICKS+i] = inputs.pots[i];
 for (int i=0; i<C9X_NUM_SWITCHES; i++)
   simuSetSwitch(i, inputs.switches[i]);
@@ -60,7 +60,7 @@ if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
 memset(outputs.chans, 0, sizeof(outputs.chans));
 for (unsigned int i=0; i<DIM(g_chans512); i++)
   outputs.chans[i] = g_chans512[i];
-for (int i=0; i<NUM_LOGICAL_SWITCH; i++)
+for (int i=0; i<MAX_LOGICAL_SWITCHES; i++)
 #if defined(BOLD_FONT)
   outputs.vsw[i] = getSwitch(SWSRC_SW1+i);
 #else

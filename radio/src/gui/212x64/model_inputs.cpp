@@ -23,7 +23,7 @@
 #define EXPO_ONE_2ND_COLUMN (LCD_W-8*FW-90)
 #define EXPO_ONE_FM_WIDTH   (9*FW)
 
-int16_t expoFn(int16_t x)
+int expoFn(int x)
 {
   ExpoData * ed = expoAddress(s_currIdx);
   int16_t anas[NUM_INPUTS] = {0};
@@ -33,20 +33,20 @@ int16_t expoFn(int16_t x)
 
 void drawFunction(FnFuncP fn, uint8_t offset)
 {
-  lcdDrawVerticalLine(X0-offset, 0/*TODO Y0-WCHART*/, WCHART*2, 0xee);
-  lcdDrawHorizontalLine(X0-WCHART-offset, Y0, WCHART*2, 0xee);
+  lcdDrawVerticalLine(CURVE_CENTER_X-offset, CURVE_CENTER_Y-CURVE_SIDE_WIDTH, CURVE_SIDE_WIDTH*2, 0xee);
+  lcdDrawHorizontalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee);
 
   coord_t prev_yv = (coord_t)-1;
 
-  for (int xv=-WCHART; xv<=WCHART; xv++) {
-    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/WCHART))) / 2 * (LCD_H-1) / RESX);
+  for (int xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv++) {
+    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/CURVE_SIDE_WIDTH))) / 2 * (LCD_H-1) / RESX);
     if (prev_yv != (coord_t)-1) {
       if (abs((int8_t)yv-prev_yv) <= 1) {
-        lcdDrawPoint(X0+xv-offset-1, prev_yv, FORCE);
+        lcdDrawPoint(CURVE_CENTER_X+xv-offset-1, prev_yv, FORCE);
       }
       else {
         uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcdDrawSolidVerticalLine(X0+xv-offset-1, yv+tmp, prev_yv-yv);
+        lcdDrawSolidVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv);
       }
     }
     prev_yv = yv;
@@ -183,7 +183,7 @@ void menuModelExpoOne(uint8_t event)
   }
 
   ExpoData * ed = expoAddress(s_currIdx);
-  putsMixerSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
+  drawSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
   SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
@@ -214,7 +214,7 @@ void menuModelExpoOne(uint8_t event)
 
       case EXPO_FIELD_SOURCE:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
-        putsMixerSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
+        drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
         if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
         break;
 
@@ -243,6 +243,7 @@ void menuModelExpoOne(uint8_t event)
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
+        drawFieldLabel(EXPO_ONE_2ND_COLUMN, y, STR_FLMODE);
         ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN, y, event, ed->flightModes, attr);
         break;
 #endif
@@ -281,7 +282,7 @@ void menuModelExpoOne(uint8_t event)
   y512 = limit(-1024, y512, 1024);
   lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
 
-  x512 = X0+x512/(RESX/WCHART);
+  x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
 
   lcdDrawSolidVerticalLine(x512, y512-3, 3*2+1);
@@ -327,15 +328,15 @@ void onExposMenu(const char * result)
   }
 }
 
-void displayExpoInfos(coord_t y, ExpoData *ed)
+void displayExpoInfos(coord_t y, ExpoData * ed)
 {
-  putsCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
-  putsSwitches(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
+  drawCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
+  drawSwitch(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
 }
 
-void displayExpoLine(coord_t y, ExpoData *ed)
+void displayExpoLine(coord_t y, ExpoData * ed)
 {
-  putsMixerSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
+  drawSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
 
   if (ed->carryTrim != TRIM_ON) {
     lcdDrawChar(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
@@ -507,7 +508,7 @@ void menuModelExposAll(uint8_t event)
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (i<MAX_EXPOS && (ed=expoAddress(i))->chn+1 == ch && EXPO_VALID(ed)) {
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-        putsMixerSource(0, y, ch, 0);
+        drawSource(0, y, ch, 0);
       }
       uint8_t mixCnt = 0;
       do {
@@ -561,7 +562,7 @@ void menuModelExposAll(uint8_t event)
         }
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-        putsMixerSource(0, y, ch, attr);
+        drawSource(0, y, ch, attr);
         if (s_copyMode == MOVE_MODE && s_copySrcCh == ch) {
           lcdDrawRect(EXPO_LINE_SELECT_POS, y-1, LCD_W-EXPO_LINE_SELECT_POS, 9, DOTTED);
         }

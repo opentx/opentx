@@ -59,7 +59,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
     }
     if (!sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), NULL)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-      popupMenuFlags = 0;
+      POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
   else {
@@ -72,7 +72,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 
 void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
-  int8_t sub = menuVerticalPosition - 1;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
 
 #if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -80,18 +80,18 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
   uint8_t eeFlags = EE_MODEL;
 #endif
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    CustomFunctionData *cfn = &functions[k];
+    CustomFunctionData * cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
-          putsSwitches(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
 #if defined(CPUARM)
           if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
@@ -122,7 +122,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 
         case 2:
         {
-          int8_t maxParam = NUM_CHNOUT-1;
+          int8_t maxParam = MAX_OUTPUT_CHANNELS-1;
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           if (func == FUNC_OVERRIDE_CHANNEL) {
             putsChn(lcdNextPos, y, CFN_CH_INDEX(cfn)+1, attr);
@@ -132,9 +132,9 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
           if (func == FUNC_TRAINER) {
             maxParam = 4;
 #if defined(CPUARM)
-            putsMixerSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            drawSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
 #else
-            putsMixerSource(lcdNextPos, y, MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            drawSource(lcdNextPos, y, MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
 #endif
           }
 #if defined(GVARS)
@@ -197,7 +197,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 #if defined(CPUARM)
           else if (func == FUNC_SET_TIMER) {
             val_max = 539*60+59;
-            putsTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
+            drawTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
           }
 #endif
 #if defined(AUDIO)
@@ -234,21 +234,21 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
               }
               else {
                 POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-                popupMenuFlags = 0;
+                POPUP_MENU_UNSET_BSS_FLAG();
               }
             }
             break;
           }
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_LAST_TELEM;
-            putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             INCDEC_ENABLE_CHECK(isSourceAvailable);
           }
 #endif
 #if defined(CPUARM)
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
-            putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
             INCDEC_ENABLE_CHECK(isSourceAvailable);
           }
@@ -278,7 +278,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
           }
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_FIRST_TELEM + TELEM_DISPLAY_MAX - 1;
-            putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
           }
 #endif
@@ -303,7 +303,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
-                putsMixerSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+                drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
                 INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
                 INCDEC_ENABLE_CHECK(isSourceAvailable);
                 break;
@@ -377,6 +377,6 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
 
 void menuModelSpecialFunctions(uint8_t event)
 {
-  MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, NUM_CFN+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
+  MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, MAX_SPECIAL_FUNCTIONS+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
   return menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 }

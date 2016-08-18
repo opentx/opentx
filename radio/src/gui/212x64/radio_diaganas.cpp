@@ -22,11 +22,11 @@
 
 void menuRadioDiagAnalogs(uint8_t event)
 {
-  SIMPLE_MENU(STR_MENUANA, menuTabGeneral, MENU_RADIO_DIAG_ANALOGS, 0);
+  SIMPLE_MENU(STR_MENU_RADIO_ANALOGS, menuTabGeneral, MENU_RADIO_ANALOGS_TEST, 0);
 
   STICK_SCROLL_DISABLE();
 
-  for (int i=0; i<NUM_STICKS+NUM_POTS; i++) {
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = i&1 ? LCD_W/2 + FW : 0;
     lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2);

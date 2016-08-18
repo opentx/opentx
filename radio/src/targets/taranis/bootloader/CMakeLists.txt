@@ -28,8 +28,8 @@ endif()
 
 set(BOOTLOADER_SRC
   ${BOOTLOADER_SRC}
-  ../../../gui/212x64/lcd.cpp
-  ../../../gui/212x64/fonts.cpp
+  ../../../gui/${GUI_DIR}/lcd.cpp
+  ../../../gui/${GUI_DIR}/fonts.cpp
   ../../../keys.cpp
   ../../../strhelpers.cpp
   ../../../${STM32USB_DIR}/STM32_USB_OTG_Driver/src/usb_core.c
@@ -52,11 +52,11 @@ set(BOOTLOADER_SRC
   ../diskio.cpp
   ../../common/arm/stm32/usbd_usr.cpp
   ../../common/arm/stm32/usbd_storage_msd.cpp
-  ../delays.c
+  ../../common/arm/stm32/delays.cpp
   ../../common/arm/stm32/usbd_desc.c
   ../../common/arm/stm32/usb_bsp.c
   ../../common/arm/stm32/usb_driver.c
-  ../pwr_driver.c
+  ../pwr_driver.cpp
   init.c
   boot.cpp
   )
@@ -67,7 +67,7 @@ add_definitions(-DBOOT -DUSB_MASS_STORAGE)
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/taranis/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 
 add_executable(bootloader ${BOOTLOADER_SRC})
-add_dependencies(bootloader taranis_fonts firmware_translations)
+add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)
 
 add_custom_command(
   TARGET bootloader POST_BUILD

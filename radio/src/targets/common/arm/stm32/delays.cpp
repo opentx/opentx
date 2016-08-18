@@ -20,7 +20,7 @@
 
 #include <OsConfig.h>
 #include "board.h"
-#if !defined(PCBX9E)
+#if defined(STM32F2)
   #include "dwt.h"    // the old ST library that we use does not define DWT register for STM32F2xx
 #endif
 

@@ -40,8 +40,8 @@
 
 #include "opentx.h"
 
-#if defined(VIRTUALINPUTS)
-  #pragma message("Templates with VIRTUALINPUTS enabled are not implemented!")
+#if defined(CPUARM)
+  #pragma message("Templates are not implemented on this board")
 #endif
 
 MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
@@ -245,7 +245,7 @@ void applyTemplate(uint8_t idx)
 
       // Servo Test
       case TMPL_SERVO_TEST:
-        md=setDest(NUM_CHNOUT-1, MIXSRC_SW1, true); md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
+        md=setDest(MAX_OUTPUT_CHANNELS-1, MIXSRC_SW1, true); md->weight=110; md->mltpx=MLTPX_ADD; md->delayUp = 6; md->delayDown = 6; md->speedUp = 8; md->speedDown = 8;
         setLogicalSwitch(1, LS_FUNC_VNEG, MIXSRC_LAST_CH, 0);
         break;
 
