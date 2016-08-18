@@ -93,6 +93,9 @@ extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
 extern DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6;
 extern DMA_TypeDef dma2;
+extern SysTick_Type systick;
+#undef SysTick
+#define SysTick (&systick)
 #undef GPIOA
 #undef GPIOB
 #undef GPIOC
