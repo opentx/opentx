@@ -331,20 +331,21 @@
 #define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
 // 5ms Interrupt
-#define INTERRUPT_5MS_APB1Periph        RCC_APB1Periph_TIM14
+#define INTERRUPT_5MS_RCC_APB1Periph    RCC_APB1Periph_TIM14
 #define INTERRUPT_5MS_TIMER             TIM14
 #define INTERRUPT_5MS_IRQn              TIM8_TRG_COM_TIM14_IRQn
 #define INTERRUPT_5MS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
 
 // 2MHz Timer
-#define TIMER_2MHz_APB1Periph           RCC_APB1Periph_TIM7
+#define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
 
 // Bluetooth
+#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
+#define BT_RCC_APB1Periph               RCC_APB1Periph_UART6
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6
 #define BT_USART_IRQn                   USART6_IRQn
-#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
 #define BT_GPIO_TXRX                    GPIOG
 #define BT_GPIO_PIN_TX                  GPIO_Pin_14 // PG.14
 #define BT_GPIO_PIN_RX                  GPIO_Pin_9  // PG.09
@@ -356,5 +357,19 @@
 #define BT_GPIO_PIN_BCTS                GPIO_Pin_11 // PG.11
 #define BT_GPIO_PinSource_TX            GPIO_PinSource14
 #define BT_GPIO_PinSource_RX            GPIO_PinSource9
+
+// GPS
+#define GPS_RCC_AHB1Periph              RCC_AHB1Periph_GPIOA
+#define GPS_RCC_APB1Periph              RCC_APB1Periph_UART4
+#define GPS_USART                       UART4
+#define GPS_GPIO_AF                     GPIO_AF_UART4
+#define GPS_USART_IRQn                  UART4_IRQn
+#define GPS_USART_IRQHandler            UART4_IRQHandler
+#define GPS_UART_GPIO                   GPIOA
+#define GPS_TX_GPIO_PIN                 GPIO_Pin_0 // PA.00
+#define GPS_RX_GPIO_PIN                 GPIO_Pin_1 // PA.01
+#define GPS_TX_GPIO_PinSource           GPIO_PinSource0
+#define GPS_RX_GPIO_PinSource           GPIO_PinSource1
+#define GPS_USART_BAUDRATE              9600
 
 #endif // _HAL_H_

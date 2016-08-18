@@ -389,6 +389,9 @@ void hapticOff(void);
 #define HAPTIC_OFF()                   hapticOff()
 void hapticOn(uint32_t pwmPercent);
 
+// GPS driver
+void gpsInit(void);
+
 // Second serial port driver
 #define DEBUG_BAUDRATE                 115200
 extern uint8_t serial2Mode;
@@ -413,5 +416,6 @@ void checkTrainerSettings(void);
 extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 #endif
+
 
 #endif // _BOARD_HORUS_H_

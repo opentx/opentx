@@ -52,6 +52,7 @@ set(TARGET_SRC
   board.cpp
   led_driver.cpp
   extmodule_driver.cpp
+  gps_driver.cpp
   ../common/arm/stm32/rtc_driver.cpp
   )
 set(FIRMWARE_TARGET_SRC
