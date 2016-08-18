@@ -263,10 +263,11 @@ add_dependencies(${SIMULATOR_NAME} gen_qrc)
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS})
 
 ############# Packaging ####################
-
+message(STATUS ${CMAKE_BINARY_DIR} ${CMAKE_INSTALL_PREFIX}/bin)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  install(DIRECTORY ${CMAKE_BINARY_DIR} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin/ FILES_MATCHING PATTERN "*.so" PATTERN REGEX "_CPack_Packages" EXCLUDE)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop DESTINATION share/applications RENAME companion${C9X_NAME_SUFFIX}.desktop)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop DESTINATION share/applications RENAME simulator${C9X_NAME_SUFFIX}.desktop)
   if(${CMAKE_INSTALL_PREFIX} MATCHES "/usr/local")
