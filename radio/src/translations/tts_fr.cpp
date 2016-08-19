@@ -79,7 +79,7 @@ char const * frUnitsFilenames[] = {
   "g",
   "deg",
   "rad",
-  "m",
+  "ml",
   "onces",
   "heure",
   "minute",

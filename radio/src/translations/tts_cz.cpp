@@ -42,6 +42,10 @@ enum CzechPrompts {
 
 #if defined(VOICE)
 
+/* The list bellow MUST be kept in sync with /radio/util/tts_en.py */
+char const * czUnitsFilenames[] = { ""
+};
+
 #if defined(CPUARM)
   #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((p), (u), id)
 #else
@@ -55,11 +59,11 @@ enum CzechPrompts {
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
   if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT((char *)czUnitsFilenames[unitprompt]);
   else if (number > 1 && number < 5)
-    PUSH_NUMBER_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT((char *)czUnitsFilenames[unitprompt+1]);
   else
-    PUSH_NUMBER_PROMPT(unitprompt+2);
+    PUSH_UNIT_PROMPT((char *)czUnitsFilenames[unitprompt+2]);
 }
 
 I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -103,7 +107,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         else
           CZ_PUSH_UNIT_PROMPT(qr.quot, CZ_PROMPT_CELA);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
-        PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
+        PUSH_UNIT_PROMPT((char *)czUnitsFilenames[unit+3]);
         return;
       }
       else
@@ -196,7 +200,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    CZ_PUSH_UNIT_PROMPT(tmp, (CZ_PROMPT_UNITS_BASE+((unit-1)*4)));
+    CZ_PUSH_UNIT_PROMPT(tmp, (unit-1)*4);
   }
 }
 

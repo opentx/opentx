@@ -91,6 +91,37 @@ enum SpanishPrompts {
 
 #if defined(VOICE)
 
+/* The list bellow MUST be kept in sync with /radio/util/tts_es.py */
+char const * esUnitsFilenames[] = {
+  "voltio",
+  "amps",
+  "mamps",
+  "knots",
+  "mps",
+  "pps",
+  "kph",
+  "mph",
+  "m",
+  "pie",
+  "grad",
+  "fahr",
+  "percent",
+  "mamph",
+  "watt",
+  "mwatt",
+  "db",
+  "rpm",
+  "g",
+  "grad",
+  "rad",
+  "ml",
+  "onzas",
+  "horas",
+  "minutos",
+  "segundos",
+};
+
+
 I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
@@ -173,7 +204,7 @@ I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_UNITS_BASE+unit-1);
+    PUSH_UNIT_PROMPT((char *)esUnitsFilenames[unit-1]);
   }
 }
 
