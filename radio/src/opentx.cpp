@@ -1722,7 +1722,7 @@ void doMixerCalculations()
     int16_t val;
 
     if (g_model.thrTraceSrc > NUM_POTS+NUM_SLIDERS) {
-      uint8_t ch = g_model.thrTraceSrc-NUM_POTS+NUM_SLIDERS-1;
+      uint8_t ch = g_model.thrTraceSrc-NUM_POTS-NUM_SLIDERS-1;
       val = channelOutputs[ch];
 
       LimitData *lim = limitAddress(ch);

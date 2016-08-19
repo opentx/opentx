@@ -35,7 +35,7 @@ enum CalibrationState {
   CALIB_FINISHED
 };
 
-#define STICK_PANEL_WIDTH                   68
+#define STICK_PANEL_WIDTH              68
 
 void drawStick(coord_t x, coord_t y, const BitmapBuffer * background, int16_t xval, int16_t yval)
 {
@@ -82,7 +82,7 @@ bool menuCommonCalib(event_t event)
   drawMenuTemplate(NULL, ICON_RADIO_CALIBRATION, NULL, OPTION_MENU_NO_FOOTER);
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = i<NUM_STICKS+NUM_POTS+NUM_SLIDERS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS-NUM_SLIDERS);
+    int16_t vt = i<TX_VOLTAGE ? anaIn(i) : anaIn(i+1);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -158,7 +158,7 @@ bool menuCommonCalib(event_t event)
       for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
-        reusableBuffer.calib.midVals[i] = i<NUM_STICKS+NUM_POTS+NUM_SLIDERS ? anaIn(i) : anaIn(MOUSE1+i-NUM_STICKS-NUM_POTS+NUM_SLIDERS);
+        reusableBuffer.calib.midVals[i] = i < TX_VOLTAGE ? anaIn(i) : anaIn(i+1);
         if (i < NUM_XPOTS) {
           reusableBuffer.calib.xpotsCalib[i].stepsCount = 0;
           reusableBuffer.calib.xpotsCalib[i].lastCount = 0;
