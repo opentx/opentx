@@ -135,6 +135,7 @@ void boardInit()
                          TELEMETRY_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
+                         INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
                          GPS_RCC_APB1Periph,
                          ENABLE);
@@ -142,7 +143,9 @@ void boardInit()
                          BL_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
-                         INTMODULE_RCC_APB2Periph, ENABLE);
+                         INTMODULE_RCC_APB2Periph |
+                         EXTMODULE_RCC_APB2Periph,
+                         ENABLE);
 
   pwrInit();
   delaysInit();

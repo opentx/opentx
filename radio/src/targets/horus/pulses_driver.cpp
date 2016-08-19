@@ -114,7 +114,7 @@ void intmoduleStop()
 {
   INTERNAL_MODULE_OFF();
 
-  NVIC_DisableIRQ(INTMODULE_TIMER_CC_IRQn);
+  NVIC_DisableIRQ(INTMODULE_TIMER_IRQn);
 
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE;
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
@@ -124,7 +124,6 @@ void intmoduleNoneStart()
 {
   INTERNAL_MODULE_OFF();
 
-  // Timer1, channel 3
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = INTMODULE_TX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -148,8 +147,8 @@ void intmoduleNoneStart()
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;                             // Clear flag
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;  // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-  NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
-  NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
+  NVIC_EnableIRQ(INTMODULE_TIMER_IRQn);
+  NVIC_SetPriority(INTMODULE_TIMER_IRQn, 7);
 }
 
 void intmodulePxxStart()
@@ -197,7 +196,6 @@ void intmodulePxxStart()
   INTMODULE_TIMER->CCR2 = 15000; // Update time
   INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
-  INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
   INTMODULE_TIMER->CCMR2 = 0;
   INTMODULE_TIMER->EGR = 1; // Restart
 
@@ -206,8 +204,8 @@ void intmodulePxxStart()
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;  // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
-  NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
-  NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
+  NVIC_EnableIRQ(INTMODULE_TIMER_IRQn);
+  NVIC_SetPriority(INTMODULE_TIMER_IRQn, 7);
 }
 
 extern "C" void INTMODULE_DMA_STREAM_IRQHandler(void)
@@ -219,16 +217,8 @@ extern "C" void INTMODULE_DMA_STREAM_IRQHandler(void)
   }
 }
 
-extern "C" void INTMODULE_TIMER_CC_IRQHandler()
+void intmoduleSendNextFrame()
 {
-  DEBUG_INTERRUPT(INT_TIM1CC);
-  DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
-  DEBUG_TIMER_START(debugTimerIntPulsesDuration);
-
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
-
-  setupPulses(INTERNAL_MODULE);
-
   if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
     DMA_InitTypeDef DMA_InitStructure;
     DMA_DeInit(INTMODULE_DMA_STREAM);
@@ -252,7 +242,17 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
     DMA_Cmd(INTMODULE_DMA_STREAM, ENABLE);
     USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
   }
+}
 
-  // INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+extern "C" void INTMODULE_TIMER_IRQHandler()
+{
+  DEBUG_INTERRUPT(INT_TIM1CC);
+  DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
+  DEBUG_TIMER_START(debugTimerIntPulsesDuration);
+
+  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;           // clear flag
+  setupPulses(INTERNAL_MODULE);
+  intmoduleSendNextFrame();
+  
   DEBUG_TIMER_STOP(debugTimerIntPulsesDuration);
 }
