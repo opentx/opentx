@@ -115,7 +115,7 @@ char const * enUnitsFilenames[] = {
 
 I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
-  if (number <= 1)
+  if (number == 1)
     PUSH_UNIT_PROMPT((char *)enUnitsFilenames[unitprompt]);
   else
     PUSH_UNIT_PROMPT((char *)enUnitsFilenames[unitprompt+1]);
