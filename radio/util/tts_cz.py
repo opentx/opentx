@@ -36,13 +36,13 @@ for s, f, a in [(u"volt", u"volt", NO_ALTERNATE), (u"volty", u"volt1", NO_ALTERN
                 (u"milivat", "mwatt", NO_ALTERNATE), (u"milivaty", u"mwatt1", NO_ALTERNATE), (u"milivatů", u"mwatt2", NO_ALTERNATE), (u"milivatu", u"mwatt3", NO_ALTERNATE),
                 (u"decibel", "db", NO_ALTERNATE), (u"decibely", u"db1", NO_ALTERNATE), (u"decibelů", u"db2", NO_ALTERNATE), (u"decibelu", u"db3", NO_ALTERNATE),
                 (u"otáčka za minutu", "rpm", NO_ALTERNATE), (u"otáčky za minutu", u"rpm1", NO_ALTERNATE), (u"otáček za minutu", u"rpm2", NO_ALTERNATE), (u"otáčky za minutu", u"rpm3", NO_ALTERNATE),
-                (u"gé", "g", NO_ALTERNATE),
+                (u"gé", "g", NO_ALTERNATE), (u"gé", "g1", NO_ALTERNATE), (u"gé", "g2", NO_ALTERNATE), (u"gé", "g3", NO_ALTERNATE),
                 (u"stupeň", "degree", NO_ALTERNATE), (u"stupně", u"degree1", NO_ALTERNATE), (u"stupňů", u"degree2", NO_ALTERNATE), (u"stupně", u"degree3", NO_ALTERNATE),
-                (u"radian", "rad", NO_ALTERNATE),
+                (u"radián", "rad", NO_ALTERNATE), (u"radiány", "rad1", NO_ALTERNATE), (u"radiánů", "rad2", NO_ALTERNATE), (u"radiánu", "rad3", NO_ALTERNATE),
                 (u"mililitr", "ml", NO_ALTERNATE), (u"mililitry", u"ml1", NO_ALTERNATE), (u"mililitrů", u"ml2", NO_ALTERNATE), (u"mililitru", u"ml3", NO_ALTERNATE),
-                (u"dutá unce", "founce", NO_ALTERNATE), (u"duté unce", u"founce1", NO_ALTERNATE),
-                (u"hodina", "hour", NO_ALTERNATE), (u"hodiny", u"hour1", NO_ALTERNATE), (u"hodin", u"hour2", NO_ALTERNATE), (u"hodiny", u"hour2", NO_ALTERNATE),
-                (u"minuta", "minute", NO_ALTERNATE), (u"minuty", u"minute1", NO_ALTERNATE), (u"minut", u"minute1", NO_ALTERNATE),  (u"minuty", u"minute1", NO_ALTERNATE),
+                (u"dutá unce", "founce", NO_ALTERNATE), (u"duté unce", u"founce1", NO_ALTERNATE), (u"dutých uncí", u"founce2", NO_ALTERNATE), (u"duté unce", u"founce3", NO_ALTERNATE),
+                (u"hodina", "hour", NO_ALTERNATE), (u"hodiny", u"hour1", NO_ALTERNATE), (u"hodin", u"hour2", NO_ALTERNATE), (u"hodiny", u"hour3", NO_ALTERNATE),
+                (u"minuta", "minute", NO_ALTERNATE), (u"minuty", u"minute1", NO_ALTERNATE), (u"minut", u"minute2", NO_ALTERNATE),  (u"minuty", u"minute3", NO_ALTERNATE),
                 (u"sekunda", "second", NO_ALTERNATE), (u"sekundy", u"second1", NO_ALTERNATE), (u"sekund", u"second2", NO_ALTERNATE), (u"sekundy", u"second3", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
