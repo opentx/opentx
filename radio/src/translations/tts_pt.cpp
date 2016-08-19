@@ -85,6 +85,37 @@ enum PortuguesePrompts {
 
 #if defined(VOICE)
 
+/* The list bellow MUST be kept in sync with /radio/util/tts_pt.py */
+char const * ptUnitsFilenames[] = {
+  "volt",
+  "amps",
+  "mamps",
+  "knots",
+  "mps",
+  "pps",
+  "kph",
+  "mph",
+  "meter",
+  "foot",
+  "degc",
+  "degf",
+  "percent",
+  "mamph",
+  "watt",
+  "mwatt",
+  "db",
+  "rpm",
+  "g",
+  "grad",
+  "rad",
+  "ml",
+  "founce",
+  "hour",
+  "minute",
+  "second",
+};
+
+
 I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
   if (number < 0) {
@@ -151,7 +182,7 @@ I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   PUSH_NUMBER_PROMPT(PT_PROMPT_ZERO+number);
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(PT_PROMPT_UNITS_BASE+unit-1);
+    PUSH_UNIT_PROMPT((char *)ptUnitsFilenames[unit-1]);
   }
 }
 
