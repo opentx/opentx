@@ -1,3 +1,6 @@
+set(PCBREV "13" CACHE STRING "PCB Revision")
+option(DISK_CACHE "Enable SD card disk cache" YES)
+
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
 set(SDCARD YES)
@@ -10,10 +13,12 @@ set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
 set(LUA_EXPORT lua_export_horus)
 set(FLAVOUR horus)
 set(RAMBACKUP YES)
-option(DISK_CACHE "Enable SD card disk cache" YES)
-add_definitions(-DPCBHORUS -DCOLORLCD -DSTM32F429_439xx -DSDRAM -DPPM_PIN_UART -DPPM_PIN_TIMER)
+
+add_definitions(-DPCBHORUS -DPCBREV=${PCBREV} -DCOLORLCD -DSTM32F429_439xx -DSDRAM -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
+
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
+
 file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/themes/*.cpp)
 file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/layouts/*.cpp)
 file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/widgets/*.cpp)
@@ -59,6 +64,7 @@ set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   sdio_sd.c
   lcd_driver.cpp
+  backlight_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
   startup_stm32f40_41xxx.s

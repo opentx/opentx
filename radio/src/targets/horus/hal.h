@@ -190,15 +190,30 @@
 
 // LCD
 #define LCD_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ | RCC_AHB1Periph_GPIOK | RCC_AHB1Periph_DMA2D)
-#define LCD_RCC_APB2Periph              (RCC_APB2Periph_TIM8 | RCC_APB2Periph_LTDC)
+#define LCD_RCC_APB2Periph              RCC_APB2Periph_LTDC
 #define LCD_GPIO_NRST                   GPIOF
 #define LCD_GPIO_PIN_NRST               GPIO_Pin_10 // PF.10
-#define LCD_GPIO_BL                     GPIOA
-#define LCD_GPIO_PIN_BL                 GPIO_Pin_5  // PA.05
-#define LCD_GPIO_PinSource_BL           GPIO_PinSource5
-#define LCD_GPIO_AF_BL                  GPIO_AF_TIM8
 #define LTDC_IRQ_PRIO                   4
 #define DMA_SCREEN_IRQ_PRIO             6
+
+// Backlight
+#define BL_RCC_AHB1Periph               RCC_AHB1Periph_GPIOA
+#define BL_GPIO                         GPIOA
+#if PCBREV >= 13
+#define BL_TIMER                        TIM5
+#define BL_GPIO_PIN                     GPIO_Pin_3  // PA.03
+#define BL_GPIO_PinSource               GPIO_PinSource3
+#define BL_RCC_APB1Periph               RCC_APB1Periph_TIM5
+#define BL_RCC_APB2Periph               0
+#define BL_GPIO_AF                      GPIO_AF_TIM5
+#else
+#define BL_TIMER                        TIM8
+#define BL_GPIO_PIN                     GPIO_Pin_5  // PA.05
+#define BL_GPIO_PinSource               GPIO_PinSource5
+#define BL_RCC_APB1Periph               0
+#define BL_RCC_APB2Periph               RCC_APB2Periph_TIM8
+#define BL_GPIO_AF                      GPIO_AF_TIM8
+#endif
 
 // SD
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
@@ -341,22 +356,28 @@
 #define TIMER_2MHz_TIMER                TIM7
 
 // Bluetooth
-#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
-#define BT_RCC_APB1Periph               RCC_APB1Periph_UART6
+#define BT_RCC_APB2Periph               RCC_APB2Periph_USART6
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6
 #define BT_USART_IRQn                   USART6_IRQn
 #define BT_GPIO_TXRX                    GPIOG
-#define BT_GPIO_PIN_TX                  GPIO_Pin_14 // PG.14
-#define BT_GPIO_PIN_RX                  GPIO_Pin_9  // PG.09
-#define BT_GPIO_EN                      GPIOB
-#define BT_GPIO_PIN_EN                  GPIO_Pin_10 // PB.10
-#define BT_GPIO_BRTS                    GPIOG
-#define BT_GPIO_PIN_BRTS                GPIO_Pin_10 // PG.10
-#define BT_GPIO_BCTS                    GPIOG
-#define BT_GPIO_PIN_BCTS                GPIO_Pin_11 // PG.11
-#define BT_GPIO_PinSource_TX            GPIO_PinSource14
-#define BT_GPIO_PinSource_RX            GPIO_PinSource9
+#define BT_TX_GPIO_PIN                  GPIO_Pin_14 // PG.14
+#define BT_RX_GPIO_PIN                  GPIO_Pin_9  // PG.09
+#if PCBREV >= 13
+#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOG)
+#define BT_EN_GPIO                      GPIOI
+#define BT_EN_GPIO_PIN                  GPIO_Pin_10 // PI.10
+#else
+#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
+#define BT_EN_GPIO                      GPIOB
+#define BT_EN_GPIO_PIN                  GPIO_Pin_10 // PB.10
+#endif
+#define BT_BRTS_GPIO                    GPIOG
+#define BT_BRTS_GPIO_PIN                GPIO_Pin_10 // PG.10
+#define BT_BCTS_GPIO                    GPIOG
+#define BT_BCTS_GPIO_PIN                GPIO_Pin_11 // PG.11
+#define BT_TX_GPIO_PinSource            GPIO_PinSource14
+#define BT_RX_GPIO_PinSource            GPIO_PinSource9
 
 // GPS
 #define GPS_RCC_AHB1Periph              RCC_AHB1Periph_GPIOA

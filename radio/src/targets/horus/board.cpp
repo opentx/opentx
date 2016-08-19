@@ -114,6 +114,7 @@ void boardInit()
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph |
+                         BL_RCC_AHB1Periph |
                          AUDIO_RCC_AHB1Periph |
                          KEYS_RCC_AHB1Periph_GPIO |
                          ADC_RCC_AHB1Periph |
@@ -128,6 +129,7 @@ void boardInit()
                          ENABLE);
   RCC_APB1PeriphClockCmd(INTERRUPT_5MS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
+                         BL_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
@@ -137,6 +139,7 @@ void boardInit()
                          GPS_RCC_APB1Periph,
                          ENABLE);
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
+                         BL_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph, ENABLE);
@@ -156,6 +159,9 @@ void boardInit()
   keysInit();
   adcInit();
   lcdInit();
+  backlightInit();
+  // TODO ? backlightEnable(100);
+  
   audioInit();
   init2MhzTimer();
   init1msTimer();

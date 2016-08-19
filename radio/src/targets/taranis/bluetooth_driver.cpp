@@ -52,28 +52,28 @@ void bluetoothInit(uint32_t baudrate)
   RCC_AHB1PeriphClockCmd(BT_RCC_AHB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
 
-  GPIO_InitStructure.GPIO_Pin = BT_GPIO_PIN_BRTS;
+  GPIO_InitStructure.GPIO_Pin = BT_BRTS_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(BT_GPIO_BRTS, &GPIO_InitStructure);
-  GPIO_SetBits(BT_GPIO_BRTS, BT_GPIO_PIN_BRTS);
+  GPIO_Init(BT_BRTS_GPIO, &GPIO_InitStructure);
+  GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
 
-  GPIO_InitStructure.GPIO_Pin = BT_GPIO_PIN_EN;
-  GPIO_Init(BT_GPIO_EN, &GPIO_InitStructure);
+  GPIO_InitStructure.GPIO_Pin = BT_EN_GPIO_PIN;
+  GPIO_Init(BT_EN_GPIO, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = BT_GPIO_PIN_BCTS;
+  GPIO_InitStructure.GPIO_Pin = BT_BCTS_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(BT_GPIO_BCTS, &GPIO_InitStructure);
+  GPIO_Init(BT_BCTS_GPIO, &GPIO_InitStructure);
 	
-  GPIO_InitStructure.GPIO_Pin = BT_GPIO_PIN_TX|BT_GPIO_PIN_RX;
+  GPIO_InitStructure.GPIO_Pin = BT_TX_GPIO_PIN|BT_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(BT_GPIO_TXRX, &GPIO_InitStructure);
 
-  GPIO_PinAFConfig(BT_GPIO_TXRX, BT_GPIO_PinSource_TX, BT_GPIO_AF);
-  GPIO_PinAFConfig(BT_GPIO_TXRX, BT_GPIO_PinSource_RX, BT_GPIO_AF);
+  GPIO_PinAFConfig(BT_GPIO_TXRX, BT_TX_GPIO_PinSource, BT_GPIO_AF);
+  GPIO_PinAFConfig(BT_GPIO_TXRX, BT_RX_GPIO_PinSource, BT_GPIO_AF);
 
   USART_DeInit(BT_USART);
   USART_InitStructure.USART_BaudRate = baudrate;
@@ -94,12 +94,12 @@ void bluetoothInit(uint32_t baudrate)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  GPIO_ResetBits(BT_GPIO_EN, BT_GPIO_PIN_EN); // open bluetooth
+  GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // open bluetooth
 }
 
 void bluetoothDone()
 {
-  GPIO_SetBits(BT_GPIO_EN, BT_GPIO_PIN_EN); // close bluetooth
+  GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth
 }
 
 extern "C" void USART6_IRQHandler(void)
@@ -144,7 +144,7 @@ void bluetoothWriteWakeup(void)
   if (bluetoothWriteState == BLUETOOTH_WRITE_IDLE) {
     if (!btTxFifo.isEmpty()) {
       bluetoothWriteState = BLUETOOTH_WRITE_INIT;
-      GPIO_ResetBits(BT_GPIO_BRTS, BT_GPIO_PIN_BRTS);
+      GPIO_ResetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
     }
   }
   else if (bluetoothWriteState == BLUETOOTH_WRITE_INIT) {
@@ -153,7 +153,7 @@ void bluetoothWriteWakeup(void)
   }
   else if (bluetoothWriteState == BLUETOOTH_WRITE_DONE) {
     bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
-    GPIO_SetBits(BT_GPIO_BRTS, BT_GPIO_PIN_BRTS);
+    GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
   }
 }
 

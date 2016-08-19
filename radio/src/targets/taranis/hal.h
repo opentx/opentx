@@ -730,26 +730,26 @@
   #define BT_USART_IRQn                USART6_IRQn
   #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB)
   #define BT_GPIO_TXRX                 GPIOG
-  #define BT_GPIO_PIN_TX               GPIO_Pin_14 // PG.14
-  #define BT_GPIO_PIN_RX               GPIO_Pin_9  // PG.09
-  #define BT_GPIO_EN                   GPIOD
-  #define BT_GPIO_PIN_EN               GPIO_Pin_11 // PD.11
-  #define BT_GPIO_BRTS                 GPIOE
-  #define BT_GPIO_PIN_BRTS             GPIO_Pin_12 // PE.12
-  #define BT_GPIO_BCTS                 GPIOG
-  #define BT_GPIO_PIN_BCTS             GPIO_Pin_6  // PG.06
-  #define BT_GPIO_PinSource_TX         GPIO_PinSource14
-  #define BT_GPIO_PinSource_RX         GPIO_PinSource9
+  #define BT_TX_GPIO_PIN               GPIO_Pin_14 // PG.14
+  #define BT_RX_GPIO_PIN               GPIO_Pin_9  // PG.09
+  #define BT_EN_GPIO                   GPIOD
+  #define BT_EN_GPIO_PIN               GPIO_Pin_11 // PD.11
+  #define BT_BRTS_GPIO                 GPIOE
+  #define BT_BRTS_GPIO_PIN             GPIO_Pin_12 // PE.12
+  #define BT_BCTS_GPIO                 GPIOG
+  #define BT_BCTS_GPIO_PIN             GPIO_Pin_6  // PG.06
+  #define BT_TX_GPIO_PinSource         GPIO_PinSource14
+  #define BT_RX_GPIO_PinSource         GPIO_PinSource9
 #elif defined(PCBX7D)
   #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_DMA1)
   #define BT_RCC_APB1Periph            RCC_APB1Periph_USART3
-  #define BT_GPIO_EN                   GPIOE
-  #define BT_GPIO_PIN_EN               GPIO_Pin_12 // PE.12
+  #define BT_EN_GPIO                   GPIOE
+  #define BT_EN_GPIO_PIN               GPIO_Pin_12 // PE.12
   #define BT_GPIO                      GPIOB
-  #define BT_GPIO_PIN_TX               GPIO_Pin_10 // PB.10
-  #define BT_GPIO_PIN_RX               GPIO_Pin_11 // PB.11
-  #define BT_GPIO_PinSource_TX         GPIO_PinSource10
-  #define BT_GPIO_PinSource_RX         GPIO_PinSource11
+  #define BT_TX_GPIO_PIN               GPIO_Pin_10 // PB.10
+  #define BT_RX_GPIO_PIN               GPIO_Pin_11 // PB.11
+  #define BT_TX_GPIO_PinSource         GPIO_PinSource10
+  #define BT_RX_GPIO_PinSource         GPIO_PinSource11
   #define BT_GPIO_AF                   GPIO_AF_USART3
   #define BT_USART                     USART3
   #define BT_USART_IRQHandler          USART3_IRQHandler

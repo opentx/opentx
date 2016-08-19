@@ -344,6 +344,7 @@ void lcdSetContrast();
 #define lcdRefreshWait(...)
 
 // Backlight driver
+void backlightInit(void);
 #if defined(SIMU)
 #define backlightEnable(...)
 #else

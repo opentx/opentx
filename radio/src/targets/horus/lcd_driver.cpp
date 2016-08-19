@@ -29,13 +29,8 @@
 #define HFP  3
 #define VFP  2
 
-#define LCD_DIR_HORIZONTAL             0x0000
-#define LCD_DIR_VERTICAL               0x0001
-
 #define LCD_FIRST_LAYER                0
 #define LCD_SECOND_LAYER               1
-
-#define LCD_BKLIGHT_PWM_FREQ           300
 
 uint8_t LCD_FIRST_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 uint8_t LCD_SECOND_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
@@ -65,28 +60,27 @@ static void LCD_AF_GPIOConfig(void)
                 |  LCD_TFT HSYNC <-> PI.12  | LCDTFT VSYNC <->  PI.13 |
                 |  LCD_TFT CLK   <-> PI.14  | LCD_TFT DE   <->  PK.07 ///
                  -----------------------------------------------------
-                |LCD_TFT backlight <-> PA.05| LCD_CS <-> PI.10    |LCD_SCK<->PI.11
+                | LCD_CS <-> PI.10    |LCD_SCK<->PI.11
                  -----------------------------------------------------
   */
- /*GPIOI configuration*/
-
-  GPIO_PinAFConfig(GPIOI,GPIO_PinSource12,GPIO_AF_LTDC);
-  GPIO_PinAFConfig(GPIOI,GPIO_PinSource13,GPIO_AF_LTDC);
-  GPIO_PinAFConfig(GPIOI,GPIO_PinSource14,GPIO_AF_LTDC);
+  // GPIOI configuration
+  GPIO_PinAFConfig(GPIOI, GPIO_PinSource12, GPIO_AF_LTDC);
+  GPIO_PinAFConfig(GPIOI, GPIO_PinSource13, GPIO_AF_LTDC);
+  GPIO_PinAFConfig(GPIOI, GPIO_PinSource14, GPIO_AF_LTDC);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14;
   GPIO_InitStructure.GPIO_Speed =GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_Mode =GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType =GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd =GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIOI,&GPIO_InitStructure);
+  GPIO_Init(GPIOI, &GPIO_InitStructure);
 
   GPIO_PinAFConfig(GPIOK, GPIO_PinSource7, GPIO_AF_LTDC);
 
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
   GPIO_Init(GPIOK, &GPIO_InitStructure);
 
-   /* GPIOJ configuration */
+  // GPIOJ configuration
   GPIO_PinAFConfig(GPIOJ, GPIO_PinSource2, GPIO_AF_LTDC);
   GPIO_PinAFConfig(GPIOJ, GPIO_PinSource3, GPIO_AF_LTDC);
   GPIO_PinAFConfig(GPIOJ, GPIO_PinSource4, GPIO_AF_LTDC);
@@ -102,7 +96,7 @@ static void LCD_AF_GPIOConfig(void)
 
   GPIO_Init(GPIOJ, &GPIO_InitStructure);
 
-  /* GPIOK configuration */
+  // GPIOK configuration
   GPIO_PinAFConfig(GPIOK, GPIO_PinSource0, GPIO_AF_LTDC);
   GPIO_PinAFConfig(GPIOK, GPIO_PinSource1, GPIO_AF_LTDC);
   GPIO_PinAFConfig(GPIOK, GPIO_PinSource2, GPIO_AF_LTDC);
@@ -118,18 +112,6 @@ static void LCD_AF_GPIOConfig(void)
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOK, &GPIO_InitStructure);
-}
-
-static void LCD_Backlight_Config(void)
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = LCD_GPIO_PIN_BL;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(LCD_GPIO_BL, &GPIO_InitStructure);
-  GPIO_PinAFConfig(LCD_GPIO_BL, LCD_GPIO_PinSource_BL, LCD_GPIO_AF_BL);
 }
 
 static void LCD_NRSTConfig(void)
@@ -318,45 +300,6 @@ void LCD_LayerInit()
   LTDC_DitherCmd(ENABLE);
 }
 
-void backlightEnable(uint8_t dutyCycle)
-{
-  static uint8_t existingDutyCycle;
-
-  if (dutyCycle == existingDutyCycle || dutyCycle < 5) {
-    return;
-  }
-  else {
-    existingDutyCycle = dutyCycle;
-  }
-
-  TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
-  TIM_OCInitTypeDef  TIM_OCInitStructure;
-
-  TIM_TimeBaseStructure.TIM_Prescaler = SystemCoreClock / 10000 - 1 ;//1KhZ
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_Period = 100;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-
-  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
-
-  TIM_Cmd(TIM8, DISABLE);
-
-  /* Channel 1 Configuration in PWM mode */
-  TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
-  TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = (100-dutyCycle);
-  TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
-  TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
-  TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
-  TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
-  TIM_OC1Init(TIM8, &TIM_OCInitStructure);
-
-  TIM_Cmd(TIM8, ENABLE);
-  TIM_CtrlPWMOutputs(TIM8, ENABLE);
-}
-
 /*********************************output****************************************/
 /**
   * @brief  Initializes the LCD.
@@ -373,13 +316,6 @@ void LCD_Init(void)
   LCD_AF_GPIOConfig();
 
   LCD_Init_LTDC();
-
-  // TODO split backlight from LCD
-  // Config backlight
-  LCD_Backlight_Config();
-
-  // Max Value
-  backlightEnable(100);
 }
 
 BitmapBuffer lcdBuffer1(BMP_RGB565, LCD_W, LCD_H, (uint16_t *)LCD_FIRST_FRAME_BUFFER);
