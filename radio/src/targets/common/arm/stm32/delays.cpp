@@ -38,19 +38,19 @@ void delay_01us(uint16_t nb)
 {
   volatile uint32_t dwtStart = DWT->CYCCNT;
   volatile uint32_t dwtTotal = (SYSTEM_TICKS_01US * nb) - 10;
-  while((DWT->CYCCNT - dwtStart) < dwtTotal);
+  while ((DWT->CYCCNT - dwtStart) < dwtTotal);
 }
 
 void delay_us(uint16_t nb)
 {
   volatile uint32_t dwtStart = DWT->CYCCNT;
   volatile uint32_t dwtTotal = (SYSTEM_TICKS_1US * nb) - 10;
-  while((DWT->CYCCNT - dwtStart) < dwtTotal);
+  while ((DWT->CYCCNT - dwtStart) < dwtTotal);
 }
 
 void delay_ms(uint32_t ms)
 {
-  while(ms--) {
+  while (ms--) {
     delay_us(1000);
   }
 }
