@@ -50,6 +50,34 @@ enum SwedishPrompts {
 };
 
 #if defined(VOICE)
+char const * seUnitsFilenames[] = {
+  "volt", "volt1",
+  "amp", "amp1",
+  "mamp", "mamp1",
+  "knot", "knot1",
+  "mps", "mps1",
+  "fps", "fps1",
+  "kph", "kph1",
+  "mph", "mph1",
+  "meter", "meter1",
+  "foot", "foot1",
+  "celsius", "celsius1",
+  "fahr", "fahr1",
+  "percent", "percent",
+  "mamph", "mamphs",
+  "watt", "watt1",
+  "mwatt", "mwatt1",
+  "db", "db",
+  "rpm", "rpm",
+  "g", "g",
+  "degree", "degree1",
+  "radian", "radian1",
+  "ml", "ml1",
+  "founce", "founce1",
+  "hour", "hour1",
+  "minute", "minute1",
+  "second", "second1",
+};
 
 I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
@@ -115,9 +143,9 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   
   if (unit) {
     if  (tmpNumber == 1 ) 
-      PUSH_NUMBER_PROMPT(SE_PROMPT_UNITS_BASE+unit*2);   // Singular prompts
+      PUSH_UNIT_PROMPT((char *)seUnitsFilenames[unit*2]);   // Singular prompts
     else
-      PUSH_NUMBER_PROMPT(SE_PROMPT_UNITS_BASE+unit*2+1); // Plural prompts
+      PUSH_UNIT_PROMPT((char *)seUnitsFilenames[(unit*2)+1]); // Plural prompts
   }
 }
 

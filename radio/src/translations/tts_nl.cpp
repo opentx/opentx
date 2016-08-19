@@ -37,70 +37,52 @@ enum DutchPrompts {
 
 #if defined(VOICE)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+char const * nlUnitsFilenames[] = {
+  "volt", "volt1",
+  "amp", "amp1",
+  "mamp", "mamp1",
+  "knot", "knot1",
+  "mps", "mps1",
+  "fps", "fps1",
+  "kph", "kph1",
+  "mph", "mph1",
+  "meter", "meter1",
+  "foot", "foot1",
+  "celsius", "celsius1",
+  "fahr", "fahr1",
+  "percent", "percent",
+  "mamph", "mamphs",
+  "watt", "watt1",
+  "mwatt", "mwatt1",
+  "db", "db",
+  "rpm", "rpm",
+  "g", "g",
+  "degree", "degree1",
+  "radian", "radian1",
+  "ml", "ml1",
+  "founce", "founce1",
+  "hour", "hour1",
+  "minute", "minute1",
+  "second", "second1",
+};
 
 #if defined(CPUARM)
   #define NL_PUSH_UNIT_PROMPT(p, u) en_pushUnitPrompt((p), (u), id)
 #else
   #define NL_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-
-
-
 #endif
 
 I18N_PLAY_FUNCTION(nl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
   if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT((char *)nlUnitsFilenames[unitprompt]);
   else
-    PUSH_NUMBER_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT((char *)nlUnitsFilenames[unitprompt+1]);
 }
-
-
 
 
 I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
-
-
-
-
-
-
-
-
-
-
   if (number < 0) {
     PUSH_NUMBER_PROMPT(NL_PROMPT_MINUS);
     number = -number;
@@ -136,15 +118,10 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(NL_PROMPT_POINT_BASE + qr.rem);
       number = -1;
-
-
-
     }
     else {
       number = qr.quot;
-
     }
-
   }
 
   int16_t tmp = number;
@@ -152,8 +129,6 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 1000) {
 
     PLAY_NUMBER(number / 1000, 0, 0);
-
-
     PUSH_NUMBER_PROMPT(NL_PROMPT_THOUSAND);
 
     number %= 1000;
@@ -171,8 +146,6 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 0) {
     PUSH_NUMBER_PROMPT(NL_PROMPT_ZERO + number);
   }
-  
-
   if (unit) {
     NL_PUSH_UNIT_PROMPT(tmp, NL_PROMPT_UNITS_BASE + unit*2);
   }
@@ -190,12 +163,10 @@ I18N_PLAY_FUNCTION(nl, playDuration, int seconds PLAY_DURATION_ATT)
     seconds = -seconds;
   }
 
-
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
     PLAY_NUMBER(tmp, UNIT_HOURS, 0);
-
   }
 
   tmp = seconds / 60;
@@ -203,20 +174,11 @@ I18N_PLAY_FUNCTION(nl, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0) {
     PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
     if (seconds > 0)
-
       PUSH_NUMBER_PROMPT(NL_PROMPT_AND);
-
-
-
-
   }
-
 
   if (seconds > 0) {
     PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
-
-
-
   }
 }
 

@@ -50,6 +50,37 @@ enum HungarianPrompts {
 
 #if defined(VOICE)
 
+/* The list bellow MUST be kept in sync with /radio/util/tts_en.py */
+char const * huUnitsFilenames[] = {
+  "volt", "volt1",
+  "amp", "amp1",
+  "mamp", "mamp1",
+  "knot", "knot1",
+  "mps", "mps1",
+  "fps", "fps1",
+  "kph", "kph1",
+  "mph", "mph1",
+  "meter", "meter1",
+  "foot", "foot1",
+  "celsius", "celsius1",
+  "fahr", "fahr1",
+  "percent", "percent",
+  "mamph", "mamphs",
+  "watt", "watt1",
+  "mwatt", "mwatt1",
+  "db", "db",
+  "rpm", "rpm",
+  "g", "g",
+  "degree", "degree1",
+  "radian", "radian1",
+  "ml", "ml1",
+  "founce", "founce1",
+  "hour", "hour1",
+  "minute", "minute1",
+  "second", "second1",
+};
+
+
 #if defined(CPUARM)
   #define HU_PUSH_UNIT_PROMPT(p, u) hu_pushUnitPrompt((p), (u), id)
 #else
@@ -59,9 +90,9 @@ enum HungarianPrompts {
 I18N_PLAY_FUNCTION(hu, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
   if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT((char *)huUnitsFilenames[unitprompt]);
   else
-    PUSH_NUMBER_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT((char *)huUnitsFilenames[unitprompt+1]);
 }
 
 I18N_PLAY_FUNCTION(hu, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
