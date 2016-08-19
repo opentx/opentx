@@ -60,20 +60,24 @@ void telemetryPortInit(uint32_t baudrate, int mode)
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     USART_InitStructure.USART_StopBits = USART_StopBits_2;
     USART_InitStructure.USART_Parity = USART_Parity_Even;
-  } else {
+  }
+  else {
     USART_InitStructure.USART_WordLength = USART_WordLength_8b;
     USART_InitStructure.USART_StopBits = USART_StopBits_1;
     USART_InitStructure.USART_Parity = USART_Parity_No;
   }
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
-
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
 
   DMA_InitTypeDef DMA_InitStructure;
   telemetryFifo.clear();
+  
   USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, DISABLE);
   USART_ITConfig(TELEMETRY_USART, USART_IT_TXE, DISABLE);
+  NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
+  NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
+  
   DMA_InitStructure.DMA_Channel = TELEMETRY_DMA_Channel_RX;
   DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&TELEMETRY_USART->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(telemetryFifo.buffer());
@@ -143,7 +147,27 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
   DEBUG_INTERRUPT(INT_TELEM_DMA);
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
+    TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
+    if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
+      outputTelemetryBufferSize = 0;
+      outputTelemetryBufferTrigger = 0x7E;
+    }
+  }
+}
+
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+extern "C" void TELEMETRY_USART_IRQHandler(void)
+{
+  DEBUG_INTERRUPT(INT_TELEM_USART);
+  uint32_t status = TELEMETRY_USART->SR;
+  
+  if ((status & USART_SR_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
+    TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE;
     telemetryPortSetDirectionInput();
+    while (status & (USART_FLAG_RXNE)) {
+      status = TELEMETRY_USART->DR;
+      status = TELEMETRY_USART->SR;
+    }
   }
 }
 

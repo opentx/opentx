@@ -177,6 +177,8 @@
 #define TELEMETRY_DMA_TX_Stream_IRQ     DMA1_Stream6_IRQn
 #define TELEMETRY_DMA_TX_IRQHandler     DMA1_Stream6_IRQHandler
 #define TELEMETRY_DMA_TX_FLAG_TC        DMA_IT_TCIF6
+#define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
+#define TELEMETRY_USART_IRQn            USART2_IRQn
 
 // USB
 #define USB_RCC_AHB1Periph_GPIO         RCC_AHB1Periph_GPIOA
