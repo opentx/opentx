@@ -147,7 +147,7 @@ I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_UNIT_PROMPT((unit*4)-1);
+    PUSH_UNIT_PROMPT((unit-1)*4);
   }
 }
 
@@ -163,36 +163,16 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
     ore = tmp;
-    if (tmp > 1) {
-      PLAY_NUMBER(tmp, 0, 0);
-      PUSH_NUMBER_PROMPT(ES_PROMPT_HORAS);
-    }
-    else {
-      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
-      PUSH_NUMBER_PROMPT(ES_PROMPT_HORA);
-    }
+    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0 || ore >0) {
-    if (tmp != 1) {
-      PLAY_NUMBER(tmp, 0, 0);
-      PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTOS);
-    } else {
-      PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
-      PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTO);
+    PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
     }
-    PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
-  }
-
-  if (seconds != 1) {
-    PLAY_NUMBER(seconds, 0, 0);
-    PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDOS);
-  } else {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
-    PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDO);
-  }
+  PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
+  PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
 }
 
 LANGUAGE_PACK_DECLARE(es, "Espanol");
