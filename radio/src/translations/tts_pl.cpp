@@ -41,35 +41,6 @@ enum PolishPrompts {
 
 #if defined(VOICE)
 
-char const * plUnitsFilenames[] = {
-  "volt", "volt1", "volt2", "volt3",
-  "amp", "amp1", "amp2", "amp3",
-  "mamp", "mamp1", "mamp2", "mamp3",
-  "knot", "knot1","knot2","knot3",
-  "mps", "mps1", "mps2", "mps3",
-  "fps", "fps1","fps2","fps3",
-  "kph", "kph1", "kph2", "kph3",
-  "mph", "mph1", "mph2", "mph3",
-  "meter", "meter1", "meter2", "meter3",
-  "foot", "foot1", "foot2", "foot3",
-  "celsius", "celsius1", "celsius2", "celsius3",
-  "fahr", "fahr1", "fahr2", "fahr3",
-  "percent", "percent","percent","percent",
-  "mamph", "mamph1", "mamph2", "mamph3",
-  "watt", "watt1", "watt2", "watt3",
-  "mwatt", "mwatt1", "mwatt2", "mwatt3",
-  "db", "db", "db", "db",
-  "rpm", "rpm", "rpm", "rpm",
-  "g", "g", "g", "g",
-  "degree", "degree1", "degree2", "degree3",
-  "radian", "radian1","radian2","radian3",
-  "ml", "ml1", "ml2", "ml3",
-  "founce", "founce1", "founce2", "founce3",
-  "hour", "hour1", "hour2", "hour3",
-  "minute", "minute1", "minute2", "minute3",
-  "second", "second1", "second2", "second3",
-};
-
 #if defined(CPUARM)
   #define PL_PUSH_UNIT_PROMPT(p, u) pl_pushUnitPrompt((p), (u), id)
 #else
@@ -82,19 +53,20 @@ char const * plUnitsFilenames[] = {
 
 I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+  unitprompt *= 4;
   if (number == 1)
-    PUSH_UNIT_PROMPT((char *)plUnitsFilenames[unitprompt]);
+    PUSH_UNIT_PROMPT(unitprompt);
   else if (number > 1 && number < 5)
-    PUSH_UNIT_PROMPT((char *)plUnitsFilenames[unitprompt+1]);
+    PUSH_UNIT_PROMPT(unitprompt+1);
   else {
     int test_2 =0;
     test_2 =number % 10;
     int ten=0;
     ten=(number - (number % 10))/10;
     if ((test_2 > 1 && test_2 < 5) && ten >=2)
-	PUSH_UNIT_PROMPT((char *)plUnitsFilenames[unitprompt+1]);
+	PUSH_UNIT_PROMPT(unitprompt+1);
     else
-	PUSH_UNIT_PROMPT((char *)plUnitsFilenames[unitprompt+2]);
+	PUSH_UNIT_PROMPT(unitprompt+2);
     }
 }
 
@@ -139,7 +111,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       else
         PL_PUSH_UNIT_PROMPT(qr.quot, PL_PROMPT_CALA);
       PLAY_NUMBER(qr.rem, 0, ZENSKI);
-      PUSH_UNIT_PROMPT((char *)plUnitsFilenames[((unit-1)*4)+3]);
+      PUSH_UNIT_PROMPT(((unit-1)*4)+3);
       return;
     }
     else {
