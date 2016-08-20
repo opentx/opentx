@@ -84,6 +84,13 @@ make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
+# OpenTX on Horus beta boards
+rm -rf *
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES -DGVARS=YES ${SRCDIR}
+make -j2 firmware
+make -j2 simu
+# make -j2 gtests ; ./gtests
+
 # OpenTX on Horus
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES -DGVARS=YES ${SRCDIR}
