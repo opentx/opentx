@@ -50,37 +50,6 @@ enum EnglishPrompts {
 
 #if defined(VOICE)
 
-/* The list bellow MUST be kept in sync with /radio/util/tts_en.py */
-char const * enUnitsFilenames[] = {
-  "volt", "volt1",
-  "amp", "amp1",
-  "mamp", "mamp1",
-  "knot", "knot1",
-  "mps", "mps1",
-  "fps", "fps1",
-  "kph", "kph1",
-  "mph", "mph1",
-  "meter", "meter1",
-  "foot", "foot1",
-  "celsius", "celsius1",
-  "fahr", "fahr1",
-  "percent", "percent",
-  "mamph", "mamphs",
-  "watt", "watt1",
-  "mwatt", "mwatt1",
-  "db", "db",
-  "rpm", "rpm",
-  "g", "g",
-  "degree", "degree1",
-  "radian", "radian1",
-  "ml", "ml1",
-  "founce", "founce1",
-  "hour", "hour1",
-  "minute", "minute1",
-  "second", "second1",
-};
-
-
 #if defined(CPUARM)
   #define EN_PUSH_UNIT_PROMPT(p, u) en_pushUnitPrompt((p), (u), id)
 #else
@@ -89,10 +58,12 @@ char const * enUnitsFilenames[] = {
 
 I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+  TRACE("About to call PUSH_UNIT");
+  unitprompt *= 4;
   if (number == 1)
-    PUSH_UNIT_PROMPT((char *)enUnitsFilenames[unitprompt]);
+    PUSH_UNIT_PROMPT(unitprompt);
   else
-    PUSH_UNIT_PROMPT((char *)enUnitsFilenames[unitprompt+1]);
+    PUSH_UNIT_PROMPT(unitprompt+1);
 }
 
 I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -158,7 +129,7 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    EN_PUSH_UNIT_PROMPT(tmp, (unit-1)*2);
+    EN_PUSH_UNIT_PROMPT(tmp, unit-1);
   }
 }
 

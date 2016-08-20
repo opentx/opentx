@@ -359,7 +359,7 @@ enum AutomaticPromptsEvents {
 };
 
 void pushPrompt(uint16_t prompt, uint8_t id=0);
-void pushUnit(char * unitname, uint8_t id);
+void pushUnit(uint8_t, uint8_t);
 void playModelName();
 
 #define I18N_PLAY_FUNCTION(lng, x, ...) void lng ## _ ## x(__VA_ARGS__, uint8_t id)

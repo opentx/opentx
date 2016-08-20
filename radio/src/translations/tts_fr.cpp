@@ -53,35 +53,6 @@ enum FrenchPrompts {
 #define FEMININ 0x80
 
 /* The list bellow MUST be kept in sync with /radio/util/tts_fr.py */
-char const * frUnitsFilenames[] = {
-  "volt",
-  "amp",
-  "mamp",
-  "knot",
-  "mps",
-  "fps",
-  "kph",
-  "mph",
-  "meter",
-  "foot",
-  "celsius",
-  "fahr",
-  "percent",
-  "mamph",
-  "watt",
-  "mwatt",
-  "db",
-  "rpm",
-  "g",
-  "degree",
-  "radian",
-  "ml",
-  "founce",
-  "hour",
-  "minute",
-  "second",
-};
-
 
 I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
@@ -160,7 +131,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_UNIT_PROMPT((char *)frUnitsFilenames[unit-1]);
+    PUSH_UNIT_PROMPT((unit*4)-1);
   }
 }
 

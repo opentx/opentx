@@ -135,6 +135,36 @@ const int16_t sineValues[] =
 };
 
 #if defined(SDCARD)
+
+const char * unitsFilenames[] = {
+  "volt", "volt1", "volt2", "volt3",
+  "amp", "amp1", "amp2", "amp3",
+  "mamp", "mamp1", "mamp2", "mamp3",
+  "knot", "knot1","knot2","knot3",
+  "mps", "mps1", "mps2", "mps3",
+  "fps", "fps1","fps2","fps3",
+  "kph", "kph1", "kph2", "kph3",
+  "mph", "mph1", "mph2", "mph3",
+  "meter", "meter1", "meter2", "meter3",
+  "foot", "foot1", "foot2", "foot3",
+  "celsius", "celsius1", "celsius2", "celsius3",
+  "fahr", "fahr1", "fahr2", "fahr3",
+  "percent", "percent1","percent2","percent3",
+  "mamph", "mamph1", "mamph2", "mamph3",
+  "watt", "watt1", "watt2", "watt3",
+  "mwatt", "mwatt1", "mwatt2", "mwatt3",
+  "db", "db1", "db2", "db3",
+  "rpm", "rpm1", "rpm2", "rpm3",
+  "g", "g1", "g2", "g3",
+  "degree", "degree1", "degree2", "degree3",
+  "radian", "radian1","radian2","radian3",
+  "ml", "ml1", "ml2", "ml3",
+  "founce", "founce1", "founce2", "founce3",
+  "hour", "hour1", "hour2", "hour3",
+  "minute", "minute1", "minute2", "minute3",
+  "second", "second1", "second2", "second3",
+};
+
 const char * const audioFilenames[] = {
   "hello",
   "bye",
@@ -1235,19 +1265,16 @@ void audioEvent(unsigned int index)
   }
 }
 
-#if defined(SDCARD)
-void pushUnit(char * unitname, uint8_t id=0)
+void pushUnit(uint8_t unit, uint8_t id=0)
 {
-  TRACE("AUDIO : trying unit : %s", unitname);
-  char filename[AUDIO_FILENAME_MAXLEN+1];
-  strcpy(filename, SOUNDS_PATH "/");
-  strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-  strcat(filename, "SYSTEM/");
-  strcat(filename, unitname);
-  strcat(filename, SOUNDS_EXT);  
-  audioQueue.playFile(filename, 0, id);
+  char path[AUDIO_FILENAME_MAXLEN+1];
+  
+  getSystemAudioPath(path);
+  strcat(path, unitsFilenames[unit]);
+  strcat(path, SOUNDS_EXT);  
+  audioQueue.playFile(path, 0, id);
 }
-#endif
+
 
 void pushPrompt(uint16_t prompt, uint8_t id)
 {

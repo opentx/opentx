@@ -41,36 +41,6 @@ enum GermanPrompts {
 
 #if defined(VOICE)
 
-/* The list bellow MUST be kept in sync with /radio/util/tts_de.py */
-char const * deUnitsFilenames[] = {
-  "volt",
-  "amp",
-  "mamp",
-  "knot",
-  "mps",
-  "fps",
-  "kph",
-  "mph",
-  "meter",
-  "foot",
-  "celsius",
-  "fahr",
-  "percent",
-  "mamph",
-  "watt",
-  "mwatt",
-  "db",
-  "rpm",
-  "g",
-  "degree",
-  "radian",
-  "ml",
-  "founce",
-  "hour",
-  "minute",
-  "second",
-};
-
 I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
@@ -149,7 +119,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
 
   if (unit) {
-    PUSH_UNIT_PROMPT((char *)deUnitsFilenames[unit-1]);
+    PUSH_UNIT_PROMPT((unit*4)-1);
   }
 }
 

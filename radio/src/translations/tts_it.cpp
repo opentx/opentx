@@ -42,36 +42,6 @@ enum ItalianPrompts {
 
 #if defined(VOICE)
 
-/* The list bellow MUST be kept in sync with /radio/util/tts_it.py */
-char const * itUnitsFilenames[] = {
-  "volt", "volt1",
-  "amp", "amp1",
-  "mamp", "mamp1",
-  "knot", "knot1",
-  "mps", "mps1",
-  "fps", "fps1",
-  "kph", "kph1",
-  "mph", "mph1",
-  "meter", "meter1",
-  "foot", "foot1",
-  "celsius", "celsius1",
-  "fahr", "fahr1",
-  "percent", "percent",
-  "mamph", "mamphs",
-  "watt", "watt1",
-  "mwatt", "mwatt1",
-  "db", "db",
-  "rpm", "rpm",
-  "g", "g",
-  "degree", "degree1",
-  "radian", "radian1",
-  "ml", "ml1",
-  "founce", "founce1",
-  "hour", "hour1",
-  "minute", "minute1",
-  "second", "second1",
-};
-
 I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
@@ -126,7 +96,7 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       if (qr.quot==1) {
         PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
         if (unit) {
-          PUSH_UNIT_PROMPT((char *)itUnitsFilenames[unit*2]);
+          PUSH_UNIT_PROMPT(unit*4);
         }
         return;
       } else {
@@ -161,9 +131,9 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   if (unit) {
     if (orignumber == 1) {
-      PUSH_UNIT_PROMPT((char *)itUnitsFilenames[unit*2]);
+      PUSH_UNIT_PROMPT(unit*2);
     } else {
-      PUSH_UNIT_PROMPT((char *)itUnitsFilenames[unit*2 + 1]);
+      PUSH_UNIT_PROMPT((unit*2) + 1);
     }
   }
 }
