@@ -32,11 +32,6 @@ enum GermanPrompts {
   DE_PROMPT_COMMA = 102,
   DE_PROMPT_UND,
   DE_PROMPT_MINUS,
-  DE_PROMPT_UHR,
-  DE_PROMPT_MINUTE,
-  DE_PROMPT_MINUTEN,
-  DE_PROMPT_SECUNDE,
-  DE_PROMPT_SECUNDEN,
 };
 
 #if defined(VOICE)
@@ -119,7 +114,17 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
 
   if (unit) {
-    PUSH_UNIT_PROMPT((unit*4)-1);
+    if (unit < UNIT_HOURS) {
+      PUSH_UNIT_PROMPT((unit-1)*4);
+    } else
+    {
+      if(number == 1) {
+        PUSH_UNIT_PROMPT((unit-1)*4);
+      } else
+      {
+        PUSH_UNIT_PROMPT(((unit-1)*4)+1);
+      }
+    }
   }
 }
 
@@ -134,27 +139,17 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, 0, 0);
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UHR);
+    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0 || ore >0) {
-    PLAY_NUMBER(tmp, 0, 0);
-    if (tmp != 1) {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
-    } else {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
+      PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
     }
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
-  }
-  PLAY_NUMBER(seconds, 0, 0);
-  if (seconds != 1) {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
-  } else {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDE);
-  }
+  PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+  PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
+
 }
 
 LANGUAGE_PACK_DECLARE(de, "Deutsch");
