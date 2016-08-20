@@ -67,7 +67,7 @@ void displayGpsTime()
   lcdInvertLastLine();
 }
 
-void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
+void drawGPSCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 {
   if (telemetryData.hub.gpsFix >= 0) {
     if (!direction) direction = '-';
@@ -99,7 +99,7 @@ void displayGpsCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
 }
 #elif !defined(CPUARM)
 #define displayGpsTime()
-#define displayGpsCoord(...)
+#define drawGPSCoord(...)
 #endif
 
 #if !defined(CPUARM)
@@ -107,9 +107,9 @@ void displayVoltageScreenLine(uint8_t y, uint8_t index)
 {
   drawStringWithIndex(0, y, STR_A, index+1, 0);
   if (TELEMETRY_STREAMING()) {
-    putsTelemetryChannelValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, telemetryData.analog[index].value, DBLSIZE);
-    lcdDrawChar(12*FW-1, y-FH, '<'); putsTelemetryChannelValue(17*FW, y-FH, index+TELEM_A1-1, telemetryData.analog[index].min, NO_UNIT);
-    lcdDrawChar(12*FW, y, '>');      putsTelemetryChannelValue(17*FW, y, index+TELEM_A1-1, telemetryData.analog[index].max, NO_UNIT);
+    drawTelemetryValue(3*FW+6*FW+4, y-FH, index+TELEM_A1-1, telemetryData.analog[index].value, DBLSIZE);
+    lcdDrawChar(12*FW-1, y-FH, '<'); drawTelemetryValue(17*FW, y-FH, index+TELEM_A1-1, telemetryData.analog[index].min, NO_UNIT);
+    lcdDrawChar(12*FW, y, '>');      drawTelemetryValue(17*FW, y, index+TELEM_A1-1, telemetryData.analog[index].max, NO_UNIT);
   }
 }
 #endif
@@ -142,10 +142,10 @@ void displayVoltagesScreen()
       break;
 #if defined(FRSKY_HUB)
     case FRSKY_VOLTS_SOURCE_FAS:
-      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_VFAS-1, telemetryData.hub.vfas, DBLSIZE);
+      drawTelemetryValue(3*FW+6*FW+4, FH, TELEM_VFAS-1, telemetryData.hub.vfas, DBLSIZE);
       break;
     case FRSKY_VOLTS_SOURCE_CELLS:
-      putsTelemetryChannelValue(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, telemetryData.hub.cellsSum, DBLSIZE);
+      drawTelemetryValue(3*FW+6*FW+4, FH, TELEM_CELLS_SUM-1, telemetryData.hub.cellsSum, DBLSIZE);
       break;
 #endif
   }
@@ -159,13 +159,13 @@ void displayVoltagesScreen()
         break;
 #if defined(FRSKY_HUB)
       case FRSKY_CURRENT_SOURCE_FAS:
-        putsTelemetryChannelValue(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, telemetryData.hub.current, DBLSIZE);
+        drawTelemetryValue(3*FW+6*FW+4, 3*FH, TELEM_CURRENT-1, telemetryData.hub.current, DBLSIZE);
         break;
 #endif
     }
 
-    putsTelemetryChannelValue(4, 5*FH, TELEM_POWER-1, telemetryData.hub.power, LEFT|DBLSIZE);
-    putsTelemetryChannelValue(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, telemetryData.hub.currentConsumption, DBLSIZE);
+    drawTelemetryValue(4, 5*FH, TELEM_POWER-1, telemetryData.hub.power, LEFT|DBLSIZE);
+    drawTelemetryValue(3*FW+4+4*FW+6*FW+FW, 5*FH, TELEM_CONSUMPTION-1, telemetryData.hub.currentConsumption, DBLSIZE);
   }
   else {
     displayVoltageScreenLine(analog > 0 ? 5*FH : 4*FH, analog ? 2-analog : 0);
@@ -198,11 +198,11 @@ void displayAfterFlightScreen()
   if (IS_GPS_AVAILABLE()) {
     // Latitude
     lcdDrawTextAlignedLeft(line, STR_LATITUDE);
-    displayGpsCoord(line, telemetryData.hub.gpsLatitudeNS, telemetryData.hub.gpsLatitude_bp, telemetryData.hub.gpsLatitude_ap);
+    drawGPSCoord(line, telemetryData.hub.gpsLatitudeNS, telemetryData.hub.gpsLatitude_bp, telemetryData.hub.gpsLatitude_ap);
     // Longitude
     line+=1*FH+1;
     lcdDrawTextAlignedLeft(line, STR_LONGITUDE);
-    displayGpsCoord(line, telemetryData.hub.gpsLongitudeEW, telemetryData.hub.gpsLongitude_bp, telemetryData.hub.gpsLongitude_ap);
+    drawGPSCoord(line, telemetryData.hub.gpsLongitudeEW, telemetryData.hub.gpsLongitude_bp, telemetryData.hub.gpsLongitude_ap);
     displayGpsTime();
     line+=1*FH+1;
   }
@@ -347,7 +347,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
 
-        putsChannel(pos[j+1]-2, (i==3 ? 1+FH+2*FH*i:FH+2*FH*i), field, att);
+        drawSourceValue(pos[j+1]-2, (i==3 ? 1+FH+2*FH*i:FH+2*FH*i), field, att);
 
       }
     }
@@ -394,7 +394,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         getvalue_t value = getValue(MIXSRC_FIRST_TELEM+field-1);
         uint8_t att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
         coord_t pos[] = {0, 65, 130};
-        putsTelemetryChannelValue(pos[j+1]-2, FH+2*FH*i, field-1, value, att);
+        drawTelemetryValue(pos[j+1]-2, FH+2*FH*i, field-1, value, att);
 
         if (field >= TELEM_TIMER1 && field <= TELEM_TIMER_MAX && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead

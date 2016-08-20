@@ -907,11 +907,16 @@ enum MixSources {
 #if defined(CPUARM)
   MIXSRC_TX_VOLTAGE,                        LUA_EXPORT("tx-voltage", "Transmitter battery voltage [volts]")
   MIXSRC_TX_TIME,                           LUA_EXPORT("clock", "RTC clock [minutes from midnight]")
-  MIXSRC_RESERVE1,
+#if defined(INTERNAL_GPS)
+  MIXSRC_TX_GPS,
+  MIXSRC_FIRST_RESERVE,
+#else
+  MIXSRC_FIRST_RESERVE,
   MIXSRC_RESERVE2,
+#endif
   MIXSRC_RESERVE3,
   MIXSRC_RESERVE4,
-  MIXSRC_RESERVE5,
+  MIXSRC_LAST_RESERVE,
   MIXSRC_FIRST_TIMER,
   MIXSRC_TIMER1 = MIXSRC_FIRST_TIMER,       LUA_EXPORT("timer1", "Timer 1 value [seconds]")
   MIXSRC_TIMER2,                            LUA_EXPORT("timer2", "Timer 2 value [seconds]")

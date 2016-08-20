@@ -171,10 +171,10 @@ void menuModelLogicalSwitches(uint8_t event)
       v2_max = getMaximumValue(v1_val);
       v2_min = - v2_max;
       if (v1_val <= MIXSRC_LAST_CH) {
-        putsChannelValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
+        drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
       }
       else {
-        putsChannelValue(CSW_3RD_COLUMN, y, v1_val, cs->v2, LEFT|attr2);
+        drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, cs->v2, LEFT|attr2);
       }
     }
 

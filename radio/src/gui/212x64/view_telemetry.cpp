@@ -72,7 +72,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
       drawSource(0, y+barHeight-5, source, 0);
       lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
       getvalue_t value = getValue(source);
-      putsChannel(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source, LEFT);
+      drawSourceValue(BAR_LEFT+2+BAR_WIDTH, y+barHeight-5, source, LEFT);
       uint8_t thresholdX = 0;
       int width = barCoord(value, barMin, barMax);
       uint8_t barShade = SOLID;
@@ -143,7 +143,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
 
-        putsChannel(x, y, field, att);
+        drawSourceValue(x, y, field, att);
       }
     }
   }

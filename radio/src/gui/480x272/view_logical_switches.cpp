@@ -63,7 +63,7 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
   }
   else {
     drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-    putsChannelValue(CSW_3RD_COLUMN, y, cs->v1, cs->v1 <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT);
+    drawSourceCustomValue(CSW_3RD_COLUMN, y, cs->v1, cs->v1 <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT);
   }
 
   // CSW AND switch

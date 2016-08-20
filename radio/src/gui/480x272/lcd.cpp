@@ -340,7 +340,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
@@ -353,66 +353,78 @@ void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags
   }
 }
 
-void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
-}
-
-void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
-{
-}
-
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
-{
-  TelemetryItem & telemetryItem = telemetryItems[channel];
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
-
-  if (telemetrySensor.unit == UNIT_DATETIME) {
-    displayDate(x, y, telemetryItem, att);
-  }
-  else if (telemetrySensor.unit == UNIT_GPS) {
-    displayGpsCoords(x, y, telemetryItem, att);
+  if (att & DBLSIZE) {
+    x -= 42;
+    att &= ~0x0F00; // TODO constant
+    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdNextPos-1, y, '-', att);
+    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
+    lcdDrawChar(lcdNextPos-1, y, '-', att);
+    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year, att|LEFT);
+    y += FH;
+    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdNextPos, y, ':', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdNextPos, y, ':', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
-    LcdFlags flags = att;
-    if (telemetrySensor.prec==2)
-      flags |= PREC2;
-    else if (telemetrySensor.prec==1)
-      flags |= PREC1;
-    putsValueWithUnit(x, y, value, telemetrySensor.unit == UNIT_CELLS ? UNIT_VOLTS : telemetrySensor.unit, flags);
+    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdNextPos-1, y, '-', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
+    lcdDrawChar(lcdNextPos-1, y, '-', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year, att|LEFT);
+    lcdDrawNumber(lcdNextPos+11, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdNextPos, y, ':', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdNextPos, y, ':', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
 
-void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t value, LcdFlags att)
+void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds=true)
 {
-  if (channel >= MIXSRC_FIRST_TELEM) {
-    channel = (channel-MIXSRC_FIRST_TELEM) / 3;
-    putsTelemetryChannelValue(x, y, channel, value, att);
-  }
-  else if (channel >= MIXSRC_FIRST_TIMER || channel == MIXSRC_TX_TIME) {
-    drawTimer(x, y, value, att);
-  }
-  else if (channel == MIXSRC_TX_VOLTAGE) {
-    lcdDrawNumber(x, y, value, att|PREC1);
-  }
-  else if (channel < MIXSRC_FIRST_CH) {
-    lcdDrawNumber(x, y, calcRESXto100(value), att);
-  }
-  else if (channel <= MIXSRC_LAST_CH) {
-#if defined(PPM_UNIT_PERCENT_PREC1)
-    lcdDrawNumber(x, y, calcRESXto1000(value), att|PREC1);
-#else
-    lcdDrawNumber(x, y, calcRESXto100(value), att);
-#endif
+  char s[32];
+  uint32_t absvalue = abs(value);
+  char * tmp = strAppendUnsigned(s, absvalue / 1000000);
+  *tmp++ = '@';
+  absvalue = absvalue % 1000000;
+  absvalue *= 60;
+  if (g_eeGeneral.gpsFormat == 0 || !seconds) {
+    tmp = strAppendUnsigned(tmp, absvalue / 1000000, 2);
+    *tmp++ = '\'';
+    if (seconds) {
+      absvalue %= 1000000;
+      absvalue *= 60;
+      absvalue /= 100000;
+      tmp = strAppendUnsigned(tmp, absvalue / 10);
+      *tmp++ = '.';
+      tmp = strAppendUnsigned(tmp, absvalue % 10);
+      *tmp++ = '"';
+    }
   }
   else {
-    lcdDrawNumber(x, y, value, att);
+    tmp = strAppendUnsigned(tmp, absvalue / 1000000, 2);
+    *tmp++ = '.';
+    absvalue /= 1000;
+    tmp = strAppendUnsigned(tmp, absvalue, 3);
   }
+  *tmp++ = direction[value>=0 ? 0 : 1];
+  *tmp = '\0';
+  lcdDrawText(x, y, s, flags);
 }
 
-void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
+void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
 {
-  getvalue_t value = getValue(channel);
-  putsChannelValue(x, y, channel, value, att);
+  drawGPSCoord(x, y, longitude, "EW", flags);
+  drawGPSCoord(x, y+FH, latitude, "NS", flags);
+}
+
+void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags)
+{
+  drawGPSPosition(x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
 }
 
 void lcdSetContrast()

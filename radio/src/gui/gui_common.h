@@ -78,7 +78,11 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 #endif
 
 #if defined(CPUARM)
+#include "telemetry/telemetry_sensors.h"
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att=0);
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att);
+void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags);
+void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags);
 #endif
 
 void drawCurve(coord_t offset=0);

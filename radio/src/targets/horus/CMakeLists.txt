@@ -44,6 +44,7 @@ set(GUI_SRC
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
   )
+set(SRC ${SRC} gps.cpp)
 if(HELI)
   set(GUI_SRC ${GUI_SRC} model_heli.cpp)
 endif()

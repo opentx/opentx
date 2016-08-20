@@ -223,7 +223,7 @@ void displayTopBar()
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & voltsItem = telemetryItems[item];
         if (voltsItem.isAvailable()) {
-          putsTelemetryChannelValue(batt_icon_x+7*FW+2, BAR_Y+1, item, voltsItem.value, LEFT);
+          drawSensorCustomValue(batt_icon_x+7*FW+2, BAR_Y+1, item, voltsItem.value, LEFT);
           altitude_icon_x = lcdLastPos+1;
         }
       }
@@ -237,7 +237,7 @@ void displayTopBar()
         if (altitudeItem.isAvailable()) {
           LCD_ICON(altitude_icon_x, BAR_Y, ICON_ALTITUDE);
           int32_t value = altitudeItem.value / g_model.telemetrySensors[item].getPrecDivisor();
-          putsValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, g_model.telemetrySensors[item].unit, LEFT);
+          drawValueWithUnit(altitude_icon_x+2*FW-1, BAR_Y+1, value, g_model.telemetrySensors[item].unit, LEFT);
         }
       }
     }

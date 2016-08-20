@@ -178,7 +178,7 @@ void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags fl
   if (prec > 0) {
     flags |= (prec == 1 ? PREC1 : PREC2);
   }
-  putsValueWithUnit(x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
+  drawValueWithUnit(x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
 }
 
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)

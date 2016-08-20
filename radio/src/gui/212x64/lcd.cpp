@@ -645,7 +645,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0) & (~RIGHT), 2);
 }
 
-// TODO to be optimized with putsValueWithUnit
+// TODO to be optimized with drawValueWithUnit
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
@@ -814,7 +814,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
@@ -823,7 +823,7 @@ void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags
   }
 }
 
-void displayGpsCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
+void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
 {
   uint32_t absvalue = abs(value);
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
@@ -837,8 +837,8 @@ void displayGpsCoord(coord_t x, coord_t y, int32_t value, const char * direction
     if (seconds) {
       absvalue %= 1000000;
       absvalue *= 60;
-      absvalue /= 10000;
-      lcdDrawNumber(lcdLastPos+2, y, absvalue, att|LEFT|PREC2);
+      absvalue /= 100000;
+      lcdDrawNumber(lcdLastPos+2, y, absvalue, att|LEFT|PREC1);
       lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
       lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
       lcdLastPos += 3;
@@ -851,7 +851,7 @@ void displayGpsCoord(coord_t x, coord_t y, int32_t value, const char * direction
   lcdDrawSizedText(lcdLastPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   if (att & DBLSIZE) {
     x -= 42;
@@ -882,123 +882,18 @@ void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags a
   }
 }
 
-void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   if (att & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
     att &= ~0x0F00; // TODO constant
-    displayGpsCoord(x, y, telemetryItem.gps.longitude, "EW", att);
-    displayGpsCoord(x, y+FH, telemetryItem.gps.latitude, "NS", att);
+    drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att);
+    drawGPSCoord(x, y+FH, telemetryItem.gps.latitude, "NS", att);
   }
   else {
-    displayGpsCoord(x, y, telemetryItem.gps.longitude, "EW", att, false);
-    displayGpsCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.latitude, "NS", att, false);
+    drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att, false);
+    drawGPSCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.latitude, "NS", att, false);
   }
-}
-
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t value, LcdFlags att)
-{
-  if (channel >= MAX_TELEMETRY_SENSORS)
-    return;     // Lua luaLcdDrawChannel() can call us with a bad value
-
-  TelemetryItem & telemetryItem = telemetryItems[channel];
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
-  if (telemetrySensor.unit == UNIT_DATETIME) {
-    displayDate(x, y, telemetryItem, att);
-  }
-  else if (telemetrySensor.unit == UNIT_GPS) {
-    displayGpsCoords(x, y, telemetryItem, att);
-  }
-  else if (telemetrySensor.unit == UNIT_BITFIELD) {
-    if (IS_FRSKY_SPORT_PROTOCOL()) {
-      if (telemetrySensor.id >= RBOX_STATE_FIRST_ID && telemetrySensor.id <= RBOX_STATE_LAST_ID) {
-        if (telemetrySensor.subId == 0) {
-          if (value == 0) {
-            lcdDrawText(x, y, "OK", att);
-          }
-          else {
-            for (uint8_t i=0; i<16; i++) {
-              if (value & (1 << i)) {
-                char s[] = "CH__ KO";
-                strAppendUnsigned(&s[2], i+1, 2);
-                lcdDrawText(x, att & DBLSIZE ? y+1 : y, s, att & ~DBLSIZE);
-                break;
-              }
-            }
-          }
-        }
-        else {
-          if (value == 0) {
-            lcdDrawText(x, att & DBLSIZE ? y+1 : y, "Rx OK", att & ~DBLSIZE);
-          }
-          else {
-            static const char * const RXS_STATUS[] = {
-              "Rx1 Ovl",
-              "Rx2 Ovl",
-              "SBUS Ovl",
-              "Rx1 FS",
-              "Rx1 LF",
-              "Rx2 FS",
-              "Rx2 LF",
-              "Rx1 Lost",
-              "Rx2 Lost",
-              "Rx1 NS",
-              "Rx2 NS",
-            };
-            for (uint8_t i=0; i<DIM(RXS_STATUS); i++) {
-              if (value & (1<<i)) {
-                lcdDrawText(x, att & DBLSIZE ? y+1 : y, RXS_STATUS[i], att & ~DBLSIZE);
-                break;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  else if (telemetrySensor.unit == UNIT_TEXT) {
-    lcdDrawSizedText(x, att & DBLSIZE ? y+1 : y, telemetryItem.text, sizeof(telemetryItem.text), att & ~DBLSIZE);
-  }
-  else {
-    LcdFlags flags = att;
-    if (telemetrySensor.prec > 0) {
-      flags |= (telemetrySensor.prec==1 ? PREC1 : PREC2);
-    }
-    putsValueWithUnit(x, y, value, telemetrySensor.unit == UNIT_CELLS ? UNIT_VOLTS : telemetrySensor.unit, flags);
-  }
-}
-
-void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t value, LcdFlags att)
-{
-  if (channel >= MIXSRC_FIRST_TELEM) {
-    channel = (channel-MIXSRC_FIRST_TELEM) / 3;
-    putsTelemetryChannelValue(x, y, channel, value, att);
-  }
-  else if (channel >= MIXSRC_FIRST_TIMER || channel == MIXSRC_TX_TIME) {
-    drawTimer(x, y, value, att, att);
-  }
-  else if (channel == MIXSRC_TX_VOLTAGE) {
-    lcdDrawNumber(x, y, value, att|PREC1);
-  }
-  else if (channel < MIXSRC_FIRST_CH) {
-    lcdDrawNumber(x, y, calcRESXto100(value), att);
-  }
-  else if (channel <= MIXSRC_LAST_CH) {
-#if defined(PPM_UNIT_PERCENT_PREC1)
-    lcdDrawNumber(x, y, calcRESXto1000(value), att|PREC1);
-#else
-    lcdDrawNumber(x, y, calcRESXto100(value), att);
-#endif
-  }
-  else {
-    lcdDrawNumber(x, y, value, att);
-  }
-}
-
-void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
-{
-  getvalue_t value = getValue(channel);
-  putsChannelValue(x, y, channel, value, att);
 }
 
 void lcdSetContrast()

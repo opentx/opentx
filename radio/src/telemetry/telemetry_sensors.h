@@ -21,6 +21,8 @@
 #ifndef _TELEMETRY_SENSORS_H_
 #define _TELEMETRY_SENSORS_H_
 
+#include "telemetry.h"
+
 class TelemetryItem
 {
   public:

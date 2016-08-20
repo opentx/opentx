@@ -1635,7 +1635,7 @@ void varioWakeup();
 #endif
 
 #if defined(CPUARM)
-void putsValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
+void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
 #elif defined(TELEMETRY_FRSKY)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {
@@ -1740,6 +1740,10 @@ extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
 #else
   #define JITTER_MEASURE_ACTIVE()   (0)
 #endif
+#endif
+
+#if defined(INTERNAL_GPS)
+  #include "gps.h"
 #endif
 
 #endif // _OPENTX_H_

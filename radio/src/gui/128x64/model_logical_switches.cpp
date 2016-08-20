@@ -157,9 +157,9 @@ void menuModelLogicalSwitchOne(uint8_t event)
 #if defined(TELEMETRY_FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
 #if defined(CPUARM)
-            putsChannelValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
+            drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
 #else
-            putsTelemetryChannelValue(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
+            drawTelemetryValue(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
 #endif
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             if (cs->func == LS_FUNC_DIFFEGREATER)
@@ -276,9 +276,9 @@ void menuModelLogicalSwitches(uint8_t event)
         drawSource(CSW_2ND_COLUMN, y, v1, 0);
         if (v1 >= MIXSRC_FIRST_TELEM) {
 #if defined(CPUARM)
-          putsChannelValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
+          drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
 #else
-          putsTelemetryChannelValue(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT);
+          drawTelemetryValue(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT);
 #endif
         }
         else {
@@ -385,27 +385,13 @@ void menuModelLogicalSwitches(uint8_t event)
         INCDEC_ENABLE_CHECK(NULL);
       }
 #if defined(CPUARM)
-      putsChannelValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
+      drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
       v2_min = -30000;
       v2_max = 30000;
 #elif defined(TELEMETRY_FRSKY)
       if (v1_val >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannelValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
+        drawTelemetryValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
-#if defined(CPUARM)
-        if (cs->func == LS_FUNC_DIFFEGREATER)
-          v2_min = -v2_max;
-        else if (cs->func == LS_FUNC_ADIFFEGREATER)
-          v2_min = 0;
-        else
-          v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
-        if (horz == 2 && v2_max-v2_min > 1000)
-          INCDEC_SET_FLAG(EE_MODEL | INCDEC_REP10 | NO_INCDEC_MARKS);
-        if (cs->v2 < v2_min || cs->v2 > v2_max) {
-          cs->v2 = 0;
-          storageDirty(EE_MODEL);
-        }
-#else
         if (cstate == LS_FAMILY_OFS) {
           v2_min = -128;
           v2_max -= 128;
@@ -418,11 +404,10 @@ void menuModelLogicalSwitches(uint8_t event)
           cs->v2 = v2_max;
           storageDirty(EE_MODEL);
         }
-#endif
       }
       else {
         lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
-#if defined(CPUARM) && defined(GVARS)
+#if defined(GVARS)
         if (v1_val >= MIXSRC_GVAR1) {
           v2_min = -1024; v2_max = +1024;
         }
@@ -434,7 +419,7 @@ void menuModelLogicalSwitches(uint8_t event)
       }
 #else
       if (v1_val >= MIXSRC_FIRST_TELEM) {
-        putsTelemetryChannelValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
+        drawTelemetryValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_min = -128; v2_max = 127;
       }
       else {

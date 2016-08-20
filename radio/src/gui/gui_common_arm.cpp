@@ -188,7 +188,7 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
-  if (source>=MIXSRC_RESERVE1 && source<=MIXSRC_RESERVE5)
+  if (source>=MIXSRC_FIRST_RESERVE && source<=MIXSRC_LAST_RESERVE)
     return false;
 
   if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {

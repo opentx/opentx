@@ -185,12 +185,12 @@ void menuModelDisplay(uint8_t event)
           int barMin = -barMax;
           if (barSource) {
             if (barSource <= MIXSRC_LAST_CH) {
-              putsChannelValue(DISPLAY_COL2, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              putsChannelValue(DISPLAY_COL3, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
+              drawSourceCustomValue(DISPLAY_COL2, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+              drawSourceCustomValue(DISPLAY_COL3, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
             }
             else {
-              putsChannelValue(DISPLAY_COL2, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              putsChannelValue(DISPLAY_COL3, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
+              drawSourceCustomValue(DISPLAY_COL2, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
+              drawSourceCustomValue(DISPLAY_COL3, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
             }
           }
           else if (attr) {

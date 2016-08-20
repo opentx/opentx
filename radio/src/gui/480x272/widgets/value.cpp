@@ -48,7 +48,9 @@ void ValueWidget::refresh()
   
   int x = zone.x;
   int y = zone.y;
-
+  
+  // TRACE("w=%d, h=%d", zone.w, zone.h);
+  
   // lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
 
   int xValue, yValue, xLabel, yLabel;
@@ -70,10 +72,13 @@ void ValueWidget::refresh()
   }
   else {
     xValue = x+NUMBERS_PADDING;
-    yValue = y+16;
+    yValue = y+18;
     xLabel = x+NUMBERS_PADDING;
     yLabel = y+2;
-    attrValue = LEFT | DBLSIZE;
+    if (field == MIXSRC_TX_GPS)
+      attrValue = LEFT | MIDSIZE;
+    else
+      attrValue = LEFT | DBLSIZE;
   }
 
   if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER) {
@@ -96,8 +101,8 @@ void ValueWidget::refresh()
 
   drawSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
   drawSource(xLabel, yLabel, field, attrLabel|CUSTOM_COLOR);
-  putsChannel(xValue + 1, yValue + 1, field, attrValue|BLACK);
-  putsChannel(xValue, yValue, field, attrValue|CUSTOM_COLOR);
+  drawSourceValue(xValue + 1, yValue + 1, field, attrValue|BLACK);
+  drawSourceValue(xValue, yValue, field, attrValue|CUSTOM_COLOR);
   
 }
 

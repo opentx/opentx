@@ -761,7 +761,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0|LEFT) & (~RIGHT), 2);
 }
 
-// TODO to be optimized with putsValueWithUnit
+// TODO to be optimized with drawValueWithUnit
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
@@ -1027,7 +1027,7 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
@@ -1036,7 +1036,7 @@ void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
   }
 }
 
-void displayGpsCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
+void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
 {
   uint32_t absvalue = abs(value);
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
@@ -1064,7 +1064,7 @@ void displayGpsCoord(coord_t x, coord_t y, int32_t value, const char * direction
   lcdDrawSizedText(lcdLastPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   if (att & DBLSIZE) {
     x -= 42;
@@ -1090,69 +1090,26 @@ void displayDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags a
   }
 }
 
-void displayGpsCoords(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
 {
-  if (att & DBLSIZE) {
+  if (flags & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
-    att &= ~0x0F00; // TODO constant
-    displayGpsCoord(x, y, telemetryItem.gps.longitude, "EW", att);
-    displayGpsCoord(x, y+FH, telemetryItem.gps.latitude, "NS", att);
+    flags &= ~0x0F00; // TODO constant
+    drawGPSCoord(x, y, longitude, "EW", flags);
+    drawGPSCoord(x, y+FH, latitude, "NS", flags);
   }
   else {
-    displayGpsCoord(x, y, telemetryItem.gps.longitude, "EW", att, false);
-    displayGpsCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.latitude, "NS", att, false);
+    drawGPSCoord(x, y, longitude, "EW", flags, false);
+    drawGPSCoord(lcdNextPos+FWNUM, y, latitude, "NS", flags, false);
   }
 }
 
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att)
+void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags)
 {
-  if (channel >= MAX_TELEMETRY_SENSORS) return;
-  TelemetryItem & telemetryItem = telemetryItems[channel];
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[channel];
-  if (telemetrySensor.unit == UNIT_DATETIME) {
-    displayDate(x, y, telemetryItem, att);
-  }
-  else if (telemetrySensor.unit == UNIT_GPS) {
-    displayGpsCoords(x, y, telemetryItem, att);
-  }
-  else {
-    LcdFlags flags = att;
-    if (telemetrySensor.prec==2)
-      flags |= PREC2;
-    else if (telemetrySensor.prec==1)
-      flags |= PREC1;
-    putsValueWithUnit(x, y, value, telemetrySensor.unit == UNIT_CELLS ? UNIT_VOLTS : telemetrySensor.unit, flags);
-  }
+  drawGPSPosition(x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
 }
-
-void putsChannelValue(coord_t x, coord_t y, source_t channel, lcdint_t value, LcdFlags att)
-{
-  if (channel >= MIXSRC_FIRST_TELEM) {
-    channel = (channel-MIXSRC_FIRST_TELEM) / 3;
-    putsTelemetryChannelValue(x, y, channel, value, att);
-  }
-  else if (channel >= MIXSRC_FIRST_TIMER || channel == MIXSRC_TX_TIME) {
-    drawTimer(x, y, value, att, att);
-  }
-  else if (channel == MIXSRC_TX_VOLTAGE) {
-    lcdDrawNumber(x, y, value, att|PREC1);
-  }
-  else {
-    if (channel <= MIXSRC_LAST_CH) {
-      value = calcRESXto100(value);
-    }
-    lcdDrawNumber(x, y, value, att);
-  }
-}
-
-void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att)
-{
-  getvalue_t value = getValue(channel);
-  putsChannelValue(x, y, channel, value, att);
-}
-
 #elif defined(TELEMETRY_FRSKY)
-void putsValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
+void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {
   convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
@@ -1172,37 +1129,21 @@ const pm_uint8_t bchunit_ar[] PROGMEM = {
   UNIT_DIST,    // GPS Alt
 };
 
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att)
+void drawTelemetryValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att)
 {
   switch (channel) {
-#if defined(CPUARM) && defined(RTCLOCK)
-    case TELEM_TX_TIME-1:
-      drawRtcTime(x, y, att);
-      break;
-#endif
     case TELEM_TIMER1-1:
     case TELEM_TIMER2-1:
-#if defined(CPUARM)
-    case TELEM_TIMER3-1:
-#endif
       att &= ~NO_UNIT;
       drawTimer(x, y, val, att, att);
       break;
-#if defined(TELEMETRY_FRSKY)
+
     case TELEM_MIN_A1-1:
     case TELEM_MIN_A2-1:
-#if defined(CPUARM)
-    case TELEM_MIN_A3-1:
-    case TELEM_MIN_A4-1:
-#endif
       channel -= TELEM_MIN_A1-TELEM_A1;
       // no break
     case TELEM_A1-1:
     case TELEM_A2-1:
-#if defined(CPUARM)
-    case TELEM_A3-1:
-    case TELEM_A4-1:
-#endif
       channel -= TELEM_A1-1;
       // A1 and A2
     {
@@ -1219,14 +1160,13 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
           att |= PREC1;
         }
       }
-      putsValueWithUnit(x, y, converted_value, g_model.frsky.channels[channel].type, att);
+      drawValueWithUnit(x, y, converted_value, g_model.frsky.channels[channel].type, att);
       break;
     }
-#endif
 
     case TELEM_CELL-1:
     case TELEM_MIN_CELL-1:
-      putsValueWithUnit(x, y, val, UNIT_VOLTS, att|PREC2);
+      drawValueWithUnit(x, y, val, UNIT_VOLTS, att|PREC2);
       break;
 
     case TELEM_TX_VOLTAGE-1:
@@ -1234,60 +1174,57 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
     case TELEM_CELLS_SUM-1:
     case TELEM_MIN_CELLS_SUM-1:
     case TELEM_MIN_VFAS-1:
-      putsValueWithUnit(x, y, val, UNIT_VOLTS, att|PREC1);
+      drawValueWithUnit(x, y, val, UNIT_VOLTS, att|PREC1);
       break;
 
     case TELEM_CURRENT-1:
     case TELEM_MAX_CURRENT-1:
-      putsValueWithUnit(x, y, val, UNIT_AMPS, att|PREC1);
+      drawValueWithUnit(x, y, val, UNIT_AMPS, att|PREC1);
       break;
 
     case TELEM_CONSUMPTION-1:
-      putsValueWithUnit(x, y, val, UNIT_MAH, att);
+      drawValueWithUnit(x, y, val, UNIT_MAH, att);
       break;
 
     case TELEM_POWER-1:
     case TELEM_MAX_POWER-1:
-      putsValueWithUnit(x, y, val, UNIT_WATTS, att);
+      drawValueWithUnit(x, y, val, UNIT_WATTS, att);
       break;
 
     case TELEM_ACCx-1:
     case TELEM_ACCy-1:
     case TELEM_ACCz-1:
-      putsValueWithUnit(x, y, val, UNIT_RAW, att|PREC2);
+      drawValueWithUnit(x, y, val, UNIT_RAW, att|PREC2);
       break;
 
     case TELEM_VSPEED-1:
-      putsValueWithUnit(x, y, div_and_round(val, 10), UNIT_RAW, att|PREC1);
+      drawValueWithUnit(x, y, div_and_round(val, 10), UNIT_RAW, att|PREC1);
       break;
 
     case TELEM_ASPEED-1:
     case TELEM_MAX_ASPEED-1:
-      putsValueWithUnit(x, y, val, UNIT_KTS, att|PREC1);
+      drawValueWithUnit(x, y, val, UNIT_KTS, att|PREC1);
       break;
 
-#if defined(CPUARM)
-    case TELEM_SWR-1:
-#endif
     case TELEM_RSSI_TX-1:
     case TELEM_RSSI_RX-1:
-      putsValueWithUnit(x, y, val, UNIT_RAW, att);
+      drawValueWithUnit(x, y, val, UNIT_RAW, att);
       break;
 
     case TELEM_HDG-1:
-      putsValueWithUnit(x, y, val, UNIT_HDG, att);
+      drawValueWithUnit(x, y, val, UNIT_HDG, att);
       break;
 
 #if defined(TELEMETRY_FRSKY_SPORT)
     case TELEM_ALT-1:
-      putsValueWithUnit(x, y, div_and_round(val, 10), UNIT_DIST, att|PREC1);
+      drawValueWithUnit(x, y, div_and_round(val, 10), UNIT_DIST, att|PREC1);
       break;
 #elif defined(WS_HOW_HIGH)
     case TELEM_ALT-1:
     case TELEM_MIN_ALT-1:
     case TELEM_MAX_ALT-1:
       if (IS_IMPERIAL_ENABLE() && IS_USR_PROTO_WS_HOW_HIGH()) {
-        putsValueWithUnit(x, y, val, UNIT_FEET, att);
+        drawValueWithUnit(x, y, val, UNIT_FEET, att);
         break;
       }
       // no break
@@ -1302,13 +1239,13 @@ void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t v
         unit = channel + 1 - TELEM_ALT;
       if (channel >= TELEM_MIN_ALT-1 && channel <= TELEM_MAX_ALT-1)
         unit = 0;
-      putsValueWithUnit(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
+      drawValueWithUnit(x, y, val, pgm_read_byte(bchunit_ar+unit), att);
       break;
     }
   }
 }
 #else // defined(TELEMETRY_FRSKY)
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, uint8_t att)
+void drawTelemetryValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, uint8_t att)
 {
   switch (channel) {
     case TELEM_TIMER1-1:

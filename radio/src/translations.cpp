@@ -64,7 +64,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VFSWFUNC)
     ISTR(VFSWRESET)
     ISTR(FUNCSOUNDS)
+#if !defined(CPUARM)
     ISTR(VTELEMCHNS)
+#endif
 #if defined(TELEMETRY_FRSKY) || defined(CPUARM)
     ISTR(VTELEMUNIT)
     ISTR(VALARM)

@@ -140,15 +140,19 @@ void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
 #if !defined(BOOT)
-void putsChannelValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
-void putsChannel(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
-void putsTelemetryChannelValue(coord_t x, coord_t y, uint8_t channel, int32_t val, LcdFlags att=0);
+void drawSourceCustomValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
+void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags flags=0);
+void drawSensorCustomValue(coord_t x, coord_t y, uint8_t source, int32_t val, LcdFlags att=0);
 #endif
 
 #define putstime_t int32_t
 
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+inline void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
+{
+  drawTimer(x, y, tme, att, att);
+}
 
 #define SOLID                          0xff
 #define DOTTED                         0x55

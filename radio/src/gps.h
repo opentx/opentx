@@ -2,6 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
+ *   cleanflight - https://github.com/cleanflight
  *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
@@ -18,27 +19,25 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#ifndef _GPS_H_
+#define _GPS_H_
 
-#if defined(FLIGHT_MODES)
-void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
+#include <inttypes.h>
+
+struct gpsdata_t
 {
-  if (idx==0) {
-    lcdDrawTextAtIndex(x, y, STR_MMMINV, 0, att); // TODO macro
-    return;
-  }
-  // TODO this code was not included in Taranis! and used with abs(...) on Horus
-  if (idx < 0) {
-    lcdDrawChar(x-2, y, '!', att);
-    idx = -idx;
-  }
-#if defined(CONDENSED)
-  if (att & CONDENSED) {
-    lcdDrawNumber(x+FW*1, y, idx-1, (att & ~CONDENSED), 1);
-    return;
-  }
-#endif
-  drawStringWithIndex(x, y, STR_FP, idx-1, att);
-}
-#endif
+  int32_t longitude;              // degrees * 1.000.000
+  int32_t latitude;               // degrees * 1.000.000
+  uint8_t fix;
+  uint8_t numSat;
+  uint32_t packetCount;
+  uint32_t errorCount;
+  uint16_t altitude;              // altitude in 0.1m
+  uint16_t speed;                 // speed in 0.1m/s
+  uint16_t groundCourse;          // degrees * 10
+};
 
+extern gpsdata_t gpsData;
+void gpsWakeup();
+
+#endif // _GPS_H_

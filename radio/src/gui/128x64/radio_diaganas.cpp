@@ -89,7 +89,7 @@ void menuRadioDiagAnalogs(uint8_t event)
 
 #if defined(TX_CAPACITY_MEASUREMENT)
   lcdDrawTextAlignedLeft(6*FH+1, STR_CURRENT_CALIB);
-  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (menuVerticalPosition==2 ? INVERS : 0)) ;
+  drawValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (menuVerticalPosition==2 ? INVERS : 0)) ;
   if (menuVerticalPosition==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
 #endif
 
@@ -103,7 +103,7 @@ void menuRadioDiagAnalogs(uint8_t event)
   #endif
 
   lcdDrawTextAlignedLeft(TEMP_CALIB_POS, STR_TEMP_CALIB);
-  putsValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (menuVerticalPosition==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
+  drawValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (menuVerticalPosition==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
   if (menuVerticalPosition==TEMP_CALIB_MENU_POS) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }

@@ -263,7 +263,7 @@ static int luaLcdDrawChannel(lua_State *L)
   }
   unsigned int att = luaL_optunsigned(L, 4, 0);
   getvalue_t value = getValue(channel);
-  putsTelemetryChannelValue(x, y, (channel-MIXSRC_FIRST_TELEM)/3, value, att);
+  drawSensorCustomValue(x, y, (channel-MIXSRC_FIRST_TELEM)/3, value, att);
   return 0;
 }
 

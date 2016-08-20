@@ -389,7 +389,7 @@ void menuRadioSetup(uint8_t event)
 #if defined(TX_CAPACITY_MEASUREMENT)
       case ITEM_SETUP_CAPACITY_WARNING:
         lcdDrawTextAlignedLeft(y, STR_CAPAWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
+        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
         break;
 #endif
@@ -397,7 +397,7 @@ void menuRadioSetup(uint8_t event)
 #if defined(PCBSKY9X)
       case ITEM_SETUP_TEMPERATURE_WARNING:
         lcdDrawTextAlignedLeft(y, STR_TEMPWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
+        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
         if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
         break;
 #endif

@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+Fifo<uint8_t, 64> gpsRxFifo;
+
 void gpsInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -76,8 +78,13 @@ extern "C" void GPS_USART_IRQHandler(void)
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = GPS_USART->DR;
     if (!(status & USART_FLAG_ERRORS)) {
-      // TODO gpsRxFifo.push(data);
+      gpsRxFifo.push(data);
     }
     status = GPS_USART->SR;
   }
+}
+
+uint8_t gpsGetByte(uint8_t * byte)
+{
+  return gpsRxFifo.pop(*byte);
 }

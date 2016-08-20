@@ -325,7 +325,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BATTERY_WARNING:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERYWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, UNIT_VOLTS, attr|PREC1|LEFT);
+        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, UNIT_VOLTS, attr|PREC1|LEFT);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;
 
@@ -350,7 +350,7 @@ bool menuRadioSetup(event_t event)
 #if defined(PCBSKY9X)
       case ITEM_SETUP_CAPACITY_WARNING:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CAPAWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
+        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
         break;
 #endif
@@ -358,7 +358,7 @@ bool menuRadioSetup(event_t event)
 #if defined(PCBSKY9X)
       case ITEM_SETUP_TEMPERATURE_WARNING:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TEMPWARNING);
-        putsValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
+        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
         break;
 #endif
