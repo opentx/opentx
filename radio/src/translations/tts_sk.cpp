@@ -69,6 +69,7 @@ enum SlovakPrompts {
 
 I18N_PLAY_FUNCTION(sk, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+  unitprompt *= 4;
   if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else if (number > 1 && number < 5)
@@ -214,7 +215,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    SK_PUSH_UNIT_PROMPT(tmp, (SK_PROMPT_UNITS_BASE+((unit-1)*4)));
+    SK_PUSH_UNIT_PROMPT(tmp, (unit-1));
   }
 }
 
@@ -228,17 +229,17 @@ I18N_PLAY_FUNCTION(sk, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKY);
+    PLAY_NUMBER(tmp, UNIT_HOURS, ZENSKY);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, UNIT_MINUTES+1, ZENSKY);
+    PLAY_NUMBER(tmp, UNIT_MINUTES, ZENSKY);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, UNIT_SECONDS+1, ZENSKY);
+    PLAY_NUMBER(seconds, UNIT_SECONDS, ZENSKY);
   }
 }
 

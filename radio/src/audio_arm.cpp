@@ -1267,12 +1267,15 @@ void audioEvent(unsigned int index)
 
 void pushUnit(uint8_t unit, uint8_t id=0)
 {
-  char path[AUDIO_FILENAME_MAXLEN+1];
+  if (unit < 104)
+  {
+    char path[AUDIO_FILENAME_MAXLEN+1];
   
-  getSystemAudioPath(path);
-  strcat(path, unitsFilenames[unit]);
-  strcat(path, SOUNDS_EXT);  
-  audioQueue.playFile(path, 0, id);
+    getSystemAudioPath(path);
+    strcat(path, unitsFilenames[unit]);
+    strcat(path, SOUNDS_EXT);  
+    audioQueue.playFile(path, 0, id);
+  }
 }
 
 

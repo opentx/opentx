@@ -204,7 +204,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PL_PUSH_UNIT_PROMPT(tmp, (unit-1)*4);
+    PL_PUSH_UNIT_PROMPT(tmp, unit-1);
   }
 }
 

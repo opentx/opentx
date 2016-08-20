@@ -131,9 +131,9 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   if (unit) {
     if (orignumber == 1) {
-      PUSH_UNIT_PROMPT(unit*2);
+      PUSH_UNIT_PROMPT((unit-1)*4);
     } else {
-      PUSH_UNIT_PROMPT((unit*2) + 1);
+      PUSH_UNIT_PROMPT(((unit-1)*4) + 1);
     }
   }
 }
@@ -151,11 +151,7 @@ I18N_PLAY_FUNCTION(it, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0) {
     ore=tmp;
     if (tmp > 1 || IS_PLAY_TIME()) {
-      PLAY_NUMBER(tmp, 0, 0);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_ORE);
-    } else {
-      PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_ORA);
+      PLAY_NUMBER(tmp, UNIT_HOURS, 0);
     }
   }
   if (seconds>0) {
@@ -165,26 +161,14 @@ I18N_PLAY_FUNCTION(it, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_NUMBER_PROMPT(IT_PROMPT_E);
     }
     if (tmp > 0) {
-      if (tmp != 1) {
-        PLAY_NUMBER(tmp, 0, 0);
-        PUSH_NUMBER_PROMPT(IT_PROMPT_MINUTI);
-      } else {
-        PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
-        PUSH_NUMBER_PROMPT(IT_PROMPT_MINUTO);
-      }
+      PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
     }
     if ((tmp>0 || ore>0) && seconds>0) {
       PUSH_NUMBER_PROMPT(IT_PROMPT_E);
     }
   }
   if (seconds != 0 || (ore==0 && tmp==0)) {
-    if (seconds != 1) {
-      PLAY_NUMBER(seconds, 0, 0);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_SECONDI);
-    } else {
-      PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_SECONDO);
-    }
+    PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
   }
 }
 

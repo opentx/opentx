@@ -115,9 +115,9 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   
   if (unit) {
     if  (tmpNumber == 1 ) 
-      PUSH_UNIT_PROMPT(unit*4);   // Singular prompts
+      PUSH_UNIT_PROMPT((unit-1)*4);   // Singular prompts
     else
-      PUSH_UNIT_PROMPT((unit*4)+1); // Plural prompts
+      PUSH_UNIT_PROMPT(((unit-1)*4)+1); // Plural prompts
   }
 }
 

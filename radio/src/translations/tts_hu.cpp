@@ -128,7 +128,7 @@ I18N_PLAY_FUNCTION(hu, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    HU_PUSH_UNIT_PROMPT(tmp, HU_PROMPT_UNITS_BASE + unit*2);
+    HU_PUSH_UNIT_PROMPT(tmp, unit-1);
   }
 }
 
