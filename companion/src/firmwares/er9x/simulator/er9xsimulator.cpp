@@ -48,7 +48,7 @@ namespace Er9x {
 uint8_t pxxFlag = 0;
 int16_t g_anas[7];
 
-#define isBacklightEnable() (PORTB & (1<<OUT_B_LIGHT))
+#define isBacklightEnabled() (PORTB & (1<<OUT_B_LIGHT))
 
 uint16_t anaIn(uint8_t chan)
 {
@@ -152,7 +152,7 @@ void simuSetKey(uint8_t key, bool state)
   }
 }
 
-#define isBacklightEnable() (PORTB & (1<<OUT_B_LIGHT))
+#define isBacklightEnabled() (PORTB & (1<<OUT_B_LIGHT))
 
 }
 

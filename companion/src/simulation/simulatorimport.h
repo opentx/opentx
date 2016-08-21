@@ -81,7 +81,7 @@ for (int fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 #ifdef LCDCHANGED_IMPORT
 #undef LCDCHANGED_IMPORT
 if (simuLcdRefresh) {
-  lightEnable = isBacklightEnable();
+  lightEnable = isBacklightEnabled();
   simuLcdRefresh = false;
   return true;
 }

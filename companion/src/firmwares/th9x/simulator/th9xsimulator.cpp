@@ -157,7 +157,7 @@ void simuSetKey(uint8_t key, bool state)
   }
 }
 
-#define isBacklightEnable() (PORTB & (1<<OUT_B_LIGHT))
+#define isBacklightEnabled() (PORTB & (1<<OUT_B_LIGHT))
 
 }
 
