@@ -23,7 +23,7 @@
 
 #include "../common/avr/board_avr.h"
 
-//Mods for futur use ? Beta tester love it 
+//Mods for futur use ? Beta tester love it
 //#define ROTENC_DIV2 // rotenc resolution/2
 
 // Board driver
@@ -31,17 +31,17 @@ void boardInit(void);
 #define boardOff()  pwrOff()
 
 // Keys
-#define KEYS_GPIO_REG_MENU        pinl                          
+#define KEYS_GPIO_REG_MENU        pinl
 #define KEYS_GPIO_PIN_MENU        (1<<4)
-#define KEYS_GPIO_REG_EXIT        pinl                          
+#define KEYS_GPIO_REG_EXIT        pinl
 #define KEYS_GPIO_PIN_EXIT        (1<<5)
-#define KEYS_GPIO_REG_RIGHT       pinl                          
+#define KEYS_GPIO_REG_RIGHT       pinl
 #define KEYS_GPIO_PIN_RIGHT       (1<<2)
-#define KEYS_GPIO_REG_LEFT        pinl                          
+#define KEYS_GPIO_REG_LEFT        pinl
 #define KEYS_GPIO_PIN_LEFT        (1<<3)
-#define KEYS_GPIO_REG_UP          pinl                          
+#define KEYS_GPIO_REG_UP          pinl
 #define KEYS_GPIO_PIN_UP          (1<<1)
-#define KEYS_GPIO_REG_DOWN        pinl                          
+#define KEYS_GPIO_REG_DOWN        pinl
 #define KEYS_GPIO_PIN_DOWN        (1<<0)
 
 // Trims
@@ -78,12 +78,12 @@ void boardInit(void);
 // Backlight driver
 #define backlightEnable()         PORTC |= (1<<OUT_C_LIGHT)
 #define backlightDisable()        PORTC &= ~(1<<OUT_C_LIGHT)
-#define isBacklightEnable()       PORTC & (1<<OUT_C_LIGHT)
-#define BACKLIGHT_ENABLE()             backlightEnable()
-#define BACKLIGHT_DISABLE()            backlightDisable()
+#define isBacklightEnabled()      PORTC & (1<<OUT_C_LIGHT)
+#define BACKLIGHT_ENABLE()        backlightEnable()
+#define BACKLIGHT_DISABLE()       backlightDisable()
 
 // SD driver
-#define BLOCK_SIZE                     512 /* Block Size in Bytes */
+#define BLOCK_SIZE                512 /* Block Size in Bytes */
 #define sdDone()
 #define SD_IS_HC()                (0)
 #define SD_GET_SPEED()            (0)
@@ -94,60 +94,60 @@ void sdPoll10ms(void);
 #endif
 
 // Switchs driver
-#define INP_C_ID2                 1    
-#define INP_C_ID1                 0    
-#define INP_D_AileDR              7    
-#define INP_G_ThrCt               2    
-#define INP_G_Gear                1    
-#define INP_G_RuddDR              0    
-#define INP_L_ElevDR              6    
-#define INP_L_Trainer             7    
+#define INP_C_ID2                 1
+#define INP_C_ID1                 0
+#define INP_D_AileDR              7
+#define INP_G_ThrCt               2
+#define INP_G_Gear                1
+#define INP_G_RuddDR              0
+#define INP_L_ElevDR              6
+#define INP_L_Trainer             7
 
 // Servitudes driver
 #define INP_E_PPM_IN              7    //not used (reserved)
 #define INP_B_WTV_BUSY            7    //WTV20SD, not used (reserved)
-#define OUT_B_PPM                 6    
-#define OUT_B_SIM_CTL             5    
+#define OUT_B_PPM                 6
+#define OUT_B_SIM_CTL             5
 #define OUT_B_BUZZER              4
 #define INP_D_I2C_SCL             1
 #define INP_D_I2C_SDA             0
 #define OUT_E_WTV_DATA            3    //WTV20SD
 #define INP_E_TELEM_RX            1
-#define OUT_E_TELEM_TX            0    
+#define OUT_E_TELEM_TX            0
 #define OUT_G_WTV_CLK             5    //WTV20SD
-#define INP_H_RF_Activated        6    
-#define INP_H_DSC_Activated       5    //not used, reserved for pwrCheck()                                                                         
-#define INP_H_Hold_Power          4    //not used, reserved for pwrCheck() 
+#define INP_H_RF_Activated        6
+#define INP_H_DSC_Activated       5    //not used, reserved for pwrCheck()
+#define INP_H_Hold_Power          4    //not used, reserved for pwrCheck()
 #define OUT_H_Speaker             3
 #define OUT_H_WTV_RESET           1    //WTV20SD
 #define OUT_H_HAPTIC              0
-  
+
 // Rotary encoders driver
-#define INP_E_ROT_ENC_1_A         4    
-#define INP_E_ROT_ENC_1_B         5    
-#define INP_D_ROT_ENC_2_A         2    
-#define INP_D_ROT_ENC_2_B         3    
-#define INP_J_ROT_ENC_1_PUSH      0    
-#define INP_J_ROT_ENC_2_PUSH      1    
-#define REA_DOWN()                (~PINJ & (1<<INP_J_ROT_ENC_1_PUSH))   
-#define REB_DOWN()                (~PINJ & (1<<INP_J_ROT_ENC_2_PUSH))   
-#define ROTENC_DOWN()             (REA_DOWN() || REB_DOWN())            
+#define INP_E_ROT_ENC_1_A         4
+#define INP_E_ROT_ENC_1_B         5
+#define INP_D_ROT_ENC_2_A         2
+#define INP_D_ROT_ENC_2_B         3
+#define INP_J_ROT_ENC_1_PUSH      0
+#define INP_J_ROT_ENC_2_PUSH      1
+#define REA_DOWN()                (~PINJ & (1<<INP_J_ROT_ENC_1_PUSH))
+#define REB_DOWN()                (~PINJ & (1<<INP_J_ROT_ENC_2_PUSH))
+#define ROTENC_DOWN()             (REA_DOWN() || REB_DOWN())
 
 // LCD driver
-#define PORTA_LCD_DAT            PORTA    
-#define PORTC_LCD_CTRL           PORTC 
+#define PORTA_LCD_DAT            PORTA
+#define PORTC_LCD_CTRL           PORTC
 #if defined(LCD_KS108)				// (For KS108 LCd only) MEGA R/W pin always at 0 state in Opentx then
 #define OUT_C_LCD_CS2            6	// Use this pin to control second KS108
 #else								// And connect LCD R/W pin to ground via a 1k resistor
-#define OUT_C_LCD_RnW            6        
+#define OUT_C_LCD_RnW            6
 #endif
-#define OUT_C_LCD_E              7        
-#define OUT_C_LCD_A0             5        
-#define OUT_C_LCD_RES            4        
-#define OUT_C_LCD_CS1            3        
+#define OUT_C_LCD_E              7
+#define OUT_C_LCD_A0             5
+#define OUT_C_LCD_RES            4
+#define OUT_C_LCD_CS1            3
 #define OUT_C_LIGHT              2
 
-// DBLKeys driver                         
+// DBLKeys driver
 #define KEYS_PRESSED()            (~PINL)
 
 // Power driver

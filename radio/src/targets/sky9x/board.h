@@ -279,7 +279,7 @@ extern "C" {
 // Backlight driver
 #define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
 #define backlightDisable()             (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
-#define isBacklightEnable()            (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
+#define isBacklightEnabled()           (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #define BACKLIGHT_ENABLE()             backlightEnable()
 #define BACKLIGHT_DISABLE()            backlightDisable()
 

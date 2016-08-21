@@ -352,7 +352,7 @@ void backlightEnable(uint8_t dutyCycle);
 #endif
 #define BACKLIGHT_ENABLE()    backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : 100-g_eeGeneral.backlightBright)
 #define BACKLIGHT_DISABLE()   backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : g_eeGeneral.blOffBright)
-#define isBacklightEnable()   true
+#define isBacklightEnabled()  true
 
 // USB driver
 int usbPlugged(void);

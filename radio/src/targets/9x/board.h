@@ -143,16 +143,16 @@ bool checkSlaveMode();
 #if defined(PWM_BACKLIGHT)
   void backlightEnable();
   void backlightDisable();
-  bool isBacklightEnable();
+  bool isBacklightEnabled();
   void backlightFade();
 #elif defined(SP22)
   #define backlightEnable()        PORTB &= ~(1<<OUT_B_LIGHT)
   #define backlightDisable()       PORTB |=  (1<<OUT_B_LIGHT)
-  #define isBacklightEnable()      (~PORTB & (1<<OUT_B_LIGHT))
+  #define isBacklightEnabled()     (~PORTB & (1<<OUT_B_LIGHT))
 #else
   #define backlightEnable()        PORTB |=  (1<<OUT_B_LIGHT)
   #define backlightDisable()       PORTB &= ~(1<<OUT_B_LIGHT)
-  #define isBacklightEnable()      (PORTB &  (1<<OUT_B_LIGHT))
+  #define isBacklightEnabled()     (PORTB &  (1<<OUT_B_LIGHT))
 #endif
 #if defined(VOICE) && !defined(SIMU)
   #define BACKLIGHT_ENABLE()           Voice.Backlight = 1

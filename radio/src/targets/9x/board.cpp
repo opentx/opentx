@@ -349,7 +349,7 @@ void backlightDisable()
   bl_target = g_eeGeneral.blOffBright;
 }
 
-bool isBacklightEnable()
+bool isBacklightEnabled()
 {
   return (bl_target==g_eeGeneral.blOnBright);
 }

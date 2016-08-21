@@ -54,7 +54,7 @@ void backlightDisable()
   BACKLIGHT_TIMER->CCR2 = 0;
 }
 
-uint8_t isBacklightEnable()
+uint8_t isBacklightEnabled()
 {
   return (BACKLIGHT_TIMER->CCR1 != 0 || BACKLIGHT_TIMER->CCR2 != 0);
 }
@@ -93,7 +93,7 @@ void backlightDisable()
   BACKLIGHT_TIMER->CCR2 = 0;
 }
 
-uint8_t isBacklightEnable()
+uint8_t isBacklightEnabled()
 {
   return (BACKLIGHT_TIMER->CCR4 != 0 || BACKLIGHT_TIMER->CCR2 != 0);
 }
@@ -127,7 +127,7 @@ void backlightDisable()
   BACKLIGHT_TIMER->CCR2 = 0;
 }
 
-uint8_t isBacklightEnable()
+uint8_t isBacklightEnabled()
 {
   return BACKLIGHT_TIMER->CCR2 != 0;
 }
@@ -161,7 +161,7 @@ void backlightDisable()
   BACKLIGHT_TIMER->CCR1 = 0;
 }
 
-uint8_t isBacklightEnable()
+uint8_t isBacklightEnabled()
 {
   return BACKLIGHT_TIMER->CCR1 != 0;
 }

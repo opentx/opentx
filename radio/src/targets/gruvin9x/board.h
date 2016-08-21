@@ -90,7 +90,7 @@ void sdPoll10ms();
 #define OUT_C_LIGHT                    0
 #define backlightEnable()              PORTC |=  (1<<OUT_C_LIGHT)
 #define backlightDisable()             PORTC &= ~(1<<OUT_C_LIGHT)
-#define isBacklightEnable()            (PORTC & (1<<OUT_C_LIGHT))
+#define isBacklightEnabled()           (PORTC & (1<<OUT_C_LIGHT))
 #define BACKLIGHT_ENABLE()             backlightEnable()
 #define BACKLIGHT_DISABLE()            backlightDisable()
 
