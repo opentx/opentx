@@ -1095,15 +1095,16 @@ void checkSDVersion()
     FRESULT result = f_open(&versionFile, "/opentx.sdcard.version", FA_OPEN_EXISTING | FA_READ);
     if ((result == FR_OK) && (f_size(&versionFile) == sizeof(REQUIRED_SDCARD_VERSION))) {
       f_read(&versionFile, &version, sizeof(REQUIRED_SDCARD_VERSION), &read);
-      f_close(&versionFile);
       if (strncmp(version, REQUIRED_SDCARD_VERSION, sizeof(REQUIRED_SDCARD_VERSION)-1) != 0) {
         TRACE("sdCheckVersion FAILED: version are not the same");
         ALERT(STR_SDCARDVERSIONWARN, STR_WRONG_SDCARDVERSION, AU_ERROR);
       }
-    } else {
+    }
+    else {
       TRACE("sdCheckVersion FAILED: opentx.sdcard.version cannot be opened");
       ALERT(STR_SDCARDVERSIONWARN, STR_WRONG_SDCARDVERSION, AU_ERROR);
     }
+    f_close(&versionFile);
   }
 }
 #endif
