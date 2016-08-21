@@ -1084,6 +1084,27 @@ void doSplash()
 #define doSplash()
 #endif
 
+#if defined(SDCARD)
+void checkSDVersion()
+{
+  if (sdMounted()) {
+    FIL versionFile = {0};
+    UINT read = 0;
+    char version[sizeof(REQUIRED_SDCARD_VERSION)];
+
+    FRESULT result = f_open(&versionFile, "/opentx.sdcard.version", FA_OPEN_EXISTING | FA_READ);
+    if ((result == FR_OK) && (f_size(&versionFile) == sizeof(REQUIRED_SDCARD_VERSION))) {
+      f_read(&versionFile, &version, sizeof(REQUIRED_SDCARD_VERSION), &read);
+    }
+    f_close(&versionFile);
+    if (strncmp(version, REQUIRED_SDCARD_VERSION, sizeof(REQUIRED_SDCARD_VERSION)-1) != 0) {
+      TRACE("sdCheckVersion FAILED");
+      ALERT(STR_SDCARDVERSIONWARN, STR_WRONG_SDCARDVERSION, AU_ERROR);
+    }
+  }  
+}
+#endif
+
 #if defined(PCBTARANIS)
 void checkFailsafe()
 {
@@ -1116,6 +1137,10 @@ void checkAll()
   }
   checkSwitches();
   checkFailsafe();
+#endif
+
+#if defined(SDCARD)
+  checkSDVersion();
 #endif
 
 #if defined(CPUARM)
