@@ -869,6 +869,8 @@
 #define TR_ALARMSWARN          "ALARMES"
 #define TR_SWITCHWARN          "CHAVES"
 #define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_SDCARDVERSIONWARN   "SD Card Check"
+#define TR_WRONG_SDCARDVERSION "Wrong SDCARD file version"
 #define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          "Inverte Acel?"
