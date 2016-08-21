@@ -51,7 +51,7 @@ for s, f, a in [(u"Voltio","volt", NO_ALTERNATE),
              (u"minutos", "minute", NO_ALTERNATE),
              (u"segundos", "second", NO_ALTERNATE),
              ]:
-             
+    systemSounds.append((s, filename(f, a)))             
 for s, f, a in [(u"me tienes abandonada", "inactiv", 486),
                 (u"batería del transmisor baja", "lowbatt", 485),
                 (u"El acelerador está activado, por favor, corrijalo", "thralert", 481),
