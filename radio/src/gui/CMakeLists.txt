@@ -40,3 +40,10 @@ if(ARCH STREQUAL ARM)
     gui/common/arm/widgets.cpp
     )
 endif()
+
+if(PCB STREQUAL FLAMENCO OR PCB STREQUAL HORUS)
+  set(SRC
+    ${SRC}
+    gui/common/colorlcd/widgets.cpp
+    )
+endif()

@@ -53,10 +53,10 @@ void menuChannelsView(uint8_t event)
 
 #ifdef MIXERS_MONITOR
   if (mixersView)
-  lcd_putsCenter(0*FH, MIXERS_MONITOR);
+  lcdDrawTextAlignedCenter(0*FH, MIXERS_MONITOR);
   else
 #endif
-  lcd_putsCenter(0*FH, CHANNELS_MONITOR);
+  lcdDrawTextAlignedCenter(0*FH, CHANNELS_MONITOR);
 
   lcdInvertLine(0);
 

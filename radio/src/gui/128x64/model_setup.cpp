@@ -1100,7 +1100,7 @@ void menuModelFailsafe(uint8_t event)
   const uint8_t SLIDER_W = 90;
   ch = 8 * (menuVerticalPosition / 8);
 
-  lcd_putsCenter(0*FH, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0*FH, FAILSAFESET);
   lcdInvertLine(0);
 
   uint8_t col = 0;

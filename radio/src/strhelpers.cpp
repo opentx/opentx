@@ -160,6 +160,36 @@ char * getStringWithIndex(char * dest, const char * s, int idx)
   return dest;
 }
 
+char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
+{
+  char * s = dest;
+  div_t qr;
+  
+  if (tme < 0) {
+    tme = -tme;
+    *s++ = '-';
+  }
+  
+  qr = div(tme, 60);
+  
+  if (hours) {
+    div_t qr2 = div(qr.quot, 60);
+    *s++ = '0' + (qr2.quot / 10);
+    *s++ = '0' + (qr2.quot % 10);
+    *s++ = ':';
+    qr.quot = qr2.rem;
+  }
+  
+  *s++ = '0' + (qr.quot / 10);
+  *s++ = '0' + (qr.quot % 10);
+  *s++ = ':';
+  *s++ = '0' + (qr.rem / 10);
+  *s++ = '0' + (qr.rem % 10);
+  *s = '\0';
+  
+  return dest;
+}
+
 char * getCurveString(char * dest, int idx)
 {
   if (idx == 0) {

@@ -511,7 +511,10 @@ int cliDisplay(const char ** argv)
     for (int i=MIXSRC_FIRST_SWITCH; i<=MIXSRC_LAST_SWITCH; i++) {
       mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
       if (SWITCH_EXISTS(sw)) {
-        serialPrint("[S%c] = %s", 'A'+sw, (switchState(3*sw) ? "down" : (switchState(3*sw+1) ? "mid" : "up")));
+        char swName[LEN_SWITCH_NAME + 1];
+        strAppend(swName, STR_VSWITCHES+1+sw*STR_VSWITCHES[0], STR_VSWITCHES[0]);
+        static const char * const SWITCH_POSITIONS[] = { "down", "mid", "up" };
+        serialPrint("[%s] = %s", swName, SWITCH_POSITIONS[1 + getValue(i) / 1024]);
       }
     }
   }

@@ -94,7 +94,7 @@ extern Layout * customScreens[MAX_CUSTOM_SCREENS];
 extern Topbar * topbar;
 
 void drawAlertBox(const char * title, const char * text, const char * action);
-void showAlertBox(const pm_char * title, const pm_char * text, const char * action, uint8_t sound);
+void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound);
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
 #define IS_TELEMETRY_VIEW_DISPLAYED()  false

@@ -64,7 +64,7 @@ void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_
   lcdNextPos = x + width;
 }
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
+void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
 {
   uint32_t fontindex = FONTINDEX(flags);
   const pm_uchar * font = fontsTable[fontindex];
@@ -210,51 +210,16 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
 }
 #endif
 
-void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
+void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
 {
-  drawTimer(x, y, getValue(MIXSRC_TX_TIME), att);
+  drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
 }
 
-void getTimerString(char * str, putstime_t tme, LcdFlags att)
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags flags)
 {
-  div_t qr;
-
-  if (tme < 0) {
-    // TODO lcdDrawChar(x - ((att & DBLSIZE) ? FW+2 : ((att & MIDSIZE) ? FW+0 : FWNUM)), y, '-', att);
-    tme = -tme;
-    *str++ = '-';
-  }
-
-  qr = div(tme, 60);
-
-  if (att & TIMEHOUR) {
-    div_t qr2 = div(qr.quot, 60);
-    *str++ = '0' + (qr2.quot/10);
-    *str++ = '0' + (qr2.quot%10);
-    *str++ = ':';
-    qr.quot = qr2.rem;
-  }
-
-  *str++ = '0' + (qr.quot/10);
-  *str++ = '0' + (qr.quot%10);
-  *str++ = ':';
-  *str++ = '0' + (qr.rem/10);
-  *str++ = '0' + (qr.rem%10);
-  *str = '\0';
-}
-
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
-{
-  char str[LEN_TIMER_STRING]; // "-00:00:00"
-  getTimerString(str, tme, att);
-  lcdDrawText(x, y, str, att);
-}
-
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, int idx, LcdFlags att, const char * prefix)
-{
-  char s[64];
-  strAppendUnsigned(strAppend(strAppend(s, prefix), str), abs(idx));
-  lcdDrawText(x, y, s, att);
+  char str[LEN_TIMER_STRING];
+  getTimerString(str, tme, flags & TIMEHOUR);
+  lcdDrawText(x, y, str, flags);
 }
 
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
@@ -275,7 +240,7 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
   lcdDrawTextAtIndex(x, y, STR_RETA123, idx-1, att);
 }
 
-void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
+void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att)
 {
   uint8_t len = sizeof(g_model.header.name);
   while (len>0 && !name[len-1]) --len;
@@ -355,6 +320,7 @@ void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags
 
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
+  // TODO
   if (att & DBLSIZE) {
     x -= 42;
     att &= ~0x0F00; // TODO constant

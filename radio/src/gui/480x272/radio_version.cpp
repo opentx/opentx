@@ -37,7 +37,7 @@ bool menuRadioVersion(event_t event)
   DEBUG_TIMER_STOP(debugTimerDrawText);
 
   // TODO EEPROM erase + backup
-  // lcd_putsCenter(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
+  // lcdDrawTextAlignedCenter(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
   // if (event == EVT_KEY_LONG(KEY_ENTER)) {
   //   eepromBackup();
   // }

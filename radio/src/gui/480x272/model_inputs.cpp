@@ -159,6 +159,7 @@ enum ExposFields {
   EXPO_FIELD_INPUT_NAME,
   EXPO_FIELD_NAME,
   EXPO_FIELD_SOURCE,
+  EXPO_FIELD_SCALE,
   EXPO_FIELD_WEIGHT,
   EXPO_FIELD_OFFSET,
   CASE_CURVES(EXPO_FIELD_CURVE)
@@ -175,7 +176,7 @@ bool menuModelExpoOne(event_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
 
-  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, ICON_MODEL_INPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)1 : (uint8_t)0), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU_WITH_OPTIONS(STR_MENUINPUTS, ICON_MODEL_INPUTS, EXPO_FIELD_MAX, OPTION_MENU_NO_FOOTER|OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, (ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW), 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
   lcdDrawSizedText(50, 3+FH, g_model.inputNames[ed->chn], LEN_INPUT_NAME, ZCHAR|MENU_TITLE_COLOR);
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 230, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
@@ -242,6 +243,12 @@ bool menuModelExpoOne(event_t event)
         else if (attr) {
           menuHorizontalPosition = 0;
         }
+        break;
+  
+      case EXPO_FIELD_SCALE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SCALE);
+        drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
+        if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
 
       case EXPO_FIELD_WEIGHT:

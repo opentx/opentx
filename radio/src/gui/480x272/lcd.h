@@ -107,9 +107,9 @@ extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
 extern coord_t lcdNextPos;
 
-void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags attr=0);
+void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
 
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags attr=0);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags=0);
 
 inline void lcdClear()
 {
@@ -141,14 +141,8 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
 #define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
-void drawSourceCustomValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags att=0);
-void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
-void drawSensorCustomValue(coord_t x, coord_t y, uint8_t channel, int32_t val, LcdFlags att=0);
-
 #define putstime_t int32_t
 
-#define LEN_TIMER_STRING               10
-void getTimerString(char * str, putstime_t tme, LcdFlags att=0);
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 

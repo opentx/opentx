@@ -45,7 +45,7 @@ void runPopupWarningBox()
   // lcdDrawBitmap(POPUP_X+15, POPUP_Y+20, LBM_WARNING);
 }
 
-void displayMessageBox()
+void drawMessageBox()
 {
   // theme->drawMessageBox("", "", "", MESSAGEBOX_TYPE_INFO);
   // lcdDrawSolidFilledRect(POPUP_X, POPUP_Y, POPUP_W, POPUP_H, TEXT_BGCOLOR);
@@ -69,7 +69,7 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
 
 void showMessageBox(const char * title)
 {
-  // displayMessageBox();
+  // drawMessageBox();
   lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN, DBLSIZE|WARNING_COLOR);
   lcdRefresh();
 }

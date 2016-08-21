@@ -33,7 +33,7 @@ bool menuRadioTrainer(event_t event)
   MENU(STR_MENUTRAINER, RADIO_ICONS, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
-    // TODO lcd_putsCenter(5*FH, STR_SLAVE, TEXT_COLOR);
+    // TODO lcdDrawTextAlignedCenter(5*FH, STR_SLAVE, TEXT_COLOR);
     return true;
   }
 

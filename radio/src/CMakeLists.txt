@@ -143,7 +143,7 @@ else()
   add_definitions(-DEEPROM)
 endif()
 
-if(NOT ${EEPROM} STREQUAL SDCARD AND ARCH STREQUAL ARM)
+if(ARCH STREQUAL ARM AND NOT PCB STREQUAL HORUS AND NOT PCB STREQUAL FLAMENCO)
   set(SRC ${SRC} storage/eeprom_conversions.cpp)
 endif()
 

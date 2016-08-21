@@ -162,7 +162,7 @@ void lcdDrawText(coord_t x, coord_t y, const pm_char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const pm_char * s);
 
-#define lcd_putsCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
 
 #if defined(CPUARM)
   void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
@@ -200,14 +200,7 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
-#if !defined(BOOT)
-void drawSourceCustomValue(coord_t x, coord_t y, source_t channel, lcdint_t val, LcdFlags att=0);
-void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags att=0);
-#endif
-
-#if defined(CPUARM)
-void drawSensorCustomValue(coord_t x, coord_t y, uint8_t channel, lcdint_t value, LcdFlags att);
-#else
+#if !defined(CPUARM)
 void drawTelemetryValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, LcdFlags att=0);
 #endif
 

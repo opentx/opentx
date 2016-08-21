@@ -130,7 +130,7 @@ bool menuTextView(event_t event)
 #if defined(SIMU)
   if (!strncmp(title, "./", 2)) title += 2;
 #endif
-  lcd_putsCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
+  lcdDrawTextAlignedCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
 #endif
 
   drawVerticalScrollbar(LCD_W-5, 50, 195, menuVerticalOffset, lines_count, NUM_BODY_LINES);

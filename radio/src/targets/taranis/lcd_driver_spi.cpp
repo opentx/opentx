@@ -70,14 +70,14 @@ void lcdHardwareInit()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(LCD_NCS_GPIO, &GPIO_InitStructure);
-  
+
   GPIO_InitStructure.GPIO_Pin = LCD_RST_GPIO_PIN;
   GPIO_Init(LCD_RST_GPIO, &GPIO_InitStructure);
-  
+
   GPIO_InitStructure.GPIO_Pin = LCD_A0_GPIO_PIN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(LCD_SPI_GPIO, &GPIO_InitStructure);
-  
+
   GPIO_InitStructure.GPIO_Pin = LCD_CLK_GPIO_PIN | LCD_MOSI_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_Init(LCD_SPI_GPIO, &GPIO_InitStructure);
@@ -319,7 +319,7 @@ void lcdInitFinish()
   
   lcdStart();
   lcdWriteCommand(0xAF); // dc2=1, IC into exit SLEEP MODE, dc3=1 gray=ON, dc4=1 Green Enhanc mode disabled
-  delay_ms(20);      //needed for internal DC-DC converter startup
+  delay_ms(20); // needed for internal DC-DC converter startup
 }
 
 void lcdSetRefVolt(uint8_t val)

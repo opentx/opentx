@@ -171,7 +171,7 @@ bool menuModelLogicalSwitches(event_t event)
         INCDEC_ENABLE_CHECK(NULL);
       }
       v2_max = getMaximumValue(v1_val);
-      v2_min = - v2_max;
+      v2_min = -v2_max;
       drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT|attr2);
     }
 

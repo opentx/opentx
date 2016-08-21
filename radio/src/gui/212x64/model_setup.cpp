@@ -1068,7 +1068,7 @@ void menuModelFailsafe(uint8_t event)
     lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
   }
 
-  lcd_putsCenter(0*FH, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0*FH, FAILSAFESET);
   lcdInvertLine(0);
 
   unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
