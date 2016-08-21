@@ -311,20 +311,50 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   }
 }
 
-#if !defined(PCBTARANIS) && !defined(PCBHORUS)
+#if defined(EEPROM_RAW)
+uint8_t Spi_complete = 1;
+void * eeprom_write_function(void *)
+{
+  while (!sem_wait(eeprom_write_sem)) {
+    if (!eeprom_thread_running)
+      return NULL;
+    if (eeprom_read_operation) {
+      assert(eeprom_buffer_size);
+      eepromReadBlock(eeprom_buffer_data, eeprom_pointer, eeprom_buffer_size);
+    }
+    else {
+      if (fp) {
+        if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
+          perror("error in fseek");
+      }
+      while (--eeprom_buffer_size) {
+        assert(eeprom_buffer_size > 0);
+        if (fp) {
+          if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
+            perror("error in fwrite");
+        }
+        else {
+          memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
+        }
+        eeprom_pointer++;
+        eeprom_buffer_data++;
+  
+        if (fp && eeprom_buffer_size == 1) {
+          fflush(fp);
+        }
+      }
+    }
+    Spi_complete = 1;
+  }
+  return 0;
+}
+#elif !defined(PCBTARANIS) && !defined(PCBHORUS)
 bool eeprom_thread_running = true;
 void * eeprom_write_function(void *)
 {
   while (!sem_wait(eeprom_write_sem)) {
     if (!eeprom_thread_running)
       return NULL;
-#if defined(CPUARM)
-    if (eeprom_read_operation) {
-      assert(eeprom_buffer_size);
-      eepromReadBlock(eeprom_buffer_data, eeprom_pointer, eeprom_buffer_size);
-    }
-    else {
-#endif
     if (fp) {
       if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
         perror("error in fseek");
@@ -334,9 +364,7 @@ void * eeprom_write_function(void *)
       if (fp) {
         if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
           perror("error in fwrite");
-#if !defined(CPUARM)
         sleep(5/*ms*/);
-#endif
       }
       else {
         memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
@@ -348,10 +376,6 @@ void * eeprom_write_function(void *)
         fflush(fp);
       }
     }
-#if defined(CPUARM)
-    }
-    Spi_complete = 1;
-#endif
   }
   return 0;
 }
@@ -1414,3 +1438,39 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
   pthread_create(&tid, NULL, start_routine, (void *)task);
   return tid;
 }
+
+#if defined(EEPROM_RAW)
+void eepromBlockErase(uint32_t address)
+{
+  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE]; // can't be on the stack!
+  memset(erasedBlock, 0xff, sizeof(erasedBlock));
+  eeprom_pointer = address;
+  eeprom_buffer_data = erasedBlock;
+  eeprom_buffer_size = EEPROM_BLOCK_SIZE;
+  eeprom_read_operation = false;
+  Spi_complete = false;
+  sem_post(eeprom_write_sem);
+}
+
+void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size)
+{
+  assert(size);
+  eeprom_pointer = address;
+  eeprom_buffer_data = buffer;
+  eeprom_buffer_size = size;
+  eeprom_read_operation = true;
+  Spi_complete = false;
+  sem_post(eeprom_write_sem);
+}
+
+void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size)
+{
+  assert(size);
+  eeprom_pointer = address;
+  eeprom_buffer_data = buffer;
+  eeprom_buffer_size = size + 1;
+  eeprom_read_operation = false;
+  Spi_complete = false;
+  sem_post(eeprom_write_sem);
+}
+#endif

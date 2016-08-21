@@ -206,7 +206,6 @@ extern uint32_t eeprom_pointer;
 extern uint8_t * eeprom_buffer_data;
 extern volatile int32_t eeprom_buffer_size;
 extern bool eeprom_read_operation;
-extern volatile uint32_t Spi_complete;
 #endif
 
 #if defined(CPUARM)
@@ -490,5 +489,9 @@ extern char simuSdDirectory[1024];
 #if !defined(SIMU_DISKIO)
   #define sdMounted()      (true)
 #endif
+
+void eepromBlockErase(uint32_t address);
+void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size);
+void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size);
 
 #endif // _SIMPGMSPACE_H_

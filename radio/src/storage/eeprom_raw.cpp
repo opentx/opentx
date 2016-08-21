@@ -24,8 +24,6 @@
 #include "opentx.h"
 #include "timers.h"
 
-#define EEPROM_SIZE           (4*1024*1024/8)
-#define EEPROM_BLOCK_SIZE     (4*1024)
 #define EEPROM_MARK           0x84697771 /* thanks ;) */
 #define EEPROM_ZONE_SIZE      (8*1024)
 #define EEPROM_BUFFER_SIZE    256
@@ -63,14 +61,6 @@ uint32_t eepromWriteDestinationAddr;
 uint16_t eepromFatAddr = 0;
 uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE] __DMA;
 
-void eepromWaitSpiComplete()
-{
-  while (!Spi_complete) {
-    SIMU_SLEEP(5/*ms*/);
-  }
-  Spi_complete = false;
-}
-
 void eepromWaitReadStatus()
 {
   while ((eepromReadStatus() & 1) != 0) {
@@ -81,20 +71,9 @@ void eepromWaitReadStatus()
 void eepromEraseBlock(uint32_t address, bool blocking=true)
 {
   // TRACE("eepromEraseBlock(%d)", address);
-
-#if defined(SIMU)
-  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE]; // can't be on the stack!
-  memset(erasedBlock, 0xff, sizeof(erasedBlock));
-  eeprom_pointer = address;
-  eeprom_buffer_data = erasedBlock;
-  eeprom_buffer_size = EEPROM_BLOCK_SIZE;
-  eeprom_read_operation = false;
-  Spi_complete = false;
-  sem_post(eeprom_write_sem);
-#else
+  
   eepromWriteEnable();
   eepromBlockErase(address);
-#endif
 
   if (blocking) {
     eepromWaitSpiComplete();
@@ -106,18 +85,7 @@ void eepromRead(uint32_t address, uint8_t * buffer, uint32_t size, bool blocking
 {
   // TRACE("eepromRead(%d, %p, %d)", address, buffer, size);
 
-#if defined(SIMU)
-  assert(size);
-  eeprom_pointer = address;
-  eeprom_buffer_data = buffer;
-  eeprom_buffer_size = size;
-  eeprom_read_operation = true;
-  Spi_complete = false;
-  sem_post(eeprom_write_sem);
-#else
   eepromReadArray(address, buffer, size);
-#endif
-
   if (blocking) {
     eepromWaitSpiComplete();
   }
@@ -127,18 +95,8 @@ void eepromWrite(uint32_t address, uint8_t * buffer, uint32_t size, bool blockin
 {
   // TRACE("eepromWrite(%d, %p, %d)", address, buffer, size);
 
-#if defined(SIMU)
-  assert(size);
-  eeprom_pointer = address;
-  eeprom_buffer_data = buffer;
-  eeprom_buffer_size = size+1;
-  eeprom_read_operation = false;
-  Spi_complete = false;
-  sem_post(eeprom_write_sem);
-#else
   eepromWriteEnable();
   eepromByteProgram(address, buffer, size);
-#endif
 
   if (blocking) {
     eepromWaitSpiComplete();
@@ -388,7 +346,7 @@ void eepromWriteProcess()
     case EEPROM_WRITING_BUFFER:
     case EEPROM_ERASING_FAT_BLOCK:
     case EEPROM_WRITING_NEW_FAT:
-      if (Spi_complete) {
+      if (eepromIsSpiComplete()) {
         eepromWriteState = EepromWriteState(eepromWriteState + 1);
       }
       break;

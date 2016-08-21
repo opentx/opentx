@@ -350,9 +350,12 @@ uint32_t pwroffPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // EEPROM driver
+#define EEPROM_SIZE           (4*1024*1024/8)
+#define EEPROM_BLOCK_SIZE     (4*1024)
 void eepromInit();
 uint32_t eepromReadStatus();
-extern volatile uint32_t Spi_complete;
+uint8_t eepromIsSpiComplete(void);
+void eepromWaitSpiComplete(void);
 void eepromWriteEnable();
 void eepromBlockErase(uint32_t address);
 void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size);

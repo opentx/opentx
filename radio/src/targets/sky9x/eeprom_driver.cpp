@@ -20,65 +20,73 @@
 
 #include "opentx.h"
 
-volatile uint32_t Spi_complete;
-uint8_t Spi_tx_buf[24] ;
+volatile uint8_t Spi_complete;
+uint8_t Spi_tx_buf[24];
 
-uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count )
+uint8_t eepromIsSpiComplete()
+{
+  return Spi_complete;
+}
+
+void eepromWaitSpiComplete()
+{
+  while (!Spi_complete) {
+    SIMU_SLEEP(5/*ms*/);
+  }
+  Spi_complete = false;
+}
+
+uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count)
 {
 #ifndef SIMU
 
-  register Spi *spiptr ;
-  register uint32_t condition ;
-  static uint8_t discard_rx_command[4] ;
+  register Spi *spiptr;
+  register uint32_t condition;
+  static uint8_t discard_rx_command[4];
 
-//  PMC->PMC_PCER0 |= 0x00200000L ;             // Enable peripheral clock to SPI
+//  PMC->PMC_PCER0 |= 0x00200000L; // Enable peripheral clock to SPI
 
-  Spi_complete = 0 ;
-  if ( comlen > 4 )
-  {
-    Spi_complete = 1 ;
-    return 0x4FFFF ;
+  Spi_complete = 0;
+  if (comlen > 4) {
+    Spi_complete = 1;
+    return 0x4FFFF;
   }
-  condition = SPI_SR_TXEMPTY ;
-  spiptr = SPI ;
-  spiptr->SPI_CR = 1 ;                    // Enable
-  (void) spiptr->SPI_RDR ;                // Dump any rx data
-  (void) spiptr->SPI_SR ;                 // Clear error flags
-  spiptr->SPI_RPR = (uint32_t)discard_rx_command ;
-  spiptr->SPI_RCR = comlen ;
-  if ( rx )
-  {
-    spiptr->SPI_RNPR = (uint32_t)rx ;
-    spiptr->SPI_RNCR = count ;
-    condition = SPI_SR_RXBUFF ;
+  condition = SPI_SR_TXEMPTY;
+  spiptr = SPI;
+  spiptr->SPI_CR = 1; // Enable
+  (void) spiptr->SPI_RDR; // Dump any rx data
+  (void) spiptr->SPI_SR; // Clear error flags
+  spiptr->SPI_RPR = (uint32_t)discard_rx_command;
+  spiptr->SPI_RCR = comlen;
+  if (rx) {
+    spiptr->SPI_RNPR = (uint32_t)rx;
+    spiptr->SPI_RNCR = count;
+    condition = SPI_SR_RXBUFF;
   }
-  spiptr->SPI_TPR = (uint32_t)command ;
-  spiptr->SPI_TCR = comlen ;
-  if ( tx )
-  {
-    spiptr->SPI_TNPR = (uint32_t)tx ;
+  spiptr->SPI_TPR = (uint32_t)command;
+  spiptr->SPI_TCR = comlen;
+  if (tx) {
+    spiptr->SPI_TNPR = (uint32_t)tx;
   }
-  else
-  {
-    spiptr->SPI_TNPR = (uint32_t)rx ;
+  else {
+    spiptr->SPI_TNPR = (uint32_t)rx;
   }
-  spiptr->SPI_TNCR = count ;
+  spiptr->SPI_TNCR = count;
 
-  spiptr->SPI_PTCR = SPI_PTCR_RXTEN | SPI_PTCR_TXTEN ;    // Start transfers
+  spiptr->SPI_PTCR = SPI_PTCR_RXTEN | SPI_PTCR_TXTEN; // Start transfers
 
   // Wait for things to get started, avoids early interrupt
-  for ( count = 0 ; count < 1000 ; count += 1 )
-  {
-    if ( ( spiptr->SPI_SR & SPI_SR_TXEMPTY ) == 0 )
+  for (count = 0; count < 1000; count += 1) {
+    if ((spiptr->SPI_SR & SPI_SR_TXEMPTY) == 0)
     {
-      break ;
+      break;
     }
   }
-  spiptr->SPI_IER = condition ;
+  spiptr->SPI_IER = condition;
 
 #endif
 
-  return 0 ;
+  return 0;
 }
 
 uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
@@ -117,7 +125,7 @@ uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
   }
   
   spiptr->SPI_CR = 2; // Disable
-  return spiptr->SPI_RDR ;
+  return spiptr->SPI_RDR;
 }
 
 enum EepromCommand {
@@ -181,18 +189,18 @@ void eepromBlockErase(uint32_t address)
 // Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
 void eepromInit()
 {
-  register Spi *spiptr ;
-  register uint32_t timer ;
+  register Spi *spiptr;
+  register uint32_t timer;
 
-  PMC->PMC_PCER0 |= 0x00200000L ;               // Enable peripheral clock to SPI
+  PMC->PMC_PCER0 |= 0x00200000L; // Enable peripheral clock to SPI
   /* Configure PIO */
-  configure_pins( 0x00007800, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
+  configure_pins(0x00007800, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP);
 
-  spiptr = SPI ;
-  timer = ( Master_frequency / 3000000 ) << 8 ;           // Baud rate 3Mb/s
-  spiptr->SPI_MR = 0x14000011 ;                           // 0001 0100 0000 0000 0000 0000 0001 0001 Master
-  spiptr->SPI_CSR[0] = 0x01180009 | timer ;               // 0000 0001 0001 1000 xxxx xxxx 0000 1001
-  NVIC_EnableIRQ(SPI_IRQn) ;
+  spiptr = SPI;
+  timer = (Master_frequency / 3000000) << 8; // Baud rate 3Mb/s
+  spiptr->SPI_MR = 0x14000011; // 0001 0100 0000 0000 0000 0000 0001 0001 Master
+  spiptr->SPI_CSR[0] = 0x01180009 | timer; // 0000 0001 0001 1000 xxxx xxxx 0000 1001
+  NVIC_EnableIRQ(SPI_IRQn);
 
   eepromWriteEnable();
   eepromWriteStatusRegister();
@@ -201,17 +209,17 @@ void eepromInit()
 #ifndef SIMU
 extern "C" void SPI_IRQHandler()
 {
-  register Spi *spiptr ;
+  register Spi *spiptr;
 
-  spiptr = SPI ;
-  SPI->SPI_IDR = 0x07FF ;                 // All interrupts off
-  spiptr->SPI_CR = 2 ;                    // Disable
-  (void) spiptr->SPI_RDR ;                // Dump any rx data
-  (void) spiptr->SPI_SR ;                 // Clear error flags
-  spiptr->SPI_PTCR = SPI_PTCR_RXTDIS | SPI_PTCR_TXTDIS ;  // Stop tramsfers
-  Spi_complete = 1 ;                                      // Indicate completion
+  spiptr = SPI;
+  SPI->SPI_IDR = 0x07FF; // All interrupts off
+  spiptr->SPI_CR = 2; // Disable
+  (void) spiptr->SPI_RDR; // Dump any rx data
+  (void) spiptr->SPI_SR; // Clear error flags
+  spiptr->SPI_PTCR = SPI_PTCR_RXTDIS | SPI_PTCR_TXTDIS; // Stop tramsfers
+  Spi_complete = 1; // Indicate completion
 
 // Power save
-//  PMC->PMC_PCER0 &= ~0x00200000L ;      // Disable peripheral clock to SPI
+//  PMC->PMC_PCER0 &= ~0x00200000L; // Disable peripheral clock to SPI
 }
 #endif
