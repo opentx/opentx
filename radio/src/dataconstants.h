@@ -127,6 +127,9 @@
 #define NUM_CYC                        3
 #define NUM_CAL_PPM                    4
 
+#if defined(SDCARD)
+#define REQUIRED_SDCARD_VERSION       "2.2V0001"
+#endif
 enum CurveType {
   CURVE_TYPE_STANDARD,
   CURVE_TYPE_CUSTOM,
