@@ -310,5 +310,6 @@ options_horus = {
     "cli": ("USB", "SERIAL", None),
     "timer3": ("TIMERS", "3", "2"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO")
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "pcbdev": ("PCBREV", "10", None),
 }

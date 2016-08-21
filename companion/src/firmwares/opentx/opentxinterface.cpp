@@ -1206,6 +1206,7 @@ void registerOpenTxFirmwares()
   firmware->addOptions(usb_options);
   firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
   addOpenTxCommonOptions(firmware);
+  firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
   firmwares.push_back(firmware);
 
   /* 9XR-Pro */
