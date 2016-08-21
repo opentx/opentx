@@ -56,9 +56,9 @@ void registerSimulators()
 #elif (!defined __GNUC__) 
     char name[MAX_PATH];
     GetModuleFileName(NULL, name, MAX_PATH);
-	QString path(name);
-	path.truncate(path.lastIndexOf('\\'));
-	dir.setPath(path);
+    QString path(name);
+    path.truncate(path.lastIndexOf('\\'));
+    dir.setPath(path);
 #else
     dir = SIMULATOR_LIB_SEARCH_PATH;
 #endif
