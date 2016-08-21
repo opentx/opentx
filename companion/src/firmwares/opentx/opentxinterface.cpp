@@ -1206,12 +1206,13 @@ void registerOpenTxFirmwares()
   firmware->addOptions(usb_options);
   firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
   addOpenTxCommonOptions(firmware);
+  firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
   firmwares.push_back(firmware);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
-  firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
+  firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu")); 
   firmware->addOption("nofp", QObject::tr("No flight modes"));
   firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
