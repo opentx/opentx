@@ -911,8 +911,7 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          TR("Przełą","Kontrola")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_SDCARDVERSIONWARN   "SD Card Check"
-#define TR_WRONG_SDCARDVERSION "Wrong SDCARD file version"
+#define TR_WRONG_SDCARDVERSION "Wrong files version"
 #define TR_NO_FAILSAFE         "Brak Failsafe"
 #define TR_KEYSTUCK            "Blokada klucza"
 #define TR_INVERT_THR          TR("Odw.Gaz?","Odwróć gaz?")

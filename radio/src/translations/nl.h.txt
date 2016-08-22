@@ -923,8 +923,7 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHAKELAAR"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_SDCARDVERSIONWARN   "SD Card Check"
-#define TR_WRONG_SDCARDVERSION "Wrong SDCARD file version"
+#define TR_WRONG_SDCARDVERSION "Wrong files version"
 #define TR_NO_FAILSAFE         TR("Failsafe niet ing.", "Failsafe niet ingesteld")
 #define TR_KEYSTUCK            "Toets klemt"
 #define TR_INVERT_THR          TR("Gas omdraaien?", "Volgas achter?")

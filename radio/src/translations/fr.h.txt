@@ -906,8 +906,7 @@
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_SDCARDVERSIONWARN   "SD Card Check"
-#define TR_WRONG_SDCARDVERSION "Wrong SDCARD file version"
+#define TR_WRONG_SDCARDVERSION "Version des fichiers incompatible"
 #define TR_NO_FAILSAFE         "Failsafe pas déf."
 #define TR_KEYSTUCK            "Touche bloquée"
 #define TR_INVERT_THR          "Inverser Gaz?"

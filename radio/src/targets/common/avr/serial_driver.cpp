@@ -35,7 +35,7 @@
  a second buffer to receive data while one buffer is being processed (slowly).
  */
 
-#ifndef SIMU
+#if !defined(SIMU)
 ISR (USART0_RX_vect)
 {
 	uint8_t iostat; //USART control and Status Register 0 A
@@ -62,7 +62,7 @@ ISR (USART0_RX_vect)
 		byte = 0;
 	}
 	//rh = UCSR0B; //USART control and Status Register 0 B
-#ifdef MAVLINK
+#if defined(TELEMETRY_MAVLINK)
 	(RXHandler)(byte);
 #endif
 
@@ -99,7 +99,8 @@ ISR(USART0_UDRE_vect)
 	if (serialTxBufferCount > 0) {
 		UDR0 = *ptrTxISR++;
 		serialTxBufferCount--;
-	} else {
+	}
+        else {
 		UCSR0B &= ~(1 << UDRIE0); // disable UDRE0 interrupt
 		serialTxState = TX_STATE_EMPTY;
 	}

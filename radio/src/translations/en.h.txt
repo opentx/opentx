@@ -886,7 +886,7 @@
 #define TR_BACKUP_MODEL        "Backup model"
 #define TR_DELETE_MODEL        "Delete model"
 #define TR_RESTORE_MODEL       "Restore model"
-#define TR_SDCARD_ERROR        "SD card error"
+#define TR_SDCARD_ERROR        TR("SD error", "SD card error")
 #define TR_NO_SDCARD           "No SD card"
 #define TR_SDCARD_FULL         "SD card full"
 #define TR_INCOMPATIBLE        "Incompatible"
@@ -898,8 +898,7 @@
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH", "CONTROL")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_SDCARDVERSIONWARN   "SD Card Check"
-#define TR_WRONG_SDCARDVERSION "Wrong SDCARD file version"
+#define TR_WRONG_SDCARDVERSION "Wrong files version"
 #define TR_NO_FAILSAFE         "Failsafe not set"
 #define TR_KEYSTUCK            "Key stuck"
 #define TR_INVERT_THR          TR("Invert thr?", "Invert throttle?")

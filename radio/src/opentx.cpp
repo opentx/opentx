@@ -1097,12 +1097,12 @@ void checkSDVersion()
       f_read(&versionFile, &version, sizeof(REQUIRED_SDCARD_VERSION), &read);
       if (strncmp(version, REQUIRED_SDCARD_VERSION, sizeof(REQUIRED_SDCARD_VERSION)-1) != 0) {
         TRACE("sdCheckVersion FAILED: version are not the same");
-        ALERT(STR_SDCARDVERSIONWARN, STR_WRONG_SDCARDVERSION, AU_ERROR);
+        ALERT(STR_SDCARD_ERROR, STR_WRONG_SDCARDVERSION, AU_ERROR);
       }
     }
     else {
       TRACE("sdCheckVersion FAILED: opentx.sdcard.version cannot be opened");
-      ALERT(STR_SDCARDVERSIONWARN, STR_WRONG_SDCARDVERSION, AU_ERROR);
+      ALERT(STR_SDCARD_ERROR, STR_WRONG_SDCARDVERSION, AU_ERROR);
     }
     f_close(&versionFile);
   }
@@ -2677,23 +2677,23 @@ int main()
   DSM2_Init();
 #endif
 
-#ifdef JETI
+#if defined(TELEMETRY_JETI)
   JETI_Init();
 #endif
 
-#ifdef ARDUPILOT
+#if defined(TELEMETRY_ARDUPILOT)
   ARDUPILOT_Init();
 #endif
 
-#ifdef NMEA
+#if defined(TELEMETRY_NMEA)
   NMEA_Init();
 #endif
 
-#ifdef MAVLINK
+#if defined(TELEMETRY_MAVLINK)
   MAVLINK_Init();
 #endif
 
-#ifdef MENU_ROTARY_SW
+#if defined(MENU_ROTARY_SW)
   init_rotary_sw();
 #endif
 
