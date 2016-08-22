@@ -22,5 +22,8 @@ endif()
 if(PWM_BACKLIGHT)
   add_definitions(-DPWM_BACKLIGHT)
 endif()
-set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp)
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  lcd_driver.cpp
+  )
 

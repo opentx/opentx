@@ -88,7 +88,7 @@ void perMain()
   }
 #endif
 
-  if (!eeprom_buffer_size) {
+  if (eepromIsTransferComplete()) {
     if (theFile.isWriting())
       theFile.nextWriteStep();
     else if (TIME_TO_WRITE())

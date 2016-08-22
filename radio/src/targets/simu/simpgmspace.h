@@ -199,13 +199,10 @@ extern Pwm pwm;
 #define PWM (&pwm)
 #endif
 
-extern sem_t *eeprom_write_sem;
-
-#if !defined(EEPROM_RLC)
-extern uint32_t eeprom_pointer;
-extern uint8_t * eeprom_buffer_data;
-extern volatile int32_t eeprom_buffer_size;
-extern bool eeprom_read_operation;
+#if defined(EEPROM_SIZE)
+extern uint8_t eeprom[EEPROM_SIZE];
+#else
+extern uint8_t * eeprom;
 #endif
 
 #if defined(CPUARM)
@@ -387,16 +384,6 @@ void StopEepromThread();
   #define StopAudioThread()
 #endif
 
-#if !defined(EEPROM_RLC)
-  #define EESIZE_SIMU (128*4096)
-#else
-  #define EESIZE_SIMU EESIZE
-#endif
-
-extern uint8_t eeprom[];
-extern const char * eepromFile;
-void eepromReadBlock (uint8_t * pointer_ram, uint32_t address, uint32_t size);
-
 #if !defined(CPUARM)
 #define wdt_disable(...)  sleep(1/*ms*/)
 #define wdt_enable(...)   sleep(1/*ms*/)
@@ -489,9 +476,5 @@ extern char simuSdDirectory[1024];
 #if !defined(SIMU_DISKIO)
   #define sdMounted()      (true)
 #endif
-
-void eepromBlockErase(uint32_t address);
-void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size);
-void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size);
 
 #endif // _SIMPGMSPACE_H_

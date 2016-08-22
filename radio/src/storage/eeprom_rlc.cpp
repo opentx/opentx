@@ -29,74 +29,15 @@ EeFs      eeFs;
 
 #if defined(CPUARM)
 blkid_t   freeBlocks = 0;
-#endif
-
-uint8_t  s_sync_write = false;
-
-#if !defined(CPUARM)
-uint16_t eeprom_pointer;
-uint8_t * eeprom_buffer_data;
-volatile int8_t eeprom_buffer_size = 0;
-
-#if !defined(SIMU)
-inline void eeprom_write_byte()
-{
-  EEAR = eeprom_pointer;
-  EEDR = *eeprom_buffer_data;
-// TODO add some define here
-#if defined (CPUM2560) || defined(CPUM2561)
-  EECR |= 1<<EEMPE;
-  EECR |= 1<<EEPE;
 #else
-  EECR |= 1<<EEMWE;
-  EECR |= 1<<EEWE;
-#endif
-  eeprom_pointer++;
-  eeprom_buffer_data++;
-}
-
-ISR(EE_READY_vect)
-{
-  if (--eeprom_buffer_size > 0) {
-    eeprom_write_byte();
-  }
-  else {
-#if defined(CPUM2560) || defined(CPUM2561)
-    EECR &= ~(1<<EERIE);
-#else
-    EECR &= ~(1<<EERIE);
-#endif
-  }
-}
-#endif
-
-void eepromWriteBlock(uint8_t * i_pointer_ram, uint16_t i_pointer_eeprom, size_t size)
-{
-  assert(!eeprom_buffer_size);
-
-  eeprom_pointer = i_pointer_eeprom;
-  eeprom_buffer_data = i_pointer_ram;
-  eeprom_buffer_size = size+1;
-
-#if defined(SIMU)
-  sem_post(eeprom_write_sem);
-#elif defined (CPUM2560) || defined(CPUM2561)
-  EECR |= (1<<EERIE);
-#else
-  EECR |= (1<<EERIE);
-#endif
-
-  if (s_sync_write) {
-    while (eeprom_buffer_size > 0) wdt_reset();
-  }
-}
+uint8_t s_sync_write = false;
 #endif
 
 static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 {
-  uint8_t ret;
-  eepromReadBlock(&ret, (uint16_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
-  return ret;
+  uint8_t byte;
+  eepromReadBlock(&byte, (size_t)(blk*BS+ofs+BLOCKS_OFFSET), 1);
+  return byte;
 }
 
 static blkid_t EeFsGetLink(blkid_t blk)
@@ -246,10 +187,10 @@ void storageFormat()
 {
   ENABLE_SYNC_WRITE(true);
 
-#ifdef SIMU
+#if defined(SIMU)
   // write zero to the end of the new EEPROM file to set it's proper size
-  uint8_t dummy = 0;
-  eepromWriteBlock(&dummy, EESIZE-1, 1);
+  static uint8_t dummy = 0;
+  eepromWriteBlock(&dummy, EEPROM_SIZE-1, 1);
 #endif
 
   memclear(&eeFs, sizeof(eeFs));
@@ -831,9 +772,8 @@ void RlcFile::nextRlcWriteStep()
 
 void RlcFile::flush()
 {
-#if !defined(CPUARM)
-  while (eeprom_buffer_size > 0) wdt_reset();
-#endif
+  while (!eepromIsTransferComplete())
+    wdt_reset();
 
   ENABLE_SYNC_WRITE(true);
 
@@ -1008,11 +948,11 @@ void eepromBackup()
   // open the file for writing...
   f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
   
-  for (int i=0; i<EESIZE; i+=1024) {
+  for (int i=0; i<EEPROM_SIZE; i+=1024) {
     UINT count;
     eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
-    updateProgressBar(i, EESIZE);
+    updateProgressBar(i, EEPROM_SIZE);
     SIMU_SLEEP(100/*ms*/);
   }
   

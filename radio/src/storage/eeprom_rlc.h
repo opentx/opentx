@@ -25,27 +25,16 @@
 
 #if defined(PCBTARANIS)
   #define blkid_t    uint16_t
-  #if !defined(EESIZE)
-    #if defined(REV4a)
-      #define EESIZE    (64*1024)
-    #else
-      #define EESIZE    (32*1024)
-    #endif
-  #else
-    #define EESIZE_SIMU (64*1024)
-  #endif
   #define EEFS_VERS  5
   #define MAXFILES   62
   #define BS         64
 #elif defined(CPUM2560) || defined(CPUM2561) || defined(CPUM128)
   #define blkid_t    uint8_t
-  #define EESIZE     4096
   #define EEFS_VERS  5
   #define MAXFILES   36
   #define BS         16
 #else
   #define blkid_t    uint8_t
-  #define EESIZE     2048
   #define EEFS_VERS  4
   #define MAXFILES   20
   #define BS         16
@@ -87,19 +76,15 @@ extern EeFs eeFs;
 
 #if defined(CPUM64)
 #define FIRSTBLK      (RESV/BS)
-#define BLOCKS        (EESIZE/BS)
+#define BLOCKS        (EEPROM_SIZE/BS)
 #define BLOCKS_OFFSET 0
 #else
 #define FIRSTBLK      1
-#define BLOCKS        (1+(EESIZE-RESV)/BS)
+#define BLOCKS        (1+(EEPROM_SIZE-RESV)/BS)
 #define BLOCKS_OFFSET (RESV-BS)
 #endif
 
 uint16_t EeFsGetFree();
-
-#if !defined(CPUARM)
-extern volatile int8_t eeprom_buffer_size;
-#endif
 
 class EFile
 {
@@ -134,9 +119,14 @@ class EFile
 #define ERR_FULL 1
 extern uint8_t  s_write_err;    // error reasons
 
-extern uint8_t  s_sync_write;
-#define ENABLE_SYNC_WRITE(val) s_sync_write = val;
-#define IS_SYNC_WRITE_ENABLE() s_sync_write
+#if defined(CPUARM)
+#define ENABLE_SYNC_WRITE(val)
+#define IS_SYNC_WRITE_ENABLE()         true
+#else
+#define ENABLE_SYNC_WRITE(val)         s_sync_write = val;
+#define IS_SYNC_WRITE_ENABLE()         s_sync_write
+#endif
+
 
 ///deliver current errno, this is reset in open
 inline uint8_t write_errno() { return s_write_err; }
@@ -199,6 +189,8 @@ inline void eeFlush()
 {
   theFile.flush();
 }
+
+void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size);
 
 inline bool eepromIsWriting()
 {

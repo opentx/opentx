@@ -90,7 +90,9 @@ bool OpenTxSimulator::lcdChanged(bool & lightEnable)
 
 void OpenTxSimulator::start(QByteArray & ee, bool tests)
 {
-  memcpy(eeprom, ee.data(), std::min<int>(EESIZE_SIMU, ee.size()));
+#if defined(EEPROM_SIZE)
+  memcpy(eeprom, ee.data(), std::min<int>(EEPROM_SIZE, ee.size()));
+#endif
   start((const char *)0, tests);
 }
 

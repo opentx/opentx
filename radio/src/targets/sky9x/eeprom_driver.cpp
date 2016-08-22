@@ -20,39 +20,26 @@
 
 #include "opentx.h"
 
-volatile uint8_t Spi_complete;
+volatile uint8_t Spi_complete = 1;
 uint8_t Spi_tx_buf[24];
 
-uint8_t eepromIsSpiComplete()
+uint8_t eepromIsTransferComplete()
 {
   return Spi_complete;
 }
 
-void eepromWaitSpiComplete()
-{
-  while (!Spi_complete) {
-    SIMU_SLEEP(5/*ms*/);
-  }
-  Spi_complete = false;
-}
-
 uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count)
 {
-#ifndef SIMU
-
-  register Spi *spiptr;
+  register Spi * spiptr = SPI;
   register uint32_t condition;
   static uint8_t discard_rx_command[4];
 
-//  PMC->PMC_PCER0 |= 0x00200000L; // Enable peripheral clock to SPI
-
-  Spi_complete = 0;
   if (comlen > 4) {
-    Spi_complete = 1;
     return 0x4FFFF;
   }
+
+  Spi_complete = 0;
   condition = SPI_SR_TXEMPTY;
-  spiptr = SPI;
   spiptr->SPI_CR = 1; // Enable
   (void) spiptr->SPI_RDR; // Dump any rx data
   (void) spiptr->SPI_SR; // Clear error flags
@@ -84,21 +71,14 @@ uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, reg
   }
   spiptr->SPI_IER = condition;
 
-#endif
-
   return 0;
 }
 
 uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
 {
-  register Spi *spiptr;
+  register Spi * spiptr = SPI;
   register uint32_t delay;
 
-#if defined(SIMU)
-  return 0;
-#endif
-
-  spiptr = SPI;
   spiptr->SPI_CR = 1; // Enable
   (void) spiptr->SPI_RDR; // Dump any rx data
 
@@ -146,9 +126,10 @@ void eepromPrepareCommand(EepromCommand command, uint32_t address)
   *(p+3) = address;
 }
 
-uint32_t eepromReadStatus()
+uint8_t eepromReadStatus()
 {
-  return eepromTransmitByte(COMMAND_READ_STATUS, true);
+  uint8_t read_status = eepromTransmitByte(COMMAND_READ_STATUS, true);
+  return !(read_status & 1);
 }
 
 void eepromWriteStatusRegister()
@@ -156,25 +137,27 @@ void eepromWriteStatusRegister()
   eepromTransmitByte(COMMAND_WRITE_STATUS_REGISTER, true);
 }
 
-void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size)
-{
-  eepromPrepareCommand(COMMAND_BYTE_PROGRAM, address);
-  eepromTransmitData(Spi_tx_buf, buffer, 0, 4, size);
-}
-
-void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size)
-{
-  eepromPrepareCommand(COMMAND_READ_ARRAY, address);
-  eepromTransmitData(Spi_tx_buf, 0, buffer, 4, size);
-}
-
 void eepromWriteEnable()
 {
   eepromTransmitByte(COMMAND_WRITE_ENABLE, false);
 }
 
+void eepromStartWrite(uint8_t * buffer, size_t address, size_t size)
+{
+  eepromWriteEnable();
+  eepromPrepareCommand(COMMAND_BYTE_PROGRAM, address);
+  eepromTransmitData(Spi_tx_buf, buffer, 0, 4, size);
+}
+
+void eepromStartRead(uint8_t * buffer, size_t address, size_t size)
+{
+  eepromPrepareCommand(COMMAND_READ_ARRAY, address);
+  eepromTransmitData(Spi_tx_buf, 0, buffer, 4, size);
+}
+
 void eepromBlockErase(uint32_t address)
 {
+  eepromWriteEnable();
   eepromPrepareCommand(COMMAND_BLOCK_ERASE, address);
   eepromTransmitData(Spi_tx_buf, 0, 0, 4, 0);
 }
@@ -189,14 +172,13 @@ void eepromBlockErase(uint32_t address)
 // Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
 void eepromInit()
 {
-  register Spi *spiptr;
+  register Spi * spiptr = SPI;
   register uint32_t timer;
 
   PMC->PMC_PCER0 |= 0x00200000L; // Enable peripheral clock to SPI
   /* Configure PIO */
   configure_pins(0x00007800, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP);
 
-  spiptr = SPI;
   timer = (Master_frequency / 3000000) << 8; // Baud rate 3Mb/s
   spiptr->SPI_MR = 0x14000011; // 0001 0100 0000 0000 0000 0000 0001 0001 Master
   spiptr->SPI_CSR[0] = 0x01180009 | timer; // 0000 0001 0001 1000 xxxx xxxx 0000 1001
@@ -206,20 +188,13 @@ void eepromInit()
   eepromWriteStatusRegister();
 }
 
-#ifndef SIMU
 extern "C" void SPI_IRQHandler()
 {
-  register Spi *spiptr;
-
-  spiptr = SPI;
+  register Spi * spiptr = SPI;
   SPI->SPI_IDR = 0x07FF; // All interrupts off
   spiptr->SPI_CR = 2; // Disable
   (void) spiptr->SPI_RDR; // Dump any rx data
   (void) spiptr->SPI_SR; // Clear error flags
   spiptr->SPI_PTCR = SPI_PTCR_RXTDIS | SPI_PTCR_TXTDIS; // Stop tramsfers
   Spi_complete = 1; // Indicate completion
-
-// Power save
-//  PMC->PMC_PCER0 &= ~0x00200000L; // Disable peripheral clock to SPI
 }
-#endif

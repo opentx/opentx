@@ -43,8 +43,6 @@ uint8_t MCUCSR, MCUSR, MCUCR;
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
-const char *eepromFile = NULL;
-FILE *fp = NULL;
 int g_snapshot_idx = 0;
 
 #if !defined(CPUARM)
@@ -73,22 +71,9 @@ Dacc dacc;
 Adc Adc0;
 #endif
 
-#if defined(EEPROM_RLC)
-  extern uint16_t eeprom_pointer;
-  extern uint8_t * eeprom_buffer_data;
-#else
-  uint32_t eeprom_pointer;
-  uint8_t * eeprom_buffer_data;
-  volatile int32_t eeprom_buffer_size;
-  bool eeprom_read_operation;
-#endif
-
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
 char simuSdDirectory[1024] = "";
 #endif
-
-uint8_t eeprom[EESIZE_SIMU];
-sem_t *eeprom_write_sem;
 
 void lcdInit()
 {
@@ -311,76 +296,6 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   }
 }
 
-#if defined(EEPROM_RAW)
-uint8_t Spi_complete = 1;
-void * eeprom_write_function(void *)
-{
-  while (!sem_wait(eeprom_write_sem)) {
-    if (!eeprom_thread_running)
-      return NULL;
-    if (eeprom_read_operation) {
-      assert(eeprom_buffer_size);
-      eepromReadBlock(eeprom_buffer_data, eeprom_pointer, eeprom_buffer_size);
-    }
-    else {
-      if (fp) {
-        if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
-          perror("error in fseek");
-      }
-      while (--eeprom_buffer_size) {
-        assert(eeprom_buffer_size > 0);
-        if (fp) {
-          if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
-            perror("error in fwrite");
-        }
-        else {
-          memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
-        }
-        eeprom_pointer++;
-        eeprom_buffer_data++;
-  
-        if (fp && eeprom_buffer_size == 1) {
-          fflush(fp);
-        }
-      }
-    }
-    Spi_complete = 1;
-  }
-  return 0;
-}
-#elif !defined(PCBTARANIS) && !defined(PCBHORUS)
-bool eeprom_thread_running = true;
-void * eeprom_write_function(void *)
-{
-  while (!sem_wait(eeprom_write_sem)) {
-    if (!eeprom_thread_running)
-      return NULL;
-    if (fp) {
-      if (fseek(fp, eeprom_pointer, SEEK_SET) == -1)
-        perror("error in fseek");
-    }
-    while (--eeprom_buffer_size) {
-      assert(eeprom_buffer_size > 0);
-      if (fp) {
-        if (fwrite(eeprom_buffer_data, 1, 1, fp) != 1)
-          perror("error in fwrite");
-        sleep(5/*ms*/);
-      }
-      else {
-        memcpy(&eeprom[eeprom_pointer], eeprom_buffer_data, 1);
-      }
-      eeprom_pointer++;
-      eeprom_buffer_data++;
-
-      if (fp && eeprom_buffer_size == 1) {
-        fflush(fp);
-      }
-    }
-  }
-  return 0;
-}
-#endif
-
 void StartSimu(bool tests)
 {
   s_current_protocol[0] = 255;
@@ -484,7 +399,6 @@ int32_t getVolume()
 #endif
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
-
 void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples)
 {
   for(unsigned int i=0; i<samples; i++) {
@@ -602,93 +516,10 @@ void StopAudioThread()
 }
 #endif // #if defined(SIMU_AUDIO) && defined(CPUARM)
 
-pthread_t eeprom_thread_pid;
-
-void StartEepromThread(const char *filename)
-{
-  eepromFile = filename;
-  if (eepromFile) {
-    fp = fopen(eepromFile, "rb+");
-    if (!fp)
-      fp = fopen(eepromFile, "wb+");
-    if (!fp) perror("error in fopen");
-  }
-#ifdef __APPLE__
-  eeprom_write_sem = sem_open("eepromsem", O_CREAT, S_IRUSR | S_IWUSR, 0);
-#else
-  eeprom_write_sem = (sem_t *)malloc(sizeof(sem_t));
-  sem_init(eeprom_write_sem, 0, 0);
-#endif
-
-#if !defined(PCBTARANIS) && !defined(PCBHORUS)
-  eeprom_thread_running = true;
-  assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_write_function, NULL));
-#endif
-}
-
-void StopEepromThread()
-{
-#if !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
-  eeprom_thread_running = false;
-  sem_post(eeprom_write_sem);
-  pthread_join(eeprom_thread_pid, NULL);
-#endif
-#ifdef __APPLE__
-  //TODO free semaphore eeprom_write_sem
-#else
-  sem_destroy(eeprom_write_sem);
-  free(eeprom_write_sem);
-#endif
-
-  if (fp) fclose(fp);
-}
-
-void eepromReadBlock (uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
-{
-  assert(size);
-
-  if (fp) {
-    // TRACE("EEPROM read (pos=%d, size=%d)", pointer_eeprom, size);
-    if (fseek(fp, (long)pointer_eeprom, SEEK_SET)==-1) perror("error in fseek");
-    if (fread(pointer_ram, size, 1, fp) <= 0) perror("error in fread");
-  }
-  else {
-    memcpy(pointer_ram, &eeprom[(uint64_t)pointer_eeprom], size);
-  }
-}
-
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO)
-void eepromWriteBlock(uint8_t * pointer_ram, uint32_t pointer_eeprom, uint32_t size)
-{
-  assert(size);
-
-  if (fp) {
-    // TRACE("EEPROM write (pos=%d, size=%d)", pointer_eeprom, size);
-    if (fseek(fp, (long)pointer_eeprom, SEEK_SET)==-1) perror("error in fseek");
-    if (fwrite(pointer_ram, size, 1, fp) <= 0) perror("error in fwrite");
-  }
-  else {
-    memcpy(&eeprom[(uint64_t)pointer_eeprom], pointer_ram, size);
-  }
-}
-
-#endif
-
 uint16_t stackAvailable()
 {
   return 500;
 }
-
-#if 0
-static void EeFsDump(){
-  for(int i=0; i<EESIZE; i++)
-  {
-    printf("%02x ",eeprom[i]);
-    if(i%16 == 15) puts("");
-  }
-  puts("");
-}
-#endif
 
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
 namespace simu {
@@ -1438,39 +1269,3 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
   pthread_create(&tid, NULL, start_routine, (void *)task);
   return tid;
 }
-
-#if defined(EEPROM_RAW)
-void eepromBlockErase(uint32_t address)
-{
-  static uint8_t erasedBlock[EEPROM_BLOCK_SIZE]; // can't be on the stack!
-  memset(erasedBlock, 0xff, sizeof(erasedBlock));
-  eeprom_pointer = address;
-  eeprom_buffer_data = erasedBlock;
-  eeprom_buffer_size = EEPROM_BLOCK_SIZE;
-  eeprom_read_operation = false;
-  Spi_complete = false;
-  sem_post(eeprom_write_sem);
-}
-
-void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size)
-{
-  assert(size);
-  eeprom_pointer = address;
-  eeprom_buffer_data = buffer;
-  eeprom_buffer_size = size;
-  eeprom_read_operation = true;
-  Spi_complete = false;
-  sem_post(eeprom_write_sem);
-}
-
-void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size)
-{
-  assert(size);
-  eeprom_pointer = address;
-  eeprom_buffer_data = buffer;
-  eeprom_buffer_size = size + 1;
-  eeprom_read_operation = false;
-  Spi_complete = false;
-  sem_post(eeprom_write_sem);
-}
-#endif

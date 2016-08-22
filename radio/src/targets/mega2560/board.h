@@ -188,9 +188,4 @@ void pwrOff();
 #define	WTV20SD_CLK                   (PING & 0x20)
 #endif
 
-// EEPROM driver
-#if !defined(SIMU)
-#define eepromReadBlock(a, b, c)  eeprom_read_block(a, (const void *)b, c)
-#endif
-
 #endif // _BOARD_MEGA2560_H_

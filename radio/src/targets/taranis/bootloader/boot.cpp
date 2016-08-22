@@ -594,7 +594,7 @@ int main()
         else {
           writeEepromBlock();
           eepromWritten += sizeof(Block_buffer);
-          progress = (200*eepromWritten) / EESIZE;
+          progress = (200*eepromWritten) / EEPROM_SIZE;
         }
 
         lcdDrawRect( 3, 6*FH+4, 204, 7);
@@ -609,7 +609,7 @@ int main()
         if (firmwareWritten >= FLASHSIZE - BOOTLOADER_SIZE) {
           state = ST_FLASH_DONE; // Backstop
         }
-        if (eepromWritten >= EESIZE) {
+        if (eepromWritten >= EEPROM_SIZE) {
           state = ST_FLASH_DONE; // Backstop
         }
       }

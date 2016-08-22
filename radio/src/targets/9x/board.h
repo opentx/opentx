@@ -240,9 +240,4 @@ void rotencPoll();
 #define buzzerOn()                 PORTE |=  (1 << OUT_E_BUZZER)
 #define buzzerOff()                PORTE &= ~(1 << OUT_E_BUZZER)
 
-// EEPROM driver
-#if !defined(SIMU)
-#define eepromReadBlock(a, b, c)   eeprom_read_block(a, (const void *)b, c)
-#endif
-
 #endif // _BOARD_STOCK_H_
