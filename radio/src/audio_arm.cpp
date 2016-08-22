@@ -137,6 +137,7 @@ const int16_t sineValues[] =
 #if defined(SDCARD)
 
 const char * unitsFilenames[] = {
+  "","","","",
   "volt", "volt1", "volt2", "volt3",
   "amp", "amp1", "amp2", "amp3",
   "mamp", "mamp1", "mamp2", "mamp3",
@@ -1265,6 +1266,7 @@ void audioEvent(unsigned int index)
   }
 }
 
+#if defined(SDCARD)
 void pushUnit(uint8_t unit, uint8_t id=0)
 {
   if (unit < 104)
@@ -1277,7 +1279,7 @@ void pushUnit(uint8_t unit, uint8_t id=0)
     audioQueue.playFile(path, 0, id);
   }
 }
-
+#endif
 
 void pushPrompt(uint16_t prompt, uint8_t id)
 {

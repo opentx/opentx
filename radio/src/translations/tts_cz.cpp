@@ -54,6 +54,7 @@ enum CzechPrompts {
 
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+#if defined(CPUARM)
   unitprompt *= 4;
   if (number == 1)
     PUSH_UNIT_PROMPT(unitprompt);
@@ -61,6 +62,15 @@ I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
     PUSH_UNIT_PROMPT(unitprompt+1);
   else
     PUSH_UNIT_PROMPT(unitprompt+2);
+#else
+  unitprompt = CZ_PROMPT_UNITS_BASE+((unitprompt-1)*4));
+  if (number == 1)
+    PUSH_NUMBER_PROMPT(unitprompt);
+  else if (number > 1 && number < 5)
+    PUSH_NUMBER_PROMPT(unitprompt+1);
+  else
+    PUSH_NUMBER_PROMPT(unitprompt+2);
+#endif
 }
 
 I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -104,7 +114,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         else
           CZ_PUSH_UNIT_PROMPT(qr.quot, CZ_PROMPT_CELA);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
-        PUSH_UNIT_PROMPT((unit*4)+3);
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
         return;
       }
       else
@@ -197,7 +207,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    CZ_PUSH_UNIT_PROMPT(tmp, unit-1);
+    CZ_PUSH_UNIT_PROMPT(tmp, unit);
   }
 }
 
