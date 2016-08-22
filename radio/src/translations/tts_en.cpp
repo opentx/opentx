@@ -65,7 +65,7 @@ I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
   else
     PUSH_UNIT_PROMPT(unitprompt+1);
 #else
-  unitprompt = EN_PROMPT_UNITS_BASE + unitprompt*2
+  unitprompt = EN_PROMPT_UNITS_BASE + unitprompt*2;
   if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else

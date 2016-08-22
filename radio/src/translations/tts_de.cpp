@@ -75,8 +75,8 @@ enum GermanPrompts {
 I18N_PLAY_FUNCTION(de, pushUnitPrompt, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-    unitprompt *= 4;
-    PUSH_UNIT_PROMPT(unitprompt);
+  unitprompt *= 4;
+  PUSH_UNIT_PROMPT(unitprompt);
 #else
   unitprompt = DE_PROMPT_UNITS_BASE + unitprompt*2
   PUSH_NUMBER_PROMPT(unitprompt);
@@ -184,17 +184,29 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0 || ore >0) {
     PLAY_NUMBER(tmp, 0, 0);
     if (tmp != 1) {
+#if defined(CPUARM)
       PUSH_UNIT_PROMPT((UNIT_MINUTES*4)+1);
     } else {
       PUSH_UNIT_PROMPT(UNIT_MINUTES*4);
+#else
+      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
+    } else {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
+#endif
     }
     PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
   }
   PLAY_NUMBER(seconds, 0, 0);
   if (seconds != 1) {
+#if defined(CPUARM)
     PUSH_UNIT_PROMPT((UNIT_SECONDS*4)+1);
   } else {
     PUSH_UNIT_PROMPT(UNIT_SECONDS*4);
+#else
+    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
+  } else {
+    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDE);
+#endif
   }
 }
 

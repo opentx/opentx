@@ -37,6 +37,32 @@ enum PolishPrompts {
   PL_PROMPT_CALYCH = PL_PROMPT_NUMBERS_BASE+117,
   PL_PROMPT_MINUS = PL_PROMPT_NUMBERS_BASE+118,
   PL_PROMPT_DZIESIATKI_ZENSKIE=PL_PROMPT_NUMBERS_BASE+120, // 22(0122.wav),32(123.wav),42,52,62,72,82,92(129.wav) - this are special female numbers when the unit is female
+
+  PL_PROMPT_UNITS_BASE = 160,
+  PL_PROMPT_VOLTS = PL_PROMPT_UNITS_BASE+UNIT_VOLTS, //(jeden)wolt,(dwa)wolty,(piec+)woltów i tak dla wszytkich unitów
+  PL_PROMPT_AMPS = PL_PROMPT_UNITS_BASE+(UNIT_AMPS*4),
+  PL_PROMPT_METERS_PER_SECOND = PL_PROMPT_UNITS_BASE+(UNIT_METERS_PER_SECOND*4),
+  PL_PROMPT_SPARE1 = PL_PROMPT_UNITS_BASE+(UNIT_RAW*4),
+  PL_PROMPT_KMH = PL_PROMPT_UNITS_BASE+(UNIT_SPEED*4),
+  PL_PROMPT_METERS = PL_PROMPT_UNITS_BASE+(UNIT_DIST*4),
+  PL_PROMPT_DEGREES = PL_PROMPT_UNITS_BASE+(UNIT_TEMPERATURE*4),
+  PL_PROMPT_PERCENT = PL_PROMPT_UNITS_BASE+(UNIT_PERCENT*4),
+  PL_PROMPT_MILLIAMPS = PL_PROMPT_UNITS_BASE+(UNIT_MILLIAMPS*4),
+  PL_PROMPT_MAH = PL_PROMPT_UNITS_BASE+(UNIT_MAH*4),
+  PL_PROMPT_WATTS = PL_PROMPT_UNITS_BASE+(UNIT_WATTS*4),
+  PL_PROMPT_DB = PL_PROMPT_UNITS_BASE+(UNIT_DB*4),
+  PL_PROMPT_FEET = PL_PROMPT_UNITS_BASE+(UNIT_FEET*4),
+  PL_PROMPT_KTS = PL_PROMPT_UNITS_BASE+(UNIT_KTS*4),
+  PL_PROMPT_HOURS = PL_PROMPT_UNITS_BASE+(UNIT_HOURS*4),
+  PL_PROMPT_MINUTES = PL_PROMPT_UNITS_BASE+(UNIT_MINUTES*4),
+  PL_PROMPT_SECONDS = PL_PROMPT_UNITS_BASE+(UNIT_SECONDS*4),
+  PL_PROMPT_RPMS = PL_PROMPT_UNITS_BASE+(UNIT_RPMS*4),
+  PL_PROMPT_G = PL_PROMPT_UNITS_BASE+(UNIT_G*4),
+#if defined(CPUARM)
+  PL_PROMPT_MILLILITERS = PL_PROMPT_UNITS_BASE+(UNIT_MILLILITERS*4),
+  PL_PROMPT_FLOZ = PL_PROMPT_UNITS_BASE+(UNIT_FLOZ*4),
+  PL_PROMPT_FEET_PER_SECOND = PL_PROMPT_UNITS_BASE+(UNIT_FEET_PER_SECOND*4),
+#endif
 };
 
 #if defined(VOICE)
@@ -53,6 +79,7 @@ enum PolishPrompts {
 
 I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+#if defined(CPUARM)
   unitprompt *= 4;
   if (number == 1)
     PUSH_UNIT_PROMPT(unitprompt);
@@ -68,6 +95,23 @@ I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
     else
 	PUSH_UNIT_PROMPT(unitprompt+2);
     }
+#else
+  unitprompt = PL_PROMPT_UNITS_BASE + unitprompt*4  
+  if (number == 1)
+    PUSH_NUMBER_PROMPT(unitprompt);
+  else if (number > 1 && number < 5)
+    PUSH_NUMBER_PROMPT(unitprompt+1);
+  else {
+    int test_2 =0;
+    test_2 =number % 10;
+    int ten=0;
+    ten=(number - (number % 10))/10;
+    if ((test_2 > 1 && test_2 < 5) && ten >=2)
+	PUSH_NUMBER_PROMPT(unitprompt+1);
+    else
+	PUSH_NUMBER_PROMPT(unitprompt+2);
+    }
+#endif
 }
 
 I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -111,7 +155,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       else
         PL_PUSH_UNIT_PROMPT(qr.quot, PL_PROMPT_CALA);
       PLAY_NUMBER(qr.rem, 0, ZENSKI);
-      PUSH_UNIT_PROMPT(((unit-1)*4)+3);
+      PUSH_NUMBER_PROMPT(PL_PROMPT_UNITS_BASE+((unit-1)*4)+3);
       return;
     }
     else {
@@ -165,10 +209,6 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -1;
   }
   
-
-
-
-
   if (number >= 1000) {
     if (number >= 2000) 
       PLAY_NUMBER(number / 1000, 0, 0);
@@ -204,7 +244,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PL_PUSH_UNIT_PROMPT(tmp, unit-1);
+    PL_PUSH_UNIT_PROMPT(tmp, unit);
   }
 }
 

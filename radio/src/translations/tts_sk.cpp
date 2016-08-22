@@ -69,13 +69,23 @@ enum SlovakPrompts {
 
 I18N_PLAY_FUNCTION(sk, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+#if defined(CPUARM)
   unitprompt *= 4;
+  if (number == 1)
+    PUSH_UNIT_PROMPT(unitprompt);
+  else if (number > 1 && number < 5)
+    PUSH_UNIT_PROMPT(unitprompt+1);
+  else
+    PUSH_UNIT_PROMPT(unitprompt+2);
+#else
+  unitprompt = SK_PROMPT_UNITS_BASE + unitprompt*4
   if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else if (number > 1 && number < 5)
     PUSH_NUMBER_PROMPT(unitprompt+1);
   else
     PUSH_NUMBER_PROMPT(unitprompt+2);
+#endif
 }
 
 I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -215,7 +225,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    SK_PUSH_UNIT_PROMPT(tmp, (unit-1));
+    SK_PUSH_UNIT_PROMPT(tmp, unit);
   }
 }
 
