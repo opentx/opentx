@@ -97,7 +97,7 @@ I18N_PLAY_FUNCTION(pt, pushUnitPrompt, uint8_t unitprompt)
     unitprompt *= 4;
     PUSH_UNIT_PROMPT(unitprompt);
 #else
-  unitprompt = PT_PROMPT_UNITS_BASE + unitprompt*2
+  unitprompt = PT_PROMPT_UNITS_BASE + unitprompt*2;
   PUSH_NUMBER_PROMPT(unitprompt);
 #endif
 }

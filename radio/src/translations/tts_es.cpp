@@ -102,7 +102,7 @@ I18N_PLAY_FUNCTION(es, pushUnitPrompt, uint8_t unitprompt)
     unitprompt *= 4;
     PUSH_UNIT_PROMPT(unitprompt);
 #else
-  unitprompt = ES_PROMPT_UNITS_BASE + unitprompt*2
+  unitprompt = ES_PROMPT_UNITS_BASE + unitprompt*2;
   PUSH_NUMBER_PROMPT(unitprompt);
 #endif
 }
