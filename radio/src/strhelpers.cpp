@@ -154,10 +154,9 @@ char * getStringAtIndex(char * dest, const char * s, int idx)
   return dest;
 }
 
-char * getStringWithIndex(char * dest, const char * s, int idx)
+char * strAppendStringWithIndex(char * dest, const char * s, int idx)
 {
-  strAppendUnsigned(strAppend(dest, s), abs(idx));
-  return dest;
+  return strAppendUnsigned(strAppend(dest, s), abs(idx));
 }
 
 char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
@@ -205,7 +204,7 @@ char * getCurveString(char * dest, int idx)
   if (ZEXIST(g_model.curves[idx - 1].name))
     zchar2str(s, g_model.curves[idx - 1].name, LEN_CURVE_NAME);
   else
-    getStringWithIndex(s, STR_CV, idx);
+    strAppendStringWithIndex(s, STR_CV, idx);
     
   return dest;
 }
@@ -247,20 +246,20 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
-    getStringWithIndex(s, "S", swinfo.quot*10+swinfo.rem+11);
+    strAppendStringWithIndex(s, "S", swinfo.quot*10+swinfo.rem+11);
   }
 #endif
   else if (idx <= SWSRC_LAST_TRIM) {
     getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1);
   }
   else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
-    getStringWithIndex(s, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1);
+    strAppendStringWithIndex(s, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1);
   }
   else if (idx <= SWSRC_ONE) {
     getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_ON+2+(SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM));
   }
   else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    getStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);
+    strAppendStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);
   }
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     strcpy(s, "Tele");
@@ -330,13 +329,13 @@ char * getSourceString(char * dest, mixsrc_t idx)
     getSwitchString(dest, SWSRC_SW1 + idx - MIXSRC_SW1);
   }
   else if (idx <= MIXSRC_LAST_TRAINER) {
-    getStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);
+    strAppendStringWithIndex(dest, STR_PPM_TRAINER, idx - MIXSRC_FIRST_TRAINER + 1);
   }
   else if (idx <= MIXSRC_LAST_CH) {
-    getStringWithIndex(dest, STR_CH, idx - MIXSRC_CH1 + 1);
+    strAppendStringWithIndex(dest, STR_CH, idx - MIXSRC_CH1 + 1);
   }
   else if (idx <= MIXSRC_LAST_GVAR) {
-    getStringWithIndex(dest, STR_GV, idx - MIXSRC_GVAR1 + 1);
+    strAppendStringWithIndex(dest, STR_GV, idx - MIXSRC_GVAR1 + 1);
   }
   else if (idx < MIXSRC_FIRST_TELEM) {
     getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS);
