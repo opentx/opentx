@@ -1,1 +1,0 @@
-/home/opentx/opentx/radio/util/tts_cz.py
