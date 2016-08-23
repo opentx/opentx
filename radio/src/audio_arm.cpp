@@ -1267,18 +1267,17 @@ void audioEvent(unsigned int index)
 }
 
 #if defined(SDCARD)
-void pushUnit(uint8_t unit, uint8_t idx, uint8_t id=0)
+void pushUnit(uint8_t unit, uint8_t idx, uint8_t id)
 {
-  if (unit < DIM(unitsFilenames) && idx < 5)
-  {
+  if (unit < DIM(unitsFilenames) && idx < 5) {
     char path[AUDIO_FILENAME_MAXLEN+1];
-    getSystemAudioPath(path);
-    getStringWithIndex(path, unitsFilenames[unit], (int)idx);
-    strcat(path, SOUNDS_EXT);  
-    audioQueue.playFile(path, 0, id);
+    char *tmp = strAppendSystemAudioPath(path);
+    tmp = strAppendStringWithIndex(tmp, unitsFilenames[unit], idx);
+    strcpy(tmp, SOUNDS_EXT);
+    audioQueue.playFile(tmp, 0, id);
   }
   else {
-    TRACE("Out of bounds unit : %d, %d", unit, idx);
+    TRACE("Out of bounds unit, idx : %d - %d", unit, idx);
   }
 }
 #endif
