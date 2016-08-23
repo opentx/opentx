@@ -17,7 +17,7 @@ for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
     
 # The list bellow MUST be kept in sync with /radio/src/translate/tts_fr.cpp
-for s, f, a in enumerate[(u"volts","volt0", NO_ALTERNATE),  
+for s, f, a in [(u"volts","volt0", NO_ALTERNATE),  
              (u"ampères", "amp0", NO_ALTERNATE),
              (u"milli ampères", "mamp0", NO_ALTERNATE),
              (u"knots", "knot0", NO_ALTERNATE),
