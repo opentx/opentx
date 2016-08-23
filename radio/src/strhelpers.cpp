@@ -206,6 +206,12 @@ char * strAppendFilename(char * dest, const char * filename, const int size)
   return dest;
 }
 
+char * getStringWithIndex(char * dest, const char * s, int idx)
+{
+  strAppendUnsigned(strAppend(dest, s), abs(idx));
+  return dest;
+}
+
 #if defined(RTCLOCK)
 #include "rtc.h"
 

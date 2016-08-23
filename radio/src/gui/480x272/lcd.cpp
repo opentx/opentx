@@ -26,6 +26,7 @@
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
+extern char * getStringWithIndex(char * dest, const char * s, int idx);
 
 uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
@@ -79,6 +80,15 @@ uint8_t getStringInfo(const char *s)
     result += s[i];
   }
   return result;
+}
+
+
+char * getStringAtIndex(char * dest, const char * s, int idx)
+{
+  uint8_t len = s[0];
+  strncpy(dest, s+1+len*idx, len);
+  dest[len] = '\0';
+  return dest;
 }
 
 uint8_t getFontHeight(LcdFlags flags)
@@ -261,20 +271,6 @@ void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
 {
   uint8_t length = STR_VSRCRAW[0];
   lcdDrawSizedText(x, y, STR_VSRCRAW+2+length*(idx+1), length-1, att);
-}
-
-char * getStringAtIndex(char * dest, const char * s, int idx)
-{
-  uint8_t len = s[0];
-  strncpy(dest, s+1+len*idx, len);
-  dest[len] = '\0';
-  return dest;
-}
-
-char * getStringWithIndex(char * dest, const char * s, int idx)
-{
-  strAppendUnsigned(strAppend(dest, s), abs(idx));
-  return dest;
 }
 
 char * getSwitchString(char * dest, swsrc_t idx)
