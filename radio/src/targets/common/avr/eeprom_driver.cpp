@@ -41,23 +41,23 @@ inline void eeprom_write_byte()
 }
 
 ISR(EE_READY_vect)
-  {
-    if (--eeprom_buffer_size > 0) {
-      eeprom_write_byte();
-    }
-    else {
-#if defined(CPUM2560) || defined(CPUM2561)
-      EECR &= ~(1<<EERIE);
-#else
-      EECR &= ~(1<<EERIE);
-#endif
-    }
+{
+  if (--eeprom_buffer_size > 0) {
+    eeprom_write_byte();
   }
+  else {
+#if defined(CPUM2560) || defined(CPUM2561)
+    EECR &= ~(1<<EERIE);
+#else
+    EECR &= ~(1<<EERIE);
+#endif
+  }
+}
 
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size)
 {
   assert(eeprom_buffer_size == 0);
-  
+
   eeprom_pointer = address;
   eeprom_buffer_data = buffer;
   eeprom_buffer_size = size+1;
@@ -78,7 +78,7 @@ extern uint8_t s_sync_write;
 void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size)
 {
   eepromStartWrite(buffer, address, size);
-  
+
   if (s_sync_write) {
     while (!eepromIsTransferComplete()) {
       wdt_reset();

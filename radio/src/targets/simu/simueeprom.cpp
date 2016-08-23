@@ -57,7 +57,7 @@ void eepromReadBlock (uint8_t * buffer, size_t address, size_t size)
 void eepromSimuWriteBlock(uint8_t * buffer, size_t address, size_t size)
 {
   assert(size);
-  
+
   if (fp) {
     // TRACE("EEPROM write (pos=%d, size=%d)", pointer_eeprom, size);
     if (fseek(fp, address, SEEK_SET) < 0)
@@ -132,7 +132,7 @@ void eepromStartWrite(uint8_t * buffer, size_t address, size_t size)
 void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size)
 {
   eepromStartWrite(buffer, address, size);
-  
+
   while (!eepromIsTransferComplete()) {
     sleep(1/*ms*/);
   }
@@ -156,7 +156,7 @@ void StartEepromThread(const char * filename)
   eeprom_write_sem = (sem_t *)malloc(sizeof(sem_t));
   sem_init(eeprom_write_sem, 0, 0);
 #endif
-  
+
   eeprom_thread_running = true;
   assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_thread_function, NULL));
 }
