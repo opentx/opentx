@@ -85,6 +85,22 @@ enum PortuguesePrompts {
 
 #if defined(VOICE)
 
+#if defined(CPUARM)
+  #define PT_PUSH_UNIT_PROMPT(u) pt_pushUnitPrompt((u), id)
+#else
+  #define PT_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
+#endif
+
+I18N_PLAY_FUNCTION(pt, pushUnitPrompt, uint8_t unitprompt)
+{
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+#else
+  unitprompt = PT_PROMPT_UNITS_BASE + unitprompt*2;
+  PUSH_NUMBER_PROMPT(unitprompt);
+#endif
+}
+
 I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
   if (number < 0) {
@@ -151,7 +167,7 @@ I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   PUSH_NUMBER_PROMPT(PT_PROMPT_ZERO+number);
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(PT_PROMPT_UNITS_BASE+unit-1);
+    PT_PUSH_UNIT_PROMPT(unit);
   }
 }
 
@@ -169,13 +185,25 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
     ore=tmp;
     if (tmp > 2) {
       PLAY_NUMBER(tmp, 0, 0);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
+#else
       PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
+#endif
     } else if (tmp==2) {
       PUSH_NUMBER_PROMPT(PT_PROMPT_DUAS);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
+#else
       PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
-    } else if (tmp==1) {
+#endif
+      } else if (tmp==1) {
       PUSH_NUMBER_PROMPT(PT_PROMPT_UMA);
-      PUSH_NUMBER_PROMPT(PT_PROMPT_HORA);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 0);
+#else
+      PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
+#endif
     }
   }
 
@@ -184,20 +212,36 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0 || ore >0) {
     if (tmp != 1) {
       PLAY_NUMBER(tmp, 0, 0);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
+#else
       PUSH_NUMBER_PROMPT(PT_PROMPT_MINUTOS);
+#endif
     } else {
       PUSH_NUMBER_PROMPT(PT_PROMPT_NUMBERS_BASE+1);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
+#else
       PUSH_NUMBER_PROMPT(PT_PROMPT_MINUTO);
+#endif
     }
     PUSH_NUMBER_PROMPT(PT_PROMPT_E);
   }
 
   if (seconds != 1) {
     PLAY_NUMBER(seconds, 0, 0);
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
+#else
     PUSH_NUMBER_PROMPT(PT_PROMPT_SEGUNDOS);
+#endif
   } else {
     PUSH_NUMBER_PROMPT(PT_PROMPT_NUMBERS_BASE+1);
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+#else
     PUSH_NUMBER_PROMPT(PT_PROMPT_SEGUNDO);
+#endif
   }
 }
 

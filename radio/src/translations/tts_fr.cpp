@@ -54,6 +54,22 @@ enum FrenchPrompts {
 
 #if defined(VOICE)
 
+#if defined(CPUARM)
+  #define FR_PUSH_UNIT_PROMPT(u) fr_pushUnitPrompt((u), id)
+#else
+  #define FR_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
+#endif
+
+I18N_PLAY_FUNCTION(fr, pushUnitPrompt, uint8_t unitprompt)
+{
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+#else
+  unitprompt = FR_PROMPT_UNITS_BASE + unitprompt*2;
+  PUSH_NUMBER_PROMPT(unitprompt);
+#endif
+}
+
 #define FEMININ 0x80
 
 I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -133,7 +149,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(FR_PROMPT_UNITS_BASE+unit);
+    FR_PUSH_UNIT_PROMPT(unit);
   }
 }
 
@@ -158,8 +174,7 @@ I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
     PUSH_NUMBER_PROMPT(FR_PROMPT_MIDI);
   }
   else if (tmp > 0) {
-    PLAY_NUMBER(tmp, 0, FEMININ);
-    PUSH_NUMBER_PROMPT(FR_PROMPT_HEURE);
+    PLAY_NUMBER(tmp, UNIT_HOURS, FEMININ);
   }
 
   tmp = seconds / 60;
@@ -169,16 +184,14 @@ I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
       PLAY_NUMBER(tmp, 0, tmp==1 ? FEMININ : 0);
     }
     else {
-      PLAY_NUMBER(tmp, 0, FEMININ);
-      PUSH_NUMBER_PROMPT(FR_PROMPT_MINUTE);
+      PLAY_NUMBER(tmp, UNIT_MINUTES, FEMININ);
       if (seconds > 0)
         PUSH_NUMBER_PROMPT(FR_PROMPT_ET);
     }
   }
 
   if (!IS_PLAY_TIME() && seconds > 0) {
-    PLAY_NUMBER(seconds, 0, FEMININ);
-    PUSH_NUMBER_PROMPT(FR_PROMPT_SECONDE);
+    PLAY_NUMBER(seconds, UNIT_SECONDS, FEMININ);
   }
 }
 

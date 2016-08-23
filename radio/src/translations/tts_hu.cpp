@@ -58,10 +58,18 @@ enum HungarianPrompts {
 
 I18N_PLAY_FUNCTION(hu, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+#if defined(CPUARM)
+  if (number == 1)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+  else
+    PUSH_UNIT_PROMPT(unitprompt, 1);
+#else
+  unitprompt = HU_PROMPT_UNITS_BASE + unitprompt*2;
   if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else
     PUSH_NUMBER_PROMPT(unitprompt+1);
+#endif
 }
 
 I18N_PLAY_FUNCTION(hu, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -127,7 +135,7 @@ I18N_PLAY_FUNCTION(hu, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    HU_PUSH_UNIT_PROMPT(tmp, HU_PROMPT_UNITS_BASE + unit*2);
+    HU_PUSH_UNIT_PROMPT(tmp, unit);
   }
 }
 

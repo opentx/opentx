@@ -23,6 +23,8 @@
 
 extern OS_MutexID audioMutex;
 
+extern char * getStringWithIndex(char * dest, const char * s, int idx);
+
 #if defined(SOFTWARE_VOLUME)
 extern uint8_t currentSpeakerVolume;
 #endif
@@ -135,6 +137,37 @@ const int16_t sineValues[] =
 };
 
 #if defined(SDCARD)
+
+const char * const unitsFilenames[] = {
+  "",
+  "volt",
+  "amp",
+  "mamp",
+  "knot",
+  "mps",
+  "fps",
+  "kph",
+  "mph",
+  "meter",
+  "foot",
+  "celsius",
+  "fahr",
+  "percent",
+  "mamph",
+  "watt",
+  "mwatt",
+  "db",
+  "rpm",
+  "g",
+  "degree",
+  "radian",
+  "ml",
+  "founce",
+  "hour",
+  "minute",
+  "second",
+};
+
 const char * const audioFilenames[] = {
   "hello",
   "bye",
@@ -1234,6 +1267,23 @@ void audioEvent(unsigned int index)
     }
   }
 }
+
+#if defined(SDCARD)
+void pushUnit(uint8_t unit, uint8_t idx, uint8_t id=0)
+{
+  if (unit < DIM(unitsFilenames) && idx < 5)
+  {
+    char path[AUDIO_FILENAME_MAXLEN+1];
+    getSystemAudioPath(path);
+    getStringWithIndex(path, unitsFilenames[unit], (int)idx);
+    strcat(path, SOUNDS_EXT);  
+    audioQueue.playFile(path, 0, id);
+  }
+  else {
+    TRACE("Out of bounds unit : %d, %d", unit, idx);
+  }
+}
+#endif
 
 void pushPrompt(uint16_t prompt, uint8_t id)
 {

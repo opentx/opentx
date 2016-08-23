@@ -15,34 +15,36 @@ for i, s in enumerate(["une", "onze", "vingt et une", "trente et une", "quarante
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
 for i, s in enumerate(["virgule", "et", "moins", "minuit", "midi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 119 + i)))
-for i, s in enumerate([u"volts",
-                       u"ampères",
-                       u"milli ampères",
-                       u"knots",
-                       u"mètres seconde",
-                       u"pieds par seconde",
-                       u"kilomètre heure",
-                       u"miles par heure",
-                       u"mètres",
-                       u"pieds",
-                       u"degrés",
-                       u"degrés fahrenheit",
-                       u"pourcents",
-                       u"milli ampères / heure",
-                       u"watt",
-                       u"milli watt",
-                       u"db",
-                       u"tours minute",
-                       u"g",
-                       u"degrés",
-                       u"radians",
-                       u"millilitres",
-                       u"onces",
-                       u"heure",
-                       u"minute",
-                       u"seconde"
-                       ]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 125 + i)))
+    
+# The list bellow MUST be kept in sync with /radio/src/translate/tts_fr.cpp
+for s, f, a in [(u"volts","volt0", NO_ALTERNATE),  
+             (u"ampères", "amp0", NO_ALTERNATE),
+             (u"milli ampères", "mamp0", NO_ALTERNATE),
+             (u"knots", "knot0", NO_ALTERNATE),
+             (u"mètres seconde", "mps0", NO_ALTERNATE),
+             (u"pieds par seconde", "fps0", NO_ALTERNATE),
+             (u"kilomètre heure", "kph0", NO_ALTERNATE),
+             (u"miles par heure", "mph0", NO_ALTERNATE),
+             (u"mètres", "meter0", NO_ALTERNATE),
+             (u"pieds", "foot0", NO_ALTERNATE),
+             (u"degrés", "celsius0", NO_ALTERNATE),
+             (u"degrés fahr", "degf0", NO_ALTERNATE),
+             (u"pourcents", "percent0", NO_ALTERNATE),
+             (u"milli ampères heure", "mamph0", NO_ALTERNATE),
+             (u"watt", "watt0", NO_ALTERNATE),
+             (u"milli watt", "mwatt0", NO_ALTERNATE),
+             (u"db", "db0", NO_ALTERNATE),
+             (u"tours minute", "rpm0", NO_ALTERNATE),
+             (u"g", "g0", NO_ALTERNATE),
+             (u"degrés", "degree0", NO_ALTERNATE),
+             (u"radians", "rad0", NO_ALTERNATE),
+             (u"millilitres", "ml0", NO_ALTERNATE),
+             (u"onces", "founce0", NO_ALTERNATE),
+             (u"heure", "hour0", NO_ALTERNATE),
+             (u"minute", "minute0", NO_ALTERNATE),
+             (u"seconde", "second0", NO_ALTERNATE),
+             ]:
+    systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
 for s, f, a in [(u"Trim centré", "midtrim", 495),
