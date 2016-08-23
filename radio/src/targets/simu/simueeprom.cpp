@@ -173,6 +173,6 @@ void StopEepromThread()
   sem_destroy(eeprom_write_sem);
   free(eeprom_write_sem);
 #endif
-  
+
   if (fp) fclose(fp);
 }

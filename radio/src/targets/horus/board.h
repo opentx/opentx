@@ -143,24 +143,24 @@ uint32_t isBootloaderStart(const void * buffer);
 void SDRAM_Init(void);
 
 // Pulses driver
-#define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#define IS_INTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#define IS_EXTERNAL_MODULE_ON()   (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#define IS_UART_MODULE(port)      (port == INTERNAL_MODULE)
+#define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#define INTERNAL_MODULE_OFF()          GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#define EXTERNAL_MODULE_ON()           GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
+#define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
+#define IS_UART_MODULE(port)           (port == INTERNAL_MODULE)
 
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
-void init_ppm( uint32_t module_index );
-void disable_ppm( uint32_t module_index );
-void init_pxx( uint32_t module_index );
-void disable_pxx( uint32_t module_index );
-void init_dsm2( uint32_t module_index );
-void disable_dsm2( uint32_t module_index );
-void init_crossfire( uint32_t module_index );
-void disable_crossfire( uint32_t module_index );
+void init_ppm(uint32_t module_index);
+void disable_ppm(uint32_t module_index);
+void init_pxx(uint32_t module_index);
+void disable_pxx(uint32_t module_index);
+void init_dsm2(uint32_t module_index);
+void disable_dsm2(uint32_t module_index);
+void init_crossfire(uint32_t module_index);
+void disable_crossfire(uint32_t module_index);
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -169,7 +169,6 @@ void init_trainer_capture(void);
 void stop_trainer_capture(void);
 
 // Keys driver
-#define NUM_SWITCHES                   8
 enum EnumKeys
 {
   KEY_PGUP,
@@ -211,7 +210,8 @@ enum EnumSwitches
   SW_SE,
   SW_SF,
   SW_SG,
-  SW_SH
+  SW_SH,
+  NUM_SWITCHES
 };
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
@@ -247,12 +247,14 @@ uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
-#define TRIMS_PRESSED() (readTrims())
-#define KEYS_PRESSED()  (readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(in) ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
-#define DBLKEYS_PRESSED_UP_DWN(in)  ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
-#define DBLKEYS_PRESSED_RGT_UP(in)  ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
-#define DBLKEYS_PRESSED_LFT_DWN(in) ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
+#define TRIMS_PRESSED()                (readTrims())
+#define KEYS_PRESSED()                 (readKeys())
+#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
+#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
+#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
+#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
+
+// Rotary encoder driver
 extern int32_t rotencValue;
 extern uint32_t rotencSpeed;
 #define ROTENC_LOWSPEED                1
@@ -261,15 +263,15 @@ extern uint32_t rotencSpeed;
 void checkRotaryEncoder(void);
 
 // WDT driver
-#define WDTO_500MS                            500
+#define WDTO_500MS                     500
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
 #if defined(WATCHDOG_DISABLED) || defined(SIMU)
   #define wdt_enable(x)
   #define wdt_reset()
 #else
-  #define wdt_enable(x)                       watchdogInit(x)
-  #define wdt_reset()                         IWDG->KR = 0xAAAA
+  #define wdt_enable(x)                watchdogInit(x)
+  #define wdt_reset()                  IWDG->KR = 0xAAAA
 #endif
 #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
 #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
@@ -318,8 +320,8 @@ void pwrOff(void);
 void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
-#define pwroffPressed()         pwrPressed()
-#define UNEXPECTED_SHUTDOWN()   (WAS_RESET_BY_WATCHDOG())
+#define pwroffPressed()                pwrPressed()
+#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG())
 
 // Led driver
 void ledOff(void);

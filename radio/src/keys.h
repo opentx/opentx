@@ -51,14 +51,11 @@
 #define IS_KEY_LONG(evt)     (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_LONG)
 #define IS_KEY_REPT(evt)     (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_REPT)
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBFLAMENCO) || defined(PCBTARANIS)
   #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
   #define EVT_ROTARY_LEFT    0xDF00
   #define EVT_ROTARY_RIGHT   0xDE00
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
-  #define EVT_ROTARY_BREAK   EVT_KEY_BREAK(KEY_ENTER)
-  #define EVT_ROTARY_LONG    EVT_KEY_LONG(KEY_ENTER)
 #else
   #define EVT_ROTARY_BREAK   0xcf
   #define EVT_ROTARY_LONG    0xce

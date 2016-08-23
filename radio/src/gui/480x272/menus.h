@@ -31,6 +31,7 @@
 extern uint8_t menuPageIndex;
 extern uint8_t menuPageCount;
 extern uint16_t linesCount;
+extern uint8_t linesDisplayed;
 extern int menuVerticalPosition;
 extern int menuHorizontalPosition;
 extern int menuVerticalOffset;
@@ -349,7 +350,7 @@ swsrc_t checkIncDecMovedSwitch(swsrc_t val);
                                        checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 int8_t navigate(event_t event, int count, int rows, int columns=1, bool loop=true);
-bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
+bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const uint8_t * horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
 bool check_simple(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, int maxrow);
 bool check_submenu_simple(event_t event, uint8_t maxrow);
 

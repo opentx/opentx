@@ -443,7 +443,7 @@ bool menuModelExposAll(event_t event)
             pushMenu(menuModelExpoOne);
             s_copyMode = 0;
           }
-          else if (menuVerticalPosition >= 0) {
+          else {
             event = 0;
             s_copyMode = 0;
             POPUP_MENU_ADD_ITEM(STR_EDIT);

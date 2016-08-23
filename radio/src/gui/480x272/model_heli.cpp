@@ -37,7 +37,7 @@ enum MenuModelHeliItems {
 bool menuModelHeli(event_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_HELI, ITEM_HELI_MAX);
-  
+
   uint8_t sub = menuVerticalPosition;
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
@@ -46,7 +46,7 @@ bool menuModelHeli(event_t event)
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
-    switch(k) {
+    switch (k) {
       case ITEM_HELI_SWASHTYPE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWASHTYPE);
         g_model.swashR.type = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);

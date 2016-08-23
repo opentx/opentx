@@ -54,7 +54,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
   lcdDrawChar(lcdNextPos+3, y, ']');
 }
 
-void onLogicalSwitchesMenu(const char *result)
+void onLogicalSwitchesMenu(const char * result)
 {
   LogicalSwitchData * cs = lswAddress(menuVerticalPosition);
 
