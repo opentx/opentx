@@ -234,7 +234,7 @@ char * getAudioPath(char * path)
   return path + sizeof(SOUNDS_PATH);
 }
 
-char * getSystemAudioPath(char * path)
+char * strAppendSystemAudioPath(char * path)
 {
   char * str = getAudioPath(path);
   strcpy(str, SYSTEM_SUBDIR "/");
@@ -243,7 +243,7 @@ char * getSystemAudioPath(char * path)
 
 void getSystemAudioFile(char * filename, int index)
 {
-  char * str = getSystemAudioPath(filename);
+  char * str = strAppendSystemAudioPath(filename);
   strcpy(str, audioFilenames[index]);
   strcat(str, SOUNDS_EXT);
 }
@@ -263,7 +263,7 @@ void referenceSystemAudioFiles()
   assert(sizeof(audioFilenames)==AU_SPECIAL_SOUND_FIRST*sizeof(char *));
   assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_SPECIAL_SOUND_FIRST);
 
-  char * filename = getSystemAudioPath(path);
+  char * filename = strAppendSystemAudioPath(path);
   *(filename-1) = '\0';
 
   FRESULT res = f_opendir(&dir, path);        /* Open the directory */
@@ -1286,7 +1286,7 @@ void pushPrompt(uint16_t prompt, uint8_t id)
 {
 #if defined(SDCARD)
   char filename[AUDIO_FILENAME_MAXLEN+1];
-  char * str = getSystemAudioPath(filename);
+  char * str = strAppendSystemAudioPath(filename);
   strcpy(str, "0000" SOUNDS_EXT);
   for (int8_t i=3; i>=0; i--) {
     str[i] = '0' + (prompt%10);
