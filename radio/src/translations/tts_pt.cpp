@@ -94,8 +94,7 @@ enum PortuguesePrompts {
 I18N_PLAY_FUNCTION(pt, pushUnitPrompt, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-    unitprompt *= 4;
-    PUSH_UNIT_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT(unitprompt, 0);
 #else
   unitprompt = PT_PROMPT_UNITS_BASE + unitprompt*2;
   PUSH_NUMBER_PROMPT(unitprompt);
@@ -187,21 +186,21 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
     if (tmp > 2) {
       PLAY_NUMBER(tmp, 0, 0);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT((UNIT_HOURS*4)+1);
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
 #else
       PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
 #endif
     } else if (tmp==2) {
       PUSH_NUMBER_PROMPT(PT_PROMPT_DUAS);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT((UNIT_HOURS*4)+1);
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
 #else
       PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
 #endif
       } else if (tmp==1) {
       PUSH_NUMBER_PROMPT(PT_PROMPT_UMA);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT(UNIT_HOURS*4);
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 0);
 #else
       PUSH_NUMBER_PROMPT(PT_PROMPT_HORAS);
 #endif
@@ -214,14 +213,14 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
     if (tmp != 1) {
       PLAY_NUMBER(tmp, 0, 0);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT((UNIT_MINUTES*4)+1);
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
 #else
       PUSH_NUMBER_PROMPT(PT_PROMPT_MINUTOS);
 #endif
     } else {
       PUSH_NUMBER_PROMPT(PT_PROMPT_NUMBERS_BASE+1);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT(UNIT_MINUTES*4);
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
 #else
       PUSH_NUMBER_PROMPT(PT_PROMPT_MINUTO);
 #endif
@@ -232,14 +231,14 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
   if (seconds != 1) {
     PLAY_NUMBER(seconds, 0, 0);
 #if defined(CPUARM)
-    PUSH_UNIT_PROMPT((UNIT_SECONDS*4)+1);
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
 #else
     PUSH_NUMBER_PROMPT(PT_PROMPT_SEGUNDOS);
 #endif
   } else {
     PUSH_NUMBER_PROMPT(PT_PROMPT_NUMBERS_BASE+1);
 #if defined(CPUARM)
-    PUSH_UNIT_PROMPT(UNIT_SECONDS*4);
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
 #else
     PUSH_NUMBER_PROMPT(PT_PROMPT_SEGUNDO);
 #endif

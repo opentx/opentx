@@ -99,8 +99,7 @@ enum SpanishPrompts {
 I18N_PLAY_FUNCTION(es, pushUnitPrompt, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-    unitprompt *= 4;
-    PUSH_UNIT_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT(unitprompt, 0);
 #else
   unitprompt = ES_PROMPT_UNITS_BASE + unitprompt*2;
   PUSH_NUMBER_PROMPT(unitprompt);
@@ -208,11 +207,11 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
     if (tmp > 1) {
       PLAY_NUMBER(tmp, 0, 0);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT((UNIT_HOURS*4)+1);
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
     }
     else {
       PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
-      PUSH_UNIT_PROMPT(UNIT_HOURS*4);
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 0);
 #else
       PUSH_NUMBER_PROMPT(ES_PROMPT_HORAS);
     }
@@ -229,11 +228,11 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
     if (tmp != 1) {
       PLAY_NUMBER(tmp, 0, 0);
 #if defined(CPUARM)
-      PUSH_UNIT_PROMPT((UNIT_MINUTES*4)+1);
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
     }
     else {
       PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
-      PUSH_UNIT_PROMPT(UNIT_MINUTES*4);
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
 #else
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTOS);
     } 
@@ -248,11 +247,11 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
   if (seconds != 1) {
     PLAY_NUMBER(seconds, 0, 0);
 #if defined(CPUARM)
-    PUSH_UNIT_PROMPT((UNIT_SECONDS*4)+1);
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
   }
   else {
     PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
-    PUSH_UNIT_PROMPT(UNIT_SECONDS*4);
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
 #else
     PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDOS);
   }

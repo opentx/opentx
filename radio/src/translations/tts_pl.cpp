@@ -80,20 +80,19 @@ enum PolishPrompts {
 I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-  unitprompt *= 4;
   if (number == 1)
-    PUSH_UNIT_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT(unitprompt, 0);
   else if (number > 1 && number < 5)
-    PUSH_UNIT_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT(unitprompt, 1);
   else {
     int test_2 =0;
     test_2 =number % 10;
     int ten=0;
     ten=(number - (number % 10))/10;
     if ((test_2 > 1 && test_2 < 5) && ten >=2)
-	PUSH_UNIT_PROMPT(unitprompt+1);
+	PUSH_UNIT_PROMPT(unitprompt, 1);
     else
-	PUSH_UNIT_PROMPT(unitprompt+2);
+	PUSH_UNIT_PROMPT(unitprompt, 2);
     }
 #else
   unitprompt = PL_PROMPT_UNITS_BASE + unitprompt*4;

@@ -46,11 +46,10 @@ enum DutchPrompts {
 I18N_PLAY_FUNCTION(nl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-  unitprompt *= 4;
   if (number == 1)
-    PUSH_UNIT_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT(unitprompt, 0);
   else
-    PUSH_UNIT_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT(unitprompt, 1);
 #else
   unitprompt = NL_PROMPT_UNITS_BASE + unitprompt*2;
   if (number == 1)

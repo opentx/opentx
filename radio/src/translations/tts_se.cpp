@@ -60,11 +60,10 @@ enum SwedishPrompts {
 I18N_PLAY_FUNCTION(se, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-  unitprompt *= 4;
   if (number == 1)
-    PUSH_UNIT_PROMPT(unitprompt);
+    PUSH_UNIT_PROMPT(unitprompt, 0);
   else
-    PUSH_UNIT_PROMPT(unitprompt+1);
+    PUSH_UNIT_PROMPT(unitprompt, 1);
 #else
   unitprompt = SE_PROMPT_UNITS_BASE + unitprompt*2;
   if (number == 1)
@@ -137,7 +136,7 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    SE_PUSH_UNIT_PROMPT(number, unit);
+    SE_PUSH_UNIT_PROMPT(tmpNumber, unit);
   }
 }
 
