@@ -40,9 +40,9 @@
 
 /* drawText flags */
 #define INVERS                         0x02
-#define LEFT                           0x00
-#define CENTERED                       0x04 /* align left */
-#define RIGHT                          0x08 /* align left */
+#define LEFT                           0x00 /* align left */
+#define CENTERED                       0x04 /* align center */
+#define RIGHT                          0x08 /* align right */
 
 /* drawNumber flags */
 #define LEADING0                       0x10

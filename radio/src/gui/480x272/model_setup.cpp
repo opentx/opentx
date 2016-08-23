@@ -23,7 +23,7 @@
 uint8_t g_moduleIdx;
 bool menuModelFailsafe(event_t event);
 
-enum menuModelSetupItems {
+enum MenuModelSetupItems {
   ITEM_MODEL_NAME,
   ITEM_MODEL_BITMAP,
   ITEM_MODEL_TIMER1,

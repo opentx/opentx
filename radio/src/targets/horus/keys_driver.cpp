@@ -144,7 +144,7 @@ void readKeysAndTrims()
   }
 
   in = readTrims();
-  for (i = 1; i < 4096; i <<= 1) {
+  for (i = 1; i <= 1 << (TRM_LAST-TRM_BASE); i <<= 1) {
     keys[index++].input(in & i);
   }
 }

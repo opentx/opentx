@@ -59,9 +59,6 @@
   #define MAX_SCRIPTS                  7
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define NUM_POTS                     4 // TODO board.h
-  #define NUM_SLIDERS                  0 // TODO board.h
-  #define NUM_XPOTS                    0 // TODO board.h
   #define MAX_TELEMETRY_SENSORS        32
 #elif defined(PCBTARANIS)
   #define MAX_MODELS                   60

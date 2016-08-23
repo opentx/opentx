@@ -126,8 +126,6 @@ void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
   lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
 }
 
-uint8_t linesDisplayed;
-
 void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, uint32_t options)
 {
   coord_t bodyTop, bodyBottom;

@@ -115,8 +115,9 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
     if (DBLKEYS_PRESSED_RGT_LFT(in)) {
-      if (!isValueAvailable || isValueAvailable(-val))
+      if (!isValueAvailable || isValueAvailable(-val)) {
         newval = -val;
+      }
     }
     else if (DBLKEYS_PRESSED_RGT_UP(in)) {
       newval = (i_max > stops.max() ? stops.max() : i_max);
@@ -297,6 +298,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 uint8_t menuPageIndex;
 uint8_t menuPageCount;
 uint16_t linesCount;
+uint8_t linesDisplayed;
 
 int8_t navigate(event_t event, int count, int rows, int columns, bool loop)
 {
@@ -389,7 +391,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     menuPageCount = menuTabSize;
   }
 
-  switch(event) {
+  switch (event) {
     case EVT_ENTRY:
       s_editMode = EDIT_MODE_INIT;
       menuVerticalPosition = MENU_FIRST_LINE_EDIT;
@@ -477,7 +479,6 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         INC(menuVerticalPosition, MENU_FIRST_LINE_EDIT, rowcount-1);
       } while (CURSOR_NOT_ALLOWED_IN_ROW(menuVerticalPosition));
       menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
-
       break;
 
     case EVT_ROTARY_LEFT:

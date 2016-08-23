@@ -43,17 +43,16 @@ bool menuAboutView(event_t event)
   static uint8_t screenIndex = 0;
   static uint8_t greyIndex = 0;
 
-  switch(event)
-  {
+  switch (event) {
     case EVT_ENTRY:
       screenIndex = 0;
       greyIndex = 0;
       break;
-    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_PGDN):
       screenIndex < ABOUT_PARENTS ? screenIndex++ : screenIndex = ABOUT_OPENTX;
       greyIndex = 0;
       break;
-    case EVT_KEY_FIRST(KEY_LEFT):
+    case EVT_KEY_FIRST(KEY_PGUP):
       screenIndex > ABOUT_OPENTX ? screenIndex-- : screenIndex = ABOUT_PARENTS;
       greyIndex = 0;
       break;

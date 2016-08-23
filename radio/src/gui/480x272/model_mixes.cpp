@@ -355,15 +355,13 @@ void displayMixLine(coord_t y, MixData *md)
       lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
     }
   }
-  else {
-    if (md->name[0]) {
-      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupLabelBitmap);
-      lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
-    }
-    if (md->flightModes) {
-      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
-      displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
-    }
+  else if (md->name[0]) {
+    lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupLabelBitmap);
+    lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
+  }
+  else if (md->flightModes) {
+    lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
+    displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
   }
   displayMixInfos(y, md);
 }

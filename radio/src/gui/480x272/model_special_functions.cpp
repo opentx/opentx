@@ -66,7 +66,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
   }
 }
 
-void onCustomFunctionsMenu(const char *result)
+void onCustomFunctionsMenu(const char * result)
 {
   CustomFunctionData * cfn;
   uint8_t eeFlags;
@@ -174,8 +174,8 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     drawStringWithIndex(MENUS_MARGIN_LEFT, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (menuVerticalPosition==k && menuHorizontalPosition<0) ? INVERS : 0);
 
     CustomFunctionData * cfn = &functions[k];
-    unsigned int func = CFN_FUNC(cfn);
-    for (int j=0; j<ITEM_SPECIAL_FUNCTIONS_COUNT; j++) {
+    uint8_t func = CFN_FUNC(cfn);
+    for (uint8_t j=0; j<ITEM_SPECIAL_FUNCTIONS_COUNT; j++) {
       LcdFlags attr = ((menuVerticalPosition==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       LcdFlags active = (attr && s_editMode>0);
       switch (j) {
@@ -224,7 +224,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           }
 #endif
           else if (func == FUNC_SET_TIMER) {
-            maxParam = MAX_TIMERS-1;
+            maxParam = TIMERS-1;
             drawStringWithIndex(MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT, y, STR_TIMER, CFN_TIMER_INDEX(cfn)+1, attr);
             if (active) CFN_TIMER_INDEX(cfn) = checkIncDec(event, CFN_TIMER_INDEX(cfn), 0, maxParam, eeFlags);
             break;
@@ -259,6 +259,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           }
 #endif
           else if (func == FUNC_SET_TIMER) {
+            // TODO 539 ? TIMEHOUR ?
             val_max = 59*60+59;
             drawTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
@@ -324,14 +325,6 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
             }
           }
-#if defined(PCBX9DP) || defined(PCBX9E)
-          else if (func == FUNC_BACKLIGHT) {
-            drawSlider(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 100, attr);
-            INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);
-            val_min = 0;
-            val_max = 100;
-          }
-#endif
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
             switch (CFN_GVAR_MODE(cfn)) {
@@ -359,6 +352,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 else
                   lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "+= ", attr);
                 lcdDrawNumber(lcdNextPos, y, abs(val_displayed), attr|LEFT);
+                break;
             }
           }
 #endif

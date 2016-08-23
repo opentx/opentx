@@ -139,9 +139,11 @@ const char * runPopupMenu(event_t event)
         }
       }
       break;
+
     case EVT_KEY_BREAK(KEY_ENTER):
       result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
       // no break
+
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
       s_menu_item = 0;
