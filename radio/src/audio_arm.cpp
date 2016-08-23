@@ -1274,10 +1274,17 @@ void pushUnit(uint8_t unit, uint8_t idx, uint8_t id)
     char *tmp = strAppendSystemAudioPath(path);
     tmp = strAppendStringWithIndex(tmp, unitsFilenames[unit], idx);
     strcpy(tmp, SOUNDS_EXT);
+<<<<<<< refs/remotes/origin/ARM-Units-soundfiles
     audioQueue.playFile(path, 0, id);
   }
   else {
     TRACE("pushUnit: out of bounds unit : %d", unit); // We should never get here, but given the nature of TTS files, this prevent segfault in case of bug there.
+=======
+    audioQueue.playFile(tmp, 0, id);
+  }
+  else {
+    TRACE("Out of bounds unit, idx : %d - %d", unit, idx);
+>>>>>>> HEAD~1
   }
 }
 #endif
