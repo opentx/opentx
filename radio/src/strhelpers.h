@@ -30,7 +30,7 @@ char * strAppendFilename(char * dest, const char * filename, const int size);
 
 #if defined(CPUARM) && !defined(BOOT)
 char * getStringAtIndex(char * dest, const char * s, int idx);
-char * getStringWithIndex(char * dest, const char * s, int idx);
+char * strAppendStringWithIndex(char * dest, const char * s, int idx);
 #define LEN_TIMER_STRING               10 // "-00:00:00"
 char * getTimerString(char * dest, int32_t tme, uint8_t hours=0);
 char * getCurveString(char * dest, int idx);
