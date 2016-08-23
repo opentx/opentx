@@ -63,7 +63,7 @@ enum FrenchPrompts {
 I18N_PLAY_FUNCTION(fr, pushUnitPrompt, uint8_t unitprompt)
 {
 #if defined(CPUARM)
-    PUSH_UNIT_PROMPT(unitprompt, 0);
+  PUSH_UNIT_PROMPT(unitprompt, 0);
 #else
   unitprompt = FR_PROMPT_UNITS_BASE + unitprompt*2;
   PUSH_NUMBER_PROMPT(unitprompt);
