@@ -25,7 +25,7 @@ if(EXISTS "${GTEST_SRCDIR}/src/gtest-all.cc")
     set(CMAKE_C_FLAGS_DEBUG  "${COMMON_FLAGS} -g -O0")
     set(CMAKE_CXX_FLAGS_DEBUG  "${COMMON_CPP_FLAGS} -g -O0")
 
-    add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp)
+    add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp)
     qt5_use_modules(gtests Core Widgets)
     add_dependencies(gtests ${FIRMWARE_DEPENDENCIES} gtests-lib)
     target_link_libraries(gtests gtests-lib pthread)

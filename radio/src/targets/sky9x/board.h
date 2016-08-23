@@ -353,13 +353,11 @@ uint32_t pwroffPressed();
 #define EEPROM_SIZE           (4*1024*1024/8)
 #define EEPROM_BLOCK_SIZE     (4*1024)
 void eepromInit();
-uint32_t eepromReadStatus();
-uint8_t eepromIsSpiComplete(void);
-void eepromWaitSpiComplete(void);
-void eepromWriteEnable();
+uint8_t eepromReadStatus();
+uint8_t eepromIsTransferComplete(void);
 void eepromBlockErase(uint32_t address);
-void eepromReadArray(uint32_t address, uint8_t * buffer, uint32_t size);
-void eepromByteProgram(uint32_t address, uint8_t * buffer, uint32_t size);
+void eepromStartRead(uint8_t * buffer, size_t address, size_t size);
+void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
 
 // Rotary Encoder driver
 void rotencInit();

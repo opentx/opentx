@@ -111,7 +111,7 @@ void storageReadAll()
 
 void storageEraseAll(bool warn)
 {
-  TRACE("storageEraseAll()");
+  TRACE("storageEraseAll");
 
   generalDefault();
   modelDefault(0);

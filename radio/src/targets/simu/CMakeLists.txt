@@ -2,7 +2,11 @@ foreach(FILE ${SRC})
   set(SIMU_SRC ${SIMU_SRC} ../../${FILE})
 endforeach()
 
-set(SIMU_SRC ${SIMU_SRC} simpgmspace.cpp)
+set(SIMU_SRC
+  ${SIMU_SRC}
+  simpgmspace.cpp
+  simueeprom.cpp
+  )
 
 add_definitions(-DSIMU)
 remove_definitions(-DCLI)

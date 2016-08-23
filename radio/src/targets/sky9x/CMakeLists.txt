@@ -1,5 +1,13 @@
 set(ARCH ARM)
 set(LUA NO)
+set(MCU cortex-m3)
+set(SDCARD YES)
+set(HAPTIC YES)
+set(EEPROM EEPROM_RAW)
+set(GUI_DIR 128x64)
+set(TARGET_DIR sky9x)
+set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
+
 if(PCB STREQUAL 9XRPRO)
   add_definitions(-Dat91sam3s8 -DREVX)
   set(FLAVOUR 9xrpro)
@@ -32,14 +40,6 @@ else()
   endif()
 endif()
 
-set(MCU cortex-m3)
-set(SDCARD YES)
-set(HAPTIC YES)
-set(EEPROM EEPROM_RAW)
-set(GUI_DIR 128x64)
-set(TARGET_DIR sky9x)
-set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
-
 add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
 add_definitions(-DEEPROM_VARIANT=0)
@@ -57,15 +57,32 @@ set(GUI_SRC
   view_about.cpp
   )
 
-set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} core_cm3.c board_lowlevel.c crt.c vectors_sam3s.c)
-
-set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp pwr_driver.cpp
-  usb/device/core/USBD_UDP.c usb/device/core/USBDDriver.c
-  usb/device/massstorage/MSDDriver.c usb/device/massstorage/MSDDStateMachine.c usb/device/massstorage/MSDLun.c
-  usb/device/massstorage/MSDDriverDescriptors.c usb/device/massstorage/SBCMethods.c usb/common/core/USBEndpointDescriptor.c
-  usb/common/core/USBGenericRequest.c usb/common/core/USBFeatureRequest.c usb/common/core/USBInterfaceRequest.c
-  usb/common/core/USBGetDescriptorRequest.c usb/common/core/USBSetAddressRequest.c usb/common/core/USBSetConfigurationRequest.c
-  usb/common/core/USBConfigurationDescriptor.c usb/common/core/USBGenericDescriptor.c MEDSdcard.c
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  core_cm3.c
+  board_lowlevel.c
+  crt.c
+  vectors_sam3s.c
+  eeprom_driver.cpp
+  lcd_driver.cpp
+  pwr_driver.cpp
+  usb/device/core/USBD_UDP.c
+  usb/device/core/USBDDriver.c
+  usb/device/massstorage/MSDDriver.c
+  usb/device/massstorage/MSDDStateMachine.c
+  usb/device/massstorage/MSDLun.c
+  usb/device/massstorage/MSDDriverDescriptors.c
+  usb/device/massstorage/SBCMethods.c
+  usb/common/core/USBEndpointDescriptor.c
+  usb/common/core/USBGenericRequest.c
+  usb/common/core/USBFeatureRequest.c
+  usb/common/core/USBInterfaceRequest.c
+  usb/common/core/USBGetDescriptorRequest.c
+  usb/common/core/USBSetAddressRequest.c
+  usb/common/core/USBSetConfigurationRequest.c
+  usb/common/core/USBConfigurationDescriptor.c
+  usb/common/core/USBGenericDescriptor.c
+  MEDSdcard.c
   )
 
 set(TARGET_SRC
@@ -73,7 +90,6 @@ set(TARGET_SRC
   board.cpp
   telemetry_driver.cpp
   adc_driver.cpp
-  eeprom_driver.cpp
   pulses_driver.cpp
   keys_driver.cpp
   audio_driver.cpp
@@ -81,8 +97,16 @@ set(TARGET_SRC
   haptic_driver.cpp
   sdcard_driver.cpp
   massstorage.cpp
-)
+  )
+
+set(FIRMWARE_SRC
+  ${FIRMWARE_SRC}
+  loadboot.cpp
+  )
+
+set(SRC
+  ${SRC}
+  debug.cpp
+  )
 
 set(SERIAL2_DRIVER serial2_driver.cpp)
-set(SRC ${SRC} debug.cpp)
-set(FIRMWARE_SRC ${FIRMWARE_SRC} loadboot.cpp)

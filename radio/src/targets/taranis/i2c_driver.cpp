@@ -130,39 +130,44 @@ bool I2C_EE_ReadBlock(uint8_t* pBuffer, uint16_t ReadAddr, uint16_t NumByteToRea
   return true;
 }
 
-void eepromReadBlock(uint8_t* pBuffer, uint32_t ReadAddr, uint32_t NumByteToRead)
+void eepromReadBlock(uint8_t * buffer, size_t address, size_t size)
 {
-  while (!I2C_EE_ReadBlock(pBuffer, ReadAddr, NumByteToRead)) {
+  while (!I2C_EE_ReadBlock(buffer, address, size)) {
     i2cInit();
   }
 }
 
 /**
   * @brief  Writes buffer of data to the I2C EEPROM.
-  * @param  pBuffer : pointer to the buffer  containing the data to be
+  * @param  buffer : pointer to the buffer containing the data to be
   *   written to the EEPROM.
-  * @param  WriteAddr : EEPROM's internal address to write to.
-  * @param  NumByteToWrite : number of bytes to write to the EEPROM.
+  * @param  address : EEPROM's internal address to write to.
+  * @param  size : number of bytes to write to the EEPROM.
   * @retval None
   */
-void eepromWriteBlock(uint8_t* pBuffer, uint32_t WriteAddr, uint32_t NumByteToWrite)
+void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size)
 {
-  uint8_t offset = WriteAddr % I2C_FLASH_PAGESIZE;
+  uint8_t offset = address % I2C_FLASH_PAGESIZE;
   uint8_t count = I2C_FLASH_PAGESIZE - offset;
-  if (NumByteToWrite < count) {
-    count = NumByteToWrite;
+  if (size < count) {
+    count = size;
   }
   while (count > 0) {
-    eepromPageWrite(pBuffer, WriteAddr, count);
+    eepromPageWrite(buffer, address, count);
     eepromWaitEepromStandbyState();
-    WriteAddr += count;
-    pBuffer += count;
-    NumByteToWrite -= count;
+    address += count;
+    buffer += count;
+    size -= count;
     count = I2C_FLASH_PAGESIZE;
-    if (NumByteToWrite < I2C_FLASH_PAGESIZE) {
-      count = NumByteToWrite;
+    if (size < I2C_FLASH_PAGESIZE) {
+      count = size;
     }
   }
+}
+
+uint8_t eepromIsTransferComplete()
+{
+  return 1;
 }
 
 /**

@@ -20,6 +20,8 @@
 
 #include "gtests.h"
 
+extern const char * eepromFile;
+
 #if !defined(EEPROM) && defined(SDCARD)
 namespace Backup {
 #define BACKUP

@@ -117,6 +117,19 @@ void lcdRefreshSide();
 uint8_t	lcdRefresh_ST7920(uint8_t full);
 #endif
 
+// EEPROM driver
+#if defined(CPUM2560) || defined(CPUM2561) || defined(CPUM128)
+  #define EEPROM_SIZE                  4096
+#else
+  #define EEPROM_SIZE                  2048
+#endif
+#if defined(SIMU)
+void eepromReadBlock(uint8_t * buffer, size_t address, size_t size);
+#else
+#define eepromReadBlock(buffer, address, size)  eeprom_read_block(buffer, (const void *)address, size)
+#endif
+uint8_t eepromIsTransferComplete();
+
 // USART driver (static register dispatcher)
 #define RXD_DDR1 DDRD
 #define RXD_DDR_PIN1 DDD2

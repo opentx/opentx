@@ -175,7 +175,7 @@ uint8_t keyState(uint8_t index)
 
 uint8_t switchState(uint8_t index)
 {
-  uint8_t result;
+  uint8_t result = 0;
   
   switch (index) {
     case SW_ELE:

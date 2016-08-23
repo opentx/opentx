@@ -11,7 +11,11 @@ set(DSM2 "NO" CACHE STRING "LCD type (NO/PPM/SERIAL)")
 set(LUA NO)
 set(PULSES_SRC pulses_avr.cpp)
 set(SRC ${SRC} main_avr.cpp)
-set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/common/avr/adc_driver.cpp)
+set(FIRMWARE_SRC
+  ${FIRMWARE_SRC}
+  targets/common/avr/adc_driver.cpp
+  targets/common/avr/eeprom_driver.cpp
+  )
 add_definitions(-DLCD_${LCD})
 if(DSM2)
   add_definitions(-DDSM2 -DDSM2_${DSM2})
@@ -86,7 +90,10 @@ if(TELEMETRY STREQUAL FRSKY OR TELEMETRY STREQUAL FRSKY_SPORT OR TELEMETRY STREQ
   option(VARIO "Vario support" ON)
   add_definitions(-DTELEMETRY_FRSKY)
   set(SRC ${SRC} telemetry/telemetry.cpp telemetry/telemetry_holders.cpp telemetry/frsky.cpp telemetry/frsky_d.cpp)
-  set(FIRMWARE_SRC ${FIRMWARE_SRC} targets/common/avr/telemetry_driver.cpp)
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    targets/common/avr/telemetry_driver.cpp
+    )
   set(GUI_SRC ${GUI_SRC} view_telemetry.cpp)
   if(FRSKY_HUB)
     add_definitions(-DFRSKY_HUB)

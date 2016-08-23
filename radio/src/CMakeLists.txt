@@ -140,7 +140,7 @@ elseif(${EEPROM} STREQUAL EEPROM_RLC)
   add_definitions(-DEEPROM -DEEPROM_RLC)
 else()
   set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_raw.cpp)
-  add_definitions(-DEEPROM)
+  add_definitions(-DEEPROM -DEEPROM_RAW)
 endif()
 
 if(ARCH STREQUAL ARM AND NOT PCB STREQUAL HORUS AND NOT PCB STREQUAL FLAMENCO)

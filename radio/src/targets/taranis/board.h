@@ -427,9 +427,16 @@ void usbSerialPutc(uint8_t c);
 #endif
 
 // I2C driver: EEPROM + Audio Volume
+#if defined(REV4a)
+  #define EEPROM_SIZE    (64*1024)
+#else
+  #define EEPROM_SIZE    (32*1024)
+#endif
+
 void i2cInit(void);
-void eepromReadBlock(uint8_t * buffer, uint32_t address, uint32_t size);
-void eepromWriteBlock(uint8_t * buffer, uint32_t address, uint32_t size);
+void eepromReadBlock(uint8_t * buffer, size_t address, size_t size);
+void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
+uint8_t eepromIsTransferComplete();
 
 // Debug driver
 void debugPutc(const char c);
