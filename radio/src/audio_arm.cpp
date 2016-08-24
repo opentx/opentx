@@ -1269,15 +1269,15 @@ void audioEvent(unsigned int index)
 #if defined(SDCARD)
 void pushUnit(uint8_t unit, uint8_t idx, uint8_t id)
 {
-  if (unit < DIM(unitsFilenames) && idx < 5) {
+  if (unit < DIM(unitsFilenames)) {
     char path[AUDIO_FILENAME_MAXLEN+1];
     char *tmp = strAppendSystemAudioPath(path);
     tmp = strAppendStringWithIndex(tmp, unitsFilenames[unit], idx);
     strcpy(tmp, SOUNDS_EXT);
-    audioQueue.playFile(tmp, 0, id);
+    audioQueue.playFile(path, 0, id);
   }
   else {
-    TRACE("Out of bounds unit, idx : %d - %d", unit, idx);
+    TRACE("pushUnit: out of bounds unit : %d", unit); // We should never get here, but given the nature of TTS files, this prevent segfault in case of bug there.
   }
 }
 #endif
