@@ -241,7 +241,7 @@ void menuModelSensor(uint8_t event)
         break;
 
       case SENSOR_FIELD_TYPE:
-        sensor->type = selectMenuItem(SENSOR_2ND_COLUMN, y, NO_INDENT(STR_TYPE), STR_VSENSORTYPES, sensor->type, 0, 1, attr, event);
+        sensor->type = editChoice(SENSOR_2ND_COLUMN, y, NO_INDENT(STR_TYPE), STR_VSENSORTYPES, sensor->type, 0, 1, attr, event);
         if (attr && checkIncDec_Ret) {
           sensor->instance = 0;
           if (sensor->type == TELEM_TYPE_CALCULATED) {
@@ -270,7 +270,7 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_FORMULA, STR_VFORMULAS, sensor->formula, 0, TELEM_FORMULA_LAST, attr, event);
+          sensor->formula = editChoice(SENSOR_2ND_COLUMN, y, STR_FORMULA, STR_VFORMULAS, sensor->formula, 0, TELEM_FORMULA_LAST, attr, event);
           if (attr && checkIncDec_Ret) {
             sensor->param = 0;
             if (sensor->formula == TELEM_FORMULA_CELL) {
@@ -291,7 +291,7 @@ void menuModelSensor(uint8_t event)
 
       case SENSOR_FIELD_UNIT:
         lcdDrawTextAlignedLeft(y, "Unit");
-        // TODO flash saving with selectMenuItem where I copied those 2 lines?
+        // TODO flash saving with editChoice where I copied those 2 lines?
         lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_MAX);
@@ -302,7 +302,7 @@ void menuModelSensor(uint8_t event)
         break;
 
       case SENSOR_FIELD_PRECISION:
-        sensor->prec = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, sensor->prec, 0, 2, attr, event);
+        sensor->prec = editChoice(SENSOR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, sensor->prec, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           telemetryItems[s_currIdx].clear();
         }
@@ -357,7 +357,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM2:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_CELLINDEX, STR_VCELLINDEX, sensor->cell.index, 0, 8, attr, event);
+            sensor->cell.index = editChoice(SENSOR_2ND_COLUMN, y, STR_CELLINDEX, STR_VCELLINDEX, sensor->cell.index, 0, 8, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
@@ -806,7 +806,7 @@ void menuModelTelemetryFrsky(uint8_t event)
         drawStringWithIndex(0*FW, y, STR_SCREEN, screenIndex);
 #if defined(GAUGES)
         bool screenType = g_model.frsky.screensType & screenIndex;
-        if (screenType != (bool)selectMenuItem(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, screenType, 0, 1, attr, event))
+        if (screenType != (bool)editChoice(TELEM_SCRTYPE_COL, y, PSTR(""), STR_VTELEMSCREENTYPE, screenType, 0, 1, attr, event))
           g_model.frsky.screensType ^= screenIndex;
 #endif
         break;

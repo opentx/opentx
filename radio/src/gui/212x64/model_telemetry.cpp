@@ -122,7 +122,7 @@ enum SensorFields {
 #define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW)
 
-void menuModelSensor(uint8_t event)
+void menuModelSensor(event_t event)
 {
   TelemetrySensor * sensor = &g_model.telemetrySensors[s_currIdx];
 
@@ -132,7 +132,7 @@ void menuModelSensor(uint8_t event)
 
   SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, { 0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
 
@@ -152,7 +152,7 @@ void menuModelSensor(uint8_t event)
         break;
 
       case SENSOR_FIELD_TYPE:
-        sensor->type = selectMenuItem(SENSOR_2ND_COLUMN, y, NO_INDENT(STR_TYPE), STR_VSENSORTYPES, sensor->type, 0, 1, attr, event);
+        sensor->type = editChoice(SENSOR_2ND_COLUMN, y, NO_INDENT(STR_TYPE), STR_VSENSORTYPES, sensor->type, 0, 1, attr, event);
         if (attr && checkIncDec_Ret) {
           sensor->instance = 0;
           if (sensor->type == TELEM_TYPE_CALCULATED) {
@@ -181,7 +181,7 @@ void menuModelSensor(uint8_t event)
           }
         }
         else {
-          sensor->formula = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_FORMULA, STR_VFORMULAS, sensor->formula, 0, TELEM_FORMULA_LAST, attr, event);
+          sensor->formula = editChoice(SENSOR_2ND_COLUMN, y, STR_FORMULA, STR_VFORMULAS, sensor->formula, 0, TELEM_FORMULA_LAST, attr, event);
           if (attr && checkIncDec_Ret) {
             sensor->param = 0;
             if (sensor->formula == TELEM_FORMULA_CELL) {
@@ -202,7 +202,7 @@ void menuModelSensor(uint8_t event)
 
       case SENSOR_FIELD_UNIT:
         lcdDrawTextAlignedLeft(y, STR_UNIT);
-        // TODO flash saving with selectMenuItem where I copied those 2 lines?
+        // TODO flash saving with editChoice where I copied those 2 lines?
         lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_MAX);
@@ -216,7 +216,7 @@ void menuModelSensor(uint8_t event)
         break;
 
       case SENSOR_FIELD_PRECISION:
-        sensor->prec = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, sensor->prec, 0, 2, attr, event);
+        sensor->prec = editChoice(SENSOR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, sensor->prec, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           telemetryItems[s_currIdx].clear();
         }
@@ -279,7 +279,7 @@ void menuModelSensor(uint8_t event)
       case SENSOR_FIELD_PARAM2:
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
-            sensor->cell.index = selectMenuItem(SENSOR_2ND_COLUMN, y, STR_CELLINDEX, STR_VCELLINDEX, sensor->cell.index, 0, 8, attr, event);
+            sensor->cell.index = editChoice(SENSOR_2ND_COLUMN, y, STR_CELLINDEX, STR_VCELLINDEX, sensor->cell.index, 0, 8, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
@@ -358,7 +358,7 @@ void menuModelSensor(uint8_t event)
 
 void onSensorMenu(const char *result)
 {
-  int index = menuVerticalPosition - ITEM_TELEMETRY_SENSOR1;
+  uint8_t index = menuVerticalPosition - ITEM_TELEMETRY_SENSOR1;
 
   if (index < MAX_TELEMETRY_SENSORS) {
     if (result == STR_EDIT) {
@@ -391,7 +391,7 @@ void onSensorMenu(const char *result)
   }
 }
 
-void menuModelTelemetryFrsky(uint8_t event)
+void menuModelTelemetryFrsky(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
@@ -402,7 +402,7 @@ void menuModelTelemetryFrsky(uint8_t event)
 
   MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, ITEM_TELEMETRY_MAX, { TELEMETRY_TYPE_ROWS RSSI_ROWS SENSORS_ROWS VARIO_ROWS });
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
     for (int j=0; j<=k; j++) {

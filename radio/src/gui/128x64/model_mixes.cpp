@@ -269,7 +269,7 @@ void menuModelMixOne(uint8_t event)
 #endif
 
       case MIX_FIELD_SWITCH:
-        md2->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
+        md2->swtch = editSwitch(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
         break;
 
       case MIX_FIELD_WARNING:
@@ -282,7 +282,7 @@ void menuModelMixOne(uint8_t event)
         break;
 
       case MIX_FIELD_MLTPX:
-        md2->mltpx = selectMenuItem(MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
+        md2->mltpx = editChoice(MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
         break;
 
       case MIX_FIELD_DELAY_UP:

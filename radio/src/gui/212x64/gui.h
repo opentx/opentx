@@ -236,11 +236,11 @@ void title(const pm_char * s);
 #define SIMPLE_SUBMENU(title, lines_count) \
   check_submenu_simple(title, event, lines_count)
 
-typedef int select_menu_value_t;
+typedef int choice_t;
 
-select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event);
+choice_t editChoice(coord_t x, coord_t y, const pm_char *label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, uint8_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event);
-swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event);
+swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 

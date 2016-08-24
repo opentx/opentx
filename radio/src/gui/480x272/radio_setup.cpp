@@ -27,10 +27,10 @@
 int8_t editSlider(coord_t x, coord_t y, event_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
 {
   drawHorizontalSlider(x, y, 100, value, min, max, 0, OPTION_SLIDER_DBL_COLOR|attr);
-  return selectMenuItem(x, y, NULL, value, min, max, attr, event);
+  return editChoice(x, y, NULL, value, min, max, attr, event);
 }
 
-#define SLIDER_5POS(y, val, event, attr) val = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, val, -2, +2, attr)
+#define SLIDER_5POS(val) val = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, val, -2, +2, attr)
 
 #if defined(SPLASH) && !defined(FSPLASH)
   #define CASE_SPLASH_PARAM(x) x,
@@ -115,7 +115,8 @@ bool menuRadioSetup(event_t event)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
     LABEL(ALARMS), 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
-    CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
+    CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0)
+    CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -225,7 +226,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BEEP_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPEAKER);
-        g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
+        g_eeGeneral.beepMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
 #if defined(TELEMETRY_FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
@@ -240,10 +241,12 @@ bool menuRadioSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_VOLUME);
         g_eeGeneral.beepVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.beepVolume, -2, +2, attr);
         break;
+
       case ITEM_SETUP_WAV_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WAV_VOLUME);
         g_eeGeneral.wavVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.wavVolume, -2, +2, attr);
         break;
+
       case ITEM_SETUP_BACKGROUND_VOLUME:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BG_VOLUME);
         g_eeGeneral.backgroundVolume = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.backgroundVolume, -2, +2, attr);
@@ -251,7 +254,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BEEP_LENGTH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BEEP_LENGTH);
-        SLIDER_5POS(y, g_eeGeneral.beepLength, event, attr);
+        SLIDER_5POS(g_eeGeneral.beepLength);
         break;
 
       case ITEM_SETUP_SPEAKER_PITCH:
@@ -294,17 +297,17 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_HAPTIC_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        g_eeGeneral.hapticMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
+        g_eeGeneral.hapticMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
         break;
 
       case ITEM_SETUP_HAPTIC_LENGTH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_LENGTH);
-        SLIDER_5POS(y, g_eeGeneral.hapticLength, event, attr);
+        SLIDER_5POS(g_eeGeneral.hapticLength);
         break;
 
       case ITEM_SETUP_HAPTIC_STRENGTH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_HAPTICSTRENGTH);
-        SLIDER_5POS(y, g_eeGeneral.hapticStrength, event, attr);
+        SLIDER_5POS(g_eeGeneral.hapticStrength);
         break;
 #endif
 
@@ -347,22 +350,6 @@ bool menuRadioSetup(event_t event)
         break;
       }
 
-#if defined(PCBSKY9X)
-      case ITEM_SETUP_CAPACITY_WARNING:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CAPAWARNING);
-        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.mAhWarn*50, UNIT_MAH, attr|LEFT) ;
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.mAhWarn, 0, 100);
-        break;
-#endif
-
-#if defined(PCBSKY9X)
-      case ITEM_SETUP_TEMPERATURE_WARNING:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TEMPWARNING);
-        drawValueWithUnit(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.temperatureWarn, UNIT_TEMPERATURE, attr|LEFT) ;
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureWarn, 0, 120); // 0 means no alarm
-        break;
-#endif
-
       case ITEM_SETUP_INACTIVITY_ALARM:
         lcdDrawText(MENUS_MARGIN_LEFT,  y,STR_INACTIVITYALARM);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT, 0, NULL, "m");
@@ -375,7 +362,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BACKLIGHT_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        g_eeGeneral.backlightMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        g_eeGeneral.backlightMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
@@ -432,12 +419,12 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_GPSFORMAT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_GPSCOORD);
-        g_eeGeneral.gpsFormat = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
+        g_eeGeneral.gpsFormat = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
         break;
 
       case ITEM_SETUP_COUNTRYCODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_COUNTRYCODE);
-        g_eeGeneral.countryCode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
+        g_eeGeneral.countryCode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;
 
       case ITEM_SETUP_LANGUAGE:
@@ -454,7 +441,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_IMPERIAL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UNITSSYSTEM);
-        g_eeGeneral.imperial = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
+        g_eeGeneral.imperial = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;
 
 #if 0
@@ -473,7 +460,7 @@ bool menuRadioSetup(event_t event)
 #if defined(TELEMETRY_MAVLINK)
       case ITEM_MAVLINK_BAUD:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAVLINK_BAUD_LABEL);
-        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
+        g_eeGeneral.mavbaud = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
         break;
 #endif
 

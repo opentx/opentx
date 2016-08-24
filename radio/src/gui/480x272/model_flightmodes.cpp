@@ -121,11 +121,11 @@ bool menuModelFlightModesAll(event_t event)
       return true;
     }
 
-    FlightModeData *p = flightModeAddress(k);
+    FlightModeData * p = flightModeAddress(k);
 
     drawFlightMode(MENUS_MARGIN_LEFT, y, k+1, (getFlightMode()==k ? BOLD : 0) | ((menuVerticalPosition==k && menuHorizontalPosition<0) ? INVERS : 0));
 
-    for (int j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
+    for (uint8_t j=0; j<ITEM_FLIGHT_MODES_COUNT; j++) {
       LcdFlags attr = ((menuVerticalPosition==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       LcdFlags active = (attr && s_editMode>0) ;
       switch (j) {

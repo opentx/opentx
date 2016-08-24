@@ -329,7 +329,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_TIMER3_COUNTDOWN_BEEP:
       {
         TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        timer->countdownBeep = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, timer->countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
+        timer->countdownBeep = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, timer->countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
         break;
       }
 
@@ -338,7 +338,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_TIMER3_PERSISTENT:
       {
         TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        timer->persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer->persistent, 0, 2, attr, event);
+        timer->persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer->persistent, 0, 2, attr, event);
         break;
       }
 #else
@@ -390,7 +390,7 @@ void menuModelSetup(uint8_t event)
       case ITEM_MODEL_TIMER2_PERSISTENT:
       {
         TimerData &timer = g_model.timers[k==ITEM_MODEL_TIMER2_PERSISTENT];
-        timer.persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer.persistent, 0, 2, attr, event);
+        timer.persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer.persistent, 0, 2, attr, event);
         break;
       }
 #endif
@@ -422,12 +422,12 @@ void menuModelSetup(uint8_t event)
 
 #if defined(CPUARM)
       case ITEM_MODEL_DISPLAY_TRIMS:
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
         break;
 #endif
 
       case ITEM_MODEL_TRIM_INC:
-        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
+        g_model.trimInc = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_REVERSED:
@@ -864,7 +864,7 @@ void menuModelSetup(uint8_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        moduleData.ppm.outputType = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_OUTPUT_TYPE, STR_VOUTPUT_TYPE, moduleData.ppm.outputType, 0, 1, attr, event);
+        moduleData.ppm.outputType = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_OUTPUT_TYPE, STR_VOUTPUT_TYPE, moduleData.ppm.outputType, 0, 1, attr, event);
         break;
       }
 #endif
@@ -918,7 +918,7 @@ void menuModelSetup(uint8_t event)
               lcdDrawTextAlignedLeft(y, STR_MULTI_VIDFREQ);
               break;
             case MM_RF_PROTO_DSM2:
-              g_model.moduleData[moduleIdx].multi.optionValue = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMFRAME, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].multi.optionValue, 0, 12, attr, event);
+              g_model.moduleData[moduleIdx].multi.optionValue = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMFRAME, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].multi.optionValue, 0, 12, attr, event);
               break;
             default:
               lcdDrawTextAlignedLeft(y, STR_MULTI_OPTION);

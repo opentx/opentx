@@ -107,6 +107,7 @@ enum MenuModelIndexes {
 
 void menuModelSelect(uint8_t event);
 void menuModelSetup(uint8_t event);
+void menuModelFailsafe(uint8_t event);
 void menuModelHeli(uint8_t event);
 void menuModelFlightModesAll(uint8_t event);
 void menuModelExposAll(uint8_t event);

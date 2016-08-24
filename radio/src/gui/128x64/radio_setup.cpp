@@ -34,16 +34,16 @@ const pm_uchar sticks[] PROGMEM = {
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     drawSlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
-    value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+    value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
 #elif defined(GRAPHICS)
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     display5posSlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
-    value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+    value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
 #else
-  #define SLIDER_5POS(y, value, label, event, attr) value = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
+  #define SLIDER_5POS(y, value, label, event, attr) value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
 #endif
 
 #if defined(SPLASH) && !defined(FSPLASH)
@@ -234,7 +234,7 @@ void menuRadioSetup(uint8_t event)
 
 #if defined(AUDIO)
       case ITEM_SETUP_BEEP_MODE:
-        g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
+        g_eeGeneral.beepMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
 #if defined(TELEMETRY_FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
@@ -242,7 +242,7 @@ void menuRadioSetup(uint8_t event)
 
 #if defined(BUZZER) // AUDIO + BUZZER
       case ITEM_SETUP_BUZZER_MODE:
-        g_eeGeneral.buzzerMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_BUZZER, STR_VBEEPMODE, g_eeGeneral.buzzerMode, -2, 1, attr, event);
+        g_eeGeneral.buzzerMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_BUZZER, STR_VBEEPMODE, g_eeGeneral.buzzerMode, -2, 1, attr, event);
 #if defined(TELEMETRY_FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
@@ -250,7 +250,7 @@ void menuRadioSetup(uint8_t event)
 #endif
 #elif defined(BUZZER) // BUZZER only
       case ITEM_SETUP_BUZZER_MODE:
-        g_eeGeneral.beepMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
+        g_eeGeneral.beepMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
 #if defined(TELEMETRY_FRSKY)
         if (attr && checkIncDec_Ret) frskySendAlarms();
 #endif
@@ -341,7 +341,7 @@ void menuRadioSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_HAPTIC_MODE:
-        g_eeGeneral.hapticMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
+        g_eeGeneral.hapticMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBEEPMODE, g_eeGeneral.hapticMode, -2, 1, attr, event);
         break;
 
       case ITEM_SETUP_HAPTIC_LENGTH:
@@ -411,7 +411,7 @@ void menuRadioSetup(uint8_t event)
 
 #if ROTARY_ENCODERS > 0
       case ITEM_SETUP_RE_NAVIGATION:
-        g_eeGeneral.reNavigation = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, NUM_ROTARY_ENCODERS, attr, event);
+        g_eeGeneral.reNavigation = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, NUM_ROTARY_ENCODERS, attr, event);
         if (attr && checkIncDec_Ret) {
           g_rotenc[NAVIGATION_RE_IDX()] = 0;
         }
@@ -423,7 +423,7 @@ void menuRadioSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_BACKLIGHT_MODE:
-        g_eeGeneral.backlightMode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        g_eeGeneral.backlightMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MODE, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
         break;
 
       case ITEM_SETUP_FLASH_BEEP:
@@ -480,13 +480,13 @@ void menuRadioSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_GPSFORMAT:
-        g_eeGeneral.gpsFormat = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
+        g_eeGeneral.gpsFormat = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
         break;
 #endif
 
 #if defined(PXX)
       case ITEM_SETUP_COUNTRYCODE:
-        g_eeGeneral.countryCode = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODE, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
+        g_eeGeneral.countryCode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODE, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;
 #endif
 
@@ -504,7 +504,7 @@ void menuRadioSetup(uint8_t event)
         break;
 
       case ITEM_SETUP_IMPERIAL:
-        g_eeGeneral.imperial = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_UNITSSYSTEM, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
+        g_eeGeneral.imperial = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_UNITSSYSTEM, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;
 #endif
 
@@ -522,7 +522,7 @@ void menuRadioSetup(uint8_t event)
 
 #if defined(TELEMETRY_MAVLINK)
       case ITEM_MAVLINK_BAUD:
-        g_eeGeneral.mavbaud = selectMenuItem(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
+        g_eeGeneral.mavbaud = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
         break;
 #endif
 

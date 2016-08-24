@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 uint8_t g_moduleIdx;
-bool menuModelFailsafe(event_t event);
 
 enum MenuModelSetupItems {
   ITEM_MODEL_NAME,
@@ -89,7 +88,7 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS         80
 #define MODEL_SETUP_SET_FAILSAFE_OFS  100
 
-void onModelSetupBitmapMenu(const char *result)
+void onModelSetupBitmapMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
     if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
@@ -255,9 +254,9 @@ bool menuModelSetup(event_t event)
 
   int sub = menuVerticalPosition;
 
-  for (int i=0; i<NUM_BODY_LINES; ++i) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
-    int k = i + menuVerticalOffset;
+    uint8_t k = i + menuVerticalOffset;
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j] == HIDDEN_ROW)
         k++;
@@ -309,7 +308,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_TIMER1_PERSISTENT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PERSISTENT);
-        g_model.timers[0].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
+        g_model.timers[0].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
         break;
 
 #if TIMERS > 1
@@ -333,10 +332,10 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_TIMER2_PERSISTENT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PERSISTENT);
-        g_model.timers[1].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
+        g_model.timers[1].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
         break;
 #endif
-
+        
 #if TIMERS > 2
       case ITEM_MODEL_TIMER3:
         editTimerMode(2, y, attr, event);
@@ -358,7 +357,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_TIMER3_PERSISTENT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PERSISTENT);
-        g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
+        g_model.timers[2].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
         break;
 #endif
 
@@ -386,12 +385,12 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_DISPLAY_TRIMS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DISPLAY_TRIMS);
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = editChoice(MODEL_SETUP_2ND_COLUMN, y, "\006No\0   ChangeYes", g_model.displayTrims, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TRIM_INC:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TRIMINC);
-        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
+        g_model.trimInc = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_LABEL:
@@ -568,7 +567,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNASELECTION);
-        newAntennaSel = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol, 0, 1, attr, event);
+        newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol, 0, 1, attr, event);
         if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].ppm.pulsePol && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
           POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
           const char * w = STR_ANTENNACONFIRM2;
@@ -581,7 +580,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        g_model.trainerMode = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_SLAVE, attr, event);
+        g_model.trainerMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_SLAVE, attr, event);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
@@ -590,7 +589,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, (menuHorizontalPosition==0 ? attr : 0));
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (IS_MODULE_XJT(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
@@ -856,7 +855,7 @@ bool menuModelSetup(event_t event)
               break;
             case MM_RF_PROTO_DSM2:
               lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_DSMFRAME);
-              g_model.moduleData[moduleIdx].multi.optionValue = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].multi.optionValue, 0, 12, attr, event);
+              g_model.moduleData[moduleIdx].multi.optionValue = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].multi.optionValue, 0, 12, attr, event);
               break;
             default:
               lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_OPTION);

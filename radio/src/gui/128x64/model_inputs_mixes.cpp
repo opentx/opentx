@@ -292,11 +292,11 @@ void menuModelExpoOne(uint8_t event)
 #endif
 
       case EXPO_FIELD_SWITCH:
-        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->swtch, attr, event);
+        ed->swtch = editSwitch(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->swtch, attr, event);
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
     }
     y += FH;
@@ -513,7 +513,7 @@ void menuModelMixOne(uint8_t event)
         break;
 #endif
       case MIX_FIELD_SWITCH:
-        md2->swtch = switchMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
+        md2->swtch = editSwitch(COLUMN_X+MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
         break;
       case MIX_FIELD_WARNING:
         drawFieldLabel(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
@@ -524,7 +524,7 @@ void menuModelMixOne(uint8_t event)
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, md2->mixWarn, 3);
         break;
       case MIX_FIELD_MLTPX:
-        md2->mltpx = selectMenuItem(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
+        md2->mltpx = editChoice(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
         break;
       case MIX_FIELD_DELAY_UP:
         md2->delayUp = EDIT_DELAY(COLUMN_X, y, event, attr, STR_DELAYUP, md2->delayUp);

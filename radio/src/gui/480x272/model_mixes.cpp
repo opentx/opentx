@@ -239,11 +239,11 @@ bool menuModelMixOne(event_t event)
 #endif
       case MIX_FIELD_SWITCH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCH);
-        md2->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
+        md2->swtch = editSwitch(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
         break;
       case MIX_FIELD_MLTPX:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTPX);
-        md2->mltpx = selectMenuItem(MIXES_2ND_COLUMN, y, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
+        md2->mltpx = editChoice(MIXES_2ND_COLUMN, y, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
         break;
       case MIX_FIELD_DELAY_UP:
         lcdDrawText(MENU_COLUMN2_X+MENUS_MARGIN_LEFT, y, STR_DELAYUP);
@@ -381,14 +381,14 @@ void displayMixStatus(uint8_t channel)
 
 bool menuModelMixAll(event_t event)
 {
-  BitmapBuffer * mpx_mode[] = {
+  static const BitmapBuffer * mpx_mode[] = {
     mixerSetupAddBitmap,
     mixerSetupMultiBitmap,
     mixerSetupReplaceBitmap
   };
   
 
-  int sub = menuVerticalPosition;
+  uint8_t sub = menuVerticalPosition;
 
   if (s_editMode > 0) {
     s_editMode = 0;
@@ -465,7 +465,7 @@ bool menuModelMixAll(event_t event)
             s_copyMode = 0;
             return true;
           }
-          else if (menuVerticalPosition >= 0) {
+          else {
             event = 0;
             s_copyMode = 0;
             POPUP_MENU_ADD_ITEM(STR_EDIT);
@@ -543,7 +543,9 @@ bool menuModelMixAll(event_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          if (mixCnt > 0) lcd->drawBitmap(10, y, mpx_mode[md->mltpx]);
+          if (mixCnt > 0) {
+            lcd->drawBitmap(10, y, mpx_mode[md->mltpx]);
+          }
 
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 

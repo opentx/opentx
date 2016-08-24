@@ -83,11 +83,11 @@ void menuModelGVarOne(uint8_t event)
         break;
 
       case GVAR_FIELD_UNIT:
-        gvar->unit = selectMenuItem(GVAR_2ND_COLUMN, y, STR_UNIT, "\001-%", gvar->unit, 0, 1, attr, event);
+        gvar->unit = editChoice(GVAR_2ND_COLUMN, y, STR_UNIT, "\001-%", gvar->unit, 0, 1, attr, event);
         break;
 
       case GVAR_FIELD_PREC:
-        gvar->prec = selectMenuItem(GVAR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, gvar->prec, 0, 1, attr, event);
+        gvar->prec = editChoice(GVAR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, gvar->prec, 0, 1, attr, event);
         break;
 
       case GVAR_FIELD_MIN:

@@ -107,7 +107,7 @@ bool menuRadioHardware(event_t event)
         else
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
-        potType = selectMenuItem(HW_SETTINGS_COLUMN+50, y, STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
+        potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.slidersConfig &= ~mask;
         g_eeGeneral.slidersConfig |= (potType << idx);
         break;
@@ -128,7 +128,7 @@ bool menuRadioHardware(event_t event)
         else
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
-        potType = selectMenuItem(HW_SETTINGS_COLUMN+50, y, STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
+        potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
@@ -152,7 +152,7 @@ bool menuRadioHardware(event_t event)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
         else
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
-        config = selectMenuItem(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
+        config = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
           swconfig_t mask = (swconfig_t)0x03 << (2*index);
           g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(config) & 0x03) << (2*index));
@@ -171,7 +171,7 @@ bool menuRadioHardware(event_t event)
 
 #if 0
       case ITEM_RADIO_HARDWARE_UART3_MODE:
-        g_eeGeneral.serial2Mode = selectMenuItem(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
+        g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
         }

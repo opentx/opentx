@@ -167,6 +167,7 @@ const uint8_t MONITOR_ICONS[] = {
 };
 
 bool menuModelSetup(event_t event);
+bool menuModelFailsafe(event_t event);
 bool menuModelHeli(event_t event);
 bool menuModelFlightModesAll(event_t event);
 bool menuModelExposAll(event_t event);
@@ -399,11 +400,6 @@ bool check_submenu_simple(event_t event, uint8_t maxrow);
 #define SIMPLE_SUBMENU_WITH_OPTIONS(title, icon, lines_count, options) \
   if (!check_submenu_simple(event, lines_count)) return false; \
   drawMenuTemplate(title, icon, NULL, options)
-
-typedef int select_menu_value_t;
-
-select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, event_t event);
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, event_t event);
 
 #if defined(GVARS)
   #define GVAR_MENU_ITEM(x, y, v, min, max, lcdattr, editflags, event) editGVarFieldValue(x, y, v, min, max, lcdattr, editflags, event)

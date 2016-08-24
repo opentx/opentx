@@ -49,7 +49,7 @@ void menuRadioHardware(uint8_t event)
 
     switch(k) {
       case ITEM_RADIO_HARDWARE_OPTREX_DISPLAY:
-        g_eeGeneral.optrexDisplay = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
+        g_eeGeneral.optrexDisplay = editChoice(GENERAL_HW_PARAM_OFS, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
         break;
 
       case ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS:
@@ -78,13 +78,13 @@ void menuRadioHardware(uint8_t event)
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_RADIO_HARDWARE_ROTARY_ENCODER:
-        g_eeGeneral.rotarySteps = selectMenuItem(GENERAL_HW_PARAM_OFS, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
+        g_eeGeneral.rotarySteps = editChoice(GENERAL_HW_PARAM_OFS, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
         break;
 #endif
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = selectMenuItem(GENERAL_HW_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        g_eeGeneral.btBaudrate = editChoice(GENERAL_HW_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }

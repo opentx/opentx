@@ -85,9 +85,11 @@ bool menuModelLogicalSwitches(event_t event)
     REPEAT_LAST_CURSOR_MOVE(LS_FIELD_LAST, false);
   }
 
+#if defined(MENU_TOOLTIPS)
   if (menuVerticalPosition>= 0 && menuHorizontalPosition>=0) {
     drawColumnHeader(STR_LSW_HEADERS, STR_LSW_DESCRIPTIONS, menuHorizontalPosition);
   }
+#endif
 
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);

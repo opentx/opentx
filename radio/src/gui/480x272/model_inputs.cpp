@@ -219,7 +219,7 @@ bool menuModelExpoOne(event_t event)
     drawCurveCoord(CURVE_CENTER_X-CURVE_SIDE_WIDTH-37, top, texty);
   }
 
-  for (int i=0; i<NUM_BODY_LINES+1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES+1; i++) {
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch (i) {
       case EXPO_FIELD_INPUT_NAME:
@@ -244,7 +244,7 @@ bool menuModelExpoOne(event_t event)
           menuHorizontalPosition = 0;
         }
         break;
-  
+
       case EXPO_FIELD_SCALE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SCALE);
         drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), LEFT|attr);
@@ -277,12 +277,12 @@ bool menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_SWITCH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCH);
-        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr, event);
+        ed->swtch = editSwitch(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr, event);
         break;
 
       case EXPO_FIELD_SIDE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SIDE);
-        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN, y, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
 
       case EXPO_FIELD_TRIM:

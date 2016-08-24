@@ -159,7 +159,7 @@ bool menuModelCurveOne(event_t event)
       pointsOfs = 0;
       break;
     case EVT_KEY_LONG(KEY_ENTER):
-      if (menuVerticalPosition > ITEM_CURVE_POINTS) {
+      if (menuVerticalPosition > ITEM_CURVE_NAME) {
         killEvents(event);
         POPUP_MENU_ADD_ITEM(STR_CURVE_PRESET);
         POPUP_MENU_ADD_ITEM(STR_MIRROR);
@@ -290,12 +290,11 @@ bool menuModelCurvesAll(event_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, MODEL_ICONS, menuTabModel, MENU_MODEL_CURVES, MAX_CURVES);
 
-  int8_t  sub = menuVerticalPosition;
+  s_curveChan = menuVerticalPosition;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (!READ_ONLY()) {
-        s_curveChan = sub;
         pushMenu(menuModelCurveOne);
       }
       break;
@@ -304,7 +303,7 @@ bool menuModelCurvesAll(event_t event)
   for (int i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     uint8_t k = i + menuVerticalOffset;
-    LcdFlags attr = (sub == k ? INVERS : 0);
+    LcdFlags attr = (menuVerticalPosition == k ? INVERS : 0);
     {
       drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_CV, k+1, attr);
       CurveData & crv = g_model.curves[k];
@@ -313,10 +312,7 @@ bool menuModelCurvesAll(event_t event)
     }
   }
 
-  if (sub >= 0) {
-    s_curveChan = sub;
-    drawCurve(CURVE_CENTER_X, CURVE_CENTER_Y+10, 80);
-  }
+  drawCurve(CURVE_CENTER_X, CURVE_CENTER_Y+10, 80);
 
   return true;
 }

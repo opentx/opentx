@@ -45,9 +45,6 @@ set(GUI_SRC
   ${WIDGETS_SRC}
   )
 set(SRC ${SRC} gps.cpp)
-if(HELI)
-  set(GUI_SRC ${GUI_SRC} model_heli.cpp)
-endif()
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)

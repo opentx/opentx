@@ -28,6 +28,7 @@
 #include "bitmaps.h"
 #include "theme.h"
 
+#define MENU_TOOLTIPS
 #define MENU_HEADER_HEIGHT             45
 #define MENU_TITLE_TOP                 48
 #define MENU_TITLE_HEIGHT              21

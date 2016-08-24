@@ -1635,7 +1635,6 @@ void varioWakeup();
 #endif
 
 #if defined(CPUARM)
-void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att);
 #elif defined(TELEMETRY_FRSKY)
 FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
 {

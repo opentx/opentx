@@ -64,7 +64,7 @@ void menuModelHeli(uint8_t event)
 
     switch (k) {
       case ITEM_HELI_SWASHTYPE:
-        g_model.swashR.type = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
+        g_model.swashR.type = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_SWASHTYPE, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
         break;
 
       case ITEM_HELI_SWASHRING:
@@ -111,20 +111,20 @@ void menuModelHeli(uint8_t event)
         break;
 #else
       case ITEM_HELI_COLLECTIVE:
-        g_model.swashR.collectiveSource = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
+        g_model.swashR.collectiveSource = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
         drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
         break;
 
       case ITEM_HELI_ELEDIRECTION:
-        g_model.swashR.invertELE = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_ELEDIRECTION, STR_MMMINV, g_model.swashR.invertELE, 0, 1, attr, event);
+        g_model.swashR.invertELE = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_ELEDIRECTION, STR_MMMINV, g_model.swashR.invertELE, 0, 1, attr, event);
         break;
 
       case ITEM_HELI_AILDIRECTION:
-        g_model.swashR.invertAIL = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_AILDIRECTION, STR_MMMINV, g_model.swashR.invertAIL, 0, 1, attr, event);
+        g_model.swashR.invertAIL = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_AILDIRECTION, STR_MMMINV, g_model.swashR.invertAIL, 0, 1, attr, event);
         break;
 
       case ITEM_HELI_COLDIRECTION:
-        g_model.swashR.invertCOL = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_COLDIRECTION, STR_MMMINV, g_model.swashR.invertCOL, 0, 1, attr, event);
+        g_model.swashR.invertCOL = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_COLDIRECTION, STR_MMMINV, g_model.swashR.invertCOL, 0, 1, attr, event);
         break;
 #endif
     }

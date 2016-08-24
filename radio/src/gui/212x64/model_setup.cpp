@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 uint8_t g_moduleIdx;
-void menuModelFailsafe(uint8_t event);
 
 enum MenuModelSetupItems {
   ITEM_MODEL_NAME,
@@ -355,7 +354,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER1_PERSISTENT:
-        g_model.timers[0].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
+        g_model.timers[0].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[0].persistent, 0, 2, attr, event);
         break;
 
 #if TIMERS > 1
@@ -376,7 +375,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER2_PERSISTENT:
-        g_model.timers[1].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
+        g_model.timers[1].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
         break;
 #endif
 
@@ -398,7 +397,7 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_TIMER3_PERSISTENT:
-        g_model.timers[2].persistent = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
+        g_model.timers[2].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, g_model.timers[2].persistent, 0, 2, attr, event);
         break;
 #endif
 
@@ -433,11 +432,11 @@ void menuModelSetup(uint8_t event)
         break;
 
       case ITEM_MODEL_DISPLAY_TRIMS:
-        g_model.displayTrims = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
+        g_model.displayTrims = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_DISPLAY_TRIMS, STR_VDISPLAYTRIMS, g_model.displayTrims, 0, 2, attr, event);
         break;
 
       case ITEM_MODEL_TRIM_INC:
-        g_model.trimInc = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
+        g_model.trimInc = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_TRIMINC, STR_VTRIMINC, g_model.trimInc, -2, 2, attr, event);
         break;
 
       case ITEM_MODEL_THROTTLE_LABEL:
@@ -990,7 +989,7 @@ void menuModelSetup(uint8_t event)
               lcdDrawTextAlignedLeft(y, STR_MULTI_VIDFREQ);
               break;
             case MM_RF_PROTO_DSM2:
-              g_model.moduleData[moduleIdx].multi.optionValue = selectMenuItem(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMFRAME, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].multi.optionValue, 0, 12, attr, event);
+              g_model.moduleData[moduleIdx].multi.optionValue = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMFRAME, STR_OPTIONS_DSM, g_model.moduleData[moduleIdx].multi.optionValue, 0, 12, attr, event);
               break;
             default:
               lcdDrawTextAlignedLeft(y, STR_MULTI_OPTION);

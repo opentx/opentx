@@ -22,25 +22,36 @@
 
 bool menuRadioVersion(event_t event)
 {
-  DEBUG_TIMER_START(debugTimerVersion);
-  DEBUG_TIMER_START(debugTimerSimpleMenu);
-  SIMPLE_MENU(STR_MENUVERSION, RADIO_ICONS, menuTabGeneral, MENU_RADIO_VERSION, 0);
-  DEBUG_TIMER_STOP(debugTimerSimpleMenu);
+#if 0
+  if (warningResult) {
+    warningResult = 0;
+    showMessageBox(STR_STORAGE_FORMAT);
+    storageEraseAll(false);
+    NVIC_SystemReset();
+  }
+#endif
 
-  DEBUG_TIMER_START(debugTimerDrawText);
-  DEBUG_TIMER_START(debugTimerDrawText1);
+  if (event == EVT_ENTRY) {
+    getCPUUniqueID(reusableBuffer.version.id);
+  }
+
+  SIMPLE_MENU(STR_MENUVERSION, RADIO_ICONS, menuTabGeneral, MENU_RADIO_VERSION, 0);
+
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, vers_stamp);
-  DEBUG_TIMER_STOP(debugTimerDrawText1);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 2*FH, date_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, time_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
-  DEBUG_TIMER_STOP(debugTimerDrawText);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 5*FH, "UID:");
+  lcdDrawText(48, MENU_HEADER_HEIGHT+1+5*FH, reusableBuffer.version.id);
 
-  // TODO EEPROM erase + backup
-  // lcdDrawTextAlignedCenter(MENU_HEADER_HEIGHT+6*FH, STR_EEBACKUP);
-  // if (event == EVT_KEY_LONG(KEY_ENTER)) {
-  //   eepromBackup();
-  // }
-  DEBUG_TIMER_STOP(debugTimerVersion);
+#if 0
+  if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    killEvents(event);
+    // POPUP_MENU_ADD_ITEM(STR_EEBACKUP);
+    POPUP_MENU_ADD_ITEM(STR_FACTORYRESET);
+    POPUP_MENU_START(onVersionMenu);
+  }
+#endif
+
   return true;
 }

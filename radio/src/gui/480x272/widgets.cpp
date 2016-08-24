@@ -176,26 +176,6 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
   }
 }
 
-select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char * values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, event_t event)
-{
-  if (attr & (~RIGHT)) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
-  if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
-  return value;
-}
-
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags attr, event_t event)
-{
-  drawCheckBox(x, y, value, attr);
-  return selectMenuItem(x, y, NULL, value, 0, 1, attr, event);
-}
-
-swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event)
-{
-  if (attr) CHECK_INCDEC_MODELSWITCH(event, value, SWSRC_FIRST_IN_MIXES, SWSRC_LAST_IN_MIXES, isSwitchAvailableInMixes);
-  drawSwitch(x, y, value, attr);
-  return value;
-}
-
 void drawTrimSquare(coord_t x, coord_t y)
 {
   lcdDrawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);

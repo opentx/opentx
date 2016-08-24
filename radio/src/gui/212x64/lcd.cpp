@@ -803,17 +803,6 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
   }
 }
 
-const pm_uint8_t bchunit_ar[] PROGMEM = {
-  UNIT_DIST,    // Alt
-  UNIT_RAW,     // Rpm
-  UNIT_PERCENT, // Fuel
-  UNIT_TEMPERATURE, // T1
-  UNIT_TEMPERATURE, // T2
-  UNIT_KTS,     // Speed
-  UNIT_DIST,    // Dist
-  UNIT_DIST,    // GPS Alt
-};
-
 void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags att)
 {
   // convertUnit(val, unit);

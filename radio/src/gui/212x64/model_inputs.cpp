@@ -249,11 +249,11 @@ void menuModelExpoOne(uint8_t event)
 #endif
 
       case EXPO_FIELD_SWITCH:
-        ed->swtch = switchMenuItem(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr, event);
+        ed->swtch = editSwitch(EXPO_ONE_2ND_COLUMN, y, ed->swtch, attr, event);
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - selectMenuItem(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
         break;
 
       case EXPO_FIELD_TRIM:

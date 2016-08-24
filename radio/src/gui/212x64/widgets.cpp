@@ -129,7 +129,7 @@ void title(const pm_char * s)
   lcdDrawText(0, 0, s, INVERS);
 }
 
-select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, const pm_char *values, select_menu_value_t value, select_menu_value_t min, select_menu_value_t max, LcdFlags attr, uint8_t event)
+choice_t editChoice(coord_t x, coord_t y, const pm_char *label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, uint8_t event)
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
@@ -140,10 +140,10 @@ select_menu_value_t selectMenuItem(coord_t x, coord_t y, const pm_char *label, c
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
 {
   drawCheckBox(x, y, value, attr);
-  return selectMenuItem(x, y, label, NULL, value, 0, 1, attr, event);
+  return editChoice(x, y, label, NULL, value, 0, 1, attr, event);
 }
 
-swsrc_t switchMenuItem(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event)
+swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event)
 {
   drawFieldLabel(x, y, STR_SWITCH);
   drawSwitch(x,  y, value, attr);

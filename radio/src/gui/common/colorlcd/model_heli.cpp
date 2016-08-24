@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -49,7 +49,7 @@ bool menuModelHeli(event_t event)
     switch (k) {
       case ITEM_HELI_SWASHTYPE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWASHTYPE);
-        g_model.swashR.type = selectMenuItem(MODEL_HELI_2ND_COLUMN, y, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
+        g_model.swashR.type = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_VSWASHTYPE, g_model.swashR.type, 0, SWASH_TYPE_MAX, attr, event);
         break;
 
       case ITEM_HELI_SWASHRING:

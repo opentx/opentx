@@ -125,7 +125,7 @@ void menuModelPhaseOne(uint8_t event)
         break;
 
       case ITEM_MODEL_PHASE_SWITCH:
-        fm->swtch = switchMenuItem(MIXES_2ND_COLUMN, y, fm->swtch, attr, event);
+        fm->swtch = editSwitch(MIXES_2ND_COLUMN, y, fm->swtch, attr, event);
         break;
 
       case ITEM_MODEL_PHASE_TRIMS:

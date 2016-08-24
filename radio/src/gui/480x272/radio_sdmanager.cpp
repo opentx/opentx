@@ -181,6 +181,7 @@ bool menuRadioSdManager(event_t _event)
       break;
 
 #if 0
+    // TODO: Implement it
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
         killEvents(_event);
@@ -196,13 +197,7 @@ bool menuRadioSdManager(event_t _event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (menuVerticalPosition < 0) {
-        if (reusableBuffer.sdmanager.count > 0) {
-          menuVerticalPosition = 0;
-        }
-        break;
-      }
-      else if (s_editMode > 0) {
+      if (s_editMode > 0) {
         break;
       }
       else {
@@ -342,7 +337,7 @@ bool menuRadioSdManager(event_t _event)
 
   reusableBuffer.sdmanager.offset = menuVerticalOffset;
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdmanager.lines[i][0]) {
