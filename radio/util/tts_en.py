@@ -15,8 +15,7 @@ for i in range(9):
 for i, s in enumerate(["thousand", "and", "minus", "point"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 109 + i)))
     
-# The list bellow MUST be kept in sync with /radio/src/translate/tts_en.cpp
-for s, f, a in [("volt", "volt0", NO_ALTERNATE), ("volts", "volt1", NO_ALTERNATE),
+array = [("volt", "volt0", NO_ALTERNATE), ("volts", "volt1", NO_ALTERNATE),
                 ("amp", "amp0", NO_ALTERNATE), ("amps", "amp1", NO_ALTERNATE),
                 ("milliamp", "mamp0", NO_ALTERNATE), ("milliamps", "mamp1", NO_ALTERNATE),
                 ("knot", "knot0", NO_ALTERNATE), ("knots", "knot1", NO_ALTERNATE),
@@ -42,8 +41,9 @@ for s, f, a in [("volt", "volt0", NO_ALTERNATE), ("volts", "volt1", NO_ALTERNATE
                 ("hour", "hour0", NO_ALTERNATE), ("hours", "hour1", NO_ALTERNATE),
                 ("minute", "minute0", NO_ALTERNATE), ("minutes", "minute1", NO_ALTERNATE),
                 ("second", "second0", NO_ALTERNATE), ("seconds", "second1", NO_ALTERNATE),
-                       ]:
-    systemSounds.append((s, filename(f, a)))
+                       ]
+for i, (s, f, a) in enumerate(array):
+    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 115 + i)))
 for i, s in enumerate(["point zero", "point one", "point two", "point three",
                        "point four", "point five", "point six",
                        "point seven", "point eight", "point nine"]):
