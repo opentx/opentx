@@ -14,9 +14,7 @@ systemSounds.append(("mila", filename(PROMPT_SYSTEM_BASE + 101)))
 systemSounds.append(("mille", filename(PROMPT_SYSTEM_BASE + 102)))
 for i, s in enumerate(["virgola", "un", "e", "meno", "ora", "ore", "minuto", "minuti", "secondo", "secondi"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 103 + i)))
-    
-# The list bellow MUST be kept in sync with /radio/src/translate/tts_it.cpp
-for s, f, a in [(u"volt", "volt0", NO_ALTERNATE),
+for i, (s, f, a) in enumerate([(u"volt", "volt0", NO_ALTERNATE),
                 (u"ampere", "amp0", NO_ALTERNATE),
                 (u"milliampers", "mamp0", NO_ALTERNATE),
                 (u"nodo", "knot0", NO_ALTERNATE), ("nodi", "knot1", NO_ALTERNATE),
@@ -43,7 +41,7 @@ for s, f, a in [(u"volt", "volt0", NO_ALTERNATE),
                 (u"minute", "minute0", NO_ALTERNATE), ("minutes", "minute1", NO_ALTERNATE),
                 (u"second", "second0", NO_ALTERNATE), ("seconds", "second1", NO_ALTERNATE),
                        ]:
-    systemSounds.append((s, filename(f, a)))
+    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 113 + i)))
 for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
                 (u"batteria della radio scarica", "lowbatt", 485),
                 (u"controllo motore non in posizione, verificare", "thralert", 481),

@@ -13,9 +13,7 @@ for i in range(101):
 systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 101)))
 for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 102 + i)))
-    
-# The list bellow MUST be kept in sync with /radio/src/translate/tts_de.cpp
-for s, f, a in [(u"Volt","volt0", NO_ALTERNATE),  
+for i, (s, f, a) in enumerate([(u"Volt","volt0", NO_ALTERNATE),  
              (u"Ampere", "amp0", NO_ALTERNATE),
              (u"MilliAmpere", "mamp0", NO_ALTERNATE),
              (u"Knoten", "knot0", NO_ALTERNATE),
@@ -41,9 +39,8 @@ for s, f, a in [(u"Volt","volt0", NO_ALTERNATE),
              (u"Uhr", "hour0", NO_ALTERNATE),
              (u"Minuten", "minute0", NO_ALTERNATE),
              (u"Secunden", "second0", NO_ALTERNATE),
-             ]:
-    systemSounds.append((s, filename(f, a)))
-
+             ]):
+    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 110 + i)))
 for s, f, a in [(u"Sender ist inaktiv,bitte Ueberpruefen Sie", "inactiv", 486),
                 (u"Senderakku niedrig", "lowbatt", 485),
                 (u"Gaskanal nicht Null, bitte pruefen", "thralert", 481),

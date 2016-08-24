@@ -17,8 +17,7 @@ for i, s in enumerate(["sto", u"dvěsta", u"třista", u"čtyřista", u"pětset",
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 100 + i)))
 for i, s in enumerate([u"tisíce", "jeden", "jedno", u"dvě", u"celá", u"celé", u"celých", u"mínus"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 110 + i)))
-
-for s, f, a in [(u"volt", u"volt0", NO_ALTERNATE), (u"volty", u"volt1", NO_ALTERNATE), (u"voltů", u"volt2", NO_ALTERNATE),(u"voltu", u"volt3", NO_ALTERNATE),
+for i, (s, f, a) in enumerate([(u"volt", u"volt0", NO_ALTERNATE), (u"volty", u"volt1", NO_ALTERNATE), (u"voltů", u"volt2", NO_ALTERNATE),(u"voltu", u"volt3", NO_ALTERNATE),
                 (u"ampér", "amp0", NO_ALTERNATE), (u"ampéry", u"amp1", NO_ALTERNATE), (u"ampérů", u"amp2", NO_ALTERNATE), (u"ampéru", u"amp3", NO_ALTERNATE),
                 (u"miliampér", "mamp0", NO_ALTERNATE), (u"miliampéry", u"mamp1", NO_ALTERNATE), (u"miliampérů", u"mamp2", NO_ALTERNATE), (u"miliampéru", u"mamp3", NO_ALTERNATE),
                 (u"uzel", "knot0", NO_ALTERNATE), (u"uzly", u"knot1", NO_ALTERNATE), (u"uzlů", u"knot2", NO_ALTERNATE), (u"uzlu", u"knot3", NO_ALTERNATE),
@@ -44,9 +43,8 @@ for s, f, a in [(u"volt", u"volt0", NO_ALTERNATE), (u"volty", u"volt1", NO_ALTER
                 (u"hodina", "hour0", NO_ALTERNATE), (u"hodiny", u"hour1", NO_ALTERNATE), (u"hodin", u"hour2", NO_ALTERNATE), (u"hodiny", u"hour3", NO_ALTERNATE),
                 (u"minuta", "minute0", NO_ALTERNATE), (u"minuty", u"minute1", NO_ALTERNATE), (u"minut", u"minute2", NO_ALTERNATE),  (u"minuty", u"minute3", NO_ALTERNATE),
                 (u"sekunda", "second0", NO_ALTERNATE), (u"sekundy", u"second1", NO_ALTERNATE), (u"sekund", u"second2", NO_ALTERNATE), (u"sekundy", u"second3", NO_ALTERNATE),
-                ]:
-    systemSounds.append((s, filename(f, a)))
-
+                ]):
+    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 118 + i)))
 for s, f, a in [(u"střed trimu", "midtrim", 495),
                 (u"maximum trimu", "endtrim", NO_ALTERNATE),
                 (u"baterie rádia je vybitá", "lowbatt", 485),
