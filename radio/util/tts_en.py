@@ -14,8 +14,7 @@ for i in range(9):
     systemSounds.append((str(100 * (i + 1)), filename(PROMPT_SYSTEM_BASE + 100 + i)))
 for i, s in enumerate(["thousand", "and", "minus", "point"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 109 + i)))
-    
-array = [("volt", "volt0", NO_ALTERNATE), ("volts", "volt1", NO_ALTERNATE),
+for i, (s, f, a) in enumerate([("volt", "volt0", NO_ALTERNATE), ("volts", "volt1", NO_ALTERNATE),
                 ("amp", "amp0", NO_ALTERNATE), ("amps", "amp1", NO_ALTERNATE),
                 ("milliamp", "mamp0", NO_ALTERNATE), ("milliamps", "mamp1", NO_ALTERNATE),
                 ("knot", "knot0", NO_ALTERNATE), ("knots", "knot1", NO_ALTERNATE),
@@ -41,8 +40,7 @@ array = [("volt", "volt0", NO_ALTERNATE), ("volts", "volt1", NO_ALTERNATE),
                 ("hour", "hour0", NO_ALTERNATE), ("hours", "hour1", NO_ALTERNATE),
                 ("minute", "minute0", NO_ALTERNATE), ("minutes", "minute1", NO_ALTERNATE),
                 ("second", "second0", NO_ALTERNATE), ("seconds", "second1", NO_ALTERNATE),
-                       ]
-for i, (s, f, a) in enumerate(array):
+                       ]):
     systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 115 + i)))
 for i, s in enumerate(["point zero", "point one", "point two", "point three",
                        "point four", "point five", "point six",
