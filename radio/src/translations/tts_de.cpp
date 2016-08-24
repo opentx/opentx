@@ -66,6 +66,21 @@ enum GermanPrompts {
 };
 
 #if defined(VOICE)
+#if defined(CPUARM)
+  #define DE_PUSH_UNIT_PROMPT(u) de_pushUnitPrompt((u), id)
+#else
+  #define DE_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
+#endif
+
+I18N_PLAY_FUNCTION(de, pushUnitPrompt, uint8_t unitprompt)
+{
+#if defined(CPUARM)
+  PUSH_UNIT_PROMPT(unitprompt, 0);
+#else
+  unitprompt = DE_PROMPT_UNITS_BASE + unitprompt*2
+  PUSH_NUMBER_PROMPT(unitprompt);
+#endif
+}
 
 I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
@@ -145,7 +160,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UNITS_BASE+unit);
+    DE_PUSH_UNIT_PROMPT(unit);
   }
 }
 
@@ -160,8 +175,7 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, 0, 0);
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UHR);
+    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
   }
 
   tmp = seconds / 60;
@@ -169,17 +183,29 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0 || ore >0) {
     PLAY_NUMBER(tmp, 0, 0);
     if (tmp != 1) {
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
+    } else {
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
+#else
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
     } else {
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
+#endif
     }
     PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
   }
   PLAY_NUMBER(seconds, 0, 0);
   if (seconds != 1) {
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
+  } else {
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+#else
     PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
   } else {
     PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDE);
+#endif
   }
 }
 

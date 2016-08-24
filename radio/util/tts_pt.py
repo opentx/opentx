@@ -22,8 +22,36 @@ systemSounds.append(("novecentos", filename(PROMPT_SYSTEM_BASE + 109)))
 systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE + 110)))
 for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 111 + i)))
-for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g", u"mililitri", u"onças"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 122 + i)))
+
+# The list bellow MUST be kept in sync with /radio/src/translate/tts_pt.cpp
+for s, f, a in [("Volt", "volt0", NO_ALTERNATE),
+                ("ampére", "amp0", NO_ALTERNATE),
+                ("miliamperes", "mamp0", NO_ALTERNATE),
+                ("knot", "knot0", NO_ALTERNATE),
+                ("metros por segundo", "mps0", NO_ALTERNATE),
+                ("foot per second", "fps0", NO_ALTERNATE),
+                ("quilômetros por hora", "kph0", NO_ALTERNATE),
+                ("mile per hour", "mph0", NO_ALTERNATE),
+                ("metros", "meter0", NO_ALTERNATE),
+                ("foot", "foot0", NO_ALTERNATE),
+                ("degree celsius", "celsius0", NO_ALTERNATE),
+                ("degree fahrenheit", "fahr0", NO_ALTERNATE),
+                ("percent", "percent0", NO_ALTERNATE),
+                ("miliamperes por hora", "mamph0", NO_ALTERNATE),
+                ("watt", "watt0", NO_ALTERNATE),
+                ("milli-watt", "mwatt0", NO_ALTERNATE),
+                ("db", "db0", NO_ALTERNATE),
+                ("r p m", "rpm0", NO_ALTERNATE),
+                ("g", "g0", NO_ALTERNATE),
+                ("degree", "degree0", NO_ALTERNATE),
+                ("radian", "rad0", NO_ALTERNATE),
+                ("milliliter", "ml0", NO_ALTERNATE),
+                ("onças", "founce0", NO_ALTERNATE),
+                ("horas", "hour0", NO_ALTERNATE),
+                ("minutos", "minute0", NO_ALTERNATE),
+                ("segundos", "second0", NO_ALTERNATE),
+                       ]:
+    systemSounds.append((s, filename(f, a)))
 for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 486),
                 (u"bateria do rádio fraca", "lowbatt", 485),
                 (u"atenção,acelerador não está no mínimo", "thralert", 481),
