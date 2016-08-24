@@ -22,8 +22,34 @@ systemSounds.append(("novecentos", filename(PROMPT_SYSTEM_BASE + 109)))
 systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE + 110)))
 for i, s in enumerate(["virgula", "uma", "duas", "e", "menos", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 111 + i)))
-for i, s in enumerate([u"Volt", u"ampére", u"metros por segundo", u"", u"quilômetros por hora", u"metros", u"graus", u"cento", u"miliamperes", u"miliamperes por hora", u"watt", u"db", u"pés", u"nós", u"horas", u"minutos", u"segundos", u"RPM", u"g", u"mililitri", u"onças"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 122 + i)))
+for i, (s, f) in enumerate([("Volt", "volt0"),
+                            ("ampére", "amp0"),
+                            ("miliamperes", "mamp0"),
+                            ("knot", "knot0"),
+                            ("metros por segundo", "mps0"),
+                            ("foot per second", "fps0"),
+                            ("quilômetros por hora", "kph0"),
+                            ("mile per hour", "mph0"),
+                            ("metros", "meter0"),
+                            ("foot", "foot0"),
+                            ("degree celsius", "celsius0"),
+                            ("degree fahrenheit", "fahr0"),
+                            ("percent", "percent0"),
+                            ("miliamperes por hora", "mamph0"),
+                            ("watt", "watt0"),
+                            ("milli-watt", "mwatt0"),
+                            ("db", "db0"),
+                            ("r p m", "rpm0"),
+                            ("g", "g0"),
+                            ("degree", "degree0"),
+                            ("radian", "rad0"),
+                            ("milliliter", "ml0"),
+                            ("onças", "founce0"),
+                            ("horas", "hour0"),
+                            ("minutos", "minute0"),
+                            ("segundos", "second0"),
+                       ]):
+    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 122 + i)))
 for s, f, a in [(u"atenção, o rádio foi esquecido ligado, por favor desligue-o", "inactiv", 486),
                 (u"bateria do rádio fraca", "lowbatt", 485),
                 (u"atenção,acelerador não está no mínimo", "thralert", 481),

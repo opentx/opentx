@@ -51,6 +51,28 @@ enum SwedishPrompts {
 
 #if defined(VOICE)
 
+#if defined(CPUARM)
+  #define SE_PUSH_UNIT_PROMPT(p, u) se_pushUnitPrompt((p), (u), id)
+#else
+  #define SE_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+#endif
+
+I18N_PLAY_FUNCTION(se, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+{
+#if defined(CPUARM)
+  if (number == 1)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+  else
+    PUSH_UNIT_PROMPT(unitprompt, 1);
+#else
+  unitprompt = SE_PROMPT_UNITS_BASE + unitprompt*2;
+  if (number == 1)
+    PUSH_NUMBER_PROMPT(unitprompt);
+  else
+    PUSH_NUMBER_PROMPT(unitprompt+1);
+#endif
+}
+
 I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
   if (number < 0) {
@@ -114,10 +136,7 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
   
   if (unit) {
-    if  (tmpNumber == 1 ) 
-      PUSH_NUMBER_PROMPT(SE_PROMPT_UNITS_BASE+unit*2);   // Singular prompts
-    else
-      PUSH_NUMBER_PROMPT(SE_PROMPT_UNITS_BASE+unit*2+1); // Plural prompts
+    SE_PUSH_UNIT_PROMPT(tmpNumber, unit);
   }
 }
 

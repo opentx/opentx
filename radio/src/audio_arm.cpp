@@ -135,6 +135,37 @@ const int16_t sineValues[] =
 };
 
 #if defined(SDCARD)
+
+const char * const unitsFilenames[] = {
+  "",
+  "volt",
+  "amp",
+  "mamp",
+  "knot",
+  "mps",
+  "fps",
+  "kph",
+  "mph",
+  "meter",
+  "foot",
+  "celsius",
+  "fahr",
+  "percent",
+  "mamph",
+  "watt",
+  "mwatt",
+  "db",
+  "rpm",
+  "g",
+  "degree",
+  "radian",
+  "ml",
+  "founce",
+  "hour",
+  "minute",
+  "second",
+};
+
 const char * const audioFilenames[] = {
   "hello",
   "bye",
@@ -1234,6 +1265,22 @@ void audioEvent(unsigned int index)
     }
   }
 }
+
+#if defined(SDCARD)
+void pushUnit(uint8_t unit, uint8_t idx, uint8_t id)
+{
+  if (unit < DIM(unitsFilenames)) {
+    char path[AUDIO_FILENAME_MAXLEN+1];
+    char *tmp = strAppendSystemAudioPath(path);
+    tmp = strAppendStringWithIndex(tmp, unitsFilenames[unit], idx);
+    strcpy(tmp, SOUNDS_EXT);
+    audioQueue.playFile(path, 0, id);
+  }
+  else {
+    TRACE("pushUnit: out of bounds unit : %d", unit); // We should never get here, but given the nature of TTS files, this prevent segfault in case of bug there.
+  }
+}
+#endif
 
 void pushPrompt(uint16_t prompt, uint8_t id)
 {

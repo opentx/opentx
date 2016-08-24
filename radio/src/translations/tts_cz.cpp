@@ -54,12 +54,22 @@ enum CzechPrompts {
 
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+#if defined(CPUARM)
+  if (number == 1)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+  else if (number > 1 && number < 5)
+    PUSH_UNIT_PROMPT(unitprompt, 1);
+  else
+    PUSH_UNIT_PROMPT(unitprompt, 2);
+#else
+  unitprompt = CZ_PROMPT_UNITS_BASE+((unitprompt-1)*4);
   if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else if (number > 1 && number < 5)
     PUSH_NUMBER_PROMPT(unitprompt+1);
   else
     PUSH_NUMBER_PROMPT(unitprompt+2);
+#endif
 }
 
 I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -196,7 +206,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    CZ_PUSH_UNIT_PROMPT(tmp, (CZ_PROMPT_UNITS_BASE+((unit-1)*4)));
+    CZ_PUSH_UNIT_PROMPT(tmp, unit);
   }
 }
 
@@ -210,17 +220,17 @@ I18N_PLAY_FUNCTION(cz, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS+1, ZENSKY);
+    PLAY_NUMBER(tmp, UNIT_HOURS, ZENSKY);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, UNIT_MINUTES+1, ZENSKY);
+    PLAY_NUMBER(tmp, UNIT_MINUTES, ZENSKY);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, UNIT_SECONDS+1, ZENSKY);
+    PLAY_NUMBER(seconds, UNIT_SECONDS, ZENSKY);
   }
 }
 
