@@ -90,6 +90,21 @@ enum SpanishPrompts {
 };
 
 #if defined(VOICE)
+#if defined(CPUARM)
+  #define ES_PUSH_UNIT_PROMPT(u) es_pushUnitPrompt((u), id)
+#else
+  #define ES_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
+#endif
+
+I18N_PLAY_FUNCTION(es, pushUnitPrompt, uint8_t unitprompt)
+{
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+#else
+  unitprompt = ES_PROMPT_UNITS_BASE + unitprompt*2;
+  PUSH_NUMBER_PROMPT(unitprompt);
+#endif
+}
 
 I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
@@ -173,7 +188,7 @@ I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_UNITS_BASE+unit-1);
+    ES_PUSH_UNIT_PROMPT(unit);
   }
 }
 
@@ -191,11 +206,19 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
     ore = tmp;
     if (tmp > 1) {
       PLAY_NUMBER(tmp, 0, 0);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 1);
+    }
+    else {
+      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+      PUSH_UNIT_PROMPT(UNIT_HOURS, 0);
+#else
       PUSH_NUMBER_PROMPT(ES_PROMPT_HORAS);
     }
     else {
       PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
       PUSH_NUMBER_PROMPT(ES_PROMPT_HORA);
+#endif
     }
   }
 
@@ -204,20 +227,38 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0 || ore >0) {
     if (tmp != 1) {
       PLAY_NUMBER(tmp, 0, 0);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
+    }
+    else {
+      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
+#else
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTOS);
-    } else {
+    } 
+    else {
       PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTO);
+#endif
     }
     PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
   }
 
   if (seconds != 1) {
     PLAY_NUMBER(seconds, 0, 0);
+#if defined(CPUARM)
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
+  }
+  else {
+    PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+#else
     PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDOS);
-  } else {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
-    PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDO);
+  }
+  else {
+   PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
+   PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDO);
+#endif
   }
 }
 

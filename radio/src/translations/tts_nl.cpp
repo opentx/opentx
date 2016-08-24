@@ -37,70 +37,30 @@ enum DutchPrompts {
 
 #if defined(VOICE)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if defined(CPUARM)
   #define NL_PUSH_UNIT_PROMPT(p, u) en_pushUnitPrompt((p), (u), id)
 #else
   #define NL_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
-
-
-
 #endif
 
 I18N_PLAY_FUNCTION(nl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
+#if defined(CPUARM)
+  if (number == 1)
+    PUSH_UNIT_PROMPT(unitprompt, 0);
+  else
+    PUSH_UNIT_PROMPT(unitprompt, 1);
+#else
+  unitprompt = NL_PROMPT_UNITS_BASE + unitprompt*2;
   if (number == 1)
     PUSH_NUMBER_PROMPT(unitprompt);
   else
     PUSH_NUMBER_PROMPT(unitprompt+1);
+#endif
 }
-
-
-
 
 I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
-
-
-
-
-
-
-
-
-
-
   if (number < 0) {
     PUSH_NUMBER_PROMPT(NL_PROMPT_MINUS);
     number = -number;
@@ -136,24 +96,16 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(NL_PROMPT_POINT_BASE + qr.rem);
       number = -1;
-
-
-
     }
     else {
       number = qr.quot;
-
     }
-
   }
 
   int16_t tmp = number;
 
   if (number >= 1000) {
-
     PLAY_NUMBER(number / 1000, 0, 0);
-
-
     PUSH_NUMBER_PROMPT(NL_PROMPT_THOUSAND);
 
     number %= 1000;
@@ -161,9 +113,7 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       number = -1;
   }
   if (number >= 100) {
-
     PUSH_NUMBER_PROMPT(NL_PROMPT_HUNDRED + (number/100)-1);
-
     number %= 100;
     if (number == 0)
       number = -1;
@@ -172,9 +122,8 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     PUSH_NUMBER_PROMPT(NL_PROMPT_ZERO + number);
   }
   
-
   if (unit) {
-    NL_PUSH_UNIT_PROMPT(tmp, NL_PROMPT_UNITS_BASE + unit*2);
+    NL_PUSH_UNIT_PROMPT(tmp, unit);
   }
 }
 
@@ -190,12 +139,10 @@ I18N_PLAY_FUNCTION(nl, playDuration, int seconds PLAY_DURATION_ATT)
     seconds = -seconds;
   }
 
-
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
     PLAY_NUMBER(tmp, UNIT_HOURS, 0);
-
   }
 
   tmp = seconds / 60;
@@ -203,20 +150,10 @@ I18N_PLAY_FUNCTION(nl, playDuration, int seconds PLAY_DURATION_ATT)
   if (tmp > 0) {
     PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
     if (seconds > 0)
-
       PUSH_NUMBER_PROMPT(NL_PROMPT_AND);
-
-
-
-
   }
-
-
   if (seconds > 0) {
     PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
-
-
-
   }
 }
 
