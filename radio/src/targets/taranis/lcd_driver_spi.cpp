@@ -279,7 +279,7 @@ void lcdInit()
 {
   lcdHardwareInit();
 
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+  if (IS_LCD_RESET_NEEDED()) {
     lcdReset();
   }
 }

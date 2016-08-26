@@ -504,10 +504,12 @@ void ledBlue(void);
 #define LCD_W                          128
 #define LCD_H                          64
 #define LCD_DEPTH                      1
+#define IS_LCD_RESET_NEEDED()          true
 #else
 #define LCD_W                          212
 #define LCD_H                          64
 #define LCD_DEPTH                      4
+#define IS_LCD_RESET_NEEDED()          (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
 #endif
 void lcdInit(void);
 void lcdInitFinish(void);
