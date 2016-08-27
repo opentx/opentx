@@ -26,7 +26,7 @@ void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
   lcdDrawChar(x, y, t+'0', t ? INVERS : 0);
 }
 
-void menuRadioDiagKeys(uint8_t event)
+void menuRadioDiagKeys(event_t event)
 {
   SIMPLE_MENU(STR_MENU_RADIO_SWITCHES, menuTabGeneral, MENU_RADIO_SWITCHES_TEST, 1);
 

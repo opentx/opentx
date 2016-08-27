@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuRadioDiagAnalogs(uint8_t event)
+void menuRadioDiagAnalogs(event_t event)
 {
 // TODO enum
 #if defined(TX_CAPACITY_MEASUREMENT)

@@ -41,7 +41,7 @@ void drawCurve(coord_t offset)
   } while (1);
 }
 
-void menuModelCurvesAll(uint8_t event)
+void menuModelCurvesAll(event_t event)
 {
 #if defined(GVARS_IN_CURVES_SCREEN)
   SIMPLE_MENU(STR_MENUCURVES, menuTabModel, MENU_MODEL_CURVES, HEADER_LINE+MAX_CURVES+MAX_GVARS);
@@ -105,7 +105,7 @@ void menuModelCurvesAll(uint8_t event)
 }
 
 #if defined(CPUARM)
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, LcdFlags flags)
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags)
 {
   coord_t x1 = x;
   if (flags & RIGHT) {

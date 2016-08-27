@@ -117,7 +117,7 @@ enum MenuRadioSetupItems {
   #define COL_TX_MODE LABEL(TX_MODE)
 #endif
 
-void menuRadioSetup(uint8_t event)
+void menuRadioSetup(event_t event)
 {
 #if defined(RTCLOCK)
   struct gtm t;
@@ -409,11 +409,11 @@ void menuRadioSetup(uint8_t event)
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
-#if ROTARY_ENCODERS > 0
+#if defined(ROTARY_ENCODERS)
       case ITEM_SETUP_RE_NAVIGATION:
         g_eeGeneral.reNavigation = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, NUM_ROTARY_ENCODERS, attr, event);
         if (attr && checkIncDec_Ret) {
-          g_rotenc[NAVIGATION_RE_IDX()] = 0;
+          ROTARY_ENCODER_NAVIGATION_VALUE = 0;
         }
         break;
 #endif

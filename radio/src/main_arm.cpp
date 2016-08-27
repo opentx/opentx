@@ -282,7 +282,7 @@ void guiMain(event_t evt)
 }
 #elif defined(GUI)
 
-void handleGui(uint8_t event) {
+void handleGui(event_t event) {
   // if Lua standalone, run it and don't clear the screen (Lua will do it)
   // else if Lua telemetry view, run it and don't clear the screen
   // else clear scren and show normal menus

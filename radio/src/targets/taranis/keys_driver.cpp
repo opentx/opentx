@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+uint32_t rotencPosition;
+#endif
+
 uint32_t readKeys()
 {
   uint32_t result = 0;
@@ -33,7 +37,7 @@ uint32_t readKeys()
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
 
-#if (!defined(PCBX9E) && !defined(PCBX7D)) || defined(SIMU)
+#if !defined(PCBX9E) && !defined(PCBX7D)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
@@ -81,29 +85,18 @@ uint8_t keyDown()
   return readKeys();
 }
 
-#if defined(PCBX9E) || defined(PCBX7D)
-uint32_t Rotary_position;
-rotenc_t rotencValue;
+#if defined(ROTARY_ENCODER_NAVIGATION)
 void checkRotaryEncoder()
 {
-  register uint32_t dummy = ENC_GPIO->IDR; // Read Rotary encoder
-
-  // TODO quick & dirty!
-#if defined(PCBX9E)
-  dummy >>= 12;
-  dummy &= 0x03;
-#else
-  dummy = ((dummy >> 11) & 0x01) + ((dummy >> 8) & 0x02);
-#endif
-  if (dummy != (Rotary_position & 0x03)) {
-    if ((Rotary_position & 0x01) ^ ((dummy & 0x02) >> 1)) {
-      --rotencValue;
+  register uint32_t newpos = ROTARY_ENCODER_POSITION();
+  if (newpos != rotencPosition) {
+    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
+      --rotencValue[0];
     }
     else {
-      ++rotencValue;
+      ++rotencValue[0];
     }
-    Rotary_position &= ~0x03 ;
-    Rotary_position |= dummy ;
+    rotencPosition = newpos;
   }
 }
 #endif
@@ -116,40 +109,6 @@ void readKeysAndTrims()
   for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
     keys[index++].input(in & i);
   }
-
-#if (defined(PCBX9E) || defined(PCBX7D)) && !defined(SIMU)
-  #define X9E_RE_TIMEOUT 5
-  static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (rotencValue / 2);
-  static int timeout = X9E_RE_TIMEOUT;
-  static int lastkey = 0;
-  int8_t scrollRE = reNewValue - rePreviousValue;
-  if (scrollRE) {
-    rePreviousValue = reNewValue;
-    timeout = X9E_RE_TIMEOUT;
-    if (scrollRE < 0) {
-      if (lastkey != KEY_MINUS) {
-        putEvent(EVT_KEY_BREAK(lastkey));
-      }
-      putEvent(EVT_KEY_FIRST(KEY_MINUS));
-      lastkey = KEY_MINUS;
-    }
-    else {
-      if (lastkey != KEY_PLUS) {
-        putEvent(EVT_KEY_BREAK(lastkey));
-      }
-      putEvent(EVT_KEY_FIRST(KEY_PLUS));
-      lastkey = KEY_PLUS; 
-    }
-  }
-  else if (timeout > 0) {
-    timeout--;
-  }
-  else if (lastkey && timeout == 0) {
-    putEvent(EVT_KEY_BREAK(lastkey));
-    lastkey = 0;
-  }
-#endif
 
   in = readTrims();
   for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
@@ -288,5 +247,9 @@ void keysInit()
 #if defined(KEYS_GPIOG_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
   GPIO_Init(GPIOG, &GPIO_InitStructure);
+#endif
+  
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotencPosition = ROTARY_ENCODER_POSITION();
 #endif
 }

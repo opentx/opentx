@@ -502,8 +502,8 @@ int cliDisplay(const char ** argv)
       name[len] = '\0';
       serialPrint("[%s] = %s", name, keyState(i) ? "on" : "off");
     }
-#if defined(ROTARY_ENCODER_NAVIGATION) || defined(PCBX9E) || defined(PCBHORUS) || defined(PCBFLAMENCO)
-    serialPrint("[Enc.] = %d", rotencValue / 2);
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    serialPrint("[Enc.] = %d", rotencValue[0] / ROTARY_ENCODER_GRANULARITY);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
       serialPrint("[Trim%d] = %s", i-TRM_BASE, keyState(i) ? "on" : "off");

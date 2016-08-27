@@ -27,7 +27,7 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx,
 }
 
 #if defined(CPUARM)
-FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
+FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModesType value, uint8_t attr)
 {
   int posHorz = menuHorizontalPosition;
   

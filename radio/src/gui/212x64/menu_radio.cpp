@@ -32,7 +32,7 @@ const MenuHandlerFunc menuTabGeneral[] = {
   menuRadioCalibration
 };
 
-void menuRadioSpecialFunctions(uint8_t event)
+void menuRadioSpecialFunctions(event_t event)
 {
   MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, MAX_SPECIAL_FUNCTIONS, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuSpecialFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);

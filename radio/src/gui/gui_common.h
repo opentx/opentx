@@ -24,6 +24,14 @@
 #include "lcd.h"
 #include "keys.h"
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  #define CASE_EVT_ROTARY_LEFT         case EVT_ROTARY_LEFT:
+  #define CASE_EVT_ROTARY_RIGHT        case EVT_ROTARY_RIGHT:
+#else
+  #define CASE_EVT_ROTARY_LEFT
+  #define CASE_EVT_ROTARY_RIGHT
+#endif
+
 #if defined(CPUARM)
 typedef bool (*IsValueAvailable)(int);
 

@@ -98,11 +98,9 @@ void OpenTxSimulator::start(QByteArray & ee, bool tests)
 
 void OpenTxSimulator::start(const char * filename, bool tests)
 {
-#if ROTARY_ENCODERS > 0
-  g_rotenc[0] = 0;
-#endif
-#if ROTARY_ENCODERS > 1
-  g_rotenc[1] = 0;
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  for (int i=0; i<DIM(rotencValue); i++)
+    rotencValue[i] = 0;
 #endif
 
   StartEepromThread(filename);
@@ -157,20 +155,8 @@ void OpenTxSimulator::getTrims(Trims & trims)
 
 void OpenTxSimulator::wheelEvent(int steps)
 {
-#if defined(PCBHORUS) || defined(PCBFLAMENCO)
-  if (steps > 0)
-    rotencValue -= 2;
-  else
-    rotencValue += 2;
-#elif defined(PCBX9E)
-  if (steps == 255)
-    rotencValue -= 2;
-  else
-    rotencValue += 2;
-#elif defined(PCBSKY9X) && ROTARY_ENCODERS > 0
-  g_rotenc[0] += steps*4;
-#elif defined(PCBGRUVIN9X)
-  g_rotenc[0] += steps;
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  ROTARY_ENCODER_NAVIGATION_VALUE += steps * ROTARY_ENCODER_GRANULARITY;
 #endif
 }
 

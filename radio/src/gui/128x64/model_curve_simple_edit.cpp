@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuModelCurveOne(uint8_t event)
+void menuModelCurveOne(event_t event)
 {
   TITLE(STR_MENUCURVE);
   lcdDrawNumber(PSIZE(TR_MENUCURVE)*FW+1, 0, s_curveChan+1, INVERS|LEFT);

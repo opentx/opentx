@@ -70,7 +70,7 @@ void onCustomFunctionsFileSelectionMenu(const char *result)
 }
 #endif
 
-void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
+void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 
@@ -375,7 +375,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
   }
 }
 
-void menuModelSpecialFunctions(uint8_t event)
+void menuModelSpecialFunctions(event_t event)
 {
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, MAX_SPECIAL_FUNCTIONS+1, {0, NAVIGATION_LINE_BY_LINE|4/*repeated*/});
   return menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);

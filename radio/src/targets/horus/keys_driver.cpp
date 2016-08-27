@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+uint32_t rotencPosition;
+
 uint32_t readKeys()
 {
   uint32_t result = 0;
@@ -89,22 +91,15 @@ uint8_t keyDown()
   return readKeys();
 }
 
-int32_t rotencValue;
-uint32_t rotencPosition;
-uint32_t rotencSpeed = ROTENC_LOWSPEED;
-
-#define ROTENC_DELAY_MIDSPEED          4
-#define ROTENC_DELAY_HIGHSPEED         2
-
 void checkRotaryEncoder()
 {
   register uint32_t newpos = ROTARY_ENCODER_POSITION();
   if (newpos != rotencPosition) {
     if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
-      --rotencValue;
+      --rotencValue[0];
     }
     else {
-      ++rotencValue;
+      ++rotencValue[0];
     }
     rotencPosition = newpos;
   }
@@ -119,28 +114,6 @@ void readKeysAndTrims()
   uint32_t in = readKeys();
   for (i = 0; i < TRM_BASE; i++) {
     keys[index++].input(in & (1 << i));
-  }
-
-  static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (rotencValue / 2);
-  int8_t scrollRE = reNewValue - rePreviousValue;
-  static uint32_t lastTick = 0;
-  if (scrollRE) {
-    rePreviousValue = reNewValue;
-    if (scrollRE < 0) {
-      putEvent(EVT_ROTARY_LEFT);
-    }
-    else {
-      putEvent(EVT_ROTARY_RIGHT);
-    }
-    uint32_t delay = get_tmr10ms() - lastTick;
-    lastTick = get_tmr10ms();
-    if (delay < ROTENC_DELAY_HIGHSPEED)
-      rotencSpeed = ROTENC_HIGHSPEED;
-    else if (delay < ROTENC_DELAY_MIDSPEED)
-      rotencSpeed = ROTENC_MIDSPEED;
-    else
-      rotencSpeed = ROTENC_LOWSPEED;
   }
 
   in = readTrims();

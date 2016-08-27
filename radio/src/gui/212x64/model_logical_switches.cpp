@@ -39,7 +39,7 @@ enum LogicalSwitchFields {
 #define CSW_5TH_COLUMN  (26*FW+3)
 #define CSW_6TH_COLUMN  (31*FW+1)
 
-void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lattr, uint8_t rattr)
+void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData * cs, uint8_t lattr, uint8_t rattr)
 {
   lcdDrawChar(x-4, y, '[');
   lcdDrawNumber(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
@@ -72,7 +72,7 @@ void onLogicalSwitchesMenu(const char *result)
   }
 }
 
-void menuModelLogicalSwitches(uint8_t event)
+void menuModelLogicalSwitches(event_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 
@@ -98,7 +98,7 @@ void menuModelLogicalSwitches(uint8_t event)
     POPUP_MENU_START(onLogicalSwitchesMenu);
   }
 
-  for (int i=0; i<NUM_BODY_LINES; ++i) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     k = i+menuVerticalOffset;
     LcdFlags attr = (sub==k ? ((s_editMode>0) ? BLINK|INVERS : INVERS)  : 0);

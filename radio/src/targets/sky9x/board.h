@@ -35,6 +35,18 @@ extern uint16_t ResetReason;
 void boardInit(void);
 #define boardOff()  pwrOff()
 
+// Rotary Encoder driver
+void rotencInit();
+void rotencEnd();
+
+#if !defined(REVX) && !defined(AR9X)
+  #define ROTARY_ENCODERS              1
+  #define ROTARY_ENCODER_NAVIGATION
+  #define REA_DOWN()                   (!(PIOB->PIO_PDSR & 0x40))
+#else
+  #define REA_DOWN()                   (0)
+#endif
+
 // Keys driver
 #define NUM_SWITCHES                   7
 enum EnumKeys
@@ -58,13 +70,10 @@ enum EnumKeys
   TRM_RH_UP,
   TRM_LAST = TRM_RH_UP,
 
-#if ROTARY_ENCODERS > 0 || defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODERS)
   BTN_REa,
 #endif
-#if ROTARY_ENCODERS > 0
-  BTN_REb,
-#endif
-  
+
   NUM_KEYS
 };
 
@@ -358,16 +367,6 @@ uint8_t eepromIsTransferComplete(void);
 void eepromBlockErase(uint32_t address);
 void eepromStartRead(uint8_t * buffer, size_t address, size_t size);
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
-
-// Rotary Encoder driver
-void rotencInit();
-void rotencEnd();
-
-#if ROTARY_ENCODERS > 0
-  #define REA_DOWN()                   (!(PIOB->PIO_PDSR & 0x40))
-#else
-  #define REA_DOWN()                   (0)
-#endif
 
 // Debug driver
 void debugPutc(const char c);

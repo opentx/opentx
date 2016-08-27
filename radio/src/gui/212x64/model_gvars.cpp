@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void editGVarValue(coord_t x, coord_t y, uint8_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags)
+void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags)
 {
   FlightModeData * fm = &g_model.flightModeData[flightMode];
   gvar_t & v = fm->gvars[gvar];
@@ -62,7 +62,7 @@ enum GVarFields {
 
 #define GVAR_2ND_COLUMN                (12*FW)
 
-void menuModelGVarOne(uint8_t event)
+void menuModelGVarOne(event_t event)
 {
   GVarData * gvar = &g_model.gvars[s_currIdx];
 
@@ -133,7 +133,7 @@ void onGVARSMenu(const char *result)
 #define GVARS_COLUMNS                  (NAVIGATION_LINE_BY_LINE|(MAX_FLIGHT_MODES-1))
 #define GVARS_FM_COLUMN(p)             (7*FW - 7 + (p)*20)
 
-void menuModelGVars(uint8_t event)
+void menuModelGVars(event_t event)
 {
   tmr10ms_t tmr10ms = get_tmr10ms();
   const char * menuTitle;

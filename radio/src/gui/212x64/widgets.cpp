@@ -129,7 +129,7 @@ void title(const pm_char * s)
   lcdDrawText(0, 0, s, INVERS);
 }
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char *label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, uint8_t event)
+choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event)
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
@@ -137,13 +137,13 @@ choice_t editChoice(coord_t x, coord_t y, const pm_char *label, const pm_char *v
   return value;
 }
 
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, uint8_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, event_t event )
 {
   drawCheckBox(x, y, value, attr);
   return editChoice(x, y, label, NULL, value, 0, 1, attr, event);
 }
 
-swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, uint8_t event)
+swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event)
 {
   drawFieldLabel(x, y, STR_SWITCH);
   drawSwitch(x,  y, value, attr);
@@ -181,7 +181,7 @@ void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags fl
   drawValueWithUnit(x, y, value, g_model.gvars[gvar].unit ? UNIT_PERCENT : UNIT_RAW, flags);
 }
 
-int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event)
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
   bool invers = (attr & INVERS);
@@ -227,7 +227,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
   return value;
 }
 #else
-int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event)
 {
   lcdDrawNumber(x, y, value, attr);
   if (attr&INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);

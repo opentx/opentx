@@ -175,7 +175,7 @@ enum ExposFields {
   EXPO_FIELD_MAX
 };
 
-void menuModelExpoOne(uint8_t event)
+void menuModelExpoOne(event_t event)
 {
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     // TODO pushMenu(menuChannelsView);
@@ -350,7 +350,7 @@ void displayExpoLine(coord_t y, ExpoData * ed)
     displayFlightModes(EXPO_LINE_INFOS_POS, y, ed->flightModes);
 }
 
-void menuModelExposAll(uint8_t event)
+void menuModelExposAll(event_t event)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 

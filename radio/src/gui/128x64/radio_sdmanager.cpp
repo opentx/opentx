@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuRadioSdManagerInfo(uint8_t event)
+void menuRadioSdManagerInfo(event_t event)
 {
   SIMPLE_SUBMENU(STR_SD_INFO_TITLE, 1);
 
@@ -56,7 +56,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
 }
 
-void onSdManagerMenu(const char *result)
+void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[_MAX_LFN+1];
 
@@ -95,7 +95,7 @@ void onSdManagerMenu(const char *result)
 #endif
 }
 
-void menuRadioSdManager(uint8_t _event)
+void menuRadioSdManager(event_t _event)
 {
 #if defined(SDCARD)
   if (warningResult) {
@@ -118,7 +118,7 @@ void menuRadioSdManager(uint8_t _event)
   }
 #endif
 
-  uint8_t event = ((READ_ONLY() && EVT_KEY_MASK(_event) == KEY_ENTER) ? 0 : _event);
+  event_t event = ((READ_ONLY() && EVT_KEY_MASK(_event) == KEY_ENTER) ? 0 : _event);
   
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE+reusableBuffer.sdmanager.count);
 

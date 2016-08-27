@@ -87,7 +87,7 @@ enum MenuModelOutputsItems {
   #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
 
-void menuModelLimits(uint8_t event)
+void menuModelLimits(event_t event)
 {
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 

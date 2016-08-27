@@ -37,13 +37,13 @@ const MenuHandlerFunc menuTabModel[] = {
 #if defined(LUA_MODEL_SCRIPTS)
   menuModelCustomScripts,
 #endif
-  menuModelTelemetryFrsky,
+  CASE_FRSKY(menuModelTelemetryFrsky)
   CASE_MAVLINK(menuModelTelemetryMavlink)
   menuModelDisplay
 };
 
 #if MENU_COLUMNS > 1
-uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
+uint8_t editDelay(coord_t x, coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay)
 {
   lcdDrawText(x, y, str);
   lcdDrawNumber(x+MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
@@ -51,7 +51,7 @@ uint8_t editDelay(const coord_t x, const coord_t y, const uint8_t event, const u
   return delay;
 }
 #else
-uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
+uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay)
 {
   lcdDrawTextAlignedLeft(y, str);
   lcdDrawNumber(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
@@ -71,7 +71,7 @@ uint8_t s_copySrcCh;
 
 uint8_t editNameCursorPos = 0;
 
-void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, uint8_t active, uint8_t attr)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, uint8_t attr)
 {
   uint8_t mode = 0;
   if (active) {
@@ -90,7 +90,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
       int8_t c = name[cur];
       int8_t v = c;
 
-      if (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
+      if (IS_NEXT_EVENT(event) || IS_PREVIOUS_EVENT(event)) {
          if (attr == ZCHAR) {
            v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
            if (c <= 0) v = -v;
@@ -102,7 +102,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
       }
 
       switch (event) {
-        case EVT_ROTARY_BREAK:
+        case EVT_KEY_BREAK(KEY_ENTER):
           if (s_editMode == EDIT_MODIFY_FIELD) {
             s_editMode = EDIT_MODIFY_STRING;
             cur = 0;
@@ -113,7 +113,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
             s_editMode = 0;
           break;
 
-        case EVT_ROTARY_LONG:
+        case EVT_KEY_LONG(KEY_ENTER):
           if (attr & ZCHAR) {
             if (v == 0) {
               s_editMode = 0;
@@ -159,7 +159,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
   }
 }
 
-void editSingleName(coord_t x, coord_t y, const pm_char * label, char *name, uint8_t size, uint8_t event, uint8_t active)
+void editSingleName(coord_t x, coord_t y, const pm_char * label, char *name, uint8_t size, event_t event, uint8_t active)
 {
   lcdDrawTextAlignedLeft(y, label);
   editName(x, y, name, size, event, active);

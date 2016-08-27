@@ -26,7 +26,7 @@ void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
   lcdDrawChar(x, y, t+'0', t ? INVERS : 0);
 }
 
-void menuRadioDiagKeys(uint8_t event)
+void menuRadioDiagKeys(event_t event)
 {
   SIMPLE_MENU(STR_MENU_RADIO_SWITCHES, menuTabGeneral, MENU_RADIO_SWITCHES_TEST, 1);
 
@@ -64,11 +64,15 @@ void menuRadioDiagKeys(uint8_t event)
 #endif
   }
 
-#if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION) // TODO || defined(PCBX7D)
-  for (uint8_t i=0; i<DIM(g_rotenc); i++) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  for (uint8_t i=0; i<DIM(rotencValue); i++) {
     coord_t y = MENU_HEADER_HEIGHT /* ??? + 1 ??? */ + i*FH;
     lcdDrawTextAtIndex(14*FW, y, STR_VRENCODERS, i, 0);
-    lcdDrawNumber(18*FW, y, g_rotenc[i], LEFT|(keyState(BTN_REa+i) ? INVERS : 0));
+  #if defined(ROTARY_ENCODERS)
+    lcdDrawNumber(18*FW, y, rotencValue[i], LEFT|(keyState(BTN_REa+i) ? INVERS : 0));
+  #else
+    lcdDrawNumber(18*FW, y, rotencValue[i], LEFT);
+  #endif
   }
 #endif
 

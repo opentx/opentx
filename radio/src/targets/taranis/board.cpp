@@ -93,13 +93,12 @@ void interrupt5ms()
   HAPTIC_HEARTBEAT();
 #endif
 
-  if ( ++pre_scale >= 2 ) {
+  if (++pre_scale >= 2) {
     pre_scale = 0 ;
     per10ms();
   }
 
-#if defined(PCBX9E) || defined(PCBX7D)
-  // TODO define ROTARY_ENCODER
+#if defined(ROTARY_ENCODER_NAVIGATION)
   checkRotaryEncoder();
 #endif
 }

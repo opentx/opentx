@@ -118,7 +118,7 @@ enum TraceEvent {
 struct TraceElement {
   gtime_t time;
   uint8_t time_ms;
-  uint8_t event;
+  event_t event;
   uint32_t data;
 };
 

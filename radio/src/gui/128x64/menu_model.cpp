@@ -24,7 +24,7 @@
 #include "view_mavlink.h"
 #endif
 
-uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char *str, uint8_t delay)
+uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay)
 {
   lcdDrawTextAlignedLeft(y, str);
   lcdDrawNumber(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
@@ -46,7 +46,7 @@ uint8_t s_copySrcCh;
 #endif
 
 #if defined(PCBX7D)
-void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, uint8_t active/* TODO, uint8_t attr*/)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active/* TODO, uint8_t attr*/)
 {
   LcdFlags attr = ZCHAR; // TODO in args
   uint8_t mode = 0;
@@ -135,7 +135,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
   }
 }
 #else
-void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, uint8_t active)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active)
 {
 #if defined(CPUM64)
   // in order to save flash
@@ -221,7 +221,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, uint8_t event, ui
 #endif
 
 #if !defined(CPUM64)
-void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, uint8_t event, uint8_t active)
+void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active)
 {
   lcdDrawTextAlignedLeft(y, label);
   editName(x, y, name, size, event, active);

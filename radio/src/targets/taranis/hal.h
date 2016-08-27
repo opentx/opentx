@@ -58,10 +58,12 @@
   #define ENC_GPIO                      GPIOD
   #define ENC_GPIO_PIN_A                GPIO_Pin_12 // PD.12
   #define ENC_GPIO_PIN_B                GPIO_Pin_13 // PD.13
+  #define ROTARY_ENCODER_POSITION()     (ENC_GPIO->IDR >> 12) & 0x03
 #elif defined(PCBX7D)
   #define ENC_GPIO                      GPIOE
   #define ENC_GPIO_PIN_A                GPIO_Pin_9  // PE.09
   #define ENC_GPIO_PIN_B                GPIO_Pin_11 // PE.11
+  #define ROTARY_ENCODER_POSITION()     (((ENC_GPIO->IDR >> 10) & 0x02) + ((ENC_GPIO->IDR >> 9) & 0x01))
 #endif
 
 // This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys

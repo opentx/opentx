@@ -40,7 +40,7 @@ void rotencPoll()
 {
 #if defined(TELEMETREZ)
   if (TrotCount != LastTrotCount) {
-    g_rotenc[0] = LastTrotCount = TrotCount ;
+    rotencValue[0] = LastTrotCount = TrotCount ;
   }
 #else
   // Rotary Encoder polling
@@ -64,10 +64,10 @@ void rotencPoll()
     x <<= 1 ;
     x ^= rotary & 0x80 ;
     if ( x ) {
-      g_rotenc[0] -= 1 ;
+      rotencValue[0] -= 1 ;
     }
     else {
-      g_rotenc[0] += 1 ;
+      rotencValue[0] += 1 ;
     }
     RotPosition = rotary ;
   }

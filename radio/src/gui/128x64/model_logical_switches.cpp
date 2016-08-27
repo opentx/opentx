@@ -58,7 +58,7 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 
 #define CSWONE_2ND_COLUMN (11*FW)
 
-void menuModelLogicalSwitchOne(uint8_t event)
+void menuModelLogicalSwitchOne(event_t event)
 {
   TITLE(STR_MENULOGICALSWITCH);
 
@@ -215,7 +215,7 @@ void menuModelLogicalSwitchOne(uint8_t event)
   }
 }
 
-void menuModelLogicalSwitches(uint8_t event)
+void menuModelLogicalSwitches(event_t event)
 {
   SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, HEADER_LINE+MAX_LOGICAL_SWITCHES);
 
@@ -294,7 +294,7 @@ void menuModelLogicalSwitches(uint8_t event)
 
 #else
 
-void menuModelLogicalSwitches(uint8_t event)
+void menuModelLogicalSwitches(event_t event)
 {
   INCDEC_DECLARE_VARS(EE_MODEL);
 

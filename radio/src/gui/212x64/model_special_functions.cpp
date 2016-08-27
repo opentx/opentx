@@ -144,7 +144,7 @@ enum CustomFunctionsItems {
   ITEM_CUSTOM_FUNCTIONS_LAST = ITEM_CUSTOM_FUNCTIONS_COUNT-1
 };
 
-void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
+void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
   int sub = menuVerticalPosition;
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -421,7 +421,7 @@ void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomF
   }
 }
 
-void menuModelSpecialFunctions(uint8_t event)
+void menuModelSpecialFunctions(event_t event)
 {
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, MAX_SPECIAL_FUNCTIONS, { NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
   return menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);

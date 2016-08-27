@@ -30,10 +30,10 @@
 
 void drawMessageBox();
 void showMessageBox(const pm_char * title);
-void runPopupWarning(uint8_t event);
+void runPopupWarning(event_t event);
 
 #if defined(CPUARM)
-extern void (*popupFunc)(uint8_t event);
+extern void (*popupFunc)(event_t event);
 extern int16_t warningInputValue;
 extern int16_t warningInputValueMin;
 extern int16_t warningInputValueMax;
@@ -100,7 +100,7 @@ extern uint8_t warningInfoFlags;
   extern uint16_t popupMenuOffset;
   extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
   extern uint16_t popupMenuNoItems;
-  const char * runPopupMenu(uint8_t event);
+  const char * runPopupMenu(event_t event);
   extern void (*popupMenuHandler)(const char * result);
 #endif
 

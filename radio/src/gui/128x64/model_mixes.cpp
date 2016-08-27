@@ -142,7 +142,7 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, uint8_t event)
+void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, event_t event)
 {
   u_int8int16_t weight;
   MD_WEIGHT_TO_UNION(md, weight);
@@ -195,7 +195,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   }
 }
 
-void menuModelMixOne(uint8_t event)
+void menuModelMixOne(event_t event)
 {
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     // TODO pushMenu(menuChannelsView);
@@ -375,7 +375,7 @@ void displayMixLine(coord_t y, MixData * md)
     displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
 }
 
-void menuModelMixAll(uint8_t event)
+void menuModelMixAll(event_t event)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 

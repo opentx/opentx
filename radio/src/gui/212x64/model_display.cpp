@@ -81,7 +81,7 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 }
 #endif
 
-void menuModelDisplay(uint8_t event)
+void menuModelDisplay(event_t event)
 {
   MENU(STR_MENU_DISPLAY, menuTabModel, MENU_MODEL_DISPLAY, ITEM_DISPLAY_MAX, { LABEL(TopBar), 0, 0, TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 

@@ -146,21 +146,21 @@ extern const CheckIncDecStops &stopsSwitch;
   const CheckIncDecStops &var  = (const CheckIncDecStops&)_ ## var;
 #define CATEGORY_END(val)                                          \
   (val), (val+1)
-int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
 #else
-int16_t checkIncDec(uint8_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
+int16_t checkIncDec(event_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
 #endif
 
 int8_t checkIncDecMovedSwitch(int8_t val);
 
 #if defined(CPUM64)
-int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
-  int8_t checkIncDecModelZero(uint8_t event, int8_t i_val, int8_t i_max);
-  int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max);
+int8_t checkIncDecModel(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
+int8_t checkIncDecModelZero(event_t event, int8_t i_val, int8_t i_max);
+int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #else
-  #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
-  #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
-  #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
+#define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
+#define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
+#define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
 #endif
 
 #define CHECK_INCDEC_MODELVAR(event, var, min, max) \
@@ -289,9 +289,9 @@ typedef int choice_t;
 typedef int8_t choice_t;
 #endif
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, uint8_t event);
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char * label, LcdFlags attr, uint8_t event);
-int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t event);
+choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char * label, LcdFlags attr, event_t event);
+int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 
@@ -301,27 +301,29 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, uint8_t eve
   #define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, event)
 #endif
 
-#if defined(GVARS)
-#if defined(CPUARM)
-    int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, uint8_t event);
-  #else
-    int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event); // @@@ open.20.fsguruh
-  #endif
-  #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
+#if defined(GVARS) && defined(CPUARM)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
+#elif defined(GVARS)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
 #else
-int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t event);
-  #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
+int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
 #endif
 
-void editName(coord_t x, coord_t y, char *name, uint8_t size, uint8_t event, uint8_t active);
+#if defined(GVARS)
+#define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
+#else
+#define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
+#endif
+
+void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active);
 
 #if defined(CPUM64)
 #define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
 #else
-void editSingleName(coord_t x, coord_t y, const pm_char *label, char *name, uint8_t size, uint8_t event, uint8_t active);
+void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active);
 #endif
 
-uint8_t editDelay(const coord_t y, const uint8_t event, const uint8_t attr, const pm_char * str, uint8_t delay);
+uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay);
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
 #define WARNING_TYPE_ASTERISK          0
@@ -358,7 +360,7 @@ void drawStatusLine();
 #if defined(CPUARM)
 #define TEXT_FILENAME_MAXLEN         40
   extern char s_text_file[TEXT_FILENAME_MAXLEN];
-  void menuTextView(uint8_t event);
+  void menuTextView(event_t event);
   void pushMenuTextView(const char *filename);
   void pushModelNotes();
 #endif
@@ -368,17 +370,21 @@ void drawStatusLine();
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)
 
+#if defined(ROTARY_ENCODERS)
+#define CASE_EVT_ROTARY_BREAK          case EVT_ROTARY_BREAK:
+#define CASE_EVT_ROTARY_LONG           case EVT_ROTARY_LONG:
+#else
+#define CASE_EVT_ROTARY_BREAK
+#define CASE_EVT_ROTARY_LONG
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   #define IS_ROTARY_LEFT(evt)          (evt == EVT_ROTARY_LEFT)
   #define IS_ROTARY_RIGHT(evt)         (evt == EVT_ROTARY_RIGHT)
   #define IS_ROTARY_BREAK(evt)         (evt == EVT_ROTARY_BREAK)
   #define IS_ROTARY_LONG(evt)          (evt == EVT_ROTARY_LONG)
   #define IS_ROTARY_EVENT(evt)         (EVT_KEY_MASK(evt) >= 0x0e)
-  #define CASE_EVT_ROTARY_BREAK        case EVT_ROTARY_BREAK:
-  #define CASE_EVT_ROTARY_LONG         case EVT_ROTARY_LONG:
-  #define CASE_EVT_ROTARY_LEFT         case EVT_ROTARY_LEFT:
-  #define CASE_EVT_ROTARY_RIGHT        case EVT_ROTARY_RIGHT:
-  void repeatLastCursorMove(uint8_t event);
+  void repeatLastCursorMove(event_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
   #define MOVE_CURSOR_FROM_HERE()      if (menuHorizontalPosition > 0) REPEAT_LAST_CURSOR_MOVE()
 #else
@@ -387,17 +393,17 @@ void drawStatusLine();
   #define IS_ROTARY_BREAK(evt)         (0)
   #define IS_ROTARY_LONG(evt)          (0)
   #define IS_ROTARY_EVENT(evt)         (0)
-  #define CASE_EVT_ROTARY_BREAK
-  #define CASE_EVT_ROTARY_LONG
-  #define CASE_EVT_ROTARY_LEFT
-  #define CASE_EVT_ROTARY_RIGHT
-  void repeatLastCursorMove(uint8_t event);
+  void repeatLastCursorMove(event_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    repeatLastCursorMove(event)
   #define MOVE_CURSOR_FROM_HERE()      REPEAT_LAST_CURSOR_MOVE()
 #endif
 
-#define POS_HORZ_INIT(posVert)         0
+// TODO enum
+#if defined(PCBX7D)
+#define EDIT_MODE_INIT                 0
+#else
 #define EDIT_MODE_INIT                 -1
+#endif
 
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
@@ -457,12 +463,12 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
 #define IS_OTHER_VIEW_DISPLAYED()      false
 
 #if defined(CPUARM)
-void editCurveRef(coord_t x, coord_t y, CurveRef & curve, uint8_t event, LcdFlags flags);
+void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 #endif
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);
-FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr);
+FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModesType value, uint8_t attr);
 #else
 #define displayFlightModes(...)
 #endif

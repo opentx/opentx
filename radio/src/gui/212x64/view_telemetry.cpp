@@ -204,7 +204,7 @@ enum NavigationDirection {
 #define decrTelemetryScreen() direction = up
 #define incrTelemetryScreen() direction = down
 
-void menuViewTelemetryFrsky(uint8_t event)
+void menuViewTelemetryFrsky(event_t event)
 {
   enum NavigationDirection direction = none;
 

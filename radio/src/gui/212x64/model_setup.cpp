@@ -98,7 +98,7 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS         7*FW
 #define MODEL_SETUP_SET_FAILSAFE_OFS  10*FW-2
 
-void copySelection(char *dst, const char *src, uint8_t size)
+void copySelection(char * dst, const char * src, uint8_t size)
 {
   if (memcmp(src, "---", 3) == 0)
     memset(dst, 0, size);
@@ -106,7 +106,7 @@ void copySelection(char *dst, const char *src, uint8_t size)
     memcpy(dst, src, size);
 }
 
-void onModelSetupBitmapMenu(const char *result)
+void onModelSetupBitmapMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
     if (!sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), NULL)) {
@@ -121,7 +121,7 @@ void onModelSetupBitmapMenu(const char *result)
   }
 }
 
-void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
+void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 {
   TimerData & timer = g_model.timers[timerIdx];
   drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
@@ -166,7 +166,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
   }
 }
 
-void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, uint8_t event)
+void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 {
   TimerData & timer = g_model.timers[timerIdx];
   lcdDrawTextAlignedLeft(y, STR_BEEPCOUNTDOWN);
@@ -258,7 +258,7 @@ int getSwitchWarningsCount()
 #endif
 
 
-void menuModelSetup(uint8_t event)
+void menuModelSetup(event_t event)
 {
   horzpos_t l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
@@ -1024,7 +1024,7 @@ void menuModelSetup(uint8_t event)
 #endif
 }
 
-void menuModelFailsafe(uint8_t event)
+void menuModelFailsafe(event_t event)
 {
   static bool longNames = false;
   bool newLongNames = false;

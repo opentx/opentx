@@ -18,44 +18,31 @@
  * GNU General Public License for more details.
  */
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "board.h"
-#include "lcd.h"
-#include "storage/eeprom_rlc.h"
-#include "pwr.h"
-#include "keys.h"
-#include "sdcard.h"
-#include "FatFs/ff.h"
-#include "FatFs/diskio.h"
-#include "translations/en.h"
+#include "opentx.h"
 #include "stamp.h"
-#include "strhelpers.h"
 
-#if defined(PCBTARANIS)
-  #define BOOTLOADER_TITLE      " Taranis BootLoader - " VERSION
-  #if defined(PCBX9E)
-    #define BOOT_KEY_UP		KEY_MINUS
-    #define BOOT_KEY_DOWN	KEY_PLUS
-  #else
-    #define BOOT_KEY_UP         KEY_PLUS
-    #define BOOT_KEY_DOWN       KEY_MINUS
-  #endif
-  #define BOOT_KEY_LEFT		KEY_MENU
-  #define BOOT_KEY_RIGHT	KEY_PAGE
-  #define BOOT_KEY_MENU		KEY_ENTER
-  #define BOOT_KEY_EXIT		KEY_EXIT
-  #define DISPLAY_CHAR_WIDTH	35
-#elif defined(PCBSKY9X)
-  #define BOOTLOADER_TITLE      "Sky9x Boot Loader - " VERSION
+#define BOOTLOADER_TITLE        " Taranis BootLoader - " VERSION
+#if defined(PCBX9E)
+  #define BOOT_KEY_UP		KEY_MINUS
+  #define BOOT_KEY_DOWN	        KEY_PLUS
+#else
+  #define BOOT_KEY_UP           KEY_PLUS
+  #define BOOT_KEY_DOWN         KEY_MINUS
 #endif
+#define BOOT_KEY_LEFT		KEY_MENU
+#define BOOT_KEY_RIGHT	        KEY_PAGE
+#define BOOT_KEY_MENU		KEY_ENTER
+#define BOOT_KEY_EXIT		KEY_EXIT
+#define DISPLAY_CHAR_WIDTH	35
 
 const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 {
   'B', 'O', 'O', 'T', '1', '0'
 };
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+volatile rotenc_t rotencValue[1] = {0};
+#endif
 
 // states
 enum BootLoaderStates {
@@ -100,12 +87,7 @@ FILINFO Finfo;
 
 TCHAR Filenames[20][50];
 uint32_t FileSize[20];
-uint32_t FnStartIndex;
 uint32_t Valid;
-
-uint32_t FlashSize;
-
-uint32_t LockBits;
 
 uint32_t Block_buffer[1024];
 UINT BlockCount;
@@ -113,21 +95,6 @@ UINT BlockCount;
 uint32_t memoryType;
 
 uint32_t unlocked = 0;
-
-#if defined(PCBSKY9X)
-  extern int32_t EblockAddress;
-#endif
-
-extern uint32_t EepromBlocked;
-
-void init_spi(void);
-void writeBlock(void);
-void usbPluggedIn();
-
-#if defined(PCBX9E)
-typedef int32_t rotenc_t;
-extern rotenc_t rotencValue;
-#endif
 
 void interrupt10ms(void)
 {
@@ -141,10 +108,10 @@ void interrupt10ms(void)
     ++index;
   }
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
   checkRotaryEncoder();
   static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (rotencValue / 2);
+  rotenc_t reNewValue = (rotencValue[0] / 2);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
@@ -278,7 +245,7 @@ uint32_t isValidBufferStart(const void * buffer)
     return isEepromStart(buffer);
 }
 
-int menuFlashFile(uint32_t index, uint8_t event)
+int menuFlashFile(uint32_t index, event_t event)
 {
   FRESULT fr;
 
@@ -401,7 +368,7 @@ int main()
       lcdDrawTextAlignedLeft(0, BOOTLOADER_TITLE);
       lcdInvertLine(0);
 
-      uint8_t event = getEvent();
+      event_t event = getEvent();
 
       if (state != ST_USB) {
         if (usbPlugged()) {
@@ -450,9 +417,6 @@ int main()
           }
           state = ST_START;
         }
-#if defined(PCBSKY9X)
-        usbMassStorage();
-#endif
       }
 
       if (state == ST_FLASH_MENU || state == ST_RESTORE_MENU) {

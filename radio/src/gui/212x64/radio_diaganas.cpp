@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuRadioDiagAnalogs(uint8_t event)
+void menuRadioDiagAnalogs(event_t event)
 {
   SIMPLE_MENU(STR_MENU_RADIO_ANALOGS, menuTabGeneral, MENU_RADIO_ANALOGS_TEST, 0);
 

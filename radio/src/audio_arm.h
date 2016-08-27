@@ -380,7 +380,7 @@ void playModelName();
 
 #if defined(SDCARD)
   extern tmr10ms_t timeAutomaticPromptsSilence;
-  void playModelEvent(uint8_t category, uint8_t index, uint8_t event=0);
+  void playModelEvent(uint8_t category, uint8_t index, event_t event=0);
   #define PLAY_PHASE_OFF(phase)         playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_OFF)
   #define PLAY_PHASE_ON(phase)          playModelEvent(PHASE_AUDIO_CATEGORY, phase, AUDIO_EVENT_ON)
   #define PLAY_SWITCH_MOVED(sw)         playModelEvent(SWITCH_AUDIO_CATEGORY, sw)

@@ -22,7 +22,7 @@
 
 #if defined(CPUARM)
 uint8_t g_moduleIdx;
-void menuModelFailsafe(uint8_t event);
+void menuModelFailsafe(event_t event);
 #endif
 
 enum MenuModelSetupItems {
@@ -190,7 +190,7 @@ enum MenuModelSetupItems {
   #define MODEL_SETUP_MAX_LINES          ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? HEADER_LINE+ITEM_MODEL_SETUP_MAX : HEADER_LINE+ITEM_MODEL_SETUP_MAX-1)
 #endif
 
-void menuModelSetup(uint8_t event)
+void menuModelSetup(event_t event)
 {
 #if defined(CPUARM)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
@@ -1080,7 +1080,7 @@ void menuModelSetup(uint8_t event)
 }
 
 #if defined(CPUARM)
-void menuModelFailsafe(uint8_t event)
+void menuModelFailsafe(event_t event)
 {
   static bool longNames = false;
   bool newLongNames = false;
