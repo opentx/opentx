@@ -75,20 +75,33 @@ char * getFileIndex(char * filename, unsigned int & value)
   return filename;
 }
 
-int findNextFileIndex(char * filename, const char * directory)
+uint8_t getDigitsCount(unsigned int value)
+{
+  uint8_t count = 1;
+  while (value >= 10) {
+    value /= 10;
+    ++count;
+  }
+  return count;
+}
+
+int findNextFileIndex(char * filename, uint8_t size, const char * directory)
 {
   unsigned int index;
   char * indexPos = getFileIndex(filename, index);
   char extension[LEN_FILE_EXTENSION+1];
   strncpy(extension, getFileExtension(filename), sizeof(extension));
-  do {
-    char * pos = strAppendUnsigned(indexPos, ++index, 2);
+  while (1) {
+    index++;
+    if ((indexPos - filename) + getDigitsCount(index) + LEN_FILE_EXTENSION > size) {
+      return 0;
+    }
+    char * pos = strAppendUnsigned(indexPos, index);
     strAppend(pos, extension);
     if (!isFileAvailable(filename, directory)) {
       return index;
     }
-  } while (index < 99);
-  return 0;
+  }
 }
 
 bool isExtensionMatching(const char * extension, const char * pattern, uint8_t flags)

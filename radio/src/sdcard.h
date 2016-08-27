@@ -125,7 +125,7 @@ T * getFileExtension(T * filename, int size=0)
 #endif
 
 bool isFileAvailable(const char * filename);
-int findNextFileIndex(char * filename, const char * directory);
+int findNextFileIndex(char * filename, uint8_t size, const char * directory);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);

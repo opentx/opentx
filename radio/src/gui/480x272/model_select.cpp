@@ -117,7 +117,7 @@ void onModelSelectMenu(const char * result)
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
     memcpy(duplicatedFilename, currentModel->name, sizeof(duplicatedFilename));
-    if (findNextFileIndex(duplicatedFilename, MODELS_PATH)) {
+    if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
       sdCopyFile(currentModel->name, MODELS_PATH, duplicatedFilename, MODELS_PATH);
       modelslist.addModel(currentCategory, duplicatedFilename);
       unsigned int index = currentCategory->size() - 1;
