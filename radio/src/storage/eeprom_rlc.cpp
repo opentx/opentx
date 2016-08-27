@@ -29,9 +29,9 @@ EeFs      eeFs;
 
 #if defined(CPUARM)
 blkid_t   freeBlocks = 0;
-#else
-uint8_t s_sync_write = false;
 #endif
+
+uint8_t s_sync_write = false;
 
 static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 {

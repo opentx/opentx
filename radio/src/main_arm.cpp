@@ -84,7 +84,7 @@ void checkEeprom()
       eepromWriteProcess();
     else if (TIME_TO_WRITE())
       storageCheck(false);
-  }
+      }
 }
 #else
 void checkEeprom()
@@ -399,7 +399,10 @@ void perMain()
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
   event_t evt = getEvent(false);
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) backlightOn(); // on keypress turn the light on
+  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+    // on keypress turn the light on
+    backlightOn();
+  }
   doLoopCommonActions();
 #if defined(NAVIGATION_STICKS)
   uint8_t sticks_evt = getSticksNavigationEvent();

@@ -74,7 +74,6 @@ uint8_t eepromIsTransferComplete()
   return eeprom_buffer_size == 0;
 }
 
-extern uint8_t s_sync_write;
 void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size)
 {
   eepromStartWrite(buffer, address, size);

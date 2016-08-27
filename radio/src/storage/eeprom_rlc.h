@@ -117,19 +117,12 @@ class EFile
 
 #define ERR_NONE 0
 #define ERR_FULL 1
-extern uint8_t  s_write_err;    // error reasons
+extern uint8_t s_write_err; // error reasons
+inline uint8_t write_errno() { return s_write_err; }
 
-#if defined(CPUARM)
-#define ENABLE_SYNC_WRITE(val)
-#define IS_SYNC_WRITE_ENABLE()         true
-#else
+extern uint8_t s_sync_write;
 #define ENABLE_SYNC_WRITE(val)         s_sync_write = val;
 #define IS_SYNC_WRITE_ENABLE()         s_sync_write
-#endif
-
-
-///deliver current errno, this is reset in open
-inline uint8_t write_errno() { return s_write_err; }
 
 class RlcFile: public EFile
 {
