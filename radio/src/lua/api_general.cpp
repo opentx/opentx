@@ -788,7 +788,7 @@ Run function (key pressed)
 */
 static int luaPopupInput(lua_State * L)
 {
-  uint8_t event = luaL_checkinteger(L, 2);
+  event_t event = luaL_checkinteger(L, 2);
   warningInputValue = luaL_checkinteger(L, 3);
   warningInputValueMin = luaL_checkinteger(L, 4);
   warningInputValueMax = luaL_checkinteger(L, 5);

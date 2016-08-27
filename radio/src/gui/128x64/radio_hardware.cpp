@@ -33,7 +33,7 @@ enum MenuRadioHardwareItems {
 };
 
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
-void menuRadioHardware(uint8_t event)
+void menuRadioHardware(event_t event)
 {
 #if defined(PCBX7D)
 #else

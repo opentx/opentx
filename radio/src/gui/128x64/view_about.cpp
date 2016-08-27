@@ -42,7 +42,7 @@ enum AboutScreens {
 #define ABOUT_X      2
 #define ABOUT_INDENT 4
 
-void menuAboutView(uint8_t event)
+void menuAboutView(event_t event)
 {
   static uint8_t screenIndex;
   static uint8_t greyIndex;

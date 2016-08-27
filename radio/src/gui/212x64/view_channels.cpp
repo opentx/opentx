@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuChannelsView(uint8_t event)
+void menuChannelsView(event_t event)
 {
   static bool longNames = false;
   bool newLongNames = false;

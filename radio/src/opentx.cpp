@@ -133,23 +133,27 @@ void per10ms()
   readKeysAndTrims();
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  if (IS_RE_NAVIGATION_ENABLE()) {
+  if (IS_ROTARY_ENCODER_NAVIGATION_ENABLE()) {
     static rotenc_t rePreviousValue;
-    rotenc_t reNewValue = (g_rotenc[NAVIGATION_RE_IDX()] / ROTARY_ENCODER_GRANULARITY);
+    rotenc_t reNewValue = (ROTARY_ENCODER_NAVIGATION_VALUE / ROTARY_ENCODER_GRANULARITY);
     int8_t scrollRE = reNewValue - rePreviousValue;
     if (scrollRE) {
       rePreviousValue = reNewValue;
       putEvent(scrollRE < 0 ? EVT_ROTARY_LEFT : EVT_ROTARY_RIGHT);
     }
-    uint8_t evt = s_evt;
-    if (EVT_KEY_MASK(evt) == BTN_REa + NAVIGATION_RE_IDX()) {
-      if (IS_KEY_BREAK(evt)) {
-        putEvent(EVT_ROTARY_BREAK);
-      }
-      else if (IS_KEY_LONG(evt)) {
-        putEvent(EVT_ROTARY_LONG);
-      }
+#if defined(CPUARM)
+    if (scrollRE) {
+      static uint32_t lastTick = 0;
+      uint32_t delay = get_tmr10ms() - lastTick;
+      lastTick = get_tmr10ms();
+      if (delay < ROTENC_DELAY_HIGHSPEED)
+        rotencSpeed = ROTENC_HIGHSPEED;
+      else if (delay < ROTENC_DELAY_MIDSPEED)
+        rotencSpeed = ROTENC_MIDSPEED;
+      else
+        rotencSpeed = ROTENC_LOWSPEED;
     }
+#endif
   }
 #endif
 
@@ -656,7 +660,7 @@ int16_t getRotaryEncoder(uint8_t idx)
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
-  g_rotenc[idx] += inc;
+  rotencValue[idx] += inc;
   int16_t *value = &(flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
   *value = limit((int16_t)-RESX, (int16_t)(*value + (inc * 8)), (int16_t)+RESX);
   storageDirty(EE_MODEL);
@@ -1344,7 +1348,7 @@ void checkTrims()
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
 #else
-uint8_t checkTrim(uint8_t event)
+uint8_t checkTrim(event_t event)
 {
   int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
@@ -2469,9 +2473,13 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 }
 
 #if defined(ROTARY_ENCODERS)
-  volatile rotenc_t g_rotenc[ROTARY_ENCODERS] = {0};
+  volatile rotenc_t rotencValue[ROTARY_ENCODERS] = {0};
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-  volatile rotenc_t g_rotenc[1] = {0};
+  volatile rotenc_t rotencValue[1] = {0};
+#endif
+
+#if defined(CPUARM) && defined(ROTARY_ENCODER_NAVIGATION)
+uint8_t rotencSpeed;
 #endif
 
 #if !defined(CPUARM) && !defined(SIMU)

@@ -175,7 +175,7 @@ enum ExposFields {
 
 #define CURVE_ROWS                     1
 
-void menuModelExpoOne(uint8_t event)
+void menuModelExpoOne(event_t event)
 {
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
@@ -352,7 +352,7 @@ void displayExpoLine(coord_t y, ExpoData * ed)
   }
 }
 
-void menuModelExposAll(uint8_t event)
+void menuModelExposAll(event_t event)
 {
   uint8_t sub = menuVerticalPosition;
 

@@ -159,10 +159,10 @@ $GPRMC - Recommended Minimum Navigation Information
 #define WAIT_VAL_END	7
 #define READ_VALUE      8
 
-void menuViewTelemetryNMEA1(uint8_t event);
-void menuViewTelemetryNMEA2(uint8_t event);
-void menuViewTelemetryNMEA3(uint8_t event);
-void menuViewTelemetryNMEA4(uint8_t event);
+void menuViewTelemetryNMEA1(event_t event);
+void menuViewTelemetryNMEA2(event_t event);
+void menuViewTelemetryNMEA3(event_t event);
+void menuViewTelemetryNMEA4(event_t event);
 void title(char x);
 void initval(uint8_t num, uint8_t pack, uint8_t val);
 int32_t binary (char *str);
@@ -367,14 +367,14 @@ void NMEA_EnableRXD (void)
     UCSR0B |=  (1 << RXCIE0);				// enable Interrupt
 }
 
-void menuViewTelemetryNMEA(uint8_t event)
+void menuViewTelemetryNMEA(event_t event)
 {
     menuViewTelemetryNMEA1(event);
 }
 
 // Start of NMEA menus 1-4 <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void menuViewTelemetryNMEA1(uint8_t event)
+void menuViewTelemetryNMEA1(event_t event)
 {
     switch(event)						// new event received, branch accordingly
     {
@@ -480,7 +480,7 @@ void menuViewTelemetryNMEA1(uint8_t event)
 
 
 
-void menuViewTelemetryNMEA2(uint8_t event)
+void menuViewTelemetryNMEA2(event_t event)
 {
     static uint8_t ignore_break;
 
@@ -642,7 +642,7 @@ void menuViewTelemetryNMEA2(uint8_t event)
 
 
 
-void menuViewTelemetryNMEA3(uint8_t event)
+void menuViewTelemetryNMEA3(event_t event)
 {
     switch(event)
     {
@@ -691,7 +691,7 @@ void menuViewTelemetryNMEA3(uint8_t event)
 
 
 
-void menuViewTelemetryNMEA4(uint8_t event)
+void menuViewTelemetryNMEA4(event_t event)
 {
     switch(event)						// new event received, branch accordingly
     {

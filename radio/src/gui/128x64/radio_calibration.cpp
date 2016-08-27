@@ -31,7 +31,7 @@ enum CalibrationState {
   CALIB_FINISHED
 };
 
-void menuCommonCalib(uint8_t event)
+void menuCommonCalib(event_t event)
 {
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
@@ -108,7 +108,7 @@ void menuCommonCalib(uint8_t event)
   doMainScreenGraphics();
 }
 
-void menuRadioCalibration(uint8_t event)
+void menuRadioCalibration(event_t event)
 {
   check_simple(event, MENU_RADIO_CALIBRATION, menuTabGeneral, DIM(menuTabGeneral), 0);
 
@@ -120,7 +120,7 @@ void menuRadioCalibration(uint8_t event)
   menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
-void menuFirstCalib(uint8_t event)
+void menuFirstCalib(event_t event)
 {
   if (event == EVT_KEY_BREAK(KEY_EXIT) || reusableBuffer.calib.state == CALIB_FINISHED) {
     menuCalibrationState = CALIB_START;

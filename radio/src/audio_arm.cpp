@@ -440,7 +440,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
 {
   uint8_t category = (i >> 24);
   uint8_t index = (i >> 16) & 0xFF;
-  uint8_t event = i & 0xFF;
+  event_t event = i & 0xFF;
 
   // TRACE("isAudioFileReferenced(%08x)", i);
 
@@ -474,7 +474,7 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
 
 tmr10ms_t timeAutomaticPromptsSilence = 0;
 
-void playModelEvent(uint8_t category, uint8_t index, uint8_t event)
+void playModelEvent(uint8_t category, uint8_t index, event_t event)
 {
   char filename[AUDIO_FILENAME_MAXLEN+1];
   // TRACE("playModelEvent(): cat: %u, idx: %u, evt:%u", (uint32_t)category, (uint32_t)index, (uint32_t)event);

@@ -97,7 +97,7 @@ void onLimitsMenu(const char *result)
   }
 }
 
-void menuModelLimits(uint8_t event)
+void menuModelLimits(event_t event)
 {
   int sub = menuVerticalPosition;
 

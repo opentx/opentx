@@ -283,7 +283,7 @@ void onMainViewMenu(const char *result)
 }
 #endif
 
-void menuMainView(uint8_t event)
+void menuMainView(event_t event)
 {
   STICK_SCROLL_DISABLE();
 

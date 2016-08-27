@@ -94,7 +94,7 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
   clearKeyEvents();
 }
 
-void runPopupWarning(uint8_t event)
+void runPopupWarning(event_t event)
 {
   warningResult = false;
   drawMessageBox();
@@ -103,18 +103,11 @@ void runPopupWarning(uint8_t event)
   }
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS);
   switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_BREAK:
-#endif
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
       warningResult = true;
       // no break
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_LONG:
-      killEvents(event);
-#endif
     case EVT_KEY_BREAK(KEY_EXIT):
       warningText = NULL;
       warningType = WARNING_TYPE_ASTERISK;
@@ -131,7 +124,7 @@ void runPopupWarning(uint8_t event)
 }
 
 #if defined(CPUARM)
-void (*popupFunc)(uint8_t event) = NULL;
+void (*popupFunc)(event_t event) = NULL;
 #endif
 
 #if defined(NAVIGATION_MENUS)
@@ -146,7 +139,7 @@ void (*popupMenuHandler)(const char * result);
 uint8_t      popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 #endif
 
-const char * runPopupMenu(uint8_t event)
+const char * runPopupMenu(event_t event)
 {
   const char * result = NULL;
 
@@ -164,7 +157,7 @@ const char * runPopupMenu(uint8_t event)
     drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, POPUP_MENU_MAX_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, POPUP_MENU_MAX_LINES);
   }
 
-  switch(event) {
+  switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     CASE_EVT_ROTARY_LEFT
 #endif

@@ -22,7 +22,7 @@
 
 #define TRAINER_CALIB_POS 12
 
-void menuRadioTrainer(uint8_t event)
+void menuRadioTrainer(event_t event)
 {
   uint8_t y;
   bool slave = SLAVE_MODE();

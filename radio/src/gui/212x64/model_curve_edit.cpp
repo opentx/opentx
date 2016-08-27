@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void displayPresetChoice(uint8_t event)
+void displayPresetChoice(event_t event)
 {
   runPopupWarning(event);
   lcdDrawNumber(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*warningInputValue/4, LEFT|INVERS);
@@ -64,7 +64,7 @@ void onCurveOneMenu(const char * result)
   }
 }
 
-void menuModelCurveOne(uint8_t event)
+void menuModelCurveOne(event_t event)
 {
   static uint8_t pointsOfs = 0;
   CurveData & crv = g_model.curves[s_curveChan];

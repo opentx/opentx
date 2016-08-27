@@ -31,7 +31,7 @@ int checkIncDecSelection = 0;
 #if defined(AUTOSWITCH)
 swsrc_t checkIncDecMovedSwitch(swsrc_t val)
 {
-  if (s_editMode>0) {
+  if (s_editMode > 0) {
     swsrc_t swtch = getMovedSwitch();
     if (swtch) {
       div_t info = switchInfo(swtch);
@@ -92,7 +92,7 @@ void onSourceLongEnterPress(const char * result)
   }
 }
 
-void onSwitchLongEnterPress(const char *result)
+void onSwitchLongEnterPress(const char * result)
 {
   if (result == STR_MENU_SWITCHES)
     checkIncDecSelection = SWSRC_FIRST_SWITCH;
@@ -111,7 +111,7 @@ void onSwitchLongEnterPress(const char *result)
 #define DBLKEYS_PRESSED_RGT_UP(in)  ((in & ((1<<KEY_ENTER) + (1<<KEY_MINUS))) == ((1<<KEY_ENTER) + (1<<KEY_MINUS)))
 #define DBLKEYS_PRESSED_LFT_DWN(in) ((in & ((1<<KEY_PAGE) + (1<<KEY_EXIT))) == ((1<<KEY_PAGE) + (1<<KEY_EXIT)))
 
-int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
 
@@ -157,6 +157,28 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   }
 #endif
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
+    newval += min<int>(rotencSpeed, i_max-val);
+    while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
+      newval++;
+    }
+    if (newval > i_max) {
+      newval = val;
+      AUDIO_KEY_ERROR();
+    }
+  }
+  else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
+    newval -= min<int>(rotencSpeed, val-i_min);
+    while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
+      newval--;
+    }
+    if (newval < i_min) {
+      newval = val;
+      AUDIO_KEY_ERROR();
+    }
+  }
+#else
   if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
     do {
       if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
@@ -187,6 +209,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
       AUDIO_KEY_ERROR();
     }
   }
+#endif
 
   if (!READ_ONLY() && i_min==0 && i_max==1 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = 0;
@@ -219,17 +242,19 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 #endif
 
   if (newval != val) {
+#if !defined(ROTARY_ENCODER_NAVIGATION)
     if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval)) {
       bool pause = (newval > val ? !stops.contains(newval+1) : !stops.contains(newval-1));
       if (pause) {
         pauseEvents(event); // delay before auto-repeat continues
       }
     }
-    storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
-    checkIncDec_Ret = (newval > val ? 1 : -1);
     if (!IS_KEY_REPT(event)) {
       AUDIO_KEY_PRESS();
     }
+#endif
+    storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
+    checkIncDec_Ret = (newval > val ? 1 : -1);
   }
   else {
     checkIncDec_Ret = 0;
@@ -312,16 +337,16 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   return newval;
 }
 
-#define CURSOR_NOT_ALLOWED_IN_ROW(row)   ((int8_t)MAXCOL(row) < 0)
-#define MAXCOL_RAW(row)                  (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-#define MAXCOL(row)                      (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
-#define COLATTR(row)                     (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define INC(val, min, max)               if (val<max) {val++;} else {val=min;}
-#define DEC(val, min, max)               if (val>min) {val--;} else {val=max;}
+#define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
+#define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+#define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
+#define INC(val, min, max)             if (val<max) {val++;} else if (max>min) {val=min;}
+#define DEC(val, min, max)             if (val>min) {val--;} else {val=max;}
 
 coord_t scrollbar_X = DEFAULT_SCROLLBAR_X;
 
-void onLongMenuPress(const char *result)
+void onLongMenuPress(const char * result)
 {
   if (result == STR_VIEW_CHANNELS) {
     pushMenu(menuChannelsView);
@@ -330,7 +355,6 @@ void onLongMenuPress(const char *result)
     pushModelNotes();
   }
 }
-
 
 tmr10ms_t menuEntryTime;
 
@@ -403,7 +427,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
       SET_SCROLLBAR_X(LCD_W-1);
       break;
 
-    case EVT_ROTARY_BREAK:
+    case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode > 1) break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
@@ -445,6 +469,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
       }
       break;
 
+    CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_FIRST(KEY_RIGHT):
       AUDIO_KEY_PRESS();
       // no break
@@ -474,7 +499,8 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
 
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
-
+  
+    CASE_EVT_ROTARY_LEFT
     case EVT_KEY_FIRST(KEY_LEFT):
       AUDIO_KEY_PRESS();
       // no break
@@ -588,7 +614,7 @@ void check_submenu_simple(const char * name, event_t event, uint8_t rowcount)
   check_simple(name, event, 0, 0, 0, rowcount);
 }
 
-void repeatLastCursorMove(uint8_t event)
+void repeatLastCursorMove(event_t event)
 {
   if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
     putEvent(event);

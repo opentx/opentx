@@ -39,7 +39,7 @@ typedef uint16_t vertpos_t;
 typedef uint8_t vertpos_t;
 #endif
 
-typedef void (*MenuHandlerFunc)(uint8_t event);
+typedef void (*MenuHandlerFunc)(event_t event);
 
 #if defined(CPUARM)
 extern tmr10ms_t menuEntryTime;
@@ -66,11 +66,11 @@ inline MenuHandlerFunc lastPopMenu()
 
 void onMainViewMenu(const char * result);
 
-void menuFirstCalib(uint8_t event);
-void menuMainView(uint8_t event);
-void menuViewTelemetryFrsky(uint8_t event);
-void menuViewTelemetryMavlink(uint8_t event);
-void menuSpecialFunctions(uint8_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
+void menuFirstCalib(event_t event);
+void menuMainView(event_t event);
+void menuViewTelemetryFrsky(event_t event);
+void menuViewTelemetryMavlink(event_t event);
+void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
 enum MenuRadioIndexes
 {
@@ -86,15 +86,15 @@ enum MenuRadioIndexes
   MENU_RADIO_PAGES_COUNT
 };
 
-void menuRadioSetup(uint8_t event);
-void menuRadioSdManager(uint8_t event);
-void menuRadioSpecialFunctions(uint8_t event);
-void menuRadioTrainer(uint8_t event);
-void menuRadioVersion(uint8_t event);
-void menuRadioDiagKeys(uint8_t event);
-void menuRadioDiagAnalogs(uint8_t event);
-void menuRadioHardware(uint8_t event);
-void menuRadioCalibration(uint8_t event);
+void menuRadioSetup(event_t event);
+void menuRadioSdManager(event_t event);
+void menuRadioSpecialFunctions(event_t event);
+void menuRadioTrainer(event_t event);
+void menuRadioVersion(event_t event);
+void menuRadioDiagKeys(event_t event);
+void menuRadioDiagAnalogs(event_t event);
+void menuRadioHardware(event_t event);
+void menuRadioCalibration(event_t event);
 
 static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuRadioSetup,
@@ -126,23 +126,23 @@ enum MenuModelIndexes {
   MENU_MODEL_PAGES_COUNT
 };
 
-void menuModelSelect(uint8_t event);
-void menuModelSetup(uint8_t event);
-void menuModelHeli(uint8_t event);
-void menuModelFlightModesAll(uint8_t event);
-void menuModelExposAll(uint8_t event);
-void menuModelMixAll(uint8_t event);
-void menuModelLimits(uint8_t event);
-void menuModelCurvesAll(uint8_t event);
-void menuModelCurveOne(uint8_t event);
-void menuModelGVars(uint8_t event);
-void menuModelLogicalSwitches(uint8_t event);
-void menuModelSpecialFunctions(uint8_t event);
-void menuModelTelemetryFrsky(uint8_t event);
-void menuModelTelemetryMavlink(uint8_t event);
-void menuModelDisplay(uint8_t event);
-void menuModelTemplates(uint8_t event);
-void menuModelExpoOne(uint8_t event);
+void menuModelSelect(event_t event);
+void menuModelSetup(event_t event);
+void menuModelHeli(event_t event);
+void menuModelFlightModesAll(event_t event);
+void menuModelExposAll(event_t event);
+void menuModelMixAll(event_t event);
+void menuModelLimits(event_t event);
+void menuModelCurvesAll(event_t event);
+void menuModelCurveOne(event_t event);
+void menuModelGVars(event_t event);
+void menuModelLogicalSwitches(event_t event);
+void menuModelSpecialFunctions(event_t event);
+void menuModelTelemetryFrsky(event_t event);
+void menuModelTelemetryMavlink(event_t event);
+void menuModelDisplay(event_t event);
+void menuModelTemplates(event_t event);
+void menuModelExpoOne(event_t event);
 
 static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelSelect,
@@ -161,12 +161,12 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   CASE_TEMPLATES(menuModelTemplates)
 };
 
-void menuStatisticsView(uint8_t event);
-void menuStatisticsDebug(uint8_t event);
-void menuAboutView(uint8_t event);
+void menuStatisticsView(event_t event);
+void menuStatisticsDebug(event_t event);
+void menuAboutView(event_t event);
 
 #if defined(DEBUG_TRACE_BUFFER)
-void menuTraceBuffer(uint8_t event);
+void menuTraceBuffer(event_t event);
 #endif
 
 #endif // _MENUS_H_

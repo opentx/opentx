@@ -93,7 +93,7 @@ enum MenuRadioSetupItems {
   ITEM_SETUP_MAX
 };
 
-void menuRadioSetup(uint8_t event)
+void menuRadioSetup(event_t event)
 {
 #if defined(RTCLOCK)
   struct gtm t;

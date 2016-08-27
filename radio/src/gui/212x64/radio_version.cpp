@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuRadioVersion(uint8_t event)
+void menuRadioVersion(event_t event)
 {
   if (warningResult) {
     warningResult = 0;

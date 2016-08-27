@@ -490,7 +490,7 @@ void incrTelemetryScreen()
 }
 #endif
 
-void menuViewTelemetryFrsky(uint8_t event)
+void menuViewTelemetryFrsky(event_t event)
 {
 #if defined(CPUARM)
   enum NavigationDirection direction = none;

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuStatisticsView(uint8_t event)
+void menuStatisticsView(event_t event)
 {
   TITLE(STR_MENUSTAT);
 
@@ -81,7 +81,7 @@ void menuStatisticsView(uint8_t event)
   #define MENU_DEBUG_COL1_OFS          (14*FW)
 #endif
 
-void menuStatisticsDebug(uint8_t event)
+void menuStatisticsDebug(event_t event)
 {
   TITLE(STR_MENUDEBUG);
 

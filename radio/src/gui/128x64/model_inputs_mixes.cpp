@@ -229,7 +229,7 @@ enum ExposFields {
 
 #define CURVE_ROWS 0
 
-void menuModelExpoOne(uint8_t event)
+void menuModelExpoOne(event_t event)
 {
   ExpoData * ed = expoAddress(s_currIdx);
   drawSource(7*FW+FW/2, 0, MIXSRC_Rud+ed->chn, 0);
@@ -339,7 +339,7 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-void gvarWeightItem(coord_t x, coord_t y, MixData *md, uint8_t attr, uint8_t event)
+void gvarWeightItem(coord_t x, coord_t y, MixData * md, uint8_t attr, event_t event)
 {
   u_int8int16_t weight;
   MD_WEIGHT_TO_UNION(md, weight);
@@ -400,7 +400,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 #undef GAUGE_HEIGHT
 #endif
 
-void menuModelMixOne(uint8_t event)
+void menuModelMixOne(event_t event)
 {
   TITLE(STR_MIXER);
   MixData * md2 = mixAddress(s_currIdx) ;
@@ -658,7 +658,7 @@ void displayExpoLine(coord_t y, ExpoData *ed)
   displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes)
 #endif
 
-void menuModelExpoMix(uint8_t expo, uint8_t event)
+void menuModelExpoMix(uint8_t expo, event_t event)
 {
   uint8_t sub = menuVerticalPosition;
 
@@ -920,12 +920,12 @@ void menuModelExpoMix(uint8_t expo, uint8_t event)
   if (sub >= s_maxLines-1) menuVerticalPosition = s_maxLines-1;
 }
 
-void menuModelExposAll(uint8_t event)
+void menuModelExposAll(event_t event)
 {
   return menuModelExpoMix(1, event);
 }
 
-void menuModelMixAll(uint8_t event)
+void menuModelMixAll(event_t event)
 {
   return menuModelExpoMix(0, event);
 }

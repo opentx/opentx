@@ -32,7 +32,7 @@ void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
 }
 
 #if !defined(CPUARM)
-FlightModesType editFlightModes(coord_t x, coord_t y, uint8_t event, FlightModesType value, uint8_t attr)
+FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModesType value, uint8_t attr)
 {
   drawFieldLabel(x, y, STR_FLMODE);
 
@@ -84,7 +84,7 @@ bool isTrimModeAvailable(int mode)
   return (mode < 0 || (mode%2) == 0 || (mode/2) != s_currIdx);
 }
 
-void menuModelPhaseOne(uint8_t event)
+void menuModelPhaseOne(event_t event)
 {
   FlightModeData * fm = flightModeAddress(s_currIdx);
   drawFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
@@ -246,7 +246,7 @@ void menuModelPhaseOne(uint8_t event)
   #define TRIMS_OFS                    (FW/2)
 #endif
 
-void menuModelFlightModesAll(uint8_t event)
+void menuModelFlightModesAll(event_t event)
 {
   SIMPLE_MENU(STR_MENUFLIGHTMODES, menuTabModel, MENU_MODEL_FLIGHT_MODES, HEADER_LINE+MAX_FLIGHT_MODES+1);
 

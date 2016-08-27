@@ -145,14 +145,14 @@ uint8_t ibuf[NB_BUF];				// subscripts on buffers values
 char rbuf[NB_BUF][LG_BUF];		    // receive buffers
 const char val_unknown[] = "?";
 
-void menuViewTelemetryArduPilot1(uint8_t event);
-void menuViewTelemetryArduPilot2(uint8_t event);
-void menuViewTelemetryArduPilot3(uint8_t event);
-void menuViewTelemetryArduPilot4(uint8_t event);
-void menuViewTelemetryArduPilot5(uint8_t event);
-void menuViewTelemetryArduPilot6(uint8_t event);
-void menuViewTelemetryArduPilot7(uint8_t event);
-void menuViewTelemetryArduPilot8(uint8_t event);
+void menuViewTelemetryArduPilot1(event_t event);
+void menuViewTelemetryArduPilot2(event_t event);
+void menuViewTelemetryArduPilot3(event_t event);
+void menuViewTelemetryArduPilot4(event_t event);
+void menuViewTelemetryArduPilot5(event_t event);
+void menuViewTelemetryArduPilot6(event_t event);
+void menuViewTelemetryArduPilot7(event_t event);
+void menuViewTelemetryArduPilot8(event_t event);
 void title(char x);
 void initval(uint8_t num, uint8_t pack, uint8_t val);
 
@@ -427,14 +427,14 @@ void ARDUPILOT_EnableRXD (void)
     UCSR0B |=  (1 << RXCIE0);		    // enable Interrupt
 }
 
-void menuViewTelemetryArduPilot(uint8_t event)
+void menuViewTelemetryArduPilot(event_t event)
 {
     menuViewTelemetryArduPilot1(event);
 }
 
 // Start of ArduPilot menus 1-8 <<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-void menuViewTelemetryArduPilot1(uint8_t event)
+void menuViewTelemetryArduPilot1(event_t event)
 {
     switch(event)						// new event received, branch accordingly
     {
@@ -504,7 +504,7 @@ void menuViewTelemetryArduPilot1(uint8_t event)
     lcdDrawText (1*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot2(uint8_t event)
+void menuViewTelemetryArduPilot2(event_t event)
 {
     switch(event)
     {
@@ -528,7 +528,7 @@ void menuViewTelemetryArduPilot2(uint8_t event)
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot3(uint8_t event)
+void menuViewTelemetryArduPilot3(event_t event)
 {
     switch(event)
     {
@@ -552,7 +552,7 @@ void menuViewTelemetryArduPilot3(uint8_t event)
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot4(uint8_t event)
+void menuViewTelemetryArduPilot4(event_t event)
 {
     switch(event)
     {
@@ -576,7 +576,7 @@ void menuViewTelemetryArduPilot4(uint8_t event)
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot5(uint8_t event)
+void menuViewTelemetryArduPilot5(event_t event)
 {
     switch(event)
     {
@@ -602,7 +602,7 @@ void menuViewTelemetryArduPilot5(uint8_t event)
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot6(uint8_t event)
+void menuViewTelemetryArduPilot6(event_t event)
 {
     switch(event)
     {
@@ -628,7 +628,7 @@ void menuViewTelemetryArduPilot6(uint8_t event)
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot7(uint8_t event)
+void menuViewTelemetryArduPilot7(event_t event)
 {
     switch(event)
     {
@@ -654,7 +654,7 @@ void menuViewTelemetryArduPilot7(uint8_t event)
     lcdDrawText (2*FW, 5*FH, VALSTR(1), APSIZE);
 }
 
-void menuViewTelemetryArduPilot8(uint8_t event)
+void menuViewTelemetryArduPilot8(event_t event)
 {
     switch(event)
     {

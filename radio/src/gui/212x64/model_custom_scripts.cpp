@@ -47,7 +47,7 @@ enum menuModelCustomScriptItems {
 #define SCRIPT_ONE_2ND_COLUMN_POS  (12*FW)
 #define SCRIPT_ONE_3RD_COLUMN_POS  (23*FW)
 
-void menuModelCustomScriptOne(uint8_t event)
+void menuModelCustomScriptOne(event_t event)
 {
   ScriptData & sd = g_model.scriptsData[s_currIdx];
 
@@ -116,7 +116,7 @@ void menuModelCustomScriptOne(uint8_t event)
   }
 }
 
-void menuModelCustomScripts(uint8_t event)
+void menuModelCustomScripts(event_t event)
 {
   lcdDrawNumber(19*FW, 0, luaGetMemUsed(), RIGHT);
   lcdDrawText(19*FW+1, 0, STR_BYTES);

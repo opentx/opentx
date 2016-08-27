@@ -35,7 +35,7 @@ uint8_t MAVLINK_menu = MENU_INFO;
  *	lanuched by the menu button. On exit (with exit button) the mavlink
  *	extension is reinitialized.
  */
-void menuViewTelemetryMavlink(uint8_t event) {
+void menuViewTelemetryMavlink(event_t event) {
 	
 	switch (event) // new event received, branch accordingly
 	{
@@ -433,7 +433,7 @@ void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val) {
 }
 
 //! \brief Hex dump of the current mavlink message.
-void menuTelemetryMavlinkDump(uint8_t event) {
+void menuTelemetryMavlinkDump(event_t event) {
 	uint8_t x = 0;
 	uint8_t y = FH;
 	uint16_t count = 0;
@@ -481,7 +481,7 @@ void menuTelemetryMavlinkDump(uint8_t event) {
  *	This funcion is called from the model setup menus, not directly by the
  *	telemetry menus
  */
-void menuModelTelemetryMavlink(uint8_t event) {
+void menuModelTelemetryMavlink(event_t event) {
 	
 	MENU(STR_MAVMENUSETUP_TITLE, menuTabModel, MENU_MODEL_TELEMETRY_MAVLINK, ITEM_MAVLINK_MAX + 1, {0, 0, 1/*to force edit mode*/});
 	

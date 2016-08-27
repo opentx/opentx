@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuModelTemplates(uint8_t event)
+void menuModelTemplates(event_t event)
 {
   SIMPLE_MENU(STR_MENUTEMPLATES, menuTabModel, MENU_MODEL_TEMPLATES, 1+TMPL_COUNT);
 

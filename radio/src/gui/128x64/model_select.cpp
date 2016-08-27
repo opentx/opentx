@@ -20,11 +20,11 @@
 
 #include "opentx.h"
 
-#define MODELSIZE_POS_X  170
-#define MODELSEL_W       LCD_W
+#define MODELSIZE_POS_X                170
+#define MODELSEL_W                     LCD_W
 
 #if defined(NAVIGATION_MENUS)
-void onModelSelectMenu(const char *result)
+void onModelSelectMenu(const char * result)
 {
   int8_t sub = menuVerticalPosition;
 
@@ -75,7 +75,7 @@ void onModelSelectMenu(const char *result)
 }
 #endif
 
-void menuModelSelect(uint8_t event)
+void menuModelSelect(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
@@ -84,7 +84,7 @@ void menuModelSelect(uint8_t event)
     event = EVT_ENTRY_UP;
   }
 
-  uint8_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
+  event_t _event_ = (IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event) ? 0 : event);
 
   if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
     _event_ -= KEY_EXIT;
@@ -111,205 +111,209 @@ void menuModelSelect(uint8_t event)
   int8_t sub = menuVerticalPosition;
 
   switch (event) {
-      case EVT_ENTRY:
+    case EVT_ENTRY:
+      menuVerticalPosition = sub = g_eeGeneral.currModel;
+      if (sub >= LCD_LINES-1) menuVerticalOffset = sub-LCD_LINES+2;
+      s_copyMode = 0;
+      s_editMode = EDIT_MODE_INIT;
+      storageCheck(true);
+      break;
+
+    case EVT_KEY_LONG(KEY_EXIT):
+      killEvents(event);
+      if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
+        POPUP_CONFIRMATION(STR_DELETEMODEL);
+#if defined(CPUARM)
+        SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
+#else
+        char * name = reusableBuffer.modelsel.mainname;
+        eeLoadModelName(sub, name);
+        SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
+#endif
+      }
+      else {
+        s_copyMode = 0;
+        menuVerticalPosition = g_eeGeneral.currModel;
+      }
+      break;
+
+#if defined(ROTARY_ENCODERS)
+    case EVT_ROTARY_LONG:
+      killEvents(event);
+      if (s_editMode < 0) {
+        popMenu();
+        break;
+      }
+      else if (!s_copyMode) {
         menuVerticalPosition = sub = g_eeGeneral.currModel;
-        if (sub >= LCD_LINES-1) menuVerticalOffset = sub-LCD_LINES+2;
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
-        storageCheck(true);
-        break;
-
-      case EVT_KEY_LONG(KEY_EXIT):
-        killEvents(event);
-        if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
-          POPUP_CONFIRMATION(STR_DELETEMODEL);
-#if defined(CPUARM)
-          SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
-#else
-          char * name = reusableBuffer.modelsel.mainname;
-          eeLoadModelName(sub, name);
-          SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
-#endif
-        }
-        else {
-          s_copyMode = 0;
-          menuVerticalPosition = g_eeGeneral.currModel;
-        }
-        break;
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      case EVT_ROTARY_LONG:
-        killEvents(event);
-        if (s_editMode < 0) {
-          popMenu();
-          break;
-        }
-        else if (!s_copyMode) {
-          menuVerticalPosition = sub = g_eeGeneral.currModel;
-          s_copyMode = 0;
-          s_editMode = EDIT_MODE_INIT;
-        }
-        // no break
+      }
+      // no break
 #endif
 
-      case EVT_KEY_BREAK(KEY_EXIT):
-        if (s_copyMode) {
-          sub = menuVerticalPosition = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
-          s_copyMode = 0;
-        }
-        else if (uint8_t(menuVerticalPosition) != g_eeGeneral.currModel) {
-          menuVerticalPosition = g_eeGeneral.currModel;
-        }
-        else {
-          popMenu();
-        }
-        break;
+    case EVT_KEY_BREAK(KEY_EXIT):
+      if (s_copyMode) {
+        sub = menuVerticalPosition = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
+        s_copyMode = 0;
+      }
+      else if (uint8_t(menuVerticalPosition) != g_eeGeneral.currModel) {
+        menuVerticalPosition = g_eeGeneral.currModel;
+      }
+      else {
+        popMenu();
+      }
+      break;
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      case EVT_ROTARY_BREAK:
-        if (s_editMode == -1) {
-          s_editMode = 0;
-          break;
-        }
-        // no break;
-#endif
-
-      case EVT_KEY_LONG(KEY_ENTER):
-      case EVT_KEY_BREAK(KEY_ENTER):
+#if defined(ROTARY_ENCODERS)
+    case EVT_ROTARY_BREAK:
+      if (s_editMode == -1) {
         s_editMode = 0;
-        if (READ_ONLY()) {
-          if (g_eeGeneral.currModel != sub && eeModelExists(sub)) {
-            selectModel(sub);
-          }
-        }
-        else if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
-          showMessageBox(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
-          storageCheck(true); // force writing of current model data before this is changed
-
-          uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
-
-          if (s_copyMode == COPY_MODE) {
-            if (!eeCopyModel(cur, s_copySrcRow)) {
-              cur = sub;
-            }
-          }
-
-          s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
-          while (sub != cur) {
-            uint8_t src = cur;
-            cur = (s_copyTgtOfs > 0 ? cur+MAX_MODELS-1 : cur+1) % MAX_MODELS;
-            eeSwapModels(src, cur);
-            if (src == s_copySrcRow)
-              s_copySrcRow = cur;
-            else if (cur == s_copySrcRow)
-              s_copySrcRow = src;
-          }
-
-          if (s_copySrcRow != g_eeGeneral.currModel) {
-            g_eeGeneral.currModel = s_copySrcRow;
-            storageDirty(EE_GENERAL);
-          }
-
-          s_copyMode = 0;
-          event = EVT_ENTRY_UP;
-        }
-        else if (event == EVT_KEY_LONG(KEY_ENTER) || IS_ROTARY_BREAK(event)) {
-          s_copyMode = 0;
-          killEvents(event);
-#if defined(NAVIGATION_MENUS)
-          if (g_eeGeneral.currModel != sub) {
-            if (eeModelExists(sub)) {
-              POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
-              POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-              POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
-              POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
-              POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
-            }
-            else {
-#if defined(SDCARD)
-              POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
-              POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
-#else
-              selectModel(sub);
+        break;
+      }
+      // no break;
 #endif
-            }
+
+    case EVT_KEY_LONG(KEY_ENTER):
+    case EVT_KEY_BREAK(KEY_ENTER):
+      s_editMode = 0;
+      if (READ_ONLY()) {
+        if (g_eeGeneral.currModel != sub && eeModelExists(sub)) {
+          selectModel(sub);
+        }
+      }
+      else if (s_copyMode && (s_copyTgtOfs || s_copySrcRow>=0)) {
+        showMessageBox(s_copyMode==COPY_MODE ? STR_COPYINGMODEL : STR_MOVINGMODEL);
+        storageCheck(true); // force writing of current model data before this is changed
+
+        uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
+
+        if (s_copyMode == COPY_MODE) {
+          if (!eeCopyModel(cur, s_copySrcRow)) {
+            cur = sub;
           }
-          else {
+        }
+
+        s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
+        while (sub != cur) {
+          uint8_t src = cur;
+          cur = (s_copyTgtOfs > 0 ? cur+MAX_MODELS-1 : cur+1) % MAX_MODELS;
+          eeSwapModels(src, cur);
+          if (src == s_copySrcRow)
+            s_copySrcRow = cur;
+          else if (cur == s_copySrcRow)
+            s_copySrcRow = src;
+        }
+
+        if (s_copySrcRow != g_eeGeneral.currModel) {
+          g_eeGeneral.currModel = s_copySrcRow;
+          storageDirty(EE_GENERAL);
+        }
+
+        s_copyMode = 0;
+        event = EVT_ENTRY_UP;
+      }
+      else if (event == EVT_KEY_LONG(KEY_ENTER) || IS_ROTARY_BREAK(event)) {
+        s_copyMode = 0;
+        killEvents(event);
+#if defined(NAVIGATION_MENUS)
+        if (g_eeGeneral.currModel != sub) {
+          if (eeModelExists(sub)) {
+            POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
             POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
             POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
             POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
+            POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
           }
-          POPUP_MENU_START(onModelSelectMenu);
+          else {
+#if defined(SDCARD)
+            POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+            POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
 #else
-          if (g_eeGeneral.currModel != sub) {
             selectModel(sub);
+#endif
           }
-#endif
-        }
-        else if (eeModelExists(sub)) {
-          s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
-          s_copyTgtOfs = 0;
-          s_copySrcRow = -1;
-        }
-        break;
-  
-#if defined(PCBX7D)
-      case EVT_KEY_LONG(KEY_PAGE):
-        chainMenu(menuTabModel[DIM(menuTabModel)-1]);
-        killEvents(event);
-        break;
-
-      case EVT_KEY_BREAK(KEY_PAGE):
-        chainMenu(menuModelSetup);
-        break;
-#else
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      case EVT_ROTARY_LEFT:
-      case EVT_ROTARY_RIGHT:
-#endif
-      case EVT_KEY_FIRST(KEY_LEFT):
-      case EVT_KEY_FIRST(KEY_RIGHT):
-#if defined(ROTARY_ENCODER_NAVIGATION)
-        if ((!IS_ROTARY_RIGHT(event) && !IS_ROTARY_LEFT(event)) || s_editMode < 0) {
-#endif
-        if (sub == g_eeGeneral.currModel) {
-          chainMenu((IS_ROTARY_RIGHT(event) || event == EVT_KEY_FIRST(KEY_RIGHT)) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
         }
         else {
-          AUDIO_WARNING2();
+          POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
+          POPUP_MENU_ADD_ITEM(STR_COPY_MODEL);
+          POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
         }
-        break;
+        POPUP_MENU_START(onModelSelectMenu);
+#else
+        if (g_eeGeneral.currModel != sub) {
+          selectModel(sub);
+        }
+#endif
+      }
+      else if (eeModelExists(sub)) {
+        s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
+        s_copyTgtOfs = 0;
+        s_copySrcRow = -1;
+      }
+      break;
+
+#if defined(PCBX7D)
+    case EVT_KEY_LONG(KEY_PAGE):
+      chainMenu(menuTabModel[DIM(menuTabModel)-1]);
+      killEvents(event);
+      break;
+
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuModelSetup);
+      break;
+#else
 #if defined(ROTARY_ENCODER_NAVIGATION)
-        }
-        // no break
+    case EVT_ROTARY_LEFT:
+    case EVT_ROTARY_RIGHT:
+#endif
+    case EVT_KEY_FIRST(KEY_LEFT):
+    case EVT_KEY_FIRST(KEY_RIGHT):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      if ((!IS_ROTARY_RIGHT(event) && !IS_ROTARY_LEFT(event)) || s_editMode < 0) {
+#endif
+      if (sub == g_eeGeneral.currModel) {
+        chainMenu((IS_ROTARY_RIGHT(event) || event == EVT_KEY_FIRST(KEY_RIGHT)) ? menuModelSetup : menuTabModel[DIM(menuTabModel)-1]);
+      }
+      else {
+        AUDIO_WARNING2();
+      }
+      break;
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      }
+      // no break
 #endif
 #endif
 
-      case EVT_KEY_FIRST(KEY_UP):
-      case EVT_KEY_REPT(KEY_UP):
-      case EVT_KEY_FIRST(KEY_DOWN):
-      case EVT_KEY_REPT(KEY_DOWN):
-        if (s_copyMode) {
-          int8_t next_ofs = s_copyTgtOfs + oldSub - menuVerticalPosition;
-          if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
-            next_ofs = 0;
+#if defined(PCBX7D)
+    case EVT_ROTARY_LEFT:
+    case EVT_ROTARY_RIGHT:
+#endif
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_REPT(KEY_UP):
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_REPT(KEY_DOWN):
+      if (s_copyMode) {
+        int8_t next_ofs = s_copyTgtOfs + oldSub - menuVerticalPosition;
+        if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
+          next_ofs = 0;
 
-          if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
-            s_copySrcRow = oldSub;
-            // find a hole (in the first empty slot above / below)
-            sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_DOWN));
-            if (sub < 0) {
-              // no free room for duplicating the model
-              AUDIO_ERROR();
-              sub = oldSub;
-              s_copyMode = 0;
-            }
-            next_ofs = 0;
-            menuVerticalPosition = sub;
+        if (s_copySrcRow < 0 && s_copyMode==COPY_MODE) {
+          s_copySrcRow = oldSub;
+          // find a hole (in the first empty slot above / below)
+          sub = eeFindEmptyModel(s_copySrcRow, IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_DOWN));
+          if (sub < 0) {
+            // no free room for duplicating the model
+            AUDIO_ERROR();
+            sub = oldSub;
+            s_copyMode = 0;
           }
-          s_copyTgtOfs = next_ofs;
+          next_ofs = 0;
+          menuVerticalPosition = sub;
         }
-        break;
+        s_copyTgtOfs = next_ofs;
+      }
+      break;
   }
 
 #if defined(EEPROM_RLC) && defined(CPUARM)
@@ -325,7 +329,7 @@ void menuModelSelect(uint8_t event)
 #if defined(PCBX7D)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_RE_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
+  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_ROTARY_ENCODER_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
 #else
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? INVERS : 0);
 #endif

@@ -316,9 +316,7 @@ uint32_t readTrims(void);
 
 #if defined(PCBX9E) || defined(PCBX7D)
 // Rotary Encoder driver
-extern int32_t rotencValue;
-void rotencInit(void);
-void rotencEnd(void);
+#define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
 #endif
 

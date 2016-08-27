@@ -190,7 +190,7 @@ void JETI_put_stop (void)
 }
 #endif
 
-void menuViewTelemetryJeti(uint8_t event)
+void menuViewTelemetryJeti(event_t event)
 {
   drawTelemetryTopBar();
 

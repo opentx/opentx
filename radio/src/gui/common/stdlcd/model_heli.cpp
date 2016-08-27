@@ -45,7 +45,7 @@ enum MenuModelHeliItems {
 #define MODEL_HELI_2ND_COLUMN          (14*FW)
 #endif
 
-void menuModelHeli(uint8_t event)
+void menuModelHeli(event_t event)
 {
   SIMPLE_MENU(STR_MENUHELISETUP, menuTabModel, MENU_MODEL_HELI, HEADER_LINE+ITEM_HELI_MAX);
 

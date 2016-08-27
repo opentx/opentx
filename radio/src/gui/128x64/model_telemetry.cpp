@@ -212,7 +212,7 @@ enum SensorFields {
 #define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW)
 
-void menuModelSensor(uint8_t event)
+void menuModelSensor(event_t event)
 {
   TelemetrySensor * sensor = & g_model.telemetrySensors[s_currIdx];
 
@@ -458,7 +458,7 @@ void onSensorMenu(const char *result)
 }
 #endif
 
-void menuModelTelemetryFrsky(uint8_t event)
+void menuModelTelemetryFrsky(event_t event)
 {
 #if defined(CPUARM)
   if (warningResult) {

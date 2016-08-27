@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 void checkBattery();
-uint8_t checkTrim(uint8_t event);
+uint8_t checkTrim(event_t event);
 
 void perMain()
 {

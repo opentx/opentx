@@ -335,7 +335,7 @@ bool menuModelSetup(event_t event)
         g_model.timers[1].persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VPERSISTENT, g_model.timers[1].persistent, 0, 2, attr, event);
         break;
 #endif
-        
+
 #if TIMERS > 2
       case ITEM_MODEL_TIMER3:
         editTimerMode(2, y, attr, event);

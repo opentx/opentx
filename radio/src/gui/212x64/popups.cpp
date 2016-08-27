@@ -29,7 +29,7 @@ uint8_t      warningInfoFlags = ZCHAR;
 int16_t      warningInputValue;
 int16_t      warningInputValueMin;
 int16_t      warningInputValueMax;
-void         (*popupFunc)(uint8_t event) = NULL;
+void         (*popupFunc)(event_t event) = NULL;
 const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t      s_menu_item = 0;
 uint16_t     popupMenuNoItems = 0;
@@ -92,7 +92,7 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
   clearKeyEvents();
 }
 
-void runPopupWarning(uint8_t event)
+void runPopupWarning(event_t event)
 {
   warningResult = false;
   drawMessageBox(warningText);
@@ -120,7 +120,7 @@ void runPopupWarning(uint8_t event)
   }
 }
 
-const char * runPopupMenu(uint8_t event)
+const char * runPopupMenu(event_t event)
 {
   const char * result = NULL;
 
@@ -139,6 +139,7 @@ const char * runPopupMenu(uint8_t event)
   }
 
   switch (event) {
+    CASE_EVT_ROTARY_LEFT
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_REPT(KEY_UP):
       if (s_menu_item > 0) {
@@ -156,7 +157,8 @@ const char * runPopupMenu(uint8_t event)
         }
       }
       break;
-
+    
+    CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
       if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
@@ -174,9 +176,11 @@ const char * runPopupMenu(uint8_t event)
         }
       }
       break;
+      
     case EVT_KEY_BREAK(KEY_ENTER):
       result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
       // no break
+      
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
       s_menu_item = 0;

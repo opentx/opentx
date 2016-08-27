@@ -66,7 +66,7 @@ void pushMenu(MenuHandlerFunc newMenu)
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 
-void menuModelNotes(uint8_t event)
+void menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
     strcpy(s_text_file, MODELS_PATH "/");

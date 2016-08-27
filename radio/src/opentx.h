@@ -526,15 +526,23 @@ extern uint8_t channel_order(uint8_t x);
   #define SPLASH_TIMEOUT  (4*100)  // 4 seconds
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-  #define IS_RE_NAVIGATION_ENABLE()   true
-  #define NAVIGATION_RE_IDX()         0
-#elif defined(ROTARY_ENCODERS)
-  #define NAVIGATION_RE_IDX()         (g_eeGeneral.reNavigation - 1)
-  #define IS_RE_NAVIGATION_ENABLE()   g_eeGeneral.reNavigation
+#if defined(ROTARY_ENCODERS)
+#define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  g_eeGeneral.reNavigation
+extern volatile rotenc_t rotencValue[ROTARY_ENCODERS];
+#define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[g_eeGeneral.reNavigation - 1]
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-  #define IS_RE_NAVIGATION_ENABLE()   true
-  #define NAVIGATION_RE_IDX()         0
+#define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
+extern volatile rotenc_t rotencValue[1];
+#define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[0]
+#endif
+
+#if defined(CPUARM) && defined(ROTARY_ENCODER_NAVIGATION)
+extern uint8_t rotencSpeed;
+#define ROTENC_LOWSPEED                1
+#define ROTENC_MIDSPEED                5
+#define ROTENC_HIGHSPEED               50
+#define ROTENC_DELAY_MIDSPEED          4
+#define ROTENC_DELAY_HIGHSPEED         2
 #endif
 
 #define HEART_TIMER_10MS     1
@@ -1127,11 +1135,11 @@ extern uint16_t lightOffCounter;
 extern uint8_t flashCounter;
 extern uint8_t mixWarning;
 
-FlightModeData *flightModeAddress(uint8_t idx);
-ExpoData *expoAddress(uint8_t idx);
-MixData *mixAddress(uint8_t idx);
-LimitData *limitAddress(uint8_t idx);
-LogicalSwitchData *lswAddress(uint8_t idx);
+FlightModeData * flightModeAddress(uint8_t idx);
+ExpoData * expoAddress(uint8_t idx);
+MixData * mixAddress(uint8_t idx);
+LimitData * limitAddress(uint8_t idx);
+LogicalSwitchData * lswAddress(uint8_t idx);
 
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
@@ -1251,13 +1259,6 @@ extern CustomFunctionsContext modelFunctionsContext;
 #define isFunctionActive(func) modelFunctionsContext.isFunctionActive(func)
 void evalFunctions();
 #define customFunctionsReset() modelFunctionsContext.reset()
-#endif
-
-#if defined(ROTARY_ENCODERS)
-  // Global rotary encoder registers
-  extern volatile rotenc_t g_rotenc[ROTARY_ENCODERS];
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  extern volatile rotenc_t g_rotenc[1];
 #endif
 
 #include "telemetry/telemetry.h"

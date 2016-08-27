@@ -330,7 +330,7 @@ void displayTimers()
   }
 }
 
-void menuMainViewChannelsMonitor(uint8_t event)
+void menuMainViewChannelsMonitor(event_t event)
 {
   switch(event) {
     case EVT_KEY_BREAK(KEY_PAGE):
@@ -440,7 +440,7 @@ int getSwitchCount()
   return count;
 }
 
-void menuMainView(uint8_t event)
+void menuMainView(event_t event)
 {
   STICK_SCROLL_DISABLE();
 

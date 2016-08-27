@@ -122,23 +122,24 @@ uint8_t Key::key() const
   return (this - keys);
 }
 
-void pauseEvents(uint8_t event)
+void pauseEvents(event_t event)
 {
   event = EVT_KEY_MASK(event);
   if (event < (int)DIM(keys)) keys[event].pauseEvents();
 }
 
-void killEvents(uint8_t event)
+void killEvents(event_t event)
 {
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODERS)
   if (event == EVT_ROTARY_LONG) {
-    killEvents(BTN_REa + NAVIGATION_RE_IDX());
+    killEvents(BTN_REa + g_eeGeneral.reNavigation - 1);
+    return;
   }
-  else
 #endif
-  {
-    event = EVT_KEY_MASK(event);
-    if (event < (int)DIM(keys)) keys[event].killEvents();
+
+  event = EVT_KEY_MASK(event);
+  if (event < (int)DIM(keys)) {
+    keys[event].killEvents();
   }
 }
 
@@ -174,7 +175,7 @@ bool clearKeyEvents()
   putEvent(0);
   return true;
 }
-#else    // #if defined(CPUARM)
+#else
 void clearKeyEvents()
 {
   // loop until all keys are up

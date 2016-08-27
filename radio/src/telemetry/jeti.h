@@ -34,7 +34,7 @@ void JETI_EnableTXD (void);
 void JETI_DisableTXD (void);
 
 void telemetryInterrupt10ms();
-void menuViewTelemetryJeti(uint8_t event);
+void menuViewTelemetryJeti(event_t event);
 
 #endif // _JETI_H_
 

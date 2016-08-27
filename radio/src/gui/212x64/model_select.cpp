@@ -23,7 +23,7 @@
 #define MODELSIZE_POS_X 170
 #define MODELSEL_W 133
 
-void onModelSelectMenu(const char *result)
+void onModelSelectMenu(const char * result)
 {
   int8_t sub = menuVerticalPosition;
 
@@ -63,7 +63,7 @@ void onModelSelectMenu(const char *result)
   }
 }
 
-void menuModelSelect(uint8_t event)
+void menuModelSelect(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
@@ -73,7 +73,7 @@ void menuModelSelect(uint8_t event)
     event = EVT_ENTRY_UP;
   }
 
-  uint8_t _event_ = ((event==EVT_KEY_BREAK(KEY_ENTER) || event==EVT_KEY_LONG(KEY_ENTER)) ? 0 : event);
+  event_t _event_ = ((event==EVT_KEY_BREAK(KEY_ENTER) || event==EVT_KEY_LONG(KEY_ENTER)) ? 0 : event);
 
   if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
     _event_ -= KEY_EXIT;
@@ -87,8 +87,7 @@ void menuModelSelect(uint8_t event)
 
   int sub = menuVerticalPosition;
 
-  switch (event)
-  {
+  switch (event) {
       case EVT_ENTRY:
         menuVerticalPosition = sub = g_eeGeneral.currModel;
         if (sub >= NUM_BODY_LINES) menuVerticalOffset = sub-(NUM_BODY_LINES-1);

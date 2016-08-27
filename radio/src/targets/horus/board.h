@@ -255,11 +255,7 @@ uint32_t readTrims(void);
 #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 
 // Rotary encoder driver
-extern int32_t rotencValue;
-extern uint32_t rotencSpeed;
-#define ROTENC_LOWSPEED                1
-#define ROTENC_MIDSPEED                5
-#define ROTENC_HIGHSPEED               50
+#define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
 
 // WDT driver

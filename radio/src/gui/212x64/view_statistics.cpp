@@ -25,7 +25,7 @@
 #define STATS_3RD_COLUMN               24*FW+FW/2
 #define STATS_LABEL_WIDTH              4*FW
 
-void menuStatisticsView(uint8_t event)
+void menuStatisticsView(event_t event)
 {
   TITLE(STR_MENUSTAT);
 
@@ -97,7 +97,7 @@ void menuStatisticsView(uint8_t event)
   extern "C" volatile uint32_t APP_Rx_ptr_in;
 #endif
 
-void menuStatisticsDebug(uint8_t event)
+void menuStatisticsDebug(event_t event)
 {
   TITLE(STR_MENUDEBUG);
 
@@ -192,7 +192,7 @@ void menuStatisticsDebug(uint8_t event)
 #if defined(DEBUG_TRACE_BUFFER)
 #include "stamp-opentx.h"
 
-void menuTraceBuffer(uint8_t event)
+void menuTraceBuffer(event_t event)
 {
   switch(event)
   {

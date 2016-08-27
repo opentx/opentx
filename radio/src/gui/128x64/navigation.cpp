@@ -70,12 +70,12 @@ INIT_STOPS(stops100, 3, -100, 0, 100)
 INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
 
-  #if defined(PCBX7D)
-int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
+#if defined(PCBX7D)
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
 
-#if defined(DBLKEYS)
+#if 0 // TODO ? defined(DBLKEYS)
   uint32_t in = KEYS_PRESSED();
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
@@ -117,33 +117,23 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   }
 #endif
 
-  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
-    do {
-      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval += min(10, i_max-val);
-      }
-      else {
-        newval++;
-      }
-    } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+  if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
+    newval += min<int>(rotencSpeed, i_max-val);
+    while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
+      newval++;
+    }
     if (newval > i_max) {
       newval = val;
-      killEvents(event);
       AUDIO_KEY_ERROR();
     }
   }
-  else if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
-    do {
-      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval -= min(10, val-i_min);
-      }
-      else {
-        newval--;
-      }
-    } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+  else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
+    newval -= min<int>(rotencSpeed, val-i_min);
+    while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
+      newval--;
+    }
     if (newval < i_min) {
       newval = val;
-      killEvents(event);
       AUDIO_KEY_ERROR();
     }
   }
@@ -179,17 +169,8 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 #endif
 
   if (newval != val) {
-    if (!(i_flags & NO_INCDEC_MARKS) && (newval != i_max) && (newval != i_min) && stops.contains(newval)) {
-      bool pause = (newval > val ? !stops.contains(newval+1) : !stops.contains(newval-1));
-      if (pause) {
-        pauseEvents(event); // delay before auto-repeat continues
-      }
-    }
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
     checkIncDec_Ret = (newval > val ? 1 : -1);
-    if (!IS_KEY_REPT(event)) {
-      AUDIO_KEY_PRESS();
-    }
   }
   else {
     checkIncDec_Ret = 0;
@@ -275,8 +256,8 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
   #endif
   return newval;
 }
-    #else
-int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
+#else
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
 
@@ -397,7 +378,7 @@ int checkIncDec(unsigned int event, int val, int i_min, int i_max, unsigned int 
 }
       #endif
 #else
-int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
+int16_t checkIncDec(event_t event, int16_t val, int16_t i_min, int16_t i_max, uint8_t i_flags)
 {
   int16_t newval = val;
 
@@ -497,17 +478,17 @@ int16_t checkIncDec(uint8_t event, int16_t val, int16_t i_min, int16_t i_max, ui
 #endif
 
 #if defined(CPUM64)
-int8_t checkIncDecModel(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
+int8_t checkIncDecModel(event_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 {
   return checkIncDec(event, i_val, i_min, i_max, EE_MODEL);
 }
 
-int8_t checkIncDecModelZero(uint8_t event, int8_t i_val, int8_t i_max)
+int8_t checkIncDecModelZero(event_t event, int8_t i_val, int8_t i_max)
 {
   return checkIncDecModel(event, i_val, 0, i_max);
 }
 
-int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
+int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 {
   return checkIncDec(event, i_val, i_min, i_max, EE_GENERAL);
 }
@@ -522,9 +503,8 @@ int8_t checkIncDecGen(uint8_t event, int8_t i_val, int8_t i_min, int8_t i_max)
   #define CURSOR_NOT_ALLOWED_IN_ROW(row)   (MAXCOL(row) == TITLE_ROW)
 #endif
 
-#define MAXCOL(row)     (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-#define INC(val, min, max) if (val<max) {val++;} else {val=min;}
-#define DEC(val, min, max) if (val>min) {val--;} else {val=max;}
+#define INC(val, min, max)             if (val<max) {val++;} else {val=min;}
+#define DEC(val, min, max)             if (val>min) {val--;} else {val=max;}
 
 #if defined(CPUARM)
 tmr10ms_t menuEntryTime;
@@ -536,7 +516,6 @@ tmr10ms_t menuEntryTime;
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
-#define EDIT_MODE_INIT                 0 // TODO enum
 
 void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
 {
@@ -649,6 +628,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       }
       break;
 
+    case EVT_ROTARY_RIGHT:
     case EVT_KEY_FIRST(KEY_RIGHT):
       AUDIO_KEY_PRESS();
       // no break
@@ -679,6 +659,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
+    case EVT_ROTARY_LEFT:
     case EVT_KEY_FIRST(KEY_LEFT):
       AUDIO_KEY_PRESS();
       // no break
@@ -777,6 +758,9 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   menuHorizontalPosition = l_posHorz;
 }
 #else
+#define MAXCOL(row)                    (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define POS_HORZ_INIT(posVert)         0
+
 void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
 {
   vertpos_t l_posVert = menuVerticalPosition;
@@ -871,7 +855,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-      if (IS_RE_NAVIGATION_ENABLE() && s_editMode < 0)
+      if (IS_ROTARY_ENCODER_NAVIGATION_ENABLE() && s_editMode < 0)
         attr = INVERS|BLINK;
 #endif
     }
@@ -1144,7 +1128,7 @@ void check_submenu_simple(event_t event, uint8_t maxrow)
   check_simple(event, 0, 0, 0, maxrow);
 }
 
-void repeatLastCursorMove(uint8_t event)
+void repeatLastCursorMove(event_t event)
 {
   if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
     putEvent(event);

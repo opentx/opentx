@@ -30,9 +30,9 @@
 
 void drawMessageBox(const char * title);
 void showMessageBox(const char * title);
-void runPopupWarning(uint8_t event);
+void runPopupWarning(event_t event);
 
-extern void (*popupFunc)(uint8_t event);
+extern void (*popupFunc)(event_t event);
 extern int16_t warningInputValue;
 extern int16_t warningInputValueMin;
 extern int16_t warningInputValueMax;
@@ -61,7 +61,7 @@ enum {
   MENU_OFFSET_EXTERNAL
 };
 extern uint8_t popupMenuOffsetType;
-const char * runPopupMenu(uint8_t event);
+const char * runPopupMenu(event_t event);
 extern void (*popupMenuHandler)(const char * result);
 
 #endif // _POPUPS_H_

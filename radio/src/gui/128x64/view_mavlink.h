@@ -31,7 +31,7 @@
 
 #define APSIZE (BSS | DBLSIZE)
 
-void menuViewTelemetryMavlink(uint8_t event);
+void menuViewTelemetryMavlink(event_t event);
 void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mode = 0);
 void mav_title(const pm_char * s, uint8_t index);
 void menuTelemetryMavlinkInfos(void);
@@ -41,7 +41,7 @@ void menuTelemetryMavlinkNavigation(void);
 void menuTelemetryMavlinkGPS(void);
 #ifdef DUMP_RX_TX
 void lcd_outhex2(uint8_t x, uint8_t y, uint8_t val);
-void menuTelemetryMavlinkDump(uint8_t event);
+void menuTelemetryMavlinkDump(event_t event);
 #endif
 
 /*!	\brief Mavlink menu enumerator
