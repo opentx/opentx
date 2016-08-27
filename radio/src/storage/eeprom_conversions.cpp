@@ -1098,7 +1098,7 @@ void ConvertModel_217_to_218(ModelData & model)
     newModel.mixData[i].delayDown = oldModel.mixData[i].delayDown;
     newModel.mixData[i].speedUp = oldModel.mixData[i].speedUp;
     newModel.mixData[i].speedDown = oldModel.mixData[i].speedDown;
-    newModel.mixData[i].srcRaw = oldModel.mixData[i].srcRaw;
+    newModel.mixData[i].srcRaw = ConvertSource_217_to_218(oldModel.mixData[i].srcRaw);
     newModel.mixData[i].offset = oldModel.mixData[i].offset;
     memcpy(newModel.mixData[i].name, oldModel.mixData[i].name, sizeof(newModel.mixData[i].name));
   }
@@ -1181,6 +1181,20 @@ void ConvertModel_217_to_218(ModelData & model)
   newModel.switchWarningEnable = oldModel.switchWarningEnable;
   memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
   newModel.frsky = oldModel.frsky;
+  for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
+    if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_VALUES) {
+      for (int j = 0; j < 4; j++) {
+        for (int k = 0; k < NUM_LINE_ITEMS; k++) {
+          newModel.frsky.screens[i].lines[j].sources[k] = ConvertSource_217_to_218(oldModel.frsky.screens[i].lines[j].sources[k]);
+        }
+      }
+    }
+    else if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_GAUGES) {
+      for (int j = 0; j < 4; j++) {
+        newModel.frsky.screens[i].bars[j].source = ConvertSource_217_to_218(oldModel.frsky.screens[i].bars[j].source);
+      }
+    }
+  }
   for (int i=0; i<NUM_MODULES+1; i++) {
     newModel.moduleData[i] = oldModel.moduleData[i];
   }
