@@ -36,7 +36,7 @@ enum CalibrationState {
 void drawPotsBars()
 {
   // Optimization by Mike Blandford
-  for (uint8_t x=LCD_W/2-(NUM_POTS+NUM_SLIDERS/2)*BAR_SPACING+BAR_SPACING/2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=BAR_SPACING, i++) {
+  for (uint8_t x=LCD_W/2-(NUM_POTS+NUM_SLIDERS)/2*BAR_SPACING+BAR_SPACING/2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=BAR_SPACING, i++) {
     if (IS_POT_OR_SLIDER_AVAILABLE(i)) {
       uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
