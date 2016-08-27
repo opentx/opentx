@@ -651,14 +651,15 @@ QDateTime TelemetrySimulator::LogPlaybackController::parseTransmittterTimestamp(
 void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
 {
   // examine up to 20 rows to determine log frequency in seconds
+  // Skip the first entry which contains the file open time
   logFrequency = 25.5; // default value
   QDateTime lastTime;
-  for (int i = 1; (i < 20) && (i < csvRecords.count()); i++)
+  for (int i = 2; (i < 21) && (i < csvRecords.count()); i++)
   {
     QDateTime logTime = parseTransmittterTimestamp(csvRecords[i]);
     // ugh - no timespan in this Qt version
     double timeDiff = (logTime.toMSecsSinceEpoch() - lastTime.toMSecsSinceEpoch()) / 1000.0;
-    if ((timeDiff > 0) && (timeDiff < logFrequency)) {
+    if ((timeDiff > 0.1) && (timeDiff < logFrequency)) {
       logFrequency = timeDiff;
     }
     lastTime = logTime;
