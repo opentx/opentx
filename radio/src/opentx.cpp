@@ -1090,19 +1090,19 @@ void checkSDVersion()
   if (sdMounted()) {
     FIL versionFile = {0};
     UINT read = 0;
-    char version[sizeof(REQUIRED_SDCARD_VERSION)];
+    char version[sizeof(REQUIRED_SDCARD_VERSION)-1];
 
     FRESULT result = f_open(&versionFile, "/opentx.sdcard.version", FA_OPEN_EXISTING | FA_READ);
-    if ((result == FR_OK) && (f_size(&versionFile) == sizeof(REQUIRED_SDCARD_VERSION))) {
-      f_read(&versionFile, &version, sizeof(REQUIRED_SDCARD_VERSION), &read);
-      if (strncmp(version, REQUIRED_SDCARD_VERSION, sizeof(REQUIRED_SDCARD_VERSION)-1) != 0) {
+    if ((result == FR_OK) && (f_size(&versionFile) == sizeof(version))) {
+      f_read(&versionFile, &version, sizeof(version), &read);
+      if (strncmp(version, REQUIRED_SDCARD_VERSION, sizeof(version)) != 0) {
         TRACE("sdCheckVersion FAILED: version are not the same");
-        ALERT(STR_SDCARD_ERROR, STR_WRONG_SDCARDVERSION, AU_ERROR);
+        ALERT(STR_SD_CARD, STR_WRONG_SDCARDVERSION, AU_ERROR);
       }
     }
     else {
       TRACE("sdCheckVersion FAILED: opentx.sdcard.version cannot be opened");
-      ALERT(STR_SDCARD_ERROR, STR_WRONG_SDCARDVERSION, AU_ERROR);
+      ALERT(STR_SD_CARD, STR_WRONG_SDCARDVERSION, AU_ERROR);
     }
     f_close(&versionFile);
   }
