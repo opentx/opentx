@@ -256,17 +256,13 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     template<class T>
     void drawScaledBitmap(const T * bitmap, coord_t x, coord_t y, coord_t w, coord_t h)
     {
-      coord_t bitmapWidth = bitmap->getWidth();
-
-      float scale = float(h) / bitmap->getHeight();
-      int width = (0.5 + bitmapWidth) * scale;
-      if (width > w) {
-        int ww = (0.5 + w) / scale;
-        drawBitmap(x, y, bitmap, (bitmapWidth - ww)/2, 0, ww, 0, scale);
-      }
-      else {
-        drawBitmap(x+(w-width)/2, y, bitmap, 0, 0, 0, 0, scale);
-      }
+      float vscale = float(h) / bitmap->getHeight();
+      float hscale = float(w) / bitmap->getWidth();
+      float scale = vscale < hscale ? vscale : hscale;
+      
+      int xshift = (w - (bitmap->getWidth() * scale)) / 2;
+      int yshift = (h - (bitmap->getHeight() * scale)) / 2;
+      drawBitmap(x + xshift, y + yshift, bitmap, 0, 0, 0, 0, scale);
     }
 
   protected:

@@ -376,7 +376,7 @@ bool menuRadioSdManager(event_t _event)
         startx = (width - LCD_W/2) / 2;
         width = LCD_W/2;
       }
-      lcd->drawBitmap(LCD_W / 2 - 20 + LCD_W/4 - width/2, MENU_BODY_TOP + MENU_BODY_HEIGHT/2 - height/2, currentBitmap, startx, starty, width, height);
+      lcd->drawScaledBitmap(currentBitmap, LCD_W / 2 - 20 + LCD_W/4 - width/2, MENU_BODY_TOP + MENU_BODY_HEIGHT/2 - height/2, width, height);
     }
   }
 
