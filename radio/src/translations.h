@@ -912,6 +912,15 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_REMOVE_WIDGET[];
   extern const pm_char STR_WIDGET_SETTINGS[];
   extern const pm_char STR_REMOVE_SCREEN[];
+  extern const pm_char STR_SETUP_WIDGETS[];
+  extern const pm_char STR_USER_INTERFACE[];
+  extern const pm_char STR_THEME[];
+  extern const pm_char STR_SETUP[];
+  extern const pm_char STR_MAINVIEWX[];
+  extern const pm_char STR_LAYOUT[];
+  extern const pm_char STR_ADDMAINVIEW[];
+  extern const pm_char STR_BACKGROUND_COLOR[];
+  extern const pm_char STR_MAIN_COLOR[];
 #endif
 
 #if defined(CPUARM)

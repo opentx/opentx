@@ -36,7 +36,7 @@ bool menuStatsGraph(event_t event)
       break;
   }
 
-  MENU("Statistics", STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
+  MENU(STR_STATISTICS, STATS_ICONS, menuTabStats, e_StatsGraph, 0, { 0 });
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
   drawTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);

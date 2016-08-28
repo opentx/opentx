@@ -265,16 +265,16 @@ bool menuModelSelect(event_t event)
           POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
           POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
         }
-        POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
-        POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
-        if (modelslist.categories.size() > 1) {
-          POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
-        }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
         if (currentModel && currentModel != modelslist.currentModel) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
         }
         // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
+        POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
+        POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
+        if (modelslist.categories.size() > 1) {
+          POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
+        }
         POPUP_MENU_START(onModelSelectMenu);
       }
       break;

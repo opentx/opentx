@@ -204,7 +204,7 @@ bool menuSettings(const char * title, const T * object, uint32_t i_flags, event_
 
 bool menuWidgetSettings(event_t event)
 {
-  return menuSettings<Widget>("Widget settings", currentWidget, EE_MODEL, event);
+  return menuSettings<Widget>(STR_WIDGET_SETTINGS, currentWidget, EE_MODEL, event);
 }
 
 bool menuWidgetChoice(event_t event)
@@ -429,7 +429,7 @@ bool menuScreensTheme(event_t event)
     mstate_tab[2+i] = getZoneOptionColumns(&options[i]);
   }
   mstate_tab[2+optionsCount] = 0; // The button for the Topbar setup
-  CUSTOM_MENU_WITH_OPTIONS("User interface", THEME_ICONS, menuTabScreensSetup, menuPageCount, 0, linesCount);
+  CUSTOM_MENU_WITH_OPTIONS(STR_USER_INTERFACE, THEME_ICONS, menuTabScreensSetup, menuPageCount, 0, linesCount);
 
   for (int i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
@@ -438,7 +438,7 @@ bool menuScreensTheme(event_t event)
     LcdFlags attr = (menuVerticalPosition == k ? blink : 0);
     switch (k) {
       case ITEM_SCREEN_SETUP_THEME: {
-        lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Theme");
+        lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, STR_THEME);
         Theme * new_theme = editThemeChoice<Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
         if (new_theme) {
           new_theme->init();
@@ -464,8 +464,8 @@ bool menuScreensTheme(event_t event)
           }
         }
         else if (index == optionsCount) {
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "Top bar");
-          drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup", attr);
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TOP_BAR);
+          drawButton(SCREENS_SETUP_2ND_COLUMN, y, STR_SETUP, attr);
           if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
             currentScreen = customScreens[0];
             currentContainer = topbar;
@@ -522,7 +522,7 @@ bool menuScreenSetup(int index, event_t event)
     switch(k) {
       case ITEM_SCREEN_SETUP_LAYOUT:
       {
-        lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, "Layout");
+        lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, STR_LAYOUT);
         const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, registeredLayouts, countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
         if (factory) {
           delete customScreens[index];
@@ -538,7 +538,7 @@ bool menuScreenSetup(int index, event_t event)
         break;
 
       case ITEM_SCREEN_SETUP_WIDGETS_SETUP:
-        drawButton(SCREENS_SETUP_2ND_COLUMN, y, "Setup widgets", attr);
+        drawButton(SCREENS_SETUP_2ND_COLUMN, y, STR_SETUP_WIDGETS, attr);
         if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
           pushMenu(menuWidgetsSetup);
         }
@@ -620,6 +620,6 @@ bool menuScreenAdd(event_t event)
     return false;
   }
 
-  SIMPLE_MENU_WITH_OPTIONS("Add main view", THEME_ICONS, menuTabScreensSetup, menuPageCount, menuPageCount-1, 0);
+  SIMPLE_MENU_WITH_OPTIONS(STR_ADDMAINVIEW, THEME_ICONS, menuTabScreensSetup, menuPageCount, menuPageCount-1, 0);
   return true;
 }
