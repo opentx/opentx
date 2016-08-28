@@ -27,7 +27,7 @@ void gpsInit()
   GPIO_InitTypeDef GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
   NVIC_InitTypeDef NVIC_InitStructure;
-  
+
   // RX and TX pins
   GPIO_PinAFConfig(GPIOA, GPS_TX_GPIO_PinSource, GPS_GPIO_AF);
   GPIO_PinAFConfig(GPIOA, GPS_RX_GPIO_PinSource, GPS_GPIO_AF);
@@ -37,7 +37,7 @@ void gpsInit()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPS_UART_GPIO, &GPIO_InitStructure);
-  
+
   // UART config
   USART_InitStructure.USART_BaudRate = GPS_USART_BAUDRATE;
   USART_InitStructure.USART_Parity = USART_Parity_No;
@@ -47,9 +47,8 @@ void gpsInit()
   USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
   USART_Init(GPS_USART, &USART_InitStructure);
   USART_Cmd(GPS_USART, ENABLE);
-  
   USART_ITConfig(GPS_USART, USART_IT_RXNE, ENABLE);
-  
+
   NVIC_InitStructure.NVIC_IRQChannel = GPS_USART_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x9;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x0;
@@ -72,7 +71,7 @@ extern "C" void GPS_USART_IRQHandler(void)
     }
   }
 #endif
-  
+
   // Receive
   uint32_t status = GPS_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
