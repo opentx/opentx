@@ -223,7 +223,7 @@ int8_t STORAGE_Read (uint8_t lun,
                  uint32_t blk_addr,                       
                  uint16_t blk_len)
 {
-  watchdogSuspend(100/*1s*/);
+  WATCHDOG_SUSPEND(100/*1s*/);
   
 #if defined(EEPROM)
   if (lun == STORAGE_EEPROM_LUN) {
@@ -248,7 +248,7 @@ int8_t STORAGE_Write (uint8_t lun,
                   uint32_t blk_addr,
                   uint16_t blk_len)
 {
-  watchdogSuspend(100/*1s*/);
+  WATCHDOG_SUSPEND(100/*1s*/);
   
 #if defined(EEPROM)
   if (lun == STORAGE_EEPROM_LUN)	{

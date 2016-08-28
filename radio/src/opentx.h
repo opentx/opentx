@@ -545,17 +545,20 @@ extern uint8_t rotencSpeed;
 #define ROTENC_DELAY_HIGHSPEED         2
 #endif
 
-#define HEART_TIMER_10MS     1
-#define HEART_TIMER_PULSES   2 // when multiple modules this is the first one
+#define HEART_TIMER_10MS               1
+#define HEART_TIMER_PULSES             2 // when multiple modules this is the first one
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-  #define HEART_WDT_CHECK      (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
+#define HEART_WDT_CHECK                (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
 #else
-  #define HEART_WDT_CHECK      (HEART_TIMER_10MS + HEART_TIMER_PULSES)
+#define HEART_WDT_CHECK                (HEART_TIMER_10MS + HEART_TIMER_PULSES)
 #endif
 extern uint8_t heartbeat;
 
-#if defined(CPUARM)
+#if defined(CPUARM) && !defined(BOOT)
 void watchdogSuspend(uint32_t timeout);
+#define WATCHDOG_SUSPEND(x)            watchdogSuspend(x)
+#else
+#define WATCHDOG_SUSPEND(...)
 #endif
 
 #define MAX_ALERT_TIME   60
