@@ -1,3 +1,4 @@
+#include <math.h>
 #include "logsdialog.h"
 #include "appdata.h"
 #include "ui_logsdialog.h"
@@ -476,7 +477,7 @@ void LogsDialog::updateCursorsLabel()
     }
     qDebug() << "Cursors: dt:" << formatTimeDelta(deltaX) << "dy:" << deltaY << "rate:" << slope;
     text += tr("Time delta: %1").arg(formatTimeDelta(deltaX)) + "\n";
-    text += tr("Climb rate: %1 m/s").arg(slope, 0, 'f', 1) + "\n";
+    text += tr("Climb rate: %1 m/s").arg(slope, 0, 'f', fabs(slope)<1.0 ? 2 : 1) + "\n";
   }
   ui->labelCursors->setText(text);
 }
