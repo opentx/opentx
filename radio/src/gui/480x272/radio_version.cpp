@@ -42,7 +42,7 @@ bool menuRadioVersion(event_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 3*FH, time_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 4*FH, eeprom_stamp);
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 5*FH, "UID:");
-  lcdDrawText(48, MENU_HEADER_HEIGHT+1+5*FH, reusableBuffer.version.id);
+  lcdDrawText(MENUS_MARGIN_LEFT + 64, MENU_CONTENT_TOP + 5*FH, reusableBuffer.version.id);
 
 #if 0
   if (event == EVT_KEY_LONG(KEY_ENTER)) {

@@ -31,18 +31,18 @@ extern "C" {
 
 void watchdogInit(unsigned int duration)
 {
-  IWDG->KR = 0x5555 ;      // Unlock registers
-  IWDG->PR = 3 ;           // Divide by 32 => 1kHz clock
-  IWDG->KR = 0x5555 ;      // Unlock registers
-  IWDG->RLR = duration ;       // 1.5 seconds nominal
-  IWDG->KR = 0xAAAA ;      // reload
-  IWDG->KR = 0xCCCC ;      // start
+  IWDG->KR = 0x5555;      // Unlock registers
+  IWDG->PR = 3;           // Divide by 32 => 1kHz clock
+  IWDG->KR = 0x5555;      // Unlock registers
+  IWDG->RLR = duration;       // 1.5 seconds nominal
+  IWDG->KR = 0xAAAA;      // reload
+  IWDG->KR = 0xCCCC;      // start
 }
 
 void getCPUUniqueID(char * s)
 {
 #if defined(SIMU)
-  uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
+  uint32_t cpu_uid[3] = {0x12345678, 0x55AA55AA, 0x87654321};
 #else
   uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
 #endif
