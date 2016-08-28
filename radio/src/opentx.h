@@ -527,22 +527,22 @@ extern uint8_t channel_order(uint8_t x);
 #endif
 
 #if defined(ROTARY_ENCODERS)
-#define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  g_eeGeneral.reNavigation
-extern volatile rotenc_t rotencValue[ROTARY_ENCODERS];
-#define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[g_eeGeneral.reNavigation - 1]
+  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  g_eeGeneral.reNavigation
+  extern volatile rotenc_t rotencValue[ROTARY_ENCODERS];
+  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[g_eeGeneral.reNavigation - 1]
 #elif defined(ROTARY_ENCODER_NAVIGATION)
-#define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
-extern volatile rotenc_t rotencValue[1];
-#define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[0]
+  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
+  extern volatile rotenc_t rotencValue[1];
+  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[0]
 #endif
 
 #if defined(CPUARM) && defined(ROTARY_ENCODER_NAVIGATION)
-extern uint8_t rotencSpeed;
-#define ROTENC_LOWSPEED                1
-#define ROTENC_MIDSPEED                5
-#define ROTENC_HIGHSPEED               50
-#define ROTENC_DELAY_MIDSPEED          4
-#define ROTENC_DELAY_HIGHSPEED         2
+  extern uint8_t rotencSpeed;
+  #define ROTENC_LOWSPEED              1
+  #define ROTENC_MIDSPEED              5
+  #define ROTENC_HIGHSPEED             50
+  #define ROTENC_DELAY_MIDSPEED        32
+  #define ROTENC_DELAY_HIGHSPEED       16
 #endif
 
 #define HEART_TIMER_10MS               1

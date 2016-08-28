@@ -142,9 +142,11 @@ void per10ms()
       putEvent(scrollRE < 0 ? EVT_ROTARY_LEFT : EVT_ROTARY_RIGHT);
     }
 #if defined(CPUARM)
+    // rotary encoder navigation speed (acceleration) detection/calculation
     if (scrollRE) {
       static uint32_t lastTick = 0;
-      uint32_t delay = get_tmr10ms() - lastTick;
+      static uint32_t delay = 0;
+      delay = (((get_tmr10ms() - lastTick) << 3) + delay) >> 1;   // Modified moving average filter used for smoother change of speed
       lastTick = get_tmr10ms();
       if (delay < ROTENC_DELAY_HIGHSPEED)
         rotencSpeed = ROTENC_HIGHSPEED;
