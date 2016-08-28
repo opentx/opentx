@@ -42,7 +42,7 @@ void storageDirty(uint8_t msk)
 void preModelLoad()
 {
 #if defined(CPUARM)
-  watchdogSetTimeout(500/*5s*/);
+  watchdogSuspend(500/*5s*/);
 #endif
 
 #if defined(SDCARD)

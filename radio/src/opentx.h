@@ -555,7 +555,7 @@ extern uint8_t rotencSpeed;
 extern uint8_t heartbeat;
 
 #if defined(CPUARM)
-void watchdogSetTimeout(uint32_t timeout);
+void watchdogSuspend(uint32_t timeout);
 #endif
 
 #define MAX_ALERT_TIME   60

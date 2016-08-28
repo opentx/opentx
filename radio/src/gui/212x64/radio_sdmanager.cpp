@@ -92,7 +92,7 @@ void flashBootloader(const char * filename)
   }
 
   for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
-    watchdogSetTimeout(100/*1s*/);
+    watchdogSuspend(100/*1s*/);
     if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
       POPUP_WARNING(STR_SDCARD_ERROR);
       break;
@@ -119,14 +119,14 @@ void flashBootloader(const char * filename)
 void flashSportDevice(ModuleIndex module, const char *filename)
 {
   pausePulses();
-  watchdogSetTimeout(60*60*100/*1h*/);
+  watchdogSuspend(60*60*100/*1h*/);
 
   lcdClear();
   drawProgressBar(STR_WRITING);
 
   sportFirmwareUpdate(module, filename);
 
-  watchdogSetTimeout(100/*1s*/);
+  watchdogSuspend(100/*1s*/);
   resumePulses();
 }
 

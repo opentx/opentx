@@ -80,7 +80,7 @@ volatile tmr10ms_t g_tmr10ms;
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
 
-void watchdogSetTimeout(uint32_t timeout)
+void watchdogSuspend(uint32_t timeout)
 {
   watchdogTimeout = timeout;
 }
@@ -1972,7 +1972,7 @@ void opentxClose(uint8_t shutdown)
 
   if (shutdown) {
 #if defined(CPUARM)
-    watchdogSetTimeout(2000/*20s*/);
+    watchdogSuspend(2000/*20s*/);
 #endif
     pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
