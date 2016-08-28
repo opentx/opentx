@@ -3,7 +3,7 @@ option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
 
 if(PCB STREQUAL X9E)
-  option(STICKS "Sticks type" STANDARD)
+  set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")
   set(CPU_TYPE STM32F4)
   set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
   set(HAPTIC YES)
