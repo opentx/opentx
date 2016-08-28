@@ -84,7 +84,7 @@ void checkEeprom()
       eepromWriteProcess();
     else if (TIME_TO_WRITE())
       storageCheck(false);
-      }
+  }
 }
 #else
 void checkEeprom()

@@ -23,17 +23,17 @@
 
 #define BOOTLOADER_TITLE        " Taranis BootLoader - " VERSION
 #if defined(PCBX9E)
-  #define BOOT_KEY_UP		KEY_MINUS
-  #define BOOT_KEY_DOWN	        KEY_PLUS
+  #define BOOT_KEY_UP           KEY_MINUS
+  #define BOOT_KEY_DOWN         KEY_PLUS
 #else
   #define BOOT_KEY_UP           KEY_PLUS
   #define BOOT_KEY_DOWN         KEY_MINUS
 #endif
-#define BOOT_KEY_LEFT		KEY_MENU
-#define BOOT_KEY_RIGHT	        KEY_PAGE
-#define BOOT_KEY_MENU		KEY_ENTER
-#define BOOT_KEY_EXIT		KEY_EXIT
-#define DISPLAY_CHAR_WIDTH	35
+#define BOOT_KEY_LEFT           KEY_MENU
+#define BOOT_KEY_RIGHT          KEY_PAGE
+#define BOOT_KEY_MENU           KEY_ENTER
+#define BOOT_KEY_EXIT           KEY_EXIT
+#define DISPLAY_CHAR_WIDTH      35
 
 const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 {
@@ -98,7 +98,7 @@ uint32_t unlocked = 0;
 
 void interrupt10ms(void)
 {
-  Tenms |= 1;			// 10 mS has passed
+  Tenms |= 1;     // 10 mS has passed
 
   uint8_t index = KEY_MENU;
   uint8_t in = readKeys();
@@ -119,7 +119,7 @@ void interrupt10ms(void)
       putEvent(EVT_KEY_FIRST(KEY_MINUS));
     }
     else {
-      putEvent(EVT_KEY_FIRST(KEY_PLUS)); 
+      putEvent(EVT_KEY_FIRST(KEY_PLUS));
     }
   }
 #endif
@@ -127,8 +127,8 @@ void interrupt10ms(void)
 
 void init10msTimer()
 {
-  TIM14->ARR = 9999;	// 10mS
-  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;	// 1uS from 12MHz
+  TIM14->ARR = 9999;  // 10mS
+  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1; // 1uS from 12MHz
   TIM14->CCER = 0;
   TIM14->CCMR1 = 0;
   TIM14->EGR = 0;
@@ -149,13 +149,13 @@ FRESULT readBinDir(DIR *dj, FILINFO *fno)
   uint32_t loop;
   do {
     loop = 0;
-    fr = f_readdir(dj, fno);		// First entry
+    fr = f_readdir(dj, fno);    // First entry
 
     if (fr != FR_OK || fno->fname[0] == 0) {
       break;
     }
     if (*fno->lfname == 0) {
-      strAppend(fno->lfname, fno->fname);	// Copy 8.3 name
+      strAppend(fno->lfname, fno->fname); // Copy 8.3 name
     }
     int32_t len = strlen(fno->lfname) - 4;
     if (len < 0) {
@@ -184,12 +184,12 @@ uint32_t fillNames(uint32_t index)
   FRESULT fr;
   Finfo.lfname = Filenames[0];
   Finfo.lfsize = 48;
-  fr = f_readdir(&Dj, 0);					// rewind
-  fr = f_readdir(&Dj, &Finfo);		// Skip .
-  fr = f_readdir(&Dj, &Finfo);		// Skip ..
+  fr = f_readdir(&Dj, 0);         // rewind
+  fr = f_readdir(&Dj, &Finfo);    // Skip .
+  fr = f_readdir(&Dj, &Finfo);    // Skip ..
   i = 0;
   while (i <= index) {
-    fr = readBinDir(&Dj, &Finfo);		// First entry
+    fr = readBinDir(&Dj, &Finfo);   // First entry
     FileSize[0] = Finfo.fsize;
     i += 1;
     if (fr == FR_NO_FILE) {
@@ -198,7 +198,7 @@ uint32_t fillNames(uint32_t index)
   }
   for (i = 1; i < 7; i += 1) {
     Finfo.lfname = Filenames[i];
-    fr = readBinDir(&Dj, &Finfo);		// First entry
+    fr = readBinDir(&Dj, &Finfo);   // First entry
     FileSize[i] = Finfo.fsize;
     if (fr != FR_OK || Finfo.fname[0] == 0) {
       break;
@@ -230,7 +230,7 @@ FRESULT openBinaryFile(uint32_t index)
     }
   }
   fr = f_read(&FlashFile, (BYTE *)Block_buffer, BLOCK_LEN, &BlockCount);
-  
+
   if (BlockCount == BLOCK_LEN)
     return fr;
   else
@@ -543,12 +543,12 @@ int main()
       else if (state == ST_FLASHING) {
         // commit to flashing
         lcdDrawTextAlignedLeft(4*FH, "\032Writing...");
-        
+
         if (!unlocked && (memoryType == MEM_FLASH)) {
           unlocked = 1;
           unlockFlash();
         }
-        
+
         int progress;
         if (memoryType == MEM_FLASH) {
           writeFlashBlock();
@@ -596,7 +596,7 @@ int main()
 
       lcdRefresh();
 
-      if (PowerUpDelay < 20) {	// 200 mS
+      if (PowerUpDelay < 20) {  // 200 mS
         PowerUpDelay += 1;
       }
       else {
