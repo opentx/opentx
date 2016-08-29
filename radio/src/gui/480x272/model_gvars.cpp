@@ -72,7 +72,7 @@ bool menuModelGVars(event_t event)
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
             if (p >= j-1) p++;
-            drawFlightMode(x-21, y, p+1, ((j-1) == curfm) ? attr|BOLD : attr);
+            drawFlightMode(x-21, y, p+1, attr | ((j-1) == curfm) ? BOLD : 0);
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_FLIGHT_MODES-1;
           }
           else {
