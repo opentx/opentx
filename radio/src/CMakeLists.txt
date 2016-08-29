@@ -33,8 +33,8 @@ set(COOS_DIR ${THIRDPARTY_DIR}/CoOS)
 set(FATFS_DIR ${THIRDPARTY_DIR}/FatFs)
 set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-set(GUI_LANGUAGES cz de en es fr it pt sk se pl hu)  # TODO add nl
-set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu)  # TODO add nl
+set(GUI_LANGUAGES cz de en es fr it pt sk se pl hu nl)
+set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu nl)
 
 configure_file(stamp.h.in stamp.h @ONLY)
 

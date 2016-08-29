@@ -38,7 +38,7 @@ enum DutchPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define NL_PUSH_UNIT_PROMPT(p, u) en_pushUnitPrompt((p), (u), id)
+  #define NL_PUSH_UNIT_PROMPT(p, u) nl_pushUnitPrompt((p), (u), id)
 #else
   #define NL_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
