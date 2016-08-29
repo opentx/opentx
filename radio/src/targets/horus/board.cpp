@@ -41,11 +41,7 @@ void watchdogInit(unsigned int duration)
 
 void getCPUUniqueID(char * s)
 {
-#if defined(SIMU)
-  uint32_t cpu_uid[3] = {0x12345678, 0x55AA55AA, 0x87654321};
-#else
   uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
-#endif
   char * tmp = strAppendUnsigned(s, cpu_uid[0], 8, 16);
   *tmp = ' ';
   tmp = strAppendUnsigned(tmp+1, cpu_uid[1], 8, 16);
@@ -116,6 +112,7 @@ void boardInit()
 {
 #if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
+                         PCBREV_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph |
                          BL_RCC_AHB1Periph |
@@ -131,9 +128,9 @@ void boardInit()
                          EXTMODULE_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph,
                          ENABLE);
+        
   RCC_APB1PeriphClockCmd(INTERRUPT_5MS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
-                         BL_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
@@ -144,7 +141,6 @@ void boardInit()
                          GPS_RCC_APB1Periph,
                          ENABLE);
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
-                         BL_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
@@ -152,6 +148,10 @@ void boardInit()
                          ENABLE);
 
   pwrInit();
+  if (IS_HORUS_PROD)
+    RCC_APB1PeriphClockCmd(PRD_BL_RCC_APB1Periph,ENABLE);
+  else
+    RCC_APB2PeriphClockCmd(BETA_BL_RCC_APB2Periph,ENABLE);
   delaysInit();
 
   // FrSky removed the volume chip in latest board, that's why it doesn't answer!

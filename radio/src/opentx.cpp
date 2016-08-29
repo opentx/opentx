@@ -1134,6 +1134,17 @@ void checkFailsafe()
 #if defined(GUI)
 void checkAll()
 {
+
+#if defined(PCBHORUS)
+#if PCBREV >= 13
+if (!IS_HORUS_PROD)
+  ALERT(STR_PCBREV_ERROR, STR_WRONG_PCBREV, AU_ERROR);
+#else
+if (IS_HORUS_PROD)
+  ALERT(STR_PCBREV_ERROR, STR_WRONG_PCBREV, AU_ERROR);
+#endif
+#endif
+
 #if defined(EEPROM_RLC)
   checkLowEEPROM();
 #endif
