@@ -159,7 +159,7 @@ char * strAppendStringWithIndex(char * dest, const char * s, int idx)
   return strAppendUnsigned(strAppend(dest, s), abs(idx));
 }
 
-char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
+char * getTimerString(char * dest, putstime_t tme, uint16_t hours)
 {
   char * s = dest;
   div_t qr;
@@ -170,7 +170,6 @@ char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
   }
   
   qr = div(tme, 60);
-  
   if (hours) {
     div_t qr2 = div(qr.quot, 60);
     *s++ = '0' + (qr2.quot / 10);
