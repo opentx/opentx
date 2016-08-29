@@ -46,7 +46,8 @@ for i, (s, f) in enumerate([(u"volts","volt0"),
 for i, s in enumerate(["virgule 0", "virgule 1", "virgule 2", "virgule 3", "virgule 4", "virgule 5", "virgule 6", "virgule 7", "virgule 8", "virgule 9"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 180 + i)))
 for s, f, a in [(u"Trim centré", "midtrim", 495),
-                (u"Trim maximum atteint", "endtrim", NO_ALTERNATE),
+                (u"Trim maximum atteint", "maxtrim", NO_ALTERNATE),
+                (u"Trim minimum atteint", "mintrim", NO_ALTERNATE),
                 (u"Chrono 1 à 0", "timovr1", NO_ALTERNATE),
                 (u"Chrono 2 à 0", "timovr2", NO_ALTERNATE),
                 (u"Chrono 3 à 0", "timovr3", NO_ALTERNATE),

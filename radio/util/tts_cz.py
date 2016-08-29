@@ -46,7 +46,8 @@ for i, (s, f) in enumerate([(u"volt", u"volt0"), (u"volty", u"volt1"), (u"voltů
                             ]):
     systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 118 + i)))
 for s, f, a in [(u"střed trimu", "midtrim", 495),
-                (u"maximum trimu", "endtrim", NO_ALTERNATE),
+                (u"maximum trimu", "maxtrim", NO_ALTERNATE),
+                (u"minimum trimu", "mintrim", NO_ALTERNATE),
                 (u"baterie rádia je vybitá", "lowbatt", 485),
                 (u"zapoměl jsi na mě!", "inactiv", 486),
                 (u"plyn není na nule", "thralert", 481),
