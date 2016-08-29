@@ -910,6 +910,8 @@
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_WRONG_SDCARDVERSION "Version des fichiers incompatible"
+#define TR_WRONG_PCBREV        "Wrong PCBREV detected"
+#define TR_PCBREV_ERROR        "PCB error"
 #define TR_NO_FAILSAFE         "Failsafe pas déf."
 #define TR_KEYSTUCK            "Touche bloquée"
 #define TR_INVERT_THR          "Inverser gaz?"

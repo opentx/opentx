@@ -23,13 +23,25 @@
 void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = BL_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(BL_GPIO, &GPIO_InitStructure);
-  GPIO_PinAFConfig(BL_GPIO, BL_GPIO_PinSource, BL_GPIO_AF);
+  if (IS_HORUS_PROD) {
+    GPIO_InitStructure.GPIO_Pin = PRD_BL_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(BL_GPIO, &GPIO_InitStructure);
+    GPIO_PinAFConfig(BL_GPIO, PRD_BL_GPIO_PinSource, PRD_BL_GPIO_AF);
+  }
+  else {
+    GPIO_InitStructure.GPIO_Pin = BETA_BL_GPIO_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(BL_GPIO, &GPIO_InitStructure);
+    GPIO_PinAFConfig(BL_GPIO, BETA_BL_GPIO_PinSource, BETA_BL_GPIO_AF);  
+  }
+  
 }
 
 void backlightEnable(uint8_t dutyCycle)
@@ -51,31 +63,38 @@ void backlightEnable(uint8_t dutyCycle)
   TIM_TimeBaseStructure.TIM_Period = 100;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-  TIM_TimeBaseInit(BL_TIMER, &TIM_TimeBaseStructure);
-  
-  TIM_Cmd(BL_TIMER, DISABLE);
+  if (IS_HORUS_PROD) {
+    TIM_TimeBaseInit(PRD_BL_TIMER, &TIM_TimeBaseStructure);
+    TIM_Cmd(PRD_BL_TIMER, DISABLE);
+  }
+  else {
+    TIM_TimeBaseInit(BETA_BL_TIMER, &TIM_TimeBaseStructure);
+    TIM_Cmd(BETA_BL_TIMER, DISABLE);
+  }
   
   /* PWM mode */
   TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
-#if PCBREV >= 13
-  TIM_OCInitStructure.TIM_Pulse = dutyCycle;
-#else
-  TIM_OCInitStructure.TIM_Pulse = (100 - dutyCycle);
-#endif
+  if (IS_HORUS_PROD)
+    TIM_OCInitStructure.TIM_Pulse = dutyCycle;
+  else
+    TIM_OCInitStructure.TIM_Pulse = (100 - dutyCycle);
+
   TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
   TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
   TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
   TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
-#if PCBREV >= 13
-  TIM_OC4Init(BL_TIMER, &TIM_OCInitStructure);
-#else
-  TIM_OC1Init(BL_TIMER, &TIM_OCInitStructure);
-#endif
-  
-  TIM_Cmd(BL_TIMER, ENABLE);
-  TIM_CtrlPWMOutputs(BL_TIMER, ENABLE);
+  if (IS_HORUS_PROD) {
+    TIM_OC4Init(PRD_BL_TIMER, &TIM_OCInitStructure);
+    TIM_Cmd(PRD_BL_TIMER, ENABLE);
+    TIM_CtrlPWMOutputs(PRD_BL_TIMER, ENABLE);
+  }
+  else {
+    TIM_OC1Init(BETA_BL_TIMER, &TIM_OCInitStructure);
+    TIM_Cmd(BETA_BL_TIMER, ENABLE);
+    TIM_CtrlPWMOutputs(BETA_BL_TIMER, ENABLE);
+  }
 }
 
 

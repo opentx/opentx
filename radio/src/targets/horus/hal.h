@@ -21,6 +21,8 @@
 #ifndef _HAL_H_
 #define _HAL_H_
 
+#define IS_HORUS_PROD                   GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
+
 // Keys
 #define KEYS_RCC_AHB1Periph_GPIO        (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
 #define KEYS_GPIO_REG_MENU              GPIOC->IDR
@@ -138,6 +140,11 @@
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
+//PCBREV
+#define PCBREV_RCC_AHB1Periph           RCC_AHB1Periph_GPIOI
+#define PCBREV_GPIO                     GPIOI
+#define PCBREV_GPIO_PIN                 GPIO_Pin_11  // PI.11
+
 // Led
 #define LED_RCC_AHB1Periph              RCC_AHB1Periph_GPIOI
 #define LED_GPIO                        GPIOI
@@ -201,21 +208,20 @@
 // Backlight
 #define BL_RCC_AHB1Periph               RCC_AHB1Periph_GPIOA
 #define BL_GPIO                         GPIOA
-#if PCBREV >= 13
-#define BL_TIMER                        TIM5
-#define BL_GPIO_PIN                     GPIO_Pin_3  // PA.03
-#define BL_GPIO_PinSource               GPIO_PinSource3
-#define BL_RCC_APB1Periph               RCC_APB1Periph_TIM5
-#define BL_RCC_APB2Periph               0
-#define BL_GPIO_AF                      GPIO_AF_TIM5
-#else
-#define BL_TIMER                        TIM8
-#define BL_GPIO_PIN                     GPIO_Pin_5  // PA.05
-#define BL_GPIO_PinSource               GPIO_PinSource5
-#define BL_RCC_APB1Periph               0
-#define BL_RCC_APB2Periph               RCC_APB2Periph_TIM8
-#define BL_GPIO_AF                      GPIO_AF_TIM8
-#endif
+//REV13+ PCB
+#define PRD_BL_TIMER                    TIM5
+#define PRD_BL_GPIO_PIN                 GPIO_Pin_3  // PA.03
+#define PRD_BL_GPIO_PinSource           GPIO_PinSource3
+#define PRD_BL_RCC_APB1Periph           RCC_APB1Periph_TIM5
+#define PRD_BL_RCC_APB2Periph           0
+#define PRD_BL_GPIO_AF                  GPIO_AF_TIM5
+// Beta boards
+#define BETA_BL_TIMER                   TIM8
+#define BETA_BL_GPIO_PIN                GPIO_Pin_5  // PA.05
+#define BETA_BL_GPIO_PinSource          GPIO_PinSource5
+#define BETA_BL_RCC_APB1Periph          0
+#define BETA_BL_RCC_APB2Periph          RCC_APB2Periph_TIM8
+#define BETA_BL_GPIO_AF                 GPIO_AF_TIM8
 
 // SD
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)

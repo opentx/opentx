@@ -49,6 +49,12 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
+  
+  // Init PCBREV PIN
+  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
 
   pwrOn();
 }
