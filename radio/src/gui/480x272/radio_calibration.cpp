@@ -124,20 +124,12 @@ bool menuCommonCalib(event_t event)
 
   switch (event) {
     case EVT_ENTRY:
-      menuCalibrationState = CALIB_START;
-      break;
-      
     case EVT_KEY_FIRST(KEY_EXIT):
-      if (menuCalibrationState == CALIB_START) {
-        killEvents(KEY_EXIT);
-        popMenu();
-      }
-      else {
-        menuCalibrationState = CALIB_START;
-      }
+      menuCalibrationState = CALIB_START;
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
+      killEvents(event);
       menuCalibrationState++;
       break;
   }
@@ -155,7 +147,7 @@ bool menuCommonCalib(event_t event)
       // SET MIDPOINT
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
       lcdDrawText(50, 3+FH, STR_SETMIDPOINT, MENU_TITLE_COLOR);
-      for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) {
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) {
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
         reusableBuffer.calib.midVals[i] = i < TX_VOLTAGE ? anaIn(i) : anaIn(i+1);
@@ -230,8 +222,9 @@ bool menuCommonCalib(event_t event)
 bool menuRadioCalibration(event_t event)
 {
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", STR_MENUCALIBRATION);
-  if (menuCalibrationState == CALIB_FINISHED) {
+  if (menuCalibrationState == CALIB_FINISHED || (menuCalibrationState == CALIB_START && event == EVT_KEY_FIRST(KEY_EXIT))) {
     menuCalibrationState = CALIB_START;
+    killEvents(event);
     popMenu();
     return false;
   }
@@ -246,7 +239,7 @@ bool menuRadioCalibration(event_t event)
 
 bool menuFirstCalib(event_t event)
 {
-  if (event == EVT_KEY_BREAK(KEY_EXIT) || menuCalibrationState == CALIB_FINISHED) {
+  if (event == EVT_KEY_FIRST(KEY_EXIT) || menuCalibrationState == CALIB_FINISHED) {
     menuCalibrationState = CALIB_START;
     chainMenu(menuMainView);
     return false;
