@@ -427,7 +427,7 @@ void perMain()
     return;
   }
 #else
-  if (IS_HORUS_PROD)
+  if (IS_HORUS_PROD){
     lcd->clear();
     lcdDrawText(LCD_W/2, LCD_H/2-20, STR_WRONG_PCBREV, DBLSIZE|CENTERED|TEXT_BGCOLOR);
     lcdRefresh();
