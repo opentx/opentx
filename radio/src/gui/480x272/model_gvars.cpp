@@ -47,14 +47,17 @@ bool menuModelGVars(event_t event)
   MENU(STR_MENUGLOBALVARS, MODEL_ICONS, menuTabModel, MENU_MODEL_GVARS/* TODO, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0*/, MAX_GVARS, { NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES});
 
   int sub = menuVerticalPosition;
+  int curfm = getFlightMode();
 
   for (int l=0; l<NUM_BODY_LINES; l++) {
     int i = l+menuVerticalOffset;
     coord_t y = MENU_CONTENT_TOP + l*FH;
-    if (g_model.gvars[i].popup) lcdDrawText(MENUS_MARGIN_LEFT+25, y, "!");
+    if (g_model.gvars[i].popup) {
+      lcdDrawText(MENUS_MARGIN_LEFT+25, y, "!");
+    }
     drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && menuHorizontalPosition<0) ? INVERS : 0));
 
-    for (int j=0; j<1+MAX_FLIGHT_MODES; j++) {
+    for (uint8_t j=0; j<1+MAX_FLIGHT_MODES; j++) {
       LcdFlags attr = ((sub==i && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       coord_t x = GVARS_FM_COLUMN(j-1);
       switch(j)
@@ -71,7 +74,7 @@ bool menuModelGVars(event_t event)
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
             if (p >= j-1) p++;
-            drawFlightMode(x-21, y, p+1, attr);
+            drawFlightMode(x-21, y, p+1, attr | ((j-1 == curfm) ? BOLD : 0));
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_FLIGHT_MODES-1;
           }
           else {
