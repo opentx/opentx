@@ -99,8 +99,9 @@ void OpenTxSimulator::start(QByteArray & ee, bool tests)
 void OpenTxSimulator::start(const char * filename, bool tests)
 {
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  for (int i=0; i<DIM(rotencValue); i++)
+  for (uint8_t i=0; i<DIM(rotencValue); i++) {
     rotencValue[i] = 0;
+  }
 #endif
 
   StartEepromThread(filename);
