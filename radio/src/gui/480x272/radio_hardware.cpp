@@ -45,7 +45,9 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
   ITEM_RADIO_HARDWARE_BLUETOOTH,
-  // ITEM_RADIO_HARDWARE_UART3_MODE,
+#if defined(SERIAL2)
+  ITEM_RADIO_HARDWARE_UART3_MODE,
+#endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_BAT_CAL,
   ITEM_RADIO_HARDWARE_MAX
@@ -169,9 +171,10 @@ bool menuRadioHardware(event_t event)
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, menuHorizontalPosition == 1 ? attr : 0);
         break;
 
-#if 0
+#if defined(SERIAL2)
       case ITEM_RADIO_HARDWARE_UART3_MODE:
-        g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UART3MODE);
+        g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
           serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
         }

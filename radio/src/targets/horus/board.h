@@ -398,6 +398,7 @@ void gpsInit(void);
 uint8_t gpsGetByte(uint8_t * byte);
 
 // Second serial port driver
+#define SERIAL2
 #define DEBUG_BAUDRATE                 115200
 extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
