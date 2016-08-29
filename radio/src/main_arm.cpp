@@ -418,6 +418,24 @@ void perMain()
   }
 #endif
 
+#if defined(PCBHORUS)
+#if PCBREV >= 13
+  if (!IS_HORUS_PROD) {
+    lcd->clear();
+    lcdDrawText(LCD_W/2, LCD_H/2-20, STR_WRONG_PCBREV, DBLSIZE|CENTERED|TEXT_BGCOLOR);
+    lcdRefresh();
+    return;
+  }
+#else
+  if (IS_HORUS_PROD)
+    lcd->clear();
+    lcdDrawText(LCD_W/2, LCD_H/2-20, STR_WRONG_PCBREV, DBLSIZE|CENTERED|TEXT_BGCOLOR);
+    lcdRefresh();
+    return;
+  }
+#endif
+#endif
+
 #if !defined(EEPROM)
   if (!SD_CARD_PRESENT()) {
     lcd->clear();
