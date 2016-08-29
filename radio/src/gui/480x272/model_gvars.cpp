@@ -47,6 +47,7 @@ bool menuModelGVars(event_t event)
   MENU(STR_MENUGLOBALVARS, MODEL_ICONS, menuTabModel, MENU_MODEL_GVARS/* TODO, first2seconds ? CHECK_FLAG_NO_SCREEN_INDEX : 0*/, MAX_GVARS, { NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES, NAVIGATION_LINE_BY_LINE|MAX_FLIGHT_MODES});
 
   int sub = menuVerticalPosition;
+  int curfm = getFlightMode();
 
   for (int l=0; l<NUM_BODY_LINES; l++) {
     int i = l+menuVerticalOffset;
@@ -71,7 +72,8 @@ bool menuModelGVars(event_t event)
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
             if (p >= j-1) p++;
-            drawFlightMode(x-21, y, p+1, attr);
+            if ((j-1) == curfm) drawFlightMode(x-21, y, p+1, attr|BOLD);
+            else drawFlightMode(x-21, y, p+1, attr);
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_FLIGHT_MODES-1;
           }
           else {
