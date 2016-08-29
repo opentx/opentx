@@ -195,6 +195,7 @@ enum InterruptNames {
   INT_1MS,
   INT_SER2,
   INT_TELEM_DMA,
+  INT_TELEM_USART,
   INT_SDIO,
   INT_SDIO_DMA,
   INT_DMA2S7,

@@ -111,6 +111,7 @@ void dumpTraceBuffer()
     "1ms  ",   // INT_1MS,
     "Ser2 ",   // INT_SER2,
     "TelDm",   // INT_TELEM_DMA,
+    "TelUs",   // INT_TELEM_USART,
     "Sdio ",   // INT_SDIO,
     "SdDma",   // INT_SDIO_DMA,
     "D2S7 ",   // INT_DMA2S7,
