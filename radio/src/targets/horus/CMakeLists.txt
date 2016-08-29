@@ -1,4 +1,6 @@
 set(PCBREV "13" CACHE STRING "PCB Revision")
+set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
+option(INTERNAL_GPS_INSTALLED "Internal GPS installed in beta hardware version" NO)
 option(DISK_CACHE "Enable SD card disk cache" YES)
 
 set(CPU_TYPE STM32F4)
@@ -16,6 +18,7 @@ set(RAMBACKUP YES)
 
 add_definitions(-DPCBHORUS -DPCBREV=${PCBREV} -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
+add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
@@ -48,6 +51,9 @@ set(SRC ${SRC} gps.cpp)
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)
+endif()
+if(INTERNAL_GPS_INSTALLED)
+  add_definitions(-DINTERNAL_GPS_INSTALLED)
 endif()
 set(SERIAL2_DRIVER serial2_driver.cpp)
 set(TARGET_SRC

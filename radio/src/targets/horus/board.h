@@ -389,12 +389,12 @@ void hapticOff(void);
 void hapticOn(uint32_t pwmPercent);
 
 // GPS driver
-#if PCBREV >= 13
+#if PCBREV >= 13 || defined(INTERNAL_GPS_INSTALLED)
 #define INTERNAL_GPS                   1
 #else
 #define INTERNAL_GPS                   0
 #endif
-void gpsInit(void);
+void gpsInit(uint32_t baudrate);
 uint8_t gpsGetByte(uint8_t * byte);
 
 // Second serial port driver

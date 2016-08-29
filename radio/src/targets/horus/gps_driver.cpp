@@ -20,9 +20,13 @@
 
 #include "opentx.h"
 
-Fifo<uint8_t, 64> gpsRxFifo;
+#if GPS_USART_BAUDRATE > 9600
+  Fifo<uint8_t, 256> gpsRxFifo;
+#else
+  Fifo<uint8_t, 64> gpsRxFifo;
+#endif
 
-void gpsInit()
+void gpsInit(uint32_t baudrate)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
@@ -39,7 +43,7 @@ void gpsInit()
   GPIO_Init(GPS_UART_GPIO, &GPIO_InitStructure);
 
   // UART config
-  USART_InitStructure.USART_BaudRate = GPS_USART_BAUDRATE;
+  USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
