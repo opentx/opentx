@@ -910,6 +910,8 @@
 #define TR_SWITCHWARN          "CONTROLLI"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_WRONG_SDCARDVERSION "Wrong files version"
+#define TR_WRONG_PCBREV        "Wrong PCBREV detected"
+#define TR_PCBREV_ERROR        "PCB error"
 #define TR_NO_FAILSAFE         "Failsafe non settato"
 #define TR_KEYSTUCK            "Tasto bloccato"
 #define TR_INVERT_THR          "Inverti Mot?"

@@ -930,6 +930,8 @@
 #define TR_SWITCHWARN          "SCHALTER"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_WRONG_SDCARDVERSION "Wrong files version"
+#define TR_WRONG_PCBREV        "Wrong PCBREV detected"
+#define TR_PCBREV_ERROR        "PCB error"
 #define TR_NO_FAILSAFE         TR("Failsafe not set", "Failsafe nicht programmiert")
 #define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt 
 #define TR_INVERT_THR          TR("Gas umkehren?", "Vollgas hinten?") // Th9x 9XR 
