@@ -17,6 +17,11 @@ set(STM32USB_SRC
   STM32_USB_Device_Library/Core/src/usbd_ioreq.c
   STM32_USB_Device_Library/Core/src/usbd_req.c
   )
+set(TARGET_SRC
+  ${TARGET_SRC}
+  ../common/arm/stm32/rtc_driver.cpp
+  ../common/arm/stm32/cpu_id.cpp
+  )
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/delays.cpp
