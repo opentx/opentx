@@ -275,7 +275,30 @@ void gpsWakeup()
 {
   uint8_t byte;
   while (gpsGetByte(&byte)) {
-    TRACE_PING("%c", (char)byte);
     gpsNewData(byte);
   }
 }
+
+#if defined(DEBUG)
+char hex(uint8_t b) {
+  return b > 9 ? b + 'A' - 10 : b + '0';
+}
+
+void gpsSendFrame(const char * frame)
+{
+  // send given frame, add checksum and CRLF
+  uint8_t parity = 0;
+  while (*frame) {
+    if (*frame != '$') parity ^= *frame;
+    gpsSendByte(*frame);
+    ++frame;
+  }
+  gpsSendByte('*');
+  gpsSendByte(hex(parity >> 4));
+  gpsSendByte(hex(parity & 0x0F));
+  gpsSendByte('\r');
+  gpsSendByte('\n');
+  TRACE("parity %02x", parity);
+}
+
+#endif // #if defined(DEBUG)
