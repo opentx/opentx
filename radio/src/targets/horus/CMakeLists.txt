@@ -54,12 +54,12 @@ set(GUI_SRC
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
   )
-set(SRC ${SRC} gps.cpp)
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)
 endif()
 if(INTERNAL_GPS)
+  set(SRC ${SRC} gps.cpp)
   add_definitions(-DINTERNAL_GPS)
   message("Internal GPS enabled")
 endif()
