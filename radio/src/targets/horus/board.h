@@ -95,6 +95,16 @@ void delay_ms(uint32_t ms);
 }
 #endif
 
+// PCBREV driver
+#define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
+#if defined(SIMU)
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
+#elif PCBREV >= 13
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
+#else
+  #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
+#endif
+
 // CPU Unique ID
 #define LEN_CPU_UID                    (3*8+2)
 void getCPUUniqueID(char * s);

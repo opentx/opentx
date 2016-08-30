@@ -63,4 +63,30 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
   return value;
 }
 
+void drawFatalErrorScreen(const char * message)
+{
+  lcdClear();
+  lcdDrawText(LCD_W/2, LCD_H/2-20, message, DBLSIZE|CENTERED|TEXT_BGCOLOR);
+  lcdRefresh();
+}
 
+void runFatalErrorScreen(const char * message)
+{
+  while (1) {
+    drawFatalErrorScreen(message);
+    uint8_t refresh = false;
+    while (1) {
+      uint32_t pwr_check = pwrCheck();
+      if (pwr_check == e_power_off) {
+        boardOff();
+      }
+      else if (pwr_check == e_power_press) {
+        refresh = true;
+      }
+      else if (pwr_check == e_power_on && refresh) {
+        break;
+      }
+      SIMU_SLEEP_NORET(1);
+    }
+  }
+}

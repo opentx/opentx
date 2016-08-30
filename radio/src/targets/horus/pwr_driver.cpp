@@ -39,7 +39,6 @@ void pwrInit()
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
 
   // Init Module PWR
-  // TODO not here
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
@@ -50,6 +49,17 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
+  // Init PCBREV PIN
+  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+
+  // Init SD-DETECT PIN
+  GPIO_ResetBits(SD_PRESENT_GPIO, SD_PRESENT_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = SD_PRESENT_GPIO_PIN;
+  GPIO_Init(SD_PRESENT_GPIO, &GPIO_InitStructure);
+  
   pwrOn();
 }
 

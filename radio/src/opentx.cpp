@@ -2706,6 +2706,18 @@ int main()
   init_rotary_sw();
 #endif
 
+#if defined(PCBHORUS)
+  if (!IS_FIRMWARE_COMPATIBLE_WITH_BOARD()) {
+    runFatalErrorScreen(STR_WRONG_PCBREV);
+  }
+#endif
+
+#if !defined(EEPROM)
+  if (!SD_CARD_PRESENT()) {
+    runFatalErrorScreen(STR_NO_SDCARD);
+  }
+#endif
+
 #if defined(CPUARM)
   tasksStart();
 #else

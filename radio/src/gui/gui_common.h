@@ -105,6 +105,8 @@ void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFla
 int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags flags, event_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags flags, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags flags, event_t event);
+void drawFatalErrorScreen(const char * message);
+void runFatalErrorScreen(const char * message);
 #endif
 
 #endif // _GUI_COMMON_H_

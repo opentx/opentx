@@ -198,8 +198,6 @@ void SD_LowLevel_Init(void)
 {
   GPIO_InitTypeDef  GPIO_InitStructure;
 
-  RCC_AHB1PeriphClockCmd(SD_RCC_AHB1Periph, ENABLE);
-
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_SDIO);
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource9, GPIO_AF_SDIO);
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource10, GPIO_AF_SDIO);
@@ -223,11 +221,6 @@ void SD_LowLevel_Init(void)
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(GPIOC, &GPIO_InitStructure);
-
-  GPIO_InitStructure.GPIO_Pin = SD_PRESENT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(SD_PRESENT_GPIO, &GPIO_InitStructure);
 
   /* Enable the SDIO APB2 Clock */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SDIO, ENABLE);

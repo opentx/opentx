@@ -406,7 +406,9 @@ void perMain()
   doLoopCommonActions();
 #if defined(NAVIGATION_STICKS)
   uint8_t sticks_evt = getSticksNavigationEvent();
-  if (sticks_evt) evt = sticks_evt;
+  if (sticks_evt) {
+    evt = sticks_evt;
+  }
 #endif
 
 #if defined(RAMBACKUP)
@@ -419,6 +421,7 @@ void perMain()
 #endif
 
 #if !defined(EEPROM)
+  // In case the SD card is removed during the session
   if (!SD_CARD_PRESENT()) {
     lcd->clear();
     lcdDrawText(LCD_W/2, LCD_H/2-20, STR_NO_SDCARD, DBLSIZE|CENTERED|TEXT_BGCOLOR);

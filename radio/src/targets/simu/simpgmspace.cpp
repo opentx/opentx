@@ -45,9 +45,7 @@ uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 int g_snapshot_idx = 0;
 
-#if !defined(CPUARM)
 pthread_t main_thread_pid;
-#endif
 uint8_t main_thread_running = 0;
 char * main_thread_error = NULL;
 
@@ -337,11 +335,7 @@ void StartSimu(bool tests)
   try {
 #endif
 
-#if defined(CPUARM)
-    simuMain();
-#else
-    pthread_create(&main_thread_pid, NULL, &simuMain, NULL);
-#endif
+  pthread_create(&main_thread_pid, NULL, &simuMain, NULL);
 
 #if defined(SIMU_EXCEPTIONS)
   }
@@ -357,9 +351,8 @@ void StopSimu()
 #if defined(CPUARM)
   pthread_join(mixerTaskId, NULL);
   pthread_join(menusTaskId, NULL);
-#else
-  pthread_join(main_thread_pid, NULL);
 #endif
+  pthread_join(main_thread_pid, NULL);
 }
 
 #if defined(CPUARM)
