@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void onGVARSMenu(const char *result)
+void onGVARSMenu(const char * result)
 {
   int8_t sub = menuVerticalPosition;
 
@@ -40,7 +40,7 @@ void onGVARSMenu(const char *result)
   }
 }
 
-#define GVARS_FM_COLUMN(p) (160 + (p)*38)
+#define GVARS_FM_COLUMN(p) (150 + (p)*41)
 
 bool menuModelGVars(event_t event)
 {
@@ -49,7 +49,13 @@ bool menuModelGVars(event_t event)
   int sub = menuVerticalPosition;
   int curfm = getFlightMode();
 
-  for (int l=0; l<NUM_BODY_LINES; l++) {
+#if defined(MENU_TOOLTIPS)
+   if (menuVerticalPosition>= 0 && menuHorizontalPosition>=0) {
+     drawColumnHeader(STR_GVAR_HEADERS, NULL, menuHorizontalPosition);
+   }
+#endif
+
+  for (uint8_t l=0; l<NUM_BODY_LINES; l++) {
     int i = l+menuVerticalOffset;
     coord_t y = MENU_CONTENT_TOP + l*FH;
     if (g_model.gvars[i].popup) {
@@ -68,13 +74,13 @@ bool menuModelGVars(event_t event)
 
         default:
         {
-          FlightModeData *fm = &g_model.flightModeData[j-1];
+          FlightModeData * fm = &g_model.flightModeData[j-1];
           int16_t & v = fm->gvars[i];
           int16_t vmin, vmax;
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
             if (p >= j-1) p++;
-            drawFlightMode(x-21, y, p+1, attr | ((j-1 == curfm) ? BOLD : 0));
+            drawFlightMode(x, y, p+1, attr | RIGHT | ((j-1 == curfm) ? BOLD : 0));
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_FLIGHT_MODES-1;
           }
           else {

@@ -577,6 +577,7 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const char * const STR_LIMITS_HEADERS[] = TR_LIMITS_HEADERS;
   const char * const STR_LSW_HEADERS[] = TR_LSW_HEADERS;
   const char * const STR_LSW_DESCRIPTIONS[] = TR_LSW_DESCRIPTIONS;
+  const char * const STR_GVAR_HEADERS[] = TR_GVAR_HEADERS;
 #endif
 
 #if defined(CPUARM)

@@ -1088,6 +1088,17 @@
 #define TR_LSW_HEADERS_DURATION        "Duracion"
 #define TR_LSW_HEADERS_DELAY           "Retardo"
 
+#define TR_GVAR_HEADERS_NAME          "Name"
+#define TR_GVAR_HEADERS_FM0           "Value on FM0"
+#define TR_GVAR_HEADERS_FM1           "Value on FM1"
+#define TR_GVAR_HEADERS_FM2           "Value on FM2"
+#define TR_GVAR_HEADERS_FM3           "Value on FM3"
+#define TR_GVAR_HEADERS_FM4           "Value on FM4"
+#define TR_GVAR_HEADERS_FM5           "Value on FM5"
+#define TR_GVAR_HEADERS_FM6           "Value on FM6"
+#define TR_GVAR_HEADERS_FM7           "Value on FM7"
+#define TR_GVAR_HEADERS_FM8           "Value on FM8"
+
 // Horus footer descriptions
 #define TR_LSW_DESCRIPTIONS    { "Comparison type or function", "First variable", "Second variable or constant", "Second variable or constant", "Additional condition for line to be enabled", "Minimum ON duration of the logical switch", "Minimum TRUE duration for the switch to become ON" }
 
