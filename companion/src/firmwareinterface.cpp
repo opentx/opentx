@@ -353,6 +353,7 @@ unsigned int FirmwareInterface::save(QString fileName)
 
   if (fileType == FILE_TYPE_HEX) {
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) { //reading HEX TEXT file
+      free(binflash);
       return -1;
     }
     QTextStream outputStream(&file);
@@ -361,6 +362,7 @@ unsigned int FirmwareInterface::save(QString fileName)
   }
   else {
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) { //reading HEX TEXT file
+      free(binflash);
       return -1;
     }
     file.write((char*)binflash, flashSize);
@@ -368,5 +370,6 @@ unsigned int FirmwareInterface::save(QString fileName)
 
   file.close();
 
+  free(binflash);
   return flashSize;
 }
