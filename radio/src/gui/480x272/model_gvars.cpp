@@ -66,8 +66,7 @@ bool menuModelGVars(event_t event)
     for (uint8_t j=0; j<1+MAX_FLIGHT_MODES; j++) {
       LcdFlags attr = ((sub==i && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       coord_t x = GVARS_FM_COLUMN(j-1);
-      switch(j)
-      {
+      switch (j) {
         case 0:
           editName(MENUS_MARGIN_LEFT+50, y, g_model.gvars[i].name, LEN_GVAR_NAME, event, attr);
           break;
@@ -87,7 +86,7 @@ bool menuModelGVars(event_t event)
             if (abs(v) >= 1000)
               lcdDrawNumber(x, y+1, v, TINSIZE|attr|RIGHT);
             else
-              lcdDrawNumber(x, y, v, attr|RIGHT);
+              lcdDrawNumber(x, y, v, attr | RIGHT | ((j-1 == curfm) ? BOLD : 0));
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
           if (attr) {
