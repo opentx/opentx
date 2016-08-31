@@ -694,6 +694,32 @@ static int luaPlayTone(lua_State * L)
 }
 
 /*luadoc
+@function luaPlayHaptic(duration, pause [, flags])
+
+Generate haptic feedback
+
+@param duration (number) length of the haptic feedback in milliseconds
+
+@param pause (number) length of the silence after haptic feedback in milliseconds
+
+@param flags (number):
+ * `0 or not present` play with normal priority
+ * `PLAY_NOW` play immediately
+
+@status current Introduced in 2.2.0
+*/
+static int luaPlayHaptic(lua_State * L)
+{
+#if defined(HAPTIC)
+  int length = luaL_checkinteger(L, 1);
+  int pause = luaL_checkinteger(L, 2);
+  int flags = luaL_optinteger(L, 3, 0);
+  haptic.play(length, pause, flags);
+#endif
+  return 0;
+}
+
+/*luadoc
 @function killEvents(key)
 
 Stops key state machine.
@@ -866,6 +892,7 @@ const luaL_Reg opentxLib[] = {
   { "playNumber", luaPlayNumber },
   { "playDuration", luaPlayDuration },
   { "playTone", luaPlayTone },
+  { "playHaptic", luaPlayHaptic },
   { "popupInput", luaPopupInput },
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
