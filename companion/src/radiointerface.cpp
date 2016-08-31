@@ -66,7 +66,7 @@ QStringList getDfuArgs(const QString & cmd, const QString & filename)
   burnConfigDialog bcd;
   QString memory = "0x08000000";
   if (cmd == "-U") {
-    memory.append(QString(":%1").arg(MAX_FSIZE));
+    memory.append(QString(":%1").arg(GetCurrentFirmware()->getFlashSize()));
   }
   args << bcd.getDFUArgs();
   if (!filename.endsWith(".dfu")) {

@@ -1765,6 +1765,33 @@ QString getBoardName(BoardEnum board)
   }
 }
 
+const int Firmware::getFlashSize()
+{
+  switch (board) {
+    case BOARD_STOCK:
+      return FSIZE_STOCK;
+    case BOARD_M128:
+      return FSIZE_M128;
+    case BOARD_MEGA2560:
+    case BOARD_GRUVIN9X:
+      return FSIZE_GRUVIN9X;
+    case BOARD_SKY9X:
+      return FSIZE_SKY9X;
+    case BOARD_9XRPRO:
+    case BOARD_AR9X:
+      return FSIZE_9XRPRO;
+    case BOARD_TARANIS:
+    case BOARD_TARANIS_PLUS:
+    case BOARD_TARANIS_X9E:
+    case BOARD_FLAMENCO:
+      return FSIZE_TARANIS;
+    case BOARD_HORUS:
+      return FSIZE_HORUS;
+    default:
+      return 0;
+  }
+}
+
 Firmware * GetFirmware(QString id)
 {
   foreach(Firmware * firmware, firmwares) {

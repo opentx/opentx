@@ -920,15 +920,38 @@ void MainWindow::about()
 void MainWindow::updateMenus()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
-    saveAct->setEnabled(hasMdiChild);
-    saveAsAct->setEnabled(hasMdiChild);
-    pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
-    writeEepromAct->setEnabled(hasMdiChild);
-    separatorAct->setVisible(hasMdiChild);
-
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
-    cutAct->setEnabled(hasSelection);
-    copyAct->setEnabled(hasSelection);
+
+    if(GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+      newAct->setEnabled(false);
+      openAct->setEnabled(false);
+      saveAct->setEnabled(false);
+      saveAsAct->setEnabled(false);
+      writeEepromAct->setEnabled(false);
+      readEepromAct->setEnabled(false);
+      writeBackupToRadioAct->setEnabled(false);
+      readBackupToFileAct->setEnabled(false);
+      cutAct->setEnabled(false);
+      copyAct->setEnabled(false);
+      pasteAct->setEnabled(false);
+      for (int i=0; i<MAX_RECENT; ++i)
+        recentFileActs[i]->setEnabled(false);
+    } else {
+      newAct->setEnabled(true);
+      openAct->setEnabled(true);
+      saveAct->setEnabled(hasMdiChild);
+      saveAsAct->setEnabled(hasMdiChild);
+      cutAct->setEnabled(hasSelection);
+      copyAct->setEnabled(hasSelection);
+      pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
+      writeEepromAct->setEnabled(hasMdiChild);
+      readEepromAct->setEnabled(true);
+      writeBackupToRadioAct->setEnabled(true);
+      readBackupToFileAct->setEnabled(true);
+      for (int i=0; i<MAX_RECENT; ++i)
+        recentFileActs[i]->setEnabled(true);
+    }
+    separatorAct->setVisible(hasMdiChild);
     simulateAct->setEnabled(hasSelection);
     printAct->setEnabled(hasSelection);
     loadbackupAct->setEnabled(hasMdiChild);
@@ -1448,6 +1471,8 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
+    if(GetCurrentFirmware()->getBoard()== BOARD_HORUS)
+      return;
     QList<QUrl> urls = event->mimeData()->urls();
     if (urls.isEmpty())
       return;
