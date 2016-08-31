@@ -1471,6 +1471,8 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
+    if(GetCurrentFirmware()->getBoard()== BOARD_HORUS)
+      return;
     QList<QUrl> urls = event->mimeData()->urls();
     if (urls.isEmpty())
       return;
