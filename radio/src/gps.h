@@ -40,4 +40,8 @@ struct gpsdata_t
 extern gpsdata_t gpsData;
 void gpsWakeup();
 
+#if defined(DEBUG)
+void gpsSendFrame(const char * frame);
+#endif
+
 #endif // _GPS_H_

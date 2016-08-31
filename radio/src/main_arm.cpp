@@ -467,7 +467,7 @@ void perMain()
   bluetoothWakeup();
 #endif
 
-#if INTERNAL_GPS > 0
+#if defined(INTERNAL_GPS)
   gpsWakeup();
 #endif
 }

@@ -136,6 +136,10 @@ void drawSourceCustomValue(coord_t x, coord_t y, source_t source, int32_t value,
     if (gpsData.fix) {
       drawGPSPosition(x, y, gpsData.longitude, gpsData.latitude, flags);
     }
+    else {
+      lcdDrawText(x, y, "sats: ", flags);
+      lcdDrawNumber(lcdNextPos, y, gpsData.numSat, flags);
+    }
   }
 #endif
   else if (source < MIXSRC_FIRST_CH) {

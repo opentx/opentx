@@ -75,10 +75,15 @@ void ValueWidget::refresh()
     yValue = y+18;
     xLabel = x+NUMBERS_PADDING;
     yLabel = y+2;
-    if (field == MIXSRC_TX_GPS)
+#if defined(INTERNAL_GPS)
+    if (field == MIXSRC_TX_GPS) {
       attrValue = LEFT | MIDSIZE;
-    else
+    }
+    else 
+#endif
+    {
       attrValue = LEFT | DBLSIZE;
+    }
   }
 
   if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER) {

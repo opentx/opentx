@@ -708,6 +708,28 @@ int cliShowJitter(const char ** argv)
 }
 #endif
 
+#if defined(INTERNAL_GPS)
+int cliGps(const char ** argv)
+{
+  int baudrate = 0;
+  if (argv[1][0] == '$') {
+    // send command to GPS
+    gpsSendFrame(argv[1]);
+  }
+  else if (!strcmp(argv[1], "trace")) {
+    gpsTraceEnabled = !gpsTraceEnabled;
+  }
+
+  else if (toInt(argv, 1, &baudrate) > 0 && baudrate > 0) {
+    gpsInit(baudrate);
+    serialPrint("GPS baudrate set to %d", baudrate);
+  }
+  else {
+    serialPrint("%s: Invalid arguments", argv[0]);
+  }
+  return 0;
+}
+#endif
 
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
@@ -731,6 +753,9 @@ const CliCommand cliCommands[] = {
   { "repeat", cliRepeat, "<interval> <command>" },
 #if defined(JITTER_MEASURE)
   { "jitter", cliShowJitter, "" },
+#endif
+#if defined(INTERNAL_GPS)
+  { "gps", cliGps, "<baudrate>" },
 #endif
   { NULL, NULL, NULL }  /* sentinel */
 };

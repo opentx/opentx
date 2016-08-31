@@ -20,9 +20,13 @@
 
 #include "opentx.h"
 
-Fifo<uint8_t, 64> gpsRxFifo;
+#if GPS_USART_BAUDRATE > 9600
+  Fifo<uint8_t, 256> gpsRxFifo;
+#else
+  Fifo<uint8_t, 64> gpsRxFifo;
+#endif
 
-void gpsInit()
+void gpsInit(uint32_t baudrate)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   USART_InitTypeDef USART_InitStructure;
@@ -39,7 +43,7 @@ void gpsInit()
   GPIO_Init(GPS_UART_GPIO, &GPIO_InitStructure);
 
   // UART config
-  USART_InitStructure.USART_BaudRate = GPS_USART_BAUDRATE;
+  USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -56,9 +60,23 @@ void gpsInit()
   NVIC_Init(&NVIC_InitStructure);
 }
 
+#if defined(DEBUG)
+uint8_t gpsTraceEnabled = false;
+Fifo<uint8_t, 64> gpsTxFifo;
+
+void gpsSendByte(uint8_t byte)
+{
+  while (gpsTxFifo.isFull());
+  gpsTxFifo.push(byte);
+  USART_ITConfig(GPS_USART, USART_IT_TXE, ENABLE);
+}
+
+#endif // #if defined(DEBUG)
+
+
 extern "C" void GPS_USART_IRQHandler(void)
 {
-#if 0
+#if defined(DEBUG)
   // Send
   if (USART_GetITStatus(GPS_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
@@ -85,5 +103,11 @@ extern "C" void GPS_USART_IRQHandler(void)
 
 uint8_t gpsGetByte(uint8_t * byte)
 {
-  return gpsRxFifo.pop(*byte);
+  uint8_t result = gpsRxFifo.pop(*byte);
+#if defined(DEBUG)
+  if (gpsTraceEnabled) {
+    serialPutc(*byte);
+  }
+#endif
+  return result;
 }

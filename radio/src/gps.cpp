@@ -1,5 +1,26 @@
 /*
- * This file is part of Cleanflight.
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/*
+ * This file is based on code from Cleanflight project
+ * https://github.com/cleanflight/cleanflight
  *
  * Cleanflight is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,14 +68,14 @@ uint32_t GPS_coord_to_degrees(const char * coordinateString)
   uint8_t degrees = 0, minutes = 0;
   uint16_t fractionalMinutes = 0;
   uint8_t digitIndex;
-  
+
   // scan for decimal point or end of field
   for (fieldSeparator = coordinateString; isdigit((unsigned char) *fieldSeparator); fieldSeparator++) {
     if (fieldSeparator >= coordinateString + 15)
       return 0; // stop potential fail
   }
   remainingString = coordinateString;
-  
+
   // convert degrees
   while ((fieldSeparator - remainingString) > 2) {
     if (degrees)
@@ -118,12 +139,12 @@ typedef struct gpsDataNmea_s
 bool gpsNewFrameNMEA(char c)
 {
   static gpsDataNmea_t gps_Msg;
-  
+
   uint8_t frameOK = 0;
   static uint8_t param = 0, offset = 0, parity = 0;
   static char string[15];
   static uint8_t checksum_param, gps_frame = NO_FRAME;
-  
+
   switch (c) {
     case '$':
       param = 0;
@@ -134,14 +155,14 @@ bool gpsNewFrameNMEA(char c)
     case '*':
       string[offset] = 0;
       if (param == 0) {
-        // Frame identification
+        // Frame identification (accept all GPS talkers (GP: GPS, GL:Glonass, GN:combination, etc...))
         gps_frame = NO_FRAME;
-        if (string[0] == 'G' && string[1] == 'P' && string[2] == 'G' && string[3] == 'G' && string[4] == 'A')
+        if (string[0] == 'G' && string[2] == 'G' && string[3] == 'G' && string[4] == 'A')
           gps_frame = FRAME_GGA;
-        if (string[0] == 'G' && string[1] == 'P' && string[2] == 'R' && string[3] == 'M' && string[4] == 'C')
+        if (string[0] == 'G' && string[2] == 'R' && string[3] == 'M' && string[4] == 'C')
           gps_frame = FRAME_RMC;
       }
-      
+
       switch (gps_frame) {
         case FRAME_GGA:        //************* GPGGA FRAME parsing
           switch (param) {
@@ -189,7 +210,7 @@ bool gpsNewFrameNMEA(char c)
           break;
 
       }
-      
+
       param++;
       offset = 0;
       if (c == '*')
@@ -207,12 +228,14 @@ bool gpsNewFrameNMEA(char c)
           switch (gps_frame) {
             case FRAME_GGA:
               frameOK = 1;
+              gpsData.fix = gps_Msg.fix;
+              gpsData.numSat = gps_Msg.numSat;
               if (gps_Msg.fix) {
-                gpsData.fix = 1;
+                __disable_irq();    // do the atomic update of lat/lon
                 gpsData.latitude = gps_Msg.latitude;
                 gpsData.longitude = gps_Msg.longitude;
-                gpsData.numSat = gps_Msg.numSat;
                 gpsData.altitude = gps_Msg.altitude;
+                __enable_irq();
               }
               break;
             case FRAME_RMC:
@@ -255,3 +278,27 @@ void gpsWakeup()
     gpsNewData(byte);
   }
 }
+
+#if defined(DEBUG)
+char hex(uint8_t b) {
+  return b > 9 ? b + 'A' - 10 : b + '0';
+}
+
+void gpsSendFrame(const char * frame)
+{
+  // send given frame, add checksum and CRLF
+  uint8_t parity = 0;
+  while (*frame) {
+    if (*frame != '$') parity ^= *frame;
+    gpsSendByte(*frame);
+    ++frame;
+  }
+  gpsSendByte('*');
+  gpsSendByte(hex(parity >> 4));
+  gpsSendByte(hex(parity & 0x0F));
+  gpsSendByte('\r');
+  gpsSendByte('\n');
+  TRACE("parity %02x", parity);
+}
+
+#endif // #if defined(DEBUG)

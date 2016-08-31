@@ -443,6 +443,5 @@
 #define GPS_RX_GPIO_PIN                 GPIO_Pin_1 // PA.01
 #define GPS_TX_GPIO_PinSource           GPIO_PinSource0
 #define GPS_RX_GPIO_PinSource           GPIO_PinSource1
-#define GPS_USART_BAUDRATE              9600
 
 #endif // _HAL_H_
