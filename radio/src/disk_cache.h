@@ -37,6 +37,7 @@ public:
   bool read(BYTE* buff, DWORD sector, UINT count);
   DRESULT fill(BYTE drv, BYTE* buff, DWORD sector, UINT count);
   void free(DWORD sector, UINT count);
+  void free();
   bool empty() const;
 
 private:
@@ -53,17 +54,18 @@ struct DiskCacheStats
 
 class DiskCache
 {
-public:
-  DiskCache();
-
-  DRESULT read(BYTE drv, BYTE* buff, DWORD sector, UINT count);
-  DRESULT write(BYTE drv, const BYTE* buff, DWORD sector, UINT count);
-  const DiskCacheStats & getStats() const; 
-  int getHitRate() const;
-private:
-  DiskCacheStats stats;
-  uint32_t lastBlock;
-  DiskCacheBlock * blocks;
+  public:
+    DiskCache();
+    DRESULT read(BYTE drv, BYTE* buff, DWORD sector, UINT count);
+    DRESULT write(BYTE drv, const BYTE* buff, DWORD sector, UINT count);
+    const DiskCacheStats & getStats() const;
+    int getHitRate() const;
+    void clear();
+    
+  private:
+    DiskCacheStats stats;
+    uint32_t lastBlock;
+    DiskCacheBlock * blocks;
 };
 
 extern DiskCache diskCache;

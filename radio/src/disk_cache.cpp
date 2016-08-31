@@ -71,6 +71,11 @@ void DiskCacheBlock::free(DWORD sector, UINT count)
   }
 }
 
+void DiskCacheBlock::free()
+{
+  endSector = 0;
+}
+
 bool DiskCacheBlock::empty() const
 {
   return (endSector == 0);
@@ -82,6 +87,16 @@ DiskCache::DiskCache():
   stats.noHits = 0;
   stats.noMisses = 0;
   blocks = new DiskCacheBlock[DISK_CACHE_BLOCKS_NUM];
+}
+
+void DiskCache::clear()
+{
+  lastBlock = 0;
+  stats.noHits = 0;
+  stats.noMisses = 0;
+  for (int n=0; n<DISK_CACHE_BLOCKS_NUM; ++n) {
+    blocks[n].free();
+  }
 }
 
 DRESULT DiskCache::read(BYTE drv, BYTE * buff, DWORD sector, UINT count)

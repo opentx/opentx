@@ -308,6 +308,8 @@ void sdMount()
 {
   TRACE("sdMount");
   
+  diskCache.clear();
+  
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
