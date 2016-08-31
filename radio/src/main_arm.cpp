@@ -413,23 +413,30 @@ void perMain()
 
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
-    lcd->clear();
-    lcdDrawText(LCD_W/2, LCD_H/2-20, "EMERGENCY MODE", DBLSIZE|CENTERED|TEXT_BGCOLOR);
-    lcdRefresh();
+    drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
+#endif
+  
+#if defined(PCBHORUS)
+  // TODO if it is OK on HORUS it could be ported to all other boards
+  // But in this case it's needed to define sdMount for all boards, because sdInit also initializes the SD mutex
+  static uint32_t sdcard_present_before = SD_CARD_PRESENT();
+  uint32_t sdcard_present_now = SD_CARD_PRESENT();
+  if (sdcard_present_now && !sdcard_present_before) {
+    sdMount();
+  }
+  sdcard_present_before = sdcard_present_now;
 #endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
   if (!SD_CARD_PRESENT()) {
-    lcd->clear();
-    lcdDrawText(LCD_W/2, LCD_H/2-20, STR_NO_SDCARD, DBLSIZE|CENTERED|TEXT_BGCOLOR);
-    lcdRefresh();
+    drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }
 #endif
-
+    
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged()) {
     // disable access to menus

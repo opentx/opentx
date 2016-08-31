@@ -708,6 +708,7 @@ extern const pm_char STR_SWITCHWARN[];
 extern const pm_char STR_FAILSAFEWARN[];
 extern const pm_char STR_WRONG_SDCARDVERSION[];
 extern const pm_char STR_WRONG_PCBREV[];
+extern const pm_char STR_EMERGENCY_MODE[];
 extern const pm_char STR_PCBREV_ERROR[];
 extern const pm_char STR_NO_FAILSAFE[];
 extern const pm_char STR_KEYSTUCK[];
