@@ -934,7 +934,8 @@ void MainWindow::updateMenus()
       cutAct->setEnabled(false);
       copyAct->setEnabled(false);
       pasteAct->setEnabled(false);
-      recentFileMenu->setEnabled(false);
+      for (int i=0; i<MAX_RECENT; ++i)
+        recentFileActs[i]->setEnabled(false);
     } else {
       newAct->setEnabled(true);
       openAct->setEnabled(true);
@@ -947,7 +948,8 @@ void MainWindow::updateMenus()
       readEepromAct->setEnabled(true);
       writeBackupToRadioAct->setEnabled(true);
       readBackupToFileAct->setEnabled(true);
-      recentFileMenu->setEnabled(true);
+      for (int i=0; i<MAX_RECENT; ++i)
+        recentFileActs[i]->setEnabled(false);
     }
     separatorAct->setVisible(hasMdiChild);
     simulateAct->setEnabled(hasSelection);
