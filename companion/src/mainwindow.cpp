@@ -949,7 +949,7 @@ void MainWindow::updateMenus()
       writeBackupToRadioAct->setEnabled(true);
       readBackupToFileAct->setEnabled(true);
       for (int i=0; i<MAX_RECENT; ++i)
-        recentFileActs[i]->setEnabled(false);
+        recentFileActs[i]->setEnabled(true);
     }
     separatorAct->setVisible(hasMdiChild);
     simulateAct->setEnabled(hasSelection);
