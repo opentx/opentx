@@ -934,6 +934,7 @@ void MainWindow::updateMenus()
       cutAct->setEnabled(false);
       copyAct->setEnabled(false);
       pasteAct->setEnabled(false);
+      recentFileMenu->setEnabled(false);
     } else {
       newAct->setEnabled(true);
       openAct->setEnabled(true);
@@ -946,6 +947,7 @@ void MainWindow::updateMenus()
       readEepromAct->setEnabled(true);
       writeBackupToRadioAct->setEnabled(true);
       readBackupToFileAct->setEnabled(true);
+      recentFileMenu->setEnabled(true);
     }
     separatorAct->setVisible(hasMdiChild);
     simulateAct->setEnabled(hasSelection);
