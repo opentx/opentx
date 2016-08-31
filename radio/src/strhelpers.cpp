@@ -246,7 +246,10 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
-    strAppendStringWithIndex(s, "S", swinfo.quot*10+swinfo.rem+11);
+    char temp[LEN_ANA_NAME+1];
+    getSourceString(temp, MIXSRC_FIRST_POT+swinfo.quot);
+    temp[LEN_ANA_NAME]= '\0';
+    strAppendStringWithIndex(s, temp, swinfo.rem+1);
   }
 #endif
   else if (idx <= SWSRC_LAST_TRIM) {

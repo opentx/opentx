@@ -300,8 +300,8 @@
 void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBHORUS)
-  #define IS_POT_MULTIPOS(x)           ((x)==POT2)
-  #define IS_POT_WITHOUT_DETENT(x)     (true)
+  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
+  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
 #elif defined(PCBFLAMENCO)
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (false)
