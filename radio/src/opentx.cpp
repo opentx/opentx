@@ -2068,6 +2068,10 @@ void opentxResume()
   
   opentxStart(false);
 
+#if defined(CPUARM)  
+  referenceSystemAudioFiles();
+#endif
+
 #if defined(CPUARM) || defined(CPUM2560)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
