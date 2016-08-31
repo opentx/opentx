@@ -342,7 +342,10 @@ bool FirmwareInterface::isValid()
 
 unsigned int FirmwareInterface::save(QString fileName)
 {
-  uint8_t binflash[FSIZE_MAX];
+  uint8_t *binflash  = (uint8_t*)malloc(FSIZE_MAX);
+  if (binflash == NULL) {
+    return -1;
+  }
   memcpy(&binflash, flash.constData(), flashSize);
   QFile file(fileName);
   
