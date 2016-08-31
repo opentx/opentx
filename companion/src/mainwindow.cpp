@@ -922,7 +922,7 @@ void MainWindow::updateMenus()
     bool hasMdiChild = (activeMdiChild() != 0);
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
 
-    if(GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
+    if(GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
       newAct->setEnabled(false);
       openAct->setEnabled(false);
       saveAct->setEnabled(false);
