@@ -23,6 +23,7 @@
 #include "opentx.h"
 #include "stamp.h"
 #include "lua/lua_api.h"
+#include "telemetry/frsky.h"
 
 #if defined(PCBHORUS)
   #include "lua/lua_exports_horus.inc"   // this line must be after lua headers
@@ -498,6 +499,27 @@ static int luaGetValue(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function getRAS()
+
+Return the RAS value or nil if no valid hardware found
+
+@retval number representing RAS value. Value bellow 0x33 (51 decimal) are all ok, value above 0x33 indicate a hardware antenna issue.
+This is just a hardware pass/fail measure and does not represent the quality of the radio link
+
+@status current Introduced in 2.2.0
+*/
+static int luaGetRAS(lua_State * L)
+{
+  if (IS_SWR_VALUE_VALID()) { 
+    lua_pushinteger(L, telemetryData.swr.value);
+  }
+  else {
+    lua_pushnil(L);  
+  }
+  return 1;
+}
+
 
 /*luadoc
 @function getFlightMode(mode)
@@ -886,6 +908,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
+  { "getRAS", luaGetRAS },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },
   { "playFile", luaPlayFile },
