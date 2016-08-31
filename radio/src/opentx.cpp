@@ -239,8 +239,8 @@ void generalDefault()
   g_eeGeneral.vBatMin = -60; // 0 is 9.0V
   g_eeGeneral.vBatMax = -78; // 0 is 12.0V
 #elif defined(PCBHORUS)
-  g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
-  g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
+  g_eeGeneral.potsConfig = 0x19;    // S1 and S2 = pots with detent
+  g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
   g_eeGeneral.blOffBright = 20;
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent

@@ -83,6 +83,7 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_LABEL_STICKS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_STICKS);
         break;
+
       case ITEM_RADIO_HARDWARE_STICK1:
       case ITEM_RADIO_HARDWARE_STICK2:
       case ITEM_RADIO_HARDWARE_STICK3:
@@ -96,6 +97,7 @@ bool menuRadioHardware(event_t event)
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         break;
       }
+
       case ITEM_RADIO_HARDWARE_LS:
       case ITEM_RADIO_HARDWARE_RS:
       case ITEM_RADIO_HARDWARE_LS2:
@@ -114,9 +116,11 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.slidersConfig |= (potType << idx);
         break;
       }
+
       case ITEM_RADIO_HARDWARE_LABEL_POTS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_POTS);
         break;
+
       case ITEM_RADIO_HARDWARE_POT1:
       case ITEM_RADIO_HARDWARE_POT2:
       case ITEM_RADIO_HARDWARE_POT3:
