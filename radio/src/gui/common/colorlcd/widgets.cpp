@@ -74,6 +74,7 @@ void runFatalErrorScreen(const char * message)
 {
   while (1) {
     drawFatalErrorScreen(message);
+    backlightEnable(100);
     uint8_t refresh = false;
     while (1) {
       uint32_t pwr_check = pwrCheck();

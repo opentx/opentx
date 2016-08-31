@@ -161,7 +161,6 @@ void boardInit()
   adcInit();
   lcdInit();
   backlightInit();
-  // TODO ? backlightEnable(100);
 
   audioInit();
   init2MhzTimer();
