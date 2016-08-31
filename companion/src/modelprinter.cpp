@@ -121,7 +121,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, int subType) {
   /* custom protocols */
   static const char *custom_subtype_strings[] = {"Subtype 0","Subtype 1","Subtype 2","Subtype 3","Subtype 4","Subtype 5","Subtype 6","Subtype 7"};
   static const char *flysky_strings[] = {"Standard","V9x9","V6x6","V912"};
-  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch"};
+  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch", "LR12"};
   static const char *hisky_strings[] = { "HiSky", "HK310" };
   static const char *dsm2_strings[] = {"DSM2", "DSMX"};
   static const char *yd717_strings[] = {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
@@ -130,7 +130,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, int subType) {
   static const char *cg023_strings[] = {"CG023", "YD829", "H3 3D"};
   static const char* kn_strings[] = {"WLtoys", "FeiLun"};
   static const char* mt99_strings[] = {"MT99","H7","YZ"};
-  static const char* mjxq_strings[] = {"WLH08", "X600", "X800", "H26D"};
+  static const char* mjxq_strings[] = {"WLH08", "X600", "X800", "H26D", "E010"};
   
   if (rfProtocol >= MM_RF_PROTO_CUSTOM) {
     return CHECK_IN_ARRAY(custom_subtype_strings, subType);
