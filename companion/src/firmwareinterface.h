@@ -19,7 +19,6 @@
 #include <QImage>
 #include <QByteArray>
 
-#define MAX_FSIZE (2048*1024)
 #define SPLASH_WIDTH (128)
 #define SPLASH_HEIGHT (64)
 #define SPLASHX9D_WIDTH (212)

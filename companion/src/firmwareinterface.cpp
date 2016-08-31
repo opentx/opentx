@@ -44,7 +44,7 @@ int getFileType(const QString &fullFileName)
 }
 
 FirmwareInterface::FirmwareInterface(const QString &filename):
-  flash(MAX_FSIZE, 0),
+  flash(FSIZE_MAX, 0),
   flashSize(0),
   versionId(0),
   eepromVersion(0),
@@ -59,11 +59,11 @@ FirmwareInterface::FirmwareInterface(const QString &filename):
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) { // reading HEX TEXT file
       QTextStream inputStream(&file);
-      flashSize = HexInterface(inputStream).load((uint8_t *)flash.data(), MAX_FSIZE);
+      flashSize = HexInterface(inputStream).load((uint8_t *)flash.data(), FSIZE_MAX);
       file.close();
       if (flashSize == 0) {
         file.open(QIODevice::ReadOnly);
-        flashSize = file.read((char *)flash.data(), MAX_FSIZE);
+        flashSize = file.read((char *)flash.data(), FSIZE_MAX);
       }
     }
   }
@@ -342,7 +342,7 @@ bool FirmwareInterface::isValid()
 
 unsigned int FirmwareInterface::save(QString fileName)
 {
-  uint8_t binflash[MAX_FSIZE];
+  uint8_t binflash[FSIZE_MAX];
   memcpy(&binflash, flash.constData(), flashSize);
   QFile file(fileName);
   

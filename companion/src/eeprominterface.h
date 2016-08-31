@@ -37,6 +37,15 @@
 #define EESIZE_9XRPRO          (128*4096)
 #define EESIZE_MAX             EESIZE_9XRPRO
 
+#define FSIZE_STOCK            (64*1024)
+#define FSIZE_M128             (128*1024)
+#define FSIZE_GRUVIN9X         (256*1024)
+#define FSIZE_TARANIS          (512*1024)
+#define FSIZE_SKY9X            (256*1024)
+#define FSIZE_9XRPRO           (512*1024)
+#define FSIZE_HORUS            (2048*1024)
+#define FSIZE_MAX              FSIZE_HORUS
+
 QString getBoardName(BoardEnum board);
 
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
@@ -1671,6 +1680,8 @@ class Firmware {
     virtual bool isTelemetrySourceAvailable(int source) = 0;
 
     virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
+    
+    const int getFlashSize();
 
   public:
     QList<const char *> languages;
