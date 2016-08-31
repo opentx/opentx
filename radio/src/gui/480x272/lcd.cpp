@@ -218,7 +218,7 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags flags)
 {
   char str[LEN_TIMER_STRING];
-  getTimerString(str, tme, flags & TIMEHOUR);
+  getTimerString(str, tme, (flags & TIMEHOUR) != 0);
   lcdDrawText(x, y, str, flags);
 }
 
