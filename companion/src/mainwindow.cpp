@@ -934,6 +934,7 @@ void MainWindow::updateMenus()
       cutAct->setEnabled(false);
       copyAct->setEnabled(false);
       pasteAct->setEnabled(false);
+      readFlashAct->setEnabled(false);
       for (int i=0; i<MAX_RECENT; ++i)
         recentFileActs[i]->setEnabled(false);
     } else {
@@ -948,6 +949,7 @@ void MainWindow::updateMenus()
       readEepromAct->setEnabled(true);
       writeBackupToRadioAct->setEnabled(true);
       readBackupToFileAct->setEnabled(true);
+      readFlashAct->setEnabled(true);
       for (int i=0; i<MAX_RECENT; ++i)
         recentFileActs[i]->setEnabled(true);
     }
