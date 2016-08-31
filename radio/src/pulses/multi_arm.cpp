@@ -120,10 +120,18 @@ void setupPulsesMultimodule(unsigned int port)
   if (type >=15)
     type= type +1;
 
+  // 23 is again a FrSky protocol so shift again
+  if (type >= 23)
+     type = type + 1;
+
   if (g_model.moduleData[port].multi.rfProtocol == MM_RF_PROTO_FRSKY) {
     if(subtype == 1) {
       //D8
       type = 3;
+      subtype = 0;
+    } else if (subtype == 3) {
+      //LR12
+      type = 25;
       subtype = 0;
     } else {
       type = 15;
