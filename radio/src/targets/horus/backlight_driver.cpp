@@ -53,15 +53,6 @@ void backlightInit()
     PROD_BL_TIMER->EGR = 0;
     PROD_BL_TIMER->CR1 = TIM_CR1_CEN; // Counter enable
   }
-  else {
-    BETA_BL_TIMER->ARR = 100;
-    BETA_BL_TIMER->PSC = BETA_BL_TIMER_FREQ / 50000 - 1; // 20us * 100 = 2ms => 500Hz
-    BETA_BL_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2; // PWM
-    BETA_BL_TIMER->CCER = TIM_CCER_CC1E;
-    BETA_BL_TIMER->CCR1 = 100;
-    BETA_BL_TIMER->EGR = 0;
-    BETA_BL_TIMER->CR1 = TIM_CR1_CEN; // Counter enable
-  }
 }
 
 void backlightEnable(uint8_t dutyCycle)
@@ -75,8 +66,36 @@ void backlightEnable(uint8_t dutyCycle)
     existingDutyCycle = dutyCycle;
   }
   
-  if (IS_HORUS_PROD())
+  if (IS_HORUS_PROD()) {
     PROD_BL_TIMER->CCR4 = dutyCycle;
-  else
-    BETA_BL_TIMER->CCR1 = (100 - dutyCycle);
+  }
+  else {
+    BETA_BL_TIMER->ARR = 100;
+    BETA_BL_TIMER->PSC = BETA_BL_TIMER_FREQ / 50000 - 1; // 20us * 100 = 2ms => 500Hz
+    BETA_BL_TIMER->CCER = TIM_CCER_CC1E;
+
+// TODO need to finish to switch to Mike's style ...
+#if 1
+    TIM_OCInitTypeDef TIM_OCInitStructure;
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+    TIM_OCInitStructure.TIM_OutputNState = TIM_OutputNState_Enable;
+    TIM_OCInitStructure.TIM_Pulse = (100 - dutyCycle);
+    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OCInitStructure.TIM_OCNPolarity = TIM_OCNPolarity_High;
+    TIM_OCInitStructure.TIM_OCIdleState = TIM_OCIdleState_Set;
+    TIM_OCInitStructure.TIM_OCNIdleState = TIM_OCNIdleState_Set;
+    TIM_OC1Init(BETA_BL_TIMER, &TIM_OCInitStructure);
+#else
+    BETA_BL_TIMER->ARR = 100;
+    BETA_BL_TIMER->PSC = BETA_BL_TIMER_FREQ / 50000 - 1; // 20us * 100 = 2ms => 500Hz
+    BETA_BL_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2; // PWM
+    BETA_BL_TIMER->CCER = TIM_CCER_CC1E;
+    BETA_BL_TIMER->CCR1 = 0;
+    BETA_BL_TIMER->EGR = 1;
+#endif
+
+    BETA_BL_TIMER->CR1 |= TIM_CR1_CEN; // Counter enable
+    BETA_BL_TIMER->BDTR |= TIM_BDTR_MOE;
+  }
 }
