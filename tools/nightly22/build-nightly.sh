@@ -17,7 +17,7 @@ suffix="N$index"
 cd ${workdir}
 
 # Call sdcard generation
-code/tools/nightly22/build-sdcard.sh
+# code/tools/nightly22/build-sdcard.sh
 
 # Create on-demand build environment
 cp code/radio/util/Dockerfile .
