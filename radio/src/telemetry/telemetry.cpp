@@ -155,18 +155,15 @@ void telemetryWakeup()
 
     SCHEDULE_NEXT_ALARMS_CHECK(1/*second*/);
 
-    uint8_t now = TelemetryItem::now();
     bool sensor_lost = false;
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       if (isTelemetryFieldAvailable(i)) {
-        uint8_t lastReceived = telemetryItems[i].lastReceived;
-        if (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE && uint8_t(now - lastReceived) > TELEMETRY_VALUE_OLD_THRESHOLD) {
-          sensor_lost = true;
-          telemetryItems[i].lastReceived = TELEMETRY_VALUE_OLD;
+        TelemetryItem & item = telemetryItems[i];
+        if (item.hasReceiveTime() && item.getDelaySinceLastValue() > TELEMETRY_VALUE_OLD_THRESHOLD) {
           TelemetrySensor * sensor = & g_model.telemetrySensors[i];
-          if (sensor->unit == UNIT_DATETIME) {
-            telemetryItems[i].datetime.datestate = 0;
-            telemetryItems[i].datetime.timestate = 0;
+          if (sensor->unit != UNIT_DATETIME) {
+            item.setOld();
+            sensor_lost = true;
           }
         }
       }

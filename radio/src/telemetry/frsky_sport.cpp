@@ -64,8 +64,7 @@ const FrSkySportSensor sportSensors[] = {
   { CELLS_FIRST_ID, CELLS_LAST_ID, 0, ZSTR_CELLS, UNIT_CELLS, 2 },
   { GPS_ALT_FIRST_ID, GPS_ALT_LAST_ID, 0, ZSTR_GPSALT, UNIT_METERS, 2 },
   { GPS_TIME_DATE_FIRST_ID, GPS_TIME_DATE_LAST_ID, 0, ZSTR_GPSDATETIME, UNIT_DATETIME, 0 },
-  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS_LATITUDE, 0 },
-  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 1, ZSTR_GPS, UNIT_GPS_LONGITUDE, 0 },
+  { GPS_LONG_LATI_FIRST_ID, GPS_LONG_LATI_LAST_ID, 0, ZSTR_GPS, UNIT_GPS, 0 },
   { FUEL_QTY_FIRST_ID, FUEL_QTY_LAST_ID, 0, ZSTR_FUEL, UNIT_MILLILITERS, 2 },
   { GPS_COURS_FIRST_ID, GPS_COURS_LAST_ID, 0, ZSTR_HDG, UNIT_DEGREE, 2 },
   { RBOX_BATT1_FIRST_ID, RBOX_BATT1_LAST_ID, 0, ZSTR_BATT1_VOLTAGE, UNIT_VOLTS, 3 },
@@ -165,13 +164,13 @@ void processSportUpdatePacket(uint8_t * packet)
   }
 }
 
-void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data)
+void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
 {
   const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
-  TelemetryUnit unit = UNIT_RAW;
   uint8_t precision = 0;
   if (sensor) {
-    unit = sensor->unit;
+    if (unit == UNIT_RAW)
+      unit = sensor->unit;
     precision = sensor->prec;
   }
   if (unit == UNIT_CELLS) {
@@ -280,9 +279,9 @@ void processSportPacket(uint8_t * packet)
             value = -value;
           value = (value * 5) / 3; // min/10000 => deg/1000000
           if (data & (1 << 31))
-            processSportPacket(id, 0, instance, value); // latitude
+            processSportPacket(id, 0, instance, value, UNIT_GPS_LATITUDE);
           else
-            processSportPacket(id, 1, instance, value); // longitude
+            processSportPacket(id, 0, instance, value, UNIT_GPS_LONGITUDE);
         }
         else if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
           processSportPacket(id, 0, instance, data & 0xffff);

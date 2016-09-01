@@ -227,21 +227,6 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   lastReceived = now();
 }
 
-bool TelemetryItem::isAvailable()
-{
-  return (lastReceived != TELEMETRY_VALUE_UNAVAILABLE);
-}
-
-bool TelemetryItem::isFresh()
-{
-  return (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE) && (uint8_t(now() - lastReceived) < 2);
-}
-
-bool TelemetryItem::isOld()
-{
-  return (lastReceived == TELEMETRY_VALUE_OLD);
-}
-
 void TelemetryItem::per10ms(const TelemetrySensor & sensor)
 {
   switch (sensor.formula) {

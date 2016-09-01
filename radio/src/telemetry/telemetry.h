@@ -79,11 +79,7 @@ extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t telemetryRxBufferCount;
 
 #if defined(CPUARM)
-#define TELEMETRY_VALUE_TIMER_CYCLE   200 /*20 seconds*/
-#define TELEMETRY_VALUE_OLD_THRESHOLD 150 /*15 seconds*/
-#define TELEMETRY_VALUE_UNAVAILABLE   255
-#define TELEMETRY_VALUE_OLD           254
-#define TELEMETRY_AVERAGE_COUNT       3
+#define TELEMETRY_AVERAGE_COUNT        3
 
 enum {
   TELEM_CELL_INDEX_LOWEST,

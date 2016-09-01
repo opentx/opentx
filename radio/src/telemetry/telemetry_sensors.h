@@ -23,6 +23,11 @@
 
 #include "telemetry.h"
 
+#define TELEMETRY_VALUE_TIMER_CYCLE    128 /* x160ms ~= 20.5s ; must be multiple of 2 to avoid the modulo */
+#define TELEMETRY_VALUE_OLD_THRESHOLD  62 /* x160ms ~= 10s */
+#define TELEMETRY_VALUE_UNAVAILABLE    255
+#define TELEMETRY_VALUE_OLD            254
+
 class TelemetryItem
 {
   public:
@@ -77,7 +82,8 @@ class TelemetryItem
 
     static uint8_t now()
     {
-      return (get_tmr10ms() / 10) % TELEMETRY_VALUE_TIMER_CYCLE;
+      // 160ms granularity
+      return (get_tmr10ms() >> 4) & (TELEMETRY_VALUE_TIMER_CYCLE - 1);
     }
 
     TelemetryItem()
@@ -95,10 +101,39 @@ class TelemetryItem
     void per10ms(const TelemetrySensor & sensor);
 
     void setValue(const TelemetrySensor & sensor, int32_t newVal, uint32_t unit, uint32_t prec=0);
-    bool isAvailable();
-    bool isFresh();
-    bool isOld();
-    void gpsReceived();
+
+    inline bool isAvailable()
+    {
+      return (lastReceived != TELEMETRY_VALUE_UNAVAILABLE);
+    }
+
+    inline bool isOld()
+    {
+      return (lastReceived == TELEMETRY_VALUE_OLD);
+    }
+
+    inline bool hasReceiveTime()
+    {
+      return (lastReceived < TELEMETRY_VALUE_TIMER_CYCLE);
+    }
+
+    inline uint8_t getDelaySinceLastValue()
+    {
+      // assumes lastReceived is not a special value (OLD / UNAVAILABLE)
+      return (now() - lastReceived) & (TELEMETRY_VALUE_TIMER_CYCLE - 1);
+    }
+
+    inline bool isFresh()
+    {
+      return (hasReceiveTime() && getDelaySinceLastValue() <= 1);
+    }
+
+    inline void setOld()
+    {
+      lastReceived = TELEMETRY_VALUE_OLD;
+    }
+
+    void gpsReceived(); // TODO seems not used
 };
 
 extern TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
