@@ -346,7 +346,7 @@ unsigned int FirmwareInterface::save(QString fileName)
   if (binflash == NULL) {
     return -1;
   }
-  memcpy(&binflash, flash.constData(), flashSize);
+  memcpy(binflash, flash.constData(), flashSize);
   QFile file(fileName);
   
   int fileType = getFileType(fileName);
