@@ -88,6 +88,7 @@ enum FontSizeIndex {
 
 #define TIMEBLINK                      0x1000
 #define TIMEHOUR                       0x2000
+#define EXPANDED                       0x2000
 #define VERTICAL                       0x4000
 #define NO_FONTCACHE                   0x8000
 

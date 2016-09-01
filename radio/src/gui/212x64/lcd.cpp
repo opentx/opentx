@@ -817,6 +817,7 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   uint32_t absvalue = abs(value);
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
   lcdDrawChar(lcdLastPos, y, '@', att);
+  att &= ~RIGHT;
   absvalue = absvalue % 1000000;
   absvalue *= 60;
   if (g_eeGeneral.gpsFormat == 0 || !seconds) {
@@ -876,8 +877,8 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
   if (att & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
     att &= ~0x0F00; // TODO constant
-    drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att);
-    drawGPSCoord(x, y+FH, telemetryItem.gps.latitude, "NS", att);
+    drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att, true);
+    drawGPSCoord(x, y+FH, telemetryItem.gps.latitude, "NS", att, true);
   }
   else {
     drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att, false);
