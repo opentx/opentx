@@ -278,7 +278,7 @@ PACK(struct FrskyTelemetryData {
   #define IS_SWR_VALUE_VALID()         (true)
 #endif
 
-#define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == SWR_ID))
+#define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == SWR_ID) || (id == GPS_LONG_LATI_FIRST_ID) || (id == GPS_TIME_DATE_FIRST_ID))
 
 enum AlarmLevel {
   alarm_off = 0,
