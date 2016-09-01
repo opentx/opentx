@@ -58,7 +58,7 @@ void backlightInit()
     BETA_BL_TIMER->PSC = BETA_BL_TIMER_FREQ / 50000 - 1; // 20us * 100 = 2ms => 500Hz
     BETA_BL_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2; // PWM
     BETA_BL_TIMER->CCER = TIM_CCER_CC1E;
-    BETA_BL_TIMER->CCR1 = 0;
+    BETA_BL_TIMER->CCR1 = 100;
     BETA_BL_TIMER->EGR = 0;
     BETA_BL_TIMER->CR1 = TIM_CR1_CEN; // Counter enable
   }
