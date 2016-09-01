@@ -96,7 +96,7 @@ void delay_ms(uint32_t ms);
 #endif
 
 // PCBREV driver
-  #define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
+#define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
 #if defined(SIMU)
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
 #elif PCBREV >= 13
