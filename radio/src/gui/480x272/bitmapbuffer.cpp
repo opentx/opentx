@@ -382,15 +382,6 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
       break;
     }
     else if (c >= 0x20) {
-#if defined(TRANSLATIONS_FR)
-      if (c >= 0x80 && c <= 0x85) {
-        c = 0x20 + 115 + c - 0x80;
-      }
-#elif defined(TRANSLATIONS_DE)
-      if (c >= 0x80 && c <= 0x86) {
-        c = 0x20 + 120 + c - 0x80;
-      }
-#endif
       uint8_t width;
       if (fontcache)
         width = drawCharWithCache(x-1, y, fontcache, fontspecs, getMappedChar(c), flags);

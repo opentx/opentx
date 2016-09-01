@@ -235,9 +235,9 @@ inline int getBitmapHeight(const uint8_t * bmp)
   return *(((const uint16_t *)bmp)+1);
 }
 
-char getMappedChar(unsigned char c);
+uint8_t getMappedChar(uint8_t c);
 uint8_t getFontHeight(LcdFlags flags);
-int getTextWidth(const pm_char *s, int len=0, LcdFlags flags=0);
+int getTextWidth(const char * s, int len=0, LcdFlags flags=0);
 
 inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdFlags flags=0, coord_t offset=0, coord_t width=0)
 {
