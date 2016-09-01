@@ -213,6 +213,7 @@
 #define PROD_BL_RCC_APB1Periph          RCC_APB1Periph_TIM5
 #define PROD_BL_RCC_APB2Periph          0
 #define PROD_BL_GPIO_AF                 GPIO_AF_TIM5
+#define PROD_BL_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 // Beta board
 #define BETA_BL_TIMER                   TIM8
 #define BETA_BL_GPIO_PIN                GPIO_Pin_5  // PA.05
@@ -220,6 +221,7 @@
 #define BETA_BL_RCC_APB1Periph          0
 #define BETA_BL_RCC_APB2Periph          RCC_APB2Periph_TIM8
 #define BETA_BL_GPIO_AF                 GPIO_AF_TIM8
+#define BETA_BL_TIMER_FREQ              (PERI2_FREQUENCY * TIMER_MULT_APB2)
 
 // SD
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
