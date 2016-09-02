@@ -22,7 +22,7 @@ import zipfile
 from tts_common import *
 board = "taranis"
 
-lib_path = os.path.abspath(os.path.join('..', '..', 'radio', 'util'))
+lib_path = os.path.abspath(os.path.join('code', 'radio', 'util'))
 sys.path.append(lib_path)
 
 def generate(str, filename):
@@ -102,3 +102,4 @@ if __name__ == "__main__":
               for s, f in sounds:
                 if s and f:
                     generate(s, f)                  
+
