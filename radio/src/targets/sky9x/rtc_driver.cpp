@@ -238,7 +238,6 @@ struct t_i2cTime
 
 void rtcSetTime(const struct gtm * t)
 {
-  g_rtcTime = gmktime(t); // update local timestamp and get wday calculated
   g_ms100 = 0; // start of next second begins now
 
   I2CTime.setCode = 0x74 ;    // Tiny SET TIME CODE command

@@ -62,6 +62,7 @@ void writeRtc(gtm* ptr)
 
 void rtcSetTime(const struct gtm * t)
 {
+  g_ms100 = 0; // start of next second begins now
   writeRtc(t);
 }
 
