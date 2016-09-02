@@ -6,9 +6,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 else(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(COMPANION_NAME "companion")
   set(SIMULATOR_NAME "simulator")
-  if(APPLE)
-    set(SIMULATOR_LIB_PATH ${CMAKE_INSTALL_PREFIX}/Contents/companion.app/Ressources)
-  endif()
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 option(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default
@@ -225,13 +222,7 @@ add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
 add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
 
-if(APPLE)
-  add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${companion_SRCS} ${companion_RCC} ${companion_QM})
-  # OS X compiler no longer automatically includes /Library/Frameworks in search path
-  set(CMAKE_EXE_LINKER_FLAGS -F/Library/Frameworks)
-else()
-  add_executable(${COMPANION_NAME} WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
-endif()
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
@@ -255,11 +246,8 @@ if(WIN32)
   set(simu_SRCS ${simu_SRCS} icon.rc)
 endif()
 
-if(APPLE)
-  add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${simu_SRCS} ${companion_RCC})
-else()
-  add_executable(${SIMULATOR_NAME} WIN32 ${simu_SRCS} ${companion_RCC})
-endif()
+
+add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RCC})
 
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
 # TODO not the same link command than companion?
@@ -268,9 +256,10 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandopti
 ############# Packaging ####################
 message(STATUS ${CMAKE_BINARY_DIR} ${CMAKE_INSTALL_PREFIX}/bin)
 if(APPLE)
-    install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${SIMULATOR_LIB_PATH} USE_SOURCE_PERMISSIONS
-    FILES_MATCHING PATTERN "libopentx-*.dylib"
-  )
+    SET(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+    #install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${companion_res_dir} USE_SOURCE_PERMISSIONS
+    #FILES_MATCHING PATTERN "libopentx-x9d+-simulator.dylib")
+
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
@@ -403,16 +392,48 @@ string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 # very poor trace-backs from the users when they report Companion crash
 set(CPACK_STRIP_FILES FALSE)
 
+
+SET(plugin_dest_dir bin)
+SET(qtconf_dest_dir bin)
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${COMPANION_NAME}")
+IF(APPLE)
+  SET(plugin_dest_dir ${COMPANION_NAME}.app/Contents/MacOS)
+  SET(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+ENDIF(APPLE)
+IF(WIN32)
+  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
+ENDIF(WIN32)
+
 INSTALL(TARGETS ${COMPANION_NAME}
     BUNDLE DESTINATION . COMPONENT Runtime
     RUNTIME DESTINATION bin COMPONENT Runtime
     )
 
+# Qt5 + Cmake + Mac is poorly documented. A lot of this is guesswork
+# and trial and error. Do not hestinate to fix it for better
+if(APPLE)
+    set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
 
-# directories to look for dependencies
-SET(DIRS ${QT_LIBRARY_DIRS})    
+  # Write qt.conf to tell qt where to find it plugins
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+    "[Paths]\nPlugins = ${plugin_dest_dir}\n")
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/Resources"
+    ${COMPONENT})
+
+  INSTALL(CODE "
+   include(BundleUtilities)
+   fixup_bundle(\"${APPS}\"   \"\"   \"\")
+   " COMPONENT Runtime)
+
+   get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
+
+   INSTALL(FILES ${QPA_PLUGIN} DESTINATION "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}" COMPONENT Runtime)
+endif()
 
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
+
 if(DPKG_PROGRAM)
   set(CPACK_GENERATOR "DEB")
   execute_process(
@@ -428,12 +449,14 @@ if(DPKG_PROGRAM)
   set(CPACK_DEBIAN_ARCHITECTURE $(CMAKE_SYSTEM_PROCESSOR))
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 elseif(APPLE)
-  set(APPS "${COMPANION_NAME}.app")
   set(CPACK_GENERATOR "DragNDrop")
+#  set(CPACK_GENERATOR "TGZ")
   set(CPACK_BINARY_DRAGNDROP ON)
-  set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/dmg_background.png)
+  set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/splash22_3_dmg.png)
   set(CPACK_DMG_VOLUME_NAME "OpenTX Companion")
   set(CPACK_DMG_DS_STORE ${PROJECT_SOURCE_DIR}/companion/targets/mac/DS_Store)
+  set(LIB_DIRS ${QT_LIBRARY_DIRS})
+  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}")
 
 else(DPKG_PROGRAM)
   set(CPACK_GENERATOR "RPM")
@@ -443,11 +466,6 @@ else(DPKG_PROGRAM)
   SET(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib /lib/udev /lib/udev/rules.d")
 endif(DPKG_PROGRAM)
 
-INSTALL(CODE "
-    include(BundleUtilities)
-    " COMPONENT Runtime
-    VERIFY_APP(${COMPANION_NAME})
-        )
 
 
 include(CPack)
