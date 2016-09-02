@@ -84,7 +84,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       }
     }
     else {
-      datetime.hour = ((uint8_t) ((data & 0xff000000) >> 24) + g_eeGeneral.timezone + 24) % 24;
+      datetime.hour = (uint8_t) ((data & 0xff000000) >> 24);
       datetime.min = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.sec = (uint16_t) ((data & 0x0000ff00) >> 8);
       if (datetime.datestate == 1) {
@@ -131,7 +131,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_DATETIME_HOUR_MIN) {
     uint32_t data = uint32_t(newVal);
-    datetime.hour = ((data & 0xFF) + g_eeGeneral.timezone + 24) % 24;
+    datetime.hour = (data & 0xFF);
     datetime.min = data >> 8;
   }
   else if (unit == UNIT_DATETIME_SEC) {

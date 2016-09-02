@@ -112,7 +112,7 @@ const unsigned short int __mon_yday[2][13] = {
    offset OFFSET seconds east of UTC,
    and store year, yday, mon, mday, wday, hour, min, sec into *TP.
    Return nonzero if successful.  */
-int __offtime(gtime_t * t, long int offset, struct gtm * tp)
+int __offtime(const gtime_t * t, long int offset, struct gtm * tp)
 {
   long int days, rem, y;
   const unsigned short int * ip;
@@ -167,7 +167,7 @@ int __offtime(gtime_t * t, long int offset, struct gtm * tp)
 
 /* time_r function implementations */
 // G: No time zones in our implementation so just do the converion from gtime_t to struct tm
-struct gtm * __localtime_r(gtime_t * t, struct gtm * tp)
+struct gtm * __localtime_r(const gtime_t * t, struct gtm * tp)
 {
   __offtime(t, 0, tp);
   return tp;
@@ -243,7 +243,7 @@ static gtime_t guess_time_tm(long int year, long int yday, int hour, int min, in
 /* Use CONVERT to convert *T to a broken down time in *TP.
    If *T is out of range for conversion, adjust it so that
    it is the nearest in-range value and then convert that.  */
-static struct gtm * ranged_convert(struct gtm *(*convert)(gtime_t *, struct gtm *), gtime_t * t, struct gtm * tp)
+static struct gtm * ranged_convert(struct gtm *(*convert)(const gtime_t *, struct gtm *), gtime_t * t, struct gtm * tp)
 {
   struct gtm * r = convert(t, tp);
 
@@ -279,7 +279,7 @@ static struct gtm * ranged_convert(struct gtm *(*convert)(gtime_t *, struct gtm 
    If *OFFSET's guess is correct, only one CONVERT call is needed.
    This function is external because it is used also by timegm.c.  */
 gtime_t __mktime_internal(struct gtm * tp,
-                          struct gtm *(*convert)(gtime_t *, struct gtm *),
+                          struct gtm *(*convert)(const gtime_t *, struct gtm *),
                           gtime_t * offset)
 {
   gtime_t t, gt, t0, t1, t2;
@@ -433,7 +433,7 @@ gtime_t gmktime(struct gtm * tp)
 }
 
 /* Fill a (struct tm) TP* from a given gtime_t time stamp */
-gtime_t filltm(gtime_t * t, struct gtm * tp)
+gtime_t filltm(const gtime_t * t, struct gtm * tp)
 {
   return __offtime(t, 0, tp);
 }
@@ -450,7 +450,7 @@ void gettime(struct gtm * tm)
 #define RTC_ADJUST_PERIOD      60   // how often RTC is checked for accuracy [seconds]
 #define RTC_ADJUST_TRESHOLD    20   // how much clock must differ before adjustment is made [seconds]
 /*
-  Changes RTC date/time to the given date/time if:
+  Changes RTC date/time to the given UTC date/time if:
    * RTC_ADJUST_PERIOD seconds have elapsed from the last time this function adjusted the RTC clock
    * AND if actual RTC clock differs from the given clock by more than RTC_ADJUST_TRESHOLD seconds
    * Function does nothing for a minute around midnight, where date change could produce erroneous result
@@ -461,22 +461,26 @@ uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t
   if ((get_tmr10ms() - lastRtcAdjust) > (RTC_ADJUST_PERIOD * 100)) {
     lastRtcAdjust = get_tmr10ms();
 
-    struct gtm t;
-    gettime(&t);
     if ((hour == 0 && min == 0) || (hour == 23 && min == 59)) return 0;
 
-    if (t.tm_year != (year - 1900) || t.tm_mon != (mon - 1) || t.tm_mday != day ||
-        (abs((t.tm_hour - hour) * 3600 + (t.tm_min - min) * 60 + (t.tm_sec - sec)) > RTC_ADJUST_TRESHOLD)) {
-      // we adjust RTC only if difference is > 20 seconds
-      t.tm_year = year - 1900;
-      t.tm_mon  = mon - 1;
-      t.tm_mday = day;
-      t.tm_hour = hour;
-      t.tm_min  = min;
-      t.tm_sec  = sec;
+    // convert given UTC time to local time (to seconds) and compare it with RTC
+    struct gtm t;
+    t.tm_year = year - 1900;
+    t.tm_mon  = mon - 1;
+    t.tm_mday = day;
+    t.tm_hour = hour;
+    t.tm_min  = min;
+    t.tm_sec  = sec;
+    gtime_t newTime = gmktime(&t) + g_eeGeneral.timezone * 3600;
+    gtime_t diff = (g_rtcTime > newTime) ? (g_rtcTime - newTime) : (newTime - g_rtcTime);
+    TRACE("rtc: %d, new: %d, diff: %d", g_rtcTime, newTime, diff);
+    if (diff > RTC_ADJUST_TRESHOLD) {
+      // convert newTime to struct gtm and set RTC clock
+      filltm(&newTime, &t);
       g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
       rtcSetTime(&t);
       TRACE("RTC clock adjusted to %04d-%02d-%02d %02d:%02d:%02d", year, mon, day, hour, min, sec);
+      // TODO perhaps some kind of audio notification ???
       return 1;
     }
   }
