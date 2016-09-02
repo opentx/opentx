@@ -51,7 +51,7 @@ void drawCategory(coord_t y, const char * name, bool selected)
 
 void drawModel(coord_t x, coord_t y, ModelCell * model, bool current, bool selected)
 {
-  lcd->drawBitmap(x+1, y+1, &model->buffer);
+  lcd->drawBitmap(x+1, y+1, model->getBuffer());
   if (current) {
     lcd->drawBitmapPattern(x+66, y+43, LBM_ACTIVE_MODEL, TITLE_BGCOLOR);
   }
@@ -324,7 +324,7 @@ bool menuModelSelect(event_t event)
         drawModel(MODELS_LEFT, y, *it, current, selected);
       }
       if (selected) {
-        lcdDrawText(MODELS_LEFT, LCD_H-FH-1, (*it)->name, TEXT_COLOR);
+        // lcdDrawText(MODELS_LEFT, LCD_H-FH-1, (*it)->name, TEXT_COLOR);
       }
     }
   }

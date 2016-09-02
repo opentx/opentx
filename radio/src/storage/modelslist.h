@@ -31,14 +31,26 @@ class ModelCell
 {
   public:
     ModelCell(const char * name):
-      buffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT)
+      buffer(NULL)
     {
-      buffer.clear(TEXT_BGCOLOR);
-
       strncpy(this->name, name, sizeof(this->name));
+    }
 
+    const BitmapBuffer * getBuffer()
+    {
+      if (!buffer) {
+        load();
+      }
+      return buffer;
+    }
+
+    void load()
+    {
       ModelHeader header;
       const char * error = NULL;
+
+      buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+      buffer->clear(TEXT_BGCOLOR);
 
       if (strncmp(name, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0)
         header = g_model.header;
@@ -46,32 +58,32 @@ class ModelCell
         error = readModel(name, (uint8_t *)&header, sizeof(header));
 
       if (error) {
-        buffer.drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
-        buffer.drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+        buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
+        buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
       }
       else {
         char timer[LEN_TIMER_STRING];
-        buffer.drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
+        buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
-        buffer.drawText(101, 40, timer, TEXT_COLOR);
+        buffer->drawText(101, 40, timer, TEXT_COLOR);
         for (int i=0; i<4; i++) {
-          buffer.drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
+          buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
         GET_FILENAME(filename, BITMAPS_PATH, header.bitmap, "");
         const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
         if (bitmap) {
-          buffer.drawScaledBitmap(bitmap, 5, 24, 56, 32);
+          buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
           delete bitmap;
         }
         else {
-          buffer.drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+          buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
         }
       }
-      buffer.drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
+      buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
     }
 
     char name[LEN_MODEL_FILENAME+1];
-    BitmapBuffer buffer;
+    BitmapBuffer * buffer;
 };
 
 class ModelsCategory: public std::list<ModelCell *>
