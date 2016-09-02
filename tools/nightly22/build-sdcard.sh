@@ -17,11 +17,11 @@ mkdir -p ${workdir}/sdcard/horus/IMAGES
 cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
 # Request sound pack generation
-python3 -B ${workdir}/code/tts.py en csv files
-python3 -B ${workdir}/code/tts.py fr csv files
-python3 -B ${workdir}/code/tts.py es csv files
-python3 -B ${workdir}/code/tts.py it csv files
-python3 -B ${workdir}/code/tts.py de csv files
+python3 -B ${workdir}/code/tools/nightly22/tts.py en csv files
+python3 -B ${workdir}/code/tools/nightly22/tts.py fr csv files
+python3 -B ${workdir}/code/tools/nightly22/tts.py es csv files
+python3 -B ${workdir}/code/tools/nightly22/tts.py it csv files
+python3 -B ${workdir}/code/tools/nightly22/tts.py de csv files
 
 # Prepare the sdcard zip files for Horus
 mv /tmp/SOUNDS ${workdir}/sdcard/horus/
