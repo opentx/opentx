@@ -236,3 +236,8 @@ ISR(INT3_vect)     // Arduino2560 IO18 (portD pin3)
 #endif
 }  
        
+// RTC driver
+void rtcSetTime(const struct gtm * tm)
+{
+  
+}
