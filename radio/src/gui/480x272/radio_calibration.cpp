@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #define XPOT_DELTA                     10
-#define XPOT_DELAY                     10 /* cycles */
+#define XPOT_DELAY                     5 /* cycles */
 #define STICKS_WIDTH                   90
 #define STICKS_Y                       60
 #define STICK_LEFT_X                   25
@@ -99,7 +99,9 @@ bool menuCommonCalib(event_t event)
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
         }
         else {
-          if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) reusableBuffer.calib.xpotsCalib[idx].lastCount++;
+          if (reusableBuffer.calib.xpotsCalib[idx].lastCount < 255) {
+            reusableBuffer.calib.xpotsCalib[idx].lastCount++;
+          }
         }
         if (reusableBuffer.calib.xpotsCalib[idx].lastCount == XPOT_DELAY) {
           int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
