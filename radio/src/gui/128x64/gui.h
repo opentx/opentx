@@ -35,7 +35,6 @@
   #define HEADER_LINE_COLUMNS          0,
 #endif
 
-#define MENU_COLUMNS                   1
 #define COLUMN_X                       0
 #define drawFieldLabel(x, y, str)      lcdDrawTextAlignedLeft(y, str)
 
