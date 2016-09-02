@@ -208,27 +208,14 @@ void menuModelMixOne(event_t event)
 
   SUBMENU(STR_MIXER, MIX_FIELD_COUNT, {0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 
-#if MENU_COLUMNS > 1
-  SET_SCROLLBAR_X(0);
-#endif
-
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
-  for (int k=0; k<MENU_COLUMNS*(LCD_LINES-1); k++) {
-    coord_t y;
-    if (k >= LCD_LINES-1)
-      y = 1 + (k-LCD_LINES+2)*FH;
-    else
-      y = 1 + (k+1)*FH;
-    int8_t i = k;
-
-#if MENU_COLUMNS < 2
-    i = i + menuVerticalOffset;
-#endif
-
-    LcdFlags attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    switch(i) {
+  for (uint8_t k=0; k<NUM_BODY_LINES; k++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
+    int i = k + menuVerticalOffset;
+    LcdFlags attr = (sub==i ? INVERS | (editMode>0 ? BLINK : 0) : 0);
+    switch (i) {
       case MIX_FIELD_NAME:
         editSingleName(MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
@@ -276,36 +263,36 @@ void menuModelMixOne(event_t event)
 #endif
 
       case MIX_FIELD_SWITCH:
-        md2->swtch = editSwitch(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
+        md2->swtch = editSwitch(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
         break;
 
       case MIX_FIELD_WARNING:
-        drawFieldLabel(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, STR_MIXWARNING);
+        drawFieldLabel(MIXES_2ND_COLUMN, y, STR_MIXWARNING);
         if (md2->mixWarn)
-          lcdDrawNumber(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
+          lcdDrawNumber(MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
         else
-          lcdDrawText(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, STR_OFF, attr);
+          lcdDrawText(MIXES_2ND_COLUMN, y, STR_OFF, attr);
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, md2->mixWarn, 3);
         break;
 
       case MIX_FIELD_MLTPX:
-        md2->mltpx = editChoice(MENU_COLUMN2_X+MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
+        md2->mltpx = editChoice(MIXES_2ND_COLUMN, y, STR_MULTPX, STR_VMLTPX, md2->mltpx, 0, 2, attr, event);
         break;
 
       case MIX_FIELD_DELAY_UP:
-        md2->delayUp = EDIT_DELAY(MENU_COLUMN2_X, y, event, attr, STR_DELAYUP, md2->delayUp);
+        md2->delayUp = EDIT_DELAY(y, event, attr, STR_DELAYUP, md2->delayUp);
         break;
 
       case MIX_FIELD_DELAY_DOWN:
-        md2->delayDown = EDIT_DELAY(MENU_COLUMN2_X, y, event, attr, STR_DELAYDOWN, md2->delayDown);
+        md2->delayDown = EDIT_DELAY(y, event, attr, STR_DELAYDOWN, md2->delayDown);
         break;
 
       case MIX_FIELD_SLOW_UP:
-        md2->speedUp = EDIT_DELAY(MENU_COLUMN2_X, y, event, attr, STR_SLOWUP, md2->speedUp);
+        md2->speedUp = EDIT_DELAY(y, event, attr, STR_SLOWUP, md2->speedUp);
         break;
 
       case MIX_FIELD_SLOW_DOWN:
-        md2->speedDown = EDIT_DELAY(MENU_COLUMN2_X, y, event, attr, STR_SLOWDOWN, md2->speedDown);
+        md2->speedDown = EDIT_DELAY(y, event, attr, STR_SLOWDOWN, md2->speedDown);
         break;
     }
   }

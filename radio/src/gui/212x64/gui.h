@@ -44,24 +44,13 @@
 #define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-2)
 #define CURVE_CENTER_Y                 (LCD_H/2)
 
-#if defined(TRANSLATIONS_FR)
-  #define MENU_COLUMNS                 1
-#else
-  #define MENU_COLUMNS                 2
-#endif
-
-#if MENU_COLUMNS == 1
-  #define MIXES_2ND_COLUMN             (18*FW)
-#else
-  #define MIXES_2ND_COLUMN             (9*FW)
-#endif
+#define MIXES_2ND_COLUMN               (18*FW)
 
 #define MENUS_SCROLLBAR_WIDTH          2
 
-#define MENU_COLUMN2_X                 (8 + LCD_W / 2)
 inline void drawFieldLabel(coord_t x, coord_t y, const char * str)
 {
-  lcdDrawText((x > (LCD_W-10*FW-MENUS_SCROLLBAR_WIDTH)) ? MENU_COLUMN2_X : 0, y, str);
+  lcdDrawText(0, y, str);
 }
 
 extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
@@ -263,13 +252,8 @@ extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, uint8_t attr=ZCHAR);
 void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active);
 
-#if MENU_COLUMNS > 1
-uint8_t editDelay(coord_t x, coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay);
-#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(x, y, event, attr, str, delay)
-#else
-uint8_t editDelay(const coord_t y, const event_t event, const uint8_t attr, const pm_char *str, uint8_t delay);
-#define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
-#endif
+uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
+#define EDIT_DELAY(y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
 #define WARNING_TYPE_ASTERISK          0
 #define WARNING_TYPE_CONFIRM           1
