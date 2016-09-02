@@ -17,27 +17,15 @@ mkdir -p ${workdir}/sdcard/horus/IMAGES
 cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
 # Request sound pack generation
-wget -qO- http://winbox.open-tx.org/voice-builds/compile22.php?branch=${branch}
-
-# Get sounds
-cd sdcard
-wget http://winbox.open-tx.org/voice-builds/english-irish-taranis.zip
-wget http://winbox.open-tx.org/voice-builds/english-scottish-taranis.zip
-wget http://winbox.open-tx.org/voice-builds/english-american-taranis.zip
-wget http://winbox.open-tx.org/voice-builds/english-australian-taranis.zip
-wget http://winbox.open-tx.org/voice-builds/french-taranis.zip
+python3 -B ${workdir}/tts.py en csv files
+python3 -B ${workdir}/tts.py fr csv files
+python3 -B ${workdir}/tts.py es csv files
+python3 -B ${workdir}/tts.py it csv files
+python3 -B ${workdir}/tts.py de csv files
 
 # Prepare the sdcard zip files for Horus
-unzip english-irish-taranis.zip -d  ${workdir}/sdcard/horus
-mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-irish
-unzip english-scottish-taranis.zip -d  ${workdir}/sdcard/horus
-mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-scottish
-unzip english-australian-taranis.zip -d  ${workdir}/sdcard/horus
-mv ${workdir}/sdcard/horus/SOUNDS/en ${workdir}/sdcard/horus/SOUNDS/en-australian
-unzip english-american-taranis -d  ${workdir}/sdcard/horus
-unzip french-taranis.zip -d  ${workdir}/sdcard/horus
-wget -O ${workdir}/sdcard/horus/SOUNDS/en/english.csv http://winbox.open-tx.org/voice-builds/english-american-taranis.csv
-wget -O ${workdir}/sdcard/horus/SOUNDS/fr/french.csv http://winbox.open-tx.org/voice-builds/french-taranis.csv
+mv /tmp/SOUNDS ${workdir}/sdcard/horus/
+
 
 # Duplicate for Taranis and create sdcards.zip
 mkdir ${workdir}/sdcard/taranis/SOUNDS
