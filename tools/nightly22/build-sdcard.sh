@@ -6,32 +6,39 @@ branch=next
 workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightly
 
-cd ${workdir}
+# Handle opentx.sdcard.version
+if cmp --silent ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}/opentx.sdcard.version
+then
+  exit
+else 
+  cp -r ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}
+  cd ${workdir}
 
-# Copy git sdcard data
-rm -Rf ${workdir}/sdcard
-cp -r ${workdir}/code/radio/sdcard .
+  # Copy git sdcard data
+  rm -Rf ${workdir}/sdcard
+  cp -r ${workdir}/code/radio/sdcard .
 
-# Get images for Horus
-mkdir -p ${workdir}/sdcard/horus/IMAGES
-cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
+  # Get images for Horus
+  mkdir -p ${workdir}/sdcard/horus/IMAGES
+  cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
-# Request sound pack generation
-python3 -B ${workdir}/code/tools/nightly22/tts.py en csv files
-python3 -B ${workdir}/code/tools/nightly22/tts.py fr csv files
-python3 -B ${workdir}/code/tools/nightly22/tts.py es csv files
-python3 -B ${workdir}/code/tools/nightly22/tts.py it csv files
-python3 -B ${workdir}/code/tools/nightly22/tts.py de csv files
+  # Request sound pack generation
+  python3 -B ${workdir}/code/tools/nightly22/tts.py en csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py fr csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py es csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py it csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py de csv files
 
-# Prepare the sdcard zip files for Horus
-mv /tmp/SOUNDS ${workdir}/sdcard/horus/
+  # Prepare the sdcard zip files for Horus
+  mv /tmp/SOUNDS ${workdir}/sdcard/horus/
 
 
-# Duplicate for Taranis and create sdcards.zip
-mkdir ${workdir}/sdcard/taranis/SOUNDS
-cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis/
-rm -f ${output}/sdcard/*.zip
-cd ${workdir}/sdcard/taranis && zip -r ${output}/sdcard/sdcard-taranis.zip *
-cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus.zip *
-rm -Rf ${workdir}/sdcard
+  # Duplicate for Taranis and create sdcards.zip
+  mkdir ${workdir}/sdcard/taranis/SOUNDS
+  cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis/
+  rm -f ${output}/sdcard/*.zip
+  cd ${workdir}/sdcard/taranis && zip -r ${output}/sdcard/sdcard-taranis.zip *
+  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus.zip *
+  rm -Rf ${workdir}/sdcard
 
+fi
