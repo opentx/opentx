@@ -23,7 +23,6 @@
 
 #include "keys.h"
 
-#define MENU_COLUMNS           2
 #define MENU_COLUMN2_X         280
 #define MIXES_2ND_COLUMN       140
 #define COLUMN_HEADER_X        150
