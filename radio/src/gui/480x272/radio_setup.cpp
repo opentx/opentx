@@ -116,7 +116,7 @@ bool menuRadioSetup(event_t event)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
     LABEL(ALARMS), 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
-    CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0)
+    CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
     CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
 
   if (event == EVT_ENTRY) {
