@@ -68,7 +68,7 @@ void backlightInit()
 void backlightEnable(uint8_t dutyCycle)
 {
   if (dutyCycle < 5) {
-    return;
+    dutyCycle = 5;
   }
   
   if (IS_HORUS_PROD()) {
