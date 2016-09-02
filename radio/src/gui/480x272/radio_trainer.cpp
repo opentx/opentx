@@ -30,15 +30,15 @@ bool menuRadioTrainer(event_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, RADIO_ICONS, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
+  MENU(STR_MENUTRAINER, RADIO_ICONS, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, 0, 0});
 
   if (slave) {
-    // TODO lcdDrawTextAlignedCenter(5*FH, STR_SLAVE, TEXT_COLOR);
+    lcdDrawText(LCD_W/2, 5*FH, STR_SLAVE, CENTERED|TEXT_COLOR);
     return true;
   }
 
-  uint8_t attr;
-  uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+  LcdFlags attr;
+  LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
   /* lcdDrawText(TRAINER_COLUMN_1, MENU_HEADER_HEIGHT+1, "Mode", HEADER_COLOR);
   lcdDrawText(TRAINER_COLUMN_2, MENU_HEADER_HEIGHT+1, "Weight", HEADER_COLOR);
@@ -46,19 +46,18 @@ bool menuRadioTrainer(event_t event)
   */
 
   y = MENU_CONTENT_TOP + FH;
-  int sub = menuVerticalPosition + 1;
 
-  for (int i=1; i<=NUM_STICKS; i++) {
-    uint8_t chan = channel_order(i);
-    volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
+  for (uint8_t i=0; i<NUM_STICKS; i++) {
+    uint8_t chan = channel_order(i+1);
+    TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
-    drawSource(MENUS_MARGIN_LEFT, y, MIXSRC_Rud-1+chan, ((sub==i && CURSOR_ON_LINE()) ? INVERS : 0));
+    drawSource(MENUS_MARGIN_LEFT, y, MIXSRC_Rud-1+chan, ((menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0));
 
     for (int j=0; j<3; j++) {
 
-      attr = ((sub==i && menuHorizontalPosition==j) ? blink : 0);
+      attr = ((menuVerticalPosition==i && menuHorizontalPosition==j) ? blink : 0);
 
-      switch(j) {
+      switch (j) {
         case 0:
           lcdDrawTextAtIndex(TRAINER_COLUMN_1, y, STR_TRNMODE, td->mode, attr);
           if (attr&BLINK) CHECK_INCDEC_GENVAR(event, td->mode, 0, 2);
@@ -78,12 +77,12 @@ bool menuRadioTrainer(event_t event)
     y += FH;
   }
 
-  attr = (sub==5) ? blink : 0;
+  attr = (menuVerticalPosition==4) ? blink : 0;
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 5*FH, STR_MULTIPLIER);
   lcdDrawNumber(TRAINER_COLUMN_1, MENU_CONTENT_TOP + 5*FH, g_eeGeneral.PPM_Multiplier+10, LEFT|attr|PREC1);
   if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-  attr = (sub==6) ? INVERS : 0;
+  attr = (menuVerticalPosition==5) ? INVERS : 0;
   if (attr) s_editMode = 0;
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {

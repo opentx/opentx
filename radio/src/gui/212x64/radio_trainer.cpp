@@ -27,7 +27,7 @@ void menuRadioTrainer(event_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { 2, 2, 2, 2, 0/*, 0*/ });
+  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, 0, 0 });
 
   if (slave) {
     lcdDrawText(7*FW, 4*FH, STR_SLAVE);
@@ -40,17 +40,16 @@ void menuRadioTrainer(event_t event)
   lcdDrawText(3*FW, MENU_HEADER_HEIGHT+1, STR_MODESRC);
 
   y = MENU_HEADER_HEIGHT + 1 + FH;
-  int sub = menuVerticalPosition + 1;
 
-  for (int i=1; i<=NUM_STICKS; i++) {
-    uint8_t chan = channel_order(i);
-    volatile TrainerMix *td = &g_eeGeneral.trainer.mix[chan-1];
+  for (int i=0; i<NUM_STICKS; i++) {
+    uint8_t chan = channel_order(i+1);
+    TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
-    putsStickName(0, y, chan-1, (sub==i && CURSOR_ON_LINE()) ? INVERS : 0);
+    putsStickName(0, y, chan-1, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);
 
     for (int j=0; j<3; j++) {
 
-      attr = ((sub==i && menuHorizontalPosition==j) ? blink : 0);
+      attr = ((menuVerticalPosition==i && menuHorizontalPosition==j) ? blink : 0);
 
       switch(j) {
         case 0:
@@ -72,12 +71,12 @@ void menuRadioTrainer(event_t event)
     y += FH;
   }
 
-  attr = (sub==5) ? blink : 0;
+  attr = (menuVerticalPosition==4) ? blink : 0;
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+5*FH, STR_MULTIPLIER);
   lcdDrawNumber(LEN_MULTIPLIER*FW+3*FW, MENU_HEADER_HEIGHT+1+5*FH, g_eeGeneral.PPM_Multiplier+10, attr|PREC1|RIGHT);
   if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.PPM_Multiplier, -10, 40);
 
-  attr = (sub==6) ? INVERS : 0;
+  attr = (menuVerticalPosition==5) ? INVERS : 0;
   if (attr) s_editMode = 0;
   lcdDrawText(0*FW, MENU_HEADER_HEIGHT+1+6*FH, STR_CAL, attr);
   for (int i=0; i<4; i++) {
