@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void rtcSetTime(struct gtm * t)
+void rtcSetTime(const struct gtm * t)
 {
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;

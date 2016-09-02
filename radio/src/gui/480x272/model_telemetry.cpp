@@ -75,6 +75,7 @@ enum MenuModelTelemetryFrskyItems {
 #define TELEM_COL2                    200
 #define TELEM_COL3                    275
 #define TELEM_COL4                    350
+#define TELEM_COL5                    425
 
 #define IF_FAS_OFFSET(x)              x,
 #define IS_RANGE_DEFINED(k)           (g_model.frsky.channels[k].ratio > 0)
@@ -443,11 +444,11 @@ bool menuModelTelemetryFrsky(event_t event)
           // Spektrum does not (yet?) really support multiple sensor of the same type. But a lot of
           // different sensor display the same information (e.g. voltage, capacity). Show the id
           // of the sensor in the overview to ease figuring out what sensors belong together
-          lcdDrawHexNumber(TELEM_COL4, y, sensor->id, LEFT);
+          lcdDrawHexNumber(TELEM_COL5, y, sensor->id, LEFT);
         } else
 #endif
       if (sensor->type == TELEM_TYPE_CUSTOM && !g_model.ignoreSensorIds) {
-        lcdDrawNumber(TELEM_COL4, y, sensor->instance, LEFT);
+        lcdDrawNumber(TELEM_COL5, y, sensor->instance, LEFT);
       }
       if (attr) {
         s_editMode = 0;
@@ -477,7 +478,7 @@ bool menuModelTelemetryFrsky(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TELEMETRY_SENSORS);
         lcdDrawText(TELEM_COL2, y, STR_VALUE, 0);
         if (!g_model.ignoreSensorIds && !IS_SPEKTRUM_PROTOCOL()) {
-          lcdDrawText(TELEM_COL4, y, STR_ID, 0);
+          lcdDrawText(TELEM_COL5, y, STR_ID, 0);
         }
         break;
 

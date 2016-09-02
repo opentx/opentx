@@ -263,7 +263,7 @@ void rtcGetTime(struct gtm * utm)
   utm->tm_wday = rtc.wday - 1;
 }
 
-void rtcSetTime(struct gtm * t)
+void rtcSetTime(const struct gtm * t)
 {
   g_rtcTime = gmktime(t); // update local timestamp and get wday calculated
   g_ms100 = 0; // start of next second begins now

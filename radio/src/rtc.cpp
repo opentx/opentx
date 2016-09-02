@@ -486,3 +486,38 @@ void gettime(struct gtm * tm)
 }
 
 
+#define RTC_ADJUST_PERIOD      60   // how often RTC is checked for accuracy [seconds]
+#define RTC_ADJUST_TRESHOLD    20   // how much clock must differ before adjustment is made [seconds]
+/*
+  Changes RTC date/time to the given date/time if:
+   * RTC_ADJUST_PERIOD seconds have elapsed from the last time this function adjusted the RTC clock
+   * AND if actual RTC clock differs from the given clock by more than RTC_ADJUST_TRESHOLD seconds
+   * Function does nothing for a minute around midnight, where date change could produce erroneous result
+*/
+uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec)
+{
+  static tmr10ms_t lastRtcAdjust = 0;
+  if ((get_tmr10ms()-lastRtcAdjust) > (RTC_ADJUST_PERIOD*100)) {
+    lastRtcAdjust = get_tmr10ms();
+
+    struct gtm t;
+    gettime(&t);
+    if ((hour == 0 && min == 0) || (hour == 23 && min == 59)) return 0;
+
+    if (t.tm_year != (year-1900) || t.tm_mon != (mon-1) || t.tm_mday != day ||
+        (abs((t.tm_hour-hour)*3600 + (t.tm_min-min)*60 + (t.tm_sec-sec)) > RTC_ADJUST_TRESHOLD)) {
+      // we adjust RTC only if difference is > 20 seconds
+      t.tm_year = year - 1900;
+      t.tm_mon  = mon - 1;
+      t.tm_mday = day;
+      t.tm_hour = hour;
+      t.tm_min  = min;
+      t.tm_sec  = sec;
+      g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
+      rtcSetTime(&t);
+      TRACE("RTC clock adjusted to %04d-%02d-%02d %02d:%02d:%02d", year, mon, day, hour, min, sec);
+      return 1;
+    }
+  }
+  return 0;
+}

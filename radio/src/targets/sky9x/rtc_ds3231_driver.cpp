@@ -60,7 +60,7 @@ void writeRtc(gtm* ptr)
   i2cWriteBuffer(DS3231_I2C_ADDR, read_buffer, 1, buffer, 7);
 }
 
-void rtcSetTime(struct gtm * t)
+void rtcSetTime(const struct gtm * t)
 {
   writeRtc(t);
 }
