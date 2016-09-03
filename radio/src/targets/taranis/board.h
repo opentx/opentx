@@ -158,7 +158,6 @@ uint32_t isFirmwareStart(const void * buffer);
 uint32_t isBootloaderStart(const void * buffer);
 
 // Pulses driver
-void modulesInit(void);
 #define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #define INTERNAL_MODULE_OFF()     GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)

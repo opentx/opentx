@@ -139,8 +139,6 @@ void boardInit()
   i2cInit();
   usbInit();
   
-  modulesInit();
-  
 #if defined(HAPTIC)  
   hapticInit();
 #endif

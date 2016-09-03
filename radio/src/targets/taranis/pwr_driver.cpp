@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "pwr.h"
-#include "board.h"
+#include "opentx.h"
 
 void pwrInit()
 {
@@ -33,11 +32,22 @@ void pwrInit()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+  
+  GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
+  GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
+  
+  GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
+  GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
-
+  
+  GPIO_InitStructure.GPIO_Pin = TRAINER_DETECT_GPIO_PIN;
+  GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
+  
   pwrOn();
 }
 
