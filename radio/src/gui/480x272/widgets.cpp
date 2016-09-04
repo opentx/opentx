@@ -61,19 +61,19 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
   if (attr) {
-    lcdDrawSolidFilledRect(x-1, y+2, 13, 13, TEXT_INVERTED_BGCOLOR);
-    lcdDrawSolidFilledRect(x+1, y+4, 9, 9, TEXT_BGCOLOR);
+    lcdDrawSolidFilledRect(x-1, y+3, 14, 14, TEXT_INVERTED_BGCOLOR);
+    lcdDrawSolidFilledRect(x+1, y+5, 10, 10, TEXT_BGCOLOR);
     if (value) {
-      lcdDrawSolidFilledRect(x+2, y+5, 7, 7, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x+2, y+6, 8, 8, TEXT_INVERTED_BGCOLOR);
     }
   }
   else {
     if (value) {
-      lcdDrawSolidFilledRect(x+2, y+5, 7, 7, SCROLLBOX_COLOR);
-      lcdDrawSolidRect(x, y+3, 11, 11, 1, LINE_COLOR);
+      lcdDrawSolidFilledRect(x+2, y+6, 8, 8, SCROLLBOX_COLOR);
+      lcdDrawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
     }
     else {
-      lcdDrawSolidRect(x, y+3, 11, 11, 1, LINE_COLOR);
+      lcdDrawSolidRect(x, y+4, 12, 12, 1, LINE_COLOR);
     }
   }
 }
