@@ -760,10 +760,10 @@ PACK(typedef struct {
   int8_t   varioRepeat;
   int8_t   backgroundVolume;
  
-  TARANIS_FIELD(uint8_t  serial2Mode : 6)
-  TARANIS_FIELD(uint8_t  slidersConfig : 2)
-  TARANIS_FIELD(uint8_t  potsConfig)
-  TARANIS_FIELD(uint8_t  backlightColor)
+  TARANIS_FIELD(uint8_t serial2Mode:6)
+  TARANIS_FIELD(uint8_t slidersConfig:2)
+  TARANIS_FIELD(uint8_t potsConfig)
+  TARANIS_FIELD(uint8_t backlightColor)
   TARANIS_FIELD(swarnstate_t switchUnlockStates)
   TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
   TARANIS_FIELD(swconfig_t switchConfig)

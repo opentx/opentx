@@ -905,8 +905,8 @@ PACK(struct TrainerData {
   #endif
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    uint8_t  serial2Mode:6; \
-    uint8_t  slidersConfig:2; \
+    uint8_t  serial2Mode:4; \
+    uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \

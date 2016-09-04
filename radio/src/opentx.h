@@ -299,34 +299,25 @@
 
 void memswap(void * a, void * b, uint8_t size);
 
-#if defined(PCBHORUS)
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+  #define POT_CONFIG(x)             ((g_eeGeneral.potsConfig >> (2*((x)-POT1)))&0x03)
+  #define IS_POT_MULTIPOS(x)        (IS_POT(x) && POT_CONFIG(x)==POT_MULTIPOS_SWITCH)
+  #define IS_POT_WITHOUT_DETENT(x)  (IS_POT(x) && POT_CONFIG(x)==POT_WITHOUT_DETENT)
+  #define IS_SLIDER_AVAILABLE(x)    ((x) == SLIDER1 || (x) == SLIDER2 || (IS_SLIDER(x) && (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER1)))))
+  #define IS_POT_AVAILABLE(x)       (IS_POT(x) && POT_CONFIG(x)!=POT_NONE)
+  #define IS_POT_OR_SLIDER_AVAILABLE(x)          (IS_POT_AVAILABLE(x) || IS_SLIDER_AVAILABLE(x))
+  #define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 #elif defined(PCBFLAMENCO)
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (false)
-#elif defined(PCBX9E)
-  #define IS_SLIDER_AVAILABLE(x)    ((x)==SLIDER1 || (x)==SLIDER2 || (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3))))
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
-#elif defined(PCBX9DP)
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
-#elif defined(PCBTARANIS)
-  #define IS_POT_MULTIPOS(x)        ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_MULTIPOS_SWITCH)
-  #define IS_POT_WITHOUT_DETENT(x)  ((x)>=POT1 && (x)<=POT_LAST && ((g_eeGeneral.potsConfig>>(2*((x)-POT1)))&0x03)==POT_WITHOUT_DETENT)
+  #define IS_POT_OR_SLIDER_AVAILABLE(x)          (true)
+  #define IS_MULTIPOS_CALIBRATED(cal) (false)
 #else
   #define IS_POT_MULTIPOS(x)        (false)
   #define IS_POT_WITHOUT_DETENT(x)  (true)
-#endif
-
-#if defined(PCBTARANIS)
-  #define IS_POT_OR_SLIDER_AVAILABLE(x)          (IS_POT(x) || IS_SLIDER(x))
-#else
   #define IS_POT_OR_SLIDER_AVAILABLE(x)          (true)
+  #define IS_MULTIPOS_CALIBRATED(cal) (false)
 #endif
-
-#define IS_MULTIPOS_CALIBRATED(cal) (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
 
 #if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7D)
   #define PWR_BUTTON_DELAY
