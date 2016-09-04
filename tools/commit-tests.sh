@@ -63,7 +63,21 @@ make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
 
-# OpenTX on Taranis
+# OpenTX on X7D
+rm -rf *
+cmake ${COMMON_OPTIONS} -DPCB=X7D -DHELI=YES ${SRCDIR}
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
+
+# OpenTX on X9D
+rm -rf *
+cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+make -j2 firmware
+make -j2 simu
+make -j2 gtests ; ./gtests
+
+# OpenTX on X9D+
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j2 firmware
@@ -73,13 +87,6 @@ make -j2 gtests ; ./gtests
 # OpenTX on Taranis X9E
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
-make -j2 firmware
-make -j2 simu
-make -j2 gtests ; ./gtests
-
-# OpenTX on Taranis Plus
-rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES -DCURVES=YES ${SRCDIR}
 make -j2 firmware
 make -j2 simu
 make -j2 gtests ; ./gtests
