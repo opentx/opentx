@@ -142,6 +142,7 @@ uint32_t sdGetSpeed(void);
 #define sdDone()
 #else
 void sdInit(void);
+void sdMount(void);
 void sdDone(void);
 void sdPoll10ms(void);
 #define sdMountPoll()
