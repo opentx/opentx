@@ -287,7 +287,6 @@
 #endif
 
 #define NUM_PSWITCH                    (SWSRC_LAST_SWITCH-SWSRC_FIRST_SWITCH+1)
-#define NUM_POTSSW                     (NUM_XPOTS*6)
 
 #include "myeeprom.h"
 
