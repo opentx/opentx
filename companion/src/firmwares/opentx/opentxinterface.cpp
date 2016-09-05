@@ -597,7 +597,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case OffsetWeight:
       return (IS_ARM(board) ? 500 : 245);
     case Timers:
-      return ((IS_ARM(board) && id.contains("timer3")) ? 3 : 2);
+      return (IS_ARM(board) ? 3 : 2);
     case TimersName:
       return (IS_TARANIS(board) ? 8 : (IS_ARM(board) ? 3 : 0));
     case PermTimers:
@@ -1142,7 +1142,6 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
-  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
@@ -1218,7 +1217,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
-  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
@@ -1370,7 +1368,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
-  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
@@ -1394,7 +1391,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
-  firmware->addOption("timer3", QObject::tr("Support for a third timer"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));

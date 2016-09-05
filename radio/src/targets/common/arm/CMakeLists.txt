@@ -1,4 +1,4 @@
-option(TIMERS "Timers count" 2)
+option(TIMERS "Timers count" 3)
 option(CLI "Command Line Interface" OFF)
 option(DEBUG "Debug mode" OFF)
 option(LOG_TELEMETRY "Telemetry Logs on SD card" OFF)
