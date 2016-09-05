@@ -532,7 +532,12 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_LAST= MM_RF_PROTO_CUSTOM
 };
 
-#define MM_RF_DSM2_22MS_6CH_OPTION  2
+#define MM_RF_DSM2_22MS_6CH_OPTION      2
+
+#define MM_RF_FRSKY_SUBTYPE_D16         0
+#define MM_RF_FRSKY_SUBTYPE_D8          1
+#define MM_RF_FRSKY_SUBTYPE_D16_8CH     2
+#define MM_RF_FRSKY_SUBTYPE_V8          3
 
 #define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
 #define HAS_RF_PROTOCOL_MODELINDEX(rf) (((rf) == RF_PROTO_X16) || ((rf) == RF_PROTO_LR12))

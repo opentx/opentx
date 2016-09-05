@@ -136,17 +136,17 @@ void setupPulsesMultimodule(uint8_t port)
      type = type + 1;
 
   if (g_model.moduleData[port].multi.rfProtocol == MM_RF_PROTO_FRSKY) {
-    if(subtype == 1) {
+    if(subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
       subtype = 0;
-    } else if (subtype == 3) {
-      //LR12
+    } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
+      //V8
       type = 25;
       subtype = 0;
     } else {
       type = 15;
-      if (subtype == 2) // D16 8ch
+      if (subtype == MM_RF_FRSKY_SUBTYPE_D16_8CH) // D16 8ch
           subtype = 1;
       else
           subtype = 0;  // D16

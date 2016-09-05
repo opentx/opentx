@@ -153,11 +153,11 @@ inline uint8_t modelTelemetryProtocol()
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     if (g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_DSM2)
       return PROTOCOL_SPEKTRUM;
-    else if ((g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == 1))
-      // D8
-      return PROTOCOL_FRSKY_D;
-    else
+    else if ((g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol == MM_RF_PROTO_FRSKY) &&
+     (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
       return PROTOCOL_FRSKY_SPORT;
+    else
+      return PROTOCOL_FRSKY_D;
   }
 #endif
 
