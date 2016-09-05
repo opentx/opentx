@@ -6,6 +6,9 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 else(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(COMPANION_NAME "companion")
   set(SIMULATOR_NAME "simulator")
+  if(APPLE)
+    set(SIMULATOR_LIB_PATH ${CMAKE_INSTALL_PREFIX}/Contents/companion.app/Ressources)
+  endif()
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 option(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default
@@ -264,7 +267,11 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandopti
 
 ############# Packaging ####################
 message(STATUS ${CMAKE_BINARY_DIR} ${CMAKE_INSTALL_PREFIX}/bin)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(APPLE)
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${SIMULATOR_LIB_PATH} USE_SOURCE_PERMISSIONS
+    FILES_MATCHING PATTERN "libopentx-*.dylib"
+  )
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${SIMULATOR_LIB_PATH} USE_SOURCE_PERMISSIONS
@@ -348,6 +355,9 @@ endif()
 
 if(APPLE)
   set(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
+  SET_SOURCE_FILES_PROPERTIES(${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  set(${COMPANION_SOURCES} ${COMPANION_SOURCES} ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE})
+
   if(CMAKE_GENERATOR STREQUAL Xcode)
     set(WORK_DIR ${CMAKE_BINARY_DIR}/Debug)
   else()
@@ -393,6 +403,15 @@ string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 # very poor trace-backs from the users when they report Companion crash
 set(CPACK_STRIP_FILES FALSE)
 
+INSTALL(TARGETS ${COMPANION_NAME}
+    BUNDLE DESTINATION . COMPONENT Runtime
+    RUNTIME DESTINATION bin COMPONENT Runtime
+    )
+
+
+# directories to look for dependencies
+SET(DIRS ${QT_LIBRARY_DIRS})    
+
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
 if(DPKG_PROGRAM)
   set(CPACK_GENERATOR "DEB")
@@ -408,6 +427,14 @@ if(DPKG_PROGRAM)
   set(CPACK_DEBIAN_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
   set(CPACK_DEBIAN_ARCHITECTURE $(CMAKE_SYSTEM_PROCESSOR))
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+elseif(APPLE)
+  set(APPS "${COMPANION_NAME}.app")
+  set(CPACK_GENERATOR "DragNDrop")
+  set(CPACK_BINARY_DRAGNDROP ON)
+  set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/dmg_background.png)
+  set(CPACK_DMG_VOLUME_NAME "OpenTX Companion")
+  set(CPACK_DMG_DS_STORE ${PROJECT_SOURCE_DIR}/companion/targets/mac/DS_Store)
+
 else(DPKG_PROGRAM)
   set(CPACK_GENERATOR "RPM")
   set(CPACK_RPM_PACKAGE_VERSION ${VERSION})
@@ -415,5 +442,12 @@ else(DPKG_PROGRAM)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
   SET(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib /lib/udev /lib/udev/rules.d")
 endif(DPKG_PROGRAM)
+
+INSTALL(CODE "
+    include(BundleUtilities)
+    " COMPONENT Runtime
+    VERIFY_APP(${COMPANION_NAME})
+        )
+
 
 include(CPack)
