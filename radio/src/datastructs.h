@@ -656,7 +656,7 @@ PACK(struct ModuleData {
   union {
     struct {
       int8_t  delay:6;
-      uint8_t pulsePol:1;      // For PXX: false = internal antenna, true = external antenna
+      uint8_t pulsePol:1;
       uint8_t outputType:1;    // false = open drain, true = push pull
       int8_t  frameLength;
     } ppm;
@@ -666,6 +666,12 @@ PACK(struct ModuleData {
       uint8_t lowPowerMode:1;
       int8_t optionValue;
     } multi);
+    NOBACKUP(struct {
+      uint8_t spare:6;
+      uint8_t external_antenna:1; // false = internal antenna, true = external antenna
+      uint8_t spare2:1;
+      uint8_t spare3;
+    } pxx);
   };
 });
 
