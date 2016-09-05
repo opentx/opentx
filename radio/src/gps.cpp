@@ -134,6 +134,8 @@ typedef struct gpsDataNmea_s
   uint16_t altitude;
   uint16_t speed;
   uint16_t groundCourse;
+  uint32_t date;
+  uint32_t time;
 } gpsDataNmea_t;
 
 bool gpsNewFrameNMEA(char c)
@@ -166,8 +168,6 @@ bool gpsNewFrameNMEA(char c)
       switch (gps_frame) {
         case FRAME_GGA:        //************* GPGGA FRAME parsing
           switch (param) {
-            // case 1: // Time information
-            //   break;
             case 2:
               gps_Msg.latitude = GPS_coord_to_degrees(string);
               break;
@@ -200,11 +200,17 @@ bool gpsNewFrameNMEA(char c)
           break;
         case FRAME_RMC:        //************* GPRMC FRAME parsing
           switch (param) {
+            case 1:
+              gps_Msg.time = grab_fields(string, 0);
+              break;
             case 7:
               gps_Msg.speed = ((grab_fields(string, 1) * 5144L) / 1000L);    // speed in cm/s added by Mis
               break;
             case 8:
               gps_Msg.groundCourse = (grab_fields(string, 1));      // ground course deg * 10
+              break;
+            case 9:
+              gps_Msg.date = grab_fields(string, 0);
               break;
           }
           break;
@@ -241,7 +247,22 @@ bool gpsNewFrameNMEA(char c)
             case FRAME_RMC:
               gpsData.speed = gps_Msg.speed;
               gpsData.groundCourse = gps_Msg.groundCourse;
-              break;
+#if defined(RTCLOCK)
+              // set RTC clock if needed
+              if (g_eeGeneral.adjustRTC && gps_Msg.fix) {
+                div_t qr = div(gps_Msg.date, 100);
+                uint8_t year = qr.rem;
+                qr = div(qr.quot, 100);
+                uint8_t mon = qr.rem;
+                uint8_t day = qr.quot;
+                qr = div(gps_Msg.time, 100);
+                uint8_t sec = qr.rem;
+                qr = div(qr.quot, 100);
+                uint8_t min = qr.rem;
+                uint8_t hour = qr.quot;
+                rtcAdjust(year+2000, mon, day, hour, min, sec);
+              }
+#endif
           } // end switch
         }
         else {

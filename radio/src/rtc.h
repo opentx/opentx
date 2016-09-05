@@ -44,13 +44,14 @@ extern gtime_t g_rtcTime;
 extern uint8_t g_ms100; // global to allow time set function to reset to zero
 
 void rtcInit();
+void rtcSetTime(const struct gtm * tm);
+gtime_t gmktime (struct gtm *tm);
+uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t min, uint8_t sec);
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
-void rtcSetTime(struct gtm * tm);
 void gettime(struct gtm * tm);
-gtime_t gmktime (struct gtm *tm);
 #if defined(__cplusplus) && !defined(SIMU)
 }
 #endif

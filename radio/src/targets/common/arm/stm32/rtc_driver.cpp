@@ -20,8 +20,10 @@
 
 #include "opentx.h"
 
-void rtcSetTime(struct gtm * t)
+void rtcSetTime(const struct gtm * t)
 {
+  g_ms100 = 0; // start of next second begins now
+
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;
 

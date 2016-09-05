@@ -178,12 +178,6 @@ void parseTelemHubByte(uint8_t byte)
       frskyUpdateCells();
       break;
 
-#if defined(GPS)
-    case offsetof(FrskyTelemetryData, hour):
-      telemetryData.hub.hour = ((uint8_t)(telemetryData.hub.hour + g_eeGeneral.timezone + 24)) % 24;
-      break;
-#endif
-
     case offsetof(FrskyTelemetryData, accelX):
     case offsetof(FrskyTelemetryData, accelY):
     case offsetof(FrskyTelemetryData, accelZ):
