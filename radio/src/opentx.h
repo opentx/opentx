@@ -342,6 +342,7 @@ void memswap(void * a, void * b, uint8_t size);
 
 #if defined(CPUARM)
   #include "fifo.h"
+  #include "io/io_arm.h"
   // This doesn't need protection on this processor
   typedef uint32_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;

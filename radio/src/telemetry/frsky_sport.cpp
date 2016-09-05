@@ -20,18 +20,6 @@
 
 #include "opentx.h"
 
-#define PRIM_REQ_POWERUP    (0)
-#define PRIM_REQ_VERSION    (1)
-#define PRIM_CMD_DOWNLOAD   (3)
-#define PRIM_DATA_WORD      (4)
-#define PRIM_DATA_EOF       (5)
-
-#define PRIM_ACK_POWERUP    (0x80)
-#define PRIM_ACK_VERSION    (0x81)
-#define PRIM_REQ_DATA_ADDR  (0x82)
-#define PRIM_END_DOWNLOAD   (0x83)
-#define PRIM_DATA_CRC_ERR   (0x84)
-
 struct FrSkySportSensor {
   const uint16_t firstId;
   const uint16_t lastId;
@@ -107,64 +95,10 @@ bool checkSportPacket(uint8_t *packet)
 #define SPORT_DATA_U32(packet)  (*((uint32_t *)(packet+4)))
 #define HUB_DATA_U16(packet)    (*((uint16_t *)(packet+4)))
 
-enum SportUpdateState {
-  SPORT_IDLE,
-  SPORT_POWERUP_REQ,
-  SPORT_POWERUP_ACK,
-  SPORT_VERSION_REQ,
-  SPORT_VERSION_ACK,
-  SPORT_DATA_TRANSFER,
-  SPORT_DATA_REQ,
-  SPORT_COMPLETE,
-  SPORT_FAIL
-};
-
-uint8_t  sportUpdateState = SPORT_IDLE;
-uint32_t sportUpdateAddr = 0;
-bool intPwr, extPwr;
 uint16_t servosState;
 uint16_t rboxState;
 
-void processSportUpdatePacket(uint8_t * packet)
-{
-  if (packet[0]==0x5E && packet[1]==0x50) {
-    switch (packet[2]) {
-      case PRIM_ACK_POWERUP :
-        if (sportUpdateState == SPORT_POWERUP_REQ) {
-          sportUpdateState = SPORT_POWERUP_ACK;
-        }
-        break;
-
-      case PRIM_ACK_VERSION:
-        if (sportUpdateState == SPORT_VERSION_REQ) {
-          sportUpdateState = SPORT_VERSION_ACK;
-          // SportVersion[0] = packet[3] ;
-          // SportVersion[1] = packet[4] ;
-          // SportVersion[2] = packet[5] ;
-          // SportVersion[3] = packet[6] ;
-          // SportVerValid = 1 ;
-        }
-        break;
-
-      case PRIM_REQ_DATA_ADDR :
-        if (sportUpdateState == SPORT_DATA_TRANSFER) {
-          sportUpdateAddr = *((uint32_t *)(&packet[3]));
-          sportUpdateState = SPORT_DATA_REQ;
-        }
-        break;
-
-      case PRIM_END_DOWNLOAD :
-        sportUpdateState = SPORT_COMPLETE ;
-        break;
-
-      case PRIM_DATA_CRC_ERR :
-        sportUpdateState = SPORT_FAIL ;
-        break;
-    }
-  }
-}
-
-void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
+void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
 {
   const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
   uint8_t precision = 0;
@@ -188,55 +122,15 @@ void processSportPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t d
   }
 }
 
-void sportOutputPushByte(uint8_t byte)
-{
-  if (byte == 0x7E || byte == 0x7D) {
-    telemetryOutputPushByte(0x7D);
-    telemetryOutputPushByte(0x20 ^ byte);
-  }
-  else {
-    telemetryOutputPushByte(byte);
-  }
-}
-
-bool isSportOutputBufferAvailable()
-{
-  return (outputTelemetryBufferSize == 0 && outputTelemetryBufferTrigger == 0x7E);
-}
-
-// TODO merge it with S.PORT update function when finished
-void sportOutputPushPacket(SportTelemetryPacket & packet)
-{
-  uint16_t crc = 0;
-
-  for (uint8_t i=1; i<sizeof(packet); i++) {
-    uint8_t byte = packet.raw[i];
-    sportOutputPushByte(byte);
-    crc += byte; // 0-1FF
-    crc += crc >> 8; // 0-100
-    crc &= 0x00ff;
-  }
-
-  telemetryOutputPushByte(0xFF-crc);
-  telemetryOutputSetTrigger(packet.raw[0]); // physicalId
-}
-
-void processSportPacket(uint8_t * packet)
+void sportProcessTelemetryPacket(uint8_t * packet)
 {
   uint8_t physicalId = packet[0] & 0x1F;
   uint8_t primId = packet[1];
   uint16_t id = *((uint16_t *)(packet+2));
   uint32_t data = SPORT_DATA_S32(packet);
 
-#if defined(STM32) && !defined(SIMU)
-  if (sportUpdateState != SPORT_IDLE) {
-    processSportUpdatePacket(packet);	// Uses different chksum
-    return;
-  }
-#endif
-
   if (!checkSportPacket(packet)) {
-    TRACE("processSportPacket(): checksum error ");
+    TRACE("sportProcessTelemetryPacket(): checksum error ");
     DUMP(packet, FRSKY_SPORT_PACKET_SIZE);
     return;
   }
@@ -279,17 +173,17 @@ void processSportPacket(uint8_t * packet)
             value = -value;
           value = (value * 5) / 3; // min/10000 => deg/1000000
           if (data & (1 << 31))
-            processSportPacket(id, 0, instance, value, UNIT_GPS_LATITUDE);
+            sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LATITUDE);
           else
-            processSportPacket(id, 0, instance, value, UNIT_GPS_LONGITUDE);
+            sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LONGITUDE);
         }
         else if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
-          processSportPacket(id, 0, instance, data & 0xffff);
-          processSportPacket(id, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= RBOX_CNSP_FIRST_ID && id <= RBOX_CNSP_LAST_ID) {
-          processSportPacket(id, 0, instance, data & 0xffff);
-          processSportPacket(id, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= RBOX_STATE_FIRST_ID && id <= RBOX_STATE_LAST_ID) {
           uint16_t newServosState = data & 0xffff;
@@ -302,8 +196,8 @@ void processSportPacket(uint8_t * packet)
           }
           servosState = newServosState;
           rboxState = newRboxState;
-          processSportPacket(id, 0, instance, servosState);
-          processSportPacket(id, 1, instance, rboxState);
+          sportProcessTelemetryPacket(id, 0, instance, servosState);
+          sportProcessTelemetryPacket(id, 1, instance, rboxState);
         }
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
@@ -320,7 +214,7 @@ void processSportPacket(uint8_t * packet)
 #endif
         }
         else {
-          processSportPacket(id, 0, instance, data);
+          sportProcessTelemetryPacket(id, 0, instance, data);
         }
       }
     }
@@ -386,201 +280,3 @@ void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instanc
 
   storageDirty(EE_MODEL);
 }
-
-#if defined(STM32)
-bool sportWaitState(SportUpdateState state, int timeout)
-{
-#if defined(SIMU)
-    SIMU_SLEEP_NORET(1);
-    return true;
-#else
-  for (int i=timeout/2; i>=0; i--) {
-    uint8_t byte ;
-    while (telemetryGetByte(&byte)) {
-      processFrskyTelemetryData(byte);
-    }
-    if (sportUpdateState == state) {
-      return true;
-    }
-    else if (sportUpdateState == SPORT_FAIL) {
-      return false;
-    }
-    CoTickDelay(1);
-  }
-  return false;
-#endif
-}
-
-void blankPacket(uint8_t * packet)
-{
-  memset(packet+2, 0, 6);
-}
-
-// TODO merge this function
-void writePacket(uint8_t * packet)
-{
-  uint8_t * ptr = outputTelemetryBuffer;
-  *ptr++ = 0x7E;
-  *ptr++ = 0xFF;
-  packet[7] = crc16(packet, 7);
-  for (int i=0; i<8; i++) {
-    if (packet[i] == 0x7E || packet[i] == 0x7D) {
-      *ptr++ = 0x7D;
-      *ptr++ = 0x20 ^ packet[i];
-    }
-    else {
-      *ptr++ = packet[i];
-    }
-  }
-  sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
-}
-
-bool sportUpdatePowerOn(ModuleIndex module)
-{
-  uint8_t packet[8];
-
-  sportUpdateState = SPORT_POWERUP_REQ;
-
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  intPwr = IS_INTERNAL_MODULE_ON();
-  extPwr = IS_EXTERNAL_MODULE_ON();
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-#endif
-
-  sportWaitState(SPORT_IDLE, 500);
-
-  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
-
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  if (module == INTERNAL_MODULE)
-    INTERNAL_MODULE_ON();
-  else
-    EXTERNAL_MODULE_ON();
-#endif
-
-  sportWaitState(SPORT_IDLE, 50);
-
-  for (int i=0; i<10; i++) {
-    // max 10 attempts
-    blankPacket(packet);
-    packet[0] = 0x50 ;
-    packet[1] = PRIM_REQ_POWERUP;
-    writePacket(packet);
-    if (sportWaitState(SPORT_POWERUP_ACK, 100))
-      return true;
-  }
-  return false;
-}
-
-bool sportUpdateReqVersion()
-{
-  uint8_t packet[8];
-  sportWaitState(SPORT_IDLE, 20);
-  sportUpdateState = SPORT_VERSION_REQ;
-  for (int i=0; i<10; i++) {
-    // max 10 attempts
-    blankPacket(packet) ;
-    packet[0] = 0x50 ;
-    packet[1] = PRIM_REQ_VERSION ;
-    writePacket(packet);
-    if (sportWaitState(SPORT_VERSION_ACK, 200))
-      return true;
-  }
-  return false;
-}
-
-bool sportUpdateUploadFile(const char *filename)
-{
-  FIL file;
-  uint32_t buffer[1024/4];
-  UINT count;
-  uint8_t packet[8];
-
-  if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return false;
-  }
-
-  sportWaitState(SPORT_IDLE, 200);
-  sportUpdateState = SPORT_DATA_TRANSFER;
-  blankPacket(packet) ;
-  packet[0] = 0x50 ;
-  packet[1] = PRIM_CMD_DOWNLOAD ;
-  // Stop here for testing
-  writePacket(packet);
-
-  while(1) {
-    if (f_read(&file, buffer, 1024, &count) != FR_OK) {
-      f_close(&file);
-      return false;
-    }
-
-    count >>= 2;
-
-    for (UINT i=0; i<count; i++) {
-      if (!sportWaitState(SPORT_DATA_REQ, 2000)) {
-        return false;
-      }
-      packet[0] = 0x50 ;
-      packet[1] = PRIM_DATA_WORD ;
-      packet[6] = sportUpdateAddr & 0x000000FF;
-      uint32_t offset = ( sportUpdateAddr & 1023 ) >> 2;           // 32 bit word offset into buffer
-      uint32_t *data = (uint32_t *)(&packet[2]);
-      *data = buffer[offset];
-      sportUpdateState = SPORT_DATA_TRANSFER,
-      writePacket(packet);
-      if (i==0) {
-        updateProgressBar(file.fptr, file.fsize);
-      }
-    }
-
-    if (count < 256) {
-      f_close(&file);
-      return true;
-    }
-  }
-}
-
-bool sportUpdateEnd()
-{
-  uint8_t packet[8];
-  if (!sportWaitState(SPORT_DATA_REQ, 2000))
-    return false;
-  blankPacket(packet);
-  packet[0] = 0x50 ;
-  packet[1] = PRIM_DATA_EOF;
-  writePacket(packet);
-  return sportWaitState(SPORT_COMPLETE, 2000);
-}
-
-void sportFirmwareUpdate(ModuleIndex module, const char * filename)
-{
-  bool result = sportUpdatePowerOn(module);
-  if (result)
-    result = sportUpdateReqVersion();
-  if (result)
-    result = sportUpdateUploadFile(filename);
-  if (result)
-    result = sportUpdateEnd();
-
-  if (result == false) {
-    POPUP_WARNING("Firmware Update Error");
-  }
-
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-#endif
-
-  sportWaitState(SPORT_IDLE, 1000);
-
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  if (intPwr)
-    INTERNAL_MODULE_ON();
-  if (extPwr)
-    EXTERNAL_MODULE_ON();
-#endif
-  sportUpdateState = SPORT_IDLE;
-}
-
-#endif

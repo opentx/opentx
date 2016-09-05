@@ -22,7 +22,7 @@
 
 uint32_t (*IAP_Function)(uint32_t, uint32_t);
 
-void writeFlash(uint32_t *address, uint32_t *buffer)    // size is 256 bytes
+void flashWrite(uint32_t *address, uint32_t *buffer)    // size is 256 bytes
 {
   uint32_t FlashSectorNum;
   uint32_t flash_cmd = 0;
@@ -76,7 +76,7 @@ void clearLockBits()
   }
 }
 
-uint32_t isFirmwareStart(const void * buffer)
+uint32_t isFirmwareStart(const uint8_t * buffer)
 {
   const uint32_t * block = (const uint32_t *)buffer;
 

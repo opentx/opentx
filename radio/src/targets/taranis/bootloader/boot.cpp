@@ -64,8 +64,6 @@ enum MemoryTypes {
   MEM_EEPROM
 };
 
-#define BLOCK_LEN 4096
-
 /*----------------------------------------------------------------------------
  *        Local variables
  *----------------------------------------------------------------------------*/
@@ -89,7 +87,8 @@ TCHAR Filenames[20][50];
 uint32_t FileSize[20];
 uint32_t Valid;
 
-uint32_t Block_buffer[1024];
+#define BLOCK_LEN 4096
+uint8_t Block_buffer[BLOCK_LEN];
 UINT BlockCount;
 
 uint32_t memoryType;
@@ -229,7 +228,7 @@ FRESULT openBinaryFile(uint32_t index)
       return fr;
     }
   }
-  fr = f_read(&FlashFile, (BYTE *)Block_buffer, BLOCK_LEN, &BlockCount);
+  fr = f_read(&FlashFile, Block_buffer, BLOCK_LEN, &BlockCount);
 
   if (BlockCount == BLOCK_LEN)
     return fr;
@@ -237,7 +236,7 @@ FRESULT openBinaryFile(uint32_t index)
     return FR_INVALID_OBJECT;
 }
 
-uint32_t isValidBufferStart(const void * buffer)
+uint32_t isValidBufferStart(const uint8_t * buffer)
 {
   if (memoryType == MEM_FLASH)
     return isFirmwareStart(buffer);
@@ -295,12 +294,12 @@ extern Key keys[];
 
 static uint32_t PowerUpDelay;
 
-void writeFlashBlock()
+void flashWriteBlock()
 {
   uint32_t blockOffset = 0;
   while (BlockCount) {
-    writeFlash((uint32_t *)firmwareAddress, &Block_buffer[blockOffset]);
-    blockOffset += FLASH_PAGESIZE/4; // 32-bit words
+    flashWrite((uint32_t *)firmwareAddress, (uint32_t *)&Block_buffer[blockOffset]);
+    blockOffset += FLASH_PAGESIZE;
     firmwareAddress += FLASH_PAGESIZE;
     if (BlockCount > FLASH_PAGESIZE) {
       BlockCount -= FLASH_PAGESIZE;
@@ -313,7 +312,7 @@ void writeFlashBlock()
 
 void writeEepromBlock()
 {
-  eepromWriteBlock((uint8_t *)Block_buffer, eepromAddress, BlockCount);
+  eepromWriteBlock(Block_buffer, eepromAddress, BlockCount);
   eepromAddress += BlockCount;
 }
 
@@ -551,7 +550,7 @@ int main()
 
         int progress;
         if (memoryType == MEM_FLASH) {
-          writeFlashBlock();
+          flashWriteBlock();
           firmwareWritten += sizeof(Block_buffer);
           progress = (200*firmwareWritten) / FirmwareSize;
         }
@@ -566,7 +565,7 @@ int main()
         lcdDrawSolidHorizontalLine(5, 6*FH+7, progress, FORCE);
         lcdDrawSolidHorizontalLine(5, 6*FH+8, progress, FORCE);
 
-        fr = f_read(&FlashFile, (BYTE *)Block_buffer, sizeof(Block_buffer), &BlockCount);
+        fr = f_read(&FlashFile, Block_buffer, sizeof(Block_buffer), &BlockCount);
         if (BlockCount == 0) {
           state = ST_FLASH_DONE; // EOF
         }

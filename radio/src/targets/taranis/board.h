@@ -155,9 +155,9 @@ uint32_t sdMounted(void);
 #define FLASH_PAGESIZE 256
 void unlockFlash(void);
 void lockFlash(void);
-void writeFlash(uint32_t * address, uint32_t * buffer);
-uint32_t isFirmwareStart(const void * buffer);
-uint32_t isBootloaderStart(const void * buffer);
+void flashWrite(uint32_t * address, uint32_t * buffer);
+uint32_t isFirmwareStart(const uint8_t * buffer);
+uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()      GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)

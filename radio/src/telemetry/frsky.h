@@ -414,17 +414,14 @@ typedef enum {
 } TS_STATE;
 #endif
 
-// FrSky D Protocol
+// FrSky D Telemetry Protocol
 void processHubPacket(uint8_t id, int16_t value);
 void frskyDSendNextAlarm();
 void frskyDProcessPacket(uint8_t *packet);
 
-// FrSky S.PORT Protocol
-void processSportPacket(uint8_t * packet);
+// FrSky S.PORT Telemetry Protocol
+void sportProcessTelemetryPacket(uint8_t * packet);
 
-#if defined(PCBTARANIS)
-void sportFirmwareUpdate(ModuleIndex module, const char * filename);
-#endif
 void telemetryWakeup();
 void telemetryReset();
 
@@ -485,19 +482,5 @@ void frskyUpdateCells();
 #endif
 
 void processFrskyTelemetryData(uint8_t data);
-
-PACK(union SportTelemetryPacket
-{
-  struct {
-    uint8_t physicalId;
-    uint8_t primId;
-    uint16_t dataId;
-    uint32_t value;
-  };
-  uint8_t raw[8];
-});
-
-bool isSportOutputBufferAvailable();
-void sportOutputPushPacket(SportTelemetryPacket & packet);
 
 #endif // _FRSKY_H_

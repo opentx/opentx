@@ -339,7 +339,7 @@ static int luaSportTelemetryPush(lua_State * L)
     packet.primId = luaL_checkunsigned(L, 2);
     packet.dataId = luaL_checkunsigned(L, 3);
     packet.value = luaL_checkunsigned(L, 4);
-    sportOutputPushPacket(packet);
+    sportOutputPushPacket(&packet);
     lua_pushboolean(L, true);
   }
   else {

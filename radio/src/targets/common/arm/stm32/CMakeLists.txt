@@ -87,6 +87,7 @@ set(SRC
   ${SRC}
   sbus.cpp
   telemetry/crossfire.cpp
+  io/bootloader_flash.cpp
   )
 set(PULSES_SRC
   ${PULSES_SRC}

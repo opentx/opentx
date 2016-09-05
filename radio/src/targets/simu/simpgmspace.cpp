@@ -1233,8 +1233,8 @@ FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 void unlockFlash() { }
 void lockFlash() { }
-void writeFlash(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
-uint32_t isBootloaderStart(const void *block) { return 1; }
+void flashWrite(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
+uint32_t isBootloaderStart(const uint8_t * block) { return 1; }
 #endif // defined(PCBTARANIS)
 
 #if defined(PCBFLAMENCO)

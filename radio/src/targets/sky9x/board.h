@@ -234,7 +234,7 @@ void init_trainer_capture();
 
 // Write Flash driver
 #define FLASH_PAGESIZE                 256
-void writeFlash(uint32_t * address, uint32_t * buffer);
+void flashWrite(uint32_t * address, uint32_t * buffer);
 
 // Keys driver
 uint8_t keyState(uint8_t index);

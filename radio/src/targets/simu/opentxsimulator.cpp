@@ -182,7 +182,7 @@ const char * OpenTxSimulator::getError()
 void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
 {
 #if defined(TELEMETRY_FRSKY_SPORT)
-  processSportPacket(data);
+  sportProcessTelemetryPacket(data);
 #endif
 }
 

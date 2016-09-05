@@ -759,7 +759,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
             operation = FATWRITE_FIRMWARE;
           }
           if (operation == FATWRITE_FIRMWARE) {
-            writeFlash((uint32_t *)address, (uint32_t *)buffer);
+            flashWrite((uint32_t *)address, (uint32_t *)buffer);
           }
         }
         address += FLASH_PAGESIZE;

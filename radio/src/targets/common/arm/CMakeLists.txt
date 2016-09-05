@@ -84,6 +84,7 @@ set(SRC
   main_arm.cpp
   tasks_arm.cpp
   audio_arm.cpp
+  io/frsky_sport.cpp
   telemetry/telemetry.cpp
   telemetry/telemetry_holders.cpp
   telemetry/telemetry_sensors.cpp

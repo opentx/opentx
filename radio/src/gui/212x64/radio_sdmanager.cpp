@@ -61,75 +61,6 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && IS_FILE(line)) || (isfile==IS_FILE(line) && strcasecmp(fn, line) < 0);
 }
 
-bool isBootloader(const char * filename)
-{
-  FIL file;
-  f_open(&file, filename, FA_READ);
-  uint8_t buffer[1024];
-  UINT count;
-
-  if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
-    return false;
-  }
-
-  return isBootloaderStart((uint32_t *)buffer);
-}
-
-void flashBootloader(const char * filename)
-{
-  FIL file;
-  f_open(&file, filename, FA_READ);
-  uint8_t buffer[1024];
-  UINT count;
-
-  lcdClear();
-  drawProgressBar(STR_WRITING);
-
-  static uint8_t unlocked = 0;
-  if (!unlocked) {
-    unlocked = 1;
-    unlockFlash();
-  }
-
-  for (int i=0; i<BOOTLOADER_SIZE; i+=1024) {
-    watchdogSuspend(100/*1s*/);
-    if (f_read(&file, buffer, 1024, &count) != FR_OK || count != 1024) {
-      POPUP_WARNING(STR_SDCARD_ERROR);
-      break;
-    }
-    if (i==0 && !isBootloaderStart((uint32_t *)buffer)) {
-      POPUP_WARNING(STR_INCOMPATIBLE);
-      break;
-    }
-    for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
-      writeFlash(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
-    }
-    updateProgressBar(i, BOOTLOADER_SIZE);
-    SIMU_SLEEP(30/*ms*/);
-  }
-
-  if (unlocked) {
-    lockFlash();
-    unlocked = 0;
-  }
-
-  f_close(&file);
-}
-
-void flashSportDevice(ModuleIndex module, const char *filename)
-{
-  pausePulses();
-  watchdogSuspend(60*60*100/*1h*/);
-
-  lcdClear();
-  drawProgressBar(STR_WRITING);
-
-  sportFirmwareUpdate(module, filename);
-
-  watchdogSuspend(100/*1s*/);
-  resumePulses();
-}
-
 void getSelectionFullPath(char *lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
@@ -137,7 +68,7 @@ void getSelectionFullPath(char *lfn)
   strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - menuVerticalOffset]);
 }
 
-void onSdManagerMenu(const char *result)
+void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[_MAX_LFN+1];
 
@@ -209,15 +140,15 @@ void onSdManagerMenu(const char *result)
   }
   else if (result == STR_FLASH_BOOTLOADER) {
     getSelectionFullPath(lfn);
-    flashBootloader(lfn);
+    bootloaderFlash(lfn);
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    flashSportDevice(INTERNAL_MODULE, lfn);
+    sportFlashDevice(INTERNAL_MODULE, lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    flashSportDevice(EXTERNAL_MODULE, lfn);
+    sportFlashDevice(EXTERNAL_MODULE, lfn);
   }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {

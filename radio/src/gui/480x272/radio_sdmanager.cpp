@@ -128,23 +128,18 @@ void onSdManagerMenu(const char * result)
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
-#if 0
-  else if (result == STR_ASSIGN_BITMAP) {
-    strAppendFilename(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
-    memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
-    storageDirty(EE_MODEL);
-  }
-#endif
   else if (result == STR_VIEW_TEXT) {
     getSelectionFullPath(lfn);
     pushMenuTextView(lfn);
   }
-#if 0
-  else if (result == STR_FLASH_BOOTLOADER) {
+  else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    flashBootloader(lfn);
+    sportFlashDevice(INTERNAL_MODULE, lfn);
   }
-#endif
+  else if (result == STR_FLASH_EXTERNAL_DEVICE) {
+    getSelectionFullPath(lfn);
+    sportFlashDevice(EXTERNAL_MODULE, lfn);
+  }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     getSelectionFullPath(lfn);
@@ -276,7 +271,7 @@ bool menuRadioSdManager(event_t _event)
 
     reusableBuffer.sdmanager.count = 0;
 
-    FRESULT res = f_opendir(&dir, ".");        /* Open the directory */
+    FRESULT res = f_opendir(&dir, "."); // Open the directory
     if (res == FR_OK) {
       for (;;) {
         res = f_readdir(&dir, &fno);                   /* Read a directory item */
@@ -294,8 +289,8 @@ bool menuRadioSdManager(event_t _event)
         bool isfile = !(fno.fattrib & AM_DIR);
 
         if (menuVerticalOffset == 0) {
-          for (int i=0; i<NUM_BODY_LINES; i++) {
-            char *line = reusableBuffer.sdmanager.lines[i];
+          for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+            char * line = reusableBuffer.sdmanager.lines[i];
             if (line[0] == '\0' || isFilenameLower(isfile, fn, line)) {
               if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.sdmanager.lines[i+1], line, sizeof(reusableBuffer.sdmanager.lines[i]) * (NUM_BODY_LINES-1-i));
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
@@ -341,7 +336,22 @@ bool menuRadioSdManager(event_t _event)
     coord_t y = MENU_CONTENT_TOP + i*FH;
     LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdmanager.lines[i][0]) {
-      if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) {
+      if (s_editMode == EDIT_MODIFY_STRING && attr) {
+        editName(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
+        if (s_editMode == 0) {
+          unsigned int len = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION);
+          char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, sizeof(reusableBuffer.sdmanager.originalName));
+          if (ext) {
+            strAppend(&reusableBuffer.sdmanager.lines[i][len], ext);
+          }
+          else {
+            reusableBuffer.sdmanager.lines[i][len] = 0;
+          }
+          f_rename(reusableBuffer.sdmanager.originalName, reusableBuffer.sdmanager.lines[i]);
+          REFRESH_FILES();
+        }
+      }
+      else if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) {
         char s[sizeof(reusableBuffer.sdmanager.lines[0])+2];
         char * ptr = s;
         *ptr++ = '[';

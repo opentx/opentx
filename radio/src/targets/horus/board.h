@@ -145,9 +145,9 @@ DRESULT __disk_write(BYTE drv, const BYTE * buff, DWORD sector, UINT count);
 #define FLASH_PAGESIZE                 256
 void unlockFlash(void);
 void lockFlash(void);
-void writeFlash(uint32_t * address, uint32_t * buffer);
-uint32_t isFirmwareStart(const void * buffer);
-uint32_t isBootloaderStart(const void * buffer);
+void flashWrite(uint32_t * address, uint32_t * buffer);
+uint32_t isFirmwareStart(const uint8_t * buffer);
+uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // SDRAM driver
 void SDRAM_Init(void);

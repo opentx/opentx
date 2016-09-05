@@ -68,7 +68,7 @@ void eraseSector(uint32_t sector)
   FLASH->CR &= SECTOR_MASK;
 }
 
-void writeFlash(uint32_t *address, uint32_t *buffer) // page size is 256 bytes
+void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
 {
   if ((uint32_t) address == 0x08000000) {
     eraseSector(0);
@@ -123,7 +123,7 @@ void writeFlash(uint32_t *address, uint32_t *buffer) // page size is 256 bytes
   }
 }
 
-uint32_t isFirmwareStart(const void * buffer)
+uint32_t isFirmwareStart(const uint8_t * buffer)
 {
   const uint32_t * block = (const uint32_t *)buffer;
 
@@ -151,7 +151,7 @@ uint32_t isFirmwareStart(const void * buffer)
   return 1;
 }
 
-uint32_t isBootloaderStart(const void * buffer)
+uint32_t isBootloaderStart(const uint8_t * buffer)
 {
   const uint32_t * block = (const uint32_t *)buffer;
 
