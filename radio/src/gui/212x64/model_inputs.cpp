@@ -194,7 +194,7 @@ void menuModelExpoOne(event_t event)
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
 
-  for (unsigned int k=0; k<NUM_BODY_LINES; k++) {
+  for (uint8_t k=0; k<NUM_BODY_LINES; k++) {
     int i = k + menuVerticalOffset;
     for (int j=0; j<=i; ++j) {
       if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {

@@ -219,7 +219,13 @@ bool menuModelExpoOne(event_t event)
     drawCurveCoord(CURVE_CENTER_X-CURVE_SIDE_WIDTH-37, top, texty);
   }
 
-  for (uint8_t i=0; i<NUM_BODY_LINES+1; i++) {
+  for (uint8_t k=0; k<NUM_BODY_LINES+1; k++) {
+    int i = k + menuVerticalOffset;
+    for (int j=0; j<=i; ++j) {
+      if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+        ++i;
+      }
+    }
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch (i) {
       case EXPO_FIELD_INPUT_NAME:
