@@ -1,4 +1,4 @@
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(C9X_NAME_SUFFIX ${VERSION_MAJOR}${VERSION_MINOR})
   set(COMPANION_NAME "companion${C9X_NAME_SUFFIX}")
   set(SIMULATOR_NAME "simulator${C9X_NAME_SUFFIX}")
@@ -255,16 +255,11 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common qxtcommandopti
 
 ############# Packaging ####################
 message(STATUS ${CMAKE_BINARY_DIR} ${CMAKE_INSTALL_PREFIX}/bin)
-if(APPLE)
-    SET(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
-    #install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${companion_res_dir} USE_SOURCE_PERMISSIONS
-    #FILES_MATCHING PATTERN "libopentx-x9d+-simulator.dylib")
-
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${SIMULATOR_LIB_PATH} USE_SOURCE_PERMISSIONS
-    FILES_MATCHING PATTERN "libopentx-*.so"
+    FILES_MATCHING PATTERN "libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}"
     PATTERN "CMakeFiles" EXCLUDE
     PATTERN "_CPack_Packages" EXCLUDE
     PATTERN "companion" EXCLUDE
@@ -342,37 +337,6 @@ if(WIN32)
     )
 endif()
 
-if(APPLE)
-  set(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
-  SET_SOURCE_FILES_PROPERTIES(${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-  set(${COMPANION_SOURCES} ${COMPANION_SOURCES} ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE})
-
-  if(CMAKE_GENERATOR STREQUAL Xcode)
-    set(WORK_DIR ${CMAKE_BINARY_DIR}/Debug)
-  else()
-    set(WORK_DIR ${PROJECT_BINARY_DIR})
-  endif()
-
-  add_custom_target(addframeworks
-    COMMAND mkdir -p companion.app/Contents/Frameworks
-    COMMAND mkdir -p companion.app/Contents/Resources
-    COMMAND mkdir -p companion.app/Contents/translations
-    COMMAND rsync ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE} companion.app/Contents/Resources/${MACOSX_BUNDLE_ICON_FILE} # Copy the icon files
-    COMMAND rsync -r --exclude=.svn ${PROJECT_SOURCE_DIR}/../targets/mac/qt_menu.nib companion.app/Contents/Resources/
-    COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
-    COMMAND rsync ${PROJECT_BINARY_DIR}/*.qm companion.app/Contents/translations
-    COMMAND rsync -r /Library/Frameworks/SDL.framework companion.app/Contents/Frameworks/
-    COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app
-    COMMAND install_name_tool -change @rpath/SDL.framework/Versions/A/SDL @executable_path/../Frameworks/SDL.framework/Versions/A/SDL companion.app/Contents/MacOS/companion
-    WORKING_DIRECTORY ${WORK_DIR}
-    DEPENDS ${COMPANION_NAME})
-
-  add_custom_target(makedmg
-    COMMAND ${QT_BINARY_DIR}/macdeployqt companion.app -dmg -no-plugins
-    WORKING_DIRECTORY ${WORK_DIR}
-    DEPENDS addframeworks opentx-simulators-bundle)
-endif()
-
 if(LUPDATE_FOUND)
   add_custom_target(translations
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -397,8 +361,9 @@ SET(plugin_dest_dir bin)
 SET(qtconf_dest_dir bin)
 SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${COMPANION_NAME}")
 IF(APPLE)
-  SET(plugin_dest_dir ${COMPANION_NAME}.app/Contents/MacOS)
+  SET(plugin_dest_dir ${COMPANION_NAME}.app/Contents/Plugins)
   SET(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
+  SET(translations_dest_dir ${COMPANION_NAME}.app/Contents/translations)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
 ENDIF(APPLE)
 IF(WIN32)
@@ -411,25 +376,48 @@ INSTALL(TARGETS ${COMPANION_NAME}
     )
 
 # Qt5 + Cmake + Mac is poorly documented. A lot of this is guesswork
-# and trial and error. Do not hestinate to fix it for better
+# and trial and error. Do not hestinate to fix it for the better
 if(APPLE)
-    set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+
+  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  SET(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+  install(FILES ${simulator_plugins}  DESTINATION "${companion_res_dir}" COMPONENT Runtime)
+  #add_dependencies(package opentx-simulators-bundle)
+
 
   # Write qt.conf to tell qt where to find it plugins
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
-    "[Paths]\nPlugins = ${plugin_dest_dir}\n")
+    "[Paths]\nPlugins = Plugins\n")
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
-    DESTINATION "${CMAKE_INSTALL_PREFIX}/Resources"
-    ${COMPONENT})
+    DESTINATION "${companion_res_dir}"
+    COMPONENT Runtime)
 
+  # menu file
+  INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/companion/targets/mac/qt_menu.nib DESTINATION "${companion_res_dir}" COMPONENT Runtime)
+
+  # translations file
+  INSTALL(FILES ${companion_QM} DESTINATION "${translations_dest_dir}" COMPONENT Runtime)
+
+
+  # manually add the cocoa plugin
+  get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
+  INSTALL(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
+  set(bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/platforms/libqcocoa.dylib")
+  
+  # Add icon
+  set(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
+  set(MAC_ICON_FILE ${COMPANION_SRC_DIRECTORY}/images/${MACOSX_BUNDLE_ICON_FILE})
+  SET_SOURCE_FILES_PROPERTIES(${MAC_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  set(${COMPANION_SOURCES} ${COMPANION_SOURCES} ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE})
+  INSTALL(FILES ${MAC_ICON_FILE} DESTINATION ${companion_res_dir} COMPONENT Runtime)
+
+  # Include depencies (adding frameworks, fixing the embbeded library)
   INSTALL(CODE "
    include(BundleUtilities)
-   fixup_bundle(\"${APPS}\"   \"\"   \"\")
+   file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs}\"   \"\")
    " COMPONENT Runtime)
-
-   get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
-
-   INSTALL(FILES ${QPA_PLUGIN} DESTINATION "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}" COMPONENT Runtime)
 endif()
 
 find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
@@ -450,14 +438,13 @@ if(DPKG_PROGRAM)
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 elseif(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
-#  set(CPACK_GENERATOR "TGZ")
+# set(CPACK_GENERATOR "TGZ")  # for quick testing
   set(CPACK_BINARY_DRAGNDROP ON)
   set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/splash22_3_dmg.png)
   set(CPACK_DMG_VOLUME_NAME "OpenTX Companion")
   set(CPACK_DMG_DS_STORE ${PROJECT_SOURCE_DIR}/companion/targets/mac/DS_Store)
   set(LIB_DIRS ${QT_LIBRARY_DIRS})
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}")
-
 else(DPKG_PROGRAM)
   set(CPACK_GENERATOR "RPM")
   set(CPACK_RPM_PACKAGE_VERSION ${VERSION})
@@ -465,7 +452,5 @@ else(DPKG_PROGRAM)
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
   SET(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib /lib/udev /lib/udev/rules.d")
 endif(DPKG_PROGRAM)
-
-
 
 include(CPack)
