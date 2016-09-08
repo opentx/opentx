@@ -154,10 +154,10 @@ void processCrossfireTelemetryFrame()
 
     case LINK_ID:
       telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-      for (int i=0; i<10; i++) {
+      for (unsigned int i=0; i<10; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
           if (i == 6) {
-            static uint32_t power_values[] const = { 0, 10, 25, 100, 500, 1000, 2000 };
+            static const uint32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000 };
             value = (i < DIM(power_values) ? power_values[i] : 0);
           }
           processCrossfireTelemetryValue(i, value);
