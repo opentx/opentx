@@ -64,7 +64,7 @@ void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
     }
     b = (b>>1) | 0x80; // shift in stop bit
   }
-  _send_1(len+BITLEN_DSM2); // stop bit
+  _send_1(len); // stop bit (len is already BITLEN_DSM2)
 }
 
 void putDsm2Flush()
@@ -118,7 +118,7 @@ void setupPulsesDSM2(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
   modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 44000;
 #endif
 

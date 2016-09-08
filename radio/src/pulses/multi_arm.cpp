@@ -87,7 +87,7 @@ static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
     if (i==7)
         b = b ^ parity; // lowest bit is one from previous line
   }
-  _send_level(len+2*BITLEN_MULTI); // 2Stop bits
+  _send_level(len+ BITLEN_MULTI); // enlarge the last bit to be two stop bits long
 }
 #endif
 
@@ -106,7 +106,7 @@ void setupPulsesMultimodule(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
   modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 18000;  // 9ms refresh
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 1;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
