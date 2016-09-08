@@ -70,9 +70,9 @@ void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
 void putDsm2Flush()
 {
   if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
-    *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
-  else
     *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
+  else
+    *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;      
 }
 #else
 void putDsm2SerialBit(uint8_t bit)
