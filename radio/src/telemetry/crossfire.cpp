@@ -156,6 +156,10 @@ void processCrossfireTelemetryFrame()
       telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       for (int i=0; i<10; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
+          if (i == 6) {
+            static uint32_t power_values[] const = { 0, 10, 25, 100, 500, 1000, 2000 };
+            value = (i < DIM(power_values) ? power_values[i] : 0);
+          }
           processCrossfireTelemetryValue(i, value);
           if (i == 2) {
             telemetryData.rssi.set(value);
