@@ -863,6 +863,7 @@ void checkSwitches()
             continue;
           }
           if (!(g_model.potsWarnEnabled & (1 << i))) {
+            TRACE("POT:%d WANT:%d GOT:%d STATUS:%s", i, g_model.potsWarnPosition[i],GET_LOWRES_POT_POSITION(i), (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) ? "FAIL" : "PASS");
             if (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1) {
 #if defined(COLORLCD)
               char s[8];
