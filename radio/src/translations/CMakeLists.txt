@@ -3,6 +3,9 @@ foreach(translation ${translations})
   get_filename_component(language ${translation} NAME_WE)
   get_filename_component(path ${translation} DIRECTORY)
   set(target ${language}.h)
+  if(NOT(PCB STREQUAL HORUS) AND language STREQUAL "cz")
+    set(language cz_reduced)
+  endif()
   add_custom_command(
     OUTPUT ${target}
     COMMAND python ${RADIO_DIRECTORY}/util/translate.py ${translation} ${target} ${language}

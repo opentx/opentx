@@ -26,36 +26,46 @@
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
-
 uint16_t lcdColorTable[LCD_COLOR_COUNT];
 
 coord_t lcdNextPos;
 
-#define FONT_CHARS_COUNT 103
-
-char getMappedChar(unsigned char c)
+uint8_t getMappedChar(uint8_t c)
 {
+  uint8_t result;
   if (c == 0)
-    return 0;
-  else if (c >= 0x80 && c <= 0x85)
-    return 115 + c - 0x80;
+    result = 0;
+#if defined(TRANSLATIONS_FR)
+  else if (c >= 0x80 && c <= 0x85) {
+    result = 115 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_DE)
+  else if (c >= 0x80 && c <= 0x86) {
+    result = 120 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_CZ)
+  else if (c >= 0x80 && c < 0x80+30) {
+    result = 127 + c - 0x80;
+  }
+#endif
   else if (c < 0xC0)
-    return c - 0x20;
+    result = c - 0x20;
   else
-    return c - 0xC0 + 96;
+    result = c - 0xC0 + 96;
+  // TRACE("getMappedChar '%c' (%d) = %d", c, c, result);
+  return result;
 }
 
-int getFontPatternWidth(const uint16_t * spec, int index)
+int getFontPatternWidth(const uint16_t * spec, uint8_t index)
 {
   return spec[index+1] - spec[index];
 }
 
-int getCharWidth(char c, const uint16_t * spec)
+int getCharWidth(uint8_t c, const uint16_t * spec)
 {
   return getFontPatternWidth(spec, getMappedChar(c));
 }
 
-#define FONT_MAX_HEIGHT 42
 void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags)
 {
   coord_t offset = spec[index];

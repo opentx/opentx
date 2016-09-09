@@ -13,11 +13,12 @@ for f in glob.glob("fonts/*.ttf"):
 chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz~|≥→←↑↓↗↘↙↖△"""
 chars_fr = u"""éèàîç"""
 chars_de = u"""ÄäÖöÜüß"""
+chars_cz = u"""ěščřžýáíéňóůúďťĚŠČŘŽÝÁÍÉŇÓÚŮĎŤ"""
 
 COUNT_EXTRA_CHARS = 12
 
 chars_extra = u"".join([chr(1+i) for i in range(COUNT_EXTRA_CHARS)])
-chars = chars_en + chars_extra + chars_fr + chars_de
+chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz
 
 
 def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
