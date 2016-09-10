@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -127,7 +127,7 @@ void boardInit()
   ledInit();
   ledGreen();
 #endif
-  
+
   keysInit();
   adcInit();
   delaysInit();
@@ -138,8 +138,8 @@ void boardInit()
   __enable_irq();
   i2cInit();
   usbInit();
-  
-#if defined(HAPTIC)  
+
+#if defined(HAPTIC)
   hapticInit();
 #endif
 
@@ -203,7 +203,7 @@ void boardOff()
 #if defined(PCBX7D)
   ledOff();
 #endif
-  
+
   BACKLIGHT_DISABLE();
 
 #if defined(PCBX9E)
@@ -228,13 +228,13 @@ extern USB_OTG_CORE_HANDLE USB_OTG_dev;
   Prepare and send new USB data packet
 
   The format of HID_Buffer is defined by
-  USB endpoint description can be found in 
+  USB endpoint description can be found in
   file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
 */
 void usbJoystickUpdate(void)
 {
   static uint8_t HID_Buffer[HID_IN_PACKET];
-  
+
   //buttons
   HID_Buffer[0] = 0;
   HID_Buffer[1] = 0;
@@ -242,13 +242,13 @@ void usbJoystickUpdate(void)
   for (int i = 0; i < 8; ++i) {
     if ( channelOutputs[i+8] > 0 ) {
       HID_Buffer[0] |= (1 << i);
-    } 
+    }
     if ( channelOutputs[i+16] > 0 ) {
       HID_Buffer[1] |= (1 << i);
-    } 
+    }
     if ( channelOutputs[i+24] > 0 ) {
       HID_Buffer[2] |= (1 << i);
-    } 
+    }
   }
 
   //analog values
@@ -257,13 +257,13 @@ void usbJoystickUpdate(void)
     int16_t value = channelOutputs[i] / 8;
     if ( value > 127 ) value = 127;
     else if ( value < -127 ) value = -127;
-    HID_Buffer[i+3] = static_cast<int8_t>(value);  
+    HID_Buffer[i+3] = static_cast<int8_t>(value);
   }
 
   USBD_HID_SendReport (&USB_OTG_dev, HID_Buffer, HID_IN_PACKET );
 }
 
-#endif // defined(USB_JOYSTICK) && defined(PCBTARANIS) && !defined(SIMU)
+#endif // #defined(USB_JOYSTICK) && !defined(SIMU)
 
 
 uint8_t currentTrainerMode = 0xff;
