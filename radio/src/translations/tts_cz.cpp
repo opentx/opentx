@@ -129,15 +129,17 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     case 8:
     case 10:
     case 14:
-    case 17:
+    case 18:
     case 21:
     case 22:
     case 23:
     case 24:
+    case 25:
+    case 26:
       att = ZENSKY;
       break;
     case 13:
-    case 18:
+    case 19:
       att = STREDNI;
       break;
     default:
