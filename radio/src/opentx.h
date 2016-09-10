@@ -297,12 +297,15 @@
 #endif
 
 void memswap(void * a, void * b, uint8_t size);
-
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBHORUS)
+  #define IS_SLIDER_AVAILABLE(x)    ((x) == SLIDER1 || (x) == SLIDER2 || (IS_SLIDER(x) && (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER1)))))
+#elif defined(PCBX9E)
+  #define IS_SLIDER_AVAILABLE(x)    ((x) == SLIDER1 || (x) == SLIDER2 || (IS_SLIDER(x) && (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER3)))))
+#endif
 #if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBHORUS)
   #define POT_CONFIG(x)             ((g_eeGeneral.potsConfig >> (2*((x)-POT1)))&0x03)
   #define IS_POT_MULTIPOS(x)        (IS_POT(x) && POT_CONFIG(x)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)  (IS_POT(x) && POT_CONFIG(x)==POT_WITHOUT_DETENT)
-  #define IS_SLIDER_AVAILABLE(x)    ((x) == SLIDER1 || (x) == SLIDER2 || (IS_SLIDER(x) && (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER1)))))
   #define IS_POT_AVAILABLE(x)       (IS_POT(x) && POT_CONFIG(x)!=POT_NONE)
   #define IS_POT_OR_SLIDER_AVAILABLE(x)   (IS_POT_AVAILABLE(x) || IS_SLIDER_AVAILABLE(x))
   #define IS_MULTIPOS_CALIBRATED(cal)     (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
