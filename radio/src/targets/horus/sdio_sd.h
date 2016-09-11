@@ -207,8 +207,8 @@ SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t Bl
 SDTransferState SD_GetTransferState(void);
 // SD_Error SD_Erase(uint32_t startaddr, uint32_t endaddr);
 // SD_Error SD_SendSDStatus(uint32_t *psdstatus);
-SD_Error SD_WaitReadOperation(void);
-SD_Error SD_WaitWriteOperation(void);
+SD_Error SD_WaitReadOperation(uint32_t timeout);
+SD_Error SD_WaitWriteOperation(uint32_t timeout);
 
 #ifdef __cplusplus
 }

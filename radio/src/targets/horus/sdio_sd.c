@@ -70,7 +70,7 @@
 #define SD_SINGLE_BUS_SUPPORT           ((uint32_t)0x00010000)
 #define SD_CARD_LOCKED                  ((uint32_t)0x02000000)
 
-#define SD_DATATIMEOUT                  ((uint32_t)0xFFFFFFFF)
+#define SD_DATATIMEOUT                  ((uint32_t)100000)
 #define SD_0TO7BITS                     ((uint32_t)0x000000FF)
 #define SD_8TO15BITS                    ((uint32_t)0x0000FF00)
 #define SD_16TO23BITS                   ((uint32_t)0x00FF0000)
@@ -1338,7 +1338,7 @@ OPTIMIZE("O0") SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr,
     return(errorstatus);
   }
 
-  SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT; // TODO consider setting shorter timeout
+  SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT * NumberOfBlocks;
   SDIO_DataInitStructure.SDIO_DataLength = NumberOfBlocks * BlockSize;
   SDIO_DataInitStructure.SDIO_DataBlockSize = SDIO_DataBlockSize_512b;
   SDIO_DataInitStructure.SDIO_TransferDir = SDIO_TransferDir_ToSDIO;
@@ -1372,25 +1372,24 @@ OPTIMIZE("O0") SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr,
   * @param  None.
   * @retval SD_Error: SD Card Error code.
   */
-OPTIMIZE("O0") SD_Error SD_WaitReadOperation(void)
+OPTIMIZE("O0") SD_Error SD_WaitReadOperation(uint32_t timeout)
 {
   SD_Error errorstatus = SD_OK;
-  uint32_t timeout;
-
-  timeout = SD_DATATIMEOUT;
 
   while (!DMAEndOfTransfer && !TransferEnd && (TransferError == SD_OK) && (timeout > 0))
   {
+    delay_ms(1);
     timeout--;
   }
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_read, (TransferError << 8) + (DMAEndOfTransfer << 1) + TransferEnd);
 
   DMAEndOfTransfer = 0;
 
-  timeout = SD_DATATIMEOUT;
+  timeout = 10;
 
   while(((SDIO->STA & SDIO_FLAG_RXACT)) && (timeout > 0))
   {
+    delay_ms(1);
     timeout--;
   }
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_read, -1);
@@ -1590,7 +1589,7 @@ OPTIMIZE("O0") SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAd
     return(errorstatus);
   }
 
-  SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT;
+  SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT * NumberOfBlocks;
   SDIO_DataInitStructure.SDIO_DataLength = NumberOfBlocks * BlockSize;
   SDIO_DataInitStructure.SDIO_DataBlockSize = SDIO_DataBlockSize_512b;
   SDIO_DataInitStructure.SDIO_TransferDir = SDIO_TransferDir_ToCard;
@@ -1610,25 +1609,24 @@ OPTIMIZE("O0") SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAd
   * @param  None.
   * @retval SD_Error: SD Card Error code.
   */
-OPTIMIZE("O0") SD_Error SD_WaitWriteOperation(void)
+OPTIMIZE("O0") SD_Error SD_WaitWriteOperation(uint32_t timeout)
 {
   SD_Error errorstatus = SD_OK;
-  uint32_t timeout;
-
-  timeout = SD_DATATIMEOUT;
 
   while (!DMAEndOfTransfer && !TransferEnd && (TransferError == SD_OK) && (timeout > 0))
   {
+    delay_ms(1);
     timeout--;
   }
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_write, (TransferError << 8) + (DMAEndOfTransfer << 1) + TransferEnd);
 
   DMAEndOfTransfer = 0;
 
-  timeout = SD_DATATIMEOUT;
+  timeout = 10;
 
   while(((SDIO->STA & SDIO_FLAG_TXACT)) && (timeout > 0))
   {
+    delay_ms(1);
     timeout--;
   }
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_write, -1);
