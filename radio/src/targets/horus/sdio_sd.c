@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -440,7 +440,7 @@ void SD_LowLevel_DMA_RxConfig(uint32_t *BufferDST, uint32_t BufferSize)
 //   * @brief  DeInitializes the SDIO interface.
 //   * @param  None
 //   * @retval None
-  
+
 // void SD_DeInit(void)
 // {
 //   SD_LowLevel_DeInit();
@@ -1238,11 +1238,11 @@ OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint1
   DMAEndOfTransfer = 0;
 
   SDIO->DCTRL = 0x0;
-  
+
   SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
   SDIO_DMACmd(ENABLE);
   SD_LowLevel_DMA_RxConfig((uint32_t *)readbuff, BlockSize);
-  
+
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
     BlockSize = 512;
   else
@@ -1311,7 +1311,7 @@ OPTIMIZE("O0") SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr,
   TransferEnd = 0;
   StopCondition = 1;
   DMAEndOfTransfer = 0;
-	
+
   SDIO->DCTRL = 0x0;
 
   SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
@@ -1440,7 +1440,7 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
   StopCondition = 0;
 
   SDIO->DCTRL = 0x0;
-  
+
   SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
   SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, BlockSize);
   SDIO_DMACmd(ENABLE);
@@ -1487,7 +1487,7 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
   SDIO_DataConfig(&SDIO_DataInitStructure);
-  
+
   return(errorstatus);
 }
 

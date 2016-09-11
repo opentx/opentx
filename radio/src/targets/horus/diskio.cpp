@@ -76,9 +76,10 @@ DSTATUS disk_initialize (
   }
 
   /*-------------------------- SD Init ----------------------------- */
-  if (SD_Init() != SD_OK)
+  SD_Error res = SD_Init();
+  if (res != SD_OK)
   {
-    TRACE("SD_Init() failed");
+    TRACE("SD_Init() failed: %d", res);
     stat |= STA_NOINIT;
   }
 
