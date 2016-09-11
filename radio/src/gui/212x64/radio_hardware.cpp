@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -103,8 +103,6 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_STICK2:
       case ITEM_RADIO_HARDWARE_STICK3:
       case ITEM_RADIO_HARDWARE_STICK4:
-      case ITEM_RADIO_HARDWARE_LS:
-      case ITEM_RADIO_HARDWARE_RS:
       {
         int idx = (k<=ITEM_RADIO_HARDWARE_STICK4 ? k-ITEM_RADIO_HARDWARE_STICK1 : k-ITEM_RADIO_HARDWARE_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
@@ -114,15 +112,19 @@ void menuRadioHardware(event_t event)
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_LS:
+      case ITEM_RADIO_HARDWARE_RS:
 #if defined(PCBX9E)
       case ITEM_RADIO_HARDWARE_LS2:
       case ITEM_RADIO_HARDWARE_RS2:
+#endif
       {
-        int idx = k - ITEM_RADIO_HARDWARE_LS2;
+        int idx = k - ITEM_RADIO_HARDWARE_LS;
         uint8_t mask = (0x01 << idx);
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_XPOTS+2+idx+1, menuHorizontalPosition < 0 ? attr : 0);
-        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx]) || (attr && menuHorizontalPosition == 0))
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_POTS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx]) || (attr && menuHorizontalPosition == 0))
+          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
@@ -131,7 +133,7 @@ void menuRadioHardware(event_t event)
         g_eeGeneral.slidersConfig |= (potType << idx);
         break;
       }
-#endif
+
       case ITEM_RADIO_HARDWARE_LABEL_POTS:
         lcdDrawTextAlignedLeft(y, STR_POTS);
         break;
