@@ -391,7 +391,7 @@ void perMain()
 #endif
   checkSpeakerVolume();
   checkEeprom();
-  writeLogs();
+  logsWrite();
   handleUsbConnection();
   checkTrainerSettings();
   periodicTick();

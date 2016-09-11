@@ -21,9 +21,11 @@
 #include "opentx.h"
 #include "ff.h"
 
-FIL g_oLogFile = {0};
+FIL g_oLogFile __DMA;
 const pm_char * g_logError = NULL;
 uint8_t logDelay;
+
+void writeHeader();
 
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
@@ -33,7 +35,13 @@ uint8_t logDelay;
 
 #define GET_3POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : (switchState(SW_ ## sw ## 2) ? 1 : 0))
 
-const pm_char * openLogs()
+
+void logsInit()
+{
+  memset(&g_oLogFile, 0, sizeof(g_oLogFile));
+}
+
+const pm_char * logsOpen()
 {
   // Determine and set log file filename
   FRESULT result;
@@ -111,7 +119,7 @@ const pm_char * openLogs()
 
 tmr10ms_t lastLogTime = 0;
 
-void closeLogs()
+void logsClose()
 {
   if (f_close(&g_oLogFile) != FR_OK) {
     // close failed, forget file
@@ -204,7 +212,7 @@ uint32_t getLogicalSwitchesStates(uint8_t first)
   return result;
 }
 
-void writeLogs()
+void logsWrite()
 {
   static const pm_char * error_displayed = NULL;
 
@@ -214,7 +222,7 @@ void writeLogs()
       lastLogTime = tmr10ms;
 
       if (!g_oLogFile.fs) {
-        const pm_char * result = openLogs();
+        const pm_char * result = logsOpen();
         if (result != NULL) {
           if (result != error_displayed) {
             error_displayed = result;
@@ -370,14 +378,14 @@ void writeLogs()
       if (result<0 && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
         POPUP_WARNING(STR_SDCARD_ERROR);
-        closeLogs();
+        logsClose();
       }
     }
   }
   else {
     error_displayed = NULL;
     if (g_oLogFile.fs) {
-      closeLogs();
+      logsClose();
     }
   }
 }

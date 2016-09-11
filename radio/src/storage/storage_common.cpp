@@ -46,7 +46,7 @@ void preModelLoad()
 #endif
 
 #if defined(SDCARD)
-  closeLogs();
+  logsClose();
 #endif
 
   if (pulsesStarted()) {

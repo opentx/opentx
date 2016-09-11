@@ -358,7 +358,7 @@ bool menuModelSensor(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_LOGS);
         sensor->logs = editCheckBox(sensor->logs, SENSOR_2ND_COLUMN, y, attr, event);
         if (attr && checkIncDec_Ret) {
-          closeLogs();
+          logsClose();
         }
         break;
     }

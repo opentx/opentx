@@ -97,7 +97,7 @@ void perMain()
 
 #if defined(SDCARD)
   sdMountPoll();
-  writeLogs();
+  logsWrite();
 #endif
 
   event_t evt = getEvent();
