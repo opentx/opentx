@@ -24,6 +24,8 @@
 void audioInit( void ) ;
 void audioEnd( void ) ;
 #define audioConsumeCurrentBuffer()
+#define audioDisableIrq()       __disable_irq()
+#define audioEnableIrq()        __enable_irq()
 
 void setSampleRate( uint32_t frequency ) ;
 
