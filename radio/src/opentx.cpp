@@ -1993,7 +1993,7 @@ void opentxClose(uint8_t shutdown)
   }
   
 #if defined(SDCARD)
-  closeLogs();
+  logsClose();
 #endif
 
   saveTimers();
@@ -2551,6 +2551,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   else {
 #if defined(SDCARD) && !defined(PCBMEGA2560)
     sdInit();
+    logsInit();
 #endif
   }
 

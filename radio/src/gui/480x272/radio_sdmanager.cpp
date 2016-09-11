@@ -153,7 +153,7 @@ bool menuRadioSdManager(event_t _event)
   if (warningResult) {
     warningResult = 0;
     showMessageBox(STR_FORMATTING);
-    closeLogs();
+    logsClose();
     audioQueue.stopSD();
     if (f_mkfs(0, 1, 0) == FR_OK) {
       f_chdir("/");

@@ -122,7 +122,6 @@ void sdInit(void);
 void sdMount(void);
 void sdDone(void);
 #define sdPoll10ms()
-#define sdMountPoll()
 uint32_t sdMounted(void);
 #else
 #define SD_IS_HC()                     (0)
@@ -378,6 +377,8 @@ void usbSerialPutc(uint8_t c);
 // Audio driver
 void audioInit(void);
 void audioConsumeCurrentBuffer(void);
+#define audioDisableIrq()             // interrupts must stay enabled on Horus
+#define audioEnableIrq()              // interrupts must stay enabled on Horus
 #define setSampleRate(freq)
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);

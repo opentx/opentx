@@ -808,7 +808,7 @@ void AudioQueue::wakeup()
 
     // push the buffer if needed
     if (size > 0) {
-      __disable_irq();
+      audioDisableIrq();
       // TRACE("pushing buffer %d\n", bufferWIdx);
       bufferWIdx = nextBufferIdx(bufferWIdx);
       buffer->size = size;
@@ -819,7 +819,7 @@ void AudioQueue::wakeup()
       }
 #endif
       audioPushBuffer(buffer);
-      __enable_irq();
+      audioEnableIrq();
     }
   }
 }

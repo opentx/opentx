@@ -101,7 +101,7 @@ void menuRadioSdManager(event_t _event)
   if (warningResult) {
     warningResult = 0;
     showMessageBox(STR_FORMATTING);
-    closeLogs();
+    logsClose();
 #if defined(PCBSKY9X)
     Card_state = SD_ST_DATA;
 #endif

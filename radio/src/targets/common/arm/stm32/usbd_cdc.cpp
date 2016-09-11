@@ -161,6 +161,7 @@ void usbSerialPutc(uint8_t c)
     if (txDataLen >= APP_RX_DATA_SIZE) {
       txDataLen -= APP_RX_DATA_SIZE;
     }
+    // TODO timeout exit
   } while (txDataLen >= (APP_RX_DATA_SIZE - CDC_DATA_MAX_PACKET_SIZE));
 
   APP_Rx_Buffer[APP_Rx_ptr_in] = c;
@@ -172,7 +173,7 @@ void usbSerialPutc(uint8_t c)
   }
   else {
     APP_Rx_ptr_in++;
-  }  
+  }
 }
 
 /**

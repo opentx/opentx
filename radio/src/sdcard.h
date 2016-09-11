@@ -80,10 +80,9 @@ extern FATFS g_FATFS_Obj;
 extern FIL g_oLogFile;
 
 extern uint8_t logDelay;
-const pm_char *openLogs();
-void writeHeader();
-void closeLogs();
-void writeLogs();
+void logsInit();
+void logsClose();
+void logsWrite();
 
 uint32_t sdGetNoSectors();
 uint32_t sdGetSize();

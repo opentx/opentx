@@ -76,9 +76,10 @@ DSTATUS disk_initialize (
   }
 
   /*-------------------------- SD Init ----------------------------- */
-  if (SD_Init() != SD_OK)
+  SD_Error res = SD_Init();
+  if (res != SD_OK)
   {
-    TRACE("SD_Init() failed");
+    TRACE("SD_Init() failed: %d", res);
     stat |= STA_NOINIT;
   }
 
@@ -158,7 +159,7 @@ DRESULT __disk_read(
     if (Status == SD_OK) {
       SDTransferState State;
 
-      Status = SD_WaitReadOperation(); // Check if the Transfer is finished
+      Status = SD_WaitReadOperation(100*count); // Check if the Transfer is finished
 
       while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
 
@@ -229,7 +230,7 @@ DRESULT __disk_write(
   if (Status == SD_OK) {
     SDTransferState State;
 
-    Status = SD_WaitWriteOperation(); // Check if the Transfer is finished
+    Status = SD_WaitWriteOperation(500*count); // Check if the Transfer is finished
 
     while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
 

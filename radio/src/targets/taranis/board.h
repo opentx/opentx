@@ -146,7 +146,6 @@ void sdInit(void);
 void sdMount(void);
 void sdDone(void);
 void sdPoll10ms(void);
-#define sdMountPoll()
 uint32_t sdMounted(void);
 #define SD_CARD_PRESENT()              (~SD_GPIO_PRESENT->IDR & SD_GPIO_PIN_PRESENT)
 #endif
@@ -459,6 +458,8 @@ void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);
 #define audioConsumeCurrentBuffer()
+#define audioDisableIrq()       __disable_irq()
+#define audioEnableIrq()        __enable_irq()
 
 // Haptic driver
 void hapticInit(void);

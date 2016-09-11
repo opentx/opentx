@@ -484,7 +484,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   UINT written;
 
   // we must close the logs as we reuse the same FIL structure
-  closeLogs();
+  logsClose();
 
   // check and create folder here
   strcpy_P(buf, STR_MODELS_PATH);
@@ -567,7 +567,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   UINT read;
 
   // we must close the logs as we reuse the same FIL structure
-  closeLogs();
+  logsClose();
 
   strcpy_P(buf, STR_MODELS_PATH);
   buf[sizeof(MODELS_PATH)-1] = '/';

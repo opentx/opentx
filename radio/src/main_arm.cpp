@@ -391,8 +391,7 @@ void perMain()
 #endif
   checkSpeakerVolume();
   checkEeprom();
-  sdMountPoll();
-  writeLogs();
+  logsWrite();
   handleUsbConnection();
   checkTrainerSettings();
   periodicTick();
