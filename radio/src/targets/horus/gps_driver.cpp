@@ -62,6 +62,8 @@ void gpsInit(uint32_t baudrate)
 
 #if defined(DEBUG)
 uint8_t gpsTraceEnabled = false;
+#endif
+
 Fifo<uint8_t, 64> gpsTxFifo;
 
 void gpsSendByte(uint8_t byte)
@@ -71,12 +73,8 @@ void gpsSendByte(uint8_t byte)
   USART_ITConfig(GPS_USART, USART_IT_TXE, ENABLE);
 }
 
-#endif // #if defined(DEBUG)
-
-
 extern "C" void GPS_USART_IRQHandler(void)
 {
-#if defined(DEBUG)
   // Send
   if (USART_GetITStatus(GPS_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
@@ -88,7 +86,6 @@ extern "C" void GPS_USART_IRQHandler(void)
       USART_ITConfig(GPS_USART, USART_IT_TXE, DISABLE);
     }
   }
-#endif
 
   // Receive
   uint32_t status = GPS_USART->SR;

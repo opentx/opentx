@@ -322,7 +322,6 @@ void gpsWakeup()
   }
 }
 
-#if defined(DEBUG)
 char hex(uint8_t b) {
   return b > 9 ? b + 'A' - 10 : b + '0';
 }
@@ -344,5 +343,3 @@ void gpsSendFrame(const char * frame)
   gpsSendByte('\n');
   TRACE("*%02x", parity);
 }
-
-#endif // #if defined(DEBUG)

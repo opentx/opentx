@@ -713,18 +713,16 @@ int cliGps(const char ** argv)
 {
   int baudrate = 0;
   
-#if defined(DEBUG)
   if (argv[1][0] == '$') {
     // send command to GPS
     gpsSendFrame(argv[1]);
   }
+#if defined(DEBUG)
   else if (!strcmp(argv[1], "trace")) {
     gpsTraceEnabled = !gpsTraceEnabled;
   }
-  else
 #endif
-  
-  if (toInt(argv, 1, &baudrate) > 0 && baudrate > 0) {
+  else if (toInt(argv, 1, &baudrate) > 0 && baudrate > 0) {
     gpsInit(baudrate);
     serialPrint("GPS baudrate set to %d", baudrate);
   }

@@ -403,9 +403,9 @@ void hapticOn(uint32_t pwmPercent);
 void gpsInit(uint32_t baudrate);
 uint8_t gpsGetByte(uint8_t * byte);
 #if defined(DEBUG)
-  extern uint8_t gpsTraceEnabled;
-  void gpsSendByte(uint8_t byte);
+extern uint8_t gpsTraceEnabled;
 #endif
+void gpsSendByte(uint8_t byte);
 
 // Second serial port driver
 #define SERIAL2
