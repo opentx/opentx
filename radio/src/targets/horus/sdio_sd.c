@@ -207,9 +207,9 @@ typedef enum
 static uint32_t CardType =  SDIO_STD_CAPACITY_SD_CARD_V1_1;
 static uint32_t CSD_Tab[4], CID_Tab[4], RCA = 0;
 // static uint8_t SDSTATUS_Tab[16];
-__IO uint32_t StopCondition = 0;
+__IO uint8_t StopCondition = 0;
 __IO SD_Error TransferError = SD_OK;
-__IO uint32_t TransferEnd = 0, DMAEndOfTransfer = 0;
+__IO uint8_t TransferEnd = 0, DMAEndOfTransfer = 0;
 SD_CardInfo SDCardInfo;
 
 SDIO_InitTypeDef SDIO_InitStructure;
@@ -225,7 +225,7 @@ static SD_Error CmdResp6Error(uint8_t cmd, uint16_t *prca);
 static SD_Error SDEnWideBus(FunctionalState NewState);
 // static SD_Error IsCardProgramming(uint8_t *pstatus);
 static SD_Error FindSCR(uint16_t rca, uint32_t *pscr);
-uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes);
+// uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes);
 
 SD_Error SD_PowerON(void);
 SDCardState SD_GetState(void);
@@ -1265,7 +1265,7 @@ OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint1
 
   SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT;
   SDIO_DataInitStructure.SDIO_DataLength = BlockSize;
-  SDIO_DataInitStructure.SDIO_DataBlockSize = (uint32_t) 9 << 4;
+  SDIO_DataInitStructure.SDIO_DataBlockSize = SDIO_DataBlockSize_512b;
   SDIO_DataInitStructure.SDIO_TransferDir = SDIO_TransferDir_ToSDIO;
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
@@ -1338,9 +1338,9 @@ OPTIMIZE("O0") SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr,
     return(errorstatus);
   }
 
-  SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT;
+  SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT; // TODO consider setting shorter timeout
   SDIO_DataInitStructure.SDIO_DataLength = NumberOfBlocks * BlockSize;
-  SDIO_DataInitStructure.SDIO_DataBlockSize = (uint32_t) 9 << 4;
+  SDIO_DataInitStructure.SDIO_DataBlockSize = SDIO_DataBlockSize_512b;
   SDIO_DataInitStructure.SDIO_TransferDir = SDIO_TransferDir_ToSDIO;
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
@@ -1379,12 +1379,13 @@ OPTIMIZE("O0") SD_Error SD_WaitReadOperation(void)
 
   timeout = SD_DATATIMEOUT;
 
-  while ((DMAEndOfTransfer == 0x00) && (TransferEnd == 0) && (TransferError == SD_OK) && (timeout > 0))
+  while (!DMAEndOfTransfer && !TransferEnd && (TransferError == SD_OK) && (timeout > 0))
   {
     timeout--;
   }
+  TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_read, (TransferError << 8) + (DMAEndOfTransfer << 1) + TransferEnd);
 
-  DMAEndOfTransfer = 0x00;
+  DMAEndOfTransfer = 0;
 
   timeout = SD_DATATIMEOUT;
 
@@ -1392,6 +1393,7 @@ OPTIMIZE("O0") SD_Error SD_WaitReadOperation(void)
   {
     timeout--;
   }
+  TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_read, -1);
 
   if (StopCondition == 1)
   {
@@ -1482,7 +1484,7 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
 
   SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT;
   SDIO_DataInitStructure.SDIO_DataLength = BlockSize;
-  SDIO_DataInitStructure.SDIO_DataBlockSize = (uint32_t) 9 << 4;
+  SDIO_DataInitStructure.SDIO_DataBlockSize = SDIO_DataBlockSize_512b;
   SDIO_DataInitStructure.SDIO_TransferDir = SDIO_TransferDir_ToCard;
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
@@ -1590,7 +1592,7 @@ OPTIMIZE("O0") SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAd
 
   SDIO_DataInitStructure.SDIO_DataTimeOut = SD_DATATIMEOUT;
   SDIO_DataInitStructure.SDIO_DataLength = NumberOfBlocks * BlockSize;
-  SDIO_DataInitStructure.SDIO_DataBlockSize = (uint32_t) 9 << 4;
+  SDIO_DataInitStructure.SDIO_DataBlockSize = SDIO_DataBlockSize_512b;
   SDIO_DataInitStructure.SDIO_TransferDir = SDIO_TransferDir_ToCard;
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
@@ -1615,12 +1617,13 @@ OPTIMIZE("O0") SD_Error SD_WaitWriteOperation(void)
 
   timeout = SD_DATATIMEOUT;
 
-  while ((DMAEndOfTransfer == 0x00) && (TransferEnd == 0) && (TransferError == SD_OK) && (timeout > 0))
+  while (!DMAEndOfTransfer && !TransferEnd && (TransferError == SD_OK) && (timeout > 0))
   {
     timeout--;
   }
+  TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_write, (TransferError << 8) + (DMAEndOfTransfer << 1) + TransferEnd);
 
-  DMAEndOfTransfer = 0x00;
+  DMAEndOfTransfer = 0;
 
   timeout = SD_DATATIMEOUT;
 
@@ -1628,6 +1631,7 @@ OPTIMIZE("O0") SD_Error SD_WaitWriteOperation(void)
   {
     timeout--;
   }
+  TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_write, -1);
 
   if (StopCondition == 1)
   {
@@ -1998,7 +2002,7 @@ OPTIMIZE("O0") void SD_ProcessDMAIRQ(void)
 {
   if(DMA2->LISR & SD_SDIO_DMA_FLAG_TCIF)
   {
-    DMAEndOfTransfer = 0x01;
+    DMAEndOfTransfer = 1;
     DMA_ClearFlag(SD_SDIO_DMA_STREAM, SD_SDIO_DMA_FLAG_TCIF|SD_SDIO_DMA_FLAG_FEIF);
   }
 }
@@ -2737,22 +2741,23 @@ OPTIMIZE("O0") static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
   * @param  NumberOfBytes: number of bytes.
   * @retval None
   */
-OPTIMIZE("O0") uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes)
-{
-  uint8_t count = 0;
+// OPTIMIZE("O0") uint8_t convert_from_bytes_to_power_of_two(uint16_t NumberOfBytes)
+// {
+//   uint8_t count = 0;
 
-  while (NumberOfBytes != 1)
-  {
-    NumberOfBytes >>= 1;
-    count++;
-  }
-  return(count);
-}
+//   while (NumberOfBytes != 1)
+//   {
+//     NumberOfBytes >>= 1;
+//     count++;
+//   }
+//   return(count);
+// }
 
 void SDIO_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_SDIO);
-  SD_ProcessIRQ();
+  SD_Error err = SD_ProcessIRQ();
+  TRACE_SD_CARD_EVENT((err != SD_OK), sd_irq, err);
 }
 
 void SD_SDIO_DMA_IRQHANDLER(void)

@@ -217,8 +217,8 @@ bool menuStatsTraces(event_t event)
       lcdDrawNumber(STATS_TRACES_EVENT_POS, y, te->event, LEADING0|LEFT, 3);
       // data
       lcdDrawSizedText(STATS_TRACES_DATA_POS, y, "0x", 2);
-      lcdDrawHexNumber(STATS_TRACES_DATA_POS + 20, y, (uint16_t)(te->data >> 16));
-      lcdDrawHexNumber(STATS_TRACES_DATA_POS+ 60, y, (uint16_t)(te->data & 0xFFFF));
+      lcdDrawHexNumber(lcdNextPos, y, (uint16_t)(te->data >> 16));
+      lcdDrawHexNumber(lcdNextPos, y, (uint16_t)(te->data & 0xFFFF));
     }
 
   }

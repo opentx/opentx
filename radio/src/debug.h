@@ -101,8 +101,11 @@ enum TraceEvent {
   sd_disk_ioctl_MMC_GET_SDSTAT_1,
   sd_disk_ioctl_MMC_GET_SDSTAT_2,
   sd_spi_reset,
+  sd_wait_read,
+  sd_wait_write,
+  sd_irq,
 
-  ff_f_write_validate = 30,
+  ff_f_write_validate = 40,
   ff_f_write_flag,
   ff_f_write_clst,
   ff_f_write_sync_window,
@@ -112,20 +115,26 @@ enum TraceEvent {
   ff_f_write_disk_read,
   ff_f_write_move_window,
 
-  audio_getNextFilledBuffer_skip = 50,
+  audio_getNextFilledBuffer_skip = 60,
 };
 
 struct TraceElement {
   gtime_t time;
   uint8_t time_ms;
-  event_t event;
+  enum TraceEvent event;
   uint32_t data;
 };
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
 void trace_event(enum TraceEvent event, uint32_t data);
 void trace_event_i(enum TraceEvent event, uint32_t data);
 const struct TraceElement * getTraceElement(uint16_t idx);
 void dumpTraceBuffer();
+#if defined(__cplusplus)
+}
+#endif
 
 #define TRACE_EVENT(condition, event, data)   if (condition) { trace_event(event, data); }
 #define TRACEI_EVENT(condition, event, data)  if (condition) { trace_event_i(event, data); }
