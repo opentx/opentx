@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -54,7 +54,7 @@ enum MenuRadioHardwareItems {
 };
 
 #define HW_SETTINGS_COLUMN             150
-#define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, 0
+#define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define BLUETOOTH_ROWS                 1,
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -105,9 +105,9 @@ bool menuRadioHardware(event_t event)
       {
         int idx = k - ITEM_RADIO_HARDWARE_LS;
         uint8_t mask = (0x01 << idx);
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_XPOTS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
-        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+2+idx]) || (attr && menuHorizontalPosition == 0))
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_XPOTS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_POTS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx]) || (attr && menuHorizontalPosition == 0))
+          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
