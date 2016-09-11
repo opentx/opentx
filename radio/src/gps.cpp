@@ -159,10 +159,24 @@ bool gpsNewFrameNMEA(char c)
       if (param == 0) {
         // Frame identification (accept all GPS talkers (GP: GPS, GL:Glonass, GN:combination, etc...))
         gps_frame = NO_FRAME;
-        if (string[0] == 'G' && string[2] == 'G' && string[3] == 'G' && string[4] == 'A')
+        if (string[0] == 'G' && string[2] == 'G' && string[3] == 'G' && string[4] == 'A') {
           gps_frame = FRAME_GGA;
-        if (string[0] == 'G' && string[2] == 'R' && string[3] == 'M' && string[4] == 'C')
+        }
+        else if (string[0] == 'G' && string[2] == 'R' && string[3] == 'M' && string[4] == 'C') {
           gps_frame = FRAME_RMC;
+        }
+        else {
+          // turn off this frame (do this only once a second)
+          static gtime_t lastGpsCmdSent = 0;
+          if (string[0] == 'G' && g_rtcTime != lastGpsCmdSent) {
+            lastGpsCmdSent = g_rtcTime;
+            char cmd[] = "$PUBX,40,GSV,0,0,0,0";
+            cmd[9]  = string[2];
+            cmd[10] = string[3];
+            cmd[11] = string[4];
+            gpsSendFrame(cmd);
+          }
+        }
       }
 
       switch (gps_frame) {
@@ -202,6 +216,14 @@ bool gpsNewFrameNMEA(char c)
           switch (param) {
             case 1:
               gps_Msg.time = grab_fields(string, 0);
+              break;
+            case 2:
+              if (string[0] == 'A') {
+                gps_Msg.fix = 1;
+              }
+              else {
+                gps_Msg.fix = 0;
+              }
               break;
             case 7:
               gps_Msg.speed = ((grab_fields(string, 1) * 5144L) / 1000L);    // speed in cm/s added by Mis
@@ -309,6 +331,7 @@ void gpsSendFrame(const char * frame)
 {
   // send given frame, add checksum and CRLF
   uint8_t parity = 0;
+  TRACE_NOCRLF("gps> %s", frame);
   while (*frame) {
     if (*frame != '$') parity ^= *frame;
     gpsSendByte(*frame);
@@ -319,7 +342,7 @@ void gpsSendFrame(const char * frame)
   gpsSendByte(hex(parity & 0x0F));
   gpsSendByte('\r');
   gpsSendByte('\n');
-  TRACE("parity %02x", parity);
+  TRACE("*%02x", parity);
 }
 
 #endif // #if defined(DEBUG)

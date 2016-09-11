@@ -446,6 +446,7 @@ void gettime(struct gtm * tm)
   filltm(&g_rtcTime, tm); // create a struct tm date/time structure from global unix time stamp
 }
 
+void rtcGetTime(struct gtm * t);
 
 #define RTC_ADJUST_PERIOD      60   // how often RTC is checked for accuracy [seconds]
 #define RTC_ADJUST_TRESHOLD    20   // how much clock must differ before adjustment is made [seconds]
@@ -473,7 +474,14 @@ uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t
     t.tm_sec  = sec;
     gtime_t newTime = gmktime(&t) + g_eeGeneral.timezone * 3600;
     gtime_t diff = (g_rtcTime > newTime) ? (g_rtcTime - newTime) : (newTime - g_rtcTime);
-    TRACE("rtc: %d, new: %d, diff: %d", g_rtcTime, newTime, diff);
+
+#if defined(DEBUG)
+    struct gtm utm;
+    rtcGetTime(&utm);
+    gtime_t rtcTime = gmktime(&utm);
+    TRACE("rtc: %d, grtc: %d, gps: %d, diff: %d, ", rtcTime, g_rtcTime, newTime, diff);
+#endif
+
     if (diff > RTC_ADJUST_TRESHOLD) {
       // convert newTime to struct gtm and set RTC clock
       filltm(&newTime, &t);
