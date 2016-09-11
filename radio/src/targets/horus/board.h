@@ -122,7 +122,6 @@ void sdInit(void);
 void sdMount(void);
 void sdDone(void);
 #define sdPoll10ms()
-#define sdMountPoll()
 uint32_t sdMounted(void);
 #else
 #define SD_IS_HC()                     (0)

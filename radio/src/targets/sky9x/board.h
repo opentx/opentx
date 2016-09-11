@@ -260,7 +260,6 @@ void disable_dsm2(uint32_t port);
 #define sdDone()
 #else
 #define sdPoll10ms()
-void sdMountPoll();
 #if defined(__cplusplus)
 extern "C" {
 #endif
