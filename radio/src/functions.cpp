@@ -230,11 +230,10 @@ bool isRepeatDelayElapsed(const CustomFunctionData * functions, CustomFunctionsC
   const CustomFunctionData * cfn = &functions[index];
   tmr10ms_t tmr10ms = get_tmr10ms();
   uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
-  if (repeatParam == CFN_PLAY_REPEAT_NOSTART && !IS_SILENCE_PERIOD_ELAPSED()) {
+  if (!IS_SILENCE_PERIOD_ELAPSED() && repeatParam == CFN_PLAY_REPEAT_NOSTART) {
     functionsContext.lastFunctionTime[index] = tmr10ms;
-    return false;
   }
-  else if (!functionsContext.lastFunctionTime[index] || (repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-functionsContext.lastFunctionTime[index])>=100*repeatParam)) {
+  if (!functionsContext.lastFunctionTime[index] || (repeatParam && repeatParam!=CFN_PLAY_REPEAT_NOSTART && (signed)(tmr10ms-functionsContext.lastFunctionTime[index])>=100*repeatParam)) {
     functionsContext.lastFunctionTime[index] = tmr10ms;
     return true;
   }
