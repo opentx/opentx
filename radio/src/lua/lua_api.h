@@ -100,7 +100,7 @@ extern ScriptInternalData standaloneScript;
 extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
 extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
 void luaClose();
-bool luaTask(uint8_t evt, uint8_t scriptType, bool allowLcdUsage);
+bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage);
 void luaExec(const char * filename);
 void luaError(uint8_t error, bool acknowledge=true);
 int luaGetMemUsed();
