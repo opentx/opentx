@@ -527,6 +527,11 @@ enum MultiModuleRFProtocols {
 };
 
 #define MM_RF_DSM2_22MS_6CH_OPTION      2
+#define MM_RF_DSM2_11MS_7CH_OPTION      7
+
+#define MM_RF_DSM2_SUBTYPE_DSM2         0
+#define MM_RF_DSM2_SUBTYPE_DSMX         1
+
 
 #define MM_RF_FRSKY_SUBTYPE_D16         0
 #define MM_RF_FRSKY_SUBTYPE_D8          1

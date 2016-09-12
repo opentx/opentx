@@ -40,7 +40,9 @@
  */
 
 #define I2C_PSEUDO_TX 0xf0
+
 #define SPEKTRUM_TELEMETRY_LENGTH 18
+#define DSM_BIND_PACKET_LENGTH 12
 
 #define I2C_HIGH_CURRENT 0x03
 #define I2C_GPS  0x17
@@ -190,6 +192,7 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_QOS,          12, uint16,    ZSTR_A2,                UNIT_VOLTS,                  2},
 
   {I2C_PSEUDO_TX,    0,  uint8,     ZSTR_TX_RSSI,           UNIT_RAW,                    0},
+  {I2C_PSEUDO_TX,    4,  uint32,    ZSTR_CHANS_STATE,       UNIT_RAW,                    0},
   {0,                0,  int16,     NULL,                   UNIT_RAW,                    0} //sentinel
 };
 
@@ -211,9 +214,9 @@ static int32_t bcdToInt32(uint32_t bcd)
 }
 
 // Spektrum uses Big Endian data types
-static int32_t spektrumGetValue(uint8_t *packet, int startByte, SpektrumDataType type)
+static int32_t spektrumGetValue(const uint8_t *packet, int startByte, SpektrumDataType type)
 {
-  uint8_t * data = packet + startByte;
+  const uint8_t * data = packet + startByte;
   switch (type) {
     case uint8:
       return *((uint8_t *) (data));
@@ -254,9 +257,9 @@ bool isSpektrumValidValue(int32_t value, const SpektrumDataType type)
   }
 }
 
-void processSpektrumPacket(uint8_t *packet)
+void processSpektrumPacket(const uint8_t *packet)
 {
-  setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 1, 0, 0, packet[1], UNIT_RAW, 0);
+  setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
   uint8_t instance = packet[3];
@@ -318,6 +321,68 @@ void processSpektrumPacket(uint8_t *packet)
   }
 }
 
+// Parse the DSM2 bind reponse, Fields are as per http://www.rcgroups.com/forums/showpost.php?p=35692146&postcount=5191
+// "I"  here means the multi module
+
+/*
+0     0xAA -> telemetry start
+1     0x80 -> bind packet
+2-5   4 bytes -> Cyrf ID of the TX xor 0xFF but you don't care as I've checked it already...
+6     1 byte -> RX version but you don't care...
+7     1 byte -> number of channels, example 0x06=6 channels
+8     1 byte -> max DSM type allowed:
+        0x01 =>22ms 1024 DSM2 1 packet => number of channels is <8 and no telemetry
+        0x02 => 22ms 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
+        0x12 => 11ms 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
+        0xa2 => 22ms 2048 DSMX 1 packet => number of channels is <8 and no telemetry
+        0xb2 => 11ms 2048 DSMX => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
+9     0x00: not sure of the use of this byte since I've always seen it at 0...
+10    2 bytes CRC but you don't care as I've checked it already...
+ */
+void processDSMBindPacket(const uint8_t *packet)
+{
+  uint32_t debugval;
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_PROTO_DSM2
+    && g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode) {
+
+    int channels = packet[7];
+    // Only sets channel etc when in DSM multi mode
+    g_model.moduleData[EXTERNAL_MODULE].channelsCount = channels - 8;
+    if (packet[8] & 0xa0) {
+      g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSMX;
+    } else {
+      g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSM2;
+    }
+
+    bool use11ms = false;
+    // 11ms mode (and less than 8 channels since more channels don't worke with 11ms for now
+    if ((packet[8] & 0x10) && (channels < 8)) {
+      use11ms = true;
+    }
+
+    // 4 - 7 => 4-7 ch @ 11ms
+    if (use11ms) {
+      g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = limit(4, channels, 7);
+    } else {
+      if (channels <= 7) {
+        // 0 -3 => 4-7 ch @ 22ms
+        g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = limit(0, channels - 4, 3);
+      } else {
+        // 8 - 12 => 8-12 ch @ 22ms
+        g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = limit(8, channels, 12);
+      }
+    }
+    storageDirty(EE_MODEL);
+
+  }
+
+  debugval = packet[9] << 24 | packet[8] << 16 | packet[7] << 8 | packet[6];
+
+  /* log the bind packet as telemetry for quick debugging */
+  setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
+
+}
+
 void processSpektrumTelemetryData(uint8_t data)
 {
   if (telemetryRxBufferCount == 0 && data != 0xAA) {
@@ -332,6 +397,13 @@ void processSpektrumTelemetryData(uint8_t data)
     TRACE("[SPK] array size %d error", telemetryRxBufferCount);
     telemetryRxBufferCount = 0;
   }
+
+  if (telemetryRxBuffer[1] == 0x80 && telemetryRxBufferCount >= DSM_BIND_PACKET_LENGTH) {
+    processDSMBindPacket(telemetryRxBuffer);
+    telemetryRxBufferCount = 0;
+    return;
+  }
+
 
   if (telemetryRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
     debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",

@@ -118,6 +118,7 @@ void setupPulsesMultimodule(uint8_t port)
 
   int type = g_model.moduleData[port].multi.rfProtocol + 1;
   int subtype = g_model.moduleData[port].subType;
+  int8_t optionValue = g_model.moduleData[port].multi.optionValue;
 
   uint8_t protoByte = 0;
   if (moduleFlag[port] == MODULE_BIND)
@@ -126,6 +127,12 @@ void setupPulsesMultimodule(uint8_t port)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
+  if (type == MM_RF_PROTO_DSM2 && g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND) {
+    // Autobinding should always be done in DSMX 11ms
+    subtype = MM_RF_DSM2_SUBTYPE_DSMX;
+    optionValue = MM_RF_DSM2_11MS_7CH_OPTION;
+  }
+
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
   // all protos > frskyx are therefore also off by one
   if (type >= 15)
@@ -156,7 +163,8 @@ void setupPulsesMultimodule(uint8_t port)
   if (g_model.moduleData[port].multi.rfProtocol >= MM_RF_PROTO_CUSTOM)
     type = g_model.moduleData[port].multi.rfProtocol & 0x1f;
 
-  protoByte |= (type & 0x1f) | (g_model.moduleData[port].multi.autoBindMode << 6);
+
+  protoByte |= (type & 0x1f); //  (g_model.moduleData[port].multi.autoBindMode << 6)
   sendByteMulti(protoByte);
 
 
@@ -167,10 +175,8 @@ void setupPulsesMultimodule(uint8_t port)
                 );
 
 
-
-  //TODO: option_protocol, use same default as multi module
   // byte 3
-  sendByteMulti(g_model.moduleData[port].multi.optionValue);
+  sendByteMulti(optionValue);
 
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
