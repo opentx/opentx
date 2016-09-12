@@ -511,11 +511,11 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (IS_SWR_VALUE_VALID()) { 
+  if (IS_SWR_VALUE_VALID()) {
     lua_pushinteger(L, telemetryData.swr.value);
   }
   else {
-    lua_pushnil(L);  
+    lua_pushnil(L);
   }
   return 1;
 }
@@ -1014,6 +1014,12 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS) },
   { "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS) },
   { "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  { "EVT_ROT_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_ROT_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  { "EVT_ROT_LEFT", EVT_ROTARY_LEFT },
+  { "EVT_ROT_RIGHT", EVT_ROTARY_RIGHT },
+#endif
   { "FILL_WHITE", FILL_WHITE },
   { "GREY_DEFAULT", GREY_DEFAULT },
   { "FORCE", FORCE },
