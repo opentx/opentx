@@ -214,15 +214,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT then
+    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT then
+    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST then
+    if event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST then
+    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT then
       selectField(-1)
     end
   end
@@ -241,7 +241,7 @@ local function runConfigPage(event)
   end
   if fields[2][4] ~= nil then
     lcd.drawPixmap(128, 28, mountBitmaps[1 + fields[2][4]])
-  end  
+  end
   return result
 end
 
@@ -278,7 +278,7 @@ local function runCalibrationPage(event)
     else
       return 2
     end
-  end  
+  end
   return 0
 end
 
