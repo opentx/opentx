@@ -692,7 +692,7 @@
 #define DREX_CHBOX_OFFSET      30
 #define TR_CURVE               "Curve"
 #define TR_FLMODE              TR("Mode", "Modes")
-#define TR_MIXWARNING          "Waarsc."
+#define TR_MIXWARNING          "Melding"
 #define TR_OFF                 "UIT"
 #define TR_MULTPX              "Multpx"
 #define TR_DELAYDOWN           "Vertr.Dn"
@@ -889,7 +889,7 @@
 #define TR_RENAME_CATEGORY     "Rename Category"
 #define TR_DELETE_CATEGORY     "Delete Category"
 #define TR_CREATE_MODEL        "Nieuw Model"
-#define TR_DUPLICATE_MODEL     "Duplicate Model"
+#define TR_DUPLICATE_MODEL     "Dupliceer Model"
 #define TR_COPY_MODEL          "Kopieer Model"
 #define TR_MOVE_MODEL          "Verplaats Model"
 #define TR_BACKUP_MODEL        "Backup Model"
@@ -899,7 +899,7 @@
 #define TR_NO_SDCARD           "Geen SD-Kaart"
 #define TR_SDCARD_FULL         "SD-Kaart vol"
 #define TR_INCOMPATIBLE        "Niet compatibel"
-#define TR_WARNING             TR("WARNING","WAARSCHUWING")
+#define TR_WARNING             "MELDING"
 #define TR_EEPROMWARN          "EEPROM"
 #define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "EEPROM Converteren"
@@ -908,9 +908,9 @@
 #define TR_SWITCHWARN          "SCHAKELAAR"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_WRONG_SDCARDVERSION "Verkeerde versie van bestanden"
-#define TR_WRONG_PCBREV        "Wrong PCB detected"
+#define TR_WRONG_PCBREV        "Verkeerde PCB gedetecteerd"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
-#define TR_PCBREV_ERROR        "PCB error"
+#define TR_PCBREV_ERROR        "PCB fout"
 #define TR_NO_FAILSAFE         TR("Failsafe niet ing.", "Failsafe niet ingesteld")
 #define TR_KEYSTUCK            "Toets klemt"
 #define TR_INVERT_THR          TR("Gas omdraaien?", "Volgas achter?")
@@ -1126,15 +1126,15 @@
 #define TR_LSW_HEADERS_DELAY           "Vertraging"
 
 #define TR_GVAR_HEADERS_NAME          "Name"
-#define TR_GVAR_HEADERS_FM0           "Value on FM0"
-#define TR_GVAR_HEADERS_FM1           "Value on FM1"
-#define TR_GVAR_HEADERS_FM2           "Value on FM2"
-#define TR_GVAR_HEADERS_FM3           "Value on FM3"
-#define TR_GVAR_HEADERS_FM4           "Value on FM4"
-#define TR_GVAR_HEADERS_FM5           "Value on FM5"
-#define TR_GVAR_HEADERS_FM6           "Value on FM6"
-#define TR_GVAR_HEADERS_FM7           "Value on FM7"
-#define TR_GVAR_HEADERS_FM8           "Value on FM8"
+#define TR_GVAR_HEADERS_FM0           "Waarde bij FM0"
+#define TR_GVAR_HEADERS_FM1           "Waarde bij FM1"
+#define TR_GVAR_HEADERS_FM2           "Waarde bij FM2"
+#define TR_GVAR_HEADERS_FM3           "Waarde bij FM3"
+#define TR_GVAR_HEADERS_FM4           "Waarde bij FM4"
+#define TR_GVAR_HEADERS_FM5           "Waarde bij FM5"
+#define TR_GVAR_HEADERS_FM6           "Waarde bij FM6"
+#define TR_GVAR_HEADERS_FM7           "Waarde bij FM7"
+#define TR_GVAR_HEADERS_FM8           "Waarde bij FM8"
 
 // Horus footer descriptions
 #define TR_LSW_DESCRIPTIONS    { "Vergelijking of Functie", "1e variabele", "2e variabele of constante", "2e variabele of constante", "Additionele conditie", "Minimale AAN duur van de logische schakelaar", "Minimale WAAR duur om AAN te gaan" }
