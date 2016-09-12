@@ -330,7 +330,7 @@ TEST(Trims, greaterTrimLink)
   MODEL_RESET();
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
   setTrimValue(3, RUD_STICK, 32);
-  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(1, RUD_STICK), RUD_STICK), 32);
+  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(1, RUD_STICK), RUD_STICK), 32);
 }
 
 TEST(Trims, chainedTrims)
@@ -339,7 +339,7 @@ TEST(Trims, chainedTrims)
   setTrimValue(0, RUD_STICK, 32);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+1); // link to FP0 trim
   setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, RUD_STICK), RUD_STICK), 32);
+  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
 }
 
 TEST(Trims, infiniteChainedTrims)
@@ -349,7 +349,7 @@ TEST(Trims, infiniteChainedTrims)
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
   setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
   setTrimValue(3, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP2 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightPhase(0, RUD_STICK), RUD_STICK), 32);
+  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
 }
 #endif
 

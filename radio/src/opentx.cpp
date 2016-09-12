@@ -586,7 +586,7 @@ int getTrimValue(uint8_t phase, uint8_t idx)
   }
   return 0;
 #else
-  return getRawTrimValue(getTrimFlightPhase(phase, idx), idx);
+  return getRawTrimValue(getTrimFlightMode(phase, idx), idx);
 #endif
 }
 
@@ -630,7 +630,7 @@ void setTrimValue(uint8_t phase, uint8_t idx, int trim)
 #endif
 
 #if !defined(CPUARM)
-uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
+uint8_t getTrimFlightMode(uint8_t phase, uint8_t idx)
 {
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     if (phase == 0) return 0;
@@ -645,7 +645,7 @@ uint8_t getTrimFlightPhase(uint8_t phase, uint8_t idx)
 #endif
 
 #if defined(ROTARY_ENCODERS)
-uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
+uint8_t getRotaryEncoderFlightMode(uint8_t idx)
 {
   uint8_t phase = mixerCurrentFlightMode;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
@@ -661,130 +661,16 @@ uint8_t getRotaryEncoderFlightPhase(uint8_t idx)
 
 int16_t getRotaryEncoder(uint8_t idx)
 {
-  return flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx];
+  return flightModeAddress(getRotaryEncoderFlightMode(idx))->rotaryEncoders[idx];
 }
 
 void incRotaryEncoder(uint8_t idx, int8_t inc)
 {
   rotencValue[idx] += inc;
-  int16_t *value = &(flightModeAddress(getRotaryEncoderFlightPhase(idx))->rotaryEncoders[idx]);
+  int16_t *value = &(flightModeAddress(getRotaryEncoderFlightMode(idx))->rotaryEncoders[idx]);
   *value = limit((int16_t)-RESX, (int16_t)(*value + (inc * 8)), (int16_t)+RESX);
   storageDirty(EE_MODEL);
 }
-#endif
-
-#if defined(GVARS)
-
-#if defined(PCBSTD)
-  #define SET_GVAR_VALUE(idx, phase, value) \
-    (GVAR_VALUE(idx, phase) = value, storageDirty(EE_MODEL))
-#else
-  #define SET_GVAR_VALUE(idx, phase, value) \
-    GVAR_VALUE(idx, phase) = value; \
-    storageDirty(EE_MODEL); \
-    if (g_model.gvars[idx].popup) { \
-      gvarLastChanged = idx; \
-      gvarDisplayTimer = GVAR_DISPLAY_TIME; \
-    }
-#endif
-
-#if defined(PCBSTD)
-int16_t getGVarFieldValue(int16_t x, int16_t min, int16_t max)
-{
-  if (GV_IS_GV_VALUE(x, min, max)) {
-    int8_t idx = GV_INDEX_CALCULATION(x, max);
-    int8_t mul = 1;
-
-    if (idx < 0) {
-      idx = -1-idx;
-      mul = -1;
-    }
-
-    x = GVAR_VALUE(idx, -1) * mul;
-  }
-
-  return limit(min, x, max);
-}
-
-void setGVarValue(uint8_t idx, int8_t value)
-{
-  if (GVAR_VALUE(idx, -1) != value) {
-    SET_GVAR_VALUE(idx, -1, value);
-  }
-}
-#else
-uint8_t gvarDisplayTimer = 0;
-uint8_t gvarLastChanged = 0;
-
-uint8_t getGVarFlightMode(uint8_t fm, uint8_t gv) // TODO change params order to be consistent!
-{
-  for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-    if (fm == 0) return 0;
-    int16_t val = GVAR_VALUE(gv, fm);
-    if (val <= GVAR_MAX) return fm;
-    uint8_t result = val-GVAR_MAX-1;
-    if (result >= fm) result++;
-    fm = result;
-  }
-  return 0;
-}
-
-int16_t getGVarValue(int8_t gv, int8_t fm)
-{
-  int8_t mul = 1;
-  if (gv < 0) {
-    gv = -1-gv;
-    mul = -1;
-  }
-  return GVAR_VALUE(gv, getGVarFlightMode(fm, gv)) * mul;
-}
-
-int32_t getGVarValuePrec1(int8_t gv, int8_t fm)
-{
-  int8_t mul;
-  uint8_t prec = g_model.gvars[gv].prec;
-  if (prec == 0)
-    mul = 10;
-  else
-    mul = 1;
-
-  if (gv < 0) {
-    gv = -1-gv;
-    mul = -mul;
-  }
-  return GVAR_VALUE(gv, getGVarFlightMode(fm, gv)) * mul;
-}
-
-void setGVarValue(uint8_t gv, int16_t value, int8_t fm)
-{
-  fm = getGVarFlightMode(fm, gv);
-  if (GVAR_VALUE(gv, fm) != value) {
-    SET_GVAR_VALUE(gv, fm, value);
-  }
-}
-
-int16_t getGVarFieldValue(int16_t val, int16_t min, int16_t max, int8_t fm)
-{
-  if (GV_IS_GV_VALUE(val, min, max)) {
-    int8_t gv = GV_INDEX_CALCULATION(val, max);
-    val = getGVarValue(gv, fm);
-  }
-  return limit(min, val, max);
-}
-
-int32_t getGVarFieldValuePrec1(int16_t val, int16_t min, int16_t max, int8_t fm)
-{
-  if (GV_IS_GV_VALUE(val, min, max)) {
-    int8_t gv = GV_INDEX_CALCULATION(val, max);
-    val = getGVarValuePrec1(gv, fm);
-  }
-  else {
-    val *= 10;
-  }
-  return limit<int>(min*10, val, max*10);
-}
-#endif
-
 #endif
 
 #if defined(CPUARM)
@@ -1380,7 +1266,7 @@ uint8_t checkTrim(event_t event)
       thro = false;
     }
     else {
-      phase = getTrimFlightPhase(mixerCurrentFlightMode, idx);
+      phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
 #if defined(CPUARM)
       before = getTrimValue(phase, idx);
 #else
@@ -1389,7 +1275,7 @@ uint8_t checkTrim(event_t event)
       thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
-    phase = getTrimFlightPhase(mixerCurrentFlightMode, idx);
+    phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
 #if defined(CPUARM)
     before = getTrimValue(phase, idx);
 #else
@@ -2359,7 +2245,7 @@ void instantTrim()
   for (uint8_t stick=0; stick<NUM_STICKS; stick++) {
     if (stick!=THR_STICK) {
       // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightPhase(mixerCurrentFlightMode, stick);
+      uint8_t trim_phase = getTrimFlightMode(mixerCurrentFlightMode, stick);
 #if defined(VIRTUAL_INPUTS)
       int16_t delta = 0;
       for (int e=0; e<MAX_EXPOS; e++) {

@@ -134,7 +134,7 @@ void OpenTxSimulator::setValues(TxInputs &inputs)
 void OpenTxSimulator::setTrim(unsigned int idx, int value)
 {
   idx = modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightPhase(getFlightMode(), idx);
+  uint8_t phase = getTrimFlightMode(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
@@ -143,7 +143,7 @@ void OpenTxSimulator::getTrims(Trims & trims)
   uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
   for (uint8_t idx=0; idx<4; idx++) {
-    trims.values[idx] = getTrimValue(getTrimFlightPhase(phase, idx), idx);
+    trims.values[idx] = getTrimValue(getTrimFlightMode(phase, idx), idx);
   }
 
   for (int i=0; i<2; i++) {

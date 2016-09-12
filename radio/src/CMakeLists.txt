@@ -196,10 +196,12 @@ endif()
 
 if(CURVES)
   add_definitions(-DCURVES)
+  set(SRC ${SRC} curves.cpp)
 endif()
 
 if(GVARS)
   add_definitions(-DGVARS)
+  set(SRC ${SRC} gvars.cpp)
   math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${GVARS_VARIANT})
 endif()
 
@@ -284,13 +286,6 @@ set(SRC
   timers.cpp
   trainer_input.cpp
   )
-
-if(CURVES)
-  set(SRC
-    ${SRC}
-    curves.cpp
-    )
-endif()
 
 if(GUI)
   add_definitions(-DGUI)
