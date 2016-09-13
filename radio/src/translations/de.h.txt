@@ -20,16 +20,16 @@
  */
 
 // DE translations author: Helmut Renz
-// German checked 01.07.2016 r122 opentx V2.2.0 für X12S,X9E, X9D+,X9D,Th9,9XR,9XR-Pro  
+// German checked 01.07.2016 r122 opentx V2.2.0 für X12S,X9E, X9D+,X9D,Th9,9XR,9XR-Pro
 /*
  * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!
  *
  * In order to make translations easier de.h.txt is parsed and national
  * characters are replaced by bitmap codes. The result is de.h.
- * 
- * See translate.py in the util folder for the list of character codes  
  *
- * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!   
+ * See translate.py in the util folder for the list of character codes
+ *
+ * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!
  */
 
 /*
@@ -80,7 +80,7 @@
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Kein\0 ""Taster""2POS\0 ""3POS\0"
 
-#define LEN_POTTYPES           "\017" 
+#define LEN_POTTYPES           "\017"
 #define TR_POTTYPES            "Kein\0          ""Poti mit Raste ""Stufen-Schalter""Poti ohne Raste\0"
 
 #define LEN_SLIDERTYPES        "\006"
@@ -98,7 +98,7 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"          
+#define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF""MULT"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
@@ -241,7 +241,7 @@
 #if LCD_W >= 212
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
   #define TR_CSWSTICKY         "SRFF\0" // Sticky = RS-Flip-Flop
-  #define TR_CSWRANGE          "Range"  // Range = Bereichsabfrage von bis 
+  #define TR_CSWRANGE          "Range"  // Range = Bereichsabfrage von bis
   #define TR_CSWSTAY           "Puls\0" // Edge = einstellbarer Impuls
 #else
   #define TR_CSWTIMER          "Takt\0" // TIM = Takt = Taktgenerator
@@ -270,7 +270,7 @@
 
 #define LEN_VFSWFUNC           "\012"
 
-#if defined(VARIO)		
+#if defined(VARIO)
   #define TR_VVARIO            "Vario\0    " // nur 10 Zeichen String!
 #else
   #define TR_VVARIO            "[Vario]\0  "
@@ -294,7 +294,7 @@
   #else
     #define TR_PLAY_TRACK      "Sag Text\0 "
   #endif
-  #define TR_PLAY_BOTH         "Sag Beide "  
+  #define TR_PLAY_BOTH         "Sag Beide "
   #define TR_PLAY_VALUE        TR("Sag Wert\0 ", "Sag Wert  ")
 #else
   #define TR_PLAY_TRACK        "[Sag Text]"
@@ -345,7 +345,7 @@
 #define TR_SF_RESERVE         "[Reserve]\0"
 
 #if defined(CPUARM)
-  #define TR_VFSWFUNC          TR_SF_SAFETY "Lehrer \0  ""Inst. Trim""Rücksetz.\0""Setze \0   " TR_ADJUST_GVAR "Lautstr.\0 " "SetFailsfe" "RangeCheck" "ModuleBind" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "LCD Licht\0" TR_SF_SCREENSHOT TR_SF_TEST 
+  #define TR_VFSWFUNC          TR_SF_SAFETY "Lehrer \0  ""Inst. Trim""Rücksetz.\0""Setze \0   " TR_ADJUST_GVAR "Lautstr.\0 " "SetFailsfe" "RangeCheck" "ModuleBind" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "LCD Licht\0" TR_SF_SCREENSHOT TR_SF_TEST
 #elif defined(PCBGRUVIN9X)
   #define TR_VFSWFUNC          TR_SF_SAFETY "Lehrer \0  ""Inst. Trim""Rücksetz.\0" TR_ADJUST_GVAR TR_SOUND TR_PLAY_TRACK TR_PLAY_BOTH TR_PLAY_VALUE TR_VVARIO TR_HAPTIC TR_SDCLOGS "LCD Licht\0" TR_SF_TEST
 #else
@@ -388,8 +388,8 @@
   #define TR_TELEM_TIME        TR("Zeit", "Zeit\0")
   #define TR_SWR               TR("SWR\0", "SWR\0 ")
   #define TR_RX_BATT           TR("[NA]", "[NA]\0")
-  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ") 
-  #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ") 
+  #define TR_A3_A4             TR("A3\0 ""A4\0 ", "A3\0  ""A4\0  ")
+  #define TR_A3_A4_MIN         TR("A3-\0""A4-\0", "A3-\0 ""A4-\0 ")
 #else
   #define TR_TELEM_RESERVE
   #define TR_TELEM_TIME
@@ -399,7 +399,7 @@
   #define TR_A3_A4_MIN
 #endif
 
-#define TR_ASPD_MAX            TR("ASp+", "ASpd+") 
+#define TR_ASPD_MAX            TR("ASp+", "ASpd+")
 
 #if LCD_W >= 212
   #define TR_TELEM_RSSI_RX     "RSSI\0"
@@ -474,7 +474,7 @@
   #define LEN_VTELEMSCREENTYPE "\007"
   #define TR_VTELEMSCREENTYPE  " None  "" Werte "" Balken"" Script"
 #else
-  #define LEN_VTELEMSCREENTYPE "\007" 
+  #define LEN_VTELEMSCREENTYPE "\007"
   #define TR_VTELEMSCREENTYPE  " Werte "" Balken"
 #endif
 
@@ -681,7 +681,7 @@
 #define TR_TRIMINC             TR("Trim Schr.", "Trimmschritte")
 #define TR_DISPLAY_TRIMS       TR("Trim anzeig", "Trimwerte anzeigen")
 #define TR_TTRACE              TR("Gasquelle", INDENT "Gas-Timerquelle")
-#define TR_TTRIM 	       			 TR("Gastrim", INDENT "Gas-Leerlauftrim")  
+#define TR_TTRIM 	       			 TR("Gastrim", INDENT "Gas-Leerlauftrim")
 #define TR_BEEPCTR             TR("Mitt.Piep", "Mittelstell. -Pieps")
 #define TR_USE_GLOBAL_FUNCS    TR("Glob. Funkt.", "Globale Funkt verw.")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -707,8 +707,8 @@
 #define TR_ELEVATOR            "Nick Quelle"
 #define TR_SWASHRING           TR("Ring   Begrenz", "Ring Begrenzung")
 #define TR_ELEDIRECTION        TR("Nick   Richtung", "Nick   Servo Richtung")
-#define TR_AILDIRECTION        TR("Roll   Richtung", "Roll   Servo Richtung") 
-#define TR_COLDIRECTION        TR("Pitch Richtung", "Pitch Servo Richtung") 
+#define TR_AILDIRECTION        TR("Roll   Richtung", "Roll   Servo Richtung")
+#define TR_COLDIRECTION        TR("Pitch Richtung", "Pitch Servo Richtung")
 #define TR_MODE                INDENT "Modus"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expos voll!"
@@ -770,6 +770,8 @@
 #define TR_SPLASHSCREEN        TR("Startbild Ein", "Startbild Ein für")
 #define TR_THROTTLEWARNING     TR("Gasalarm", INDENT "Gas Alarm")
 #define TR_SWITCHWARNING       TR("Sch. Alarm", INDENT "Schalter-Alarm")
+#define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
+#define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Poti-Warnung")
 #define TR_TIMEZONE            TR("Zeitzone", "GPS-Zeitzone +/-Std")
 #define TR_ADJUST_RTC          INDENT "Uhrzeit per GPS setzen"
@@ -820,14 +822,14 @@
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER " für Reset"
-#define TR_PPM_TRAINER         "TR"               
+#define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODELL"
 #define TR_FP                  "FP"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM voll"
 #define TR_ALERT               "WARNUNG"
-#define TR_PRESSANYKEYTOSKIP	 TR("Taste drücken",CENTER"Taste drücken")	
+#define TR_PRESSANYKEYTOSKIP	 TR("Taste drücken",CENTER"Taste drücken")
 #define TR_THROTTLENOTIDLE     "Gas nicht Null!"
 #define TR_ALARMSDISABLED      "Alarme ausgeschaltet"
 #define TR_PRESSANYKEY         TR("Taste drücken",CENTER"Taste drücken")
@@ -893,7 +895,7 @@
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_SYNCMENU            "Sync [MENU]"
-#define TR_LIMIT               INDENT "Grenzen"   
+#define TR_LIMIT               INDENT "Grenzen"
 #define TR_MINRSSI             "Min. RSSI"
 #define TR_LATITUDE            "Breite:"
 #define TR_LONGITUDE           "Länge:"
@@ -937,8 +939,8 @@
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB error"
 #define TR_NO_FAILSAFE         TR("Failsafe not set", "Failsafe nicht programmiert")
-#define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt 
-#define TR_INVERT_THR          TR("Gas umkehren?", "Vollgas hinten?") // Th9x 9XR 
+#define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt
+#define TR_INVERT_THR          TR("Gas umkehren?", "Vollgas hinten?") // Th9x 9XR
 #define TR_SPEAKER_VOLUME      INDENT "Lautstärke"
 #define TR_LCD                 "Bildschirm"
 #define TR_BRIGHTNESS          INDENT "Helligkeit"
@@ -973,7 +975,7 @@
 #define TR_REMOVED             " gelöscht"
 #define TR_SD_INFO             "Information"
 #define TR_SD_FORMAT           "Formatieren"
-#define TR_NA                  "N/V"	//NV=Nicht Verfügbar  Kurz-Meldung 
+#define TR_NA                  "N/V"	//NV=Nicht Verfügbar  Kurz-Meldung
 #define TR_HARDWARE            TR("Hardware einst. ", "Namen und Hardware einst.")
 #define TR_FORMATTING          "Formatierung..."
 #define TR_TEMP_CALIB          "Temp.  abgl."
@@ -1030,8 +1032,8 @@
 #define TR_ABOUT_US            "Die Programmierer"
 #define TR_SETUP_SCREENS       "Setup Hautbildschirme"
 #define TR_MONITOR_SCREENS     "Monitore Mischer Kanal Logik"
-#define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern 
-#define TR_SF                  "SF" //Spezial Funktionen 
+#define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern
+#define TR_SF                  "SF" //Spezial Funktionen
 #define TR_GF                  "GF" // Globale Funktionen
 #define TR_SPEAKER             INDENT "Lautspr"
 #define TR_BUZZER              INDENT "Summer"
@@ -1071,7 +1073,7 @@
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Pts"
 #define TR_SMOOTH              "Runden"
-#define TR_COPY_STICKS_TO_OFS  "Kopie Stick to Servo-Mitte"  
+#define TR_COPY_STICKS_TO_OFS  "Kopie Stick to Servo-Mitte"
 #define TR_COPY_TRIMS_TO_OFS   "Kopie Trimm to Servo-Mitte"  // "Trim to Subtrim"
 #define TR_INCDEC              "Inc/Decrement"
 #define TR_GLOBALVAR           "Global Var"
@@ -1175,7 +1177,7 @@
 #define TR_ABOUT_MIKE_2        "Code- und Treiber-Guru"
 #define TR_ABOUT_MIKE_3        "Wohl einer der Besten."
 #define TR_ABOUT_MIKE_4        "Sehr inspirierend."
-       
+
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2      "Companion9x-Hauptentwickler"
 #define TR_ABOUT_ROMOLO_3      ""
@@ -1216,7 +1218,7 @@
 
 #define TR_CHR_SHORT  				 's' // Taste short
 #define TR_CHR_LONG   				 'l' // Taste long
-#define TR_CHR_TOGGLE 				 't' // Taste als togglefunktion = Ein Aus Ein 
+#define TR_CHR_TOGGLE 				 't' // Taste als togglefunktion = Ein Aus Ein
 #define TR_CHR_HOUR   				 'h' // Stunden
 #define TR_CHR_INPUT  				 'I' // Values between A-I will work
 
