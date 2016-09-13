@@ -2626,11 +2626,8 @@ int main()
 
 #if defined(CPUM2560)
   // Time to switch off
-  lcdClear();
-  showMessageBox(STR_SHUTDOWN);
+  drawSleepBitmap();
   opentxClose();
-  lcdClear() ;
-  lcdRefresh() ;
   boardOff(); // Only turn power off if necessary
   wdt_disable();
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.

@@ -256,8 +256,10 @@ void updateProgressBar(int num, int den)
   // TODO
 }
 
+#if defined(CPUARM) || defined(CPU2560)
 void drawSleepBitmap()
 {
   lcdClear();
   showMessageBox(STR_SHUTDOWN);
 }
+#endif
