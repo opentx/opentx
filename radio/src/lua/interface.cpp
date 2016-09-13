@@ -584,6 +584,11 @@ void luaDoOneRunStandalone(event_t evt)
     }
 #endif
   }
+  else {
+    TRACE("Script run method missing");
+    standaloneScript.state = SCRIPT_SYNTAX_ERROR;
+    luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+  }
 }
 
 bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
