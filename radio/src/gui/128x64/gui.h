@@ -421,21 +421,9 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();
 void doMainScreenGraphics();
 
-inline void drawProgressBar(const char * label)
-{
-  // TODO
-}
-
-inline void updateProgressBar(int num, int den)
-{
-  // TODO
-}
-
-inline void drawSleepBitmap()
-{
-  lcdClear();
-  showMessageBox(STR_SHUTDOWN);
-}
+inline void drawProgressBar(const char * label);
+inline void updateProgressBar(int num, int den);
+void drawSleepBitmap();
 
 #if !defined(CPUM64)
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);

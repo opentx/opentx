@@ -245,3 +245,19 @@ void drawStatusLine()
   }
 }
 #endif
+
+void drawProgressBar(const char * label)
+{
+  // TODO
+}
+
+void updateProgressBar(int num, int den)
+{
+  // TODO
+}
+
+void drawSleepBitmap()
+{
+  lcdClear();
+  showMessageBox(STR_SHUTDOWN);
+}
