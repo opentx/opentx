@@ -71,7 +71,7 @@ void selectModel(uint8_t sub)
 #if !defined(COLORLCD)
   showMessageBox(STR_LOADINGMODEL);
 #endif
-  saveTimers();
+  storageFlushCurrentModel();
   storageCheck(true); // force writing of current model data before this is changed
   g_eeGeneral.currModel = sub;
   storageDirty(EE_GENERAL);

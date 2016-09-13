@@ -45,9 +45,9 @@ void drawMessageBox()
   // could be a place for a warningInfoText
 }
 
-void showMessageBox(const pm_char * pstr)
+void showMessageBox(const pm_char * str)
 {
-  warningText = pstr;
+  warningText = str;
   drawMessageBox();
   warningText = NULL;
   lcdRefresh();

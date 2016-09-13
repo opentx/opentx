@@ -66,16 +66,8 @@ void saveTimers()
       }
     }
   }
-
-#if defined(CPUARM) && !defined(REVA)
-  if (sessionTimer > 0) {
-    g_eeGeneral.globalTimer += sessionTimer;
-    storageDirty(EE_GENERAL);
-    sessionTimer = 0;
-  }
-#endif
 }
-#endif  // #if defined(CPUARM) || defined(CPUM2560)
+#endif // #if defined(CPUARM) || defined(CPUM2560)
 
 #if defined(ACCURAT_THROTTLE_TIMER)
   #define THR_TRG_TRESHOLD    13      // approximately 10% full throttle

@@ -50,6 +50,7 @@ void storageFormat();
 void storageReadAll();
 void storageDirty(uint8_t msk);
 void storageCheck(bool immediately);
+void storageFlushCurrentModel();
 
 void preModelLoad();
 void postModelLoad(bool alarms);

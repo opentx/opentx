@@ -425,13 +425,16 @@ inline void drawProgressBar(const char * label)
 {
   // TODO
 }
+
 inline void updateProgressBar(int num, int den)
 {
   // TODO
 }
+
 inline void drawSleepBitmap()
 {
-  // TODO
+  lcdClear();
+  showMessageBox(STR_SHUTDOWN);
 }
 
 #if !defined(CPUM64)

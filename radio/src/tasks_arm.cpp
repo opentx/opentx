@@ -243,13 +243,7 @@ void menusTask(void * pdata)
   ledOff();
 #endif
 
-#if defined(COLORLCD) || defined(PCBTARANIS)
   drawSleepBitmap();
-#else
-  lcdClear();
-  showMessageBox(STR_SHUTDOWN);
-#endif
-
   opentxClose();
   boardOff(); // Only turn power off if necessary
 }

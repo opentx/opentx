@@ -1882,15 +1882,12 @@ void opentxClose(uint8_t shutdown)
   logsClose();
 #endif
 
-  saveTimers();
+  storageFlushCurrentModel();
 
-#if defined(CPUARM)
-  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-    TelemetrySensor & sensor = g_model.telemetrySensors[i];
-    if (sensor.type == TELEM_TYPE_CALCULATED && sensor.persistent && sensor.persistentValue != telemetryItems[i].value) {
-      sensor.persistentValue = telemetryItems[i].value;
-      storageDirty(EE_MODEL);
-    }
+#if defined(CPUARM) && !defined(REVA)
+  if (sessionTimer > 0) {
+    g_eeGeneral.globalTimer += sessionTimer;
+    sessionTimer = 0;
   }
 #endif
 
@@ -1901,25 +1898,7 @@ void opentxClose(uint8_t shutdown)
   }
 #endif
 
-#if defined(PCBTARANIS)
-  if (g_model.potsWarnMode == POTS_WARN_AUTO) {
-    for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
-      if (!(g_model.potsWarnEnabled & (1 << i))) {
-        SAVE_POT_POSITION(i);
-      }
-    }
-    storageDirty(EE_MODEL);
-  }
-#endif
-
-#if !defined(PCBTARANIS) && !defined(COLORLCD)
-  if (storageDirtyMsk & EE_MODEL) {
-    showMessageBox(STR_SAVEMODEL);
-  }
-#endif
-
   g_eeGeneral.unexpectedShutdown = 0;
-
   storageDirty(EE_GENERAL);
   storageCheck(true);
 
