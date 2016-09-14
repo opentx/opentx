@@ -1,4 +1,4 @@
-<h2>Version 2.0.20 / 2016-05-27</h2>
+<h2>Version 2.0.20 / 2016-09-14</h2>
 <ul>
 <li>Fixed data overflow in Special Functions Override Channel (<a href=https://github.com/opentx/opentx/issues/3347>#3347</a>)</li>
 <li>Removed dependencies on th9x, er9x and ersky9x source code (<a href=https://github.com/opentx/opentx/issues/3537>#3537</a>)</li>

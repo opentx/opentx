@@ -1,4 +1,4 @@
-<h2>Version 2.0.20 / 2016-05-27</h2>
+<h2>Version 2.0.20 / 2016-09-14</h2>
 
 Nothing new (only Firmware build server and Companion fixes)
 
