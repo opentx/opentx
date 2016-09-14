@@ -739,7 +739,7 @@ void checkSwitches()
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
 // FIXME: One getADC() call only reads one 14051 MUX input. To have all switch states updated, we need to call it MUX_MAX+1 times.
 #define GETADC_COUNT (MUX_MAX+1)
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
 #define GETADC_COUNT 1
 #endif
 #ifdef GETADC_COUNT
@@ -759,6 +759,19 @@ void checkSwitches()
         unsigned int state = ((states >> (3*i)) & 0x07);
         if (state && state-1 != ((switches_states >> (i*2)) & 0x03)) {
           warn = true;
+        }
+      }
+    }
+    if (g_model.potsWarnMode) {
+      evalFlightModeMixes(e_perout_mode_normal, 0);
+      bad_pots = 0;
+      for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
+        if (!IS_POT_OR_SLIDER_AVAILABLE(POT1+i)) {
+          continue;
+        }
+        if (!(g_model.potsWarnEnabled & (1 << i)) && (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
+          warn = true;
+          bad_pots |= (1<<i);
         }
       }
     }
@@ -883,7 +896,7 @@ void checkSwitches()
               else if (numWarnings == 6) {
                 lcdDrawText(x, y, "...", ALARM_COLOR);
               }
-              x += 20;
+              x += 40;
 #else
               x = lcdNextPos + 3;
 #endif
