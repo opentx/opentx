@@ -1,4 +1,4 @@
-<h2>Version 2.1.9 / todo</h2>
+<h2>Version 2.1.9 / 2016-09-14</h2>
 
 <ul>
 <li>SD sync fixes (<a href=https://github.com/opentx/opentx/issues/3351>#3351</a>)</li>
