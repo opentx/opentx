@@ -1025,6 +1025,8 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_ROT_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_ROT_LEFT", EVT_ROTARY_LEFT },
   { "EVT_ROT_RIGHT", EVT_ROTARY_RIGHT },
+#endif
+#if defined(PCBHORUS)
   { "EVT_PAGEUP_FIRST",  EVT_KEY_FIRST(KEY_PGUP) },
   { "EVT_PAGEDN_FIRST",  EVT_KEY_FIRST(KEY_PGDN) },
   { "EVT_TELEM_FIRST",  EVT_KEY_FIRST(KEY_TELEM) },
