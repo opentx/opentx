@@ -81,6 +81,7 @@ void sig(int sgn)
 
 #include <inttypes.h>
 #include <stdio.h>
+#define HAVE_STRUCT_TIMESPEC
 #include <pthread.h>
 #include <semaphore.h>
 #include <stddef.h>
