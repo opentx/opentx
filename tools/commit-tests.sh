@@ -5,12 +5,16 @@ CORES=2
 for i in "$@"
 do
 case $i in
-    -c=*|--cores=*)
+    -j=*|--jobs=*)
       CORES="${i#*=}"
       shift
       ;;
+    -j*)
+      CORES="${i#*j}"
+      shift
+      ;;
     *)
-      echo 'Usage : commit-test.sh --cores=2'
+      echo 'Usage : commit-test.sh --jobs=2'
       exit
       ;;
 esac
@@ -30,98 +34,98 @@ cd build
 # OpenTX on 9X stock with FrSky telemetry
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=FRSKY ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on 9X stock with Ardupilot telemetry
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=ARDUPILOT ${SRCDIR}
-make -j$(CORES) firmware
+make -j${CORES} firmware
 
 # OpenTX on 9X stock with JETI telemetry
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=JETI ${SRCDIR}
-make -j$(CORES) firmware
+make -j${CORES} firmware
 
 # OpenTX on Mega2560
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTEMPLATES=YES -DHELI=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Mega2560 with Mavlink telemetry
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTELEMETRY=MAVLINK -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on gruvin9x board
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Sky9x
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on AR9X
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on X7D
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X7D -DHELI=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on X9D
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on X9D+
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Taranis X9E
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Horus beta boards
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES -DGVARS=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-# make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+# make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Horus
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES -DGVARS=YES ${SRCDIR}
-make -j$(CORES) firmware
-make -j$(CORES) simu
-# make -j$(CORES) gtests ; ./gtests
+make -j${CORES} firmware
+make -j${CORES} simu
+# make -j${CORES} gtests ; ./gtests
 
 # Companion
 rm -rf *
 cmake ${COMMON_OPTIONS} ${SRCDIR}
-make -j$(CORES)
+make -j${CORES}
