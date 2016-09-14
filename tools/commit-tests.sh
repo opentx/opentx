@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Allow variable core usage, default uses two cores, to set 8 cores for example : commit-tests.sh -c=8
+# Allow variable core usage, default uses two cores, to set 8 cores for example : commit-tests.sh -j8
 CORES=2
 for i in "$@"
 do
 case $i in
-    -j=*|--jobs=*)
+    --jobs=*)
       CORES="${i#*=}"
       shift
       ;;
@@ -14,7 +14,7 @@ case $i in
       shift
       ;;
     *)
-      echo 'Usage : commit-test.sh --jobs=2'
+      echo 'Usage : commit-test.sh --jobs=2 or commit-test.sh -j2'
       exit
       ;;
 esac
