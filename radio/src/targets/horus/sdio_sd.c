@@ -1951,7 +1951,7 @@ OPTIMIZE("O0") SD_Error SD_SendStatus(uint32_t *pcardstatus)
   * @param  None
   * @retval SD_Error: SD Card Error code.
   */
-OPTIMIZE("O0") SD_Error SD_ProcessIRQ(void)
+OPTIMIZE("O0") void SD_ProcessIRQ(void)
 {
   if (SDIO_GetITStatus(SDIO_IT_DATAEND) != RESET)
   {
@@ -1988,7 +1988,8 @@ OPTIMIZE("O0") SD_Error SD_ProcessIRQ(void)
   SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND |
                 SDIO_IT_TXFIFOHE | SDIO_IT_RXFIFOHF | SDIO_IT_TXUNDERR |
                 SDIO_IT_RXOVERR | SDIO_IT_STBITERR, DISABLE);
-  return(TransferError);
+
+  TRACE_SD_CARD_EVENT((TransferError != SD_OK), sd_irq, TransferError);
 }
 
 /**
@@ -2754,8 +2755,7 @@ OPTIMIZE("O0") static SD_Error FindSCR(uint16_t rca, uint32_t *pscr)
 void SDIO_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_SDIO);
-  SD_Error err = SD_ProcessIRQ();
-  TRACE_SD_CARD_EVENT((err != SD_OK), sd_irq, err);
+  SD_ProcessIRQ();
 }
 
 void SD_SDIO_DMA_IRQHANDLER(void)
