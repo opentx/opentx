@@ -37,8 +37,10 @@ for i, (s, f) in enumerate([(u"Volt","volt0"),
                             (u"Milliliter", "ml0"),
                             (u"Unze", "founce0"),
                             (u"Uhr", "hour0"),
-                            (u"Minuten", "minute0"),
-                            (u"Sekunden", "second0"),
+                            (u"Minute", "minute0"),
+                            (u"Minuten", "minute1"),
+                            (u"Sekunde", "second0"),
+                            (u"Sekunden", "second1"),
                             ]):
     systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 110 + i)))
 for s, f, a in [(u"Inaktivitätsalarm", "inactiv", 486),
