@@ -65,11 +65,18 @@
 #define HINT(s) s
 #endif
 
-#if LCD_W >= 212
-  #define TR(x, y) y
+#if LCD_W >= 480
+  #define TR3(x, y, z) z
+  #define TR2(x, y) y
+#elif LCD_W >= 212
+  #define TR3(x, y, z) y
+  #define TR2(x, y) y
 #else
-  #define TR(x, y) x
+  #define TR3(x, y, z) x
+  #define TR2(x, y) x
 #endif
+
+#define TR(x, y) TR2(x, y) // for compatibility
 
 #if defined(COLORLCD)
   #define BUTTON(x) x
