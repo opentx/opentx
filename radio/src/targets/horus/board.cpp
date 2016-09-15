@@ -51,33 +51,31 @@ void init2MhzTimer()
 // Starts TIMER at 1000Hz
 void init1msTimer()
 {
-  INTERRUPT_5MS_TIMER->ARR = 999;     // 1mS
-  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;  // 1uS from 30MHz
-  INTERRUPT_5MS_TIMER->CCER = 0;
-  INTERRUPT_5MS_TIMER->CCMR1 = 0;
-  INTERRUPT_5MS_TIMER->EGR = 0;
-  INTERRUPT_5MS_TIMER->CR1 = 5;
-  INTERRUPT_5MS_TIMER->DIER |= 1;
-  NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
-  NVIC_SetPriority(TIM8_TRG_COM_TIM14_IRQn, 7);
+  INTERRUPT_1MS_TIMER->ARR = 999;     // 1mS
+  INTERRUPT_1MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;  // 1uS from 30MHz
+  INTERRUPT_1MS_TIMER->CCER = 0;
+  INTERRUPT_1MS_TIMER->CCMR1 = 0;
+  INTERRUPT_1MS_TIMER->EGR = 0;
+  INTERRUPT_1MS_TIMER->CR1 = 5;
+  INTERRUPT_1MS_TIMER->DIER |= 1;
+  NVIC_EnableIRQ(INTERRUPT_1MS_IRQn);
+  NVIC_SetPriority(INTERRUPT_1MS_IRQn, 7);
 }
 
 // TODO use the same than board_sky9x.cpp
 void interrupt1ms()
 {
-  static uint32_t pre_scale;       // Used to get 10 Hz counter
+  static uint8_t pre_scale;       // Used to get 10 Hz counter
 
   ++pre_scale;
 
-  if (pre_scale == 5 || pre_scale == 10) {
-
 #if defined(HAPTIC)
+  if (pre_scale == 5 || pre_scale == 10) {
     DEBUG_TIMER_START(debugTimerHaptic);
     HAPTIC_HEARTBEAT();
     DEBUG_TIMER_STOP(debugTimerHaptic);
-#endif
-
   }
+#endif
 
   if (pre_scale == 10) {
     pre_scale = 0;
@@ -89,11 +87,19 @@ void interrupt1ms()
   DEBUG_TIMER_START(debugTimerRotEnc);
   checkRotaryEncoder();
   DEBUG_TIMER_STOP(debugTimerRotEnc);
+
+#if defined(LUA)
+  if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
+    if (telemetryFifo.last(-2) == 0x7E && telemetryFifo.last(-1) == outputTelemetryBufferTrigger) {
+      sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+    }
+  }
+#endif
 }
 
-extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
+extern "C" void INTERRUPT_1MS_IRQHandler()
 {
-  TIM14->SR &= ~TIM_SR_UIF;
+  INTERRUPT_1MS_TIMER->SR &= ~TIM_SR_UIF;
   interrupt1ms();
   DEBUG_INTERRUPT(INT_1MS);
 }
@@ -120,7 +126,7 @@ void boardInit()
                          GPS_RCC_AHB1Periph,
                          ENABLE);
 
-  RCC_APB1PeriphClockCmd(INTERRUPT_5MS_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(INTERRUPT_1MS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          SERIAL_RCC_APB1Periph |
