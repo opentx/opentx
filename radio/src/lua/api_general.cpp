@@ -511,11 +511,11 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (IS_SWR_VALUE_VALID()) {
+  if (IS_SWR_VALUE_VALID()) { 
     lua_pushinteger(L, telemetryData.swr.value);
   }
   else {
-    lua_pushnil(L);
+    lua_pushnil(L);  
   }
   return 1;
 }
@@ -1004,7 +1004,14 @@ const luaR_value_entry opentxConstants[] = {
 #else
   { "FIXEDWIDTH", FIXEDWIDTH },
 #endif
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  { "EVT_PAGEUP_FIRST",  EVT_KEY_FIRST(KEY_PGUP) },
+  { "EVT_PAGEDN_FIRST",  EVT_KEY_FIRST(KEY_PGDN) },
+  { "EVT_TELEM_FIRST",  EVT_KEY_FIRST(KEY_TELEM) },
+  { "EVT_MODEL_FIRST",  EVT_KEY_FIRST(KEY_MODEL) },
+  { "EVT_SYS_FIRST",  EVT_KEY_FIRST(KEY_RADIO) },
+  { "EVT_RTN_FIRST",  EVT_KEY_FIRST(KEY_EXIT) },
+#elif defined(PCBTARANIS)
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
@@ -1020,23 +1027,15 @@ const luaR_value_entry opentxConstants[] = {
   { "ERASE", ERASE },
   { "ROUND", ROUND },
 #endif
+  { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
+  { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
+  { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
 #if defined(ROTARY_ENCODER_NAVIGATION)
   { "EVT_ROT_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_ROT_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_ROT_LEFT", EVT_ROTARY_LEFT },
   { "EVT_ROT_RIGHT", EVT_ROTARY_RIGHT },
 #endif
-#if defined(PCBHORUS)
-  { "EVT_PAGEUP_FIRST",  EVT_KEY_FIRST(KEY_PGUP) },
-  { "EVT_PAGEDN_FIRST",  EVT_KEY_FIRST(KEY_PGDN) },
-  { "EVT_TELEM_FIRST",  EVT_KEY_FIRST(KEY_TELEM) },
-  { "EVT_MODEL_FIRST",  EVT_KEY_FIRST(KEY_MODEL) },
-  { "EVT_SYS_FIRST",  EVT_KEY_FIRST(KEY_RADIO) },
-  { "EVT_RTN_FIRST",  EVT_KEY_FIRST(KEY_EXIT) },
-#endif
-  { "EVT_ENTER_BREAK", EVT_KEY_BREAK(KEY_ENTER) },
-  { "EVT_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
-  { "EVT_EXIT_BREAK", EVT_KEY_BREAK(KEY_EXIT) },
   { "SOLID", SOLID },
   { "DOTTED", DOTTED },
   { "LCD_W", LCD_W },
