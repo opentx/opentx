@@ -17,7 +17,7 @@ void unlockFlash()
 
 void lockFlash()
 {
-  while (!FLASH->SR & FLASH_SR_BSY);
+  while (FLASH->SR & FLASH_SR_BSY);
   FLASH->CR |= FLASH_CR_LOCK;
 }
 

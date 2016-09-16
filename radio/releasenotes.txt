@@ -1,4 +1,4 @@
-<h2>Version 2.1.9 / todo</h2>
+<h2>Version 2.1.9 / 2016-09-14</h2>
 
 [All]
 <ul>
@@ -16,7 +16,7 @@
 
 [Taranis]
 <ul>
-<li>Fixed USB driver changed interrupt grouping which affected interrupt priorities (fix suggested by Michael Blandford) (<a href=https://github.com/opentx/opentx/issues/3178>#3178</a>)</li>
+<li>Fixed USB driver changed interrupt grouping which affected interrupt priorities (fix suggested by Michael Blandford), this should fix the SBUS Trainer issue <a href=https://github.com/opentx/opentx/issues/2999>#2999</a> (<a href=https://github.com/opentx/opentx/issues/3178>#3178</a>)</li>
 <li>ADC Jitter Filter improvements, option added in Hardware settings to turn it on/off (<a href=https://github.com/opentx/opentx/issues/3432>#3432</a>)</li>
 <li>Added multimodule support</li>
 </ul>
@@ -33,7 +33,6 @@
 <li>Return proper values for `Cels-` and `Cels+` (<a href=https://github.com/opentx/opentx/issues/2826>#2826</a>)</li>
 <li>Fixed lcd.drawNumber() display when INVERS flag was used (<a href=https://github.com/opentx/opentx/issues/3569>#3569</a>)</li>
 </ul>
-
 
 <h2>Version 2.1.8 / 2016-04-14</h2>
 
