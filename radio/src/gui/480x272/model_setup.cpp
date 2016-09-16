@@ -683,6 +683,9 @@ bool menuModelSetup(event_t event)
             case MM_RF_PROTO_MJXQ:
               lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_MJXQ, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
+            case MM_RF_PROTO_HONTAI:
+              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+              break;
             case MM_RF_PROTO_CUSTOM:
               lcdDrawNumber(MODEL_SETUP_4TH_COLUMN, y, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, menuHorizontalPosition==2 ? attr : 0, 2);
               lcdDrawNumber(MODEL_SETUP_4TH_COLUMN + MODEL_SETUP_BIND_OFS, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
@@ -737,6 +740,7 @@ bool menuModelSetup(event_t event)
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 1);
                   break;
                 case MM_RF_PROTO_CG023:
+                case MM_RF_PROTO_HONTAI:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 2);
                   break;
                 case MM_RF_PROTO_FLYSKY:
