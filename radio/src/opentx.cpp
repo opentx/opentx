@@ -980,7 +980,7 @@ void doSplash()
 #define doSplash()
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && defined(CPUARM)
 void checkSDVersion()
 {
   if (sdMounted()) {
@@ -1038,7 +1038,7 @@ void checkAll()
   checkFailsafe();
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && defined(CPUARM)
   checkSDVersion();
 #endif
 
@@ -1877,7 +1877,7 @@ void opentxClose(uint8_t shutdown)
     hapticOff();
 #endif
   }
-  
+
 #if defined(SDCARD)
   logsClose();
 #endif
@@ -1919,21 +1919,21 @@ void opentxClose(uint8_t shutdown)
 void opentxResume()
 {
   TRACE("opentxResume");
-  
+
   menuHandlers[0] = menuMainView;
-  
+
   sdMount();
-  
+
   storageReadAll();
 
 #if defined(PCBHORUS)
   loadTheme();
   loadFontCache();
 #endif
-  
+
   opentxStart(false);
 
-#if defined(CPUARM)  
+#if defined(CPUARM)
   referenceSystemAudioFiles();
 #endif
 
