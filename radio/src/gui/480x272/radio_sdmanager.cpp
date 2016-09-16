@@ -128,6 +128,10 @@ void onSdManagerMenu(const char * result)
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
   }
+  else if (result == STR_ASSIGN_BITMAP) {
+    memcpy(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
+    storageDirty(EE_MODEL);
+  }
   else if (result == STR_VIEW_TEXT) {
     getSelectionFullPath(lfn);
     pushMenuTextView(lfn);
@@ -219,6 +223,11 @@ bool menuRadioSdManager(event_t _event)
         if (ext) {
           if (!strcasecmp(ext, SOUNDS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
+          }
+          else if (!strcasecmp(ext, BMP_EXT) || !strcasecmp(ext, JPG_EXT) || !strcasecmp(ext, PNG_EXT)) {
+            if (!READ_ONLY() && (ext-line) <= (int)sizeof(g_model.header.bitmap)) {
+              POPUP_MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
+            }
           }
           else if (!strcasecmp(ext, TEXT_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
