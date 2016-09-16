@@ -222,7 +222,7 @@ int getSwitchWarningsCount()
 #define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
 #if defined(MULTIMODULE)
 
-#define MULTIMODULE_HAS_SUBTYPE(x)        (x == MM_RF_PROTO_FLYSKY || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_HISKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_YD717 || x == MM_RF_PROTO_KN || x == MM_RF_PROTO_SYMAX || x == MM_RF_PROTO_CX10 || x == MM_RF_PROTO_CG023 || x == MM_RF_PROTO_MT99XX || x == MM_RF_PROTO_MJXQ)
+#define MULTIMODULE_HAS_SUBTYPE(x)        (x == MM_RF_PROTO_FLYSKY || x == MM_RF_PROTO_FRSKY || x == MM_RF_PROTO_HISKY || x == MM_RF_PROTO_DSM2 || x == MM_RF_PROTO_YD717 || x == MM_RF_PROTO_KN || x == MM_RF_PROTO_SYMAX || x == MM_RF_PROTO_CX10 || x == MM_RF_PROTO_CG023 || x == MM_RF_PROTO_MT99XX || x == MM_RF_PROTO_MJXQ || x == MM_RF_PROTO_HONTAI)
 #define MULTIMODULE_MODE_ROWS(x)          (g_model.moduleData[x].multi.rfProtocol >= MM_RF_PROTO_CUSTOM ) ? (uint8_t) 3 :MULTIMODULE_HAS_SUBTYPE(g_model.moduleData[x].multi.rfProtocol) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_MODULE_ROWS           IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 0 : HIDDEN_ROW, IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? (uint8_t) 0 : HIDDEN_ROW,
 #else
@@ -738,6 +738,9 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_MJXQ:
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_MJXQ, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
+            case MM_RF_PROTO_HONTAI:
+              lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+              break;
             case MM_RF_PROTO_CUSTOM:
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+14*FW, y, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, menuHorizontalPosition==2 ? attr : 0, 2);
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+16*FW, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
@@ -792,6 +795,7 @@ void menuModelSetup(uint8_t event)
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 1);
                   break;
                 case MM_RF_PROTO_CG023:
+                case MM_RF_PROTO_HONTAI:                    
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 2);
                   break;
                 case MM_RF_PROTO_FLYSKY:

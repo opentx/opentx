@@ -52,7 +52,7 @@
 #define I2C_QOS 0x7f
 
 
-enum SpektrumDataType : uint8_t {
+enum SpektrumDataType  {
   int8,
   int16,
   int32,
