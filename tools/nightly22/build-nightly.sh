@@ -1,5 +1,5 @@
 #!/bin/bash
- 
+
 set -e
 
 branch=next
@@ -23,7 +23,7 @@ cd ${workdir}
 cp code/radio/util/Dockerfile .
 docker build -t new-$docker --build-arg OPENTX_VERSION_SUFFIX=$suffix .
 docker rmi $docker || true
-docker tag new-$docker $docker 
+docker tag new-$docker $docker
 docker rmi new-$docker
 
 # Build Linux companion
@@ -50,5 +50,4 @@ chmod -Rf g+w companion-windows-2.2.0$suffix.exe
 # Update windows stamp
 rm -f companion-windows.stamp
 echo "#define VERSION  "'"2.2.0'$suffix'"' >> companion-windows.stamp
-
-
+cp $output/companion/window/companion-windows.stamp $output/companion/linux/companion-windows.stamp
