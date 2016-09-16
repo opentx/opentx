@@ -8,6 +8,11 @@ set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
 message(STATUS "OpenTX ${VERSION}")
 
+set(SDCARD_REVISION "0002")
+set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
+file(WRITE radio/sdcard/horus/opentx.sdcard.version ${SDCARD_VERSION})
+file(WRITE radio/sdcard/taranis/opentx.sdcard.version ${SDCARD_VERSION})
+
 cmake_minimum_required(VERSION 2.8)
 cmake_policy(SET CMP0020 NEW)
 cmake_policy(SET CMP0023 OLD)

@@ -16,15 +16,15 @@ suffix="N$index"
 
 cd ${workdir}
 
-# Call sdcard generation
-# code/tools/nightly22/build-sdcard.sh
-
 # Create on-demand build environment
 cp code/radio/util/Dockerfile .
 docker build -t new-$docker --build-arg OPENTX_VERSION_SUFFIX=$suffix .
 docker rmi $docker || true
 docker tag new-$docker $docker
 docker rmi new-$docker
+
+# Call sdcard generation
+code/tools/nightly22/build-sdcard.sh
 
 # Build Linux companion
 docker run -dit --name companion -v /home/opentx/$docker:/opentx $docker
