@@ -741,6 +741,9 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_HONTAI:
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
+            case MM_RF_PROTO_HONTAI:
+              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+              break;
             case MM_RF_PROTO_CUSTOM:
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+14*FW, y, g_model.moduleData[EXTERNAL_MODULE].multi.rfProtocol & 0x1f, menuHorizontalPosition==2 ? attr : 0, 2);
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+16*FW, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
@@ -808,6 +811,7 @@ void menuModelSetup(uint8_t event)
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 4);
                   break;
                 case MM_RF_PROTO_CX10:
+                case MM_RF_PROTO_HONTAI:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
                   break;
                 case MM_RF_PROTO_CUSTOM:

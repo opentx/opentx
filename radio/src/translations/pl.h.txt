@@ -150,7 +150,7 @@
 #define LEN_SUBTYPE_MJXQ       "\005"
 #define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
 
-#define LEN_SUBTYPE_HONTAI     "007"
+#define LEN_SUBTYPE_HONTAI     "\007"
 #define TR_SUBTYPE_HONTAI      "Std\0   ""JJRC X1""X5C1cln"
 
 #define LEN_OPTIONS_DSM        "\011"
