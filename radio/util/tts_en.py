@@ -113,7 +113,7 @@ for i, (s, f) in enumerate([(u"gear!, up!", "gearup"),
                             (u"flight mode!, launch", "fm-lch"),
                             (u"flight mode!, ping", "fm-png"),
                             (u"flight mode!, thermal", "fm-thm"),
-                            (u"flight mode!, thermal left", "fm-thml"),
-                            (u"flight mode!, thermal right", "fm-thmr"),
+                            (u"flight mode!, thermal left", "fm-thl"),
+                            (u"flight mode!, thermal right", "fm-thr"),
                             ]):
     sounds.append((s, filename(f, PROMPT_CUSTOM_BASE + i)))
