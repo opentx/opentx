@@ -50,4 +50,4 @@ chmod -Rf g+w companion-windows-2.2.0$suffix.exe
 # Update windows stamp
 rm -f companion-windows.stamp
 echo "#define VERSION  "'"2.2.0'$suffix'"' >> companion-windows.stamp
-cp $output/companion/window/companion-windows.stamp $output/companion/linux/companion-windows.stamp
+cp $output/companion/windows/companion-windows.stamp $output/companion/linux/companion-windows.stamp
