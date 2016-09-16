@@ -71,7 +71,6 @@ set(TARGET_DIR taranis)
 
 add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
-add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
 
 set(GUI_SRC ${GUI_SRC}
   model_inputs.cpp

@@ -42,7 +42,6 @@ endif()
 add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
 add_definitions(-DEEPROM_VARIANT=0)
-add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
 
 set(GUI_SRC
   ${GUI_SRC}
