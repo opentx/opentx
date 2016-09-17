@@ -993,6 +993,7 @@ void checkSDVersion()
       if (f_read(&versionFile, &version, sizeof(version), &read) != FR_OK ||
           read != sizeof(version) ||
           strncmp(version, REQUIRED_SDCARD_VERSION, sizeof(version)) != 0) {
+        TRACE("SD card version mismatch:  %.*s, %s", sizeof(REQUIRED_SDCARD_VERSION)-1, version, REQUIRED_SDCARD_VERSION);
         ALERT(STR_SD_CARD, STR_WRONG_SDCARDVERSION, AU_ERROR);
       }
       f_close(&versionFile);
