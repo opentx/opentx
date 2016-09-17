@@ -217,15 +217,10 @@ const char * const audioFilenames[] = {
   "timovr3"
 };
 
-uint64_t sdAvailableSystemAudioFiles = 0;
-uint32_t sdAvailablePhaseAudioFiles = 0;
-uint64_t sdAvailableSwitchAudioFiles = 0;
-uint64_t sdAvailableLogicalSwitchAudioFiles = 0;
-
-#define MASK_SYSTEM_AUDIO_FILE(index)                 ((uint64_t)1 << (index))
-#define MASK_PHASE_AUDIO_FILE(index, event)           ((uint32_t)1 << (2*(index)+(event)))
-#define MASK_SWITCH_AUDIO_FILE(index)                 ((uint64_t)1 << (index))
-#define MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)  ((uint64_t)1 << (2*(index)+(event)))
+BitField<(AU_SPECIAL_SOUND_FIRST)> sdAvailableSystemAudioFiles;
+BitField<(MAX_FLIGHT_MODES * 2/*on, off*/)> sdAvailablePhaseAudioFiles;
+BitField<(SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT)> sdAvailableSwitchAudioFiles;
+BitField<(MAX_LOGICAL_SWITCHES * 2/*on, off*/)> sdAvailableLogicalSwitchAudioFiles;
 
 char * getAudioPath(char * path)
 {
@@ -258,10 +253,9 @@ void referenceSystemAudioFiles()
   fno.lfname = lfn;
   fno.lfsize = sizeof(lfn);
 
-  uint64_t availableAudioFiles = 0;
+  sdAvailableSystemAudioFiles.reset();
 
   assert(sizeof(audioFilenames)==AU_SPECIAL_SOUND_FIRST*sizeof(char *));
-  assert(sizeof(sdAvailableSystemAudioFiles)*8 >= AU_SPECIAL_SOUND_FIRST);
 
   char * filename = strAppendSystemAudioPath(path);
   *(filename-1) = '\0';
@@ -280,15 +274,13 @@ void referenceSystemAudioFiles()
       for (int i=0; i<AU_SPECIAL_SOUND_FIRST; i++) {
         getSystemAudioFile(path, i);
         if (!strcasecmp(filename, fn)) {
-          availableAudioFiles |= MASK_SYSTEM_AUDIO_FILE(i);
+          sdAvailableSystemAudioFiles.setBit(i);
           break;
         }
       }
     }
     f_closedir(&dir);
   }
-
-  sdAvailableSystemAudioFiles = availableAudioFiles;
 }
 
 const char * const suffixes[] = { "-off", "-on" };
@@ -315,7 +307,7 @@ void getSwitchAudioFile(char * filename, swsrc_t index)
 {
   char * str = getModelAudioPath(filename);
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (index <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(index);
     *str++ = 'S';
@@ -373,9 +365,9 @@ void referenceModelAudioFiles()
   fno.lfname = lfn;
   fno.lfsize = sizeof(lfn);
 
-  sdAvailablePhaseAudioFiles = 0;
-  sdAvailableSwitchAudioFiles = 0;
-  sdAvailableLogicalSwitchAudioFiles = 0;
+  sdAvailablePhaseAudioFiles.reset();
+  sdAvailableSwitchAudioFiles.reset();
+  sdAvailableLogicalSwitchAudioFiles.reset();
 
   char * filename = getModelAudioPath(path);
   *(filename-1) = '\0';
@@ -399,7 +391,7 @@ void referenceModelAudioFiles()
           getPhaseAudioFile(path, i, event);
           // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
           if (!strcasecmp(filename, fn)) {
-            sdAvailablePhaseAudioFiles |= MASK_PHASE_AUDIO_FILE(i, event);
+            sdAvailablePhaseAudioFiles.setBit(INDEX_PHASE_AUDIO_FILE(i, event));
             found = true;
             TRACE("\tfound: %s", filename);
             break;
@@ -410,9 +402,9 @@ void referenceModelAudioFiles()
       // Switches Audio Files <switchname>-[up|mid|down].wav
       for (int i=SWSRC_FIRST_SWITCH; i<=SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
-        // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
+        // TRACE("referenceModelAudioFiles(): searching for %s in %s (%d)", path, fn, i);
         if (!strcasecmp(filename, fn)) {
-          sdAvailableSwitchAudioFiles |= MASK_SWITCH_AUDIO_FILE(i-SWSRC_FIRST_SWITCH);
+          sdAvailableSwitchAudioFiles.setBit(i-SWSRC_FIRST_SWITCH);
           found = true;
           TRACE("\tfound: %s", filename);
         }
@@ -424,7 +416,7 @@ void referenceModelAudioFiles()
           getLogicalSwitchAudioFile(path, i, event);
           // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
           if (!strcasecmp(filename, fn)) {
-            sdAvailableLogicalSwitchAudioFiles |= MASK_LOGICAL_SWITCH_AUDIO_FILE(i, event);
+            sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(i, event));
             found = true;
             TRACE("\tfound: %s", filename);
             break;
@@ -445,25 +437,25 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
   // TRACE("isAudioFileReferenced(%08x)", i);
 
   if (category == SYSTEM_AUDIO_CATEGORY) {
-    if (sdAvailableSystemAudioFiles & MASK_SYSTEM_AUDIO_FILE(event)) {
+    if (sdAvailableSystemAudioFiles.getBit(event)) {
       getSystemAudioFile(filename, event);
       return true;
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
-    if (sdAvailablePhaseAudioFiles & MASK_PHASE_AUDIO_FILE(index, event)) {
+    if (sdAvailablePhaseAudioFiles.getBit(INDEX_PHASE_AUDIO_FILE(index, event))) {
       getPhaseAudioFile(filename, index, event);
       return true;
     }
   }
   else if (category == SWITCH_AUDIO_CATEGORY) {
-    if (sdAvailableSwitchAudioFiles & MASK_SWITCH_AUDIO_FILE(index)) {
+    if (sdAvailableSwitchAudioFiles.getBit(index)) {
       getSwitchAudioFile(filename, SWSRC_FIRST_SWITCH+index);
       return true;
     }
   }
   else if (category == LOGICAL_SWITCH_AUDIO_CATEGORY) {
-    if (sdAvailableLogicalSwitchAudioFiles & MASK_LOGICAL_SWITCH_AUDIO_FILE(index, event)) {
+    if (sdAvailableLogicalSwitchAudioFiles.getBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(index, event))) {
       getLogicalSwitchAudioFile(filename, index, event);
       return true;
     }
@@ -527,13 +519,16 @@ void audioTask(void * pdata)
   }
 
   setSampleRate(AUDIO_SAMPLE_RATE);
-  
+
   if (!unexpectedShutdown) {
     AUDIO_HELLO();
   }
 
   while (1) {
+    DEBUG_TIMER_SAMPLE(debugTimerAudioIterval);
+    DEBUG_TIMER_START(debugTimerAudioDuration);
     audioQueue.wakeup();
+    DEBUG_TIMER_STOP(debugTimerAudioDuration);
     CoTickDelay(2/*4ms*/);
   }
 }
@@ -743,7 +738,9 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
 
 void AudioQueue::wakeup()
 {
+  DEBUG_TIMER_START(debugTimerAudioConsume);
   audioConsumeCurrentBuffer();
+  DEBUG_TIMER_STOP(debugTimerAudioConsume);
 
   AudioBuffer * buffer = getEmptyBuffer();
   if (buffer) {
@@ -818,7 +815,9 @@ void AudioQueue::wakeup()
         buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
       }
 #endif
+      DEBUG_TIMER_START(debugTimerAudioPush);
       audioPushBuffer(buffer);
+      DEBUG_TIMER_STOP(debugTimerAudioPush);
       audioEnableIrq();
     }
   }
@@ -981,7 +980,7 @@ void AudioQueue::stopPlay(uint8_t id)
 
 void AudioQueue::stopSD()
 {
-  sdAvailableSystemAudioFiles = 0;
+  sdAvailableSystemAudioFiles.reset();
   stopAll();
   playTone(0, 0, 100, PLAY_NOW);        // insert a 100ms pause
 }

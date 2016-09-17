@@ -150,7 +150,7 @@ TEST(getSwitch, inputWithTrim)
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
 TEST(evalLogicalSwitches, playFile)
 {
   SYSTEM_RESET();
@@ -158,8 +158,7 @@ TEST(evalLogicalSwitches, playFile)
   modelDefault(0);
   MIXER_RESET();
 
-  extern uint64_t sdAvailableLogicalSwitchAudioFiles;
-  sdAvailableLogicalSwitchAudioFiles = 0xffffffffffffffff;
+  extern BitField<(MAX_LOGICAL_SWITCHES * 2/*on, off*/)> sdAvailableLogicalSwitchAudioFiles;
   char filename[AUDIO_FILENAME_MAXLEN+1];
 
 #if defined(EEPROM)
@@ -167,6 +166,11 @@ TEST(evalLogicalSwitches, playFile)
 #else
 #define MODELNAME "Model00"
 #endif
+
+  sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(0,AUDIO_EVENT_OFF));
+  sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(0,AUDIO_EVENT_ON));
+  sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(31,AUDIO_EVENT_OFF));
+  sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(31,AUDIO_EVENT_ON));
 
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (0 << 16) + AUDIO_EVENT_OFF, filename);
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L1-off.wav"), 0);
@@ -176,6 +180,9 @@ TEST(evalLogicalSwitches, playFile)
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L32-off.wav"), 0);
   isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_ON, filename);
   EXPECT_EQ(strcmp(filename, "/SOUNDS/en/" MODELNAME "/L32-on.wav"), 0);
+
+  EXPECT_EQ(isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (31 << 16) + AUDIO_EVENT_ON, filename), true);
+  EXPECT_EQ(isAudioFileReferenced((LOGICAL_SWITCH_AUDIO_CATEGORY << 24) + (32 << 16) + AUDIO_EVENT_ON, filename), false);
 
 #undef MODELNAME
 }

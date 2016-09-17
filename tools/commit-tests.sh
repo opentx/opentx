@@ -102,24 +102,24 @@ make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Taranis X9E
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Horus beta boards
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES -DGVARS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-# make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Horus
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=NO -DUSB=SERIAL -DCLI=YES -DDEBUG=YES -DGVARS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-# make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests ; ./gtests
 
 # Companion
 rm -rf *

@@ -24,4 +24,4 @@ install:
   - sudo dpkg --install gcc-avr_1%3a4.8-2.1_amd64.deb avr-libc_1%3a1.8.0-4.1_all.deb libmpfr4_3.1.2-1_amd64.deb binutils-avr_2.23.1-2.1_amd64.deb libmpc3_1.0.1-1ubuntu1_amd64.deb
 
 script:
-  - ./tools/commit-tests.sh .
+  - ./tools/commit-tests.sh
