@@ -787,7 +787,7 @@ TEST(Mixer, DelayOnSwitch)
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
   g_model.mixData[0].weight = 100;
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   g_model.mixData[0].swtch = SWSRC_SA2;
 #else
   g_model.mixData[0].swtch = SWSRC_THR;
