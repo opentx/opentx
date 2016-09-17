@@ -158,7 +158,7 @@ local function refreshNext()
         if fieldId == 0x9D then
           refreshState = 0
           calibrationState = 0
-          calibrationStep = (calibrationStep + 1) % 6
+          calibrationStep = (calibrationStep + 1) % 7
         end
       else
         local field = fields[refreshIndex + 1]
@@ -230,8 +230,8 @@ local function runFieldsPage(event)
   return 0
 end
 
-local wingBitmaps = { "plane.bmp", "delta.bmp", "vtail.bmp" }
-local mountBitmaps = { "horz.bmp", "horz-r.bmp", "vert.bmp", "vert-r.bmp" }
+local wingBitmaps = { "bmp/plane.bmp", "bmp/delta.bmp", "bmp/vtail.bmp" }
+local mountBitmaps = { "bmp/horz.bmp", "bmp/horz-r.bmp", "bmp/vert.bmp", "bmp/vert-r.bmp" }
 
 local function runConfigPage(event)
   fields = configFields
@@ -259,17 +259,22 @@ local function runCalibrationPage(event)
   end
   lcd.clear()
   lcd.drawScreenTitle("S6R", page, #pages)
-  local position = calibrationPositions[1 + calibrationStep]
-  lcd.drawText(0, 9, "Turn the S6R " .. position, 0)
-  lcd.drawPixmap(10, 19, position .. ".bmp")
-  for index = 1, 3, 1 do
-    local field = fields[index]
-    lcd.drawText(80, 12+10*index, field[1], 0)
-    lcd.drawNumber(90, 12+10*index, field[4]/10, LEFT+PREC2)
-  end
+  if(calibrationStep < 6) then
+    local position = calibrationPositions[1 + calibrationStep]
+    lcd.drawText(0, 9, "Turn the S6R " .. position, 0)
+    lcd.drawPixmap(10, 19, "bmp/"..position .. ".bmp")
+    for index = 1, 3, 1 do
+      local field = fields[index]
+      lcd.drawText(80, 12+10*index, field[1], 0)
+      lcd.drawNumber(90, 12+10*index, field[4]/10, LEFT+PREC2)
+    end
 
-  local attr = calibrationState == 0 and INVERS or 0
-  lcd.drawText(0, 56, "Press [Enter] when ready", attr)
+    local attr = calibrationState == 0 and INVERS or 0
+    lcd.drawText(0, 56, "Press [Enter] when ready", attr)
+  else
+    lcd.drawText(0, 9, "Calibration completed", 0)
+    lcd.drawText(0, 56, "Press [Enter] when ready", attr)
+  end
   if event == EVT_ENTER_BREAK then
     calibrationState = 1
   elseif event == EVT_EXIT_BREAK then
