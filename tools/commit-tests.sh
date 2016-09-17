@@ -13,10 +13,6 @@ case $i in
       CORES="${i#*j}"
       shift
       ;;
-    *)
-      echo 'Usage : commit-test.sh --jobs=2 or commit-test.sh -j2'
-      exit
-      ;;
 esac
 done
 
