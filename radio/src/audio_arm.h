@@ -24,6 +24,47 @@
 #include <stddef.h>
 #include "ff.h"
 
+/*
+  Implements a bit field, number of bits is set by the template,
+  each bit can be modified and read by the provided methods.
+*/
+template <unsigned int NUM_BITS> class BitField {
+  private:
+    uint8_t bits[(NUM_BITS+7)/8];
+  public:
+    BitField()
+    {
+      reset();
+    }
+
+    void reset()
+    {
+      memset(bits, 0, sizeof(bits));
+    }
+
+    void setBit(unsigned int bitNo)
+    {
+      if (bitNo >= NUM_BITS) return;
+      bits[bitNo >> 3] = bits[bitNo >> 3] | (1 << (bitNo & 0x07));
+    }
+
+    bool getBit(unsigned int bitNo) const
+    {
+      // assert(bitNo < NUM_BITS);
+      if (bitNo >= NUM_BITS) return false;
+      return bits[bitNo >> 3] & (1 << (bitNo & 0x07));
+    }
+
+    void getSize() const
+    {
+      return NUM_BITS;
+    }
+};
+
+#define INDEX_LOGICAL_SWITCH_AUDIO_FILE(index, event) (2*(index)+(event))
+#define INDEX_PHASE_AUDIO_FILE(index, event)          (2*(index)+(event))
+
+
 #define AUDIO_FILENAME_MAXLEN          (42) // max length (example: /SOUNDS/fr/123456789012/1234567890-off.wav)
 #define AUDIO_QUEUE_LENGTH             (20)
 
