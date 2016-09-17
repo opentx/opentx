@@ -124,15 +124,12 @@
 #define NUM_CYC                        3
 #define NUM_CAL_PPM                    4
 
-#if defined(SDCARD)
-#define REQUIRED_SDCARD_VERSION       "2.2V0001"
-#endif
 enum CurveType {
   CURVE_TYPE_STANDARD,
   CURVE_TYPE_CUSTOM,
   CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
 };
-  
+
 #if defined(CPUARM)
 #define MIN_POINTS_PER_CURVE           3
 #else
@@ -729,7 +726,7 @@ enum MixSources {
   MIXSRC_FIRST_INPUT,                   LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
 #endif
-  
+
 #if defined(LUA_INPUTS)
   MIXSRC_FIRST_LUA,
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
