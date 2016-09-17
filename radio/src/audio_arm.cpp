@@ -519,13 +519,16 @@ void audioTask(void * pdata)
   }
 
   setSampleRate(AUDIO_SAMPLE_RATE);
-  
+
   if (!unexpectedShutdown) {
     AUDIO_HELLO();
   }
 
   while (1) {
+    DEBUG_TIMER_SAMPLE(debugTimerAudioIterval);
+    DEBUG_TIMER_START(debugTimerAudioDuration);
     audioQueue.wakeup();
+    DEBUG_TIMER_STOP(debugTimerAudioDuration);
     CoTickDelay(2/*4ms*/);
   }
 }
@@ -735,7 +738,9 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
 
 void AudioQueue::wakeup()
 {
+  DEBUG_TIMER_START(debugTimerAudioConsume);
   audioConsumeCurrentBuffer();
+  DEBUG_TIMER_STOP(debugTimerAudioConsume);
 
   AudioBuffer * buffer = getEmptyBuffer();
   if (buffer) {
@@ -810,7 +815,9 @@ void AudioQueue::wakeup()
         buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
       }
 #endif
+      DEBUG_TIMER_START(debugTimerAudioPush);
       audioPushBuffer(buffer);
+      DEBUG_TIMER_STOP(debugTimerAudioPush);
       audioEnableIrq();
     }
   }

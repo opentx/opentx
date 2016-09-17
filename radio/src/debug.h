@@ -335,6 +335,11 @@ enum DebugTimers {
   debugTimerMixerCalcToUsage,
   debugTimerMixerIterval,
 
+  debugTimerAudioIterval,
+  debugTimerAudioDuration,
+  debugTimerAudioConsume,
+  debugTimerAudioPush,
+
   DEBUG_TIMERS_COUNT
 };
 
