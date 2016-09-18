@@ -8,9 +8,7 @@ local page = 1
 local current = 1
 local refreshState = 0
 local refreshIndex = 0
-local calibrationState = 0
 local pageOffset = 0
-local calibrationStep = 0
 local pages = {}
 local fields = {}
 local modifications = {}
@@ -44,12 +42,6 @@ local settingsFields = {
   {"RUD crab angle offset:", VALUE, 0x99, nil, -20, 20, "%", 0x6C},
 }
 
-local calibrationFields = {
-  {"X:", VALUE, 0x9E, 0, -100, 100, "%"},
-  {"Y:", VALUE, 0x9F, 0, -100, 100, "%"},
-  {"Z:", VALUE, 0xA0, 0, -100, 100, "%"}
-}
-
 -- Change display attribute to current field
 local function addField(step)
   local field = fields[current]
@@ -70,7 +62,6 @@ end
 local function selectPage(step)
   page = 1 + ((page + step - 1 + #pages) % #pages)
   refreshIndex = 0
-  calibrationStep = 0
   pageOffset = 0
 end
 
@@ -134,13 +125,7 @@ end
 local telemetryPopTimeout = 0
 local function refreshNext()
   if refreshState == 0 then
-    if calibrationState == 1 then
-      if telemetryWrite(0x9D, calibrationStep) == true then
-        refreshState = 1
-        calibrationState = 2
-        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
-      end
-    elseif #modifications > 0 then
+    if #modifications > 0 then
       telemetryWrite(modifications[1][1], modifications[1][2])
       modifications[1] = nil
     elseif refreshIndex < #fields then
@@ -154,40 +139,31 @@ local function refreshNext()
     local physicalId, primId, dataId, value = sportTelemetryPop()
     if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 then
       local fieldId = value % 256
-      if calibrationState == 2 then
-        if fieldId == 0x9D then
-          refreshState = 0
-          calibrationState = 0
-          calibrationStep = (calibrationStep + 1) % 7
+      local field = fields[refreshIndex + 1]
+      if fieldId == field[3] then
+        local value = math.floor(value / 256)
+        if field[3] >= 0x9E and field[3] <= 0xA0 then
+          local b1 = value % 256
+          local b2 = math.floor(value / 256)
+          value = b1*256 + b2
+          value = value - bit32.band(value, 0x8000) * 2
         end
-      else
-        local field = fields[refreshIndex + 1]
-        if fieldId == field[3] then
-          local value = math.floor(value / 256)
-          if field[3] >= 0x9E and field[3] <= 0xA0 then
-            local b1 = value % 256
-            local b2 = math.floor(value / 256)
-            value = b1*256 + b2
-            value = value - bit32.band(value, 0x8000) * 2
-          end
-          if field[2] == COMBO and #field == 6 then
-            for index = 1, #(field[6]), 1 do
-              if value == field[6][index] then
-                value = index - 1
-                break
-              end
+        if field[2] == COMBO and #field == 6 then
+          for index = 1, #(field[6]), 1 do
+            if value == field[6][index] then
+              value = index - 1
+              break
             end
-          elseif field[2] == VALUE and #field == 8 then
-            value = value - field[8] + field[5]
           end
-          fields[refreshIndex + 1][4] = value
-          refreshIndex = refreshIndex + 1
-          refreshState = 0
+        elseif field[2] == VALUE and #field == 8 then
+          value = value - field[8] + field[5]
         end
+        fields[refreshIndex + 1][4] = value
+        refreshIndex = refreshIndex + 1
+        refreshState = 0
       end
     elseif getTime() > telemetryPopTimeout then
       refreshState = 0
-      calibrationState = 0
     end
   end
 end
@@ -204,9 +180,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK then             -- exit script
+  if event == EVT_EXIT_BREAK then -- exit script
     return 2
-  elseif event == EVT_ENTER_BREAK then        -- toggle editing/selecting current field
+  elseif event == EVT_ENTER_BREAK then -- toggle editing/selecting current field
     if fields[current][4] ~= nil then
       edit = not edit
       if edit == false then
@@ -250,50 +226,12 @@ local function runSettingsPage(event)
   return runFieldsPage(event)
 end
 
-local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
-
-local function runCalibrationPage(event)
-  fields = calibrationFields
-  if refreshIndex == #fields then
-    refreshIndex = 0
-  end
-  lcd.clear()
-  lcd.drawScreenTitle("S6R", page, #pages)
-  if(calibrationStep < 6) then
-    local position = calibrationPositions[1 + calibrationStep]
-    lcd.drawText(0, 9, "Turn the S6R " .. position, 0)
-    lcd.drawPixmap(10, 19, "bmp/"..position .. ".bmp")
-    for index = 1, 3, 1 do
-      local field = fields[index]
-      lcd.drawText(80, 12+10*index, field[1], 0)
-      lcd.drawNumber(90, 12+10*index, field[4]/10, LEFT+PREC2)
-    end
-
-    local attr = calibrationState == 0 and INVERS or 0
-    lcd.drawText(0, 56, "Press [Enter] when ready", attr)
-  else
-    lcd.drawText(0, 9, "Calibration completed", 0)
-    lcd.drawText(0, 56, "Press [Enter] when ready", attr)
-  end
-  if event == EVT_ENTER_BREAK then
-    calibrationState = 1
-  elseif event == EVT_EXIT_BREAK then
-    if calibrationStep > 0 then
-      calibrationStep = 0
-    else
-      return 2
-    end
-  end
-  return 0
-end
-
 -- Init
 local function init()
   current, edit, refreshState, refreshIndex = 1, false, 0, 0
   pages = {
     runConfigPage,
     runSettingsPage,
-    runCalibrationPage
   }
 end
 
