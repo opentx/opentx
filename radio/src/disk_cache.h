@@ -25,8 +25,13 @@
 #include "sdio_sd.h"
 
 // tunable parameters
-#define DISK_CACHE_BLOCKS_NUM       8   // no cache blocks
-#define DISK_CACHE_BLOCK_SECTORS   16   // no sectors
+#if defined(PCBHORUS)
+  #define DISK_CACHE_BLOCKS_NUM      32   // no cache blocks
+  #define DISK_CACHE_BLOCK_SECTORS   16   // no sectors
+#else
+  #define DISK_CACHE_BLOCKS_NUM       8   // no cache blocks
+  #define DISK_CACHE_BLOCK_SECTORS   16   // no sectors
+#endif
 
 #define DISK_CACHE_BLOCK_SIZE   (DISK_CACHE_BLOCK_SECTORS * BLOCK_SIZE)
 
@@ -50,6 +55,7 @@ struct DiskCacheStats
 {
   uint32_t noHits;
   uint32_t noMisses;
+  uint32_t noWrites;
 };
 
 class DiskCache
