@@ -8,77 +8,49 @@ local page = 1
 local current = 1
 local refreshState = 0
 local refreshIndex = 0
+local calibrationState = 0
 local pageOffset = 0
+local calibrationStep = 0
 local pages = {}
 local fields = {}
 local modifications = {}
 
-local configFields = {
-  {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
-  {"Mounting type:", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
+local calibrationFields = {
+  {"X:", VALUE, 0x9E, 0, -100, 100, "%"},
+  {"Y:", VALUE, 0x9F, 0, -100, 100, "%"},
+  {"Z:", VALUE, 0xA0, 0, -100, 100, "%"}
 }
 
-local settingsFields = {
-  {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
-  {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
-  {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 255, 0 } },
-  {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 255, 0 } },
-  {"AIL2 direction:", COMBO, 0x9A, nil, { "Normal", "Invers" }, { 255, 0 } },
-  {"ELE2 direction:", COMBO, 0x9B, nil, { "Normal", "Invers" }, { 255, 0 } },
-  {"AIL stabilize gain:", VALUE, 0x85, nil, 0, 200, "%"},
-  {"ELE stabilize gain:", VALUE, 0x86, nil, 0, 200, "%"},
-  {"RUD stabilize gain:", VALUE, 0x87, nil, 0, 200, "%"},
-  {"AIL auto level gain:", VALUE, 0x88, nil, 0, 200, "%"},
-  {"ELE auto level gain:", VALUE, 0x89, nil, 0, 200, "%"},
-  {"ELE upright gain:", VALUE, 0x8C, nil, 0, 200, "%"},
-  {"RUD upright gain:", VALUE, 0x8D, nil, 0, 200, "%"},
-  {"AIL crab gain:", VALUE, 0x8E, nil, 0, 200, "%"},
-  {"RUD crab gain:", VALUE, 0x90, nil, 0, 200, "%"},
-  {"AIL auto angle offset:", VALUE, 0x91, nil, -20, 20, "%", 0x6C},
-  {"ELE auto angle offset:", VALUE, 0x92, nil, -20, 20, "%", 0x6C},
-  {"ELE upright angle offset:", VALUE, 0x95, nil, -20, 20, "%", 0x6C},
-  {"RUD upright angle offset:", VALUE, 0x96, nil, -20, 20, "%", 0x6C},
-  {"AIL crab angle offset:", VALUE, 0x97, nil, -20, 20, "%", 0x6C},
-  {"RUD crab angle offset:", VALUE, 0x99, nil, -20, 20, "%", 0x6C},
-}
-
--- Change display attribute to current field
-local function addField(step)
-  local field = fields[current]
-  local min, max
-  if field[2] == VALUE then
-    min = field[5]
-    max = field[6]
-  elseif field[2] == COMBO then
-    min = 0
-    max = #(field[5]) - 1
-  end
-  if (step < 0 and field[4] > min) or (step > 0 and field[4] < max) then
-    field[4] = field[4] + step
-  end
+local function drawProgressBar()
+  local width = (140 * refreshIndex) / #fields
+  lcd.drawRectangle(30, 1, 144, 6)
+  lcd.drawFilledRectangle(32, 3, width, 2);
 end
 
 -- Select the next or previous page
 local function selectPage(step)
   page = 1 + ((page + step - 1 + #pages) % #pages)
   refreshIndex = 0
+  calibrationStep = 0
   pageOffset = 0
 end
 
--- Select the next or previous editable field
-local function selectField(step)
-  current = 1 + ((current + step - 1 + #fields) % #fields)
-  if current > 7 + pageOffset then
-    pageOffset = current - 7
-  elseif current <= pageOffset then
-    pageOffset = current - 1
+-- Draw initial warning page
+local function runWarningPage(event)
+  lcd.clear()
+  lcd.drawScreenTitle("S6R", page, #pages)
+  lcd.drawText(0, 10, "Warning: this will start S6R calibration", SMLSIZE)
+  lcd.drawText(0, 20, "This need to be run only once. You need a S6R,", SMLSIZE)
+  lcd.drawText(0, 30, "power supply and a flat level surface (desk,...)", SMLSIZE)
+  lcd.drawText(0, 40, "Press [Enter] when ready", SMLSIZE)
+  lcd.drawText(0, 50, "Press [Exit] when cancel", SMLSIZE)
+  if event == EVT_ENTER_BREAK then
+    selectPage(1)
+    return 0
+  elseif event == EVT_EXIT_BREAK then
+    return 2
   end
-end
-
-local function drawProgressBar()
-  local width = (140 * refreshIndex) / #fields
-  lcd.drawRectangle(30, 1, 144, 6)
-  lcd.drawFilledRectangle(32, 3, width, 2);
+  return 0
 end
 
 -- Redraw the current page
@@ -125,7 +97,13 @@ end
 local telemetryPopTimeout = 0
 local function refreshNext()
   if refreshState == 0 then
-    if #modifications > 0 then
+    if calibrationState == 1 then
+      if telemetryWrite(0x9D, calibrationStep) == true then
+        refreshState = 1
+        calibrationState = 2
+        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
+      end
+    elseif #modifications > 0 then
       telemetryWrite(modifications[1][1], modifications[1][2])
       modifications[1] = nil
     elseif refreshIndex < #fields then
@@ -139,31 +117,40 @@ local function refreshNext()
     local physicalId, primId, dataId, value = sportTelemetryPop()
     if physicalId == 0x1A and primId == 0x32 and dataId == 0x0C30 then
       local fieldId = value % 256
-      local field = fields[refreshIndex + 1]
-      if fieldId == field[3] then
-        local value = math.floor(value / 256)
-        if field[3] >= 0x9E and field[3] <= 0xA0 then
-          local b1 = value % 256
-          local b2 = math.floor(value / 256)
-          value = b1*256 + b2
-          value = value - bit32.band(value, 0x8000) * 2
+      if calibrationState == 2 then
+        if fieldId == 0x9D then
+          refreshState = 0
+          calibrationState = 0
+          calibrationStep = (calibrationStep + 1) % 7
         end
-        if field[2] == COMBO and #field == 6 then
-          for index = 1, #(field[6]), 1 do
-            if value == field[6][index] then
-              value = index - 1
-              break
-            end
+      else
+        local field = fields[refreshIndex + 1]
+        if fieldId == field[3] then
+          local value = math.floor(value / 256)
+          if field[3] >= 0x9E and field[3] <= 0xA0 then
+            local b1 = value % 256
+            local b2 = math.floor(value / 256)
+            value = b1*256 + b2
+            value = value - bit32.band(value, 0x8000) * 2
           end
-        elseif field[2] == VALUE and #field == 8 then
-          value = value - field[8] + field[5]
+          if field[2] == COMBO and #field == 6 then
+            for index = 1, #(field[6]), 1 do
+              if value == field[6][index] then
+                value = index - 1
+                break
+              end
+            end
+          elseif field[2] == VALUE and #field == 8 then
+            value = value - field[8] + field[5]
+          end
+          fields[refreshIndex + 1][4] = value
+          refreshIndex = refreshIndex + 1
+          refreshState = 0
         end
-        fields[refreshIndex + 1][4] = value
-        refreshIndex = refreshIndex + 1
-        refreshState = 0
       end
     elseif getTime() > telemetryPopTimeout then
       refreshState = 0
+      calibrationState = 0
     end
   end
 end
@@ -206,32 +193,49 @@ local function runFieldsPage(event)
   return 0
 end
 
-local wingBitmaps = { "bmp/plane.bmp", "bmp/delta.bmp", "bmp/vtail.bmp" }
-local mountBitmaps = { "bmp/horz.bmp", "bmp/horz-r.bmp", "bmp/vert.bmp", "bmp/vert-r.bmp" }
+local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
 
-local function runConfigPage(event)
-  fields = configFields
-  local result = runFieldsPage(event)
-  if fields[1][4] ~= nil then
-    lcd.drawPixmap(20, 28, wingBitmaps[1 + fields[1][4]])
+local function runCalibrationPage(event)
+  fields = calibrationFields
+  if refreshIndex == #fields then
+    refreshIndex = 0
   end
-  if fields[2][4] ~= nil then
-    lcd.drawPixmap(128, 28, mountBitmaps[1 + fields[2][4]])
-  end
-  return result
-end
+  lcd.clear()
+  lcd.drawScreenTitle("S6R", page, #pages)
+  if(calibrationStep < 6) then
+    local position = calibrationPositions[1 + calibrationStep]
+    lcd.drawText(0, 9, "Turn the S6R " .. position, 0)
+    lcd.drawPixmap(10, 19, "bmp/"..position .. ".bmp")
+    for index = 1, 3, 1 do
+      local field = fields[index]
+      lcd.drawText(80, 12+10*index, field[1], 0)
+      lcd.drawNumber(90, 12+10*index, field[4]/10, LEFT+PREC2)
+    end
 
-local function runSettingsPage(event)
-  fields = settingsFields
-  return runFieldsPage(event)
+    local attr = calibrationState == 0 and INVERS or 0
+    lcd.drawText(0, 56, "Press [Enter] when ready", attr)
+  else
+    lcd.drawText(0, 9, "Calibration completed", 0)
+    lcd.drawText(0, 56, "Press [Enter] when ready", attr)
+  end
+  if event == EVT_ENTER_BREAK then
+    calibrationState = 1
+  elseif event == EVT_EXIT_BREAK then
+    if calibrationStep > 0 then
+      calibrationStep = 0
+    else
+      return 2
+    end
+  end
+  return 0
 end
 
 -- Init
 local function init()
   current, edit, refreshState, refreshIndex = 1, false, 0, 0
   pages = {
-    runConfigPage,
-    runSettingsPage,
+    runWarningPage,
+    runCalibrationPage
   }
 end
 
