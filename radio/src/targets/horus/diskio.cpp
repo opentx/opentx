@@ -83,6 +83,13 @@ DSTATUS disk_initialize (
     stat |= STA_NOINIT;
   }
 
+  TRACE("SD card info:");
+  TRACE("sectors: %u", (uint32_t)(SDCardInfo.CardCapacity / 512));
+  TRACE("type: %u", (uint32_t)(SDCardInfo.CardType));
+  TRACE("EraseGrSize: %u", (uint32_t)(SDCardInfo.SD_csd.EraseGrSize));
+  TRACE("EraseGrMul: %u", (uint32_t)(SDCardInfo.SD_csd.EraseGrMul));
+  TRACE("ManufacturerID: %u", (uint32_t)(SDCardInfo.SD_cid.ManufacturerID));
+
   return(stat);
 }
 
@@ -164,16 +171,16 @@ DRESULT __disk_read(
       while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
 
       if (State == SD_TRANSFER_ERROR)  {
-        TRACE("State=SD_TRANSFER_ERROR");
+        TRACE("State=SD_TRANSFER_ERROR, c: %u", sector, (uint32_t)count);
         res = RES_ERROR;
       }
       else if (Status != SD_OK) {
-        TRACE("Status(WaitRead)=%d", Status);
+        TRACE("Status(WaitRead)=%d, s:%u c: %u", Status, sector, (uint32_t)count);
         res = RES_ERROR;
       }
     }
     else {
-      TRACE("Status(ReadBlock)=%d", Status);
+      TRACE("Status(ReadBlock)=%d, s:%u c: %u", Status, sector, (uint32_t)count);
       res = RES_ERROR;
     }
 
@@ -234,8 +241,10 @@ DRESULT __disk_write(
 
     while((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
 
-    if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK))
+    if ((State == SD_TRANSFER_ERROR) || (Status != SD_OK)) {
+      TRACE("__disk_write() err, st:%d,%d, s:%u c: %u", Status, State, sector, (uint32_t)count);
       res = RES_ERROR;
+    }
   }
   else {
     res = RES_ERROR;
@@ -263,12 +272,19 @@ DRESULT disk_ioctl (
 
   switch (ctrl) {
     case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
-      *(DWORD*)buff = SDCardInfo.CardCapacity / SDCardInfo.CardBlockSize;
+      // use 512 for sector size, SDCardInfo.CardBlockSize is not sector size and can be 1024 for 2G SD cards!!!!
+      *(DWORD*)buff = SDCardInfo.CardCapacity / 512;
       res = RES_OK;
       break;
 
     case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
-      *(WORD*)buff = SDCardInfo.CardBlockSize;
+      *(WORD*)buff = 512;   // force sector size. SDCardInfo.CardBlockSize is not sector size and can be 1024 for 2G SD cards!!!!
+      res = RES_OK;
+      break;
+
+    case GET_BLOCK_SIZE :   /* Get erase block size in unit of sector (DWORD) */
+      // TODO verify that this is the correct value
+      *(DWORD*)buff = (uint32_t)SDCardInfo.SD_csd.EraseGrSize * (uint32_t)SDCardInfo.SD_csd.EraseGrMul;
       res = RES_OK;
       break;
 
