@@ -502,8 +502,8 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#define LEN_INPUTNAMES         "\003"
-#define TR_INPUTNAMES          "Sme""Vys""Pln""Kri"
+#define LEN_INPUTNAMES         "\004"
+#define TR_INPUTNAMES          "Sme\0""Vys\0""Pln\0""Kri\0"
 
 #if defined(CPUARM)
 #define TR_STICKS_VSRCRAW      "\307Smě""\307Výš""\307Pln""\307Kři"
