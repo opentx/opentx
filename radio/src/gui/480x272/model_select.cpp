@@ -97,6 +97,7 @@ void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
     // we store the latest changes if any
+    storageFlushCurrentModel();
     storageCheck(true);
     memcpy(g_eeGeneral.currModelFilename, currentModel->name, LEN_MODEL_FILENAME);
     loadModel(g_eeGeneral.currModelFilename);
