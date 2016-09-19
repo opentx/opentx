@@ -138,7 +138,7 @@ void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, event_t event)
       case 1:
       {
         const int stopsMinutes[] = { 8, 60, 120, 180, 240, 300, 600, 900, 1200 };
-        timer.start = checkIncDec(event, timer.start, 0, 60*60, EE_MODEL, NULL, (const CheckIncDecStops&)stopsMinutes);
+        timer.start = checkIncDec(event, timer.start, 0, TIMER_MAX, EE_MODEL, NULL, (const CheckIncDecStops&)stopsMinutes);
         break;
       }
     }
