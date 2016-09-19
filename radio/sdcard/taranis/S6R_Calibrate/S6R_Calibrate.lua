@@ -216,11 +216,11 @@ local function runCalibrationPage(event)
     lcd.drawText(0, 56, "Press [Enter] when ready", attr)
   else
     lcd.drawText(0, 9, "Calibration completed", 0)
-	  lcd.drawPixmap(10, 19, "bmp/done.bmp")
+    lcd.drawPixmap(10, 19, "bmp/done.bmp")
     lcd.drawText(0, 56, "Press [Exit] when ready", attr)
   end
   if calibrationStep > 6 and (event == EVT_ENTER_BREAK or event == EVT_EXIT_BREAK) then
-	return 2
+    return 2
   elseif event == EVT_ENTER_BREAK then
     calibrationState = 1
   elseif event == EVT_EXIT_BREAK then
