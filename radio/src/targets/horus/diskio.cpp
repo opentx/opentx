@@ -166,7 +166,7 @@ DRESULT __disk_read(
     if (Status == SD_OK) {
       SDTransferState State;
 
-      Status = SD_WaitReadOperation(100*count); // Check if the Transfer is finished
+      Status = SD_WaitReadOperation(200*count); // Check if the Transfer is finished
 
       while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
 
