@@ -109,13 +109,13 @@ DRESULT DiskCache::read(BYTE drv, BYTE * buff, DWORD sector, UINT count)
 
   // if read is bigger than cache block, then read it directly without using cache
   if (count > DISK_CACHE_BLOCK_SECTORS) {
-    TRACE_DISK_CACHE("\t\t big read(%u, %u)", this, (uint32_t)sector, (uint32_t)count);
+    TRACE_DISK_CACHE("\t\t big read(%u, %u)",  (uint32_t)sector, (uint32_t)count);
     return __disk_read(drv, buff, sector, count);
   }
   
   // if block + cache block size is beyond the end of the disk, then read it directly without using cache
   if (sector+DISK_CACHE_BLOCK_SECTORS >= sdGetNoSectors()) {
-    TRACE_DISK_CACHE("\t\t cache would be beyond end of disk(%u)", this, (uint32_t)sector);
+    TRACE_DISK_CACHE("\t\t cache would be beyond end of disk %u (%u)", (uint32_t)sector, sdGetNoSectors());
     return __disk_read(drv, buff, sector, count);
   }
 
