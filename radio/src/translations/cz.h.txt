@@ -666,7 +666,7 @@
 #define TR_HAPTICSTRENGTH      INDENT"Síla"
 #define TR_CONTRAST            "Kontrast LCD"
 #define TR_ALARMS_LABEL        "Alarmy"
-#define TR_BATTERY_RANGE       TR("Ukazatel bat.", "Ukazetel baterie")
+#define TR_BATTERY_RANGE       TR("Ukazatel bat.", "Ukazatel baterie")
 #define TR_BATTERYWARNING      INDENT"Vybitá baterie"
 #define TR_INACTIVITYALARM     TR(INDENT "Nečinnost", INDENT "Nečinnost rádia")
 #define TR_MEMORYWARNING       INDENT"Plná pamět'"
