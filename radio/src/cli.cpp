@@ -30,7 +30,7 @@ OS_TID cliTaskId;
 TaskStack<CLI_STACK_SIZE> _ALIGNED(8) cliStack; // stack must be aligned to 8 bytes otherwise printf for %f does not work!
 Fifo<uint8_t, 256> cliRxFifo;
 uint8_t cliTracesEnabled = true;
-// char cliLastLine[CLI_COMMAND_MAX_LEN+1];
+char cliLastLine[CLI_COMMAND_MAX_LEN+1];
 
 typedef int (* CliFunction) (const char ** args);
 int cliExecLine(char * line);
@@ -228,6 +228,63 @@ int cliReadSD(const char ** argv)
   return 0;
 }
 
+int cliTestSD(const char ** argv)
+{
+  // Do the read test on the SD card and report back the result
+
+  // get sector count
+  uint32_t sectorCount;
+  if (disk_ioctl(0, GET_SECTOR_COUNT, &sectorCount) != RES_OK) {
+      serialPrint("Error: can't read sector count");
+      return 0;
+  }
+  serialPrint("SD card has %u sectors", sectorCount);
+
+  // read last 16 sectors one sector at the time
+  serialPrint("Starting single sector read test, reading 16 sectors one by one");
+  uint8_t * buffer = (uint8_t*) malloc(512);
+  for(uint32_t s = sectorCount - 16; s<sectorCount; ++s) {
+    DRESULT res = __disk_read(0, buffer, s, 1);
+    if (res != RES_OK) {
+      serialPrint("sector %d read FAILED, err: %d", s, res);
+    }
+    else {
+      serialPrint("sector %d read OK", s);
+    }
+  }
+  free(buffer);
+  serialCrlf();
+
+  // read last 16 sectors, two sectors at the time with a multi-block read
+  buffer = (uint8_t*) malloc(512*2);
+  serialPrint("Starting multiple sector read test, reading two sectors at the time");
+  for(uint32_t s = sectorCount - 16; s<sectorCount; s+=2) {
+    DRESULT res = __disk_read(0, buffer, s, 2);
+    if (res != RES_OK) {
+      serialPrint("sector %d-%d read FAILED, err: %d", s, s+1, res);
+    }
+    else {
+      serialPrint("sector %d-%d read OK", s, s+1);
+    }
+  }
+  free(buffer);
+  serialCrlf();
+
+  // read last 16 sectors, all sectors with single multi-block read
+  buffer = (uint8_t*) malloc(512*16);
+  serialPrint("Starting multiple sector read test, reading 16 sectors at the time");
+  DRESULT res = __disk_read(0, buffer, sectorCount-16, 16);
+  if (res != RES_OK) {
+    serialPrint("sector %d-%d read FAILED, err: %d", sectorCount-16, sectorCount-1, res);
+  }
+  else {
+    serialPrint("sector %d-%d read OK", sectorCount-16, sectorCount-1);
+  }
+  free(buffer);
+  serialCrlf();
+
+  return 0;
+}
 
 int cliTrace(const char ** argv)
 {
@@ -745,6 +802,7 @@ const CliCommand cliCommands[] = {
   { "ls", cliLs, "<directory>" },
   { "read", cliRead, "<filename>" },
   { "readsd", cliReadSD, "<start sector> <sectors count> <read buffer size (sectors)>" },
+  { "testsd", cliTestSD, "" },
   { "play", cliPlay, "<filename>" },
   { "print", cliDisplay, "<address> [<size>] | <what>" },
   { "p", cliDisplay, "<address> [<size>] | <what>" },
@@ -847,7 +905,14 @@ void cliTask(void * pdata)
       // enter
       serialCrlf();
       line[pos] = '\0';
-      // strcpy(cliLastLine, line);
+      if (pos == 0 && cliLastLine[0]) {
+        // execute (repeat) last command
+        strcpy(line, cliLastLine);
+      }
+      else {
+        // save new command
+        strcpy(cliLastLine, line);
+      }
       cliExecLine(line);
       pos = 0;
       cliPrompt();
