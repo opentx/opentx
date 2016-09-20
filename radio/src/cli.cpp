@@ -203,14 +203,19 @@ int cliReadSD(const char ** argv)
     if (res != RES_OK) {
       serialPrint("disk_read error: %d, sector: %d(%d)", res, startSector, numberOfSectors);
     }
-    // dump(buffer, 32);
-    // // calc checksumm
-    // uint32_t summ = 0;
-    // for(int n=0; n<(bufferSectors*512); ++n) {
-    //   summ += buffer[n];
-    // }
-    // serialPrint("sector %d(%d) checksumm: %u", startSector, numberOfSectors, summ);
-
+#if 0
+    for(uint32_t n=0; n<bufferSectors; ++n) {
+      dump(buffer + n*512, 32);
+    }
+#endif
+#if 0
+    // calc checksumm
+    uint32_t summ = 0;
+    for(int n=0; n<(bufferSectors*512); ++n) {
+      summ += buffer[n];
+    }
+    serialPrint("sector %d(%d) checksumm: %u", startSector, numberOfSectors, summ);
+#endif
     if (numberOfSectors >= bufferSectors) {
       numberOfSectors -= bufferSectors;
       startSector += bufferSectors;
