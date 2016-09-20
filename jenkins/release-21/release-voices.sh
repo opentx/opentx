@@ -12,7 +12,7 @@ cd ${DIR}
 source ./version.sh
 
 # build voice packs
-wget -O /dev/null ${winboxurl}/compile.php?branch=${branch}
+wget -O /dev/null ${winboxurl}/compile21.php?branch=${branch}
 
 # get voice packs
 cd /var/www/html/voices-${version}/opentx-taranis/en/
