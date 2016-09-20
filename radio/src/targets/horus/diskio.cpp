@@ -118,58 +118,24 @@ uint32_t sdReadRetries = 0;
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
 
-DRESULT __disk_read(
-  BYTE drv,               /* Physical drive nmuber (0..) */
-  BYTE * buff,            /* Data buffer to store read data */
-  DWORD sector,   	  /* Sector address (LBA) */
-  UINT count              /* Number of sectors to read (1..255) */
-)
+
+DRESULT disk_read_dma(BYTE drv, BYTE * buff, DWORD sector, UINT count)
 {
-  DRESULT res = RES_OK;
+  // this functions assumes that buff is properly aligned and in the right RAM segment for DMA
+  DRESULT res;
   SD_Error Status;
-
-  // TRACE("disk_read %d %p %10d %d", drv, buff, sector, count);
-
-  if (SD_Detect() != SD_PRESENT) {
-    TRACE("SD_Detect() != SD_PRESENT");
-    return RES_NOTRDY;
-  }
-
-  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
-    TRACE("disk_read bad alignment (%p)", buff);
-    while (count--) {
-      res = __disk_read(drv, (BYTE *)scratch, sector++, 1);
-
-      if (res != RES_OK) {
-        TRACE("disk_read() status=%d", res);
-        break;
-      }
-
-      memcpy(buff, scratch, BLOCK_SIZE);
-
-      buff += BLOCK_SIZE;
-    }
-
-    return res;
-  }
-
+  SDTransferState State;
   for (int retry=0; retry<3; retry++) {
     res = RES_OK;
-
     if (count == 1) {
       Status = SD_ReadBlock(buff, sector, BLOCK_SIZE); // 4GB Compliant
     }
     else {
       Status = SD_ReadMultiBlocks(buff, sector, BLOCK_SIZE, count); // 4GB Compliant
     }
-
     if (Status == SD_OK) {
-      SDTransferState State;
-
       Status = SD_WaitReadOperation(200*count); // Check if the Transfer is finished
-
       while ((State = SD_GetStatus()) == SD_TRANSFER_BUSY); // BUSY, OK (DONE), ERROR (FAIL)
-
       if (State == SD_TRANSFER_ERROR)  {
         TRACE("State=SD_TRANSFER_ERROR, c: %u", sector, (uint32_t)count);
         res = RES_ERROR;
@@ -183,13 +149,51 @@ DRESULT __disk_read(
       TRACE("Status(ReadBlock)=%d, s:%u c: %u", Status, sector, (uint32_t)count);
       res = RES_ERROR;
     }
-
-    if (res == RES_OK)
-      break;
-
+    if (res == RES_OK) break;
     sdReadRetries += 1;
   }
+  return res;
+}
 
+DRESULT __disk_read(BYTE drv, BYTE * buff, DWORD sector, UINT count)
+{
+  // If unaligned, do the single block reads with a scratch buffer.
+  // If aligned and single sector, do a single block read.
+  // If aligned and multiple sectors, try multi block read.
+  //    If multi block read fails, try single block reads without
+  //    an intermediate buffer (move trough the provided buffer)
+
+  // TRACE("disk_read %d %p %10d %d", drv, buff, sector, count);
+  if (SD_Detect() != SD_PRESENT) {
+    TRACE("SD_Detect() != SD_PRESENT");
+    return RES_NOTRDY;
+  }
+
+  DRESULT res = RES_OK;
+  if (count == 0) return res;
+
+  if ((DWORD)buff < 0x20000000 || ((DWORD)buff & 3)) {
+    // buffer is not aligned, use scratch buffer that is aligned
+    TRACE("disk_read bad alignment (%p)", buff);
+    while (count--) {
+      res = disk_read_dma(drv, (BYTE *)scratch, sector++, 1);
+      if (res != RES_OK) break;
+      memcpy(buff, scratch, BLOCK_SIZE);
+      buff += BLOCK_SIZE;
+    }
+    return res;
+  }
+
+  res = disk_read_dma(drv, buff, sector, count);
+  if (res != RES_OK && count > 1) {
+    // multi-read failed, try reading same sectors, one by one
+    TRACE("disk_read() multi-block failed, trying single block reads...");
+    while (count--) {
+      res = disk_read_dma(drv, buff, sector++, 1);
+      if (res != RES_OK) break;
+      buff += BLOCK_SIZE;
+    }
+  }
   return res;
 }
 
@@ -273,12 +277,12 @@ DRESULT disk_ioctl (
   switch (ctrl) {
     case GET_SECTOR_COUNT : /* Get number of sectors on the disk (DWORD) */
       // use 512 for sector size, SDCardInfo.CardBlockSize is not sector size and can be 1024 for 2G SD cards!!!!
-      *(DWORD*)buff = SDCardInfo.CardCapacity / 512;
+      *(DWORD*)buff = SDCardInfo.CardCapacity / BLOCK_SIZE;
       res = RES_OK;
       break;
 
     case GET_SECTOR_SIZE :  /* Get R/W sector size (WORD) */
-      *(WORD*)buff = 512;   // force sector size. SDCardInfo.CardBlockSize is not sector size and can be 1024 for 2G SD cards!!!!
+      *(WORD*)buff = BLOCK_SIZE;   // force sector size. SDCardInfo.CardBlockSize is not sector size and can be 1024 for 2G SD cards!!!!
       res = RES_OK;
       break;
 
