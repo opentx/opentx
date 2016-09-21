@@ -14,6 +14,7 @@ class MixersList : public QListWidget
   public:
     explicit MixersList(QWidget *parent, bool expo);
     void keyPressEvent(QKeyEvent *event);
+    void dropEvent(QDropEvent *event);
 
   signals:
     void mimeDropped(int index, const QMimeData *data, Qt::DropAction action);

@@ -430,11 +430,18 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
   contextMenu.exec(globalPos);
 }
 
-void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
+void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
   int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
   //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
-  pasteMixerMimeData(data, idx);
+  if (action==Qt::CopyAction) {
+    pasteMixerMimeData(data, idx);
+  }
+  else if (action==Qt::MoveAction) {
+    QList<int> list = createMixListFromSelected();
+    mixersDeleteList(list);
+    pasteMixerMimeData(data, idx);
+  }
 }
 
 void MixesPanel::mixesEdited()
