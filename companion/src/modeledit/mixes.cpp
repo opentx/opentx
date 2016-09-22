@@ -3,7 +3,7 @@
 
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  mixInserted(false), 
+  mixInserted(false),
   highlightedSource(0),
   modelPrinter(firmware, generalSettings, model)
 {
@@ -76,7 +76,7 @@ void MixesPanel::update()
 
   @note Mixer lines are now HTML formated in order to support bold text.
 
-  @param[in] dest   defines which mixer line to create. 
+  @param[in] dest   defines which mixer line to create.
                     If dest < 0 then create empty channel slotr fo channel -dest ( dest=-2 -> CH2)
                     if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
 
@@ -94,11 +94,11 @@ bool MixesPanel::AddMixerLine(int dest)
     MixData *md = &model->mixData[dest];
     qba.append((const char*)md, sizeof(MixData));
   }
-  itm->setData(Qt::UserRole, qba);  
+  itm->setData(Qt::UserRole, qba);
 #if MIX_ROW_HEIGHT_INCREASE > 0
   if (new_ch && !firstLine) {
     //increase size of this row
-    itm->setData(GroupHeaderRole, 1);  
+    itm->setData(GroupHeaderRole, 1);
   }
 #endif
   MixerlistWidget->addItem(itm);
@@ -110,11 +110,11 @@ bool MixesPanel::AddMixerLine(int dest)
 /**
   @brief Returns HTML formated mixer representation
 
-  @param[in] dest   defines which mixer line to create. 
+  @param[in] dest   defines which mixer line to create.
                     If dest < 0 then create empty channel slot for channel -dest ( dest=-2 -> CH2)
                     if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
 
-  @retval string    mixer line in HTML  
+  @retval string    mixer line in HTML
 */
 QString MixesPanel::getMixerText(int dest, bool * new_ch)
 {
@@ -187,7 +187,7 @@ void MixesPanel::gm_openMix(int index)
     model->mixData[index] = mixd;
     emit modified();
     update();
-  } 
+  }
   else {
     if (mixInserted) {
       gm_deleteMix(index);
@@ -215,7 +215,7 @@ void MixesPanel::mixerlistWidget_doubleClicked(QModelIndex index)
     if (!gm_insertMix(idx)) return;
     model->mixData[idx].destCh = i;
     mixInserted = true;
-  } 
+  }
   else {
     mixInserted = false;
   }
@@ -355,7 +355,7 @@ void MixesPanel::mixerOpen()
     if (!gm_insertMix(idx)) return;
     model->mixData[idx].destCh = i;
     mixInserted = true;
-  } 
+  }
   else {
     mixInserted = false;
   }
@@ -393,7 +393,7 @@ void MixesPanel::mixerAdd()
     if (!gm_insertMix(index)) return;
     model->mixData[index].destCh = i;
     mixInserted = true;
-  } 
+  }
   else {
     index++;
     if (!gm_insertMix(index)) return;
@@ -428,11 +428,18 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
   contextMenu.exec(globalPos);
 }
 
-void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
+void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
   int idx= MixerlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
   //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
-  pasteMixerMimeData(data, idx);
+  if (action==Qt::CopyAction) {
+      pasteMixerMimeData(data, idx);
+  }
+  else if (action==Qt::MoveAction) {
+      QList<int> list = createMixListFromSelected();
+      mixersDeleteList(list);
+      pasteMixerMimeData(data, idx);
+  }
 }
 
 void MixesPanel::mixesEdited()
@@ -469,7 +476,7 @@ int MixesPanel::gm_moveMix(int idx, bool dir) //true=inc=down false=dec=up
   if (idx == 0 && !dir) {
     //special case: topmost mixer moving up
     if (src.destCh > 1) src.destCh--;
-    return idx;  
+    return idx;
   }
 
   int tdx = dir ? idx+1 : idx-1;
