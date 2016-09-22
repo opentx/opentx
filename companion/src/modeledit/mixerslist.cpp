@@ -26,12 +26,24 @@ QStringList MixersList::mimeTypes () const
 {
     QStringList types;
     if (expo) types << "application/x-companion-expo-item";
-    else types << "application/x-companion-mix-item"; 
+    else types << "application/x-companion-mix-item";
     return types;
 }
 
+void MixersList::dropEvent(QDropEvent *event)
+{
+    QList<int> list;
+    foreach(QListWidgetItem *item, selectedItems()) {
+      int idx= item->data(Qt::UserRole).toByteArray().at(0);
+      if(idx >= 0) list << idx;
+    }
+    if (list.count()<1) return;
+    event->acceptProposedAction();
+    dropMimeData(indexAt(event->pos()).row(),event->mimeData(),event->dropAction());
+}
+
 bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction action )
-{    
+{
     // qDebug() << "MixersList::dropMimeData() index:" << index << "formats" << data->formats();
     QByteArray dropData = data->data(expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");
     if (dropData.isNull() ) return false;
@@ -52,7 +64,7 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
         QMimeData *mimeData = new QMimeData;
         mimeData->setData(expo ? "application/x-companion-expo" : "application/x-companion-mix", qba);
         emit mimeDropped(index, mimeData, action);
-        delete mimeData;      //is this correct? is mimeData freed elswere?? 
+        delete mimeData;      //is this correct? is mimeData freed elswere??
     }
 
     return true;
@@ -105,7 +117,7 @@ QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QMod
     //qDebug() << "MixersDelegate::sizeHint() UserRole-> " << index.model()->data(index, Qt::UserRole + 2);
     int height = doc.size().height();
     if ( index.model()->data(index, Qt::UserRole + 2).toInt() > 0 ) {
-        //qDebug() << "MixersDelegate::sizeHint() detected channel head"; 
+        //qDebug() << "MixersDelegate::sizeHint() detected channel head";
         height = doc.size().height() + MIX_ROW_HEIGHT_INCREASE;
     }
     //qDebug() << "MixersDelegate::sizeHint() options.rect " << options.rect;
@@ -121,7 +133,7 @@ void MixersDelegate::SetupDocument(QTextDocument & doc, const QStyleOptionViewIt
 
     //minimize margins (default margins look ugly)
     QTextFrame *tf = doc.rootFrame();
-    QTextFrameFormat tff = tf->frameFormat();    
+    QTextFrameFormat tff = tf->frameFormat();
     tff.setMargin(0);
-    tf->setFrameFormat(tff);      
+    tf->setFrameFormat(tff);
 }
