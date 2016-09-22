@@ -30,6 +30,18 @@ QStringList MixersList::mimeTypes () const
     return types;
 }
 
+void MixersList::dropEvent(QDropEvent *event)
+{
+    QList<int> list;
+    foreach(QListWidgetItem *item, selectedItems()) {
+      int idx= item->data(Qt::UserRole).toByteArray().at(0);
+      if(idx >= 0) list << idx;
+    }
+    if (list.count()<1) return;
+    event->acceptProposedAction();
+    dropMimeData(indexAt(event->pos()).row(),event->mimeData(),event->dropAction());
+}
+
 bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction action )
 {    
     // qDebug() << "MixersList::dropMimeData() index:" << index << "formats" << data->formats();
