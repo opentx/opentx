@@ -282,10 +282,17 @@ void InputsPanel::exposCopy()
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
-void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
+void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
     int idx = ExposlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+  if (action==Qt::CopyAction) {
     pasteExpoMimeData(data, idx);
+  }
+  else if (action==Qt::MoveAction) {
+    QList<int> list = createExpoListFromSelected();
+    exposDeleteList(list);
+    pasteExpoMimeData(data, idx);
+  }
 }
 
 #include <iostream>
