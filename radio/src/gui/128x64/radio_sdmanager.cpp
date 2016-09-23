@@ -60,7 +60,7 @@ void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[_MAX_LFN+1];
 
-  uint8_t index = menuVerticalPosition-1-menuVerticalOffset;
+  uint8_t index = menuVerticalPosition-HEADER_LINE-menuVerticalOffset;
   if (result == STR_SD_INFO) {
     pushMenu(menuRadioSdManagerInfo);
   }
@@ -76,7 +76,7 @@ void onSdManagerMenu(const char * result)
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
     showStatusLine();
     if ((uint16_t)menuVerticalPosition == reusableBuffer.sdmanager.count) menuVerticalPosition--;
-    reusableBuffer.sdmanager.offset = menuVerticalOffset-1;
+    reusableBuffer.sdmanager.offset = menuVerticalOffset-HEADER_LINE;
   }
 #if defined(CPUARM)
   /* TODO else if (result == STR_LOAD_FILE) {
@@ -152,18 +152,17 @@ void menuRadioSdManager(event_t _event)
         break;
       // no break;
     }
-  
-#if !defined(PCBX7D)
+
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(_event);
-      if (menuVerticalPosition == 0) {
+      if (menuVerticalPosition < HEADER_LINE) {
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);
         POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
       }
       else
       {
 #if defined(CPUARM)
-        uint8_t index = menuVerticalPosition-1-menuVerticalOffset;
+        uint8_t index = menuVerticalPosition-HEADER_LINE-menuVerticalOffset;
         // TODO duplicated code for finding extension
         char * ext = reusableBuffer.sdmanager.lines[index];
         int len = strlen(ext) - 4;
@@ -183,7 +182,6 @@ void menuRadioSdManager(event_t _event)
       }
       POPUP_MENU_START(onSdManagerMenu);
       break;
-#endif
   }
 
   if (reusableBuffer.sdmanager.offset != menuVerticalOffset) {
