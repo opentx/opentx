@@ -17,7 +17,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);
-  
+
   qbUp->setText(tr("Move Up"));
   qbUp->setIcon(CompanionIcon("moveup.png"));
   qbUp->setShortcut(QKeySequence(tr("Ctrl+Up")));
@@ -89,14 +89,14 @@ void InputsPanel::update()
 
   @note Input lines are now HTML formated because they use same widget as mixers.
 
-  @param[in] dest   defines which input line to create. 
+  @param[in] dest   defines which input line to create.
                     If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
                     if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
 
   @retval true      created input number is different from the previous list item
           false     created input number is the same as previous list item
 */
-bool InputsPanel::AddInputLine(int dest) 
+bool InputsPanel::AddInputLine(int dest)
 {
   bool new_ch;
   QString str = getInputText(dest, &new_ch);
@@ -107,11 +107,11 @@ bool InputsPanel::AddInputLine(int dest)
     ExpoData *md = &model->expoData[dest];
     qba.append((const char*)md, sizeof(ExpoData));
   }
-  itm->setData(Qt::UserRole, qba);  
+  itm->setData(Qt::UserRole, qba);
 #if MIX_ROW_HEIGHT_INCREASE > 0
   if (new_ch && !firstLine) {
     //increase size of this row
-    itm->setData(GroupHeaderRole, 1);  
+    itm->setData(GroupHeaderRole, 1);
   }
 #endif
   ExposlistWidget->addItem(itm);
@@ -124,11 +124,11 @@ bool InputsPanel::AddInputLine(int dest)
 /**
   @brief Returns HTML formated input representation
 
- @param[in] dest   defines which input line to create. 
+ @param[in] dest   defines which input line to create.
                     If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
                     if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
 
-  @retval string    input line in HTML  
+  @retval string    input line in HTML
 */
 QString InputsPanel::getInputText(int dest, bool * new_ch)
 {
@@ -281,10 +281,17 @@ void InputsPanel::exposCopy()
     QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
-void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction /*action*/)
+void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
     int idx = ExposlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+  if (action==Qt::CopyAction) {
     pasteExpoMimeData(data, idx);
+  }
+  else if (action==Qt::MoveAction) {
+    QList<int> list = createExpoListFromSelected();
+    exposDeleteList(list);
+    pasteExpoMimeData(data, idx);
+  }
 }
 
 void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
