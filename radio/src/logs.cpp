@@ -305,10 +305,15 @@ void logsWrite()
         TelemetryItem & telemetryItem = telemetryItems[i];
         if (sensor.logs) {
           if (sensor.unit == UNIT_GPS) {
-            if (telemetryItem.gps.longitude && telemetryItem.gps.latitude)
-              f_printf(&g_oLogFile, "%f %f,", float(telemetryItem.gps.longitude)/1000000, float(telemetryItem.gps.latitude)/1000000);
-            else
+            if (telemetryItem.gps.longitude && telemetryItem.gps.latitude) {
+              div_t qr = div(telemetryItem.gps.latitude, 1000000);
+              f_printf(&g_oLogFile, "%d.%06d ", qr.quot, abs(qr.rem));
+              qr = div(telemetryItem.gps.longitude, 1000000);
+              f_printf(&g_oLogFile, "%d.%06d,", qr.quot, abs(qr.rem));
+            }
+            else {
               f_printf(&g_oLogFile, ",");
+            }
           }
           else if (sensor.unit == UNIT_DATETIME) {
             if (telemetryItem.datetime.datestate)
