@@ -178,11 +178,19 @@ QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int ma
 bool caseInsensitiveLessThan(const QString &s1, const QString &s2);
 
 
+class GpsCoord
+{
+public:
+  GpsCoord(): latitude(0), longitude(0) {};
+  double latitude;    // Precede South latitudes and West longitudes with a minus sign. Latitudes range from -90 to 90.
+  double longitude;   // Longitudes range from -180 to 180.
+};
+
 class GpsGlitchFilter
 {
 public:
   GpsGlitchFilter() : lastValid(false), glitchCount(0) {};
-  bool isGlitch(double latitude, double longitude);
+  bool isGlitch(GpsCoord coord);
 
 private:
   bool lastValid;
@@ -195,15 +203,16 @@ class GpsLatLonFilter
 {
 public:
   GpsLatLonFilter() {};
-  bool isValid(const QString & latitude, const QString & longitude);
-  
+  bool isValid(GpsCoord coord);
+
 private:
-  QString lastLat;
-  QString lastLon;
+  double lastLat;
+  double lastLon;
 };
 
-double toDecimalCoordinate(const QString & value);
-QStringList extractLatLon(const QString & position);
+
+
+GpsCoord extractGpsCoordinates(const QString & position);
 
 class TableLayout
 {

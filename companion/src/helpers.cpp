@@ -945,43 +945,43 @@ bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
   return s1.toLower() < s2.toLower();
 }
 
-bool GpsGlitchFilter::isGlitch(double latitude, double longitude) 
+bool GpsGlitchFilter::isGlitch(GpsCoord coord) 
 {
-  if ((fabs(latitude) < 0.1) && (fabs(longitude) < 0.1)) {
+  if ((fabs(coord.latitude) < 0.1) && (fabs(coord.longitude) < 0.1)) {
     return true;
   }
 
   if (lastValid) {
-    if (fabs(latitude - lastLat) > 0.01) {
-      // qDebug() << "GpsGlitchFilter(): latitude glitch " << latitude << lastLat;
+    if (fabs(coord.latitude - lastLat) > 0.01) {
+      // qDebug() << "GpsGlitchFilter(): latitude glitch " << coord.latitude << lastLat;
       if ( ++glitchCount < 10) {
-        return true; 
+        return true;
       }
     }
-    if (fabs(longitude - lastLon) > 0.01) {
-      // qDebug() << "GpsGlitchFilter(): longitude glitch " << longitude << lastLon;
+    if (fabs(coord.longitude - lastLon) > 0.01) {
+      // qDebug() << "GpsGlitchFilter(): longitude glitch " << coord.longitude << lastLon;
       if ( ++glitchCount < 10) {
-        return true; 
+        return true;
       }
     }
   }
-  lastLat = latitude;
-  lastLon = longitude;
+  lastLat = coord.latitude;
+  lastLon = coord.longitude;
   lastValid = true;
   glitchCount = 0;
   return false;
 }
 
-bool GpsLatLonFilter::isValid(const QString & latitude, const QString & longitude)
+bool GpsLatLonFilter::isValid(GpsCoord coord)
 {
-  if (lastLat == latitude) {
+  if (lastLat == coord.latitude) {
     return false;
   }
-  if (lastLon == longitude) {
+  if (lastLon == coord.longitude) {
     return false;
   }
-  lastLat = latitude;
-  lastLon = longitude;
+  lastLat = coord.latitude;
+  lastLon = coord.longitude;
   return true;
 }
 
@@ -997,17 +997,26 @@ double toDecimalCoordinate(const QString & value)
   return result;
 }
 
-QStringList extractLatLon(const QString & position)
+GpsCoord extractGpsCoordinates(const QString & position)
 {
-  QStringList result;
+  GpsCoord result;
   QStringList parts = position.split(' ');
-  if (parts.size() != 2) {
-    result.append(""); 
-    result.append(""); 
-  }
-  else {
-    result.append(parts.at(1).trimmed());
-    result.append(parts.at(0).trimmed());
+  if (parts.size() == 2) {
+    QString value = parts.at(0).trimmed();
+    QChar direction = value.at(value.size()-1);
+    if (direction == 'E' || direction == 'W') {
+      // OpenTX 2.1 format: "NNN.MMM[E|W] NNN.MMM[N|S]" <longitude> <latitude>
+      result.latitude = toDecimalCoordinate(parts.at(1).trimmed());
+      result.longitude = toDecimalCoordinate(parts.at(0).trimmed());
+    }
+    else {
+      // OpenTX 2.2 format: "DD.DDDDDD DD.DDDDDD" <latitude> <longitude> both in Signed degrees format (DDD.dddd)
+      // Precede South latitudes and West longitudes with a minus sign.
+      // Latitudes range from -90 to 90.
+      // Longitudes range from -180 to 180.
+      result.latitude = parts.at(0).trimmed().toDouble();
+      result.longitude = parts.at(1).trimmed().toDouble();
+    }
   }
   return result;
 }

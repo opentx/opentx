@@ -229,7 +229,7 @@ QList<QStringList> LogsDialog::filterGePoints(const QList<QStringList> & input)
     }
   }
   if (gpscol == 0) {
-    QMessageBox::critical(this, tr("Error: no GPS data not found"), 
+    QMessageBox::critical(this, tr("Error: no GPS data not found"),
       tr("The column containing GPS coordinates must be named \"GPS\".\n\n\
 The columns for altitude \"GAlt\" and for speed \"GSpd\" are optional"));
     return result;
@@ -244,21 +244,17 @@ The columns for altitude \"GAlt\" and for speed \"GSpd\" are optional"));
   for (int i = 1; i < n; i++) {
     if ((ui->logTable->item(i-1, 1)->isSelected() && rangeSelected) || !rangeSelected) {
 
-      QStringList latlon = extractLatLon(input.at(i).at(gpscol));
-      QString latitude = latlon[0];
-      QString longitude = latlon[1];
-      double flatitude = toDecimalCoordinate(latitude);
-      double flongitude = toDecimalCoordinate(longitude);
+      GpsCoord coord = extractGpsCoordinates(input.at(i).at(gpscol));
 
       // glitch filter
-      if ( glitchFilter.isGlitch(flatitude, flongitude) ) {
-        // qDebug() << "filterGePoints(): GPS glitch detected at" << i << flatitude << flongitude;  
+      if ( glitchFilter.isGlitch(coord) ) {
+        // qDebug() << "filterGePoints(): GPS glitch detected at" << i << coord.latitude << coord.longitude;
         continue;
       }
 
       // lat long pair filter
-      if ( !latLonFilter.isValid(latitude, longitude) ) {
-        // qDebug() << "filterGePoints(): Lat-Lon pair wrong, skipping at" << i << latitude << longitude;  
+      if ( !latLonFilter.isValid(coord) ) {
+        // qDebug() << "filterGePoints(): Lat-Lon pair wrong, skipping at" << i << coord.latitude << coord.longitude;
         continue;
       }
 
@@ -333,7 +329,7 @@ void LogsDialog::exportToGoogleEarth()
   
   // declare additional fields
   for (int i=0; i<dataPoints.at(0).count()-2; i++) {
-    if (ui->FieldsTW->item(0,i)->isSelected() && !nondataCols.contains(i+2)) {
+    if (ui->FieldsTW->item(i, 0) && ui->FieldsTW->item(i, 0)->isSelected() && !nondataCols.contains(i+2)) {
       QString origName = dataPoints.at(0).at(i+2);
       QString safeName = origName;
       safeName.replace(" ","_");
@@ -363,14 +359,12 @@ void LogsDialog::exportToGoogleEarth()
   }
 
   // coordinate data points
+  outputStream.setRealNumberNotation(QTextStream::FixedNotation);
+  outputStream.setRealNumberPrecision(8);
   for (int i=1; i<n; i++) {
-    QStringList latlon = extractLatLon(dataPoints.at(i).at(gpscol));
-    QString latitude = latlon[0];
-    QString longitude = latlon[1];
+    GpsCoord coord = extractGpsCoordinates(dataPoints.at(i).at(gpscol));
     int altitude = altcol ? dataPoints.at(i).at(altcol).toFloat() : 0;
-    latitude.sprintf("%3.8f", toDecimalCoordinate(latitude));
-    longitude.sprintf("%3.8f", toDecimalCoordinate(longitude));
-    outputStream << "\t\t\t\t\t<gx:coord>" << longitude << " " << latitude << " " <<  altitude << " </gx:coord>\n" ;
+    outputStream << "\t\t\t\t\t<gx:coord>" << coord.longitude << " " << coord.latitude << " " << altitude << " </gx:coord>\n" ;
   }
 
   // additional data for data points
@@ -387,7 +381,7 @@ void LogsDialog::exportToGoogleEarth()
 
   // add values for additional fields
   for (int i=0; i<dataPoints.at(0).count()-2; i++) {
-    if (ui->FieldsTW->item(0,i)->isSelected() && !nondataCols.contains(i+2)) {
+    if (ui->FieldsTW->item(i, 0) && ui->FieldsTW->item(i, 0)->isSelected() && !nondataCols.contains(i+2)) {
       QString safeName = dataPoints.at(0).at(i+2);;
       safeName.replace(" ","_");
       outputStream << "\t\t\t\t\t\t\t<gx:SimpleArrayData name=\""<< safeName <<"\">\n";
@@ -564,7 +558,7 @@ void LogsDialog::on_fileOpen_BT_clicked()
       ui->logTable->setSelectionBehavior(QAbstractItemView::SelectRows);
       for (int i=2; i<csvlog.at(0).count(); i++) {
         QTableWidgetItem* item= new QTableWidgetItem(csvlog.at(0).at(i));
-        ui->FieldsTW->setItem(0,i-2,item);
+        ui->FieldsTW->setItem(i-2, 0, item);
       }
       ui->FieldsTW->resizeRowsToContents();
       ui->logTable->setColumnCount(csvlog.at(0).count());
