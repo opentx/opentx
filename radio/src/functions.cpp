@@ -286,7 +286,7 @@ void evalFunctions()
 
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS; i++) {
     const CustomFunctionData * cfn = &functions[i];
-    uint8_t swtch = CFN_SWITCH(cfn);
+    swsrc_t swtch = CFN_SWITCH(cfn);
     if (swtch) {
       MASK_CFN_TYPE switch_mask = ((MASK_CFN_TYPE)1 << i);
 
