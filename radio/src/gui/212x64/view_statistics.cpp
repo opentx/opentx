@@ -190,8 +190,6 @@ void menuStatisticsDebug(event_t event)
 
 
 #if defined(DEBUG_TRACE_BUFFER)
-#include "stamp-opentx.h"
-
 void menuTraceBuffer(event_t event)
 {
   switch(event)
@@ -202,11 +200,9 @@ void menuTraceBuffer(event_t event)
       break;
   }
 
-  SIMPLE_SUBMENU("Trace Buffer " VERSION, TRACE_BUFFER_LEN);
+  SIMPLE_SUBMENU("Trace Buffer", TRACE_BUFFER_LEN);
   /* RTC time */
-  struct gtm t;
-  gettime(&t);
-  putsTime(LCD_W+1, 0, t, TIMEBLINK);
+  drawRtcTime(LCD_W+1, 0, LEFT|TIMEBLINK);
 
   uint8_t y = 0;
   uint8_t k = 0;

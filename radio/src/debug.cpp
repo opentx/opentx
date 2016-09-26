@@ -82,13 +82,13 @@ const struct TraceElement * getTraceElement(uint16_t idx)
 
 void dumpTraceBuffer()
 {
-  TRACE("Dump of Trace Buffer (" VERSION " " DATE " " TIME "):");
+  TRACE("Dump of Trace Buffer (%s " DATE " " TIME "):", vers_stamp);
   TRACE("#   Time                     Event  Data");
   for(int n = 0; n < TRACE_BUFFER_LEN; ++n) {
     struct gtm tp;
     filltm(&traceBuffer[n].time, &tp);
-    TRACE_INFO_WP("%02d  ", n);
-    TRACE_INFO_WP("%4d-%02d-%02d,%02d:%02d:%02d.%02d0", tp.tm_year+1900, tp.tm_mon+1, tp.tm_mday, tp.tm_hour, tp.tm_min, tp.tm_sec, traceBuffer[n].time_ms);
+    TRACE_NOCRLF("%02d  ", n);
+    TRACE_NOCRLF("%4d-%02d-%02d,%02d:%02d:%02d.%02d0", tp.tm_year+1900, tp.tm_mon+1, tp.tm_mday, tp.tm_hour, tp.tm_min, tp.tm_sec, traceBuffer[n].time_ms);
     TRACE("  %03d    0x%08x", traceBuffer[n].event, traceBuffer[n].data);
     if (traceBuffer[n].time == 0 && traceBuffer[n].time_ms == 0) break;
 #if !defined(SIMU)
