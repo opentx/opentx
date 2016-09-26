@@ -51,7 +51,7 @@ for s, f, a in [(u"Inaktivitätsalarm", "inactiv", 486),
                 (u"Trim zentriert", "midtrim", 495),
                 (u"Poti zentriert", "midpot", 496),
                 (u"Maximale Trimmung erreicht", "endtrim", NO_ALTERNATE),
-                # (u"Minimale Trimmung erreicht", "mintrim", NO_ALTERNATE), this makes no sense
+                (u"Maximale Trimmung erreicht", "mintrim", NO_ALTERNATE), this makes no sense
                 (u"20 Sekunden", "timer20", 500),
                 (u"30 Sekunden", "timer30", 501),
                 (u"Senderstrom zu hoch!", "highmah", NO_ALTERNATE),
