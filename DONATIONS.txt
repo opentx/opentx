@@ -1019,3 +1019,5 @@ Thomas Sandner
 Pascal Pochard
 Helmut Renz
 T S Pung
+Jorge Trinidad
+Yeo Jonathan
