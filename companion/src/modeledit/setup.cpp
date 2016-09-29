@@ -771,6 +771,12 @@ void SetupPanel::on_throttleWarning_toggled(bool checked)
   emit modified();
 }
 
+void SetupPanel::on_rfAntennaWarning_toggled(bool checked)
+{
+  model->enableRfAntennaWarning = checked;
+  emit modified();
+}
+
 void SetupPanel::on_throttleReverse_toggled(bool checked)
 {
   model->throttleReversed = checked;
@@ -882,6 +888,7 @@ void SetupPanel::update()
   ui->throttleReverse->setChecked(model->throttleReversed);
   populateThrottleSourceCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
+  ui->rfAntennaWarning->setChecked(model->enableRfAntennaWarning);
 
   //trim inc, thro trim, thro expo, instatrim
   ui->trimIncrement->setCurrentIndex(model->trimInc+2);

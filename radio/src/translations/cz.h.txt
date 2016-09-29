@@ -768,6 +768,7 @@
 #define TR_BLCOLOR             INDENT "Barva"
 #define TR_SPLASHSCREEN        TR("úvodníLogo", "Zobrazit úvodní logo")
 #define TR_THROTTLEWARNING     TR("* Plyn", INDENT "Kontrola plynu")
+#define TR_RFANTENNAWARNING    TR(IF_CPUARM(INDENT) "RF-Warning", INDENT "RF Antenna State")
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy spínačů")
 #define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Poty a Slidery", INDENT "Kontrola Pot. a Slid.")
 #define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slidery", INDENT "Pozice sliderů")
@@ -928,6 +929,8 @@
 #define TR_STORAGE_WARNING     "ÚLOŽIŠTĚ"
 #define TR_EEPROM_CONVERTING   "Aktualizuji EEPROM"
 #define TR_THROTTLEWARN        "PLYNU"
+#define TR_RFANTENNAWARN       "RF ANTENNA"
+#define TR_RFCHECKANTENNA      "Check if antenna is attached"
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
 #define TR_FAILSAFEWARN        "FAILSAFE"

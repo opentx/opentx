@@ -725,6 +725,7 @@
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Ptalla.inicio"
 #define TR_THROTTLEWARNING     TR("Aviso-A", INDENT "Aviso Acelerador")
+#define TR_RFANTENNAWARNING    TR(IF_CPUARM(INDENT) "RF-Warning", INDENT "RF Antenna State")
 #define TR_SWITCHWARNING       TR("Aviso-I", INDENT "Aviso Intrptor")
 #define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
 #define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
@@ -876,6 +877,8 @@
 #define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "EEPROM Converting"
 #define TR_THROTTLEWARN        "ACELERADOR"
+#define TR_RFANTENNAWARN       "RF ANTENNA"
+#define TR_RFCHECKANTENNA      "Check if antenna is attached"
 #define TR_ALARMSWARN          "ALARMAS"
 #define TR_SWITCHWARN          "INTERPTOR"
 #define TR_FAILSAFEWARN        "FAILSAFE"

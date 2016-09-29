@@ -71,6 +71,7 @@ PACK(typedef struct t_Th9xGeneral {
   uint8_t   keySpeed:2;
   uint8_t   thr0pos:4;
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   uint8_t   disableSwitchWarning:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   beeperVal:2;

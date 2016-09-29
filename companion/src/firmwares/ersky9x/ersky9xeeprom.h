@@ -74,6 +74,7 @@ PACK(typedef struct t_Ersky9xGeneral {
   Ersky9xTrainerData trainer;
   uint8_t   view;
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   uint8_t   disableSwitchWarning:1;
   uint8_t   disableMemoryWarning:1;
   uint8_t   beeperVal:3;

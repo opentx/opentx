@@ -217,6 +217,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v208 {
   int8_t    ppmNCH:4;
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
@@ -256,6 +257,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v209 {
   int8_t    ppmNCH:4;
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
@@ -296,6 +298,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v210 {
   int8_t    ppmNCH:4;
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
@@ -334,6 +337,7 @@ PACK(typedef struct t_Open9xGruvin9xModelData_v211 {
   int8_t    ppmNCH:4;
   uint8_t   trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   uint8_t   pulsePol:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;

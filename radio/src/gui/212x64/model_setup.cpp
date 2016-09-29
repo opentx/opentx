@@ -58,6 +58,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_PREFLIGHT_LABEL,
   ITEM_MODEL_CHECKLIST_DISPLAY,
   ITEM_MODEL_THROTTLE_WARNING,
+  ITEM_MODEL_RF_ANTENNA_WARNING,
   ITEM_MODEL_SWITCHES_WARNING,
 #if defined(PCBX9E)
   ITEM_MODEL_SWITCHES_WARNING2,
@@ -476,6 +477,9 @@ void menuModelSetup(event_t event)
         g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
+      case ITEM_MODEL_RF_ANTENNA_WARNING:
+        g_model.enableRfAntennaWarning = onoffMenuItem(g_model.enableRfAntennaWarning, MODEL_SETUP_2ND_COLUMN, y, STR_RFANTENNAWARNING, attr, event);
+        break;
 #if defined(PCBX9E)
       case ITEM_MODEL_SWITCHES_WARNING2:
       case ITEM_MODEL_SWITCHES_WARNING3:

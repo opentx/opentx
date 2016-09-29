@@ -496,6 +496,7 @@ extern const pm_char STR_BLOFFBRIGHTNESS[];
 #endif
 extern const pm_char STR_SPLASHSCREEN[];
 extern const pm_char STR_THROTTLEWARNING[];
+extern const pm_char STR_RFANTENNAWARNING[];
 extern const pm_char STR_SWITCHWARNING[];
 extern const pm_char STR_POTWARNINGSTATE[];
 extern const pm_char STR_POTWARNING[];
@@ -713,6 +714,8 @@ extern const pm_char STR_WARNING[];
 extern const pm_char STR_STORAGE_WARNING[];
 extern const pm_char STR_EEPROM_CONVERTING[];
 extern const pm_char STR_THROTTLEWARN[];
+extern const pm_char STR_RFANTENNAWARN[];
+extern const pm_char STR_RFCHECKANTENNA[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
 extern const pm_char STR_FAILSAFEWARN[];

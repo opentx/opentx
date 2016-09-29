@@ -533,6 +533,7 @@ t_Open9xGruvin9xModelData_v208::operator ModelData ()
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
   c9x.disableThrottleWarning=disableThrottleWarning;
+  c9x.enableRfAntennaWarning = enableRfAntennaWarning;
   c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppm.pulsePol = pulsePol;
@@ -614,7 +615,8 @@ t_Open9xGruvin9xModelData_v209::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
-  c9x.disableThrottleWarning=disableThrottleWarning;
+  c9x.disableThrottleWarning = disableThrottleWarning;
+  c9x.enableRfAntennaWarning = enableRfAntennaWarning;
   c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppm.pulsePol = pulsePol;
@@ -697,7 +699,8 @@ t_Open9xGruvin9xModelData_v210::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
-  c9x.disableThrottleWarning=disableThrottleWarning;
+  c9x.disableThrottleWarning = disableThrottleWarning;
+  c9x.enableRfAntennaWarning = enableRfAntennaWarning;
   c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppm.pulsePol = pulsePol;
@@ -784,7 +787,8 @@ t_Open9xGruvin9xModelData_v211::operator ModelData ()
   c9x.moduleData[0].channelsCount = 8 + (2 * ppmNCH);
   c9x.thrTrim = thrTrim;
   c9x.trimInc = trimInc - 2;
-  c9x.disableThrottleWarning=disableThrottleWarning;
+  c9x.disableThrottleWarning = disableThrottleWarning;
+  c9x.enableRfAntennaWarning = enableRfAntennaWarning;
   c9x.moduleData[0].ppm.delay = 300 + 50 * ppmDelay;
   c9x.beepANACenter = beepANACenter;
   c9x.moduleData[0].ppm.pulsePol = pulsePol;

@@ -74,6 +74,7 @@ PACK(typedef struct t_Gruvin9xGeneral_v103 {
   Gruvin9xTrainerData_v103 trainer;
   uint8_t   view;      //index of subview in main scrren
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   int8_t    switchWarning:2; // -1=down, 0=off, 1=up
   uint8_t   beeperVal:3;
   uint8_t   disableMemoryWarning:1;
@@ -111,6 +112,7 @@ PACK(typedef struct t_Gruvin9xGeneral_v104 {
   Gruvin9xTrainerData_v104 trainer;
   uint8_t   view;      //index of subview in main scrren
   uint8_t   disableThrottleWarning:1;
+  uint8_t   enableRfAntennaWarning:1;
   int8_t    switchWarning:2; // -1=down, 0=off, 1=up
   uint8_t   beeperVal:3;
   uint8_t   disableMemoryWarning:1;

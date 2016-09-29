@@ -3052,6 +3052,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new ConversionField< SignedField<3> >(modelData.trimInc, +2));
 
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
+  internalField.Append(new BoolField<1>(modelData.enableRfAntennaWarning));
 
   if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
     internalField.Append(new BoolField<1>(modelData.displayChecklist));

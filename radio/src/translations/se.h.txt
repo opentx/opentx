@@ -768,6 +768,7 @@
 #define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
 #define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR("Rattvarn.", INDENT "Rattvarning")
+#define TR_RFANTENNAWARNING    TR(IF_CPUARM(INDENT) "RF Warn.", INDENT "RF Antenna State")
 #define TR_TIMEZONE            TR("Tidszon", "GPS Tidszon")
 #define TR_ADJUST_RTC          INDENT "Adjust RTC"
 #define TR_GPS                 "GPS"
