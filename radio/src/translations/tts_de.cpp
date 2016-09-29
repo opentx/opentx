@@ -146,8 +146,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 2000) {
 		PLAY_NUMBER(number / 1000, 0, 0);
 		PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-		//number %= 1000;
-		number = fmod(number, 1000);
+		number %= 1000;
 		if (number == 0)
 			number = -1;
 	}
@@ -155,8 +154,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 	if ((number >= 1000) && (number <= 1999)) {
 		PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
 		PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-		//number %= 100;
-		number = fmod(number, 1000);
+		number %= 1000;
 		if (number == 0)
 			number = -1;
 	}
@@ -164,8 +162,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 	if ((number >= 200) && (number <= 999)) {
 		PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 100);
 		PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);		
-		//number %= 100;
-		number = fmod(number, 100);
+		number %= 100;
 		if (number == 0)
 			number = -1;		
 	}
@@ -173,15 +170,14 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 	if ((number >= 100) && (number <= 199)) {
 		PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
 		PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
-		//number %= 100;		
-		number = fmod(number, 100);
+		number %= 100;
 		if (number == 0)
 			number = -1;		
 	}
 	
 	if (number > 0){
 		PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 1);
-		number = fmod(number, 1);
+		number %= 1;
 		if (number == 0)
 			number = -1;
 	}
