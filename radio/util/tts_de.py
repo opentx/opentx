@@ -8,9 +8,11 @@ from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM
 systemSounds = []
 sounds = []
 
-for i in range(101):
+for i in range(99):
     systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
-systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 101)))
+systemSounds.append(("ein", filename(PROMPT_SYSTEM_BASE + 100)))
+systemSounds.append(("hundert", filename(PROMPT_SYSTEM_BASE + 101)))
+systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 102)))
 for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 102 + i)))
 for i, (s, f) in enumerate([(u"Volt","volt0"),
