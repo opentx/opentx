@@ -97,6 +97,7 @@ class SetupPanel : public ModelPanel
     void on_extendedLimits_toggled(bool checked);
     void on_extendedTrims_toggled(bool checked);
     void on_throttleWarning_toggled(bool checked);
+    void on_rfAntennaWarning_toggled(bool checked);
     void on_throttleReverse_toggled(bool checked);
     void on_displayText_toggled(bool checked);
     void on_gfEnabled_toggled(bool checked);

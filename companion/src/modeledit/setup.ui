@@ -419,6 +419,16 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
          </property>
         </widget>
        </item>
+       <item row="0" column="2">
+        <widget class="QCheckBox" name="rfAntennaWarning">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>RF Antenna Warning</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="4">
         <spacer name="horizontalSpacer">
          <property name="orientation">
