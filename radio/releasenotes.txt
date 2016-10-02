@@ -5,6 +5,10 @@
 <li>Fixed: Radio was reset 20s after USB connection in MASSSTORAGE mode (<a href=https://github.com/opentx/opentx/issues/3840>#3840</a>)</li>
 </ul>
 
+[Lua]
+<ul>
+<li>Number conversion from floating point to integer now gives the same result on the radio and Companion simulator (<a href=https://github.com/opentx/opentx/issues/3826>#3826</a>)</li>
+</ul>
 
 
 <h2>Version 2.1.9 / 2016-09-14</h2>

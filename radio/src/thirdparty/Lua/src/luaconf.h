@@ -15,6 +15,8 @@
 #define USE_FATFS
 #endif
 
+#define LUA_ANSI			// force ANSI mode: lua_number2integer() behaves the same way on all platforms (#3826)
+
 /*
 ** ==================================================================
 ** Search for "@@" to find all configurable definitions.
