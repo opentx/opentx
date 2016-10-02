@@ -1,3 +1,11 @@
+<h2>Version 2.1.10 / todo</h2>
+
+<ul>
+<li>Fixed problems with Input and Mixer drag&drop before CH1 (<a href=https://github.com/opentx/opentx/issues/3474>#3474</a>, <a href=https://github.com/opentx/opentx/issues/3838>#3838</a>)</li>
+<li>Added missing "none" settings for heli sources (<a href=https://github.com/opentx/opentx/issues/3662>#3662</a>)</li>
+</ul>
+
+
 <h2>Version 2.1.9 / 2016-09-14</h2>
 
 <ul>
