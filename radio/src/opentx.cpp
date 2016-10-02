@@ -1941,14 +1941,16 @@ void opentxStart()
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
-void opentxClose()
+void opentxClose(uint8_t shutdown)
 {
 #if defined(CPUARM)
   watchdogSetTimeout(2000/*20s*/);
 #endif
-  pausePulses();   // stop mixer task to disable trims processing while in shutdown
 
-  AUDIO_BYE();
+  if (shutdown) {
+    pausePulses();   // stop mixer task to disable trims processing while in shutdown
+    AUDIO_BYE();
+  }
 
 #if defined(FRSKY)
   // TODO needed? telemetryEnd();

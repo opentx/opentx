@@ -1532,9 +1532,9 @@ extern uint8_t requiredSpeakerVolume;
 extern uint8_t requestScreenshot;
 #endif
 
-extern void checkBattery();
-extern void opentxClose();
-extern void opentxInit();
+void checkBattery();
+void opentxClose(uint8_t shutdown=true);
+void opentxInit();
 
 // Re-useable byte array to save having multiple buffers
 #define SD_SCREEN_FILE_LENGTH (32)
