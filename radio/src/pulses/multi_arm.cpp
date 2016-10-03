@@ -111,12 +111,11 @@ void setupPulsesMultimodule(uint8_t port)
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
-  // header, byte 0, always 0x55
-  sendByteMulti(0x55);
 
   // byte 1+2, protocol information
 
-  int type = g_model.moduleData[port].multi.rfProtocol + 1;
+  // Our enumeration starts at 0
+  int type = g_model.moduleData[port].getMultiProtocol() + 1;
   int subtype = g_model.moduleData[port].subType;
   int8_t optionValue = g_model.moduleData[port].multi.optionValue;
 
@@ -127,10 +126,17 @@ void setupPulsesMultimodule(uint8_t port)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (type == MM_RF_PROTO_DSM2 && g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND) {
+  if (g_model.moduleData[port].getMultiProtocol() && g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND) {
     // Autobinding should always be done in DSMX 11ms
-    subtype = MM_RF_DSM2_SUBTYPE_DSMX;
-    optionValue = MM_RF_DSM2_11MS_7CH_OPTION;
+    subtype = MM_RF_DSM2_SUBTYPE_AUTO;
+
+    // The multi module wants the number of channels as options value and negative amout if the
+    // broken PRNG table is to be used.
+    if (optionValue==0)
+     optionValue = NUM_CHANNELS(EXTERNAL_MODULE);
+    else
+      optionValue = -(NUM_CHANNELS(EXTERNAL_MODULE));
+
   }
 
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
@@ -142,7 +148,7 @@ void setupPulsesMultimodule(uint8_t port)
   if (type >= 23)
      type = type + 1;
 
-  if (g_model.moduleData[port].multi.rfProtocol == MM_RF_PROTO_FRSKY) {
+  if (g_model.moduleData[port].getMultiProtocol() == MM_RF_PROTO_FRSKY) {
     if(subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
@@ -160,11 +166,14 @@ void setupPulsesMultimodule(uint8_t port)
     }
   }
 
-  if (g_model.moduleData[port].multi.rfProtocol >= MM_RF_PROTO_CUSTOM)
-    type = g_model.moduleData[port].multi.rfProtocol & 0x1f;
+  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
+  if (type <= 31)
+    sendByteMulti(0x55);
+  else
+    sendByteMulti(0x54);
 
-
-  protoByte |= (type & 0x1f); //  (g_model.moduleData[port].multi.autoBindMode << 6)
+  //  (g_model.moduleData[port].multi.autoBindMode << 6)
+  protoByte |= (type & 0x1f);
   sendByteMulti(protoByte);
 
 

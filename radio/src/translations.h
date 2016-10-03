@@ -216,7 +216,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_SUBTYPE_FLYSKY    (OFS_MULTI_PROTOCOLS + sizeof(TR_MULTI_PROTOCOLS))
   #define OFS_SUBTYPE_FRSKY     (OFS_SUBTYPE_FLYSKY + sizeof(TR_SUBTYPE_FLYSKY))
   #define OFS_SUBTYPE_HISKY     (OFS_SUBTYPE_FRSKY + sizeof(TR_SUBTYPE_FRSKY))
-  #define OFS_SUBTYPE_YD717     (OFS_SUBTYPE_HISKY + sizeof(TR_SUBTYPE_HISKY))
+  #define OFS_SUBTYPE_DSM       (OFS_SUBTYPE_HISKY + sizeof(TR_SUBTYPE_HISKY))
+  #define OFS_SUBTYPE_YD717     (OFS_SUBTYPE_DSM + sizeof(TR_SUBTYPE_DSM))
   #define OFS_SUBTYPE_SYMAX     (OFS_SUBTYPE_YD717 + sizeof(TR_SUBTYPE_YD717))
   #define OFS_SUBTYPE_CX10      (OFS_SUBTYPE_SYMAX + sizeof(TR_SUBTYPE_SYMAX))
   #define OFS_SUBTYPE_CG023     (OFS_SUBTYPE_CX10 + sizeof(TR_SUBTYPE_CX10))
@@ -350,6 +351,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_SUBTYPE_FLYSKY    (STR_OPEN9X + OFS_SUBTYPE_FLYSKY)
   #define STR_SUBTYPE_FRSKY     (STR_OPEN9X + OFS_SUBTYPE_FRSKY)
   #define STR_SUBTYPE_HISKY     (STR_OPEN9X + OFS_SUBTYPE_HISKY)
+  #define STR_SUBTYPE_DSM       (STR_OPEN9X + OFS_SUBTYPE_DSM)
   #define STR_SUBTYPE_YD717     (STR_OPEN9X + OFS_SUBTYPE_YD717)
   #define STR_SUBTYPE_SYMAX     (STR_OPEN9X + OFS_SUBTYPE_SYMAX)
   #define STR_SUBTYPE_CX10      (STR_OPEN9X + OFS_SUBTYPE_CX10)
@@ -599,8 +601,9 @@ extern const pm_char STR_MULTI_OPTION[];
 extern const pm_char STR_MULTI_VIDFREQ[];
 extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
+extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
-extern const pm_char STR_MULTI_DSMFRAME[];
+extern const pm_char STR_MULTI_DSMPRNG[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
 #endif
