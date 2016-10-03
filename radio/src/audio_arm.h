@@ -55,7 +55,7 @@ template <unsigned int NUM_BITS> class BitField {
       return bits[bitNo >> 3] & (1 << (bitNo & 0x07));
     }
 
-    void getSize() const
+    unsigned int getSize() const
     {
       return NUM_BITS;
     }
