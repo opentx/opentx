@@ -435,13 +435,27 @@ PACK(typedef struct {
       uint8_t ppmOutputType:1;     // false = open drain, true = push pull
       int8_t  ppmFrameLength;
     };
-   struct {
-      uint8_t rfProtocol:6;    // can be changed to rfProtocol if rfProtocol gets more bits, currently 6 bits used
+    struct {
+      uint8_t rfProtocolExtra:2;
+      uint8_t spare:3;
+      uint8_t customProto:1;
       uint8_t autoBindMode:1;
       uint8_t lowPowerMode:1;
       int8_t optionValue;
     } multi;
   };
+  // Helper functions to set both of the rfProto protocol at the same time
+  inline uint8_t getMultiProtocol()
+  {
+    return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
+  }
+
+  inline void setMultiProtocol(uint8_t proto)
+  {
+    rfProtocol = (uint8_t) (proto & 0x0f);
+    multi.rfProtocolExtra = (proto & 0x30) >> 4;
+  }
+    
 }) ModuleData;
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
@@ -2090,11 +2104,11 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_LAST= MM_RF_PROTO_CUSTOM
 };
 
-#define MM_RF_DSM2_22MS_6CH_OPTION      2
-#define MM_RF_DSM2_11MS_7CH_OPTION      7
-
-#define MM_RF_DSM2_SUBTYPE_DSM2         0
-#define MM_RF_DSM2_SUBTYPE_DSMX         1
+#define MM_RF_DSM2_SUBTYPE_DSM2_22       0
+#define MM_RF_DSM2_SUBTYPE_DSM2_11       1
+#define MM_RF_DSM2_SUBTYPE_DSMX_22       2
+#define MM_RF_DSM2_SUBTYPE_DSMX_11       3
+#define MM_RF_DSM2_SUBTYPE_AUTO          4
 
 
 #define MM_RF_FRSKY_SUBTYPE_D16         0
