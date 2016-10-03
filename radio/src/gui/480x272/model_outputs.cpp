@@ -72,7 +72,7 @@ enum LimitsItems {
 
 void onLimitsMenu(const char *result)
 {
-  uint8_t ch = menuVerticalPosition - 1;
+  uint8_t ch = menuVerticalPosition;
 
   if (result == STR_RESET) {
     LimitData *ld = limitAddress(ch);
