@@ -248,10 +248,6 @@ void referenceSystemAudioFiles()
   char path[AUDIO_FILENAME_MAXLEN+1];
   FILINFO fno;
   DIR dir;
-  char *fn;   /* This function is assuming non-Unicode cfg. */
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
 
   sdAvailableSystemAudioFiles.reset();
 
@@ -265,15 +261,14 @@ void referenceSystemAudioFiles()
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-      fn = *fno.lfname ? fno.lfname : fno.fname;
-      uint8_t len = strlen(fn);
+      uint8_t len = strlen(fno.fname);
 
       // Eliminates directories / non wav files
-      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+      if (len < 5 || strcasecmp(fno.fname+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
 
       for (int i=0; i<AU_SPECIAL_SOUND_FIRST; i++) {
         getSystemAudioFile(path, i);
-        if (!strcasecmp(filename, fn)) {
+        if (!strcasecmp(filename, fno.fname)) {
           sdAvailableSystemAudioFiles.setBit(i);
           break;
         }
@@ -360,10 +355,6 @@ void referenceModelAudioFiles()
   char path[AUDIO_FILENAME_MAXLEN+1];
   FILINFO fno;
   DIR dir;
-  char *fn;   /* This function is assuming non-Unicode cfg. */
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
 
   sdAvailablePhaseAudioFiles.reset();
   sdAvailableSwitchAudioFiles.reset();
@@ -377,20 +368,19 @@ void referenceModelAudioFiles()
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-      fn = *fno.lfname ? fno.lfname : fno.fname;
-      uint8_t len = strlen(fn);
+      uint8_t len = strlen(fno.fname);
       bool found = false;
 
       // Eliminates directories / non wav files
-      if (len < 5 || strcasecmp(fn+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
-      TRACE("referenceModelAudioFiles(): using file: %s", fn);
+      if (len < 5 || strcasecmp(fno.fname+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
+      TRACE("referenceModelAudioFiles(): using file: %s", fno.fname);
 
       // Phases Audio Files <phasename>-[on|off].wav
       for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
           getPhaseAudioFile(path, i, event);
-          // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
-          if (!strcasecmp(filename, fn)) {
+          // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fno.fname);
+          if (!strcasecmp(filename, fno.fname)) {
             sdAvailablePhaseAudioFiles.setBit(INDEX_PHASE_AUDIO_FILE(i, event));
             found = true;
             TRACE("\tfound: %s", filename);
@@ -402,8 +392,8 @@ void referenceModelAudioFiles()
       // Switches Audio Files <switchname>-[up|mid|down].wav
       for (int i=SWSRC_FIRST_SWITCH; i<=SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT && !found; i++) {
         getSwitchAudioFile(path, i);
-        // TRACE("referenceModelAudioFiles(): searching for %s in %s (%d)", path, fn, i);
-        if (!strcasecmp(filename, fn)) {
+        // TRACE("referenceModelAudioFiles(): searching for %s in %s (%d)", path, fno.fname, i);
+        if (!strcasecmp(filename, fno.fname)) {
           sdAvailableSwitchAudioFiles.setBit(i-SWSRC_FIRST_SWITCH);
           found = true;
           TRACE("\tfound: %s", filename);
@@ -414,8 +404,8 @@ void referenceModelAudioFiles()
       for (int i=0; i<MAX_LOGICAL_SWITCHES && !found; i++) {
         for (int event=0; event<2; event++) {
           getLogicalSwitchAudioFile(path, i, event);
-          // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fn);
-          if (!strcasecmp(filename, fn)) {
+          // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fno.fname);
+          if (!strcasecmp(filename, fno.fname)) {
             sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(i, event));
             found = true;
             TRACE("\tfound: %s", filename);
