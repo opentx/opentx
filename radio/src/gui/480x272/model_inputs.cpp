@@ -308,13 +308,13 @@ bool menuModelExpoOne(event_t event)
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#define EXPO_LINE_WEIGHT_POS    110
-#define EXPO_LINE_SRC_POS       115
-#define EXPO_LINE_CURVE_POS     162
-#define EXPO_LINE_SWITCH_POS    210
-#define EXPO_LINE_SIDE_POS      250
-#define EXPO_LINE_FM_POS        270
-#define EXPO_LINE_NAME_POS      384
+#define EXPO_LINE_WEIGHT_POS    125
+#define EXPO_LINE_SRC_POS       135
+#define EXPO_LINE_CURVE_POS     185
+#define EXPO_LINE_SWITCH_POS    233
+#define EXPO_LINE_SIDE_POS      275
+#define EXPO_LINE_FM_POS        295
+#define EXPO_LINE_NAME_POS      405
 #define EXPO_LINE_SELECT_POS    50
 #define EXPO_LINE_SELECT_WIDTH  (LCD_W-EXPO_LINE_SELECT_POS-15)
 
