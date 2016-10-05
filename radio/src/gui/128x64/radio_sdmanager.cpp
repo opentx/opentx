@@ -108,7 +108,8 @@ void menuRadioSdManager(event_t _event)
 #if defined(CPUARM)
     audioQueue.stopSD();
 #endif
-    if (f_mkfs(0, 1, 0) == FR_OK) {
+    BYTE work[_MAX_SS];
+    if (f_mkfs(0, FM_FAT32, 0, work, sizeof(work)) == FR_OK) {
       f_chdir("/");
       reusableBuffer.sdmanager.offset = -1;
     }
@@ -187,11 +188,7 @@ void menuRadioSdManager(event_t _event)
   if (reusableBuffer.sdmanager.offset != menuVerticalOffset) {
     FILINFO fno;
     DIR dir;
-    char * fn;   /* This function is assuming non-Unicode cfg. */
-    TCHAR lfn[_MAX_LFN + 1];
-    fno.lfname = lfn;
-    fno.lfsize = sizeof(lfn);
-  
+
     if (menuVerticalOffset == 0) {
       reusableBuffer.sdmanager.offset = 0;
       memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));
@@ -214,16 +211,20 @@ void menuRadioSdManager(event_t _event)
 
     FRESULT res = f_opendir(&dir, "."); // Open the directory
     if (res == FR_OK) {
+      bool firstTime = true;
       for (;;) {
-        res = f_readdir(&dir, &fno);                   /* Read a directory item */
+        if (firstTime) {
+          // fake up directory entry
+          strcpy(fno.fname, "..");
+          fno.fattrib = AM_DIR;
+          res = FR_OK;
+          firstTime = false;
+        }
+        else {
+          res = f_readdir(&dir, &fno);                   /* Read a directory item */
+        }
         if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-        if (fno.fname[0] == '.' && fno.fname[1] == '\0') continue;             /* Ignore dot entry */
-#if _USE_LFN
-        fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-        fn = fno.fname;
-#endif
-        if (strlen(fn) > SD_SCREEN_FILE_LENGTH) continue;
+        if (strlen(fno.fname) > SD_SCREEN_FILE_LENGTH) continue;
 
         reusableBuffer.sdmanager.count++;
 
@@ -232,10 +233,10 @@ void menuRadioSdManager(event_t _event)
         if (menuVerticalOffset == 0) {
           for (uint8_t i=0; i<LCD_LINES-1; i++) {
             char * line = reusableBuffer.sdmanager.lines[i];
-            if (line[0] == '\0' || isFilenameLower(isfile, fn, line)) {
+            if (line[0] == '\0' || isFilenameLower(isfile, fno.fname, line)) {
               if (i < 6) memmove(reusableBuffer.sdmanager.lines[i+1], line, sizeof(reusableBuffer.sdmanager.lines[i]) * (6-i));
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[i]));
-              strcpy(line, fn);
+              strcpy(line, fno.fname);
               line[SD_SCREEN_FILE_LENGTH+1] = isfile;
               break;
             }
@@ -244,26 +245,26 @@ void menuRadioSdManager(event_t _event)
         else if (reusableBuffer.sdmanager.offset == menuVerticalOffset) {
           for (int8_t i=6; i>=0; i--) {
             char * line = reusableBuffer.sdmanager.lines[i];
-            if (line[0] == '\0' || isFilenameGreater(isfile, fn, line)) {
+            if (line[0] == '\0' || isFilenameGreater(isfile, fno.fname, line)) {
               if (i > 0) memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], sizeof(reusableBuffer.sdmanager.lines[0]) * i);
               memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[i]));
-              strcpy(line, fn);
+              strcpy(line, fno.fname);
               line[SD_SCREEN_FILE_LENGTH+1] = isfile;
               break;
             }
           }
         }
         else if (menuVerticalOffset > reusableBuffer.sdmanager.offset) {
-          if (isFilenameGreater(isfile, fn, reusableBuffer.sdmanager.lines[5]) && isFilenameLower(isfile, fn, reusableBuffer.sdmanager.lines[6])) {
+          if (isFilenameGreater(isfile, fno.fname, reusableBuffer.sdmanager.lines[5]) && isFilenameLower(isfile, fno.fname, reusableBuffer.sdmanager.lines[6])) {
             memset(reusableBuffer.sdmanager.lines[6], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
-            strcpy(reusableBuffer.sdmanager.lines[6], fn);
+            strcpy(reusableBuffer.sdmanager.lines[6], fno.fname);
             reusableBuffer.sdmanager.lines[6][SD_SCREEN_FILE_LENGTH+1] = isfile;
           }
         }
         else {
-          if (isFilenameLower(isfile, fn, reusableBuffer.sdmanager.lines[1]) && isFilenameGreater(isfile, fn, reusableBuffer.sdmanager.lines[0])) {
+          if (isFilenameLower(isfile, fno.fname, reusableBuffer.sdmanager.lines[1]) && isFilenameGreater(isfile, fno.fname, reusableBuffer.sdmanager.lines[0])) {
             memset(reusableBuffer.sdmanager.lines[0], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
-            strcpy(reusableBuffer.sdmanager.lines[0], fn);
+            strcpy(reusableBuffer.sdmanager.lines[0], fno.fname);
             reusableBuffer.sdmanager.lines[0][SD_SCREEN_FILE_LENGTH+1] = isfile;
           }
         }

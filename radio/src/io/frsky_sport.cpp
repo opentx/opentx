@@ -256,7 +256,7 @@ bool sportUpdateUploadFile(const char *filename)
       sportUpdateState = SPORT_DATA_TRANSFER,
       sportWritePacket(packet);
       if (i==0) {
-        updateProgressBar(file.fptr, file.fsize);
+        updateProgressBar(file.fptr, file.obj.objsize);
       }
     }
 

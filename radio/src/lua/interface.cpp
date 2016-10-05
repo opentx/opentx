@@ -1118,10 +1118,6 @@ void luaLoadFiles(const char * directory, void (*callback)())
   char path[LUA_FULLPATH_MAXLEN+1];
   FILINFO fno;
   DIR dir;
-  char * fn;   /* This function is assuming non-Unicode cfg. */
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
 
   strcpy(path, directory);
 
@@ -1133,10 +1129,9 @@ void luaLoadFiles(const char * directory, void (*callback)())
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-      fn = * fno.lfname ? fno.lfname : fno.fname;
-      uint8_t len = strlen(fn);
-      if (len > 0 && fn[0]!='.' && (fno.fattrib & AM_DIR)) {
-        strcpy(&path[pathlen], fn);
+      uint8_t len = strlen(fno.fname);
+      if (len > 0 && fno.fname[0]!='.' && (fno.fattrib & AM_DIR)) {
+        strcpy(&path[pathlen], fno.fname);
         strcat(&path[pathlen], "/main.lua");
         if (isFileAvailable(path)) {
           luaLoadFile(path, callback);

@@ -123,12 +123,6 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 {
   FILINFO fno;
   DIR dir;
-  char * fn;   /* This function is assuming non-Unicode cfg. */
-#if _USE_LFN
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
-#endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
@@ -201,33 +195,27 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
 
-#if _USE_LFN
-      fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-      fn = fno.fname;
-#endif
-
-      uint8_t len = strlen(fn);
+      uint8_t len = strlen(fno.fname);
       uint8_t maxlen_with_extension = (flags & LIST_SD_FILE_EXT) ? maxlen : maxlen+LEN_FILE_EXTENSION;
-      if (len < LEN_FILE_EXTENSION+1 || len > maxlen_with_extension || !isExtensionMatching(fn+len-LEN_FILE_EXTENSION, extension, flags) || (fno.fattrib & AM_DIR)) continue;
+      if (len < LEN_FILE_EXTENSION+1 || len > maxlen_with_extension || !isExtensionMatching(fno.fname+len-LEN_FILE_EXTENSION, extension, flags) || (fno.fattrib & AM_DIR)) continue;
 
       popupMenuNoItems++;
 
       if (!(flags & LIST_SD_FILE_EXT)) {
-        fn[len-LEN_FILE_EXTENSION] = '\0';
+        fno.fname[len-LEN_FILE_EXTENSION] = '\0';
       }
 
       if (popupMenuOffset == 0) {
-        if (selection && strncasecmp(fn, selection, maxlen) < 0) {
+        if (selection && strncasecmp(fno.fname, selection, maxlen) < 0) {
           lastpopupMenuOffset++;
         }
         else {
           for (uint8_t i=0; i<MENU_MAX_DISPLAY_LINES; i++) {
             char * line = reusableBuffer.modelsel.menu_bss[i];
-            if (line[0] == '\0' || strcasecmp(fn, line) < 0) {
+            if (line[0] == '\0' || strcasecmp(fno.fname, line) < 0) {
               if (i < MENU_MAX_DISPLAY_LINES-1) memmove(reusableBuffer.modelsel.menu_bss[i+1], line, sizeof(reusableBuffer.modelsel.menu_bss[i]) * (MENU_MAX_DISPLAY_LINES-1-i));
               memset(line, 0, MENU_LINE_LENGTH);
-              strcpy(line, fn);
+              strcpy(line, fno.fname);
               break;
             }
           }
@@ -240,10 +228,10 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
       else if (lastpopupMenuOffset == 0xffff) {
         for (int i=MENU_MAX_DISPLAY_LINES-1; i>=0; i--) {
           char * line = reusableBuffer.modelsel.menu_bss[i];
-          if (line[0] == '\0' || strcasecmp(fn, line) > 0) {
+          if (line[0] == '\0' || strcasecmp(fno.fname, line) > 0) {
             if (i > 0) memmove(reusableBuffer.modelsel.menu_bss[0], reusableBuffer.modelsel.menu_bss[1], sizeof(reusableBuffer.modelsel.menu_bss[i]) * i);
             memset(line, 0, MENU_LINE_LENGTH);
-            strcpy(line, fn);
+            strcpy(line, fno.fname);
             break;
           }
         }
@@ -252,15 +240,15 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
         }
       }
       else if (popupMenuOffset > lastpopupMenuOffset) {
-        if (strcasecmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-2]) > 0 && strcasecmp(fn, reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1]) < 0) {
+        if (strcasecmp(fno.fname, reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-2]) > 0 && strcasecmp(fno.fname, reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1]) < 0) {
           memset(reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1], 0, MENU_LINE_LENGTH);
-          strcpy(reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1], fn);
+          strcpy(reusableBuffer.modelsel.menu_bss[MENU_MAX_DISPLAY_LINES-1], fno.fname);
         }
       }
       else {
-        if (strcasecmp(fn, reusableBuffer.modelsel.menu_bss[1]) < 0 && strcasecmp(fn, reusableBuffer.modelsel.menu_bss[0]) > 0) {
+        if (strcasecmp(fno.fname, reusableBuffer.modelsel.menu_bss[1]) < 0 && strcasecmp(fno.fname, reusableBuffer.modelsel.menu_bss[0]) > 0) {
           memset(reusableBuffer.modelsel.menu_bss[0], 0, MENU_LINE_LENGTH);
-          strcpy(reusableBuffer.modelsel.menu_bss[0], fn);
+          strcpy(reusableBuffer.modelsel.menu_bss[0], fno.fname);
         }
       }
     }
