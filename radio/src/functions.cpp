@@ -458,7 +458,7 @@ void evalFunctions()
             if (isRepeatDelayElapsed(functions, functionsContext, i)) {
               if (!IS_PLAYING(PLAY_INDEX)) {
                 if (CFN_FUNC(cfn) == FUNC_PLAY_SOUND) {
-                  if (audioQueue.empty()) {
+                  if (audioQueue.isEmpty()) {
                     AUDIO_PLAY(AU_SPECIAL_SOUND_FIRST + CFN_PARAM(cfn));
                   }
                 }

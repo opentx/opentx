@@ -364,7 +364,7 @@ uint8_t * currentBuffer = NULL;
 uint32_t currentSize = 0;
 int16_t newVolume = -1;
 
-void audioSetCurrentBuffer(AudioBuffer * buffer)
+void audioSetCurrentBuffer(const AudioBuffer * buffer)
 {
   currentBuffer = (uint8_t *)buffer->data;
   currentSize = buffer->size * 2;
@@ -379,32 +379,19 @@ void audioConsumeCurrentBuffer()
     newVolume = -1;
   }
 
+  if (!currentBuffer) {
+    audioSetCurrentBuffer(audioQueue.buffersFifo.getNextFilledBuffer());
+  }
+
   if (currentBuffer) {
     uint32_t written = audioSpiWriteData(currentBuffer, currentSize);
     currentBuffer += written;
     currentSize -= written;
     if (currentSize == 0) {
-      AudioBuffer * buffer = audioQueue.getNextFilledBuffer();
-      if (buffer) {
-        audioSetCurrentBuffer(buffer);
-      }
-      else {
-        currentBuffer = NULL;
-        currentSize = 0;
-      }
+      audioQueue.buffersFifo.freeNextFilledBuffer();
+      currentBuffer = NULL;
+      currentSize = 0;
     }
-  }
-}
-
-void audioPushBuffer(AudioBuffer * buffer)
-{
-  if (!currentBuffer) {
-    buffer->state = AUDIO_BUFFER_PLAYING;
-    audioSetCurrentBuffer(buffer);
-    audioConsumeCurrentBuffer();
-  }
-  else {
-    buffer->state = AUDIO_BUFFER_FILLED;
   }
 }
 
