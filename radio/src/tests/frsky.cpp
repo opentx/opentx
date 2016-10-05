@@ -173,6 +173,27 @@ TEST(FrSky, HubAltNegative)
   processHubPacket(BARO_ALT_AP_ID, 05);
   EXPECT_EQ(telemetryItems[0].value, 120);
 }
+
+TEST(FrSky, Gps)
+{
+  MODEL_RESET();
+  TELEMETRY_RESET();
+  EXPECT_EQ(telemetryItems[0].value, 0);
+
+  // latitude 15 degrees north, 30.5000 minutes = 15.508333333333333 degrees
+  processHubPacket(GPS_LAT_BP_ID, 1530);  // DDDMM.
+  processHubPacket(GPS_LAT_AP_ID, 5000);  // .MMMM
+  processHubPacket(GPS_LAT_NS_ID, 'N');
+
+  // longitude 45 degrees west, 20.5000 minutes = 45.34166666666667 degrees
+  processHubPacket(GPS_LONG_BP_ID, 4520);
+  processHubPacket(GPS_LONG_AP_ID, 5000);
+  processHubPacket(GPS_LONG_EW_ID, 'E');
+
+  EXPECT_EQ(telemetryItems[0].gps.latitude, 15508333);
+  EXPECT_EQ(telemetryItems[0].gps.longitude, 45341666);
+}
+
 #endif // defined(TELEMETRY_FRSKY) && defined(CPUARM)
 
 #if defined(TELEMETRY_FRSKY_SPORT)

@@ -172,7 +172,7 @@ void processHubPacket(uint8_t id, int16_t value)
     return;
   }
   else if (id == GPS_LAT_NS_ID) {
-    if (lastId == GPS_LONG_BP_ID) {
+    if (lastId == GPS_LAT_AP_ID) {
       id = GPS_LAT_AP_ID;
       unit = UNIT_GPS_LATITUDE;
       data = getFrSkyDProtocolGPSValue(value == 'N' ? 1 : -1);
@@ -182,7 +182,7 @@ void processHubPacket(uint8_t id, int16_t value)
     }
   }
   else if (id == GPS_LONG_EW_ID) {
-    if (lastId == GPS_LONG_BP_ID) {
+    if (lastId == GPS_LONG_AP_ID) {
       id = GPS_LAT_AP_ID;
       unit = UNIT_GPS_LONGITUDE;
       data = getFrSkyDProtocolGPSValue(value == 'E' ? 1 : -1);
