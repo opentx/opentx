@@ -419,6 +419,7 @@ enum BeeperMode {
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
+#define MM_RF_CUSTOM_SELECTED 0xff
 PACK(typedef struct {
   uint8_t type:4;
   int8_t  rfProtocol:4;
@@ -445,8 +446,10 @@ PACK(typedef struct {
     } multi;
   };
   // Helper functions to set both of the rfProto protocol at the same time
-  inline uint8_t getMultiProtocol()
+  inline uint8_t getMultiProtocol(bool returnCustom)
   {
+    if (returnCustom && multi.customProto)
+      return MM_RF_CUSTOM_SELECTED;
     return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   }
 
@@ -2074,8 +2077,9 @@ enum RFProtocols {
 };
 
 enum MultiModuleRFProtocols {
+  MM_RF_PROTO_CUSTOM = -1,
+  MM_RF_PROTO_FIRST = MM_RF_PROTO_CUSTOM,
   MM_RF_PROTO_FLYSKY=0,
-  MM_RF_PROTO_FIRST=MM_RF_PROTO_FLYSKY,
   MM_RF_PROTO_HUBSAN,
   MM_RF_PROTO_FRSKY,
   MM_RF_PROTO_HISKY,
@@ -2100,8 +2104,7 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_ASSAN,
   MM_RF_PROTO_HONTAI,
   MM_RF_PROTO_OLRS,
-  MM_RF_PROTO_CUSTOM,
-  MM_RF_PROTO_LAST= MM_RF_PROTO_CUSTOM
+  MM_RF_PROTO_LAST= MM_RF_PROTO_OLRS
 };
 
 #define MM_RF_DSM2_SUBTYPE_DSM2_22       0
