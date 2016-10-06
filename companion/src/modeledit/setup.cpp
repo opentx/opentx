@@ -324,6 +324,8 @@ void ModulePanel::update()
 
   if (mask & MASK_MULTIMODULE) {
     int numEntries = getNumSubtypes(static_cast<MultiModuleRFProtocols>(module.multi.rfProtocol));
+    if (module.multi.customProto)
+      numEntries=8;
     // Removes extra items
     ui->multiSubType->setMaxCount(numEntries);
     for (int i=0; i < numEntries; i++) {
@@ -476,6 +478,8 @@ void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
     lock=true;
     module.multi.rfProtocol = index;
     unsigned int maxSubTypes = getNumSubtypes(static_cast<MultiModuleRFProtocols>(index));
+    if (module.multi.customProto)
+      maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
     update();
     emit modified();
