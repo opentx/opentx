@@ -496,11 +496,11 @@ TelemetrySimulator::GPSEmulator::GPSEmulator()
 uint32_t TelemetrySimulator::GPSEmulator::encodeLatLon(double latLon, bool isLat)
 {
   uint32_t data = (uint32_t)((latLon < 0 ? -latLon : latLon) * 60 * 10000) & 0x3FFFFFFF;
-  if (isLat == false) {
-    data |= 0x80000000;
+  if (isLat) {
+    data |= (1 << 31);
   }
   if (latLon < 0) {
-    data |= 0x40000000;
+    data |= (1 << 30);
   }
   return data;
 }
