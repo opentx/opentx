@@ -868,6 +868,11 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_SHENQI,
   MM_RF_PROTO_FY326,
   MM_RF_PROTO_SFHSS,
+  MM_RF_PROTO_J6PRO,
+  MM_RF_PROTO_FQ777,
+  MM_RF_PROTO_ASSAN,
+  MM_RF_PROTO_HONTAI,
+  MM_RF_PROTO_OLRS,
   MM_RF_PROTO_CUSTOM,
   MM_RF_PROTO_LAST= MM_RF_PROTO_CUSTOM
 };
@@ -894,32 +899,26 @@ class ModuleData {
     unsigned int failsafeMode;
     int          failsafeChannels[C9X_NUM_CHNOUT];
 
-    // By pure coincidence the struct are unions with the same datatype in Companion
-    // and the firmware itself. If this changes the multi struct needs it own logic in the eeprom interface
-    union {
-      struct {
+
+    struct {
         int delay;
         bool pulsePol;           // false = positive
         bool outputType;         // false = open drain, true = push pull
         int frameLength;
-      } ppm;
-      struct {
-        int rfProtocol;
-        bool autoBindMode;
-        bool lowPowerMode;
-        int optionValue;
-      } multi;
-    };
+    } ppm;
 
-    // Currently the Eeprom read/write code does not work with unions
-    // define a hack for the multi rf Protocol to get the real numbers here
-    // (reverse the int => ms logic of the ppm delay)
-    int getMultiRfProtocol () { return (multi.rfProtocol - 300) / 50; }
-    void setMultiRfProtocol (int val) { multi.rfProtocol = 300 + 50 * val; }
+    struct {
+      unsigned int rfProtocol;
+      bool autoBindMode;
+      bool lowPowerMode;
+      bool customProto;
+      int optionValue;
+   } multi;
+
+
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     QString polarityToString() const { return ppm.pulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
-
 };
 
 #define C9X_MAX_SCRIPTS       7

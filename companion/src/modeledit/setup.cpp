@@ -183,7 +183,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
 
   for (int i=0; i<=MM_RF_PROTO_LAST; i++)
   {
-    ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i), (QVariant) i);
+    ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i, false), (QVariant) i);
   }
 
   if (firmware->getCapability(HasFailsafe)) {
@@ -318,19 +318,19 @@ void ModulePanel::update()
   // Multi settings fields
   ui->label_multiProtocol->setVisible(mask & MASK_MULTIMODULE);
   ui->multiProtocol->setVisible(mask & MASK_MULTIMODULE);
-  ui->multiProtocol->setCurrentIndex(module.getMultiRfProtocol());
+  ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
   ui->label_multiSubType->setVisible(mask & MASK_MULTIMODULE);
   ui->multiSubType->setVisible(mask & MASK_MULTIMODULE);
 
   if (mask & MASK_MULTIMODULE) {
-    int numEntries = getNumSubtypes(static_cast<MultiModuleRFProtocols>(module.getMultiRfProtocol()));
+    int numEntries = getNumSubtypes(static_cast<MultiModuleRFProtocols>(module.multi.rfProtocol));
     // Removes extra items
     ui->multiSubType->setMaxCount(numEntries);
     for (int i=0; i < numEntries; i++) {
       if (i < ui->multiSubType->count())
-        ui->multiSubType->setItemText(i, ModelPrinter::printMultiSubType(module.getMultiRfProtocol(), i));
+        ui->multiSubType->setItemText(i, ModelPrinter::printMultiSubType(module.multi.rfProtocol, module.multi.customProto, i));
       else
-        ui->multiSubType->addItem(ModelPrinter::printMultiSubType(module.getMultiRfProtocol(), i), (QVariant) i);
+        ui->multiSubType->addItem(ModelPrinter::printMultiSubType(module.multi.rfProtocol, module.multi.customProto, i), (QVariant) i);
     }
   }
   ui->multiSubType->setCurrentIndex(module.subType);
@@ -474,7 +474,7 @@ void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
 {
   if (!lock) {
     lock=true;
-    module.setMultiRfProtocol(index);
+    module.multi.rfProtocol = index;
     unsigned int maxSubTypes = getNumSubtypes(static_cast<MultiModuleRFProtocols>(index));
     module.subType = std::min(module.subType, maxSubTypes -1);
     update();

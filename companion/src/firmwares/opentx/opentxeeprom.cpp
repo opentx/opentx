@@ -3290,7 +3290,17 @@ void OpenTxModelData::beforeExport()
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
     else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX)
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
-    else
+    else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
+      // copy multi settings to ppm settings to get them written to the eeprom
+      // (reverse the int => ms logic of the ppm delay) since only ppm is written
+
+      subprotocols[module] = modelData.moduleData[module].multi.rfProtocol & (0x1f);
+      int multiByte = ((modelData.moduleData[module].multi.rfProtocol >> 4) & 0x03) | (modelData.moduleData[module].multi.customProto << 7);
+      modelData.moduleData[module].ppm.delay = 300 + 50 * multiByte;
+      modelData.moduleData[module].ppm.frameLength = modelData.moduleData[module].multi.optionValue;
+      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].multi.lowPowerMode;
+      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].multi.autoBindMode;
+    } else
       subprotocols[module] = (module==0 ? -1 : 0);
   }
 }
@@ -3324,6 +3334,15 @@ void OpenTxModelData::afterImport()
         modelData.moduleData[module].protocol += subprotocols[module];
       else
         modelData.moduleData[module].protocol = PULSES_OFF;
+    } else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
+      // Copy data from ppm struct to multi struct
+      unsigned int multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
+      modelData.moduleData[module].multi.rfProtocol = subprotocols[module]  | ((multiByte & 0x3) << 4);
+
+      modelData.moduleData[module].multi.customProto = (multiByte & 0x80) == 0x80;
+      modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
+      modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
+      modelData.moduleData[module].multi.autoBindMode = modelData.moduleData[module].ppm.pulsePol;
     }
   }
 
