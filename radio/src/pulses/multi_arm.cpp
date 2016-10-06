@@ -115,7 +115,7 @@ void setupPulsesMultimodule(uint8_t port)
   // byte 1+2, protocol information
 
   // Our enumeration starts at 0
-  int type = g_model.moduleData[port].getMultiProtocol() + 1;
+  int type = g_model.moduleData[port].getMultiProtocol(false) + 1;
   int subtype = g_model.moduleData[port].subType;
   int8_t optionValue = g_model.moduleData[port].multi.optionValue;
 
@@ -126,11 +126,11 @@ void setupPulsesMultimodule(uint8_t port)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (g_model.moduleData[port].getMultiProtocol() && g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND) {
+  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_DSM2 && g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND) {
     // Autobinding should always be done in DSMX 11ms
     subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
-    // The multi module wants the number of channels as options value and negative amout if the
+    // The multi module wants the number of channels as options value and negative amount if the
     // broken PRNG table is to be used.
     if (optionValue==0)
      optionValue = NUM_CHANNELS(EXTERNAL_MODULE);
@@ -148,7 +148,7 @@ void setupPulsesMultimodule(uint8_t port)
   if (type >= 23)
      type = type + 1;
 
-  if (g_model.moduleData[port].getMultiProtocol() == MM_RF_PROTO_FRSKY) {
+  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_FRSKY) {
     if(subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
@@ -172,8 +172,13 @@ void setupPulsesMultimodule(uint8_t port)
   else
     sendByteMulti(0x54);
 
-  //  (g_model.moduleData[port].multi.autoBindMode << 6)
+
+
+
   protoByte |= (type & 0x1f);
+  if(g_model.moduleData[port].getMultiProtocol(true) != MM_RF_PROTO_DSM2)
+    protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
+
   sendByteMulti(protoByte);
 
 

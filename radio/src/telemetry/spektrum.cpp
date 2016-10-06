@@ -347,7 +347,7 @@ void processSpektrumPacket(const uint8_t *packet)
 void processDSMBindPacket(const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MM_RF_PROTO_DSM2
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2
     && g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode) {
 
     int channels = packet[7];

@@ -147,9 +147,9 @@ inline uint8_t modelTelemetryProtocol()
   
 #if defined(MULTIMODULE)
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
-    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MM_RF_PROTO_DSM2)
+    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_DSM2)
       return PROTOCOL_SPEKTRUM;
-    else if ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MM_RF_PROTO_FRSKY) &&
+    else if ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) &&
      (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
       return PROTOCOL_FRSKY_SPORT;
     else

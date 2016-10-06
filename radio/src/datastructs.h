@@ -644,6 +644,8 @@ PACK(struct TelemetrySensor {
  * Module structure
  */
 
+// Only used in case switch and if statements as "virtual" protocol
+#define MM_RF_CUSTOM_SELECTED 0xff
 PACK(struct ModuleData {
   uint8_t type:4;
   int8_t  rfProtocol:4;
@@ -677,8 +679,10 @@ PACK(struct ModuleData {
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
-  inline uint8_t getMultiProtocol()
+  inline uint8_t getMultiProtocol(bool returnCustom)
   {
+    if (returnCustom && multi.customProto)
+      return MM_RF_CUSTOM_SELECTED;
     return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   }
 
