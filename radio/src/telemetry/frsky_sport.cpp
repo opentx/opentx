@@ -173,9 +173,9 @@ void sportProcessTelemetryPacket(uint8_t * packet)
             value = -value;
           value = (value * 5) / 3; // min/10000 => deg/1000000
           if (data & (1 << 31))
-            sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LATITUDE);
-          else
             sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LONGITUDE);
+          else
+            sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LATITUDE);
         }
         else if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
           sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
