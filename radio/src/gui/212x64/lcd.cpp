@@ -877,12 +877,12 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
   if (att & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
     att &= ~0x0F00; // TODO constant
-    drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att, true);
-    drawGPSCoord(x, y+FH, telemetryItem.gps.latitude, "NS", att, true);
+    drawGPSCoord(x, y, telemetryItem.gps.latitude, "NS", att, true);
+    drawGPSCoord(x, y+FH, telemetryItem.gps.longitude, "EW", att, true);
   }
   else {
-    drawGPSCoord(x, y, telemetryItem.gps.longitude, "EW", att, false);
-    drawGPSCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.latitude, "NS", att, false);
+    drawGPSCoord(x, y, telemetryItem.gps.latitude, "NS", att, false);
+    drawGPSCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.longitude, "EW", att, false);
   }
 }
 
