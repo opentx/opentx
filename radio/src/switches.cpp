@@ -942,6 +942,9 @@ void checkSwitches()
     wdt_reset();
 
     SIMU_SLEEP(1);
+#if defined(CPUARM)
+    CoTickDelay(10);
+#endif
   }
 #endif
 
