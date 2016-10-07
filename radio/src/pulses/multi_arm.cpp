@@ -95,6 +95,11 @@ void setupPulsesMultimodule(unsigned int port)
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
+#if defined(PCBTARANIS)
+  modulePulsesData[EXTERNAL_MODULE].dsm2.value = 100;
+  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.value;
+#endif
+
 
   // byte 1+2, protocol information
 
