@@ -985,7 +985,7 @@ void menuModelSetup(event_t event)
               lcdDrawTextAlignedLeft(y, STR_MULTI_VIDFREQ);
               break;
             case MM_RF_PROTO_DSM2:
-              g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.optionValue, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMPRNG, attr, event);
+              g_model.moduleData[moduleIdx].multi.optionValue = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.optionValue, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMPRNG, attr, event);
               break;
             default:
               lcdDrawTextAlignedLeft(y, STR_MULTI_OPTION);
@@ -1004,9 +1004,9 @@ void menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
     case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
       if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2)
-       g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSM_AUTODTECT, attr, event);
+        g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSM_AUTODTECT, attr, event);
       else
-       g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
+        g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_AUTOBIND, attr, event);
       break;
     case  ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER:
       g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
