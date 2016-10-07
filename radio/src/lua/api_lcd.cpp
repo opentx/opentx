@@ -216,6 +216,7 @@ Display a number at (x,y)
  * `PREC1` display with one decimal place (number 386 is displayed as 38.6)
  * `PREC2` display with tow decimal places (number 386 is displayed as 3.86)
  * other general LCD flag also apply
+ * default alignement is RIGHT
 
 @status current Introduced in 2.0.0
 */
@@ -226,7 +227,7 @@ static int luaLcdDrawNumber(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int val = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  if (!(att & LEFT)) att |= RIGHT; 
+  if (!(att & LEFT)) att |= RIGHT;
   lcdDrawNumber(x, y, val, att);
   return 0;
 }
