@@ -799,7 +799,7 @@ ZoneOption * createOptionsArray(int reference)
     luaL_checktype(L, -2, LUA_TNUMBER); // key is number
     luaL_checktype(L, -1, LUA_TTABLE); // value is table
     uint8_t field = 0;
-    for (lua_pushnil(L); lua_next(L, -2) && field<3; lua_pop(L, 1), field++) {
+    for (lua_pushnil(L); lua_next(L, -2) && field<5; lua_pop(L, 1), field++) {
       switch (field) {
         case 0:
           luaL_checktype(L, -2, LUA_TNUMBER); // key is number
