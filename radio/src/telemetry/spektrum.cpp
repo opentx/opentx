@@ -369,7 +369,7 @@ void processDSMBindPacket(const uint8_t *packet)
     else
       g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
 
-    storageDirty(EE_MODEL);
+    eeDirty(EE_MODEL);
 
   }
 
@@ -382,7 +382,7 @@ void processDSMBindPacket(const uint8_t *packet)
 
 void processSpektrumTelemetryData(uint8_t data)
 {
-  if (telemetryRxBufferCount == 0 && data != 0xAA) {
+  if (frskyRxBufferCount == 0 && data != 0xAA) {
     TRACE("[SPK] invalid start byte 0x%02X", data);
     return;
   }
@@ -395,14 +395,14 @@ void processSpektrumTelemetryData(uint8_t data)
     frskyRxBufferCount = 0;
   }
 
-  if (telemetryRxBuffer[1] == 0x80 && telemetryRxBufferCount >= DSM_BIND_PACKET_LENGTH) {
-    processDSMBindPacket(telemetryRxBuffer);
-    telemetryRxBufferCount = 0;
+  if (frskyRxBuffer[1] == 0x80 && frskyRxBufferCount >= DSM_BIND_PACKET_LENGTH) {
+    processDSMBindPacket(frskyRxBuffer);
+    frskyRxBufferCount = 0;
     return;
   }
 
 
-  if (telemetryRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
+  if (frskyRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
     debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",
                 frskyRxBuffer[0], frskyRxBuffer[1], frskyRxBuffer[2], frskyRxBuffer[3]);
     for (int i = 4; i < SPEKTRUM_TELEMETRY_LENGTH; i += 4) {

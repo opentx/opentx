@@ -587,6 +587,7 @@ extern const pm_char STR_SUBTYPE[];
 #endif
 #endif
 #if defined(DSM2) || defined(PXX)
+extern const pm_char STR_RXNUM[];
 extern const pm_char STR_RECEIVER_NUM[];
 extern const pm_char STR_RECEIVER[];
 #endif

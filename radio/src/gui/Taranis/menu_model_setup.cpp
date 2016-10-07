@@ -34,6 +34,7 @@
  */
 
 #include "../../opentx.h"
+#include "../../gui/gui_common.h"
 
 uint8_t g_moduleIdx;
 void menuModelFailsafe(uint8_t event);
@@ -210,7 +211,7 @@ int getSwitchWarningsCount()
 #define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
 
-#define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
+#define TIMER_ROWS                        2|NAVIGATION_LINE_BY_LINE, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
 
 #define EXTERNAL_MODULE_MODE_ROWS         (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
 
@@ -729,10 +730,7 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_HONTAI:
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
-            case MM_RF_PROTO_HONTAI:
-              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_CUSTOM:
+            case MM_RF_CUSTOM_SELECTED:
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+14*FW, y, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), menuHorizontalPosition==2 ? attr : 0, 2);
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+16*FW, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
               break;
@@ -975,7 +973,7 @@ void menuModelSetup(uint8_t event)
               lcd_putsLeft(y, STR_MULTI_VIDFREQ);
               break;
             case MM_RF_PROTO_DSM2:
-              g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.optionValue, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMPRNG, attr, event);
+              g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = onoffMenuItem(g_model.moduleData[EXTERNAL_MODULE].multi.optionValue, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMPRNG, attr, event);
               break;
             default:
               lcd_putsLeft(y, STR_MULTI_OPTION);
@@ -985,6 +983,7 @@ void menuModelSetup(uint8_t event)
             lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT | attr);
             if (attr) {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
+            }
           }
         }
 #endif
