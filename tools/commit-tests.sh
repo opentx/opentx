@@ -20,7 +20,11 @@ done
 set -e
 set -x
 
-SCRIPT=$(readlink -f "$0")
+if [ "$(uname)" = "Darwin" ]; then
+    SCRIPT=$(python -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "$0")
+else
+    SCRIPT=$(readlink -f "$0")
+fi
 SRCDIR=$(dirname "$SCRIPT")/..
 COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55"
 
