@@ -226,6 +226,7 @@ static int luaLcdDrawNumber(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int val = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
+  if (!(att & LEFT)) att |= RIGHT; 
   lcdDrawNumber(x, y, val, att);
   return 0;
 }
