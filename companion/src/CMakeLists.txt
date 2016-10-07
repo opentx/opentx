@@ -365,6 +365,9 @@ IF(APPLE)
   SET(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
   SET(translations_dest_dir ${COMPANION_NAME}.app/Contents/translations)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+  set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
+  set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
+
 ENDIF(APPLE)
 IF(WIN32)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
@@ -383,8 +386,6 @@ if(APPLE)
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
   SET(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
   install(FILES ${simulator_plugins}  DESTINATION "${companion_res_dir}" COMPONENT Runtime)
-  #add_dependencies(package opentx-simulators-bundle)
-
 
   # Write qt.conf to tell qt where to find it plugins
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
@@ -399,7 +400,6 @@ if(APPLE)
   # translations file
   INSTALL(FILES ${companion_QM} DESTINATION "${translations_dest_dir}" COMPONENT Runtime)
 
-
   # manually add the cocoa plugin
   get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
   INSTALL(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
@@ -412,7 +412,7 @@ if(APPLE)
   set(${COMPANION_SOURCES} ${COMPANION_SOURCES} ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE})
   INSTALL(FILES ${MAC_ICON_FILE} DESTINATION ${companion_res_dir} COMPONENT Runtime)
 
-  # Include depencies (adding frameworks, fixing the embbeded library)
+  # Include depencies (adding frameworks, fixing the embbeded libraries)
   INSTALL(CODE "
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
@@ -443,8 +443,7 @@ elseif(APPLE)
   set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/splash22_3_dmg.png)
   set(CPACK_DMG_VOLUME_NAME "OpenTX Companion")
   set(CPACK_DMG_DS_STORE ${PROJECT_SOURCE_DIR}/companion/targets/mac/DS_Store)
-  set(LIB_DIRS ${QT_LIBRARY_DIRS})
-  set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}")
+  set(CPACK_PACKAGE_FILE_NAME "opentx-${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}")
 else(DPKG_PROGRAM)
   set(CPACK_GENERATOR "RPM")
   set(CPACK_RPM_PACKAGE_VERSION ${VERSION})
