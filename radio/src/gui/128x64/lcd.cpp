@@ -1084,12 +1084,12 @@ void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, 
   if (flags & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
     flags &= ~0x0F00; // TODO constant
-    drawGPSCoord(x, y, longitude, "EW", flags);
-    drawGPSCoord(x, y+FH, latitude, "NS", flags);
+    drawGPSCoord(x, y, latitude, "NS", flags);
+    drawGPSCoord(x, y+FH, longitude, "EW", flags);
   }
   else {
-    drawGPSCoord(x, y, longitude, "EW", flags, false);
-    drawGPSCoord(lcdNextPos+FWNUM, y, latitude, "NS", flags, false);
+    drawGPSCoord(x, y, latitude, "NS", flags, false);
+    drawGPSCoord(lcdNextPos+FWNUM, y, longitude, "EW", flags, false);
   }
 }
 

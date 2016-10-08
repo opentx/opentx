@@ -371,12 +371,12 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
 void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
 {
   if (flags & EXPANDED) {
-    drawGPSCoord(x, y, longitude, "EW", flags, true);
-    drawGPSCoord(x, y + FH, latitude, "NS", flags, true);
+    drawGPSCoord(x, y, latitude, "NS", flags, true);
+    drawGPSCoord(x, y + FH, longitude, "EW", flags, true);
   }
   else {
-    drawGPSCoord(x, y, longitude, "EW", flags, false);
-    drawGPSCoord(lcdNextPos+5, y, latitude, "NS", flags, false);
+    drawGPSCoord(x, y, latitude, "NS", flags, false);
+    drawGPSCoord(lcdNextPos+5, y, longitude, "EW", flags, false);
   }
 }
 
