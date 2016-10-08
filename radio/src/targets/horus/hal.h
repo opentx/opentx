@@ -399,11 +399,11 @@
 #define TRAINER_DMA_FLAG_TC             DMA_IT_TCIF2
 #define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
-// 5ms Interrupt
-#define INTERRUPT_5MS_RCC_APB1Periph    RCC_APB1Periph_TIM14
-#define INTERRUPT_5MS_TIMER             TIM14
-#define INTERRUPT_5MS_IRQn              TIM8_TRG_COM_TIM14_IRQn
-#define INTERRUPT_5MS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
+// 1ms Interrupt
+#define INTERRUPT_1MS_RCC_APB1Periph    RCC_APB1Periph_TIM14
+#define INTERRUPT_1MS_TIMER             TIM14
+#define INTERRUPT_1MS_IRQn              TIM8_TRG_COM_TIM14_IRQn
+#define INTERRUPT_1MS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
 
 // 2MHz Timer
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7

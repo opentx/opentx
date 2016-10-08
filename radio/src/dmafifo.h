@@ -43,6 +43,11 @@ class DMAFifo
       return N;
     }
 
+    uint8_t last(int index)
+    {
+      return fifo[(2*N - stream->NDTR - index) & (N-1)];
+    }
+
     bool isEmpty()
     {
 #if defined(SIMU)
