@@ -115,9 +115,11 @@ void setupPulsesMultimodule(unsigned int port)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_DSM2 && g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND) {
+  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_DSM2){
+
     // Autobinding should always be done in DSMX 11ms
-    subtype = MM_RF_DSM2_SUBTYPE_AUTO;
+    if(g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND)
+      subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
     // The multi module wants the number of channels as options value and negative amount if the
     // broken PRNG table is to be used.
@@ -162,21 +164,18 @@ void setupPulsesMultimodule(unsigned int port)
     sendByteMulti(0x54);
 
 
-
-
+  // protocol byte
   protoByte |= (type & 0x1f);
   if(g_model.moduleData[port].getMultiProtocol(true) != MM_RF_PROTO_DSM2)
     protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
 
   sendByteMulti(protoByte);
 
-
-  // power always set to high (0 << 7)
+  // byte 2, subtype, powermode, model id
   sendByteMulti((g_model.header.modelId[port] & 0x0f)
                 | ((subtype & 0x7) << 4)
                 | (g_model.moduleData[port].multi.lowPowerMode << 7)
                 );
-
 
   // byte 3
   sendByteMulti(optionValue);
