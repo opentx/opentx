@@ -1119,7 +1119,7 @@ void checkTHR()
     return;
   }
 
-  getADC();
+  GET_ADC_IF_MIXER_NOT_RUNNING();
 
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
@@ -1138,9 +1138,7 @@ void checkTHR()
 
   while (1) {
 
-    SIMU_SLEEP(1);
-
-    getADC();
+    GET_ADC_IF_MIXER_NOT_RUNNING();
 
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
@@ -1171,6 +1169,12 @@ void checkTHR()
     doLoopCommonActions();
 
     wdt_reset();
+
+    SIMU_SLEEP(1);
+#if defined(CPUARM)
+    CoTickDelay(10);
+#endif
+
   }
 #endif
 
@@ -1200,6 +1204,9 @@ void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG)
 
   while(1) {
     SIMU_SLEEP(1);
+#if defined(CPUARM)
+    CoTickDelay(10);
+#endif
 
     if (keyDown()) break; // wait for key release
 
@@ -1474,7 +1481,7 @@ void getADC()
       s_anaFilt[x] = (s_anaFilt[x] - previous) + v;
     }
     else
-#endif
+#endif  // #if defined(VIRTUAL_INPUTS)
     {
     	//use unfiltered value
       s_anaFilt[x] = v * JITTER_ALPHA;
@@ -1486,7 +1493,6 @@ void getADC()
     }
 #endif
 
-#if defined(CPUARM)
     #define ANAFILT_MAX    (2 * RESX * JITTER_ALPHA * ANALOG_MULTIPLIER - 1)
     StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[x];
     if (IS_POT_MULTIPOS(x) && IS_MULTIPOS_CALIBRATED(calib)) {
@@ -1500,10 +1506,9 @@ void getADC()
         }
       }
     }
-#endif // defined(CPUARM)
   }
 }
-#endif
+#endif  // #if defined(CPUARM)
 
 #endif // SIMU
 

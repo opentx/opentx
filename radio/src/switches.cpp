@@ -737,14 +737,13 @@ void checkSwitches()
   while (1) {
 
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-// FIXME: One getADC() call only reads one 14051 MUX input. To have all switch states updated, we need to call it MUX_MAX+1 times.
-#define GETADC_COUNT (MUX_MAX+1)
+  #define GETADC_COUNT (MUX_MAX+1)
 #elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
-#define GETADC_COUNT 1
+  #define GETADC_COUNT 1
 #endif
 #ifdef GETADC_COUNT
     for (uint8_t i=0; i<GETADC_COUNT; i++) {
-      getADC();
+      GET_ADC_IF_MIXER_NOT_RUNNING();
     }
 #undef GETADC_COUNT
 #endif
@@ -942,6 +941,9 @@ void checkSwitches()
     wdt_reset();
 
     SIMU_SLEEP(1);
+#if defined(CPUARM)
+    CoTickDelay(10);
+#endif
   }
 #endif
 
