@@ -1291,3 +1291,4 @@
 #define ZSTR_QOS_R             "FdeR"
 #define ZSTR_QOS_F             "FLss"
 #define ZSTR_QOS_H             "Hold"
+#define ZSTR_BIND              "BIND"

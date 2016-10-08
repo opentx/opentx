@@ -192,7 +192,7 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_QOS,          12, uint16,    ZSTR_A2,                UNIT_VOLTS,                  2},
 
   {I2C_PSEUDO_TX,    0,  uint8,     ZSTR_TX_RSSI,           UNIT_RAW,                    0},
-  {I2C_PSEUDO_TX,    4,  uint32,    ZSTR_CHANS_STATE,       UNIT_RAW,                    0},
+  {I2C_PSEUDO_TX,    4,  uint32,    ZSTR_BIND,              UNIT_RAW,                    0},
   {0,                0,  int16,     NULL,                   UNIT_RAW,                    0} //sentinel
 };
 
