@@ -1119,7 +1119,7 @@ void checkTHR()
     return;
   }
 
-  getADC_ifMixerNotRunning();
+  GET_ADC_IF_MIXER_NOT_RUNNING();
 
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
@@ -1138,7 +1138,7 @@ void checkTHR()
 
   while (1) {
 
-    getADC_ifMixerNotRunning();
+    GET_ADC_IF_MIXER_NOT_RUNNING();
 
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 

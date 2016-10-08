@@ -743,7 +743,7 @@ void checkSwitches()
 #endif
 #ifdef GETADC_COUNT
     for (uint8_t i=0; i<GETADC_COUNT; i++) {
-      getADC_ifMixerNotRunning();
+      GET_ADC_IF_MIXER_NOT_RUNNING();
     }
 #undef GETADC_COUNT
 #endif

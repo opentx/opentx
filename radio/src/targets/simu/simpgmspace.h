@@ -360,7 +360,7 @@ extern uint8_t main_thread_running;
 extern char * main_thread_error;
 
 #define getADC()
-#define getADC_ifMixerNotRunning()
+#define GET_ADC_IF_MIXER_NOT_RUNNING()
 #define getADC_bandgap()
 
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
