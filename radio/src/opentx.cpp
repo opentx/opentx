@@ -1119,7 +1119,7 @@ void checkTHR()
     return;
   }
 
-  getADC();
+  getADC_ifMixerNotRunning();
 
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
@@ -1138,7 +1138,7 @@ void checkTHR()
 
   while (1) {
 
-    getADC();
+    getADC_ifMixerNotRunning();
 
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
@@ -1421,8 +1421,6 @@ uint16_t anaIn(uint8_t chan)
 #if defined(CPUARM)
 void getADC()
 {
-  static OS_MutexID getAdcMutex;
-  CoEnterMutexSection(getAdcMutex);
 #if defined(JITTER_MEASURE)
   if (JITTER_MEASURE_ACTIVE() && jitterResetTime < get_tmr10ms()) {
     // reset jitter measurement every second
@@ -1509,7 +1507,6 @@ void getADC()
       }
     }
   }
-  CoLeaveMutexSection(getAdcMutex);
 }
 #endif  // #if defined(CPUARM)
 

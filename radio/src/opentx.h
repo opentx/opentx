@@ -847,6 +847,11 @@ void checkAll();
 
 #if !defined(SIMU)
 void getADC();
+  #if defined(CPUARM)
+    #define getADC_ifMixerNotRunning()    do { if (s_pulses_paused) getADC(); } while(0)
+  #else
+    #define getADC_ifMixerNotRunning()    getADC()
+  #endif
 #endif
 
 #if defined(SBUS)
