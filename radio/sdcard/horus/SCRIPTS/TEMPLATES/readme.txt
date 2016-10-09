@@ -1,1 +1,1 @@
-This directory is for template lua scripts
+This directory is for template lua scripts.
