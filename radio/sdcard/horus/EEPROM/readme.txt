@@ -1,1 +1,1 @@
-EEprom backup go in this folder
+EEprom backups go in this folder
