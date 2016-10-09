@@ -196,9 +196,9 @@ local function runFieldsPage(event)
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT then
+    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT then
+    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
       selectField(-1)
     end
   end
