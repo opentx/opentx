@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include <string.h>
+#include <list>
 
 #define MAX_WIDGET_OPTIONS             5
 
@@ -185,9 +186,7 @@ inline const ZoneOption * Widget::getOptions() const
   return getFactory()->getOptions();
 }
 
-#define MAX_REGISTERED_WIDGETS 10
-extern unsigned int countRegisteredWidgets;
-extern const WidgetFactory * registeredWidgets[MAX_REGISTERED_WIDGETS];
+extern std::list<const WidgetFactory *> registeredWidgets;
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
 
 #endif // _WIDGET_H_
