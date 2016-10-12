@@ -288,7 +288,6 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
   end
-  lcd.lock()
   if page == THROTTLE_PAGE then
     throttleMenu(event)
   elseif page == ROLL_PAGE then

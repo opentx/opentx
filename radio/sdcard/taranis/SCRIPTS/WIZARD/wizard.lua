@@ -69,7 +69,6 @@ local function run(event)
     return 2
   end
   
-  lcd.lock()
   return modelTypeMenu(event) 
 end
 

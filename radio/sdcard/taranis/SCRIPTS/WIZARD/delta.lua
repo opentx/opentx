@@ -358,7 +358,6 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
   end
-  lcd.lock()
   if servoPage ~= nil then
     servoMenu(event) 
   elseif page == ENGINE_PAGE then
