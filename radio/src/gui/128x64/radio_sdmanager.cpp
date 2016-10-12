@@ -137,7 +137,10 @@ void menuRadioSdManager(event_t _event)
 #endif
     case EVT_KEY_FIRST(KEY_ENTER):
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wtype-limits"
       if (menuVerticalPosition >= HEADER_LINE) {
+#pragma GCC diagnostic pop
         vertpos_t index = menuVerticalPosition-HEADER_LINE-menuVerticalOffset;
         if (!reusableBuffer.sdmanager.lines[index][SD_SCREEN_FILE_LENGTH+1]) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
@@ -155,7 +158,10 @@ void menuRadioSdManager(event_t _event)
 
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(_event);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wtype-limits"
       if (menuVerticalPosition < HEADER_LINE) {
+#pragma GCC diagnostic pop
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);
         POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
       }

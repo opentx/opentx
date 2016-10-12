@@ -101,11 +101,11 @@ void menuChannelsView(event_t event)
 #endif
 
       // Gauge
-#ifdef MIXERS_MONITOR
-      uint16_t lim = mixersView ? 512*2*2 : (g_model.extendedLimits ? 640*2 : 512*2);
-#else
-      uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
-#endif
+// #ifdef MIXERS_MONITOR
+//       uint16_t lim = mixersView ? 512*2*2 : (g_model.extendedLimits ? 640*2 : 512*2);
+// #else
+//       uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
+// #endif
       // TODO ? drawGauge(x+LCD_W/2-3-wbar-ofs, y, wbar, 6, val, lim);
 
       ch++;
