@@ -21,8 +21,6 @@
 #ifndef _DATACONSTANTS_H_
 #define _DATACONSTANTS_H_
 
-#include "board.h"
-
 #define NUM_STICKS                     4
 
 #if defined(EXPORT)
