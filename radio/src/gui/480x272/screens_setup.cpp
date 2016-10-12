@@ -210,28 +210,26 @@ bool menuWidgetSettings(event_t event)
 bool menuWidgetChoice(event_t event)
 {
   static Widget * previousWidget;
+  static Widget * currentWidget;
+  static std::list<const WidgetFactory *>::iterator iterator;
   static Widget::PersistentData tempData;
 
   switch (event) {
     case EVT_ENTRY:
     {
-      const WidgetFactory * factory;
       previousWidget = currentContainer->getWidget(currentZone);
       currentContainer->setWidget(currentZone, NULL);
-      menuHorizontalPosition = 0;
+      iterator = registeredWidgets.begin();
       if (previousWidget) {
-        factory = previousWidget->getFactory();
-        for (unsigned int i=0; i<countRegisteredWidgets; i++) {
-          if (factory->getName() == registeredWidgets[i]->getName()) {
-            menuHorizontalPosition = i;
+        const WidgetFactory * factory = previousWidget->getFactory();
+        for (std::list<const WidgetFactory *>::iterator it = registeredWidgets.begin(); it != registeredWidgets.end(); ++it) {
+          if (factory->getName() == (*it)->getName()) {
+            iterator = it;
             break;
           }
         }
       }
-      else {
-        factory = registeredWidgets[0];
-      }
-      currentWidget = factory->create(currentContainer->getZone(currentZone), &tempData);
+      currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
       break;
     }
 
@@ -243,22 +241,24 @@ bool menuWidgetChoice(event_t event)
 
     case EVT_KEY_FIRST(KEY_ENTER):
       delete previousWidget;
-      currentContainer->createWidget(currentZone, registeredWidgets[menuHorizontalPosition]);
+      currentContainer->createWidget(currentZone, *iterator);
       storageDirty(EE_MODEL);
       popMenu();
       return false;
 
     case EVT_ROTARY_RIGHT:
-      if (menuHorizontalPosition < int(countRegisteredWidgets-1)) {
+      if (iterator != registeredWidgets.end() && iterator != --registeredWidgets.end()) {
+        ++iterator;
         delete currentWidget;
-        currentWidget = registeredWidgets[++menuHorizontalPosition]->create(currentContainer->getZone(currentZone), &tempData);
+        currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
       }
       break;
 
     case EVT_ROTARY_LEFT:
-      if (menuHorizontalPosition > 0) {
+      if (iterator != registeredWidgets.begin()) {
+        --iterator;
         delete currentWidget;
-        currentWidget = registeredWidgets[--menuHorizontalPosition]->create(currentContainer->getZone(currentZone), &tempData);
+        currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
       }
       break;
   }

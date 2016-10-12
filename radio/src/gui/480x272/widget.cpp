@@ -20,20 +20,17 @@
 
 #include "opentx.h"
 
-const WidgetFactory * registeredWidgets[MAX_REGISTERED_WIDGETS]; // TODO dynamic
-unsigned int countRegisteredWidgets = 0;
+std::list<const WidgetFactory *> registeredWidgets;
 void registerWidget(const WidgetFactory * factory)
 {
-  if (countRegisteredWidgets < MAX_REGISTERED_WIDGETS) {
-    TRACE("register widget %s", factory->getName());
-    registeredWidgets[countRegisteredWidgets++] = factory;
-  }
+  TRACE("register widget %s", factory->getName());
+  registeredWidgets.push_back(factory);
 }
 
 const WidgetFactory * getWidgetFactory(const char * name)
 {
-  for (unsigned int i=0; i<countRegisteredWidgets; i++) {
-    const WidgetFactory * factory = registeredWidgets[i];
+  for (std::list<const WidgetFactory *>::iterator it = registeredWidgets.begin(); it != registeredWidgets.end();++it) {
+    const WidgetFactory * factory = *it;
     if (!strcmp(name, factory->getName())) {
       return factory;
     }
