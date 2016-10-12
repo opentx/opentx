@@ -113,14 +113,14 @@ make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Horus beta boards
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests
 
 # OpenTX on Horus
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests

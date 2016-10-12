@@ -23,6 +23,7 @@ option(SIMU_AUDIO "Enable simulator audio" OFF)
 option(SIMU_DISKIO "Enable disk IO simulation in simulator. Simulator will use FatFs module and simulated IO layer that  uses \"./sdcard.image\" file as image of SD card. This file must contain whole SD card from first to last sector" OFF)
 option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
 option(TEMPLATES "Model templates menu" OFF)
+option(WARNINGS_AS_ERRORS "Treat all compiler warnings as error" OFF)
 
 enable_language(ASM)
 set(OPT s)
@@ -317,6 +318,9 @@ add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
 if(NOT WIN32)
   add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
+  if(WARNINGS_AS_ERRORS)
+    set(WARNING_FLAGS -Werror)
+  endif(WARNINGS_AS_ERRORS)
 else()
   add_definitions(-DHAVE_STRUCT_TIMESPEC)
 endif()
@@ -338,103 +342,103 @@ set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LI
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
 if(NOT MSVC)
-if(ARCH STREQUAL ARM)
-  cmake_force_c_compiler(arm-none-eabi-gcc GNU)
-  cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
-  set(CMAKE_ASM_COMPILER arm-none-eabi-as)
+  if(ARCH STREQUAL ARM)
+    cmake_force_c_compiler(arm-none-eabi-gcc GNU)
+    cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
+    set(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
-  set(CMAKE_SYSTEM_NAME Generic)
-  set(CMAKE_SYSTEM_VERSION 1)
-  set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
+    set(CMAKE_SYSTEM_NAME Generic)
+    set(CMAKE_SYSTEM_VERSION 1)
+    set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
-  set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
-# Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
-if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-  set(COMMON_CPP_FLAGS "${COMMON_FLAGS} -std=gnu++11")
-else()
-  set(COMMON_CPP_FLAGS ${COMMON_FLAGS})
-endif()
-  set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
-  set(CMAKE_C_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -Wimplicit -g")
-  set(CMAKE_C_FLAGS_RELEASE "${COMMON_FLAGS} -Wimplicit")
-  set(CMAKE_C_FLAGS_DEBUG "${COMMON_FLAGS} -Wimplicit -g")
-  set(CMAKE_CXX_FLAGS "${COMMON_CPP_FLAGS}")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${COMMON_CPP_FLAGS} -g")
-  set(CMAKE_CXX_FLAGS_RELEASE "${COMMON_CPP_FLAGS}")
-  set(CMAKE_CXX_FLAGS_DEBUG "${COMMON_CPP_FLAGS} -g")
-  set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
+    set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
+    # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
+    if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
+      set(COMMON_CPP_FLAGS "${COMMON_FLAGS} -std=gnu++11")
+    else()
+      set(COMMON_CPP_FLAGS ${COMMON_FLAGS})
+    endif()
+    set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
+    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -Wimplicit -g")
+    set(CMAKE_C_FLAGS_RELEASE "${COMMON_FLAGS} -Wimplicit")
+    set(CMAKE_C_FLAGS_DEBUG "${COMMON_FLAGS} -Wimplicit -g")
+    set(CMAKE_CXX_FLAGS "${COMMON_CPP_FLAGS}")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${COMMON_CPP_FLAGS} -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "${COMMON_CPP_FLAGS}")
+    set(CMAKE_CXX_FLAGS_DEBUG "${COMMON_CPP_FLAGS} -g")
+    set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
-  if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7D)
-    add_subdirectory(targets/${TARGET_DIR}/bootloader)
-    include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
-    set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+    if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7D)
+      add_subdirectory(targets/${TARGET_DIR}/bootloader)
+      include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
+      set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+    else()
+      # We fetch Mike's bootloader as it is not included inside OpenTX
+      file(DOWNLOAD https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER} ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm)
+    endif()
+
+    add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
+    link_libraries(firmware -lstdc++)
+    add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
+
+    add_custom_command(
+      TARGET firmware POST_BUILD
+      COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
   else()
-    # We fetch Mike's bootloader as it is not included inside OpenTX
-    file(DOWNLOAD https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER} ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm)
+    cmake_force_c_compiler(avr-gcc GNU)
+    cmake_force_cxx_compiler(avr-gcc GNU)
+
+    set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+    # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
+    if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
+      set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
+    endif()
+
+    include_directories(storage gui/${GUI_DIR})
+
+    set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
+    foreach(FILE ${SRC})
+      file(READ ${FILE} FILE_CONTENT)
+      set(ALLSRC_CONTENT "${ALLSRC_CONTENT}# 1 \"${FILE}\"\n${FILE_CONTENT}")
+    endforeach()
+
+    file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
+
+    add_executable(firmware ${ALLSRC})
+    add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
+
+    add_custom_command(
+      TARGET firmware POST_BUILD
+      COMMAND avr-objcopy -O ihex -R .eeprom firmware.elf firmware.hex
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
+
+    add_custom_target(firmware.lss
+      COMMAND avr-objdump -h -S firmware.elf > firmware.lss
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
+
+    add_custom_target(firmware-size
+      COMMAND avr-size --format=avr --mcu=${MCU} firmware.elf
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
   endif()
 
-  add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
-  link_libraries(firmware -lstdc++)
-  add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
-
-  add_custom_command(
-    TARGET firmware POST_BUILD
-    COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  )
-else()
-  cmake_force_c_compiler(avr-gcc GNU)
-  cmake_force_cxx_compiler(avr-gcc GNU)
-
-  set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
-# Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
-if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-  set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
-endif()
-
-  include_directories(storage gui/${GUI_DIR})
-
-  set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-  foreach(FILE ${SRC})
-    file(READ ${FILE} FILE_CONTENT)
-    set(ALLSRC_CONTENT "${ALLSRC_CONTENT}# 1 \"${FILE}\"\n${FILE_CONTENT}")
-  endforeach()
-
-  file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
-
-  add_executable(firmware ${ALLSRC})
-  add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
-
-  add_custom_command(
-    TARGET firmware POST_BUILD
-    COMMAND avr-objcopy -O ihex -R .eeprom firmware.elf firmware.hex
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  if(CPU_FAMILY STREQUAL STM32)
+    add_custom_target(flash
+      COMMAND dfu-util --alt 0 --dfuse-address 0x08000000:leave -d 0483:df11 -D firmware.bin
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-  add_custom_target(firmware.lss
-    COMMAND avr-objdump -h -S firmware.elf > firmware.lss
-    DEPENDS firmware
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-
-  add_custom_target(firmware-size
-    COMMAND avr-size --format=avr --mcu=${MCU} firmware.elf
-    DEPENDS firmware
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-endif()
-
-if(CPU_FAMILY STREQUAL STM32)
-  add_custom_target(flash
-    COMMAND dfu-util --alt 0 --dfuse-address 0x08000000:leave -d 0483:df11 -D firmware.bin
-    DEPENDS firmware
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-  )
-
-  add_custom_target(jtag-flash
-    COMMAND st-flash --reset write firmware.bin 0x8000000
-    DEPENDS firmware
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-endif()
-endif()
+    add_custom_target(jtag-flash
+      COMMAND st-flash --reset write firmware.bin 0x8000000
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
+  endif()
+endif(NOT MSVC)
