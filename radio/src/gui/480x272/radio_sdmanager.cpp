@@ -29,6 +29,11 @@
 int currentBitmapIndex = 0;
 BitmapBuffer * currentBitmap = NULL;
 
+bool isImageFileExtension(const char * ext)
+{
+  return (ext && (!strcasecmp(ext, BMP_EXT) || !strcasecmp(ext, JPG_EXT) || !strcasecmp(ext, PNG_EXT)));
+}
+
 bool menuRadioSdManagerInfo(event_t event)
 {
   SIMPLE_SUBMENU(STR_SD_INFO_TITLE, ICON_RADIO_SD_BROWSER, 1);
@@ -63,7 +68,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && IS_FILE(line)) || (isfile==IS_FILE(line) && strcasecmp(fn, line) < 0);
 }
 
-void getSelectionFullPath(char *lfn)
+void getSelectionFullPath(char * lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
   strcat(lfn, PSTR("/"));
@@ -218,14 +223,16 @@ bool menuRadioSdManager(event_t _event)
         char * line = reusableBuffer.sdmanager.lines[index];
         char * ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
         if (!strcmp(line, "..")) {
-          break;      // no menu for parent dir
+          break; // no menu for parent dir
         }
         if (ext) {
           if (!strcasecmp(ext, SOUNDS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
           }
-          else if (!strcasecmp(ext, BMP_EXT) || !strcasecmp(ext, JPG_EXT) || !strcasecmp(ext, PNG_EXT)) {
-            if (!READ_ONLY() && (ext-line) <= (int)sizeof(g_model.header.bitmap)) {
+          else if (isImageFileExtension(ext)) {
+            TCHAR lfn[_MAX_LFN+1];
+            f_getcwd(lfn, _MAX_LFN);
+            if (!READ_ONLY() && unsigned(LEN_FILE_EXTENSION+ext-line) <= sizeof(g_model.header.bitmap) && !strcmp(lfn, BITMAPS_PATH)) {
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
             }
           }
@@ -376,7 +383,7 @@ bool menuRadioSdManager(event_t _event)
   }
 
   char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index], SD_SCREEN_FILE_LENGTH+1);
-  if (ext && (!strcasecmp(ext, BMP_EXT) || !strcasecmp(ext, PNG_EXT) || !strcasecmp(ext, JPG_EXT))) {
+  if (isImageFileExtension(ext)) {
     if (currentBitmapIndex != menuVerticalPosition) {
       currentBitmapIndex = menuVerticalPosition;
       delete currentBitmap;
