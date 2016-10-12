@@ -1075,6 +1075,7 @@ class ModelData {
     int       trimInc;            // Trim Increments
     unsigned int trimsDisplay;
     bool      disableThrottleWarning;
+    bool      enableRfAntennaWarning;
 
     unsigned int beepANACenter;      // 1<<0->A1.. 1<<6->A7
 
@@ -1211,6 +1212,7 @@ class GeneralSettings {
     TrainerData trainer;
     unsigned int   view;    // main screen view // TODO enum
     bool      disableThrottleWarning;
+    bool      enableRfAntennaWarning;
     bool      fai;
     int       switchWarning; // -1=down, 0=off, 1=up
     bool      disableMemoryWarning;

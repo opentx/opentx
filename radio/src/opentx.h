@@ -624,6 +624,7 @@ extern uint8_t startupWarningState;
 enum StartupWarningStates {
   STARTUP_WARNING_THROTTLE,
   STARTUP_WARNING_SWITCHES,
+  STARTUP_WARNING_RF_ANTENNA,
   STARTUP_WARNING_DONE,
 };
 #endif
@@ -840,6 +841,7 @@ extern uint16_t lastMixerDuration;
 #endif
 
 void checkLowEEPROM();
+void checkRF();
 void checkTHR();
 void checkSwitches();
 void checkAlarm();

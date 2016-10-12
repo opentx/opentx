@@ -1022,6 +1022,14 @@ void checkFailsafe()
 #define checkFailsafe()
 #endif
 
+
+void checkRF(){
+  if (!g_model.enableRfAntennaWarning) {
+    return;
+  }
+  ALERT(STR_RFANTENNAWARN, STR_RFCHECKANTENNA, AU_ERROR);
+}
+
 #if defined(GUI)
 void checkAll()
 {
@@ -1037,6 +1045,7 @@ void checkAll()
   }
   checkSwitches();
   checkFailsafe();
+  checkRF();
 #endif
 
 #if defined(SDCARD) && defined(CPUARM)

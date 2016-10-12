@@ -739,6 +739,7 @@
 #define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
 #define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot warn.", INDENT "Pot positions")
+#define TR_RFANTENNAWARNING    TR(IF_CPUARM(INDENT) "RF Warn.", INDENT "RF Antenna State")
 #define TR_TIMEZONE            TR("Time Zone", INDENT "Time zone")
 #define TR_ADJUST_RTC          INDENT "Adjust RTC"
 #define TR_GPS                 "GPS"
@@ -897,6 +898,8 @@
 #define TR_STORAGE_WARNING     "STORAGE"
 #define TR_EEPROM_CONVERTING   "Converting EEPROM"
 #define TR_THROTTLEWARN        "THROTTLE"
+#define TR_RFANTENNAWARN       "RF ANTENNA"
+#define TR_RFCHECKANTENNA      "Check if antenna is attached"
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH", "CONTROL")
 #define TR_FAILSAFEWARN        "FAILSAFE"

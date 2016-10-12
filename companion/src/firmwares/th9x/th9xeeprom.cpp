@@ -67,6 +67,7 @@ Th9xGeneral::operator GeneralSettings ()
   result.trainer = trainer;
   result.view = view;
   result.disableThrottleWarning = disableThrottleWarning;
+  result.enableRfAntennaWarning = enableRfAntennaWarning;
   result.switchWarning = disableSwitchWarning ? 0 : -1;
   result.disableMemoryWarning = disableMemoryWarning;
   switch (beeperVal) {

@@ -84,6 +84,7 @@ Gruvin9xGeneral_v103::operator GeneralSettings ()
   result.trainer = trainer;
   result.view = view;
   result.disableThrottleWarning = disableThrottleWarning;
+  result.enableRfAntennaWarning = enableRfAntennaWarning;
   result.switchWarning = switchWarning;
 
   switch (beeperVal) {
@@ -141,6 +142,7 @@ Gruvin9xGeneral_v104::operator GeneralSettings ()
   result.trainer = trainer;
   result.view = view;
   result.disableThrottleWarning = disableThrottleWarning;
+  result.enableRfAntennaWarning = enableRfAntennaWarning;
   result.switchWarning = switchWarning;
   result.beeperMode = (GeneralSettings::BeeperMode)beeperVal;
   result.disableMemoryWarning = disableMemoryWarning;
