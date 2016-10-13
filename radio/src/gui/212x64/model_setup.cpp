@@ -853,6 +853,12 @@ void menuModelSetup(event_t event)
           lcdDrawNumber(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
           lcdDrawChar(lcdLastPos, y, '-');
           lcdDrawNumber(lcdLastPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (menuHorizontalPosition==1 ? attr : 0));
+          if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[INTERNAL_MODULE].rfProtocol== 0) {
+            if (NUM_CHANNELS(moduleIdx) > 8)
+              lcdDrawText(lcdLastPos+5, y, "(18ms)");
+            else
+              lcdDrawText(lcdLastPos+5, y, "(9ms)");
+          }
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
               case 0:
