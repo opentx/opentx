@@ -158,7 +158,7 @@ void StartEepromThread(const char * filename)
 #endif
 
   eeprom_thread_running = true;
-  assert(!pthread_create(&eeprom_thread_pid, NULL, &eeprom_thread_function, NULL));
+  pthread_create(&eeprom_thread_pid, NULL, &eeprom_thread_function, NULL);
 }
 
 void StopEepromThread()
