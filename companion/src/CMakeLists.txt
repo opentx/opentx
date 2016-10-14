@@ -367,10 +367,10 @@ IF(APPLE)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
-
 ENDIF(APPLE)
 IF(WIN32)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
+
 ENDIF(WIN32)
 
 INSTALL(TARGETS ${COMPANION_NAME}
@@ -413,9 +413,12 @@ if(APPLE)
   INSTALL(FILES ${MAC_ICON_FILE} DESTINATION ${companion_res_dir} COMPONENT Runtime)
 
   # Include depencies (adding frameworks, fixing the embbeded libraries)
+  # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
+  # technically a hack (that is already is in the Bundle library ....)
   INSTALL(CODE "
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+   set(BU_CHMOD_BUNDLE_ITEMS on)
    fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs}\"   \"\")
    " COMPONENT Runtime)
 endif()
