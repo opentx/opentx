@@ -22,23 +22,26 @@
  *
  */
 
-#include "../opentx.h"
+#include "opentx.h"
 
 enum GermanPrompts {
   DE_PROMPT_NUMBERS_BASE = 0,
   DE_PROMPT_NULL = DE_PROMPT_NUMBERS_BASE+0,
-  DE_PROMPT_HUNDERT = DE_PROMPT_NUMBERS_BASE+100,
-  DE_PROMPT_TAUSEND = DE_PROMPT_NUMBERS_BASE+101,
-  DE_PROMPT_COMMA = 102,
+  DE_PROMPT_EIN = DE_PROMPT_NUMBERS_BASE+100,
+  DE_PROMPT_EINE = DE_PROMPT_NUMBERS_BASE+101,
+  DE_PROMPT_HUNDERT = DE_PROMPT_NUMBERS_BASE+102,
+  DE_PROMPT_TAUSEND = DE_PROMPT_NUMBERS_BASE+103,
+  DE_PROMPT_COMMA = 104,
   DE_PROMPT_UND,
   DE_PROMPT_MINUS,
   DE_PROMPT_UHR,
   DE_PROMPT_MINUTE,
   DE_PROMPT_MINUTEN,
-  DE_PROMPT_SECUNDE,
-  DE_PROMPT_SECUNDEN,
-
-  DE_PROMPT_UNITS_BASE = 110,
+  DE_PROMPT_SEKUNDE,
+  DE_PROMPT_SEKUNDEN,
+	DE_PROMPT_STUNDE,
+	DE_PROMPT_STUNDEN,
+  DE_PROMPT_UNITS_BASE = 114,
   DE_PROMPT_VOLTS = DE_PROMPT_UNITS_BASE+UNIT_VOLTS,
   DE_PROMPT_AMPS = DE_PROMPT_UNITS_BASE+UNIT_AMPS,
   DE_PROMPT_METERS_PER_SECOND = DE_PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
@@ -66,11 +69,26 @@ enum GermanPrompts {
 };
 
 #if defined(VOICE)
+#if defined(CPUARM)
+  #define DE_PUSH_UNIT_PROMPT(u) de_pushUnitPrompt((u), id)
+#else
+  #define DE_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
+#endif
+
+I18N_PLAY_FUNCTION(de, pushUnitPrompt, uint8_t unitprompt)
+{
+#if defined(CPUARM)
+  PUSH_UNIT_PROMPT(unitprompt, 0);
+#else
+  unitprompt = DE_PROMPT_UNITS_BASE + unitprompt*2
+  PUSH_NUMBER_PROMPT(unitprompt);
+#endif
+}
 
 I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
-      temp_digit, digit = divmod(digit, 1000000000)
+      temp_digit, digit = divmod(digit, 1000000000)pen 
       prompts.extend(self.getNumberPrompt(temp_digit))
       prompts.append(Prompt(GUIDE_00_BILLION, dir=2))
   if digit >= 1000000:
@@ -123,34 +141,114 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     return;
   }
 
-  if (number >= 1000) {
-    if (number >= 1100) {
-      PLAY_NUMBER(number / 1000, 0, 0);
-      PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-    } else {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-    }
-    number %= 1000;
-    if (number == 0)
-      number = -1;
-  }
-  if (number >= 100) {
-    if (number >= 200)
-      PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number/100);
-    PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
-    number %= 100;
-    if (number == 0)
-      number = -1;
-  }
-  PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
+	if (number >= 2000) {
+		PLAY_NUMBER(number / 1000, 0, 0);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
+		number %= 1000;
+	}
+
+	if ((number >= 1000) && (number < 2000)) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
+		number %= 1000;
+	}
+
+	if ((number >= 200) && (number < 1000)) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 100);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);		
+		number %= 100;
+	}
+
+	if ((number >= 100) && (number < 200)) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
+		number %= 100;
+	}
+	
+	if (number > 0){
+		PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 1);
+		number %= 1;
+	}
+
+	if (number == 0)
+		number = -1;
 
   if (unit) {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UNITS_BASE+unit);
+    DE_PUSH_UNIT_PROMPT(unit);
   }
 }
 
 I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 {
+	if (seconds == 0) {
+		PLAY_NUMBER(seconds, 0, 0);
+		return;
+	}
+	
+	if (seconds < 0) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_MINUS);
+		seconds = -seconds;
+	}
+
+	//	if (seconds > 0) {
+	uint8_t tmp = seconds / 3600; //1 Stunde 3600 Sekunden = 1
+	seconds %= 3600; //1 Stunde = 0	
+	
+	// Stunden
+	if (tmp > 0 || IS_PLAY_TIME()) {
+		// Wenn 1 Stunde spiele "eine" "Stunde"
+		if (tmp > 1) {
+			PLAY_NUMBER(tmp, 0, 0);
+			PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDEN);
+		}
+		else {
+			PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+			PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDE);
+		}
+
+		if (seconds > 0) {
+			PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+		}
+	}
+
+		tmp = seconds / 60;
+		seconds %= 60;
+
+		// Minuten
+		if (tmp > 0) {
+			// Wenn 1 Minute spiele "eine" "Minute"
+			if (tmp > 1) {
+				PLAY_NUMBER(tmp, 0, 0);
+				PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
+			} else {
+				PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+				PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
+			}
+			if (seconds > 0) {
+				PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+			}
+		}
+		
+		//Sekunden		
+		if (seconds > 1) {
+			PLAY_NUMBER(seconds, 0, 0);
+			PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
+		} else {
+			if (seconds == 1) {
+				PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+				PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDE);
+			} else {
+				PLAY_NUMBER(seconds, 0, 0);
+			}
+		}
+}
+
+/*
+  if (seconds == 0) {
+   PLAY_NUMBER(seconds, 0, 0);
+   return;
+  }
+
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_MINUS);
     seconds = -seconds;
@@ -160,28 +258,55 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, 0, 0);
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UHR);
+    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0 || ore >0) {
-    PLAY_NUMBER(tmp, 0, 0);
+		if (tmp == 1) {
+			// PLAY_NUMBER(DE_PROMPT_EINE, 0, 0);
+			PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+		}
+		else
+		{
+			PLAY_NUMBER(tmp, UNIT_HOURS, 0);
+		}
     if (tmp != 1) {
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
+    } else {
+      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
+#else
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
     } else {
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
+#endif
     }
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
-  }
-  PLAY_NUMBER(seconds, 0, 0);
-  if (seconds != 1) {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
-  } else {
+		if (seconds > 0) {
+ 	  	PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+					if (seconds == 0) {
+						// PLAY_NUMBER(DE_PROMPT_EINE, 0, 0);
+						PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+					} else {
+						PLAY_NUMBER(seconds, 0, 0);
+					}
+		}
+		if (seconds > 0) {
+  	if (seconds != 1) {
+#if defined(CPUARM)
+	    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
+	  } else {
+	    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+#else
+	    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
+	  } else {
     PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDE);
+#endif
   }
-}
+  }
+ }
+*/
 
 LANGUAGE_PACK_DECLARE(de, "Deutsch");
 
