@@ -13,6 +13,10 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 # different versions for different eeproms easier, i.e. without manually renaming
 set(COMPANION_OSX_FINAL_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
 
+# On OS X we copy dfu-util to the application bundle. This the path from which we copy
+# the binary (default homebrew path)
+set(DFU_UTIL_PATH "/usr/local/bin/dfu-util")
+
 option(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default
 if(ALLOW_NIGHTLY_BUILDS)
   add_definitions(-DALLOW_NIGHTLY_BUILDS)
@@ -418,6 +422,11 @@ if(APPLE)
   set(${COMPANION_SOURCES} ${COMPANION_SOURCES} ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE})
   INSTALL(FILES ${MAC_ICON_FILE} DESTINATION ${companion_res_dir} COMPONENT Runtime)
 
+  # Copy dfu-util, resolve symlink first
+  get_filename_component(DFU_UTIL_ABSOLUTE_PATH ${DFU_UTIL_PATH} REALPATH)
+  INSTALL(FILES ${DFU_UTIL_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
+  set(bundle_dfu_util_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util")
+
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
   # technically a hack (that is already is in the Bundle library ....)
@@ -425,7 +434,7 @@ if(APPLE)
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
-   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs}\"   \"\")
+   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_dfu_util_path}\"   \"\")
    file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_FINAL_NAME}.app\")
    " COMPONENT Runtime)
 endif()
