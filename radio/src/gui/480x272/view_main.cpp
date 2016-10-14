@@ -54,7 +54,11 @@ void drawTrims(uint8_t flightMode)
     int32_t trim = getTrimValue(flightMode, i);
 
     if (vert[i]) {
-      drawVerticalSlider(xm, TRIM_V_Y, 160, trim, -125, 125, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+      if (g_model.extendedTrims == 1) {
+        drawVerticalSlider(xm, TRIM_V_Y, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+      } else {
+        drawVerticalSlider(xm, TRIM_V_Y, 160, trim, TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+      }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
           uint16_t y = TRIM_V_Y + TRIM_LEN + (trim<0 ? -TRIM_LEN/2 : TRIM_LEN/2);
@@ -63,7 +67,11 @@ void drawTrims(uint8_t flightMode)
       }
     }
     else {
-      drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, -125, 125, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+      if (g_model.extendedTrims == 1) {
+        drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+      } else {
+        drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+      }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
           uint16_t x = xm + TRIM_LEN + (trim>0 ? -TRIM_LEN/2 : TRIM_LEN/2);
