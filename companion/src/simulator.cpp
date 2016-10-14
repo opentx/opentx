@@ -136,7 +136,9 @@ int main(int argc, char *argv[])
 
   eedir = QDir(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/data/OpenTX/Simulator");
   if (!eedir.exists("OpenTX")) {
-    eedir.mkdir("OpenTX");
+    if (!eedir.mkpath("OpenTX")) {
+      showMessage(QObject::tr("WARNING: couldn't create directory for EEPROM:\n%1").arg(eedir.absoluteFilePath("OpenTX")), QMessageBox::Warning);
+    }
   }
   eedir.cd("OpenTX");
 
