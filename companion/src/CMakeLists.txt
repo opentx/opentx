@@ -8,6 +8,11 @@ else(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(SIMULATOR_NAME "simulator")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
+# This the name that the user will see in the generated DMG and what the application
+# will be called under /Applications. We include the version string to make installing
+# different versions for different eeproms easier, i.e. without manually renaming
+set(COMPANION_OSX_FINAL_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
+
 option(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default
 if(ALLOW_NIGHTLY_BUILDS)
   add_definitions(-DALLOW_NIGHTLY_BUILDS)
@@ -373,6 +378,7 @@ IF(WIN32)
 
 ENDIF(WIN32)
 
+
 INSTALL(TARGETS ${COMPANION_NAME}
     BUNDLE DESTINATION . COMPONENT Runtime
     RUNTIME DESTINATION bin COMPONENT Runtime
@@ -420,6 +426,7 @@ if(APPLE)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
    fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs}\"   \"\")
+   file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_FINAL_NAME}.app\")
    " COMPONENT Runtime)
 endif()
 
