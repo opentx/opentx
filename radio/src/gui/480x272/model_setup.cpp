@@ -784,6 +784,12 @@ bool menuModelSetup(event_t event)
           drawStringWithIndex(MODEL_SETUP_2ND_COLUMN, y, STR_CH, moduleData.channelsStart+1, menuHorizontalPosition==0 ? attr : 0);
           lcdDrawText(lcdNextPos+5, y, "-");
           drawStringWithIndex(lcdNextPos+5, y, STR_CH, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), menuHorizontalPosition==1 ? attr : 0);
+          if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16) {
+            if (NUM_CHANNELS(moduleIdx) > 8)
+              lcdDrawText(lcdNextPos+15, y, "(18ms)");
+            else
+              lcdDrawText(lcdNextPos+15, y, "(9ms)");
+          }
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
               case 0:
