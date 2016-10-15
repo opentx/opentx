@@ -243,8 +243,16 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           int16_t val_min = 0;
           int16_t val_max = 255;
           if (func == FUNC_RESET) {
-            val_max = FUNC_RESET_PARAM_LAST;
-            lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(cfn), attr);
+            val_max = FUNC_RESET_PARAM_FIRST_TELEM+lastUsedTelemetryIndex();
+            int param = CFN_PARAM(cfn);
+            if (param < FUNC_RESET_PARAM_FIRST_TELEM) {
+              lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_VFSWRESET, param, attr);
+            }
+            else {
+              TelemetrySensor * sensor = & g_model.telemetrySensors[param-FUNC_RESET_PARAM_FIRST_TELEM];
+              lcdDrawSizedText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
+            }
+            if (active) INCDEC_ENABLE_CHECK(functions == g_eeGeneral.customFn ? isSourceAvailableInGlobalResetSpecialFunction : isSourceAvailableInResetSpecialFunction);
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
