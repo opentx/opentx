@@ -610,7 +610,12 @@ bool menuModelSetup(event_t event)
           if (checkIncDec_Ret) {
             g_model.moduleData[0].type = MODULE_TYPE_XJT;
             g_model.moduleData[0].channelsStart = 0;
-            g_model.moduleData[0].channelsCount = 0;
+            if (g_model.moduleData[0].rfProtocol == RF_PROTO_X16) {
+              g_model.moduleData[0].channelsCount = MAX_CHANNELS(INTERNAL_MODULE);
+            }
+            else {
+              g_model.moduleData[0].channelsCount = 0;
+            }
           }
         }
         break;
