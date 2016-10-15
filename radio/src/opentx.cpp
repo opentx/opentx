@@ -422,8 +422,9 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
+  g_model.moduleData[INTERNAL_MODULE].channelsCount = MAX_CHANNELS(INTERNAL_MODULE);
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
