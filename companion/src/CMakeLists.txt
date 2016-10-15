@@ -395,8 +395,8 @@ if(APPLE)
 
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
   SET(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
-  install(FILES ${simulator_plugins}  DESTINATION "${companion_res_dir}" COMPONENT Runtime)
-
+  install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
+  
   # Write qt.conf to tell qt where to find it plugins
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
     "[Paths]\nPlugins = Plugins\n")
