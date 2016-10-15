@@ -240,6 +240,7 @@ end
 
 local wingBitmaps = { Bitmap.open("img/plane_b.png"), Bitmap.open("img/delta_b.png"), Bitmap.open("img/planev_b.png") }
 local mountBitmaps = { Bitmap.open("img/up.png"), Bitmap.open("img/down.png"), Bitmap.open("img/vert.png"), Bitmap.open("img/vert-r.png") }
+local calibBitmaps = { Bitmap.open("img/up.png"), Bitmap.open("img/down.png"), Bitmap.open("img/left.png"), Bitmap.open("img/right.png"), Bitmap.open("img/forward.png"), Bitmap.open("img/back.png") }
 
 local function runConfigPage(event)
   fields = configFields
@@ -271,12 +272,12 @@ local function runCalibrationPage(event)
   drawScreenTitle("S6R", page, #pages)
   if(calibrationStep < 6) then
     local position = calibrationPositions[1 + calibrationStep]
-    lcd.drawText(200, 50, "Turn the S6R " .. position, TEXT_COLOR)
-    lcd.drawBitmap(Bitmap.open("img/"..position .. ".png"), 200, 70)
+    lcd.drawText(100, 50, "Place the S6R in the following position", TEXT_COLOR)
+    lcd.drawBitmap(calibBitmaps[calibrationStep + 1], 200, 70)
     for index = 1, 3, 1 do
       local field = fields[index]
-      lcd.drawText(80, 50+20*index, field[1]..":", TEXT_COLOR)
-      lcd.drawNumber(100, 50+20*index, field[4]/10, LEFT+PREC2)
+      lcd.drawText(70, 80+20*index, field[1]..":", TEXT_COLOR)
+      lcd.drawNumber(90, 80+20*index, field[4]/10, LEFT+PREC2)
     end
 
     local attr = calibrationState == 0 and INVERS or 0

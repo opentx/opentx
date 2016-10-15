@@ -193,7 +193,7 @@ local function runFieldsPage(event)
   return 0
 end
 
-local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
+local calibrationPositionsBitmaps = { "bmp/up.bmp", "bmp/down.bmp", "bmp/left.bmp", "bmp/right.bmp", "bmp/forward.bmp", "bmp/back.bmp"  }
 
 local function runCalibrationPage(event)
   fields = calibrationFields
@@ -203,9 +203,8 @@ local function runCalibrationPage(event)
   lcd.clear()
   lcd.drawScreenTitle("S6R", page, #pages)
   if(calibrationStep < 6) then
-    local position = calibrationPositions[1 + calibrationStep]
-    lcd.drawText(0, 9, "Turn the S6R " .. position, 0)
-    lcd.drawPixmap(10, 19, "bmp/"..position .. ".bmp")
+    lcd.drawText(0, 9, "Turn the S6R as shown", 0)
+    lcd.drawPixmap(10, 19, calibrationPositionsBitmaps[1 + calibrationStep])
     for index = 1, 3, 1 do
       local field = fields[index]
       lcd.drawText(80, 12+10*index, field[1], 0)
