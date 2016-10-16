@@ -66,7 +66,7 @@ template <unsigned int NUM_BITS> class BitField {
 
 
 #define AUDIO_FILENAME_MAXLEN          (42) // max length (example: /SOUNDS/fr/123456789012/1234567890-off.wav)
-#define AUDIO_QUEUE_LENGTH             (20)
+#define AUDIO_QUEUE_LENGTH             (16) // must be a power of 2!
 
 #define AUDIO_SAMPLE_RATE              (32000)
 #define AUDIO_BUFFER_DURATION          (10)
@@ -254,14 +254,15 @@ class MixedContext {
       tone.clear();   // the biggest member of the uninon
     }
 
+    bool isEmpty() const { return fragment.type == FRAGMENT_EMPTY; };
     bool isTone() const { return fragment.type == FRAGMENT_TONE; };
     bool isFile() const { return fragment.type == FRAGMENT_FILE; };
     bool hasId(uint8_t id) const { return fragment.id == id; };
 
-    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
+    int mixBuffer(AudioBuffer *buffer, int toneVolume, int wavVolume, unsigned int fade)
     {
-      if (isTone()) return tone.mixBuffer(buffer, volume, fade);
-      else if (isFile()) return wav.mixBuffer(buffer, volume, fade);
+      if (isTone()) return tone.mixBuffer(buffer, toneVolume, fade);
+      else if (isFile()) return wav.mixBuffer(buffer, wavVolume, fade);
       return 0;
     }
 
@@ -361,7 +362,7 @@ class AudioFragmentFifo
 
     uint8_t nextIdx(uint8_t idx) const
     {
-      return (idx + 1) % AUDIO_QUEUE_LENGTH;
+      return (idx + 1) & (AUDIO_QUEUE_LENGTH - 1);
     }
 
   public:
@@ -373,7 +374,7 @@ class AudioFragmentFifo
       while (i != widx) {
         AudioFragment & fragment = fragments[i];
         if (fragment.id == id) return true;
-        i = (i + 1) % AUDIO_QUEUE_LENGTH;
+        i = nextIdx(i);
       }
       return false;
     }
@@ -400,7 +401,6 @@ class AudioFragmentFifo
         if (!fragments[ridx].repeat--) {
           // repeat is done, move to the next fragment
           ridx = nextIdx(ridx);
-          // return 0;
         }
         return result;
       }
@@ -410,6 +410,7 @@ class AudioFragmentFifo
     void push(const AudioFragment & fragment)
     {
       if (!full()) {
+        TRACE("frament %d at %d", fragment.type, widx);
         fragments[widx] = fragment;
         widx = nextIdx(widx);
       }

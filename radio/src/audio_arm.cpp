@@ -578,8 +578,8 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
     }
   }
 
-  read = 0;
   if (result == FR_OK) {
+    read = 0;
     result = f_read(&state.file, wavBuffer, state.readSize, &read);
     if (result == FR_OK) {
       if (read > state.size) {
@@ -619,7 +619,11 @@ int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
       return samples - buffer->data;
     }
   }
-  return -result;
+
+  if (result != FR_OK) {
+    clear();
+  }
+  return 0;
 }
 #else
 int WavContext::mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade)
@@ -748,28 +752,15 @@ void AudioQueue::wakeup()
     }
 
     // mix the normal context (tones and wavs)
-    if (normalContext.isTone()) {
-      result = normalContext.mixBuffer(buffer, g_eeGeneral.beepVolume, fade);
+    if (normalContext.isEmpty() && !fragmentsFifo.empty()) {
+      CoEnterMutexSection(audioMutex);
+      normalContext.setFragment(fragmentsFifo.get());
+      CoLeaveMutexSection(audioMutex);
     }
-    else if (normalContext.isFile()) {
-      result = normalContext.mixBuffer(buffer, g_eeGeneral.wavVolume, fade);
-      if (result < 0) {
-        normalContext.clear();
-      }
-    }
-    else {
-      result = 0;
-    }
+    result = normalContext.mixBuffer(buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
     if (result > 0) {
       size = max(size, result);
       fade += 1;
-    }
-    else {
-      // normal contex is done, load new or repeat same fragment
-      CoEnterMutexSection(audioMutex);
-      normalContext.clear();
-      normalContext.setFragment(fragmentsFifo.get());
-      CoLeaveMutexSection(audioMutex);
     }
 
     // mix the vario context
