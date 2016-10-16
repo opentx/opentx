@@ -908,7 +908,7 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHAKELAAR"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Expects version: "
+#define TR_WRONG_SDCARDVERSION "Expected version: "
 #define TR_WRONG_PCBREV        "Verkeerde PCB gedetecteerd"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB fout"

@@ -916,7 +916,7 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          TR("Przełą","Kontrola")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Expects version: "
+#define TR_WRONG_SDCARDVERSION "Expected version: "
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB error"
