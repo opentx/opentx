@@ -259,6 +259,7 @@ bool isSpektrumValidValue(int32_t value, const SpektrumDataType type) {
   }
 }
 
+bool spektrumBindFinished = 0;
 void processSpektrumPacket(const uint8_t *packet)
 {
   setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
@@ -378,6 +379,11 @@ void processDSMBindPacket(const uint8_t *packet)
   /* log the bind packet as telemetry for quick debugging */
   setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
 
+  /* Finally stop binding as the rx just told us that it is bound */
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2
+    && moduleFlag[EXTERNAL_MODULE] == MODULE_BIND) {
+    spektrumBindFinished=true;
+  }
 }
 
 void processSpektrumTelemetryData(uint8_t data)
