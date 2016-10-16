@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+const AudioBuffer * nextBuffer = 0;
 
 const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
@@ -93,17 +94,24 @@ void dacInit()
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
-void audioPushBuffer(AudioBuffer *buffer)
+void audioConsumeCurrentBuffer()
 {
-  buffer->state = AUDIO_BUFFER_FILLED;
-  dacStart();
+  if (nextBuffer == 0) {
+    nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
+    if (nextBuffer) {
+      dacStart();
+    }
+  }
 }
+
 
 extern "C" void DAC_IRQHandler()
 {
   uint32_t sr = DACC->DACC_ISR;
   if (sr & DACC_ISR_ENDTX) {
-    AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+    if (nextBuffer) audioQueue.buffersFifo.freeNextFilledBuffer();
+
+    nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
       // Try the first PDC buffer
       if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {

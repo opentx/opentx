@@ -66,16 +66,16 @@ template <unsigned int NUM_BITS> class BitField {
 
 
 #define AUDIO_FILENAME_MAXLEN          (42) // max length (example: /SOUNDS/fr/123456789012/1234567890-off.wav)
-#define AUDIO_QUEUE_LENGTH             (20)
+#define AUDIO_QUEUE_LENGTH             (16) // must be a power of 2!
 
 #define AUDIO_SAMPLE_RATE              (32000)
 #define AUDIO_BUFFER_DURATION          (10)
 #define AUDIO_BUFFER_SIZE              (AUDIO_SAMPLE_RATE*AUDIO_BUFFER_DURATION/1000)
 
-#if defined(SIMU_AUDIO)
+#if defined(SIMU) && defined(SIMU_AUDIO)
   #define AUDIO_BUFFER_COUNT           (10) // simulator needs more buffers for smooth audio
 #elif defined(PCBHORUS)
-  #define AUDIO_BUFFER_COUNT           (2)
+  #define AUDIO_BUFFER_COUNT           (5)
 #else
   #define AUDIO_BUFFER_COUNT           (3)
 #endif
@@ -116,7 +116,6 @@ enum AudioBufferState
 struct AudioBuffer {
   audio_data_t data[AUDIO_BUFFER_SIZE];
   uint16_t size;
-  uint8_t  state;
 };
 
 extern AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
@@ -127,30 +126,65 @@ enum FragmentTypes {
   FRAGMENT_FILE,
 };
 
+struct Tone {
+  uint16_t freq;
+  uint16_t duration;
+  uint16_t pause;
+  int8_t   freqIncr;
+  uint8_t  reset;
+  Tone() {};
+  Tone(uint16_t freq, uint16_t duration, uint16_t pause, int8_t freqIncr, bool reset):
+    freq(freq),
+    duration(duration),
+    pause(pause),
+    freqIncr(freqIncr),
+    reset(reset)
+  {};
+};
+
+
 struct AudioFragment {
   uint8_t type;
   uint8_t id;
   uint8_t repeat;
   union {
-    struct {
-      uint16_t freq;
-      uint16_t duration;
-      uint16_t pause;
-      int8_t   freqIncr;
-      uint8_t  reset;
-    } tone;
-
+    Tone tone;
     char file[AUDIO_FILENAME_MAXLEN+1];
   };
 
-  void clear()
+  AudioFragment() { clear(); };
+
+  AudioFragment(uint16_t freq, uint16_t duration, uint16_t pause, uint8_t repeat, int8_t freqIncr, bool reset, uint8_t id=0):
+    type(FRAGMENT_TONE),
+    id(id),
+    repeat(repeat),
+    tone(freq, duration, pause, freqIncr, reset)
+  {};
+
+  AudioFragment(const char * filename, uint8_t repeat, uint8_t id=0):
+    type(FRAGMENT_FILE),
+    id(id),
+    repeat(repeat)
   {
-    memset(this, 0, sizeof(AudioFragment));
+    strcpy(file, filename);
   }
+
+  void clear() { memset(this, 0, sizeof(AudioFragment)); };
 };
 
 class ToneContext {
   public:
+
+    inline void clear() { memset(this, 0, sizeof(ToneContext)); };
+    bool isFree() const { return fragment.type == FRAGMENT_EMPTY; };
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
+
+    void setFragment(uint16_t freq, uint16_t duration, uint16_t pause, uint8_t repeat, int8_t freqIncr, bool reset, uint8_t id=0)
+    {
+      fragment = AudioFragment(freq, duration, pause, repeat, freqIncr, reset, id);
+    }
+
+  private:
     AudioFragment fragment;
 
     struct {
@@ -162,22 +196,29 @@ class ToneContext {
       uint16_t pause;
     } state;
 
-    inline void setFragment(AudioFragment & fragment)
-    {
-      this->fragment = fragment;
-      memset(&state, 0, sizeof(state));
-    }
-
-    inline void clear()
-    {
-      memset(this, 0, sizeof(ToneContext));
-    }
-
-    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
 };
 
 class WavContext {
   public:
+
+    inline void clear() { fragment.clear(); };
+
+    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
+    bool hasId(uint8_t id) const { return fragment.id == id; };
+
+    void setFragment(const char * filename, uint8_t repeat, uint8_t id)
+    {
+      fragment = AudioFragment(filename, repeat, id);
+    }
+
+    void stop(uint8_t id)
+    {
+      if (fragment.id == id) {
+        fragment.clear();
+      }
+    }
+
+  private:
     AudioFragment fragment;
 
     struct {
@@ -188,134 +229,227 @@ class WavContext {
       uint8_t  resampleRatio;
       uint16_t readSize;
     } state;
-
-    inline void clear()
-    {
-      fragment.clear();
-    }
-
-    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
 };
 
 class MixedContext {
-  public:
-    union {
-      AudioFragment fragment;
-      ToneContext tone;
-      WavContext wav;
-    };
-
-    int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
-};
-
-void audioPushBuffer(AudioBuffer * buffer);
-
-class AudioQueue {
-
-  friend void audioTask(void* pdata);
-#if defined(SIMU_AUDIO)
-  friend void * audioThread(void *);
-#endif
 #if defined(CLI)
   friend void printAudioVars();
 #endif
   public:
 
-    AudioQueue();
-
-    void start();
-
-    void playTone(uint16_t freq, uint16_t len, uint16_t pause=0, uint8_t flags=0, int8_t freqIncr=0);
-
-    void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
-
-    void stopPlay(uint8_t id);
-
-    void stopAll();
-
-    void flush();
-
-    void pause(uint16_t tLen);
-
-    void stopSD();
-
-    bool isPlaying(uint8_t id);
-
-    bool started()
+    MixedContext()
     {
-      return state;
+      clear();
     }
 
-    bool empty()
+    void setFragment(const AudioFragment * frag)
     {
-      return ridx == widx;
-    }
-
-    inline AudioBuffer * getNextFilledBuffer()
-    {
-      if (audioBuffers[bufferRIdx].state == AUDIO_BUFFER_PLAYING) {
-        audioBuffers[bufferRIdx].state = AUDIO_BUFFER_FREE;
-        bufferRIdx = nextBufferIdx(bufferRIdx);
+      if (frag) {
+        fragment = *frag;
       }
-
-      uint8_t idx = bufferRIdx;
-      do {
-        AudioBuffer * buffer = &audioBuffers[idx];
-        if (buffer->state == AUDIO_BUFFER_FILLED) {
-          buffer->state = AUDIO_BUFFER_PLAYING;
-          bufferRIdx = idx;
-          return buffer;
-        }
-        idx = nextBufferIdx(idx);
-      } while (idx != bufferWIdx);   //this fixes a bug if all buffers are filled
-
-      return NULL;
     }
 
-    bool filledAtleast(int noBuffers)
+    inline void clear()
     {
-      int count = 0;
-      for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
-        if (audioBuffers[n].state == AUDIO_BUFFER_FILLED) {
-          if (++count >= noBuffers) {
-            return true;
-          }
-        }
+      tone.clear();   // the biggest member of the uninon
+    }
+
+    bool isEmpty() const { return fragment.type == FRAGMENT_EMPTY; };
+    bool isTone() const { return fragment.type == FRAGMENT_TONE; };
+    bool isFile() const { return fragment.type == FRAGMENT_FILE; };
+    bool hasId(uint8_t id) const { return fragment.id == id; };
+
+    int mixBuffer(AudioBuffer *buffer, int toneVolume, int wavVolume, unsigned int fade)
+    {
+      if (isTone()) return tone.mixBuffer(buffer, toneVolume, fade);
+      else if (isFile()) return wav.mixBuffer(buffer, wavVolume, fade);
+      return 0;
+    }
+
+  private:
+    union {
+      AudioFragment fragment;   // a hack: fragment is used to access the fragment members of tone and wav
+      ToneContext tone;
+      WavContext wav;
+    };
+
+};
+
+class AudioBufferFifo {
+#if defined(CLI)
+  friend void printAudioVars();
+#endif
+
+  private:
+    volatile uint8_t readIdx;
+    volatile uint8_t writeIdx;
+    volatile bool bufferFull;
+
+    // readIdx == writeIdx       -> buffer empty
+    // readIdx == writeIdx + 1   -> buffer full
+
+    inline uint8_t nextBufferIdx(uint8_t idx) const
+    {
+      return (idx >= AUDIO_BUFFER_COUNT-1 ? 0 : idx+1);
+    }
+    bool full() const
+    {
+      return bufferFull;
+    }
+    bool empty() const
+    {
+      return (readIdx == writeIdx) && !bufferFull;
+    }
+    uint8_t used() const
+    {
+      return bufferFull ? AUDIO_BUFFER_COUNT : writeIdx - readIdx;
+    }
+
+  public:
+    AudioBufferFifo() : readIdx(0), writeIdx(0), bufferFull(false)
+    {
+      memset(audioBuffers, 0, sizeof(audioBuffers));
+    }
+
+    // returns an empty buffer to be filled wit data and put back into FIFO with audioPushBuffer()
+    AudioBuffer * getEmptyBuffer() const
+    {
+      return full() ? 0 : &audioBuffers[writeIdx];
+    }
+
+    // puts filled buffer into FIFO
+    void audioPushBuffer()
+    {
+      // AudioBuffer * buffer = &audioBuffers[writeIdx];
+      audioDisableIrq();
+      writeIdx = nextBufferIdx(writeIdx);
+      bufferFull = (writeIdx == readIdx);
+      audioEnableIrq();
+      // buffer->state = AUDIO_BUFFER_FILLED;
+    }
+
+    // returns a pointer to the audio buffer to be played
+    const AudioBuffer * getNextFilledBuffer() const
+    {
+      return empty() ? 0 : &audioBuffers[readIdx];
+    }
+
+    // frees the last played buffer
+    void freeNextFilledBuffer()
+    {
+      audioDisableIrq();
+      readIdx = nextBufferIdx(readIdx);
+      bufferFull = false;
+      audioEnableIrq();
+    }
+
+    bool filledAtleast(int noBuffers) const
+    {
+      return used() >= noBuffers;
+    }
+
+};
+
+class AudioFragmentFifo
+{
+#if defined(CLI)
+  friend void printAudioVars();
+#endif
+  private:
+    volatile uint8_t ridx;
+    volatile uint8_t widx;
+    AudioFragment fragments[AUDIO_QUEUE_LENGTH];
+
+    uint8_t nextIdx(uint8_t idx) const
+    {
+      return (idx + 1) & (AUDIO_QUEUE_LENGTH - 1);
+    }
+
+  public:
+    AudioFragmentFifo() : ridx(0), widx(0), fragments() {};
+
+    bool hasId(uint8_t id)
+    {
+      uint8_t i = ridx;
+      while (i != widx) {
+        AudioFragment & fragment = fragments[i];
+        if (fragment.id == id) return true;
+        i = nextIdx(i);
       }
       return false;
     }
 
-  protected:
+    bool empty() const
+    {
+      return ridx == widx;
+    }
 
+    bool full() const
+    {
+      return ridx == nextIdx(widx);
+    }
+
+    void clear()
+    {
+      widx = ridx;                      // clean the queue
+    }
+
+    const AudioFragment * get()
+    {
+      if (!empty()) {
+        const AudioFragment * result = &fragments[ridx];
+        if (!fragments[ridx].repeat--) {
+          // repeat is done, move to the next fragment
+          ridx = nextIdx(ridx);
+        }
+        return result;
+      }
+      return 0;
+    }
+
+    void push(const AudioFragment & fragment)
+    {
+      if (!full()) {
+        TRACE("frament %d at %d", fragment.type, widx);
+        fragments[widx] = fragment;
+        widx = nextIdx(widx);
+      }
+    }
+
+};
+
+class AudioQueue {
+
+#if defined(SIMU_AUDIO)
+  friend void fillAudioBuffer(void *, uint8_t *, int);
+#endif
+#if defined(CLI)
+  friend void printAudioVars();
+#endif
+  public:
+    AudioQueue();
+    void start() { _started = true; };
+    void playTone(uint16_t freq, uint16_t len, uint16_t pause=0, uint8_t flags=0, int8_t freqIncr=0);
+    void playFile(const char *filename, uint8_t flags=0, uint8_t id=0);
+    void stopPlay(uint8_t id);
+    void stopAll();
+    void flush();
+    void pause(uint16_t tLen);
+    void stopSD();
+    bool isPlaying(uint8_t id);
+    bool isEmpty() const { return fragmentsFifo.empty(); };
     void wakeup();
+    bool started() const { return _started; };
 
-    volatile bool state;
-    uint8_t ridx;
-    uint8_t widx;
+    AudioBufferFifo buffersFifo;
 
-    AudioFragment fragments[AUDIO_QUEUE_LENGTH];
-
+  private:
+    volatile bool _started;
     MixedContext normalContext;
     WavContext   backgroundContext;
     ToneContext  priorityContext;
     ToneContext  varioContext;
-
-    uint8_t bufferRIdx;
-    uint8_t bufferWIdx;
-
-    inline uint8_t nextBufferIdx(uint8_t idx)
-    {
-      return (idx == AUDIO_BUFFER_COUNT-1 ? 0 : idx+1);
-    }
-
-    inline AudioBuffer * getEmptyBuffer()
-    {
-      AudioBuffer * buffer = &audioBuffers[bufferWIdx];
-      if (buffer->state == AUDIO_BUFFER_FREE)
-        return buffer;
-      else
-        return NULL;
-    }
+    AudioFragmentFifo fragmentsFifo;
 };
 
 extern AudioQueue audioQueue;

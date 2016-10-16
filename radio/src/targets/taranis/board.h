@@ -457,7 +457,7 @@ void setSampleRate(uint32_t frequency);
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);
-#define audioConsumeCurrentBuffer()
+void audioConsumeCurrentBuffer();
 #define audioDisableIrq()       __disable_irq()
 #define audioEnableIrq()        __enable_irq()
 
