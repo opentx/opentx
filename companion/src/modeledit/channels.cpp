@@ -32,7 +32,9 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
 
   if (IS_TARANIS(firmware->getBoard()) || deflt == 0 /*it's the offset*/) {
     spinbox->setDecimals(1);
-    allowGVars = true;
+    if (IS_TARANIS(firmware->getBoard())) {
+      allowGVars = true;
+    }
   }
   else {
     internalStep *= 10;
