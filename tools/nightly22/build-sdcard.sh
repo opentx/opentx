@@ -7,6 +7,9 @@ workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightly
 
 # Handle opentx.sdcard.version
+#sdccard_version = $(grep 'set(SDCARD_VERSION' ${workdir}/code/CMakeLists.txt | grep -o '".*"' | sed 's/"//g')
+sdcard_version=$(grep 'set(SDCARD_VERSION' /home/opentx/opentx/CMakeLists.txt | grep -o '".*"' | sed 's/"//g')
+echo "SDCARD Version : $sdcard_version"
 grep 'set(SDCARD_VERSION' ${workdir}/code/CMakeLists.txt | grep -o '".*"' | sed 's/"//g' > ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version
 grep 'set(SDCARD_VERSION' ${workdir}/code/CMakeLists.txt | grep -o '".*"' | sed 's/"//g' > ${workdir}/code/radio/sdcard/taranis/opentx.sdcard.version
 if cmp --silent ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}/opentx.sdcard.version
