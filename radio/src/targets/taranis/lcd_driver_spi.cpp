@@ -104,8 +104,8 @@ void lcdHardwareInit()
 void lcdStart()
 {
   lcdWriteCommand(0xe2); // (14) Soft reset
-  lcdWriteCommand(0xa0); // Set seg direct
-  lcdWriteCommand(0xc8); // Set com direct
+  lcdWriteCommand(0xa1); // Set seg
+  lcdWriteCommand(0xc0); // Set com
   lcdWriteCommand(0xf8); // Set booster
   lcdWriteCommand(0x00); // 5x
   lcdWriteCommand(0xa3); // Set bias=1/6
@@ -181,7 +181,7 @@ void lcdRefresh(bool wait)
   for (uint8_t y=0; y < 8; y++, p+=LCD_W) {
     lcdWriteCommand(0x10); // Column addr 0
     lcdWriteCommand(0xB0 | y); // Page addr y
-    lcdWriteCommand(0x00);
+    lcdWriteCommand(0x04);
     
     LCD_NCS_LOW();
     LCD_A0_HIGH();
