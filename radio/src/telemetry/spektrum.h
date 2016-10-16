@@ -24,4 +24,5 @@
 void processSpektrumTelemetryData(uint8_t data);
 void spektrumSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
+extern bool spektrumBindFinished;
 #endif
