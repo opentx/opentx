@@ -581,7 +581,6 @@ extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
-extern const pm_char STR_MULTI_DSMPRNG[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
 #endif
@@ -689,6 +688,10 @@ extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
 extern const pm_char STR_FAILSAFEWARN[];
+extern const pm_char STR_WRONG_SDCARDVERSION[];
+extern const pm_char STR_WRONG_PCBREV[];
+extern const pm_char STR_EMERGENCY_MODE[];
+extern const pm_char STR_PCBREV_ERROR[];
 extern const pm_char STR_NO_FAILSAFE[];
 extern const pm_char STR_KEYSTUCK[];
 

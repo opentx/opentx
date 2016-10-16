@@ -121,12 +121,8 @@ void setupPulsesMultimodule(unsigned int port)
     if(g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
-    // The multi module wants the number of channels as options value and negative amount if the
-    // broken PRNG table is to be used.
-    if (optionValue==0)
-     optionValue = NUM_CHANNELS(EXTERNAL_MODULE);
-    else
-      optionValue = -(NUM_CHANNELS(EXTERNAL_MODULE));
+    // Multi module in DSM mode wants the number of channels to be used as option value
+    optionValue = NUM_CHANNELS(EXTERNAL_MODULE);
 
   }
 

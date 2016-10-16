@@ -979,18 +979,13 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_HUBSAN:
               lcd_putsLeft(y, STR_MULTI_VIDFREQ);
               break;
-            case MM_RF_PROTO_DSM2:
-              g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = onoffMenuItem(g_model.moduleData[EXTERNAL_MODULE].multi.optionValue, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_DSMPRNG, attr, event);
-              break;
             default:
               lcd_putsLeft(y, STR_MULTI_OPTION);
               break;
           }
-          if (g_model.moduleData[moduleIdx].getMultiProtocol(true) != MM_RF_PROTO_DSM2) {
-            lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT | attr);
-            if (attr) {
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-            }
+          lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT | attr);
+          if (attr) {
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
           }
         }
 #endif
