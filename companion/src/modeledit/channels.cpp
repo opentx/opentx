@@ -7,7 +7,8 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   value(value),
   displayStep(0.1)
 {
-  bool allowGVars = false;
+  BoardEnum board = firmware->getBoard();
+  bool allowGVars = (IS_TARANIS(board) || IS_HORUS(board));
   int internalStep = 1;
 
   spinbox->setProperty("index", row);
@@ -24,14 +25,13 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
     spinbox->setSuffix("%");
   }
 
-  if (IS_TARANIS(firmware->getBoard()) || deflt == 0 /*it's the offset*/) {
+  if (IS_TARANIS(board) || deflt == 0 /*it's the offset*/) {
     spinbox->setDecimals(1);
-    allowGVars = true;
   }
   else {
     internalStep *= 10;
   }
-  
+
   spinbox->setSingleStep(displayStep*internalStep);
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
