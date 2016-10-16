@@ -894,7 +894,6 @@
 #endif
 #define TR_MULTI_RFTUNE        TR(INDENT "RF Freq.", INDENT "RF Freq. Feintuning")
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. Freq.", INDENT "Video Frequenz")
-#define TR_MULTI_DSMPRNG       TR(INDENT "Wrong PNRG", INDENT "Wrong PRNG tables")
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Optionswert")
 #define TR_MULTI_AUTOBIND      INDENT "Autobind"
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")

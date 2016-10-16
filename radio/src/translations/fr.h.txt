@@ -871,7 +871,6 @@
 #endif
 #define TR_MULTI_RFTUNE        INDENT "Ajustement fréq."
 #define TR_MULTI_VIDFREQ       INDENT "Fréquence vidéo"
-#define TR_MULTI_DSMFRAME      INDENT "Format trame DSM"
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option perso")
 #define TR_MULTI_AUTOBIND      INDENT "Bind automatique"
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")

@@ -603,7 +603,6 @@ extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
-extern const pm_char STR_MULTI_DSMPRNG[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
 #endif

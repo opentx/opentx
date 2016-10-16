@@ -900,19 +900,13 @@ bool menuModelSetup(event_t event)
             case MM_RF_PROTO_HUBSAN:
               lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_VIDFREQ);
               break;
-            case MM_RF_PROTO_DSM2:
-              lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_DSMPRNG);
-              g_model.moduleData[EXTERNAL_MODULE].multi.optionValue = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.optionValue, MODEL_SETUP_2ND_COLUMN, y, attr, event);
-              break;
             default:
               lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_OPTION);
               break;
           }
-          if (g_model.moduleData[moduleIdx].getMultiProtocol(true) != MM_RF_PROTO_DSM2) {
-            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT | attr);
-            if (attr)
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
-          }
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT | attr);
+          if (attr)
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
         }
 #endif
         break;
