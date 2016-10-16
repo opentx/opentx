@@ -990,7 +990,7 @@ void checkSDVersion()
     char version[sizeof(REQUIRED_SDCARD_VERSION)-1];
     char error[sizeof(TR_WRONG_SDCARDVERSION)+ sizeof(version)];
 
-    strAppend(strAppend(error,STR_WRONG_SDCARDVERSION, sizeof(TR_WRONG_SDCARDVERSION)), REQUIRED_SDCARD_VERSION, sizeof(REQUIRED_SDCARD_VERSION));
+    strAppend(strAppend(error, STR_WRONG_SDCARDVERSION, sizeof(TR_WRONG_SDCARDVERSION)), REQUIRED_SDCARD_VERSION, sizeof(REQUIRED_SDCARD_VERSION));
     FRESULT result = f_open(&versionFile, "/opentx.sdcard.version", FA_OPEN_EXISTING | FA_READ);
     if (result == FR_OK) {
       if (f_read(&versionFile, &version, sizeof(version), &read) != FR_OK ||
