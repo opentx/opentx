@@ -22,7 +22,7 @@
  *
  */
 
-#include "opentx.h"
+#include "../opentx.h"
 
 enum GermanPrompts {
   DE_PROMPT_NUMBERS_BASE = 0,
@@ -88,7 +88,7 @@ I18N_PLAY_FUNCTION(de, pushUnitPrompt, uint8_t unitprompt)
 I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
 /*  if digit >= 1000000000:
-      temp_digit, digit = divmod(digit, 1000000000)pen 
+      temp_digit, digit = divmod(digit, 1000000000) 
       prompts.extend(self.getNumberPrompt(temp_digit))
       prompts.append(Prompt(GUIDE_00_BILLION, dir=2))
   if digit >= 1000000:
@@ -174,7 +174,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 		number = -1;
 
   if (unit) {
-    DE_PUSH_UNIT_PROMPT(unit);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_UNITS_BASE+unit);
   }
 }
 
@@ -190,13 +190,10 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 		seconds = -seconds;
 	}
 
-	//	if (seconds > 0) {
-	uint8_t tmp = seconds / 3600; //1 Stunde 3600 Sekunden = 1
-	seconds %= 3600; //1 Stunde = 0	
+	uint8_t tmp = seconds / 3600;
+	seconds %= 3600;
 	
-	// Stunden
 	if (tmp > 0 || IS_PLAY_TIME()) {
-		// Wenn 1 Stunde spiele "eine" "Stunde"
 		if (tmp > 1) {
 			PLAY_NUMBER(tmp, 0, 0);
 			PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDEN);
@@ -214,9 +211,7 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 		tmp = seconds / 60;
 		seconds %= 60;
 
-		// Minuten
 		if (tmp > 0) {
-			// Wenn 1 Minute spiele "eine" "Minute"
 			if (tmp > 1) {
 				PLAY_NUMBER(tmp, 0, 0);
 				PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
@@ -229,7 +224,6 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 			}
 		}
 		
-		//Sekunden		
 		if (seconds > 1) {
 			PLAY_NUMBER(seconds, 0, 0);
 			PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
@@ -242,71 +236,6 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 			}
 		}
 }
-
-/*
-  if (seconds == 0) {
-   PLAY_NUMBER(seconds, 0, 0);
-   return;
-  }
-
-  if (seconds < 0) {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_MINUS);
-    seconds = -seconds;
-  }
-
-  uint8_t ore = 0;
-  uint8_t tmp = seconds / 3600;
-  seconds %= 3600;
-  if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
-  }
-
-  tmp = seconds / 60;
-  seconds %= 60;
-  if (tmp > 0 || ore >0) {
-		if (tmp == 1) {
-			// PLAY_NUMBER(DE_PROMPT_EINE, 0, 0);
-			PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
-		}
-		else
-		{
-			PLAY_NUMBER(tmp, UNIT_HOURS, 0);
-		}
-    if (tmp != 1) {
-#if defined(CPUARM)
-      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
-    } else {
-      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
-#else
-      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
-    } else {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
-#endif
-    }
-		if (seconds > 0) {
- 	  	PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
-					if (seconds == 0) {
-						// PLAY_NUMBER(DE_PROMPT_EINE, 0, 0);
-						PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
-					} else {
-						PLAY_NUMBER(seconds, 0, 0);
-					}
-		}
-		if (seconds > 0) {
-  	if (seconds != 1) {
-#if defined(CPUARM)
-	    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
-	  } else {
-	    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
-#else
-	    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
-	  } else {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDE);
-#endif
-  }
-  }
- }
-*/
 
 LANGUAGE_PACK_DECLARE(de, "Deutsch");
 
