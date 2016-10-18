@@ -922,6 +922,8 @@
 #define TR_BACKUP_MODEL        "Modell auf SD-Karte"  //9XR-Pro
 #define TR_DELETE_MODEL        "Modell löschen" // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       "Modell Restore"
+#define TR_DELETE_ERROR        "Delete error"
+#define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        "SD-Kartenfehler"
 #define TR_NO_SDCARD           "Keine SD-Karte"
 #define TR_SDCARD_FULL         "SD-Karte voll"

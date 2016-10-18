@@ -902,6 +902,8 @@
 #define TR_BACKUP_MODEL        "Salva Modello"
 #define TR_DELETE_MODEL        TR("Elim. Modello","Elimina Modello") // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       TR("Ripr. Modello","Ripristina Modello")
+#define TR_DELETE_ERROR        "Delete error"
+#define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
 #define TR_SDCARD_FULL         "SD Card Piena"
