@@ -139,7 +139,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     if (i<limit) {
       ui->curvesLayout->addWidget(edit, i, 1, 1, 1);
     } else {
-      ui->curvesLayout2->addWidget(edit, i-limit, 1, 1, 1);
+      ui->curvesLayout2->addWidget(edit, i-limit, 2, 1, 1);
     }
 
     // The curve plot checkbox
@@ -151,7 +151,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     if (i<limit) {
       ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
     } else {
-      ui->curvesLayout2->addWidget(plot, i-limit, 2, 1, 1);
+      ui->curvesLayout2->addWidget(plot, i-limit, 1, 1, 1);
     }
   }
   QSpacerItem * item = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
