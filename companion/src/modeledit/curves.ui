@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>624</width>
+    <width>672</width>
     <height>539</height>
    </rect>
   </property>
@@ -20,7 +20,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_1">
      <property name="rightMargin">
-      <number>10</number>
+      <number>0</number>
      </property>
      <item>
       <widget class="QGraphicsView" name="curvePreview">
