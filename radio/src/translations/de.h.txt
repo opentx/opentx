@@ -283,9 +283,9 @@
 #endif
 
 #if defined(HAPTIC)
-  #define TR_HAPTIC            "Haptic\0   "
+  #define TR_HAPTIC            "Haptik\0   "
 #else
-  #define TR_HAPTIC            "[Haptic]\0 "
+  #define TR_HAPTIC            "[Haptik]\0 "
 #endif
 
 #if defined(VOICE)
@@ -317,7 +317,7 @@
 #endif
 
 #if defined(LUA)
-  #define TR_SF_PLAY_SCRIPT   "Lua Script"
+  #define TR_SF_PLAY_SCRIPT   "Lua Skript"
 #else
   #define TR_SF_PLAY_SCRIPT   "[Lua]\0    "
 #endif
@@ -626,8 +626,8 @@
 #define LEN_VCELLINDEX         "\012"  // "\007" ursprünglich
 #define TR_VCELLINDEX          "Niedrigst\0""1. Zelle\0 ""2. Zelle\0 ""3. Zelle\0 ""4. Zelle\0 ""5. Zelle\0 ""6. Zelle\0 ""Höchster\0 ""Differenz\0"
 
-#define LEN_VANTENNATYPES      "\013"
-#define TR_VANTENNATYPES       "Interne Ant""Externe Ant"  // Antennenauswahl
+#define LEN_VANTENNATYPES      "\014"
+#define TR_VANTENNATYPES       "Int. Antenne""Ext. Antenne"  // Antennenauswahl
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
@@ -815,10 +815,10 @@
 
 #if defined(CPUARM)
   #define TR_TMIXMAXMS         "Tmix max"
-  #define TR_FREESTACKMINB     "Free Stack"
+  #define TR_FREESTACKMINB     "Freier Stack"
 #else
   #define TR_TMIXMAXMS         "Tmix max\037\124ms"
-  #define TR_FREESTACKMINB     "Free Stack\037\124b"
+  #define TR_FREESTACKMINB     "Freier Stack\037\124b"
 #endif
 
 #define TR_MENUTORESET         CENTER TR_ENTER " für Reset"
@@ -921,24 +921,24 @@
 #define TR_MOVE_MODEL          "Verschiebe Modell"
 #define TR_BACKUP_MODEL        "Modell auf SD-Karte"  //9XR-Pro
 #define TR_DELETE_MODEL        "Modell löschen" // TODO merged into DELETEMODEL?
-#define TR_RESTORE_MODEL       "Modell Restore"
-#define TR_DELETE_ERROR        "Delete error"
-#define TR_CAT_NOT_EMPTY       "Category is not empty"
+#define TR_RESTORE_MODEL       "Modell wiederherstellen"
+#define TR_DELETE_ERROR        "Fehler beim Löschen"
+#define TR_CAT_NOT_EMPTY       "Kategorie nicht leer"
 #define TR_SDCARD_ERROR        "SD-Kartenfehler"
 #define TR_NO_SDCARD           "Keine SD-Karte"
 #define TR_SDCARD_FULL         "SD-Karte voll"
 #define TR_INCOMPATIBLE        "Nicht kompatibel"
 #define TR_WARNING             "WARNUNG"
 #define TR_EEPROMWARN          "EEPROM"
-#define TR_STORAGE_WARNING     "STORAGE"
-#define TR_EEPROM_CONVERTING   "EEPROM Converting"
+#define TR_STORAGE_WARNING     "SPEICHER"
+#define TR_EEPROM_CONVERTING   "EEPROM Konvertierung"
 #define TR_THROTTLEWARN        "GAS"
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHALTER"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Expected version: "
-#define TR_WRONG_PCBREV        "Wrong PCB detected"
-#define TR_EMERGENCY_MODE      "EMERGENCY MODE"
+#define TR_WRONG_SDCARDVERSION "Erwartete Version: "
+#define TR_WRONG_PCBREV        "Falsches PCB detektiert"
+#define TR_EMERGENCY_MODE      "NOTFALL MODUS"
 #define TR_PCBREV_ERROR        "PCB error"
 #define TR_NO_FAILSAFE         TR("Failsafe not set", "Failsafe nicht programmiert")
 #define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt
@@ -963,10 +963,10 @@
 #define TR_NO_SOUNDS_ON_SD     "Keine Töne" BREAKSPACE "auf SD"
 #define TR_NO_MODELS_ON_SD     "Kein Modelle" BREAKSPACE "auf SD"
 #define TR_NO_BITMAPS_ON_SD    "Keine Bitmaps" BREAKSPACE "auf SD"
-#define TR_NO_SCRIPTS_ON_SD    "Keine Scripte" BREAKSPACE "auf SD"
-#define TR_SCRIPT_SYNTAX_ERROR "Script Syntax Fehler"
-#define TR_SCRIPT_PANIC        "Script panic"   //??
-#define TR_SCRIPT_KILLED       "Script killed"  //??
+#define TR_NO_SCRIPTS_ON_SD    "Keine Skripte" BREAKSPACE "auf SD"
+#define TR_SCRIPT_SYNTAX_ERROR "Skript Syntaxfehler"
+#define TR_SCRIPT_PANIC        "Skript Panik"   //??
+#define TR_SCRIPT_KILLED       "Skript getötet"  //??
 #define TR_SCRIPT_ERROR        "Unbekannter Fehler"
 #define TR_PLAY_FILE           "Spielen"
 #define TR_DELETE_FILE         "Löschen"
@@ -995,7 +995,7 @@
 #define TR_MENUGLOBALVARS      "GLOBALE VARIABLEN"
 #define TR_OWN                 "Eigen"
 #define TR_DATE                "Datum:"
-#define TR_MONTHS              { "Jan", "Fev", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
+#define TR_MONTHS              { "Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez" }
 #define TR_ROTARY_ENCODER      "Drehgeber"
 #define TR_CHANNELS_MONITOR    "Kanal-Monitor==>"
 #define TR_MIXERS_MONITOR      "==>Mischer Monitor"
@@ -1086,13 +1086,13 @@
 #define TR_CHECKLIST           TR(INDENT "Checkliste", INDENT "Checkliste anzeigen") //9XR-Pro
 #define TR_FAS_OFFSET          TR(INDENT "FAS-Ofs", INDENT "FAS-Offset")
 #define TR_UART3MODE           "Serieller Port"
-#define TR_SCRIPT              "Lua-Script"
+#define TR_SCRIPT              "Lua-Skript"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
 #define TR_EEBACKUP            "\002[ENTER Long] Backup EEPROM->SD-Karte"
 #define TR_FACTORYRESET        "\004[MENU Long] ALLES komplett löschen"
 #define TR_CONFIRMRESET        "ALLE Modelle + Einst. löschen?"
-#define TR_TO_MANY_LUA_SCRIPTS "Zu viele Lua-Scripte!!"
+#define TR_TO_MANY_LUA_SCRIPTS "Zu viele Lua-Skripte!!"
 
 #if defined(TELEMETRY_MAVLINK)
   #define TR_MAVLINK_RC_RSSI_SCALE_LABEL   "Max RSSI"
@@ -1237,7 +1237,7 @@
 #define TR_MODS_FORBIDDEN      "Veränderungen verboten!"
 #define TR_UNLOCKED            "Entsperrt"
 #define TR_ID                  "ID"
-#define TR_PRECISION           "Prezision"
+#define TR_PRECISION           "Präzision"
 #define TR_RATIO               "Umrechnung"  //Faktor, Mulitplikator, Teiler  0,1 bis 10,0
 #define TR_FORMULA             "Formel"
 #define TR_CELLINDEX           "Zellenindex"
@@ -1271,11 +1271,11 @@
 #define TR_MAINVIEWX           "Main view X"
 #define TR_LAYOUT              "Layout"
 #define TR_ADDMAINVIEW         "Add main view"
-#define TR_BACKGROUND_COLOR    "Background color"
-#define TR_MAIN_COLOR          "Main color"
+#define TR_BACKGROUND_COLOR    "Hintergrundfarbe"
+#define TR_MAIN_COLOR          "Hauptfarbe"
 // ----------------------------- Symbole für Auswahlliste----------
 #define TR_MENU_INPUTS         "\314Inputs"
-#define TR_MENU_LUA            "\322Lua Scripte"
+#define TR_MENU_LUA            "\322Lua Skripte"
 #define TR_MENU_STICKS         "\307Knüppel"
 #define TR_MENU_POTS           "\310Potis"
 #define TR_MENU_MAX            "\315MAX"
