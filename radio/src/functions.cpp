@@ -340,39 +340,41 @@ void evalFunctions()
             break;
 
           case FUNC_RESET:
-            switch (CFN_PARAM(cfn)) {
-              case FUNC_RESET_TIMER1:
-              case FUNC_RESET_TIMER2:
+            if (!(functionsContext.activeSwitches & switch_mask)) {
+              switch (CFN_PARAM(cfn)) {
+                case FUNC_RESET_TIMER1:
+                case FUNC_RESET_TIMER2:
 #if defined(CPUARM)
-              case FUNC_RESET_TIMER3:
+                case FUNC_RESET_TIMER3:
 #endif
-                timerReset(CFN_PARAM(cfn));
-                break;
-              case FUNC_RESET_FLIGHT:
-                flightReset();
-                break;
+                  timerReset(CFN_PARAM(cfn));
+                  break;
+                case FUNC_RESET_FLIGHT:
+                  flightReset();
+                  break;
 #if defined(FRSKY)
-              case FUNC_RESET_TELEMETRY:
-                telemetryReset();
-                break;
+                case FUNC_RESET_TELEMETRY:
+                  telemetryReset();
+                  break;
 #endif
 #if ROTARY_ENCODERS > 0
-              case FUNC_RESET_ROTENC1:
+                case FUNC_RESET_ROTENC1:
 #if ROTARY_ENCODERS > 1
-              case FUNC_RESET_ROTENC2:
+                case FUNC_RESET_ROTENC2:
 #endif
-                g_rotenc[CFN_PARAM(cfn)-FUNC_RESET_ROTENC1] = 0;
-                break;
+                  g_rotenc[CFN_PARAM(cfn)-FUNC_RESET_ROTENC1] = 0;
+                  break;
 #endif
-            }
-#if defined(CPUARM)
-            if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
-              uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
-              if (item < MAX_SENSORS) {
-                telemetryItems[item].clear();
               }
-            }
+#if defined(CPUARM)
+              if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
+                uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
+                if (item < MAX_SENSORS) {
+                  telemetryItems[item].clear();
+                }
+              }
 #endif
+            }
             break;
 
 #if defined(CPUARM)
