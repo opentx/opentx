@@ -146,6 +146,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     QCheckBox * plot = new QCheckBox(this);
     plot->setProperty("index", i);
     plot->setPalette(palette);
+    plot->setToolTip(tr("Overlay this curve"));
     connect(plot, SIGNAL(toggled(bool)), this, SLOT(plotCurve(bool)));
     if (i<limit) {
       ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
