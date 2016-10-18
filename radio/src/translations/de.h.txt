@@ -937,9 +937,9 @@
 #define TR_SWITCHWARN          "SCHALTER"
 #define TR_FAILSAFEWARN        "FAILSAFE"
 #define TR_WRONG_SDCARDVERSION "Erwartete Version: "
-#define TR_WRONG_PCBREV        "Falsches PCB detektiert"
+#define TR_WRONG_PCBREV        "Falsches PCB erkannt"
 #define TR_EMERGENCY_MODE      "NOTFALL MODUS"
-#define TR_PCBREV_ERROR        "PCB error"
+#define TR_PCBREV_ERROR        "PCB Problem"
 #define TR_NO_FAILSAFE         TR("Failsafe not set", "Failsafe nicht programmiert")
 #define TR_KEYSTUCK            "Taste klemmt"  //Key stuck=Taste klemmt
 #define TR_INVERT_THR          TR("Gas umkehren?", "Vollgas hinten?") // Th9x 9XR
@@ -968,7 +968,7 @@
 #define TR_SCRIPT_PANIC        "Skript Panik"   //??
 #define TR_SCRIPT_KILLED       "Skript getötet"  //??
 #define TR_SCRIPT_ERROR        "Unbekannter Fehler"
-#define TR_PLAY_FILE           "Spielen"
+#define TR_PLAY_FILE           "Abspielen"
 #define TR_DELETE_FILE         "Löschen"
 #define TR_COPY_FILE           "Kopieren"
 #define TR_RENAME_FILE         "Umbenennen"
@@ -1087,8 +1087,8 @@
 #define TR_FAS_OFFSET          TR(INDENT "FAS-Ofs", INDENT "FAS-Offset")
 #define TR_UART3MODE           "Serieller Port"
 #define TR_SCRIPT              "Lua-Skript"
-#define TR_INPUTS              "Inputs"
-#define TR_OUTPUTS             "Outputs"
+#define TR_INPUTS              "Eingaben"
+#define TR_OUTPUTS             "Ausgaben"
 #define TR_EEBACKUP            "\002[ENTER Long] Backup EEPROM->SD-Karte"
 #define TR_FACTORYRESET        "\004[MENU Long] ALLES komplett löschen"
 #define TR_CONFIRMRESET        "ALLE Modelle + Einst. löschen?"
@@ -1234,7 +1234,7 @@
 #define TR_VIEW_CHANNELS       "Zeige Kanäle"
 #define TR_VIEW_NOTES          "Zeige Notizen"
 #define TR_MODEL_SELECT        "Modell auswählen"
-#define TR_MODS_FORBIDDEN      "Veränderungen verboten!"
+#define TR_MODS_FORBIDDEN      "Anpassung verboten!"
 #define TR_UNLOCKED            "Entsperrt"
 #define TR_ID                  "ID"
 #define TR_PRECISION           "Präzision"
@@ -1268,9 +1268,9 @@
 #define TR_USER_INTERFACE      "User interface"
 #define TR_THEME               "Theme"
 #define TR_SETUP               "Setup"
-#define TR_MAINVIEWX           "Main view X"
+#define TR_MAINVIEWX           "Ansicht X"
 #define TR_LAYOUT              "Layout"
-#define TR_ADDMAINVIEW         "Add main view"
+#define TR_ADDMAINVIEW         "Ansicht hinzufügen"
 #define TR_BACKGROUND_COLOR    "Hintergrundfarbe"
 #define TR_MAIN_COLOR          "Hauptfarbe"
 // ----------------------------- Symbole für Auswahlliste----------
