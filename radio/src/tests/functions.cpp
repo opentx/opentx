@@ -31,6 +31,7 @@ TEST(SpecialFunctions, SwitchFiledSize)
   EXPECT_EQ(g_model.customFn[0].swtch, -SWSRC_LAST) << "CustomFunctionData.swtch member is too small to hold all possible values";
 }
 
+#if defined(PCBTARANIS) || defined(PCBHORUS)
 TEST(SpecialFunctions, FlightReset)
 {
   RADIO_RESET();
@@ -118,4 +119,6 @@ TEST(SpecialFunctions, GvarsInc)
   EXPECT_EQ(g_model.flightModeData[0].gvars[0], 28);
 }
 
-#endif
+#endif // #if defined(PCBTARANIS) || defined(PCBHORUS)
+
+#endif // #if defined(CPUARM)
