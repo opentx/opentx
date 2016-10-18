@@ -61,6 +61,7 @@ TEST(SpecialFunctions, FlightReset)
 
 }
 
+#if defined(GVARS)
 TEST(SpecialFunctions, GvarsInc)
 {
   RADIO_RESET();
@@ -118,6 +119,7 @@ TEST(SpecialFunctions, GvarsInc)
   evalFunctions(g_model.customFn, modelFunctionsContext);
   EXPECT_EQ(g_model.flightModeData[0].gvars[0], 28);
 }
+#endif // #if defined(GVARS)
 
 #endif // #if defined(PCBTARANIS) || defined(PCBHORUS)
 
