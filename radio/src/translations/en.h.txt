@@ -888,6 +888,8 @@
 #define TR_BACKUP_MODEL        "Backup model"
 #define TR_DELETE_MODEL        "Delete model"
 #define TR_RESTORE_MODEL       "Restore model"
+#define TR_DELETE_ERROR        "Delete error"
+#define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        TR("SD error", "SD card error")
 #define TR_NO_SDCARD           "No SD card"
 #define TR_SDCARD_FULL         "SD card full"

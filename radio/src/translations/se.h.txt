@@ -915,6 +915,8 @@
 #define TR_BACKUP_MODEL        "Modell-backup"
 #define TR_DELETE_MODEL        "Ta Bort Modell"
 #define TR_RESTORE_MODEL       "Återställ Modell"
+#define TR_DELETE_ERROR        "Delete error"
+#define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        "SDCARD-fel"
 #define TR_NO_SDCARD           "SDCARD saknas"
 #define TR_SDCARD_FULL         "SD-kort Fullt"

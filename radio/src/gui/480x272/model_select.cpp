@@ -31,7 +31,12 @@ enum ModelSelectMode {
   MODE_MOVE_MODEL,
 };
 
-uint8_t selectMode;
+enum ModelDeleteMode {
+  MODE_DELETE_MODEL,
+  MODE_DELETE_CATEGORY,
+};
+
+uint8_t selectMode, deleteMode;
 ModelsList modelslist;
 
 ModelsCategory * currentCategory;
@@ -108,6 +113,7 @@ void onModelSelectMenu(const char * result)
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
     SET_WARNING_INFO(currentModel->name, LEN_MODEL_FILENAME, 0);
+    deleteMode = MODE_DELETE_MODEL;
   }
   else if (result == STR_CREATE_MODEL) {
     storageCheck(true);
@@ -141,9 +147,15 @@ void onModelSelectMenu(const char * result)
     editNameCursorPos = 0;
   }
   else if (result == STR_DELETE_CATEGORY) {
-    modelslist.removeCategory(currentCategory);
-    modelslist.save();
-    setCurrentCategory(currentCategoryIndex > 0 ? currentCategoryIndex-1 : currentCategoryIndex);
+    if (currentCategory->size() > 0){
+      POPUP_WARNING(STR_DELETE_ERROR);
+      SET_WARNING_INFO(STR_CAT_NOT_EMPTY, sizeof(TR_CAT_NOT_EMPTY), 0);
+    }
+    else {
+      POPUP_CONFIRMATION(STR_DELETEMODEL);
+      SET_WARNING_INFO(currentCategory->name, LEN_MODEL_FILENAME, 0);
+      deleteMode = MODE_DELETE_CATEGORY;
+    }
   }
 }
 
@@ -184,14 +196,22 @@ bool menuModelSelect(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
-    int modelIndex = MODEL_INDEX();
-    modelslist.removeModel(currentCategory, currentModel);
-    s_copyMode = 0;
-    event = EVT_REFRESH;
-    if (modelIndex > 0) {
-      modelIndex--;
+    if (deleteMode == MODE_DELETE_CATEGORY) {
+      TRACE("DELETE CATEGORY");
+      modelslist.removeCategory(currentCategory);
+      modelslist.save();
+      setCurrentCategory(currentCategoryIndex > 0 ? currentCategoryIndex-1 : currentCategoryIndex);
     }
-    setCurrentModel(modelIndex);
+    else if (deleteMode == MODE_DELETE_MODEL){
+      int modelIndex = MODEL_INDEX();
+      modelslist.removeModel(currentCategory, currentModel);
+      s_copyMode = 0;
+      event = EVT_REFRESH;
+      if (modelIndex > 0) {
+        modelIndex--;
+      }
+      setCurrentModel(modelIndex);
+    }
   }
 
   switch(event) {
