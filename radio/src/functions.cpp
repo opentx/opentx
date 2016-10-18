@@ -330,39 +330,42 @@ void evalFunctions()
             break;
 
           case FUNC_RESET:
-            switch (CFN_PARAM(cfn)) {
-              case FUNC_RESET_TIMER1:
-              case FUNC_RESET_TIMER2:
+            if (!(functionsContext.activeSwitches & switch_mask)) {
+              switch (CFN_PARAM(cfn)) {
+                case FUNC_RESET_TIMER1:
+                case FUNC_RESET_TIMER2:
 #if defined(CPUARM)
-              case FUNC_RESET_TIMER3:
+                case FUNC_RESET_TIMER3:
 #endif
-                timerReset(CFN_PARAM(cfn));
-                break;
-              case FUNC_RESET_FLIGHT:
-                flightReset();
-                break;
+                  timerReset(CFN_PARAM(cfn));
+                  break;
+                case FUNC_RESET_FLIGHT:
+                  flightReset();
+                  break;
 #if defined(TELEMETRY_FRSKY)
-              case FUNC_RESET_TELEMETRY:
-                telemetryReset();
-                break;
+                case FUNC_RESET_TELEMETRY:
+                  telemetryReset();
+                  break;
 #endif
+                  
 #if ROTARY_ENCODERS > 0
-              case FUNC_RESET_ROTENC1:
+                case FUNC_RESET_ROTENC1:
 #if ROTARY_ENCODERS > 1
-              case FUNC_RESET_ROTENC2:
+                case FUNC_RESET_ROTENC2:
 #endif
-                rotencValue[CFN_PARAM(cfn)-FUNC_RESET_ROTENC1] = 0;
-                break;
+                  rotencValue[CFN_PARAM(cfn)-FUNC_RESET_ROTENC1] = 0;
+                  break;
 #endif
-            }
-#if defined(CPUARM)
-            if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
-              uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
-              if (item < MAX_TELEMETRY_SENSORS) {
-                telemetryItems[item].clear();
               }
-            }
+#if defined(CPUARM)
+              if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
+                uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
+                if (item < MAX_TELEMETRY_SENSORS) {
+                  telemetryItems[item].clear();
+                }
+              }
 #endif
+            }
             break;
 
 #if defined(CPUARM)
@@ -409,13 +412,13 @@ void evalFunctions()
               SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_PARAM(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_PARAM(cfn))), mixerCurrentFlightMode);
             }
             else if (CFN_GVAR_MODE(cfn) == FUNC_ADJUST_GVAR_INCDEC) {
-#if defined(CPUARM)
-              SET_GVAR(CFN_GVAR_INDEX(cfn), limit<int16_t>(CFN_GVAR_CST_MIN+g_model.gvars[CFN_GVAR_INDEX(cfn)].min, GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + CFN_PARAM(cfn), CFN_GVAR_CST_MAX-g_model.gvars[CFN_GVAR_INDEX(cfn)].max), mixerCurrentFlightMode);
-#else
               if (!(functionsContext.activeSwitches & switch_mask)) {
+#if defined(CPUARM)
+                SET_GVAR(CFN_GVAR_INDEX(cfn), limit<int16_t>(CFN_GVAR_CST_MIN+g_model.gvars[CFN_GVAR_INDEX(cfn)].min, GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + CFN_PARAM(cfn), CFN_GVAR_CST_MAX-g_model.gvars[CFN_GVAR_INDEX(cfn)].max), mixerCurrentFlightMode);
+#else
                 SET_GVAR(CFN_GVAR_INDEX(cfn), GVAR_VALUE(CFN_GVAR_INDEX(cfn), getGVarFlightMode(mixerCurrentFlightMode, CFN_GVAR_INDEX(cfn))) + (CFN_PARAM(cfn) ? +1 : -1), mixerCurrentFlightMode);
-              }
 #endif
+              }
             }
             else if (CFN_PARAM(cfn) >= MIXSRC_TrimRud && CFN_PARAM(cfn) <= MIXSRC_TrimAil) {
               trimGvar[CFN_PARAM(cfn)-MIXSRC_TrimRud] = CFN_GVAR_INDEX(cfn);
