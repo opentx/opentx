@@ -921,7 +921,7 @@
 #define TR_MOVE_MODEL          "Verschiebe Modell"
 #define TR_BACKUP_MODEL        "Modell auf SD-Karte"  //9XR-Pro
 #define TR_DELETE_MODEL        "Modell löschen" // TODO merged into DELETEMODEL?
-#define TR_RESTORE_MODEL       "Modell wiederherstellen"
+#define TR_RESTORE_MODEL       TR("Modell wiederher.", "Modell wiederherstellen")
 #define TR_DELETE_ERROR        "Fehler beim Löschen"
 #define TR_CAT_NOT_EMPTY       "Kategorie nicht leer"
 #define TR_SDCARD_ERROR        "SD-Kartenfehler"
@@ -936,7 +936,7 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHALTER"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Erwartete Version: "
+#define TR_WRONG_SDCARDVERSION TR("Erw. Version: ","Erwartete Version: ")
 #define TR_WRONG_PCBREV        "Falsches PCB erkannt"
 #define TR_EMERGENCY_MODE      "NOTFALL MODUS"
 #define TR_PCBREV_ERROR        "PCB Problem"
