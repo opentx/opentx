@@ -219,16 +219,7 @@ void menuRadioSdManager(event_t _event)
     if (res == FR_OK) {
       bool firstTime = true;
       for (;;) {
-        if (firstTime) {
-          // fake up directory entry
-          strcpy(fno.fname, "..");
-          fno.fattrib = AM_DIR;
-          res = FR_OK;
-          firstTime = false;
-        }
-        else {
-          res = f_readdir(&dir, &fno);                   /* Read a directory item */
-        }
+        res = sdReadDir(&dir, &fno, firstTime);
         if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
         if (strlen(fno.fname) > SD_SCREEN_FILE_LENGTH) continue;
 

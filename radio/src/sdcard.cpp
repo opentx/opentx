@@ -262,6 +262,37 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   return popupMenuNoItems;
 }
 
+// returns true if current working dir is at the root level
+bool isCwdAtRoot()
+{
+  char path[10];
+  if (f_getcwd(path, sizeof(path)-1) == FR_OK) {
+    return (strcasecmp("/", path) == 0);
+  }
+  return false;
+}
+
+/*
+  Wrapper around the f_readdir() function which 
+  also returns ".." entry for sub-dirs. (FatFS 0.12 does
+  not return ".", ".." dirs anymore)
+*/
+FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime)
+{
+  FRESULT res;
+  if (firstTime && !isCwdAtRoot()) {
+    // fake parent directory entry
+    strcpy(fno->fname, "..");
+    fno->fattrib = AM_DIR;
+    res = FR_OK;
+  }
+  else {
+    res = f_readdir(dir, fno);                   /* Read a directory item */
+  }
+  firstTime = false;
+  return res;
+}
+
 #if defined(CPUARM) && defined(SDCARD)
 const char * sdCopyFile(const char * srcPath, const char * destPath)
 {

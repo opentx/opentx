@@ -869,8 +869,17 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
     return FR_NO_PATH;
   }
 
+  if (sz_path < (strlen(cwd) - strlen(simuSdDirectory))) {
+    TRACE("f_getcwd(): buffer too short");
+    return FR_NOT_ENOUGH_CORE;
+  }
+
   // remove simuSdDirectory from the cwd
   strcpy(path, cwd + strlen(simuSdDirectory));
+
+  if (strlen(path) == 0) {
+    strcpy(path, "/");    // fix for the root directory
+  }
 
   TRACE("f_getcwd() = %s", path);
   return FR_OK;
