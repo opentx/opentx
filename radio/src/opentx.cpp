@@ -985,7 +985,7 @@ void doSplash()
 void checkSDVersion()
 {
   if (sdMounted()) {
-    FIL versionFile = {0};
+    FIL versionFile;
     UINT read = 0;
     char version[sizeof(REQUIRED_SDCARD_VERSION)-1];
     char error[sizeof(TR_WRONG_SDCARDVERSION)+ sizeof(version)];

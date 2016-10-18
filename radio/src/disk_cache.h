@@ -25,7 +25,7 @@
 #include "sdio_sd.h"
 
 // tunable parameters
-#define DISK_CACHE_BLOCKS_NUM       8   // no cache blocks
+#define DISK_CACHE_BLOCKS_NUM      32   // no cache blocks
 #define DISK_CACHE_BLOCK_SECTORS   16   // no sectors
 
 #define DISK_CACHE_BLOCK_SIZE   (DISK_CACHE_BLOCK_SECTORS * BLOCK_SIZE)
@@ -50,6 +50,7 @@ struct DiskCacheStats
 {
   uint32_t noHits;
   uint32_t noMisses;
+  uint32_t noWrites;
 };
 
 class DiskCache
@@ -61,7 +62,7 @@ class DiskCache
     const DiskCacheStats & getStats() const;
     int getHitRate() const;
     void clear();
-    
+
   private:
     DiskCacheStats stats;
     uint32_t lastBlock;

@@ -107,25 +107,13 @@ int cliLs(const char ** argv)
 {
   FILINFO fno;
   DIR dir;
-  char *fn;   /* This function is assuming non-Unicode cfg. */
-#if _USE_LFN
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
-#endif
 
   FRESULT res = f_opendir(&dir, argv[1]);        /* Open the directory */
   if (res == FR_OK) {
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-
-#if _USE_LFN
-      fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-      fn = fno.fname;
-#endif
-      serialPrint(fn);
+      serialPrint(fno.fname);
     }
   }
   else {
@@ -711,7 +699,7 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "dc")) {
     DiskCacheStats stats = diskCache.getStats();
     uint32_t hitRate = diskCache.getHitRate();
-    serialPrint("Disk Cache stats: reads: %u, hits: %u, hit rate: %0.1f%%", (stats.noHits + stats.noMisses), stats.noHits, hitRate/10.0);
+    serialPrint("Disk Cache stats: w:%u r: %u, h: %u(%0.1f%%), m: %u", stats.noWrites, (stats.noHits + stats.noMisses), stats.noHits, hitRate/10.0, stats.noMisses);
   }
 #endif
   else if (toLongLongInt(argv, 1, &address) > 0) {
