@@ -931,7 +931,7 @@
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Chybná verze souborů na kartě"
+#define TR_WRONG_SDCARDVERSION "Doporučená ver.: "
 #define TR_WRONG_PCBREV        "Jiná verze PCB/firmware"
 #define TR_EMERGENCY_MODE      "NOUZOVÝ REŽIM"
 #define TR_PCBREV_ERROR        "PCB error"
