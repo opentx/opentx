@@ -698,7 +698,6 @@ extern const pm_char STR_RESET_BTN[];
 #if defined(SDCARD)
   extern const pm_char STR_BACKUP_MODEL[];
   extern const pm_char STR_RESTORE_MODEL[];
-
   extern const pm_char STR_DELETE_ERROR[];
   extern const pm_char STR_NO_SDCARD[];
   extern const pm_char STR_SDCARD_FULL[];
