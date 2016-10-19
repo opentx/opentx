@@ -225,20 +225,20 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
     if (seconds > 0) {
       PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
     }
-    }
-    if (seconds > 1) {
-      PLAY_NUMBER(seconds, 0, 0);
-      PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
+  }
+  if (seconds > 1) {
+    PLAY_NUMBER(seconds, 0, 0);
+    PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
+  }
+  else {
+    if (seconds == 1) {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+      PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDE);
     }
     else {
-      if (seconds == 1) {
-        PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
-        PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDE);
-      }
-      else {
-        PLAY_NUMBER(seconds, 0, 0);
-      }
+      PLAY_NUMBER(seconds, 0, 0);
     }
+  }
 }
 
 LANGUAGE_PACK_DECLARE(de, "Deutsch");
