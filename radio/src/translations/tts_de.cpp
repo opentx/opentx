@@ -227,6 +227,7 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
     }
   }
+  
   if (seconds > 1) {
     PLAY_NUMBER(seconds, 0, 0);
     PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
