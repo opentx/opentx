@@ -3,6 +3,7 @@
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Andreas Weitl <andreas.weitl@gmx.de>
  * - Bertrand Songis <bsongis@gmail.com>
+ * - Benjamin Boy <rcbebo82@googlemail.com>
  * - Thomas Husterer
  *
  * opentx is based on code named
@@ -112,7 +113,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         unit = UNIT_FEET;
       }
       if (unit == UNIT_SPEED) {
-        unit = UNIT_KTS;
+         unit = UNIT_KTS;
       }
     }
     unit++;
@@ -175,7 +176,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -1;
   
   if (unit) {
-    DE_PUSH_UNIT_PROMPT(unit);  
+    DE_PUSH_UNIT_PROMPT(unit);
   }
 }
 
@@ -198,7 +199,8 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
     if (tmp > 1) {
       PLAY_NUMBER(tmp, 0, 0);
       PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDEN);
-    } else {
+    }
+    else {
       PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
       PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDE);
     }
@@ -215,7 +217,8 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
     if (tmp > 1) {
       PLAY_NUMBER(tmp, 0, 0);
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
-    } else {
+    }
+    else {
       PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
     }
@@ -226,11 +229,13 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
     if (seconds > 1) {
       PLAY_NUMBER(seconds, 0, 0);
       PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
-    } else {
+    }
+    else {
       if (seconds == 1) {
         PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
         PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDE);
-      } else {
+      }
+      else {
         PLAY_NUMBER(seconds, 0, 0);
       }
     }
