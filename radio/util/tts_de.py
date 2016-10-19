@@ -8,14 +8,17 @@ from tts_common import filename, NO_ALTERNATE, PROMPT_SYSTEM_BASE, PROMPT_CUSTOM
 systemSounds = []
 sounds = []
 
-for i in range(101):
+for i in range(100):
     systemSounds.append((str(i), filename(PROMPT_SYSTEM_BASE + i)))
-systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 101)))
-for i, s in enumerate(["comma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden"]):
-    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 102 + i)))
-for i, (s, f) in enumerate([(u"Volt","volt0"),
-                            (u"Ampere", "amp0"),
-                            (u"MilliAmpere", "mamp0"),
+systemSounds.append(("ein", filename(PROMPT_SYSTEM_BASE + 100)))
+systemSounds.append(("eine", filename(PROMPT_SYSTEM_BASE + 101)))
+systemSounds.append(("hundert", filename(PROMPT_SYSTEM_BASE + 102)))
+systemSounds.append(("tausend", filename(PROMPT_SYSTEM_BASE + 103)))
+for i, s in enumerate(["komma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden", "stunde", "stunden"]):
+    systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 104 + i)))
+for i, (s, f) in enumerate([(u"Wolt","volt0"),
+                            (u"Ampär", "amp0"),
+                            (u"MilliAmpär", "mamp0"),
                             (u"Knoten", "knot0"),
                             (u"Meter pro sekunde", "mps0"),
                             (u"Fuss pro sekunde", "fps0"),
@@ -26,7 +29,7 @@ for i, (s, f) in enumerate([(u"Volt","volt0"),
                             (u"Grad Celsius", "celsius0"),
                             (u"Grad Fahrenheit", "fahr0"),
                             (u"Prozent", "percent0"),
-                            (u"Milliampere pro stunde", "mamps0"),
+                            (u"Milliampär pro stunde", "mamps0"),
                             (u"Watt", "watt0"),
                             (u"Milli Watt", "mwatt0"),
                             (u"D B", "db0"),
@@ -40,7 +43,7 @@ for i, (s, f) in enumerate([(u"Volt","volt0"),
                             (u"Minute", "minute0"), (u"Minuten", "minute1"),
                             (u"Sekunde", "second0"), (u"Sekunden", "second1"),
                             ]):
-    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 110 + i)))
+    systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 114 + i)))
 for s, f, a in [(u"Inaktivitätsalarm", "inactiv", 486),
                 (u"Senderspannung schwach", "lowbatt", 485),
                 (u"Gaskanal nicht Null, bitte prüfen", "thralert", 481),
