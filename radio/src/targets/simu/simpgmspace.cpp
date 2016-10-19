@@ -364,18 +364,11 @@ struct SimulatorAudio {
   bool threadRunning;
   pthread_t threadPid;
 } simuAudio;
-
-void audioPushBuffer(AudioBuffer * buffer)
-{
-  buffer->state = AUDIO_BUFFER_FILLED;
-}
 #endif
 
-#if defined(PCBHORUS)
 void audioConsumeCurrentBuffer()
 {
 }
-#endif
 
 #if defined(MASTER_VOLUME)
 void setScaledVolume(uint8_t volume)
@@ -395,7 +388,7 @@ int32_t getVolume()
 #endif
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
-void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples)
+void copyBuffer(uint8_t * dest, const uint16_t * buff, unsigned int samples)
 {
   for(unsigned int i=0; i<samples; i++) {
     int sample = ((int32_t)(uint32_t)(buff[i]) - 0x8000);  // conversion from uint16_t
@@ -409,22 +402,25 @@ void fillAudioBuffer(void *udata, Uint8 *stream, int len)
   SDL_memset(stream, 0, len);
 
   if (simuAudio.leftoverLen) {
-    copyBuffer(stream, simuAudio.leftoverData, simuAudio.leftoverLen);
-    len -= simuAudio.leftoverLen*2;
-    stream += simuAudio.leftoverLen*2;
-    simuAudio.leftoverLen = 0;
+    int len1 = min(len/2, simuAudio.leftoverLen);
+    copyBuffer(stream, simuAudio.leftoverData, len1);
+    len -= len1*2;
+    stream += len1*2;
+    simuAudio.leftoverLen -= len1;
     // putchar('l');
+    if (simuAudio.leftoverLen) return;		// buffer fully filled
   }
 
-  if (audioQueue.filledAtleast(len/(AUDIO_BUFFER_SIZE*2)+1) ) {
+  if (audioQueue.buffersFifo.filledAtleast(len/(AUDIO_BUFFER_SIZE*2)+1) ) {
     while(true) {
-      AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+      const AudioBuffer * nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
       if (nextBuffer) {
         if (len >= nextBuffer->size*2) {
           copyBuffer(stream, nextBuffer->data, nextBuffer->size);
           stream += nextBuffer->size*2;
           len -= nextBuffer->size*2;
           // putchar('+');
+          audioQueue.buffersFifo.freeNextFilledBuffer();
         }
         else {
           //partial
@@ -433,6 +429,7 @@ void fillAudioBuffer(void *udata, Uint8 *stream, int len)
           memcpy(simuAudio.leftoverData, &nextBuffer->data[len/2], simuAudio.leftoverLen*2);
           len = 0;
           // putchar('p');
+          audioQueue.buffersFifo.freeNextFilledBuffer();
           break;
         }
       }

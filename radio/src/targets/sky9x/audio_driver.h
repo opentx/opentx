@@ -23,7 +23,7 @@
 
 void audioInit( void ) ;
 void audioEnd( void ) ;
-#define audioConsumeCurrentBuffer()
+void audioConsumeCurrentBuffer();
 #define audioDisableIrq()       __disable_irq()
 #define audioEnableIrq()        __enable_irq()
 
