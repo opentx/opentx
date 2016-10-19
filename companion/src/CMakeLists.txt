@@ -427,6 +427,13 @@ if(APPLE)
   INSTALL(FILES ${DFU_UTIL_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
   set(bundle_dfu_util_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util")
 
+
+  # these needs to be relative to CMAKE_INSTALL_PREFIX
+  get_target_property(QT_LIBRARY_DIR Qt5::Core LOCATION)
+  get_filename_component(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PATH)
+  get_filename_component(QT_LIBRARY_DIR "${QT_LIBRARY_DIR}/.." ABSOLUTE)
+
+
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
   # technically a hack (that is already is in the Bundle library ....)
@@ -434,7 +441,7 @@ if(APPLE)
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
-   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_dfu_util_path}\"   \"\")
+   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_dfu_util_path}\"   \"${QT_LIBRARY_DIR}\")
    file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_FINAL_NAME}.app\")
    " COMPONENT Runtime)
 endif()

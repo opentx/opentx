@@ -8,7 +8,18 @@ SRCDIR=$1
 OUTDIR=$2
 
 COMMON_OPTIONS="-DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$3 -DGVARS=YES -DHELI=YES"
+
+if [ "$(uname)" = "Darwin" ]; then
+    COMMON_OPTIONS="${COMMON_OPTIONS} -DCMAKE_PREFIX_PATH=~/Qt/5.7/clang_64/ -DCMAKE_OSX_DEPLOYMENT_TARGET='10.9'"
+fi
+
 STM32_OPTIONS="${COMMON_OPTIONS} -DLUA=YES"
+
+if [ "$3" == "" ]; then
+   echo "Usage $0 SRCDIR OUTDIR VERSION_SUFFIX"
+   exit 1
+fi
+
 
 rm -rf build
 mkdir build
@@ -46,4 +57,8 @@ make -j2 libsimulator
 
 make -j2 package
 
-cp *.deb ${OUTDIR}
+if [ "$(uname)" = "Darwin" ]; then
+    cp *.dmg ${OUTDIR}
+else
+    cp *.deb ${OUTDIR}
+fi
