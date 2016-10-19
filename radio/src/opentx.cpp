@@ -1008,7 +1008,7 @@ void checkSDVersion()
 }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
