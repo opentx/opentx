@@ -247,7 +247,7 @@ void eepromWaitEepromStandbyState(void)
   }
 }
 
-#if !defined(BOOT)
+#if !defined(BOOT) && !defined(SOFTWARE_VOLUME)
 const uint8_t volumeScale[VOLUME_LEVEL_MAX+1] = {
   0,  1,  2,  3,  5,  9,  13,  17,  22,  27,  33,  40,
   64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127

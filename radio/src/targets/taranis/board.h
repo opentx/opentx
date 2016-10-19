@@ -454,9 +454,11 @@ void dacStop(void);
 void setSampleRate(uint32_t frequency);
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
+#if !defined(SOFTWARE_VOLUME)
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);
+#endif
 #define audioConsumeCurrentBuffer()
 #define audioDisableIrq()       __disable_irq()
 #define audioEnableIrq()        __enable_irq()
