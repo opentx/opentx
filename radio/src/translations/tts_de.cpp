@@ -113,7 +113,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         unit = UNIT_FEET;
       }
       if (unit == UNIT_SPEED) {
-       unit = UNIT_KTS;
+         unit = UNIT_KTS;
       }
     }
     unit++;
