@@ -776,7 +776,7 @@
   #define BT_RCC_APB1Periph            RCC_APB1Periph_USART3
   #define BT_EN_GPIO                   GPIOE
   #define BT_EN_GPIO_PIN               GPIO_Pin_12 // PE.12
-  #define BT_GPIO                      GPIOB
+  #define BT_GPIO_TXRX                 GPIOB
   #define BT_TX_GPIO_PIN               GPIO_Pin_10 // PB.10
   #define BT_RX_GPIO_PIN               GPIO_Pin_11 // PB.11
   #define BT_TX_GPIO_PinSource         GPIO_PinSource10
