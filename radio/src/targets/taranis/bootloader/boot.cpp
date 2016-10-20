@@ -22,7 +22,7 @@
 #include "stamp.h"
 
 #define BOOTLOADER_TITLE        " Taranis BootLoader - " VERSION
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
   #define BOOT_KEY_UP           KEY_MINUS
   #define BOOT_KEY_DOWN         KEY_PLUS
 #else
@@ -126,19 +126,19 @@ void interrupt10ms(void)
 
 void init10msTimer()
 {
-  TIM14->ARR = 9999;  // 10mS
-  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1; // 1uS from 12MHz
-  TIM14->CCER = 0;
-  TIM14->CCMR1 = 0;
-  TIM14->EGR = 0;
-  TIM14->CR1 = 5;
-  TIM14->DIER |= 1;
-  NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+  INTERRUPT_5MS_TIMER->ARR = 9999;  // 10mS
+  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1; // 1uS from 12MHz
+  INTERRUPT_5MS_TIMER->CCER = 0;
+  INTERRUPT_5MS_TIMER->CCMR1 = 0;
+  INTERRUPT_5MS_TIMER->EGR = 0;
+  INTERRUPT_5MS_TIMER->CR1 = 5;
+  INTERRUPT_5MS_TIMER->DIER |= 1;
+  NVIC_EnableIRQ(INTERRUPT_5MS_IRQn);
 }
 
-extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
+extern "C" void INTERRUPT_5MS_IRQHandler()
 {
-  TIM14->SR &= ~TIM_SR_UIF;
+  INTERRUPT_5MS_TIMER->SR &= ~TIM_SR_UIF;
   interrupt10ms();
 }
 
