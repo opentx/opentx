@@ -36,7 +36,7 @@ uint16_t DsmRxTimeout;
 // Uses PA5 and PA6 (RXD and TXD)
 void UART2_Configure(uint32_t baudrate, uint32_t masterClock, int mode)
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
 
   // Configure PIO
   configure_pins( (PIO_PA5 | PIO_PA6), PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;
@@ -66,7 +66,7 @@ void UART2_Configure(uint32_t baudrate, uint32_t masterClock, int mode)
 
 void UART2_timeout_enable()
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
   pUsart->US_CR = US_CR_STTTO ;
   pUsart->US_RTOR = 115 ;               // Bits @ 115200 ~= 1mS
   pUsart->US_IER = US_IER_TIMEOUT ;
@@ -76,7 +76,7 @@ void UART2_timeout_enable()
 
 void UART2_timeout_disable()
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
   pUsart->US_RTOR = 0 ;
   pUsart->US_IDR = US_IDR_TIMEOUT ;
   NVIC_DisableIRQ(USART0_IRQn);
@@ -84,14 +84,14 @@ void UART2_timeout_disable()
 
 extern "C" void USART0_IRQHandler()
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
   pUsart->US_CR = US_CR_STTTO ;         // Clears timeout bit
   DsmRxTimeout = 1;
 }
 
 void startPdcUsartReceive()
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
   TelemetryInBuffer.outPtr = TelemetryInBuffer.fifo ;
 #ifndef SIMU
   pUsart->US_RPR = (uint32_t)TelemetryInBuffer.fifo ;
@@ -105,7 +105,7 @@ void startPdcUsartReceive()
 void rxPdcUsart( void (*pChProcess)(uint8_t x) )
 {
 #if !defined(SIMU)
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
   uint8_t *ptr ;
   uint8_t *endPtr ;
 
@@ -137,7 +137,7 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) )
 
 uint32_t txPdcUsart(uint8_t *buffer, uint32_t size)
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
 
   if ( pUsart->US_TNCR == 0 )
   {
@@ -153,7 +153,7 @@ uint32_t txPdcUsart(uint8_t *buffer, uint32_t size)
 
 uint32_t telemetryTransmitPending()
 {
-  register Usart *pUsart = SECOND_USART;
+  Usart *pUsart = SECOND_USART;
   uint32_t x ;
 
   __disable_irq() ;

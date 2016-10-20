@@ -25,7 +25,7 @@ const AudioBuffer * nextBuffer = 0;
 
 void setSampleRate(uint32_t frequency)
 {
-  register uint32_t timer = (PERI1_FREQUENCY * TIMER_MULT_APB1) / frequency - 1 ;         // MCK/8 and 100 000 Hz
+  uint32_t timer = (PERI1_FREQUENCY * TIMER_MULT_APB1) / frequency - 1 ;         // MCK/8 and 100 000 Hz
 
   AUDIO_TIMER->CR1 &= ~TIM_CR1_CEN ;
   AUDIO_TIMER->CNT = 0 ;

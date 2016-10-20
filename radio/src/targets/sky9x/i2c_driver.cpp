@@ -51,7 +51,7 @@ bool i2cInit()
   //Enable Peripheral Clock
   PMC->PMC_PCER0 |= 0x00080000L;
   //Enable TWI PIOs
-  register Pio *pioptr;
+  Pio *pioptr;
   pioptr = PIOA;
   pioptr->PIO_ABCDSR[0] &= ~0x00000018;        // Peripheral A
   pioptr->PIO_ABCDSR[1] &= ~0x00000018;        // Peripheral A

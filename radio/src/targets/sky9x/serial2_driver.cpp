@@ -62,7 +62,7 @@ uint8_t serial2TracesEnabled()
  */
 void SECOND_UART_Configure(uint32_t baudrate, uint32_t masterClock)
 {
-  register Uart *pUart = SECOND_SERIAL_UART;
+  Uart *pUart = SECOND_SERIAL_UART;
 
   /* Configure PIO */
   configure_pins( (PIO_PA9 | PIO_PA10), PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA | PIN_NO_PULLUP ) ;

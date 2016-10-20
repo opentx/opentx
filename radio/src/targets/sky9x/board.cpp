@@ -50,7 +50,7 @@ extern "C" void sam_boot( void ) ;
 inline void config_free_pins()
 {
 #if defined(REVA)
-  register Pio * pioptr = PIOA ;
+  Pio * pioptr = PIOA ;
   pioptr->PIO_PER = 0x03800000L ;         // Enable bits A25,24,23
   pioptr->PIO_ODR = 0x03800000L ;         // Set as input
   pioptr->PIO_PUER = 0x03800000L ;        // Enable pullups
@@ -73,7 +73,7 @@ inline void config_free_pins()
 inline void setup_switches()
 {
 #if defined(REVA)
-  register Pio *pioptr = PIOA ;
+  Pio *pioptr = PIOA ;
   pioptr->PIO_PER = 0xF8008184 ;          // Enable bits
   pioptr->PIO_ODR = 0xF8008184 ;          // Set bits input
   pioptr->PIO_PUER = 0xF8008184 ;         // Set bits with pullups
@@ -97,7 +97,7 @@ inline void setup_switches()
 #if !defined(SIMU)
 inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock)
 {
-  register Uart *pUart = BT_USART;
+  Uart *pUart = BT_USART;
 
   /* Configure PIO */
   configure_pins( (PIO_PB2 | PIO_PB3), PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTB | PIN_NO_PULLUP ) ;
@@ -139,7 +139,7 @@ void UART3_Stop()
 // This was 6 MHz, we may need to slow it to TIMER_CLOCK2 (MCK/8=4.5 MHz)
 inline void start_timer0()
 {
-  register Tc *ptc ;
+  Tc *ptc ;
 
   // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x00800000L ;               // Enable peripheral clock to TC0
@@ -158,8 +158,8 @@ inline void start_timer0()
 // Starts TIMER2 at 200Hz,  commentd out drive of TIOA2 (A26, EXT2)
 inline void start_timer2()
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  Tc *ptc ;
+  uint32_t timer ;
 
   // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x02000000L ;               // Enable peripheral clock to TC2
@@ -195,7 +195,7 @@ void interrupt5ms()
 
 extern "C" void TC2_IRQHandler()
 {
-  register uint32_t dummy;
+  uint32_t dummy;
 
   /* Clear status bit to acknowledge interrupt */
   dummy = TC0->TC_CHANNEL[2].TC_SR;
@@ -220,8 +220,8 @@ extern "C" void TC2_IRQHandler()
 // For testing, just drive it out with PWM
 void init_pwm()
 {
-  register Pwm *pwmptr ;
-  register uint32_t timer ;
+  Pwm *pwmptr ;
+  uint32_t timer ;
 
   PMC->PMC_PCER0 |= ( 1 << ID_PWM ) ;           // Enable peripheral clock to PWM
 
@@ -229,7 +229,7 @@ void init_pwm()
 
   /* Configure PIO */
 #if defined(REVA)
-  register Pio *pioptr = PIOB ;
+  Pio *pioptr = PIOB ;
   pioptr->PIO_PER = 0x00000020L ;         // Enable bit B5
   pioptr->PIO_ODR = 0x00000020L ;         // set as input
 #else
@@ -299,7 +299,7 @@ void init_pwm()
 
 void configure_pins( uint32_t pins, uint16_t config )
 {
-        register Pio *pioptr ;
+        Pio *pioptr ;
 
         pioptr = PIOA + ( ( config & PIN_PORT_MASK ) >> 6) ;
         if ( config & PIN_PULLUP )
@@ -374,8 +374,8 @@ void opentxBootloader();
 #if !defined(AR9X)
 void i2cInit()
 {
-  register Pio *pioptr;
-  register uint32_t timing;
+  Pio *pioptr;
+  uint32_t timing;
 
   PMC->PMC_PCER0 |= 0x00080000L ;               // Enable peripheral clock to TWI0
 
@@ -410,7 +410,7 @@ void boardInit()
     }
   }
 
-  register Pio *pioptr ;
+  Pio *pioptr ;
 
   ResetReason = RSTC->RSTC_SR;
 
@@ -547,7 +547,7 @@ uint8_t getTemperature()
 
 void setSticksGain(uint8_t gains)
 {
-  register Adc *padc ;
+  Adc *padc ;
   uint32_t gain ;
   uint32_t offset ;
 

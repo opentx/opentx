@@ -71,7 +71,7 @@ const uint8_t Lcd_lookup[] =
 
 void lcdSendCtl(uint8_t val)
 {
-  register Pio *pioptr;
+  Pio *pioptr;
 
 #if defined(REVA)
   pioptr = PIOC;
@@ -112,7 +112,7 @@ void lcdSendCtl(uint8_t val)
 
 void lcdInit()
 {
-  register Pio *pioptr;
+  Pio *pioptr;
   // /home/thus/txt/datasheets/lcd/KS0713.pdf
   // ~/txt/flieger/ST7565RV17.pdf  from http://www.glyn.de/content.asp?wdid=132&sid=
 
@@ -191,7 +191,7 @@ void lcdInit()
 
 void lcdSetRefVolt(uint8_t val)
 {
-  register Pio *pioptr;
+  Pio *pioptr;
   pioptr = PIOC;
 
   // read the inputs, and lock the LCD lines
@@ -221,14 +221,14 @@ void lcdSetRefVolt(uint8_t val)
 
 void lcdRefresh()
 {
-  register Pio *pioptr;
-  register uint8_t *p = displayBuf;
-  register uint32_t y;
-  register uint32_t x;
-  register uint32_t z;
-  register uint32_t ebit;
+  Pio *pioptr;
+  uint8_t *p = displayBuf;
+  uint32_t y;
+  uint32_t x;
+  uint32_t z;
+  uint32_t ebit;
 #if defined(REVA)
-  register uint8_t *lookup;
+  uint8_t *lookup;
   lookup = (uint8_t *) Lcd_lookup;
 #endif
 

@@ -30,7 +30,7 @@ void hapticOff()
 // pwmPercent 0-100
 void hapticOn( uint32_t pwmPercent )
 {
-  register Pwm *pwmptr ;
+  Pwm *pwmptr ;
 
   pwmptr = PWM ;
 

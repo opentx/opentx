@@ -88,7 +88,7 @@ uint8_t keyDown()
 #if defined(ROTARY_ENCODER_NAVIGATION)
 void checkRotaryEncoder()
 {
-  register uint32_t newpos = ROTARY_ENCODER_POSITION();
+  uint32_t newpos = ROTARY_ENCODER_POSITION();
   if (newpos != rotencPosition) {
     if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
       --rotencValue[0];
@@ -168,7 +168,7 @@ uint8_t keyState(uint8_t index)
 
 uint32_t switchState(uint8_t index)
 {
-  register uint32_t xxx = 0;
+  uint32_t xxx = 0;
   
   switch (index) {
     ADD_3POS_CASE(A, 0);

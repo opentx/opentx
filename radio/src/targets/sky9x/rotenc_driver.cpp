@@ -37,7 +37,7 @@ void rotencEnd()
 volatile uint32_t Rotary_position ;
 extern "C" void PIOC_IRQHandler()
 {
-  register uint32_t dummy;
+  uint32_t dummy;
 
   dummy = PIOC->PIO_ISR ;                 // Read and clear status register
   (void) dummy ;                          // Discard value - prevents compiler warning

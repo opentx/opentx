@@ -23,7 +23,7 @@
 // Start TIMER3 for input capture
 inline void start_timer3()
 {
-  register Tc *ptc ;
+  Tc *ptc ;
 
   // Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x04000000L ;               // Enable peripheral clock to TC3
@@ -45,8 +45,8 @@ inline void start_timer3()
 // Start Timer4 to provide 0.5uS clock for input capture
 void start_timer4()
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  Tc *ptc ;
+  uint32_t timer ;
 
   timer = Master_frequency / (2*2000000) ;                // MCK/2 and 2MHz
 

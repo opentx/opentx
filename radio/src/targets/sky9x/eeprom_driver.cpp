@@ -28,10 +28,10 @@ uint8_t eepromIsTransferComplete()
   return Spi_complete;
 }
 
-uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, register uint8_t *rx, register uint32_t comlen, register uint32_t count)
+uint32_t eepromTransmitData(uint8_t *command, uint8_t *tx, uint8_t *rx, uint32_t comlen, uint32_t count)
 {
-  register Spi * spiptr = SPI;
-  register uint32_t condition;
+  Spi * spiptr = SPI;
+  uint32_t condition;
   static uint8_t discard_rx_command[4];
 
   if (comlen > 4) {
@@ -76,8 +76,8 @@ uint32_t eepromTransmitData(register uint8_t *command, register uint8_t *tx, reg
 
 uint8_t eepromTransmitByte(uint8_t out, bool skipFirst)
 {
-  register Spi * spiptr = SPI;
-  register uint32_t delay;
+  Spi * spiptr = SPI;
+  uint32_t delay;
 
   spiptr->SPI_CR = 1; // Enable
   (void) spiptr->SPI_RDR; // Dump any rx data
@@ -172,8 +172,8 @@ void eepromBlockErase(uint32_t address)
 // Set clock to 3 MHz, AT25 device is rated to 70MHz, 18MHz would be better
 void eepromInit()
 {
-  register Spi * spiptr = SPI;
-  register uint32_t timer;
+  Spi * spiptr = SPI;
+  uint32_t timer;
 
   PMC->PMC_PCER0 |= 0x00200000L; // Enable peripheral clock to SPI
   /* Configure PIO */
@@ -190,7 +190,7 @@ void eepromInit()
 
 extern "C" void SPI_IRQHandler()
 {
-  register Spi * spiptr = SPI;
+  Spi * spiptr = SPI;
   SPI->SPI_IDR = 0x07FF; // All interrupts off
   spiptr->SPI_CR = 2; // Disable
   (void) spiptr->SPI_RDR; // Dump any rx data

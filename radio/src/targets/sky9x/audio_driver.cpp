@@ -31,8 +31,8 @@ const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 
 void setSampleRate(uint32_t frequency)
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  Tc *ptc ;
+  uint32_t timer ;
 
   timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
   if (timer > 65535)
@@ -50,8 +50,8 @@ void setSampleRate(uint32_t frequency)
 // Start TIMER1 at 100000Hz, used for DACC trigger
 void dacTimerStart()
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  Tc *ptc ;
+  uint32_t timer ;
 
 	// Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x01000000L ;		// Enable peripheral clock to TC1
@@ -78,7 +78,7 @@ void dacInit()
 
   PMC->PMC_PCER0 |= 0x40000000L ;		// Enable peripheral clock to DAC
 
-  register Dacc *dacptr = DACC;
+  Dacc *dacptr = DACC;
 
 #if defined(REVA)
   dacptr->DACC_MR = 0x0B010215L ;                       // 0000 1011 0000 0001 0000 0010 0001 0101
@@ -137,7 +137,7 @@ extern "C" void DAC_IRQHandler()
 // Sound routines
 void audioInit()
 {
-  register Pio *pioptr ;
+  Pio *pioptr ;
 
   dacInit() ;
 

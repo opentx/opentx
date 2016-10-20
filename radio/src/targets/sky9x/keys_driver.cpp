@@ -32,8 +32,8 @@
 // LCD pins 5 DOWN, 4 RIGHT, 3 LEFT, 1 UP
 uint32_t readKeys()
 {
-  register uint32_t x;
-  register uint32_t result = 0;
+  uint32_t x;
+  uint32_t result = 0;
 
   x = lcdLock ? lcdInputs : PIOC->PIO_PDSR; // 6 LEFT, 5 RIGHT, 4 DOWN, 3 UP ()
   x = ~x;
@@ -73,7 +73,7 @@ uint32_t readKeys()
 
 uint32_t readTrims()
 {
-  register uint32_t result = 0;
+  uint32_t result = 0;
 
   if (~TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
     result |= 0x01;
@@ -107,7 +107,7 @@ uint8_t keyDown()
 
 void readKeysAndTrims()
 {
-  register uint32_t i;
+  uint32_t i;
 
 #if ROTARY_ENCODERS > 0
   keys[BTN_REa].input(REA_DOWN());
@@ -135,8 +135,8 @@ uint8_t keyState(uint8_t index)
 
 uint32_t switchState(uint8_t index)
 {
-  register uint32_t a = PIOA->PIO_PDSR;
-  register uint32_t c = PIOC->PIO_PDSR;
+  uint32_t a = PIOA->PIO_PDSR;
+  uint32_t c = PIOC->PIO_PDSR;
 
   uint32_t xxx = 0;
 
