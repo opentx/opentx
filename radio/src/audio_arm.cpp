@@ -23,10 +23,6 @@
 
 extern OS_MutexID audioMutex;
 
-#if defined(SOFTWARE_VOLUME)
-extern uint8_t currentSpeakerVolume;
-#endif
-
 const int16_t sineValues[] =
 {
     0, 196, 392, 588, 784, 980, 1175, 1370, 1564, 1758,

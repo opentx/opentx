@@ -452,6 +452,7 @@ class AudioQueue {
     AudioFragmentFifo fragmentsFifo;
 };
 
+extern uint8_t currentSpeakerVolume;
 extern AudioQueue audioQueue;
 
 enum {
