@@ -358,28 +358,26 @@ else()
 endif()
 
 set(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTx open source firmware")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTX open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 
 # The file stripping is deliberately disabled, with the stripped file we get
 # very poor trace-backs from the users when they report Companion crash
 set(CPACK_STRIP_FILES FALSE)
 
-
-SET(plugin_dest_dir bin)
-SET(qtconf_dest_dir bin)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${COMPANION_NAME}")
+set(plugin_dest_dir bin)
+set(qtconf_dest_dir bin)
+set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${COMPANION_NAME}")
 IF(APPLE)
-  SET(plugin_dest_dir ${COMPANION_NAME}.app/Contents/Plugins)
-  SET(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
-  SET(translations_dest_dir ${COMPANION_NAME}.app/Contents/translations)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+  set(plugin_dest_dir ${COMPANION_NAME}.app/Contents/Plugins)
+  set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
+  set(translations_dest_dir ${COMPANION_NAME}.app/Contents/translations)
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
 ENDIF(APPLE)
 IF(WIN32)
-  SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
-
+  set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
 ENDIF(WIN32)
 
 
@@ -389,12 +387,12 @@ INSTALL(TARGETS ${COMPANION_NAME}
     )
 
 # Qt5 + Cmake + Mac is poorly documented. A lot of this is guesswork
-# and trial and error. Do not hestinate to fix it for the better
+# and trial and error. Do not hesitate to fix it for the better
 if(APPLE)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
 
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-  SET(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+  set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
   install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
   
   # Write qt.conf to tell qt where to find it plugins
@@ -405,14 +403,14 @@ if(APPLE)
     COMPONENT Runtime)
 
   # menu file
-  INSTALL(DIRECTORY ${PROJECT_SOURCE_DIR}/companion/targets/mac/qt_menu.nib DESTINATION "${companion_res_dir}" COMPONENT Runtime)
+  install(DIRECTORY ${PROJECT_SOURCE_DIR}/companion/targets/mac/qt_menu.nib DESTINATION "${companion_res_dir}" COMPONENT Runtime)
 
   # translations file
-  INSTALL(FILES ${companion_QM} DESTINATION "${translations_dest_dir}" COMPONENT Runtime)
+  install(FILES ${companion_QM} DESTINATION "${translations_dest_dir}" COMPONENT Runtime)
 
   # manually add the cocoa plugin
   get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
-  INSTALL(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
+  install(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
   set(bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/platforms/libqcocoa.dylib")
   
   # Add icon
@@ -420,24 +418,22 @@ if(APPLE)
   set(MAC_ICON_FILE ${COMPANION_SRC_DIRECTORY}/images/${MACOSX_BUNDLE_ICON_FILE})
   SET_SOURCE_FILES_PROPERTIES(${MAC_ICON_FILE} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
   set(${COMPANION_SOURCES} ${COMPANION_SOURCES} ${PROJECT_SOURCE_DIR}/images/${MACOSX_BUNDLE_ICON_FILE})
-  INSTALL(FILES ${MAC_ICON_FILE} DESTINATION ${companion_res_dir} COMPONENT Runtime)
+  install(FILES ${MAC_ICON_FILE} DESTINATION ${companion_res_dir} COMPONENT Runtime)
 
   # Copy dfu-util, resolve symlink first
   get_filename_component(DFU_UTIL_ABSOLUTE_PATH ${DFU_UTIL_PATH} REALPATH)
-  INSTALL(FILES ${DFU_UTIL_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
+  install(FILES ${DFU_UTIL_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
   set(bundle_dfu_util_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util")
 
-
-  # these needs to be relative to CMAKE_INSTALL_PREFIX
+  # These needs to be relative to CMAKE_INSTALL_PREFIX
   get_target_property(QT_LIBRARY_DIR Qt5::Core LOCATION)
   get_filename_component(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PATH)
   get_filename_component(QT_LIBRARY_DIR "${QT_LIBRARY_DIR}/.." ABSOLUTE)
 
-
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
   # technically a hack (that is already is in the Bundle library ....)
-  INSTALL(CODE "
+  install(CODE "
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
@@ -475,7 +471,7 @@ else(DPKG_PROGRAM)
   set(CPACK_RPM_PACKAGE_VERSION ${VERSION})
   set(CPACK_RPM_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION_SUMMARY})
   set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}-${VERSION}-${CMAKE_SYSTEM_PROCESSOR}")
-  SET(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib /lib/udev /lib/udev/rules.d")
+  set(CPACK_RPM_EXCLUDE_FROM_AUTO_FILELIST_ADDITION "/lib /lib/udev /lib/udev/rules.d")
 endif(DPKG_PROGRAM)
 
 include(CPack)

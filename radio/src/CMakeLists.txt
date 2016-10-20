@@ -346,8 +346,8 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAG
 
 if(NOT MSVC)
   if(ARCH STREQUAL ARM)
-    cmake_force_c_compiler(arm-none-eabi-gcc GNU)
-    cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
+    set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+    set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
     set(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
     set(CMAKE_SYSTEM_NAME Generic)
@@ -390,10 +390,10 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
   else()
-    cmake_force_c_compiler(avr-gcc GNU)
-    cmake_force_cxx_compiler(avr-gcc GNU)
-
+    set(CMAKE_C_COMPILER avr-gcc)
+    set(CMAKE_CXX_COMPILER avr-gcc)
     set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+
     # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
     if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
       set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
