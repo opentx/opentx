@@ -2456,7 +2456,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
-#if defined(VOICE)
+#if defined(VOICE) && defined(CPUARM)
   currentSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
   #if !defined(SOFTWARE_VOLUME)
     setScaledVolume(currentSpeakerVolume);
