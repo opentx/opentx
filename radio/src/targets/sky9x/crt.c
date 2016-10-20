@@ -71,9 +71,9 @@ extern uint32_t Master_frequency ;
 void ResetHandler (void)
 {
   {
-  	register uint32_t *pSrc;
-  	register uint32_t *pDest;
-  	register uint32_t m_freq ;
+  	uint32_t *pSrc;
+  	uint32_t *pDest;
+  	uint32_t m_freq ;
    
   	 /*
   	  * Call the SystemInit code from CMSIS interface if available.
