@@ -25,6 +25,10 @@ class ExpoDialog : public QDialog {
   private slots:
     void valuesChanged();
     void shrink();    
+    void label_phases_customContextMenuRequested(const QPoint & pos);
+    void fmClearAll();
+    void fmSetAll();
+    void fmInvertAll();
 
   private:
     Ui::ExpoDialog * ui;
@@ -37,6 +41,7 @@ class ExpoDialog : public QDialog {
     GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
     ModelPrinter modelPrinter;
+    bool lock;
 };
 
 #endif // EXPODIALOG_H

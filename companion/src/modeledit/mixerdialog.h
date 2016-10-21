@@ -23,7 +23,11 @@ class MixerDialog : public QDialog {
   private slots:
     void valuesChanged();
     void shrink();
-
+    void label_phases_customContextMenuRequested(const QPoint & pos);
+    void fmClearAll();
+    void fmSetAll();
+    void fmInvertAll();
+    
   private:
     Ui::MixerDialog *ui;
     ModelData & model;

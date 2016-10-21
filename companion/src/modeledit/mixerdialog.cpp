@@ -64,6 +64,9 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
       }
     }
     else {
+      ui->label_phases->setToolTip(tr("Click to access popup menu"));
+      ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
+      connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
       int mask = 1;
       for (int i=0; i<9 ; i++) {
         if ((md->flightModes & mask) == 0) {
@@ -178,4 +181,48 @@ void MixerDialog::valuesChanged()
 void MixerDialog::shrink()
 {
   resize(0, 0);
+}
+
+void MixerDialog::label_phases_customContextMenuRequested(const QPoint & pos)
+{
+  QLabel *label = (QLabel *)sender();
+  QPoint globalPos = label->mapToGlobal(pos);
+  QMenu contextMenu;
+  contextMenu.addAction(tr("Clear All"), this, SLOT(fmClearAll()));
+  contextMenu.addAction(tr("Set All"), this, SLOT(fmSetAll()));
+  contextMenu.addAction(tr("Invert All"), this, SLOT(fmInvertAll()));
+  contextMenu.exec(globalPos);
+}
+
+void MixerDialog::fmClearAll()
+{
+  lock = true;
+  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+  for (int i=0; i<9 ; i++) {
+    cb_fp[i]->setChecked(false);
+  }
+  lock = false;
+  valuesChanged();
+}
+
+void MixerDialog::fmSetAll()
+{
+  lock = true;
+  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+  for (int i=0; i<9 ; i++) {
+    cb_fp[i]->setChecked(true);
+  }
+  lock = false;
+  valuesChanged();
+}
+
+void MixerDialog::fmInvertAll()
+{
+  lock = true;
+  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+  for (int i=0; i<9 ; i++) {
+    cb_fp[i]->setChecked(not cb_fp[i]->checkState());
+  }
+  lock = false;
+  valuesChanged();
 }
