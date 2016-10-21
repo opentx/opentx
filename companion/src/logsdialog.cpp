@@ -478,7 +478,7 @@ void LogsDialog::updateCursorsLabel()
 
 QString LogsDialog::formatTimeDelta(double timeDelta) 
 {
-  if (abs(timeDelta) < 10) {
+  if (abs(int(timeDelta)) < 10) {
     return QString("%1 s").arg(timeDelta, 1, 'f', 1);
   }
 
