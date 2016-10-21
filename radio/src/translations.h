@@ -225,7 +225,8 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_SUBTYPE_MT99      (OFS_SUBTYPE_KN + sizeof(TR_SUBTYPE_KN))
   #define OFS_SUBTYPE_MJXQ      (OFS_SUBTYPE_MT99 + sizeof(TR_SUBTYPE_MT99))
   #define OFS_SUBTYPE_HONTAI    (OFS_SUBTYPE_MJXQ + sizeof(TR_SUBTYPE_MJXQ))
-  #define OFS_OPTIONS_DSM       (OFS_SUBTYPE_HONTAI + sizeof(TR_SUBTYPE_HONTAI))
+  #define OFS_SUBTYPE_AFHDS2A   (OFS_SUBTYPE_HONTAI + sizeof(TR_SUBTYPE_HONTAI))
+  #define OFS_OPTIONS_DSM       (OFS_SUBTYPE_AFHDS2A + sizeof(TR_SUBTYPE_AFHDS2A))
   #define OFS_VOLTSRC           (OFS_OPTIONS_DSM + sizeof(TR_OPTIONS_DSM))
 #else
   #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
@@ -360,6 +361,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_SUBTYPE_MT99      (STR_OPEN9X + OFS_SUBTYPE_MT99)
   #define STR_SUBTYPE_MJXQ      (STR_OPEN9X + OFS_SUBTYPE_MJXQ)
   #define STR_SUBTYPE_HONTAI    (STR_OPEN9X + OFS_SUBTYPE_HONTAI)
+  #define STR_SUBTYPE_AFHDS2A   (STR_OPEN9X + OFS_SUBTYPE_AFHDS2A)
   #define STR_OPTIONS_DSM       (STR_OPEN9X + OFS_OPTIONS_DSM)
 #endif
   #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
@@ -604,6 +606,7 @@ extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
+extern const pm_char STR_MULTI_SERVOFREQ[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
 #endif
