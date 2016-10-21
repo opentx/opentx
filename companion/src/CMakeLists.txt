@@ -11,7 +11,7 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 # This the name that the user will see in the generated DMG and what the application
 # will be called under /Applications. We include the version string to make installing
 # different versions for different eeproms easier, i.e. without manually renaming
-set(COMPANION_OSX_FINAL_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
+set(COMPANION_OSX_APP_BUNDLE_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
 
 # On OS X we copy dfu-util to the application bundle. This the path from which we copy
 # the binary (default homebrew path)
@@ -373,8 +373,8 @@ IF(APPLE)
   set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
   set(translations_dest_dir ${COMPANION_NAME}.app/Contents/translations)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
-  set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
-  set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
+  set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Companion")
+  set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenTX Simulator")
 ENDIF(APPLE)
 IF(WIN32)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
@@ -438,7 +438,7 @@ if(APPLE)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
    fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_dfu_util_path}\"   \"${QT_LIBRARY_DIR}\")
-   file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_FINAL_NAME}.app\")
+   file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_APP_BUNDLE_NAME}.app\")
    " COMPONENT Runtime)
 endif()
 
