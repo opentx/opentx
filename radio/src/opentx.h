@@ -1349,8 +1349,8 @@ extern uint8_t requiredSpeakerVolume;
 
 #if defined(CPUARM)
 enum MainRequest {
-  RequestScreenshot,
-  RequestFlightReset,
+  REQUEST_SCREENSHOT,
+  REQUEST_FLIGHT_RESET,
 };
 
 extern uint8_t mainRequestFlags;

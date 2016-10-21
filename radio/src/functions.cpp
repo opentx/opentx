@@ -341,7 +341,7 @@ void evalFunctions()
                   break;
                 case FUNC_RESET_FLIGHT:
 #if defined(CPUARM)
-                  mainRequestFlags |= (1 << RequestFlightReset);     // on systems with threads flightReset() must not be called from the mixers thread!
+                  mainRequestFlags |= (1 << REQUEST_FLIGHT_RESET);     // on systems with threads flightReset() must not be called from the mixers thread!
 #else
                   flightReset();
 #endif // defined(CPUARM)
@@ -577,7 +577,7 @@ void evalFunctions()
 #if defined(PCBTARANIS)
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
-              mainRequestFlags |= (1 << RequestScreenshot);
+              mainRequestFlags |= (1 << REQUEST_SCREENSHOT);
             }
             break;
 #endif

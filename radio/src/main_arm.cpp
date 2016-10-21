@@ -399,10 +399,10 @@ void perMain()
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
-  if (mainRequestFlags & (1 << RequestFlightReset)) {
+  if (mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)) {
     TRACE("Executing requested Flight Reset");
     flightReset();
-    mainRequestFlags &= ~(1 << RequestFlightReset);
+    mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
   }
 
   event_t evt = getEvent(false);
@@ -461,9 +461,9 @@ void perMain()
 #endif
 
 #if defined(PCBTARANIS)
-  if (mainRequestFlags & (1 << RequestScreenshot)) {
+  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
     writeScreenshot();
-    mainRequestFlags &= ~(1 << RequestScreenshot);
+    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
   }
 #endif
 

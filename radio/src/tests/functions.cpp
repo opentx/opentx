@@ -44,19 +44,19 @@ TEST(SpecialFunctions, FlightReset)
 
   mainRequestFlags = 0;
   evalFunctions(g_model.customFn, modelFunctionsContext);
-  EXPECT_EQ((bool)(mainRequestFlags & (1 << RequestFlightReset)), false);
+  EXPECT_EQ((bool)(mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)), false);
 
   // now trigger SA0
   simuSetSwitch(0, -1);
 
   // flightReset() should be called
   evalFunctions(g_model.customFn, modelFunctionsContext);
-  EXPECT_EQ((bool)(mainRequestFlags & (1 << RequestFlightReset)), true);
+  EXPECT_EQ((bool)(mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)), true);
 
   // now reset mainRequestFlags, and it should stay reset (flightReset() should not be called again)
   mainRequestFlags = 0;
   evalFunctions(g_model.customFn, modelFunctionsContext);
-  EXPECT_EQ((bool)(mainRequestFlags & (1 << RequestFlightReset)), false);
+  EXPECT_EQ((bool)(mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)), false);
 }
 
 #if defined(GVARS)
