@@ -1347,8 +1347,13 @@ void clearMFP();
 extern uint8_t requiredSpeakerVolume;
 #endif
 
-#if defined(PCBTARANIS)
-extern uint8_t requestScreenshot;
+#if defined(CPUARM)
+enum MainRequest {
+  REQUEST_SCREENSHOT,
+  REQUEST_FLIGHT_RESET,
+};
+
+extern uint8_t mainRequestFlags;
 #endif
 
 void checkBattery();
