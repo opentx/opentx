@@ -597,6 +597,7 @@ extern const pm_char STR_FAS_OFFSET[];
 #endif
 
 #if defined(MULTIMODULE)
+extern const pm_char STR_MULTI_CUSTOM[];
 extern const pm_char STR_MULTI_OPTION[];
 extern const pm_char STR_MULTI_VIDFREQ[];
 extern const pm_char STR_MULTI_RFTUNE[];
