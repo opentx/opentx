@@ -42,23 +42,21 @@ TEST(SpecialFunctions, FlightReset)
   g_model.customFn[0].all.val = FUNC_RESET_FLIGHT;
   g_model.customFn[0].active = true;
 
-  // we (mis)use s_mixer_first_run_done for the flight reset detection
-  s_mixer_first_run_done = true;
+  mainRequestFlags = 0;
   evalFunctions(g_model.customFn, modelFunctionsContext);
-  EXPECT_EQ(s_mixer_first_run_done, true);
+  EXPECT_EQ((bool)(mainRequestFlags & (1 << RequestFlightReset)), false);
 
   // now trigger SA0
   simuSetSwitch(0, -1);
 
   // flightReset() should be called
   evalFunctions(g_model.customFn, modelFunctionsContext);
-  EXPECT_EQ(s_mixer_first_run_done, false);
+  EXPECT_EQ((bool)(mainRequestFlags & (1 << RequestFlightReset)), true);
 
-  // now set s_mixer_first_run_done to true, and it should stay true (flightReset() should not be called again)
-  s_mixer_first_run_done = true;
+  // now reset mainRequestFlags, and it should stay reset (flightReset() should not be called again)
+  mainRequestFlags = 0;
   evalFunctions(g_model.customFn, modelFunctionsContext);
-  EXPECT_EQ(s_mixer_first_run_done, true) << "Flight Reset repeats!";
-
+  EXPECT_EQ((bool)(mainRequestFlags & (1 << RequestFlightReset)), false);
 }
 
 #if defined(GVARS)

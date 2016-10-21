@@ -340,7 +340,11 @@ void evalFunctions()
                   timerReset(CFN_PARAM(cfn));
                   break;
                 case FUNC_RESET_FLIGHT:
+#if defined(CPUARM)
+                  mainRequestFlags |= (1 << RequestFlightReset);     // on systems with threads flightReset() must not be called from the mixers thread!
+#else
                   flightReset();
+#endif // defined(CPUARM)
                   break;
 #if defined(TELEMETRY_FRSKY)
                 case FUNC_RESET_TELEMETRY:
@@ -573,7 +577,7 @@ void evalFunctions()
 #if defined(PCBTARANIS)
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
-              requestScreenshot = true;
+              mainRequestFlags |= (1 << RequestScreenshot);
             }
             break;
 #endif
