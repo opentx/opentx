@@ -107,7 +107,9 @@
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS    "\006"
-#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Custom"
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 "
+
+#define TR_MULTI_CUSTOM        "Custom"
 
 #define LEN_SUBTYPE_FLYSKY     "\004"
 #define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912"
@@ -118,7 +120,8 @@
 #define LEN_SUBTYPE_HISKY      "\005"
 #define TR_SUBTYPE_HISKY       "HiSky""HK310"
 
-// SUBTYPE FOR DSMX use TR_DSM_PROTOCOLS with offset +1
+#define LEN_SUBTYPE_DSM        "\006"
+#define TR_SUBTYPE_DSM         "2 22ms""2 11ms""X 22ms""X 11ms"
 
 #define LEN_SUBTYPE_YD717      "\007"
 #define TR_SUBTYPE_YD717       "YD717\0 ""SKYWLKR""Syma X2""XINXUN\0""NIHUI\0  "
@@ -140,6 +143,9 @@
 
 #define LEN_SUBTYPE_MJXQ       "\005"
 #define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
+
+#define LEN_SUBTYPE_HONTAI     "\007"
+#define TR_SUBTYPE_HONTAI      "Std\0   ""JJRC X1""X5C1cln"
 
 #define LEN_OPTIONS_DSM        "\011"
 #define TR_OPTIONS_DSM         "4ch 22ms\0""5ch 22ms\0""6ch 22ms\0""7ch 22ms\0""4ch 11ms\0""5ch 11ms\0""6ch 11ms\0""7ch 11ms\0""8ch 22ms\0""9ch 22ms\0""10ch 22ms""11ch 22ms""12ch 22ms"
@@ -870,9 +876,9 @@
 #endif
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
-#define TR_MULTI_DSMFRAME      TR(INDENT "DSM frame", INDENT "DSM frame format")
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
-#define TR_MULTI_AUTOBIND      INDENT "Autobind"
+#define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on powerup")
+#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limiti"
@@ -1330,3 +1336,4 @@
 #define ZSTR_QOS_R             "FdeR"
 #define ZSTR_QOS_F             "FLss"
 #define ZSTR_QOS_H             "Hold"
+#define ZSTR_BIND              "BIND"

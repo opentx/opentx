@@ -1864,11 +1864,11 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
     case MM_RF_PROTO_KN:
       return 2;
 
-    case MM_RF_PROTO_FRSKY:
     case MM_RF_PROTO_CG023:
     case MM_RF_PROTO_MT99XX:
       return 3;
 
+    case MM_RF_PROTO_FRSKY:
     case MM_RF_PROTO_FLYSKY:
       return 4;
 
@@ -1877,7 +1877,6 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
       return 5;
 
     case MM_RF_PROTO_CX10:
-    case MM_RF_PROTO_CUSTOM:
       return 8;
     default:
       return 1;

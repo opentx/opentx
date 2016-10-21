@@ -111,13 +111,13 @@ void setupPulsesMultimodule(uint8_t port)
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
-  // header, byte 0, always 0x55
-  sendByteMulti(0x55);
 
   // byte 1+2, protocol information
 
-  int type = g_model.moduleData[port].multi.rfProtocol + 1;
+  // Our enumeration starts at 0
+  int type = g_model.moduleData[port].getMultiProtocol(false) + 1;
   int subtype = g_model.moduleData[port].subType;
+  int8_t optionValue = g_model.moduleData[port].multi.optionValue;
 
   uint8_t protoByte = 0;
   if (moduleFlag[port] == MODULE_BIND)
@@ -126,6 +126,17 @@ void setupPulsesMultimodule(uint8_t port)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
+  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_DSM2){
+
+    // Autobinding should always be done in DSMX 11ms
+    if(g_model.moduleData[port].multi.autoBindMode && moduleFlag[port] == MODULE_BIND)
+      subtype = MM_RF_DSM2_SUBTYPE_AUTO;
+
+    // Multi module in DSM mode wants the number of channels to be used as option value
+    optionValue = NUM_CHANNELS(EXTERNAL_MODULE);
+
+  }
+
   // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
   // all protos > frskyx are therefore also off by one
   if (type >= 15)
@@ -135,7 +146,7 @@ void setupPulsesMultimodule(uint8_t port)
   if (type >= 23)
      type = type + 1;
 
-  if (g_model.moduleData[port].multi.rfProtocol == MM_RF_PROTO_FRSKY) {
+  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_FRSKY) {
     if(subtype == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       type = 3;
@@ -153,24 +164,28 @@ void setupPulsesMultimodule(uint8_t port)
     }
   }
 
-  if (g_model.moduleData[port].multi.rfProtocol >= MM_RF_PROTO_CUSTOM)
-    type = g_model.moduleData[port].multi.rfProtocol & 0x1f;
+  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
+  if (type <= 31)
+    sendByteMulti(0x55);
+  else
+    sendByteMulti(0x54);
 
-  protoByte |= (type & 0x1f) | (g_model.moduleData[port].multi.autoBindMode << 6);
+
+  // protocol byte
+  protoByte |= (type & 0x1f);
+  if(g_model.moduleData[port].getMultiProtocol(true) != MM_RF_PROTO_DSM2)
+    protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
+
   sendByteMulti(protoByte);
 
-
-  // power always set to high (0 << 7)
+  // byte 2, subtype, powermode, model id
   sendByteMulti((g_model.header.modelId[port] & 0x0f)
                 | ((subtype & 0x7) << 4)
                 | (g_model.moduleData[port].multi.lowPowerMode << 7)
                 );
 
-
-
-  //TODO: option_protocol, use same default as multi module
   // byte 3
-  sendByteMulti(g_model.moduleData[port].multi.optionValue);
+  sendByteMulti(optionValue);
 
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;

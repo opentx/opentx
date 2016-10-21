@@ -216,14 +216,16 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_SUBTYPE_FLYSKY    (OFS_MULTI_PROTOCOLS + sizeof(TR_MULTI_PROTOCOLS))
   #define OFS_SUBTYPE_FRSKY     (OFS_SUBTYPE_FLYSKY + sizeof(TR_SUBTYPE_FLYSKY))
   #define OFS_SUBTYPE_HISKY     (OFS_SUBTYPE_FRSKY + sizeof(TR_SUBTYPE_FRSKY))
-  #define OFS_SUBTYPE_YD717     (OFS_SUBTYPE_HISKY + sizeof(TR_SUBTYPE_HISKY))
+  #define OFS_SUBTYPE_DSM       (OFS_SUBTYPE_HISKY + sizeof(TR_SUBTYPE_HISKY))
+  #define OFS_SUBTYPE_YD717     (OFS_SUBTYPE_DSM + sizeof(TR_SUBTYPE_DSM))
   #define OFS_SUBTYPE_SYMAX     (OFS_SUBTYPE_YD717 + sizeof(TR_SUBTYPE_YD717))
   #define OFS_SUBTYPE_CX10      (OFS_SUBTYPE_SYMAX + sizeof(TR_SUBTYPE_SYMAX))
   #define OFS_SUBTYPE_CG023     (OFS_SUBTYPE_CX10 + sizeof(TR_SUBTYPE_CX10))
   #define OFS_SUBTYPE_KN        (OFS_SUBTYPE_CG023 + sizeof(TR_SUBTYPE_CG023))
   #define OFS_SUBTYPE_MT99      (OFS_SUBTYPE_KN + sizeof(TR_SUBTYPE_KN))
   #define OFS_SUBTYPE_MJXQ      (OFS_SUBTYPE_MT99 + sizeof(TR_SUBTYPE_MT99))
-  #define OFS_OPTIONS_DSM       (OFS_SUBTYPE_MJXQ + sizeof(TR_SUBTYPE_MJXQ))
+  #define OFS_SUBTYPE_HONTAI    (OFS_SUBTYPE_MJXQ + sizeof(TR_SUBTYPE_MJXQ))
+  #define OFS_OPTIONS_DSM       (OFS_SUBTYPE_HONTAI + sizeof(TR_SUBTYPE_HONTAI))
   #define OFS_VOLTSRC           (OFS_OPTIONS_DSM + sizeof(TR_OPTIONS_DSM))
 #else
   #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
@@ -349,6 +351,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_SUBTYPE_FLYSKY    (STR_OPEN9X + OFS_SUBTYPE_FLYSKY)
   #define STR_SUBTYPE_FRSKY     (STR_OPEN9X + OFS_SUBTYPE_FRSKY)
   #define STR_SUBTYPE_HISKY     (STR_OPEN9X + OFS_SUBTYPE_HISKY)
+  #define STR_SUBTYPE_DSM       (STR_OPEN9X + OFS_SUBTYPE_DSM)
   #define STR_SUBTYPE_YD717     (STR_OPEN9X + OFS_SUBTYPE_YD717)
   #define STR_SUBTYPE_SYMAX     (STR_OPEN9X + OFS_SUBTYPE_SYMAX)
   #define STR_SUBTYPE_CX10      (STR_OPEN9X + OFS_SUBTYPE_CX10)
@@ -356,6 +359,7 @@ extern const pm_char STR_OPEN9X[];
   #define STR_SUBTYPE_KN        (STR_OPEN9X + OFS_SUBTYPE_KN)
   #define STR_SUBTYPE_MT99      (STR_OPEN9X + OFS_SUBTYPE_MT99)
   #define STR_SUBTYPE_MJXQ      (STR_OPEN9X + OFS_SUBTYPE_MJXQ)
+  #define STR_SUBTYPE_HONTAI    (STR_OPEN9X + OFS_SUBTYPE_HONTAI)
   #define STR_OPTIONS_DSM       (STR_OPEN9X + OFS_OPTIONS_DSM)
 #endif
   #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
@@ -593,12 +597,13 @@ extern const pm_char STR_FAS_OFFSET[];
 #endif
 
 #if defined(MULTIMODULE)
+extern const pm_char STR_MULTI_CUSTOM[];
 extern const pm_char STR_MULTI_OPTION[];
 extern const pm_char STR_MULTI_VIDFREQ[];
 extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
+extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
-extern const pm_char STR_MULTI_DSMFRAME[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
 #endif

@@ -387,7 +387,7 @@ void memswap(void * a, void * b, uint8_t size);
 
 #if defined(CPUARM)
 // Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 8 }; // relative to 8!
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4 }; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define MAX_TRAINER_CHANNELS_M8()    (MAX_TRAINER_CHANNELS-8)
 #endif
@@ -423,7 +423,7 @@ void memswap(void * a, void * b, uint8_t size);
   #endif
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[1].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
   #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8()))
-  #define NUM_CHANNELS(idx)                 ((IS_MODULE_CROSSFIRE(idx) || IS_MODULE_MULTIMODULE(idx)) ? CROSSFIRE_CHANNELS_COUNT : (8+g_model.moduleData[idx].channelsCount))
+  #define NUM_CHANNELS(idx)                 ((IS_MODULE_CROSSFIRE(idx) || (IS_MODULE_MULTIMODULE(idx) && (g_model.moduleData[idx].getMultiProtocol(true) != MM_RF_PROTO_DSM2))) ? CROSSFIRE_CHANNELS_COUNT : (8+g_model.moduleData[idx].channelsCount))
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)
@@ -432,6 +432,7 @@ void memswap(void * a, void * b, uint8_t size);
   #define MAX_EXTRA_MODULE_CHANNELS()       (8) // Only PPM (16ch PPM)
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : (idx==EXTRA_MODULE ? MAX_EXTRA_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8()))
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
+  #define IS_MODULE_CROSSFIRE(idx)          (false)
 #else
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)
@@ -440,7 +441,13 @@ void memswap(void * a, void * b, uint8_t size);
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8())
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
 #endif
+
+#if defined(MULTIMODULE)
+#define IS_MULTIMODULE_DSM(idx)             (IS_MODULE_MULTIMODULE(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MM_RF_PROTO_DSM2)
+#define DEFAULT_CHANNELS(idx)               (IS_MODULE_PPM(idx) ? 0 : IS_MULTIMODULE_DSM(idx) ? -1 : MAX_CHANNELS(idx))
+#else
 #define DEFAULT_CHANNELS(idx)               (IS_MODULE_PPM(idx) ? 0 : MAX_CHANNELS(idx))
+#endif
 
 #if defined(CPUARM)
   #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
