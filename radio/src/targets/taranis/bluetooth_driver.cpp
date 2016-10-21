@@ -51,22 +51,26 @@ void bluetoothInit(uint32_t baudrate)
 
   RCC_AHB1PeriphClockCmd(BT_RCC_AHB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
-
-  GPIO_InitStructure.GPIO_Pin = BT_BRTS_GPIO_PIN;
+  
+  GPIO_InitStructure.GPIO_Pin = BT_EN_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(BT_BRTS_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
-
-  GPIO_InitStructure.GPIO_Pin = BT_EN_GPIO_PIN;
   GPIO_Init(BT_EN_GPIO, &GPIO_InitStructure);
 
+#if defined(BT_BRTS_GPIO_PIN)
+  GPIO_InitStructure.GPIO_Pin = BT_BRTS_GPIO_PIN;
+  GPIO_Init(BT_BRTS_GPIO, &GPIO_InitStructure);
+  GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
+#endif
+
+#if defined(BT_BCTS_GPIO_PIN)
   GPIO_InitStructure.GPIO_Pin = BT_BCTS_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(BT_BCTS_GPIO, &GPIO_InitStructure);
-	
+#endif
+
   GPIO_InitStructure.GPIO_Pin = BT_TX_GPIO_PIN|BT_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
@@ -144,7 +148,9 @@ void bluetoothWriteWakeup(void)
   if (bluetoothWriteState == BLUETOOTH_WRITE_IDLE) {
     if (!btTxFifo.isEmpty()) {
       bluetoothWriteState = BLUETOOTH_WRITE_INIT;
+#if defined(BT_BRTS_GPIO_PIN)
       GPIO_ResetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
+#endif
     }
   }
   else if (bluetoothWriteState == BLUETOOTH_WRITE_INIT) {
@@ -153,7 +159,9 @@ void bluetoothWriteWakeup(void)
   }
   else if (bluetoothWriteState == BLUETOOTH_WRITE_DONE) {
     bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
+#if defined(BT_BRTS_GPIO_PIN)
     GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
+#endif
   }
 }
 

@@ -134,7 +134,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     if (i<limit) {
       ui->curvesLayout->addWidget(edit, i, 1, 1, 1);
     } else {
-      ui->curvesLayout2->addWidget(edit, i-limit, 1, 1, 1);
+      ui->curvesLayout2->addWidget(edit, i-limit, 2, 1, 1);
     }
 
     // The curve plot checkbox
@@ -145,7 +145,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     if (i<limit) {
       ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
     } else {
-      ui->curvesLayout2->addWidget(plot, i-limit, 2, 1, 1);
+      ui->curvesLayout2->addWidget(plot, i-limit, 1, 1, 1);
     }
   }
   QSpacerItem * item = new QSpacerItem(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
@@ -570,13 +570,13 @@ void Curves::ShowContextMenu(const QPoint& pos) // this is a slot
   QAction *action;
   action = myMenu.addAction(CompanionIcon("copy.png"),tr("Copy"));
   action->setProperty("index", CURVE_COPY);
-  
+
   action = myMenu.addAction(CompanionIcon("paste.png"),tr("Paste"));
   if (!mimeData->hasFormat("application/x-companion-curve-item")) {
     action->setEnabled(false);
   }
   action->setProperty("index", CURVE_PASTE);
-  
+
   action = myMenu.addAction(CompanionIcon("clear.png"),tr("Clear"));
   action->setProperty("index", CURVE_RESET);
   action = myMenu.addAction(CompanionIcon("clear.png"),tr("Clear all curves"));
@@ -591,14 +591,14 @@ void Curves::ShowContextMenu(const QPoint& pos) // this is a slot
       curveData.append((char*)&model->curves[index], sizeof(CurveData));
       mimeData2->setData("application/x-companion-curve-item", curveData);
       QApplication::clipboard()->setMimeData(mimeData2, QClipboard::Clipboard);
-    } 
+    }
     else if (action==CURVE_PASTE) {
       QByteArray curveData = mimeData->data("application/x-companion-curve-item");
       CurveData *curve = &model->curves[index];
       memcpy(curve, curveData.constData(), sizeof(CurveData));
       update();
       emit modified();
-    } 
+    }
     else if (action==CURVE_RESET) {
       int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset curve %1?").arg(index+1), QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::Yes) {
@@ -606,7 +606,7 @@ void Curves::ShowContextMenu(const QPoint& pos) // this is a slot
         update();
         emit modified();
       }
-    } 
+    }
     else if (action==CURVE_RESETALL) {
       int res = QMessageBox::question(this, "companion", tr("Are you sure you want to reset all curves?"), QMessageBox::Yes | QMessageBox::No);
       if (res == QMessageBox::Yes) {

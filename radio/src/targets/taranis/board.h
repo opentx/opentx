@@ -27,6 +27,13 @@
 extern "C" {
 #endif
 
+#if __clang__
+// clang is very picky about the use of "register"
+// tell it to ignore for the STM32 includes instead of modyfing the orginal files
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-register"
+#endif
+
 #if defined(PCBX9E)
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
@@ -57,6 +64,11 @@ extern "C" {
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_flash.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_dbgmcu.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/misc.h"
+#endif
+
+#if __clang__
+// Restore warnings about registers
+#pragma clang diagnostic pop
 #endif
 
 #if !defined(SIMU)
@@ -454,10 +466,12 @@ void dacStop(void);
 void setSampleRate(uint32_t frequency);
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
+#if !defined(SOFTWARE_VOLUME)
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);
-#define audioConsumeCurrentBuffer()
+#endif
+void audioConsumeCurrentBuffer();
 #define audioDisableIrq()       __disable_irq()
 #define audioEnableIrq()        __enable_irq()
 

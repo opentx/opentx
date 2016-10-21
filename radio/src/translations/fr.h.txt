@@ -905,6 +905,8 @@
 #define TR_BACKUP_MODEL        "Archiver modèle"
 #define TR_DELETE_MODEL        "Supprimer modèle"
 #define TR_RESTORE_MODEL       "Restaurer modèle"
+#define TR_DELETE_ERROR        "Effacement impossible"
+#define TR_CAT_NOT_EMPTY       "Categorie non vide"
 #define TR_SDCARD_ERROR        "Erreur carte SD"
 #define TR_NO_SDCARD           "Carte SD indisponible"
 #define TR_SDCARD_FULL         "Carte SD pleine"
@@ -917,7 +919,7 @@
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Version des fichiers incompatible"
+#define TR_WRONG_SDCARDVERSION "Version requise : "
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB error"

@@ -364,18 +364,11 @@ struct SimulatorAudio {
   bool threadRunning;
   pthread_t threadPid;
 } simuAudio;
-
-void audioPushBuffer(AudioBuffer * buffer)
-{
-  buffer->state = AUDIO_BUFFER_FILLED;
-}
 #endif
 
-#if defined(PCBHORUS)
 void audioConsumeCurrentBuffer()
 {
 }
-#endif
 
 #if defined(MASTER_VOLUME)
 void setScaledVolume(uint8_t volume)
@@ -395,7 +388,7 @@ int32_t getVolume()
 #endif
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
-void copyBuffer(uint8_t * dest, uint16_t * buff, unsigned int samples)
+void copyBuffer(uint8_t * dest, const uint16_t * buff, unsigned int samples)
 {
   for(unsigned int i=0; i<samples; i++) {
     int sample = ((int32_t)(uint32_t)(buff[i]) - 0x8000);  // conversion from uint16_t
@@ -409,22 +402,25 @@ void fillAudioBuffer(void *udata, Uint8 *stream, int len)
   SDL_memset(stream, 0, len);
 
   if (simuAudio.leftoverLen) {
-    copyBuffer(stream, simuAudio.leftoverData, simuAudio.leftoverLen);
-    len -= simuAudio.leftoverLen*2;
-    stream += simuAudio.leftoverLen*2;
-    simuAudio.leftoverLen = 0;
+    int len1 = min(len/2, simuAudio.leftoverLen);
+    copyBuffer(stream, simuAudio.leftoverData, len1);
+    len -= len1*2;
+    stream += len1*2;
+    simuAudio.leftoverLen -= len1;
     // putchar('l');
+    if (simuAudio.leftoverLen) return;		// buffer fully filled
   }
 
-  if (audioQueue.filledAtleast(len/(AUDIO_BUFFER_SIZE*2)+1) ) {
+  if (audioQueue.buffersFifo.filledAtleast(len/(AUDIO_BUFFER_SIZE*2)+1) ) {
     while(true) {
-      AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+      const AudioBuffer * nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
       if (nextBuffer) {
         if (len >= nextBuffer->size*2) {
           copyBuffer(stream, nextBuffer->data, nextBuffer->size);
           stream += nextBuffer->size*2;
           len -= nextBuffer->size*2;
           // putchar('+');
+          audioQueue.buffersFifo.freeNextFilledBuffer();
         }
         else {
           //partial
@@ -433,6 +429,7 @@ void fillAudioBuffer(void *udata, Uint8 *stream, int len)
           memcpy(simuAudio.leftoverData, &nextBuffer->data[len/2], simuAudio.leftoverLen*2);
           len = 0;
           // putchar('p');
+          audioQueue.buffersFifo.freeNextFilledBuffer();
           break;
         }
       }
@@ -657,20 +654,20 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char * path = convertSimuPath(name);
   char * realPath = findTrueFileName(path);
-  fil->fs = 0;
+  fil->obj.fs = 0;
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
     if (stat(realPath, &tmp)) {
       TRACE("f_open(%s) = INVALID_NAME (FIL %p)", path, fil);
       return FR_INVALID_NAME;
     }
-    fil->fsize = tmp.st_size;
+    fil->obj.objsize = tmp.st_size;
     fil->fptr = 0;
   }
-  fil->fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
+  fil->obj.fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
   fil->fptr = 0;
-  if (fil->fs) {
-    TRACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->fs, fil);
+  if (fil->obj.fs) {
+    TRACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->obj.fs, fil);
     return FR_OK;
   }
   TRACE("f_open(%s) = error %d (%s) (FIL %p)", path, errno, strerror(errno), fil);
@@ -679,39 +676,39 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 
 FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
 {
-  if (fil && fil->fs) {
-    *read = fread(data, 1, size, (FILE*)fil->fs);
+  if (fil && fil->obj.fs) {
+    *read = fread(data, 1, size, (FILE*)fil->obj.fs);
     fil->fptr += *read;
-    // TRACE("fread(%p) %u, %u", fil->fs, size, *read);
+    // TRACE("fread(%p) %u, %u", fil->obj.fs, size, *read);
   }
   return FR_OK;
 }
 
 FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
 {
-  if (fil && fil->fs) {
-    *written = fwrite(data, 1, size, (FILE*)fil->fs);
+  if (fil && fil->obj.fs) {
+    *written = fwrite(data, 1, size, (FILE*)fil->obj.fs);
     fil->fptr += size;
-    // TRACE("fwrite(%p) %u, %u", fil->fs, size, *written);
+    // TRACE("fwrite(%p) %u, %u", fil->obj.fs, size, *written);
   }
   return FR_OK;
 }
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
 {
-  if (fil && fil->fs) fseek((FILE*)fil->fs, offset, SEEK_SET);
+  if (fil && fil->obj.fs) fseek((FILE*)fil->obj.fs, offset, SEEK_SET);
   fil->fptr = offset;
   return FR_OK;
 }
 
 UINT f_size(FIL* fil)
 {
-  if (fil && fil->fs) {
-    long curr = ftell((FILE*)fil->fs);
-    fseek((FILE*)fil->fs, 0, SEEK_END);
-    long size = ftell((FILE*)fil->fs);
-    fseek((FILE*)fil->fs, curr, SEEK_SET);
-    TRACE("f_size(%p) %u", fil->fs, size);
+  if (fil && fil->obj.fs) {
+    long curr = ftell((FILE*)fil->obj.fs);
+    fseek((FILE*)fil->obj.fs, 0, SEEK_END);
+    long size = ftell((FILE*)fil->obj.fs);
+    fseek((FILE*)fil->obj.fs, curr, SEEK_SET);
+    TRACE("f_size(%p) %u", fil->obj.fs, size);
     return size;
   }
   return 0;
@@ -719,10 +716,10 @@ UINT f_size(FIL* fil)
 
 FRESULT f_close (FIL * fil)
 {
-  TRACE("f_close(%p) (FIL:%p)", fil->fs, fil);
-  if (fil->fs) {
-    fclose((FILE*)fil->fs);
-    fil->fs = NULL;
+  TRACE("f_close(%p) (FIL:%p)", fil->obj.fs, fil);
+  if (fil->obj.fs) {
+    fclose((FILE*)fil->obj.fs);
+    fil->obj.fs = NULL;
   }
   return FR_OK;
 }
@@ -736,8 +733,8 @@ FRESULT f_chdir (const TCHAR *name)
 FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
   char *path = convertSimuPath(name);
-  rep->fs = (FATFS *)simu::opendir(path);
-  if ( rep->fs ) {
+  rep->obj.fs = (FATFS *)simu::opendir(path);
+  if ( rep->obj.fs ) {
     TRACE("f_opendir(%s) = OK", path);
     return FR_OK;
   }
@@ -748,15 +745,19 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
 FRESULT f_closedir (DIR * rep)
 {
   TRACE("f_closedir(%p)", rep);
-  if (rep->fs) simu::closedir((simu::DIR *)rep->fs);
+  if (rep->obj.fs) simu::closedir((simu::DIR *)rep->obj.fs);
   return FR_OK;
 }
 
 FRESULT f_readdir (DIR * rep, FILINFO * fil)
 {
-  if (!rep->fs) return FR_NO_FILE;
-  simu::dirent * ent = simu::readdir((simu::DIR *)rep->fs);
-  if (!ent) return FR_NO_FILE;
+  simu::dirent * ent;
+  if (!rep->obj.fs) return FR_NO_FILE;
+  for(;;) {
+    ent = simu::readdir((simu::DIR *)rep->obj.fs);
+    if (!ent) return FR_NO_FILE;
+    if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..") ) break;
+  }
 
 #if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
@@ -773,15 +774,13 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   }
 #endif
 
-  memset(fil->fname, 0, 13);
-  memset(fil->lfname, 0, SD_SCREEN_FILE_LENGTH);
-  strncpy(fil->fname, ent->d_name, 13-1);
-  strcpy(fil->lfname, ent->d_name);
+  memset(fil->fname, 0, SD_SCREEN_FILE_LENGTH);
+  strcpy(fil->fname, ent->d_name);
   // TRACE("f_readdir(): %s", fil->fname);
   return FR_OK;
 }
 
-FRESULT f_mkfs (const TCHAR * path, BYTE, UINT)
+FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len)
 {
   TRACE("Format SD...");
   return FR_OK;
@@ -830,7 +829,7 @@ FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
 
 int f_putc (TCHAR c, FIL * fil)
 {
-  if (fil && fil->fs) fwrite(&c, 1, 1, (FILE*)fil->fs);
+  if (fil && fil->obj.fs) fwrite(&c, 1, 1, (FILE*)fil->obj.fs);
   return FR_OK;
 }
 
@@ -847,7 +846,7 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 {
   va_list arglist;
   va_start(arglist, format);
-  if (fil && fil->fs) vfprintf((FILE*)fil->fs, format, arglist);
+  if (fil && fil->obj.fs) vfprintf((FILE*)fil->obj.fs, format, arglist);
   va_end(arglist);
   return 0;
 }
@@ -867,8 +866,17 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
     return FR_NO_PATH;
   }
 
+  if (sz_path < (strlen(cwd) - strlen(simuSdDirectory))) {
+    TRACE("f_getcwd(): buffer too short");
+    return FR_NOT_ENOUGH_CORE;
+  }
+
   // remove simuSdDirectory from the cwd
   strcpy(path, cwd + strlen(simuSdDirectory));
+
+  if (strlen(path) == 0) {
+    strcpy(path, "/");    // fix for the root directory
+  }
 
   TRACE("f_getcwd() = %s", path);
   return FR_OK;

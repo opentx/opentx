@@ -133,4 +133,7 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 #define LIST_SD_FILE_EXT    2
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags=0);
 
+bool isCwdAtRoot();
+FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime);
+
 #endif // _SDCARD_H_

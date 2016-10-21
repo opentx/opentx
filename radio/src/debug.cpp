@@ -227,7 +227,6 @@ const char * debugTimerNames[DEBUG_TIMERS_COUNT] = {
   ,"Audio int. "   // debugTimerAudioIterval
   ,"Audio dur. "   // debugTimerAudioDuration
   ," A. consume"   // debugTimerAudioConsume,
-  ," A push    "   // debugTimerAudioPush,
 
 };
 

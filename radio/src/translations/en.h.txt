@@ -894,6 +894,8 @@
 #define TR_BACKUP_MODEL        "Backup model"
 #define TR_DELETE_MODEL        "Delete model"
 #define TR_RESTORE_MODEL       "Restore model"
+#define TR_DELETE_ERROR        "Delete error"
+#define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        TR("SD error", "SD card error")
 #define TR_NO_SDCARD           "No SD card"
 #define TR_SDCARD_FULL         "SD card full"
@@ -906,7 +908,7 @@
 #define TR_ALARMSWARN          "ALARMS"
 #define TR_SWITCHWARN          TR("SWITCH", "CONTROL")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Wrong files version"
+#define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
 #define TR_PCBREV_ERROR        "PCB error"

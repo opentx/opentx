@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+const AudioBuffer * nextBuffer = 0;
 
 const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
@@ -30,8 +31,8 @@ const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 
 void setSampleRate(uint32_t frequency)
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  Tc *ptc ;
+  uint32_t timer ;
 
   timer = Master_frequency / (8 * frequency) ;		// MCK/8 and 100 000 Hz
   if (timer > 65535)
@@ -49,8 +50,8 @@ void setSampleRate(uint32_t frequency)
 // Start TIMER1 at 100000Hz, used for DACC trigger
 void dacTimerStart()
 {
-  register Tc *ptc ;
-  register uint32_t timer ;
+  Tc *ptc ;
+  uint32_t timer ;
 
 	// Enable peripheral clock TC0 = bit 23 thru TC5 = bit 28
   PMC->PMC_PCER0 |= 0x01000000L ;		// Enable peripheral clock to TC1
@@ -77,7 +78,7 @@ void dacInit()
 
   PMC->PMC_PCER0 |= 0x40000000L ;		// Enable peripheral clock to DAC
 
-  register Dacc *dacptr = DACC;
+  Dacc *dacptr = DACC;
 
 #if defined(REVA)
   dacptr->DACC_MR = 0x0B010215L ;                       // 0000 1011 0000 0001 0000 0010 0001 0101
@@ -93,17 +94,24 @@ void dacInit()
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
-void audioPushBuffer(AudioBuffer *buffer)
+void audioConsumeCurrentBuffer()
 {
-  buffer->state = AUDIO_BUFFER_FILLED;
-  dacStart();
+  if (nextBuffer == 0) {
+    nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
+    if (nextBuffer) {
+      dacStart();
+    }
+  }
 }
+
 
 extern "C" void DAC_IRQHandler()
 {
   uint32_t sr = DACC->DACC_ISR;
   if (sr & DACC_ISR_ENDTX) {
-    AudioBuffer *nextBuffer = audioQueue.getNextFilledBuffer();
+    if (nextBuffer) audioQueue.buffersFifo.freeNextFilledBuffer();
+
+    nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
       // Try the first PDC buffer
       if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {
@@ -129,7 +137,7 @@ extern "C" void DAC_IRQHandler()
 // Sound routines
 void audioInit()
 {
-  register Pio *pioptr ;
+  Pio *pioptr ;
 
   dacInit() ;
 
@@ -161,17 +169,15 @@ void audioEnd()
   PMC->PMC_PCER0 &= ~0x40000000L ;		// Disable peripheral clock to DAC
 }
 
+#if !defined(SOFTWARE_VOLUME)
 void setScaledVolume(uint8_t volume)
 {
-#if !defined(SOFTWARE_VOLUME)
   volumeRequired = volumeScale[min<uint8_t>(volume, VOLUME_LEVEL_MAX)];
-#ifndef AR9X
   __disable_irq() ;
   i2cCheck() ;
   __enable_irq() ;
-#endif
-#endif
 }
+#endif
 
 #endif // #if !defined(SIMU)
 

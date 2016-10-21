@@ -107,25 +107,13 @@ int cliLs(const char ** argv)
 {
   FILINFO fno;
   DIR dir;
-  char *fn;   /* This function is assuming non-Unicode cfg. */
-#if _USE_LFN
-  TCHAR lfn[_MAX_LFN + 1];
-  fno.lfname = lfn;
-  fno.lfsize = sizeof(lfn);
-#endif
 
   FRESULT res = f_opendir(&dir, argv[1]);        /* Open the directory */
   if (res == FR_OK) {
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-
-#if _USE_LFN
-      fn = *fno.lfname ? fno.lfname : fno.fname;
-#else
-      fn = fno.fname;
-#endif
-      serialPrint(fn);
+      serialPrint(fno.fname);
     }
   }
   else {
@@ -529,22 +517,21 @@ extern OS_MutexID audioMutex;
 void printAudioVars()
 {
   for(int n = 0; n < AUDIO_BUFFER_COUNT; n++) {
-    serialPrint("Audio Buffer %d: size: %u, state: %u, ", n, (uint32_t)audioBuffers[n].size, (uint32_t)audioBuffers[n].state);
+    serialPrint("Audio Buffer %d: size: %u, ", n, (uint32_t)audioBuffers[n].size);
     dump((uint8_t *)audioBuffers[n].data, 32);
   }
   serialPrint("fragments:");
   for(int n = 0; n < AUDIO_QUEUE_LENGTH; n++) {
-    serialPrint("%d: type %u: id: %u, repeat: %u, ", n, (uint32_t)audioQueue.fragments[n].type,
-                                                        (uint32_t)audioQueue.fragments[n].id,
-                                                        (uint32_t)audioQueue.fragments[n].repeat);
-    if ( audioQueue.fragments[n].type == FRAGMENT_FILE) {
-      serialPrint(" file: %s", audioQueue.fragments[n].file);
+    serialPrint("%d: type %u: id: %u, repeat: %u, ", n, (uint32_t)audioQueue.fragmentsFifo.fragments[n].type,
+                                                        (uint32_t)audioQueue.fragmentsFifo.fragments[n].id,
+                                                        (uint32_t)audioQueue.fragmentsFifo.fragments[n].repeat);
+    if ( audioQueue.fragmentsFifo.fragments[n].type == FRAGMENT_FILE) {
+      serialPrint(" file: %s", audioQueue.fragmentsFifo.fragments[n].file);
     }
   }
 
-  serialPrint("audioQueue:");
-  serialPrint("  ridx: %d, widx: %d", audioQueue.ridx, audioQueue.widx);
-  serialPrint("  bufferRIdx: %d, bufferWIdx: %d", audioQueue.bufferRIdx, audioQueue.bufferWIdx);
+  serialPrint("FragmentFifo:  ridx: %d, widx: %d", audioQueue.fragmentsFifo.ridx, audioQueue.fragmentsFifo.widx);
+  serialPrint("audioQueue:  readIdx: %d, writeIdx: %d, full: %d", audioQueue.buffersFifo.readIdx, audioQueue.buffersFifo.writeIdx, audioQueue.buffersFifo.bufferFull);
 
   serialPrint("normalContext: %u", (uint32_t)audioQueue.normalContext.fragment.type);
 
@@ -711,7 +698,7 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "dc")) {
     DiskCacheStats stats = diskCache.getStats();
     uint32_t hitRate = diskCache.getHitRate();
-    serialPrint("Disk Cache stats: reads: %u, hits: %u, hit rate: %0.1f%%", (stats.noHits + stats.noMisses), stats.noHits, hitRate/10.0);
+    serialPrint("Disk Cache stats: w:%u r: %u, h: %u(%0.1f%%), m: %u", stats.noWrites, (stats.noHits + stats.noMisses), stats.noHits, hitRate/10.0, stats.noMisses);
   }
 #endif
   else if (toLongLongInt(argv, 1, &address) > 0) {

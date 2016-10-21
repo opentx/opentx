@@ -57,8 +57,12 @@ elseif(PCB STREQUAL X7D)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_taranis)
   set(FLAVOUR x7d)
-  add_definitions(-DPCBX7D)
+  add_definitions(-DPCBX7D -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    bluetooth_driver.cpp
+    )
   set(GUI_DIR 128x64)
   set(BITMAPS_TARGET 9x_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)

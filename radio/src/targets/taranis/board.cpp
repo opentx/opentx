@@ -143,7 +143,7 @@ void boardInit()
   hapticInit();
 #endif
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 

@@ -35,7 +35,7 @@ docker exec companion rm -rf build
 docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/ $suffix
 docker stop companion
 docker rm companion
-cp binaries/*.deb $output/companion/linux/
+cp binaries/*.deb $output/companion/linux/opentx-companion-linux-2.2.0$suffix_amd64.deb
 
 # Clean binaries It will be hosting built on demand firmware
 rm -rf binaries/*
@@ -44,7 +44,7 @@ rm -rf binaries/.lock
 # Request companion compilation on Windows
 cd $output/companion/windows
 wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch\&suffix=$suffix
-wget -O companion-windows-2.2.0$suffix.exe http://winbox.open-tx.org/companion-builds/companion-windows-2.2.0$suffix.exe
+wget -O opentx-companion-windows-2.2.0$suffix.exe http://winbox.open-tx.org/companion-builds/companion-windows-2.2.0$suffix.exe
 chmod -Rf g+w companion-windows-2.2.0$suffix.exe
 
 # Update windows stamp

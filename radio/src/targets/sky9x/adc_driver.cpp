@@ -43,8 +43,8 @@ const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
 // TRGEN = 0 (software trigger only)
 void adcInit()
 {
-  register Adc *padc ;
-  register uint32_t timer ;
+  Adc *padc ;
+  uint32_t timer ;
 
   timer = ( Master_frequency / (3600000*2) ) << 8 ;
   // Enable peripheral clock ADC = bit 29
@@ -65,9 +65,9 @@ void adcInit()
 // Documented bug, must do them 1 by 1
 void adcSingleRead()
 {
-  register Adc *padc;
-  register uint32_t y;
-  register uint32_t x;
+  Adc *padc;
+  uint32_t y;
+  uint32_t x;
 
   for (uint8_t i=0; i<4; i++)
   padc = ADC;

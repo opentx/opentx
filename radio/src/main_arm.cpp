@@ -22,7 +22,7 @@
 
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
-uint8_t requestScreenshot = false;
+uint8_t mainRequestFlags = 0;
 
 void handleUsbConnection()
 {
@@ -72,7 +72,9 @@ void checkSpeakerVolume()
 {
   if (currentSpeakerVolume != requiredSpeakerVolume) {
     currentSpeakerVolume = requiredSpeakerVolume;
+#if !defined(SOFTWARE_VOLUME)
     setScaledVolume(currentSpeakerVolume);
+#endif
   }
 }
 
@@ -397,6 +399,12 @@ void perMain()
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
+  if (mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)) {
+    TRACE("Executing requested Flight Reset");
+    flightReset();
+    mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
+  }
+
   event_t evt = getEvent(false);
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
     // on keypress turn the light on
@@ -453,9 +461,9 @@ void perMain()
 #endif
 
 #if defined(PCBTARANIS)
-  if (requestScreenshot) {
-    requestScreenshot = false;
+  if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
     writeScreenshot();
+    mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);
   }
 #endif
 

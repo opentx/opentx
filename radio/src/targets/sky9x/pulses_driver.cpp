@@ -22,7 +22,7 @@
 
 void setExternalModulePolarity()
 {
-  register Pwm * pwmptr = PWM;
+  Pwm * pwmptr = PWM;
   pwmptr->PWM_CH_NUM[3].PWM_CDTYUPD = GET_PPM_DELAY(EXTERNAL_MODULE) * 2; // Duty in half uS
   if (GET_PPM_POLARITY(EXTERNAL_MODULE))
     pwmptr->PWM_CH_NUM[3].PWM_CMR &= ~0x00000200; // CPOL
@@ -32,7 +32,7 @@ void setExternalModulePolarity()
 
 void setExtraModulePolarity()
 {
-  register Pwm * pwmptr = PWM;
+  Pwm * pwmptr = PWM;
   pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = GET_PPM_DELAY(EXTRA_MODULE) * 2; // Duty in half uS
   if (GET_PPM_POLARITY(EXTRA_MODULE))
     pwmptr->PWM_CH_NUM[1].PWM_CMR &= ~0x00000200; // CPOL
@@ -42,7 +42,7 @@ void setExtraModulePolarity()
 
 void module_output_active()
 {
-  register Pio *pioptr = PIOA;
+  Pio *pioptr = PIOA;
   pioptr->PIO_ABCDSR[0] &= ~PIO_PA17;            // Peripheral C
   pioptr->PIO_ABCDSR[1] |= PIO_PA17;             // Peripheral C
   pioptr->PIO_PDR = PIO_PA17;                    // Disable bit A17 Assign to peripheral
@@ -61,7 +61,7 @@ void module_output_active()
 
 void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
-  register Pwm * pwmptr;
+  Pwm * pwmptr;
 
   setupPulsesPPMModule(EXTERNAL_MODULE);
 
@@ -86,7 +86,7 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
 
 void disable_main_ppm()
 {
-  register Pio * pioptr = PIOA;
+  Pio * pioptr = PIOA;
   pioptr->PIO_PER = PIO_PA17;                                            // Assign A17 to PIO
   PWM->PWM_IDR1 = PWM_IDR1_CHID3;
 }
@@ -95,7 +95,7 @@ void init_second_ppm(uint32_t period)
 {
 #if !defined(REVA)
   // PWM1 for PPM2
-  register Pwm * pwmptr = PWM;
+  Pwm * pwmptr = PWM;
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP );
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B;    // CLKB
   if (!GET_PPM_POLARITY(EXTRA_MODULE)) {
@@ -113,7 +113,7 @@ void init_second_ppm(uint32_t period)
 void disable_second_ppm()
 {
 #if !defined(REVA)
-  register Pio * pioptr = PIOC;
+  Pio * pioptr = PIOC;
   pioptr->PIO_PER = PIO_PC15;                                            // Assign C17 to PIO
   PWM->PWM_IDR1 = PWM_IDR1_CHID1;
 #endif
@@ -163,7 +163,7 @@ void disable_ppm(uint32_t port)
 // TD is on PA17, peripheral A
 void init_ssc()
 {
-  register Ssc * sscptr;
+  Ssc * sscptr;
 
   PMC->PMC_PCER0 |= 0x00400000L;               // Enable peripheral clock to SSC
 
@@ -185,8 +185,8 @@ void init_ssc()
 
 void disable_ssc()
 {
-  register Pio *pioptr;
-  register Ssc *sscptr;
+  Pio *pioptr;
+  Ssc *sscptr;
 
   // Revert back to pwm output
   pioptr = PIOA;
@@ -243,7 +243,7 @@ void disable_dsm2(uint32_t port)
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
 {
-  register Pwm * pwmptr = PWM;
+  Pwm * pwmptr = PWM;
   uint32_t reason = pwmptr->PWM_ISR1;
   uint32_t period;
 
@@ -266,7 +266,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         else {
           // Kick off serial output here
-          register Ssc * sscptr = SSC;
+          Ssc * sscptr = SSC;
           sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.pulses);
           sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
@@ -290,7 +290,7 @@ extern "C" void PWM_IRQHandler(void)
         }
         else {
           // Kick off serial output here
-          register Ssc * sscptr = SSC;
+          Ssc * sscptr = SSC;
           sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);
           sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers

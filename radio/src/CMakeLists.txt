@@ -35,7 +35,7 @@ set(FATFS_DIR ${THIRDPARTY_DIR}/FatFs)
 set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 set(GUI_LANGUAGES cz de en es fr it pt sk se pl hu nl)
-set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu nl)
+set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu)
 
 configure_file(stamp.h.in stamp.h @ONLY)
 
@@ -337,14 +337,17 @@ set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 set(CMAKE_COMMON_FLAGS "")
+# similar for -mmacosx-version-min="
+set(CMAKE_C_OSX_DEPLOYMENT_TARGET_FLAG "")
+set(CMAKE_CXX_OSX_DEPLOYMENT_TARGET_FLAG "")
 set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
 if(NOT MSVC)
   if(ARCH STREQUAL ARM)
-    cmake_force_c_compiler(arm-none-eabi-gcc GNU)
-    cmake_force_cxx_compiler(arm-none-eabi-g++ GNU)
+    set(CMAKE_C_COMPILER arm-none-eabi-gcc)
+    set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
     set(CMAKE_ASM_COMPILER arm-none-eabi-as)
 
     set(CMAKE_SYSTEM_NAME Generic)
@@ -387,10 +390,10 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
   else()
-    cmake_force_c_compiler(avr-gcc GNU)
-    cmake_force_cxx_compiler(avr-gcc GNU)
-
+    set(CMAKE_C_COMPILER avr-gcc)
+    set(CMAKE_CXX_COMPILER avr-gcc)
     set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+
     # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
     if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
       set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")

@@ -111,8 +111,8 @@ static uint32_t BOARD_ConfigurePmc(void)
 #undef CLOCK_TIMEOUT
 #define CLOCK_TIMEOUT           0xFFFFFFFF
 
-    register uint32_t timeout = 0 ;
-		register Pmc *pmcptr ;
+    uint32_t timeout = 0 ;
+		Pmc *pmcptr ;
 
 		pmcptr = PMC ;
 
@@ -179,8 +179,8 @@ static uint32_t BOARD_ConfigurePmc(void)
 
 void revert_osc()
 {
-  register uint32_t timeout = 0;
-  register Pmc *pmcptr;
+  uint32_t timeout = 0;
+  Pmc *pmcptr;
 
   pmcptr = PMC;
 

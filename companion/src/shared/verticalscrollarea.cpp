@@ -5,8 +5,7 @@
 
 VerticalScrollArea::VerticalScrollArea(QWidget * parent, GenericPanel * panel):
   QScrollArea(parent),
-  panel(panel),
-  parent(parent)
+  panel(panel)
 {
   setWidgetResizable(true);
   setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -14,7 +13,7 @@ VerticalScrollArea::VerticalScrollArea(QWidget * parent, GenericPanel * panel):
   panel->installEventFilter(this);
 }
 
-bool VerticalScrollArea::eventFilter(QObject *o, QEvent *e)
+bool VerticalScrollArea::eventFilter(QObject * o, QEvent * e)
 {
   if (o == panel && e->type() == QEvent::Resize) {
     setMinimumWidth(panel->minimumSizeHint().width() + verticalScrollBar()->width());

@@ -703,7 +703,7 @@ extern const pm_char STR_RESET_BTN[];
 #if defined(SDCARD)
   extern const pm_char STR_BACKUP_MODEL[];
   extern const pm_char STR_RESTORE_MODEL[];
-  extern const pm_char STR_SDCARD_ERROR[];
+  extern const pm_char STR_DELETE_ERROR[];
   extern const pm_char STR_NO_SDCARD[];
   extern const pm_char STR_SDCARD_FULL[];
   extern const pm_char STR_INCOMPATIBLE[];
@@ -714,6 +714,8 @@ extern const pm_char STR_RESET_BTN[];
   #define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
+extern const pm_char STR_SDCARD_ERROR[];
+extern const pm_char STR_CAT_NOT_EMPTY[];
 extern const pm_char STR_WARNING[];
 extern const pm_char STR_STORAGE_WARNING[];
 extern const pm_char STR_EEPROM_CONVERTING[];

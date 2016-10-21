@@ -11,11 +11,10 @@ class VerticalScrollArea : public QScrollArea
     VerticalScrollArea(QWidget * parent, GenericPanel * panel);
 
   protected:
-    virtual bool eventFilter(QObject *o, QEvent *e);
+    virtual bool eventFilter(QObject * o, QEvent * e);
 
   private:
     GenericPanel * panel;
-    QWidget * parent;
 };
 
 #endif

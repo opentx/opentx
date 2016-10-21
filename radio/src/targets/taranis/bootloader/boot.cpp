@@ -22,7 +22,7 @@
 #include "stamp.h"
 
 #define BOOTLOADER_TITLE        " Taranis BootLoader - " VERSION
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7D)
   #define BOOT_KEY_UP           KEY_MINUS
   #define BOOT_KEY_DOWN         KEY_PLUS
 #else
@@ -83,7 +83,7 @@ FIL FlashFile;
 DIR Dj;
 FILINFO Finfo;
 
-TCHAR Filenames[20][50];
+TCHAR Filenames[20][_MAX_LFN + 1];
 uint32_t FileSize[20];
 uint32_t Valid;
 
@@ -126,19 +126,19 @@ void interrupt10ms(void)
 
 void init10msTimer()
 {
-  TIM14->ARR = 9999;  // 10mS
-  TIM14->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1; // 1uS from 12MHz
-  TIM14->CCER = 0;
-  TIM14->CCMR1 = 0;
-  TIM14->EGR = 0;
-  TIM14->CR1 = 5;
-  TIM14->DIER |= 1;
-  NVIC_EnableIRQ(TIM8_TRG_COM_TIM14_IRQn);
+  INTERRUPT_5MS_TIMER->ARR = 9999;  // 10mS
+  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1; // 1uS from 12MHz
+  INTERRUPT_5MS_TIMER->CCER = 0;
+  INTERRUPT_5MS_TIMER->CCMR1 = 0;
+  INTERRUPT_5MS_TIMER->EGR = 0;
+  INTERRUPT_5MS_TIMER->CR1 = 5;
+  INTERRUPT_5MS_TIMER->DIER |= 1;
+  NVIC_EnableIRQ(INTERRUPT_5MS_IRQn);
 }
 
-extern "C" void TIM8_TRG_COM_TIM14_IRQHandler()
+extern "C" void INTERRUPT_5MS_IRQHandler()
 {
-  TIM14->SR &= ~TIM_SR_UIF;
+  INTERRUPT_5MS_TIMER->SR &= ~TIM_SR_UIF;
   interrupt10ms();
 }
 
@@ -153,23 +153,20 @@ FRESULT readBinDir(DIR *dj, FILINFO *fno)
     if (fr != FR_OK || fno->fname[0] == 0) {
       break;
     }
-    if (*fno->lfname == 0) {
-      strAppend(fno->lfname, fno->fname); // Copy 8.3 name
-    }
-    int32_t len = strlen(fno->lfname) - 4;
+    int32_t len = strlen(fno->fname) - 4;
     if (len < 0) {
       loop = 1;
     }
-    if (fno->lfname[len] != '.') {
+    if (fno->fname[len] != '.') {
       loop = 1;
     }
-    if ((fno->lfname[len + 1] != 'b') && (fno->lfname[len + 1] != 'B')) {
+    if ((fno->fname[len + 1] != 'b') && (fno->fname[len + 1] != 'B')) {
       loop = 1;
     }
-    if ((fno->lfname[len + 2] != 'i') && (fno->lfname[len + 2] != 'I')) {
+    if ((fno->fname[len + 2] != 'i') && (fno->fname[len + 2] != 'I')) {
       loop = 1;
     }
-    if ((fno->lfname[len + 3] != 'n') && (fno->lfname[len + 3] != 'N')) {
+    if ((fno->fname[len + 3] != 'n') && (fno->fname[len + 3] != 'N')) {
       loop = 1;
     }
 
@@ -181,27 +178,22 @@ uint32_t fillNames(uint32_t index)
 {
   uint32_t i;
   FRESULT fr;
-  Finfo.lfname = Filenames[0];
-  Finfo.lfsize = 48;
   fr = f_readdir(&Dj, 0);         // rewind
-  fr = f_readdir(&Dj, &Finfo);    // Skip .
-  fr = f_readdir(&Dj, &Finfo);    // Skip ..
-  i = 0;
-  while (i <= index) {
+  for (i = 0; i <= index; ++i) {
     fr = readBinDir(&Dj, &Finfo);   // First entry
-    FileSize[0] = Finfo.fsize;
-    i += 1;
     if (fr == FR_NO_FILE) {
       return 0;
     }
   }
+  strAppend(Filenames[0], Finfo.fname);
+  FileSize[0] = Finfo.fsize;
   for (i = 1; i < 7; i += 1) {
-    Finfo.lfname = Filenames[i];
-    fr = readBinDir(&Dj, &Finfo);   // First entry
-    FileSize[i] = Finfo.fsize;
+    fr = readBinDir(&Dj, &Finfo);
     if (fr != FR_OK || Finfo.fname[0] == 0) {
       break;
     }
+    strAppend(Filenames[i], Finfo.fname);
+    FileSize[i] = Finfo.fsize;
   }
   return i;
 }

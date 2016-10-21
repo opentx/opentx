@@ -24,11 +24,11 @@
 // Keys
 #if defined(PCBX7D)
   #define KEYS_GPIO_REG_PAGE            GPIOD->IDR
-  #define KEYS_GPIO_PIN_PAGE            GPIO_Pin_2  // PD.02
+  #define KEYS_GPIO_PIN_PAGE            GPIO_Pin_3  // PD.03
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR
   #define KEYS_GPIO_PIN_MENU            GPIO_Pin_7  // PD.07
   #define KEYS_GPIO_REG_EXIT            GPIOD->IDR
-  #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_3  // PD.03
+  #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_2  // PD.02
 #else
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR
   #define KEYS_GPIO_PIN_MENU            GPIO_Pin_7  // PD.07
@@ -92,6 +92,23 @@
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
   #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_13 // PC.13
+#elif defined(PCBX7D)
+  #define TRIMS_GPIO_REG_LHL            GPIOD->IDR
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_15 // PD.15
+  #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_1  // PC.01
+  #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_6  // PE.06
+  #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_5  // PE.05
+  #define TRIMS_GPIO_REG_RVD            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
+  #define TRIMS_GPIO_REG_RHL            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_3  // PE.03
+  #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
+  #define TRIMS_GPIO_REG_RHR            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_4  // PE.04
 #else
   #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PE.04
@@ -147,10 +164,10 @@
   #define SWITCHES_GPIO_REG_C_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_14 // PF.14
 #elif defined(PCBX7D)
-  #define SWITCHES_GPIO_REG_C_H         GPIOD->IDR
-  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_14 // PD.14
-  #define SWITCHES_GPIO_REG_C_L         GPIOD->IDR
-  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_15 // PD.15
+  #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_15 // PE.15
+  #define SWITCHES_GPIO_REG_C_L         GPIOA->IDR
+  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_5  // PA.05
 #else
   #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_15 // PE.15
@@ -190,6 +207,9 @@
 #if defined(PCBX9E)
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_11 // PE.11
+#elif defined(PCBX7D)
+  #define SWITCHES_GPIO_REG_F           GPIOD->IDR
+  #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PD.14
 #else
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
@@ -215,7 +235,7 @@
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_14 // PD.14
 #elif defined(PCBX7D)
   #define SWITCHES_GPIO_REG_H           GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_H           GPIO_Pin_15 // PE.15
+  #define SWITCHES_GPIO_PIN_H           GPIO_Pin_14 // PE.14
 #else
   #define SWITCHES_GPIO_REG_H           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_13 // PE.13
@@ -282,9 +302,10 @@
   #define KEYS_GPIOE_PINS               (KEYS_GPIO_PIN_PLUS | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_MINUS | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_F | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L)
 #elif defined(PCBX7D)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
-  #define KEYS_GPIOC_PINS               (TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR)
-  #define KEYS_GPIOD_PINS               (KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_C_L | SWITCHES_GPIO_PIN_C_H)
-  #define KEYS_GPIOE_PINS               (ENC_GPIO_PIN_A | ENC_GPIO_PIN_B | KEYS_GPIO_PIN_ENTER | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_F | SWITCHES_GPIO_PIN_H)
+  #define KEYS_GPIOA_PINS               SWITCHES_GPIO_PIN_C_L
+  #define KEYS_GPIOC_PINS               (TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU)
+  #define KEYS_GPIOD_PINS               (TRIMS_GPIO_PIN_LHL | KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_F)
+  #define KEYS_GPIOE_PINS               (ENC_GPIO_PIN_A | ENC_GPIO_PIN_B | KEYS_GPIO_PIN_ENTER | TRIMS_GPIO_PIN_RHR | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_H)
 #else
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               (SWITCHES_GPIO_PIN_C_L)
@@ -304,12 +325,19 @@
 #endif
 #define ADC_GPIO_PIN_STICK_RV           GPIO_Pin_0  // PA.00
 #define ADC_GPIO_PIN_STICK_RH           GPIO_Pin_1  // PA.01
-#define ADC_GPIO_PIN_STICK_LH           GPIO_Pin_2  // PA.02
-#define ADC_GPIO_PIN_STICK_LV           GPIO_Pin_3  // PA.03
+#if defined(PCBX7D)
+  #define ADC_GPIO_PIN_STICK_LV         GPIO_Pin_2  // PA.02
+  #define ADC_GPIO_PIN_STICK_LH         GPIO_Pin_3  // PA.03
+  #define ADC_CHANNEL_STICK_LV          ADC_Channel_2  // ADC1_IN2
+  #define ADC_CHANNEL_STICK_LH          ADC_Channel_3  // ADC1_IN3
+#else
+  #define ADC_GPIO_PIN_STICK_LH         GPIO_Pin_2  // PA.02
+  #define ADC_GPIO_PIN_STICK_LV         GPIO_Pin_3  // PA.03
+  #define ADC_CHANNEL_STICK_LH          ADC_Channel_2  // ADC1_IN2
+  #define ADC_CHANNEL_STICK_LV          ADC_Channel_3  // ADC1_IN3
+#endif
 #define ADC_CHANNEL_STICK_RV            ADC_Channel_0  // ADC1_IN0
 #define ADC_CHANNEL_STICK_RH            ADC_Channel_1  // ADC1_IN1
-#define ADC_CHANNEL_STICK_LH            ADC_Channel_2  // ADC1_IN2
-#define ADC_CHANNEL_STICK_LV            ADC_Channel_3  // ADC1_IN3
 #define ADC1_DMA                        DMA2
 #define ADC1_DMA_Stream                 DMA2_Stream4
 #define ADC1_DMA_FLAGS                  (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
@@ -748,7 +776,7 @@
   #define BT_RCC_APB1Periph            RCC_APB1Periph_USART3
   #define BT_EN_GPIO                   GPIOE
   #define BT_EN_GPIO_PIN               GPIO_Pin_12 // PE.12
-  #define BT_GPIO                      GPIOB
+  #define BT_GPIO_TXRX                 GPIOB
   #define BT_TX_GPIO_PIN               GPIO_Pin_10 // PB.10
   #define BT_RX_GPIO_PIN               GPIO_Pin_11 // PB.11
   #define BT_TX_GPIO_PinSource         GPIO_PinSource10

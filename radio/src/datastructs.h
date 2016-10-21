@@ -920,7 +920,7 @@ PACK(struct TrainerData {
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
 #elif defined(PCBTARANIS)
-  #if defined(PCBX9E)
+  #if defined(PCBX9E) || defined(PCBX7D)
     #define BLUETOOTH_FIELDS \
       uint8_t bluetoothEnable; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
