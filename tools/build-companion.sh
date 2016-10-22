@@ -20,42 +20,45 @@ if [ "$3" == "" ]; then
    exit 1
 fi
 
+if [ "$JOBS" == "" ]; then
+    JOBS=2
+fi
 
 rm -rf build
 mkdir build
 cd build
 
 cmake ${COMMON_OPTIONS} -DPCB=9X ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=SKY9X ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=9XRPRO ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake -DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$3 -DGVARS=NO -DHELI=YES -DPCB=X7D ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
  
 cmake ${STM32_OPTIONS} -DPCB=X9D ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${STM32_OPTIONS} -DPCB=X9D+ ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${STM32_OPTIONS} -DPCB=X9E ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
 cmake ${STM32_OPTIONS} -DPCB=HORUS ${SRCDIR}
-make -j2 libsimulator
+make -j${JOBS} libsimulator
 
-make -j2 package
+make -j${JOBS} package
 
 if [ "$(uname)" = "Darwin" ]; then
     cp *.dmg ${OUTDIR}

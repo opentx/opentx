@@ -6,7 +6,7 @@ branch=next
 docker=nightly22
 workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightly
-
+version=2.2.0
 
 # Incrementnightly index
 index=`cat index.txt`
@@ -35,7 +35,7 @@ docker exec companion rm -rf build
 docker exec companion /opentx/nightly22/code/tools/build-companion.sh /opentx/nightly22/code /opentx/binaries/ $suffix
 docker stop companion
 docker rm companion
-cp binaries/*.deb $output/companion/linux/opentx-companion-linux-2.2.0$suffix_amd64.deb
+cp binaries/*.deb $output/companion/linux/opentx-companion-linux-${version}$suffix_amd64.deb
 
 # Clean binaries It will be hosting built on demand firmware
 rm -rf binaries/*
@@ -44,10 +44,17 @@ rm -rf binaries/.lock
 # Request companion compilation on Windows
 cd $output/companion/windows
 wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch\&suffix=$suffix
-wget -O opentx-companion-windows-2.2.0$suffix.exe http://winbox.open-tx.org/companion-builds/companion-windows-2.2.0$suffix.exe
-chmod -Rf g+w companion-windows-2.2.0$suffix.exe
+wget -O opentx-companion-windows-${version}$suffix.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}$suffix.exe
+chmod -Rf g+w companion-windows-${version}$suffix.exe
 
 # Update windows stamp
 rm -f companion-windows.stamp
 echo "#define VERSION  "'"2.2.0'$suffix'"' >> companion-windows.stamp
 cp $output/companion/windows/companion-windows.stamp $output/companion/linux/companion-windows.stamp
+
+# Request companion compilation on Mac OS X
+cd $output/companion/macosx
+wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
+wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
+chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
+

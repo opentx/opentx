@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Stops on first error, echo on
+set -e
+set -x
+
 # Allow variable core usage, default uses two cores, to set 8 cores for example : commit-tests.sh -j8
 CORES=2
 for i in "$@"
@@ -16,9 +20,6 @@ case $i in
 esac
 done
 
-# Stops on first error, echo on
-set -e
-set -x
 
 if [ "$(uname)" = "Darwin" ]; then
     SCRIPT=$(python -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "$0")
