@@ -330,7 +330,6 @@ bool luaLoadMixScript(uint8_t index)
 bool luaLoadFunctionScript(uint8_t index)
 {
   CustomFunctionData & fn = g_model.customFn[index];
-
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
@@ -739,9 +738,9 @@ bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage)
 #if !defined(COLORLCD)
       luaInit();
       if (luaState == INTERPRETER_PANIC) return false;
+#endif
       luaLoadPermanentScripts();
       if (luaState == INTERPRETER_PANIC) return false;
-#endif
     }
 
     for (int i=0; i<luaScriptsCount; i++) {
