@@ -330,7 +330,7 @@ bool luaLoadMixScript(uint8_t index)
 bool luaLoadFunctionScript(uint8_t index)
 {
   CustomFunctionData & fn = g_model.customFn[index];
-  
+
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
