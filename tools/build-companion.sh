@@ -10,9 +10,9 @@ while [ $# -gt 0 ]
 do
   case "$1" in
     --jobs=*)
-      CORES="${1#*=}";;
+      JOBS="${1#*=}";;
     -j*)
-      CORES="${1#*j}";;
+      JOBS="${1#*j}";;
     -*)
       echo >&2 "usage: $0 [-j<jobs>|--jobs=<jobs>] SRCDIR OUTDIR VERSION_SUFFIX"
       exit 1;;
