@@ -8,9 +8,11 @@ SRCDIR=$1
 OUTDIR=$2
 
 COMMON_OPTIONS="-DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$3 -DGVARS=YES -DHELI=YES"
+JOBS=2
 
 if [ "$(uname)" = "Darwin" ]; then
     COMMON_OPTIONS="${COMMON_OPTIONS} -DCMAKE_PREFIX_PATH=~/Qt/5.7/clang_64/ -DCMAKE_OSX_DEPLOYMENT_TARGET='10.9'"
+    JOBS=`sysctl -n hw.ncpu`
 fi
 
 STM32_OPTIONS="${COMMON_OPTIONS} -DLUA=YES"
@@ -18,10 +20,6 @@ STM32_OPTIONS="${COMMON_OPTIONS} -DLUA=YES"
 if [ "$3" == "" ]; then
    echo "Usage $0 SRCDIR OUTDIR VERSION_SUFFIX"
    exit 1
-fi
-
-if [ "$JOBS" == "" ]; then
-    JOBS=2
 fi
 
 rm -rf build
