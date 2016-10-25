@@ -109,7 +109,7 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
 {
   static const char *strings[] = {
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
-    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS","Custom"
+    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS","FlySky AFHDS2A"
   };
   if (custom)
     return "Custom - proto " + QString::number(rfProtocol);
@@ -132,6 +132,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
   static const char *mt99_strings[] = {"MT99","H7","YZ"};
   static const char *mjxq_strings[] = {"WLH08", "X600", "X800", "H26D", "E010"};
   static const char *hontai_strings[] = {"Standard","JJRC X1","X5C1 Clone"};
+  static const char *afhds2a_strings[] = {"PWM and IBUS", "PPM and IBUS", "PWM and SBUS", "PPM and SBUS"};
   
   if (custom)
     return CHECK_IN_ARRAY(custom_subtype_strings, subType);
@@ -161,6 +162,8 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(mjxq_strings, subType);
     case MM_RF_PROTO_HONTAI:
       return CHECK_IN_ARRAY(hontai_strings, subType);
+    case MM_RF_PROTO_AFHDS2A:
+      return CHECK_IN_ARRAY(afhds2a_strings, subType);
     default:
         return "DEFAULT";
   }

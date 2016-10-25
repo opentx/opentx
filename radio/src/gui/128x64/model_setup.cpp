@@ -636,40 +636,43 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_SUBTYPE);
         switch (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true)) {
           case MM_RF_PROTO_FLYSKY:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_FLYSKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_FLYSKY, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_FRSKY:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_FRSKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_FRSKY, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_HISKY:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_HISKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_HISKY, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_DSM2:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_DSM, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_DSM, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_YD717:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_YD717, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_YD717, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_KN:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_KN, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_KN, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_SYMAX:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_SYMAX, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_SYMAX, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_CX10:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_CX10, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_CX10, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_CG023:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_CG023, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_CG023, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_MT99XX:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_MT99, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_MT99, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_MJXQ:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_MJXQ, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_MJXQ, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_PROTO_HONTAI:
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
+            break;
+          case MM_RF_PROTO_FS_AFHDS2A:
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_SUBTYPE_AFHDS2A, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
             break;
           case MM_RF_CUSTOM_SELECTED:
             lcdDrawNumber(MODEL_SETUP_2ND_COLUMN + 3 * FW, y, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), RIGHT | (menuHorizontalPosition == 0 ? attr : 0), 2);
@@ -692,6 +695,7 @@ void menuModelSetup(event_t event)
                 case MM_RF_PROTO_FRSKY:
                 case MM_RF_PROTO_DSM2:
                 case MM_RF_PROTO_MT99XX:
+                case MM_RF_PROTO_FS_AFHDS2A:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 3);
                   break;
                 case MM_RF_PROTO_MJXQ:
@@ -888,6 +892,8 @@ void menuModelSetup(event_t event)
         }
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
+          int optionValue =  g_model.moduleData[moduleIdx].multi.optionValue;
+
           switch (g_model.moduleData[moduleIdx].getMultiProtocol(true))
           {
             case MM_RF_PROTO_FRSKY:
@@ -897,13 +903,21 @@ void menuModelSetup(event_t event)
             case MM_RF_PROTO_HUBSAN:
               lcdDrawTextAlignedLeft(y, STR_MULTI_VIDFREQ);
               break;
+            case MM_RF_PROTO_FS_AFHDS2A:
+              lcdDrawTextAlignedLeft(y, TR_MULTI_SERVOFREQ);
+              optionValue = 50 + 5 * optionValue;
+              break;
             default:
               lcdDrawTextAlignedLeft(y, STR_MULTI_OPTION);
               break;
           }
-          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].multi.optionValue, LEFT | attr);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
           if (attr) {
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
+            if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_FS_AFHDS2A) {
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 70);
+            } else {
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
+            }
           }
         }
 #endif

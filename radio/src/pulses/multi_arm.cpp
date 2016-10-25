@@ -164,6 +164,11 @@ void setupPulsesMultimodule(uint8_t port)
     }
   }
 
+  // For custom protocol send unmofied type byte
+  if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_CUSTOM_SELECTED)
+    type = g_model.moduleData[port].getMultiProtocol(false);
+
+
   // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
   if (type <= 31)
     sendByteMulti(0x55);
