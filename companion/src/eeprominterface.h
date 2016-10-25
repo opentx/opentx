@@ -873,7 +873,8 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_ASSAN,
   MM_RF_PROTO_HONTAI,
   MM_RF_PROTO_OLRS,
-  MM_RF_PROTO_LAST= MM_RF_PROTO_OLRS
+  MM_RF_PROTO_AFHDS2A,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_AFHDS2A
 };
 
 unsigned int getNumSubtypes(MultiModuleRFProtocols type);
