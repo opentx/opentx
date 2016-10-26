@@ -908,12 +908,12 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   }
   else if ((func>=FuncAdjustGV1) && (func<FuncCount)) {
     switch (adjustMode) {
-      case 0:
+      case FUNC_ADJUST_GVAR_CONSTANT:
         return QObject::tr("Value ")+QString("%1").arg(param);
-      case 1:
-      case 2:
+      case FUNC_ADJUST_GVAR_SOURCE:
+      case FUNC_ADJUST_GVAR_GVAR:
         return RawSource(param).toString();
-      case 3:
+      case FUNC_ADJUST_GVAR_INCDEC:
         if (param==0) return QObject::tr("Decr:") + " -1";
         else          return QObject::tr("Incr:") + " +1";
     }
