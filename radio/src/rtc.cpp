@@ -79,7 +79,7 @@ extern void rtcdriver_settime(struct gtm * t);
 #define TIME_T_MIDPOINT (SHR (TIME_T_MIN + TIME_T_MAX, 1) + 1)
 
 /* Verify a requirement at compile-time (unlike assert, which is runtime).  */
-#define verify(name, assertion) struct name { char a[(assertion) ? 1 : -1]; }
+#define verify(name, assertion) static_assert(assertion, #assertion);
 
 verify(gtime_t_is_integer, TYPE_IS_INTEGER(gtime_t));
 verify(twos_complement_arithmetic, TYPE_TWOS_COMPLEMENT(int));
