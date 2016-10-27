@@ -78,18 +78,17 @@ extern void rtcdriver_settime(struct gtm * t);
 #endif
 #define TIME_T_MIDPOINT (SHR (TIME_T_MIN + TIME_T_MAX, 1) + 1)
 
-/* Verify a requirement at compile-time (unlike assert, which is runtime).  */
-#define verify(name, assertion) struct name { char a[(assertion) ? 1 : -1]; }
 
-verify(gtime_t_is_integer, TYPE_IS_INTEGER(gtime_t));
-verify(twos_complement_arithmetic, TYPE_TWOS_COMPLEMENT(int));
+
+static_assert(TYPE_IS_INTEGER(gtime_t), "gtime_t is not integer");
+static_assert(TYPE_TWOS_COMPLEMENT(int), "twos complement arithmetic");
 /* The code also assumes that signed integer overflow silently wraps
    around, but this assumption can't be stated without causing a
    diagnostic on some hosts.  */
 
 #define EPOCH_YEAR 1970
 #define TM_YEAR_BASE 1900
-verify(base_year_is_a_multiple_of_100, TM_YEAR_BASE % 100 == 0);
+static_assert(TM_YEAR_BASE % 100 == 0, "base year is not a multiple of 100");
 
 /* Return 1 if YEAR + TM_YEAR_BASE is a leap year.  */
 static inline int leapyear(long int year)
@@ -188,8 +187,8 @@ struct gtm * __localtime_r(const gtime_t * t, struct gtm * tp)
 static inline gtime_t ydhms_diff(long int year1, long int yday1, int hour1, int min1, int sec1,
                                  int year0, int yday0, int hour0, int min0, int sec0)
 {
-  verify(C99_integer_division, -1 / 2 == 0);
-  verify(long_int_year_and_yday_are_wide_enough, INT_MAX <= LONG_MAX / 2 || TIME_T_MAX <= UINT_MAX);
+  static_assert(-1 / 2 == 0, "no C99 integer division");
+  static_assert(INT_MAX <= LONG_MAX / 2 || TIME_T_MAX <= UINT_MAX, "long int year and yday are not wide enough");
 
   /* Compute intervening leap days correctly even if year is negative.
      Take care to avoid integer overflow here.  */

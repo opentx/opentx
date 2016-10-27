@@ -75,7 +75,7 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
 */
 void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItemV4 options = option;
+    QStyleOptionViewItem options = option;
     initStyleOption(&options, index);
 
     painter->save();
@@ -107,7 +107,7 @@ void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 */
 QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
-    QStyleOptionViewItemV4 options = option;
+    QStyleOptionViewItem options = option;
     initStyleOption(&options, index);
 
     //setup html document
@@ -125,7 +125,7 @@ QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QMod
     return QSize(doc.idealWidth(), height);
 }
 
-void MixersDelegate::SetupDocument(QTextDocument & doc, const QStyleOptionViewItemV4 & options) const
+void MixersDelegate::SetupDocument(QTextDocument & doc, const QStyleOptionViewItem & options) const
 {
     //setup html document
     doc.setHtml(options.text);

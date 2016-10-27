@@ -46,7 +46,7 @@ class MixersDelegate : public QStyledItemDelegate
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
   private:
-    void SetupDocument(QTextDocument & doc, const QStyleOptionViewItemV4 & options) const;
+    void SetupDocument(QTextDocument & doc, const QStyleOptionViewItem & options) const;
 
 };
 
