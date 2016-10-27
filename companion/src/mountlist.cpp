@@ -210,7 +210,7 @@
 #ifdef MOUNTED_GETMNTINFO
 
 # if ! HAVE_STRUCT_STATFS_F_FSTYPENAME
-static char *
+static const char *
 fstype_to_string (short int t)
 {
   switch (t)
@@ -305,7 +305,7 @@ fstype_to_string (short int t)
 }
 # endif
 
-static char *
+static const char *
 fsp_to_string (const struct statfs *fsp)
 {
 # if HAVE_STRUCT_STATFS_F_FSTYPENAME
