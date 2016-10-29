@@ -162,9 +162,11 @@ void writeHeader()
     if (sensor.logs) {
       memset(label, 0, sizeof(label));
       zchar2str(label, sensor.label, TELEM_LABEL_LEN);
-      if (sensor.unit != UNIT_RAW && sensor.unit != UNIT_GPS && sensor.unit != UNIT_DATETIME) {
+      uint8_t unit = sensor.unit;
+      if (unit == UNIT_CELLS ) unit = UNIT_VOLTS;
+      if (UNIT_RAW < unit && unit < UNIT_FIRST_VIRTUAL) {
         strcat(label, "(");
-        strncat(label, STR_VTELEMUNIT+1+3*sensor.unit, 3);
+        strncat(label, STR_VTELEMUNIT+1+3*unit, 3);
         strcat(label, ")");
       }
       strcat(label, ",");
