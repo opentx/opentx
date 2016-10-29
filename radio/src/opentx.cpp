@@ -1300,6 +1300,9 @@ uint8_t checkTrim(event_t event)
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
     bool beepTrim = false;
 
+    if (abs(after) <= (trimInc+1)) { // magnetic 0
+      after = 0;
+    }
     if (!thro && after==0 && before!=0) {
       beepTrim = true;
       AUDIO_TRIM_MIDDLE();
