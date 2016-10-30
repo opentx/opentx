@@ -221,7 +221,7 @@ void sportProcessTelemetryPacket(uint8_t * packet)
   }
 #if defined(LUA)
   else if (primId == 0x32) {
-    if (luaInputTelemetryFifo && && luaInputTelemetryFifo.hasSpace(sizeof(luaPacket))) {
+    if (luaInputTelemetryFifo && luaInputTelemetryFifo.hasSpace(sizeof(luaPacket))) {
       SportTelemetryPacket luaPacket;
       luaPacket.physicalId = physicalId;
       luaPacket.primId = primId;
