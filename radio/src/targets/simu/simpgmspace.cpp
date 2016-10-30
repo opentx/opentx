@@ -1203,7 +1203,7 @@ void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef * RTC_DateStruct)
   time_t tme;
   time(&tme);
   struct tm * timeinfo = localtime(&tme);
-  RTC_DateStruct->RTC_Year = timeinfo->tm_year - 1900;
+  RTC_DateStruct->RTC_Year = timeinfo->tm_year - TM_YEAR_BASE;
   RTC_DateStruct->RTC_Month = timeinfo->tm_mon + 1;
   RTC_DateStruct->RTC_Date = timeinfo->tm_mday;
 }

@@ -254,7 +254,7 @@ void rtcGetTime(struct gtm * utm)
 
   g9x_rtcGetTime(&rtc);
 
-  utm->tm_year = rtc.year - 1900;
+  utm->tm_year = rtc.year - TM_YEAR_BASE;
   utm->tm_mon =  rtc.month - 1;
   utm->tm_mday = rtc.mday;
   utm->tm_hour = rtc.hour;
@@ -268,7 +268,7 @@ void rtcSetTime(const struct gtm * t)
   g_ms100 = 0; // start of next second begins now
 
   RTC rtc;
-  rtc.year = t->tm_year + 1900;
+  rtc.year = t->tm_year + TM_YEAR_BASE;
   rtc.month = t->tm_mon + 1;
   rtc.mday = t->tm_mday;
   rtc.hour = t->tm_hour;

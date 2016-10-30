@@ -164,7 +164,7 @@ extern "C" void TWI0_IRQHandler()
         utm.tm_hour = Co_proc_status[3] ;
         utm.tm_mday = Co_proc_status[4] ;
         utm.tm_mon = Co_proc_status[5] - 1;
-        utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - 1900;
+        utm.tm_year = (Co_proc_status[6] + ( Co_proc_status[7] << 8 )) - TM_YEAR_BASE;
         g_rtcTime = gmktime(&utm);
       }
       Coproc_temp = Co_proc_status[8];

@@ -425,7 +425,7 @@ char * strAppendDate(char * str, bool time)
   str[0] = '-';
   struct gtm utm;
   gettime(&utm);
-  div_t qr = div(utm.tm_year+1900, 10);
+  div_t qr = div(utm.tm_year+TM_YEAR_BASE, 10);
   str[4] = '0' + qr.rem;
   qr = div(qr.quot, 10);
   str[3] = '0' + qr.rem;

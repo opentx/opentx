@@ -246,8 +246,8 @@ void rtcSetTime(const struct gtm * t)
   I2CTime.Time[2] = t->tm_hour ;
   I2CTime.Time[3] = t->tm_mday ;
   I2CTime.Time[4] = t->tm_mon+1 ;
-  I2CTime.Time[5] = (uint8_t) (t->tm_year+1900);
-  I2CTime.Time[6] = (t->tm_year+1900) >> 8;
+  I2CTime.Time[5] = (uint8_t) (t->tm_year+TM_YEAR_BASE);
+  I2CTime.Time[6] = (t->tm_year+TM_YEAR_BASE) >> 8;
 #if defined(REVX)
   writeRTC((uint8_t *)&I2CTime.Time[0]) ;
 #elif defined(COPROCESSOR)

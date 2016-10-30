@@ -163,7 +163,7 @@ void menuRadioSetup(event_t event)
           uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
-              lcdDrawNumber(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+1900, rowattr|RIGHT);
+              lcdDrawNumber(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+TM_YEAR_BASE, rowattr|RIGHT);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
@@ -172,7 +172,7 @@ void menuRadioSetup(event_t event)
               break;
             case 2:
             {
-              int16_t year = 1900 + t.tm_year;
+              int16_t year = TM_YEAR_BASE + t.tm_year;
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               static const pm_uint8_t dmon[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += pgm_read_byte(&dmon[t.tm_mon]);

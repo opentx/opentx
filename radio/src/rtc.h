@@ -25,6 +25,7 @@
 
 #define SECS_PER_HOUR   3600ul
 #define SECS_PER_DAY    86400ul
+#define TM_YEAR_BASE    1900
 
 typedef long int gtime_t;
 

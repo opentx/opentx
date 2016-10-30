@@ -388,7 +388,7 @@ int cliSet(const char ** argv)
     struct gtm t;
     int year, month, day, hour, minute, second;
     if (toInt(argv, 2, &year) > 0 && toInt(argv, 3, &month) > 0 && toInt(argv, 4, &day) > 0 && toInt(argv, 5, &hour) > 0 && toInt(argv, 6, &minute) > 0 && toInt(argv, 7, &second) > 0) {
-      t.tm_year = year-1900;
+      t.tm_year = year-TM_YEAR_BASE;
       t.tm_mon = month-1;
       t.tm_mday = day;
       t.tm_hour = hour;
@@ -587,7 +587,7 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "rtc")) {
     struct gtm utm;
     gettime(&utm);
-    serialPrint("rtc = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+1900, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
+    serialPrint("rtc = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+TM_YEAR_BASE, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
   }
   else if (!strcmp(argv[1], "volume")) {
     serialPrint("volume = %d", getVolume());

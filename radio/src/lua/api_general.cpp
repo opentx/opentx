@@ -141,7 +141,7 @@ static int luaGetDateTime(lua_State * L)
 {
   struct gtm utm;
   gettime(&utm);
-  luaPushDateTime(L, utm.tm_year + 1900, utm.tm_mon + 1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec);
+  luaPushDateTime(L, utm.tm_year + TM_YEAR_BASE, utm.tm_mon + 1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec);
   return 1;
 }
 

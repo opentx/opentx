@@ -87,7 +87,6 @@ static_assert(TYPE_TWOS_COMPLEMENT(int), "twos complement arithmetic");
    diagnostic on some hosts.  */
 
 #define EPOCH_YEAR 1970
-#define TM_YEAR_BASE 1900
 static_assert(TM_YEAR_BASE % 100 == 0, "base year is not a multiple of 100");
 
 /* Return 1 if YEAR + TM_YEAR_BASE is a leap year.  */
@@ -148,8 +147,8 @@ int __offtime(const gtime_t * t, long int offset, struct gtm * tp)
     days -= ((yg - y) * 365 + LEAPS_THRU_END_OF(yg - 1) - LEAPS_THRU_END_OF(y - 1));
     y = yg;
   }
-  tp->tm_year = y - 1900;
-  if (tp->tm_year != y - 1900) {
+  tp->tm_year = y - TM_YEAR_BASE;
+  if (tp->tm_year != y - TM_YEAR_BASE) {
     /* The year cannot be represented due to overflow.  */
     // __set_errno (EOVERFLOW);
     return 0;
@@ -465,7 +464,7 @@ uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t
 
     // convert given UTC time to local time (to seconds) and compare it with RTC
     struct gtm t;
-    t.tm_year = year - 1900;
+    t.tm_year = year - TM_YEAR_BASE;
     t.tm_mon  = mon - 1;
     t.tm_mday = day;
     t.tm_hour = hour;
