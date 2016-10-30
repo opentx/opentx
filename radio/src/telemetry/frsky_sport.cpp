@@ -201,13 +201,13 @@ void sportProcessTelemetryPacket(uint8_t * packet)
         }
         else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
 #if defined(LUA)
-          if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(luaPacket))) {
+          if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(SportTelemetryPacket))) {
             SportTelemetryPacket luaPacket;
             luaPacket.physicalId = physicalId;
             luaPacket.primId = primId;
             luaPacket.dataId = id;
             luaPacket.value = data;
-            for (uint8_t i=0; i<sizeof(luaPacket); i++) {
+            for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
               luaInputTelemetryFifo->push(luaPacket.raw[i]);
             }
           }
@@ -221,13 +221,13 @@ void sportProcessTelemetryPacket(uint8_t * packet)
   }
 #if defined(LUA)
   else if (primId == 0x32) {
-    if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(luaPacket))) {
+    if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(SportTelemetryPacket))) {
       SportTelemetryPacket luaPacket;
       luaPacket.physicalId = physicalId;
       luaPacket.primId = primId;
       luaPacket.dataId = id;
       luaPacket.value = data;
-      for (uint8_t i=0; i<sizeof(luaPacket); i++) {
+      for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
         luaInputTelemetryFifo->push(luaPacket.raw[i]);
       }
     }
