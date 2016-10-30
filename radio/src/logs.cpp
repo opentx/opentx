@@ -312,10 +312,7 @@ void logsWrite()
             }
           }
           else if (sensor.unit == UNIT_DATETIME) {
-            if (telemetryItem.datetime.datestate)
-              f_printf(&g_oLogFile, "%4d-%02d-%02d %02d:%02d:%02d,", telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day, telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
-            else
-              f_printf(&g_oLogFile, ",");
+            f_printf(&g_oLogFile, "%4d-%02d-%02d %02d:%02d:%02d,", telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day, telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
           }
           else if (sensor.prec == 2) {
             div_t qr = div(telemetryItem.value, 100);

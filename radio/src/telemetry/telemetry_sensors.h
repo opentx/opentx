@@ -61,11 +61,9 @@ class TelemetryItem
         CellValue values[6];
       } cells;
       struct {
-        uint8_t  datestate;
-        uint16_t year;
+        uint16_t year;          // full year (4 digits)
         uint8_t  month;
         uint8_t  day;
-        uint8_t  timestate;
         uint8_t  hour;
         uint8_t  min;
         uint8_t  sec;
