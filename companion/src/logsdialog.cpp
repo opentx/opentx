@@ -275,6 +275,8 @@ void LogsDialog::exportToGoogleEarth()
   if (n==0) return;
 
   int gpscol=0, altcol=0, speedcol=0;
+  double altMultiplier = 1.0;
+
   QSet<int> nondataCols;
   for (int i=1; i<dataPoints.at(0).count(); i++) {
     // Long,Lat,Course,GPS Speed,GPS Alt
@@ -284,6 +286,9 @@ void LogsDialog::exportToGoogleEarth()
     if (dataPoints.at(0).at(i).contains("GAlt")) {
       altcol = i;
       nondataCols << i;
+      if (dataPoints.at(0).at(i).contains("(ft)")) {
+        altMultiplier = 0.3048;    // feet to meters
+      }
     }
     if (dataPoints.at(0).at(i).contains("GSpd")) {
       speedcol = i;
@@ -295,7 +300,7 @@ void LogsDialog::exportToGoogleEarth()
     return;
   }
 
-  // qDebug() << "gpscol" << gpscol << "altcol" << altcol << "speedcol" << speedcol;
+  // qDebug() << "gpscol" << gpscol << "altcol" << altcol << "speedcol" << speedcol << "altMultiplier" << altMultiplier;
   QString geIconFilename = generateProcessUniqueTempFileName("track0.png");
   if (QFile::exists(geIconFilename)) {
     QFile::remove(geIconFilename);
@@ -363,7 +368,7 @@ void LogsDialog::exportToGoogleEarth()
   outputStream.setRealNumberPrecision(8);
   for (int i=1; i<n; i++) {
     GpsCoord coord = extractGpsCoordinates(dataPoints.at(i).at(gpscol));
-    int altitude = altcol ? dataPoints.at(i).at(altcol).toFloat() : 0;
+    int altitude = altcol ? (dataPoints.at(i).at(altcol).toFloat() * altMultiplier) : 0;
     outputStream << "\t\t\t\t\t<gx:coord>" << coord.longitude << " " << coord.latitude << " " << altitude << " </gx:coord>\n" ;
   }
 
