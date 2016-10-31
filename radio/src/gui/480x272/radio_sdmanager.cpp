@@ -126,6 +126,8 @@ void onSdManagerMenu(const char * result)
   else if (result == STR_DELETE_FILE) {
     getSelectionFullPath(lfn);
     f_unlink(lfn);
+    menuVerticalOffset = 0;
+    menuVerticalPosition = 0;
     REFRESH_FILES();
   }
   else if (result == STR_PLAY_FILE) {
