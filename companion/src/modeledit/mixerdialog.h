@@ -2,6 +2,7 @@
 #define MIXERDIALOG_H
 
 #include <QDialog>
+#include <QCheckBox>
 #include "eeprominterface.h"
 
 class GVarGroup;
@@ -27,7 +28,7 @@ class MixerDialog : public QDialog {
     void fmClearAll();
     void fmSetAll();
     void fmInvertAll();
-    
+
   private:
     Ui::MixerDialog *ui;
     ModelData & model;
@@ -38,6 +39,7 @@ class MixerDialog : public QDialog {
     GVarGroup * gvWeightGroup;
     GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
+    QCheckBox * cb_fp[C9X_MAX_FLIGHT_MODES-1];
 };
 
 #endif // MIXERDIALOG_H

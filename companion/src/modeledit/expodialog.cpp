@@ -16,7 +16,21 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 {
   ui->setupUi(this);
   QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+    
+#if __cplusplus >= 201103L
+    //  extended initializer lists only available with -std=c++11 or -std=gnu++11
+    cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+#else
+    cb_fp[0] = ui->cb_FP0;
+    cb_fp[1] = ui->cb_FP1;
+    cb_fp[2] = ui->cb_FP2;
+    cb_fp[3] = ui->cb_FP3;
+    cb_fp[4] = ui->cb_FP4;
+    cb_fp[5] = ui->cb_FP5;
+    cb_fp[6] = ui->cb_FP6;
+    cb_fp[7] = ui->cb_FP7;
+    cb_fp[8] = ui->cb_FP8;
+#endif
 
   setWindowTitle(tr("Edit %1").arg(modelPrinter.printInputName(ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
@@ -43,7 +57,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (!firmware->getCapability(FlightModes)) {
     ui->label_phases->hide();
-    for (int i=0; i<9; i++) {
+    for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
@@ -53,13 +67,13 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
     int mask = 1;
-    for (int i=0; i<9; i++) {
+    for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
       if ((ed->flightModes & mask) == 0) {
         cb_fp[i]->setChecked(true);
       }
       mask <<= 1;
     }
-    for (int i=firmware->getCapability(FlightModes); i<9; i++) {
+    for (int i=firmware->getCapability(FlightModes); i<C9X_MAX_FLIGHT_MODES; i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
@@ -108,7 +122,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   connect(ui->trimCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   connect(ui->switchesCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   connect(ui->sideCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
-  for (int i=0; i<9; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
   if (firmware->getCapability(VirtualInputs))
@@ -146,7 +160,6 @@ void ExpoDialog::valuesChanged()
 {
   if (!lock) {
     lock = true;
-    QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
 
     RawSource srcRaw = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
     if (ed->srcRaw != srcRaw) {
@@ -166,7 +179,7 @@ void ExpoDialog::valuesChanged()
     }
 
     ed->flightModes = 0;
-    for (int i=8; i>=0 ; i--) {
+    for (int i=C9X_MAX_FLIGHT_MODES-1; i>=0 ; i--) {
       if (!cb_fp[i]->checkState()) {
         ed->flightModes++;
       }
@@ -181,6 +194,7 @@ void ExpoDialog::shrink()
 {
   resize(0, 0);
 }
+
 void ExpoDialog::label_phases_customContextMenuRequested(const QPoint & pos)
 {
   QLabel *label = (QLabel *)sender();
@@ -195,8 +209,7 @@ void ExpoDialog::label_phases_customContextMenuRequested(const QPoint & pos)
 void ExpoDialog::fmClearAll()
 {
   lock = true;
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<9 ; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(false);
   }
   lock = false;
@@ -206,8 +219,7 @@ void ExpoDialog::fmClearAll()
 void ExpoDialog::fmSetAll()
 {
   lock = true;
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<9 ; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(true);
   }
   lock = false;
@@ -217,11 +229,9 @@ void ExpoDialog::fmSetAll()
 void ExpoDialog::fmInvertAll()
 {
   lock = true;
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<9 ; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(not cb_fp[i]->checkState());
   }
   lock = false;
   valuesChanged();
 }
-

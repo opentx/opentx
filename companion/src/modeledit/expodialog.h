@@ -2,6 +2,7 @@
 #define EXPODIALOG_H
 
 #include <QDialog>
+#include <QCheckBox>
 #include "eeprominterface.h"
 #include "modelprinter.h"
 
@@ -42,6 +43,7 @@ class ExpoDialog : public QDialog {
     CurveGroup * curveGroup;
     ModelPrinter modelPrinter;
     bool lock;
+    QCheckBox * cb_fp[C9X_MAX_FLIGHT_MODES-1];
 };
 
 #endif // EXPODIALOG_H

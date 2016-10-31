@@ -15,7 +15,21 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     ui->setupUi(this);
     QRegExp rx(CHAR_FOR_NAMES_REGEX);
     QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
-    QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+    
+#if __cplusplus >= 201103L
+    //  extended initializer lists only available with -std=c++11 or -std=gnu++11
+    cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+#else
+    cb_fp[0] = ui->cb_FP0;
+    cb_fp[1] = ui->cb_FP1;
+    cb_fp[2] = ui->cb_FP2;
+    cb_fp[3] = ui->cb_FP3;
+    cb_fp[4] = ui->cb_FP4;
+    cb_fp[5] = ui->cb_FP5;
+    cb_fp[6] = ui->cb_FP6;
+    cb_fp[7] = ui->cb_FP7;
+    cb_fp[8] = ui->cb_FP8;
+#endif
 
     this->setWindowTitle(tr("DEST -> CH%1").arg(md->destCh));
 
@@ -58,7 +72,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     if (!firmware->getCapability(FlightModes)) {
       ui->label_phases->hide();
-      for (int i=0; i<9; i++) {
+      for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
         lb_fp[i]->hide();
         cb_fp[i]->hide();
       }
@@ -68,13 +82,13 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
       ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
       connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
       int mask = 1;
-      for (int i=0; i<9 ; i++) {
+      for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
         if ((md->flightModes & mask) == 0) {
           cb_fp[i]->setChecked(true);
         }
         mask <<= 1;
       }
-      for (int i=firmware->getCapability(FlightModes); i<9; i++) {
+      for (int i=firmware->getCapability(FlightModes); i<C9X_MAX_FLIGHT_MODES; i++) {
         lb_fp[i]->hide();
         cb_fp[i]->hide();
       }
@@ -115,7 +129,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     connect(ui->delayUpSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->slowDownSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
     connect(ui->slowUpSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    for (int i=0; i<9; i++) {
+    for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
       connect(cb_fp[i],SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
     }
 }
@@ -145,7 +159,6 @@ void MixerDialog::valuesChanged()
 {
   if (!lock) {
     lock = true;
-    QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
     if (firmware->getCapability(HasNoExpo)) {
       bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < NUM_STICKS);
@@ -166,7 +179,7 @@ void MixerDialog::valuesChanged()
     strcpy(md->name, ui->mixerName->text().toAscii());
 
     md->flightModes = 0;
-    for (int i=8; i>=0 ; i--) {
+    for (int i=C9X_MAX_FLIGHT_MODES-1; i>=0 ; i--) {
       if (!cb_fp[i]->checkState()) {
         md->flightModes++;
       }
@@ -197,8 +210,7 @@ void MixerDialog::label_phases_customContextMenuRequested(const QPoint & pos)
 void MixerDialog::fmClearAll()
 {
   lock = true;
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<9 ; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(false);
   }
   lock = false;
@@ -208,8 +220,7 @@ void MixerDialog::fmClearAll()
 void MixerDialog::fmSetAll()
 {
   lock = true;
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<9 ; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(true);
   }
   lock = false;
@@ -219,8 +230,7 @@ void MixerDialog::fmSetAll()
 void MixerDialog::fmInvertAll()
 {
   lock = true;
-  QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<9 ; i++) {
+  for (int i=0; i<C9X_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(not cb_fp[i]->checkState());
   }
   lock = false;
