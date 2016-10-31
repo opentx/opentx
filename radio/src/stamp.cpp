@@ -37,12 +37,12 @@
 #endif
 
 #if defined(COLORLCD)
-  const pm_char vers_stamp[] PROGMEM =   "VERS" TAB ": " "opentx-" FLAVOUR "-" VERSION;
+  const pm_char vers_stamp[] PROGMEM =   "VERS" TAB ": " "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
   const pm_char date_stamp[] PROGMEM =   "DATE" TAB ": " DATE;
   const pm_char time_stamp[] PROGMEM =   "TIME" TAB ": " TIME;
   const pm_char eeprom_stamp[] PROGMEM = "EEPR" TAB ": " EEPROM_STR;
 #elif defined(PCBTARANIS)
-  const pm_char vers_stamp[] PROGMEM = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERSION "\036DATE\037\033: " DATE " " TIME "\036EEPR\037\033: " EEPROM_STR;
+  const pm_char vers_stamp[] PROGMEM = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERSION " (" GIT_STR ")" "\036DATE\037\033: " DATE " " TIME "\036EEPR\037\033: " EEPROM_STR;
 #else
   const pm_char vers_stamp[] PROGMEM = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERSION "\036DATE\037\033: " DATE "\036TIME\037\033: " TIME "\036EEPR\037\033: " EEPROM_STR;
 #endif
