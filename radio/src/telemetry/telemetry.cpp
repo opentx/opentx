@@ -161,6 +161,9 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       gpsReceived();
     }
     return;
+  } else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+    processFlySkyTelemetryData(data);
+    return;
   }
   else if (unit == UNIT_DATETIME_YEAR) {
     datetime.year = newVal;

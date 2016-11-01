@@ -408,14 +408,9 @@ void processSpektrumTelemetryData(uint8_t data)
   }
 
 
+
   if (frskyRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
-    debugPrintf("[SPK] Packet 0x%02X rssi 0x%02X: ic2 0x%02x, %02x: ",
-                frskyRxBuffer[0], frskyRxBuffer[1], frskyRxBuffer[2], frskyRxBuffer[3]);
-    for (int i = 4; i < SPEKTRUM_TELEMETRY_LENGTH; i += 4) {
-      debugPrintf("%02X%02X %02X%02X  ", frskyRxBuffer[i], frskyRxBuffer[i + 1],
-                  frskyRxBuffer[i + 2], frskyRxBuffer[i + 3]);
-    }
-    debugPrintf("\r\n");
+    // Debug print content of Telemetry to console
     processSpektrumPacket(frskyRxBuffer);
     frskyRxBufferCount = 0;
   }

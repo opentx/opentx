@@ -38,6 +38,7 @@
 
 #if defined(MULTIMODULE)
   #include "telemetry/spektrum.h"
+  #include "telemetry/flysky_ibus.h"
 #endif
 
 uint8_t frskyStreaming = 0;
@@ -188,6 +189,10 @@ NOINLINE void processSerialData(uint8_t data)
   if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
+  else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+    processFlySkyTelemetryData(data);
+    return;
+
   }
 #endif
   switch (dataState)
