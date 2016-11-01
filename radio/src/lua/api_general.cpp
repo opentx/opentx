@@ -895,19 +895,24 @@ static int luaDefaultStick(lua_State * L)
 static int luaSetTelemetryValue(lua_State * L)
 {
   const char* name = luaL_checkstring(L, 1);
+
+  char zname[4];
+  str2zchar(zname, name, 4);
+
   uint16_t id = luaL_checkinteger(L, 2);
   uint8_t subId = luaL_checkinteger(L, 3);
   uint8_t instance = luaL_checkinteger(L, 4);
   int32_t value = luaL_checkinteger(L, 5);
   uint32_t unit = luaL_checkinteger(L, 6);
   uint32_t prec = luaL_checkinteger(L, 7);
+
   int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
   if (index >= 0) {
     TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
     telemetrySensor.id = id;
     telemetrySensor.subId = subId;
     telemetrySensor.instance = instance;
-    telemetrySensor.init(name, unit, prec);
+    telemetrySensor.init(zname, unit, prec);
     lua_pushboolean(L, true);
   } else {
     lua_pushboolean(L, false);
