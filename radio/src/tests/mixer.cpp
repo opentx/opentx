@@ -250,6 +250,7 @@ TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
 
 TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
   MIXER_RESET();
   modelDefault(0);

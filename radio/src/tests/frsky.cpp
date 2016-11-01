@@ -33,6 +33,8 @@ void displayVoltagesScreen();
 #if defined(TELEMETRY_FRSKY) && !defined(CPUARM)
 TEST(FrSky, gpsNfuel)
 {
+  MODEL_RESET();
+  TELEMETRY_RESET();
   g_model.frsky.usrProto = 1;
   telemetryData.hub.gpsFix = 1;
 
@@ -62,6 +64,11 @@ TEST(FrSky, gpsNfuel)
 
 TEST(FrSky, dateNtime)
 {
+  MODEL_RESET();
+  TELEMETRY_RESET();
+  g_model.frsky.usrProto = 1;
+  telemetryData.hub.gpsFix = 1;
+
   uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x15, 0x0f, 0x07, 0x5e, 0x16, 0x0b };
   uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x17, 0x06, 0x12, 0x5e, 0x18 };
   uint8_t pkt3[] = { 0xfd, 0x03, 0x00, 0x32, 0x00, 0x5e };
