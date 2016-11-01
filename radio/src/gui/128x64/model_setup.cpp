@@ -829,6 +829,12 @@ void menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
+#if defined(MULTIMODULE)
+            if (spektrumBindFinished) {
+               spektrumBindFinished = false;
+               s_editMode=0;
+            }
+#endif
             if (attr && l_posHorz>0 && s_editMode>0) {
               if (l_posHorz == 1)
                 newFlag = MODULE_BIND;

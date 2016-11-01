@@ -164,7 +164,12 @@ void setupPulsesMultimodule(uint8_t port)
     }
   }
 
-  // For custom protocol send unmofied type byte
+  // Set the highest bit of option byte in AFHDS2A protocol to instruct MULTI to passthrough telemetry bytes instead
+  // of sending Frsky D telemetry
+  if (g_model.moduleData[port].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
+    optionValue = optionValue | 0x80;
+
+  // For custom protocol send unmodified type byte
   if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_CUSTOM_SELECTED)
     type = g_model.moduleData[port].getMultiProtocol(false);
 

@@ -849,6 +849,12 @@ bool menuModelSetup(event_t event)
             drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleFlag[moduleIdx] == MODULE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
             drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleFlag[moduleIdx] == MODULE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
             uint8_t newFlag = 0;
+#if defined(MULTIMODULE)
+            if (spektrumBindFinished) {
+               spektrumBindFinished = false;
+               s_editMode=0;
+            }
+#endif
             if (attr && l_posHorz>0 && s_editMode>0) {
               if (l_posHorz == 1)
                 newFlag = MODULE_BIND;
