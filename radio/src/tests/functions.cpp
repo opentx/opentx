@@ -43,6 +43,7 @@ TEST(SpecialFunctions, FlightReset)
   g_model.customFn[0].active = true;
 
   mainRequestFlags = 0;
+  simuSetSwitch(0, 0);
   evalFunctions(g_model.customFn, modelFunctionsContext);
   EXPECT_EQ((bool)(mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)), false);
 

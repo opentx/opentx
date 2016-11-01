@@ -48,6 +48,7 @@ TEST(Trims, throttleTrim)
 {
   SYSTEM_RESET();
   MODEL_RESET();
+  MIXER_RESET();
   modelDefault(0);
   g_model.thrTrim = 1;
   // stick max + trim max
@@ -109,6 +110,7 @@ TEST(Trims, throttleTrim)
 TEST(Trims, invertedThrottlePlusThrottleTrim)
 {
   MODEL_RESET();
+  MIXER_RESET();
   modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
@@ -170,6 +172,7 @@ TEST(Trims, invertedThrottlePlusThrottleTrim)
 TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
 {
   MODEL_RESET();
+  MIXER_RESET();
   modelDefault(0);
   g_model.thrTrim = 1;
 #if defined(VIRTUAL_INPUTS)
@@ -248,6 +251,7 @@ TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
 TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 {
   MODEL_RESET();
+  MIXER_RESET();
   modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
@@ -374,10 +378,12 @@ TEST(Trims, CopyTrimsToOffset)
 TEST(Trims, CopySticksToOffset)
 {
   MODEL_RESET();
+  MIXER_RESET();
   modelDefault(0);
   anaInValues[ELE_STICK] = -100;
 #if defined(CPUARM)
-  doMixerCalculations();
+  evalMixes(1);
+  // doMixerCalculations();
 #else
   perMain();
 #endif
@@ -986,6 +992,7 @@ TEST(Heli, Mode2Test)
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
+  SYSTEM_RESET();
 }
 #endif
 

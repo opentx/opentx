@@ -37,7 +37,7 @@ rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=FRSKY ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on 9X stock with Ardupilot telemetry
 rm -rf *
@@ -54,77 +54,77 @@ rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTEMPLATES=YES -DHELI=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on Mega2560 with Mavlink telemetry
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTELEMETRY=MAVLINK -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on gruvin9x board
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on Sky9x
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on AR9X
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on X7D
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X7D -DHELI=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on X9D
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on X9D+
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on Taranis X9E
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on Horus beta boards
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # OpenTX on Horus
 rm -rf *
 cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
-make -j${CORES} gtests ; ./gtests
+make -j${CORES} gtests && ./gtests --gtest_shuffle --gtest_repeat=5
 
 # Companion
 rm -rf *

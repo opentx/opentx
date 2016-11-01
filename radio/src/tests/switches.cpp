@@ -68,6 +68,7 @@ TEST(getSwitch, OldTypeStickyCSW)
   setLogicalSwitch(0, LS_FUNC_AND, SWSRC_SA0, SWSRC_NONE);
   setLogicalSwitch(1, LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2);
 
+  simuSetSwitch(0, 0);
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);

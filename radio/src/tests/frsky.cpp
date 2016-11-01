@@ -178,6 +178,8 @@ TEST(FrSky, Gps)
 {
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
+
   EXPECT_EQ(telemetryItems[0].value, 0);
 
   // latitude 15 degrees north, 30.5000 minutes = 15.508333333333333 degrees
@@ -240,6 +242,8 @@ TEST(FrSkySPORT, FrSkyDCells)
 {
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
+
   uint8_t pkt1[] = { 0x7E, 0x98, 0x10, 0x06, 0x00, 0x07, 0xD0, 0x00, 0x00, 0x12 };
   EXPECT_EQ(checkSportPacket(pkt1+1), true);
   sportProcessTelemetryPacket(pkt1+1);
@@ -266,6 +270,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
 
   // test that simulates 3 cell battery
   generateSportCellPacket(packet, 3, 0, _V(410), _V(420)); sportProcessTelemetryPacket(packet);
@@ -360,6 +365,7 @@ TEST(FrSkySPORT, StrangeCellsBug)
 {
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
 
   uint8_t pkt[] = { 0x7E, 0x48, 0x10, 0x00, 0x03, 0x30, 0x15, 0x50, 0x81, 0xD5 };
   EXPECT_EQ(checkSportPacket(pkt+1), true);
@@ -375,6 +381,7 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
 
   //sensor 1: 3 cell battery
   generateSportCellPacket(packet, 3, 0, _V(418), _V(416)); sportProcessTelemetryPacket(packet);
@@ -449,6 +456,7 @@ TEST(FrSkySPORT, frskyVfas)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
 
   // tests for Vfas
   generateSportFasVoltagePacket(packet, 5000); sportProcessTelemetryPacket(packet);
@@ -487,6 +495,7 @@ TEST(FrSkySPORT, frskyCurrent)
 
   MODEL_RESET();
   TELEMETRY_RESET();
+  allowNewSensors = true;
 
   // tests for Curr
   generateSportFasCurrentPacket(packet, 0); sportProcessTelemetryPacket(packet);

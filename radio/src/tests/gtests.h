@@ -82,10 +82,13 @@ inline void TELEMETRY_RESET()
   memclear(&telemetryData, sizeof(telemetryData));
   TELEMETRY_RSSI() = 100;
 #endif
-#if defined(CPUARM) && defined(TELEMETRY_FRSKY)
+#if defined(CPUARM)
+#if defined(TELEMETRY_FRSKY)
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
+#endif
+  memclear(g_model.telemetrySensors, sizeof(g_model.telemetrySensors));
 #endif
 }
 
