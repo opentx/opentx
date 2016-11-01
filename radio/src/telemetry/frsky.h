@@ -412,6 +412,7 @@ void frskyDSendNextAlarm();
 void frskyDProcessPacket(uint8_t *packet);
 
 // FrSky S.PORT Telemetry Protocol
+void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW);
 void sportProcessTelemetryPacket(uint8_t * packet);
 
 void telemetryWakeup();
