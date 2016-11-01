@@ -902,6 +902,28 @@ static int luaDefaultChannel(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function registerSensor()
+
+Transmit data back to the general environment as a discoverable sensor, all RAW units
+
+@param instance (number) sensor data ID
+
+@param id (number) data ID
+
+@param data (number) the value transmitted by the sensor
+
+@status current Introduced in 2.2.0
+*/
+static int luaRegisterSensor(lua_State * L)
+{
+  uint8_t instance = luaL_checkunsigned(L, 1);
+  uint16_t id = luaL_checkunsigned(L, 2);
+  uint32_t data = luaL_checkunsigned(L, 3);
+  sportProcessTelemetryPacket(id, 0, instance, data);
+  return 0;
+}
+
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
@@ -919,6 +941,7 @@ const luaL_Reg opentxLib[] = {
   { "popupInput", luaPopupInput },
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
+  { "registerSensor", luaRegisterSensor },
   { "killEvents", luaKillEvents },
 #if !defined(COLORLCD)
   { "GREY", luaGrey },

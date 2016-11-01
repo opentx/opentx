@@ -98,7 +98,7 @@ bool checkSportPacket(uint8_t *packet)
 uint16_t servosState;
 uint16_t rboxState;
 
-void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit=UNIT_RAW)
+void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, uint32_t data, TelemetryUnit unit)
 {
   const FrSkySportSensor * sensor = getFrSkySportSensor(id, subId);
   uint8_t precision = 0;
