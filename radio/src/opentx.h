@@ -872,13 +872,9 @@ void doLoopCommonActions();
 
 #define BITMASK(bit) (1<<(bit))
 
-/// retruns the number of elements of an array
+/// returns the number of elements of an array
 #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 
-/// AVR compîler does not optimize 'abs' well
-#if defined(__AVR_LIBC_MAJOR__)
-template<class t> FORCEINLINE t abs(t a) { return a>0?a:-a; }
-#endif
 template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
 template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
