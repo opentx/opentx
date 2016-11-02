@@ -20,23 +20,7 @@
 
 #include "gtests.h"
 
-class SpecialFunctionsTest : public testing::Test 
-{
-  protected:  // You should make the members protected s.t. they can be
-              // accessed from sub-classes.
-
-    // virtual void SetUp() will be called before each test is run.  You
-    // should define it if you need to initialize the varaibles.
-    // Otherwise, this can be skipped.
-    virtual void SetUp() 
-    {
-      SYSTEM_RESET();
-      MODEL_RESET();
-      MIXER_RESET();
-      modelDefault(0);
-      RADIO_RESET();
-    }
-};
+class SpecialFunctionsTest : public OpenTxTest {};
 
 #if defined(CPUARM)
 TEST_F(SpecialFunctionsTest, SwitchFiledSize)

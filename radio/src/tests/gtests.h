@@ -94,4 +94,22 @@ inline void TELEMETRY_RESET()
 
 bool checkScreenshot(QString test);
 
+class OpenTxTest : public testing::Test 
+{
+  protected:  // You should make the members protected s.t. they can be
+              // accessed from sub-classes.
+
+    // virtual void SetUp() will be called before each test is run.  You
+    // should define it if you need to initialize the varaibles.
+    // Otherwise, this can be skipped.
+    virtual void SetUp() 
+    {
+      SYSTEM_RESET();
+      MODEL_RESET();
+      MIXER_RESET();
+      modelDefault(0);
+      RADIO_RESET();
+    }
+};
+
 #endif // _GTESTS_H_
