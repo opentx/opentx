@@ -22,7 +22,10 @@ crossfire_types = [
     "FLOAT",
     "TEXT_SELECTION",
     "STRING",
-    "FOLDER"
+    "FOLDER",
+    "INFO",
+    "COMMAND",
+    "VTX",
 ]
 
 def dump(data, maxLen=None):
@@ -68,12 +71,12 @@ def ParseFieldRequest(payload):
 
 def ParseField(payload):
     name = ""
-    i = 5
+    i = 6
     while payload[i] != 0:
         name += chr(payload[i])
         i += 1
     i += 1
-    return '[Field] %s device=0x%02x field=%d parent=%d type=%s' % (name, payload[1], payload[2], payload[3], crossfire_types[payload[4]])
+    return '[Field] %s device=0x%02x field=%d parent=%d type=%s' % (name, payload[1], payload[2], payload[4], crossfire_types[payload[5] & 0x7f])
 
 parsers = (
     (0x02, ParseGPS),
@@ -113,7 +116,7 @@ def ParseData(data):
             crossfireDataBuff = crossfireDataBuff[1:]
             continue
         length = crossfireDataBuff[1]
-        if length < 2 or length > 0x32:
+        if length < 2 or length > 0x40:
             print("Skipped 2 bytes", dump(crossfireDataBuff[:2]))
             crossfireDataBuff = crossfireDataBuff[2:]
             continue
