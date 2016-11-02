@@ -872,14 +872,10 @@ void doLoopCommonActions();
 
 #define BITMASK(bit) (1<<(bit))
 
-/// liefert Dimension eines Arrays
+/// returns the number of elements of an array
 #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 
-/// liefert Betrag des Arguments
-template<class t> FORCEINLINE t abs(t a) { return a>0?a:-a; }
-/// liefert das Minimum der Argumente
 template<class t> FORCEINLINE t min(t a, t b) { return a<b?a:b; }
-/// liefert das Maximum der Argumente
 template<class t> FORCEINLINE t max(t a, t b) { return a>b?a:b; }
 template<class t> FORCEINLINE t sgn(t a) { return a>0 ? 1 : (a < 0 ? -1 : 0); }
 template<class t> FORCEINLINE t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
