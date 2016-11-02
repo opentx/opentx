@@ -1,5 +1,5 @@
-set(GTEST_INCDIR /usr/include/gtest)
-set(GTEST_SRCDIR /usr/src/gtest)
+set(GTEST_INCDIR /usr/include/gtest CACHE string "Location of Google Test includes")
+set(GTEST_SRCDIR /usr/src/gtest CACHE string "Location of Google Test directory")
 
 if(EXISTS "${GTEST_SRCDIR}/src/gtest-all.cc")
   if(Qt5Widgets_FOUND)
