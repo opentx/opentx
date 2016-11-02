@@ -947,6 +947,27 @@ static int luaDefaultChannel(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function getRSSI()
+
+Get RSSI value as well as low and critical RSSI alarm levels (in dB)
+
+@retval rssi RSSI value (0 if no link)
+
+@retval alarm_low Configured low RSSI alarm level
+
+@retval alarm_crit Configured critical RSSI alarm level
+
+@status current Introduced in 2.2.0
+*/
+static int luaGetRSSI(lua_State * L)
+{
+  lua_pushunsigned(L, min((uint8_t)99, TELEMETRY_RSSI()));
+  lua_pushunsigned(L, getRssiAlarmValue(0));
+  lua_pushunsigned(L, getRssiAlarmValue(1));
+  return 3;
+}
+
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
@@ -964,6 +985,7 @@ const luaL_Reg opentxLib[] = {
   { "popupInput", luaPopupInput },
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
+  { "getRSSI", luaGetRSSI },
   { "killEvents", luaKillEvents },
 #if !defined(COLORLCD)
   { "GREY", luaGrey },
