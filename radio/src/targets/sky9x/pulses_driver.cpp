@@ -179,7 +179,7 @@ void init_ssc()
 //#else
 //  PIOA->PIO_MDDR = PIO_PA17;            // Push Pull O/p in A17
 //#endif
-//}
+}
 
 void disable_ssc()
 {
