@@ -93,7 +93,10 @@ SECTIONS
       . = ALIGN(4);        /* Align the start of the rodata part */
       *(.rodata)
       *(.rodata.*)
-      
+
+      KEEP (*(.init))
+      KEEP (*(.fini))
+
       . = ALIGN(4);        /* Align the end of the section */
    } > FLASH = 0
    _etext = .;             /* Provide the name for the end of this section */
