@@ -63,9 +63,11 @@ TEST(SpecialFunctions, FlightReset)
 #if defined(GVARS)
 TEST(SpecialFunctions, GvarsInc)
 {
-  RADIO_RESET();
+  SYSTEM_RESET();
   MODEL_RESET();
-
+  MIXER_RESET();
+  modelDefault(0);
+  RADIO_RESET();
   simuSetSwitch(0, 0);    // SA-
 
   g_model.customFn[0].swtch = SWSRC_SA0;
