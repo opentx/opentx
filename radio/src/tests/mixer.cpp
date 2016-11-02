@@ -464,6 +464,11 @@ TEST(FlightModes, nullFadeOut_posFadeIn)
   evalMixes(1);
   simuSetSwitch(3, 0);
   evalMixes(1);
+  // run mixes enough time to fade out flight modes (otherwise the mixer internal state flightModesFade  could affect other tests)
+  simuSetSwitch(3, 1);
+  for(int n=0; n<200; n++) {
+    evalMixes(1);  
+  }
 }
 
 TEST(Mixer, R2029Comment)
