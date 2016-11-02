@@ -24,6 +24,8 @@
 template <class T, int N>
 class Fifo
 {
+  static_assert((N > 1) & !(N & (N - 1)), "Fifo size must be a power of two!");
+
   public:
     Fifo():
       widx(0),
@@ -57,7 +59,7 @@ class Fifo
       }
     }
 
-    bool isEmpty()
+    bool isEmpty() const
     {
       return (ridx == widx);
     }
@@ -73,12 +75,17 @@ class Fifo
       while (!isEmpty()) {};
     }
 
-    uint32_t size()
+    uint32_t size() const
     {
       return (N + widx - ridx) & (N-1);
     }
 
-    bool probe(T & element)
+    uint32_t hasSpace(uint32_t n) const
+    {
+      return (N > (size() + n));
+    }
+
+    bool probe(T & element) const
     {
       if (isEmpty()) {
         return false;

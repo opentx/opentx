@@ -198,7 +198,7 @@ void processCrossfireTelemetryFrame()
 
 #if defined(LUA)
     default:
-      if (luaInputTelemetryFifo) {
+      if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(telemetryRxBufferCount-2) ) {
         for (uint8_t i=1; i<telemetryRxBufferCount-1; i++) {
           // destination address and CRC are skipped
           luaInputTelemetryFifo->push(telemetryRxBuffer[i]);
