@@ -20,9 +20,26 @@
 
 #include "gtests.h"
 
+class SpecialFunctionsTest : public testing::Test 
+{
+  protected:  // You should make the members protected s.t. they can be
+              // accessed from sub-classes.
+
+    // virtual void SetUp() will be called before each test is run.  You
+    // should define it if you need to initialize the varaibles.
+    // Otherwise, this can be skipped.
+    virtual void SetUp() 
+    {
+      SYSTEM_RESET();
+      MODEL_RESET();
+      MIXER_RESET();
+      modelDefault(0);
+      RADIO_RESET();
+    }
+};
 
 #if defined(CPUARM)
-TEST(SpecialFunctions, SwitchFiledSize)
+TEST_F(SpecialFunctionsTest, SwitchFiledSize)
 {
   // test the size of swtch member
   g_model.customFn[0].swtch = SWSRC_LAST;
@@ -32,11 +49,8 @@ TEST(SpecialFunctions, SwitchFiledSize)
 }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-TEST(SpecialFunctions, FlightReset)
+TEST_F(SpecialFunctionsTest, FlightReset)
 {
-  RADIO_RESET();
-  MODEL_RESET();
-
   g_model.customFn[0].swtch = SWSRC_SA0;
   g_model.customFn[0].func = FUNC_RESET;
   g_model.customFn[0].all.val = FUNC_RESET_FLIGHT;
@@ -61,13 +75,8 @@ TEST(SpecialFunctions, FlightReset)
 }
 
 #if defined(GVARS)
-TEST(SpecialFunctions, GvarsInc)
+TEST_F(SpecialFunctionsTest, GvarsInc)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  RADIO_RESET();
   simuSetSwitch(0, 0);    // SA-
 
   g_model.customFn[0].swtch = SWSRC_SA0;

@@ -20,6 +20,24 @@
 
 #include "gtests.h"
 
+class TrimsTest : public testing::Test 
+{
+  protected:  // You should make the members protected s.t. they can be
+              // accessed from sub-classes.
+
+    // virtual void SetUp() will be called before each test is run.  You
+    // should define it if you need to initialize the varaibles.
+    // Otherwise, this can be skipped.
+    virtual void SetUp() 
+    {
+      SYSTEM_RESET();
+      MODEL_RESET();
+      MIXER_RESET();
+      modelDefault(0);
+      RADIO_RESET();
+    }
+};
+
 #define CHECK_NO_MOVEMENT(channel, value, duration) \
     for (int i=1; i<=(duration); i++) { \
       evalFlightModeMixes(e_perout_mode_normal, 1); \
@@ -44,12 +62,8 @@
       } \
     } while (0)
 
-TEST(Trims, throttleTrim)
+TEST_F(TrimsTest, throttleTrim)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   g_model.thrTrim = 1;
   // stick max + trim max
   anaInValues[THR_STICK] = +1024;
@@ -107,12 +121,8 @@ TEST(Trims, throttleTrim)
 
 }
 
-TEST(Trims, invertedThrottlePlusThrottleTrim)
+TEST_F(TrimsTest, invertedThrottlePlusThrottleTrim)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
   // stick max + trim max
@@ -170,12 +180,8 @@ TEST(Trims, invertedThrottlePlusThrottleTrim)
   EXPECT_EQ(channelOutputs[2], +1024);
 }
 
-TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
+TEST_F(TrimsTest, throttleTrimWithZeroWeightOnThrottle)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   g_model.thrTrim = 1;
 #if defined(VIRTUAL_INPUTS)
   // the input already exists
@@ -250,12 +256,8 @@ TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
   EXPECT_EQ(channelOutputs[2], 1000);
 }
 
-TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
+TEST_F(TrimsTest, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
 #if defined(VIRTUAL_INPUTS)
@@ -332,35 +334,23 @@ TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 }
 
 #if !defined(VIRTUAL_INPUTS)
-TEST(Trims, greaterTrimLink)
+TEST_F(TrimsTest, greaterTrimLink)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
   setTrimValue(3, RUD_STICK, 32);
   EXPECT_EQ(getRawTrimValue(getTrimFlightMode(1, RUD_STICK), RUD_STICK), 32);
 }
 
-TEST(Trims, chainedTrims)
+TEST_F(TrimsTest, chainedTrims)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   setTrimValue(0, RUD_STICK, 32);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+1); // link to FP0 trim
   setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
   EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
 }
 
-TEST(Trims, infiniteChainedTrims)
+TTEST_F(TrimsTest, infiniteChainedTrims)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   setTrimValue(0, RUD_STICK, 32);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
   setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
@@ -369,12 +359,8 @@ TEST(Trims, infiniteChainedTrims)
 }
 #endif
 
-TEST(Trims, CopyTrimsToOffset)
+TEST_F(TrimsTest, CopyTrimsToOffset)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   setTrimValue(0, ELE_STICK, -100); // -100 on elevator
 #if defined(CPUARM)
   evalFunctions(g_model.customFn, modelFunctionsContext); // it disables all safety channels
@@ -389,37 +375,24 @@ TEST(Trims, CopyTrimsToOffset)
 #endif
 }
 
-TEST(Trims, CopySticksToOffset)
+TEST_F(TrimsTest, CopySticksToOffset)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   anaInValues[ELE_STICK] = -100;
   evalMixes(1);
   copySticksToOffset(1);
   EXPECT_EQ(g_model.limitData[1].offset, -97);
 }
 
-TEST(Trims, InstantTrim)
+TEST_F(TrimsTest, InstantTrim)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
   anaInValues[AIL_STICK] = 50;
   instantTrim();
   EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
 }
 
 #if defined(VIRTUAL_INPUTS)
-TEST(Trims, InstantTrimNegativeCurve)
+TEST_F(TrimsTest, InstantTrimNegativeCurve)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  modelDefault(0);
   ExpoData *expo = expoAddress(AIL_STICK);
   expo->curve.type = CURVE_REF_CUSTOM;
   expo->curve.value = 1;
