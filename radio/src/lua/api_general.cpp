@@ -875,6 +875,51 @@ static int luaDefaultStick(lua_State * L)
   return 1;
 }
 
+/* luadoc
+@function setTelemetryValue(name, id, subID, instance, value, unit, precision)
+
+@param name (string) Name of the sensor if it does not yet exit (4 chars)
+
+@param id Id of the sensor
+
+@param subID  subID of the sensor, usually 0
+
+@param instance instance of the sensor
+
+@param value of the sensor
+
+@param precision the precision of the sensor, value is devided by 10^precision, e.g. value=1000, prec=2 => 10.00
+
+@retval true, if the sensor was just added. In this case the value is ignored (subsequent call will set the value)
+*/
+static int luaSetTelemetryValue(lua_State * L)
+{
+  const char* name = luaL_checkstring(L, 1);
+
+  char zname[4];
+  str2zchar(zname, name, 4);
+
+  uint16_t id = luaL_checkinteger(L, 2);
+  uint8_t subId = luaL_checkinteger(L, 3);
+  uint8_t instance = luaL_checkinteger(L, 4);
+  int32_t value = luaL_checkinteger(L, 5);
+  uint32_t unit = luaL_checkinteger(L, 6);
+  uint32_t prec = luaL_checkinteger(L, 7);
+
+  int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
+  if (index >= 0) {
+    TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
+    telemetrySensor.id = id;
+    telemetrySensor.subId = subId;
+    telemetrySensor.instance = instance;
+    telemetrySensor.init(zname, unit, prec);
+    lua_pushboolean(L, true);
+  } else {
+    lua_pushboolean(L, false);
+  }
+  return 1;
+}
+
 /*luadoc
 @function defaultChannel(stick)
 
@@ -925,6 +970,7 @@ const luaL_Reg opentxLib[] = {
 #endif
   { "sportTelemetryPop", luaSportTelemetryPop },
   { "sportTelemetryPush", luaSportTelemetryPush },
+  { "setTelemetryValue", luaSetTelemetryValue },
 #if defined(CROSSFIRE)
   { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },

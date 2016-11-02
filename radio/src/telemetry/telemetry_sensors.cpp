@@ -429,7 +429,7 @@ int lastUsedTelemetryIndex()
   return -1;
 }
 
-void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
+int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
   bool available = false;
 
@@ -443,7 +443,7 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
   }
 
   if (available || !allowNewSensors) {
-    return;
+    return -1;
   }
 
   int index = availableTelemetryIndex();
@@ -469,14 +469,23 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
         spektrumSetDefault(index, id, subId, instance);
         break;
 #endif
+#if defined(LUA)
+     case TELEM_PROTO_LUA:
+        // Sensor will be initialized by calling function
+        // This drops the first value
+        return index;
+#endif
       default:
-        return;
+        return index;
     }
     telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+    return index;
   }
   else {
     POPUP_WARNING(STR_TELEMETRYFULL);
+    return -1;
   }
+
 }
 
 void TelemetrySensor::init(const char * label, uint8_t unit, uint8_t prec)
