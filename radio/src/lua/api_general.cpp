@@ -157,7 +157,7 @@ static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & tel
 
 static void luaPushTelemetryDateTime(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 {
-  luaPushDateTime(L, telemetryItem.datetime.year + 2000, telemetryItem.datetime.month, telemetryItem.datetime.day,
+  luaPushDateTime(L, telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day,
                   telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
 }
 

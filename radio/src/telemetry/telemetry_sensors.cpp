@@ -76,28 +76,19 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   else if (unit == UNIT_DATETIME) {
     uint32_t data = uint32_t(newVal);
     if (data & 0x000000ff) {
-      datetime.year = (uint16_t) ((data & 0xff000000) >> 24) + 2000;
+      datetime.year = (uint16_t) ((data & 0xff000000) >> 24) + 2000;  // SPORT GPS year is only two digits
       datetime.month = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.day = (uint8_t) ((data & 0x0000ff00) >> 8);
-      if (datetime.year != 0) {
-        datetime.datestate = 1;
-      }
     }
     else {
       datetime.hour = (uint8_t) ((data & 0xff000000) >> 24);
       datetime.min = (uint8_t) ((data & 0x00ff0000) >> 16);
-      datetime.sec = (uint16_t) ((data & 0x0000ff00) >> 8);
-      if (datetime.datestate == 1) {
-        datetime.timestate = 1;
-      }
+      datetime.sec = (uint8_t) ((data & 0x0000ff00) >> 8);
 #if defined(RTCLOCK)
-      if (g_eeGeneral.adjustRTC && datetime.datestate == 1) {
+      if (g_eeGeneral.adjustRTC) {
         rtcAdjust(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.min, datetime.sec);
       }
 #endif
-    }
-    if (datetime.year == 0) {
-      return;
     }
     newVal = 0;
   }
@@ -126,17 +117,16 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     uint32_t data = uint32_t(newVal);
     datetime.month = data >> 8;
     datetime.day = data & 0xFF;
-    datetime.datestate = 1;
     return;
   }
   else if (unit == UNIT_DATETIME_HOUR_MIN) {
     uint32_t data = uint32_t(newVal);
     datetime.hour = (data & 0xFF);
     datetime.min = data >> 8;
+    return;
   }
   else if (unit == UNIT_DATETIME_SEC) {
     datetime.sec = newVal & 0xFF;
-    datetime.timestate = 1;
     newVal = 0;
   }
   else if (unit == UNIT_RPMS) {

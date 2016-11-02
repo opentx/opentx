@@ -460,7 +460,7 @@ uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t
   if ((get_tmr10ms() - lastRtcAdjust) > (RTC_ADJUST_PERIOD * 100)) {
     lastRtcAdjust = get_tmr10ms();
 
-    if ((hour == 0 && min == 0) || (hour == 23 && min == 59)) return 0;
+    if (year == 0 || (hour == 0 && min == 0) || (hour == 23 && min == 59)) return 0;
 
     // convert given UTC time to local time (to seconds) and compare it with RTC
     struct gtm t;
