@@ -173,11 +173,12 @@ void init_ssc()
   sscptr->SSC_TCMR = 0 ;          //  0000 0000 0000 0000 0000 0000 0000 0000
   sscptr->SSC_CR = SSC_CR_TXEN ;
 
-#if defined(REVX)
-  PIOA->PIO_MDER = PIO_PA17;            // Open Drain O/p in A17
-#else
-  PIOA->PIO_MDDR = PIO_PA17;            // Push Pull O/p in A17
-#endif
+//BF:20161102 Commenting this line solve issu #3628
+//#if defined(REVX)
+//  PIOA->PIO_MDER = PIO_PA17;            // Open Drain O/p in A17
+//#else
+//  PIOA->PIO_MDDR = PIO_PA17;            // Push Pull O/p in A17
+//#endif
 }
 
 void disable_ssc()
