@@ -82,13 +82,34 @@ inline void TELEMETRY_RESET()
   memclear(&telemetryData, sizeof(telemetryData));
   TELEMETRY_RSSI() = 100;
 #endif
-#if defined(CPUARM) && defined(TELEMETRY_FRSKY)
+#if defined(CPUARM)
+#if defined(TELEMETRY_FRSKY)
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
 #endif
+  memclear(g_model.telemetrySensors, sizeof(g_model.telemetrySensors));
+#endif
 }
 
 bool checkScreenshot(QString test);
+
+class OpenTxTest : public testing::Test 
+{
+  protected:  // You should make the members protected s.t. they can be
+              // accessed from sub-classes.
+
+    // virtual void SetUp() will be called before each test is run.  You
+    // should define it if you need to initialize the varaibles.
+    // Otherwise, this can be skipped.
+    virtual void SetUp() 
+    {
+      SYSTEM_RESET();
+      MODEL_RESET();
+      MIXER_RESET();
+      modelDefault(0);
+      RADIO_RESET();
+    }
+};
 
 #endif // _GTESTS_H_

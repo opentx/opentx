@@ -68,6 +68,7 @@ TEST(getSwitch, OldTypeStickyCSW)
   setLogicalSwitch(0, LS_FUNC_AND, SWSRC_SA0, SWSRC_NONE);
   setLogicalSwitch(1, LS_FUNC_OR, SWSRC_SW1, SWSRC_SW2);
 
+  simuSetSwitch(0, 0);
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), false);
@@ -107,6 +108,8 @@ TEST(getSwitch, recursiveSW)
   g_model.logicalSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
   g_model.logicalSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
+  simuSetSwitch(1, 0);  // RUD 0
+  simuSetSwitch(2, 0);  // ELE 0
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);
@@ -116,7 +119,7 @@ TEST(getSwitch, recursiveSW)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);
 
-  simuSetSwitch(1, 1);
+  simuSetSwitch(1, 1);  // RUD 1
   LS_RECURSIVE_EVALUATION_RESET();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
@@ -139,12 +142,12 @@ TEST(getSwitch, inputWithTrim)
   // g_model.logicalSw[0] = { LS_FUNC_VPOS, MIXSRC_FIRST_INPUT, 0, 0 };
   setLogicalSwitch(0, LS_FUNC_VPOS, MIXSRC_FIRST_INPUT, 0, 0);
 
-  doMixerCalculations();
+  evalMixes(1);
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   setTrimValue(0, 0, 32);
-  doMixerCalculations();
+  evalMixes(1);
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 }

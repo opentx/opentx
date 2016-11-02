@@ -20,9 +20,10 @@
 
 #include "gtests.h"
 
+class SpecialFunctionsTest : public OpenTxTest {};
 
 #if defined(CPUARM)
-TEST(SpecialFunctions, SwitchFiledSize)
+TEST_F(SpecialFunctionsTest, SwitchFiledSize)
 {
   // test the size of swtch member
   g_model.customFn[0].swtch = SWSRC_LAST;
@@ -32,17 +33,15 @@ TEST(SpecialFunctions, SwitchFiledSize)
 }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-TEST(SpecialFunctions, FlightReset)
+TEST_F(SpecialFunctionsTest, FlightReset)
 {
-  RADIO_RESET();
-  MODEL_RESET();
-
   g_model.customFn[0].swtch = SWSRC_SA0;
   g_model.customFn[0].func = FUNC_RESET;
   g_model.customFn[0].all.val = FUNC_RESET_FLIGHT;
   g_model.customFn[0].active = true;
 
   mainRequestFlags = 0;
+  simuSetSwitch(0, 0);
   evalFunctions(g_model.customFn, modelFunctionsContext);
   EXPECT_EQ((bool)(mainRequestFlags & (1 << REQUEST_FLIGHT_RESET)), false);
 
@@ -60,11 +59,8 @@ TEST(SpecialFunctions, FlightReset)
 }
 
 #if defined(GVARS)
-TEST(SpecialFunctions, GvarsInc)
+TEST_F(SpecialFunctionsTest, GvarsInc)
 {
-  RADIO_RESET();
-  MODEL_RESET();
-
   simuSetSwitch(0, 0);    // SA-
 
   g_model.customFn[0].swtch = SWSRC_SA0;

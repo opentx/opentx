@@ -20,6 +20,9 @@
 
 #include "gtests.h"
 
+class TrimsTest : public OpenTxTest {};
+class MixerTest : public OpenTxTest {};
+
 #define CHECK_NO_MOVEMENT(channel, value, duration) \
     for (int i=1; i<=(duration); i++) { \
       evalFlightModeMixes(e_perout_mode_normal, 1); \
@@ -44,11 +47,8 @@
       } \
     } while (0)
 
-TEST(Trims, throttleTrim)
+TEST_F(TrimsTest, throttleTrim)
 {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  modelDefault(0);
   g_model.thrTrim = 1;
   // stick max + trim max
   anaInValues[THR_STICK] = +1024;
@@ -106,10 +106,8 @@ TEST(Trims, throttleTrim)
 
 }
 
-TEST(Trims, invertedThrottlePlusThrottleTrim)
+TEST_F(TrimsTest, invertedThrottlePlusThrottleTrim)
 {
-  MODEL_RESET();
-  modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
   // stick max + trim max
@@ -167,10 +165,8 @@ TEST(Trims, invertedThrottlePlusThrottleTrim)
   EXPECT_EQ(channelOutputs[2], +1024);
 }
 
-TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
+TEST_F(TrimsTest, throttleTrimWithZeroWeightOnThrottle)
 {
-  MODEL_RESET();
-  modelDefault(0);
   g_model.thrTrim = 1;
 #if defined(VIRTUAL_INPUTS)
   // the input already exists
@@ -245,10 +241,8 @@ TEST(Trims, throttleTrimWithZeroWeightOnThrottle)
   EXPECT_EQ(channelOutputs[2], 1000);
 }
 
-TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
+TEST_F(TrimsTest, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 {
-  MODEL_RESET();
-  modelDefault(0);
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
 #if defined(VIRTUAL_INPUTS)
@@ -325,26 +319,23 @@ TEST(Trims, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 }
 
 #if !defined(VIRTUAL_INPUTS)
-TEST(Trims, greaterTrimLink)
+TEST_F(TrimsTest, greaterTrimLink)
 {
-  MODEL_RESET();
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
   setTrimValue(3, RUD_STICK, 32);
   EXPECT_EQ(getRawTrimValue(getTrimFlightMode(1, RUD_STICK), RUD_STICK), 32);
 }
 
-TEST(Trims, chainedTrims)
+TEST_F(TrimsTest, chainedTrims)
 {
-  MODEL_RESET();
   setTrimValue(0, RUD_STICK, 32);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+1); // link to FP0 trim
   setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
   EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
 }
 
-TEST(Trims, infiniteChainedTrims)
+TTEST_F(TrimsTest, infiniteChainedTrims)
 {
-  MODEL_RESET();
   setTrimValue(0, RUD_STICK, 32);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
   setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
@@ -353,10 +344,8 @@ TEST(Trims, infiniteChainedTrims)
 }
 #endif
 
-TEST(Trims, CopyTrimsToOffset)
+TEST_F(TrimsTest, CopyTrimsToOffset)
 {
-  MODEL_RESET();
-  modelDefault(0);
   setTrimValue(0, ELE_STICK, -100); // -100 on elevator
 #if defined(CPUARM)
   evalFunctions(g_model.customFn, modelFunctionsContext); // it disables all safety channels
@@ -371,34 +360,24 @@ TEST(Trims, CopyTrimsToOffset)
 #endif
 }
 
-TEST(Trims, CopySticksToOffset)
+TEST_F(TrimsTest, CopySticksToOffset)
 {
-  MODEL_RESET();
-  modelDefault(0);
   anaInValues[ELE_STICK] = -100;
-#if defined(CPUARM)
-  doMixerCalculations();
-#else
-  perMain();
-#endif
+  evalMixes(1);
   copySticksToOffset(1);
   EXPECT_EQ(g_model.limitData[1].offset, -97);
 }
 
-TEST(Trims, InstantTrim)
+TEST_F(TrimsTest, InstantTrim)
 {
-  MODEL_RESET();
-  modelDefault(0);
   anaInValues[AIL_STICK] = 50;
   instantTrim();
   EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
 }
 
 #if defined(VIRTUAL_INPUTS)
-TEST(Trims, InstantTrimNegativeCurve)
+TEST_F(TrimsTest, InstantTrimNegativeCurve)
 {
-  MODEL_RESET();
-  modelDefault(0);
   ExpoData *expo = expoAddress(AIL_STICK);
   expo->curve.type = CURVE_REF_CUSTOM;
   expo->curve.value = 1;
@@ -415,7 +394,10 @@ TEST(Trims, InstantTrimNegativeCurve)
 
 TEST(Curves, LinearIntpol)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
   for (int8_t i=-2; i<=2; i++) {
     g_model.points[2+i] = 50*i;
   }
@@ -429,18 +411,30 @@ TEST(Curves, LinearIntpol)
 #if !defined(CPUARM)
 TEST(FlightModes, nullFadeOut_posFadeIn)
 {
-  MODEL_RESET();
-  g_model.flightModeData[1].swtch = SWSRC_ID1;
-  g_model.flightModeData[1].fadeIn = 15;
-  perMain();
-  simuSetSwitch(3, 0);
-  perMain();
-}
-
-TEST(Mixer, R2029Comment)
-{
+  SYSTEM_RESET();
   MODEL_RESET();
   MIXER_RESET();
+  modelDefault(0);
+  lastFlightMode = 255;
+  simuSetSwitch(3, 1);
+  g_model.flightModeData[1].swtch = SWSRC_ID1;
+  g_model.flightModeData[1].fadeIn = 15;
+  evalMixes(1);
+  simuSetSwitch(3, 0);
+  evalMixes(1);
+  // run mixes enough time to fade out flight modes (otherwise the mixer internal state flightModesFade  could affect other tests)
+  simuSetSwitch(3, 1);
+  for(int n=0; n<200; n++) {
+    evalMixes(1);  
+  }
+}
+
+TEST_F(MixerTest, R2029Comment)
+{
+  SYSTEM_RESET();
+  MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].srcRaw = MIXSRC_CH2;
   g_model.mixData[0].swtch = -SWSRC_THR;
@@ -464,10 +458,12 @@ TEST(Mixer, R2029Comment)
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
-TEST(Mixer, Cascaded3Channels)
+TEST_F(MixerTest, Cascaded3Channels)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
   MIXER_RESET();
+  modelDefault(0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].srcRaw = MIXSRC_CH2;
   g_model.mixData[0].weight = 100;
@@ -484,10 +480,8 @@ TEST(Mixer, Cascaded3Channels)
   EXPECT_EQ(chans[2], CHANNEL_MAX);
 }
 
-TEST(Mixer, CascadedOrderedChannels)
+TEST_F(MixerTest, CascadedOrderedChannels)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].srcRaw = MIXSRC_THR;
   g_model.mixData[0].weight = 100;
@@ -500,10 +494,8 @@ TEST(Mixer, CascadedOrderedChannels)
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
-TEST(Mixer, Cascaded5Channels)
+TEST_F(MixerTest, Cascaded5Channels)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].srcRaw = MIXSRC_CH2;
   g_model.mixData[0].weight = 100;
@@ -521,14 +513,14 @@ TEST(Mixer, Cascaded5Channels)
   g_model.mixData[4].weight = 100;
   for (uint8_t i=0; i<10; i++) {
     simuSetSwitch(0, 1);
-    doMixerCalculations();
+    evalMixes(1);
     EXPECT_EQ(chans[0], CHANNEL_MAX);
     EXPECT_EQ(chans[1], CHANNEL_MAX);
     EXPECT_EQ(chans[2], CHANNEL_MAX);
     EXPECT_EQ(chans[3], CHANNEL_MAX);
     EXPECT_EQ(chans[4], CHANNEL_MAX);
     simuSetSwitch(0, 0);
-    doMixerCalculations();
+    evalMixes(1);
     EXPECT_EQ(chans[0], -CHANNEL_MAX);
     EXPECT_EQ(chans[1], -CHANNEL_MAX);
     EXPECT_EQ(chans[2], -CHANNEL_MAX);
@@ -538,10 +530,8 @@ TEST(Mixer, Cascaded5Channels)
 }
 #endif
 
-TEST(Mixer, InfiniteRecursiveChannels)
+TEST_F(MixerTest, InfiniteRecursiveChannels)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].srcRaw = MIXSRC_CH2;
   g_model.mixData[0].weight = 100;
@@ -557,10 +547,8 @@ TEST(Mixer, InfiniteRecursiveChannels)
   EXPECT_EQ(chans[0], 0);
 }
 
-TEST(Mixer, BlockingChannel)
+TEST_F(MixerTest, BlockingChannel)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].srcRaw = MIXSRC_CH1;
   g_model.mixData[0].weight = 100;
@@ -568,10 +556,8 @@ TEST(Mixer, BlockingChannel)
   EXPECT_EQ(chans[0], 0);
 }
 
-TEST(Mixer, RecursiveAddChannel)
+TEST_F(MixerTest, RecursiveAddChannel)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -588,10 +574,8 @@ TEST(Mixer, RecursiveAddChannel)
   EXPECT_EQ(chans[1], 0);
 }
 
-TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
+TEST_F(MixerTest, RecursiveAddChannelAfterInactivePhase)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.flightModeData[1].swtch = SWSRC_ID1;
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
@@ -607,28 +591,18 @@ TEST(Mixer, RecursiveAddChannelAfterInactivePhase)
   g_model.mixData[2].srcRaw = MIXSRC_MAX;
   g_model.mixData[2].weight = 100;
   simuSetSwitch(3, -1);
-#if defined(CPUARM)
-  doMixerCalculations();
-#else
-  perMain();
-#endif
+  evalMixes(1);
   EXPECT_EQ(chans[0], CHANNEL_MAX/2);
   EXPECT_EQ(chans[1], CHANNEL_MAX);
   simuSetSwitch(3, 0);
-#if defined(CPUARM)
-  doMixerCalculations();
-#else
-  perMain();
-#endif
+  evalMixes(1);
   EXPECT_EQ(chans[0], CHANNEL_MAX/2);
   EXPECT_EQ(chans[1], CHANNEL_MAX);
 }
 
 #if !defined(CPUARM)
-TEST(Mixer, SlowOnSwitch)
+TEST_F(MixerTest, SlowOnSwitch)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -649,10 +623,8 @@ TEST(Mixer, SlowOnSwitch)
   CHECK_SLOW_MOVEMENT(0, -1, 250);
 }
 
-TEST(Mixer, SlowUpOnSwitch)
+TEST_F(MixerTest, SlowUpOnSwitch)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -679,10 +651,8 @@ TEST(Mixer, SlowUpOnSwitch)
 }
 #endif
 
-TEST(Mixer, SlowOnPhase)
+TEST_F(MixerTest, SlowOnPhase)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.flightModeData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
@@ -704,10 +674,8 @@ TEST(Mixer, SlowOnPhase)
 }
 
 #if !defined(CPUARM)
-TEST(Mixer, SlowOnSwitchAndPhase)
+TEST_F(MixerTest, SlowOnSwitchAndPhase)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.flightModeData[1].swtch = TR(SWSRC_THR, SWSRC_SA0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
@@ -736,10 +704,8 @@ TEST(Mixer, SlowOnSwitchAndPhase)
 }
 #endif
 
-TEST(Mixer, SlowOnSwitchSource)
+TEST_F(MixerTest, SlowOnSwitchSource)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -764,10 +730,8 @@ TEST(Mixer, SlowOnSwitchSource)
   CHECK_SLOW_MOVEMENT(0, +1, 500);
 }
 
-TEST(Mixer, SlowDisabledOnStartup)
+TEST_F(MixerTest, SlowDisabledOnStartup)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -779,10 +743,8 @@ TEST(Mixer, SlowDisabledOnStartup)
   EXPECT_EQ(chans[0], CHANNEL_MAX);
 }
 
-TEST(Mixer, DelayOnSwitch)
+TEST_F(MixerTest, DelayOnSwitch)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -812,10 +774,8 @@ TEST(Mixer, DelayOnSwitch)
 }
 
 #if !defined(CPUARM)
-TEST(Mixer, SlowAndDelayOnReplace3POSSource)
+TEST_F(MixerTest, SlowAndDelayOnReplace3POSSource)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_REP;
   g_model.mixData[0].srcRaw = MIXSRC_3POS;
@@ -842,10 +802,8 @@ TEST(Mixer, SlowAndDelayOnReplace3POSSource)
 #endif
 
 #if !defined(CPUARM)
-TEST(Mixer, SlowOnSwitchReplace)
+TEST_F(MixerTest, SlowOnSwitchReplace)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -874,10 +832,8 @@ TEST(Mixer, SlowOnSwitchReplace)
 #endif
 
 #if !defined(VIRTUAL_INPUTS)
-TEST(Mixer, NoTrimOnInactiveMix)
+TEST_F(MixerTest, NoTrimOnInactiveMix)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_Thr;
@@ -897,10 +853,8 @@ TEST(Mixer, NoTrimOnInactiveMix)
 }
 #endif
 
-TEST(Mixer, SlowOnMultiply)
+TEST_F(MixerTest, SlowOnMultiply)
 {
-  MODEL_RESET();
-  MIXER_RESET();
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
@@ -929,8 +883,10 @@ TEST(Mixer, SlowOnMultiply)
 #if defined(HELI) && defined(VIRTUAL_INPUTS)
 TEST(Heli, BasicTest)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
-  applyDefaultTemplate();
+  MIXER_RESET();
+  modelDefault(0);
   g_model.swashR.collectiveSource = MIXSRC_Thr;
   g_model.swashR.elevatorSource = MIXSRC_Ele;
   g_model.swashR.aileronSource = MIXSRC_Ail;
@@ -959,7 +915,10 @@ TEST(Heli, BasicTest)
 
 TEST(Heli, Mode2Test)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
   g_eeGeneral.templateSetup = 2;
   applyDefaultTemplate();
   g_model.swashR.collectiveSource = MIXSRC_Thr;
@@ -986,13 +945,17 @@ TEST(Heli, Mode2Test)
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
+  SYSTEM_RESET();
 }
 #endif
 
 #if defined(HELI) && !defined(VIRTUAL_INPUTS)
 TEST(Heli, SimpleTest)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
   applyTemplate(TMPL_HELI_SETUP);
   anaInValues[ELE_STICK] = 1024;
   evalFlightModeMixes(e_perout_mode_normal, 0);
@@ -1004,8 +967,10 @@ TEST(Heli, SimpleTest)
 
 TEST(Trainer, UnpluggedTest)
 {
+  SYSTEM_RESET();
   MODEL_RESET();
   MIXER_RESET();
+  modelDefault(0);
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_FIRST_TRAINER;
