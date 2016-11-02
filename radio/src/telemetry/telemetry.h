@@ -70,7 +70,7 @@ enum TelemetrySerialMode {
 };
 
 #if defined(CROSSFIRE)
-#define TELEMETRY_RX_PACKET_SIZE       64
+#define TELEMETRY_RX_PACKET_SIZE       128
 #else
 #define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1), multimodule Spektrum telemetry is 18 bytes
 #endif

@@ -72,11 +72,14 @@ def ParseFieldRequest(payload):
 def ParseField(payload):
     name = ""
     i = 6
-    while payload[i] != 0:
-        name += chr(payload[i])
+    try:
+        while payload[i] != 0:
+            name += chr(payload[i])
+            i += 1
         i += 1
-    i += 1
-    return '[Field] %s device=0x%02x field=%d parent=%d type=%s' % (name, payload[1], payload[2], payload[4], crossfire_types[payload[5] & 0x7f])
+        return '[Field] %s device=0x%02x field=%d parent=%d type=%s' % (name, payload[1], payload[2], payload[4], crossfire_types[payload[5] & 0x7f])
+    except:
+        return '[Exception]'
 
 parsers = (
     (0x02, ParseGPS),
