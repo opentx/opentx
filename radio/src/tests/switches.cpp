@@ -142,12 +142,12 @@ TEST(getSwitch, inputWithTrim)
   // g_model.logicalSw[0] = { LS_FUNC_VPOS, MIXSRC_FIRST_INPUT, 0, 0 };
   setLogicalSwitch(0, LS_FUNC_VPOS, MIXSRC_FIRST_INPUT, 0, 0);
 
-  doMixerCalculations();
+  evalMixes(1);
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
 
   setTrimValue(0, 0, 32);
-  doMixerCalculations();
+  evalMixes(1);
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
 }
