@@ -2,15 +2,47 @@ local COLUMN_2 = 140
 
 local pages = { }
 local pageIndex = 1
-local fieldIndex = 1
+local lineIndex = 0
 local pageOffset = 0
 local edit = false
 local charIndex = 1
+local f = io.open("traces.txt", "w")
+
+local function getField(line)
+  local page = pages[pageIndex]
+  local counter = 1
+  local index = 1
+  while 1 do
+    local field = page.fields[index]
+    if field == nil then
+      return nil
+    elseif field.hidden == 1 then
+      -- continue
+    elseif counter < line then
+      counter = counter + 1
+    else
+      return field
+    end
+    index = index + 1
+  end
+end
+
+local function initLineIndex()
+  local index = 0
+  repeat
+    index = index + 1
+    local field = getField(index)
+    if field ~= nil and field.type ~= 11 and field.type ~= 12 and field.name ~= nil then
+      lineIndex = index
+      return
+    end
+  until index >= #pages[pageIndex].fields
+  lineIndex = 0
+end
 
 -- Change display attribute to current field
 local function incrField(step)
-  local fields = pages[pageIndex].fields
-  local field = fields[fieldIndex]
+  local field = getField(lineIndex)
   if field.type == 10 then
     local byte = string.byte(field.value, charIndex) + step
     if byte < 32 then
@@ -21,7 +53,9 @@ local function incrField(step)
     field.value = string.sub(field.value, 1, charIndex-1) .. string.char(byte) .. string.sub(field.value, charIndex+1)
   else
     local min, max = 0, 0
+    io.write(f, "field type:" .. field.type .. "\n")
     if field.type <= 5 then
+      io.write(f, "field min:" .. field.min .. ", max:" .. field.max .. ", step:" .. field.step .. "\n")
       min = field.min
       max = field.max
       step = field.step * step
@@ -31,6 +65,7 @@ local function incrField(step)
     end
     if (step < 0 and field.value > min) or (step > 0 and field.value < max) then
       field.value = field.value + step
+      io.write(f, "field new value:" .. field.value .. "\n")
     end
   end
 end
@@ -38,41 +73,43 @@ end
 -- Select the next or previous page
 local function selectPage(step)
   pageIndex = 1 + ((pageIndex + step - 1 + #pages) % #pages)
+  initLineIndex()
 end
 
 -- Select the next or previous editable field
 local function selectField(step)
-  local fields = pages[pageIndex].fields
-  local newFieldIndex = fieldIndex
-  local field = fields[newFieldIndex]
+  local newLineIndex = lineIndex
+  local field
   repeat
-    newFieldIndex = 1 + ((newFieldIndex + step - 1 + #fields) % #fields)
-    field = fields[newFieldIndex]
-  until newFieldIndex == fieldIndex or (field.type ~= 11 and field.type ~= 12 and field.name ~= nil)
-  fieldIndex = newFieldIndex
-  if fieldIndex > 7 + pageOffset then
-    pageOffset = fieldIndex - 7
-  elseif fieldIndex <= pageOffset then
-    pageOffset = fieldIndex - 1
+    newLineIndex = newLineIndex + step
+    if newLineIndex == 0 then
+      newLineIndex = #pages[pageIndex].fields
+    elseif newLineIndex == 1 + #pages[pageIndex].fields then
+      newLineIndex = 1
+    end
+    field = getField(newLineIndex)
+  until newLineIndex == lineIndex or (field ~= nil and field.type ~= 11 and field.type ~= 12 and field.name ~= nil)
+  lineIndex = newLineIndex
+  if lineIndex > 7 + pageOffset then
+    pageOffset = lineIndex - 7
+  elseif lineIndex <= pageOffset then
+    pageOffset = lineIndex - 1
   end
 end
 
 local function drawDevicePage(page)
-  for index = 1, 7, 1 do
-    local field = page.fields[pageOffset+index]
+  for y = 1, 7, 1 do
+    local field = getField(pageOffset+y)
     if field == nil then
-      break
-    end
-    
-    if field.name == nil then
-      lcd.drawText(0, 1+8*index, "...")
+      return
+    elseif field.name == nil then
+      lcd.drawText(0, 1+8*y, "...")
     else
-      local attr = fieldIndex == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
-      lcd.drawText(0, 1+8*index, field.name)
+      local attr = lineIndex == (pageOffset+y) and ((edit == true and BLINK or 0) + INVERS) or 0
+      lcd.drawText(0, 1+8*y, field.name)
       if field.functions ~= nil then
-        field.functions.display(field, 1+8*index, attr)
+        field.functions.display(field, 1+8*y, attr)
       end
-
       -- if field[4] == nil then
       --   lcd.drawText(COLUMN_2, 1+8*index, "---", attr)
       -- else
@@ -130,8 +167,8 @@ local function parseDeviceInfoMessage(data)
 end
 
 local function split(inputstr)
-  local t={}
-  local i=1
+  local t = {}
+  local i = 1
   for str in string.gmatch(inputstr, "([^;]+)") do
     t[i] = str
     i = i + 1
@@ -161,8 +198,10 @@ local function fieldUnsignedSelectionLoad(field, data, offset, size)
   field.value = fieldGetValue(data, offset, size)
   field.min = fieldGetValue(data, offset+size, size)
   field.max = fieldGetValue(data, offset+2*size, size)
-  field.unit, offset = fieldGetString(data, offset+3*size)
+  field.default = fieldGetValue(data, offset+3*size, size)
+  field.unit, offset = fieldGetString(data, offset+4*size)
   field.step = 1
+  io.write(f, "  unsigned value:" .. field.value .. ", min:" .. field.min .. ", max:" .. field.max, ", step:" .. field.step .. ", unit:" .. field.unit .. "\n")
 end
 
 local function fieldUnsignedToSigned(field, size)
@@ -170,6 +209,8 @@ local function fieldUnsignedToSigned(field, size)
   field.value = field.value - bit32.band(field.value, bandval) * 2
   field.min = field.min - bit32.band(field.min, bandval) * 2
   field.max = field.max - bit32.band(field.max, bandval) * 2
+  field.default = field.default - bit32.band(field.default, bandval) * 2
+  io.write(f, "  => to signed value:" .. field.value .. ", min:" .. field.min .. ", max:" .. field.max .. ", default:" .. field.default .. "\n")
 end
 
 local function fieldSignedSelectionLoad(field, data, offset, size)
@@ -177,25 +218,26 @@ local function fieldSignedSelectionLoad(field, data, offset, size)
   fieldUnsignedToSigned(field, size)
 end
 
-local function fieldIntSave(fieldIndex, value, size)
-  local frame = { pages[pageIndex].id, 0xEA, fieldIndex }
+local function fieldIntSave(index, value, size)
+  local frame = { pages[pageIndex].id, 0xEA, index }
   for i=size-1, 0, -1 do
     frame[#frame + 1] = (bit32.rshift(value, 8*i) % 256)
   end
   crossfireTelemetryPush(0x2D, frame)
 end
 
-local function fieldUnsignedSelectionSave(fieldIndex, size)
-  local value = pages[pageIndex].fields[fieldIndex].value
-  fieldIntSave(fieldIndex, value, size)
+local function fieldUnsignedSelectionSave(field, size)
+  local value = field.value
+  fieldIntSave(field.index, value, size)
 end
 
-local function fieldSignedSelectionSave(fieldIndex, size)
-  local value = pages[pageIndex].fields[fieldIndex].value
+local function fieldSignedSelectionSave(field, size)
+  local value = field.value
   if value < 0 then
-    value = bit32.lshift(0x100, (size-1)*8) - value
+    value = bit32.lshift(0x100, (size-1)*8) + value
   end
-  fieldIntSave(fieldIndex, value, size)
+  io.write(f, "save value:" .. value .. "\n")
+  fieldIntSave(field.index, value, size)
 end
 
 local function fieldIntDisplay(field, y, attr)
@@ -208,8 +250,8 @@ local function fieldUint8Load(field, data, offset)
   fieldUnsignedSelectionLoad(field, data, offset, 1)
 end
 
-local function fieldUint8Save(fieldIndex)
-  fieldUnsignedSelectionSave(fieldIndex, 1)
+local function fieldUint8Save(field)
+  fieldUnsignedSelectionSave(field, 1)
 end
 
 -- INT8
@@ -217,8 +259,8 @@ local function fieldInt8Load(field, data, offset)
   fieldSignedSelectionLoad(field, data, offset, 1)
 end
 
-local function fieldInt8Save(fieldIndex)
-  fieldSignedSelectionSave(fieldIndex, 1)
+local function fieldInt8Save(field)
+  fieldSignedSelectionSave(field, 1)
 end
 
 -- UINT16
@@ -226,9 +268,9 @@ local function fieldUint16Load(field, data, offset)
   fieldUnsignedSelectionLoad(field, data, offset, 2)
 end
 
-local function fieldUint16Save(fieldIndex)
+local function fieldUint16Save(field)
 
-  fieldUnsignedSelectionSave(fieldIndex, 2)
+  fieldUnsignedSelectionSave(field, 2)
 end
 
 -- INT16
@@ -236,8 +278,8 @@ local function fieldInt16Load(field, data, offset)
   fieldSignedSelectionLoad(field, data, offset, 2)
 end
 
-local function fieldInt16Save(fieldIndex)
-  fieldSignedSelectionSave(fieldIndex, 2)
+local function fieldInt16Save(field)
+  fieldSignedSelectionSave(field, 2)
 end
 
 -- UINT32
@@ -245,8 +287,8 @@ local function fieldUint32Load(field, data, offset)
   fieldUnsignedSelectionLoad(field, data, offset, 4)
 end
 
-local function fieldUint32Save(fieldIndex)
-  fieldUnsignedSelectionSave(fieldIndex, 4)
+local function fieldUint32Save(field)
+  fieldUnsignedSelectionSave(field, 4)
 end
 
 -- INT32
@@ -254,8 +296,8 @@ local function fieldInt32Load(field, data, offset)
   fieldSignedSelectionLoad(field, data, offset, 4)
 end
 
-local function fieldInt32Save(fieldIndex)
-  fieldSignedSelectionSave(fieldIndex, 4)
+local function fieldInt32Save(field)
+  fieldSignedSelectionSave(field, 4)
 end
 
 -- FLOAT
@@ -263,13 +305,14 @@ local function fieldFloatSelectionLoad(field, data, offset)
   field.value = fieldGetValue(data, offset, 4)
   field.min = fieldGetValue(data, offset+4, 4)
   field.max = fieldGetValue(data, offset+8, 4)
+  field.default = fieldGetValue(data, offset+12, 4)
   fieldUnsignedToSigned(field, 4)
-  field.prec = data[offset+12]
+  field.prec = data[offset+16]
   if field.prec > 2 then
     field.prec = 2
   end
-  field.step = fieldGetValue(data, offset+13, 4)
-  field.unit, offset = fieldGetString(data, offset+14)
+  field.step = fieldGetValue(data, offset+17, 4)
+  field.unit, offset = fieldGetString(data, offset+21)
 end
 
 local function fieldFloatSelectionDisplay(field, y, attr)
@@ -291,14 +334,20 @@ local function fieldTextSelectionLoad(field, data, offset)
   values, offset = fieldGetString(data, offset)
   field.values = split(values)
   field.value = data[offset]
+  field.min = data[offset+1]
+  field.max = data[offset+2]
+  field.default = data[offset+3]
+  field.unit, offset = fieldGetString(data, offset+4)
+  io.write(f, "  value:" .. field.value .. "(" .. field.values[field.value+1] .. ")\n")
 end
 
-local function fieldTextSelectionSave(fieldIndex)
-  crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, fieldIndex, pages[pageIndex].fields[fieldIndex].value })
+local function fieldTextSelectionSave(field)
+  crossfireTelemetryPush(0x2D, { pages[pageIndex].id, 0xEA, field.index, field.value })
 end
 
 local function fieldTextSelectionDisplay(field, y, attr)
   lcd.drawText(COLUMN_2, y, field.values[field.value+1], attr)
+  lcd.drawText(lcd.getLastPos(), y, field.unit, attr)
 end
 
 -- STRING
@@ -309,8 +358,8 @@ local function fieldStringLoad(field, data, offset)
   end
 end
 
-local function fieldStringSave(fieldIndex)
-  local frame = { pages[pageIndex].id, 0xEA, fieldIndex }
+local function fieldStringSave(field)
+  local frame = { pages[pageIndex].id, 0xEA, field.index }
   for i=1, string.len(field.value) do
     frame[#frame + 1] = string.byte(field.value, i)
   end
@@ -331,6 +380,11 @@ local function fieldCommandLoad(field, data, offset)
   -- TODO
 end
 
+local function fieldCommandSave(field)
+  local frame = { pages[pageIndex].id, 0xEA, field.index }
+  crossfireTelemetryPush(0x2D, frame)
+end
+
 local function fieldCommandDisplay(field, y, attr)
   lcd.drawText(0, y, field.name, attr)
 end
@@ -349,39 +403,66 @@ local types_functions = {
   { load=fieldStringLoad, save=fieldStringSave, display=fieldStringDisplay },
   nil,
   { load=fieldStringLoad, save=nil, display=fieldStringDisplay },
-  { load=fieldCommandLoad, save=nil, display=fieldCommandDisplay },
+  { load=fieldCommandLoad, save=fieldCommandSave, display=fieldCommandDisplay },
 }
 
 local function parseParameterInfoMessage(data)
   local page = pages[pageIndex]
+  io.write(f, "  device:" .. data[2])
+  if data[2] ~= page.id then
+    return
+  end
   local index = data[3]
   local field = page.fields[index]
-  field.parent = data[4]
-  field.type = data[5]
-  field.functions = types_functions[field.type+1]
-  local parent = field.parent
-  local name = ""
-  while parent ~= 0 do
-    name = name .. " "
-    parent = page.fields[parent].parent
+  local chunks = data[4]
+  if field.data then
+    for i=5, #data do
+      field.data[#field.data + 1] = data[i]
+    end
+    data = field.data
+    io.write(f, " (" .. #field.data .. " bytes)")
   end
-  local i = 6
-  while data[i] ~= 0 do
-    name = name .. string.char(data[i])
+  if chunks > 0 then
+    field.data = data
+    if field.next_chunk then
+      field.next_chunk = field.next_chunk + 1
+    else
+      field.next_chunk = 1
+    end
+    io.write(f, ", continued\n")
+  else
+    field.index = index
+    field.parent = data[5]
+    field.type = data[6] % 128
+    field.hidden = bit32.rshift(data[6], 7)
+    field.functions = types_functions[field.type+1]
+    io.write(f, ", id:" .. index .. ", parent:" .. field.parent .. ", type:" .. field.type .. ", hidden:" .. field.hidden)
+    local parent = field.parent
+    local name = ""
+    while parent ~= 0 do
+      name = name .. " "
+      parent = page.fields[parent].parent
+    end
+    local i = 7
+    while data[i] ~= 0 do
+      name = name .. string.char(data[i])
+      i = i + 1
+    end
     i = i + 1
+    field.name = name
+    io.write(f, ", name:" .. field.name .. "\n")
+    if field.functions ~= nil then
+      field.functions.load(field, data, i)
+    end
+    page.fieldstimeout = 0
+    if lineIndex == 0 and field.hidden == 0 and field.type and field.type ~= 11 and field.type ~= 12 then
+      initLineIndex()
+    end
   end
-  i = i + 1
-  field.name = name
-  if field.functions ~= nil then
-    field.functions.load(field, data, i)
-  end
-  if field.type ~= 11 and page.fields[fieldIndex].type == 11 then
-    fieldIndex = index
-  end
-  page.fieldstimeout = 0
 end
 
 local devicesRefreshTimeout = 0
+local paramsReceiveTimeout = 0
 local function refreshNext()
   local command, data = crossfireTelemetryPop()
   if command == nil then
@@ -392,20 +473,31 @@ local function refreshNext()
       else
         devicesRefreshTimeout = time + 1000 -- 10s
       end
+      io.write(f, "Ping devices...\n")
       crossfireTelemetryPush(0x28, { 0x00, 0xEA })
-    elseif pageIndex <= #pages and time > pages[pageIndex].fieldstimeout then
+    elseif time > paramsReceiveTimeout and pageIndex <= #pages and time > pages[pageIndex].fieldstimeout then
       for i=1, #pages[pageIndex].fields do
         local field = pages[pageIndex].fields[i]
         if field.name == nil then
-          crossfireTelemetryPush(0x2C, { pages[pageIndex].id, 0xEA, i })
-          pages[pageIndex].fieldstimeout = time + 200 -- 2s
+          local chunk = 0
+          if field.next_chunk then
+            chunk = field.next_chunk
+          end
+          io.write(f, "Request parameter " .. i .. "(" .. chunk .. ")...\n")
+          crossfireTelemetryPush(0x2C, { pages[pageIndex].id, 0xEA, i, chunk })
+          paramsReceiveTimeout = time + 200 -- 2s
+          pages[pageIndex].fieldstimeout = paramsReceiveTimeout
+          break
         end
       end
     end
   elseif command == 0x29 then
+    io.write(f, "Device info received...\n")
     parseDeviceInfoMessage(data)
   elseif command == 0x2B then
+    io.write(f, "Parameter info received...\n")
     parseParameterInfoMessage(data)
+    paramsReceiveTimeout = 0
   end
 end
 
@@ -419,8 +511,8 @@ local function runNoDevicesPage(event)
   return 0
 end
 
-local function runDevicePage(index, event)
-  local page = pages[index]
+local function runDevicePage(event)
+  local page = pages[pageIndex]
   if event == EVT_EXIT_BREAK then             -- exit script
     if edit == true then
       edit = false
@@ -428,7 +520,7 @@ local function runDevicePage(index, event)
       return 2
     end
   elseif event == EVT_ENTER_BREAK then        -- toggle editing/selecting current field
-    local field = page.fields[fieldIndex]
+    local field = getField(lineIndex)
     if field.name ~= nil then
       if field.type == 10 then
         if edit == false then
@@ -437,11 +529,11 @@ local function runDevicePage(index, event)
         else
           charIndex = charIndex + 1
         end
-      else
+      elseif field.type ~= 13 then
         edit = not edit
       end
       if edit == false and field.functions.save ~= nil then
-        field.functions.save(fieldIndex)
+        field.functions.save(field)
       end
     end
   elseif edit then
@@ -459,14 +551,14 @@ local function runDevicePage(index, event)
   end
 
   lcd.clear()
-  lcd.drawScreenTitle(page.name, index, #pages)
+  lcd.drawScreenTitle(page.name, pageIndex, #pages)
   drawDevicePage(page)
   return 0
 end
 
 -- Init
 local function init()
-  fieldIndex, edit = 1, false
+  lineIndex, edit = 0, false
 end
 
 -- Main
@@ -485,7 +577,7 @@ local function run(event)
   if #pages == 0 then
     result = runNoDevicesPage(event)
   else
-    result = runDevicePage(pageIndex, event)
+    result = runDevicePage(event)
   end
 
   refreshNext()
