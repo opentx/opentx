@@ -572,6 +572,11 @@ void evalFunctions()
 
           case FUNC_BACKLIGHT:
             newActiveFunctions |= (1 << FUNCTION_BACKLIGHT);
+            g_eeGeneral.backlightBright = 100 - CFN_PARAM(cfn);
+            break;
+
+          case FUNC_BACKLIGHT_COLOR:
+            g_eeGeneral.backlightColor = CFN_PARAM(cfn);
             break;
 
 #if defined(PCBTARANIS)
