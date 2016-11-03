@@ -301,7 +301,7 @@ void menuModelMixOne(event_t event)
 #define _STR_MAX(x)                     PSTR("/" #x)
 #define STR_MAX(x)                     _STR_MAX(x)
 
-#define MIX_LINE_WEIGHT_POS            6*FW+10
+#define MIX_LINE_WEIGHT_POS            2*FW+12
 #define MIX_LINE_SRC_POS               7*FW+5
 #define MIX_LINE_CURVE_POS             13*FW+3
 #define MIX_LINE_SWITCH_POS            19*FW+1
@@ -360,7 +360,7 @@ void displayMixLine(coord_t y, MixData * md)
     displayMixInfos(y, md);
   else
     displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
-  
+
   char cs = ' ';
   if (md->speedDown || md->speedUp)
     cs = 'S';
@@ -551,10 +551,10 @@ void menuModelMixAll(event_t event)
 
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
+          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, LEFT | attr | (isMixActive(i) ? BOLD : 0), 0);
 
           displayMixLine(y, md);
-          
+
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
               /* draw a border around the raw on selection mode (copy/move) */
