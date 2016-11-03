@@ -166,7 +166,7 @@ void displayTimers()
   // Main timer
   if (g_model.timers[0].mode) {
     TimerState & timerState = timersStates[0];
-    LcdFlags att = DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
+    LcdFlags att = RIGHT | DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
     drawTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
     uint8_t xLabel = (timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7);
 #if defined(CPUARM)
