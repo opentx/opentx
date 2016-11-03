@@ -105,10 +105,10 @@ void onModelSelectMenu(const char * result)
     storageFlushCurrentModel();
     storageCheck(true);
     memcpy(g_eeGeneral.currModelFilename, currentModel->name, LEN_MODEL_FILENAME);
-    chainMenu(menuMainView);
     loadModel(g_eeGeneral.currModelFilename);
     storageDirty(EE_GENERAL);
     storageCheck(true);
+    chainMenu(menuMainView);
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
