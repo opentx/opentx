@@ -908,36 +908,55 @@ static int luaDefaultStick(lua_State * L)
 }
 
 /* luadoc
-@function setTelemetryValue(name, id, subID, instance, value, unit, precision)
-
-@param name (string) Name of the sensor if it does not yet exit (4 chars)
+@function setTelemetryValue(id, subID, instance, value [, unit] [, precision [, name])
 
 @param id Id of the sensor
 
-@param subID  subID of the sensor, usually 0
+@param subID subID of the sensor, usually 0
 
-@param instance instance of the sensor
+@param instance instance of the sensor (SensorID)
 
-@param value of the sensor
+@param value fed to the sensor
 
-@param precision the precision of the sensor, value is devided by 10^precision, e.g. value=1000, prec=2 => 10.00
+@param unit unit of the sensor.
+ * `0 or not present` UNIT_RAW.
+ * `!= 0` Valid values are 1 (UNIT_VOLTS), 2 (UNIT_AMPS), 3 (UNIT_MILLIAMPS),
+ 4 (UNIT_KTS), 5 (UNIT_METERS_PER_SECOND), 6 (UNIT_FEET_PER_SECOND), 7 (UNIT_KMH), 8 (UNIT_MPH), 9 (UNIT_METERS),
+ 10 (UNIT_FEET), 11 (UNIT_CELSIUS), 12 (UNIT_FAHRENHEIT), 13 (UNIT_PERCENT), 14 (UNIT_MAH), 15 (UNIT_WATTS),
+ 16 (UNIT_MILLIWATTS), 17 (UNIT_DB), 18 (UNIT_RPMS), 19 (UNIT_G), 20 (UNIT_DEGREE), 21 (UNIT_RADIANS),
+ 22 (UNIT_MILLILITERS), 23 (UNIT_FLOZ), 24 (UNIT_HOURS), 25 (UNIT_MINUTES), 26 (UNIT_SECONDS), 27 (UNIT_CELLS),
+ 28 (UNIT_DATETIME), 29 (UNIT_GPS), 30 (UNIT_BITFIELD), 31 (UNIT_TEXT)
 
+@param precision the precision of the sensor
+ * `0 or not present` no decimal precision.
+ * `!= 0` value is divided by 10^precision, e.g. value=1000, prec=2 => 10.00.
+ 
+@param name (string) Name of the sensor if it does not yet exist (4 chars).
+ * `not present` Name defaults to the Id.
+ * `present` Sensor takes name of the argument. Argument must have name surrounded by quotes: e.g., "Name"
+ 
 @retval true, if the sensor was just added. In this case the value is ignored (subsequent call will set the value)
 */
 static int luaSetTelemetryValue(lua_State * L)
 {
-  const char* name = luaL_checkstring(L, 1);
+  uint16_t id = luaL_checkinteger(L, 1);
+  uint8_t subId = luaL_checkinteger(L, 2);
+  uint8_t instance = luaL_checkinteger(L, 3);
+  int32_t value = luaL_checkinteger(L, 4);
+  uint32_t unit = luaL_optinteger(L, 5, 0);
+  uint32_t prec = luaL_optinteger(L, 6, 0);
 
   char zname[4];
-  str2zchar(zname, name, 4);
-
-  uint16_t id = luaL_checkinteger(L, 2);
-  uint8_t subId = luaL_checkinteger(L, 3);
-  uint8_t instance = luaL_checkinteger(L, 4);
-  int32_t value = luaL_checkinteger(L, 5);
-  uint32_t unit = luaL_checkinteger(L, 6);
-  uint32_t prec = luaL_checkinteger(L, 7);
-
+  const char* name = luaL_optstring(L, 7, NULL);
+  if (name != NULL) {
+    str2zchar(zname, name, 4);
+  } else {
+    zname[0] = hex2zchar((id & 0xf000) >> 12);
+    zname[1] = hex2zchar((id & 0x0f00) >> 8);
+    zname[2] = hex2zchar((id & 0x00f0) >> 4);
+    zname[3] = hex2zchar((id & 0x000f) >> 0);
+  }
+  
   int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
   if (index >= 0) {
     TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
