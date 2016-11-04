@@ -131,15 +131,14 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #endif
     div_t qr = div(number, 10);
     if (qr.rem > 0) {
-      PLAY_NUMBER(qr.quot, 0, 0);
+      PUSH_NUMBER_PROMPT(qr.quot);
       PUSH_NUMBER_PROMPT(DE_PROMPT_COMMA);
-      if (mode==2 && qr.rem < 10)
-        PUSH_NUMBER_PROMPT(DE_PROMPT_NULL);
-      PLAY_NUMBER(qr.rem, unit, 0);
+      PUSH_NUMBER_PROMPT(qr.rem);
     }
     else {
-      PLAY_NUMBER(qr.quot, unit, 0);
+      PUSH_NUMBER_PROMPT(qr.quot);
     }
+    DE_PUSH_UNIT_PROMPT(unit);
     return;
   }
 
@@ -147,52 +146,50 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     PLAY_NUMBER(number / 1000, 0, 0);
     PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
     number %= 1000;
+    if (number == 0)
+      number = -1;       
   }
 
   if ((number >= 1000) && (number < 2000)) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
     PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
     number %= 1000;
+    if (number == 0)
+      number = -1;    
   }
 
   if ((number >= 200) && (number < 1000)) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 100);
     PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);	
     number %= 100;
+    if (number == 0)
+      number = -1;    
   }
 
   if ((number >= 100) && (number < 200)) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
     PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
     number %= 100;
+    if (number == 0)
+      number = -1;
   }
 
-  if (number > 0){
-    if (number == 1){
+  if (number >= 0) {
+    if (number == 1) {
       PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
-      }
-      else {
+    }
+    else {
       PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 1);
-      number %= 1;
     }
   }
 
-  if (number == 0)
-    number = -1;
-  
   if (unit) {
     DE_PUSH_UNIT_PROMPT(unit);
-
   }
 }
 
 I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 {
-  if (seconds == 0) {
-    PLAY_NUMBER(seconds, 0, 0);
-    return;
-  }
-
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_MINUS);
     seconds = -seconds;
@@ -210,7 +207,6 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
       PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDE);
     }
-
     if (seconds > 0) {
       PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
     }
@@ -241,9 +237,6 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
     if (seconds == 1) {
       PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
       PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDE);
-    }
-    else {
-      PLAY_NUMBER(seconds, 0, 0);
     }
   }
 }
