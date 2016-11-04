@@ -175,12 +175,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (number >= 0) {
-    if (number == 1) {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
-    }
-    else {
       PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 1);
-    }
   }
 
   if (unit) {
