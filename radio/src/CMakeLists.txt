@@ -389,6 +389,12 @@ if(NOT MSVC)
       COMMAND arm-none-eabi-objcopy -O binary firmware.elf firmware.bin
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
+
+    add_custom_target(firmware-size
+      COMMAND arm-none-eabi-size firmware.elf
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
   else()
     set(CMAKE_C_COMPILER avr-gcc)
     set(CMAKE_CXX_COMPILER avr-gcc)
