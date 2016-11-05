@@ -890,6 +890,38 @@ static int luaPopupWarning(lua_State * L)
 }
 
 /*luadoc
+@function popupConfirmation(title, event)
+
+Raises a pop-up on screen that asks for confirmation
+
+@param title (string) text to display
+
+@param event (number) the event variable that is passed in from the
+Run function (key pressed)
+
+@retval "CANCEL" user pushed EXIT key
+
+@notice Use only from stand-alone and telemetry scripts.
+
+@status current Introduced in 2.2.0
+*/
+static int luaPopupConfirmation(lua_State * L)
+{
+  event_t event = luaL_checkinteger(L, 2);
+  warningText = luaL_checkstring(L, 1);
+  warningType = WARNING_TYPE_CONFIRM;
+  runPopupWarning(event);
+  if (!warningText) {
+    lua_pushstring(L, warningResult ? "OK" : "CANCEL");
+  }
+  else {
+    warningText = NULL;
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+/*luadoc
 @function defaultStick(channel)
 
 Get stick that is assigned to a channel. See Default Channel Order in General Settings.
@@ -1016,6 +1048,7 @@ const luaL_Reg opentxLib[] = {
   { "playHaptic", luaPlayHaptic },
   { "popupInput", luaPopupInput },
   { "popupWarning", luaPopupWarning },
+  { "popupConfirmation", luaPopupConfirmation },
   { "defaultStick", luaDefaultStick },
   { "defaultChannel", luaDefaultChannel },
   { "getRSSI", luaGetRSSI },
