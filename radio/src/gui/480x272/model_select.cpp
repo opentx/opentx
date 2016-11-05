@@ -346,7 +346,7 @@ bool menuModelSelect(event_t event)
         drawModel(MODELS_LEFT, y, *it, current, selected);
       }
       if (selected) {
-        // lcdDrawText(MODELS_LEFT, LCD_H-FH-1, (*it)->name, TEXT_COLOR);
+        lcdDrawText(MODELS_LEFT, LCD_H-FH-1, (*it)->name, TEXT_COLOR);
       }
     }
   }
