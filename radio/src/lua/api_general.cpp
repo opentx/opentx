@@ -1145,7 +1145,7 @@ const luaR_value_entry opentxConstants[] = {
   { "PLAY_BACKGROUND", PLAY_BACKGROUND },
   { "TIMEHOUR", TIMEHOUR },
 
-#if 0
+#if defined(PCBHORUS)
   // Adding the unit consts for the set Telemetry function adds about 1k of flash usage
   {"UNIT_RAW", UNIT_RAW },
   {"UNIT_VOLTS", UNIT_VOLTS },
