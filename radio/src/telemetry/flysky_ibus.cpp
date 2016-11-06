@@ -89,9 +89,10 @@ static void processFlySkySensor(const uint8_t *packet) {
 
   for (const FlySkySensor * sensor = flySkySensors; sensor->id; sensor++) {
     // Extract value, skip header
-
-    setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
-    return;
+    if (sensor->id == id) {
+      setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
+      return;
+    }
   }
   setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, UNIT_RAW, 0);
 }
