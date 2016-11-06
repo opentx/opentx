@@ -49,7 +49,7 @@ uint8_t frskyUsrStreaming = 0;
 
 uint8_t link_counter = 0;
 
-#define FRSKY_RX_PACKET_SIZE   19
+#define FRSKY_RX_PACKET_SIZE   39
 uint8_t frskyRxBuffer[FRSKY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 
 #if !defined(CPUARM)
@@ -189,10 +189,9 @@ NOINLINE void processSerialData(uint8_t data)
   if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
-  else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+  } else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
     processFlySkyTelemetryData(data);
     return;
-
   }
 #endif
   switch (dataState)

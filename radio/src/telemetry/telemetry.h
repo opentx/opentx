@@ -52,7 +52,8 @@ enum TelemetryProtocol
 {
   TELEM_PROTO_FRSKY_D,
   TELEM_PROTO_FRSKY_SPORT,
-  TELEM_PROTO_SPEKTRUM
+  TELEM_PROTO_SPEKTRUM,
+  TELEM_PROTO_FLYSKY_IBUS
 };
 
 enum TelemetrySerialMode {

@@ -14,7 +14,7 @@
  */
 
 
-#include "flysky_ibus.h"
+#include "telemetry/flysky_ibus.h"
 
 /*
  * Telemetry format from goebish/Deviation/flysky_afhds2a_a7105.c
@@ -84,8 +84,8 @@ static void processFlySkySensor(const uint8_t *packet) {
     // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
     id = 0x100;
 
-  if(id == 0xfe)
-    telemetryData.rssi.set(value);
+  if(id == 0xfc)
+    frskyData.rssi.set(value);
 
   for (const FlySkySensor * sensor = flySkySensors; sensor->id; sensor++) {
     // Extract value, skip header
@@ -104,7 +104,7 @@ static void processFlySkyPacket(const uint8_t *packet) {
     int index = 2 + (4 * sensor);
     processFlySkySensor(packet+index);
   }
-  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  frskyStreaming = FRSKY_TIMEOUT10ms;
 }
 
 
@@ -115,7 +115,7 @@ void processFlySkyTelemetryData(uint8_t data)
     return;
   }
 
-  if (frskyRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+  if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
     frskyRxBuffer[frskyRxBufferCount++] = data;
   }
   else {
@@ -146,7 +146,7 @@ const FlySkySensor *getFlySkySensor(uint16_t id)
     if (id == sensor->id)
       return sensor;
   }
-  return nullptr;
+  return 0;
 }
 
 void flySkySetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
@@ -171,5 +171,5 @@ void flySkySetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
     telemetrySensor.init(id);
   }
 
-  storageDirty(EE_MODEL);
+  eeDirty(EE_MODEL);
 }

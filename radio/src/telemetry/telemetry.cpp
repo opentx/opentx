@@ -2,6 +2,7 @@
 
 #if defined(MULTIMODULE)
   #include "telemetry/spektrum.h"
+  #include "telemetry/flysky_ibus.h"
 #endif
 
 TelemetryItem telemetryItems[MAX_SENSORS];
@@ -160,9 +161,6 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     if (gps.longitudeEW && gps.latitudeNS && gps.longitude_ap && gps.latitude_ap) {
       gpsReceived();
     }
-    return;
-  } else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
-    processFlySkyTelemetryData(data);
     return;
   }
   else if (unit == UNIT_DATETIME_YEAR) {
@@ -522,6 +520,9 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
 #if defined(MULTIMODULE)
       case TELEM_PROTO_SPEKTRUM:
         spektrumSetDefault(index, id, subId, instance);
+        break;
+      case TELEM_PROTO_FLYSKY_IBUS:
+        flySkySetDefault(index, id, subId, instance);
         break;
 #endif        
       default:

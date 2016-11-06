@@ -731,7 +731,7 @@ void menuModelSetup(uint8_t event)
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
             case MM_RF_PROTO_FS_AFHDS2A:
-              lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_SUBTYPE_AFHDS2A , g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+              lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_SUBTYPE_AFHDS2A , g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
             case MM_RF_CUSTOM_SELECTED:
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+14*FW, y, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), menuHorizontalPosition==2 ? attr : 0, 2);
@@ -986,7 +986,7 @@ void menuModelSetup(uint8_t event)
               lcd_putsLeft(y, STR_MULTI_VIDFREQ);
               break;
             case MM_RF_PROTO_FS_AFHDS2A:
-              lcdDrawTextAlignedLeft(y, TR_MULTI_SERVOFREQ);
+              lcd_putsLeft(y, TR_MULTI_SERVOFREQ);
               optionValue = 50 + 5 * optionValue;
               break;
             default:
