@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import Qt, QtGui
+from PyQt5 import Qt, QtGui
 
 try:
     app = Qt.QApplication(sys.argv)

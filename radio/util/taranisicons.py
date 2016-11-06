@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from PyQt4 import Qt, QtGui
+from PyQt5 import Qt, QtGui
 
 menu = ["radio_setup", "model_select", "model_settings", "model_checklist", "files", "version"]
 
