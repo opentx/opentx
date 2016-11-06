@@ -6,6 +6,7 @@ local lineIndex = 0
 local pageOffset = 0
 local edit = false
 local charIndex = 1
+local fieldPopup = nil
 local f = io.open("traces.txt", "w")
 
 local function getField(line)
@@ -377,16 +378,32 @@ local function fieldStringDisplay(field, y, attr)
 end
 
 local function fieldCommandLoad(field, data, offset)
-  -- TODO
+  field.status = data[offset]
+  field.timeout = data[offset+1]
+  field.info, offset = fieldGetString(data, offset+2)
+  io.write(f, "  status:" .. field.status .. ", timeout:" .. field.timeout .. ", info=", field.info .. "\n")
+  if field.status < 2 or field.status > 3 then
+    fieldPopup = nil
+  end
 end
 
+local fieldPopupTimeout = 0
 local function fieldCommandSave(field)
-  local frame = { pages[pageIndex].id, 0xEA, field.index }
-  crossfireTelemetryPush(0x2D, frame)
+  io.write(f, "Command send...\n")
+  if field.status == 0 then
+    field.status = 1
+    local frame = { pages[pageIndex].id, 0xEA, field.index, field.status }
+    crossfireTelemetryPush(0x2D, frame)
+    fieldPopup = field
+    fieldPopupTimeout = getTime() + field.timeout
+  end
 end
 
 local function fieldCommandDisplay(field, y, attr)
   lcd.drawText(0, y, field.name, attr)
+  if field.info ~= "" then
+    lcd.drawText(COLUMN_2, y, "[" .. field.info .. "]")
+  end
 end
 
 local types_functions = {
@@ -430,6 +447,7 @@ local function parseParameterInfoMessage(data)
       field.next_chunk = 1
     end
     io.write(f, ", continued\n")
+    page.fieldstimeout = 0
   else
     field.index = index
     field.parent = data[5]
@@ -449,7 +467,9 @@ local function parseParameterInfoMessage(data)
       i = i + 1
     end
     i = i + 1
-    field.name = name
+    if name ~= "" then
+      field.name = name
+    end
     io.write(f, ", name:" .. field.name .. "\n")
     if field.functions ~= nil then
       field.functions.load(field, data, i)
@@ -467,7 +487,14 @@ local function refreshNext()
   local command, data = crossfireTelemetryPop()
   if command == nil then
     local time = getTime()
-    if time > devicesRefreshTimeout then
+    if fieldPopup ~= nil then
+      if time > fieldPopupTimeout then
+        io.write(f, "Poll command status...\n")
+        local frame = { pages[pageIndex].id, 0xEA, fieldPopup.index }
+        crossfireTelemetryPush(0x2D, frame)
+        fieldPopupTimeout = time + fieldPopup.timeout
+      end
+    elseif time > devicesRefreshTimeout then
       if #pages == 0 then
         devicesRefreshTimeout = time + 100 -- 1s
       else
@@ -556,6 +583,25 @@ local function runDevicePage(event)
   return 0
 end
 
+local function runPopupPage(event)
+  local result
+  if fieldPopup.status == 3 then
+    result = popupConfirmation(fieldPopup.info, event)
+  else
+    result = popupWarning(fieldPopup.info, event)
+  end
+  if result == "OK" then
+    io.write(f, "Command confirm...\n")
+    local frame = { pages[pageIndex].id, 0xEA, fieldPopup.index, 4 }
+    crossfireTelemetryPush(0x2D, frame)
+  elseif result == "CANCEL" then
+    io.write(f, "Command cancel...\n")
+    local frame = { pages[pageIndex].id, 0xEA, fieldPopup.index, 5 }
+    crossfireTelemetryPush(0x2D, frame)
+  end
+  return 0
+end
+
 -- Init
 local function init()
   lineIndex, edit = 0, false
@@ -576,6 +622,8 @@ local function run(event)
   local result
   if #pages == 0 then
     result = runNoDevicesPage(event)
+  elseif fieldPopup ~= nil then
+    result = runPopupPage(event)
   else
     result = runDevicePage(event)
   end
