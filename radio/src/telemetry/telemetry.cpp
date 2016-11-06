@@ -74,7 +74,8 @@ void processTelemetryData(uint8_t data)
   if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
-  } else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+  }
+  else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
     processFlySkyTelemetryData(data);
     return;
   }

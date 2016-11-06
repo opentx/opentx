@@ -15,7 +15,6 @@
 
 #include "opentx.h"
 #include "flysky_ibus.h"
-#include "../dataconstants.h"
 
 /*
  * Telemetry format from goebish/Deviation/flysky_afhds2a_a7105.c
@@ -37,8 +36,8 @@
 
 
 #define FLYSKY_TELEMETRY_LENGTH (2+7*4)
-#define TX_RSSI_ID              300 // Pseudo id outside 1 byte range of FlySky sensors
-
+#define TX_RSSI_ID              300      // Pseudo id outside 1 byte range of FlySky sensors
+#define FS_ID_RSSI              0x7c
 
 struct FlySkySensor {
   const uint16_t id;
@@ -46,6 +45,7 @@ struct FlySkySensor {
   const TelemetryUnit unit;
   const uint8_t precision;
 };
+
 
 
 const FlySkySensor flySkySensors[] = {
@@ -61,16 +61,14 @@ const FlySkySensor flySkySensors[] = {
   // RX Noise
   {0xfb,            ZSTR_RX_SNR,            UNIT_DB,                     0},
   // RX RSSI
-  {0xfc,            ZSTR_RSSI,              UNIT_DB,                     0},
+  {FS_ID_RSSI,            ZSTR_RSSI,              UNIT_DB,                     0},
   // RX error rate
   {0xfe,            ZSTR_RX_QUALITY,        UNIT_RAW,                    1},
   // 0xff is an used sensor slot)
   // Pseud sensor for TRSSI
-  {TX_RSSI_ID,      ZSTR_TX_RSSI,           UNIT_RAW,                     0},
+  {TX_RSSI_ID,      ZSTR_TX_RSSI,           UNIT_RAW,                    0},
   // sentinel
   {0x00,            NULL,                   UNIT_RAW,                    0},
-
-
 };
 
 static void processFlySkySensor(const uint8_t *packet) {
@@ -85,7 +83,7 @@ static void processFlySkySensor(const uint8_t *packet) {
     // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
     id = 0x100;
 
-  if(id == 0xfe)
+  if (id == FS_ID_RSSI)
     telemetryData.rssi.set(value);
 
   for (const FlySkySensor * sensor = flySkySensors; sensor->id; sensor++) {
@@ -97,7 +95,8 @@ static void processFlySkySensor(const uint8_t *packet) {
   setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, UNIT_RAW, 0);
 }
 
-static void processFlySkyPacket(const uint8_t *packet) {
+static void processFlySkyPacket(const uint8_t *packet)
+{
   // Set TX RSSI Value, reverse MULTIs scaling
   setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[1], UNIT_RAW, 0);
 
@@ -107,7 +106,6 @@ static void processFlySkyPacket(const uint8_t *packet) {
   }
   telemetryStreaming = TELEMETRY_TIMEOUT10ms;
 }
-
 
 void processFlySkyTelemetryData(uint8_t data)
 {
