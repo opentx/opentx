@@ -229,26 +229,13 @@ class ModelsList
 
     bool readNextLine(char * line, int maxlen)
     {
-      char c;
-      unsigned int read;
-      int len=0;
-      while (1) {
-        FRESULT result = f_read(&file, (uint8_t *)&c, 1, &read);
-        if (result != FR_OK || read != 1) {
-          line[len] = '\0';
-          return false;
+      if(f_gets(line, maxlen, &file) != NULL) {
+        if(line[strlen(line)-1] == '\n') { // fgets return \n, so remove it
+          line[strlen(line)-1] = 0;
         }
-        if (c == '\n') {
-          if (len > 0) {
-            // we skip empty lines
-            line[len] = '\0';
-            return true;
-          }
-        }
-        else if (c != '\r' && len < maxlen) {
-          line[len++] = c;
-        }
+        return true;
       }
+      return false;
     }
 
     ModelsCategory * createCategory()

@@ -155,7 +155,7 @@ void simuInit()
 void simuSetKey(uint8_t key, bool state)
 {
   // if (state) TRACE("simuSetKey(%d, %d)", key, state);
-  
+
   switch (key) {
 #if !defined(PCBHORUS)
     KEY_CASE(KEY_MENU, KEYS_GPIO_REG_MENU, KEYS_GPIO_PIN_MENU)
@@ -219,7 +219,7 @@ void simuSetTrim(uint8_t trim, bool state)
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // TRACE("simuSetSwitch(%d, %d)", swtch, state);
-  
+
   switch (swtch) {
 #if defined(PCBFLAMENCO)
     // SWITCH_3_CASE(0, SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
@@ -692,6 +692,18 @@ FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
     // TRACE("fwrite(%p) %u, %u", fil->obj.fs, size, *written);
   }
   return FR_OK;
+}
+
+TCHAR * f_gets (TCHAR* buff, int len, FIL* fil)
+{
+  if (fil && fil->obj.fs) {
+    buff = fgets(buff, len, (FILE*)fil->obj.fs);
+    if (buff != NULL) {
+      fil->fptr = *buff;
+    }
+    TRACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
+  }
+  return buff;
 }
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
