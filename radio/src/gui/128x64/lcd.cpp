@@ -665,15 +665,6 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
 }
 #endif
 
-void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
-{
-  lcdDrawVerticalLine(x, y, h, pat);
-  lcdDrawVerticalLine(x+w-1, y, h, pat);
-  if (~att & ROUND) { x+=1; w-=2; }
-  lcdDrawHorizontalLine(x, y+h-1, w, pat);
-  lcdDrawHorizontalLine(x, y, w, pat);
-}
-
 #if !defined(BOOT)
 void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
@@ -1443,6 +1434,15 @@ void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h)
 {
   lcdDrawVerticalLine(x, y, h, SOLID);
 }
+
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+{
+  lcdDrawVerticalLine(x, y, h, pat);
+  lcdDrawVerticalLine(x+w-1, y, h, pat);
+  if (~att & ROUND) { x+=1; w-=2; }
+  lcdDrawHorizontalLine(x, y+h-1, w, pat);
+  lcdDrawHorizontalLine(x, y, w, pat);
+}
 #else
 void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
 {
@@ -1485,6 +1485,15 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
 void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
 {
   lcdDrawVerticalLine(x, y, h, SOLID, att);
+}
+
+void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
+{
+  lcdDrawVerticalLine(x, y, h, pat, att);
+  lcdDrawVerticalLine(x+w-1, y, h, pat, att);
+  if (~att & ROUND) { x+=1; w-=2; }
+  lcdDrawHorizontalLine(x, y+h-1, w, pat, att);
+  lcdDrawHorizontalLine(x, y, w, pat, att);
 }
 #endif
 
