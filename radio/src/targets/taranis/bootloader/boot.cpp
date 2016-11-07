@@ -552,7 +552,7 @@ int main()
           progress = (200*eepromWritten) / EEPROM_SIZE;
         }
 
-        lcdDrawRect( 3, 6*FH+4, 204, 7);
+        lcdDrawRect(3, 6*FH+4, 204, 7);
         lcdDrawSolidHorizontalLine(5, 6*FH+6, progress, FORCE);
         lcdDrawSolidHorizontalLine(5, 6*FH+7, progress, FORCE);
         lcdDrawSolidHorizontalLine(5, 6*FH+8, progress, FORCE);
