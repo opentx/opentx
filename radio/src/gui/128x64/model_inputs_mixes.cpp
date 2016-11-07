@@ -380,7 +380,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   if (barMin <= barMax) {
     int8_t right = (barMax * GAUGE_WIDTH) / 200;
     int8_t left = ((barMin * GAUGE_WIDTH) / 200)-1;
-    lcdDrawFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
+    lcdDrawSolidFilledRect(x+GAUGE_WIDTH/2+left, y+2, right-left, GAUGE_HEIGHT-3);
   }
   lcdDrawSolidVerticalLine(x+GAUGE_WIDTH/2-1, y, GAUGE_HEIGHT+1);
   if (barMin == -101) {
@@ -882,7 +882,7 @@ void menuModelExpoMix(uint8_t expo, event_t event)
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              lcdDrawFilledRect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (LCD_W-EXPO_LINE_SELECT_POS-2) : (LCD_W-24), 7);
+              lcdDrawSolidFilledRect(expo ? EXPO_LINE_SELECT_POS+1 : 23, y, expo ? (LCD_W-EXPO_LINE_SELECT_POS-2) : (LCD_W-24), 7);
             }
           }
         }
