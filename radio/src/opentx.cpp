@@ -1401,6 +1401,10 @@ tmr10ms_t jitterResetTime = 0;
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
+#if defined(PCBSKY9X) && !defined(REVA)
+  static const pm_char skyAna[] PROGMEM = {1,5,7,0,4,6,2,3};
+  chan = skyAna[chan];
+#endif
 #if defined(VIRTUAL_INPUTS)
   return ANA_FILT(chan);
 #else
