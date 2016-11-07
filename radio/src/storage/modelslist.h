@@ -230,8 +230,13 @@ class ModelsList
     bool readNextLine(char * line, int maxlen)
     {
       if(f_gets(line, maxlen, &file) != NULL) {
-        if(line[strlen(line)-1] == '\n') { // fgets return \n, so remove it
-          line[strlen(line)-1] = 0;
+        if(line[strlen(line)-1] == '\n') { // remove unwanted chars if file was edited using windows
+          if(line[strlen(line)-2] == '\r') {
+          line[strlen(line)-2] = 0;
+          } else
+          {
+            line[strlen(line)-1] = 0;
+          }
         }
         return true;
       }
