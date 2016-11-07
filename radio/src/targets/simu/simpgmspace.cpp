@@ -701,7 +701,7 @@ TCHAR * f_gets (TCHAR* buff, int len, FIL* fil)
     if (buff != NULL) {
       fil->fptr = *buff;
     }
-    TRACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
+    // TRACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
   }
   return buff;
 }
