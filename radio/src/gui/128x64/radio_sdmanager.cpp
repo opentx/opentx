@@ -56,6 +56,13 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && line[SD_SCREEN_FILE_LENGTH+1]) || (isfile==(bool)line[SD_SCREEN_FILE_LENGTH+1] && strcasecmp(fn, line) < 0);
 }
 
+void getSelectionFullPath(char * lfn)
+{
+  f_getcwd(lfn, _MAX_LFN);
+  strcat(lfn, PSTR("/"));
+  strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - HEADER_LINE - menuVerticalOffset]);
+}
+
 void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[_MAX_LFN+1];
@@ -68,9 +75,7 @@ void onSdManagerMenu(const char * result)
     POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
   }
   else if (result == STR_DELETE_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat_P(lfn, PSTR("/"));
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    getSelectionFullPath(lfn);
     f_unlink(lfn);
     strncpy(statusLineMsg, reusableBuffer.sdmanager.lines[index], 13);
     strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
@@ -80,17 +85,19 @@ void onSdManagerMenu(const char * result)
   }
 #if defined(CPUARM)
   /* TODO else if (result == STR_LOAD_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    getSelectionFullPath(lfn);
     POPUP_WARNING(eeLoadModelSD(lfn));
   } */
   else if (result == STR_PLAY_FILE) {
-    f_getcwd(lfn, _MAX_LFN);
-    strcat(lfn, "/");
-    strcat(lfn, reusableBuffer.sdmanager.lines[index]);
+    getSelectionFullPath(lfn);
     audioQueue.stopAll();
     audioQueue.playFile(lfn, 0, ID_PLAY_FROM_SD_MANAGER);
+  }
+#endif
+#if defined(LUA)
+  else if (result == STR_EXECUTE_FILE) {
+    getSelectionFullPath(lfn);
+    luaExec(lfn);
   }
 #endif
 }
@@ -179,6 +186,11 @@ void menuRadioSdManager(event_t _event)
         }
         else */ if (!strcasecmp(ext, SOUNDS_EXT)) {
           POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
+        }
+#endif
+#if defined(LUA)
+        else if (!strcasecmp(ext, SCRIPTS_EXT)) {
+          POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
         }
 #endif
         if (!READ_ONLY()) {

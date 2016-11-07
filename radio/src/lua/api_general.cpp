@@ -30,9 +30,11 @@
 #elif defined(PCBFLAMENCO)
   #include "lua/lua_exports_flamenco.inc"
 #elif defined(PCBX9E)
-  #include "lua/lua_exports_taranis_x9e.inc"
+  #include "lua/lua_exports_x9e.inc"
+#elif defined(PCBX7D)
+  #include "lua/lua_exports_x7d.inc"
 #elif defined(PCBTARANIS)
-  #include "lua/lua_exports_taranis.inc"
+  #include "lua/lua_exports_x9d.inc"
 #endif
 
 #if defined(SIMU)
@@ -763,7 +765,7 @@ static int luaKillEvents(lua_State * L)
   return 0;
 }
 
-#if !defined(COLORLCD)
+#if LCD_DEPTH > 1 && !defined(COLORLCD)
 /*luadoc
 @function GREY()
 
@@ -1053,7 +1055,7 @@ const luaL_Reg opentxLib[] = {
   { "defaultChannel", luaDefaultChannel },
   { "getRSSI", luaGetRSSI },
   { "killEvents", luaKillEvents },
-#if !defined(COLORLCD)
+#if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
   { "sportTelemetryPop", luaSportTelemetryPop },
@@ -1155,8 +1157,10 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_MINUS_FIRST", EVT_KEY_FIRST(KEY_MINUS) },
   { "EVT_PLUS_REPT", EVT_KEY_REPT(KEY_PLUS) },
   { "EVT_MINUS_REPT", EVT_KEY_REPT(KEY_MINUS) },
+#if LCD_DEPTH > 1
   { "FILL_WHITE", FILL_WHITE },
   { "GREY_DEFAULT", GREY_DEFAULT },
+#endif
   { "FORCE", FORCE },
   { "ERASE", ERASE },
   { "ROUND", ROUND },

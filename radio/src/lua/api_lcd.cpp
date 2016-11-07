@@ -423,7 +423,7 @@ static int luaLcdDrawBitmap(lua_State *L)
 
   return 0;
 }
-#else
+#elif LCD_DEPTH > 1
 /*luadoc
 @function lcd.drawPixmap(x, y, name)
 
@@ -555,7 +555,7 @@ static int luaLcdDrawGauge(lua_State *L)
 }
 
 
-#if !defined(COLORLCD)
+#if LCD_DEPTH > 1 && !defined(COLORLCD)
 /*luadoc
 @function lcd.drawScreenTitle(title, page, pages)
 
@@ -587,7 +587,7 @@ static int luaLcdDrawScreenTitle(lua_State *L)
 }
 #endif
 
-#if !defined(COLORLCD)
+#if LCD_DEPTH > 1 && !defined(COLORLCD)
 /*luadoc
 @function lcd.drawCombobox(x, y, w, list, idx [, flags])
 
@@ -761,7 +761,7 @@ const luaL_Reg lcdLib[] = {
   { "drawBitmap", luaLcdDrawBitmap },
   { "setColor", luaLcdSetColor },
   { "RGB", luaRGB },
-#else
+#elif LCD_DEPTH > 1
   { "getLastPos", luaLcdGetLastPos },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },

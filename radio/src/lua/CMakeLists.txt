@@ -38,6 +38,7 @@ set(LUA_INCLUDES_STM32F4
   -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include
   )
 
-add_lua_export_target(taranis     ${LUA_INCLUDES_STM32F2} -DPCBTARANIS)
-add_lua_export_target(taranis_x9e ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E -DSTM32F40_41xxx)
-add_lua_export_target(horus       ${LUA_INCLUDES_STM32F4} -DPCBHORUS -DSTM32F40_41xxx)
+add_lua_export_target(x7d   ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX7D)
+add_lua_export_target(x9d   ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9D)
+add_lua_export_target(x9e   ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E -DSTM32F40_41xxx)
+add_lua_export_target(horus ${LUA_INCLUDES_STM32F4} -DPCBHORUS -DSTM32F40_41xxx)

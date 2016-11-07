@@ -540,7 +540,7 @@ void menuModelExposAll(event_t event)
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              lcdDrawFilledRect(EXPO_LINE_SELECT_POS+1, y, LCD_W-EXPO_LINE_SELECT_POS-2, 7);
+              lcdDrawSolidFilledRect(EXPO_LINE_SELECT_POS+1, y, LCD_W-EXPO_LINE_SELECT_POS-2, 7);
             }
           }
         }

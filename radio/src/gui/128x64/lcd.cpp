@@ -608,7 +608,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
     }
     else {
       // TODO needed on CPUAVR? y &= ~0x07;
-      lcdDrawFilledRect(xn, y+2*FH-3, ln, 2);
+      lcdDrawSolidFilledRect(xn, y+2*FH-3, ln, 2);
     }
   }
   if (neg) lcdDrawChar(x, y, '-', flags);
@@ -664,11 +664,6 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
   }
 }
 #endif
-
-void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h)
-{
-  lcdDrawVerticalLine(x, y, h, SOLID);
-}
 
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
@@ -781,7 +776,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
     lcdDrawChar(x+2, y+1, CHR_INPUT, TINSIZE);
-    lcdDrawFilledRect(x, y, 7, 7);
+    lcdDrawSolidFilledRect(x, y, 7, 7);
     if (ZEXIST(g_model.inputNames[idx-MIXSRC_FIRST_INPUT]))
       lcdDrawSizedText(x+8, y, g_model.inputNames[idx-MIXSRC_FIRST_INPUT], LEN_INPUT_NAME, ZCHAR|att);
     else
@@ -1443,9 +1438,54 @@ void lcdDrawVerticalLine(coord_t x, int8_t y, int8_t h, uint8_t pat)
     *p ^= ~(BITMASK(h)-1) & pat;
   }
 }
-#else
-// allows the att parameter...
 
+void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h)
+{
+  lcdDrawVerticalLine(x, y, h, SOLID);
+}
+#else
+void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
+{
+  if (x >= LCD_W) return;
+#if defined(CPUARM)
+  // should never happen on 9X
+  if (y >= LCD_H) return;
+#endif
+  
+  if (h<0) { y+=h; h=-h; }
+  if (y<0) { h+=y; y=0; }
+  if (y+h > LCD_H) { h = LCD_H - y; }
+  
+  if (pat==DOTTED && !(y%2))
+    pat = ~pat;
+  
+  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
+  y = (y & 0x07);
+  if (y) {
+    ASSERT_IN_DISPLAY(p);
+    uint8_t msk = ~(BITMASK(y)-1);
+    h -= 8-y;
+    if (h < 0)
+      msk -= ~(BITMASK(8+h)-1);
+    lcdMaskPoint(p, msk & pat, att);
+    p += LCD_W;
+  }
+  while (h>=8) {
+    ASSERT_IN_DISPLAY(p);
+    lcdMaskPoint(p, pat, att);
+    p += LCD_W;
+    h -= 8;
+  }
+  if (h>0) {
+    ASSERT_IN_DISPLAY(p);
+    lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
+  }
+}
+
+void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
+{
+  lcdDrawVerticalLine(x, y, h, SOLID, att);
+}
 #endif
 
 #define LCD_IMG_FUNCTION(NAME, TYPE, READ_BYTE)                               \
@@ -1520,44 +1560,6 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
       pat = pat >> 1;
     }
     p++;
-  }
-}
-
-void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att)
-{
-  if (x >= LCD_W) return;
-#if defined(CPUARM)
-  // should never happen on 9X
-  if (y >= LCD_H) return;
-#endif
-
-  if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; }
-  if (y+h > LCD_H) { h = LCD_H - y; }
-
-  if (pat==DOTTED && !(y%2))
-    pat = ~pat;
-
-  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  y = (y & 0x07);
-  if (y) {
-    ASSERT_IN_DISPLAY(p);
-    uint8_t msk = ~(BITMASK(y)-1);
-    h -= 8-y;
-    if (h < 0)
-      msk -= ~(BITMASK(8+h)-1);
-    lcdMaskPoint(p, msk & pat, att);
-    p += LCD_W;
-  }
-  while (h>=8) {
-    ASSERT_IN_DISPLAY(p);
-    lcdMaskPoint(p, pat, att);
-    p += LCD_W;
-    h -= 8;
-  }
-  if (h>0) {
-    ASSERT_IN_DISPLAY(p);
-    lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
   }
 }
 

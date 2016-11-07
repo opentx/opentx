@@ -404,6 +404,15 @@ void drawStatusLine();
 #define EDIT_MODE_INIT                 -1
 #endif
 
+#if defined(VIRTUAL_INPUTS)
+uint8_t getExposCount();
+void insertExpo(uint8_t idx);
+void deleteExpo(uint8_t idx);
+uint8_t getMixesCount();
+void insertMix(uint8_t idx);
+void deleteMix(uint8_t idx);
+#endif
+  
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
 

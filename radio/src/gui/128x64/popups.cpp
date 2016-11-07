@@ -72,7 +72,7 @@ void drawAlertBox(const pm_char * title, const pm_char * text, const char * acti
   lcdDrawText(MESSAGE_LCD_OFFSET, 2*FH, STR_WARNING, DBLSIZE);
 #endif
   
-  lcdDrawFilledRect(0, 0, LCD_W, 32);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, 32);
   if (text) {
     lcdDrawTextAlignedLeft(5*FH, text);
   }
@@ -150,7 +150,7 @@ const char * runPopupMenu(event_t event)
 
   for (uint8_t i=0; i<display_count; i++) {
     lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i], popupMenuFlags);
-    if (i == s_menu_item) lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
+    if (i == s_menu_item) lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
   if (popupMenuNoItems > display_count) {

@@ -61,7 +61,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
   return (!isfile && IS_FILE(line)) || (isfile==IS_FILE(line) && strcasecmp(fn, line) < 0);
 }
 
-void getSelectionFullPath(char *lfn)
+void getSelectionFullPath(char * lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
   strcat(lfn, PSTR("/"));
