@@ -30,7 +30,7 @@
 class ModelCell
 {
   public:
-    ModelCell(const char * name):
+    ModelCell(const char * name) :
       buffer(NULL)
     {
       strncpy(this->name, name, sizeof(this->name));
@@ -63,11 +63,11 @@ class ModelCell
       }
       else {
         char timer[LEN_TIMER_STRING];
-        buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
+        buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR | TEXT_COLOR);
         getTimerString(timer, 0);
         buffer->drawText(101, 40, timer, TEXT_COLOR);
-        for (int i=0; i<4; i++) {
-          buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
+        for (int i = 0; i < 4; i++) {
+          buffer->drawBitmapPattern(104 + i * 11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
         GET_FILENAME(filename, BITMAPS_PATH, header.bitmap, "");
         const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
@@ -82,11 +82,11 @@ class ModelCell
       buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
     }
 
-    char name[LEN_MODEL_FILENAME+1];
+    char name[LEN_MODEL_FILENAME + 1];
     BitmapBuffer * buffer;
 };
 
-class ModelsCategory: public std::list<ModelCell *>
+class ModelsCategory: public std::list < ModelCell * >
 {
   public:
     ModelsCategory(const char * name)
@@ -140,13 +140,13 @@ class ModelsCategory: public std::list<ModelCell *>
       f_puts(name, file);
       f_puts("]", file);
       f_putc('\n', file);
-      for (std::list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
+      for (std::list < ModelCell * > ::iterator it = begin(); it != end(); ++it) {
         f_puts((*it)->name, file);
         f_putc('\n', file);
       }
     }
 
-    char name[LEN_MODEL_FILENAME+1];
+    char name[LEN_MODEL_FILENAME + 1];
 };
 
 class ModelsList
@@ -163,8 +163,8 @@ class ModelsList
 
     void clear()
     {
-      for (std::list<ModelsCategory *>::iterator it = categories.begin(); it != categories.end(); ++it) {
-        delete *it;
+      for (std::list < ModelsCategory * > ::iterator it = categories.begin(); it != categories.end(); ++it) {
+        delete * it;
       }
       categories.clear();
       currentCategory = NULL;
@@ -174,7 +174,7 @@ class ModelsList
 
     bool load()
     {
-      char line[LEN_MODEL_FILENAME+1];
+      char line[LEN_MODEL_FILENAME + 1];
       ModelsCategory * category = NULL;
 
       clear();
@@ -183,9 +183,9 @@ class ModelsList
       if (result == FR_OK) {
         while (readNextLine(line, LEN_MODEL_FILENAME)) {
           int len = strlen(line); // TODO could be returned by readNextLine
-          if (len > 2 && line[0] == '[' && line[len-1] == ']') {
-            line[len-1] = '\0';
-            category = new ModelsCategory(&line[1]);
+          if (len > 2 && line[0] == '[' && line[len - 1] == ']') {
+            line[len - 1] = '\0';
+            category = new ModelsCategory( & line[1]);
             categories.push_back(category);
           }
           else if (len > 0) {
@@ -220,7 +220,7 @@ class ModelsList
         return;
       }
 
-      for (std::list<ModelsCategory *>::iterator it = categories.begin(); it != categories.end(); ++it) {
+      for (std::list < ModelsCategory * > ::iterator it = categories.begin(); it != categories.end(); ++it) {
         (*it)->save(&file);
       }
 
@@ -229,13 +229,14 @@ class ModelsList
 
     bool readNextLine(char * line, int maxlen)
     {
-      if(f_gets(line, maxlen, &file) != NULL) {
-        if(line[strlen(line)-1] == '\n') { // remove unwanted chars if file was edited using windows
-          if(line[strlen(line)-2] == '\r') {
-          line[strlen(line)-2] = 0;
-          } else
-          {
-            line[strlen(line)-1] = 0;
+      if (f_gets(line, maxlen, &file) != NULL) {
+        int curlen = strlen(line) - 1;
+        if (line[curlen] == '\n') { // remove unwanted chars if file was edited using windows
+          if (line[curlen - 1] == '\r') {
+            line[curlen - 1] = 0;
+          }
+          else{
+            line[curlen] = 0;
           }
         }
         return true;
@@ -286,7 +287,7 @@ class ModelsList
       save();
     }
 
-    std::list<ModelsCategory *> categories;
+    std::list < ModelsCategory * > categories;
     ModelsCategory * currentCategory;
     ModelCell * currentModel;
     unsigned int modelsCount;
