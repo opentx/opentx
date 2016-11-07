@@ -110,7 +110,7 @@ void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 {
   lcdDrawChar(x+2*FW+(value*FW), y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, SOLID);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawSolidFilledRect(x, y, 5*FW-1, FH-1);
 }
 #endif
 
