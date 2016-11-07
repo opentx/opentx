@@ -157,7 +157,7 @@ int main(int argc, char *argv[])
   options.add("help", "show this help text");
   options.alias("help", "h");
   options.parse(QCoreApplication::arguments());
-  if(options.count("help") || options.showUnrecognizedWarning()) {
+  if (options.count("help") || options.showUnrecognizedWarning()) {
     QString msg;
     QTextStream stream(&msg);
     stream << "Usage: simulator [OPTION]... [EEPROM.BIN FILE] " << endl << endl;
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
     qDebug() << "eepromFileName" << eepromFileName;
     // TODO display used eeprom filename somewhere
 
-    SimulatorFactory *factory = getSimulatorFactory(firmwareId);
+    SimulatorFactory * factory = getSimulatorFactory(firmwareId);
     if (!factory) {
       showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(firmwareId), QMessageBox::Critical);
       return 2;

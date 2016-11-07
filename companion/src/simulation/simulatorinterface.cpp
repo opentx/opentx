@@ -24,7 +24,7 @@ void registerSimulator(const QString &filename)
   typedef SimulatorFactory * (*RegisterSimulator)();
   RegisterSimulator registerSimulator = (RegisterSimulator)lib.resolve("registerSimu");
   if (registerSimulator) {
-    SimulatorFactory *factory = registerSimulator();
+    SimulatorFactory * factory = registerSimulator();
     registerSimulatorFactory(factory);
   }
   else {

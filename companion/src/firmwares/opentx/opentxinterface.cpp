@@ -64,11 +64,13 @@ const char * OpenTxEepromInterface::getName()
     case BOARD_GRUVIN9X:
       return "OpenTX for Gruvin9x board / 9X";
     case BOARD_TARANIS:
-      return "OpenTX for FrSky Taranis";
+      return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_PLUS:
-      return "OpenTX for FrSky Taranis Plus";
+      return "OpenTX for FrSky Taranis X9D+";
     case BOARD_TARANIS_X9E:
       return "OpenTX for FrSky Taranis X9E";
+    case BOARD_X7D:
+      return "OpenTX for FrSky X7D";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -99,6 +101,7 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_9XRPRO:
     case BOARD_AR9X:
       return EESIZE_9XRPRO;
+    case BOARD_X7D:
     case BOARD_TARANIS:
     case BOARD_TARANIS_PLUS:
     case BOARD_TARANIS_X9E:
@@ -403,6 +406,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
 
   if (!version) {
     switch(board) {
+      case BOARD_X7D:
       case BOARD_TARANIS:
       case BOARD_TARANIS_PLUS:
       case BOARD_TARANIS_X9E:
@@ -1176,27 +1180,33 @@ void registerOpenTxFirmwares()
   Option nav_options[] = { { "rotenc", QObject::tr("Rotary Encoder use in menus navigation") }, { "potscroll", QObject::tr("Pots use in menus navigation") }, { NULL } };
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
 
-  /* Taranis Plus board */
+  /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* Taranis board */
+  /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis"), BOARD_TARANIS);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* Taranis X9E board */
+  /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* Horus board */
+  /* FrSky X7D board */
+  firmware = new OpenTxFirmware("opentx-x7d", QObject::tr("FrSky X7D"), BOARD_X7D);
+  addOpenTxTaranisOptions(firmware);
+  addOpenTxCommonOptions(firmware);
+  firmwares.push_back(firmware);
+
+  /* FrSky Horus board */
   firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));

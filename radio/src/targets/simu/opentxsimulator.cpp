@@ -241,7 +241,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
     {
     }
 
-    virtual SimulatorInterface *create()
+    virtual SimulatorInterface * create()
     {
       return new OpenTxSimulator();
     }
@@ -257,6 +257,8 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return BOARD_HORUS;
 #elif defined(PCBFLAMENCO)
       return BOARD_FLAMENCO;
+#elif defined(PCBX7D)
+      return BOARD_X7D;
 #elif defined(PCBTARANIS)
       return BOARD_TARANIS;
 #else
