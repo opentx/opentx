@@ -477,7 +477,7 @@ void perMain()
   toplcdRefreshEnd();
 #endif
 
-#if defined(PCBX9E) && !defined(SIMU)
+#if (defined(PCBX9E) || defined(PCBHORUS)) && !defined(SIMU)
   bluetoothWakeup();
 #endif
 

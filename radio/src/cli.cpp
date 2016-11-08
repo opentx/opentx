@@ -789,6 +789,45 @@ int cliGps(const char ** argv)
 }
 #endif
 
+#if defined(PCBX9E) || defined(PCBHORUS)
+int cliBlueTooth(const char ** argv)
+{
+  int baudrate = 0;
+  if (argv[1][0] == '$') {
+    // send command to GPS
+    bluetoothWriteString(argv[1] + 1);
+    bluetoothWriteString("\r\n");
+    serialPrint("bt sent: %s", argv[1] + 1);
+    CoTickDelay(100); // 200ms
+    char buff[100];
+    int len = bluetoothRead(buff, 100);
+    buff[len] = 0;
+    serialPrint("bt read: %s", buff);
+
+  }
+  else if (!strcmp(argv[1], "read")) {
+    char buff[100];
+    int len = bluetoothRead(buff, 100);
+    buff[len] = 0;
+    serialPrint("bt read: %s", buff);
+  }
+  else if (toInt(argv, 1, &baudrate) > 0) {
+    if (baudrate > 0) {
+      bluetoothInit(baudrate);
+      serialPrint("BT baudrate set to %d", baudrate);
+    }
+    else {
+      bluetoothDone();
+      serialPrint("BT turned off");
+    }
+  }
+  else {
+    serialPrint("%s: Invalid arguments", argv[0]);
+  }
+  return 0;
+}
+#endif  // #if defined(PCBX9E) || defined(PCBHORUS)
+
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
   { "ls", cliLs, "<directory>" },
@@ -814,7 +853,10 @@ const CliCommand cliCommands[] = {
   { "jitter", cliShowJitter, "" },
 #endif
 #if defined(INTERNAL_GPS)
-  { "gps", cliGps, "<baudrate>" },
+  { "gps", cliGps, "<baudrate>|$<command>|trace" },
+#endif
+#if defined(PCBX9E) || defined(PCBHORUS)
+  { "bt", cliBlueTooth, "<baudrate>|$<command>|read" },
 #endif
   { NULL, NULL, NULL }  /* sentinel */
 };

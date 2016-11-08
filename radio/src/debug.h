@@ -211,6 +211,7 @@ enum InterruptNames {
   INT_TIM2,
   INT_TRAINER,
   INT_OTG_FS,
+  INT_BLUETOOTH,
   INT_LAST
 };
 #elif defined(PCBTARANIS)

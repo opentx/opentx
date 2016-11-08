@@ -422,9 +422,9 @@
 #define BT_EN_GPIO                      GPIOI
 #define BT_EN_GPIO_PIN                  GPIO_Pin_10 // PI.10
 #else
-#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
-#define BT_EN_GPIO                      GPIOB
-#define BT_EN_GPIO_PIN                  GPIO_Pin_10 // PB.10
+#define BT_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOG)
+#define BT_EN_GPIO                      GPIOA
+#define BT_EN_GPIO_PIN                  GPIO_Pin_6 // PA.06
 #endif
 #define BT_BRTS_GPIO                    GPIOG
 #define BT_BRTS_GPIO_PIN                GPIO_Pin_10 // PG.10

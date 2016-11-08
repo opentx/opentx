@@ -63,7 +63,7 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 
-#if defined(PCBX9E) && !defined(SIMU)
+#if defined(PCBX9E) && !defined(SIMU) && !defined(BLUETOOTH_CLI_PASSTHROUGH)
   #define BLUETOOTH_BUFFER_LENGTH     20
   static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
   static uint8_t bluetoothIndex = 0;
