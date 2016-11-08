@@ -61,7 +61,7 @@ const FlySkySensor flySkySensors[] = {
   // RX Noise
   {0xfb,            ZSTR_RX_SNR,            UNIT_DB,                     0},
   // RX RSSI
-  {FS_ID_RSSI,            ZSTR_RSSI,              UNIT_DB,                     0},
+  {FS_ID_RSSI,      ZSTR_RSSI,              UNIT_DB,                     0},
   // RX error rate
   {0xfe,            ZSTR_RX_QUALITY,        UNIT_RAW,                    1},
   // 0xff is an used sensor slot)
@@ -71,20 +71,25 @@ const FlySkySensor flySkySensors[] = {
   {0x00,            NULL,                   UNIT_RAW,                    0},
 };
 
-static void processFlySkySensor(const uint8_t *packet) {
+static void processFlySkySensor(const uint8_t *packet)
+{
   uint16_t id = packet[0];
   const uint8_t instance = packet[1];
   const int32_t value = (packet[3] << 8)  + packet[2];
 
-  if (id == 0xff)
+  if (id == 0xff) {
     // No sensor
     return;
-  if (id == 0)
+  }
+
+  if (id == 0) {
     // Some part of OpenTX does not like sensor with id and instance 0, remap to 0x100
     id = 0x100;
+  }
 
-  if (id == FS_ID_RSSI)
+  if (id == FS_ID_RSSI) {
     telemetryData.rssi.set(value);
+  }
 
   for (const FlySkySensor * sensor = flySkySensors; sensor->id; sensor++) {
     // Extract value, skip header
