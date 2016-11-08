@@ -656,7 +656,7 @@
 #define TR_ELIMITS             TR("E.Limits", "Extended Limits")
 #define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_DISPLAY_TRIMS       TR("Toon Trims", "Toon Trims")
+#define TR_DISPLAY_TRIMS       "Toon Trims"
 #define TR_TTRACE              TR("T-Source", INDENT "Source")
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Idle Only")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
