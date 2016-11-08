@@ -3,6 +3,7 @@
  * - Andre Bernet <bernet.andre@gmail.com>
  * - Andreas Weitl <andreas.weitl@gmx.de>
  * - Bertrand Songis <bsongis@gmail.com>
+ * - Benjamin Boy <rcbebo82@googlemail.com>
  * - Thomas Husterer
  *
  * opentx is based on code named
@@ -27,18 +28,22 @@
 enum GermanPrompts {
   DE_PROMPT_NUMBERS_BASE = 0,
   DE_PROMPT_NULL = DE_PROMPT_NUMBERS_BASE+0,
-  DE_PROMPT_HUNDERT = DE_PROMPT_NUMBERS_BASE+100,
-  DE_PROMPT_TAUSEND = DE_PROMPT_NUMBERS_BASE+101,
-  DE_PROMPT_COMMA = 102,
+  DE_PROMPT_EIN = DE_PROMPT_NUMBERS_BASE+100,
+  DE_PROMPT_EINE = DE_PROMPT_NUMBERS_BASE+101,
+  DE_PROMPT_HUNDERT = DE_PROMPT_NUMBERS_BASE+102,
+  DE_PROMPT_TAUSEND = DE_PROMPT_NUMBERS_BASE+103,
+  DE_PROMPT_COMMA = 104,
   DE_PROMPT_UND,
   DE_PROMPT_MINUS,
   DE_PROMPT_UHR,
   DE_PROMPT_MINUTE,
   DE_PROMPT_MINUTEN,
-  DE_PROMPT_SECUNDE,
-  DE_PROMPT_SECUNDEN,
+  DE_PROMPT_SEKUNDE,
+  DE_PROMPT_SEKUNDEN,
+  DE_PROMPT_STUNDE,
+  DE_PROMPT_STUNDEN,
 
-  DE_PROMPT_UNITS_BASE = 110,
+  DE_PROMPT_UNITS_BASE = 114,
   DE_PROMPT_VOLTS = DE_PROMPT_UNITS_BASE+UNIT_VOLTS,
   DE_PROMPT_AMPS = DE_PROMPT_UNITS_BASE+UNIT_AMPS,
   DE_PROMPT_METERS_PER_SECOND = DE_PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
@@ -108,7 +113,7 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         unit = UNIT_FEET;
       }
       if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
+         unit = UNIT_KTS;
       }
     }
     unit++;
@@ -126,38 +131,52 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #endif
     div_t qr = div(number, 10);
     if (qr.rem > 0) {
-      PLAY_NUMBER(qr.quot, 0, 0);
+      PUSH_NUMBER_PROMPT(qr.quot);
       PUSH_NUMBER_PROMPT(DE_PROMPT_COMMA);
-      if (mode==2 && qr.rem < 10)
-        PUSH_NUMBER_PROMPT(DE_PROMPT_NULL);
-      PLAY_NUMBER(qr.rem, unit, 0);
+      PUSH_NUMBER_PROMPT(qr.rem);
     }
     else {
-      PLAY_NUMBER(qr.quot, unit, 0);
+      PUSH_NUMBER_PROMPT(qr.quot);
     }
+    DE_PUSH_UNIT_PROMPT(unit);
     return;
   }
 
-  if (number >= 1000) {
-    if (number >= 1100) {
-      PLAY_NUMBER(number / 1000, 0, 0);
-      PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-    } else {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-    }
+  if (number >= 2000) {
+    PLAY_NUMBER(number / 1000, 0, 0);
+    PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
     number %= 1000;
     if (number == 0)
-      number = -1;
+      number = -1;       
   }
-  if (number >= 100) {
-    if (number >= 200)
-      PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number/100);
+
+  if ((number >= 1000) && (number < 2000)) {
+    PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
+    PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
+    number %= 1000;
+    if (number == 0)
+      number = -1;    
+  }
+
+  if ((number >= 200) && (number < 1000)) {
+    PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 100);
+    PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);	
+    number %= 100;
+    if (number == 0)
+      number = -1;    
+  }
+
+  if ((number >= 100) && (number < 200)) {
+    PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
     PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
     number %= 100;
     if (number == 0)
       number = -1;
   }
-  PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
+
+  if (number >= 0) {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 1);
+  }
 
   if (unit) {
     DE_PUSH_UNIT_PROMPT(unit);
@@ -171,41 +190,49 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
     seconds = -seconds;
   }
 
-  uint8_t ore = 0;
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
+
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
+    if (tmp > 1) {
+      PLAY_NUMBER(tmp, 0, 0);
+      PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDEN);
+    }
+    else {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+      PUSH_NUMBER_PROMPT(DE_PROMPT_STUNDE);
+    }
+    if (seconds > 0) {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+    }
   }
 
   tmp = seconds / 60;
   seconds %= 60;
-  if (tmp > 0 || ore >0) {
-    PLAY_NUMBER(tmp, 0, 0);
-    if (tmp != 1) {
-#if defined(CPUARM)
-      PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
-    } else {
-      PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
-#else
+
+  if (tmp > 0) {
+    if (tmp > 1) {
+      PLAY_NUMBER(tmp, 0, 0);
       PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTEN);
-    } else {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
-#endif
     }
-    PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+    else {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+      PUSH_NUMBER_PROMPT(DE_PROMPT_MINUTE);
+    }
+    if (seconds > 0) {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_UND);
+    }
   }
-  PLAY_NUMBER(seconds, 0, 0);
-  if (seconds != 1) {
-#if defined(CPUARM)
-    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
-  } else {
-    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
-#else
-    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDEN);
-  } else {
-    PUSH_NUMBER_PROMPT(DE_PROMPT_SECUNDE);
-#endif
+  
+  if (seconds > 1) {
+    PLAY_NUMBER(seconds, 0, 0);
+    PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDEN);
+  }
+  else {
+    if (seconds == 1) {
+      PUSH_NUMBER_PROMPT(DE_PROMPT_EINE);
+      PUSH_NUMBER_PROMPT(DE_PROMPT_SEKUNDE);
+    }
   }
 }
 
