@@ -21,6 +21,8 @@
 #include "opentx.h"
 #include <stdio.h>
 
+void displayMixStatus(uint8_t channel);
+
 int getMixesLinesCount()
 {
   int lastch = -1;
@@ -176,6 +178,7 @@ bool menuModelMixOne(event_t event)
 
   SUBMENU_WITH_OPTIONS(STR_MIXER, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
+  displayMixStatus(md2->destCh);
 
   // The separation line between 2 columns
   lcdDrawSolidVerticalLine(MENU_COLUMN2_X-10, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
@@ -367,7 +370,7 @@ void displayMixLine(coord_t y, MixData *md)
 }
 
 void displayMixStatus(uint8_t channel)
-{  
+{
   lcdDrawNumber(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, channel + 1, MENU_TITLE_COLOR, 0, "CH", NULL);
   drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
@@ -386,7 +389,7 @@ bool menuModelMixAll(event_t event)
     mixerSetupMultiBitmap,
     mixerSetupReplaceBitmap
   };
-  
+
 
   uint8_t sub = menuVerticalPosition;
 
@@ -553,7 +556,7 @@ bool menuModelMixAll(event_t event)
 
           displayMixLine(y, md);
 
-          BitmapBuffer *delayslowbmp[] = {mixerSetupSlowBitmap, mixerSetupDelayBitmap, mixerSetupDelaySlowBitmap}; 
+          BitmapBuffer *delayslowbmp[] = {mixerSetupSlowBitmap, mixerSetupDelayBitmap, mixerSetupDelaySlowBitmap};
           uint8_t delayslow = 0;
           if (md->speedDown || md->speedUp)
             delayslow = 1;
