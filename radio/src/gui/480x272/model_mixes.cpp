@@ -178,7 +178,7 @@ bool menuModelMixOne(event_t event)
 
   SUBMENU_WITH_OPTIONS(STR_MIXER, ICON_MODEL_MIXER, MIX_FIELD_COUNT, OPTION_MENU_NO_SCROLLBAR, { 0, 0, 0, 0, 0, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/ });
   putsChn(50, 3+FH, md2->destCh+1, MENU_TITLE_COLOR);
-  displayMixStatus( md2->destCh);
+  displayMixStatus(md2->destCh);
 
   // The separation line between 2 columns
   lcdDrawSolidVerticalLine(MENU_COLUMN2_X-10, DEFAULT_SCROLLBAR_Y-FH, DEFAULT_SCROLLBAR_H+5, TEXT_COLOR);
