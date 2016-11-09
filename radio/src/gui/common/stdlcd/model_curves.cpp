@@ -109,13 +109,13 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
 {
   coord_t x1 = x;
   if (flags & RIGHT) {
-    x1 -= 8*FW;
+    x1 -= 6*FW;
     flags -= RIGHT;
   }
   else {
-    x += 8*FW;
+    x += 6*FW;
   }
-  
+
   lcdDrawTextAtIndex(x1, y, "\004DiffExpoFuncCstm", curve.type, menuHorizontalPosition==0 ? flags : 0);
   if (flags && menuHorizontalPosition==0) {
     CHECK_INCDEC_MODELVAR_ZERO(event, curve.type, CURVE_REF_CUSTOM);
@@ -124,7 +124,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
   switch (curve.type) {
     case CURVE_REF_DIFF:
     case CURVE_REF_EXPO:
-      curve.value = GVAR_MENU_ITEM(x, y, curve.value, -100, 100, RIGHT | (menuHorizontalPosition==1 ? flags : 0), 0, event);
+      curve.value = GVAR_MENU_ITEM(x, y, curve.value, -100, 100, LEFT | (menuHorizontalPosition==1 ? flags : 0), 0, event);
       break;
     case CURVE_REF_FUNC:
       lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
