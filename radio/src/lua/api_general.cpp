@@ -333,7 +333,10 @@ uint8_t getDataId(uint8_t physicalId)
 
 static int luaSportTelemetryPush(lua_State * L)
 {
-  if (isSportOutputBufferAvailable()) {
+  if (lua_gettop(L) == 0) {
+    lua_pushboolean(L, isSportOutputBufferAvailable());
+  }
+  else if (isSportOutputBufferAvailable()) {
     SportTelemetryPacket packet;
     packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
     packet.primId = luaL_checkunsigned(L, 2);
@@ -378,7 +381,10 @@ static int luaCrossfireTelemetryPop(lua_State * L)
 
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
-  if (isCrossfireOutputBufferAvailable()) {
+  if (lua_gettop(L) == 0) {
+    lua_pushboolean(L, isCrossfireOutputBufferAvailable());
+  }
+  else if (isCrossfireOutputBufferAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);
     luaL_checktype(L, 2, LUA_TTABLE);
     uint8_t length = luaL_len(L, 2);
