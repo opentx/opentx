@@ -656,11 +656,11 @@
 #define TR_ELIMITS             TR("E.Limits", "Extended Limits")
 #define TR_ETRIMS              TR("E.Trims", "Extended Trims")
 #define TR_TRIMINC             "Trim Step"
-#define TR_DISPLAY_TRIMS       TR("Show Trims", "Display Trims")
+#define TR_DISPLAY_TRIMS       "Toon Trims"
 #define TR_TTRACE              TR("T-Source", INDENT "Source")
 #define TR_TTRIM               TR("T-Trim", INDENT "Trim Idle Only")
 #define TR_BEEPCTR             TR("Ctr Beep", "Center Beep")
-#define TR_USE_GLOBAL_FUNCS    TR("Glob.Funcs", "Use Global Funcs")
+#define TR_USE_GLOBAL_FUNCS    TR("Glob.Funcs", "Globale Functies")
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
@@ -691,10 +691,10 @@
 #define TR_NOFREEEXPO          "Geen vrije expo!"
 #define TR_NOFREEMIXER         "Geen vrije mixer!"
 #define TR_SOURCE              INDENT "Source"
-#define TR_WEIGHT              "Weight"
+#define TR_WEIGHT              "Gewicht"
 #define TR_EXPO                TR("Expo", "Exponentieel")
 #define TR_SIDE                "Side"
-#define TR_DIFFERENTIAL        "Differ"
+#define TR_DIFFERENTIAL        "Diff"
 #define TR_OFFSET              INDENT "Offset"
 #define TR_TRIM                "Trim"
 #define TR_DREX                "DRex"
@@ -849,8 +849,8 @@
 
 #define TR_MENUCURVES          "CURVEN"
 #define TR_MENUCURVE           "CURVE"
-#define TR_MENULOGICALSWITCH   "LOGISCHE SCHAKELAAR"
-#define TR_MENULOGICALSWITCHES "LOGISCHE SCHAKELAARS"
+#define TR_MENULOGICALSWITCH   "LOGISCHE SCHAK."
+#define TR_MENULOGICALSWITCHES "LOGISCHE SCHAKELRS"
 #define TR_MENUCUSTOMFUNC      TR("SPEC.-FUNKTIES", "SPECIALE-FUNKTIES")
 #define TR_MENUCUSTOMSCRIPTS   "LUA-SCRIPTS"
 #define TR_MENUTELEMETRY       "TELEMETRIE"
@@ -1067,7 +1067,7 @@
 #define TR_CONSTANT            "Constant"
 #define TR_PERSISTENT_MAH      TR(INDENT "Str mAh", INDENT "Vasthouden mAh")
 #define TR_PREFLIGHT           "Preflight Checks"
-#define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Display Checklist")
+#define TR_CHECKLIST           TR(INDENT "Checklist", INDENT "Toon Checklist")
 #define TR_FAS_OFFSET          TR(INDENT "FAS Ofs", INDENT "FAS Offset")
 #define TR_UART3MODE           "Seriele poort"
 #define TR_SCRIPT              "Script"
@@ -1077,7 +1077,7 @@
 #define TR_EEBACKUP            "EEPROM backup"
 #define TR_FACTORYRESET        "Factory reset"
 #else
-#define TR_EEBACKUP            TR("\001[ENTER Lang]: Backup", "\012[ENTER Lang]: EEPROM backup naar SD-CARD")
+#define TR_EEBACKUP            TR("\001[ENTER Lang]: Backup", "\012[ENTER Lang]: EEPROM backup => SD")
 #define TR_FACTORYRESET        TR("\001[MENU Lang]: Fact. reset", "\012[MENU Lang]: Factory reset")
 
 #endif
