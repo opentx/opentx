@@ -143,7 +143,7 @@ class DefaultTheme: public Theme
       currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
       currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
       currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
-      
+
       delete topleftBitmap;
       topleftBitmap = BitmapBuffer::loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
 
@@ -169,56 +169,59 @@ class DefaultTheme: public Theme
       delete modelselModelQtyBitmap;
       modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
 
+      delete modelselModelNameBitmap;
+      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", TEXT_COLOR, TEXT_BGCOLOR);
+
       delete modelselModelMoveBackground;
       modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
 
       delete modelselModelMoveIcon;
       modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
-      
+
       // Channels monitor screen
       delete chanMonLockedBitmap;
       chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       delete chanMonInvertedBitmap;
       chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
       mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
-      
+
       delete mixerSetupToBitmap;
-      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_TITLE_COLOR, HEADER_BGCOLOR); 
+      mixerSetupToBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_to.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupOutputBitmap;
-      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);      
+      mixerSetupOutputBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_output.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
 
       delete mixerSetupAddBitmap;
       mixerSetupAddBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_add.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       delete mixerSetupMultiBitmap;
       mixerSetupMultiBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_multi.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       delete mixerSetupReplaceBitmap;
-      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR); 
-      
+      mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground("mask_mplex_replace.png", TEXT_COLOR, TEXT_BGCOLOR);
+
       delete mixerSetupLabelBitmap;
-      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", TEXT_COLOR, TEXT_BGCOLOR); 
-      
+      mixerSetupLabelBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_label.png", TEXT_COLOR, TEXT_BGCOLOR);
+
       delete mixerSetupCurveBitmap;
-      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR); 
-      
+      mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR);
+
       delete mixerSetupSwitchBitmap;
-      mixerSetupSwitchBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_switch.png", TEXT_COLOR, TEXT_BGCOLOR); 
-      
+      mixerSetupSwitchBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_switch.png", TEXT_COLOR, TEXT_BGCOLOR);
+
       delete mixerSetupFlightmodeBitmap;
       mixerSetupFlightmodeBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_fm.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       delete mixerSetupSlowBitmap;
       mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       delete mixerSetupDelayBitmap;
       mixerSetupDelayBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delay.png", TEXT_COLOR, TEXT_BGCOLOR);
-      
+
       delete mixerSetupDelaySlowBitmap;
       mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
     }

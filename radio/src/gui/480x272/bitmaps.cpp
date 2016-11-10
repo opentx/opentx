@@ -183,6 +183,7 @@ const uint8_t LBM_SWIPE_RIGHT[] = {
 BitmapBuffer * modelselIconBitmap = NULL;
 BitmapBuffer * modelselSdFreeBitmap = NULL;
 BitmapBuffer * modelselModelQtyBitmap = NULL;
+BitmapBuffer * modelselModelNameBitmap = NULL;
 BitmapBuffer * modelselModelMoveBackground = NULL;
 BitmapBuffer * modelselModelMoveIcon = NULL;
 BitmapBuffer * chanMonLockedBitmap = NULL;
@@ -200,4 +201,3 @@ BitmapBuffer * mixerSetupDelayBitmap = NULL;
 BitmapBuffer * mixerSetupSlowBitmap = NULL;
 BitmapBuffer * mixerSetupDelaySlowBitmap = NULL;
 BitmapBuffer * mixerSetupFlightmodeBitmap = NULL;
-
