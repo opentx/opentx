@@ -32,6 +32,8 @@ void drawMessageBox();
 void showMessageBox(const pm_char * title);
 void runPopupWarning(event_t event);
 
+#define DRAW_MESSAGE_BOX(title)        (warningText = title, drawMessageBox(), warningText = NULL)
+
 #if defined(CPUARM)
 extern void (*popupFunc)(event_t event);
 extern int16_t warningInputValue;

@@ -178,7 +178,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   if (barMin <= barMax) {
     int8_t right = (barMax * gaugeWidth) / 200;
     int8_t left = ((barMin * gaugeWidth) / 200)-1;
-    lcdDrawFilledRect(x+gaugeWidth/2+left, y+2, right-left, gaugeHeight-3);
+    lcdDrawSolidFilledRect(x+gaugeWidth/2+left, y+2, right-left, gaugeHeight-3);
   }
   lcdDrawSolidVerticalLine(x+gaugeWidth/2-1, y, gaugeHeight+1);
   if (barMin == -101) {
@@ -569,7 +569,7 @@ void menuModelMixAll(event_t event)
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              lcdDrawFilledRect(23, y, LCD_W-24, 7);
+              lcdDrawSolidFilledRect(23, y, LCD_W-24, 7);
             }
           }
         }

@@ -39,7 +39,9 @@ static int luaModelGetInfo(lua_State *L)
 {
   lua_newtable(L);
   lua_pushtablezstring(L, "name", g_model.header.name);
+#if LCD_DEPTH > 1
   lua_pushtablenzstring(L, "bitmap", g_model.header.bitmap);
+#endif
   return 1;
 }
 
@@ -68,10 +70,12 @@ static int luaModelSetInfo(lua_State *L)
       memcpy(modelHeaders[g_eeGeneral.currModel].name, g_model.header.name, sizeof(g_model.header.name));
 #endif
     }
+#if LCD_DEPTH > 1
     else if (!strcmp(key, "bitmap")) {
       const char * name = luaL_checkstring(L, -1);
       strncpy(g_model.header.bitmap, name, sizeof(g_model.header.bitmap));
     }
+#endif
   }
   storageDirty(EE_MODEL);
   return 0;

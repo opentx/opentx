@@ -226,10 +226,11 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
 void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att=0);
 void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att=0);
 void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att=0);
-void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h);
 #if defined(CPUM64)
+  void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h);
   void lcdDrawVerticalLine(coord_t x, scoord_t y, int8_t h, uint8_t pat);
 #else
+  void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att=0);
   void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlags att=0);
 #endif
 
@@ -237,7 +238,11 @@ void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h);
   void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 #endif
 
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0);
+inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att=0)
+{
+  lcdDrawFilledRect(x, y, w, h, SOLID, att);
+}
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 
 void lcdInvertLine(int8_t line);

@@ -401,6 +401,7 @@ int cliSet(const char ** argv)
       serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1], argv[2]);
     }
   }
+#if !defined(SOFTWARE_VOLUME)
   else if (!strcmp(argv[1], "volume")) {
     int level = 0;
     if (toInt(argv, 2, &level) > 0) {
@@ -411,6 +412,7 @@ int cliSet(const char ** argv)
     }
     return 0;
   }
+#endif
   return 0;
 }
 
@@ -589,9 +591,11 @@ int cliDisplay(const char ** argv)
     gettime(&utm);
     serialPrint("rtc = %4d-%02d-%02d %02d:%02d:%02d.%02d0", utm.tm_year+TM_YEAR_BASE, utm.tm_mon+1, utm.tm_mday, utm.tm_hour, utm.tm_min, utm.tm_sec, g_ms100);
   }
+#if !defined(SOFTWARE_VOLUME)
   else if (!strcmp(argv[1], "volume")) {
     serialPrint("volume = %d", getVolume());
   }
+#endif
 #if defined(STM32)
   else if (!strcmp(argv[1], "uid")) {
     char str[LEN_CPU_UID+1];

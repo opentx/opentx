@@ -426,7 +426,7 @@ void luaLoadPermanentScripts()
 void displayLuaError(const char * title)
 {
 #if !defined(COLORLCD)
-  drawMessageBox(title);
+  DRAW_MESSAGE_BOX(title);
 #endif
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");

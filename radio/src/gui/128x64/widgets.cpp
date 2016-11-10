@@ -38,7 +38,7 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
   if (value)
     lcdDrawChar(x+1, y, '#');
   if (attr)
-    lcdDrawFilledRect(x, y, 7, 7);
+    lcdDrawSolidFilledRect(x, y, 7, 7);
   else
     lcdDrawSquare(x, y, 7);
 #else
@@ -103,14 +103,14 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 {
   lcdDrawChar(x+(value*4*FW)/max, y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, FORCE);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawSolidFilledRect(x, y, 5*FW-1, FH-1);
 }
 #elif defined(GRAPHICS)
 void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 {
   lcdDrawChar(x+2*FW+(value*FW), y, '$');
   lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, SOLID);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawFilledRect(x, y, 5*FW-1, FH-1);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawSolidFilledRect(x, y, 5*FW-1, FH-1);
 }
 #endif
 
