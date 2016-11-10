@@ -297,6 +297,19 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
   return false;  // not found
 }
 
+/*luadoc
+@function sportTelemetryPop()
+
+Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to the LUA telemetry receive queue.
+
+@retval SPORT paket as a quadruple:
+ * sensor ID (number)
+ * frame ID (number)
+ * data ID (number)
+ * value (number)
+
+@status current Introduced in 2.2.0
+*/
 static int luaSportTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
@@ -331,6 +344,26 @@ uint8_t getDataId(uint8_t physicalId)
   return result;
 }
 
+/*luadoc
+@function sportTelemetryPush()
+
+This functions allows for sending SPORT telemetry data toward the receiver,
+and more generally, to anything connected SPORT bus on the receiver or transmitter.
+
+When called without parameters, it will only return the status of the ouput buffer without sending anything.
+
+@param sensorId  physical sensor ID
+
+@param frameId   frame ID
+
+@param dataId    data ID
+
+@param value     value
+
+@retval boolean  data queued in output buffer or not.
+
+@status current Introduced in 2.2.0
+*/
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
@@ -351,6 +384,17 @@ static int luaSportTelemetryPush(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function crossfireTelemetryPop()
+
+@retval SPORT paket as a quadruple:
+ * sensor ID (number)
+ * frame ID (number)
+ * data ID (number)
+ * value (number)
+
+@status current Introduced in 2.2.0
+*/
 static int luaCrossfireTelemetryPop(lua_State * L)
 {
   if (!luaInputTelemetryFifo) {
@@ -379,6 +423,25 @@ static int luaCrossfireTelemetryPop(lua_State * L)
   return 0;
 }
 
+/*luadoc
+@function crossfireTelemetryPush()
+
+This functions allows for sending telemetry data toward the TBS Crossfire link.
+
+When called without parameters, it will only return the status of the ouput buffer without sending anything.
+
+@param sensorId  physical sensor ID
+
+@param frameId   frame ID
+
+@param dataId    data ID
+
+@param value     value
+
+@retval boolean  data queued in output buffer or not.
+
+@status current Introduced in 2.2.0
+*/
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
