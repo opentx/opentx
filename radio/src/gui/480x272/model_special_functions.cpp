@@ -180,10 +180,13 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
       LcdFlags active = (attr && s_editMode>0);
       switch (j) {
         case ITEM_SPECIAL_FUNCTIONS_SWITCH:
+          drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) {
             CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
           }
-          drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext.activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+          if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
+            func = CFN_FUNC(cfn) = func+1;
+          }
           break;
 
         case ITEM_SPECIAL_FUNCTIONS_FUNCTION:
