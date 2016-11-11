@@ -186,8 +186,13 @@ void sportProcessTelemetryPacket(uint8_t * packet)
           sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= RBOX_STATE_FIRST_ID && id <= RBOX_STATE_LAST_ID) {
+          bool static isRB10 = false;
           uint16_t newServosState;
-          if ((data & 0xff00) == 0xff00) {
+
+          if ((servosState & 0xff00) == 0 && (data & 0xff00) == 0xff00) {
+            isRB10 = true;
+          }
+          if (isRB10) {
             newServosState = data & 0x00ff; // 8ch only RB10
           } else {
             newServosState = data & 0xffff;
