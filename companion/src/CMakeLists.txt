@@ -72,15 +72,16 @@ include_directories(
   ${COMPANION_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/shared
   ${SIMU_SRC_DIRECTORY}
-  ${COMPANION_SRC_DIRECTORY}/qxtcommandoptions
+  ${COMPANION_SRC_DIRECTORY}/thirdparty/qxtcommandoptions
+  ${COMPANION_SRC_DIRECTORY}/thirdparty/qcustomplot
 )
 
 add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
 add_subdirectory(simulation)
-add_subdirectory(qcustomplot)
-add_subdirectory(qxtcommandoptions)
+add_subdirectory(thirdparty/qcustomplot)
+add_subdirectory(thirdparty/qxtcommandoptions)
 
 set(common_SRCS
   eeprominterface.cpp

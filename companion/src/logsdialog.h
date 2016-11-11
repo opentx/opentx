@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "qcustomplot/qcustomplot.h"
+#include "qcustomplot.h"
 
 #define INVALID_MIN 999999
 #define INVALID_MAX -999999
