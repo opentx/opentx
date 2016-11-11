@@ -189,12 +189,13 @@ void sportProcessTelemetryPacket(uint8_t * packet)
           bool static isRB10 = false;
           uint16_t newServosState;
 
-          if ((servosState & 0xff00) == 0 && (data & 0xff00) == 0xff00) {
+          if (servosState == 0 && (data & 0xff00) == 0xff00) {
             isRB10 = true;
           }
           if (isRB10) {
             newServosState = data & 0x00ff; // 8ch only RB10
-          } else {
+          }
+          else {
             newServosState = data & 0xffff;
           }
           if (newServosState != 0 && servosState == 0) {
