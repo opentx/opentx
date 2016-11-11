@@ -35,6 +35,7 @@
 #define FILE_TYPE_EEPE 3
 #define FILE_TYPE_EEPM 4
 #define FILE_TYPE_XML  5
+#define FILE_TYPE_EEPE2 6
 
 int getFileType(const QString &fullFileName);
 

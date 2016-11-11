@@ -10,6 +10,7 @@
 #define BIN_FILES_FILTER              "BIN files (*.bin);;"
 #define DFU_FILES_FILTER              "DFU files (*.dfu);;"
 #define EEPE_FILES_FILTER             "EEPE EEPROM files (*.eepe);;"
+#define EEPE2_FILES_FILTER            "EEPE2 files (*.eepe2);;"
 #define EEPROM_FILES_FILTER           "EEPE files (*.eepe *.bin *.hex);;" EEPE_FILES_FILTER BIN_FILES_FILTER HEX_FILES_FILTER
 #define FLASH_FILES_FILTER            "FLASH files (*.bin *.hex *.dfu);;" BIN_FILES_FILTER HEX_FILES_FILTER DFU_FILES_FILTER
 #define EXTERNAL_EEPROM_FILES_FILTER  "EEPROM files (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER

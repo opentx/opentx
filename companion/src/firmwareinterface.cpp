@@ -39,6 +39,8 @@ int getFileType(const QString &fullFileName)
     return FILE_TYPE_EEPE;
   else if (suffix == "XML")
     return FILE_TYPE_XML;
+  else if (suffix == "EEPE2")
+    return FILE_TYPE_EEPE2;
   else
     return 0;
 }

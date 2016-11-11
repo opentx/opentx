@@ -576,22 +576,29 @@ void MainWindow::openDocURL()
 
 void MainWindow::openFile()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
-    if (!fileName.isEmpty()) {
-      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
+  QString fileFilter;
+  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+    fileFilter = tr(EEPE2_FILES_FILTER);
+  }
+  else {
+    fileFilter = tr(EEPROM_FILES_FILTER);
+  }
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), fileFilter);
+  if (!fileName.isEmpty()) {
+    g.eepromDir(QFileInfo(fileName).dir().absolutePath());
 
-      QMdiSubWindow *existing = findMdiChild(fileName);
-      if (existing) {
-        mdiArea->setActiveSubWindow(existing);
-        return;
-      }
-
-      MdiChild *child = createMdiChild();
-      if (child->loadFile(fileName)) {
-        statusBar()->showMessage(tr("File loaded"), 2000);
-        child->show();
-      }
+    QMdiSubWindow *existing = findMdiChild(fileName);
+    if (existing) {
+      mdiArea->setActiveSubWindow(existing);
+      return;
     }
+
+    MdiChild *child = createMdiChild();
+    if (child->loadFile(fileName)) {
+      statusBar()->showMessage(tr("File loaded"), 2000);
+      child->show();
+    }
+  }
 }
 
 void MainWindow::save()
@@ -922,7 +929,7 @@ void MainWindow::updateMenus()
     bool hasMdiChild = (activeMdiChild() != 0);
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
 
-    if(GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+    if(false /*GetCurrentFirmware()->getBoard() == BOARD_HORUS*/) {
       newAct->setEnabled(false);
       openAct->setEnabled(false);
       saveAct->setEnabled(false);
