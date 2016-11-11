@@ -186,7 +186,12 @@ void sportProcessTelemetryPacket(uint8_t * packet)
           sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= RBOX_STATE_FIRST_ID && id <= RBOX_STATE_LAST_ID) {
-          uint16_t newServosState = data & 0xffff;
+          uint16_t newServosState;
+          if ((data & 0xff00) == 0xff00) {
+            newServosState = data & 0x00ff; // 8ch only RB10
+          } else {
+            newServosState = data & 0xffff;
+          }
           if (newServosState != 0 && servosState == 0) {
             audioEvent(AU_SERVO_KO);
           }
