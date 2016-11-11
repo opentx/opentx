@@ -9,6 +9,7 @@ else()
     message("Internal GPS is optional, use INTERNAL_GPS=YES option to enable it")
   endif()
 endif()
+option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
 
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
@@ -76,10 +77,15 @@ set(FIRMWARE_TARGET_SRC
   sdio_sd.c
   lcd_driver.cpp
   backlight_driver.cpp
+  bluetooth_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
   startup_stm32f40_41xxx.s
   )
+if(BLUETOOTH_CLI_PASSTHROUGH)
+  add_definitions(-DBLUETOOTH_CLI_PASSTHROUGH)
+  message("Bluetooth pass-trough enabled")
+endif()
 set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fmc.c

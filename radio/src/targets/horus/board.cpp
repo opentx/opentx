@@ -174,9 +174,7 @@ void boardInit()
   init1msTimer();
   usbInit();
   hapticInit();
-
-  //  bt_open();
-
+  bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
   gpsInit(GPS_USART_BAUDRATE);
 
 #if defined(DEBUG)

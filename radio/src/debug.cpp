@@ -118,7 +118,8 @@ void dumpTraceBuffer()
     "Tim1 ",   // INT_TIM1CC,
     "Tim2 ",   // INT_TIM2,
     "Tim3 ",   // INT_TIM3,
-    "Usb  "   // INT_OTG_FS,
+    "Usb  "    // INT_OTG_FS,
+    "BlueT",   // INT_BLUETOOTH,
   };
 #elif defined(PCBTARANIS) 
   const char * interruptNames[INT_LAST] = {
