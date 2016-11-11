@@ -229,13 +229,13 @@ class ModelsList
 
     bool readNextLine(char * line, int maxlen)
     {
-      if(f_gets(line, maxlen, &file) != NULL) {
+      if (f_gets(line, maxlen, &file) != NULL) {
         int curlen = strlen(line) - 1;
-        if(line[curlen] == '\n') { // remove unwanted chars if file was edited using windows
-          if(line[curlen - 1] == '\r') {
+        if (line[curlen] == '\n') { // remove unwanted chars if file was edited using windows
+          if (line[curlen - 1] == '\r') {
             line[curlen - 1] = 0;
-          } else
-          {
+          }
+          else {
             line[curlen] = 0;
           }
         }
