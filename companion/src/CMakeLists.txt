@@ -74,6 +74,7 @@ include_directories(
   ${SIMU_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/thirdparty/qxtcommandoptions
   ${COMPANION_SRC_DIRECTORY}/thirdparty/qcustomplot
+  ${COMPANION_SRC_DIRECTORY}/thirdparty/miniz
 )
 
 add_subdirectory(shared)
