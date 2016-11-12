@@ -98,17 +98,17 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
 void drawProgressBar(const char *label)
 {
   lcdDrawTextAlignedLeft(4*FH, label);
-  lcdDrawRect(3, 6*FH+4, 204, 7);
+  lcdDrawRect(4, 6*FH+4, LCD_W-8, 7);
   lcdRefresh();
 }
 
 void updateProgressBar(int num, int den)
 {
   if (num > 0 && den > 0) {
-    int width = (200*num)/den;
-    lcdDrawSolidHorizontalLine(5, 6*FH+6, width, FORCE);
-    lcdDrawSolidHorizontalLine(5, 6*FH+7, width, FORCE);
-    lcdDrawSolidHorizontalLine(5, 6*FH+8, width, FORCE);
+    int width = ((LCD_W-12)*num)/den;
+    lcdDrawSolidHorizontalLine(6, 6*FH+6, width, FORCE);
+    lcdDrawSolidHorizontalLine(6, 6*FH+7, width, FORCE);
+    lcdDrawSolidHorizontalLine(6, 6*FH+8, width, FORCE);
     lcdRefresh();
   }
 }

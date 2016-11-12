@@ -978,9 +978,9 @@
 #define TR_PATH_TOO_LONG       "Path too long"
 #define TR_VIEW_TEXT           "View text"
 #define TR_FLASH_BOOTLOADER    "Flash bootLoader"
-#define TR_FLASH_EXTERNAL_DEVICE "Flash external device"
-#define TR_FLASH_INTERNAL_MODULE "Flash internal module"
-#define TR_WRITING             "\032Writing..."
+#define TR_FLASH_EXTERNAL_DEVICE TR("Flash ext. device", "Flash external device")
+#define TR_FLASH_INTERNAL_MODULE TR("Flash int. module", "Flash internal module")
+#define TR_WRITING             TR("\14Writing...", "\032Writing...")
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Internal RF"
 #define TR_EXTERNALRF          "External RF"
