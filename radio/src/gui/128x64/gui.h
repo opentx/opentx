@@ -308,6 +308,8 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
 #endif
 
+void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
+  
 #if defined(GVARS)
 #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else

@@ -130,7 +130,9 @@ void menuModelSelect(event_t event);
 void menuModelSetup(event_t event);
 void menuModelHeli(event_t event);
 void menuModelFlightModesAll(event_t event);
+void menuModelExpoOne(event_t event);
 void menuModelExposAll(event_t event);
+void menuModelMixOne(event_t event);
 void menuModelMixAll(event_t event);
 void menuModelLimits(event_t event);
 void menuModelCurvesAll(event_t event);
@@ -142,7 +144,6 @@ void menuModelTelemetryFrsky(event_t event);
 void menuModelTelemetryMavlink(event_t event);
 void menuModelDisplay(event_t event);
 void menuModelTemplates(event_t event);
-void menuModelExpoOne(event_t event);
 
 static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelSelect,

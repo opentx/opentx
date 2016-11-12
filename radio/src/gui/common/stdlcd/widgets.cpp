@@ -144,3 +144,11 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
   }
 }
 #endif
+
+void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event)
+{
+  u_int8int16_t weight;
+  MD_WEIGHT_TO_UNION(md, weight);
+  weight.word = GVAR_MENU_ITEM(x, y, weight.word, GV_RANGELARGE_WEIGHT_NEG, GV_RANGELARGE_WEIGHT, attr, 0, event);
+  MD_UNION_TO_WEIGHT(weight, md);
+}

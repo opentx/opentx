@@ -46,7 +46,7 @@ add_definitions(-DEEPROM_VARIANT=0)
 set(GUI_SRC
   ${GUI_SRC}
   model_input_edit.cpp
-  model_mixes.cpp
+  model_mix_edit.cpp
   model_display.cpp
   radio_diagkeys.cpp
   radio_diaganas.cpp
