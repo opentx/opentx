@@ -329,7 +329,7 @@ void menuModelExposAll(event_t event)
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
 #if defined(ROTARY_ENCODER_NAVIGATION)
-      case EVT_ROTARY_RIGHT:
+    case EVT_ROTARY_RIGHT:
     case EVT_ROTARY_LEFT:
 #endif
       if (s_copyMode) {

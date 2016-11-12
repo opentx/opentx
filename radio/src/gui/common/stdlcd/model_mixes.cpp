@@ -343,25 +343,31 @@ void menuModelMixAll(event_t event)
     case EVT_KEY_REPT(KEY_UP):
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    case EVT_ROTARY_RIGHT:
+    case EVT_ROTARY_LEFT:
+#endif
       if (s_copyMode) {
-        uint8_t key = (event & 0x1f);
-        uint8_t next_ofs = (key==KEY_UP ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
+        uint8_t next_ofs = (IS_PREVIOUS_EVENT(event) ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
         
         if (s_copyTgtOfs==0 && s_copyMode==COPY_MODE) {
           // insert a mix on the same channel (just above / just below)
           if (reachMixesLimit()) break;
           copyMix(s_currIdx);
-          if (key==KEY_DOWN) s_currIdx++;
-          else if (sub-menuVerticalOffset >= 6) menuVerticalOffset++;
+          if (IS_NEXT_EVENT(event))
+            s_currIdx++;
+          else if (sub - menuVerticalOffset >= 6)
+            menuVerticalOffset++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
           deleteMix(s_currIdx);
-          if (key==KEY_UP) s_currIdx--;
+          if (IS_PREVIOUS_EVENT(event))
+            s_currIdx--;
         }
         else {
           // only swap the mix with its neighbor
-          if (!swapMixes(s_currIdx, key==KEY_UP)) break;
+          if (!swapMixes(s_currIdx, IS_PREVIOUS_EVENT(event))) break;
           storageDirty(EE_MODEL);
         }
         
