@@ -77,7 +77,7 @@ add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 
 set(GUI_SRC ${GUI_SRC}
-  model_inputs.cpp
+  model_input_edit.cpp
   model_mixes.cpp
   model_display.cpp
   radio_diagkeys.cpp
