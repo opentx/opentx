@@ -321,15 +321,12 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   }
 #endif
   
-  TRACE("x=%d y=%d s=%s flags=%x", x, y, s, flags);
-  
   bool setx = false;
   while (len--) {
     unsigned char c;
     switch (flags & (BSS+ZCHAR)) {
       case BSS:
         c = *s;
-        TRACE_INFO_WP("%x ", c);
         break;
 #if !defined(BOOT)
       case ZCHAR:
