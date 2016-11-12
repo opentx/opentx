@@ -54,6 +54,7 @@
 #include "wizarddialog.h"
 #include "flashfirmwaredialog.h"
 #include "miniz.c"
+#include "storage_eeprom.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__

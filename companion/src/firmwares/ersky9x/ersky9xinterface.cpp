@@ -17,7 +17,7 @@
 #include <iostream>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
-#include "file.h"
+#include "rlefile.h"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2

@@ -20,7 +20,7 @@
 #include "opentxeeprom.h"
 #include "open9xGruvin9xeeprom.h"
 #include "open9xSky9xeeprom.h"
-#include "file.h"
+#include "rlefile.h"
 #include "appdata.h"
 
 #define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-22.open-tx.org/firmware"

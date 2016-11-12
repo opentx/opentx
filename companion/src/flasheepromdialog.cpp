@@ -7,7 +7,7 @@
 #include "appdata.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
-#include "converteeprom.h"
+#include "storage_eeprom.h"
 #include "splashlibrarydialog.h"
 
 FlashEEpromDialog::FlashEEpromDialog(QWidget *parent, const QString &filename):

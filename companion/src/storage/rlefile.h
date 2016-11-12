@@ -15,8 +15,8 @@
  * GNU General Public License for more details.
  *
  */
-#ifndef file_h
-#define file_h
+#ifndef rlefile_h
+#define rlefile_h
 
 #include "eeprominterface.h"
 

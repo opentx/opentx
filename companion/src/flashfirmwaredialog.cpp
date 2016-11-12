@@ -1,7 +1,7 @@
 #include "flashfirmwaredialog.h"
 #include "ui_flashfirmwaredialog.h"
 #include "appdata.h"
-#include "converteeprom.h"
+#include "storage_eeprom.h"
 #include "eeprominterface.h"
 #include "firmwareinterface.h"
 #include "process_flash.h"

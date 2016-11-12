@@ -21,7 +21,7 @@
 #include <assert.h>
 #include <algorithm>
 #include "eeprominterface.h"
-#include "file.h"
+#include "rlefile.h"
 
 RleFile::RleFile():
 eeprom(NULL),

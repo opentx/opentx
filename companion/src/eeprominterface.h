@@ -1554,9 +1554,6 @@ enum EepromLoadErrors {
 void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
 void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
 
-unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
-unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc);
 
 struct Option {
   const char * name;
@@ -1714,5 +1711,7 @@ inline int divRoundClosest(const int n, const int d)
 #define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")
 
 SimulatorInterface * GetCurrentFirmwareSimulator();
+
+extern QList<EEPROMInterface *> eepromInterfaces;
 
 #endif

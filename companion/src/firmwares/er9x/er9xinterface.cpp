@@ -17,7 +17,7 @@
 #include <iostream>
 #include "er9xinterface.h"
 #include "er9xeeprom.h"
-#include "file.h"
+#include "rlefile.h"
 #include "appdata.h"
 
 #define FILE_TYP_GENERAL 1
