@@ -341,7 +341,7 @@ void displayExpoInfos(coord_t y, ExpoData * ed)
 void displayExpoLine(coord_t y, ExpoData * ed)
 {
   drawSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
-  
+
   if (ed->name[0])
     lcdDrawSizedText(EXPO_LINE_INFOS_POS, y, ed->name, LEN_EXPOMIX_NAME, ZCHAR);
   else if (!ed->flightModes || ((ed->curve.value || ed->swtch) && ((get_tmr10ms() / 200) & 1)))
@@ -453,6 +453,8 @@ void menuModelExposAll(event_t event)
     case EVT_KEY_REPT(KEY_UP):
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
+    case EVT_ROTARY_RIGHT:
+    case EVT_ROTARY_LEFT:
       if (s_copyMode) {
         uint8_t key = (event & 0x1f);
         uint8_t next_ofs = (key==KEY_UP ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
@@ -461,17 +463,21 @@ void menuModelExposAll(event_t event)
           // insert a mix on the same channel (just above / just below)
           if (reachExposLimit()) break;
           copyExpo(s_currIdx);
-          if (key==KEY_DOWN) s_currIdx++;
-          else if (sub-menuVerticalOffset >= 6) menuVerticalOffset++;
+          if (IS_NEXT_EVENT(event))
+            s_currIdx++;
+          else if (sub-menuVerticalOffset >= 6)
+            menuVerticalOffset++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
           deleteExpo(s_currIdx);
-          if (key==KEY_UP) s_currIdx--;
+          if (IS_PREVIOUS_EVENT(event))
+            s_currIdx--;
         }
         else {
           // only swap the mix with its neighbor
-          if (!swapExpos(s_currIdx, key==KEY_UP)) break;
+          if (!swapExpos(s_currIdx, IS_PREVIOUS_EVENT(event)))
+            break;
           storageDirty(EE_MODEL);
         }
 
@@ -482,22 +488,23 @@ void menuModelExposAll(event_t event)
 
   lcdDrawNumber(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, getExposCount(), RIGHT);
   lcdDrawText(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, STR_MAX(MAX_EXPOS));
-  
-#if 0
-  // NOT ENOUGH SPACE ?
+
+#if LCD_DEPTH > 1
   // Value
   uint8_t index = expoAddress(s_currIdx)->chn;
   if (!s_currCh) {
     lcdDrawNumber(127, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE|RIGHT);
   }
 #endif
-  
+
   SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, MENU_MODEL_INPUTS, HEADER_LINE + s_maxLines);
 
+#if LCD_DEPTH > 1
   // Gauge
   if (!s_currCh) {
-    // NOT ENOUGH SPACE ? drawGauge(127, 1, 58, 6, anas[index], 1024);
+    drawGauge(127, 1, 58, 6, anas[index], 1024);
   }
+#endif
 
   sub = menuVerticalPosition - HEADER_LINE;
   s_currCh = 0;
@@ -570,5 +577,7 @@ void menuModelExposAll(event_t event)
     }
   }
   s_maxLines = cur;
-  if (sub >= s_maxLines-1) menuVerticalPosition = s_maxLines - 1 + HEADER_LINE;
+  if (sub >= s_maxLines-1) {
+    menuVerticalPosition = s_maxLines - 1 + HEADER_LINE;
+  }
 }

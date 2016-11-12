@@ -39,102 +39,11 @@ uint8_t s_maxLines = 8;
 uint8_t s_copySrcIdx;
 uint8_t s_copySrcCh;
 
-#if defined(CPUM64)
-  #define editNameCursorPos menuHorizontalPosition
-#else
+#if !defined(CPUM64)
   uint8_t editNameCursorPos = 0;
 #endif
 
-#if defined(PCBX7D)
-void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active/* TODO, uint8_t attr*/)
-{
-  LcdFlags attr = ZCHAR; // TODO in args
-  uint8_t mode = 0;
-  if (active) {
-    if (s_editMode <= 0)
-      mode = INVERS + FIXEDWIDTH;
-    else
-      mode = FIXEDWIDTH;
-  }
-  
-  lcdDrawSizedText(x, y, name, size, attr | mode);
-  coord_t backupNextPos = lcdNextPos;
-  
-  if (active) {
-    uint8_t cur = editNameCursorPos;
-    if (s_editMode > 0) {
-      int8_t c = name[cur];
-      int8_t v = c;
-      
-      if (event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_DOWN) || event==EVT_KEY_REPT(KEY_UP)) {
-        if (attr == ZCHAR) {
-          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
-          if (c <= 0) v = -v;
-        }
-        else {
-          v = checkIncDec(event, abs(v), '0', 'z', 0);
-        }
-        
-      }
-      
-      switch (event) {
-        case EVT_ROTARY_BREAK:
-          if (s_editMode == EDIT_MODIFY_FIELD) {
-            s_editMode = EDIT_MODIFY_STRING;
-            cur = 0;
-          }
-          else if (cur<size-1)
-            cur++;
-          else
-            s_editMode = 0;
-          break;
-        
-        case EVT_ROTARY_LONG:
-          if (attr & ZCHAR) {
-            if (v == 0) {
-              s_editMode = 0;
-              killEvents(event);
-            }
-            else if (v>=-26 && v<=26) {
-              v = -v; // toggle case
-            }
-          }
-          else {
-            if (v == ' ') {
-              s_editMode = 0;
-              killEvents(event);
-              break;
-            }
-            else if (v>='A' && v<='Z') {
-              v = 'a'+v-'A'; // toggle case
-            }
-            else if (v>='a' && v<='z') {
-              v = 'A'+v-'a'; // toggle case
-            }
-          }
-          break;
-      }
-      
-      if (c != v) {
-        name[cur] = v;
-        storageDirty(menuVerticalPositions[0] == 0 ? EE_MODEL : EE_GENERAL);
-      }
-      
-      if (attr == ZCHAR) {
-        lcdDrawChar(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
-      }
-      else {
-        lcdDrawChar(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);
-      }
-    }
-    else {
-      cur = 0;
-    }
-    editNameCursorPos = cur;
-    lcdNextPos = backupNextPos;
-  }
-}
-#else
+#if !defined(CPUARM)
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active)
 {
 #if defined(CPUM64)

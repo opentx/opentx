@@ -21,3 +21,10 @@ if(CURVES)
     ${CURVE_EDIT_SRC}
     )
 endif()
+
+if(SDCARD)
+  set(GUI_SRC
+    ${GUI_SRC}
+    ../common/stdlcd/radio_sdmanager.cpp
+    )
+endif()

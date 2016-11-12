@@ -314,7 +314,11 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
 #endif
 
+#if defined(CPUARM)
+void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr=ZCHAR);
+#else
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active);
+#endif
 
 #if defined(CPUM64)
 #define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
@@ -402,6 +406,12 @@ void drawStatusLine();
 #define EDIT_MODE_INIT                 0
 #else
 #define EDIT_MODE_INIT                 -1
+#endif
+
+#if defined(CPUM64)
+  #define editNameCursorPos menuHorizontalPosition
+#else
+  extern uint8_t editNameCursorPos;
 #endif
 
 #if defined(VIRTUAL_INPUTS)

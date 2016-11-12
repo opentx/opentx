@@ -766,6 +766,8 @@ const luaL_Reg lcdLib[] = {
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
+#else
+  { "getLastPos", luaLcdGetLastPos },
 #endif
   { NULL, NULL }  /* sentinel */
 };

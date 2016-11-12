@@ -160,7 +160,7 @@ bool swapExpos(uint8_t & idx, uint8_t up)
 
 enum ExposFields {
   EXPO_FIELD_INPUT_NAME,
-  EXPO_FIELD_NAME,
+  EXPO_FIELD_LINE_NAME,
   EXPO_FIELD_SOURCE,
   EXPO_FIELD_SCALE,
   EXPO_FIELD_WEIGHT,
@@ -203,12 +203,12 @@ void menuModelExpoOne(event_t event)
     }
     LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
-    switch(i) {
+    switch (i) {
       case EXPO_FIELD_INPUT_NAME:
         editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_INPUTNAME, g_model.inputNames[ed->chn], sizeof(g_model.inputNames[ed->chn]), event, attr);
         break;
 
-      case EXPO_FIELD_NAME:
+      case EXPO_FIELD_LINE_NAME:
         editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
 
@@ -350,11 +350,17 @@ void displayExpoLine(coord_t y, ExpoData * ed)
   if (ed->name[0]) {
     lcdDrawSizedText(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
   }
+  
+#if LCD_DEPTH > 1
+  if (ed->mode!=3) {
+    lcdDrawChar(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
+  }
+#endif
 }
 
 void menuModelExposAll(event_t event)
 {
-  uint8_t sub = menuVerticalPosition;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
 
   if (s_editMode > 0) {
     s_editMode = 0;
@@ -485,20 +491,24 @@ void menuModelExposAll(event_t event)
   lcdDrawNumber(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, getExposCount(), RIGHT);
   lcdDrawText(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, STR_MAX(MAX_EXPOS));
 
+#if LCD_DEPTH > 1
   // Value
   uint8_t index = expoAddress(s_currIdx)->chn;
   if (!s_currCh) {
     lcdDrawNumber(127, 2, calcRESXto1000(anas[index]), PREC1|TINSIZE|RIGHT);
   }
+#endif
 
-  SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, MENU_MODEL_INPUTS, s_maxLines);
+  SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, MENU_MODEL_INPUTS, HEADER_LINE + s_maxLines);
 
+#if LCD_DEPTH > 1
   // Gauge
   if (!s_currCh) {
     drawGauge(127, 1, 58, 6, anas[index], 1024);
   }
+#endif
 
-  sub = menuVerticalPosition;
+  sub = menuVerticalPosition - HEADER_LINE;
   s_currCh = 0;
   int cur = 0;
   int i = 0;
@@ -518,7 +528,8 @@ void menuModelExposAll(event_t event)
             cur++; y+=FH;
           }
           if (s_currIdx == i) {
-            sub = menuVerticalPosition = cur;
+            sub = cur;
+            menuVerticalPosition = cur + HEADER_LINE;
             s_currCh = ch;
           }
         }
@@ -526,13 +537,10 @@ void menuModelExposAll(event_t event)
           s_currIdx = i;
         }
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-          uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
+          LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
           GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, RIGHT | attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
           displayExpoLine(y, ed);
-          if (ed->mode!=3) {
-            lcdDrawChar(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
-          }
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
@@ -541,7 +549,7 @@ void menuModelExposAll(event_t event)
             }
             if (cur == sub) {
               /* invert the raw when it's the current one */
-              lcdDrawFilledRect(EXPO_LINE_SELECT_POS+1, y, LCD_W-EXPO_LINE_SELECT_POS-2, 7);
+              lcdDrawSolidFilledRect(EXPO_LINE_SELECT_POS+1, y, LCD_W-EXPO_LINE_SELECT_POS-2, 7);
             }
           }
         }
@@ -571,5 +579,7 @@ void menuModelExposAll(event_t event)
     }
   }
   s_maxLines = cur;
-  if (sub >= s_maxLines-1) menuVerticalPosition = s_maxLines-1;
+  if (sub >= s_maxLines-1) {
+    menuVerticalPosition = s_maxLines - 1 + HEADER_LINE;
+  }
 }

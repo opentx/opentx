@@ -109,10 +109,9 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
             lcdDrawPoint(x, y+j, plot ? FORCE : ERASE);
         }
       }
+      x++;
+      lcdNextPos++;
     }
-
-    x++;
-    lcdNextPos++;
   }
 }
 
@@ -322,12 +321,15 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   }
 #endif
   
+  TRACE("x=%d y=%d s=%s flags=%x", x, y, s, flags);
+  
   bool setx = false;
   while (len--) {
     unsigned char c;
     switch (flags & (BSS+ZCHAR)) {
       case BSS:
         c = *s;
+        TRACE_INFO_WP("%x ", c);
         break;
 #if !defined(BOOT)
       case ZCHAR:
@@ -338,7 +340,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
         c = pgm_read_byte(s);
         break;
     }
-
+    
     if (setx) {
       x = c;
       setx = false;
