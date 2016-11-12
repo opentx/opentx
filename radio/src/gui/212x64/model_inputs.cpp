@@ -205,11 +205,11 @@ void menuModelExpoOne(event_t event)
 
     switch (i) {
       case EXPO_FIELD_INPUT_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_INPUTNAME, g_model.inputNames[ed->chn], sizeof(g_model.inputNames[ed->chn]), event, attr);
+        editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_INPUTNAME, g_model.inputNames[ed->chn], LEN_INPUT_NAME, event, attr);
         break;
 
       case EXPO_FIELD_LINE_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
+        editSingleName(EXPO_ONE_2ND_COLUMN, y, STR_EXPONAME, ed->name, LEN_EXPOMIX_NAME, event, attr);
         break;
 
       case EXPO_FIELD_SOURCE:
