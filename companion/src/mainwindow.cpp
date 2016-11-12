@@ -69,6 +69,7 @@
 #include "process_sync.h"
 #include "radiointerface.h"
 #include "progressdialog.h"
+#include "storage_sdcard.h"
 
 #define OPENTX_COMPANION_DOWNLOADS        "http://downloads-22.open-tx.org/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -578,7 +579,7 @@ void MainWindow::openFile()
 {
   QString fileFilter;
   if (GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
-    fileFilter = tr(EEPE2_FILES_FILTER);
+    fileFilter = tr(OTX_FILES_FILTER);
   }
   else {
     fileFilter = tr(EEPROM_FILES_FILTER);
@@ -771,6 +772,46 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
+  if(GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
+    // just an example
+    QString path = findMassstoragePath("RADIO");
+    if (path.isEmpty()) {
+      qDebug() << "Horus card not found";
+      return;
+    }
+
+    QString realPath = path.remove(path.size()- 5, 5);
+
+    qDebug() << "Reading files from" << realPath;
+    StorageSdcard storage;
+    storage.read(realPath);
+
+    // display models.txt
+    QString modelList = QString(storage.modelList);
+    qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
+
+    // info about radio.bin
+    qDebug() << "Radio settings:" << storage.radio.size();
+
+    // info about all models
+    QList<QString> models = storage.getModelsFileNames();
+    qDebug() << "We have" << models.size() << "models:";
+    foreach(QString filename, models) {
+      QList<ModelFile>::const_iterator i = storage.getModelIterator(filename);
+      if (i != storage.models.end()) {
+        qDebug() << "\tModel:" << i->filename << "size" << i->data.size();
+      }
+    }
+
+    for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i) {
+    }
+
+
+    // for test immediately save to current dir
+    storage.write("./");
+
+  }
+  else {
     QString tempFile;
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -789,6 +830,7 @@ void MainWindow::readEeprom()
       child->show();
       qunlink(tempFile);
     }
+  }
 }
 
 bool MainWindow::readFirmwareFromRadio(const QString &filename)

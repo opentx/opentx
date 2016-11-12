@@ -53,8 +53,8 @@
 #include "appdata.h"
 #include "wizarddialog.h"
 #include "flashfirmwaredialog.h"
-#include "miniz.c"
 #include "storage_eeprom.h"
+#include "storage_sdcard.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
@@ -361,98 +361,46 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       free(eeprom);
       return true;
     }
-    else if (fileType==FILE_TYPE_EEPE2) { //read zip archive
-      return loadEepe2File(fileName, resetCurrentFile);
+    else if (fileType == FILE_TYPE_OTX) { //read zip archive
+      return loadOtxFile(fileName, resetCurrentFile);
     }
 
     return false;
 }
 
-bool MdiChild::loadEepe2File(const QString &fileName, bool resetCurrentFile)
+bool MdiChild::loadOtxFile(const QString &fileName, bool resetCurrentFile)
 {
-  QFile file(fileName);
+  // example of StorageSdcard usage
 
-  if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
-      QMessageBox::critical(this, tr("Error"),
-                           tr("Error opening file %1:\n%2.")
-                           .arg(fileName)
-                           .arg(file.errorString()));
-      return false;
-  }
+  StorageSdcard storage;
 
-  QByteArray archiveContents = file.readAll();
-  file.close();
-  qDebug() << "File" << fileName << "read, size:" << archiveContents.size();
+  storage.read(fileName);
 
-  // open zip file
-  mz_zip_archive zip_archive;
-  memset(&zip_archive, 0, sizeof(zip_archive));
-  mz_bool res = mz_zip_reader_init_mem(&zip_archive, archiveContents.data(), archiveContents.size(), 0);
-  if (!res)
-  {
-    printf("mz_zip_reader_init_file() failed!\n");
-    return false;
-  }
+  // display models.txt
+  QString modelList = QString(storage.modelList);
+  qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
 
-  // example: list file contents and remember model bin files
-  std::map<std::string, int> archiveModelsList;
-  for (int i = 0; i < (int)mz_zip_reader_get_num_files(&zip_archive); i++)
-  {
-    mz_zip_archive_file_stat file_stat;
-    if (!mz_zip_reader_file_stat(&zip_archive, i, &file_stat))
-    {
-       printf("mz_zip_reader_file_stat() failed!\n");
-       mz_zip_reader_end(&zip_archive);
-       return EXIT_FAILURE;
+  // info about radio.bin
+  qDebug() << "Radio settings:" << storage.radio.size();
+
+  // info about all models
+  QList<QString> models = storage.getModelsFileNames();
+  qDebug() << "We have" << models.size() << "models:";
+  foreach(QString filename, models) {
+    QList<ModelFile>::const_iterator i = storage.getModelIterator(filename);
+    if (i != storage.models.end()) {
+      qDebug() << "\tModel:" << i->filename << "size" << i->data.size();
     }
-
-    QRegularExpression re("MODELS/\\w+.bin", QRegularExpression::CaseInsensitiveOption);
-
-    if (re.match(file_stat.m_filename).hasMatch()) {
-      printf("MATCHED: \"%s\"", file_stat.m_filename);
-      archiveModelsList[file_stat.m_filename] = i;
-    }
-
-    printf("Filename: \"%s\", Comment: \"%s\", Uncompressed size: %u, Compressed size: %u, Is Dir: %u\n", file_stat.m_filename, file_stat.m_comment, (uint)file_stat.m_uncomp_size, (uint)file_stat.m_comp_size, mz_zip_reader_is_file_a_directory(&zip_archive, i));
   }
 
-  // open models.txt
-  size_t uncomp_size;
-  void * p = mz_zip_reader_extract_file_to_heap(&zip_archive, "RADIO/models.txt", &uncomp_size, 0);
-  if (!p)
-  {
-    // file missing
-    printf("mz_zip_reader_extract_file_to_heap() failed!\n");
-    mz_zip_reader_end(&zip_archive);
-    return EXIT_FAILURE;
-  }
-  QString models = QString::fromLatin1((const char *)p, uncomp_size);
-  mz_free(p);
-  qDebug() << "Models: size" << uncomp_size << "contents" << models;
-
-
-  // open specific model bin file in this example "MODELS/model01.bin"
-  std::map<std::string, int>::iterator search = archiveModelsList.find("MODELS/model01.bin");
-  if(search != archiveModelsList.end()) {
-    std::cout << "Found " << search->first << " " << search->second << '\n';
-    // we found index fo the file, extract it
-    void * model = mz_zip_reader_extract_to_heap(&zip_archive, search->second, &uncomp_size, 0);
-    if (!model)
-    {
-      // file missing
-      printf("mz_zip_reader_extract_file_to_heap() failed!\n");
-    }
-    qDebug() << "Model: " << search->first.c_str() << "size" << uncomp_size;
-    // TODO use model here
-    mz_free(model);
-  }
-  else {
-    std::cout << "Not found\n";
+  for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i) {
   }
 
-  mz_zip_reader_end(&zip_archive);
 
+  // for test immediately save to another file
+  storage.write(fileName + "test.otx");
   return true;
+
 }
 
 bool MdiChild::save()
