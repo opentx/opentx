@@ -512,7 +512,21 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if !defined(PCBX7D)
+#if defined(PCBX7D)
+      for (int i=0; i<NUM_SWITCHES; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
+          if (i >= NUM_SWITCHES/2) {
+            x = 17*FW-1;
+            y -= 3*FH;
+          }
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
+          getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
+          drawSwitch(x, y, sw, 0);
+        }
+      }
+#else
+      // The ID0 3-POS switch is merged with the TRN switch
       for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
         int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
         uint8_t x = 2*FW-2, y = i*FH+1;
