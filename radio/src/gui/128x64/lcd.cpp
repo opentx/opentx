@@ -109,10 +109,9 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
             lcdDrawPoint(x, y+j, plot ? FORCE : ERASE);
         }
       }
+      x++;
+      lcdNextPos++;
     }
-
-    x++;
-    lcdNextPos++;
   }
 }
 
@@ -338,7 +337,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
         c = pgm_read_byte(s);
         break;
     }
-
+    
     if (setx) {
       x = c;
       setx = false;

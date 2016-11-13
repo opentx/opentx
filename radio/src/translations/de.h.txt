@@ -1022,7 +1022,7 @@
 #define TR_FAILSAFESET         "Failsafe setzen"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
-#define TR_MENUSENSOR          "SENSORS"
+#define TR_MENUSENSOR          "SENSOR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landescode"
 #define TR_VOICELANG           "Sprach-Ansage"

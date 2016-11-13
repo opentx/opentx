@@ -66,6 +66,7 @@ void onModelSelectMenu(const char * result)
 #if defined(SDCARD)
   else {
     // The user choosed a file on SD to restore
+    storageCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
     if (!warningText && g_eeGeneral.currModel == sub) {
       eeLoadModel(sub);
@@ -79,6 +80,9 @@ void menuModelSelect(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
+#if defined(CPUARM)
+    storageCheck(true);
+#endif
     eeDeleteModel(menuVerticalPosition); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
@@ -92,7 +96,7 @@ void menuModelSelect(event_t event)
 
   int8_t oldSub = menuVerticalPosition;
 
-  check_submenu_simple(_event_, MAX_MODELS-HEADER_LINE);
+  check_submenu_simple(_event_, MAX_MODELS - HEADER_LINE);
 
 #if defined(NAVIGATION_POT2)
   if (event==0 && p2valdiff<0) {
@@ -113,10 +117,13 @@ void menuModelSelect(event_t event)
   switch (event) {
     case EVT_ENTRY:
       menuVerticalPosition = sub = g_eeGeneral.currModel;
-      if (sub >= LCD_LINES-1) menuVerticalOffset = sub-LCD_LINES+2;
+      if (sub >= NUM_BODY_LINES)
+        menuVerticalOffset = sub-(NUM_BODY_LINES-1);
       s_copyMode = 0;
       s_editMode = EDIT_MODE_INIT;
+#if !defined(CPUARM)
       storageCheck(true);
+#endif
       break;
 
     case EVT_KEY_LONG(KEY_EXIT):
@@ -336,11 +343,11 @@ void menuModelSelect(event_t event)
 
   TITLE(STR_MENUMODELSEL);
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i+menuVerticalOffset;
 
-    lcdDrawNumber(3*FW+2, y, k+1, RIGHT+LEADING0+((!s_copyMode && sub==k) ? INVERS : 0), 2);
+    lcdDrawNumber(3*FW+2, y, k+1, RIGHT|LEADING0|((!s_copyMode && sub==k) ? INVERS : 0), 2);
 
     if (s_copyMode == MOVE_MODE || (s_copyMode == COPY_MODE && s_copySrcRow >= 0)) {
       if (k == sub) {
@@ -361,7 +368,7 @@ void menuModelSelect(event_t event)
     k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
-#if defined(PCBSKY9X)
+#if defined(CPUARM)
       putsModelName(4*FW, y, modelHeaders[k].name, k, 0);
 #else
       char * name = reusableBuffer.modelsel.listnames[i];

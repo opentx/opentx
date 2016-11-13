@@ -394,9 +394,6 @@
   #define ADC_GPIOC_PINS                ADC_GPIO_PIN_BATT
   #define ADC_CHANNEL_POT1              ADC_Channel_6
   #define ADC_CHANNEL_POT2              ADC_Channel_8
-  #define ADC_CHANNEL_POT3              ADC_Channel_9
-  #define ADC_CHANNEL_SLIDER1           ADC_Channel_14
-  #define ADC_CHANNEL_SLIDER2           ADC_Channel_15
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #else
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_6  // PA.06

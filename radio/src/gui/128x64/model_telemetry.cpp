@@ -160,7 +160,7 @@ enum MenuModelTelemetryFrskyItems {
 #if defined(PCBSTD)
   #define VARIO_RANGE_ROWS             1
 #else
-  #define VARIO_RANGE_ROWS             3
+  #define VARIO_RANGE_ROWS             (NAVIGATION_LINE_BY_LINE | 3)
 #endif
 
 #if defined(REVX)
@@ -232,7 +232,7 @@ void menuModelSensor(event_t event)
         k++;
     }
 
-    uint8_t attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    LcdFlags attr = (sub==k ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
     switch (k) {
 
@@ -422,9 +422,9 @@ void menuModelSensor(event_t event)
   }
 }
 
-void onSensorMenu(const char *result)
+void onSensorMenu(const char * result)
 {
-  uint8_t index = menuVerticalPosition - 1 - ITEM_TELEMETRY_SENSOR1;
+  uint8_t index = menuVerticalPosition - HEADER_LINE - ITEM_TELEMETRY_SENSOR1;
 
   if (index < MAX_TELEMETRY_SENSORS) {
     if (result == STR_EDIT) {
@@ -436,11 +436,10 @@ void onSensorMenu(const char *result)
       if (index<MAX_TELEMETRY_SENSORS && isTelemetryFieldAvailable(index))
         menuVerticalPosition += 1;
       else
-        menuVerticalPosition = 1+ITEM_TELEMETRY_NEW_SENSOR;
+        menuVerticalPosition = HEADER_LINE + ITEM_TELEMETRY_NEW_SENSOR;
     }
     else if (result == STR_COPY) {
       int newIndex = availableTelemetryIndex();
-
       if (newIndex >= 0) {
         TelemetrySensor & sourceSensor = g_model.telemetrySensors[index];
         TelemetrySensor & newSensor = g_model.telemetrySensors[newIndex];
@@ -495,8 +494,8 @@ void menuModelTelemetryFrsky(event_t event)
     }
 #endif
 
-    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
-    uint8_t attr = (sub == k ? blink : 0);
+    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags attr = (sub == k ? blink : 0);
 
 #if !defined(CPUARM)
     uint8_t ch = TELEMETRY_CURRENT_CHANNEL(k);
@@ -506,7 +505,7 @@ void menuModelTelemetryFrsky(event_t event)
 
 #if defined(CPUARM)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_TELEMETRY_SENSORS) {
-      int index = k-ITEM_TELEMETRY_SENSOR1;
+      int index = k - ITEM_TELEMETRY_SENSOR1;
       lcdDrawNumber(INDENT_WIDTH, y, index+1, LEFT|attr);
       lcdDrawChar(lcdLastPos, y, ':', attr);
       lcdDrawSizedText(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
@@ -586,10 +585,12 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_DELETE_ALL_SENSORS:
         lcdDrawText(0, y, STR_DELETE_ALL_SENSORS, attr);
-        s_editMode = 0;
-        if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-          killEvents(KEY_ENTER);
-          POPUP_CONFIRMATION(STR_CONFIRMDELETE);
+        if (attr) {
+          s_editMode = 0;
+          if (event==EVT_KEY_LONG(KEY_ENTER)) {
+            killEvents(KEY_ENTER);
+            POPUP_CONFIRMATION(STR_CONFIRMDELETE);
+          }
         }
         break;
 
@@ -774,10 +775,13 @@ void menuModelTelemetryFrsky(event_t event)
           }
         }
 #else
-        lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, (menuHorizontalPosition<=0 ? attr : 0)|LEFT);
-        lcdDrawNumber(TELEM_COL2+7*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1);
-        lcdDrawNumber(TELEM_COL2+10*FW-1, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0)|PREC1);
-        lcdDrawNumber(TELEM_COL2+13*FW, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==3) ? attr : 0));
+        if (attr && menuHorizontalPosition<0) {
+          lcdDrawSolidFilledRect(TELEM_COL2-1, y-1, LCD_W-TELEM_COL2+1, FH+1);
+        }
+        lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|LEFT);
+        lcdDrawNumber(TELEM_COL2+4*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1|LEFT);
+        lcdDrawNumber(TELEM_COL2+8*FW-1, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0)|PREC1|LEFT);
+        lcdDrawNumber(TELEM_COL2+12*FW-4, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==3) ? attr : 0)|LEFT);
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (menuHorizontalPosition) {
             case 0:

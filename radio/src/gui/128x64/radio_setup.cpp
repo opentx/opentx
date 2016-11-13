@@ -546,10 +546,10 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_MODE));
         for (uint8_t i=0; i<4; i++) {
-          lcd_img((6+4*i)*FW, y, sticks, i, 0);
+          lcd_img(5*FW+i*(4*FW+2), y, sticks, i, 0);
 #if defined(FRSKY_STICKS)
           if (g_eeGeneral.stickReverse & (1<<i)) {
-            lcdDrawFilledRect((6+4*i)*FW, y, 3*FW, FH-1);
+            lcdDrawFilledRect(5*FW+i*(4*FW+2), y, 3*FW, FH-1);
           }
 #endif
         }
@@ -557,15 +557,15 @@ void menuRadioSetup(event_t event)
         if (attr) {
           s_editMode = 0;
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.stickReverse, 0, 15);
-          lcdDrawRect(6*FW-1, y-1, 15*FW+2, 9);
+          lcdDrawRect(5*FW-1, y-1, 16*FW+2, 9);
         }
 #endif
         break;
 
       case ITEM_SETUP_STICK_MODE:
         lcdDrawChar(2*FW, y, '1'+reusableBuffer.generalSettings.stickMode, attr);
-        for (uint8_t i=0; i<4; i++) {
-          drawSource((6+4*i)*FW, y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i), 0);
+        for (uint8_t i=0; i<NUM_STICKS; i++) {
+          drawSource(5*FW+i*(4*FW+2), y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i), 0);
         }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, reusableBuffer.generalSettings.stickMode, 0, 3);

@@ -90,7 +90,8 @@ void menuModelSelect(event_t event)
   switch (event) {
       case EVT_ENTRY:
         menuVerticalPosition = sub = g_eeGeneral.currModel;
-        if (sub >= NUM_BODY_LINES) menuVerticalOffset = sub-(NUM_BODY_LINES-1);
+        if (sub >= NUM_BODY_LINES)
+          menuVerticalOffset = sub-(NUM_BODY_LINES-1);
         s_copyMode = 0;
         s_editMode = EDIT_MODE_INIT;
         break;
@@ -133,8 +134,9 @@ void menuModelSelect(event_t event)
           uint8_t cur = (MAX_MODELS + sub + s_copyTgtOfs) % MAX_MODELS;
 
           if (s_copyMode == COPY_MODE) {
-            if (!eeCopyModel(cur, s_copySrcRow))
+            if (!eeCopyModel(cur, s_copySrcRow)) {
               cur = sub;
+            }
           }
 
           s_copySrcRow = g_eeGeneral.currModel; // to update the currModel value
@@ -260,7 +262,7 @@ void menuModelSelect(event_t event)
     }
 
     if (s_copyMode && (vertpos_t)sub==i+menuVerticalOffset) {
-      lcdDrawFilledRect(9, y, MODELSEL_W-1-9, 7);
+      lcdDrawSolidFilledRect(9, y, MODELSEL_W-1-9, 7);
       lcdDrawRect(8, y-1, MODELSEL_W-1-7, 9, s_copyMode == COPY_MODE ? SOLID : DOTTED);
     }
   }

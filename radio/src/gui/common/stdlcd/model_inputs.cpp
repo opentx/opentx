@@ -20,44 +20,14 @@
 
 #include "opentx.h"
 
-#define EXPO_ONE_2ND_COLUMN (7*FW+3*FW+2)
-#define EXPO_ONE_FM_WIDTH   (5*FW)
-
-int expoFn(int x)
-{
-  ExpoData * ed = expoAddress(s_currIdx);
-  int16_t anas[NUM_INPUTS] = {0};
-  applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
-  return anas[ed->chn];
-}
-
-void drawFunction(FnFuncP fn, uint8_t offset)
-{
-  lcdDrawVerticalLine(CURVE_CENTER_X-offset, 0/*TODO CURVE_CENTER_Y-CURVE_SIDE_WIDTH*/, CURVE_SIDE_WIDTH*2, 0xee);
-  lcdDrawHorizontalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee);
-
-  coord_t prev_yv = (coord_t)-1;
-
-  for (int xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv++) {
-    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/CURVE_SIDE_WIDTH))) / 2 * (LCD_H-1) / RESX);
-    if (prev_yv != (coord_t)-1) {
-      if (abs((int8_t)yv-prev_yv) <= 1) {
-        lcdDrawPoint(CURVE_CENTER_X+xv-offset-1, prev_yv, FORCE);
-      }
-      else {
-        uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcdDrawSolidVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv);
-      }
-    }
-    prev_yv = yv;
-  }
-}
+#define _STR_MAX(x)                     PSTR("/" #x)
+#define STR_MAX(x)                     _STR_MAX(x)
 
 uint8_t getExposCount()
 {
   uint8_t count = 0;
   uint8_t ch ;
-
+  
   for (int i=MAX_EXPOS-1 ; i>=0; i--) {
     ch = EXPO_VALID(expoAddress(i));
     if (ch != 0) {
@@ -74,20 +44,6 @@ bool reachExposLimit()
     return true;
   }
   return false;
-}
-
-void deleteExpo(uint8_t idx)
-{
-  pauseMixerCalculations();
-  ExpoData * expo = expoAddress(idx);
-  int input = expo->chn;
-  memmove(expo, expo+1, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
-  memclear(&g_model.expoData[MAX_EXPOS-1], sizeof(ExpoData));
-  if (!isInputAvailable(input)) {
-    memclear(&g_model.inputNames[input], LEN_INPUT_NAME);
-  }
-  resumeMixerCalculations();
-  storageDirty(EE_MODEL);
 }
 
 // TODO avoid this global s_currCh on ARM boards ...
@@ -120,23 +76,23 @@ bool swapExpos(uint8_t & idx, uint8_t up)
 {
   ExpoData * x, * y;
   int8_t tgt_idx = (up ? idx-1 : idx+1);
-
+  
   x = expoAddress(idx);
-
+  
   if (tgt_idx < 0) {
     if (x->chn == 0)
       return false;
     x->chn--;
     return true;
   }
-
+  
   if (tgt_idx == MAX_EXPOS) {
     if (x->chn == NUM_INPUTS-1)
       return false;
     x->chn++;
     return true;
   }
-
+  
   y = expoAddress(tgt_idx);
   if (x->chn != y->chn || !EXPO_VALID(y)) {
     if (up) {
@@ -149,164 +105,33 @@ bool swapExpos(uint8_t & idx, uint8_t up)
     }
     return true;
   }
-
+  
   pauseMixerCalculations();
   memswap(x, y, sizeof(ExpoData));
   resumeMixerCalculations();
-
+  
   idx = tgt_idx;
   return true;
 }
 
-enum ExposFields {
-  EXPO_FIELD_INPUT_NAME,
-  EXPO_FIELD_LINE_NAME,
-  EXPO_FIELD_SOURCE,
-  EXPO_FIELD_SCALE,
-  EXPO_FIELD_WEIGHT,
-  EXPO_FIELD_OFFSET,
-  CASE_CURVES(EXPO_FIELD_CURVE_LABEL)
-  CASE_CURVES(EXPO_FIELD_CURVE)
-  CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES_LABEL)
-  CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
-  EXPO_FIELD_SWITCH,
-  EXPO_FIELD_SIDE,
-  EXPO_FIELD_TRIM,
-  EXPO_FIELD_MAX
-};
-
-void menuModelExpoOne(event_t event)
+void deleteExpo(uint8_t idx)
 {
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
-    // TODO pushMenu(menuChannelsView);
-    killEvents(event);
+  pauseMixerCalculations();
+  ExpoData * expo = expoAddress(idx);
+  int input = expo->chn;
+  memmove(expo, expo+1, (MAX_EXPOS-(idx+1))*sizeof(ExpoData));
+  memclear(&g_model.expoData[MAX_EXPOS-1], sizeof(ExpoData));
+  if (!isInputAvailable(input)) {
+    memclear(&g_model.inputNames[input], LEN_INPUT_NAME);
   }
-
-  ExpoData * ed = expoAddress(s_currIdx);
-  drawSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
-  
-  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CASE_CURVES(LABEL(Curve)) CASE_CURVES(1) CASE_FLIGHT_MODES(LABEL(Flight Mode)) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
-
-  int8_t sub = menuVerticalPosition;
-
-  coord_t y = MENU_HEADER_HEIGHT + 1;
-
-  for (uint8_t k=0; k<NUM_BODY_LINES; k++) {
-    int i = k + menuVerticalOffset;
-    for (int j=0; j<=i; ++j) {
-      if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
-        ++i;
-      }
-    }
-    LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-
-    switch (i) {
-      case EXPO_FIELD_INPUT_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN-LEN_INPUT_NAME*FW, y, STR_INPUTNAME, g_model.inputNames[ed->chn], LEN_INPUT_NAME, event, attr);
-        break;
-
-      case EXPO_FIELD_LINE_NAME:
-        editSingleName(EXPO_ONE_2ND_COLUMN-LEN_EXPOMIX_NAME*FW, y, STR_EXPONAME, ed->name, LEN_EXPOMIX_NAME, event, attr);
-        break;
-
-      case EXPO_FIELD_SOURCE:
-        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_SOURCE));
-        drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, RIGHT|STREXPANDED|attr);
-        if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isInputSourceAvailable);
-        break;
-
-      case EXPO_FIELD_SCALE:
-        lcdDrawTextAlignedLeft(y, STR_SCALE);
-        drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), attr);
-        if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
-        break;
-
-      case EXPO_FIELD_WEIGHT:
-        lcdDrawTextAlignedLeft(y, STR_WEIGHT);
-        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, RIGHT | attr, 0, event);
-        break;
-
-      case EXPO_FIELD_OFFSET:
-        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_OFFSET));
-        ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, RIGHT | attr, 0, event);
-        break;
-
-#if defined(CURVES)
-      case EXPO_FIELD_CURVE_LABEL:
-        lcdDrawTextAlignedLeft(y, STR_CURVE);
-        break;
-
-      case EXPO_FIELD_CURVE:
-        editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, event, RIGHT | attr);
-        break;
-#endif
-
-#if defined(FLIGHT_MODES)
-      case EXPO_FIELD_FLIGHT_MODES_LABEL:
-        lcdDrawTextAlignedLeft(y, STR_FLMODE);
-        break;
-
-      case EXPO_FIELD_FLIGHT_MODES:
-        ed->flightModes = editFlightModes(EXPO_ONE_2ND_COLUMN-9*FW+1, y, event, ed->flightModes, attr);
-        break;
-#endif
-
-      case EXPO_FIELD_SWITCH:
-        ed->swtch = editSwitch(EXPO_ONE_2ND_COLUMN, y, ed->swtch, RIGHT | attr, event);
-        break;
-
-      case EXPO_FIELD_SIDE:
-        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, RIGHT | attr, event);
-        break;
-
-      case EXPO_FIELD_TRIM:
-        uint8_t not_stick = (ed->srcRaw > MIXSRC_Ail);
-        int8_t carryTrim = -ed->carryTrim;
-        lcdDrawTextAlignedLeft(y, STR_TRIM);
-        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, RIGHT | (menuHorizontalPosition==0 ? attr : 0));
-        if (attr) ed->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
-        break;
-    }
-    y += FH;
-  }
-
-  drawFunction(expoFn);
-
-  int x512 = getValue(ed->srcRaw);
-  if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-    drawSensorCustomValue(LCD_W-8, 6*FH, (ed->srcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
-    if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
-  }
-  else {
-    lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
-  }
-  x512 = limit(-1024, x512, 1024);
-  int y512 = expoFn(x512);
-  y512 = limit(-1024, y512, 1024);
-  lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
-
-  x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
-  y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
-
-  lcdDrawSolidVerticalLine(x512, y512-3, 3*2+1);
-  lcdDrawSolidHorizontalLine(x512-3, y512, 3*2+1);
+  resumeMixerCalculations();
+  storageDirty(EE_MODEL);
 }
-
-#define _STR_MAX(x)                     PSTR("/" #x)
-#define STR_MAX(x)                     _STR_MAX(x)
-
-#define EXPO_LINE_WEIGHT_POS           7*FW+8
-#define EXPO_LINE_SRC_POS              8*FW+3
-#define EXPO_LINE_INFOS_POS            11*FW+11
-#define EXPO_LINE_CURVE_POS            11*FW+11
-#define EXPO_LINE_SWITCH_POS           17*FW
-#define EXPO_LINE_SIDE_POS             20*FW+2
-#define EXPO_LINE_SELECT_POS           4*FW+2
 
 void onExposMenu(const char * result)
 {
   uint8_t chn = expoAddress(s_currIdx)->chn + 1;
-
+  
   if (result == STR_EDIT) {
     pushMenu(menuModelExpoOne);
   }
@@ -329,6 +154,55 @@ void onExposMenu(const char * result)
   }
 }
 
+#if LCD_W >= 212
+#define EXPO_LINE_WEIGHT_POS           8*FW+8
+#define EXPO_LINE_SRC_POS              9*FW+3
+#define EXPO_LINE_CURVE_POS            12*FW+11
+#define EXPO_LINE_TRIM_POS             19*FW-4
+#define EXPO_LINE_SWITCH_POS           20*FW-1
+#define EXPO_LINE_SIDE_POS             25*FW
+#define EXPO_LINE_FM_POS               12*FW+11
+#define EXPO_LINE_SELECT_POS           5*FW+2
+#define EXPO_LINE_NAME_POS             LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
+
+void displayExpoInfos(coord_t y, ExpoData * ed)
+{
+  drawCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
+  drawSwitch(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
+}
+
+void displayExpoLine(coord_t y, ExpoData * ed)
+{
+  drawSource(EXPO_LINE_SRC_POS, y, ed->srcRaw, 0);
+
+  if (ed->carryTrim != TRIM_ON) {
+    lcdDrawChar(EXPO_LINE_TRIM_POS, y, ed->carryTrim > 0 ? '-' : STR_RETA123[-ed->carryTrim]);
+  }
+
+  if (!ed->flightModes || ((ed->curve.value || ed->swtch) && ((get_tmr10ms() / 200) & 1)))
+    displayExpoInfos(y, ed);
+  else
+    displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes);
+
+  if (ed->name[0]) {
+    lcdDrawSizedText(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
+  }
+  
+#if LCD_DEPTH > 1
+  if (ed->mode!=3) {
+    lcdDrawChar(EXPO_LINE_SIDE_POS, y, ed->mode == 2 ? 126 : 127);
+  }
+#endif
+}
+#else
+#define EXPO_LINE_WEIGHT_POS           7*FW+8
+#define EXPO_LINE_SRC_POS              8*FW+3
+#define EXPO_LINE_INFOS_POS            11*FW+11
+#define EXPO_LINE_CURVE_POS            11*FW+11
+#define EXPO_LINE_SWITCH_POS           17*FW
+#define EXPO_LINE_SIDE_POS             20*FW+2
+#define EXPO_LINE_SELECT_POS           4*FW+2
+
 void displayExpoInfos(coord_t y, ExpoData * ed)
 {
   drawCurveRef(EXPO_LINE_CURVE_POS, y, ed->curve, 0);
@@ -349,17 +223,18 @@ void displayExpoLine(coord_t y, ExpoData * ed)
   else
     displayFlightModes(EXPO_LINE_INFOS_POS, y, ed->flightModes);
 }
+#endif
 
 void menuModelExposAll(event_t event)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
-
+  
   if (s_editMode > 0) {
     s_editMode = 0;
   }
-
+  
   uint8_t chn = expoAddress(s_currIdx)->chn + 1;
-
+  
   switch (event) {
     case EVT_ENTRY:
     case EVT_ENTRY_UP:
@@ -453,38 +328,44 @@ void menuModelExposAll(event_t event)
     case EVT_KEY_REPT(KEY_UP):
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    case EVT_ROTARY_RIGHT:
+    case EVT_ROTARY_LEFT:
+#endif
       if (s_copyMode) {
-        uint8_t key = (event & 0x1f);
-        uint8_t next_ofs = (key==KEY_UP ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
-
+        uint8_t next_ofs = (IS_PREVIOUS_EVENT(event) ? s_copyTgtOfs - 1 : s_copyTgtOfs + 1);
+        
         if (s_copyTgtOfs==0 && s_copyMode==COPY_MODE) {
           // insert a mix on the same channel (just above / just below)
           if (reachExposLimit()) break;
           copyExpo(s_currIdx);
-          if (key==KEY_DOWN) s_currIdx++;
-          else if (sub-menuVerticalOffset >= 6) menuVerticalOffset++;
+          if (IS_NEXT_EVENT(event))
+            s_currIdx++;
+          else if (sub-menuVerticalOffset >= 6)
+            menuVerticalOffset++;
         }
         else if (next_ofs==0 && s_copyMode==COPY_MODE) {
           // delete the mix
           deleteExpo(s_currIdx);
-          if (key==KEY_UP) s_currIdx--;
+          if (IS_PREVIOUS_EVENT(event))
+            s_currIdx--;
         }
         else {
           // only swap the mix with its neighbor
-          if (!swapExpos(s_currIdx, key==KEY_UP)) break;
+          if (!swapExpos(s_currIdx, IS_PREVIOUS_EVENT(event)))
+            break;
           storageDirty(EE_MODEL);
         }
-
+        
         s_copyTgtOfs = next_ofs;
       }
       break;
   }
-
+  
   lcdDrawNumber(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, getExposCount(), RIGHT);
   lcdDrawText(FW*sizeof(TR_MENUINPUTS)+FW+FW/2, 0, STR_MAX(MAX_EXPOS));
-  
-#if 0
-  // NOT ENOUGH SPACE ?
+
+#if LCD_DEPTH > 1
   // Value
   uint8_t index = expoAddress(s_currIdx)->chn;
   if (!s_currCh) {
@@ -494,16 +375,18 @@ void menuModelExposAll(event_t event)
   
   SIMPLE_MENU(STR_MENUINPUTS, menuTabModel, MENU_MODEL_INPUTS, HEADER_LINE + s_maxLines);
 
+#if LCD_DEPTH > 1
   // Gauge
   if (!s_currCh) {
-    // NOT ENOUGH SPACE ? drawGauge(127, 1, 58, 6, anas[index], 1024);
+    drawGauge(127, 1, 58, 6, anas[index], 1024);
   }
-
+#endif
+  
   sub = menuVerticalPosition - HEADER_LINE;
   s_currCh = 0;
   int cur = 0;
   int i = 0;
-
+  
   for (int ch=1; ch<=NUM_INPUTS; ch++) {
     ExpoData * ed;
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
@@ -529,10 +412,10 @@ void menuModelExposAll(event_t event)
         }
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
-
+          
           GVAR_MENU_ITEM(EXPO_LINE_WEIGHT_POS, y, ed->weight, MIN_EXPO_WEIGHT, 100, RIGHT | attr | (isExpoActive(i) ? BOLD : 0), 0, 0);
           displayExpoLine(y, ed);
-
+          
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
               /* draw a border around the raw on selection mode (copy/move) */
@@ -570,5 +453,7 @@ void menuModelExposAll(event_t event)
     }
   }
   s_maxLines = cur;
-  if (sub >= s_maxLines-1) menuVerticalPosition = s_maxLines - 1 + HEADER_LINE;
+  if (sub >= s_maxLines-1) {
+    menuVerticalPosition = s_maxLines - 1 + HEADER_LINE;
+  }
 }

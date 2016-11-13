@@ -339,14 +339,6 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-void gvarWeightItem(coord_t x, coord_t y, MixData * md, uint8_t attr, event_t event)
-{
-  u_int8int16_t weight;
-  MD_WEIGHT_TO_UNION(md, weight);
-  weight.word = GVAR_MENU_ITEM(x, y, weight.word, GV_RANGELARGE_WEIGHT_NEG, GV_RANGELARGE_WEIGHT, attr, 0, event);
-  MD_UNION_TO_WEIGHT(weight, md);
-}
-
 #if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
 #define GAUGE_WIDTH  33
 #define GAUGE_HEIGHT 6

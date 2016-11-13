@@ -237,7 +237,16 @@ char * getSwitchString(char * dest, swsrc_t idx)
     }
     else {
       *s++ = 'S';
+#if defined(PCBX7D)
+      if (swinfo.quot == 5)
+        *s++ = 'H';
+      else if (swinfo.quot == 4)
+        *s++ = 'F';
+      else
+        *s++ = 'A'+swinfo.quot;
+#else
       *s++ = 'A'+swinfo.quot;
+#endif
     }
     *s++ = "\300-\301"[swinfo.rem];
     *s = '\0';
