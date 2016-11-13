@@ -43,6 +43,7 @@
 #endif
 #if defined(MULTIMODULE)
   #include "spektrum.h"
+  #include "flysky_ibus.h"
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
@@ -69,10 +70,11 @@ enum TelemetrySerialMode {
   TELEMETRY_SERIAL_8E2
 };
 
-#if defined(CROSSFIRE)
+#if defined(CROSSFIRE) || defined(MULTIMODULE)
 #define TELEMETRY_RX_PACKET_SIZE       128
+// multi module Spektrum telemetry is 18 bytes, FlySky is 37 bytes
 #else
-#define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1), multimodule Spektrum telemetry is 18 bytes
+#define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 #endif
 
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
@@ -149,6 +151,8 @@ inline uint8_t modelTelemetryProtocol()
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_DSM2)
       return PROTOCOL_SPEKTRUM;
+    else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
+      return PROTOCOL_FLYSKY_IBUS;
     else if ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) &&
      (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
       return PROTOCOL_FRSKY_SPORT;

@@ -458,6 +458,9 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
       case TELEM_PROTO_SPEKTRUM:
         spektrumSetDefault(index, id, subId, instance);
         break;
+      case TELEM_PROTO_FLYSKY_IBUS:
+        flySkySetDefault(index,id, subId, instance);
+        break;
 #endif
 #if defined(LUA)
      case TELEM_PROTO_LUA:
