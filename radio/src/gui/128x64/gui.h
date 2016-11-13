@@ -213,7 +213,11 @@ int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event, var, min, max)
 
-#define CURSOR_ON_LINE()         (0)
+#if defined(CPUARM)
+#define CURSOR_ON_LINE()               (menuHorizontalPosition < 0)
+#else
+#define CURSOR_ON_LINE()               (0)
+#endif
 
 void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
 void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
