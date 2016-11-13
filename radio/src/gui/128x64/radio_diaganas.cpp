@@ -61,8 +61,11 @@ void menuRadioDiagAnalogs(event_t event)
   lcdDrawText(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
   lcdDrawNumber(64+5+6*FW-3, 1+4*FH, BandGap, RIGHT);
 #endif
-
-#if defined(PCBSKY9X)
+  
+#if defined(PCBX7D)
+  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH, STR_BATT_CALIB);
+  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, getBatteryVoltage(), (menuVerticalPosition==HEADER_LINE ? INVERS | (s_editMode > 0 ? BLINK : 0) : 0) | PREC2 | LEFT);
+#elif defined(PCBSKY9X)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+4*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
   // TODO board.cpp
@@ -104,6 +107,7 @@ void menuRadioDiagAnalogs(event_t event)
 
   lcdDrawTextAlignedLeft(TEMP_CALIB_POS, STR_TEMP_CALIB);
   drawValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (menuVerticalPosition==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
-  if (menuVerticalPosition==TEMP_CALIB_MENU_POS) CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
+  if (menuVerticalPosition==TEMP_CALIB_MENU_POS)
+    CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
 }
