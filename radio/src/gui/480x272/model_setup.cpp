@@ -851,8 +851,8 @@ bool menuModelSetup(event_t event)
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (spektrumBindFinished) {
-               spektrumBindFinished = false;
-               s_editMode=0;
+              spektrumBindFinished = false;
+              s_editMode=0;
             }
 #endif
             if (attr && l_posHorz>0 && s_editMode>0) {

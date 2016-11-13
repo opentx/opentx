@@ -14,7 +14,6 @@
  */
 
 #include "opentx.h"
-#include "flysky_ibus.h"
 
 /*
  * Telemetry format from goebish/Deviation/flysky_afhds2a_a7105.c
