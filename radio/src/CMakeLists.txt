@@ -376,7 +376,12 @@ if(NOT MSVC)
       set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
     else()
       # We fetch Mike's bootloader as it is not included inside OpenTX
-      file(DOWNLOAD https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER} ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm)
+      message(STATUS "Downloading Mike's bootloader: https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER}")
+      file(DOWNLOAD https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER} ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm STATUS status)
+      list(GET status 0 error_code)
+      if(error_code)
+        message(FATAL_ERROR "Failed to download Mike's bootloader: ${status}")
+      endif()
     endif()
 
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
