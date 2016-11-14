@@ -374,7 +374,7 @@ if(NOT MSVC)
       add_subdirectory(targets/${TARGET_DIR}/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
       set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
-    else()
+    else(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO)
       # We fetch Mike's bootloader as it is not included inside OpenTX
       message(STATUS "Downloading Mike's bootloader: https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER}")
       file(DOWNLOAD https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${BOOTLOADER} ${CMAKE_CURRENT_BINARY_DIR}/bootloader.lbm STATUS status)
