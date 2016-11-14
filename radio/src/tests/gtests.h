@@ -92,8 +92,6 @@ inline void TELEMETRY_RESET()
 #endif
 }
 
-bool checkScreenshot(QString test);
-
 class OpenTxTest : public testing::Test 
 {
   protected:  // You should make the members protected s.t. they can be

@@ -775,7 +775,7 @@ void menuModelTelemetryFrsky(event_t event)
           }
         }
 #else
-        if (attr && menuHorizontalPosition<0) {
+        if (attr && CURSOR_ON_LINE()) {
           lcdDrawSolidFilledRect(TELEM_COL2-1, y-1, LCD_W-TELEM_COL2+1, FH+1);
         }
         lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|LEFT);
