@@ -242,7 +242,7 @@ void menuRadioSdManager(event_t _event)
           return;
         }
       }
-      // no break
+      break;
 
     case EVT_KEY_LONG(KEY_ENTER):
 #if !defined(PCBTARANIS)
@@ -254,7 +254,7 @@ void menuRadioSdManager(event_t _event)
         break;
       }
 #endif
-      if (s_editMode == 0) {
+      if (s_editMode <= 0) {
         killEvents(_event);
         char * line = reusableBuffer.sdmanager.lines[index];
         if (!strcmp(line, "..")) {
