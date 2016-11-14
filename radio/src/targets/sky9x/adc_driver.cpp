@@ -137,8 +137,12 @@ void adcRead()
 
 
 #if !defined(SIMU)
-uint16_t getAnalogValue(uint8_t value)
+uint16_t getAnalogValue(uint8_t index)
 {
-  return adcValues[value];
+#if defined(PCBSKY9X) && !defined(REVA)
+  static const uint8_t mapping[] = {1,5,7,0,4,6,2,3};
+  index = mapping[index];
+#endif
+  return adcValues[index];
 }
 #endif // #if !defined(SIMU)
