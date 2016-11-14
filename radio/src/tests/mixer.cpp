@@ -334,7 +334,7 @@ TEST_F(TrimsTest, chainedTrims)
   EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
 }
 
-TTEST_F(TrimsTest, infiniteChainedTrims)
+TEST_F(TrimsTest, infiniteChainedTrims)
 {
   setTrimValue(0, RUD_STICK, 32);
   setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
