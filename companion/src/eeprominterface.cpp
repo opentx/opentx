@@ -16,8 +16,6 @@
 
 std::list<QString> EEPROMWarnings;
 
-const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
-const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SP", "SQ", "SR" };
 const char leftArrow[] = {(char)0xE2, (char)0x86, (char)0x90, 0};
 const char rightArrow[] = {(char)0xE2, (char)0x86, (char)0x92, 0};
 const char upArrow[] = {(char)0xE2, (char)0x86, (char)0x91, 0};
@@ -500,7 +498,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
     case SOURCE_TYPE_SWITCH:
-      return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(switchesX9D, index) : CHECK_IN_ARRAY(switches9X, index));
+      return GetCurrentFirmware()->getSwitch(index).name;
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return QObject::tr("L%1").arg(index+1);
     case SOURCE_TYPE_CYC:
@@ -1008,17 +1006,17 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   if (index == 0)
     return true;
   SwitchInfo info = switchInfoFromSwitchPositionTaranis(abs(index));
-  if (index < 0 && switchConfig[info.index] != SWITCH_3POS)
+  if (index < 0 && switchConfig[info.index] != Firmware::SWITCH_3POS)
     return false;
   else if (info.position == 1)
-    return switchConfig[info.index] == SWITCH_3POS;
+    return switchConfig[info.index] == Firmware::SWITCH_3POS;
   else
-    return switchConfig[info.index] != SWITCH_NONE;
+    return switchConfig[info.index] != Firmware::SWITCH_NONE;
 }
 
 bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 {
-  return switchConfig[index] != SWITCH_NONE;
+  return switchConfig[index] != Firmware::SWITCH_NONE;
 }
 
 bool GeneralSettings::isPotAvailable(int index) const
@@ -1045,21 +1043,17 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-
+  
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
+    switchConfig[i] = GetCurrentFirmware()->getSwitch(i).type;
+  }
+  
   BoardEnum board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
     potConfig[0] = POT_WITH_DETENT;
     potConfig[1] = POT_WITH_DETENT;
     sliderConfig[0] = SLIDER_WITH_DETENT;
     sliderConfig[1] = SLIDER_WITH_DETENT;
-    switchConfig[0] = SWITCH_3POS;
-    switchConfig[1] = SWITCH_3POS;
-    switchConfig[2] = SWITCH_3POS;
-    switchConfig[3] = SWITCH_3POS;
-    switchConfig[4] = SWITCH_3POS;
-    switchConfig[5] = SWITCH_2POS;
-    switchConfig[6] = SWITCH_3POS;
-    switchConfig[7] = SWITCH_TOGGLE;
   }
   else {
     for (int i=0; i<3; i++) {

@@ -654,15 +654,12 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   // Startup switches warnings
   for (int i=0; i<firmware->getCapability(Switches); i++) {
+    Firmware::Switch sw = firmware->getSwitch(i);
     if (IS_TARANIS(firmware->getBoard())) {
-      if (generalSettings.switchConfig[i] == GeneralSettings::SWITCH_NONE || generalSettings.switchConfig[i] == GeneralSettings::SWITCH_TOGGLE) {
-    //    continue;
-      }
+      sw.type = Firmware::SwitchType(generalSettings.switchConfig[i]);
     }
-    else {
-      if (i==firmware->getCapability(Switches)-1) {
-      //  continue;
-      }
+    if (sw.type == Firmware::SWITCH_NONE || sw.type == Firmware::SWITCH_TOGGLE) {
+      continue;
     }
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
@@ -677,14 +674,8 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     slider->setSingleStep(1);
     slider->setPageStep(1);
     slider->setTickInterval(1);
-    if (IS_TARANIS(board)) {
-      label->setText(switchesX9D[i]);
-      slider->setMaximum(generalSettings.switchConfig[i] == GeneralSettings::SWITCH_3POS ? 2 : 1);
-    }
-    else {
-      label->setText(switches9X[i]);
-      slider->setMaximum(i==0 ? 2 : 1);
-    }
+    label->setText(sw.name);
+    slider->setMaximum(sw.type == Firmware::SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
@@ -700,8 +691,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     QWidget::setTabOrder(slider, cb);
     prevFocus = cb;
   }
-  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, firmware->getCapability(Switches));
-
+  
   // Pot warnings
   prevFocus = ui->potWarningMode;
   if (IS_TARANIS(board)) {
@@ -930,7 +920,7 @@ void SetupPanel::updateStartupSwitches()
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
-      if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2)
+      if (generalSettings.switchConfig[index] != Firmware::SWITCH_3POS && value == 2)
         value = 1;
     }
     else {
@@ -968,7 +958,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
     
-    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
+    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != Firmware::SWITCH_3POS) {
       if (value == 1) value = 2;
     }
 

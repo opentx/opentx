@@ -8,7 +8,7 @@ void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *na
   if (IS_TARANIS(firmware->getBoard())) {
     if (IS_TARANIS_X9E(firmware->getBoard())) {
       enabled = true;
-      type->addItem(tr("None"), GeneralSettings::SWITCH_NONE);
+      type->addItem(tr("None"), Firmware::SWITCH_NONE);
     }
     else if (index < 8) {
       enabled = true;
@@ -16,9 +16,9 @@ void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *na
   }
 
   if (enabled) {
-    type->addItem(tr("2 Positions Toggle"), GeneralSettings::SWITCH_TOGGLE);
-    type->addItem(tr("2 Positions"), GeneralSettings::SWITCH_2POS);
-    if (threePos) type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
+    type->addItem(tr("2 Positions Toggle"), Firmware::SWITCH_TOGGLE);
+    type->addItem(tr("2 Positions"), Firmware::SWITCH_2POS);
+    if (threePos) type->addItem(tr("3 Positions"), Firmware::SWITCH_3POS);
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
   }

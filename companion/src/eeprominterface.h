@@ -164,8 +164,6 @@ enum HeliSwashTypes {
  HELI_SWASH_TYPE_90
 };
 
-extern const char * switches9X[];
-extern const char * switchesX9D[];
 extern const char leftArrow[];
 extern const char rightArrow[];
 extern const char upArrow[];
@@ -1179,13 +1177,6 @@ class GeneralSettings {
       SLIDER_WITH_DETENT
     };
 
-    enum SwitchConfig {
-      SWITCH_NONE,
-      SWITCH_TOGGLE,
-      SWITCH_2POS,
-      SWITCH_3POS,
-    };
-
     GeneralSettings();
 
     int getDefaultStick(unsigned int channel) const;
@@ -1589,7 +1580,7 @@ struct Option {
 };
 
 class Firmware {
-
+    
   public:
     Firmware(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
       id(id),
@@ -1670,7 +1661,21 @@ class Firmware {
       return eepromInterface;
     }
 
-    virtual int getCapability(const Capability) = 0;
+    virtual int getCapability(Capability) = 0;
+    
+    enum SwitchType {
+      SWITCH_NONE,
+      SWITCH_TOGGLE,
+      SWITCH_2POS,
+      SWITCH_3POS
+    };
+    
+    struct Switch {
+      SwitchType type;
+      const char * name;
+    };
+    
+    virtual Switch getSwitch(unsigned int index) = 0;
 
     virtual QTime getMaxTimerStart() = 0;
 
