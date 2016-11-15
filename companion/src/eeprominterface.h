@@ -46,8 +46,6 @@
 #define FSIZE_HORUS            (2048*1024)
 #define FSIZE_MAX              FSIZE_HORUS
 
-QString getBoardName(BoardEnum board);
-
 #define IS_9X(board)           (board==BOARD_STOCK || board==BOARD_M128)
 #define IS_STOCK(board)        (board==BOARD_STOCK)
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
