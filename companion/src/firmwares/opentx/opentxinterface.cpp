@@ -298,7 +298,7 @@ template <class T>
 bool OpenTxEepromInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant)
 {
   T open9xSettings(settings, board, version, variant);
-  // open9xSettings.Dump();
+  open9xSettings.Dump();
   QByteArray eeprom;
   open9xSettings.Export(eeprom);
   int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (const uint8_t*)eeprom.constData(), eeprom.size());
@@ -309,7 +309,7 @@ template <class T>
 bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
-  // open9xModel.Dump();
+  open9xModel.Dump();
   QByteArray eeprom;
   open9xModel.Export(eeprom);
   int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (const uint8_t*)eeprom.constData(), eeprom.size());
@@ -323,7 +323,7 @@ unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument 
   return errors.to_ulong();
 }
 
-unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long OpenTxEepromInterface::load(RadioData & radioData, const uint8_t * eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
 

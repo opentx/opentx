@@ -225,7 +225,7 @@ int main(int argc, char *argv[])
       dialog = new SimulatorDialogHorus(NULL, factory->create());
     else if (factory->type() == BOARD_FLAMENCO)
       dialog = new SimulatorDialogFlamenco(NULL, factory->create());
-    else if (factory->type() == BOARD_TARANIS_X9D)
+    else if (factory->type() == BOARD_TARANIS_X9D || factory->type() == BOARD_TARANIS_X9DP || factory->type() == BOARD_TARANIS_X9E)
       dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
     else
       dialog = new SimulatorDialog9X(NULL, factory->create());

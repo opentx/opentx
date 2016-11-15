@@ -10,12 +10,12 @@
 #define IS_DBLRAM(board, version)             ((IS_2560(board) && version >= 213) || (board==BOARD_M128 && version >= 213 && version <= 214))
 
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
-#define HAS_LARGE_LCD(board)                  IS_TARANIS(board)
+#define HAS_LARGE_LCD(board)                  (IS_TARANIS(board) && board != BOARD_X7D)
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)              (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)
-#define MAX_SLIDERS(board)                    (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)
-#define MAX_SWITCHES(board, version)          (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)
-#define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9))
+#define MAX_POTS(board, version)              (board == BOARD_X7D ? 2 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3))
+#define MAX_SLIDERS(board)                    (board == BOARD_X7D ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0))
+#define MAX_SWITCHES(board, version)          (board == BOARD_X7D ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7))
+#define MAX_SWITCHES_POSITION(board, version) (board == BOARD_X7D ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9)))
 #define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_TIMERS(board, version)            ((IS_ARM(board) && version >= 217) ? 3 : 2)
@@ -2968,7 +2968,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new UnsignedField<8>(modelData.moduleData[1].modelId));
   }
 
-  if (IS_TARANIS(board) && version >= 215) {
+  if (HAS_LARGE_LCD(board) && version >= 215) {
     internalField.Append(new CharField<10>(modelData.bitmap));
   }
 
@@ -2981,7 +2981,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].persistent));
       internalField.Append(new SpareBitsField<3>());
-      if (IS_TARANIS(board))
+      if (HAS_LARGE_LCD(board))
         internalField.Append(new ZCharField<8>(modelData.timers[i].name));
       else
         internalField.Append(new ZCharField<3>(modelData.timers[i].name));
