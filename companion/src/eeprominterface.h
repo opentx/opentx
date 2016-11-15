@@ -51,8 +51,8 @@
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
-#define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
-#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
+#define IS_TARANIS(board)      (board==BOARD_TARANIS_X9D  || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E || board==BOARD_X7D)
+#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)  (board==BOARD_TARANIS_X9E)
 #define IS_HORUS(board)        (board==BOARD_HORUS)
 #define IS_FLAMENCO(board)     (board==BOARD_FLAMENCO)
@@ -64,14 +64,6 @@ const uint8_t modn12x3[4][4]= {
   {1, 3, 2, 4},
   {4, 2, 3, 1},
   {4, 3, 2, 1} };
-
-#define STK_RUD  1
-#define STK_ELE  2
-#define STK_THR  3
-#define STK_AIL  4
-#define STK_P1   5
-#define STK_P2   6
-#define STK_P3   7
 
 enum Switches {
   SWITCH_NONE,

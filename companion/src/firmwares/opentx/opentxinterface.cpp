@@ -63,9 +63,9 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for MEGA2560 board";
     case BOARD_GRUVIN9X:
       return "OpenTX for Gruvin9x board / 9X";
-    case BOARD_TARANIS:
+    case BOARD_TARANIS_X9D:
       return "OpenTX for FrSky Taranis X9D";
-    case BOARD_TARANIS_PLUS:
+    case BOARD_TARANIS_X9DP:
       return "OpenTX for FrSky Taranis X9D+";
     case BOARD_TARANIS_X9E:
       return "OpenTX for FrSky Taranis X9E";
@@ -102,8 +102,8 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_AR9X:
       return EESIZE_9XRPRO;
     case BOARD_X7D:
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
     case BOARD_FLAMENCO:
     case BOARD_HORUS:
@@ -407,8 +407,8 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
   if (!version) {
     switch(board) {
       case BOARD_X7D:
-      case BOARD_TARANIS:
-      case BOARD_TARANIS_PLUS:
+      case BOARD_TARANIS_X9D:
+      case BOARD_TARANIS_X9DP:
       case BOARD_TARANIS_X9E:
       case BOARD_SKY9X:
       case BOARD_AR9X:
@@ -540,15 +540,9 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      if (IS_TARANIS(board))
-        return 1;
-      else
-        return 0;
+      return (board==BOARD_TARANIS_X9D || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E);
     case HasBeeper:
-      if (IS_ARM(board))
-        return 0;
-      else
-        return 1;
+      return (!IS_ARM(board));
     case HasPxxCountry:
       return 1;
     case HasGeneralUnits:
@@ -557,10 +551,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 0;
     case HasNegAndSwitches:
-      if (IS_ARM(board))
-        return 1;
-      else
-        return 0;
+      return IS_ARM(board);
     case PPMExtCtrl:
       return 1;
     case PPMFrameLength:
@@ -626,6 +617,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
+      else if (board == BOARD_X7D)
+        return 6;
       else if (IS_TARANIS(board))
         return 8;
       else
@@ -1040,7 +1033,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *e
   BoardEnum backupBoard = (BoardEnum)-1;
   switch (eeprom[3]) {
     case 0x33:
-      backupBoard = BOARD_TARANIS;
+      backupBoard = BOARD_TARANIS_X9D;
       break;
     case 0x32:
       backupBoard = BOARD_SKY9X;
@@ -1181,13 +1174,13 @@ void registerOpenTxFirmwares()
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
 
   /* FrSky Taranis X9D+ board */
-  firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
+  firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* FrSky Taranis X9D board */
-  firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis"), BOARD_TARANIS);
+  firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);

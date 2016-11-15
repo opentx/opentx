@@ -181,8 +181,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
     }
   }
 
-  for (int i=0; i<=MM_RF_PROTO_LAST; i++)
-  {
+  for (int i=0; i<=MM_RF_PROTO_LAST; i++) {
     ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i, false), (QVariant) i);
   }
 
@@ -594,7 +593,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->imagePreview->hide();
   }
 
-  QWidget *prevFocus = ui->image;
+  QWidget * prevFocus = ui->image;
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
     if (i<firmware->getCapability(Timers)) {
       timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus);
@@ -657,12 +656,12 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   for (int i=0; i<firmware->getCapability(Switches); i++) {
     if (IS_TARANIS(firmware->getBoard())) {
       if (generalSettings.switchConfig[i] == GeneralSettings::SWITCH_NONE || generalSettings.switchConfig[i] == GeneralSettings::SWITCH_TOGGLE) {
-        continue;
+    //    continue;
       }
     }
     else {
       if (i==firmware->getCapability(Switches)-1) {
-        continue;
+      //  continue;
       }
     }
     QLabel * label = new QLabel(this);

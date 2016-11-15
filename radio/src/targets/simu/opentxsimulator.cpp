@@ -260,7 +260,7 @@ class OpenTxSimulatorFactory: public SimulatorFactory
 #elif defined(PCBX7D)
       return BOARD_X7D;
 #elif defined(PCBTARANIS)
-      return BOARD_TARANIS;
+      return BOARD_TARANIS_X9D;
 #else
       return BOARD_STOCK;
 #endif
