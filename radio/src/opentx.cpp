@@ -1300,7 +1300,7 @@ uint8_t checkTrim(event_t event)
     int16_t after = (k&1) ? before + v : before - v;   // positive = k&1
     bool beepTrim = false;
 
-    if (!thro && ((after < 0) != (before < 0)) && before!=0) { //forcing a stop at centerered trim when changing sides
+    if (!thro && before!=0 && ((!(after < 0) == (before < 0)) || after==0)) { //forcing a stop at centerered trim when changing sides
       after = 0;
       beepTrim = true;
       AUDIO_TRIM_MIDDLE();
