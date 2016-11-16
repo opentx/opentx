@@ -1104,7 +1104,7 @@ static inline void check_struct()
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
-  CHKSIZE(LimitData, 13);
+  CHKSIZE(LimitData, 11);
   CHKSIZE(CustomFunctionData, 9);
   CHKSIZE(FlightModeData, 38);
   CHKSIZE(TimerData, 11);
@@ -1115,7 +1115,7 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
   CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5252);
+  CHKSIZE(ModelData, 5188);
 #else
   // Common for all variants
   CHKSIZE(LimitData, 5);
