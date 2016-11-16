@@ -800,61 +800,61 @@ void ConvertSpecialFunctions_217_to_218(CustomFunctionData * cf218, CustomFuncti
 
 void ConvertRadioData_217_to_218(RadioData & settings)
 {
-  RadioData_v216 * settings_v217 = (RadioData_v216 *)&settings;
-
+  RadioData_v216 settings_v217 = (RadioData_v216 &)settings;
+  
   settings.version = 218;
 #if !defined(PCBTARANIS)
-  settings.stickReverse = settings_v217->stickReverse;
+  settings.stickReverse = settings_v217.stickReverse;
 #endif
-  settings.beepLength = settings_v217->beepLength;
-  settings.hapticStrength = settings_v217->hapticStrength;
-  settings.gpsFormat = settings_v217->gpsFormat;
-  settings.unexpectedShutdown = settings_v217->unexpectedShutdown;
-  settings.speakerPitch = settings_v217->speakerPitch;
-  settings.speakerVolume = settings_v217->speakerVolume;
-  settings.vBatMin = settings_v217->vBatMin;
-  settings.vBatMax = settings_v217->vBatMax;
-  settings.backlightBright = settings_v217->backlightBright;
-  settings.globalTimer = settings_v217->globalTimer;
-  settings.btBaudrate = settings_v217->btBaudrate;
-  settings.countryCode = settings_v217->countryCode;
-  settings.imperial = settings_v217->imperial;
-  settings.ttsLanguage[0] = settings_v217->ttsLanguage[0];
-  settings.ttsLanguage[1] = settings_v217->ttsLanguage[1];
-  settings.beepVolume = settings_v217->beepVolume;
-  settings.wavVolume = settings_v217->wavVolume;
-  settings.varioVolume = settings_v217->varioVolume;
-  settings.backgroundVolume = settings_v217->backgroundVolume;
-  settings.varioPitch = settings_v217->varioPitch;
-  settings.varioRange = settings_v217->varioRange;
-  settings.varioRepeat = settings_v217->varioRepeat;
-  ConvertSpecialFunctions_217_to_218(settings.customFn, settings_v217->customFn);
+  settings.beepLength = settings_v217.beepLength;
+  settings.hapticStrength = settings_v217.hapticStrength;
+  settings.gpsFormat = settings_v217.gpsFormat;
+  settings.unexpectedShutdown = settings_v217.unexpectedShutdown;
+  settings.speakerPitch = settings_v217.speakerPitch;
+  settings.speakerVolume = settings_v217.speakerVolume;
+  settings.vBatMin = settings_v217.vBatMin;
+  settings.vBatMax = settings_v217.vBatMax;
+  settings.backlightBright = settings_v217.backlightBright;
+  settings.globalTimer = settings_v217.globalTimer;
+  settings.btBaudrate = settings_v217.btBaudrate;
+  settings.countryCode = settings_v217.countryCode;
+  settings.imperial = settings_v217.imperial;
+  settings.ttsLanguage[0] = settings_v217.ttsLanguage[0];
+  settings.ttsLanguage[1] = settings_v217.ttsLanguage[1];
+  settings.beepVolume = settings_v217.beepVolume;
+  settings.wavVolume = settings_v217.wavVolume;
+  settings.varioVolume = settings_v217.varioVolume;
+  settings.backgroundVolume = settings_v217.backgroundVolume;
+  settings.varioPitch = settings_v217.varioPitch;
+  settings.varioRange = settings_v217.varioRange;
+  settings.varioRepeat = settings_v217.varioRepeat;
+  ConvertSpecialFunctions_217_to_218(settings.customFn, settings_v217.customFn);
 
 #if defined(PCBTARANIS)
-  settings.serial2Mode = settings_v217->serial2Mode;
-  settings.slidersConfig = settings_v217->slidersConfig;
-  settings.potsConfig = settings_v217->potsConfig;
-  settings.backlightColor = settings_v217->backlightColor;
-  settings.switchUnlockStates = settings_v217->switchUnlockStates;
-  settings.switchConfig = settings_v217->switchConfig;
-  memcpy(settings.switchNames, settings_v217->switchNames, sizeof(settings.switchNames));
-  memcpy(settings.anaNames, settings_v217->anaNames, sizeof(settings.anaNames));
+  settings.serial2Mode = settings_v217.serial2Mode;
+  settings.slidersConfig = settings_v217.slidersConfig;
+  settings.potsConfig = settings_v217.potsConfig;
+  settings.backlightColor = settings_v217.backlightColor;
+  settings.switchUnlockStates = settings_v217.switchUnlockStates;
+  settings.switchConfig = settings_v217.switchConfig;
+  memcpy(settings.switchNames, settings_v217.switchNames, sizeof(settings.switchNames));
+  memcpy(settings.anaNames, settings_v217.anaNames, sizeof(settings.anaNames));
 #endif
 
 #if defined(PCBX9E)
-  settings.bluetoothEnable = settings_v217->bluetoothEnable;
-  memcpy(settings.bluetoothName, settings_v217->bluetoothName, sizeof(settings.bluetoothName));
+  settings.bluetoothEnable = settings_v217.bluetoothEnable;
+  memcpy(settings.bluetoothName, settings_v217.bluetoothName, sizeof(settings.bluetoothName));
 #endif
 
 #if defined(PCBSKY9X)
-  settings.txCurrentCalibration = settings_v217->txCurrentCalibration;
-  settings.temperatureWarn = settings_v217->temperatureWarn;
-  settings.mAhWarn = settings_v217->mAhWarn;
-  settings.mAhUsed = settings_v217->mAhUsed;
-  settings.temperatureCalib = settings_v217->temperatureCalib;
-  settings.optrexDisplay = settings_v217->optrexDisplay;
-  settings.sticksGain = settings_v217->sticksGain;
-  settings.rotarySteps = settings_v217->rotarySteps;
+  settings.txCurrentCalibration = settings_v217.txCurrentCalibration;
+  settings.temperatureWarn = settings_v217.temperatureWarn;
+  settings.mAhWarn = settings_v217.mAhWarn;
+  settings.mAhUsed = settings_v217.mAhUsed;
+  settings.temperatureCalib = settings_v217.temperatureCalib;
+  settings.optrexDisplay = settings_v217.optrexDisplay;
+  settings.sticksGain = settings_v217.sticksGain;
+  settings.rotarySteps = settings_v217.rotarySteps;
 #endif
 }
 
