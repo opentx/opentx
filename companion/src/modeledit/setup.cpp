@@ -551,7 +551,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     QStringList items;
     items.append("");
     QString path = g.profile[g.id()].sdPath();
-    path.append("/BMP/");
+    path.append("/IMAGES/");
     QDir qd(path);
     if (qd.exists()) {
       QStringList filters;
@@ -813,7 +813,7 @@ void SetupPanel::on_image_currentIndexChanged(int index)
   if (!lock) {
     strncpy(model->bitmap, ui->image->currentText().toLatin1(), 10);
     QString path = g.profile[g.id()].sdPath();
-    path.append("/BMP/");
+    path.append("/IMAGES/");
     QDir qd(path);
     if (qd.exists()) {
       QString fileName=path;
