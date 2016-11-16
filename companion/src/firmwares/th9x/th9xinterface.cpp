@@ -17,8 +17,7 @@
 #include <iostream>
 #include "th9xinterface.h"
 #include "th9xeeprom.h"
-#include "simulator/th9xsimulator.h"
-#include "file.h"
+#include "rlefile.h"
 #include "appdata.h"
 
 #define FILE_TYP_GENERAL 1

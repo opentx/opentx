@@ -421,6 +421,7 @@ QString findMassstoragePath(const QString &filename)
       temppath = entry->me_mountdir;
       eepromfile = temppath;
       eepromfile.append("/" + filename);
+      qDebug() << "Searching for" << eepromfile;
 #if !defined __APPLE__
       QString fstype = entry->me_type;
       // qDebug() << eepromfile;

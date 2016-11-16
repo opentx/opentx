@@ -1639,65 +1639,30 @@ void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long err
   msgBox.exec();
 }
 
-unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+QString getBoardName(BoardEnum board)
 {
-  std::bitset<NUM_ERRORS> errors;
-
-  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, eeprom, size));
-    if (result.test(ALL_OK)) {
-      return result.to_ulong();
-    }
-    else {
-      errors |= result;
-    }
+  switch (board) {
+    case BOARD_STOCK:
+      return "9X";
+    case BOARD_M128:
+      return "9X128";
+    case BOARD_GRUVIN9X:
+      return "Gruvin9x";
+    case BOARD_MEGA2560:
+      return "MEGA2560";
+    case BOARD_TARANIS:
+      return "Taranis";
+    case BOARD_TARANIS_PLUS:
+      return "Taranis Plus";
+    case BOARD_SKY9X:
+      return "Sky9x";
+    case BOARD_9XRPRO:
+      return "9XR-PRO";
+    case BOARD_AR9X:
+      return "AR9X";
+    default:
+      return "Unknown";
   }
-
-  if (errors.none()) {
-    errors.set(UNKNOWN_ERROR);
-  }
-  return errors.to_ulong();
-}
-
-unsigned long LoadBackup(RadioData & radioData, uint8_t * eeprom, int size, int index)
-{
-  std::bitset<NUM_ERRORS> errors;
-
-  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
-    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadBackup(radioData, eeprom, size, index));
-    if (result.test(ALL_OK)) {
-      return result.to_ulong();
-    }
-    else {
-      errors |= result;
-    }
-  }
-
-  if (errors.none()) {
-    errors.set(UNKNOWN_ERROR);
-  }
-  return errors.to_ulong();
-}
-
-
-unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
-{
-  std::bitset<NUM_ERRORS> errors;
-
-  foreach(EEPROMInterface * eepromInterface, eepromInterfaces) {
-    std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadxml(radioData, doc));
-    if (result.test(ALL_OK)) {
-      return result.to_ulong();
-    }
-    else {
-      errors |= result;
-    }
-  }
-
-  if (errors.none()) {
-    errors.set(UNKNOWN_ERROR);
-  }
-  return errors.to_ulong();
 }
 
 const int Firmware::getFlashSize()

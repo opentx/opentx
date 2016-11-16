@@ -112,6 +112,7 @@ class MdiChild : public QWidget
     QString strippedName(const QString &fullFileName);
     void saveSelection();
     void restoreSelection();
+    bool loadOtxFile(const QString &fileName, bool resetCurrentFile);
 
     Ui::mdiChild *ui;
 

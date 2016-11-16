@@ -53,6 +53,8 @@
 #include "appdata.h"
 #include "wizarddialog.h"
 #include "flashfirmwaredialog.h"
+#include "storage_eeprom.h"
+#include "storage_sdcard.h"
 #include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
@@ -334,7 +336,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
                                tr("Error reading file %1:\n%2.")
                                .arg(fileName)
                                .arg(file.errorString()));
-
+          free(eeprom);
           return false;
       }
 
@@ -343,6 +345,7 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
         std::bitset<NUM_ERRORS> errorsBackup((unsigned long long)LoadBackup(radioData, eeprom, eeprom_size, 0));
         if (!errorsBackup.test(ALL_OK)) {
           ShowEepromErrors(this, tr("Error"), tr("Invalid binary EEPROM File %1").arg(fileName), (errorsEeprom | errorsBackup).to_ulong());
+          free(eeprom);
           return false;
         }
         if (errorsBackup.test(HAS_WARNINGS)) {
@@ -358,8 +361,46 @@ bool MdiChild::loadFile(const QString &fileName, bool resetCurrentFile)
       free(eeprom);
       return true;
     }
+    else if (fileType == FILE_TYPE_OTX) { //read zip archive
+      return loadOtxFile(fileName, resetCurrentFile);
+    }
 
     return false;
+}
+
+bool MdiChild::loadOtxFile(const QString &fileName, bool resetCurrentFile)
+{
+  // example of StorageSdcard usage
+
+  StorageSdcard storage;
+
+  storage.read(fileName);
+
+  // display models.txt
+  QString modelList = QString(storage.modelList);
+  qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
+
+  // info about radio.bin
+  qDebug() << "Radio settings:" << storage.radio.size();
+
+  // info about all models
+  QList<QString> models = storage.getModelsFileNames();
+  qDebug() << "We have" << models.size() << "models:";
+  foreach(QString filename, models) {
+    QList<ModelFile>::const_iterator i = storage.getModelIterator(filename);
+    if (i != storage.models.end()) {
+      qDebug() << "\tModel:" << i->filename << "size" << i->data.size();
+    }
+  }
+
+  for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i) {
+  }
+
+
+  // for test immediately save to another file
+  storage.write(fileName + "test.otx");
+  return true;
+
 }
 
 bool MdiChild::save()
