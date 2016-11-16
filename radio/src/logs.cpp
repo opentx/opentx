@@ -158,19 +158,21 @@ void writeHeader()
 #if defined(CPUARM)
   char label[TELEM_LABEL_LEN+7];
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-    TelemetrySensor & sensor = g_model.telemetrySensors[i];
-    if (sensor.logs) {
-      memset(label, 0, sizeof(label));
-      zchar2str(label, sensor.label, TELEM_LABEL_LEN);
-      uint8_t unit = sensor.unit;
-      if (unit == UNIT_CELLS ) unit = UNIT_VOLTS;
-      if (UNIT_RAW < unit && unit < UNIT_FIRST_VIRTUAL) {
-        strcat(label, "(");
-        strncat(label, STR_VTELEMUNIT+1+3*unit, 3);
-        strcat(label, ")");
+    if (isTelemetryFieldAvailable(i)) {
+      TelemetrySensor & sensor = g_model.telemetrySensors[i];
+      if (sensor.logs) {
+        memset(label, 0, sizeof(label));
+        zchar2str(label, sensor.label, TELEM_LABEL_LEN);
+        uint8_t unit = sensor.unit;
+        if (unit == UNIT_CELLS ) unit = UNIT_VOLTS;
+        if (UNIT_RAW < unit && unit < UNIT_FIRST_VIRTUAL) {
+          strcat(label, "(");
+          strncat(label, STR_VTELEMUNIT+1+3*unit, 3);
+          strcat(label, ")");
+        }
+        strcat(label, ",");
+        f_puts(label, &g_oLogFile);
       }
-      strcat(label, ",");
-      f_puts(label, &g_oLogFile);
     }
   }
 #endif
@@ -297,35 +299,37 @@ void logsWrite()
 
 #if defined(CPUARM)
       for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-        TelemetrySensor & sensor = g_model.telemetrySensors[i];
-        TelemetryItem & telemetryItem = telemetryItems[i];
-        if (sensor.logs) {
-          if (sensor.unit == UNIT_GPS) {
-            if (telemetryItem.gps.longitude && telemetryItem.gps.latitude) {
-              div_t qr = div(telemetryItem.gps.latitude, 1000000);
-              f_printf(&g_oLogFile, "%d.%06d ", qr.quot, abs(qr.rem));
-              qr = div(telemetryItem.gps.longitude, 1000000);
-              f_printf(&g_oLogFile, "%d.%06d,", qr.quot, abs(qr.rem));
+        if (isTelemetryFieldAvailable(i)) {
+          TelemetrySensor & sensor = g_model.telemetrySensors[i];
+          TelemetryItem & telemetryItem = telemetryItems[i];
+          if (sensor.logs) {
+            if (sensor.unit == UNIT_GPS) {
+              if (telemetryItem.gps.longitude && telemetryItem.gps.latitude) {
+                div_t qr = div(telemetryItem.gps.latitude, 1000000);
+                f_printf(&g_oLogFile, "%d.%06d ", qr.quot, abs(qr.rem));
+                qr = div(telemetryItem.gps.longitude, 1000000);
+                f_printf(&g_oLogFile, "%d.%06d,", qr.quot, abs(qr.rem));
+              }
+              else {
+                f_printf(&g_oLogFile, ",");
+              }
+            }
+            else if (sensor.unit == UNIT_DATETIME) {
+              f_printf(&g_oLogFile, "%4d-%02d-%02d %02d:%02d:%02d,", telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day, telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
+            }
+            else if (sensor.prec == 2) {
+              div_t qr = div(telemetryItem.value, 100);
+              if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
+              f_printf(&g_oLogFile, "%d.%02d,", abs(qr.quot), abs(qr.rem));
+            }
+            else if (sensor.prec == 1) {
+              div_t qr = div(telemetryItem.value, 10);
+              if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
+              f_printf(&g_oLogFile, "%d.%d,", abs(qr.quot), abs(qr.rem));
             }
             else {
-              f_printf(&g_oLogFile, ",");
+              f_printf(&g_oLogFile, "%d,", telemetryItem.value);
             }
-          }
-          else if (sensor.unit == UNIT_DATETIME) {
-            f_printf(&g_oLogFile, "%4d-%02d-%02d %02d:%02d:%02d,", telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day, telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
-          }
-          else if (sensor.prec == 2) {
-            div_t qr = div(telemetryItem.value, 100);
-            if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
-            f_printf(&g_oLogFile, "%d.%02d,", abs(qr.quot), abs(qr.rem));
-          }
-          else if (sensor.prec == 1) {
-            div_t qr = div(telemetryItem.value, 10);
-            if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
-            f_printf(&g_oLogFile, "%d.%d,", abs(qr.quot), abs(qr.rem));
-          }
-          else {
-            f_printf(&g_oLogFile, "%d,", telemetryItem.value);
           }
         }
       }

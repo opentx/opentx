@@ -356,7 +356,7 @@ void menuModelSensor(event_t event)
   }
 }
 
-void onSensorMenu(const char *result)
+void onSensorMenu(const char * result)
 {
   uint8_t index = menuVerticalPosition - ITEM_TELEMETRY_SENSOR1;
 
