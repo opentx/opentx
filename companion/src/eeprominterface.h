@@ -51,27 +51,20 @@
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
-#define IS_TARANIS(board)      (board==BOARD_TARANIS  || board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
-#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_PLUS || board==BOARD_TARANIS_X9E)
+#define IS_TARANIS(board)      (board==BOARD_TARANIS_X9D  || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E || board==BOARD_X7D)
+#define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)  (board==BOARD_TARANIS_X9E)
 #define IS_HORUS(board)        (board==BOARD_HORUS)
 #define IS_FLAMENCO(board)     (board==BOARD_FLAMENCO)
 #define IS_STM32(board)        (IS_TARANIS(board) || IS_HORUS(board) || IS_FLAMENCO(board))
 #define IS_ARM(board)          (IS_STM32(board) || IS_SKY9X(board))
+#define HAS_LARGE_LCD(board)   (IS_TARANIS(board) && board != BOARD_X7D)
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
   {1, 3, 2, 4},
   {4, 2, 3, 1},
   {4, 3, 2, 1} };
-
-#define STK_RUD  1
-#define STK_ELE  2
-#define STK_THR  3
-#define STK_AIL  4
-#define STK_P1   5
-#define STK_P2   6
-#define STK_P3   7
 
 enum Switches {
   SWITCH_NONE,
@@ -149,18 +142,6 @@ enum FailsafeModes {
 #define TRIM_T6_UP 11
 #define TRIM_NONE  12
 
-// Beep center bits
-#define BC_BIT_RUD (0x01)
-#define BC_BIT_ELE (0x02)
-#define BC_BIT_THR (0x04)
-#define BC_BIT_AIL (0x08)
-#define BC_BIT_P1  (0x10)
-#define BC_BIT_P2  (0x20)
-#define BC_BIT_P3  (0x40)
-#define BC_BIT_P4  (0x80)
-#define BC_BIT_REA (0x80)
-#define BC_BIT_REB (0x100)
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 
@@ -171,13 +152,6 @@ enum HeliSwashTypes {
  HELI_SWASH_TYPE_140,
  HELI_SWASH_TYPE_90
 };
-
-extern const char * switches9X[];
-extern const char * switchesX9D[];
-extern const char leftArrow[];
-extern const char rightArrow[];
-extern const char upArrow[];
-extern const char downArrow[];
 
 class ModelData;
 class GeneralSettings;
@@ -1187,13 +1161,6 @@ class GeneralSettings {
       SLIDER_WITH_DETENT
     };
 
-    enum SwitchConfig {
-      SWITCH_NONE,
-      SWITCH_TOGGLE,
-      SWITCH_2POS,
-      SWITCH_3POS,
-    };
-
     GeneralSettings();
 
     int getDefaultStick(unsigned int channel) const;
@@ -1315,6 +1282,7 @@ class RadioData {
 };
 
 enum Capability {
+  ModelName,
   FlightModes,
   FlightModesName,
   FlightModesHaveFades,
@@ -1597,7 +1565,7 @@ struct Option {
 };
 
 class Firmware {
-
+    
   public:
     Firmware(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
       id(id),
@@ -1678,7 +1646,21 @@ class Firmware {
       return eepromInterface;
     }
 
-    virtual int getCapability(const Capability) = 0;
+    virtual int getCapability(Capability) = 0;
+    
+    enum SwitchType {
+      SWITCH_NONE,
+      SWITCH_TOGGLE,
+      SWITCH_2POS,
+      SWITCH_3POS
+    };
+    
+    struct Switch {
+      SwitchType type;
+      const char * name;
+    };
+    
+    virtual Switch getSwitch(unsigned int index) = 0;
 
     virtual QTime getMaxTimerStart() = 0;
 

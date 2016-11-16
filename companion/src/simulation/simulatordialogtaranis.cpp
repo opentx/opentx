@@ -50,14 +50,14 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
     }
   }
 
-  ui->trimHR_L->setText(QString::fromUtf8(leftArrow));
-  ui->trimHR_R->setText(QString::fromUtf8(rightArrow));
-  ui->trimVR_U->setText(QString::fromUtf8(upArrow));
-  ui->trimVR_D->setText(QString::fromUtf8(downArrow));
-  ui->trimHL_L->setText(QString::fromUtf8(leftArrow));
-  ui->trimHL_R->setText(QString::fromUtf8(rightArrow));
-  ui->trimVL_U->setText(QString::fromUtf8(upArrow));
-  ui->trimVL_D->setText(QString::fromUtf8(downArrow));
+  ui->trimHR_L->setText(QString::fromUtf8(ARROW_LEFT));
+  ui->trimHR_R->setText(QString::fromUtf8(ARROW_RIGHT));
+  ui->trimVR_U->setText(QString::fromUtf8(ARROW_UP));
+  ui->trimVR_D->setText(QString::fromUtf8(ARROW_DOWN));
+  ui->trimHL_L->setText(QString::fromUtf8(ARROW_LEFT));
+  ui->trimHL_R->setText(QString::fromUtf8(ARROW_RIGHT));
+  ui->trimVL_U->setText(QString::fromUtf8(ARROW_UP));
+  ui->trimVL_D->setText(QString::fromUtf8(ARROW_DOWN));
 
   connect(ui->leftbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->rightbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));

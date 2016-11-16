@@ -178,7 +178,7 @@ void MdiChild::modelEdit()
   else {
     QApplication::setOverrideCursor(Qt::WaitCursor);
     checkAndInitModel( row );
-    ModelData &model = radioData.models[row - 1];
+    ModelData & model = radioData.models[row - 1];
     gStopwatch.restart();
     gStopwatch.report("ModelEdit creation");
     ModelEdit *t = new ModelEdit(this, radioData, (row - 1), GetCurrentFirmware()/*firmware*/);
@@ -213,7 +213,7 @@ void MdiChild::openEditWindow()
     generalEdit();
   }
   else{
-    ModelData &model = radioData.models[row - 1];
+    ModelData & model = radioData.models[row - 1];
     if (model.isEmpty() && g.useWizard()) {
       wizardEdit();
     }

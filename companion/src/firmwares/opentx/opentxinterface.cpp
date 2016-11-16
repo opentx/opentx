@@ -63,12 +63,14 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for MEGA2560 board";
     case BOARD_GRUVIN9X:
       return "OpenTX for Gruvin9x board / 9X";
-    case BOARD_TARANIS:
-      return "OpenTX for FrSky Taranis";
-    case BOARD_TARANIS_PLUS:
-      return "OpenTX for FrSky Taranis Plus";
+    case BOARD_TARANIS_X9D:
+      return "OpenTX for FrSky Taranis X9D";
+    case BOARD_TARANIS_X9DP:
+      return "OpenTX for FrSky Taranis X9D+";
     case BOARD_TARANIS_X9E:
       return "OpenTX for FrSky Taranis X9E";
+    case BOARD_X7D:
+      return "OpenTX for FrSky X7D";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -99,8 +101,9 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_9XRPRO:
     case BOARD_AR9X:
       return EESIZE_9XRPRO;
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
+    case BOARD_X7D:
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
     case BOARD_FLAMENCO:
     case BOARD_HORUS:
@@ -320,7 +323,7 @@ unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument 
   return errors.to_ulong();
 }
 
-unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
+unsigned long OpenTxEepromInterface::load(RadioData & radioData, const uint8_t * eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
 
@@ -403,8 +406,9 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
 
   if (!version) {
     switch(board) {
-      case BOARD_TARANIS:
-      case BOARD_TARANIS_PLUS:
+      case BOARD_X7D:
+      case BOARD_TARANIS_X9D:
+      case BOARD_TARANIS_X9DP:
       case BOARD_TARANIS_X9E:
       case BOARD_SKY9X:
       case BOARD_AR9X:
@@ -527,7 +531,7 @@ Firmware * OpenTxFirmware::getFirmwareVariant(const QString & id)
   }
 }
 
-int OpenTxFirmware::getCapability(const Capability capability)
+int OpenTxFirmware::getCapability(Capability capability)
 {
   switch (capability) {
     case Imperial:
@@ -536,15 +540,9 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      if (IS_TARANIS(board))
-        return 1;
-      else
-        return 0;
+      return (board==BOARD_TARANIS_X9D || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E);
     case HasBeeper:
-      if (IS_ARM(board))
-        return 0;
-      else
-        return 1;
+      return (!IS_ARM(board));
     case HasPxxCountry:
       return 1;
     case HasGeneralUnits:
@@ -553,10 +551,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
       else
         return 0;
     case HasNegAndSwitches:
-      if (IS_ARM(board))
-        return 1;
-      else
-        return 0;
+      return IS_ARM(board);
     case PPMExtCtrl:
       return 1;
     case PPMFrameLength:
@@ -582,6 +577,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
         return IS_ARM(board) ? 9 : 5;
       else
         return 0;
+    case ModelName:
+      return (HAS_LARGE_LCD(board) ? 12 : 10);
     case FlightModesName:
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsName:
@@ -599,21 +596,25 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Timers:
       return (IS_ARM(board) ? 3 : 2);
     case TimersName:
-      return (IS_TARANIS(board) ? 8 : (IS_ARM(board) ? 3 : 0));
+      return (HAS_LARGE_LCD(board) ? 8 : (IS_ARM(board) ? 3 : 0));
     case PermTimers:
       if (IS_2560(board) || IS_ARM(board))
         return 1;
       else
         return 0;
     case Pots:
-      if (IS_TARANIS_X9E(board))
+      if (board == BOARD_X7D)
+        return 2;
+      else if (IS_TARANIS_X9E(board))
         return 4;
       else if (IS_TARANIS(board))
         return 3;   //Taranis has only 2 pots but still has a placeholder in settings for 3 pots
       else
         return 3;
     case Sliders:
-      if (IS_TARANIS_X9E(board))
+      if (board == BOARD_X7D)
+        return 0;
+      else if (IS_TARANIS_X9E(board))
         return 4;
       else if (IS_TARANIS(board))
         return 2;
@@ -622,6 +623,8 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
+      else if (board == BOARD_X7D)
+        return 6;
       else if (IS_TARANIS(board))
         return 8;
       else
@@ -691,7 +694,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case Simulation:
       return 1;
     case NumCurves:
-      return (IS_TARANIS(board) ? 32 : (IS_ARM(board) ? 16 : 8));
+      return (HAS_LARGE_LCD(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
@@ -699,7 +702,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case HasNoExpo:
       return (IS_TARANIS(board) ? false : true);
     case ChannelsName:
-      return (IS_TARANIS(board) ? 6 : 0);
+      return (IS_ARM(board) ? (HAS_LARGE_LCD(board) ? 6 : 4) : 0);
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case Telemetry:
@@ -712,7 +715,7 @@ int OpenTxFirmware::getCapability(const Capability capability)
     case TelemetryCustomScreens:
       return IS_ARM(board) ? 4 : 2;
     case TelemetryCustomScreensFieldsPerLine:
-      return IS_TARANIS(board) ? 3 : 2;
+      return HAS_LARGE_LCD(board) ? 3 : 2;
     case NoTelemetryProtocol:
       return IS_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:
@@ -810,6 +813,50 @@ int OpenTxFirmware::getCapability(const Capability capability)
       return id.contains("danger") ? 1 : 0;
     default:
       return 0;
+  }
+}
+
+Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
+{
+  if (board == BOARD_X7D) {
+    const Switch switches[] = { { SWITCH_3POS, "SA" },
+                                { SWITCH_3POS, "SB" },
+                                { SWITCH_3POS, "SC" },
+                                { SWITCH_3POS, "SD" },
+                                { SWITCH_2POS, "SF" },
+                                { SWITCH_TOGGLE, "SH" } };
+    return switches[index];
+  }
+  else if (IS_TARANIS(board) || board == BOARD_HORUS) {
+    const Switch switches[] = { { SWITCH_3POS, "SA" },
+                                { SWITCH_3POS, "SB" },
+                                { SWITCH_3POS, "SC" },
+                                { SWITCH_3POS, "SD" },
+                                { SWITCH_3POS, "SE" },
+                                { SWITCH_2POS, "SF" },
+                                { SWITCH_3POS, "SG" },
+                                { SWITCH_TOGGLE, "SH" },
+                                { SWITCH_3POS, "SI" },
+                                { SWITCH_3POS, "SJ" },
+                                { SWITCH_3POS, "SK" },
+                                { SWITCH_3POS, "SL" },
+                                { SWITCH_3POS, "SM" },
+                                { SWITCH_3POS, "SN" },
+                                { SWITCH_3POS, "SO" },
+                                { SWITCH_3POS, "SP" },
+                                { SWITCH_3POS, "SQ" },
+                                { SWITCH_3POS, "SR" } };
+    return switches[index];
+  }
+  else {
+    const Switch switches[] = {{SWITCH_3POS,   "3POS"},
+                               {SWITCH_2POS,   "THR"},
+                               {SWITCH_2POS,   "RUD"},
+                               {SWITCH_2POS,   "ELE"},
+                               {SWITCH_2POS,   "AIL"},
+                               {SWITCH_2POS,   "GEA"},
+                               {SWITCH_TOGGLE, "SH"}};
+    return switches[index];
   }
 }
 
@@ -1036,7 +1083,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *e
   BoardEnum backupBoard = (BoardEnum)-1;
   switch (eeprom[3]) {
     case 0x33:
-      backupBoard = BOARD_TARANIS;
+      backupBoard = BOARD_TARANIS_X9D;
       break;
     case 0x32:
       backupBoard = BOARD_SKY9X;
@@ -1176,27 +1223,33 @@ void registerOpenTxFirmwares()
   Option nav_options[] = { { "rotenc", QObject::tr("Rotary Encoder use in menus navigation") }, { "potscroll", QObject::tr("Pots use in menus navigation") }, { NULL } };
   Option dsm2_options[] = { { "DSM2", QObject::tr("Support for DSM2 modules"), 0 }, { "DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0 }, { NULL } };
 
-  /* Taranis Plus board */
-  firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis Plus"), BOARD_TARANIS_PLUS);
+  /* FrSky Taranis X9D+ board */
+  firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* Taranis board */
-  firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis"), BOARD_TARANIS);
+  /* FrSky Taranis X9D board */
+  firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* Taranis X9E board */
+  /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   addOpenTxTaranisOptions(firmware);
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* Horus board */
+  /* FrSky X7D board */
+  firmware = new OpenTxFirmware("opentx-x7d", QObject::tr("FrSky X7D"), BOARD_X7D);
+  addOpenTxTaranisOptions(firmware);
+  addOpenTxCommonOptions(firmware);
+  firmwares.push_back(firmware);
+
+  /* FrSky Horus board */
   firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));

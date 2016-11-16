@@ -804,7 +804,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     else if (board == BOARD_FLAMENCO) {
       sd = new SimulatorDialogFlamenco(parent, si, flags);
     }
-    else if (IS_TARANIS(board)) {
+    else if (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E) {
       for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
         if (radioData.generalSettings.isPotAvailable(i)) {
           flags |= (SIMULATOR_FLAGS_S1 << i);

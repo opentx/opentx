@@ -2,6 +2,7 @@
 #include <list>
 #include <float.h>
 #include <QtWidgets>
+#include <stdlib.h>
 #include "eeprominterface.h"
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/th9x/th9xinterface.h"
@@ -15,13 +16,6 @@
 #include "firmwareinterface.h"
 
 std::list<QString> EEPROMWarnings;
-
-const char * switches9X[] = { "3POS", "THR", "RUD", "ELE", "AIL", "GEA", "TRN" };
-const char * switchesX9D[] = { "SA", "SB", "SC", "SD", "SE", "SF", "SG", "SH", "SI", "SJ", "SK", "SL", "SM", "SN", "SO", "SP", "SQ", "SR" };
-const char leftArrow[] = {(char)0xE2, (char)0x86, (char)0x90, 0};
-const char rightArrow[] = {(char)0xE2, (char)0x86, (char)0x92, 0};
-const char upArrow[] = {(char)0xE2, (char)0x86, (char)0x91, 0};
-const char downArrow[] = {(char)0xE2, (char)0x86, (char)0x93, 0};
 
 const uint8_t chout_ar[] = { // First number is 0..23 -> template setup,  Second is relevant channel out
   1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
@@ -500,7 +494,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
     case SOURCE_TYPE_SWITCH:
-      return (IS_TARANIS(GetEepromInterface()->getBoard()) ? CHECK_IN_ARRAY(switchesX9D, index) : CHECK_IN_ARRAY(switches9X, index));
+      return GetCurrentFirmware()->getSwitch(index).name;
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return QObject::tr("L%1").arg(index+1);
     case SOURCE_TYPE_CYC:
@@ -542,46 +536,12 @@ bool RawSource::isSlider() const
           index < NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders));
 }
 
-
-QString SwitchUp(const char sw)
-{
-  const char result[] = {'S', sw, upArrow[0], upArrow[1], upArrow[2], 0};
-  return QString::fromUtf8(result);
-}
-
-QString SwitchDn(const char sw)
-{
-  const char result[] = {'S', sw, downArrow[0], downArrow[1], downArrow[2], 0};
-  return QString::fromUtf8(result);
-}
-
 QString RawSwitch::toString() const
 {
   static const QString switches9X[] = {
     QString("THR"), QString("RUD"), QString("ELE"),
     QString("ID0"), QString("ID1"), QString("ID2"),
     QString("AIL"), QString("GEA"), QString("TRN")
-  };
-
-  static const QString switchesX9D[] = {
-    SwitchUp('A'), QString::fromUtf8("SA-"), SwitchDn('A'),
-    SwitchUp('B'), QString::fromUtf8("SB-"), SwitchDn('B'),
-    SwitchUp('C'), QString::fromUtf8("SC-"), SwitchDn('C'),
-    SwitchUp('D'), QString::fromUtf8("SD-"), SwitchDn('D'),
-    SwitchUp('E'), QString::fromUtf8("SE-"), SwitchDn('E'),
-    SwitchUp('F'), QString::fromUtf8("SF-"), SwitchDn('F'),
-    SwitchUp('G'), QString::fromUtf8("SG-"), SwitchDn('G'),
-    SwitchUp('H'), QString::fromUtf8("SH-"), SwitchDn('H'),
-    SwitchUp('I'), QString::fromUtf8("SI-"), SwitchDn('I'),
-    SwitchUp('J'), QString::fromUtf8("SJ-"), SwitchDn('J'),
-    SwitchUp('K'), QString::fromUtf8("SK-"), SwitchDn('K'),
-    SwitchUp('L'), QString::fromUtf8("SL-"), SwitchDn('L'),
-    SwitchUp('M'), QString::fromUtf8("SM-"), SwitchDn('M'),
-    SwitchUp('N'), QString::fromUtf8("SN-"), SwitchDn('N'),
-    SwitchUp('O'), QString::fromUtf8("SO-"), SwitchDn('O'),
-    SwitchUp('P'), QString::fromUtf8("SP-"), SwitchDn('P'),
-    SwitchUp('Q'), QString::fromUtf8("SQ-"), SwitchDn('Q'),
-    SwitchUp('R'), QString::fromUtf8("SR-"), SwitchDn('R'),
   };
 
   static const QString flightModes[] = {
@@ -616,10 +576,15 @@ QString RawSwitch::toString() const
   else {
     switch(type) {
       case SWITCH_TYPE_SWITCH:
-        if (IS_TARANIS(GetEepromInterface()->getBoard()))
-          return CHECK_IN_ARRAY(switchesX9D, index-1);
-        else
-          return CHECK_IN_ARRAY(switches9X, index-1);
+        if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+          div_t qr = div(index-1, 3);
+          Firmware::Switch sw = GetCurrentFirmware()->getSwitch(qr.quot);
+          const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
+          return QString(sw.name) + QString(positions[qr.rem]);
+        }
+        else {
+          return CHECK_IN_ARRAY(switches9X, index - 1);
+        }
       case SWITCH_TYPE_VIRTUAL:
         return QObject::tr("L%1").arg(index);
       case SWITCH_TYPE_MULTIPOS_POT:
@@ -1008,17 +973,17 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   if (index == 0)
     return true;
   SwitchInfo info = switchInfoFromSwitchPositionTaranis(abs(index));
-  if (index < 0 && switchConfig[info.index] != SWITCH_3POS)
+  if (index < 0 && switchConfig[info.index] != Firmware::SWITCH_3POS)
     return false;
   else if (info.position == 1)
-    return switchConfig[info.index] == SWITCH_3POS;
+    return switchConfig[info.index] == Firmware::SWITCH_3POS;
   else
-    return switchConfig[info.index] != SWITCH_NONE;
+    return switchConfig[info.index] != Firmware::SWITCH_NONE;
 }
 
 bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 {
-  return switchConfig[index] != SWITCH_NONE;
+  return switchConfig[index] != Firmware::SWITCH_NONE;
 }
 
 bool GeneralSettings::isPotAvailable(int index) const
@@ -1045,21 +1010,17 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-
+  
+  for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
+    switchConfig[i] = GetCurrentFirmware()->getSwitch(i).type;
+  }
+  
   BoardEnum board = GetEepromInterface()->getBoard();
   if (IS_TARANIS(board)) {
     potConfig[0] = POT_WITH_DETENT;
     potConfig[1] = POT_WITH_DETENT;
     sliderConfig[0] = SLIDER_WITH_DETENT;
     sliderConfig[1] = SLIDER_WITH_DETENT;
-    switchConfig[0] = SWITCH_3POS;
-    switchConfig[1] = SWITCH_3POS;
-    switchConfig[2] = SWITCH_3POS;
-    switchConfig[3] = SWITCH_3POS;
-    switchConfig[4] = SWITCH_3POS;
-    switchConfig[5] = SWITCH_2POS;
-    switchConfig[6] = SWITCH_3POS;
-    switchConfig[7] = SWITCH_TOGGLE;
   }
   else {
     for (int i=0; i<3; i++) {
@@ -1604,8 +1565,8 @@ void registerEEpromInterfaces()
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_GRUVIN9X));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_SKY9X));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_9XRPRO));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_PLUS));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9D));
+  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9DP));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9E));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_STOCK));
   eepromInterfaces.push_back(new Gruvin9xInterface(BOARD_GRUVIN9X));
@@ -1754,8 +1715,8 @@ const int Firmware::getFlashSize()
     case BOARD_9XRPRO:
     case BOARD_AR9X:
       return FSIZE_9XRPRO;
-    case BOARD_TARANIS:
-    case BOARD_TARANIS_PLUS:
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
     case BOARD_FLAMENCO:
       return FSIZE_TARANIS;

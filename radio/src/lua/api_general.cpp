@@ -1181,9 +1181,11 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
+#if !defined(PCBX7D)
   { "MIXSRC_SE", MIXSRC_SE },
-  { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SG", MIXSRC_SG },
+#endif
+  { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },

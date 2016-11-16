@@ -117,7 +117,9 @@ class OpenTxFirmware: public Firmware {
 
     virtual QString getFirmwareUrl();
 
-    virtual int getCapability(const Capability);
+    virtual int getCapability(Capability);
+    
+    virtual Switch getSwitch(unsigned int index);
     
     virtual QTime getMaxTimerStart();
 

@@ -181,8 +181,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
     }
   }
 
-  for (int i=0; i<=MM_RF_PROTO_LAST; i++)
-  {
+  for (int i=0; i<=MM_RF_PROTO_LAST; i++) {
     ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i, false), (QVariant) i);
   }
 
@@ -531,7 +530,7 @@ void ModulePanel::updateFailsafe(int channel)
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
@@ -545,7 +544,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   ui->name->setValidator(new QRegExpValidator(rx, this));
-  ui->name->setMaxLength(IS_TARANIS(board) ? 12 : 10);
+  ui->name->setMaxLength(firmware->getCapability(ModelName));
 
   if (firmware->getCapability(ModelImage)) {
     QStringList items;
@@ -594,7 +593,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     ui->imagePreview->hide();
   }
 
-  QWidget *prevFocus = ui->image;
+  QWidget * prevFocus = ui->image;
   for (int i=0; i<C9X_MAX_TIMERS; i++) {
     if (i<firmware->getCapability(Timers)) {
       timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus);
@@ -655,15 +654,12 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   // Startup switches warnings
   for (int i=0; i<firmware->getCapability(Switches); i++) {
+    Firmware::Switch sw = firmware->getSwitch(i);
     if (IS_TARANIS(firmware->getBoard())) {
-      if (generalSettings.switchConfig[i] == GeneralSettings::SWITCH_NONE || generalSettings.switchConfig[i] == GeneralSettings::SWITCH_TOGGLE) {
-        continue;
-      }
+      sw.type = Firmware::SwitchType(generalSettings.switchConfig[i]);
     }
-    else {
-      if (i==firmware->getCapability(Switches)-1) {
-        continue;
-      }
+    if (sw.type == Firmware::SWITCH_NONE || sw.type == Firmware::SWITCH_TOGGLE) {
+      continue;
     }
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
@@ -678,14 +674,8 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     slider->setSingleStep(1);
     slider->setPageStep(1);
     slider->setTickInterval(1);
-    if (IS_TARANIS(board)) {
-      label->setText(switchesX9D[i]);
-      slider->setMaximum(generalSettings.switchConfig[i] == GeneralSettings::SWITCH_3POS ? 2 : 1);
-    }
-    else {
-      label->setText(switches9X[i]);
-      slider->setMaximum(i==0 ? 2 : 1);
-    }
+    label->setText(sw.name);
+    slider->setMaximum(sw.type == Firmware::SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
@@ -701,8 +691,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
     QWidget::setTabOrder(slider, cb);
     prevFocus = cb;
   }
-  ui->switchesStartupLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Minimum), 0, firmware->getCapability(Switches));
-
+  
   // Pot warnings
   prevFocus = ui->potWarningMode;
   if (IS_TARANIS(board)) {
@@ -931,7 +920,7 @@ void SetupPanel::updateStartupSwitches()
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
-      if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2)
+      if (generalSettings.switchConfig[index] != Firmware::SWITCH_3POS && value == 2)
         value = 1;
     }
     else {
@@ -969,7 +958,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
     
-    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
+    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != Firmware::SWITCH_3POS) {
       if (value == 1) value = 2;
     }
 
