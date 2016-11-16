@@ -25,7 +25,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
     spinbox->setSuffix("%");
   }
 
-  if (IS_TARANIS(board) || deflt == 0 /*it's the offset*/) {
+  if (HAS_LARGE_LCD(board) || deflt == 0 /*it's the offset*/) {
     spinbox->setDecimals(1);
   }
   else {

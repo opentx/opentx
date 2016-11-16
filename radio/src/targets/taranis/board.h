@@ -376,7 +376,7 @@ enum Analogs {
   NUMBER_ANALOG
 };
 #define NUM_POTS                       (POT_LAST-POT_FIRST+1)
-#define NUM_SLIDERS                    (TX_VOLTAGE-POT_FIRST-NUM_POTS)
+#define NUM_SLIDERS                    (TX_VOLTAGE-POT_LAST-1)
 #define NUM_XPOTS                      NUM_POTS
 #if defined(PCBX9D)
   #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT2) // POT3 is only defined in software

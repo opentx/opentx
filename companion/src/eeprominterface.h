@@ -58,6 +58,7 @@
 #define IS_FLAMENCO(board)     (board==BOARD_FLAMENCO)
 #define IS_STM32(board)        (IS_TARANIS(board) || IS_HORUS(board) || IS_FLAMENCO(board))
 #define IS_ARM(board)          (IS_STM32(board) || IS_SKY9X(board))
+#define HAS_LARGE_LCD(board)   (IS_TARANIS(board) && board != BOARD_X7D)
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -141,18 +142,6 @@ enum FailsafeModes {
 #define TRIM_T6_UP 11
 #define TRIM_NONE  12
 
-// Beep center bits
-#define BC_BIT_RUD (0x01)
-#define BC_BIT_ELE (0x02)
-#define BC_BIT_THR (0x04)
-#define BC_BIT_AIL (0x08)
-#define BC_BIT_P1  (0x10)
-#define BC_BIT_P2  (0x20)
-#define BC_BIT_P3  (0x40)
-#define BC_BIT_P4  (0x80)
-#define BC_BIT_REA (0x80)
-#define BC_BIT_REB (0x100)
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 
@@ -163,11 +152,6 @@ enum HeliSwashTypes {
  HELI_SWASH_TYPE_140,
  HELI_SWASH_TYPE_90
 };
-
-extern const char leftArrow[];
-extern const char rightArrow[];
-extern const char upArrow[];
-extern const char downArrow[];
 
 class ModelData;
 class GeneralSettings;
@@ -1298,6 +1282,7 @@ class RadioData {
 };
 
 enum Capability {
+  ModelName,
   FlightModes,
   FlightModesName,
   FlightModesHaveFades,

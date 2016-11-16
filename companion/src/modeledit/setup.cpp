@@ -530,7 +530,7 @@ void ModulePanel::updateFailsafe(int channel)
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
@@ -544,7 +544,7 @@ SetupPanel::SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   ui->name->setValidator(new QRegExpValidator(rx, this));
-  ui->name->setMaxLength(IS_TARANIS(board) ? 12 : 10);
+  ui->name->setMaxLength(firmware->getCapability(ModelName));
 
   if (firmware->getCapability(ModelImage)) {
     QStringList items;

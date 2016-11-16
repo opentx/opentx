@@ -164,7 +164,7 @@ enum CurveType {
   #define LEN_TIMER_NAME               3
   #define LEN_FLIGHT_MODE_NAME         6
   #define LEN_EXPOMIX_NAME             6
-  #define LEN_CHANNEL_NAME             6
+  #define LEN_CHANNEL_NAME             4
   #define LEN_INPUT_NAME               3
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            6
@@ -527,15 +527,13 @@ enum PotsWarnMode {
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
 
 #if defined(PCBSTD) && defined(GVARS)
-  #define MAX_GVARS 5
+  #define MAX_GVARS                    5
 #elif defined(PCBSTD)
-  #define MAX_GVARS 0
+  #define MAX_GVARS                    0
+#elif defined(CPUARM)
+  #define MAX_GVARS                    9
 #else
-  #if defined(CPUARM)
-    #define MAX_GVARS 9
-  #else
-    #define MAX_GVARS 5
-  #endif
+  #define MAX_GVARS                    5
 #endif
 
 enum SwitchSources {
@@ -836,21 +834,25 @@ enum MixSources {
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
+#if !defined(PCBX7D)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
+#endif
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
+#if !defined(PCBX7D)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
+#endif
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #if defined(PCBX9E)
-  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I (X9E only)")
-  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J (X9E only)")
-  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K (X9E only)")
-  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L (X9E only)")
-  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M (X9E only)")
-  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N (X9E only)")
-  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O (X9E only)")
-  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P (X9E only)")
-  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q (X9E only)")
-  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R (X9E only)")
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+  MIXSRC_SK,                        LUA_EXPORT("sk", "Switch K")
+  MIXSRC_SL,                        LUA_EXPORT("sl", "Switch L")
+  MIXSRC_SM,                        LUA_EXPORT("sm", "Switch M")
+  MIXSRC_SN,                        LUA_EXPORT("sn", "Switch N")
+  MIXSRC_SO,                        LUA_EXPORT("so", "Switch O")
+  MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
+  MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
+  MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
   MIXSRC_LAST_SWITCH = MIXSRC_SR,
 #else
   MIXSRC_LAST_SWITCH = MIXSRC_SH,
@@ -867,10 +869,6 @@ enum MixSources {
 #endif
   MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", MAX_LOGICAL_SWITCHES)
-  MIXSRC_SW9 = MIXSRC_SW1 + 8,
-  MIXSRC_SWA,
-  MIXSRC_SWB,
-  MIXSRC_SWC,
   MIXSRC_LAST_LOGICAL_SWITCH = MIXSRC_FIRST_LOGICAL_SWITCH+MAX_LOGICAL_SWITCHES-1,
 
   MIXSRC_FIRST_TRAINER,                     LUA_EXPORT_MULTIPLE("trn", "Trainer input %d", MAX_TRAINER_CHANNELS)

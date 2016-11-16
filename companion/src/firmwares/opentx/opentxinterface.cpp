@@ -298,7 +298,7 @@ template <class T>
 bool OpenTxEepromInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant)
 {
   T open9xSettings(settings, board, version, variant);
-  open9xSettings.Dump();
+  // open9xSettings.Dump();
   QByteArray eeprom;
   open9xSettings.Export(eeprom);
   int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (const uint8_t*)eeprom.constData(), eeprom.size());
@@ -309,7 +309,7 @@ template <class T>
 bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
-  open9xModel.Dump();
+  // open9xModel.Dump();
   QByteArray eeprom;
   open9xModel.Export(eeprom);
   int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (const uint8_t*)eeprom.constData(), eeprom.size());
@@ -577,6 +577,8 @@ int OpenTxFirmware::getCapability(Capability capability)
         return IS_ARM(board) ? 9 : 5;
       else
         return 0;
+    case ModelName:
+      return (HAS_LARGE_LCD(board) ? 12 : 10);
     case FlightModesName:
       return (IS_TARANIS(board) ? 10 : 6);
     case GvarsName:
@@ -594,7 +596,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Timers:
       return (IS_ARM(board) ? 3 : 2);
     case TimersName:
-      return (IS_TARANIS(board) ? 8 : (IS_ARM(board) ? 3 : 0));
+      return (HAS_LARGE_LCD(board) ? 8 : (IS_ARM(board) ? 3 : 0));
     case PermTimers:
       if (IS_2560(board) || IS_ARM(board))
         return 1;
@@ -692,7 +694,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Simulation:
       return 1;
     case NumCurves:
-      return (IS_TARANIS(board) ? 32 : (IS_ARM(board) ? 16 : 8));
+      return (HAS_LARGE_LCD(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
       return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
@@ -700,7 +702,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case HasNoExpo:
       return (IS_TARANIS(board) ? false : true);
     case ChannelsName:
-      return (IS_TARANIS(board) ? 6 : 0);
+      return (IS_ARM(board) ? (HAS_LARGE_LCD(board) ? 6 : 4) : 0);
     case HasCvNames:
       return (IS_TARANIS(board) ? 1 : 0);
     case Telemetry:
@@ -713,7 +715,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case TelemetryCustomScreens:
       return IS_ARM(board) ? 4 : 2;
     case TelemetryCustomScreensFieldsPerLine:
-      return IS_TARANIS(board) ? 3 : 2;
+      return HAS_LARGE_LCD(board) ? 3 : 2;
     case NoTelemetryProtocol:
       return IS_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:

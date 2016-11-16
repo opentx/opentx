@@ -39,4 +39,9 @@ enum BoardEnum {
 #define C9X_NUM_SWITCHES          32
 #define C9X_NUM_KEYS              32
 
+const char * const ARROW_LEFT = "\xE2\x86\x90";
+const char * const ARROW_UP = "\xE2\x86\x91";
+const char * const ARROW_RIGHT = "\xE2\x86\x92";
+const char * const ARROW_DOWN = "\xE2\x86\x93";
+
 #endif
