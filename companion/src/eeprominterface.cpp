@@ -1650,16 +1650,22 @@ QString getBoardName(BoardEnum board)
       return "Gruvin9x";
     case BOARD_MEGA2560:
       return "MEGA2560";
-    case BOARD_TARANIS:
-      return "Taranis";
-    case BOARD_TARANIS_PLUS:
-      return "Taranis Plus";
+    case BOARD_X7D:
+      return "X7D";  
+    case BOARD_TARANIS_X9D:
+      return "Taranis X9D";
+    case BOARD_TARANIS_X9DP:
+      return "Taranis X9D+";
+    case BOARD_TARANIS_X9E:
+      return "Taranis X9E";  
     case BOARD_SKY9X:
       return "Sky9x";
     case BOARD_9XRPRO:
       return "9XR-PRO";
     case BOARD_AR9X:
       return "AR9X";
+    case BOARD_HORUS:
+      return "Horus";  
     default:
       return "Unknown";
   }
