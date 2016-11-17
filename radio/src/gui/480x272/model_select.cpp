@@ -98,7 +98,6 @@ void setCurrentCategory(unsigned int index)
     currentModel = NULL;
 }
 
-#define MAX_WIZARDS                    11   //the last one is used for ... so that's 10 effective
 #define MAX_WIZARD_NAME_LEN            (sizeof(WIZARD_PATH)+20)
 #define WIZARD_SPACING                 40
 #define WIZARD_LEFT_SPACING            30
@@ -127,7 +126,8 @@ uint8_t getWizardNumber()
   return wizNbr;
 }
 
-bool menuModelWizard(event_t event){
+bool menuModelWizard(event_t event)
+{
   static uint8_t wizardSelected;
   static uint8_t wizardNumber;
   bool executeMe = false;
@@ -139,6 +139,7 @@ bool menuModelWizard(event_t event){
   if(wizardNumber == 0) {
     wizardNumber = getWizardNumber();
   }
+
   switch(event) {
    case 0:
      // no need to refresh the screen
@@ -149,7 +150,6 @@ bool menuModelWizard(event_t event){
     return false;
 
   case EVT_KEY_BREAK(KEY_ENTER):
-    TRACE("ENTER WAS PUSHED");
     executeMe = true;
     break;
 
@@ -187,15 +187,15 @@ bool menuModelWizard(event_t event){
         if((wizidx >= first) && (wizidx < (first+4))) {
           uint16_t x = WIZARD_LEFT_SPACING + (wizidx - first) * (WIZARD_SPACING + WIZARD_ICON_X);
           strcpy(&wizpath[sizeof(WIZARD_PATH)], fno.fname);
-          strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)],"/icon.png");
+          strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)], "/icon.png");
           lcdDrawText(x + 10, WIZARD_TEXT_Y, fno.fname);
           lcd->drawBitmap(x, WIZARD_ICON_Y, BitmapBuffer::load(wizpath));
           if(wizidx == wizardSelected ) {
             if (wizardSelected < 5) {
-              lcdDrawRect(x-10, 100, 85, 130,1, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
+              lcdDrawRect(x-10, 100, 85, 130, 1, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
             }
             if (executeMe) {
-              strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)],"/wizard.lua");
+              strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)], "/wizard.lua");
               if (isFileAvailable(wizpath)) {
                 wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)] = 0;
                 f_chdir(wizpath);
