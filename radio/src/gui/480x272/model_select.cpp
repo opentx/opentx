@@ -109,7 +109,7 @@ void setCurrentCategory(unsigned int index)
 
 uint8_t getWizardNumber()
 {
-  uint8_t wizNbr;
+  uint8_t wizNbr=0;
   DIR dir;
   static FILINFO fno;
 
