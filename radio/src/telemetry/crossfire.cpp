@@ -154,14 +154,14 @@ void processCrossfireTelemetryFrame()
 
     case LINK_ID:
       telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-      for (unsigned int i=0; i<10; i++) {
+      for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
-          if (i == 6) {
+          if (i == TX_POWER_INDEX) {
             static const uint32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000 };
-            value = (i < DIM(power_values) ? power_values[i] : 0);
+            value = (value < DIM(power_values) ? power_values[value] : 0);
           }
           processCrossfireTelemetryValue(i, value);
-          if (i == 2) {
+          if (i == RX_QUALITY_INDEX) {
             telemetryData.rssi.set(value);
           }
         }
