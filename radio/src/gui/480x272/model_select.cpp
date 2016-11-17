@@ -98,6 +98,8 @@ void setCurrentCategory(unsigned int index)
     currentModel = NULL;
 }
 
+#if defined(LUA)
+
 #define MAX_WIZARD_NAME_LEN            (sizeof(WIZARD_PATH)+20)
 #define WIZARD_SPACING                 40
 #define WIZARD_LEFT_SPACING            30
@@ -187,18 +189,18 @@ bool menuModelWizard(event_t event)
         if((wizidx >= first) && (wizidx < (first+4))) {
           uint16_t x = WIZARD_LEFT_SPACING + (wizidx - first) * (WIZARD_SPACING + WIZARD_ICON_X);
           strcpy(&wizpath[sizeof(WIZARD_PATH)], fno.fname);
-          strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)], "/icon.png");
+          strcpy(&wizpath[sizeof(WIZARD_PATH) + strlen(fno.fname)], "/icon.png");
           lcdDrawText(x + 10, WIZARD_TEXT_Y, fno.fname);
           lcd->drawBitmap(x, WIZARD_ICON_Y, BitmapBuffer::load(wizpath));
           if(wizidx == wizardSelected ) {
             if (wizardSelected < 5) {
-              lcdDrawRect(x, WIZARD_ICON_Y, 85, 130, 1, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
+              lcdDrawRect(x, WIZARD_ICON_Y, 85, 130, 2, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
               lcdDrawRect(x+5, WIZARD_TEXT_Y, 75, 4, 2, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
             }
             if (executeMe) {
               strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)], "/wizard.lua");
               if (isFileAvailable(wizpath)) {
-                wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)] = 0;
+                wizpath[sizeof(WIZARD_PATH) + strlen(fno.fname)] = 0;
                 f_chdir(wizpath);
                 luaExec(WIZARD_NAME);
               }
@@ -215,6 +217,7 @@ bool menuModelWizard(event_t event)
   }
   return true;
 }
+#endif
 
 void onModelSelectMenu(const char * result)
 {
@@ -239,7 +242,9 @@ void onModelSelectMenu(const char * result)
     currentModel = modelslist.currentModel = modelslist.addModel(currentCategory, createModel());
     selectMode = MODE_SELECT_MODEL;
     setCurrentModel(currentCategory->size() - 1);
+#if defined(LUA)
     chainMenu(menuModelWizard);
+#endif
   }
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
