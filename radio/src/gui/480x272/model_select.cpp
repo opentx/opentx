@@ -103,7 +103,7 @@ void setCurrentCategory(unsigned int index)
 #define WIZARD_LEFT_SPACING            30
 #define WIZARD_ICON_X                  80
 #define WIZARD_ICON_Y                  110
-#define WIZARD_TEXT_Y                  200
+#define WIZARD_TEXT_Y                  195
 
 uint8_t getWizardNumber()
 {
@@ -192,7 +192,8 @@ bool menuModelWizard(event_t event)
           lcd->drawBitmap(x, WIZARD_ICON_Y, BitmapBuffer::load(wizpath));
           if(wizidx == wizardSelected ) {
             if (wizardSelected < 5) {
-              lcdDrawRect(x-10, 100, 85, 130, 1, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
+              lcdDrawRect(x, WIZARD_ICON_Y, 85, 130, 1, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
+              lcdDrawRect(x+5, WIZARD_TEXT_Y, 75, 4, 2, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
             }
             if (executeMe) {
               strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)], "/wizard.lua");
