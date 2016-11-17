@@ -98,6 +98,127 @@ void setCurrentCategory(unsigned int index)
     currentModel = NULL;
 }
 
+#if defined(LUA)
+
+#define MAX_WIZARD_NAME_LEN            (sizeof(WIZARD_PATH)+20)
+#define WIZARD_SPACING                 40
+#define WIZARD_LEFT_SPACING            30
+#define WIZARD_ICON_X                  80
+#define WIZARD_ICON_Y                  110
+#define WIZARD_TEXT_Y                  195
+
+uint8_t getWizardNumber()
+{
+  uint8_t wizNbr=0;
+  DIR dir;
+  static FILINFO fno;
+
+  FRESULT res = f_opendir(&dir, WIZARD_PATH);
+  if (res == FR_OK) {
+    for (;;) {
+      res = f_readdir(&dir, &fno);
+      if (res != FR_OK || fno.fname[0] == 0) {
+        break;
+      }
+      if (fno.fattrib & AM_DIR) {
+        wizNbr++;
+      }
+    }
+  }
+  return wizNbr;
+}
+
+bool menuModelWizard(event_t event)
+{
+  static uint8_t wizardSelected;
+  static uint8_t wizardNumber;
+  bool executeMe = false;
+  uint8_t first = 0;
+  DIR dir;
+  static FILINFO fno;
+  char wizpath[MAX_WIZARD_NAME_LEN];
+
+  if(wizardNumber == 0) {
+    wizardNumber = getWizardNumber();
+  }
+
+  switch(event) {
+   case 0:
+     // no need to refresh the screen
+     return false;
+
+  case EVT_KEY_FIRST(KEY_EXIT):
+    chainMenu(menuModelSelect);
+    return false;
+
+  case EVT_KEY_BREAK(KEY_ENTER):
+    executeMe = true;
+    break;
+
+  case EVT_ROTARY_RIGHT:
+    if (wizardSelected < wizardNumber-1) {
+      wizardSelected++;
+    }
+    if (wizardSelected > 3) {
+      first = wizardSelected - 3;
+    }
+    break;
+
+  case EVT_ROTARY_LEFT:
+    if (wizardSelected != 0) {
+      wizardSelected--;
+    }
+    if(wizardSelected < first)
+    {
+      first = wizardSelected;
+    }
+    break;
+  }
+  strncpy(wizpath, WIZARD_PATH, sizeof(WIZARD_PATH));
+  strcpy(&wizpath[sizeof(WIZARD_PATH)-1], "/");
+  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  lcd->drawBitmap(0, 0, BitmapBuffer::load(getThemePath("wizard/background.png")));
+  FRESULT res = f_opendir(&dir, WIZARD_PATH);
+  if (res == FR_OK) {
+    for (uint8_t wizidx=0;;wizidx++) {
+      res = f_readdir(&dir, &fno);
+      if (res != FR_OK || fno.fname[0] == 0) {
+        break;
+      }
+      if (fno.fattrib & AM_DIR) {
+        if((wizidx >= first) && (wizidx < (first+4))) {
+          uint16_t x = WIZARD_LEFT_SPACING + (wizidx - first) * (WIZARD_SPACING + WIZARD_ICON_X);
+          strcpy(&wizpath[sizeof(WIZARD_PATH)], fno.fname);
+          strcpy(&wizpath[sizeof(WIZARD_PATH) + strlen(fno.fname)], "/icon.png");
+          lcdDrawText(x + 10, WIZARD_TEXT_Y, fno.fname);
+          lcd->drawBitmap(x, WIZARD_ICON_Y, BitmapBuffer::load(wizpath));
+          if(wizidx == wizardSelected ) {
+            if (wizardSelected < 5) {
+              lcdDrawRect(x, WIZARD_ICON_Y, 85, 130, 2, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
+              lcdDrawRect(x+5, WIZARD_TEXT_Y, 75, 4, 2, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
+            }
+            if (executeMe) {
+              strcpy(&wizpath[sizeof(WIZARD_PATH)+strlen(fno.fname)], "/wizard.lua");
+              if (isFileAvailable(wizpath)) {
+                wizpath[sizeof(WIZARD_PATH) + strlen(fno.fname)] = 0;
+                f_chdir(wizpath);
+                luaExec(WIZARD_NAME);
+              }
+            }
+          }
+        }
+      }
+    }
+    f_closedir(&dir);
+    if(wizardNumber == 0) {
+      lcdDrawText(40, LCD_H / 2, STR_SDCARD_NOWIZ);
+      return true;
+    }
+  }
+  return true;
+}
+#endif
+
 void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
@@ -121,6 +242,9 @@ void onModelSelectMenu(const char * result)
     currentModel = modelslist.currentModel = modelslist.addModel(currentCategory, createModel());
     selectMode = MODE_SELECT_MODEL;
     setCurrentModel(currentCategory->size() - 1);
+#if defined(LUA)
+    chainMenu(menuModelWizard);
+#endif
   }
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
