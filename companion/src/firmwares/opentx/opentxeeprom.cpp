@@ -3430,7 +3430,6 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   if (version >= 216) {
     for (int i=0; i<inputsCount; i++) {
-      qDebug() << "CALIB" << i;
       internalField.Append(new SignedField<16>(generalData.calibMid[i]));
       internalField.Append(new SignedField<16>(generalData.calibSpanNeg[i]));
       internalField.Append(new SignedField<16>(generalData.calibSpanPos[i]));
