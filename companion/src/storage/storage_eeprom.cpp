@@ -3,7 +3,7 @@
 #include "storage_eeprom.h"
 
 
-unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, const int size)
+unsigned long LoadEeprom(RadioData & radioData, const uint8_t * eeprom, const int size)
 {
   std::bitset<NUM_ERRORS> errors;
 
@@ -64,7 +64,7 @@ unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
   return errors.to_ulong();
 }
 
-bool convertEEprom(const QString &sourceEEprom, const QString &destinationEEprom, const QString &firmwareFilename)
+bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEprom, const QString & firmwareFilename)
 {
   Firmware *currentFirmware = GetCurrentFirmware();
   FirmwareInterface firmware(firmwareFilename);

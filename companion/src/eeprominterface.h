@@ -994,6 +994,7 @@ class SensorData {
     SensorData() { clear(); }
     unsigned int type; // custom / formula
     unsigned int id;
+    unsigned int subid;
     unsigned int instance;
     unsigned int persistentValue;
     unsigned int formula;
