@@ -113,19 +113,19 @@ class BaseUnsignedField: public DataField {
       DataField("Unsigned"),
       field(field),
       min(0),
-      max(UINT_MAX)
+      max(std::numeric_limits<container>::max())
     {
     }
 
-    BaseUnsignedField(container & field, const char *name):
+    BaseUnsignedField(container & field, const char * name):
       DataField(name),
       field(field),
       min(0),
-      max(UINT_MAX)
+      max(std::numeric_limits<container>::max())
     {
     }
 
-    BaseUnsignedField(container & field, unsigned int min, unsigned int max, const char *name="Unsigned"):
+    BaseUnsignedField(container & field, container min, container max, const char * name="Unsigned"):
       DataField(name),
       field(field),
       min(min),
@@ -141,8 +141,9 @@ class BaseUnsignedField: public DataField {
 
       output.resize(N);
       for (int i=0; i<N; i++) {
-        if (value & (1<<i))
+        if (value & ((container)1<<i)) {
           output.setBit(i);
+        }
       }
     }
 
@@ -151,7 +152,7 @@ class BaseUnsignedField: public DataField {
       field = 0;
       for (int i=0; i<N; i++) {
         if (input[i])
-          field |= (1<<i);
+          field |= ((container)1<<i);
       }
       eepromImportDebug() << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }

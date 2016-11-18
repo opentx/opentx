@@ -2072,7 +2072,7 @@ class SwitchesWarningField: public TransformedField {
 
     virtual void beforeExport()
     {
-        _sw = sw;
+      _sw = sw;
     }
 
     virtual void afterImport()
@@ -2092,7 +2092,7 @@ class SwitchesWarningField: public TransformedField {
 
   protected:
     BaseUnsignedField<uint64_t, N> internalField;
-    uint64_t &sw;
+    uint64_t & sw;
     uint64_t _sw;
     BoardEnum board;
     unsigned int version;

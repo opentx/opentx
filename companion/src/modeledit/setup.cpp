@@ -910,18 +910,19 @@ void SetupPanel::updateStartupSwitches()
 {
   lock = true;
   
-  unsigned int switchStates = model->switchWarningStates;
-  unsigned int value;
+  uint64_t switchStates = model->switchWarningStates;
+  uint64_t value;
 
   for (int i=0; i<startupSwitchesSliders.size(); i++) {
-    QSlider *slider = startupSwitchesSliders[i];
+    QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     int index = slider->property("index").toInt();
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
-      if (generalSettings.switchConfig[index] != Firmware::SWITCH_3POS && value == 2)
+      if (generalSettings.switchConfig[index] != Firmware::SWITCH_3POS && value == 2) {
         value = 1;
+      }
     }
     else {
       value = (i==0 ? switchStates & 0x3 : switchStates & 0x1);
@@ -939,12 +940,12 @@ void SetupPanel::startupSwitchEdited(int value)
 {
   if (!lock) {
     int shift = 0;
-    unsigned int mask;
+    uint64_t mask;
     int index = sender()->property("index").toInt();
 
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       shift = index * 2;
-      mask = 0x03 << shift;
+      mask = 0x03ul << shift;
     }
     else {
       if (index == 0) {
@@ -952,18 +953,20 @@ void SetupPanel::startupSwitchEdited(int value)
       }
       else {
         shift = index+1;
-        mask = 0x01 << shift;
+        mask = 0x01ul << shift;
       }
     }
 
     model->switchWarningStates &= ~mask;
     
     if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != Firmware::SWITCH_3POS) {
-      if (value == 1) value = 2;
+      if (value == 1) {
+        value = 2;
+      }
     }
 
     if (value) {
-      model->switchWarningStates |= (value << shift);
+      model->switchWarningStates |= ((uint64_t)value << shift);
     }
 
     updateStartupSwitches();
