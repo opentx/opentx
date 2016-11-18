@@ -384,7 +384,7 @@ void displayMixStatus(uint8_t channel)
 
 bool menuModelMixAll(event_t event)
 {
-  static const BitmapBuffer * mpx_mode[] = {
+  const BitmapBuffer * mpx_mode[] = {
     mixerSetupAddBitmap,
     mixerSetupMultiBitmap,
     mixerSetupReplaceBitmap

@@ -39,23 +39,21 @@ enum CalibrationState {
 
 void drawStick(coord_t x, coord_t y, const BitmapBuffer * background, int16_t xval, int16_t yval)
 {
-  static const BitmapBuffer * stick = BitmapBuffer::load(getThemePath("stick_pointer.png"));
-  lcd->drawBitmap(x, y, background);
-  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, stick);
+  lcd->drawBitmap(x, y, calibStickBackground);
+  lcd->drawBitmap(x + 2 + STICK_PANEL_WIDTH/2 + STICK_PANEL_WIDTH/2 * xval/RESX, y + 2 + STICK_PANEL_WIDTH/2 - STICK_PANEL_WIDTH/2 * yval/RESX, calibStick);
 }
 
 void drawSticks()
 {
-  static const BitmapBuffer * background = BitmapBuffer::load(getThemePath("stick_background.png"));
   int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
   if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(STICK_LEFT_X, STICKS_Y, background, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+  drawStick(STICK_LEFT_X, STICKS_Y, calibStickBackground, calibratedStick[CONVERT_MODE(0)], calibStickVert);
 
   calibStickVert = calibratedStick[CONVERT_MODE(2)];
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(STICK_RIGHT_X, STICKS_Y, background, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+  drawStick(STICK_RIGHT_X, STICKS_Y, calibStickBackground, calibratedStick[CONVERT_MODE(3)], calibStickVert);
 }
 
 void drawPots()
@@ -73,8 +71,7 @@ void drawPots()
 
 void drawMouse()
 {
-  static const BitmapBuffer * background = BitmapBuffer::load(getThemePath("trackp_background.png"));
-  drawStick(STICK_LEFT_X, STICKS_Y+100, background, calibratedStick[11], calibratedStick[12]);
+  drawStick(STICK_LEFT_X, STICKS_Y+100, calibTrackpBackground, calibratedStick[11], calibratedStick[12]);
 }
 
 bool menuCommonCalib(event_t event)
@@ -209,9 +206,9 @@ bool menuCommonCalib(event_t event)
       break;
   }
 
-  static const BitmapBuffer * horus = BitmapBuffer::load(getThemePath("horus.bmp"));
-  if (horus) {
-    lcd->drawBitmap((LCD_W-horus->getWidth())/2, LCD_H-20-horus->getHeight(), horus);
+
+  if (calibHorus) {
+    lcd->drawBitmap((LCD_W-calibHorus->getWidth())/2, LCD_H-20-calibHorus->getHeight(), calibHorus);
   }
 
   drawSticks();

@@ -180,6 +180,11 @@ const uint8_t LBM_SWIPE_RIGHT[] = {
   #include "mask_swipe_right.lbm"
 };
 
+BitmapBuffer * calibStick = NULL;
+BitmapBuffer * calibBackground = NULL;
+BitmapBuffer * calibStickBackground = NULL;
+BitmapBuffer * calibTrackpBackground = NULL;
+BitmapBuffer * calibHorus = NULL;
 BitmapBuffer * modelselIconBitmap = NULL;
 BitmapBuffer * modelselSdFreeBitmap = NULL;
 BitmapBuffer * modelselModelQtyBitmap = NULL;
