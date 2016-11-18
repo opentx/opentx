@@ -79,9 +79,9 @@ class Theme
     const char * name;
     const ZoneOption * options;
     BitmapBuffer * thumb;
-    static const BitmapBuffer * asterisk;
-    static const BitmapBuffer * question;
-    static const BitmapBuffer * busy;
+    static const BitmapBuffer* asterisk;
+    static const BitmapBuffer* question;
+    static const BitmapBuffer* busy;
 };
 
 extern Theme * theme;
