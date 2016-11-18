@@ -296,7 +296,7 @@ class DefaultTheme: public Theme
     }
 
   protected:
-    static const BitmapBuffer* backgroundBitmap;
+    static const BitmapBuffer * backgroundBitmap;
     static BitmapBuffer * topleftBitmap;
     static BitmapBuffer * menuIconNormal[MENUS_ICONS_COUNT];
     static BitmapBuffer * menuIconSelected[MENUS_ICONS_COUNT];
