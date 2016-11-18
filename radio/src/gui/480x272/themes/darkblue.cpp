@@ -133,30 +133,6 @@ class DarkblueTheme: public Theme
       delete calibHorus;
       calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
 
-      // Model Selection screen
-      delete modelselIconBitmap;
-      modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
-      if (modelselIconBitmap) {
-        BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
-        modelselIconBitmap->drawBitmap(25, 8, bitmap);
-        delete bitmap;
-      }
-
-      delete modelselSdFreeBitmap;
-      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", TEXT_COLOR, TEXT_BGCOLOR);
-
-      delete modelselModelQtyBitmap;
-      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
-
-      delete modelselModelNameBitmap;
-      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", TEXT_COLOR, TEXT_BGCOLOR);
-
-      delete modelselModelMoveBackground;
-      modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
-
-      delete modelselModelMoveIcon;
-      modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
-
       // Channels monitor screen
       delete chanMonLockedBitmap;
       chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);
