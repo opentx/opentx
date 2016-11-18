@@ -376,7 +376,7 @@ void drawSleepBitmap()
 void drawShutdownAnimation(uint32_t index)
 {
   static uint32_t last_index = 0xffffffff;
-  const BitmapBuffer* shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
+  static const BitmapBuffer* shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));
 
   if (shutdown) {
     if (index < last_index) {
