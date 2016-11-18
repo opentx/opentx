@@ -154,6 +154,19 @@ class DefaultTheme: public Theme
 
     void loadThemeBitmaps() const
     {
+      // Calibration screen
+      delete calibStick;
+      calibStick = BitmapBuffer::load(getThemePath("stick_pointer.png"));
+
+      delete calibStickBackground;
+      calibStickBackground = BitmapBuffer::load(getThemePath("stick_background.png"));
+
+      delete calibTrackpBackground;
+      calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
+
+      delete calibHorus;
+      calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
+
       // Model Selection screen
       delete modelselIconBitmap;
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);

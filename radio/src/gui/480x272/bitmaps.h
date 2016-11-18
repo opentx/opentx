@@ -78,6 +78,13 @@ extern BitmapBuffer * modelselModelNameBitmap;
 extern BitmapBuffer * modelselModelMoveBackground;
 extern BitmapBuffer * modelselModelMoveIcon;
 
+// calibration bitmaps
+extern BitmapBuffer * calibStick;
+extern BitmapBuffer * calibBackground;
+extern BitmapBuffer * calibStickBackground;
+extern BitmapBuffer * calibTrackpBackground;
+extern BitmapBuffer * calibHorus;
+
 // Channels monitor bitmaps
 extern BitmapBuffer * chanMonLockedBitmap;
 extern BitmapBuffer * chanMonInvertedBitmap;
