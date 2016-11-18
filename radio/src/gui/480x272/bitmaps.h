@@ -80,7 +80,6 @@ extern BitmapBuffer * modelselModelMoveIcon;
 
 // calibration bitmaps
 extern BitmapBuffer * calibStick;
-extern BitmapBuffer * calibBackground;
 extern BitmapBuffer * calibStickBackground;
 extern BitmapBuffer * calibTrackpBackground;
 extern BitmapBuffer * calibHorus;

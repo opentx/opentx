@@ -181,7 +181,6 @@ const uint8_t LBM_SWIPE_RIGHT[] = {
 };
 
 BitmapBuffer * calibStick = NULL;
-BitmapBuffer * calibBackground = NULL;
 BitmapBuffer * calibStickBackground = NULL;
 BitmapBuffer * calibTrackpBackground = NULL;
 BitmapBuffer * calibHorus = NULL;
