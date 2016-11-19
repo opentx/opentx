@@ -446,7 +446,7 @@ read_file_system_list (bool need_fs_type)
         me = (mount_entry *) malloc (sizeof *me);
         me->me_devname = strdup (fsp->f_mntfromname);
         me->me_mountdir = strdup (fsp->f_mntonname);
-#if defined(__APPLE__) || defined(__OpenBSD__)
+#if defined(__APPLE__) || defined(__OpenBSD__) || defined(__FreeBSD__)
         me->me_type = fsp->f_fstypename;
 #else
         me->me_type = fsp->fs_typename;
