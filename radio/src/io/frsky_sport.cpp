@@ -194,7 +194,7 @@ const char * sportUpdatePowerOn(ModuleIndex module)
     packet[1] = PRIM_REQ_POWERUP;
     sportWritePacket(packet);
     if (sportWaitState(SPORT_POWERUP_ACK, 100))
-      return 0;
+      return NULL;
   }
   return "Module not responding";
 }
@@ -211,7 +211,7 @@ const char * sportUpdateReqVersion()
     packet[1] = PRIM_REQ_VERSION ;
     sportWritePacket(packet);
     if (sportWaitState(SPORT_VERSION_ACK, 200))
-      return 0;
+      return NULL;
   }
   return "Version request failed";
 }
@@ -262,7 +262,7 @@ const char * sportUpdateUploadFile(const char *filename)
 
     if (count < 256) {
       f_close(&file);
-      return 0;
+      return NULL;
     }
   }
 }
@@ -279,7 +279,7 @@ const char * sportUpdateEnd()
   if (!sportWaitState(SPORT_COMPLETE, 2000)) {
     return "Module rejected firmware";
   }
-  return 0;
+  return NULL;
 }
 
 void sportFlashDevice(ModuleIndex module, const char * filename)
