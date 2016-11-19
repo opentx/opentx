@@ -63,15 +63,15 @@ class ModelCell
       }
       else {
         char timer[LEN_TIMER_STRING];
-        if(getTextWidth(header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR) < (MODELCELL_WIDTH - 5)) {
-          buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, ZCHAR|TEXT_COLOR);
+        if(getTextWidth(header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR) < (MODELCELL_WIDTH - 5)) {
+          buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
         }
         else {
           for(uint8_t i=0;i<4;i++) // 4 is arbitrary, but in all cases, it should not exceed that value
           {
-            if(getTextWidth(header.name, LEN_MODEL_NAME-i, ZCHAR|TEXT_COLOR) < (MODELCELL_WIDTH - 5))
+            if(getTextWidth(header.name, LEN_MODEL_NAME-i, SMLSIZE|ZCHAR|TEXT_COLOR) < (MODELCELL_WIDTH - 5))
             {
-              buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME-i, ZCHAR|TEXT_COLOR);
+              buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME-i, SMLSIZE|ZCHAR|TEXT_COLOR);
               break;
             }
           }
