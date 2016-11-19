@@ -134,16 +134,9 @@ void flashBootloader(const char * filename)
 
 void flashSportDevice(ModuleIndex module, const char *filename)
 {
-  pausePulses();
   watchdogSetTimeout(60*60*100/*1h*/);
-
-  lcd_clear();
-  displayProgressBar(STR_WRITING);
-
   sportFirmwareUpdate(module, filename);
-
   watchdogSetTimeout(100/*1s*/);
-  resumePulses();
 }
 
 void getSelectionFullPath(char *lfn)

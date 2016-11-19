@@ -388,20 +388,13 @@ void writePacket(uint8_t * packet)
   sportSendBuffer(sportUpdatePacket, ptr-sportUpdatePacket);
 }
 
-bool sportUpdatePowerOn(ModuleIndex module)
+const char * sportUpdatePowerOn(ModuleIndex module)
 {
   uint8_t packet[8];
 
   sportUpdateState = SPORT_POWERUP_REQ;
 
-#if defined(PCBTARANIS)
-  intPwr = IS_INTERNAL_MODULE_ON();
-  extPwr = IS_EXTERNAL_MODULE_ON();
-  INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
-#endif
-
-  sportWaitState(SPORT_IDLE, 500);
+  sportWaitState(SPORT_IDLE, 500); // Clear the fifo
 
   telemetryPortInit(FRSKY_SPORT_BAUDRATE);
 
@@ -412,7 +405,7 @@ bool sportUpdatePowerOn(ModuleIndex module)
     EXTERNAL_MODULE_ON();
 #endif
 
-  sportWaitState(SPORT_IDLE, 50);
+  sportWaitState(SPORT_IDLE, 50); // Clear the fifo
 
   for (int i=0; i<10; i++) {
     // max 10 attempts
@@ -421,15 +414,15 @@ bool sportUpdatePowerOn(ModuleIndex module)
     packet[1] = PRIM_REQ_POWERUP;
     writePacket(packet);
     if (sportWaitState(SPORT_POWERUP_ACK, 100))
-      return true;
+      return NULL;
   }
-  return false;
+  return "Module not responding";
 }
 
-bool sportUpdateReqVersion()
+const char * sportUpdateReqVersion()
 {
   uint8_t packet[8];
-  sportWaitState(SPORT_IDLE, 20);
+  sportWaitState(SPORT_IDLE, 20); // Clear the fifo
   sportUpdateState = SPORT_VERSION_REQ;
   for (int i=0; i<10; i++) {
     // max 10 attempts
@@ -438,12 +431,12 @@ bool sportUpdateReqVersion()
     packet[1] = PRIM_REQ_VERSION ;
     writePacket(packet);
     if (sportWaitState(SPORT_VERSION_ACK, 200))
-      return true;
+      return NULL;
   }
-  return false;
+  return "Version request failed";
 }
 
-bool sportUpdateUploadFile(const char *filename)
+const char * sportUpdateUploadFile(const char *filename)
 {
   FIL file;
   uint32_t buffer[1024/4];
@@ -451,10 +444,10 @@ bool sportUpdateUploadFile(const char *filename)
   uint8_t packet[8];
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return false;
+    return "Error opening file";
   }
 
-  sportWaitState(SPORT_IDLE, 200);
+  sportWaitState(SPORT_IDLE, 200); // Clear the fifo
   sportUpdateState = SPORT_DATA_TRANSFER;
   blankPacket(packet) ;
   packet[0] = 0x50 ;
@@ -465,14 +458,14 @@ bool sportUpdateUploadFile(const char *filename)
   while(1) {
     if (f_read(&file, buffer, 1024, &count) != FR_OK) {
       f_close(&file);
-      return false;
+      return "Error reading file";
     }
 
     count >>= 2;
 
     for (UINT i=0; i<count; i++) {
       if (!sportWaitState(SPORT_DATA_REQ, 2000)) {
-        return false;
+        return "Module refused data";
       }
       packet[0] = 0x50 ;
       packet[1] = PRIM_DATA_WORD ;
@@ -489,49 +482,66 @@ bool sportUpdateUploadFile(const char *filename)
 
     if (count < 256) {
       f_close(&file);
-      return true;
+      return NULL;
     }
   }
 }
 
-bool sportUpdateEnd()
+const char * sportUpdateEnd()
 {
   uint8_t packet[8];
   if (!sportWaitState(SPORT_DATA_REQ, 2000))
-    return false;
+    return "Module refused data";
   blankPacket(packet);
   packet[0] = 0x50 ;
   packet[1] = PRIM_DATA_EOF;
   writePacket(packet);
-  return sportWaitState(SPORT_COMPLETE, 2000);
+  if (!sportWaitState(SPORT_COMPLETE, 2000)) {
+    return "Module rejected firmware";
+  }
+  return NULL;
 }
 
 void sportFirmwareUpdate(ModuleIndex module, const char *filename)
 {
-  bool result = sportUpdatePowerOn(module);
-  if (result)
-    result = sportUpdateReqVersion();
-  if (result)
-    result = sportUpdateUploadFile(filename);
-  if (result)
-    result = sportUpdateEnd();
-  
-  if (result == false) {
+  pausePulses();
+
+  lcd_clear();
+  displayProgressBar(STR_WRITING);
+
+#if defined(PCBTARANIS)
+  uint8_t intPwr = IS_INTERNAL_MODULE_ON();
+  uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+  INTERNAL_MODULE_OFF();
+  EXTERNAL_MODULE_OFF();
+#endif
+
+  const char * result = sportUpdatePowerOn(module);
+  if (!result) result = sportUpdateReqVersion();
+  if (!result) result = sportUpdateUploadFile(filename);
+  if (!result) result = sportUpdateEnd();
+
+  if (result) {
     POPUP_WARNING("Firmware Update Error");
+    SET_WARNING_INFO(result, strlen(result), 0);
   }
-  
+
 #if defined(PCBTARANIS)
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
-  
-  sportWaitState(SPORT_IDLE, 1000);
+#endif
 
-  if (intPwr) 
+  sportWaitState(SPORT_IDLE, 500); // Clear the fifo
+
+#if defined(PCBTARANIS)
+  if (intPwr)
     INTERNAL_MODULE_ON();
   if (extPwr)
     EXTERNAL_MODULE_ON();
 #endif
-  sportUpdateState = SPORT_IDLE;
-}
 
+  sportUpdateState = SPORT_IDLE;
+
+  resumePulses();
+}
 #endif
