@@ -73,13 +73,11 @@ void uart3Setup(unsigned int baudrate, bool dma)
     DMA_Cmd(SERIAL_DMA_Stream_RX, ENABLE);
   }
   else {
-#if !defined(USB_SERIAL) && (defined(CLI) || defined(DEBUG))
     USART_Cmd(SERIAL_USART, ENABLE);
     USART_ITConfig(SERIAL_USART, USART_IT_RXNE, ENABLE);
     USART_ITConfig(SERIAL_USART, USART_IT_TXE, DISABLE);
     NVIC_SetPriority(SERIAL_USART_IRQn, 7);
     NVIC_EnableIRQ(SERIAL_USART_IRQn);
-#endif
   }
 }
 
