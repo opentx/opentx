@@ -60,7 +60,7 @@ else()
     ../common/arm/stm32/usbd_hid_joystick.c
     )
 endif()
-if(GVARS)
+if(GVARS AND NOT GUI_DIR STREQUAL 128x64)
   set(GUI_SRC
     ${GUI_SRC}
     model_gvars.cpp
