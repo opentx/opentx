@@ -22,8 +22,8 @@
 #include "storage/modelslist.h"
 
 #define CATEGORIES_WIDTH               127
-#define MODELS_LEFT                    147
-#define MODELS_COLUMN_WIDTH            162
+#define MODELS_LEFT                    128
+#define MODELS_COLUMN_WIDTH            175
 
 enum ModelSelectMode {
   MODE_SELECT_MODEL,
@@ -471,7 +471,7 @@ bool menuModelSelect(event_t event)
       }
       if (selected) {
         lcd->drawBitmap(5, LCD_H-FH, modelselModelNameBitmap);
-        lcdDrawText(22, LCD_H-FH-1, (*it)->name, TEXT_COLOR);
+        lcdDrawText(22, LCD_H-FH-1, (*it)->name, SMLSIZE|TEXT_COLOR);
       }
     }
   }
@@ -498,9 +498,9 @@ bool menuModelSelect(event_t event)
   // Footer
   lcd->drawBitmap(5, LCD_H-FH-20, modelselSdFreeBitmap);
   uint32_t size = sdGetSize() / 100;
-  lcdDrawNumber(22, LCD_H-FH-21, size, PREC1, 0, NULL, "GB");
-  lcd->drawBitmap(80, LCD_H-FH-20, modelselModelQtyBitmap);
-  lcdDrawNumber(105, LCD_H-FH-21, modelslist.modelsCount);
+  lcdDrawNumber(22, LCD_H-FH-21, size, PREC1|SMLSIZE, 0, NULL, "GB");
+  lcd->drawBitmap(70, LCD_H-FH-20, modelselModelQtyBitmap);
+  lcdDrawNumber(92, LCD_H-FH-21, modelslist.modelsCount,SMLSIZE);
 
   return true;
 }
