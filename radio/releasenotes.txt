@@ -1,8 +1,18 @@
 <h2>Version 2.1.10 / todo</h2>
 
+[All]
+<ul>
+<li>Special Function RESET now executes only once on the switch change (<a href=https://github.com/opentx/opentx/issues/3858>#3858</a>)</li>
+</ul>
+
 [Taranis]
 <ul>
 <li>Fixed: Radio was reset 20s after USB connection in MASSSTORAGE mode (<a href=https://github.com/opentx/opentx/issues/3840>#3840</a>)</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>DSM protocol fixed (<a href=https://github.com/opentx/opentx/issues/3628>#3628</a>)</li>
 </ul>
 
 [Lua]

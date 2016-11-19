@@ -3,6 +3,8 @@
 <ul>
 <li>Fixed problems with Input and Mixer drag&drop before CH1 (<a href=https://github.com/opentx/opentx/issues/3474>#3474</a>, <a href=https://github.com/opentx/opentx/issues/3838>#3838</a>)</li>
 <li>Added missing "none" settings for heli sources (<a href=https://github.com/opentx/opentx/issues/3662>#3662</a>)</li>
+<li>Fixed GVAR Subtrim option showing on radios that do not have that capability (<a href=https://github.com/opentx/opentx/issues/3580>#3580</a>)</li>
+<li>Cosmetic improvements of Curves screen</li>
 </ul>
 
 
