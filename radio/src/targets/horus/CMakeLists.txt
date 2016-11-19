@@ -66,6 +66,7 @@ if(INTERNAL_GPS)
   message("Internal GPS enabled")
 endif()
 set(SERIAL2_DRIVER serial2_driver.cpp)
+set(GVAR_SCREEN model_gvars.cpp)
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp

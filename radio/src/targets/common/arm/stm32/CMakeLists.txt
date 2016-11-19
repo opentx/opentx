@@ -63,7 +63,7 @@ endif()
 if(GVARS)
   set(GUI_SRC
     ${GUI_SRC}
-    model_gvars.cpp
+    ${GVAR_SCREEN}
     )
 endif()
 set(FIRMWARE_SRC
