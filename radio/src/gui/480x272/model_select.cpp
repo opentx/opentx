@@ -22,8 +22,8 @@
 #include "storage/modelslist.h"
 
 #define CATEGORIES_WIDTH               127
-#define MODELS_LEFT                    128
-#define MODELS_COLUMN_WIDTH            175
+#define MODELS_LEFT                    127
+#define MODELS_COLUMN_WIDTH            170
 
 enum ModelSelectMode {
   MODE_SELECT_MODEL,

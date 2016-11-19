@@ -24,7 +24,7 @@
 #include <list>
 #include "sdcard.h"
 
-#define MODELCELL_WIDTH                170
+#define MODELCELL_WIDTH                166
 #define MODELCELL_HEIGHT               59
 
 class ModelCell
@@ -63,7 +63,7 @@ class ModelCell
       }
       else {
         char timer[LEN_TIMER_STRING];
-        buffer->drawSizedText(3, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
+        buffer->drawSizedText(1, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
         buffer->drawText(101, 40, timer, TEXT_COLOR);
         for (int i=0; i<4; i++) {
