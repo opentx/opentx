@@ -601,7 +601,7 @@ char *findTrueFileName(const char *path)
       for (;;) {
         struct simu::dirent * res = simu::readdir(dir);
         if (res == 0) break;
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
         if ((res->d_type == DT_REG) || (res->d_type == DT_LNK)) {
 #else
         if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
@@ -771,7 +771,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
     if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..") ) break;
   }
 
-#if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__)
+#if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__) || defined(__FreeBSD__)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
   if (ent->d_type == simu::DT_UNKNOWN) {
