@@ -168,7 +168,7 @@ void sportWritePacket(uint8_t * packet)
   sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
 }
 
-bool sportUpdatePowerOn(ModuleIndex module)
+const char * sportUpdatePowerOn(ModuleIndex module)
 {
   uint8_t packet[8];
 
@@ -194,12 +194,12 @@ bool sportUpdatePowerOn(ModuleIndex module)
     packet[1] = PRIM_REQ_POWERUP;
     sportWritePacket(packet);
     if (sportWaitState(SPORT_POWERUP_ACK, 100))
-      return true;
+      return NULL;
   }
-  return false;
+  return "Module not responding";
 }
 
-bool sportUpdateReqVersion()
+const char * sportUpdateReqVersion()
 {
   uint8_t packet[8];
   sportWaitState(SPORT_IDLE, 20); // Clear the fifo
@@ -211,12 +211,12 @@ bool sportUpdateReqVersion()
     packet[1] = PRIM_REQ_VERSION ;
     sportWritePacket(packet);
     if (sportWaitState(SPORT_VERSION_ACK, 200))
-      return true;
+      return NULL;
   }
-  return false;
+  return "Version request failed";
 }
 
-bool sportUpdateUploadFile(const char *filename)
+const char * sportUpdateUploadFile(const char *filename)
 {
   FIL file;
   uint32_t buffer[1024/4];
@@ -224,7 +224,7 @@ bool sportUpdateUploadFile(const char *filename)
   uint8_t packet[8];
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return false;
+    return "Error opening file";
   }
 
   sportWaitState(SPORT_IDLE, 200); // Clear the fifo
@@ -238,14 +238,14 @@ bool sportUpdateUploadFile(const char *filename)
   while(1) {
     if (f_read(&file, buffer, 1024, &count) != FR_OK) {
       f_close(&file);
-      return false;
+      return "Error reading file";
     }
 
     count >>= 2;
 
     for (UINT i=0; i<count; i++) {
       if (!sportWaitState(SPORT_DATA_REQ, 2000)) {
-        return false;
+        return "Module refused data";
       }
       packet[0] = 0x50 ;
       packet[1] = PRIM_DATA_WORD ;
@@ -262,21 +262,24 @@ bool sportUpdateUploadFile(const char *filename)
 
     if (count < 256) {
       f_close(&file);
-      return true;
+      return NULL;
     }
   }
 }
 
-bool sportUpdateEnd()
+const char * sportUpdateEnd()
 {
   uint8_t packet[8];
   if (!sportWaitState(SPORT_DATA_REQ, 2000))
-    return false;
+    return "Module refused data";
   sportClearPacket(packet);
   packet[0] = 0x50 ;
   packet[1] = PRIM_DATA_EOF;
   sportWritePacket(packet);
-  return sportWaitState(SPORT_COMPLETE, 2000);
+  if (!sportWaitState(SPORT_COMPLETE, 2000)) {
+    return "Module rejected firmware";
+  }
+  return NULL;
 }
 
 void sportFlashDevice(ModuleIndex module, const char * filename)
@@ -293,16 +296,14 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
   EXTERNAL_MODULE_OFF();
 #endif
 
-  bool result = sportUpdatePowerOn(module);
-  if (result)
-    result = sportUpdateReqVersion();
-  if (result)
-    result = sportUpdateUploadFile(filename);
-  if (result)
-    result = sportUpdateEnd();
+  const char * result = sportUpdatePowerOn(module);
+  if (!result) result = sportUpdateReqVersion();
+  if (!result) result = sportUpdateUploadFile(filename);
+  if (!result) result = sportUpdateEnd();
 
-  if (result == false) {
+  if (result) {
     POPUP_WARNING("Firmware Update Error");
+    SET_WARNING_INFO(result, strlen(result), 0);
   }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
