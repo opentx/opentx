@@ -25,6 +25,7 @@
 #define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)            (IS_ARM(board) ? ((HAS_LARGE_LCD(board) && version >= 216) ? 32 : 16) : 8)
 #define MAX_GVARS(board, version)             ((IS_ARM(board) && version >= 216) ? 9 : 5)
+#define MAX_SCRIPTS(board)                    (IS_HORUS(board) ? 9 : 7)
 #define MAX_TELEMETRY_SENSORS(board, version) (32)
 #define NUM_PPM_INPUTS(board, version)        ((IS_ARM(board) && version >= 216) ? 16 : 8)
 #define ROTENC_COUNT(board, version)          (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 218) ? 0 : 1) : (IS_2560(board) ? 2 : 0))
@@ -211,11 +212,11 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_NONE), val++);
       }
 
-      if (IS_TARANIS(board) && version >= 216) {
+      if (IS_STM32(board) && version >= 216) {
         for (int i=0; i<32; i++) {
           addConversion(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i), val++);
         }
-        for (int i=0; i<7; i++) {
+        for (int i=0; i<MAX_SCRIPTS(board); i++) {
           for (int j=0; j<6; j++) {
             addConversion(RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j), val++);
           }
@@ -1357,7 +1358,7 @@ class InputField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_TARANIS(board)) {
+      if (IS_STM32(board)) {
         if (version < 216) {
           if (expo.mode) {
             expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
@@ -1370,11 +1371,11 @@ class InputField: public TransformedField {
 
       expo.weight = smallGvarToC9x(_weight);
 
-      if (IS_TARANIS(board) && version >= 216) {
+      if (IS_STM32(board) && version >= 216) {
         expo.offset = smallGvarToC9x(_offset);
       }
 
-      if (!IS_TARANIS(board) || version < 216) {
+      if (!IS_STM32(board) || version < 216) {
         if (!_curveMode)
           expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarToC9x(_curveParam));
         else if (_curveParam > 6)
@@ -1533,7 +1534,7 @@ class CurvesField: public TransformedField {
 
       for (int i=0; i<maxCurves; i++) {
         CurveData *curve = &curves[i];
-        if (IS_TARANIS(board) && version >= 216) {
+        if (IS_STM32(board) && version >= 216) {
           offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
           if (offset > maxPoints) {
             EEPROMWarnings.push_back(::QObject::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints));
@@ -1565,7 +1566,7 @@ class CurvesField: public TransformedField {
 
       for (int i=0; i<maxCurves; i++) {
         CurveData *curve = &curves[i];
-        if (!IS_TARANIS(board) || version < 216) {
+        if (!IS_STM32(board) || version < 216) {
           int * next = &_points[5*(i+1) + _curves[i]];
           int size = next - cur;
           if (size % 2 == 0) {
@@ -1663,7 +1664,7 @@ class AndSwitchesConversionTable: public ConversionTable {
       int val=0;
       addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
 
-      if (IS_TARANIS(board)) {
+      if (IS_STM32(board)) {
         for (int i=1; i<=MAX_SWITCHES_POSITION(board, version); i++) {
           int s = switchIndex(i, board, version);
           if (IS_TARANIS(board) && version < 217) {
@@ -2021,7 +2022,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         addConversion(FuncPlayValue, val++);
         if (IS_ARM(board)) {
           addConversion(FuncReserve, val++);
-          if (IS_TARANIS(board))
+          if (IS_STM32(board))
             addConversion(FuncPlayScript, val++);
           else
             addConversion(FuncReserve, val++);
@@ -2034,7 +2035,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         if (IS_2560(board) || IS_ARM(board) )
           addConversion(FuncLogs, val++);
         addConversion(FuncBacklight, val++);
-        if (IS_TARANIS(board))
+        if (IS_STM32(board))
           addConversion(FuncScreenshot, val++);
       }
       else {
@@ -2128,7 +2129,7 @@ class ArmCustomFunctionField: public TransformedField {
         internalField.Append(new ConversionField< UnsignedField<8> >(_func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
       }
 
-      if (IS_TARANIS(board) && version >= 216)
+      if (IS_STM32(board) && version >= 216)
         internalField.Append(new CharField<8>(_param, false));
       else if (IS_TARANIS(board))
         internalField.Append(new CharField<10>(_param, false));
