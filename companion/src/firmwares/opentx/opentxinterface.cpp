@@ -1187,17 +1187,22 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOptions(fai_options);
 }
 
-void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
+void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
 {
+  addOpenTxCommonOptions(firmware);
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
   Option usb_options[] = { { "massstorage", QObject::tr("Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)") }, { "cli", QObject::tr("Instead of Joystick emulation, USB connection is Command Line Interface") }, { NULL } };
   firmware->addOptions(usb_options);
-  firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   firmware->addOption("eu", QObject::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
-  firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
   firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
+}
+
+void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
+{
+  firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
+  firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
 }
 
@@ -1226,38 +1231,28 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   addOpenTxTaranisOptions(firmware);
-  addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
-  addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   addOpenTxTaranisOptions(firmware);
-  addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* FrSky X7D board */
   firmware = new OpenTxFirmware("opentx-x7d", QObject::tr("FrSky X7D"), BOARD_X7D);
   addOpenTxTaranisOptions(firmware);
-  addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
 
   /* FrSky Horus board */
   firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
-  firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
-  firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
-  firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
-  Option usb_options[] = { { "massstorage", QObject::tr("Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)") }, { "cli", QObject::tr("Instead of Joystick emulation, USB connection is Command Line Interface") }, { NULL } };
-  firmware->addOptions(usb_options);
-  firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
-  addOpenTxCommonOptions(firmware);
+  addOpenTxFrskyOptions(firmware);
   firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
   firmwares.push_back(firmware);
 
