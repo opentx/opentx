@@ -58,7 +58,7 @@
 #define IS_FLAMENCO(board)     (board==BOARD_FLAMENCO)
 #define IS_STM32(board)        (IS_TARANIS(board) || IS_HORUS(board) || IS_FLAMENCO(board))
 #define IS_ARM(board)          (IS_STM32(board) || IS_SKY9X(board))
-#define HAS_LARGE_LCD(board)   (IS_TARANIS(board) && board != BOARD_X7D)
+#define HAS_LARGE_LCD(board)   (IS_HORUS(board) || (IS_TARANIS(board) && board != BOARD_X7D))
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},

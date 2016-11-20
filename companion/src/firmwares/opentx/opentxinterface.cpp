@@ -200,9 +200,12 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & mod
 
 bool OpenTxEepromInterface::loadModelFromByteArray(ModelData & model, const QByteArray & data)
 {
-  OpenTxModelData modelData(model, board, 218, 0);
-  modelData.Import(data);
-  modelData.Dump();
+  // TODO check the 8 first bytes (fourcc + version + 'M' + size)
+  QByteArray raw = data.right(data.size() - 8);
+  OpenTxModelData modelData(model, board, 218, 0); // TODO board and 218 should be the version taken from the header
+  modelData.Import(raw);
+  modelData.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
+  model.used = true;
   return true;
 }
 

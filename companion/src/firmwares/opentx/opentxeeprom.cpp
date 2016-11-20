@@ -779,7 +779,7 @@ class FlightModeField: public TransformedField {
   public:
     FlightModeField(FlightModeData & phase, int index, BoardEnum board, unsigned int version):
       TransformedField(internalField),
-      internalField("Phase"),
+      internalField("FlightMode"),
       phase(phase),
       index(index),
       board(board),
@@ -2986,7 +2986,9 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
 
   eepromImportDebug() << QString("OpenTxModelData::OpenTxModelData(name: %1, board: %2, ver: %3, var: %4)").arg(name).arg(board).arg(version).arg(variant);
 
-  if (HAS_LARGE_LCD(board))
+  if (board == BOARD_HORUS)
+    internalField.Append(new ZCharField<15>(modelData.name));
+  else if (HAS_LARGE_LCD(board))
     internalField.Append(new ZCharField<12>(modelData.name));
   else
     internalField.Append(new ZCharField<10>(modelData.name));

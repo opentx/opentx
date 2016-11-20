@@ -387,19 +387,23 @@ bool MdiChild::loadOtxFile(const QString &fileName, bool resetCurrentFile)
   // info about all models
   QList<QString> models = storage.getModelsFileNames();
   qDebug() << "We have" << models.size() << "models:";
+#if 0
   foreach(QString filename, models) {
     QList<ModelFile>::const_iterator i = storage.getModelIterator(filename);
     if (i != storage.models.end()) {
       qDebug() << "\tModel:" << i->filename << "size" << i->data.size();
     }
   }
-
+#endif
+  
   for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i) {
     GetEepromInterface()->loadModelFromByteArray(radioData.models[0], i->data);
   }
+  
+  ui->modelsList->refreshList();
 
   // for test immediately save to another file
-  storage.write(fileName + "test.otx");
+  // storage.write(fileName + "test.otx");
   return true;
 
 }
