@@ -8,6 +8,7 @@
 [Taranis]
 <ul>
 <li>Fixed: Radio was reset 20s after USB connection in MASSSTORAGE mode (<a href=https://github.com/opentx/opentx/issues/3840>#3840</a>)</li>
+<li>Added detailed failure messages to the TX module firmware update function</li>
 </ul>
 
 [9XR-PRO]
