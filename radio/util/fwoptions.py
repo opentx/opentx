@@ -252,7 +252,6 @@ options_taranis = {
     "mixersmon": ("MIXERS_MONITOR", "YES", "NO"),
     "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
-    "timer3": ("TIMERS", "3", "2"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO")
 }
@@ -272,7 +271,6 @@ options_taranisplus = {
     "mixersmon": ("MIXERS_MONITOR", "YES", "NO"),
     "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
-    "timer3": ("TIMERS", "3", None),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO")
 }
@@ -292,24 +290,22 @@ options_taranisx9e = {
     "mixersmon": ("MIXERS_MONITOR", "YES", "NO"),
     "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
-    "timer3": ("TIMERS", "3", None),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "horussticks": ("STICKS", "HORUS", "STANDARD"),
     "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
 options_horus = {
-     "noheli": ("HELI", "NO", "YES"),
-     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
-     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
-     "nogvars": ("GVARS", "NO", "YES"),
-     "faimode": ("FAI", "YES", None),
-     "faichoice": ("FAI", "CHOICE", None),
-     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-     "massstorage": ("USB", "MASSSTORAGE", None),
-     "cli": ("USB", "SERIAL", None),
-    "timer3": ("TIMERS", "3", "2"),
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "massstorage": ("USB", "MASSSTORAGE", None),
+    "cli": ("USB", "SERIAL", None),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-     "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
 }
