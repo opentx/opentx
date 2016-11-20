@@ -63,7 +63,7 @@ class ModelCell
       }
       else {
         char timer[LEN_TIMER_STRING];
-        buffer->drawSizedText(1, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
+        buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
         buffer->drawText(101, 40, timer, TEXT_COLOR);
         for (int i=0; i<4; i++) {
