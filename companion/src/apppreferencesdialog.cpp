@@ -473,7 +473,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
     foreach(Option opt, opts) {
       if (index >= optionsCheckBoxes.size()) {
         QCheckBox * checkbox = new QCheckBox(ui->profileTab);
-        ui->optionsLayout->addWidget(checkbox, optionsCheckBoxes.count()/5, optionsCheckBoxes.count()%5, 1, 1);
+        ui->optionsLayout->addWidget(checkbox, optionsCheckBoxes.count()/4, optionsCheckBoxes.count()%4, 1, 1);
         optionsCheckBoxes.push_back(checkbox);
         connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
         if (prevFocus) {

@@ -1201,6 +1201,7 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
+  addOpenTxFrskyOptions(firmware);
   firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
@@ -1242,6 +1243,7 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
+  firmware->addOption("horussticks", QObject::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
 
