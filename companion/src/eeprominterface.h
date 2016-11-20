@@ -1048,7 +1048,7 @@ class ModelData {
     QVector<const MixData *> mixes(int channel) const;
 
     bool      used;
-    char      name[12+1];
+    char      name[15+1];
     TimerData timers[C9X_MAX_TIMERS];
     bool      noGlobalFunctions;
     bool      thrTrim;            // Enable Throttle Trim

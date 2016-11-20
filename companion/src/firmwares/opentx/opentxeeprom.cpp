@@ -595,11 +595,11 @@ int smallGvarToEEPROM(int gvar)
 
 int smallGvarToC9x(int gvar)
 {
-  if (gvar>110) {
-    gvar = gvar-128 - 10000;
+  if (gvar > 110) {
+    gvar = gvar - 128 - 10000;
   }
-  else if (gvar<-110) {
-    gvar = gvar+128 + 10001;
+  else if (gvar < -110) {
+    gvar = gvar + 128 + 10001;
   }
   return gvar;
 }
@@ -753,7 +753,7 @@ class HeliField: public StructField {
   public:
     HeliField(SwashRingData & heli, BoardEnum board, unsigned int version, unsigned int variant)
     {
-      if (IS_TARANIS(board) && version >= 217) {
+      if (IS_STM32(board) && version >= 217) {
         Append(new UnsignedField<8>(heli.type));
         Append(new UnsignedField<8>(heli.value));
         Append(new SourceField<8>(heli.collectiveSource, board, version, variant));
@@ -953,7 +953,9 @@ class MixField: public TransformedField {
         internalField.Append(new UnsignedField<8>(mix.delayDown));
         internalField.Append(new UnsignedField<8>(mix.speedUp));
         internalField.Append(new UnsignedField<8>(mix.speedDown));
-        if (HAS_LARGE_LCD(board))
+        if (IS_HORUS(board))
+          internalField.Append(new ZCharField<6>(mix.name));
+        else if (HAS_LARGE_LCD(board))
           internalField.Append(new ZCharField<8>(mix.name));
         else
           internalField.Append(new ZCharField<6>(mix.name));
@@ -1169,7 +1171,7 @@ class MixField: public TransformedField {
 
       if (mix.srcRaw.type != SOURCE_TYPE_NONE) {
         mix.destCh = _destCh + 1;
-        if (!IS_TARANIS(board) || version < 216) {
+        if (!IS_STM32(board) || version < 216) {
           if (!_curveMode)
             mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarToC9x(_curveParam));
           else if (_curveParam > 6)
@@ -1236,7 +1238,9 @@ class InputField: public TransformedField {
         internalField.Append(new UnsignedField<9>(expo.flightModes));
         internalField.Append(new SignedField<8>(_weight, "Weight"));
         internalField.Append(new SpareBitsField<1>());
-        if (HAS_LARGE_LCD(board))
+        if (IS_HORUS(board))
+          internalField.Append(new ZCharField<6>(expo.name));
+        else if (HAS_LARGE_LCD(board))
           internalField.Append(new ZCharField<8>(expo.name));
         else
           internalField.Append(new ZCharField<6>(expo.name));

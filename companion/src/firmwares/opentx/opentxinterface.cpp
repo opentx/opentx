@@ -577,21 +577,21 @@ int OpenTxFirmware::getCapability(Capability capability)
     case FlightModesHaveFades:
       return 1;
     case Heli:
-      if (IS_TARANIS(board))
+      if (IS_TARANIS(board) || IS_HORUS(board))
         return id.contains("noheli") ? 0 : 1;
       else
         return id.contains("heli") ? 1 : 0;
     case Gvars:
-      if (IS_TARANIS(board))
+      if (IS_TARANIS(board) || IS_HORUS(board))
         return id.contains("nogvars") ? 0 : 9;
       else if (id.contains("gvars"))
         return IS_ARM(board) ? 9 : 5;
       else
         return 0;
     case ModelName:
-      return (HAS_LARGE_LCD(board) ? 12 : 10);
+      return (IS_HORUS(board) ? 15 : (HAS_LARGE_LCD(board) ? 12 : 10));
     case FlightModesName:
-      return (IS_TARANIS(board) ? 10 : 6);
+      return ((IS_TARANIS(board) || IS_HORUS(board)) ? 10 : 6);
     case GvarsName:
       return (IS_9X(board) ? 0 : 6);
     case GvarsInCS:
@@ -601,7 +601,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case GvarsFlightModes:
       return ((IS_ARM(board) || IS_2560(board)) ? 1 : 0);
     case Mixes:
-      return (IS_TARANIS(board) ? 64 : (IS_ARM(board) ? 60 : 32));
+      return (IS_ARM(board) ? 64 : 32);
     case OffsetWeight:
       return (IS_ARM(board) ? 500 : 245);
     case Timers:
@@ -778,7 +778,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case GlobalFunctions:
       return IS_ARM(board) ? 64 : 0;
     case VirtualInputs:
-      return IS_TARANIS(board) ? 32 : 0;
+      return IS_ARM(board) ? 64 : 0;
     case TrainerInputs:
       return IS_ARM(board) ? 16 : 8;
     case RtcTime:
