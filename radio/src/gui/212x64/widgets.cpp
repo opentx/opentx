@@ -198,8 +198,10 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
-    if (attr & RIGHT)
-      x -= 2*FW+FWNUM;
+    if (attr & RIGHT) {
+      x -= 3*FW;
+      attr -= RIGHT;
+    }
 
     attr &= ~PREC1;
 

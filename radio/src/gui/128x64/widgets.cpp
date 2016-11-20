@@ -137,10 +137,13 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
-    if (attr & LEFT)
+    if (IS_LEFT_ALIGNED(attr)) {
       attr -= LEFT; /* because of ZCHAR */
-    else
-      x -= 2*FW+FWNUM;
+    }
+    else {
+      x -= 3*FW;
+      attr -= RIGHT;
+    }
 
     attr &= ~PREC1;
 

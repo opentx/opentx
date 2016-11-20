@@ -154,7 +154,7 @@ void onMixesMenu(const char * result)
 }
 
 #if LCD_W >= 212
-#define MIX_LINE_WEIGHT_POS            2*FW+32
+#define MIX_LINE_WEIGHT_POS            2*FW+34
 #define MIX_LINE_SRC_POS               7*FW+5
 #define MIX_LINE_CURVE_POS             13*FW+3
 #define MIX_LINE_SWITCH_POS            19*FW+1
@@ -402,7 +402,7 @@ void menuModelMixAll(event_t event)
   int cur = 0;
   int i = 0;
 
-  for (int ch=1; ch<=MAX_OUTPUT_CHANNELS; ch++) {
+  for (uint8_t ch=1; ch<=MAX_OUTPUT_CHANNELS; ch++) {
     MixData * md;
     coord_t y = MENU_HEADER_HEIGHT+1+(cur-menuVerticalOffset)*FH;
     if (i<MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh+1 == ch) {
@@ -426,7 +426,7 @@ void menuModelMixAll(event_t event)
           s_currIdx = i;
         }
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
-          uint8_t attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
+          LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
           if (mixCnt > 0) lcdDrawTextAtIndex(FW, y, STR_VMLTPX2, md->mltpx, 0);
 

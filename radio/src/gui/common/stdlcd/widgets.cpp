@@ -20,10 +20,16 @@
 
 #include "opentx.h"
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx, LcdFlags att)
+void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx, LcdFlags flags)
 {
-  lcdDrawText(x, y, str, att & ~LEADING0);
-  lcdDrawNumber(lcdNextPos, y, idx, att|LEFT, 2);
+  if (flags & RIGHT) {
+    lcdDrawNumber(x, y, idx, flags);
+    lcdDrawText(x-FW, y, str, flags & ~LEADING0);
+  }
+  else {
+    lcdDrawText(x, y, str, flags & ~LEADING0);
+    lcdDrawNumber(lcdNextPos, y, idx, flags|LEFT, 2);
+  }
 }
 
 #if defined(CPUARM)

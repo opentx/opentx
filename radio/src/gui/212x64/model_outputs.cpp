@@ -173,7 +173,7 @@ void menuModelLimits(event_t event)
 
         case ITEM_LIMITS_OFFSET:
           if (GV_IS_GV_VALUE(ld->offset, -1000, 1000) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
-            ld->offset = GVAR_MENU_ITEM(LIMITS_OFFSET_POS, y, ld->offset, -1000, 1000, attr|PREC1, 0, event);
+            ld->offset = GVAR_MENU_ITEM(LIMITS_OFFSET_POS, y, ld->offset, -1000, 1000, RIGHT|attr|PREC1, 0, event);
             break;
           }
 
