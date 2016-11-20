@@ -159,7 +159,7 @@ bool OpenTxEepromInterface::loadModel(ModelData &model, uint8_t *data, int index
 }
 
 template <class T>
-bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &model, uint8_t *data, unsigned int version, unsigned int variant)
+bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & model, uint8_t *data, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
 
@@ -195,6 +195,14 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData &mode
     }
   }
 
+  return true;
+}
+
+bool OpenTxEepromInterface::loadModelFromByteArray(ModelData & model, const QByteArray & data)
+{
+  OpenTxModelData modelData(model, board, 218, 0);
+  modelData.Import(data);
+  modelData.Dump();
   return true;
 }
 
@@ -1068,7 +1076,7 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   return true;
 }
 
-unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long OpenTxEepromInterface::loadBackup(RadioData & radioData, uint8_t * eeprom, int esize, int index)
 {
   std::bitset<NUM_ERRORS> errors;
 
@@ -1114,7 +1122,8 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, uint8_t *e
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
-  } else if (version_error == NOT_OPENTX) {
+  }
+  else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
     errors.set(version_error);
     return errors.to_ulong();

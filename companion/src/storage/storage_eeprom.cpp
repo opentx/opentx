@@ -7,7 +7,7 @@ unsigned long LoadEeprom(RadioData & radioData, const uint8_t * eeprom, const in
 {
   std::bitset<NUM_ERRORS> errors;
 
-  foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
+  foreach(EEPROMInterface * eepromInterface, eepromInterfaces) {
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, eeprom, size));
     if (result.test(ALL_OK)) {
       return result.to_ulong();

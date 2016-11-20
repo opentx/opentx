@@ -52,7 +52,9 @@ class OpenTxEepromInterface : public EEPROMInterface
     EepromLoadErrors checkVersion(unsigned int version);
 
     bool checkVariant(unsigned int version, unsigned int variant);
-
+    
+    bool loadModelFromByteArray(ModelData & model, const QByteArray & data);
+      
     template <class T>
     bool loadModel(ModelData &model, uint8_t *data, int index, unsigned int stickMode=0);
 

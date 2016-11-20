@@ -30,7 +30,7 @@ class DataField {
     virtual const char *getName() { return name; }
     virtual ~DataField() { }
     virtual void ExportBits(QBitArray & output) = 0;
-    virtual void ImportBits(QBitArray & input) = 0;
+    virtual void ImportBits(const QBitArray & input) = 0;
     virtual unsigned int size() = 0;
 
     QBitArray bytesToBits(QByteArray bytes)
@@ -62,7 +62,7 @@ class DataField {
       return 0;
     }
 
-    int Import(QByteArray & input)
+    int Import(const QByteArray & input)
     {
       QBitArray bits = bytesToBits(input);
       ImportBits(bits);
@@ -147,7 +147,7 @@ class BaseUnsignedField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       field = 0;
       for (int i=0; i<N; i++) {
@@ -208,7 +208,7 @@ class BoolField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       field = input[0] ? true : false;
       eepromImportDebug() << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
@@ -266,7 +266,7 @@ class SignedField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       unsigned int value = 0;
       for (int i=0; i<N; i++) {
@@ -331,7 +331,7 @@ class CharField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       unsigned int b = 0;
       for (int i=0; i<N; i++) {
@@ -381,7 +381,7 @@ class ZCharField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       unsigned int b = 0;
       for (int i=0; i<N; i++) {
@@ -442,7 +442,7 @@ class StructField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       eepromImportDebug() << QString("\timporting %1[%2]:").arg(name).arg(fields.size());
       int offset = 0;
@@ -497,7 +497,7 @@ class TransformedField: public DataField {
       field.ExportBits(output);
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       eepromImportDebug() << QString("\timporting TransformedField %1:").arg(field.getName());
       field.ImportBits(input);

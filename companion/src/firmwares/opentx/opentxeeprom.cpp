@@ -2604,7 +2604,7 @@ class FrskyScreenField: public DataField {
       }
     }
 
-    virtual void ImportBits(QBitArray & input)
+    virtual void ImportBits(const QBitArray & input)
     {
       eepromImportDebug() << QString("importing %1: type: %2").arg(name).arg(screen.type);
 

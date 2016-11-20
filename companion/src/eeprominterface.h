@@ -1408,6 +1408,8 @@ class EEPROMInterface
     virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
 
     virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
+    
+    virtual bool loadModelFromByteArray(ModelData & model, const QByteArray & data) { return false; }
 
     virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
