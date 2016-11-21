@@ -791,7 +791,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       return IS_TARANIS(board) ? 6 : 0;
     case LimitsPer1000:
     case EnhancedCurves:
-      return IS_TARANIS(board);
+      return IS_ARM(board);
     case HasFasOffset:
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:
