@@ -32,6 +32,7 @@ enum BoardEnum {
 #define C9X_MAX_CUSTOM_FUNCTIONS  64 // number of functions assigned to switches
 #define C9X_NUM_MODULES           2
 #define NUM_STICKS                4
+#define NUM_AUX_TRIMS             2
 #define BOARD_9X_NUM_POTS         3
 #define C9X_NUM_POTS              8
 #define NUM_CAL_PPM               4

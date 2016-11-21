@@ -613,9 +613,9 @@ class CustomFunctionData { // Function Switches data
 class FlightModeData {
   public:
     FlightModeData() { clear(0); }
-    int trimMode[NUM_STICKS];
-    int trimRef[NUM_STICKS];
-    int trim[NUM_STICKS];
+    int trimMode[NUM_STICKS+NUM_AUX_TRIMS];
+    int trimRef[NUM_STICKS+NUM_AUX_TRIMS];
+    int trim[NUM_STICKS+NUM_AUX_TRIMS];
     RawSwitch swtch;
     char name[10+1];
     unsigned int fadeIn;

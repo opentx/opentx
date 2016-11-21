@@ -28,7 +28,8 @@
 #define MAX_SCRIPTS(board)                    (IS_HORUS(board) ? 9 : 7)
 #define MAX_TELEMETRY_SENSORS(board, version) (32)
 #define NUM_PPM_INPUTS(board, version)        ((IS_ARM(board) && version >= 216) ? 16 : 8)
-#define ROTENC_COUNT(board, version)          (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 218) ? 0 : 1) : (IS_2560(board) ? 2 : 0))
+#define ROTENC_COUNT(board, version)          (IS_ARM(board) ? ((IS_STM32(board) && version >= 218) ? 0 : 1) : (IS_2560(board) ? 2 : 0))
+#define MAX_AUX_TRIMS(board)                  (IS_HORUS(board) ? 2 : 0)
 
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
 #define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
@@ -795,7 +796,7 @@ class FlightModeField: public TransformedField {
           internalField.Append(new SignedField<2>(trimExt[i]));
       }
       else if (IS_ARM(board) && version >= 218) {
-        for (int i=0; i<NUM_STICKS; i++) {
+        for (int i=0; i<NUM_STICKS+MAX_AUX_TRIMS(board); i++) {
           internalField.Append(new SignedField<11>(phase.trim[i]));
           internalField.Append(new UnsignedField<5>(trimMode[i]));
         }
@@ -848,7 +849,7 @@ class FlightModeField: public TransformedField {
 
     virtual void beforeExport()
     {
-      for (int i=0; i<NUM_STICKS; i++) {
+      for (int i=0; i<NUM_STICKS+MAX_AUX_TRIMS(board); i++) {
         if (IS_TARANIS(board) && version >= 216) {
           if (phase.trimMode[i] < 0)
             trimMode[i] = TRIM_MODE_NONE;
@@ -876,7 +877,7 @@ class FlightModeField: public TransformedField {
 
     virtual void afterImport()
     {
-      for (int i=0; i<NUM_STICKS; i++) {
+      for (int i=0; i<NUM_STICKS+MAX_AUX_TRIMS(board); i++) {
         if (IS_TARANIS(board) && version >= 216) {
           if (trimMode[i] == TRIM_MODE_NONE) {
             phase.trimMode[i] = -1;
@@ -923,9 +924,9 @@ class FlightModeField: public TransformedField {
     BoardEnum board;
     unsigned int version;
     int rotencCount;
-    int trimBase[NUM_STICKS];
-    int trimExt[NUM_STICKS];
-    unsigned int trimMode[NUM_STICKS];
+    int trimBase[NUM_STICKS+NUM_AUX_TRIMS];
+    int trimExt[NUM_STICKS+NUM_AUX_TRIMS];
+    unsigned int trimMode[NUM_STICKS+NUM_AUX_TRIMS];
 };
 
 class MixField: public TransformedField {
@@ -2129,7 +2130,7 @@ class ArmCustomFunctionField: public TransformedField {
         internalField.Append(new ConversionField< UnsignedField<8> >(_func, &functionsConversionTable, "Function", ::QObject::tr("OpenTX on this board doesn't accept this function")));
       }
 
-      if (IS_STM32(board) && version >= 216)
+      if (IS_TARANIS(board) && version >= 216)
         internalField.Append(new CharField<8>(_param, false));
       else if (IS_TARANIS(board))
         internalField.Append(new CharField<10>(_param, false));
