@@ -60,7 +60,7 @@ class OutputsWidget: public Widget
         lcdDrawRect(x + RECT_OFFSET, y + (curChan - firstChan) * row_height, RECT_WIDTH, row_height+1);
         lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * row_height, row_height, MAINVIEW_GRAPHICS_COLOR);
       }
-      return lastChan;
+      return lastChan - 1;
     }
 
     void twoColumns()
