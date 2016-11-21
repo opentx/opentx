@@ -24,7 +24,7 @@
 #include <list>
 #include "sdcard.h"
 
-#define MODELCELL_WIDTH                166
+#define MODELCELL_WIDTH                172
 #define MODELCELL_HEIGHT               59
 
 class ModelCell
