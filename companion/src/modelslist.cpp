@@ -280,69 +280,52 @@ void ModelsListWidget::focusOutEvent ( QFocusEvent * event )
 
 void ModelsListWidget::refreshList()
 {
-    clear();
-    int msize;
-    div_t divresult;
-    addItem(tr("General Settings"));
+  clear();
+  addItem(tr("General Settings"));
 
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    int availableEEpromSize = eepromInterface->getEEpromSize()-64; //let's consider fat
-    divresult=div(eepromInterface->getSize(radioData->generalSettings),15);
-    divresult.quot+=(divresult.rem!=0 ? 1:0);
-    availableEEpromSize -= divresult.quot*16;
-    
-    for(uint8_t i=0; i<GetEepromInterface()->getMaxModels(); i++)
-    {
-      QString item = QString().sprintf("%02d: ", i+1);
-       
-      if (!radioData->models[i].isEmpty()) {
-        if (eepromInterface && IS_SKY9X(eepromInterface->getBoard())) {
-          if (radioData->models[i].name[0]==0) {
-            QString modelname="Model";
-            modelname.append(QString().sprintf("%02d", i+1));
-            item += modelname;
-          } else {
-            item += radioData->models[i].name;
-          }
-        }
-        else {
-          char modelname[256];
-          if (radioData->models[i].name[0]==0) {
-            sprintf(modelname, "Model%02d", i+1);
-          } else {
-            if (IS_TARANIS(eepromInterface->getBoard())) {
-              sprintf(modelname,"%12s",radioData->models[i].name);
-            } else {
-              sprintf(modelname,"%10s",radioData->models[i].name);
-            }            
-          }
-          if (IS_TARANIS(eepromInterface->getBoard())) {
-            item += QString().sprintf("%12s", modelname);
-          } else {
-            item += QString().sprintf("%10s", modelname);
-          }            
-          msize = eepromInterface->getSize(radioData->models[i]);
-          item += QString().sprintf("%5d", msize);
-          divresult=div(msize,15);
-          divresult.quot+=(divresult.rem!=0 ? 1:0);
+  EEPROMInterface * eepromInterface = GetEepromInterface();
+  BoardEnum board = eepromInterface->getBoard();
+
+  // TODO here we calculate the size used by the RLE format, this is clearly not the right place to do that...
+  int availableEEpromSize = eepromInterface->getEEpromSize() - 64; // let's consider fat
+  div_t divresult = div(eepromInterface->getSize(radioData->generalSettings), 15);
+  divresult.quot += (divresult.rem != 0 ? 1 : 0);
+  availableEEpromSize -= divresult.quot*16;
+  
+  for (uint8_t i=0; i<GetEepromInterface()->getMaxModels(); i++) {
+    QString item = QString().sprintf("%02d: ", i+1);
+    if (!radioData->models[i].isEmpty()) {
+      QString modelName;
+      if (strlen(radioData->models[i].name) > 0)
+        modelName = radioData->models[i].name;
+      else
+        modelName = QString().sprintf("Model%02d", i+1);
+      item += modelName;
+      if (!IS_SKY9X(board) && !IS_HORUS(board)) {
+        item += QString(GetCurrentFirmware()->getCapability(ModelName)-modelName.size(), ' ');
+        int size = eepromInterface->getSize(radioData->models[i]);
+        item += QString().sprintf("%5d", size);
+        divresult = div(size, 15);
+        divresult.quot += (divresult.rem != 0 ? 1 : 0);
+        availableEEpromSize -= divresult.quot*16;
+        if (i == radioData->generalSettings.currModel) {
+          // TODO why?
           availableEEpromSize -= divresult.quot*16;
-
-          if (i==radioData->generalSettings.currModel) {
-            availableEEpromSize -= divresult.quot*16;
-          }
         }
-       }
-      addItem(item);
+      }
     }
-    if (radioData->generalSettings.currModel < (unsigned int)GetEepromInterface()->getMaxModels()) {
-        QFont f = QFont("Courier New", 12);
-        f.setBold(true);
-        this->item(radioData->generalSettings.currModel+1)->setFont(f);
-    }
+    addItem(item);
+  }
+  
+  if (radioData->generalSettings.currModel < (unsigned int)eepromInterface->getMaxModels()) {
+    QFont f = QFont("Courier New", 12);
+    f.setBold(true);
+    this->item(radioData->generalSettings.currModel+1)->setFont(f);
+  }
 
-    if (eepromInterface && !IS_SKY9X(eepromInterface->getBoard())) {
-      ((MdiChild*)parent())->setEEpromAvail((availableEEpromSize/16)*15);
-    }
+  if (!IS_SKY9X(board) && !IS_HORUS(board)) {
+    ((MdiChild*)parent())->setEEpromAvail((availableEEpromSize/16)*15);
+  }
 }
 
 void ModelsListWidget::cut()
