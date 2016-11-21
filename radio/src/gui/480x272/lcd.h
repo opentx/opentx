@@ -77,6 +77,7 @@ enum FontSizeIndex {
   SPAREf_INDEX,
 };
 
+#define STDSIZE                        (STDSIZE_INDEX << 8)
 #define TINSIZE                        (TINSIZE_INDEX << 8)
 #define SMLSIZE                        (SMLSIZE_INDEX << 8)
 #define MIDSIZE                        (MIDSIZE_INDEX << 8)
