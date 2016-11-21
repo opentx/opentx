@@ -21,9 +21,9 @@
 #include "opentx.h"
 #include "storage/modelslist.h"
 
-#define CATEGORIES_WIDTH               127
-#define MODELS_LEFT                    127
-#define MODELS_COLUMN_WIDTH            170
+#define CATEGORIES_WIDTH               120
+#define MODELS_LEFT                    123
+#define MODELS_COLUMN_WIDTH            174
 
 enum ModelSelectMode {
   MODE_SELECT_MODEL,
@@ -46,11 +46,11 @@ ModelCell * currentModel;
 void drawCategory(coord_t y, const char * name, bool selected)
 {
   if (selected) {
-    lcdDrawSolidFilledRect(5, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, TEXT_INVERTED_BGCOLOR);
-    lcdDrawText(10, y, name, TEXT_COLOR | INVERS);
+    lcdDrawSolidFilledRect(1, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, TEXT_INVERTED_BGCOLOR);
+    lcdDrawText(6, y, name, SMLSIZE | TEXT_COLOR | INVERS);
   }
   else {
-    lcdDrawText(10, y, name, TEXT_COLOR);
+    lcdDrawText(6, y, name, TEXT_COLOR);
   }
 }
 
@@ -437,7 +437,7 @@ bool menuModelSelect(event_t event)
   for (std::list<ModelsCategory *>::iterator it = modelslist.categories.begin(); it != modelslist.categories.end(); ++it, ++index) {
     if (index >= categoriesVerticalOffset && index < categoriesVerticalOffset+5) {
       if (index != categoriesVerticalOffset) {
-        lcdDrawSolidHorizontalLine(5, y-4, CATEGORIES_WIDTH-10, LINE_COLOR);
+        lcdDrawSolidHorizontalLine(1, y-4, CATEGORIES_WIDTH-10, LINE_COLOR);
       }
       if (selectMode == MODE_RENAME_CATEGORY && currentCategory == *it) {
         lcdDrawSolidFilledRect(0, y-INVERT_VERT_MARGIN+1, CATEGORIES_WIDTH-2, INVERT_LINE_HEIGHT, TEXT_BGCOLOR);
@@ -493,7 +493,7 @@ bool menuModelSelect(event_t event)
       }
     }
   }
-  drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, 7, LCD_H - 15, menuVerticalOffset, (index + 1) / 2, 4);
+  drawVerticalScrollbar(DEFAULT_SCROLLBAR_X + 4, 7, LCD_H - 15, menuVerticalOffset, (index + 1) / 2, 4);
 
   // Footer
   lcd->drawBitmap(5, LCD_H-FH-20, modelselSdFreeBitmap);
