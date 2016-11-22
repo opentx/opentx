@@ -92,7 +92,7 @@ const SpektrumSensor spektrumSensors[] = {
 
 
   // Lap Timer
-  {0x0b,             0, uint8,      ZSTR_LAP_NUMBER,         UNIT_RAW,                    0},
+  {0x0b,             0, uint8,      ZSTR_LAP_NUMBER,        UNIT_RAW,                    0},
   {0x0b,             0, uint8,      ZSTR_GATE_NUMBER,       UNIT_RAW,                    0},
   {0x0b,             0, uint32,     ZSTR_LAP_TIME,          UNIT_SECONDS,                3},
   {0x0b,             0, uint32,     ZSTR_GATE_TIME,         UNIT_SECONDS,                3},
@@ -282,9 +282,9 @@ void processSpektrumPacket(const uint8_t *packet)
 
     uint16_t pseudoId = (i2cAddress << 8 | lineNumber);
 
-    for (int i=0; i<13; i++)
+    for (int i=5; i<SPEKTRUM_TELEMETRY_LENGTH; i++)
     {
-      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, packet[5+i], UNIT_TEXT, i);
+      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, packet[i], UNIT_TEXT, i-5);
     }
     // Set a sential \0 just for safety since we have the space there
     setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, '\0', UNIT_TEXT, 13);
