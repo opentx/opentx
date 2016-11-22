@@ -834,7 +834,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 
 QPixmap makePixMap( QImage image, QString firmwareType )
 {
-  if (firmwareType.contains( "x9d" )) {
+  if (firmwareType.contains( "x9" )) {
     image = image.convertToFormat(QImage::Format_RGB32);
     QRgb col;
     int gray;
