@@ -153,8 +153,8 @@ QVector<T> findWidgets(QObject * object, const QString & name)
   return result;
 }
 
-// Format a pixmap to fit on the radio using a specific firmware
-QPixmap makePixMap( QImage image, QString firmwareType );
+// Format a pixmap to fit on the current firmware
+QPixmap makePixMap(const QImage & image);
 
 int version2index(const QString & version);
 QString index2version(int index);

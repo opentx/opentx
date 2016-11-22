@@ -767,8 +767,25 @@ int OpenTxFirmware::getCapability(Capability capability)
       return 18;
     case HasSDLogs:
       return ((IS_2560(board) || IS_ARM(board)) ? true : false);
-    case LCDWidth:
-      return (IS_TARANIS(board) ? 212 : 128) ;
+    case LcdWidth:
+      if (IS_HORUS(board))
+        return 480;
+      else if (IS_TARANIS(board))
+        return 212;
+      else
+        return 128;
+    case LcdHeight:
+      if (IS_HORUS(board))
+        return 272;
+      else
+        return 64;
+    case LcdDepth:
+      if (IS_HORUS(board))
+        return 16;
+      else if (IS_TARANIS(board))
+        return 4;
+      else
+        return 1;
     case GetThrSwitch:
       return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR) ;
     case HasDisplayText:
