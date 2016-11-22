@@ -529,7 +529,7 @@ PACK(struct FrSkyTelemetryData {
   uint8_t voltsSource;
   uint8_t altitudeSource;
   uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
-  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
+  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS]; // TODO EEPROM change should not be here anymore
   uint8_t varioSource:7;
   uint8_t varioCenterSilent:1;
   int8_t  varioCenterMax;
