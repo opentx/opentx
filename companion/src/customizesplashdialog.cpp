@@ -54,14 +54,14 @@ bool Side::displayImage( QString fileName, Source pictSource )
     if (pictSource== PICT)
       *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
     else if (pictSource == PROFILE)
-      *format = (g.profile[g.id()].fwType().contains("taranis")) ? LCDTARANIS : LCD9X; 
+      *format = (g.profile[g.id()].fwType().contains("x9d")) ? LCDTARANIS : LCD9X; 
   }
   if (image.isNull()) {
     return false;
   }
   // Load image
   if (*format==LCDTARANIS) {
-    imageLabel->setPixmap( makePixMap( image, "taranis" ));
+    imageLabel->setPixmap( makePixMap( image, "x9d" ));
     imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
   }
   else {

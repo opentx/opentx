@@ -337,7 +337,7 @@ bool AppPreferencesDialog::displayImage( QString fileName )
 
   // Use the firmware name to determine splash width
   int width = SPLASH_WIDTH;
-  if (g.profile[g.id()].fwType().contains("taranis"))
+  if (g.profile[g.id()].fwType().contains("x9d"))
     width = SPLASHX9D_WIDTH;
   
   ui->imageLabel->setPixmap( makePixMap( image, g.profile[g.id()].fwType()));
