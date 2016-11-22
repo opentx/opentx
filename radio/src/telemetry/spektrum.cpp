@@ -23,7 +23,8 @@
 
 /*
  * Documentation of the Spektrum protocol is available under
- * http://www.rcgroups.com/forums/showthread.php?t=1726960&page=22#post34091390
+ * https://www.spektrumrc.com/ProdInfo/Files/SPM_Telemetry_Developers_Specs.pdf
+ *
  * Multi module adds two byte header of 0xAA [RSSI of telemetry packet] [16 byte message]
  */
 
@@ -45,6 +46,7 @@
 #define DSM_BIND_PACKET_LENGTH 12
 
 #define I2C_HIGH_CURRENT 0x03
+#define I2C_TEXTGEN 0x0c
 #define I2C_GPS  0x17
 #define I2C_GPS2 0x17
 #define I2C_CELLS 0x3a
@@ -87,6 +89,16 @@ const SpektrumSensor spektrumSensors[] = {
   {0x0a,             2,  uint16,    ZSTR_BATT2_VOLTAGE,     UNIT_VOLTS,                  2},
   {0x0a,             4,  uint16,    ZSTR_BATT1_CONSUMPTION, UNIT_MAH,                    0},
   {0x0a,             6,  uint16,    ZSTR_BATT2_CONSUMPTION, UNIT_MAH,                    0},
+
+
+  // Lap Timer
+  {0x0b,             0, uint8,      ZSTR_LAP_NUMBER,        UNIT_RAW,                    0},
+  {0x0b,             0, uint8,      ZSTR_GATE_NUMBER,       UNIT_RAW,                    0},
+  {0x0b,             0, uint32,     ZSTR_LAP_TIME,          UNIT_SECONDS,                3},
+  {0x0b,             0, uint32,     ZSTR_GATE_TIME,         UNIT_SECONDS,                3},
+
+  // Text Generator
+  {I2C_TEXTGEN,      0, uint32,     ZSTR_FLIGHT_MODE,       UNIT_TEXT,                   0},
 
   // AirSpeed, also has max (+2, int16)
   {0x11,             0,  int16,     ZSTR_ASPD,              UNIT_KMH,                    0},
@@ -264,6 +276,22 @@ void processSpektrumPacket(const uint8_t *packet)
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
   uint8_t instance = packet[3];
+
+  if (i2cAddress == I2C_TEXTGEN) {
+    uint8_t lineNumber = packet[4];
+
+    uint16_t pseudoId = (i2cAddress << 8 | lineNumber);
+
+    for (int i=5; i<SPEKTRUM_TELEMETRY_LENGTH; i++)
+    {
+      setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, packet[i], UNIT_TEXT, i-5);
+    }
+    // Set a sential \0 just for safety since we have the space there
+    setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, '\0', UNIT_TEXT, 13);
+
+
+    return;
+  }
 
   bool handled = false;
   for (const SpektrumSensor * sensor = spektrumSensors; sensor->i2caddress; sensor++) {
