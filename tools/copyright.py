@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 
+import os
 import sys
 
 
@@ -43,9 +44,9 @@ def writeheader(filename, header):
 
 
 def main(args=sys.argv):
-    with open(args[1]) as headerfile:
+    with open(os.path.dirname(os.path.realpath(__file__)) + "/copyright-header.txt") as headerfile:
         header = headerfile.readlines()
-    for filename in args[2:]:
+    for filename in args[1:]:
         writeheader(filename, header)
 
 

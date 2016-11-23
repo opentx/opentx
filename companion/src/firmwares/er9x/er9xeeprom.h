@@ -1,7 +1,12 @@
 /*
- * Author - Bertrand Songis <bsongis@gmail.com>
+ * Copyright (C) OpenTX
  *
- * Based on th9x -> http://code.google.com/p/th9x/
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -11,10 +16,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  */
-#ifndef er9xeeprom_h
-#define er9xeeprom_h
+
+#ifndef _ER9XEEPROM_H_
+#define _ER9XEEPROM_H_
 
 #include <inttypes.h>
 #include "eeprominterface.h"
@@ -257,4 +262,4 @@ PACK(typedef struct t_Er9xModelData {
   t_Er9xModelData() { memset(this, 0, sizeof(t_Er9xModelData)); }
 }) Er9xModelData;
 
-#endif
+#endif // _ER9XEEPROM_H_

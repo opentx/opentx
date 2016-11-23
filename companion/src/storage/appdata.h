@@ -1,5 +1,12 @@
 /*
- * Author - Kjell Kernen
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -9,7 +16,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  */
 
 // All temporary and permanent global variables are defined here to make
@@ -17,8 +23,8 @@
 // Do not access variables in QSettings directly, it is not type safe!
 
 
-#ifndef COMPANION_APPDATA_H
-#define COMPANION_APPDATA_H
+#ifndef _APPDATA_H_
+#define _APPDATA_H_
 #include <QByteArray>
 #include <QStringList>
 #include <QString>
@@ -389,4 +395,4 @@ class AppData: protected CompStoreObj
 
 extern AppData g;
 
-#endif // COMPANION_APPDATA_H
+#endif // _APPDATA_H_

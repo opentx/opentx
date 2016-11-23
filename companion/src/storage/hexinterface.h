@@ -1,7 +1,12 @@
 /*
- * Author - Bertrand Songis <bsongis@gmail.com>
- * 
- * Based on th9x -> http://code.google.com/p/th9x/
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -11,10 +16,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  */
-#ifndef hex_stream_h
-#define hex_stream_h
+
+#ifndef _HEXINTERFACE_H_
+#define _HEXINTERFACE_H_
 
 #include <inttypes.h>
 #include <QTextStream>
@@ -35,4 +40,4 @@ class HexInterface {
     QTextStream & stream;
 };
 
-#endif
+#endif // _HEXINTERFACE_H_

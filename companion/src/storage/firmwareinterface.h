@@ -1,6 +1,13 @@
 /*
- * Author - Romolo Manfredini <romolo.manfredini@gmail.com>
- * 
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
  * published by the Free Software Foundation.
@@ -9,11 +16,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
  */
 
-#ifndef FIRMWAREINTERFACE_H_
-#define FIRMWAREINTERFACE_H_
+#ifndef _FIRMWAREINTERFACE_H_
+#define _FIRMWAREINTERFACE_H_
 
 #include <QString>
 #include <QImage>
@@ -88,4 +94,4 @@ class FirmwareInterface
     bool isValidFlag;
 };
 
-#endif /* FIRMWAREINTERFACE_H_ */
+#endif // _FIRMWAREINTERFACE_H_
