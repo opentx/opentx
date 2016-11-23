@@ -1,4 +1,4 @@
-﻿#!/bin/bash  
+#!/bin/bash  
 for file in $(ls *png)
 do
   convert $file \( +clone \
