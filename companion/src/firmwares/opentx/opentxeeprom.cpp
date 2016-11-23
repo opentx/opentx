@@ -224,7 +224,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<NUM_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
@@ -233,7 +233,7 @@ class SourcesConversionTable: public ConversionTable {
       }
 
       if (!afterrelease21March2013) {
-        for (int i=0; i<NUM_STICKS; i++) {
+        for (int i=0; i<CPN_MAX_STICKS; i++) {
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
         }
       }
@@ -246,7 +246,7 @@ class SourcesConversionTable: public ConversionTable {
       }
 
       if (afterrelease21March2013) {
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<CPN_MAX_STICKS; i++)
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
       }
 
@@ -294,7 +294,7 @@ class SourcesConversionTable: public ConversionTable {
           addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
           addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
           addConversion(RawSource(SOURCE_TYPE_SPECIAL, 4), val++); // Timer3
-          for (int i=0; i<C9X_MAX_SENSORS*3; ++i) {
+          for (int i=0; i<CPN_MAX_SENSORS*3; ++i) {
             addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
           }
         }
@@ -790,25 +790,25 @@ class FlightModeField: public TransformedField {
     {
       if (board == BOARD_STOCK || (board==BOARD_M128 && version>=215)) {
         // On stock we use 10bits per trim
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<CPN_MAX_STICKS; i++)
           internalField.Append(new SignedField<8>(trimBase[i]));
-        for (int i=0; i<NUM_STICKS; i++)
+        for (int i=0; i<CPN_MAX_STICKS; i++)
           internalField.Append(new SignedField<2>(trimExt[i]));
       }
       else if (IS_ARM(board) && version >= 218) {
-        for (int i=0; i<NUM_STICKS+MAX_AUX_TRIMS(board); i++) {
+        for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
           internalField.Append(new SignedField<11>(phase.trim[i]));
           internalField.Append(new UnsignedField<5>(trimMode[i]));
         }
       }
       else if (IS_TARANIS(board) && version >= 216) {
-        for (int i=0; i<NUM_STICKS; i++) {
+        for (int i=0; i<CPN_MAX_STICKS; i++) {
           internalField.Append(new SignedField<11>(phase.trim[i]));
           internalField.Append(new UnsignedField<5>(trimMode[i]));
         }
       }
       else {
-        for (int i=0; i<NUM_STICKS; i++) {
+        for (int i=0; i<CPN_MAX_STICKS; i++) {
           internalField.Append(new SignedField<16>(trimBase[i]));
         }
       }
@@ -849,7 +849,7 @@ class FlightModeField: public TransformedField {
 
     virtual void beforeExport()
     {
-      for (int i=0; i<NUM_STICKS+MAX_AUX_TRIMS(board); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
         if (IS_TARANIS(board) && version >= 216) {
           if (phase.trimMode[i] < 0)
             trimMode[i] = TRIM_MODE_NONE;
@@ -877,7 +877,7 @@ class FlightModeField: public TransformedField {
 
     virtual void afterImport()
     {
-      for (int i=0; i<NUM_STICKS+MAX_AUX_TRIMS(board); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
         if (IS_TARANIS(board) && version >= 216) {
           if (trimMode[i] == TRIM_MODE_NONE) {
             phase.trimMode[i] = -1;
@@ -924,9 +924,9 @@ class FlightModeField: public TransformedField {
     BoardEnum board;
     unsigned int version;
     int rotencCount;
-    int trimBase[NUM_STICKS+NUM_AUX_TRIMS];
-    int trimExt[NUM_STICKS+NUM_AUX_TRIMS];
-    unsigned int trimMode[NUM_STICKS+NUM_AUX_TRIMS];
+    int trimBase[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    int trimExt[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    unsigned int trimMode[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
 };
 
 class MixField: public TransformedField {
@@ -1164,7 +1164,7 @@ class MixField: public TransformedField {
     virtual void afterImport()
     {
       if (IS_TARANIS(board) && version < 216) {
-        if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < NUM_STICKS) {
+        if (mix.srcRaw.type == SOURCE_TYPE_STICK && mix.srcRaw.index < CPN_MAX_STICKS) {
           if (!mix.noExpo) {
             mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, mix.srcRaw.index);
           }
@@ -1615,8 +1615,8 @@ class CurvesField: public TransformedField {
     unsigned int version;
     int maxCurves;
     int maxPoints;
-    int _curves[C9X_MAX_CURVES];
-    int _points[C9X_MAX_CURVES*C9X_MAX_POINTS*2];
+    int _curves[CPN_MAX_CURVES];
+    int _points[CPN_MAX_CURVES*CPN_MAX_POINTS*2];
 };
 
 class LogicalSwitchesFunctionsTable: public ConversionTable {
@@ -1865,11 +1865,11 @@ class LogicalSwitchField: public TransformedField {
         }
         if (IS_TARANIS(board) && version < 216) {
           RawSource val1(csw.val1);
-          if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
+          if (val1.type == SOURCE_TYPE_STICK && val1.index < CPN_MAX_STICKS) {
             csw.val1 = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, val1.index).toValue();
           }
           RawSource val2(csw.val2);
-          if (val2.type == SOURCE_TYPE_STICK && val2.index < NUM_STICKS) {
+          if (val2.type == SOURCE_TYPE_STICK && val2.index < CPN_MAX_STICKS) {
             csw.val2 = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, val2.index).toValue();
           }
         }
@@ -1883,7 +1883,7 @@ class LogicalSwitchField: public TransformedField {
         }
         if (IS_TARANIS(board) && version < 216) {
           RawSource val1(csw.val1);
-          if (val1.type == SOURCE_TYPE_STICK && val1.index < NUM_STICKS) {
+          if (val1.type == SOURCE_TYPE_STICK && val1.index < CPN_MAX_STICKS) {
             csw.val1 = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, val1.index).toValue();
           }
         }
@@ -3384,7 +3384,7 @@ void OpenTxModelData::afterImport()
   eepromImportDebug() << QString("OpenTxModelData::afterImport()") << modelData.name;
 
   if (IS_TARANIS(board) && version < 216) {
-    for (unsigned int i=0; i<NUM_STICKS; i++) {
+    for (unsigned int i=0; i<CPN_MAX_STICKS; i++) {
       for (int j=0; j<64; j++) {
         ExpoData * expo = &modelData.expoData[j];
         if (expo->mode == INPUT_MODE_BOTH && expo->chn == i && expo->flightModes == 0 && expo->swtch.type == SWITCH_TYPE_NONE)
@@ -3431,7 +3431,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(NUM_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board))
+  inputsCount(CPN_MAX_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board))
 {
   eepromImportDebug() << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
@@ -3471,10 +3471,10 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   internalField.Append(new SignedField<8>(generalData.txVoltageCalibration));
   internalField.Append(new SignedField<8>(generalData.backlightMode));
 
-  for (int i=0; i<NUM_STICKS; i++) {
+  for (int i=0; i<CPN_MAX_STICKS; i++) {
     internalField.Append(new SignedField<16>(generalData.trainer.calib[i]));
   }
-  for (int i=0; i<NUM_STICKS; i++) {
+  for (int i=0; i<CPN_MAX_STICKS; i++) {
     internalField.Append(new UnsignedField<6>(generalData.trainer.mix[i].src));
     internalField.Append(new UnsignedField<2>(generalData.trainer.mix[i].mode));
     internalField.Append(new SignedField<8>(generalData.trainer.mix[i].weight));
@@ -3642,7 +3642,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       for (int i=0; i<MAX_SWITCHES(board, version); ++i) {
         internalField.Append(new ZCharField<3>(generalData.switchName[i]));
       }
-      for (int i=0; i<NUM_STICKS; ++i) {
+      for (int i=0; i<CPN_MAX_STICKS; ++i) {
         internalField.Append(new ZCharField<3>(generalData.stickName[i]));
       }
       for (int i=0; i<MAX_POTS(board, version); ++i) {

@@ -56,8 +56,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   }
     
   // The trims
-  QString labels[NUM_STICKS]; 
-  for(int i=0; i < NUM_STICKS; i++) {
+  QString labels[CPN_MAX_STICKS];
+  for(int i=0; i < CPN_MAX_STICKS; i++) {
     labels[i] = AnalogString(i);
   }
 

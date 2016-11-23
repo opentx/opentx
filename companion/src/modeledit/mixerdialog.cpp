@@ -38,7 +38,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     }
 
     if (!firmware->getCapability(VirtualInputs)) {
-      for(int i=0; i < NUM_STICKS; i++) {
+      for(int i=0; i < CPN_MAX_STICKS; i++) {
         ui->trimCB->addItem(AnalogString(i));
       }
     }
@@ -145,7 +145,7 @@ void MixerDialog::valuesChanged()
     QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
     if (firmware->getCapability(HasNoExpo)) {
-      bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < NUM_STICKS);
+      bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < CPN_MAX_STICKS);
       ui->MixDR_CB->setEnabled(drVisible);
       ui->label_MixDR->setEnabled(drVisible);
     }

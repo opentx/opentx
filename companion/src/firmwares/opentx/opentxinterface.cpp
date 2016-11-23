@@ -18,8 +18,6 @@
 #include <QMessageBox>
 #include "opentxinterface.h"
 #include "opentxeeprom.h"
-#include "open9xGruvin9xeeprom.h"
-#include "open9xSky9xeeprom.h"
 #include "rlefile.h"
 #include "appdata.h"
 
@@ -126,39 +124,6 @@ const int OpenTxEepromInterface::getMaxModels()
 }
 
 template <class T>
-bool OpenTxEepromInterface::loadModel(ModelData &model, uint8_t *data, int index, unsigned int stickMode)
-{
-  T _model;
-
-  if (!data) {
-    // load from EEPROM
-    efile->openRd(FILE_MODEL(index));
-    int sz = efile->readRlc2((uint8_t*)&_model, sizeof(T));
-    if (sz) {
-      model = _model;
-      if (sz < (int)sizeof(T)) {
-        std::cout << " size(" << model.name << ") " << sz << " < " << (int)sizeof(T) << " ";
-      }
-      if (stickMode) {
-        applyStickModeToModel(model, stickMode);
-      }
-    }
-    else {
-      model.clear();
-    }
-  }
-  else {
-    // load from SD Backup, size is stored in index
-    if ((unsigned int)index < sizeof(T))
-      return false;
-    memcpy((uint8_t*)&_model, data, sizeof(T));
-    model = _model;
-  }
-
-  return true;
-}
-
-template <class T>
 bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & model, uint8_t *data, unsigned int version, unsigned int variant)
 {
   T open9xModel(model, board, version, variant);
@@ -211,82 +176,7 @@ bool OpenTxEepromInterface::loadModelFromByteArray(ModelData & model, const QByt
 
 bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data, int index, unsigned int variant, unsigned int stickMode)
 {
-  if (version == 201) {
-    return loadModel<Open9xModelData_v201>(model, data, index, stickMode);
-  }
-  else if (version == 202) {
-    return loadModel<Open9xModelData_v202>(model, data, index, 0 /*no more stick mode messed*/);
-  }
-  else if (version == 203) {
-    return loadModel<Open9xModelData_v203>(model, data, index, 0 /*no more stick mode messed*/);
-  }
-  else if (version == 204) {
-    return loadModel<Open9xModelData_v204>(model, data, index, 0 /*no more stick mode messed*/);
-  }
-  else if (version == 205) {
-    return loadModel<Open9xModelData_v205>(model, data, index, 0 /*no more stick mode messed*/);
-  }
-  else if (board == BOARD_GRUVIN9X && version == 207) {
-    return loadModel<Open9xGruvin9xModelData_v207>(model, data, index, 0 /*no more stick mode messed*/);
-  }
-  else if (version == 208) {
-    if (board == BOARD_GRUVIN9X) {
-      return loadModel<Open9xGruvin9xModelData_v208>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else if (IS_SKY9X(board)) {
-      return loadModel<Open9xArmModelData_v208>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else {
-      return loadModel<Open9xModelData_v208>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-  }
-  else if (version == 209) {
-    if (board == BOARD_GRUVIN9X) {
-      return loadModel<Open9xGruvin9xModelData_v209>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else if (IS_SKY9X(board)) {
-      return loadModel<Open9xArmModelData_v209>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else {
-      return loadModel<Open9xModelData_v209>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-  }
-  else if (version == 210) {
-    if (board == BOARD_GRUVIN9X) {
-      return loadModel<Open9xGruvin9xModelData_v210>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else if (IS_SKY9X(board)) {
-      return loadModel<Open9xArmModelData_v210>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else {
-      return loadModel<Open9xModelData_v210>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-  }
-  else if (version == 211) {
-    if (board == BOARD_GRUVIN9X) {
-      return loadModel<Open9xGruvin9xModelData_v211>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else if (IS_SKY9X(board)) {
-      return loadModel<Open9xArmModelData_v211>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-    else {
-      return loadModel<Open9xModelData_v211>(model, data, index, 0 /*no more stick mode messed*/);
-    }
-  }
-  else if (version == 212) {
-    if (IS_SKY9X(board)) {
-      return loadModel<Open9xArmModelData_v212>(model, data, index);
-    }
-    else {
-      return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
-    }
-  }
-  else if (version >= 213) {
-    return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
-  }
-
-  std::cout << " ko\n";
-  return false;
+  return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
 }
 
 template <class T>
@@ -607,14 +497,18 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Timers:
       return (IS_ARM(board) ? 3 : 2);
     case TimersName:
-      return (HAS_LARGE_LCD(board) ? 8 : (IS_ARM(board) ? 3 : 0));
-    case PermTimers:
-      if (IS_2560(board) || IS_ARM(board))
-        return 1;
+      if (HAS_LARGE_LCD(board))
+        return 8;
+      else if (IS_ARM(board))
+        return 3;
       else
         return 0;
+    case PermTimers:
+      return (IS_2560(board) || IS_ARM(board));
     case Pots:
-      if (board == BOARD_X7D)
+      if (IS_HORUS(board))
+        return 3;
+      else if (board == BOARD_X7D)
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -623,7 +517,9 @@ int OpenTxFirmware::getCapability(Capability capability)
       else
         return 3;
     case Sliders:
-      if (board == BOARD_X7D)
+      if (IS_HORUS(board))
+        return 4;
+      else if (board == BOARD_X7D)
         return 0;
       else if (IS_TARANIS_X9E(board))
         return 4;

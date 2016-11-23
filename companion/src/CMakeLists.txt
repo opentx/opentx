@@ -88,18 +88,11 @@ add_subdirectory(thirdparty/qxtcommandoptions)
 
 set(common_SRCS
   eeprominterface.cpp
-  firmwares/th9x/th9xeeprom.cpp # TODO not needed
-  firmwares/th9x/th9xinterface.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
-  firmwares/gruvin9x/gruvin9xeeprom.cpp
-  firmwares/gruvin9x/gruvin9xinterface.cpp
   firmwares/ersky9x/ersky9xeeprom.cpp
   firmwares/ersky9x/ersky9xinterface.cpp
   firmwares/opentx/opentxeeprom.cpp
-  firmwares/opentx/open9xStockeeprom.cpp
-  firmwares/opentx/open9xGruvin9xeeprom.cpp
-  firmwares/opentx/open9xSky9xeeprom.cpp
   firmwares/opentx/opentxinterface.cpp
   )
 

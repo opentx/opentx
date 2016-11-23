@@ -1,19 +1,3 @@
-/*
- * Author - Bertrand Songis <bsongis@gmail.com>
- *
- * Based on th9x -> http://code.google.com/p/th9x/
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- */
-
 #ifndef eeprom_interface_h
 #define eeprom_interface_h
 
@@ -434,7 +418,7 @@ class CurveData {
     CurveType type;
     bool smooth;
     int  count;
-    CurvePoint points[C9X_MAX_POINTS];
+    CurvePoint points[CPN_MAX_POINTS];
     char name[6+1];
 };
 
@@ -467,7 +451,7 @@ enum MltpxValue {
 class MixData {
   public:
     MixData() { clear(); }
-    unsigned int destCh;            //        1..C9X_NUM_CHNOUT
+    unsigned int destCh;            //        1..CPN_MAX_CHNOUT
     RawSource srcRaw;
     int     weight;
     RawSwitch swtch;
@@ -544,7 +528,7 @@ class LogicalSwitchData { // Logical Switches data
 
 enum AssignFunc {
   FuncOverrideCH1 = 0,
-  FuncOverrideCH32 = FuncOverrideCH1+C9X_NUM_CHNOUT-1,
+  FuncOverrideCH32 = FuncOverrideCH1+CPN_MAX_CHNOUT-1,
   FuncTrainer,
   FuncTrainerRUD,
   FuncTrainerELE,
@@ -569,7 +553,7 @@ enum AssignFunc {
   FuncBackgroundMusic,
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
-  FuncAdjustGVLast = FuncAdjustGV1+C9X_MAX_GVARS-1,
+  FuncAdjustGVLast = FuncAdjustGV1+CPN_MAX_GVARS-1,
   FuncSetFailsafeInternalModule,
   FuncSetFailsafeExternalModule,
   FuncRangeCheckInternalModule,
@@ -613,15 +597,15 @@ class CustomFunctionData { // Function Switches data
 class FlightModeData {
   public:
     FlightModeData() { clear(0); }
-    int trimMode[NUM_STICKS+NUM_AUX_TRIMS];
-    int trimRef[NUM_STICKS+NUM_AUX_TRIMS];
-    int trim[NUM_STICKS+NUM_AUX_TRIMS];
+    int trimMode[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    int trimRef[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    int trim[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
     RawSwitch swtch;
     char name[10+1];
     unsigned int fadeIn;
     unsigned int fadeOut;
-    int rotaryEncoders[C9X_MAX_ENCODERS];
-    int gvars[C9X_MAX_GVARS];
+    int rotaryEncoders[CPN_MAX_ENCODERS];
+    int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
 };
 
@@ -877,7 +861,7 @@ class ModuleData {
     unsigned int channelsStart;
     int          channelsCount; // 0=8 channels
     unsigned int failsafeMode;
-    int          failsafeChannels[C9X_NUM_CHNOUT];
+    int          failsafeChannels[CPN_MAX_CHNOUT];
 
 
     struct {
@@ -901,18 +885,18 @@ class ModuleData {
     QString polarityToString() const { return ppm.pulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
 };
 
-#define C9X_MAX_SCRIPTS       7
-#define C9X_MAX_SCRIPT_INPUTS 10
+#define CPN_MAX_SCRIPTS       7
+#define CPN_MAX_SCRIPT_INPUTS 10
 class ScriptData {
   public:
     ScriptData() { clear(); }
     char    filename[10+1];
     char    name[10+1];
-    int     inputs[C9X_MAX_SCRIPT_INPUTS];
+    int     inputs[CPN_MAX_SCRIPT_INPUTS];
     void clear() { memset(this, 0, sizeof(ScriptData)); }
 };
 
-#define C9X_MAX_SENSORS       32
+#define CPN_MAX_SENSORS       32
 class SensorData {
 
   public:
@@ -1049,7 +1033,7 @@ class ModelData {
 
     bool      used;
     char      name[15+1];
-    TimerData timers[C9X_MAX_TIMERS];
+    TimerData timers[CPN_MAX_TIMERS];
     bool      noGlobalFunctions;
     bool      thrTrim;            // Enable Throttle Trim
     int       trimInc;            // Trim Increments
@@ -1061,27 +1045,27 @@ class ModelData {
     bool      extendedLimits; // TODO xml
     bool      extendedTrims;
     bool      throttleReversed;
-    FlightModeData flightModeData[C9X_MAX_FLIGHT_MODES];
-    MixData   mixData[C9X_MAX_MIXERS];
-    LimitData limitData[C9X_NUM_CHNOUT];
+    FlightModeData flightModeData[CPN_MAX_FLIGHT_MODES];
+    MixData   mixData[CPN_MAX_MIXERS];
+    LimitData limitData[CPN_MAX_CHNOUT];
 
-    char      inputNames[C9X_MAX_INPUTS][4+1];
-    ExpoData  expoData[C9X_MAX_EXPOS];
+    char      inputNames[CPN_MAX_INPUTS][4+1];
+    ExpoData  expoData[CPN_MAX_EXPOS];
 
-    CurveData curves[C9X_MAX_CURVES];
-    LogicalSwitchData  logicalSw[C9X_NUM_CSW];
-    CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
+    CurveData curves[CPN_MAX_CURVES];
+    LogicalSwitchData  logicalSw[CPN_MAX_CSW];
+    CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
     uint64_t switchWarningStates;
     unsigned int switchWarningEnable;
     unsigned int potsWarningMode;
-    bool potsWarningEnabled[C9X_NUM_POTS];
-    int          potPosition[C9X_NUM_POTS];
+    bool potsWarningEnabled[CPN_MAX_POTS];
+    int          potPosition[CPN_MAX_POTS];
     bool         displayChecklist;
     // TODO structure
-    char     gvars_names[C9X_MAX_GVARS][6+1];
-    bool     gvars_popups[C9X_MAX_GVARS];
+    char     gvars_names[CPN_MAX_GVARS][6+1];
+    bool     gvars_popups[CPN_MAX_GVARS];
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
     FrSkyData frsky;
@@ -1090,11 +1074,11 @@ class ModelData {
 
     unsigned int trainerMode;
 
-    ModuleData moduleData[C9X_NUM_MODULES+1/*trainer*/];
+    ModuleData moduleData[CPN_MAX_MODULES+1/*trainer*/];
 
-    ScriptData scriptData[C9X_MAX_SCRIPTS];
+    ScriptData scriptData[CPN_MAX_SCRIPTS];
 
-    SensorData sensorData[C9X_MAX_SENSORS];
+    SensorData sensorData[CPN_MAX_SENSORS];
 
     unsigned int toplcdTimer;
 
@@ -1170,9 +1154,9 @@ class GeneralSettings {
 
     unsigned int version;
     unsigned int variant;
-    int   calibMid[NUM_STICKS+C9X_NUM_POTS];
-    int   calibSpanNeg[NUM_STICKS+C9X_NUM_POTS];
-    int   calibSpanPos[NUM_STICKS+C9X_NUM_POTS];
+    int   calibMid[CPN_MAX_STICKS+CPN_MAX_POTS];
+    int   calibSpanNeg[CPN_MAX_STICKS+CPN_MAX_POTS];
+    int   calibSpanPos[CPN_MAX_STICKS+CPN_MAX_POTS];
     unsigned int  currModel; // 0..15
     unsigned int   contrast;
     unsigned int   vBatWarn;
@@ -1250,7 +1234,7 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
     unsigned int backlightColor;
-    CustomFunctionData customFn[C9X_MAX_CUSTOM_FUNCTIONS];
+    CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
     char switchName[18][3+1];
     unsigned int switchConfig[18];
     char stickName[4][3+1];
@@ -1279,7 +1263,7 @@ class GeneralSettings {
 class RadioData {
   public:
     GeneralSettings generalSettings;
-    ModelData models[C9X_MAX_MODELS];
+    ModelData models[CPN_MAX_MODELS];
 };
 
 enum Capability {
@@ -1471,8 +1455,8 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   ModelData model_copy = model;
 
   // trims
-  for (int p=0; p<C9X_MAX_FLIGHT_MODES; p++) {
-    for (int i=0; i<NUM_STICKS/2; i++) {
+  for (int p=0; p<CPN_MAX_FLIGHT_MODES; p++) {
+    for (int i=0; i<CPN_MAX_STICKS/2; i++) {
       int converted_stick = applyStickMode(i+1, mode) - 1;
       int tmp = model.flightModeData[p].trim[i];
       model.flightModeData[p].trim[i] = model.flightModeData[p].trim[converted_stick];
@@ -1489,7 +1473,7 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
       model_copy.expoData[i].chn = applyStickMode(model.expoData[i].chn+1, mode) - 1;
   }
   int index=0;
-  for (unsigned int i=0; i<NUM_STICKS; i++) {
+  for (unsigned int i=0; i<CPN_MAX_STICKS; i++) {
     for (unsigned int e=0; e<sizeof(model.expoData) / sizeof(model.expoData[1]); e++) {
       if (model_copy.expoData[e].mode && model_copy.expoData[e].chn == i)
         model.expoData[index++] = model_copy.expoData[e];
@@ -1497,14 +1481,14 @@ inline void applyStickModeToModel(ModelData &model, unsigned int mode)
   }
 
   // mixers
-  for (int i=0; i<C9X_MAX_MIXERS; i++) {
+  for (int i=0; i<CPN_MAX_MIXERS; i++) {
     if (model.mixData[i].srcRaw.type == SOURCE_TYPE_STICK) {
       model.mixData[i].srcRaw.index = applyStickMode(model.mixData[i].srcRaw.index + 1, mode) - 1;
     }
   }
 
   // virtual switches
-  for (int i=0; i<C9X_NUM_CSW; i++) {
+  for (int i=0; i<CPN_MAX_CSW; i++) {
     RawSource source;
     switch (model.logicalSw[i].getFunctionFamily()) {
       case LS_FAMILY_VCOMP:

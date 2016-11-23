@@ -45,7 +45,7 @@ t_Er9xTrainerData::t_Er9xTrainerData()
 t_Er9xTrainerData::operator TrainerData ()
 {
   TrainerData c9x;
-  for (int i=0; i<NUM_STICKS; i++) {
+  for (int i=0; i<CPN_MAX_STICKS; i++) {
     c9x.calib[i] = calib[i];
     c9x.mix[i] = mix[i];
   }
@@ -61,7 +61,7 @@ Er9xGeneral::operator GeneralSettings ()
 {
   GeneralSettings result;
   result.version = myVers;
-  for (int i=0; i<NUM_STICKSnPOTS; i++) {
+  for (int i=0; i<CPN_MAX_STICKSnPOTS; i++) {
     result.calibMid[i] = calibMid[i];
     result.calibSpanNeg[i] = calibSpanNeg[i];
     result.calibSpanPos[i] = calibSpanPos[i];
@@ -402,8 +402,8 @@ t_Er9xModelData::operator ModelData ()
 
   // expoData
   int e = 0;
-  for (int ch = 0; ch < 4 && e < C9X_MAX_EXPOS; ch++) {
-    for (int dr = 0, pos = 0; dr < 3 && e < C9X_MAX_EXPOS; dr++, pos++) {
+  for (int ch = 0; ch < 4 && e < CPN_MAX_EXPOS; ch++) {
+    for (int dr = 0, pos = 0; dr < 3 && e < CPN_MAX_EXPOS; dr++, pos++) {
       if ((dr == 0 && !expoData[ch].drSw1) || (dr == 1 && !expoData[ch].drSw2))
         dr = 2;
       if (dr == 2 && !expoData[ch].expo[0][0][0] && !expoData[ch].expo[0][0][1] && !expoData[ch].expo[0][1][0] && !expoData[ch].expo[0][1][1])
@@ -426,7 +426,7 @@ t_Er9xModelData::operator ModelData ()
       }
       else {
         c9x.expoData[e].mode = 2;
-        if (e < C9X_MAX_EXPOS - 1) {
+        if (e < CPN_MAX_EXPOS - 1) {
           c9x.expoData[e + 1].swtch = c9x.expoData[e].swtch;
           c9x.expoData[++e].chn = ch;
           c9x.expoData[e].mode = 1;
@@ -440,7 +440,7 @@ t_Er9xModelData::operator ModelData ()
     }
   }
 
-  for (int i=0; i<NUM_STICKS; i++)
+  for (int i=0; i<CPN_MAX_STICKS; i++)
     c9x.flightModeData[0].trim[i] = trim[i];
 
   for (int i=0; i<ER9X_MAX_CURVE5; i++) {

@@ -28,16 +28,16 @@ class LogicalSwitchesPanel : public ModelPanel
     void cswCut();
 
   private:
-    QComboBox * csw[C9X_NUM_CSW];
-    QDoubleSpinBox  * cswitchValue[C9X_NUM_CSW];
-    QDoubleSpinBox  * cswitchOffset[C9X_NUM_CSW];
-    QDoubleSpinBox  * cswitchOffset2[C9X_NUM_CSW];
-    QTimeEdit  * cswitchTOffset[C9X_NUM_CSW];
-    QComboBox * cswitchAnd[C9X_NUM_CSW];
-    QDoubleSpinBox  * cswitchDuration[C9X_NUM_CSW];
-    QDoubleSpinBox  * cswitchDelay[C9X_NUM_CSW];
-    QComboBox * cswitchSource1[C9X_NUM_CSW];
-    QComboBox * cswitchSource2[C9X_NUM_CSW];
+    QComboBox * csw[CPN_MAX_CSW];
+    QDoubleSpinBox  * cswitchValue[CPN_MAX_CSW];
+    QDoubleSpinBox  * cswitchOffset[CPN_MAX_CSW];
+    QDoubleSpinBox  * cswitchOffset2[CPN_MAX_CSW];
+    QTimeEdit  * cswitchTOffset[CPN_MAX_CSW];
+    QComboBox * cswitchAnd[CPN_MAX_CSW];
+    QDoubleSpinBox  * cswitchDuration[CPN_MAX_CSW];
+    QDoubleSpinBox  * cswitchDelay[CPN_MAX_CSW];
+    QComboBox * cswitchSource1[CPN_MAX_CSW];
+    QComboBox * cswitchSource2[CPN_MAX_CSW];
     void setSwitchWidgetVisibility(int i);
     int selectedSwitch;
 

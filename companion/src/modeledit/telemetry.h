@@ -134,7 +134,7 @@ class TelemetryPanel : public ModelPanel
     Ui::Telemetry *ui;
     TelemetryAnalog * analogs[4];
     TelemetryCustomScreen * telemetryCustomScreens[4];
-    TelemetrySensorPanel * sensorPanels[C9X_MAX_SENSORS];
+    TelemetrySensorPanel * sensorPanels[CPN_MAX_SENSORS];
 
     void setup();
     void telBarUpdate();

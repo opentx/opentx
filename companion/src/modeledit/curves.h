@@ -55,9 +55,9 @@ class Curves : public ModelPanel
   private:
     Ui::Curves *ui;
     int currentCurve;
-    bool visibleCurves[C9X_MAX_CURVES];
-    QSpinBox * spnx[C9X_MAX_POINTS];
-    QSpinBox * spny[C9X_MAX_POINTS];
+    bool visibleCurves[CPN_MAX_CURVES];
+    QSpinBox * spnx[CPN_MAX_POINTS];
+    QSpinBox * spny[CPN_MAX_POINTS];
     QVector<CurveCreatorTemplate> templates;
     void setCurrentCurve(int index);
     void updateCurve();

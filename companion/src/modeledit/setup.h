@@ -115,8 +115,8 @@ class SetupPanel : public ModelPanel
     QVector<QCheckBox *> startupSwitchesCheckboxes;
     QVector<QCheckBox *> potWarningCheckboxes;
     QVector<QCheckBox *> centerBeepCheckboxes;
-    ModulePanel * modules[C9X_NUM_MODULES+1];
-    TimerPanel * timers[C9X_MAX_TIMERS];
+    ModulePanel * modules[CPN_MAX_MODULES+1];
+    TimerPanel * timers[CPN_MAX_TIMERS];
     void updateStartupSwitches();
     void updatePotWarnings();
     void updateBeepCenter();

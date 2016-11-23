@@ -58,7 +58,7 @@ void FlashEEpromDialog::updateUI()
       ui->patchCalibration->show();
       ui->patchHardwareSettings->show();
       // TODO I hardcode the number of pots here, should be dependant on the board?
-      if (!((calib.length()==(NUM_STICKS+3)*12) && (trainercalib.length()==16))) {
+      if (!((calib.length()==(CPN_MAX_STICKS+3)*12) && (trainercalib.length()==16))) {
         ui->patchCalibration->setDisabled(true);
       }
       if (!((DisplaySet.length()==6) && (BeeperSet.length()==4) && (HapticSet.length()==6) && (SpeakerSet.length()==6))) {
@@ -181,11 +181,11 @@ bool FlashEEpromDialog::patchCalibration()
   int8_t txCurrentCalibration=(int8_t) g.profile[g.id()].txCurrentCalibration();
   int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
 
-  if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
+  if ((calib.length()==(CPN_MAX_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
     QString Byte;
     int16_t byte16;
     bool ok;
-    for (int i=0; i<(NUM_STICKS+potsnum); i++) {
+    for (int i=0; i<(CPN_MAX_STICKS+potsnum); i++) {
       Byte=calib.mid(i*12,4);
       byte16=(int16_t)Byte.toInt(&ok,16);
       if (ok)

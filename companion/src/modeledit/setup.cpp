@@ -594,7 +594,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   QWidget * prevFocus = ui->image;
-  for (int i=0; i<C9X_MAX_TIMERS; i++) {
+  for (int i=0; i<CPN_MAX_TIMERS; i++) {
     if (i<firmware->getCapability(Timers)) {
       timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus);
       ui->gridLayout->addWidget(timers[i], 1+i, 1);
@@ -610,7 +610,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   if (firmware->getCapability(HasTopLcd)) {
     ui->toplcdTimer->setField(model.toplcdTimer, this);
-    for (int i=0; i<C9X_MAX_TIMERS; i++) {
+    for (int i=0; i<CPN_MAX_TIMERS; i++) {
       if (i<firmware->getCapability(Timers)) {
         ui->toplcdTimer->addItem(tr("Timer %1").arg(i+1), i);
       }
@@ -631,7 +631,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   // Beep Center checkboxes
   prevFocus = ui->trimsDisplay;
-  int analogs = NUM_STICKS + firmware->getCapability(Pots) + firmware->getCapability(Sliders);
+  int analogs = CPN_MAX_STICKS + firmware->getCapability(Pots) + firmware->getCapability(Sliders);
   for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
@@ -641,10 +641,10 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     centerBeepCheckboxes << checkbox;
     if (IS_TARANIS(board)) {
       RawSource src(SOURCE_TYPE_STICK, i);
-      if (src.isPot() && !generalSettings.isPotAvailable(i-NUM_STICKS)) {
+      if (src.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) {
         checkbox->hide();
       }
-      else if (src.isSlider() && !generalSettings.isSliderAvailable(i-NUM_STICKS-firmware->getCapability(Pots))) {
+      else if (src.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-firmware->getCapability(Pots))) {
         checkbox->hide();
       }
     }
@@ -702,7 +702,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (RawSource(SOURCE_TYPE_STICK, NUM_STICKS+i).isPot()) {
+      if (RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+i).isPot()) {
         if (!generalSettings.isPotAvailable(i)) {
           cb->hide();
         }
@@ -736,9 +736,9 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   if (firmware->getCapability(ModelTrainerEnable)) {
-    modules[C9X_NUM_MODULES] = new ModulePanel(this, model, model.moduleData[C9X_NUM_MODULES], generalSettings, firmware, -1);
-    ui->modulesLayout->addWidget(modules[C9X_NUM_MODULES]);
-    connect(modules[C9X_NUM_MODULES], SIGNAL(modified()), this, SLOT(onChildModified()));
+    modules[CPN_MAX_MODULES] = new ModulePanel(this, model, model.moduleData[CPN_MAX_MODULES], generalSettings, firmware, -1);
+    ui->modulesLayout->addWidget(modules[CPN_MAX_MODULES]);
+    connect(modules[CPN_MAX_MODULES], SIGNAL(modified()), this, SLOT(onChildModified()));
   }
 
   disableMouseScrolling();
@@ -894,7 +894,7 @@ void SetupPanel::update()
   for (int i=0; i<firmware->getCapability(Timers); i++)
     timers[i]->update();
 
-  for (int i=0; i<C9X_NUM_MODULES+1; i++)
+  for (int i=0; i<CPN_MAX_MODULES+1; i++)
     if (modules[i])
       modules[i]->update();
 }

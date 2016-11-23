@@ -247,7 +247,7 @@ QString MultiModelPrinter::printFlightModes()
     columns.append("<td><b>" + tr("Switch") + "</b></td>");
     columns.append("<td><b>" + tr("Fade IN") + "</b></td>");
     columns.append("<td><b>" + tr("Fade OUT") + "</b></td>");
-    for (int i=0; i<NUM_STICKS; i++) {
+    for (int i=0; i<CPN_MAX_STICKS; i++) {
       columns.append("<td><b>" + AnalogString(i) + " trim</b></td>");
     }
     columns.append("</tr>");
@@ -262,7 +262,7 @@ QString MultiModelPrinter::printFlightModes()
       columns.append("</td><td>");
       COMPARE(model->flightModeData[i].fadeOut);
       columns.append("</td>");
-      for (int k=0; k<NUM_STICKS; k++) {
+      for (int k=0; k<CPN_MAX_STICKS; k++) {
         columns.append("<td>");
         COMPARE(modelPrinter->printTrim(i, k));
         columns.append("</td>");

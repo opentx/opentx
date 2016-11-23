@@ -117,7 +117,7 @@ class OpenTxModelData: public TransformedField {
 
   private:
     char name[256];
-    int subprotocols[C9X_NUM_MODULES+1/*trainer*/];
+    int subprotocols[CPN_MAX_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
 };

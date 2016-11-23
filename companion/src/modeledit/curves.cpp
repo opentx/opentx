@@ -156,7 +156,7 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     ui->curvesLayout2->addItem(item2,limit+1,1,1,1,0);
   }
 
-  for (int i=0; i<C9X_MAX_POINTS; i++) {
+  for (int i=0; i<CPN_MAX_POINTS; i++) {
     spnx[i] = new QSpinBox(this);
     spnx[i]->setProperty("index", i);
     spnx[i]->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -360,7 +360,7 @@ void Curves::updateCurvePoints()
       spnx[i]->hide();
     }
   }
-  for (int i=count; i<C9X_MAX_POINTS; i++) {
+  for (int i=count; i<CPN_MAX_POINTS; i++) {
     spny[i]->hide();
     spnx[i]->hide();
   }
@@ -440,7 +440,7 @@ void Curves::on_curvePoints_currentIndexChanged(int index)
       model->curves[currentCurve].count = numpoints;
 
       // TODO something better + reuse!
-      for (int i=0; i<C9X_MAX_POINTS; i++) {
+      for (int i=0; i<CPN_MAX_POINTS; i++) {
         model->curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
         model->curves[currentCurve].points[i].y = 0;
       }
@@ -463,7 +463,7 @@ void Curves::on_curveCustom_currentIndexChanged(int index)
       model->curves[currentCurve].type = type;
 
       // TODO something better + reuse!
-      for (int i=0; i<C9X_MAX_POINTS; i++) {
+      for (int i=0; i<CPN_MAX_POINTS; i++) {
         model->curves[currentCurve].points[i].x = (i >= numpoints-1 ? +100 : -100 + (200*i)/(numpoints-1));
         model->curves[currentCurve].points[i].y = 0;
       }

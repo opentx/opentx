@@ -9,7 +9,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
 {
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
-    inputsCount = NUM_STICKS;
+    inputsCount = CPN_MAX_STICKS;
 
   QGridLayout * exposLayout = new QGridLayout(this);
 
@@ -58,7 +58,7 @@ void InputsPanel::update()
   firstLine = true;
   int curDest = -1;
 
-  for (int i=0; i<C9X_MAX_EXPOS; i++) {
+  for (int i=0; i<CPN_MAX_EXPOS; i++) {
     ExpoData *md = &model->expoData[i];
 
     if (md->mode==0) break;
@@ -162,7 +162,7 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
 
 bool InputsPanel::gm_insertExpo(int idx)
 {
-  if (idx<0 || idx>=C9X_MAX_EXPOS || model->expoData[C9X_MAX_EXPOS-1].mode > 0) {
+  if (idx<0 || idx>=CPN_MAX_EXPOS || model->expoData[CPN_MAX_EXPOS-1].mode > 0) {
     QMessageBox::information(this, "Companion", tr("Not enough available inputs!"));
     return false;
   }
@@ -184,7 +184,7 @@ void InputsPanel::gm_deleteExpo(int index)
 
 void InputsPanel::gm_openExpo(int index)
 {
-    if(index<0 || index>=C9X_MAX_EXPOS) return;
+    if(index<0 || index>=CPN_MAX_EXPOS) return;
 
     ExpoData mixd(model->expoData[index]);
     emit modified();
@@ -215,8 +215,8 @@ void InputsPanel::gm_openExpo(int index)
 int InputsPanel::getExpoIndex(unsigned int dch)
 {
     unsigned int i = 0;
-    while (model->expoData[i].chn<=dch && model->expoData[i].mode && i<C9X_MAX_EXPOS) i++;
-    if(i==C9X_MAX_EXPOS) return -1;
+    while (model->expoData[i].chn<=dch && model->expoData[i].mode && i<CPN_MAX_EXPOS) i++;
+    if(i==CPN_MAX_EXPOS) return -1;
     return i;
 }
 
@@ -226,7 +226,7 @@ QList<int> InputsPanel::createExpoListFromSelected()
     QList<int> list;
     foreach(QListWidgetItem *item, ExposlistWidget->selectedItems()) {
       int idx= item->data(Qt::UserRole).toByteArray().at(0);
-      if(idx>=0 && idx<C9X_MAX_EXPOS) list << idx;
+      if(idx>=0 && idx<CPN_MAX_EXPOS) list << idx;
     }
     return list;
 }
@@ -424,7 +424,7 @@ void InputsPanel::expolistWidget_KeyPress(QKeyEvent *event)
 int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
 {
 
-    if(idx>C9X_MAX_EXPOS || (idx==C9X_MAX_EXPOS && dir)) return idx;
+    if(idx>CPN_MAX_EXPOS || (idx==CPN_MAX_EXPOS && dir)) return idx;
 
     int tdx = dir ? idx+1 : idx-1;
     ExpoData temp;

@@ -101,11 +101,11 @@ void GeneralEdit::on_calretrieve_PB_clicked()
     QString SpeakerSet = g.profile[profile_id].speaker();
     QString CountrySet = g.profile[profile_id].countryCode();
 
-    if ((calib.length()==(NUM_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
+    if ((calib.length()==(CPN_MAX_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
       QString Byte;
       int16_t byte16;
       bool ok;
-      for (int i=0; i<(NUM_STICKS+potsnum); i++) {
+      for (int i=0; i<(CPN_MAX_STICKS+potsnum); i++) {
         Byte=calib.mid(i*12,4);
         byte16=(int16_t)Byte.toInt(&ok,16);
         if (ok) generalSettings.calibMid[i]=byte16;
@@ -138,14 +138,14 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       QByteArray qba;
       int16_t offset;
       bool ok;
-      for (int i=0; i<NUM_STICKS; i++) {
+      for (int i=0; i<CPN_MAX_STICKS; i++) {
         qba = controlNames.mid(3*i,3).toLatin1();
         strcpy(generalSettings.stickName[i], qba.data());
       }
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {
         Byte=hwtypes.mid(i,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        qba=controlNames.mid(3*(i+NUM_STICKS),3).toLatin1();
+        qba=controlNames.mid(3*(i+CPN_MAX_STICKS),3).toLatin1();
         if (ok) {
           generalSettings.switchConfig[i]=byte16;
           strcpy(generalSettings.switchName[i], qba.data());
@@ -155,7 +155,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toLatin1();
+        qba=controlNames.mid(3*(i+CPN_MAX_STICKS+offset),3).toLatin1();
         if (ok) {
           generalSettings.potConfig[i]=byte16;
           strcpy(generalSettings.potName[i], qba.data());
@@ -165,7 +165,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
-        qba=controlNames.mid(3*(i+NUM_STICKS+offset),3).toLatin1();
+        qba=controlNames.mid(3*(i+CPN_MAX_STICKS+offset),3).toLatin1();
         if (ok) {
           generalSettings.sliderConfig[i]=byte16;
           strcpy(generalSettings.sliderName[i], qba.data());
@@ -243,7 +243,7 @@ void GeneralEdit::on_calstore_PB_clicked()
       }
     }
     calib.clear();
-    for (int i=0; i< (NUM_STICKS+potsnum); i++) {
+    for (int i=0; i< (CPN_MAX_STICKS+potsnum); i++) {
       calib.append(QString("%1").arg((uint16_t)generalSettings.calibMid[i], 4, 16, QChar('0')));
       calib.append(QString("%1").arg((uint16_t)generalSettings.calibSpanNeg[i], 4, 16, QChar('0')));
       calib.append(QString("%1").arg((uint16_t)generalSettings.calibSpanPos[i], 4, 16, QChar('0')));
@@ -256,7 +256,7 @@ void GeneralEdit::on_calstore_PB_clicked()
     g.profile[profile_id].trainerCalib( calib );
     hwtypes.clear();
     controlNames.clear();
-    for (int i=0; i<NUM_STICKS; i++) {
+    for (int i=0; i<CPN_MAX_STICKS; i++) {
       controlNames.append(QString("%1").arg(generalSettings.stickName[i], -3));
     }
     for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {

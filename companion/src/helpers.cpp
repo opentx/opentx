@@ -14,7 +14,7 @@
 
 Stopwatch gStopwatch("global");
 
-const QColor colors[C9X_MAX_CURVES] = {
+const QColor colors[CPN_MAX_CURVES] = {
   QColor(0,0,127),
   QColor(0,127,0),
   QColor(127,0,0),
@@ -551,11 +551,11 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<NUM_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders); i++) {
+    for (int i=0; i<CPN_MAX_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       // skip unavailable pots and sliders
-      if (item.isPot() && !generalSettings.isPotAvailable(i-NUM_STICKS)) continue;
-      if (item.isSlider() && !generalSettings.isSliderAvailable(i-NUM_STICKS-GetCurrentFirmware()->getCapability(Pots))) continue;
+      if (item.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) continue;
+      if (item.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-GetCurrentFirmware()->getCapability(Pots))) continue;
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
@@ -600,7 +600,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<NUM_CYC; i++) {
+    for (int i=0; i<CPN_MAX_CYC; i++) {
       item = RawSource(SOURCE_TYPE_CYC, i);
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -626,7 +626,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
         b->addItem(item.toString(model), item.toValue());
         if (item == source) b->setCurrentIndex(b->count()-1);
       }
-      for (int i=0; i<C9X_MAX_SENSORS; ++i) {
+      for (int i=0; i<CPN_MAX_SENSORS; ++i) {
         if (model && model->sensorData[i].isAvailable()) {    //this conditon must be false if we populate Global Functions where model = 0
           for (int j=0; j<3; ++j) {
             item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i+j);

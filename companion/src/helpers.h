@@ -8,7 +8,7 @@
 #include <QDebug>
 #include "eeprominterface.h"
 
-extern const QColor colors[C9X_MAX_CURVES];
+extern const QColor colors[CPN_MAX_CURVES];
 
 #define TMR_NUM_OPTION  (TMRMODE_COUNT+2*9+2*GetCurrentFirmware()->getCapability(LogicalSwitches)-1)
 

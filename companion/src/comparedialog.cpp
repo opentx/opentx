@@ -17,7 +17,7 @@ class DragDropHeader {
     }
     bool general_settings;
     uint8_t models_count;
-    uint8_t models[C9X_MAX_MODELS];
+    uint8_t models[CPN_MAX_MODELS];
 };
 
 CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):

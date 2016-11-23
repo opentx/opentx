@@ -34,7 +34,7 @@ void HardwarePanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name,
   bool enabled = false;
 
   if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
-    label->setText(RawSource(SOURCE_TYPE_STICK, index+NUM_STICKS).toString());
+    label->setText(RawSource(SOURCE_TYPE_STICK, index+CPN_MAX_STICKS).toString());
     enabled = true;
   }
   else if (IS_TARANIS_PLUS(firmware->getBoard()) && index < 3) {
@@ -72,7 +72,7 @@ void HardwarePanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit *na
   }
 
   if (IS_TARANIS_X9E(firmware->getBoard())) {
-    label->setText(RawSource(SOURCE_TYPE_STICK, index+NUM_STICKS+4).toString());
+    label->setText(RawSource(SOURCE_TYPE_STICK, index+CPN_MAX_STICKS+4).toString());
   }
 
   if (enabled) {

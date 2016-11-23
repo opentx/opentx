@@ -1,17 +1,3 @@
-/*
- * Author - Kjell Kernen
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- */
-
 #ifndef WIZARDDIALOG_H
 #define WIZARDDIALOG_H
 
@@ -31,7 +17,7 @@ class WizardDialog : public QWizard
     void showHelp();
 };
 
-class  StandardPage: public QWizardPage
+class StandardPage: public QWizardPage
 {
   Q_OBJECT
 
@@ -57,7 +43,7 @@ class  StandardPage: public QWizardPage
     int nextId() const;
 };
 
-class  ModelSelectionPage: public StandardPage
+class ModelSelectionPage: public StandardPage
 {
   Q_OBJECT
 public:
@@ -71,7 +57,7 @@ private:
   int nextId() const;
 };
 
-class  WingtypeSelectionPage: public StandardPage
+class WingtypeSelectionPage: public StandardPage
 {
   Q_OBJECT
 public:
@@ -82,7 +68,7 @@ private:
   int nextId() const;
 };
 
-class  TailSelectionPage: public StandardPage
+class TailSelectionPage: public StandardPage
 {
   Q_OBJECT
 public:
@@ -94,7 +80,7 @@ private:
   int nextId() const;
 };
 
-class  FlybarSelectionPage: public StandardPage
+class FlybarSelectionPage: public StandardPage
 {
   Q_OBJECT
 public:

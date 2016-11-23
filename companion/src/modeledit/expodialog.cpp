@@ -78,7 +78,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->trimCB->hide();
   }
 
-  for(int i=0; i < NUM_STICKS; i++) {
+  for(int i=0; i < CPN_MAX_STICKS; i++) {
     ui->trimCB->addItem(AnalogString(i), i+1);
   }
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);

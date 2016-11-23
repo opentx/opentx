@@ -45,12 +45,12 @@ class FlightModePanel : public ModelPanel
     int reCount;
     int gvCount;
     QVector<QLabel *> trimsLabel;
-    QLineEdit * gvNames[C9X_MAX_GVARS];
-    QSpinBox * gvValues[C9X_MAX_GVARS];
-    QCheckBox * gvPopups[C9X_MAX_GVARS];
-    QComboBox * gvUse[C9X_MAX_GVARS];
-    QSpinBox * reValues[C9X_MAX_ENCODERS];
-    QComboBox * reUse[C9X_MAX_ENCODERS];
+    QLineEdit * gvNames[CPN_MAX_GVARS];
+    QSpinBox * gvValues[CPN_MAX_GVARS];
+    QCheckBox * gvPopups[CPN_MAX_GVARS];
+    QComboBox * gvUse[CPN_MAX_GVARS];
+    QSpinBox * reValues[CPN_MAX_ENCODERS];
+    QComboBox * reUse[CPN_MAX_ENCODERS];
     QVector<QComboBox *> trimsUse;
     QVector<QSpinBox *> trimsValue;
     QVector<QSlider *> trimsSlider;

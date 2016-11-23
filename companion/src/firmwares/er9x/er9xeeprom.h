@@ -29,7 +29,7 @@
 
 #define ER9X_NUM_CHNOUT      16 //number of real outputchannels CH1-CH8
 #define ER9X_NUM_CSW         12 //number of custom switches
-#define NUM_STICKSnPOTS 7  //number of sticks and pots
+#define CPN_MAX_STICKSnPOTS  7  //number of sticks and pots
 #define ER9X_MAX_GVARS 7
 
 #define ER9X_MAX_MODES		4
@@ -54,9 +54,9 @@ PACK(typedef struct t_Er9xTrainerData {
 
 PACK(typedef struct t_Er9xGeneral {
   uint8_t   myVers;
-  int16_t   calibMid[NUM_STICKSnPOTS];
-  int16_t   calibSpanNeg[NUM_STICKSnPOTS];
-  int16_t   calibSpanPos[NUM_STICKSnPOTS];
+  int16_t   calibMid[CPN_MAX_STICKSnPOTS];
+  int16_t   calibSpanNeg[CPN_MAX_STICKSnPOTS];
+  int16_t   calibSpanPos[CPN_MAX_STICKSnPOTS];
   uint16_t  chkSum;
   uint8_t   currModel; //0..15
   uint8_t   contrast;
@@ -131,7 +131,7 @@ PACK(typedef struct t_Er9xLimitData {
 #define MLTPX_REP  2
 
 PACK(typedef struct t_Er9xMixData {
-  uint8_t destCh;            //        1..C9X_NUM_CHNOUT
+  uint8_t destCh;            //        1..CPN_MAX_CHNOUT
   uint8_t srcRaw;            //
   int8_t  weight;
   int8_t  swtch;
