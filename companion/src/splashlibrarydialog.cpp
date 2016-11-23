@@ -42,7 +42,7 @@ void SplashLibraryDialog::setupPage(int page)
     if ((i + 20 * page) < imageList.size()) {
       QImage image(imageList.at(i + 20 * page));
       if (!image.isNull()) {
-        sl[i]->setPixmap(makePixMap(image, g.profile[g.id()].fwType()));
+        sl[i]->setPixmap(makePixMap(image));
         sl[i]->setEnabled(true);
         sl[i]->setId((i + 20 * page));
         sl[i]->setStyleSheet("border:1px solid; border-color:#999999;");

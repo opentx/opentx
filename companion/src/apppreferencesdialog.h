@@ -16,9 +16,9 @@ class AppPreferencesDialog : public QDialog
     Q_OBJECT
 
   public:
-    explicit AppPreferencesDialog(QWidget *parent = 0);
+    explicit AppPreferencesDialog(QWidget * parent = 0);
     ~AppPreferencesDialog();
-    Joystick *joystick;
+    Joystick * joystick;
 
   private:
     QList<QCheckBox *> optionsCheckBoxes;
@@ -33,9 +33,7 @@ class AppPreferencesDialog : public QDialog
 
     Ui::AppPreferencesDialog *ui;
     void initSettings();
-    bool displayImage( QString fileName );
-    void loadProfileString(QString profile, QString label);
-    void loadFromProfile();
+    bool displayImage(const QString & fileName);
 
   protected slots:
     void shrink();  
@@ -55,7 +53,7 @@ class AppPreferencesDialog : public QDialog
     void on_SplashSelect_clicked();
     void on_clearImageButton_clicked();
 
-#ifdef JOYSTICKS
+#if defined(JOYSTICKS)
     void on_joystickChkB_clicked();
     void on_joystickcalButton_clicked();
 #endif

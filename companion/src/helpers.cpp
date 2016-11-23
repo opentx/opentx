@@ -832,25 +832,25 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
   }
 }
 
-QPixmap makePixMap( QImage image, QString firmwareType )
+QPixmap makePixMap(const QImage & image)
 {
-  if (firmwareType.contains( "x9" )) {
-    image = image.convertToFormat(QImage::Format_RGB32);
-    QRgb col;
-    int gray;
+  Firmware * firmware = GetCurrentFirmware();
+  QImage result = image.scaled(firmware->getCapability(LcdWidth), firmware->getCapability(LcdHeight));
+  if (firmware->getCapability(LcdDepth) == 4) {
+    result = result.convertToFormat(QImage::Format_RGB32);
     for (int i = 0; i < image.width(); ++i) {
       for (int j = 0; j < image.height(); ++j) {
-        col = image.pixel(i, j);
-        gray = qGray(col);
-        image.setPixel(i, j, qRgb(gray, gray, gray));
+        QRgb col = result.pixel(i, j);
+        int gray = qGray(col);
+        result.setPixel(i, j, qRgb(gray, gray, gray));
       }
     }
-    image = image.scaled(SPLASHX9D_WIDTH, SPLASHX9D_HEIGHT); 
-  } 
-  else {
-    image = image.scaled(SPLASH_WIDTH, SPLASH_HEIGHT).convertToFormat(QImage::Format_Mono);
   }
-  return(QPixmap::fromImage(image));
+  else {
+    result = result.convertToFormat(QImage::Format_Mono);
+  }
+  
+  return QPixmap::fromImage(result);
 }
 
 int version2index(const QString & version)

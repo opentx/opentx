@@ -115,7 +115,7 @@ void FlashFirmwareDialog::updateUI()
   }
 
   if (!image.isNull()) {
-    ui->splash->setPixmap(makePixMap(image, g.profile[g.id()].fwType()));
+    ui->splash->setPixmap(makePixMap(image));
   }
 }
 

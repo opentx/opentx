@@ -29,11 +29,11 @@ void Side::markSourceButton()
 
 void Side::copyImage( Side side )
 {
- if ((*source!=UNDEFINED) && (*side.source!=UNDEFINED))
+  if ((*source!=UNDEFINED) && (*side.source!=UNDEFINED))
     imageLabel->setPixmap(*side.imageLabel->pixmap());
 }
 
-bool Side::displayImage( QString fileName, Source pictSource )
+bool Side::displayImage(QString fileName, Source pictSource)
 {
   QImage image;
 
@@ -41,7 +41,7 @@ bool Side::displayImage( QString fileName, Source pictSource )
     return false;
 
   // Determine which picture format to use
-  if (pictSource == FW ){
+  if (pictSource == FW) {
     FirmwareInterface firmware(fileName);
     if (!firmware.hasSplash())
       return false;
@@ -56,37 +56,34 @@ bool Side::displayImage( QString fileName, Source pictSource )
     else if (pictSource == PROFILE)
       *format = (g.profile[g.id()].fwType().contains("x9")) ? LCDTARANIS : LCD9X; 
   }
+
   if (image.isNull()) {
     return false;
   }
-  // Load image
-  if (*format==LCDTARANIS) {
-    imageLabel->setPixmap( makePixMap( image, "x9" ));
-    imageLabel->setFixedSize(WIDTH_TARANIS*2, HEIGHT_TARANIS*2);
-  }
-  else {
-    imageLabel->setPixmap( makePixMap( image, "9x" )); 
-    imageLabel->setFixedSize(WIDTH_9X*2, HEIGHT_9X*2);
-  }
 
-  switch (pictSource){
-  case FW:
-    fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
-    *saveToFileName = fileName;
-    *source=FW;
-    break;
-  case PICT:
-    fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
-    *saveToFileName = fileName;
-    *source=PICT;
-    break;
-  case PROFILE:
-    fileNameEdit->setText(QObject::tr("Profile image"));
-    *saveToFileName = fileName;
-    *source=PROFILE;
-    break;
-  default:
-    break;
+  // Load image
+  QPixmap pixmap = makePixMap(image);
+  imageLabel->setPixmap(pixmap);
+  imageLabel->setFixedSize(pixmap.width()*2, pixmap.height()*2);
+
+  switch (pictSource) {
+    case FW:
+      fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
+      *saveToFileName = fileName;
+      *source = FW;
+      break;
+    case PICT:
+      fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
+      *saveToFileName = fileName;
+      *source = PICT;
+      break;
+    case PROFILE:
+      fileNameEdit->setText(QObject::tr("Profile image"));
+      *saveToFileName = fileName;
+      *source = PROFILE;
+      break;
+    default:
+      break;
   }
   saveButton->setEnabled(true);
   libraryButton->setEnabled(true);
