@@ -336,19 +336,24 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
     }
 
     ui->modelsList->refreshList();
-    if (resetCurrentFile) setCurrentFile(fileName);
+    if (resetCurrentFile)
+      setCurrentFile(fileName);
 
     free(eeprom);
     return true;
   }
   else if (fileType == FILE_TYPE_OTX) { //read zip archive
-    return loadOtxFile(fileName, resetCurrentFile);
+    if (loadOtxFile(fileName)) {
+      ui->modelsList->refreshList();
+      if (resetCurrentFile)
+        setCurrentFile(fileName);
+    }
   }
 
   return false;
 }
 
-bool MdiChild::loadOtxFile(const QString &fileName, bool resetCurrentFile)
+bool MdiChild::loadOtxFile(const QString & fileName)
 {
   // example of StorageSdcard usage
 
@@ -375,16 +380,12 @@ bool MdiChild::loadOtxFile(const QString &fileName, bool resetCurrentFile)
   }
 #endif
   
-  for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i) {
-    GetEepromInterface()->loadModelFromByteArray(radioData.models[0], i->data);
+  int index = 0;
+  for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i, ++index) {
+    GetEepromInterface()->loadModel(radioData.models[index], i->data);
   }
   
-  ui->modelsList->refreshList();
-
-  // for test immediately save to another file
-  // storage.write(fileName + "test.otx");
   return true;
-
 }
 
 bool MdiChild::save()
@@ -437,11 +438,11 @@ bool MdiChild::saveFile(const QString &fileName, bool setCurrent)
 
   int fileType = getFileType(myFile);
 
-  uint8_t *eeprom = (uint8_t*)malloc(GetEepromInterface()->getEEpromSize());
+  uint8_t * eeprom = (uint8_t*)malloc(GetEepromInterface()->getEEpromSize());
   int eeprom_size = 0;
 
   if (fileType != FILE_TYPE_XML) {
-    eeprom_size = GetEepromInterface()->save(eeprom, radioData, GetCurrentFirmware()->getVariantNumber(), 0/*last version*/);
+    eeprom_size = GetEepromInterface()->save(eeprom, radioData, 0, GetCurrentFirmware()->getVariantNumber());
     if (!eeprom_size) {
       QMessageBox::warning(this, tr("Error"),tr("Cannot write file %1:\n%2.").arg(myFile).arg(file.errorString()));
       return false;

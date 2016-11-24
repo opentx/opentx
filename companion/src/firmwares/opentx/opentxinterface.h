@@ -41,9 +41,13 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual unsigned long loadBackup(RadioData &, uint8_t *eeprom, int esize, int index);
 
-    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
-
-    virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0);
+    virtual unsigned long loadxml(RadioData & radioData, QDomDocument & doc);
+    
+    virtual bool loadRadioSettings(GeneralSettings & model, const QByteArray & data);
+    
+    virtual bool loadModel(ModelData & model, const QByteArray & data);
+    
+    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0);
 
     virtual int getSize(const ModelData &);
 
@@ -57,24 +61,15 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     bool checkVariant(unsigned int version, unsigned int variant);
     
-    bool loadModelFromByteArray(ModelData & model, const QByteArray & data);
-      
-    template <class T>
-    bool loadModel(ModelData &model, uint8_t *data, int index, unsigned int stickMode=0);
+    bool loadModel(uint8_t version, ModelData &model, uint8_t *data, int index, unsigned int variant);
 
     template <class T>
-    bool loadModelVariant(unsigned int index, ModelData &model, uint8_t *data, unsigned int version, unsigned int variant);
+    bool saveModel(unsigned int index, ModelData & model, uint8_t version, uint32_t variant);
 
-    bool loadModel(uint8_t version, ModelData &model, uint8_t *data, int index, unsigned int variant, unsigned int stickMode=0);
-
-    template <class T>
-    bool saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant);
+    bool loadRadioSettings(GeneralSettings & settings, uint8_t version);
 
     template <class T>
-    bool loadGeneral(GeneralSettings &settings, unsigned int version);
-
-    template <class T>
-    bool saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant);
+    bool saveRadioSettings(GeneralSettings & settings, BoardEnum board, uint8_t version, uint32_t variant);
 
     RleFile *efile;
 

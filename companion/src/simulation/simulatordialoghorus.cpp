@@ -24,7 +24,7 @@
 
 uint32_t SimulatorDialogHorus::switchstatus = 0;
 
-SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
+SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface * simulator, unsigned int flags):
   SimulatorDialog(parent, simulator, flags),
   ui(new Ui::SimulatorDialogHorus)
 {

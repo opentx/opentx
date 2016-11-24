@@ -136,11 +136,11 @@ const char * loadModel(const char * filename, bool alarms)
   return error;
 }
 
-const char * loadGeneralSettings()
+const char * loadRadioSettingsSettings()
 {
   const char * error = loadFile(RADIO_SETTINGS_PATH, (uint8_t *)&g_eeGeneral, sizeof(g_eeGeneral));
   if (error) {
-    TRACE("loadGeneralSettings error=%s", error);
+    TRACE("loadRadioSettingsSettings error=%s", error);
   }
   // TODO this is temporary, we only have one model for now
   return error;
@@ -176,7 +176,7 @@ void storageReadAll()
 {
   TRACE("storageReadAll");
   
-  if (loadGeneralSettings() != NULL) {
+  if (loadRadioSettingsSettings() != NULL) {
     storageEraseAll(true);
   }
 

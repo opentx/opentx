@@ -100,15 +100,15 @@ unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
   Er9xGeneral er9xGeneral;
   memset(&er9xGeneral,0,sizeof(er9xGeneral));
-  if(!loadGeneralDataXML(&doc, &er9xGeneral)) {
+  if (!loadRadioSettingsDataXML(&doc, &er9xGeneral)) {
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
-  } else {
+  }
+  else {
     radioData.generalSettings=er9xGeneral;
     std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
   }
-  for(int i=0; i<getMaxModels(); i++)
-  {
+  for (int i=0; i<getMaxModels(); i++) {
     Er9xModelData er9xModel;
     memset(&er9xModel,0,sizeof(er9xModel));
     if(loadModelDataXML(&doc, &er9xModel, i)) {
@@ -200,14 +200,6 @@ unsigned long Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, i
   return errors.to_ulong();
 }
 
-int Er9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
-{
-  std::cout << "NO!\n";
-  // TODO an error
-
-  return 0;
-}
-
 int Er9xInterface::getSize(const ModelData &model)
 {
   return 0;
@@ -279,7 +271,7 @@ QDomElement Er9xInterface::getModelDataXML(QDomDocument * qdoc, Er9xModelData * 
   return md;
 }
 
-bool Er9xInterface::loadGeneralDataXML(QDomDocument * qdoc, Er9xGeneral * tgen)
+bool Er9xInterface::loadRadioSettingsDataXML(QDomDocument * qdoc, Er9xGeneral * tgen)
 {
   //look for "GENERAL_DATA" tag
   QDomElement gde = qdoc->elementsByTagName("GENERAL_DATA").at(0).toElement();

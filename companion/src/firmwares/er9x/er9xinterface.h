@@ -20,9 +20,11 @@
 
 #ifndef _ER9XINTERFACE_H_
 #define _ER9XINTERFACE_H_
+
 #include <QtXml>
 #include "eeprominterface.h"
 #include "er9xeeprom.h"
+
 class RleFile;
 
 class Er9xInterface : public EEPROMInterface
@@ -45,7 +47,10 @@ class Er9xInterface : public EEPROMInterface
 
     virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
 
-    virtual int save(uint8_t * eeprom, RadioData & radioData, uint32_t variant=0, uint8_t version=0);
+    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0)
+    {
+      return 0;
+    }
 
     virtual int getSize(const ModelData &);
 
@@ -55,7 +60,7 @@ class Er9xInterface : public EEPROMInterface
 
   protected:
 
-    RleFile *efile;
+    RleFile * efile;
 
   private:
     void appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value);
@@ -68,7 +73,7 @@ class Er9xInterface : public EEPROMInterface
 
     QDomElement getModelDataXML(QDomDocument * qdoc, Er9xModelData * tmod, int modelNum, int mdver); //parse out data to XML format
 
-    bool loadGeneralDataXML(QDomDocument * qdoc, Er9xGeneral * tgen); // get data from XML
+    bool loadRadioSettingsDataXML(QDomDocument * qdoc, Er9xGeneral * tgen); // get data from XML
 
     bool loadModelDataXML(QDomDocument * qdoc, Er9xModelData * tmod, int modelNum = -1); // get data from XML
 

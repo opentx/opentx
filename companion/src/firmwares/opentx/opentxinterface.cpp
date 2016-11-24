@@ -108,10 +108,9 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
     case BOARD_FLAMENCO:
-    case BOARD_HORUS:
       return EESIZE_TARANIS;
     default:
-      return 0;
+      return 0; // unlimited
   }
 }
 
@@ -127,10 +126,9 @@ const int OpenTxEepromInterface::getMaxModels()
     return 16;
 }
 
-template <class T>
-bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & model, uint8_t *data, unsigned int version, unsigned int variant)
+bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData & model, uint8_t * data, int index, unsigned int variant)
 {
-  T open9xModel(model, board, version, variant);
+  OpenTxModelData modelDataFactory(model, board, version, variant);
 
   if (!data) {
     // load from EEPROM
@@ -138,8 +136,8 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & mod
     efile->openRd(FILE_MODEL(index));
     int numbytes = efile->readRlc2((uint8_t *)eepromData.data(), eepromData.size());
     if (numbytes) {
-      open9xModel.Import(eepromData);
-      // open9xModel.Dump();
+      modelDataFactory.Import(eepromData);
+      // modelDataFactory.Dump();
       model.used = true;
     }
     else {
@@ -155,8 +153,8 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & mod
     else
       importRlc(modelData, backupData);
     if (modelData.size()) {
-      open9xModel.Import(modelData);
-      // open9xModel.Dump();
+      modelDataFactory.Import(modelData);
+      // modelDataFactory.Dump();
       model.used = true;
     }
     else {
@@ -167,7 +165,17 @@ bool OpenTxEepromInterface::loadModelVariant(unsigned int index, ModelData & mod
   return true;
 }
 
-bool OpenTxEepromInterface::loadModelFromByteArray(ModelData & model, const QByteArray & data)
+bool OpenTxEepromInterface::loadRadioSettings(GeneralSettings & settings, const QByteArray & data)
+{
+  // TODO check the 8 first bytes (fourcc + version + 'M' + size)
+  QByteArray raw = data.right(data.size() - 8);
+  OpenTxGeneralData importer(settings, board, 218, 0); // TODO board and 218 should be the version taken from the header
+  importer.Import(raw);
+  importer.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
+  return true;
+}
+
+bool OpenTxEepromInterface::loadModel(ModelData & model, const QByteArray & data)
 {
   // TODO check the 8 first bytes (fourcc + version + 'M' + size)
   QByteArray raw = data.right(data.size() - 8);
@@ -178,16 +186,10 @@ bool OpenTxEepromInterface::loadModelFromByteArray(ModelData & model, const QByt
   return true;
 }
 
-bool OpenTxEepromInterface::loadModel(uint8_t version, ModelData &model, uint8_t *data, int index, unsigned int variant, unsigned int stickMode)
-{
-  return loadModelVariant<OpenTxModelData>(index, model, data, version, variant);
-}
-
-template <class T>
-bool OpenTxEepromInterface::loadGeneral(GeneralSettings &settings, unsigned int version)
+bool OpenTxEepromInterface::loadRadioSettings(GeneralSettings & settings, uint8_t version)
 {
   QByteArray eepromData(sizeof(settings), 0); // GeneralSettings should be always bigger than the EEPROM struct
-  T open9xSettings(settings, board, version);
+  OpenTxGeneralData open9xSettings(settings, board, version);
   efile->openRd(FILE_GENERAL);
   int sz = efile->readRlc2((uint8_t *)eepromData.data(), eepromData.size());
   if (sz) {
@@ -200,7 +202,7 @@ bool OpenTxEepromInterface::loadGeneral(GeneralSettings &settings, unsigned int 
 }
 
 template <class T>
-bool OpenTxEepromInterface::saveGeneral(GeneralSettings &settings, BoardEnum board, uint32_t version, uint32_t variant)
+bool OpenTxEepromInterface::saveRadioSettings(GeneralSettings & settings, BoardEnum board, uint8_t version, uint32_t variant)
 {
   T open9xSettings(settings, board, version, variant);
   // open9xSettings.Dump();
@@ -211,7 +213,7 @@ bool OpenTxEepromInterface::saveGeneral(GeneralSettings &settings, BoardEnum boa
 }
 
 template <class T>
-bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, unsigned int version, unsigned int variant)
+bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData & model, uint8_t version, uint32_t variant)
 {
   T open9xModel(model, board, version, variant);
   // open9xModel.Dump();
@@ -286,7 +288,7 @@ unsigned long OpenTxEepromInterface::load(RadioData & radioData, const uint8_t *
     return errors.to_ulong();
   }
 
-  if (!loadGeneral<OpenTxGeneralData>(radioData.generalSettings, version)) {
+  if (!loadRadioSettings(radioData.generalSettings, version)) {
     std::cout << " ko\n";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
@@ -294,7 +296,7 @@ unsigned long OpenTxEepromInterface::load(RadioData & radioData, const uint8_t *
 
   std::cout << " variant " << radioData.generalSettings.variant;
   for (int i=0; i<getMaxModels(); i++) {
-    if (!loadModel(version, radioData.models[i], NULL, i, radioData.generalSettings.variant, radioData.generalSettings.stickMode+1)) {
+    if (!loadModel(version, radioData.models[i], NULL, i, radioData.generalSettings.variant)) {
       std::cout << " ko\n";
       errors.set(UNKNOWN_ERROR);
       return errors.to_ulong();
@@ -305,12 +307,12 @@ unsigned long OpenTxEepromInterface::load(RadioData & radioData, const uint8_t *
   return errors.to_ulong();
 }
 
-int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
+int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t version, uint32_t variant)
 {
   EEPROMWarnings.clear();
 
-  if (!version) {
-    switch(board) {
+  if (version == 0) {
+    switch (board) {
       case BOARD_X7D:
       case BOARD_TARANIS_X9D:
       case BOARD_TARANIS_X9DP:
@@ -346,7 +348,7 @@ int OpenTxEepromInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t 
     variant |= TARANIS_X9E_VARIANT;
   }
 
-  int result = saveGeneral<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
+  int result = saveRadioSettings<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
   if (!result) {
     return 0;
   }

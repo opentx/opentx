@@ -20,9 +20,11 @@
 
 #ifndef _ERSKY9XINTERFACE_H_
 #define _ERSKY9XINTERFACE_H_
+
 #include <QtXml>
 #include "eeprominterface.h"
 #include "ersky9xeeprom.h"
+
 class RleFile;
 
 class Ersky9xInterface : public EEPROMInterface
@@ -45,7 +47,10 @@ class Ersky9xInterface : public EEPROMInterface
 
     virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
 
-    virtual int save(uint8_t * eeprom, RadioData & radioData, uint32_t variant=0, uint8_t version=0);
+    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0)
+    {
+      return 0;
+    }
 
     virtual int getSize(const ModelData &);
     
@@ -55,7 +60,7 @@ class Ersky9xInterface : public EEPROMInterface
 
   protected:
 
-    RleFile *efile;
+    RleFile * efile;
 
   private:
     void appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value);
@@ -68,7 +73,7 @@ class Ersky9xInterface : public EEPROMInterface
     
     QDomElement getModelDataXML(QDomDocument * qdoc, Ersky9xModelData_v11 * tmod, int modelNum, int mdver); //parse out data to XML format
     
-    bool loadGeneralDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen); // get data from XML
+    bool loadRadioSettingsDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen); // get data from XML
     
     template <class T>
     bool loadModelDataXML(QDomDocument * qdoc, ModelData * model, int modelNum, int stickMode); // get data from XML

@@ -22,7 +22,6 @@
 #include "firmwareinterface.h"
 #include "storage_eeprom.h"
 
-
 unsigned long LoadEeprom(RadioData & radioData, const uint8_t * eeprom, const int size)
 {
   std::bitset<NUM_ERRORS> errors;
@@ -86,12 +85,12 @@ unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
 
 bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEprom, const QString & firmwareFilename)
 {
-  Firmware *currentFirmware = GetCurrentFirmware();
+  Firmware * currentFirmware = GetCurrentFirmware();
   FirmwareInterface firmware(firmwareFilename);
   if (!firmware.isValid())
     return false;
 
-  unsigned int version = firmware.getEEpromVersion();
+  uint8_t version = firmware.getEEpromVersion();
   unsigned int variant = firmware.getEEpromVariant();
 
   QFile sourceFile(sourceEEprom);
@@ -108,8 +107,7 @@ bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEpr
 
   QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
   std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEeprom(*radioData, (uint8_t *)eeprom.data(), eeprom_size));
-  if (!errors.test(ALL_OK)
-    || !currentFirmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, variant, version)) {
+  if (!errors.test(ALL_OK) || !currentFirmware->saveEEPROM((uint8_t *)eeprom.data(), *radioData, version, variant)) {
     return false;
   }
 

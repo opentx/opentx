@@ -297,7 +297,7 @@ void FlashEEpromDialog::on_burnButton_clicked()
     QString filename = generateProcessUniqueTempFileName("temp.bin");
     QFile file(filename);
     uint8_t *eeprom = (uint8_t*)malloc(GetEepromInterface()->getEEpromSize());
-    int eeprom_size = GetEepromInterface()->save(eeprom, *radioData, GetCurrentFirmware()->getVariantNumber());
+    int eeprom_size = GetEepromInterface()->save(eeprom, *radioData, 0, GetCurrentFirmware()->getVariantNumber());
     if (!eeprom_size) {
       QMessageBox::warning(this, tr("Error"), tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));
       return;

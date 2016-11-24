@@ -130,7 +130,7 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
   Ersky9xGeneral ersky9xGeneral;
   memset(&ersky9xGeneral,0,sizeof(ersky9xGeneral));
-  if(!loadGeneralDataXML(&doc, &ersky9xGeneral)) {
+  if(!loadRadioSettingsDataXML(&doc, &ersky9xGeneral)) {
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
@@ -244,14 +244,6 @@ unsigned long Ersky9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom
   return errors.to_ulong();
 }
 
-int Ersky9xInterface::save(uint8_t *eeprom, RadioData &radioData, uint32_t variant, uint8_t version)
-{
-  std::cout << "NO!\n";
-  // TODO an error
-
-  return 0;
-}
-
 int Ersky9xInterface::getSize(const ModelData & model)
 {
   return 0;
@@ -323,7 +315,7 @@ QDomElement Ersky9xInterface::getModelDataXML(QDomDocument * qdoc, Ersky9xModelD
   return md;
 }
 
-bool Ersky9xInterface::loadGeneralDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen)
+bool Ersky9xInterface::loadRadioSettingsDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen)
 {
   //look for "GENERAL_DATA" tag
   QDomElement gde = qdoc->elementsByTagName("GENERAL_DATA").at(0).toElement();

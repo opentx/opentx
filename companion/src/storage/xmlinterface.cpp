@@ -59,7 +59,7 @@ bool XmlInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   return false;
 }
 
-void saveGeneralSettings(GeneralSettings & settings, global_settings & gs)
+void saveRadioSettings(GeneralSettings & settings, global_settings & gs)
 {
   Calibration rudderCalib(settings.calibMid[0], settings.calibSpanNeg[0], settings.calibSpanPos[0]);
   Calibration throttleCalib(settings.calibMid[1], settings.calibSpanNeg[1], settings.calibSpanPos[1]);
@@ -189,7 +189,7 @@ bool XmlInterface::save(RadioData &radioData)
 
     // the general settings
     global_settings gs;
-    saveGeneralSettings(settings, gs);
+    saveRadioSettings(settings, gs);
     r.global_settings(gs);
 
     // the models

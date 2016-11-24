@@ -43,15 +43,14 @@ class MdiChild : public QWidget
     ~MdiChild();
 
     void newFile();
-    bool loadFile(const QString &fileName, bool resetCurrentFile=true);
+    bool loadFile(const QString & fileName, bool resetCurrentFile=true);
     bool loadBackup();
     bool save();
     bool saveAs(bool isNew=false);
-    bool saveFile(const QString &fileName, bool setCurrent=true);
+    bool saveFile(const QString & fileName, bool setCurrent=true);
     bool hasSelection();
     QString userFriendlyCurrentFile();
     QString currentFile() { return curFile; }
-    // void keyPressEvent(QKeyEvent *event);
     bool hasPasteData();
     void viableModelSelected(bool viable);
     void eepromInterfaceChanged();
@@ -62,7 +61,7 @@ class MdiChild : public QWidget
     void copyAvailable(bool val);
 
   protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent * event);
 
   private slots:
     void documentWasModified();
@@ -87,13 +86,11 @@ class MdiChild : public QWidget
 
   private:
     bool maybeSave();
-    void setCurrentFile(const QString &fileName);
-    QString strippedName(const QString &fullFileName);
-    void saveSelection();
-    void restoreSelection();
-    bool loadOtxFile(const QString &fileName, bool resetCurrentFile);
+    void setCurrentFile(const QString & fileName);
+    QString strippedName(const QString & fullFileName);
+    bool loadOtxFile(const QString & fileName);
 
-    Ui::mdiChild *ui;
+    Ui::mdiChild * ui;
 
     QString curFile;
 

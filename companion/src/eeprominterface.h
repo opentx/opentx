@@ -1415,11 +1415,13 @@ class EEPROMInterface
 
     virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
     
-    virtual bool loadModelFromByteArray(ModelData & model, const QByteArray & data) { return false; }
+    virtual bool loadRadioSettings(GeneralSettings & model, const QByteArray & data) { return false; }
+    
+    virtual bool loadModel(ModelData & model, const QByteArray & data) { return false; }
 
     virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
 
-    virtual int save(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, uint8_t version=0) = 0;
+    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
 
     virtual int getSize(const ModelData &) = 0;
 
@@ -1621,9 +1623,9 @@ class Firmware {
 
     virtual void addOptions(Option options[]);
 
-    inline int saveEEPROM(uint8_t *eeprom, RadioData &radioData, uint32_t variant=0, unsigned int version=0)
+    inline int saveEEPROM(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0)
     {
-      return eepromInterface->save(eeprom, radioData, variant, version);
+      return eepromInterface->save(eeprom, radioData, version, variant);
     }
 
     virtual QString getStampUrl() = 0;

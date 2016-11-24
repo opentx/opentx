@@ -31,6 +31,7 @@
 #include "simulatordialog.h"
 #include "simulatorinterface.h"
 #include "firmwareinterface.h"
+#include "storage/storage_sdcard.h"
 
 Stopwatch gStopwatch("global");
 
@@ -805,8 +806,9 @@ CompanionIcon::CompanionIcon(const QString &baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  SimulatorInterface * si = GetCurrentFirmwareSimulator();
-  if (si) {
+  Firmware * firmware = GetCurrentFirmware();
+  SimulatorInterface * simulator = GetCurrentFirmwareSimulator();
+  if (simulator) {
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
     if (modelIdx >= 0) {
@@ -817,12 +819,19 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;
     }
     BoardEnum board = GetCurrentFirmware()->getBoard();
-    SimulatorDialog * sd;
+    SimulatorDialog * dialog;
     if (board == BOARD_HORUS) {
-      sd = new SimulatorDialogHorus(parent, si, flags);
+      dialog = new SimulatorDialogHorus(parent, simulator, flags);
+      StorageSdcard storage;
+      QString sdPath = g.profile[g.id()].sdPath();
+      storage.write(sdPath);
+      dialog->start(NULL);
     }
     else if (board == BOARD_FLAMENCO) {
-      sd = new SimulatorDialogFlamenco(parent, si, flags);
+      dialog = new SimulatorDialogFlamenco(parent, simulator, flags);
+      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+      firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
+      dialog->start(eeprom);
     }
     else if (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E) {
       for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
@@ -833,17 +842,21 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
           }
         }
       }
-      sd = new SimulatorDialogTaranis(parent, si, flags);
+      dialog = new SimulatorDialogTaranis(parent, simulator, flags);
+      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+      firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
+      dialog->start(eeprom);
     }
     else {
-      sd = new SimulatorDialog9X(parent, si, flags);
+      dialog = new SimulatorDialog9X(parent, simulator, flags);
+      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+      firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData, 0, firmware->getCapability(SimulatorVariant));
+      dialog->start(eeprom);
     }
-    QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
-    GetEepromInterface()->save((uint8_t *)eeprom.data(), *simuData, GetCurrentFirmware()->getCapability(SimulatorVariant));
+    
+    dialog->exec();
+    delete dialog;
     delete simuData;
-    sd->start(eeprom);
-    sd->exec();
-    delete sd;
   }
   else {
     QMessageBox::warning(NULL,

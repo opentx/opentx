@@ -218,7 +218,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name);
 
 // For conversions
 #if defined(CPUARM)
-void loadGeneralSettings();
+void loadRadioSettingsSettings();
 void loadModel(int index, bool alarms=true);
 #endif
 
