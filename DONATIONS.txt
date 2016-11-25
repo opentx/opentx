@@ -1053,3 +1053,4 @@ Eric Olivi
 Jean-Jacques Pointel  
 Vianney Levesque
 Fred Carlisle
+Pierre Duvezin-Caubet
