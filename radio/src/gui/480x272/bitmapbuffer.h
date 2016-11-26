@@ -117,6 +117,14 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline void drawPixel(display_t * p, display_t value)
     {
+      if (dataAllocated && !data) {
+      	TRACE("missing buffer");
+        return;   // we have no buffer
+      }
+      if (p > &data[width * height]) {
+      	TRACE("draw outside buffer");
+        return; // drawing outside the buffer
+      }
       *p = value;
     }
 
