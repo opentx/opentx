@@ -774,7 +774,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
 #if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__) || defined(__FreeBSD__)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
-  if (ent->d_type == simu::DT_UNKNOWN) {
+  if (ent->d_type == simu::DT_UNKNOWN || ent->d_type == simu::DT_LNK) {
     fil->fattrib = 0;
     struct stat buf;
     if (stat(ent->d_name, &buf) == 0) {
