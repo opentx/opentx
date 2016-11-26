@@ -303,6 +303,10 @@ int cliStackInfo(const char ** argv)
   return 0;
 }
 
+extern int _end;
+extern int _heap_end;
+extern unsigned char *heap;
+
 int cliMemoryInfo(const char ** argv)
 {
   // struct mallinfo {
@@ -318,11 +322,18 @@ int cliMemoryInfo(const char ** argv)
   //   int keepcost; /* top-most, releasable (via malloc_trim) space */
   // };
   struct mallinfo info = mallinfo();
-  serialPrint("arena %d", info.arena);
-  serialPrint("ordblks %d", info.ordblks);
-  serialPrint("uordblks %d", info.uordblks);
-  serialPrint("fordblks %d", info.fordblks);
-  serialPrint("keepcost %d", info.keepcost);
+  serialPrint("mallinfo:");
+  serialPrint("\tarena    %d bytes", info.arena);
+  serialPrint("\tordblks  %d bytes", info.ordblks);
+  serialPrint("\tuordblks %d bytes", info.uordblks);
+  serialPrint("\tfordblks %d bytes", info.fordblks);
+  serialPrint("\tkeepcost %d bytes", info.keepcost);
+  serialPrint("Heap:");
+  serialPrint("\tstart %p", (unsigned char *)&_end);
+  serialPrint("\tend   %p", (unsigned char *)&_heap_end);
+  serialPrint("\tcurr  %p", heap);
+  serialPrint("\tused  %d bytes", (int)(heap - (unsigned char *)&_end));
+  serialPrint("\tfree  %d bytes", (int)((unsigned char *)&_heap_end - heap));
   return 0;
 }
 
