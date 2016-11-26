@@ -1240,6 +1240,7 @@ class GeneralSettings {
     unsigned int sticksGain;
     unsigned int rotarySteps;
     unsigned int countryCode;
+    bool jitterFilter;
     unsigned int imperial;
     bool crosstrim;
     char ttsLanguage[2+1];
@@ -1411,15 +1412,15 @@ class EEPROMInterface
 
     inline BoardEnum getBoard() { return board; }
 
-    virtual unsigned long load(RadioData &radioData, const uint8_t *eeprom, int size) = 0;
+    virtual unsigned long load(RadioData &radioData, const uint8_t * eeprom, int size) = 0;
 
-    virtual unsigned long loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index) = 0;
+    virtual unsigned long loadBackup(RadioData & radioData, const uint8_t * eeprom, int esize, int index) = 0;
     
     virtual bool loadRadioSettings(GeneralSettings & model, const QByteArray & data) { return false; }
     
     virtual bool loadModel(ModelData & model, const QByteArray & data) { return false; }
 
-    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc) = 0;
+    virtual unsigned long loadxml(RadioData & radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
 
@@ -1430,7 +1431,11 @@ class EEPROMInterface
     virtual const int getEEpromSize() = 0;
 
     virtual const int getMaxModels() = 0;
-
+    
+    virtual int loadFile(RadioData & radioData, const QString & filename) = 0;
+    
+    virtual int saveFile(const RadioData & radioData, const QString & filename) = 0;
+  
   protected:
 
     BoardEnum board;

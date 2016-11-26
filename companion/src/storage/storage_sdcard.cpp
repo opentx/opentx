@@ -163,6 +163,7 @@ void StorageSdcard::writeFile(const QByteArray & data, const QString & path)
   QFile file(path);
   if (!file.open(QFile::WriteOnly)) {
     lastErrorMessage = QObject::tr("Error opening file %1:\n%2.").arg(path).arg(file.errorString());
+    qDebug() << "File" << path << "write error";
     throw StorageSdcardWriteFileError();
   }
   file.write(data.data(), data.size());
@@ -176,12 +177,12 @@ int StorageSdcard::writeSdcard(const QString & path)
     QDir dir(path);
     dir.mkdir("RADIO");
     writeFile(radio, path + "/RADIO/radio.bin");
-    writeFile(modelList, path + "RADIO/models.txt");
+    writeFile(modelList, path + "/RADIO/models.txt");
 
     dir.mkdir("MODELS");
     for (QList<ModelFile>::const_iterator i = models.begin(); i != models.end(); ++i) {
       qDebug() << "writing" << i->filename;
-      writeFile(i->data, path + "MODELS/" + i->filename);
+      writeFile(i->data, path + "/MODELS/" + i->filename);
     }
   }
   catch (StorageSdcardWriteFileError) {

@@ -343,49 +343,15 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
     return true;
   }
   else if (fileType == FILE_TYPE_OTX) { //read zip archive
-    if (loadOtxFile(fileName)) {
+    if (!GetEepromInterface()->loadFile(radioData, fileName)) {
       ui->modelsList->refreshList();
       if (resetCurrentFile)
         setCurrentFile(fileName);
+      return true;
     }
   }
 
   return false;
-}
-
-bool MdiChild::loadOtxFile(const QString & fileName)
-{
-  // example of StorageSdcard usage
-
-  StorageSdcard storage;
-
-  storage.read(fileName);
-
-  // display models.txt
-  QString modelList = QString(storage.modelList);
-  qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
-
-  // info about radio.bin
-  qDebug() << "Radio settings:" << storage.radio.size();
-
-  // info about all models
-  QList<QString> models = storage.getModelsFileNames();
-  qDebug() << "We have" << models.size() << "models:";
-#if 0
-  foreach(QString filename, models) {
-    QList<ModelFile>::const_iterator i = storage.getModelIterator(filename);
-    if (i != storage.models.end()) {
-      qDebug() << "\tModel:" << i->filename << "size" << i->data.size();
-    }
-  }
-#endif
-  
-  int index = 0;
-  for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i, ++index) {
-    GetEepromInterface()->loadModel(radioData.models[index], i->data);
-  }
-  
-  return true;
 }
 
 bool MdiChild::save()

@@ -822,9 +822,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     SimulatorDialog * dialog;
     if (board == BOARD_HORUS) {
       dialog = new SimulatorDialogHorus(parent, simulator, flags);
-      StorageSdcard storage;
-      QString sdPath = g.profile[g.id()].sdPath();
-      storage.write(sdPath);
+      GetEepromInterface()->saveFile(*simuData, g.profile[g.id()].sdPath());
       dialog->start(NULL);
     }
     else if (board == BOARD_FLAMENCO) {

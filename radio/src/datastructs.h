@@ -913,8 +913,8 @@ PACK(struct TrainerData {
 #elif defined(PCBFLAMENCO)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    uint8_t  serial2Mode:6; \
-    uint8_t  spare:2; \
+    uint8_t  serial2Mode:4; \
+    uint8_t  spare:4; \
     uint32_t switchConfig; \
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \

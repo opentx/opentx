@@ -1634,8 +1634,8 @@ void registerEEpromInterfaces()
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9D));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9DP));
   eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9E));
-  eepromInterfaces.push_back(new Ersky9xInterface());
-  eepromInterfaces.push_back(new Er9xInterface());
+  // eepromInterfaces.push_back(new Ersky9xInterface());
+  // eepromInterfaces.push_back(new Er9xInterface());
 }
 
 void unregisterEEpromInterfaces()
