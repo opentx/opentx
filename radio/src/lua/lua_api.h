@@ -28,6 +28,7 @@ extern "C" {
   #include <lauxlib.h>
   #include <lualib.h>
   #include <lrotable.h>
+  #include <lgc.h>
 }
 
 extern lua_State *L;
