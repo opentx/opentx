@@ -3396,6 +3396,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     for (int i = 0; i < 5; i++) {
       internalField.Append(new CharField<610>(modelData.customScreenData[i], true, "Custom screen blob"));
     }
+    internalField.Append(new CharField<216>(modelData.topbarData, true, "Top bar blob"));
+    internalField.Append(new SpareBitsField<8>()); // current view
   }
 }
 

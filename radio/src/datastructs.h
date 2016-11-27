@@ -1101,6 +1101,7 @@ static inline void check_struct()
   CHKSIZE(RadioData, 847);
   CHKSIZE(ModelData, 9380);
   CHKSIZE(CustomScreenData, 610);
+  CHKSIZE(Topbar::PersistentData, 216);
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);

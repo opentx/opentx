@@ -1060,6 +1060,7 @@ class CustomScreenData {
 };
 #else
 typedef char CustomScreenData[610+1];
+typedef char TopbarData[216+1];
 #endif
 
 class ModelData {
@@ -1130,6 +1131,8 @@ class ModelData {
     unsigned int toplcdTimer;
     
     CustomScreenData customScreenData[5];
+    
+    TopbarData topbarData;
     
     void clear();
     bool isEmpty() const;
