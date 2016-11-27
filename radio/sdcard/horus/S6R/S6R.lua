@@ -14,9 +14,42 @@ local calibrationStep = 0
 local pages = {}
 local fields = {}
 local modifications = {}
-local configFields
-local settingsFields
-local calibrationFields
+
+local configFields = {
+  {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
+  {"Mounting type:", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
+}
+
+local settingsFields = {
+  {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
+  {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"AIL2 direction:", COMBO, 0x9A, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"ELE2 direction:", COMBO, 0x9B, nil, { "Normal", "Invers" }, { 255, 0 } },
+  {"AIL stabilize gain:", VALUE, 0x85, nil, 0, 200, "%"},
+  {"ELE stabilize gain:", VALUE, 0x86, nil, 0, 200, "%"},
+  {"RUD stabilize gain:", VALUE, 0x87, nil, 0, 200, "%"},
+  {"AIL auto level gain:", VALUE, 0x88, nil, 0, 200, "%"},
+  {"ELE auto level gain:", VALUE, 0x89, nil, 0, 200, "%"},
+  {"ELE upright gain:", VALUE, 0x8C, nil, 0, 200, "%"},
+  {"RUD upright gain:", VALUE, 0x8D, nil, 0, 200, "%"},
+  {"AIL crab gain:", VALUE, 0x8E, nil, 0, 200, "%"},
+  {"RUD crab gain:", VALUE, 0x90, nil, 0, 200, "%"},
+  {"AIL auto angle offset:", VALUE, 0x91, nil, -20, 20, "%", 0x6C},
+  {"ELE auto angle offset:", VALUE, 0x92, nil, -20, 20, "%", 0x6C},
+  {"ELE upright angle offset:", VALUE, 0x95, nil, -20, 20, "%", 0x6C},
+  {"RUD upright angle offset:", VALUE, 0x96, nil, -20, 20, "%", 0x6C},
+  {"AIL crab angle offset:", VALUE, 0x97, nil, -20, 20, "%", 0x6C},
+  {"RUD crab angle offset:", VALUE, 0x99, nil, -20, 20, "%", 0x6C},
+}
+
+local calibrationFields = {
+  {"X:", VALUE, 0x9E, 0, -100, 100, "%"},
+  {"Y:", VALUE, 0x9F, 0, -100, 100, "%"},
+  {"Z:", VALUE, 0xA0, 0, -100, 100, "%"}
+}
+
 local wingBitmaps = {}
 local mountBitmaps = {}
 local calibBitmaps = {}
@@ -269,41 +302,6 @@ end
 
 -- Init
 local function init()
-  configFields = {
-    {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
-    {"Mounting type:", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
-  }
-
-  settingsFields = {
-    {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
-    {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
-    {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 255, 0 } },
-    {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 255, 0 } },
-    {"AIL2 direction:", COMBO, 0x9A, nil, { "Normal", "Invers" }, { 255, 0 } },
-    {"ELE2 direction:", COMBO, 0x9B, nil, { "Normal", "Invers" }, { 255, 0 } },
-    {"AIL stabilize gain:", VALUE, 0x85, nil, 0, 200, "%"},
-    {"ELE stabilize gain:", VALUE, 0x86, nil, 0, 200, "%"},
-    {"RUD stabilize gain:", VALUE, 0x87, nil, 0, 200, "%"},
-    {"AIL auto level gain:", VALUE, 0x88, nil, 0, 200, "%"},
-    {"ELE auto level gain:", VALUE, 0x89, nil, 0, 200, "%"},
-    {"ELE upright gain:", VALUE, 0x8C, nil, 0, 200, "%"},
-    {"RUD upright gain:", VALUE, 0x8D, nil, 0, 200, "%"},
-    {"AIL crab gain:", VALUE, 0x8E, nil, 0, 200, "%"},
-    {"RUD crab gain:", VALUE, 0x90, nil, 0, 200, "%"},
-    {"AIL auto angle offset:", VALUE, 0x91, nil, -20, 20, "%", 0x6C},
-    {"ELE auto angle offset:", VALUE, 0x92, nil, -20, 20, "%", 0x6C},
-    {"ELE upright angle offset:", VALUE, 0x95, nil, -20, 20, "%", 0x6C},
-    {"RUD upright angle offset:", VALUE, 0x96, nil, -20, 20, "%", 0x6C},
-    {"AIL crab angle offset:", VALUE, 0x97, nil, -20, 20, "%", 0x6C},
-    {"RUD crab angle offset:", VALUE, 0x99, nil, -20, 20, "%", 0x6C},
-  }
-
-  calibrationFields = {
-    {"X:", VALUE, 0x9E, 0, -100, 100, "%"},
-    {"Y:", VALUE, 0x9F, 0, -100, 100, "%"},
-    {"Z:", VALUE, 0xA0, 0, -100, 100, "%"}
-  }
-
   current, edit, refreshState, refreshIndex = 1, false, 0, 0
   pages = {
     runConfigPage,
@@ -312,17 +310,10 @@ local function init()
   }
 end
 
-local function cleanup()
-  -- without this the bitmaps are not freed until the radio is shut down
-  wingBitmaps = nil
-  mountBitmaps = nil
-  calibBitmaps = nil
-  configFields = nil
-  settingsFields = nil
-  calibrationFields = nil
-end
-
 local loaded = 1
+local bitmaps = {"plane_b", "delta_b", "planev_b"
+                  , "up", "down", "vert", "vert-r"
+                  , "up", "down", "left", "right", "forward", "back"}
 
 local function loadBitmaps()
   print("loaded "..loaded)
@@ -331,38 +322,20 @@ local function loadBitmaps()
   drawScreenTitle("S6R", 0, #pages)
   lcd.drawText(120, 100, "Loading bitmaps "..loaded.."/12", TEXT_COLOR)
 
-  if loaded == 1 then
-    wingBitmaps[1] = Bitmap.open("img/plane_b.png")
-  elseif loaded == 2 then
-    wingBitmaps[2] = Bitmap.open("img/delta_b.png")
-  elseif loaded == 3 then
-    wingBitmaps[3] = Bitmap.open("img/planev_b.png")
-
-  elseif loaded == 4 then
-    mountBitmaps[1] = Bitmap.open("img/up.png")
-  elseif loaded == 5 then
-    mountBitmaps[2] = Bitmap.open("img/down.png")
-  elseif loaded == 6 then
-    mountBitmaps[3] = Bitmap.open("img/vert.png")
-  elseif loaded == 6 then
-    mountBitmaps[4] = Bitmap.open("img/vert-r.png")
-
-  elseif loaded == 7 then
-    calibBitmaps[1] = Bitmap.open("img/up.png")
-  elseif loaded == 8 then
-    calibBitmaps[2] = Bitmap.open("img/down.png")
-  elseif loaded == 9 then
-    calibBitmaps[3] = Bitmap.open("img/left.png")
-  elseif loaded == 10 then
-    calibBitmaps[4] = Bitmap.open("img/right.png")
-  elseif loaded == 11 then
-    calibBitmaps[5] = Bitmap.open("img/forward.png")
-  elseif loaded == 12 then
-    calibBitmaps[6] = Bitmap.open("img/back.png")
-
-  elseif loaded > 12  then
+  if loaded > #bitmaps then
     page = 1
+    return
   end
+
+  local bitmap = Bitmap.open("img/"..bitmaps[loaded]..".png")
+  if loaded < 4 then
+    wingBitmaps[loaded] = bitmap
+  elseif loaded < 8 then
+    mountBitmaps[loaded-3] = bitmap
+  else
+    calibBitmaps[loaded-7] = bitmap
+  end
+
   loaded = loaded + 1
 end
 
@@ -389,9 +362,6 @@ local function run(event)
   local result = pages[page](event)
   refreshNext()
 
-  if result ~= 0 then
-    cleanup()
-  end
   return result
 end
 
