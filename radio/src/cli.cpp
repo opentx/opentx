@@ -328,12 +328,19 @@ int cliMemoryInfo(const char ** argv)
   serialPrint("\tuordblks %d bytes", info.uordblks);
   serialPrint("\tfordblks %d bytes", info.fordblks);
   serialPrint("\tkeepcost %d bytes", info.keepcost);
-  serialPrint("Heap:");
+
+  serialPrint("\nHeap:");
   serialPrint("\tstart %p", (unsigned char *)&_end);
   serialPrint("\tend   %p", (unsigned char *)&_heap_end);
   serialPrint("\tcurr  %p", heap);
   serialPrint("\tused  %d bytes", (int)(heap - (unsigned char *)&_end));
   serialPrint("\tfree  %d bytes", (int)((unsigned char *)&_heap_end - heap));
+
+  serialPrint("\nLua:");
+  serialPrint("\tScripts %d", luaGetMemUsed(lsScripts));
+#if defined(PCBHORUS)
+  serialPrint("\tWidgets %d", luaGetMemUsed(lsWidgets));
+#endif
   return 0;
 }
 

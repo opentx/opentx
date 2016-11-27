@@ -31,10 +31,9 @@
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
-#define SET_LUA_INSTRUCTIONS_COUNT(x)      (instructionsPercent=0, lua_sethook(L, hook, LUA_MASKCOUNT, x))
 #define LUA_WARNING_INFO_LEN               64
 
-lua_State *L = NULL;
+lua_State *lsScripts = NULL;
 uint8_t luaState = 0;
 uint8_t luaScriptsCount = 0;
 ScriptInternalData scriptInternalData[MAX_SCRIPTS] = { { SCRIPT_NOFILE, 0 } };
@@ -48,7 +47,7 @@ char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 struct our_longjmp * global_lj = 0;
 
 /* custom panic handler */
-static int custom_lua_atpanic(lua_State *lua)
+int custom_lua_atpanic(lua_State * L)
 {
   TRACE("PANIC: unprotected error in call to Lua API (%s)\n", lua_tostring(L, -1));
   if (global_lj) {
@@ -58,18 +57,24 @@ static int custom_lua_atpanic(lua_State *lua)
   return 0;
 }
 
-void hook(lua_State* L, lua_Debug *ar)
+void luaHook(lua_State * L, lua_Debug *ar)
 {
   instructionsPercent++;
   if (instructionsPercent > 100) {
     // From now on, as soon as a line is executed, error
     // keep erroring until you're script reaches the top
-    lua_sethook(L, hook, LUA_MASKLINE, 0);
+    lua_sethook(L, luaHook, LUA_MASKLINE, 0);
     luaL_error(L, "");
   }
 }
 
-int luaGetInputs(ScriptInputsOutputs & sid)
+void luaSetInstructionsLimit(lua_State * L, int count)
+{
+  instructionsPercent=0;
+  lua_sethook(L, luaHook, LUA_MASKCOUNT, count);
+}
+
+int luaGetInputs(lua_State * L, ScriptInputsOutputs & sid)
 {
   if (!lua_istable(L, -1))
     return -1;
@@ -123,7 +128,7 @@ int luaGetInputs(ScriptInputsOutputs & sid)
   return 0;
 }
 
-int luaGetOutputs(ScriptInputsOutputs & sid)
+int luaGetOutputs(lua_State * L, ScriptInputsOutputs & sid)
 {
   if (!lua_istable(L, -1))
     return -1;
@@ -146,10 +151,11 @@ void luaDisable()
   luaState = INTERPRETER_PANIC;
 }
 
-void luaClose()
+void luaClose(lua_State * L)
 {
   if (L) {
     PROTECT_LUA() {
+      TRACE("luaClose %p", L);
       lua_close(L);  // this should not panic, but we make sure anyway
     }
     else {
@@ -161,17 +167,15 @@ void luaClose()
   }
 }
 
-void luaRegisterAll()
+void luaRegisterLibraries(lua_State * L)
 {
-  // Init lua
   luaL_openlibs(L);
-
 #if defined(COLORLCD)
   registerBitmapClass(L);
 #endif
 }
 
-void luaFree(ScriptInternalData & sid)
+void luaFree(lua_State * L, ScriptInternalData & sid)
 {
   PROTECT_LUA() {
     if (sid.run) {
@@ -191,7 +195,7 @@ void luaFree(ScriptInternalData & sid)
 }
 
 #if defined(LUA_COMPILER) && defined(SIMU)
-static int luaDumpWriter(lua_State* L, const void* p, size_t size, void* u)
+static int luaDumpWriter(lua_State * L, const void* p, size_t size, void* u)
 {
   UNUSED(L);
   UINT written;
@@ -199,7 +203,7 @@ static int luaDumpWriter(lua_State* L, const void* p, size_t size, void* u)
   return (result != FR_OK && !written);
 }
 
-static void luaCompileAndSave(const char *bytecodeName)
+static void luaCompileAndSave(lua_State * L, const char *bytecodeName)
 {
   FIL D;
   char srcName[1024];
@@ -228,7 +232,7 @@ static void luaCompileAndSave(const char *bytecodeName)
 }
 #endif
 
-int luaLoad(const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
+int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
 
@@ -245,10 +249,10 @@ int luaLoad(const char * filename, ScriptInternalData & sid, ScriptInputsOutputs
   }
 
 #if defined(LUA_COMPILER) && defined(SIMU)
-  luaCompileAndSave(filename);
+  luaCompileAndSave(L, filename);
 #endif
 
-  SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
+  luaSetInstructionsLimit(L, MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
   PROTECT_LUA() {
     if (luaL_loadfile(L, filename) == 0 &&
@@ -272,10 +276,10 @@ int luaLoad(const char * filename, ScriptInternalData & sid, ScriptInputsOutputs
           lua_pushnil(L);
         }
         else if (sio && !strcmp(key, "input")) {
-          luaGetInputs(*sio);
+          luaGetInputs(L, *sio);
         }
         else if (sio && !strcmp(key, "output")) {
-          luaGetOutputs(*sio);
+          luaGetOutputs(L, *sio);
         }
       }
 
@@ -301,7 +305,7 @@ int luaLoad(const char * filename, ScriptInternalData & sid, ScriptInputsOutputs
   UNPROTECT_LUA();
 
   if (sid.state != SCRIPT_OK) {
-    luaFree(sid);
+    luaFree(L, sid);
   }
 
   return sid.state;
@@ -320,7 +324,7 @@ bool luaLoadMixScript(uint8_t index)
     strncpy(filename+sizeof(SCRIPTS_MIXES_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)] = '\0';
     strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPTS_EXT);
-    if (luaLoad(filename, sid, sio) == SCRIPT_PANIC) {
+    if (luaLoad(lsScripts, filename, sid, sio) == SCRIPT_PANIC) {
       return false;
     }
   }
@@ -340,7 +344,7 @@ bool luaLoadFunctionScript(uint8_t index)
       strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
       filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)] = '\0';
       strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPTS_EXT);
-      if (luaLoad(filename, sid) == SCRIPT_PANIC) {
+      if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
         return false;
       }
     }
@@ -368,7 +372,7 @@ bool luaLoadTelemetryScript(uint8_t index)
         strncpy(filename+sizeof(SCRIPTS_TELEM_PATH), script.file, sizeof(script.file));
         filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)] = '\0';
         strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPTS_EXT);
-        if (luaLoad(filename, sid) == SCRIPT_PANIC) {
+        if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
           return false;
         }
       }
@@ -449,7 +453,7 @@ void displayAcknowledgeLuaError(event_t event)
   }
 }
 
-void luaError(uint8_t error, bool acknowledge)
+void luaError(lua_State * L, uint8_t error, bool acknowledge)
 {
   const char * errorTitle;
 
@@ -492,19 +496,17 @@ void luaError(uint8_t error, bool acknowledge)
 
 void luaExec(const char * filename)
 {
-#if !defined(COLORLCD)
   luaInit();
-#endif
 
   if (luaState != INTERPRETER_PANIC) {
     standaloneScript.state = SCRIPT_NOFILE;
-    int result = luaLoad(filename, standaloneScript);
+    int result = luaLoad(lsScripts, filename, standaloneScript);
     // TODO the same with run ...
     if (result == SCRIPT_OK) {
       luaState = INTERPRETER_RUNNING_STANDALONE_SCRIPT;
     }
     else {
-      luaError(result);
+      luaError(lsScripts, result);
       luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
     }
   }
@@ -515,19 +517,19 @@ void luaDoOneRunStandalone(event_t evt)
   static uint8_t luaDisplayStatistics = false;
 
   if (standaloneScript.state == SCRIPT_OK && standaloneScript.run) {
-    SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
-    lua_rawgeti(L, LUA_REGISTRYINDEX, standaloneScript.run);
-    lua_pushunsigned(L, evt);
-    if (lua_pcall(L, 1, 1, 0) == 0) {
-      if (!lua_isnumber(L, -1)) {
+    luaSetInstructionsLimit(lsScripts, MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
+    lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, standaloneScript.run);
+    lua_pushunsigned(lsScripts, evt);
+    if (lua_pcall(lsScripts, 1, 1, 0) == 0) {
+      if (!lua_isnumber(lsScripts, -1)) {
         if (instructionsPercent > 100) {
           TRACE("Script killed");
           standaloneScript.state = SCRIPT_KILLED;
           luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
         }
-        else if (lua_isstring(L, -1)) {
+        else if (lua_isstring(lsScripts, -1)) {
           char nextScript[_MAX_LFN+1];
-          strncpy(nextScript, lua_tostring(L, -1), _MAX_LFN);
+          strncpy(nextScript, lua_tostring(lsScripts, -1), _MAX_LFN);
           nextScript[_MAX_LFN] = '\0';
           luaExec(nextScript);
         }
@@ -538,8 +540,8 @@ void luaDoOneRunStandalone(event_t evt)
         }
       }
       else {
-        int scriptResult = lua_tointeger(L, -1);
-        lua_pop(L, 1);  /* pop returned value */
+        int scriptResult = lua_tointeger(lsScripts, -1);
+        lua_pop(lsScripts, 1);  /* pop returned value */
         if (scriptResult != 0) {
           TRACE("Script finished with status %d", scriptResult);
           standaloneScript.state = SCRIPT_NOFILE;
@@ -551,7 +553,7 @@ void luaDoOneRunStandalone(event_t evt)
 #else
           lcdDrawSolidHorizontalLine(0, 7*FH-1, lcdLastPos+6, ERASE);
           lcdDrawText(0, 7*FH, "GV Use: ");
-          lcdDrawNumber(lcdLastPos, 7*FH, luaGetMemUsed(), LEFT);
+          lcdDrawNumber(lcdLastPos, 7*FH, luaGetMemUsed(lsScripts), LEFT);
           lcdDrawChar(lcdLastPos, 7*FH, 'b');
           lcdDrawSolidHorizontalLine(0, 7*FH-2, lcdLastPos+6, FORCE);
           lcdDrawVerticalLine(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
@@ -560,13 +562,13 @@ void luaDoOneRunStandalone(event_t evt)
       }
     }
     else {
-      TRACE("Script error: %s", lua_tostring(L, -1));
+      TRACE("Script error: %s", lua_tostring(lsScripts, -1));
       standaloneScript.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
       luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
     }
 
     if (standaloneScript.state != SCRIPT_OK) {
-      luaError(standaloneScript.state);
+      luaError(lsScripts, standaloneScript.state);
       luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
     }
 
@@ -596,7 +598,7 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
   ScriptInternalData & sid = scriptInternalData[i];
   if (sid.state != SCRIPT_OK) return false;
 
-  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
+  luaSetInstructionsLimit(lsScripts, PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
   int inputsCount = 0;
 #if defined(SIMU) || defined(DEBUG)
   const char *filename;
@@ -613,12 +615,12 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
 #if defined(SIMU) || defined(DEBUG)
     filename = sd.file;
 #endif
-    lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+    lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.run);
     for (int j=0; j<sio->inputsCount; j++) {
       if (sio->inputs[j].type == 1)
-        luaGetValueAndPush((uint8_t)sd.inputs[j]);
+        luaGetValueAndPush(lsScripts, (uint8_t)sd.inputs[j]);
       else
-        lua_pushinteger(L, sd.inputs[j] + sio->inputs[j].def);
+        lua_pushinteger(lsScripts, sd.inputs[j] + sio->inputs[j].def);
     }
   }
   else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {
@@ -627,9 +629,9 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     filename = fn.play.name;
 #endif
     if (getSwitch(fn.swtch))
-      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
+      lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.run);
     else if (sid.background)
-      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
+      lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.background);
     else
       return false;
   }
@@ -640,12 +642,12 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     filename = script.file;
 #endif
     if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuViewTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {
-      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.run);
-      lua_pushunsigned(L, evt);
+      lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.run);
+      lua_pushunsigned(lsScripts, evt);
       inputsCount = 1;
     }
     else if ((scriptType & RUN_TELEM_BG_SCRIPT) && (sid.background)) {
-      lua_rawgeti(L, LUA_REGISTRYINDEX, sid.background);
+      lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.background);
     }
     else {
       return false;
@@ -655,16 +657,16 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
 #endif
   }
 
-  if (lua_pcall(L, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
+  if (lua_pcall(lsScripts, inputsCount, sio ? sio->outputsCount : 0, 0) == 0) {
     if (sio) {
       for (int j=sio->outputsCount-1; j>=0; j--) {
-        if (!lua_isnumber(L, -1)) {
+        if (!lua_isnumber(lsScripts, -1)) {
           sid.state = (instructionsPercent > 100 ? SCRIPT_KILLED : SCRIPT_SYNTAX_ERROR);
           TRACE("Script %8s disabled", filename);
           break;
         }
-        sio->outputs[j].value = lua_tointeger(L, -1);
-        lua_pop(L, 1);
+        sio->outputs[j].value = lua_tointeger(lsScripts, -1);
+        lua_pop(lsScripts, 1);
       }
     }
   }
@@ -674,13 +676,13 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
       sid.state = SCRIPT_KILLED;
     }
     else {
-      TRACE("Script %8s error: %s", filename, lua_tostring(L, -1));
+      TRACE("Script %8s error: %s", filename, lua_tostring(lsScripts, -1));
       sid.state = SCRIPT_SYNTAX_ERROR;
     }
   }
 
   if (sid.state != SCRIPT_OK) {
-    luaFree(sid);
+    luaFree(lsScripts, sid);
   }
   else {
     if (instructionsPercent > sid.instructions) {
@@ -690,14 +692,14 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
   return true;
 }
 
-void luaDoGc()
+void luaDoGc(lua_State * L)
 {
   if (L) {
     PROTECT_LUA() {
       lua_gc(L, LUA_GCCOLLECT, 0);
 #if defined(SIMU) || defined(DEBUG)
       static int lastgc = 0;
-      int gc = luaGetMemUsed();
+      int gc = luaGetMemUsed(L);
       if (gc != lastgc) {
         lastgc = gc;
         TRACE("GC Use: %dbytes", gc);
@@ -736,10 +738,8 @@ bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage)
     // run permanent scripts
     if (luaState & INTERPRETER_RELOAD_PERMANENT_SCRIPTS) {
       luaState = 0;
-#if !defined(COLORLCD)
       luaInit();
       if (luaState == INTERPRETER_PANIC) return false;
-#endif
       luaLoadPermanentScripts();
       if (luaState == INTERPRETER_PANIC) return false;
     }
@@ -756,435 +756,47 @@ bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage)
       //todo gc step between scripts
     }
   }
-  luaDoGc();
+  luaDoGc(lsScripts);
   return scriptWasRun;
 }
 
-int luaGetMemUsed()
+int luaGetMemUsed(lua_State * L)
 {
-  return (lua_gc(L, LUA_GCCOUNT, 0) << 10) + lua_gc(L, LUA_GCCOUNTB, 0);
+  return L ? (lua_gc(L, LUA_GCCOUNT, 0) << 10) + lua_gc(L, LUA_GCCOUNTB, 0) : 0;
 }
 
-#if defined(COLORLCD)
-#define LUA_FULLPATH_MAXLEN            (42) // max length (example: /SCRIPTS/THEMES/mytheme.lua)
-
-void exec(int function, int nresults=0)
-{
-  if (function) {
-    SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-    lua_rawgeti(L, LUA_REGISTRYINDEX, function);
-    if (lua_pcall(L, 0, nresults, 0) != 0) {
-      TRACE("Error in theme  %s", lua_tostring(L, -1));
-    }
-  }
-}
-
-ZoneOption * createOptionsArray(int reference)
-{
-  if (reference == 0) {
-    return NULL;
-  }
-
-  int count = 0;
-  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
-  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-    count++;
-  }
-
-  ZoneOption * options = (ZoneOption *)malloc(sizeof(ZoneOption) * (count+1));
-
-  lua_rawgeti(L, LUA_REGISTRYINDEX, reference);
-  ZoneOption * option = options;
-  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-    luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-    luaL_checktype(L, -1, LUA_TTABLE); // value is table
-    uint8_t field = 0;
-    for (lua_pushnil(L); lua_next(L, -2) && field<5; lua_pop(L, 1), field++) {
-      switch (field) {
-        case 0:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TSTRING); // value is string
-          option->name = lua_tostring(L, -1);
-          break;
-        case 1:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          option->type = (ZoneOption::Type)lua_tointeger(L, -1);
-          break;
-        case 2:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          option->deflt.signedValue = lua_tointeger(L, -1);
-          break;
-        case 3:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          option->min.signedValue = lua_tointeger(L, -1);
-          break;
-        case 4:
-          luaL_checktype(L, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-          option->max.signedValue = lua_tointeger(L, -1);
-          break;
-      }
-    }
-    option++;
-  }
-
-  option->name = NULL; // sentinel
-
-  return options;
-}
-
-class LuaTheme: public Theme
-{
-  friend void luaLoadThemeCallback();
-
-  public:
-    LuaTheme(const char * name, int options):
-      Theme(name, createOptionsArray(options)),
-      loadFunction(0),
-      drawBackgroundFunction(0),
-      drawTopbarBackgroundFunction(0),
-      drawAlertBoxFunction(0)
-    {
-    }
-
-    virtual void load() const
-    {
-      luaLcdAllowed = true;
-      exec(loadFunction);
-    }
-
-    virtual void drawBackground() const
-    {
-      exec(drawBackgroundFunction);
-    }
-
-    virtual void drawTopbarBackground(uint8_t icon) const
-    {
-      exec(drawTopbarBackgroundFunction);
-    }
-
-#if 0
-    virtual void drawAlertBox(const char * title, const char * text, const char * action) const
-    {
-      exec(drawAlertBoxFunction);
-    }
-#endif
-
-  protected:
-    int loadFunction;
-    int drawBackgroundFunction;
-    int drawTopbarBackgroundFunction;
-    int drawAlertBoxFunction;
-};
-
-void luaLoadThemeCallback()
-{
-  const char * name=NULL;
-  int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
-
-  luaL_checktype(L, -1, LUA_TTABLE);
-
-  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-    const char * key = lua_tostring(L, -2);
-    if (!strcmp(key, "name")) {
-      name = luaL_checkstring(L, -1);
-    }
-    else if (!strcmp(key, "options")) {
-      themeOptions = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "load")) {
-      loadFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "drawBackground")) {
-      drawBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "drawTopbarBackground")) {
-      drawTopbarBackgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-  }
-
-  if (name) {
-    LuaTheme * theme = new LuaTheme(name, themeOptions);
-    theme->loadFunction = loadFunction;
-    theme->drawBackgroundFunction = drawBackgroundFunction;
-    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
-  }
-}
-
-class LuaWidget: public Widget
-{
-  public:
-    LuaWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData, int widgetData):
-      Widget(factory, zone, persistentData),
-      widgetData(widgetData)
-    {
-    }
-
-    virtual ~LuaWidget()
-    {
-      luaL_unref(L, LUA_REGISTRYINDEX, widgetData);
-    }
-
-    virtual void update() const;
-
-    virtual void refresh();
-
-    virtual void background();
-
-  protected:
-    int widgetData;
-};
-
-void l_pushtableint(const char * key, int value)
-{
-  lua_pushstring(L, key);
-  lua_pushinteger(L, value);
-  lua_settable(L, -3);
-}
-
-class LuaWidgetFactory: public WidgetFactory
-{
-  friend void luaLoadWidgetCallback();
-  friend class LuaWidget;
-
-  public:
-    LuaWidgetFactory(const char * name, int widgetOptions, int createFunction):
-      WidgetFactory(name, createOptionsArray(widgetOptions)),
-      createFunction(createFunction),
-      updateFunction(0),
-      refreshFunction(0),
-      backgroundFunction(0)
-    {
-    }
-
-    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const
-    {
-      if (init) {
-        initPersistentData(persistentData);
-      }
-
-      SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-      lua_rawgeti(L, LUA_REGISTRYINDEX, createFunction);
-
-      lua_newtable(L);
-      l_pushtableint("x", zone.x);
-      l_pushtableint("y", zone.y);
-      l_pushtableint("w", zone.w);
-      l_pushtableint("h", zone.h);
-
-      lua_newtable(L);
-      int i = 0;
-      for (const ZoneOption * option = options; option->name; option++, i++) {
-        l_pushtableint(option->name, persistentData->options[i].signedValue);
-      }
-
-      if (lua_pcall(L, 2, 1, 0) != 0) {
-        TRACE("Error in widget %s create() function: %s", getName(), lua_tostring(L, -1));
-      }
-      int widgetData = luaL_ref(L, LUA_REGISTRYINDEX);
-      Widget * widget = new LuaWidget(this, zone, persistentData, widgetData);
-      return widget;
-    }
-
-  protected:
-    int createFunction;
-    int updateFunction;
-    int refreshFunction;
-    int backgroundFunction;
-};
-
-void LuaWidget::update() const
-{
-  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-  LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
-  lua_rawgeti(L, LUA_REGISTRYINDEX, factory->updateFunction);
-  lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
-
-  lua_newtable(L);
-  int i = 0;
-  for (const ZoneOption * option = getOptions(); option->name; option++, i++) {
-    l_pushtableint(option->name, persistentData->options[i].signedValue);
-  }
-
-  if (lua_pcall(L, 2, 0, 0) != 0) {
-    TRACE("Error in widget %s update() function: %s", factory->getName(), lua_tostring(L, -1));
-  }
-}
-
-void LuaWidget::refresh()
-{
-  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-  LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
-  lua_rawgeti(L, LUA_REGISTRYINDEX, factory->refreshFunction);
-  lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
-  if (lua_pcall(L, 1, 0, 0) != 0) {
-    TRACE("Error in widget %s refresh() function: %s", factory->getName(), lua_tostring(L, -1));
-  }
-}
-
-void LuaWidget::background()
-{
-  SET_LUA_INSTRUCTIONS_COUNT(PERMANENT_SCRIPTS_MAX_INSTRUCTIONS);
-  LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
-  if (factory->backgroundFunction) {
-    lua_rawgeti(L, LUA_REGISTRYINDEX, factory->backgroundFunction);
-    lua_rawgeti(L, LUA_REGISTRYINDEX, widgetData);
-    if (lua_pcall(L, 1, 0, 0) != 0) {
-      TRACE("Error in widget %s background() function: %s", factory->getName(), lua_tostring(L, -1));
-    }
-  }
-}
-
-void luaLoadWidgetCallback()
-{
-  const char * name=NULL;
-  int widgetOptions=0, createFunction=0, updateFunction=0, refreshFunction=0, backgroundFunction=0;
-
-  luaL_checktype(L, -1, LUA_TTABLE);
-
-  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-    const char * key = lua_tostring(L, -2);
-    if (!strcmp(key, "name")) {
-      name = luaL_checkstring(L, -1);
-    }
-    else if (!strcmp(key, "options")) {
-      widgetOptions = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "create")) {
-      createFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "update")) {
-      updateFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "refresh")) {
-      refreshFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-    else if (!strcmp(key, "background")) {
-      backgroundFunction = luaL_ref(L, LUA_REGISTRYINDEX);
-      lua_pushnil(L);
-    }
-  }
-
-  if (name && createFunction) {
-    LuaWidgetFactory * factory = new LuaWidgetFactory(name, widgetOptions, createFunction);
-    factory->updateFunction = updateFunction;
-    factory->refreshFunction = refreshFunction;
-    factory->backgroundFunction = backgroundFunction;
-  }
-}
-
-void luaLoadFile(const char * filename, void (*callback)())
-{
-  if (luaState == INTERPRETER_PANIC) {
-    return;
-  }
-
-#if defined(LUA_COMPILER) && defined(SIMU)
-  luaCompileAndSave(filename);
-#endif
-
-  SET_LUA_INSTRUCTIONS_COUNT(MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
-
-  PROTECT_LUA() {
-    if (luaL_loadfile(L, filename) == 0 &&
-        lua_pcall(L, 0, 1, 0) == 0 &&
-        lua_istable(L, -1)) {
-      (*callback)();
-    }
-    else {
-      TRACE("Error in script %s: %s", filename, lua_tostring(L, -1));
-    }
-  }
-  else {
-    luaDisable();
-    return;
-  }
-  UNPROTECT_LUA();
-}
-
-void luaLoadFiles(const char * directory, void (*callback)())
-{
-  char path[LUA_FULLPATH_MAXLEN+1];
-  FILINFO fno;
-  DIR dir;
-
-  strcpy(path, directory);
-
-  FRESULT res = f_opendir(&dir, path);        /* Open the directory */
-
-  if (res == FR_OK) {
-    int pathlen = strlen(path);
-    path[pathlen++] = '/';
-    for (;;) {
-      res = f_readdir(&dir, &fno);                   /* Read a directory item */
-      if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-      uint8_t len = strlen(fno.fname);
-      if (len > 0 && fno.fname[0]!='.' && (fno.fattrib & AM_DIR)) {
-        strcpy(&path[pathlen], fno.fname);
-        strcat(&path[pathlen], "/main.lua");
-        if (isFileAvailable(path)) {
-          luaLoadFile(path, callback);
-        }
-      }
-    }
-  }
-  else {
-    TRACE("f_opendir(%s) failed, code=%d", path, res);
-  }
-
-  f_closedir(&dir);
-}
-
-#endif
 
 void luaInit()
 {
   TRACE("luaInit");
 
-#if !defined(COLORLCD)
-  luaClose();
-#endif
+  luaClose(lsScripts);
 
   if (luaState != INTERPRETER_PANIC) {
 #if defined(USE_BIN_ALLOCATOR)
-    L = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
+    lsScripts = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
 #else
-    L = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
+    lsScripts = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
 #endif
-    if (L) {
+    if (lsScripts) {
       // install our panic handler
-      lua_atpanic(L, &custom_lua_atpanic);
+      lua_atpanic(lsScripts, &custom_lua_atpanic);
 
       // protect libs and constants registration
       PROTECT_LUA() {
-          luaRegisterAll();
-        }
-        else {
-          // if we got panic during registration
-          // we disable Lua for this session
-          luaDisable();
-        }
+        luaRegisterLibraries(lsScripts);
+      }
+      else {
+        // if we got panic during registration
+        // we disable Lua for this session
+        luaDisable();
+      }
       UNPROTECT_LUA();
+      TRACE("lsScripts %p", lsScripts);
     }
     else {
       /* log error and return */
       luaDisable();
     }
   }
-
-#if defined(COLORLCD)
-  luaLoadFiles(THEMES_PATH, luaLoadThemeCallback);
-  luaLoadFiles(WIDGETS_PATH, luaLoadWidgetCallback);
-#endif
 }
