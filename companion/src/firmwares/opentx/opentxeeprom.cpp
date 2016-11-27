@@ -3392,8 +3392,10 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
     internalField.Append(new UnsignedField<8>(modelData.toplcdTimer));
   }
   
-  for (int i=0; i<5; i++) {
-    internalField.Append(new CharField<610>(modelData.customScreenData[i], true, "Custom screen blob"));
+  if (IS_HORUS(board)) {
+    for (int i = 0; i < 5; i++) {
+      internalField.Append(new CharField<610>(modelData.customScreenData[i], true, "Custom screen blob"));
+    }
   }
 }
 

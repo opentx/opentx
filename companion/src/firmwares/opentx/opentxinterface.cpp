@@ -149,14 +149,14 @@ bool OpenTxEepromInterface::loadModelFromRLE(ModelData & model, RleFile * rleFil
   rleFile->openRd(FILE_MODEL(index));
   int size = rleFile->readRlc2((uint8_t *)data.data(), data.size());
   if (size) {
-    if (loadFromByteArray<ModelData, OpenTxModelData>(model, data, version, variant) == 0) {
+    if (loadFromByteArray<ModelData, OpenTxModelData>(model, data, version, variant)) {
       model.used = true;
-      return true;
     }
   }
-  std::cout << " error when loading model";
-  model.clear();
-  return false;
+  else {
+    model.clear();
+  }
+  return true;
 }
 
 template <class T, class M>
@@ -1043,7 +1043,7 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
 }
 
 bool
-OpenTxEepromInterface::loadModelFromBackup(ModelData &model, const uint8_t * data, unsigned int size, uint8_t version, uint32_t variant)
+OpenTxEepromInterface::loadModelFromBackup(ModelData & model, const uint8_t * data, unsigned int size, uint8_t version, uint32_t variant)
 {
   QByteArray backupData((char *) data, size);
   QByteArray modelData;
@@ -1054,7 +1054,7 @@ OpenTxEepromInterface::loadModelFromBackup(ModelData &model, const uint8_t * dat
     importRlc(modelData, backupData);
   }
   if (modelData.size()) {
-    if (loadFromByteArray<ModelData, OpenTxModelData>(model, modelData, version, variant) == 0) {
+    if (loadFromByteArray<ModelData, OpenTxModelData>(model, modelData, version, variant)) {
       model.used = true;
       return true;
     }
