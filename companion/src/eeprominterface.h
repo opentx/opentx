@@ -1035,6 +1035,33 @@ class SensorData {
     void clear() { memset(this, 0, sizeof(SensorData)); }
 };
 
+/*
+ * TODO ...
+ */
+#if 0
+class CustomScreenOptionData {
+  public:
+    
+};
+
+class CustomScreenZoneData {
+  public:
+    char widgetName[10+1];
+    WidgetOptionData widgetOptions[5];
+};
+
+class CustomScreenData {
+  public:
+    CustomScreenData();
+    
+    char layoutName[10+1];
+    CustomScreenZoneData zones[];
+    CustomScreenOptionData options[];
+};
+#else
+typedef char CustomScreenData[610+1];
+#endif
+
 class ModelData {
   public:
     ModelData();
@@ -1101,7 +1128,9 @@ class ModelData {
     SensorData sensorData[CPN_MAX_SENSORS];
 
     unsigned int toplcdTimer;
-
+    
+    CustomScreenData customScreenData[5];
+    
     void clear();
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
@@ -1174,9 +1203,9 @@ class GeneralSettings {
 
     unsigned int version;
     unsigned int variant;
-    int   calibMid[CPN_MAX_STICKS+CPN_MAX_POTS];
-    int   calibSpanNeg[CPN_MAX_STICKS+CPN_MAX_POTS];
-    int   calibSpanPos[CPN_MAX_STICKS+CPN_MAX_POTS];
+    int   calibMid[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
+    int   calibSpanNeg[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
+    int   calibSpanPos[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
     unsigned int  currModel; // 0..15
     unsigned int   contrast;
     unsigned int   vBatWarn;
@@ -1228,6 +1257,7 @@ class GeneralSettings {
     unsigned int    gpsFormat;
     int     speakerVolume;
     unsigned int   backlightBright;
+    unsigned int   backlightOffBright;
     int switchesDelay;
     int    temperatureCalib;
     int    temperatureWarn;
@@ -1264,6 +1294,10 @@ class GeneralSettings {
     char sliderName[4][3+1];
     unsigned int sliderConfig[4];
 
+    char themeName[8+1];
+    typedef uint8_t ThemeOptionData[8+1];
+    ThemeOptionData themeOptionValue[5];
+    
     struct SwitchInfo {
       SwitchInfo(unsigned int index, unsigned int position):
         index(index),
@@ -1416,10 +1450,6 @@ class EEPROMInterface
 
     virtual unsigned long loadBackup(RadioData & radioData, const uint8_t * eeprom, int esize, int index) = 0;
     
-    virtual bool loadRadioSettings(GeneralSettings & model, const QByteArray & data) { return false; }
-    
-    virtual bool loadModel(ModelData & model, const QByteArray & data) { return false; }
-
     virtual unsigned long loadxml(RadioData & radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;

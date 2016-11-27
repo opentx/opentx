@@ -23,9 +23,8 @@
 
 #include <QDebug>
 
-
 // Controls the generation of debug output for EEPROM import
-#if defined(DEBUG_MODEL_IMPORT)
+#if defined(DEBUG_STORAGE_IMPORT)
   inline QDebug eepromImportDebug() { return QDebug(QtDebugMsg); }
 #else
   #undef eepromImportDebug

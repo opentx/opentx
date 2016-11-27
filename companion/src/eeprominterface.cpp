@@ -640,9 +640,10 @@ QString RawSwitch::toString() const
     return QString("!") + RawSwitch(type, -index).toString();
   }
   else {
+    BoardEnum board = GetEepromInterface()->getBoard();
     switch(type) {
       case SWITCH_TYPE_SWITCH:
-        if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+        if (IS_HORUS(board) || IS_TARANIS(board)) {
           div_t qr = div(index-1, 3);
           Firmware::Switch sw = GetCurrentFirmware()->getSwitch(qr.quot);
           const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
@@ -1105,12 +1106,9 @@ GeneralSettings::GeneralSettings()
   templateSetup = g.profile[g.id()].channelOrder();
   stickMode = g.profile[g.id()].defaultMode();
 
-  QString t_calib=g.profile[g.id()].stickPotCalib();
-  int potsnum=GetCurrentFirmware()->getCapability(Pots);
-  if (t_calib.isEmpty()) {
-    return;
-  }
-  else {
+  QString t_calib = g.profile[g.id()].stickPotCalib();
+  int potsnum = GetCurrentFirmware()->getCapability(Pots);
+  if (!t_calib.isEmpty()) {
     QString t_trainercalib=g.profile[g.id()].trainerCalib();
     int8_t t_txVoltageCalibration=(int8_t)g.profile[g.id()].txVoltageCalibration();
     int8_t t_txCurrentCalibration=(int8_t)g.profile[g.id()].txCurrentCalibration();
@@ -1203,6 +1201,12 @@ GeneralSettings::GeneralSettings()
       }
     }
   }
+  
+  strcpy(themeName, "default");
+  ThemeOptionData option1 = { 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0 };
+  memcpy(&themeOptionValue[0], option1, sizeof(ThemeOptionData));
+  ThemeOptionData option2 = { 0x03, 0xe1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0 };
+  memcpy(&themeOptionValue[1], option2, sizeof(ThemeOptionData));
 }
 
 int GeneralSettings::getDefaultStick(unsigned int channel) const

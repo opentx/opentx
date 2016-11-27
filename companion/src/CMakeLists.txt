@@ -22,17 +22,17 @@ if(ALLOW_NIGHTLY_BUILDS)
   add_definitions(-DALLOW_NIGHTLY_BUILDS)
 endif(ALLOW_NIGHTLY_BUILDS)
 
-option(DEBUG_IMPORT "Turn on debug output for EEPROM import") # Disabled by default
-if(DEBUG_IMPORT)
-  add_definitions(-DDEBUG_MODEL_IMPORT)
-  message(STATUS "EEPROM import debugging enabled")
-endif(DEBUG_IMPORT)
+option(DEBUG_STORAGE_IMPORT "Turn on debug output for storage import") # Disabled by default
+if(DEBUG_STORAGE_IMPORT)
+  add_definitions(-DDEBUG_STORAGE_IMPORT)
+  message(STATUS "Storage import debugging enabled")
+endif()
 
 option(TABLE_LAYOUT "Use QTableWidget for grid layouts") # Disabled by default
 if(TABLE_LAYOUT)
   add_definitions(-DTABLE_LAYOUT)
   message(STATUS "Using QTableWidget")
-endif(TABLE_LAYOUT)
+endif()
 
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})

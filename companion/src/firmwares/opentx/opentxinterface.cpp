@@ -164,7 +164,7 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
 {
   QByteArray raw;
   M manager((T&)src, board, version, 0);
-  // manager.Dump();
+  manager.Dump();
   manager.Export(raw);
   data.resize(8);
   *((uint32_t*)&data.data()[0]) = 0x3178396F;
@@ -180,7 +180,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data,
 {
   M manager(dest, board, version, variant);
   manager.Import(data);
-  // manager.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
+  manager.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
   return true;
 }
 
@@ -222,7 +222,7 @@ unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument 
   return errors.to_ulong();
 }
 
-int OpenTxEepromInterface::loadFile(RadioData &radioData, const QString & filename)
+int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filename)
 {
   StorageSdcard storage;
   
@@ -234,7 +234,7 @@ int OpenTxEepromInterface::loadFile(RadioData &radioData, const QString & filena
   
   // radio.bin
   qDebug() << "Radio settings:" << storage.radio.size();
-  loadRadioSettings(radioData.generalSettings, storage.radio);
+  loadFromByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio);
   
   // all models
   QList<QString> models = storage.getModelsFileNames();

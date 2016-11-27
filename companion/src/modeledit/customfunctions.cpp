@@ -85,7 +85,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
   s1.report("get tracks");
 
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_STM32(firmware->getBoard())) {
     scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS/FUNCTIONS", QStringList() << "*.lua", firmware->getCapability(VoicesMaxLength));
     for (int i=0; i<num_fsw; i++) {
       if (functions[i].func==FuncPlayScript) {

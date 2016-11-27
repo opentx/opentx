@@ -314,8 +314,8 @@ class SpareBitsField: public UnsignedField<N> {
 template<int N>
 class CharField: public DataField {
   public:
-    CharField(char *field, bool truncate=true):
-      DataField("Char"),
+    CharField(char * field, bool truncate=true, const char * name="Char"):
+      DataField(name),
       field(field),
       truncate(truncate)
     {
@@ -365,8 +365,8 @@ char idx2char(int8_t idx);
 template<int N>
 class ZCharField: public DataField {
   public:
-    ZCharField(char *field):
-      DataField("ZChar"),
+    ZCharField(char * field, const char * name = "ZChar"):
+      DataField(name),
       field(field)
     {
     }
@@ -418,7 +418,7 @@ class ZCharField: public DataField {
 
 class StructField: public DataField {
   public:
-    StructField(const char *name="Struct"):
+    StructField(const char * name="Struct"):
       DataField(name)
     {
     }
