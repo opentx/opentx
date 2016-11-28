@@ -317,6 +317,9 @@ static int luaLcdDrawSource(lua_State *L)
 }
 
 #if defined(COLORLCD)
+
+#define LUA_BITMAPHANDLE          "BITMAP*"
+
 /*luadoc
 @function Bitmap.open(name)
 
@@ -334,8 +337,15 @@ static int luaOpenBitmap(lua_State * L)
 
   BitmapBuffer ** ptr = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
   *ptr = BitmapBuffer::load(filename);
+  TRACE("luaOpenBitmap: %p", *ptr);
 
-  luaL_getmetatable(L, "luaL_Bitmap");
+  if (*ptr == NULL && G(L)->gcrunning) {
+    luaC_fullgc(L, 1);  /* try to free some memory... */
+    *ptr = BitmapBuffer::load(filename);  /* try again */
+     TRACE("luaOpenBitmap: %p (second try)", *ptr);
+  }
+
+  luaL_getmetatable(L, LUA_BITMAPHANDLE);
   lua_setmetatable(L, -2);
 
   return 1;
@@ -343,7 +353,9 @@ static int luaOpenBitmap(lua_State * L)
 
 static BitmapBuffer * checkBitmap(lua_State * L, int index)
 {
-  return *(BitmapBuffer **)luaL_checkudata(L, index, "luaL_Bitmap");
+  BitmapBuffer ** b = (BitmapBuffer **)luaL_checkudata(L, index, LUA_BITMAPHANDLE);
+  if (!*b) luaL_error(L, "null Image");
+  return *b;
 }
 
 
@@ -374,7 +386,9 @@ static int luaGetBitmapSize(lua_State * L)
 
 static int luaDestroyBitmap(lua_State * L)
 {
-  delete checkBitmap(L, 1);
+  BitmapBuffer * ptr = checkBitmap(L, 1);
+  TRACE("luaDestroyBitmap: %p", ptr);
+  delete ptr;
   return 0;
 }
 
@@ -387,7 +401,7 @@ const luaL_Reg bitmapFuncs[] = {
 
 void registerBitmapClass(lua_State * L)
 {
-  luaL_newmetatable(L, "luaL_Bitmap");
+  luaL_newmetatable(L, LUA_BITMAPHANDLE);
   luaL_setfuncs(L, bitmapFuncs, 0);
   lua_pushvalue(L, -1);
   lua_setfield(L, -2, "__index");

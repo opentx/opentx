@@ -1881,7 +1881,10 @@ void opentxClose(uint8_t shutdown)
     // TODO needed? telemetryEnd();
 #endif
 #if defined(LUA)
-    luaClose();
+    luaClose(lsScripts);
+#if defined(PCBHORUS)
+    luaClose(lsWidgets);
+#endif
 #endif
 #if defined(HAPTIC)
     hapticOff();
@@ -2432,7 +2435,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 
 #if defined(PCBHORUS)
   topbar = new Topbar(&g_model.topbarData);
-  luaInit();
+  luaInitThemesAndWidgets();
 #endif
 
 #if defined(RAMBACKUP)

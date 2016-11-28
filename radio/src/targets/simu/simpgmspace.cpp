@@ -39,6 +39,13 @@
   #include <SDL.h>
 #endif
 
+#if defined(TRACE_SIMPGMSPACE)
+  #undef TRACE_SIMPGMSPACE
+  #define TRACE_SIMPGMSPACE   TRACE
+#else
+  #define TRACE_SIMPGMSPACE(...)
+#endif
+
 uint8_t MCUCSR, MCUSR, MCUCR;
 volatile uint8_t pina=0xff, pinb=0xff, pinc=0xff, pind, pine=0xff, pinf=0xff, ping=0xff, pinh=0xff, pinj=0, pinl=0;
 uint8_t portb, portc, porth=0, dummyport;
@@ -154,7 +161,7 @@ void simuInit()
 
 void simuSetKey(uint8_t key, bool state)
 {
-  // if (state) TRACE("simuSetKey(%d, %d)", key, state);
+  // if (state) TRACE_SIMPGMSPACE("simuSetKey(%d, %d)", key, state);
 
   switch (key) {
 #if !defined(PCBHORUS)
@@ -195,7 +202,7 @@ void simuSetKey(uint8_t key, bool state)
 
 void simuSetTrim(uint8_t trim, bool state)
 {
-  // TRACE("trim=%d state=%d", trim, state);
+  // TRACE_SIMPGMSPACE("trim=%d state=%d", trim, state);
 
   switch (trim) {
     TRIM_CASE(0, TRIMS_GPIO_REG_LHL, TRIMS_GPIO_PIN_LHL)
@@ -218,7 +225,7 @@ void simuSetTrim(uint8_t trim, bool state)
 // TODO use a better numbering to allow google tests to work on Taranis
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
-  // TRACE("simuSetSwitch(%d, %d)", swtch, state);
+  // TRACE_SIMPGMSPACE("simuSetSwitch(%d, %d)", swtch, state);
 
   switch (swtch) {
 #if defined(PCBFLAMENCO)
@@ -374,7 +381,7 @@ void audioConsumeCurrentBuffer()
 void setScaledVolume(uint8_t volume)
 {
   simuAudio.currentVolume = 127 * volume * simuAudio.volumeGain / VOLUME_LEVEL_MAX / 10;
-  // TRACE("setVolume(): in: %u, out: %u", volume, simuAudio.currentVolume);
+  // TRACE_SIMPGMSPACE("setVolume(): in: %u, out: %u", volume, simuAudio.currentVolume);
 }
 
 void setVolume(uint8_t volume)
@@ -552,12 +559,12 @@ filemap_t fileMap;
 
 char *findTrueFileName(const char *path)
 {
-  TRACE("findTrueFileName(%s)", path);
+  // TRACE_SIMPGMSPACE("findTrueFileName(%s)", path);
   static char result[1024];
   filemap_t::iterator i = fileMap.find(path);
   if (i != fileMap.end()) {
     strcpy(result, i->second.c_str());
-    TRACE("\tfound in map: %s", result);
+    // TRACE_SIMPGMSPACE("\tfound in map: %s", result);
     return result;
   }
   else {
@@ -572,17 +579,17 @@ char *findTrueFileName(const char *path)
     std::string fileName = std::string(fname) + std::string(ext);
     std::string dirName = std::string(drive) + std::string(dir);
     std::string searchName = dirName + "*";
-    // TRACE("\tsearching for: %s", fileName.c_str());
+    // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
     WIN32_FIND_DATA ffd;
     HANDLE hFind = FindFirstFile(searchName.c_str(), &ffd);
     if (INVALID_HANDLE_VALUE != hFind) {
       do {
         if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-          //TRACE("comparing with: %s", ffd.cFileName);
+          //TRACE_SIMPGMSPACE("comparing with: %s", ffd.cFileName);
           if (!strcasecmp(fileName.c_str(), ffd.cFileName)) {
             strcpy(result, dirName.c_str());
             strcat(result, ffd.cFileName);
-            TRACE("\tfound: %s", ffd.cFileName);
+            TRACE_SIMPGMSPACE("\tfound: %s", ffd.cFileName);
             fileMap.insert(filemap_t:: value_type(path, result));
             return result;
           }
@@ -597,7 +604,7 @@ char *findTrueFileName(const char *path)
     std::string dirName = simu::dirname(result);
     simu::DIR * dir = simu::opendir(dirName.c_str());
     if (dir) {
-      // TRACE("\tsearching for: %s", fileName.c_str());
+      // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
       for (;;) {
         struct simu::dirent * res = simu::readdir(dir);
         if (res == 0) break;
@@ -606,12 +613,12 @@ char *findTrueFileName(const char *path)
 #else
         if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
 #endif
-          // TRACE("comparing with: %s", res->d_name);
+          // TRACE_SIMPGMSPACE("comparing with: %s", res->d_name);
           if (!strcasecmp(fileName.c_str(), res->d_name)) {
             strcpy(result, dirName.c_str());
             strcat(result, "/");
             strcat(result, res->d_name);
-            TRACE("\tfound: %s", res->d_name);
+            // TRACE_SIMPGMSPACE("\tfound: %s", res->d_name);
             fileMap.insert(filemap_t:: value_type(path, result));
             simu::closedir(dir);
             return result;
@@ -622,7 +629,7 @@ char *findTrueFileName(const char *path)
     }
 #endif
   }
-  TRACE("\tnot found");
+  // TRACE_SIMPGMSPACE("\tnot found");
   strcpy(result, path);
   return result;
 }
@@ -633,11 +640,11 @@ FRESULT f_stat (const TCHAR * name, FILINFO *fno)
   char * realPath = findTrueFileName(path);
   struct stat tmp;
   if (stat(realPath, &tmp)) {
-    TRACE("f_stat(%s) = error %d (%s)", path, errno, strerror(errno));
+    TRACE_SIMPGMSPACE("f_stat(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
   else {
-    TRACE("f_stat(%s) = OK", path);
+    TRACE_SIMPGMSPACE("f_stat(%s) = OK", path);
     if (fno) {
       fno->fattrib = (tmp.st_mode & S_IFDIR) ? AM_DIR : 0;
     }
@@ -658,7 +665,7 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
     if (stat(realPath, &tmp)) {
-      TRACE("f_open(%s) = INVALID_NAME (FIL %p)", path, fil);
+      TRACE_SIMPGMSPACE("f_open(%s) = INVALID_NAME (FIL %p)", path, fil);
       return FR_INVALID_NAME;
     }
     fil->obj.objsize = tmp.st_size;
@@ -667,10 +674,10 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
   fil->obj.fs = (FATFS*)fopen(realPath, (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
   fil->fptr = 0;
   if (fil->obj.fs) {
-    TRACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->obj.fs, fil);
+    TRACE_SIMPGMSPACE("f_open(%s, %x) = %p (FIL %p)", path, flag, fil->obj.fs, fil);
     return FR_OK;
   }
-  TRACE("f_open(%s) = error %d (%s) (FIL %p)", path, errno, strerror(errno), fil);
+  TRACE_SIMPGMSPACE("f_open(%s) = error %d (%s) (FIL %p)", path, errno, strerror(errno), fil);
   return FR_INVALID_NAME;
 }
 
@@ -679,7 +686,7 @@ FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
   if (fil && fil->obj.fs) {
     *read = fread(data, 1, size, (FILE*)fil->obj.fs);
     fil->fptr += *read;
-    // TRACE("fread(%p) %u, %u", fil->obj.fs, size, *read);
+    // TRACE_SIMPGMSPACE("fread(%p) %u, %u", fil->obj.fs, size, *read);
   }
   return FR_OK;
 }
@@ -689,7 +696,7 @@ FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
   if (fil && fil->obj.fs) {
     *written = fwrite(data, 1, size, (FILE*)fil->obj.fs);
     fil->fptr += size;
-    // TRACE("fwrite(%p) %u, %u", fil->obj.fs, size, *written);
+    // TRACE_SIMPGMSPACE("fwrite(%p) %u, %u", fil->obj.fs, size, *written);
   }
   return FR_OK;
 }
@@ -701,7 +708,7 @@ TCHAR * f_gets (TCHAR* buff, int len, FIL* fil)
     if (buff != NULL) {
       fil->fptr = *buff;
     }
-    // TRACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
+    // TRACE_SIMPGMSPACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
   }
   return buff;
 }
@@ -720,7 +727,7 @@ UINT f_size(FIL* fil)
     fseek((FILE*)fil->obj.fs, 0, SEEK_END);
     long size = ftell((FILE*)fil->obj.fs);
     fseek((FILE*)fil->obj.fs, curr, SEEK_SET);
-    TRACE("f_size(%p) %u", fil->obj.fs, size);
+    TRACE_SIMPGMSPACE("f_size(%p) %u", fil->obj.fs, size);
     return size;
   }
   return 0;
@@ -728,7 +735,7 @@ UINT f_size(FIL* fil)
 
 FRESULT f_close (FIL * fil)
 {
-  TRACE("f_close(%p) (FIL:%p)", fil->obj.fs, fil);
+  TRACE_SIMPGMSPACE("f_close(%p) (FIL:%p)", fil->obj.fs, fil);
   if (fil->obj.fs) {
     fclose((FILE*)fil->obj.fs);
     fil->obj.fs = NULL;
@@ -747,16 +754,16 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
   char *path = convertSimuPath(name);
   rep->obj.fs = (FATFS *)simu::opendir(path);
   if ( rep->obj.fs ) {
-    TRACE("f_opendir(%s) = OK", path);
+    TRACE_SIMPGMSPACE("f_opendir(%s) = OK", path);
     return FR_OK;
   }
-  TRACE("f_opendir(%s) = error %d (%s)", path, errno, strerror(errno));
+  TRACE_SIMPGMSPACE("f_opendir(%s) = error %d (%s)", path, errno, strerror(errno));
   return FR_NO_PATH;
 }
 
 FRESULT f_closedir (DIR * rep)
 {
-  TRACE("f_closedir(%p)", rep);
+  TRACE_SIMPGMSPACE("f_closedir(%p)", rep);
   if (rep->obj.fs) simu::closedir((simu::DIR *)rep->obj.fs);
   return FR_OK;
 }
@@ -774,7 +781,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
 #if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__) || defined(__FreeBSD__)
   fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
 #else
-  if (ent->d_type == simu::DT_UNKNOWN) {
+  if (ent->d_type == simu::DT_UNKNOWN || ent->d_type == simu::DT_LNK) {
     fil->fattrib = 0;
     struct stat buf;
     if (stat(ent->d_name, &buf) == 0) {
@@ -788,13 +795,13 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
 
   memset(fil->fname, 0, SD_SCREEN_FILE_LENGTH);
   strcpy(fil->fname, ent->d_name);
-  // TRACE("f_readdir(): %s", fil->fname);
+  // TRACE_SIMPGMSPACE("f_readdir(): %s", fil->fname);
   return FR_OK;
 }
 
 FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len)
 {
-  TRACE("Format SD...");
+  TRACE_SIMPGMSPACE("Format SD...");
   return FR_OK;
 }
 
@@ -802,11 +809,11 @@ FRESULT f_mkdir (const TCHAR * name)
 {
   char * path = convertSimuPath(name);
   if (mkdir(path, 0777)) {
-    TRACE("mkdir(%s) = error %d (%s)", path, errno, strerror(errno));
+    TRACE_SIMPGMSPACE("mkdir(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
   else {
-    TRACE("mkdir(%s) = OK", path);
+    TRACE_SIMPGMSPACE("mkdir(%s) = OK", path);
     return FR_OK;
   }
   return FR_OK;
@@ -816,11 +823,11 @@ FRESULT f_unlink (const TCHAR * name)
 {
   char * path = convertSimuPath(name);
   if (unlink(path)) {
-    TRACE("f_unlink(%s) = error %d (%s)", path, errno, strerror(errno));
+    TRACE_SIMPGMSPACE("f_unlink(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
   else {
-    TRACE("f_unlink(%s) = OK", path);
+    TRACE_SIMPGMSPACE("f_unlink(%s) = OK", path);
     return FR_OK;
   }
 }
@@ -832,10 +839,10 @@ FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
   char * path = convertSimuPath(newname);
 
   if (rename(old, path) < 0) {
-    TRACE("f_rename(%s, %s) = error %d (%s)", old, path, errno, strerror(errno));
+    TRACE_SIMPGMSPACE("f_rename(%s, %s) = error %d (%s)", old, path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
-  TRACE("f_rename(%s, %s) = OK", old, path);
+  TRACE_SIMPGMSPACE("f_rename(%s, %s) = OK", old, path);
   return FR_OK;
 }
 
@@ -867,19 +874,19 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
   char cwd[1024];
   if (!getcwd(cwd, 1024)) {
-    TRACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
+    TRACE_SIMPGMSPACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
     strcpy(path, ".");
     return FR_NO_PATH;
   }
 
   if (strlen(cwd) < strlen(simuSdDirectory)) {
-    TRACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
+    TRACE_SIMPGMSPACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
     strcpy(path, ".");
     return FR_NO_PATH;
   }
 
   if (sz_path < (strlen(cwd) - strlen(simuSdDirectory))) {
-    TRACE("f_getcwd(): buffer too short");
+    TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
     return FR_NOT_ENOUGH_CORE;
   }
 
@@ -890,7 +897,7 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
     strcpy(path, "/");    // fix for the root directory
   }
 
-  TRACE("f_getcwd() = %s", path);
+  TRACE_SIMPGMSPACE("f_getcwd() = %s", path);
   return FR_OK;
 }
 
@@ -962,7 +969,7 @@ unsigned int noDiskStatus = 0;
 void traceDiskStatus()
 {
   if (noDiskStatus > 0) {
-    TRACE("disk_status() called %d times", noDiskStatus);
+    TRACE_SIMPGMSPACE("disk_status() called %d times", noDiskStatus);
     noDiskStatus = 0;
   }
 }
@@ -970,7 +977,7 @@ void traceDiskStatus()
 DSTATUS disk_initialize (BYTE pdrv)
 {
   traceDiskStatus();
-  TRACE("disk_initialize(%u)", pdrv);
+  TRACE_SIMPGMSPACE("disk_initialize(%u)", pdrv);
   diskImage = fopen("sdcard.image", "r+");
   return diskImage ? (DSTATUS)0 : (DSTATUS)STA_NODISK;
 }
@@ -978,7 +985,7 @@ DSTATUS disk_initialize (BYTE pdrv)
 DSTATUS disk_status (BYTE pdrv)
 {
   ++noDiskStatus;
-  // TRACE("disk_status(%u)", pdrv);
+  // TRACE_SIMPGMSPACE("disk_status(%u)", pdrv);
   return (DSTATUS)0;
 }
 
@@ -986,7 +993,7 @@ DRESULT __disk_read (BYTE pdrv, BYTE* buff, DWORD sector, UINT count)
 {
   if (diskImage == 0) return RES_NOTRDY;
   traceDiskStatus();
-  TRACE("disk_read(%u, %p, %u, %u)", pdrv, buff, sector, count);
+  TRACE_SIMPGMSPACE("disk_read(%u, %p, %u, %u)", pdrv, buff, sector, count);
   fseek(diskImage, sector*512, SEEK_SET);
   fread(buff, count, 512, diskImage);
   return RES_OK;
@@ -996,7 +1003,7 @@ DRESULT __disk_write (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count)
 {
   if (diskImage == 0) return RES_NOTRDY;
   traceDiskStatus();
-  TRACE("disk_write(%u, %p, %u, %u)", pdrv, buff, sector, count);
+  TRACE_SIMPGMSPACE("disk_write(%u, %p, %u, %u)", pdrv, buff, sector, count);
   fseek(diskImage, sector*512, SEEK_SET);
   fwrite(buff, count, 512, diskImage);
   return RES_OK;
@@ -1006,7 +1013,7 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
 {
   if (diskImage == 0) return RES_NOTRDY;
   traceDiskStatus();
-  TRACE("disk_ioctl(%u, %u, %p)", pdrv, cmd, buff);
+  TRACE_SIMPGMSPACE("disk_ioctl(%u, %u, %p)", pdrv, cmd, buff);
   if (pdrv) return RES_PARERR;
 
   DRESULT res;
@@ -1041,14 +1048,14 @@ DRESULT disk_ioctl (BYTE pdrv, BYTE cmd, void* buff)
         if (stat("sdcard.image", &buf) == 0) {
           DWORD noSectors  = buf.st_size / 512;
           *(DWORD*)buff = noSectors;
-          TRACE("disk_ioctl(GET_SECTOR_COUNT) = %u", noSectors);
+          TRACE_SIMPGMSPACE("disk_ioctl(GET_SECTOR_COUNT) = %u", noSectors);
           return RES_OK;
         }
         return RES_ERROR;
       }
 
     case GET_SECTOR_SIZE: /* Get sector size (needed at _MAX_SS != _MIN_SS) */
-      TRACE("disk_ioctl(GET_SECTOR_SIZE) = 512");
+      TRACE_SIMPGMSPACE("disk_ioctl(GET_SECTOR_SIZE) = 512");
       *(WORD*)buff = 512;
       res = RES_OK;
       break;
@@ -1105,7 +1112,7 @@ void sdInit(void)
 #endif
   }
   else {
-    TRACE("f_mount() failed");
+    TRACE_SIMPGMSPACE("f_mount() failed");
   }
 }
 

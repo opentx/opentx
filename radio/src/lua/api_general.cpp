@@ -147,7 +147,7 @@ static int luaGetDateTime(lua_State * L)
   return 1;
 }
 
-static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
   lua_createtable(L, 0, 4);
@@ -157,13 +157,13 @@ static void luaPushLatLon(TelemetrySensor & telemetrySensor, TelemetryItem & tel
   lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude / 1000000.0);
 }
 
-static void luaPushTelemetryDateTime(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+static void luaPushTelemetryDateTime(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 {
   luaPushDateTime(L, telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day,
                   telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
 }
 
-static void luaPushCells(TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
+static void luaPushCells(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 {
   if (telemetryItem.cells.count == 0)
     lua_pushinteger(L, (int)0); // returns zero if no cells
@@ -177,7 +177,7 @@ static void luaPushCells(TelemetrySensor & telemetrySensor, TelemetryItem & tele
   }
 }
 
-void luaGetValueAndPush(int src)
+void luaGetValueAndPush(lua_State* L, int src)
 {
   getvalue_t value = getValue(src); // ignored for GPS, DATETIME, and CELLS
 
@@ -188,14 +188,14 @@ void luaGetValueAndPush(int src)
       TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
       switch (telemetrySensor.unit) {
         case UNIT_GPS:
-          luaPushLatLon(telemetrySensor, telemetryItems[qr.quot]);
+          luaPushLatLon(L, telemetrySensor, telemetryItems[qr.quot]);
           break;
         case UNIT_DATETIME:
-          luaPushTelemetryDateTime(telemetrySensor, telemetryItems[qr.quot]);
+          luaPushTelemetryDateTime(L, telemetrySensor, telemetryItems[qr.quot]);
           break;
         case UNIT_CELLS:
           if (qr.rem == 0) {
-            luaPushCells(telemetrySensor, telemetryItems[qr.quot]);
+            luaPushCells(L, telemetrySensor, telemetryItems[qr.quot]);
             break;
           }
           // deliberate no break here to properly return `Cels-` and `Cels+`
@@ -566,7 +566,7 @@ static int luaGetValue(lua_State * L)
       src = field.id;
     }
   }
-  luaGetValueAndPush(src);
+  luaGetValueAndPush(L, src);
   return 1;
 }
 

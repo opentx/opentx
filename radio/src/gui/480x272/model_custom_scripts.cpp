@@ -124,7 +124,7 @@ bool menuModelCustomScriptOne(event_t event)
 
 bool menuModelCustomScripts(event_t event)
 {
-  // lcdDrawNumber(19*FW, 0, luaGetMemUsed(), 0);
+  // lcdDrawNumber(19*FW, 0, luaGetMemUsed(lsScripts), 0);
   // lcdDrawText(19*FW+1, 0, STR_BYTES);
 
   MENU(STR_MENUCUSTOMSCRIPTS, MODEL_ICONS, menuTabModel, MENU_MODEL_CUSTOM_SCRIPTS, MAX_SCRIPTS, { NAVIGATION_LINE_BY_LINE|3/*repeated*/ });

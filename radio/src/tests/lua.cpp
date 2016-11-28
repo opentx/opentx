@@ -31,11 +31,11 @@ extern const char * zchar2string(const char * zstring, int size);
 
 ::testing::AssertionResult __luaExecStr(const char * str)
 {
-  extern lua_State * L;
-  if (!L) luaInit();
-  if (!L) return ::testing::AssertionFailure() << "No Lua state!";
-  if (luaL_dostring(L, str)) {
-    return ::testing::AssertionFailure() << "lua error: " << lua_tostring(L, -1);
+  extern lua_State * lsScripts;
+  if (!lsScripts) luaInit();
+  if (!lsScripts) return ::testing::AssertionFailure() << "No Lua state!";
+  if (luaL_dostring(lsScripts, str)) {
+    return ::testing::AssertionFailure() << "lua error: " << lua_tostring(lsScripts, -1);
   }
   return ::testing::AssertionSuccess();
 }

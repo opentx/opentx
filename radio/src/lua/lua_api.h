@@ -28,12 +28,16 @@ extern "C" {
   #include <lauxlib.h>
   #include <lualib.h>
   #include <lrotable.h>
+  #include <lgc.h>
 }
 
-extern lua_State *L;
+extern lua_State * lsScripts;
+extern lua_State * lsWidgets;
 extern bool luaLcdAllowed;
 
 void luaInit();
+void luaInitThemesAndWidgets();
+
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
@@ -99,12 +103,12 @@ extern uint8_t luaScriptsCount;
 extern ScriptInternalData standaloneScript;
 extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
 extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
-void luaClose();
+void luaClose(lua_State * L);
 bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage);
 void luaExec(const char * filename);
-void luaError(uint8_t error, bool acknowledge=true);
-int luaGetMemUsed();
-void luaGetValueAndPush(int src);
+void luaError(lua_State * L, uint8_t error, bool acknowledge=true);
+int luaGetMemUsed(lua_State * L);
+void luaGetValueAndPush(lua_State * L, int src);
 #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
 uint8_t isTelemetryScriptAvailable(uint8_t index);
 #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
@@ -137,7 +141,10 @@ struct LuaField {
 };
 bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags=0);
 void luaLoadThemes();
+void luaRegisterLibraries(lua_State * L);
 void registerBitmapClass(lua_State * L);
+void luaSetInstructionsLimit(lua_State* L, int count);
+void luaCompileAndSave(lua_State * L, const char *bytecodeName);
 #else  // defined(LUA)
 #define luaInit()
 #define LUA_LOAD_MODEL_SCRIPTS()

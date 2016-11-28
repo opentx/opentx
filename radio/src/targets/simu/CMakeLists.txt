@@ -9,6 +9,7 @@ set(SIMU_SRC
   )
 
 add_definitions(-DSIMU)
+add_definitions(-DLUA_COMPILER)
 remove_definitions(-DCLI)
 
 if(SDL_FOUND)

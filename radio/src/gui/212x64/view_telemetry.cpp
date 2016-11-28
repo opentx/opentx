@@ -175,7 +175,7 @@ bool displayTelemetryScreen()
       case SCRIPT_SYNTAX_ERROR:
       case SCRIPT_PANIC:
       case SCRIPT_KILLED:
-        luaError(state, false);
+        luaError(lsScripts, state, false);
         return true;
     }
     return false;

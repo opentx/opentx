@@ -4,7 +4,7 @@ local COMBO = 1
 local COLUMN_2 = 300
 
 local edit = false
-local page = 1
+local page = 0
 local current = 1
 local refreshState = 0
 local refreshIndex = 0
@@ -49,6 +49,10 @@ local calibrationFields = {
   {"Y:", VALUE, 0x9F, 0, -100, 100, "%"},
   {"Z:", VALUE, 0xA0, 0, -100, 100, "%"}
 }
+
+local wingBitmaps = {}
+local mountBitmaps = {}
+local calibBitmaps = {}
 
 local function drawScreenTitle(title,page, pages)
 	lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
@@ -238,10 +242,6 @@ local function runFieldsPage(event)
   return 0
 end
 
-local wingBitmaps = { Bitmap.open("img/plane_b.png"), Bitmap.open("img/delta_b.png"), Bitmap.open("img/planev_b.png") }
-local mountBitmaps = { Bitmap.open("img/up.png"), Bitmap.open("img/down.png"), Bitmap.open("img/vert.png"), Bitmap.open("img/vert-r.png") }
-local calibBitmaps = { Bitmap.open("img/up.png"), Bitmap.open("img/down.png"), Bitmap.open("img/left.png"), Bitmap.open("img/right.png"), Bitmap.open("img/forward.png"), Bitmap.open("img/back.png") }
-
 local function runConfigPage(event)
   fields = configFields
   local result = runFieldsPage(event)
@@ -310,8 +310,45 @@ local function init()
   }
 end
 
+local loaded = 1
+local bitmaps = {"plane_b", "delta_b", "planev_b"
+                  , "up", "down", "vert", "vert-r"
+                  , "up", "down", "left", "right", "forward", "back"}
+
+local function loadBitmaps()
+  print("loaded "..loaded)
+  lcd.clear()
+  lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR)
+  drawScreenTitle("S6R", 0, #pages)
+  lcd.drawText(120, 100, "Loading bitmaps "..loaded.."/12", TEXT_COLOR)
+
+  if loaded > #bitmaps then
+    page = 1
+    return
+  end
+
+  local bitmap = Bitmap.open("img/"..bitmaps[loaded]..".png")
+  if loaded < 4 then
+    wingBitmaps[loaded] = bitmap
+  elseif loaded < 8 then
+    mountBitmaps[loaded-3] = bitmap
+  else
+    calibBitmaps[loaded-7] = bitmap
+  end
+
+  loaded = loaded + 1
+end
+
+
 -- Main
 local function run(event)
+
+  if page == 0 then
+    -- splash screen while bitmaps are loading
+    loadBitmaps()
+    return 0
+  end
+
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
