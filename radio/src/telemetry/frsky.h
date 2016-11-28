@@ -561,11 +561,12 @@ void frskyUpdateCells(void);
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_DSM2)
       return PROTOCOL_SPEKTRUM;
-    else if ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType != 1))
-      // D8
-      return PROTOCOL_FRSKY_SPORT;
-    else
+    else if (((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == 1)) ||
+            (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_HUBSAN))
+            //(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_AFHDS2A)) // not added yet 
       return PROTOCOL_FRSKY_D;
+    else
+      return PROTOCOL_FRSKY_SPORT; // default to sport for all other protocols
   }
 #endif      
 #if defined(CROSSFIRE)
