@@ -2583,7 +2583,7 @@ int main(void)
   MCUCSR = 0x80 ;   // Must be done twice
 #endif
 #if defined(PCBTARANIS)
-  g_eeGeneral.contrast=30;
+  g_eeGeneral.contrast=40;
 #endif  
   wdt_disable();
 
@@ -2596,7 +2596,7 @@ int main(void)
   stackPaint();
 
 #if defined(GUI)
-  menuHandlers[0] = menuMainView;
+  menuHandlers[0] = menuTelemetryFrsky;
   #if MENUS_LOCK != 2/*no menus*/
     menuHandlers[1] = menuModelSelect;
   #endif
