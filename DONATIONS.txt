@@ -1054,3 +1054,4 @@ Jean-Jacques Pointel
 Vianney Levesque
 Fred Carlisle
 Pierre Duvezin-Caubet
+Pascal Dugué
