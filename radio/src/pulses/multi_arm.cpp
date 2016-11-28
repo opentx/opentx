@@ -142,8 +142,8 @@ void setupPulsesMultimodule(uint8_t port)
   if (type >= 15)
     type = type + 1;
 
-  // 23 is again a FrSky protocol so shift again
-  if (type >= 23)
+  // 25 is again a FrSky protocol (FrskyV) so shift again
+  if (type >= 25)
      type = type + 1;
 
   if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_FRSKY) {
