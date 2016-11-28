@@ -25,8 +25,9 @@
 #include "lua/lua_api.h"
 
 #if defined(LUA_COMPILER) && defined(SIMU)
-  #include <lundump.h>
-  #include <lstate.h>
+  extern "C" {
+    #include <lundump.h>
+  }
 #endif
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
@@ -203,7 +204,7 @@ static int luaDumpWriter(lua_State * L, const void* p, size_t size, void* u)
   return (result != FR_OK && !written);
 }
 
-static void luaCompileAndSave(lua_State * L, const char *bytecodeName)
+void luaCompileAndSave(lua_State * L, const char *bytecodeName)
 {
   FIL D;
   char srcName[1024];

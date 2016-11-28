@@ -144,6 +144,7 @@ void luaLoadThemes();
 void luaRegisterLibraries(lua_State * L);
 void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
+void luaCompileAndSave(lua_State * L, const char *bytecodeName);
 #else  // defined(LUA)
 #define luaInit()
 #define LUA_LOAD_MODEL_SCRIPTS()

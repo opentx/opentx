@@ -372,6 +372,11 @@ void luaLoadFile(const char * filename, void (*callback)())
   if (lsWidgets == 0) return;
 
   TRACE("luaLoadFile() %s", filename);
+
+#if defined(LUA_COMPILER) && defined(SIMU)
+  luaCompileAndSave(lsWidgets, filename);
+#endif
+
   luaSetInstructionsLimit(lsWidgets, MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
   PROTECT_LUA() {
