@@ -978,6 +978,7 @@ enum Functions {
 #if defined(PCBTARANIS)
   FUNC_SCREENSHOT,
 #endif
+  FUNC_BACKLIGHT_COLOR,
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in companion9x
 #endif

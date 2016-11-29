@@ -339,6 +339,13 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             val_min = 0;
             val_max = 100;
           }
+          else if (func == FUNC_BACKLIGHT_COLOR) {
+            drawSlider(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, CFN_PARAM(cfn), 20, attr);
+            if (active) INCDEC_SET_FLAG(eeFlags | NO_INCDEC_MARKS);
+            val_min = 0;
+            val_max = 20;
+          }
+
 #endif
 #if defined(GVARS)
           else if (func == FUNC_ADJUST_GVAR) {
