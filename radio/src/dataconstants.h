@@ -572,15 +572,19 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
+#if !defined(PCBX7D)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
+#endif
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
+#if !defined(PCBX7D)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
+#endif
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
