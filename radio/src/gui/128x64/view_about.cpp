@@ -26,6 +26,7 @@ const pm_uchar about_bmp[] PROGMEM = {
 
 enum AboutScreens {
   ABOUT_OPENTX,
+  ABOUT_HARDWARE,
   ABOUT_BERTRAND,
   ABOUT_ANDRE,
   ABOUT_MIKE,
@@ -33,7 +34,6 @@ enum AboutScreens {
   ABOUT_MARTIN,
   ABOUT_ROMOLO,
   ABOUT_ROB,
-  ABOUT_HARDWARE,
   ABOUT_PARENTS,
   ABOUT_END,
   ABOUT_COUNT,
