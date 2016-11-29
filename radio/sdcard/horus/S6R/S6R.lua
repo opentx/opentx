@@ -22,6 +22,10 @@ local configFields = {
   {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
   {"Mounting type:", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
 }
+local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
+local wingBitmapsFile = {"img/plane_b.png", "img/delta_b.png", "img/planev_b.png"}
+local mountBitmapsFile = {"img/up.png", "img/down.png", "img/vert.png", "img/vert-r.png"}
+local calibBitmapsFile = {"img/up.png", "img/down.png", "img/left.png", "img/right.png", "img/forward.png", "img/back.png"}
 
 local settingsFields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
@@ -241,10 +245,6 @@ local function runFieldsPage(event)
   return 0
 end
 
-local wingBitmapsFile = {"img/plane_b.png", "img/delta_b.png", "img/planev_b.png"}
-local mountBitmapsFile = {"img/up.png", "img/down.png", "img/vert.png", "img/vert-r.png"}
-local calibBitmapsFile = {"img/up.png", "img/down.png", "img/left.png", "img/right.png", "img/forward.png", "img/back.png"}
-
 local function runConfigPage(event)
   fields = configFields
   local result = runFieldsPage(event)
@@ -267,8 +267,6 @@ local function runSettingsPage(event)
   fields = settingsFields
   return runFieldsPage(event)
 end
-
-local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
 
 local function runCalibrationPage(event)
   fields = calibrationFields
