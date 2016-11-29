@@ -1165,7 +1165,7 @@
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "OpenTX main author"
-#define TR_ABOUT_BERTRAND_3    "Companion9x co-author"
+#define TR_ABOUT_BERTRAND_3    "Companion co-author"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Code and drivers guru"

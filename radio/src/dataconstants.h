@@ -983,7 +983,7 @@ enum Functions {
   FUNC_SCREENSHOT,
 #endif
 #if defined(DEBUG)
-  FUNC_TEST, // should remain the last before MAX as not added in companion9x
+  FUNC_TEST, // should remain the last before MAX as not added in Companion
 #endif
   FUNC_MAX
 };

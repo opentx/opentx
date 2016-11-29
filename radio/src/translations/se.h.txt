@@ -1179,7 +1179,7 @@
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2    "Chefsutvecklare av OpenTX"
-#define TR_ABOUT_BERTRAND_3    "Hjälputvecklare av Companion9x"
+#define TR_ABOUT_BERTRAND_3    "Hjälputvecklare av Companion"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
 #define TR_ABOUT_MIKE_2        "Kod och drivrutins-guru"
@@ -1187,7 +1187,7 @@
 #define TR_ABOUT_MIKE_4        ""
 
 #define TR_ABOUT_ROMOLO_1      "Romolo Manfredini"
-#define TR_ABOUT_ROMOLO_2      "Chefsutvecklare av Companion9x"
+#define TR_ABOUT_ROMOLO_2      "Chefsutvecklare av Companion"
 #define TR_ABOUT_ROMOLO_3      ""
 
 #define TR_ABOUT_ANDRE_1       "Andre Bernet"

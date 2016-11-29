@@ -1156,7 +1156,7 @@
 
 #define TR_ABOUT_BERTRAND_1            "Bertrand Songis"
 #define TR_ABOUT_BERTRAND_2            "OpenTX main author"
-#define TR_ABOUT_BERTRAND_3            "Companion9x co-author"
+#define TR_ABOUT_BERTRAND_3            "Companion co-author"
 
 #define TR_ABOUT_MIKE_1                "Mike Blandford"
 #define TR_ABOUT_MIKE_2                "Code and drivers guru"
@@ -1175,7 +1175,7 @@
 #define TR_ABOUT_ROB_2                 "openrcforums webmaster"
 
 #define TR_ABOUT_KJELL_1               "Kjell Kernen"
-#define TR_ABOUT_KJELL_2               "www.open-tx.org main author"
+#define TR_ABOUT_KJELL_2               TR("www.open-tx.org author", "www.open-tx.org main author")
 #define TR_ABOUT_KJELL_3               "OpenTX Recorder author"
 #define TR_ABOUT_KJELL_4               "Companion contributor"
 
@@ -1188,7 +1188,7 @@
   #define TR_ABOUT_HARDWARE_3          ""
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   #define TR_ABOUT_HARDWARE_1          "FrSky"
-  #define TR_ABOUT_HARDWARE_2          "Hardware designer/producer"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
   #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #else
   #define TR_ABOUT_HARDWARE_1          "Brent Nelson"
