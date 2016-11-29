@@ -546,8 +546,11 @@ void menuModelTelemetryFrsky(event_t event)
       case ITEM_TELEMETRY_PROTOCOL_TYPE:
         lcdDrawTextAlignedLeft(y, STR_TELEMETRY_TYPE);
         lcdDrawTextAtIndex(TELEM_COL2, y, STR_TELEMETRY_PROTOCOLS, g_model.telemetryProtocol, attr);
-        g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
+        if (attr) {
+          g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
+        }
         break;
+        
 #if defined(REVX)
       case ITEM_TELEMETRY_INVERTED_SERIAL:
         ON_OFF_MENU_ITEM(g_model.moduleData[EXTERNAL_MODULE].invertedSerial, TELEM_COL2, y, STR_INVERTED_SERIAL, attr, event);
