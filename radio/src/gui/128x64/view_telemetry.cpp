@@ -324,7 +324,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
       }
       if (field) {
-        LcdFlags att = (i==3 ? NO_UNIT : DBLSIZE|NO_UNIT);
+        LcdFlags att = (i==3 ? RIGHT|NO_UNIT : RIGHT|DBLSIZE|NO_UNIT);
         coord_t pos[] = {0, 65, 130};
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
@@ -346,9 +346,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
             att |= INVERS|BLINK;
           }
         }
-
         drawSourceValue(pos[j+1]-2, (i==3 ? 1+FH+2*FH*i:FH+2*FH*i), field, att);
-
       }
     }
   }
@@ -490,6 +488,14 @@ void incrTelemetryScreen()
 }
 #endif
 
+#if defined(PCBX7D)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
+#else
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_FIRST(KEY_UP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_DOWN)
+#endif
+
 void menuViewTelemetryFrsky(event_t event)
 {
 #if defined(CPUARM)
@@ -502,11 +508,14 @@ void menuViewTelemetryFrsky(event_t event)
       chainMenu(menuMainView);
       break;
 
-    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_PREVIOUS_VIEW:
+      if (IS_KEY_LONG(EVT_KEY_PREVIOUS_VIEW)) {
+        killEvents(event);
+      }
       decrTelemetryScreen();
       break;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_NEXT_VIEW:
       incrTelemetryScreen();
       break;
 
