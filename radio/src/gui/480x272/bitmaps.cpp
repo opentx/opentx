@@ -190,6 +190,7 @@ BitmapBuffer * modelselModelQtyBitmap = NULL;
 BitmapBuffer * modelselModelNameBitmap = NULL;
 BitmapBuffer * modelselModelMoveBackground = NULL;
 BitmapBuffer * modelselModelMoveIcon = NULL;
+BitmapBuffer * modelselWizardBackground = NULL;
 BitmapBuffer * chanMonLockedBitmap = NULL;
 BitmapBuffer * chanMonInvertedBitmap = NULL;
 BitmapBuffer * mixerSetupMixerBitmap = NULL;

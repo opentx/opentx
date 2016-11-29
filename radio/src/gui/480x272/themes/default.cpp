@@ -191,6 +191,9 @@ class DefaultTheme: public Theme
       delete modelselModelMoveIcon;
       modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
 
+      delete modelselWizardBackground;
+      modelselWizardBackground = BitmapBuffer::load(getThemePath("wizard/background.png"));
+
       // Channels monitor screen
       delete chanMonLockedBitmap;
       chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", TEXT_COLOR, TEXT_BGCOLOR);

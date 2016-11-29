@@ -140,6 +140,34 @@ class DarkblueTheme: public Theme
       delete chanMonInvertedBitmap;
       chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", TEXT_COLOR, TEXT_BGCOLOR);
 
+     // Model Selection screen
+      delete modelselIconBitmap;
+      modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
+      if (modelselIconBitmap) {
+        BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
+        modelselIconBitmap->drawBitmap(25, 8, bitmap);
+        delete bitmap;
+      }
+
+      delete modelselSdFreeBitmap;
+      modelselSdFreeBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_sdfree.png", TEXT_COLOR, TEXT_BGCOLOR);
+
+      delete modelselModelQtyBitmap;
+      modelselModelQtyBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelqty.png", TEXT_COLOR, TEXT_BGCOLOR);
+
+      delete modelselModelNameBitmap;
+      modelselModelNameBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_modelname.png", TEXT_COLOR, TEXT_BGCOLOR);
+
+      delete modelselModelMoveBackground;
+      modelselModelMoveBackground = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveback.png"));
+
+      delete modelselModelMoveIcon;
+      modelselModelMoveIcon = BitmapBuffer::loadMask(getThemePath("modelsel/mask_moveico.png"));
+
+      delete modelselWizardBackground;
+      modelselWizardBackground = BitmapBuffer::load(getThemePath("wizard/background.png"));
+
+
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
       mixerSetupMixerBitmap = BitmapBuffer::loadMaskOnBackground("mask_sbar_mixer.png", MENU_TITLE_COLOR, HEADER_BGCOLOR);
