@@ -2437,7 +2437,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 
 #if defined(PCBHORUS)
   topbar = new Topbar(&g_model.topbarData);
-  luaInitThemesAndWidgets();
+  LUA_INIT_THEMES_AND_WIDGETS();
 #endif
 
 #if defined(RAMBACKUP)

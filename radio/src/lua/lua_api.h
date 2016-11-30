@@ -37,7 +37,7 @@ extern bool luaLcdAllowed;
 
 void luaInit();
 void luaInitThemesAndWidgets();
-
+#define LUA_INIT_THEMES_AND_WIDGETS()  luaInitThemesAndWidgets()
 
 #define lua_registernumber(L, n, i)    (lua_pushnumber(L, (i)), lua_setglobal(L, (n)))
 #define lua_registerint(L, n, i)       (lua_pushinteger(L, (i)), lua_setglobal(L, (n)))
@@ -147,8 +147,8 @@ void luaSetInstructionsLimit(lua_State* L, int count);
 void luaCompileAndSave(lua_State * L, const char *bytecodeName);
 #else  // defined(LUA)
 #define luaInit()
+#define LUA_INIT_THEMES_AND_WIDGETS()
 #define LUA_LOAD_MODEL_SCRIPTS()
-#define luaLoadThemes()
 #endif // defined(LUA)
 
 #endif // _LUA_API_H_
