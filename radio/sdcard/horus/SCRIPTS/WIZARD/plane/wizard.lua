@@ -117,6 +117,13 @@ local function setFieldsVisible(...)
   end
 end
 
+-- on demand load of bitmaps
+local  function loadIndexedBitmap(bitmap, index, name)
+  if bitmap[index] == nil then
+    bitmap[index] = Bitmap.open(name..index..".gif")
+  end
+end
+
 local MotorConfigBackground = Bitmap.open("img/bg_engine.gif")
 local MotorFields = {
   {50, 50, COMBO, 1, 1, { "No", "Yes"} },
@@ -136,9 +143,7 @@ local function runMotorConfig(event)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     fields[2][4]=1
   end
-  if AilCfgBg[2] == nil then
-    AilCfgBg[2] = Bitmap.open("img/bg_ail2.gif")
-  end
+  loadIndexedBitmap(AilCfgBg, 2, "img/bg_ail")
   local result = runFieldsPage(event)
   return result
 end
@@ -155,38 +160,30 @@ local function runAilConfig(event)
   lcd.clear()
   fields = AilFields
   if fields[1][5] == 1 then
-    if AilCfgBg[1] == nil then
-      AilCfgBg[1] = Bitmap.open("img/bg_ail1.gif")
-    end
+    loadIndexedBitmap(AilCfgBg, 1, "img/bg_ail")
     lcd.drawBitmap(AilCfgBg[1], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
-    if AilCfgBg[2] == nil then
-      AilCfgBg[2] = Bitmap.open("img/bg_ail2.gif")
-    end
+    loadIndexedBitmap(AilCfgBg, 2, "img/bg_ail")
     lcd.drawBitmap(AilCfgBg[2], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1)
   else
-    if AilCfgBg[0] == nil then
-      AilCfgBg[0] = Bitmap.open("img/bg_ail0.gif")
-    end
+    loadIndexedBitmap(AilCfgBg, 0, "img/bg_ail")
     lcd.drawBitmap(AilCfgBg[0], 0, 0)
     setFieldsVisible(0, 0)
   end
   lcd.drawText(40, 20, "Number of ailerons on your model ?", TEXT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
-  if FlapsCfgBg[1] == nil then
-    FlapsCfgBg[1] = Bitmap.open("img/bg_flaps1.gif")
-  end
+  loadIndexedBitmap(FlapsCfgBg, 1, "img/bg_flaps")
   local result = runFieldsPage(event)
   return result
 end
 
 local FlapsFields = {
-  {50, 50, COMBO, 1, 1, { "No", "Yes, on one channel", "Yes, on two channels"} },
+  {50, 50, COMBO, 1, 0, { "No", "Yes, on one channel", "Yes, on two channels"} },
   {50, 127, COMBO, 1, 6, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
   {50, 167, COMBO, 1, 7, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
 }
@@ -195,29 +192,24 @@ local function runFlapsConfig(event)
   lcd.clear()
   fields = FlapsFields
   if fields[1][5] == 1 then
+    loadIndexedBitmap(FlapsCfgBg, 1, "img/bg_flaps")
     lcd.drawBitmap(FlapsCfgBg[1], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
-    if FlapsCfgBg[2] == nil then
-      FlapsCfgBg[2] = Bitmap.open("img/bg_flaps2.gif")
-    end
+    loadIndexedBitmap(FlapsCfgBg, 2, "img/bg_flaps")
     lcd.drawBitmap(FlapsCfgBg[2], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1)
   else
-    if FlapsCfgBg[0] == nil then
-      FlapsCfgBg[0] = Bitmap.open("img/bg_flaps0.gif")
-    end
+    loadIndexedBitmap(FlapsCfgBg, 0, "img/bg_flaps")
     lcd.drawBitmap(FlapsCfgBg[0], 0, 0)
     setFieldsVisible(0, 0)
   end
   lcd.drawText(40, 20, "Does your model have flaps ?", TEXT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
-  if TAilCfgBg[1] == nil then
-    TAilCfgBg[1] = Bitmap.open("img/bg_tail1.gif")
-  end
+  loadIndexedBitmap(TAilCfgBg, 1, "img/bg_tail")
   local result = runFieldsPage(event)
   return result
 end
@@ -233,26 +225,20 @@ local function runTailConfig(event)
   lcd.clear()
   fields = TailFields
   if fields[1][5] == 0 then
-    if TAilCfgBg[0] == nil then
-      TAilCfgBg[0] = Bitmap.open("img/bg_tail0.gif")
-    end
+    loadIndexedBitmap(TAilCfgBg, 0, "img/bg_tail")
     lcd.drawBitmap(TAilCfgBg[0], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 0, 0)
   end
   if fields[1][5] == 1 then
-    if TAilCfgBg[1] == nil then
-      TAilCfgBg[1] = Bitmap.open("img/bg_tail1.gif")
-    end
+    loadIndexedBitmap(TAilCfgBg, 1, "img/bg_tail")
     lcd.drawBitmap(TAilCfgBg[1], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1, 0)
   end
   if fields[1][5] == 2 then
-    if TAilCfgBg[2] == nil then
-      TAilCfgBg[2] = Bitmap.open("img/bg_tail2.gif")
-    end
+    loadIndexedBitmap(TAilCfgBg, 2, "img/bg_tail")
     lcd.drawBitmap(TAilCfgBg[2], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
@@ -260,9 +246,7 @@ local function runTailConfig(event)
     setFieldsVisible(1, 1, 1)
   end
   if fields[1][5] == 3 then
-    if TAilCfgBg[3] == nil then
-      TAilCfgBg[3] = Bitmap.open("img/bg_tail3.gif")
-    end
+    loadIndexedBitmap(TAilCfgBg, 3, "img/bg_tail")
     lcd.drawBitmap(TailCfgBg[3], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
