@@ -177,7 +177,7 @@ bool menuModelWizard(event_t event)
   strncpy(wizpath, WIZARD_PATH, sizeof(WIZARD_PATH));
   strcpy(&wizpath[sizeof(WIZARD_PATH)-1], "/");
   lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
-  lcd->drawBitmap(0, 0,modelselWizardBackground);
+  lcd->drawBitmap(0, 0, modelselWizardBackground);
   FRESULT res = f_opendir(&dir, WIZARD_PATH);
   if (res == FR_OK) {
     for (uint8_t wizidx=0;;wizidx++) {
