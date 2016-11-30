@@ -77,6 +77,7 @@ extern BitmapBuffer * modelselModelQtyBitmap;
 extern BitmapBuffer * modelselModelNameBitmap;
 extern BitmapBuffer * modelselModelMoveBackground;
 extern BitmapBuffer * modelselModelMoveIcon;
+extern BitmapBuffer * modelselWizardBackground;
 
 // calibration bitmaps
 extern BitmapBuffer * calibStick;
