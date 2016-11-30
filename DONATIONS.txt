@@ -1055,3 +1055,4 @@ Vianney Levesque
 Fred Carlisle
 Pierre Duvezin-Caubet
 Pascal Dugué
+Burt Pickard-Richardson
