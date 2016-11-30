@@ -4,7 +4,7 @@ local COMBO = 1
 local COLUMN_2 = 300
 
 local edit = false
-local page = 0
+local page = 1
 local current = 1
 local refreshState = 0
 local refreshIndex = 0
@@ -14,11 +14,18 @@ local calibrationStep = 0
 local pages = {}
 local fields = {}
 local modifications = {}
+local wingBitmaps = {}
+local mountBitmaps = {}
+local calibBitmaps = {}
 
 local configFields = {
   {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
   {"Mounting type:", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
 }
+local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
+local wingBitmapsFile = {"img/plane_b.png", "img/delta_b.png", "img/planev_b.png"}
+local mountBitmapsFile = {"img/up.png", "img/down.png", "img/vert.png", "img/vert-r.png"}
+local calibBitmapsFile = {"img/up.png", "img/down.png", "img/left.png", "img/right.png", "img/forward.png", "img/back.png"}
 
 local settingsFields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
@@ -50,14 +57,10 @@ local calibrationFields = {
   {"Z:", VALUE, 0xA0, 0, -100, 100, "%"}
 }
 
-local wingBitmaps = {}
-local mountBitmaps = {}
-local calibBitmaps = {}
-
 local function drawScreenTitle(title,page, pages)
-	lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
-	lcd.drawText(1, 5, title, MENU_TITLE_COLOR)
-	lcd.drawText(LCD_W-40, 5, page.."/"..pages, MENU_TITLE_COLOR)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
+  lcd.drawText(1, 5, title, MENU_TITLE_COLOR)
+  lcd.drawText(LCD_W-40, 5, page.."/"..pages, MENU_TITLE_COLOR)
 end
 
 -- Change display attribute to current field
@@ -117,7 +120,7 @@ local function redrawFieldsPage(event)
     end
 
     local attr = current == (pageOffset+index) and ((edit == true and BLINK or 0) + INVERS) or 0
-	attr = attr + TEXT_COLOR
+    attr = attr + TEXT_COLOR
 
     lcd.drawText(1, 30+20*index, field[1], TEXT_COLOR)
 
@@ -216,9 +219,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK  then             -- exit script
+  if event == EVT_EXIT_BREAK then -- exit script
     return 2
-  elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then        -- toggle editing/selecting current field
+  elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then -- toggle editing/selecting current field
     if fields[current][4] ~= nil then
       edit = not edit
       if edit == false then
@@ -246,9 +249,15 @@ local function runConfigPage(event)
   fields = configFields
   local result = runFieldsPage(event)
   if fields[1][4] ~= nil then
+    if wingBitmaps[1 + fields[1][4]] == nil then
+      wingBitmaps[1 + fields[1][4]] = Bitmap.open(wingBitmapsFile[1 + fields[1][4]])
+    end
     lcd.drawBitmap(wingBitmaps[1 + fields[1][4]], 10, 90)
   end
   if fields[2][4] ~= nil then
+    if mountBitmaps[1 + fields[2][4]] == nil then
+      mountBitmaps[1 + fields[2][4]] = Bitmap.open(mountBitmapsFile[1 + fields[2][4]])
+    end
     lcd.drawBitmap(mountBitmaps[1 + fields[2][4]], 190, 110)
   end
   return result
@@ -259,20 +268,20 @@ local function runSettingsPage(event)
   return runFieldsPage(event)
 end
 
-local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
-
-
 local function runCalibrationPage(event)
   fields = calibrationFields
   if refreshIndex == #fields then
     refreshIndex = 0
   end
   lcd.clear()
-    lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR)
+  lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR)
   drawScreenTitle("S6R", page, #pages)
   if(calibrationStep < 6) then
     local position = calibrationPositions[1 + calibrationStep]
     lcd.drawText(100, 50, "Place the S6R in the following position", TEXT_COLOR)
+    if calibBitmaps[calibrationStep + 1] == nil then
+      calibBitmaps[calibrationStep + 1] = Bitmap.open(calibBitmapsFile[calibrationStep + 1])
+    end
     lcd.drawBitmap(calibBitmaps[calibrationStep + 1], 200, 70)
     for index = 1, 3, 1 do
       local field = fields[index]
@@ -310,49 +319,12 @@ local function init()
   }
 end
 
-local loaded = 1
-local bitmaps = {"plane_b", "delta_b", "planev_b"
-                  , "up", "down", "vert", "vert-r"
-                  , "up", "down", "left", "right", "forward", "back"}
-
-local function loadBitmaps()
-  print("loaded "..loaded)
-  lcd.clear()
-  lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR)
-  drawScreenTitle("S6R", 0, #pages)
-  lcd.drawText(120, 100, "Loading bitmaps "..loaded.."/12", TEXT_COLOR)
-
-  if loaded > #bitmaps then
-    page = 1
-    return
-  end
-
-  local bitmap = Bitmap.open("img/"..bitmaps[loaded]..".png")
-  if loaded < 4 then
-    wingBitmaps[loaded] = bitmap
-  elseif loaded < 8 then
-    mountBitmaps[loaded-3] = bitmap
-  else
-    calibBitmaps[loaded-7] = bitmap
-  end
-
-  loaded = loaded + 1
-end
-
-
 -- Main
 local function run(event)
-
-  if page == 0 then
-    -- splash screen while bitmaps are loading
-    loadBitmaps()
-    return 0
-  end
-
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST  then
+  elseif event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST then
     selectPage(1)
   elseif event == EVT_PAGE_LONG or event == EVT_PAGEUP_FIRST then
     killEvents(event);
