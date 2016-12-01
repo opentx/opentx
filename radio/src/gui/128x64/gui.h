@@ -93,7 +93,7 @@ extern int8_t s_editMode;       // global editmode
 #define NO_DBLKEYS                     0x80
 
 #if defined(CPUARM)
-#define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
   #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
   #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
   #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
@@ -163,10 +163,10 @@ int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #endif
 
 #define CHECK_INCDEC_MODELVAR(event, var, min, max) \
-  var = checkIncDecModel(event,var,min,max)
+  var = checkIncDecModel(event, var, min, max)
 
 #define CHECK_INCDEC_MODELVAR_ZERO(event, var, max) \
-  var = checkIncDecModelZero(event,var,max)
+  var = checkIncDecModelZero(event, var, max)
 
 #if defined(CPUARM)
 #define CHECK_INCDEC_MODELVAR_CHECK(event, var, min, max, check) \

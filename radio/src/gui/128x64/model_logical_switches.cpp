@@ -73,8 +73,6 @@ void menuModelLogicalSwitchOne(event_t event)
 
   int8_t sub = menuVerticalPosition;
 
-  INCDEC_DECLARE_VARS(EE_MODEL);
-
   int v1_val = cs->v1;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
@@ -105,6 +103,7 @@ void menuModelLogicalSwitchOne(event_t event)
         
       case LS_FIELD_V1:
       {
+        INCDEC_DECLARE_VARS(EE_MODEL);
         lcdDrawTextAlignedLeft(y, STR_V1);
         int v1_min=0, v1_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_EDGE) {
@@ -132,6 +131,7 @@ void menuModelLogicalSwitchOne(event_t event)
       
       case LS_FIELD_V2:
       {
+        INCDEC_DECLARE_VARS(EE_MODEL);
         lcdDrawTextAlignedLeft(y, STR_V2);
         int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
@@ -146,7 +146,7 @@ void menuModelLogicalSwitchOne(event_t event)
           v2_max = 122;
         }
         else if (cstate == LS_FAMILY_EDGE) {
-          putsEdgeDelayParam(CSWONE_2ND_COLUMN, y, cs, menuHorizontalPosition==0 ? attr : 0, menuHorizontalPosition==1 ? attr : 0);
+          putsEdgeDelayParam(CSWONE_2ND_COLUMN+5, y, cs, menuHorizontalPosition==0 ? attr : 0, menuHorizontalPosition==1 ? attr : 0);
           if (s_editMode <= 0) continue;
           if (attr && menuHorizontalPosition==1) {
             CHECK_INCDEC_MODELVAR(event, cs->v3, -1, 222 - cs->v2);
@@ -504,7 +504,6 @@ void menuModelLogicalSwitches(event_t event)
           break;
         case LS_FIELD_V2:
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
-          if (checkIncDec_Ret) TRACE("v2=%d", cs->v2);
           break;
 #if defined(CPUARM)
         case LS_FIELD_V3:
