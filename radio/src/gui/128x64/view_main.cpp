@@ -153,31 +153,25 @@ void displayTrims(uint8_t phase)
   }
 }
 
-
-void displayTimers()
+void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
 {
-#if defined(TRANSLATIONS_CZ)
-  #define MAINTMR_LBL_COL (9*FW-FW/2-1)
-#else
-  #define MAINTMR_LBL_COL (9*FW-FW/2+3)
-#endif
   // Main timer
-  if (g_model.timers[0].mode) {
-    TimerState & timerState = timersStates[0];
+  if (g_model.timers[index].mode) {
+    const TimerState & timerState = timersStates[index];
     LcdFlags att = RIGHT | DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
-    drawTimer(12*FW+2+10*FWNUM-4, FH*2, timerState.val, att, att);
-    uint8_t xLabel = (timerState.val >= 0 ? MAINTMR_LBL_COL : MAINTMR_LBL_COL-7);
+    drawTimer(x, y, timerState.val, att, att);
 #if defined(CPUARM)
-    uint8_t len = zlen(g_model.timers[0].name, LEN_TIMER_NAME);
+    uint8_t xLabel = (timerState.val >= 0 ? x-49 : x-56);
+    uint8_t len = zlen(g_model.timers[index].name, LEN_TIMER_NAME);
     if (len > 0) {
-      xLabel += (LEN_TIMER_NAME-len)*FW;
-      lcdDrawSizedText(xLabel, FH*3, g_model.timers[0].name, len, ZCHAR);
+      lcdDrawSizedText(xLabel, y+FH, g_model.timers[index].name, len, RIGHT | ZCHAR);
     }
     else {
-      drawTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+      drawTimerMode(xLabel, y+FH, g_model.timers[index].mode, RIGHT);
     }
 #else
-    drawTimerMode(xLabel, FH*3, g_model.timers[0].mode);
+    uint8_t xLabel = (timerState.val >= 0 ? x-69 : x-76);
+    drawTimerMode(xLabel, y+FH, g_model.timers[index].mode);
 #endif
   }
 }
@@ -423,11 +417,13 @@ void menuMainView(event_t event)
         gvarDisplayTimer = 0;
       }
 #endif
+#if !defined(NAVIGATION_MENUS)
       if (view == VIEW_TIMER2) {
         timerReset(1);
       }
+#endif
       break;
-
+      
 #if !defined(NAVIGATION_MENUS)
     case EVT_KEY_LONG(KEY_EXIT):
       flightReset();
@@ -446,8 +442,8 @@ void menuMainView(event_t event)
     // Main Voltage (or alarm if any)
     displayVoltageOrAlarm();
 
-    // Timers
-    displayTimers();
+    // Timer 1
+    drawTimerWithMode(120, 2*FH, 0);
 
     // Trims sliders
     displayTrims(mode);
@@ -582,15 +578,9 @@ void menuMainView(event_t event)
 #endif
     }
   }
-  else { // timer2
-#if defined(TRANSLATIONS_CZ)
-  #define TMR2_LBL_COL (20-FW/2+1)
-#else
-  #define TMR2_LBL_COL (20-FW/2+5)
-#endif
-    drawTimer(33+FW+2+10*FWNUM-4, FH*5, timersStates[1].val, DBLSIZE|RIGHT, DBLSIZE);
-    drawTimerMode(timersStates[1].val >= 0 ? TMR2_LBL_COL : TMR2_LBL_COL-7, FH*6, g_model.timers[1].mode);
-    // lcdDrawNumber(33+11*FW, FH*6, s_timerVal_10ms[1], LEADING0, 2); // 1/100s
+  else {
+    // Timer2
+    drawTimerWithMode(87, 5*FH, 1);
   }
 
   // And ! in case of unexpected shutdown
