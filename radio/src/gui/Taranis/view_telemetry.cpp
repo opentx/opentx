@@ -235,12 +235,12 @@ void menuTelemetryFrsky(uint8_t event)
   enum NavigationDirection direction = none;
 
   switch (event) {
-    case EVT_KEY_FIRST(KEY_EXIT):
+/*    case EVT_KEY_FIRST(KEY_EXIT):
     case EVT_KEY_LONG(KEY_EXIT):
       killEvents(event);
       chainMenu(menuMainView);
       break;
-
+*/
     case EVT_KEY_LONG(KEY_PAGE):
       killEvents(event);
       // no break;
@@ -253,13 +253,14 @@ void menuTelemetryFrsky(uint8_t event)
     case EVT_KEY_FIRST(KEY_DOWN):
       incrTelemetryScreen();
       break;
-
+/*
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
       POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
       popupMenuHandler = onMainViewMenu;
       break;
+*/
   }
 
   for (int i=0; i<=TELEMETRY_SCREEN_TYPE_MAX; i++) {

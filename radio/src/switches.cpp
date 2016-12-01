@@ -699,7 +699,7 @@ void checkSwitches()
     // first - display warning
 #if defined(PCBTARANIS)
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
-      MESSAGE(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
+      MESSAGE(STR_SWITCHWARN, NULL, "", ((last_bad_switches == 0xff) || (last_bad_pots == 0xff)) ? AU_SWITCH_ALERT : AU_NONE);
       int x = 60, y = 4*FH+3;
       int numWarnings = 0;
       for (int i=0; i<NUM_SWITCHES; ++i) {
@@ -766,11 +766,11 @@ void checkSwitches()
       last_bad_switches = 0xff;
     }
 #else
-
+/*
     if (keyDown()) {
       return;
     }
-
+*/
 #if defined(PCBTARANIS) && defined(REV9E)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
