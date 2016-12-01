@@ -40,13 +40,20 @@ end
 local function incrField(step)
   local field = getField(lineIndex)
   if field.type == 10 then
-    local byte = string.byte(field.value, charIndex) + step
+    local byte = 32
+    if charIndex <= #field.value then
+      byte = string.byte(field.value, charIndex) + step
+    end
     if byte < 32 then
       byte = 32
     elseif byte > 122 then
       byte = 122
     end
-    field.value = string.sub(field.value, 1, charIndex-1) .. string.char(byte) .. string.sub(field.value, charIndex+1)
+    if charIndex <= #field.value then
+      field.value = string.sub(field.value, 1, charIndex-1) .. string.char(byte) .. string.sub(field.value, charIndex+1)
+    else
+      field.value = field.value .. string.char(byte)
+    end
   else
     local min, max = 0, 0
     if field.type <= 5 then
@@ -282,7 +289,7 @@ end
 local function fieldStringDisplay(field, y, attr)
   if edit == true and attr then
     lcd.drawText(140, y, field.value, FIXEDWIDTH)
-    lcd.drawText(134+6*charIndex, y, string.sub(field.value, charIndex, charIndex), attr)
+    lcd.drawText(134+6*charIndex, y, string.sub(field.value, charIndex, charIndex), FIXEDWIDTH + attr)
   else
     lcd.drawText(140, y, field.value, attr)
   end
@@ -399,6 +406,11 @@ local function runDevicePage(event)
   if event == EVT_EXIT_BREAK then             -- exit script
     if edit == true then
       edit = false
+      local field = getField(lineIndex)
+      fieldTimeout = getTime() + 200 -- 2s
+      fieldId, fieldChunk = field.id, 0
+      fieldData = {}
+      functions[field.type+1].save(field)
     else
       return "crossfire.lua"
     end
