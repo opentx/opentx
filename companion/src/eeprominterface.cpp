@@ -1399,7 +1399,7 @@ void ModelData::clear()
   moduleData[1].ppm.delay = 300;
   moduleData[2].ppm.delay = 300;
   int board = GetEepromInterface()->getBoard();
-  if (IS_TARANIS(board)) {
+  if (IS_TARANIS(board) || IS_HORUS(board)) {
     moduleData[0].protocol = PULSES_PXX_XJT_X16;
     moduleData[1].protocol = PULSES_OFF;
   }
@@ -1469,7 +1469,8 @@ QString removeAccents(const QString & str)
 
 void ModelData::setDefaultInputs(const GeneralSettings & settings)
 {
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  BoardEnum board = GetEepromInterface()->getBoard();
+  if (IS_ARM(board)) {
     for (int i=0; i<CPN_MAX_STICKS; i++) {
       ExpoData * expo = &expoData[i];
       expo->chn = i;
@@ -1483,7 +1484,8 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
 
 void ModelData::setDefaultMixes(const GeneralSettings & settings)
 {
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  BoardEnum board = GetEepromInterface()->getBoard();
+  if (IS_ARM(board)) {
     setDefaultInputs(settings);
   }
 
@@ -1491,7 +1493,7 @@ void ModelData::setDefaultMixes(const GeneralSettings & settings)
     MixData * mix = &mixData[i];
     mix->destCh = i+1;
     mix->weight = 100;
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_ARM(board)) {
       mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
     }
     else {
