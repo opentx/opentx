@@ -557,7 +557,12 @@ void MainWindow::openDocURL()
 void MainWindow::openFile()
 {
   QString fileFilter;
+#if defined(DEBUG)
   if (GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+#else
+  if (false) {
+#endif
+
     fileFilter = tr(OTX_FILES_FILTER);
   }
   else {
@@ -751,6 +756,7 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
+#if defined(DEBUG)
   if(GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
     // just an example
     QString path = findMassstoragePath("RADIO");
@@ -791,6 +797,7 @@ void MainWindow::readEeprom()
 
   }
   else {
+#endif
     QString tempFile;
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -809,7 +816,9 @@ void MainWindow::readEeprom()
       child->show();
       qunlink(tempFile);
     }
+#if defined(DEBUG)
   }
+#endif
 }
 
 bool MainWindow::readFirmwareFromRadio(const QString &filename)
@@ -950,7 +959,11 @@ void MainWindow::updateMenus()
     bool hasMdiChild = (activeMdiChild() != 0);
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
 
-    if(false /*GetCurrentFirmware()->getBoard() == BOARD_HORUS*/) {
+#if defined(DEBUG)
+  if(false) {
+#else
+  if(GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+#endif
       newAct->setEnabled(false);
       openAct->setEnabled(false);
       saveAct->setEnabled(false);

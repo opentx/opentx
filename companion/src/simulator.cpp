@@ -45,7 +45,7 @@
 #endif
 
 #ifdef __APPLE__
-#include <QProxyStyle> 
+#include <QProxyStyle>
 
 class MyProxyStyle : public QProxyStyle
  {
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
     }
   }
   if (!ok) {
-    firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
+    firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"),
                                                 QObject::tr("Which radio type do you want to simulate?"),
                                                 firmwareIds, currentIdx, false, &ok);
   }
@@ -200,9 +200,12 @@ int main(int argc, char *argv[])
       showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(firmwareId), QMessageBox::Critical);
       return 2;
     }
+#if defined(DEBUG)
     if (factory->type() == BOARD_HORUS)
       dialog = new SimulatorDialogHorus(NULL, factory->create());
-    else if (factory->type() == BOARD_FLAMENCO)
+    else
+#endif
+    if (factory->type() == BOARD_FLAMENCO)
       dialog = new SimulatorDialogFlamenco(NULL, factory->create());
     else if (factory->type() == BOARD_TARANIS_X9D || factory->type() == BOARD_TARANIS_X9DP || factory->type() == BOARD_TARANIS_X9E)
       dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
