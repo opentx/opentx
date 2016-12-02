@@ -562,7 +562,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       else if (IS_TARANIS_X9E(board))
         return 4;
       else if (IS_TARANIS(board))
-        return 3;   //Taranis has only 2 pots but still has a placeholder in settings for 3 pots
+        return 3; // Taranis has only 2 pots but still has a placeholder in settings for 3 pots
       else
         return 3;
     case Sliders:
@@ -908,7 +908,7 @@ bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
 
 int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
 {
-  if (IS_TARANIS(board)) {
+  if (IS_TARANIS(board) || IS_HORUS(board)) {
     switch (port) {
       case 0:
         switch (proto) {
