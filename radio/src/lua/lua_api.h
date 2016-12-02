@@ -103,7 +103,7 @@ extern uint8_t luaScriptsCount;
 extern ScriptInternalData standaloneScript;
 extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
 extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
-void luaClose(lua_State * L);
+void luaClose(lua_State ** L);
 bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage);
 void luaExec(const char * filename);
 void luaError(lua_State * L, uint8_t error, bool acknowledge=true);

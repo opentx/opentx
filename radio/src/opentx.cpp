@@ -1883,9 +1883,9 @@ void opentxClose(uint8_t shutdown)
     // TODO needed? telemetryEnd();
 #endif
 #if defined(LUA)
-    luaClose(lsScripts);
+    luaClose(&lsScripts);
 #if defined(PCBHORUS)
-    luaClose(lsWidgets);
+    luaClose(&lsWidgets);
 #endif
 #endif
 #if defined(HAPTIC)
