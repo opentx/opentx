@@ -3444,7 +3444,7 @@ void OpenTxModelData::afterImport()
           break;
         }
       }
-      strncpy(modelData.inputNames[i], AnalogString(i).toLatin1().constData(), sizeof(modelData.inputNames[i])-1);
+      strncpy(modelData.inputNames[i], GetCurrentFirmware()->getAnalogInputName(i).toLatin1().constData(), sizeof(modelData.inputNames[i])-1);
     }
   }
 

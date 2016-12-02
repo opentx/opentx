@@ -489,22 +489,6 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   return result;
 }
 
-QString AnalogString(int index)
-{
-  static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
-  static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-  static const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
-  static const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS") };
-  if (index < 4)
-    return CHECK_IN_ARRAY(sticks, index);
-  else if (IS_TARANIS_X9E(GetEepromInterface()->getBoard()))
-    return CHECK_IN_ARRAY(potsTaranisX9E, index-4);
-  else if (IS_TARANIS(GetEepromInterface()->getBoard()))
-    return CHECK_IN_ARRAY(potsTaranis, index-4);
-  else
-    return CHECK_IN_ARRAY(pots9X, index-4);
-}
-
 QString RotaryEncoderString(int index)
 {
   static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
@@ -552,7 +536,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_LUA_OUTPUT:
       return QObject::tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
     case SOURCE_TYPE_STICK:
-      return AnalogString(index);
+      return GetCurrentFirmware()->getAnalogInputName(index);
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:

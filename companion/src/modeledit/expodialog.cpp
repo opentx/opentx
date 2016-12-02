@@ -99,7 +99,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   }
 
   for(int i=0; i < CPN_MAX_STICKS; i++) {
-    ui->trimCB->addItem(AnalogString(i), i+1);
+    ui->trimCB->addItem(firmware->getAnalogInputName(i), i+1);
   }
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 

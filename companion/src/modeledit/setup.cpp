@@ -655,7 +655,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
-    checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
+    checkbox->setText(i<analogs ? firmware->getAnalogInputName(i) : RotaryEncoderString(i-analogs));
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
@@ -718,7 +718,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i);
-      cb->setText(AnalogString(i+4));
+      cb->setText(firmware->getAnalogInputName(i+4));
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;

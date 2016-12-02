@@ -49,7 +49,7 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
 
   for(int i = 0; i < rows; ++i) {
 
-    QTableWidgetItem *newItem = new QTableWidgetItem(AnalogString(i));
+    QTableWidgetItem *newItem = new QTableWidgetItem(firmware->getAnalogInputName(i));
     newItem->setTextAlignment(Qt::AlignLeft);
     tableWidget->setVerticalHeaderItem(i, newItem);
 

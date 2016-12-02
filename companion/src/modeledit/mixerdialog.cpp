@@ -59,7 +59,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
     if (!firmware->getCapability(VirtualInputs)) {
       for(int i=0; i < CPN_MAX_STICKS; i++) {
-        ui->trimCB->addItem(AnalogString(i));
+        ui->trimCB->addItem(firmware->getAnalogInputName(i));
       }
     }
 

@@ -136,6 +136,8 @@ class OpenTxFirmware: public Firmware
     
     virtual Switch getSwitch(unsigned int index);
     
+    virtual QString getAnalogInputName(unsigned int index);
+    
     virtual QTime getMaxTimerStart();
 
     virtual bool isTelemetrySourceAvailable(int source);

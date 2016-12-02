@@ -242,7 +242,6 @@ enum RawSourceType {
   MAX_SOURCE_TYPE
 };
 
-QString AnalogString(int index);
 QString RotaryEncoderString(int index);
 
 class RawSourceRange
@@ -1707,7 +1706,9 @@ class Firmware {
     };
     
     virtual Switch getSwitch(unsigned int index) = 0;
-
+    
+    virtual QString getAnalogInputName(unsigned int index) = 0;
+    
     virtual QTime getMaxTimerStart() = 0;
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;
