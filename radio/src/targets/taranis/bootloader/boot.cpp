@@ -21,19 +21,34 @@
 #include "opentx.h"
 #include "stamp.h"
 
-#define BOOTLOADER_TITLE        " Taranis BootLoader - " VERSION
-#if defined(PCBX9E) || defined(PCBX7D)
-  #define BOOT_KEY_UP           KEY_MINUS
-  #define BOOT_KEY_DOWN         KEY_PLUS
+#if defined(PCBX7D)
+  #define BOOTLOADER_TITLE               " X7 Bootloader - " VERSION
+#elif defined(PCBTARANIS)
+  #define BOOTLOADER_TITLE               " Taranis Bootloader - " VERSION
 #else
-  #define BOOT_KEY_UP           KEY_PLUS
-  #define BOOT_KEY_DOWN         KEY_MINUS
+  #error "Not implemented"
 #endif
-#define BOOT_KEY_LEFT           KEY_MENU
-#define BOOT_KEY_RIGHT          KEY_PAGE
-#define BOOT_KEY_MENU           KEY_ENTER
-#define BOOT_KEY_EXIT           KEY_EXIT
-#define DISPLAY_CHAR_WIDTH      35
+
+#if defined(PCBX9E) || defined(PCBX7D)
+  #define BOOT_KEY_UP                  KEY_MINUS
+  #define BOOT_KEY_DOWN                KEY_PLUS
+#else
+  #define BOOT_KEY_UP                  KEY_PLUS
+  #define BOOT_KEY_DOWN                KEY_MINUS
+#endif
+#define BOOT_KEY_LEFT                  KEY_MENU
+#define BOOT_KEY_RIGHT                 KEY_PAGE
+#define BOOT_KEY_MENU                  KEY_ENTER
+#define BOOT_KEY_EXIT                  KEY_EXIT
+#define DISPLAY_CHAR_WIDTH             35
+
+#if LCD_W >= 212
+  #define STR_OR_PLUGIN_USB_CABLE      INDENT "Or plug in a USB cable for mass storage"
+  #define STR_USB_CONNECTED            "\026USB Connected"
+#else
+  #define STR_OR_PLUGIN_USB_CABLE      INDENT "Or plug in a USB cable"
+  #define STR_USB_CONNECTED            "\012USB Connected  "
+#endif
 
 const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 {
@@ -377,7 +392,7 @@ int main()
         lcdDrawTextAlignedLeft(3*FH, "\010Restore EEPROM");
         lcdDrawTextAlignedLeft(4*FH, "\010Exit");
         lcdInvertLine(2+vpos);
-        lcdDrawTextAlignedLeft(7*FH, INDENT "Or plug in a USB cable for mass storage");
+        lcdDrawTextAlignedLeft(7*FH, STR_OR_PLUGIN_USB_CABLE);
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {
           vpos == 2 ? vpos = 0 : vpos = vpos+1;
         }
@@ -399,7 +414,7 @@ int main()
       }
 
       if (state == ST_USB) {
-        lcdDrawTextAlignedLeft(4*FH, "\026USB Connected");
+        lcdDrawTextAlignedLeft(4*FH, STR_USB_CONNECTED);
         if (usbPlugged() == 0) {
           vpos = 0;
           if (unlocked) {

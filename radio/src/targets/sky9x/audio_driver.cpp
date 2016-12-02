@@ -19,7 +19,8 @@
  */
 
 #include "opentx.h"
-const AudioBuffer * nextBuffer = 0;
+
+volatile uint8_t dacStarted = false;
 
 const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
@@ -94,13 +95,23 @@ void dacInit()
   NVIC_EnableIRQ(DACC_IRQn) ;
 }
 
+inline void dacStart()
+{
+  PMC->PMC_PCER0 |= 0x40000000L ; // Enable peripheral clock to DAC
+  DACC->DACC_IER = DACC_IER_ENDTX ;
+  dacStarted = true;
+}
+
+inline void dacStop()
+{
+  DACC->DACC_IDR = DACC_IDR_ENDTX ; // Disable interrupt
+  dacStarted = false;
+}
+
 void audioConsumeCurrentBuffer()
 {
-  if (nextBuffer == 0) {
-    nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
-    if (nextBuffer) {
-      dacStart();
-    }
+  if (!dacStarted) {
+    dacStart();
   }
 }
 
@@ -109,9 +120,8 @@ extern "C" void DAC_IRQHandler()
 {
   uint32_t sr = DACC->DACC_ISR;
   if (sr & DACC_ISR_ENDTX) {
-    if (nextBuffer) audioQueue.buffersFifo.freeNextFilledBuffer();
-
-    nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
+    audioQueue.buffersFifo.freeNextFilledBuffer();
+    const AudioBuffer * nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
       // Try the first PDC buffer
       if ((DACC->DACC_TCR == 0) && (DACC->DACC_TNCR == 0)) {
@@ -137,7 +147,7 @@ extern "C" void DAC_IRQHandler()
 // Sound routines
 void audioInit()
 {
-  Pio *pioptr ;
+  Pio * pioptr ;
 
   dacInit() ;
 
