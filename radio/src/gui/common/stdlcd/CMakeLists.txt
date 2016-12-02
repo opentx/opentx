@@ -1,6 +1,7 @@
 set(GUI_SRC
   ${GUI_SRC}
   ../common/stdlcd/widgets.cpp
+  ../common/stdlcd/popups.cpp
   )
 
 if(HELI)

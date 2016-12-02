@@ -231,7 +231,7 @@ void generalDefault()
   g_eeGeneral.variant = EEPROM_VARIANT;
 
 #if !defined(PCBHORUS)
-  g_eeGeneral.contrast = 25;
+  g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
 #if defined(PCBFLAMENCO)
@@ -2545,7 +2545,7 @@ int main()
   MCUCSR = 0x80 ;   // Must be done twice
 #endif
 #if defined(PCBTARANIS)
-  g_eeGeneral.contrast = 30;
+  g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
   wdt_disable();
 

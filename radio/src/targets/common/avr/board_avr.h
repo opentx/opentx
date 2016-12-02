@@ -102,6 +102,9 @@ uint8_t switchState(uint8_t index);
 #define LCD_W                          128
 #define LCD_H                          64
 #define LCD_DEPTH                      1
+#define LCD_CONTRAST_MIN               10
+#define LCD_CONTRAST_MAX               45
+#define LCD_CONTRAST_DEFAULT           25
 void lcdRefresh(void);
 #define lcdRefreshWait()
 void lcdSetRefVolt(unsigned char val);

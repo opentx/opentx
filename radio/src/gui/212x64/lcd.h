@@ -27,8 +27,6 @@
 #define scoord_t                       int
 #define CENTER                         "\015"
 #define CENTER_OFS                     (7*FW-FW/2)
-#define CONTRAST_MIN                   0
-#define CONTRAST_MAX                   45
 
 #define lcdint_t                       int32_t
 

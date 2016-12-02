@@ -20,9 +20,9 @@
 
 #include "opentx.h"
 
-#define MODEL_SPECIAL_FUNC_1ST_COLUMN          (3)
-#define MODEL_SPECIAL_FUNC_2ND_COLUMN          (5*FW-2)
-#define MODEL_SPECIAL_FUNC_3RD_COLUMN          (15*FW+2)
+#define MODEL_SPECIAL_FUNC_1ST_COLUMN          (0)
+#define MODEL_SPECIAL_FUNC_2ND_COLUMN          (4*FW-1)
+#define MODEL_SPECIAL_FUNC_3RD_COLUMN          (14*FW-3)
 #define MODEL_SPECIAL_FUNC_4TH_COLUMN          (20*FW)
 #if defined(GRAPHICS)
   #define MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF  (20*FW)
@@ -31,9 +31,9 @@
 #endif
 
 #if defined(CPUARM) && defined(SDCARD)
-void onCustomFunctionsFileSelectionMenu(const char *result)
+void onCustomFunctionsFileSelectionMenu(const char * result)
 {
-  int  sub = menuVerticalPosition - 1;
+  int  sub = menuVerticalPosition - HEADER_LINE;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
@@ -132,9 +132,9 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           if (func == FUNC_TRAINER) {
             maxParam = 4;
 #if defined(CPUARM)
-            drawSource(lcdNextPos, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, CFN_CH_INDEX(cfn)==0 ? 0 : MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
 #else
-            drawSource(lcdNextPos, y, MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, MIXSRC_Rud+CFN_CH_INDEX(cfn)-1, attr);
 #endif
           }
 #if defined(GVARS)
@@ -214,11 +214,10 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 #endif
 #if defined(CPUARM) && defined(SDCARD)
           else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
-            coord_t x = (func == FUNC_PLAY_TRACK ? MODEL_SPECIAL_FUNC_2ND_COLUMN + FW + FW*strlen(TR_PLAY_TRACK) : MODEL_SPECIAL_FUNC_3RD_COLUMN);
             if (ZEXIST(cfn->play.name))
-              lcdDrawSizedText(x, y, cfn->play.name, sizeof(cfn->play.name), attr);
+              lcdDrawSizedText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, cfn->play.name, sizeof(cfn->play.name), attr);
             else
-              lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, 0, attr);
+              lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_VCSWFUNC, 0, attr);
             if (active && event==EVT_KEY_BREAK(KEY_ENTER)) {
               s_editMode = 0;
               char directory[256];
@@ -354,11 +353,11 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             }
 #if defined(CPUARM)
             else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
-              lcdDrawText(MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF, y, "!-", attr);
+              lcdDrawText(MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF+1, y, "!-", attr);
             }
 #endif
             else {
-              lcdDrawNumber(MODEL_SPECIAL_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr);
+              lcdDrawNumber(MODEL_SPECIAL_FUNC_4TH_COLUMN+2+FW, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, RIGHT | attr);
             }
 #if defined(CPUARM)
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);

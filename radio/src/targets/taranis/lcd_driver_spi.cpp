@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#define CONTRAST_OFS                   160
+#define LCD_CONTRAST_OFFSET            160
 #define RESET_WAIT_DELAY_MS            300 // Wait time after LCD reset before first command
 #define WAIT_FOR_DMA_END()             do { } while (lcd_busy)
 
@@ -124,9 +124,9 @@ void lcdStart()
   lcdWriteCommand(0xE9); // Set bias=1/10
   lcdWriteCommand(0x81); // Set Vop
 #if defined(BOOT)
-  lcdWriteCommand(CONTRAST_OFS+25);
+  lcdWriteCommand(LCD_CONTRAST_OFFSET+LCD_CONTRAST_DEFAULT);
 #else
-  lcdWriteCommand(CONTRAST_OFS+g_eeGeneral.contrast);
+  lcdWriteCommand(LCD_CONTRAST_OFFSET+g_eeGeneral.contrast);
 #endif
   lcdWriteCommand(0xA2); // Set line rate: 28KLPS
   lcdWriteCommand(0x28); // Set panel loading
@@ -330,8 +330,8 @@ void lcdSetRefVolt(uint8_t val)
 
 #if !defined(PCBX7D)
   WAIT_FOR_DMA_END();
+#endif
   
   lcdWriteCommand(0x81); // Set Vop
-  lcdWriteCommand(val+CONTRAST_OFS); // 0-255
-#endif
+  lcdWriteCommand(val+LCD_CONTRAST_OFFSET); // 0-255
 }

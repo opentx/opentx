@@ -519,11 +519,17 @@ void ledBlue(void);
 #define LCD_H                          64
 #define LCD_DEPTH                      1
 #define IS_LCD_RESET_NEEDED()          true
+#define LCD_CONTRAST_MIN               10
+#define LCD_CONTRAST_MAX               30
+#define LCD_CONTRAST_DEFAULT           20
 #else
 #define LCD_W                          212
 #define LCD_H                          64
 #define LCD_DEPTH                      4
 #define IS_LCD_RESET_NEEDED()          (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
+#define LCD_CONTRAST_MIN               0
+#define LCD_CONTRAST_MAX               45
+#define LCD_CONTRAST_DEFAULT           25
 #endif
 void lcdInit(void);
 void lcdInitFinish(void);
