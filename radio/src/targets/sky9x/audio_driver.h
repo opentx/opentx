@@ -29,17 +29,6 @@ void audioConsumeCurrentBuffer();
 
 void setSampleRate( uint32_t frequency ) ;
 
-inline void dacStart()
-{
-  PMC->PMC_PCER0 |= 0x40000000L ; // Enable peripheral clock to DAC
-  DACC->DACC_IER = DACC_IER_ENDTX ;
-}
-
-inline void dacStop()
-{
-  DACC->DACC_IDR = DACC_IDR_ENDTX ; // Disable interrupt
-}
-
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 
