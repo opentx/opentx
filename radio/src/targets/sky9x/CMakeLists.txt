@@ -39,7 +39,7 @@ else()
   endif()
 endif()
 
-add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
+add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL -DAUDIO_DUAL_BUFFER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
 add_definitions(-DEEPROM_VARIANT=0)
 

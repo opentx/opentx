@@ -86,7 +86,7 @@ template <unsigned int NUM_BITS> class BitField {
 #define BEEP_KEY_UP_FREQ               (BEEP_DEFAULT_FREQ+150)
 #define BEEP_KEY_DOWN_FREQ             (BEEP_DEFAULT_FREQ-150)
 
-#if defined(PCBSKY9X)
+#if defined(AUDIO_DUAL_BUFFER)
 enum AudioBufferState
 {
   AUDIO_BUFFER_FREE,
@@ -118,7 +118,9 @@ enum AudioBufferState
 struct AudioBuffer {
   audio_data_t data[AUDIO_BUFFER_SIZE];
   uint16_t size;
-  uint8_t  state;
+#if defined(AUDIO_DUAL_BUFFER)
+  uint8_t state;
+#endif
 };
 
 extern AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
@@ -317,7 +319,7 @@ class AudioBufferFifo {
     // returns an empty buffer to be filled wit data and put back into FIFO with audioPushBuffer()
     AudioBuffer * getEmptyBuffer() const
     {
-#if defined(PCBSKY9X)
+#if defined(AUDIO_DUAL_BUFFER)
       AudioBuffer * buffer = &audioBuffers[writeIdx];
       return buffer->state == AUDIO_BUFFER_FREE ? buffer : NULL;
 #else
@@ -329,7 +331,7 @@ class AudioBufferFifo {
     void audioPushBuffer()
     {
       audioDisableIrq();
-#if defined(PCBSKY9X)
+#if defined(AUDIO_DUAL_BUFFER)
       AudioBuffer * buffer = &audioBuffers[writeIdx];
       buffer->state = AUDIO_BUFFER_FILLED;
 #endif
@@ -341,7 +343,7 @@ class AudioBufferFifo {
     // returns a pointer to the audio buffer to be played
     const AudioBuffer * getNextFilledBuffer()
     {
-#if defined(PCBSKY9X)
+#if defined(AUDIO_DUAL_BUFFER)
       uint8_t idx = readIdx;
       do {
         AudioBuffer * buffer = &audioBuffers[idx];
@@ -362,7 +364,7 @@ class AudioBufferFifo {
     void freeNextFilledBuffer()
     {
       audioDisableIrq();
-#if defined(PCBSKY9X)
+#if defined(AUDIO_DUAL_BUFFER)
       if (audioBuffers[readIdx].state == AUDIO_BUFFER_PLAYING) {
         audioBuffers[readIdx].state = AUDIO_BUFFER_FREE;
         readIdx = nextBufferIdx(readIdx);
@@ -377,7 +379,7 @@ class AudioBufferFifo {
 
     bool filledAtleast(int noBuffers) const
     {
-#if defined(PCBSKY9X)
+#if defined(AUDIO_DUAL_BUFFER)
       int count = 0;
       for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
         if (audioBuffers[n].state == AUDIO_BUFFER_FILLED) {
