@@ -70,8 +70,7 @@ void SimulatorDialog::updateDebugOutput()
 
 void SimulatorDialog::wheelEvent (QWheelEvent *event)
 {
-   if ( event->delta() != 0)
-   {
+   if ( event->delta() != 0) {
        simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
    }
 }
