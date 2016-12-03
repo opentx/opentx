@@ -110,7 +110,7 @@ const char * runPopupMenu(event_t event)
       }
       break;
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(CASE_EVT_ROTARY_BREAK)
     CASE_EVT_ROTARY_BREAK
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -121,12 +121,12 @@ const char * runPopupMenu(event_t event)
 #endif
       // no break
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(CASE_EVT_ROTARY_LONG)
     CASE_EVT_ROTARY_LONG
       killEvents(event);
       // no break
 #endif
-      
+
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
       s_menu_item = 0;
