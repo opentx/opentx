@@ -715,6 +715,9 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_SYMAX:
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_SYMAX, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
+            case MM_RF_PROTO_SLT:
+              lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+11*FW, y, STR_SUBTYPE_SLT, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+              break;
             case MM_RF_PROTO_CX10:
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_SUBTYPE_CX10, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
@@ -732,6 +735,9 @@ void menuModelSetup(uint8_t event)
               break;
             case MM_RF_PROTO_FS_AFHDS2A:
               lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_SUBTYPE_AFHDS2A , g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
+              break;
+            case MM_RF_PROTO_Q2X2:
+              lcd_putsiAtt(MODEL_SETUP_2ND_COLUMN+10*FW, y, STR_SUBTYPE_Q2X2 , g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
               break;
             case MM_RF_CUSTOM_SELECTED:
               lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN+14*FW, y, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), menuHorizontalPosition==2 ? attr : 0, 2);
@@ -792,18 +798,20 @@ void menuModelSetup(uint8_t event)
                   case MM_RF_PROTO_HISKY:
                   case MM_RF_PROTO_SYMAX:
                   case MM_RF_PROTO_KN:
+                  case MM_RF_PROTO_SLT:
+                  case MM_RF_PROTO_Q2X2:
                     CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 1);
                     break;
                   case MM_RF_PROTO_CG023:
                     CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 2);
                     break;
-                  case MM_RF_PROTO_FLYSKY:
                   case MM_RF_PROTO_MT99XX:
                   case MM_RF_PROTO_FRSKY:
                   case MM_RF_PROTO_DSM2:
                   case MM_RF_PROTO_FS_AFHDS2A:
                     CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 3);
                     break;
+                  case MM_RF_PROTO_FLYSKY:
                   case MM_RF_PROTO_MJXQ:
                   case MM_RF_PROTO_YD717:
                     CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 4);
@@ -907,9 +915,8 @@ void menuModelSetup(uint8_t event)
             if (xOffsetBind) lcd_outdezNAtt(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx],
-                                           IS_MODULE_DSM2(moduleIdx) ? 20 :
-                                           IS_MODULE_MULTIMODULE(moduleIdx) ? 15 : 63);
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
@@ -985,6 +992,9 @@ void menuModelSetup(uint8_t event)
             case MM_RF_PROTO_HUBSAN:
               lcd_putsLeft(y, STR_MULTI_VIDFREQ);
               break;
+            case MM_RF_PROTO_OLRS:
+              lcd_putsLeft(y, STR_MULTI_RFPOWER);
+              break;
             case MM_RF_PROTO_FS_AFHDS2A:
               lcd_putsLeft(y, TR_MULTI_SERVOFREQ);
               optionValue = 50 + 5 * optionValue;
@@ -997,6 +1007,8 @@ void menuModelSetup(uint8_t event)
           if (attr) {
             if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_FS_AFHDS2A) {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, 0, 70);
+            } else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_OLRS) {
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -1, 7);
             } else {
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].multi.optionValue, -128, 127);
             }
