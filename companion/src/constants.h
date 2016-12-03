@@ -64,4 +64,10 @@ const char * const ARROW_UP = "\xE2\x86\x91";
 const char * const ARROW_RIGHT = "\xE2\x86\x92";
 const char * const ARROW_DOWN = "\xE2\x86\x93";
 
+#if defined(DEBUG)
+#define HORUS_READY_FOR_RELEASE()     true
+#else
+#define HORUS_READY_FOR_RELEASE()     false
+#endif
+
 #endif // _CONSTANTS_H_

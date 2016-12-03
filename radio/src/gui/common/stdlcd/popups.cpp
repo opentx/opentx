@@ -126,7 +126,7 @@ const char * runPopupMenu(event_t event)
       killEvents(event);
       // no break
 #endif
-      
+
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
       s_menu_item = 0;

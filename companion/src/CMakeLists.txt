@@ -27,6 +27,9 @@ if(DEBUG_STORAGE_IMPORT)
   add_definitions(-DDEBUG_STORAGE_IMPORT)
   message(STATUS "Storage import debugging enabled")
 endif()
+if(DEBUG)
+  add_definitions(-DDEBUG)
+endif()
 
 option(TABLE_LAYOUT "Use QTableWidget for grid layouts") # Disabled by default
 if(TABLE_LAYOUT)
@@ -384,7 +387,7 @@ if(APPLE)
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
   set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
   install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
-  
+
   # Write qt.conf to tell qt where to find it plugins
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
     "[Paths]\nPlugins = Plugins\n")
@@ -402,7 +405,7 @@ if(APPLE)
   get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
   install(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
   set(bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/platforms/libqcocoa.dylib")
-  
+
   # Add icon
   set(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
   set(MAC_ICON_FILE ${COMPANION_SRC_DIRECTORY}/images/${MACOSX_BUNDLE_ICON_FILE})
