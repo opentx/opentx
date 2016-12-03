@@ -84,11 +84,9 @@ void MdiChild::eepromInterfaceChanged()
 {
   ui->modelsList->refreshList();
   ui->SimulateTxButton->setEnabled(GetCurrentFirmware()/*firmware*/->getCapability(Simulation));
-#if !defined(DEBUG)
-  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
     ui->SimulateTxButton->setDisabled(GetCurrentFirmware()/*firmware*/->getCapability(Simulation));
   }
-#endif
   updateTitle();
 }
 
