@@ -222,10 +222,10 @@ void SimulatorDialog::keyPressEvent (QKeyEvent *event)
     case Qt::Key_PageUp:    
       buttonPressed = event->key();
       break;
-    case Qt::Key_Comma:
+    case Qt::Key_Z:
       simulator->wheelEvent(-1);
       break;
-    case Qt::Key_Period:
+    case Qt::Key_X:
       simulator->wheelEvent(1);
       break;
 
