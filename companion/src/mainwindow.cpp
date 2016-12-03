@@ -557,12 +557,7 @@ void MainWindow::openDocURL()
 void MainWindow::openFile()
 {
   QString fileFilter;
-#if defined(DEBUG)
-  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
-#else
-  if (false) {
-#endif
-
+  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
     fileFilter = tr(OTX_FILES_FILTER);
   }
   else {
@@ -756,8 +751,7 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-#if defined(DEBUG)
-  if(GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
+  if(GetCurrentFirmware()->getBoard()== BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
     // just an example
     QString path = findMassstoragePath("RADIO");
     if (path.isEmpty()) {
@@ -797,7 +791,6 @@ void MainWindow::readEeprom()
 
   }
   else {
-#endif
     QString tempFile;
 
     EEPROMInterface *eepromInterface = GetEepromInterface();
@@ -816,9 +809,7 @@ void MainWindow::readEeprom()
       child->show();
       qunlink(tempFile);
     }
-#if defined(DEBUG)
   }
-#endif
 }
 
 bool MainWindow::readFirmwareFromRadio(const QString &filename)

@@ -820,15 +820,13 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * dialog;
-#if defined(DEBUG)
-    if (board == BOARD_HORUS) {
+
+    if (board == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
       dialog = new SimulatorDialogHorus(parent, simulator, flags);
       GetEepromInterface()->saveFile(*simuData, g.profile[g.id()].sdPath());
       dialog->start(NULL);
     }
-    else
-#endif
-    if (board == BOARD_FLAMENCO) {
+    else if (board == BOARD_FLAMENCO) {
       dialog = new SimulatorDialogFlamenco(parent, simulator, flags);
       QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
