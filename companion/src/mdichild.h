@@ -25,10 +25,10 @@
 #include "eeprominterface.h"
 
 namespace Ui {
-class mdiChild;
+class MdiChild;
 }
-#define ER9X_EEPROM_FILE_TYPE        "ER9X_EEPROM_FILE"
 
+#define ER9X_EEPROM_FILE_TYPE        "ER9X_EEPROM_FILE"
 #define EEPE_EEPROM_FILE_HEADER  "EEPE EEPROM FILE"
 #define EEPE_MODEL_FILE_HEADER   "EEPE MODEL FILE"
 
@@ -65,8 +65,7 @@ class MdiChild : public QWidget
 
   private slots:
     void documentWasModified();
-    void on_SimulateTxButton_clicked();
-    void qSleep(int ms);
+    void on_simulateButton_clicked();
 
   public slots:
     void checkAndInitModel(int row);
@@ -90,8 +89,8 @@ class MdiChild : public QWidget
     QString strippedName(const QString & fullFileName);
     bool loadOtxFile(const QString & fileName);
 
-    Ui::mdiChild * ui;
-
+    Ui::MdiChild * ui;
+    
     QString curFile;
 
     Firmware * firmware;
