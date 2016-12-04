@@ -1,7 +1,7 @@
 set(LUA "NO" CACHE STRING "Lua scripts (YES/NO/NO_MODEL_SCRIPTS)")
 set(USB "JOYSTICK" CACHE STRING "USB option (JOYSTICK/MASSSTORAGE/SERIAL)")
 set(ARCH ARM)
-set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.1.0/Libraries)
+set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.2.0/Libraries)
 add_definitions(-DSTM32 -DLUA_INPUTS -DVARIO -DSBUS -DCROSSFIRE)
 include_directories(${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32)
 include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
