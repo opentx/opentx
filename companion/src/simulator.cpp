@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
       showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(firmwareId), QMessageBox::Critical);
       return 2;
     }
-    if (factory->type() == BOARD_HORUS && HORUS_READY_FOR_RELEASE())
+    if (factory->type() == BOARD_HORUS)
       dialog = new SimulatorDialogHorus(NULL, factory->create());
     else if (factory->type() == BOARD_FLAMENCO)
       dialog = new SimulatorDialogFlamenco(NULL, factory->create());
