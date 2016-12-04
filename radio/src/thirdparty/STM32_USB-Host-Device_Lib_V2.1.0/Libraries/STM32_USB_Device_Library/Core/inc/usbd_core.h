@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_core.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   Header file for usbd_core.c
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -30,9 +30,9 @@
 #define __USBD_CORE_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_conf.h"
-#include "../../../STM32_USB_OTG_Driver/inc/usb_dcd.h"
+#include "usb_dcd.h"
 #include "usbd_def.h"
+#include "usbd_conf.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -92,7 +92,7 @@ void USBD_Init(USB_OTG_CORE_HANDLE *pdev,
                USB_OTG_CORE_ID_TypeDef coreID, 
                const USBD_DEVICE *pDevice,                  
                const USBD_Class_cb_TypeDef *class_cb, 
-               const USBD_Usr_cb_TypeDef *usr_cb);
+               const USBD_Usr_cb_TypeDef *usr_cb);	// modified by OpenTX
 
 USBD_Status USBD_DeInit(USB_OTG_CORE_HANDLE *pdev);
 

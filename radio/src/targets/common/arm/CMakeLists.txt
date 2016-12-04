@@ -107,7 +107,6 @@ set(TARGET_SRC
   trainer_driver.cpp
   audio_driver.cpp
   telemetry_driver.cpp
-  ${SERIAL2_DRIVER}
   )
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}

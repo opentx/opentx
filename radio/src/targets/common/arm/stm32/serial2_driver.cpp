@@ -106,9 +106,15 @@ void serial2Init(unsigned int mode, unsigned int protocol)
 
 void serial2Putc(char c)
 {
-  while (serial2TxFifo.isFull());
+#if !defined(SIMU)
+  int n = 0;
+  while (serial2TxFifo.isFull()) {
+    delay_ms(1);
+    if (++n > 100) return;
+  }
   serial2TxFifo.push(c);
   USART_ITConfig(SERIAL_USART, USART_IT_TXE, ENABLE);
+#endif
 }
 
 void serial2SbusInit()

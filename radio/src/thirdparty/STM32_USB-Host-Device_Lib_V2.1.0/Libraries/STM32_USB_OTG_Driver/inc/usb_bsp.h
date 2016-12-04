@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usb_bsp.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    19-March-2012
+  * @version V2.2.0
+  * @date    09-November-2015
   * @brief   Specific api's relative to the used hardware platform
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -78,20 +78,24 @@
 void BSP_Init(void);
 
 void USB_OTG_BSP_Init (USB_OTG_CORE_HANDLE *pdev);
-void USB_OTG_BSP_Deinit(USB_OTG_CORE_HANDLE *pdev);
+void USB_OTG_BSP_Deinit(USB_OTG_CORE_HANDLE *pdev);	// modified by OpenTX
 void USB_OTG_BSP_uDelay (const uint32_t usec);
 void USB_OTG_BSP_mDelay (const uint32_t msec);
 void USB_OTG_BSP_EnableInterrupt (USB_OTG_CORE_HANDLE *pdev);
-void USB_OTG_BSP_DisableInterrupt (USB_OTG_CORE_HANDLE *pdev);
+void USB_OTG_BSP_TimerIRQ (void);
+void USB_OTG_BSP_DisableInterrupt (USB_OTG_CORE_HANDLE *pdev);	// modified by OpenTX
 #ifdef USE_HOST_MODE
 void USB_OTG_BSP_ConfigVBUS(USB_OTG_CORE_HANDLE *pdev);
 void USB_OTG_BSP_DriveVBUS(USB_OTG_CORE_HANDLE *pdev,uint8_t state);
-#endif
+void USB_OTG_BSP_Resume(USB_OTG_CORE_HANDLE *pdev) ;                                                                
+void USB_OTG_BSP_Suspend(USB_OTG_CORE_HANDLE *pdev);
+
+#endif /* USE_HOST_MODE */
 /**
   * @}
   */ 
 
-#endif //__USB_BSP__H__
+#endif /* __USB_BSP__H__ */
 
 /**
   * @}

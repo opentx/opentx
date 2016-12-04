@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usb_dcd.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    19-March-2012
+  * @version V2.2.0
+  * @date    09-November-2015
   * @brief   Peripheral Driver Header file
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_core.h"
+
 
 /** @addtogroup USB_OTG_DRIVER
 * @{
@@ -128,7 +129,7 @@ uint32_t   DCD_EP_PrepareRx ( USB_OTG_CORE_HANDLE *pdev,
 uint32_t    DCD_EP_Tx (USB_OTG_CORE_HANDLE *pdev,
                                uint8_t  ep_addr,
                                const uint8_t  *pbuf,
-                               uint32_t   buf_len);
+                               uint32_t   buf_len);	// modified by OpenTX
 uint32_t    DCD_EP_Stall (USB_OTG_CORE_HANDLE *pdev,
                               uint8_t   epnum);
 uint32_t    DCD_EP_ClrStall (USB_OTG_CORE_HANDLE *pdev,
@@ -149,7 +150,7 @@ void DCD_SetEPStatus (USB_OTG_CORE_HANDLE *pdev ,
 */ 
 
 
-#endif //__DCD_H__
+#endif /* __DCD_H__ */
 
 
 /**

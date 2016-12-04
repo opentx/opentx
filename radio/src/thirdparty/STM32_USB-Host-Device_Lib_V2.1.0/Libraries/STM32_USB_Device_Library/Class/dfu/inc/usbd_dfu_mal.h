@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_dfu_mal.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   Header for usbd_dfu_mal.c file.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usb_conf.h"
+
 #include "usbd_conf.h"
 #include "usbd_dfu_core.h"
 
@@ -54,7 +55,7 @@ DFU_MAL_Prop_TypeDef;
 #define MAL_OK                          0
 #define MAL_FAIL                        1
 
-/* utils macro ---------------------------------------------------------------*/
+/* useful macro ---------------------------------------------------------------*/
 #define _1st_BYTE(x)  (uint8_t)((x)&0xFF)             /* 1st addressing cycle */
 #define _2nd_BYTE(x)  (uint8_t)(((x)&0xFF00)>>8)      /* 2nd addressing cycle */
 #define _3rd_BYTE(x)  (uint8_t)(((x)&0xFF0000)>>16)   /* 3rd addressing cycle */

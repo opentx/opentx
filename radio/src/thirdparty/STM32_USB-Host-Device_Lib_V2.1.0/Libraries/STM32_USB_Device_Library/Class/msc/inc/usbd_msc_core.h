@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_msc_core.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   header for the usbd_msc_core.c file
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@
 #ifndef _USB_MSC_CORE_H_
 #define _USB_MSC_CORE_H_
 
-#include  "../../../Core/inc/usbd_ioreq.h"
+#include  "usbd_ioreq.h"
 
 /** @addtogroup USBD_MSC_BOT
   * @{
@@ -69,7 +69,7 @@ extern USBD_Class_cb_TypeDef  USBD_MSC_cb;
 /**
   * @}
   */ 
-#endif  // _USB_MSC_CORE_H_
+#endif /* _USB_MSC_CORE_H_ */
 /**
   * @}
   */ 

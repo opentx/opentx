@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_hid_core.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   header file for the usbd_hid_core.c file.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -52,6 +52,8 @@
 #define HID_DESCRIPTOR_TYPE           0x21
 #define HID_REPORT_DESC               0x22
 
+#define HID_HS_BINTERVAL              0x07
+#define HID_FS_BINTERVAL              0x0A
 
 #define HID_REQ_SET_PROTOCOL          0x0B
 #define HID_REQ_GET_PROTOCOL          0x03
@@ -89,7 +91,7 @@
   * @{
   */ 
 
-extern const USBD_Class_cb_TypeDef  USBD_HID_cb;
+extern const USBD_Class_cb_TypeDef  USBD_HID_cb;	// modified by OpenTX
 /**
   * @}
   */ 
@@ -100,11 +102,14 @@ extern const USBD_Class_cb_TypeDef  USBD_HID_cb;
 uint8_t USBD_HID_SendReport (USB_OTG_CORE_HANDLE  *pdev, 
                                  uint8_t *report,
                                  uint16_t len);
+
+uint32_t USBD_HID_GetPollingInterval (USB_OTG_CORE_HANDLE *pdev);
+
 /**
   * @}
   */ 
 
-#endif  // __USB_HID_CORE_H_
+#endif  /*  __USB_HID_CORE_H_ */
 /**
   * @}
   */ 

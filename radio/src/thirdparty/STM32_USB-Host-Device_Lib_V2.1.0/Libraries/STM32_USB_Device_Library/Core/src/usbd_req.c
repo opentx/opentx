@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_req.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012 
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   This file provides the standard USB requests following chapter 9.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -27,9 +27,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_req.h"
-
-#include "usbd_desc.h"
 #include "usbd_ioreq.h"
+#include "usbd_desc.h"
 
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
@@ -84,7 +83,7 @@ __ALIGN_BEGIN uint32_t USBD_ep_status __ALIGN_END  = 0;
     #pragma data_alignment=4   
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN const uint32_t  USBD_default_cfg __ALIGN_END  = 0;
+__ALIGN_BEGIN const uint32_t  USBD_default_cfg __ALIGN_END  = 0;	// modified by OpenTX
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
@@ -93,12 +92,6 @@ __ALIGN_BEGIN const uint32_t  USBD_default_cfg __ALIGN_END  = 0;
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN uint32_t  USBD_cfg_status __ALIGN_END  = 0;  
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-  #if defined ( __ICCARM__ ) /*!< IAR Compiler */
-    #pragma data_alignment=4   
-  #endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;
 /**
   * @}
   */ 
@@ -242,9 +235,15 @@ USBD_Status  USBD_StdEPReq (USB_OTG_CORE_HANDLE  *pdev, USB_SETUP_REQ  *req)
   
   ep_addr  = LOBYTE(req->wIndex);   
   
-  switch (req->bRequest) 
+  /* Check the class specific requests before going to standard request */
+  if ((req->bmRequest & USB_REQ_TYPE_MASK) == USB_REQ_TYPE_CLASS)
   {
+    pdev->dev.class_cb->Setup (pdev, req);
+    return ret;
+  }
     
+  switch (req->bRequest) 
+  {  
   case USB_REQ_SET_FEATURE :
     
     switch (pdev->dev.device_status) 
@@ -341,6 +340,12 @@ USBD_Status  USBD_StdEPReq (USB_OTG_CORE_HANDLE  *pdev, USB_SETUP_REQ  *req)
           USBD_ep_status = 0x0000;     
         }      
       }
+      
+      else
+      {
+        /* Do Nothing */
+      }
+      
       USBD_CtlSendData (pdev,
                         (uint8_t *)&USBD_ep_status,
                         2);
@@ -369,16 +374,17 @@ static void USBD_GetDescriptor(USB_OTG_CORE_HANDLE  *pdev,
 {
   uint16_t len;
   uint8_t *pbuf;
-  
+  len = req->wLength ;
     
   switch (req->wValue >> 8)
   {
+#if (USBD_LPM_ENABLED == 1)
+  case USB_DESC_TYPE_BOS:
+    pbuf = pdev->pDesc->GetBOSDescriptor(pdev->dev_speed, &len);
+    break;
+#endif
   case USB_DESC_TYPE_DEVICE:
     pbuf = pdev->dev.usr_device->GetDeviceDescriptor(pdev->cfg.speed, &len);
-    if ((req->wLength == 64) ||( pdev->dev.device_status == USB_OTG_DEFAULT))  
-    {                  
-      len = 8;
-    }
     break;
     
   case USB_DESC_TYPE_CONFIGURATION:
@@ -428,7 +434,7 @@ static void USBD_GetDescriptor(USB_OTG_CORE_HANDLE  *pdev,
 #else      
        USBD_CtlError(pdev , req);
       return;
-#endif /* USBD_CtlError(pdev , req); */      
+#endif /* USBD_CtlError(pdev , req)*/      
     }
     break;
   case USB_DESC_TYPE_DEVICE_QUALIFIER:                   
@@ -474,8 +480,6 @@ static void USBD_GetDescriptor(USB_OTG_CORE_HANDLE  *pdev,
       USBD_CtlError(pdev , req);
       return;
 #endif     
-
-    
   default: 
      USBD_CtlError(pdev , req);
     return;
@@ -627,7 +631,7 @@ static void USBD_GetConfig(USB_OTG_CORE_HANDLE  *pdev,
       
       USBD_CtlSendData (pdev, 
                         (const uint8_t *)&USBD_default_cfg,
-                        1);
+                        1);	// modified by OpenTX
       break;
       
     case USB_OTG_CONFIGURED:                   
@@ -713,31 +717,38 @@ static void USBD_SetFeature(USB_OTG_CORE_HANDLE  *pdev,
     test_mode = req->wIndex >> 8;
     switch (test_mode) 
     {
-    case 1: // TEST_J
+    case 1: /* TEST_J */
       dctl.b.tstctl = 1;
       break;
       
-    case 2: // TEST_K	
+    case 2: /* TEST_K */	
       dctl.b.tstctl = 2;
       break;
       
-    case 3: // TEST_SE0_NAK
+    case 3: /* TEST_SE0_NAK */
       dctl.b.tstctl = 3;
       break;
       
-    case 4: // TEST_PACKET
+    case 4: /* TEST_PACKET */
       dctl.b.tstctl = 4;
       break;
       
-    case 5: // TEST_FORCE_ENABLE
+    case 5: /* TEST_FORCE_ENABLE */
       dctl.b.tstctl = 5;
+      break;
+      
+    default :
+      dctl.b.tstctl = 1;
       break;
     }
     SET_TEST_MODE = dctl;
     pdev->dev.test_mode = 1;
     USBD_CtlSendStatus(pdev);
   }
-
+  else
+  {
+    /* Do Nothing */
+  }
 }
 
 

@@ -23,8 +23,8 @@
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
+#include "usb_dcd_int.h"
+#include "usb_bsp.h"
 #if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
@@ -158,7 +158,9 @@ void boardInit()
   // FrSky removed the volume chip in latest board, that's why it doesn't answer!
   // i2cInit();
 
+#if defined(DEBUG)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
+#endif
 
   __enable_irq();
 

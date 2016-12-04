@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usb_hcd.c
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    19-March-2012
+  * @version V2.2.0
+  * @date    09-November-2015
   * @brief   Host Interface Layer
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usb_core.h"
 #include "usb_hcd.h"
-
 #include "usb_conf.h"
 #include "usb_bsp.h"
 
@@ -168,6 +167,19 @@ uint32_t HCD_ResetPort(USB_OTG_CORE_HANDLE *pdev)
 uint32_t HCD_IsDeviceConnected(USB_OTG_CORE_HANDLE *pdev)
 {
   return (pdev->host.ConnSts);
+}
+
+
+/**
+  * @brief  HCD_IsPortEnabled 
+  *         This function checks if port is enabled
+  * @param  pdev : Selected device
+  * @retval Frame number
+  * 
+  */
+uint32_t HCD_IsPortEnabled(USB_OTG_CORE_HANDLE *pdev)
+{
+  return (pdev->host.PortEnabled);
 }
 
 /**

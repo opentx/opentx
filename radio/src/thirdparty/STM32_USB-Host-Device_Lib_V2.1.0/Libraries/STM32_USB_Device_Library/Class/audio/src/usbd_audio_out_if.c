@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_audio_out_if.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   This file provides the Audio Out (palyback) interface API.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ static uint8_t AudioState = AUDIO_STATE_INACTIVE;
 /**
   * @brief  Init
   *         Initialize and configures all required resources for audio play function.
-  * @param  AudioFreq: Statrtup audio frequency. 
+  * @param  AudioFreq: Startup audio frequency. 
   * @param  Volume: Startup volume to be set.
   * @param  options: specific options passed to low layer function.
   * @retval AUDIO_OK if all operations succeed, AUDIO_FAIL else.
@@ -120,7 +120,11 @@ static uint8_t  Init         (uint32_t AudioFreq,
   if (Initialized == 0)
   {
     /* Call low layer function */
-    if (EVAL_AUDIO_Init(OUTPUT_DEVICE_AUTO, Volume, AudioFreq) != 0)
+#if defined (USE_STM324x9I_EVAL)
+    if (EVAL_AUDIO_Init(OUTPUT_DEVICE_BOTH, Volume, AudioFreq) != 0)
+#else
+      if (EVAL_AUDIO_Init(OUTPUT_DEVICE_AUTO, Volume, AudioFreq) != 0)
+#endif
     {
       AudioState = AUDIO_STATE_ERROR;
       return AUDIO_FAIL;
@@ -153,7 +157,7 @@ static uint8_t  DeInit       (uint32_t options)
 /**
   * @brief  AudioCmd 
   *         Play, Stop, Pause or Resume current file.
-  * @param  pbuf: address from which file shoud be played.
+  * @param  pbuf: address from which file should be played.
   * @param  size: size of the current buffer/file.
   * @param  cmd: command to be executed, can be AUDIO_CMD_PLAY , AUDIO_CMD_PAUSE, 
   *              AUDIO_CMD_RESUME or AUDIO_CMD_STOP.
@@ -186,8 +190,12 @@ static uint8_t  AudioCmd(uint8_t* pbuf,
     /* If current state is Paused */
     else if (AudioState == AUDIO_STATE_PAUSED)
     {
-      if (EVAL_AUDIO_PauseResume(AUDIO_RESUME, (uint32_t)pbuf, (size/2)) != 0)
-      {
+#if defined (USE_STM324x9I_EVAL)
+      if (EVAL_AUDIO_PauseResume(AUDIO_RESUME) != 0)
+#else
+        if (EVAL_AUDIO_PauseResume(AUDIO_RESUME, (uint32_t)pbuf, (size/2)) != 0)
+#endif
+        {
         AudioState = AUDIO_STATE_ERROR;
         return AUDIO_FAIL;
       }
@@ -227,7 +235,11 @@ static uint8_t  AudioCmd(uint8_t* pbuf,
       /* Unsupported command */
       return AUDIO_FAIL;
     }
+#if defined (USE_STM324x9I_EVAL)
+    else if (EVAL_AUDIO_PauseResume(AUDIO_PAUSE) != 0)
+#else
     else if (EVAL_AUDIO_PauseResume(AUDIO_PAUSE, (uint32_t)pbuf, (size/2)) != 0)
+#endif
     {
       AudioState = AUDIO_STATE_ERROR;
       return AUDIO_FAIL;

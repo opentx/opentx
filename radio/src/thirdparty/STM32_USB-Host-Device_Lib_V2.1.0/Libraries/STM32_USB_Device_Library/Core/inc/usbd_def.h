@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_def.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   general defines for the usb device library 
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -93,7 +93,7 @@
 #define  USB_DESC_TYPE_ENDPOINT                            5
 #define  USB_DESC_TYPE_DEVICE_QUALIFIER                    6
 #define  USB_DESC_TYPE_OTHER_SPEED_CONFIGURATION           7
-
+#define  USB_DESC_TYPE_BOS                                 0x0F
 
 #define USB_CONFIG_REMOTE_WAKEUP                           2
 #define USB_CONFIG_SELF_POWERED                            1
@@ -122,8 +122,8 @@
 #define  SWAPBYTE(addr)        (((uint16_t)(*((uint8_t *)(addr)))) + \
                                (((uint16_t)(*(((uint8_t *)(addr)) + 1))) << 8))
 
-#define LOBYTE(x)  ((uint8_t)(x & 0x00FF))
-#define HIBYTE(x)  ((uint8_t)((x & 0xFF00) >>8))
+#define LOBYTE(x)  ((uint8_t)((x) & 0x00FF))
+#define HIBYTE(x)  ((uint8_t)(((x) & 0xFF00) >>8))
 /**
   * @}
   */ 

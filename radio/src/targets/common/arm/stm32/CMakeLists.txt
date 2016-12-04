@@ -9,6 +9,8 @@ include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/cdc/inc)
+include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc/)
+include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
 set(STM32USB_SRC
   STM32_USB_OTG_Driver/src/usb_core.c
   STM32_USB_OTG_Driver/src/usb_dcd.c
@@ -21,6 +23,7 @@ set(TARGET_SRC
   ${TARGET_SRC}
   ../common/arm/stm32/rtc_driver.cpp
   ../common/arm/stm32/cpu_id.cpp
+  ${SERIAL2_DRIVER}
   )
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}

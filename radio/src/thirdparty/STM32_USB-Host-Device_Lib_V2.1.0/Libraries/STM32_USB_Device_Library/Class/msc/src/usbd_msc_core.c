@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    usbd_msc_core.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   This file provides all the MSC core functions.
   *
   * @verbatim
@@ -23,7 +23,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ uint8_t  USBD_MSC_DataOut (void  *pdev,
                                uint8_t epnum);
 
 const uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, 
-                                      uint16_t *length);
+                                      uint16_t *length);	// modified by OpenTX
 
 #ifdef USB_OTG_HS_CORE  
 uint8_t  *USBD_MSC_GetOtherCfgDesc (uint8_t speed, 
@@ -458,7 +458,7 @@ uint8_t  USBD_MSC_DataOut (void  *pdev,
 * @param  length : pointer data length
 * @retval pointer to descriptor buffer
 */
-const uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, uint16_t *length)
+const uint8_t  *USBD_MSC_GetCfgDesc (uint8_t speed, uint16_t *length)	// modified by OpenTX
 {
   *length = sizeof (USBD_MSC_CfgDesc);
   return USBD_MSC_CfgDesc;

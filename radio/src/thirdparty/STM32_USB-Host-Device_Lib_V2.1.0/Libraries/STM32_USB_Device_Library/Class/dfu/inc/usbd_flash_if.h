@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_flash_if.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   Header for usbd_flash_if.c file.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -39,9 +39,15 @@
 #ifdef STM32F2XX
  #define FLASH_END_ADD                   0x08100000
  #define FLASH_IF_STRING                 "@Internal Flash   /0x08000000/03*016Ka,01*016Kg,01*064Kg,07*128Kg"
-#elif defined(STM32F4XX)
+#elif defined(STM32F40_41xxx)
  #define FLASH_END_ADD                   0x08100000
  #define FLASH_IF_STRING                 "@Internal Flash   /0x08000000/03*016Ka,01*016Kg,01*064Kg,07*128Kg"
+
+#elif defined(STM32F429_439xx)
+ #define FLASH_END_ADD                   0x08200000
+ #define FLASH_IF_STRING                  "@Internal Flash   /0x08000000/03*016Ka,01*016Kg,01*064Kg,07*128Kg,04*016Kg,01*064Kg,07*128Kg"
+
+
 #elif defined(STM32F10X_CL)
  #define FLASH_END_ADD                   0x08040000
  #define FLASH_IF_STRING                 "@Internal Flash   /0x08000000/06*002Ka,122*002Kg"  

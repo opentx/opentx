@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usb_defines.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    19-March-2012
+  * @version V2.2.0
+  * @date    09-November-2015
   * @brief   Header of the Core Layer
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -220,10 +220,10 @@ typedef enum
 /** @defgroup Internal_Macro's
   * @{
   */
-#define USB_OTG_READ_REG32(reg)  (*(__IO uint32_t *)reg)
-#define USB_OTG_WRITE_REG32(reg,value) (*(__IO uint32_t *)reg = value)
+#define USB_OTG_READ_REG32(reg)  (*(__IO uint32_t *)(reg))
+#define USB_OTG_WRITE_REG32(reg,value) (*(__IO uint32_t *)(reg) = (value))
 #define USB_OTG_MODIFY_REG32(reg,clear_mask,set_mask) \
-  USB_OTG_WRITE_REG32(reg, (((USB_OTG_READ_REG32(reg)) & ~clear_mask) | set_mask ) )
+  USB_OTG_WRITE_REG32((reg), (((USB_OTG_READ_REG32(reg)) & ~(clear_mask)) | (set_mask)) )
 
 /********************************************************************************
                               ENUMERATION TYPE
@@ -235,7 +235,7 @@ enum USB_OTG_SPEED {
   USB_SPEED_HIGH
 };
 
-#endif //__USB_DEFINES__H__
+#endif /* __USB_DEFINES__H__ */
 
 
 /**

@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usb_hcd_int.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    19-March-2012
+  * @version V2.2.0
+  * @date    09-November-2015
   * @brief   Peripheral Device Interface Layer
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -60,6 +60,8 @@ typedef struct _USBH_HCD_INT
   uint8_t (* SOF) (USB_OTG_CORE_HANDLE *pdev);
   uint8_t (* DevConnected) (USB_OTG_CORE_HANDLE *pdev);
   uint8_t (* DevDisconnected) (USB_OTG_CORE_HANDLE *pdev);   
+  uint8_t (* DevPortEnabled) (USB_OTG_CORE_HANDLE *pdev);  
+  uint8_t (* DevPortDisabled) (USB_OTG_CORE_HANDLE *pdev); 
   
 }USBH_HCD_INT_cb_TypeDef;
 

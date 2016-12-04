@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_flash_if.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   Specific media access Layer for internal flash.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ DFU_MAL_Prop_TypeDef DFU_Flash_cb =
   * @brief  FLASH_If_Init
   *         Memory initialization routine.
   * @param  None
-  * @retval MAL_OK if operation is successeful, MAL_FAIL else.
+  * @retval MAL_OK if operation is successful, MAL_FAIL else.
   */
 uint16_t FLASH_If_Init(void)
 {
@@ -76,7 +76,7 @@ uint16_t FLASH_If_Init(void)
   * @brief  FLASH_If_DeInit
   *         Memory deinitialization routine.
   * @param  None
-  * @retval MAL_OK if operation is successeful, MAL_FAIL else.
+  * @retval MAL_OK if operation is successful, MAL_FAIL else.
   */
 uint16_t FLASH_If_DeInit(void)
 {
@@ -95,7 +95,7 @@ uint16_t FLASH_If_DeInit(void)
 *******************************************************************************/
 uint16_t FLASH_If_Erase(uint32_t Add)
 {
-#if defined (STM32F2XX) || defined (STM32F4XX)
+#if !defined(STM32F10X_CL)
   /* Check which sector has to be erased */
   if (Add < 0x08004000)
   {
@@ -149,10 +149,10 @@ uint16_t FLASH_If_Erase(uint32_t Add)
   {
     return MAL_FAIL;    
   }
-#elif defined(STM32F10X_CL)
+#else
   /* Call the standard Flash erase function */
   FLASH_ErasePage(Add);  
-#endif /* STM32F2XX */
+#endif /* STM32F10X_CL */
   
   return MAL_OK;
 }
@@ -162,7 +162,7 @@ uint16_t FLASH_If_Erase(uint32_t Add)
   *         Memory write routine.
   * @param  Add: Address to be written to.
   * @param  Len: Number of data to be written (in bytes).
-  * @retval MAL_OK if operation is successeful, MAL_FAIL else.
+  * @retval MAL_OK if operation is successful, MAL_FAIL else.
   */
 uint16_t FLASH_If_Write(uint32_t Add, uint32_t Len)
 {
@@ -190,7 +190,7 @@ uint16_t FLASH_If_Write(uint32_t Add, uint32_t Len)
   *         Memory read routine.
   * @param  Add: Address to be read from.
   * @param  Len: Number of data to be read (in bytes).
-  * @retval Pointer to the phyisical address where data should be read.
+  * @retval Pointer to the physical address where data should be read.
   */
 uint8_t *FLASH_If_Read (uint32_t Add, uint32_t Len)
 {

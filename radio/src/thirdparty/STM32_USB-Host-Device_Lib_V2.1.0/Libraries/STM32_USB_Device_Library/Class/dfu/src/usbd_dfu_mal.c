@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_dfu_mal.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   Generic media access Layer.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -90,7 +90,7 @@ static uint8_t  MAL_CheckAdd  (uint32_t Add);
   * @brief  MAL_Init
   *         Initializes the Media on the STM32
   * @param  None
-  * @retval Result of the opeartion (MAL_OK in all cases)
+  * @retval Result of the operation (MAL_OK in all cases)
   */
 uint16_t MAL_Init(void)
 {
@@ -113,7 +113,7 @@ uint16_t MAL_Init(void)
   * @brief  MAL_DeInit
   *         DeInitializes the Media on the STM32
   * @param  None
-  * @retval Result of the opeartion (MAL_OK in all cases)
+  * @retval Result of the operation (MAL_OK in all cases)
   */
 uint16_t MAL_DeInit(void)
 {
@@ -136,7 +136,7 @@ uint16_t MAL_DeInit(void)
   * @brief  MAL_Erase
   *         Erase a sector of memory.
   * @param  Add: Sector address/code
-  * @retval Result of the opeartion: MAL_OK if all operations are OK else MAL_FAIL
+  * @retval Result of the operation: MAL_OK if all operations are OK else MAL_FAIL
   */
 uint16_t MAL_Erase(uint32_t Add)
 {
@@ -171,7 +171,7 @@ uint16_t MAL_Erase(uint32_t Add)
   *         Write sectors of memory.
   * @param  Add: Sector address/code
   * @param  Len: Number of data to be written (in bytes)
-  * @retval Result of the opeartion: MAL_OK if all operations are OK else MAL_FAIL
+  * @retval Result of the operation: MAL_OK if all operations are OK else MAL_FAIL
   */
 uint16_t MAL_Write (uint32_t Add, uint32_t Len)
 {

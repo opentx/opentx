@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED 
-#pragma     data_alignment = 4 
+#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+#pragma     data_alignment = 4
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 
 #include "opentx.h"
@@ -35,7 +35,7 @@ extern "C" {
 /* Private variables ---------------------------------------------------------*/
 
 
-/* These are external variables imported from CDC core to be used for IN 
+/* These are external variables imported from CDC core to be used for IN
    transfer management. */
 extern uint8_t  APP_Rx_Buffer []; /* Write CDC received data in this buffer.
                                      These data will be sent over USB IN endpoint
@@ -53,7 +53,7 @@ static uint16_t VCP_DataRx   (uint8_t* Buf, uint32_t Len);
 
 // static uint16_t VCP_COMConfig(uint8_t Conf);
 
-CDC_IF_Prop_TypeDef VCP_fops = 
+CDC_IF_Prop_TypeDef VCP_fops =
 {
   VCP_Init,
   VCP_DeInit,
@@ -95,13 +95,13 @@ static uint16_t VCP_DeInit(void)
 /**
   * @brief  VCP_Ctrl
   *         Manage the CDC class requests
-  * @param  Cmd: Command code            
+  * @param  Cmd: Command code
   * @param  Buf: Buffer containing command data (request parameters)
   * @param  Len: Number of data to be sent (in bytes)
   * @retval Result of the opeartion (USBD_OK in all cases)
   */
 static uint16_t VCP_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
-{ 
+{
   switch (Cmd)
   {
   case SEND_ENCAPSULATED_COMMAND:
@@ -138,8 +138,8 @@ static uint16_t VCP_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
 
   case SEND_BREAK:
     /* Not  needed for this driver */
-    break;    
-    
+    break;
+
   default:
     break;
   }
@@ -153,39 +153,57 @@ uint16_t charsWritten = 0;
 
 void usbSerialPutc(uint8_t c)
 {
+
+  /*
+      Apparently there is no reliable way to tell if the
+      virtual serial port is opened or not.
+
+      The cdcConnected variable only reports the state
+      of the physical USB connection.
+  */
+
   if (!cdcConnected) return;
 
-  uint32_t txDataLen;
-  do {
-    txDataLen = APP_RX_DATA_SIZE + APP_Rx_ptr_in - APP_Rx_ptr_out;
-    if (txDataLen >= APP_RX_DATA_SIZE) {
-      txDataLen -= APP_RX_DATA_SIZE;
-    }
-    // TODO timeout exit
-  } while (txDataLen >= (APP_RX_DATA_SIZE - CDC_DATA_MAX_PACKET_SIZE));
+  uint32_t prim = __get_PRIMASK();
+  __disable_irq();
+  uint32_t txDataLen = APP_RX_DATA_SIZE + APP_Rx_ptr_in - APP_Rx_ptr_out;
+  if (!prim) __enable_irq();
 
-  APP_Rx_Buffer[APP_Rx_ptr_in] = c;
+  if (txDataLen >= APP_RX_DATA_SIZE) {
+    txDataLen -= APP_RX_DATA_SIZE;
+  }
+  if (txDataLen > (APP_RX_DATA_SIZE - CDC_DATA_MAX_PACKET_SIZE)) return;    // buffer is too full, skip this write
+
   ++charsWritten;
-  /* To avoid buffer overflow */
-  if (APP_Rx_ptr_in >= APP_RX_DATA_SIZE-1) {
+
+  /*
+    APP_Rx_Buffer and associated variables must be modified
+    atomically, because they are used from the interrupt
+  */
+
+  /* Read PRIMASK register, check interrupt status before you disable them */
+  /* Returns 0 if they are enabled, or non-zero if disabled */
+  prim = __get_PRIMASK();
+  __disable_irq();
+  APP_Rx_Buffer[APP_Rx_ptr_in++] = c;
+  if(APP_Rx_ptr_in >= APP_RX_DATA_SIZE)
+  {
     APP_Rx_ptr_in = 0;
     ++usbWraps;
   }
-  else {
-    APP_Rx_ptr_in++;
-  }
+  if (!prim) __enable_irq();
 }
 
 /**
   * @brief  VCP_DataRx
   *         Data received over USB OUT endpoint is available here
-  *           
+  *
   *         @note
-  *         This function will block any OUT packet reception on USB endpoint 
+  *         This function will block any OUT packet reception on USB endpoint
   *         until exiting this function. If you exit this function before transfer
-  *         is complete on CDC interface (ie. using DMA controller) it will result 
+  *         is complete on CDC interface (ie. using DMA controller) it will result
   *         in receiving more data while previous ones are still not sent.
-  *          
+  *
   *         @note
   *         This function is executed inside the USBD_OTG_ISR_Handler() interrupt handler!
 
@@ -205,7 +223,7 @@ static uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len)
   for (uint32_t i = 0; i < Len; i++)
   {
     cliRxFifo.push(Buf[i]);
-  } 
+  }
 #endif
 
   return USBD_OK;

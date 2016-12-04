@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usb_dcd_int.h
   * @author  MCD Application Team
-  * @version V2.1.0
-  * @date    19-March-2012
+  * @version V2.2.0
+  * @date    09-November-2015
   * @brief   Peripheral Device Interface Layer
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ typedef struct _USBD_DCD_INT
   
 }USBD_DCD_INT_cb_TypeDef;
 
-extern const USBD_DCD_INT_cb_TypeDef * const USBD_DCD_INT_fops;
+extern const USBD_DCD_INT_cb_TypeDef * const USBD_DCD_INT_fops;	// modified by OpenTX
 /**
   * @}
   */ 
@@ -90,7 +90,7 @@ extern const USBD_DCD_INT_cb_TypeDef * const USBD_DCD_INT_fops;
 #define CLEAR_OUT_EP_INTR(epnum,intr) \
   doepint.d32=0; \
   doepint.b.intr = 1; \
-  USB_OTG_WRITE_REG32(&pdev->regs.OUTEP_REGS[epnum]->DOEPINT,doepint.d32);
+  USB_OTG_WRITE_REG32(&pdev->regs.OUTEP_REGS[(epnum)]->DOEPINT,doepint.d32);
 
 /**
   * @}
@@ -108,13 +108,14 @@ extern const USBD_DCD_INT_cb_TypeDef * const USBD_DCD_INT_fops;
   */ 
 
 uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
-
+uint32_t USBD_OTG_EP1OUT_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
+uint32_t USBD_OTG_EP1IN_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 /**
   * @}
   */ 
 
 
-#endif // USB_DCD_INT_H__
+#endif /* USB_DCD_INT_H__ */
 
 /**
   * @}

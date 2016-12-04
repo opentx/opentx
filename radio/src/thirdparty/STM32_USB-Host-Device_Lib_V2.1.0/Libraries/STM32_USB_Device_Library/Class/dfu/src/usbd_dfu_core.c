@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    usbd_dfu_core.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   This file provides the high layer firmware functions to manage the 
   *          following functionalities of the USB DFU Class:
   *           - Initialization and Configuration of high and low layer
@@ -44,7 +44,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -63,7 +63,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_dfu_core.h"
-
 #include "usbd_desc.h"
 #include "usbd_req.h"
 #include "usb_bsp.h"
@@ -224,7 +223,7 @@ USBD_Class_cb_TypeDef  DFU_cb =
 /* USB DFU device Configuration Descriptor */
 __ALIGN_BEGIN uint8_t usbd_dfu_CfgDesc[USB_DFU_CONFIG_DESC_SIZ] __ALIGN_END =
 {
-  0x09, /* bLength: Configuation Descriptor size */
+  0x09, /* bLength: Configuration Descriptor size */
   USB_CONFIGURATION_DESCRIPTOR_TYPE, /* bDescriptorType: Configuration */
   USB_DFU_CONFIG_DESC_SIZ,
   /* wTotalLength: Bytes returned */
@@ -232,7 +231,7 @@ __ALIGN_BEGIN uint8_t usbd_dfu_CfgDesc[USB_DFU_CONFIG_DESC_SIZ] __ALIGN_END =
   0x01,         /*bNumInterfaces: 1 interface*/
   0x01,         /*bConfigurationValue: Configuration value*/
   0x02,         /*iConfiguration: Index of string descriptor describing the configuration*/
-  0xC0,         /*bmAttributes: bus powered and Supprts Remote Wakeup */
+  0xC0,         /*bmAttributes: bus powered and Supports Remote Wakeup */
   0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
   /* 09 */
   
@@ -298,7 +297,7 @@ __ALIGN_BEGIN uint8_t usbd_dfu_CfgDesc[USB_DFU_CONFIG_DESC_SIZ] __ALIGN_END =
 
 __ALIGN_BEGIN uint8_t usbd_dfu_OtherCfgDesc[USB_DFU_CONFIG_DESC_SIZ] __ALIGN_END =
 {
-  0x09, /* bLength: Configuation Descriptor size */
+  0x09, /* bLength: Configuration Descriptor size */
   USB_DESC_TYPE_OTHER_SPEED_CONFIGURATION, /* bDescriptorType: Configuration */
   USB_DFU_CONFIG_DESC_SIZ,
   /* wTotalLength: Bytes returned */
@@ -306,7 +305,7 @@ __ALIGN_BEGIN uint8_t usbd_dfu_OtherCfgDesc[USB_DFU_CONFIG_DESC_SIZ] __ALIGN_END
   0x01,         /*bNumInterfaces: 1 interface*/
   0x01,         /*bConfigurationValue: Configuration value*/
   0x02,         /*iConfiguration: Index of string descriptor describing the configuration*/
-  0xC0,         /*bmAttributes: bus powered and Supprts Remote Wakeup */
+  0xC0,         /*bmAttributes: bus powered and Supports Remote Wakeup */
   0x32,         /*MaxPower 100 mA: this current is used for detecting Vbus*/
   /* 09 */
   
@@ -590,7 +589,7 @@ static uint8_t  EP0_TxSent (void  *pdev)
       /* Preform the write operation */
       MAL_Write(Addr, wlength);
     }
-    /* Reset the global lenght and block number */
+    /* Reset the global length and block number */
     wlength = 0;
     wBlockNum = 0;
     
@@ -737,7 +736,7 @@ static void DFU_Req_UPLOAD(void *pdev, USB_SETUP_REQ *req)
   {
     if ((DeviceState == STATE_dfuIDLE) || (DeviceState == STATE_dfuUPLOAD_IDLE))
     {
-      /* Update the global langth and block number */
+      /* Update the global length and block number */
       wBlockNum = req->wValue;
       wlength = req->wLength;
       
@@ -1018,7 +1017,7 @@ static uint8_t  *USBD_DFU_GetOtherCfgDesc (uint8_t speed, uint16_t *length)
   * @brief  USBD_DFU_GetUsrStringDesc
   *         Manages the transfer of memory interfaces string descriptors.
   * @param  speed : current device speed
-  * @param  index: desciptor index
+  * @param  index: descriptor index
   * @param  length : pointer data length
   * @retval pointer to the descriptor table or NULL if the descriptor is not supported.
   */

@@ -138,6 +138,8 @@ __ALIGN_BEGIN const  uint8_t USBD_LangIDDesc[USB_SIZ_STRING_LANGID] __ALIGN_END 
      HIBYTE(USBD_LANGID_STRING), 
 };
 
+__ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;	// modified by OpenTX
+
 /*
 * @brief  USBD_USR_DeviceDescriptor 
 *         return the device descriptor

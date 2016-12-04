@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_usr.h
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   Header file for usbd_usr.c
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 #define __USBD_USR_H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "usbd_core.h"
+#include "usbd_ioreq.h"
 
 
 /** @addtogroup USBD_USER
@@ -51,9 +51,9 @@
   * @{
   */ 
 
-extern  const USBD_Usr_cb_TypeDef USR_cb;
-extern  const USBD_Usr_cb_TypeDef USR_FS_cb;
-extern  const USBD_Usr_cb_TypeDef USR_HS_cb;
+extern  const USBD_Usr_cb_TypeDef USR_cb;	// modified by OpenTX
+extern  const USBD_Usr_cb_TypeDef USR_FS_cb;	// modified by OpenTX
+extern  const USBD_Usr_cb_TypeDef USR_HS_cb;	// modified by OpenTX
 
 
 

@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_msc_scsi.c
   * @author  MCD Application Team
-  * @version V1.1.0
-  * @date    19-March-2012
+  * @version V1.2.0
+  * @date    09-November-2015
   * @brief   This file provides all the USBD SCSI layer functions.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2012 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ static int8_t SCSI_ReadFormatCapacity(uint8_t lun, uint8_t *params);
 static int8_t SCSI_ReadCapacity10(uint8_t lun, uint8_t *params);
 static int8_t SCSI_RequestSense (uint8_t lun, uint8_t *params);
 static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params);
-static int8_t SCSI_AllowRemoval(uint8_t lun, uint8_t *params);
+static int8_t SCSI_AllowRemoval(uint8_t lun, uint8_t *params);	// modified by OpenTX
 static int8_t SCSI_ModeSense6 (uint8_t lun, uint8_t *params);
 static int8_t SCSI_ModeSense10 (uint8_t lun, uint8_t *params);
 static int8_t SCSI_Write10(uint8_t lun , uint8_t *params);
@@ -147,7 +147,7 @@ int8_t SCSI_ProcessCmd(USB_OTG_CORE_HANDLE  *pdev,
     return SCSI_StartStopUnit(lun, params);
     
   case SCSI_ALLOW_MEDIUM_REMOVAL:
-    return SCSI_AllowRemoval( lun, params);
+    return SCSI_AllowRemoval( lun, params);  // ST lib 2.2.0 uses SCSI_StartStopUnit which doesn't work	// modified by OpenTX
     
   case SCSI_MODE_SENSE6:
     return SCSI_ModeSense6 (lun, params);
@@ -434,13 +434,13 @@ void SCSI_SenseCode(uint8_t lun, uint8_t sKey, uint8_t ASC)
 * @retval status
 */
 
-extern uint8_t lunReady[] ;
+extern uint8_t lunReady[];	// modified by OpenTX
 
 static int8_t SCSI_StartStopUnit(uint8_t lun, uint8_t *params)
 {
   MSC_BOT_DataLen = 0;
   
-#if defined(BOOT)
+#if defined(BOOT)		// modified by OpenTX
   if (lun < 2) 
 #else
   if (lun < 1) 
@@ -511,6 +511,7 @@ static int8_t SCSI_Read10(uint8_t lun , uint8_t *params)
     }
     
     MSC_BOT_State = BOT_DATA_IN;
+    // SCSI_blk_addr *= SCSI_blk_size; 	// modified by OpenTX
     SCSI_blk_len  *= SCSI_blk_size;
     
     /* cases 4,5 : Hi <> Dn */
@@ -582,6 +583,7 @@ static int8_t SCSI_Write10 (uint8_t lun , uint8_t *params)
       return -1; /* error */      
     }
     
+    // SCSI_blk_addr *= SCSI_blk_size;	// modified by OpenTX
     SCSI_blk_len  *= SCSI_blk_size;
     
     /* cases 3,11,13 : Hn,Ho <> D0 */
@@ -623,6 +625,13 @@ static int8_t SCSI_Verify10(uint8_t lun , uint8_t *params){
     return -1; /* Error, Verify Mode Not supported*/
   }
   
+  SCSI_blk_addr = (params[2] << 24) | \
+    (params[3] << 16) | \
+      (params[4] <<  8) | \
+        params[5];
+  SCSI_blk_len = (params[7] <<  8) | \
+    params[8];  
+    
   if(SCSI_CheckAddressRange(lun, SCSI_blk_addr, SCSI_blk_len) < 0)
   {
     return -1; /* error */      
@@ -641,7 +650,7 @@ static int8_t SCSI_Verify10(uint8_t lun , uint8_t *params){
 */
 static int8_t SCSI_CheckAddressRange (uint8_t lun , uint32_t blk_offset , uint16_t blk_nbr)
 {
-  if (USBD_STORAGE_fops->GetCapacity(lun, &SCSI_blk_nbr, &SCSI_blk_size) != 0)
+  if (USBD_STORAGE_fops->GetCapacity(lun, &SCSI_blk_nbr, &SCSI_blk_size) != 0)	// modified by OpenTX
   {
     SCSI_SenseCode(lun, NOT_READY, MEDIUM_NOT_PRESENT);
     return -1;
@@ -670,7 +679,7 @@ static int8_t SCSI_ProcessRead (uint8_t lun)
   
   if( USBD_STORAGE_fops->Read(lun ,
                               MSC_BOT_Data, 
-                              SCSI_blk_addr, 
+                              SCSI_blk_addr, 	// modified by OpenTX
                               len / SCSI_blk_size) < 0)
   {
     
@@ -685,7 +694,7 @@ static int8_t SCSI_ProcessRead (uint8_t lun)
              len);
   
   
-  SCSI_blk_addr   += len / SCSI_blk_size; 
+  SCSI_blk_addr   += len / SCSI_blk_size; 	// modified by OpenTX
   SCSI_blk_len    -= len;  
   
   /* case 6 : Hi = Di */
@@ -713,7 +722,7 @@ static int8_t SCSI_ProcessWrite (uint8_t lun)
   
   if(USBD_STORAGE_fops->Write(lun ,
                               MSC_BOT_Data, 
-                              SCSI_blk_addr, 
+                              SCSI_blk_addr, 	// modified by OpenTX
                               len / SCSI_blk_size) < 0)
   {
     SCSI_SenseCode(lun, HARDWARE_ERROR, WRITE_FAULT);     
@@ -721,7 +730,7 @@ static int8_t SCSI_ProcessWrite (uint8_t lun)
   }
   
   
-  SCSI_blk_addr  += len / SCSI_blk_size; 
+  SCSI_blk_addr  += len / SCSI_blk_size; 	// modified by OpenTX
   SCSI_blk_len   -= len; 
   
   /* case 12 : Ho = Do */
