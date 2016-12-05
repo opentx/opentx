@@ -62,6 +62,7 @@ class ModelCell
         buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
       }
       else {
+        zchar2str(modelName, header.name, LEN_MODEL_NAME);
         char timer[LEN_TIMER_STRING];
         buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
@@ -83,6 +84,7 @@ class ModelCell
     }
 
     char name[LEN_MODEL_FILENAME+1];
+    char modelName[LEN_MODEL_FILENAME+1];
     BitmapBuffer * buffer;
 };
 
