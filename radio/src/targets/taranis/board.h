@@ -208,7 +208,7 @@ enum EnumKeys
   KEY_PAGE,
   KEY_PLUS,
   KEY_MINUS,
-  
+
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -219,7 +219,7 @@ enum EnumKeys
   TRM_RH_DWN,
   TRM_RH_UP,
   TRM_LAST = TRM_RH_UP,
-  
+
   NUM_KEYS
 };
 
@@ -505,6 +505,7 @@ void bluetoothWrite(const void * buffer, int len);
 void bluetoothWriteString(const char * str);
 int bluetoothRead(void * buffer, int len);
 void bluetoothWakeup(void);
+void bluetoothDone(void);
 
 // LED driver
 void ledInit(void);
