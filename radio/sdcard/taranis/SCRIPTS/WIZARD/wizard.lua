@@ -10,10 +10,10 @@ local MODELTYPE_QUAD = 3
 
 -- Common functions
 local function fieldIncDec(event, value, max)
-  if event == EVT_PLUS_BREAK then
+  if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT then
     value = (value + max)
     dirty = true
-  elseif event == EVT_MINUS_BREAK then
+  elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT then
     value = (value + max + 2)
     dirty = true
   end
@@ -64,12 +64,12 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
   end
-  
+
   if event == EVT_EXIT_BREAK then
     return 2
   end
-  
-  return modelTypeMenu(event) 
+
+  return modelTypeMenu(event)
 end
 
 return { run=run }

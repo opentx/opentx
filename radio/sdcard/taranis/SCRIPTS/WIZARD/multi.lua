@@ -34,10 +34,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_PLUS_BREAK then
+    if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT then
       value = (value + max)
       dirty = true
-    elseif event == EVT_MINUS_BREAK then
+    elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT then
       value = (value + max + 2)
       dirty = true
     end
@@ -48,12 +48,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT then
+    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_RIGHT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT then
+    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_LEFT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -70,12 +70,12 @@ local function navigate(event, fieldMax, prevPage, nextPage)
   elseif edit then
     if event == EVT_EXIT_BREAK then
       edit = false
-      dirty = true  
+      dirty = true
     elseif not dirty then
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK then     
+    if event == EVT_PAGE_BREAK then
       page = nextPage
       field = 0
       dirty = true
@@ -124,7 +124,7 @@ local function drawThrottleMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter throttle channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-thr.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Throttle", 0);
@@ -148,7 +148,7 @@ local function drawRollMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter roll channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-roll.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Roll", 0);
@@ -172,7 +172,7 @@ local function drawPitchMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter pitch channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-pitch.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Pitch", 0);
@@ -196,7 +196,7 @@ local function drawYawMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter yaw channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-yaw.bmp")
   lcd.drawText(20, LCD_H-16, "Assign Yaw", 0);
@@ -249,7 +249,7 @@ local function addMix(channel, input, name, weight, index)
   if weight ~= nil then
     mix.weight = weight
   end
-  if index == nil then 
+  if index == nil then
     index = 0
   end
   model.insertMix(channel, index, mix)
@@ -257,7 +257,7 @@ end
 
 local function applySettings()
   model.defaultInputs()
-  model.deleteMixes()      
+  model.deleteMixes()
   addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Throttle")
   addMix(rollCH1,  MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   addMix(yawCH1,   MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
