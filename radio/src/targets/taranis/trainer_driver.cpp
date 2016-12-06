@@ -187,7 +187,7 @@ void init_cppm_on_heartbeat_capture(void)
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
 }
 
-void stop_cppm_on_heartbeat_capture(void)
+void stop_cppm_on_heartbeat_capture()
 {
   TRAINER_TIMER->DIER = 0;
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                             // Stop counter
@@ -247,8 +247,12 @@ void init_sbus_on_heartbeat_capture()
   DMA_Cmd(HEARTBEAT_DMA_Stream, ENABLE);
 }
 
-void stop_sbus_on_heartbeat_capture(void)
+void stop_sbus_on_heartbeat_capture()
 {
+  DMA_Cmd(HEARTBEAT_DMA_Stream, DISABLE);
+  USART_Cmd(HEARTBEAT_USART, DISABLE);
+  USART_DMACmd(HEARTBEAT_USART, USART_DMAReq_Rx, DISABLE);
+  DMA_DeInit(HEARTBEAT_DMA_Stream);
   NVIC_DisableIRQ(HEARTBEAT_USART_IRQn);
 
   if (!IS_EXTERNAL_MODULE_PRESENT()) {
