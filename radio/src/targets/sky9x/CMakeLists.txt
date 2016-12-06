@@ -96,6 +96,7 @@ set(TARGET_SRC
   haptic_driver.cpp
   sdcard_driver.cpp
   massstorage.cpp
+  serial2_driver.cpp
   )
 
 set(FIRMWARE_SRC
@@ -107,5 +108,3 @@ set(SRC
   ${SRC}
   debug.cpp
   )
-
-set(SERIAL2_DRIVER serial2_driver.cpp)

@@ -95,6 +95,7 @@ void menuStatisticsView(event_t event)
   extern uint16_t usbWraps;
   extern uint16_t charsWritten;
   extern "C" volatile uint32_t APP_Rx_ptr_in;
+  extern "C" volatile uint32_t APP_Rx_ptr_out;
 #endif
 
 void menuStatisticsDebug(event_t event)
@@ -170,6 +171,8 @@ void menuStatisticsDebug(event_t event)
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
   lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
   lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
+  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
+  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_out, LEFT);
   lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
   lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
 #endif

@@ -66,7 +66,7 @@ if(INTERNAL_GPS)
   add_definitions(-DINTERNAL_GPS)
   message("Internal GPS enabled")
 endif()
-set(SERIAL2_DRIVER serial2_driver.cpp)
+set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
 set(GVAR_SCREEN model_gvars.cpp)
 set(TARGET_SRC
   ${TARGET_SRC}

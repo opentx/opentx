@@ -19,7 +19,7 @@
  */
 
 #include "board.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
+#include "usb_dcd_int.h"
 #include "debug.h"
 
 int usbPlugged(void)

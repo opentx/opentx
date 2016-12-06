@@ -2451,6 +2451,10 @@ void opentxInit(OPENTX_INIT_ARGS)
   storageReadAll();
 #endif
 
+#if defined(SERIAL2)
+  serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
+#endif
+
 #if defined(PCBTARANIS)
   BACKLIGHT_ENABLE();
 #endif
@@ -2506,10 +2510,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   lcdSetContrast();
 #endif
   backlightOn();
-
-#if defined(SERIAL2)
-  serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
-#endif
 
 #if defined(PCBSKY9X) && !defined(SIMU)
   init_trainer_capture();
