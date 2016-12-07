@@ -83,25 +83,25 @@ void ModelsListWidget::ShowContextMenu(const QPoint& pos)
     const QMimeData *mimeData = clipboard->mimeData();
     bool hasData = mimeData->hasFormat("application/x-companion");
 
-    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
-    contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"),this,SLOT(LoadBackup()));
-    contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"),this,SLOT(OpenWizard()));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(EditModel()));
+    contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"), this, SLOT(LoadBackup()));
+    contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"), this, SLOT(OpenWizard()));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(confirmDelete()),tr("Delete"));
-    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(copy()),tr("Ctrl+C"));
-    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(cut()),tr("Ctrl+X"));
-    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(paste()),tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"),this,SLOT(duplicate()),tr("Ctrl+U"));
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"), this, SLOT(confirmDelete()), tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"), this, SLOT(copy()), tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"), this, SLOT(cut()), tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(duplicate()), tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"),this,SLOT(setdefault()));
+    contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setdefault()));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"),this, SLOT(print()),QKeySequence(tr("Ctrl+P")));
+    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"), this, SLOT(print()),QKeySequence(tr("Ctrl+P")));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"),this, SLOT(simulate()),tr("Alt+S"));
+    contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"), this, SLOT(simulate()), tr("Alt+S"));
   }
   else {
     // context menu for radio settings
-    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"),this,SLOT(EditModel()));
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(EditModel()));
   }
   contextMenu.exec(globalPos);
 }
@@ -145,10 +145,10 @@ void ModelsListWidget::setdefault()
 {
   if (currentRow() > 0) {
     unsigned int currModel = currentRow() - 1;
-    if (!radioData->models[currModel].isEmpty() && radioData->generalSettings.currModel != currModel) {
-      radioData->generalSettings.currModel = currModel;
+    if (!radioData->models[currModel].isEmpty() && radioData->generalSettings.currModelIndex != currModel) {
+      radioData->setCurrentModel(currModel);
       refreshList();
-      ((MdiChild *)parent())->setModified();
+      ((MdiChild *) parent())->setModified();
     }
   }
 }
@@ -239,7 +239,7 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
   if (row < 0)
     return;
 
-  // QMessageBox::warning(this, tr("Companion"),tr("Index :%1").arg(row));
+  // QMessageBox::warning(this, tr("Companion"), tr("Index :%1").arg(row));
   const QMimeData * mimeData = event->mimeData();
 
   if (mimeData->hasFormat("application/x-companion")) {
@@ -310,12 +310,12 @@ void ModelsListWidget::refreshList()
         item->setText(2, QString().sprintf("%5d", size));
         size = 16 * ((size + 14) / 15);
         availableEEpromSize -= size;
-        if (i == radioData->generalSettings.currModel) {
+        if (i == radioData->generalSettings.currModelIndex) {
           // Because we need this space for a TEMP model each time we have to write it again
           availableEEpromSize -= size;
         }
       }
-      if (i == radioData->generalSettings.currModel) {
+      if (i == radioData->generalSettings.currModelIndex) {
         QFont font = item->font(0);
         font.setBold(true);
         for (int j=0; j<columnCount(); j++) {
@@ -359,7 +359,7 @@ void ModelsListWidget::deleteSelected(bool ask=true)
       }
     }
     if (isModel) {
-      if (radioData->generalSettings.currModel != selModel) {
+      if (radioData->generalSettings.currModelIndex != selModel) {
         ret = QMessageBox::warning(this, "Companion", tr("Delete Selected Models?"), QMessageBox::Yes | QMessageBox::No);
       }
       else {
@@ -369,7 +369,7 @@ void ModelsListWidget::deleteSelected(bool ask=true)
   }
   if (ret == QMessageBox::Yes) {
     foreach (QModelIndex index, this->selectionModel()->selectedIndexes()) {
-      if (index.row()>0 && radioData->generalSettings.currModel!=(unsigned int)(index.row()-1)) {
+      if (index.row() > 0 && radioData->generalSettings.currModelIndex != (unsigned int)(index.row()-1)) {
         radioData->models[index.row()-1].clear();
         ((MdiChild *)parent())->setModified();
       }
@@ -390,7 +390,7 @@ void ModelsListWidget::doCut(QByteArray * gmData)
   bool modified = false;
   DragDropHeader * header = (DragDropHeader *)gmData->data();
   for (int i=0; i<header->models_count; i++) {
-    if (radioData->generalSettings.currModel != (unsigned int)header->models[i]-1) {
+    if (radioData->generalSettings.currModelIndex != (unsigned int)header->models[i]-1) {
       radioData->models[header->models[i]-1].clear();
       modified=true;
     }
@@ -404,17 +404,21 @@ void ModelsListWidget::doCopy(QByteArray * gmData)
 {
   DragDropHeader header;
     
-  foreach(QModelIndex index, this->selectionModel()->selectedIndexes()) {
-    char row = index.row();
-    if (!row) {
-      header.general_settings = true;
-      gmData->append('G');
-      gmData->append((char*)&radioData->generalSettings, sizeof(GeneralSettings));
-    }
-    else {
-      header.models[header.models_count++] = row;
-      gmData->append('M');
-      gmData->append((char*)&radioData->models[row-1], sizeof(ModelData));
+  qDebug() << selectionModel()->selectedIndexes();
+  foreach(QModelIndex index, selectionModel()->selectedIndexes()) {
+    char column = index.column();
+    if (column == 0) {
+      char row = index.row();
+      if (!row) {
+        header.general_settings = true;
+        gmData->append('G');
+        gmData->append((char *) &radioData->generalSettings, sizeof(GeneralSettings));
+      }
+      else {
+        header.models[header.models_count++] = row;
+        gmData->append('M');
+        gmData->append((char *) &radioData->models[row - 1], sizeof(ModelData));
+      }
     }
   }
 
@@ -433,16 +437,17 @@ void ModelsListWidget::copy()
   clipboard->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
-void ModelsListWidget::doPaste(QByteArray *gmData, int index)
+void ModelsListWidget::doPaste(QByteArray * gmData, int index)
 {
   // QByteArray gmData = mimeD->data("application/x-companion");
-  char * gData = gmData->data()+sizeof(DragDropHeader);//new char[gmData.size() + 1];
+  char * gData = gmData->data() + sizeof(DragDropHeader); // new char[gmData.size() + 1];
   int i = sizeof(DragDropHeader);
   int id = index;
   int ret, modified=0;
   if(!id) id++;
 
-  while ((i<gmData->size()) && (id<=GetEepromInterface()->getMaxModels())) {
+  while (i<gmData->size() && id<=GetEepromInterface()->getMaxModels()) {
+    qDebug() << i << gmData->size();
     char c = *gData;
     i++;
     gData++;
@@ -464,6 +469,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
                 QMessageBox::Yes | QMessageBox::No);
         if (ret == QMessageBox::Yes) {
           radioData->models[id-1] = *((ModelData *)gData);
+          strcpy(radioData->models[id-1].filename, radioData->getNextModelFilename().toStdString().c_str());
           gData += sizeof(ModelData);
           i += sizeof(ModelData);
           id++;
@@ -477,6 +483,7 @@ void ModelsListWidget::doPaste(QByteArray *gmData, int index)
       } 
       else {
         radioData->models[id-1] = *((ModelData *)gData);
+        strcpy(radioData->models[id-1].filename, radioData->getNextModelFilename().toStdString().c_str());
         gData += sizeof(ModelData);
         i += sizeof(ModelData);
         id++;
@@ -504,7 +511,7 @@ void ModelsListWidget::paste()
     const QMimeData * mimeData = clipboard->mimeData();
 
     QByteArray gmData = mimeData->data("application/x-companion");
-    doPaste(&gmData, this->currentRow());
+    doPaste(&gmData, currentRow());
   }
 }
 
@@ -512,10 +519,11 @@ void ModelsListWidget::duplicate()
 {
   int i = this->currentRow();
   if (i && i<GetEepromInterface()->getMaxModels()) {
-    ModelData *model = &radioData->models[i-1];
+    ModelData * model = &radioData->models[i-1];
     while (i<GetEepromInterface()->getMaxModels()) {
       if (radioData->models[i].isEmpty()) {
         radioData->models[i] = *model;
+        strcpy(radioData->models[i].filename, radioData->getNextModelFilename().toStdString().c_str());
         ((MdiChild *)parent())->setModified();
         break;
       }

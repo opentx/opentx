@@ -99,7 +99,7 @@ Ersky9xGeneral::operator GeneralSettings ()
     result.calibSpanPos[i] = calibSpanPos[i];
   }
 
-  result.currModel = currModel;
+  result.currModelIndex = currModel;
   result.contrast = contrast;
   result.vBatWarn = vBatWarn;
   result.txVoltageCalibration = txVoltageCalibration;
