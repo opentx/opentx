@@ -524,8 +524,11 @@ uint16_t stackAvailable()
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
 namespace simu {
 #include <dirent.h>
-#if !defined WIN32
+#if defined(WIN32) || !defined(__GNUC__)
+  #include <sys/utime.h>
+#else
   #include <libgen.h>
+  #include <utime.h>
 #endif
 }
 #include "ff.h"
@@ -647,6 +650,11 @@ FRESULT f_stat (const TCHAR * name, FILINFO *fno)
     TRACE_SIMPGMSPACE("f_stat(%s) = OK", path);
     if (fno) {
       fno->fattrib = (tmp.st_mode & S_IFDIR) ? AM_DIR : 0;
+      // convert to FatFs fdate/ftime
+      struct tm *ltime = localtime(&tmp.st_mtime);
+      fno->fdate = ((ltime->tm_year - 80) << 9) | ((ltime->tm_mon + 1) << 5) | ltime->tm_mday;
+      fno->ftime = (ltime->tm_hour << 11) | (ltime->tm_min << 5) | (ltime->tm_sec / 2);
+      fno->fsize = (DWORD)tmp.st_size;
     }
     return FR_OK;
   }
@@ -808,7 +816,11 @@ FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len)
 FRESULT f_mkdir (const TCHAR * name)
 {
   char * path = convertSimuPath(name);
+#if defined(WIN32)
+  if (mkdir(path)) {
+#else
   if (mkdir(path, 0777)) {
+#endif
     TRACE_SIMPGMSPACE("mkdir(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
@@ -844,6 +856,38 @@ FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
   }
   TRACE_SIMPGMSPACE("f_rename(%s, %s) = OK", old, path);
   return FR_OK;
+}
+
+FRESULT f_utime(const TCHAR* path, const FILINFO* fno)
+{
+  if (fno == NULL)
+    return FR_INVALID_PARAMETER;
+
+  char *simpath = convertSimuPath(path);
+  char *realPath = findTrueFileName(simpath);
+  struct simu::utimbuf newTimes;
+  struct tm ltime;
+
+  // convert from FatFs fdate/ftime
+  ltime.tm_year = ((fno->fdate >> 9) & 0x7F) + 80;
+  ltime.tm_mon = ((fno->fdate >> 5) & 0xF) - 1;
+  ltime.tm_mday = (fno->fdate & 0x1F);
+  ltime.tm_hour = ((fno->ftime >> 11) & 0x1F);
+  ltime.tm_min = ((fno->ftime >> 5) & 0x3F);
+  ltime.tm_sec = (fno->ftime & 0x1F) * 2;
+  ltime.tm_isdst = -1;  // force mktime() to check dst
+
+  newTimes.modtime = mktime(&ltime);
+  newTimes.actime = newTimes.modtime;
+
+  if (simu::utime(realPath, &newTimes)) {
+    TRACE_SIMPGMSPACE("f_utime(%s) = error %d (%s)", simpath, errno, strerror(errno));
+    return FR_DENIED;
+  }
+  else {
+    TRACE_SIMPGMSPACE("f_utime(%s) set mtime = %s", simpath, ctime(&newTimes.modtime));
+    return FR_OK;
+  }
 }
 
 int f_putc (TCHAR c, FIL * fil)
@@ -891,7 +935,11 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   }
 
   // remove simuSdDirectory from the cwd
+#ifdef WIN32
+  strcpy(path, cwd + strlen(simuSdDirectory) + 2);  // account for drive name
+#else
   strcpy(path, cwd + strlen(simuSdDirectory));
+#endif
 
   if (strlen(path) == 0) {
     strcpy(path, "/");    // fix for the root directory
