@@ -172,7 +172,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(yd717_strings, subType);
     case MM_RF_PROTO_SYMAX:
       return CHECK_IN_ARRAY(symax_strings, subType);
-    case MM_RF_PROTO_SLT
+    case MM_RF_PROTO_SLT:
       return CHECK_IN_ARRAY(slt_strings, subType);
     case MM_RF_PROTO_CX10:
       return CHECK_IN_ARRAY(cx10_strings, subType);
