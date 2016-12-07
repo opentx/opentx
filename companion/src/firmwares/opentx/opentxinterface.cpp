@@ -228,22 +228,33 @@ int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filen
   
   storage.read(filename);
   
-  // models.txt
-  QString modelList = QString(storage.modelList);
-  qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
-  
-  // radio.bin
+  // Radio settings
   qDebug() << "Radio settings:" << storage.radio.size();
   loadFromByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio);
   
-  // all models
-  QList<QString> models = storage.getModelsFileNames();
-  qDebug() << "We have" << models.size() << "models:";
-  
-  int index = 0;
-  for (QList<ModelFile>::iterator it = storage.models.begin(); it != storage.models.end(); ++it, ++index) {
-    loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[index], it->data);
-    radioData.models[index].used = true;
+  // Models
+  int modelIndex = 0;
+  QString modelList = QString(storage.modelList);
+  QList<QByteArray> lines = storage.modelList.split('\n');
+  QString category = QObject::tr("Unknown");
+  foreach (const QByteArray & line, lines) {
+    if (!line.isEmpty()) {
+      if (line.startsWith('[') && line.endsWith(']')) {
+        category = line.mid(1, line.size() - 2);
+      }
+      else {
+        qDebug() << "Loading" << line;
+        foreach (const ModelFile &model, storage.models) {
+          if (line == model.filename) {
+            loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[modelIndex], model.data);
+            strncpy(radioData.models[modelIndex].filename, line.toStdString().c_str(), sizeof(radioData.models[modelIndex].filename));
+            strncpy(radioData.models[modelIndex].category, category.toStdString().c_str(), sizeof(radioData.models[modelIndex].category));
+            radioData.models[modelIndex].used = true;
+            modelIndex++;
+          }
+        }
+      }
+    }
   }
   
   return 0;
@@ -255,7 +266,8 @@ int OpenTxEepromInterface::saveFile(const RadioData & radioData, const QString &
   uint8_t version = getLastDataVersion(board);
   
   // models.txt
-  storage.modelList = QByteArray("[Models]\n");
+  storage.modelList = QByteArray();
+  QString currentCategory = "";
   
   // radio.bin
   saveToByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio, version);
@@ -264,12 +276,17 @@ int OpenTxEepromInterface::saveFile(const RadioData & radioData, const QString &
   for (int i=0; i<CPN_MAX_MODELS; i++) {
     const ModelData & model = radioData.models[i];
     if (!model.isEmpty()) {
-      QString modelFilename = QString().sprintf("model%d.bin", i+1);
+      QString modelFilename = model.filename;
       QByteArray modelData;
       saveToByteArray<ModelData, OpenTxModelData>(model, modelData, version);
       ModelFile modelFile = { modelFilename, modelData };
       storage.models.append(modelFile);
-      storage.modelList.append(QString("  ") + modelFilename + "\n");
+      QString modelCategory = model.category;
+      if (currentCategory != modelCategory) {
+        storage.modelList.append(QString().sprintf("[%s]\n", model.category));
+        currentCategory = modelCategory;
+      }
+      storage.modelList.append(modelFilename + "\n");
     }
   }
   
