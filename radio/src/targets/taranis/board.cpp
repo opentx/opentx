@@ -139,7 +139,7 @@ void boardInit()
   i2cInit();
   usbInit();
 
-#if defined(DEBUG)
+#if defined(DEBUG) && !defined(PCBX7D)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
   TRACE("\nTaranis board started :)");
 #endif
