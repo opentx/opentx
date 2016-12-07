@@ -296,6 +296,7 @@ void ModelsListWidget::refreshList()
     addItem(item);
   }
   
+
   if (radioData->generalSettings.currModel < (unsigned int)eepromInterface->getMaxModels()) {
     QFont f = QFont("Courier New", 12);
     f.setBold(true);

@@ -30,12 +30,14 @@ void popMenu()
   assert(menuLevel>0);
   menuLevel = menuLevel-1;
   menuEvent = EVT_ENTRY_UP;
+  TRACE("popMenu(%d)", menuLevel);
 }
 
 void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  TRACE("chainMenu(%d, %p)", menuLevel, newMenu);
 }
 
 void pushMenu(MenuHandlerFunc newMenu)
@@ -58,6 +60,7 @@ void pushMenu(MenuHandlerFunc newMenu)
 
   menuHandlers[menuLevel] = newMenu;
   menuEvent = EVT_ENTRY;
+  TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 
 #if defined(CPUARM)
