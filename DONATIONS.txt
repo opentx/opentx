@@ -1058,3 +1058,4 @@ Pascal Dugué
 Burt Pickard-Richardson
 Robert Wilhelm
 Thomas Kilduff
+Hans-Rudolf Riniker
