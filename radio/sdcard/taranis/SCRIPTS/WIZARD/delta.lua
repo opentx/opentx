@@ -36,10 +36,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_PLUS_BREAK then
+    if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT then
       value = (value + max)
       dirty = true
-    elseif event == EVT_MINUS_BREAK then
+    elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT then
       value = (value + max + 2)
       dirty = true
     end
@@ -50,12 +50,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT then
+    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_RIGHT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT then
+    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_LEFT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -72,12 +72,12 @@ local function navigate(event, fieldMax, prevPage, nextPage)
   elseif edit then
     if event == EVT_EXIT_BREAK then
       edit = false
-      dirty = true  
+      dirty = true
     elseif not dirty then
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK then     
+    if event == EVT_PAGE_BREAK then
       page = nextPage
       field = 0
       dirty = true
@@ -127,7 +127,7 @@ local function drawEngineMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got an engine?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, engineModeItems, engineMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, engineModeItems, engineMode, getFieldFlags(0))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if engineMode == 0 then
     -- No engine
@@ -164,8 +164,8 @@ local function drawElevonsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select elevon channnels", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, elevonsModeItems, elevonsMode, 0) 
-  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)  
+  lcd.drawCombobox(0, 8, LCD_W/2, elevonsModeItems, elevonsMode, 0)
+  lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(110, 9, "elevons.bmp")
   lcd.drawText(20, LCD_H-16, "Assign channels", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
@@ -196,7 +196,7 @@ local function drawRudderMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got a rudder?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, rudderModeItems, rudderMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W/2, rudderModeItems, rudderMode, getFieldFlags(0))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if rudderMode == 0 then
     -- No rudder
@@ -217,7 +217,7 @@ local function rudderMenu(event)
     dirty = false
     drawRudderMenu()
   end
-  
+
   navigate(event, fieldsMax, page-1, page+1)
 
   if field==0 then
@@ -244,7 +244,7 @@ local function drawServoMenu(limits)
   else
     lcd.drawText(129, 50, "\127", getFieldFlags(3));
   end
-  fieldsMax = 3    
+  fieldsMax = 3
 end
 
 local function servoMenu(event)
@@ -280,7 +280,7 @@ local function addMix(channel, input, name, weight, index)
   if weight ~= nil then
     mix.weight = weight
   end
-  if index == nil then 
+  if index == nil then
     index = 0
   end
   model.insertMix(channel, index, mix)
@@ -288,7 +288,7 @@ end
 
 local function applySettings()
   model.defaultInputs()
-  model.deleteMixes()      
+  model.deleteMixes()
   if engineMode == 1 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
@@ -340,7 +340,7 @@ local function confirmationMenu(event)
   end
 
   navigate(event, fieldsMax, RUDDER_PAGE, page)
-  
+
   if event == EVT_EXIT_BREAK then
     return 2
   elseif event == EVT_ENTER_LONG then
@@ -359,7 +359,7 @@ local function run(event)
     error("Cannot be run as a model script!")
   end
   if servoPage ~= nil then
-    servoMenu(event) 
+    servoMenu(event)
   elseif page == ENGINE_PAGE then
     engineMenu(event)
   elseif page == ELEVONS_PAGE then
