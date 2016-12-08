@@ -139,20 +139,22 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
 
 QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType) {
   /* custom protocols */
-  static const char *custom_subtype_strings[] = {"Subtype 0","Subtype 1","Subtype 2","Subtype 3","Subtype 4","Subtype 5","Subtype 6","Subtype 7"};
-  static const char *flysky_strings[] = {"Standard","V9x9","V6x6","V912"};
+  static const char *custom_subtype_strings[] = {"Subtype 0", "Subtype 1", "Subtype 2", "Subtype 3", "Subtype 4", "Subtype 5", "Subtype 6", "Subtype 7"};
+  static const char *flysky_strings[] = {"Standard", "V9x9", "V6x6", "V912", "CX20"};
   static const char *frsky_strings[] = {"D16", "D8", "D16 8ch", "V8"};
-  static const char *hisky_strings[] = { "HiSky", "HK310" };
+  static const char *hisky_strings[] = {"HiSky", "HK310"};
   static const char *dsm2_strings[] = {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
   static const char *yd717_strings[] = {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
   static const char *symax_strings[] = {"Standard", "Syma X5C"};
-  static const char *cx10_strings[] = {"Green", "Blue", "DM007", "Q282", "JC3015a", "JC3015b", "MK33041", "Q242"};
+  static const char *slt_strings[] = {"SLT", "Vista"};
+  static const char *cx10_strings[] = {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
   static const char *cg023_strings[] = {"CG023", "YD829", "H3 3D"};
   static const char *kn_strings[] = {"WLtoys", "FeiLun"};
-  static const char *mt99_strings[] = {"MT99","H7","YZ"};
+  static const char *mt99_strings[] = {"MT99", "H7", "YZ"};
   static const char *mjxq_strings[] = {"WLH08", "X600", "X800", "H26D", "E010"};
-  static const char *hontai_strings[] = {"Standard","JJRC X1","X5C1 Clone"};
+  static const char *hontai_strings[] = {"Standard", "JJRC X1", "X5C1 Clone"};
   static const char *afhds2a_strings[] = {"PWM and IBUS", "PPM and IBUS", "PWM and SBUS", "PPM and SBUS"};
+  static const char *q2x2_strings[] = {"Q242", "Q282"};
   
   if (custom)
     return CHECK_IN_ARRAY(custom_subtype_strings, subType);
@@ -170,6 +172,8 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(yd717_strings, subType);
     case MM_RF_PROTO_SYMAX:
       return CHECK_IN_ARRAY(symax_strings, subType);
+    case MM_RF_PROTO_SLT:
+      return CHECK_IN_ARRAY(slt_strings, subType);
     case MM_RF_PROTO_CX10:
       return CHECK_IN_ARRAY(cx10_strings, subType);
     case MM_RF_PROTO_CG023:
@@ -184,6 +188,8 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(hontai_strings, subType);
     case MM_RF_PROTO_AFHDS2A:
       return CHECK_IN_ARRAY(afhds2a_strings, subType);
+    case MM_RF_PROTO_Q2X2:
+      return CHECK_IN_ARRAY(q2x2_strings, subType);
     default:
         return "DEFAULT";
   }
