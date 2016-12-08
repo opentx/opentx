@@ -8,7 +8,7 @@ local pages = {}
 local fields = {}
 local AilCfgBg = {}
 local FlapsCfgBg = {}
-local TAilCfgBg = {}
+local TailCfgBg = {}
 local SummaryBackground
 
 -- Release memory
@@ -17,7 +17,7 @@ local function clean()
   MotorConfigBackground = nil
   AilCfgBg = nil
   FlapsCfgBg = nil
-  TAilCfgBg = nil
+  TailCfgBg = nil
   SummaryBackground = nil
 end
 
@@ -209,7 +209,7 @@ local function runFlapsConfig(event)
   end
   lcd.drawText(40, 20, "Does your model have flaps ?", TEXT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
-  loadIndexedBitmap(TAilCfgBg, 1, "img/bg_tail")
+  loadIndexedBitmap(TailCfgBg, 1, "img/bg_tail")
   local result = runFieldsPage(event)
   return result
 end
@@ -225,28 +225,28 @@ local function runTailConfig(event)
   lcd.clear()
   fields = TailFields
   if fields[1][5] == 0 then
-    loadIndexedBitmap(TAilCfgBg, 0, "img/bg_tail")
-    lcd.drawBitmap(TAilCfgBg[0], 0, 0)
+    loadIndexedBitmap(TailCfgBg, 0, "img/bg_tail")
+    lcd.drawBitmap(TailCfgBg[0], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 0, 0)
   end
   if fields[1][5] == 1 then
-    loadIndexedBitmap(TAilCfgBg, 1, "img/bg_tail")
-    lcd.drawBitmap(TAilCfgBg[1], 0, 0)
+    loadIndexedBitmap(TailCfgBg, 1, "img/bg_tail")
+    lcd.drawBitmap(TailCfgBg[1], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1, 0)
   end
   if fields[1][5] == 2 then
-    loadIndexedBitmap(TAilCfgBg, 2, "img/bg_tail")
-    lcd.drawBitmap(TAilCfgBg[2], 0, 0)
+    loadIndexedBitmap(TailCfgBg, 2, "img/bg_tail")
+    lcd.drawBitmap(TailCfgBg[2], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 202, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1, 1)
   end
   if fields[1][5] == 3 then
-    loadIndexedBitmap(TAilCfgBg, 3, "img/bg_tail")
+    loadIndexedBitmap(TailCfgBg, 3, "img/bg_tail")
     lcd.drawBitmap(TailCfgBg[3], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
