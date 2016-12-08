@@ -356,10 +356,10 @@ void ModulePanel::update()
   }
   ui->multiSubType->setCurrentIndex(module.subType);
 
-  ui->cb_autoBind->setVisible(mask & MASK_MULTIMODULE);
-  ui->cb_autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
-  ui->cb_lowPower->setVisible(mask & MASK_MULTIMODULE);
-  ui->cb_lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
+  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
+  ui->autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
+  ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
 
 
   if (firmware->getCapability(HasFailsafe)) {

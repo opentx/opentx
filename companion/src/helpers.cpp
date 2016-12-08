@@ -813,7 +813,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     unsigned int flags = 0;
     if (modelIdx >= 0) {
       flags |= SIMULATOR_FLAGS_NOTX;
-      simuData->generalSettings.currModel = modelIdx;
+      simuData->setCurrentModel(modelIdx);
     }
     if (radioData.generalSettings.stickMode & 1) {
       flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;

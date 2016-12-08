@@ -225,27 +225,38 @@ unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument 
 int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filename)
 {
   StorageSdcard storage;
-  
+
   storage.read(filename);
-  
-  // models.txt
-  QString modelList = QString(storage.modelList);
-  qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
-  
-  // radio.bin
+
+  // Radio settings
   qDebug() << "Radio settings:" << storage.radio.size();
   loadFromByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio);
-  
-  // all models
-  QList<QString> models = storage.getModelsFileNames();
-  qDebug() << "We have" << models.size() << "models:";
-  
-  int index = 0;
-  for (QList<ModelFile>::iterator it = storage.models.begin(); it != storage.models.end(); ++it, ++index) {
-    loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[index], it->data);
-    radioData.models[index].used = true;
+
+  // Models
+  int modelIndex = 0;
+  QString modelList = QString(storage.modelList);
+  QList<QByteArray> lines = storage.modelList.split('\n');
+  QString category = QObject::tr("Unknown");
+  foreach (const QByteArray & line, lines) {
+    if (!line.isEmpty()) {
+      if (line.startsWith('[') && line.endsWith(']')) {
+        category = line.mid(1, line.size() - 2);
+      }
+      else {
+        qDebug() << "Loading" << line;
+        foreach (const ModelFile &model, storage.models) {
+          if (line == model.filename) {
+            loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[modelIndex], model.data);
+            strncpy(radioData.models[modelIndex].filename, line.data(), sizeof(radioData.models[modelIndex].filename));
+            strncpy(radioData.models[modelIndex].category, category.toStdString().c_str(), sizeof(radioData.models[modelIndex].category));
+            radioData.models[modelIndex].used = true;
+            modelIndex++;
+          }
+        }
+      }
+    }
   }
-  
+
   return 0;
 }
 
@@ -253,37 +264,43 @@ int OpenTxEepromInterface::saveFile(const RadioData & radioData, const QString &
 {
   StorageSdcard storage;
   uint8_t version = getLastDataVersion(board);
-  
+
   // models.txt
-  storage.modelList = QByteArray("[Models]\n");
-  
+  storage.modelList = QByteArray();
+  QString currentCategory = "";
+
   // radio.bin
   saveToByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio, version);
-  
+
   // all models
   for (int i=0; i<CPN_MAX_MODELS; i++) {
     const ModelData & model = radioData.models[i];
     if (!model.isEmpty()) {
-      QString modelFilename = QString().sprintf("model%d.bin", i+1);
+      QString modelFilename = model.filename;
       QByteArray modelData;
       saveToByteArray<ModelData, OpenTxModelData>(model, modelData, version);
       ModelFile modelFile = { modelFilename, modelData };
       storage.models.append(modelFile);
-      storage.modelList.append(QString("  ") + modelFilename + "\n");
+      QString modelCategory = model.category;
+      if (currentCategory != modelCategory) {
+        storage.modelList.append(QString().sprintf("[%s]\n", model.category));
+        currentCategory = modelCategory;
+      }
+      storage.modelList.append(modelFilename + "\n");
     }
   }
-  
+
   storage.write(filename);
-  
+
   return 0;
 }
 
 unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
-  
+
   std::bitset<NUM_ERRORS> errors;
-  
+
   if (size != getEEpromSize()) {
     if (size == 4096) {
       int notnull = false;
@@ -309,24 +326,24 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       return errors.to_ulong();
     }
   }
-  
+
   if (!efile->EeFsOpen((uint8_t *) eeprom, size, board)) {
     std::cout << " wrong file system\n";
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();
   }
-  
+
   efile->openRd(FILE_GENERAL);
-  
+
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
     std::cout << " no\n";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
-  
+
   std::cout << " version " << (unsigned int) version;
-  
+
   EepromLoadErrors version_error = checkVersion(version);
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
@@ -337,13 +354,13 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
     errors.set(version_error);
     return errors.to_ulong();
   }
-  
+
   if (!loadRadioSettingsFromRLE(radioData.generalSettings, efile, version)) {
     std::cout << " ko\n";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
-  
+
   std::cout << " variant " << radioData.generalSettings.variant;
   for (int i = 0; i < getMaxModels(); i++) {
     if (!loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
@@ -352,7 +369,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       return errors.to_ulong();
     }
   }
-  
+
   std::cout << " ok\n";
   errors.set(ALL_OK);
   return errors.to_ulong();
@@ -375,27 +392,27 @@ uint8_t OpenTxEepromInterface::getLastDataVersion(BoardEnum board)
 int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t version, uint32_t variant)
 {
   EEPROMWarnings.clear();
-  
+
   if (version == 0) {
     version = getLastDataVersion(board);
   }
-  
+
   int size = getEEpromSize();
-  
+
   efile->EeFsCreate(eeprom, size, board, version);
-  
+
   if (board == BOARD_M128) {
     variant |= M128_VARIANT;
   }
   else if (board == BOARD_TARANIS_X9E) {
     variant |= TARANIS_X9E_VARIANT;
   }
-  
+
   int result = saveRadioSettings<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
   if (!result) {
     return 0;
   }
-  
+
   for (int i = 0; i < getMaxModels(); i++) {
     if (!radioData.models[i].isEmpty()) {
       result = saveModel<OpenTxModelData>(i, radioData.models[i], version, variant);
@@ -404,7 +421,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t
       }
     }
   }
-  
+
   if (!EEPROMWarnings.empty()) {
     QString msg;
     int noErrorsToDisplay = std::min((int) EEPROMWarnings.size(), 10);
@@ -420,7 +437,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t
                          QObject::tr("Warning"),
                          QObject::tr("EEPROM saved with these warnings:") + "\n" + msg);
   }
-  
+
   return size;
 }
 
@@ -428,15 +445,15 @@ int OpenTxEepromInterface::getSize(const ModelData &model)
 {
   if (IS_SKY9X(board))
     return 0;
-  
+
   if (model.isEmpty())
     return 0;
-  
+
   QByteArray tmp(EESIZE_MAX, 0);
   efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255/*version max*/);
-  
+
   OpenTxModelData open9xModel((ModelData &) model, board, 255/*version max*/, GetCurrentFirmware()->getVariantNumber());
-  
+
   QByteArray eeprom;
   open9xModel.Export(eeprom);
   int sz = efile->writeRlc2(0, FILE_TYP_MODEL, (const uint8_t *) eeprom.constData(), eeprom.size());
@@ -450,13 +467,13 @@ int OpenTxEepromInterface::getSize(const GeneralSettings &settings)
 {
   if (IS_SKY9X(board))
     return 0;
-  
+
   QByteArray tmp(EESIZE_MAX, 0);
   efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255);
-  
+
   OpenTxGeneralData open9xGeneral((GeneralSettings &) settings, board, 255, GetCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
-  
+
   QByteArray eeprom;
   open9xGeneral.Export(eeprom);
   int sz = efile->writeRlc2(0, FILE_TYP_GENERAL, (const uint8_t *) eeprom.constData(), eeprom.size());
@@ -798,9 +815,9 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
                                QObject::tr("Ail") };
     return sticks[index];
   }
-  
+
   index -= 4;
-  
+
   if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
     const QString pots[]  = { QObject::tr("P1"),
                               QObject::tr("P2"),
@@ -899,10 +916,10 @@ bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
 {
   if (IS_TARANIS(board) && (source == TELEMETRY_SOURCE_RSSI_TX))
     return false;
-  
+
   if (source == TELEMETRY_SOURCE_DTE)
     return false;
-  
+
   return true;
 }
 
@@ -1057,7 +1074,7 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
     default:
       return NOT_OPENTX;
   }
-  
+
   return ALL_OK;
 }
 
@@ -1090,7 +1107,7 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
       return false;
     }
   }
-  
+
   return true;
 }
 
@@ -1118,15 +1135,15 @@ OpenTxEepromInterface::loadModelFromBackup(ModelData & model, const uint8_t * da
 unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint8_t * eeprom, int esize, int index)
 {
   std::bitset<NUM_ERRORS> errors;
-  
+
   std::cout << "trying " << getName() << " backup import...";
-  
+
   if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0) {
     std::cout << " no\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
-  
+
   BoardEnum backupBoard = (BoardEnum) -1;
   switch (eeprom[3]) {
     case 0x33:
@@ -1143,20 +1160,20 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
       errors.set(UNKNOWN_BOARD);
       return errors.to_ulong();
   }
-  
+
   if (backupBoard != board) {
     std::cout << " not right board\n";
     errors.set(WRONG_BOARD);
     return errors.to_ulong();
   }
-  
+
   uint8_t version = eeprom[4];
   uint8_t bcktype = eeprom[5];
   uint16_t size = ((uint16_t) eeprom[7] << 8) + eeprom[6];
   uint16_t variant = ((uint16_t) eeprom[9] << 8) + eeprom[8];
-  
+
   std::cout << " version " << (unsigned int) version << " ";
-  
+
   EepromLoadErrors version_error = checkVersion(version);
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
@@ -1167,13 +1184,13 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
     errors.set(version_error);
     return errors.to_ulong();
   }
-  
+
   if (size > esize - 8) {
     std::cout << " wrong size\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
-  
+
   if (bcktype == 'M') {
     if (!loadModelFromBackup(radioData.models[index], &eeprom[8], size, version, variant)) {
       std::cout << " ko\n";
@@ -1186,7 +1203,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
     errors.set(BACKUP_NOT_SUPPORTED);
     return errors.to_ulong();
   }
-  
+
   std::cout << " ok\n";
   errors.set(ALL_OK);
   return errors.to_ulong();
@@ -1205,7 +1222,7 @@ QString OpenTxFirmware::getFirmwareUrl()
 {
   QString url = getFirmwareBaseUrl();
   QByteArray data = QUrl::toPercentEncoding(id);
-  
+
   if (IS_ARM(board))
     url.append(QString("/getfw.php?fw=%1.bin").arg((QString) data));
   else
@@ -1275,7 +1292,7 @@ void addOpenTxLcdOptions(OpenTxFirmware * firmware)
 void registerOpenTxFirmwares()
 {
   OpenTxFirmware * firmware;
-  
+
   Option ext_options[] = {{"frsky",      QObject::tr("Support for frsky telemetry mod"),  FRSKY_VARIANT},
                           {"telemetrez", QObject::tr("Support for telemetry easy board"), FRSKY_VARIANT},
                           {"jeti",       QObject::tr("Support for jeti telemetry mod"),       0},
@@ -1295,36 +1312,36 @@ void registerOpenTxFirmwares()
   Option dsm2_options[] = {{"DSM2",    QObject::tr("Support for DSM2 modules"),                                  0},
                            {"DSM2PPM", QObject::tr("Support for DSM2 modules using ppm instead of true serial"), 0},
                            {NULL}};
-  
+
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   firmware->addOption("horussticks", QObject::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* FrSky X7D board */
   firmware = new OpenTxFirmware("opentx-x7d", QObject::tr("FrSky X7D"), BOARD_X7D);
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* FrSky Horus board */
   firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
   firmwares.push_back(firmware);
-  
+
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
@@ -1344,7 +1361,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* 9XR board with M128 chip */
   firmware = new OpenTxFirmware("opentx-9xr128", QObject::tr("Turnigy 9XR with m128 chip"), BOARD_M128);
   firmware->addOptions(extr_options);
@@ -1373,7 +1390,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* 9XR board */
   firmware = new OpenTxFirmware("opentx-9xr", QObject::tr("Turnigy 9XR"), BOARD_STOCK);
   firmware->addOptions(extr_options);
@@ -1407,7 +1424,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* 9x board */
   firmware = new OpenTxFirmware("opentx-9x", QObject::tr("9X with stock board"), BOARD_STOCK);
   firmware->addOptions(ext_options);
@@ -1444,7 +1461,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* 9x board with M128 chip */
   firmware = new OpenTxFirmware("opentx-9x128", QObject::tr("9X with stock board and m128 chip"), BOARD_M128);
   firmware->addOptions(ext_options);
@@ -1475,7 +1492,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* ar9x board */
   firmware = new OpenTxFirmware("opentx-ar9x", QObject::tr("9X with AR9X board"), BOARD_AR9X);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
@@ -1498,7 +1515,7 @@ void registerOpenTxFirmwares()
 //  firmware->addOption("volume", QObject::tr("i2c volume control added"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* Sky9x board */
   firmware = new OpenTxFirmware("opentx-sky9x", QObject::tr("9X with Sky9x board"), BOARD_SKY9X);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
@@ -1519,7 +1536,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* Gruvin9x board */
   firmware = new OpenTxFirmware("opentx-gruvin9x", QObject::tr("9X with Gruvin9x board"), BOARD_GRUVIN9X);
   firmware->addOption("heli", QObject::tr("Enable heli menu and cyclic mix support"));
@@ -1545,7 +1562,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   /* MEGA2560 board */
   firmware = new OpenTxFirmware("opentx-mega2560", QObject::tr("DIY MEGA2560 radio"), BOARD_MEGA2560);
   addOpenTxLcdOptions(firmware);
@@ -1576,7 +1593,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
   firmwares.push_back(firmware);
-  
+
   default_firmware_variant = GetFirmware("opentx-x9d+");
   current_firmware_variant = default_firmware_variant;
 }

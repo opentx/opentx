@@ -3394,9 +3394,9 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   
   if (IS_HORUS(board)) {
     for (int i = 0; i < 5; i++) {
-      internalField.Append(new CharField<610>(modelData.customScreenData[i], true, "Custom screen blob"));
+      internalField.Append(new CharField<610>(modelData.customScreenData[i], false, "Custom screen blob"));
     }
-    internalField.Append(new CharField<216>(modelData.topbarData, true, "Top bar blob"));
+    internalField.Append(new CharField<216>(modelData.topbarData, false, "Top bar blob"));
     internalField.Append(new SpareBitsField<8>()); // current view
   }
 }
@@ -3512,7 +3512,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   internalField.Append(new UnsignedField<16>(chkSum));
   if (!IS_HORUS(board)) {
-    internalField.Append(new UnsignedField<8>(generalData.currModel));
+    internalField.Append(new UnsignedField<8>(generalData.currModelIndex));
     internalField.Append(new UnsignedField<8>(generalData.contrast));
   }
   internalField.Append(new UnsignedField<8>(generalData.vBatWarn));
@@ -3711,8 +3711,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       for (int i=0; i<MAX_SLIDERS(board); ++i) {
         internalField.Append(new ZCharField<3>(generalData.sliderName[i], "Slider name"));
       }
-      static char modelName[17+1] = "model1.bin\0     ";
-      internalField.Append(new CharField<17>(modelName, true, "Model name"));
+      internalField.Append(new CharField<17>(generalData.currModelFilename, true, "Current model filename"));
     }
     else if (IS_TARANIS(board) && version >= 217) {
       for (int i=0; i<MAX_SWITCHES(board, version); i++) {

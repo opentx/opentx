@@ -70,7 +70,7 @@ void saveRadioSettings(GeneralSettings & settings, global_settings & gs)
   Calibration p3Calib(settings.calibMid[6], settings.calibSpanNeg[6], settings.calibSpanPos[6]);
   gs.calibration(calibration(rudderCalib, throttleCalib, aileronCalib, elevatorCalib, p1Calib, p2Calib, p3Calib));
 
-  // TODO BSS settings.currModel;
+  // TODO BSS settings.currModelIndex;
   gs.contrast(settings.contrast);
   gs.battery(battery(settings.txVoltageCalibration, settings.vBatWarn));
 
