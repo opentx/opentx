@@ -55,7 +55,7 @@ endif()
 add_definitions(-DQXT_STATIC)
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "/EHsc /LD")
+  set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
   include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
   link_directories(C:/Programs/pthreads/Pre-built.2/lib/)

@@ -411,7 +411,7 @@ if(NOT MSVC)
   else()
     set(CMAKE_C_COMPILER avr-gcc)
     set(CMAKE_CXX_COMPILER avr-gcc)
-    set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS} /MP")
 
     # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
     if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
