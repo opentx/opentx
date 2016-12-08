@@ -62,6 +62,10 @@ int main(int argc, char *argv[])
 {
   Q_INIT_RESOURCE(companion);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
   QApplication app(argc, argv);
   app.setApplicationName("OpenTX Companion");
   app.setOrganizationName("OpenTX");
