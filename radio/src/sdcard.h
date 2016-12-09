@@ -44,6 +44,7 @@
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
 #define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
 #define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
+#define SCRIPTS_PATH_MAX_SZ (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + slash
 
 #if defined(COLORLCD)
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
@@ -57,6 +58,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define PNG_EXT             ".png"
 #define JPG_EXT             ".jpg"
 #define SCRIPTS_EXT         ".lua"
+#define SCRIPTS_BIN_EXT     ".luac"
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"

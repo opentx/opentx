@@ -31,6 +31,16 @@ extern "C" {
   #include <lgc.h>
 }
 
+#ifndef LUA_SCRIPT_LOAD_MODE
+  // Can force loading of binary (.luac) or plain-text (.lua) versions of scripts specifically, and control
+  //  compilation options. See interface.cpp:luaLoadScriptFileToState() <mode> parameter description for details.
+  #if !defined(LUA_COMPILER) || defined(SIMU) || defined(DEBUG)
+    #define LUA_SCRIPT_LOAD_MODE    "T"   // prefer loading .lua source file for full debug info
+  #else
+    #define LUA_SCRIPT_LOAD_MODE    "bt"  // binary or text, whichever is newer
+  #endif
+#endif
+
 extern lua_State * lsScripts;
 extern lua_State * lsWidgets;
 extern bool luaLcdAllowed;
@@ -144,7 +154,7 @@ void luaLoadThemes();
 void luaRegisterLibraries(lua_State * L);
 void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
-void luaCompileAndSave(lua_State * L, const char *bytecodeName);
+int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode);
 #else  // defined(LUA)
 #define luaInit()
 #define LUA_INIT_THEMES_AND_WIDGETS()
