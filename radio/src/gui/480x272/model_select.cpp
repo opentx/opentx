@@ -42,7 +42,6 @@ ModelsList modelslist;
 ModelsCategory * currentCategory;
 int currentCategoryIndex;
 ModelCell * currentModel;
-char modelDeleteConfirm[LEN_MODEL_FILENAME + LEN_MODEL_NAME + 3];
 
 void drawCategory(coord_t y, const char * name, bool selected)
 {
@@ -234,13 +233,8 @@ void onModelSelectMenu(const char * result)
     postModelLoad(true);
   }
   else if (result == STR_DELETE_MODEL) {
-    char * tmp;
     POPUP_CONFIRMATION(STR_DELETEMODEL);
-    memcpy(modelDeleteConfirm, currentModel->modelName, LEN_MODEL_NAME);
-    tmp = strAppend(strchr(modelDeleteConfirm, 0), " (", 2);
-    tmp = strAppend(tmp, currentModel->name, strlen(currentModel->name));
-    strAppend(tmp, ")",1);
-    SET_WARNING_INFO(modelDeleteConfirm, sizeof(modelDeleteConfirm), 0);
+    SET_WARNING_INFO(currentModel->modelName, sizeof(currentModel->modelName), 0);
     deleteMode = MODE_DELETE_MODEL;
   }
   else if (result == STR_CREATE_MODEL) {
