@@ -39,7 +39,7 @@ if(Qt5Widgets_FOUND)
 endif()
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "/EHsc /LD")
+  set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
   include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
   target_link_libraries(${SIMULATOR_TARGET} PRIVATE C:/Programs/pthreads/Pre-built.2/lib/pthreadVC2.lib)
 else()
