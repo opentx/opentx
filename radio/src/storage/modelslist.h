@@ -84,7 +84,7 @@ class ModelCell
     }
 
     char name[LEN_MODEL_FILENAME+1];
-    char modelName[LEN_MODEL_FILENAME+1];
+    char modelName[LEN_MODEL_NAME+1];
     BitmapBuffer * buffer;
 };
 
