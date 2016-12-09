@@ -234,7 +234,7 @@ void onModelSelectMenu(const char * result)
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
-    SET_WARNING_INFO(currentModel->modelName, sizeof(currentModel->modelName), 0);
+    SET_WARNING_INFO(currentModel->modelName, LEN_MODEL_NAME, 0);
     deleteMode = MODE_DELETE_MODEL;
   }
   else if (result == STR_CREATE_MODEL) {
