@@ -659,7 +659,7 @@ void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
     QDateTime logTime = parseTransmittterTimestamp(csvRecords[i]);
     // ugh - no timespan in this Qt version
     double timeDiff = (logTime.toMSecsSinceEpoch() - lastTime.toMSecsSinceEpoch()) / 1000.0;
-    if ((timeDiff > 0.1) && (timeDiff < logFrequency)) {
+    if ((timeDiff > 0.09) && (timeDiff < logFrequency)) {
       logFrequency = timeDiff;
     }
     lastTime = logTime;
