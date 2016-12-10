@@ -323,8 +323,11 @@ void CustomFunctionsPanel::functionEdited()
   if (!lock) {
     lock = true;
     int index = sender()->property("index").toInt();
-    fswtchParamArmT[index]->setCurrentIndex(0);
-    refreshCustomFunction(index, true);
+    RawSwitch swtch = functions[index].swtch;
+    functions[index].clear();
+    functions[index].swtch = swtch;
+    functions[index].func = (AssignFunc)fswtchFunc[index]->itemData(fswtchFunc[index]->currentIndex()).toInt();
+    refreshCustomFunction(index);
     emit modified();
     lock = false;
   }
