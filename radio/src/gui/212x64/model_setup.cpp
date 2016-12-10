@@ -1085,8 +1085,6 @@ void menuModelFailsafe(event_t event)
 
   SIMPLE_SUBMENU_NOTITLE(NUM_CHANNELS(g_moduleIdx));
 
-  SET_SCROLLBAR_X(0);
-
   #define COL_W   (LCD_W/2)
   const uint8_t SLIDER_W = 64;
 
