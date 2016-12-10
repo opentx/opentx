@@ -153,10 +153,6 @@ void USBD_Init(USB_OTG_CORE_HANDLE *pdev,
   /* Upon Init call usr callback */
   pdev->dev.usr_cb->Init();
   
-  /* Force Device Mode*/
-  // IMPORTANT: without this here, the USB works upon radio start only in 50% cases
-  USB_OTG_SetCurrentMode(pdev, DEVICE_MODE);	// modified by OpenTX
-
   /* Enable Interrupts */
   USB_OTG_BSP_EnableInterrupt(pdev);
 }

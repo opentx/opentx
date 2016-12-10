@@ -110,7 +110,7 @@ uint8_t  *USBD_MSC_GetOtherCfgDesc (uint8_t speed,
 #endif
 
 
-uint8_t USBD_MSC_CfgDesc[USB_MSC_CONFIG_DESC_SIZ];
+// uint8_t USBD_MSC_CfgDesc[USB_MSC_CONFIG_DESC_SIZ];   // modified by OpenTX
 
 
 
@@ -125,7 +125,7 @@ uint8_t USBD_MSC_CfgDesc[USB_MSC_CONFIG_DESC_SIZ];
   */ 
 
 
-USBD_Class_cb_TypeDef  USBD_MSC_cb = 
+const USBD_Class_cb_TypeDef  USBD_MSC_cb =    // modified by OpenTX
 {
   USBD_MSC_Init,
   USBD_MSC_DeInit,
@@ -150,7 +150,7 @@ USBD_Class_cb_TypeDef  USBD_MSC_cb =
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 /* USB Mass storage device Configuration Descriptor */
 /*   All Descriptors (Configuration, Interface, Endpoint, Class, Vendor */
-__ALIGN_BEGIN uint8_t USBD_MSC_CfgDesc[USB_MSC_CONFIG_DESC_SIZ] __ALIGN_END =
+__ALIGN_BEGIN const uint8_t USBD_MSC_CfgDesc[USB_MSC_CONFIG_DESC_SIZ] __ALIGN_END =   // modified by OpenTX
 {
   
   0x09,   /* bLength: Configuation Descriptor size */
@@ -240,12 +240,13 @@ __ALIGN_BEGIN uint8_t USBD_MSC_OtherCfgDesc[USB_MSC_CONFIG_DESC_SIZ] __ALIGN_END
 };
 #endif 
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-  #if defined ( __ICCARM__ ) /*!< IAR Compiler */
-    #pragma data_alignment=4   
-  #endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN static uint8_t  USBD_MSC_MaxLun  __ALIGN_END = 0;
+// modified my OpenTX
+// #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+//   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+//     #pragma data_alignment=4   
+//   #endif
+// #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+// __ALIGN_BEGIN static uint8_t  USBD_MSC_MaxLun  __ALIGN_END = 0;
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
@@ -334,6 +335,7 @@ uint8_t  USBD_MSC_Setup (void  *pdev, USB_SETUP_REQ *req)
          (req->wLength == 1) &&
          ((req->bmRequest & 0x80) == 0x80))
       {
+        __ALIGN_BEGIN uint8_t  USBD_MSC_MaxLun  __ALIGN_END;    // modified by OpenTX
         USBD_MSC_MaxLun = USBD_STORAGE_fops->GetMaxLun();
         if(USBD_MSC_MaxLun > 0)
         {
@@ -345,7 +347,6 @@ uint8_t  USBD_MSC_Setup (void  *pdev, USB_SETUP_REQ *req)
         {
           USBD_CtlError(pdev , req);
           return USBD_FAIL; 
-          
         }
       }
       else

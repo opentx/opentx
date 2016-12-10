@@ -92,7 +92,7 @@ typedef struct _USBD_STORAGE
 /** @defgroup USBD_MEM_Exported_FunctionsPrototype
   * @{
   */ 
-extern USBD_STORAGE_cb_TypeDef *USBD_STORAGE_fops;
+extern const USBD_STORAGE_cb_TypeDef * const USBD_STORAGE_fops;   // modified my OpenTX
 /**
   * @}
   */ 
