@@ -89,7 +89,7 @@ uint8_t keyDown()
 void checkRotaryEncoder()
 {
   uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition) {
+  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
     if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
       --rotencValue[0];
     }
