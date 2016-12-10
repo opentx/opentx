@@ -305,7 +305,7 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
 #if defined(LUA_COMPILER)
   uint16_t fnamelen;
-  char filenameFull[SCRIPTS_PATH_MAX_SZ + _MAX_LFN + 1];
+  char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1];
   FILINFO fnoLuaS, fnoLuaC;
   FRESULT frLuaS, frLuaC;
 
@@ -317,22 +317,22 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
   // check if file extension is already in the file name and strip it
   fnamelen = strlen(filename);
-  if (!strcasecmp(filename + fnamelen - strlen(SCRIPTS_BIN_EXT), SCRIPTS_BIN_EXT)) {
-    fnamelen -= strlen(SCRIPTS_BIN_EXT);
+  if (!strcasecmp(filename + fnamelen - strlen(SCRIPT_BIN_EXT), SCRIPT_BIN_EXT)) {
+    fnamelen -= strlen(SCRIPT_BIN_EXT);
   }
-  else if (!strcasecmp(filename + fnamelen - strlen(SCRIPTS_EXT), SCRIPTS_EXT)) {
-    fnamelen -= strlen(SCRIPTS_EXT);
+  else if (!strcasecmp(filename + fnamelen - strlen(SCRIPT_EXT), SCRIPT_EXT)) {
+    fnamelen -= strlen(SCRIPT_EXT);
   }
-  fnamelen = min(fnamelen, (uint16_t)(sizeof(filenameFull) - sizeof(SCRIPTS_BIN_EXT)));
+  fnamelen = min(fnamelen, (uint16_t)(sizeof(filenameFull) - sizeof(SCRIPT_BIN_EXT)));
   strncpy(filenameFull, filename, fnamelen);
   filenameFull[fnamelen] = '\0';
 
   // check if binary version exists
-  strcpy(filenameFull + fnamelen, SCRIPTS_BIN_EXT);
+  strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
   frLuaC = f_stat(filenameFull, &fnoLuaC);
 
   // check if text version exists
-  strcpy(filenameFull + fnamelen, SCRIPTS_EXT);
+  strcpy(filenameFull + fnamelen, SCRIPT_EXT);
   frLuaS = f_stat(filenameFull, &fnoLuaS);
 
   // decide which version to load, text or binary
@@ -368,14 +368,14 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
   if (loadFileType == 2) {
     // change file extension to binary version
-    strcpy(filenameFull + fnamelen, SCRIPTS_BIN_EXT);
+    strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
   }
 
 //  TRACE_DEBUG("luaLoadScriptFileToState(%s, %s):\n", filename, lmode);
 //  TRACE_DEBUG("\tldfile='%s'; ldtype=%u; compile=%u;\n", filenameFull, loadFileType, scriptNeedsCompile);
-//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPTS_EXT, (frLuaS == FR_OK ? "ok" : "nf"), fnoLuaS.fdate, fnoLuaS.ftime,
+//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_EXT, (frLuaS == FR_OK ? "ok" : "nf"), fnoLuaS.fdate, fnoLuaS.ftime,
 //      (fnoLuaS.fdate >> 9) + 1980, (fnoLuaS.fdate >> 5) & 15, fnoLuaS.fdate & 31, fnoLuaS.ftime >> 11, (fnoLuaS.ftime >> 5) & 63, (fnoLuaS.ftime & 31) * 2);
-//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPTS_BIN_EXT, (frLuaC == FR_OK ? "ok" : "nf"), fnoLuaC.fdate, fnoLuaC.ftime,
+//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_BIN_EXT, (frLuaC == FR_OK ? "ok" : "nf"), fnoLuaC.fdate, fnoLuaC.ftime,
 //      (fnoLuaC.fdate >> 9) + 1980, (fnoLuaC.fdate >> 5) & 15, fnoLuaC.fdate & 31, fnoLuaC.ftime >> 11, (fnoLuaC.ftime >> 5) & 63, (fnoLuaC.ftime & 31) * 2);
 
   // final check that file exists and is allowed by mode flags
@@ -400,13 +400,13 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   if (lstatus == LUA_ERRSYNTAX && loadFileType == 2 && frLuaS == FR_OK && strstr(lua_tostring(L, -1), "precompiled")) {
     loadFileType = 1;
     scriptNeedsCompile = true;
-    strcpy(filenameFull + fnamelen, SCRIPTS_EXT);
+    strcpy(filenameFull + fnamelen, SCRIPT_EXT);
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: %s\n\tRetrying with %s\n", filename, lmode, lua_tostring(L, -1), filenameFull);
     lstatus = luaL_loadfilex(L, filenameFull, NULL);
   }
   if (lstatus == LUA_OK) {
     if (scriptNeedsCompile && loadFileType == 1) {
-      strcpy(filenameFull + fnamelen, SCRIPTS_BIN_EXT);
+      strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
       luaDumpState(L, filenameFull, &fnoLuaS, (strchr(lmode, 'd') ? 0 : 1));
     }
     ret = SCRIPT_OK;
@@ -432,8 +432,8 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
 static int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
-  int lstatus;
   int init = 0;
+  int lstatus = 0;
 
   sid.instructions = 0;
   sid.state = SCRIPT_OK;
@@ -508,10 +508,10 @@ bool luaLoadMixScript(uint8_t index)
     ScriptInputsOutputs * sio = &scriptInputsOutputs[index];
     sid.reference = SCRIPT_MIX_FIRST+index;
     sid.state = SCRIPT_NOFILE;
-    char filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_MIXES_PATH "/";
+    char filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
     strncpy(filename+sizeof(SCRIPTS_MIXES_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)] = '\0';
-    strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPTS_EXT);
+    strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPT_EXT);
     if (luaLoad(lsScripts, filename, sid, sio) == SCRIPT_PANIC) {
       return false;
     }
@@ -528,10 +528,10 @@ bool luaLoadFunctionScript(uint8_t index)
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = SCRIPT_FUNC_FIRST+index;
       sid.state = SCRIPT_NOFILE;
-      char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPTS_EXT)] = SCRIPTS_FUNCS_PATH "/";
+      char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
       strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
       filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)] = '\0';
-      strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPTS_EXT);
+      strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
       if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
         return false;
       }
@@ -556,10 +556,10 @@ bool luaLoadTelemetryScript(uint8_t index)
         ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
         sid.reference = SCRIPT_TELEMETRY_FIRST+index;
         sid.state = SCRIPT_NOFILE;
-        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_TELEM_PATH "/";
+        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_TELEM_PATH "/";
         strncpy(filename+sizeof(SCRIPTS_TELEM_PATH), script.file, sizeof(script.file));
         filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)] = '\0';
-        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPTS_EXT);
+        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPT_EXT);
         if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
           return false;
         }

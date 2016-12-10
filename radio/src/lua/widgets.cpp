@@ -31,7 +31,7 @@
 lua_State *lsWidgets = NULL;
 extern int custom_lua_atpanic(lua_State *L);
 
-#define LUA_FULLPATH_MAXLEN                (42) // max length (example: /SCRIPTS/THEMES/mytheme.lua)
+#define LUA_FULLPATH_MAXLEN                (LEN_FILE_PATH_MAX + LEN_SCRIPT_FILENAME + LEN_FILE_EXTENSION_MAX)  // max length (example: /SCRIPTS/THEMES/mytheme.lua)
 
 void exec(int function, int nresults=0)
 {

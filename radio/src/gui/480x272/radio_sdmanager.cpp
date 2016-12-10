@@ -111,13 +111,14 @@ void onSdManagerMenu(const char * result)
     memcpy(reusableBuffer.sdmanager.originalName, line, sizeof(reusableBuffer.sdmanager.originalName));
     char * ext = getFileExtension(line, SD_SCREEN_FILE_LENGTH+1);
     if (ext) {
+      size_t len = strlen(ext);
       // write spaces to allow a longer filename
-      memset(ext, ' ', SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION-(ext-line));
-      line[SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION] = '\0';
+      memset(ext, ' ', SD_SCREEN_FILE_LENGTH-len-(ext-line));
+      line[SD_SCREEN_FILE_LENGTH-len] = '\0';
     }
     else {
-      int len = strlen(line);
-      memset(line + strlen(line), ' ', SD_SCREEN_FILE_LENGTH - len);
+      size_t len = strlen(line);
+      memset(line + len, ' ', SD_SCREEN_FILE_LENGTH - len);
       line[SD_SCREEN_FILE_LENGTH] = '\0';
     }
     s_editMode = EDIT_MODIFY_STRING;
@@ -235,7 +236,7 @@ bool menuRadioSdManager(event_t _event)
           else if (isImageFileExtension(ext)) {
             TCHAR lfn[_MAX_LFN+1];
             f_getcwd(lfn, _MAX_LFN);
-            if (!READ_ONLY() && unsigned(LEN_FILE_EXTENSION+ext-line) <= sizeof(g_model.header.bitmap) && !strcmp(lfn, BITMAPS_PATH)) {
+            if (!READ_ONLY() && strlen(line) <= sizeof(g_model.header.bitmap) && !strcmp(lfn, BITMAPS_PATH)) {
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
             }
           }
@@ -243,7 +244,7 @@ bool menuRadioSdManager(event_t _event)
             POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
 #if defined(LUA)
-          else if (!strcasecmp(ext, SCRIPTS_EXT)) {
+          else if (!strcasecmp(ext, SCRIPT_EXT) || !strcasecmp(ext, SCRIPT_BIN_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
 #endif
@@ -347,15 +348,14 @@ bool menuRadioSdManager(event_t _event)
     LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
-        editName(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-4, _event, attr, 0);
+        char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, sizeof(reusableBuffer.sdmanager.originalName));
+        editName(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - (ext ? strlen(ext) : 0), _event, attr, 0);
         if (s_editMode == 0) {
-          unsigned int len = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-LEN_FILE_EXTENSION);
-          char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, sizeof(reusableBuffer.sdmanager.originalName));
           if (ext) {
-            strAppend(&reusableBuffer.sdmanager.lines[i][len], ext);
+            strAppend(&reusableBuffer.sdmanager.lines[i][effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH-strlen(ext))], ext);
           }
           else {
-            reusableBuffer.sdmanager.lines[i][len] = 0;
+            reusableBuffer.sdmanager.lines[i][effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH)] = 0;
           }
           f_rename(reusableBuffer.sdmanager.originalName, reusableBuffer.sdmanager.lines[i]);
           REFRESH_FILES();

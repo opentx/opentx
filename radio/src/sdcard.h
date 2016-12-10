@@ -44,7 +44,8 @@
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
 #define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
 #define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
-#define SCRIPTS_PATH_MAX_SZ (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + slash
+
+#define LEN_FILE_PATH_MAX   (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + "/"
 
 #if defined(COLORLCD)
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
@@ -57,8 +58,8 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define BMP_EXT             ".bmp"
 #define PNG_EXT             ".png"
 #define JPG_EXT             ".jpg"
-#define SCRIPTS_EXT         ".lua"
-#define SCRIPTS_BIN_EXT     ".luac"
+#define SCRIPT_EXT          ".lua"
+#define SCRIPT_BIN_EXT      ".luac"
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
@@ -68,6 +69,12 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
 #else
 #define BITMAPS_EXT         BMP_EXT
+#endif
+
+#ifdef LUA_COMPILER
+  #define SCRIPTS_EXT         SCRIPT_BIN_EXT SCRIPT_EXT
+#else
+  #define SCRIPTS_EXT         SCRIPT_EXT
 #endif
 
 #define GET_FILENAME(filename, path, var, ext) \
@@ -101,7 +108,9 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 }
 #endif
 
-#define LEN_FILE_EXTENSION             4
+//#define LEN_FILE_EXTENSION    4  // including the dot
+#define LEN_FILE_EXTENSION_MAX  5  // including the dot
+
 template<class T>
 T * getFileExtension(T * filename, int size=0)
 {
@@ -109,7 +118,7 @@ T * getFileExtension(T * filename, int size=0)
   if (size != 0 && size < len) {
     len = size;
   }
-  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
+  for (int i=len-1; i >= 0 && len-i <= LEN_FILE_EXTENSION_MAX; --i) {
     if (filename[i] == '.') {
       return &filename[i];
     }
@@ -125,7 +134,7 @@ T * getFileExtension(T * filename, int size=0)
   #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
 
-bool isFileAvailable(const char * filename);
+bool isFileAvailable(const char * filename, bool exclDir = false);
 int findNextFileIndex(char * filename, uint8_t size, const char * directory);
 
 const char * sdCopyFile(const char * src, const char * dest);
