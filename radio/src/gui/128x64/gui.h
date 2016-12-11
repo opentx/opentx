@@ -441,6 +441,7 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 extern const pm_uchar sticks[] PROGMEM;
 
 void drawSplash();
+void drawSecondSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();

@@ -964,6 +964,14 @@ void doSplash()
       }
 #endif
 
+#if defined(SPLASH_FRSKY)
+      static uint8_t secondSplash = false;
+      if (!secondSplash && get_tmr10ms() >= tgtime-200) {
+        secondSplash = true;
+        drawSecondSplash();
+      }
+#endif
+            
 #if defined(PCBSKY9X)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
