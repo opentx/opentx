@@ -96,7 +96,7 @@ int8_t STORAGE_Write (uint8_t lun,
 
 int8_t STORAGE_GetMaxLun (void);
 
-USBD_STORAGE_cb_TypeDef USBD_MICRO_SDIO_fops =
+const USBD_STORAGE_cb_TypeDef USBD_MICRO_SDIO_fops =    // modified my OpenTX
 {
   STORAGE_Init,
   STORAGE_GetCapacity,
@@ -108,9 +108,7 @@ USBD_STORAGE_cb_TypeDef USBD_MICRO_SDIO_fops =
   (int8_t *)STORAGE_Inquirydata,
 };
 
-USBD_STORAGE_cb_TypeDef  *USBD_STORAGE_fops = &USBD_MICRO_SDIO_fops;
-
-__IO uint32_t count = 0;
+const USBD_STORAGE_cb_TypeDef  * const USBD_STORAGE_fops = &USBD_MICRO_SDIO_fops;    // modified my OpenTX
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -172,14 +170,9 @@ uint8_t lunReady[STORAGE_LUN_NBR];
 
 void usbPluggedIn()
 {
-  if (lunReady[STORAGE_SDCARD_LUN] == 0) {
-    lunReady[STORAGE_SDCARD_LUN] = 1;
-  }
-  
+  lunReady[STORAGE_SDCARD_LUN] = 1;
 #if defined(EEPROM)
-  if (lunReady[STORAGE_EEPROM_LUN] == 0) {
-    lunReady[STORAGE_EEPROM_LUN] = 1;
-  }
+  lunReady[STORAGE_EEPROM_LUN] = 1;
 #endif
 }
 
@@ -719,7 +712,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
     FATWRITE_FIRMWARE
   };
 
-  static unsigned int operation = FATWRITE_NONE;
+  static uint8_t operation = FATWRITE_NONE;
 
   TRACE("FAT12 Write(sector=%d, count=%d)", sector, count);
 

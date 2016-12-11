@@ -210,8 +210,25 @@ enum InterruptNames {
   INT_TIM1CC,
   INT_TIM2,
   INT_TRAINER,
-  INT_OTG_FS,
   INT_BLUETOOTH,
+  INT_OTG_FS,
+#if defined(DEBUG_USB_INTERRUPTS)
+  INT_OTG_FS_SPURIOUS,
+  INT_OTG_FS_OUT_EP,
+  INT_OTG_FS_IN_EP,
+  INT_OTG_FS_MODEMISMATCH,
+  INT_OTG_FS_WAKEUP,
+  INT_OTG_FS_SUSPEND,
+  INT_OTG_FS_SOF,
+  INT_OTG_FS_RX_STAT,
+  INT_OTG_FS_RESET,
+  INT_OTG_FS_ENUM,
+  INT_OTG_FS_INCOMPLETE_IN,
+  INT_OTG_FS_INCOMPLETE_OUT,
+  INT_OTG_FS_SESSION,
+  INT_OTG_FS_OTG,
+  INT_OTG_FS_RX_NOT_DEVICE,
+#endif // #if defined(DEBUG_USB_INTERRUPTS)
   INT_LAST
 };
 #elif defined(PCBTARANIS)
@@ -229,6 +246,23 @@ enum InterruptNames {
   INT_TELEM_USART,
   INT_TRAINER,
   INT_OTG_FS,
+#if defined(DEBUG_USB_INTERRUPTS)
+  INT_OTG_FS_SPURIOUS,
+  INT_OTG_FS_OUT_EP,
+  INT_OTG_FS_IN_EP,
+  INT_OTG_FS_MODEMISMATCH,
+  INT_OTG_FS_WAKEUP,
+  INT_OTG_FS_SUSPEND,
+  INT_OTG_FS_SOF,
+  INT_OTG_FS_RX_STAT,
+  INT_OTG_FS_RESET,
+  INT_OTG_FS_ENUM,
+  INT_OTG_FS_INCOMPLETE_IN,
+  INT_OTG_FS_INCOMPLETE_OUT,
+  INT_OTG_FS_SESSION,
+  INT_OTG_FS_OTG,
+  INT_OTG_FS_RX_NOT_DEVICE,
+#endif // #if defined(DEBUG_USB_INTERRUPTS)
   INT_LAST
 };
 #endif
@@ -243,8 +277,18 @@ extern const char * interruptNames[INT_LAST];
 extern struct InterruptCounters interruptCounters;
 
 #define DEBUG_INTERRUPT(int)    (++interruptCounters.cnt[int])
+
+#if defined(DEBUG_USB_INTERRUPTS)
+  #define DEBUG_USB_INTERRUPT(int)  DEBUG_INTERRUPT(int)
 #else
+  #define DEBUG_USB_INTERRUPT(int)
+#endif
+
+#else  //#if defined(DEBUG_INTERRUPTS)
+
 #define DEBUG_INTERRUPT(int)
+#define DEBUG_USB_INTERRUPT(int)
+
 #endif //#if defined(DEBUG_INTERRUPTS)
 
 #if defined(DEBUG_TASKS)

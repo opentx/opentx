@@ -138,22 +138,24 @@ static uint8_t  *USBD_cdc_GetOtherCfgDesc (uint8_t speed, uint16_t *length);
 /** @defgroup usbd_cdc_Private_Variables
   * @{
   */ 
-extern CDC_IF_Prop_TypeDef  APP_FOPS;
+extern const CDC_IF_Prop_TypeDef  APP_FOPS;    // modified my OpenTX
 extern const uint8_t USBD_DeviceDesc   [USB_SIZ_DEVICE_DESC];	// modified by OpenTX
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-  #if defined ( __ICCARM__ ) /*!< IAR Compiler */
-    #pragma data_alignment=4   
-  #endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint8_t usbd_cdc_CfgDesc  [USB_CDC_CONFIG_DESC_SIZ] __ALIGN_END ;
+// modified my OpenTX
+// #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+//   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+//     #pragma data_alignment=4   
+//   #endif
+// #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+// __ALIGN_BEGIN uint8_t usbd_cdc_CfgDesc  [USB_CDC_CONFIG_DESC_SIZ] __ALIGN_END ;
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-  #if defined ( __ICCARM__ ) /*!< IAR Compiler */
-    #pragma data_alignment=4   
-  #endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
-__ALIGN_BEGIN uint8_t usbd_cdc_OtherCfgDesc  [USB_CDC_CONFIG_DESC_SIZ] __ALIGN_END ;
+// modified my OpenTX
+// #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+//   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
+//     #pragma data_alignment=4   
+//   #endif
+// #endif  USB_OTG_HS_INTERNAL_DMA_ENABLED 
+// __ALIGN_BEGIN uint8_t usbd_cdc_OtherCfgDesc  [USB_CDC_CONFIG_DESC_SIZ] __ALIGN_END ;
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */
@@ -191,10 +193,10 @@ uint32_t APP_Rx_length  = 0;
 uint8_t  USB_Tx_State = USB_CDC_IDLE;
 
 static uint32_t cdcCmd = 0xFF;
-static uint32_t cdcLen = 0;
+static uint8_t cdcLen = 0;   // modified by OpenTX
 
 /* CDC interface class callbacks structure */
-USBD_Class_cb_TypeDef  USBD_CDC_cb = 
+const USBD_Class_cb_TypeDef  USBD_CDC_cb =   // modified by OpenTX
 {
   usbd_cdc_Init,
   usbd_cdc_DeInit,
@@ -218,7 +220,7 @@ USBD_Class_cb_TypeDef  USBD_CDC_cb =
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 /* USB CDC device Configuration Descriptor */
-__ALIGN_BEGIN uint8_t usbd_cdc_CfgDesc[USB_CDC_CONFIG_DESC_SIZ]  __ALIGN_END =
+__ALIGN_BEGIN const uint8_t usbd_cdc_CfgDesc[USB_CDC_CONFIG_DESC_SIZ]  __ALIGN_END =  // modified by OpenTX
 {
   /*Configuration Descriptor*/
   0x09,   /* bLength: Configuration Descriptor size */
@@ -323,7 +325,7 @@ __ALIGN_BEGIN uint8_t usbd_cdc_CfgDesc[USB_CDC_CONFIG_DESC_SIZ]  __ALIGN_END =
     #pragma data_alignment=4   
   #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */ 
-__ALIGN_BEGIN uint8_t usbd_cdc_OtherCfgDesc[USB_CDC_CONFIG_DESC_SIZ]  __ALIGN_END =
+__ALIGN_BEGIN const uint8_t usbd_cdc_OtherCfgDesc[USB_CDC_CONFIG_DESC_SIZ]  __ALIGN_END =   // modified by OpenTX
 { 
   0x09,   /* bLength: Configuration Descriptor size */
   USB_DESC_TYPE_OTHER_SPEED_CONFIGURATION,   
@@ -435,6 +437,13 @@ uint8_t  usbd_cdc_Init (void  *pdev,
                                uint8_t cfgidx)
 {
   uint8_t *pbuf;
+
+  APP_Rx_ptr_in  = 0; // modified by OpenTX
+  APP_Rx_ptr_out = 0; // modified by OpenTX
+  APP_Rx_length  = 0;  // modified by OpenTX
+  USB_Tx_State = USB_CDC_IDLE;  // modified by OpenTX
+  cdcCmd = 0xFF;   // modified by OpenTX
+  cdcLen = 0;  // modified by OpenTX
 
   /* Open EP IN */
   DCD_EP_Open(pdev,
@@ -702,9 +711,9 @@ uint8_t  usbd_cdc_DataOut (void *pdev, uint8_t epnum)
   */
 uint8_t  usbd_cdc_SOF (void *pdev)
 {      
-  static uint32_t FrameCount = 0;
+  static uint8_t FrameCount = 0;    // modified by OpenTX
   
-  if (FrameCount++ == CDC_IN_FRAME_INTERVAL)
+  if (FrameCount++ >= CDC_IN_FRAME_INTERVAL)     // modified by OpenTX
   {
     /* Reset the frame counter */
     FrameCount = 0;

@@ -118,8 +118,25 @@ void dumpTraceBuffer()
     "Tim1 ",   // INT_TIM1CC,
     "Tim2 ",   // INT_TIM2,
     "Tim3 ",   // INT_TIM3,
-    "Usb  "    // INT_OTG_FS,
     "BlueT",   // INT_BLUETOOTH,
+    "USB  ",  // INT_OTG_FS,
+#if defined(DEBUG_USB_INTERRUPTS)
+    " spur",  // INT_OTG_FS_SPURIOUS,
+    "  out",  // INT_OTG_FS_OUT_EP,
+    "   in",  // INT_OTG_FS_IN_EP,
+    " miss",  // INT_OTG_FS_MODEMISMATCH,
+    " wake",  // INT_OTG_FS_WAKEUP,
+    " susp",  // INT_OTG_FS_SUSPEND,
+    "  sof",  // INT_OTG_FS_SOF,
+    " rxst",  // INT_OTG_FS_RX_STAT,
+    "  rst",  // INT_OTG_FS_RESET,
+    " enum",  // INT_OTG_FS_ENUM,
+    " inci",  // INT_OTG_FS_INCOMPLETE_IN,
+    " inco",  // INT_OTG_FS_INCOMPLETE_OUT,
+    " sess",  // INT_OTG_FS_SESSION,
+    "  otg",  // INT_OTG_FS_OTG,
+    " notd",  // INT_OTG_FS_RX_NOT_DEVICE,
+#endif // #if defined(DEBUG_USB_INTERRUPTS)
   };
 #elif defined(PCBTARANIS) 
   const char * interruptNames[INT_LAST] = {
@@ -136,6 +153,23 @@ void dumpTraceBuffer()
     "TelUs",   // INT_TELEM_USART,
     "Train",   // INT_TRAINER,
     "Usb  ",   // INT_OTG_FS,
+#if defined(DEBUG_USB_INTERRUPTS)
+    " spur",  // INT_OTG_FS_SPURIOUS,
+    "  out",  // INT_OTG_FS_OUT_EP,
+    "   in",  // INT_OTG_FS_IN_EP,
+    " miss",  // INT_OTG_FS_MODEMISMATCH,
+    " wake",  // INT_OTG_FS_WAKEUP,
+    " susp",  // INT_OTG_FS_SUSPEND,
+    "  sof",  // INT_OTG_FS_SOF,
+    " rxst",  // INT_OTG_FS_RX_STAT,
+    "  rst",  // INT_OTG_FS_RESET,
+    " enum",  // INT_OTG_FS_ENUM,
+    " inci",  // INT_OTG_FS_INCOMPLETE_IN,
+    " inco",  // INT_OTG_FS_INCOMPLETE_OUT,
+    " sess",  // INT_OTG_FS_SESSION,
+    "  otg",  // INT_OTG_FS_OTG,
+    " notd",  // INT_OTG_FS_RX_NOT_DEVICE,
+#endif // #if defined(DEBUG_USB_INTERRUPTS)
   };
 #endif
 
