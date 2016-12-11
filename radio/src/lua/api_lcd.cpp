@@ -129,6 +129,8 @@ Returns the last x position from previous output
 
 @retval number (integer) x position
 
+@notice Only available on Taranis and X7D
+
 @status current Introduced in 2.0.0
 */
 static int luaLcdGetLastPos(lua_State *L)
@@ -327,7 +329,7 @@ Loads a bitmap in memory, for later use with lcd.drawBitmap()
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
-@notice Only available on color screens
+@notice Only available on Horus
 
 @status current Introduced in 2.2.0
 */
@@ -366,7 +368,7 @@ Return width, heigh of a bitmap in memory
 
 @param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
 
-@notice Only available on color screens
+@notice Only available on Horus
 
 @status current Introduced in 2.2.0
 */
@@ -419,7 +421,7 @@ Displays a bitmap at (x,y)
 
 @param scale (positive numbers) scale in %, 50 divides size by two, 100 is unchanged, 200 doubles size
 
-@notice Only available on color screens
+@notice Only available on Horus
 
 @status current Introduced in 2.2.0
 */
@@ -447,7 +449,7 @@ Draw a bitmap at (x,y)
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
-@notice Only available on monochrome screens
+@notice Only available on Taranis
 
 @status current Introduced in 2.0.0
 */
@@ -468,7 +470,7 @@ static int luaLcdDrawPixmap(lua_State *L)
 #endif
 
 /*luadoc
-@function lcd.drawRectangle(x, y, w, h [, flags])
+@function lcd.drawRectangle(x, y, w, h [, flags [, t]])
 
 Draw a rectangle from top left corner (x,y) of specified width and height
 
@@ -480,9 +482,9 @@ Draw a rectangle from top left corner (x,y) of specified width and height
 
 @param flags (unsigned number) drawing flags
 
-@param t (number) thickness in pixels
+@param t (number) thickness in pixels, defaults to 1 (only on Horus)
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, changed in 2.2.0
 */
 static int luaLcdDrawRectangle(lua_State *L)
 {
@@ -546,7 +548,7 @@ Draw a simple gauge that is filled based upon fill value
 
 @param flags (unsigned number) drawing flags
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, changed in 2.2.0
 */
 static int luaLcdDrawGauge(lua_State *L)
 {
@@ -582,7 +584,7 @@ Draw a title bar
 @param pages (number) total number of pages. Only used as indicator on
 the right side of title bar. (i.e. idx=2, cnt=5, display `2/5`)
 
-@notice Only available on monochrome screens
+@notice Only available on Taranis
 
 @status current Introduced in 2.0.0
 */
@@ -621,6 +623,8 @@ Draw a combo box
  * `BLINK` combo box is expanded
  * `INVERS` combo box collapsed, text inversed
  * `0 or not present` combo box collapsed, text normal
+
+@notice Only available on Taranis
 
 @status current Introduced in 2.0.0
 */
@@ -743,6 +747,8 @@ Returns a 5/6/5 rgb color code, that can be used with lcd.setColor
 @param b (integer) a number between 0x00 and 0xff that expresses te amount of blue in the color
 
 @retval number (integer) rgb color expressed in 5/6/5 format
+
+@notice Only available on Horus
 
 @status current Introduced in 2.2.0
 */
