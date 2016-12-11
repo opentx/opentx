@@ -175,7 +175,6 @@ void boardInit()
   init2MhzTimer();
   init1msTimer();
   usbInit();
-  usbDeInit();
   hapticInit();
   bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
   gpsInit(GPS_USART_BAUDRATE);

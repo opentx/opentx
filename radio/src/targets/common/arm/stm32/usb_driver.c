@@ -20,6 +20,7 @@
 
 #include "board.h"
 #include "usb_dcd_int.h"
+#include "usb_bsp.h"
 #include "debug.h"
 
 int usbPlugged(void)
@@ -53,6 +54,12 @@ void OTG_FS_IRQHandler(void)
 
 void usbInit(void)
 {
+  // Initialize hardware
+  USB_OTG_BSP_Init(&USB_OTG_dev);
+}
+
+void usbStart(void)
+{
 #if defined(USB_JOYSTICK)
   // initialize USB as HID device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
@@ -65,7 +72,7 @@ void usbInit(void)
 #endif
 }
 
-void usbDeInit(void)
+void usbStop(void)
 {
   USBD_DeInit(&USB_OTG_dev);
 }

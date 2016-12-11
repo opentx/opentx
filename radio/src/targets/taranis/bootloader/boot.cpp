@@ -361,7 +361,6 @@ int main()
   // SD card detect pin
   sdInit();
   usbInit();
-  usbDeInit();
 #endif
 
   for (;;) {
@@ -384,7 +383,7 @@ int main()
             unlocked = 1;
             unlockFlash();
           }
-          usbInit();
+          usbStart();
           usbPluggedIn();
         }
       }
@@ -419,7 +418,7 @@ int main()
         lcdDrawTextAlignedLeft(4*FH, STR_USB_CONNECTED);
         if (usbPlugged() == 0) {
           vpos = 0;
-          usbDeInit();
+          usbStop();
           if (unlocked) {
             lockFlash();
             unlocked = 0;

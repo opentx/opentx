@@ -31,7 +31,7 @@ void handleUsbConnection()
 
   if (!usbStarted && usbPlugged()) {
     usbStarted = true;
-    usbInit();
+    usbStart();
 #if defined(USB_MASS_STORAGE)
     opentxClose(false);
     usbPluggedIn();
@@ -39,7 +39,7 @@ void handleUsbConnection()
   }
   if (usbStarted && !usbPlugged()) {
     usbStarted = false;
-    usbDeInit();
+    usbStop();
 #if defined(USB_MASS_STORAGE) && !defined(EEPROM)
     opentxResume();
 #endif

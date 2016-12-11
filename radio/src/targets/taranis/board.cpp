@@ -138,7 +138,6 @@ void boardInit()
   __enable_irq();
   i2cInit();
   usbInit();
-  usbDeInit();
 
 #if defined(DEBUG) && !defined(PCBX7D)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
