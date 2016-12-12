@@ -24,4 +24,8 @@
 void processFlySkyTelemetryData(uint8_t data);
 void flySkySetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
+// Used by multi protocol
+void processFlySkyPacket(const uint8_t *packet);
+
+
 #endif

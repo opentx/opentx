@@ -113,7 +113,7 @@ const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
   return result;
 }
 
-bool checkSportPacket(uint8_t *packet)
+bool checkSportPacket(const uint8_t *packet)
 {
   short crc = 0;
   for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; ++i) {

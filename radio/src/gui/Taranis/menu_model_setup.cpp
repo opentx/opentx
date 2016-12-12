@@ -99,6 +99,7 @@ enum menuModelSetupItems {
 #ifdef MULTIMODULE
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
   ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER,
+  ITEM_MODEL_EXTERNAL_MODULE_STATUS,
 #endif
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
@@ -921,7 +922,7 @@ void menuModelSetup(uint8_t event)
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
               }
-              if (s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
+              if (menuVerticalOffset == sub && s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 checkModelIdUnique(g_eeGeneral.currModel, moduleIdx);
               }
             }
@@ -929,9 +930,9 @@ void menuModelSetup(uint8_t event)
             lcd_putsAtt(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
-            if (spektrumBindFinished) {
-               spektrumBindFinished = false;
-               s_editMode=0;
+            if (multiBindStatus == MULTI_BIND_FINISHED) {
+              multiBindStatus = MULTI_NORMAL_OPERATION;
+              s_editMode=0;
             }
 #endif
             if (attr && l_posHorz>0 && s_editMode>0) {
@@ -942,7 +943,10 @@ void menuModelSetup(uint8_t event)
               }
             }
             moduleFlag[moduleIdx] = newFlag;
-
+#if defined(MULTIMODULE)
+            if (newFlag == MODULE_BIND)
+              multiBindStatus = MULTI_BIND_INITIATED;
+#endif
           }
         }
         break;
@@ -1027,6 +1031,14 @@ void menuModelSetup(uint8_t event)
     case  ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER:
       g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = onoffMenuItem(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
       break;
+    case ITEM_MODEL_EXTERNAL_MODULE_STATUS: {
+      lcd_putsLeft(y, STR_MODULE_STATUS);
+
+      char statusText[64];
+      multiModuleStatus.getStatusString(statusText);
+      lcd_putsAtt(MODEL_SETUP_2ND_COLUMN, y, statusText, 0);
+      break;
+    }
 #endif
     }
   }

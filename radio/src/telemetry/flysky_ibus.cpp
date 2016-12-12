@@ -97,12 +97,13 @@ static void processFlySkySensor(const uint8_t *packet) {
   setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, UNIT_RAW, 0);
 }
 
-static void processFlySkyPacket(const uint8_t *packet) {
+void processFlySkyPacket(const uint8_t *packet)
+{
   // Set TX RSSI Value, reverse MULTIs scaling
-  setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[1], UNIT_RAW, 0);
+  setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, TX_RSSI_ID, 0, 0, packet[0], UNIT_RAW, 0);
 
   for (int sensor = 0; sensor < 7; sensor++) {
-    int index = 2 + (4 * sensor);
+    int index = 1 + (4 * sensor);
     processFlySkySensor(packet+index);
   }
   frskyStreaming = FRSKY_TIMEOUT10ms;
@@ -136,7 +137,7 @@ void processFlySkyTelemetryData(uint8_t data)
     }
     debugPrintf("\r\n");
 #endif
-    processFlySkyPacket(frskyRxBuffer);
+    processFlySkyPacket(frskyRxBuffer+1);
     frskyRxBufferCount = 0;
   }
 }

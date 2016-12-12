@@ -559,15 +559,7 @@ void frskyUpdateCells(void);
   {
 #if defined(MULTIMODULE)
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
-    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_DSM2)
-      return PROTOCOL_SPEKTRUM;
-    else if ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType != 1))
-      // D8
-      return PROTOCOL_FRSKY_SPORT;
-    else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) ==   MM_RF_PROTO_FS_AFHDS2A)
-      return PROTOCOL_FLYSKY_IBUS;
-    else
-      return PROTOCOL_FRSKY_D;
+      return PROTOCOL_MULTIMODULE;
   }
 #endif      
 #if defined(CROSSFIRE)
