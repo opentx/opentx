@@ -371,7 +371,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           break;
       }
     }
-#if defined(PCBX7D)
+#if defined(PCBX7)
     if (sub==k && menuHorizontalPosition<0 && CFN_SWITCH(cfn)) {
       lcdInvertLine(i+1);
     }
@@ -381,7 +381,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 void menuModelSpecialFunctions(event_t event)
 {
-#if defined(PCBX7D)
+#if defined(PCBX7)
   const CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     menuHorizontalPosition = 0;
@@ -389,14 +389,14 @@ void menuModelSpecialFunctions(event_t event)
 #endif
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0) {
     menuHorizontalPosition = 0;
   }
 #endif
   menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
   
-#if defined(PCBX7D)
+#if defined(PCBX7)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
   }

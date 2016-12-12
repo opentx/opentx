@@ -72,8 +72,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9D+";
     case BOARD_TARANIS_X9E:
       return "OpenTX for FrSky Taranis X9E";
-    case BOARD_X7D:
-      return "OpenTX for FrSky X7D";
+    case BOARD_TARANIS_X7:
+      return "OpenTX for FrSky Taranis X7";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -104,7 +104,7 @@ const int OpenTxEepromInterface::getEEpromSize()
     case BOARD_9XRPRO:
     case BOARD_AR9X:
       return EESIZE_9XRPRO;
-    case BOARD_X7D:
+    case BOARD_TARANIS_X7:
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
@@ -574,7 +574,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Pots:
       if (IS_HORUS(board))
         return 3;
-      else if (board == BOARD_X7D)
+      else if (board == BOARD_TARANIS_X7)
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -585,7 +585,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Sliders:
       if (IS_HORUS(board))
         return 4;
-      else if (board == BOARD_X7D)
+      else if (board == BOARD_TARANIS_X7)
         return 0;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -596,7 +596,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
-      else if (board == BOARD_X7D)
+      else if (board == BOARD_TARANIS_X7)
         return 6;
       else if (IS_TARANIS(board))
         return 8;
@@ -860,7 +860,7 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
 
 Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
 {
-  if (board == BOARD_X7D) {
+  if (board == BOARD_TARANIS_X7) {
     const Switch switches[] = {{SWITCH_3POS,   "SA"},
                                {SWITCH_3POS,   "SB"},
                                {SWITCH_3POS,   "SC"},
@@ -1331,8 +1331,8 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
 
-  /* FrSky X7D board */
-  firmware = new OpenTxFirmware("opentx-x7d", QObject::tr("FrSky X7D"), BOARD_X7D);
+  /* FrSky X7 board */
+  firmware = new OpenTxFirmware("opentx-x7", QObject::tr("FrSky Taranis X7"), BOARD_TARANIS_X7);
   addOpenTxTaranisOptions(firmware);
   firmwares.push_back(firmware);
 

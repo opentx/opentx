@@ -262,7 +262,7 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
   SW_SE0,
   SW_SE1,
   SW_SE2,
@@ -270,7 +270,7 @@ enum EnumSwitchesPositions
   SW_SF0,
   SW_SF1,
   SW_SF2,
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
   SW_SG0,
   SW_SG1,
   SW_SG2,
@@ -311,7 +311,7 @@ enum EnumSwitchesPositions
   SW_SR2,
 #endif
 };
-#if defined(PCBX7D)
+#if defined(PCBX7)
   #define NUM_SWITCHES                 6
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                 18 // yes, it's a lot!
@@ -326,7 +326,7 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()            (readTrims())
 #define KEYS_PRESSED()             (readKeys())
 
-#if defined(PCBX9E) || defined(PCBX7D)
+#if defined(PCBX9E) || defined(PCBX7)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
@@ -356,7 +356,7 @@ enum Analogs {
   POT_FIRST,
   POT1 = POT_FIRST,
   POT2,
-#if defined(PCBX7D)
+#if defined(PCBX7)
   POT_LAST = POT2,
 #elif defined(PCBX9E)
   POT3,
@@ -487,7 +487,7 @@ void hapticOff(void);
 
 // Second serial port driver
 #define DEBUG_BAUDRATE                 115200
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
 #define SERIAL2
 extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
@@ -516,7 +516,7 @@ void ledGreen(void);
 void ledBlue(void);
 
 // LCD driver
-#if defined(PCBX7D)
+#if defined(PCBX7)
 #define LCD_W                          128
 #define LCD_H                          64
 #define LCD_DEPTH                      1
@@ -538,7 +538,7 @@ void lcdInitFinish(void);
 void lcdOff(void);
 
 // TODO lcdRefreshWait() stub in simpgmspace and remove LCD_DUAL_BUFFER
-#if (defined(PCBX9E) || defined(PCBX9DP) || defined(PCBX7D)) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
+#if (defined(PCBX9E) || defined(PCBX9DP) || defined(PCBX7)) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
 void lcdRefreshWait();
 #else
 #define lcdRefreshWait()

@@ -1703,8 +1703,8 @@ QString getBoardName(BoardEnum board)
       return "Gruvin9x";
     case BOARD_MEGA2560:
       return "MEGA2560";
-    case BOARD_X7D:
-      return "X7D";  
+    case BOARD_TARANIS_X7:
+      return "Taranis X7";
     case BOARD_TARANIS_X9D:
       return "Taranis X9D";
     case BOARD_TARANIS_X9DP:

@@ -84,9 +84,9 @@ make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
 
-# OpenTX on X7D
+# OpenTX on X7
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X7D -DHELI=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure

@@ -188,7 +188,7 @@ void writeHeader()
     }
     f_putc(',', &g_oLogFile);
   }
-#if defined(PCBX7D)
+#if defined(PCBX7)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
 #else
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
@@ -353,11 +353,11 @@ void logsWrite()
           GET_3POS_STATE(SB),
           GET_3POS_STATE(SC),
           GET_3POS_STATE(SD),
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
           GET_3POS_STATE(SE),
 #endif
           GET_2POS_STATE(SF),
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
           GET_3POS_STATE(SG),
 #endif
           GET_2POS_STATE(SH),

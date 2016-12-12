@@ -54,13 +54,13 @@ elseif(PCB STREQUAL X9D)
   set(LCD_DRIVER lcd_driver_aspi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
-elseif(PCB STREQUAL X7D)
+elseif(PCB STREQUAL X7)
   set(CPU_TYPE STM32F2)
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
-  set(LUA_EXPORT lua_export_x7d)
-  set(FLAVOUR x7d)
-  add_definitions(-DPCBX7D -DSOFTWARE_VOLUME)
+  set(LUA_EXPORT lua_export_x7)
+  set(FLAVOUR x7)
+  add_definitions(-DPCBX7 -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
@@ -93,7 +93,7 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
-if(PCB STREQUAL X7D)
+if(PCB STREQUAL X7)
   set(LED_DRIVER led_driver.cpp)
 endif()
 

@@ -123,7 +123,7 @@ void boardInit()
   pwrInit();
 #endif
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   ledInit();
   ledGreen();
 #endif
@@ -139,7 +139,7 @@ void boardInit()
   i2cInit();
   usbInit();
 
-#if defined(DEBUG) && !defined(PCBX7D)
+#if defined(DEBUG) && !defined(PCBX7)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
   TRACE("\nTaranis board started :)");
 #endif
@@ -148,7 +148,7 @@ void boardInit()
   hapticInit();
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7D)
+#if defined(PCBX9E) || defined(PCBX7)
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
@@ -205,7 +205,7 @@ void boardInit()
 
 void boardOff()
 {
-#if defined(PCBX7D)
+#if defined(PCBX7)
   ledOff();
 #endif
 
@@ -215,7 +215,7 @@ void boardOff()
   toplcdOff();
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7D)
+#if defined(PCBX9E) || defined(PCBX7)
   while (pwrPressed()) {
     wdt_reset();
   }

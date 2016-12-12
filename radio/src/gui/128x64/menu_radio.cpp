@@ -23,7 +23,7 @@
 #if defined(CPUARM)
 void menuRadioSpecialFunctions(event_t event)
 {
-#if defined(PCBX7D)
+#if defined(PCBX7)
   const CustomFunctionData * cfn = &g_eeGeneral.customFn[menuVerticalPosition];
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     menuHorizontalPosition = 0;
@@ -32,7 +32,7 @@ void menuRadioSpecialFunctions(event_t event)
   
   MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0) {
     menuHorizontalPosition = 0;
   }
@@ -40,7 +40,7 @@ void menuRadioSpecialFunctions(event_t event)
 
   menuSpecialFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
   }

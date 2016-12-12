@@ -55,7 +55,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SWITCHES_WARNING,
   ITEM_MODEL_BEEP_CENTER,
   CASE_CPUARM(ITEM_MODEL_USE_GLOBAL_FUNCTIONS)
-#if defined(PCBX7D)
+#if defined(PCBX7)
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
@@ -87,7 +87,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_PPM1_PROTOCOL,
   ITEM_MODEL_PPM1_PARAMS,
 #endif
-#if defined(PCBX7D)
+#if defined(PCBX7)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_CHANNELS,
@@ -107,7 +107,7 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
@@ -152,7 +152,7 @@ enum MenuModelSetupItems {
   #define EXTRA_MODULE_ROWS
 #endif
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   #define TRAINER_CHANNELS_ROWS()        IF_TRAINER_ON(1)
   #define TRAINER_MODULE_ROWS            LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)
 #else
@@ -169,7 +169,7 @@ enum MenuModelSetupItems {
 
 void menuModelSetup(event_t event)
 {
-#if defined(PCBX7D)
+#if defined(PCBX7)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(InternalModule),
   INTERNAL_MODULE_MODE_ROWS,
@@ -550,7 +550,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
   
-#if defined(PCBX7D)
+#if defined(PCBX7)
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
         break;
@@ -739,7 +739,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
   
-#if defined(PCBX7D)
+#if defined(PCBX7)
       case ITEM_MODEL_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;
@@ -751,7 +751,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_TRAINER_CHANNELS:
 #endif
@@ -787,7 +787,7 @@ void menuModelSetup(event_t event)
       }
 #endif
   
-#if defined(PCBX7D)
+#if defined(PCBX7)
       case ITEM_MODEL_TRAINER_SETTINGS:
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
 #endif
@@ -877,7 +877,7 @@ void menuModelSetup(event_t event)
       }
 #endif
   
-#if defined(PCBX7D)
+#if defined(PCBX7)
       case ITEM_MODEL_INTERNAL_MODULE_FAILSAFE:
 #endif
 #if defined(CPUARM)

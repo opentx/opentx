@@ -31,7 +31,7 @@ Get current Model information
 
 @retval table model information:
  * `name` (string) model name
- * `bitmap` (string) bitmap name (not present on X7D)
+ * `bitmap` (string) bitmap name (not present on X7)
 
 @status current Introduced in 2.0.6, changed in 2.2.0
 */

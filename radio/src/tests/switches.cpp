@@ -191,7 +191,7 @@ TEST(evalLogicalSwitches, playFile)
 }
 #endif
 
-#if defined(PCBTARANIS) && !defined(PCBX7D)
+#if defined(PCBTARANIS) && !defined(PCBX7)
 TEST(getSwitch, edgeInstant)
 {
   MODEL_RESET();

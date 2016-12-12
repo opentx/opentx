@@ -233,7 +233,7 @@ void menuModelLogicalSwitches(event_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_BREAK:
 #endif
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
     case EVT_KEY_FIRST(KEY_RIGHT):
 #endif
     case EVT_KEY_FIRST(KEY_ENTER):

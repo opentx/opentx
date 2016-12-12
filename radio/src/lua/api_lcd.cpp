@@ -129,7 +129,7 @@ Returns the last x position from previous output
 
 @retval number (integer) x position
 
-@notice Only available on Taranis and X7D
+@notice Only available on Taranis
 
 @status current Introduced in 2.0.0
 */
