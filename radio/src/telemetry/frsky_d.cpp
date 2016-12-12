@@ -229,7 +229,7 @@ void parseTelemWSHowHighByte(uint8_t byte)
 }
 #endif
 
-void frskyDProcessPacket(uint8_t *packet)
+void frskyDProcessPacket(const uint8_t *packet)
 {
   // What type of packet?
   switch (packet[0])

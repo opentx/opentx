@@ -75,6 +75,7 @@ enum MenuModelSetupItems {
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
   ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER,
+  ITEM_MODEL_EXTERNAL_MODULE_STATUS,
 #endif
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
@@ -855,8 +856,8 @@ bool menuModelSetup(event_t event)
             drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleFlag[moduleIdx] == MODULE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
-            if (spektrumBindFinished) {
-              spektrumBindFinished = false;
+            if (multiBindStatus == MULTI_BIND_FINISHED) {
+              multiBindStatus = MULTI_NORMAL_OPERATION;
               s_editMode=0;
             }
 #endif
@@ -868,6 +869,10 @@ bool menuModelSetup(event_t event)
               }
             }
             moduleFlag[moduleIdx] = newFlag;
+#if defined(MULTIMODULE)
+            if (newFlag == MODULE_BIND)
+              multiBindStatus = MULTI_BIND_INITIATED;
+#endif
           }
         }
         break;
@@ -955,6 +960,14 @@ bool menuModelSetup(event_t event)
       lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_LOWPOWER);
       g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
       break;
+    case ITEM_MODEL_EXTERNAL_MODULE_STATUS: {
+      lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_STATUS);
+
+      char statusText[64];
+      multiModuleStatus.getStatusString(statusText);
+      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
+      break;
+    }
 #endif
     }
   }

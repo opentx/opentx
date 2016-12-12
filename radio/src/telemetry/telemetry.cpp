@@ -74,9 +74,11 @@ void processTelemetryData(uint8_t data)
   if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
-  }
-  else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+  } else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
     processFlySkyTelemetryData(data);
+    return;
+  } else if (telemetryProtocol == PROTOCOL_MULTIMODULE) {
+    processMultiTelemetryData(data);
     return;
   }
 #endif
@@ -411,8 +413,7 @@ void telemetryReset()
 // we don't reset the telemetry here as we would also reset the consumption after model load
 void telemetryInit(uint8_t protocol) {
 #if defined(MULTIMODULE)
-  // TODO: Is there a better way to communicate this to this function?
-  if (!IS_TELEMETRY_INTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (protocol == PROTOCOL_MULTIMODULE) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
   } else

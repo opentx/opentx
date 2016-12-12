@@ -77,6 +77,7 @@ enum MenuModelSetupItems {
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
   ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER,
+  ITEM_MODEL_EXTERNAL_MODULE_STATUS,
 #endif
 #if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
@@ -848,8 +849,8 @@ void menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, l_posHorz==2 ? attr : 0);
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
-            if (spektrumBindFinished) {
-              spektrumBindFinished = false;
+            if (multiBindStatus == MULTI_BIND_FINISHED) {
+              multiBindStatus = MULTI_NORMAL_OPERATION;
               s_editMode=0;
             }
 #endif
@@ -861,6 +862,10 @@ void menuModelSetup(event_t event)
               }
             }
             moduleFlag[moduleIdx] = newFlag;
+#if defined(MULTIMODULE)
+            if (newFlag == MODULE_BIND)
+              multiBindStatus = MULTI_BIND_INITIATED;
+#endif
           }
         }
         break;
@@ -963,6 +968,15 @@ void menuModelSetup(event_t event)
     case  ITEM_MODEL_EXTERNAL_MODULE_LOWPOWER:
       g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
       break;
+    case ITEM_MODEL_EXTERNAL_MODULE_STATUS: {
+      lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
+
+      char statusText[64];
+      multiModuleStatus.getStatusString(statusText);
+      lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
+      break;
+    }
+
 #endif
 #endif
 
