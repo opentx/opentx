@@ -711,10 +711,10 @@ void menuModelSetup(event_t event)
                   break;
                 case MM_RF_PROTO_FRSKY:
                 case MM_RF_PROTO_DSM2:
-                case MM_RF_PROTO_MT99XX:
                 case MM_RF_PROTO_FS_AFHDS2A:
                   CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 3);
                   break;
+                case MM_RF_PROTO_MT99XX:
                 case MM_RF_PROTO_MJXQ:
                 case MM_RF_PROTO_YD717:
                 case MM_RF_PROTO_FLYSKY:

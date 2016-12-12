@@ -145,8 +145,8 @@
 #define LEN_SUBTYPE_KN         "\006"
 #define TR_SUBTYPE_KN          "WLtoys""FeiLun"
 
-#define LEN_SUBTYPE_MT99       "\004"
-#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 ""LS\0 "
+#define LEN_SUBTYPE_MT99       "\005"
+#define TR_SUBTYPE_MT99        "MT99 ""H7\0  ""YZ\0  ""LS\0  ""FY805"
 
 #define LEN_SUBTYPE_MJXQ       "\005"
 #define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
