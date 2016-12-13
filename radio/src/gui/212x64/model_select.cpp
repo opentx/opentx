@@ -198,6 +198,10 @@ void menuModelSelect(event_t event)
       case EVT_KEY_REPT(KEY_UP):
       case EVT_KEY_FIRST(KEY_DOWN):
       case EVT_KEY_REPT(KEY_DOWN):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      case EVT_ROTARY_LEFT:
+      case EVT_ROTARY_RIGHT:
+#endif
         if (s_copyMode) {
           int8_t next_ofs = s_copyTgtOfs + oldSub - menuVerticalPosition;
           if (next_ofs == MAX_MODELS || next_ofs == -MAX_MODELS)
