@@ -1165,9 +1165,10 @@ OpenTx's optional pre-compilation feature to (possibly) save memory and time dur
      print(err)
   end
 
-@status current Introduced in 2.1.10 (?)
+@status current Introduced in 2.2.0
 */
-static int luaLoadScript(lua_State * L) {
+static int luaLoadScript(lua_State * L)
+{
   // this function is replicated pretty much verbatim from luaB_loadfile() and load_aux() in lbaselib.c
   const char *fname = luaL_optstring(L, 1, NULL);
   const char *mode = luaL_optstring(L, 2, NULL);
