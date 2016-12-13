@@ -65,6 +65,8 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
 
+#define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
+
 #if defined(PCBHORUS)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
 #else
@@ -108,20 +110,30 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 }
 #endif
 
-//#define LEN_FILE_EXTENSION    4  // including the dot
-#define LEN_FILE_EXTENSION_MAX  5  // including the dot
-
+// NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
 template<class T>
-T * getFileExtension(T * filename, int size=0)
+T * getFileExtension(T * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL)
 {
-  int len = strlen(filename);
-  if (size != 0 && size < len) {
-    len = size;
+  int len = size;
+  if (!size) {
+    len = strlen(filename);
   }
-  for (int i=len-1; i >= 0 && len-i <= LEN_FILE_EXTENSION_MAX; --i) {
+  if (!extMaxLen) {
+    extMaxLen = LEN_FILE_EXTENSION_MAX;
+  }
+  if (fnlen != NULL) {
+    *fnlen = (uint8_t)len;
+  }
+  for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
     if (filename[i] == '.') {
+      if (extlen) {
+        *extlen = len-i;
+      }
       return &filename[i];
     }
+  }
+  if (extlen != NULL) {
+    *extlen = 0;
   }
   return NULL;
 }
@@ -136,6 +148,7 @@ T * getFileExtension(T * filename, int size=0)
 
 bool isFileAvailable(const char * filename, bool exclDir = false);
 int findNextFileIndex(char * filename, uint8_t size, const char * directory);
+bool isExtensionMatching(const char * extension, const char * pattern, char * match = NULL);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);

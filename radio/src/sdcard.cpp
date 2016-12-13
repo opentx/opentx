@@ -64,13 +64,20 @@ bool isFileAvailable(const char * path, bool exclDir)
   @param match Optional container to hold the matched file extension (wide enough to hold LEN_FILE_EXTENSION_MAX + 1).
   @retval true if a file was found, false otherwise.
 */
-static bool isFilePatternAvailable(const char * path, const char * file, const char * pattern = NULL, bool exclDir = true, char * match = NULL)
+bool isFilePatternAvailable(const char * path, const char * file, const char * pattern = NULL, bool exclDir = true, char * match = NULL)
 {
+  uint8_t fplen;
   char fqfp[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
 
-  strncat(fqfp, path, LEN_FILE_PATH_MAX);
-  strcat(fqfp, "/");
-  strncat(fqfp, file, _MAX_LFN);
+  fplen = strlen(path);
+  if (fplen > LEN_FILE_PATH_MAX) {
+    TRACE_ERROR("isFilePatternAvailable(%s) = error: file path too long.\n", path, file);
+    return false;
+  }
+
+  strcpy(fqfp, path);
+  strcpy(fqfp + fplen, "/");
+  strncat(fqfp + (++fplen), file, _MAX_LFN);
 
   if (pattern == NULL) {
     // no extensions list, just check the filename as-is
@@ -79,31 +86,32 @@ static bool isFilePatternAvailable(const char * path, const char * file, const c
   else {
     // extensions list search
     const char *ext;
-    uint16_t flen;
-    uint8_t elen;
+    uint16_t len;
+    uint8_t extlen, fnlen;
     int plen;
 
-    flen = strlen(fqfp);
-    if ((ext = getFileExtension(file))) {
-      flen -= strlen(ext);
-      fqfp[flen] = '\0';
-    }
-    plen = strlen(pattern);
-    while (plen > 0 && (ext = getFileExtension(pattern, plen))) {
-      elen = plen - (ext - pattern);
-      strncat(fqfp, ext, elen);
+    getFileExtension(file, 0, 0, &fnlen, &extlen);
+    len = fplen + fnlen - extlen;
+    fqfp[len] = '\0';
+    ext = getFileExtension(pattern, 0, 0, &fnlen, &extlen);
+    plen = (int)fnlen;
+    while (plen > 0 && ext) {
+      strncat(fqfp + len, ext, extlen);
       if (isFileAvailable(fqfp, exclDir)) {
-        if (match != NULL) strncat(&(match[0]='\0'), ext, elen);
+        if (match != NULL) strncat(&(match[0]='\0'), ext, extlen);
         return true;
       }
-      plen -= elen;
-      fqfp[flen] = '\0';
+      plen -= extlen;
+      if (plen > 0) {
+        fqfp[len] = '\0';
+        ext = getFileExtension(pattern, plen, 0, NULL, &extlen);
+      }
     }
   }
   return false;
 }
 
-static char * getFileIndex(char * filename, unsigned int & value)
+char * getFileIndex(char * filename, unsigned int & value)
 {
   value = 0;
   char * pos = getFileExtension(filename);
@@ -124,7 +132,7 @@ static char * getFileIndex(char * filename, unsigned int & value)
   return filename;
 }
 
-static uint8_t getDigitsCount(unsigned int value)
+uint8_t getDigitsCount(unsigned int value)
 {
   uint8_t count = 1;
   while (value >= 10) {
@@ -137,11 +145,11 @@ static uint8_t getDigitsCount(unsigned int value)
 int findNextFileIndex(char * filename, uint8_t size, const char * directory)
 {
   unsigned int index;
+  uint8_t extlen;
   char * indexPos = getFileIndex(filename, index);
   char extension[LEN_FILE_EXTENSION_MAX+1] = "\0";
-  char *p = getFileExtension(filename);
+  char *p = getFileExtension(filename, 0, 0, NULL, &extlen);
   if (p) strncat(extension, p, sizeof(extension)-1);
-  uint8_t extlen = strlen(extension);
   while (1) {
     index++;
     if ((indexPos - filename) + getDigitsCount(index) + extlen > size) {
@@ -164,18 +172,22 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   @param match Optional container to hold the matched file extension (wide enough to hold LEN_FILE_EXTENSION_MAX + 1).
   @retval true if a extension was found in the lost, false otherwise.
 */
-static bool isExtensionMatching(const char * extension, const char * pattern, char * match = NULL)
+bool isExtensionMatching(const char * extension, const char * pattern, char * match)
 {
   const char *ext;
-  uint8_t elen;
-  int plen = strlen(pattern);
-  while (plen > 0 && (ext = getFileExtension(pattern, plen))) {
-    elen = plen - (ext - pattern);
-    if (!strncasecmp(extension, ext, elen)) {
-      if (match != NULL) strncat(&(match[0]='\0'), ext, elen);
+  uint8_t extlen, fnlen;
+  int plen;
+
+  ext = getFileExtension(pattern, 0, 0, &fnlen, &extlen);
+  plen = (int)fnlen;
+  while (plen > 0 && ext) {
+    if (!strncasecmp(extension, ext, extlen)) {
+      if (match != NULL) strncat(&(match[0]='\0'), ext, extlen);
       return true;
-    } else {
-      plen -= elen;
+    }
+    plen -= extlen;
+    if (plen > 0) {
+      ext = getFileExtension(pattern, plen, 0, NULL, &extlen);
     }
   }
   return false;
@@ -187,7 +199,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   FILINFO fno;
   DIR dir;
   char *fnExt;
-  uint8_t fnLen;
+  uint8_t fnLen, extLen;
   char tmpExt[LEN_FILE_EXTENSION_MAX+1] = "\0";
 
 #if defined(CPUARM)
@@ -251,9 +263,8 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */
 
-      fnLen = strlen(fno.fname);
-      fnExt = getFileExtension(fno.fname);
-      if (fnExt) fnLen -= strlen(fnExt);
+      fnExt = getFileExtension(fno.fname, 0, 0, &fnLen, &extLen);
+      fnLen -= extLen;
 
 //      TRACE_DEBUG("listSdFiles(%s, %s, %u, %s, %u): fn='%s'; fnExt='%s'; match=%d\n",
 //           path, extension, maxlen, (selection ? selection : "nul"), flags, fno.fname, (fnExt ? fnExt : "nul"), (fnExt && isExtensionMatching(fnExt, extension)));
