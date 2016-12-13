@@ -1110,7 +1110,7 @@ void menuModelFailsafe(event_t event)
     killEvents(event);
     event = 0;
     if (s_editMode) {
-      g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[ch+channelStart];
+      g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
       storageDirty(EE_MODEL);
       AUDIO_WARNING1();
       s_editMode = 0;
