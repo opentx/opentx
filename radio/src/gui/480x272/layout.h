@@ -22,6 +22,7 @@
 #define _LAYOUT_H_
 
 #include "widgets_container.h"
+#include "lcd.h"
 
 #define MAX_LAYOUT_ZONES               10
 #define MAX_LAYOUT_OPTIONS             10
@@ -85,7 +86,6 @@ class BaseLayoutFactory: public LayoutFactory
 
     virtual void drawThumb(uint16_t x, uint16_t y, uint32_t flags) const
     {
-      extern void lcdDrawBitmapPattern(int x, int y, const uint8_t * bitmap, uint32_t flags, int width=0, int offset=0);
       lcdDrawBitmapPattern(x, y, bitmap, flags);
     }
 
