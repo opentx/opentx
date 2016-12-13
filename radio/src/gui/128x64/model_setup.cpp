@@ -1198,7 +1198,9 @@ void menuModelFailsafe(event_t event)
       }
 
       // Gauge
+#if !defined(PCBX7)  // X7 LCD doesn't like too many horizontal lines
       lcdDrawRect(x+LCD_W-3-wbar, y, wbar+1, 6);
+#endif
       unsigned int lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       unsigned int lenFailsafe = limit((uint8_t)1, uint8_t((abs(failsafeValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
       coord_t xChannel = (channelValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenChannel;
