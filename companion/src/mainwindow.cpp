@@ -557,7 +557,7 @@ void MainWindow::openDocURL()
 void MainWindow::openFile()
 {
   QString fileFilter;
-  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS) {
+  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
     fileFilter = tr(OTX_FILES_FILTER);
   }
   else {
@@ -751,7 +751,7 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-  if(GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
+  if(GetCurrentFirmware()->getBoard()== BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
     // just an example
     QString path = findMassstoragePath("RADIO");
     if (path.isEmpty()) {
@@ -950,7 +950,7 @@ void MainWindow::updateMenus()
     bool hasMdiChild = (activeMdiChild() != 0);
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
 
-    if(false /*GetCurrentFirmware()->getBoard() == BOARD_HORUS*/) {
+  if(GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
       newAct->setEnabled(false);
       openAct->setEnabled(false);
       saveAct->setEnabled(false);

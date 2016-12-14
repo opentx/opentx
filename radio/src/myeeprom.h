@@ -57,6 +57,8 @@
 #elif defined(PCBTARANIS)
   #define IS_TRAINER_EXTERNAL_MODULE()    (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
   #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
+#else
+  #define IS_TRAINER_EXTERNAL_MODULE()    false
 #endif
 
 #if defined(VOICE)
@@ -526,7 +528,8 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_HONTAI,
   MM_RF_PROTO_OLRS,
   MM_RF_PROTO_FS_AFHDS2A,
-  MM_RF_PROTO_LAST= MM_RF_PROTO_FS_AFHDS2A
+  MM_RF_PROTO_Q2X2,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_Q2X2
 };
 
 enum MMDSM2Subtypes {

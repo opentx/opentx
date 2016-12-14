@@ -152,19 +152,19 @@ void luaDisable()
   luaState = INTERPRETER_PANIC;
 }
 
-void luaClose(lua_State * L)
+void luaClose(lua_State ** L)
 {
-  if (L) {
+  if (*L) {
     PROTECT_LUA() {
-      TRACE("luaClose %p", L);
-      lua_close(L);  // this should not panic, but we make sure anyway
+      TRACE("luaClose %p", *L);
+      lua_close(*L);  // this should not panic, but we make sure anyway
     }
     else {
       // we can only disable Lua for the rest of the session
       luaDisable();
     }
     UNPROTECT_LUA();
-    L = NULL;
+    *L = NULL;
   }
 }
 
@@ -771,7 +771,7 @@ void luaInit()
 {
   TRACE("luaInit");
 
-  luaClose(lsScripts);
+  luaClose(&lsScripts);
 
   if (luaState != INTERPRETER_PANIC) {
 #if defined(USE_BIN_ALLOCATOR)

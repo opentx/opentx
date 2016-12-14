@@ -32,7 +32,7 @@ docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code &&
 
 cp binaries/stamp-opentx.txt $output/firmware
 docker exec companion rm -rf build
-docker exec companion /opentx/nightly22/code/tools/build-companion.sh /opentx/nightly22/code /opentx/binaries/ $suffix
+docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/ $suffix
 docker stop companion
 docker rm companion
 cp binaries/*.deb $output/companion/linux/opentx-companion-linux-${version}$suffix_amd64.deb

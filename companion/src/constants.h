@@ -29,7 +29,7 @@ enum BoardEnum {
   BOARD_SKY9X,
   BOARD_9XRPRO,
   BOARD_AR9X,
-  BOARD_X7D,
+  BOARD_TARANIS_X7,
   BOARD_TARANIS_X9D,
   BOARD_TARANIS_X9DP,
   BOARD_TARANIS_X9E,
@@ -63,5 +63,11 @@ const char * const ARROW_LEFT = "\xE2\x86\x90";
 const char * const ARROW_UP = "\xE2\x86\x91";
 const char * const ARROW_RIGHT = "\xE2\x86\x92";
 const char * const ARROW_DOWN = "\xE2\x86\x93";
+
+#if defined(DEBUG)
+#define HORUS_READY_FOR_RELEASE()     true
+#else
+#define HORUS_READY_FOR_RELEASE()     false
+#endif
 
 #endif // _CONSTANTS_H_

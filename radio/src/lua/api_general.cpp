@@ -31,8 +31,8 @@
   #include "lua/lua_exports_flamenco.inc"
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
-#elif defined(PCBX7D)
-  #include "lua/lua_exports_x7d.inc"
+#elif defined(PCBX7)
+  #include "lua/lua_exports_x7.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_x9d.inc"
 #endif
@@ -514,7 +514,9 @@ Returns the value of a source.
 
 The list of valid sources is available:
 * for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
-* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt
+* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt (depreciated)
+* for OpenTX 2.1.x Taranis and Taranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
+* for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
 
 In OpenTX 2.1.x the telemetry sources no longer have a predefined name.
 To get a telemetry value simply use it's sensor name. For example:
@@ -577,6 +579,8 @@ Return the RAS value or nil if no valid hardware found
 
 @retval number representing RAS value. Value bellow 0x33 (51 decimal) are all ok, value above 0x33 indicate a hardware antenna issue.
 This is just a hardware pass/fail measure and does not represent the quality of the radio link
+
+@notice RAS was called SWR in the past
 
 @status current Introduced in 2.2.0
 */
@@ -842,6 +846,9 @@ Returns gray value which can be used in LCD functions
 
 @retval (number) a value that represents amount of *greyness* (from 0 to 15)
 
+@notice Only available on Taranis
+
+@status current Introduced in 2.0.13
 */
 static int luaGrey(lua_State * L)
 {
@@ -865,7 +872,7 @@ Returns (some of) the general radio settings
  * `voice` (string) voice language (used for speech)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO,
-`language` and `voice` added int 2.2.0.
+`language` and `voice` added in 2.2.0.
 
 */
 static int luaGetGeneralSettings(lua_State * L)
@@ -1039,6 +1046,8 @@ static int luaDefaultStick(lua_State * L)
  * `present` Sensor takes name of the argument. Argument must have name surrounded by quotes: e.g., "Name"
  
 @retval true, if the sensor was just added. In this case the value is ignored (subsequent call will set the value)
+
+@status current Introduced in 2.2.0
 */
 static int luaSetTelemetryValue(lua_State * L)
 {
@@ -1181,7 +1190,7 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7D)
+#if !defined(PCBX7)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif

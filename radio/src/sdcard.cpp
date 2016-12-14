@@ -124,7 +124,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   FILINFO fno;
   DIR dir;
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(CPUARM)
   popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
 #endif
   

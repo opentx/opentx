@@ -35,7 +35,7 @@ enum MenuRadioHardwareItems {
 #define GENERAL_HW_PARAM_OFS (2+(15*FW))
 void menuRadioHardware(event_t event)
 {
-#if defined(PCBX7D)
+#if defined(PCBX7)
 #else
   MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
 

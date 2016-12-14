@@ -45,7 +45,7 @@
 #endif
 
 #ifdef __APPLE__
-#include <QProxyStyle> 
+#include <QProxyStyle>
 
 class MyProxyStyle : public QProxyStyle
  {
@@ -70,6 +70,9 @@ void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessage
 int main(int argc, char *argv[])
 {
   Q_INIT_RESOURCE(companion);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 
   QApplication app(argc, argv);
   app.setApplicationName("OpenTX Simulator");
@@ -162,7 +165,7 @@ int main(int argc, char *argv[])
     }
   }
   if (!ok) {
-    firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"), 
+    firmwareId = QInputDialog::getItem(0, QObject::tr("Radio type"),
                                                 QObject::tr("Which radio type do you want to simulate?"),
                                                 firmwareIds, currentIdx, false, &ok);
   }

@@ -609,14 +609,14 @@
        </widget>
       </item>
       <item row="4" column="4">
-       <widget class="QCheckBox" name="cb_autoBind">
+       <widget class="QCheckBox" name="autoBind">
         <property name="text">
          <string>Bind on startup</string>
         </property>
        </widget>
       </item>
       <item row="4" column="5">
-       <widget class="QCheckBox" name="cb_lowPower">
+       <widget class="QCheckBox" name="lowPower">
         <property name="text">
          <string>Low Power</string>
         </property>

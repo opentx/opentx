@@ -72,8 +72,7 @@ int StorageSdcard::readOtx(const QString & path)
 
   // go trough all files in an archive
   QRegularExpression regexModel("MODELS/\\w+.bin", QRegularExpression::CaseInsensitiveOption);
-  for (unsigned int i = 0; i < mz_zip_reader_get_num_files(&zip_archive); i++)
-  {
+  for (unsigned int i = 0; i < mz_zip_reader_get_num_files(&zip_archive); i++) {
     mz_zip_archive_file_stat file_stat;
     if (!mz_zip_reader_file_stat(&zip_archive, i, &file_stat)) {
        lastErrorMessage = QObject::tr("mz_zip_reader_file_stat() failed!");
@@ -117,9 +116,9 @@ int StorageSdcard::readOtx(const QString & path)
     else {
       qDebug() << "Unknown file " << filename;
     }
-
   }
   mz_zip_reader_end(&zip_archive);
+  
   return 0;
 }
 

@@ -42,3 +42,18 @@ void drawSplash()
   lcdRefresh();
 }
 #endif
+
+#if defined(SPLASH_FRSKY)
+const pm_uchar splashdata2[] PROGMEM = {
+  'S','F','S',0,
+  #include "bitmaps/212x64/splash_frsky.lbm"
+  'S','F','E',0 };
+const pm_uchar * const splash2_lbm = splashdata2+4;
+
+void drawSecondSplash()
+{
+  lcdClear();
+  lcdDrawBitmap(0, 0, splash2_lbm);
+  lcdRefresh();
+}
+#endif

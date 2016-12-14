@@ -376,7 +376,8 @@ void backlightEnable(uint8_t dutyCycle);
 // USB driver
 int usbPlugged(void);
 void usbInit(void);
-void usbDeInit(void);
+void usbStart(void);
+void usbStop(void);
 void usbSerialPutc(uint8_t c);
 #define USB_NAME                       "FrSky Horus"
 #define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */

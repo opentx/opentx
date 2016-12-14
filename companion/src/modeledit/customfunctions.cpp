@@ -67,7 +67,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   mediaPlayerCurrent(-1),
   mediaPlayer(NULL)
 {
-  Stopwatch s1("CustomFunctionsPanel - populate"); 
+  Stopwatch s1("CustomFunctionsPanel - populate");
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
@@ -337,8 +337,11 @@ void CustomFunctionsPanel::functionEdited()
   if (!lock) {
     lock = true;
     int index = sender()->property("index").toInt();
-    fswtchParamArmT[index]->setCurrentIndex(0);
-    refreshCustomFunction(index, true);
+    RawSwitch swtch = functions[index].swtch;
+    functions[index].clear();
+    functions[index].swtch = swtch;
+    functions[index].func = (AssignFunc)fswtchFunc[index]->itemData(fswtchFunc[index]->currentIndex()).toInt();
+    refreshCustomFunction(index);
     emit modified();
     lock = false;
   }

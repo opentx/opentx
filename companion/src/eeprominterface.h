@@ -55,14 +55,14 @@
 #define IS_2560(board)         (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
 #define IS_SKY9X(board)        (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
-#define IS_TARANIS(board)      (board==BOARD_TARANIS_X9D  || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E || board==BOARD_X7D)
+#define IS_TARANIS(board)      (board==BOARD_TARANIS_X9D  || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E || board==BOARD_TARANIS_X7)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)  (board==BOARD_TARANIS_X9E)
 #define IS_HORUS(board)        (board==BOARD_HORUS)
 #define IS_FLAMENCO(board)     (board==BOARD_FLAMENCO)
 #define IS_STM32(board)        (IS_TARANIS(board) || IS_HORUS(board) || IS_FLAMENCO(board))
 #define IS_ARM(board)          (IS_STM32(board) || IS_SKY9X(board))
-#define HAS_LARGE_LCD(board)   (IS_HORUS(board) || (IS_TARANIS(board) && board != BOARD_X7D))
+#define HAS_LARGE_LCD(board)   (IS_HORUS(board) || (IS_TARANIS(board) && board != BOARD_TARANIS_X7))
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -242,7 +242,6 @@ enum RawSourceType {
   MAX_SOURCE_TYPE
 };
 
-QString AnalogString(int index);
 QString RotaryEncoderString(int index);
 
 class RawSourceRange
@@ -858,7 +857,8 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_HONTAI,
   MM_RF_PROTO_OLRS,
   MM_RF_PROTO_AFHDS2A,
-  MM_RF_PROTO_LAST= MM_RF_PROTO_AFHDS2A
+  MM_RF_PROTO_Q2X2,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_Q2X2
 };
 
 unsigned int getNumSubtypes(MultiModuleRFProtocols type);
@@ -1080,7 +1080,9 @@ class ModelData {
     QVector<const MixData *> mixes(int channel) const;
 
     bool      used;
+    char      category[15+1];
     char      name[15+1];
+    char      filename[16+1];
     TimerData timers[CPN_MAX_TIMERS];
     bool      noGlobalFunctions;
     bool      thrTrim;            // Enable Throttle Trim
@@ -1209,7 +1211,8 @@ class GeneralSettings {
     int   calibMid[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
     int   calibSpanNeg[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
     int   calibSpanPos[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
-    unsigned int  currModel; // 0..15
+    unsigned int  currModelIndex;
+    char currModelFilename[16+1];
     unsigned int   contrast;
     unsigned int   vBatWarn;
     int    txVoltageCalibration;
@@ -1322,6 +1325,30 @@ class RadioData {
   public:
     GeneralSettings generalSettings;
     ModelData models[CPN_MAX_MODELS];
+    
+    void setCurrentModel(unsigned int index)
+    {
+      generalSettings.currModelIndex = index;
+      strcpy(generalSettings.currModelFilename, models[index].filename);
+    }
+    
+    QString getNextModelFilename()
+    {
+      char filename[sizeof(ModelData::filename)];
+      int index = 0;
+      bool found = true;
+      while (found) {
+        sprintf(filename, "model%d.bin", ++index);
+        found = false;
+        for (int i=0; i<CPN_MAX_MODELS; i++) {
+          if (strcmp(filename, models[i].filename) == 0) {
+            found = true;
+            break;
+          }
+        }
+      }
+      return filename;
+    }
 };
 
 enum Capability {
@@ -1707,7 +1734,9 @@ class Firmware {
     };
     
     virtual Switch getSwitch(unsigned int index) = 0;
-
+    
+    virtual QString getAnalogInputName(unsigned int index) = 0;
+    
     virtual QTime getMaxTimerStart() = 0;
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;

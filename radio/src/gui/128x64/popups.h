@@ -70,13 +70,12 @@ extern uint8_t warningInfoFlags;
   #define POPUP_MENU_ADD_SD_ITEM(s)
 #endif
 
-#define MENU_MAX_DISPLAY_LINES         6
-
 #if defined(CPUARM)
   #define NAVIGATION_MENUS
-  #define POPUP_MENU_ADD_ITEM(s)       do { if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
+  #define POPUP_MENU_ADD_ITEM(s)       do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
   #define POPUP_MENU_START(func)       do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while (0)
   #define POPUP_MENU_MAX_LINES         12
+  #define MENU_MAX_DISPLAY_LINES       6
   #define MENU_LINE_LENGTH             (LEN_MODEL_NAME+1)
   #define POPUP_MENU_SET_BSS_FLAG()
   #define POPUP_MENU_UNSET_BSS_FLAG()
@@ -89,7 +88,8 @@ extern uint8_t warningInfoFlags;
   #define NAVIGATION_MENUS
   #define POPUP_MENU_ADD_ITEM(s)       do { if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
   #define POPUP_MENU_START(func)       do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while (0)
-  #define POPUP_MENU_MAX_LINES         MENU_MAX_DISPLAY_LINES
+  #define POPUP_MENU_MAX_LINES         6
+  #define MENU_MAX_DISPLAY_LINES       6
   #define MENU_LINE_LENGTH             (LEN_MODEL_NAME+1)
   #define POPUP_MENU_SET_BSS_FLAG()    (popupMenuFlags = BSS)
   #define POPUP_MENU_UNSET_BSS_FLAG()  (popupMenuFlags = 0)

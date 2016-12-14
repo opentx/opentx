@@ -86,12 +86,14 @@ template <unsigned int NUM_BITS> class BitField {
 #define BEEP_KEY_UP_FREQ               (BEEP_DEFAULT_FREQ+150)
 #define BEEP_KEY_DOWN_FREQ             (BEEP_DEFAULT_FREQ-150)
 
+#if defined(AUDIO_DUAL_BUFFER)
 enum AudioBufferState
 {
   AUDIO_BUFFER_FREE,
   AUDIO_BUFFER_FILLED,
   AUDIO_BUFFER_PLAYING
 };
+#endif
 
 #if defined(SIMU)
   typedef uint16_t audio_data_t;
@@ -116,6 +118,9 @@ enum AudioBufferState
 struct AudioBuffer {
   audio_data_t data[AUDIO_BUFFER_SIZE];
   uint16_t size;
+#if defined(AUDIO_DUAL_BUFFER)
+  uint8_t state;
+#endif
 };
 
 extern AudioBuffer audioBuffers[AUDIO_BUFFER_COUNT];
@@ -314,38 +319,79 @@ class AudioBufferFifo {
     // returns an empty buffer to be filled wit data and put back into FIFO with audioPushBuffer()
     AudioBuffer * getEmptyBuffer() const
     {
-      return full() ? 0 : &audioBuffers[writeIdx];
+#if defined(AUDIO_DUAL_BUFFER)
+      AudioBuffer * buffer = &audioBuffers[writeIdx];
+      return buffer->state == AUDIO_BUFFER_FREE ? buffer : NULL;
+#else
+      return full() ? NULL : &audioBuffers[writeIdx];
+#endif
     }
 
     // puts filled buffer into FIFO
     void audioPushBuffer()
     {
-      // AudioBuffer * buffer = &audioBuffers[writeIdx];
       audioDisableIrq();
+#if defined(AUDIO_DUAL_BUFFER)
+      AudioBuffer * buffer = &audioBuffers[writeIdx];
+      buffer->state = AUDIO_BUFFER_FILLED;
+#endif
       writeIdx = nextBufferIdx(writeIdx);
       bufferFull = (writeIdx == readIdx);
       audioEnableIrq();
-      // buffer->state = AUDIO_BUFFER_FILLED;
     }
 
     // returns a pointer to the audio buffer to be played
-    const AudioBuffer * getNextFilledBuffer() const
+    const AudioBuffer * getNextFilledBuffer()
     {
-      return empty() ? 0 : &audioBuffers[readIdx];
+#if defined(AUDIO_DUAL_BUFFER)
+      uint8_t idx = readIdx;
+      do {
+        AudioBuffer * buffer = &audioBuffers[idx];
+        if (buffer->state == AUDIO_BUFFER_FILLED) {
+          buffer->state = AUDIO_BUFFER_PLAYING;
+          readIdx = idx;
+          return buffer;
+        }
+        idx = nextBufferIdx(idx);
+      } while (idx != writeIdx);   // this fixes a bug if all buffers are filled
+      return NULL;
+#else
+      return empty() ? NULL : &audioBuffers[readIdx];
+#endif
     }
 
     // frees the last played buffer
     void freeNextFilledBuffer()
     {
       audioDisableIrq();
+#if defined(AUDIO_DUAL_BUFFER)
+      if (audioBuffers[readIdx].state == AUDIO_BUFFER_PLAYING) {
+        audioBuffers[readIdx].state = AUDIO_BUFFER_FREE;
+        readIdx = nextBufferIdx(readIdx);
+        bufferFull = false;
+      }
+#else
       readIdx = nextBufferIdx(readIdx);
       bufferFull = false;
+#endif
       audioEnableIrq();
     }
 
     bool filledAtleast(int noBuffers) const
     {
+#if defined(AUDIO_DUAL_BUFFER)
+      int count = 0;
+      for(int n= 0; n<AUDIO_BUFFER_COUNT; ++n) {
+        if (audioBuffers[n].state == AUDIO_BUFFER_FILLED) {
+          if (++count >= noBuffers) {
+            return true;
+          }
+        }
+      }
+      return false;
+#else
       return used() >= noBuffers;
+#endif
     }
 
 };

@@ -318,7 +318,7 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MULTIPOS_CALIBRATED(cal)     (false)
 #endif
 
-#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7D)
+#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7)
   #define PWR_BUTTON_DELAY
   #define PWR_PRESS_SHUTDOWN           300 // 3s
 #endif
@@ -965,7 +965,7 @@ extern const char vers_stamp[];
 #endif
 
 extern uint8_t g_vbat100mV;
-#if defined(PCBTARANIS)
+#if LCD_W > 128
   #define GET_TXBATT_BARS() (limit<int8_t>(0, div_and_round(10 * (g_vbat100mV - g_eeGeneral.vBatMin - 90), 30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 10))
 #else
   #define GET_TXBATT_BARS() (limit<int8_t>(2, 20 * (g_vbat100mV - g_eeGeneral.vBatMin - 90) / (30 + g_eeGeneral.vBatMax - g_eeGeneral.vBatMin), 20))
@@ -1364,7 +1364,7 @@ void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
 
-#if defined(PCBHORUS) || defined(PCBX7D)
+#if defined(PCBHORUS) || defined(PCBX7)
   #define LED_ERROR_BEGIN()            ledRed()
   #define LED_ERROR_END()              ledBlue()
 #else

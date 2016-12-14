@@ -37,7 +37,7 @@ uint32_t readKeys()
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
 
-#if !defined(PCBX9E) && !defined(PCBX7D)
+#if !defined(PCBX9E) && !defined(PCBX7)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
@@ -89,7 +89,7 @@ uint8_t keyDown()
 void checkRotaryEncoder()
 {
   uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition) {
+  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
     if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
       --rotencValue[0];
     }
@@ -160,12 +160,12 @@ void readKeysAndTrims()
       break
 #endif
 
-#if !defined(BOOT)
 uint8_t keyState(uint8_t index)
 {
   return keys[index].state();
 }
 
+#if !defined(BOOT)
 uint32_t switchState(uint8_t index)
 {
   uint32_t xxx = 0;
@@ -175,7 +175,7 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
-#if defined(PCBX7D)
+#if defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
 #else

@@ -336,10 +336,12 @@ int cliMemoryInfo(const char ** argv)
   serialPrint("\tused  %d bytes", (int)(heap - (unsigned char *)&_end));
   serialPrint("\tfree  %d bytes", (int)((unsigned char *)&_heap_end - heap));
 
+#if defined(LUA)
   serialPrint("\nLua:");
   serialPrint("\tScripts %d", luaGetMemUsed(lsScripts));
 #if defined(PCBHORUS)
   serialPrint("\tWidgets %d", luaGetMemUsed(lsWidgets));
+#endif
 #endif
   return 0;
 }

@@ -33,18 +33,18 @@ telemetryStreaming = 20;
 
 #ifdef SETVALUES_IMPORT
 #undef SETVALUES_IMPORT
-for (int i=0; i<CPN_MAX_STICKS; i++)
+for (int i=0; i<NUM_STICKS; i++)
   g_anas[i] = inputs.sticks[i];
 for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++)
-  g_anas[CPN_MAX_STICKS+i] = inputs.pots[i];
+  g_anas[NUM_STICKS+i] = inputs.pots[i];
 for (int i=0; i<CPN_MAX_SWITCHES; i++)
   simuSetSwitch(i, inputs.switches[i]);
 for (int i=0; i<CPN_MAX_KEYS; i++)
   simuSetKey(i, inputs.keys[i]);
-for (int i=0; i<(CPN_MAX_STICKS+NUM_AUX_TRIMS)*2; i++)
+for (int i=0; i<(NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
   simuSetTrim(i, inputs.trims[i]);
 
-#ifdef PCBGRUVIN9X
+#if defined(PCBGRUVIN9X)
 // rotary encoders
 pind = 0;
 if (inputs.rotenc) pind |= 0x20;
@@ -80,7 +80,7 @@ for (int fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 }
 #endif
 #endif
-#endif   //GETVALUES_IMPORT
+#endif
 
 #ifdef LCDCHANGED_IMPORT
 #undef LCDCHANGED_IMPORT

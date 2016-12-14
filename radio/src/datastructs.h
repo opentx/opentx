@@ -920,7 +920,7 @@ PACK(struct TrainerData {
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
 #elif defined(PCBTARANIS)
-  #if defined(PCBX9E) || defined(PCBX7D)
+  #if defined(PCBX9E) || defined(PCBX7)
     #define BLUETOOTH_FIELDS \
       uint8_t bluetoothEnable; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
@@ -1055,7 +1055,7 @@ static inline void check_struct()
 
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   // TODO
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
@@ -1076,7 +1076,7 @@ static inline void check_struct()
 #if defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
-#elif defined(PCBX7D)
+#elif defined(PCBX7)
   CHKSIZE(RadioData, 839);
   CHKSIZE(ModelData, 6504);
 #else

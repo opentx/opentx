@@ -39,7 +39,7 @@ else()
   endif()
 endif()
 
-add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL)
+add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL -DAUDIO_DUAL_BUFFER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK -DVARIO)
 add_definitions(-DEEPROM_VARIANT=0)
 
@@ -96,6 +96,7 @@ set(TARGET_SRC
   haptic_driver.cpp
   sdcard_driver.cpp
   massstorage.cpp
+  serial2_driver.cpp
   )
 
 set(FIRMWARE_SRC
@@ -107,5 +108,3 @@ set(SRC
   ${SRC}
   debug.cpp
   )
-
-set(SERIAL2_DRIVER serial2_driver.cpp)

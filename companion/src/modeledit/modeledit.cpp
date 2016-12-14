@@ -47,8 +47,11 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
 
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("edit.png"));
-  restoreGeometry(g.modelEditGeo());  
+  restoreGeometry(g.modelEditGeo());
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
+  if(GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
+    ui->pushButton->setEnabled(false);
+  }
   SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware);
   addTab(setupPanel, tr("Setup"));
   if (firmware->getCapability(Heli))
@@ -68,7 +71,7 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   s1.report("CF");
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, model, generalSettings, firmware), tr("Telemetry"));
-    
+
   connect(setupPanel, SIGNAL(extendedLimitsToggled()), chnPanel, SLOT(refreshExtendedLimits()));
   s1.report("end");
   gStopwatch.report("ModelEdit end constructor");
@@ -107,7 +110,12 @@ void ModelEdit::on_tabWidget_currentChanged(int index)
 
 void ModelEdit::on_pushButton_clicked()
 {
-  launchSimulation();
+  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
+    QMessageBox::warning(this, "Unavailable", "Horus simulation not currently supported within Companion");
+  }
+  else {
+    launchSimulation();
+  }
 }
 
 void ModelEdit::launchSimulation()
@@ -118,5 +126,3 @@ void ModelEdit::launchSimulation()
   startSimulation(this, *simuData, 0);
   delete simuData;
 }
-
-

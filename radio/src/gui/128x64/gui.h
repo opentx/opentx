@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -232,7 +232,7 @@ void title(const pm_char * s);
   #define MENU_TAB(...) static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__
 #endif
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
@@ -245,7 +245,7 @@ void title(const pm_char * s);
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count);
 #define SUBMENU_NOTITLE(lines_count, ...) { \
@@ -408,7 +408,7 @@ void drawStatusLine();
 #endif
 
 // TODO enum
-#if defined(PCBX7D)
+#if defined(PCBX7)
 #define EDIT_MODE_INIT                 0
 #else
 #define EDIT_MODE_INIT                 -1
@@ -441,6 +441,7 @@ void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 extern const pm_uchar sticks[] PROGMEM;
 
 void drawSplash();
+void drawSecondSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();

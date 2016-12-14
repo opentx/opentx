@@ -29,13 +29,6 @@ uint8_t      warningInfoFlags = ZCHAR;
 int16_t      warningInputValue;
 int16_t      warningInputValueMin;
 int16_t      warningInputValueMax;
-void         (*popupFunc)(event_t event) = NULL;
-const char * popupMenuItems[POPUP_MENU_MAX_LINES];
-uint8_t      s_menu_item = 0;
-uint16_t     popupMenuNoItems = 0;
-uint16_t     popupMenuOffset = 0;
-uint8_t      popupMenuOffsetType = MENU_OFFSET_INTERNAL;
-void         (*popupMenuHandler)(const char * result);
 
 void drawMessageBox(const char * title)
 {
@@ -118,75 +111,4 @@ void runPopupWarning(event_t event)
       }
       break;
   }
-}
-
-const char * runPopupMenu(event_t event)
-{
-  const char * result = NULL;
-
-  uint8_t display_count = min<uint8_t>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
-  uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
-  lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
-  lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
-
-  for (uint8_t i=0; i<display_count; i++) {
-    lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], 0);
-    if (i == s_menu_item) lcdDrawFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
-  }
-
-  if (popupMenuNoItems > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, display_count);
-  }
-
-  switch (event) {
-    CASE_EVT_ROTARY_LEFT
-    case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_REPT(KEY_UP):
-      if (s_menu_item > 0) {
-        s_menu_item--;
-      }
-      else if (popupMenuOffset > 0) {
-        popupMenuOffset--;
-        result = STR_UPDATE_LIST;
-      }
-      else {
-        s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
-        if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
-          popupMenuOffset = popupMenuNoItems - MENU_MAX_DISPLAY_LINES;
-          result = STR_UPDATE_LIST;
-        }
-      }
-      break;
-    
-    CASE_EVT_ROTARY_RIGHT
-    case EVT_KEY_FIRST(KEY_DOWN):
-    case EVT_KEY_REPT(KEY_DOWN):
-      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
-        s_menu_item++;
-      }
-      else if (popupMenuNoItems > popupMenuOffset + display_count) {
-        popupMenuOffset++;
-        result = STR_UPDATE_LIST;
-      }
-      else {
-        s_menu_item = 0;
-        if (popupMenuOffset) {
-          popupMenuOffset = 0;
-          result = STR_UPDATE_LIST;
-        }
-      }
-      break;
-      
-    case EVT_KEY_BREAK(KEY_ENTER):
-      result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
-      // no break
-      
-    case EVT_KEY_BREAK(KEY_EXIT):
-      popupMenuNoItems = 0;
-      s_menu_item = 0;
-      popupMenuOffset = 0;
-      break;
-  }
-
-  return result;
 }

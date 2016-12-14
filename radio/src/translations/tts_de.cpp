@@ -136,7 +136,12 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       PUSH_NUMBER_PROMPT(qr.rem);
     }
     else {
-      PUSH_NUMBER_PROMPT(qr.quot);
+      if (qr.quot == 1) {
+        PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
+      }
+      else {
+        PUSH_NUMBER_PROMPT(qr.quot);
+      }
     }
     DE_PUSH_UNIT_PROMPT(unit);
     return;

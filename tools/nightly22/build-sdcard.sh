@@ -40,7 +40,6 @@ else
   # Duplicate for Taranis and create sdcards.zip
   mkdir ${workdir}/sdcard/taranis/SOUNDS
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis/
-  rm -f ${output}/sdcard/*.zip
   cd ${workdir}/sdcard/taranis && zip -r ${output}/sdcard/sdcard-taranis.zip *
   cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus.zip *
   mv ${output}/sdcard/sdcard-horus.zip ${output}/sdcard/sdcard-horus-$sdcard_version.zip

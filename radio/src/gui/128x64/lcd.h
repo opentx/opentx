@@ -28,8 +28,6 @@
 #define scoord_t                       int8_t
 #define CENTER
 #define CENTER_OFS                     0
-#define CONTRAST_MIN                   10
-#define CONTRAST_MAX                   45
 
 #if defined(CPUARM)
   typedef int32_t lcdint_t;

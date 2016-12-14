@@ -33,8 +33,6 @@
 #include "wizarddialog.h"
 #include "flashfirmwaredialog.h"
 #include "storage_eeprom.h"
-#include "storage_sdcard.h"
-#include <QFileInfo>
 
 #if defined WIN32 || !defined __GNUC__
 #include <windows.h>
@@ -45,19 +43,19 @@
 
 MdiChild::MdiChild():
   QWidget(),
-  ui(new Ui::mdiChild),
+  ui(new Ui::MdiChild),
   firmware(GetCurrentFirmware()),
   isUntitled(true),
   fileChanged(false)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("open.png"));
-  ui->SimulateTxButton->setIcon(CompanionIcon("simulate.png"));
+  ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
-
+  
   eepromInterfaceChanged();
 
-  if (!(this->isMaximized() || this->isMinimized())) {
+  if (!(isMaximized() || isMinimized())) {
     adjustSize();
   }
 }
@@ -67,23 +65,15 @@ MdiChild::~MdiChild()
   delete ui;
 }
 
-void MdiChild::qSleep(int ms)
-{
-  if (ms<0)
-    return;
-
-#if defined WIN32 || !defined __GNUC__
-    Sleep(uint(ms));
-#else
-    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-    nanosleep(&ts, NULL);
-#endif
-}
-
 void MdiChild::eepromInterfaceChanged()
 {
   ui->modelsList->refreshList();
-  ui->SimulateTxButton->setEnabled(GetCurrentFirmware()/*firmware*/->getCapability(Simulation));
+  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
+    ui->simulateButton->setEnabled(false);
+  }
+  else {
+    ui->simulateButton->setEnabled(GetCurrentFirmware()->getCapability(Simulation));
+  }
   updateTitle();
 }
 
@@ -128,7 +118,7 @@ void MdiChild::setModified()
   documentWasModified();
 }
 
-void MdiChild::on_SimulateTxButton_clicked()
+void MdiChild::on_simulateButton_clicked()
 {
   startSimulation(this, radioData, -1);
 }
@@ -153,7 +143,7 @@ void MdiChild::modelEdit()
 {
   int row = getCurrentRow();
 
-  if (row == 0){
+  if (row == 0) {
     generalEdit();
   }
   else {

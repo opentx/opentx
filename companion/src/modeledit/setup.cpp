@@ -148,7 +148,7 @@ void TimerPanel::on_name_editingFinished()
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
-ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx):
+ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx):
   ModelPanel(parent, model, generalSettings, firmware),
   module(module),
   moduleIdx(moduleIdx),
@@ -174,7 +174,7 @@ ModulePanel::ModulePanel(QWidget *parent, ModelData & model, ModuleData & module
     ui->label_trainerMode->hide();
     ui->trainerMode->hide();
     if (firmware->getCapability(NumModules) > 1) {
-      if (IS_TARANIS(firmware->getBoard())) {
+      if (IS_TARANIS(firmware->getBoard()) || IS_HORUS(firmware->getBoard())) {
         if (moduleIdx == 0)
           label = tr("Internal Radio System");
         else
@@ -294,7 +294,7 @@ void ModulePanel::update()
         break;
     }
   }
-  else if (IS_TARANIS(firmware->getBoard())) {
+  else if (IS_TARANIS(firmware->getBoard()) || IS_HORUS(firmware->getBoard())) {
     if (model->trainerMode == TRAINER_SLAVE_JACK) {
       mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
     }
@@ -356,10 +356,10 @@ void ModulePanel::update()
   }
   ui->multiSubType->setCurrentIndex(module.subType);
 
-  ui->cb_autoBind->setVisible(mask & MASK_MULTIMODULE);
-  ui->cb_autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
-  ui->cb_lowPower->setVisible(mask & MASK_MULTIMODULE);
-  ui->cb_lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
+  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
+  ui->autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
+  ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
 
 
   if (firmware->getCapability(HasFailsafe)) {
@@ -655,7 +655,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
-    checkbox->setText(i<analogs ? AnalogString(i) : RotaryEncoderString(i-analogs));
+    checkbox->setText(i<analogs ? firmware->getAnalogInputName(i) : RotaryEncoderString(i-analogs));
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
@@ -718,7 +718,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i);
-      cb->setText(AnalogString(i+4));
+      cb->setText(firmware->getAnalogInputName(i+4));
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
@@ -851,40 +851,16 @@ void SetupPanel::on_image_currentIndexChanged(int index)
 
 void SetupPanel::populateThrottleSourceCB()
 {
-  const QString pots9x[] = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS")};
-  const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS")};
-
-  unsigned int i;
-
   lock = true;
-
   ui->throttleSource->clear();
   ui->throttleSource->addItem(QObject::tr("THR"));
-
-  if (IS_TARANIS_X9E(GetEepromInterface()->getBoard())) {
-    for (i=0; i<8; i++) {
-      ui->throttleSource->addItem(potsTaranisX9E[i], i);
-    }
+  for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
+    ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), i);
   }
-  else if (IS_TARANIS(GetEepromInterface()->getBoard())) {
-    for (i=0; i<5; i++) {
-      ui->throttleSource->addItem(potsTaranis[i], i);
-    }
-  }
-  else {
-    for (i=0; i<3; i++) {
-      ui->throttleSource->addItem(pots9x[i], i);
-    }
-  }
-
-  int channels = (IS_ARM(GetEepromInterface()->getBoard()) ? 32 : 16);
-  for (int i=0; i<channels; i++) {
+  for (int i=0; i<firmware->getCapability(Outputs); i++) {
     ui->throttleSource->addItem(ModelPrinter::printChannelName(i));
   }
-
   ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
-
   lock = false;
 }
 
@@ -895,8 +871,6 @@ void SetupPanel::update()
   ui->throttleReverse->setChecked(model->throttleReversed);
   populateThrottleSourceCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
-
-  //trim inc, thro trim, thro expo, instatrim
   ui->trimIncrement->setCurrentIndex(model->trimInc+2);
   ui->throttleTrim->setChecked(model->thrTrim);
   ui->extendedLimits->setChecked(model->extendedLimits);
@@ -911,12 +885,15 @@ void SetupPanel::update()
     updatePotWarnings();
   }
 
-  for (int i=0; i<firmware->getCapability(Timers); i++)
+  for (int i=0; i<firmware->getCapability(Timers); i++) {
     timers[i]->update();
+  }
 
-  for (int i=0; i<CPN_MAX_MODULES+1; i++)
-    if (modules[i])
+  for (int i=0; i<CPN_MAX_MODULES+1; i++) {
+    if (modules[i]) {
       modules[i]->update();
+    }
+  }
 }
 
 void SetupPanel::updateBeepCenter()

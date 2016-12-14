@@ -23,8 +23,8 @@
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_dcd_int.h"
-#include "STM32_USB-Host-Device_Lib_V2.1.0/Libraries/STM32_USB_OTG_Driver/inc/usb_bsp.h"
+#include "usb_dcd_int.h"
+#include "usb_bsp.h"
 #if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
@@ -123,7 +123,7 @@ void boardInit()
   pwrInit();
 #endif
 
-#if defined(PCBX7D)
+#if defined(PCBX7)
   ledInit();
   ledGreen();
 #endif
@@ -139,11 +139,16 @@ void boardInit()
   i2cInit();
   usbInit();
 
+#if defined(DEBUG) && !defined(PCBX7)
+  serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
+  TRACE("\nTaranis board started :)");
+#endif
+
 #if defined(HAPTIC)
   hapticInit();
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7D)
+#if defined(PCBX9E) || defined(PCBX7)
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
@@ -200,7 +205,7 @@ void boardInit()
 
 void boardOff()
 {
-#if defined(PCBX7D)
+#if defined(PCBX7)
   ledOff();
 #endif
 
@@ -210,7 +215,7 @@ void boardOff()
   toplcdOff();
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7D)
+#if defined(PCBX9E) || defined(PCBX7)
   while (pwrPressed()) {
     wdt_reset();
   }

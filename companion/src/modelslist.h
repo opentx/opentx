@@ -26,20 +26,21 @@
 
 struct CurrentSelection
 {
-  QListWidgetItem *current_item;
+  QTreeWidgetItem * current_item;
   bool selected[CPN_MAX_MODELS+1];
 };
 
-class ModelsListWidget : public QListWidget
+class ModelsListWidget : public QTreeWidget
 {
     Q_OBJECT
 
 public:
-    ModelsListWidget(QWidget *parent = 0);
+    ModelsListWidget(QWidget * parent = 0);
 
     bool hasSelection();
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent * event);
     bool hasPasteData();
+    int currentRow() const;
 
 protected:
     void dropEvent(QDropEvent *event);
@@ -69,7 +70,7 @@ public slots:
     void setdefault();
     void deleteSelected(bool ask);
     void confirmDelete();
-    void viableModelSelected(int idx);
+    void onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *);
 
 private:
     void doCut(QByteArray *gmData);

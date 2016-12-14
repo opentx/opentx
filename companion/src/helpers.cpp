@@ -25,7 +25,7 @@
 #endif
 #if !defined WIN32 && defined __GNUC__
   #include <unistd.h>
-#endif 
+#endif
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
@@ -600,7 +600,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     b->addItem(item.toString(model), item.toValue());
     if (item == source) b->setCurrentIndex(b->count()-1);
   }
-  
+
   if (flags & POPULATE_SWITCHES) {
     for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
@@ -685,7 +685,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
 }
 
 QString image2qstring(QImage image)
-{   
+{
     if (image.isNull())
       return "";
     QBuffer buffer;
@@ -713,7 +713,7 @@ int findmult(float value, float base)
       break;
     }
   }
-  
+
   return mult;
 }
 
@@ -790,7 +790,7 @@ QString getTheme()
       break;
     default:
       Theme="yerico";
-      break;          
+      break;
   }
   return Theme;
 }
@@ -813,14 +813,15 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     unsigned int flags = 0;
     if (modelIdx >= 0) {
       flags |= SIMULATOR_FLAGS_NOTX;
-      simuData->generalSettings.currModel = modelIdx;
+      simuData->setCurrentModel(modelIdx);
     }
     if (radioData.generalSettings.stickMode & 1) {
       flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;
     }
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * dialog;
-    if (board == BOARD_HORUS) {
+
+    if (board == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
       dialog = new SimulatorDialogHorus(parent, simulator, flags);
       GetEepromInterface()->saveFile(*simuData, g.profile[g.id()].sdPath());
       dialog->start(NULL);
@@ -851,7 +852,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData, 0, firmware->getCapability(SimulatorVariant));
       dialog->start(eeprom);
     }
-    
+
     dialog->exec();
     delete dialog;
     delete simuData;
@@ -880,7 +881,7 @@ QPixmap makePixMap(const QImage & image)
   else {
     result = result.convertToFormat(QImage::Format_Mono);
   }
-  
+
   return QPixmap::fromImage(result);
 }
 
@@ -976,7 +977,7 @@ bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
   return s1.toLower() < s2.toLower();
 }
 
-bool GpsGlitchFilter::isGlitch(GpsCoord coord) 
+bool GpsGlitchFilter::isGlitch(GpsCoord coord)
 {
   if ((fabs(coord.latitude) < 0.1) && (fabs(coord.longitude) < 0.1)) {
     return true;
@@ -1016,7 +1017,7 @@ bool GpsLatLonFilter::isValid(GpsCoord coord)
   return true;
 }
 
-double toDecimalCoordinate(const QString & value) 
+double toDecimalCoordinate(const QString & value)
 {
   if (value.isEmpty()) return 0.0;
   double temp = int(value.left(value.length()-1).toDouble() / 100);
@@ -1112,7 +1113,7 @@ void TableLayout::addLayout(int row, int column, QLayout * layout)
 #endif
 }
 
-void TableLayout::resizeColumnsToContents() 
+void TableLayout::resizeColumnsToContents()
 {
 #if defined(TABLE_LAYOUT)
   tableWidget->resizeColumnsToContents();
@@ -1120,7 +1121,7 @@ void TableLayout::resizeColumnsToContents()
 #endif
 }
 
-void TableLayout::setColumnWidth(int col, int width) 
+void TableLayout::setColumnWidth(int col, int width)
 {
 #if defined(TABLE_LAYOUT)
   tableWidget->setColumnWidth(col, width);
@@ -1128,7 +1129,7 @@ void TableLayout::setColumnWidth(int col, int width)
 #endif
 }
 
-void TableLayout::pushRowsUp(int row) 
+void TableLayout::pushRowsUp(int row)
 {
 #if defined(TABLE_LAYOUT)
 #else

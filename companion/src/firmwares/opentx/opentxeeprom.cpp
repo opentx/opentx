@@ -31,11 +31,11 @@
 
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)              (IS_HORUS(board) ? 3 : (board == BOARD_X7D ? 2 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)))
-#define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (board == BOARD_X7D ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
+#define MAX_POTS(board, version)              (IS_HORUS(board) ? 3 : (board == BOARD_TARANIS_X7 ? 2 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)))
+#define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (board == BOARD_TARANIS_X7 ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS(board) ? 2 : 0)
-#define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (board == BOARD_X7D ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
-#define MAX_SWITCHES_POSITION(board, version) (IS_HORUS(board) ? 24 : (board == BOARD_X7D ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9))))
+#define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (board == BOARD_TARANIS_X7 ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
+#define MAX_SWITCHES_POSITION(board, version) (IS_HORUS(board) ? 24 : (board == BOARD_TARANIS_X7 ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9))))
 #define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_TIMERS(board, version)            ((IS_ARM(board) && version >= 217) ? 3 : 2)
@@ -3394,9 +3394,9 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   
   if (IS_HORUS(board)) {
     for (int i = 0; i < 5; i++) {
-      internalField.Append(new CharField<610>(modelData.customScreenData[i], true, "Custom screen blob"));
+      internalField.Append(new CharField<610>(modelData.customScreenData[i], false, "Custom screen blob"));
     }
-    internalField.Append(new CharField<216>(modelData.topbarData, true, "Top bar blob"));
+    internalField.Append(new CharField<216>(modelData.topbarData, false, "Top bar blob"));
     internalField.Append(new SpareBitsField<8>()); // current view
   }
 }
@@ -3444,7 +3444,7 @@ void OpenTxModelData::afterImport()
           break;
         }
       }
-      strncpy(modelData.inputNames[i], AnalogString(i).toLatin1().constData(), sizeof(modelData.inputNames[i])-1);
+      strncpy(modelData.inputNames[i], GetCurrentFirmware()->getAnalogInputName(i).toLatin1().constData(), sizeof(modelData.inputNames[i])-1);
     }
   }
 
@@ -3512,7 +3512,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
 
   internalField.Append(new UnsignedField<16>(chkSum));
   if (!IS_HORUS(board)) {
-    internalField.Append(new UnsignedField<8>(generalData.currModel));
+    internalField.Append(new UnsignedField<8>(generalData.currModelIndex));
     internalField.Append(new UnsignedField<8>(generalData.contrast));
   }
   internalField.Append(new UnsignedField<8>(generalData.vBatWarn));
@@ -3711,8 +3711,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       for (int i=0; i<MAX_SLIDERS(board); ++i) {
         internalField.Append(new ZCharField<3>(generalData.sliderName[i], "Slider name"));
       }
-      static char modelName[17+1] = "model1.bin\0     ";
-      internalField.Append(new CharField<17>(modelName, true, "Model name"));
+      internalField.Append(new CharField<17>(generalData.currModelFilename, true, "Current model filename"));
     }
     else if (IS_TARANIS(board) && version >= 217) {
       for (int i=0; i<MAX_SWITCHES(board, version); i++) {

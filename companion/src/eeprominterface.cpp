@@ -489,22 +489,6 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   return result;
 }
 
-QString AnalogString(int index)
-{
-  static const QString sticks[]  = { QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail") };
-  static const QString pots9X[]  = { QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3") };
-  static const QString potsTaranisX9E[] = { QObject::tr("F1"), QObject::tr("F2"), QObject::tr("F3"), QObject::tr("F4"), QObject::tr("S1"), QObject::tr("S2"), QObject::tr("LS"), QObject::tr("RS") };
-  static const QString potsTaranis[] = { QObject::tr("S1"), QObject::tr("S2"), QObject::tr("S3"), QObject::tr("LS"), QObject::tr("RS") };
-  if (index < 4)
-    return CHECK_IN_ARRAY(sticks, index);
-  else if (IS_TARANIS_X9E(GetEepromInterface()->getBoard()))
-    return CHECK_IN_ARRAY(potsTaranisX9E, index-4);
-  else if (IS_TARANIS(GetEepromInterface()->getBoard()))
-    return CHECK_IN_ARRAY(potsTaranis, index-4);
-  else
-    return CHECK_IN_ARRAY(pots9X, index-4);
-}
-
 QString RotaryEncoderString(int index)
 {
   static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
@@ -552,7 +536,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_LUA_OUTPUT:
       return QObject::tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
     case SOURCE_TYPE_STICK:
-      return AnalogString(index);
+      return GetCurrentFirmware()->getAnalogInputName(index);
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:
@@ -1415,7 +1399,7 @@ void ModelData::clear()
   moduleData[1].ppm.delay = 300;
   moduleData[2].ppm.delay = 300;
   int board = GetEepromInterface()->getBoard();
-  if (IS_TARANIS(board)) {
+  if (IS_TARANIS(board) || IS_HORUS(board)) {
     moduleData[0].protocol = PULSES_PXX_XJT_X16;
     moduleData[1].protocol = PULSES_OFF;
   }
@@ -1485,7 +1469,8 @@ QString removeAccents(const QString & str)
 
 void ModelData::setDefaultInputs(const GeneralSettings & settings)
 {
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  BoardEnum board = GetEepromInterface()->getBoard();
+  if (IS_ARM(board)) {
     for (int i=0; i<CPN_MAX_STICKS; i++) {
       ExpoData * expo = &expoData[i];
       expo->chn = i;
@@ -1499,7 +1484,8 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
 
 void ModelData::setDefaultMixes(const GeneralSettings & settings)
 {
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  BoardEnum board = GetEepromInterface()->getBoard();
+  if (IS_ARM(board)) {
     setDefaultInputs(settings);
   }
 
@@ -1507,7 +1493,7 @@ void ModelData::setDefaultMixes(const GeneralSettings & settings)
     MixData * mix = &mixData[i];
     mix->destCh = i+1;
     mix->weight = 100;
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_ARM(board)) {
       mix->srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
     }
     else {
@@ -1717,8 +1703,8 @@ QString getBoardName(BoardEnum board)
       return "Gruvin9x";
     case BOARD_MEGA2560:
       return "MEGA2560";
-    case BOARD_X7D:
-      return "X7D";  
+    case BOARD_TARANIS_X7:
+      return "Taranis X7";
     case BOARD_TARANIS_X9D:
       return "Taranis X9D";
     case BOARD_TARANIS_X9DP:
@@ -1834,6 +1820,8 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
     case MM_RF_PROTO_HISKY:
     case MM_RF_PROTO_SYMAX:
     case MM_RF_PROTO_KN:
+    case MM_RF_PROTO_SLT:
+    case MM_RF_PROTO_Q2X2:
       return 2;
 
     case MM_RF_PROTO_CG023:
@@ -1841,11 +1829,11 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
       return 3;
 
     case MM_RF_PROTO_FRSKY:
-    case MM_RF_PROTO_FLYSKY:
     case MM_RF_PROTO_DSM2:
     case MM_RF_PROTO_AFHDS2A:
       return 4;
 
+    case MM_RF_PROTO_FLYSKY:
     case MM_RF_PROTO_MJXQ:
     case MM_RF_PROTO_YD717:
       return 5;
