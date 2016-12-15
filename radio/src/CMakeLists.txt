@@ -25,6 +25,7 @@ option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
 option(TEMPLATES "Model templates menu" OFF)
 option(WARNINGS_AS_ERRORS "Treat all compiler warnings as error" OFF)
 option(TRACE_SIMPGMSPACE "Turn on traces in simpgmspace.cpp" ON)
+set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
 
 enable_language(ASM)
 set(OPT s)
@@ -279,6 +280,10 @@ if(SPLASH STREQUAL FRSKY)
   add_definitions(-DSPLASH -DSPLASH_FRSKY)
 elseif(NOT SPLASH STREQUAL OFF)
   add_definitions(-DSPLASH)
+endif()
+
+if(NOT DEFAULT_MODE STREQUAL "")
+  add_definitions(-DDEFAULT_MODE=${DEFAULT_MODE})
 endif()
 
 if(TRACE_SIMPGMSPACE)
