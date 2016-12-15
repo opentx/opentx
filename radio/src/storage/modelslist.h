@@ -33,7 +33,7 @@ class ModelCell
     ModelCell(const char * name):
       buffer(NULL)
     {
-      strncpy(this->name, name, sizeof(this->name));
+      strncpy(this->modelFilename, name, sizeof(this->modelFilename));
     }
 
     const BitmapBuffer * getBuffer()
@@ -52,16 +52,17 @@ class ModelCell
       buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
       buffer->clear(TEXT_BGCOLOR);
 
-      if (strncmp(name, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0)
+      if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0)
         header = g_model.header;
       else
-        error = readModel(name, (uint8_t *)&header, sizeof(header));
+        error = readModel(modelFilename, (uint8_t *)&header, sizeof(header));
 
       if (error) {
         buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
         buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
       }
       else {
+        zchar2str(modelName, header.name, LEN_MODEL_NAME);
         char timer[LEN_TIMER_STRING];
         buffer->drawSizedText(5, 2, header.name, LEN_MODEL_NAME, SMLSIZE|ZCHAR|TEXT_COLOR);
         getTimerString(timer, 0);
@@ -82,7 +83,8 @@ class ModelCell
       buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
     }
 
-    char name[LEN_MODEL_FILENAME+1];
+    char modelFilename[LEN_MODEL_FILENAME+1];
+    char modelName[LEN_MODEL_NAME+1];
     BitmapBuffer * buffer;
 };
 
@@ -141,7 +143,7 @@ class ModelsCategory: public std::list<ModelCell *>
       f_puts("]", file);
       f_putc('\n', file);
       for (std::list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
-        f_puts((*it)->name, file);
+        f_puts((*it)->modelFilename, file);
         f_putc('\n', file);
       }
     }

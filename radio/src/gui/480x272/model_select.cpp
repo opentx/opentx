@@ -225,7 +225,7 @@ void onModelSelectMenu(const char * result)
     // we store the latest changes if any
     storageFlushCurrentModel();
     storageCheck(true);
-    memcpy(g_eeGeneral.currModelFilename, currentModel->name, LEN_MODEL_FILENAME);
+    memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
     loadModel(g_eeGeneral.currModelFilename, false);
     storageDirty(EE_GENERAL);
     storageCheck(true);
@@ -234,7 +234,7 @@ void onModelSelectMenu(const char * result)
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
-    SET_WARNING_INFO(currentModel->name, LEN_MODEL_FILENAME, 0);
+    SET_WARNING_INFO(currentModel->modelName, LEN_MODEL_NAME, 0);
     deleteMode = MODE_DELETE_MODEL;
   }
   else if (result == STR_CREATE_MODEL) {
@@ -248,9 +248,9 @@ void onModelSelectMenu(const char * result)
   }
   else if (result == STR_DUPLICATE_MODEL) {
     char duplicatedFilename[LEN_MODEL_FILENAME+1];
-    memcpy(duplicatedFilename, currentModel->name, sizeof(duplicatedFilename));
+    memcpy(duplicatedFilename, currentModel->modelFilename, sizeof(duplicatedFilename));
     if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
-      sdCopyFile(currentModel->name, MODELS_PATH, duplicatedFilename, MODELS_PATH);
+      sdCopyFile(currentModel->modelFilename, MODELS_PATH, duplicatedFilename, MODELS_PATH);
       modelslist.addModel(currentCategory, duplicatedFilename);
       unsigned int index = currentCategory->size() - 1;
       setCurrentModel(index);
@@ -461,7 +461,7 @@ bool menuModelSelect(event_t event)
   for (ModelsCategory::iterator it = currentCategory->begin(); it != currentCategory->end(); ++it, ++index) {
     if (index >= menuVerticalOffset*2 && index < (menuVerticalOffset+4)*2) {
       bool selected = ((selectMode==MODE_SELECT_MODEL || selectMode==MODE_MOVE_MODEL) && index==menuVerticalPosition*2+menuHorizontalPosition);
-      bool current = !strncmp((*it)->name, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+      bool current = !strncmp((*it)->modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
       if (index & 1) {
         drawModel(MODELS_LEFT + MODELS_COLUMN_WIDTH, y, *it, current, selected);
         y += 66;
@@ -471,7 +471,7 @@ bool menuModelSelect(event_t event)
       }
       if (selected) {
         lcd->drawBitmap(5, LCD_H-FH, modelselModelNameBitmap);
-        lcdDrawText(22, LCD_H-FH-1, (*it)->name, SMLSIZE|TEXT_COLOR);
+        lcdDrawText(22, LCD_H-FH-1, (*it)->modelFilename, SMLSIZE|TEXT_COLOR);
       }
     }
   }
