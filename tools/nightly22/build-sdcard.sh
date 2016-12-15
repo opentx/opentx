@@ -36,10 +36,10 @@ else
   # Create sdcards.zips for supported platforms
   mv /tmp/SOUNDS ${workdir}/sdcard/horus/
   mkdir ${workdir}/sdcard/taranis/SOUNDS
-  cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x9/
-  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-$sdcard_version.zip *  
+  cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis/
+  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-$sdcard_version.zip *
   cd ${workdir}/sdcard/taranis && zip -r ${output}/sdcard/sdcard-taranis-x9-$sdcard_version.zip *
-  rm -rf CROSSFIRE IMAGES S6R SCREENSHOTS SCRIPTS/WIZARD
-  zip -r ${output}/sdcard/sdcardsdcard-taranis-x7-$sdcard_version.zip *
+  rm -rf CROSSFIRE IMAGES S6R SCRIPTS/WIZARD
+  zip -r ${output}/sdcard/sdcard-taranis-x7-$sdcard_version.zip *
   rm -Rf ${workdir}/sdcard
 fi
