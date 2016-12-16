@@ -25,6 +25,7 @@
 #include "opentx.h"
 #include "bin_allocator.h"
 #include "lua/lua_api.h"
+#include "sdcard.h"
 
 extern "C" {
   #include <lundump.h>
@@ -305,7 +306,8 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
 #if defined(LUA_COMPILER)
   uint16_t fnamelen;
-  char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1];
+  uint8_t extlen;
+  char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
   FILINFO fnoLuaS, fnoLuaC;
   FRESULT frLuaS, frLuaC;
 
@@ -315,17 +317,15 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   memset(&fnoLuaS, 0, sizeof(FILINFO));
   memset(&fnoLuaC, 0, sizeof(FILINFO));
 
-  // check if file extension is already in the file name and strip it
   fnamelen = strlen(filename);
-  if (!strcasecmp(filename + fnamelen - strlen(SCRIPT_BIN_EXT), SCRIPT_BIN_EXT)) {
-    fnamelen -= strlen(SCRIPT_BIN_EXT);
+  // check if file extension is already in the file name and strip it
+  getFileExtension(filename, fnamelen, 0, NULL, &extlen);
+  fnamelen -= extlen;
+  if (fnamelen > sizeof(filenameFull) - sizeof(SCRIPT_BIN_EXT)) {
+    TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: filename buffer overflow.\n", filename, lmode);
+    return ret;
   }
-  else if (!strcasecmp(filename + fnamelen - strlen(SCRIPT_EXT), SCRIPT_EXT)) {
-    fnamelen -= strlen(SCRIPT_EXT);
-  }
-  fnamelen = min(fnamelen, (uint16_t)(sizeof(filenameFull) - sizeof(SCRIPT_BIN_EXT)));
-  strncpy(filenameFull, filename, fnamelen);
-  filenameFull[fnamelen] = '\0';
+  strncat(filenameFull, filename, fnamelen);
 
   // check if binary version exists
   strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
