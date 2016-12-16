@@ -279,10 +279,12 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
 {
   if (mode >= 0) {
-    if (mode < TMRMODE_COUNT)
+    if (mode < TMRMODE_COUNT) {
       lcdDrawTextAtIndex(x, y, STR_VTMRMODES, mode, att);
-    else
+      return;
+    } else {
       mode -= (TMRMODE_COUNT-1);
+    }
   }
   drawSwitch(x, y, mode, att);
 }
