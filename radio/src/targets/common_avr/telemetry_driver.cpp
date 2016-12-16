@@ -45,6 +45,7 @@ enum SERIAL_BAUDS {// KEEP IN SYNC WITH GUI
   BAUD_19200,
   BAUD_38400,
   BAUD_57600,
+  BAUD_58798,
   BAUD_76800
 };
 
@@ -193,6 +194,12 @@ static void uart_57600(void) {
 #endif
 }
 
+static void uart_58798(void) {
+  UBRRH_N(TLM_USART) = 0;
+  UBRRL_N(TLM_USART) = 0x010;
+  UCSRA_N(TLM_USART) &= ~(1 << U2X_N(TLM_USART)); // disable double speed operation.
+}
+
 static void uart_76800(void) {
   #undef BAUD
   #define BAUD 76800
@@ -226,6 +233,9 @@ void telemetryPortInitFromIndex(uint8_t index) {
     case BAUD_57600:
       telemetryPortInit(57600);
       break;
+    case BAUD_58798:
+      telemetryPortInit(58798);
+      break;
     case BAUD_76800:
       telemetryPortInit(76800);
       break;
@@ -254,6 +264,9 @@ void telemetryPortInit(uint32_t baudrate)
     break;
   case 57600:
     uart_57600();
+    break;
+  case 58798:
+    uart_58798();
     break;
   case 76800:
     uart_76800();
