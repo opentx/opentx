@@ -20,7 +20,12 @@
 
 #include "opentx.h"
 
-std::list<const WidgetFactory *> registeredWidgets;
+std::list<const WidgetFactory *> & getRegisteredWidgets()
+{
+  static std::list<const WidgetFactory *> widgets;
+  return widgets;
+}
+
 void registerWidget(const WidgetFactory * factory)
 {
   TRACE("register widget %s", factory->getName());

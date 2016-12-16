@@ -26,7 +26,7 @@ class BitmapBuffer;
 #define MAX_THEME_OPTIONS              5
 
 class Theme;
-void registerTheme(Theme * theme);
+extern void registerTheme(Theme * theme);
 
 class Theme
 {
@@ -91,13 +91,13 @@ inline const char * getThemePath(const char * filename)
   return theme->getFilePath(filename);
 }
 
-#define MAX_REGISTERED_THEMES          10
-extern unsigned int countRegisteredThemes;
-void registerTheme(Theme * theme);
-extern Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
-
 Theme * getTheme(const char * name);
 void loadTheme(Theme * theme);
 void loadTheme();
+
+#define MAX_REGISTERED_THEMES          10
+extern unsigned int countRegisteredThemes;
+#define registeredThemes    getRegisteredThemes()
+extern Theme ** getRegisteredThemes();
 
 #endif // _THEME_H_

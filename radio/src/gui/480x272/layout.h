@@ -52,7 +52,7 @@ class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
     const LayoutFactory * factory;
 };
 
-void registerLayout(const LayoutFactory * factory);
+extern void registerLayout(const LayoutFactory * factory);
 
 class LayoutFactory
 {
@@ -113,11 +113,12 @@ class BaseLayoutFactory: public LayoutFactory
     const ZoneOption * options;
 };
 
-#define MAX_REGISTERED_LAYOUTS 10
-
-extern unsigned int countRegisteredLayouts;
-extern const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS];
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
 void loadCustomScreens();
+
+#define MAX_REGISTERED_LAYOUTS          10
+extern unsigned int countRegisteredLayouts;
+#define registeredLayouts      getRegisteredLayouts()
+extern const LayoutFactory **  getRegisteredLayouts();
 
 #endif // _LAYOUT_H_

@@ -23,6 +23,21 @@
 const BitmapBuffer * Theme::asterisk = NULL;
 const BitmapBuffer * Theme::question = NULL;
 const BitmapBuffer * Theme::busy = NULL;
+unsigned int countRegisteredThemes = 0;
+
+Theme ** getRegisteredThemes()
+{
+  static Theme * themes[MAX_REGISTERED_THEMES]; // TODO dynamic
+  return themes;
+}
+
+void registerTheme(Theme * theme)
+{
+  if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
+    TRACE("register theme %s", theme->getName());
+    registeredThemes[countRegisteredThemes++] = theme;
+  }
+}
 
 void Theme::init() const
 {
@@ -109,16 +124,6 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
 
   if (action) {
     lcdDrawText(WARNING_LINE_X, WARNING_INFOLINE_Y+24, action);
-  }
-}
-
-Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
-unsigned int countRegisteredThemes = 0;
-void registerTheme(Theme * theme)
-{
-  if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
-    TRACE("register theme %s", theme->getName());
-    registeredThemes[countRegisteredThemes++] = theme;
   }
 }
 

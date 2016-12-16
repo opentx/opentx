@@ -280,7 +280,7 @@ void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
 {
   if (mode >= 0) {
     if (mode < TMRMODE_COUNT)
-      return lcdDrawTextAtIndex(x, y, STR_VTMRMODES, mode, att);
+      lcdDrawTextAtIndex(x, y, STR_VTMRMODES, mode, att);
     else
       mode -= (TMRMODE_COUNT-1);
   }

@@ -20,8 +20,14 @@
 
 #include "opentx.h"
 
-const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS]; // TODO dynamic
 unsigned int countRegisteredLayouts = 0;
+
+const LayoutFactory ** getRegisteredLayouts()
+{
+  static const LayoutFactory * layouts[MAX_REGISTERED_LAYOUTS]; // TODO dynamic
+  return layouts;
+}
+
 void registerLayout(const LayoutFactory * factory)
 {
   if (countRegisteredLayouts < MAX_REGISTERED_LAYOUTS) {
