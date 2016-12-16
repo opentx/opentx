@@ -1235,7 +1235,7 @@ void lcdRefresh()
   lcd_refresh = true;
 }
 
-void telemetryPortInit()
+void telemetryPortInit(uint32_t baudrate)
 {
 }
 

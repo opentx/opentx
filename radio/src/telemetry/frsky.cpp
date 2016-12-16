@@ -652,7 +652,7 @@ void telemetryInit(uint8_t protocol)
 #else
 void telemetryInit()
 {
-  telemetryPortInit();
+  telemetryPortInit(9600);
 }
 #endif
 

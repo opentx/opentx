@@ -127,7 +127,7 @@ void MAVLINK_reset(uint8_t warm_reset) {
 void MAVLINK_Init(void) {
 	mav_statustext[0] = 0;
 	MAVLINK_reset(0);
-	SERIAL_Init();
+	telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
 }
 
 /*!	\brief Status log message
@@ -726,7 +726,7 @@ void telemetryWakeup() {
 
 			if (mav_heartbeat == -30) {
 				MAVLINK_reset(1);
-				SERIAL_Init();
+				telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
 			}
 //			SERIAL_startTX();
 		}
