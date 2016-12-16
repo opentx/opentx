@@ -2572,7 +2572,7 @@ int main()
   // lcdSetRefVolt(25);
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(SPLASH) && (defined(PCBTARANIS) || defined(PCBHORUS))
   drawSplash();
 #endif
 

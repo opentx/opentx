@@ -1175,7 +1175,7 @@ void menuModelFailsafe(event_t event)
 #if defined(PPM_UNIT_PERCENT_PREC1)
       uint8_t wbar = SLIDER_W-6;
 #else
-      uint8_t wbar = SLIDER_W);
+      uint8_t wbar = SLIDER_W;
 #endif
 
       uint8_t xValue = x+LCD_W-4-wbar;
