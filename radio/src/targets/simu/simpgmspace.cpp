@@ -24,10 +24,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-#if defined(_MSC_VER)
-  #include <direct.h>
-  #define mkdir(s, f) _mkdir(s)
-#else
+#if !defined _MSC_VER
   #include <sys/time.h>
 #endif
 
@@ -522,24 +519,24 @@ uint16_t stackAvailable()
 }
 
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
-namespace simu {
-#include <dirent.h>
-#if defined(WIN32) || !defined(__GNUC__)
+#if defined(_MSC_VER) || !defined(__GNUC__)
+  #include <direct.h>
+  #include <stdlib.h>
   #include <sys/utime.h>
+  #define mkdir(s, f) _mkdir(s)
 #else
-  #include <libgen.h>
   #include <utime.h>
 #endif
-}
 #include "ff.h"
-
-#if defined WIN32 || !defined __GNUC__
-#include <direct.h>
-#include <stdlib.h>
-#endif
-
 #include <map>
 #include <string>
+
+namespace simu {
+#include <dirent.h>
+#if !defined(_MSC_VER)
+  #include <libgen.h>
+#endif
+}
 
 #if defined(CPUARM)
 FATFS g_FATFS_Obj;
@@ -816,7 +813,7 @@ FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len)
 FRESULT f_mkdir (const TCHAR * name)
 {
   char * path = convertSimuPath(name);
-#if defined(WIN32)
+#if defined(WIN32) && defined(__GNUC__)
   if (mkdir(path)) {
 #else
   if (mkdir(path, 0777)) {
@@ -865,7 +862,7 @@ FRESULT f_utime(const TCHAR* path, const FILINFO* fno)
 
   char *simpath = convertSimuPath(path);
   char *realPath = findTrueFileName(simpath);
-  struct simu::utimbuf newTimes;
+  struct utimbuf newTimes;
   struct tm ltime;
 
   // convert from FatFs fdate/ftime
@@ -880,7 +877,7 @@ FRESULT f_utime(const TCHAR* path, const FILINFO* fno)
   newTimes.modtime = mktime(&ltime);
   newTimes.actime = newTimes.modtime;
 
-  if (simu::utime(realPath, &newTimes)) {
+  if (utime(realPath, &newTimes)) {
     TRACE_SIMPGMSPACE("f_utime(%s) = error %d (%s)", simpath, errno, strerror(errno));
     return FR_DENIED;
   }
@@ -917,31 +914,33 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
   char cwd[1024];
+  size_t sdlen = strlen(simuSdDirectory);
   if (!getcwd(cwd, 1024)) {
     TRACE_SIMPGMSPACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
     strcpy(path, ".");
     return FR_NO_PATH;
   }
+  size_t cwdlen = strlen(cwd);
 
-  if (strlen(cwd) < strlen(simuSdDirectory)) {
+  if (cwdlen < sdlen) {
     TRACE_SIMPGMSPACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
     strcpy(path, ".");
     return FR_NO_PATH;
   }
 
-  if (sz_path < (strlen(cwd) - strlen(simuSdDirectory))) {
-    TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
+  if (sz_path < (cwdlen - sdlen)) {
+    //TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
     return FR_NOT_ENOUGH_CORE;
   }
 
   // remove simuSdDirectory from the cwd
-#ifdef WIN32
-  strcpy(path, cwd + strlen(simuSdDirectory) + 2);  // account for drive name
+#ifdef _MSC_VER
+  strcpy(path, cwd + sdlen + 2);  // account for drive name
 #else
-  strcpy(path, cwd + strlen(simuSdDirectory));
+  strcpy(path, cwd + sdlen);
 #endif
 
-  if (strlen(path) == 0) {
+  if (path[0] == '\0') {
     strcpy(path, "/");    // fix for the root directory
   }
 
