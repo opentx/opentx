@@ -35,22 +35,6 @@ int16_t p1valdiff;
 int8_t p2valdiff;
 #endif
 
-#if defined(AUTOSWITCH)
-int8_t checkIncDecMovedSwitch(int8_t val)
-{
-  if (s_editMode>0) {
-    int8_t swtch = getMovedSwitch();
-    if (swtch) {
-      if (IS_CONFIG_TOGGLE(swtch) && swtch==val)
-        val = -val;
-      else
-        val = swtch;
-    }
-  }
-  return val;
-}
-#endif
-
 int8_t  checkIncDec_Ret;
 
 #if defined(PCBX7)
