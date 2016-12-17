@@ -24,7 +24,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-#if !defined _MSC_VER
+#if !defined _MSC_VER || defined __GNUC__
   #include <sys/time.h>
 #endif
 
@@ -34,6 +34,7 @@
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
   #include <SDL.h>
+  #undef main
 #endif
 
 #if defined(TRACE_SIMPGMSPACE)
@@ -41,6 +42,10 @@
   #define TRACE_SIMPGMSPACE   TRACE
 #else
   #define TRACE_SIMPGMSPACE(...)
+#endif
+
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
+  #define SIMU_USE_SDCARD
 #endif
 
 uint8_t MCUCSR, MCUSR, MCUCR;
@@ -73,7 +78,7 @@ Dacc dacc;
 Adc Adc0;
 #endif
 
-#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION)
+#if defined(SIMU_USE_SDCARD)
 char simuSdDirectory[1024] = "";
 #endif
 
@@ -308,9 +313,9 @@ void StartSimu(bool tests)
 
   main_thread_running = (tests ? 1 : 2); // TODO rename to simu_run_mode with #define
 
-#if defined(SDCARD)
+#if defined(SIMU_USE_SDCARD)
   if (strlen(simuSdDirectory) == 0) {
-    getcwd(simuSdDirectory, 1024);
+    f_getcwd(simuSdDirectory, 1024);
   }
 #endif
 
@@ -518,7 +523,7 @@ uint16_t stackAvailable()
   return 500;
 }
 
-#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
+#if defined(SIMU_USE_SDCARD)
 #if defined(_MSC_VER) || !defined(__GNUC__)
   #include <direct.h>
   #include <stdlib.h>
@@ -570,7 +575,7 @@ char *findTrueFileName(const char *path)
   else {
     //find file
     //add to map
-#if defined WIN32 || !defined __GNUC__
+#if defined _MSC_VER || !defined __GNUC__
     char drive[_MAX_DRIVE];
     char dir[_MAX_DIR];
     char fname[_MAX_FNAME];
@@ -608,7 +613,7 @@ char *findTrueFileName(const char *path)
       for (;;) {
         struct simu::dirent * res = simu::readdir(dir);
         if (res == 0) break;
-#if defined(__APPLE__) || defined(__FreeBSD__)
+#if defined(WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
         if ((res->d_type == DT_REG) || (res->d_type == DT_LNK)) {
 #else
         if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
@@ -960,7 +965,7 @@ int32_t Card_state = SD_ST_MOUNTED;
 uint32_t Card_CSD[4]; // TODO elsewhere
 #endif
 
-#endif  // #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
+#endif  // #if defined(SIMU_USE_SDCARD)
 
 
 #if defined(SIMU_DISKIO)
