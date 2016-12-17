@@ -24,10 +24,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-#if defined(_MSC_VER)
-  #include <direct.h>
-  #define mkdir(s, f) _mkdir(s)
-#else
+#if !defined _MSC_VER
   #include <sys/time.h>
 #endif
 
@@ -522,21 +519,24 @@ uint16_t stackAvailable()
 }
 
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
+#if defined(_MSC_VER) || !defined(__GNUC__)
+  #include <direct.h>
+  #include <stdlib.h>
+  #include <sys/utime.h>
+  #define mkdir(s, f) _mkdir(s)
+#else
+  #include <utime.h>
+#endif
+#include "ff.h"
+#include <map>
+#include <string>
+
 namespace simu {
 #include <dirent.h>
-#if !defined WIN32
+#if !defined(_MSC_VER)
   #include <libgen.h>
 #endif
 }
-#include "ff.h"
-
-#if defined WIN32 || !defined __GNUC__
-#include <direct.h>
-#include <stdlib.h>
-#endif
-
-#include <map>
-#include <string>
 
 #if defined(CPUARM)
 FATFS g_FATFS_Obj;
@@ -647,6 +647,11 @@ FRESULT f_stat (const TCHAR * name, FILINFO *fno)
     TRACE_SIMPGMSPACE("f_stat(%s) = OK", path);
     if (fno) {
       fno->fattrib = (tmp.st_mode & S_IFDIR) ? AM_DIR : 0;
+      // convert to FatFs fdate/ftime
+      struct tm *ltime = localtime(&tmp.st_mtime);
+      fno->fdate = ((ltime->tm_year - 80) << 9) | ((ltime->tm_mon + 1) << 5) | ltime->tm_mday;
+      fno->ftime = (ltime->tm_hour << 11) | (ltime->tm_min << 5) | (ltime->tm_sec / 2);
+      fno->fsize = (DWORD)tmp.st_size;
     }
     return FR_OK;
   }
@@ -808,7 +813,11 @@ FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len)
 FRESULT f_mkdir (const TCHAR * name)
 {
   char * path = convertSimuPath(name);
+#if defined(WIN32) && defined(__GNUC__)
+  if (mkdir(path)) {
+#else
   if (mkdir(path, 0777)) {
+#endif
     TRACE_SIMPGMSPACE("mkdir(%s) = error %d (%s)", path, errno, strerror(errno));
     return FR_INVALID_NAME;
   }
@@ -846,6 +855,38 @@ FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
   return FR_OK;
 }
 
+FRESULT f_utime(const TCHAR* path, const FILINFO* fno)
+{
+  if (fno == NULL)
+    return FR_INVALID_PARAMETER;
+
+  char *simpath = convertSimuPath(path);
+  char *realPath = findTrueFileName(simpath);
+  struct utimbuf newTimes;
+  struct tm ltime;
+
+  // convert from FatFs fdate/ftime
+  ltime.tm_year = ((fno->fdate >> 9) & 0x7F) + 80;
+  ltime.tm_mon = ((fno->fdate >> 5) & 0xF) - 1;
+  ltime.tm_mday = (fno->fdate & 0x1F);
+  ltime.tm_hour = ((fno->ftime >> 11) & 0x1F);
+  ltime.tm_min = ((fno->ftime >> 5) & 0x3F);
+  ltime.tm_sec = (fno->ftime & 0x1F) * 2;
+  ltime.tm_isdst = -1;  // force mktime() to check dst
+
+  newTimes.modtime = mktime(&ltime);
+  newTimes.actime = newTimes.modtime;
+
+  if (utime(realPath, &newTimes)) {
+    TRACE_SIMPGMSPACE("f_utime(%s) = error %d (%s)", simpath, errno, strerror(errno));
+    return FR_DENIED;
+  }
+  else {
+    TRACE_SIMPGMSPACE("f_utime(%s) set mtime = %s", simpath, ctime(&newTimes.modtime));
+    return FR_OK;
+  }
+}
+
 int f_putc (TCHAR c, FIL * fil)
 {
   if (fil && fil->obj.fs) fwrite(&c, 1, 1, (FILE*)fil->obj.fs);
@@ -873,27 +914,33 @@ int f_printf (FIL *fil, const TCHAR * format, ...)
 FRESULT f_getcwd (TCHAR *path, UINT sz_path)
 {
   char cwd[1024];
+  size_t sdlen = strlen(simuSdDirectory);
   if (!getcwd(cwd, 1024)) {
     TRACE_SIMPGMSPACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
     strcpy(path, ".");
     return FR_NO_PATH;
   }
+  size_t cwdlen = strlen(cwd);
 
-  if (strlen(cwd) < strlen(simuSdDirectory)) {
+  if (cwdlen < sdlen) {
     TRACE_SIMPGMSPACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd, simuSdDirectory);
     strcpy(path, ".");
     return FR_NO_PATH;
   }
 
-  if (sz_path < (strlen(cwd) - strlen(simuSdDirectory))) {
-    TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
+  if (sz_path < (cwdlen - sdlen)) {
+    //TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
     return FR_NOT_ENOUGH_CORE;
   }
 
   // remove simuSdDirectory from the cwd
-  strcpy(path, cwd + strlen(simuSdDirectory));
+#ifdef _MSC_VER
+  strcpy(path, cwd + sdlen + 2);  // account for drive name
+#else
+  strcpy(path, cwd + sdlen);
+#endif
 
-  if (strlen(path) == 0) {
+  if (path[0] == '\0') {
     strcpy(path, "/");    // fix for the root directory
   }
 
