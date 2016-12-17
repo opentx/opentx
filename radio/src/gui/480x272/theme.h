@@ -21,6 +21,8 @@
 #ifndef _THEME_H_
 #define _THEME_H_
 
+#include <list>
+
 class BitmapBuffer;
 
 #define MAX_THEME_OPTIONS              5
@@ -91,13 +93,11 @@ inline const char * getThemePath(const char * filename)
   return theme->getFilePath(filename);
 }
 
-#define MAX_REGISTERED_THEMES          10
-extern unsigned int countRegisteredThemes;
-void registerTheme(Theme * theme);
-extern Theme * registeredThemes[MAX_REGISTERED_THEMES]; // TODO dynamic
-
 Theme * getTheme(const char * name);
 void loadTheme(Theme * theme);
 void loadTheme();
+
+#define MAX_REGISTERED_THEMES          10
+std::list<Theme *> & getRegisteredThemes();
 
 #endif // _THEME_H_

@@ -186,7 +186,9 @@ inline const ZoneOption * Widget::getOptions() const
   return getFactory()->getOptions();
 }
 
-extern std::list<const WidgetFactory *> registeredWidgets;
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
+
+#define MAX_REGISTERED_WIDGETS          20  // TODO: arbitrary limit, not checked
+std::list<const WidgetFactory *> & getRegisteredWidgets();
 
 #endif // _WIDGET_H_
