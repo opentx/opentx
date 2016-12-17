@@ -33,17 +33,13 @@ else
   python3 -B ${workdir}/code/tools/nightly22/tts.py it csv files
   python3 -B ${workdir}/code/tools/nightly22/tts.py de csv files
 
-  # Prepare the sdcard zip files for Horus
+  # Create sdcards.zips for supported platforms
   mv /tmp/SOUNDS ${workdir}/sdcard/horus/
-
-
-  # Duplicate for Taranis and create sdcards.zip
   mkdir ${workdir}/sdcard/taranis/SOUNDS
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis/
-  cd ${workdir}/sdcard/taranis && zip -r ${output}/sdcard/sdcard-taranis.zip *
-  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus.zip *
-  mv ${output}/sdcard/sdcard-horus.zip ${output}/sdcard/sdcard-horus-$sdcard_version.zip
-  mv ${output}/sdcard/sdcard-taranis.zip ${output}/sdcard/sdcard-taranis-$sdcard_version.zip
+  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-$sdcard_version.zip *
+  cd ${workdir}/sdcard/taranis && zip -r ${output}/sdcard/sdcard-taranis-x9-$sdcard_version.zip *
+  rm -rf CROSSFIRE IMAGES S6R SCRIPTS/WIZARD
+  zip -r ${output}/sdcard/sdcard-taranis-x7-$sdcard_version.zip *
   rm -Rf ${workdir}/sdcard
-
 fi

@@ -45,6 +45,8 @@
 #define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
 #define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
 
+#define LEN_FILE_PATH_MAX   (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + "/"
+
 #if defined(COLORLCD)
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
 const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
@@ -56,16 +58,25 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define BMP_EXT             ".bmp"
 #define PNG_EXT             ".png"
 #define JPG_EXT             ".jpg"
-#define SCRIPTS_EXT         ".lua"
+#define SCRIPT_EXT          ".lua"
+#define SCRIPT_BIN_EXT      ".luac"
 #define TEXT_EXT            ".txt"
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
 
+#define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
+
 #if defined(PCBHORUS)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
 #else
 #define BITMAPS_EXT         BMP_EXT
+#endif
+
+#ifdef LUA_COMPILER
+  #define SCRIPTS_EXT         SCRIPT_BIN_EXT SCRIPT_EXT
+#else
+  #define SCRIPTS_EXT         SCRIPT_EXT
 #endif
 
 #define GET_FILENAME(filename, path, var, ext) \
@@ -99,18 +110,30 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 }
 #endif
 
-#define LEN_FILE_EXTENSION             4
+// NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
 template<class T>
-T * getFileExtension(T * filename, int size=0)
+T * getFileExtension(T * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL)
 {
-  int len = strlen(filename);
-  if (size != 0 && size < len) {
-    len = size;
+  int len = size;
+  if (!size) {
+    len = strlen(filename);
   }
-  for (int i=len; i>=len-LEN_FILE_EXTENSION; --i) {
+  if (!extMaxLen) {
+    extMaxLen = LEN_FILE_EXTENSION_MAX;
+  }
+  if (fnlen != NULL) {
+    *fnlen = (uint8_t)len;
+  }
+  for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
     if (filename[i] == '.') {
+      if (extlen) {
+        *extlen = len-i;
+      }
       return &filename[i];
     }
+  }
+  if (extlen != NULL) {
+    *extlen = 0;
   }
   return NULL;
 }
@@ -123,8 +146,9 @@ T * getFileExtension(T * filename, int size=0)
   #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
 
-bool isFileAvailable(const char * filename);
+bool isFileAvailable(const char * filename, bool exclDir = false);
 int findNextFileIndex(char * filename, uint8_t size, const char * directory);
+bool isExtensionMatching(const char * extension, const char * pattern, char * match = NULL);
 
 const char * sdCopyFile(const char * src, const char * dest);
 const char * sdCopyFile(const char * srcFilename, const char * srcDir, const char * destFilename, const char * destDir);

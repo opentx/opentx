@@ -26,6 +26,7 @@ set(GUI_SRC
 set(SRC
   ${SRC}
   gui/common/widgets.cpp
+  gui/common/navigation.cpp
   )
 
 include_directories(gui gui/${GUI_DIR})

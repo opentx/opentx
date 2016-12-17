@@ -20,19 +20,24 @@
 
 #include "opentx.h"
 
-std::list<const WidgetFactory *> registeredWidgets;
+std::list<const WidgetFactory *> & getRegisteredWidgets()
+{
+  static std::list<const WidgetFactory *> widgets;
+  return widgets;
+}
+
 void registerWidget(const WidgetFactory * factory)
 {
   TRACE("register widget %s", factory->getName());
-  registeredWidgets.push_back(factory);
+  getRegisteredWidgets().push_back(factory);
 }
 
 const WidgetFactory * getWidgetFactory(const char * name)
 {
-  for (std::list<const WidgetFactory *>::iterator it = registeredWidgets.begin(); it != registeredWidgets.end();++it) {
-    const WidgetFactory * factory = *it;
-    if (!strcmp(name, factory->getName())) {
-      return factory;
+  std::list<const WidgetFactory *>::const_iterator it = getRegisteredWidgets().cbegin();
+  for (; it != getRegisteredWidgets().cend();++it) {
+    if (!strcmp(name, (*it)->getName())) {
+      return (*it);
     }
   }
   return NULL;

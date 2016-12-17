@@ -35,22 +35,6 @@ int16_t p1valdiff;
 int8_t p2valdiff;
 #endif
 
-#if defined(AUTOSWITCH)
-int8_t checkIncDecMovedSwitch(int8_t val)
-{
-  if (s_editMode>0) {
-    int8_t swtch = getMovedSwitch();
-    if (swtch) {
-      if (IS_CONFIG_TOGGLE(swtch) && swtch==val)
-        val = -val;
-      else
-        val = swtch;
-    }
-  }
-  return val;
-}
-#endif
-
 int8_t  checkIncDec_Ret;
 
 #if defined(PCBX7)
@@ -71,6 +55,59 @@ INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
 
 #if defined(PCBX7)
+int checkIncDecSelection = 0;
+
+void onSourceLongEnterPress(const char * result)
+{
+  if (result == STR_MENU_INPUTS)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable)+1;
+#if defined(LUA_MODEL_SCRIPTS)
+  else if (result == STR_MENU_LUA)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable);
+#endif
+  else if (result == STR_MENU_STICKS)
+    checkIncDecSelection = MIXSRC_FIRST_STICK;
+  else if (result == STR_MENU_POTS)
+    checkIncDecSelection = MIXSRC_FIRST_POT;
+  else if (result == STR_MENU_MAX)
+    checkIncDecSelection = MIXSRC_MAX;
+  else if (result == STR_MENU_HELI)
+    checkIncDecSelection = MIXSRC_FIRST_HELI;
+  else if (result == STR_MENU_TRIMS)
+    checkIncDecSelection = MIXSRC_FIRST_TRIM;
+  else if (result == STR_MENU_SWITCHES)
+    checkIncDecSelection = MIXSRC_FIRST_SWITCH;
+  else if (result == STR_MENU_TRAINER)
+    checkIncDecSelection = MIXSRC_FIRST_TRAINER;
+  else if (result == STR_MENU_CHANNELS)
+    checkIncDecSelection = getFirstAvailable(MIXSRC_FIRST_CH, MIXSRC_LAST_CH, isSourceAvailable);
+  else if (result == STR_MENU_GVARS)
+    checkIncDecSelection = MIXSRC_FIRST_GVAR;
+  else if (result == STR_MENU_TELEMETRY) {
+    for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
+      TelemetrySensor * sensor = & g_model.telemetrySensors[i];
+      if (sensor->isAvailable()) {
+        checkIncDecSelection = MIXSRC_FIRST_TELEM + 3*i;
+        break;
+      }
+    }
+  }
+}
+
+void onSwitchLongEnterPress(const char * result)
+{
+  if (result == STR_MENU_SWITCHES)
+    checkIncDecSelection = SWSRC_FIRST_SWITCH;
+  else if (result == STR_MENU_TRIMS)
+    checkIncDecSelection = SWSRC_FIRST_TRIM;
+  else if (result == STR_MENU_LOGICAL_SWITCHES)
+    checkIncDecSelection = SWSRC_FIRST_LOGICAL_SWITCH + getFirstAvailable(0, MAX_LOGICAL_SWITCHES, isLogicalSwitchAvailable);
+  else if (result == STR_MENU_OTHER)
+    checkIncDecSelection = SWSRC_ON;
+  else if (result == STR_MENU_INVERT)
+    checkIncDecSelection = SWSRC_INVERT;
+}
+
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
@@ -179,7 +216,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   if (i_flags & INCDEC_SOURCE) {
     if (event == EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
-      // TODO checkIncDecSelection = MIXSRC_NONE;
+      checkIncDecSelection = MIXSRC_NONE;
 
       if (i_min <= MIXSRC_FIRST_INPUT && i_max >= MIXSRC_FIRST_INPUT) {
         if (getFirstAvailable(MIXSRC_FIRST_INPUT, MIXSRC_LAST_INPUT, isInputAvailable) != MIXSRC_NONE) {
@@ -216,18 +253,15 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
           }
         }
       }
-      // TODO POPUP_MENU_START(onSourceLongEnterPress);
+      POPUP_MENU_START(onSourceLongEnterPress);
     }
-    #if 0 // TODO
     if (checkIncDecSelection != 0) {
       newval = checkIncDecSelection;
       if (checkIncDecSelection != MIXSRC_MAX)
         s_editMode = EDIT_MODIFY_FIELD;
       checkIncDecSelection = 0;
     }
-    #endif
   }
-  #if 0 // TODO
   else if (i_flags & INCDEC_SWITCH) {
     if (event == EVT_KEY_LONG(KEY_ENTER)) {
       killEvents(event);
@@ -253,7 +287,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
       checkIncDecSelection = 0;
     }
   }
-  #endif
   return newval;
 }
 #else

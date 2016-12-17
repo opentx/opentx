@@ -75,6 +75,11 @@ set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM EEPROM_RLC)
 set(TARGET_DIR taranis)
+set(PPM_LIMITS_SYMETRICAL YES)
+
+if(SPLASH STREQUAL OFF)
+  message(FATAL_ERROR "Option SPLASH=OFF not supported on Taranis")
+endif()
 
 add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)

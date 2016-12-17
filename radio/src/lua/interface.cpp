@@ -18,17 +18,18 @@
  * GNU General Public License for more details.
  */
 
+/** @file Main interface layer handler for Lua API. */
+
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
 #include "bin_allocator.h"
 #include "lua/lua_api.h"
+#include "sdcard.h"
 
-#if defined(LUA_COMPILER) && defined(SIMU)
-  extern "C" {
-    #include <lundump.h>
-  }
-#endif
+extern "C" {
+  #include <lundump.h>
+}
 
 #define PERMANENT_SCRIPTS_MAX_INSTRUCTIONS (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
@@ -176,6 +177,28 @@ void luaRegisterLibraries(lua_State * L)
 #endif
 }
 
+void luaDoGc(lua_State * L)
+{
+  if (L) {
+    PROTECT_LUA() {
+      lua_gc(L, LUA_GCCOLLECT, 0);
+#if defined(SIMU) || defined(DEBUG)
+      static int lastgc = 0;
+      int gc = luaGetMemUsed(L);
+      if (gc != lastgc) {
+        lastgc = gc;
+        TRACE("GC Use: %dbytes", gc);
+      }
+#endif
+    }
+    else {
+      // we disable Lua for the rest of the session
+      luaDisable();
+    }
+    UNPROTECT_LUA();
+  }
+}
+
 void luaFree(lua_State * L, ScriptInternalData & sid)
 {
   PROTECT_LUA() {
@@ -187,15 +210,17 @@ void luaFree(lua_State * L, ScriptInternalData & sid)
       luaL_unref(L, LUA_REGISTRYINDEX, sid.background);
       sid.background = 0;
     }
-    lua_gc(L, LUA_GCCOLLECT, 0);
   }
   else {
     luaDisable();
   }
   UNPROTECT_LUA();
+
+  luaDoGc(L);
 }
 
-#if defined(LUA_COMPILER) && defined(SIMU)
+#if defined(LUA_COMPILER)
+/// callback for luaU_dump()
 static int luaDumpWriter(lua_State * L, const void* p, size_t size, void* u)
 {
   UNUSED(L);
@@ -204,64 +229,224 @@ static int luaDumpWriter(lua_State * L, const void* p, size_t size, void* u)
   return (result != FR_OK && !written);
 }
 
-void luaCompileAndSave(lua_State * L, const char *bytecodeName)
+/*
+  @fn luaDumpState(lua_State * L, const char * filename, const FILINFO * finfo, int stripDebug)
+
+  Save compiled bytecode from a given Lua stack to a file.
+
+  @param L The Lua stack to dump.
+  @param filename Full path and name of file to save to (typically with .luac extension).
+  @param finfo Can be NULL. If not NULL, sets timestamp of created file to match the one in finfo->fdate/ftime
+  @param stripDebug This is passed directly to luaU_dump()
+    1 = remove debug info from bytecode (smaller but errors are less informative)
+    0 = keep debug info
+*/
+static void luaDumpState(lua_State * L, const char * filename, const FILINFO * finfo, int stripDebug)
 {
   FIL D;
-  char srcName[1024];
-  strcpy(srcName, bytecodeName);
-  strcat(srcName, ".src");
+  if (f_open(&D, filename, FA_WRITE | FA_CREATE_ALWAYS) == FR_OK) {
+    lua_lock(L);
+    luaU_dump(L, getproto(L->top - 1), luaDumpWriter, &D, stripDebug);
+    lua_unlock(L);
+    if (f_close(&D) == FR_OK) {
+      if (finfo != NULL)
+        f_utime(filename, finfo);  // set the file mod time
+      TRACE("luaDumpState(%s): Saved bytecode to file.", filename);
+    }
+  } else
+    TRACE_ERROR("luaDumpState(%s): Error: Could not open output file.", filename);
+}
+#endif  // LUA_COMPILER
 
-  if (f_stat(srcName, 0) != FR_OK) {
-    return;   // no source to compile
+/**
+  @fn luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode)
+
+  Load a Lua script file into a given lua_State (stack).  May use OpenTx's optional pre-compilation
+   feature to save memory and time during load.
+
+  @param L (lua_State) the Lua stack to load into.
+
+  @param filename (string) full path and file name of script.
+
+  @param mode (string) controls whether the file can be text or binary (that is, a pre-compiled file).
+   Possible values are:
+    "b" only binary.
+    "t" only text.
+    "T" (default on simulator) prefer text but load binary if that is the only version available.
+    "bt" (default on radio) either binary or text, whichever is newer (binary preferred when timestamps are equal).
+    Add "x" to avoid automatic compilation of source file to .luac version.
+      Eg: "tx", "bx", or "btx".
+    Add "c" to force compilation of source file to .luac version (even if existing version is newer than source file).
+      Eg: "tc" or "btc" (forces "t", overrides "x").
+    Add "d" to keep extra debug info in the compiled binary.
+      Eg: "td", "btd", or "tcd" (no effect with just "b" or with "x").
+
+  @retval (int)
+  SCRIPT_OK on success (LUA_OK)
+  SCRIPT_NOFILE if file wasn't found for specified mode or Lua could not open file (LUA_ERRFILE)
+  SCRIPT_SYNTAX_ERROR if Lua returned a syntax error during pre/de-compilation (LUA_ERRSYNTAX)
+  SCRIPT_PANIC for Lua memory errors (LUA_ERRMEM or LUA_ERRGCMM)
+*/
+int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode)
+{
+  if (luaState == INTERPRETER_PANIC) {
+    return SCRIPT_PANIC;
+  } else if (filename == NULL) {
+    return SCRIPT_NOFILE;
   }
 
-  if (f_open(&D, bytecodeName, FA_WRITE | FA_CREATE_ALWAYS) != FR_OK) {
-    TRACE("Could not open Lua bytecode output file %s", bytecodeName);
-    return;
+  int lstatus;
+  char lmode[6] = "bt";
+  uint8_t ret = SCRIPT_NOFILE;
+
+  if (mode != NULL) {
+    strncpy(lmode, mode, sizeof(lmode)-1);
+    lmode[sizeof(lmode)-1] = '\0';
   }
 
-  PROTECT_LUA() {
-    if (luaL_loadfile(L, srcName) == 0) {
-      lua_lock(L);
-      luaU_dump(L, getproto(L->top - 1), luaDumpWriter, &D, 1);
-      lua_unlock(L);
-      TRACE("Saved Lua bytecode to file %s", bytecodeName);
+#if defined(LUA_COMPILER)
+  uint16_t fnamelen;
+  uint8_t extlen;
+  char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
+  FILINFO fnoLuaS, fnoLuaC;
+  FRESULT frLuaS, frLuaC;
+
+  bool scriptNeedsCompile = false;
+  uint8_t loadFileType = 0;  // 1=text, 2=binary
+
+  memset(&fnoLuaS, 0, sizeof(FILINFO));
+  memset(&fnoLuaC, 0, sizeof(FILINFO));
+
+  fnamelen = strlen(filename);
+  // check if file extension is already in the file name and strip it
+  getFileExtension(filename, fnamelen, 0, NULL, &extlen);
+  fnamelen -= extlen;
+  if (fnamelen > sizeof(filenameFull) - sizeof(SCRIPT_BIN_EXT)) {
+    TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: filename buffer overflow.\n", filename, lmode);
+    return ret;
+  }
+  strncat(filenameFull, filename, fnamelen);
+
+  // check if binary version exists
+  strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
+  frLuaC = f_stat(filenameFull, &fnoLuaC);
+
+  // check if text version exists
+  strcpy(filenameFull + fnamelen, SCRIPT_EXT);
+  frLuaS = f_stat(filenameFull, &fnoLuaS);
+
+  // decide which version to load, text or binary
+  if (frLuaC != FR_OK && frLuaS == FR_OK) {
+    // only text version exists
+    loadFileType = 1;
+    scriptNeedsCompile = true;
+  }
+  else if (frLuaC == FR_OK && frLuaS != FR_OK) {
+    // only binary version exists
+    loadFileType = 2;
+  }
+  else if (frLuaS == FR_OK) {
+    // both versions exist, compare them
+    if (strchr(lmode, 'c') || (uint32_t)((fnoLuaC.fdate << 16) + fnoLuaC.ftime) < (uint32_t)((fnoLuaS.fdate << 16) + fnoLuaS.ftime)) {
+      // text version is newer than binary or forced by "c" mode flag, rebuild it
+      scriptNeedsCompile = true;
+    }
+    if (scriptNeedsCompile || !strchr(lmode, 'b')) {
+      // text version needs compilation or forced by mode
+      loadFileType = 1;
+    } else {
+      // use binary file
+      loadFileType = 2;
     }
   }
-  UNPROTECT_LUA();
-  f_close(&D);
-}
+  // else both versions are missing
+
+  // skip compilation based on mode flags? ("c" overrides "x")
+  if (scriptNeedsCompile && strchr(lmode, 'x') && !strchr(lmode, 'c')) {
+    scriptNeedsCompile = false;
+  }
+
+  if (loadFileType == 2) {
+    // change file extension to binary version
+    strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
+  }
+
+//  TRACE_DEBUG("luaLoadScriptFileToState(%s, %s):\n", filename, lmode);
+//  TRACE_DEBUG("\tldfile='%s'; ldtype=%u; compile=%u;\n", filenameFull, loadFileType, scriptNeedsCompile);
+//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_EXT, (frLuaS == FR_OK ? "ok" : "nf"), fnoLuaS.fdate, fnoLuaS.ftime,
+//      (fnoLuaS.fdate >> 9) + 1980, (fnoLuaS.fdate >> 5) & 15, fnoLuaS.fdate & 31, fnoLuaS.ftime >> 11, (fnoLuaS.ftime >> 5) & 63, (fnoLuaS.ftime & 31) * 2);
+//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_BIN_EXT, (frLuaC == FR_OK ? "ok" : "nf"), fnoLuaC.fdate, fnoLuaC.ftime,
+//      (fnoLuaC.fdate >> 9) + 1980, (fnoLuaC.fdate >> 5) & 15, fnoLuaC.fdate & 31, fnoLuaC.ftime >> 11, (fnoLuaC.ftime >> 5) & 63, (fnoLuaC.ftime & 31) * 2);
+
+  // final check that file exists and is allowed by mode flags
+  if (!loadFileType || (loadFileType == 1 && !strpbrk(lmode, "tTc")) || (loadFileType == 2 && !strpbrk(lmode, "bT"))) {
+    TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: file not found.\n", filename, lmode);
+    return SCRIPT_NOFILE;
+  }
+
+#else  // !defined(LUA_COMPILER)
+
+  // use passed file name as-is
+  const char *filenameFull = filename;
+
 #endif
 
-int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
+  TRACE("luaLoadScriptFileToState(%s, %s): loading %s", filename, lmode, filenameFull);
+
+  // we don't pass <mode> on to loadfilex() because we want lua to load whatever file we specify, regardless of content
+  lstatus = luaL_loadfilex(L, filenameFull, NULL);
+#if defined(LUA_COMPILER)
+  // Check for bytecode encoding problem, eg. compiled for x64. Unfortunately Lua doesn't provide a unique error code for this. See Lua/src/lundump.c.
+  if (lstatus == LUA_ERRSYNTAX && loadFileType == 2 && frLuaS == FR_OK && strstr(lua_tostring(L, -1), "precompiled")) {
+    loadFileType = 1;
+    scriptNeedsCompile = true;
+    strcpy(filenameFull + fnamelen, SCRIPT_EXT);
+    TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: %s\n\tRetrying with %s\n", filename, lmode, lua_tostring(L, -1), filenameFull);
+    lstatus = luaL_loadfilex(L, filenameFull, NULL);
+  }
+  if (lstatus == LUA_OK) {
+    if (scriptNeedsCompile && loadFileType == 1) {
+      strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
+      luaDumpState(L, filenameFull, &fnoLuaS, (strchr(lmode, 'd') ? 0 : 1));
+    }
+    ret = SCRIPT_OK;
+  }
+#else
+  if (lstatus == LUA_OK) {
+    ret = SCRIPT_OK;
+  }
+#endif
+  else {
+    TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: %s\n", filename, lmode, lua_tostring(L, -1));
+    if (lstatus == LUA_ERRFILE) {
+      ret = SCRIPT_NOFILE;
+    } else if (lstatus == LUA_ERRSYNTAX) {
+      ret = SCRIPT_SYNTAX_ERROR;
+    } else {  //  LUA_ERRMEM or LUA_ERRGCMM
+      ret = SCRIPT_PANIC;
+    }
+  }
+
+  return ret;
+}
+
+static int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, ScriptInputsOutputs * sio=NULL)
 {
   int init = 0;
+  int lstatus = 0;
 
   sid.instructions = 0;
   sid.state = SCRIPT_OK;
-
-#if 0
-  // not needed, we just called luaInit
-  luaFree(sid);
-#endif
 
   if (luaState == INTERPRETER_PANIC) {
     return SCRIPT_PANIC;
   }
 
-#if defined(LUA_COMPILER) && defined(SIMU)
-  luaCompileAndSave(L, filename);
-#endif
-
   luaSetInstructionsLimit(L, MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
   PROTECT_LUA() {
-    if (luaL_loadfile(L, filename) == 0 &&
-        lua_pcall(L, 0, 1, 0) == 0 &&
-        lua_istable(L, -1)) {
-
-      luaL_checktype(L, -1, LUA_TTABLE);
-
+    sid.state = luaLoadScriptFileToState(L, filename, LUA_SCRIPT_LOAD_MODE);
+    if (sid.state == SCRIPT_OK && (lstatus = lua_pcall(L, 0, 1, 0)) == LUA_OK && lua_istable(L, -1)) {
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
         const char * key = lua_tostring(L, -2);
         if (!strcmp(key, "init")) {
@@ -287,15 +472,15 @@ int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, Scri
       if (init) {
         lua_rawgeti(L, LUA_REGISTRYINDEX, init);
         if (lua_pcall(L, 0, 0, 0) != 0) {
-          TRACE("Error in script %s init: %s", filename, lua_tostring(L, -1));
+          TRACE_ERROR("luaLoad(%s): Error in script init(): %s\n", filename, lua_tostring(L, -1));
           sid.state = SCRIPT_SYNTAX_ERROR;
         }
         luaL_unref(L, LUA_REGISTRYINDEX, init);
         lua_gc(L, LUA_GCCOLLECT, 0);
       }
     }
-    else {
-      TRACE("Error in script %s: %s", filename, lua_tostring(L, -1));
+    else if (sid.state == SCRIPT_OK) {
+      TRACE_ERROR("luaLoad(%s): Error parsing script (%d): %s\n", filename, lstatus, lua_tostring(L, -1));
       sid.state = SCRIPT_SYNTAX_ERROR;
     }
   }
@@ -309,6 +494,8 @@ int luaLoad(lua_State * L, const char * filename, ScriptInternalData & sid, Scri
     luaFree(L, sid);
   }
 
+  luaDoGc(L);
+
   return sid.state;
 }
 
@@ -321,10 +508,10 @@ bool luaLoadMixScript(uint8_t index)
     ScriptInputsOutputs * sio = &scriptInputsOutputs[index];
     sid.reference = SCRIPT_MIX_FIRST+index;
     sid.state = SCRIPT_NOFILE;
-    char filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_MIXES_PATH "/";
+    char filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
     strncpy(filename+sizeof(SCRIPTS_MIXES_PATH), sd.file, sizeof(sd.file));
     filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)] = '\0';
-    strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPTS_EXT);
+    strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPT_EXT);
     if (luaLoad(lsScripts, filename, sid, sio) == SCRIPT_PANIC) {
       return false;
     }
@@ -341,10 +528,10 @@ bool luaLoadFunctionScript(uint8_t index)
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = SCRIPT_FUNC_FIRST+index;
       sid.state = SCRIPT_NOFILE;
-      char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPTS_EXT)] = SCRIPTS_FUNCS_PATH "/";
+      char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
       strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
       filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)] = '\0';
-      strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPTS_EXT);
+      strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
       if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
         return false;
       }
@@ -369,10 +556,10 @@ bool luaLoadTelemetryScript(uint8_t index)
         ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
         sid.reference = SCRIPT_TELEMETRY_FIRST+index;
         sid.state = SCRIPT_NOFILE;
-        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPTS_EXT)] = SCRIPTS_TELEM_PATH "/";
+        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_TELEM_PATH "/";
         strncpy(filename+sizeof(SCRIPTS_TELEM_PATH), script.file, sizeof(script.file));
         filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)] = '\0';
-        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPTS_EXT);
+        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPT_EXT);
         if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
           return false;
         }
@@ -691,28 +878,6 @@ bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
     }
   }
   return true;
-}
-
-void luaDoGc(lua_State * L)
-{
-  if (L) {
-    PROTECT_LUA() {
-      lua_gc(L, LUA_GCCOLLECT, 0);
-#if defined(SIMU) || defined(DEBUG)
-      static int lastgc = 0;
-      int gc = luaGetMemUsed(L);
-      if (gc != lastgc) {
-        lastgc = gc;
-        TRACE("GC Use: %dbytes", gc);
-      }
-#endif
-    }
-    else {
-      // we disable Lua for the rest of the session
-      luaDisable();
-    }
-    UNPROTECT_LUA();
-  }
 }
 
 bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage)

@@ -150,8 +150,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 int16_t checkIncDec(event_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
 #endif
 
-int8_t checkIncDecMovedSwitch(int8_t val);
-
 #if defined(CPUM64)
 int8_t checkIncDecModel(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 int8_t checkIncDecModelZero(event_t event, int8_t i_val, int8_t i_max);

@@ -86,6 +86,8 @@ bool isSwitchWarningStateAvailable(int state);
 void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 #endif
 
+swsrc_t checkIncDecMovedSwitch(swsrc_t val);
+
 #if defined(CPUARM)
 #include "telemetry/telemetry_sensors.h"
 void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags flags);

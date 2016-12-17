@@ -1043,7 +1043,7 @@ static int luaModelSetOutput(lua_State *L)
 }
 
 /*luadoc
-@function model.getGlobalVariable(index [, phase])
+@function model.getGlobalVariable(index [, flight_mode])
 
 Return current global variable value
 
@@ -1051,7 +1051,7 @@ Return current global variable value
 
 @param index  zero based global variable index, use 0 for GV1, 8 for GV9
 
-@param phase  zero based phase index, use 0 for Phase 1, 5 for Phase 6
+@param flight_mode  Flight mode number (0 = FM0, 8 = FM8)
 
 @retval nil   requested global variable does not exist
 
@@ -1060,7 +1060,7 @@ Return current global variable value
 Example:
 
 ```lua
-  -- get GV3 (index = 2) from flight phase 1 (phase = 0)
+  -- get GV3 (index = 2) from Flight mode 0 (FM0)
   val = model.getGlobalVariable(2, 0)
 ```
 */
@@ -1076,22 +1076,20 @@ static int luaModelGetGlobalVariable(lua_State *L)
 }
 
 /*luadoc
-@function model.setGlobalVariable(index, phase, value)
+@function model.setGlobalVariable(index, flight_mode, value)
 
 Sets current global variable value. See also model.getGlobalVariable()
 
 @param index  zero based global variable index, use 0 for GV1, 8 for GV9
 
-@param phase  zero based phase index, use 0 for Phase 1, 5 for Phase 6
-   
-@param value  new value for global variable. Permitted range is
-from -1024 to 1024. 
-    
-@notice If a parameter is missing from the value, then 
-that parameter remains unchanged.
+@param flight_mode  Flight mode number (0 = FM0, 8 = FM8)
 
-@notice Global variable can only store integer values, 
-any floating point value is converted (todo check how) into integer value.
+@param value  new value for global variable. Permitted range is
+from -1024 to 1024.
+
+@notice Global variable can only store integer values,
+any floating point value is converted into integer value
+by truncating everything behind a floating point.
 */
 static int luaModelSetGlobalVariable(lua_State *L)
 {

@@ -33,6 +33,11 @@ def ParseFlVSS(packet, dataId, prim, appId, data, crc):
     print(" FLVSS: no cells: %d, cell: %d: voltages: %0.2f %0.2f" % (cells, battnumber, voltage1 / 100., voltage2 / 100.))
 
 
+def ParseASS(packet, dataId, prim, appId, data, crc):
+    print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
+    print(" ASS: %dkm/h" % (float(data) / 10))
+
+
 def ParseRSSI(packet, dataId, prim, appId, data, crc):
     print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
     print(" RSSI: %d" % (data & 0xFF))
@@ -53,6 +58,11 @@ def ParseSWR(packet, dataId, prim, appId, data, crc):
     print(" SWR: %d" % (data & 0xFF))
 
 
+def ParseVersion(packet, dataId, prim, appId, data, crc):
+    print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
+    print(" VERSION: %d" % data)
+
+
 def ParseAirSpeed(packet, dataId, prim, appId, data, crc):
     print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
     print(" Aspd: %.1f km/h" % (data / 10.0))
@@ -60,10 +70,12 @@ def ParseAirSpeed(packet, dataId, prim, appId, data, crc):
 
 appIdParsers = (
     (0x0300, 0x030f, ParseFlVSS),
+    (0x0a00, 0x0a0f, ParseASS),
     (0xf101, 0xf101, ParseRSSI),
     (0xf102, 0xf103, ParseAdc),
     (0xf104, 0xf104, ParseBatt),
     (0xf105, 0xf105, ParseSWR),
+    (0xf106, 0xf106, ParseVersion),
 )
 
 
@@ -83,9 +95,9 @@ def ParseSportPacket(packet):
     # print "dataId:%02x, prim:%02x, appId:%04x, data:%08x, crc:%02x)\n" % (dataId, prim, appId, data, crc)
     if prim != DATA_FRAME:
         print("unknown prim: %02x for packet %s in line %s" % (prim, dump(packet), lineNumber))
-    # proces according to appId
-    for (firstId, lastId, parser) in appIdParsers:
-        if appId >= firstId and appId <= lastId:
+    # process according to appId
+    for firstId, lastId, parser in appIdParsers:
+        if firstId <= appId <= lastId:
             parser(packet, dataId, prim, appId, data, crc)
             return
     # no parser found

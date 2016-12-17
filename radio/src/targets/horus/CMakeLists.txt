@@ -24,6 +24,11 @@ set(LUA_EXPORT lua_export_horus)
 set(FLAVOUR horus)
 set(RAMBACKUP YES)
 set(LUA YES)
+set(PPM_LIMITS_SYMETRICAL YES)
+
+if(SPLASH STREQUAL OFF)
+  message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
+endif()
 
 add_definitions(-DPCBHORUS -DPCBREV=${PCBREV} -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)

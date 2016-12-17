@@ -40,18 +40,75 @@ const char * sdCheckAndCreateDirectory(const char * path)
   return NULL;
 }
 
-bool isFileAvailable(const char * path)
+bool isFileAvailable(const char * path, bool exclDir)
 {
+  if (exclDir) {
+    FILINFO fno;
+    return (f_stat(path, &fno) == FR_OK && !(fno.fattrib & AM_DIR));
+  }
   return f_stat(path, 0) == FR_OK;
 }
 
-bool isFileAvailable(const char * filename, const char * directory)
+/**
+  Search file system path for a file. Can optionally take a list of file extensions to search through.
+  Eg. find "splash.bmp", or the first occurrence of one of "splash.[bmp|jpeg|jpg|gif]".
+
+  @param path String with path name, no trailing slash. eg; "/BITMAPS"
+  @param file String containing file name to search for, with or w/out an extension.
+    eg; "splash.bmp" or "splash"
+  @param pattern Optional list of one or more file extensions concatenated together, including the period(s).
+    The list is searched backwards and the first match, if any, is returned.  If null, then only the actual filename
+    passed will be searched for.
+    eg: ".gif.jpg.jpeg.bmp"
+  @param exclDir true/false whether to allow directory matches (default true, excludes directories)
+  @param match Optional container to hold the matched file extension (wide enough to hold LEN_FILE_EXTENSION_MAX + 1).
+  @retval true if a file was found, false otherwise.
+*/
+bool isFilePatternAvailable(const char * path, const char * file, const char * pattern = NULL, bool exclDir = true, char * match = NULL)
 {
-  char path[256];
-  char * pos = strAppend(path, directory);
-  *pos = '/';
-  strAppend(pos+1, filename);
-  return isFileAvailable(path);
+  uint8_t fplen;
+  char fqfp[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
+
+  fplen = strlen(path);
+  if (fplen > LEN_FILE_PATH_MAX) {
+    TRACE_ERROR("isFilePatternAvailable(%s) = error: file path too long.\n", path, file);
+    return false;
+  }
+
+  strcpy(fqfp, path);
+  strcpy(fqfp + fplen, "/");
+  strncat(fqfp + (++fplen), file, _MAX_LFN);
+
+  if (pattern == NULL) {
+    // no extensions list, just check the filename as-is
+    return isFileAvailable(fqfp, exclDir);
+  }
+  else {
+    // extensions list search
+    const char *ext;
+    uint16_t len;
+    uint8_t extlen, fnlen;
+    int plen;
+
+    getFileExtension(file, 0, 0, &fnlen, &extlen);
+    len = fplen + fnlen - extlen;
+    fqfp[len] = '\0';
+    ext = getFileExtension(pattern, 0, 0, &fnlen, &extlen);
+    plen = (int)fnlen;
+    while (plen > 0 && ext) {
+      strncat(fqfp + len, ext, extlen);
+      if (isFileAvailable(fqfp, exclDir)) {
+        if (match != NULL) strncat(&(match[0]='\0'), ext, extlen);
+        return true;
+      }
+      plen -= extlen;
+      if (plen > 0) {
+        fqfp[len] = '\0';
+        ext = getFileExtension(pattern, plen, 0, NULL, &extlen);
+      }
+    }
+  }
+  return false;
 }
 
 char * getFileIndex(char * filename, unsigned int & value)
@@ -88,63 +145,73 @@ uint8_t getDigitsCount(unsigned int value)
 int findNextFileIndex(char * filename, uint8_t size, const char * directory)
 {
   unsigned int index;
+  uint8_t extlen;
   char * indexPos = getFileIndex(filename, index);
-  char extension[LEN_FILE_EXTENSION+1];
-  strncpy(extension, getFileExtension(filename), sizeof(extension));
+  char extension[LEN_FILE_EXTENSION_MAX+1] = "\0";
+  char *p = getFileExtension(filename, 0, 0, NULL, &extlen);
+  if (p) strncat(extension, p, sizeof(extension)-1);
   while (1) {
     index++;
-    if ((indexPos - filename) + getDigitsCount(index) + LEN_FILE_EXTENSION > size) {
+    if ((indexPos - filename) + getDigitsCount(index) + extlen > size) {
       return 0;
     }
     char * pos = strAppendUnsigned(indexPos, index);
     strAppend(pos, extension);
-    if (!isFileAvailable(filename, directory)) {
+    if (!isFilePatternAvailable(directory, filename, NULL, false)) {
       return index;
     }
   }
 }
 
-bool isExtensionMatching(const char * extension, const char * pattern, uint8_t flags)
+/**
+  Check if given extension exists in a list of extensions.
+  @param extension The extension to search for, including leading period.
+  @param pattern One or more file extensions concatenated together, including the periods.
+    The list is searched backwards and the first match, if any, is returned.
+    eg: ".gif.jpg.jpeg.png"
+  @param match Optional container to hold the matched file extension (wide enough to hold LEN_FILE_EXTENSION_MAX + 1).
+  @retval true if a extension was found in the lost, false otherwise.
+*/
+bool isExtensionMatching(const char * extension, const char * pattern, char * match)
 {
-  if (flags & LIST_SD_FILE_EXT) {
-    for (int i=0; pattern[i]!='\0'; i+=LEN_FILE_EXTENSION) {
-      if (strncasecmp(extension, &pattern[i], LEN_FILE_EXTENSION) == 0) {
-        return true;
-      }
+  const char *ext;
+  uint8_t extlen, fnlen;
+  int plen;
+
+  ext = getFileExtension(pattern, 0, 0, &fnlen, &extlen);
+  plen = (int)fnlen;
+  while (plen > 0 && ext) {
+    if (!strncasecmp(extension, ext, extlen)) {
+      if (match != NULL) strncat(&(match[0]='\0'), ext, extlen);
+      return true;
     }
-    return false;
+    plen -= extlen;
+    if (plen > 0) {
+      ext = getFileExtension(pattern, plen, 0, NULL, &extlen);
+    }
   }
-  else {
-    return strcasecmp(extension, pattern) == 0;
-  }
+  return false;
 }
 
 bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen, const char * selection, uint8_t flags)
 {
+  static uint16_t lastpopupMenuOffset = 0;
   FILINFO fno;
   DIR dir;
+  char *fnExt;
+  uint8_t fnLen, extLen;
+  char tmpExt[LEN_FILE_EXTENSION_MAX+1] = "\0";
 
 #if defined(CPUARM)
   popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
 #endif
   
-  static uint16_t lastpopupMenuOffset = 0;
-
 #if defined(CPUARM)
   static uint8_t s_last_flags;
 
   if (selection) {
     s_last_flags = flags;
-    memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
-    strcpy(reusableBuffer.modelsel.menu_bss[0], path);
-    strcat(reusableBuffer.modelsel.menu_bss[0], "/");
-    strncat(reusableBuffer.modelsel.menu_bss[0], selection, maxlen);
-    if (!(flags & LIST_SD_FILE_EXT)) {
-      strcat(reusableBuffer.modelsel.menu_bss[0], extension);
-    }
-    if (f_stat(reusableBuffer.modelsel.menu_bss[0], &fno) != FR_OK || (fno.fattrib & AM_DIR)) {
-      selection = NULL;
-    }
+    if (!isFilePatternAvailable(path, selection, ((flags & LIST_SD_FILE_EXT) ? NULL : extension))) selection = NULL;
   }
   else {
     flags = s_last_flags;
@@ -194,15 +261,33 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
     for (;;) {
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+      if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */
 
-      uint8_t len = strlen(fno.fname);
-      uint8_t maxlen_with_extension = (flags & LIST_SD_FILE_EXT) ? maxlen : maxlen+LEN_FILE_EXTENSION;
-      if (len < LEN_FILE_EXTENSION+1 || len > maxlen_with_extension || !isExtensionMatching(fno.fname+len-LEN_FILE_EXTENSION, extension, flags) || (fno.fattrib & AM_DIR)) continue;
+      fnExt = getFileExtension(fno.fname, 0, 0, &fnLen, &extLen);
+      fnLen -= extLen;
+
+//      TRACE_DEBUG("listSdFiles(%s, %s, %u, %s, %u): fn='%s'; fnExt='%s'; match=%d\n",
+//           path, extension, maxlen, (selection ? selection : "nul"), flags, fno.fname, (fnExt ? fnExt : "nul"), (fnExt && isExtensionMatching(fnExt, extension)));
+
+      // file validation checks
+      if (!fnLen || fnLen > maxlen || (                                              // wrong size
+            fnExt && extension && (                                                  // extension-based checks follow...
+              !isExtensionMatching(fnExt, extension) || (                            // wrong extension
+                !(flags & LIST_SD_FILE_EXT) &&                                       // only if we want unique file names...
+                strcmp(fnExt, getFileExtension(extension)) &&                        // possible duplicate file name...
+                isFilePatternAvailable(path, fno.fname, extension, true, tmpExt) &&  // find the first file from extensions list...
+                strncmp(fnExt, tmpExt, LEN_FILE_EXTENSION_MAX)                       // found file doesn't match, this is a duplicate
+              )
+            )
+          ))
+      {
+        continue;
+      }
 
       popupMenuNoItems++;
 
       if (!(flags & LIST_SD_FILE_EXT)) {
-        fno.fname[len-LEN_FILE_EXTENSION] = '\0';
+        fno.fname[fnLen] = '\0';  // strip extension
       }
 
       if (popupMenuOffset == 0) {

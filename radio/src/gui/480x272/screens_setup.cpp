@@ -209,9 +209,9 @@ bool menuWidgetSettings(event_t event)
 
 bool menuWidgetChoice(event_t event)
 {
-  static Widget * previousWidget;
-  static Widget * currentWidget;
-  static std::list<const WidgetFactory *>::iterator iterator;
+  static Widget * previousWidget = NULL;
+  static Widget * currentWidget = NULL;
+  static std::list<const WidgetFactory *>::const_iterator iterator;
   static Widget::PersistentData tempData;
 
   switch (event) {
@@ -219,45 +219,55 @@ bool menuWidgetChoice(event_t event)
     {
       previousWidget = currentContainer->getWidget(currentZone);
       currentContainer->setWidget(currentZone, NULL);
-      iterator = registeredWidgets.begin();
+      iterator = getRegisteredWidgets().cbegin();
       if (previousWidget) {
         const WidgetFactory * factory = previousWidget->getFactory();
-        for (std::list<const WidgetFactory *>::iterator it = registeredWidgets.begin(); it != registeredWidgets.end(); ++it) {
+        std::list<const WidgetFactory *>::const_iterator it = getRegisteredWidgets().cbegin();
+        for (; it != getRegisteredWidgets().cend(); ++it) {
           if (factory->getName() == (*it)->getName()) {
             iterator = it;
             break;
           }
         }
       }
-      currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
+      if (iterator != getRegisteredWidgets().cend())
+        currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
       break;
     }
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      delete currentWidget;
-      currentContainer->setWidget(currentZone, previousWidget);
+      if (previousWidget) {
+        if (currentWidget)
+          delete currentWidget;
+        currentContainer->setWidget(currentZone, previousWidget);
+      }
       popMenu();
       return false;
 
     case EVT_KEY_FIRST(KEY_ENTER):
-      delete previousWidget;
-      currentContainer->createWidget(currentZone, *iterator);
-      storageDirty(EE_MODEL);
+      if (iterator != getRegisteredWidgets().cend()) {
+        if (previousWidget)
+          delete previousWidget;
+        currentContainer->createWidget(currentZone, *iterator);
+        storageDirty(EE_MODEL);
+      }
       popMenu();
       return false;
 
     case EVT_ROTARY_RIGHT:
-      if (iterator != registeredWidgets.end() && iterator != --registeredWidgets.end()) {
+      if (iterator != getRegisteredWidgets().cend() && iterator != --getRegisteredWidgets().cend()) {
         ++iterator;
-        delete currentWidget;
+        if (currentWidget)
+          delete currentWidget;
         currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
       }
       break;
 
     case EVT_ROTARY_LEFT:
-      if (iterator != registeredWidgets.begin()) {
+      if (iterator != getRegisteredWidgets().cbegin()) {
         --iterator;
-        delete currentWidget;
+        if (currentWidget)
+          delete currentWidget;
         currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
       }
       break;
@@ -271,13 +281,19 @@ bool menuWidgetChoice(event_t event)
   lcdDrawFilledRect(zone.x-2, 0, zone.w+4, zone.y-2, SOLID, OVERLAY_COLOR | (8<<24));
   lcdDrawFilledRect(zone.x-2, zone.y+zone.h+2, zone.w+4, LCD_H-zone.y-zone.h-2, SOLID, OVERLAY_COLOR | (8<<24));
 
-  currentWidget->refresh();
+  if (currentWidget)
+    currentWidget->refresh();
 
-  lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
-  lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, TEXT_INVERTED_COLOR);
-  lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
-  lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
-  lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | TEXT_COLOR | SMLSIZE | INVERS);
+  if (iterator != getRegisteredWidgets().cbegin()) {
+    lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
+    lcdDrawBitmapPattern(zone.x-10, zone.y+zone.h/2-10, LBM_SWIPE_LEFT, TEXT_INVERTED_COLOR);
+  }
+  if (iterator != --getRegisteredWidgets().cend()) {
+    lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_CIRCLE, TEXT_INVERTED_BGCOLOR);
+    lcdDrawBitmapPattern(zone.x+zone.w-9, zone.y+zone.h/2-10, LBM_SWIPE_RIGHT, TEXT_INVERTED_COLOR);
+  }
+  if (currentWidget)
+    lcdDrawText(zone.x + zone.w, zone.y-1, currentWidget->getFactory()->getName(), RIGHT | TEXT_COLOR | SMLSIZE | INVERS);
 
   return true;
 }
@@ -351,16 +367,20 @@ bool menuWidgetsSetup(event_t event)
 }
 
 template <class T>
-T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * current, bool needsOffsetCheck, LcdFlags attr, event_t event)
+T * editThemeChoice(coord_t x, coord_t y, std::list<T *> & elList, T * current, bool needsOffsetCheck, LcdFlags attr, event_t event)
 {
-  static uint8_t menuHorizontalOffset;
-
+  static uint8_t menuHorizontalOffset = 0;
+  uint8_t elCount = elList.size(), last, idx;
+  coord_t pos;
   int currentIndex = 0;
-  for (unsigned int i=0; i<count; i++) {
-    if (array[i] == current) {
-      currentIndex = i;
+  typename std::list<T *>::const_iterator elItr = elList.cbegin();
+
+  if (!elCount)
+    return NULL;
+
+  for (; elItr != elList.cend(); ++elItr, ++currentIndex) {
+    if ((*elItr) == current)
       break;
-    }
   }
 
   if (event == EVT_ENTRY) {
@@ -378,7 +398,7 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
   }
   if (attr) {
     if (menuHorizontalPosition < 0) {
-      lcdDrawSolidFilledRect(x-3, y-1, min<uint8_t>(4, count)*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
+      lcdDrawSolidFilledRect(x-3, y-1, min<uint8_t>(4, elCount)*56+1, 2*FH-5, TEXT_INVERTED_BGCOLOR);
     }
     else {
       if (needsOffsetCheck) {
@@ -392,20 +412,29 @@ T * editThemeChoice(coord_t x, coord_t y, T * array[], uint8_t count, T * curren
       }
     }
   }
-  unsigned int last = min<int>(menuHorizontalOffset + 4, count);
-  for (unsigned int i=menuHorizontalOffset, pos=x; i<last; i++, pos += 56) {
-    T * element = array[i];
-    element->drawThumb(pos, y+1, current == element ? ((attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
+  last = min<uint8_t>(menuHorizontalOffset + 4, elCount);
+  idx = menuHorizontalOffset;
+  pos = x;
+  elItr = elList.cbegin();
+  std::advance(elItr, min<uint8_t>(menuHorizontalOffset, elCount - 1));
+  for (; idx < last && elItr != elList.cend(); ++idx, ++elItr, pos += 56) {
+    (*elItr)->drawThumb(pos, y+1, current == (*elItr) ? ((attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_INVERTED_BGCOLOR) : LINE_COLOR);
   }
-  if (count > 4) {
+  if (elCount > 4) {
     lcdDrawBitmapPattern(x - 12, y+1, LBM_CARROUSSEL_LEFT, menuHorizontalOffset > 0 ? LINE_COLOR : CURVE_AXIS_COLOR);
-    lcdDrawBitmapPattern(x + 4 * 56, y+1, LBM_CARROUSSEL_RIGHT, last < countRegisteredLayouts ? LINE_COLOR : CURVE_AXIS_COLOR);
+    lcdDrawBitmapPattern(x + 4 * 56, y+1, LBM_CARROUSSEL_RIGHT, last < getRegisteredLayouts().size() ? LINE_COLOR : CURVE_AXIS_COLOR);
   }
   if (attr && menuHorizontalPosition >= 0) {
     lcdDrawSolidRect(x + (menuHorizontalPosition - menuHorizontalOffset) * 56 - 3, y - 1, 57, 35, 1, TEXT_INVERTED_BGCOLOR);
     if (event == EVT_KEY_FIRST(KEY_ENTER)) {
       s_editMode = 0;
-      return array[menuHorizontalPosition];
+      elItr = elList.cbegin();
+      if (menuHorizontalPosition < (int)elList.size())
+        std::advance(elItr, menuHorizontalPosition);
+      if (elItr != elList.cend())
+        return (*elItr);
+      else
+        return NULL;
     }
   }
   return NULL;
@@ -424,7 +453,7 @@ bool menuScreensTheme(event_t event)
   linesCount = ITEM_SCREEN_SETUP_THEME_OPTION1 + optionsCount + 1;
 
   menuPageCount = updateMainviewsMenu();
-  uint8_t mstate_tab[2 + MAX_THEME_OPTIONS + 1] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredThemes-1)), ORPHAN_ROW };
+  uint8_t mstate_tab[2 + MAX_THEME_OPTIONS + 1] = { uint8_t(NAVIGATION_LINE_BY_LINE | uint8_t(getRegisteredThemes().size()-1)), ORPHAN_ROW };
   for (int i=0; i<optionsCount; i++) {
     mstate_tab[2+i] = getZoneOptionColumns(&options[i]);
   }
@@ -439,7 +468,7 @@ bool menuScreensTheme(event_t event)
     switch (k) {
       case ITEM_SCREEN_SETUP_THEME: {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, STR_THEME);
-        Theme * new_theme = editThemeChoice<Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
+        Theme * new_theme = editThemeChoice<Theme>(SCREENS_SETUP_2ND_COLUMN, y, getRegisteredThemes(), theme, needsOffsetCheck, attr, event);
         if (new_theme) {
           new_theme->init();
           loadTheme(new_theme);
@@ -506,7 +535,7 @@ bool menuScreenSetup(int index, event_t event)
   if (menuPageCount > 3)
     ++linesCount;
 
-  uint8_t mstate_tab[2 + MAX_LAYOUT_OPTIONS + 1] = { uint8_t(NAVIGATION_LINE_BY_LINE|uint8_t(countRegisteredLayouts-1)), ORPHAN_ROW };
+  uint8_t mstate_tab[2 + MAX_LAYOUT_OPTIONS + 1] = { uint8_t(NAVIGATION_LINE_BY_LINE | uint8_t(getRegisteredLayouts().size()-1)), ORPHAN_ROW };
   for (int i=0; i<optionsCount; i++) {
     mstate_tab[3+i] = getZoneOptionColumns(&options[i]);
   }
@@ -523,7 +552,7 @@ bool menuScreenSetup(int index, event_t event)
       case ITEM_SCREEN_SETUP_LAYOUT:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, STR_LAYOUT);
-        const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, registeredLayouts, countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
+        const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, getRegisteredLayouts(), currentScreen->getFactory(), needsOffsetCheck, attr, event);
         if (factory) {
           delete customScreens[index];
           currentScreen = customScreens[index] = factory->create(&g_model.screenData[index].layoutData);
@@ -610,9 +639,10 @@ bool menuScreenAdd(event_t event)
 {
   menuPageCount = updateMainviewsMenu();
 
-  if (event == EVT_KEY_FIRST(KEY_ENTER)) {
-    customScreens[menuPageCount-2] = registeredLayouts[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
-    strncpy(g_model.screenData[menuPageCount-2].layoutName, registeredLayouts[0]->getName(), sizeof(g_model.screenData[menuPageCount-2].layoutName));
+  if (event == EVT_KEY_FIRST(KEY_ENTER) && getRegisteredLayouts().size()) {
+    const LayoutFactory * lf = getRegisteredLayouts().front();
+    customScreens[menuPageCount-2] = lf->create(&g_model.screenData[menuPageCount-2].layoutData);
+    strncpy(g_model.screenData[menuPageCount-2].layoutName, lf->getName(), sizeof(g_model.screenData[menuPageCount-2].layoutName));
     s_editMode = 0;
     menuHorizontalPosition = -1;
     killEvents(KEY_ENTER);

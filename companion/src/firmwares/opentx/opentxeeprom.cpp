@@ -41,7 +41,7 @@
 #define MAX_TIMERS(board, version)            ((IS_ARM(board) && version >= 217) ? 3 : 2)
 #define MAX_MIXERS(board, version)            (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)          (IS_ARM(board) ? 32 : 16)
-#define MAX_EXPOS(board, version)             (IS_ARM(board) ? ((HAS_LARGE_LCD(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
+#define MAX_EXPOS(board, version)             (IS_ARM(board) ? ((IS_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
 #define MAX_LOGICAL_SWITCHES(board, version)  (IS_ARM(board) ? (version >= 218 ? 64 : 32) : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
 #define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
 #define MAX_CURVES(board, version)            (IS_ARM(board) ? ((HAS_LARGE_LCD(board) && version >= 216) ? 32 : 16) : 8)

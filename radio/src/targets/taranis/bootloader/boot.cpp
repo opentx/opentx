@@ -44,11 +44,17 @@
 
 #if LCD_W >= 212
   #define STR_OR_PLUGIN_USB_CABLE      INDENT "Or plug in a USB cable for mass storage"
-  #define STR_USB_CONNECTED            "\026USB Connected"
+  #define STR_HOLD_ENTER_TO_START      "\012Hold [ENT] to start writing"
+  #define STR_INVALID_FIRMWARE         "\011Not a valid firmware file!        "
+  #define STR_INVALID_EEPROM           "\011Not a valid EEPROM file!          "
 #else
   #define STR_OR_PLUGIN_USB_CABLE      INDENT "Or plug in a USB cable"
-  #define STR_USB_CONNECTED            "\012USB Connected  "
+  #define STR_HOLD_ENTER_TO_START      "\006Hold [ENT] to start"
+  #define STR_INVALID_FIRMWARE         "\004Not a valid firmware!        "
+  #define STR_INVALID_EEPROM           "\004Not a valid EEPROM!          "
 #endif
+
+#define STR_USB_CONNECTED              CENTER "\011USB Connected"
 
 const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 {
@@ -255,7 +261,7 @@ int menuFlashFile(uint32_t index, event_t event)
 {
   FRESULT fr;
 
-  lcdDrawTextAlignedLeft(4*FH, "\012Hold [ENT] to start writing");
+  lcdDrawTextAlignedLeft(4*FH, STR_HOLD_ENTER_TO_START);
 
   if (Valid == 0) {
     // Validate file here
@@ -277,9 +283,9 @@ int menuFlashFile(uint32_t index, event_t event)
 
   if (Valid == 2) {
     if (memoryType == MEM_FLASH)
-      lcdDrawTextAlignedLeft(4*FH,  "\011Not a valid firmware file!        ");
+      lcdDrawTextAlignedLeft(4*FH, STR_INVALID_FIRMWARE);
     else
-      lcdDrawTextAlignedLeft(4*FH,  "\011Not a valid EEPROM file!          ");
+      lcdDrawTextAlignedLeft(4*FH, STR_INVALID_EEPROM);
     if (event == EVT_KEY_BREAK(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
       return 0;
     }
@@ -550,7 +556,7 @@ int main()
 
       else if (state == ST_FLASHING) {
         // commit to flashing
-        lcdDrawTextAlignedLeft(4*FH, "\032Writing...");
+        lcdDrawTextAlignedLeft(4*FH, CENTER "\015Writing...");
 
         if (!unlocked && (memoryType == MEM_FLASH)) {
           unlocked = 1;
@@ -561,15 +567,15 @@ int main()
         if (memoryType == MEM_FLASH) {
           flashWriteBlock();
           firmwareWritten += sizeof(Block_buffer);
-          progress = (200*firmwareWritten) / FirmwareSize;
+          progress = ((LCD_W-12)*firmwareWritten) / FirmwareSize;
         }
         else {
           writeEepromBlock();
           eepromWritten += sizeof(Block_buffer);
-          progress = (200*eepromWritten) / EEPROM_SIZE;
+          progress = ((LCD_W-12)*eepromWritten) / EEPROM_SIZE;
         }
 
-        lcdDrawRect(3, 6*FH+4, 204, 7);
+        lcdDrawRect(3, 6*FH+4, (LCD_W-8), 7);
         lcdDrawSolidHorizontalLine(5, 6*FH+6, progress, FORCE);
         lcdDrawSolidHorizontalLine(5, 6*FH+7, progress, FORCE);
         lcdDrawSolidHorizontalLine(5, 6*FH+8, progress, FORCE);
@@ -591,7 +597,7 @@ int main()
           lockFlash();
           unlocked = 0;
         }
-        lcdDrawTextAlignedLeft(4*FH, "\024Writing Complete");
+        lcdDrawTextAlignedLeft(4*FH, CENTER "\007Writing Complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
           vpos = 0;
@@ -631,7 +637,7 @@ int main()
         lcdClear();
         lcdRefresh();
         lcdRefreshWait();
-        RCC->CSR |= RCC_CSR_RMVF;   //clear the reset flags in RCC clock control & status register
+        RCC->CSR |= RCC_CSR_RMVF; // clear the reset flags in RCC clock control & status register
         NVIC_SystemReset();
       }
     }

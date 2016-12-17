@@ -273,9 +273,11 @@ inline display_t getPixel(uint8_t x, uint8_t y)
     return 0;
   }
   
-  display_t * p = &displayBuf[y / 2 * LCD_W + x];
-  return (y & 1) ? (*p >> 4) : (*p & 0x0F);
+  display_t pixel = displayBuf[(y / 8) * LCD_W + x];
+  display_t mask = 1 << (y & 7);
+  return ((pixel & mask) ? 0xf : 0);
 }
+
 const char * writeScreenshot();
 
 void drawShutdownAnimation(uint32_t index);

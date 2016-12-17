@@ -24,11 +24,6 @@
 #include "bin_allocator.h"
 #include "lua/lua_api.h"
 
-#if defined(LUA_COMPILER) && defined(SIMU)
-  #include <lundump.h>
-  #include <lstate.h>
-#endif
-
 #define WIDGET_SCRIPTS_MAX_INSTRUCTIONS    (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
 #define LUA_WARNING_INFO_LEN               64
@@ -36,7 +31,7 @@
 lua_State *lsWidgets = NULL;
 extern int custom_lua_atpanic(lua_State *L);
 
-#define LUA_FULLPATH_MAXLEN                (42) // max length (example: /SCRIPTS/THEMES/mytheme.lua)
+#define LUA_FULLPATH_MAXLEN                (LEN_FILE_PATH_MAX + LEN_SCRIPT_FILENAME + LEN_FILE_EXTENSION_MAX)  // max length (example: /SCRIPTS/THEMES/mytheme.lua)
 
 void exec(int function, int nresults=0)
 {
@@ -369,24 +364,21 @@ void luaLoadWidgetCallback()
 
 void luaLoadFile(const char * filename, void (*callback)())
 {
-  if (lsWidgets == 0) return;
+  if (lsWidgets == NULL || callback == NULL)
+    return;
 
-  TRACE("luaLoadFile() %s", filename);
-
-#if defined(LUA_COMPILER) && defined(SIMU)
-  luaCompileAndSave(lsWidgets, filename);
-#endif
+  TRACE("luaLoadFile(%s)", filename);
 
   luaSetInstructionsLimit(lsWidgets, MANUAL_SCRIPTS_MAX_INSTRUCTIONS);
 
   PROTECT_LUA() {
-    if (luaL_loadfile(lsWidgets, filename) == 0 &&
-        lua_pcall(lsWidgets, 0, 1, 0) == 0 &&
-        lua_istable(lsWidgets, -1)) {
-      (*callback)();
-    }
-    else {
-      TRACE("Error in script %s: %s", filename, lua_tostring(lsWidgets, -1));
+    if (luaLoadScriptFileToState(lsWidgets, filename, LUA_SCRIPT_LOAD_MODE) == SCRIPT_OK) {
+      if (lua_pcall(lsWidgets, 0, 1, 0) == LUA_OK && lua_istable(lsWidgets, -1)) {
+        (*callback)();
+      }
+      else {
+        TRACE("luaLoadFile(%s): Error parsing script: %s", filename, lua_tostring(lsWidgets, -1));
+      }
     }
   }
   else {

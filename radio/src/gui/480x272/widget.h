@@ -186,7 +186,8 @@ inline const ZoneOption * Widget::getOptions() const
   return getFactory()->getOptions();
 }
 
-extern std::list<const WidgetFactory *> registeredWidgets;
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
+
+std::list<const WidgetFactory *> & getRegisteredWidgets();
 
 #endif // _WIDGET_H_

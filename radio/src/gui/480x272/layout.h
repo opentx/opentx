@@ -21,6 +21,7 @@
 #ifndef _LAYOUT_H_
 #define _LAYOUT_H_
 
+#include <list>
 #include "widgets_container.h"
 
 #define MAX_LAYOUT_ZONES               10
@@ -113,11 +114,9 @@ class BaseLayoutFactory: public LayoutFactory
     const ZoneOption * options;
 };
 
-#define MAX_REGISTERED_LAYOUTS 10
-
-extern unsigned int countRegisteredLayouts;
-extern const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS];
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
 void loadCustomScreens();
+
+std::list<const LayoutFactory *> & getRegisteredLayouts();
 
 #endif // _LAYOUT_H_

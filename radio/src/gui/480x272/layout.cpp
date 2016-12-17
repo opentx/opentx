@@ -20,22 +20,24 @@
 
 #include "opentx.h"
 
-const LayoutFactory * registeredLayouts[MAX_REGISTERED_LAYOUTS]; // TODO dynamic
-unsigned int countRegisteredLayouts = 0;
+std::list<const LayoutFactory *> & getRegisteredLayouts()
+{
+  static std::list<const LayoutFactory *> layouts;
+  return layouts;
+}
+
 void registerLayout(const LayoutFactory * factory)
 {
-  if (countRegisteredLayouts < MAX_REGISTERED_LAYOUTS) {
-    TRACE("register layout %s", factory->getName());
-    registeredLayouts[countRegisteredLayouts++] = factory;
-  }
+  TRACE("register layout %s", factory->getName());
+  getRegisteredLayouts().push_back(factory);
 }
 
 const LayoutFactory * getLayoutFactory(const char * name)
 {
-  for (unsigned int i=0; i<countRegisteredLayouts; i++) {
-    const LayoutFactory * factory = registeredLayouts[i];
-    if (!strcmp(name, factory->getName())) {
-      return factory;
+  std::list<const LayoutFactory *>::const_iterator it = getRegisteredLayouts().cbegin();
+  for (; it != getRegisteredLayouts().cend(); ++it) {
+    if (!strcmp(name, (*it)->getName())) {
+      return (*it);
     }
   }
   return NULL;
@@ -60,8 +62,8 @@ void loadCustomScreens()
     customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
   }
 
-  if (customScreens[0] == NULL) {
-    customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
+  if (customScreens[0] == NULL && getRegisteredLayouts().size()) {
+    customScreens[0] = getRegisteredLayouts().front()->create(&g_model.screenData[0].layoutData);
   }
 
   topbar->load();

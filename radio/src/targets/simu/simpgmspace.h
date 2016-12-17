@@ -38,7 +38,7 @@ extern char * main_thread_error;
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
-#if defined(WIN32) || !defined(__GNUC__)
+#if defined(_MSC_VER) || !defined(__GNUC__)
 #define write_backtrace(output)
 #else
 #include <execinfo.h>
@@ -339,7 +339,7 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 #define ISR(x, ...)  void x()
 
-#if !defined(WIN32) && defined(__GNUC__)
+#if !defined(_MSC_VER) && defined(__GNUC__)
 #define asm(...)
 #endif
 
