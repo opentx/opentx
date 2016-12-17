@@ -88,6 +88,14 @@ void readTextFile(int & lines_count)
   }
 }
 
+#if defined(PCBX7)
+#define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
+#define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
+#else
+#define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
+#define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
+#endif
+  
 void menuTextView(event_t event)
 {
   static int lines_count;
@@ -99,20 +107,18 @@ void menuTextView(event_t event)
       readTextFile(lines_count);
       break;
 
-    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_PREVIOUS_LINE:
       if (menuVerticalOffset == 0)
         break;
       else
         menuVerticalOffset--;
         // no break;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
-      // if (event == EVT_KEY_BREAK(KEY_DOWN)) {
-        if (menuVerticalOffset+LCD_LINES-1 >= lines_count)
-          break;
-        else
-          ++menuVerticalOffset;
-      // }
+    case EVT_KEY_NEXT_LINE:
+      if (menuVerticalOffset+LCD_LINES-1 >= lines_count)
+        break;
+      else
+        ++menuVerticalOffset;
       readTextFile(lines_count);
       break;
 
