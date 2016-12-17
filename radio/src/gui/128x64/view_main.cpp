@@ -584,9 +584,13 @@ void menuMainView(event_t event)
   }
 
   // And ! in case of unexpected shutdown
+#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
+  lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
+#else
   if (unexpectedShutdown) {
     lcdDrawChar(REBOOT_X, 0*FH, '!', INVERS);
   }
+#endif
 
 #if defined(GVARS) && !defined(PCBSTD)
   if (gvarDisplayTimer > 0) {
