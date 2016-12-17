@@ -21,6 +21,7 @@
 #ifndef _LAYOUT_H_
 #define _LAYOUT_H_
 
+#include <list>
 #include "widgets_container.h"
 
 #define MAX_LAYOUT_ZONES               10
@@ -117,7 +118,6 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
 void loadCustomScreens();
 
 #define MAX_REGISTERED_LAYOUTS          10
-extern unsigned int countRegisteredLayouts;
-const LayoutFactory **  getRegisteredLayouts();
+std::list<const LayoutFactory *> & getRegisteredLayouts();
 
 #endif // _LAYOUT_H_

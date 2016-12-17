@@ -282,7 +282,8 @@ void drawTimerMode(coord_t x, coord_t y, int32_t mode, LcdFlags att)
     if (mode < TMRMODE_COUNT) {
       lcdDrawTextAtIndex(x, y, STR_VTMRMODES, mode, att);
       return;
-    } else {
+    }
+    else {
       mode -= (TMRMODE_COUNT-1);
     }
   }

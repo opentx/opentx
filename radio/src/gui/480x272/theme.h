@@ -21,6 +21,8 @@
 #ifndef _THEME_H_
 #define _THEME_H_
 
+#include <list>
+
 class BitmapBuffer;
 
 #define MAX_THEME_OPTIONS              5
@@ -96,7 +98,6 @@ void loadTheme(Theme * theme);
 void loadTheme();
 
 #define MAX_REGISTERED_THEMES          10
-extern unsigned int countRegisteredThemes;
-Theme ** getRegisteredThemes();
+std::list<Theme *> & getRegisteredThemes();
 
 #endif // _THEME_H_

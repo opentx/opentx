@@ -23,19 +23,18 @@
 const BitmapBuffer * Theme::asterisk = NULL;
 const BitmapBuffer * Theme::question = NULL;
 const BitmapBuffer * Theme::busy = NULL;
-unsigned int countRegisteredThemes = 0;
 
-Theme ** getRegisteredThemes()
+std::list<Theme *> & getRegisteredThemes()
 {
-  static Theme * themes[MAX_REGISTERED_THEMES]; // TODO dynamic
+  static std::list<Theme *> themes;
   return themes;
 }
 
 void registerTheme(Theme * theme)
 {
-  if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
+  if (getRegisteredThemes().size() < MAX_REGISTERED_THEMES) {
     TRACE("register theme %s", theme->getName());
-    getRegisteredThemes()[countRegisteredThemes++] = theme;
+    getRegisteredThemes().push_back(theme);
   }
 }
 
@@ -129,10 +128,10 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
 
 Theme * getTheme(const char * name)
 {
-  for (unsigned int i=0; i<countRegisteredThemes; i++) {
-    Theme * theme = getRegisteredThemes()[i];
-    if (!strcmp(name, theme->getName())) {
-      return theme;
+  std::list<Theme *>::const_iterator it = getRegisteredThemes().cbegin();
+  for (; it != getRegisteredThemes().cend(); ++it) {
+    if (!strcmp(name, (*it)->getName())) {
+      return (*it);
     }
   }
   return NULL;
