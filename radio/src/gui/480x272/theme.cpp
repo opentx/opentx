@@ -32,10 +32,8 @@ std::list<Theme *> & getRegisteredThemes()
 
 void registerTheme(Theme * theme)
 {
-  if (getRegisteredThemes().size() < MAX_REGISTERED_THEMES) {
-    TRACE("register theme %s", theme->getName());
-    getRegisteredThemes().push_back(theme);
-  }
+  TRACE("register theme %s", theme->getName());
+  getRegisteredThemes().push_back(theme);
 }
 
 void Theme::init() const

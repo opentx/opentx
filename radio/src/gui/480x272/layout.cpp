@@ -28,10 +28,8 @@ std::list<const LayoutFactory *> & getRegisteredLayouts()
 
 void registerLayout(const LayoutFactory * factory)
 {
-  if (getRegisteredLayouts().size() < MAX_REGISTERED_LAYOUTS) {
-    TRACE("register layout %s", factory->getName());
-    getRegisteredLayouts().push_back(factory);
-  }
+  TRACE("register layout %s", factory->getName());
+  getRegisteredLayouts().push_back(factory);
 }
 
 const LayoutFactory * getLayoutFactory(const char * name)

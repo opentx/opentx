@@ -97,7 +97,6 @@ Theme * getTheme(const char * name);
 void loadTheme(Theme * theme);
 void loadTheme();
 
-#define MAX_REGISTERED_THEMES          10
 std::list<Theme *> & getRegisteredThemes();
 
 #endif // _THEME_H_

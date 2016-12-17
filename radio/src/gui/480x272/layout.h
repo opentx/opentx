@@ -117,7 +117,6 @@ class BaseLayoutFactory: public LayoutFactory
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
 void loadCustomScreens();
 
-#define MAX_REGISTERED_LAYOUTS          10
 std::list<const LayoutFactory *> & getRegisteredLayouts();
 
 #endif // _LAYOUT_H_

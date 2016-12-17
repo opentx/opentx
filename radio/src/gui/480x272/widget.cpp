@@ -28,10 +28,8 @@ std::list<const WidgetFactory *> & getRegisteredWidgets()
 
 void registerWidget(const WidgetFactory * factory)
 {
-  if (getRegisteredWidgets().size() < MAX_REGISTERED_WIDGETS) {
-    TRACE("register widget %s", factory->getName());
-    getRegisteredWidgets().push_back(factory);
-  }
+  TRACE("register widget %s", factory->getName());
+  getRegisteredWidgets().push_back(factory);
 }
 
 const WidgetFactory * getWidgetFactory(const char * name)
