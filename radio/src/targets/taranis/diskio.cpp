@@ -978,7 +978,7 @@ void sdPoll10ms()
 
 FATFS g_FATFS_Obj;
 #if defined(LOG_TELEMETRY)
-FIL g_telemetryFile;
+FIL g_telemetryFile = {};
 #endif
 
 #if defined(BOOT)
@@ -1005,7 +1005,6 @@ void sdInit(void)
     sdGetFreeSectors();
     
 #if defined(LOG_TELEMETRY)
-    memset(&g_telemetryFile, 0, sizeof(FIL));
     f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
     if (f_size(&g_telemetryFile) > 0) {
       f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
