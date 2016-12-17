@@ -219,10 +219,10 @@ bool menuWidgetChoice(event_t event)
     {
       previousWidget = currentContainer->getWidget(currentZone);
       currentContainer->setWidget(currentZone, NULL);
-      iterator = registeredWidgets.begin();
+      iterator = getRegisteredWidgets().begin();
       if (previousWidget) {
         const WidgetFactory * factory = previousWidget->getFactory();
-        for (std::list<const WidgetFactory *>::iterator it = registeredWidgets.begin(); it != registeredWidgets.end(); ++it) {
+        for (std::list<const WidgetFactory *>::iterator it = getRegisteredWidgets().begin(); it != getRegisteredWidgets().end(); ++it) {
           if (factory->getName() == (*it)->getName()) {
             iterator = it;
             break;
@@ -247,7 +247,7 @@ bool menuWidgetChoice(event_t event)
       return false;
 
     case EVT_ROTARY_RIGHT:
-      if (iterator != registeredWidgets.end() && iterator != --registeredWidgets.end()) {
+      if (iterator != getRegisteredWidgets().end() && iterator != --getRegisteredWidgets().end()) {
         ++iterator;
         delete currentWidget;
         currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
@@ -255,7 +255,7 @@ bool menuWidgetChoice(event_t event)
       break;
 
     case EVT_ROTARY_LEFT:
-      if (iterator != registeredWidgets.begin()) {
+      if (iterator != getRegisteredWidgets().begin()) {
         --iterator;
         delete currentWidget;
         currentWidget = (*iterator)->create(currentContainer->getZone(currentZone), &tempData);
@@ -439,7 +439,7 @@ bool menuScreensTheme(event_t event)
     switch (k) {
       case ITEM_SCREEN_SETUP_THEME: {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, STR_THEME);
-        Theme * new_theme = editThemeChoice<Theme>(SCREENS_SETUP_2ND_COLUMN, y, registeredThemes, countRegisteredThemes, theme, needsOffsetCheck, attr, event);
+        Theme * new_theme = editThemeChoice<Theme>(SCREENS_SETUP_2ND_COLUMN, y, getRegisteredThemes(), countRegisteredThemes, theme, needsOffsetCheck, attr, event);
         if (new_theme) {
           new_theme->init();
           loadTheme(new_theme);
@@ -523,7 +523,7 @@ bool menuScreenSetup(int index, event_t event)
       case ITEM_SCREEN_SETUP_LAYOUT:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y + FH / 2, STR_LAYOUT);
-        const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, registeredLayouts, countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
+        const LayoutFactory * factory = editThemeChoice<const LayoutFactory>(SCREENS_SETUP_2ND_COLUMN, y, getRegisteredLayouts(), countRegisteredLayouts, currentScreen->getFactory(), needsOffsetCheck, attr, event);
         if (factory) {
           delete customScreens[index];
           currentScreen = customScreens[index] = factory->create(&g_model.screenData[index].layoutData);
@@ -611,8 +611,8 @@ bool menuScreenAdd(event_t event)
   menuPageCount = updateMainviewsMenu();
 
   if (event == EVT_KEY_FIRST(KEY_ENTER)) {
-    customScreens[menuPageCount-2] = registeredLayouts[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
-    strncpy(g_model.screenData[menuPageCount-2].layoutName, registeredLayouts[0]->getName(), sizeof(g_model.screenData[menuPageCount-2].layoutName));
+    customScreens[menuPageCount-2] = getRegisteredLayouts()[0]->create(&g_model.screenData[menuPageCount-2].layoutData);
+    strncpy(g_model.screenData[menuPageCount-2].layoutName, getRegisteredLayouts()[0]->getName(), sizeof(g_model.screenData[menuPageCount-2].layoutName));
     s_editMode = 0;
     menuHorizontalPosition = -1;
     killEvents(KEY_ENTER);

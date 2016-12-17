@@ -35,7 +35,7 @@ void registerTheme(Theme * theme)
 {
   if (countRegisteredThemes < MAX_REGISTERED_THEMES) {
     TRACE("register theme %s", theme->getName());
-    registeredThemes[countRegisteredThemes++] = theme;
+    getRegisteredThemes()[countRegisteredThemes++] = theme;
   }
 }
 
@@ -130,7 +130,7 @@ void Theme::drawMessageBox(const char * title, const char * text, const char * a
 Theme * getTheme(const char * name)
 {
   for (unsigned int i=0; i<countRegisteredThemes; i++) {
-    Theme * theme = registeredThemes[i];
+    Theme * theme = getRegisteredThemes()[i];
     if (!strcmp(name, theme->getName())) {
       return theme;
     }

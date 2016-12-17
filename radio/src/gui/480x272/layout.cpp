@@ -32,14 +32,14 @@ void registerLayout(const LayoutFactory * factory)
 {
   if (countRegisteredLayouts < MAX_REGISTERED_LAYOUTS) {
     TRACE("register layout %s", factory->getName());
-    registeredLayouts[countRegisteredLayouts++] = factory;
+    getRegisteredLayouts()[countRegisteredLayouts++] = factory;
   }
 }
 
 const LayoutFactory * getLayoutFactory(const char * name)
 {
   for (unsigned int i=0; i<countRegisteredLayouts; i++) {
-    const LayoutFactory * factory = registeredLayouts[i];
+    const LayoutFactory * factory = getRegisteredLayouts()[i];
     if (!strcmp(name, factory->getName())) {
       return factory;
     }
@@ -67,7 +67,7 @@ void loadCustomScreens()
   }
 
   if (customScreens[0] == NULL) {
-    customScreens[0] = registeredLayouts[0]->create(&g_model.screenData[0].layoutData);
+    customScreens[0] = getRegisteredLayouts()[0]->create(&g_model.screenData[0].layoutData);
   }
 
   topbar->load();

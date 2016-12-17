@@ -121,7 +121,7 @@ class Widget
     PersistentData * persistentData;
 };
 
-extern void registerWidget(const WidgetFactory * factory);
+void registerWidget(const WidgetFactory * factory);
 
 class WidgetFactory
 {
@@ -186,8 +186,7 @@ inline const ZoneOption * Widget::getOptions() const
   return getFactory()->getOptions();
 }
 
-#define registeredWidgets    getRegisteredWidgets()
-extern std::list<const WidgetFactory *> & getRegisteredWidgets();
+std::list<const WidgetFactory *> & getRegisteredWidgets();
 Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
 
 #endif // _WIDGET_H_

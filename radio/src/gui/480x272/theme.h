@@ -26,7 +26,7 @@ class BitmapBuffer;
 #define MAX_THEME_OPTIONS              5
 
 class Theme;
-extern void registerTheme(Theme * theme);
+void registerTheme(Theme * theme);
 
 class Theme
 {
@@ -97,7 +97,6 @@ void loadTheme();
 
 #define MAX_REGISTERED_THEMES          10
 extern unsigned int countRegisteredThemes;
-#define registeredThemes    getRegisteredThemes()
-extern Theme ** getRegisteredThemes();
+Theme ** getRegisteredThemes();
 
 #endif // _THEME_H_

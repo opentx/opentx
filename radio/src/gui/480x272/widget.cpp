@@ -29,12 +29,12 @@ std::list<const WidgetFactory *> & getRegisteredWidgets()
 void registerWidget(const WidgetFactory * factory)
 {
   TRACE("register widget %s", factory->getName());
-  registeredWidgets.push_back(factory);
+  getRegisteredWidgets().push_back(factory);
 }
 
 const WidgetFactory * getWidgetFactory(const char * name)
 {
-  for (std::list<const WidgetFactory *>::iterator it = registeredWidgets.begin(); it != registeredWidgets.end();++it) {
+  for (std::list<const WidgetFactory *>::iterator it = getRegisteredWidgets().begin(); it != getRegisteredWidgets().end();++it) {
     const WidgetFactory * factory = *it;
     if (!strcmp(name, factory->getName())) {
       return factory;
