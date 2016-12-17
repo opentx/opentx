@@ -978,7 +978,7 @@ void sdPoll10ms()
 
 FATFS g_FATFS_Obj;
 #if defined(LOG_TELEMETRY)
-FIL g_telemetryFile = {0};
+FIL g_telemetryFile = {};
 #endif
 
 #if defined(BOOT)

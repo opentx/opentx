@@ -310,7 +310,7 @@ DRESULT disk_ioctl (
 
 FATFS g_FATFS_Obj __DMA;
 #if defined(LOG_TELEMETRY)
-FIL g_telemetryFile = {0};
+FIL g_telemetryFile = {};
 #endif
 
 void sdInit()
