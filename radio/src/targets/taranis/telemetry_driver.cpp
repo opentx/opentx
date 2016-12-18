@@ -38,6 +38,7 @@
 
 extern Fifo<512> telemetryFifo;
 
+#if !defined(SIMU)
 void telemetryPortInit(uint32_t baudrate)
 {
   if (baudrate == 0) {
@@ -78,7 +79,7 @@ void telemetryPortInit(uint32_t baudrate)
   NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
   NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
 }
-
+#endif
 struct SportTxBuffer
 {
   uint8_t *ptr;
