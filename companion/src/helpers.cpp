@@ -19,11 +19,10 @@
  */
 
 #include <QtGui>
-#if defined WIN32
+#if defined _MSC_VER
   #include <io.h>
   #include <stdio.h>
-#endif
-#if !defined WIN32 && defined __GNUC__
+#elif defined __GNUC__
   #include <unistd.h>
 #endif
 #include "appdata.h"

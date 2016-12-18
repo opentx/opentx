@@ -37,10 +37,13 @@
 #include "appdata.h"
 #include "qxtcommandoptions.h"
 
-#if defined WIN32 || !defined __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x*1000)
-#else
+#ifdef WIN32
+  #include <windows.h>
+  #ifdef _MSC_VER
+    #define sleep(x) Sleep(x*1000)
+  #endif
+#endif
+#if !defined(_MSC_VER) || defined(__GNUC__)
 #include <unistd.h>
 #endif
 

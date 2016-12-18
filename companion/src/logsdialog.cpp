@@ -23,7 +23,7 @@
 #include "appdata.h"
 #include "ui_logsdialog.h"
 #include "helpers.h"
-#if defined WIN32 || !defined __GNUC__
+#if defined _MSC_VER || !defined __GNUC__
 #include <windows.h>
 #else
 #include <unistd.h>

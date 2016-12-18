@@ -24,7 +24,7 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
-// #if !defined WIN32 && defined __GNUC__
+// #if !defined _MSC_VER && defined __GNUC__
 // #include <unistd.h>
 // #endif
 
