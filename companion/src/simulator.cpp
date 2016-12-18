@@ -62,7 +62,6 @@ class MyProxyStyle : public QProxyStyle
  };
 #endif
 
-
 void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessageBox::NoIcon) {
   QMessageBox msgBox;
   msgBox.setText(message);
@@ -75,6 +74,12 @@ int main(int argc, char *argv[])
   Q_INIT_RESOURCE(companion);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
+  AllocConsole();
+  freopen("conin$", "r", stdin);
+  freopen("conout$", "w", stdout);
+  freopen("conout$", "w", stderr);
 #endif
 
   QApplication app(argc, argv);
@@ -231,6 +236,9 @@ int main(int argc, char *argv[])
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();
+#endif
+#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
+  FreeConsole();
 #endif
 
   return result;

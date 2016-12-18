@@ -40,6 +40,10 @@ endif()
 
 if(WIN32)
   option(WIN_DO_FULL_INSTALL "'install' target will perform a full installation into CMAKE_INSTALL_PREFIX path, otherwise only supporting DLLs are copied to binaries folder (default)" OFF)
+  option(WIN_USE_CONSOLE "Open a Windows command console for Simulator debug output." OFF)
+  if(WIN_USE_CONSOLE)
+    add_definitions(-DWIN_USE_CONSOLE_STDIO)
+  endif()
 endif()
 
 if(SDL_FOUND)
