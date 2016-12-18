@@ -38,6 +38,10 @@ if(TABLE_LAYOUT)
   message(STATUS "Using QTableWidget")
 endif()
 
+if(WIN32)
+  option(WIN_DO_FULL_INSTALL "'install' target will perform a full installation into CMAKE_INSTALL_PREFIX path, otherwise only supporting DLLs are copied to binaries folder (default)" OFF)
+endif()
+
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
   add_definitions(-DJOYSTICKS)
@@ -276,53 +280,102 @@ endif()
 
 ############# Install ####################
 
-############# Packaging ####################
-message(STATUS ${CMAKE_BINARY_DIR} ${CMAKE_INSTALL_PREFIX}/bin)
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
+  message(STATUS "install " ${CMAKE_BINARY_DIR} " to " ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  install(DIRECTORY ${CMAKE_BINARY_DIR}/ DESTINATION ${SIMULATOR_LIB_PATH} USE_SOURCE_PERMISSIONS
-    FILES_MATCHING PATTERN "libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}"
-    PATTERN "CMakeFiles" EXCLUDE
-    PATTERN "_CPack_Packages" EXCLUDE
-    PATTERN "companion" EXCLUDE
-    PATTERN "radio" EXCLUDE
-  )
+  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  install(FILES ${simulator_plugins} DESTINATION "${SIMULATOR_LIB_PATH}")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop DESTINATION share/applications RENAME companion${C9X_NAME_SUFFIX}.desktop)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop DESTINATION share/applications RENAME simulator${C9X_NAME_SUFFIX}.desktop)
   if(${CMAKE_INSTALL_PREFIX} MATCHES "/usr/local")
-    install(FILES images/linuxicons/16x16/companion.png DESTINATION /usr/share/icons/hicolor/16x16/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/22x22/companion.png DESTINATION /usr/share/icons/hicolor/22x22/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/24x24/companion.png DESTINATION /usr/share/icons/hicolor/24x24/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/32x32/companion.png DESTINATION /usr/share/icons/hicolor/32x32/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/48x48/companion.png DESTINATION /usr/share/icons/hicolor/48x48/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/128x128/companion.png DESTINATION /usr/share/icons/hicolor/128x128/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/256x256/companion.png DESTINATION /usr/share/icons/hicolor/256x256/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/512x512/companion.png DESTINATION /usr/share/icons/hicolor/512x512/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/scalable/companion.svg DESTINATION /usr/share/icons/hicolor/scalable/apps RENAME companion${C9X_NAME_SUFFIX}.svg)
-    install(FILES ../targets/linux/45-companion-taranis.rules DESTINATION /lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-taranis.rules)
-  else()
-    install(FILES images/linuxicons/16x16/companion.png DESTINATION share/icons/hicolor/16x16/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/22x22/companion.png DESTINATION share/icons/hicolor/22x22/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/24x24/companion.png DESTINATION share/icons/hicolor/24x24/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/32x32/companion.png DESTINATION share/icons/hicolor/32x32/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/48x48/companion.png DESTINATION share/icons/hicolor/48x48/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/128x128/companion.png DESTINATION share/icons/hicolor/128x128/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/256x256/companion.png DESTINATION share/icons/hicolor/256x256/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/512x512/companion.png DESTINATION share/icons/hicolor/512x512/apps RENAME companion${C9X_NAME_SUFFIX}.png)
-    install(FILES images/linuxicons/scalable/companion.svg DESTINATION share/icons/hicolor/scalable/apps RENAME companion${C9X_NAME_SUFFIX}.svg)
-    install(FILES ../targets/linux/45-companion-taranis.rules DESTINATION lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-taranis.rules)
+    set(INSTALL_TEMP_SHR_PFX "/usr/")
+    set(INSTALL_TEMP_LIB_PFX "/")
   endif()
+  install(FILES images/linuxicons/16x16/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/16x16/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/22x22/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/22x22/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/24x24/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/24x24/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/32x32/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/32x32/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/48x48/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/48x48/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/128x128/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/128x128/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/256x256/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/256x256/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/512x512/companion.png DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/512x512/apps RENAME companion${C9X_NAME_SUFFIX}.png)
+  install(FILES images/linuxicons/scalable/companion.svg DESTINATION ${INSTALL_TEMP_SHR_PFX}share/icons/hicolor/scalable/apps RENAME companion${C9X_NAME_SUFFIX}.svg)
+  install(FILES ../targets/linux/45-companion-taranis.rules DESTINATION ${INSTALL_TEMP_LIB_PFX}lib/udev/rules.d RENAME 45-companion${C9X_NAME_SUFFIX}-taranis.rules)
   # Linux specific code
   set(OperatingSystem "Linux")
+
 elseif(WIN32)
+
   get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
   get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
-  get_filename_component(SDL_DIR ${SDLMAIN_LIBRARY} PATH)
-  install(FILES ${QT_DLL_DIR}/icudt54.dll ${QT_DLL_DIR}/icuin54.dll ${QT_DLL_DIR}/icuuc54.dll ${QT_DLL_DIR}/Qt5Core.dll ${QT_DLL_DIR}/Qt5Gui.dll ${QT_DLL_DIR}/Qt5Widgets.dll ${QT_DLL_DIR}/Qt5Xml.dll ${QT_DLL_DIR}/Qt5Network.dll ${QT_DLL_DIR}/Qt5PrintSupport.dll ${QT_DLL_DIR}/Qt5Multimedia.dll ${SDL_DIR}/SDL.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
-  install(FILES ${QT_DLL_DIR}/icudt54.dll ${QT_DLL_DIR}/icuin54.dll ${QT_DLL_DIR}/icuuc54.dll ${QT_DLL_DIR}/Qt5Cored.dll ${QT_DLL_DIR}/Qt5Guid.dll ${QT_DLL_DIR}/Qt5Widgetsd.dll ${QT_DLL_DIR}/Qt5Xmld.dll ${QT_DLL_DIR}/Qt5Networkd.dll ${QT_DLL_DIR}/Qt5PrintSupportd.dll ${QT_DLL_DIR}/Qt5Multimediad.dll ${SDL_DIR}/SDL.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
-endif()
+  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia)
+  set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(INSTALL_TEMP_QTDLL_SFX "d")
+  endif()
 
+  if(NOT WIN_DO_FULL_INSTALL)
+    # Just copy supporting DLLs to build folder
+    set(INSTALL_DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    message(STATUS "Partial install to " ${INSTALL_DESTINATION})
+  else()
+    # Full Windows installation with all supporting files
+    set(INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX})
+    message(STATUS "Full install to " ${INSTALL_DESTINATION})
+    # companion & simulator binaries
+    install(TARGETS ${COMPANION_NAME} DESTINATION ${INSTALL_DESTINATION})
+    install(TARGETS ${SIMULATOR_NAME} DESTINATION ${INSTALL_DESTINATION})
+    file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*-simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+    install(FILES ${simulator_plugins} DESTINATION "${INSTALL_DESTINATION}")
+    # language files
+    file(GLOB language_files "${CMAKE_BINARY_DIR}/companion/src/companion_*.qm")
+    install(FILES ${language_files} DESTINATION "${INSTALL_DESTINATION}/lang")
+    # supporting utilities
+    set(INSTALL_TEMP_FILES avrdude.exe avrdude.conf dfu-util.exe libusb0.dll libusb-1.0.dll)
+    foreach(tmpfile ${INSTALL_TEMP_FILES})
+      install(FILES "${COMPANION_SRC_DIRECTORY}/../targets/windows/${tmpfile}" DESTINATION ${INSTALL_DESTINATION})
+    endforeach()
+  endif()  # WIN_DO_FULL_INSTALL
+
+  # Qt dlls
+  foreach(tmpfile ${INSTALL_TEMP_QTDLL_FILES})
+    install(FILES ${QT_DLL_DIR}/${tmpfile}${INSTALL_TEMP_QTDLL_SFX}.dll DESTINATION ${INSTALL_DESTINATION})
+  endforeach()
+  install(FILES ${QT_DLL_DIR}/../plugins/platforms/qwindows${INSTALL_TEMP_QTDLL_SFX}.dll DESTINATION ${INSTALL_DESTINATION}/platforms)
+  # ICU dlls
+  foreach(tmpfile ${INSTALL_TEMP_ICUDLL_FILES})
+    # Qt5.7+ doesn't use icu dlls anymore (at least with MinGW), hence optional
+    install(FILES ${QT_DLL_DIR}/${tmpfile}.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+  endforeach()
+  # SDL dll
+  if(SDL_FOUND AND SDLMAIN_LIBRARY)
+    get_filename_component(SDL_DIR ${SDLMAIN_LIBRARY} PATH)
+    install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
+  endif()
+  # C++/system dlls, depends on compiler
+  if(MSVC)
+    set(WIN_SYSDIR "$ENV{windir}/SysWOW64")  # This would be "system32" for a 64-bit build or on x86... but how to tell?
+    if(IS_DIRECTORY ${WIN_SYSDIR})
+      install(FILES ${WIN_SYSDIR}/msvcp140.dll ${WIN_SYSDIR}/vcruntime140.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    endif()
+    install(FILES "${WIN_PTHREAD_BASE_PATH}/lib/pthreadVC2.dll" DESTINATION ${INSTALL_DESTINATION})
+  elseif(MINGW)
+    get_filename_component(MINGW_DIR ${CMAKE_CXX_COMPILER} PATH)
+    if(IS_DIRECTORY ${MINGW_DIR})
+      install(FILES ${MINGW_DIR}/libgcc_s_dw2-1.dll ${MINGW_DIR}/libstdc++-6.dll ${MINGW_DIR}/libwinpthread-1.dll DESTINATION ${INSTALL_DESTINATION})
+      set(MINGW_DIR "${MINGW_DIR}/../opt/bin")
+      # SSL support
+      install(FILES ${MINGW_DIR}/libeay32.dll ${MINGW_DIR}/ssleay32.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    endif()
+  endif()
+
+endif() # WIN32 install
+
+############# Packaging ####################
+
+# Create Windows installer with NSIS (only works for MSVC for now)
 if(WIN32)
   if(MSVC)
     set(COMPANION_NSI_IN_FILE companion-vs.nsi.in)
@@ -379,9 +432,8 @@ string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
 # very poor trace-backs from the users when they report Companion crash
 set(CPACK_STRIP_FILES FALSE)
 
-set(plugin_dest_dir bin)
-set(qtconf_dest_dir bin)
-set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${COMPANION_NAME}")
+# Qt5 + Cmake + Mac is poorly documented. A lot of this is guesswork
+# and trial and error. Do not hesitate to fix it for the better
 IF(APPLE)
   set(plugin_dest_dir ${COMPANION_NAME}.app/Contents/Plugins)
   set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
@@ -393,21 +445,11 @@ IF(APPLE)
   # Use a non standard Info.plist that adds Retina support flags
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/companion/targets/mac/MacOSXBundleInfo.plist.in)
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/companion/targets/mac/MacOSXBundleInfo.plist.in)
-ENDIF(APPLE)
-IF(WIN32)
-  set(APPS "\${CMAKE_INSTALL_PREFIX}/bin/QtTest.exe")
-ENDIF(WIN32)
 
-
-INSTALL(TARGETS ${COMPANION_NAME}
-    BUNDLE DESTINATION . COMPONENT Runtime
-    RUNTIME DESTINATION bin COMPONENT Runtime
-    )
-
-# Qt5 + Cmake + Mac is poorly documented. A lot of this is guesswork
-# and trial and error. Do not hesitate to fix it for the better
-if(APPLE)
-  set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+  INSTALL(TARGETS ${COMPANION_NAME}
+      BUNDLE DESTINATION . COMPONENT Runtime
+      RUNTIME DESTINATION bin COMPONENT Runtime
+      )
 
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
   set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
@@ -416,7 +458,7 @@ if(APPLE)
   # Write qt.conf to tell qt where to find it plugins
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
     "[Paths]\nPlugins = Plugins\n")
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
+  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
     DESTINATION "${companion_res_dir}"
     COMPONENT Runtime)
 
