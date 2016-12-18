@@ -1,4 +1,4 @@
- if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(C9X_NAME_SUFFIX ${VERSION_MAJOR}${VERSION_MINOR})
   set(COMPANION_NAME "companion${C9X_NAME_SUFFIX}")
   set(SIMULATOR_NAME "simulator${C9X_NAME_SUFFIX}")
@@ -40,26 +40,37 @@ endif()
 
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
-  add_definitions(-DSIMU_AUDIO)
   add_definitions(-DJOYSTICKS)
+else()
+  remove_definitions(-DSIMU_AUDIO)
 endif()
 
-message(STATUS "Looking for QT lupdate ")
 find_package(Lupdate)
 if(LUPDATE_FOUND)
-  message("QT lupdate: " ${LUPDATE_EXECUTABLE})
+  message("Qt lupdate: " ${LUPDATE_EXECUTABLE})
 else()
-  message("QT lupdate not found!")
+  message("Qt lupdate not found, 'translations' target will not be availabe.")
 endif()
 
+add_definitions(-DSIMU)
 add_definitions(-DQXT_STATIC)
 
-if(MSVC)
-  set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
-  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
-  include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
-  link_directories(C:/Programs/pthreads/Pre-built.2/lib/)
-  set(PTHREAD_LIBRARY pthreadVC2.lib)
+if (NOT MSVC AND ${CMAKE_VERSION} VERSION_LESS 3.1.0})
+  message("companion: adding -std=gnu++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+endif()
+
+if(WIN32)
+  include_directories(SYSTEM ${WIN_INCLUDE_DIRS})
+  if(MSVC)
+    set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
+    message("companion: using MSVC with ${CMAKE_CXX_FLAGS}")
+  elseif(MINGW)
+    # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields -mwindows")
+    message("companion: using MinGW with ${CMAKE_CXX_FLAGS}")
+  endif()
 else()
   set(PTHREAD_LIBRARY pthread)
   add_definitions(-Wall)
@@ -229,7 +240,11 @@ add_executable(${COMPANION_NAME} MACOSX_BUNDLE WIN32 ${companion_SRCS} ${compani
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
+
 target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY})
+if(WIN32)
+  target_link_libraries(${COMPANION_NAME} PRIVATE "${WIN_LINK_LIBRARIES}")
+endif()
 
 ############# Standalone simu ###############
 
@@ -249,12 +264,17 @@ if(WIN32)
   set(simu_SRCS ${simu_SRCS} icon.rc)
 endif()
 
-
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RCC})
 
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
+
 # TODO not the same link command than companion?
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS})
+if(WIN32)
+  target_link_libraries(${SIMULATOR_NAME} PRIVATE "${WIN_LINK_LIBRARIES}")
+endif()
+
+############# Install ####################
 
 ############# Packaging ####################
 message(STATUS ${CMAKE_BINARY_DIR} ${CMAKE_INSTALL_PREFIX}/bin)
@@ -298,7 +318,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(WIN32)
   get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
   get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
-  get_filename_component(SDL_DIR ${SDL_LIBRARY} PATH)
+  get_filename_component(SDL_DIR ${SDLMAIN_LIBRARY} PATH)
   install(FILES ${QT_DLL_DIR}/icudt54.dll ${QT_DLL_DIR}/icuin54.dll ${QT_DLL_DIR}/icuuc54.dll ${QT_DLL_DIR}/Qt5Core.dll ${QT_DLL_DIR}/Qt5Gui.dll ${QT_DLL_DIR}/Qt5Widgets.dll ${QT_DLL_DIR}/Qt5Xml.dll ${QT_DLL_DIR}/Qt5Network.dll ${QT_DLL_DIR}/Qt5PrintSupport.dll ${QT_DLL_DIR}/Qt5Multimedia.dll ${SDL_DIR}/SDL.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
   install(FILES ${QT_DLL_DIR}/icudt54.dll ${QT_DLL_DIR}/icuin54.dll ${QT_DLL_DIR}/icuuc54.dll ${QT_DLL_DIR}/Qt5Cored.dll ${QT_DLL_DIR}/Qt5Guid.dll ${QT_DLL_DIR}/Qt5Widgetsd.dll ${QT_DLL_DIR}/Qt5Xmld.dll ${QT_DLL_DIR}/Qt5Networkd.dll ${QT_DLL_DIR}/Qt5PrintSupportd.dll ${QT_DLL_DIR}/Qt5Multimediad.dll ${SDL_DIR}/SDL.dll DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIG>)
 endif()
