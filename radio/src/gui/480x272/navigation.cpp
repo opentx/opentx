@@ -27,28 +27,6 @@ int8_t s_editMode;
 uint8_t noHighlightCounter;
 uint8_t menuCalibrationState; // TODO rename this variable
 int checkIncDecSelection = 0;
-
-#if defined(AUTOSWITCH)
-swsrc_t checkIncDecMovedSwitch(swsrc_t val)
-{
-  if (s_editMode > 0) {
-    swsrc_t swtch = getMovedSwitch();
-    if (swtch) {
-      div_t info = switchInfo(swtch);
-      if (IS_CONFIG_TOGGLE(info.quot)) {
-        if (info.rem != 0) {
-          val = (val == swtch ? swtch-2 : swtch);
-        }
-      }
-      else {
-        val = swtch;
-      }
-    }
-  }
-  return val;
-}
-#endif
-
 int8_t  checkIncDec_Ret;
 
 INIT_STOPS(stops100, 3, -100, 0, 100)
