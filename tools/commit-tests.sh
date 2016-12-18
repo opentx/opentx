@@ -100,7 +100,7 @@ make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break
 
 # OpenTX on X9D+
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
