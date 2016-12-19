@@ -93,7 +93,6 @@ set(GUI_SRC ${GUI_SRC}
   radio_hardware.cpp
   view_channels.cpp
   view_telemetry.cpp
-  view_text.cpp
   view_about.cpp
   ../screenshot.cpp
   )
