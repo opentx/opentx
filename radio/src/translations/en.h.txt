@@ -497,8 +497,10 @@
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW             "\313Rud""\313Ele""\313Thr""\313Ail""\313T5\0""\313T6\0"
+#elif defined(CPUARM)
+  #define TR_TRIMS_VSRCRAW             "\313Rud""\313Ele""\313Thr""\313Ail"
 #else
-  #define TR_TRIMS_VSRCRAW             TR("TrmR""TrmE""TrmT""TrmA", "\313Rud""\313Ele""\313Thr""\313Ail")
+  #define TR_TRIMS_VSRCRAW             "TrmR""TrmE""TrmT""TrmA"
 #endif
 
 #if defined(PCBHORUS)

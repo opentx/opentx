@@ -505,12 +505,18 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#define TR_STICKS_VSRCRAW      TR("Dir\0""Prf\0""Gaz\0""Ail\0", "\307Dir""\307Prf""\307Gaz""\307Ail")
+#if defined(CPUARM)
+#define TR_STICKS_VSRCRAW      "\307Dir""\307Prf""\307Gaz""\307Ail"
+#else
+#define TR_STICKS_VSRCRAW      "Dir\0""Prf\0""Gaz\0""Ail\0"
+#endif
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW     "\313Dir""\313Prf""\313Gaz""\313Ail""\313T5\0""\313T6\0"
+#elif defined(CPUARM)
+  #define TR_TRIMS_VSRCRAW     "\313Dir""\313Prf""\313Gaz""\313Ail"
 #else
-  #define TR_TRIMS_VSRCRAW     TR("TrmD""TrmP""TrmG""TrmA", "\313Dir""\313Prf""\313Gaz""\313Ail")
+  #define TR_TRIMS_VSRCRAW     "TrmD""TrmP""TrmG""TrmA"
 #endif
 
 #if defined(PCBHORUS)
