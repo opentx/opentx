@@ -176,6 +176,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           uint8_t val_max = 255;
 #endif
           if (func == FUNC_RESET) {
+#if defined (CPUARM)
             val_max = FUNC_RESET_PARAM_FIRST_TELEM+lastUsedTelemetryIndex();
             int param = CFN_PARAM(cfn);
             if (param < FUNC_RESET_PARAM_FIRST_TELEM) {
@@ -186,6 +187,10 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               lcdDrawSizedText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
             }
             if (active) INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalResetSpecialFunction : isSourceAvailableInResetSpecialFunction);
+#else
+            val_max = FUNC_RESET_PARAM_LAST;
+            lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(cfn), attr);
+#endif
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
