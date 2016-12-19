@@ -586,7 +586,7 @@
 
 #if defined(CPUARM)
   #define TR_RESERVE_VSRCRAW   "[--]"
-  #define TR_EXTRA_VSRCRAW     "Batt""H:M\0" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3"
+  #define TR_EXTRA_VSRCRAW     "Batt""H:M\0" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Chr1""Chr2""Chr3"
 #else
   #define TR_EXTRA_VSRCRAW
 #endif
@@ -667,7 +667,7 @@
 #define TR_NAME                "Nom"
 #define TR_MODELNAME           TR("Nom modèle", "Nom du modèle")
 #define TR_PHASENAME           "Nom phase"
-#define TR_MIXNAME             TR("Nom mix.", "Nom du mixeur")
+#define TR_MIXNAME             TR("Nom ligne", "Nom du mixeur")
 #define TR_INPUTNAME           TR("Entrée", "Nom entrée")
 #define TR_EXPONAME            TR("Nom", "Nom ligne")
 #define TR_BITMAP              "Image du modèle"
@@ -1043,7 +1043,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED         TR("ID déjà affecté", "No de modèle déjà utilisé")
 #define TR_MODULE              INDENT "Type de module"
-#define TR_TELEMETRY_TYPE      TR("Type télm.", "Type télémesure")
+#define TR_TELEMETRY_TYPE      TR("Type tél.", "Type télémesure")
 #define TR_TELEMETRY_SENSORS   "Capteurs"
 #define TR_VALUE               "Valeur"
 #define TR_TOPLCDTIMER         "Timer LCD haut"
@@ -1246,7 +1246,7 @@
 #define TR_SERVOS_OK           "Servos OK"
 #define TR_SERVOS_KO           "Servos KO"
 #define TR_INVERTED_SERIAL     INDENT "Inversé"
-#define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst.", INDENT "Ignorer instance")
+#define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst", INDENT "Ignorer instance")
 #define TR_DISCOVER_SENSORS    INDENT "Découvrir capteurs"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Terminer découverte"
 #define TR_DELETE_ALL_SENSORS  TR(INDENT "Suppr. tous capteurs", INDENT "Supprimer tous capteurs")
