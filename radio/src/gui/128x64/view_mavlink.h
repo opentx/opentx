@@ -27,7 +27,6 @@
 
 #include "opentx.h"
 #include "telemetry/mavlink.h"
-#include "targets/common/avr/serial_driver.h"
 
 #define APSIZE (BSS | DBLSIZE)
 

@@ -202,4 +202,6 @@ uint8_t eepromIsTransferComplete();
 #define TLM_USART 0
 #endif
 void telemetryPortInit();
+void telemetryPortInit(uint32_t baudrate); 
+void telemetryPortInitFromIndex(uint8_t index); 
 void telemetryTransmitBuffer();

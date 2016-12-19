@@ -130,7 +130,7 @@ bool sportWaitState(SportUpdateState state, int timeout)
   for (int i=timeout/2; i>=0; i--) {
     uint8_t byte ;
     while (telemetryGetByte(&byte)) {
-      processFrskyTelemetryData(byte);
+      processSerialData(byte);
     }
     if (sportUpdateState == state) {
       return true;
