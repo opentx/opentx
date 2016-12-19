@@ -368,32 +368,51 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len)
 {
-  {
-    char str[16+1];
-     char *s = str+16;
-     *s = '\0';
-     int idx = 0;
-     int mode = MODE(flags);
-     bool neg = false;
-     if (val < 0) {
-       val = -val;
-       neg = true;
-     }
-     do {
-       *--s = '0' + (val % 10);
-       ++idx;
-       val /= 10;
-       if (mode!=0 && idx==mode) {
-         mode = 0;
-         *--s = '.';
-         if (val==0)
-           *--s = '0';
-       }
-     } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
-     if (neg) *--s = '-';
-     flags &= ~LEADING0;
-     lcdDrawText(x, y, s, flags);
-   }
+  char str[16+1];
+  char *s = str+16;
+  char *d;
+  *s = '\0';
+  int idx = 0;
+  int mode = MODE(flags);
+  bool neg = false;
+  if (val < 0) {
+    val = -val;
+    neg = true;
+  }
+  do {
+    *--s = '0' + (val % 10);
+    ++idx;
+    val /= 10;
+    if (mode!=0 && idx==mode) {
+      mode = 0;
+      if((flags & 0x0F00) == TINSIZE) {
+        d=s;
+        *--s = 0;
+      } else {
+        *--s = '.';
+      }
+      if (val==0)
+        *--s = '0';
+    }
+  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
+  if (neg) {
+    *--s = '-';
+  }
+  flags &= ~LEADING0;
+
+  if(((flags & 0x0F00) == TINSIZE) && (flags & PREC1)) { // TINSIZE needs to be handled specificaly if using a '.' (fixed width needs narrowing)
+    if (flags & RIGHT) {
+      lcdDrawText(x, y, d, flags);
+      lcdDrawText(lcdNextPos, y, ".", flags);
+      lcdDrawText(lcdNextPos+1, y, s, flags);
+    } else {
+      lcdDrawText(x, y, s, flags);
+      lcdDrawText(lcdNextPos-1, y, ".", flags);
+      lcdDrawText(lcdNextPos-1, y, d, flags);
+    }
+  } else {
+    lcdDrawText(x, y, s, flags);
+  }
 }
 #endif
 
