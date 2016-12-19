@@ -1,15 +1,21 @@
-option(TELEMETRY "Telemetry protocol" OFF)
 option(AUDIO "Audio support" OFF)
 option(VOICE "Voice support" OFF)
 option(GRAPHICS "Additional graphics" ON)
 option(BOLD "Bold font" ON)
 option(BATTGRAPH "Battery graph" OFF)
 option(HAPTIC "Haptic support" OFF)
+
+set(TELEMETRY_TYPES NONE/MAVLINK/ARDUPILOT/FRSKY/FRSKY_SPORT/TELEMETREZ/NMEA)
+set(TELEMETRY "NONE" CACHE STRING "Telemetry Type (${TELEMETRY_TYPES})")
+set_property(CACHE TELEMETRY PROPERTY STRINGS ${TELEMETRY_TYPES})
+
 set(TTS "EN" CACHE STRING "TTS language, one of: ${TTS_LANGUAGES}")
 set_property(CACHE TTS PROPERTY STRINGS ${TTS_LANGUAGES})
+
 set(LCD_TYPES DEFAULT ST7565P ST7565R ERC12864FSF ST7920 KS108)
 set(LCD "DEFAULT" CACHE STRING "LCD type (${LCD_TYPES})")
 set_property(CACHE LCD PROPERTY STRINGS ${LCD_TYPES})
+
 set(DSM2 "NO" CACHE STRING "DSM2 support/interface (NO/PPM/SERIAL)")
 set_property(CACHE DSM2 PROPERTY STRINGS NO PPM SERIAL)
 
