@@ -543,7 +543,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   if (att & TIMEHOUR) {
     div_t qr2 = div(qr.quot, 60);
     lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, separator, att);
+    lcdDrawChar(lcdNextPos, y, separator, att);
     qr.quot = qr2.rem;
     if (att & MIDSIZE)
       x += 17;
@@ -555,9 +555,9 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
   if (att & TIMEBLINK)
-    lcdDrawChar(lcdLastPos, y, separator, BLINK);
+    lcdDrawChar(lcdNextPos, y, separator, BLINK);
   else
-    lcdDrawChar(lcdLastPos, y, separator, att&att2);
+    lcdDrawChar(lcdNextPos, y, separator, att&att2);
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0) & (~RIGHT), 2);
 }
 
