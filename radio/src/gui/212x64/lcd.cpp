@@ -361,6 +361,14 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
   }
 }
 
+void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len, bool ForceLeftwithoutMinus)
+{
+  if(val < 0 &&  ForceLeftwithoutMinus) {
+    x-= getTextWidth("-", 1, flags);
+  }
+  lcdDrawNumber(x, y, val, flags, len);
+}
+
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 {
   lcdDrawNumber(x, y, val, flags, 0);
