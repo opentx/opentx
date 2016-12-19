@@ -479,6 +479,6 @@ void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
 void frskyUpdateCells();
 #endif
 
-void processFrskyTelemetryData(uint8_t data);
+void processSerialData(uint8_t data);
 
 #endif // _FRSKY_H_

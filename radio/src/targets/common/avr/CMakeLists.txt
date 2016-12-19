@@ -77,7 +77,11 @@ elseif(TELEMETRY STREQUAL JETI)
 elseif(TELEMETRY STREQUAL MAVLINK)
   add_definitions(-DTELEMETRY_MAVLINK)
   include_directories(${THIRDPARTY_DIR} gui/${GUI_DIR} targets/common/avr)
-  set(SRC ${SRC} telemetry/mavlink.cpp targets/common/avr/serial_driver.cpp)
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    targets/common/avr/telemetry_driver.cpp
+    )
+  set(SRC ${SRC} telemetry/mavlink.cpp)
   set(GUI_SRC ${GUI_SRC} view_mavlink.cpp)
   math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${MAVLINK_VARIANT})
 elseif(TELEMETRY STREQUAL TELEMETREZ)
