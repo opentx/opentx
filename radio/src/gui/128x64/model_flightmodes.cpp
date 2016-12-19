@@ -201,10 +201,10 @@ void menuModelPhaseOne(event_t event)
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          drawFlightMode(11*FW, y, p+1, posHorz==1 ? attr : 0);
+          drawFlightMode(10*FW, y, p+1, posHorz==1 ? attr : 0);
         }
         else {
-          lcdDrawText(11*FW, y, STR_OWN, posHorz==1 ? attr : 0);
+          lcdDrawText(10*FW, y, STR_OWN, posHorz==1 ? attr : 0);
         }
         if (attr && s_currIdx>0 && posHorz==1 && (editMode>0 || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
@@ -216,7 +216,7 @@ void menuModelPhaseOne(event_t event)
         }
 
         uint8_t p = getGVarFlightMode(s_currIdx, idx);
-        lcdDrawNumber(21*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
+        lcdDrawNumber(18*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
         if (attr && posHorz==2 && ((editMode>0) || p1valdiff)) {
           GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -500, 500, EE_MODEL);
         }
