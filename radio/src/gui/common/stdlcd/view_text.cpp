@@ -101,7 +101,7 @@ void readTextFile(int & lines_count)
 #define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
 #define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
 #endif
-  
+
 void menuTextView(event_t event)
 {
   static int lines_count;
@@ -159,3 +159,6 @@ void pushMenuTextView(const char *filename)
     pushMenu(menuTextView);
   }
 }
+
+#undef EVT_KEY_NEXT_LINE
+#undef EVT_KEY_PREVIOUS_LINE

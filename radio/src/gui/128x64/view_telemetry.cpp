@@ -573,3 +573,5 @@ void menuViewTelemetryFrsky(event_t event)
 #endif
 }
 
+#undef EVT_KEY_PREVIOUS_VIEW
+#undef EVT_KEY_NEXT_VIEW

@@ -612,3 +612,14 @@ void menuMainView(event_t event)
   }
 #endif
 }
+
+#undef EVT_KEY_CONTEXT_MENU
+#undef EVT_KEY_PREVIOUS_VIEW
+#undef EVT_KEY_NEXT_VIEW
+#undef EVT_KEY_NEXT_PAGE
+#undef EVT_KEY_PREVIOUS_PAGE
+#undef EVT_KEY_MODEL_MENU
+#undef EVT_KEY_GENERAL_MENU
+#undef EVT_KEY_LAST_MENU
+#undef EVT_KEY_TELEMETRY
+#undef EVT_KEY_STATISTICS
