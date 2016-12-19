@@ -258,7 +258,7 @@
   #define TR_CSWSTAY                   "Edge\0"
 #else
   #define TR_CSWTIMER                  "Tim\0 "
-  #define TR_CSWSTICKY                 "Glue\0"
+  #define TR_CSWSTICKY                 "Stky\0"
   #if defined(CPUARM)
     #define TR_CSWRANGE                "Rnge\0"
     #define TR_CSWSTAY                 "Edge\0"
@@ -710,7 +710,7 @@
 #define TR_FLMODE                      TR("Mode", "Modes")
 #define TR_MIXWARNING                  "Warning"
 #define TR_OFF                         "OFF"
-#define TR_MULTPX                      "Multpx"
+#define TR_MULTPX                      "Multiplex"
 #define TR_DELAYDOWN                   "Delay dn"
 #define TR_DELAYUP                     "Delay up"
 #define TR_SLOWDOWN                    "Slow  dn"
