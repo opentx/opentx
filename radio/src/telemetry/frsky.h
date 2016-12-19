@@ -576,4 +576,6 @@ void frskyUpdateCells(void);
   #define MODEL_TELEMETRY_PROTOCOL() g_model.telemetryProtocol
 #endif
 
+void processFrskyTelemetryData(uint8_t data);
+    
 #endif

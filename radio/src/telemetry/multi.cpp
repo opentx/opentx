@@ -56,7 +56,7 @@ MultiBufferState guessProtocol()
     return FrskyTelemetryFallbackFirstByte;
 }
 
-static void processMultiStatusPacket(const uint8_t *data)
+static void processMultiStatusPacket(uint8_t *data)
 {
   // At least two status packets without bind flag
   bool wasBinding = (multiModuleStatus.isBinding());
@@ -64,7 +64,7 @@ static void processMultiStatusPacket(const uint8_t *data)
   multiModuleStatus.flags = data[0];
   multiModuleStatus.major = data[1];
   multiModuleStatus.minor = data[2];
-  multiModuleStatus.patchlevel = data[3] << 8 | data[4];
+  multiModuleStatus.patchlevel = data[3] | data[4] << 8;
   multiModuleStatus.lastUpdate = get_tmr10ms();
 
   if (wasBinding && !multiModuleStatus.isBinding() && multiBindStatus == MULTI_BIND_INITIATED)
@@ -81,11 +81,11 @@ static void processMultiStatusPacket(const uint8_t *data)
 
 }
 
-static void processMultiTelemetryPaket(const uint8_t *packet)
+static void processMultiTelemetryPaket(uint8_t *packet)
 {
   uint8_t type = packet[0];
   uint8_t len = packet[1];
-  const uint8_t *data = packet + 2;
+  uint8_t *data = packet + 2;
 
   // Switch type
   switch (type) {
@@ -119,7 +119,7 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       break;
     case FrSkySportTelemtry:
       if (len >= 4)
-        sportProcessTelemetryPacket(data);
+        processSportPacket(data);
       else
         TRACE("[MP] Received sm telemetry len %d < 4", len);
       break;
@@ -154,39 +154,35 @@ void MultiModuleStatus::getStatusString(char *statusText)
 
 static MultiBufferState multiTelemetryBufferState;
 
-static void processMultiTelemetryByte(const uint8_t data)
+static void processMultiTelemetryByte(uint8_t data)
 {
-  if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
-    telemetryRxBuffer[telemetryRxBufferCount++] = data;
+  if (frskyRxBufferCount < FRSKY_RX_PACKET_SIZE) {
+    frskyRxBuffer[frskyRxBufferCount++] = data;
   } else {
-    TRACE("[MP] array size %d error", telemetryRxBufferCount);
+    TRACE("[MP] array size %d error", frskyRxBufferCount);
     multiTelemetryBufferState = NoProtocolDetected;
   }
 
   // Length field does not count the header
-  if (telemetryRxBufferCount >= 2 && telemetryRxBuffer[1] == telemetryRxBufferCount - 2) {
+  if (frskyRxBufferCount >= 2 && frskyRxBuffer[1] == frskyRxBufferCount - 2) {
     // debug print the content of the packet
 #if 0
     debugPrintf("[MP] Packet type %02X len 0x%02X: ",
-                telemetryRxBuffer[0], telemetryRxBuffer[1]);
-    for (int i=0; i<(telemetryRxBufferCount+3)/4; i++) {
-      debugPrintf("[%02X%02X %02X%02X] ", telemetryRxBuffer[i*4+2], telemetryRxBuffer[i*4 + 3],
-                  telemetryRxBuffer[i*4 + 4], telemetryRxBuffer[i*4 + 5]);
+                frskyRxBuffer[0], frskyRxBuffer[1]);
+    for (int i=0; i<(frskyRxBufferCount+3)/4; i++) {
+      debugPrintf("[%02X%02X %02X%02X] ", frskyRxBuffer[i*4+2], frskyRxBuffer[i*4 + 3],
+                  frskyRxBuffer[i*4 + 4], frskyRxBuffer[i*4 + 5]);
     }
     debugPrintf("\r\n");
 #endif
     // Packet is complete, process it
-    processMultiTelemetryPaket(telemetryRxBuffer);
+    processMultiTelemetryPaket(frskyRxBuffer);
     multiTelemetryBufferState = NoProtocolDetected;
   }
 }
 
-void processMultiTelemetryData(const uint8_t data)
+void processMultiTelemetryData(uint8_t data)
 {
-  if (telemetryRxBufferCount == 0 && multiTelemetryBufferState != FrskyTelemetryFallbackFirstByte) {
-
-  }
-
   switch (multiTelemetryBufferState) {
     case NoProtocolDetected:
       if (data == 'M') {
@@ -208,26 +204,26 @@ void processMultiTelemetryData(const uint8_t data)
       if (data == 0x7e)
         // might start a new packet
         multiTelemetryBufferState = FrskyTelemetryFallbackFirstByte;
-      else if (telemetryRxBufferCount == 0 && data != 0x7d)
+      else if (frskyRxBufferCount == 0 && data != 0x7d)
         // Should be in a frame (no bytestuff), but the Frsky parser has discarded the byte
         multiTelemetryBufferState = NoProtocolDetected;
       break;
 
     case FlyskyTelemetryFallback:
       processFlySkyTelemetryData(data);
-      if (telemetryRxBuffer == 0)
+      if (frskyRxBufferCount == 0)
         multiTelemetryBufferState = NoProtocolDetected;
       break;
 
     case SpektrumTelemetryFallback:
       processSpektrumTelemetryData(data);
-      if (telemetryRxBuffer == 0)
+      if (frskyRxBufferCount == 0)
         multiTelemetryBufferState = NoProtocolDetected;
       break;
 
     case MultiFirstByteReceived:
       if (data == 'P') {
-        telemetryRxBufferCount = 0;
+        frskyRxBufferCount = 0;
         multiTelemetryBufferState = ReceivingMultiProtocol;
       } else {
         TRACE("[MP] invalid second byte 0x%02X", data);

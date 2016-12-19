@@ -922,7 +922,7 @@ void menuModelSetup(uint8_t event)
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
               }
-              if (menuVerticalOffset == sub && s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
+              if (s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
                 checkModelIdUnique(g_eeGeneral.currModel, moduleIdx);
               }
             }

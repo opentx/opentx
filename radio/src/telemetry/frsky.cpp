@@ -160,7 +160,6 @@ extern uint8_t TezRotary;
 
 NOINLINE void processSerialData(uint8_t data)
 {
-  static uint8_t dataState = STATE_DATA_IDLE;
 
 #if defined(BLUETOOTH)
   // TODO if (g_model.bt_telemetry)
@@ -193,10 +192,16 @@ NOINLINE void processSerialData(uint8_t data)
     processFlySkyTelemetryData(data);
     return;
   } else if (telemetryProtocol == PROTOCOL_MULTIMODULE) {
-      processMultiTelemetryData(data);
-      return;
+    processMultiTelemetryData(data);
+    return;
   }
 #endif
+  processFrskyTelemetryData(data);
+}
+
+void processFrskyTelemetryData(uint8_t data)
+{
+  static uint8_t dataState = STATE_DATA_IDLE;
   switch (dataState)
   {
     case STATE_DATA_START:

@@ -51,12 +51,12 @@ Type = 0x01 Multimodule Status:
    0x04 = protocol is valid
    0x08 = module is in binding mode
    [5] major
-   [6] mior
-   [7-8] patchlevel
+   [6] minor
+   [7-8] patchlevel, big endian e.g. patchlevel 258 (= 0x102) is 02 01
    version of multi code, should be displayed as major.minor.patchlevel
 
 
-   more information can be added by specifing a longer length of the type, the TX will just ignore these bytes
+   more information can be added by specifying a longer length of the type, the TX will just ignore these bytes
 
 
 Type 0x02 Frksy S.port telemetry
