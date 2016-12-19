@@ -45,7 +45,7 @@ void drawPotsBars()
 {
   // Optimization by Mike Blandford
   for (uint8_t x=LCD_W/2 - (NUM_POTS+NUM_SLIDERS-1) * 5 / 2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=5, i++) {
-    if (IS_POT_OR_SLIDER_AVAILABLE(i)) {
+    if (IS_POT_SLIDER_AVAILABLE(i)) {
       uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
     }

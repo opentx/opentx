@@ -178,7 +178,7 @@ void adcStop()
 #if !defined(SIMU)
 uint16_t getAnalogValue(uint8_t index)
 {
-  if (IS_POT(index) && !IS_POT_OR_SLIDER_AVAILABLE(index)) {
+  if (IS_POT(index) && !IS_POT_SLIDER_AVAILABLE(index)) {
     // Use fixed analog value for non-existing and/or non-connected pots.
     // Non-connected analog inputs will slightly follow the adjacent connected analog inputs, 
     // which produces ghost readings on these inputs.
