@@ -378,7 +378,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
 {
   char str[16+1];
   char *s = str+16;
-  char *d;
+  char *d = str;
   *s = '\0';
   int idx = 0;
   int mode = MODE(flags);
