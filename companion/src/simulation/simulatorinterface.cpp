@@ -59,7 +59,7 @@ void registerSimulators()
   QStringList filters;
 #if defined(__APPLE__)
   filters << "*-simulator.dylib";
-#elif (defined WIN32)
+#elif defined(WIN32) || defined(__CYGWIN__)
   filters << "*-simulator.dll";
 #else
   filters << "*-simulator.so";

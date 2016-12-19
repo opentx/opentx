@@ -24,10 +24,6 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
-// #if !defined _MSC_VER && defined __GNUC__
-// #include <unistd.h>
-// #endif
-
 class DragDropHeader {
   public:
     DragDropHeader():

@@ -1,6 +1,3 @@
-if(WIN32 AND WIN_INCLUDE_DIRS)
-  set(LUA_EXPORT_INCLUDES "-I${WIN_INCLUDE_DIRS}")
-endif()
 
 macro(add_lua_export_target target)
   if(PYTHONINTERP_FOUND)
@@ -27,6 +24,12 @@ set(LUA_INCLUDES
   -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc
   -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc
   )
+
+if(WIN32 AND WIN_INCLUDE_DIRS)
+  foreach(include ${WIN_INCLUDE_DIRS})
+    set(LUA_INCLUDES "${LUA_INCLUDES} -I${include}")
+  endforeach()
+endif()
 
 set(LUA_INCLUDES_STM32F2
   ${LUA_INCLUDES}

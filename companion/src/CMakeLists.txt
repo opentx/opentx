@@ -249,10 +249,7 @@ add_executable(${COMPANION_NAME} MACOSX_BUNDLE WIN32 ${companion_SRCS} ${compani
 add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
 
-target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY})
-if(WIN32)
-  target_link_libraries(${COMPANION_NAME} PRIVATE "${WIN_LINK_LIBRARIES}")
-endif()
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Standalone simu ###############
 
@@ -277,10 +274,7 @@ add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RC
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
 
 # TODO not the same link command than companion?
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS})
-if(WIN32)
-  target_link_libraries(${SIMULATOR_NAME} PRIVATE "${WIN_LINK_LIBRARIES}")
-endif()
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS} ${WIN_LINK_LIBRARIES})
 
 ############# Install ####################
 

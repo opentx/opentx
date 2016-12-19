@@ -34,7 +34,6 @@
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
   #include <SDL.h>
-  #undef main
 #endif
 
 #if defined(TRACE_SIMPGMSPACE)
