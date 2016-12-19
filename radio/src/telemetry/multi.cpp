@@ -64,7 +64,7 @@ static void processMultiStatusPacket(const uint8_t *data)
   multiModuleStatus.flags = data[0];
   multiModuleStatus.major = data[1];
   multiModuleStatus.minor = data[2];
-  multiModuleStatus.patchlevel = data[3] << 8 | data[4];
+  multiModuleStatus.patchlevel = data[3] | data[4] << 8;
   multiModuleStatus.lastUpdate = get_tmr10ms();
 
   if (wasBinding && !multiModuleStatus.isBinding() && multiBindStatus == MULTI_BIND_INITIATED)
@@ -215,13 +215,13 @@ void processMultiTelemetryData(const uint8_t data)
 
     case FlyskyTelemetryFallback:
       processFlySkyTelemetryData(data);
-      if (telemetryRxBuffer == 0)
+      if (telemetryRxBufferCount == 0)
         multiTelemetryBufferState = NoProtocolDetected;
       break;
 
     case SpektrumTelemetryFallback:
       processSpektrumTelemetryData(data);
-      if (telemetryRxBuffer == 0)
+      if (telemetryRxBufferCount == 0)
         multiTelemetryBufferState = NoProtocolDetected;
       break;
 
