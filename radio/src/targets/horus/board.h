@@ -338,7 +338,7 @@ void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define pwroffPressed()                pwrPressed()
-#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG())
+#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG() || g_eeGeneral.unexpectedShutdown)
 
 // Led driver
 void ledOff(void);
