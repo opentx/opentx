@@ -348,9 +348,11 @@ elseif(WIN32)
     install(FILES ${QT_DLL_DIR}/${tmpfile}.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
   endforeach()
   # SDL dll
-  if(SDL_FOUND AND SDLMAIN_LIBRARY)
-    get_filename_component(SDL_DIR ${SDLMAIN_LIBRARY} PATH)
+  if(SDL_FOUND AND SDL_LIBRARY_PATH AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
+    set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
     install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
+  else()
+    message(WARNING "Installer: SDL.dll not found!")
   endif()
   # C++/system dlls, depends on compiler
   if(MSVC)

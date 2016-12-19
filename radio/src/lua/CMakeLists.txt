@@ -3,7 +3,7 @@ macro(add_lua_export_target target)
   if(PYTHONINTERP_FOUND)
     add_custom_command(
       OUTPUT lua_exports_${target}.inc
-      COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${LUA_EXPORT_INCLUDES} ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.tmp
+      COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.tmp
       COMMAND grep LEXP lua_exports_${target}.tmp > lua_exports_${target}.txt
       COMMAND rm lua_exports_${target}.tmp
       COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/luaexport.py ${VERSION} lua_exports_${target}.txt lua_exports_${target}.inc lua_fields_${target}.txt
