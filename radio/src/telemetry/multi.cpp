@@ -183,10 +183,6 @@ static void processMultiTelemetryByte(const uint8_t data)
 
 void processMultiTelemetryData(const uint8_t data)
 {
-  if (telemetryRxBufferCount == 0 && multiTelemetryBufferState != FrskyTelemetryFallbackFirstByte) {
-
-  }
-
   switch (multiTelemetryBufferState) {
     case NoProtocolDetected:
       if (data == 'M') {
