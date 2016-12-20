@@ -609,6 +609,7 @@ extern const pm_char STR_MULTI_RFTUNE[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
+extern const pm_char STR_DISABLE_INTERNAL[];
 extern const pm_char STR_MODULE_NO_SERIAL_MODE[];
 extern const pm_char STR_MODULE_NO_INPUT[];
 extern const pm_char STR_MODULE_NO_TELEMETRY[];

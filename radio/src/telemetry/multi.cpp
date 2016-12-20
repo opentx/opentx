@@ -132,11 +132,16 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
 void MultiModuleStatus::getStatusString(char *statusText)
 {
 
+
   if (get_tmr10ms()  - lastUpdate > 200) {
-    strcpy(statusText, STR_MODULE_NO_TELEMETRY);
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+    if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
+      strcpy(statusText, STR_DISABLE_INTERNAL);
+    else
+#endif
+      strcpy(statusText, STR_MODULE_NO_TELEMETRY);
     return;
   }
-
   if (!protocolValid()) {
     strcpy(statusText, STR_PROTOCOL_INVALID);
     return;
