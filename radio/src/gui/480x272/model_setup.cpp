@@ -633,61 +633,16 @@ bool menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
           int multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
-          if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
-            lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_CUSTOM, menuHorizontalPosition==1 ? attr : 0);
-          else
-            lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
+          if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto) {
+            lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_CUSTOM, menuHorizontalPosition == 1 ? attr : 0);
+            lcdDrawNumber(MODEL_SETUP_4TH_COLUMN, y, multi_rfProto, menuHorizontalPosition==2 ? attr : 0, 2);
+            lcdDrawNumber(MODEL_SETUP_4TH_COLUMN + MODEL_SETUP_BIND_OFS, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
+          } else {
+            const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_rfProto);
 
-          switch(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true)) {
-            case MM_RF_PROTO_FLYSKY:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_FLYSKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_FRSKY:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_XJT_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].subType+1, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_HISKY:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_HISKY, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_DSM2:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_DSM, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_YD717:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_YD717, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_KN:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_KN, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_SYMAX:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_SYMAX, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_SLT:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_SLT, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_CX10:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_CX10, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_CG023:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_CG023, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_MT99XX:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_MT99, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_MJXQ:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_MJXQ, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_HONTAI:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_HONTAI, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_FS_AFHDS2A:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_AFHDS2A , g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_PROTO_Q2X2:
-              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, STR_SUBTYPE_Q2X2, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
-              break;
-            case MM_RF_CUSTOM_SELECTED:
-              lcdDrawNumber(MODEL_SETUP_4TH_COLUMN, y, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), menuHorizontalPosition==2 ? attr : 0, 2);
-              lcdDrawNumber(MODEL_SETUP_4TH_COLUMN + MODEL_SETUP_BIND_OFS, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
-              break;
+            lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
+            if (pdef->subTypeString != nullptr)
+              lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, pdef->subTypeString, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
           }
         }
 #endif
@@ -738,32 +693,9 @@ bool menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), 0, 63, EE_MODEL));
                 break;
               } else {
-                switch (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true)) {
-                  case MM_RF_PROTO_HISKY:
-                  case MM_RF_PROTO_SYMAX:
-                  case MM_RF_PROTO_KN:
-                  case MM_RF_PROTO_SLT:
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 1);
-                    break;
-                  case MM_RF_PROTO_CG023:
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 2);
-                    break;
-                  case MM_RF_PROTO_FRSKY:
-                  case MM_RF_PROTO_DSM2:
-                  case MM_RF_PROTO_FS_AFHDS2A:
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 3);
-                    break;
-                  case MM_RF_PROTO_MT99XX:
-                  case MM_RF_PROTO_MJXQ:
-                  case MM_RF_PROTO_YD717:
-                  case MM_RF_PROTO_FLYSKY:
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 4);
-                    break;
-                  case MM_RF_PROTO_CX10:
-                  case MM_RF_PROTO_HONTAI:
-                    CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
-                    break;
-                }
+                const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false));
+                if (pdef->maxSubtype > 0)
+                  CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, pdef->maxSubtype);
               }
               break;
             case 3:
@@ -917,26 +849,14 @@ bool menuModelSetup(event_t event)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
           int optionValue =  g_model.moduleData[moduleIdx].multi.optionValue;
 
-          switch (g_model.moduleData[moduleIdx].getMultiProtocol(true))
-          {
-            case MM_RF_PROTO_FRSKY:
-            case MM_RF_PROTO_SFHSS:
-              lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_RFTUNE);
-              break;
-            case MM_RF_PROTO_HUBSAN:
-              lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_VIDFREQ);
-              break;
-            case MM_RF_PROTO_OLRS:
-              lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_RFPOWER);
-              break;
-            case MM_RF_PROTO_FS_AFHDS2A:
-              lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_SERVOFREQ);
-              optionValue = 50 + 5 * optionValue;
-              break;
-            default:
-              lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_OPTION);
-              break;
-          }
+          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
+          const mm_protocol_definition* pdef = getMultiProtocolDefinition(multi_proto);
+          if (pdef->optionsstr)
+            lcdDrawText(MENUS_MARGIN_LEFT, y, pdef->optionsstr);
+
+          if (multi_proto == MM_RF_PROTO_FS_AFHDS2A)
+            optionValue = 50 + 5 * optionValue;
+
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, optionValue, LEFT | attr);
           if (attr) {
             if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_FS_AFHDS2A) {

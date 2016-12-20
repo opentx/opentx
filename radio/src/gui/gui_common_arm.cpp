@@ -582,4 +582,46 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   }
   return retval;
 }
+#if defined(MULTIMODULE)
+const mm_protocol_definition multi_protocols[] = {
+  { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
+  { MM_RF_PROTO_HUBSAN,     nullptr,              0,  STR_MULTI_VIDFREQ   },
+  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    3,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
+  { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
+  { MM_RF_PROTO_DSM2,       STR_SUBTYPE_DSM,      3,  nullptr             },
+  { MM_RF_PROTO_YD717,      STR_SUBTYPE_YD717,    4,  nullptr             },
+  { MM_RF_PROTO_KN,         STR_SUBTYPE_KN,       1,  nullptr             },
+  { MM_RF_PROTO_SYMAX,      STR_SUBTYPE_SYMAX,    1,  nullptr             },
+  { MM_RF_PROTO_SLT,        STR_SUBTYPE_SLT,      1,  nullptr             },
+  { MM_RF_PROTO_CX10,       STR_SUBTYPE_CX10,     7,  nullptr             },
+  { MM_RF_PROTO_CG023,      STR_SUBTYPE_CG023,    2,  nullptr             },
+  { MM_RF_PROTO_BAYANG,     STR_SUBTYPE_BAYANG,   1,  nullptr             },
+  { MM_RF_PROTO_MT99XX,     STR_SUBTYPE_MT99,     4,  nullptr             },
+  { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     4,  nullptr             },
+  { MM_RF_PROTO_FY326,      STR_SUBTYPE_FY326,    1,  nullptr             },
+  { MM_RF_PROTO_SFHSS,      nullptr,              0,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   3,  nullptr             },
+  { MM_RF_PROTO_OLRS,       nullptr,              0,  STR_MULTI_RFPOWER   },
+  { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
+  { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     1,  nullptr             },
+  { MM_RF_CUSTOM_SELECTED,  nullptr,              7,  STR_MULTI_OPTION    },
+
+  //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
+  { 0xfe,                   nullptr,              0,  nullptr             }
+};
+
+const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
+{
+  const mm_protocol_definition *pdef;
+  for (pdef = multi_protocols; pdef->protocol != 0xfe; pdef++) {
+    if (pdef->protocol == protocol)
+      return pdef;
+  }
+  // Return the empty last protocol
+  return pdef;
+}
+
+#endif
+
 #endif
