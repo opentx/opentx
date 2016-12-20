@@ -1062,3 +1062,4 @@ Hans-Rudolf Riniker
 Arkadiusz Milewski
 Kenneth Frehafer
 Jens Ziegler
+Peter Arnold
