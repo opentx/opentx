@@ -19,10 +19,6 @@
  */
 #include "opentx.h"
 
-// for sprintf
-#include <stdio.h>
-
-
 MultiModuleStatus multiModuleStatus;
 uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
 
@@ -129,10 +125,31 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
   }
 }
 
+// sprintf does not work AVR ARM
+// use a small helper function
+static void appendInt(char* buf, uint32_t val)
+{
+  while(*buf)
+    buf++;
+
+  int len=1;
+  int32_t tmp = val / 10;
+  while (tmp) {
+    len++;
+    tmp /= 10;
+  }
+
+  buf[len]='\0';
+  for (uint8_t i=1;i<=len; i++) {
+    div_t qr = div(val, 10);
+    char c = qr.rem + '0';
+    buf[len - i] = c;
+  }
+}
+
+
 void MultiModuleStatus::getStatusString(char *statusText)
 {
-
-
   if (get_tmr10ms()  - lastUpdate > 200) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
@@ -152,10 +169,19 @@ void MultiModuleStatus::getStatusString(char *statusText)
     strcpy(statusText, STR_MODULE_NO_INPUT);
     return;
   }
-  sprintf(statusText, "V%d.%d.%d ", major, minor, patchlevel);
+
+  strcpy(statusText, "V");
+  appendInt(statusText, major);
+  strcat(statusText, ".");
+  appendInt(statusText, minor);
+  strcat(statusText, ".");
+  appendInt(statusText, patchlevel);
+  strcat(statusText, " ");
+
   if (isBinding())
     strcat(statusText, STR_MODULE_BINDING);
 }
+
 
 static MultiBufferState multiTelemetryBufferState;
 
