@@ -60,7 +60,8 @@ static void processMultiStatusPacket(const uint8_t *data)
   multiModuleStatus.flags = data[0];
   multiModuleStatus.major = data[1];
   multiModuleStatus.minor = data[2];
-  multiModuleStatus.patchlevel = data[3] | data[4] << 8;
+  multiModuleStatus.revision = data[3];
+  multiModuleStatus.patch = data[4];
   multiModuleStatus.lastUpdate = get_tmr10ms();
 
   if (wasBinding && !multiModuleStatus.isBinding() && multiBindStatus == MULTI_BIND_INITIATED)
@@ -144,6 +145,7 @@ static void appendInt(char* buf, uint32_t val)
     div_t qr = div(val, 10);
     char c = qr.rem + '0';
     buf[len - i] = c;
+    val = qr.quot;
   }
 }
 
@@ -175,7 +177,9 @@ void MultiModuleStatus::getStatusString(char *statusText)
   strcat(statusText, ".");
   appendInt(statusText, minor);
   strcat(statusText, ".");
-  appendInt(statusText, patchlevel);
+  appendInt(statusText, revision);
+  strcat(statusText, ".");
+  appendInt(statusText, patch);
   strcat(statusText, " ");
 
   if (isBinding())

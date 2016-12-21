@@ -52,9 +52,9 @@ Type = 0x01 Multimodule Status:
    0x08 = module is in binding mode
    [5] major
    [6] minor
-   [7-8] patchlevel, big endian e.g. patchlevel 258 (= 0x102) is 02 01
-   version of multi code, should be displayed as major.minor.patchlevel
-
+   [7] revision
+   [8] patchlevel,
+   version of multi code, should be displayed as major.minor.revision.patchlevel
 
    more information can be added by specifying a longer length of the type, the TX will just ignore these bytes
 
@@ -89,9 +89,11 @@ void processMultiTelemetryData(uint8_t data);
 #define MULTISTATUS_FLAG
 
 struct MultiModuleStatus {
-  uint16_t patchlevel;
+
   uint8_t major;
   uint8_t minor;
+  uint8_t revision;
+  uint8_t patch;
 
   uint8_t flags;
   tmr10ms_t lastUpdate;
