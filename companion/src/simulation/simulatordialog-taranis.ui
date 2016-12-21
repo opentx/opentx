@@ -2,25 +2,11 @@
 <ui version="4.0">
  <class>SimulatorDialogTaranis</class>
  <widget class="QDialog" name="SimulatorDialogTaranis">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>739</width>
-    <height>695</height>
-   </rect>
-  </property>
   <property name="sizePolicy">
    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>739</width>
-    <height>16777215</height>
-   </size>
   </property>
   <property name="windowTitle">
    <string>Companion Simulator</string>
@@ -30,7 +16,16 @@
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_6">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
     <number>5</number>
    </property>
    <property name="spacing">
@@ -1493,7 +1488,7 @@ QPushButton:checked {
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>20</width>
+          <width>0</width>
           <height>20</height>
          </size>
         </property>
@@ -1760,7 +1755,7 @@ QPushButton:checked {
         <string>PF7 - Reload Lua Scripts</string>
        </property>
       </widget>
-      </item>
+     </item>
     </layout>
    </item>
   </layout>

@@ -385,6 +385,8 @@ void SimulatorDialog::initUi(T * ui)
     slider->setOrientation(Qt::Horizontal);
     slider->setInvertedAppearance(false);
     slider->setTickPosition(QSlider::TicksBelow);
+    slider->setMaximumHeight(20);
+
     channelSliders << slider;
     outputTab->addWidget(slider, line, column == 0 ? 1 : 4, 1, 1);
 
@@ -396,13 +398,14 @@ void SimulatorDialog::initUi(T * ui)
   }
 
   int switches = GetCurrentFirmware()->getCapability(LogicalSwitches);
+  int rows = switches / (switches > 16 ? 4 : 2);
   for (int i=0; i<switches; i++) {
     QFrame * swtch = createLogicalSwitch(tabWidget, i, logicalSwitchLabels);
-    ui->logicalSwitchesLayout->addWidget(swtch, i / (switches/2), i % (switches/2), 1, 1);
+    ui->logicalSwitchesLayout->addWidget(swtch, i / rows, i % rows, 1, 1);
     if (outputs > 16) {
       // repeat logical switches on second outputs tab
       swtch = createLogicalSwitch(tabWidget, i, logicalSwitchLabels2);
-      ui->logicalSwitchesLayout2->addWidget(swtch, i / (switches/2), i % (switches/2), 1, 1);
+      ui->logicalSwitchesLayout2->addWidget(swtch, i / rows, i % rows, 1, 1);
     }
   }
 
@@ -450,12 +453,15 @@ QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QV
     swtch->setAutoFillBackground(true);
     swtch->setFrameShape(QFrame::Panel);
     swtch->setFrameShadow(QFrame::Raised);
-    swtch->setLineWidth(2);
+//    swtch->setLineWidth(2);
+    swtch->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    swtch->setMaximumHeight(20);
     QVBoxLayout * layout = new QVBoxLayout(swtch);
     layout->setContentsMargins(2, 2, 2, 2);
     QLabel * label = new QLabel(swtch);
     label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
     label->setAlignment(Qt::AlignCenter);
+    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     labels << label;
     layout->addWidget(label);
     return swtch;
