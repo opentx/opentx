@@ -275,8 +275,9 @@ void SimulatorDialog::initUi(T * ui)
 
   setupSticks();
 
-  resize(0, 0); // to force min height, min width
-  setFixedSize(width(), height());
+  // resize(sizeHint()); // to force min height, min width
+  // setFixedSize(width(), height());
+  // setFixedHeight(height());
 
 #ifdef JOYSTICKS
     if (g.jsSupport()) {
@@ -340,27 +341,47 @@ void SimulatorDialog::initUi(T * ui)
 
   setTrims();
 
+  // setup Outputs tab
+  QWidget *outputsWidget = new QWidget();
+  QGridLayout *gridLayout = new QGridLayout(outputsWidget);
+  gridLayout->setHorizontalSpacing(0);
+  gridLayout->setVerticalSpacing(3);
+  gridLayout->setContentsMargins(5, 3, 5, 3);
+  // logical switches area
+  QWidget *logicalSwitches = new QWidget(outputsWidget);
+  logicalSwitches->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+  QGridLayout *logicalSwitchesLayout = new QGridLayout(logicalSwitches);
+  logicalSwitchesLayout->setObjectName(QStringLiteral("logicalSwitchesLayout"));
+  logicalSwitchesLayout->setHorizontalSpacing(3);
+  logicalSwitchesLayout->setVerticalSpacing(2);
+  logicalSwitchesLayout->setContentsMargins(0, 0, 0, 0);
+  gridLayout->addWidget(logicalSwitches, 0, 0, 1, 1);
+  // channels area
+  QScrollArea *scrollArea = new QScrollArea(outputsWidget);
+  QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  sp.setHorizontalStretch(0);
+  sp.setVerticalStretch(0);
+  scrollArea->setSizePolicy(sp);
+  scrollArea->setWidgetResizable(true);
+  QWidget *channelsWidget = new QWidget();
+  QGridLayout *channelsLayout = new QGridLayout(channelsWidget);
+  channelsLayout->setHorizontalSpacing(4);
+  channelsLayout->setVerticalSpacing(3);
+  channelsLayout->setContentsMargins(0, 0, 0, 3);
+  scrollArea->setWidget(channelsWidget);
+  gridLayout->addWidget(scrollArea, 1, 0, 1, 1);
+
+  tabWidget->insertTab(1, outputsWidget, QString(tr("Outputs")));
+
+  // populate outputs
   int outputs = std::min(32, GetCurrentFirmware()->getCapability(Outputs));
-  if (outputs <= 16) {
-    // hide second Outputs tab
-    tabWidget->removeTab(tabWidget->indexOf(ui->outputs2));
-  }
-  else {
-    tabWidget->setTabText(tabWidget->indexOf(ui->outputs), tr("Outputs") + QString(" 1-%1").arg(16));
-    tabWidget->setTabText(tabWidget->indexOf(ui->outputs2), tr("Outputs") + QString(" 17-%1").arg(outputs));
-  }
+  int column = 0;
   for (int i=0; i<outputs; i++) {
-    QGridLayout * outputTab = ui->channelsLayout;
-    int column = i / (std::min(16,outputs)/2);
-    int line =   i % (std::min(16,outputs)/2);
-    if (i >= 16 ) {
-      outputTab = ui->channelsLayout2;
-      column = (i-16) / (std::min(16,outputs-16)/2);
-      line =   (i-16) % (std::min(16,outputs-16)/2);
-    }
     QLabel * label = new QLabel(tabWidget);
-    label->setText(RawSource(SOURCE_TYPE_CH, i).toString());
-    outputTab->addWidget(label, line, column == 0 ? 0 : 5, 1, 1);
+    label->setText(" " + RawSource(SOURCE_TYPE_CH, i).toString() + " ");
+    label->setAlignment(Qt::AlignCenter);
+    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    channelsLayout->addWidget(label, 0, column, 1, 1);
 
     QSlider * slider = new QSlider(tabWidget);
     slider->setEnabled(false);
@@ -382,41 +403,45 @@ void SimulatorDialog::initUi(T * ui)
     slider->setMaximum(1024);
     slider->setPageStep(128);
     slider->setTracking(false);
-    slider->setOrientation(Qt::Horizontal);
+    slider->setOrientation(Qt::Vertical);
     slider->setInvertedAppearance(false);
-    slider->setTickPosition(QSlider::TicksBelow);
-    slider->setMaximumHeight(20);
-
-    channelSliders << slider;
-    outputTab->addWidget(slider, line, column == 0 ? 1 : 4, 1, 1);
+    slider->setTickPosition(QSlider::TicksRight);
+    slider->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
     QLabel * value = new QLabel(tabWidget);
-    value->setMinimumSize(QSize(50, 0));
+    value->setMinimumSize(QSize(value->fontMetrics().size(Qt::TextSingleLine, "-100.0").width(), 0));
     value->setAlignment(Qt::AlignCenter);
+    value->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     channelValues << value;
-    outputTab->addWidget(value, line, column == 0 ? 2 : 3, 1, 1);
+    channelsLayout->addWidget(value, 1, column, 1, 1);
+
+    channelSliders << slider;
+    channelsLayout->addWidget(slider, 2, column++, 1, 1);
+    channelsLayout->setAlignment(slider, Qt::AlignHCenter);
+
   }
 
+  // populate logical switches
   int switches = GetCurrentFirmware()->getCapability(LogicalSwitches);
   int rows = switches / (switches > 16 ? 4 : 2);
   for (int i=0; i<switches; i++) {
     QFrame * swtch = createLogicalSwitch(tabWidget, i, logicalSwitchLabels);
-    ui->logicalSwitchesLayout->addWidget(swtch, i / rows, i % rows, 1, 1);
-    if (outputs > 16) {
-      // repeat logical switches on second outputs tab
-      swtch = createLogicalSwitch(tabWidget, i, logicalSwitchLabels2);
-      ui->logicalSwitchesLayout2->addWidget(swtch, i / rows, i % rows, 1, 1);
-    }
+    logicalSwitchesLayout->addWidget(swtch, i / rows, i % rows, 1, 1);
   }
 
   int fmodes = GetCurrentFirmware()->getCapability(FlightModes);
   int gvars = GetCurrentFirmware()->getCapability(Gvars);
   if (gvars>0) {
+    // setup GVars tab
+    QWidget *gvarsWidget = new QWidget();
+    QGridLayout *gvarsLayout = new QGridLayout(gvarsWidget);
+    tabWidget->addTab(gvarsWidget, QString(tr("GVars")));
+
     for (int fm=0; fm<fmodes; fm++) {
       QLabel * label = new QLabel(tabWidget);
       label->setText(QString("FM%1").arg(fm));
       label->setAlignment(Qt::AlignCenter);
-      ui->gvarsLayout->addWidget(label, 0, fm+1);
+      gvarsLayout->addWidget(label, 0, fm+1);
     }
     for (int i=0; i<gvars; i++) {
       QLabel * label = new QLabel(tabWidget);
@@ -425,7 +450,7 @@ void SimulatorDialog::initUi(T * ui)
       if ((i % 2) ==0 ) {
         label->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
       }
-      ui->gvarsLayout->addWidget(label, i+1, 0);
+      gvarsLayout->addWidget(label, i+1, 0);
       for (int fm=0; fm<fmodes; fm++) {
         QLabel * value = new QLabel(tabWidget);
         value->setAutoFillBackground(true);
@@ -434,13 +459,13 @@ void SimulatorDialog::initUi(T * ui)
           value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
         }
         gvarValues << value;
-        ui->gvarsLayout->addWidget(value, i+1, fm+1);
+        gvarsLayout->addWidget(value, i+1, fm+1);
       }
     }
   }
 
   if (flags & SIMULATOR_FLAGS_NOTX) {
-    ui->tabWidget->setCurrentWidget(ui->outputs);
+    ui->tabWidget->setCurrentWidget(outputsWidget);
   }
   else {
     ui->tabWidget->setCurrentWidget(ui->simu);
@@ -455,9 +480,9 @@ QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QV
     swtch->setFrameShadow(QFrame::Raised);
 //    swtch->setLineWidth(2);
     swtch->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    swtch->setMaximumHeight(20);
+    swtch->setMaximumHeight(18);
     QVBoxLayout * layout = new QVBoxLayout(swtch);
-    layout->setContentsMargins(2, 2, 2, 2);
+    layout->setContentsMargins(2, 0, 2, 0);
     QLabel * label = new QLabel(swtch);
     label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
     label->setAlignment(Qt::AlignCenter);
