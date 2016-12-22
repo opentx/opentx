@@ -285,12 +285,13 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
     }
     else if (c >= 0x20) {
       if ( ( c == 46) && ((FONTSIZE(flags) == TINSIZE) || (FONTSIZE(flags) == SMLSIZE))) { // '.' handling
+        uint8_t bheight = (FONTSIZE(flags) == TINSIZE ? 5 : 6);
         if (flags & INVERS) {
-          lcdDrawSolidVerticalLine(x, y-1, (FONTSIZE(flags) == TINSIZE ? 5 : 6));
-          lcdDrawPoint(x, y + (FONTSIZE(flags) == TINSIZE ? 5 : 6));
+          lcdDrawSolidVerticalLine(x, y-1, bheight);
+          lcdDrawPoint(x, y + bheight);
         }
         else {
-          lcdDrawPoint(x, y + (FONTSIZE(flags) == TINSIZE ? 4 : 5) , flags);
+          lcdDrawPoint(x, y + bheight -1 , flags);
         }
         x+=2;
       }
