@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#define RECT_OFFSET                    80
+#define RECT_OFFSET                    0
 #define RECT_WIDTH                     (w - RECT_OFFSET)
 #define ROW_HEIGHT                     17
 
@@ -36,24 +36,14 @@ class OutputsWidget: public Widget
 
     uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan)
     {
-      char chanString[] = "CH32";
+      char chanString[] = "CH32 123456";
       uint8_t numChan = h / ROW_HEIGHT;
       uint8_t row_height = (h - numChan * ROW_HEIGHT >= numChan ? ROW_HEIGHT + 1 : ROW_HEIGHT);
       uint8_t lastChan = firstChan + numChan;
 
       for (uint8_t curChan = firstChan; curChan < lastChan && curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
-        strAppend(chanString, "CH");
-        strAppendSigned(&chanString[2], curChan, 2);
-        if (g_model.limitData[curChan - 1].name[0] != 0)  {
-          lcdDrawText(x, y + (curChan - firstChan) * row_height + 1, chanString, TINSIZE | TEXT_COLOR | LEFT);
-          lcdDrawSizedText(x, y + (curChan - firstChan) * row_height + 1 + ROW_HEIGHT / 2, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), TINSIZE | TEXT_COLOR | LEFT | ZCHAR);
-        } 
-        else {
-          lcdDrawText(x, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
-        }
-        strAppendSigned(chanString, chanVal);
-        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+        lcdDrawSolidFilledRect(x + RECT_OFFSET, y + 1 + (curChan - firstChan) * row_height, RECT_WIDTH, row_height - 2, TEXT_BGCOLOR);
         if (chanVal > 0) {
           lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height, MAINVIEW_GRAPHICS_COLOR);
         }
@@ -63,8 +53,18 @@ class OutputsWidget: public Widget
           uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, 200);
           lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * row_height, size, row_height, MAINVIEW_GRAPHICS_COLOR);
         }
-        lcdDrawRect(x + RECT_OFFSET, y + (curChan - firstChan) * row_height, RECT_WIDTH, row_height+1);
         lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * row_height, row_height, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawNumber(x + RECT_WIDTH - 10, y + (curChan - firstChan) * row_height + 1, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+        if (g_model.limitData[curChan - 1].name[0] != 0)  {
+          strAppendSigned(chanString, curChan, 2);
+          lcdDrawText(x + 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+          lcdDrawSizedText(x + 25, y + (curChan - firstChan) * row_height + 1, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
+      } 
+        else {
+          strAppend(chanString, "CH");
+          strAppendSigned(&chanString[2], curChan, 2);
+          lcdDrawText(x + 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+        }
       }
       return lastChan - 1;
     }
