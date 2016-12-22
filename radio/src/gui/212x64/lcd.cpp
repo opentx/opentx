@@ -284,8 +284,20 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
       break;
     }
     else if (c >= 0x20) {
-      lcdDrawChar(x, y, c, flags);
-      x = lcdNextPos;
+      if ( ( c == 46) && ((FONTSIZE(flags) == TINSIZE) || (FONTSIZE(flags) == SMLSIZE))) { // '.' handling
+        if (flags & INVERS) {
+          lcdDrawSolidVerticalLine(x, y-1, (FONTSIZE(flags) == TINSIZE ? 5 : 6));
+          lcdDrawPoint(x, y + (FONTSIZE(flags) == TINSIZE ? 5 : 6));
+        }
+        else {
+          lcdDrawPoint(x, y + (FONTSIZE(flags) == TINSIZE ? 4 : 5) , flags);
+        }
+        x+=2;
+      }
+      else {
+        lcdDrawChar(x, y, c, flags);
+        x = lcdNextPos;
+      }
     }
     else if (c == 0x1F) {  //X-coord prefix
       setx = true;
@@ -378,7 +390,6 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
 {
   char str[16+1];
   char *s = str+16;
-  char *d = str;
   *s = '\0';
   int idx = 0;
   int mode = MODE(flags);
@@ -393,34 +404,17 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
     val /= 10;
     if (mode!=0 && idx==mode) {
       mode = 0;
-      if((flags & 0x0F00) == TINSIZE) {
-        d=s;
-        *--s = 0;
-      } else {
-        *--s = '.';
-      }
-      if (val==0)
+      *--s = '.';
+      if (val==0) {
         *--s = '0';
+      }
     }
   } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
   if (neg) {
     *--s = '-';
   }
   flags &= ~LEADING0;
-
-  if(((flags & 0x0F00) == TINSIZE) && (flags & PREC1)) { // TINSIZE needs to be handled specificaly if using a '.' (fixed width needs narrowing)
-    if (flags & RIGHT) {
-      lcdDrawText(x, y, d, flags);
-      lcdDrawText(lcdNextPos, y, ".", flags);
-      lcdDrawText(lcdNextPos+1, y, s, flags);
-    } else {
-      lcdDrawText(x, y, s, flags);
-      lcdDrawText(lcdNextPos-1, y, ".", flags);
-      lcdDrawText(lcdNextPos-1, y, d, flags);
-    }
-  } else {
-    lcdDrawText(x, y, s, flags);
-  }
+  lcdDrawText(x, y, s, flags);
 }
 #endif
 
@@ -475,12 +469,12 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
     }
   }
 }
+#endif
 
 void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
 {
   lcdDrawVerticalLine(x, y, h, SOLID, att);
 }
-#endif
 
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
