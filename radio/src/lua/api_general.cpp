@@ -586,11 +586,11 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (IS_SWR_VALUE_VALID()) { 
+  if (IS_SWR_VALUE_VALID()) {
     lua_pushinteger(L, telemetryData.swr.value);
   }
   else {
-    lua_pushnil(L);  
+    lua_pushnil(L);
   }
   return 1;
 }
@@ -1022,7 +1022,7 @@ static int luaDefaultStick(lua_State * L)
 
 @param id Id of the sensor
 
-@param subID subID of the sensor, usually 0
+@param subID subID of the sensor, usually 0, cannot exeed 7
 
 @param instance instance of the sensor (SensorID)
 
@@ -1040,11 +1040,11 @@ static int luaDefaultStick(lua_State * L)
 @param precision the precision of the sensor
  * `0 or not present` no decimal precision.
  * `!= 0` value is divided by 10^precision, e.g. value=1000, prec=2 => 10.00.
- 
+
 @param name (string) Name of the sensor if it does not yet exist (4 chars).
  * `not present` Name defaults to the Id.
  * `present` Sensor takes name of the argument. Argument must have name surrounded by quotes: e.g., "Name"
- 
+
 @retval true, if the sensor was just added. In this case the value is ignored (subsequent call will set the value)
 
 @status current Introduced in 2.2.0
@@ -1052,7 +1052,7 @@ static int luaDefaultStick(lua_State * L)
 static int luaSetTelemetryValue(lua_State * L)
 {
   uint16_t id = luaL_checkinteger(L, 1);
-  uint8_t subId = luaL_checkinteger(L, 2);
+  uint8_t subId = luaL_checkinteger(L, 2) & 0x7;
   uint8_t instance = luaL_checkinteger(L, 3);
   int32_t value = luaL_checkinteger(L, 4);
   uint32_t unit = luaL_optinteger(L, 5, 0);
@@ -1068,7 +1068,7 @@ static int luaSetTelemetryValue(lua_State * L)
     zname[2] = hex2zchar((id & 0x00f0) >> 4);
     zname[3] = hex2zchar((id & 0x000f) >> 0);
   }
-  
+
   int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
   if (index >= 0) {
     TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
@@ -1388,6 +1388,6 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_GPS", UNIT_GPS},
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
-#endif  
+#endif
   { NULL, 0 }  /* sentinel */
 };
