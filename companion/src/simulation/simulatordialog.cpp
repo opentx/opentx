@@ -70,7 +70,9 @@ void SimulatorDialog::updateDebugOutput()
 
 void SimulatorDialog::wheelEvent (QWheelEvent *event)
 {
-  simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
+  if ( event->delta() != 0) {
+    simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
+  }
 }
 
 SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
@@ -220,6 +222,13 @@ void SimulatorDialog::keyPressEvent (QKeyEvent *event)
     case Qt::Key_PageUp:    
       buttonPressed = event->key();
       break;
+    case Qt::Key_X:
+      simulator->wheelEvent(-1);
+      break;
+    case Qt::Key_C:
+      simulator->wheelEvent(1);
+      break;
+
   }
 }
 
