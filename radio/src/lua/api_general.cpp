@@ -1022,7 +1022,7 @@ static int luaDefaultStick(lua_State * L)
 
 @param id Id of the sensor
 
-@param subID subID of the sensor, usually 0, cannot exeed 7
+@param subID subID of the sensor, usually 0, cannot exceed 7
 
 @param instance instance of the sensor (SensorID)
 
