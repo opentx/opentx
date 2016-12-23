@@ -597,7 +597,7 @@ int main()
           lockFlash();
           unlocked = 0;
         }
-        lcdDrawTextAlignedLeft(4*FH, CENTER "\007Writing Complete");
+        lcdDrawTextAlignedLeft(4*FH, CENTER "\007Writing complete");
         if (event == EVT_KEY_FIRST(BOOT_KEY_EXIT) || event == EVT_KEY_BREAK(BOOT_KEY_MENU)) {
           state = ST_START;
           vpos = 0;
