@@ -24,10 +24,7 @@
 #include <iostream>
 #include "helpers.h"
 #include "simulatorinterface.h"
-#include "sliderwidget.h"
-
-#define GBALL_SIZE  20
-#define RESX        1024
+#include "virtualjoystickwidget.h"
 
 int SimulatorDialog::screenshotIdx = 0;
 SimulatorDialog * traceCallbackInstance = 0;
@@ -85,9 +82,10 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   TrainerSimu(0),
   DebugOut(0),
   buttonPressed(0),
-  trimPressed (TRIM_NONE),
+  trimPressed(TRIM_NONE),
   middleButtonPressed(false)
 {
+  setWindowFlags(Qt::Window);
   //shorcut for telemetry simulator
   // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_T), this, SLOT(openTelemetrySimulator()));
   new QShortcut(QKeySequence(Qt::Key_F4), this, SLOT(openTelemetrySimulator()));
@@ -108,6 +106,23 @@ void SimulatorDialog::closeEvent (QCloseEvent *)
 {
   simulator->stop();
   timer->stop();
+  //g.simuWinGeo(GetCurrentFirmware()->getId(), saveGeometry());
+}
+
+void SimulatorDialog::showEvent(QShowEvent * event)
+{
+  static bool firstShow = true;
+  if (firstShow) {
+    if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
+      vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+      vJoyLeft->setStickY(1);
+    }
+    else {
+      vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+      vJoyRight->setStickY(1);
+    }
+    firstShow = false;
+  }
 }
 
 void SimulatorDialog::mousePressEvent(QMouseEvent *event)
@@ -124,29 +139,19 @@ void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
   }
 }
 
-void SimulatorDialog::onTrimPressed()
+void SimulatorDialog::onTrimPressed(int which)
 {
-  if (sender()->objectName() == QString("trimHL_L"))
-    trimPressed = TRIM_LH_L;
-  else if (sender()->objectName() == QString("trimHL_R"))
-    trimPressed = TRIM_LH_R;
-  else if (sender()->objectName() == QString("trimVL_D"))      
-    trimPressed = TRIM_LV_DN;
-  else if (sender()->objectName() == QString("trimVL_U"))     
-    trimPressed = TRIM_LV_UP;
-  else if (sender()->objectName() == QString("trimVR_D"))
-    trimPressed = TRIM_RV_DN;
-  else if (sender()->objectName() == QString("trimVR_U"))
-    trimPressed = TRIM_RV_UP;
-  else if (sender()->objectName() == QString("trimHR_L")) 
-    trimPressed = TRIM_RH_L;
-  else if (sender()->objectName() == QString("trimHR_R"))
-    trimPressed = TRIM_RH_R;
+  trimPressed = which;
 }
 
 void SimulatorDialog::onTrimReleased()
 {
   trimPressed = TRIM_NONE;
+}
+
+void SimulatorDialog::onTrimSliderMoved(int which, int value)
+{
+  simulator->setTrim(which, value);
 }
 
 void SimulatorDialog::openTelemetrySimulator()
@@ -255,29 +260,34 @@ void SimulatorDialog::initUi(T * ui)
 {
   ui->setupUi(this);
 
+  windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
+  setWindowTitle(windowName);
+
+  simulator->setSdPath(g.profile[g.id()].sdPath());
+  simulator->setVolumeGain(g.profile[g.id()].volumeGain());
+
   lcd = ui->lcd;
-  leftStick = ui->leftStick;
-  rightStick = ui->rightStick;
+  lcd->setData(simulator->getLcd(), lcdWidth, lcdHeight, lcdDepth);
+
+  tabWidget = ui->tabWidget;
   pots = findWidgets<QDial *>(this, "pot%1");
   potLabels = findWidgets<QLabel *>(this, "potLabel%1");
   potValues = findWidgets<QLabel *>(this, "potValue%1");
   sliders = findWidgets<QSlider *>(this, "slider%1");
 
-  trimHLeft = ui->trimHLeft;
-  trimVLeft = ui->trimVLeft;
-  trimHRight = ui->trimHRight;
-  trimVRight = ui->trimVRight;
-  tabWidget = ui->tabWidget;
-  leftXPerc = ui->leftXPerc;
-  leftYPerc = ui->leftYPerc;
-  rightXPerc = ui->rightXPerc;
-  rightYPerc = ui->rightYPerc;
+  vJoyLeft = new VirtualJoystickWidget(this, 'L');
+  ui->leftStickLayout->addWidget(vJoyLeft);
 
-  setupSticks();
+  vJoyRight = new VirtualJoystickWidget(this, 'R');
+  ui->rightStickLayout->addWidget(vJoyRight);
 
-  // resize(sizeHint()); // to force min height, min width
-  // setFixedSize(width(), height());
-  // setFixedHeight(height());
+  connect(vJoyLeft, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
+  connect(vJoyLeft, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
+  connect(vJoyLeft, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
+
+  connect(vJoyRight, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
+  connect(vJoyRight, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
+  connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
 
 #ifdef JOYSTICKS
     if (g.jsSupport()) {
@@ -305,14 +315,11 @@ void SimulatorDialog::initUi(T * ui)
               joystick->sensitivities[j] = 0;
               joystick->deadzones[j]=0;
             }
-            nodeRight->setCenteringY(false);   //mode 1,3 -> THR on right
-            ui->holdRightY->setChecked(true);
-            nodeRight->setCenteringX(false);   //mode 1,3 -> THR on right
-            ui->holdRightX->setChecked(true);
-            nodeLeft->setCenteringY(false);   //mode 1,3 -> THR on right
-            ui->holdLeftY->setChecked(true);
-            nodeLeft->setCenteringX(false);   //mode 1,3 -> THR on right
-            ui->holdLeftX->setChecked(true);
+            //mode 1,3 -> THR on right
+            vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+            vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_X, true);
+            vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+            vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_X, true);
             connect(joystick, SIGNAL(axisValueChanged(int, int)), this, SLOT(onjoystickAxisValueChanged(int, int)));
           }
           else {
@@ -323,48 +330,64 @@ void SimulatorDialog::initUi(T * ui)
     }
 #endif
 
-  windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
-  setWindowTitle(windowName);
-
-  simulator->setSdPath(g.profile[g.id()].sdPath());
-  simulator->setVolumeGain(g.profile[g.id()].volumeGain());
-  lcd->setData(simulator->getLcd(), lcdWidth, lcdHeight, lcdDepth);
-
-  if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
-    nodeLeft->setCenteringY(false);
-    ui->holdLeftY->setChecked(true);
-  }
-  else {
-    nodeRight->setCenteringY(false);
-    ui->holdRightY->setChecked(true);
-  }
-
+  setupOutputsDisplay();
+  setupGVarsDisplay();
   setTrims();
 
+  //restoreGeometry(g.simuWinGeo(GetCurrentFirmware()->getId()));
+
+  if (flags & SIMULATOR_FLAGS_NOTX)
+    tabWidget->setCurrentIndex(1);
+
+}
+
+QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels)
+{
+    QFrame * swtch = new QFrame(parent);
+    swtch->setAutoFillBackground(true);
+    swtch->setFrameShape(QFrame::Panel);
+    swtch->setFrameShadow(QFrame::Raised);
+    swtch->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    swtch->setMaximumHeight(18);
+    QVBoxLayout * layout = new QVBoxLayout(swtch);
+    layout->setContentsMargins(2, 0, 2, 0);
+    QFont font;
+    font.setPointSize(8);
+    QLabel * label = new QLabel(swtch);
+    label->setFont(font);
+    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
+    label->setAlignment(Qt::AlignCenter);
+    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    labels << label;
+    layout->addWidget(label);
+    return swtch;
+}
+
+void SimulatorDialog::setupOutputsDisplay()
+{
   // setup Outputs tab
-  QWidget *outputsWidget = new QWidget();
-  QGridLayout *gridLayout = new QGridLayout(outputsWidget);
+  QWidget * outputsWidget = new QWidget();
+  QGridLayout * gridLayout = new QGridLayout(outputsWidget);
   gridLayout->setHorizontalSpacing(0);
   gridLayout->setVerticalSpacing(3);
   gridLayout->setContentsMargins(5, 3, 5, 3);
   // logical switches area
-  QWidget *logicalSwitches = new QWidget(outputsWidget);
+  QWidget * logicalSwitches = new QWidget(outputsWidget);
   logicalSwitches->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-  QGridLayout *logicalSwitchesLayout = new QGridLayout(logicalSwitches);
-  logicalSwitchesLayout->setObjectName(QStringLiteral("logicalSwitchesLayout"));
+  QGridLayout * logicalSwitchesLayout = new QGridLayout(logicalSwitches);
   logicalSwitchesLayout->setHorizontalSpacing(3);
   logicalSwitchesLayout->setVerticalSpacing(2);
   logicalSwitchesLayout->setContentsMargins(0, 0, 0, 0);
   gridLayout->addWidget(logicalSwitches, 0, 0, 1, 1);
   // channels area
-  QScrollArea *scrollArea = new QScrollArea(outputsWidget);
+  QScrollArea * scrollArea = new QScrollArea(outputsWidget);
   QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Preferred);
   sp.setHorizontalStretch(0);
   sp.setVerticalStretch(0);
   scrollArea->setSizePolicy(sp);
   scrollArea->setWidgetResizable(true);
-  QWidget *channelsWidget = new QWidget();
-  QGridLayout *channelsLayout = new QGridLayout(channelsWidget);
+  QWidget * channelsWidget = new QWidget();
+  QGridLayout * channelsLayout = new QGridLayout(channelsWidget);
   channelsLayout->setHorizontalSpacing(4);
   channelsLayout->setVerticalSpacing(3);
   channelsLayout->setContentsMargins(0, 0, 0, 3);
@@ -385,20 +408,6 @@ void SimulatorDialog::initUi(T * ui)
 
     QSlider * slider = new QSlider(tabWidget);
     slider->setEnabled(false);
-    /*slider->setMaximumSize(QSize(16777215, 18));
-    slider->setStyleSheet(QString::fromUtf8("QSlider::sub-page:horizontal:disabled {\n"
-    "border-color: #999;\n"
-    "}\n"
-    "\n"
-    "QSlider::add-page:horizontal:disabled {\n"
-    "border-color: #999;\n"
-    "}\n"
-    "\n"
-    "QSlider::handle:horizontal:disabled {\n"
-    "background: #0000CC;\n"
-    "border: 1px solid #aaa;\n"
-    "border-radius: 4px;\n"
-    "}")); */
     slider->setMinimum(-1024);
     slider->setMaximum(1024);
     slider->setPageStep(128);
@@ -418,7 +427,6 @@ void SimulatorDialog::initUi(T * ui)
     channelSliders << slider;
     channelsLayout->addWidget(slider, 2, column++, 1, 1);
     channelsLayout->setAlignment(slider, Qt::AlignHCenter);
-
   }
 
   // populate logical switches
@@ -428,13 +436,16 @@ void SimulatorDialog::initUi(T * ui)
     QFrame * swtch = createLogicalSwitch(tabWidget, i, logicalSwitchLabels);
     logicalSwitchesLayout->addWidget(swtch, i / rows, i % rows, 1, 1);
   }
+}
 
+void SimulatorDialog::setupGVarsDisplay()
+{
   int fmodes = GetCurrentFirmware()->getCapability(FlightModes);
   int gvars = GetCurrentFirmware()->getCapability(Gvars);
   if (gvars>0) {
     // setup GVars tab
-    QWidget *gvarsWidget = new QWidget();
-    QGridLayout *gvarsLayout = new QGridLayout(gvarsWidget);
+    QWidget * gvarsWidget = new QWidget();
+    QGridLayout * gvarsLayout = new QGridLayout(gvarsWidget);
     tabWidget->addTab(gvarsWidget, QString(tr("GVars")));
 
     for (int fm=0; fm<fmodes; fm++) {
@@ -463,33 +474,6 @@ void SimulatorDialog::initUi(T * ui)
       }
     }
   }
-
-  if (flags & SIMULATOR_FLAGS_NOTX) {
-    ui->tabWidget->setCurrentWidget(outputsWidget);
-  }
-  else {
-    ui->tabWidget->setCurrentWidget(ui->simu);
-  }
-}
-
-QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels)
-{
-    QFrame * swtch = new QFrame(parent);
-    swtch->setAutoFillBackground(true);
-    swtch->setFrameShape(QFrame::Panel);
-    swtch->setFrameShadow(QFrame::Raised);
-//    swtch->setLineWidth(2);
-    swtch->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    swtch->setMaximumHeight(18);
-    QVBoxLayout * layout = new QVBoxLayout(swtch);
-    layout->setContentsMargins(2, 0, 2, 0);
-    QLabel * label = new QLabel(swtch);
-    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
-    label->setAlignment(Qt::AlignCenter);
-    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    labels << label;
-    layout->addWidget(label);
-    return swtch;
 }
 
 void SimulatorDialog::onButtonPressed(int value)
@@ -555,6 +539,7 @@ void SimulatorDialog::onTimerEvent()
       beepVal = 0;
       QApplication::beep();
     }
+
   }
 
   updateDebugOutput();
@@ -562,11 +547,11 @@ void SimulatorDialog::onTimerEvent()
 
 void SimulatorDialog::centerSticks()
 {
-  if (leftStick->scene())
-    nodeLeft->stepToCenter();
+  if (vJoyLeft)
+    vJoyLeft->centerStick();
 
-  if (rightStick->scene())
-    nodeRight->stepToCenter();
+  if (vJoyRight)
+    vJoyRight->centerStick();
 }
 
 void SimulatorDialog::start(QByteArray & eeprom)
@@ -591,43 +576,37 @@ void SimulatorDialog::start(const char * filename)
 
 void SimulatorDialog::setTrims()
 {
+  typedef VirtualJoystickWidget VJW;
+  static Trims lastTrims;
   Trims trims;
   simulator->getTrims(trims);
 
-  int trimMin = -125, trimMax = +125;
-  if (trims.extended) {
-    trimMin = -500;
-    trimMax = +500;
+  if (trims.values[VJW::TRIM_AXIS_L_X] != lastTrims.values[VJW::TRIM_AXIS_L_X])
+    vJoyLeft->setTrimValue(VJW::TRIM_AXIS_L_X, trims.values[VJW::TRIM_AXIS_L_X]);
+  if (trims.values[VJW::TRIM_AXIS_L_Y] != lastTrims.values[VJW::TRIM_AXIS_L_Y])
+    vJoyLeft->setTrimValue(VJW::TRIM_AXIS_L_Y, trims.values[VJW::TRIM_AXIS_L_Y]);
+  if (trims.values[VJW::TRIM_AXIS_R_Y] != lastTrims.values[VJW::TRIM_AXIS_R_Y])
+    vJoyRight->setTrimValue(VJW::TRIM_AXIS_R_Y, trims.values[VJW::TRIM_AXIS_R_Y]);
+  if (trims.values[VJW::TRIM_AXIS_R_X] != lastTrims.values[VJW::TRIM_AXIS_R_X])
+    vJoyRight->setTrimValue(VJW::TRIM_AXIS_R_X, trims.values[VJW::TRIM_AXIS_R_X]);
+
+  if (trims.extended != lastTrims.extended) {
+    int trimMin = -125, trimMax = +125;
+    if (trims.extended) {
+      trimMin = -500;
+      trimMax = +500;
+    }
+    vJoyLeft->setTrimRange(VJW::TRIM_AXIS_L_X, trimMin, trimMax);
+    vJoyLeft->setTrimRange(VJW::TRIM_AXIS_L_Y, trimMin, trimMax);
+    vJoyRight->setTrimRange(VJW::TRIM_AXIS_R_Y, trimMin, trimMax);
+    vJoyRight->setTrimRange(VJW::TRIM_AXIS_R_X, trimMin, trimMax);
   }
-  trimHLeft->setRange(trimMin, trimMax);  trimHLeft->setValue(trims.values[0]);
-  trimVLeft->setRange(trimMin, trimMax);  trimVLeft->setValue(trims.values[1]);
-  trimVRight->setRange(trimMin, trimMax); trimVRight->setValue(trims.values[2]);
-  trimHRight->setRange(trimMin, trimMax); trimHRight->setValue(trims.values[3]);
+  lastTrims = trims;
 }
 
 inline int chVal(int val)
 {
   return qMin(1024, qMax(-1024, val));
-}
-
-void SimulatorDialog::on_trimHLeft_valueChanged(int value)
-{
-  simulator->setTrim(0, value);
-}
-
-void SimulatorDialog::on_trimVLeft_valueChanged(int value)
-{
-  simulator->setTrim(1, value);
-}
-
-void SimulatorDialog::on_trimVRight_valueChanged(int value)
-{
-  simulator->setTrim(2, value);
-}
-
-void SimulatorDialog::on_trimHRight_valueChanged(int value)
-{
-  simulator->setTrim(3, value);
 }
 
 void SimulatorDialog::setValues()
@@ -644,20 +623,11 @@ void SimulatorDialog::setValues()
     }
   }
 
-  leftXPerc->setText(QString("X %1%").arg((qreal)nodeLeft->getX()*100+trims.values[0]/5, 2, 'f', 0));
-  leftYPerc->setText(QString("Y %1%").arg((qreal)nodeLeft->getY()*-100+trims.values[1]/5, 2, 'f', 0));
-
-  rightXPerc->setText(QString("X %1%").arg((qreal)nodeRight->getX()*100+trims.values[3]/5, 2, 'f', 0));
-  rightYPerc->setText(QString("Y %1%").arg((qreal)nodeRight->getY()*-100+trims.values[2]/5, 2, 'f', 0));
-
   QString CSWITCH_ON = "QLabel { background-color: #4CC417 }";
   QString CSWITCH_OFF = "QLabel { }";
 
   for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
     logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
-    if (!logicalSwitchLabels2.isEmpty()) {
-      logicalSwitchLabels2[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
-    }
   }
 
   for (unsigned int gv=0; gv<numGvars; gv++) {
@@ -669,103 +639,6 @@ void SimulatorDialog::setValues()
   if (outputs.beep) {
     beepVal = outputs.beep;
   }
-}
-
-void SimulatorDialog::setupSticks()
-{
-  QGraphicsScene *leftScene = new QGraphicsScene(leftStick);
-  leftScene->setItemIndexMethod(QGraphicsScene::NoIndex);
-  leftStick->setScene(leftScene);
-
-  // leftStick->scene()->addLine(0,10,20,30);
-
-  QGraphicsScene *rightScene = new QGraphicsScene(rightStick);
-  rightScene->setItemIndexMethod(QGraphicsScene::NoIndex);
-  rightStick->setScene(rightScene);
-
-  // rightStick->scene()->addLine(0,10,20,30);
-
-  nodeLeft = new Node();
-  nodeLeft->setPos(-GBALL_SIZE/2,-GBALL_SIZE/2);
-  nodeLeft->setBallSize(GBALL_SIZE);
-  leftScene->addItem(nodeLeft);
-
-  nodeRight = new Node();
-  nodeRight->setPos(-GBALL_SIZE/2,-GBALL_SIZE/2);
-  nodeRight->setBallSize(GBALL_SIZE);
-  rightScene->addItem(nodeRight);
-}
-
-void SimulatorDialog::resizeEvent(QResizeEvent *event)
-{
-  if (leftStick->scene()) {
-    QRect qr = leftStick->contentsRect();
-    qreal w  = (qreal)qr.width()  - GBALL_SIZE;
-    qreal h  = (qreal)qr.height() - GBALL_SIZE;
-    qreal cx = (qreal)qr.width()/2;
-    qreal cy = (qreal)qr.height()/2;
-    leftStick->scene()->setSceneRect(-cx,-cy,w,h);
-
-    QPointF p = nodeLeft->pos();
-    p.setX(qMin(cx, qMax(p.x(), -cx)));
-    p.setY(qMin(cy, qMax(p.y(), -cy)));
-    nodeLeft->setPos(p);
-  }
-
-  if (rightStick->scene()) {
-    QRect qr = rightStick->contentsRect();
-    qreal w  = (qreal)qr.width()  - GBALL_SIZE;
-    qreal h  = (qreal)qr.height() - GBALL_SIZE;
-    qreal cx = (qreal)qr.width()/2;
-    qreal cy = (qreal)qr.height()/2;
-    rightStick->scene()->setSceneRect(-cx,-cy,w,h);
-
-    QPointF p = nodeRight->pos();
-    p.setX(qMin(cx, qMax(p.x(), -cx)));
-    p.setY(qMin(cy, qMax(p.y(), -cy)));
-    nodeRight->setPos(p);
-  }
-  QDialog::resizeEvent(event);
-}
-
-void SimulatorDialog::on_holdLeftX_clicked(bool checked)
-{
-  nodeLeft->setCenteringX(!checked);
-}
-
-void SimulatorDialog::on_holdLeftY_clicked(bool checked)
-{
-  nodeLeft->setCenteringY(!checked);
-}
-
-void SimulatorDialog::on_holdRightX_clicked(bool checked)
-{
-  nodeRight->setCenteringX(!checked);
-}
-
-void SimulatorDialog::on_holdRightY_clicked(bool checked)
-{
-  nodeRight->setCenteringY(!checked);
-}
-
-void SimulatorDialog::on_FixLeftX_clicked(bool checked)
-{
-  nodeLeft->setFixedX(checked);
-}
-
-void SimulatorDialog::on_FixLeftY_clicked(bool checked)
-{
-  nodeLeft->setFixedY(checked);
-}
-
-void SimulatorDialog::on_FixRightX_clicked(bool checked)
-{
-  nodeRight->setFixedX(checked);
-}
-
-void SimulatorDialog::on_FixRightY_clicked(bool checked)
-{
-  nodeRight->setFixedY(checked);
 }
 
 #ifdef JOYSTICKS
@@ -786,19 +659,19 @@ void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
       stickval=(1024*(value-jscal[axis][1]))/(jscal[axis][1]-jscal[axis][0]);
     }
     if (jscal[axis][3]==1) {
-       stickval*=-1;
+      stickval*=-1;
     }
     if (stick==1 ) {
-       nodeRight->setY(-stickval/1024.0);
+      vJoyRight->setStickY(-stickval/1024.0);
     } 
     else if (stick==2) {
-      nodeRight->setX(stickval/1024.0);
+      vJoyRight->setStickX(stickval/1024.0);
     } 
     else if (stick==3) {
-      nodeLeft->setY(-stickval/1024.0);
+      vJoyLeft->setStickY(-stickval/1024.0);
     } 
     else if (stick==4) {
-      nodeLeft->setX(stickval/1024.0);
+      vJoyLeft->setStickX(stickval/1024.0);
     }
     else if (stick >= 5 && stick < 5+pots.count()) {
       pots[stick-5]->setValue(stickval);
