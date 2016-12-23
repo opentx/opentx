@@ -19,7 +19,7 @@
  */
 
 #include "virtualjoystickwidget.h"
-#include "../constants.h"
+#include "constants.h"
 #include "sliderwidget.h"
 #include "modeledit/node.h"
 #include "helpers.h"
