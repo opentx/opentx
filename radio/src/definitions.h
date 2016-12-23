@@ -73,10 +73,4 @@ typedef __int24 int24_t;
 #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
 #endif
 
-#if defined(WIN32)
-#define round(x)    floor(x+0.5)
-#define strcasecmp  _stricmp
-#define strncasecmp _tcsnicmp
-#endif
-
 #endif // _DEFINITIONS_H_

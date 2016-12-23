@@ -24,10 +24,6 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
-// #if !defined WIN32 && defined __GNUC__
-// #include <unistd.h>
-// #endif
-
 PrintDialog::PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings & generalSettings, ModelData & model, const QString & filename) :
   QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
   firmware(firmware),

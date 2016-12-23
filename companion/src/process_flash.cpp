@@ -26,7 +26,7 @@
 #include "eeprominterface.h"
 //#include "firmwareinterface.h"
 
-#if defined WIN32 || !defined __GNUC__
+#if defined _MSC_VER || !defined __GNUC__
 #include <Windows.h>
 #include <WinBase.h>
 #include <tlhelp32.h>

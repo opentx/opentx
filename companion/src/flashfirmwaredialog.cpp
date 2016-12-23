@@ -32,7 +32,7 @@
 #include "progresswidget.h"
 #include "splashlibrarydialog.h"
 
-#if defined WIN32 || !defined __GNUC__
+#if defined _MSC_VER || !defined __GNUC__
   #include <windows.h>
   #define sleep(x) Sleep(x*1000)
 #else

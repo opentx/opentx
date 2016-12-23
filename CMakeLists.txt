@@ -33,29 +33,56 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
+if(WIN32)
+  set(WIN_EXTRA_LIBS_PATH "C:/Programs" CACHE PATH
+    "Base path to extra libs/headers on Windows (SDL, dirent, pthreads, msinttypes folders should be in here).")
+  list(APPEND CMAKE_PREFIX_PATH "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/SDL")  # hints for FindSDL
+endif()
+
 find_package(Qt5Widgets)
 find_package(Qt5Xml)
 find_package(Qt5LinguistTools)
 find_package(Qt5PrintSupport)
 find_package(Qt5Multimedia)
 
-message(STATUS "Looking for SDL ")
-find_package(Sdl)
-if(SDL_FOUND)
-  message("SDL Include Path: " ${SDL_INCLUDE_DIR})
+if(Qt5Widgets_FOUND)
+  message(STATUS "Qt Version: ${Qt5Widgets_VERSION}")
 else()
-  message("SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
+  message(WARNING "Qt not found! Companion and Simulator builds disabled.")
 endif()
 
-message(STATUS "Looking for FOX ")
-find_package(Fox)
-if ((NOT FOX_FOUND) AND (NOT WIN32))
-  message("Libfox not found, simu target will not be available")
+if(NOT WIN32)
+  find_package(Fox QUIET)  # QUIET not working on WIN32?
+  if (FOX_FOUND)
+    message(STATUS "Foxlib found at ${FOX_LIBRARY}")
+  else() # if(NOT WIN32)
+    message("Libfox not found, simu target will not be available")
+  endif()
+endif()
+
+if(Qt5Widgets_FOUND OR FOX_FOUND)
+  set(SDL_BUILDING_LIBRARY YES)  # this prevents FindSDL from appending SDLmain lib to the results, which we don't want
+  find_package("SDL")
+  if(SDL_FOUND)
+    message(STATUS "SDL Lib: ${SDL_LIBRARY}; Headers: ${SDL_INCLUDE_DIR}; Version: ${SDL_VERSION_STRING}")
+  else()
+    message(STATUS "SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
+  endif()
 endif()
 
 # Check for a file that is typically left from a OpenTX 2.1 build and abort if found
 if (EXISTS ${RADIO_SRC_DIRECTORY}/stamp.h OR EXISTS ${RADIO_SRC_DIRECTORY}/translations/en.h)
    message(FATAL_ERROR "Source directory contains files leftover from a OpenTX 2.1 build. Please run `git clean -f` in source directory (Careful: Will remove any extra files) or do a new clean git checkout")
+endif()
+
+# Windows-specific includes and libs shared by sub-projects
+if(WIN32)
+  list(APPEND WIN_INCLUDE_DIRS "${WIN_EXTRA_LIBS_PATH}/dirent/include")
+  if(MSVC)
+    set(WIN_PTHREAD_BASE_PATH "${WIN_EXTRA_LIBS_PATH}/pthreads/Pre-built.2")
+    list(APPEND WIN_INCLUDE_DIRS "${WIN_PTHREAD_BASE_PATH}/include" "${WIN_EXTRA_LIBS_PATH}/msinttypes")
+    list(APPEND WIN_LINK_LIBRARIES "${WIN_PTHREAD_BASE_PATH}/lib/pthreadVC2.lib")
+  endif(MSVC)
 endif()
 
 include(Macros)

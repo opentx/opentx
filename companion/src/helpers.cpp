@@ -19,13 +19,16 @@
  */
 
 #include <QtGui>
-#if defined WIN32
+#if defined _MSC_VER
   #include <io.h>
   #include <stdio.h>
-#endif
-#if !defined WIN32 && defined __GNUC__
+#elif defined __GNUC__
   #include <unistd.h>
 #endif
+#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
+  #include "windows.h"
+#endif
+
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
@@ -809,6 +812,12 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
   Firmware * firmware = GetCurrentFirmware();
   SimulatorInterface * simulator = GetCurrentFirmwareSimulator();
   if (simulator) {
+#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
+    AllocConsole();
+    freopen("conin$", "r", stdin);
+    freopen("conout$", "w", stdout);
+    freopen("conout$", "w", stderr);
+#endif
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
     if (modelIdx >= 0) {
@@ -854,6 +863,9 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
 
     dialog->exec();
+#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
+    FreeConsole();
+#endif
     delete dialog;
     delete simuData;
   }

@@ -34,7 +34,6 @@
 
 #if defined(SIMU_AUDIO) && defined(CPUARM)
   #include <SDL.h>
-  #undef main
 #endif
 
 #if defined(TRACE_SIMPGMSPACE)
@@ -939,11 +938,7 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
   }
 
   // remove simuSdDirectory from the cwd
-#ifdef _MSC_VER
-  strcpy(path, cwd + sdlen + 2);  // account for drive name
-#else
   strcpy(path, cwd + sdlen);
-#endif
 
   if (path[0] == '\0') {
     strcpy(path, "/");    // fix for the root directory
