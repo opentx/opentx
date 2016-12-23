@@ -43,7 +43,7 @@ class OutputsWidget: public Widget
 
       for (uint8_t curChan = firstChan; curChan < lastChan && curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
-        lcdDrawSolidFilledRect(x + RECT_OFFSET, y + 1 + (curChan - firstChan) * row_height, RECT_WIDTH, row_height - 2, BARGRAPH_BGCOLOR);
+        lcdDrawSolidFilledRect(x + RECT_OFFSET, y + 1 + (curChan - firstChan) * row_height, RECT_WIDTH, row_height, BARGRAPH_BGCOLOR);
         if (chanVal > 0) {
           lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height, MAINVIEW_GRAPHICS_COLOR);
         }
@@ -54,6 +54,7 @@ class OutputsWidget: public Widget
           lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * row_height, size, row_height, MAINVIEW_GRAPHICS_COLOR);
         }
         lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * row_height, row_height, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawRect(x + RECT_OFFSET, y + (curChan - firstChan) * row_height, RECT_WIDTH, row_height+1);
         lcdDrawNumber(x + RECT_WIDTH - 10, y + (curChan - firstChan) * row_height + 1, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
         if (g_model.limitData[curChan - 1].name[0] != 0)  {
           strAppendSigned(chanString, curChan, 2);
