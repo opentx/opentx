@@ -1068,18 +1068,21 @@ static int luaSetTelemetryValue(lua_State * L)
     zname[2] = hex2zchar((id & 0x00f0) >> 4);
     zname[3] = hex2zchar((id & 0x000f) >> 0);
   }
-
-  int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
-  if (index >= 0) {
-    TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
-    telemetrySensor.id = id;
-    telemetrySensor.subId = subId;
-    telemetrySensor.instance = instance;
-    telemetrySensor.init(zname, unit, prec);
-    lua_pushboolean(L, true);
-  } else {
-    lua_pushboolean(L, false);
+  if (id | subId | instance) {
+    int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
+    if (index >= 0) {
+      TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
+      telemetrySensor.id = id;
+      telemetrySensor.subId = subId;
+      telemetrySensor.instance = instance;
+      telemetrySensor.init(zname, unit, prec);
+      lua_pushboolean(L, true);
+    } else {
+      lua_pushboolean(L, false);
+    }
+    return 1;
   }
+  lua_pushboolean(L, false);
   return 1;
 }
 
