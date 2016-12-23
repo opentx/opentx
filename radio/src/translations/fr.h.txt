@@ -514,12 +514,18 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#define TR_STICKS_VSRCRAW      TR("Dir\0""Prf\0""Gaz\0""Ail\0", "\307Dir""\307Prf""\307Gaz""\307Ail")
+#if defined(CPUARM)
+#define TR_STICKS_VSRCRAW      "\307Dir""\307Prf""\307Gaz""\307Ail"
+#else
+#define TR_STICKS_VSRCRAW      "Dir\0""Prf\0""Gaz\0""Ail\0"
+#endif
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW     "\313Dir""\313Prf""\313Gaz""\313Ail""\313T5\0""\313T6\0"
+#elif defined(CPUARM)
+  #define TR_TRIMS_VSRCRAW     "\313Dir""\313Prf""\313Gaz""\313Ail"
 #else
-  #define TR_TRIMS_VSRCRAW     TR("TrmD""TrmP""TrmG""TrmA", "\313Dir""\313Prf""\313Gaz""\313Ail")
+  #define TR_TRIMS_VSRCRAW     "TrmD""TrmP""TrmG""TrmA"
 #endif
 
 #if defined(PCBHORUS)
@@ -589,7 +595,7 @@
 
 #if defined(CPUARM)
   #define TR_RESERVE_VSRCRAW   "[--]"
-  #define TR_EXTRA_VSRCRAW     "Batt""H:M\0" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3"
+  #define TR_EXTRA_VSRCRAW     "Batt""H:M\0" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Chr1""Chr2""Chr3"
 #else
   #define TR_EXTRA_VSRCRAW
 #endif
@@ -670,13 +676,9 @@
 #define TR_NAME                "Nom"
 #define TR_MODELNAME           TR("Nom modèle", "Nom du modèle")
 #define TR_PHASENAME           "Nom phase"
-#define TR_MIXNAME             TR("Nom mix.", "Nom du mixeur")
-#define TR_INPUTNAME           "Nom entrée"
-#if defined(CPUARM)
-  #define TR_EXPONAME          "Nom ligne"
-#else
-  #define TR_EXPONAME          "Nom expo"
-#endif
+#define TR_MIXNAME             TR("Nom ligne", "Nom du mixeur")
+#define TR_INPUTNAME           TR("Entrée", "Nom entrée")
+#define TR_EXPONAME            TR("Nom", "Nom ligne")
 #define TR_BITMAP              "Image du modèle"
 #define TR_TIMER               "Chrono "
 #define TR_ELIMITS             TR("Limites ét.", "Limites étendues")
@@ -713,7 +715,7 @@
 #define TR_AILDIRECTION        TR("Inv. latéral", "Inversion latéral")
 #define TR_COLDIRECTION        TR("Inv. collectif", "Inversion collectif")
 #define TR_MODE                INDENT "Mode"
-#define TR_SUBTYPE             INDENT "Subtype"
+#define TR_SUBTYPE             INDENT "Sous-type"
 #define TR_NOFREEEXPO          "Max expos atteint!"
 #define TR_NOFREEMIXER         "Max mixages atteint!"
 #define TR_SOURCE              INDENT "Source"
@@ -886,21 +888,21 @@
   #define TR_RECEIVER_NUM      "Récepteur"
   #define TR_RECEIVER          "Récepteur"
 #endif
-#define TR_MULTI_RFTUNE        INDENT "Ajustement fréq."
-#define TR_MULTI_VIDFREQ       INDENT "Fréquence vidéo"
-#define TR_MULTI_RFPOWER       INDENT "RF Power"
+#define TR_MULTI_RFTUNE        TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
+#define TR_MULTI_VIDFREQ       TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
+#define TR_MULTI_RFPOWER       TR(INDENT "Puiss. RF", INDENT "Puissance RF")
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option perso")
-#define TR_MULTI_AUTOBIND      INDENT "Bind automatique"
-#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
-#define TR_MULTI_LOWPOWER      TR( INDENT "low power", INDENT "Mode basse puiss.")
-#define TR_DISABLE_INTERNAL         TR("Disable int. RF", "Disable internal RF")
+#define TR_MULTI_AUTOBIND      TR(INDENT "Bind auto", INDENT "Bind automatique")
+#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodét.", INDENT "Autodétection")
+#define TR_MULTI_LOWPOWER      TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
+#define TR_DISABLE_INTERNAL    TR("Disable int. RF", "Disable internal RF")
 #define TR_MODULE_NO_SERIAL_MODE       TR("!serial mode", "Not in serial mode")
-#define TR_MODULE_NO_INPUT             TR("No input", "No serial input")
-#define TR_MODULE_NO_TELEMETRY         TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
-#define TR_MODULE_BINDING              "Binding"
-#define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
-#define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
-#define TR_MULTI_SERVOFREQ     TR(INDENT "Servo rate", INDENT "Servo update rate")
+#define TR_MODULE_NO_INPUT     TR("No input", "No serial input")
+#define TR_MODULE_NO_TELEMETRY TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
+#define TR_MODULE_BINDING      "Binding"
+#define TR_PROTOCOL_INVALID    TR("Prot. invalid", "Protocol invalid")
+#define TR_MODULE_STATUS       TR(INDENT "Status", INDENT "Module Status")
+#define TR_MULTI_SERVOFREQ     TR(INDENT "Fréq.servo", INDENT "Fréquence servos")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Limite"
 #define TR_MINRSSI             "RSSI Min."
@@ -944,10 +946,10 @@
 #define TR_ALARMSWARN          "SON"
 #define TR_SWITCHWARN          TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN        "FAILSAFE"
-#define TR_WRONG_SDCARDVERSION "Version requise : "
-#define TR_WRONG_PCBREV        "Wrong PCB detected"
-#define TR_EMERGENCY_MODE      "EMERGENCY MODE"
-#define TR_PCBREV_ERROR        "PCB error"
+#define TR_WRONG_SDCARDVERSION "Version requise: "
+#define TR_WRONG_PCBREV        "PCB incorrect détecté"
+#define TR_EMERGENCY_MODE      "MODE SECOURS"
+#define TR_PCBREV_ERROR        "Erreur PCB"
 #define TR_NO_FAILSAFE         "Failsafe pas déf."
 #define TR_KEYSTUCK            "Touche bloquée"
 #define TR_INVERT_THR          "Inverser gaz?"
@@ -961,7 +963,7 @@
 #define TR_COPROC_TEMP         "Temp. MB \016>"
 #define TR_CAPAWARNING         INDENT "Capacité Basse"
 #define TR_TEMPWARNING         INDENT "Surchauffe"
-#define TR_FUNC                TR("Fonc", "Fonction")
+#define TR_FUNC                "Fonction"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
 #define TR_DURATION            "Durée"
@@ -1057,7 +1059,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED         TR("ID déjà affecté", "No de modèle déjà utilisé")
 #define TR_MODULE              INDENT "Type de module"
-#define TR_TELEMETRY_TYPE      TR("Type télm.", "Type télémesure")
+#define TR_TELEMETRY_TYPE      TR("Type tél.", "Type télémesure")
 #define TR_TELEMETRY_SENSORS   "Capteurs"
 #define TR_VALUE               "Valeur"
 #define TR_TOPLCDTIMER         "Timer LCD haut"
@@ -1254,13 +1256,13 @@
 #define TR_GPSSENSOR           "Capteur GPS"
 #define TR_CURRENTSENSOR       "Capteur"
 #define TR_AUTOOFFSET          "Offset auto"
-#define TR_ONLYPOSITIVE        "Positive"
+#define TR_ONLYPOSITIVE        "Positif"
 #define TR_FILTER              "Filtrage"
 #define TR_TELEMETRYFULL       "Plus de capteurs libres!"
 #define TR_SERVOS_OK           "Servos OK"
 #define TR_SERVOS_KO           "Servos KO"
 #define TR_INVERTED_SERIAL     INDENT "Inversé"
-#define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst.", INDENT "Ignorer instance")
+#define TR_IGNORE_INSTANCE     TR(INDENT "Ign. inst", INDENT "Ignorer instance")
 #define TR_DISCOVER_SENSORS    INDENT "Découvrir capteurs"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Terminer découverte"
 #define TR_DELETE_ALL_SENSORS  TR(INDENT "Suppr. tous capteurs", INDENT "Supprimer tous capteurs")

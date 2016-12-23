@@ -1067,7 +1067,16 @@ GeneralSettings::GeneralSettings()
   }
   
   BoardEnum board = GetEepromInterface()->getBoard();
-  if (IS_TARANIS(board)) {
+  if (board == BOARD_HORUS) {
+    potConfig[0] = POT_WITH_DETENT;
+    potConfig[1] = POT_MULTIPOS_SWITCH;
+    potConfig[2] = POT_WITH_DETENT;
+    sliderConfig[0] = SLIDER_WITH_DETENT;
+    sliderConfig[1] = SLIDER_WITH_DETENT;
+    sliderConfig[2] = SLIDER_WITH_DETENT;
+    sliderConfig[3] = SLIDER_WITH_DETENT;
+  }
+  else if (IS_TARANIS(board)) {
     potConfig[0] = POT_WITH_DETENT;
     potConfig[1] = POT_WITH_DETENT;
     sliderConfig[0] = SLIDER_WITH_DETENT;

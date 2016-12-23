@@ -14,6 +14,7 @@ if(ARCH STREQUAL ARM)
     ${GUI_SRC}
     ../common/stdlcd/model_inputs.cpp
     ../common/stdlcd/model_mixes.cpp
+    ../common/stdlcd/view_text.cpp
     )
   set(CURVE_EDIT_SRC model_curve_edit.cpp)
 else()

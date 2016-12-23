@@ -127,11 +127,11 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
       curve.value = GVAR_MENU_ITEM(x, y, curve.value, -100, 100, LEFT | (menuHorizontalPosition==1 ? flags : 0), 0, event);
       break;
     case CURVE_REF_FUNC:
-      lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
+      lcdDrawTextAtIndex(x+2*FW, y, STR_VCURVEFUNC, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
       if (flags && menuHorizontalPosition==1) CHECK_INCDEC_MODELVAR_ZERO(event, curve.value, CURVE_BASE-1);
       break;
     case CURVE_REF_CUSTOM:
-      drawCurveName(x, y, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
+      drawCurveName(x+2*FW, y, curve.value, RIGHT | (menuHorizontalPosition==1 ? flags : 0));
       if (flags && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
           s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);

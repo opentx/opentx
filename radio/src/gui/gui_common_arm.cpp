@@ -162,7 +162,7 @@ bool isSourceAvailable(int source)
 #endif
 
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
-    return IS_POT_OR_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+    return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
@@ -227,7 +227,7 @@ bool isSourceAvailableInCustomSwitches(int source)
 bool isInputSourceAvailable(int source)
 {
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
-    return IS_POT_OR_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
+    return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
@@ -401,7 +401,7 @@ bool isSwitchAvailableInTimers(int swtch)
 
 bool isThrottleSourceAvailable(int source)
 {
-  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS+NUM_SLIDERS && !IS_POT_OR_SLIDER_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
+  if (source >= THROTTLE_SOURCE_FIRST_POT && source < THROTTLE_SOURCE_FIRST_POT+NUM_POTS+NUM_SLIDERS && !IS_POT_SLIDER_AVAILABLE(POT1+source-THROTTLE_SOURCE_FIRST_POT))
     return false;
   else
     return true;

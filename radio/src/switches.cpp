@@ -765,7 +765,7 @@ void checkSwitches()
       evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
       for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
-        if (!IS_POT_OR_SLIDER_AVAILABLE(POT1+i)) {
+        if (!IS_POT_SLIDER_AVAILABLE(POT1+i)) {
           continue;
         }
         if (!(g_model.potsWarnEnabled & (1 << i)) && (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
@@ -787,7 +787,7 @@ void checkSwitches()
       evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
       for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
-        if (!IS_POT_OR_SLIDER_AVAILABLE(POT1+i)) {
+        if (!IS_POT_SLIDER_AVAILABLE(POT1+i)) {
           continue;
         }
         if (!(g_model.potsWarnEnabled & (1 << i)) && (abs(g_model.potsWarnPosition[i] - GET_LOWRES_POT_POSITION(i)) > 1)) {
@@ -871,7 +871,7 @@ void checkSwitches()
           x = 60;
         }
         for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
-          if (!IS_POT_OR_SLIDER_AVAILABLE(POT1+i)) {
+          if (!IS_POT_SLIDER_AVAILABLE(POT1+i)) {
             continue;
           }
           if (!(g_model.potsWarnEnabled & (1 << i))) {

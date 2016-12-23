@@ -3675,7 +3675,12 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
         internalField.Append(new UnsignedField<8>(generalData.hw_uartMode));
       }
       if (IS_HORUS(board)) {
-        internalField.Append(new SpareBitsField<32>()); // switchConfig
+        for (int i=0; i<16; i++) {
+          if (i < MAX_SWITCHES(board, version))
+            internalField.Append(new UnsignedField<2>(generalData.switchConfig[i]));
+          else
+            internalField.Append(new SpareBitsField<2>());
+        }
       }
       for (int i=0; i<4; i++) {
         if (i < MAX_POTS(board, version))

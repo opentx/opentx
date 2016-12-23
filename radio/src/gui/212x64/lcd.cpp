@@ -284,8 +284,21 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
       break;
     }
     else if (c >= 0x20) {
-      lcdDrawChar(x, y, c, flags);
-      x = lcdNextPos;
+      if ( ( c == 46) && ((FONTSIZE(flags) == TINSIZE) || (FONTSIZE(flags) == SMLSIZE))) { // '.' handling
+        uint8_t c_height = (FONTSIZE(flags) == TINSIZE ? 5 : 6);
+        if (flags & INVERS) {
+          lcdDrawSolidVerticalLine(x, y-1, c_height);
+          lcdDrawPoint(x, y + c_height);
+        }
+        else {
+          lcdDrawPoint(x, y + c_height -1 , flags);
+        }
+        x+=2;
+      }
+      else {
+        lcdDrawChar(x, y, c, flags);
+        x = lcdNextPos;
+      }
     }
     else if (c == 0x1F) {  //X-coord prefix
       setx = true;
@@ -368,135 +381,33 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags)
 
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t len)
 {
-  uint8_t fw = FWNUM;
-  int8_t mode = MODE(flags);
-  flags &= ~LEADING0;
-  uint32_t fontsize = FONTSIZE(flags);
-  bool dblsize = (fontsize == DBLSIZE);
-  bool xxlsize = (fontsize == XXLSIZE);
-  bool midsize = (fontsize == MIDSIZE);
-  bool smlsize = (fontsize == SMLSIZE);
-  bool tinsize = (fontsize == TINSIZE);
-
+  char str[16+1];
+  char *s = str+16;
+  *s = '\0';
+  int idx = 0;
+  int mode = MODE(flags);
   bool neg = false;
   if (val < 0) {
-    neg = true;
     val = -val;
+    neg = true;
   }
-
-  coord_t xn = 0;
-  uint8_t ln = 2;
-
-  if (mode != MODE(LEADING0)) {
-    len = 1;
-    int32_t tmp = val / 10;
-    while (tmp) {
-      len++;
-      tmp /= 10;
-    }
-    if (len <= mode) {
-      len = mode + 1;
-    }
-  }
-
-  if (dblsize) {
-    fw += FWNUM;
-  }
-  else if (xxlsize) {
-    fw += 4*FWNUM-1;
-  }
-  else if (midsize) {
-    fw += FWNUM-3;
-  }
-  else if (tinsize) {
-    fw -= 1;
-  }
-  else {
-    if (!(flags & RIGHT)) {
-      if (mode > 0)
-        x += 2;
-    }
-    if (flags & BOLD) fw += 1;
-  }
-
-  if (!(flags & RIGHT)) {
-    x += len * fw;
-    if (neg) {
-      x += ((xxlsize|dblsize|midsize) ? 7 : FWNUM);
-    }
-  }
-
-  lcdLastPos = x;
-  x -= fw;
-  if (dblsize) x++;
-
-  for (uint8_t i=1; i<=len; i++) {
-    div_t qr = div(val, 10);
-    char c = qr.rem + '0';
-    LcdFlags f = flags;
-    lcdDrawChar(x, y, c, f);
-    if (mode == i) {
-      if (dblsize) {
-        xn = x - 2;
-        if (c>='2' && c<='3') ln++;
-        uint8_t tn = (qr.quot % 10);
-        if (tn==2 || tn==4) {
-          if (c=='4') {
-            xn++;
-          }
-          else {
-            xn--;
-            ln++;
-          }
-        }
-      }
-      else if (xxlsize) {
-        x -= 17;
-        lcdDrawChar(x+2, y, '.', f);
-      }
-      else if (midsize) {
-        x -= 3;
-        xn = x;
-      }
-      else if (smlsize) {
-        x -= 2;
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x, y-1, 8, INVERS);
-        }
-        lcdDrawPoint(x, y+5);
-      }
-      else if (tinsize) {
-        x -= 2;
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x, y-1, 7, INVERS);
-        }
-        lcdDrawPoint(x, y+4);
-      }
-      else {
-        x -= (flags & BOLD) ? 3 : 2;
-        lcdDrawChar(x, y, '.', f);
+  do {
+    *--s = '0' + (val % 10);
+    ++idx;
+    val /= 10;
+    if (mode!=0 && idx==mode) {
+      mode = 0;
+      *--s = '.';
+      if (val==0) {
+        *--s = '0';
       }
     }
-    val = qr.quot;
-    x -= fw;
-    if (i==len && (flags & BOLD)) x += 1;
+  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
+  if (neg) {
+    *--s = '-';
   }
-
-  if (xn) {
-    if (midsize) {
-      if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-        lcdDrawSolidVerticalLine(xn, y, 12);
-        lcdDrawSolidVerticalLine(xn+1, y, 12);
-      }
-      lcdDrawSolidHorizontalLine(xn, y+9, 2);
-      lcdDrawSolidHorizontalLine(xn, y+10, 2);
-    }
-    else {
-      // TODO needed on CPUAVR? y &= ~0x07;
-      lcdDrawFilledRect(xn, y+2*FH-3, ln, 2);
-    }
-  }
-  if (neg) lcdDrawChar(x, y, '-', flags);
+  flags &= ~LEADING0;
+  lcdDrawText(x, y, s, flags);
 }
 #endif
 
@@ -551,12 +462,12 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
     }
   }
 }
+#endif
 
 void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
 {
   lcdDrawVerticalLine(x, y, h, SOLID, att);
 }
-#endif
 
 void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
@@ -627,7 +538,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   if (att & TIMEHOUR) {
     div_t qr2 = div(qr.quot, 60);
     lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, separator, att);
+    lcdDrawChar(lcdNextPos, y, separator, att);
     qr.quot = qr2.rem;
     if (att & MIDSIZE)
       x += 17;
@@ -639,9 +550,9 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
   if (att & TIMEBLINK)
-    lcdDrawChar(lcdLastPos, y, separator, BLINK);
+    lcdDrawChar(lcdNextPos, y, separator, BLINK);
   else
-    lcdDrawChar(lcdLastPos, y, separator, att&att2);
+    lcdDrawChar(lcdNextPos, y, separator, att&att2);
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0) & (~RIGHT), 2);
 }
 

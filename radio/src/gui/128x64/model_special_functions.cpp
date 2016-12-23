@@ -22,7 +22,7 @@
 
 #define MODEL_SPECIAL_FUNC_1ST_COLUMN          (0)
 #define MODEL_SPECIAL_FUNC_2ND_COLUMN          (4*FW-1)
-#define MODEL_SPECIAL_FUNC_3RD_COLUMN          (14*FW-3)
+#define MODEL_SPECIAL_FUNC_3RD_COLUMN          (15*FW-3)
 #define MODEL_SPECIAL_FUNC_4TH_COLUMN          (20*FW)
 #if defined(GRAPHICS)
   #define MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF  (20*FW)
@@ -176,8 +176,21 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           uint8_t val_max = 255;
 #endif
           if (func == FUNC_RESET) {
+#if defined (CPUARM)
+            val_max = FUNC_RESET_PARAM_FIRST_TELEM+lastUsedTelemetryIndex();
+            int param = CFN_PARAM(cfn);
+            if (param < FUNC_RESET_PARAM_FIRST_TELEM) {
+              lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_VFSWRESET, param, attr);
+            }
+            else {
+              TelemetrySensor * sensor = & g_model.telemetrySensors[param-FUNC_RESET_PARAM_FIRST_TELEM];
+              lcdDrawSizedText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, sensor->label, TELEM_LABEL_LEN, attr|ZCHAR);
+            }
+            if (active) INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalResetSpecialFunction : isSourceAvailableInResetSpecialFunction);
+#else
             val_max = FUNC_RESET_PARAM_LAST;
             lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_VFSWRESET, CFN_PARAM(cfn), attr);
+#endif
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {

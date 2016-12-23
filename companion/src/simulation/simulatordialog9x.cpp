@@ -75,36 +75,12 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simul
   if (g.simuSW())
     restoreSwitches();
 
-  ui->trimHR_L->setText(QString::fromUtf8(ARROW_LEFT));
-  ui->trimHR_R->setText(QString::fromUtf8(ARROW_RIGHT));
-  ui->trimVR_U->setText(QString::fromUtf8(ARROW_UP));
-  ui->trimVR_D->setText(QString::fromUtf8(ARROW_DOWN));
-  ui->trimHL_L->setText(QString::fromUtf8(ARROW_LEFT));
-  ui->trimHL_R->setText(QString::fromUtf8(ARROW_RIGHT));
-  ui->trimVL_U->setText(QString::fromUtf8(ARROW_UP));
-  ui->trimVL_D->setText(QString::fromUtf8(ARROW_DOWN));
   for (int i=0; i<pots.count(); i++) {
     pots[i]->setProperty("index", i);
     connect(pots[i], SIGNAL(valueChanged(int)), this, SLOT(dialChanged(int)));
   }
   connect(ui->leftbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->rightbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
-  connect(ui->trimHR_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHR_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVR_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVR_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHL_R, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHL_L, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVL_U, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimVL_D, SIGNAL(pressed()), this, SLOT(onTrimPressed()));
-  connect(ui->trimHR_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHR_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVR_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVR_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHL_R, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimHL_L, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVL_U, SIGNAL(released()), this, SLOT(onTrimReleased()));
-  connect(ui->trimVL_D, SIGNAL(released()), this, SLOT(onTrimReleased()));
 }
 
 SimulatorDialog9X::~SimulatorDialog9X()
@@ -154,10 +130,10 @@ void SimulatorDialog9X::getValues()
 {
   TxInputs inputs = {
     {
-      int(1024*nodeLeft->getX()),  // LEFT HORZ
-      int(-1024*nodeLeft->getY()),  // LEFT VERT
-      int(-1024*nodeRight->getY()), // RGHT VERT
-      int(1024*nodeRight->getX())   // RGHT HORZ
+      int(1024 * vJoyLeft->getStickX()),    // LEFT HORZ
+      int(-1024 * vJoyLeft->getStickY()),   // LEFT VERT
+      int(-1024 * vJoyRight->getStickY()),  // RGHT VERT
+      int(1024 * vJoyRight->getStickX())    // RGHT HORZ
     },
 
     {

@@ -190,9 +190,7 @@ void menuRadioSdManager(event_t _event)
 
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE + reusableBuffer.sdmanager.count);
-
-  int index = menuVerticalPosition - HEADER_LINE - menuVerticalOffset;
-
+  
   switch (_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
@@ -201,7 +199,11 @@ void menuRadioSdManager(event_t _event)
       lastPos = -1;
 #endif
       break;
-
+    
+    case EVT_ENTRY_UP:
+      menuVerticalOffset = reusableBuffer.sdmanager.offset;
+      break;
+      
 #if defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
@@ -226,11 +228,11 @@ void menuRadioSdManager(event_t _event)
         break;
       }
       else {
+        int index = menuVerticalPosition - HEADER_LINE - menuVerticalOffset;
         if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[index])) {
           f_chdir(reusableBuffer.sdmanager.lines[index]);
           menuVerticalOffset = 0;
           menuVerticalPosition = HEADER_LINE;
-          index = 1;
           REFRESH_FILES();
           killEvents(_event);
           return;
@@ -250,6 +252,7 @@ void menuRadioSdManager(event_t _event)
 #endif
       if (s_editMode <= 0) {
         killEvents(_event);
+        int index = menuVerticalPosition - HEADER_LINE - menuVerticalOffset;
         char * line = reusableBuffer.sdmanager.lines[index];
         if (!strcmp(line, "..")) {
           break; // no menu for parent dir
@@ -385,6 +388,7 @@ void menuRadioSdManager(event_t _event)
   }
 
   reusableBuffer.sdmanager.offset = menuVerticalOffset;
+  int index = menuVerticalPosition - HEADER_LINE - menuVerticalOffset;
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;

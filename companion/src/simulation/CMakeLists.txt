@@ -4,6 +4,7 @@ set(simulation_SRCS
   trainersimu.cpp
   debugoutput.cpp
   simulatorinterface.cpp
+  virtualjoystickwidget.cpp
 )
 
 set(simulation_UIS
@@ -24,6 +25,7 @@ set(simulation_HDRS
   telemetrysimu.h
   trainersimu.h
   debugoutput.h
+  virtualjoystickwidget.h
 )
 
 if(SDL_FOUND)

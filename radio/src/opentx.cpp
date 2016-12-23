@@ -2432,6 +2432,10 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
+  
+#if defined(EEPROM)
+  storageReadAll();
+#endif
 
   if (UNEXPECTED_SHUTDOWN()) {
     unexpectedShutdown = 1;
@@ -2447,7 +2451,8 @@ void opentxInit(OPENTX_INIT_ARGS)
   topbar = new Topbar(&g_model.topbarData);
   LUA_INIT_THEMES_AND_WIDGETS();
 #endif
-
+  
+#if !defined(EEPROM)
 #if defined(RAMBACKUP)
   if (UNEXPECTED_SHUTDOWN()) {
     rambackupRestore();
@@ -2457,6 +2462,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #else
   storageReadAll();
+#endif
 #endif
 
 #if defined(SERIAL2)

@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-#define TEXT_FILENAME_MAXLEN  40
 #define TEXT_FILE_MAXSIZE     2048
 
 char s_text_file[TEXT_FILENAME_MAXLEN];
@@ -34,7 +33,7 @@ void readTextFile(int & lines_count)
   unsigned int sz;
   int line_length = 0;
   int escape = 0;
-  char escape_chars[2];
+  char escape_chars[4] = {0};
   int current_line = 0;
 
   memset(s_text_screen, 0, sizeof(s_text_screen));
@@ -52,7 +51,7 @@ void readTextFile(int & lines_count)
           escape = 1;
           continue;
         }
-        else if (c!='\\' && escape>0 && escape<3) {
+        else if (c!='\\' && escape>0 && escape<4) {
           escape_chars[escape-1] = c;
           if (escape == 2 && !strncmp(escape_chars, "up", 2)) {
             c = '\300';
@@ -60,6 +59,13 @@ void readTextFile(int & lines_count)
           }
           else if (escape == 2 && !strncmp(escape_chars, "dn", 2)) {
             c = '\301';
+            escape = 0;
+          }
+          else if (escape == 3) {
+            int val = atoi(escape_chars);
+            if (val >= 200 && val < 225) {
+              c = '\200' + val-200;
+            }
             escape = 0;
           }
           else {
@@ -88,14 +94,14 @@ void readTextFile(int & lines_count)
   }
 }
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX9E)
 #define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
 #else
 #define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
 #define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
 #endif
-  
+
 void menuTextView(event_t event)
 {
   static int lines_count;
@@ -112,7 +118,8 @@ void menuTextView(event_t event)
         break;
       else
         menuVerticalOffset--;
-        // no break;
+      readTextFile(lines_count);
+      break;
 
     case EVT_KEY_NEXT_LINE:
       if (menuVerticalOffset+LCD_LINES-1 >= lines_count)
@@ -152,3 +159,6 @@ void pushMenuTextView(const char *filename)
     pushMenu(menuTextView);
   }
 }
+
+#undef EVT_KEY_NEXT_LINE
+#undef EVT_KEY_PREVIOUS_LINE

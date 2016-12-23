@@ -53,7 +53,6 @@ set(GUI_SRC
   radio_diaganas.cpp
   radio_hardware.cpp
   view_telemetry.cpp
-  view_text.cpp
   view_about.cpp
   )
 

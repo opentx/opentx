@@ -360,11 +360,11 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     static bool rotencAction = false;
-    if (getApp()->getKeyState(KEY_X)) {
+    if (getApp()->getKeyState(KEY_C)) {
       if (!rotencAction) ROTARY_ENCODER_NAVIGATION_VALUE += ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
-    else if (getApp()->getKeyState(KEY_W) || getApp()->getKeyState(KEY_Z)) {    
+    else if (getApp()->getKeyState(KEY_X)) {    
       if (!rotencAction) ROTARY_ENCODER_NAVIGATION_VALUE -= ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }

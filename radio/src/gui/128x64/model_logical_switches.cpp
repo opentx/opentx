@@ -184,7 +184,7 @@ void menuModelLogicalSwitchOne(event_t event)
 #endif
           {
             v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
-            lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->v2, LEFT|attr);
+            drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, cs->v2, LEFT|attr);
           }
         }
 
@@ -288,7 +288,7 @@ void menuModelLogicalSwitches(event_t event)
 #endif
         }
         else {
-          lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT);
+          drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, cs->v2, LEFT);
         }
       }
 

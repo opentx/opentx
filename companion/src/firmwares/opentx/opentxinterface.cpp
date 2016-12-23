@@ -598,7 +598,7 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 18;
       else if (board == BOARD_TARANIS_X7)
         return 6;
-      else if (IS_TARANIS(board))
+      else if (IS_TARANIS(board) || board == BOARD_HORUS)
         return 8;
       else
         return 7;

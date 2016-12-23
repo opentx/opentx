@@ -440,6 +440,24 @@ bool displayCustomTelemetryScreen(uint8_t index)
 
 bool displayTelemetryScreen()
 {
+#if defined(LUA)
+  if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
+    uint8_t state = isTelemetryScriptAvailable(s_frsky_view);
+    switch (state) {
+      case SCRIPT_OK:
+        return true;  // contents will be drawed by Lua Task
+      case SCRIPT_NOFILE:
+        return false;  // requested lua telemetry screen not available
+      case SCRIPT_SYNTAX_ERROR:
+      case SCRIPT_PANIC:
+      case SCRIPT_KILLED:
+        luaError(lsScripts, state, false);
+        return true;
+    }
+    return false;
+  }
+#endif
+  
 #if defined(CPUARM)
   if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_NONE) {
     return false;
@@ -504,6 +522,9 @@ void menuViewTelemetryFrsky(event_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_EXIT):
+#if defined(LUA)
+    case EVT_KEY_LONG(KEY_EXIT):
+#endif
       killEvents(event);
       chainMenu(menuMainView);
       break;
@@ -552,3 +573,5 @@ void menuViewTelemetryFrsky(event_t event)
 #endif
 }
 
+#undef EVT_KEY_PREVIOUS_VIEW
+#undef EVT_KEY_NEXT_VIEW

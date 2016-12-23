@@ -31,7 +31,7 @@ class SliderWidget : public QSlider
 
   public:
 
-    explicit SliderWidget(QFrame * parent = 0):
+    explicit SliderWidget(QWidget * parent = 0):
       QSlider(parent)
     {
     }

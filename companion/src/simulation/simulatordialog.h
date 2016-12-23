@@ -47,6 +47,7 @@ namespace Ui {
 // TODO rename + move?
 class LcdWidget;
 class SliderWidget;
+class VirtualJoystickWidget;
 
 #define SIMULATOR_FLAGS_NOTX              1
 #define SIMULATOR_FLAGS_STICK_MODE_LEFT   2
@@ -73,6 +74,7 @@ class SimulatorDialog : public QDialog
     void start(QByteArray & eeprom);
     virtual void traceCallback(const char * text);
 
+
   protected:
     template <class T> void initUi(T * ui);
     virtual void setLightOn(bool enable) { }
@@ -80,24 +82,19 @@ class SimulatorDialog : public QDialog
 
     unsigned int flags;
     LcdWidget * lcd;
-    QGraphicsView * leftStick, * rightStick;
     QVector<QDial *> pots;
     QVector<QLabel *> potLabels;
     QVector<QLabel *> potValues;
     QVector<QSlider *> sliders;
-
-    SliderWidget * trimHLeft, * trimVLeft, * trimHRight, * trimVRight;
-    QLabel * leftXPerc, * rightXPerc, * leftYPerc, * rightYPerc;
     QTabWidget * tabWidget;
     QVector<QLabel *> logicalSwitchLabels;
-    QVector<QLabel *> logicalSwitchLabels2;
     QVector<QSlider *> channelSliders;
     QVector<QLabel *> channelValues;
     QVector<QLabel *> gvarValues;
 
     void init();
-    Node *nodeLeft;
-    Node *nodeRight;
+    VirtualJoystickWidget *vJoyLeft;
+    VirtualJoystickWidget *vJoyRight;
     QTimer *timer;
     QString windowName;
     unsigned int backLight;
@@ -114,18 +111,18 @@ class SimulatorDialog : public QDialog
     SimulatorInterface *simulator;
     unsigned int lastPhase;
 
-    void setupSticks();
     void setupTimer();
-    void resizeEvent(QResizeEvent *event  = 0);
+    QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
+    void setupOutputsDisplay();
+    void setupGVarsDisplay();
 
-    virtual void getValues() = 0;
-    void setValues();
     void centerSticks();
+    void setTrims();
 
+    void setValues();
+    virtual void getValues() = 0;
     int getValue(qint8 i);
     bool getSwitch(int swtch, bool nc, qint8 level=0);
-    void setTrims();
-    QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
 
     int beepVal;
 
@@ -141,8 +138,8 @@ class SimulatorDialog : public QDialog
     QList<QString> traceList;
     void updateDebugOutput();
 
-  protected:
     virtual void closeEvent(QCloseEvent *);
+    virtual void showEvent(QShowEvent *event);
     virtual void mousePressEvent(QMouseEvent *);
     virtual void mouseReleaseEvent(QMouseEvent *);
     virtual void wheelEvent(QWheelEvent *);
@@ -155,21 +152,10 @@ class SimulatorDialog : public QDialog
 
   private slots:
     void onButtonPressed(int value);
-    void on_FixRightY_clicked(bool checked);
-    void on_FixRightX_clicked(bool checked);
-    void on_FixLeftY_clicked(bool checked);
-    void on_FixLeftX_clicked(bool checked);
-    void on_holdRightY_clicked(bool checked);
-    void on_holdRightX_clicked(bool checked);
-    void on_holdLeftY_clicked(bool checked);
-    void on_holdLeftX_clicked(bool checked);
-    void on_trimHLeft_valueChanged(int);
-    void on_trimVLeft_valueChanged(int);
-    void on_trimHRight_valueChanged(int);
-    void on_trimVRight_valueChanged(int);
     void onTimerEvent();
-    void onTrimPressed();
+    void onTrimPressed(int which);
     void onTrimReleased();
+    void onTrimSliderMoved(int which, int value);
     void openTelemetrySimulator();
     void openTrainerSimulator();
     void openDebugOutput();
