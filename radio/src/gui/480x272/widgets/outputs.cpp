@@ -57,7 +57,7 @@ class OutputsWidget: public Widget
           uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, 200);
           lcdDrawSolidFilledRect(endpoint - size,  y + RECT_BORDER + (curChan - firstChan) * row_height, size, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
-        lcd->drawSolidVerticalLine(x + RECT_BORDER + RECT_WIDTH / 2, y + (curChan - firstChan) * row_height, row_height, MAINVIEW_GRAPHICS_COLOR);
+        lcd->drawSolidVerticalLine(x + RECT_BORDER + RECT_WIDTH / 2, y + RECT_BORDER + (curChan - firstChan) * row_height, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         lcdDrawNumber(x + RECT_WIDTH - 10, y + (curChan - firstChan) * row_height + 1, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
         if (g_model.limitData[curChan - 1].name[0] != 0)  {
           strAppendSigned(chanString, curChan, 2);
