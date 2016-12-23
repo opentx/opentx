@@ -791,7 +791,7 @@ static int luaPlayTone(lua_State * L)
 }
 
 /*luadoc
-@function luaPlayHaptic(duration, pause [, flags])
+@function playHaptic(duration, pause [, flags])
 
 Generate haptic feedback
 
@@ -1020,11 +1020,11 @@ static int luaDefaultStick(lua_State * L)
 /* luadoc
 @function setTelemetryValue(id, subID, instance, value [, unit] [, precision [, name])
 
-@param id Id of the sensor
+@param id Id of the sensor, valid range is from 0 to 0xFFFF
 
-@param subID subID of the sensor, usually 0, cannot exceed 7
+@param subID subID of the sensor, usually 0, valid range is from 0 to 7
 
-@param instance instance of the sensor (SensorID)
+@param instance instance of the sensor (SensorID), valid range is from 0 to 0xFF
 
 @param value fed to the sensor
 
@@ -1051,12 +1051,12 @@ static int luaDefaultStick(lua_State * L)
 */
 static int luaSetTelemetryValue(lua_State * L)
 {
-  uint16_t id = luaL_checkinteger(L, 1);
-  uint8_t subId = luaL_checkinteger(L, 2) & 0x7;
-  uint8_t instance = luaL_checkinteger(L, 3);
+  uint16_t id = luaL_checkunsigned(L, 1);
+  uint8_t subId = luaL_checkunsigned(L, 2) & 0x7;
+  uint8_t instance = luaL_checkunsigned(L, 3);
   int32_t value = luaL_checkinteger(L, 4);
-  uint32_t unit = luaL_optinteger(L, 5, 0);
-  uint32_t prec = luaL_optinteger(L, 6, 0);
+  uint32_t unit = luaL_optunsigned(L, 5, 0);
+  uint32_t prec = luaL_optunsigned(L, 6, 0);
 
   char zname[4];
   const char* name = luaL_optstring(L, 7, NULL);
