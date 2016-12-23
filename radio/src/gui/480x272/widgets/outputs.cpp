@@ -36,14 +36,14 @@ class OutputsWidget: public Widget
 
     uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan)
     {
-      char chanString[] = "CH32 123456";
+      char chanString[] = "CH32";
       uint8_t numChan = h / ROW_HEIGHT;
       uint8_t row_height = (h - numChan * ROW_HEIGHT >= numChan ? ROW_HEIGHT + 1 : ROW_HEIGHT);
       uint8_t lastChan = firstChan + numChan;
 
       for (uint8_t curChan = firstChan; curChan < lastChan && curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
-        lcdDrawSolidFilledRect(x + RECT_OFFSET, y + 1 + (curChan - firstChan) * row_height, RECT_WIDTH, row_height - 2, TEXT_BGCOLOR);
+        lcdDrawSolidFilledRect(x + RECT_OFFSET, y + 1 + (curChan - firstChan) * row_height, RECT_WIDTH, row_height - 2, BARGRAPH_BGCOLOR);
         if (chanVal > 0) {
           lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height, MAINVIEW_GRAPHICS_COLOR);
         }
