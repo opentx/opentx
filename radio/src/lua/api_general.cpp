@@ -1017,8 +1017,8 @@ static int luaDefaultStick(lua_State * L)
   return 1;
 }
 
-/* luadoc
-@function setTelemetryValue(id, subID, instance, value [, unit] [, precision [, name])
+/*luadoc
+@function setTelemetryValue(id, subID, instance, value [, unit [, precision [, name]]])
 
 @param id Id of the sensor, valid range is from 0 to 0xFFFF
 
@@ -1047,6 +1047,9 @@ static int luaDefaultStick(lua_State * L)
 
 @retval true, if the sensor was just added. In this case the value is ignored (subsequent call will set the value)
 
+@notice All three parameters `id`, `subID` and `instance` can't be zero at the same time. At least one of them
+must be different from zero.
+
 @status current Introduced in 2.2.0
 */
 static int luaSetTelemetryValue(lua_State * L)
@@ -1060,7 +1063,7 @@ static int luaSetTelemetryValue(lua_State * L)
 
   char zname[4];
   const char* name = luaL_optstring(L, 7, NULL);
-  if (name != NULL) {
+  if (name != NULL && strlen(name) > 0) {
     str2zchar(zname, name, 4);
   } else {
     zname[0] = hex2zchar((id & 0xf000) >> 12);
