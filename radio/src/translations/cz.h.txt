@@ -144,8 +144,8 @@
 #define LEN_SUBTYPE_KN         "\006"
 #define TR_SUBTYPE_KN          "WLtoys""FeiLun"
 
-#define LEN_SUBTYPE_MT99       "\004"
-#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 ""LS\0 "
+#define LEN_SUBTYPE_MT99       "\005"
+#define TR_SUBTYPE_MT99        "MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805"
 
 #define LEN_SUBTYPE_MJXQ       "\005"
 #define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
@@ -155,6 +155,15 @@
 
 #define LEN_SUBTYPE_Q2X2       "\004"
 #define TR_SUBTYPE_Q2X2        "Q242""Q282"
+
+#define LEN_SUBTYPE_V2X2       "\006"
+#define TR_SUBTYPE_V2X2        "V2x2\0 ""JXD506"
+
+#define LEN_SUBTYPE_BAYANG     "\006"
+#define TR_SUBTYPE_BAYANG      "Bayang""H8S3D"
+
+#define LEN_SUBTYPE_FY326      "\005"
+#define TR_SUBTYPE_FY326       "FY326""FY319"
 
 #define LEN_VTRIMINC           "\007"
 #define TR_VTRIMINC            "Expo\0  ""ExJemný""Jemný\0 ""Střední""Hrubý\0 "
@@ -904,6 +913,13 @@
 #define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on powerup")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
+#define TR_DISABLE_INTERNAL         TR("Disable int. RF", "Disable internal RF")
+#define TR_MODULE_NO_SERIAL_MODE       TR("!serial mode", "Not in serial mode")
+#define TR_MODULE_NO_INPUT     TR("No input", "No serial input")
+#define TR_MODULE_NO_TELEMETRY TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
+#define TR_MODULE_BINDING      "Binding"
+#define TR_PROTOCOL_INVALID    TR("Prot. invalid", "Protocol invalid")
+#define TR_MODULE_STATUS       TR(INDENT "Status", INDENT "Module Status")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Servo rate", INDENT "Servo update rate")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT"Limit"

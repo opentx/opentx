@@ -189,24 +189,27 @@ void setupPulsesMultimodule(uint8_t port)
   sendByteMulti(protoByte);
 
   // byte 2, subtype, powermode, model id
-  sendByteMulti((g_model.header.modelId[port] & 0x0f)
-                | ((subtype & 0x7) << 4)
-                | (g_model.moduleData[port].multi.lowPowerMode << 7)
+  sendByteMulti((uint8_t) ((g_model.header.modelId[port] & 0x0f)
+                           | ((subtype & 0x7) << 4)
+                           | (g_model.moduleData[port].multi.lowPowerMode << 7))
                 );
 
   // byte 3
-  sendByteMulti(optionValue);
+  sendByteMulti((uint8_t) optionValue);
 
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
 
   // byte 4-25, channels 0..2047
-  // ?? Range for pulses (channelsOutputs) is [-1024:+1024]
+  // Range for pulses (channelsOutputs) is [-1024:+1024] for [-100%;100%]
+  // Multi uses [204;1843] as [-100%;100%]
   for (int i=0; i<MULTI_CHANS; i++) {
     int channel = g_model.moduleData[port].channelsStart+i;
     int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
 
-    bits |= limit(0, 1024 + value, 2047) << bitsavailable;
+    // Scale to 80%
+    value =  value*800/1000 + 1024;
+    bits |= limit(0, value, 2047) << bitsavailable;
     bitsavailable += MULTI_CHAN_BITS;
     while (bitsavailable >= 8) {
       sendByteMulti((uint8_t) (bits & 0xff));

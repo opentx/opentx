@@ -44,6 +44,7 @@
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"
+  #include "multi.h"
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
@@ -127,7 +128,12 @@ void frskyDSetDefault(int index, uint16_t id);
 #if defined(CPUARM)
 extern uint8_t telemetryProtocol;
 #define IS_FRSKY_D_PROTOCOL()          (telemetryProtocol == PROTOCOL_FRSKY_D)
+#if defined (MULTIMODULE)
+#define IS_D16_MULTI()                 ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
+#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_MULTIMODULE && IS_D16_MULTI()))
+#else
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
+#endif
 #define IS_SPEKTRUM_PROTOCOL()         (telemetryProtocol == PROTOCOL_SPEKTRUM)
 #else
 #define IS_FRSKY_D_PROTOCOL()          (true)
@@ -149,15 +155,7 @@ inline uint8_t modelTelemetryProtocol()
   
 #if defined(MULTIMODULE)
   if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
-    if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_DSM2)
-      return PROTOCOL_SPEKTRUM;
-    else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
-      return PROTOCOL_FLYSKY_IBUS;
-    else if ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) &&
-     (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
-      return PROTOCOL_FRSKY_SPORT;
-    else
-      return PROTOCOL_FRSKY_D;
+    return PROTOCOL_MULTIMODULE;
   }
 #endif
 

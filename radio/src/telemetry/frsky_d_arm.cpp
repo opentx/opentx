@@ -63,7 +63,7 @@ void parseTelemHubByte(uint8_t byte)
 }
 #endif  // #if defined(FRSKY_HUB)
 
-void frskyDProcessPacket(uint8_t *packet)
+void frskyDProcessPacket(const uint8_t *packet)
 {
   // What type of packet?
   switch (packet[0])

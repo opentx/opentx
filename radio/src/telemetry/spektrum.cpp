@@ -269,7 +269,6 @@ bool isSpektrumValidValue(int32_t value, const SpektrumDataType type)
   }
 }
 
-bool spektrumBindFinished = 0;
 void processSpektrumPacket(const uint8_t *packet)
 {
   setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
@@ -350,23 +349,21 @@ void processSpektrumPacket(const uint8_t *packet)
   }
 }
 
-// Parse the DSM2 bind reponse, Fields are as per http://www.rcgroups.com/forums/showpost.php?p=35692146&postcount=5191
+// Parse the DSM2 bind response, Fields are as per http://www.rcgroups.com/forums/showpost.php?p=35692146&postcount=5191
 // "I"  here means the multi module
 
 /*
-0     0xAA -> telemetry start
-1     0x80 -> bind packet
-2-5   4 bytes -> Cyrf ID of the TX xor 0xFF but you don't care as I've checked it already...
-6     1 byte -> RX version but you don't care...
-7     1 byte -> number of channels, example 0x06=6 channels
-8     1 byte -> max DSM type allowed:
+0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but you don't care as I've checked it already...
+4     1 byte -> RX version but you don't care...
+5     1 byte -> number of channels, example 0x06=6 channels
+6     1 byte -> max DSM type allowed:
         0x01 => 22ms 1024 DSM2 1 packet => number of channels is <8 and no telemetry
         0x02 => 22ms 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
         0x12 => 11ms 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
         0xa2 => 22ms 2048 DSMX 1 packet => number of channels is <8 and no telemetry
         0xb2 => 11ms 2048 DSMX => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
-9     0x00: not sure of the use of this byte since I've always seen it at 0...
-10    2 bytes CRC but you don't care as I've checked it already...
+7     0x00: not sure of the use of this byte since I've always seen it at 0...
+8-9   2 bytes CRC but you don't care as I've checked it already...
 
  Examples:           DSM   #Chan  RXver
  Inductrix           0xa2   07     1
@@ -379,16 +376,16 @@ void processDSMBindPacket(const uint8_t *packet)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2
     && g_model.moduleData[EXTERNAL_MODULE].multi.autoBindMode) {
 
-    int channels = packet[7];
+    int channels = packet[5];
     // Only sets channel etc when in DSM multi mode
     g_model.moduleData[EXTERNAL_MODULE].channelsCount = channels - 8;
 
     // bool use11ms = (packet[8] & 0x10) ;
-    if (packet[8] >= 0xb2)
+    if (packet[6] >= 0xb2)
       g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
-    else if (packet[8] >= 0xa2)
+    else if (packet[6] >= 0xa2)
       g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
-    else if (packet[8] >= 0x12)
+    else if (packet[6] >= 0x12)
       g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
     else
       g_model.moduleData[EXTERNAL_MODULE].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
@@ -397,7 +394,7 @@ void processDSMBindPacket(const uint8_t *packet)
 
   }
 
-  debugval = packet[9] << 24 | packet[8] << 16 | packet[7] << 8 | packet[6];
+  debugval = packet[7] << 24 | packet[6] << 16 | packet[5] << 8 | packet[4];
 
   /* log the bind packet as telemetry for quick debugging */
   setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
@@ -405,7 +402,7 @@ void processDSMBindPacket(const uint8_t *packet)
   /* Finally stop binding as the rx just told us that it is bound */
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2
     && moduleFlag[EXTERNAL_MODULE] == MODULE_BIND) {
-    spektrumBindFinished=true;
+    multiBindStatus=MULTI_BIND_FINISHED;
   }
 }
 
@@ -425,12 +422,10 @@ void processSpektrumTelemetryData(uint8_t data)
   }
 
   if (telemetryRxBuffer[1] == 0x80 && telemetryRxBufferCount >= DSM_BIND_PACKET_LENGTH) {
-    processDSMBindPacket(telemetryRxBuffer);
+    processDSMBindPacket(telemetryRxBuffer+2);
     telemetryRxBufferCount = 0;
     return;
   }
-
-
 
   if (telemetryRxBufferCount >= SPEKTRUM_TELEMETRY_LENGTH) {
     // Debug print content of Telemetry to console
