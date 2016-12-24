@@ -515,29 +515,29 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   lock(false)
 {
   ui->setupUi(this);
-  ui->id->setField(sensor.id);
-  ui->instance->setField(sensor.instance);
-  ui->ratio->setField(sensor.ratio);
-  ui->offset->setField(sensor.offset);
-  ui->autoOffset->setField(sensor.autoOffset);
-  ui->filter->setField(sensor.filter);
-  ui->logs->setField(sensor.logs);
-  ui->persistent->setField(sensor.persistent);
-  ui->onlyPositive->setField(sensor.onlyPositive);
-  ui->gpsSensor->setField(sensor.gps);
-  ui->altSensor->setField(sensor.alt);
-  ui->ampsSensor->setField(sensor.amps);
-  ui->cellsSensor->setField(sensor.source);
+  ui->id->setField(sensor.id, this);
+  ui->instance->setField(sensor.instance, this);
+  ui->ratio->setField(sensor.ratio, this);
+  ui->offset->setField(sensor.offset, this);
+  ui->autoOffset->setField(sensor.autoOffset, this);
+  ui->filter->setField(sensor.filter, this);
+  ui->logs->setField(sensor.logs, this);
+  ui->persistent->setField(sensor.persistent, this);
+  ui->onlyPositive->setField(sensor.onlyPositive, this);
+  ui->gpsSensor->setField(sensor.gps, this);
+  ui->altSensor->setField(sensor.alt, this);
+  ui->ampsSensor->setField(sensor.amps, this);
+  ui->cellsSensor->setField(sensor.source, this);
   ui->cellsIndex->addItem(tr("Lowest"), SensorData::TELEM_CELL_INDEX_LOWEST);
   for (int i=1; i<=6; i++)
     ui->cellsIndex->addItem(tr("Cell %1").arg(i), i);
   ui->cellsIndex->addItem(tr("Highest"), SensorData::TELEM_CELL_INDEX_HIGHEST);
   ui->cellsIndex->addItem(tr("Delta"), SensorData::TELEM_CELL_INDEX_DELTA);
   ui->cellsIndex->setField(sensor.index);
-  ui->source1->setField(sensor.sources[0]);
-  ui->source2->setField(sensor.sources[1]);
-  ui->source3->setField(sensor.sources[2]);
-  ui->source4->setField(sensor.sources[3]);
+  ui->source1->setField(sensor.sources[0], this);
+  ui->source2->setField(sensor.sources[1], this);
+  ui->source3->setField(sensor.sources[2], this);
+  ui->source4->setField(sensor.sources[3], this);
   update();
 }
 
@@ -825,7 +825,7 @@ void TelemetryPanel::setup()
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
-      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds);
+      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
     }
     else {
       ui->telemetryProtocolLabel->hide();

@@ -199,8 +199,6 @@ void MixesPanel::gm_openMix(int index)
   if(index < 0 || index>=firmware->getCapability(Mixes)) return;
 
   MixData mixd(model->mixData[index]);
-  emit modified();
-  update();
 
   MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
   if(g->exec()) {
@@ -213,7 +211,6 @@ void MixesPanel::gm_openMix(int index)
       gm_deleteMix(index);
     }
     mixInserted = false;
-    emit modified();
     update();
   }
 }
@@ -460,11 +457,6 @@ void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropActi
       mixersDeleteList(list);
       pasteMixerMimeData(data, idx);
   }
-}
-
-void MixesPanel::mixesEdited()
-{
-  emit modified();
 }
 
 void MixesPanel::mixerlistWidget_KeyPress(QKeyEvent *event)
