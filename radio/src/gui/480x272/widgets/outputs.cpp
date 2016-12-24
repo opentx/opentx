@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#define RECT_BORDER                    2
+#define RECT_BORDER                    1
 #define RECT_WIDTH                     (w - RECT_BORDER * 2)
 #define ROW_HEIGHT                     17
 
@@ -45,9 +45,8 @@ class OutputsWidget: public Widget
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
         if (bg_shown) {
           lcdSetColor(bg_color);
-          lcdDrawSolidFilledRect(x, y + (curChan - firstChan) * row_height, RECT_WIDTH + RECT_BORDER * 2, row_height + RECT_BORDER, CUSTOM_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_BORDER, y + RECT_BORDER + (curChan - firstChan) * row_height, RECT_WIDTH , row_height - RECT_BORDER, CUSTOM_COLOR);
         }
-        lcdDrawSolidFilledRect(x + RECT_BORDER, y + RECT_BORDER + (curChan - firstChan) * row_height, RECT_WIDTH , row_height - RECT_BORDER, BARGRAPH_BGCOLOR);
         if (chanVal > 0) {
           lcdDrawSolidFilledRect(x + RECT_BORDER + RECT_WIDTH / 2,  y + RECT_BORDER + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
@@ -58,6 +57,7 @@ class OutputsWidget: public Widget
           lcdDrawSolidFilledRect(endpoint - size,  y + RECT_BORDER + (curChan - firstChan) * row_height, size, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
         lcd->drawSolidVerticalLine(x + RECT_BORDER + RECT_WIDTH / 2, y + RECT_BORDER + (curChan - firstChan) * row_height, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawRect(x, y + (curChan - firstChan) * row_height, w, row_height+1);
         lcdDrawNumber(x + RECT_WIDTH - 10, y + (curChan - firstChan) * row_height + 1, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
         if (g_model.limitData[curChan - 1].name[0] != 0)  {
           strAppendSigned(chanString, curChan, 2);
