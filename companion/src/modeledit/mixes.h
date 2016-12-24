@@ -38,8 +38,6 @@ class MixesPanel : public ModelPanel
     void mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action);
     void pasteMixerMimeData(const QMimeData * mimeData, int destIdx);
 
-    void mixesEdited();
-
   private:
     MixersList *MixerlistWidget;
     bool mixInserted;

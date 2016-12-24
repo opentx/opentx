@@ -188,8 +188,6 @@ void InputsPanel::gm_openExpo(int index)
     if(index<0 || index>=C9X_MAX_EXPOS) return;
 
     ExpoData mixd(model->expoData[index]);
-    emit modified();
-    update();
 
     QString inputName;
     if (firmware->getCapability(VirtualInputs))
@@ -208,7 +206,6 @@ void InputsPanel::gm_openExpo(int index)
         gm_deleteExpo(index);
       }
       expoInserted=false;
-      emit modified();
       update();
     }
 }
