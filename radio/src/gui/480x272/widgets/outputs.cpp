@@ -45,7 +45,11 @@ class OutputsWidget: public Widget
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
         strAppend(chanString, "CH");
         strAppendSigned(&chanString[2], curChan, 2);
-        lcdDrawText(x, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+        if ( g_model.limitData[curChan - 1].name[0] != 0 )  {
+          lcdDrawSizedText(x, y + (curChan - firstChan) * row_height + 1, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
+        } else {
+          lcdDrawText(x, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+        }
         strAppendSigned(chanString, chanVal);
         lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
         if (chanVal > 0) {
