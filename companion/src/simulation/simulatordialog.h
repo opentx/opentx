@@ -54,11 +54,12 @@ class VirtualJoystickWidget;
 #define SIMULATOR_FLAGS_S1                4
 #define SIMULATOR_FLAGS_S2                8
 #define SIMULATOR_FLAGS_S3               16
-#define SIMULATOR_FLAGS_S4               32 // reserved for the future
+#define SIMULATOR_FLAGS_S4               32  // reserved for the future
 #define SIMULATOR_FLAGS_S1_MULTI         64
 #define SIMULATOR_FLAGS_S2_MULTI        128
 #define SIMULATOR_FLAGS_S3_MULTI        256
-#define SIMULATOR_FLAGS_S4_MULTI        512 // reserved for the future
+#define SIMULATOR_FLAGS_S4_MULTI        512  // reserved for the future
+#define SIMULATOR_FLAGS_STANDALONE     1024  // started from stanalone simulator
 
 void traceCb(const char * text);
 

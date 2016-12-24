@@ -115,7 +115,7 @@ void SimulatorDialog::showEvent(QShowEvent * event)
 {
   static bool firstShow = true;
   if (firstShow) {
-    if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT) {
+    if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT || ((flags & SIMULATOR_FLAGS_STANDALONE) && (g.profile[g.id()].defaultMode() & 1))) {
       vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
       vJoyLeft->setStickY(1);
     }

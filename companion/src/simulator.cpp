@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
 #endif
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
   AllocConsole();
+  SetConsoleTitle("Simulator Console");
   freopen("conin$", "r", stdin);
   freopen("conout$", "w", stdout);
   freopen("conout$", "w", stderr);
@@ -206,19 +207,21 @@ int main(int argc, char *argv[])
     qDebug() << "eepromFileName" << eepromFileName;
     // TODO display used eeprom filename somewhere
 
+    uint32_t flags = SIMULATOR_FLAGS_STANDALONE;
+
     SimulatorFactory * factory = getSimulatorFactory(firmwareId);
     if (!factory) {
       showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(firmwareId), QMessageBox::Critical);
       return 2;
     }
     if (factory->type() == BOARD_HORUS)
-      dialog = new SimulatorDialogHorus(NULL, factory->create());
+      dialog = new SimulatorDialogHorus(NULL, factory->create(), flags);
     else if (factory->type() == BOARD_FLAMENCO)
-      dialog = new SimulatorDialogFlamenco(NULL, factory->create());
+      dialog = new SimulatorDialogFlamenco(NULL, factory->create(), flags);
     else if (factory->type() == BOARD_TARANIS_X9D || factory->type() == BOARD_TARANIS_X9DP || factory->type() == BOARD_TARANIS_X9E)
-      dialog = new SimulatorDialogTaranis(NULL, factory->create(), SIMULATOR_FLAGS_S1|SIMULATOR_FLAGS_S2);
+      dialog = new SimulatorDialogTaranis(NULL, factory->create(), flags | SIMULATOR_FLAGS_S1 | SIMULATOR_FLAGS_S2);
     else
-      dialog = new SimulatorDialog9X(NULL, factory->create());
+      dialog = new SimulatorDialog9X(NULL, factory->create(), flags);
   }
   else {
     return 0;

@@ -814,6 +814,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
   if (simulator) {
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
     AllocConsole();
+    SetConsoleTitle("Companion Console");
     freopen("conin$", "r", stdin);
     freopen("conout$", "w", stdout);
     freopen("conout$", "w", stderr);
@@ -863,11 +864,11 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
 
     dialog->exec();
+    delete dialog;
+    delete simuData;
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
     FreeConsole();
 #endif
-    delete dialog;
-    delete simuData;
   }
   else {
     QMessageBox::warning(NULL,
