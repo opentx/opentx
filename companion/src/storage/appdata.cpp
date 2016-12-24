@@ -310,6 +310,8 @@ bool    Profile::renameFwFiles() const { return _renameFwFiles; }
 int     Profile::channelOrder()  const { return _channelOrder;  }
 int     Profile::defaultMode()   const { return _defaultMode;   }
 
+QByteArray Profile::simuWinGeo() const { return _simuWinGeo;    }
+
 QString Profile::beeper()        const { return _beeper;        }
 QString Profile::countryCode()   const { return _countryCode;   }
 QString Profile::display()       const { return _display;       }
@@ -342,6 +344,8 @@ void Profile::penableBackup (const bool    x) { store(x, _penableBackup, "penabl
 void Profile::channelOrder  (const int     x) { store(x, _channelOrder,  "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
 void Profile::defaultMode   (const int     x) { store(x, _defaultMode,   "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
 
+void Profile::simuWinGeo    (const QByteArray x) { store(x, _simuWinGeo, "simuWindowGeometry"    ,"Profiles", QString("profile%1").arg(index));}
+
 void Profile::beeper        (const QString x) { store(x, _beeper,        "Beeper"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::countryCode   (const QString x) { store(x, _countryCode,   "countryCode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::display       (const QString x) { store(x, _display,       "Display"               ,"Profiles", QString("profile%1").arg(index));}
@@ -352,10 +356,10 @@ void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeSt
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::controlTypes  (const QString x) { store(x, _controlTypes,  "ControlTypes"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::controlNames  (const QString x) { store(x, _controlNames,  "ControlNames"          ,"Profiles", QString("profile%1").arg(index));}
-void Profile::txCurrentCalibration  (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
+void Profile::txCurrentCalibration (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
-void Profile::txVoltageCalibration     (const int x) { store(x, _txVoltageCalibration, "VbatCalib","Profiles", QString("profile%1").arg(index));}
+void Profile::txVoltageCalibration (const int x) { store(x, _txVoltageCalibration, "VbatCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMin       (const int     x) { store(x, _vBatMin,       "VbatMin"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMax       (const int     x) { store(x, _vBatMax,       "VbatMax"               ,"Profiles", QString("profile%1").arg(index));}
@@ -464,6 +468,8 @@ void Profile::init(int newIndex)
     _channelOrder =  0;
     _defaultMode =   1;
 
+    _simuWinGeo = QByteArray();
+
     initFwVariables();
 
     // Do not write empty profiles to disk except the default (0) profile.
@@ -488,6 +494,8 @@ void Profile::flush()
     getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
     getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
+
+    getset( _simuWinGeo,    "simuWindowGeometry"    ,""     ,"Profiles", QString("profile%1").arg(index));
 
     getset( _beeper,        "Beeper"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _countryCode,   "countryCode"           ,""     ,"Profiles", QString("profile%1").arg(index));

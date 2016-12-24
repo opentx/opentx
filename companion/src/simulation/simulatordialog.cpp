@@ -108,7 +108,7 @@ void SimulatorDialog::closeEvent (QCloseEvent *)
 {
   simulator->stop();
   timer->stop();
-  //g.simuWinGeo(GetCurrentFirmware()->getId(), saveGeometry());
+  g.profile[g.id()].simuWinGeo(saveGeometry());
 }
 
 void SimulatorDialog::showEvent(QShowEvent * event)
@@ -343,7 +343,7 @@ void SimulatorDialog::initUi(T * ui)
   setupGVarsDisplay();
   setTrims();
 
-  //restoreGeometry(g.simuWinGeo(GetCurrentFirmware()->getId()));
+  restoreGeometry(g.profile[g.id()].simuWinGeo());
 
   if (flags & SIMULATOR_FLAGS_NOTX)
     tabWidget->setCurrentIndex(1);

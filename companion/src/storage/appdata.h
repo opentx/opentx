@@ -122,6 +122,9 @@ class Profile: protected CompStoreObj
     int     _channelOrder;
     int     _defaultMode;
 
+    // Simulator variables
+    QByteArray _simuWinGeo;
+
     // Firmware Variables
     QString _beeper;
     QString _countryCode;
@@ -156,6 +159,8 @@ class Profile: protected CompStoreObj
     int     channelOrder() const;
     int     defaultMode() const;
 
+    QByteArray simuWinGeo() const;
+
     QString beeper() const;
     QString countryCode() const;
     QString display() const;
@@ -187,6 +192,8 @@ class Profile: protected CompStoreObj
     void penableBackup (const bool);
     void channelOrder  (const int);
     void defaultMode   (const int);
+
+    void simuWinGeo    (const QByteArray);
 
     void beeper        (const QString);
     void countryCode   (const QString);
