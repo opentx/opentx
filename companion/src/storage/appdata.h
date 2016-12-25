@@ -262,6 +262,7 @@ class AppData: protected CompStoreObj
     QString _sambaLocation;
     QString _sambaPort;
     QString _lastSimulator;
+    QString _simuLastEepe;
 
     QString _backupDir;
     QString _gePath;
@@ -292,6 +293,7 @@ class AppData: protected CompStoreObj
     int _id;
     int _theme;
     int _warningId;
+    int _simuLastProfId;
 
   public:
     // All the get definitions
@@ -313,6 +315,7 @@ class AppData: protected CompStoreObj
     QString sambaLocation();
     QString sambaPort();
     QString lastSimulator();
+    QString simuLastEepe();
 
     QString backupDir();
     QString gePath();
@@ -343,6 +346,7 @@ class AppData: protected CompStoreObj
     int id();
     int theme();
     int warningId();
+    int simuLastProfId();
 
     // All the set definitions
     void recentFiles     (const QStringList x);
@@ -363,6 +367,7 @@ class AppData: protected CompStoreObj
     void sambaLocation   (const QString);
     void sambaPort       (const QString);
     void lastSimulator   (const QString);
+    void simuLastEepe    (const QString);
 
     void backupDir       (const QString);
     void gePath          (const QString);
@@ -394,10 +399,13 @@ class AppData: protected CompStoreObj
     void id              (const int);
     void theme           (const int);
     void warningId       (const int);
+    void simuLastProfId  (const int);
 
     // Constructor
     AppData();
     void init();
+
+    QMap<int, QString> getActiveProfiles();
 };
 
 extern AppData g;

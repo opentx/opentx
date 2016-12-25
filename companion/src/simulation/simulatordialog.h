@@ -73,8 +73,8 @@ class SimulatorDialog : public QDialog
 
     void start(const char * filename);
     void start(QByteArray & eeprom);
+    void setRadioProfileId(int value);
     virtual void traceCallback(const char * text);
-
 
   protected:
     template <class T> void initUi(T * ui);
@@ -110,16 +110,18 @@ class SimulatorDialog : public QDialog
 #endif
 
     SimulatorInterface *simulator;
+    int radioProfileId;
     unsigned int lastPhase;
 
-    void setupTimer();
     QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
     void setupOutputsDisplay();
     void setupGVarsDisplay();
 
+    void startCommon();
+    void setupTimer();
+
     void centerSticks();
     void setTrims();
-
     void setValues();
     virtual void getValues() = 0;
     int getValue(qint8 i);

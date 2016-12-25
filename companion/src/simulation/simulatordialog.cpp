@@ -37,47 +37,13 @@ void traceCb(const char * text)
   }
 }
 
-void SimulatorDialog::traceCallback(const char * text)
-{
-  // this function is called from other threads
-  traceMutex.lock();
-  // limit the size of list
-  if (traceList.size() < 1000) {
-    traceList.append(QString(text));
-  }
-  traceMutex.unlock();
-}
-
-void SimulatorDialog::updateDebugOutput()
-{
-  traceMutex.lock();
-  while (!traceList.isEmpty()) {
-    QString text = traceList.takeFirst();
-    traceBuffer.append(text);
-    // limit the size of traceBuffer
-    if (traceBuffer.size() > 10*1024) {
-      traceBuffer.remove(0, 1*1024);
-    }
-    if (DebugOut) {
-      DebugOut->traceCallback(QString(text));
-    }
-  }
-  traceMutex.unlock();
-}
-
-void SimulatorDialog::wheelEvent (QWheelEvent *event)
-{
-  if ( event->delta() != 0) {
-    simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
-  }
-}
-
 SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags):
   QDialog(parent),
   flags(flags),
   timer(NULL),
   lightOn(false),
   simulator(simulator),
+  radioProfileId(g.id()),
   lastPhase(-1),
   beepVal(0),
   TelemetrySimu(0),
@@ -108,14 +74,16 @@ void SimulatorDialog::closeEvent (QCloseEvent *)
 {
   simulator->stop();
   timer->stop();
-  g.profile[g.id()].simuWinGeo(saveGeometry());
+  g.profile[radioProfileId].simuWinGeo(saveGeometry());
 }
 
 void SimulatorDialog::showEvent(QShowEvent * event)
 {
   static bool firstShow = true;
   if (firstShow) {
-    if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT || ((flags & SIMULATOR_FLAGS_STANDALONE) && (g.profile[g.id()].defaultMode() & 1))) {
+    restoreGeometry(g.profile[radioProfileId].simuWinGeo());
+
+    if (flags & SIMULATOR_FLAGS_STICK_MODE_LEFT || ((flags & SIMULATOR_FLAGS_STANDALONE) && (g.profile[radioProfileId].defaultMode() & 1))) {
       vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
       vJoyLeft->setStickY(1);
     }
@@ -139,6 +107,29 @@ void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
   if (event->button() == Qt::MidButton) {
     middleButtonPressed = false;
   }
+}
+
+void SimulatorDialog::wheelEvent (QWheelEvent *event)
+{
+  if ( event->delta() != 0) {
+    simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
+  }
+}
+
+void SimulatorDialog::traceCallback(const char * text)
+{
+  // this function is called from other threads
+  traceMutex.lock();
+  // limit the size of list
+  if (traceList.size() < 1000) {
+    traceList.append(QString(text));
+  }
+  traceMutex.unlock();
+}
+
+void SimulatorDialog::setRadioProfileId(int value)
+{
+  radioProfileId = value;
 }
 
 void SimulatorDialog::onTrimPressed(int which)
@@ -257,13 +248,6 @@ void SimulatorDialog::keyReleaseEvent(QKeyEvent * event)
   }
 }
 
-void SimulatorDialog::setupTimer()
-{
-  timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
-  timer->start(10);
-}
-
 template <class T>
 void SimulatorDialog::initUi(T * ui)
 {
@@ -271,9 +255,6 @@ void SimulatorDialog::initUi(T * ui)
 
   windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
   setWindowTitle(windowName);
-
-  simulator->setSdPath(g.profile[g.id()].sdPath());
-  simulator->setVolumeGain(g.profile[g.id()].volumeGain());
 
   lcd = ui->lcd;
   lcd->setData(simulator->getLcd(), lcdWidth, lcdHeight, lcdDepth);
@@ -342,8 +323,6 @@ void SimulatorDialog::initUi(T * ui)
   setupOutputsDisplay();
   setupGVarsDisplay();
   setTrims();
-
-  restoreGeometry(g.profile[g.id()].simuWinGeo());
 
   if (flags & SIMULATOR_FLAGS_NOTX)
     tabWidget->setCurrentIndex(1);
@@ -499,6 +478,23 @@ void SimulatorDialog::onButtonPressed(int value)
   }
 }
 
+void SimulatorDialog::updateDebugOutput()
+{
+  traceMutex.lock();
+  while (!traceList.isEmpty()) {
+    QString text = traceList.takeFirst();
+    traceBuffer.append(text);
+    // limit the size of traceBuffer
+    if (traceBuffer.size() > 10*1024) {
+      traceBuffer.remove(0, 1*1024);
+    }
+    if (DebugOut) {
+      DebugOut->traceCallback(QString(text));
+    }
+  }
+  traceMutex.unlock();
+}
+
 void SimulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
@@ -554,20 +550,25 @@ void SimulatorDialog::onTimerEvent()
   updateDebugOutput();
 }
 
-void SimulatorDialog::centerSticks()
-{
-  if (vJoyLeft)
-    vJoyLeft->centerStick();
-
-  if (vJoyRight)
-    vJoyRight->centerStick();
-}
-
-void SimulatorDialog::start(QByteArray & eeprom)
+void SimulatorDialog::startCommon()
 {
   lastPhase = -1;
   numGvars = GetCurrentFirmware()->getCapability(Gvars);
   numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
+  simulator->setSdPath(g.profile[radioProfileId].sdPath());
+  simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
+}
+
+void SimulatorDialog::setupTimer()
+{
+  timer = new QTimer(this);
+  connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
+  timer->start(10);
+}
+
+void SimulatorDialog::start(QByteArray & eeprom)
+{
+  startCommon();
   simulator->start(eeprom, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
   getValues();
   setupTimer();
@@ -575,12 +576,19 @@ void SimulatorDialog::start(QByteArray & eeprom)
 
 void SimulatorDialog::start(const char * filename)
 {
-  lastPhase = -1;
-  numGvars = GetCurrentFirmware()->getCapability(Gvars);
-  numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
+  startCommon();
   simulator->start(filename);
   getValues();
   setupTimer();
+}
+
+void SimulatorDialog::centerSticks()
+{
+  if (vJoyLeft)
+    vJoyLeft->centerStick();
+
+  if (vJoyRight)
+    vJoyRight->centerStick();
 }
 
 void SimulatorDialog::setTrims()
