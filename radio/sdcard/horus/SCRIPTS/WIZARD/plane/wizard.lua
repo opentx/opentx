@@ -11,6 +11,7 @@ local FlapsCfgBg = {}
 local TailCfgBg = {}
 local SummaryBackground
 
+
 -- Release memory
 local function clean()
   print("FREE MEMORY CALLED")
@@ -133,6 +134,13 @@ local function loadBitmap(bitmap, name)
   end
 end
 
+-- draws one letter mark
+local ImgMarkBg = Bitmap.open("img/mark_bg.png")
+local function drawMark(x, y, name)
+  lcd.drawBitmap(ImgMarkBg, x, y)
+  lcd.drawText(x+8, y+3, name, TEXT_COLOR)
+end
+
 local BackgroundImg = Bitmap.open("img/background.png")
 local ImgPageDn = Bitmap.open("img/pagedn.png")
 local ImgEngineEl = Bitmap.open("img/eng_electric.png")
@@ -174,7 +182,8 @@ local AilFields = {
 
 local ImgPlane = Bitmap.open("img/plane.png")
 local ImgPageUp = Bitmap.open("img/pageup.png")
-local ImgMarkBg = Bitmap.open("img/mark_bg.png")
+local ImgAilR = Bitmap.open("img/rail.png")
+local ImgAilL = Bitmap.open("img/lail.png")
 
 local function runAilConfig(event)
   lcd.clear()
@@ -186,20 +195,22 @@ local function runAilConfig(event)
   if fields[1][5] == 1 then
 --    loadIndexedBitmap(AilCfgBg, 1, "img/bg_ail")
 --    lcd.drawBitmap(AilCfgBg[1], 0, 0)
+    lcd.drawBitmap(ImgAilR, 324, 123)
+    lcd.drawBitmap(ImgAilL, 275, 210)
+    drawMark(362, 132, "A")
+    drawMark(302, 227, "A")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
-    loadBitmap(ImgAilR, "img/rail")
-    loadBitmap(ImgAilL, "img/lail")
-    lcd.drawBitmap(ImgAilR, 350, 150)
-    lcd.drawBitmap(ImgAilL, 300, 250)
-
+    lcd.drawBitmap(ImgAilR, 324, 123)
+    lcd.drawBitmap(ImgAilL, 275, 210)
+    drawMark(362, 132, "A")
+    drawMark(302, 227, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
-    lcd.drawBitmap(ImgMarkBg, 150, 122)
-    lcd.drawText(160, 127, "A", TEXT_COLOR)
+    drawMark(152, 124, "A")
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
-    lcd.drawBitmap(ImgMarkBg, 150, 162)
-    lcd.drawText(160, 167, "B", TEXT_COLOR)
+    drawMark(152, 164, "B")
     setFieldsVisible(1, 1)
   else
 --    loadIndexedBitmap(AilCfgBg, 0, "img/bg_ail")
@@ -208,7 +219,7 @@ local function runAilConfig(event)
   end
   lcd.drawText(40, 20, "Number of ailerons on your model ?", TEXT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
-  loadIndexedBitmap(FlapsCfgBg, 1, "img/bg_flaps")
+--  loadIndexedBitmap(FlapsCfgBg, 1, "img/bg_flaps")
   local result = runFieldsPage(event)
   return result
 end
@@ -219,28 +230,46 @@ local FlapsFields = {
   {50, 167, COMBO, 1, 7, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
 }
 
+local ImgFlp = Bitmap.open("img/flap.png")
+
 local function runFlapsConfig(event)
   lcd.clear()
+  lcd.drawBitmap(BackgroundImg, 0, 0)
+  lcd.drawBitmap(ImgPageUp, 0, 95)
+  lcd.drawBitmap(ImgPageDn, 455, 95)
+  lcd.drawBitmap(ImgPlane, 252, 100)
   fields = FlapsFields
   if fields[1][5] == 1 then
-    loadIndexedBitmap(FlapsCfgBg, 1, "img/bg_flaps")
-    lcd.drawBitmap(FlapsCfgBg[1], 0, 0)
+--    loadIndexedBitmap(FlapsCfgBg, 1, "img/bg_flaps")
+--    lcd.drawBitmap(FlapsCfgBg[1], 0, 0)
+    lcd.drawBitmap(ImgFlp, 315, 143)
+    lcd.drawBitmap(ImgFlp, 285, 191)
+    drawMark(362, 132, "A")
+    drawMark(302, 227, "A")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
-    loadIndexedBitmap(FlapsCfgBg, 2, "img/bg_flaps")
-    lcd.drawBitmap(FlapsCfgBg[2], 0, 0)
+--    loadIndexedBitmap(FlapsCfgBg, 2, "img/bg_flaps")
+--    lcd.drawBitmap(FlapsCfgBg[2], 0, 0)
+    lcd.drawBitmap(ImgFlp, 315, 143)
+    lcd.drawBitmap(ImgFlp, 285, 191)
+    drawMark(362, 132, "A")
+    drawMark(302, 227, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 164, "B")
+    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1)
   else
-    loadIndexedBitmap(FlapsCfgBg, 0, "img/bg_flaps")
-    lcd.drawBitmap(FlapsCfgBg[0], 0, 0)
+--    loadIndexedBitmap(FlapsCfgBg, 0, "img/bg_flaps")
+--    lcd.drawBitmap(FlapsCfgBg[0], 0, 0)
     setFieldsVisible(0, 0)
   end
   lcd.drawText(40, 20, "Does your model have flaps ?", TEXT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
-  loadIndexedBitmap(TailCfgBg, 1, "img/bg_tail")
+--  loadIndexedBitmap(TailCfgBg, 1, "img/bg_tail")
   local result = runFieldsPage(event)
   return result
 end
