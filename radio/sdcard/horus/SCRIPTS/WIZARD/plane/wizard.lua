@@ -6,11 +6,6 @@ local page = 1
 local current = 1
 local pages = {}
 local fields = {}
-local AilCfgBg = {}
-local FlapsCfgBg = {}
-local TailCfgBg = {}
-local SummaryBackground
-
 
 -- Release memory
 local function clean()
@@ -260,7 +255,6 @@ local function runFlapsConfig(event)
     drawMark(152, 124, "A")
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
     drawMark(152, 164, "B")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 1)
   else
 --    loadIndexedBitmap(FlapsCfgBg, 0, "img/bg_flaps")
@@ -281,42 +275,73 @@ local TailFields = {
   {50, 207, COMBO, 0, 5, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } }, --ele2
 }
 
+local ImgTail = Bitmap.open("img/tail.png")
+local ImgVTail = Bitmap.open("img/vtail.png")
+local ImgTailRud = Bitmap.open("img/tailrud.png")
+
 local function runTailConfig(event)
   lcd.clear()
+  lcd.drawBitmap(BackgroundImg, 0, 0)
+  lcd.drawBitmap(ImgPageUp, 0, 95)
+  lcd.drawBitmap(ImgPageDn, 455, 95)
   fields = TailFields
   if fields[1][5] == 0 then
-    loadIndexedBitmap(TailCfgBg, 0, "img/bg_tail")
-    lcd.drawBitmap(TailCfgBg[0], 0, 0)
+--    loadIndexedBitmap(TailCfgBg, 0, "img/bg_tail")
+--    lcd.drawBitmap(TailCfgBg[0], 0, 0)
+    lcd.drawBitmap(ImgTail, 252, 100)
+    drawMark(275, 120, "A")
+    drawMark(390, 155, "A")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     setFieldsVisible(1, 0, 0)
   end
   if fields[1][5] == 1 then
-    loadIndexedBitmap(TailCfgBg, 1, "img/bg_tail")
-    lcd.drawBitmap(TailCfgBg[1], 0, 0)
+--    loadIndexedBitmap(TailCfgBg, 1, "img/bg_tail")
+--    lcd.drawBitmap(TailCfgBg[1], 0, 0)
+    lcd.drawBitmap(ImgTail, 252, 100)
+    lcd.drawBitmap(ImgTailRud, 340, 100)
+    drawMark(275, 120, "A")
+    drawMark(390, 155, "A")
+    drawMark(370, 112, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 164, "B")
     setFieldsVisible(1, 1, 0)
   end
   if fields[1][5] == 2 then
-    loadIndexedBitmap(TailCfgBg, 2, "img/bg_tail")
-    lcd.drawBitmap(TailCfgBg[2], 0, 0)
+--    loadIndexedBitmap(TailCfgBg, 2, "img/bg_tail")
+--    lcd.drawBitmap(TailCfgBg[2], 0, 0)
+    lcd.drawBitmap(ImgTail, 252, 100)
+    lcd.drawBitmap(ImgTailRud, 340, 100)
+    drawMark(275, 120, "A")
+    drawMark(390, 155, "C")
+    drawMark(370, 112, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 164, "B")
     lcd.drawFilledRectangle(40, 202, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 204, "C")
     setFieldsVisible(1, 1, 1)
   end
   if fields[1][5] == 3 then
-    loadIndexedBitmap(TailCfgBg, 3, "img/bg_tail")
-    lcd.drawBitmap(TailCfgBg[3], 0, 0)
+--    loadIndexedBitmap(TailCfgBg, 3, "img/bg_tail")
+--    lcd.drawBitmap(TailCfgBg[3], 0, 0)
+    lcd.drawBitmap(ImgVTail, 252, 100)
+    drawMark(315, 110, "A")
+    drawMark(382, 120, "B")
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 124, "A")
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    drawMark(152, 164, "B")
     setFieldsVisible(1, 1, 0)
   end
   lcd.drawText(40, 20, "Pick the tail config of your model", TEXT_COLOR)
   lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
-  if SummaryBackground == nil then
-    SummaryBackground = Bitmap.open("img/bg_sum.gif")
-  end
+--  if SummaryBackground == nil then
+--    SummaryBackground = Bitmap.open("img/bg_sum.gif")
+--  end
   local result = runFieldsPage(event)
   return result
 end
@@ -332,10 +357,14 @@ local ConfigSummaryFields = {
   {110, 250, COMBO, 1, 0, { "No, I need to change something", "Yes, all is well, create the plane !"} },
 }
 
+local ImgSummary = Bitmap.open("img/summary.png")
+
 local function runConfigSummary(event)
   lcd.clear()
   fields = ConfigSummaryFields
-  lcd.drawBitmap(SummaryBackground, 0, 0)
+  lcd.drawBitmap(BackgroundImg, 0, 0)
+  lcd.drawBitmap(ImgPageUp, 0, 95)
+  lcd.drawBitmap(ImgSummary, 300, 60)
   lineIndex = 40
   -- motors
   if(MotorFields[1][5] == 1) then
@@ -392,7 +421,8 @@ end
 
 local function createModel(event)
   lcd.clear()
-  lcd.drawBitmap(SummaryBackground, 0, 0)
+  lcd.drawBitmap(BackgroundImg, 0, 0)
+  lcd.drawBitmap(ImgSummary, 300, 60)
   model.defaultInputs()
   model.deleteMixes()
   -- motor
@@ -432,8 +462,8 @@ local function createModel(event)
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "VTailE", 50)
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "VTailR", -50, 1)
   end
-  lcd.drawText(70, 140, "Model successfully created !", TEXT_COLOR)
-  lcd.drawText(100, 180, "Press RTN to exit", TEXT_COLOR)
+  lcd.drawText(70, 90, "Model successfully created !", TEXT_COLOR)
+  lcd.drawText(100, 130, "Press RTN to exit", TEXT_COLOR)
   return 2
 end
 
