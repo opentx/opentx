@@ -14,10 +14,14 @@ local SummaryBackground
 -- Release memory
 local function clean()
   print("FREE MEMORY CALLED")
-  MotorConfigBackground = nil
-  AilCfgBg = nil
-  FlapsCfgBg = nil
-  TailCfgBg = nil
+--  BackgroundImg = nil
+  ImgEngineEl = nil
+  ImgEngineCom = nil
+  ImgAilR = nil
+  ImgAilL = nil
+--  AilCfgBg = nil
+--  FlapsCfgBg = nil
+--  TailCfgBg = nil
   SummaryBackground = nil
 end
 
@@ -118,13 +122,22 @@ local function setFieldsVisible(...)
 end
 
 -- on demand load of bitmaps
-local  function loadIndexedBitmap(bitmap, index, name)
+local function loadIndexedBitmap(bitmap, index, name)
   if bitmap[index] == nil then
     bitmap[index] = Bitmap.open(name..index..".gif")
   end
 end
+local function loadBitmap(bitmap, name)
+  if bitmap == nil then
+    bitmap = Bitmap.open(name..".png")
+  end
+end
 
-local MotorConfigBackground = Bitmap.open("img/bg_engine.gif")
+local BackgroundImg = Bitmap.open("img/background.png")
+local ImgPageDn = Bitmap.open("img/pagedn.png")
+local ImgEngineEl = Bitmap.open("img/eng_electric.png")
+local ImgEngineCom = Bitmap.open("img/eng_comb.png")
+
 local MotorFields = {
   {50, 50, COMBO, 1, 1, { "No", "Yes"} },
   {50, 127, COMBO, 1, 2, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
@@ -132,7 +145,10 @@ local MotorFields = {
 
 local function runMotorConfig(event)
   lcd.clear()
-  lcd.drawBitmap(MotorConfigBackground, 0, 0)
+  lcd.drawBitmap(BackgroundImg, 0, 0)
+  lcd.drawBitmap(ImgPageDn, 455, 95)
+  lcd.drawBitmap(ImgEngineEl, 310, 50)
+  lcd.drawBitmap(ImgEngineCom, 180, 150)
   lcd.setColor(CUSTOM_COLOR, lcd.RGB(255, 255, 255))
   fields = MotorFields
   lcd.drawText(40, 20, "Does your model have a motor ?", TEXT_COLOR)
@@ -143,7 +159,7 @@ local function runMotorConfig(event)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     fields[2][4]=1
   end
-  loadIndexedBitmap(AilCfgBg, 2, "img/bg_ail")
+--  loadIndexedBitmap(AilCfgBg, 2, "img/bg_ail")
   local result = runFieldsPage(event)
   return result
 end
@@ -156,23 +172,38 @@ local AilFields = {
   {50, 167, COMBO, 1, 4, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } }, -- Ail2 chan
 }
 
+local ImgPlane = Bitmap.open("img/plane.png")
+local ImgPageUp = Bitmap.open("img/pageup.png")
+local ImgMarkBg = Bitmap.open("img/mark_bg.png")
+
 local function runAilConfig(event)
   lcd.clear()
+  lcd.drawBitmap(BackgroundImg, 0, 0)
+  lcd.drawBitmap(ImgPageUp, 0, 95)
+  lcd.drawBitmap(ImgPageDn, 455, 95)
+  lcd.drawBitmap(ImgPlane, 252, 100)
   fields = AilFields
   if fields[1][5] == 1 then
-    loadIndexedBitmap(AilCfgBg, 1, "img/bg_ail")
-    lcd.drawBitmap(AilCfgBg[1], 0, 0)
+--    loadIndexedBitmap(AilCfgBg, 1, "img/bg_ail")
+--    lcd.drawBitmap(AilCfgBg[1], 0, 0)
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
-    loadIndexedBitmap(AilCfgBg, 2, "img/bg_ail")
-    lcd.drawBitmap(AilCfgBg[2], 0, 0)
+    loadBitmap(ImgAilR, "img/rail")
+    loadBitmap(ImgAilL, "img/lail")
+    lcd.drawBitmap(ImgAilR, 350, 150)
+    lcd.drawBitmap(ImgAilL, 300, 250)
+
     lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawBitmap(ImgMarkBg, 150, 122)
+    lcd.drawText(160, 127, "A", TEXT_COLOR)
     lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    lcd.drawBitmap(ImgMarkBg, 150, 162)
+    lcd.drawText(160, 167, "B", TEXT_COLOR)
     setFieldsVisible(1, 1)
   else
-    loadIndexedBitmap(AilCfgBg, 0, "img/bg_ail")
-    lcd.drawBitmap(AilCfgBg[0], 0, 0)
+--    loadIndexedBitmap(AilCfgBg, 0, "img/bg_ail")
+--    lcd.drawBitmap(AilCfgBg[0], 0, 0)
     setFieldsVisible(0, 0)
   end
   lcd.drawText(40, 20, "Number of ailerons on your model ?", TEXT_COLOR)
