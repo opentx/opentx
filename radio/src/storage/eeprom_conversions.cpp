@@ -1261,6 +1261,7 @@ bool eeConvert()
   g_eeGeneral.contrast = 25;
 
   ALERT(STR_STORAGE_WARNING, msg, AU_BAD_RADIODATA);
+  eepromBackup();
 
   RAISE_ALERT(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE);
 
