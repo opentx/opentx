@@ -310,6 +310,8 @@ bool    Profile::renameFwFiles() const { return _renameFwFiles; }
 int     Profile::channelOrder()  const { return _channelOrder;  }
 int     Profile::defaultMode()   const { return _defaultMode;   }
 
+QByteArray Profile::simuWinGeo() const { return _simuWinGeo;    }
+
 QString Profile::beeper()        const { return _beeper;        }
 QString Profile::countryCode()   const { return _countryCode;   }
 QString Profile::display()       const { return _display;       }
@@ -342,6 +344,8 @@ void Profile::penableBackup (const bool    x) { store(x, _penableBackup, "penabl
 void Profile::channelOrder  (const int     x) { store(x, _channelOrder,  "default_channel_order" ,"Profiles", QString("profile%1").arg(index));}
 void Profile::defaultMode   (const int     x) { store(x, _defaultMode,   "default_mode"          ,"Profiles", QString("profile%1").arg(index));}
 
+void Profile::simuWinGeo    (const QByteArray x) { store(x, _simuWinGeo, "simuWindowGeometry"    ,"Profiles", QString("profile%1").arg(index));}
+
 void Profile::beeper        (const QString x) { store(x, _beeper,        "Beeper"                ,"Profiles", QString("profile%1").arg(index));}
 void Profile::countryCode   (const QString x) { store(x, _countryCode,   "countryCode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::display       (const QString x) { store(x, _display,       "Display"               ,"Profiles", QString("profile%1").arg(index));}
@@ -352,10 +356,10 @@ void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeSt
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::controlTypes  (const QString x) { store(x, _controlTypes,  "ControlTypes"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::controlNames  (const QString x) { store(x, _controlNames,  "ControlNames"          ,"Profiles", QString("profile%1").arg(index));}
-void Profile::txCurrentCalibration  (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
+void Profile::txCurrentCalibration (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
-void Profile::txVoltageCalibration     (const int x) { store(x, _txVoltageCalibration, "VbatCalib","Profiles", QString("profile%1").arg(index));}
+void Profile::txVoltageCalibration (const int x) { store(x, _txVoltageCalibration, "VbatCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMin       (const int     x) { store(x, _vBatMin,       "VbatMin"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMax       (const int     x) { store(x, _vBatMax,       "VbatMax"               ,"Profiles", QString("profile%1").arg(index));}
@@ -464,6 +468,8 @@ void Profile::init(int newIndex)
     _channelOrder =  0;
     _defaultMode =   1;
 
+    _simuWinGeo = QByteArray();
+
     initFwVariables();
 
     // Do not write empty profiles to disk except the default (0) profile.
@@ -488,6 +494,8 @@ void Profile::flush()
     getset( _renameFwFiles, "rename_firmware_files" ,false  ,"Profiles", QString("profile%1").arg(index));
     getset( _channelOrder,  "default_channel_order" ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _defaultMode,   "default_mode"          ,1      ,"Profiles", QString("profile%1").arg(index));
+
+    getset( _simuWinGeo,    "simuWindowGeometry"    ,""     ,"Profiles", QString("profile%1").arg(index));
 
     getset( _beeper,        "Beeper"                ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _countryCode,   "countryCode"           ,""     ,"Profiles", QString("profile%1").arg(index));
@@ -529,6 +537,7 @@ QString AppData::programmer()      { return _programmer;      }
 QString AppData::sambaLocation()   { return _sambaLocation;   }
 QString AppData::sambaPort()       { return _sambaPort;       }
 QString AppData::lastSimulator()   { return _lastSimulator;   }
+QString AppData::simuLastEepe()    { return _simuLastEepe;    }
 
 QString AppData::backupDir()       { return _backupDir;       }
 QString AppData::gePath()          { return _gePath;          }
@@ -559,6 +568,7 @@ int AppData::jsCtrl()              { return _jsCtrl;          }
 int AppData::id()                  { return _id;              }
 int AppData::theme()               { return _theme;           }
 int AppData::warningId()           { return _warningId;       }
+int AppData::simuLastProfId()      { return _simuLastProfId;  }
 
 // Set declarations
 void AppData::recentFiles     (const QStringList x) { store(x, _recentFiles,     "recentFileList"          );}
@@ -578,6 +588,7 @@ void AppData::programmer      (const QString     x) { store(x, _programmer,     
 void AppData::sambaLocation   (const QString     x) { store(x, _sambaLocation,   "samba_location"          );}
 void AppData::sambaPort       (const QString     x) { store(x, _sambaPort,       "samba_port"              );}
 void AppData::lastSimulator   (const QString     x) { store(x, _lastSimulator,   "last_simulator"          );}
+void AppData::simuLastEepe    (const QString     x) { store(x, _simuLastEepe,    "simuLastEepe"            );}
 
 void AppData::backupDir       (const QString     x) { store(x, _backupDir,       "backupPath"              );}
 void AppData::gePath          (const QString     x) { store(x, _gePath,          "gePath"                  );}
@@ -608,6 +619,7 @@ void AppData::jsCtrl          (const int         x) { store(x, _jsCtrl,         
 void AppData::id              (const int         x) { store(x, _id,              "profileId"               );}
 void AppData::theme           (const int         x) { store(x, _theme,           "theme"                   );}
 void AppData::warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
+void AppData::simuLastProfId  (const int         x) { store(x, _simuLastProfId,  "simuLastProfId"          );}
 
 // Constructor
 AppData::AppData()
@@ -765,6 +777,7 @@ void AppData::init()
     getset( _sambaLocation,   "samba_location"          ,"" );
     getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
     getset( _lastSimulator,   "last_simulator"          ,"" );
+    getset( _simuLastEepe,    "simuLastEepe"            ,"" );
 
     getset( _backupDir,       "backupPath"              ,"" );
     getset( _gePath,          "gePath"                  ,"" );
@@ -803,4 +816,15 @@ void AppData::init()
     getset( _id,              "profileId"               ,0  );
     getset( _theme,           "theme"                   ,1  );
     getset( _warningId,       "warningId"               ,0  );
+    getset( _simuLastProfId,  "simuLastProfId"          ,-1 );
+}
+
+QMap<int, QString> AppData::getActiveProfiles()
+{
+  QMap<int, QString> active;
+  for (int i=0; i<MAX_PROFILES; i++) {
+    if (g.profile[i].existsOnDisk())
+      active.insert(i, g.profile[i].name());
+  }
+  return active;
 }
