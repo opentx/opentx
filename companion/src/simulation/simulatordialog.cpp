@@ -478,6 +478,7 @@ void SimulatorDialog::setupGVarsDisplay()
         if ((i % 2) ==0 ) {
           value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
         }
+        value->setText("0");
         gvarValues << value;
         gvarsLayout->addWidget(value, i+1, fm+1);
       }
@@ -620,12 +621,17 @@ inline int chVal(int val)
 
 void SimulatorDialog::setValues()
 {
+  static const int numOutputs = GetCurrentFirmware()->getCapability(Outputs);
+  static const int numLogicalSwitches = GetCurrentFirmware()->getCapability(LogicalSwitches);
+  static TxOutputs prevOutputs;
+  static unsigned int prevPhase = -1;
+
   TxOutputs outputs;
   simulator->getValues(outputs);
   Trims trims;
   simulator->getTrims(trims);
 
-  for (int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+  for (int i=0; i<numOutputs; i++) {
     if (i < channelSliders.size()) {
       channelSliders[i]->setValue(chVal(outputs.chans[i]));
       channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
@@ -635,19 +641,29 @@ void SimulatorDialog::setValues()
   QString CSWITCH_ON = "QLabel { background-color: #4CC417 }";
   QString CSWITCH_OFF = "QLabel { }";
 
-  for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
-    logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+  for (int i=0; i<numLogicalSwitches; i++) {
+    if (prevOutputs.vsw[i] != outputs.vsw[i]) {
+      // setStyleSheet() is very CPU time consuming, doing it only on the actual
+      // switch state change brings down CPU usage time (for Taranis simulation) from 40% to 7% (Linux, one core usage)
+      logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+    }
   }
 
   for (unsigned int gv=0; gv<numGvars; gv++) {
     for (unsigned int fm=0; fm<numFlightModes; fm++) {
-      gvarValues[gv*numFlightModes+fm]->setText(QString((fm==lastPhase)?"<b>%1</b>":"%1").arg(outputs.gvars[fm][gv]));
+      if (prevPhase != lastPhase || prevOutputs.gvars[fm][gv] != outputs.gvars[fm][gv]) {
+        // same trick for GVARS, but this has far less effect on CPU usage as setStyleSheet()
+        gvarValues[gv*numFlightModes+fm]->setText(QString((fm==lastPhase)?"<b>%1</b>":"%1").arg(outputs.gvars[fm][gv]));
+      }
     }
   }
 
   if (outputs.beep) {
     beepVal = outputs.beep;
   }
+
+  prevOutputs = outputs;
+  prevPhase = lastPhase;
 }
 
 #ifdef JOYSTICKS
