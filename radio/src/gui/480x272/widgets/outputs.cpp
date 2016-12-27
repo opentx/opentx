@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 
-#define RECT_OFFSET                    80
-#define RECT_WIDTH                     (w - RECT_OFFSET)
+#define RECT_BORDER                    1
+#define RECT_WIDTH                     (w - RECT_BORDER * 2)
 #define ROW_HEIGHT                     17
 
 class OutputsWidget: public Widget
@@ -34,7 +34,7 @@ class OutputsWidget: public Widget
 
     virtual void refresh();
 
-    uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan)
+    uint8_t drawChannels(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint8_t firstChan, bool bg_shown, uint16_t bg_color)
     {
       char chanString[] = "CH32";
       uint8_t numChan = h / ROW_HEIGHT;
@@ -43,35 +43,45 @@ class OutputsWidget: public Widget
 
       for (uint8_t curChan = firstChan; curChan < lastChan && curChan < 33; curChan++) {
         int16_t chanVal = calcRESXto100(channelOutputs[curChan-1]);
-        strAppend(chanString, "CH");
-        strAppendSigned(&chanString[2], curChan, 2);
-        lcdDrawText(x, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
-        strAppendSigned(chanString, chanVal);
-        lcdDrawText(x + RECT_OFFSET - 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | RIGHT);
+        if (bg_shown) {
+          lcdSetColor(bg_color);
+          lcdDrawSolidFilledRect(x + RECT_BORDER, y + RECT_BORDER + (curChan - firstChan) * row_height, RECT_WIDTH , row_height - RECT_BORDER, CUSTOM_COLOR);
+        }
         if (chanVal > 0) {
-          lcdDrawSolidFilledRect(x + RECT_OFFSET + RECT_WIDTH / 2,  y + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_BORDER + RECT_WIDTH / 2,  y + RECT_BORDER + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0) {
-          uint16_t startpoint = x + RECT_OFFSET;
+          uint16_t startpoint = x + RECT_BORDER;
           uint16_t endpoint = startpoint + RECT_WIDTH / 2;
           uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, 200);
-          lcdDrawSolidFilledRect(endpoint - size,  y + (curChan - firstChan) * row_height, size, row_height, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(endpoint - size,  y + RECT_BORDER + (curChan - firstChan) * row_height, size, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
-        lcdDrawRect(x + RECT_OFFSET, y + (curChan - firstChan) * row_height, RECT_WIDTH, row_height+1);
-        lcd->drawSolidVerticalLine(x + RECT_OFFSET + RECT_WIDTH / 2, y + (curChan - firstChan) * row_height, row_height, MAINVIEW_GRAPHICS_COLOR);
+        lcd->drawSolidVerticalLine(x + RECT_BORDER + RECT_WIDTH / 2, y + RECT_BORDER + (curChan - firstChan) * row_height, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
+        lcdDrawRect(x, y + (curChan - firstChan) * row_height, w, row_height+1);
+        lcdDrawNumber(x + RECT_WIDTH - 10, y + (curChan - firstChan) * row_height + 1, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+        if (g_model.limitData[curChan - 1].name[0] != 0)  {
+          strAppendSigned(chanString, curChan, 2);
+          lcdDrawText(x + 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+          lcdDrawSizedText(x + 25, y + (curChan - firstChan) * row_height + 1, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
+      } 
+        else {
+          strAppend(chanString, "CH");
+          strAppendSigned(&chanString[2], curChan, 2);
+          lcdDrawText(x + 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
+        }
       }
       return lastChan - 1;
     }
 
     void twoColumns()
     {
-      uint8_t endColumn = drawChannels(zone.x, zone.y, zone.w / 2, zone.h, persistentData->options[0].unsignedValue);
-      drawChannels(zone.x + zone.w / 2 + 2, zone.y, zone.w / 2, zone.h, endColumn + 1);
+      uint8_t endColumn = drawChannels(zone.x, zone.y, zone.w / 2, zone.h, persistentData->options[0].unsignedValue, persistentData->options[1].boolValue, persistentData->options[2].unsignedValue);
+      drawChannels(zone.x + zone.w / 2 + 2, zone.y, zone.w / 2, zone.h, endColumn + 1, persistentData->options[1].boolValue, persistentData->options[2].unsignedValue);
     }
 
     void oneColumn()
     {
-      drawChannels(zone.x, zone.y, zone.w, zone.h, persistentData->options[0].unsignedValue);
+      drawChannels(zone.x, zone.y, zone.w, zone.h, persistentData->options[0].unsignedValue, persistentData->options[1].boolValue, persistentData->options[2].unsignedValue);
     }
 
     static const ZoneOption options[];
@@ -79,6 +89,8 @@ class OutputsWidget: public Widget
 
 const ZoneOption OutputsWidget::options[] = {
   { "First channel", ZoneOption::Integer, OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(32) },
+  { "Fill Background?", ZoneOption::Bool, OPTION_VALUE_BOOL(false) },
+  { "BG Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREY) },  { NULL, ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 
