@@ -376,9 +376,7 @@ void evalFunctions()
           case FUNC_SET_TIMER:
             timerSet(CFN_TIMER_INDEX(cfn), CFN_PARAM(cfn));
             break;
-#endif
 
-#if defined(CPUARM)
           case FUNC_SET_FAILSAFE:
           {
             unsigned int moduleIndex = CFN_PARAM(cfn);
@@ -393,7 +391,6 @@ void evalFunctions()
               }
             }
           }
-#endif
 
 #if defined(DANGEROUS_MODULE_FUNCTIONS)
           case FUNC_RANGECHECK:
@@ -405,7 +402,8 @@ void evalFunctions()
             }
             break;
           }
-#endif
+#endif  
+#endif  // defined(CPUARM)
 
 #if defined(GVARS)
           case FUNC_ADJUST_GVAR:
@@ -593,7 +591,7 @@ void evalFunctions()
       }
       else {
         functionsContext.lastFunctionTime[i] = 0;
-#if defined(DANGEROUS_MODULE_FUNCTIONS)
+#if defined(CPUARM) && defined(DANGEROUS_MODULE_FUNCTIONS)
         if (functionsContext.activeSwitches & switch_mask) {
           switch (CFN_FUNC(cfn)) {
             case FUNC_RANGECHECK:

@@ -35,7 +35,10 @@ extern void rtcdriver_settime(struct gtm * t);
    implementations (e.g., UNICOS 9.0 on a Cray Y-MP EL) don't shift
    right in the usual way when A < 0, so SHR falls back on division if
    ordinary A >> B doesn't seem to be the usual signed shift.  */
-#define SHR(a, b) (-1 >> 1 == -1 ? (a) >> (b) : (a) / (1 << (b)) - ((a) % (1 << (b)) < 0))
+// Update: shifting a negative value is undefined behaviour in some modern compilers (e.g llvm/clang).
+// Uncomment if using e.g., Cray Y-MP EL.
+//#define SHR(a, b) (-1 >> 1 == -1 ? (a) >> (b) : (a) / (1 << (b)) - ((a) % (1 << (b)) < 0))
+#define SHR(a, b) ((a) >> (b))
 
 /* The extra casts in the following macros work around compiler bugs,
    e.g., in Cray C 5.0.3.0.  */
