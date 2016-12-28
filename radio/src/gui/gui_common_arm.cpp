@@ -287,6 +287,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
 
 #if defined(PCBSKY9X)
   if (swtch >= SWSRC_FIRST_SWITCH && swtch <= SWSRC_LAST_SWITCH) {
+    (void)negative;
     return true;
   }
 #else

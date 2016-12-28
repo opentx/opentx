@@ -35,10 +35,7 @@ extern void rtcdriver_settime(struct gtm * t);
    implementations (e.g., UNICOS 9.0 on a Cray Y-MP EL) don't shift
    right in the usual way when A < 0, so SHR falls back on division if
    ordinary A >> B doesn't seem to be the usual signed shift.  */
-// Update: shifting a negative value is undefined behaviour in some modern compilers (e.g llvm/clang).
-// Uncomment if using e.g., Cray Y-MP EL.
-//#define SHR(a, b) (-1 >> 1 == -1 ? (a) >> (b) : (a) / (1 << (b)) - ((a) % (1 << (b)) < 0))
-#define SHR(a, b) ((a) >> (b))
+#define SHR(a, b) (-1 >> 1 == -1 ? (a) >> (b) : (a) / (1 << (b)) - ((a) % (1 << (b)) < 0))
 
 /* The extra casts in the following macros work around compiler bugs,
    e.g., in Cray C 5.0.3.0.  */
@@ -190,7 +187,7 @@ static inline gtime_t ydhms_diff(long int year1, long int yday1, int hour1, int 
                                  int year0, int yday0, int hour0, int min0, int sec0)
 {
   static_assert(-1 / 2 == 0, "no C99 integer division");
-  static_assert(INT_MAX <= LONG_MAX / 2 || TIME_T_MAX <= UINT_MAX, "long int year and yday are not wide enough");
+  static_assert(INT_MAX <= LONG_MAX / 2 || TIME_T_MAX <= INT_MAX, "long int year and yday are not wide enough");
 
   /* Compute intervening leap days correctly even if year is negative.
      Take care to avoid integer overflow here.  */

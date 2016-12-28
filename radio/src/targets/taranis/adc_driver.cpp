@@ -43,11 +43,13 @@
 #if defined(PCBX9E)
     #define NUMBER_ANALOG_ADC1      10
     #define NUMBER_ANALOG_ADC3      (NUMBER_ANALOG - 10)
+#if !defined(SIMU)
     // mapping from adcValues order to enum Analogs
     const uint8_t ana_mapping[NUMBER_ANALOG] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
                                                  10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
                                                  11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
                                                  9 /*TX_VOLTAGE*/ };
+#endif  // !defined(SIMU)
 #else
     #define NUMBER_ANALOG_ADC1      NUMBER_ANALOG
 #endif
