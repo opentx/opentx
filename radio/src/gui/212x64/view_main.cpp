@@ -410,14 +410,14 @@ void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
-const MenuItem MAIN_MENU[] = {
-  { "RADIO SETTINGS", menuRadioSetup },
-  { "MODEL SELECT", menuModelSelect },
-  { "MODEL SETTINGS", menuModelSetup },
-  { "CHECKLIST", menuModelNotes },
-  { "SD MANAGER", menuRadioSdManager },
-  { "VERSION", menuRadioVersion }
-};
+//const MenuItem MAIN_MENU[] = {
+//  { "RADIO SETTINGS", menuRadioSetup },
+//  { "MODEL SELECT", menuModelSelect },
+//  { "MODEL SETTINGS", menuModelSetup },
+//  { "CHECKLIST", menuModelNotes },
+//  { "SD MANAGER", menuRadioSdManager },
+//  { "VERSION", menuRadioVersion }
+//};
 
 bool isMenuAvailable(int index)
 {

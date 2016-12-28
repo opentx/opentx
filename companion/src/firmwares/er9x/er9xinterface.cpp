@@ -193,7 +193,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
   return errors.to_ulong();
 }
 
-unsigned long Er9xInterface::loadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index)
+unsigned long Er9xInterface::loadBackup(RadioData &radioData, const uint8_t *eeprom, int esize, int index)
 {
   std::bitset<NUM_ERRORS> errors;
   errors.set(UNKNOWN_ERROR);

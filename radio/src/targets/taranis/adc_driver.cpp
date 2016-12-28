@@ -24,6 +24,7 @@
 #define SAMPTIME       2   // sample time = 28 cycles
 #define SAMPTIME_LONG  3   // sample time = 56 cycles
 
+#if !defined(SIMU)
 #if defined(PCBX9E) && defined(HORUS_STICKS)
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
 #elif defined(PCBX9E)
@@ -37,6 +38,7 @@
 #else
   const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
+#endif // #if !defined(SIMU)
 
 #if defined(PCBX9E)
     #define NUMBER_ANALOG_ADC1      10
