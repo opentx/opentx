@@ -107,7 +107,7 @@ void setCurrentCategory(unsigned int index)
 #define WIZARD_ICON_Y                  110
 #define WIZARD_TEXT_Y                  195
 
-uint8_t getWizardNumber()
+uint8_t getWizardCount()
 {
   uint8_t wizNbr=0;
   DIR dir;
@@ -139,7 +139,7 @@ bool menuModelWizard(event_t event)
   char wizpath[MAX_WIZARD_NAME_LEN];
 
   if(wizardNumber == 0) {
-    wizardNumber = getWizardNumber();
+    wizardNumber = getWizardCount();
     if (wizardNumber == 0) {
       chainMenu(menuModelSelect);
       return false;
