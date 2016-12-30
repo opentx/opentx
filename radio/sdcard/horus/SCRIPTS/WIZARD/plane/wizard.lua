@@ -123,19 +123,16 @@ local MotorFields = {
   {50, 127, COMBO, 1, 2, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
 }
 
-local ImgEngineEl
-local ImgEngineCom
+local ImgEngine
 
 local function runMotorConfig(event)
   lcd.clear()
-  if ImgEngineEl == nil then
-   ImgEngineEl = Bitmap.open("img/eng_electric.png")
-   ImgEngineCom = Bitmap.open("img/eng_comb.png")
+  if ImgEngine == nil then
+   ImgEngine = Bitmap.open("img/prop.png")
   end
   lcd.drawBitmap(BackgroundImg, 0, 0)
   lcd.drawBitmap(ImgPageDn, 455, 95)
-  lcd.drawBitmap(ImgEngineEl, 310, 50)
-  lcd.drawBitmap(ImgEngineCom, 180, 150)
+  lcd.drawBitmap(ImgEngine, 310, 50)
   lcd.setColor(CUSTOM_COLOR, lcd.RGB(255, 255, 255))
   fields = MotorFields
   lcd.drawText(40, 20, "Does your model have a motor ?", TEXT_COLOR)
