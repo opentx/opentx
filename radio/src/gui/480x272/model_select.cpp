@@ -109,7 +109,7 @@ void setCurrentCategory(unsigned int index)
 
 uint8_t getWizardCount()
 {
-  uint8_t wizNbr=0;
+  uint8_t wizCnt=0;
   DIR dir;
   static FILINFO fno;
 
@@ -121,26 +121,26 @@ uint8_t getWizardCount()
         break;
       }
       if (fno.fattrib & AM_DIR) {
-        wizNbr++;
+        wizCnt++;
       }
     }
   }
-  return wizNbr;
+  return wizCnt;
 }
 
 bool menuModelWizard(event_t event)
 {
   static uint8_t wizardSelected;
-  static uint8_t wizardNumber;
+  static uint8_t wizardCnt;
   bool executeMe = false;
   uint8_t first = 0;
   DIR dir;
   static FILINFO fno;
   char wizpath[MAX_WIZARD_NAME_LEN];
 
-  if(wizardNumber == 0) {
-    wizardNumber = getWizardCount();
-    if (wizardNumber == 0) {
+  if (wizardCnt == 0) {
+    wizardCnt = getWizardCount();
+    if (wizardCnt == 0) {
       chainMenu(menuModelSelect);
       return false;
     }
@@ -160,7 +160,7 @@ bool menuModelWizard(event_t event)
     break;
 
   case EVT_ROTARY_RIGHT:
-    if (wizardSelected < wizardNumber-1) {
+    if (wizardSelected < wizardCnt-1) {
       wizardSelected++;
     }
     if (wizardSelected > 3) {
