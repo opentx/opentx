@@ -140,6 +140,10 @@ bool menuModelWizard(event_t event)
 
   if(wizardNumber == 0) {
     wizardNumber = getWizardNumber();
+    if (wizardNumber == 0) {
+      chainMenu(menuModelSelect);
+      return false;
+    }
   }
 
   switch(event) {
@@ -210,10 +214,6 @@ bool menuModelWizard(event_t event)
       }
     }
     f_closedir(&dir);
-    if(wizardNumber == 0) {
-      lcdDrawText(40, LCD_H / 2, STR_SDCARD_NOWIZ);
-      return true;
-    }
   }
   return true;
 }
