@@ -18,7 +18,10 @@
  * GNU General Public License for more details.
  */
 
+#include "simulatordialog.h"
 #include "ui_simulatordialog-taranis.h"
+#include "helpers.h"
+
 
 uint32_t SimulatorDialogTaranis::switchstatus = 0;
 
@@ -69,6 +72,14 @@ SimulatorDialogTaranis::SimulatorDialogTaranis(QWidget * parent, SimulatorInterf
       potLabels[i]->hide();
     }
   }
+
+  keymapHelp.append(keymapHelp_t(tr("PG-UP"),           tr("[ MENU ]")));
+  keymapHelp.append(keymapHelp_t(tr("PG-DN"),           tr("[ PAGE ]")));
+  keymapHelp.append(keymapHelp_t(tr("DEL/BKSP/ESC"),    tr("[ EXIT ]")));
+  keymapHelp.append(keymapHelp_t(tr("+/UP"),            tr("[ + ]")));
+  keymapHelp.append(keymapHelp_t(tr("-/DN"),            tr("[ - ]")));
+  keymapHelp.append(keymapHelp_t(tr("ENTER/MOUSE-MID"), tr("[ ENT ]")));
+  keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("[ + ]/[ - ] or Rotary Sel.")));
 
   connect(ui->leftbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->rightbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
@@ -134,10 +145,10 @@ void SimulatorDialogTaranis::getValues()
     {
       buttonPressed == Qt::Key_PageUp,
       buttonPressed == Qt::Key_Escape,
-      buttonPressed == Qt::Key_Enter,
+      buttonPressed == Qt::Key_Enter || middleButtonPressed,
       buttonPressed == Qt::Key_PageDown,
-      buttonPressed == Qt::Key_Plus,
-      buttonPressed == Qt::Key_Minus
+      buttonPressed == Qt::Key_Plus || buttonPressed == Qt::Key_Up,
+      buttonPressed == Qt::Key_Minus || buttonPressed == Qt::Key_Down
     },
 
     middleButtonPressed,

@@ -134,6 +134,9 @@
            <property name="invertedAppearance">
             <bool>true</bool>
            </property>
+           <property name="invertedControls">
+            <bool>true</bool>
+           </property>
            <property name="tickPosition">
             <enum>QSlider::TicksBothSides</enum>
            </property>
@@ -208,6 +211,9 @@
            <property name="invertedAppearance">
             <bool>true</bool>
            </property>
+           <property name="invertedControls">
+            <bool>true</bool>
+           </property>
            <property name="tickPosition">
             <enum>QSlider::TicksBothSides</enum>
            </property>
@@ -248,6 +254,9 @@
            <property name="invertedAppearance">
             <bool>true</bool>
            </property>
+           <property name="invertedControls">
+            <bool>true</bool>
+           </property>
            <property name="tickPosition">
             <enum>QSlider::TicksBothSides</enum>
            </property>
@@ -286,6 +295,9 @@
             <enum>Qt::Vertical</enum>
            </property>
            <property name="invertedAppearance">
+            <bool>true</bool>
+           </property>
+           <property name="invertedControls">
             <bool>true</bool>
            </property>
            <property name="tickPosition">
@@ -396,6 +408,9 @@
            <property name="invertedAppearance">
             <bool>true</bool>
            </property>
+           <property name="invertedControls">
+            <bool>true</bool>
+           </property>
            <property name="tickPosition">
             <enum>QSlider::TicksBothSides</enum>
            </property>
@@ -434,6 +449,9 @@
             <enum>Qt::Vertical</enum>
            </property>
            <property name="invertedAppearance">
+            <bool>true</bool>
+           </property>
+           <property name="invertedControls">
             <bool>true</bool>
            </property>
            <property name="tickPosition">
@@ -477,7 +495,7 @@
             <bool>true</bool>
            </property>
            <property name="invertedControls">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="tickPosition">
             <enum>QSlider::TicksBothSides</enum>
@@ -551,6 +569,9 @@
             <enum>Qt::Vertical</enum>
            </property>
            <property name="invertedAppearance">
+            <bool>true</bool>
+           </property>
+           <property name="invertedControls">
             <bool>true</bool>
            </property>
            <property name="tickPosition">

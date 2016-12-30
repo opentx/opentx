@@ -49,7 +49,7 @@ SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface 
   polygon.setPoints(19, 29,232, 23,225, 19,218, 16,210, 14,200, 13,190, 14,179, 17,170, 20,162, 25,155, 30,149, 43,164, 37,172, 34,181, 33,190, 34,200, 37,209, 41,215, 44,219);
   ui->leftbuttons->addArea(polygon, Qt::Key_PageUp, "Horus/left_btn1.png");
   polygon.setPoints(22, 32,234, 46,220, 52,225, 59,228, 68,230, 75,230, 83,229, 90,227, 95,224, 101,220, 114,234, 109,239, 103,242, 98,245, 91,248, 84,249, 77,250, 69,250, 60,249, 51,247, 44,243, 38,239);
-  ui->leftbuttons->addArea(polygon, Qt::Key_Escape, "Horus/left_btn2.png");
+  ui->leftbuttons->addArea(polygon, Qt::Key_PageDown, "Horus/left_btn2.png");
   ui->leftbuttons->addArea(9, 259, 34, 282, Qt::Key_Print, "Horus/left_scrnsht.png");
 
   // install simulator TRACE hook
@@ -62,6 +62,17 @@ SimulatorDialogHorus::SimulatorDialogHorus(QWidget * parent, SimulatorInterface 
   //restore switches
   if (g.simuSW())
     restoreSwitches();
+
+  keymapHelp.append(keymapHelp_t(tr("PG-UP"),           tr("[ PgUp ]")));
+  keymapHelp.append(keymapHelp_t(tr("PG-DN"),           tr("[ PgDn ]")));
+  keymapHelp.append(keymapHelp_t(tr("UP"),              tr("[ MDL ]")));
+  keymapHelp.append(keymapHelp_t(tr("DN/DEL/BKSP"),     tr("[ RTN ]")));
+  keymapHelp.append(keymapHelp_t(tr("LEFT"),            tr("[ SYS ]")));
+  keymapHelp.append(keymapHelp_t(tr("RIGHT"),           tr("[ TELE ]")));
+  keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("Rotary Selector")));
+  keymapHelp.append(keymapHelp_t(tr("-/X"),             tr("Rotary UP")));
+  keymapHelp.append(keymapHelp_t(tr("+/C"),             tr("Rotary DOWN")));
+  keymapHelp.append(keymapHelp_t(tr("ENTER/MOUSE-MID"), tr("Selector Press")));
 
   connect(ui->leftbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
   connect(ui->rightbuttons, SIGNAL(buttonPressed(int)), this, SLOT(onButtonPressed(int)));
@@ -118,10 +129,10 @@ void SimulatorDialogHorus::getValues()
 
     {
       buttonPressed == Qt::Key_PageUp,
-      buttonPressed == Qt::Key_Escape,
+      buttonPressed == Qt::Key_PageDown,
       buttonPressed == Qt::Key_Enter || middleButtonPressed,
       buttonPressed == Qt::Key_Up,
-      buttonPressed == Qt::Key_Down,
+      buttonPressed == Qt::Key_Down || buttonPressed == Qt::Key_Escape,
       buttonPressed == Qt::Key_Right,
       buttonPressed == Qt::Key_Left
     },
@@ -146,6 +157,15 @@ void SimulatorDialogHorus::getValues()
   };
 
   simulator->setValues(inputs);
+
+  if (buttonPressed == Qt::Key_Plus || buttonPressed == Qt::Key_C) {
+    simulator->wheelEvent(1);
+    buttonPressed = 0;  // debounce, important
+  }
+  else if (buttonPressed == Qt::Key_Minus || buttonPressed == Qt::Key_X) {
+    simulator->wheelEvent(-1);
+    buttonPressed = 0;  // debounce, important
+  }
 }
 
 void SimulatorDialogHorus::saveSwitches(void)

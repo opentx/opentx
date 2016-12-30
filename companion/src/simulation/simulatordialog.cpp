@@ -54,12 +54,20 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   middleButtonPressed(false)
 {
   setWindowFlags(Qt::Window);
-  //shorcut for telemetry simulator
-  // new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_T), this, SLOT(openTelemetrySimulator()));
+  grabKeyboard();
+
+  new QShortcut(QKeySequence(Qt::Key_F1), this, SLOT(showHelp()));
   new QShortcut(QKeySequence(Qt::Key_F4), this, SLOT(openTelemetrySimulator()));
   new QShortcut(QKeySequence(Qt::Key_F5), this, SLOT(openTrainerSimulator()));
   new QShortcut(QKeySequence(Qt::Key_F6), this, SLOT(openDebugOutput()));
   new QShortcut(QKeySequence(Qt::Key_F7), this, SLOT(luaReload()));
+
+  keymapHelp.append(keymapHelp_t(tr("F1"), tr("Show Help/Keymap")));
+  keymapHelp.append(keymapHelp_t(tr("F4"), tr("Open Telemetry Simulator")));
+  keymapHelp.append(keymapHelp_t(tr("F5"), tr("Open Trainer Simulator")));
+  keymapHelp.append(keymapHelp_t(tr("F6"), tr("Open Debug Output")));
+  keymapHelp.append(keymapHelp_t(tr("F7"), tr("Reload Lua Scripts")));
+
   traceCallbackInstance = this;
 }
 
@@ -91,29 +99,33 @@ void SimulatorDialog::showEvent(QShowEvent * event)
       vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
       vJoyRight->setStickY(1);
     }
+
     firstShow = false;
   }
 }
 
 void SimulatorDialog::mousePressEvent(QMouseEvent *event)
 {
-  if (event->button() == Qt::MidButton) {
+  if (event->button() == Qt::MidButton)
     middleButtonPressed = true;
-  }
+  else
+    event->ignore();
 }
 
 void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
 {
-  if (event->button() == Qt::MidButton) {
+  if (event->button() == Qt::MidButton)
     middleButtonPressed = false;
-  }
+  else
+    event->ignore();
 }
 
-void SimulatorDialog::wheelEvent (QWheelEvent *event)
+void SimulatorDialog::wheelEvent(QWheelEvent *event)
 {
-  if ( event->delta() != 0) {
-    simulator->wheelEvent(event->delta() > 0 ? 1 : -1);
-  }
+  if (event->angleDelta().isNull())
+    return;
+  QPoint numSteps = event->angleDelta() / 8 / 15 * -1;  // one step per 15deg
+  simulator->wheelEvent(numSteps.y());
 }
 
 void SimulatorDialog::traceCallback(const char * text)
@@ -196,6 +208,25 @@ void SimulatorDialog::onDebugOutputClose()
   DebugOut = 0;
 }
 
+void SimulatorDialog::showHelp()
+{
+  QString helpText = tr("Simulator Controls:");
+  helpText += "<table cellspacing=4 cellpadding=0>";
+  helpText += tr("<tr><th>Key/Mouse</td><th>Action</td></tr>");
+  QString keyTemplate = "<tr><td align='center'><pre>%1</pre></td><td align='center'>%2</td></tr>";
+  foreach (keymapHelp_t pair, keymapHelp)
+    helpText += keyTemplate.arg(pair.first, pair.second);
+  helpText += "</table>";
+
+  QMessageBox * msgBox = new QMessageBox(this);
+  msgBox->setAttribute(Qt::WA_DeleteOnClose);
+  msgBox->setWindowFlags(msgBox->windowFlags() | Qt::WindowStaysOnTopHint);
+  msgBox->setStandardButtons( QMessageBox::Ok );
+  msgBox->setWindowTitle(tr("Simulator Help"));
+  msgBox->setText(helpText);
+  msgBox->setModal(false);
+  msgBox->show();
+}
 
 void SimulatorDialog::keyPressEvent (QKeyEvent *event)
 {
@@ -206,25 +237,27 @@ void SimulatorDialog::keyPressEvent (QKeyEvent *event)
       break;
     case Qt::Key_Escape:
     case Qt::Key_Backspace:
+    case Qt::Key_Delete:
       buttonPressed = Qt::Key_Escape;
+      break;
+    case Qt::Key_Plus:
+    case Qt::Key_Equal:
+      buttonPressed = Qt::Key_Plus;
       break;
     case Qt::Key_Up:
     case Qt::Key_Down:
     case Qt::Key_Right:
     case Qt::Key_Left:
     case Qt::Key_Minus:
-    case Qt::Key_Plus:
     case Qt::Key_PageDown:
-    case Qt::Key_PageUp:    
+    case Qt::Key_PageUp:
+    case Qt::Key_X:
+    case Qt::Key_C:
       buttonPressed = event->key();
       break;
-    case Qt::Key_X:
-      simulator->wheelEvent(-1);
+    default:
+      event->ignore();
       break;
-    case Qt::Key_C:
-      simulator->wheelEvent(1);
-      break;
-
   }
 }
 
@@ -235,15 +268,22 @@ void SimulatorDialog::keyReleaseEvent(QKeyEvent * event)
     case Qt::Key_Return:
     case Qt::Key_Escape:
     case Qt::Key_Backspace:
+    case Qt::Key_Delete:
+    case Qt::Key_Plus:
+    case Qt::Key_Equal:
     case Qt::Key_Up:
     case Qt::Key_Down:
     case Qt::Key_Right:
     case Qt::Key_Left:
-    case Qt::Key_Plus:
     case Qt::Key_Minus:
     case Qt::Key_PageDown:
     case Qt::Key_PageUp:
+    case Qt::Key_X:
+    case Qt::Key_C:
       buttonPressed = 0;
+      break;
+    default:
+      event->ignore();
       break;
   }
 }
