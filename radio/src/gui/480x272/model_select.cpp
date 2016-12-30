@@ -130,8 +130,8 @@ uint8_t getWizardCount()
 
 bool menuModelWizard(event_t event)
 {
-  static uint8_t wizardSelected;
-  static uint8_t wizardCnt;
+  static uint8_t wizardSelected = 0;
+  static uint8_t wizardCnt = getWizardCount();
   bool executeMe = false;
   uint8_t first = 0;
   DIR dir;
@@ -139,11 +139,8 @@ bool menuModelWizard(event_t event)
   char wizpath[MAX_WIZARD_NAME_LEN];
 
   if (wizardCnt == 0) {
-    wizardCnt = getWizardCount();
-    if (wizardCnt == 0) {
-      chainMenu(menuModelSelect);
-      return false;
-    }
+    chainMenu(menuModelSelect);
+    return false;
   }
 
   switch(event) {
