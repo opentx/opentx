@@ -902,7 +902,6 @@
 #define TR_SDCARD_ERROR        "SDCARD Error"
 #define TR_NO_SDCARD           "No SDCARD"
 #define TR_SDCARD_FULL         "SD Card Full"
-#define TR_SDCARD_NOWIZ        "No wizard found on SD Card"
 #define TR_INCOMPATIBLE        "Incompatible"
 #define TR_WARNING             "WARNING"
 #define TR_EEPROMWARN          "FINSKA"

@@ -107,9 +107,9 @@ void setCurrentCategory(unsigned int index)
 #define WIZARD_ICON_Y                  110
 #define WIZARD_TEXT_Y                  195
 
-uint8_t getWizardNumber()
+uint8_t getWizardCount()
 {
-  uint8_t wizNbr=0;
+  uint8_t wizCnt=0;
   DIR dir;
   static FILINFO fno;
 
@@ -121,25 +121,26 @@ uint8_t getWizardNumber()
         break;
       }
       if (fno.fattrib & AM_DIR) {
-        wizNbr++;
+        wizCnt++;
       }
     }
   }
-  return wizNbr;
+  return wizCnt;
 }
 
 bool menuModelWizard(event_t event)
 {
-  static uint8_t wizardSelected;
-  static uint8_t wizardNumber;
+  static uint8_t wizardSelected = 0;
+  static uint8_t wizardCnt = getWizardCount();
   bool executeMe = false;
   uint8_t first = 0;
   DIR dir;
   static FILINFO fno;
   char wizpath[MAX_WIZARD_NAME_LEN];
 
-  if(wizardNumber == 0) {
-    wizardNumber = getWizardNumber();
+  if (wizardCnt == 0) {
+    chainMenu(menuModelSelect);
+    return false;
   }
 
   switch(event) {
@@ -156,7 +157,7 @@ bool menuModelWizard(event_t event)
     break;
 
   case EVT_ROTARY_RIGHT:
-    if (wizardSelected < wizardNumber-1) {
+    if (wizardSelected < wizardCnt-1) {
       wizardSelected++;
     }
     if (wizardSelected > 3) {
@@ -210,10 +211,6 @@ bool menuModelWizard(event_t event)
       }
     }
     f_closedir(&dir);
-    if(wizardNumber == 0) {
-      lcdDrawText(40, LCD_H / 2, STR_SDCARD_NOWIZ);
-      return true;
-    }
   }
   return true;
 }
