@@ -77,6 +77,7 @@ class SimulatorDialog : public QDialog
     virtual void traceCallback(const char * text);
 
   protected:
+    typedef QPair<QString, QString> keymapHelp_t;
     template <class T> void initUi(T * ui);
     virtual void setLightOn(bool enable) { }
     virtual void updateBeepButton() { }
@@ -98,6 +99,7 @@ class SimulatorDialog : public QDialog
     VirtualJoystickWidget *vJoyRight;
     QTimer *timer;
     QString windowName;
+    QVector<keymapHelp_t> keymapHelp;
     unsigned int backLight;
     bool lightOn;
     int switches;
@@ -164,6 +166,7 @@ class SimulatorDialog : public QDialog
     void openDebugOutput();
     void onDebugOutputClose();
     void luaReload();
+    void showHelp();
 
 #ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);

@@ -18,7 +18,10 @@
  * GNU General Public License for more details.
  */
 
+#include "simulatordialog.h"
 #include "ui_simulatordialog-9x.h"
+#include "helpers.h"
+
 
 uint32_t SimulatorDialog9X::switchstatus = 0;
 
@@ -74,6 +77,14 @@ SimulatorDialog9X::SimulatorDialog9X(QWidget * parent, SimulatorInterface *simul
   //restore switches
   if (g.simuSW())
     restoreSwitches();
+
+  keymapHelp.append(keymapHelp_t(tr("UP/PG-UP"),         tr("[ UP ]")));
+  keymapHelp.append(keymapHelp_t(tr("DN/PG-DN"),         tr("[ DN ]")));
+  keymapHelp.append(keymapHelp_t(tr("LEFT/+"),           tr("[ + ]")));
+  keymapHelp.append(keymapHelp_t(tr("RIGHT/-"),          tr("[ - ]")));
+  keymapHelp.append(keymapHelp_t(tr("ENTER/MOUSE-MID"),  tr("[ MENU ]")));
+  keymapHelp.append(keymapHelp_t(tr("DEL/BKSP/ESC"),     tr("[ EXIT ]")));
+  keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),   tr("[ UP ]/[ DN ] or Rotary Sel.")));
 
   for (int i=0; i<pots.count(); i++) {
     pots[i]->setProperty("index", i);
@@ -154,12 +165,12 @@ void SimulatorDialog9X::getValues()
     },
 
     {
-      buttonPressed == Qt::Key_Enter,
+      buttonPressed == Qt::Key_Enter || middleButtonPressed,
       buttonPressed == Qt::Key_Escape,
-      buttonPressed == Qt::Key_Down,
-      buttonPressed == Qt::Key_Up,
-      buttonPressed == Qt::Key_Right,
-      buttonPressed == Qt::Key_Left,
+      buttonPressed == Qt::Key_Down || buttonPressed == Qt::Key_PageDown,
+      buttonPressed == Qt::Key_Up || buttonPressed == Qt::Key_PageUp,
+      buttonPressed == Qt::Key_Right || buttonPressed == Qt::Key_Plus,
+      buttonPressed == Qt::Key_Left || buttonPressed == Qt::Key_Minus,
     },
 
     middleButtonPressed,
