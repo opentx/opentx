@@ -121,7 +121,6 @@ class TelemetrySimulator : public QDialog
       bool stepping;
       QDateTime parseTransmittterTimestamp(QString row);
       void calcLogFrequency();
-      int32_t replayRate;
     };
 
 private:
@@ -162,8 +161,6 @@ private:
       uint32_t cellData1;
       uint32_t cellData2;
       uint32_t cellData3;
-      uint32_t cellDataTime;
-      double cell[MAXCELLS];
     };
 
     class GPSEmulator
@@ -185,7 +182,6 @@ private:
       double course;
       double speedKNTS;
       double altitude; // in meters
-      uint32_t nextDataIndex;
       uint32_t encodeLatLon(double latLon, bool isLat);
       uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
     };

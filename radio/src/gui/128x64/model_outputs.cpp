@@ -143,7 +143,7 @@ void menuModelLimits(event_t event)
     lcdDrawChar(LIMITS_DIRECTION_POS, y, swVal);
 #endif
 
-    int8_t limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 100);
+    limit_min_max_t limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 100);
   
     putsChn(0, y, k+1, IS_LINE_SELECTED(sub, k) ? INVERS : 0);
 

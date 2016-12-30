@@ -22,13 +22,15 @@
 
 volatile uint8_t dacStarted = false;
 
+#if !defined(SIMU)
+
+#if !defined(SOFTWARE_VOLUME)
 const int8_t volumeScale[VOLUME_LEVEL_MAX+1] =
 {
     0,  2,  4,   6,   8,  10,  13,  17,  22,  27,  33,  40,
     64, 82, 96, 105, 112, 117, 120, 122, 124, 125, 126, 127
 } ;
-
-#if !defined(SIMU)
+#endif
 
 void setSampleRate(uint32_t frequency)
 {

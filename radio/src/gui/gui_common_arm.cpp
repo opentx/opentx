@@ -278,16 +278,16 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   bool negative = false;
 
   if (swtch < 0) {
-    negative = true;
     if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
+    negative = true;
     swtch = -swtch;
   }
 
 #if defined(PCBSKY9X)
   if (swtch >= SWSRC_FIRST_SWITCH && swtch <= SWSRC_LAST_SWITCH) {
-    negative = negative;
+    (void)negative;
     return true;
   }
 #else
