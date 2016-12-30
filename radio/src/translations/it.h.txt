@@ -937,7 +937,6 @@
 #define TR_SDCARD_ERROR        "Errore SD"
 #define TR_NO_SDCARD           "No SDCARD"
 #define TR_SDCARD_FULL         "SD Card Piena"
-#define TR_SDCARD_NOWIZ        "No wizard found on SD Card"
 #define TR_INCOMPATIBLE        "Incompatibile"
 #define TR_WARNING             "AVVISO"
 #define TR_EEPROMWARN          "EEPROM"
