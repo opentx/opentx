@@ -158,6 +158,11 @@ void OpenTxSimulator::wheelEvent(int steps)
 {
 #if defined(ROTARY_ENCODER_NAVIGATION)
   ROTARY_ENCODER_NAVIGATION_VALUE += steps * ROTARY_ENCODER_GRANULARITY;
+#else
+  if (steps > 0)
+    simuSetKey(KEY_MINUS, 1);
+  else if (steps < 0)
+    simuSetKey(KEY_PLUS, 1);
 #endif
 }
 
