@@ -27,8 +27,8 @@
 #define SECS_PER_DAY    86400ul
 #define TM_YEAR_BASE    1900
 
-#define TIME_T_MIN      (-__LONG_MAX__)
-#define TIME_T_MAX      (__LONG_MAX__)
+#define TIME_T_MIN      (-LONG_MAX)
+#define TIME_T_MAX      (LONG_MAX)
 
 typedef long int gtime_t;
 
