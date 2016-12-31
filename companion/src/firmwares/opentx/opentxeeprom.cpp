@@ -2935,6 +2935,7 @@ class SensorField: public TransformedField {
       TransformedField(internalField),
       internalField("Sensor"),
       sensor(sensor),
+      version(version),
       _param(0)
     {
       internalField.Append(new UnsignedField<16>(_id, "id/persistentValue"));
@@ -2997,12 +2998,21 @@ class SensorField: public TransformedField {
         else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           sensor.amps = _sources[0];
       }
+      
+      if (version < 218) {
+        if (sensor.unit > SensorData::UNIT_WATTS)
+          sensor.unit++;
+        if (sensor.unit > SensorData::UNIT_DEGREE)
+          sensor.unit++;
+      }
+        
       eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
   protected:
     StructField internalField;
     SensorData & sensor;
+    unsigned int version;
     unsigned int _id;
     unsigned int _subid;
     unsigned int _instance;
