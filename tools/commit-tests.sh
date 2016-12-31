@@ -27,7 +27,7 @@ else
 fi
 
 SRCDIR=$(dirname "$SCRIPT")/..
-COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55"
+COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55 -DWARNINGS_AS_ERRORS=ON"
 
 mkdir build || true
 cd build
@@ -86,42 +86,42 @@ make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break
 
 # OpenTX on X7
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
 
 # OpenTX on X9D
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
 
 # OpenTX on X9D+
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
 
 # OpenTX on Taranis X9E
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
 
 # OpenTX on Horus beta boards
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
 
 # OpenTX on Horus
 rm -rf *
-cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES -DWARNINGS_AS_ERRORS=YES ${SRCDIR}
+cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
 make -j${CORES} firmware
 make -j${CORES} simu
 make -j${CORES} gtests ; ./gtests --gtest_shuffle --gtest_repeat=5 --gtest_break_on_failure
