@@ -810,6 +810,7 @@ FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
 {
   char *path = convertSimuPath(name);
   char * realPath = findTrueFileName(path);
+  fil->fs = 0;
   if (!(flag & FA_WRITE)) {
     struct stat tmp;
     if (stat(realPath, &tmp)) {
