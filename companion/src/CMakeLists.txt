@@ -231,7 +231,7 @@ endif()
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(LANGUAGES he pl pt ru de fr es it sv cs fi nl)
+set(LANGUAGES he pl pt ru de fr es it sv cs fi nl cn)
 foreach(language ${LANGUAGES})
   set(companion_TS ${companion_TS} translations/companion_${language}.ts)
 endforeach(language)
@@ -415,7 +415,7 @@ endif()
 
 if(LUPDATE_FOUND)
   add_custom_target(translations
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
     COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
     )
 else()
