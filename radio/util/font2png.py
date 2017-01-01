@@ -91,6 +91,12 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             pass
         elif c == "." and fontsize <= 8:
             painter.drawPoint(width, fontsize)
+        elif c == u"↑" or c == u"↓":
+            rect = metrics.boundingRect(c)
+            if fontsize >= 24:
+                painter.drawText(width - rect.left() + 1, fontsize - 2, c)  # fontsize-bottom+1 -17 / 7
+            else:
+                painter.drawText(width - 1, fontsize, c)  # fontsize-bottom+1 -17 / 7            
         else:
             rect = metrics.boundingRect(c)
             if fontsize >= 24:
