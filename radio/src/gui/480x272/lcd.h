@@ -22,6 +22,7 @@
 #define _LCD_H_
 
 #include "bitmapbuffer.h"
+#include "opentx_types.h"
 
 #if LCD_W >= 480
   #define LCD_COLS                     40
