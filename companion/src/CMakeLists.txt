@@ -416,7 +416,7 @@ endif()
 if(LUPDATE_FOUND)
   add_custom_target(translations
     WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
-    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
+    COMMAND ${LUPDATE_EXECUTABLE} ${COMPANION_SRC_DIRECTORY} -no-obsolete -ts ${companion_TS}
     )
 else()
   add_custom_target(translations

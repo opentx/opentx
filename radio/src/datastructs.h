@@ -885,7 +885,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  countryCode); \
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
-    NOBACKUP(uint8_t  spareExtra:6); \
+    NOBACKUP(uint8_t  spareExtraArm:6); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
@@ -914,7 +914,7 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:4; \
-    uint8_t  spare:4; \
+    uint8_t  spareExtra:4; \
     uint32_t switchConfig; \
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
@@ -980,7 +980,11 @@ PACK(struct RadioData {
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
-  NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+#if defined(BUZZER)
+  NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+#else
+  NOBACKUP(int8_t spareRadio:2);
+#endif
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t alarmsFlash:1);

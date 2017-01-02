@@ -117,7 +117,7 @@
 #define TR_MULTI_CUSTOM        "Custom"
 
 #define LEN_SUBTYPE_FLYSKY     "\004"
-#define TR_SUBTYPE_FLYSKY      "Std\0"V9x9""V6x6""V912""CX20"
+#define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912""CX20"
 
 #define LEN_SUBTYPE_AFHDS2A    "\010"
 #define TR_SUBTYPE_AFHDS2A     "PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS"
@@ -641,7 +641,11 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_EXIT                "[EXIT]"
+#if defined(PCBHORUS)
+  #define TR_EXIT              "[RTN]"
+#else
+  #define TR_EXIT              "[EXIT]"
+#endif
 
 #if defined(PCBFLAMENCO)
   #define TR_POPUPS            TR_EXIT "\010" TR_ENTER
