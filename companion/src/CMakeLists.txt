@@ -231,7 +231,7 @@ endif()
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(LANGUAGES he pl pt ru de fr es it sv cs fi nl)
+set(LANGUAGES he pl pt ru de fr es it sv cs fi nl cn)
 foreach(language ${LANGUAGES})
   set(companion_TS ${companion_TS} translations/companion_${language}.ts)
 endforeach(language)
