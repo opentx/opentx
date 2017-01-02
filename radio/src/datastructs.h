@@ -968,6 +968,12 @@ PACK(struct TrainerData {
   #define THEME_DATA
 #endif
 
+#if defined(BUZZER)
+  #define BUZZER_FIELD NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+#else
+  #define BUZZER_FIELD NOBACKUP(int8_t spareRadio:2);
+#endif
+
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
@@ -980,11 +986,7 @@ PACK(struct RadioData {
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
-#if defined(BUZZER)
-  NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
-#else
-  NOBACKUP(int8_t spareRadio:2);
-#endif
+  BUZZER_FIELD
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t alarmsFlash:1);
