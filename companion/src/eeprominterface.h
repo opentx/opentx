@@ -971,10 +971,12 @@ class SensorData {
       UNIT_PERCENT,
       UNIT_MAH,
       UNIT_WATTS,
+      UNIT_MILLIWATTS,
       UNIT_DB,
       UNIT_RPMS,
       UNIT_G,
       UNIT_DEGREE,
+      UNIT_RADIANS,
       UNIT_MILLILITERS,
       UNIT_FLOZ,
       UNIT_HOURS,
@@ -1041,7 +1043,7 @@ class SensorData {
 #if 0
 class CustomScreenOptionData {
   public:
-    
+
 };
 
 class CustomScreenZoneData {
@@ -1053,7 +1055,7 @@ class CustomScreenZoneData {
 class CustomScreenData {
   public:
     CustomScreenData();
-    
+
     char layoutName[10+1];
     CustomScreenZoneData zones[];
     CustomScreenOptionData options[];
@@ -1131,11 +1133,11 @@ class ModelData {
     SensorData sensorData[CPN_MAX_SENSORS];
 
     unsigned int toplcdTimer;
-    
+
     CustomScreenData customScreenData[5];
-    
+
     TopbarData topbarData;
-    
+
     void clear();
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
@@ -1303,7 +1305,7 @@ class GeneralSettings {
     char themeName[8+1];
     typedef uint8_t ThemeOptionData[8+1];
     ThemeOptionData themeOptionValue[5];
-    
+
     struct SwitchInfo {
       SwitchInfo(unsigned int index, unsigned int position):
         index(index),
@@ -1325,13 +1327,13 @@ class RadioData {
   public:
     GeneralSettings generalSettings;
     ModelData models[CPN_MAX_MODELS];
-    
+
     void setCurrentModel(unsigned int index)
     {
       generalSettings.currModelIndex = index;
       strcpy(generalSettings.currModelFilename, models[index].filename);
     }
-    
+
     QString getNextModelFilename()
     {
       char filename[sizeof(ModelData::filename)];
@@ -1479,7 +1481,7 @@ class EEPROMInterface
     virtual unsigned long load(RadioData &radioData, const uint8_t * eeprom, int size) = 0;
 
     virtual unsigned long loadBackup(RadioData & radioData, const uint8_t * eeprom, int esize, int index) = 0;
-    
+
     virtual unsigned long loadxml(RadioData & radioData, QDomDocument &doc) = 0;
 
     virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
@@ -1491,11 +1493,11 @@ class EEPROMInterface
     virtual const int getEEpromSize() = 0;
 
     virtual const int getMaxModels() = 0;
-    
+
     virtual int loadFile(RadioData & radioData, const QString & filename) = 0;
-    
+
     virtual int saveFile(const RadioData & radioData, const QString & filename) = 0;
-  
+
   protected:
 
     BoardEnum board;
@@ -1638,7 +1640,7 @@ struct Option {
 };
 
 class Firmware {
-    
+
   public:
     Firmware(const QString & id, const QString & name, const BoardEnum board, EEPROMInterface * eepromInterface):
       id(id),
@@ -1720,29 +1722,29 @@ class Firmware {
     }
 
     virtual int getCapability(Capability) = 0;
-    
+
     enum SwitchType {
       SWITCH_NONE,
       SWITCH_TOGGLE,
       SWITCH_2POS,
       SWITCH_3POS
     };
-    
+
     struct Switch {
       SwitchType type;
       const char * name;
     };
-    
+
     virtual Switch getSwitch(unsigned int index) = 0;
-    
+
     virtual QString getAnalogInputName(unsigned int index) = 0;
-    
+
     virtual QTime getMaxTimerStart() = 0;
 
     virtual bool isTelemetrySourceAvailable(int source) = 0;
 
     virtual int isAvailable(PulsesProtocol proto, int port=0) = 0;
-    
+
     const int getFlashSize();
 
   public:

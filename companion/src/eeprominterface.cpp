@@ -193,6 +193,8 @@ QString SensorData::unitString() const
       return QObject::tr("mAh");
     case UNIT_WATTS:
       return QObject::tr("W");
+    case UNIT_MILLIWATTS:
+        return QObject::tr("mW");
     case UNIT_DB:
       return QObject::tr("dB");
     case UNIT_RPMS:
@@ -201,6 +203,8 @@ QString SensorData::unitString() const
       return QObject::tr("g");
     case UNIT_DEGREE:
       return QObject::trUtf8("°");
+    case UNIT_RADIANS:
+      return QObject::trUtf8("Rad");
     case UNIT_HOURS:
       return QObject::tr("hours");
     case UNIT_MINUTES:
@@ -1061,11 +1065,11 @@ GeneralSettings::GeneralSettings()
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
   }
-  
+
   for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
     switchConfig[i] = GetCurrentFirmware()->getSwitch(i).type;
   }
-  
+
   BoardEnum board = GetEepromInterface()->getBoard();
   if (board == BOARD_HORUS) {
     potConfig[0] = POT_WITH_DETENT;
@@ -1194,7 +1198,7 @@ GeneralSettings::GeneralSettings()
       }
     }
   }
-  
+
   strcpy(themeName, "default");
   ThemeOptionData option1 = { 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0 };
   memcpy(&themeOptionValue[0], option1, sizeof(ThemeOptionData));
@@ -1719,7 +1723,7 @@ QString getBoardName(BoardEnum board)
     case BOARD_TARANIS_X9DP:
       return "Taranis X9D+";
     case BOARD_TARANIS_X9E:
-      return "Taranis X9E";  
+      return "Taranis X9E";
     case BOARD_SKY9X:
       return "Sky9x";
     case BOARD_9XRPRO:
@@ -1727,7 +1731,7 @@ QString getBoardName(BoardEnum board)
     case BOARD_AR9X:
       return "AR9X";
     case BOARD_HORUS:
-      return "Horus";  
+      return "Horus";
     default:
       return "Unknown";
   }
