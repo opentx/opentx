@@ -1070,3 +1070,4 @@ Jean-Christophe Gardaz
 Igor Pongrac
 James Mare
 Kerry Cochrell
+Florian Derriennic
