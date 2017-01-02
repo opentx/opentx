@@ -18,6 +18,7 @@ class GenericPanel : public QWidget
   friend class AutoCheckBox;
   friend class AutoHexSpinBox;
   friend class AutoLineEdit;
+  friend class GVarGroup;
 
   public:
     GenericPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware);
