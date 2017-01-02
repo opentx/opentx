@@ -179,6 +179,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     {
       if (h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
+      if (w<0) { x+=w; w=-w; }
       DMAFillRect(data, width, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 
@@ -197,7 +198,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     static BitmapBuffer * load(const char * filename);
 
     static BitmapBuffer * loadMask(const char * filename);
-    
+
     static BitmapBuffer * loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background);
 
     void drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset=0, coord_t width=0);
@@ -232,7 +233,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         w = srcw - srcx;
       if (srcy+h > srch)
         h = srch - srcy;
-      
+
       if (scale == 0) {
         if (x + w > width) {
           w = width - x;
@@ -280,7 +281,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       float vscale = float(h) / bitmap->getHeight();
       float hscale = float(w) / bitmap->getWidth();
       float scale = vscale < hscale ? vscale : hscale;
-      
+
       int xshift = (w - (bitmap->getWidth() * scale)) / 2;
       int yshift = (h - (bitmap->getHeight() * scale)) / 2;
       drawBitmap(x + xshift, y + yshift, bitmap, 0, 0, 0, 0, scale);
