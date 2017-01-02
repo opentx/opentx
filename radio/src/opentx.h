@@ -26,6 +26,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "definitions.h"
+#include "opentx_types.h"
 
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)
@@ -349,15 +350,9 @@ void memswap(void * a, void * b, uint8_t size);
   #include "fifo.h"
   #include "io/io_arm.h"
   // This doesn't need protection on this processor
-  typedef uint32_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   #define get_tmr10ms() g_tmr10ms
-  typedef int32_t rotenc_t;
-  typedef int32_t getvalue_t;
-  typedef uint32_t mixsrc_t;
-  typedef int32_t swsrc_t;
 #else
-  typedef uint16_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   extern inline uint16_t get_tmr10ms()
   {
@@ -367,10 +362,6 @@ void memswap(void * a, void * b, uint8_t size);
     sei();
     return time ;
   }
-  typedef int8_t rotenc_t;
-  typedef int16_t getvalue_t;
-  typedef uint8_t mixsrc_t;
-  typedef int8_t swsrc_t;
 #endif
 
 #if defined(NAVIGATION_STICKS)
@@ -773,10 +764,8 @@ extern uint16_t s_timeCum16ThrP;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
 #if defined(CPUARM)
-  typedef int16_t safetych_t;
   #define OVERRIDE_CHANNEL_UNDEFINED -4096
 #else
-  typedef int8_t safetych_t;
   #define OVERRIDE_CHANNEL_UNDEFINED -128
 #endif
 extern safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
@@ -1483,10 +1472,8 @@ enum BarThresholdIdx {
 };
 
 #if defined(CPUARM)
-  typedef uint16_t bar_threshold_t;
   #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = (val)
 #else
-  typedef uint8_t bar_threshold_t;
   #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = 128 + (val)
 #endif
 
