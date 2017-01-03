@@ -58,7 +58,7 @@ void drawTrims(uint8_t flightMode)
         drawVerticalSlider(xm, TRIM_V_Y, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
       }
       else {
-        drawVerticalSlider(xm, TRIM_V_Y, 160, limit(TRIM_MIN, trim, TRIM_MAX), TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+        drawVerticalSlider(xm, TRIM_V_Y, 160, trim, TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
@@ -72,7 +72,7 @@ void drawTrims(uint8_t flightMode)
         drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
       }
       else {
-        drawHorizontalSlider(xm, TRIM_H_Y, 160, limit(TRIM_MIN, trim, TRIM_MAX), TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+        drawHorizontalSlider(xm, TRIM_H_Y, 160, trim, TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {

@@ -212,6 +212,7 @@ void drawVerticalTrimPosition(coord_t x, coord_t y, int16_t dir)
 
 void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
+  val = limit(min, val, max);
   if (steps) {
     int delta = len / steps;
     for (int i = 0; i <= len; i += delta) {
@@ -244,6 +245,7 @@ void drawVerticalSlider(coord_t x, coord_t y, int len, int val, int min, int max
 
 void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
 {
+  val = limit(min, val, max);
   int w = divRoundClosest(len * (val - min), max - min);
   if (options & OPTION_SLIDER_TICKS) {
     if (steps) {
