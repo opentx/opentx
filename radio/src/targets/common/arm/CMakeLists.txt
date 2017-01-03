@@ -82,7 +82,8 @@ add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE -DGAUGES)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
 foreach(LANGUAGE ${TTS_LANGUAGES})
-  set(SRC ${SRC} translations/tts_${LANGUAGE}.cpp)
+  string(TOLOWER ${LANGUAGE} lang_lower)
+  set(SRC ${SRC} translations/tts_${lang_lower}.cpp)
 endforeach()
 set(SRC
   ${SRC}

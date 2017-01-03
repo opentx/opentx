@@ -53,41 +53,37 @@ else()
   remove_definitions(-DSIMU_AUDIO)
 endif()
 
-find_package(Lupdate)
-if(LUPDATE_FOUND)
-  message("Qt lupdate: " ${LUPDATE_EXECUTABLE})
-else()
-  message("Qt lupdate not found, 'translations' target will not be availabe.")
-endif()
-
 add_definitions(-DSIMU)
 add_definitions(-DQXT_STATIC)
 
-if (NOT MSVC AND ${CMAKE_VERSION} VERSION_LESS 3.1.0})
-  message("companion: adding -std=gnu++11")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+if(NOT MSVC)
+  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall")
+endif()
+if(WARNINGS_AS_ERRORS)
+  if(MSVC)
+    set(WARNING_FLAGS "${WARNING_FLAGS} /WX")
+  else()
+    set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
+  endif()
 endif()
 
 if(WIN32)
   include_directories(SYSTEM ${WIN_INCLUDE_DIRS})
   if(MSVC)
-    set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /LD /MP")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
-    message("companion: using MSVC with ${CMAKE_CXX_FLAGS}")
   elseif(MINGW)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields -mwindows")
-    message("companion: using MinGW with ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
 else()
   set(PTHREAD_LIBRARY pthread)
-  add_definitions(-Wall)
   link_directories(/usr/local/lib)
 endif()
 
-set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/radio/src)
-set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/companion/src/simulation)
-set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/companion/src)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
+
+use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
 include_directories(
   ${CMAKE_BINARY_DIR}
@@ -101,6 +97,8 @@ include_directories(
   ${COMPANION_SRC_DIRECTORY}/storage
 )
 
+############# Supporting libraries ###############
+
 add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
@@ -108,6 +106,8 @@ add_subdirectory(simulation)
 add_subdirectory(storage)
 add_subdirectory(thirdparty/qcustomplot)
 add_subdirectory(thirdparty/qxtcommandoptions)
+
+############# Common lib ###############
 
 set(common_SRCS
   eeprominterface.cpp
@@ -123,6 +123,8 @@ qt5_wrap_cpp(common_SRCS)
 
 add_library(common ${common_SRCS})
 qt5_use_modules(common Core Xml Widgets)
+
+############# Companion ###############
 
 set(companion_SRCS
   helpers.cpp
@@ -222,10 +224,7 @@ configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_B
 configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
 
 if(WIN32)
-  set(companion_SRCS ${companion_SRCS} icon.rc)
-  if(NOT MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS -mwindows)
-  endif()
+  list(APPEND companion_SRCS icon.rc)
 endif()
 
 include_directories(${CMAKE_BINARY_DIR})
@@ -233,7 +232,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 
 set(LANGUAGES he pl pt ru de fr es it sv cs fi nl cn)
 foreach(language ${LANGUAGES})
-  set(companion_TS ${companion_TS} translations/companion_${language}.ts)
+  list(APPEND companion_TS translations/companion_${language}.ts)
 endforeach(language)
 
 qt5_wrap_ui(companion_SRCS ${companion_UIS})
@@ -251,11 +250,13 @@ qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
 
 target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
-############# Standalone simu ###############
+PrintTargetReport("${COMPANION_NAME}")
+
+############# Standalone simulator ###############
 
 set(simu_SRCS
   modeledit/node.cpp
-  modeledit/edge.cpp # TODO not needed
+  modeledit/edge.cpp
   simulator.cpp
   )
 
@@ -266,15 +267,28 @@ set(simu_MOC_HDRS
 qt5_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
 
 if(WIN32)
-  set(simu_SRCS ${simu_SRCS} icon.rc)
+  list(APPEND simu_SRCS icon.rc)
 endif()
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RCC})
 
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
+qt5_use_modules(${SIMULATOR_NAME} Core Widgets Multimedia)
 
-# TODO not the same link command than companion?
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+
+############# Translations ####################
+
+find_package(Lupdate)
+if(LUPDATE_FOUND)
+  message(STATUS "Qt lupdate: " ${LUPDATE_EXECUTABLE})
+  add_custom_target(translations
+    WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
+    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
+    )
+else()
+  message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")
+endif()
 
 ############# Install ####################
 
@@ -407,17 +421,6 @@ if(WIN32)
     DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
     SOURCES ${PROJECT_BINARY_DIR}/companion/companion.nsi
     SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    )
-endif()
-
-if(LUPDATE_FOUND)
-  add_custom_target(translations
-    WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
-    COMMAND ${LUPDATE_EXECUTABLE} ${COMPANION_SRC_DIRECTORY} -no-obsolete -ts ${companion_TS}
-    )
-else()
-  add_custom_target(translations
-    COMMAND echo "Sorry, QT lupdate was not found."
     )
 endif()
 

@@ -1,15 +1,25 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB "X9D+" CACHE STRING "Radio type")
-set(TRANSLATIONS "EN" CACHE STRING "Radio language")
+set(PCB_TYPES X9D X9D+ X9E X7 HORUS 9X 9XR 9X128 9XR128 SKY9X 9XRPRO AR9X 9X2561 GRUVIN9X MEGA2560)
+set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
+set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU)
+
+set(PCB "X9D+" CACHE STRING "Radio type, one of: ${PCB_TYPES}")
+set_property(CACHE PCB PROPERTY STRINGS ${PCB_TYPES})
+set(TRANSLATIONS "EN" CACHE STRING "Radio language, one of: ${GUI_LANGUAGES}")
+set_property(CACHE TRANSLATIONS PROPERTY STRINGS ${GUI_LANGUAGES})
+set(SPLASH "DEFAULT" CACHE STRING "Splash (DEFAULT/OFF/FRSKY)")
+set_property(CACHE SPLASH PROPERTY STRINGS DEFAULT OFF FRSKY)
+set(PPM_UNIT "PERCENT_PREC1" CACHE STRING "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)")
+set_property(CACHE PPM_UNIT PROPERTY STRINGS US PERCENT_PREC1 PERCENT_PREC0)
+set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
+
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
 option(CURVES "Curves" ON)
 option(GVARS "Global variables" OFF)
 option(GUI "GUI enabled" ON)
-set(SPLASH "DEFAULT" CACHE STRING "Splash (DEFAULT/OFF/FRSKY)")
-set(PPM_UNIT "PERCENT_PREC1" CACHE STRING "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)")
 option(PPM_CENTER_ADJUSTABLE "PPM center adjustable" ON)
 option(PPM_LIMITS_SYMETRICAL "PPM limits symetrical" OFF)
 option(OVERRIDE_CHANNEL_FUNCTION "OverrideChannel function available" ON)
@@ -24,9 +34,7 @@ option(SIMU_DISKIO "Enable disk IO simulation in simulator. Simulator will use F
 option(SIMU_LUA_COMPILER "Pre-compile and save Lua scripts in simulator." ON)
 option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
 option(TEMPLATES "Model templates menu" OFF)
-option(WARNINGS_AS_ERRORS "Treat all compiler warnings as error" OFF)
 option(TRACE_SIMPGMSPACE "Turn on traces in simpgmspace.cpp" ON)
-set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
 
 # Python check
 find_package("PythonInterp")
@@ -45,9 +53,6 @@ set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
 set(COOS_DIR ${THIRDPARTY_DIR}/CoOS)
 set(FATFS_DIR ${THIRDPARTY_DIR}/FatFs)
 set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
-
-set(GUI_LANGUAGES cz de en es fr it pt sk se pl hu nl)
-set(TTS_LANGUAGES cz de en es fr it pt sk se pl hu)
 
 configure_file(stamp.h.in stamp.h @ONLY)
 
@@ -138,9 +143,8 @@ endif()
 include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
 
 foreach(LANGUAGE ${GUI_LANGUAGES})
-  string(TOUPPER ${LANGUAGE} LANGUAGE_CAPITALIZED)
-  if(TRANSLATIONS STREQUAL ${LANGUAGE_CAPITALIZED})
-    add_definitions(-DTRANSLATIONS_${LANGUAGE_CAPITALIZED} -DTRANSLATIONS="${LANGUAGE_CAPITALIZED}")
+  if(TRANSLATIONS STREQUAL ${LANGUAGE})
+    add_definitions(-DTRANSLATIONS_${LANGUAGE} -DTRANSLATIONS="${LANGUAGE}")
   endif()
 endforeach()
 
@@ -347,12 +351,15 @@ endforeach()
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
 if(NOT MSVC)
-  add_definitions(-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits)
+  set(WARNING_FLAGS "-Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
   if(WARNINGS_AS_ERRORS)
-    set(WARNING_FLAGS -Werror)
+    set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
   endif(WARNINGS_AS_ERRORS)
 else()
   add_definitions(-DHAVE_STRUCT_TIMESPEC)
+  if(WARNINGS_AS_ERRORS)
+    set(WARNING_FLAGS "${WARNING_FLAGS} -WX")
+  endif(WARNINGS_AS_ERRORS)
 endif()
 
 add_subdirectory(targets/simu)
@@ -362,58 +369,48 @@ endif()
 
 set(SRC ${SRC} ${FIRMWARE_SRC})
 
-# trick to remove the -rdynamic and --out-implib issues
+
+##### firmware target #####
+
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
+# trick to remove the -rdynamic and --out-implib issues
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
 set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
-set(CMAKE_COMMON_FLAGS "")
 # similar for -mmacosx-version-min="
 set(CMAKE_C_OSX_DEPLOYMENT_TARGET_FLAG "")
 set(CMAKE_CXX_OSX_DEPLOYMENT_TARGET_FLAG "")
+# reset some CMake default flags which assume optimization levels
+set(CMAKE_C_FLAGS_RELEASE "")
+set(CMAKE_C_FLAGS_MINSIZEREL "")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_RELEASE "")
+set(CMAKE_CXX_FLAGS_MINSIZEREL "")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_DEBUG}")
+# customize linker command
 set(CMAKE_EXE_LINKER_FLAGS "")
-# similar for -Wl,-search_paths_first (fix "arch_paths_first" warning)
-set(CMAKE_CXX_LINK_FLAGS "")
-set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <CMAKE_C_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
-set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <CMAKE_CXX_LINK_FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
+set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
+set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
-set(MCU_COMPILER_VERSION 0.0.0)
-function(checkCompilerVersion compiler)
-  execute_process(COMMAND ${compiler} -dumpversion OUTPUT_VARIABLE gcc_version)
-  if(gcc_version)
-    set(MCU_COMPILER_VERSION ${gcc_version} PARENT_SCOPE)
-  else()
-    set(gcc_version "NOT FOUND!")
-  endif()
-  message(STATUS "firmware: ${compiler} version: ${gcc_version}")
-endfunction()
+use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
 if(NOT MSVC)
   if(ARCH STREQUAL ARM)
+
     set(CMAKE_C_COMPILER arm-none-eabi-gcc)
     set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
     set(CMAKE_ASM_COMPILER arm-none-eabi-as)
-    checkCompilerVersion(${CMAKE_CXX_COMPILER})
 
     set(CMAKE_SYSTEM_NAME Generic)
     set(CMAKE_SYSTEM_VERSION 1)
     set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
     set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
-    # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
-    if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-      set(COMMON_CPP_FLAGS "${COMMON_FLAGS} -std=gnu++11")
-    else()
-      set(COMMON_CPP_FLAGS ${COMMON_FLAGS})
-    endif()
-    set(CMAKE_C_FLAGS "${COMMON_FLAGS} -Wimplicit")
-    set(CMAKE_C_FLAGS_RELWITHDEBINFO "${COMMON_FLAGS} -Wimplicit -g")
-    set(CMAKE_C_FLAGS_RELEASE "${COMMON_FLAGS} -Wimplicit")
-    set(CMAKE_C_FLAGS_DEBUG "${COMMON_FLAGS} -Wimplicit -g")
-    set(CMAKE_CXX_FLAGS "${COMMON_CPP_FLAGS}")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${COMMON_CPP_FLAGS} -g")
-    set(CMAKE_CXX_FLAGS_RELEASE "${COMMON_CPP_FLAGS}")
-    set(CMAKE_CXX_FLAGS_DEBUG "${COMMON_CPP_FLAGS} -g")
-    set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
+
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -Wimplicit")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
+
+    # these are in addition to CMAKE_CXX_FLAGS
+    set(CMAKE_EXE_LINKER_FLAGS "-lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
 
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7)
       add_subdirectory(targets/${TARGET_DIR}/bootloader)
@@ -445,24 +442,15 @@ if(NOT MSVC)
       DEPENDS firmware
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )
-  else()
+
+  else()  # AVR
+
     set(CMAKE_C_COMPILER avr-gcc)
     set(CMAKE_CXX_COMPILER avr-gcc)
-    checkCompilerVersion(${CMAKE_CXX_COMPILER})
     
-    set(COMMON_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X")
-    set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} ${WARNING_FLAGS}")
-    # NOTE: this is a workaround for bug in avr-gcc < v4.8.3 which reports bogus linker warnings: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=59396
-    if(WARNINGS_AS_ERRORS AND MCU_COMPILER_VERSION VERSION_LESS 4.8.3)
-      message(STATUS "NOTE: skipping -Werror in linker flags due to avr-gcc bug.")
-      set(CMAKE_CXX_LINK_FLAGS "${COMMON_FLAGS}")
-      set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <CMAKE_CXX_LINK_FLAGS> <OBJECTS> -o <TARGET>")
-    endif()
-
-    # Remove once the minimum cmake version is set to 3.1 in the main CmakeLists.tx
-    if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-      set(CMAKE_CXX_FLAGS "-std=gnu++11 ${CMAKE_CXX_FLAGS}")
-    endif()
+    set(COMMON_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
 
     include_directories(storage gui/${GUI_DIR})
 
@@ -494,7 +482,8 @@ if(NOT MSVC)
       DEPENDS firmware
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )
-  endif()
+
+  endif()  # ARM or AVR
 
   if(CPU_FAMILY STREQUAL STM32)
     add_custom_target(flash
@@ -509,6 +498,7 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )
   endif()
-else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+
+  PrintTargetReport("firmware")
+
 endif(NOT MSVC)
