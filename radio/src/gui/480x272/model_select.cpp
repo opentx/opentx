@@ -47,7 +47,7 @@ void drawCategory(coord_t y, const char * name, bool selected)
 {
   if (selected) {
     lcdDrawSolidFilledRect(1, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, TEXT_INVERTED_BGCOLOR);
-    lcdDrawText(6, y, name, SMLSIZE | TEXT_COLOR | INVERS);
+    lcdDrawText(6, y, name, TEXT_COLOR | INVERS);
   }
   else {
     lcdDrawText(6, y, name, TEXT_COLOR);
