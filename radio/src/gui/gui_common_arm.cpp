@@ -527,7 +527,7 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 #endif
-  
+
   if (protocol== PROTOCOL_PULSES_CROSSFIRE) {
     return false;
   }
@@ -537,7 +537,7 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 #endif
-  
+
 #if defined(PCBHORUS)
   if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     return false;
@@ -568,7 +568,18 @@ bool modelHasNotes()
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
   char *buf = strcat_currentmodelname(&filename[sizeof(MODELS_PATH)]);
   strcpy(buf, TEXT_EXT);
+#if defined(PCBHORUS)
+  if (!isFileAvailable(filename)) {
+    return true;
+  }
+  else {
+    buf = strAppendFilename(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+    strcpy(buf, TEXT_EXT);
+    return isFileAvailable(filename);
+  }
+#else
   return isFileAvailable(filename);
+#endif
 }
 
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
