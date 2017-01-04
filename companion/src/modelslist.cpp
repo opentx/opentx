@@ -20,8 +20,6 @@
 
 #include "modelslist.h"
 
-
-
 TreeItem::TreeItem(const QVector<QVariant> & itemData):
   itemData(itemData),
   parentItem(NULL),
@@ -92,7 +90,7 @@ bool TreeItem::removeChildren(int position, int count)
   return true;
 }
 
-bool TreeItem::setData(int column, const QVariant &value)
+bool TreeItem::setData(int column, const QVariant & value)
 {
   if (column < 0 || column >= itemData.size())
     return false;
@@ -101,8 +99,8 @@ bool TreeItem::setData(int column, const QVariant &value)
   return true;
 }
 
-TreeModel::TreeModel(RadioData * radioData, QObject *parent)
-  : QAbstractItemModel(parent),
+TreeModel::TreeModel(RadioData * radioData, QObject * parent):
+  QAbstractItemModel(parent),
   radioData(radioData),
   availableEEpromSize(-1)
 {
@@ -149,7 +147,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
   return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 
-TreeItem *TreeModel::getItem(const QModelIndex &index) const
+TreeItem * TreeModel::getItem(const QModelIndex &index) const
 {
   if (index.isValid()) {
     TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
@@ -306,31 +304,6 @@ ModelsListWidget::ModelsListWidget(QWidget * parent):
   active_highlight_color = palette().color(QPalette::Active, QPalette::Highlight);
 }
 
-int ModelsListWidget::currentRow() const
-{
-  return 0; // indexOfTopLevelItem(currentItem());
-}
-
-void ModelsListWidget::EditModel()
-{
-  ((MdiChild *)parent())->modelEdit();
-}
-
-void ModelsListWidget::OpenWizard()
-{
-  ((MdiChild *)parent())->wizardEdit();
-}
-
-void ModelsListWidget::LoadBackup()
-{
-  ((MdiChild *)parent())->loadBackup();
-}
-
-void ModelsListWidget::print()
-{
-  ((MdiChild *)parent())->print();
-}
-
 void ModelsListWidget::setdefault()
 {
   if (currentRow() > 0) {
@@ -468,67 +441,6 @@ void ModelsListWidget::focusOutEvent ( QFocusEvent * event )
 }
 #endif
 
-void ModelsListWidget::refreshList()
-{
-  TreeModel * model = new TreeModel(radioData, this);
-  setModel(model);
-  expandAll();
-  
-  /*int current = std::max(0, indexOfTopLevelItem(currentItem()));
-  
-  clear();
-  
-  QTreeWidgetItem * item = new QTreeWidgetItem();
-  item->setText(1, tr("General Settings"));
-  addTopLevelItem(item);
-
-  EEPROMInterface * eepromInterface = GetEepromInterface();
-  BoardEnum board = eepromInterface->getBoard();
-
-  // TODO here we calculate the size used by the RLE format, this is clearly not the right place to do that...
-  int availableEEpromSize = eepromInterface->getEEpromSize() - 64; // let's consider fat
-  availableEEpromSize -= 16 * ((eepromInterface->getSize(radioData->generalSettings) + 14) / 15);
-  for (uint8_t i=0; i<GetCurrentFirmware()->getCapability(Models); i++) {
-    QTreeWidgetItem * item = new QTreeWidgetItem();
-    item->setTextAlignment(0, Qt::AlignLeft);
-    item->setText(0, QString().sprintf("%02d", i+1));
-    if (!radioData->models[i].isEmpty()) {
-      QString modelName;
-      if (strlen(radioData->models[i].name) > 0)
-        modelName = radioData->models[i].name;
-      else
-        modelName = QString().sprintf("Model%02d", i+1);
-      item->setText(1, modelName);
-      if (!IS_SKY9X(board) && !IS_HORUS(board)) {
-        int size = eepromInterface->getSize(radioData->models[i]);
-        item->setText(2, QString().sprintf("%5d", size));
-        size = 16 * ((size + 14) / 15);
-        availableEEpromSize -= size;
-        if (i == radioData->generalSettings.currModelIndex) {
-          // Because we need this space for a TEMP model each time we have to write it again
-          availableEEpromSize -= size;
-        }
-      }
-      if (i == radioData->generalSettings.currModelIndex) {
-        QFont font = item->font(0);
-        font.setBold(true);
-        for (int j=0; j<columnCount(); j++) {
-          item->setFont(j, font);
-        }
-      }
-    }
-    addTopLevelItem(item);
-  }
-  
-  selectionModel()->select(model()->index(current, 0), QItemSelectionModel::Current | QItemSelectionModel::Select | QItemSelectionModel::Rows);
-  setCurrentItem(topLevelItem(current));
-  
-  if (!IS_SKY9X(board) && !IS_HORUS(board)) {
-    ((MdiChild*)parent())->setEEpromAvail((availableEEpromSize/16)*15);
-  }
-   */
-}
-
 void ModelsListWidget::doCut(QByteArray * gmData)
 {
   bool modified = false;
@@ -541,109 +453,6 @@ void ModelsListWidget::doCut(QByteArray * gmData)
   }
   if (modified) {
     ((MdiChild *)parent())->setModified();
-  }
-}
-
-void ModelsListWidget::doCopy(QByteArray * gmData)
-{
-  DragDropHeader header;
-    
-  qDebug() << selectionModel()->selectedIndexes();
-  foreach(QModelIndex index, selectionModel()->selectedIndexes()) {
-    char column = index.column();
-    if (column == 0) {
-      char row = index.row();
-      if (!row) {
-        header.general_settings = true;
-        gmData->append('G');
-        gmData->append((char *) &radioData->generalSettings, sizeof(GeneralSettings));
-      }
-      else {
-        header.models[header.models_count++] = row;
-        gmData->append('M');
-        gmData->append((char *) &radioData->models[row - 1], sizeof(ModelData));
-      }
-    }
-  }
-
-  gmData->prepend((char *)&header, sizeof(header));
-}
-
-void ModelsListWidget::doPaste(QByteArray * gmData, int index)
-{
-  // QByteArray gmData = mimeD->data("application/x-companion");
-  char * gData = gmData->data() + sizeof(DragDropHeader); // new char[gmData.size() + 1];
-  int i = sizeof(DragDropHeader);
-  int id = index;
-  int ret, modified=0;
-  if(!id) id++;
-
-  while (i<gmData->size() && id<=GetCurrentFirmware()->getCapability(Models)) {
-    qDebug() << i << gmData->size();
-    char c = *gData;
-    i++;
-    gData++;
-    if (c == 'G') {
-      // General settings
-      ret = QMessageBox::question(this, "Companion", tr("Do you want to overwrite radio general settings?"),
-              QMessageBox::Yes | QMessageBox::No);
-      if (ret == QMessageBox::Yes) {
-        radioData->generalSettings = *((GeneralSettings *)gData);
-        modified = 1;
-      }
-      gData += sizeof(GeneralSettings);
-      i += sizeof(GeneralSettings);
-    }
-    else {
-      // Model data
-      if (!radioData->models[id-1].isEmpty()) {
-        ret = QMessageBox::question(this, "Companion", tr("You are pasting on an not empty model, are you sure?"),
-                QMessageBox::Yes | QMessageBox::No);
-        if (ret == QMessageBox::Yes) {
-          radioData->models[id-1] = *((ModelData *)gData);
-          strcpy(radioData->models[id-1].filename, radioData->getNextModelFilename().toStdString().c_str());
-          gData += sizeof(ModelData);
-          i += sizeof(ModelData);
-          id++;
-          modified = 1;
-        }
-        else {
-          gData += sizeof(ModelData);
-          i += sizeof(ModelData);
-          id++;
-        }
-      } 
-      else {
-        radioData->models[id-1] = *((ModelData *)gData);
-        strcpy(radioData->models[id-1].filename, radioData->getNextModelFilename().toStdString().c_str());
-        gData += sizeof(ModelData);
-        i += sizeof(ModelData);
-        id++;
-        modified=1;
-      }
-    }
-  }
-  if (modified==1) {
-    ((MdiChild *)parent())->setModified();
-  }
-}
-
-bool ModelsListWidget::hasPasteData()
-{
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-
-  return mimeData->hasFormat("application/x-companion");
-}
-
-void ModelsListWidget::paste()
-{
-  if (hasPasteData()) {
-    const QClipboard * clipboard = QApplication::clipboard();
-    const QMimeData * mimeData = clipboard->mimeData();
-
-    QByteArray gmData = mimeData->data("application/x-companion");
-    doPaste(&gmData, currentRow());
   }
 }
 
@@ -665,42 +474,6 @@ void ModelsListWidget::duplicate()
       QMessageBox::warning(this, "Companion", tr("No free slot available, cannot duplicate"), QMessageBox::Ok);
     }
   }
-}
-
-bool ModelsListWidget::hasSelection()
-{
-  return false;
-  // return (this->selectionModel()->hasSelection());
-}
-
-void ModelsListWidget::keyPressEvent(QKeyEvent *event)
-{
-  if (event->matches(QKeySequence::Delete)) {
-    deleteSelected();
-    return;
-  }
-
-  if (event->matches(QKeySequence::Cut)) {
-    cut();
-    return;
-  }
-
-  if (event->matches(QKeySequence::Copy)) {
-    copy();
-    return;
-  }
-
-  if (event->matches(QKeySequence::Paste)) {
-    paste();
-    return;
-  }
-
-  if (event->matches(QKeySequence::Underline)) {
-    duplicate();
-    return;
-  }
-
-  QTreeView::keyPressEvent(event); //run the standard event in case we didn't catch an action
 }
 
 void ModelsListWidget::onCurrentItemChanged(QTreeWidgetItem * current, QTreeWidgetItem *)

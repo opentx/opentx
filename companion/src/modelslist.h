@@ -89,9 +89,12 @@ class TreeModel : public QAbstractItemModel
   
     int getAvailableEEpromSize() { return availableEEpromSize; }
     
-  public:
-  // private:
-    TreeItem * getItem(const QModelIndex &index) const;
+    int getModelIndex(const QModelIndex & index) const {
+      return getItem(index)->getModelIndex();
+    }
+    
+  private:
+    TreeItem * getItem(const QModelIndex & index) const;
     TreeItem * rootItem;
     RadioData * radioData;
     int availableEEpromSize;

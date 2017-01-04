@@ -41,18 +41,6 @@
 #include <unistd.h>
 #endif
 
-class DragDropHeader {
-  public:
-    DragDropHeader():
-      general_settings(false),
-      models_count(0)
-    {
-    }
-    bool general_settings;
-    uint8_t models_count;
-    uint8_t models[CPN_MAX_MODELS];
-};
-
 MdiChild::MdiChild():
   QWidget(),
   ui(new Ui::MdiChild),
@@ -79,10 +67,10 @@ MdiChild::MdiChild():
   ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
   ui->modelsList->setSelectionBehavior(QAbstractItemView::SelectRows);
   ui->modelsList->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  ui->modelsList->setDragEnabled(true);
-  ui->modelsList->setAcceptDrops(true);
-  ui->modelsList->setDragDropOverwriteMode(true);
-  ui->modelsList->setDropIndicatorShown(true);
+  // ui->modelsList->setDragEnabled(true);
+  // ui->modelsList->setAcceptDrops(true);
+  // ui->modelsList->setDragDropOverwriteMode(true);
+  // ui->modelsList->setDropIndicatorShown(true);
   
   if (IS_HORUS(board)) {
     ui->modelsList->header()->hide();
@@ -127,14 +115,16 @@ void MdiChild::confirmDelete()
 void MdiChild::deleteSelectedModels()
 {
   foreach (QModelIndex index, ui->modelsList->selectionModel()->selectedIndexes()) {
-    unsigned int modelIndex = modelsListModel->getItem(index)->getModelIndex();
-    if (radioData.generalSettings.currModelIndex != modelIndex) {
-      qDebug() << "delete" << modelIndex;
-      radioData.models[modelIndex].clear();
-      setModified();
-    }
-    else {
-      QMessageBox::warning(this, "Companion", tr("Cannot delete default model."), QMessageBox::Ok);
+    if (index.column() == 0) {
+      unsigned int modelIndex = modelsListModel->getModelIndex(index);
+      if (radioData.generalSettings.currModelIndex != modelIndex) {
+        qDebug() << "delete" << modelIndex;
+        radioData.models[modelIndex].clear();
+        setModified();
+      }
+      else {
+        QMessageBox::warning(this, "Companion", tr("Cannot delete default model."), QMessageBox::Ok);
+      }
     }
   }
 }
@@ -198,43 +188,89 @@ void MdiChild::copy()
 
 void MdiChild::doCopy(QByteArray * gmData)
 {
-  DragDropHeader header;
-  
-  qDebug() << ui->modelsList->selectionModel()->selectedIndexes();
   foreach(QModelIndex index, ui->modelsList->selectionModel()->selectedIndexes()) {
-    char column = index.column();
-    if (column == 0) {
-      char row = index.row();
-      if (!row) {
-        header.general_settings = true;
-        gmData->append('G');
-        gmData->append((char *) &radioData.generalSettings, sizeof(GeneralSettings));
-      }
-      else {
-        header.models[header.models_count++] = row;
+    if (index.column() == 0) {
+      unsigned int modelIndex = modelsListModel->getModelIndex(index);
+      if (modelIndex >= 0) {
         gmData->append('M');
-        gmData->append((char *) &radioData.models[row - 1], sizeof(ModelData));
+        gmData->append((char *) &radioData.models[modelIndex], sizeof(ModelData));
       }
     }
   }
-  
-  gmData->prepend((char *)&header, sizeof(header));
+
+// TODO to copy radio settings
+// gmData->append('G');
+// gmData->append((char *) &radioData.generalSettings, sizeof(GeneralSettings));
 }
 
+void MdiChild::doPaste(QByteArray * gmData, int index)
+{
+  char * gData = gmData->data();
+  bool modified = false;
+  int size = 0;
+  
+  while (size < gmData->size()) {
+    char c = *gData++;
+    size++;
+    if (c == 'G') {
+      // General settings
+      int ret = QMessageBox::question(this, "Companion", tr("Do you want to overwrite radio general settings?"),
+                                  QMessageBox::Yes | QMessageBox::No);
+      if (ret == QMessageBox::Yes) {
+        radioData.generalSettings = *((GeneralSettings *)gData);
+        modified = 1;
+      }
+      gData += sizeof(GeneralSettings);
+      size += sizeof(GeneralSettings);
+    }
+    else if (c == 'M') {
+      if (index < GetCurrentFirmware()->getCapability(Models)) {
+        // Model data
+        int ret = QMessageBox::Yes;
+        if (!radioData.models[index].isEmpty()) {
+          ret = QMessageBox::question(this, "Companion", tr("You are pasting on an not empty model, are you sure?"),
+                                      QMessageBox::Yes | QMessageBox::No);
+        }
+        if (ret == QMessageBox::Yes) {
+          radioData.models[index] = *((ModelData *)gData);
+          strcpy(radioData.models[index].filename, radioData.getNextModelFilename().toStdString().c_str());
+          modified = 1;
+        }
+        gData += sizeof(ModelData);
+        size += sizeof(ModelData);
+        index++;
+      }
+    }
+    else {
+      qWarning() << "paste error";
+      break;
+    }
+  }
+  if (modified) {
+    setModified();
+  }
+}
 
 void MdiChild::paste()
 {
-//  ui->modelsList->paste();
+  if (hasPasteData()) {
+    const QClipboard * clipboard = QApplication::clipboard();
+    const QMimeData * mimeData = clipboard->mimeData();
+    QByteArray gmData = mimeData->data("application/x-companion");
+    doPaste(&gmData, getCurrentRow());
+  }
 }
 
 bool MdiChild::hasPasteData() const
 {
-  return false; // ui->modelsList->hasPasteData();
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  return mimeData->hasFormat("application/x-companion");
 }
 
 bool MdiChild::hasSelection() const
 {
-    return false; // ui->modelsList->hasSelection();
+  return ui->modelsList->selectionModel()->hasSelection();
 }
 
 void MdiChild::updateTitle()
@@ -253,6 +289,29 @@ void MdiChild::setModified()
   fileChanged = true;
   documentWasModified();
 }
+
+void MdiChild::keyPressEvent(QKeyEvent * event)
+{
+  if (event->matches(QKeySequence::Delete)) {
+    deleteSelectedModels();
+  }
+  else if (event->matches(QKeySequence::Cut)) {
+    cut();
+  }
+  else if (event->matches(QKeySequence::Copy)) {
+    copy();
+  }
+  else if (event->matches(QKeySequence::Paste)) {
+    paste();
+  }
+  else if (event->matches(QKeySequence::Underline)) {
+    // TODO duplicate();
+  }
+  else {
+    QWidget::keyPressEvent(event); // run the standard event in case we didn't catch an action
+  }
+}
+
 
 void MdiChild::on_simulateButton_clicked()
 {
@@ -681,8 +740,7 @@ void MdiChild::viableModelSelected(bool viable)
 
 int MdiChild::getCurrentRow() const
 {
-  TreeItem * item = modelsListModel->getItem(ui->modelsList->currentIndex());
-  return item->getModelIndex();
+  return modelsListModel->getModelIndex(ui->modelsList->currentIndex());
 }
 
 bool MdiChild::loadBackup()
