@@ -210,7 +210,6 @@ int getSwitchWarningsCount()
 
 bool menuModelSetup(event_t event)
 {
-  int l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 
   // Switch to external antenna confirmation
@@ -451,9 +450,6 @@ bool menuModelSetup(event_t event)
         unsigned int newStates = 0;
         for (int i=0, current=0; i<NUM_SWITCHES; i++) {
           if (SWITCH_WARNING_ALLOWED(i)) {
-            if (!READ_ONLY() && attr && l_posHorz==current) {
-              storageDirty(EE_MODEL);
-            }
             unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
             LcdFlags color = (state > 0 ? TEXT_COLOR : TEXT_DISABLE_COLOR);
             if (attr && menuHorizontalPosition < 0) {
@@ -464,7 +460,9 @@ bool menuModelSetup(event_t event)
             s[1] = "x\300-\301"[state];
             s[2] = '\0';
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+i*25, y, s, color|(menuHorizontalPosition==current ? attr : 0));
-            if (attr && menuHorizontalPosition==current) CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, state, 3, IS_3POS(i) ? 0 : isSwitchWarningStateAvailable);
+            if (!READ_ONLY() && attr && menuHorizontalPosition==current) {
+              CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, state, 3, IS_CONFIG_3POS(i) ? NULL : isSwitch2POSWarningStateAvailable);
+            }
             newStates |= (state << (3*i));
             ++current;
           }

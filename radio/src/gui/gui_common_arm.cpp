@@ -375,7 +375,7 @@ bool isSwitchAvailableInMixes(int swtch)
 }
 
 #if defined(COLORLCD)
-bool isSwitchWarningStateAvailable(int state)
+bool isSwitch2POSWarningStateAvailable(int state)
 {
   return (state != 2); // two pos switch - middle state not available
 }
