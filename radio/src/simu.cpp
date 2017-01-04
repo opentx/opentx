@@ -331,7 +331,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(E, 4, 3);
   SWITCH_KEY(F, 5, 2);
   SWITCH_KEY(G, 6, 3);
-  SWITCH_KEY(H, 7, 2);
+SWITCH_KEY(H, 7, 2);
 #else
   SWITCH_KEY(1, 0, 2);
   SWITCH_KEY(2, 1, 2);
@@ -360,11 +360,11 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     static bool rotencAction = false;
-    if (getApp()->getKeyState(KEY_C)) {
+    if (getApp()->getKeyState(KEY_X)) {
       if (!rotencAction) ROTARY_ENCODER_NAVIGATION_VALUE += ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
-    else if (getApp()->getKeyState(KEY_X)) {    
+    else if (getApp()->getKeyState(KEY_W)) {    
       if (!rotencAction) ROTARY_ENCODER_NAVIGATION_VALUE -= ROTARY_ENCODER_GRANULARITY;
       rotencAction = true;
     }
