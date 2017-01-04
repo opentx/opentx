@@ -569,7 +569,7 @@ bool modelHasNotes()
   char *buf = strcat_currentmodelname(&filename[sizeof(MODELS_PATH)]);
   strcpy(buf, TEXT_EXT);
 #if defined(PCBHORUS)
-  if (!isFileAvailable(filename)) {
+  if (isFileAvailable(filename)) {
     return true;
   }
   else {
