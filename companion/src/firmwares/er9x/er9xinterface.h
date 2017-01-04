@@ -39,8 +39,6 @@ class Er9xInterface : public EEPROMInterface
 
     virtual const int getEEpromSize();
 
-    virtual const int getMaxModels();
-
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
 
     virtual unsigned long loadBackup(RadioData &, const uint8_t * eeprom, int esize, int index);

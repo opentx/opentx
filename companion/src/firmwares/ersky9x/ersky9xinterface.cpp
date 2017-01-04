@@ -53,11 +53,6 @@ const int Ersky9xInterface::getEEpromSize()
   return EESIZE_SKY9X;
 }
 
-const int Ersky9xInterface::getMaxModels()
-{
-  return 20;
-}
-
 inline void applyStickModeToModel(Ersky9xModelData_v10 & model, unsigned int mode)
 {
   for (int i=0; i<2; i++) {
@@ -138,7 +133,7 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     radioData.generalSettings=ersky9xGeneral;
     std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
   }
-  for(int i=0; i<getMaxModels(); i++) {
+  for(int i=0; i<20; i++) {
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
         std::cout << "ko\n";
@@ -206,7 +201,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
   }
   radioData.generalSettings = ersky9xGeneral;
   
-  for (int i=0; i<getMaxModels(); i++) {
+  for (int i=0; i<20; i++) {
     uint8_t buffer[4096];
     uint size;
     memset(buffer,0,sizeof(buffer));

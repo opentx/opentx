@@ -115,18 +115,6 @@ const int OpenTxEepromInterface::getEEpromSize()
   }
 }
 
-const int OpenTxEepromInterface::getMaxModels()
-{
-  if (IS_ARM(board))
-    return 60;
-  else if (board == BOARD_M128)
-    return 30;
-  else if (IS_2560(board))
-    return 30;
-  else
-    return 16;
-}
-
 bool OpenTxEepromInterface::loadRadioSettingsFromRLE(GeneralSettings & settings, RleFile * rleFile, uint8_t version)
 {
   QByteArray data(sizeof(settings), 0); // GeneralSettings should be always bigger than the EEPROM struct
@@ -164,7 +152,7 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
 {
   QByteArray raw;
   M manager((T&)src, board, version, 0);
-  manager.Dump();
+  // manager.Dump();
   manager.Export(raw);
   data.resize(8);
   *((uint32_t*)&data.data()[0]) = 0x3178396F;
@@ -180,7 +168,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data,
 {
   M manager(dest, board, version, variant);
   manager.Import(data);
-  manager.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
+  // manager.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
   return true;
 }
 
@@ -236,11 +224,15 @@ int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filen
   int modelIndex = 0;
   QString modelList = QString(storage.modelList);
   QList<QByteArray> lines = storage.modelList.split('\n');
-  QString category = QObject::tr("Unknown");
+  int categoryIndex = -1;
   foreach (const QByteArray & line, lines) {
     if (!line.isEmpty()) {
       if (line.startsWith('[') && line.endsWith(']')) {
-        category = line.mid(1, line.size() - 2);
+        QString name = line.mid(1, line.size() - 2);
+        CategoryData category;
+        strncpy(category.name, name.toStdString().c_str(), sizeof(CategoryData::name));
+        radioData.categories.push_back(category);
+        categoryIndex++;
       }
       else {
         qDebug() << "Loading" << line;
@@ -248,7 +240,7 @@ int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filen
           if (line == model.filename) {
             loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[modelIndex], model.data);
             strncpy(radioData.models[modelIndex].filename, line.data(), sizeof(radioData.models[modelIndex].filename));
-            strncpy(radioData.models[modelIndex].category, category.toStdString().c_str(), sizeof(radioData.models[modelIndex].category));
+            radioData.models[modelIndex].category = categoryIndex;
             radioData.models[modelIndex].used = true;
             modelIndex++;
           }
@@ -267,13 +259,13 @@ int OpenTxEepromInterface::saveFile(const RadioData & radioData, const QString &
 
   // models.txt
   storage.modelList = QByteArray();
-  QString currentCategory = "";
+  int currentCategoryIndex = -1;
 
   // radio.bin
   saveToByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio, version);
 
   // all models
-  for (int i=0; i<CPN_MAX_MODELS; i++) {
+  for (unsigned int i=0; i<radioData.models.size(); i++) {
     const ModelData & model = radioData.models[i];
     if (!model.isEmpty()) {
       QString modelFilename = model.filename;
@@ -281,10 +273,10 @@ int OpenTxEepromInterface::saveFile(const RadioData & radioData, const QString &
       saveToByteArray<ModelData, OpenTxModelData>(model, modelData, version);
       ModelFile modelFile = { modelFilename, modelData };
       storage.models.append(modelFile);
-      QString modelCategory = model.category;
-      if (currentCategory != modelCategory) {
-        storage.modelList.append(QString().sprintf("[%s]\n", model.category));
-        currentCategory = modelCategory;
+      int categoryIndex = model.category;
+      if (currentCategoryIndex != categoryIndex) {
+        storage.modelList.append(QString().sprintf("[%s]\n", radioData.categories[model.category].name));
+        currentCategoryIndex = categoryIndex;
       }
       storage.modelList.append(modelFilename + "\n");
     }
@@ -362,7 +354,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   }
 
   std::cout << " variant " << radioData.generalSettings.variant;
-  for (int i = 0; i < getMaxModels(); i++) {
+  for (int i = 0; i < GetCurrentFirmware()->getCapability(Models); i++) {
     if (!loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
       std::cout << " ko\n";
       errors.set(UNKNOWN_ERROR);
@@ -413,7 +405,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t
     return 0;
   }
 
-  for (int i = 0; i < getMaxModels(); i++) {
+  for (int i = 0; i < GetCurrentFirmware()->getCapability(Models); i++) {
     if (!radioData.models[i].isEmpty()) {
       result = saveModel<OpenTxModelData>(i, radioData.models[i], version, variant);
       if (!result) {
@@ -501,6 +493,15 @@ Firmware * OpenTxFirmware::getFirmwareVariant(const QString &id)
 int OpenTxFirmware::getCapability(Capability capability)
 {
   switch (capability) {
+    case Models:
+      if (IS_ARM(board))
+        return 60;
+      else if (board == BOARD_M128)
+        return 30;
+      else if (IS_2560(board))
+        return 30;
+      else
+        return 16;
     case Imperial:
       if (IS_ARM(board))
         return 0;
@@ -598,7 +599,7 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 18;
       else if (board == BOARD_TARANIS_X7)
         return 6;
-      else if (IS_TARANIS(board) || board == BOARD_HORUS)
+      else if (IS_TARANIS(board) || IS_HORUS(board))
         return 8;
       else
         return 7;
@@ -869,7 +870,7 @@ Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
                                {SWITCH_TOGGLE, "SH"}};
     return switches[index];
   }
-  else if (IS_TARANIS(board) || board == BOARD_HORUS) {
+  else if (IS_TARANIS(board) || IS_HORUS(board)) {
     const Switch switches[] = {{SWITCH_3POS,   "SA"},
                                {SWITCH_3POS,   "SB"},
                                {SWITCH_3POS,   "SC"},

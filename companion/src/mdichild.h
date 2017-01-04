@@ -23,6 +23,7 @@
 
 #include <QtGui>
 #include "eeprominterface.h"
+#include "modelslist.h"
 
 namespace Ui {
 class MdiChild;
@@ -44,18 +45,17 @@ class MdiChild : public QWidget
 
     void newFile();
     bool loadFile(const QString & fileName, bool resetCurrentFile=true);
-    bool loadBackup();
     bool save();
     bool saveAs(bool isNew=false);
     bool saveFile(const QString & fileName, bool setCurrent=true);
-    bool hasSelection();
-    QString userFriendlyCurrentFile();
-    QString currentFile() { return curFile; }
-    bool hasPasteData();
+    bool hasSelection() const;
+    bool hasPasteData() const;
+    QString userFriendlyCurrentFile() const;
+    QString currentFile() const { return curFile; }
     void viableModelSelected(bool viable);
     void eepromInterfaceChanged();
-    void setEEpromAvail(int eavail);
     int getCurrentRow() const;
+    void refresh(bool expand=false);
 
   signals:
     void copyAvailable(bool val);
@@ -66,30 +66,37 @@ class MdiChild : public QWidget
   private slots:
     void documentWasModified();
     void on_simulateButton_clicked();
-
+    void on_radioSettings_clicked();
+  
   public slots:
+    void showModelsListContextMenu(const QPoint & pos);
     void checkAndInitModel(int row);
     void generalEdit();
     void modelEdit();
     void wizardEdit();
-    void openEditWindow();
+    void openModelEditWindow();
+    bool loadBackup();
+    void confirmDelete();
+    void deleteSelectedModels();
     
     void cut();
     void copy();
     void paste();
     void writeEeprom();
-    void simulate();
-    void print(int model=-1, QString filename="");
+    void modelSimulate();
+    void radioSimulate();
+    void print(int model=-1, const QString & filename="");
     void setModified();
     void updateTitle();
 
   private:
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
-    QString strippedName(const QString & fullFileName);
     bool loadOtxFile(const QString & fileName);
+    void doCopy(QByteArray * gmData);
 
     Ui::MdiChild * ui;
+    TreeModel * modelsListModel;
     
     QString curFile;
 
@@ -98,7 +105,6 @@ class MdiChild : public QWidget
 
     bool isUntitled;
     bool fileChanged;
-    int EEPromAvail;
 };
 
 #endif // _MDICHILD_H_

@@ -55,11 +55,6 @@ const int Er9xInterface::getEEpromSize()
   return EESIZE_STOCK;
 }
 
-const int Er9xInterface::getMaxModels()
-{
-  return 16;
-}
-
 inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
 {
   for (int i=0; i<2; i++) {
@@ -108,7 +103,7 @@ unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     radioData.generalSettings=er9xGeneral;
     std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
   }
-  for (int i=0; i<getMaxModels(); i++) {
+  for (int i=0; i<16; i++) {
     Er9xModelData er9xModel;
     memset(&er9xModel,0,sizeof(er9xModel));
     if(loadModelDataXML(&doc, &er9xModel, i)) {
@@ -176,7 +171,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
   }
   radioData.generalSettings = er9xGeneral;
   
-  for (int i=0; i<getMaxModels(); i++) {
+  for (int i=0; i<16; i++) {
     Er9xModelData er9xModel;
     efile->openRd(FILE_MODEL(i));
     if (!efile->readRlc1((uint8_t*)&er9xModel, sizeof(Er9xModelData))) {

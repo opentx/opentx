@@ -1082,7 +1082,7 @@ class ModelData {
     QVector<const MixData *> mixes(int channel) const;
 
     bool      used;
-    char      category[15+1];
+    int       category;
     char      name[15+1];
     char      filename[16+1];
     TimerData timers[CPN_MAX_TIMERS];
@@ -1240,25 +1240,17 @@ class GeneralSettings {
     bool      minuteBeep;
     bool      preBeep;
     bool      flashBeep;
-    bool      disablePotScroll;
-    bool      frskyinternalalarm;
-    bool      disableBG;
     unsigned int  splashMode;
     int splashDuration;
     unsigned int  backlightDelay;
-    bool   blightinv;
-    bool   stickScroll;
     unsigned int   templateSetup;  //RETA order according to chout_ar array
     int    PPM_Multiplier;
     int    hapticLength;
     unsigned int   reNavigation;
     unsigned int stickReverse;
-    bool      hideNameOnSplash;
-    bool      enablePpmsim;
     unsigned int   speakerPitch;
     int   hapticStrength;
     unsigned int   speakerMode;
-    unsigned int   lightOnStickMove; /* er9x / ersky9x only */
     char      ownerName[10+1];
     unsigned int   switchWarningStates;
     int    beeperLength;
@@ -1280,7 +1272,6 @@ class GeneralSettings {
     unsigned int countryCode;
     bool jitterFilter;
     unsigned int imperial;
-    bool crosstrim;
     char ttsLanguage[2+1];
     int beepVolume;
     int wavVolume;
@@ -1323,11 +1314,19 @@ class GeneralSettings {
     bool isSliderAvailable(int index) const;
 };
 
+class CategoryData {
+  public:
+    char name[15+1];
+};
+
 class RadioData {
   public:
+    RadioData();
+    
     GeneralSettings generalSettings;
-    ModelData models[CPN_MAX_MODELS];
-
+    std::vector<CategoryData> categories;
+    std::vector<ModelData> models;
+    
     void setCurrentModel(unsigned int index)
     {
       generalSettings.currModelIndex = index;
@@ -1342,7 +1341,7 @@ class RadioData {
       while (found) {
         sprintf(filename, "model%d.bin", ++index);
         found = false;
-        for (int i=0; i<CPN_MAX_MODELS; i++) {
+        for (unsigned int i=0; i<models.size(); i++) {
           if (strcmp(filename, models[i].filename) == 0) {
             found = true;
             break;
@@ -1354,6 +1353,7 @@ class RadioData {
 };
 
 enum Capability {
+  Models,
   ModelName,
   FlightModes,
   FlightModesName,
@@ -1362,12 +1362,10 @@ enum Capability {
   Mixes,
   Timers,
   TimersName,
-  TimeDivisions,
   CustomFunctions,
   SafetyChannelCustomFunction,
   VoicesAsNumbers,
   VoicesMaxLength,
-  ModelVoice,
   MultiLangVoice,
   ModelImage,
   Pots,
@@ -1390,7 +1388,6 @@ enum Capability {
   SoundMod,
   SoundPitch,
   MaxVolume,
-  EepromBackup,
   Haptic,
   HasBeeper,
   ModelTrainerEnable,
@@ -1491,9 +1488,7 @@ class EEPROMInterface
     virtual int getSize(const GeneralSettings &) = 0;
 
     virtual const int getEEpromSize() = 0;
-
-    virtual const int getMaxModels() = 0;
-
+    
     virtual int loadFile(RadioData & radioData, const QString & filename) = 0;
 
     virtual int saveFile(const RadioData & radioData, const QString & filename) = 0;
@@ -1537,69 +1532,6 @@ inline int applyStickMode(int stick, unsigned int mode)
     return stickModes[(mode-1)*4 + stick - 1];
   else
     return stick;
-}
-
-inline void applyStickModeToModel(ModelData &model, unsigned int mode)
-{
-  ModelData model_copy = model;
-
-  // trims
-  for (int p=0; p<CPN_MAX_FLIGHT_MODES; p++) {
-    for (int i=0; i<CPN_MAX_STICKS/2; i++) {
-      int converted_stick = applyStickMode(i+1, mode) - 1;
-      int tmp = model.flightModeData[p].trim[i];
-      model.flightModeData[p].trim[i] = model.flightModeData[p].trim[converted_stick];
-      model.flightModeData[p].trim[converted_stick] = tmp;
-      tmp = model.flightModeData[p].trimRef[i];
-      model.flightModeData[p].trimRef[i] = model.flightModeData[p].trimRef[converted_stick];
-      model.flightModeData[p].trimRef[converted_stick] = tmp;
-    }
-  }
-
-  // expos
-  for (unsigned int i=0; i<sizeof(model.expoData) / sizeof(model.expoData[1]); i++) {
-    if (model.expoData[i].mode)
-      model_copy.expoData[i].chn = applyStickMode(model.expoData[i].chn+1, mode) - 1;
-  }
-  int index=0;
-  for (unsigned int i=0; i<CPN_MAX_STICKS; i++) {
-    for (unsigned int e=0; e<sizeof(model.expoData) / sizeof(model.expoData[1]); e++) {
-      if (model_copy.expoData[e].mode && model_copy.expoData[e].chn == i)
-        model.expoData[index++] = model_copy.expoData[e];
-    }
-  }
-
-  // mixers
-  for (int i=0; i<CPN_MAX_MIXERS; i++) {
-    if (model.mixData[i].srcRaw.type == SOURCE_TYPE_STICK) {
-      model.mixData[i].srcRaw.index = applyStickMode(model.mixData[i].srcRaw.index + 1, mode) - 1;
-    }
-  }
-
-  // virtual switches
-  for (int i=0; i<CPN_MAX_CSW; i++) {
-    RawSource source;
-    switch (model.logicalSw[i].getFunctionFamily()) {
-      case LS_FAMILY_VCOMP:
-        source = RawSource(model.logicalSw[i].val2);
-        if (source.type == SOURCE_TYPE_STICK)
-          source.index = applyStickMode(source.index + 1, mode) - 1;
-        model.logicalSw[i].val2 = source.toValue();
-        // no break
-      case LS_FAMILY_VOFS:
-        source = RawSource(model.logicalSw[i].val1);
-        if (source.type == SOURCE_TYPE_STICK)
-          source.index = applyStickMode(source.index + 1, mode) - 1;
-        model.logicalSw[i].val1 = source.toValue();
-        break;
-      default:
-        break;
-    }
-  }
-
-  // heli
-  if (model.swashRingData.collectiveSource.type == SOURCE_TYPE_STICK)
-    model.swashRingData.collectiveSource.index = applyStickMode(model.swashRingData.collectiveSource.index + 1, mode) - 1;
 }
 
 void registerEEpromInterfaces();

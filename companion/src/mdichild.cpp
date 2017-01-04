@@ -41,6 +41,18 @@
 #include <unistd.h>
 #endif
 
+class DragDropHeader {
+  public:
+    DragDropHeader():
+      general_settings(false),
+      models_count(0)
+    {
+    }
+    bool general_settings;
+    uint8_t models_count;
+    uint8_t models[CPN_MAX_MODELS];
+};
+
 MdiChild::MdiChild():
   QWidget(),
   ui(new Ui::MdiChild),
@@ -48,13 +60,38 @@ MdiChild::MdiChild():
   isUntitled(true),
   fileChanged(false)
 {
+  BoardEnum board = GetCurrentFirmware()->getBoard();
+  
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("open.png"));
+  
+  modelsListModel = new TreeModel(&radioData, this);
+  ui->modelsList->setModel(modelsListModel);
   ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
   
   eepromInterfaceChanged();
+  
+  connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
+  connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
+  // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+  
+  ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
+  ui->modelsList->setSelectionBehavior(QAbstractItemView::SelectRows);
+  ui->modelsList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  ui->modelsList->setDragEnabled(true);
+  ui->modelsList->setAcceptDrops(true);
+  ui->modelsList->setDragDropOverwriteMode(true);
+  ui->modelsList->setDropIndicatorShown(true);
+  
+  if (IS_HORUS(board)) {
+    ui->modelsList->header()->hide();
+  }
+  else {
+    ui->modelsList->setIndentation(0);
+  }
 
+  
   if (!(isMaximized() || isMinimized())) {
     adjustSize();
   }
@@ -65,9 +102,12 @@ MdiChild::~MdiChild()
   delete ui;
 }
 
-void MdiChild::eepromInterfaceChanged()
+void MdiChild::refresh(bool expand)
 {
-  ui->modelsList->refreshList();
+  modelsListModel->refresh();
+  if (1 || expand) {
+    ui->modelsList->expandAll();
+  }
   if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
     ui->simulateButton->setEnabled(false);
   }
@@ -77,64 +117,160 @@ void MdiChild::eepromInterfaceChanged()
   updateTitle();
 }
 
+void MdiChild::confirmDelete()
+{
+  if (QMessageBox::warning(this, "Companion", tr("Delete selected models?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+    deleteSelectedModels();
+  }
+}
+
+void MdiChild::deleteSelectedModels()
+{
+  foreach (QModelIndex index, ui->modelsList->selectionModel()->selectedIndexes()) {
+    unsigned int modelIndex = modelsListModel->getItem(index)->getModelIndex();
+    if (radioData.generalSettings.currModelIndex != modelIndex) {
+      qDebug() << "delete" << modelIndex;
+      radioData.models[modelIndex].clear();
+      setModified();
+    }
+    else {
+      QMessageBox::warning(this, "Companion", tr("Cannot delete default model."), QMessageBox::Ok);
+    }
+  }
+}
+
+void MdiChild::showModelsListContextMenu(const QPoint & pos)
+{
+  int modelIndex = getCurrentRow();
+  QPoint globalPos = ui->modelsList->mapToGlobal(pos);
+  QMenu contextMenu;
+  
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  bool hasData = mimeData->hasFormat("application/x-companion");
+  
+  if (modelIndex >= 0) {
+    contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(modelEdit()));
+    contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"), this, SLOT(loadBackup()));
+    contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"), this, SLOT(wizardEdit()));
+    contextMenu.addSeparator();
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"), this, SLOT(confirmDelete()), tr("Delete"));
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"), this, SLOT(copy()), tr("Ctrl+C"));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"), this, SLOT(cut()), tr("Ctrl+X"));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(duplicate()), tr("Ctrl+U"));
+    contextMenu.addSeparator();
+    contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setdefault()));
+    contextMenu.addSeparator();
+    contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"), this, SLOT(print()), QKeySequence(tr("Ctrl+P")));
+    contextMenu.addSeparator();
+    contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"), this, SLOT(modelSimulate()), tr("Alt+S"));
+  }
+  
+  // TODO context menu for radio settings
+  // contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(EditModel()));
+  
+  contextMenu.exec(globalPos);
+}
+
+void MdiChild::eepromInterfaceChanged()
+{
+  refresh();
+}
+
 void MdiChild::cut()
 {
-  ui->modelsList->cut();
+  copy();
+  deleteSelectedModels();
 }
 
 void MdiChild::copy()
 {
-  ui->modelsList->copy();
+  QByteArray gmData;
+  doCopy(&gmData);
+  
+  QMimeData * mimeData = new QMimeData;
+  mimeData->setData("application/x-companion", gmData);
+  
+  QClipboard * clipboard = QApplication::clipboard();
+  clipboard->setMimeData(mimeData, QClipboard::Clipboard);
 }
+
+void MdiChild::doCopy(QByteArray * gmData)
+{
+  DragDropHeader header;
+  
+  qDebug() << ui->modelsList->selectionModel()->selectedIndexes();
+  foreach(QModelIndex index, ui->modelsList->selectionModel()->selectedIndexes()) {
+    char column = index.column();
+    if (column == 0) {
+      char row = index.row();
+      if (!row) {
+        header.general_settings = true;
+        gmData->append('G');
+        gmData->append((char *) &radioData.generalSettings, sizeof(GeneralSettings));
+      }
+      else {
+        header.models[header.models_count++] = row;
+        gmData->append('M');
+        gmData->append((char *) &radioData.models[row - 1], sizeof(ModelData));
+      }
+    }
+  }
+  
+  gmData->prepend((char *)&header, sizeof(header));
+}
+
 
 void MdiChild::paste()
 {
-  ui->modelsList->paste();
+//  ui->modelsList->paste();
 }
 
-bool MdiChild::hasPasteData()
+bool MdiChild::hasPasteData() const
 {
-  return ui->modelsList->hasPasteData();
+  return false; // ui->modelsList->hasPasteData();
 }
 
-bool MdiChild::hasSelection()
+bool MdiChild::hasSelection() const
 {
-    return ui->modelsList->hasSelection();
+    return false; // ui->modelsList->hasSelection();
 }
 
 void MdiChild::updateTitle()
 {
   QString title = userFriendlyCurrentFile() + "[*]" + " (" + GetCurrentFirmware()->getName() + QString(")");
-  if (!IS_SKY9X(GetCurrentFirmware()->getBoard()))
-    title += QString(" - %1 ").arg(EEPromAvail) + tr("free bytes");
+  int availableEEpromSize = modelsListModel->getAvailableEEpromSize();
+  if (availableEEpromSize >= 0) {
+    title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
+  }
   setWindowTitle(title);
 }
 
 void MdiChild::setModified()
 {
-  ui->modelsList->refreshList();
+  refresh();
   fileChanged = true;
-  updateTitle();
   documentWasModified();
 }
 
 void MdiChild::on_simulateButton_clicked()
 {
-  startSimulation(this, radioData, -1);
+  radioSimulate();
 }
 
 void MdiChild::checkAndInitModel(int row)
 {
-  ModelData &model = radioData.models[row - 1];
+  ModelData &model = radioData.models[row];
   if (model.isEmpty()) {
-    model.setDefaultValues(row - 1, radioData.generalSettings);
+    model.setDefaultValues(row, radioData.generalSettings);
     setModified();
   }
 }
 
 void MdiChild::generalEdit()
 {
-  GeneralEdit *t = new GeneralEdit(this, radioData, GetCurrentFirmware()/*firmware*/);
+  GeneralEdit * t = new GeneralEdit(this, radioData, GetCurrentFirmware()/*firmware*/);
   connect(t, SIGNAL(modified()), this, SLOT(setModified()));
   t->show();
 }
@@ -142,49 +278,38 @@ void MdiChild::generalEdit()
 void MdiChild::modelEdit()
 {
   int row = getCurrentRow();
-
-  if (row == 0) {
-    generalEdit();
-  }
-  else {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    checkAndInitModel( row );
-    ModelData & model = radioData.models[row - 1];
-    gStopwatch.restart();
-    gStopwatch.report("ModelEdit creation");
-    ModelEdit *t = new ModelEdit(this, radioData, (row - 1), GetCurrentFirmware()/*firmware*/);
-    gStopwatch.report("ModelEdit created");
-    t->setWindowTitle(tr("Editing model %1: ").arg(row) + model.name);
-    connect(t, SIGNAL(modified()), this, SLOT(setModified()));
-    gStopwatch.report("STARTING MODEL EDIT");
-    t->show();
-    QApplication::restoreOverrideCursor();
-    gStopwatch.report("ModelEdit shown");
-  }
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  checkAndInitModel(row);
+  ModelData & model = radioData.models[row];
+  gStopwatch.restart();
+  gStopwatch.report("ModelEdit creation");
+  ModelEdit * t = new ModelEdit(this, radioData, (row), GetCurrentFirmware()/*firmware*/);
+  gStopwatch.report("ModelEdit created");
+  t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + model.name);
+  connect(t, SIGNAL(modified()), this, SLOT(setModified()));
+  gStopwatch.report("STARTING MODEL EDIT");
+  t->show();
+  QApplication::restoreOverrideCursor();
+  gStopwatch.report("ModelEdit shown");
 }
 
 void MdiChild::wizardEdit()
 {
   int row = getCurrentRow();
-  if (row > 0) {
-    checkAndInitModel(row);
-    WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row, this);
-    wizard->exec();
-    if (wizard->mix.complete /*TODO rather test the exec() result?*/) {
-      radioData.models[row - 1] = wizard->mix;
-      setModified();
-    }
+  checkAndInitModel(row);
+  WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row+1, this);
+  wizard->exec();
+  if (wizard->mix.complete /*TODO rather test the exec() result?*/) {
+    radioData.models[row] = wizard->mix;
+    setModified();
   }
 }
 
-void MdiChild::openEditWindow()
+void MdiChild::openModelEditWindow()
 {
   int row = getCurrentRow();
-  if (row == 0){
-    generalEdit();
-  }
-  else{
-    ModelData & model = radioData.models[row - 1];
+  if (row >= 0) {
+    ModelData & model = radioData.models[row];
     if (model.isEmpty() && g.useWizard()) {
       wizardEdit();
     }
@@ -197,7 +322,6 @@ void MdiChild::openEditWindow()
 void MdiChild::newFile()
 {
   static int sequenceNumber = 1;
-
   isUntitled = true;
   curFile = QString("document%1.eepe").arg(sequenceNumber++);
   updateTitle();
@@ -242,8 +366,8 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
     if (xmlOK) {
       std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEepromXml(radioData, doc));
       if (errors.test(ALL_OK)) {
-        ui->modelsList->refreshList();
-        if(resetCurrentFile) setCurrentFile(fileName);
+        refresh(true);
+        if (resetCurrentFile) setCurrentFile(fileName);
         return true;
       }
     }
@@ -280,7 +404,7 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
       ShowEepromWarnings(this, tr("Warning"), errors.to_ulong());
     }
 
-    ui->modelsList->refreshList();
+    refresh(true);
     if (resetCurrentFile) setCurrentFile(fileName);
 
     return true;
@@ -325,7 +449,7 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
       ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
     }
 
-    ui->modelsList->refreshList();
+    refresh(true);
     if (resetCurrentFile)
       setCurrentFile(fileName);
 
@@ -334,7 +458,7 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
   }
   else if (fileType == FILE_TYPE_OTX) { //read zip archive
     if (!GetEepromInterface()->loadFile(radioData, fileName)) {
-      ui->modelsList->refreshList();
+      refresh(true);
       if (resetCurrentFile)
         setCurrentFile(fileName);
       return true;
@@ -452,9 +576,9 @@ bool MdiChild::saveFile(const QString &fileName, bool setCurrent)
   return true;
 }
 
-QString MdiChild::userFriendlyCurrentFile()
+QString MdiChild::userFriendlyCurrentFile() const
 {
-  return strippedName(curFile);
+  return QFileInfo(curFile).fileName();
 }
 
 void MdiChild::closeEvent(QCloseEvent *event)
@@ -501,45 +625,47 @@ void MdiChild::setCurrentFile(const QString &fileName)
   files.removeAll(fileName);
   files.prepend(fileName);
   while (files.size() > MaxRecentFiles)
-      files.removeLast();
-
-  g.recentFiles( files );
-}
-
-QString MdiChild::strippedName(const QString &fullFileName)
-{
-  return QFileInfo(fullFileName).fileName();
+    files.removeLast();
+  g.recentFiles(files);
 }
 
 void MdiChild::writeEeprom()  // write to Tx
 {
   QString tempFile = generateProcessUniqueTempFileName("temp.bin");
   saveFile(tempFile, false);
-  if(!QFileInfo(tempFile).exists()) {
+  if (!QFileInfo(tempFile).exists()) {
     QMessageBox::critical(this, tr("Error"), tr("Cannot write temporary file!"));
     return;
   }
-
-  FlashEEpromDialog *cd = new FlashEEpromDialog(this, tempFile);
+  FlashEEpromDialog * cd = new FlashEEpromDialog(this, tempFile);
   cd->exec();
 }
 
-void MdiChild::simulate()
+void MdiChild::on_radioSettings_clicked()
 {
-  if (getCurrentRow() > 0) {
-    startSimulation(this, radioData, getCurrentRow()-1);
-  }
+  generalEdit();
 }
 
-void MdiChild::print(int model, QString filename)
+void MdiChild::radioSimulate()
 {
+  startSimulation(this, radioData, -1);
+}
+
+void MdiChild::modelSimulate()
+{
+  startSimulation(this, radioData, getCurrentRow());
+}
+
+void MdiChild::print(int model, const QString & filename)
+{
+  // TODO
   PrintDialog * pd = NULL;
 
   if (model>=0 && !filename.isEmpty()) {
     pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[model], filename);
   }
-  else if (getCurrentRow() > 0) {
-    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[getCurrentRow()-1]);
+  else if (getCurrentRow()) {
+    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[getCurrentRow()]);
   }
 
   if (pd) {
@@ -553,19 +679,15 @@ void MdiChild::viableModelSelected(bool viable)
   emit copyAvailable(viable);
 }
 
-void MdiChild::setEEpromAvail(int eavail)
-{
-  EEPromAvail=eavail;
-}
-
 int MdiChild::getCurrentRow() const
 {
-  return ui->modelsList->currentRow();
+  TreeItem * item = modelsListModel->getItem(ui->modelsList->currentIndex());
+  return item->getModelIndex();
 }
 
 bool MdiChild::loadBackup()
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open backup Models and Settings file"), g.eepromDir(),tr(EEPROM_FILES_FILTER));
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open backup Models and Settings file"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
   if (fileName.isEmpty())
     return false;
   QFile file(fileName);
@@ -574,8 +696,8 @@ bool MdiChild::loadBackup()
     QMessageBox::critical(this, tr("Error"), tr("Unable to find file %1!").arg(fileName));
     return false;
   }
-  if(getCurrentRow() < 1) return false;
-  int index = getCurrentRow() - 1;
+  
+  int index = getCurrentRow();
 
   int eeprom_size = file.size();
   if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
@@ -598,16 +720,16 @@ bool MdiChild::loadBackup()
     return false;
   }
 
-    std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
-    if (!errorsEeprom.test(ALL_OK)) {
-      ShowEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
-      return false;
-    }
-    if (errorsEeprom.test(HAS_WARNINGS)) {
-      ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
-    }
+  std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
+  if (!errorsEeprom.test(ALL_OK)) {
+    ShowEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
+    return false;
+  }
+  if (errorsEeprom.test(HAS_WARNINGS)) {
+    ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
+  }
 
-  ui->modelsList->refreshList();
+  refresh(true);
 
   return true;
 }

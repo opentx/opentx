@@ -135,15 +135,15 @@ MainWindow::MainWindow():
       }
 
       if (fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
-        MdiChild *child = createMdiChild();
+        MdiChild * child = createMdiChild();
         if (child->loadFile(str)) {
-          if (!(printing && (model >=0 && model<GetEepromInterface()->getMaxModels()) && !printfilename.isEmpty()  )) {
+          if (!(printing && model >= 0 && model<GetCurrentFirmware()->getCapability(Models) && !printfilename.isEmpty())) {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
           }
           else {
             child->show();
-            child->print(model,printfilename);
+            child->print(model, printfilename);
             child->close();
           }
         }
@@ -729,14 +729,15 @@ void MainWindow::paste()
 
 void MainWindow::writeEeprom()
 {
-    if (activeMdiChild())
-      activeMdiChild()->writeEeprom();
+  if (activeMdiChild())
+    activeMdiChild()->writeEeprom();
 }
 
 void MainWindow::simulate()
 {
-    if (activeMdiChild())
-      activeMdiChild()->simulate();
+  if (activeMdiChild()) {
+    activeMdiChild()->radioSimulate();
+  }
 }
 
 

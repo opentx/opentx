@@ -1402,6 +1402,11 @@ void ModelData::clearMixes()
     mixData[i].clear();
 }
 
+RadioData::RadioData()
+{
+  models.resize(GetCurrentFirmware()->getCapability(Models));
+}
+
 void ModelData::clear()
 {
   memset(this, 0, sizeof(ModelData));
