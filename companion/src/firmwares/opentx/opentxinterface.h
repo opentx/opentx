@@ -35,8 +35,6 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual const int getEEpromSize();
 
-    virtual const int getMaxModels();
-
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
     
     bool loadModelFromBackup(ModelData & model, const uint8_t * data, unsigned int size, uint8_t version, uint32_t variant);
