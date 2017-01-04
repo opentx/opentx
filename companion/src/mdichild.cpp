@@ -41,6 +41,18 @@
 #include <unistd.h>
 #endif
 
+class DragDropHeader {
+  public:
+    DragDropHeader():
+      general_settings(false),
+      models_count(0)
+    {
+    }
+    bool general_settings;
+    uint8_t models_count;
+    uint8_t models[CPN_MAX_MODELS];
+};
+
 MdiChild::MdiChild():
   QWidget(),
   ui(new Ui::MdiChild),
@@ -250,6 +262,32 @@ void MdiChild::doPaste(QByteArray * gmData, int index)
     setModified();
   }
 }
+
+void MdiChild::doCopy(QByteArray * gmData)
+{
+  DragDropHeader header;
+  
+  qDebug() << ui->modelsList->selectionModel()->selectedIndexes();
+  foreach(QModelIndex index, ui->modelsList->selectionModel()->selectedIndexes()) {
+    char column = index.column();
+    if (column == 0) {
+      char row = index.row();
+      if (!row) {
+        header.general_settings = true;
+        gmData->append('G');
+        gmData->append((char *) &radioData.generalSettings, sizeof(GeneralSettings));
+      }
+      else {
+        header.models[header.models_count++] = row;
+        gmData->append('M');
+        gmData->append((char *) &radioData.models[row - 1], sizeof(ModelData));
+      }
+    }
+  }
+  
+  gmData->prepend((char *)&header, sizeof(header));
+}
+
 
 void MdiChild::paste()
 {
