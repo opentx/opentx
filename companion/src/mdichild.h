@@ -56,7 +56,8 @@ class MdiChild : public QWidget
     void eepromInterfaceChanged();
     int getCurrentRow() const;
     void refresh(bool expand=false);
-
+    void keyPressEvent(QKeyEvent * event);
+  
   signals:
     void copyAvailable(bool val);
 
@@ -94,7 +95,9 @@ class MdiChild : public QWidget
     void setCurrentFile(const QString & fileName);
     bool loadOtxFile(const QString & fileName);
     void doCopy(QByteArray * gmData);
-
+    void doPaste(QByteArray * gmData, int index);
+    
+    
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;
     
