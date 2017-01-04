@@ -37,7 +37,7 @@ void Channel::clear()
   weight2 = 0;
 }
 
-WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
+WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId):
   complete(false),
   modelId(modelId),
   settings(settings),

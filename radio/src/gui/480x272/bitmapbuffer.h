@@ -221,9 +221,9 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     {
       if (!bmp || x >= width || y >= height)
         return;
-
-      int srcw = bmp->getWidth();
-      int srch = bmp->getHeight();
+  
+      coord_t srcw = bmp->getWidth();
+      coord_t srch = bmp->getHeight();
 
       if (w == 0)
         w = srcw;
