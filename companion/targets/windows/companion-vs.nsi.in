@@ -133,10 +133,6 @@ Section "OpenTX Companion" SecDummy
   SetOutPath "$INSTDIR\printsupport"
   File "@QT_DLL_DIR@\..\plugins\printsupport\windowsprintersupport.dll"
 
-  CreateDirectory "$INSTDIR\lang"
-  SetOutPath "$INSTDIR\lang"
-  File "src\*.qm"
-
   SetOutPath "$INSTDIR"
   ;Store installation folder
   WriteRegStr HKCU "Software\OpenTX\Companion @VERSION_FAMILY@" "" $INSTDIR

@@ -327,9 +327,6 @@ elseif(WIN32)
     install(TARGETS ${SIMULATOR_NAME} DESTINATION ${INSTALL_DESTINATION})
     file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*-simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
     install(FILES ${simulator_plugins} DESTINATION "${INSTALL_DESTINATION}")
-    # language files
-    file(GLOB language_files "${CMAKE_BINARY_DIR}/companion/src/companion_*.qm")
-    install(FILES ${language_files} DESTINATION "${INSTALL_DESTINATION}/lang")
     # supporting utilities
     set(INSTALL_TEMP_FILES avrdude.exe avrdude.conf dfu-util.exe libusb0.dll libusb-1.0.dll)
     foreach(tmpfile ${INSTALL_TEMP_FILES})
@@ -464,9 +461,6 @@ IF(APPLE)
 
   # menu file
   install(DIRECTORY ${PROJECT_SOURCE_DIR}/companion/targets/mac/qt_menu.nib DESTINATION "${companion_res_dir}" COMPONENT Runtime)
-
-  # translations file
-  install(FILES ${companion_QM} DESTINATION "${translations_dest_dir}" COMPONENT Runtime)
 
   # manually add the cocoa plugin
   get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
