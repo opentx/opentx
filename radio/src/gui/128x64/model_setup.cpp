@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -167,6 +167,14 @@ enum MenuModelSetupItems {
   #define CURSOR_ON_CELL                 (true)
   #define MODEL_SETUP_MAX_LINES          ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? HEADER_LINE+ITEM_MODEL_SETUP_MAX : HEADER_LINE+ITEM_MODEL_SETUP_MAX-1)
 #endif
+
+void copySelection(char * dst, const char * src, uint8_t size)
+{
+  if (memcmp(src, "---", 3) == 0)
+    memset(dst, 0, size);
+  else
+    memcpy(dst, src, size);
+}
 
 void menuModelSetup(event_t event)
 {
@@ -557,7 +565,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
         break;
-        
+
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
@@ -680,7 +688,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;
-        
+
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, attr);
