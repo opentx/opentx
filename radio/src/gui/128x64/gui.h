@@ -333,8 +333,6 @@ void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, ui
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay);
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
-void copySelection(char * dst, const char * src, uint8_t size);
-
 #define WARNING_TYPE_ASTERISK          0
 #define WARNING_TYPE_CONFIRM           1
 #define WARNING_TYPE_INPUT             2
