@@ -25,7 +25,7 @@
 #include <QPrintDialog>
 
 PrintDialog::PrintDialog(QWidget *parent, Firmware * firmware, GeneralSettings & generalSettings, ModelData & model, const QString & filename) :
-  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
+  QDialog(parent),
   firmware(firmware),
   generalSettings(generalSettings),
   model(model),
