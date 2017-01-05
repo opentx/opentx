@@ -44,7 +44,7 @@ enum menuModelCustomScriptItems {
   ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL,
 };
 
-#define SCRIPT_ONE_2ND_COLUMN_POS  (4*FW-1)
+#define SCRIPT_ONE_2ND_COLUMN_POS  (8*FW)
 #define SCRIPT_ONE_3RD_COLUMN_POS  (15*FW-3)
 
 void menuModelCustomScriptOne(event_t event)
@@ -54,7 +54,7 @@ void menuModelCustomScriptOne(event_t event)
   drawStringWithIndex(PSIZE(TR_MENUCUSTOMSCRIPTS)*FW+FW, 0, "LUA", s_currIdx+1, 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, 0);
 
-  SUBMENU(STR_MENUCUSTOMSCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
+  SUBMENU(STR_MENUCUSTOMSCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount+scriptInputsOutputs[s_currIdx].outputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
   int8_t sub = menuVerticalPosition;
 
@@ -66,7 +66,7 @@ void menuModelCustomScriptOne(event_t event)
     if (i == ITEM_MODEL_CUSTOMSCRIPT_FILE) {
       lcdDrawTextAlignedLeft(y, STR_SCRIPT);
       if (ZEXIST(sd.file))
-        lcdDrawSizedText(SCRIPT_ONE_2ND_COLUMN_POS+10, y, sd.file, sizeof(sd.file), attr);
+        lcdDrawSizedText(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
         lcdDrawTextAtIndex(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
       if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && !READ_ONLY()) {
@@ -103,15 +103,13 @@ void menuModelCustomScriptOne(event_t event)
         }
       }
     }
-  }
-
-  if (scriptInputsOutputs[s_currIdx].outputsCount > 0) {
-    lcdDrawSolidVerticalLine(SCRIPT_ONE_3RD_COLUMN_POS-4, FH+1, LCD_H-FH-1);
-    lcdDrawText(SCRIPT_ONE_3RD_COLUMN_POS, FH+1, STR_OUTPUTS);
-
-    for (int i=0; i<scriptInputsOutputs[s_currIdx].outputsCount; i++) {
-      drawSource(SCRIPT_ONE_3RD_COLUMN_POS+INDENT_WIDTH, FH+1+FH+i*FH, MIXSRC_FIRST_LUA+(s_currIdx*MAX_SCRIPT_OUTPUTS)+i, 0);
-      lcdDrawNumber(SCRIPT_ONE_3RD_COLUMN_POS+11*FW+3, FH+1+FH+i*FH, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1|RIGHT);
+    else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount+1) {
+      lcdDrawTextAlignedLeft(y, STR_OUTPUTS);
+    }
+    else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount+scriptInputsOutputs[s_currIdx].outputsCount) {
+      int outputIdx = i-(ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount)-2;
+      lcdDrawSizedText(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].outputs[outputIdx].name, 10, 0);
+      lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1|RIGHT);
     }
   }
 }
