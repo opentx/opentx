@@ -168,14 +168,6 @@ enum MenuModelSetupItems {
   #define MODEL_SETUP_MAX_LINES          ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? HEADER_LINE+ITEM_MODEL_SETUP_MAX : HEADER_LINE+ITEM_MODEL_SETUP_MAX-1)
 #endif
 
-void copySelection(char * dst, const char * src, uint8_t size)
-{
-  if (memcmp(src, "---", 3) == 0)
-    memset(dst, 0, size);
-  else
-    memcpy(dst, src, size);
-}
-
 void menuModelSetup(event_t event)
 {
 #if defined(PCBX7)

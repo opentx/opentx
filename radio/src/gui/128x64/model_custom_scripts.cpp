@@ -20,6 +20,14 @@
 
 #include "opentx.h"
 
+void copySelection(char * dst, const char * src, uint8_t size)
+{
+  if (memcmp(src, "---", 3) == 0)
+    memset(dst, 0, size);
+  else
+    memcpy(dst, src, size);
+}
+
 void onModelCustomScriptMenu(const char *result)
 {
   ScriptData &sd = g_model.scriptsData[s_currIdx];
