@@ -12,5 +12,6 @@
         <file>companion_sv.qm</file>
         <file>companion_ru.qm</file>
         <file>companion_nl.qm</file>
+        <file>companion_cn.qm</file>
     </qresource>
 </RCC>
