@@ -45,12 +45,12 @@ union ZoneOptionValue
   #define OPTION_VALUE_UNSIGNED(x)    uint32_t(x)
   #define OPTION_VALUE_SIGNED(x)      uint32_t(x)
   #define OPTION_VALUE_BOOL(x)        uint32_t(x)
-  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)__VA_ARGS__
+  #define OPTION_VALUE_STRING(...)    { .stringValue = {__VA_ARGS__} }
 #else
   #define OPTION_VALUE_UNSIGNED(x)    { .unsignedValue = (x) }
   #define OPTION_VALUE_SIGNED(x)      { .signedValue = (x) }
   #define OPTION_VALUE_BOOL(x)        { .boolValue = (x) }
-  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)__VA_ARGS__
+  #define OPTION_VALUE_STRING(...)    { .stringValue = {__VA_ARGS__} }
 #endif
 
 struct ZoneOption

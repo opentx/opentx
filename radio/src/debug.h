@@ -273,7 +273,7 @@ struct InterruptCounters
   uint32_t resetTime;
 };
 
-extern const char * interruptNames[INT_LAST];
+extern const char * const interruptNames[INT_LAST];
 extern struct InterruptCounters interruptCounters;
 
 #define DEBUG_INTERRUPT(int)    (++interruptCounters.cnt[int])
@@ -388,7 +388,7 @@ enum DebugTimers {
 };
 
 extern DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
-extern const char * debugTimerNames[DEBUG_TIMERS_COUNT];
+extern const char * const debugTimerNames[DEBUG_TIMERS_COUNT];
 
 #endif // #if defined(__cplusplus)
 

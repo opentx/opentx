@@ -216,7 +216,7 @@ bool menuRadioSdManager(event_t _event)
         if (!strcmp(line, "..")) {
           break; // no menu for parent dir
         }
-        char * ext = getFileExtension(line);
+        const char * ext = getFileExtension(line);
         if (ext) {
           if (!strcasecmp(ext, SOUNDS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
@@ -337,7 +337,7 @@ bool menuRadioSdManager(event_t _event)
     if (reusableBuffer.sdmanager.lines[i][0]) {
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
         uint8_t extlen, efflen;
-        char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, 0, 0, NULL, &extlen);
+        const char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, 0, 0, NULL, &extlen);
         editName(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - extlen, _event, attr, 0);
         efflen = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - extlen);
         if (s_editMode == 0) {
@@ -366,7 +366,7 @@ bool menuRadioSdManager(event_t _event)
     }
   }
 
-  char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index]);
+  const char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index]);
   if (ext && isExtensionMatching(ext, BITMAPS_EXT)) {
     if (currentBitmapIndex != menuVerticalPosition) {
       currentBitmapIndex = menuVerticalPosition;

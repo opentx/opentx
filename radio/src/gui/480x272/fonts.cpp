@@ -20,59 +20,59 @@
 
 #include "opentx.h"
 
-uint16_t font_tinsize_specs[] = {
+const uint16_t font_tinsize_specs[] = {
 #include "font_tinsize.specs"
 };
 
-pm_uchar font_tinsize[] = {
+const pm_uchar font_tinsize[] = {
 #include "font_tinsize.lbm"
 };
 
-uint16_t font_smlsize_specs[] = {
+const uint16_t font_smlsize_specs[] = {
 #include "font_smlsize.specs"
 };
 
-pm_uchar font_smlsize[] = {
+const pm_uchar font_smlsize[] = {
 #include "font_smlsize.lbm"
 };
 
-uint16_t font_stdsize_specs[] = {
+const uint16_t font_stdsize_specs[] = {
 #include "font_stdsize.specs"
 };
 
-pm_uchar font_stdsize[] = {
+const pm_uchar font_stdsize[] = {
 #include "font_stdsize.lbm"
 };
 
-uint16_t font_midsize_specs[] = {
+const uint16_t font_midsize_specs[] = {
 #include "font_midsize.specs"
 };
 
-pm_uchar font_midsize[] = {
+const pm_uchar font_midsize[] = {
 #include "font_midsize.lbm"
 };
 
-uint16_t font_dblsize_specs[] = {
+const uint16_t font_dblsize_specs[] = {
 #include "font_dblsize.specs"
 };
 
-pm_uchar font_dblsize[] = {
+const pm_uchar font_dblsize[] = {
 #include "font_dblsize.lbm"
 };
 
-uint16_t font_xxlsize_specs[] = {
+const uint16_t font_xxlsize_specs[] = {
 #include "font_xxlsize.specs"
 };
 
-pm_uchar font_xxlsize[] = {
+const pm_uchar font_xxlsize[] = {
 #include "font_xxlsize.lbm"
 };
 
-uint16_t font_stdsizebold_specs[] = {
+const uint16_t font_stdsizebold_specs[] = {
 #include "font_stdsizebold.specs"
 };
 
-pm_uchar font_stdsizebold[] = {
+const pm_uchar font_stdsizebold[] = {
 #include "font_stdsizebold.lbm"
 };
 

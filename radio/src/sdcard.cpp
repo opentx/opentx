@@ -114,7 +114,7 @@ bool isFilePatternAvailable(const char * path, const char * file, const char * p
 char * getFileIndex(char * filename, unsigned int & value)
 {
   value = 0;
-  char * pos = getFileExtension(filename);
+  char * pos = (char *)getFileExtension(filename);
   if (!pos || pos == filename)
     return NULL;
   int multiplier = 1;
@@ -148,7 +148,7 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   uint8_t extlen;
   char * indexPos = getFileIndex(filename, index);
   char extension[LEN_FILE_EXTENSION_MAX+1] = "\0";
-  char *p = getFileExtension(filename, 0, 0, NULL, &extlen);
+  char * p = (char *)getFileExtension(filename, 0, 0, NULL, &extlen);
   if (p) strncat(extension, p, sizeof(extension)-1);
   while (1) {
     index++;
@@ -161,6 +161,32 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
       return index;
     }
   }
+}
+
+const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMaxLen, uint8_t *fnlen, uint8_t *extlen)
+{
+  int len = size;
+  if (!size) {
+    len = strlen(filename);
+  }
+  if (!extMaxLen) {
+    extMaxLen = LEN_FILE_EXTENSION_MAX;
+  }
+  if (fnlen != NULL) {
+    *fnlen = (uint8_t)len;
+  }
+  for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
+    if (filename[i] == '.') {
+      if (extlen) {
+        *extlen = len-i;
+      }
+      return &filename[i];
+    }
+  }
+  if (extlen != NULL) {
+    *extlen = 0;
+  }
+  return NULL;
 }
 
 /**
@@ -198,7 +224,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   static uint16_t lastpopupMenuOffset = 0;
   FILINFO fno;
   DIR dir;
-  char *fnExt;
+  const char * fnExt;
   uint8_t fnLen, extLen;
   char tmpExt[LEN_FILE_EXTENSION_MAX+1] = "\0";
 

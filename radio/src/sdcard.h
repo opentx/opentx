@@ -111,32 +111,7 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 #endif
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
-template<class T>
-T * getFileExtension(T * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL)
-{
-  int len = size;
-  if (!size) {
-    len = strlen(filename);
-  }
-  if (!extMaxLen) {
-    extMaxLen = LEN_FILE_EXTENSION_MAX;
-  }
-  if (fnlen != NULL) {
-    *fnlen = (uint8_t)len;
-  }
-  for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
-    if (filename[i] == '.') {
-      if (extlen) {
-        *extlen = len-i;
-      }
-      return &filename[i];
-    }
-  }
-  if (extlen != NULL) {
-    *extlen = 0;
-  }
-  return NULL;
-}
+const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
 
 #if defined(PCBTARANIS)
   #define O9X_FOURCC 0x3378396F // o9x for Taranis

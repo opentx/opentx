@@ -106,7 +106,7 @@ void dumpTraceBuffer()
 #if defined(DEBUG_INTERRUPTS)
 
 #if defined(PCBHORUS)
-  const char * interruptNames[INT_LAST] = {
+  const char * const interruptNames[INT_LAST] = {
     "Tick ",   // INT_TICK,
     "1ms  ",   // INT_1MS,
     "Ser2 ",   // INT_SER2,
@@ -139,7 +139,7 @@ void dumpTraceBuffer()
 #endif // #if defined(DEBUG_USB_INTERRUPTS)
   };
 #elif defined(PCBTARANIS) 
-  const char * interruptNames[INT_LAST] = {
+  const char * const interruptNames[INT_LAST] = {
     "Tick ",   // INT_TICK,
     "5ms  ",   // INT_5MS,
     "Audio",   // INT_AUDIO,
@@ -231,7 +231,7 @@ void DebugTimer::stop()
 
 DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
 
-const char * debugTimerNames[DEBUG_TIMERS_COUNT] = {
+const char * const debugTimerNames[DEBUG_TIMERS_COUNT] = {
    "Pulses int."   // debugTimerIntPulses,
   ,"Pulses dur."   // debugTimerIntPulsesDuration,
   ,"10ms dur.  "   // debugTimerPer10ms,
