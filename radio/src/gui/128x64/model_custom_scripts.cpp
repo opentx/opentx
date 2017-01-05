@@ -106,10 +106,10 @@ void menuModelCustomScriptOne(event_t event)
     else if (i == ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount+1) {
       lcdDrawTextAlignedLeft(y, STR_OUTPUTS);
     }
-    else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount+scriptInputsOutputs[s_currIdx].outputsCount) {
+    else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount+scriptInputsOutputs[s_currIdx].outputsCount+1) {
       int outputIdx = i-(ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount)-2;
       lcdDrawSizedText(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].outputs[outputIdx].name, 10, 0);
-      lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[i].value), PREC1|RIGHT);
+      lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[outputIdx].value), PREC1|RIGHT);
     }
   }
 }
