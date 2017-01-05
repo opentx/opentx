@@ -58,12 +58,14 @@ add_definitions(-DQXT_STATIC)
 
 if(NOT MSVC)
   set(WARNING_FLAGS "${WARNING_FLAGS} -Wall")
-endif()
-if(WARNINGS_AS_ERRORS)
-  if(MSVC)
-    set(WARNING_FLAGS "${WARNING_FLAGS} /WX")
-  else()
+  if(WARNINGS_AS_ERRORS)
     set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
+  endif()
+else()
+  # silence lots of warnings regarding "insecure" use of functions (sprintf, strcpy, etc)
+  set(WARNING_FLAGS "${WARNING_FLAGS} /D_CRT_SECURE_NO_WARNINGS")
+  if(WARNINGS_AS_ERRORS)
+    set(WARNING_FLAGS "${WARNING_FLAGS} /WX")
   endif()
 endif()
 
@@ -330,11 +332,11 @@ elseif(WIN32)
 
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
-    set(INSTALL_DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
     message(STATUS "Partial install to " ${INSTALL_DESTINATION})
   else()
     # Full Windows installation with all supporting files
-    set(INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX})
+    set(INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}")
     message(STATUS "Full install to " ${INSTALL_DESTINATION})
     # companion & simulator binaries
     install(TARGETS ${COMPANION_NAME} DESTINATION ${INSTALL_DESTINATION})
@@ -355,30 +357,33 @@ elseif(WIN32)
   install(FILES ${QT_DLL_DIR}/../plugins/platforms/qwindows${INSTALL_TEMP_QTDLL_SFX}.dll DESTINATION ${INSTALL_DESTINATION}/platforms)
   # ICU dlls
   foreach(tmpfile ${INSTALL_TEMP_ICUDLL_FILES})
-    # Qt5.7+ doesn't use icu dlls anymore (at least with MinGW), hence optional
+    # Qt5.7+ doesn't use icu dlls anymore, hence optional
     install(FILES ${QT_DLL_DIR}/${tmpfile}.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
   endforeach()
   # SDL dll
   if(SDL_FOUND AND SDL_LIBRARY_PATH AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
     set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
     install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
-  else()
+  elseif(SDL_FOUND)
     message(WARNING "Installer: SDL.dll not found!")
   endif()
   # C++/system dlls, depends on compiler
   if(MSVC)
-    set(WIN_SYSDIR "$ENV{windir}/SysWOW64")  # This would be "system32" for a 64-bit build or on x86... but how to tell?
-    if(IS_DIRECTORY ${WIN_SYSDIR})
-      install(FILES ${WIN_SYSDIR}/msvcp140.dll ${WIN_SYSDIR}/vcruntime140.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    string(REPLACE "\\" "/" WIN_SYSDIR "$ENV{windir}")
+    set(WIN_SYSDIR "${WIN_SYSDIR}/SysWOW64")  # This would be "system32" for a 64-bit build or on x86... but how to tell?
+    if(IS_DIRECTORY "${WIN_SYSDIR}")
+      install(FILES "${WIN_SYSDIR}/msvcp140.dll" "${WIN_SYSDIR}/vcruntime140.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
     endif()
-    install(FILES "${WIN_PTHREAD_BASE_PATH}/lib/pthreadVC2.dll" DESTINATION ${INSTALL_DESTINATION})
+    if(WIN_PTHREAD_DLL)
+      install(FILES "${WIN_PTHREAD_DLL}" DESTINATION ${INSTALL_DESTINATION})
+    endif()
   elseif(MINGW)
     get_filename_component(MINGW_DIR ${CMAKE_CXX_COMPILER} PATH)
     if(IS_DIRECTORY ${MINGW_DIR})
-      install(FILES ${MINGW_DIR}/libgcc_s_dw2-1.dll ${MINGW_DIR}/libstdc++-6.dll ${MINGW_DIR}/libwinpthread-1.dll DESTINATION ${INSTALL_DESTINATION})
+      install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${MINGW_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
       set(MINGW_DIR "${MINGW_DIR}/../opt/bin")
       # SSL support
-      install(FILES ${MINGW_DIR}/libeay32.dll ${MINGW_DIR}/ssleay32.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+      install(FILES "${MINGW_DIR}/libeay32.dll" "${MINGW_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
     endif()
   endif()
 

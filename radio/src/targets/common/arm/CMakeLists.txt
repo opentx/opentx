@@ -1,4 +1,5 @@
 set(TIMERS 3 CACHE STRING "Timers count (2 or 3)")
+set_property(CACHE TIMERS PROPERTY STRINGS 2 3)
 option(CLI "Command Line Interface" OFF)
 option(DEBUG "Debug mode" OFF)
 option(LOG_TELEMETRY "Telemetry Logs on SD card" OFF)
