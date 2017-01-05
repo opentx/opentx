@@ -130,6 +130,9 @@ Section "OpenTX Companion" SecDummy
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\dfu-util.exe"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb-1.0.dll"
 
+  SetOutPath "$INSTDIR\printsupport"
+  File "@QT_DLL_DIR@\..\plugins\printsupport\windowsprintersupport.dll"
+
   CreateDirectory "$INSTDIR\lang"
   SetOutPath "$INSTDIR\lang"
   File "src\*.qm"
@@ -212,10 +215,12 @@ Section "Uninstall"
   Delete "$INSTDIR\lang\*.*"
   Delete "$INSTDIR\phonon_backend\*.*"
   Delete "$INSTDIR\platforms\*.*"
+  Delete "$INSTDIR\printsupport\*.*"
 
   RMDir "$INSTDIR\lang"
   RMDir "$INSTDIR\phonon_backend"
   RMDir "$INSTDIR\platforms"
+  RMDir "$INSTDIR\printsupport"
   RMDir "$INSTDIR"
 
   ${unregisterExtension} ".bin" "BIN File"
