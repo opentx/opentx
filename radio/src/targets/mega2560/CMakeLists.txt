@@ -1,5 +1,6 @@
 option(PWRMANAGE "Pwr Manage" OFF)
-option(SDCARD "SD card support" ON)
+option(SDCARD "SD card support" OFF)
+option(ROTENC_DIV2 "Rotary encoder resolution/2" OFF)
 set(ARCH AVR)
 set(MCU atmega2560)
 string(TOLOWER ${PCB} FLAVOUR)
