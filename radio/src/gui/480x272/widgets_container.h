@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include "widget.h"
+#include "zone.h"
 
 class WidgetsContainerInterface
 {
