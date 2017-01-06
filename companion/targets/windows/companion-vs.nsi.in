@@ -98,6 +98,8 @@
 Section "OpenTX Companion" SecDummy
 
   Delete "$INSTDIR\opentx-*-simulator.dll"
+  Delete "$INSTDIR\lang\*.*"
+  RMDir  "$INSTDIR\lang"
   SetOutPath "$INSTDIR\platforms"
   File "@QT_DLL_DIR@\..\plugins\platforms\qwindows.dll"
 
@@ -132,6 +134,9 @@ Section "OpenTX Companion" SecDummy
 
   SetOutPath "$INSTDIR\printsupport"
   File "@QT_DLL_DIR@\..\plugins\printsupport\windowsprintersupport.dll"
+  
+  SetOutPath "$INSTDIR\mediaservice"
+  File "@QT_DLL_DIR@\..\plugins\mediaservice\dsengine.dll"
 
   SetOutPath "$INSTDIR"
   ;Store installation folder
@@ -212,17 +217,19 @@ Section "Uninstall"
   Delete "$INSTDIR\phonon_backend\*.*"
   Delete "$INSTDIR\platforms\*.*"
   Delete "$INSTDIR\printsupport\*.*"
+  Delete "$INSTDIR\mediaservice\*.*"
 
   RMDir "$INSTDIR\lang"
   RMDir "$INSTDIR\phonon_backend"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\printsupport"
+  RMDir "$INSTDIR\mediaservice"
   RMDir "$INSTDIR"
 
   ${unregisterExtension} ".bin" "BIN File"
   ${unregisterExtension} ".hex" "HEX File"
   ${unregisterExtension} ".eepm" "EEPE File"
-  ${unregisterExtension} ".companion" "EEPM File"
+  ${unregisterExtension} ".otx" "OpenTX Archive"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 
