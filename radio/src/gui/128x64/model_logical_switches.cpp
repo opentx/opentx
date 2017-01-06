@@ -183,8 +183,13 @@ void menuModelLogicalSwitchOne(event_t event)
           else
 #endif
           {
-            v2_max = calc100toRESX(getMaximumValue(v1_val)); v2_min = -v2_max;
-            drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, cs->v2, LEFT|attr);
+            v2_max = getMaximumValue(v1_val); v2_min = -v2_max;
+            if (v1_val <= MIXSRC_LAST_CH) {
+              drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr);
+            }
+            else {
+              drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, cs->v2, LEFT|attr);
+            }
           }
         }
 
@@ -288,7 +293,13 @@ void menuModelLogicalSwitches(event_t event)
 #endif
         }
         else {
-          drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, cs->v2, LEFT);
+          if (v1 <= MIXSRC_LAST_CH) {
+            drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, calc100toRESX(cs->v2), LEFT);
+          }
+          else
+          {
+            drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, cs->v2, LEFT);
+          }
         }
       }
 
