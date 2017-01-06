@@ -36,6 +36,12 @@ option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
 option(TEMPLATES "Model templates menu" OFF)
 option(TRACE_SIMPGMSPACE "Turn on traces in simpgmspace.cpp" ON)
 
+# since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
+set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
+set(FIRMWARE_C_FLAGS_DEBUG "-g" CACHE STRING "Additional flags for firmware target (Debug config) c compiler (note: CMAKE_C_FLAGS_DEBUG is ignored for firmware/bootloader).")
+set(FIRMWARE_CXX_FLAGS "" CACHE STRING "Additional flags for firmware target c++ compiler (note: all CMAKE_CXX_FLAGS[_*] are ignored for firmware/bootloader).")
+set(FIRMWARE_CXX_FLAGS_DEBUG "-g" CACHE STRING "Additional flags for firmware target (Debug config) c++ compiler (note: CMAKE_CXX_FLAGS_DEBUG is ignored for firmware/bootloader).")
+
 # Python check
 find_package("PythonInterp")
 if(PYTHONINTERP_FOUND)
@@ -44,9 +50,6 @@ else()
   message(WARNING "Python not found! Most firmware and simu flavors not buildable.")
   set(LUA NO)
 endif()
-
-enable_language(ASM)
-set(OPT s)
 
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
@@ -383,13 +386,17 @@ set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 # similar for -mmacosx-version-min="
 set(CMAKE_C_OSX_DEPLOYMENT_TARGET_FLAG "")
 set(CMAKE_CXX_OSX_DEPLOYMENT_TARGET_FLAG "")
-# reset some CMake default flags which assume optimization levels
+# reset some CMake default flags which assume optimization levels/etc
+set(CMAKE_C_FLAGS "${FIRMWARE_C_FLAGS}")
+set(CMAKE_C_FLAGS_DEBUG "${FIRMWARE_C_FLAGS_DEBUG}")
 set(CMAKE_C_FLAGS_RELEASE "")
 set(CMAKE_C_FLAGS_MINSIZEREL "")
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_DEBUG}")
+set(CMAKE_C_FLAGS_RELWITHDEBINFO "")
+set(CMAKE_CXX_FLAGS "${FIRMWARE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "${FIRMWARE_CXX_FLAGS_DEBUG}")
 set(CMAKE_CXX_FLAGS_RELEASE "")
 set(CMAKE_CXX_FLAGS_MINSIZEREL "")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "")
 # customize linker command
 set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
@@ -398,8 +405,11 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECT
 use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
 if(NOT MSVC)
+  set(OPT s)
+
   if(ARCH STREQUAL ARM)
 
+    enable_language(ASM)
     set(CMAKE_C_COMPILER arm-none-eabi-gcc)
     set(CMAKE_CXX_COMPILER arm-none-eabi-g++)
     set(CMAKE_ASM_COMPILER arm-none-eabi-as)
