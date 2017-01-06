@@ -175,7 +175,7 @@ void pwrOff();
 #endif
 
 // Voice driver (WTV20)
-#if defined(WTV20)
+#if defined(VOICE_WTV20)
 #define WTV20_Data_on             PORTE |=  (1<<OUT_E_VoiceData)
 #define WTV20_Data_off            PORTE &= ~(1<<OUT_E_VoiceData)
 #define WTV20_BUSY                (PINB & (1<<INP_B_VoiceBuzy))
@@ -187,7 +187,7 @@ void pwrOff();
 #endif
 
 // Voice driver (JQ6500)
-#if defined(JQ6500)
+#if defined(VOICE_JQ6500)
 #define JQ6500_Serial_on          PORTE |=  (1<<OUT_E_VoiceData)
 #define JQ6500_Serial_off         PORTE &= ~(1<<OUT_E_VoiceData)
 #define JQ6500_BUSY               (PINB & (1<<INP_B_VoiceBuzy))
