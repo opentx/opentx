@@ -22,7 +22,6 @@
 #define _TOPBAR_H_
 
 #include "widgets_container.h"
-#include "zone.h"
 
 #define MAX_TOPBAR_ZONES               4
 #define MAX_TOPBAR_OPTIONS             1 // just because of VC++ which doesn't like 0-size arrays :(

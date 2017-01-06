@@ -7,10 +7,18 @@
 
 #define LEN_ZONE_OPTION_STRING         8
 
-#define OPTION_VALUE_UNSIGNED(x)    setZoneOptionValue((uint32_t)x)
-#define OPTION_VALUE_SIGNED(x)      setZoneOptionValue((int32_t)x)
-#define OPTION_VALUE_BOOL(x)        setZoneOptionValue((bool)x)
-#define OPTION_VALUE_STRING(x)      setZoneOptionValue(x)
+#if defined(_MSC_VER)
+  #define CHARS_TO_CONST(...)         #__VA_ARGS__
+  #define OPTION_VALUE_UNSIGNED(x)    uint32_t(x)
+  #define OPTION_VALUE_SIGNED(x)      uint32_t(x)
+  #define OPTION_VALUE_BOOL(x)        bool(x)
+  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)CHARS_TO_CONST(__VA_ARGS__)
+#else
+  #define OPTION_VALUE_UNSIGNED(x)    { .unsignedValue = (x) }
+  #define OPTION_VALUE_SIGNED(x)      { .signedValue = (x) }
+  #define OPTION_VALUE_BOOL(x)        { .boolValue = (x) }
+  #define OPTION_VALUE_STRING(...)    { .stringValue = {__VA_ARGS__} }
+#endif
 
 struct Zone
 {
@@ -45,10 +53,5 @@ struct ZoneOption
   ZoneOptionValue min;
   ZoneOptionValue max;
 };
-
-ZoneOptionValue setZoneOptionValue(uint32_t v);
-ZoneOptionValue setZoneOptionValue(int32_t v);
-ZoneOptionValue setZoneOptionValue(bool v);
-ZoneOptionValue setZoneOptionValue(const char * v);
 
 #endif
