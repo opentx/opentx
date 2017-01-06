@@ -296,8 +296,7 @@ void menuModelLogicalSwitches(event_t event)
           if (v1 <= MIXSRC_LAST_CH) {
             drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, calc100toRESX(cs->v2), LEFT);
           }
-          else
-          {
+          else {
             drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, cs->v2, LEFT);
           }
         }
