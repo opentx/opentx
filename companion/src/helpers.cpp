@@ -864,7 +864,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
 
     dialog->exec();
-    delete dialog;
+    dialog->deleteLater();
     delete simuData;
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
     FreeConsole();
@@ -941,10 +941,9 @@ QString index2version(int index)
   }
 }
 
-int qunlink(const QString & fileName)
+bool qunlink(const QString & fileName)
 {
-  QByteArray ba = fileName.toLatin1();
-  return unlink(ba.constData());
+  return QFile::remove(fileName);
 }
 
 QString generateProcessUniqueTempFileName(const QString & fileName)

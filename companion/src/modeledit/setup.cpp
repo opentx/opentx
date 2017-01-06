@@ -950,7 +950,7 @@ void SetupPanel::startupSwitchEdited(int value)
       }
       else {
         shift = index+1;
-        mask = 0x01ul << shift;
+        mask = 0x01ull << shift;
       }
     }
 

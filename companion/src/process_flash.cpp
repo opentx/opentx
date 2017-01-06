@@ -93,13 +93,12 @@ void FlashProcess::onStarted()
   progress->addSeparator();
 }
 
-# if !__GNUC__
+#if !__GNUC__
 bool killProcessByName(const char *szProcessToKill)
 {
   HANDLE hProcessSnap;
   HANDLE hProcess;
   PROCESSENTRY32 pe32;
-  DWORD dwPriorityClass;
 
   hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  // Takes a snapshot of all the processes
 
@@ -129,7 +128,7 @@ bool killProcessByName(const char *szProcessToKill)
 
 void FlashProcess::onKillTimerElapsed()
 {
-# if !__GNUC__
+#if !__GNUC__
   // trick to accelerate SAM-BA startup
   killProcessByName("tasklist.exe");
 #endif
