@@ -174,7 +174,7 @@ void menuModelLogicalSwitchOne(event_t event)
             }
           }
           else
-#endif //TELEMETRY_FRSKY
+#endif // TELEMETRY_FRSKY
           {
             v2_max = getMaximumValue(v1_val); v2_min = -v2_max;
             if (v1_val <= MIXSRC_LAST_CH) {
@@ -297,7 +297,7 @@ void menuModelLogicalSwitches(event_t event)
   }
 }
 
-#else //CPUARM
+#else // CPUARM
 
 void menuModelLogicalSwitches(event_t event)
 {
@@ -385,12 +385,12 @@ void menuModelLogicalSwitches(event_t event)
           v2_min = -1024; v2_max = +1024;
         }
         else
-#endif //GVARS
+#endif // GVARS
         {
           v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
         }
       }
-#else //TELEMETRY_FRSKY
+#else // TELEMETRY_FRSKY
       if (v1_val >= MIXSRC_FIRST_TELEM) {
         drawTelemetryValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_min = -128; v2_max = 127;
@@ -399,7 +399,7 @@ void menuModelLogicalSwitches(event_t event)
         lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
         v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
       }
-#endif //TELEMETRY_FRSKY
+#endif // TELEMETRY_FRSKY
     }
 
     // CSW AND switch
@@ -432,4 +432,4 @@ void menuModelLogicalSwitches(event_t event)
     }
   }
 }
-#endif //CPUARM
+#endif // CPUARM
