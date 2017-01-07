@@ -46,7 +46,7 @@ const char * Er9xInterface::getName()
   return "Er9x";
 }
 
-const int Er9xInterface::getEEpromSize()
+int Er9xInterface::getEEpromSize()
 {
   QString avrMCU = g.mcu();
   if (avrMCU==QString("m128")) {

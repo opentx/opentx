@@ -33,7 +33,7 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual ~OpenTxEepromInterface();
 
-    virtual const int getEEpromSize();
+    virtual int getEEpromSize();
 
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
     
@@ -49,8 +49,6 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual int getSize(const GeneralSettings &);
     
-    virtual int loadFile(RadioData & radioData, const QString & filename);
-    
     virtual int saveFile(const RadioData & radioData, const QString & filename);
 
   protected:
@@ -64,6 +62,7 @@ class OpenTxEepromInterface : public EEPROMInterface
     template <class T, class M>
     bool loadFromByteArray(T & dest, const QByteArray & data, uint8_t version, uint32_t variant=0);
     
+  public:
     template <class T, class M>
     bool loadFromByteArray(T & dest, const QByteArray & data);
     
@@ -81,6 +80,8 @@ class OpenTxEepromInterface : public EEPROMInterface
     bool saveRadioSettings(GeneralSettings & settings, BoardEnum board, uint8_t version, uint32_t variant);
     
     uint8_t getLastDataVersion(BoardEnum board);
+    
+    uint32_t getFourCC();
     
     RleFile * efile;
 
@@ -150,5 +151,7 @@ class OpenTxFirmware: public Firmware
 
 void registerOpenTxFirmwares();
 void unregisterOpenTxFirmwares();
+
+bool loadFile(RadioData & radioData, const QString & filename);
 
 #endif // _OPENTXINTERFACE_H_

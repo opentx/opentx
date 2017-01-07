@@ -240,9 +240,11 @@ void TreeModel::refresh()
   
   removeRows(0, rowCount());
   
-  for (unsigned int i=0; i<radioData->categories.size(); i++) {
-    TreeItem * current = rootItem->appendChild(-1);
-    current->setData(0, QString(radioData->categories[i].name));
+  if (IS_HORUS(board)) {
+    for (unsigned int i = 0; i < radioData->categories.size(); i++) {
+      TreeItem * current = rootItem->appendChild(-1);
+      current->setData(0, QString(radioData->categories[i].name));
+    }
   }
     
   for (unsigned int i=0; i<(unsigned)GetCurrentFirmware()->getCapability(Models) && i<radioData->models.size(); i++) {

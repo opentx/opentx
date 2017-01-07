@@ -1487,9 +1487,9 @@ class EEPROMInterface
 
     virtual int getSize(const GeneralSettings &) = 0;
 
-    virtual const int getEEpromSize() = 0;
+    virtual int getEEpromSize() = 0;
     
-    virtual int loadFile(RadioData & radioData, const QString & filename) = 0;
+//    virtual bool loadFile(RadioData & radioData, const QString & filename) = 0;
 
     virtual int saveFile(const RadioData & radioData, const QString & filename) = 0;
 
