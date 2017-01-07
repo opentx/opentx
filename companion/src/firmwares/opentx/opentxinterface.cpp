@@ -89,7 +89,7 @@ const char * OpenTxEepromInterface::getName()
   }
 }
 
-const int OpenTxEepromInterface::getEEpromSize()
+int OpenTxEepromInterface::getEEpromSize()
 {
   switch (board) {
     case BOARD_STOCK:
@@ -112,6 +112,27 @@ const int OpenTxEepromInterface::getEEpromSize()
       return EESIZE_TARANIS;
     default:
       return 0; // unlimited
+  }
+}
+
+uint32_t OpenTxEepromInterface::getFourCC()
+{
+  switch (board) {
+    case BOARD_HORUS:
+      return 0x3478746F;
+    case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
+    case BOARD_TARANIS_X9E:
+      return 0x3378746F;
+    case BOARD_SKY9X:
+    case BOARD_AR9X:
+      return 0x3278746F;
+    case BOARD_MEGA2560:
+    case BOARD_GRUVIN9X:
+      return 0x3178746F;
+    default:
+      return 0;
   }
 }
 
@@ -155,7 +176,7 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
   // manager.Dump();
   manager.Export(raw);
   data.resize(8);
-  *((uint32_t*)&data.data()[0]) = 0x3178396F;
+  *((uint32_t*)&data.data()[0]) = getFourCC();
   data[4] = version;
   data[5] = 'M';
   *((uint16_t*)&data.data()[6]) = raw.size();
@@ -175,6 +196,12 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data,
 template <class T, class M>
 bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 {
+  uint32_t fourcc = *((uint32_t*)&data.data()[0]);
+  if (getFourCC() != fourcc) {
+    qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, getFourCC());
+    return false;
+  }
+  
   uint8_t version = data[4];
   QByteArray raw = data.right(data.size() - 8);
   return loadFromByteArray<T, M>(dest, raw, version);
@@ -210,7 +237,40 @@ unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument 
   return errors.to_ulong();
 }
 
-int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filename)
+QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
+void registerOpenTxEEpromInterface(BoardEnum board)
+{
+  OpenTxEepromInterface * interface = new OpenTxEepromInterface(board);
+  opentxEEpromInterfaces.push_back(interface);
+  eepromInterfaces.push_back(interface);
+}
+
+void registerOpenTxEEpromInterfaces()
+{
+  registerOpenTxEEpromInterface(BOARD_STOCK);
+  registerOpenTxEEpromInterface(BOARD_M128);
+  registerOpenTxEEpromInterface(BOARD_GRUVIN9X);
+  registerOpenTxEEpromInterface(BOARD_SKY9X);
+  registerOpenTxEEpromInterface(BOARD_9XRPRO);
+  registerOpenTxEEpromInterface(BOARD_TARANIS_X9D);
+  registerOpenTxEEpromInterface(BOARD_TARANIS_X9DP);
+  registerOpenTxEEpromInterface(BOARD_TARANIS_X9E);
+  registerOpenTxEEpromInterface(BOARD_HORUS);
+}
+
+template <class T, class M>
+bool loadFromByteArray(T & dest, const QByteArray & data)
+{
+  foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
+    if (eepromInterface->loadFromByteArray<T, M>(dest, data)) {
+      return true;
+    }
+  }
+  
+  return false;
+};
+
+bool loadFile(RadioData & radioData, const QString & filename)
 {
   StorageSdcard storage;
 
@@ -218,7 +278,8 @@ int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filen
 
   // Radio settings
   qDebug() << "Radio settings:" << storage.radio.size();
-  loadFromByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio);
+  if (!loadFromByteArray<GeneralSettings, OpenTxGeneralData>(radioData.generalSettings, storage.radio))
+    return false;
 
   // Models
   int modelIndex = 0;
@@ -238,7 +299,8 @@ int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filen
         qDebug() << "Loading" << line;
         foreach (const ModelFile &model, storage.models) {
           if (line == model.filename) {
-            loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[modelIndex], model.data);
+            if (!loadFromByteArray<ModelData, OpenTxModelData>(radioData.models[modelIndex], model.data))
+              return false;
             strncpy(radioData.models[modelIndex].filename, line.data(), sizeof(radioData.models[modelIndex].filename));
             radioData.models[modelIndex].category = categoryIndex;
             radioData.models[modelIndex].used = true;
@@ -249,7 +311,7 @@ int OpenTxEepromInterface::loadFile(RadioData & radioData, const QString & filen
     }
   }
 
-  return 0;
+  return true;
 }
 
 int OpenTxEepromInterface::saveFile(const RadioData & radioData, const QString & filename)

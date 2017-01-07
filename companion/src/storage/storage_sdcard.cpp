@@ -297,4 +297,3 @@ QList<QString> StorageSdcard::getModelsFileNames() const
   }
   return result;
 }
-

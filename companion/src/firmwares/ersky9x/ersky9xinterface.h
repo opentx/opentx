@@ -37,7 +37,7 @@ class Ersky9xInterface : public EEPROMInterface
 
     virtual const char * getName();
     
-    virtual const int  getEEpromSize();
+    virtual int getEEpromSize();
     
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
 

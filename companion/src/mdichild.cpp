@@ -515,8 +515,10 @@ bool MdiChild::loadFile(const QString & fileName, bool resetCurrentFile)
     free(eeprom);
     return true;
   }
-  else if (fileType == FILE_TYPE_OTX) { //read zip archive
-    if (!GetEepromInterface()->loadFile(radioData, fileName)) {
+  else if (fileType == FILE_TYPE_OTX) {
+    // read zip archive
+    bool loadFile(RadioData & radioData, const QString & filename);
+    if (loadFile(radioData, fileName)) {
       refresh(true);
       if (resetCurrentFile)
         setCurrentFile(fileName);

@@ -48,7 +48,7 @@ const char * Ersky9xInterface::getName()
   return "Ersky9x";
 }
 
-const int Ersky9xInterface::getEEpromSize()
+int Ersky9xInterface::getEEpromSize()
 {
   return EESIZE_SKY9X;
 }

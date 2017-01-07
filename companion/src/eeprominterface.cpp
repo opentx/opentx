@@ -1632,16 +1632,11 @@ int ModelData::getChannelsMax(bool forceExtendedLimits) const
 }
 
 QList<EEPROMInterface *> eepromInterfaces;
+
+void registerOpenTxEEpromInterfaces();
 void registerEEpromInterfaces()
 {
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_STOCK));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_M128));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_GRUVIN9X));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_SKY9X));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_9XRPRO));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9D));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9DP));
-  eepromInterfaces.push_back(new OpenTxEepromInterface(BOARD_TARANIS_X9E));
+  registerOpenTxEEpromInterfaces();
   // eepromInterfaces.push_back(new Ersky9xInterface());
   // eepromInterfaces.push_back(new Er9xInterface());
 }
