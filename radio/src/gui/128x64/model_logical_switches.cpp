@@ -195,7 +195,7 @@ void menuModelLogicalSwitchOne(event_t event)
       case LS_FIELD_ANDSW:
         lcdDrawTextAlignedLeft(y, STR_AND_SWITCH);
         drawSwitch(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_CHECK(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW, isSwitchAvailableInLogicalSwitches);
+        if (attr) CHECK_INCDEC_MODELSWITCH(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW, isSwitchAvailableInLogicalSwitches);
         break;
 
       case LS_FIELD_DURATION:
