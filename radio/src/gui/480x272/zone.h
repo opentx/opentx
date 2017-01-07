@@ -3,16 +3,14 @@
 #define _ZONE_H_
 
 #include <inttypes.h>
-#include <string.h>
 
 #define LEN_ZONE_OPTION_STRING         8
 
 #if defined(_MSC_VER)
-  #define CHARS_TO_CONST(...)         #__VA_ARGS__
   #define OPTION_VALUE_UNSIGNED(x)    uint32_t(x)
   #define OPTION_VALUE_SIGNED(x)      uint32_t(x)
   #define OPTION_VALUE_BOOL(x)        bool(x)
-  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)CHARS_TO_CONST(__VA_ARGS__)
+  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *) #__VA_ARGS__
 #else
   #define OPTION_VALUE_UNSIGNED(x)    { .unsignedValue = (x) }
   #define OPTION_VALUE_SIGNED(x)      { .signedValue = (x) }
