@@ -52,9 +52,6 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
     lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
   lcdDrawChar(lcdLastPos, y, ']');
 }
-#endif
-
-#if defined(CPUARM)
 
 #define CSWONE_2ND_COLUMN (11*FW)
 
@@ -162,11 +159,7 @@ void menuModelLogicalSwitchOne(event_t event)
         else {
 #if defined(TELEMETRY_FRSKY)
           if (v1_val >= MIXSRC_FIRST_TELEM) {
-#if defined(CPUARM)
             drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, convertLswTelemValue(cs), attr|LEFT);
-#else
-            drawTelemetryValue(CSWONE_2ND_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), attr|LEFT);
-#endif
             v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
             if (cs->func == LS_FUNC_DIFFEGREATER)
               v2_min = -v2_max;
@@ -181,7 +174,7 @@ void menuModelLogicalSwitchOne(event_t event)
             }
           }
           else
-#endif
+#endif //TELEMETRY_FRSKY
           {
             v2_max = getMaximumValue(v1_val); v2_min = -v2_max;
             if (v1_val <= MIXSRC_LAST_CH) {
@@ -286,11 +279,7 @@ void menuModelLogicalSwitches(event_t event)
         uint8_t v1 = cs->v1;
         drawSource(CSW_2ND_COLUMN, y, v1, 0);
         if (v1 >= MIXSRC_FIRST_TELEM) {
-#if defined(CPUARM)
           drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
-#else
-          drawTelemetryValue(CSW_3RD_COLUMN, y, v1 - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT);
-#endif
         }
         else {
           if (v1 <= MIXSRC_LAST_CH) {
@@ -308,7 +297,7 @@ void menuModelLogicalSwitches(event_t event)
   }
 }
 
-#else
+#else //CPUARM
 
 void menuModelLogicalSwitches(event_t event)
 {
@@ -337,13 +326,8 @@ void menuModelLogicalSwitches(event_t event)
 
     // CSW params
     uint8_t cstate = lswFamily(cs->func);
-#if defined(CPUARM)
-    int16_t v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
-    int16_t v3_min=-1, v3_max=100;
-#else
     int8_t v1_min=0, v1_max=MIXSRC_LAST_TELEM, v2_min=0, v2_max=MIXSRC_LAST_TELEM;
     #define v1_val cs->v1
-#endif
 
     if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       drawSwitch(CSW_2ND_COLUMN, y, cs->v1, attr1);
@@ -353,27 +337,7 @@ void menuModelLogicalSwitches(event_t event)
       INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
       INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
     }
-#if defined(CPUARM)
-    else if (cstate == LS_FAMILY_EDGE) {
-      drawSwitch(CSW_2ND_COLUMN, y, cs->v1, attr1);
-      putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, attr2, horz==LS_FIELD_V3 ? attr : 0);
-      v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
-      v2_min=-129; v2_max = 122;
-      v3_max = 222 - cs->v2;
-      if (horz == 1) {
-        INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
-        INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
-      }
-      else {
-        INCDEC_SET_FLAG(EE_MODEL);
-        INCDEC_ENABLE_CHECK(NULL);
-      }
-    }
-#endif
     else if (cstate == LS_FAMILY_COMP) {
-#if defined(CPUARM)
-      v1_val = (uint8_t)cs->v1;
-#endif
       drawSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       drawSource(CSW_3RD_COLUMN, y, cs->v2, attr2);
       INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
@@ -388,9 +352,6 @@ void menuModelLogicalSwitches(event_t event)
       INCDEC_ENABLE_CHECK(NULL);
     }
     else {
-#if defined(CPUARM)
-      v1_val = (uint8_t)cs->v1;
-#endif
       drawSource(CSW_2ND_COLUMN, y, v1_val, attr1);
       if (horz == 1) {
         INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
@@ -400,11 +361,7 @@ void menuModelLogicalSwitches(event_t event)
         INCDEC_SET_FLAG(EE_MODEL);
         INCDEC_ENABLE_CHECK(NULL);
       }
-#if defined(CPUARM)
-      drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr2);
-      v2_min = -30000;
-      v2_max = 30000;
-#elif defined(TELEMETRY_FRSKY)
+#if defined(TELEMETRY_FRSKY)
       if (v1_val >= MIXSRC_FIRST_TELEM) {
         drawTelemetryValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_max = maxTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
@@ -428,12 +385,12 @@ void menuModelLogicalSwitches(event_t event)
           v2_min = -1024; v2_max = +1024;
         }
         else
-#endif
+#endif //GVARS
         {
           v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
         }
       }
-#else
+#else //TELEMETRY_FRSKY
       if (v1_val >= MIXSRC_FIRST_TELEM) {
         drawTelemetryValue(CSW_3RD_COLUMN, y, v1_val - MIXSRC_FIRST_TELEM, convertLswTelemValue(cs), LEFT|attr2);
         v2_min = -128; v2_max = 127;
@@ -442,70 +399,23 @@ void menuModelLogicalSwitches(event_t event)
         lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
         v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
       }
-#endif
+#endif //TELEMETRY_FRSKY
     }
 
     // CSW AND switch
-#if defined(CPUARM)
-    drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, horz==LS_FIELD_ANDSW ? attr : 0);
-#else
     uint8_t andsw = cs->andsw;
     if (andsw > SWSRC_LAST_SWITCH) {
       andsw += SWSRC_SW1-SWSRC_LAST_SWITCH-1;
     }
     drawSwitch(CSW_4TH_COLUMN, y, andsw, horz==LS_FIELD_ANDSW ? attr : 0);
-#endif
-
-#if defined(CPUARM)
-    // CSW duration
-    if (cs->duration > 0)
-      lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
-    else
-      lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
-
-    // CSW delay
-    if (cstate == LS_FAMILY_EDGE) {
-      lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
-      if (attr && horz == LS_FIELD_DELAY) {
-        REPEAT_LAST_CURSOR_MOVE();
-      }
-    }
-    else if (cs->delay > 0) {
-      lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
-    }
-    else {
-      lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);
-    }
-
-    if (attr && horz == LS_FIELD_V3 && cstate != LS_FAMILY_EDGE) {
-      REPEAT_LAST_CURSOR_MOVE();
-    }
-#endif
-
     if ((s_editMode>0 || p1valdiff) && attr) {
       switch (horz) {
         case LS_FIELD_FUNCTION:
         {
-#if defined(CPUARM)
-          cs->func = checkIncDec(event, cs->func, 0, LS_FUNC_MAX, EE_MODEL, isLogicalSwitchFunctionAvailable);
-#else
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, LS_FUNC_MAX);
-#endif
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
-#if defined(CPUARM)
-            if (new_cstate == LS_FAMILY_TIMER) {
-              cs->v1 = cs->v2 = -119;
-            }
-            else if (new_cstate == LS_FAMILY_EDGE) {
-              cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
-            }
-            else {
-              cs->v1 = cs->v2 = 0;
-            }
-#else
             cs->v1 = cs->v2 = (new_cstate==LS_FAMILY_TIMER ? -119/*1.0*/ : 0);
-#endif
           }
           break;
         }
@@ -515,30 +425,11 @@ void menuModelLogicalSwitches(event_t event)
         case LS_FIELD_V2:
           cs->v2 = CHECK_INCDEC_PARAM(event, cs->v2, v2_min, v2_max);
           break;
-#if defined(CPUARM)
-        case LS_FIELD_V3:
-          cs->v3 = CHECK_INCDEC_PARAM(event, cs->v3, v3_min, v3_max);
-          break;
-#endif
         case LS_FIELD_ANDSW:
-#if defined(CPUARM)
-          INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
-          INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
-          cs->andsw = CHECK_INCDEC_PARAM(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW);
-#else
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, MAX_LS_ANDSW);
-#endif
           break;
-#if defined(CPUARM)
-        case LS_FIELD_DURATION:
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
-          break;
-        case LS_FIELD_DELAY:
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);
-          break;
-#endif
       }
     }
   }
 }
-#endif
+#endif //CPUARM
