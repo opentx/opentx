@@ -305,9 +305,9 @@ void logsWrite()
           if (sensor.logs) {
             if (sensor.unit == UNIT_GPS) {
               if (telemetryItem.gps.longitude && telemetryItem.gps.latitude) {
-                div_t qr = div(telemetryItem.gps.latitude, 1000000);
+                div_t qr = div((int)telemetryItem.gps.latitude, 1000000);
                 f_printf(&g_oLogFile, "%d.%06d ", qr.quot, abs(qr.rem));
-                qr = div(telemetryItem.gps.longitude, 1000000);
+                qr = div((int)telemetryItem.gps.longitude, 1000000);
                 f_printf(&g_oLogFile, "%d.%06d,", qr.quot, abs(qr.rem));
               }
               else {
@@ -318,12 +318,12 @@ void logsWrite()
               f_printf(&g_oLogFile, "%4d-%02d-%02d %02d:%02d:%02d,", telemetryItem.datetime.year, telemetryItem.datetime.month, telemetryItem.datetime.day, telemetryItem.datetime.hour, telemetryItem.datetime.min, telemetryItem.datetime.sec);
             }
             else if (sensor.prec == 2) {
-              div_t qr = div(telemetryItem.value, 100);
+              div_t qr = div((int)telemetryItem.value, 100);
               if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
               f_printf(&g_oLogFile, "%d.%02d,", abs(qr.quot), abs(qr.rem));
             }
             else if (sensor.prec == 1) {
-              div_t qr = div(telemetryItem.value, 10);
+              div_t qr = div((int)telemetryItem.value, 10);
               if (telemetryItem.value < 0) f_printf(&g_oLogFile, "-");
               f_printf(&g_oLogFile, "%d.%d,", abs(qr.quot), abs(qr.rem));
             }

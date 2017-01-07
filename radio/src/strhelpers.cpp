@@ -169,7 +169,7 @@ char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
     *s++ = '-';
   }
   
-  qr = div(tme, 60);
+  qr = div((int)tme, 60);
   
   if (hours) {
     div_t qr2 = div(qr.quot, 60);
@@ -254,7 +254,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #endif
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
-    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    div_t swinfo = div(int(idx - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);
     char temp[LEN_ANA_NAME+1];
     getSourceString(temp, MIXSRC_FIRST_POT+swinfo.quot);
     temp[LEN_ANA_NAME]= '\0';
