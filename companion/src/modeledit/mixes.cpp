@@ -78,7 +78,7 @@ void MixesPanel::update()
     QString str = "";
     while (curDest < mix.destCh-1) {
       curDest++;
-      AddMixerLine(-curDest);
+      AddMixerLine(-int(curDest));
     }
     if (AddMixerLine(i)) {
       curDest++;
@@ -87,7 +87,7 @@ void MixesPanel::update()
 
   while (curDest < outputs) {
     curDest++;
-    AddMixerLine(-curDest);
+    AddMixerLine(-int(curDest));
   }
 }
 
