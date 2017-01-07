@@ -52,6 +52,9 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
     lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
   lcdDrawChar(lcdLastPos, y, ']');
 }
+#endif
+
+#if defined(CPUARM)
 
 #define CSWONE_2ND_COLUMN (11*FW)
 
@@ -516,12 +519,6 @@ void menuModelLogicalSwitches(event_t event)
         case LS_FIELD_V3:
           cs->v3 = CHECK_INCDEC_PARAM(event, cs->v3, v3_min, v3_max);
           break;
-        case LS_FIELD_DURATION:
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
-          break;
-        case LS_FIELD_DELAY:
-          CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);
-          break;
 #endif
         case LS_FIELD_ANDSW:
 #if defined(CPUARM)
@@ -532,6 +529,14 @@ void menuModelLogicalSwitches(event_t event)
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->andsw, MAX_LS_ANDSW);
 #endif
           break;
+#if defined(CPUARM)
+        case LS_FIELD_DURATION:
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
+          break;
+        case LS_FIELD_DELAY:
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);
+          break;
+#endif
       }
     }
   }
