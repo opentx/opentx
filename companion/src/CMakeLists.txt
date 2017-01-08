@@ -232,7 +232,7 @@ endif()
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(LANGUAGES he pl pt ru de fr es it sv cs fi nl cn)
+set(LANGUAGES pl de fr es it sv cs fi zh)
 foreach(language ${LANGUAGES})
   list(APPEND companion_TS translations/companion_${language}.ts)
 endforeach(language)
