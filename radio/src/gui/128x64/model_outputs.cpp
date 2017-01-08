@@ -171,7 +171,7 @@ void menuModelLimits(event_t event)
     putsChn(0, y, k+1, IS_LINE_SELECTED(sub, k) ? INVERS : 0);
 
 #if defined(CPUARM)
-    if (sub==k && menuHorizontalPosition < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    if (sub==k && CURSOR_ON_LINE() && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_RESET);
       POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
