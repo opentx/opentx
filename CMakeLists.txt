@@ -39,7 +39,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
 # options shared by all targets
 option(VERBOSE_CMAKELISTS "Show extra information while processing CMakeLists.txt files." OFF)
-option(WARNINGS_AS_ERRORS "Treat all compiler warnings as error." OFF)
+option(WARNINGS_AS_ERRORS "Treat any compiler warning as an error (adds -Werror flag)." OFF)
 if(WIN32)
   set(WIN_EXTRA_LIBS_PATH "C:/Programs" CACHE PATH
     "Base path to extra libs/headers on Windows (SDL, dirent, pthreads, msinttypes folders should be in here).")

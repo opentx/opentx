@@ -370,7 +370,7 @@ else()
 endif()
 
 add_subdirectory(targets/simu)
-if(NOT WIN32)
+if(NOT MSVC)
   add_subdirectory(tests)
 endif()
 
