@@ -20,9 +20,12 @@
 
 #include "opentx.h"
 
-DMAFifo<512> telemetryFifo __DMA (TELEMETRY_DMA_Stream_RX);
+DMAFifo<TELEMETRY_FIFO_SIZE> telemetryDMAFifo __DMA (TELEMETRY_DMA_Stream_RX);
+Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryNoDMAFifo;
+uint8_t telemetryFifoMode;
+uint32_t telemetryErrors = 0;
 
-void telemetryPortInit(uint32_t baudrate, int mode)
+void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 {
   if (baudrate == 0) {
     USART_DeInit(TELEMETRY_USART);
@@ -56,7 +59,7 @@ void telemetryPortInit(uint32_t baudrate, int mode)
   GPIO_ResetBits(TELEMETRY_DIR_GPIO, TELEMETRY_DIR_GPIO_PIN);
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  if (mode == TELEMETRY_SERIAL_8E2) {
+  if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     USART_InitStructure.USART_StopBits = USART_StopBits_2;
     USART_InitStructure.USART_Parity = USART_Parity_Even;
@@ -69,34 +72,44 @@ void telemetryPortInit(uint32_t baudrate, int mode)
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
-
-  DMA_InitTypeDef DMA_InitStructure;
-  telemetryFifo.clear();
   
-  USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, DISABLE);
-  USART_ITConfig(TELEMETRY_USART, USART_IT_TXE, DISABLE);
-  NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
-  NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
+  telemetryFifoMode = mode;
   
-  DMA_InitStructure.DMA_Channel = TELEMETRY_DMA_Channel_RX;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&TELEMETRY_USART->DR);
-  DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(telemetryFifo.buffer());
-  DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
-  DMA_InitStructure.DMA_BufferSize = telemetryFifo.size();
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-  DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_Low;
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(TELEMETRY_DMA_Stream_RX, &DMA_InitStructure);
-  USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Rx, ENABLE);
-  USART_Cmd(TELEMETRY_USART, ENABLE);
-  DMA_Cmd(TELEMETRY_DMA_Stream_RX, ENABLE);
+  if (mode & TELEMETRY_SERIAL_WITHOUT_DMA) {
+    USART_Cmd(TELEMETRY_USART, ENABLE);
+    USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
+    NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
+  }
+  else {
+    DMA_InitTypeDef DMA_InitStructure;
+    telemetryDMAFifo.clear();
+  
+    USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, DISABLE);
+    USART_ITConfig(TELEMETRY_USART, USART_IT_TXE, DISABLE);
+    NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
+    NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
+  
+    DMA_InitStructure.DMA_Channel = TELEMETRY_DMA_Channel_RX;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&TELEMETRY_USART->DR);
+    DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(telemetryDMAFifo.buffer());
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
+    DMA_InitStructure.DMA_BufferSize = telemetryDMAFifo.size();
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_Low;
+    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+    DMA_Init(TELEMETRY_DMA_Stream_RX, &DMA_InitStructure);
+    USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Rx, ENABLE);
+    USART_Cmd(TELEMETRY_USART, ENABLE);
+    DMA_Cmd(TELEMETRY_DMA_Stream_RX, ENABLE);
+  }
 }
 
 void telemetryPortSetDirectionOutput()
@@ -160,7 +173,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_TELEM_USART);
   uint32_t status = TELEMETRY_USART->SR;
-  
+
   if ((status & USART_SR_TC) && (TELEMETRY_USART->CR1 & USART_CR1_TCIE)) {
     TELEMETRY_USART->CR1 &= ~USART_CR1_TCIE;
     telemetryPortSetDirectionInput();
@@ -169,25 +182,33 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
       status = TELEMETRY_USART->SR;
     }
   }
+
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    uint8_t data = TELEMETRY_USART->DR;
+    if (status & USART_FLAG_ERRORS) {
+      telemetryErrors++;
+    }
+    else {
+      telemetryNoDMAFifo.push(data);
+#if defined(LUA)
+      if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
+        static uint8_t prevdata;
+        if (prevdata == 0x7E && outputTelemetryBufferSize > 0 && data == outputTelemetryBufferTrigger) {
+          sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+        }
+        prevdata = data;
+      }
+#endif
+    }
+    status = TELEMETRY_USART->SR;
+  }
 }
 
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
-int telemetryGetByte(uint8_t * byte)
+uint8_t telemetryGetByte(uint8_t * byte)
 {
-  // TODO I am not sure it's possible to have this cable on Horus ...
-#if 0
-  if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    if (serial2Mode == UART_MODE_TELEMETRY)
-      return serial2RxFifo.pop(*byte);
-    else
-      return 0;
-  }
-  else {
-    return telemetryFifo.pop(*byte);
-  }
-#else
-  return telemetryFifo.pop(*byte);
-#endif
-
-
+  if (telemetryFifoMode & TELEMETRY_SERIAL_WITHOUT_DMA)
+    return telemetryNoDMAFifo.pop(*byte);
+  else
+    return telemetryDMAFifo.pop(*byte);
 }

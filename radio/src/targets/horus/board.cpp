@@ -87,15 +87,6 @@ void interrupt1ms()
   DEBUG_TIMER_START(debugTimerRotEnc);
   checkRotaryEncoder();
   DEBUG_TIMER_STOP(debugTimerRotEnc);
-
-#if defined(LUA)
-  if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && outputTelemetryBufferTrigger && outputTelemetryBufferSize > 0) {
-    if (telemetryFifo.last(-2) == 0x7E && telemetryFifo.last(-1) == outputTelemetryBufferTrigger) {
-      outputTelemetryBufferTrigger = 0;
-      sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
-    }
-  }
-#endif
 }
 
 extern "C" void INTERRUPT_1MS_IRQHandler()

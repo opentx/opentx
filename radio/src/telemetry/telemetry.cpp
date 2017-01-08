@@ -104,12 +104,12 @@ void telemetryWakeup()
 
 #if defined(STM32)
   uint8_t data;
-  if (!telemetryFifo.isEmpty()) {
+  if (telemetryGetByte(&data)) {
     LOG_TELEMETRY_WRITE_START();
-  }
-  while (telemetryFifo.pop(data)) {
-    processTelemetryData(data);
-    LOG_TELEMETRY_WRITE_BYTE(data);
+    do {
+      processTelemetryData(data);
+      LOG_TELEMETRY_WRITE_BYTE(data);
+    } while (telemetryGetByte(&data));
   }
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
@@ -416,18 +416,18 @@ void telemetryInit(uint8_t protocol) {
   if (protocol == PROTOCOL_MULTIMODULE || protocol == PROTOCOL_FLYSKY_IBUS) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
-  } else if (protocol == PROTOCOL_SPEKTRUM)
-  {
-    // Spektrum's own small race RX (SPM4648) uses  125000 8N1, use the same since there is no real standard
-    telemetryPortInit(125000, TELEMETRY_SERIAL_8N1);
+  }
+  else if (protocol == PROTOCOL_SPEKTRUM) {
+    // Spektrum's own small race RX (SPM4648) uses 125000 8N1, use the same since there is no real standard
+    telemetryPortInit(125000, TELEMETRY_SERIAL_DEFAULT);
   } else
 #endif
   if (protocol == PROTOCOL_FRSKY_D) {
-    telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_8N1);
+    telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
 #if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
-    telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_8N1);
+    telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 #if defined(LUA)
     outputTelemetryBufferSize = 0;
     outputTelemetryBufferTrigger = 0;
@@ -437,12 +437,12 @@ void telemetryInit(uint8_t protocol) {
 #endif
 #if defined(SERIAL2)
   else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    telemetryPortInit(0, TELEMETRY_SERIAL_8N1);
+    telemetryPortInit(0, TELEMETRY_SERIAL_DEFAULT);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
 #endif
   else {
-    telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
+    telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
     outputTelemetryBufferSize = 0;
     outputTelemetryBufferTrigger = 0x7E;
