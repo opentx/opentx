@@ -22,7 +22,6 @@
 #define _THEME_H_
 
 #include <list>
-#include "zone.h"
 
 class BitmapBuffer;
 

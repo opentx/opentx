@@ -24,7 +24,6 @@
 #include <list>
 #include "widgets_container.h"
 #include "lcd.h"
-#include "zone.h"
 
 #define MAX_LAYOUT_ZONES               10
 #define MAX_LAYOUT_OPTIONS             10
