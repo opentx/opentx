@@ -15,13 +15,11 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get --yes --force-yes install qtbase5-dev qtmultimedia5-dev qttools5-dev qttools5-dev-tools python3-pyqt5 curl gcc-arm-none-eabi libfox-1.6-dev libgtest-dev
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/gcc-avr_1%253a4.8-2.1_amd64.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/libmpfr4_3.1.2-1_amd64.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/avr-libc_1%253a1.8.0-4.1_all.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/binutils-avr_2.23.1-2.1_amd64.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/libmpc3_1.0.1-1ubuntu1_amd64.deb
-  - sudo dpkg --install gcc-avr_1%3a4.8-2.1_amd64.deb avr-libc_1%3a1.8.0-4.1_all.deb libmpfr4_3.1.2-1_amd64.deb binutils-avr_2.23.1-2.1_amd64.deb libmpc3_1.0.1-1ubuntu1_amd64.deb
+  - sudo apt-get --yes --force-yes install qtbase5-dev qtmultimedia5-dev qttools5-dev qttools5-dev-tools python3-pyqt5 curl gcc-arm-none-eabi libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
+  - wget --quiet https://launchpad.net/ubuntu/+source/gcc-avr/1:4.9.2+Atmel3.5.0-1/+build/8403710/+files/gcc-avr_4.9.2+Atmel3.5.0-1_amd64.deb
+  - wget --quiet https://launchpad.net/ubuntu/+source/avr-libc/1:1.8.0+Atmel3.5.0-1/+build/8435473/+files/avr-libc_1.8.0+Atmel3.5.0-1_all.deb
+  - wget --quiet https://launchpad.net/ubuntu/+source/binutils-avr/2.25+Atmel3.5.0-2/+build/8435474/+files/binutils-avr_2.25+Atmel3.5.0-2_amd64.deb
+  - sudo dpkg --install gcc-avr_4.9.2+Atmel3.5.0-1_amd64.deb avr-libc_1.8.0+Atmel3.5.0-1_all.deb binutils-avr_2.25+Atmel3.5.0-2_amd64.deb
 
 script:
   - ./tools/commit-tests.sh
