@@ -219,6 +219,29 @@ void menuModelLogicalSwitchOne(event_t event)
   }
 }
 
+void onLogicalSwitchesMenu(const char *result)
+{
+  int8_t sub = menuVerticalPosition;
+  LogicalSwitchData * cs = lswAddress(sub);
+
+  if (result == STR_EDIT) {
+    pushMenu(menuModelLogicalSwitchOne);
+  }
+
+  if (result == STR_COPY) {
+    clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
+    clipboard.data.csw = *cs;
+  }
+  else if (result == STR_PASTE) {
+    *cs = clipboard.data.csw;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_CLEAR) {
+    memset(cs, 0, sizeof(LogicalSwitchData));
+    storageDirty(EE_MODEL);
+  }
+}
+
 void menuModelLogicalSwitches(event_t event)
 {
   SIMPLE_MENU(STR_MENULOGICALSWITCHES, menuTabModel, MENU_MODEL_LOGICAL_SWITCHES, HEADER_LINE+MAX_LOGICAL_SWITCHES);
@@ -227,19 +250,19 @@ void menuModelLogicalSwitches(event_t event)
   uint8_t k = 0;
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 
-  switch (event) {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    case EVT_ROTARY_BREAK:
-#endif
-#if !defined(PCBX7)
-    case EVT_KEY_FIRST(KEY_RIGHT):
-#endif
-    case EVT_KEY_FIRST(KEY_ENTER):
-      if (sub >= 0) {
-        s_currIdx = sub;
-        pushMenu(menuModelLogicalSwitchOne);
-      }
-      break;
+  if (event==EVT_KEY_FIRST(KEY_ENTER)) {
+    killEvents(event);
+    LogicalSwitchData * cs = lswAddress(sub);
+    if (cs->func)
+      s_currIdx = sub;
+      POPUP_MENU_ADD_ITEM(STR_EDIT);
+    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
+      POPUP_MENU_ADD_ITEM(STR_COPY);
+    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
+      POPUP_MENU_ADD_ITEM(STR_PASTE);
+    if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
+      POPUP_MENU_ADD_ITEM(STR_CLEAR);
+    POPUP_MENU_START(onLogicalSwitchesMenu);
   }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
