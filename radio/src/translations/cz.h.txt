@@ -1107,8 +1107,8 @@
 #define TR_PT                  "č."
 #define TR_PTS                 " b."
 #define TR_SMOOTH              "Hladká"
-#define TR_COPY_STICKS_TO_OFS  "Kopie pák do subtrimu"
-#define TR_COPY_TRIMS_TO_OFS   "Kopíe trimů do subtrimu"
+#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim","Kopie pák do subtrimu")
+#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Kopíe trimů do subtrimu")
 #define TR_INCDEC              "Zvěšit/Zmenšit"
 #define TR_GLOBALVAR           "Glob. proměnná"
 #define TR_MIXSOURCE           "Zdroje mixeru"

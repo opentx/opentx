@@ -1084,8 +1084,8 @@
 #define TR_PT                  "Pt"
 #define TR_PTS                 "Ptn"
 #define TR_SMOOTH              "Zacht"
-#define TR_COPY_STICKS_TO_OFS  "Kopieer Sticks naar Subtrim"
-#define TR_COPY_TRIMS_TO_OFS   "Kopieer Trim naar Subtrim"
+#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Kopieer Sticks naar Subtrim")
+#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Kopieer Trim naar Subtrim")
 #define TR_INCDEC              "Inc/Decrement"
 #define TR_GLOBALVAR           "Globale Var"
 #define TR_MIXSOURCE           "Mixer Bron"
