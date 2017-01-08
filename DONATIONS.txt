@@ -1074,3 +1074,4 @@ Florian Derriennic
 HLL Vogels
 Gordon Evans
 Gaines Smith
+Daniel Vogel
