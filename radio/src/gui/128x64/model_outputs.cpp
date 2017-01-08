@@ -87,6 +87,7 @@ enum MenuModelOutputsItems {
   #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
 
+#if defined(CPUARM)
 void onLimitsMenu(const char *result)
 {
   int ch = menuVerticalPosition;
@@ -107,6 +108,7 @@ void onLimitsMenu(const char *result)
     copyTrimsToOffset(ch);
   }
 }
+#endif
 
 void menuModelLimits(event_t event)
 {
@@ -168,6 +170,7 @@ void menuModelLimits(event_t event)
 
     putsChn(0, y, k+1, IS_LINE_SELECTED(sub, k) ? INVERS : 0);
 
+#if defined(CPUARM)
     if (sub==k && menuHorizontalPosition < 0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_RESET);
@@ -175,6 +178,7 @@ void menuModelLimits(event_t event)
       POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
       POPUP_MENU_START(onLimitsMenu);
     }
+#endif
 
     for (uint8_t j=0; j<ITEM_OUTPUTS_COUNT; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
