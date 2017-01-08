@@ -1089,8 +1089,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Lissage"
-#define TR_COPY_STICKS_TO_OFS  "Manche vers subtrim"
-#define TR_COPY_TRIMS_TO_OFS   "Trim vers subtrim"
+#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Manche vers subtrim")
+#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Trim vers subtrim")
 #define TR_INCDEC              "Inc/décrementer"
 #define TR_GLOBALVAR           "Var. globale"
 #define TR_MIXSOURCE           "Source mixeur"

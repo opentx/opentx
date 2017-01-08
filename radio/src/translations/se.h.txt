@@ -1095,8 +1095,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pkt"
 #define TR_SMOOTH              "Mjuk"
-#define TR_COPY_STICKS_TO_OFS  "Spara spakar som subtrim"
-#define TR_COPY_TRIMS_TO_OFS   "Spara trimmar som subtrim"
+#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Spara spakar som subtrim")
+#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Spara trimmar som subtrim")
 #define TR_INCDEC              "Inkr/Dekrement"
 #define TR_GLOBALVAR           "Globala Var"
 #define TR_MIXSOURCE           "Mixer Källa"

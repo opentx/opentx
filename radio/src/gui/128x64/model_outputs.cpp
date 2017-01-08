@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -87,6 +87,29 @@ enum MenuModelOutputsItems {
   #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
 
+#if defined(CPUARM)
+void onLimitsMenu(const char *result)
+{
+  int ch = menuVerticalPosition;
+
+  if (result == STR_RESET) {
+    LimitData *ld = limitAddress(ch);
+    ld->min = 0;
+    ld->max = 0;
+    ld->offset = 0;
+    ld->ppmCenter = 0;
+    ld->revert = false;
+    ld->curve = 0;
+  }
+  else if (result == STR_COPY_STICKS_TO_OFS) {
+    copySticksToOffset(ch);
+  }
+  else if (result == STR_COPY_TRIMS_TO_OFS) {
+    copyTrimsToOffset(ch);
+  }
+}
+#endif
+
 void menuModelLimits(event_t event)
 {
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -144,8 +167,18 @@ void menuModelLimits(event_t event)
 #endif
 
     limit_min_max_t limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 100);
-  
+
     putsChn(0, y, k+1, IS_LINE_SELECTED(sub, k) ? INVERS : 0);
+
+#if defined(CPUARM)
+    if (sub==k && CURSOR_ON_LINE() && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+      killEvents(event);
+      POPUP_MENU_ADD_ITEM(STR_RESET);
+      POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
+      POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
+      POPUP_MENU_START(onLimitsMenu);
+    }
+#endif
 
     for (uint8_t j=0; j<ITEM_OUTPUTS_COUNT; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
