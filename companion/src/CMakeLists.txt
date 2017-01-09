@@ -470,9 +470,17 @@ IF(APPLE)
   install(DIRECTORY ${PROJECT_SOURCE_DIR}/companion/targets/mac/qt_menu.nib DESTINATION "${companion_res_dir}" COMPONENT Runtime)
 
   # manually add the cocoa plugin
-  get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
-  install(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
-  set(bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/platforms/libqcocoa.dylib")
+  foreach (plugin ${Qt5Multimedia_PLUGINS} ${Qt5PrintSupport_PLUGINS} ${Qt5Gui_PLUGINS})
+    get_target_property(QPA_PLUGIN ${plugin} LOCATION)
+    get_filename_component(QPA_PLUGIN_FILENAME ${QPA_PLUGIN} NAME)
+    # Todo is there a nicer way to get the QT Plugin directory name?!
+    get_filename_component(QPA_PLUGIN_DIRECTORY ${QPA_PLUGIN} DIRECTORY)
+    get_filename_component(QPA_PLUGIN_DIRECTORY ${QPA_PLUGIN_DIRECTORY} NAME)
+
+    install(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/${QPA_PLUGIN_DIRECTORY}/" COMPONENT Runtime)
+
+    list(APPEND bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/${QPA_PLUGIN_DIRECTORY}/${QPA_PLUGIN_FILENAME}")
+  endforeach()
 
   # Add icon
   set(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
