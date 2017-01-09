@@ -519,7 +519,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
         x += 2;
       }
     }
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
+#if defined(BOLD_SPECIFIC_FONT)
     if (flags & BOLD) fw += 1;
 #endif
   }
@@ -591,7 +591,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
     if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) x-=2;
     val = qr.quot;
     x -= fw;
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
+#if defined(BOLD_SPECIFIC_FONT)
     if (i==len && (flags & BOLD)) x += 1;
 #endif
   }
