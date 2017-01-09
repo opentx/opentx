@@ -201,7 +201,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
     qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, getFourCC());
     return false;
   }
-  
+  qDebug() << QString().sprintf("%s: OK", getName());
   uint8_t version = data[4];
   QByteArray raw = data.right(data.size() - 8);
   return loadFromByteArray<T, M>(dest, raw, version);
@@ -668,7 +668,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case SwitchesPositions:
       if (IS_TARANIS_X9E(board))
         return 18 * 3;
-      else if (IS_TARANIS(board))
+      else if (IS_HORUS(board) || IS_TARANIS(board))
         return 8 * 3;
       else
         return 9;

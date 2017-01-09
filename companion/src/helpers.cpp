@@ -373,13 +373,14 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase)
 
 void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
 {
+  BoardEnum board = GetCurrentFirmware()->getBoard();
   RawSwitch item;
 
   b->clear();
 
   if (context != MixesContext && context != GlobalFunctionsContext) {
     // !FMx
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (IS_ARM(board)) {
       for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
         b->addItem(item.toString(), item.toValue());
@@ -420,7 +421,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
+    if ((IS_HORUS(board) || IS_TARANIS(board)) && !generalSettings.switchPositionAllowedTaranis(i)) {
       continue;
     }
     b->addItem(item.toString(), item.toValue());
@@ -442,7 +443,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
+    if ((IS_HORUS(board) || IS_TARANIS(board)) && !generalSettings.switchPositionAllowedTaranis(i)) {
       continue;
     }
     b->addItem(item.toString(), item.toValue());
@@ -492,7 +493,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   // FMx
   if (context != MixesContext && context != GlobalFunctionsContext) {
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (IS_ARM(board)) {
       for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
         b->addItem(item.toString(), item.toValue());
@@ -608,7 +609,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
-      if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchSourceAllowedTaranis(i)) {
+      if ((IS_HORUS(board) || IS_TARANIS(board)) && !generalSettings.switchSourceAllowedTaranis(i)) {
         QModelIndex index = b->model()->index(b->count()-1, 0);
         QVariant v(0);
         b->model()->setData(index, v, Qt::UserRole - 1);
