@@ -86,8 +86,6 @@ Type 0x06 Flysky AFHDS2 telemetry data
 
 void processMultiTelemetryData(uint8_t data);
 
-#define MULTISTATUS_FLAG
-
 struct MultiModuleStatus {
 
   uint8_t major;
