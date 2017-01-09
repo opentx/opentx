@@ -21,8 +21,7 @@
 // JQ6500 mp3 module driver
 // 6 X 10 (bits) X 104µs = 6.24 mS to send a playfile command
 
-#include "../../opentx.h"
-
+#include "opentx.h"
 
 #define QUEUE_LENGTH 16*2  //bytes
 
