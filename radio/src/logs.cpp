@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -115,11 +115,13 @@ tmr10ms_t lastLogTime = 0;
 
 void logsClose()
 {
-  if (f_close(&g_oLogFile) != FR_OK) {
-    // close failed, forget file
-    g_oLogFile.obj.fs = 0;
+  if (sdMounted()) {
+    if (f_close(&g_oLogFile) != FR_OK) {
+      // close failed, forget file
+      g_oLogFile.obj.fs = 0;
+    }
+    lastLogTime = 0;
   }
-  lastLogTime = 0;
 }
 
 #if !defined(CPUARM)
@@ -391,6 +393,3 @@ void logsWrite()
     }
   }
 }
-
-
-
