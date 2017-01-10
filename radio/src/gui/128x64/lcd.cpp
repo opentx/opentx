@@ -1020,6 +1020,11 @@ void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
 
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
+#if defined(CPUARM)
+  char s[8];
+  getCurveString(s, idx);
+  lcdDrawText(x, y, s, att);
+#else //  CPUARM
   if (idx < 0) {
     lcdDrawChar(x-3, y, '!', att);
     idx = -idx+CURVE_BASE-1;
@@ -1028,6 +1033,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, idx, att);
   else
     drawStringWithIndex(x, y, STR_CV, idx-CURVE_BASE+1, att);
+#endif // CPUARM
 }
 
 void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
