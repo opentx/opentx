@@ -163,10 +163,18 @@ enum MenuModelTelemetryFrskyItems {
   #define VARIO_RANGE_ROWS             (NAVIGATION_LINE_BY_LINE | 3)
 #endif
 
+#if defined (CPUARM)
+#if defined (PCBTARANIS)
+  #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
+#else
+  #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
+#endif
+#endif
+
 #if defined(REVX)
-  #define TELEMETRY_TYPE_ROWS          0, 0,
+  #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY, TELEMETRY_TYPE_SHOW_TELEMETRY,
 #elif defined(CPUARM)
-  #define TELEMETRY_TYPE_ROWS          0,
+  #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY,
 #else
   #define TELEMETRY_TYPE_ROWS
 #endif
