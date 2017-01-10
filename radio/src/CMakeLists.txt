@@ -451,11 +451,14 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-    add_custom_target(firmware-size
-      COMMAND arm-none-eabi-size firmware.elf
-      DEPENDS firmware
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      )
+    find_program(BASH bash HINTS "c:/cygwin/bin/" DOC "bash shell for firmware size report (eg. c:/cygwin/bin/bash.exe on Windows).")
+    if (BASH)
+      add_custom_target(firmware-size
+        COMMAND ${BASH} -kc '${RADIO_DIRECTORY}/util/elf-size-report.sh --mcu=${CPU_TYPE_FULL} ${SIZE_TARGET_MEM_DEFINE} firmware.elf'
+        DEPENDS firmware
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+    endif()
 
   else()  # AVR
 

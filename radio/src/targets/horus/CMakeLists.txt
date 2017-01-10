@@ -25,6 +25,9 @@ set(FLAVOUR horus)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
+# for size report script
+set(CPU_TYPE_FULL STM32F429xI)
+set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
 
 if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
