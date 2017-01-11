@@ -5,7 +5,9 @@ set -e
 set -x
 
 # Allow variable core usage, default uses two cores, to set 8 cores for example : commit-tests.sh -j8
+# Default build treats warnings as errors, set -Wno-error to override, e.g.: commit-tests.sh -Wno-error
 CORES=2
+WERROR=1
 for i in "$@"
 do
 case $i in
@@ -15,6 +17,10 @@ case $i in
       ;;
     -j*)
       CORES="${i#*j}"
+      shift
+      ;;
+    -Wno-error)
+      WERROR=0
       shift
       ;;
 esac
@@ -27,7 +33,8 @@ else
 fi
 
 SRCDIR=$(dirname "$SCRIPT")/..
-COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55 -DTRACE_SIMPGMSPACE=NO -DWARNINGS_AS_ERRORS=YES -DVERBOSE_CMAKELISTS=YES -DCMAKE_RULE_MESSAGES=OFF -Wno-dev"
+COMMON_OPTIONS="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=/opt/qt55 -DTRACE_SIMPGMSPACE=NO -DVERBOSE_CMAKELISTS=YES -DCMAKE_RULE_MESSAGES=OFF -Wno-dev"
+if (( $WERROR )); then COMMON_OPTIONS+=" -DWARNINGS_AS_ERRORS=YES"; fi
 FIRMARE_TARGET="firmware-size"
 
 mkdir build || true
