@@ -660,13 +660,13 @@ Mode 4:
         <location filename="../modeledit/channels.cpp" line="146"/>
         <source>---</source>
         <translatorcomment>在舵机设置页面中 表示舵机正向</translatorcomment>
-        <translation>---</translation>
+        <translation>正向  [→]</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="146"/>
         <source>INV</source>
         <translatorcomment>在舵机设置页面中</translatorcomment>
-        <translation>舵机反向</translation>
+        <translation>反向  [←]</translation>
     </message>
 </context>
 <context>
@@ -5569,7 +5569,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../modelprinter.cpp" line="387"/>
         <source>Input%1</source>
         <translatorcomment>!!!!此处似乎应该是[I%1] (用在INPUT列表页面中)</translatorcomment>
-        <translation></translation>
+        <translation>I%1</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="415"/>
@@ -9249,7 +9249,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <location filename="../modeledit/setup.ui" line="485"/>
         <source>On change</source>
         <translatorcomment>????意思是说微调在拨动微调开关时才在LCD显示屏上显示</translatorcomment>
-        <translation>改变时  [On change]</translation>
+        <translation>调整时  [On change]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="490"/>
@@ -10667,7 +10667,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         <location filename="../simulation/telemetrysimu.ui" line="346"/>
         <source>Row # 
 Timestamp</source>
-        <translation>行 # 
+        <translation>行数
 时间戳</translation>
     </message>
     <message>
@@ -10680,7 +10680,7 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="813"/>
         <location filename="../simulation/telemetrysimu.ui" line="886"/>
         <source>V / ratio</source>
-        <translation>V / 比例</translation>
+        <translation>伏 / 比值          </translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="448"/>
@@ -10708,12 +10708,12 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="493"/>
         <location filename="../simulation/telemetrysimu.ui" line="740"/>
         <source>Volts</source>
-        <translation>Volts  电压</translation>
+        <translation>V</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="505"/>
         <source>RSSI</source>
-        <translation></translation>
+        <translation>RSSI  信号强度</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="538"/>
@@ -10728,7 +10728,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="595"/>
         <source>Amps</source>
-        <translation>Amps  电流</translation>
+        <translation>A</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="607"/>
@@ -10738,7 +10738,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="643"/>
         <source>Cels</source>
-        <translation>Cells  锂电总电压</translation>
+        <translation>Cells  锂电电压</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="752"/>
@@ -10775,7 +10775,7 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="1033"/>
         <location filename="../simulation/telemetrysimu.ui" line="1786"/>
         <source>Meters</source>
-        <translation></translation>
+        <translation>m</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1045"/>
@@ -10795,7 +10795,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1177"/>
         <source>Deg. C</source>
-        <translation></translation>
+        <translation>℃</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1192"/>
@@ -10805,7 +10805,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1234"/>
         <source>Degrees</source>
-        <translation>Degrees  度</translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1249"/>
@@ -10831,7 +10831,7 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="1342"/>
         <location filename="../simulation/telemetrysimu.ui" line="1375"/>
         <source>RPM</source>
-        <translation>Rpm  转速</translation>
+        <translation>Rpm</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1390"/>
@@ -10841,7 +10841,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1420"/>
         <source>Lat,Lon (dec.deg.)</source>
-        <translation>Lat,Lon (dec.deg.)  经纬度</translation>
+        <translation>纬度,经度 (用小数表示)</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1432"/>
@@ -10863,7 +10863,7 @@ Timestamp</source>
         <location filename="../simulation/telemetrysimu.ui" line="1618"/>
         <location filename="../simulation/telemetrysimu.ui" line="1729"/>
         <source>G</source>
-        <translation>G  加速度</translation>
+        <translation>G</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1531"/>
