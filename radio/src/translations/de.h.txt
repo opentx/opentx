@@ -80,8 +80,8 @@
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Kein\0 ""Taster""2POS\0 ""3POS\0"
 
-#define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Kein\0          ""Poti mit Raste ""Stufen-Schalter""Poti ohne Raste\0"
+#define LEN_POTTYPES           TR("\013","\017")
+#define TR_POTTYPES            TR("None       ""Pot w. det ""Multipos   ""Pot        ", "Kein\0          ""Poti mit Raste ""Stufen-Schalter""Poti ohne Raste\0")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Keine\0""Slider"

@@ -77,8 +77,8 @@
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Brak\0 ""Chwil.""2POZ\0 ""3POZ\0"
 
-#define LEN_POTTYPES           "\017" /*15 decimal*/
-#define TR_POTTYPES            "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0  "
+#define LEN_POTTYPES           TR("\013","\017") /*15 decimal*/
+#define TR_POTTYPES            TR("None       ""Pot w. det ""Multipos   ""Pot        ", "Brak\0          ""Poten z zapadką""Przeł.Wielopoz.""Potencjometr\0  ")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Brak\0 ""Suwak "

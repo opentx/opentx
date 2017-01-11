@@ -42,14 +42,6 @@
   #define CASE_PCBSKY9X(x)
 #endif
 
-#if defined(PCBX7)
-  #define IS_PCBX7        true
-  #define CASE_PCBX7(x)   x,
-#else
-  #define IS_PCBX7        false
-  #define CASE_PCBX7(x)
-#endif
-
 #if defined(CPUARM)
   #define CASE_CPUARM(x)     x,
   #define IF_CPUARM(x)       x

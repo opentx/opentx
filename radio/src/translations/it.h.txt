@@ -76,8 +76,8 @@
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "None\0 ""Toggle""2POS\0 ""3POS\0"
 
-#define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 "
+#define LEN_POTTYPES           TR("\013","\017")
+#define TR_POTTYPES            TR("None       ""Pot w. det ""Multipos   ""Pot        ", "None\0          ""Pot. con centro""Inter. Multipos""Potenziometro\0 ")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Niente""Slider"

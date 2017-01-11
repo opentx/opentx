@@ -76,8 +76,8 @@
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Rien\0 ""Levier""2-POS\0""3-POS\0"
 
-#define LEN_POTTYPES           "\017"
-#define TR_POTTYPES            "Rien\0          ""Pot avec centre""Inter multi-pos""Potentiomètre\0"
+#define LEN_POTTYPES           TR("\013","\017")
+#define TR_POTTYPES            TR("Rien       ""Pot w. det ""Multipos   ""Pot        ", "Rien\0          ""Pot avec centre""Inter multi-pos""Potentiomètre\0")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Rien\0 ""Slider"

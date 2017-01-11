@@ -20,9 +20,8 @@
 
 #include "opentx.h"
 
-#define GENERAL_HW_PARAM_OFS (2+(15*FW))
-
 #if defined(PCBSKY9X)
+#define HW_SETTINGS_COLUMN (2+(15*FW))
 enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_OPTREX_DISPLAY,
   ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS,
@@ -49,7 +48,7 @@ void menuRadioHardware(event_t event)
 
     switch(k) {
       case ITEM_RADIO_HARDWARE_OPTREX_DISPLAY:
-        g_eeGeneral.optrexDisplay = editChoice(GENERAL_HW_PARAM_OFS, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
+        g_eeGeneral.optrexDisplay = editChoice(HW_SETTINGS_COLUMN, y, STR_LCD, STR_VLCD, g_eeGeneral.optrexDisplay, 0, 1, attr, event);
         break;
 
       case ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS:
@@ -65,7 +64,7 @@ void menuRadioHardware(event_t event)
         lcdDrawText(INDENT_WIDTH+3*FW, y, PSTR("Gain"));
         uint8_t mask = (1<<(k-ITEM_RADIO_HARDWARE_STICK_LV_GAIN));
         uint8_t val = (g_eeGeneral.sticksGain & mask ? 1 : 0);
-        lcdDrawChar(GENERAL_HW_PARAM_OFS, y, val ? '2' : '1', attr);
+        lcdDrawChar(HW_SETTINGS_COLUMN, y, val ? '2' : '1', attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, val, 0, 1);
           if (checkIncDec_Ret) {
@@ -78,13 +77,13 @@ void menuRadioHardware(event_t event)
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_RADIO_HARDWARE_ROTARY_ENCODER:
-        g_eeGeneral.rotarySteps = editChoice(GENERAL_HW_PARAM_OFS, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
+        g_eeGeneral.rotarySteps = editChoice(HW_SETTINGS_COLUMN, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
         break;
 #endif
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = editChoice(GENERAL_HW_PARAM_OFS, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        g_eeGeneral.btBaudrate = editChoice(HW_SETTINGS_COLUMN, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
