@@ -369,8 +369,8 @@ void backlightInit(void);
 #else
 void backlightEnable(uint8_t dutyCycle);
 #endif
-#define BACKLIGHT_ENABLE()    backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : 100-g_eeGeneral.backlightBright)
-#define BACKLIGHT_DISABLE()   backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : g_eeGeneral.blOffBright)
+#define BACKLIGHT_ENABLE()    backlightEnable(unexpectedShutdown ? 100 : 100-g_eeGeneral.backlightBright)
+#define BACKLIGHT_DISABLE()   backlightEnable(unexpectedShutdown ? 100 : g_eeGeneral.blOffBright)
 #define isBacklightEnabled()  true
 
 // USB driver
