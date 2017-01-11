@@ -62,48 +62,31 @@ uint8_t lcdRefresh_ST7920(uint8_t full)
 {
   LCD_LOCK();
   static uint8_t state;
-  uint8_t yst,yend;
+  uint8_t yst;
+  uint8_t yend;
+  uint8_t y_table[6]={0,13,26,39,52,64}; 
   uint8_t x_addr = 0;
   uint8_t y_addr = 0;
   uint16_t line_offset = 0;
   uint8_t col_offset = 0;
   uint8_t bit_count = 0;
   uint8_t result;
-  uint8_t * p;
-  if (full != 0) {
+  uint8_t *p;
+  
+  if(full!=0){
     yst=0;
     yend=64;
     state=0;
   } 
-  else {
-    switch (state) { // Since writing to ST7920 is too slow we need to split it to five bands.
-      default:
-      case 0:
-        yst=0;
-        yend=13;
-        state=1;
-      break;
-      case 1:
-        yst=13;
-        yend=26;
-        state=2;
-      break;
-      case 2:
-        yst=26;
-        yend=39;
-        state=3;
-      break;
-      case 3:
-        yst=39;
-        yend=52;
-        state=4;
-      break;
-      case 4:
-        yst=52;
-        yend=64;
-        state=0;
-      break;
+  else{ //Since writing to ST7920 is too slow we need to split it to five bands
+    yst=y_table[state];
+    yend=y_table[state+1];
+    if (state==4){
+      state=0;
     }
+    else{
+      state++;
+    }    
   }
   
   for (uint8_t y=yst; y<yend; y++) {
