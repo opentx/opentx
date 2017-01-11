@@ -20,6 +20,8 @@ local configFields = {
 
 local settingsFields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
+  {"CH5 mode:", COMBO, 0xA8, nil, { "AIL2", "AUX1" } },
+  {"CH6 mode:", COMBO, 0xA9, nil, { "ELE2", "AUX2" } },
   {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
   {"ELE direction:", COMBO, 0x83, nil, { "Normal", "Invers" }, { 255, 0 } },
   {"RUD direction:", COMBO, 0x84, nil, { "Normal", "Invers" }, { 255, 0 } },
