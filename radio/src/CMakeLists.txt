@@ -458,6 +458,12 @@ if(NOT MSVC)
         DEPENDS firmware
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
+    else()
+      add_custom_target(firmware-size
+        COMMAND arm-none-eabi-size -A firmware.elf
+        DEPENDS firmware
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
     endif()
 
   else()  # AVR
