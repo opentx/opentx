@@ -77,7 +77,7 @@
 #define TR_SWTYPES             "Ingen\0""Flipp\0""2Pos\0 ""3Pos\0"
 
 #define LEN_POTTYPES           TR("\013","\020")
-#define TR_POTTYPES            TR("None       ""Pot w. det ""Multipos   ""Pot        ", "Ingen\0          ""Mittläges-pot\0  ""Flerlägesväljare""Potentiometer\0")
+#define TR_POTTYPES            TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "Ingen\0          ""Mittläges-pot\0  ""Flerlägesväljare""Potentiometer\0")
 
 #define LEN_SLIDERTYPES        "\010"
 #define TR_SLIDERTYPES         "Ingen\0  ""Skjutpot"
