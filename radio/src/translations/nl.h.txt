@@ -80,8 +80,8 @@
 #define TR_SWTYPES             "Geen\0 ""Wissel""2POS\0 ""3POS\0"
 
 
-#define LEN_POTTYPES           "\021"
-#define TR_POTTYPES            "Geen\0            ""Pot met Klik\0    ""Standenschakelaar""Pot zonder Klik\0 "
+#define LEN_POTTYPES           TR("\013","\021")
+#define TR_POTTYPES            TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "Geen\0            ""Pot met Klik\0    ""Standenschakelaar""Pot zonder Klik\0 ")
 
 
 #define LEN_SLIDERTYPES        "\006"

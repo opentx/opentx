@@ -76,8 +76,8 @@
 #define LEN_SWTYPES            "\013"
 #define TR_SWTYPES             "Žádný\0     ""Bez aretace""2-polohový\0""3-polohový\0"
 
-#define LEN_POTTYPES           "\016"
-#define TR_POTTYPES            "Žádný\0        ""Pot s aretací\0""Vícepol. přep.""Potenciometr\0 "
+#define LEN_POTTYPES           TR("\013","\016")
+#define TR_POTTYPES            TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "Žádný\0        ""Pot s aretací\0""Vícepol. přep.""Potenciometr\0 ")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Žádný\0""Slider"
