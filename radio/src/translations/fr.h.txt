@@ -1015,10 +1015,10 @@
 #define TR_PATH_TOO_LONG       "Chemin trop long"
 #define TR_VIEW_TEXT           "Voir texte"
 #define TR_FLASH_BOOTLOADER    "Flasher BootLoader"
-#define TR_FLASH_EXTERNAL_DEVICE "Flasher module externe"
-#define TR_FLASH_INTERNAL_MODULE "Flasher module interne"
+#define TR_FLASH_EXTERNAL_DEVICE TR("Flasher module ext.", "Flasher module externe")
+#define TR_FLASH_INTERNAL_MODULE TR("Flasher module int.", "Flasher module interne")
 #define TR_FIRMWARE_UPDATE_ERROR "Firmware update error"
-#define TR_WRITING             "\032Ecriture..."
+#define TR_WRITING             TR("\14Ecriture...", "\032Ecriture...")
 #define TR_CONFIRM_FORMAT      "Confirmer Formatage?"
 #define TR_INTERNALRF          "HF interne"
 #define TR_EXTERNALRF          "HF externe"
@@ -1028,7 +1028,7 @@
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "CAPTEUR"
 #define TR_SENSOR              "SENSOR"
-#define TR_COUNTRYCODE         TR("Zone géo.","Zone géographique")
+#define TR_COUNTRYCODE         TR("Zone géo.", "Zone géographique")
 #define TR_VOICELANG           TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM         "Unités"
 #define TR_EDIT                "Editer"
