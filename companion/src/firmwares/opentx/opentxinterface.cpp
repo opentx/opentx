@@ -596,12 +596,12 @@ int OpenTxFirmware::getCapability(Capability capability)
     case FlightModesHaveFades:
       return 1;
     case Heli:
-      if (IS_TARANIS(board) || IS_HORUS(board))
+      if (IS_HORUS_OR_TARANIS(board))
         return id.contains("noheli") ? 0 : 1;
       else
         return id.contains("heli") ? 1 : 0;
     case Gvars:
-      if (IS_TARANIS(board) || IS_HORUS(board))
+      if (IS_HORUS_OR_TARANIS(board))
         return id.contains("nogvars") ? 0 : 9;
       else if (id.contains("gvars"))
         return IS_ARM(board) ? 9 : 5;
@@ -610,7 +610,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case ModelName:
       return (IS_HORUS(board) ? 15 : (HAS_LARGE_LCD(board) ? 12 : 10));
     case FlightModesName:
-      return ((IS_TARANIS(board) || IS_HORUS(board)) ? 10 : 6);
+      return (IS_HORUS_OR_TARANIS(board) ? 10 : 6);
     case GvarsName:
       return (IS_9X(board) ? 0 : 6);
     case GvarsInCS:
@@ -661,14 +661,14 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 18;
       else if (board == BOARD_TARANIS_X7)
         return 6;
-      else if (IS_TARANIS(board) || IS_HORUS(board))
+      else if (IS_HORUS_OR_TARANIS(board))
         return 8;
       else
         return 7;
     case SwitchesPositions:
       if (IS_TARANIS_X9E(board))
         return 18 * 3;
-      else if (IS_HORUS(board) || IS_TARANIS(board))
+      else if (IS_HORUS_OR_TARANIS(board))
         return 8 * 3;
       else
         return 9;
@@ -932,7 +932,7 @@ Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
                                {SWITCH_TOGGLE, "SH"}};
     return switches[index];
   }
-  else if (IS_TARANIS(board) || IS_HORUS(board)) {
+  else if (IS_HORUS_OR_TARANIS(board)) {
     const Switch switches[] = {{SWITCH_3POS,   "SA"},
                                {SWITCH_3POS,   "SB"},
                                {SWITCH_3POS,   "SC"},
@@ -967,7 +967,7 @@ Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
 
 QTime OpenTxFirmware::getMaxTimerStart()
 {
-  if (IS_TARANIS(board) || IS_HORUS(board))
+  if (IS_HORUS_OR_TARANIS(board))
     return QTime(23, 59, 59);
   else if (IS_ARM(board))
     return QTime(8, 59, 59);
@@ -988,7 +988,7 @@ bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
 
 int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
 {
-  if (IS_TARANIS(board) || IS_HORUS(board)) {
+  if (IS_HORUS_OR_TARANIS(board)) {
     switch (port) {
       case 0:
         switch (proto) {

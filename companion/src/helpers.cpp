@@ -421,7 +421,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if ((IS_HORUS(board) || IS_TARANIS(board)) && !generalSettings.switchPositionAllowedTaranis(i)) {
+    if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchPositionAllowedTaranis(i)) {
       continue;
     }
     b->addItem(item.toString(), item.toValue());
@@ -443,7 +443,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if ((IS_HORUS(board) || IS_TARANIS(board)) && !generalSettings.switchPositionAllowedTaranis(i)) {
+    if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchPositionAllowedTaranis(i)) {
       continue;
     }
     b->addItem(item.toString(), item.toValue());
@@ -609,7 +609,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
-      if ((IS_HORUS(board) || IS_TARANIS(board)) && !generalSettings.switchSourceAllowedTaranis(i)) {
+      if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchSourceAllowedTaranis(i)) {
         QModelIndex index = b->model()->index(b->count()-1, 0);
         QVariant v(0);
         b->model()->setData(index, v, Qt::UserRole - 1);

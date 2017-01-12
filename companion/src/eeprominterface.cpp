@@ -631,7 +631,7 @@ QString RawSwitch::toString() const
     BoardEnum board = GetEepromInterface()->getBoard();
     switch(type) {
       case SWITCH_TYPE_SWITCH:
-        if (IS_HORUS(board) || IS_TARANIS(board)) {
+        if (IS_HORUS_OR_TARANIS(board)) {
           div_t qr = div(index-1, 3);
           Firmware::Switch sw = GetCurrentFirmware()->getSwitch(qr.quot);
           const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
@@ -1417,7 +1417,7 @@ void ModelData::clear()
   moduleData[1].ppm.delay = 300;
   moduleData[2].ppm.delay = 300;
   int board = GetEepromInterface()->getBoard();
-  if (IS_TARANIS(board) || IS_HORUS(board)) {
+  if (IS_HORUS_OR_TARANIS(board)) {
     moduleData[0].protocol = PULSES_PXX_XJT_X16;
     moduleData[1].protocol = PULSES_OFF;
   }
