@@ -154,4 +154,6 @@ void unregisterOpenTxFirmwares();
 
 bool loadFile(RadioData & radioData, const QString & filename);
 
+void registerOpenTxEEpromInterfaces();
+
 #endif // _OPENTXINTERFACE_H_
