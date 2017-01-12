@@ -252,6 +252,7 @@ void registerOpenTxEEpromInterfaces()
   registerOpenTxEEpromInterface(BOARD_GRUVIN9X);
   registerOpenTxEEpromInterface(BOARD_SKY9X);
   registerOpenTxEEpromInterface(BOARD_9XRPRO);
+  registerOpenTxEEpromInterface(BOARD_TARANIS_X7);
   registerOpenTxEEpromInterface(BOARD_TARANIS_X9D);
   registerOpenTxEEpromInterface(BOARD_TARANIS_X9DP);
   registerOpenTxEEpromInterface(BOARD_TARANIS_X9E);
@@ -266,7 +267,7 @@ bool loadFromByteArray(T & dest, const QByteArray & data)
       return true;
     }
   }
-  
+
   return false;
 };
 
