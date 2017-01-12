@@ -675,7 +675,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   // Startup switches warnings
   for (int i=0; i<firmware->getCapability(Switches); i++) {
     Firmware::Switch sw = firmware->getSwitch(i);
-    if (IS_TARANIS(board) || IS_HORUS(board)) {
+    if (IS_HORUS_OR_TARANIS(board)) {
       sw.type = Firmware::SwitchType(generalSettings.switchConfig[i]);
     }
     if (sw.type == Firmware::SWITCH_NONE || sw.type == Firmware::SWITCH_TOGGLE) {
