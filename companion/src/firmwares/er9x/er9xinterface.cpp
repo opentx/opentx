@@ -31,8 +31,8 @@
 #define FILE_MODEL(n) (1+n)
 
 Er9xInterface::Er9xInterface():
-EEPROMInterface(BOARD_STOCK),
-efile(new RleFile())
+  EEPROMInterface(BOARD_STOCK),
+  efile(new RleFile())
 {
 }
 
@@ -103,7 +103,7 @@ unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     radioData.generalSettings=er9xGeneral;
     std::cout << "version " << (unsigned int)er9xGeneral.myVers << " ";
   }
-  for (int i=0; i<16; i++) {
+  for (int i=0; i<getCapability(Models); i++) {
     Er9xModelData er9xModel;
     memset(&er9xModel,0,sizeof(er9xModel));
     if(loadModelDataXML(&doc, &er9xModel, i)) {
@@ -171,7 +171,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
   }
   radioData.generalSettings = er9xGeneral;
   
-  for (int i=0; i<16; i++) {
+  for (int i=0; i<getCapability(Models); i++) {
     Er9xModelData er9xModel;
     efile->openRd(FILE_MODEL(i));
     if (!efile->readRlc1((uint8_t*)&er9xModel, sizeof(Er9xModelData))) {
@@ -220,11 +220,11 @@ int Er9xInterface::isAvailable(PulsesProtocol prot, int port)
 
 void Er9xInterface::appendTextElement(QDomDocument * qdoc, QDomElement * pe, QString name, QString value)
 {
-    QDomElement e = qdoc->createElement(name);
-    QDomText t = qdoc->createTextNode(name);
-    t.setNodeValue(value);
-    e.appendChild(t);
-    pe->appendChild(e);
+  QDomElement e = qdoc->createElement(name);
+  QDomText t = qdoc->createTextNode(name);
+  t.setNodeValue(value);
+  e.appendChild(t);
+  pe->appendChild(e);
 }
 
 void Er9xInterface::appendNumberElement(QDomDocument * qdoc, QDomElement * pe,QString name, int value, bool forceZeroWrite)
@@ -268,13 +268,13 @@ QDomElement Er9xInterface::getModelDataXML(QDomDocument * qdoc, Er9xModelData * 
 
 bool Er9xInterface::loadRadioSettingsDataXML(QDomDocument * qdoc, Er9xGeneral * tgen)
 {
-  //look for "GENERAL_DATA" tag
+  // look for "GENERAL_DATA" tag
   QDomElement gde = qdoc->elementsByTagName("GENERAL_DATA").at(0).toElement();
 
   if(gde.isNull()) // couldn't find
     return false;
 
-  //load cdata into tgen
+  // load cdata into tgen
   QDomNode n = gde.elementsByTagName("Data").at(0).firstChild();// get all children in Data
   while (!n.isNull()) {
     if (n.isCDATASection()) {
@@ -286,17 +286,17 @@ bool Er9xInterface::loadRadioSettingsDataXML(QDomDocument * qdoc, Er9xGeneral * 
     }
     n = n.nextSibling();
   }
-  //check version?
+  // check version?
   return true;
 }
 
 bool Er9xInterface::loadModelDataXML(QDomDocument * qdoc, Er9xModelData * tmod, int modelNum)
 {
-  //look for MODEL_DATA with modelNum attribute.
-  //if modelNum = -1 then just pick the first one
+  // look for MODEL_DATA with modelNum attribute.
+  // if modelNum = -1 then just pick the first one
   QDomNodeList ndl = qdoc->elementsByTagName("MODEL_DATA");
 
-  //cycle through nodes to find correct model number
+  // cycle through nodes to find correct model number
   QDomNode k = ndl.at(0);
   if(modelNum>=0) {
     while(!k.isNull()) {
@@ -307,11 +307,11 @@ bool Er9xInterface::loadModelDataXML(QDomDocument * qdoc, Er9xModelData * tmod, 
     }
   }
 
-  if(k.isNull()) // couldn't find
+  if (k.isNull()) // couldn't find
     return false;
 
 
-  //load cdata into tgen
+  // load cdata into tgen
   QDomNode n = k.toElement().elementsByTagName("Data").at(0).firstChild();// get all children in Data
   while (!n.isNull()) {
     if (n.isCDATASection()) {
@@ -323,6 +323,16 @@ bool Er9xInterface::loadModelDataXML(QDomDocument * qdoc, Er9xModelData * tmod, 
     }
     n = n.nextSibling();
   }
-  //check version?
+  // check version?
   return true;
+}
+
+int Er9xInterface::getCapability(Capability capability)
+{
+  switch (capability) {
+    case Models:
+      return 16;
+    default:
+      return 0;
+  }
 }
