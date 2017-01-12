@@ -1633,7 +1633,6 @@ int ModelData::getChannelsMax(bool forceExtendedLimits) const
 
 QList<EEPROMInterface *> eepromInterfaces;
 
-void registerOpenTxEEpromInterfaces();
 void registerEEpromInterfaces()
 {
   registerOpenTxEEpromInterfaces();
