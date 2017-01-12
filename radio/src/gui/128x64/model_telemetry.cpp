@@ -163,10 +163,18 @@ enum MenuModelTelemetryFrskyItems {
   #define VARIO_RANGE_ROWS             (NAVIGATION_LINE_BY_LINE | 3)
 #endif
 
+
+#if defined (PCBTARANIS)
+  #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
+#elif defined (CPUARM)
+  #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
+#endif
+
+
 #if defined(REVX)
-  #define TELEMETRY_TYPE_ROWS          0, 0,
+  #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY, TELEMETRY_TYPE_SHOW_TELEMETRY,
 #elif defined(CPUARM)
-  #define TELEMETRY_TYPE_ROWS          0,
+  #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY,
 #else
   #define TELEMETRY_TYPE_ROWS
 #endif
@@ -550,7 +558,7 @@ void menuModelTelemetryFrsky(event_t event)
           g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
         }
         break;
-        
+
 #if defined(REVX)
       case ITEM_TELEMETRY_INVERTED_SERIAL:
         ON_OFF_MENU_ITEM(g_model.moduleData[EXTERNAL_MODULE].invertedSerial, TELEM_COL2, y, STR_INVERTED_SERIAL, attr, event);
