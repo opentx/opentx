@@ -58,12 +58,10 @@ OpenTxSimulator::OpenTxSimulator()
 {
 }
 
-void OpenTxSimulator::setSdPath(const QString &sdPath)
+void OpenTxSimulator::setSdPath(const QString & sdPath, const QString & settingsPath)
 {
-#if defined(SDCARD)
-  strncpy(simuSdDirectory, sdPath.toLatin1().constData(), sizeof(simuSdDirectory)-1);
-  simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';
-#endif
+  simuSdDirectory = sdPath;
+  simuSettingsDirectory = settingsPath;
 }
 
 void OpenTxSimulator::setVolumeGain(int value)
@@ -106,7 +104,7 @@ void OpenTxSimulator::start(const char * filename, bool tests)
 
   StartEepromThread(filename);
   StartAudioThread(volumeGain);
-  StartSimu(tests);
+  StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
 }
 
 void OpenTxSimulator::stop()

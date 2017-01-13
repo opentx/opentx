@@ -64,7 +64,7 @@ class SimulatorInterface
 
     virtual ~SimulatorInterface() {};
 
-    virtual void setSdPath(const QString &sdPath) { };
+    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") { };
 
     virtual void setVolumeGain(int value) { };
 

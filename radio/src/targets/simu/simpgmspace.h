@@ -372,7 +372,7 @@ void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
 
-void StartSimu(bool tests=true);
+void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
 void StopSimu();
 
 void StartEepromThread(const char *filename="eeprom.bin");
@@ -466,10 +466,6 @@ inline void NVIC_Init(NVIC_InitTypeDef *) { }
 
 inline void delay_01us(int dummy) { }
 #define configure_pins(...)
-
-#if defined(SDCARD)
-extern char simuSdDirectory[1024];
-#endif
 
 #define sdMountPoll()
 #define sdPoll10ms()

@@ -29,12 +29,14 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
   private:
     int volumeGain;
+    QString simuSdDirectory;
+    QString simuSettingsDirectory;
 
   public:
 
     OpenTxSimulator();
 
-    virtual void setSdPath(const QString &sdPath);
+    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "");
 
     virtual void setVolumeGain(int value);
 
