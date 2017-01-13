@@ -57,6 +57,7 @@
 #define IS_9XRPRO(board)       (board==BOARD_9XRPRO)
 #define IS_TARANIS_PLUS(board) (board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)  (board==BOARD_TARANIS_X9E)
+#define IS_TARANIS_X7(board)   (board==BOARD_TARANIS_X7)
 #define IS_TARANIS(board)      (board==BOARD_TARANIS_X9D  || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E || board==BOARD_TARANIS_X7)
 #define IS_HORUS(board)        (board==BOARD_HORUS)
 #define IS_HORUS_OR_TARANIS(board) (IS_HORUS(board) || IS_TARANIS(board))
@@ -1323,11 +1324,11 @@ class CategoryData {
 class RadioData {
   public:
     RadioData();
-    
+
     GeneralSettings generalSettings;
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
-    
+
     void setCurrentModel(unsigned int index)
     {
       generalSettings.currModelIndex = index;
@@ -1489,7 +1490,7 @@ class EEPROMInterface
     virtual int getSize(const GeneralSettings &) = 0;
 
     virtual int getEEpromSize() = 0;
-    
+
 //    virtual bool loadFile(RadioData & radioData, const QString & filename) = 0;
 
     virtual int saveFile(const RadioData & radioData, const QString & filename) = 0;
