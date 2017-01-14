@@ -110,6 +110,9 @@ std::string convertFromSimuPath(const char *path)
   std::string result;
   if (startsWith(path, simuSdDirectory.c_str())) {
     result = std::string(path).substr(simuSdDirectory.length(), std::string::npos);
+    if (result.empty()) {
+      result = "/";
+    }
   }
   else {
     result = std::string(path);
