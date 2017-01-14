@@ -246,7 +246,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
@@ -268,7 +268,7 @@ class SourcesConversionTable: public ConversionTable {
       }
 
       if (afterrelease21March2013) {
-        for (int i=0; i<CPN_MAX_STICKS; i++)
+        for (int i=0; i<MAX_TRIMS(board); i++)
           addConversion(RawSource(SOURCE_TYPE_TRIM, i), val++);
       }
 
