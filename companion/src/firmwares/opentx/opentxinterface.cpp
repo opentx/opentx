@@ -733,15 +733,15 @@ int OpenTxFirmware::getCapability(Capability capability)
     case NumCurves:
       return (HAS_LARGE_LCD(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
-      return (IS_ARM(board) ? (IS_HORUS_OR_TARANIS(board) ? 8 : 6) : false);
+      return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasExpoNames:
-      return (IS_ARM(board) ? (IS_HORUS_OR_TARANIS(board) ? 8 : 6) : false);
+      return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : false);
     case HasNoExpo:
-      return (IS_HORUS_OR_TARANIS(board) ? false : true);
+      return (IS_TARANIS(board) ? false : true);
     case ChannelsName:
       return (IS_ARM(board) ? (HAS_LARGE_LCD(board) ? 6 : 4) : 0);
     case HasCvNames:
-      return (IS_HORUS_OR_TARANIS(board) ? 1 : 0);
+      return (IS_TARANIS(board) ? 1 : 0);
     case Telemetry:
       if (IS_2560(board) || IS_ARM(board) || id.contains("frsky") || id.contains("telemetrez"))
         return TM_HASTELEMETRY | TM_HASOFFSET | TM_HASWSHH;
@@ -796,8 +796,6 @@ int OpenTxFirmware::getCapability(Capability capability)
     case LcdWidth:
       if (IS_HORUS(board))
         return 480;
-      else if (IS_TARANIS_X7)
-        return 128:
       else if (IS_TARANIS(board))
         return 212;
       else
@@ -810,8 +808,6 @@ int OpenTxFirmware::getCapability(Capability capability)
     case LcdDepth:
       if (IS_HORUS(board))
         return 16;
-      if (IS_TARANIS_X7)
-        return 1;
       else if (IS_TARANIS(board))
         return 4;
       else
