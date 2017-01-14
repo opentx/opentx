@@ -82,11 +82,21 @@ void simuFatfsSetPaths(const char * sdPath, const char * settingsPath)
   }
 }
 
+bool startsWith(const char *path, const char * start)
+{
+  return strncasecmp(path, start, strlen(start)) == 0;
+}
+
 std::string convertToSimuPath(const char *path)
 {
   std::string result;
   if (isPathDelimiter(path[0])) {
-    result = simuSdDirectory + std::string(path);
+    if (!simuSettingsDirectory.empty() && (startsWith(path, "/MODELS") || startsWith(path, "/RADIO"))) {
+      result = simuSettingsDirectory + std::string(path);
+    }
+    else {
+      result = simuSdDirectory + std::string(path);
+    }
   }
   else {
     result = std::string(path);
@@ -98,7 +108,7 @@ std::string convertToSimuPath(const char *path)
 std::string convertFromSimuPath(const char *path)
 {
   std::string result;
-  if (std::string(path).compare(0, simuSdDirectory.length(), simuSdDirectory) == 0) {
+  if (startsWith(path, simuSdDirectory.c_str())) {
     result = std::string(path).substr(simuSdDirectory.length(), std::string::npos);
   }
   else {
@@ -510,17 +520,6 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
     return FR_NO_PATH;
   }
 
-  // // size_t sdlen = simuSdDirectory.length();
-  // std::string cwd = buff;
-  // // size_t cwdlen = strlen(cwd);
-
-  // if (cwd.length() < simuSdDirectory.length()) {
-  //   TRACE_SIMPGMSPACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd.c_str(), simuSdDirectory.c_str());
-  //   strcpy(path, ".");
-  //   return FR_NO_PATH;
-  // }
-
-  // remove simuSdDirectory from the cwd
   std::string result = convertFromSimuPath(cwd);
   if (result.length() > sz_path) {
     //TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");

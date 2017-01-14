@@ -131,7 +131,9 @@ Open9xSim::~Open9xSim()
 {
   StopSimu();
   StopAudioThread();
+#if defined(EEPROM)
   StopEepromThread();
+#endif
 
   delete bmp;
   delete sliders[0];
@@ -548,9 +550,11 @@ int main(int argc,char **argv)
 
   simuInit();
 
+#if defined(EEPROM)
   StartEepromThread(argc >= 2 ? argv[1] : "eeprom.bin");
+#endif
   StartAudioThread();
-  StartSimu();
+  StartSimu(false, argc >= 3 ? argv[2] : 0, argc >= 4 ? argv[3] : 0);
 
   return application.run();
 }
