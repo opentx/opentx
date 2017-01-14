@@ -1,14 +1,18 @@
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(storage_NAMES
-  storage_eeprom
-  storage_sdcard
   hexinterface
-  # xmlinterface
   mountlist
   rlefile
   appdata
   firmwareinterface
+  storage
+  bineeprom
+  eepe
+  hexeeprom
+  categorized
+  sdcard
+  otx
 )
 
 set(storage_SRCS

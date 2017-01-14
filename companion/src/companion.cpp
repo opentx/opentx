@@ -20,21 +20,16 @@
 
 #include <QApplication>
 #include <QTranslator>
-#include <QLocale>
-#include <QString>
 #include <QDir>
-#include <QFileInfo>
 #include <QSplashScreen>
-#include <QThread>
-#include <iostream>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
   #undef main
 #endif
 #include "mainwindow.h"
 #include "version.h"
-#include "eeprominterface.h"
 #include "appdata.h"
+#include "storage.h"
 
 #if defined _MSC_VER || !defined __GNUC__
 #include <windows.h>
@@ -106,7 +101,8 @@ int main(int argc, char *argv[])
     fprintf(stderr, "ERROR: couldn't initialize SDL: %s\n", SDL_GetError());
   }
 #endif
-
+  
+  registerStorageFactories();
   registerEEpromInterfaces();
   registerOpenTxFirmwares();
   registerSimulators();

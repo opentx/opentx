@@ -21,16 +21,13 @@
 #include "flashfirmwaredialog.h"
 #include "ui_flashfirmwaredialog.h"
 #include "appdata.h"
-#include "storage_eeprom.h"
-#include "eeprominterface.h"
-#include "firmwareinterface.h"
 #include "process_flash.h"
 #include "helpers.h"
-#include "hexinterface.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
 #include "progresswidget.h"
 #include "splashlibrarydialog.h"
+#include "storage.h"
 
 #if defined _MSC_VER || !defined __GNUC__
   #include <windows.h>
