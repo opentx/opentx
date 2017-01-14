@@ -701,6 +701,9 @@ Get Logical Switch parameters
  * `delay` (number) delay (time in 1/10 s)
  * `duration` (number) duration (time in 1/10 s)
 
+@notice To set the `and` member (which is Lua keyword)
+use the following syntax: `model.setLogicalSwitch(30, {func=4,v1=1,v2=-99, ["and"]=24})`
+
 @status current Introduced in 2.0.0
 */
 static int luaModelGetLogicalSwitch(lua_State *L)
