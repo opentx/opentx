@@ -1763,7 +1763,7 @@ const int Firmware::getFlashSize()
   }
 }
 
-Firmware * GetFirmware(QString id)
+Firmware * GetFirmware(const QString & id)
 {
   foreach(Firmware * firmware, firmwares) {
     Firmware * result = firmware->getFirmwareVariant(id);

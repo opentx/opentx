@@ -18,16 +18,20 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _STORAGE_EEPROM_H_
-#define _STORAGE_EEPROM_H_
+#ifndef _EEPE_H_
+#define _EEPE_H_
 
-#include <QDomDocument>
-#include <QString>
-#include "eeprominterface.h"
+#include "hexeeprom.h"
 
-unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);
-unsigned long LoadEeprom(RadioData &radioData, const uint8_t *eeprom, int size);
-unsigned long LoadEepromXml(RadioData &radioData, QDomDocument &doc);
-bool convertEEprom(const QString &sourceEEprom, const QString &destinationEEprom, const QString &firmware);
+class EepeFormat : public HexEepromFormat
+{
+  public:
+    EepeFormat(const QString & filename):
+      HexEepromFormat(filename)
+    {
+    }
+    
+    virtual bool load(RadioData & radioData);
+};
 
-#endif // _STORAGE_EEPROM_H_
+#endif // _EEPE_H_

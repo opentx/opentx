@@ -240,6 +240,8 @@ void TreeModel::refresh()
   
   removeRows(0, rowCount());
   
+  TreeItem * defaultCategoryItem = NULL;
+  
   if (IS_HORUS(board)) {
     for (unsigned int i = 0; i < radioData->categories.size(); i++) {
       TreeItem * current = rootItem->appendChild(-1);
@@ -253,7 +255,19 @@ void TreeModel::refresh()
     TreeItem * current;
     if (IS_HORUS(board)) {
       if (!model.isEmpty()) {
-        current = rootItem->child(model.category)->appendChild(i);
+        TreeItem * categoryItem;
+        // TODO category should be set to -1 if not Horus
+        if (model.category >= 0 && model.category < rootItem->childCount()) {
+          categoryItem = rootItem->child(model.category);
+        }
+        else {
+          if (!defaultCategoryItem) {
+            defaultCategoryItem = rootItem->appendChild(-1);
+            defaultCategoryItem->setData(0, QObject::tr("Models"));
+          }
+          categoryItem = defaultCategoryItem;
+        }
+        current = categoryItem->appendChild(i);
       }
     }
     else {

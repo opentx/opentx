@@ -32,9 +32,7 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "simulatordialog.h"
-#include "simulatorinterface.h"
-#include "firmwareinterface.h"
-#include "storage/storage_sdcard.h"
+#include "storage/sdcard.h"
 
 Stopwatch gStopwatch("global");
 
@@ -838,7 +836,8 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 
     if (board == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
       dialog = new SimulatorDialogHorus(parent, simulator, flags);
-      GetEepromInterface()->saveFile(*simuData, g.profile[g.id()].sdPath());
+      SdcardFormat sdcard(g.profile[g.id()].sdPath());
+      sdcard.write(*simuData);
       dialog->start(NULL);
     }
     else if (board == BOARD_FLAMENCO) {
