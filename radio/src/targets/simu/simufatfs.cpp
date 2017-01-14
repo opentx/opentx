@@ -20,8 +20,12 @@
 
 #include "opentx.h"
 
+#if defined _MSC_VER || !defined (__GNUC__)
+  #define WINDOWS_BUILD
+#endif
+
 #if defined(SIMU_USE_SDCARD)
-#if defined(_MSC_VER) || !defined(__GNUC__)
+#if defined(WINDOWS_BUILD)
   #include <direct.h>
   #include <stdlib.h>
   #include <sys/utime.h>
@@ -37,6 +41,7 @@
 #include "ff.h"
 #include <map>
 #include <string>
+#include <vector>
 
 namespace simu {
 #include <dirent.h>
@@ -110,6 +115,88 @@ typedef std::map<std::string, std::string> filemap_t;
 
 filemap_t fileMap;
 
+void splitPath(const std::string & path, std::string & dir, std::string & name)
+{
+#if defined(WINDOWS_BUILD)
+  char drive[_MAX_DRIVE];
+  char dir[_MAX_DIR];
+  char fname[_MAX_FNAME];
+  char ext[_MAX_EXT];
+  _splitpath(path.c_str(), drive, dir, fname, ext);
+  name = std::string(fname) + std::string(ext);
+  dir = std::string(drive) + std::string(dir);
+  std::string searchName = dirName + "*";
+#else
+  char * buff = new char[path.length()+1];
+  strcpy(buff, path.c_str());
+  name = simu::basename(buff);
+  strcpy(buff, path.c_str());
+  dir = simu::dirname(buff);
+  delete[] buff;
+#endif
+}
+
+
+bool isFile(const std::string & fullName, unsigned char d_type)
+{
+#if defined(WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
+  #define REGULAR_FILE DT_REG
+  #define SYMBOLIC_LINK DT_LNK
+#else
+  #define REGULAR_FILE simu::DT_REG
+  #define SYMBOLIC_LINK simu::DT_LNK
+#endif
+
+  if (d_type == REGULAR_FILE) return true;
+  if (d_type == SYMBOLIC_LINK) {
+    struct stat tmp;
+    if (stat(fullName.c_str(), &tmp) == 0) {
+      // TRACE_SIMPGMSPACE("\tsymlik: %s is %s", fullName.c_str(), (tmp.st_mode & S_IFREG) ? "file" : "other");
+      if (tmp.st_mode & S_IFREG) return true;
+    }
+  }
+  return false;
+}
+
+std::vector<std::string> listDirectoryFiles(const std::string & dirName)
+{
+  std::vector<std::string> result;
+
+#if defined (WINDOWS_BUILD)
+    std::string searchName = dirName + "*";
+    // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
+    WIN32_FIND_DATA ffd;
+    HANDLE hFind = FindFirstFile(searchName.c_str(), &ffd);
+    if (INVALID_HANDLE_VALUE != hFind) {
+      do {
+        if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+          //TRACE_SIMPGMSPACE("comparing with: %s", ffd.cFileName);
+          if (!strcasecmp(fileName.c_str(), ffd.cFileName)) {
+            std::string fullName = dirName + std::string(ffd.cFileName);
+            // TRACE_SIMPGMSPACE("listDirectoryFiles(): %s", fullName.c_str());
+            result.push_back(fullName);
+          }
+        }
+      }
+      while (FindNextFile(hFind, &ffd) != 0);
+    }
+#else
+  simu::DIR * dir = simu::opendir(dirName.c_str());
+  if (dir) {
+    struct simu::dirent * res;
+    while ((res = simu::readdir(dir)) != 0) {
+      std::string fullName = dirName + "/" + std::string(res->d_name);
+      if (isFile(fullName, res->d_type)) {
+        // TRACE_SIMPGMSPACE("listDirectoryFiles(): %s", fullName.c_str());
+        result.push_back(fullName);
+      }
+    }
+    simu::closedir(dir);
+  }
+#endif
+  return result;
+}
+
 std::string findTrueFileName(const std::string & path)
 {
   TRACE_SIMPGMSPACE("findTrueFileName(%s)", path.c_str());
@@ -121,64 +208,18 @@ std::string findTrueFileName(const std::string & path)
     return result;
   }
   else {
-    //find file
-    //add to map
-#if defined _MSC_VER || !defined __GNUC__
-    char drive[_MAX_DRIVE];
-    char dir[_MAX_DIR];
-    char fname[_MAX_FNAME];
-    char ext[_MAX_EXT];
-    _splitpath(path.c_str(), drive, dir, fname, ext);
-    std::string fileName = std::string(fname) + std::string(ext);
-    std::string dirName = std::string(drive) + std::string(dir);
-    std::string searchName = dirName + "*";
-    // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
-    WIN32_FIND_DATA ffd;
-    HANDLE hFind = FindFirstFile(searchName.c_str(), &ffd);
-    if (INVALID_HANDLE_VALUE != hFind) {
-      do {
-        if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-          //TRACE_SIMPGMSPACE("comparing with: %s", ffd.cFileName);
-          if (!strcasecmp(fileName.c_str(), ffd.cFileName)) {
-            result = dirName + std::string(ffd.cFileName);
-            TRACE_SIMPGMSPACE("\tfound: %s", ffd.cFileName);
-            fileMap.insert(filemap_t::value_type(path, result));
-            return result;
-          }
-        }
+    //find file and add to map
+    std::string dirName;
+    std::string fileName;
+    splitPath(path, dirName, fileName);
+    std::vector<std::string> files = listDirectoryFiles(dirName);
+    for(unsigned int i=0; i<files.size(); ++i) {
+      if (!strcasecmp(files[i].c_str(), path.c_str())) {
+        TRACE_SIMPGMSPACE("\tfound: %s", files[i].c_str());
+        fileMap.insert(filemap_t::value_type(path, files[i]));
+        return files[i];
       }
-      while (FindNextFile(hFind, &ffd) != 0);
     }
-#else
-    char buff[1024];
-    strcpy(buff, path.c_str());
-    std::string fileName = simu::basename(buff);
-    strcpy(buff, path.c_str());
-    std::string dirName = simu::dirname(buff);
-    simu::DIR * dir = simu::opendir(dirName.c_str());
-    if (dir) {
-      // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
-      for (;;) {
-        struct simu::dirent * res = simu::readdir(dir);
-        if (res == 0) break;
-#if defined(WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
-        if ((res->d_type == DT_REG) || (res->d_type == DT_LNK)) {
-#else
-        if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
-#endif
-          // TRACE_SIMPGMSPACE("comparing with: %s", res->d_name);
-          if (!strcasecmp(fileName.c_str(), res->d_name)) {
-            result = dirName + "/" + std::string(res->d_name);
-            TRACE_SIMPGMSPACE("\tfound: %s", res->d_name);
-            fileMap.insert(filemap_t::value_type(path, result));
-            simu::closedir(dir);
-            return result;
-          }
-        }
-      }
-      simu::closedir(dir);
-    }
-#endif
   }
   TRACE_SIMPGMSPACE("\tnot found");
   return std::string(path);
