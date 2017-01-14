@@ -467,11 +467,28 @@ inline void NVIC_Init(NVIC_InitTypeDef *) { }
 inline void delay_01us(int dummy) { }
 #define configure_pins(...)
 
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
+  #define SIMU_USE_SDCARD
+#endif
+
 #define sdMountPoll()
 #define sdPoll10ms()
 #define sd_card_ready()  (true)
 #if !defined(SIMU_DISKIO)
   #define sdMounted()      (true)
+#endif
+
+#if defined(SIMU_USE_SDCARD)
+  void simuFatfsSetPaths(const char * sdPath, const char * settingsPath);
+#else
+  #define simuFatfsSetPaths(...)
+#endif
+
+#if defined(TRACE_SIMPGMSPACE)
+  #undef TRACE_SIMPGMSPACE
+  #define TRACE_SIMPGMSPACE   TRACE
+#else
+  #define TRACE_SIMPGMSPACE(...)
 #endif
 
 #endif // _SIMPGMSPACE_H_

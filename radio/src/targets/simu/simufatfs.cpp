@@ -1,0 +1,506 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "opentx.h"
+
+#if defined(SIMU_USE_SDCARD)
+#if defined(_MSC_VER) || !defined(__GNUC__)
+  #include <direct.h>
+  #include <stdlib.h>
+  #include <sys/utime.h>
+  #define mkdir(s, f) _mkdir(s)
+#else
+  #include <utime.h>
+#endif
+
+#include <stdio.h>
+#include <stdarg.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include "ff.h"
+#include <map>
+#include <string>
+
+namespace simu {
+#include <dirent.h>
+#if !defined(_MSC_VER)
+  #include <libgen.h>
+#endif
+}
+
+std::string simuSdDirectory;          // path to the root of the SD card image
+std::string simuSettingsDirectory;    // path to the root of the models and settings (only for the radios that use SD for model storage)
+
+bool isPathDelimiter(char delimiter)
+{
+  return (delimiter == '/' || delimiter == '\\');
+}
+
+std::string removeTrailingPathDelimiter(const char * path)
+{
+  std::string result = path;
+  while (!result.empty() && isPathDelimiter(result.back())) {
+    result.pop_back();
+  }
+  return result;
+}
+
+void simuFatfsSetPaths(const char * sdPath, const char * settingsPath)
+{
+  if (sdPath) {
+    simuSdDirectory = removeTrailingPathDelimiter(sdPath);
+  }
+  else {
+    char buff[1024];
+    f_getcwd(buff, sizeof(buff)-1);
+    simuSdDirectory = removeTrailingPathDelimiter(buff);
+  }
+  if (settingsPath) {
+    simuSettingsDirectory = removeTrailingPathDelimiter(settingsPath);
+  }
+}
+
+std::string convertToSimuPath(const char *path)
+{
+  std::string result;
+  if (isPathDelimiter(path[0])) {
+    result = simuSdDirectory + std::string(path);
+  }
+  else {
+    result = std::string(path);
+  }
+  TRACE("convertToSimuPath(): %s -> %s", path, result.c_str());
+  return result;
+}
+
+std::string convertFromSimuPath(const char *path)
+{
+  std::string result;
+  if (std::string(path).compare(0, simuSdDirectory.length(), simuSdDirectory) == 0) {
+    result = std::string(path).substr(simuSdDirectory.length(), std::string::npos);
+  }
+  else {
+    result = std::string(path);
+    if (!result.empty() && !isPathDelimiter(result[0])) {
+      result = "/" + result;
+    }
+  }
+  TRACE("convertFromSimuPath(): %s -> %s", path, result.c_str());
+  return result;
+}
+
+typedef std::map<std::string, std::string> filemap_t;
+
+filemap_t fileMap;
+
+std::string findTrueFileName(const std::string & path)
+{
+  TRACE_SIMPGMSPACE("findTrueFileName(%s)", path.c_str());
+  std::string result;
+  filemap_t::iterator i = fileMap.find(path);
+  if (i != fileMap.end()) {
+    result = i->second;
+    TRACE_SIMPGMSPACE("\tfound in map: %s", result.c_str());
+    return result;
+  }
+  else {
+    //find file
+    //add to map
+#if defined _MSC_VER || !defined __GNUC__
+    char drive[_MAX_DRIVE];
+    char dir[_MAX_DIR];
+    char fname[_MAX_FNAME];
+    char ext[_MAX_EXT];
+    _splitpath(path.c_str(), drive, dir, fname, ext);
+    std::string fileName = std::string(fname) + std::string(ext);
+    std::string dirName = std::string(drive) + std::string(dir);
+    std::string searchName = dirName + "*";
+    // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
+    WIN32_FIND_DATA ffd;
+    HANDLE hFind = FindFirstFile(searchName.c_str(), &ffd);
+    if (INVALID_HANDLE_VALUE != hFind) {
+      do {
+        if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+          //TRACE_SIMPGMSPACE("comparing with: %s", ffd.cFileName);
+          if (!strcasecmp(fileName.c_str(), ffd.cFileName)) {
+            result = dirName + std::string(ffd.cFileName);
+            TRACE_SIMPGMSPACE("\tfound: %s", ffd.cFileName);
+            fileMap.insert(filemap_t::value_type(path, result));
+            return result;
+          }
+        }
+      }
+      while (FindNextFile(hFind, &ffd) != 0);
+    }
+#else
+    char buff[1024];
+    strcpy(buff, path.c_str());
+    std::string fileName = simu::basename(buff);
+    strcpy(buff, path.c_str());
+    std::string dirName = simu::dirname(buff);
+    simu::DIR * dir = simu::opendir(dirName.c_str());
+    if (dir) {
+      // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
+      for (;;) {
+        struct simu::dirent * res = simu::readdir(dir);
+        if (res == 0) break;
+#if defined(WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
+        if ((res->d_type == DT_REG) || (res->d_type == DT_LNK)) {
+#else
+        if ((res->d_type == simu::DT_REG) || (res->d_type == simu::DT_LNK)) {
+#endif
+          // TRACE_SIMPGMSPACE("comparing with: %s", res->d_name);
+          if (!strcasecmp(fileName.c_str(), res->d_name)) {
+            result = dirName + "/" + std::string(res->d_name);
+            TRACE_SIMPGMSPACE("\tfound: %s", res->d_name);
+            fileMap.insert(filemap_t::value_type(path, result));
+            simu::closedir(dir);
+            return result;
+          }
+        }
+      }
+      simu::closedir(dir);
+    }
+#endif
+  }
+  TRACE_SIMPGMSPACE("\tnot found");
+  return std::string(path);
+}
+
+FRESULT f_stat (const TCHAR * name, FILINFO *fno)
+{
+  std::string path = convertToSimuPath(name);
+  std::string realPath = findTrueFileName(path);
+  struct stat tmp;
+  if (stat(realPath.c_str(), &tmp)) {
+    TRACE_SIMPGMSPACE("f_stat(%s) = error %d (%s)", path.c_str(), errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  else {
+    TRACE_SIMPGMSPACE("f_stat(%s) = OK", path.c_str());
+    if (fno) {
+      fno->fattrib = (tmp.st_mode & S_IFDIR) ? AM_DIR : 0;
+      // convert to FatFs fdate/ftime
+      struct tm *ltime = localtime(&tmp.st_mtime);
+      fno->fdate = ((ltime->tm_year - 80) << 9) | ((ltime->tm_mon + 1) << 5) | ltime->tm_mday;
+      fno->ftime = (ltime->tm_hour << 11) | (ltime->tm_min << 5) | (ltime->tm_sec / 2);
+      fno->fsize = (DWORD)tmp.st_size;
+    }
+    return FR_OK;
+  }
+}
+
+FRESULT f_mount (FATFS* ,const TCHAR*, BYTE opt)
+{
+  return FR_OK;
+}
+
+FRESULT f_open (FIL * fil, const TCHAR *name, BYTE flag)
+{
+  std::string path = convertToSimuPath(name);
+  std::string realPath = findTrueFileName(path);
+  fil->obj.fs = 0;
+  if (!(flag & FA_WRITE)) {
+    struct stat tmp;
+    if (stat(realPath.c_str(), &tmp)) {
+      TRACE_SIMPGMSPACE("f_open(%s) = INVALID_NAME (FIL %p)", path.c_str(), fil);
+      return FR_INVALID_NAME;
+    }
+    fil->obj.objsize = tmp.st_size;
+    fil->fptr = 0;
+  }
+  fil->obj.fs = (FATFS*)fopen(realPath.c_str(), (flag & FA_WRITE) ? ((flag & FA_CREATE_ALWAYS) ? "wb+" : "ab+") : "rb+");
+  fil->fptr = 0;
+  if (fil->obj.fs) {
+    TRACE_SIMPGMSPACE("f_open(%s, %x) = %p (FIL %p)", path.c_str(), flag, fil->obj.fs, fil);
+    return FR_OK;
+  }
+  TRACE_SIMPGMSPACE("f_open(%s) = error %d (%s) (FIL %p)", path.c_str(), errno, strerror(errno), fil);
+  return FR_INVALID_NAME;
+}
+
+FRESULT f_read (FIL* fil, void* data, UINT size, UINT* read)
+{
+  if (fil && fil->obj.fs) {
+    *read = fread(data, 1, size, (FILE*)fil->obj.fs);
+    fil->fptr += *read;
+    // TRACE_SIMPGMSPACE("fread(%p) %u, %u", fil->obj.fs, size, *read);
+  }
+  return FR_OK;
+}
+
+FRESULT f_write (FIL* fil, const void* data, UINT size, UINT* written)
+{
+  if (fil && fil->obj.fs) {
+    *written = fwrite(data, 1, size, (FILE*)fil->obj.fs);
+    fil->fptr += size;
+    // TRACE_SIMPGMSPACE("fwrite(%p) %u, %u", fil->obj.fs, size, *written);
+  }
+  return FR_OK;
+}
+
+TCHAR * f_gets (TCHAR* buff, int len, FIL* fil)
+{
+  if (fil && fil->obj.fs) {
+    buff = fgets(buff, len, (FILE*)fil->obj.fs);
+    if (buff != NULL) {
+      fil->fptr = *buff;
+    }
+    // TRACE_SIMPGMSPACE("fgets(%p) %u, %s", fil->obj.fs, len, buff);
+  }
+  return buff;
+}
+
+FRESULT f_lseek (FIL* fil, DWORD offset)
+{
+  if (fil && fil->obj.fs) fseek((FILE*)fil->obj.fs, offset, SEEK_SET);
+  fil->fptr = offset;
+  return FR_OK;
+}
+
+UINT f_size(FIL* fil)
+{
+  if (fil && fil->obj.fs) {
+    long curr = ftell((FILE*)fil->obj.fs);
+    fseek((FILE*)fil->obj.fs, 0, SEEK_END);
+    long size = ftell((FILE*)fil->obj.fs);
+    fseek((FILE*)fil->obj.fs, curr, SEEK_SET);
+    TRACE_SIMPGMSPACE("f_size(%p) %u", fil->obj.fs, size);
+    return size;
+  }
+  return 0;
+}
+
+FRESULT f_close (FIL * fil)
+{
+  TRACE_SIMPGMSPACE("f_close(%p) (FIL:%p)", fil->obj.fs, fil);
+  if (fil->obj.fs) {
+    fclose((FILE*)fil->obj.fs);
+    fil->obj.fs = NULL;
+  }
+  return FR_OK;
+}
+
+FRESULT f_chdir (const TCHAR *name)
+{
+  chdir(convertToSimuPath(name).c_str());
+  return FR_OK;
+}
+
+FRESULT f_opendir (DIR * rep, const TCHAR * name)
+{
+  std::string path = convertToSimuPath(name);
+  rep->obj.fs = (FATFS *)simu::opendir(path.c_str());
+  if ( rep->obj.fs ) {
+    TRACE_SIMPGMSPACE("f_opendir(%s) = OK", path.c_str());
+    return FR_OK;
+  }
+  TRACE_SIMPGMSPACE("f_opendir(%s) = error %d (%s)", path.c_str(), errno, strerror(errno));
+  return FR_NO_PATH;
+}
+
+FRESULT f_closedir (DIR * rep)
+{
+  TRACE_SIMPGMSPACE("f_closedir(%p)", rep);
+  if (rep->obj.fs) simu::closedir((simu::DIR *)rep->obj.fs);
+  return FR_OK;
+}
+
+FRESULT f_readdir (DIR * rep, FILINFO * fil)
+{
+  simu::dirent * ent;
+  if (!rep->obj.fs) return FR_NO_FILE;
+  for(;;) {
+    ent = simu::readdir((simu::DIR *)rep->obj.fs);
+    if (!ent) return FR_NO_FILE;
+    if (strcmp(ent->d_name, ".") && strcmp(ent->d_name, "..") ) break;
+  }
+
+#if defined(WIN32) || !defined(__GNUC__) || defined(__APPLE__) || defined(__FreeBSD__)
+  fil->fattrib = (ent->d_type == DT_DIR ? AM_DIR : 0);
+#else
+  if (ent->d_type == simu::DT_UNKNOWN || ent->d_type == simu::DT_LNK) {
+    fil->fattrib = 0;
+    struct stat buf;
+    if (stat(ent->d_name, &buf) == 0) {
+      fil->fattrib = (S_ISDIR(buf.st_mode) ? AM_DIR : 0);
+    }
+  }
+  else {
+    fil->fattrib = (ent->d_type == simu::DT_DIR ? AM_DIR : 0);
+  }
+#endif
+
+  memset(fil->fname, 0, SD_SCREEN_FILE_LENGTH);
+  strcpy(fil->fname, ent->d_name);
+  // TRACE_SIMPGMSPACE("f_readdir(): %s", fil->fname);
+  return FR_OK;
+}
+
+FRESULT f_mkfs (const TCHAR* path, BYTE opt, DWORD au, void* work, UINT len)
+{
+  TRACE_SIMPGMSPACE("Format SD...");
+  return FR_OK;
+}
+
+FRESULT f_mkdir (const TCHAR * name)
+{
+  std::string path = convertToSimuPath(name);
+#if defined(WIN32) && defined(__GNUC__)
+  if (mkdir(path.c_str())) {
+#else
+  if (mkdir(path.c_str(), 0777)) {
+#endif
+    TRACE_SIMPGMSPACE("mkdir(%s) = error %d (%s)", path.c_str(), errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  else {
+    TRACE_SIMPGMSPACE("mkdir(%s) = OK", path.c_str());
+    return FR_OK;
+  }
+  return FR_OK;
+}
+
+FRESULT f_unlink (const TCHAR * name)
+{
+  std::string path = convertToSimuPath(name);
+  if (unlink(path.c_str())) {
+    TRACE_SIMPGMSPACE("f_unlink(%s) = error %d (%s)", path.c_str(), errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  else {
+    TRACE_SIMPGMSPACE("f_unlink(%s) = OK", path.c_str());
+    return FR_OK;
+  }
+}
+
+FRESULT f_rename(const TCHAR *oldname, const TCHAR *newname)
+{
+  std::string old = convertToSimuPath(oldname);
+  std::string path = convertToSimuPath(newname);
+
+  if (rename(old.c_str(), path.c_str()) < 0) {
+    TRACE_SIMPGMSPACE("f_rename(%s, %s) = error %d (%s)", old.c_str(), path.c_str(), errno, strerror(errno));
+    return FR_INVALID_NAME;
+  }
+  TRACE_SIMPGMSPACE("f_rename(%s, %s) = OK", old.c_str(), path.c_str());
+  return FR_OK;
+}
+
+FRESULT f_utime(const TCHAR* path, const FILINFO* fno)
+{
+  if (fno == NULL)
+    return FR_INVALID_PARAMETER;
+
+  std::string simpath = convertToSimuPath(path);
+  std::string realPath = findTrueFileName(simpath);
+  struct utimbuf newTimes;
+  struct tm ltime;
+
+  // convert from FatFs fdate/ftime
+  ltime.tm_year = ((fno->fdate >> 9) & 0x7F) + 80;
+  ltime.tm_mon = ((fno->fdate >> 5) & 0xF) - 1;
+  ltime.tm_mday = (fno->fdate & 0x1F);
+  ltime.tm_hour = ((fno->ftime >> 11) & 0x1F);
+  ltime.tm_min = ((fno->ftime >> 5) & 0x3F);
+  ltime.tm_sec = (fno->ftime & 0x1F) * 2;
+  ltime.tm_isdst = -1;  // force mktime() to check dst
+
+  newTimes.modtime = mktime(&ltime);
+  newTimes.actime = newTimes.modtime;
+
+  if (utime(realPath.c_str(), &newTimes)) {
+    TRACE_SIMPGMSPACE("f_utime(%s) = error %d (%s)", simpath.c_str(), errno, strerror(errno));
+    return FR_DENIED;
+  }
+  else {
+    TRACE_SIMPGMSPACE("f_utime(%s) set mtime = %s", simpath.c_str(), ctime(&newTimes.modtime));
+    return FR_OK;
+  }
+}
+
+int f_putc (TCHAR c, FIL * fil)
+{
+  if (fil && fil->obj.fs) fwrite(&c, 1, 1, (FILE*)fil->obj.fs);
+  return FR_OK;
+}
+
+int f_puts (const TCHAR * str, FIL * fil)
+{
+  int n;
+  for (n = 0; *str; str++, n++) {
+    if (f_putc(*str, fil) == EOF) return EOF;
+  }
+  return n;
+}
+
+int f_printf (FIL *fil, const TCHAR * format, ...)
+{
+  va_list arglist;
+  va_start(arglist, format);
+  if (fil && fil->obj.fs) vfprintf((FILE*)fil->obj.fs, format, arglist);
+  va_end(arglist);
+  return 0;
+}
+
+FRESULT f_getcwd (TCHAR *path, UINT sz_path)
+{
+  char cwd[1024];
+  if (!getcwd(cwd, 1024)) {
+    TRACE_SIMPGMSPACE("f_getcwd() = getcwd() error %d (%s)", errno, strerror(errno));
+    strcpy(path, ".");
+    return FR_NO_PATH;
+  }
+
+  // // size_t sdlen = simuSdDirectory.length();
+  // std::string cwd = buff;
+  // // size_t cwdlen = strlen(cwd);
+
+  // if (cwd.length() < simuSdDirectory.length()) {
+  //   TRACE_SIMPGMSPACE("f_getcwd() = logic error strlen(cwd) < strlen(simuSdDirectory):  cwd: \"%s\",  simuSdDirectory: \"%s\"", cwd.c_str(), simuSdDirectory.c_str());
+  //   strcpy(path, ".");
+  //   return FR_NO_PATH;
+  // }
+
+  // remove simuSdDirectory from the cwd
+  std::string result = convertFromSimuPath(cwd);
+  if (result.length() > sz_path) {
+    //TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
+    return FR_NOT_ENOUGH_CORE;
+  }
+
+  strcpy(path, result.c_str());
+  TRACE_SIMPGMSPACE("f_getcwd() = %s", path);
+  return FR_OK;
+}
+
+FRESULT f_getfree (const TCHAR* path, DWORD* nclst, FATFS** fatfs)
+{
+  // just fake that we always have some clusters free
+  *nclst = 10;
+  return FR_OK;
+}
+
+#if defined(PCBSKY9X)
+int32_t Card_state = SD_ST_MOUNTED;
+uint32_t Card_CSD[4]; // TODO elsewhere
+#endif
+
+#endif  // #if defined(SIMU_USE_SDCARD)
