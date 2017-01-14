@@ -35,12 +35,13 @@
 #define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (board == BOARD_TARANIS_X7 ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS(board) ? 2 : 0)
 #define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (board == BOARD_TARANIS_X7 ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
-#define MAX_SWITCHES_POSITION(board, version) (IS_HORUS(board) ? 24 : (board == BOARD_TARANIS_X7 ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_TARANIS(board) ? 8*3 : 9))))
+#define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X7(board) ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_HORUS_OR_TARANIS(board) ? 8*3 : 9)))
 #define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_TIMERS(board, version)            ((IS_ARM(board) && version >= 217) ? 3 : 2)
 #define MAX_MIXERS(board, version)            (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)          (IS_ARM(board) ? 32 : 16)
+#define MAX_TRIMS(board)                      (IS_HORUS(board) ? 6 : 4)
 #define MAX_EXPOS(board, version)             (IS_ARM(board) ? ((IS_HORUS_OR_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
 #define MAX_LOGICAL_SWITCHES(board, version)  (IS_ARM(board) ? (version >= 218 ? 64 : 32) : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
 #define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))
@@ -102,7 +103,7 @@ class SwitchesConversionTable: public ConversionTable {
         val++;
       }
 
-      if (IS_TARANIS(board) && version >= 216) {
+      if (IS_HORUS_OR_TARANIS(board) && version >= 216) {
         for (int i=1; i<=MAX_POTS(board, version)*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
@@ -110,7 +111,7 @@ class SwitchesConversionTable: public ConversionTable {
       }
 
       if (version >= 216) {
-        for (int i=1; i<=8; i++) {
+        for (int i=1; i<=2*MAX_TRIMS(board); i++) {
           addConversion(RawSwitch(SWITCH_TYPE_TRIM, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_TRIM, i), val++);
         }

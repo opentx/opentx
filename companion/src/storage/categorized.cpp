@@ -100,7 +100,7 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
         modelsList.append(QString().sprintf("[%s]\n", radioData.categories[model.category].name));
         currentCategoryIndex = categoryIndex;
       }
-      modelsList.append(modelFilename + "\n");
+      modelsList.append(QString(model.filename) + "\n");
     }
   }
   
