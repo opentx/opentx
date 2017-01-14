@@ -354,7 +354,12 @@ FRESULT f_close (FIL * fil)
 
 FRESULT f_chdir (const TCHAR *name)
 {
-  chdir(convertToSimuPath(name).c_str());
+  std::string path = convertToSimuPath(name);
+  if (chdir(path.c_str())) {
+    TRACE_SIMPGMSPACE("f_chdir(%s) = error %d (%s)", path.c_str(), errno, strerror(errno));
+    return FR_NO_PATH;
+  }
+  TRACE_SIMPGMSPACE("f_chdir(%s)", path.c_str());
   return FR_OK;
 }
 
@@ -362,7 +367,7 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
 {
   std::string path = convertToSimuPath(name);
   rep->obj.fs = (FATFS *)simu::opendir(path.c_str());
-  if ( rep->obj.fs ) {
+  if (rep->obj.fs) {
     TRACE_SIMPGMSPACE("f_opendir(%s) = OK", path.c_str());
     return FR_OK;
   }
