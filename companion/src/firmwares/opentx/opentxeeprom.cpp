@@ -2175,7 +2175,7 @@ class ArmCustomFunctionField: public TransformedField {
     {
       return (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic);
     }
-
+    
     virtual void beforeExport()
     {
       if (fn.swtch.type != SWITCH_TYPE_NONE) {
@@ -2779,7 +2779,7 @@ class FrskyField: public StructField {
     {
       rssiConversionTable[0] = RSSIConversionTable(0);
       rssiConversionTable[1] = RSSIConversionTable(1);
-
+      
       if (IS_ARM(board)) {
         if (!IS_HORUS(board)) {
           if (version >= 217) {
@@ -2811,7 +2811,7 @@ class FrskyField: public StructField {
             Append(new ConversionField<SignedField<8> >(frsky.blades, -2));
             Append(new ConversionField<UnsignedField<8> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
           }
-
+  
           if (version >= 217) {
             for (int i = 0; i < 4; i++) {
               Append(new UnsignedField<2>(frsky.screens[i].type));
@@ -2830,7 +2830,7 @@ class FrskyField: public StructField {
             }
           }
         }
-
+        
         if (version >= 217) {
           Append(new UnsignedField<7>(frsky.varioSource, "Vario Source"));
           Append(new BoolField<1>(frsky.varioCenterSilent));
@@ -2923,7 +2923,7 @@ class CustomScreenField: public StructField {
       customScreen(customScreen)
     {
     }
-
+    
   protected:
     CustomScreenData & customScreen;
 };
@@ -2998,14 +2998,14 @@ class SensorField: public TransformedField {
         else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           sensor.amps = _sources[0];
       }
-
+      
       if (version < 218) {
         if (sensor.unit > SensorData::UNIT_WATTS)
           sensor.unit++;
         if (sensor.unit > SensorData::UNIT_DEGREE)
           sensor.unit++;
       }
-
+        
       eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
@@ -3084,7 +3084,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
       internalField.Append(new BoolField<1>(modelData.timers[i].minuteBeep));
       internalField.Append(new UnsignedField<2>(modelData.timers[i].persistent));
       internalField.Append(new SpareBitsField<3>());
-      if (IS_HORUS_OR_TARANIS(board))
+      if (IS_TARANIS(board))
         internalField.Append(new ZCharField<8>(modelData.timers[i].name, "Timer name"));
       else
         internalField.Append(new ZCharField<3>(modelData.timers[i].name, "Timer name"));
@@ -3195,7 +3195,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.moduleData[0].modelId));
   }
-
+  
   if (IS_HORUS(board))
     internalField.Append(new SwitchesWarningField<32>(modelData.switchWarningStates, board, version));
   else if (IS_TARANIS_X9E(board))
@@ -3401,7 +3401,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigne
   if (IS_TARANIS_X9E(board)) {
     internalField.Append(new UnsignedField<8>(modelData.toplcdTimer));
   }
-
+  
   if (IS_HORUS(board)) {
     for (int i = 0; i < 5; i++) {
       internalField.Append(new CharField<610>(modelData.customScreenData[i], false, "Custom screen blob"));
@@ -3539,7 +3539,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
 
   internalField.Append(new UnsignedField<8>(generalData.view, 0, MAX_VIEWS(board)-1));
-
+  
   internalField.Append(new SpareBitsField<2>()); // TODO buzzerMode?
   internalField.Append(new BoolField<1>(generalData.fai));
   internalField.Append(new SignedField<2>((int &)generalData.beeperMode));
@@ -3612,7 +3612,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
     internalField.Append(new SignedField<8>(generalData.vBatMin));
     internalField.Append(new SignedField<8>(generalData.vBatMax));
   }
-
+  
   if (IS_ARM(board)) {
     internalField.Append(new UnsignedField<8>(generalData.backlightBright));
     if (version < 218) internalField.Append(new SignedField<8>(generalData.txCurrentCalibration));
@@ -3663,7 +3663,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
       }
     }
-
+    
     if (IS_STM32(board) && version >= 216) {
       if (version >= 218) {
         internalField.Append(new UnsignedField<4>(generalData.hw_uartMode));
@@ -3758,7 +3758,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       internalField.Append(new BoolField<8>(generalData.bluetoothEnable));
       internalField.Append(new ZCharField<10>(generalData.bluetoothName, "Bluetooth name"));
     }
-
+    
     if (IS_HORUS(board)) {
       internalField.Append(new CharField<8>(generalData.themeName, true, "Theme name"));
       for (int i=0; i<5; i++) {
