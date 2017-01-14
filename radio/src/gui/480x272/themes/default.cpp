@@ -130,7 +130,7 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS2, "mask_monitor_channels2.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channels3.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
-      loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "/mask_monitor_logsw.png");
+      loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "mask_monitor_logsw.png");
 
       BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
       BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
