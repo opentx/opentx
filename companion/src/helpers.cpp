@@ -31,6 +31,7 @@
 
 #include "appdata.h"
 #include "helpers.h"
+#include "modeledit/modeledit.h"
 #include "simulatordialog.h"
 #include "storage/sdcard.h"
 
