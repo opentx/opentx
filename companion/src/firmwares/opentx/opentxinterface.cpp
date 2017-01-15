@@ -661,6 +661,8 @@ int OpenTxFirmware::getCapability(Capability capability)
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
+    if (IS_HORUS(board))
+      return 0;
       return IS_ARM(board) ? 4 : 2;
     case TelemetryCustomScreensFieldsPerLine:
       return HAS_LARGE_LCD(board) ? 3 : 2;
