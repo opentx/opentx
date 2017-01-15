@@ -134,7 +134,11 @@ void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size)
   eepromStartWrite(buffer, address, size);
 
   while (!eepromIsTransferComplete()) {
+#if defined(GTESTS)
+    sleep(0/*ms*/);
+#else
     sleep(1/*ms*/);
+#endif
   }
 }
 

@@ -372,7 +372,7 @@ void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
 
-void StartSimu(bool tests=true);
+void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
 void StopSimu();
 
 void StartEepromThread(const char *filename="eeprom.bin");
@@ -467,8 +467,8 @@ inline void NVIC_Init(NVIC_InitTypeDef *) { }
 inline void delay_01us(int dummy) { }
 #define configure_pins(...)
 
-#if defined(SDCARD)
-extern char simuSdDirectory[1024];
+#if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
+  #define SIMU_USE_SDCARD
 #endif
 
 #define sdMountPoll()
@@ -476,6 +476,19 @@ extern char simuSdDirectory[1024];
 #define sd_card_ready()  (true)
 #if !defined(SIMU_DISKIO)
   #define sdMounted()      (true)
+#endif
+
+#if defined(SIMU_USE_SDCARD)
+  void simuFatfsSetPaths(const char * sdPath, const char * settingsPath);
+#else
+  #define simuFatfsSetPaths(...)
+#endif
+
+#if defined(TRACE_SIMPGMSPACE)
+  #undef TRACE_SIMPGMSPACE
+  #define TRACE_SIMPGMSPACE   TRACE
+#else
+  #define TRACE_SIMPGMSPACE(...)
 #endif
 
 #endif // _SIMPGMSPACE_H_

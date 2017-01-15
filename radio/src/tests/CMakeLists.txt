@@ -7,6 +7,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   add_library(gtests-lib STATIC EXCLUDE_FROM_ALL ${GTEST_SRCDIR}/src/gtest-all.cc )
   target_include_directories(gtests-lib PUBLIC ${GTEST_INCDIR} ${GTEST_INCDIR}/gtest ${GTEST_SRCDIR})
   add_definitions(-DSIMU)
+  add_definitions(-DGTESTS)
   set(TESTS_PATH ${RADIO_SRC_DIRECTORY})
   configure_file(${RADIO_SRC_DIRECTORY}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
@@ -36,7 +37,7 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
 
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
-  add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp)
+  add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp ../targets/simu/simufatfs.cpp)
   qt5_use_modules(gtests Core Widgets)
   add_dependencies(gtests ${FIRMWARE_DEPENDENCIES} gtests-lib)
   target_link_libraries(gtests gtests-lib pthread)

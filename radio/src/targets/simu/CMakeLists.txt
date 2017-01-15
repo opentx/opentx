@@ -6,6 +6,8 @@ set(SIMU_SRC
   ${SIMU_SRC}
   simpgmspace.cpp
   simueeprom.cpp
+  simufatfs.cpp
+  simudisk.cpp
   )
 
 add_definitions(-DSIMU)
