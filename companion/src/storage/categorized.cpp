@@ -28,8 +28,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
     setError(QObject::tr("Can't extract RADIO/radio.bin"));
     return false;
   }
-  
-  
+
   if (!loadRadioSettingsFromByteArray(radioData.generalSettings, radioSettingsBuffer)) {
     return false;
   }
