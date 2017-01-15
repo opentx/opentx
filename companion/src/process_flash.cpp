@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QProcess>
+#include <QTimer>
 #include <QEventLoop>
 
 #if defined _MSC_VER || !defined __GNUC__
