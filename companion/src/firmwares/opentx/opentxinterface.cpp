@@ -451,7 +451,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      return (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E);
+      return (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E  || board == BOARD_HORUS);
     case HasBeeper:
       return (!IS_ARM(board));
     case HasPxxCountry:
@@ -549,6 +549,8 @@ int OpenTxFirmware::getCapability(Capability capability)
     case SwitchesPositions:
       if (IS_TARANIS_X9E(board))
         return 18 * 3;
+      else if (board == BOARD_TARANIS_X7)
+        return 6 * 3;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8 * 3;
       else
@@ -594,7 +596,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || id.contains("haptic"));
+      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_HORUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board))
         return 1;
@@ -637,13 +639,13 @@ int OpenTxFirmware::getCapability(Capability capability)
     case TelemetryCustomScreensFieldsPerLine:
       return HAS_LARGE_LCD(board) ? 3 : 2;
     case NoTelemetryProtocol:
-      return IS_TARANIS(board) ? 1 : 0;
+      return IS_HORUS_OR_TARANIS(board) ? 1 : 0;
     case TelemetryUnits:
       return 0;
     case TelemetryMaxMultiplier:
       return (IS_ARM(board) ? 32 : 8);
     case PPMCenter:
-      return (IS_TARANIS(board) ? 500 : (id.contains("ppmca") ? 125 : 0));
+      return (IS_HORUS_OR_TARANIS(board) ? 500 : (id.contains("ppmca") ? 125 : 0));
     case PPMUnitMicroseconds:
       return id.contains("ppmus") ? 1 : 0;
     case SYMLimits:
@@ -700,7 +702,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       else
         return 1;
     case GetThrSwitch:
-      return (IS_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR);
+      return (IS_HORUS_OR_TARANIS(board) ? SWITCH_SF1 : SWITCH_THR);
     case HasDisplayText:
       return IS_ARM(board) ? 1 : 0;
     case HasTopLcd:
@@ -714,11 +716,11 @@ int OpenTxFirmware::getCapability(Capability capability)
     case RtcTime:
       return IS_ARM(board) || IS_2560(board) ? 1 : 0;
     case LuaScripts:
-      return IS_TARANIS(board) && id.contains("lua") ? 7 : 0;
+      return IS_HORUS_OR_TARANIS(board) && id.contains("lua") ? 7 : 0;
     case LuaInputsPerScript:
-      return IS_TARANIS(board) ? 10 : 0;
+      return IS_HORUS_OR_TARANIS(board) ? 10 : 0;
     case LuaOutputsPerScript:
-      return IS_TARANIS(board) ? 6 : 0;
+      return IS_HORUS_OR_TARANIS(board) ? 6 : 0;
     case LimitsPer1000:
     case EnhancedCurves:
       return IS_ARM(board);
@@ -727,9 +729,9 @@ int OpenTxFirmware::getCapability(Capability capability)
     case HasMahPersistent:
       return (IS_ARM(board) ? true : false);
     case MultiposPots:
-      return IS_TARANIS(board) ? 3 : 0;
+      return IS_HORUS_OR_TARANIS(board) ? 3 : 0;
     case MultiposPotsPositions:
-      return IS_TARANIS(board) ? 6 : 0;
+      return IS_HORUS_OR_TARANIS(board) ? 6 : 0;
     case SimulatorVariant:
       if (board == BOARD_STOCK)
         return SIMU_STOCK_VARIANTS;
@@ -745,11 +747,11 @@ int OpenTxFirmware::getCapability(Capability capability)
       return IS_ARM(board) ? 1 : 0;
     case HasInputDiff:
     case HasMixerExpo:
-      return (IS_TARANIS(board) ? true : false);
+      return (IS_HORUS_OR_TARANIS(board) ? true : false);
     case MixersMonitor:
       return id.contains("mixersmon") ? 1 : 0;
     case HasBatMeterRange:
-      return (IS_TARANIS(board) ? true : id.contains("battgraph"));
+      return (IS_HORUS_OR_TARANIS(board) ? true : id.contains("battgraph"));
     case DangerousFunctions:
       return id.contains("danger") ? 1 : 0;
     default:
