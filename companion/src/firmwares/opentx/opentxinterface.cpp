@@ -451,7 +451,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      return (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E  || board == BOARD_TARANIS_X7 || board == BOARD_HORUS);
+      return (board == BOARD_TARANIS_X9D || IS_TARANIS_PLUS(board) || IS_HORUS(board));
     case HasBeeper:
       return (!IS_ARM(board));
     case HasPxxCountry:
@@ -518,7 +518,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Pots:
       if (IS_HORUS(board))
         return 3;
-      else if (board == BOARD_TARANIS_X7)
+      else if (IS_TARANIS_X7(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -529,7 +529,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Sliders:
       if (IS_HORUS(board))
         return 4;
-      else if (board == BOARD_TARANIS_X7)
+      else if (IS_TARANIS_X7(board))
         return 0;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -540,7 +540,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
-      else if (board == BOARD_TARANIS_X7)
+      else if (IS_TARANIS_X7(board))
         return 6;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8;
@@ -549,7 +549,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case SwitchesPositions:
       if (IS_TARANIS_X9E(board))
         return 18 * 3;
-      else if (board == BOARD_TARANIS_X7)
+      else if (IS_TARANIS_X7(board))
         return 6 * 3;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8 * 3;
@@ -596,7 +596,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_HORUS(board) || id.contains("haptic"));
+      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9E(board) || IS_HORUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board))
         return 1;
@@ -1048,7 +1048,7 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
     std::cout << " wrong variant (" << variant << ")";
     return false;
   }
-  else if (board == BOARD_TARANIS_X9E) {
+  else if (IS_TARANIS_X9E(board)) {
     if (variant != TARANIS_X9E_VARIANT) {
       std::cout << " wrong variant (" << variant << ")";
       return false;
