@@ -46,15 +46,6 @@ const char * Er9xInterface::getName()
   return "Er9x";
 }
 
-int Er9xInterface::getEEpromSize()
-{
-  QString avrMCU = g.mcu();
-  if (avrMCU==QString("m128")) {
-    return 2*EESIZE_STOCK;
-  }
-  return EESIZE_STOCK;
-}
-
 inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
 {
   for (int i=0; i<2; i++) {
@@ -122,7 +113,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != getEEpromSize()) {
+  if (size != getEEpromSize(BOARD_STOCK)) {
     std::cout << "wrong size\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();

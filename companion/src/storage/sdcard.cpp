@@ -57,3 +57,9 @@ bool SdcardFormat::writeFile(const QByteArray & data, const QString & filename)
   qDebug() << "File" << path << "written, size:" << data.size();
   return true;
 }
+
+bool SdcardStorageFactory::probe(const QString & path)
+{
+  return QDir(path).exists();
+}
+

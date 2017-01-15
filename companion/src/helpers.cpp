@@ -842,7 +842,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
     else if (board == BOARD_FLAMENCO) {
       dialog = new SimulatorDialogFlamenco(parent, simulator, flags);
-      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+      QByteArray eeprom(getEEpromSize(board), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
       dialog->start(eeprom);
     }
@@ -856,13 +856,13 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
         }
       }
       dialog = new SimulatorDialogTaranis(parent, simulator, flags);
-      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+      QByteArray eeprom(getEEpromSize(board), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
       dialog->start(eeprom);
     }
     else {
       dialog = new SimulatorDialog9X(parent, simulator, flags);
-      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
+      QByteArray eeprom(getEEpromSize(board), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData, 0, firmware->getCapability(SimulatorVariant));
       dialog->start(eeprom);
     }

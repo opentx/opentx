@@ -20,7 +20,6 @@
 
 #include "hexeeprom.h"
 #include <QFile>
-#include <QDebug>
 #include "eeprominterface.h"
 #include "hexinterface.h"
 
@@ -44,4 +43,21 @@ bool HexEepromFormat::load(RadioData & radioData)
   eeprom.resize(eeprom_size);
   
   return extract(radioData, eeprom);
+}
+
+bool HexEepromFormat::writeToFile(const uint8_t * eeprom, uint32_t size)
+{
+  QFile file(filename);
+  if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    setError(QObject::tr("Cannot open file %1:\n%2.").arg(filename).arg(file.errorString()));
+    return false;
+  }
+  
+  QTextStream outputStream(&file);
+  if (!HexInterface(outputStream).save(eeprom, size)) {
+    setError(QObject::tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
+    return false;
+  }
+  
+  return true;
 }

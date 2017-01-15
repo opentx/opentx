@@ -48,11 +48,6 @@ const char * Ersky9xInterface::getName()
   return "Ersky9x";
 }
 
-int Ersky9xInterface::getEEpromSize()
-{
-  return EESIZE_SKY9X;
-}
-
 inline void applyStickModeToModel(Ersky9xModelData_v10 & model, unsigned int mode)
 {
   for (int i=0; i<2; i++) {

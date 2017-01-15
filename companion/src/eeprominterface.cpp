@@ -35,6 +35,32 @@
 
 std::list<QString> EEPROMWarnings;
 
+int getEEpromSize(BoardEnum board)
+{
+  switch (board) {
+    case BOARD_STOCK:
+      return EESIZE_STOCK;
+    case BOARD_M128:
+      return EESIZE_M128;
+    case BOARD_MEGA2560:
+    case BOARD_GRUVIN9X:
+      return EESIZE_GRUVIN9X;
+    case BOARD_SKY9X:
+      return EESIZE_SKY9X;
+    case BOARD_9XRPRO:
+    case BOARD_AR9X:
+      return EESIZE_9XRPRO;
+    case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
+    case BOARD_TARANIS_X9E:
+    case BOARD_FLAMENCO:
+      return EESIZE_TARANIS;
+    default:
+      return 0; // unlimited
+  }
+}
+
 const uint8_t chout_ar[] = { // First number is 0..23 -> template setup,  Second is relevant channel out
   1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
   2,1,3,4 , 2,1,4,3 , 2,3,1,4 , 2,3,4,1 , 2,4,1,3 , 2,4,3,1,

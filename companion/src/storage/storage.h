@@ -25,6 +25,20 @@
 #include <QDebug>
 #include "radiodata.h"
 
+enum StorageType
+{
+  STORAGE_TYPE_UNKNOWN,
+  STORAGE_TYPE_BIN,
+  STORAGE_TYPE_HEX,
+  STORAGE_TYPE_EEPE,
+  STORAGE_TYPE_EEPM,
+  STORAGE_TYPE_XML,
+  STORAGE_TYPE_SDCARD,
+  STORAGE_TYPE_OTX
+};
+
+StorageType getStorageType(const QString & filename);
+
 class StorageFormat
 {
   public:
@@ -35,7 +49,7 @@ class StorageFormat
     }
     
     virtual bool load(RadioData & radioData) = 0;
-    // TODO virtual bool write(const RadioData & radioData) = 0;
+    virtual bool write(const RadioData & radioData) = 0;
 
     QString error() {
       return _error;
@@ -71,7 +85,8 @@ class StorageFactory
     StorageFactory()
     {
     }
-    virtual const char * name() = 0;
+    virtual QString name() = 0;
+    virtual bool probe(const QString & filename) = 0;
     virtual StorageFormat * instance(const QString & filename) = 0;
 };
 
@@ -79,15 +94,20 @@ template <class T>
 class DefaultStorageFactory : public StorageFactory
 {
   public:
-    DefaultStorageFactory(const char * name):
+    DefaultStorageFactory(const QString & name):
       StorageFactory(),
       _name(name)
     {
     }
     
-    virtual const char * name()
+    virtual QString name()
     {
       return _name;
+    }
+    
+    virtual bool probe(const QString & filename)
+    {
+      return filename.toLower().endsWith("." + _name);
     }
     
     virtual StorageFormat * instance(const QString & filename)
@@ -95,12 +115,8 @@ class DefaultStorageFactory : public StorageFactory
       return new T(filename);
     }
     
-    const char * _name;
+    QString _name;
 };
-
-extern QList<StorageFactory *> registeredStorageFactories; // TODO needed?
-
-void registerStorageFactories();
 
 class Storage : public StorageFormat
 {
@@ -111,7 +127,10 @@ class Storage : public StorageFormat
     }
     
     virtual bool load(RadioData & radioData);
+    virtual bool write(const RadioData & radioData);
 };
+
+void registerStorageFactories();
 
 #if 0
 unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);

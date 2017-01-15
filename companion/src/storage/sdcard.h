@@ -38,4 +38,15 @@ class SdcardFormat : public CategorizedStorageFormat
     virtual bool writeFile(const QByteArray & fileData, const QString & fileName);
 };
 
+class SdcardStorageFactory : public DefaultStorageFactory<SdcardFormat>
+{
+  public:
+    SdcardStorageFactory():
+      DefaultStorageFactory<SdcardFormat>("sdcard")
+    {
+    }
+    
+    virtual bool probe(const QString & name);
+};
+
 #endif // _SDCARD_H2_

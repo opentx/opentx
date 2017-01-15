@@ -32,6 +32,9 @@ class HexEepromFormat : public BinEepromFormat
     }
     
     virtual bool load(RadioData & radioData);
+    
+  protected:
+    virtual bool writeToFile(const uint8_t * eeprom, uint32_t size);
 };
 
 #endif // _HEXEEPROM_H_

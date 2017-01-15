@@ -239,7 +239,7 @@ void FlashFirmwareDialog::on_burnButton_clicked()
     }
     // write the customized firmware
     QString tempFile;
-    if (getFileType(fwName) == FILE_TYPE_HEX)
+    if (getStorageType(fwName) == STORAGE_TYPE_HEX)
       tempFile = generateProcessUniqueTempFileName("flash.hex");
     else
       tempFile = generateProcessUniqueTempFileName("flash.bin");

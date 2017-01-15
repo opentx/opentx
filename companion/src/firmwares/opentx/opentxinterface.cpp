@@ -88,32 +88,6 @@ const char * OpenTxEepromInterface::getName()
   }
 }
 
-int OpenTxEepromInterface::getEEpromSize()
-{
-  switch (board) {
-    case BOARD_STOCK:
-      return EESIZE_STOCK;
-    case BOARD_M128:
-      return EESIZE_M128;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return EESIZE_GRUVIN9X;
-    case BOARD_SKY9X:
-      return EESIZE_SKY9X;
-    case BOARD_9XRPRO:
-    case BOARD_AR9X:
-      return EESIZE_9XRPRO;
-    case BOARD_TARANIS_X7:
-    case BOARD_TARANIS_X9D:
-    case BOARD_TARANIS_X9DP:
-    case BOARD_TARANIS_X9E:
-    case BOARD_FLAMENCO:
-      return EESIZE_TARANIS;
-    default:
-      return 0; // unlimited
-  }
-}
-
 uint32_t OpenTxEepromInterface::getFourCC()
 {
   switch (board) {
@@ -267,7 +241,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != getEEpromSize()) {
+  if (size != getEEpromSize(board)) {
     if (size == 4096) {
       int notnull = false;
       for (int i = 2048; i < 4096; i++) {
@@ -287,7 +261,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       }
     }
     else {
-      std::cout << " wrong size (" << size << "/" << getEEpromSize() << ")\n";
+      std::cout << " wrong size (" << size << "/" << getEEpromSize(board) << ")\n";
       errors.set(WRONG_SIZE);
       return errors.to_ulong();
     }
@@ -355,7 +329,7 @@ uint8_t OpenTxEepromInterface::getLastDataVersion(BoardEnum board)
   }
 }
 
-int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t version, uint32_t variant)
+int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, uint8_t version, uint32_t variant)
 {
   EEPROMWarnings.clear();
 
@@ -363,7 +337,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t
     version = getLastDataVersion(board);
   }
 
-  int size = getEEpromSize();
+  int size = getEEpromSize(board);
 
   efile->EeFsCreate(eeprom, size, board, version);
 
@@ -374,14 +348,14 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, RadioData & radioData, uint8_t
     variant |= TARANIS_X9E_VARIANT;
   }
 
-  int result = saveRadioSettings<OpenTxGeneralData>(radioData.generalSettings, board, version, variant);
+  int result = saveRadioSettings<OpenTxGeneralData>((GeneralSettings &)radioData.generalSettings, board, version, variant);
   if (!result) {
     return 0;
   }
 
   for (int i = 0; i < GetCurrentFirmware()->getCapability(Models); i++) {
     if (!radioData.models[i].isEmpty()) {
-      result = saveModel<OpenTxModelData>(i, radioData.models[i], version, variant);
+      result = saveModel<OpenTxModelData>(i, (ModelData &)radioData.models[i], version, variant);
       if (!result) {
         return 0;
       }

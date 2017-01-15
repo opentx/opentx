@@ -48,6 +48,7 @@
 #include "process_sync.h"
 #include "radiointerface.h"
 #include "progressdialog.h"
+#include "storage.h"
 
 #define OPENTX_COMPANION_DOWNLOADS        "http://downloads-22.open-tx.org/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -127,13 +128,13 @@ MainWindow::MainWindow():
     }
     if (strl.count()>1) str = strl[1];
     if (!str.isEmpty()) {
-      int fileType = getFileType(str);
+      int fileType = getStorageType(str);
 
-      if (fileType==FILE_TYPE_HEX) {
+      if (fileType==STORAGE_TYPE_HEX) {
         writeFlash(str);
       }
 
-      if (fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
+      if (fileType==STORAGE_TYPE_EEPE || fileType==STORAGE_TYPE_EEPM || fileType==STORAGE_TYPE_BIN) {
         MdiChild * child = createMdiChild();
         if (child->loadFile(str)) {
           if (!(printing && model >= 0 && model<GetCurrentFirmware()->getCapability(Models) && !printfilename.isEmpty())) {
@@ -823,16 +824,6 @@ void MainWindow::writeBackup()
 {
   FlashEEpromDialog *cd = new FlashEEpromDialog(this);
   cd->exec();
-}
-
-int MainWindow::getFileType(const QString & fullFileName)
-{
-    if(QFileInfo(fullFileName).suffix().toUpper()=="HEX")  return FILE_TYPE_HEX;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="BIN")  return FILE_TYPE_BIN;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="EEPM") return FILE_TYPE_EEPM;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="EEPE") return FILE_TYPE_EEPE;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="XML") return FILE_TYPE_XML;
-    return 0;
 }
 
 void MainWindow::writeFlash(QString fileToFlash)

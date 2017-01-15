@@ -201,14 +201,12 @@ class EEPROMInterface
 
     virtual unsigned long loadxml(RadioData & radioData, QDomDocument &doc) = 0;
 
-    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
+    virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
 
     virtual int getSize(const ModelData &) = 0;
 
     virtual int getSize(const GeneralSettings &) = 0;
 
-    virtual int getEEpromSize() = 0;
-    
   protected:
 
     BoardEnum board;
@@ -218,6 +216,8 @@ class EEPROMInterface
     EEPROMInterface();
 
 };
+
+int getEEpromSize(BoardEnum board);
 
 extern std::list<QString> EEPROMWarnings;
 

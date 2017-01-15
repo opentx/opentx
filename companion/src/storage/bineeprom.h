@@ -32,9 +32,11 @@ class BinEepromFormat : public StorageFormat
     }
     
     virtual bool load(RadioData & radioData);
+    virtual bool write(const RadioData & radioData);
     
   protected:
     bool extract(RadioData & radioData, const QByteArray & eeprom);
+    virtual bool writeToFile(const uint8_t * eeprom, uint32_t size);
 };
 
 #endif // _BINEEPROM_H_

@@ -23,7 +23,26 @@
 #include "otx.h"
 #include "sdcard.h"
 #include "firmwareinterface.h"
-#include <QFile>
+#include "eeprominterface.h"
+
+StorageType getStorageType(const QString & filename)
+{
+  QString suffix = QFileInfo(filename).suffix().toUpper();
+  if (suffix == "HEX")
+    return STORAGE_TYPE_HEX;
+  else if (suffix == "BIN")
+    return STORAGE_TYPE_BIN;
+  else if (suffix == "EEPM")
+    return STORAGE_TYPE_EEPM;
+  else if (suffix == "EEPE")
+    return STORAGE_TYPE_EEPE;
+  else if (suffix == "XML")
+    return STORAGE_TYPE_XML;
+  else if (suffix == "OTX")
+    return STORAGE_TYPE_OTX;
+  else
+    return STORAGE_TYPE_UNKNOWN;
+}
 
 void registerStorageFactory(StorageFactory * factory);
 
@@ -41,7 +60,7 @@ void registerStorageFactories()
   registerStorageFactory(new DefaultStorageFactory<EepeFormat>("eepe"));
   registerStorageFactory(new DefaultStorageFactory<HexEepromFormat>("hex"));
   registerStorageFactory(new DefaultStorageFactory<OtxFormat>("otx"));
-  registerStorageFactory(new DefaultStorageFactory<SdcardFormat>("sdcard"));
+  registerStorageFactory(new SdcardStorageFactory());
 }
 
 bool Storage::load(RadioData & radioData)
@@ -66,7 +85,15 @@ bool Storage::load(RadioData & radioData)
   return false;
 }
 
-#include "eeprominterface.h"
+bool Storage::write(const RadioData & radioData)
+{
+  foreach(StorageFactory * factory, registeredStorageFactories) {
+    if (factory->probe(filename)) {
+      return factory->instance(filename)->write(radioData);
+    }
+  }
+  return false;
+}
 
 bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEprom, const QString & firmwareFilename)
 {

@@ -45,6 +45,41 @@ bool BinEepromFormat::load(RadioData & radioData)
   return extract(radioData, eeprom);
 }
 
+bool BinEepromFormat::write(const RadioData & radioData)
+{
+  bool result;
+  EEPROMInterface * eepromInterface = GetEepromInterface();
+  uint8_t * eeprom = (uint8_t *)malloc(getEEpromSize(eepromInterface->getBoard()));
+  int eeprom_size = eepromInterface->save(eeprom, radioData, 0, GetCurrentFirmware()->getVariantNumber());
+  if (eeprom_size) {
+    result = writeToFile(eeprom, eeprom_size);
+  }
+  else {
+    setError(QObject::tr("Cannot save EEPROM"));
+    result = false;
+  }
+  free(eeprom);
+  return result;
+}
+
+bool BinEepromFormat::writeToFile(const uint8_t * eeprom, uint32_t size)
+{
+  QFile file(filename);
+  if (!file.open(QIODevice::WriteOnly)) {
+    setError(QObject::tr("Cannot open file %1:\n%2.").arg(filename).arg(file.errorString()));
+    return false;
+  }
+  
+  QTextStream outputStream(&file);
+  long len = file.write((char *)eeprom, size);
+  if (len != size) {
+    setError(QObject::tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
+    return false;
+  }
+  
+  return true;
+}
+
 bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
 {
   std::bitset<NUM_ERRORS> errors;

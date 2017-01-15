@@ -33,8 +33,6 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual ~OpenTxEepromInterface();
 
-    virtual int getEEpromSize();
-
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
     
     bool loadModelFromBackup(ModelData & model, const uint8_t * data, unsigned int size, uint8_t version, uint32_t variant);
@@ -43,7 +41,7 @@ class OpenTxEepromInterface : public EEPROMInterface
 
     virtual unsigned long loadxml(RadioData & radioData, QDomDocument & doc);
     
-    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0);
+    virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0);
 
     virtual int getSize(const ModelData &);
 
