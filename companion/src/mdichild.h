@@ -64,10 +64,11 @@ class MdiChild : public QWidget
   protected:
     void closeEvent(QCloseEvent * event);
 
-  private slots:
+  protected slots:
     void documentWasModified();
     void on_simulateButton_clicked();
     void on_radioSettings_clicked();
+    void setDefault();
   
   public slots:
     void showModelsListContextMenu(const QPoint & pos);

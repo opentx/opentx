@@ -150,7 +150,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
     contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(duplicate()), tr("Ctrl+U"));
     contextMenu.addSeparator();
-    contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setdefault()));
+    contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setDefault()));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("print.png"), tr("P&rint model"), this, SLOT(print()), QKeySequence(tr("Ctrl+P")));
     contextMenu.addSeparator();
@@ -312,7 +312,6 @@ void MdiChild::keyPressEvent(QKeyEvent * event)
   }
 }
 
-
 void MdiChild::on_simulateButton_clicked()
 {
   radioSimulate();
@@ -320,7 +319,7 @@ void MdiChild::on_simulateButton_clicked()
 
 void MdiChild::checkAndInitModel(int row)
 {
-  ModelData &model = radioData.models[row];
+  ModelData & model = radioData.models[row];
   if (model.isEmpty()) {
     model.setDefaultValues(row, radioData.generalSettings);
     setModified();
@@ -350,6 +349,15 @@ void MdiChild::modelEdit()
   t->show();
   QApplication::restoreOverrideCursor();
   gStopwatch.report("ModelEdit shown");
+}
+
+void MdiChild::setDefault()
+{
+  int row = getCurrentRow();
+  if (!radioData.models[row].isEmpty() && radioData.generalSettings.currModelIndex != (unsigned)row) {
+    radioData.setCurrentModel(row);
+    setModified();
+  }
 }
 
 void MdiChild::wizardEdit()
@@ -453,6 +461,7 @@ bool MdiChild::saveFile(const QString & filename, bool setCurrent)
     path.replace(".eepe", ".bin");
   }
   
+  radioData.fixModelFilenames();
   Storage storage(path);
   bool result = storage.write(radioData);
   

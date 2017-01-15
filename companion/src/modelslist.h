@@ -136,7 +136,7 @@ public slots:
     void LoadBackup();
     void OpenWizard();
     void duplicate();
-    void setdefault();
+    
     void deleteSelected(bool ask);
     void confirmDelete();
     void onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *);

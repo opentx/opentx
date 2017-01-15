@@ -1269,6 +1269,36 @@ class RadioData {
       strcpy(generalSettings.currModelFilename, models[index].filename);
     }
     
+    void fixModelFilename(unsigned int index)
+    {
+      ModelData & model = models[index];
+      QString filename(model.filename);
+      bool ok = filename.endsWith(".bin");
+      if (ok) {
+        if (filename.startsWith("model") && filename.mid(5, filename.length()-9).toInt() > 0) {
+          ok = false;
+        }
+      }
+      if (ok) {
+        for (unsigned i=0; i<index; i++) {
+          if (strcmp(models[i].filename, model.filename) == 0) {
+            ok = false;
+            break;
+          }
+        }
+      }
+      if (!ok) {
+        sprintf(model.filename, "model%d.bin", index+1);
+      }
+    }
+    
+    void fixModelFilenames()
+    {
+      for (unsigned int i=0; i<models.size(); i++) {
+        fixModelFilename(i);
+      }
+    }
+    
     QString getNextModelFilename()
     {
       char filename[sizeof(ModelData::filename)];

@@ -329,18 +329,6 @@ ModelsListWidget::ModelsListWidget(QWidget * parent):
   active_highlight_color = palette().color(QPalette::Active, QPalette::Highlight);
 }
 
-void ModelsListWidget::setdefault()
-{
-  if (currentRow() > 0) {
-    unsigned int currModel = currentRow() - 1;
-    if (!radioData->models[currModel].isEmpty() && radioData->generalSettings.currModelIndex != currModel) {
-      radioData->setCurrentModel(currModel);
-      refreshList();
-      ((MdiChild *) parent())->setModified();
-    }
-  }
-}
-
 void ModelsListWidget::mousePressEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton)
