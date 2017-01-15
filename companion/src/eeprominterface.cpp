@@ -1860,12 +1860,12 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
     case MM_RF_PROTO_SYMAX:
     case MM_RF_PROTO_KN:
     case MM_RF_PROTO_SLT:
-    case MM_RF_PROTO_Q2X2:
     case MM_RF_PROTO_FY326:
     case MM_RF_PROTO_BAYANG:
     case MM_RF_PROTO_V2X2:
       return 2;
 
+    case MM_RF_PROTO_Q2X2:
     case MM_RF_PROTO_CG023:
       return 3;
 
@@ -1880,6 +1880,9 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
     case MM_RF_PROTO_MJXQ:
     case MM_RF_PROTO_YD717:
       return 5;
+
+    case MM_RF_PROTO_WALKERA_2x01:
+      return 6;
 
     case MM_RF_PROTO_CX10:
       return 8;
