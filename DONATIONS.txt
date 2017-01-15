@@ -1079,3 +1079,5 @@ RCdiy
 Joseph S Robinson
 Jack Dunkley
 Hannes Niethammer
+Thierry Laligand
+Pierre Duvezin-Caubet
