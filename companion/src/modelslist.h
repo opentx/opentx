@@ -21,15 +21,14 @@
 #ifndef _MODELSLIST_H_
 #define _MODELSLIST_H_
 
-#include <QtWidgets>
 #include "eeprominterface.h"
+#include <QtWidgets>
 
 struct CurrentSelection
 {
   QTreeWidgetItem * current_item;
   bool selected[CPN_MAX_MODELS+1];
 };
-
 
 class TreeItem
 {

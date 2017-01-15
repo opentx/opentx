@@ -62,6 +62,9 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
           return false;
         }
         strncpy(radioData.models[modelIndex].filename, line.data(), sizeof(radioData.models[modelIndex].filename));
+        if (strcmp(radioData.generalSettings.currModelFilename, line.data()) == 0) {
+          radioData.generalSettings.currModelIndex = modelIndex;
+        }
         radioData.models[modelIndex].category = categoryIndex;
         radioData.models[modelIndex].used = true;
         modelIndex++;

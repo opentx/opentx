@@ -126,16 +126,24 @@ int TreeModel::columnCount(const QModelIndex & /* parent */) const
   return rootItem->columnCount();
 }
 
-QVariant TreeModel::data(const QModelIndex &index, int role) const
+QVariant TreeModel::data(const QModelIndex & index, int role) const
 {
   if (!index.isValid())
     return QVariant();
   
-  if (role != Qt::DisplayRole && role != Qt::EditRole)
+  if (role != Qt::DisplayRole && role != Qt::EditRole && role != Qt::FontRole) {
     return QVariant();
+  }
   
-  TreeItem *item = getItem(index);
+  TreeItem * item = getItem(index);
   
+  if (role == Qt::FontRole) {
+    if (item->getModelIndex() == (int)radioData->generalSettings.currModelIndex) {
+      QFont font;
+      font.setBold(true);
+      return font;
+    }
+  }
   return item->data(index.column());
 }
 
@@ -150,9 +158,10 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 TreeItem * TreeModel::getItem(const QModelIndex &index) const
 {
   if (index.isValid()) {
-    TreeItem *item = static_cast<TreeItem*>(index.internalPointer());
-    if (item)
+    TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+    if (item) {
       return item;
+    }
   }
   return rootItem;
 }
@@ -171,9 +180,9 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
   if (parent.isValid() && parent.column() != 0)
     return QModelIndex();
   
-  TreeItem *parentItem = getItem(parent);
+  TreeItem * parentItem = getItem(parent);
   
-  TreeItem *childItem = parentItem->child(row);
+  TreeItem * childItem = parentItem->child(row);
   if (childItem)
     return createIndex(row, column, childItem);
   else
@@ -197,7 +206,7 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 
 bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
 {
-  TreeItem *parentItem = getItem(parent);
+  TreeItem * parentItem = getItem(parent);
   bool success = true;
   
   beginRemoveRows(parent, position, position + rows - 1);
