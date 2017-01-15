@@ -260,15 +260,15 @@ void displayTopBar()
     x -= 12;
   }
 
-  if (TRAINER_CONNECTED()) {
-    if (SLAVE_MODE()) {
+  if (SLAVE_MODE()) {
+    if (TRAINER_CONNECTED()) {
       LCD_NOTIF_ICON(x, ICON_TRAINEE);
       x -= 12;
     }
-    else if (IS_TRAINER_INPUT_VALID()) {
-      LCD_NOTIF_ICON(x, ICON_TRAINER);
-      x -= 12;
-    }
+  }
+  else if (IS_TRAINER_INPUT_VALID()) {
+    LCD_NOTIF_ICON(x, ICON_TRAINER);
+    x -= 12;
   }
 
   if (isFunctionActive(FUNCTION_LOGS)) {
