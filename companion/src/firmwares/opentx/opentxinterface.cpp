@@ -451,7 +451,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       else
         return id.contains("imperial") ? 1 : 0;
     case ModelImage:
-      return (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E  || board == BOARD_HORUS);
+      return (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E  || board == BOARDTARANIS_X7 || board == BOARD_HORUS);
     case HasBeeper:
       return (!IS_ARM(board));
     case HasPxxCountry:
