@@ -28,14 +28,14 @@
 bool BinEepromFormat::load(RadioData & radioData)
 {
   QFile file(filename);
-  
+
   int size = file.size();
-  
+
   if (!file.open(QFile::ReadOnly)) {
     qDebug() << "Unable to open" << filename << file.errorString();
     return false;
   }
-  
+
   QByteArray eeprom(size, 0);
   int result = file.read((char *)eeprom.data(), size);
   if (result != size) {
@@ -70,21 +70,21 @@ bool BinEepromFormat::writeToFile(const uint8_t * eeprom, uint32_t size)
     setError(QObject::tr("Cannot open file %1:\n%2.").arg(filename).arg(file.errorString()));
     return false;
   }
-  
+
   QTextStream outputStream(&file);
-  long len = file.write((char *)eeprom, size);
-  if (len != size) {
+  qint64 len = file.write((char *)eeprom, size);
+  if (len != qint64(size)) {
     setError(QObject::tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
     return false;
   }
-  
+
   return true;
 }
 
 bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
 {
   std::bitset<NUM_ERRORS> errors;
-    
+
   foreach(EEPROMInterface * eepromInterface, eepromInterfaces) {
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, (uint8_t *)eeprom.data(), eeprom.size()));
     if (result.test(ALL_OK)) {
@@ -97,7 +97,7 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
       errors |= result;
     }
   }
-  
+
   setError(QObject::tr("Invalid EEPROM File %1: %2").arg(filename).arg(errors.to_ulong()));
   return false;
 }
