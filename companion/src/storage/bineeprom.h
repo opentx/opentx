@@ -18,29 +18,25 @@
  * GNU General Public License for more details.
  */
 
-#include "releasenotesdialog.h"
-#include "ui_htmldialog.h"
-#include <QFile>
+#ifndef _BINEEPROM_H_
+#define _BINEEPROM_H_
 
-ReleaseNotesDialog::ReleaseNotesDialog(QWidget * parent) :
-  QDialog(parent),
-  ui(new Ui::HtmlDialog)
+#include "storage.h"
+
+class BinEepromFormat : public StorageFormat
 {
-  ui->setupUi(this);
+  public:
+    BinEepromFormat(const QString & filename):
+      StorageFormat(filename)
+    {
+    }
+    
+    virtual bool load(RadioData & radioData);
+    virtual bool write(const RadioData & radioData);
+    
+  protected:
+    bool extract(RadioData & radioData, const QByteArray & eeprom);
+    virtual bool writeToFile(const uint8_t * eeprom, uint32_t size);
+};
 
-  setWindowTitle(tr("Companion Release Notes"));
-  setWindowIcon(CompanionIcon("changelog.png"));
-
-  QFile file(":/releasenotes.txt");
-  if (file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-    ui->textEditor->setHtml(file.readAll());
-    ui->textEditor->setOpenExternalLinks(true);
-  }
-  ui->textEditor->scroll(0, 0);
-  ui->textEditor->setOpenExternalLinks(true);
-}
-
-ReleaseNotesDialog::~ReleaseNotesDialog()
-{
-  delete ui;
-}
+#endif // _BINEEPROM_H_

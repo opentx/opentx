@@ -18,10 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include <QtGui>
-#include <QNetworkProxyFactory>
-#include <QFileInfo>
-#include <QDesktopServices>
 #include "mainwindow.h"
 #include "mdichild.h"
 #include "burnconfigdialog.h"
@@ -48,7 +44,11 @@
 #include "process_sync.h"
 #include "radiointerface.h"
 #include "progressdialog.h"
-#include "storage_sdcard.h"
+#include "storage.h"
+#include <QtGui>
+#include <QNetworkProxyFactory>
+#include <QFileInfo>
+#include <QDesktopServices>
 
 #define OPENTX_COMPANION_DOWNLOADS        "http://downloads-22.open-tx.org/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
@@ -128,22 +128,22 @@ MainWindow::MainWindow():
     }
     if (strl.count()>1) str = strl[1];
     if (!str.isEmpty()) {
-      int fileType = getFileType(str);
+      int fileType = getStorageType(str);
 
-      if (fileType==FILE_TYPE_HEX) {
+      if (fileType==STORAGE_TYPE_HEX) {
         writeFlash(str);
       }
 
-      if (fileType==FILE_TYPE_EEPE || fileType==FILE_TYPE_EEPM || fileType==FILE_TYPE_BIN) {
-        MdiChild *child = createMdiChild();
+      if (fileType==STORAGE_TYPE_EEPE || fileType==STORAGE_TYPE_EEPM || fileType==STORAGE_TYPE_BIN) {
+        MdiChild * child = createMdiChild();
         if (child->loadFile(str)) {
-          if (!(printing && (model >=0 && model<GetEepromInterface()->getMaxModels()) && !printfilename.isEmpty()  )) {
+          if (!(printing && model >= 0 && model<GetCurrentFirmware()->getCapability(Models) && !printfilename.isEmpty())) {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
           }
           else {
             child->show();
-            child->print(model,printfilename);
+            child->print(model, printfilename);
             child->close();
           }
         }
@@ -729,14 +729,15 @@ void MainWindow::paste()
 
 void MainWindow::writeEeprom()
 {
-    if (activeMdiChild())
-      activeMdiChild()->writeEeprom();
+  if (activeMdiChild())
+    activeMdiChild()->writeEeprom();
 }
 
 void MainWindow::simulate()
 {
-    if (activeMdiChild())
-      activeMdiChild()->simulate();
+  if (activeMdiChild()) {
+    activeMdiChild()->radioSimulate();
+  }
 }
 
 
@@ -754,49 +755,13 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-  if(GetCurrentFirmware()->getBoard()== BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
-    // just an example
-    QString path = findMassstoragePath("RADIO");
-    if (path.isEmpty()) {
-      qDebug() << "Horus card not found";
-      return;
-    }
-
-    QString realPath = path.remove(path.size()- 5, 5);
-
-    qDebug() << "Reading files from" << realPath;
-    StorageSdcard storage;
-    storage.read(realPath);
-
-    // display models.txt
-    QString modelList = QString(storage.modelList);
-    qDebug() << "Models: size" << modelList.size() << "contents" << modelList;
-
-    // info about radio.bin
-    qDebug() << "Radio settings:" << storage.radio.size();
-
-    // info about all models
-    QList<QString> models = storage.getModelsFileNames();
-    qDebug() << "We have" << models.size() << "models:";
-    foreach(QString filename, models) {
-      QList<ModelFile>::const_iterator i = storage.getModelIterator(filename);
-      if (i != storage.models.end()) {
-        qDebug() << "\tModel:" << i->filename << "size" << i->data.size();
-      }
-    }
-
-    for (QList<ModelFile>::iterator i = storage.models.begin(); i != storage.models.end(); ++i) {
-    }
-
-
-    // for test immediately save to current dir
-    storage.write("./");
-
+  if (GetCurrentFirmware()->getBoard()== BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
+    // TODO
   }
   else {
     QString tempFile;
 
-    EEPROMInterface *eepromInterface = GetEepromInterface();
+    EEPROMInterface * eepromInterface = GetEepromInterface();
 
     if (IS_ARM(eepromInterface->getBoard()))
       tempFile = generateProcessUniqueTempFileName("temp.bin");
@@ -859,16 +824,6 @@ void MainWindow::writeBackup()
 {
   FlashEEpromDialog *cd = new FlashEEpromDialog(this);
   cd->exec();
-}
-
-int MainWindow::getFileType(const QString & fullFileName)
-{
-    if(QFileInfo(fullFileName).suffix().toUpper()=="HEX")  return FILE_TYPE_HEX;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="BIN")  return FILE_TYPE_BIN;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="EEPM") return FILE_TYPE_EEPM;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="EEPE") return FILE_TYPE_EEPE;
-    if(QFileInfo(fullFileName).suffix().toUpper()=="XML") return FILE_TYPE_XML;
-    return 0;
 }
 
 void MainWindow::writeFlash(QString fileToFlash)

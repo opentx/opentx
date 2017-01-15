@@ -787,7 +787,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::update()
 {
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     if (model->moduleData[0].protocol == PULSES_OFF && model->moduleData[1].protocol == PULSES_PPM) {
       ui->telemetryProtocol->setEnabled(true);
     }
@@ -820,7 +820,7 @@ void TelemetryPanel::setup()
     if (IS_ARM(firmware->getBoard())) {
       ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
       ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-      if (IS_9XRPRO(firmware->getBoard()) || 
+      if (IS_9XRPRO(firmware->getBoard()) ||
          (IS_TARANIS(firmware->getBoard()) && generalSettings.hw_uartMode == 2)) {
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
@@ -835,7 +835,7 @@ void TelemetryPanel::setup()
 
     ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
-    if (!IS_TARANIS(firmware->getBoard())) {
+    if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       ui->rssiAlarm1CB->setCurrentIndex(model->frsky.rssiAlarms[0].level);
       ui->rssiAlarm2CB->setCurrentIndex(model->frsky.rssiAlarms[1].level);
     }
@@ -890,7 +890,7 @@ void TelemetryPanel::setup()
     else {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High (not supported)"));
     }
-    
+
     ui->variousGB->hide();
     if (!IS_ARM(firmware->getBoard())) {
       if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {

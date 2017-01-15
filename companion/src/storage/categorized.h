@@ -18,29 +18,25 @@
  * GNU General Public License for more details.
  */
 
-#include "releasenotesdialog.h"
-#include "ui_htmldialog.h"
-#include <QFile>
+#ifndef _CATEGORIZED_H_
+#define _CATEGORIZED_H_
 
-ReleaseNotesDialog::ReleaseNotesDialog(QWidget * parent) :
-  QDialog(parent),
-  ui(new Ui::HtmlDialog)
+#include "storage.h"
+
+class CategorizedStorageFormat : public StorageFormat
 {
-  ui->setupUi(this);
+  public:
+    CategorizedStorageFormat(const QString & filename):
+      StorageFormat(filename)
+    {
+    }
+    
+    virtual bool load(RadioData & radioData);
+    virtual bool write(const RadioData & radioData);
 
-  setWindowTitle(tr("Companion Release Notes"));
-  setWindowIcon(CompanionIcon("changelog.png"));
+  protected:
+    virtual bool loadFile(QByteArray & fileData, const QString & fileName) = 0;
+    virtual bool writeFile(const QByteArray & fileData, const QString & fileName) = 0;
+};
 
-  QFile file(":/releasenotes.txt");
-  if (file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-    ui->textEditor->setHtml(file.readAll());
-    ui->textEditor->setOpenExternalLinks(true);
-  }
-  ui->textEditor->scroll(0, 0);
-  ui->textEditor->setOpenExternalLinks(true);
-}
-
-ReleaseNotesDialog::~ReleaseNotesDialog()
-{
-  delete ui;
-}
+#endif // _CATEGORIZED_H_

@@ -18,30 +18,35 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _XMLINTERFACE_H_
-#define _XMLINTERFACE_H_
+#ifndef _SDCARD_H2_
+#define _SDCARD_H2_
 
-#include "eeprominterface.h"
-#include <QTextStream>
-#include <QDomDocument>
+#include "categorized.h"
 
-class XmlInterface
+class SdcardFormat : public CategorizedStorageFormat
 {
   public:
-
-    XmlInterface(QTextStream & stream);
-
-    bool load(RadioData &);
+    SdcardFormat(const QString & filename):
+      CategorizedStorageFormat(filename)
+    {
+    }
     
-    virtual bool loadxml(RadioData & radioData, QDomDocument & doc);
-
-    bool save(RadioData &radioData);
-
+    virtual bool write(const RadioData & radioData);
+  
   protected:
-
-    QTextStream & stream;
-
-
+    virtual bool loadFile(QByteArray & fileData, const QString & fileName);
+    virtual bool writeFile(const QByteArray & fileData, const QString & fileName);
 };
 
-#endif // _XMLINTERFACE_H_
+class SdcardStorageFactory : public DefaultStorageFactory<SdcardFormat>
+{
+  public:
+    SdcardStorageFactory():
+      DefaultStorageFactory<SdcardFormat>("sdcard")
+    {
+    }
+    
+    virtual bool probe(const QString & name);
+};
+
+#endif // _SDCARD_H2_

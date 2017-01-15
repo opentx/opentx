@@ -84,7 +84,7 @@ int HexInterface::load(uint8_t *data, int maxsize)
 }
 
 
-bool HexInterface::save(uint8_t *data, const int size)
+bool HexInterface::save(const uint8_t * data, const int size)
 {
   int addr = 0;
   int nextbank = 1;
@@ -103,7 +103,7 @@ bool HexInterface::save(uint8_t *data, const int size)
   return true;
 }
 
-QString HexInterface::iHEXLine(quint8 * data, quint32 addr, quint8 len)
+QString HexInterface::iHEXLine(const quint8 * data, quint32 addr, quint8 len)
 {
   unsigned int bankaddr;
   bankaddr=addr&0xffff;

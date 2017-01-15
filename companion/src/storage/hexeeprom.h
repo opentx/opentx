@@ -18,29 +18,23 @@
  * GNU General Public License for more details.
  */
 
-#include "releasenotesdialog.h"
-#include "ui_htmldialog.h"
-#include <QFile>
+#ifndef _HEXEEPROM_H_
+#define _HEXEEPROM_H_
 
-ReleaseNotesDialog::ReleaseNotesDialog(QWidget * parent) :
-  QDialog(parent),
-  ui(new Ui::HtmlDialog)
+#include "bineeprom.h"
+
+class HexEepromFormat : public BinEepromFormat
 {
-  ui->setupUi(this);
+  public:
+    HexEepromFormat(const QString & filename):
+      BinEepromFormat(filename)
+    {
+    }
+    
+    virtual bool load(RadioData & radioData);
+    
+  protected:
+    virtual bool writeToFile(const uint8_t * eeprom, uint32_t size);
+};
 
-  setWindowTitle(tr("Companion Release Notes"));
-  setWindowIcon(CompanionIcon("changelog.png"));
-
-  QFile file(":/releasenotes.txt");
-  if (file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-    ui->textEditor->setHtml(file.readAll());
-    ui->textEditor->setOpenExternalLinks(true);
-  }
-  ui->textEditor->scroll(0, 0);
-  ui->textEditor->setOpenExternalLinks(true);
-}
-
-ReleaseNotesDialog::~ReleaseNotesDialog()
-{
-  delete ui;
-}
+#endif // _HEXEEPROM_H_

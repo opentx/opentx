@@ -163,8 +163,7 @@ class MainWindow : public QMainWindow
     void updateIconSizeActions();
     void updateLanguageActions();
     void updateIconThemeActions();
-
-    int getFileType(const QString & fullFileName);
+    
     QString Theme;
     QString ISize;
     QString strippedName(const QString & fullFileName);

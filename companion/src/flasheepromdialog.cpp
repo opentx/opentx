@@ -22,12 +22,10 @@
 #include "ui_flasheepromdialog.h"
 #include "eeprominterface.h"
 #include "helpers.h"
-#include "firmwareinterface.h"
-#include "hexinterface.h"
+#include "storage.h"
 #include "appdata.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
-#include "storage_eeprom.h"
 #include "splashlibrarydialog.h"
 
 FlashEEpromDialog::FlashEEpromDialog(QWidget *parent, const QString &filename):
@@ -107,88 +105,17 @@ void FlashEEpromDialog::on_eepromLoad_clicked()
   }
 }
 
-int FlashEEpromDialog::getEEpromVersion(const QString &filename)
+int FlashEEpromDialog::getEEpromVersion(const QString & filename)
 {
   int result = -1;
-  int eeprom_size = 0;
-
-  if (filename.isEmpty()) {
-    return -1;
-  }
-
-  QFile file(filename);
-  if (!file.exists()) {
-    QMessageBox::warning(this, tr("Error"), tr("Unable to find file %1!").arg(filename));
-    return -1;
-  }
-
-  QByteArray eeprom(EESIZE_MAX, 0);
-  int fileType = getFileType(filename);
-
-#if 0
-  if (fileType==FILE_TYPE_XML) {
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-      QMessageBox::critical(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
-      return -1;
-    }
-    QTextStream inputStream(&file);
-    XmlInterface(inputStream).load(testData);
-  }
-  else
-#endif
-  if (fileType==FILE_TYPE_HEX || fileType==FILE_TYPE_EEPE) {
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, tr("Error"),tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
-        return -1;
-    }
-    QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
-    bool xmlOK = doc.setContent(&file);
-    if (xmlOK) {
-      RadioData * radioData = new RadioData();
-      std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEepromXml(*radioData, doc));
-      if (!errors.test(ALL_OK)) {
-        QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
-      }
-      else {
-        result = radioData->generalSettings.version;
-      }
-      delete radioData;
-      return result;
-    }
-    file.reset();
-
-    QTextStream inputStream(&file);
-    if (fileType==FILE_TYPE_EEPE) {  // read EEPE file header
-      QString hline = inputStream.readLine();
-      if (hline!=EEPE_EEPROM_FILE_HEADER) {
-        QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings File %1").arg(filename));
-        return -1;
-      }
-    }
-    eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), EESIZE_MAX);
-  }
-  else if (fileType==FILE_TYPE_BIN) { //read binary
-    eeprom_size = file.size();
-    if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
-      QMessageBox::warning(this, tr("Error"), tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
-      return -1;
-    }
-    int len = file.read(eeprom.data(), eeprom_size);
-    if (len != eeprom_size) {
-      QMessageBox::warning(this, tr("Error"), tr("Error reading file %1:\n%2.").arg(filename).arg(file.errorString()));
-      return -1;
-    }
-  }
-
-  RadioData * radioData = new RadioData();
-  std::bitset<NUM_ERRORS> errors((unsigned long long)LoadEeprom(*radioData, (const uint8_t *)eeprom.data(), eeprom_size));
-  if (eeprom_size == 0 || !errors.test(ALL_OK)) {
-    QMessageBox::warning(this, tr("Error"), tr("Invalid Models and Settings file %1").arg(filename));
-  }
-  else {
+  QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
+  Storage storage(filename);
+  if (storage.load(*radioData)) {
     result = radioData->generalSettings.version;
   }
-  delete radioData;
+  else {
+    QMessageBox::warning(this, tr("Error"), storage.error());
+  }
   return result;
 }
 
@@ -196,16 +123,16 @@ bool FlashEEpromDialog::patchCalibration()
 {
   QString calib = g.profile[g.id()].stickPotCalib();
   QString trainercalib = g.profile[g.id()].trainerCalib();
-  int potsnum=GetCurrentFirmware()->getCapability(Pots);
-  int8_t txVoltageCalibration=(int8_t) g.profile[g.id()].txVoltageCalibration();
-  int8_t txCurrentCalibration=(int8_t) g.profile[g.id()].txCurrentCalibration();
-  int8_t PPM_Multiplier=(int8_t) g.profile[g.id()].ppmMultiplier();
+  int potsnum = GetCurrentFirmware()->getCapability(Pots);
+  int8_t txVoltageCalibration = (int8_t) g.profile[g.id()].txVoltageCalibration();
+  int8_t txCurrentCalibration = (int8_t) g.profile[g.id()].txCurrentCalibration();
+  int8_t PPM_Multiplier = (int8_t) g.profile[g.id()].ppmMultiplier();
 
   if ((calib.length()==(CPN_MAX_STICKS+potsnum)*12) && (trainercalib.length()==16)) {
     QString Byte;
     int16_t byte16;
     bool ok;
-    for (int i=0; i<(CPN_MAX_STICKS+potsnum); i++) {
+    for (int i=0; i<CPN_MAX_STICKS+potsnum; i++) {
       Byte=calib.mid(i*12,4);
       byte16=(int16_t)Byte.toInt(&ok,16);
       if (ok)
@@ -296,7 +223,7 @@ void FlashEEpromDialog::on_burnButton_clicked()
   if (patch) {
     QString filename = generateProcessUniqueTempFileName("temp.bin");
     QFile file(filename);
-    uint8_t *eeprom = (uint8_t*)malloc(GetEepromInterface()->getEEpromSize());
+    uint8_t *eeprom = (uint8_t*)malloc(getEEpromSize(GetCurrentFirmware()->getBoard()));
     int eeprom_size = GetEepromInterface()->save(eeprom, *radioData, 0, GetCurrentFirmware()->getVariantNumber());
     if (!eeprom_size) {
       QMessageBox::warning(this, tr("Error"), tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));

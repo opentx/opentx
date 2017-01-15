@@ -23,22 +23,12 @@
 
 void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
 {
-  bool enabled = false;
-
-  if (IS_TARANIS(firmware->getBoard())) {
-    if (IS_TARANIS_X9E(firmware->getBoard())) {
-      enabled = true;
-      type->addItem(tr("None"), Firmware::SWITCH_NONE);
-    }
-    else if (index < 8) {
-      enabled = true;
-    }
-  }
-
-  if (enabled) {
+  if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Switches)) {
+    type->addItem(tr("None"), Firmware::SWITCH_NONE);
     type->addItem(tr("2 Positions Toggle"), Firmware::SWITCH_TOGGLE);
     type->addItem(tr("2 Positions"), Firmware::SWITCH_2POS);
-    if (threePos) type->addItem(tr("3 Positions"), Firmware::SWITCH_3POS);
+    if (threePos)
+      type->addItem(tr("3 Positions"), Firmware::SWITCH_3POS);
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
   }
@@ -51,20 +41,8 @@ void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *na
 
 void HardwarePanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
 {
-  bool enabled = false;
-
-  if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
-    label->setText(RawSource(SOURCE_TYPE_STICK, index+CPN_MAX_STICKS).toString());
-    enabled = true;
-  }
-  else if (IS_TARANIS_PLUS(firmware->getBoard()) && index < 3) {
-    enabled = true;
-  }
-  else if (IS_TARANIS(firmware->getBoard()) && index < 2) {
-    enabled = true;
-  }
-
-  if (enabled) {
+  if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Pots)) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+index).toString());
     type->addItem(tr("None"), GeneralSettings::POT_NONE);
     type->addItem(tr("Pot with detent"), GeneralSettings::POT_WITH_DETENT);
     type->addItem(tr("Multipos switch"), GeneralSettings::POT_MULTIPOS_SWITCH);
@@ -81,21 +59,8 @@ void HardwarePanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name,
 
 void HardwarePanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
 {
-  bool enabled = false;
-
-  if (IS_TARANIS(firmware->getBoard()) && index < 2) {
-    type->setEnabled(false);
-    enabled = true;
-  }
-  else if (IS_TARANIS_X9E(firmware->getBoard()) && index < 4) {
-    enabled = true;
-  }
-
-  if (IS_TARANIS_X9E(firmware->getBoard())) {
-    label->setText(RawSource(SOURCE_TYPE_STICK, index+CPN_MAX_STICKS+4).toString());
-  }
-
-  if (enabled) {
+  if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Sliders)) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+firmware->getCapability(Pots)+index).toString());
     type->addItem(tr("None"), GeneralSettings::SLIDER_NONE);
     type->addItem(tr("Slider with detent"), GeneralSettings::SLIDER_WITH_DETENT);
     name->setField(generalSettings.sliderName[index], 3, this);
@@ -114,7 +79,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
 {
   ui->setupUi(this);
 
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_STM32(firmware->getBoard())) {
     ui->rudName->setField(generalSettings.stickName[0], 3, this);
     ui->eleName->setField(generalSettings.stickName[1], 3, this);
     ui->thrName->setField(generalSettings.stickName[2], 3, this);

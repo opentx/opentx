@@ -143,8 +143,6 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.preBeep = preBeep;
   result.flashBeep = flashBeep;
   result.splashMode = disableSplashScreen;
-  result.disablePotScroll=(disablePotScroll==1);
-  result.disableBG=(disableBG==1);
   result.templateSetup = templateSetup;
   result.PPM_Multiplier = PPM_Multiplier;
   getEEPROMString(result.ownerName, ownerName, sizeof(ownerName));

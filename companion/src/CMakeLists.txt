@@ -185,7 +185,6 @@ set(companion_MOC_HDRS
   flashfirmwaredialog.h
   flasheepromdialog.h
   downloaddialog.h
-  modelslist.h
   mdichild.h
   mainwindow.h
   radionotfound.h

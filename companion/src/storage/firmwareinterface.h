@@ -36,15 +36,6 @@
 #define ERSKY9X_SPE "SPE"
 #define ERSKY9X_OFFSET (7)
 
-#define FILE_TYPE_BIN  1
-#define FILE_TYPE_HEX  2
-#define FILE_TYPE_EEPE 3
-#define FILE_TYPE_EEPM 4
-#define FILE_TYPE_XML  5
-#define FILE_TYPE_OTX  6
-
-int getFileType(const QString &fullFileName);
-
 class FirmwareInterface
 {
   public:

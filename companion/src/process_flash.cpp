@@ -20,11 +20,11 @@
 
 #include "process_flash.h"
 #include "progresswidget.h"
+#include "eeprominterface.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QProcess>
-#include "eeprominterface.h"
-//#include "firmwareinterface.h"
+#include <QEventLoop>
 
 #if defined _MSC_VER || !defined __GNUC__
 #include <Windows.h>

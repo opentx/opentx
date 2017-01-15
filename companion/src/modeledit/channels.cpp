@@ -28,7 +28,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   displayStep(0.1)
 {
   BoardEnum board = firmware->getBoard();
-  bool allowGVars = (IS_TARANIS(board) || IS_HORUS(board));
+  bool allowGVars = IS_HORUS_OR_TARANIS(board);
   int internalStep = 1;
 
   spinbox->setProperty("index", row);

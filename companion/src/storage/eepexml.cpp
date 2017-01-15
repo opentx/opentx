@@ -18,29 +18,31 @@
  * GNU General Public License for more details.
  */
 
-#include "releasenotesdialog.h"
-#include "ui_htmldialog.h"
-#include <QFile>
+// TODO not enabled for now
 
-ReleaseNotesDialog::ReleaseNotesDialog(QWidget * parent) :
-  QDialog(parent),
-  ui(new Ui::HtmlDialog)
+bool EepeXmlFormat::load(RadioData & radioData)
 {
-  ui->setupUi(this);
-
-  setWindowTitle(tr("Companion Release Notes"));
-  setWindowIcon(CompanionIcon("changelog.png"));
-
-  QFile file(":/releasenotes.txt");
-  if (file.open( QIODevice::ReadOnly | QIODevice::Text ) ) {
-    ui->textEditor->setHtml(file.readAll());
-    ui->textEditor->setOpenExternalLinks(true);
+  QFile file(filename);
+  
+  if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    qDebug() << "Unable to open" << filename << file.errorString();
+    return false;
   }
-  ui->textEditor->scroll(0, 0);
-  ui->textEditor->setOpenExternalLinks(true);
-}
-
-ReleaseNotesDialog::~ReleaseNotesDialog()
-{
-  delete ui;
+  
+  QDomDocument doc(ER9X_EEPROM_FILE_TYPE);
+  bool xmlOK = doc.setContent(&file);
+  if (xmlOK) {
+    std::bitset<NUM_ERRORS> errors((unsigned long long) LoadEepromXml(radioData, doc));
+    if (errors.test(ALL_OK)) {
+      return true;
+    }
+    else {
+      qDebug() << "XML parsing error";
+    }
+  }
+  else {
+    qDebug() << "No XML content";
+  }
+  
+  return false;
 }

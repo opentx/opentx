@@ -18,36 +18,18 @@
  * GNU General Public License for more details.
  */
 
-#include <QtGui>
 #include "hexinterface.h"
 #include "splash.h"
 #include "firmwareinterface.h"
 #include "helpers.h"
+#include "storage.h"
+#include <QtGui>
 
 #define FW_MARK     "FW"
 #define VERS_MARK   "VERS"
 #define DATE_MARK   "DATE"
 #define TIME_MARK   "TIME"
 #define EEPR_MARK   "EEPR"
-
-int getFileType(const QString &fullFileName)
-{
-  QString suffix = QFileInfo(fullFileName).suffix().toUpper();
-  if (suffix == "HEX")
-    return FILE_TYPE_HEX;
-  else if (suffix == "BIN")
-    return FILE_TYPE_BIN;
-  else if (suffix == "EEPM")
-    return FILE_TYPE_EEPM;
-  else if (suffix == "EEPE")
-    return FILE_TYPE_EEPE;
-  else if (suffix == "XML")
-    return FILE_TYPE_XML;
-  else if (suffix == "OTX")
-    return FILE_TYPE_OTX;
-  else
-    return 0;
-}
 
 FirmwareInterface::FirmwareInterface(const QString &filename):
   flash(FSIZE_MAX, 0),
@@ -355,9 +337,9 @@ unsigned int FirmwareInterface::save(QString fileName)
   memcpy(binflash, flash.constData(), flashSize);
   QFile file(fileName);
   
-  int fileType = getFileType(fileName);
+  int fileType = getStorageType(fileName);
 
-  if (fileType == FILE_TYPE_HEX) {
+  if (fileType == STORAGE_TYPE_HEX) {
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) { //reading HEX TEXT file
       free(binflash);
       return -1;

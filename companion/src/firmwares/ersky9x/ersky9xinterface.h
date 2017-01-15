@@ -37,16 +37,11 @@ class Ersky9xInterface : public EEPROMInterface
 
     virtual const char * getName();
     
-    virtual const int  getEEpromSize();
-
-    virtual const int getMaxModels();
-
+    
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
 
     virtual unsigned long loadBackup(RadioData &, const uint8_t * eeprom, int esize, int index);
-
-    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
-
+    
     virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0)
     {
       return 0;
@@ -57,6 +52,8 @@ class Ersky9xInterface : public EEPROMInterface
     virtual int getSize(const GeneralSettings & settings);
 
     virtual int isAvailable(PulsesProtocol proto, int port=0);
+    
+    virtual int getCapability(Capability capability);
 
   protected:
 

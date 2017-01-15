@@ -18,10 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#include <iostream>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
 #include "rlefile.h"
+#include <iostream>
+#include <bitset>
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -46,16 +47,6 @@ Ersky9xInterface::~Ersky9xInterface()
 const char * Ersky9xInterface::getName()
 {
   return "Ersky9x";
-}
-
-const int Ersky9xInterface::getEEpromSize()
-{
-  return EESIZE_SKY9X;
-}
-
-const int Ersky9xInterface::getMaxModels()
-{
-  return 20;
 }
 
 inline void applyStickModeToModel(Ersky9xModelData_v10 & model, unsigned int mode)
@@ -122,6 +113,7 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
+#if 0
 unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying ersky9x xml import... ";
@@ -138,7 +130,7 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
     radioData.generalSettings=ersky9xGeneral;
     std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
   }
-  for(int i=0; i<getMaxModels(); i++) {
+  for(int i=0; i<getCapability(Models); i++) {
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
         std::cout << "ko\n";
@@ -158,6 +150,7 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   errors.set(ALL_OK);
   return errors.to_ulong();
 }
+#endif
 
 unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
@@ -206,14 +199,14 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
   }
   radioData.generalSettings = ersky9xGeneral;
   
-  for (int i=0; i<getMaxModels(); i++) {
+  for (int i=0; i<getCapability(Models); i++) {
     uint8_t buffer[4096];
     uint size;
     memset(buffer,0,sizeof(buffer));
     efile->openRd(FILE_MODEL(i));
     
 //    if (!efile->readRlc2((uint8_t*)&ersky9xModel, sizeof(Ersky9xModelData))) {
-    size=efile->readRlc2(buffer, 4096);
+    size = efile->readRlc2(buffer, 4096);
     if (!size) {
       radioData.models[i].clear();
     }
@@ -317,13 +310,13 @@ QDomElement Ersky9xInterface::getModelDataXML(QDomDocument * qdoc, Ersky9xModelD
 
 bool Ersky9xInterface::loadRadioSettingsDataXML(QDomDocument * qdoc, Ersky9xGeneral * tgen)
 {
-  //look for "GENERAL_DATA" tag
+  // look for "GENERAL_DATA" tag
   QDomElement gde = qdoc->elementsByTagName("GENERAL_DATA").at(0).toElement();
 
   if(gde.isNull()) // couldn't find
     return false;
 
-  //load cdata into tgen
+  // load cdata into tgen
   QDomNode n = gde.elementsByTagName("Data").at(0).firstChild();// get all children in Data
   while (!n.isNull()) {
     if (n.isCDATASection()) {
@@ -335,7 +328,7 @@ bool Ersky9xInterface::loadRadioSettingsDataXML(QDomDocument * qdoc, Ersky9xGene
     }
     n = n.nextSibling();
   }
-  //check version?
+  // check version?
   return true;
 }
 
@@ -345,11 +338,11 @@ bool Ersky9xInterface::loadModelDataXML(QDomDocument * qdoc, ModelData *model, i
   T ersky9xModel;
   memset(&ersky9xModel, 0, sizeof(ersky9xModel));
 
-  //look for MODEL_DATA with modelNum attribute.
+  // look for MODEL_DATA with modelNum attribute.
   //if modelNum = -1 then just pick the first one
   QDomNodeList ndl = qdoc->elementsByTagName("MODEL_DATA");
 
-  //cycle through nodes to find correct model number
+  // cycle through nodes to find correct model number
   QDomNode k = ndl.at(0);
   if (modelNum>=0) {
     while(!k.isNull()) {
@@ -363,7 +356,7 @@ bool Ersky9xInterface::loadModelDataXML(QDomDocument * qdoc, ModelData *model, i
   if (k.isNull()) // couldn't find
     return false;
 
-  //load cdata into tgen
+  // load cdata into tgen
   QDomNode n = k.toElement().elementsByTagName("Data").at(0).firstChild();// get all children in Data
   while (!n.isNull()) {
     if (n.isCDATASection()) {
@@ -379,4 +372,14 @@ bool Ersky9xInterface::loadModelDataXML(QDomDocument * qdoc, ModelData *model, i
   applyStickModeToModel(ersky9xModel, stickMode);
   *model = ersky9xModel;
   return true;
+}
+
+int Ersky9xInterface::getCapability(Capability capability)
+{
+  switch (capability) {
+    case Models:
+      return 20;
+    default:
+      return 0;
+  }
 }
