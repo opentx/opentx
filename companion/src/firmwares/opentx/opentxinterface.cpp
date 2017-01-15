@@ -18,12 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#include <iostream>
-#include <QMessageBox>
 #include "opentxinterface.h"
 #include "opentxeeprom.h"
 #include "rlefile.h"
 #include "appdata.h"
+#include <bitset>
+#include <QMessageBox>
+#include <QTime>
+#include <QUrl>
 
 #define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-22.open-tx.org/firmware"
 #define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/firmware"
@@ -204,13 +206,6 @@ bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, uint
   open9xModel.Export(eeprom);
   int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (const uint8_t *) eeprom.constData(), eeprom.size());
   return (sz == eeprom.size());
-}
-
-unsigned long OpenTxEepromInterface::loadxml(RadioData &radioData, QDomDocument &doc)
-{
-  std::bitset<NUM_ERRORS> errors;
-  errors.set(UNKNOWN_ERROR);
-  return errors.to_ulong();
 }
 
 QList<OpenTxEepromInterface *> opentxEEpromInterfaces;

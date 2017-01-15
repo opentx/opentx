@@ -20,6 +20,7 @@
 
 #include "releasenotesdialog.h"
 #include "ui_htmldialog.h"
+#include <QFile>
 
 ReleaseNotesDialog::ReleaseNotesDialog(QWidget * parent) :
   QDialog(parent),

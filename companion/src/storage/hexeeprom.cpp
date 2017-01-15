@@ -19,9 +19,9 @@
  */
 
 #include "hexeeprom.h"
-#include <QFile>
 #include "eeprominterface.h"
 #include "hexinterface.h"
+#include <QFile>
 
 bool HexEepromFormat::load(RadioData & radioData)
 {

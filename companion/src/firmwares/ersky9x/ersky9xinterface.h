@@ -41,9 +41,7 @@ class Ersky9xInterface : public EEPROMInterface
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
 
     virtual unsigned long loadBackup(RadioData &, const uint8_t * eeprom, int esize, int index);
-
-    virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
-
+    
     virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0)
     {
       return 0;

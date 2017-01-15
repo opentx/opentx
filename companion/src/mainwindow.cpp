@@ -18,10 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include <QtGui>
-#include <QNetworkProxyFactory>
-#include <QFileInfo>
-#include <QDesktopServices>
 #include "mainwindow.h"
 #include "mdichild.h"
 #include "burnconfigdialog.h"
@@ -49,6 +45,10 @@
 #include "radiointerface.h"
 #include "progressdialog.h"
 #include "storage.h"
+#include <QtGui>
+#include <QNetworkProxyFactory>
+#include <QFileInfo>
+#include <QDesktopServices>
 
 #define OPENTX_COMPANION_DOWNLOADS        "http://downloads-22.open-tx.org/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"

@@ -22,14 +22,12 @@
 #define _EEPROMINTERFACE_H_
 
 #include "radiodata.h"
-#include <string.h>
-#include <QStringList>
-#include <QList>
-#include <QtXml> // This should be removed from here, and remove Xml dependency from all libs which don't need it.
-#include <iostream>
-#include <bitset>
 #include "../../radio/src/definitions.h"
 #include "simulatorinterface.h"
+#include <QStringList>
+#include <QList>
+#include <iostream>
+#include <QDebug>
 
 #define EESIZE_STOCK           2048
 #define EESIZE_M128            4096
@@ -198,9 +196,7 @@ class EEPROMInterface
     virtual unsigned long load(RadioData &radioData, const uint8_t * eeprom, int size) = 0;
 
     virtual unsigned long loadBackup(RadioData & radioData, const uint8_t * eeprom, int esize, int index) = 0;
-
-    virtual unsigned long loadxml(RadioData & radioData, QDomDocument &doc) = 0;
-
+    
     virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
 
     virtual int getSize(const ModelData &) = 0;

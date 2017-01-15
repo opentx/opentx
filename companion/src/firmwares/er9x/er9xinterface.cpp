@@ -18,11 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include <iostream>
 #include "er9xinterface.h"
 #include "er9xeeprom.h"
 #include "rlefile.h"
-#include "appdata.h"
+// #include "appdata.h"
+// #include <iostream>
+#include <bitset>
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -78,6 +79,7 @@ inline void applyStickModeToModel(Er9xModelData & model, unsigned int mode)
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
+#if 0
 unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying er9x xml import... ";
@@ -106,6 +108,7 @@ unsigned long Er9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   errors.set(ALL_OK);
   return errors.to_ulong();
 }
+#endif
 
 unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {

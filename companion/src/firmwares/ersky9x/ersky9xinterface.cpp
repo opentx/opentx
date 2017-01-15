@@ -18,10 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#include <iostream>
 #include "ersky9xinterface.h"
 #include "ersky9xeeprom.h"
 #include "rlefile.h"
+#include <iostream>
+#include <bitset>
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -112,6 +113,7 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
   model.swashCollectiveSource = applyStickMode(model.swashCollectiveSource, mode);
 }
 
+#if 0
 unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
   std::cout << "trying ersky9x xml import... ";
@@ -148,6 +150,7 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   errors.set(ALL_OK);
   return errors.to_ulong();
 }
+#endif
 
 unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {

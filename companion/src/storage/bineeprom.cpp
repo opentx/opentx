@@ -19,8 +19,9 @@
  */
 
 #include "bineeprom.h"
-#include <QFile>
 #include "eeprominterface.h"
+#include <QFile>
+#include <bitset>
 
 // TODO should be RleFormat, RawFormat etc.
 

@@ -24,6 +24,7 @@
 #include "sdcard.h"
 #include "firmwareinterface.h"
 #include "eeprominterface.h"
+#include <QFileInfo>
 
 StorageType getStorageType(const QString & filename)
 {

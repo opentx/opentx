@@ -22,6 +22,7 @@
 #define _EEPROMIMPORTEXPORT_H_
 
 #include "customdebug.h"
+#include <QBitArray>
 
 #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 

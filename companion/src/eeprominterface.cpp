@@ -18,11 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include <stdio.h>
-#include <list>
-#include <float.h>
-#include <QtWidgets>
-#include <stdlib.h>
 #include "eeprominterface.h"
 #include "firmwares/er9x/er9xinterface.h"
 #include "firmwares/ersky9x/ersky9xinterface.h"
@@ -32,6 +27,12 @@
 #include "helpers.h"
 #include "wizarddata.h"
 #include "firmwareinterface.h"
+#include <stdio.h>
+#include <list>
+#include <float.h>
+#include <QtWidgets>
+#include <stdlib.h>
+#include <bitset>
 
 std::list<QString> EEPROMWarnings;
 

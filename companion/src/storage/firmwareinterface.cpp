@@ -18,12 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include <QtGui>
 #include "hexinterface.h"
 #include "splash.h"
 #include "firmwareinterface.h"
 #include "helpers.h"
 #include "storage.h"
+#include <QtGui>
 
 #define FW_MARK     "FW"
 #define VERS_MARK   "VERS"

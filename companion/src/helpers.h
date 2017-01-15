@@ -21,13 +21,15 @@
 #ifndef _HELPERS_H_
 #define _HELPERS_H_
 
+#include "eeprominterface.h"
+#include "modeledit/modeledit.h"
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QDebug>
-#include "eeprominterface.h"
-#include "modeledit/modeledit.h"
+#include <QTime>
+#include <QElapsedTimer>
 
 extern const QColor colors[CPN_MAX_CURVES];
 

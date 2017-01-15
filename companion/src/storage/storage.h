@@ -21,9 +21,9 @@
 #ifndef _STORAGE_H_
 #define _STORAGE_H_
 
+#include "radiodata.h"
 #include <QString>
 #include <QDebug>
-#include "radiodata.h"
 
 enum StorageType
 {
