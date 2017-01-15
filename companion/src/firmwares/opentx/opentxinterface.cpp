@@ -596,7 +596,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case Haptic:
       return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
-      if (IS_TARANIS(board))
+      if (IS_HORUS_OR_TARANIS(board))
         return 1;
       else
         return 0;
@@ -630,7 +630,10 @@ int OpenTxFirmware::getCapability(Capability capability)
     case TelemetryBars:
       return 1;
     case TelemetryCustomScreens:
-      return IS_ARM(board) ? 4 : 2;
+      if (IS_HORUS(board))
+        return 0;
+      else
+        return IS_ARM(board) ? 4 : 2;
     case TelemetryCustomScreensFieldsPerLine:
       return HAS_LARGE_LCD(board) ? 3 : 2;
     case NoTelemetryProtocol:
