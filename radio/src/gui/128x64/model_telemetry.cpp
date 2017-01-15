@@ -149,7 +149,11 @@ enum MenuModelTelemetryFrskyItems {
   #define USRDATA_ROWS                 0, 0, IF_FAS_OFFSET(0)
 #endif
 
-#define RSSI_ROWS                      LABEL(RSSI), 1, 1,
+#if defined(CPUARM)
+  #define RSSI_ROWS                      LABEL(RSSI), 0, 0,
+#else
+  #define RSSI_ROWS                      LABEL(RSSI), 1, 1,
+#endif
 
 #if defined(CPUARM) || defined(GAUGES)
   #define SCREEN_TYPE_ROWS             0
@@ -698,11 +702,17 @@ void menuModelTelemetryFrsky(event_t event)
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
         uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
+#if defined(CPUARM)
+        lcdDrawTextAlignedLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
+        lcdDrawNumber(LCD_W, y, getRssiAlarmValue(alarm), RIGHT | attr, 3);
+        if (attr && s_editMode>0) {
+          CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
+        }
+#else // CPUARM
         lcdDrawTextAlignedLeft(y, STR_ALARM);
         lcdDrawTextAtIndex(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), menuHorizontalPosition<=0 ? attr : 0);
         lcdDrawChar(TELEM_COL2+4*FW, y, '<');
         lcdDrawNumber(TELEM_COL2+6*FW, y, getRssiAlarmValue(alarm), LEFT|(menuHorizontalPosition!=0 ? attr : 0), 3);
-
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (menuHorizontalPosition) {
             case 0:
@@ -712,7 +722,8 @@ void menuModelTelemetryFrsky(event_t event)
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
               break;
           }
-        }
+       }
+#endif // CPUARM
         break;
       }
 
