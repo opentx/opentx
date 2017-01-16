@@ -20,8 +20,6 @@
 
 #include "mdichild.h"
 #include "ui_mdichild.h"
-#include "xmlinterface.h"
-#include "hexinterface.h"
 #include "mainwindow.h"
 #include "modeledit/modeledit.h"
 #include "generaledit/generaledit.h"
@@ -156,6 +154,9 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"), this, SLOT(modelSimulate()), tr("Alt+S"));
   }
+  else if (IS_HORUS(GetCurrentFirmware()->getBoard())) {
+    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
+  }
   
   // TODO context menu for radio settings
   // contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(EditModel()));
@@ -224,7 +225,7 @@ void MdiChild::doPaste(QByteArray * gmData, int index)
       size += sizeof(GeneralSettings);
     }
     else if (c == 'M') {
-      if (index < GetCurrentFirmware()->getCapability(Models)) {
+      if (GetCurrentFirmware()->getCapability(Models) == 0 || index < GetCurrentFirmware()->getCapability(Models)) {
         // Model data
         int ret = QMessageBox::Yes;
         if (!radioData.models[index].isEmpty()) {
@@ -331,6 +332,23 @@ void MdiChild::generalEdit()
   GeneralEdit * t = new GeneralEdit(this, radioData, GetCurrentFirmware()/*firmware*/);
   connect(t, SIGNAL(modified()), this, SLOT(setModified()));
   t->show();
+}
+
+void MdiChild::modelAdd()
+{
+  if (radioData.categories.size() == 0) {
+    CategoryData category("Models");
+    radioData.categories.push_back(category);
+  }
+  
+  ModelData model;
+  model.category = 0;
+  model.used = true;
+  radioData.models.push_back(model);
+  sprintf(model.filename, "model%lu.bin", radioData.models.size());
+  sprintf(model.name, "Model%lu", radioData.models.size());
+  setModified();
+  //modelEdit();
 }
 
 void MdiChild::modelEdit()

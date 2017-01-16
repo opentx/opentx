@@ -137,7 +137,7 @@ MainWindow::MainWindow():
       if (fileType==STORAGE_TYPE_EEPE || fileType==STORAGE_TYPE_EEPM || fileType==STORAGE_TYPE_BIN) {
         MdiChild * child = createMdiChild();
         if (child->loadFile(str)) {
-          if (!(printing && model >= 0 && model<GetCurrentFirmware()->getCapability(Models) && !printfilename.isEmpty())) {
+          if (!(printing && model >= 0 && (GetCurrentFirmware()->getCapability(Models) == 0 || model<GetCurrentFirmware()->getCapability(Models)) && !printfilename.isEmpty())) {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
           }

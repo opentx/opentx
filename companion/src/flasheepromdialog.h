@@ -23,8 +23,6 @@
 
 #include <QtWidgets>
 
-#define ER9X_EEPROM_FILE_TYPE          "ER9X_EEPROM_FILE"
-#define EEPE_EEPROM_FILE_HEADER        "EEPE EEPROM FILE"
 #define HEX_FILES_FILTER               "HEX files (*.hex);;"
 #define BIN_FILES_FILTER               "BIN files (*.bin);;"
 #define EXTERNAL_EEPROM_FILES_FILTER   "EEPROM files (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER
