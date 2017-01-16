@@ -1372,3 +1372,14 @@
 #define ZSTR_GATE_NUMBER               "Gate"
 #define ZSTR_LAP_TIME                  "LapT"
 #define ZSTR_GATE_TIME                 "GteT"
+
+#define ZSTR_TADANGO_LINK			   "Link"
+#define ZSTR_TADANGO_RX1E			   "RX1E"
+#define ZSTR_TADANGO_RX2E			   "RX2E"
+#define ZSTR_TADANGO_RXFL			   "RXFL"
+#define ZSTR_TADANGO_RXHO			   "RXHO"
+#define ZSTR_TADANGO_GPS_DIST	       "Dist"
+#define ZSTR_TADANGO_GPS_TRAV	       "Trav"
+
+
+
