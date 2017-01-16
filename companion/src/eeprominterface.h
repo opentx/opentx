@@ -86,6 +86,9 @@ enum Capability {
   VoicesMaxLength,
   MultiLangVoice,
   ModelImage,
+  FactoryInstalledPots,
+  FactoryInstalledSliders,
+  FactoryInstalledSwitches,
   Pots,
   Sliders,
   Switches,
@@ -196,7 +199,7 @@ class EEPROMInterface
     virtual unsigned long load(RadioData &radioData, const uint8_t * eeprom, int size) = 0;
 
     virtual unsigned long loadBackup(RadioData & radioData, const uint8_t * eeprom, int esize, int index) = 0;
-    
+
     virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
 
     virtual int getSize(const ModelData &) = 0;
