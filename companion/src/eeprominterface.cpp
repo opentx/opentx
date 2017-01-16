@@ -1881,7 +1881,7 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
     case MM_RF_PROTO_YD717:
       return 5;
 
-    case MM_RF_PROTO_WALKERA_2x01:
+    case MM_RF_PROTO_WK_2X01:
       return 6;
 
     case MM_RF_PROTO_CX10:

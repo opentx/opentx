@@ -202,7 +202,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(afhds2a_strings, subType);
     case MM_RF_PROTO_Q2X2:
       return CHECK_IN_ARRAY(q2x2_strings, subType);
-    case MM_RF_PROTO_WALKERA_2x01:
+    case MM_RF_PROTO_WK_2X01:
       return CHECK_IN_ARRAY(walkera_wk2x01_strings, subType);
     default:
         return "DEFAULT";
