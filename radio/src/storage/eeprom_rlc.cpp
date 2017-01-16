@@ -826,6 +826,15 @@ bool eeLoadGeneral()
     }
   }
 
+#if defined(PCBX7)
+  if (g_eeGeneral.variant == 0) {
+    TRACE("Pre release EEPROM detected, variant %d instead of %d for X7 radio. Loading anyway", g_eeGeneral.variant, EEPROM_VARIANT);
+    g_eeGeneral.variant = EEPROM_VARIANT;
+    storageDirty(EE_GENERAL);
+    return true;
+  }
+#endif
+
 #if defined(PCBTARANIS)
   if (g_eeGeneral.variant != EEPROM_VARIANT) {
     TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
@@ -922,32 +931,32 @@ void eepromBackup()
   char filename[60];
   uint8_t buffer[1024];
   FIL file;
-  
+
   lcdClear();
   drawProgressBar(STR_WRITING);
-  
+
   // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
   g_eeGeneral.unexpectedShutdown = 0;
   storageDirty(EE_GENERAL);
   storageCheck(true);
-  
+
   // create the directory if needed...
   const char * error = sdCheckAndCreateDirectory(EEPROMS_PATH);
   if (error) {
     POPUP_WARNING(error);
     return;
   }
-  
+
   // prepare the filename...
   char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
 #if defined(RTCLOCK)
   tmp = strAppendDate(tmp, true);
 #endif
   strAppend(tmp, EEPROM_EXT);
-  
+
   // open the file for writing...
   f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
-  
+
   for (int i=0; i<EEPROM_SIZE; i+=1024) {
     UINT count;
     eepromReadBlock(buffer, i, 1024);
@@ -955,9 +964,9 @@ void eepromBackup()
     updateProgressBar(i, EEPROM_SIZE);
     SIMU_SLEEP(100/*ms*/);
   }
-  
+
   f_close(&file);
-  
+
   //set back unexpectedShutdown
   g_eeGeneral.unexpectedShutdown = 1;
   storageDirty(EE_GENERAL);
