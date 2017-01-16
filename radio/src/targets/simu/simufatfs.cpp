@@ -21,11 +21,11 @@
 #include "opentx.h"
 
 #if defined _MSC_VER || !defined (__GNUC__)
-  #define WINDOWS_BUILD
+  #define MSVC_BUILD
 #endif
 
 #if defined(SIMU_USE_SDCARD)
-#if defined(WINDOWS_BUILD)
+#if defined(MSVC_BUILD)
   #include <direct.h>
   #include <stdlib.h>
   #include <sys/utime.h>
@@ -130,15 +130,14 @@ filemap_t fileMap;
 
 void splitPath(const std::string & path, std::string & dir, std::string & name)
 {
-#if defined(WINDOWS_BUILD)
+#if defined(MSVC_BUILD)
   char drive[_MAX_DRIVE];
-  char dir[_MAX_DIR];
+  char directory[_MAX_DIR];
   char fname[_MAX_FNAME];
   char ext[_MAX_EXT];
-  _splitpath(path.c_str(), drive, dir, fname, ext);
+  _splitpath(path.c_str(), drive, directory, fname, ext);
   name = std::string(fname) + std::string(ext);
-  dir = std::string(drive) + std::string(dir);
-  std::string searchName = dirName + "*";
+  dir = std::string(drive) + std::string(directory);
 #else
   char * buff = new char[path.length()+1];
   strcpy(buff, path.c_str());
@@ -175,7 +174,7 @@ std::vector<std::string> listDirectoryFiles(const std::string & dirName)
 {
   std::vector<std::string> result;
 
-#if defined (WINDOWS_BUILD)
+#if defined (MSVC_BUILD)
     std::string searchName = dirName + "*";
     // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
     WIN32_FIND_DATA ffd;
@@ -183,12 +182,9 @@ std::vector<std::string> listDirectoryFiles(const std::string & dirName)
     if (INVALID_HANDLE_VALUE != hFind) {
       do {
         if (!(ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
-          //TRACE_SIMPGMSPACE("comparing with: %s", ffd.cFileName);
-          if (!strcasecmp(fileName.c_str(), ffd.cFileName)) {
-            std::string fullName = dirName + std::string(ffd.cFileName);
-            // TRACE_SIMPGMSPACE("listDirectoryFiles(): %s", fullName.c_str());
-            result.push_back(fullName);
-          }
+          std::string fullName = dirName + std::string(ffd.cFileName);
+          // TRACE_SIMPGMSPACE("listDirectoryFiles(): %s", fullName.c_str());
+          result.push_back(fullName);
         }
       }
       while (FindNextFile(hFind, &ffd) != 0);
