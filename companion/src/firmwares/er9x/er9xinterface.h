@@ -43,7 +43,7 @@ class Er9xInterface : public EEPROMInterface
 
     virtual unsigned long loadxml(RadioData &radioData, QDomDocument &doc);
 
-    virtual int save(uint8_t * eeprom, RadioData & radioData, uint8_t version=0, uint32_t variant=0)
+    virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0)
     {
       return 0;
     }
