@@ -96,9 +96,11 @@ uint32_t OpenTxEepromInterface::getFourCC()
     case BOARD_HORUS:
       return 0x3478746F;
     case BOARD_TARANIS_X7:
+      return 0x3678746F;
+    case BOARD_TARANIS_X9E:
+      return 0x3578746F;
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
-    case BOARD_TARANIS_X9E:
       return 0x3378746F;
     case BOARD_SKY9X:
     case BOARD_AR9X:
