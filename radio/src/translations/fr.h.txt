@@ -902,12 +902,12 @@
 #define TR_MULTI_AUTOBIND      TR(INDENT "Bind auto", INDENT "Bind automatique")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodét.", INDENT "Autodétection")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
-#define TR_DISABLE_INTERNAL    TR("Désact. RF int", "Désact. RF interne")
+#define TR_DISABLE_INTERNAL    TR("Désact intRF", "Désact. RF interne")
 #define TR_MODULE_NO_SERIAL_MODE  TR("Mode série?", "Pas en mode série")
 #define TR_MODULE_NO_INPUT     TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_BINDING      "Bind..."
-#define TR_PROTOCOL_INVALID    TR("Prot. invalide", "Protocole invalide")
+#define TR_PROTOCOL_INVALID    TR("Sél. invalide", "Protocole invalide")
 #define TR_MODULE_STATUS       TR(INDENT "Etat", INDENT "Etat module")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Fréq.servo", INDENT "Fréquence servos")
 #define TR_SYNCMENU            "Sync [MENU]"
