@@ -11,7 +11,7 @@ if(PCB STREQUAL X9E)
   set(LUA_EXPORT lua_export_x9e)
   set(FLAVOUR x9e)
   add_definitions(-DSTM32F40_41xxx -DPCBX9E)
-  add_definitions(-DEEPROM_VARIANT=32768)
+  add_definitions(-DEEPROM_VARIANT=0x8000)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     top_lcd_driver.cpp
@@ -65,7 +65,7 @@ elseif(PCB STREQUAL X7)
   set(LUA_EXPORT lua_export_x7)
   set(FLAVOUR x7)
   add_definitions(-DPCBX7 -DSOFTWARE_VOLUME)
-  add_definitions(-DEEPROM_VARIANT=0)
+  add_definitions(-DEEPROM_VARIANT=0x4000)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     bluetooth_driver.cpp

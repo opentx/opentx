@@ -28,10 +28,10 @@
 
 #define GVARS_VARIANT                  0x0001
 #define FRSKY_VARIANT                  0x0002
-#define POS3_VARIANT                   0x0004
 #define MAVLINK_VARIANT                0x0008
 #define M128_VARIANT                   0x8000
 #define TARANIS_X9E_VARIANT            0x8000
+#define TARANIS_X7_VARIANT             0x4000
 
 #define SIMU_STOCK_VARIANTS            (GVARS_VARIANT|FRSKY_VARIANT)
 #define SIMU_M128_VARIANTS             (M128_VARIANT|SIMU_STOCK_VARIANTS)
