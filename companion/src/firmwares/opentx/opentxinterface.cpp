@@ -442,7 +442,9 @@ int OpenTxFirmware::getCapability(Capability capability)
 {
   switch (capability) {
     case Models:
-      if (IS_ARM(board))
+      if (IS_HORUS(board))
+        return 0;
+      else if (IS_ARM(board))
         return 60;
       else if (board == BOARD_M128)
         return 30;

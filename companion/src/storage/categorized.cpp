@@ -57,6 +57,9 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
           setError(QObject::tr("Can't extract %1").arg(QString(line)));
           return false;
         }
+        if ((int)radioData.models.size() <= modelIndex) {
+          radioData.models.resize(modelIndex + 1);
+        }
         if (!loadModelFromByteArray(radioData.models[modelIndex], modelBuffer)) {
           return false;
         }
