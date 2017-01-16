@@ -392,14 +392,18 @@ void evalFunctions()
             }
           }
 
-#if defined(DANGEROUS_MODULE_FUNCTIONS)
+#if defined(DANGEROUS_MODULE_FUNCTIONS) || defined(MULTIMODULE)
           case FUNC_RANGECHECK:
           case FUNC_BIND:
           {
             unsigned int moduleIndex = CFN_PARAM(cfn);
-            if (moduleIndex < NUM_MODULES) {
-              moduleFlag[moduleIndex] = 1 + CFN_FUNC(cfn) - FUNC_RANGECHECK;
-            }
+// if the dangerous functions are not allowed, allow this only on the external multimodule
+#if !defined(DANGEROUS_MODULE_FUNCTIONS)
+            if (IS_MODULE_MULTIMODULE(moduleIndex))
+#endif
+              if (moduleIndex < NUM_MODULES) {
+                moduleFlag[moduleIndex] = 1 + CFN_FUNC(cfn) - FUNC_RANGECHECK;
+              }
             break;
           }
 #endif  
