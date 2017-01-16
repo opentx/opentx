@@ -72,6 +72,7 @@ void sig(int sgn)
 #include <pthread.h>
 #include <semaphore.h>
 #include <stddef.h>
+#include <errno.h>
 
 #undef min
 #undef max
