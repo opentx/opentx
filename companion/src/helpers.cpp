@@ -813,6 +813,7 @@ CompanionIcon::CompanionIcon(const QString &baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
+  QString settingsPath;
   Firmware * firmware = GetCurrentFirmware();
   SimulatorInterface * simulator = GetCurrentFirmwareSimulator();
   if (simulator) {
@@ -837,14 +838,20 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 
     if (board == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
       dialog = new SimulatorDialogHorus(parent, simulator, flags);
-      SdcardFormat sdcard(g.profile[g.id()].sdPath());
+      QTemporaryDir tmpDir(QDir::tempPath() + "/otx-XXXXXX");
+      settingsPath = tmpDir.path();
+      tmpDir.setAutoRemove(false);
+      SdcardFormat sdcard(settingsPath);
       sdcard.write(*simuData);
+      qDebug() << "Starting Horus simulation with SD path" << g.profile[g.id()].sdPath() << "and models/settings path" << settingsPath;
+      simulator->setSdPath(g.profile[g.id()].sdPath(), settingsPath);
       dialog->start(NULL);
     }
     else if (board == BOARD_FLAMENCO) {
       dialog = new SimulatorDialogFlamenco(parent, simulator, flags);
       QByteArray eeprom(getEEpromSize(board), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
+      simulator->setSdPath(g.profile[g.id()].sdPath(), "");
       dialog->start(eeprom);
     }
     else if (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E) {
@@ -859,17 +866,26 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       dialog = new SimulatorDialogTaranis(parent, simulator, flags);
       QByteArray eeprom(getEEpromSize(board), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
+      qDebug() << "Starting Taranis simulation with SD path" << g.profile[g.id()].sdPath();
+      simulator->setSdPath(g.profile[g.id()].sdPath(), "");
       dialog->start(eeprom);
     }
     else {
       dialog = new SimulatorDialog9X(parent, simulator, flags);
       QByteArray eeprom(getEEpromSize(board), 0);
       firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData, 0, firmware->getCapability(SimulatorVariant));
+      simulator->setSdPath(g.profile[g.id()].sdPath(), "");  // does 9X need SD card path? I think not.
       dialog->start(eeprom);
     }
 
     dialog->exec();
     dialog->deleteLater();
+    if (!settingsPath.isEmpty()) {
+      // TODO either delete tmp directory and its contents OR use it to get back data from the simulation
+      qDebug() << "Simulation finished, deleting temporary settings directory" << settingsPath;
+      QDir tmp(settingsPath);
+      tmp.removeRecursively();
+    }
     delete simuData;
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
     FreeConsole();

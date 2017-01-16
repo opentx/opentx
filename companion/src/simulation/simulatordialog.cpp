@@ -78,7 +78,7 @@ SimulatorDialog::~SimulatorDialog()
   delete simulator;
 }
 
-void SimulatorDialog::closeEvent (QCloseEvent *)
+void SimulatorDialog::closeEvent(QCloseEvent *)
 {
   simulator->stop();
   timer->stop();
@@ -596,7 +596,6 @@ void SimulatorDialog::startCommon()
   lastPhase = -1;
   numGvars = GetCurrentFirmware()->getCapability(Gvars);
   numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
-  simulator->setSdPath(g.profile[radioProfileId].sdPath());
   simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
 }
 
