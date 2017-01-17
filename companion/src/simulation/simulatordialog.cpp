@@ -54,7 +54,6 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   middleButtonPressed(false)
 {
   setWindowFlags(Qt::Window);
-  grabKeyboard();
 
   new QShortcut(QKeySequence(Qt::Key_F1), this, SLOT(showHelp()));
   new QShortcut(QKeySequence(Qt::Key_F4), this, SLOT(openTelemetrySimulator()));
