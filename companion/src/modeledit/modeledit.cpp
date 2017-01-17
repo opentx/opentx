@@ -19,7 +19,7 @@
  */
 
 #include "modeledit.h"
-#include "../helpers.h"
+#include "helpers.h"
 #include "ui_modeledit.h"
 #include "setup.h"
 #include "heli.h"
@@ -120,9 +120,14 @@ void ModelEdit::on_pushButton_clicked()
 
 void ModelEdit::launchSimulation()
 {
-  RadioData *simuData = new RadioData();
+  RadioData * simuData = new RadioData();
   simuData->generalSettings = generalSettings;
-  simuData->models[0] = model;
+  if (simuData->models.size() == 0) {
+    simuData->models.push_back(model);
+  }
+  else {
+    simuData->models[0] = model;
+  }
   startSimulation(this, *simuData, 0);
   delete simuData;
 }
