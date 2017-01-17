@@ -4,7 +4,7 @@ set(simulation_SRCS
   trainersimu.cpp
   debugoutput.cpp
   simulatorinterface.cpp
-  virtualjoystickwidget.cpp
+  widgets/virtualjoystickwidget.cpp
 )
 
 set(simulation_UIS
@@ -19,13 +19,15 @@ set(simulation_UIS
 
 set(simulation_HDRS
   simulatordialog.h
-  # lcdwidget.h
-  buttonswidget.h
-  sliderwidget.h
+
   telemetrysimu.h
   trainersimu.h
   debugoutput.h
-  virtualjoystickwidget.h
+  widgets/buttonswidget.h
+  #widgets/dialwidget.h
+  #widgets/lcdwidget.h
+  widgets/sliderwidget.h
+  widgets/virtualjoystickwidget.h
 )
 
 if(SDL_FOUND)
@@ -34,29 +36,30 @@ if(SDL_FOUND)
     joystick.cpp
     joystickdialog.cpp
   )
-  
+
   set(simulation_HDRS
     ${simulation_HDRS}
     joystick.h
     joystickdialog.h
   )
-     
+
   set(simulation_UIS
     ${simulation_UIS}
     joystickdialog.ui
-  ) 
-endif() 
+  )
+endif()
 
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${PROJECT_SOURCE_DIR}
   ${COMPANION_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/simulation
+  ${COMPANION_SRC_DIRECTORY}/simulation/widgets
   ${RADIO_SRC_DIRECTORY}/fonts/std
 )
 
 qt5_wrap_ui(simulation_SRCS ${simulation_UIS})
 qt5_wrap_cpp(simulation_SRCS ${simulation_HDRS})
 
-add_library(simulation ${simulation_SRCS})
+add_library(simulation ${simulation_SRCS} ${simulation_HDRS})
 qt5_use_modules(simulation Widgets Xml)

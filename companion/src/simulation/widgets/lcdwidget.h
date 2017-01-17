@@ -73,7 +73,7 @@ class LcdWidget : public QWidget
       }
       else {
         width = lcdWidth;
-        height = lcdHeight;        
+        height = lcdHeight;
       }
       QPixmap buffer(width, height);
       QPainter p(&buffer);

@@ -57,7 +57,7 @@ class ButtonsWidget : public QWidget
     }
 
   protected:
-  
+
     class Area {
       public:
         Area(const QPolygon & polygon, int key, const char * bitmap):
@@ -75,30 +75,30 @@ class ButtonsWidget : public QWidget
         int key;
         const char * bitmap;
     };
-      
+
     void setBitmap(const char * bitmap)
     {
       if (bitmap) {
         QWidget::setStyleSheet(QString("background:url(:/images/simulator/%1);").arg(bitmap));
       }
     }
-    
+
     virtual void mousePressEvent(QMouseEvent * event)
     {
       int x = event->x();
       int y = event->y();
       setFocus();
       if (event->button() == Qt::LeftButton) {
-        foreach(Area area, areas) {
-          if (area.contains(x, y)) {
+      foreach(Area area, areas) {
+        if (area.contains(x, y)) {
             setBitmap(area.bitmap);
             emit buttonPressed(area.key);
-            break;
-          }
+          break;
         }
       }
     }
-    
+    }
+
     virtual void mouseReleaseEvent(QMouseEvent * event)
     {
       QWidget::setStyleSheet(defaultStyleSheet);
@@ -115,9 +115,9 @@ class ButtonsWidget : public QWidget
     }
 
   signals:
-  
+
     void buttonPressed(int button);
-    
+
   protected:
 
     QList<Area> areas;

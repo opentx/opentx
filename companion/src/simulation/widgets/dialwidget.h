@@ -29,7 +29,7 @@ class DialWidget : public QDial
       QDial(parent)
     {
     }
- 
+
   protected:
 
     void mousePressEvent(QMouseEvent * event)
@@ -37,9 +37,9 @@ class DialWidget : public QDial
         if (event->button() == Qt::RightButton && event->type() == QEvent::MouseButtonDblClick) {
           setValue(0);
           event->accept();
-        } 
+        }
         QDial::mousePressEvent(event);
-    }    
+    }
 };
 
 #endif // _DIALWIDGET_H_
