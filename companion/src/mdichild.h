@@ -21,17 +21,13 @@
 #ifndef _MDICHILD_H_
 #define _MDICHILD_H_
 
-#include <QtGui>
 #include "eeprominterface.h"
 #include "modelslist.h"
+#include <QtGui>
 
 namespace Ui {
 class MdiChild;
 }
-
-#define ER9X_EEPROM_FILE_TYPE        "ER9X_EEPROM_FILE"
-#define EEPE_EEPROM_FILE_HEADER  "EEPE EEPROM FILE"
-#define EEPE_MODEL_FILE_HEADER   "EEPE MODEL FILE"
 
 class MdiChild : public QWidget
 {
@@ -74,6 +70,7 @@ class MdiChild : public QWidget
     void showModelsListContextMenu(const QPoint & pos);
     void checkAndInitModel(int row);
     void generalEdit();
+    void modelAdd();
     void modelEdit();
     void wizardEdit();
     void openModelEditWindow();
@@ -94,7 +91,6 @@ class MdiChild : public QWidget
   private:
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
-    bool loadOtxFile(const QString & fileName);
     void doCopy(QByteArray * gmData);
     void doPaste(QByteArray * gmData, int index);
     
