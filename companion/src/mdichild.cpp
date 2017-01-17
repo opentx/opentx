@@ -342,11 +342,12 @@ void MdiChild::modelAdd()
   }
   
   ModelData model;
-  model.category = 0;
+  model.category = radioData.categories.size() - 1;
   model.used = true;
+  sprintf(model.filename, "model%lu.bin", radioData.models.size()+1);
+  sprintf(model.name, "Model%lu", radioData.models.size()+1);
   radioData.models.push_back(model);
-  sprintf(model.filename, "model%lu.bin", radioData.models.size());
-  sprintf(model.name, "Model%lu", radioData.models.size());
+  radioData.setCurrentModel(radioData.models.size() - 1);
   setModified();
   //modelEdit();
 }
