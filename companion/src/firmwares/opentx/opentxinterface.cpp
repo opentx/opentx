@@ -820,44 +820,45 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
 
 Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
 {
+  typedef GeneralSettings::SwitchConfig sc;
   if (board == BOARD_TARANIS_X7) {
-    const Switch switches[] = {{SWITCH_3POS,   "SA"},
-                               {SWITCH_3POS,   "SB"},
-                               {SWITCH_3POS,   "SC"},
-                               {SWITCH_3POS,   "SD"},
-                               {SWITCH_2POS,   "SF"},
-                               {SWITCH_TOGGLE, "SH"}};
+    const Switch switches[] = {{sc::SWITCH_3POS,   "SA"},
+                               {sc::SWITCH_3POS,   "SB"},
+                               {sc::SWITCH_3POS,   "SC"},
+                               {sc::SWITCH_3POS,   "SD"},
+                               {sc::SWITCH_2POS,   "SF"},
+                               {sc::SWITCH_TOGGLE, "SH"}};
     return switches[index];
   }
   else if (IS_HORUS_OR_TARANIS(board)) {
-    const Switch switches[] = {{SWITCH_3POS,   "SA"},
-                               {SWITCH_3POS,   "SB"},
-                               {SWITCH_3POS,   "SC"},
-                               {SWITCH_3POS,   "SD"},
-                               {SWITCH_3POS,   "SE"},
-                               {SWITCH_2POS,   "SF"},
-                               {SWITCH_3POS,   "SG"},
-                               {SWITCH_TOGGLE, "SH"},
-                               {SWITCH_3POS,   "SI"},
-                               {SWITCH_3POS,   "SJ"},
-                               {SWITCH_3POS,   "SK"},
-                               {SWITCH_3POS,   "SL"},
-                               {SWITCH_3POS,   "SM"},
-                               {SWITCH_3POS,   "SN"},
-                               {SWITCH_3POS,   "SO"},
-                               {SWITCH_3POS,   "SP"},
-                               {SWITCH_3POS,   "SQ"},
-                               {SWITCH_3POS,   "SR"}};
+    const Switch switches[] = {{sc::SWITCH_3POS,   "SA"},
+                               {sc::SWITCH_3POS,   "SB"},
+                               {sc::SWITCH_3POS,   "SC"},
+                               {sc::SWITCH_3POS,   "SD"},
+                               {sc::SWITCH_3POS,   "SE"},
+                               {sc::SWITCH_2POS,   "SF"},
+                               {sc::SWITCH_3POS,   "SG"},
+                               {sc::SWITCH_TOGGLE, "SH"},
+                               {sc::SWITCH_3POS,   "SI"},
+                               {sc::SWITCH_3POS,   "SJ"},
+                               {sc::SWITCH_3POS,   "SK"},
+                               {sc::SWITCH_3POS,   "SL"},
+                               {sc::SWITCH_3POS,   "SM"},
+                               {sc::SWITCH_3POS,   "SN"},
+                               {sc::SWITCH_3POS,   "SO"},
+                               {sc::SWITCH_3POS,   "SP"},
+                               {sc::SWITCH_3POS,   "SQ"},
+                               {sc::SWITCH_3POS,   "SR"}};
     return switches[index];
   }
   else {
-    const Switch switches[] = {{SWITCH_3POS,   "3POS"},
-                               {SWITCH_2POS,   "THR"},
-                               {SWITCH_2POS,   "RUD"},
-                               {SWITCH_2POS,   "ELE"},
-                               {SWITCH_2POS,   "AIL"},
-                               {SWITCH_2POS,   "GEA"},
-                               {SWITCH_TOGGLE, "SH"}};
+    const Switch switches[] = {{sc::SWITCH_3POS,   "3POS"},
+                               {sc::SWITCH_2POS,   "THR"},
+                               {sc::SWITCH_2POS,   "RUD"},
+                               {sc::SWITCH_2POS,   "ELE"},
+                               {sc::SWITCH_2POS,   "AIL"},
+                               {sc::SWITCH_2POS,   "GEA"},
+                               {sc::SWITCH_TOGGLE, "SH"}};
     return switches[index];
   }
 }

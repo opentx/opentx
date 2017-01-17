@@ -676,9 +676,9 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   for (int i=0; i<firmware->getCapability(Switches); i++) {
     Firmware::Switch sw = firmware->getSwitch(i);
     if (IS_HORUS_OR_TARANIS(board)) {
-      sw.type = Firmware::SwitchType(generalSettings.switchConfig[i]);
+      sw.type = GeneralSettings::SwitchConfig(generalSettings.switchConfig[i]);
     }
-    if (sw.type == Firmware::SWITCH_NONE || sw.type == Firmware::SWITCH_TOGGLE) {
+    if (sw.type == GeneralSettings::SWITCH_NONE || sw.type == GeneralSettings::SWITCH_TOGGLE) {
       continue;
     }
     QLabel * label = new QLabel(this);
@@ -695,7 +695,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     slider->setPageStep(1);
     slider->setTickInterval(1);
     label->setText(sw.name);
-    slider->setMaximum(sw.type == Firmware::SWITCH_3POS ? 2 : 1);
+    slider->setMaximum(sw.type == GeneralSettings::SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
@@ -917,7 +917,7 @@ void SetupPanel::updateStartupSwitches()
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_TARANIS(GetEepromInterface()->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
-      if (generalSettings.switchConfig[index] != Firmware::SWITCH_3POS && value == 2) {
+      if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2) {
         value = 1;
       }
     }
@@ -956,7 +956,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
 
-    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != Firmware::SWITCH_3POS) {
+    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
       if (value == 1) {
         value = 2;
       }
