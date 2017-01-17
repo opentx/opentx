@@ -48,8 +48,7 @@ bool SdcardFormat::writeFile(const QByteArray & data, const QString & filename)
   QString path = this->filename + "/" + filename;
   QFile file(path);
   if (!file.open(QFile::WriteOnly)) {
-    setError(QObject::tr("Error opening file %1:\n%2.").arg(path).arg(file.errorString()));
-    qDebug() << "File" << path << "write error";
+    setError(QObject::tr("Error opening file %1 in write mode:\n%2.").arg(path).arg(file.errorString()));
     return false;
   }
   file.write(data.data(), data.size());
