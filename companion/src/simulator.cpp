@@ -382,15 +382,17 @@ int main(int argc, char *argv[])
   g.simuLastEepe(simOptions.eepromFileName);
 
   uint32_t flags = SIMULATOR_FLAGS_STANDALONE;
+  SimulatorInterface * simulator = factory->create();
+  simulator->setSdPath(g.profile[simOptions.profileId].sdPath(), "");
 
   if (factory->type() == BOARD_HORUS)
-    dialog = new SimulatorDialogHorus(NULL, factory->create(), flags);
+    dialog = new SimulatorDialogHorus(NULL, simulator, flags);
   else if (factory->type() == BOARD_FLAMENCO)
-    dialog = new SimulatorDialogFlamenco(NULL, factory->create(), flags);
+    dialog = new SimulatorDialogFlamenco(NULL, simulator, flags);
   else if (factory->type() == BOARD_TARANIS_X9D || factory->type() == BOARD_TARANIS_X9DP || factory->type() == BOARD_TARANIS_X9E)
-    dialog = new SimulatorDialogTaranis(NULL, factory->create(), flags | SIMULATOR_FLAGS_S1 | SIMULATOR_FLAGS_S2);
+    dialog = new SimulatorDialogTaranis(NULL, simulator, flags | SIMULATOR_FLAGS_S1 | SIMULATOR_FLAGS_S2);
   else
-    dialog = new SimulatorDialog9X(NULL, factory->create(), flags);
+    dialog = new SimulatorDialog9X(NULL, simulator, flags);
 
   dialog->setRadioProfileId(simOptions.profileId);
   dialog->start(simOptions.eepromFileName.toLatin1().constData());
