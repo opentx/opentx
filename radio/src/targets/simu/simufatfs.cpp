@@ -20,24 +20,31 @@
 
 #include "opentx.h"
 
-#if defined _MSC_VER || !defined (__GNUC__)
-  #define MSVC_BUILD
+#if defined(SIMU_USE_SDCARD)  // rest of file is excluded otherwise
+
+#if defined(_MSC_VER) || !defined (__GNUC__)
+  #define MSVC_BUILD    1
+#else
+  #define MSVC_BUILD    0
 #endif
 
-#if defined(SIMU_USE_SDCARD)
-#if defined(MSVC_BUILD)
+// NOTE: the #include order is important here, sensitive on different platoforms.
+#include <errno.h>
+#include <fcntl.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <sys/stat.h>
+
+#if MSVC_BUILD
   #include <direct.h>
   #include <stdlib.h>
   #include <sys/utime.h>
   #define mkdir(s, f) _mkdir(s)
 #else
+  #include <sys/time.h>
   #include <utime.h>
 #endif
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 #include "ff.h"
 #include <map>
 #include <string>
@@ -130,7 +137,7 @@ filemap_t fileMap;
 
 void splitPath(const std::string & path, std::string & dir, std::string & name)
 {
-#if defined(MSVC_BUILD)
+#if MSVC_BUILD
   char drive[_MAX_DRIVE];
   char directory[_MAX_DIR];
   char fname[_MAX_FNAME];
@@ -149,7 +156,8 @@ void splitPath(const std::string & path, std::string & dir, std::string & name)
 }
 
 
-bool isFile(const std::string & fullName, unsigned char d_type)
+#if !MSVC_BUILD
+bool isFile(const std::string & fullName, unsigned int d_type)
 {
 #if defined(WIN32) || defined(__APPLE__) || defined(__FreeBSD__)
   #define REGULAR_FILE DT_REG
@@ -169,12 +177,13 @@ bool isFile(const std::string & fullName, unsigned char d_type)
   }
   return false;
 }
+#endif
 
 std::vector<std::string> listDirectoryFiles(const std::string & dirName)
 {
   std::vector<std::string> result;
 
-#if defined (MSVC_BUILD)
+#if MSVC_BUILD
     std::string searchName = dirName + "*";
     // TRACE_SIMPGMSPACE("\tsearching for: %s", fileName.c_str());
     WIN32_FIND_DATA ffd;
