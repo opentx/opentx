@@ -515,37 +515,6 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 0;
     case PermTimers:
       return (IS_2560(board) || IS_ARM(board));
-    case FactoryInstalledPots:
-      if (IS_HORUS(board))
-        return 3;
-      else if (IS_TARANIS_X7(board))
-        return 2;
-      else if (IS_TARANIS_X9E(board))
-        return 2;
-      else if (IS_TARANIS(board))
-        return 2;
-      else
-        return 3;
-    case FactoryInstalledSliders:
-      if (IS_HORUS(board))
-        return 4;
-      else if (IS_TARANIS_X7(board))
-        return 0;
-      else if (IS_TARANIS_X9E(board))
-        return 4;
-      else if (IS_TARANIS(board))
-        return 2;
-      else
-        return 0;
-    case FactoryInstalledSwitches:
-      if (IS_TARANIS_X9E(board))
-        return 8;
-      else if (IS_TARANIS_X7(board))
-        return 6;
-      else if (IS_HORUS_OR_TARANIS(board))
-        return 8;
-      else
-        return 7;
     case Pots:
       if (IS_HORUS(board))
         return 3;
@@ -577,15 +546,21 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 8;
       else
         return 7;
-    case SwitchesPositions:
+    case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
-        return 18 * 3;
-      else if (IS_TARANIS_X7(board))
-        return 6 * 3;
-      else if (IS_HORUS_OR_TARANIS(board))
-        return 8 * 3;
+        return 8;
+      else
+        return getCapability(Switches);
+    case SwitchesPositions:
+      if (IS_HORUS_OR_TARANIS(board))
+        return getCapability(Switches) * 3;
       else
         return 9;
+    case NumTrimSwitches:
+      if (IS_HORUS(board))
+        return 12;
+      else
+        return 8;
     case CustomFunctions:
       if (IS_ARM(board))
         return 64;
