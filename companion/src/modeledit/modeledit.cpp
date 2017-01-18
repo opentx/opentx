@@ -122,12 +122,15 @@ void ModelEdit::launchSimulation()
 {
   RadioData * simuData = new RadioData();
   simuData->generalSettings = generalSettings;
+  CategoryData category("Models");
+  simuData->categories.push_back(category);
   if (simuData->models.size() == 0) {
     simuData->models.push_back(model);
   }
   else {
     simuData->models[0] = model;
   }
+  simuData->models[0].category = 0;
   startSimulation(this, *simuData, 0);
   delete simuData;
 }

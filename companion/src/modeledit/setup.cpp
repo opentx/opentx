@@ -659,7 +659,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
-    if (IS_TARANIS(board)) {
+    if (IS_HORUS_OR_TARANIS(board)) {
       RawSource src(SOURCE_TYPE_STICK, i);
       if (src.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) {
         checkbox->hide();
@@ -714,7 +714,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   // Pot warnings
   prevFocus = ui->potWarningMode;
-  if (IS_TARANIS(board)) {
+  if (IS_HORUS_OR_TARANIS(board)) {
     for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i);
@@ -881,7 +881,7 @@ void SetupPanel::update()
   updateBeepCenter();
   updateStartupSwitches();
 
-  if(IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if(IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
     updatePotWarnings();
   }
 
@@ -915,7 +915,7 @@ void SetupPanel::updateStartupSwitches()
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     int index = slider->property("index").toInt();
     bool enabled = !(model->switchWarningEnable & (1 << index));
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
       if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2) {
         value = 1;
@@ -940,7 +940,7 @@ void SetupPanel::startupSwitchEdited(int value)
     uint64_t mask;
     int index = sender()->property("index").toInt();
 
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
       shift = index * 2;
       mask = 0x03ul << shift;
     }
@@ -956,7 +956,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
 
-    if (IS_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
+    if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
       if (value == 1) {
         value = 2;
       }

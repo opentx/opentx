@@ -150,7 +150,6 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.speakerPitch = speakerPitch;
   result.hapticStrength = hapticStrength - 3;
   result.speakerMode = speakerMode;
-  result.switchWarningStates = switchWarningStates;
   result.speakerVolume = volume;
   result.backlightBright = bright ;
   result.txCurrentCalibration = current_calib;

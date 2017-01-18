@@ -138,7 +138,6 @@ Er9xGeneral::operator GeneralSettings ()
   result.speakerPitch = speakerPitch;
   result.hapticStrength = hapticStrength - 3;
   result.speakerMode = speakerMode;
-  result.switchWarningStates =switchWarningStates;
   return result;
 }
 

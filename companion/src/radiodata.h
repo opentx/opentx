@@ -1193,7 +1193,6 @@ class GeneralSettings {
     int   hapticStrength;
     unsigned int   speakerMode;
     char      ownerName[10+1];
-    unsigned int   switchWarningStates;
     int    beeperLength;
     unsigned int    gpsFormat;
     int     speakerVolume;

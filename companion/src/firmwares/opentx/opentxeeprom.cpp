@@ -18,12 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#include <stdlib.h>
-#include <algorithm>
 #include "helpers.h"
 #include "opentxeeprom.h"
-#include <QObject>
 #include "customdebug.h"
+#include <stdlib.h>
+#include <algorithm>
 
 #define IS_DBLEEPROM(board, version)          ((IS_2560(board) || board==BOARD_M128) && version >= 213)
 // Macro used for Gruvin9x board and M128 board between versions 213 and 214 (when there were stack overflows!)
@@ -3417,22 +3416,36 @@ void OpenTxModelData::beforeExport()
   // qDebug() << QString("before export model") << modelData.name;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12)
+    if (modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) {
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
-    else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX)
+    }
+    else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX) {
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
+    }
     else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
       // copy multi settings to ppm settings to get them written to the eeprom
       // (reverse the int => ms logic of the ppm delay) since only ppm is written
-
       subprotocols[module] = modelData.moduleData[module].multi.rfProtocol & (0x1f);
       int multiByte = ((modelData.moduleData[module].multi.rfProtocol >> 4) & 0x03) | (modelData.moduleData[module].multi.customProto << 7);
       modelData.moduleData[module].ppm.delay = 300 + 50 * multiByte;
       modelData.moduleData[module].ppm.frameLength = modelData.moduleData[module].multi.optionValue;
       modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].multi.lowPowerMode;
       modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].multi.autoBindMode;
-    } else
-      subprotocols[module] = (module==0 ? -1 : 0);
+    }
+    else {
+      subprotocols[module] = (module == 0 ? -1 : 0);
+    }
+  }
+  
+  if (IS_HORUS(board)) {
+    uint32_t newSwitchWarningStates = 0;
+    for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
+      uint8_t value = (modelData.switchWarningStates >> (2*i)) & 0x03;
+      if (!(modelData.switchWarningEnable & (1 << i))) {
+        newSwitchWarningStates |= (value + 1) << (3*i);
+      }
+    }
+    modelData.switchWarningStates = newSwitchWarningStates;
   }
 }
 
@@ -3465,11 +3478,11 @@ void OpenTxModelData::afterImport()
         modelData.moduleData[module].protocol += subprotocols[module];
       else
         modelData.moduleData[module].protocol = PULSES_OFF;
-    } else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
+    }
+    else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
       // Copy data from ppm struct to multi struct
       unsigned int multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
       modelData.moduleData[module].multi.rfProtocol = subprotocols[module]  | ((multiByte & 0x3) << 4);
-
       modelData.moduleData[module].multi.customProto = (multiByte & 0x80) == 0x80;
       modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
       modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
@@ -3479,6 +3492,18 @@ void OpenTxModelData::afterImport()
 
   if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != PULSES_OFF) {
     modelData.moduleData[1].modelId = modelData.moduleData[0].modelId;
+  }
+  
+  if (IS_HORUS(board)) {
+    uint32_t newSwitchWarningStates = 0;
+    for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
+      uint8_t value = (modelData.switchWarningStates >> (3*i)) & 0x07;
+      if (value == 0)
+        modelData.switchWarningEnable |= (1 << i);
+      else
+        newSwitchWarningStates |= ((value & 0x03) - 1) << (2*i);
+    }
+    modelData.switchWarningStates = newSwitchWarningStates;
   }
 }
 
