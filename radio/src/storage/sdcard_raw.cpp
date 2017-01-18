@@ -189,7 +189,10 @@ void storageReadAll()
   }
 #endif
 
-  loadModel(g_eeGeneral.currModelFilename, false);
+  if (loadModel(g_eeGeneral.currModelFilename, false) != NULL) {
+    sdCheckAndCreateDirectory(MODELS_PATH);
+    createModel();
+  }
 }
 
 void storageCreateModelsList()
