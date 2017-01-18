@@ -1093,30 +1093,35 @@ GeneralSettings::GeneralSettings()
     calibSpanPos[i] = 0x180;
   }
 
-  for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
+  for (int i=0; i<GetCurrentFirmware()->getCapability(FactoryInstalledSwitches); i++) {
     switchConfig[i] = GetCurrentFirmware()->getSwitch(i).type;
   }
 
   BoardEnum board = GetEepromInterface()->getBoard();
-  if (board == BOARD_HORUS) {
+  if (IS_HORUS(board)) {
     potConfig[0] = POT_WITH_DETENT;
     potConfig[1] = POT_MULTIPOS_SWITCH;
     potConfig[2] = POT_WITH_DETENT;
+  }
+  else if (IS_TARANIS(board)) {
+    potConfig[0] = POT_WITH_DETENT;
+    potConfig[1] = POT_WITH_DETENT;
+  }
+  else {
+    potConfig[0] = POT_WITHOUT_DETENT;
+    potConfig[1] = POT_WITHOUT_DETENT;
+    potConfig[2] = POT_WITHOUT_DETENT;
+  }
+
+  if (IS_HORUS(board) || IS_TARANIS_X9E(board)) {
     sliderConfig[0] = SLIDER_WITH_DETENT;
     sliderConfig[1] = SLIDER_WITH_DETENT;
     sliderConfig[2] = SLIDER_WITH_DETENT;
     sliderConfig[3] = SLIDER_WITH_DETENT;
   }
-  else if (IS_TARANIS(board)) {
-    potConfig[0] = POT_WITH_DETENT;
-    potConfig[1] = POT_WITH_DETENT;
+  else if (IS_TARANIS(board) && !IS_TARANIS_X7(board)) {
     sliderConfig[0] = SLIDER_WITH_DETENT;
     sliderConfig[1] = SLIDER_WITH_DETENT;
-  }
-  else {
-    for (int i=0; i<3; i++) {
-      potConfig[i] = POT_WITHOUT_DETENT;
-    }
   }
 
   if (IS_ARM(board)) {

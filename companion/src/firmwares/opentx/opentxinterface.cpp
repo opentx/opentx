@@ -530,7 +530,7 @@ int OpenTxFirmware::getCapability(Capability capability)
       else if (IS_TARANIS_X9E(board))
         return 4;
       else if (IS_TARANIS(board))
-        return 3; // Taranis has only 2 pots but still has a placeholder in settings for 3 pots
+        return 3;
       else
         return 3;
     case Sliders:
@@ -553,15 +553,21 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 8;
       else
         return 7;
-    case SwitchesPositions:
+    case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
-        return 18 * 3;
-      else if (IS_TARANIS_X7(board))
-        return 6 * 3;
-      else if (IS_HORUS_OR_TARANIS(board))
-        return 8 * 3;
+        return 8;
+      else
+        return getCapability(Switches);
+    case SwitchesPositions:
+      if (IS_HORUS_OR_TARANIS(board))
+        return getCapability(Switches) * 3;
       else
         return 9;
+    case NumTrimSwitches:
+      if (IS_HORUS(board))
+        return 12;
+      else
+        return 8;
     case CustomFunctions:
       if (IS_ARM(board))
         return 64;
