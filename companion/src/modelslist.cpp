@@ -223,7 +223,7 @@ int TreeModel::rowCount(const QModelIndex &parent) const
   return parentItem->childCount();
 }
 
-bool TreeModel::setData(const QModelIndex &index, const QVariant & value, int role)
+bool TreeModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
   if (role != Qt::EditRole)
     return false;
@@ -231,8 +231,9 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant & value, int ro
   TreeItem * item = getItem(index);
   bool result = item->setData(index.column(), value);
   
-  if (result)
+  if (result) {
     emit dataChanged(index, index);
+  }
   
   return result;
 }

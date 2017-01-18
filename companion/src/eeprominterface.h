@@ -340,9 +340,9 @@ class Firmware {
       return board;
     }
     
-    void setEEpromInterface(EEPROMInterface * interface)
+    void setEEpromInterface(EEPROMInterface * eeprom)
     {
-      eepromInterface = interface;
+      eepromInterface = eeprom;
     }
     
     EEPROMInterface * getEEpromInterface()

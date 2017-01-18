@@ -81,6 +81,7 @@ class MdiChild : public QWidget
     bool loadBackup();
     void confirmDelete();
     void deleteSelectedModels();
+    void onDataChanged(const QModelIndex & index);
     
     void cut();
     void copy();
@@ -97,7 +98,7 @@ class MdiChild : public QWidget
     void setCurrentFile(const QString & fileName);
     void doCopy(QByteArray * gmData);
     void doPaste(QByteArray * gmData, int index);
-    
+    void initModelsList();
     
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;

@@ -51,7 +51,7 @@ MdiChild::MdiChild(MainWindow * parent):
   setWindowIcon(CompanionIcon("open.png"));
   ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
-  onFirmwareChanged();
+  initModelsList();
   connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
@@ -154,11 +154,18 @@ void MdiChild::onFirmwareChanged()
 {
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
-  BoardEnum board = firmware->getBoard();
   qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
   radioData.convert(previous, firmware);
+  initModelsList();
+}
+
+void MdiChild::initModelsList()
+{
+  BoardEnum board = firmware->getBoard();
+
   delete modelsListModel;
   modelsListModel = new TreeModel(&radioData, this);
+  connect(modelsListModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(onDataChanged(const QModelIndex &)));
   ui->modelsList->setModel(modelsListModel);
   ui->modelsList->header()->setVisible(!IS_HORUS(board));
   if (IS_HORUS(board)) {
@@ -368,6 +375,16 @@ void MdiChild::categoryDelete()
     }
   }
   
+  setModified();
+}
+
+void MdiChild::onDataChanged(const QModelIndex & index)
+{
+  int categoryIndex = modelsListModel->getCategoryIndex(index);
+  if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
+    return;
+  }
+  strcpy(radioData.categories[categoryIndex].name, modelsListModel->data(index, 0).toString().left(sizeof(CategoryData::name)-1).toStdString().c_str());
   setModified();
 }
 
