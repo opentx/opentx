@@ -137,6 +137,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   else if (IS_HORUS(firmware->getBoard())) {
     if (modelsListModel->getCategoryIndex(modelIndex) >= 0) {
       contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
+      contextMenu.addAction(CompanionIcon("delete.png"), tr("&Delete category"), this, SLOT(categoryDelete()));
     }
     else {
       contextMenu.addAction(CompanionIcon("add.png"), tr("&Add category"), this, SLOT(categoryAdd()));
@@ -339,6 +340,34 @@ void MdiChild::categoryAdd()
 {
   CategoryData category("New category");
   radioData.categories.push_back(category);
+  setModified();
+}
+
+void MdiChild::categoryDelete()
+{
+  int categoryIndex = modelsListModel->getCategoryIndex(ui->modelsList->currentIndex());
+  if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
+    return;
+  }
+  
+  for (unsigned i=0; i<radioData.models.size(); i++) {
+    ModelData & model = radioData.models[i];
+    if (model.used && model.category == categoryIndex) {
+      QMessageBox::warning(this, tr("Companion"),
+                                 tr("This category is not empty!"),
+                                 QMessageBox::Cancel);
+      return;
+    }
+  }
+  
+  radioData.categories.erase(radioData.categories.begin() + categoryIndex);
+  for (unsigned i=0; i<radioData.models.size(); i++) {
+    ModelData & model = radioData.models[i];
+    if (model.used && model.category > categoryIndex) {
+      model.category--;
+    }
+  }
+  
   setModified();
 }
 

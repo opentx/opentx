@@ -73,6 +73,7 @@ class MdiChild : public QWidget
     void checkAndInitModel(int row);
     void generalEdit();
     void categoryAdd();
+    void categoryDelete();
     void modelAdd();
     void modelEdit();
     void wizardEdit();
