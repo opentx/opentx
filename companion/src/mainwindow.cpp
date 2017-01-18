@@ -560,12 +560,7 @@ void MainWindow::openDocURL()
 void MainWindow::openFile()
 {
   QString fileFilter;
-  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
-    fileFilter = tr(OTX_FILES_FILTER);
-  }
-  else {
-    fileFilter = tr(EEPROM_FILES_FILTER);
-  }
+  fileFilter = tr(EEPROM_FILES_FILTER);
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), fileFilter);
   if (!fileName.isEmpty()) {
     g.eepromDir(QFileInfo(fileName).dir().absolutePath());
@@ -755,8 +750,8 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-  if (GetCurrentFirmware()->getBoard()== BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
-    // TODO
+  if (GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
+    qDebug() << "TODO readEEPROM HORUS";
   }
   else {
     QString tempFile;
@@ -907,36 +902,20 @@ void MainWindow::updateMenus()
 {
     bool hasMdiChild = (activeMdiChild() != 0);
     bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
-
-  if(GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
-      newAct->setEnabled(false);
-      openAct->setEnabled(false);
-      saveAct->setEnabled(false);
-      saveAsAct->setEnabled(false);
-      writeEepromAct->setEnabled(false);
-      readEepromAct->setEnabled(false);
-      writeBackupToRadioAct->setEnabled(false);
-      readBackupToFileAct->setEnabled(false);
-      cutAct->setEnabled(false);
-      copyAct->setEnabled(false);
-      pasteAct->setEnabled(false);
-      for (int i=0; i<MAX_RECENT; ++i)
-        recentFileActs[i]->setEnabled(false);
-    } else {
-      newAct->setEnabled(true);
-      openAct->setEnabled(true);
-      saveAct->setEnabled(hasMdiChild);
-      saveAsAct->setEnabled(hasMdiChild);
-      cutAct->setEnabled(hasSelection);
-      copyAct->setEnabled(hasSelection);
-      pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
-      writeEepromAct->setEnabled(hasMdiChild);
-      readEepromAct->setEnabled(true);
-      writeBackupToRadioAct->setEnabled(true);
-      readBackupToFileAct->setEnabled(true);
-      for (int i=0; i<MAX_RECENT; ++i)
-        recentFileActs[i]->setEnabled(true);
-    }
+  
+    newAct->setEnabled(true);
+    openAct->setEnabled(true);
+    saveAct->setEnabled(hasMdiChild);
+    saveAsAct->setEnabled(hasMdiChild);
+    cutAct->setEnabled(hasSelection);
+    copyAct->setEnabled(hasSelection);
+    pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
+    writeEepromAct->setEnabled(hasMdiChild);
+    readEepromAct->setEnabled(true);
+    writeBackupToRadioAct->setEnabled(true);
+    readBackupToFileAct->setEnabled(true);
+    for (int i=0; i<MAX_RECENT; ++i)
+      recentFileActs[i]->setEnabled(true);
     separatorAct->setVisible(hasMdiChild);
     simulateAct->setEnabled(hasSelection);
     printAct->setEnabled(hasSelection);

@@ -94,12 +94,7 @@ void MdiChild::refresh(bool expand)
   if (1 || expand) {
     ui->modelsList->expandAll();
   }
-  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
-    ui->simulateButton->setEnabled(false);
-  }
-  else {
-    ui->simulateButton->setEnabled(GetCurrentFirmware()->getCapability(Simulation));
-  }
+  ui->simulateButton->setEnabled(GetCurrentFirmware()->getCapability(Simulation));
   updateTitle();
 }
 

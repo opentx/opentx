@@ -49,9 +49,6 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  if(GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
-    ui->pushButton->setEnabled(false);
-  }
   SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware);
   addTab(setupPanel, tr("Setup"));
   if (firmware->getCapability(Heli))
@@ -110,12 +107,7 @@ void ModelEdit::on_tabWidget_currentChanged(int index)
 
 void ModelEdit::on_pushButton_clicked()
 {
-  if (GetCurrentFirmware()->getBoard() == BOARD_HORUS && !HORUS_READY_FOR_RELEASE()) {
-    QMessageBox::warning(this, "Unavailable", "Horus simulation not currently supported within Companion");
-  }
-  else {
-    launchSimulation();
-  }
+  launchSimulation();
 }
 
 void ModelEdit::launchSimulation()

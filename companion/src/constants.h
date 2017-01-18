@@ -62,9 +62,9 @@ enum BoardEnum {
 #define HEX_FILES_FILTER              "HEX files (*.hex);;"
 #define BIN_FILES_FILTER              "BIN files (*.bin);;"
 #define DFU_FILES_FILTER              "DFU files (*.dfu);;"
-#define EEPE_FILES_FILTER             "EEPE EEPROM files (*.eepe);;"
+#define EEPE_FILES_FILTER             "EEPE files (*.eepe);;"
 #define OTX_FILES_FILTER              "OpenTX files (*.otx);;"
-#define EEPROM_FILES_FILTER           "EEPE files (*.eepe *.bin *.hex);;" EEPE_FILES_FILTER BIN_FILES_FILTER HEX_FILES_FILTER
+#define EEPROM_FILES_FILTER           "Radio and Models settings files (*.otx *.eepe *.bin *.hex);;" OTX_FILES_FILTER EEPE_FILES_FILTER BIN_FILES_FILTER HEX_FILES_FILTER
 #define FLASH_FILES_FILTER            "FLASH files (*.bin *.hex *.dfu);;" BIN_FILES_FILTER HEX_FILES_FILTER DFU_FILES_FILTER
 #define EXTERNAL_EEPROM_FILES_FILTER  "EEPROM files (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER
 #define ER9X_EEPROM_FILE_TYPE         "ER9X_EEPROM_FILE"
@@ -75,11 +75,5 @@ const char * const ARROW_LEFT = "\xE2\x86\x90";
 const char * const ARROW_UP = "\xE2\x86\x91";
 const char * const ARROW_RIGHT = "\xE2\x86\x92";
 const char * const ARROW_DOWN = "\xE2\x86\x93";
-
-#if defined(DEBUG)
-#define HORUS_READY_FOR_RELEASE()     true
-#else
-#define HORUS_READY_FOR_RELEASE()     false
-#endif
 
 #endif // _CONSTANTS_H_

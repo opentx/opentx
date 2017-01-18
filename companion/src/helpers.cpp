@@ -836,7 +836,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     BoardEnum board = GetCurrentFirmware()->getBoard();
     SimulatorDialog * dialog;
 
-    if (board == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
+    if (board == BOARD_HORUS) {
       dialog = new SimulatorDialogHorus(parent, simulator, flags);
       QTemporaryDir tmpDir(QDir::tempPath() + "/otx-XXXXXX");
       settingsPath = tmpDir.path();
