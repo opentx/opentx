@@ -31,6 +31,7 @@
 #include "wizarddialog.h"
 #include "flashfirmwaredialog.h"
 #include "storage.h"
+#include "radiointerface.h"
 
 #if defined _MSC_VER || !defined __GNUC__
 #include <windows.h>
@@ -41,6 +42,7 @@
 
 MdiChild::MdiChild(MainWindow * parent):
   QWidget(),
+  parent(parent),
   ui(new Ui::MdiChild),
   modelsListModel(NULL),
   firmware(getCurrentFirmware()),
@@ -599,14 +601,32 @@ void MdiChild::setCurrentFile(const QString &fileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  QString tempFile = generateProcessUniqueTempFileName("temp.bin");
-  saveFile(tempFile, false);
-  if (!QFileInfo(tempFile).exists()) {
-    QMessageBox::critical(this, tr("Error"), tr("Cannot write temporary file!"));
-    return;
+  BoardEnum board = getCurrentBoard();
+  if (board == BOARD_HORUS) {
+    QString radioPath = findMassstoragePath("RADIO", true);
+    qDebug() << "Searching for SD card, found" << radioPath;
+    if (radioPath.isEmpty()) {
+      qDebug() << "MdiChild::writeEeprom(): Horus radio not found";
+      QMessageBox::critical(this, tr("Error"), tr("Unable to find Horus radio SD card!"));
+      return;
+    }
+    if (saveFile(radioPath, false)) {
+      parent->statusBar()->showMessage(tr("Models and Settings written"), 2000);
+    }
+    else {
+      qDebug() << "MdiChild::writeEeprom(): saveFile error";
+    }
   }
-  FlashEEpromDialog * cd = new FlashEEpromDialog(this, tempFile);
-  cd->exec();
+  else {
+    QString tempFile = generateProcessUniqueTempFileName("temp.bin");
+    saveFile(tempFile, false);
+    if (!QFileInfo(tempFile).exists()) {
+      QMessageBox::critical(this, tr("Error"), tr("Cannot write temporary file!"));
+      return;
+    }
+    FlashEEpromDialog * cd = new FlashEEpromDialog(this, tempFile);
+    cd->exec();
+  }
 }
 
 void MdiChild::on_radioSettings_clicked()

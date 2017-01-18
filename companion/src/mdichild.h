@@ -100,6 +100,7 @@ class MdiChild : public QWidget
     void doPaste(QByteArray * gmData, int index);
     void initModelsList();
     
+    MainWindow * parent;
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;
     

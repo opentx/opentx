@@ -400,7 +400,7 @@ bool isRemovableMedia(const QString & vol)
 }
 #endif
 
-QString findMassstoragePath(const QString &filename)
+QString findMassstoragePath(const QString &filename, bool onlyPath)
 {
   QString temppath;
   QStringList drives;
@@ -424,9 +424,8 @@ QString findMassstoragePath(const QString &filename)
           QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
           temppath = drive.absolutePath();
           eepromfile = temppath;
-          eepromfile.append("/" + filename);
           if (QFile::exists(eepromfile)) {
-            return eepromfile;
+            return onlyPath ? temppath : eepromfile;
           }
         }
       }
@@ -452,7 +451,7 @@ QString findMassstoragePath(const QString &filename)
       if (QFile::exists(eepromfile)) {
 #endif
         free_file_system_list(firstEntry);
-        return eepromfile;
+        return onlyPath ? temppath : eepromfile;
       }
     }
     entry = entry->me_next;
