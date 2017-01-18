@@ -137,7 +137,7 @@ MainWindow::MainWindow():
       if (fileType==STORAGE_TYPE_EEPE || fileType==STORAGE_TYPE_EEPM || fileType==STORAGE_TYPE_BIN) {
         MdiChild * child = createMdiChild();
         if (child->loadFile(str)) {
-          if (!(printing && model >= 0 && (GetCurrentFirmware()->getCapability(Models) == 0 || model<GetCurrentFirmware()->getCapability(Models)) && !printfilename.isEmpty())) {
+          if (!(printing && model >= 0 && (getCurrentFirmware()->getCapability(Models) == 0 || model<getCurrentFirmware()->getCapability(Models)) && !printfilename.isEmpty())) {
             statusBar()->showMessage(tr("File loaded"), 2000);
             child->show();
           }
@@ -228,7 +228,7 @@ void MainWindow::checkForUpdates()
   }
   else if (checkForUpdatesState & CHECK_FIRMWARE) {
     checkForUpdatesState -= CHECK_FIRMWARE;
-    QString stamp = GetCurrentFirmware()->getStampUrl();
+    QString stamp = getCurrentFirmware()->getStampUrl();
     if (!stamp.isEmpty()) {
       networkManager = new QNetworkAccessManager(this);
       connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(checkForFirmwareUpdateFinished(QNetworkReply*)));
@@ -413,7 +413,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
 
       if (currentVersion == 0) {
-        QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
+        QString rn = getCurrentFirmware()->getReleaseNotesUrl();
         QAbstractButton *rnButton = NULL;
         msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(fullVersionString));
         QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -441,7 +441,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
         }
       }
       else if (version > currentVersion) {
-        QString rn = GetCurrentFirmware()->getReleaseNotesUrl();
+        QString rn = getCurrentFirmware()->getReleaseNotesUrl();
         QAbstractButton *rnButton = NULL;
         msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(fullVersionString));
         QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -618,7 +618,7 @@ void MainWindow::loadProfile() // TODO Load all variables - Also HW!
     // Set the new profile number
     int profnum = action->data().toInt();
     g.id(profnum);
-    current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
+    current_firmware_variant = getFirmware(g.profile[g.id()].fwType());
     emit FirmwareChanged();
     updateMenus();
   }
@@ -673,7 +673,7 @@ void MainWindow::changelog()
 
 void MainWindow::fwchangelog()
 {
-  Firmware * firmware = GetCurrentFirmware();
+  Firmware * firmware = getCurrentFirmware();
   QString url = firmware->getReleaseNotesUrl();
   if (url.isEmpty()) {
     QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
@@ -740,15 +740,14 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-  if (GetCurrentFirmware()->getBoard()== BOARD_HORUS) {
+  if (getCurrentBoard()== BOARD_HORUS) {
     qDebug() << "TODO readEEPROM HORUS";
   }
   else {
     QString tempFile;
 
-    EEPROMInterface * eepromInterface = GetEepromInterface();
-
-    if (IS_ARM(eepromInterface->getBoard()))
+    BoardEnum board = getCurrentBoard();
+    if (IS_ARM(board))
       tempFile = generateProcessUniqueTempFileName("temp.bin");
     else
       tempFile += generateProcessUniqueTempFileName("temp.hex");
@@ -836,7 +835,7 @@ void MainWindow::burnFuses()
 
 void MainWindow::compare()
 {
-  CompareDialog *fd = new CompareDialog(this,GetCurrentFirmware());
+  CompareDialog *fd = new CompareDialog(this,getCurrentFirmware());
   fd->setAttribute(Qt::WA_DeleteOnClose, true);
   fd->show();
 }
@@ -896,7 +895,7 @@ void MainWindow::updateMenus()
     updateLanguageActions();
     updateIconSizeActions();
     updateIconThemeActions();
-    setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(GetCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
+    setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(getCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
 }
 
 MdiChild * MainWindow::createMdiChild()
@@ -1120,8 +1119,7 @@ void MainWindow::createMenus()
     burnMenu->addAction(readFlashAct);
     burnMenu->addSeparator();
     burnMenu->addSeparator();
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (!IS_ARM(eepromInterface->getBoard())) {
+    if (!IS_ARM(getCurrentBoard())) {
       burnMenu->addAction(burnFusesAct);
       burnMenu->addAction(burnListAct);
     }
@@ -1410,7 +1408,7 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
-    if(GetCurrentFirmware()->getBoard()== BOARD_HORUS)
+    if(getCurrentBoard()== BOARD_HORUS)
       return;
     QList<QUrl> urls = event->mimeData()->urls();
     if (urls.isEmpty())

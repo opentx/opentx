@@ -40,7 +40,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   setWindowTitle(tr("Edit %1").arg(modelPrinter.printInputName(ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if (IS_TARANIS(getCurrentBoard())) {
     gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
     gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
   }

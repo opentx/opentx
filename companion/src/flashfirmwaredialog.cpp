@@ -54,7 +54,7 @@ fwName(g.profile[g.id()].fwName())
     ui->useProfileSplash->setDisabled(true);
   }
 
-  if (IS_STM32(GetEepromInterface()->getBoard())) {
+  if (IS_STM32(getCurrentBoard())) {
     // No backup on Taranis ... could be done if in massstorage
     ui->backupEEprom->hide();
     ui->backupEEprom->setCheckState(Qt::Unchecked);

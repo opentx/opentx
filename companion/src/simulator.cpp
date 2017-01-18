@@ -375,7 +375,7 @@ int main(int argc, char *argv[])
     return finish(2);
   }
 
-  current_firmware_variant = GetFirmware(simOptions.firmwareId);
+  current_firmware_variant = getFirmware(simOptions.firmwareId);
 
   g.simuLastProfId(simOptions.profileId);
   g.lastSimulator(simOptions.firmwareId);

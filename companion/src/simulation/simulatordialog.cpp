@@ -292,7 +292,7 @@ void SimulatorDialog::initUi(T * ui)
 {
   ui->setupUi(this);
 
-  windowName = tr("Simulating Radio (%1)").arg(GetCurrentFirmware()->getName());
+  windowName = tr("Simulating Radio (%1)").arg(getCurrentFirmware()->getName());
   setWindowTitle(windowName);
 
   lcd = ui->lcd;
@@ -424,7 +424,7 @@ void SimulatorDialog::setupOutputsDisplay()
   tabWidget->insertTab(1, outputsWidget, QString(tr("Outputs")));
 
   // populate outputs
-  int outputs = std::min(32, GetCurrentFirmware()->getCapability(Outputs));
+  int outputs = std::min(32, getCurrentFirmware()->getCapability(Outputs));
   int column = 0;
   for (int i=0; i<outputs; i++) {
     QLabel * label = new QLabel(tabWidget);
@@ -457,7 +457,7 @@ void SimulatorDialog::setupOutputsDisplay()
   }
 
   // populate logical switches
-  int switches = GetCurrentFirmware()->getCapability(LogicalSwitches);
+  int switches = getCurrentFirmware()->getCapability(LogicalSwitches);
   int rows = switches / (switches > 16 ? 4 : 2);
   for (int i=0; i<switches; i++) {
     QFrame * swtch = createLogicalSwitch(tabWidget, i, logicalSwitchLabels);
@@ -467,8 +467,8 @@ void SimulatorDialog::setupOutputsDisplay()
 
 void SimulatorDialog::setupGVarsDisplay()
 {
-  int fmodes = GetCurrentFirmware()->getCapability(FlightModes);
-  int gvars = GetCurrentFirmware()->getCapability(Gvars);
+  int fmodes = getCurrentFirmware()->getCapability(FlightModes);
+  int gvars = getCurrentFirmware()->getCapability(Gvars);
   if (gvars>0) {
     // setup GVars tab
     QWidget * gvarsWidget = new QWidget();
@@ -539,7 +539,7 @@ void SimulatorDialog::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
   if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "Companion", tr("Firmware %1 error: %2").arg(GetCurrentFirmware()->getName()).arg(simulator->getError()));
+    QMessageBox::critical(this, "Companion", tr("Firmware %1 error: %2").arg(getCurrentFirmware()->getName()).arg(simulator->getError()));
     timer->stop();
     return;
   }
@@ -593,8 +593,8 @@ void SimulatorDialog::onTimerEvent()
 void SimulatorDialog::startCommon()
 {
   lastPhase = -1;
-  numGvars = GetCurrentFirmware()->getCapability(Gvars);
-  numFlightModes = GetCurrentFirmware()->getCapability(FlightModes);
+  numGvars = getCurrentFirmware()->getCapability(Gvars);
+  numFlightModes = getCurrentFirmware()->getCapability(FlightModes);
   simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
 }
 
@@ -667,8 +667,8 @@ inline int chVal(int val)
 
 void SimulatorDialog::setValues()
 {
-  static const int numOutputs = GetCurrentFirmware()->getCapability(Outputs);
-  static const int numLogicalSwitches = GetCurrentFirmware()->getCapability(LogicalSwitches);
+  static const int numOutputs = getCurrentFirmware()->getCapability(Outputs);
+  static const int numLogicalSwitches = getCurrentFirmware()->getCapability(LogicalSwitches);
   static TxOutputs prevOutputs;
   static unsigned int prevPhase = -1;
 

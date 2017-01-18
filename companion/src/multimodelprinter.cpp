@@ -268,7 +268,7 @@ QString MultiModelPrinter::printFlightModes()
     columns.append("<td><b>" + tr("Fade IN") + "</b></td>");
     columns.append("<td><b>" + tr("Fade OUT") + "</b></td>");
     for (int i=0; i<4; i++) {
-      columns.append("<td><b>" + GetCurrentFirmware()->getAnalogInputName(i) + " trim</b></td>");
+      columns.append("<td><b>" + getCurrentFirmware()->getAnalogInputName(i) + " trim</b></td>");
     }
     columns.append("</tr>");
 

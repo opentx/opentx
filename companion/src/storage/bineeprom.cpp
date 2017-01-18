@@ -49,9 +49,9 @@ bool BinEepromFormat::load(RadioData & radioData)
 bool BinEepromFormat::write(const RadioData & radioData)
 {
   bool result;
-  EEPROMInterface * eepromInterface = GetEepromInterface();
+  EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
   uint8_t * eeprom = (uint8_t *)malloc(getEEpromSize(eepromInterface->getBoard()));
-  int eeprom_size = eepromInterface->save(eeprom, radioData, 0, GetCurrentFirmware()->getVariantNumber());
+  int eeprom_size = eepromInterface->save(eeprom, radioData, 0, getCurrentFirmware()->getVariantNumber());
   if (eeprom_size) {
     result = writeToFile(eeprom, eeprom_size);
   }

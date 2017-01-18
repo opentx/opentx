@@ -207,7 +207,7 @@ ui(new Ui::GeneralSetup)
   ui->memwarnChkB->setChecked(!generalSettings.disableMemoryWarning);   //Default is zero=checked
   ui->alarmwarnChkB->setChecked(!generalSettings.disableAlarmWarning);//Default is zero=checked
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if (IS_TARANIS(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
     ui->splashScreenDuration->setCurrentIndex(3-generalSettings.splashDuration);
   }
@@ -261,7 +261,7 @@ ui(new Ui::GeneralSetup)
   }
   ui->blAlarm_ChkB->setChecked(generalSettings.flashBeep);
 
-  if (!GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+  if (!firmware->getCapability(HasBatMeterRange)) {
     ui->batMeterRangeLabel->hide();
     ui->HasBatMeterMinRangeLabel->hide();
     ui->HasBatMeterMaxRangeLabel->hide();
@@ -365,7 +365,7 @@ void GeneralSetupPanel::setValues()
   ui->beeperCB->setCurrentIndex(generalSettings.beeperMode+2);
   ui->channelorderCB->setCurrentIndex(generalSettings.templateSetup);
   ui->stickmodeCB->setCurrentIndex(generalSettings.stickMode);
-  if (GetCurrentFirmware()->getCapability(Haptic)) {
+  if (firmware->getCapability(Haptic)) {
     ui->hapticLengthCB->setCurrentIndex(generalSettings.hapticLength+2);
   }
   else {
@@ -380,7 +380,7 @@ void GeneralSetupPanel::setValues()
   ui->hapticStrength->setValue(generalSettings.hapticStrength);
   ui->hapticmodeCB->setCurrentIndex(generalSettings.hapticMode+2);
 
-  if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+  if (firmware->getCapability(HasBatMeterRange)) {
     ui->vBatMinDSB->setValue((double)(generalSettings.vBatMin + 90) / 10);
     ui->vBatMaxDSB->setValue((double)(generalSettings.vBatMax + 120) / 10);
   }

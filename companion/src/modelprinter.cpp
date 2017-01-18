@@ -67,7 +67,7 @@ QString addFont(const QString & input, const QString & color, const QString & si
 
 QString ModelPrinter::printEEpromSize()
 {
-  return tr("%1 bytes").arg(GetEepromInterface()->getSize(model));
+  return tr("%1 bytes").arg(getCurrentEEpromInterface()->getSize(model));
 }
 
 QString ModelPrinter::printChannelName(int idx)

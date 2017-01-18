@@ -60,7 +60,7 @@ void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int wei
 void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixIndex)
 {
   if (input != NO_INPUT)  {
-    bool isTaranis = IS_TARANIS(GetEepromInterface()->getBoard());
+    bool isTaranis = IS_TARANIS(getCurrentBoard());
 
     if (input >= RUDDER_INPUT && input <= AILERONS_INPUT) {
       MixData & mix = model.mixData[mixIndex++];
@@ -89,7 +89,7 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
 WizMix::operator ModelData()
 {
   int throttleChannel = -1;
-  bool isTaranis = IS_TARANIS(GetEepromInterface()->getBoard());
+  bool isTaranis = IS_TARANIS(getCurrentBoard());
 
   ModelData model;
   model.used = true;

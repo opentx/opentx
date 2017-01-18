@@ -247,7 +247,7 @@ QString SensorData::unitString() const
 
 bool RawSource::isTimeBased() const
 {
-  if (IS_ARM(GetCurrentFirmware()->getBoard()))
+  if (IS_ARM(getCurrentBoard()))
     return (type == SOURCE_TYPE_SPECIAL && index > 0);
   else
     return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
@@ -255,7 +255,7 @@ bool RawSource::isTimeBased() const
 
 float RawSourceRange::getValue(int value)
 {
-  if (IS_ARM(GetCurrentFirmware()->getBoard()))
+  if (IS_ARM(getCurrentBoard()))
     return float(value) * step;
   else
     return min + float(value) * step;
@@ -265,7 +265,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
 {
   RawSourceRange result;
 
-  Firmware * firmware = GetCurrentFirmware();
+  Firmware * firmware = getCurrentFirmware();
   int board = firmware->getBoard();
   bool singleprec = (flags & RANGE_SINGLE_PRECISION);
 
@@ -567,7 +567,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_LUA_OUTPUT:
       return QObject::tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
     case SOURCE_TYPE_STICK:
-      return GetCurrentFirmware()->getAnalogInputName(index);
+      return getCurrentFirmware()->getAnalogInputName(index);
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:
@@ -575,7 +575,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
     case SOURCE_TYPE_SWITCH:
-      return GetCurrentFirmware()->getSwitch(index).name;
+      return getCurrentFirmware()->getSwitch(index).name;
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return QObject::tr("L%1").arg(index+1);
     case SOURCE_TYPE_CYC:
@@ -587,7 +587,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_SPECIAL:
       return CHECK_IN_ARRAY(special, index);
     case SOURCE_TYPE_TELEMETRY:
-      if (IS_ARM(GetEepromInterface()->getBoard())) {
+      if (IS_ARM(getCurrentBoard())) {
         div_t qr = div(index, 3);
         QString result = QString(model ? model->sensorData[qr.quot].label : QString("[T%1]").arg(qr.quot+1));
         if (qr.rem) result += qr.rem == 1 ? "-" : "+";
@@ -607,14 +607,14 @@ bool RawSource::isPot() const
 {
   return (type == SOURCE_TYPE_STICK &&
           index >= CPN_MAX_STICKS &&
-          index < CPN_MAX_STICKS+GetCurrentFirmware()->getCapability(Pots));
+          index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots));
 }
 
 bool RawSource::isSlider() const
 {
   return (type == SOURCE_TYPE_STICK &&
-          index >= CPN_MAX_STICKS+GetCurrentFirmware()->getCapability(Pots) &&
-          index < CPN_MAX_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders));
+          index >= CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots) &&
+          index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders));
 }
 
 QString RawSwitch::toString() const
@@ -655,12 +655,12 @@ QString RawSwitch::toString() const
     return QString("!") + RawSwitch(type, -index).toString();
   }
   else {
-    BoardEnum board = GetEepromInterface()->getBoard();
+    BoardEnum board = getCurrentBoard();
     switch(type) {
       case SWITCH_TYPE_SWITCH:
         if (IS_HORUS_OR_TARANIS(board)) {
           div_t qr = div(index-1, 3);
-          Firmware::Switch sw = GetCurrentFirmware()->getSwitch(qr.quot);
+          Firmware::Switch sw = getCurrentFirmware()->getSwitch(qr.quot);
           const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
           return QString(sw.name) + QString(positions[qr.rem]);
         }
@@ -791,7 +791,7 @@ QString LogicalSwitchData::funcToString() const
 void CustomFunctionData::clear()
 {
   memset(this, 0, sizeof(CustomFunctionData));
-  if (!GetCurrentFirmware()->getCapability(SafetyChannelCustomFunction)) {
+  if (!getCurrentFirmware()->getCapability(SafetyChannelCustomFunction)) {
     func = FuncTrainer;
   }
 }
@@ -864,8 +864,8 @@ QString CustomFunctionData::funcToString() const
 void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox * b, unsigned int value = 0)
 {
   int val = 0;
-  Firmware * firmware = GetCurrentFirmware();
-  BoardEnum board = GetEepromInterface()->getBoard();
+  Firmware * firmware = getCurrentFirmware();
+  BoardEnum board = firmware->getBoard();
 
   b->addItem(QObject::tr("Timer1"), val++);
   b->addItem(QObject::tr("Timer2"), val++);
@@ -946,7 +946,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     return item.toString(model);
   }
   else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
-    if ( GetCurrentFirmware()->getCapability(VoicesAsNumbers)) {
+    if ( getCurrentFirmware()->getCapability(VoicesAsNumbers)) {
       return QString("%1").arg(param);
     }
     else {
@@ -977,7 +977,7 @@ QString CustomFunctionData::repeatToString() const
     return "";
   }
   else {
-    unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+    unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
     return QObject::tr("repeat(%1s)").arg(step*repeatParam);
   }
 }
@@ -1070,13 +1070,13 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
-  if (index<0 || index>GetCurrentFirmware()->getCapability(Pots)) return false;
+  if (index<0 || index>getCurrentFirmware()->getCapability(Pots)) return false;
   return potConfig[index] != POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
-  if (index<0 || index>GetCurrentFirmware()->getCapability(Sliders)) return false;
+  if (index<0 || index>getCurrentFirmware()->getCapability(Sliders)) return false;
   return sliderConfig[index] != SLIDER_NONE;
 }
 
@@ -1093,11 +1093,13 @@ GeneralSettings::GeneralSettings()
     calibSpanPos[i] = 0x180;
   }
 
-  for (int i=0; i<GetCurrentFirmware()->getCapability(FactoryInstalledSwitches); i++) {
-    switchConfig[i] = GetCurrentFirmware()->getSwitch(i).type;
+  Firmware * firmware = getCurrentFirmware();
+  BoardEnum board = firmware->getBoard();
+  
+  for (int i=0; i<firmware->getCapability(FactoryInstalledSwitches); i++) {
+    switchConfig[i] = firmware->getSwitch(i).type;
   }
-
-  BoardEnum board = GetEepromInterface()->getBoard();
+  
   if (IS_HORUS(board)) {
     potConfig[0] = POT_WITH_DETENT;
     potConfig[1] = POT_MULTIPOS_SWITCH;
@@ -1136,7 +1138,7 @@ GeneralSettings::GeneralSettings()
   stickMode = g.profile[g.id()].defaultMode();
 
   QString t_calib = g.profile[g.id()].stickPotCalib();
-  int potsnum = GetCurrentFirmware()->getCapability(Pots);
+  int potsnum = getCurrentFirmware()->getCapability(Pots);
   if (!t_calib.isEmpty()) {
     QString t_trainercalib=g.profile[g.id()].trainerCalib();
     int8_t t_txVoltageCalibration=(int8_t)g.profile[g.id()].txVoltageCalibration();
@@ -1290,7 +1292,7 @@ RawSourceRange FrSkyChannelData::getRange() const
 void FrSkyScreenData::clear()
 {
   memset(this, 0, sizeof(FrSkyScreenData));
-  if (!IS_ARM(GetCurrentFirmware()->getBoard())) {
+  if (!IS_ARM(getCurrentBoard())) {
     type = TELEMETRY_SCREEN_NUMBERS;
   }
 }
@@ -1421,7 +1423,7 @@ void ModelData::clearInputs()
     expoData[i].clear();
 
   //clear all input names
-  if (GetCurrentFirmware()->getCapability(VirtualInputs)) {
+  if (getCurrentFirmware()->getCapability(VirtualInputs)) {
     for (int i=0; i<CPN_MAX_INPUTS; i++) {
       inputNames[i][0] = 0;
     }
@@ -1436,7 +1438,7 @@ void ModelData::clearMixes()
 
 RadioData::RadioData()
 {
-  models.resize(GetCurrentFirmware()->getCapability(Models));
+  models.resize(getCurrentFirmware()->getCapability(Models));
 }
 
 void ModelData::clear()
@@ -1448,7 +1450,7 @@ void ModelData::clear()
   moduleData[0].ppm.delay = 300;
   moduleData[1].ppm.delay = 300;
   moduleData[2].ppm.delay = 300;
-  int board = GetEepromInterface()->getBoard();
+  int board = getCurrentBoard();
   if (IS_HORUS_OR_TARANIS(board)) {
     moduleData[0].protocol = PULSES_PXX_XJT_X16;
     moduleData[1].protocol = PULSES_OFF;
@@ -1519,7 +1521,7 @@ QString removeAccents(const QString & str)
 
 void ModelData::setDefaultInputs(const GeneralSettings & settings)
 {
-  BoardEnum board = GetEepromInterface()->getBoard();
+  BoardEnum board = getCurrentBoard();
   if (IS_ARM(board)) {
     for (int i=0; i<CPN_MAX_STICKS; i++) {
       ExpoData * expo = &expoData[i];
@@ -1534,7 +1536,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
 
 void ModelData::setDefaultMixes(const GeneralSettings & settings)
 {
-  BoardEnum board = GetEepromInterface()->getBoard();
+  BoardEnum board = getCurrentBoard();
   if (IS_ARM(board)) {
     setDefaultInputs(settings);
   }
@@ -1658,19 +1660,12 @@ ModelData ModelData::removeGlobalVars()
 int ModelData::getChannelsMax(bool forceExtendedLimits) const
 {
   if (forceExtendedLimits || extendedLimits)
-    return IS_TARANIS(GetCurrentFirmware()->getBoard()) ? 150 : 125;
+    return IS_TARANIS(getCurrentBoard()) ? 150 : 125;
   else
     return 100;
 }
 
 QList<EEPROMInterface *> eepromInterfaces;
-
-void registerEEpromInterfaces()
-{
-  registerOpenTxEEpromInterfaces();
-  // eepromInterfaces.push_back(new Ersky9xInterface());
-  // eepromInterfaces.push_back(new Er9xInterface());
-}
 
 void unregisterEEpromInterfaces()
 {
@@ -1795,7 +1790,7 @@ const int Firmware::getFlashSize()
   }
 }
 
-Firmware * GetFirmware(const QString & id)
+Firmware * getFirmware(const QString & id)
 {
   foreach(Firmware * firmware, firmwares) {
     Firmware * result = firmware->getFirmwareVariant(id);
@@ -1849,17 +1844,18 @@ void Firmware::addOptions(Option options[])
   this->opts.push_back(opts);
 }
 
-SimulatorInterface *GetCurrentFirmwareSimulator()
+SimulatorInterface * getCurrentSimulator()
 {
-  QString firmwareId = GetCurrentFirmware()->getId();
-  SimulatorFactory *factory = getSimulatorFactory(firmwareId);
+  QString firmwareId = getCurrentFirmware()->getId();
+  SimulatorFactory * factory = getSimulatorFactory(firmwareId);
   if (factory)
     return factory->create();
   else
     return NULL;
 }
 
-unsigned int getNumSubtypes(MultiModuleRFProtocols type) {
+unsigned int getNumSubtypes(MultiModuleRFProtocols type)
+{
   switch (type) {
     case MM_RF_PROTO_HISKY:
     case MM_RF_PROTO_SYMAX:

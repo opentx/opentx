@@ -106,7 +106,7 @@ TreeModel::TreeModel(RadioData * radioData, QObject * parent):
   radioData(radioData),
   availableEEpromSize(-1)
 {
-  BoardEnum board = GetCurrentFirmware()->getBoard();
+  BoardEnum board = getCurrentBoard();
   QVector<QVariant> labels;
   if (!IS_HORUS(board))
     labels << tr("Index");
@@ -239,7 +239,7 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant & value, int ro
 
 void TreeModel::refresh()
 {
-  EEPROMInterface * eepromInterface = GetEepromInterface();
+  EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
   BoardEnum board = eepromInterface->getBoard();
   
   if (!IS_SKY9X(board) && !IS_HORUS(board)) {
@@ -366,7 +366,7 @@ void ModelsListWidget::mouseMoveEvent(QMouseEvent *event)
 void ModelsListWidget::saveSelection()
 {
   /*currentSelection.current_item = currentItem();
-  for (int i=0; i<GetCurrentFirmware()->getCapability(Models)+1; ++i) {
+  for (int i=0; i<getCurrentFirmware()->getCapability(Models)+1; ++i) {
     currentSelection.selected[i] = selectionModel()->isSelected(model()->index(i, 0));
   }*/
 }
@@ -374,7 +374,7 @@ void ModelsListWidget::saveSelection()
 void ModelsListWidget::restoreSelection()
 {
   /*setCurrentItem(currentSelection.current_item);
-  for (int i=0; i<GetCurrentFirmware()->getCapability(Models)+1; ++i) {
+  for (int i=0; i<getCurrentFirmware()->getCapability(Models)+1; ++i) {
     selectionModel()->select(model()->index(i, 0), currentSelection.selected[i] ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
   }*/
 }
@@ -404,7 +404,7 @@ void ModelsListWidget::dragMoveEvent(QDragMoveEvent *event)
     if (row >= 0) {
       if (header->general_settings)
         selectionModel()->select(model()->index(0, 0), QItemSelectionModel::Select);
-      for (int i=row, end=std::min(GetCurrentFirmware()->getCapability(Models)+1, row+header->models_count); i<end; i++)
+      for (int i=row, end=std::min(getCurrentFirmware()->getCapability(Models)+1, row+header->models_count); i<end; i++)
         selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
     }
   }
@@ -429,7 +429,7 @@ void ModelsListWidget::dropEvent(QDropEvent *event)
     DragDropHeader * header = (DragDropHeader *)gmData.data();
     if (header->general_settings)
       selectionModel()->select(model()->index(0, 0), QItemSelectionModel::Select);
-    for (int i=row, end=std::min(GetCurrentFirmware()->getCapability(Models)+1, row+header->models_count); i<end; i++)
+    for (int i=row, end=std::min(getCurrentFirmware()->getCapability(Models)+1, row+header->models_count); i<end; i++)
       selectionModel()->select(model()->index(i, 0), QItemSelectionModel::Select);
   }
   event->acceptProposedAction();
@@ -473,9 +473,9 @@ void ModelsListWidget::doCut(QByteArray * gmData)
 void ModelsListWidget::duplicate()
 {
   int i = this->currentRow();
-  if (i && i<GetCurrentFirmware()->getCapability(Models)) {
+  if (i && i<getCurrentFirmware()->getCapability(Models)) {
     ModelData * model = &radioData->models[i-1];
-    while (i<GetCurrentFirmware()->getCapability(Models)) {
+    while (i<getCurrentFirmware()->getCapability(Models)) {
       if (radioData->models[i].isEmpty()) {
         radioData->models[i] = *model;
         strcpy(radioData->models[i].filename, radioData->getNextModelFilename().toStdString().c_str());
@@ -484,7 +484,7 @@ void ModelsListWidget::duplicate()
       }
       i++;
     }
-    if (i==GetCurrentFirmware()->getCapability(Models)) {
+    if (i==getCurrentFirmware()->getCapability(Models)) {
       QMessageBox::warning(this, "Companion", tr("No free slot available, cannot duplicate"), QMessageBox::Ok);
     }
   }

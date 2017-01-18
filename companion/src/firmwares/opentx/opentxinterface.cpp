@@ -45,9 +45,10 @@ size_t SizeOfArray(T(&)[N])
   return N;
 }
 
-OpenTxEepromInterface::OpenTxEepromInterface(BoardEnum board):
-  EEPROMInterface(board),
-  efile(new RleFile())
+OpenTxEepromInterface::OpenTxEepromInterface(OpenTxFirmware * firmware):
+  EEPROMInterface(firmware->getBoard()),
+  efile(new RleFile()),
+  firmware(firmware)
 {
 }
 
@@ -215,28 +216,6 @@ bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, uint
   return (sz == eeprom.size());
 }
 
-QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
-void registerOpenTxEEpromInterface(BoardEnum board)
-{
-  OpenTxEepromInterface * interface = new OpenTxEepromInterface(board);
-  opentxEEpromInterfaces.push_back(interface);
-  eepromInterfaces.push_back(interface);
-}
-
-void registerOpenTxEEpromInterfaces()
-{
-  registerOpenTxEEpromInterface(BOARD_STOCK);
-  registerOpenTxEEpromInterface(BOARD_M128);
-  registerOpenTxEEpromInterface(BOARD_GRUVIN9X);
-  registerOpenTxEEpromInterface(BOARD_SKY9X);
-  registerOpenTxEEpromInterface(BOARD_9XRPRO);
-  registerOpenTxEEpromInterface(BOARD_TARANIS_X9D);
-  registerOpenTxEEpromInterface(BOARD_TARANIS_X9DP);
-  registerOpenTxEEpromInterface(BOARD_TARANIS_X9E);
-  registerOpenTxEEpromInterface(BOARD_TARANIS_X7);
-  registerOpenTxEEpromInterface(BOARD_HORUS);
-}
-
 unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
@@ -304,10 +283,16 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   }
 
   std::cout << " variant " << radioData.generalSettings.variant;
-  for (int i = 0; i < GetCurrentFirmware()->getCapability(Models); i++) {
+  if (getCurrentFirmware()->getCapability(Models) == 0) {
+    radioData.models.resize(firmware->getCapability(Models));
+  }
+  for (int i = 0; i < firmware->getCapability(Models); i++) {
     if (!loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
       std::cout << " ko\n";
       errors.set(UNKNOWN_ERROR);
+      if (getCurrentFirmware()->getCapability(Models) == 0) {
+        radioData.models.resize(i);
+      }
       return errors.to_ulong();
     }
   }
@@ -358,7 +343,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     return 0;
   }
 
-  for (int i = 0; i < GetCurrentFirmware()->getCapability(Models); i++) {
+  for (int i = 0; i < getCurrentFirmware()->getCapability(Models); i++) {
     if (!radioData.models[i].isEmpty()) {
       result = saveModel<OpenTxModelData>(i, (ModelData &)radioData.models[i], version, variant);
       if (!result) {
@@ -397,7 +382,7 @@ int OpenTxEepromInterface::getSize(const ModelData &model)
   QByteArray tmp(EESIZE_MAX, 0);
   efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255/*version max*/);
 
-  OpenTxModelData open9xModel((ModelData &) model, board, 255/*version max*/, GetCurrentFirmware()->getVariantNumber());
+  OpenTxModelData open9xModel((ModelData &) model, board, 255/*version max*/, getCurrentFirmware()->getVariantNumber());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -416,7 +401,7 @@ int OpenTxEepromInterface::getSize(const GeneralSettings &settings)
   QByteArray tmp(EESIZE_MAX, 0);
   efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255);
 
-  OpenTxGeneralData open9xGeneral((GeneralSettings &) settings, board, 255, GetCurrentFirmware()->getVariantNumber());
+  OpenTxGeneralData open9xGeneral((GeneralSettings &) settings, board, 255, getCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
 
   QByteArray eeprom;
@@ -886,17 +871,6 @@ QTime OpenTxFirmware::getMaxTimerStart()
     return QTime(0, 59, 59);
 }
 
-bool OpenTxFirmware::isTelemetrySourceAvailable(int source)
-{
-  if (IS_TARANIS(board) && (source == TELEMETRY_SOURCE_RSSI_TX))
-    return false;
-
-  if (source == TELEMETRY_SOURCE_DTE)
-    return false;
-
-  return true;
-}
-
 int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
 {
   if (IS_HORUS_OR_TARANIS(board)) {
@@ -1269,6 +1243,17 @@ void addOpenTxLcdOptions(OpenTxFirmware * firmware)
   firmware->addOptions(lcd_options);
 }
 
+QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
+
+void registerOpenTxFirmware(OpenTxFirmware * firmware)
+{
+  OpenTxEepromInterface * eepromInterface = new OpenTxEepromInterface(firmware);
+  firmware->setEEpromInterface(eepromInterface);
+  opentxEEpromInterfaces.push_back(eepromInterface);
+  eepromInterfaces.push_back(eepromInterface);
+  firmwares.push_back(firmware);
+}
+
 void registerOpenTxFirmwares()
 {
   OpenTxFirmware * firmware;
@@ -1296,31 +1281,31 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", QObject::tr("FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   addOpenTxTaranisOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", QObject::tr("FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QObject::tr("Haptic module installed"));
   addOpenTxTaranisOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9E board */
   firmware = new OpenTxFirmware("opentx-x9e", QObject::tr("FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QObject::tr("Confirmation before radio shutdown"));
   firmware->addOption("horussticks", QObject::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", QObject::tr("FrSky Taranis X7"), BOARD_TARANIS_X7);
   addOpenTxTaranisOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* FrSky Horus board */
   firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
@@ -1340,7 +1325,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* 9XR board with M128 chip */
   firmware = new OpenTxFirmware("opentx-9xr128", QObject::tr("Turnigy 9XR with m128 chip"), BOARD_M128);
@@ -1369,7 +1354,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("imperial", QObject::tr("Imperial units"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* 9XR board */
   firmware = new OpenTxFirmware("opentx-9xr", QObject::tr("Turnigy 9XR"), BOARD_STOCK);
@@ -1403,7 +1388,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* 9x board */
   firmware = new OpenTxFirmware("opentx-9x", QObject::tr("9X with stock board"), BOARD_STOCK);
@@ -1440,7 +1425,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("stickrev", QObject::tr("Add support for reversing stick inputs (e.g. needed for FrSky gimbals)"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* 9x board with M128 chip */
   firmware = new OpenTxFirmware("opentx-9x128", QObject::tr("9X with stock board and m128 chip"), BOARD_M128);
@@ -1471,7 +1456,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("imperial", QObject::tr("Imperial units"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* ar9x board */
   firmware = new OpenTxFirmware("opentx-ar9x", QObject::tr("9X with AR9X board"), BOARD_AR9X);
@@ -1494,7 +1479,7 @@ void registerOpenTxFirmwares()
 //  firmware->addOption("rtc", QObject::tr("Optional RTC added"));
 //  firmware->addOption("volume", QObject::tr("i2c volume control added"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* Sky9x board */
   firmware = new OpenTxFirmware("opentx-sky9x", QObject::tr("9X with Sky9x board"), BOARD_SKY9X);
@@ -1515,7 +1500,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* Gruvin9x board */
   firmware = new OpenTxFirmware("opentx-gruvin9x", QObject::tr("9X with Gruvin9x board"), BOARD_GRUVIN9X);
@@ -1541,7 +1526,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("imperial", QObject::tr("Imperial units"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
   /* MEGA2560 board */
   firmware = new OpenTxFirmware("opentx-mega2560", QObject::tr("DIY MEGA2560 radio"), BOARD_MEGA2560);
@@ -1572,17 +1557,17 @@ void registerOpenTxFirmwares()
   firmware->addOption("imperial", QObject::tr("Imperial units"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
   addOpenTxCommonOptions(firmware);
-  firmwares.push_back(firmware);
+  registerOpenTxFirmware(firmware);
 
-  default_firmware_variant = GetFirmware("opentx-x9d+");
+  default_firmware_variant = getFirmware("opentx-x9d+");
   current_firmware_variant = default_firmware_variant;
 }
 
 void unregisterOpenTxFirmwares()
 {
-    foreach (Firmware * f, firmwares) {
-      delete f;
-    }
+  foreach (Firmware * f, firmwares) {
+    delete f;
+  }
 }
 
 template <class T, class M>
@@ -1599,7 +1584,7 @@ bool loadFromByteArray(T & dest, const QByteArray & data)
 template <class T, class M>
 bool saveToByteArray(const T & dest, QByteArray & data)
 {
-  BoardEnum board = GetCurrentFirmware()->getBoard();
+  BoardEnum board = getCurrentBoard();
   foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
     if (eepromInterface->getBoard() == board) {
       return eepromInterface->saveToByteArray<T, M>(dest, data);

@@ -42,7 +42,7 @@
 MdiChild::MdiChild(MainWindow * parent):
   QWidget(),
   ui(new Ui::MdiChild),
-  firmware(GetCurrentFirmware()),
+  firmware(getCurrentFirmware()),
   isUntitled(true),
   fileChanged(false)
 {
@@ -157,7 +157,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
 void MdiChild::onFirmwareChanged()
 {
   Firmware * previous = firmware;
-  firmware = GetCurrentFirmware();
+  firmware = getCurrentFirmware();
   qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
   
   BoardEnum board = firmware->getBoard();
@@ -453,7 +453,7 @@ bool MdiChild::save()
 bool MdiChild::saveAs(bool isNew)
 {
   QString fileName;
-  if (IS_SKY9X(GetEepromInterface()->getBoard())) {
+  if (IS_SKY9X(getCurrentBoard())) {
     curFile.replace(".eepe", ".bin");
     QFileInfo fi(curFile);
 #ifdef __APPLE__
@@ -481,7 +481,7 @@ bool MdiChild::saveAs(bool isNew)
 
 bool MdiChild::saveFile(const QString & filename, bool setCurrent)
 {
-  BoardEnum board = GetEepromInterface()->getBoard();
+  BoardEnum board = getCurrentBoard();
   QString path = filename;
   if (IS_SKY9X(board)) {
     path.replace(".eepe", ".bin");

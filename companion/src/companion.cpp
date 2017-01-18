@@ -103,7 +103,6 @@ int main(int argc, char *argv[])
 #endif
   
   registerStorageFactories();
-  registerEEpromInterfaces();
   registerOpenTxFirmwares();
   registerSimulators();
 
@@ -118,7 +117,7 @@ int main(int argc, char *argv[])
   QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
-  current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
+  current_firmware_variant = getFirmware(g.profile[g.id()].fwType());
 
   MainWindow *mainWin = new MainWindow();
   if (g.showSplash()) {

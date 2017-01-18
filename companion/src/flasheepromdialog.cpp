@@ -123,7 +123,7 @@ bool FlashEEpromDialog::patchCalibration()
 {
   QString calib = g.profile[g.id()].stickPotCalib();
   QString trainercalib = g.profile[g.id()].trainerCalib();
-  int potsnum = GetCurrentFirmware()->getCapability(Pots);
+  int potsnum = getCurrentFirmware()->getCapability(Pots);
   int8_t txVoltageCalibration = (int8_t) g.profile[g.id()].txVoltageCalibration();
   int8_t txCurrentCalibration = (int8_t) g.profile[g.id()].txCurrentCalibration();
   int8_t PPM_Multiplier = (int8_t) g.profile[g.id()].ppmMultiplier();
@@ -223,8 +223,8 @@ void FlashEEpromDialog::on_burnButton_clicked()
   if (patch) {
     QString filename = generateProcessUniqueTempFileName("temp.bin");
     QFile file(filename);
-    uint8_t *eeprom = (uint8_t*)malloc(getEEpromSize(GetCurrentFirmware()->getBoard()));
-    int eeprom_size = GetEepromInterface()->save(eeprom, *radioData, 0, GetCurrentFirmware()->getVariantNumber());
+    uint8_t *eeprom = (uint8_t*)malloc(getEEpromSize(getCurrentBoard()));
+    int eeprom_size = getCurrentEEpromInterface()->save(eeprom, *radioData, 0, getCurrentFirmware()->getVariantNumber());
     if (!eeprom_size) {
       QMessageBox::warning(this, tr("Error"), tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));
       return;

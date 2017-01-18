@@ -409,7 +409,7 @@ void TelemetryCustomScreen::updateBar(int line)
   RawSource source = screen.body.bars[line].source;
   if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
-    if (!IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (!IS_ARM(getCurrentBoard())) {
       int max = round((range.max - range.min) / range.step);
       if (int(255-screen.body.bars[line].barMax) > max) {
         screen.body.bars[line].barMax = 255 - max;
@@ -426,7 +426,7 @@ void TelemetryCustomScreen::updateBar(int line)
     maxSB[line]->setMinimum(range.min);
     maxSB[line]->setMaximum(range.max);
     maxSB[line]->setSingleStep(range.step);
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (IS_ARM(getCurrentBoard())) {
       maxSB[line]->setValue(range.getValue(screen.body.bars[line].barMax));
     }
     else {
@@ -486,7 +486,7 @@ void TelemetryCustomScreen::barMinChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    if (IS_ARM(getCurrentBoard()))
       screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
     else
       screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
@@ -499,7 +499,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    if (IS_ARM(getCurrentBoard()))
       screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
     else
       screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());

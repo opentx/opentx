@@ -24,12 +24,13 @@
 #include "eeprominterface.h"
 
 class RleFile;
+class OpenTxFirmware;
 
 class OpenTxEepromInterface : public EEPROMInterface
 {
   public:
 
-    OpenTxEepromInterface(BoardEnum board);
+    OpenTxEepromInterface(OpenTxFirmware * firmware);
 
     virtual ~OpenTxEepromInterface();
 
@@ -78,6 +79,8 @@ class OpenTxEepromInterface : public EEPROMInterface
     uint32_t getFourCC();
     
     RleFile * efile;
+    
+    OpenTxFirmware * firmware;
 
 };
 
@@ -85,12 +88,13 @@ class OpenTxFirmware: public Firmware
 {
   public:
     OpenTxFirmware(const QString & id, OpenTxFirmware * parent):
-      Firmware(parent, id, parent->getName(), parent->getBoard(), parent->eepromInterface)
+      Firmware(parent, id, parent->getName(), parent->getBoard())
     {
+      setEEpromInterface(parent->getEEpromInterface());
     }
 
     OpenTxFirmware(const QString & id, const QString & name, const BoardEnum board):
-      Firmware(id, name, board, new OpenTxEepromInterface(board))
+      Firmware(id, name, board)
     {
       addLanguage("en");
       addLanguage("cz");
@@ -133,8 +137,6 @@ class OpenTxFirmware: public Firmware
     
     virtual QTime getMaxTimerStart();
 
-    virtual bool isTelemetrySourceAvailable(int source);
-
     virtual int isAvailable(PulsesProtocol proto, int port=0);
 
   protected:
@@ -145,7 +147,6 @@ class OpenTxFirmware: public Firmware
 
 void registerOpenTxFirmwares();
 void unregisterOpenTxFirmwares();
-void registerOpenTxEEpromInterfaces();
 
 extern QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
 

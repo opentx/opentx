@@ -867,7 +867,6 @@ void SetupPanel::populateThrottleSourceCB()
 void SetupPanel::update()
 {
   ui->name->setText(model->name);
-
   ui->throttleReverse->setChecked(model->throttleReversed);
   populateThrottleSourceCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
@@ -881,7 +880,7 @@ void SetupPanel::update()
   updateBeepCenter();
   updateStartupSwitches();
 
-  if(IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     updatePotWarnings();
   }
 
@@ -915,7 +914,7 @@ void SetupPanel::updateStartupSwitches()
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     int index = slider->property("index").toInt();
     bool enabled = !(model->switchWarningEnable & (1 << index));
-    if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
       if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2) {
         value = 1;
@@ -940,7 +939,7 @@ void SetupPanel::startupSwitchEdited(int value)
     uint64_t mask;
     int index = sender()->property("index").toInt();
 
-    if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       shift = index * 2;
       mask = 0x03ul << shift;
     }
@@ -956,7 +955,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
 
-    if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
       if (value == 1) {
         value = 2;
       }

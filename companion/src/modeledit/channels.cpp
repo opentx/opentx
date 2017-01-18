@@ -101,7 +101,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     headerLabels << tr("Name");
   }
   headerLabels << tr("Subtrim") << tr("Min") << tr("Max") << tr("Direction");
-  if (IS_TARANIS(GetEepromInterface()->getBoard()))
+  if (IS_TARANIS(firmware->getBoard()))
     headerLabels << tr("Curve");
   if (firmware->getCapability(PPMCenter))
     headerLabels << tr("PPM Center");
@@ -150,7 +150,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     tableLayout->addWidget(i, col++, invCB);
 
     // Curve
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_TARANIS(firmware->getBoard())) {
       QComboBox * curveCB = new QComboBox(this);
       curveCB->setProperty("index", i);
       int numcurves = firmware->getCapability(NumCurves);

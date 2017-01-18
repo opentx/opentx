@@ -238,7 +238,7 @@ void FlightModePanel::update()
       }
       gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
       gvValues[i]->setValue(model->getGVarFieldValue(phaseIdx, i));
-      if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) {
+      if (IS_HORUS_OR_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
         gvPopups[i]->setChecked(model->gvars_popups[i]);
       }
     }
@@ -471,7 +471,7 @@ void FlightModePanel::fmClear()
   if (res == QMessageBox::Yes) {
     phase.clear(phaseIdx);
     if (phaseIdx == 0) {
-      if (IS_HORUS_OR_TARANIS(GetEepromInterface()->getBoard())) {
+      if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
         for (int i=0; i < gvCount; ++i) {
           memset(&model->gvars_names[i], 0, sizeof(model->gvars_names[i]));
           model->gvars_popups[i] = 0;
