@@ -546,9 +546,9 @@ void  MainWindow::setIconThemeSize(int index)
 
 void MainWindow::newFile()
 {
-    MdiChild * child = createMdiChild();
-    child->newFile();
-    child->show();
+  MdiChild * child = createMdiChild();
+  child->newFile();
+  child->show();
 }
 
 void MainWindow::openDocURL()
@@ -771,7 +771,7 @@ void MainWindow::readEeprom()
     qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
 
     if (readEepromFromRadio(tempFile)) {
-      MdiChild *child = createMdiChild();
+      MdiChild * child = createMdiChild();
       child->newFile();
       child->loadFile(tempFile, false);
       child->show();

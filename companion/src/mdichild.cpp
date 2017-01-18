@@ -418,7 +418,7 @@ void MdiChild::newFile()
 {
   static int sequenceNumber = 1;
   isUntitled = true;
-  curFile = QString("document%1.eepe").arg(sequenceNumber++);
+  curFile = QString("document%1.otx").arg(sequenceNumber++);
   updateTitle();
 }
 
@@ -454,31 +454,31 @@ bool MdiChild::save()
 
 bool MdiChild::saveAs(bool isNew)
 {
-    QString fileName;
-    if (IS_SKY9X(GetEepromInterface()->getBoard())) {
-      curFile.replace(".eepe", ".bin");
-      QFileInfo fi(curFile);
+  QString fileName;
+  if (IS_SKY9X(GetEepromInterface()->getBoard())) {
+    curFile.replace(".eepe", ".bin");
+    QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
+    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
+    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
 #endif
-    }
-    else {
-      QFileInfo fi(curFile);
+  }
+  else {
+    QFileInfo fi(curFile);
 #ifdef __APPLE__
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
+    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-      fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
+    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
 #endif
-    }
-    if (fileName.isEmpty())
-      return false;
-    g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
-    if (isNew)
-      return saveFile(fileName);
-    else
-      return saveFile(fileName,true);
+  }
+  if (fileName.isEmpty())
+    return false;
+  g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
+  if (isNew)
+    return saveFile(fileName);
+  else
+    return saveFile(fileName,true);
 }
 
 bool MdiChild::saveFile(const QString & filename, bool setCurrent)
