@@ -70,6 +70,7 @@ class MdiChild : public QWidget
     void showModelsListContextMenu(const QPoint & pos);
     void checkAndInitModel(int row);
     void generalEdit();
+    void categoryAdd();
     void modelAdd();
     void modelEdit();
     void wizardEdit();

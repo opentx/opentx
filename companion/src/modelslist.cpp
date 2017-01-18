@@ -23,13 +23,15 @@
 TreeItem::TreeItem(const QVector<QVariant> & itemData):
   itemData(itemData),
   parentItem(NULL),
+  categoryIndex(-1),
   modelIndex(-1)
 {
 }
 
-TreeItem::TreeItem(TreeItem * parent, int modelIndex):
+TreeItem::TreeItem(TreeItem * parent, int categoryIndex, int modelIndex):
   itemData(parent->columnCount()),
   parentItem(parent),
+  categoryIndex(categoryIndex),
   modelIndex(modelIndex)
 {
 }
@@ -67,9 +69,9 @@ QVariant TreeItem::data(int column) const
   return itemData.value(column);
 }
 
-TreeItem * TreeItem::appendChild(int modelIndex)
+TreeItem * TreeItem::appendChild(int categoryIndex, int modelIndex)
 {
-  TreeItem * item = new TreeItem(this, modelIndex);
+  TreeItem * item = new TreeItem(this, categoryIndex, modelIndex);
   childItems.insert(childItems.size(), item);
   return item;
 }
@@ -155,10 +157,10 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
   return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 
-TreeItem * TreeModel::getItem(const QModelIndex &index) const
+TreeItem * TreeModel::getItem(const QModelIndex & index) const
 {
   if (index.isValid()) {
-    TreeItem * item = static_cast<TreeItem*>(index.internalPointer());
+    TreeItem * item = static_cast<TreeItem *>(index.internalPointer());
     if (item) {
       return item;
     }
@@ -166,8 +168,7 @@ TreeItem * TreeModel::getItem(const QModelIndex &index) const
   return rootItem;
 }
 
-QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     return rootItem->data(section);
@@ -175,7 +176,7 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation,
   return QVariant();
 }
 
-QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex TreeModel::index(int row, int column, const QModelIndex & parent) const
 {
   if (parent.isValid() && parent.column() != 0)
     return QModelIndex();
@@ -189,13 +190,13 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
     return QModelIndex();
 }
 
-QModelIndex TreeModel::parent(const QModelIndex &index) const
+QModelIndex TreeModel::parent(const QModelIndex & index) const
 {
   if (!index.isValid())
     return QModelIndex();
   
-  TreeItem *childItem = getItem(index);
-  TreeItem *parentItem = childItem->parent();
+  TreeItem * childItem = getItem(index);
+  TreeItem * parentItem = childItem->parent();
   
   if (parentItem == rootItem)
     return QModelIndex();
@@ -203,11 +204,10 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
   return createIndex(parentItem->childNumber(), 0, parentItem);
 }
 
-
-bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
+bool TreeModel::removeRows(int position, int rows, const QModelIndex & parent)
 {
   TreeItem * parentItem = getItem(parent);
-  bool success = true;
+  bool success;
   
   beginRemoveRows(parent, position, position + rows - 1);
   success = parentItem->removeChildren(position, rows);
@@ -218,17 +218,17 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex &parent)
 
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
-  TreeItem *parentItem = getItem(parent);
+  TreeItem * parentItem = getItem(parent);
   
   return parentItem->childCount();
 }
 
-bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool TreeModel::setData(const QModelIndex &index, const QVariant & value, int role)
 {
   if (role != Qt::EditRole)
     return false;
   
-  TreeItem *item = getItem(index);
+  TreeItem * item = getItem(index);
   bool result = item->setData(index.column(), value);
   
   if (result)
@@ -253,7 +253,7 @@ void TreeModel::refresh()
   
   if (IS_HORUS(board)) {
     for (unsigned i = 0; i < radioData->categories.size(); i++) {
-      TreeItem * current = rootItem->appendChild(-1);
+      TreeItem * current = rootItem->appendChild(i, -1);
       current->setData(0, QString(radioData->categories[i].name));
     }
   }
@@ -270,17 +270,18 @@ void TreeModel::refresh()
           categoryItem = rootItem->child(model.category);
         }
         else {
+          model.category = 0;
           if (!defaultCategoryItem) {
-            defaultCategoryItem = rootItem->appendChild(-1);
+            defaultCategoryItem = rootItem->appendChild(0, -1);
             defaultCategoryItem->setData(0, QObject::tr("Models"));
           }
           categoryItem = defaultCategoryItem;
         }
-        current = categoryItem->appendChild(i);
+        current = categoryItem->appendChild(model.category, i);
       }
     }
     else {
-      current = rootItem->appendChild(i);
+      current = rootItem->appendChild(0, i);
       current->setData(currentColumn++, QString().sprintf("%02d", i + 1));
     }
     

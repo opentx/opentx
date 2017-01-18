@@ -129,15 +129,13 @@ void MdiChild::deleteSelectedModels()
 
 void MdiChild::showModelsListContextMenu(const QPoint & pos)
 {
-  int modelIndex = getCurrentRow();
+  QModelIndex modelIndex = ui->modelsList->indexAt(pos);
   QPoint globalPos = ui->modelsList->mapToGlobal(pos);
   QMenu contextMenu;
-  
-  const QClipboard * clipboard = QApplication::clipboard();
-  const QMimeData * mimeData = clipboard->mimeData();
-  bool hasData = mimeData->hasFormat("application/x-companion");
-  
-  if (modelIndex >= 0) {
+  if (modelsListModel->getModelIndex(modelIndex) >= 0) {
+    const QClipboard * clipboard = QApplication::clipboard();
+    const QMimeData * mimeData = clipboard->mimeData();
+    bool hasData = mimeData->hasFormat("application/x-companion");
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(modelEdit()));
     contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"), this, SLOT(loadBackup()));
     contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"), this, SLOT(wizardEdit()));
@@ -155,11 +153,16 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"), this, SLOT(modelSimulate()), tr("Alt+S"));
   }
   else if (IS_HORUS(GetCurrentFirmware()->getBoard())) {
-    contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
+    if (modelsListModel->getCategoryIndex(modelIndex) >= 0) {
+      contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
+    }
+    else {
+      contextMenu.addAction(CompanionIcon("add.png"), tr("&Add category"), this, SLOT(categoryAdd()));
+    }
   }
-  
-  // TODO context menu for radio settings
-  // contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(EditModel()));
+  else {
+    return;
+  }
   
   contextMenu.exec(globalPos);
 }
@@ -334,22 +337,28 @@ void MdiChild::generalEdit()
   t->show();
 }
 
+void MdiChild::categoryAdd()
+{
+  CategoryData category("New category");
+  radioData.categories.push_back(category);
+  setModified();
+}
+
 void MdiChild::modelAdd()
 {
-  if (radioData.categories.size() == 0) {
-    CategoryData category("Models");
-    radioData.categories.push_back(category);
+  int categoryIndex = modelsListModel->getCategoryIndex(ui->modelsList->currentIndex());
+  if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
+    return;
   }
   
   ModelData model;
-  model.category = radioData.categories.size() - 1;
+  model.category = categoryIndex;
   model.used = true;
   sprintf(model.filename, "model%lu.bin", radioData.models.size()+1);
-  sprintf(model.name, "Model%lu", radioData.models.size()+1);
+  sprintf(model.name, tr("New model").toStdString().c_str());
   radioData.models.push_back(model);
   radioData.setCurrentModel(radioData.models.size() - 1);
   setModified();
-  //modelEdit();
 }
 
 void MdiChild::modelEdit()

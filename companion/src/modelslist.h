@@ -34,14 +34,14 @@ class TreeItem
 {
   public:
     explicit TreeItem(const QVector<QVariant> & itemData);
-    explicit TreeItem(TreeItem * parent, int modelIndex = -1);
+    explicit TreeItem(TreeItem * parent, int categoryIndex, int modelIndex);
     ~TreeItem();
     
-    TreeItem *child(int number);
+    TreeItem * child(int number);
     int childCount() const;
     int columnCount() const;
     QVariant data(int column) const;
-    TreeItem * appendChild(int modelIndex);
+    TreeItem * appendChild(int categoryIndex, int modelIndex);
     TreeItem * parent();
     bool removeChildren(int position, int count);
     
@@ -49,11 +49,13 @@ class TreeItem
     bool setData(int column, const QVariant &value);
     
     int getModelIndex() const { return modelIndex; }
+    int getCategoryIndex() const { return categoryIndex; }
   
   private:
     QList<TreeItem*> childItems;
     QVector<QVariant> itemData;
     TreeItem * parentItem;
+    int categoryIndex;
     int modelIndex;
 };
 
@@ -90,6 +92,10 @@ class TreeModel : public QAbstractItemModel
     
     int getModelIndex(const QModelIndex & index) const {
       return getItem(index)->getModelIndex();
+    }
+    
+    int getCategoryIndex(const QModelIndex & index) const {
+      return getItem(index)->getCategoryIndex();
     }
     
   private:
