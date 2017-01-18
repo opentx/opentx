@@ -5,6 +5,8 @@
 #include <QString>
 #include <QComboBox>
 
+class Firmware;
+
 enum Switches {
   SWITCH_NONE,
 
@@ -1004,7 +1006,9 @@ class ModelData {
     ModelData();
     ModelData(const ModelData & src);
     ModelData & operator = (const ModelData & src);
-
+    
+    void convert(Firmware * before, Firmware * after);
+    
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
 
@@ -1144,6 +1148,7 @@ class GeneralSettings {
     };
 
     GeneralSettings();
+    void convert(Firmware * before, Firmware * after);
 
     int getDefaultStick(unsigned int channel) const;
     RawSource getDefaultSource(unsigned int channel) const;
@@ -1269,6 +1274,8 @@ class RadioData {
     GeneralSettings generalSettings;
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
+    
+    void convert(Firmware * before, Firmware * after);
 
     void setCurrentModel(unsigned int index)
     {

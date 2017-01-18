@@ -25,18 +25,20 @@
 #include "modelslist.h"
 #include <QtGui>
 
+class MainWindow;
+
 namespace Ui {
 class MdiChild;
 }
 
 class MdiChild : public QWidget
 {
-    friend class ModelsListWidget;
+    // friend class ModelsListWidget;
 
     Q_OBJECT
 
   public:
-    MdiChild();
+    MdiChild(MainWindow * parent);
     ~MdiChild();
 
     void newFile();
@@ -49,7 +51,6 @@ class MdiChild : public QWidget
     QString userFriendlyCurrentFile() const;
     QString currentFile() const { return curFile; }
     void viableModelSelected(bool viable);
-    void eepromInterfaceChanged();
     int getCurrentRow() const;
     void refresh(bool expand=false);
     void keyPressEvent(QKeyEvent * event);
@@ -65,6 +66,7 @@ class MdiChild : public QWidget
     void on_simulateButton_clicked();
     void on_radioSettings_clicked();
     void setDefault();
+    void onFirmwareChanged();
   
   public slots:
     void showModelsListContextMenu(const QPoint & pos);

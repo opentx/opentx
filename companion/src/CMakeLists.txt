@@ -113,6 +113,7 @@ add_subdirectory(thirdparty/qxtcommandoptions)
 
 set(common_SRCS
   eeprominterface.cpp
+  radiodata.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
   firmwares/ersky9x/ersky9xeeprom.cpp

@@ -52,6 +52,9 @@ class MainWindow : public QMainWindow
 
   public:
     MainWindow();
+    
+  signals:
+    void FirmwareChanged();
 
   protected:
     QString getCompanionUpdateBaseUrl();
@@ -73,13 +76,9 @@ class MainWindow : public QMainWindow
     void setFILanguage()  { setLanguage("fi_FI"); };
     void setFRLanguage()  { setLanguage("fr_FR"); };
     void setITLanguage()  { setLanguage("it_IT"); };
-    void setHELanguage()  { setLanguage("he_IL"); };
     void setPLLanguage()  { setLanguage("pl_PL"); };
     void setESLanguage()  { setLanguage("es_ES"); };
-    void setPTLanguage()  { setLanguage("pt_PT"); };
-    void setRULanguage()  { setLanguage("ru_RU"); };
     void setSELanguage()  { setLanguage("sv_SE"); };
-    void setNLLanguage()  { setLanguage("nl_NL"); };
     void setCNLanguage()  { setLanguage("zh_CN"); };
 
     void setTheme(int index);
@@ -139,7 +138,7 @@ class MainWindow : public QMainWindow
     void fwPrefs();
     void updateMenus();
     void createProfile();
-    MdiChild *createMdiChild();
+    MdiChild * createMdiChild();
     void setActiveSubWindow(QWidget *window);
     QMenu * createRecentFileMenu();
     QMenu * createProfilesMenu();
@@ -164,18 +163,13 @@ class MainWindow : public QMainWindow
     void updateLanguageActions();
     void updateIconThemeActions();
     
-    QString Theme;
-    QString ISize;
     QString strippedName(const QString & fullFileName);
 
-    MdiChild *activeMdiChild();
-    QMdiSubWindow *findMdiChild(const QString & fileName);
-    int getEpromVersion(QString fileName);
+    MdiChild * activeMdiChild();
+    QMdiSubWindow * findMdiChild(const QString & fileName);
 
     bool readEepromFromRadio(const QString & filename);
-    bool writeEepromToRadio(const QString & filename);
     bool readFirmwareFromRadio(const QString & filename);
-    bool writeFirmwareToRadio(const QString & filename);
 
     QMdiArea *mdiArea;
     QSignalMapper *windowMapper;
@@ -198,7 +192,6 @@ class MainWindow : public QMainWindow
     QToolBar *helpToolBar;
     QAction *newAct;
     QAction *openAct;
-    QAction *recentAct;
     QAction *saveAct;
     QAction *saveAsAct;
     QAction *exitAct;
@@ -249,13 +242,9 @@ class MainWindow : public QMainWindow
     QAction *finnishLangAct;
     QAction *frenchLangAct;
     QAction *italianLangAct;
-    // QAction *hebrewLangAct;
     QAction *polishLangAct;
-    // QAction *portugueseLangAct;
     QAction *spanishLangAct;
     QAction *swedishLangAct;
-    // QAction *russianLangAct;
-    // QAction *dutchLangAct;
     QAction *chineseLangAct;
 
     QAction *openDocURLAct;

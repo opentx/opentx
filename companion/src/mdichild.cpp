@@ -39,15 +39,13 @@
 #include <unistd.h>
 #endif
 
-MdiChild::MdiChild():
+MdiChild::MdiChild(MainWindow * parent):
   QWidget(),
   ui(new Ui::MdiChild),
   firmware(GetCurrentFirmware()),
   isUntitled(true),
   fileChanged(false)
 {
-  BoardEnum board = GetCurrentFirmware()->getBoard();
-  
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("open.png"));
   
@@ -56,7 +54,9 @@ MdiChild::MdiChild():
   ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
   
-  eepromInterfaceChanged();
+  onFirmwareChanged();
+  
+  connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
   
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
@@ -69,14 +69,6 @@ MdiChild::MdiChild():
   // ui->modelsList->setAcceptDrops(true);
   // ui->modelsList->setDragDropOverwriteMode(true);
   // ui->modelsList->setDropIndicatorShown(true);
-  
-  if (IS_HORUS(board)) {
-    ui->modelsList->header()->hide();
-  }
-  else {
-    ui->modelsList->setIndentation(0);
-  }
-
   
   if (!(isMaximized() || isMinimized())) {
     adjustSize();
@@ -94,7 +86,7 @@ void MdiChild::refresh(bool expand)
   if (1 || expand) {
     ui->modelsList->expandAll();
   }
-  ui->simulateButton->setEnabled(GetCurrentFirmware()->getCapability(Simulation));
+  ui->simulateButton->setEnabled(firmware->getCapability(Simulation));
   updateTitle();
 }
 
@@ -147,7 +139,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("simulate.png"), tr("&Simulate model"), this, SLOT(modelSimulate()), tr("Alt+S"));
   }
-  else if (IS_HORUS(GetCurrentFirmware()->getBoard())) {
+  else if (IS_HORUS(firmware->getBoard())) {
     if (modelsListModel->getCategoryIndex(modelIndex) >= 0) {
       contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
     }
@@ -162,8 +154,19 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   contextMenu.exec(globalPos);
 }
 
-void MdiChild::eepromInterfaceChanged()
+void MdiChild::onFirmwareChanged()
 {
+  Firmware * previous = firmware;
+  firmware = GetCurrentFirmware();
+  qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
+  
+  BoardEnum board = firmware->getBoard();
+  ui->modelsList->header()->setVisible(!IS_HORUS(board));
+  if (IS_HORUS(board))
+    ui->modelsList->resetIndentation();
+  else
+    ui->modelsList->setIndentation(0);
+  radioData.convert(previous, firmware);
   refresh();
 }
 
@@ -223,7 +226,7 @@ void MdiChild::doPaste(QByteArray * gmData, int index)
       size += sizeof(GeneralSettings);
     }
     else if (c == 'M') {
-      if (GetCurrentFirmware()->getCapability(Models) == 0 || index < GetCurrentFirmware()->getCapability(Models)) {
+      if (firmware->getCapability(Models) == 0 || index < firmware->getCapability(Models)) {
         // Model data
         int ret = QMessageBox::Yes;
         if (!radioData.models[index].isEmpty()) {
@@ -274,7 +277,7 @@ bool MdiChild::hasSelection() const
 
 void MdiChild::updateTitle()
 {
-  QString title = userFriendlyCurrentFile() + "[*]" + " (" + GetCurrentFirmware()->getName() + QString(")");
+  QString title = userFriendlyCurrentFile() + "[*]" + " (" + firmware->getName() + QString(")");
   int availableEEpromSize = modelsListModel->getAvailableEEpromSize();
   if (availableEEpromSize >= 0) {
     title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
@@ -327,7 +330,7 @@ void MdiChild::checkAndInitModel(int row)
 
 void MdiChild::generalEdit()
 {
-  GeneralEdit * t = new GeneralEdit(this, radioData, GetCurrentFirmware()/*firmware*/);
+  GeneralEdit * t = new GeneralEdit(this, radioData, firmware);
   connect(t, SIGNAL(modified()), this, SLOT(setModified()));
   t->show();
 }
@@ -364,7 +367,7 @@ void MdiChild::modelEdit()
   ModelData & model = radioData.models[row];
   gStopwatch.restart();
   gStopwatch.report("ModelEdit creation");
-  ModelEdit * t = new ModelEdit(this, radioData, (row), GetCurrentFirmware()/*firmware*/);
+  ModelEdit * t = new ModelEdit(this, radioData, (row), firmware);
   gStopwatch.report("ModelEdit created");
   t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + model.name);
   connect(t, SIGNAL(modified()), this, SLOT(setModified()));
@@ -581,10 +584,10 @@ void MdiChild::print(int model, const QString & filename)
   PrintDialog * pd = NULL;
 
   if (model>=0 && !filename.isEmpty()) {
-    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[model], filename);
+    pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[model], filename);
   }
   else if (getCurrentRow()) {
-    pd = new PrintDialog(this, GetCurrentFirmware()/*firmware*/, radioData.generalSettings, radioData.models[getCurrentRow()]);
+    pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[getCurrentRow()]);
   }
 
   if (pd) {

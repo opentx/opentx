@@ -611,48 +611,38 @@ void MainWindow::openRecentFile()
   }
 }
 
-void MainWindow::loadProfile()  //TODO Load all variables - Also HW!
+void MainWindow::loadProfile() // TODO Load all variables - Also HW!
 {
-    QAction *action = qobject_cast<QAction *>(sender());
-
-    if (action) {
-      // Set the new profile number
-      int profnum=action->data().toInt();
-      g.id( profnum );
-
-      current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
-
-      foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-        MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-        mdiChild->eepromInterfaceChanged();
-      }
-
-      updateMenus();
-    }
+  QAction * action = qobject_cast<QAction *>(sender());
+  if (action) {
+    // Set the new profile number
+    int profnum = action->data().toInt();
+    g.id(profnum);
+    current_firmware_variant = GetFirmware(g.profile[g.id()].fwType());
+    emit FirmwareChanged();
+    updateMenus();
+  }
 }
 
 void MainWindow::appPrefs()
 {
-    AppPreferencesDialog *pd = new AppPreferencesDialog(this);
-    pd->exec();
-    updateMenus();
+  AppPreferencesDialog * dialog = new AppPreferencesDialog(this);
+  dialog->exec();
+  updateMenus();
 }
 
 void MainWindow::fwPrefs()
 {
-    FirmwarePreferencesDialog *pd = new FirmwarePreferencesDialog(this);
-    pd->exec();
-    foreach (QMdiSubWindow *window, mdiArea->subWindowList()) {
-      MdiChild *mdiChild = qobject_cast<MdiChild *>(window->widget());
-      mdiChild->eepromInterfaceChanged();
-    }
-    updateMenus();
+  FirmwarePreferencesDialog * dialog = new FirmwarePreferencesDialog(this);
+  dialog->exec();
+  emit FirmwareChanged();
+  updateMenus();
 }
 
 void MainWindow::contributors()
 {
-    ContributorsDialog * dialog = new ContributorsDialog(this);
-    dialog->exec();
+  ContributorsDialog * dialog = new ContributorsDialog(this);
+  dialog->exec();
 }
 
 void MainWindow::sdsync()
@@ -785,30 +775,10 @@ bool MainWindow::readFirmwareFromRadio(const QString &filename)
   return result;
 }
 
-bool MainWindow::writeFirmwareToRadio(const QString &filename)
-{
-  ProgressDialog progressDialog(this, tr("Write Firmware to Radio"), CompanionIcon("write_flash.png"));
-  bool result = writeFirmware(filename, progressDialog.progress());
-  if (!result) {
-    progressDialog.exec();
-  }
-  return result;
-}
-
 bool MainWindow::readEepromFromRadio(const QString &filename)
 {
   ProgressDialog progressDialog(this, tr("Read Models and Settings from Radio"), CompanionIcon("read_eeprom.png"));
   bool result = ::readEeprom(filename, progressDialog.progress());
-  if (!result) {
-    progressDialog.exec();
-  }
-  return result;
-}
-
-bool MainWindow::writeEepromToRadio(const QString &filename)
-{
-  ProgressDialog progressDialog(this, tr("Write Models and Settings to Radio"), CompanionIcon("write_eeprom.png"));
-  bool result = ::writeEeprom(filename, progressDialog.progress());
   if (!result) {
     progressDialog.exec();
   }
@@ -823,8 +793,8 @@ void MainWindow::writeBackup()
 
 void MainWindow::writeFlash(QString fileToFlash)
 {
-    FlashFirmwareDialog *cd = new FlashFirmwareDialog(this);
-    cd->exec();
+  FlashFirmwareDialog * cd = new FlashFirmwareDialog(this);
+  cd->exec();
 }
 
 void MainWindow::readBackup()
@@ -929,9 +899,9 @@ void MainWindow::updateMenus()
     setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(GetCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
 }
 
-MdiChild *MainWindow::createMdiChild()
+MdiChild * MainWindow::createMdiChild()
 {
-  MdiChild * child = new MdiChild();
+  MdiChild * child = new MdiChild(this);
   mdiArea->addSubWindow(child);
   if (!child->parentWidget()->isMaximized() && !child->parentWidget()->isMinimized()) {
     child->parentWidget()->resize(400, 400);
