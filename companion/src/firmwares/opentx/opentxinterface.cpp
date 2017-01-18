@@ -852,13 +852,13 @@ Firmware::Switch OpenTxFirmware::getSwitch(unsigned int index)
     return switches[index];
   }
   else {
-    const Switch switches[] = {{sc::SWITCH_3POS,   "3POS"},
-                               {sc::SWITCH_2POS,   "THR"},
+    const Switch switches[] = {{sc::SWITCH_2POS,   "THR"},
                                {sc::SWITCH_2POS,   "RUD"},
                                {sc::SWITCH_2POS,   "ELE"},
+                               {sc::SWITCH_3POS,   "3POS"},
                                {sc::SWITCH_2POS,   "AIL"},
                                {sc::SWITCH_2POS,   "GEA"},
-                               {sc::SWITCH_TOGGLE, "SH"}};
+                               {sc::SWITCH_TOGGLE, "TRN"}};
     return switches[index];
   }
 }
