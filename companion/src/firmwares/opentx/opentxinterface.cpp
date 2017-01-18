@@ -178,8 +178,13 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 {
   uint32_t fourcc = *((uint32_t*)&data.data()[0]);
   if (getFourCC() != fourcc) {
-    qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, getFourCC());
-    return false;
+    if (IS_HORUS(board) && fourcc == 0x3178396F) {
+      qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, getFourCC());
+    }
+    else {
+      qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, getFourCC());
+      return false;
+    }
   }
   qDebug() << QString().sprintf("%s: OK", getName());
   uint8_t version = data[4];
