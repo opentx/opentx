@@ -162,10 +162,13 @@ void MdiChild::onFirmwareChanged()
   
   BoardEnum board = firmware->getBoard();
   ui->modelsList->header()->setVisible(!IS_HORUS(board));
-  if (IS_HORUS(board))
-    ui->modelsList->resetIndentation();
-  else
+  if (IS_HORUS(board)) {
+    ui->modelsList->setIndentation(20);
+    // ui->modelsList->resetIndentation(); // introduced in next Qt versions ...
+  }
+  else {
     ui->modelsList->setIndentation(0);
+  }
   radioData.convert(previous, firmware);
   refresh();
 }
