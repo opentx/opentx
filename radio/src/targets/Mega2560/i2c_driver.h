@@ -20,7 +20,7 @@
 
 // From https://github.com/g4lvanix/I2C-master-lib
 
-#ifndef I2CDRIVER_H
+#ifndef I2C_DRIVER_H
 #define I2C_DRIVER_H
 
 #define I2C_READ 0x01
