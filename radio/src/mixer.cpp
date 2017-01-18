@@ -770,36 +770,26 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       bool apply_offset_and_curve = true;
 
       //========== DELAYS ===============
-      delayval_t _swOn = swOn[i].now;
-      delayval_t _swPrev = swOn[i].prev;
-      bool swTog = (mixEnabled > _swOn+DELAY_POS_MARGIN || mixEnabled < _swOn-DELAY_POS_MARGIN);
-      if (mode==e_perout_mode_normal && swTog) {
-        if (!swOn[i].delay) _swPrev = _swOn;
-        swOn[i].delay = (mixEnabled > _swOn ? md->delayUp : md->delayDown) * (100/DELAY_STEP);
-        swOn[i].now = mixEnabled;
-        swOn[i].prev = _swPrev;
-      }
-      if (mode==e_perout_mode_normal && swOn[i].delay > 0) {
-        swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);
-        if (!mixCondition)
-          v = _swPrev << DELAY_POS_SHIFT;
-        else if (mixEnabled)
-          continue;
-      }
-      else {
-        if (mode==e_perout_mode_normal) {
-          swOn[i].now = swOn[i].prev = mixEnabled;
+      if (mode <= e_perout_mode_inactive_flight_mode && (md->delayDown || md->delayUp)) {	// there are delay values      
+        if (!s_mixer_first_run_done || !swOn[i].delay) {
+          swOn[i].hold = v;     // store actual value of v as reference for next run
+          swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
         }
-        if (!mixEnabled) {
-          if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
-            if (mixCondition) {
-              v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
-              apply_offset_and_curve = false;
-            }
+        else if ((swOn[i].delay > 0) && ((v > swOn[i].hold +10) || (v < swOn[i].hold -10))) {  // compare v to value stored at previous run, with +/-10% tolerance
+          swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);   // decrement delay
+          v = swOn[i].hold;     // keep v to stored value until end of delay
+        }
+      }
+
+      if (!mixEnabled) {
+        if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
+          if (mixCondition) {
+            v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
+            apply_offset_and_curve = false;
           }
-          else if (mixCondition) {
-            continue;
-          }
+        }
+        else if (mixCondition) {
+          continue;
         }
       }
 

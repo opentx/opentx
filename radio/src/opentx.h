@@ -1121,8 +1121,7 @@ void moveTrimsToOffsets();
 #define delayval_t         int16_t
 PACK(typedef struct {
   uint16_t delay;
-  int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  int16_t  prev;
+  int16_t  hold;
   uint8_t  activeMix;
   uint8_t  activeExpo;
 }) SwOn;
@@ -1132,12 +1131,12 @@ PACK(typedef struct {
 #define DELAY_POS_MARGIN   0
 #define delayval_t         int8_t
 PACK(typedef struct {
-  uint16_t delay:10;
-  int16_t  now:2;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  int16_t  prev:2;
-  int16_t  activeMix:1;
-  int16_t  activeExpo:1;
+	uint16_t delay:10;
+	int16_t hold;
+	bool activeMix:1;
+	bool activeExpo:1;
 }) SwOn;
+
 #endif
 
 extern SwOn   swOn[MAX_MIXERS];
