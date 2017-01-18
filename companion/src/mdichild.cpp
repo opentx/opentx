@@ -42,22 +42,17 @@
 MdiChild::MdiChild(MainWindow * parent):
   QWidget(),
   ui(new Ui::MdiChild),
+  modelsListModel(NULL),
   firmware(getCurrentFirmware()),
   isUntitled(true),
   fileChanged(false)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("open.png"));
-  
-  modelsListModel = new TreeModel(&radioData, this);
-  ui->modelsList->setModel(modelsListModel);
   ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
-  
   onFirmwareChanged();
-  
   connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
-  
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
@@ -158,9 +153,12 @@ void MdiChild::onFirmwareChanged()
 {
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
-  qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  
   BoardEnum board = firmware->getBoard();
+  qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
+  radioData.convert(previous, firmware);
+  delete modelsListModel;
+  modelsListModel = new TreeModel(&radioData, this);
+  ui->modelsList->setModel(modelsListModel);
   ui->modelsList->header()->setVisible(!IS_HORUS(board));
   if (IS_HORUS(board)) {
     ui->modelsList->setIndentation(20);
@@ -169,7 +167,6 @@ void MdiChild::onFirmwareChanged()
   else {
     ui->modelsList->setIndentation(0);
   }
-  radioData.convert(previous, firmware);
   refresh();
 }
 
