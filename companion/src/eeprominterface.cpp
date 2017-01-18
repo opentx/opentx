@@ -1055,17 +1055,17 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   if (index == 0)
     return true;
   SwitchInfo info = switchInfoFromSwitchPositionTaranis(abs(index));
-  if (index < 0 && switchConfig[info.index] != Firmware::SWITCH_3POS)
+  if (index < 0 && switchConfig[info.index] != GeneralSettings::SWITCH_3POS)
     return false;
   else if (info.position == 1)
-    return switchConfig[info.index] == Firmware::SWITCH_3POS;
+    return switchConfig[info.index] == GeneralSettings::SWITCH_3POS;
   else
-    return switchConfig[info.index] != Firmware::SWITCH_NONE;
+    return switchConfig[info.index] != GeneralSettings::SWITCH_NONE;
 }
 
 bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 {
-  return switchConfig[index] != Firmware::SWITCH_NONE;
+  return switchConfig[index] != GeneralSettings::SWITCH_NONE;
 }
 
 bool GeneralSettings::isPotAvailable(int index) const

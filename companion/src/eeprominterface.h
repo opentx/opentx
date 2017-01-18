@@ -196,7 +196,7 @@ class EEPROMInterface
     virtual unsigned long load(RadioData &radioData, const uint8_t * eeprom, int size) = 0;
 
     virtual unsigned long loadBackup(RadioData & radioData, const uint8_t * eeprom, int esize, int index) = 0;
-    
+
     virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0) = 0;
 
     virtual int getSize(const ModelData &) = 0;
@@ -367,15 +367,8 @@ class Firmware {
 
     virtual int getCapability(Capability) = 0;
 
-    enum SwitchType {
-      SWITCH_NONE,
-      SWITCH_TOGGLE,
-      SWITCH_2POS,
-      SWITCH_3POS
-    };
-
     struct Switch {
-      SwitchType type;
+      GeneralSettings::SwitchConfig type;
       const char * name;
     };
 
