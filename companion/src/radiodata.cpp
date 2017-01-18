@@ -39,4 +39,11 @@ void RadioData::convert(Firmware * before, Firmware * after)
   for (unsigned i=0; i<models.size(); i++) {
     models[i].convert(before, after);
   }
+  
+  if (categories.size() == 0) {
+    categories.push_back(CategoryData(QObject::tr("Models").toStdString().c_str()));
+    for (unsigned i=0; i<models.size(); i++) {
+      models[i].category = 0;
+    }
+  }
 }
