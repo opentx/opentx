@@ -196,7 +196,6 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   // Antena selection for Horus
   if (IS_HORUS(firmware->getBoard()) && moduleIdx == 0) {
     ui->antennaMode->setCurrentIndex(module.ppm.pulsePol);
-
   }
   else {
     ui->label_antenna->hide();
