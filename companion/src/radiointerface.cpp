@@ -424,6 +424,7 @@ QString findMassstoragePath(const QString &filename, bool onlyPath)
           QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
           temppath = drive.absolutePath();
           eepromfile = temppath;
+          eepromfile.append("/" + filename);
           if (QFile::exists(eepromfile)) {
             return onlyPath ? temppath : eepromfile;
           }
