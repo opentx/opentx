@@ -98,6 +98,6 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
     }
   }
 
-  setError(QObject::tr("Invalid binary EEPROM file %1").arg(filename)));
+  setError(QObject::tr("Invalid binary EEPROM file %1").arg(filename));
   return false;
 }
