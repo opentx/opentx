@@ -199,7 +199,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
     ui->antennaMode->hide();
   }
   else {
-
+    ui->antennaMode->setCurrentIndex(module.ppm.pulsePol);
   }
 
   // The protocols available on this board
@@ -420,6 +420,12 @@ void ModulePanel::on_protocol_currentIndexChanged(int index)
 }
 
 void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
+{
+  module.ppm.pulsePol = index;
+  emit modified();
+}
+
+void ModulePanel::on_antennaMode_currentIndexChanged(int index)
 {
   module.ppm.pulsePol = index;
   emit modified();
