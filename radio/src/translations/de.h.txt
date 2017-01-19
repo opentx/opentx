@@ -652,7 +652,7 @@
 #define TR_VCELLINDEX          "Niedrigst\0""1. Zelle\0 ""2. Zelle\0 ""3. Zelle\0 ""4. Zelle\0 ""5. Zelle\0 ""6. Zelle\0 ""Höchster\0 ""Differenz\0"
 
 #define LEN_VANTENNATYPES      "\014"
-#define TR_VANTENNATYPES       "Int. Antenne""Ext. Antenne"  // Antennenauswahl
+#define TR_VANTENNATYPES       "Int. Antenne""Ext. + Int.\0"  // Antennenauswahl
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
