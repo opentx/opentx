@@ -35,6 +35,7 @@ class OtxFormat : public CategorizedStorageFormat
     {
     }
     
+    virtual QString name() { return "otx"; };
     virtual bool load(RadioData & radioData);
     virtual bool write(const RadioData & radioData);
   

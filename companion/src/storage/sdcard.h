@@ -31,6 +31,7 @@ class SdcardFormat : public CategorizedStorageFormat
     {
     }
     
+    virtual QString name() { return "sdcard"; };
     virtual bool write(const RadioData & radioData);
   
   protected:

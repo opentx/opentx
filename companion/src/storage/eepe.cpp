@@ -28,23 +28,23 @@ bool EepeFormat::load(RadioData & radioData)
   QFile file(filename);
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    qDebug() << "Unable to open" << filename << file.errorString();
+    setError(QObject::tr("Unable to open %1: %2").arg(filename).arg(file.errorString()));
     return false;
   }
   
   QTextStream inputStream(&file);
   QString hline = inputStream.readLine();
   if (hline != EEPE_EEPROM_FILE_HEADER) {
-    qDebug() << "No EEPE header";
+    qDebug() << qPrintable("[eepe] No EEPE header");
     return false;
   }
   
-  qDebug() << "EEPE header found";
+  qDebug() << qPrintable("[eepe] EEPE header found");
   
   QByteArray eeprom(EESIZE_MAX, 0);
   int eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), EESIZE_MAX);
   if (!eeprom_size) {
-    setError(QObject::tr("Invalid EEPROM File %1").arg(filename));
+    setError(QObject::tr("Invalid EEPROM file %1").arg(filename));
     return false;
   }
   eeprom.resize(eeprom_size);

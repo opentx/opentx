@@ -31,6 +31,7 @@ class HexEepromFormat : public BinEepromFormat
     {
     }
     
+    virtual QString name() { return "hex"; };
     virtual bool load(RadioData & radioData);
     
   protected:

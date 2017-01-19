@@ -31,6 +31,7 @@ class BinEepromFormat : public StorageFormat
     {
     }
     
+    virtual QString name() { return "bin"; };
     virtual bool load(RadioData & radioData);
     virtual bool write(const RadioData & radioData);
     

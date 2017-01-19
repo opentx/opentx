@@ -31,6 +31,7 @@ class EepeFormat : public HexEepromFormat
     {
     }
     
+    virtual QString name() { return "eepe"; };
     virtual bool load(RadioData & radioData);
 };
 

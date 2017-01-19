@@ -58,18 +58,19 @@ class StorageFormat
     QString warning() {
       return _warning;
     }
-    
+
+    virtual QString name() = 0;
+
   protected:
     void setError(const QString & error)
     {
-      qDebug() << "error:" << error;
+      qDebug() << qPrintable(QString("[%1] error: %2").arg(name()).arg(error));
       _error = error;
     }
     
     void setWarning(const QString & warning)
     {
-      if (!warning.isEmpty())
-        qDebug() << "warning:" << warning;
+      qDebug() << qPrintable(QString("[%1] warning: %2").arg(name()).arg(warning));
       _warning = warning;
     }
     
@@ -124,6 +125,18 @@ class Storage : public StorageFormat
     Storage(const QString & filename):
       StorageFormat(filename)
     {
+    }
+    
+    virtual QString name() { return "storage"; };
+    
+    void setError(const QString & error)
+    {
+      _error = error;
+    }
+    
+    void setWarning(const QString & warning)
+    {
+      _warning = warning;
     }
     
     virtual bool load(RadioData & radioData);
