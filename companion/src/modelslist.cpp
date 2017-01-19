@@ -207,11 +207,13 @@ QModelIndex TreeModel::parent(const QModelIndex & index) const
 bool TreeModel::removeRows(int position, int rows, const QModelIndex & parent)
 {
   TreeItem * parentItem = getItem(parent);
-  bool success;
+  bool success = true;
   
-  beginRemoveRows(parent, position, position + rows - 1);
-  success = parentItem->removeChildren(position, rows);
-  endRemoveRows();
+  if (position >= 0 && rows > 0) {
+    beginRemoveRows(parent, position, position + rows - 1);
+    success = parentItem->removeChildren(position, rows);
+    endRemoveRows();
+  }
   
   return success;
 }
