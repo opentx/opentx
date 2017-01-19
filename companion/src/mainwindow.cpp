@@ -740,13 +740,23 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-  if (getCurrentBoard()== BOARD_HORUS) {
-    qDebug() << "TODO readEEPROM HORUS";
+  BoardEnum board = getCurrentBoard();
+  if (board == BOARD_HORUS) {
+    QString radioPath = findMassstoragePath("RADIO", true);
+    qDebug() << "Searching for SD card, found" << radioPath;
+    if (radioPath.isEmpty()) {
+      qDebug() << "MainWindow::readEeprom(): Horus radio not found";
+      QMessageBox::critical(this, tr("Error"), tr("Unable to find Horus radio SD card!"));
+      return;
+    }
+    MdiChild *child = createMdiChild();
+    if (child->loadFile(radioPath)) {
+      statusBar()->showMessage(tr("Models and Settings read"), 2000);
+      child->show();
+    }
   }
   else {
     QString tempFile;
-
-    BoardEnum board = getCurrentBoard();
     if (IS_ARM(board))
       tempFile = generateProcessUniqueTempFileName("temp.bin");
     else
