@@ -193,6 +193,15 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   }
   ui->label_module->setText(label);
 
+  // Antena selection for Horus
+  if (!IS_HORUS(firmware->getBoard())) {
+    ui->label_antenna->hide();
+    ui->antennaMode->hide();
+  }
+  else {
+
+  }
+
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
