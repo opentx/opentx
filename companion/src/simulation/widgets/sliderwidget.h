@@ -21,9 +21,8 @@
 #ifndef _SLIDERWIDGET_H_
 #define _SLIDERWIDGET_H_
 
-#include <QSlider>
 #include <QtGui>
-#include <QFrame>
+#include <QSlider>
 
 class SliderWidget : public QSlider
 {
@@ -34,6 +33,7 @@ class SliderWidget : public QSlider
     explicit SliderWidget(QWidget * parent = 0):
       QSlider(parent)
     {
+      setToolTip(tr("Right-double-click to reset to center."));
     }
 
    protected:

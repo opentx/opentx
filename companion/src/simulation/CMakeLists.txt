@@ -1,31 +1,39 @@
 set(simulation_SRCS
+  debugoutput.cpp
   simulatordialog.cpp
+  simulatorinterface.cpp
+  simulateduiwidget.cpp
+  simulateduiwidget9X.cpp
+  simulateduiwidgetX9.cpp
+  simulateduiwidgetX12.cpp
   telemetrysimu.cpp
   trainersimu.cpp
-  debugoutput.cpp
-  simulatorinterface.cpp
   widgets/virtualjoystickwidget.cpp
 )
 
 set(simulation_UIS
-  simulatordialog-9x.ui
-  simulatordialog-taranis.ui
-  simulatordialog-horus.ui
-  simulatordialog-flamenco.ui
+  debugoutput.ui
+  simulatordialog.ui
+  simulateduiwidget9X.ui
+  simulateduiwidgetX9.ui
+  simulateduiwidgetX12.ui
   telemetrysimu.ui
   trainersimu.ui
-  debugoutput.ui
 )
 
 set(simulation_HDRS
+  debugoutput.h
+  radiouiaction.h
   simulatordialog.h
-
+  simulateduiwidget.h
   telemetrysimu.h
   trainersimu.h
-  debugoutput.h
   widgets/buttonswidget.h
-  #widgets/dialwidget.h
-  #widgets/lcdwidget.h
+  widgets/lcdwidget.h
+  widgets/radiowidget.h
+  widgets/radiofaderwidget.h
+  widgets/radioknobwidget.h
+  widgets/radioswitchwidget.h
   widgets/sliderwidget.h
   widgets/virtualjoystickwidget.h
 )

@@ -21,11 +21,18 @@
 #ifndef _LCDWIDGET_H_
 #define _LCDWIDGET_H_
 
+#include <QApplication>
 #include <QWidget>
+#include <QPainter>
+#include <QClipboard>
+#include <QDir>
+#include <QDebug>
 #include "appdata.h"
 
 class LcdWidget : public QWidget
 {
+  Q_OBJECT
+
   public:
 
     LcdWidget(QWidget * parent = 0):
@@ -100,12 +107,6 @@ class LcdWidget : public QWidget
         memcpy(previousBuf, lcdBuf, lcdSize);
         update();
       }
-    }
-
-    virtual void mousePressEvent(QMouseEvent * event)
-    {
-      setFocus();
-      QWidget::mousePressEvent(event);
     }
 
   protected:

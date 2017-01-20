@@ -31,6 +31,7 @@
 #include "simulatorinterface.h"
 
 static double const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
+template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
 
 namespace Ui {
   class TelemetrySimulator;
@@ -130,7 +131,7 @@ private:
     SimulatorInterface *simulator;
     void generateTelemetryFrame();
     TelemetrySimulator::LogPlaybackController *logPlayback;
-  
+
   private slots:
     void onSimulateToggled(bool isChecked);
     void onTimerEvent();
