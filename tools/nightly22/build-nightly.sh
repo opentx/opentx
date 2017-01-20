@@ -57,4 +57,3 @@ cd $output/companion/macosx
 wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
 wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
 chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
-
