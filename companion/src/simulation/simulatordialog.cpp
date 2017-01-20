@@ -174,6 +174,7 @@ void SimulatorDialog::setRadioData(RadioData * radioData)
   else {
     SdcardFormat sdcard(radioDataPath);
     sdcard.write(*radioData);
+    radioSettings = radioData->generalSettings;
   }
 }
 
