@@ -28,7 +28,7 @@ code/tools/nightly22/build-sdcard.sh
 
 # Build Linux companion
 docker run -dit --name companion -v /home/opentx/$docker:/opentx $docker
-docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
+docker exec companion sh -c "mkdir -p build && cd build && cmake -DCMAKE_PREFIX_PATH=/opt/qt57/lib/cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
 
 cp binaries/stamp-opentx.txt $output/firmware
 docker exec companion rm -rf build
@@ -57,4 +57,3 @@ cd $output/companion/macosx
 wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
 wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
 chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
-

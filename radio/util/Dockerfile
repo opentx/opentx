@@ -1,6 +1,6 @@
-# An Debian image for compiling OpenTX 2.2
+# An Ubuntu image for compiling OpenTX 2.2
 
-FROM debian:jessie
+FROM ubuntu:16.04
 
 RUN apt-get update && \
     apt-get install -y \
@@ -32,9 +32,14 @@ RUN wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_4.7.2-2_
     wget -q http://ftp.de.debian.org/debian/pool/main/m/mpclib/libmpc2_0.9-4_amd64.deb && \
     dpkg -i gcc-avr_4.7.2-2_amd64.deb libmpc2_0.9-4_amd64.deb avr-libc_1.8.0-2_all.deb binutils-avr_2.24+Atmel3.4.4-1_amd64.deb
 
+
+RUN add-apt-repository ppa:beineri/opt-qt571-xenial -y && \
+    apt-get update && \
+    apt-get install -qq qt57base  && \
+   /opt/qt57/bin/qt57-env.sh
+
 VOLUME ["/opentx"]
 
 ENV PATH $PATH:/opt/gcc-arm-none-eabi/bin:/opentx/code/radio/util
 ARG OPENTX_VERSION_SUFFIX=
 ENV OPENTX_VERSION_SUFFIX ${OPENTX_VERSION_SUFFIX}
-
