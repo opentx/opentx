@@ -58,7 +58,7 @@ MdiChild::MdiChild(MainWindow * parent):
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
-  
+
   ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
   ui->modelsList->setSelectionBehavior(QAbstractItemView::SelectRows);
   ui->modelsList->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -66,7 +66,7 @@ MdiChild::MdiChild(MainWindow * parent):
   // ui->modelsList->setAcceptDrops(true);
   // ui->modelsList->setDragDropOverwriteMode(true);
   // ui->modelsList->setDropIndicatorShown(true);
-  
+
   if (!(isMaximized() || isMinimized())) {
     adjustSize();
   }
@@ -148,7 +148,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   else {
     return;
   }
-  
+
   contextMenu.exec(globalPos);
 }
 
@@ -190,10 +190,10 @@ void MdiChild::copy()
 {
   QByteArray gmData;
   doCopy(&gmData);
-  
+
   QMimeData * mimeData = new QMimeData;
   mimeData->setData("application/x-companion", gmData);
-  
+
   QClipboard * clipboard = QApplication::clipboard();
   clipboard->setMimeData(mimeData, QClipboard::Clipboard);
 }
@@ -220,7 +220,7 @@ void MdiChild::doPaste(QByteArray * gmData, int index)
   char * gData = gmData->data();
   bool modified = false;
   int size = 0;
-  
+
   while (size < gmData->size()) {
     char c = *gData++;
     size++;
@@ -358,7 +358,7 @@ void MdiChild::categoryDelete()
   if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
     return;
   }
-  
+
   for (unsigned i=0; i<radioData.models.size(); i++) {
     ModelData & model = radioData.models[i];
     if (model.used && model.category == categoryIndex) {
@@ -368,7 +368,7 @@ void MdiChild::categoryDelete()
       return;
     }
   }
-  
+
   radioData.categories.erase(radioData.categories.begin() + categoryIndex);
   for (unsigned i=0; i<radioData.models.size(); i++) {
     ModelData & model = radioData.models[i];
@@ -376,7 +376,7 @@ void MdiChild::categoryDelete()
       model.category--;
     }
   }
-  
+
   setModified();
 }
 
@@ -401,11 +401,11 @@ void MdiChild::modelAdd()
   if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
     return;
   }
-  
+
   ModelData model;
   model.category = categoryIndex;
   model.used = true;
-  sprintf(model.filename, "model%lu.bin", radioData.models.size()+1);
+  sprintf(model.filename, "model%lu.bin", (long unsigned)radioData.models.size()+1);
   strcpy(model.name, tr("New model").toStdString().c_str());
   radioData.models.push_back(model);
   radioData.setCurrentModel(radioData.models.size() - 1);
@@ -539,11 +539,11 @@ bool MdiChild::saveFile(const QString & filename, bool setCurrent)
   if (IS_SKY9X(board)) {
     path.replace(".eepe", ".bin");
   }
-  
+
   radioData.fixModelFilenames();
   Storage storage(path);
   bool result = storage.write(radioData);
-  
+
   if (result && setCurrent) {
     setCurrentFile(path);
   }
@@ -688,7 +688,7 @@ bool MdiChild::loadBackup()
     QMessageBox::critical(this, tr("Error"), tr("Unable to find file %1!").arg(fileName));
     return false;
   }
-  
+
   // TODO int index = getCurrentRow();
 
   int eeprom_size = file.size();
@@ -711,7 +711,7 @@ bool MdiChild::loadBackup()
 
     return false;
   }
-  
+
 #if 0
   std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
   if (!errorsEeprom.test(ALL_OK)) {
