@@ -162,7 +162,8 @@ class MainWindow : public QMainWindow
     void updateIconSizeActions();
     void updateLanguageActions();
     void updateIconThemeActions();
-    
+    void openFile(const QString & fileName, bool updateLastUsedDir = false);
+
     QString strippedName(const QString & fullFileName);
 
     MdiChild * activeMdiChild();

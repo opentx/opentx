@@ -555,13 +555,12 @@ void MainWindow::openDocURL()
   QDesktopServices::openUrl(QUrl(link));
 }
 
-void MainWindow::openFile()
+void MainWindow::openFile(const QString & fileName, bool updateLastUsedDir)
 {
-  QString fileFilter;
-  fileFilter = tr(EEPROM_FILES_FILTER);
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), fileFilter);
   if (!fileName.isEmpty()) {
-    g.eepromDir(QFileInfo(fileName).dir().absolutePath());
+    if (updateLastUsedDir) {
+      g.eepromDir(QFileInfo(fileName).dir().absolutePath());
+    }
 
     QMdiSubWindow *existing = findMdiChild(fileName);
     if (existing) {
@@ -575,6 +574,14 @@ void MainWindow::openFile()
       child->show();
     }
   }
+}
+
+void MainWindow::openFile()
+{
+  QString fileFilter;
+  fileFilter = tr(EEPROM_FILES_FILTER);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), fileFilter);
+  openFile(fileName);
 }
 
 void MainWindow::save()
@@ -594,18 +601,7 @@ void MainWindow::openRecentFile()
   QAction *action = qobject_cast<QAction *>(sender());
   if (action) {
     QString fileName = action->data().toString();
-
-    QMdiSubWindow *existing = findMdiChild(fileName);
-    if (existing) {
-      mdiArea->setActiveSubWindow(existing);
-    }
-    else {
-      MdiChild *child = createMdiChild();
-      if (child->loadFile(fileName)) {
-        statusBar()->showMessage(tr("File loaded"), 2000);
-        child->show();
-      }
-    }
+    openFile(fileName, false);
   }
 }
 
@@ -1402,28 +1398,10 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
-  if(getCurrentBoard()== BOARD_HORUS)
-    return;
   QList<QUrl> urls = event->mimeData()->urls();
-  if (urls.isEmpty())
-    return;
-
+  if (urls.isEmpty()) return;
   QString fileName = urls.first().toLocalFile();
-  if (fileName.isEmpty())
-    return;
-  g.eepromDir(QFileInfo(fileName).dir().absolutePath());
-
-  QMdiSubWindow *existing = findMdiChild(fileName);
-  if (existing) {
-    mdiArea->setActiveSubWindow(existing);
-    return;
-  }
-
-  MdiChild *child = createMdiChild();
-  if (child->loadFile(fileName)) {
-    statusBar()->showMessage(tr("File loaded"), 2000);
-    child->show();
-  }
+  openFile(fileName);
 }
 
 void MainWindow::autoClose()
