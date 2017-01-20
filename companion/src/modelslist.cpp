@@ -182,7 +182,6 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex & parent) co
     return QModelIndex();
   
   TreeItem * parentItem = getItem(parent);
-  
   TreeItem * childItem = parentItem->child(row);
   if (childItem)
     return createIndex(row, column, childItem);
@@ -221,13 +220,15 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex & parent)
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
   TreeItem * parentItem = getItem(parent);
-  
   return parentItem->childCount();
 }
 
 bool TreeModel::setData(const QModelIndex & index, const QVariant & value, int role)
 {
   if (role != Qt::EditRole)
+    return false;
+  
+  if (!index.isValid())
     return false;
   
   TreeItem * item = getItem(index);
@@ -305,16 +306,7 @@ void TreeModel::refresh()
           availableEEpromSize -= size;
         }
       }
-      
-      /* TODO if (i == radioData->generalSettings.currModelIndex) {
-        QFont font = item->font(0);
-        font.setBold(true);
-        for (int j=0; j<columnCount(); j++) {
-          item->setFont(j, font);
-        }
-      } */
     }
-    // addTopLevelItem(item);
   }
   
   if (!IS_SKY9X(board) && !IS_HORUS(board)) {

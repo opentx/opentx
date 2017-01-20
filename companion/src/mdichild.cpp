@@ -382,12 +382,17 @@ void MdiChild::categoryDelete()
 
 void MdiChild::onDataChanged(const QModelIndex & index)
 {
+  int modelIndex = modelsListModel->getModelIndex(index);
+  if (modelIndex >= 0) {
+    return;
+  }
   int categoryIndex = modelsListModel->getCategoryIndex(index);
   if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
     return;
   }
   strcpy(radioData.categories[categoryIndex].name, modelsListModel->data(index, 0).toString().left(sizeof(CategoryData::name)-1).toStdString().c_str());
-  setModified();
+  fileChanged = true;
+  documentWasModified();
 }
 
 void MdiChild::modelAdd()
