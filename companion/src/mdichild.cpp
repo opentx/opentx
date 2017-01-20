@@ -202,7 +202,7 @@ void MdiChild::doCopy(QByteArray * gmData)
 {
   foreach(QModelIndex index, ui->modelsList->selectionModel()->selectedIndexes()) {
     if (index.column() == 0) {
-      unsigned int modelIndex = modelsListModel->getModelIndex(index);
+      int modelIndex = modelsListModel->getModelIndex(index);
       if (modelIndex >= 0) {
         gmData->append('M');
         gmData->append((char *) &radioData.models[modelIndex], sizeof(ModelData));
