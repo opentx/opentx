@@ -19,6 +19,7 @@ env:
      #- GCC_ARM=/opt/gcc-arm-none-eabi/bin
   matrix:
      # - FLAVOR=ALL
+     - FLAVOR=DEFAULT
      - FLAVOR=AVR9X
      # - FLAVOR=9X
      # - FLAVOR=GRUVIN9X
@@ -36,7 +37,6 @@ env:
      - FLAVOR=HORUS
      # - FLAVOR=X12Sr10
      # - FLAVOR=X12S
-     - FLAVOR=COMPANION
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-sdk-team/ppa --yes

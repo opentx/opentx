@@ -180,7 +180,7 @@ if [[ ${FLAVOR} == "X12S" || ${FLAVOR} == "HORUS" || ${FLAVOR} == "ALL" ]] ; the
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "COMPANION" || ${FLAVOR} == "ALL" ]] ; then
+if [[ ${FLAVOR} == "DEFAULT" || ${FLAVOR} == "ALL" ]] ; then
   # Companion
   rm -rf *
   cmake ${COMMON_OPTIONS} ${SRCDIR}
