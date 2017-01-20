@@ -18,6 +18,10 @@
  * GNU General Public License for more details.
  */
 
+#include <map>
+#include <string>
+#include <vector>
+#include <algorithm>
 #include "opentx.h"
 
 #if defined(SIMU_USE_SDCARD)  // rest of file is excluded otherwise
@@ -46,9 +50,6 @@
 #endif
 
 #include "ff.h"
-#include <map>
-#include <string>
-#include <vector>
 
 namespace simu {
 #include <dirent.h>
@@ -62,10 +63,10 @@ std::string simuSettingsDirectory;    // path to the root of the models and sett
 
 bool isPathDelimiter(char delimiter)
 {
-  return (delimiter == '/' || delimiter == '\\');
+  return delimiter == '/';
 }
 
-std::string removeTrailingPathDelimiter(const char * path)
+std::string removeTrailingPathDelimiter(const std::string & path)
 {
   std::string result = path;
   while (!result.empty() && isPathDelimiter(result.back())) {
@@ -74,19 +75,30 @@ std::string removeTrailingPathDelimiter(const char * path)
   return result;
 }
 
+std::string fixPathDelimiters(const char * path)
+{
+  // replace all '\' characters with '/'
+  std::string result(path);
+  std::replace(result.begin(), result.end(), '\\', '/');
+  // TRACE_SIMPGMSPACE("fixPathDelimiters(): %s -> %s", path, result.c_str());
+  return result;
+}
+
 void simuFatfsSetPaths(const char * sdPath, const char * settingsPath)
 {
   if (sdPath) {
-    simuSdDirectory = removeTrailingPathDelimiter(sdPath);
+    simuSdDirectory = removeTrailingPathDelimiter(fixPathDelimiters(sdPath));
   }
   else {
     char buff[1024];
     f_getcwd(buff, sizeof(buff)-1);
-    simuSdDirectory = removeTrailingPathDelimiter(buff);
+    simuSdDirectory = removeTrailingPathDelimiter(fixPathDelimiters(buff));
   }
   if (settingsPath) {
-    simuSettingsDirectory = removeTrailingPathDelimiter(settingsPath);
+    simuSettingsDirectory = removeTrailingPathDelimiter(fixPathDelimiters(settingsPath));
   }
+  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSdDirectory: \"\"", simuSdDirectory.c_str());
+  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSettingsDirectory: \"\"", simuSettingsDirectory.c_str());
 }
 
 bool startsWith(const char *path, const char * start)
@@ -94,7 +106,7 @@ bool startsWith(const char *path, const char * start)
   return strncasecmp(path, start, strlen(start)) == 0;
 }
 
-std::string convertToSimuPath(const char *path)
+std::string convertToSimuPath(const char * path)
 {
   std::string result;
   if (isPathDelimiter(path[0])) {
@@ -108,11 +120,11 @@ std::string convertToSimuPath(const char *path)
   else {
     result = std::string(path);
   }
-  TRACE("convertToSimuPath(): %s -> %s", path, result.c_str());
+  TRACE_SIMPGMSPACE("convertToSimuPath(): %s -> %s", path, result.c_str());
   return result;
 }
 
-std::string convertFromSimuPath(const char *path)
+std::string convertFromSimuPath(const char * path)
 {
   std::string result;
   if (startsWith(path, simuSdDirectory.c_str())) {
@@ -127,7 +139,7 @@ std::string convertFromSimuPath(const char *path)
       result = "/" + result;
     }
   }
-  TRACE("convertFromSimuPath(): %s -> %s", path, result.c_str());
+  TRACE_SIMPGMSPACE("convertFromSimuPath(): %s -> %s", path, result.c_str());
   return result;
 }
 
@@ -533,7 +545,7 @@ FRESULT f_getcwd (TCHAR *path, UINT sz_path)
     return FR_NO_PATH;
   }
 
-  std::string result = convertFromSimuPath(cwd);
+  std::string result = convertFromSimuPath(fixPathDelimiters(cwd).c_str());
   if (result.length() > sz_path) {
     //TRACE_SIMPGMSPACE("f_getcwd(): buffer too short");
     return FR_NOT_ENOUGH_CORE;
