@@ -193,6 +193,15 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   }
   ui->label_module->setText(label);
 
+  // Antena selection for Horus
+  if (IS_HORUS(firmware->getBoard()) && moduleIdx == 0) {
+    ui->antennaMode->setCurrentIndex(module.ppm.pulsePol);
+  }
+  else {
+    ui->label_antenna->hide();
+    ui->antennaMode->hide();
+  }
+
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
@@ -411,6 +420,12 @@ void ModulePanel::on_protocol_currentIndexChanged(int index)
 }
 
 void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
+{
+  module.ppm.pulsePol = index;
+  emit modified();
+}
+
+void ModulePanel::on_antennaMode_currentIndexChanged(int index)
 {
   module.ppm.pulsePol = index;
   emit modified();
