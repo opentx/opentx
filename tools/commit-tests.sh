@@ -55,7 +55,7 @@ if (( $WERROR )); then COMMON_OPTIONS+=" -DWARNINGS_AS_ERRORS=YES"; fi
 mkdir build || true
 cd build
 
-if [[ ${FLAVOR} == "9X" || ${FLAVOR} == "AVR9X" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " 9X AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on 9X stock with FrSky telemetry
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DTELEMETRY=FRSKY ${SRCDIR}
@@ -74,7 +74,7 @@ if [[ ${FLAVOR} == "9X" || ${FLAVOR} == "AVR9X" || ${FLAVOR} == "ALL" ]] ; then
   make -j${CORES} ${FIRMARE_TARGET}
 fi
 
-if [[ ${FLAVOR} == "MEGA2560" || ${FLAVOR} == "AVR9X" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " MEGA2560 AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Mega2560
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTEMPLATES=YES -DHELI=YES ${SRCDIR}
@@ -90,7 +90,7 @@ if [[ ${FLAVOR} == "MEGA2560" || ${FLAVOR} == "AVR9X" || ${FLAVOR} == "ALL" ]] ;
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "GRUVIN9X" || ${FLAVOR} == "AVR9X" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " GRUVIN9X AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on gruvin9x board
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES ${SRCDIR}
@@ -99,7 +99,7 @@ if [[ ${FLAVOR} == "GRUVIN9X" || ${FLAVOR} == "AVR9X" || ${FLAVOR} == "ALL" ]] ;
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "SKY9X" || ${FLAVOR} == "ARM9X" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " SKY9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Sky9x
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES ${SRCDIR}
@@ -108,7 +108,7 @@ if [[ ${FLAVOR} == "SKY9X" || ${FLAVOR} == "ARM9X" || ${FLAVOR} == "ALL" ]] ; th
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "AR9X" || ${FLAVOR} == "ARM9X" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " AR9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on AR9X
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES ${SRCDIR}
@@ -117,7 +117,7 @@ if [[ ${FLAVOR} == "AR9X" || ${FLAVOR} == "ARM9X" || ${FLAVOR} == "ALL" ]] ; the
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "9XRPRO" || ${FLAVOR} == "ARM9X" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Sky9x
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=9XRPRO -DHELI=YES ${SRCDIR}
@@ -126,7 +126,7 @@ if [[ ${FLAVOR} == "9XRPRO" || ${FLAVOR} == "ARM9X" || ${FLAVOR} == "ALL" ]] ; t
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "X7" || ${FLAVOR} == "TARANIS" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X7
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES ${SRCDIR}
@@ -135,7 +135,7 @@ if [[ ${FLAVOR} == "X7" || ${FLAVOR} == "TARANIS" || ${FLAVOR} == "ALL" ]] ; the
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "X9D" || ${FLAVOR} == "X9" || ${FLAVOR} == "TARANIS" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9D
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
@@ -144,7 +144,7 @@ if [[ ${FLAVOR} == "X9D" || ${FLAVOR} == "X9" || ${FLAVOR} == "TARANIS" || ${FLA
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "X9D+" || ${FLAVOR} == "X9" || ${FLAVOR} == "TARANIS" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9D+
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
@@ -153,7 +153,7 @@ if [[ ${FLAVOR} == "X9D+" || ${FLAVOR} == "X9" || ${FLAVOR} == "TARANIS" || ${FL
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "X9E" || ${FLAVOR} == "X9" || ${FLAVOR} == "TARANIS" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Taranis X9E
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
@@ -162,7 +162,7 @@ if [[ ${FLAVOR} == "X9E" || ${FLAVOR} == "X9" || ${FLAVOR} == "TARANIS" || ${FLA
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "X12Sr10" || ${FLAVOR} == "HORUS" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " X12Sr10 X12 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Horus beta boards
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
@@ -171,7 +171,7 @@ if [[ ${FLAVOR} == "X12Sr10" || ${FLAVOR} == "HORUS" || ${FLAVOR} == "ALL" ]] ; 
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "X12S" || ${FLAVOR} == "HORUS" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " X12S X12 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Horus
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
@@ -180,7 +180,7 @@ if [[ ${FLAVOR} == "X12S" || ${FLAVOR} == "HORUS" || ${FLAVOR} == "ALL" ]] ; the
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ ${FLAVOR} == "DEFAULT" || ${FLAVOR} == "ALL" ]] ; then
+if [[ " DEFAULT ALL " =~ " ${FLAVOR} " ]] ; then
   # Companion
   rm -rf *
   cmake ${COMMON_OPTIONS} ${SRCDIR}
