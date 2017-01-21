@@ -24,184 +24,79 @@
 AppData g;
 
 // ** CompStoreObj class********************
-void CompStoreObj::clear (const QString tag1, const QString tag2, const QString tag3)
+void CompStoreObj::clear (const QString &tag1, const QString &tag2, const QString &tag3)
 {
-    QSettings settings(COMPANY, PRODUCT);
-    if (tag2.isEmpty())
-    {
-        settings.remove(tag1);
-    }
-    else if (tag3.isEmpty())
-    {
-        settings.beginGroup(tag1);
-        settings.remove(tag2);
-        settings.endGroup();
-    }
-    else
-    {
-        settings.beginGroup(tag1);
-        settings.beginGroup(tag2);
-        settings.remove(tag3);
-        settings.endGroup();
-        settings.endGroup();
-    }
+  QSettings settings(COMPANY, PRODUCT);
+  if (tag2.isEmpty())
+  {
+    settings.remove(tag1);
+  }
+  else if (tag3.isEmpty())
+  {
+    settings.beginGroup(tag1);
+    settings.remove(tag2);
+    settings.endGroup();
+  }
+  else
+  {
+    settings.beginGroup(tag1);
+    settings.beginGroup(tag2);
+    settings.remove(tag3);
+    settings.endGroup();
+    settings.endGroup();
+  }
 }
 
-void CompStoreObj::store(const QByteArray newArray, QByteArray &array, const QString tag, const QString group1, const QString group2 )
+template <typename OBJ_T, typename TAG_T, typename GP1_T, typename GP2_T>
+void CompStoreObj::store(const OBJ_T newValue, OBJ_T & destValue, const TAG_T tag, const GP1_T group1, const GP2_T group2)
 {
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
+  QSettings settings(COMPANY, PRODUCT);
+  QString g1 = group1;  // these may come in as const char * or QString
+  QString g2 = group2;
+  if (!g1.isEmpty()){
+    settings.beginGroup(g1);
+    if (!g2.isEmpty())
+      settings.beginGroup(g2);
+  }
 
-    settings.setValue(tag, newArray);
-    array = newArray;
+  settings.setValue(tag, newValue);
+  destValue = newValue;
 
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
+  if (!g1.isEmpty()){
+    settings.endGroup();
+    if (!g2.isEmpty())
+      settings.endGroup();
+  }
 }
 
-void CompStoreObj::store(const QStringList newSList, QStringList &stringList, const QString tag, const QString group1, const QString group2 )
+template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T, typename GP2_T>
+void CompStoreObj::retrieve(OBJ_T & destValue, const TAG_T tag, const DEF_T def, const GP1_T group1, const GP2_T group2)
 {
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
+  QSettings settings(COMPANY, PRODUCT);
+  QString g1 = group1;  // these may come in as const char * or QString
+  QString g2 = group2;
+  if (!g1.isEmpty()){
+    settings.beginGroup(g1);
+    if (!g2.isEmpty())
+      settings.beginGroup(g2);
+  }
 
-    settings.setValue(tag, newSList);
-    stringList = newSList;
+  QVariant val = settings.value(QString(tag), (OBJ_T)def);
+  if (val.canConvert<OBJ_T>())
+    destValue = val.value<OBJ_T>();
 
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
+  if (!g1.isEmpty()){;
+    settings.endGroup();
+    if (!g2.isEmpty())
+      settings.endGroup();
+  }
 }
 
-void CompStoreObj::store(const QString newString, QString &string, const QString tag, const QString group1, const QString group2 )
+template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T, typename GP2_T>
+void CompStoreObj::getset(OBJ_T & value, const TAG_T tag, const DEF_T def, const GP1_T group1, const GP2_T group2 )
 {
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    settings.setValue(tag, newString);
-    string = newString;
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-void CompStoreObj::store(const bool newTruth, bool &truth, const QString tag, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    settings.setValue(tag, newTruth);
-    truth = newTruth;
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-void CompStoreObj::store(const int newNumber, int &number, const QString tag, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    settings.setValue(tag, newNumber);
-    number = newNumber;
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-// Retrieval functions
-void CompStoreObj::retrieve( QByteArray &array, const QString tag, const QString def, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    array = settings.value(tag, def).toByteArray();
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-void CompStoreObj::retrieve( QStringList &stringList, const QString tag, const QString def, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    stringList = settings.value(tag, def).toStringList();
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-void CompStoreObj::retrieve( QString &string, const QString tag, const QString def, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    string = settings.value(tag, def).toString();
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-void CompStoreObj::retrieve( bool &truth, const QString tag, const bool def, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    truth = settings.value(tag, def).toBool();
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-void CompStoreObj::retrieve( int &number, const QString tag, const int def, const QString group1, const QString group2 )
-{
-    QSettings settings(COMPANY, PRODUCT);
-    if (!group1.isEmpty()) settings.beginGroup(group1);
-    if (!group2.isEmpty()) settings.beginGroup(group2);
-
-    number = settings.value(tag, def).toInt();
-
-    if (!group1.isEmpty()) settings.endGroup();
-    if (!group2.isEmpty()) settings.endGroup();
-}
-
-// Retrieve and Store functions
-void CompStoreObj::getset( QByteArray &array, const QString tag, const QString def, const QString group1, const QString group2 )
-{
-    retrieve( array, tag, def, group1, group2);
-    store(array, array, tag, group1, group2);
-}
-
-void CompStoreObj::getset( QStringList &stringList, const QString tag, const QString def, const QString group1, const QString group2 )
-{
-    retrieve( stringList, tag, def, group1, group2);
-    store(stringList, stringList, tag, group1, group2);
-}
-
-void CompStoreObj::getset( QString &string, const QString tag, const QString def, const QString group1, const QString group2 )
-{
-    retrieve( string, tag, def, group1, group2);
-    store(string, string, tag, group1, group2);
-}
-
-void CompStoreObj::getset( bool &truth, const QString tag, const bool def, const QString group1, const QString group2 )
-{
-    retrieve( truth, tag, def, group1, group2);
-    store(truth, truth, tag, group1, group2);
-}
-
-void CompStoreObj::getset( int &number, const QString tag, const int def, const QString group1, const QString group2 )
-{
-    retrieve( number, tag, def, group1, group2);
-    store(number, number, tag, group1, group2);
+  retrieve(value, tag, def, group1, group2);
+  store(value, value, tag, group1, group2);
 }
 
 // ** FwRevision class********************
@@ -322,13 +217,13 @@ QString Profile::timeStamp()     const { return _timeStamp;     }
 QString Profile::trainerCalib()  const { return _trainerCalib;  }
 QString Profile::controlTypes()  const { return _controlTypes;  }
 QString Profile::controlNames()  const { return _controlNames;  }
-int     Profile::txCurrentCalibration()  const { return _txCurrentCalibration;  }
 int     Profile::gsStickMode()   const { return _gsStickMode;   }
 int     Profile::ppmMultiplier() const { return _ppmMultiplier; }
-int     Profile::txVoltageCalibration()     const { return _txVoltageCalibration;     }
 int     Profile::vBatWarn()      const { return _vBatWarn;      }
 int     Profile::vBatMin()       const { return _vBatMin;       }
 int     Profile::vBatMax()       const { return _vBatMax;       }
+int     Profile::txCurrentCalibration()  const { return _txCurrentCalibration; }
+int     Profile::txVoltageCalibration()  const { return _txVoltageCalibration; }
 
 // Set declarations
 void Profile::name          (const QString x) { store(x, _name,          "Name"                  ,"Profiles", QString("profile%1").arg(index));}
@@ -356,13 +251,13 @@ void Profile::timeStamp     (const QString x) { store(x, _timeStamp,     "TimeSt
 void Profile::trainerCalib  (const QString x) { store(x, _trainerCalib,  "TrainerCalib"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::controlTypes  (const QString x) { store(x, _controlTypes,  "ControlTypes"          ,"Profiles", QString("profile%1").arg(index));}
 void Profile::controlNames  (const QString x) { store(x, _controlNames,  "ControlNames"          ,"Profiles", QString("profile%1").arg(index));}
-void Profile::txCurrentCalibration (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::gsStickMode   (const int     x) { store(x, _gsStickMode,   "GSStickMode"           ,"Profiles", QString("profile%1").arg(index));}
 void Profile::ppmMultiplier (const int     x) { store(x, _ppmMultiplier, "PPM_Multiplier"        ,"Profiles", QString("profile%1").arg(index));}
-void Profile::txVoltageCalibration (const int x) { store(x, _txVoltageCalibration, "VbatCalib","Profiles", QString("profile%1").arg(index));}
 void Profile::vBatWarn      (const int     x) { store(x, _vBatWarn,      "vBatWarn"              ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMin       (const int     x) { store(x, _vBatMin,       "VbatMin"               ,"Profiles", QString("profile%1").arg(index));}
 void Profile::vBatMax       (const int     x) { store(x, _vBatMax,       "VbatMax"               ,"Profiles", QString("profile%1").arg(index));}
+void Profile::txCurrentCalibration (const int x) { store(x, _txCurrentCalibration, "currentCalib","Profiles", QString("profile%1").arg(index));}
+void Profile::txVoltageCalibration (const int x) { store(x, _txVoltageCalibration, "VbatCalib"   ,"Profiles", QString("profile%1").arg(index));}
 
 // Constructor
 Profile::Profile()
@@ -507,13 +402,13 @@ void Profile::flush()
     getset( _trainerCalib,  "TrainerCalib"          ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _controlTypes,  "ControlTypes"          ,""     ,"Profiles", QString("profile%1").arg(index));
     getset( _controlNames,  "ControlNames"          ,""     ,"Profiles", QString("profile%1").arg(index));
-    getset( _txCurrentCalibration,  "currentCalib"          ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _gsStickMode,   "GSStickMode"           ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _ppmMultiplier, "PPM_Multiplier"        ,0      ,"Profiles", QString("profile%1").arg(index));
-    getset( _txVoltageCalibration,     "VbatCalib"             ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatWarn,      "vBatWarn"              ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatMin,       "VbatMin"               ,0      ,"Profiles", QString("profile%1").arg(index));
     getset( _vBatMax,       "VbatMax"               ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _txCurrentCalibration,  "currentCalib"  ,0      ,"Profiles", QString("profile%1").arg(index));
+    getset( _txVoltageCalibration,  "VbatCalib"     ,0      ,"Profiles", QString("profile%1").arg(index));
 }
 
 
@@ -792,13 +687,13 @@ void AppData::init()
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
-    getset( _outputDisplayDetails,  "outputDisplayDetails"     ,false );
     getset( _enableBackup,    "enableBackup"            ,false );
     getset( _backupOnFlash,   "backupOnFlash"           ,true  );
-    getset( _checkHardwareCompatibility,   "checkHardwareCompatibility"           ,true  );
 
-    getset( _useCompanionNightlyBuilds,   "useCompanionNightlyBuilds"           ,false  );
-    getset( _useFirmwareNightlyBuilds,   "useFirmwareNightlyBuilds"           ,false  );
+    getset( _outputDisplayDetails,       "outputDisplayDetails"       ,false );
+    getset( _checkHardwareCompatibility, "checkHardwareCompatibility" ,true  );
+    getset( _useCompanionNightlyBuilds,  "useCompanionNightlyBuilds"  ,false );
+    getset( _useFirmwareNightlyBuilds,   "useFirmwareNightlyBuilds"   ,false );
 
     getset( _jsSupport,       "js_support"              ,false );
     getset( _maximized,       "maximized"               ,false );
