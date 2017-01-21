@@ -37,14 +37,6 @@ enum BoardEnum {
   BOARD_HORUS
 };
 
-enum SimulatorUiFlavor {
-  SIMULATOR_UI_9X,
-  SIMULATOR_UI_X7,
-  SIMULATOR_UI_X9,
-  SIMULATOR_UI_X12,
-  SIMULATOR_UI_FLAMENCO
-};
-
 #define CPN_MAX_MODELS                 60
 #define CPN_MAX_TIMERS                 3
 #define CPN_MAX_FLIGHT_MODES           9

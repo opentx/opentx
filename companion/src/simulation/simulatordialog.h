@@ -71,7 +71,7 @@ class SimulatorDialog : public QDialog
   Q_OBJECT
 
   public:
-    explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, SimulatorUiFlavor uiflavor, quint8 flags=0);
+    explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags=0);
     virtual ~SimulatorDialog();
 
     void setRadioProfileId(int value);
@@ -99,7 +99,6 @@ class SimulatorDialog : public QDialog
     Ui::SimulatorDialog * ui;
     SimulatorInterface * simulator;
     Firmware * firmware;
-    SimulatorUiFlavor uiFlavor;
     GeneralSettings radioSettings;
 
     QTimer * timer;

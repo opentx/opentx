@@ -477,23 +477,7 @@ int main(int argc, char *argv[])
   g.simuLastEepe(simOptions.eepromFileName);
   g.simuLastFolder(simOptions.dataFolder);
 
-  uint32_t flags = SIMULATOR_FLAGS_STANDALONE;
-  SimulatorUiFlavor uiflav;
-
-  switch(factory->type()) {
-    case BOARD_HORUS :
-      uiflav = SIMULATOR_UI_X12;
-      break;
-    case BOARD_TARANIS_X9E :
-    case BOARD_TARANIS_X9D :
-    case BOARD_TARANIS_X9DP :
-      uiflav = SIMULATOR_UI_X9;
-      break;
-    default:
-      uiflav = SIMULATOR_UI_9X;
-  }
-
-  SimulatorDialog * dialog = new SimulatorDialog(NULL, factory->create(), uiflav, flags);
+  SimulatorDialog * dialog = new SimulatorDialog(NULL, factory->create(), SIMULATOR_FLAGS_STANDALONE);
   dialog->setRadioProfileId(simOptions.profileId);
   if (simOptions.useFolder && !simOptions.dataFolder.isEmpty()) {
     dialog->setDataPath(simOptions.dataFolder);

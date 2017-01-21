@@ -826,7 +826,6 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     RadioData * simuData = new RadioData(radioData);
     BoardEnum board = getCurrentBoard();
     QByteArray eeprom = QByteArray();
-    SimulatorUiFlavor uiflav;
     QString sdPath = g.profile[g.id()].sdPath();
     QString settingsPath = "";
     unsigned int flags = 0;
@@ -842,24 +841,9 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       tmpDir.setAutoRemove(false);
     }
 
-    switch(board) {
-      case BOARD_TARANIS_X9D  :
-      case BOARD_TARANIS_X9DP :
-      case BOARD_TARANIS_X9E  :
-        uiflav = SIMULATOR_UI_X9;
-        break;
-      case BOARD_HORUS :
-        uiflav = SIMULATOR_UI_X12;
-        break;
-      case BOARD_TARANIS_X7   :  // TODO
-      default:
-        uiflav = SIMULATOR_UI_9X;
-        break;
-    }
-
     qDebug() << "Starting" << firmware->getName() << "simulation with SD path" << sdPath << "and models/settings path" << settingsPath;
 
-    SimulatorDialog * dialog = new SimulatorDialog(parent, simulator, uiflav, flags);
+    SimulatorDialog * dialog = new SimulatorDialog(parent, simulator, flags);
     dialog->setPaths(sdPath, settingsPath);
     dialog->setRadioData(simuData);
     dialog->start();

@@ -52,12 +52,11 @@ void traceCb(const char * text)
   }
 }
 
-SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, SimulatorUiFlavor uiflavor, quint8 flags):
+SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags):
   QDialog(parent),
   ui(new Ui::SimulatorDialog),
   simulator(simulator),
   firmware(getCurrentFirmware()),
-  uiFlavor(uiflavor),
   radioSettings(GeneralSettings()),
   timer(NULL),
   radioUiWidget(NULL),
@@ -199,21 +198,23 @@ void SimulatorDialog::setupUi()
   windowName = tr("Simulating Radio (%1)").arg(firmware->getName());
   setWindowTitle(windowName);
 
-  switch(uiFlavor) {
-    case SIMULATOR_UI_X7 :
-      radioUiWidget = new SimulatedUIWidget9X(simulator, this);  // TODO
+  switch(m_board) {
+    case BOARD_TARANIS_X7   :  // TODO
+      radioUiWidget = new SimulatedUIWidget9X(simulator, this);
       break;
-    case SIMULATOR_UI_X9 :
+    case BOARD_TARANIS_X9D  :
+    case BOARD_TARANIS_X9DP :
+    case BOARD_TARANIS_X9E  :
       radioUiWidget = new SimulatedUIWidgetX9(simulator, this);
       break;
-    case SIMULATOR_UI_X12 :
+    case BOARD_HORUS :
       radioUiWidget = new SimulatedUIWidgetX12(simulator, this);
       break;
-    case SIMULATOR_UI_9X :
     default:
       radioUiWidget = new SimulatedUIWidget9X(simulator, this);
       break;
   }
+
   keymapHelp.append(*radioUiWidget->getKeymapHelp());
 
   ui->radioUiTab->layout()->addWidget(radioUiWidget);
