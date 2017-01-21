@@ -1105,6 +1105,10 @@ GeneralSettings::GeneralSettings()
     potConfig[1] = POT_MULTIPOS_SWITCH;
     potConfig[2] = POT_WITH_DETENT;
   }
+  else if (IS_TARANIS_X7(board)) {
+    potConfig[0] = POT_WITHOUT_DETENT;
+    potConfig[1] = POT_WITH_DETENT;
+  }
   else if (IS_TARANIS(board)) {
     potConfig[0] = POT_WITH_DETENT;
     potConfig[1] = POT_WITH_DETENT;
