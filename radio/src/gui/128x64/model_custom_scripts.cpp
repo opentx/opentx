@@ -52,8 +52,7 @@ enum menuModelCustomScriptItems {
   ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL,
 };
 
-#define SCRIPT_ONE_2ND_COLUMN_POS  (8*FW)
-#define SCRIPT_ONE_3RD_COLUMN_POS  (15*FW-3)
+#define SCRIPT_ONE_2ND_COLUMN_POS  (14*FW)
 
 void menuModelCustomScriptOne(event_t event)
 {
@@ -117,7 +116,7 @@ void menuModelCustomScriptOne(event_t event)
     else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount+scriptInputsOutputs[s_currIdx].outputsCount+1) {
       int outputIdx = i-(ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount)-2;
       lcdDrawSizedText(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].outputs[outputIdx].name, 10, 0);
-      lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[outputIdx].value), PREC1|RIGHT);
+      lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, calcRESXto1000(scriptInputsOutputs[s_currIdx].outputs[outputIdx].value), PREC1|LEFT);
     }
   }
 }
