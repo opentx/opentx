@@ -39,7 +39,6 @@ class ButtonsWidget : public QWidget
     {
     }
 
-
     virtual void setStyleSheet(const QString & sheet)
     {
       defaultStyleSheet = sheet;
@@ -130,10 +129,6 @@ class ButtonsWidget : public QWidget
       QPainter p(this);
       style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     }
-
-  signals:
-
-    //void buttonPressed(int button);
 
   protected:
 

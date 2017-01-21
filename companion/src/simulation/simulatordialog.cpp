@@ -127,10 +127,13 @@ void SimulatorDialog::setEepromData(const QByteArray & eeprom, bool fromFile)
   QString error;
 
   if (eeprom.isEmpty() && !radioDataPath.isEmpty()) {
-    SdcardFormat sdcard(radioDataPath);
-    ret = sdcard.load(simuData);
-    if (!ret)
-      error = sdcard.error();
+    // FIXME : need Storage classes to return error code, not just a message.
+    if (QDir(QString(radioDataPath).append("/RADIO")).exists()) {
+      SdcardFormat sdcard(radioDataPath);
+      ret = sdcard.load(simuData);
+      if (!ret)
+        error = sdcard.error();
+    }
   }
   else if (fromFile) {
     // Storage store = Storage(QString(eeprom));
@@ -142,10 +145,6 @@ void SimulatorDialog::setEepromData(const QByteArray & eeprom, bool fromFile)
     file.setFileName(QString(eeprom));
     if (file.exists() && file.open(QIODevice::ReadOnly) && !(ba = file.readAll()).isEmpty()) {
       ret = firmware->getEEpromInterface()->load(simuData, (uint8_t *)ba.constData(), getEEpromSize(m_board));
-    }
-    else {
-      ret = 0;
-      error = tr("File not found or not readable: %1").arg(QString(eeprom));
     }
   }
   else if (!eeprom.isEmpty()) {

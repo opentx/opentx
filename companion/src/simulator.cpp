@@ -168,12 +168,11 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   hl->addWidget(fwBtn, 0);
   form->addRow(label, fw);
 
-  bool show = usesCategorizedStorage(cbType->currentText());
-
   label = QObject::tr("Data Folder:");
   QLineEdit * fwFolder = new QLineEdit(opts.dataFolder, dialog);
   fwFolder->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-  fwFolder->setToolTip(QObject::tr("Directory containing RADIO and MODELS folders."));
+  fwFolder->setToolTip(QObject::tr("Directory containing RADIO and MODELS folders to use." \
+                                   "<br>New folder(s) with default radio/model will be created here if necessary."));
   QToolButton * fwFolderBtn = new QToolButton(dialog);
   fwFolderBtn->setText("...");
   fwFolderBtn->setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -185,8 +184,6 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   hlf->addWidget(fwFolder, 2);
   hlf->addWidget(fwFolderBtn, 0);
   form->addRow(label, fwf);
-  fwf->setVisible(show);
-  form->labelForField(fwf)->setVisible(show);
 
   label = QObject::tr("Date Source:");
   QRadioButton * dsfileBtn = new QRadioButton(QObject::tr("File"), dialog);
@@ -204,8 +201,6 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   btnlo->addWidget(dsdirBtn);
   btnlo->addStretch(1);
   form->addRow(label, btnwdgt);
-  btnwdgt->setVisible(show);
-  form->labelForField(btnwdgt)->setVisible(show);
 
   QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, dialog);
   form->addRow(&buttonBox);
@@ -215,8 +210,26 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   QObject::connect(&buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
   QObject::connect(&buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
 
+  auto changeContainerType = [cbType, btnwdgt, dsfileBtn, dsdirBtn, fw, fwf, form] (void)
+  {
+    bool show = usesCategorizedStorage(cbType->currentText());
+    //btnwdgt->setVisible(show);
+    //form->labelForField(btnwdgt)->setVisible(show);
+    fwf->setVisible(show);
+    form->labelForField(fwf)->setVisible(show);
+    // TODO : remove below once .otx support works and un-comment 2 lines above
+    fw->setVisible(!show);
+    form->labelForField(fw)->setVisible(!show);
+    dsdirBtn->setChecked(show);
+    dsfileBtn->setChecked(!show);
+    btnwdgt->setVisible(false);
+    form->labelForField(btnwdgt)->setVisible(false);
+  };
+
+  changeContainerType();
+
   // set new default radio type when profile choice changes
-  QObject::connect(cbProf, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbProf, cbType](int index) {
+  QObject::connect(cbProf, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbProf, cbType] (int index) {
     if (index < 0)
       return;
     SimulatorFactory * sf = getSimulatorFactory(g.profile[index].fwType());
@@ -229,20 +242,15 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   });
 
   // set new default firmware file when radio type changes
-  QObject::connect(cbType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbType, fwFile, btnwdgt, fwf, form](int index) {
+  QObject::connect(cbType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbType, fwFile, changeContainerType] (int index) {
     if (index < 0)
       return;
-    QString cbtxt = cbType->currentText();
-    bool show = usesCategorizedStorage(cbtxt);
-    fwFile->setText(radioEepromFileName(cbtxt));
-    btnwdgt->setVisible(show);
-    form->labelForField(btnwdgt)->setVisible(show);
-    fwf->setVisible(show);
-    form->labelForField(fwf)->setVisible(show);
+    fwFile->setText(radioEepromFileName(cbType->currentText()));
+    changeContainerType();
   });
 
   // connect button to file selector dialog
-  QObject::connect(fwBtn, &QToolButton::clicked, [dialog, fwFile, cbType, opts, dsfileBtn](bool) {
+  QObject::connect(fwBtn, &QToolButton::clicked, [dialog, fwFile, cbType, opts, dsfileBtn] (bool) {
     QString filter = QObject::tr((usesCategorizedStorage(cbType->currentText()) ? OTX_FILES_FILTER : EEPROM_FILES_FILTER));
     filter += QObject::tr("All files (*.*)");
     QString file = QFileDialog::getSaveFileName(dialog, QObject::tr("Select EEPROM image"), fwFile->text(),
