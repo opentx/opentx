@@ -841,7 +841,7 @@ class ModuleData {
     QString polarityToString() const { return ppm.pulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
 };
 
-#define CPN_MAX_SCRIPTS       7
+#define CPN_MAX_SCRIPTS       9
 #define CPN_MAX_SCRIPT_INPUTS 10
 class ScriptData {
   public:
