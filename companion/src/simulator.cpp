@@ -490,7 +490,6 @@ int main(int argc, char *argv[])
   if (simOptions.useFolder && !simOptions.dataFolder.isEmpty()) {
     dialog->setDataPath(simOptions.dataFolder);
     dialog->setEepromData();
-    qDebug() << "setEepromData()" << simOptions.dataFolder;
   }
   else {
     dialog->setEepromData(simOptions.eepromFileName.toLocal8Bit(), true);

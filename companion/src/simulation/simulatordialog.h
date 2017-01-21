@@ -29,24 +29,10 @@
 #include <QVector>
 #include <QMutex>
 
-#define TMR_OFF     0
-#define TMR_RUNNING 1
-#define TMR_BEEPING 2
-#define TMR_STOPPED 3
+#define SIMULATOR_FLAGS_NOTX              0x01  // simulating a single model from Companion
+#define SIMULATOR_FLAGS_STANDALONE        0x02  // started from stanalone simulator
 
 #define FLASH_DURATION 10
-
-#define SIMULATOR_FLAGS_NOTX              1
-#define SIMULATOR_FLAGS_STICK_MODE_LEFT   2
-#define SIMULATOR_FLAGS_S1                4
-#define SIMULATOR_FLAGS_S2                8
-#define SIMULATOR_FLAGS_S3               16
-#define SIMULATOR_FLAGS_S4               32  // reserved for the future
-#define SIMULATOR_FLAGS_S1_MULTI         64
-#define SIMULATOR_FLAGS_S2_MULTI        128
-#define SIMULATOR_FLAGS_S3_MULTI        256
-#define SIMULATOR_FLAGS_S4_MULTI        512  // reserved for the future
-#define SIMULATOR_FLAGS_STANDALONE     1024  // started from stanalone simulator
 
 #define CSWITCH_ON    "QLabel { background-color: #4CC417 }"
 #define CSWITCH_OFF   "QLabel { }"
@@ -178,99 +164,5 @@ class SimulatorDialog : public QDialog
 #endif
 
 };
-
-/*
-class SimulatorDialog9X: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialog9X(QWidget * parent, SimulatorInterface *simulator, SimulatorUiFlavor uiflavor, unsigned int flags=0);
-    virtual ~SimulatorDialog9X();
-
-  protected:
-    virtual void getValues();
-    void timedUpdate(unsigned loop);
-    void setLightOn(bool enable);
-    void updateBeepButton();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialog9X * ui;
-    static uint32_t switchstatus;
-    unsigned int backLight;
-    bool lightOn;
-    int beepShow;
-    int beepVal;
-
-};
-
-class SimulatorDialogTaranis: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialogTaranis(QWidget * parent, SimulatorInterface *simulator, SimulatorUiFlavor uiflavor, unsigned int flags=0);
-    virtual ~SimulatorDialogTaranis();
-
-  protected:
-    virtual void getValues();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialogTaranis * ui;
-    static uint32_t switchstatus;
-
-  private slots:
-    void resetSH();
-    void on_switchH_sliderReleased();
-};
-
-class SimulatorDialogFlamenco: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialogFlamenco(QWidget * parent, SimulatorInterface *simulator, SimulatorUiFlavor uiflavor, unsigned int flags=0);
-    virtual ~SimulatorDialogFlamenco();
-
-  protected:
-    virtual void getValues();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialogFlamenco * ui;
-    static uint32_t switchstatus;
-
-  private slots:
-    void resetSH();
-    void on_switchH_sliderReleased();
-};
-
-class SimulatorDialogHorus: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialogHorus(QWidget * parent, SimulatorInterface *simulator, SimulatorUiFlavor uiflavor, unsigned int flags=0);
-    virtual ~SimulatorDialogHorus();
-
-  protected:
-    virtual void getValues();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialogHorus * ui;
-    static uint32_t switchstatus;
-
-  private slots:
-    void resetSH();
-    void on_switchH_sliderReleased();
-};
-*/
 
 #endif // _SIMULATORDIALOG_H_

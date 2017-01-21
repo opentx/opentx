@@ -99,7 +99,7 @@ void SimulatedUIWidget9X::setLightOn(bool enable)
   }
   ui->top->setStyleSheet(bgfmt.arg("t").arg(bg));
   ui->bottom->setStyleSheet(bgfmt.arg("b").arg(bg));
-  ui->left->setStyleSheet(bgfmt.arg("dl").arg(bg));
-  ui->right->setStyleSheet(bgfmt.arg("dr").arg(bg));
+  ui->left->setStyleSheet(bgfmt.arg("l").arg(bg));
+  ui->right->setStyleSheet(bgfmt.arg("r").arg(bg));
 }
 

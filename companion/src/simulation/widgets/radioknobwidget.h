@@ -27,6 +27,7 @@
 #include <QDial>
 #include <QMouseEvent>
 #include <QDebug>
+#include <math.h>
 
 class RadioKnobWidget : public RadioWidget
 {
