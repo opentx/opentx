@@ -822,7 +822,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     tme = -tme;
   }
 
-  qr = div(tme, 60);
+  qr = div((int)tme, 60);
 
 #if defined(CPUARM)
   char separator = ':';
