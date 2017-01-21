@@ -30,10 +30,10 @@
 
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)              (IS_HORUS(board) ? 3 : (board == BOARD_TARANIS_X7 ? 2 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)))
-#define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (board == BOARD_TARANIS_X7 ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
+#define MAX_POTS(board, version)              (IS_HORUS(board) ? 3 : (IS_TARANIS_X7(board) ? 2 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)))
+#define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (IS_TARANIS_X7(board) ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS(board) ? 2 : 0)
-#define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (board == BOARD_TARANIS_X7 ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
+#define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (IS_TARANIS_X7(board) ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
 #define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X7(board) ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_HORUS_OR_TARANIS(board) ? 8*3 : 9)))
 #define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
@@ -2590,12 +2590,8 @@ class FrskyScreenField: public DataField {
             numbers.Append(new TelemetrySourceField<8>(screen.body.lines[i].source[j], board, version));
         }
       }
-
-      if (!IS_TARANIS(board)) {
-        if (IS_ARM(board))
-          numbers.Append(new SpareBitsField<12*8>());
-        else
-          numbers.Append(new SpareBitsField<4*8>());
+      for (unsigned i=numbers.size(); i<bars.size(); i++) {
+        numbers.Append(new SpareBitsField<1>());
       }
 
       if (IS_TARANIS(board) && version >= 217) {
