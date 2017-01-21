@@ -843,7 +843,6 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
 
     switch(board) {
-      case BOARD_TARANIS_X7   :
       case BOARD_TARANIS_X9D  :
       case BOARD_TARANIS_X9DP :
       case BOARD_TARANIS_X9E  :
@@ -852,6 +851,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       case BOARD_HORUS :
         uiflav = SIMULATOR_UI_X12;
         break;
+      case BOARD_TARANIS_X7   :  // TODO
       default:
         uiflav = SIMULATOR_UI_9X;
         break;
