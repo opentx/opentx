@@ -152,10 +152,10 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   contextMenu.exec(globalPos);
 }
 
-void MdiChild::setCurrentFileExtension(const QString & ext)
+void MdiChild::forceNewFilename(const QString & suffix, const QString & ext)
 {
   QFileInfo info(curFile);
-  curFile = info.path() + "/" + info.baseName() + ext;
+  curFile = info.path() + "/" + info.baseName() + suffix + ext;
 }
 
 void MdiChild::onFirmwareChanged()
@@ -168,11 +168,12 @@ void MdiChild::onFirmwareChanged()
 
 void MdiChild::convertStorage(BoardEnum from, BoardEnum to)
 {
-  QMessageBox::warning(this, "Companion", tr("Models and settings will be automatically converted"), QMessageBox::Ok);
+  QMessageBox::warning(this, "Companion", tr("Models and settings will be automatically converted.\nIf that is not what you intended, please close the file\nand choose the correct radio type/profile before reopening it."), QMessageBox::Ok);
   radioData.convert(from, to);
-  setCurrentFileExtension(".otx");
+  forceNewFilename("_converted", ".otx");
   initModelsList();
   fileChanged = true;
+  isUntitled = true;
   documentWasModified();
 }
 
