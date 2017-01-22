@@ -80,6 +80,7 @@ class SimulatorDialog : public QDialog
     void setRadioSettings(const GeneralSettings settings);
     void setEepromData(const QByteArray & eeprom = NULL, bool fromFile = false);
     void setRadioData(RadioData * radioData);
+    void setUiAreaStyle(const QString & style);
     void traceCallback(const char * text);
     void start();
 

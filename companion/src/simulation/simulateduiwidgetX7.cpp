@@ -35,7 +35,7 @@ SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, Simulato
 
   ui->leftbuttons->addArea(9, 154, 34, 177, "X7/left_scrnshot.png", m_screenshotAction);
 
-  m_backlightColors << QColor(192, 231, 212);  // X7 Blue
+  m_backlightColors << QColor(215, 243, 255);  // X7 Blue
   m_backlightColors << QColor(166,247,159);
   m_backlightColors << QColor(247,159,166);
   m_backlightColors << QColor(255,195,151);
@@ -43,6 +43,11 @@ SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, Simulato
 
   setLcd(ui->lcd);
   connectScrollActions();
+  // try to match the gradient on the white radio images.
+  m_simuDialog->setUiAreaStyle("background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, " \
+                             "stop:0 rgba(255, 255, 255, 255), " \
+                             "stop:0.757062 rgba(241, 238, 238, 255), " \
+                             "stop:1 rgba(247, 245, 245, 255));");
 }
 
 SimulatedUIWidgetX7::~SimulatedUIWidgetX7()

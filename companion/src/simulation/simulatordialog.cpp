@@ -176,6 +176,11 @@ void SimulatorDialog::setRadioData(RadioData * radioData)
   }
 }
 
+void SimulatorDialog::setUiAreaStyle(const QString & style)
+{
+  ui->radioUiTab->setStyleSheet(style);
+}
+
 void SimulatorDialog::traceCallback(const char * text)
 {
   // this function is called from other threads
@@ -218,7 +223,7 @@ void SimulatorDialog::setupUi()
   keymapHelp.append(*radioUiWidget->getKeymapHelp());
 
   ui->radioUiTab->layout()->addWidget(radioUiWidget);
-  ui->tabWidget->setTabText(0, windowName);
+  ui->tabWidget->setTabText(0, firmware->getName());
   ui->tabWidget->setFixedHeight(radioUiWidget->height() + ui->tabWidget->tabBar()->height() - 8);
 
   vJoyLeft = new VirtualJoystickWidget(this, 'L');
