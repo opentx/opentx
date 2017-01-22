@@ -79,7 +79,7 @@ enum MenuModelOutputsItems {
   #endif
 #endif
 #define LIMITS_CURVE_POS          17*FW+1
-#define LIMITS_MIN_MAX_OFFSET 100
+#define LIMITS_MIN_MAX_OFFSET 1000
 #define CONVERT_US_MIN_MAX(x) ((int16_t(x)*128)/25)
 #define MIN_MAX_ATTR          attr
 
@@ -362,7 +362,7 @@ void menuModelLimits(event_t event)
     uint8_t k = i+menuVerticalOffset;
     LcdFlags attr = (sub==MAX_OUTPUT_CHANNELS) ? INVERS : 0;
 
-    if (sub==k && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    if (sub==k && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_EDIT);
       POPUP_MENU_ADD_ITEM(STR_RESET);
