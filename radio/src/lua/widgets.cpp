@@ -59,6 +59,9 @@ ZoneOption * createOptionsArray(int reference)
   }
 
   ZoneOption * options = (ZoneOption *)malloc(sizeof(ZoneOption) * (count+1));
+  if (!options) {
+    return NULL;
+  }
 
   lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, reference);
   ZoneOption * option = options;
