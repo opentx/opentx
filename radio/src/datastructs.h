@@ -999,7 +999,6 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t mavbaud:3);
   SPLASH_MODE; /* 3bits */
   NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  HORUS_FIELD(int8_t splashSpares:3);
   AVR_FIELD(uint8_t blOffBright:4)
   AVR_FIELD(uint8_t blOnBright:4)
   ARM_FIELD(int8_t switchesDelay)
