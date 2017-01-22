@@ -59,6 +59,7 @@ class MdiChild : public QWidget
     void copyAvailable(bool val);
 
   protected:
+    void setCurrentFileExtension(const QString & ext);
     void closeEvent(QCloseEvent * event);
 
   protected slots:
