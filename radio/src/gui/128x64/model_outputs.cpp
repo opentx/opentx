@@ -50,15 +50,15 @@ enum MenuModelOutputsItems {
 #if defined(PPM_UNIT_US)
   #define LIMITS_MIN_POS          12*FW+1
 #else
-  #define LIMITS_MIN_POS          12*FW
+  #define LIMITS_MIN_POS          12*FW-2
 #endif
 #if defined(CPUARM)
-#define LIMITS_OFFSET_POS         7*FW+3
+#define LIMITS_OFFSET_POS         8*FW-1
 #else
 #define LIMITS_OFFSET_POS         8*FW
 #endif
 #if defined(PPM_LIMITS_SYMETRICAL)
-  #if defined(PPM_CENTER_ADJUSTABLE)
+  #if defined(PPM_CENTER_ADJUSTABLE)    // TODO remove #ifdefs
     #define LIMITS_MAX_POS        15*FW
     #define LIMITS_REVERT_POS     16*FW-3
     #define LIMITS_PPM_CENTER_POS 20*FW+1
@@ -411,11 +411,21 @@ void menuModelLimits(event_t event)
           break;
 
         case ITEM_OUTPUTS_MIN:
-          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), PREC1 | RIGHT);
+          if (ld->min <= 0) {
+            lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
+          }
+          else {
+            lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), PREC1 | RIGHT);
+          }
           break;
 
         case ITEM_OUTPUTS_MAX:
-          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), PREC1 | RIGHT);
+          if (ld->max >= 0) {
+            lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
+          }
+          else {
+            lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), PREC1 | RIGHT);
+          }
           break;
 
         case ITEM_OUTPUTS_DIRECTION:
