@@ -728,36 +728,22 @@ void MainWindow::loadBackup()
 void MainWindow::readEeprom()
 {
   BoardEnum board = getCurrentBoard();
-  if (board == BOARD_HORUS) {
-    QString radioPath = findMassstoragePath("RADIO", true);
-    qDebug() << "Searching for SD card, found" << radioPath;
-    if (radioPath.isEmpty()) {
-      qDebug() << "MainWindow::readEeprom(): Horus radio not found";
-      QMessageBox::critical(this, tr("Error"), tr("Unable to find Horus radio SD card!"));
-      return;
-    }
-    MdiChild *child = createMdiChild();
-    if (child->loadFile(radioPath)) {
-      statusBar()->showMessage(tr("Models and Settings read"), 2000);
-      child->show();
-    }
-  }
-  else {
-    QString tempFile;
-    if (IS_ARM(board))
-      tempFile = generateProcessUniqueTempFileName("temp.bin");
-    else
-      tempFile += generateProcessUniqueTempFileName("temp.hex");
+  QString tempFile;
+  if (IS_HORUS(board))
+    tempFile = generateProcessUniqueTempFileName("temp.otx");
+  else if (IS_ARM(board))
+    tempFile = generateProcessUniqueTempFileName("temp.bin");
+  else
+    tempFile = generateProcessUniqueTempFileName("temp.hex");
 
-    qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
+  qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
 
-    if (readEepromFromRadio(tempFile)) {
-      MdiChild * child = createMdiChild();
-      child->newFile();
-      child->loadFile(tempFile, false);
-      child->show();
-      qunlink(tempFile);
-    }
+  if (readEepromFromRadio(tempFile)) {
+    MdiChild * child = createMdiChild();
+    child->newFile();
+    child->loadFile(tempFile, false);
+    child->show();
+    qunlink(tempFile);
   }
 }
 

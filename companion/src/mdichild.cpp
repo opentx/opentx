@@ -487,8 +487,9 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
   }
 
   refresh(true);
-  if (resetCurrentFile)
+  if (resetCurrentFile) {
     setCurrentFile(filename);
+  }
 
   return true;
 }
@@ -588,7 +589,7 @@ bool MdiChild::maybeSave()
   return true;
 }
 
-void MdiChild::setCurrentFile(const QString &fileName)
+void MdiChild::setCurrentFile(const QString & fileName)
 {
   curFile = QFileInfo(fileName).canonicalFilePath();
   isUntitled = false;
