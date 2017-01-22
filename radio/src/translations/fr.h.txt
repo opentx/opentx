@@ -77,7 +77,7 @@
 #define TR_SWTYPES             "Rien\0 ""Levier""2-POS\0""3-POS\0"
 
 #define LEN_POTTYPES           TR("\013","\017")
-#define TR_POTTYPES            TR("Rien       ""Pot w. det ""Multipos   ""Pot        ", "Rien\0          ""Pot avec centre""Inter multi-pos""Potentiomètre\0")
+#define TR_POTTYPES            TR("Rien\0      ""Pot av. ctr""Multipos\0  ""Pot\0       ", "Rien\0          ""Pot avec centre""Inter multi-pos""Potentiomètre\0")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Rien\0 ""Slider"
@@ -790,7 +790,7 @@
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Ordre voies RX","Ordre des voies préféré")
 #define TR_STICKS              "Manches"
-#define TR_POTS                TR("Potentios", "Potentiomètres")
+#define TR_POTS                "Potentiomètres"
 #define TR_SWITCHES            "Inters"
 #define TR_SWITCHES_DELAY      "Délai inters son"
 #define TR_SLAVE               "Elève"
@@ -1107,9 +1107,9 @@
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Entrées"
 #define TR_OUTPUTS             "Sorties"
-#define TR_EEBACKUP            "\004[ENTER Long]: Sauvegarder l'EEPROM"
-#define TR_FACTORYRESET        "\016[MENU Long]: RAZ d'usine"
-#define TR_CONFIRMRESET        "Effacer TOUS modèles/réglages?"
+#define TR_EEBACKUP            TR("[ENTER Long]:Sauvegarde", "\004[ENTER Long]: Sauvegarder l'EEPROM")
+#define TR_FACTORYRESET        TR("\001[MENU Long]: RAZ d'usine", "\016[MENU Long]: RAZ d'usine")
+#define TR_CONFIRMRESET        TR("Effacer TOUT?","Effacer TOUS modèles/réglages?")
 #define TR_TO_MANY_LUA_SCRIPTS "Trop de scripts lua!"
 
 #if defined(TELEMETRY_MAVLINK)
