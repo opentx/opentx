@@ -94,9 +94,10 @@ BitmapBuffer * createFontCache(const uint8_t * font, LcdFlags fg, LcdFlags bg)
   coord_t height = *(((uint16_t *)font)+1);
 
   BitmapBuffer * buffer = new BitmapBuffer(BMP_RGB565, width, height);
-  buffer->clear(bg);
-  buffer->drawBitmapPattern(0, 0, font, fg);
-
+  if (buffer) {
+    buffer->clear(bg);
+    buffer->drawBitmapPattern(0, 0, font, fg);
+  }
   return buffer;
 }
 

@@ -74,12 +74,16 @@ class DefaultTheme: public Theme
       if (mask) {
         delete menuIconNormal[index];
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-        menuIconNormal[index]->clear(HEADER_BGCOLOR);
-        menuIconNormal[index]->drawMask(0, 0, mask, color);
+        if (menuIconNormal[index]) {
+          menuIconNormal[index]->clear(HEADER_BGCOLOR);
+          menuIconNormal[index]->drawMask(0, 0, mask, color);
+        }
         delete menuIconSelected[index];
         menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-        menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
-        menuIconSelected[index]->drawMask(0, 0, mask, color);
+        if (menuIconSelected[index]) {
+          menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
+          menuIconSelected[index]->drawMask(0, 0, mask, color);
+        }
         delete mask;
       }
     }
@@ -136,13 +140,17 @@ class DefaultTheme: public Theme
       BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
       BitmapBuffer * dot = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_dot.png"));
 
-      if (!currentMenuBackground) currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
-      currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-      currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
-      currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
-      currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
-      currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
-      currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
+      if (!currentMenuBackground) {
+        currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
+      }
+      if (currentMenuBackground) {
+        currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
+        currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
+        currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
+        currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
+      }
 
       delete topleftBitmap;
       topleftBitmap = BitmapBuffer::loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);

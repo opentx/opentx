@@ -504,8 +504,10 @@ BitmapBuffer * BitmapBuffer::loadMaskOnBackground(const char * filename, LcdFlag
   BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
   if (mask) {
     result = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-    result->clear(background);
-    result->drawMask(0, 0, mask, foreground);
+    if (result) {
+      result->clear(background);
+      result->drawMask(0, 0, mask, foreground);
+    }
     delete mask;
   }
   return result;

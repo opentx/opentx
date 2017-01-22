@@ -98,14 +98,18 @@ class BaseLayoutFactory: public LayoutFactory
     virtual Layout * create(Layout::PersistentData * persistentData) const
     {
       Layout * layout = new T(this, persistentData);
-      layout->create();
+      if (layout) {
+        layout->create();
+      }
       return layout;
     }
 
     virtual Layout * load(Layout::PersistentData * persistentData) const
     {
       Layout * layout = new T(this, persistentData);
-      layout->load();
+      if (layout) {
+        layout->load();
+      }
       return layout;
     }
 

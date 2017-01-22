@@ -507,6 +507,10 @@ void printTaskSwitchLog()
   serialPrint("Tasks switch log at %u [<time>, <task_id>]:", get_tmr10ms());
   uint32_t lastSwitchTime = 0;
   uint32_t * tsl = new uint32_t[DEBUG_TASKS_LOG_SIZE];
+  if (!tsl) {
+    serialPrint("Not enough memory");
+    return 0;
+  }
   memcpy(tsl, taskSwitchLog, sizeof(taskSwitchLog));
   uint32_t * p = tsl + taskSwitchLogPos;
   uint32_t * end = tsl + DEBUG_TASKS_LOG_SIZE;
