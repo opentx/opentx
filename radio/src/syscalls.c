@@ -54,17 +54,17 @@ extern void _exit( int status ) ;
 extern void _kill( int pid, int sig ) ;
 extern int _getpid ( void ) ;
 
-unsigned char *heap = (unsigned char *)&_end;
+unsigned char * heap = (unsigned char *)&_end;
 extern caddr_t _sbrk(int nbytes)
 {
   if (heap + nbytes < (unsigned char *)&_heap_end) {
-    unsigned char *prev_heap = heap;
+    unsigned char * prev_heap = heap;
     heap += nbytes;
-    return (caddr_t) prev_heap;
+    return (caddr_t)prev_heap;
   }
   else {
     errno = ENOMEM;
-    return ((void*)-1);
+    return ((void *)-1);
   }
 }
 

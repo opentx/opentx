@@ -133,6 +133,11 @@ int cliRead(const char ** argv)
   }
 
   uint8_t * buffer = (uint8_t*) malloc(bufferSize);
+  if (!buffer) {
+    serialPrint("Not enough memory");
+    return 0;
+  }
+
   FRESULT result = f_open(&file, argv[1], FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     free(buffer);
@@ -177,11 +182,15 @@ int cliReadSD(const char ** argv)
   }
 
   if (toInt(argv, 3, &bufferSectors) == 0 || bufferSectors < 0 ) {
-    serialPrint("%s: Invalid number of buffrer sectors \"%s\"", argv[0], argv[3]);
+    serialPrint("%s: Invalid number of buffer sectors \"%s\"", argv[0], argv[3]);
     return 0;
   }
 
   uint8_t * buffer = (uint8_t*) malloc(512*bufferSectors);
+  if (!buffer) {
+    serialPrint("Not enough memory");
+    return 0;
+  }
 
   uint32_t bytesRead = numberOfSectors * 512;
   tmr10ms_t start = get_tmr10ms();
@@ -228,15 +237,19 @@ int cliTestSD(const char ** argv)
   // get sector count
   uint32_t sectorCount;
   if (disk_ioctl(0, GET_SECTOR_COUNT, &sectorCount) != RES_OK) {
-      serialPrint("Error: can't read sector count");
-      return 0;
+    serialPrint("Error: can't read sector count");
+    return 0;
   }
   serialPrint("SD card has %u sectors", sectorCount);
 
   // read last 16 sectors one sector at the time
   serialPrint("Starting single sector read test, reading 16 sectors one by one");
   uint8_t * buffer = (uint8_t*) malloc(512);
-  for(uint32_t s = sectorCount - 16; s<sectorCount; ++s) {
+  if (!buffer) {
+    serialPrint("Not enough memory");
+    return 0;
+  }
+  for (uint32_t s = sectorCount - 16; s<sectorCount; ++s) {
     DRESULT res = __disk_read(0, buffer, s, 1);
     if (res != RES_OK) {
       serialPrint("sector %d read FAILED, err: %d", s, res);
@@ -249,9 +262,14 @@ int cliTestSD(const char ** argv)
   serialCrlf();
 
   // read last 16 sectors, two sectors at the time with a multi-block read
-  buffer = (uint8_t*) malloc(512*2);
+  buffer = (uint8_t *) malloc(512*2);
+  if (!buffer) {
+    serialPrint("Not enough memory");
+    return 0;
+  }
+
   serialPrint("Starting multiple sector read test, reading two sectors at the time");
-  for(uint32_t s = sectorCount - 16; s<sectorCount; s+=2) {
+  for (uint32_t s = sectorCount - 16; s<sectorCount; s+=2) {
     DRESULT res = __disk_read(0, buffer, s, 2);
     if (res != RES_OK) {
       serialPrint("sector %d-%d read FAILED, err: %d", s, s+1, res);
@@ -265,6 +283,11 @@ int cliTestSD(const char ** argv)
 
   // read last 16 sectors, all sectors with single multi-block read
   buffer = (uint8_t*) malloc(512*16);
+  if (!buffer) {
+    serialPrint("Not enough memory");
+    return 0;
+  }
+
   serialPrint("Starting multiple sector read test, reading 16 sectors at the time");
   DRESULT res = __disk_read(0, buffer, sectorCount-16, 16);
   if (res != RES_OK) {
