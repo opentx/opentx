@@ -4,6 +4,7 @@ set(simulation_SRCS
   simulatorinterface.cpp
   simulateduiwidget.cpp
   simulateduiwidget9X.cpp
+  simulateduiwidgetX7.cpp
   simulateduiwidgetX9.cpp
   simulateduiwidgetX12.cpp
   telemetrysimu.cpp
@@ -15,6 +16,7 @@ set(simulation_UIS
   debugoutput.ui
   simulatordialog.ui
   simulateduiwidget9X.ui
+  simulateduiwidgetX7.ui
   simulateduiwidgetX9.ui
   simulateduiwidgetX12.ui
   telemetrysimu.ui

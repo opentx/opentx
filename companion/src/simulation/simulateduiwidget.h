@@ -56,6 +56,8 @@ class SimulatedUIWidget : public QWidget
     QList<RadioUiAction *>  getActions()      const { return m_actions;   }
     RadioUiAction *         getRotEncAction() const { return m_rotEncClickAction; }
 
+    QPolygon polyArc(int ctrX, int ctrY, int radius, int startAngle = 0, int endAngle = 360, int step = 10);
+
   public slots:
 
     void timedUpdate(unsigned loop);
@@ -68,12 +70,14 @@ class SimulatedUIWidget : public QWidget
     void mouseReleaseEvent(QMouseEvent *event);
 
   protected:
+    void setLcd(LcdWidget * lcd);
     void connectScrollActions();
     virtual void setLightOn(bool enable) { }
 
     SimulatorInterface * m_simulator;
     SimulatorDialog * m_simuDialog;
     LcdWidget * m_lcd;
+    QVector<QColor> m_backlightColors;
     QVector<keymapHelp_t> m_keymapHelp;
     QList<RadioUiAction *> m_actions;
     RadioUiAction * m_scrollUpAction;
@@ -92,9 +96,9 @@ class SimulatedUIWidget : public QWidget
 // Each subclass is responsible for its own Ui
 namespace Ui {
   class SimulatedUIWidget9X;
+  class SimulatedUIWidgetX7;
   class SimulatedUIWidgetX9;
   class SimulatedUIWidgetX12;
-  //class SimulatedUIWidgetFlamenco;
 }
 
 class SimulatedUIWidget9X: public SimulatedUIWidget
@@ -113,6 +117,20 @@ class SimulatedUIWidget9X: public SimulatedUIWidget
   private:
     Ui::SimulatedUIWidget9X * ui;
 
+};
+
+class SimulatedUIWidgetX7: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetX7(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    virtual ~SimulatedUIWidgetX7();
+
+  protected:
+
+  private:
+    Ui::SimulatedUIWidgetX7 * ui;
 };
 
 class SimulatedUIWidgetX9: public SimulatedUIWidget
@@ -142,19 +160,5 @@ class SimulatedUIWidgetX12: public SimulatedUIWidget
   private:
     Ui::SimulatedUIWidgetX12 * ui;
 };
-
-//class SimulatedUIWidgetFlamenco: public SimulatedUIWidget
-//{
-//  Q_OBJECT
-
-//  public:
-//    explicit SimulatedUIWidgetFlamenco(SimulatorInterface *simulator, QWidget * parent = NULL);
-//    virtual ~SimulatedUIWidgetFlamenco();
-
-//  protected:
-
-//  private:
-//    Ui::SimulatedUIWidgetFlamenco * ui;
-//};
 
 #endif // SIMULATEDUIWIDGET_H

@@ -32,20 +32,25 @@ SimulatedUIWidget9X::SimulatedUIWidget9X(SimulatorInterface * simulator, Simulat
 
   // add actions in order of appearance on the help menu
 
+  int x = 68, y = 91, oR = 63;
+
+  polygon << QPoint(x, y) << polyArc(x, y, oR, -45, 45);
   act = addRadioUiAction(3, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, tr("UP/PG-UP"), tr("[ UP ]"));
-  polygon.setPoints(6, 68, 83, 28, 45, 51, 32, 83, 32, 105, 45, 68, 83);
   ui->leftbuttons->addArea(polygon, "9X/9xcursup.png", act);
 
+  polygon.clear();
+  polygon << QPoint(x, y) << polyArc(x, y, oR, 135, 225);
   act = addRadioUiAction(2, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, tr("DN/PG-DN"), tr("[ DN ]"));
-  polygon.setPoints(6, 68, 98, 28, 137, 51, 151, 83, 151, 105, 137, 68, 98);
   ui->leftbuttons->addArea(polygon, "9X/9xcursdown.png", act);
 
+  polygon.clear();
+  polygon << QPoint(x, y) << polyArc(x, y, oR, 45, 135);
   act = addRadioUiAction(4, QList<int>() << Qt::Key_Right << Qt::Key_Plus << Qt::Key_Equal, tr("RIGHT/+"), tr("[ + ]"));
-  polygon.setPoints(6, 74, 90, 114, 51, 127, 80, 127, 106, 114, 130, 74, 90);
   ui->leftbuttons->addArea(polygon, "9X/9xcursmin.png", act);
 
+  polygon.clear();
+  polygon << QPoint(x, y) << polyArc(x, y, oR, 225, 315);
   act = addRadioUiAction(5, QList<int>() << Qt::Key_Left << Qt::Key_Minus, tr("LEFT/-"), tr("[ - ]"));
-  polygon.setPoints(6, 80, 90, 20, 51, 7, 80, 7, 106, 20, 130, 80, 90);
   ui->leftbuttons->addArea(polygon, "9X/9xcursplus.png", act);
 
   act = addRadioUiAction(0, QList<int>() << Qt::Key_Enter << Qt::Key_Return, tr("ENTER/MOUSE-MID"), tr("[ MENU ]"));
@@ -59,29 +64,13 @@ SimulatedUIWidget9X::SimulatedUIWidget9X(SimulatorInterface * simulator, Simulat
 
   m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),   tr("[ UP ]/[ DN ] or Rotary Sel.")));
 
-  m_lcd = ui->lcd;
-  ui->lcd->setData(simulator->getLcd(), 128, 64, 1);
-  m_backLight = g.backLight();
-  if (m_backLight > 4)
-    m_backLight = 0;
-  switch (m_backLight) {
-    case 1:
-      ui->lcd->setBackgroundColor(166,247,159);
-      break;
-    case 2:
-      ui->lcd->setBackgroundColor(247,159,166);
-      break;
-    case 3:
-      ui->lcd->setBackgroundColor(255,195,151);
-      break;
-    case 4:
-      ui->lcd->setBackgroundColor(247,242,159);
-      break;
-    default:
-      ui->lcd->setBackgroundColor(159,165,247);
-      break;
-  }
+  m_backlightColors << QColor(159,165,247);
+  m_backlightColors << QColor(166,247,159);
+  m_backlightColors << QColor(247,159,166);
+  m_backlightColors << QColor(255,195,151);
+  m_backlightColors << QColor(247,242,159);
 
+  setLcd(ui->lcd);
 }
 
 SimulatedUIWidget9X::~SimulatedUIWidget9X()
@@ -94,7 +83,7 @@ void SimulatedUIWidget9X::setLightOn(bool enable)
   static QStringList list = QStringList() << "bl" << "gr" << "rd" << "or" << "yl";
   static QString bgfmt = "background:url(:/images/simulator/9X/9xd%1%2.png);";
   QString bg = "";
-  if (enable) {
+  if (enable && (int)m_backLight < list.size()) {
     bg = "-" + list[m_backLight];
   }
   ui->top->setStyleSheet(bgfmt.arg("t").arg(bg));

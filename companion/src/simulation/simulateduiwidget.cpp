@@ -71,6 +71,18 @@ RadioUiAction * SimulatedUIWidget::addRadioUiAction(int index, QList<int> keys, 
   return addRadioUiAction(new RadioUiAction(index, keys, m_simuDialog, text, descript));
 }
 
+QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAngle, int endAngle, int step)
+{
+  QPolygon polygon;
+  float st = qDegreesToRadians((float)startAngle - 90.0f);
+  float en = qDegreesToRadians((float)endAngle - 90.0f);
+  float sp = qDegreesToRadians((float)step);
+  for ( ; st < en; st += sp) {
+    polygon << QPoint((int)(ctrX + radius * cosf(st)), (int)(ctrY + radius * sinf(st)));
+  }
+  return polygon;
+}
+
 void SimulatedUIWidget::timedUpdate(unsigned loop)
 {
   if (m_lcd->isVisible()) {
@@ -106,7 +118,15 @@ void SimulatedUIWidget::saveScreenshot(int idx)
   Q_UNUSED(idx)
   QString fileName = "";
   if (!g.snapToClpbrd()) {
-    fileName = QString("screenshot_%1.png").arg(QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
+    QString path = g.snapshotDir();
+    if (path.isEmpty())
+      path = "./";
+    QDir dir(path);
+    if (!dir.exists() || !dir.isReadable()) {
+      m_simuDialog->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
+      return;
+    }
+    fileName += QString("%1screenshot_%2.png").arg(dir.absolutePath(), QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
   }
   m_lcd->makeScreenshot(fileName);
 }
@@ -139,6 +159,22 @@ void SimulatedUIWidget::mouseReleaseEvent(QMouseEvent * event)
     m_rotEncClickAction->trigger(false);
   else
     event->ignore();
+}
+
+void SimulatedUIWidget::setLcd(LcdWidget * lcd)
+{
+  m_lcd = lcd;
+  Firmware * firmware = getCurrentFirmware();
+  m_lcd->setData(m_simulator->getLcd(), firmware->getCapability(LcdWidth), firmware->getCapability(LcdHeight), firmware->getCapability(LcdDepth));
+
+  if (!m_backlightColors.size())
+    return;
+
+  m_backLight = g.backLight();
+  if ((int)m_backLight >= m_backlightColors.size())
+    m_backLight = 0;
+
+  m_lcd->setBackgroundColor(m_backlightColors.at(m_backLight));
 }
 
 void SimulatedUIWidget::connectScrollActions()

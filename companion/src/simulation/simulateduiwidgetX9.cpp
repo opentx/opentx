@@ -73,10 +73,13 @@ SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, Simulato
   if (!rotaryOnly)
     m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("[ + ]/[ - ]")));
 
-  m_lcd = ui->lcd;
-  m_lcd->setData(simulator->getLcd(), 212, 64, 4);
-  m_lcd->setBackgroundColor(47, 123, 227);
+  m_backlightColors << QColor(47, 123, 227);  // Taranis Blue
+  m_backlightColors << QColor(166,247,159);
+  m_backlightColors << QColor(247,159,166);
+  m_backlightColors << QColor(255,195,151);
+  m_backlightColors << QColor(247,242,159);
 
+  setLcd(ui->lcd);
 }
 
 SimulatedUIWidgetX9::~SimulatedUIWidgetX9()

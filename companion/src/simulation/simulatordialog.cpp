@@ -199,8 +199,8 @@ void SimulatorDialog::setupUi()
   setWindowTitle(windowName);
 
   switch(m_board) {
-    case BOARD_TARANIS_X7   :  // TODO
-      radioUiWidget = new SimulatedUIWidget9X(simulator, this);
+    case BOARD_TARANIS_X7 :
+      radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
       break;
     case BOARD_TARANIS_X9D  :
     case BOARD_TARANIS_X9DP :

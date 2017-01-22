@@ -39,7 +39,8 @@ class LcdWidget : public QWidget
       QWidget(parent),
       lcdBuf(NULL),
       previousBuf(NULL),
-      lightEnable(false)
+      lightEnable(false),
+      bgDefaultColor(QColor(198, 208, 199))
     {
     }
 
@@ -64,11 +65,16 @@ class LcdWidget : public QWidget
       memset(previousBuf, 0, lcdSize);
     }
 
-    void setBackgroundColor(int red, int green, int blue)
+    void setBgDefaultColor(QColor color)
     {
-      _r = red;
-      _g = green;
-      _b = blue;
+      bgDefaultColor = color;
+    }
+
+    void setBackgroundColor(QColor color)
+    {
+      _r = color.red();
+      _g = color.green();
+      _b = color.blue();
     }
 
     void makeScreenshot(const QString & fileName)
@@ -85,18 +91,13 @@ class LcdWidget : public QWidget
       QPixmap buffer(width, height);
       QPainter p(&buffer);
       doPaint(p);
-      bool toclipboard = g.snapToClpbrd();
-      if (toclipboard) {
+      if (fileName.isEmpty()) {
+        qDebug() << "Screenshot saved to clipboard";
         QApplication::clipboard()->setPixmap( buffer );
       }
       else {
-        QString path = g.snapshotDir();
-        if (path.isEmpty() || !QDir(path).exists()) {
-          path = ".";
-        }
-        path.append(QDir::separator() + fileName);
-        qDebug() << "Screenshot" << path;
-        buffer.toImage().save(path);
+        qDebug() << "Screenshot" << fileName;
+        buffer.toImage().save(fileName);
       }
     }
 
@@ -121,6 +122,7 @@ class LcdWidget : public QWidget
 
     bool lightEnable;
     int _r, _g, _b;
+    QColor bgDefaultColor;
 
     inline void doPaint(QPainter & p)
     {
@@ -150,7 +152,7 @@ class LcdWidget : public QWidget
         if (lightEnable)
           rgb = qRgb(_r, _g, _b);
         else
-          rgb = qRgb(161, 161, 161);
+          rgb = bgDefaultColor.rgba();
 
         p.setBackground(QBrush(rgb));
         p.eraseRect(0, 0, 2*lcdWidth, 2*lcdHeight);
