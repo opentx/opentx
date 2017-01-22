@@ -34,6 +34,7 @@
 #define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (IS_TARANIS_X7(board) ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS(board) ? 2 : 0)
 #define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (IS_TARANIS_X7(board) ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
+#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)
 #define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X7(board) ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_HORUS_OR_TARANIS(board) ? 8*3 : 9)))
 #define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
@@ -3751,8 +3752,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
       internalField.Append(new CharField<17>(generalData.currModelFilename, true, "Current model filename"));
     }
     else if (IS_TARANIS(board) && version >= 217) {
-      for (int i=0; i<MAX_SWITCHES(board, version); i++) {
-        internalField.Append(new UnsignedField<2>(generalData.switchConfig[i]));
+      for (int i=0; i<MAX_SWITCH_SLOTS(board, version); i++) {
+        if (i < MAX_SWITCHES(board, version))
+          internalField.Append(new UnsignedField<2>(generalData.switchConfig[i]));
+        else
+          internalField.Append(new SpareBitsField<2>());
       }
       if (IS_TARANIS_X9E(board)) {
         internalField.Append(new SpareBitsField<64-2*18>());
