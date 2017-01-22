@@ -589,12 +589,24 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     QDir qd(path);
     if (qd.exists()) {
       QStringList filters;
-      filters << "*.bmp" << "*.bmp";
-      foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
-        QFileInfo fi(file);
-        QString temp = fi.completeBaseName();
-        if (!items.contains(temp) && temp.length() <= 10+4) {
-          items.append(temp);
+      if(IS_HORUS(board)) {
+        filters << "*.bmp" << "*.jpg" << "*.png";
+        foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
+          QFileInfo fi(file);
+          QString temp = fi.fileName();
+          if (!items.contains(temp) && temp.length() <= 6+4) {
+            items.append(temp);
+          }
+        }  
+      }     
+      else {
+        filters << "*.bmp";
+        foreach (QString file, qd.entryList(filters, QDir::Files)) {
+          QFileInfo fi(file);
+          QString temp = fi.completeBaseName();
+          if (!items.contains(temp) && temp.length() <= 10+4) {
+            items.append(temp);
+          }
         }
       }
     }
@@ -602,22 +614,30 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
       items.append(model.bitmap);
     }
     items.sort();
-    foreach ( QString file, items ) {
+    foreach (QString file, items) {
       ui->image->addItem(file);
       if (file == model.bitmap) {
         ui->image->setCurrentIndex(ui->image->count()-1);
         QString fileName = path;
         fileName.append(model.bitmap);
-        fileName.append(".bmp");
+        if (!IS_HORUS(board))
+          fileName.append(".bmp");
         QImage image(fileName);
-        if (image.isNull()) {
+        if (image.isNull() && !IS_HORUS(board)) {
           fileName = path;
           fileName.append(model.bitmap);
           fileName.append(".BMP");
           image.load(fileName);
         }
         if (!image.isNull()) {
-          ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled( 64,32)));;
+          if (IS_HORUS(board)) {
+            ui->imagePreview->setFixedSize(QSize(192, 114));
+            ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(192, 114)));
+          }
+          else {
+            ui->imagePreview->setFixedSize(QSize(64, 32));
+            ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(64, 32)));
+          }
         }
       }
     }
@@ -835,6 +855,7 @@ void SetupPanel::on_name_editingFinished()
 void SetupPanel::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
+    BoardEnum board = firmware->getBoard();
     strncpy(model->bitmap, ui->image->currentText().toLatin1(), 10);
     QString path = g.profile[g.id()].sdPath();
     path.append("/IMAGES/");
@@ -842,16 +863,24 @@ void SetupPanel::on_image_currentIndexChanged(int index)
     if (qd.exists()) {
       QString fileName=path;
       fileName.append(model->bitmap);
-      fileName.append(".bmp");
+      if (!IS_HORUS(board))
+        fileName.append(".bmp");
       QImage image(fileName);
-      if (image.isNull()) {
+      if (image.isNull() && !IS_HORUS(board)) {
         fileName=path;
         fileName.append(model->bitmap);
         fileName.append(".BMP");
         image.load(fileName);
       }
       if (!image.isNull()) {
-        ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(64, 32)));;
+        if (IS_HORUS(board)) {
+          ui->imagePreview->setFixedSize(QSize(192, 114));
+          ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(192, 114)));
+        }
+        else {
+          ui->imagePreview->setFixedSize(QSize(64, 32));
+          ui->imagePreview->setPixmap(QPixmap::fromImage(image.scaled(64, 32)));
+        }
       }
       else {
         ui->imagePreview->clear();
