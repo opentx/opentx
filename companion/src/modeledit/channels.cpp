@@ -45,7 +45,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
     spinbox->setSuffix("%");
   }
 
-  if (HAS_LARGE_LCD(board) || deflt == 0 /*it's the offset*/) {
+  if (IS_ARM(board) || deflt == 0 /*it's the offset*/) {
     spinbox->setDecimals(1);
   }
   else {

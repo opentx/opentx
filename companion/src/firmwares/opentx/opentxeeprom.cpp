@@ -1456,14 +1456,8 @@ class LimitField: public StructField {
       StructField("Limit")
     {
       if (IS_ARM(board) && version >= 218) {
-        if (HAS_LARGE_LCD(board)) {
-          Append(new ConversionField< SignedField<11> >(limit.min, exportLimitValue<1000, 1024>, importLimitValue<1000, 1024>));
-          Append(new ConversionField< SignedField<11> >(limit.max, exportLimitValue<-1000, 1024>, importLimitValue<-1000, 1024>));
-        }
-        else {
-          Append(new ConversionField< SignedField<11> >(limit.min, +100, 10));
-          Append(new ConversionField< SignedField<11> >(limit.max, -100, 10));
-        }
+        Append(new ConversionField< SignedField<11> >(limit.min, exportLimitValue<1000, 1024>, importLimitValue<1000, 1024>));
+        Append(new ConversionField< SignedField<11> >(limit.max, exportLimitValue<-1000, 1024>, importLimitValue<-1000, 1024>));
         Append(new SignedField<10>(limit.ppmCenter));
         Append(new ConversionField< SignedField<11> >(limit.offset, exportLimitValue<0, 1024>, importLimitValue<0, 1024>));
         Append(new BoolField<1>(limit.symetrical));
