@@ -3595,11 +3595,15 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum bo
   }
   if (version >= 216 && IS_TARANIS(board))
     internalField.Append(new SignedField<3>(generalData.splashDuration));
-  else if (version >= 213 || (!IS_ARM(board) && version >= 212))
+  else if ((version >= 213 && !IS_HORUS(board)) || (!IS_ARM(board) && version >= 212))
     internalField.Append(new UnsignedField<3>(generalData.splashMode)); // TODO
-  else
+  else if (!IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>());
+  
   internalField.Append(new SignedField<2>((int &)generalData.hapticMode));
+
+  if (IS_HORUS(board))
+    internalField.Append(new SpareBitsField<3>());
 
   if (IS_ARM(board))
     internalField.Append(new SignedField<8>(generalData.switchesDelay));
