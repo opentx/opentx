@@ -78,8 +78,10 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   ui(new Ui::Hardware)
 {
   ui->setupUi(this);
+  
+  BoardEnum board = firmware->getBoard();
 
-  if (IS_STM32(firmware->getBoard())) {
+  if (IS_STM32(board)) {
     ui->rudName->setField(generalSettings.stickName[0], 3, this);
     ui->eleName->setField(generalSettings.stickName[1], 3, this);
     ui->thrName->setField(generalSettings.stickName[2], 3, this);
@@ -125,7 +127,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchConfig(16, ui->sqLabel, ui->sqName, ui->sqType);
   setupSwitchConfig(17, ui->srLabel, ui->srName, ui->srType);
 
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(board) && !IS_TARANIS_X7(board)) {
     ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);
   }
   else {
@@ -133,12 +135,12 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->serialPortLabel->hide();
   }
 
-  if (!IS_SKY9X(firmware->getBoard())) {
+  if (!IS_SKY9X(board)) {
     ui->txCurrentCalibration->hide();
     ui->txCurrentCalibrationLabel->hide();
   }
 
-  if (IS_TARANIS_X9E(firmware->getBoard())) {
+  if (IS_TARANIS_X9E(board) || IS_HORUS(board)) {
     ui->bluetoothEnable->setChecked(generalSettings.bluetoothEnable);
     ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
   }
@@ -146,6 +148,13 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->bluetoothLabel->hide();
     ui->bluetoothEnable->hide();
     ui->bluetoothName->hide();
+  }
+  
+  if (IS_HORUS_OR_TARANIS(board)) {
+    ui->filterEnable->setChecked(!generalSettings.jitterFilter);
+  }
+  else {
+    ui->filterEnable->hide();
   }
 
   disableMouseScrolling();
@@ -156,6 +165,11 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
 HardwarePanel::~HardwarePanel()
 {
   delete ui;
+}
+
+void HardwarePanel::on_filterEnable_stateChanged()
+{
+  generalSettings.jitterFilter = !ui->filterEnable->isChecked();
 }
 
 void HardwarePanel::on_PPM_MultiplierDSB_editingFinished()

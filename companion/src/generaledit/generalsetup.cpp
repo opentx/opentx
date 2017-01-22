@@ -145,7 +145,7 @@ ui(new Ui::GeneralSetup)
   ui->gpsFormatCB->setCurrentIndex(generalSettings.gpsFormat);
   ui->timezoneSB->setValue(generalSettings.timezone);
 
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     ui->adjustRTC->setChecked(generalSettings.adjustRTC);
   }
   else {
@@ -171,6 +171,12 @@ ui(new Ui::GeneralSetup)
     ui->BLBright_SB->hide();
     ui->BLBright_SB->setDisabled(true);
     ui->label_BLBright->hide();
+  }
+  
+  if (!IS_HORUS(firmware->getBoard())) {
+    ui->OFFBright_SB->hide();
+    ui->OFFBright_SB->setDisabled(true);
+    ui->label_OFFBright->hide();
   }
 
   if (!firmware->getCapability(SoundMod)) {
@@ -373,6 +379,7 @@ void GeneralSetupPanel::setValues()
     ui->hapticLengthCB->hide();
   }
   ui->BLBright_SB->setValue(100-generalSettings.backlightBright);
+  ui->OFFBright_SB->setValue(generalSettings.backlightOffBright);
   ui->soundModeCB->setCurrentIndex(generalSettings.speakerMode);
   ui->volume_SB->setValue(generalSettings.speakerVolume);
   ui->beeperlenCB->setCurrentIndex(generalSettings.beeperLength+2);
@@ -483,6 +490,12 @@ void GeneralSetupPanel::on_varioR0_SB_editingFinished()
 void GeneralSetupPanel::on_BLBright_SB_editingFinished()
 {
   generalSettings.backlightBright = 100 - ui->BLBright_SB->value();
+  emit modified();
+}
+
+void GeneralSetupPanel::on_OFFBright_SB_editingFinished()
+{
+  generalSettings.backlightOffBright = ui->OFFBright_SB->value();
   emit modified();
 }
 

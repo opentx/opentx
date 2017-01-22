@@ -49,6 +49,7 @@ class HardwarePanel : public GeneralPanel
 
     void on_txCurrentHardware_editingFinished();
     void on_bluetoothEnable_stateChanged(int);
+    void on_filterEnable_stateChanged();
 
     void on_serialPortMode_currentIndexChanged(int index);
 
