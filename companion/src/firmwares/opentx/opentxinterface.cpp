@@ -1157,7 +1157,7 @@ QString OpenTxFirmware::getFirmwareUrl()
 {
   QString url = getFirmwareBaseUrl();
   QByteArray data = QUrl::toPercentEncoding(id);
-  
+
   if (IS_ARM(board))
     url.append(QString("/getfw.php?fw=%1.bin").arg((QString)data));
   else
@@ -1261,7 +1261,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
-  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
@@ -1410,7 +1409,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
-  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
@@ -1431,7 +1429,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
-  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
