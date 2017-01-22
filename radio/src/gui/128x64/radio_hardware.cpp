@@ -115,8 +115,8 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_MAX
 };
 
-#define POTS_ROWS      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
-#define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#define POTS_ROWS      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCH_TYPE_MAX(sw)   ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #define HW_SETTINGS_COLUMN 30
 
@@ -169,7 +169,7 @@ void menuRadioHardware(event_t event)
         else
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
-        potType = editChoice(HW_SETTINGS_COLUMN+3*FW, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
+        potType = editChoice(HW_SETTINGS_COLUMN+5*FW, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
