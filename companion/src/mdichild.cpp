@@ -152,13 +152,29 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   contextMenu.exec(globalPos);
 }
 
+void MdiChild::setCurrentFileExtension(const QString & ext)
+{
+  QFileInfo info(curFile);
+  curFile = info.path() + "/" + info.baseName() + ext;
+}
+
 void MdiChild::onFirmwareChanged()
 {
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
+  BoardEnum board = getCurrentBoard();
+  QFileInfo info(curFile);
+  if (IS_SKY9X(board)) {
+    setCurrentFileExtension(".bin");
+  }
+  else if (IS_HORUS(board)) {
+    setCurrentFileExtension(".otx");
+  }
   radioData.convert(previous, firmware);
   initModelsList();
+  fileChanged = true;
+  documentWasModified();
 }
 
 void MdiChild::initModelsList()
@@ -535,21 +551,19 @@ bool MdiChild::saveAs(bool isNew)
 
 bool MdiChild::saveFile(const QString & filename, bool setCurrent)
 {
-  BoardEnum board = getCurrentBoard();
-  QString path = filename;
-  if (IS_SKY9X(board)) {
-    path.replace(".eepe", ".bin");
-  }
-
   radioData.fixModelFilenames();
-  Storage storage(path);
+  Storage storage(filename);
   bool result = storage.write(radioData);
-
-  if (result && setCurrent) {
-    setCurrentFile(path);
+  if (!result) {
+    QMessageBox::warning(this, "Companion", tr("Cannot save file"), QMessageBox::Ok);
+    return false;
   }
 
-  return result;
+  if (setCurrent) {
+    setCurrentFile(filename);
+  }
+
+  return true;
 }
 
 QString MdiChild::userFriendlyCurrentFile() const
