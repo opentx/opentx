@@ -21,8 +21,13 @@
 #include "opentx.h"
 
 #define BIGSIZE       DBLSIZE
-#define LBOX_CENTERX  (LCD_W/4 + 10)
-#define RBOX_CENTERX  (3*LCD_W/4 - 10)
+#if defined (PCBX7)
+  #define LBOX_CENTERX  (LCD_W/4 + 14)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 13)
+#else
+  #define LBOX_CENTERX  (LCD_W/4 + 10)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 10)
+#endif
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
 #define PHASE_X       (6*FW-1)
@@ -513,7 +518,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
           if (i >= NUM_SWITCHES/2) {
-            x = 17*FW-1;
+            x = 16*FW+1;
             y -= 3*FH;
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
