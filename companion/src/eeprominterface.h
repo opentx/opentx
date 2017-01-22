@@ -161,6 +161,7 @@ enum Capability {
   HasTopLcd,
   GlobalFunctions,
   VirtualInputs,
+  InputsLength,
   TrainerInputs,
   RtcTime,
   SportTelemetry,

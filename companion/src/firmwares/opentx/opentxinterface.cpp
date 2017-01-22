@@ -714,6 +714,8 @@ int OpenTxFirmware::getCapability(Capability capability)
       return IS_ARM(board) ? 64 : 0;
     case VirtualInputs:
       return IS_ARM(board) ? 64 : 0;
+    case InputsLength:
+      return HAS_LARGE_LCD(board) ? 4 : 3;
     case TrainerInputs:
       return IS_ARM(board) ? 16 : 8;
     case RtcTime:
