@@ -177,7 +177,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline void drawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
     {
-      if (h==0 || w==0) return;
+      if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
       if (w<0) { x+=w; w=-w; }
       DMAFillRect(data, width, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
@@ -219,7 +219,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     template<class T>
     void drawBitmap(coord_t x, coord_t y, const T * bmp, coord_t srcx=0, coord_t srcy=0, coord_t w=0, coord_t h=0, float scale=0)
     {
-      if (!bmp || x >= width || y >= height)
+      if (!data || !bmp || x >= width || y >= height)
         return;
   
       coord_t srcw = bmp->getWidth();

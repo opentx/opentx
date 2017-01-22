@@ -617,7 +617,7 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
   }
 
   BitmapBuffer * bmp = new BitmapBuffer(BMP_RGB565, w, h);
-  if (bmp == NULL) {
+  if (bmp == NULL || bmp->getData() == NULL) {
     f_close(&imgFile);
     return NULL;
   }
