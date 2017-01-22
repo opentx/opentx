@@ -60,7 +60,7 @@ class MdiChild : public QWidget
 
   protected:
     void convertStorage(BoardEnum from, BoardEnum to);
-    void setCurrentFileExtension(const QString & ext);
+    void forceNewFilename(const QString & suffix, const QString & ext);
     void closeEvent(QCloseEvent * event);
 
   protected slots:
