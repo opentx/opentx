@@ -75,6 +75,7 @@ bool Storage::load(RadioData & radioData)
   foreach(StorageFactory * factory, registeredStorageFactories) {
     StorageFormat * format = factory->instance(filename);
     if (format->load(radioData)) {
+      board = format->getBoard();
       setWarning(format->warning());
       return true;
     }

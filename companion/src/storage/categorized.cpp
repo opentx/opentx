@@ -29,9 +29,12 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
     return false;
   }
 
-  if (!loadRadioSettingsFromByteArray(radioData.generalSettings, radioSettingsBuffer)) {
+  OpenTxEepromInterface * loadInterface = loadRadioSettingsFromByteArray(radioData.generalSettings, radioSettingsBuffer);
+  if (!loadInterface) {
     return false;
   }
+
+  board = loadInterface->getBoard();
   
   QByteArray modelsListBuffer;
   if (!loadFile(modelsListBuffer, "RADIO/models.txt")) {
