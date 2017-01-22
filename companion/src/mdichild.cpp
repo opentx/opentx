@@ -168,7 +168,7 @@ void MdiChild::onFirmwareChanged()
 
 void MdiChild::convertStorage(BoardEnum from, BoardEnum to)
 {
-  QMessageBox::warning(this, "Companion", tr("Models and settings will be automatically converted"), QMessageBox::Ok);
+  QMessageBox::warning(this, "Companion", tr("Models and settings will be automatically converted.\nIf that is not what you intended, please close the file\nand choose the correct radio type/profile before reopening it."), QMessageBox::Ok);
   radioData.convert(from, to);
   forceNewFilename("_converted", ".otx");
   initModelsList();
