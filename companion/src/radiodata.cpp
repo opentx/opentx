@@ -33,6 +33,61 @@ void GeneralSettings::convert(BoardEnum before, BoardEnum after)
   // Here we can add explicit conversions when moving from one board to another
 }
 
+void RadioData::setCurrentModel(unsigned int index)
+{
+  generalSettings.currModelIndex = index;
+  strcpy(generalSettings.currModelFilename, models[index].filename);
+}
+
+void RadioData::fixModelFilename(unsigned int index)
+{
+  ModelData & model = models[index];
+  QString filename(model.filename);
+  bool ok = filename.endsWith(".bin");
+  if (ok) {
+    if (filename.startsWith("model") && filename.mid(5, filename.length()-9).toInt() > 0) {
+      ok = false;
+    }
+  }
+  if (ok) {
+    for (unsigned i=0; i<index; i++) {
+      if (strcmp(models[i].filename, model.filename) == 0) {
+        ok = false;
+        break;
+      }
+    }
+  }
+  if (!ok) {
+    sprintf(model.filename, "model%d.bin", index+1);
+  }
+}
+
+void RadioData::fixModelFilenames()
+{
+  for (unsigned int i=0; i<models.size(); i++) {
+    fixModelFilename(i);
+  }
+  setCurrentModel(generalSettings.currModelIndex);
+}
+
+QString RadioData::getNextModelFilename()
+{
+  char filename[sizeof(ModelData::filename)];
+  int index = 0;
+  bool found = true;
+  while (found) {
+    sprintf(filename, "model%d.bin", ++index);
+    found = false;
+    for (unsigned int i=0; i<models.size(); i++) {
+      if (strcmp(filename, models[i].filename) == 0) {
+        found = true;
+        break;
+      }
+    }
+  }
+  return filename;
+}
+
 void RadioData::convert(BoardEnum before, BoardEnum after)
 {
   generalSettings.convert(before, after);
@@ -45,5 +100,9 @@ void RadioData::convert(BoardEnum before, BoardEnum after)
     for (unsigned i=0; i<models.size(); i++) {
       models[i].category = 0;
     }
+  }
+
+  if (after == BOARD_HORUS) {
+    fixModelFilenames();
   }
 }
