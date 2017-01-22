@@ -95,6 +95,7 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
       if (errors.test(HAS_WARNINGS)) {
         // TODO ShowEepromWarnings(this, QObject::tr("Warning"), errors.to_ulong());
       }
+      board = eepromInterface->getBoard();
       return true;
     }
     else {

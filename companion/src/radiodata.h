@@ -1007,7 +1007,7 @@ class ModelData {
     ModelData(const ModelData & src);
     ModelData & operator = (const ModelData & src);
     
-    void convert(Firmware * before, Firmware * after);
+    void convert(BoardEnum before, BoardEnum after);
     
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
@@ -1148,7 +1148,7 @@ class GeneralSettings {
     };
 
     GeneralSettings();
-    void convert(Firmware * before, Firmware * after);
+    void convert(BoardEnum before, BoardEnum after);
 
     int getDefaultStick(unsigned int channel) const;
     RawSource getDefaultSource(unsigned int channel) const;
@@ -1275,7 +1275,7 @@ class RadioData {
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
     
-    void convert(Firmware * before, Firmware * after);
+    void convert(BoardEnum before, BoardEnum after);
 
     void setCurrentModel(unsigned int index)
     {

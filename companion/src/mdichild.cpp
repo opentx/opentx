@@ -163,15 +163,14 @@ void MdiChild::onFirmwareChanged()
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  BoardEnum board = getCurrentBoard();
-  QFileInfo info(curFile);
-  if (IS_SKY9X(board)) {
-    setCurrentFileExtension(".bin");
-  }
-  else if (IS_HORUS(board)) {
-    setCurrentFileExtension(".otx");
-  }
-  radioData.convert(previous, firmware);
+  convertStorage(previous->getBoard(), firmware->getBoard());
+}
+
+void MdiChild::convertStorage(BoardEnum from, BoardEnum to)
+{
+  QMessageBox::warning(this, "Companion", tr("Models and settings will be automatically converted"), QMessageBox::Ok);
+  radioData.convert(from, to);
+  setCurrentFileExtension(".otx");
   initModelsList();
   fileChanged = true;
   documentWasModified();
@@ -505,6 +504,10 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
   refresh(true);
   if (resetCurrentFile) {
     setCurrentFile(filename);
+  }
+
+  if (storage.getBoard() != getCurrentBoard()) {
+    convertStorage(storage.getBoard(), getCurrentBoard());
   }
 
   return true;

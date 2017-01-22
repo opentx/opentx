@@ -34,7 +34,8 @@ enum BoardEnum {
   BOARD_TARANIS_X9DP,
   BOARD_TARANIS_X9E,
   BOARD_FLAMENCO,
-  BOARD_HORUS
+  BOARD_HORUS,
+  BOARD_UNKNOWN = -1
 };
 
 #define CPN_MAX_MODELS                 60
