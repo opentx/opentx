@@ -1573,14 +1573,14 @@ void unregisterOpenTxFirmwares()
 }
 
 template <class T, class M>
-bool loadFromByteArray(T & dest, const QByteArray & data)
+OpenTxEepromInterface * loadFromByteArray(T & dest, const QByteArray & data)
 {
   foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
     if (eepromInterface->loadFromByteArray<T, M>(dest, data)) {
-      return true;
+      return eepromInterface;
     }
   }
-  return false;
+  return NULL;
 }
 
 template <class T, class M>
@@ -1595,12 +1595,12 @@ bool saveToByteArray(const T & dest, QByteArray & data)
   return false;
 }
 
-bool loadModelFromByteArray(ModelData & model, const QByteArray & data)
+OpenTxEepromInterface * loadModelFromByteArray(ModelData & model, const QByteArray & data)
 {
   return loadFromByteArray<ModelData, OpenTxModelData>(model, data);
 }
 
-bool loadRadioSettingsFromByteArray(GeneralSettings & settings, const QByteArray & data)
+OpenTxEepromInterface * loadRadioSettingsFromByteArray(GeneralSettings & settings, const QByteArray & data)
 {
   return loadFromByteArray<GeneralSettings, OpenTxGeneralData>(settings, data);
 }

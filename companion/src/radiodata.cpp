@@ -23,17 +23,17 @@
 
 // TODO here we will move a lot of functions from eeprominterface.cpp when no merge risk
 
-void ModelData::convert(Firmware * before, Firmware * after)
+void ModelData::convert(BoardEnum before, BoardEnum after)
 {
   // Here we can add explicit conversions when moving from one board to another
 }
 
-void GeneralSettings::convert(Firmware * before, Firmware * after)
+void GeneralSettings::convert(BoardEnum before, BoardEnum after)
 {
   // Here we can add explicit conversions when moving from one board to another
 }
 
-void RadioData::convert(Firmware * before, Firmware * after)
+void RadioData::convert(BoardEnum before, BoardEnum after)
 {
   generalSettings.convert(before, after);
   for (unsigned i=0; i<models.size(); i++) {

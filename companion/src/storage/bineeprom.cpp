@@ -50,7 +50,11 @@ bool BinEepromFormat::write(const RadioData & radioData)
 {
   bool result;
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
-  uint8_t * eeprom = (uint8_t *)malloc(getEEpromSize(eepromInterface->getBoard()));
+  int size = getEEpromSize(eepromInterface->getBoard());
+  if (size == 0) {
+    return false;
+  }
+  uint8_t * eeprom = (uint8_t *)malloc(size);
   int eeprom_size = eepromInterface->save(eeprom, radioData, 0, getCurrentFirmware()->getVariantNumber());
   if (eeprom_size) {
     result = writeToFile(eeprom, eeprom_size);
@@ -91,6 +95,7 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
       if (errors.test(HAS_WARNINGS)) {
         // TODO ShowEepromWarnings(this, QObject::tr("Warning"), errors.to_ulong());
       }
+      board = eepromInterface->getBoard();
       return true;
     }
     else {

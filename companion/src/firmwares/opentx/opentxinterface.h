@@ -150,8 +150,8 @@ void unregisterOpenTxFirmwares();
 
 extern QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
 
-bool loadModelFromByteArray(ModelData & model, const QByteArray & data);
-bool loadRadioSettingsFromByteArray(GeneralSettings & settings, const QByteArray & data);
+OpenTxEepromInterface * loadModelFromByteArray(ModelData & model, const QByteArray & data);
+OpenTxEepromInterface * loadRadioSettingsFromByteArray(GeneralSettings & settings, const QByteArray & data);
 
 bool writeModelToByteArray(const ModelData & model, QByteArray & data);
 bool writeRadioSettingsToByteArray(const GeneralSettings & settings, QByteArray & data);
