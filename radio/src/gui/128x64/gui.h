@@ -286,6 +286,7 @@ void title(const pm_char * s);
 
 #if defined(CPUARM)
 typedef int choice_t;
+void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
 #else
 typedef int8_t choice_t;
 #endif
@@ -304,7 +305,6 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t eve
 
 #if defined(GVARS) && defined(CPUARM)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
-void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
 #elif defined(GVARS)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
 #else

@@ -114,15 +114,18 @@ void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 }
 #endif
 
-#if defined(GVARS) && defined(CPUARM)
 void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags)
 {
+#if defined(GVARS) && defined(CPUARM)
   if (ZEXIST(g_model.gvars[index].name))
     lcdDrawSizedText(x, y, g_model.gvars[index].name, LEN_GVAR_NAME, ZCHAR|flags);
   else
     drawStringWithIndex(x, y, STR_GV, index+1, flags);
+#endif    
 }
 
+
+#if defined(GVARS) && defined(CPUARM)
 bool noZero(int val)
 {
   return val != 0;
