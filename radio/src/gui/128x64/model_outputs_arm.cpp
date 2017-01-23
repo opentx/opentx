@@ -35,11 +35,7 @@ enum MenuModelOutputsItems {
   ITEM_OUTPUTS_MIN,
   ITEM_OUTPUTS_MAX,
   ITEM_OUTPUTS_DIRECTION,
-#if defined(CPUARM)
   ITEM_OUTPUTS_CURVE,
-#elif defined(PPM_CENTER_ADJUSTABLE)
-  ITEM_OUTPUTS_PPM_CENTER,
-#endif
 #if defined(PPM_LIMITS_SYMETRICAL)
   ITEM_OUTPUTS_SYMETRICAL,
 #endif
@@ -53,11 +49,7 @@ enum MenuModelOutputsItems {
   #define LIMITS_MIN_POS          12*FW-2
 #endif
 
-#if defined(CPUARM)
-  #define LIMITS_OFFSET_POS         8*FW-1
-#else
-  #define LIMITS_OFFSET_POS         8*FW
-#endif
+#define LIMITS_OFFSET_POS         8*FW-1
 
 #if defined(PPM_LIMITS_SYMETRICAL)
   #if defined(PPM_CENTER_ADJUSTABLE)
@@ -89,146 +81,10 @@ enum MenuModelOutputsItems {
 #if defined(PPM_UNIT_US)
   #define SET_MIN_MAX(x, val)   x = ((val)*250)/128
   #define MIN_MAX_DISPLAY(x)    CONVERT_US_MIN_MAX(x)
-#elif defined(CPUARM)
+#else
   #define MIN_MAX_DISPLAY(x)    (x)
   #define SET_MIN_MAX(x, val)   x = (val)
-#else
-  #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
 #endif
-
-#if !defined(CPUARM)
-void menuModelLimits(event_t event)
-{
-  uint8_t sub = menuVerticalPosition - HEADER_LINE;
-
-  if (sub < MAX_OUTPUT_CHANNELS) {
-#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
-    lcdDrawNumber(13*FW, 0, PPM_CH_CENTER(sub)+channelOutputs[sub]/2, RIGHT);
-    lcdDrawText(13*FW, 0, STR_US);
-#else
-    lcdDrawNumber(13*FW, 0, calcRESXto1000(channelOutputs[sub]), RIGHT|PREC1);
-#endif
-  }
-
-  MENU(STR_MENULIMITS, menuTabModel, MENU_MODEL_OUTPUTS, HEADER_LINE+MAX_OUTPUT_CHANNELS+1, { HEADER_LINE_COLUMNS ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, ITEM_OUTPUTS_MAXROW, 0});
-
-  if (warningResult) {
-    warningResult = 0;
-    LimitData * ld = limitAddress(sub);
-    ld->revert = !ld->revert;
-    storageDirty(EE_MODEL);
-  }
-
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
-
-    if (k == MAX_OUTPUT_CHANNELS) {
-      // last line available - add the "copy trim menu" line
-      LcdFlags attr = (sub==MAX_OUTPUT_CHANNELS) ? INVERS : 0;
-      lcdDrawText(CENTER_OFS, y, STR_TRIMS2OFFSETS, NO_HIGHLIGHT() ? 0 : attr);
-      if (attr) {
-        s_editMode = 0;
-        if (event == EVT_KEY_LONG(KEY_ENTER)) {
-          START_NO_HIGHLIGHT();
-          killEvents(event);
-          moveTrimsToOffsets(); // if highlighted and menu pressed - move trims to offsets
-        }
-      }
-      return;
-    }
-
-    LimitData * ld = limitAddress(k);
-
-#if !defined(PPM_CENTER_ADJUSTABLE)
-    int16_t v = (ld->revert) ? -LIMIT_OFS(ld) : LIMIT_OFS(ld);
-    char swVal = '-';  // '-', '<', '>'
-    if ((channelOutputs[k] - v) > 50) swVal = (ld->revert ? 127 : 126); // Switch to raw inputs?  - remove trim!
-    if ((channelOutputs[k] - v) < -50) swVal = (ld->revert ? 126 : 127);
-    putsChn(0, y, k+1, 0);
-    lcdDrawChar(LIMITS_DIRECTION_POS, y, swVal);
-#endif
-
-    limit_min_max_t limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 100);
-
-    putsChn(0, y, k+1, IS_LINE_SELECTED(sub, k) ? INVERS : 0);
-
-    for (uint8_t j=0; j<ITEM_OUTPUTS_COUNT; j++) {
-      uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
-      if (active) STICK_SCROLL_DISABLE();
-      switch (j) {
-        case ITEM_OUTPUTS_OFFSET:
-#if defined(PPM_UNIT_US)
-          lcdDrawNumber(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, attr|PREC1|RIGHT);
-#else
-          lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1|RIGHT);
-#endif
-          if (active) {
-            ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
-          }
-          else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
-            copySticksToOffset(k);
-            s_editMode = 0;
-          }
-          break;
-
-        case ITEM_OUTPUTS_MIN:
-          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT);
-          if (active) {
-            ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL);
-          }
-          break;
-
-        case ITEM_OUTPUTS_MAX:
-          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT);
-          if (active) {
-            ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL);
-          }
-          break;
-
-        case ITEM_OUTPUTS_DIRECTION:
-        {
-          uint8_t revert = ld->revert;
-#if defined(PPM_CENTER_ADJUSTABLE)
-          lcdDrawChar(LIMITS_REVERT_POS, y, revert ? 127 : 126, attr);
-#else
-          lcdDrawTextAtIndex(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
-#endif
-          if (active) {
-            uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
-            if (checkIncDec_Ret && isThrottleOutput(k)) {
-              POPUP_CONFIRMATION(STR_INVERT_THR);
-            }
-            else {
-              ld->revert = revert_new;
-            }
-          }
-          break;
-        }
-
-#if defined(PPM_CENTER_ADJUSTABLE)
-        case ITEM_OUTPUTS_PPM_CENTER:
-          lcdDrawNumber(LIMITS_PPM_CENTER_POS, y, PPM_CENTER+ld->ppmCenter, RIGHT|attr);
-          if (active) {
-            CHECK_INCDEC_MODELVAR(event, ld->ppmCenter, -PPM_CENTER_MAX, +PPM_CENTER_MAX);
-          }
-          break;
-#endif
-
-#if defined(PPM_LIMITS_SYMETRICAL)
-        case ITEM_OUTPUTS_SYMETRICAL:
-          lcdDrawChar(LCD_W-FW, y, ld->symetrical ? '=' : '^', attr);
-          if (active) {
-            CHECK_INCDEC_MODELVAR_ZERO(event, ld->symetrical, 1);
-          }
-          break;
-#endif
-      }
-    }
-  }
-}
-#else // !CPUARM
 
 enum MenuModelOutputsOneItems {
   ITEM_OUTPUTONE_CH_NAME,
@@ -485,4 +341,3 @@ void menuModelLimits(event_t event)
     }
   }
 }
-#endif // !CPUARM
