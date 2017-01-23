@@ -213,7 +213,7 @@ char * getGVarString(char * dest, int idx)
 {
   char * s = dest;
   if (idx < 0) {
-    *s++ = '!';
+    *s++ = '-';
     idx = -idx-1;
   }
 
