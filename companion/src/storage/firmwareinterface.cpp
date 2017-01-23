@@ -23,7 +23,6 @@
 #include "firmwareinterface.h"
 #include "helpers.h"
 #include "storage.h"
-#include <QtGui>
 
 #define FW_MARK     "FW"
 #define VERS_MARK   "VERS"
@@ -31,7 +30,7 @@
 #define TIME_MARK   "TIME"
 #define EEPR_MARK   "EEPR"
 
-FirmwareInterface::FirmwareInterface(const QString &filename):
+FirmwareInterface::FirmwareInterface(const QString & filename):
   flash(FSIZE_MAX, 0),
   flashSize(0),
   versionId(0),
@@ -79,7 +78,7 @@ FirmwareInterface::FirmwareInterface(const QString &filename):
     }
 
     versionId = version2index(version);
-    SeekSplash();
+    seekSplash();
     isValidFlag = !version.isEmpty();
   }
 }
@@ -113,9 +112,9 @@ QString FirmwareInterface::seekLabel(const QString & label)
   if (result.isEmpty()) {
     result = seekString(label + "\037\075:"); // This is for Horus
   }
-  if (!result.isEmpty())
+  if (!result.isEmpty()) {
     return result;
-
+  }
   return seekString(label + ":");
 }
 
@@ -134,17 +133,17 @@ QString FirmwareInterface::getFlavour() const
 bool FirmwareInterface::isHardwareCompatible(const FirmwareInterface &previousFirmware) const
 {
   QString newFlavour = getFlavour();
-  if (newFlavour.isEmpty())
+  if (newFlavour.isEmpty()) {
     return true;
-
+  }
   QString previousFlavour = previousFirmware.getFlavour();
-  if (previousFlavour.isEmpty())
+  if (previousFlavour.isEmpty()) {
     return true;
-
+  }
   return (newFlavour == previousFlavour);
 }
 
-bool FirmwareInterface::SeekSplash(QByteArray splash)
+bool FirmwareInterface::seekSplash(QByteArray splash)
 {
   int start = flash.indexOf(splash);
   if (start>0) {
@@ -157,7 +156,7 @@ bool FirmwareInterface::SeekSplash(QByteArray splash)
   }
 }
 
-bool FirmwareInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
+bool FirmwareInterface::seekSplash(QByteArray sps, QByteArray spe, int size)
 {
   int start = 0;
   while (start>=0) {
@@ -183,7 +182,7 @@ bool FirmwareInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
 #define OTX_SPE         "SPE"
 #define OTX_SPE_SIZE    4
 
-void FirmwareInterface::SeekSplash(void)
+void FirmwareInterface::seekSplash()
 {
   splashSize = 0;
   splashOffset = 0;
@@ -191,45 +190,45 @@ void FirmwareInterface::SeekSplash(void)
   splashHeight = SPLASH_HEIGHT;
   splash_format = QImage::Format_Mono;
 
-  if (SeekSplash(QByteArray((const char *)gr9x_splash, sizeof(gr9x_splash))) || SeekSplash(QByteArray((const char *)gr9xv4_splash, sizeof(gr9xv4_splash)))) {
+  if (seekSplash(QByteArray((const char *)gr9x_splash, sizeof(gr9x_splash))) || seekSplash(QByteArray((const char *)gr9xv4_splash, sizeof(gr9xv4_splash)))) {
     return;
   }
 
-  if (SeekSplash(QByteArray((const char *)er9x_splash, sizeof(er9x_splash)))) {
+  if (seekSplash(QByteArray((const char *)er9x_splash, sizeof(er9x_splash)))) {
     return;
   }
 
-  if (SeekSplash(QByteArray((const char *)opentx_splash, sizeof(opentx_splash)))) {
+  if (seekSplash(QByteArray((const char *)opentx_splash, sizeof(opentx_splash)))) {
     return;
   }
 
-  if (SeekSplash(QByteArray((const char *)opentxtaranis_splash, sizeof(opentxtaranis_splash)))) {
+  if (seekSplash(QByteArray((const char *)opentxtaranis_splash, sizeof(opentxtaranis_splash)))) {
     splashWidth = SPLASHX9D_WIDTH;
     splashHeight = SPLASHX9D_HEIGHT;
     splash_format = QImage::Format_Indexed8;
     return;
   }
 
-  if (SeekSplash(QByteArray((const char *)ersky9x_splash, sizeof(ersky9x_splash)))) {
+  if (seekSplash(QByteArray((const char *)ersky9x_splash, sizeof(ersky9x_splash)))) {
     return;
   }
 
-  if (SeekSplash(QByteArray(OTX_SPS_9X, OTX_SPS_SIZE), QByteArray(OTX_SPE, OTX_SPE_SIZE), 1024)) {
+  if (seekSplash(QByteArray(OTX_SPS_9X, OTX_SPS_SIZE), QByteArray(OTX_SPE, OTX_SPE_SIZE), 1024)) {
     return;
   }
 
-  if (SeekSplash(QByteArray(OTX_SPS_TARANIS, OTX_SPS_SIZE), QByteArray(OTX_SPE, OTX_SPE_SIZE), 6784)) {
+  if (seekSplash(QByteArray(OTX_SPS_TARANIS, OTX_SPS_SIZE), QByteArray(OTX_SPE, OTX_SPE_SIZE), 6784)) {
     splashWidth = SPLASHX9D_WIDTH;
     splashHeight = SPLASHX9D_HEIGHT;
     splash_format = QImage::Format_Indexed8;
     return;
   }
 
-  if (SeekSplash(QByteArray(ERSKY9X_SPS, sizeof(ERSKY9X_SPS)), QByteArray(ERSKY9X_SPE, sizeof(ERSKY9X_SPE)), 1030)) {
+  if (seekSplash(QByteArray(ERSKY9X_SPS, sizeof(ERSKY9X_SPS)), QByteArray(ERSKY9X_SPE, sizeof(ERSKY9X_SPE)), 1030)) {
     return;
   }
 
-  if (SeekSplash(QByteArray(ERSPLASH_MARKER, sizeof(ERSPLASH_MARKER)))) {
+  if (seekSplash(QByteArray(ERSPLASH_MARKER, sizeof(ERSPLASH_MARKER)))) {
     splashOffset += sizeof(ERSPLASH_MARKER);
     splashSize = sizeof(er9x_splash);
   }
@@ -333,7 +332,7 @@ bool FirmwareInterface::isValid()
 
 unsigned int FirmwareInterface::save(QString fileName)
 {
-  uint8_t *binflash  = (uint8_t*)malloc(FSIZE_MAX);
+  uint8_t * binflash  = (uint8_t*)malloc(FSIZE_MAX);
   if (binflash == NULL) {
     return -1;
   }

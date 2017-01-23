@@ -64,9 +64,9 @@ class FirmwareInterface
     uint flashSize;
     QString seekString(const QString & string);
     QString seekLabel(const QString & label);
-    void SeekSplash();
-    bool SeekSplash(QByteArray sps, QByteArray spe, int size);
-    bool SeekSplash(QByteArray splash);
+    void seekSplash();
+    bool seekSplash(QByteArray sps, QByteArray spe, int size);
+    bool seekSplash(QByteArray splash);
     QString filename;
     QString date;
     QString time;
