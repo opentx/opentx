@@ -767,7 +767,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
-      bool apply_offset_and_curve = true;
+
 
       //========== DELAYS ===============
       if (mode <= e_perout_mode_inactive_flight_mode && (md->delayDown || md->delayUp)) {	// there are delay values      
@@ -781,6 +781,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
+	  //========== Active Mix ===============
+	  bool apply_offset_and_curve = true;
       if (!mixEnabled) {
         if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
           if (mixCondition) {
@@ -792,7 +794,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           continue;
         }
       }
-
       if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
         if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1);
 #if defined(BOLD_FONT)
