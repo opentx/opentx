@@ -77,8 +77,6 @@ extern "C" {
 #define BOOTLOADER_SIZE                0x8000
 #define FIRMWARE_ADDRESS               0x08000000
 
-#define PWRMANAGE     // this radio has CPU controlled power switch
-
 // HSI is at 168Mhz (over-drive is not enabled!)
 #define PERI1_FREQUENCY                42000000
 #define PERI2_FREQUENCY                84000000
@@ -340,6 +338,7 @@ void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define pwroffPressed()                pwrPressed()
+#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG())
 
 // Led driver
 void ledOff(void);

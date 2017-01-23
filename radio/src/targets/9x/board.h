@@ -129,7 +129,7 @@ void boardInit(void);
 // Power driver (none)
 #define pwrCheck()                 (e_power_on)
 #define pwrOff()
-#define WAS_RESET_BY_WATCHDOG()    (bool)((mcusr & (1 << WDRF)) != 0)
+#define UNEXPECTED_SHUTDOWN()      (bool)((mcusr & (1 << WDRF)) != 0)
 
 // Trainer driver
 bool checkSlaveMode();

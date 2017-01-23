@@ -148,12 +148,9 @@ void sdPoll10ms();
 #define OUT_C_LCD_CS1              1
 
 // Power driver
-#if !defined(REV0)
-  #define PWRMANAGE     // this radio has CPU controlled power switch
-#endif
 uint8_t pwrCheck();
 void pwrOff();
-#define WAS_RESET_BY_WATCHDOG()    (bool)((mcusr & (1 << WDRF)) != 0)
+#define UNEXPECTED_SHUTDOWN()     (bool)((mcusr & (1 << WDRF)) != 0)
 
 // USB fake driver
 #define usbPlugged()               false
