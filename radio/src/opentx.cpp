@@ -2457,6 +2457,16 @@ void opentxInit(OPENTX_INIT_ARGS)
  }
 #endif
 
+#if defined(PCBHORUS)
+  if (!unexpectedShutdown) {
+    // g_model.topbarData is still zero here (because it was not yet read from SDCARD), 
+    // but we only remember the pointer to in in constructor.
+    // The storageReadAll() needs topbar object, so it must be created here
+    topbar = new Topbar(&g_model.topbarData);   
+    LUA_INIT_THEMES_AND_WIDGETS(); // lua widget state must also be prepared before the call to storageReadAll()
+  }
+#endif
+
   // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
 #if defined(RAMBACKUP)
@@ -2473,13 +2483,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   // we can now check g_eeGeneral.unexpectedShutdown again for radios that have SDCARD model storage
   unexpectedShutdown |= g_eeGeneral.unexpectedShutdown;
 #endif  // #if !defined(EEPROM)
-
-#if defined(PCBHORUS)
-  if (!unexpectedShutdown) {
-    topbar = new Topbar(&g_model.topbarData);
-    LUA_INIT_THEMES_AND_WIDGETS();
-  }
-#endif
 
 #if defined(SERIAL2)
   serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
