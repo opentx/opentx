@@ -52,13 +52,15 @@ enum MenuModelOutputsItems {
 #else
   #define LIMITS_MIN_POS          12*FW-2
 #endif
+
 #if defined(CPUARM)
-#define LIMITS_OFFSET_POS         8*FW-1
+  #define LIMITS_OFFSET_POS         8*FW-1
 #else
-#define LIMITS_OFFSET_POS         8*FW
+  #define LIMITS_OFFSET_POS         8*FW
 #endif
+
 #if defined(PPM_LIMITS_SYMETRICAL)
-  #if defined(PPM_CENTER_ADJUSTABLE)    // TODO remove #ifdefs
+  #if defined(PPM_CENTER_ADJUSTABLE)
     #define LIMITS_MAX_POS        15*FW+3
     #define LIMITS_REVERT_POS     16*FW-1
     #define LIMITS_PPM_CENTER_POS 20*FW+1
@@ -78,6 +80,7 @@ enum MenuModelOutputsItems {
     #define LIMITS_DIRECTION_POS  12*FW+5
   #endif
 #endif
+
 #define LIMITS_CURVE_POS          17*FW+1
 #define LIMITS_MIN_MAX_OFFSET 1000
 #define CONVERT_US_MIN_MAX(x) ((int16_t(x)*128)/25)
@@ -172,12 +175,16 @@ void menuModelLimits(event_t event)
 
         case ITEM_OUTPUTS_MIN:
           lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT);
-          if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL);
+          if (active) {
+            ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL);
+          }
           break;
 
         case ITEM_OUTPUTS_MAX:
           lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT);
-          if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL);
+          if (active) {
+            ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL);
+          }
           break;
 
         case ITEM_OUTPUTS_DIRECTION:
@@ -274,7 +281,9 @@ void menuModelLimitsOne(event_t event)
            break;
         }
         lcdDrawNumber(LIMITS_ONE_2ND_COLUMN, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1);
-        if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL, NULL, stops1000);
+        if (active) {
+          ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL, NULL, stops1000);
+        }
         break;
 
       case ITEM_OUTPUTONE_MAX:
@@ -284,7 +293,9 @@ void menuModelLimitsOne(event_t event)
             break;
         }
         lcdDrawNumber(LIMITS_ONE_2ND_COLUMN, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1);
-        if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL, NULL, stops1000);
+        if (active) {
+          ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL, NULL, stops1000);
+        }
         break;
 
       case ITEM_OUTPUTONE_DIR:
@@ -308,8 +319,8 @@ void menuModelLimitsOne(event_t event)
         lcdDrawTextAlignedLeft(y, TR_CURVE);
         drawCurveName(LIMITS_ONE_2ND_COLUMN, y, ld->curve, attr);
         if (active) {
-            CHECK_INCDEC_MODELVAR(event, ld->curve, -MAX_CURVES, +MAX_CURVES);
-          }
+          CHECK_INCDEC_MODELVAR(event, ld->curve, -MAX_CURVES, +MAX_CURVES);
+        }
         break;
 
       case ITEM_OUTPUTONE_PPM_CENTER:
@@ -460,12 +471,8 @@ void menuModelLimits(event_t event)
           break;
 
         case ITEM_OUTPUTS_DIRECTION:
-        {
-          uint8_t revert = ld->revert;
-
-          lcdDrawChar(LIMITS_REVERT_POS, y, revert ? 127 : 126, 0);
+          lcdDrawChar(LIMITS_REVERT_POS, y, ld->revert ? 127 : 126, 0);
           break;
-        }
 
         case ITEM_OUTPUTS_CURVE:
           drawCurveName(LIMITS_CURVE_POS, y, ld->curve, 0);
