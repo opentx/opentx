@@ -780,11 +780,48 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           v = swOn[i].hold;     // keep v to stored value until end of delay
         }
       }
+	  
+	  //========== SLOW DOWN ==============
+      // lower weight causes slower movement
+      if (mode <= e_perout_mode_inactive_flight_mode && (md->speedUp || md->speedDown)) { // there are delay values
+        int32_t tact = act[i];
+        int16_t diff = v - (tact>>8);	// we recale to a mult 256 higher value for calculation
+        if (diff) {
+          // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
+          // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
+          // because we get a tick each 10msec, we need 100 ticks for one second
+          // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
+          if (tick10ms || !s_mixer_first_run_done) {
+            // only if already time is passed add or substract a value according the speed configured
+            int32_t rate = (int32_t)tick10ms<<(8+11);  // = DEL_MULT*2048*tick10ms
+            // rate equals a full range for one second; if less time is passed rate is accordingly smaller
+            // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
+            int32_t currentValue = (int32_t)v<<8;
+            if (diff > 0) {
+              if (s_mixer_first_run_done && md->speedUp > 0) {
+                // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
+                int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
+                if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
+              }
+            }
+            else {  // if is <0 because ==0 is not possible
+              if (s_mixer_first_run_done && md->speedDown > 0) {
+                // see explanation in speedUp
+                int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
+                if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
+              }
+            }
+            act[i] = tact = currentValue;
+            // open.20.fsguruh: this implementation would save about 50 bytes code
+          } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
+          v = tact>>8;
+        }
+      }
 
 	  //========== Active Mix ===============
 	  bool apply_offset_and_curve = true;
       if (!mixEnabled) {
-        if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
+        if ((md->delayDown || md->delayUp) && md->mltpx!=MLTPX_REP) {
           if (mixCondition) {
             v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
             apply_offset_and_curve = false;
@@ -836,46 +873,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
 #endif
-      //========== SPEED ===============
-      // now its on input side, but without weight compensation. More like other remote controls
-      // lower weight causes slower movement
-
-      if (mode <= e_perout_mode_inactive_flight_mode && (md->speedUp || md->speedDown)) { // there are delay values
-#define DEL_MULT_SHIFT 8
-        // we recale to a mult 256 higher value for calculation
-        int32_t tact = act[i];
-        int16_t diff = v - (tact>>DEL_MULT_SHIFT);
-        if (diff) {
-          // open.20.fsguruh: speed is defined in % movement per second; In menu we specify the full movement (-100% to 100%) = 200% in total
-          // the unit of the stored value is the value from md->speedUp or md->speedDown divide SLOW_STEP seconds; e.g. value 4 means 4/SLOW_STEP = 2 seconds for CPU64
-          // because we get a tick each 10msec, we need 100 ticks for one second
-          // the value in md->speedXXX gives the time it should take to do a full movement from -100 to 100 therefore 200%. This equals 2048 in recalculated internal range
-          if (tick10ms || !s_mixer_first_run_done) {
-            // only if already time is passed add or substract a value according the speed configured
-            int32_t rate = (int32_t) tick10ms << (DEL_MULT_SHIFT+11);  // = DEL_MULT*2048*tick10ms
-            // rate equals a full range for one second; if less time is passed rate is accordingly smaller
-            // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
-            int32_t currentValue = ((int32_t) v<<DEL_MULT_SHIFT);
-            if (diff > 0) {
-              if (s_mixer_first_run_done && md->speedUp > 0) {
-                // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
-                int32_t newValue = tact+rate/((int16_t)(100/SLOW_STEP)*md->speedUp);
-                if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
-              }
-            }
-            else {  // if is <0 because ==0 is not possible
-              if (s_mixer_first_run_done && md->speedDown > 0) {
-                // see explanation in speedUp
-                int32_t newValue = tact-rate/((int16_t)(100/SLOW_STEP)*md->speedDown);
-                if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
-              }
-            }
-            act[i] = tact = currentValue;
-            // open.20.fsguruh: this implementation would save about 50 bytes code
-          } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
-          v = (tact >> DEL_MULT_SHIFT);
-        }
-      }
 
       //========== CURVES ===============
 #if defined(CPUARM)
