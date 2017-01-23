@@ -873,15 +873,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
-#if defined(CPUARM)
-      int32_t weight = GET_GVAR_PREC1(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-      weight = calc100to256_16Bits(weight);
-#else
-      // saves 12 bytes code if done here and not together with weight; unknown reason
-      int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-      weight = calc100to256_16Bits(weight);
-#endif
-
       //========== CURVES ===============
 #if defined(CPUARM)
       if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
@@ -894,6 +885,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
 
       //========== WEIGHT ===============
+#if defined(CPUARM)
+      int32_t weight = GET_GVAR_PREC1(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+      weight = calc100to256_16Bits(weight);
+#else
+      // saves 12 bytes code if done here and not together with weight; unknown reason
+      int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+      weight = calc100to256_16Bits(weight);
+#endif
       int32_t dv = (int32_t)v * weight;
 #if defined(CPUARM)
       dv = div_and_round(dv, 10);
