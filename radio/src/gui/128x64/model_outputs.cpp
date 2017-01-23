@@ -59,8 +59,8 @@ enum MenuModelOutputsItems {
 #endif
 #if defined(PPM_LIMITS_SYMETRICAL)
   #if defined(PPM_CENTER_ADJUSTABLE)    // TODO remove #ifdefs
-    #define LIMITS_MAX_POS        15*FW
-    #define LIMITS_REVERT_POS     16*FW-3
+    #define LIMITS_MAX_POS        15*FW+3
+    #define LIMITS_REVERT_POS     16*FW-1
     #define LIMITS_PPM_CENTER_POS 20*FW+1
   #else
     #define LIMITS_DIRECTION_POS  12*FW+4
@@ -242,7 +242,9 @@ void menuModelLimitsOne(event_t event)
   TITLE(STR_MENULIMITS);
   LimitData * ld = limitAddress(s_currIdx);
 
-  putsChn(14*FW, 0, s_currIdx+1, 0);
+  putsChn(12*FW, 0, s_currIdx+1, 0);
+  lcdDrawNumber(19*FW, 0, PPM_CH_CENTER(s_currIdx)+channelOutputs[s_currIdx]/2, RIGHT);
+  lcdDrawText(19*FW, 0, STR_US);
 
   SUBMENU_NOTITLE(ITEM_OUTPUTONE_MAXROW, { 0, 0, 0, 0, 0, 0 , 0  /*, 0...*/ });
 
@@ -253,6 +255,7 @@ void menuModelLimitsOne(event_t event)
     uint8_t i = k + menuVerticalOffset;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
+    int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
     switch (i) {
       case ITEM_OUTPUTONE_CH_NAME:
@@ -266,12 +269,22 @@ void menuModelLimitsOne(event_t event)
 
       case ITEM_OUTPUTONE_MIN:
         lcdDrawTextAlignedLeft(y, TR_MIN);
-        ld->min = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->min-LIMITS_MIN_MAX_OFFSET, -1000, 1000, PREC1 | attr, 0, event) + LIMITS_MIN_MAX_OFFSET;
+        if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+           ld->min = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1, 0, event);
+           break;
+        }
+        lcdDrawNumber(LIMITS_ONE_2ND_COLUMN, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1);
+        if (active) ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL, NULL, stops1000);
         break;
 
       case ITEM_OUTPUTONE_MAX:
         lcdDrawTextAlignedLeft(y, TR_MAX);
-        ld->max = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->max+LIMITS_MIN_MAX_OFFSET, -1000, 1000, PREC1 | attr, 0, event) - LIMITS_MIN_MAX_OFFSET;
+        if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
+            ld->max = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1, 0, event);
+            break;
+        }
+        lcdDrawNumber(LIMITS_ONE_2ND_COLUMN, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1);
+        if (active) ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL, NULL, stops1000);
         break;
 
       case ITEM_OUTPUTONE_DIR:
@@ -401,30 +414,40 @@ void menuModelLimits(event_t event)
 #if defined(PPM_UNIT_US)
           lcdDrawNumber(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, PREC1|RIGHT);
 #else
-          if (abs(ld->offset) >= 1000) {
+          if (abs(ld->offset) == 1000) {
             lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset/10, RIGHT);
           }
           else {
-            lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset, PREC1|RIGHT);
+            GVAR_MENU_ITEM(LIMITS_OFFSET_POS, y, ld->offset, -1000, 1000, RIGHT|attr|PREC1, 0, event);
           }
 #endif
           break;
 
         case ITEM_OUTPUTS_MIN:
-          if (ld->min <= 0) {
+          if (ld->min == 0) {
             lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
-            lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), PREC1 | RIGHT);
+            if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
+              GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1|RIGHT, 0, event);
+            }
+            else {
+              lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
+            }
           }
           break;
 
         case ITEM_OUTPUTS_MAX:
-          if (ld->max >= 0) {
+          if (ld->max == 0) {
             lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
-            lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), PREC1 | RIGHT);
+            if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE)) {
+              GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1|RIGHT, 0, event);
+            }
+            else {
+              lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
+            }
           }
           break;
 
