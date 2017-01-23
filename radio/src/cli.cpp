@@ -302,6 +302,62 @@ int cliTestSD(const char ** argv)
   return 0;
 }
 
+int cliTestNew()
+{
+  char * tmp = 0;
+  serialPrint("Allocating 1kB with new()");
+  CoTickDelay(100);
+  tmp = new char[1024];
+  if (tmp) {
+    serialPrint("\tsuccess");
+    delete[] tmp;
+    tmp = 0;
+  }
+  else {
+    serialPrint("\tFAILURE");
+  }
+
+  serialPrint("Allocating 10MB with (std::nothrow) new()");
+  CoTickDelay(100);
+  tmp = new (std::nothrow) char[1024*1024*10];
+  if (tmp) {
+    serialPrint("\tFAILURE, tmp = %p", tmp);
+    delete[] tmp;
+    tmp = 0;
+  }
+  else {
+    serialPrint("\tsuccess, allocaton failed, tmp = 0");
+  }
+
+  serialPrint("Allocating 10MB with new()");
+  CoTickDelay(100);
+  tmp = new char[1024*1024*10];
+  if (tmp) {
+    serialPrint("\tFAILURE, tmp = %p", tmp);
+    delete[] tmp;
+    tmp = 0;
+  }
+  else {
+    serialPrint("\tsuccess, allocaton failed, tmp = 0");
+  }
+  serialPrint("Test finished");
+  return 0;
+}
+
+int cliTest(const char ** argv)
+{
+  if (!strcmp(argv[1], "new")) {
+    return cliTestNew();
+  }
+  else if (!strcmp(argv[1], "std::exception")) {
+    serialPrint("Not implemented");
+  }
+  else {
+    serialPrint("%s: Invalid argument \"%s\"", argv[0], argv[1]);
+  }
+  return 0;
+}
+
 int cliTrace(const char ** argv)
 {
   if (!strcmp(argv[1], "on")) {
@@ -892,6 +948,7 @@ const CliCommand cliCommands[] = {
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
   { "meminfo", cliMemoryInfo, "" },
+  { "test", cliTest, "new | std::exception" },
   { "trace", cliTrace, "on | off" },
 #if defined(PCBFLAMENCO)
   { "read_bq24195", cliReadBQ24195, "<register>" },
