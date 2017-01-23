@@ -433,7 +433,7 @@ void menuModelLimits(event_t event)
 #if defined(GVARS)
           if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
             drawGVarName(LIMITS_MIN_POS, y, ld->min, attr|PREC1|RIGHT);
-            break:
+            break;
           }
 #endif
           if (ld->min <= 0) {
