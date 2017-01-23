@@ -837,6 +837,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         swOn[i].activeMix = true;
 #endif
       }
+	  
+	  //========== OFFSET BEFORE ============
+#if defined(OFFSET_ON_INPUT)
+      if (apply_offset_and_curve) {
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+        if (offset) v += calc100toRESX_16Bits(offset);
+      }
+#endif
 
       if (apply_offset_and_curve) {
 
@@ -891,7 +899,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       dv = div_and_round(dv, 10);
 #endif
 
-      //========== OFFSET / AFTER ===============
+      //========== OFFSET AFTER ===============
+#if !defined(OFFSET_ON_INPUT) 
       if (apply_offset_and_curve) {
 #if defined(CPUARM)
         int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
@@ -901,6 +910,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
 #endif
       }
+#endif
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
