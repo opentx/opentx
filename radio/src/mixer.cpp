@@ -705,7 +705,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         chans[md->destCh] = 0;
       }
 
-      //========== PHASE && SWITCH =====
+      //========== PHASE & SWITCH =======
       bool mixCondition = (md->flightModes != 0 || md->swtch);
       delayval_t mixEnabled = (!(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch)) ? DELAY_POS_MARGIN+1 : 0;
 
@@ -725,7 +725,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 #endif
 
-      //========== VALUE ===============
+      //========== VALUE ================
       getvalue_t v = 0;
       if (mode > e_perout_mode_inactive_flight_mode) {
 #if defined(VIRTUAL_INPUTS)
@@ -767,8 +767,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
-
-
       //========== DELAYS ===============
       if (mode <= e_perout_mode_inactive_flight_mode && (md->delayDown || md->delayUp)) {	// there are delay values      
         if (!s_mixer_first_run_done || !swOn[i].delay) {
@@ -781,7 +779,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 	  
-	  //========== SLOW DOWN ==============
+      //========== SLOW DOWN ============
       // lower weight causes slower movement
       if (mode <= e_perout_mode_inactive_flight_mode && (md->speedUp || md->speedDown)) { // there are delay values
         int32_t tact = act[i];
@@ -818,8 +816,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
-	  //========== Active Mix ===============
-	  bool apply_offset_and_curve = true;
+      //========== Active Mix ===========
+      bool apply_offset_and_curve = true;
       if (!mixEnabled) {
         if ((md->delayDown || md->delayUp) && md->mltpx!=MLTPX_REP) {
           if (mixCondition) {
@@ -838,7 +836,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 	  
-	  //========== OFFSET BEFORE ============
+      //========== OFFSET BEFORE ========
 #if defined(OFFSET_ON_INPUT)
       if (apply_offset_and_curve) {
         int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
@@ -846,9 +844,9 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 #endif
 
+      //========== TRIMS ================
+      int16_t trim = 0;
       if (apply_offset_and_curve) {
-
-        //========== TRIMS ================
         if (!(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUAL_INPUTS)
           if (md->carryTrim == 0) {
@@ -858,16 +856,18 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           int8_t mix_trim = md->carryTrim;
           if (mix_trim < TRIM_ON)
             mix_trim = -mix_trim - 1;
-          else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
+            else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
             mix_trim = stickIndex;
           else
-            mix_trim = -1;
+          mix_trim = -1;
           if (mix_trim >= 0) {
-            int16_t trim = trims[mix_trim];
+            trim = trims[mix_trim];
+            if (md->curveMode != MODE_DIFFERENTIAL) {
             if (mix_trim == THR_STICK && g_model.throttleReversed)
               v -= trim;
             else
               v += trim;
+            }
           }
 #endif
         }
@@ -894,8 +894,36 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       weight = calc100to256_16Bits(weight);
 #endif
       int32_t dv = (int32_t)v * weight;
+      int32_t dtrim = (int32_t) trim * weight;
 #if defined(CPUARM)
       dv = div_and_round(dv, 10);
+#endif
+
+      //========== DIFFERENTIAL =========
+#if defined(CPUARM)
+      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
+        dv = applyCurve(dv, md->curve);
+      }
+#else
+      if (md->curveMode == MODE_DIFFERENTIAL) {
+		    // stick and trim are computed separatly
+        // curveParam recalculated to a 256 basis which ease the calculation later a lot
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));  
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
+        if (curveParam > 0 && dv < 0) {
+          dv = (dv * (256 - curveParam)) >> 8;
+        }
+        else if (curveParam < 0 && dv > 0) {
+          dv = (dv * (256 + curveParam)) >> 8;
+        }
+        if (curveParam > 0 && dtrim < 0) {
+          dtrim = (dtrim * (256 - curveParam)) >> 8;
+        }
+        else if (curveParam < 0 && dtrim > 0) {
+          dtrim = (dtrim * (256 + curveParam)) >> 8;
+        }
+        dv += dtrim;
+      }
 #endif
 
       //========== OFFSET AFTER ===============
@@ -911,21 +939,16 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 #endif
 
-      //========== DIFFERENTIAL =========
-#if defined(CPUARM)
-      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
-        dv = applyCurve(dv, md->curve);
-      }
-#else
-      if (md->curveMode == MODE_DIFFERENTIAL) {
-        // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
-        if (curveParam > 0 && dv < 0)
-          dv = (dv * (256 - curveParam)) >> 8;
-        else if (curveParam < 0 && dv > 0)
-          dv = (dv * (256 + curveParam)) >> 8;
-      }
-#endif
+      //Stick value to mixer
+      //    stick => delay => slow_down => mixer source
+
+      //Mixer output with offset before
+      //    Curve(source + offset + trim) * weight
+      //    Diff((source + offset) * weight) + Diff(trim * weight)
+
+      //Mixer output with offset after
+      //    Curve(source + trim) * weight + offset
+      //    Diff(source * weight) + Diff(trim * weight) + offset
 
       int32_t * ptr = &chans[md->destCh]; // Save calculating address several times
 
