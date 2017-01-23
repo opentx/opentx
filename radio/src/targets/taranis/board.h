@@ -91,6 +91,8 @@ extern "C" {
 #define BOOTLOADER_SIZE    0x8000
 #define FIRMWARE_ADDRESS   0x08000000
 
+#define PWRMANAGE     // this radio has CPU controlled power switch
+
 #if defined(PCBX9E)
   #define PERI1_FREQUENCY  42000000
   #define PERI2_FREQUENCY  84000000
@@ -343,9 +345,9 @@ void checkRotaryEncoder(void);
 #endif
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
-#define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
-#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
+#define WAS_RESET_BY_SOFTWARE()               (bool)((RCC->CSR & RCC_CSR_SFTRSTF) != 0)
+#define WAS_RESET_BY_WATCHDOG()               (bool)((RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF)) != 0)
+#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (bool)((RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF)) != 0)
 
 // ADC driver
 enum Analogs {

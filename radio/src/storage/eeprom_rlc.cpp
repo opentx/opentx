@@ -935,9 +935,7 @@ void eepromBackup()
   lcdClear();
   drawProgressBar(STR_WRITING);
 
-  // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
-  g_eeGeneral.unexpectedShutdown = 0;
-  storageDirty(EE_GENERAL);
+  clearUnexpectedShutdownFlag();
   storageCheck(true);
 
   // create the directory if needed...
@@ -967,9 +965,7 @@ void eepromBackup()
 
   f_close(&file);
 
-  //set back unexpectedShutdown
-  g_eeGeneral.unexpectedShutdown = 1;
-  storageDirty(EE_GENERAL);
+  setUnexpectedShutdownFlag();
   storageCheck(true);
 }
 #endif

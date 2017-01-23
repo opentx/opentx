@@ -509,7 +509,7 @@ void printTaskSwitchLog()
   uint32_t * tsl = new uint32_t[DEBUG_TASKS_LOG_SIZE];
   if (!tsl) {
     serialPrint("Not enough memory");
-    return 0;
+    return;
   }
   memcpy(tsl, taskSwitchLog, sizeof(taskSwitchLog));
   uint32_t * p = tsl + taskSwitchLogPos;

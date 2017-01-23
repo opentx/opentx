@@ -31,6 +31,8 @@ extern uint16_t ResetReason;
 #define FIRMWARE_SIZE                  (256*1024)
 #define FIRMWARE_ADDRESS               0x00400000
 
+#define PWRMANAGE     // this radio has CPU controlled power switch
+
 // Board driver
 void boardInit(void);
 #define boardOff()  pwrOff()

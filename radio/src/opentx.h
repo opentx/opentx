@@ -1357,6 +1357,8 @@ void checkBattery();
 void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
+void clearUnexpectedShutdownFlag();
+void setUnexpectedShutdownFlag();
 
 #if defined(PCBHORUS) || defined(PCBX7)
   #define LED_ERROR_BEGIN()            ledRed()

@@ -1917,6 +1917,7 @@ void opentxClose(uint8_t shutdown)
   if (sessionTimer > 0) {
     g_eeGeneral.globalTimer += sessionTimer;
     sessionTimer = 0;
+    storageDirty(EE_GENERAL);
   }
 #endif
 
@@ -1924,12 +1925,11 @@ void opentxClose(uint8_t shutdown)
   uint32_t mAhUsed = g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36;
   if (g_eeGeneral.mAhUsed != mAhUsed) {
     g_eeGeneral.mAhUsed = mAhUsed;
+    storageDirty(EE_GENERAL);
   }
 #endif
 
-  // clean unexpectedShutdown flag to mark that we have controlled power-down/reset
-  g_eeGeneral.unexpectedShutdown = 0;
-  storageDirty(EE_GENERAL);
+  clearUnexpectedShutdownFlag();
   storageCheck(true);
 
 #if defined(CPUARM)
@@ -1944,6 +1944,29 @@ void opentxClose(uint8_t shutdown)
 #endif
 }
 #endif
+
+void clearUnexpectedShutdownFlag()
+{
+#if defined(PWRMANAGE)
+   // clean unexpectedShutdown flag to mark that we have controlled power-down/reset
+  g_eeGeneral.unexpectedShutdown = 0;
+  storageDirty(EE_GENERAL);
+  TRACE("clearUnexpectedShutdownFlag");
+#endif
+}
+
+void setUnexpectedShutdownFlag()
+{
+#if defined(PWRMANAGE)
+  // prepare the unexpectedShutdown flag, which will remain set if we get unexpected reboot
+  // only do this on radios tha have software controled power
+  if (!g_eeGeneral.unexpectedShutdown) {
+    g_eeGeneral.unexpectedShutdown = 1;
+    storageDirty(EE_GENERAL);
+    TRACE("setUnexpectedShutdownFlag");
+  }
+#endif
+}
 
 #if defined(USB_MASS_STORAGE)
 void opentxResume()
@@ -1967,11 +1990,7 @@ void opentxResume()
   referenceSystemAudioFiles();
 #endif
 
-  // prepare the unexpectedShutdown flag, which will remain set if we get unexpected reboot
-  if (!g_eeGeneral.unexpectedShutdown) {
-    g_eeGeneral.unexpectedShutdown = 1;
-    storageDirty(EE_GENERAL);
-  }
+  setUnexpectedShutdownFlag();
 }
 #endif
 
@@ -2412,15 +2431,7 @@ uint16_t stackAvailable()
 }
 #endif
 
-#if defined(CPUM2560)
-  #define OPENTX_INIT_ARGS const uint8_t mcusr
-#elif defined(PCBSTD)
-  #define OPENTX_INIT_ARGS const uint8_t mcusr
-#else
-  #define OPENTX_INIT_ARGS
-#endif
-
-void opentxInit(OPENTX_INIT_ARGS)
+void opentxInit()
 {
 #if defined(DEBUG) && defined(USB_SERIAL)
   // CoTickDelay(5000); // 10s
@@ -2438,16 +2449,20 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
-  
+
 #if defined(EEPROM)
   storageReadAll();
 #endif
 
+#if defined(PWRMANAGE)
   // radios with EEPROM storage have g_eeGeneral.unexpectedShutdown set by now and we can check it
   // redios with SDCARD storage have not yet, we will check that later
   // unexpectedShutdown may already be set from the main()
   unexpectedShutdown |= g_eeGeneral.unexpectedShutdown;
-
+  if (unexpectedShutdown) {
+    TRACE("g_eeGeneral.unexpectedShutdown was set");
+  }
+#endif
 
 #if defined(SDCARD) && !defined(PCBMEGA2560)
   // SDCARD related stuff, only done if not unexpectedShutdown
@@ -2472,6 +2487,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
+    TRACE("rambackupRestore");
     rambackupRestore();
   }
   else {
@@ -2480,8 +2496,13 @@ void opentxInit(OPENTX_INIT_ARGS)
 #else
   storageReadAll();
 #endif
+#if defined(PWRMANAGE)
   // we can now check g_eeGeneral.unexpectedShutdown again for radios that have SDCARD model storage
   unexpectedShutdown |= g_eeGeneral.unexpectedShutdown;
+  if (unexpectedShutdown) {
+    TRACE("g_eeGeneral.unexpectedShutdown was set (on SDCARD)");
+  }
+#endif
 #endif  // #if !defined(EEPROM)
 
 #if defined(SERIAL2)
@@ -2532,11 +2553,7 @@ void opentxInit(OPENTX_INIT_ARGS)
     opentxStart();
   }
 
-  // prepare the unexpectedShutdown flag, which will remain set if we get unexpected reboot
-  if (!g_eeGeneral.unexpectedShutdown) {
-    g_eeGeneral.unexpectedShutdown = 1;
-    storageDirty(EE_GENERAL);
-  }
+  setUnexpectedShutdownFlag();
 
 #if defined(GUI)
   lcdSetContrast();
@@ -2586,6 +2603,12 @@ int main()
 
   // first check for WDT reset, we check the status of WDT register (storage is not available here)
   unexpectedShutdown = WAS_RESET_BY_WATCHDOG();
+  if (unexpectedShutdown) {
+    TRACE("WDT reset detected");
+  }
+  else {
+    TRACE("normal reset detected");
+  }
 
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
   // TODO remove this
@@ -2649,7 +2672,7 @@ int main()
 #if defined(CPUARM)
   tasksStart();
 #else
-  opentxInit(mcusr);
+  opentxInit();
 #if defined(CPUM2560)
   uint8_t shutdown_state = 0;
 #endif
