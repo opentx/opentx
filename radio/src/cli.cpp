@@ -22,6 +22,7 @@
 #include "diskio.h"
 #include <ctype.h>
 #include <malloc.h>
+#include <new>
 
 #define CLI_COMMAND_MAX_ARGS           8
 #define CLI_COMMAND_MAX_LEN            256
