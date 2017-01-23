@@ -280,12 +280,14 @@ uint32_t readTrims(void);
 void checkRotaryEncoder(void);
 
 // WDT driver
-#define WDTO_500MS                            500
+#define WDTO_500MS                              500
 extern uint32_t powerupReason;
-#define SHUTDOWN_REQUEST                      0xDEADBEEF
-#define NO_SHUTDOWN_REQUEST                   ~SHUTDOWN_REQUEST
-#define DIRTY_SHUTDOWN                        0xCAFEDEAD
-#define NORMAL_POWER_OFF                      ~DIRTY_SHUTDOWN
+
+#define SHUTDOWN_REQUEST                        0xDEADBEEF
+#define NO_SHUTDOWN_REQUEST                     ~SHUTDOWN_REQUEST
+#define DIRTY_SHUTDOWN                          0xCAFEDEAD
+#define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
+
 #if defined(SIMU)
   #define WAS_RESET_BY_WATCHDOG()               (false)
   #define WAS_RESET_BY_SOFTWARE()               (false)
@@ -302,7 +304,6 @@ extern uint32_t powerupReason;
   #endif
   #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
   #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
-  #define UNREQUESTED_SHUTDOWN()                (shutdownRequest != SHUTDOWN_REQUEST)
   #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 #endif
 

@@ -2443,7 +2443,14 @@ void opentxInit(OPENTX_INIT_ARGS)
   storageReadAll();
 #endif
 
+  // Radios handle UNEXPECTED_SHUTDOWN() differently:
+  //  * radios with WDT and EEPROM and CPU controlled power use Reset status register
+  //    and eeGeneral.unexpectedShutdown
+  //  * radios with SDCARD model storage use Reset status register and special
+  //    variables in RAM. They can not use eeGeneral.unexpectedShutdown
+  //  * radios without CPU controlled power can only use Reset status register (if available)
   if (UNEXPECTED_SHUTDOWN()) {
+    TRACE("Unexpected Shutdown detected");
     unexpectedShutdown = 1;
   }
 
@@ -2457,11 +2464,12 @@ void opentxInit(OPENTX_INIT_ARGS)
 
 #if defined(PCBHORUS)
   if (!unexpectedShutdown) {
-    // g_model.topbarData is still zero here (because it was not yet read from SDCARD), 
+    // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
     // The storageReadAll() needs topbar object, so it must be created here
     topbar = new Topbar(&g_model.topbarData);
-    LUA_INIT_THEMES_AND_WIDGETS(); // lua widget state must also be prepared before the call to storageReadAll()
+    // lua widget state must also be prepared before the call to storageReadAll()
+    LUA_INIT_THEMES_AND_WIDGETS();
   }
 #endif
 

@@ -133,7 +133,7 @@ void pwrResetHandler()
   // This variable needs to be in a RAM section that is not initialized or zeroed, since once we exit this pwrResetHandler() function the
   // C runtime would otherwise overwrite it during program init.
 
-  if (UNREQUESTED_SHUTDOWN()) {
+  if (shutdownRequest != SHUTDOWN_REQUEST) {
     GPIO_InitTypeDef GPIO_InitStructure;
     GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
