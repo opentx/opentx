@@ -285,7 +285,7 @@ void title(const pm_char * s);
   TITLE(title)
 
 #if defined(CPUARM)
-typedef int choice_t;;
+typedef int choice_t;
 #else
 typedef int8_t choice_t;
 #endif
