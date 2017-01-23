@@ -110,6 +110,9 @@ QString FirmwareInterface::seekString(const QString & string)
 QString FirmwareInterface::seekLabel(const QString & label)
 {
   QString result = seekString(label + "\037\033:");
+  if (result.isEmpty()) {
+    result = seekString(label + "\037\075:"); // This is for Horus
+  }
   if (!result.isEmpty())
     return result;
 
@@ -180,7 +183,7 @@ bool FirmwareInterface::SeekSplash(QByteArray sps, QByteArray spe, int size)
 #define OTX_SPE         "SPE"
 #define OTX_SPE_SIZE    4
 
-void FirmwareInterface::SeekSplash(void) 
+void FirmwareInterface::SeekSplash(void)
 {
   splashSize = 0;
   splashOffset = 0;
@@ -336,7 +339,7 @@ unsigned int FirmwareInterface::save(QString fileName)
   }
   memcpy(binflash, flash.constData(), flashSize);
   QFile file(fileName);
-  
+
   int fileType = getStorageType(fileName);
 
   if (fileType == STORAGE_TYPE_HEX) {
