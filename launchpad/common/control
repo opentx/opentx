@@ -1,0 +1,20 @@
+Source: opentx-companion22
+Section: utils
+Priority: optional
+Maintainer: Bertrand Songis <bsongis-nosp@m-gmail.com>
+Build-Depends: cmake,
+               build-essential,
+               python,
+               python-qt4,
+               qt5-default,
+               qttools5-dev-tools,
+               qtmultimedia5-dev,
+               qttools5-dev,
+               libsdl1.2-dev
+Homepage: http://www.open-tx.org/
+
+Package: opentx-companion22
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: OpenTX Companion
+ Models and settings editor for the OpenTX open source firmware

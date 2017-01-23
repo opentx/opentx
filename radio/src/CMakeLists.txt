@@ -381,6 +381,12 @@ set(SRC ${SRC} ${FIRMWARE_SRC})
 
 ##### firmware target #####
 
+option(NO_FIRMWARE_TARGET "Don't configure firmware target (usefull for compiling Companion only)" OFF)
+if(NO_FIRMWARE_TARGET)
+  message(STATUS "firmware target disabled")
+  return()
+endif()
+
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
 # trick to remove the -rdynamic and --out-implib issues
 set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
