@@ -414,51 +414,48 @@ void menuModelLimits(event_t event)
 #if defined(PPM_UNIT_US)
           lcdDrawNumber(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, PREC1|RIGHT);
 #else
-          if (GV_IS_GV_VALUE(ld->offset, -GV_RANGELARGE, GV_RANGELARGE)) {
 #if defined(GVARS)
+          if (GV_IS_GV_VALUE(ld->offset, -GV_RANGELARGE, GV_RANGELARGE)) {
             drawGVarName(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1|RIGHT);
-#endif            
+            break;
+          }
+#endif
+          if (abs(ld->offset) >= 1000) {
+            lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset/10, RIGHT);
           }
           else {
-            if (abs(ld->offset) >= 1000) {
-              lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset/10, RIGHT);
-            }
-            else {
-              lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset, PREC1|RIGHT);
-            }
+            lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset, PREC1|RIGHT);
           }
 #endif
           break;
 
         case ITEM_OUTPUTS_MIN:
-          if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
 #if defined(GVARS)
+          if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
             drawGVarName(LIMITS_MIN_POS, y, ld->min, attr|PREC1|RIGHT);
+            break:
+          }
 #endif
+          if (ld->min <= 0) {
+            lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
-            if (ld->min <= 0) {
-              lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
-            }
-            else {
-              lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
-            }
+            lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
           }
           break;
 
         case ITEM_OUTPUTS_MAX:
-          if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE)) {
 #if defined(GVARS)
+          if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE)) {
             drawGVarName(LIMITS_MAX_POS, y, ld->max, attr|PREC1|RIGHT);
+            break;
+          }
 #endif
+          if (ld->max >= 0) {
+            lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
-            if (ld->max >= 0) {
-              lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
-            }
-            else {
-              lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
-            }
+            lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
           }
           break;
 
