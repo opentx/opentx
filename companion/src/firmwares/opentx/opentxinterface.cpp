@@ -1314,10 +1314,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
-  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
-  firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
-  firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
@@ -1465,10 +1462,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
-  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
-  firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
-  firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
@@ -1488,10 +1482,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
   firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
-  firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
-  firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
-  firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
