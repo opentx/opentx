@@ -242,7 +242,7 @@ void menuModelLimitsOne(event_t event)
   TITLE(STR_MENULIMITS);
   LimitData * ld = limitAddress(s_currIdx);
 
-  putsChn(12*FW, 0, s_currIdx+1, 0);
+  putsChn(11*FW, 0, s_currIdx+1, 0);
   lcdDrawNumber(19*FW, 0, PPM_CH_CENTER(s_currIdx)+channelOutputs[s_currIdx]/2, RIGHT);
   lcdDrawText(19*FW, 0, STR_US);
 

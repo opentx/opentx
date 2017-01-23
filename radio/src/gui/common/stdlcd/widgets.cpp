@@ -24,7 +24,7 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx,
 {
   if (flags & RIGHT) {
     lcdDrawNumber(x, y, idx, flags);
-    lcdDrawText(x-FW, y, str, flags & ~LEADING0);
+    lcdDrawText(x-FWNUM, y, str, flags & ~LEADING0);
   }
   else {
     lcdDrawText(x, y, str, flags & ~LEADING0);
