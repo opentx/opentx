@@ -30,6 +30,7 @@
 
 #if defined(SIMU_AUDIO)
   #include <SDL.h>
+  #undef main
 #endif
 
 #if LCD_W > 212
