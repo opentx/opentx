@@ -418,7 +418,7 @@ void menuModelLimits(event_t event)
             drawGVarName(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1|RIGHT);
           }
           else {
-            if (abs(ld->offset) == 1000) {
+            if (abs(ld->offset) >= 1000) {
               lcdDrawNumber(LIMITS_OFFSET_POS, y, ld->offset/10, RIGHT);
             }
             else {
