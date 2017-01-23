@@ -415,7 +415,9 @@ void menuModelLimits(event_t event)
           lcdDrawNumber(LIMITS_OFFSET_POS, y, ((int32_t)ld->offset*128) / 25, PREC1|RIGHT);
 #else
           if (GV_IS_GV_VALUE(ld->offset, -GV_RANGELARGE, GV_RANGELARGE)) {
+#if defined(GVARS)
             drawGVarName(LIMITS_OFFSET_POS, y, ld->offset, attr|PREC1|RIGHT);
+#endif            
           }
           else {
             if (abs(ld->offset) >= 1000) {
@@ -430,7 +432,9 @@ void menuModelLimits(event_t event)
 
         case ITEM_OUTPUTS_MIN:
           if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
+#if defined(GVARS)
             drawGVarName(LIMITS_MIN_POS, y, ld->min, attr|PREC1|RIGHT);
+#endif
           }
           else {
             if (ld->min <= 0) {
@@ -444,7 +448,9 @@ void menuModelLimits(event_t event)
 
         case ITEM_OUTPUTS_MAX:
           if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE)) {
+#if defined(GVARS)
             drawGVarName(LIMITS_MAX_POS, y, ld->max, attr|PREC1|RIGHT);
+#endif
           }
           else {
             if (ld->max >= 0) {
