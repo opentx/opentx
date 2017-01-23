@@ -2686,7 +2686,7 @@ int main()
   drawSleepBitmap();
   opentxClose();
   boardOff(); // Only turn power off if necessary
-  wdt_disable();
+  wdt_disable();  // this function is provided by AVR Libc
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif
 
