@@ -412,7 +412,6 @@ uint32_t pwrPressedDuration(void);
 #else
 uint32_t pwroffPressed(void);
 #endif
-#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG() || g_eeGeneral.unexpectedShutdown)
 
 // Backlight driver
 void backlightInit(void);

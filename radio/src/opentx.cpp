@@ -1927,6 +1927,7 @@ void opentxClose(uint8_t shutdown)
   }
 #endif
 
+  // clean unexpectedShutdown flag to mark that we have controlled power-down/reset
   g_eeGeneral.unexpectedShutdown = 0;
   storageDirty(EE_GENERAL);
   storageCheck(true);
@@ -1966,12 +1967,11 @@ void opentxResume()
   referenceSystemAudioFiles();
 #endif
 
-#if defined(CPUARM) || defined(CPUM2560)
+  // prepare the unexpectedShutdown flag, which will remain set if we get unexpected reboot
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
   }
-#endif
 }
 #endif
 
@@ -2443,24 +2443,25 @@ void opentxInit(OPENTX_INIT_ARGS)
   storageReadAll();
 #endif
 
-  if (UNEXPECTED_SHUTDOWN()) {
-    unexpectedShutdown = 1;
-  }
-  else {
+  // radios with EEPROM storage have g_eeGeneral.unexpectedShutdown set by now and we can check it
+  // redios with SDCARD storage have not yet, we will check that later
+  // unexpectedShutdown may already be set from the main()
+  unexpectedShutdown |= g_eeGeneral.unexpectedShutdown;
+
+
 #if defined(SDCARD) && !defined(PCBMEGA2560)
+  // SDCARD related stuff, only done if not unexpectedShutdown
+  if (!unexpectedShutdown) {
     sdInit();
     logsInit();
+ }
 #endif
-  }
 
-#if defined(PCBHORUS)
-  topbar = new Topbar(&g_model.topbarData);
-  LUA_INIT_THEMES_AND_WIDGETS();
-#endif
-  
+  // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
 #if defined(RAMBACKUP)
-  if (UNEXPECTED_SHUTDOWN()) {
+  if (unexpectedShutdown) {
+    // SDCARD not available, try to restore last model from RAM
     rambackupRestore();
   }
   else {
@@ -2469,6 +2470,15 @@ void opentxInit(OPENTX_INIT_ARGS)
 #else
   storageReadAll();
 #endif
+  // we can now check g_eeGeneral.unexpectedShutdown again for radios that have SDCARD model storage
+  unexpectedShutdown |= g_eeGeneral.unexpectedShutdown;
+#endif  // #if !defined(EEPROM)
+
+#if defined(PCBHORUS)
+  if (!unexpectedShutdown) {
+    topbar = new Topbar(&g_model.topbarData);
+    LUA_INIT_THEMES_AND_WIDGETS();
+  }
 #endif
 
 #if defined(SERIAL2)
@@ -2515,16 +2525,15 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
-  if (!UNEXPECTED_SHUTDOWN()) {
+  if (!unexpectedShutdown) {
     opentxStart();
   }
 
-#if defined(CPUARM) || defined(CPUM2560)
+  // prepare the unexpectedShutdown flag, which will remain set if we get unexpected reboot
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
   }
-#endif
 
 #if defined(GUI)
   lcdSetContrast();
@@ -2570,6 +2579,10 @@ int main()
   wdt_disable();
 
   boardInit();
+
+
+  // first check for WDT reset, we check the status of WDT register (storage is not available here)
+  unexpectedShutdown = WAS_RESET_BY_WATCHDOG();
 
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
   // TODO remove this

@@ -153,11 +153,7 @@ void sdPoll10ms(void);
 // Power driver
 uint8_t pwrCheck();
 void pwrOff();
-#if defined(PWRMANAGE)
-  #define UNEXPECTED_SHUTDOWN()   ((mcusr & (1 << WDRF)) || g_eeGeneral.unexpectedShutdown)
-#else
-  #define UNEXPECTED_SHUTDOWN()   (mcusr & (1 << WDRF))
-#endif
+#define WAS_RESET_BY_WATCHDOG()   (mcusr & (1 << WDRF))
 
 // USB fake driver
 #define usbPlugged()              false

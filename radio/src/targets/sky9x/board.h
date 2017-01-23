@@ -360,7 +360,7 @@ void pwrInit();
 void pwrOff();
 uint32_t pwrCheck();
 uint32_t pwroffPressed();
-#define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
+#define WAS_RESET_BY_WATCHDOG()          (false)
 
 // EEPROM driver
 #define EEPROM_SIZE           (4*1024*1024/8)
