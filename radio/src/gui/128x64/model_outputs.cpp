@@ -424,12 +424,12 @@ void menuModelLimits(event_t event)
           break;
 
         case ITEM_OUTPUTS_MIN:
-          if (ld->min == 0) {
-            lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
+          if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
+            GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1|RIGHT, 0, event);
           }
           else {
-            if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE)) {
-              GVAR_MENU_ITEM(LIMITS_MIN_POS, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1|RIGHT, 0, event);
+            if (ld->min <= 0) {
+              lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
             }
             else {
               lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
@@ -438,12 +438,12 @@ void menuModelLimits(event_t event)
           break;
 
         case ITEM_OUTPUTS_MAX:
-          if (ld->max == 0) {
-            lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
+          if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE)) {
+            GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1|RIGHT, 0, event);
           }
           else {
-            if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE)) {
-              GVAR_MENU_ITEM(LIMITS_MAX_POS, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1|RIGHT, 0, event);
+            if (ld->max >= 0) {
+              lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
             }
             else {
               lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), attr|PREC1|RIGHT);
