@@ -221,7 +221,7 @@ void displayExpoLine(coord_t y, ExpoData * ed)
   else if (!ed->flightModes || ((ed->curve.value || ed->swtch) && ((get_tmr10ms() / 200) & 1)))
     displayExpoInfos(y, ed);
   else
-    displayFlightModes(EXPO_LINE_INFOS_POS, y, ed->flightModes);
+    displayFlightModes(EXPO_LINE_INFOS_POS+9*FWNUM, y, ed->flightModes);
 }
 #endif
 

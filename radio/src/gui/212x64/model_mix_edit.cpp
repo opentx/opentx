@@ -126,14 +126,16 @@ void menuModelMixOne(event_t event)
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
-        drawOffsetBar(MIXES_2ND_COLUMN+22, y, md2);
+        drawOffsetBar(MIXES_2ND_COLUMN+35, y, md2);
         break;
       }
 
       case MIX_FIELD_TRIM:
         lcdDrawTextAlignedLeft(y, STR_TRIM);
         drawCheckBox(MIXES_2ND_COLUMN, y, !md2->carryTrim, attr);
-        if (attr) md2->carryTrim = !checkIncDecModel(event, !md2->carryTrim, 0, 1);
+        if (attr) {
+          md2->carryTrim = !checkIncDecModel(event, !md2->carryTrim, 0, 1);
+        }
         break;
 
 #if defined(CURVES)

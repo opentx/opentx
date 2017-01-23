@@ -180,3 +180,10 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
   weight.word = GVAR_MENU_ITEM(x, y, weight.word, GV_RANGELARGE_WEIGHT_NEG, GV_RANGELARGE_WEIGHT, attr, 0, event);
   MD_UNION_TO_WEIGHT(weight, md);
 }
+
+void drawGVarName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
+{
+  char s[8];
+  getGVarString(s, idx);
+  lcdDrawText(x, y, s, flags);
+}
