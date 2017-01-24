@@ -228,12 +228,23 @@ void displayMixInfos(coord_t y, MixData * md)
   lcdDrawChar(MIX_LINE_DELAY_POS, y, cs);
 }
 
-void displayMixLine(coord_t y, MixData * md)
+void displayMixLine(coord_t y, MixData * md, bool active)
 {
-  if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
-    displayMixInfos(y, md);
-  else
-    displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
+  if(active && md->name[0]) {
+    lcdDrawSizedText(FW*sizeof(TR_MIXER), 0, md->name, sizeof(md->name), ZCHAR);
+    if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
+      displayMixInfos(y, md);
+    else
+      displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
+  }
+  else {
+    if (md->name[0])
+      lcdDrawSizedText(MIX_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);
+    else if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
+      displayMixInfos(y, md);
+    else
+      displayFlightModes(MIX_LINE_FM_POS, y, md->flightModes);
+  }
 }
 #endif // LCD_W >= 212
 
@@ -426,16 +437,13 @@ void menuModelMixAll(event_t event)
         if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
           LcdFlags attr = ((s_copyMode || sub != cur) ? 0 : INVERS);
 
-          if (cur == sub && md->name[0])
-              lcdDrawSizedText(FW*sizeof(TR_MIXER), 0, md->name, sizeof(md->name), ZCHAR);
-
           if (mixCnt > 0) lcdDrawTextAtIndex(FW, y, STR_VMLTPX2, md->mltpx, 0);
 
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
 
-          displayMixLine(y, md);
+          displayMixLine(y, md, (sub == cur));
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
