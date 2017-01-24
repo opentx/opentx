@@ -33,10 +33,12 @@
   #include <SDL.h>
   #undef main
 #endif
-#include "simulatordialog.h"
+
+#include "appdata.h"
 #include "constants.h"
 #include "eeprominterface.h"
-#include "appdata.h"
+#include "simulatordialog.h"
+#include "storage.h"
 #include "qxtcommandoptions.h"
 
 #ifdef WIN32
@@ -69,6 +71,8 @@ typedef struct
   int profileId;
   QString firmwareId;
   QString eepromFileName;
+  QString dataFolder;
+  bool useFolder;
 } simulatorOptions_t;
 
 
@@ -84,9 +88,13 @@ void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessage
   msgBox.exec();
 }
 
+bool usesCategorizedStorage(const QString &name)
+{
+  return name.contains("horus", Qt::CaseInsensitive);
+}
 QString radioEepromFileName(QString firmwareId)
 {
-  QString eepromFileName = "";
+  QString eepromFileName = "", ext = "bin";
   QString radioId = firmwareId;
   int pos = firmwareId.indexOf("-");
   if (pos > 0) {
@@ -96,7 +104,10 @@ QString radioEepromFileName(QString firmwareId)
       radioId = radioId.mid(0, pos);
     }
   }
-  eepromFileName = QString("eeprom-%1.bin").arg(radioId);
+  if (usesCategorizedStorage(radioId))
+    ext = "otx";
+
+  eepromFileName = QString("eeprom-%1.%2").arg(radioId, ext);
   eepromFileName = g_eepromDirectory.filePath(eepromFileName.toLatin1());
   // qDebug() << "radioId" << radioId << "eepromFileName" << eepromFileName;
 
@@ -133,16 +144,22 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
                                  "The radio type specified in the selected profile is used by default."));
   cbType->addItems(registered_simulators.keys());
   cbType->setCurrentIndex(cbType->findText(opts.firmwareId));
+  if (cbType->currentIndex() == -1 && cbProf->currentIndex() > -1){
+    SimulatorFactory * sf = getSimulatorFactory(g.profile[cbProf->currentIndex()].fwType());
+    if (sf)
+      cbType->setCurrentIndex(cbType->findText(sf->name()));
+  }
   form->addRow(label, cbType);
 
-  label = QObject::tr("EEPROM Image:");
+  label = QObject::tr("Data File:");
   QLineEdit * fwFile = new QLineEdit(opts.eepromFileName, dialog);
-  fwFile->setToolTip(QObject::tr("EEPROM image file to use. A new file with a default image will be created if necessary.<br />" \
+  fwFile->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  fwFile->setToolTip(QObject::tr("Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.<br />" \
                                  "<b>NOTE</b>: any existing EEPROM data incompatible with the selected radio type may be overwritten!"));
   QToolButton * fwBtn = new QToolButton(dialog);
   fwBtn->setText("...");
   fwBtn->setToolButtonStyle(Qt::ToolButtonTextOnly);
-  fwBtn->setToolTip(QObject::tr("Select EEPROM image file..."));
+  fwBtn->setToolTip(QObject::tr("Select radio data..."));
   QWidget * fw = new QWidget(dialog);
   QHBoxLayout * hl = new QHBoxLayout(fw);
   hl->setContentsMargins(0, 0, 0, 0);
@@ -150,6 +167,40 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   hl->addWidget(fwFile, 2);
   hl->addWidget(fwBtn, 0);
   form->addRow(label, fw);
+
+  label = QObject::tr("Data Folder:");
+  QLineEdit * fwFolder = new QLineEdit(opts.dataFolder, dialog);
+  fwFolder->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+  fwFolder->setToolTip(QObject::tr("Directory containing RADIO and MODELS folders to use." \
+                                   "<br>New folder(s) with default radio/model will be created here if necessary."));
+  QToolButton * fwFolderBtn = new QToolButton(dialog);
+  fwFolderBtn->setText("...");
+  fwFolderBtn->setToolButtonStyle(Qt::ToolButtonTextOnly);
+  fwFolderBtn->setToolTip(QObject::tr("Select data folder..."));
+  QWidget * fwf = new QWidget(dialog);
+  QHBoxLayout * hlf = new QHBoxLayout(fwf);
+  hlf->setContentsMargins(0, 0, 0, 0);
+  hlf->setSpacing(2);
+  hlf->addWidget(fwFolder, 2);
+  hlf->addWidget(fwFolderBtn, 0);
+  form->addRow(label, fwf);
+
+  label = QObject::tr("Date Source:");
+  QRadioButton * dsfileBtn = new QRadioButton(QObject::tr("File"), dialog);
+  QRadioButton * dsdirBtn = new QRadioButton(QObject::tr("Folder"), dialog);
+  dsfileBtn->setChecked(true);
+  QButtonGroup * btngrp = new QButtonGroup(dialog);
+  btngrp->setExclusive(true);
+  btngrp->addButton(dsfileBtn);
+  btngrp->addButton(dsdirBtn);
+  QWidget * btnwdgt = new QWidget(dialog);
+  QHBoxLayout * btnlo = new QHBoxLayout(btnwdgt);
+  btnlo->setContentsMargins(0, 0, 0, 0);
+  btnlo->setSpacing(9);
+  btnlo->addWidget(dsfileBtn);
+  btnlo->addWidget(dsdirBtn);
+  btnlo->addStretch(1);
+  form->addRow(label, btnwdgt);
 
   QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, dialog);
   form->addRow(&buttonBox);
@@ -159,33 +210,64 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
   QObject::connect(&buttonBox, SIGNAL(accepted()), dialog, SLOT(accept()));
   QObject::connect(&buttonBox, SIGNAL(rejected()), dialog, SLOT(reject()));
 
+  auto changeContainerType = [cbType, btnwdgt, dsfileBtn, dsdirBtn, fw, fwf, form] (void)
+  {
+    bool show = usesCategorizedStorage(cbType->currentText());
+    //btnwdgt->setVisible(show);
+    //form->labelForField(btnwdgt)->setVisible(show);
+    fwf->setVisible(show);
+    form->labelForField(fwf)->setVisible(show);
+    // TODO : remove below once .otx support works and un-comment 2 lines above
+    fw->setVisible(!show);
+    form->labelForField(fw)->setVisible(!show);
+    dsdirBtn->setChecked(show);
+    dsfileBtn->setChecked(!show);
+    btnwdgt->setVisible(false);
+    form->labelForField(btnwdgt)->setVisible(false);
+  };
+
+  changeContainerType();
+
   // set new default radio type when profile choice changes
-  QObject::connect(cbProf, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbProf, cbType](int index) {
+  QObject::connect(cbProf, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbProf, cbType] (int index) {
     if (index < 0)
       return;
     SimulatorFactory * sf = getSimulatorFactory(g.profile[index].fwType());
     if (sf) {
       int i = cbType->findText(sf->name());
-      if (i > -1)
+      if (i > -1) {
         cbType->setCurrentIndex(i);
+      }
     }
   });
 
   // set new default firmware file when radio type changes
-  QObject::connect(cbType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbType, fwFile](int index) {
+  QObject::connect(cbType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [cbType, fwFile, changeContainerType] (int index) {
     if (index < 0)
       return;
     fwFile->setText(radioEepromFileName(cbType->currentText()));
+    changeContainerType();
   });
 
   // connect button to file selector dialog
-  QObject::connect(fwBtn, &QToolButton::clicked, [dialog, fwFile, cbType, opts](bool) {
-    QString filter = QObject::tr((cbType->currentText().contains("horus") ? OTX_FILES_FILTER : EEPROM_FILES_FILTER));
+  QObject::connect(fwBtn, &QToolButton::clicked, [dialog, fwFile, cbType, opts, dsfileBtn] (bool) {
+    QString filter = QObject::tr((usesCategorizedStorage(cbType->currentText()) ? OTX_FILES_FILTER : EEPROM_FILES_FILTER));
     filter += QObject::tr("All files (*.*)");
-    QString file = QFileDialog::getSaveFileName(dialog, QObject::tr("Select EEPROM image"), opts.eepromFileName,
+    QString file = QFileDialog::getSaveFileName(dialog, QObject::tr("Select EEPROM image"), fwFile->text(),
                                                 filter, NULL, QFileDialog::DontConfirmOverwrite);
-    if (!file.isEmpty())
+    if (!file.isEmpty()) {
       fwFile->setText(file);
+      dsfileBtn->setChecked(true);
+    }
+  });
+
+  // connect button to folder selector dialog
+  QObject::connect(fwFolderBtn, &QToolButton::clicked, [dialog, fwFolder, cbType, opts, dsdirBtn](bool) {
+    QString folder = QFileDialog::getExistingDirectory(dialog, QObject::tr("Select Data Directory"), fwFolder->text(), QFileDialog::DontUseNativeDialog);
+    if (!folder.isEmpty()) {
+      fwFolder->setText(folder);
+      dsdirBtn->setChecked(true);
+    }
   });
 
   // go
@@ -193,6 +275,8 @@ bool startupOptionsDialog(simulatorOptions_t &opts)
     opts.profileId = cbProf->currentData().toInt();
     opts.firmwareId = cbType->currentText();
     opts.eepromFileName = fwFile->text();
+    opts.dataFolder = fwFolder->text();
+    opts.useFolder = dsdirBtn->isChecked();
     ret = true;
   }
 
@@ -264,7 +348,6 @@ int main(int argc, char *argv[])
   }
 #endif
 
-  SimulatorDialog *dialog;
   simulatorOptions_t simOptions;
   QxtCommandOptions cliOptions;
   bool cliOptsFound = false;
@@ -295,7 +378,7 @@ int main(int argc, char *argv[])
   if (cliOptions.count("help") || cliOptions.showUnrecognizedWarning()) {
     QString msg;
     QTextStream stream(&msg);
-    stream << QObject::tr("Usage: simulator [OPTION]... [EEPROM.BIN FILE] ") << endl << endl;
+    stream << QObject::tr("Usage: simulator [OPTION]... [EEPROM.BIN FILE OR DATA FOLDER] ") << endl << endl;
     stream << QObject::tr("Options:") << endl;
     cliOptions.showUsage(false, stream);
     sharedHelpText(stream);
@@ -337,25 +420,34 @@ int main(int argc, char *argv[])
   }
 
   if (!cliOptions.positional().isEmpty()) {
-    simOptions.eepromFileName = cliOptions.positional()[0];
+    if (QString(cliOptions.positional().at(0)).contains(QRegExp(".*\\.[\\w]{2,6}$"))) {
+      simOptions.eepromFileName = cliOptions.positional()[0];
+    }
+    else {
+      simOptions.dataFolder = cliOptions.positional()[0];
+      simOptions.useFolder = true;
+    }
     cliOptsFound = true;
   }
   else if (cliOptsFound || g.simuLastEepe().isEmpty()) {
     simOptions.eepromFileName = radioEepromFileName(simOptions.firmwareId);
+    simOptions.dataFolder = g_eepromDirectory.absolutePath();
   }
   else {
     simOptions.eepromFileName = g.simuLastEepe();
+    simOptions.dataFolder = g.simuLastFolder();
   }
 
-  if (!cliOptsFound || simOptions.profileId == -1 || simOptions.firmwareId.isEmpty() || simOptions.eepromFileName.isEmpty()) {
+  if (!cliOptsFound || simOptions.profileId == -1 || simOptions.firmwareId.isEmpty() || (simOptions.eepromFileName.isEmpty() && simOptions.dataFolder.isEmpty())) {
     if (!startupOptionsDialog(simOptions)) {
       return finish(0);
     }
   }
-  qDebug() << "firmwareId" << simOptions.firmwareId << "profileId" << simOptions.profileId << "eepromFileName" << simOptions.eepromFileName;
+  qDebug() << "firmwareId" << simOptions.firmwareId << "profileId" << simOptions.profileId << "eepromFileName" \
+           << simOptions.eepromFileName << "dataFolder" << simOptions.dataFolder << "useFolder" << simOptions.useFolder;
 
-  if (simOptions.profileId < 0 || simOptions.firmwareId.isEmpty() || simOptions.eepromFileName.isEmpty()) {
-    showMessage(QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/EEPROM file.\nProfile ID: [%1]; Radio ID: [%2]\nEEPROM File: [%3]")
+  if (simOptions.profileId < 0 || simOptions.firmwareId.isEmpty() || (simOptions.eepromFileName.isEmpty() && simOptions.dataFolder.isEmpty())) {
+    showMessage(QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\nProfile ID: [%1]; Radio ID: [%2];\nData File: [%3]")
                 .arg(simOptions.profileId).arg(simOptions.firmwareId).arg(simOptions.eepromFileName), QMessageBox::Critical);
     return finish(1);
   }
@@ -376,30 +468,29 @@ int main(int argc, char *argv[])
   }
 
   current_firmware_variant = getFirmware(simOptions.firmwareId);
+  registerStorageFactories();
 
+  int oldProfId = g.id();
+  g.id(simOptions.profileId);
   g.simuLastProfId(simOptions.profileId);
   g.lastSimulator(simOptions.firmwareId);
   g.simuLastEepe(simOptions.eepromFileName);
+  g.simuLastFolder(simOptions.dataFolder);
 
-  uint32_t flags = SIMULATOR_FLAGS_STANDALONE;
-  SimulatorInterface * simulator = factory->create();
-  simulator->setSdPath(g.profile[simOptions.profileId].sdPath(), "");
-
-  if (factory->type() == BOARD_HORUS)
-    dialog = new SimulatorDialogHorus(NULL, simulator, flags);
-  else if (factory->type() == BOARD_FLAMENCO)
-    dialog = new SimulatorDialogFlamenco(NULL, simulator, flags);
-  else if (factory->type() == BOARD_TARANIS_X9D || factory->type() == BOARD_TARANIS_X9DP || factory->type() == BOARD_TARANIS_X9E)
-    dialog = new SimulatorDialogTaranis(NULL, simulator, flags | SIMULATOR_FLAGS_S1 | SIMULATOR_FLAGS_S2);
-  else
-    dialog = new SimulatorDialog9X(NULL, simulator, flags);
-
+  SimulatorDialog * dialog = new SimulatorDialog(NULL, factory->create(), SIMULATOR_FLAGS_STANDALONE);
   dialog->setRadioProfileId(simOptions.profileId);
-  dialog->start(simOptions.eepromFileName.toLatin1().constData());
-
+  if (simOptions.useFolder && !simOptions.dataFolder.isEmpty()) {
+    dialog->setDataPath(simOptions.dataFolder);
+    dialog->setEepromData();
+  }
+  else {
+    dialog->setEepromData(simOptions.eepromFileName.toLocal8Bit(), true);
+  }
+  dialog->start();
   dialog->show();
   int result = app.exec();
 
+  g.id(oldProfId);
   dialog->deleteLater();
 
   return finish(result);

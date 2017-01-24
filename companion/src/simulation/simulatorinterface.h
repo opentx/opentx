@@ -28,9 +28,6 @@
 #include <QMap>
 #include <algorithm>
 
-// TODO can be removed?
-template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
-
 struct TxInputs
 {
     int  sticks[CPN_MAX_STICKS]; /* lh lv rv rh */
@@ -38,7 +35,7 @@ struct TxInputs
     int  switches[CPN_MAX_SWITCHES];
     bool keys[CPN_MAX_KEYS];
     bool rotenc;
-    bool trims[12];
+    bool trims[(CPN_MAX_STICKS + CPN_MAX_AUX_TRIMS) * 2];
 };
 
 class TxOutputs
@@ -62,11 +59,11 @@ class SimulatorInterface
 {
   public:
 
-    virtual ~SimulatorInterface() {};
+    virtual ~SimulatorInterface() {}
 
     virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") { };
 
-    virtual void setVolumeGain(int value) { };
+    virtual void setVolumeGain(int value) { }
 
     virtual void start(QByteArray & eeprom, bool tests=true) = 0;
 
@@ -89,10 +86,10 @@ class SimulatorInterface
     virtual void getTrims(Trims &trims) = 0;
 
     virtual unsigned int getPhase() = 0;
-    
+
     virtual const char * getPhaseName(unsigned int phase) = 0;
 
-    virtual void wheelEvent(int steps) { };
+    virtual void wheelEvent(int steps) { }
 
     virtual const char * getError() = 0;
 

@@ -538,6 +538,7 @@ QString AppData::sambaLocation()   { return _sambaLocation;   }
 QString AppData::sambaPort()       { return _sambaPort;       }
 QString AppData::lastSimulator()   { return _lastSimulator;   }
 QString AppData::simuLastEepe()    { return _simuLastEepe;    }
+QString AppData::simuLastFolder()  { return _simuLastFolder;  }
 
 QString AppData::backupDir()       { return _backupDir;       }
 QString AppData::gePath()          { return _gePath;          }
@@ -589,6 +590,7 @@ void AppData::sambaLocation   (const QString     x) { store(x, _sambaLocation,  
 void AppData::sambaPort       (const QString     x) { store(x, _sambaPort,       "samba_port"              );}
 void AppData::lastSimulator   (const QString     x) { store(x, _lastSimulator,   "last_simulator"          );}
 void AppData::simuLastEepe    (const QString     x) { store(x, _simuLastEepe,    "simuLastEepe"            );}
+void AppData::simuLastFolder  (const QString     x) { store(x, _simuLastFolder,  "simuLastFolder"          );}
 
 void AppData::backupDir       (const QString     x) { store(x, _backupDir,       "backupPath"              );}
 void AppData::gePath          (const QString     x) { store(x, _gePath,          "gePath"                  );}
@@ -778,6 +780,7 @@ void AppData::init()
     getset( _sambaPort,       "samba_port"              ,"\\USBserial\\COM23" );
     getset( _lastSimulator,   "last_simulator"          ,"" );
     getset( _simuLastEepe,    "simuLastEepe"            ,"" );
+    getset( _simuLastFolder,  "simuLastFolder"          ,"" );
 
     getset( _backupDir,       "backupPath"              ,"" );
     getset( _gePath,          "gePath"                  ,"" );

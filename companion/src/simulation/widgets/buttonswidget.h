@@ -21,6 +21,8 @@
 #ifndef _BUTTONSWIDGET_H_
 #define _BUTTONSWIDGET_H_
 
+#include "radiouiaction.h"
+
 #include <QWidget>
 #include <QtGui>
 #include <QStyleOption>
@@ -37,73 +39,87 @@ class ButtonsWidget : public QWidget
     {
     }
 
-
     virtual void setStyleSheet(const QString & sheet)
     {
       defaultStyleSheet = sheet;
       QWidget::setStyleSheet(sheet);
     }
 
-    void addArea(int x1, int y1, int x2, int y2, int key, const char * bitmap)
+    void addArea(int x1, int y1, int x2, int y2, const char * image, RadioUiAction * action = NULL)
     {
       QPolygon polygon;
       polygon.setPoints(4, x1, y1, x1, y2, x2, y2, x2, y1);
-      addArea(polygon, key, bitmap);
+      addArea(polygon, image, action);
     }
 
-    void addArea(const QPolygon & polygon, int key, const char * bitmap)
+    void addArea(const QPolygon & polygon, const char * image, RadioUiAction * action = NULL)
     {
-      areas.push_back(Area(polygon, key, bitmap));
+      areas.push_back(Area(polygon, image, action));
     }
 
   protected:
-  
-    class Area {
+
+    class Area
+    {
       public:
-        Area(const QPolygon & polygon, int key, const char * bitmap):
+        Area(const QPolygon & polygon, const QString &image, RadioUiAction * action = NULL):
           polygon(polygon),
-          key(key),
-          bitmap(bitmap)
+          imgFile(image),
+          action(action)
         {
         }
+
         bool contains(int x, int y)
         {
           return polygon.containsPoint(QPoint(x, y), Qt::OddEvenFill);
         }
-      public:
+
         QPolygon polygon;
-        int key;
-        const char * bitmap;
+        QString imgFile;
+        RadioUiAction * action;
     };
-      
-    void setBitmap(const char * bitmap)
+
+    void setBitmap(QString bitmap)
     {
-      if (bitmap) {
+      if (!bitmap.isEmpty()) {
         QWidget::setStyleSheet(QString("background:url(:/images/simulator/%1);").arg(bitmap));
       }
-    }
-    
-    virtual void mousePressEvent(QMouseEvent * event)
-    {
-      int x = event->x();
-      int y = event->y();
-      setFocus();
-      if (event->button() == Qt::LeftButton) {
-        foreach(Area area, areas) {
-          if (area.contains(x, y)) {
-            setBitmap(area.bitmap);
-            emit buttonPressed(area.key);
-            break;
-          }
-        }
+      else {
+        QWidget::setStyleSheet(defaultStyleSheet);
       }
     }
-    
+
+    void onMouseButtonEvent(bool press, QMouseEvent * event)
+    {
+      bool trig;
+      QString img = "";
+      int x = event->x();
+      int y = event->y();
+
+      foreach(Area area, areas) {
+        trig = false;
+        if (press && event->button() == Qt::LeftButton && area.contains(x, y)) {
+          img = area.imgFile;
+          setFocus();
+          trig = true;
+        }
+        if (area.action)
+          area.action->trigger(trig);
+      }
+      setBitmap(img);
+    }
+
+    virtual void mousePressEvent(QMouseEvent * event)
+    {
+      onMouseButtonEvent(true, event);
+    }
     virtual void mouseReleaseEvent(QMouseEvent * event)
     {
-      QWidget::setStyleSheet(defaultStyleSheet);
-      setFocus();
-      emit buttonPressed(0);
+      onMouseButtonEvent(false, event);
+    }
+    virtual void mouseLeaveEvent(QMouseEvent * event)
+    {
+      onMouseButtonEvent(false, event);
     }
 
     void paintEvent(QPaintEvent *)
@@ -114,10 +130,6 @@ class ButtonsWidget : public QWidget
       style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
     }
 
-  signals:
-  
-    void buttonPressed(int button);
-    
   protected:
 
     QList<Area> areas;

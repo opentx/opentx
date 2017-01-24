@@ -263,6 +263,7 @@ class AppData: protected CompStoreObj
     QString _sambaPort;
     QString _lastSimulator;
     QString _simuLastEepe;
+    QString _simuLastFolder;
 
     QString _backupDir;
     QString _gePath;
@@ -316,6 +317,7 @@ class AppData: protected CompStoreObj
     QString sambaPort();
     QString lastSimulator();
     QString simuLastEepe();
+    QString simuLastFolder();
 
     QString backupDir();
     QString gePath();
@@ -368,6 +370,7 @@ class AppData: protected CompStoreObj
     void sambaPort       (const QString);
     void lastSimulator   (const QString);
     void simuLastEepe    (const QString);
+    void simuLastFolder  (const QString);
 
     void backupDir       (const QString);
     void gePath          (const QString);

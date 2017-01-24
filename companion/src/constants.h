@@ -72,9 +72,9 @@ enum BoardEnum {
 #define EEPE_EEPROM_FILE_HEADER       "EEPE EEPROM FILE"
 #define EEPE_MODEL_FILE_HEADER        "EEPE MODEL FILE"
 
-const char * const ARROW_LEFT = "\xE2\x86\x90";
-const char * const ARROW_UP = "\xE2\x86\x91";
+const char * const ARROW_LEFT  = "\xE2\x86\x90";
+const char * const ARROW_UP    = "\xE2\x86\x91";
 const char * const ARROW_RIGHT = "\xE2\x86\x92";
-const char * const ARROW_DOWN = "\xE2\x86\x93";
+const char * const ARROW_DOWN  = "\xE2\x86\x93";
 
 #endif // _CONSTANTS_H_

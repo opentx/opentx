@@ -259,11 +259,13 @@ PrintTargetReport("${COMPANION_NAME}")
 set(simu_SRCS
   modeledit/node.cpp
   modeledit/edge.cpp
+  helpers.cpp
   simulator.cpp
   )
 
 set(simu_MOC_HDRS
   modeledit/node.h
+  helpers.h
   )
 
 qt5_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
@@ -277,7 +279,7 @@ add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RC
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
 qt5_use_modules(${SIMULATOR_NAME} Core Widgets Multimedia)
 
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common shared storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Translations ####################
 
