@@ -1,6 +1,7 @@
 #ifndef _RADIODATA_H_
 #define _RADIODATA_H_
 
+#include "boards.h"
 #include "constants.h"
 #include <QString>
 #include <QComboBox>
@@ -289,7 +290,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString() const;
+    QString toString(BoardEnum board = BOARD_UNKNOWN) const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -1126,25 +1127,6 @@ class GeneralSettings {
       BEEPER_ALARMS_ONLY = -1,
       BEEPER_NOKEYS = 0,
       BEEPER_ALL = 1
-    };
-
-    enum PotConfig {
-      POT_NONE,
-      POT_WITH_DETENT,
-      POT_MULTIPOS_SWITCH,
-      POT_WITHOUT_DETENT
-    };
-
-    enum SliderConfig {
-      SLIDER_NONE,
-      SLIDER_WITH_DETENT
-    };
-
-    enum SwitchConfig {
-      SWITCH_NONE,
-      SWITCH_TOGGLE,
-      SWITCH_2POS,
-      SWITCH_3POS
     };
 
     GeneralSettings();

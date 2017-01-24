@@ -27,6 +27,7 @@
 #include "helpers.h"
 #include "wizarddata.h"
 #include "firmwareinterface.h"
+#include "macros.h"
 #include <stdio.h>
 #include <list>
 #include <float.h>
@@ -35,32 +36,6 @@
 #include <bitset>
 
 std::list<QString> EEPROMWarnings;
-
-int getEEpromSize(BoardEnum board)
-{
-  switch (board) {
-    case BOARD_STOCK:
-      return EESIZE_STOCK;
-    case BOARD_M128:
-      return EESIZE_M128;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return EESIZE_GRUVIN9X;
-    case BOARD_SKY9X:
-      return EESIZE_SKY9X;
-    case BOARD_9XRPRO:
-    case BOARD_AR9X:
-      return EESIZE_9XRPRO;
-    case BOARD_TARANIS_X7:
-    case BOARD_TARANIS_X9D:
-    case BOARD_TARANIS_X9DP:
-    case BOARD_TARANIS_X9E:
-    case BOARD_FLAMENCO:
-      return EESIZE_TARANIS;
-    default:
-      return 0; // unlimited
-  }
-}
 
 const uint8_t chout_ar[] = { // First number is 0..23 -> template setup,  Second is relevant channel out
   1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
@@ -575,7 +550,7 @@ QString RawSource::toString(const ModelData * model) const
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
     case SOURCE_TYPE_SWITCH:
-      return getCurrentFirmware()->getSwitch(index).name;
+      return getSwitchInfo(getCurrentBoard(), index).name;
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return QObject::tr("L%1").arg(index+1);
     case SOURCE_TYPE_CYC:
@@ -617,8 +592,12 @@ bool RawSource::isSlider() const
           index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders));
 }
 
-QString RawSwitch::toString() const
+QString RawSwitch::toString(BoardEnum board) const
 {
+  if (board == BOARD_UNKNOWN) {
+    board = getCurrentBoard();
+  }
+
   static const QString switches9X[] = {
     QString("THR"), QString("RUD"), QString("ELE"),
     QString("ID0"), QString("ID1"), QString("ID2"),
@@ -655,14 +634,13 @@ QString RawSwitch::toString() const
     return QString("!") + RawSwitch(type, -index).toString();
   }
   else {
-    BoardEnum board = getCurrentBoard();
     switch(type) {
       case SWITCH_TYPE_SWITCH:
         if (IS_HORUS_OR_TARANIS(board)) {
           div_t qr = div(index-1, 3);
-          Firmware::Switch sw = getCurrentFirmware()->getSwitch(qr.quot);
+          SwitchInfo switchInfo = getSwitchInfo(board, qr.quot);
           const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
-          return QString(sw.name) + QString(positions[qr.rem]);
+          return QString(switchInfo.name) + QString(positions[qr.rem]);
         }
         else {
           return CHECK_IN_ARRAY(switches9X, index - 1);
@@ -1097,7 +1075,7 @@ GeneralSettings::GeneralSettings()
   BoardEnum board = firmware->getBoard();
 
   for (int i=0; i<firmware->getCapability(FactoryInstalledSwitches); i++) {
-    switchConfig[i] = firmware->getSwitch(i).type;
+    switchConfig[i] = getSwitchInfo(board, i).config;
   }
 
   if (IS_HORUS(board)) {

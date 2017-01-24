@@ -709,11 +709,11 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   // Startup switches warnings
   for (int i=0; i<firmware->getCapability(Switches); i++) {
-    Firmware::Switch sw = firmware->getSwitch(i);
+    SwitchInfo switchInfo = getSwitchInfo(board, i);
     if (IS_HORUS_OR_TARANIS(board)) {
-      sw.type = GeneralSettings::SwitchConfig(generalSettings.switchConfig[i]);
+      switchInfo.config = SwitchConfig(generalSettings.switchConfig[i]);
     }
-    if (sw.type == GeneralSettings::SWITCH_NONE || sw.type == GeneralSettings::SWITCH_TOGGLE) {
+    if (switchInfo.config == SWITCH_NOT_AVAILABLE || switchInfo.config == SWITCH_TOGGLE) {
       continue;
     }
     QLabel * label = new QLabel(this);
@@ -729,8 +729,8 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     slider->setSingleStep(1);
     slider->setPageStep(1);
     slider->setTickInterval(1);
-    label->setText(sw.name);
-    slider->setMaximum(sw.type == GeneralSettings::SWITCH_3POS ? 2 : 1);
+    label->setText(switchInfo.name);
+    slider->setMaximum(switchInfo.config == SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
@@ -960,7 +960,7 @@ void SetupPanel::updateStartupSwitches()
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
-      if (generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS && value == 2) {
+      if (generalSettings.switchConfig[index] != SWITCH_3POS && value == 2) {
         value = 1;
       }
     }
@@ -999,7 +999,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
 
-    if (IS_HORUS_OR_TARANIS(firmware->getBoard()) && generalSettings.switchConfig[index] != GeneralSettings::SWITCH_3POS) {
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard()) && generalSettings.switchConfig[index] != SWITCH_3POS) {
       if (value == 1) {
         value = 2;
       }

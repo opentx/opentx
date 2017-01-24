@@ -413,7 +413,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=getCurrentFirmware()->getCapability(MultiposPots)-1; i>=0; i--) {
-    if (generalSettings.potConfig[i] == GeneralSettings::POT_MULTIPOS_SWITCH) {
+    if (generalSettings.potConfig[i] == POT_MULTIPOS_SWITCH) {
       for (int j=-getCurrentFirmware()->getCapability(MultiposPotsPositions); j<0; j++) {
         item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
@@ -454,7 +454,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=0; i<getCurrentFirmware()->getCapability(MultiposPots); i++) {
-    if (generalSettings.potConfig[i] == GeneralSettings::POT_MULTIPOS_SWITCH) {
+    if (generalSettings.potConfig[i] == POT_MULTIPOS_SWITCH) {
       for (int j=1; j<=getCurrentFirmware()->getCapability(MultiposPotsPositions); j++) {
         item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());

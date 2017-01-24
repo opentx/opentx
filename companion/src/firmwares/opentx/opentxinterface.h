@@ -131,8 +131,6 @@ class OpenTxFirmware: public Firmware
 
     virtual int getCapability(Capability);
     
-    virtual Switch getSwitch(unsigned int index);
-    
     virtual QString getAnalogInputName(unsigned int index);
     
     virtual QTime getMaxTimerStart();

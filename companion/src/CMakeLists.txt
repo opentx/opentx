@@ -112,6 +112,7 @@ add_subdirectory(thirdparty/qxtcommandoptions)
 ############# Common lib ###############
 
 set(common_SRCS
+  boards.cpp
   eeprominterface.cpp
   radiodata.cpp
   firmwares/er9x/er9xeeprom.cpp

@@ -24,8 +24,6 @@
 #include "customdebug.h"
 #include <QBitArray>
 
-#define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
-
 class DataField {
   public:
     DataField(const char *name=""):

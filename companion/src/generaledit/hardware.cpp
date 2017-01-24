@@ -24,11 +24,12 @@
 void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
 {
   if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Switches)) {
-    type->addItem(tr("None"), GeneralSettings::SWITCH_NONE);
-    type->addItem(tr("2 Positions Toggle"), GeneralSettings::SWITCH_TOGGLE);
-    type->addItem(tr("2 Positions"), GeneralSettings::SWITCH_2POS);
-    if (threePos)
-      type->addItem(tr("3 Positions"), GeneralSettings::SWITCH_3POS);
+    type->addItem(tr("None"), SWITCH_NONE);
+    type->addItem(tr("2 Positions Toggle"), SWITCH_TOGGLE);
+    type->addItem(tr("2 Positions"), SWITCH_2POS);
+    if (threePos) {
+      type->addItem(tr("3 Positions"), SWITCH_3POS);
+    }
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
   }
@@ -43,10 +44,10 @@ void HardwarePanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name,
 {
   if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Pots)) {
     label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+index).toString());
-    type->addItem(tr("None"), GeneralSettings::POT_NONE);
-    type->addItem(tr("Pot with detent"), GeneralSettings::POT_WITH_DETENT);
-    type->addItem(tr("Multipos switch"), GeneralSettings::POT_MULTIPOS_SWITCH);
-    type->addItem(tr("Pot without detent"), GeneralSettings::POT_WITHOUT_DETENT);
+    type->addItem(tr("None"), POT_NONE);
+    type->addItem(tr("Pot with detent"), POT_WITH_DETENT);
+    type->addItem(tr("Multipos switch"), POT_MULTIPOS_SWITCH);
+    type->addItem(tr("Pot without detent"), POT_WITHOUT_DETENT);
     name->setField(generalSettings.potName[index], 3, this);
     type->setField(generalSettings.potConfig[index], this);
   }
@@ -61,8 +62,8 @@ void HardwarePanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit *na
 {
   if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Sliders)) {
     label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+firmware->getCapability(Pots)+index).toString());
-    type->addItem(tr("None"), GeneralSettings::SLIDER_NONE);
-    type->addItem(tr("Slider with detent"), GeneralSettings::SLIDER_WITH_DETENT);
+    type->addItem(tr("None"), SLIDER_NONE);
+    type->addItem(tr("Slider with detent"), SLIDER_WITH_DETENT);
     name->setField(generalSettings.sliderName[index], 3, this);
     type->setField(generalSettings.sliderConfig[index], this);
   }

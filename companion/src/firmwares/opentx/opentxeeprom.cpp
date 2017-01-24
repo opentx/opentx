@@ -416,9 +416,10 @@ class SwitchField: public ConversionField< SignedField<N> > {
   public:
     SwitchField(RawSwitch & sw, BoardEnum board, unsigned int version, unsigned long flags=0):
       ConversionField< SignedField<N> >(_switch, SwitchesConversionTable::getInstance(board, version, flags),  QObject::tr("Switch").toLatin1(),
-          QObject::tr("Switch ").toLatin1()+ sw.toString()+  QObject::tr(" cannot be exported on this board!").toLatin1()),
+          QObject::tr("Switch ").toLatin1()+ sw.toString(board) +  QObject::tr(" cannot be exported on this board!").toLatin1()),
       sw(sw),
-      _switch(0)
+      _switch(0),
+      board(board)
     {
     }
 
@@ -436,12 +437,13 @@ class SwitchField: public ConversionField< SignedField<N> > {
     {
       ConversionField< SignedField<N> >::afterImport();
       sw = RawSwitch(_switch);
-      eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< SignedField<N> >::internalField.getName()).arg(sw.toString());
+      eepromImportDebug() << QString("imported %1: %2").arg(ConversionField< SignedField<N> >::internalField.getName()).arg(sw.toString(board));
     }
 
   protected:
     RawSwitch & sw;
     int _switch;
+    BoardEnum board;
 };
 
 class TelemetrySourcesConversionTable: public ConversionTable {
@@ -3814,7 +3816,7 @@ void OpenTxGeneralData::beforeExport()
 void OpenTxGeneralData::afterImport()
 {
   if (IS_TARANIS(board) && version < 217) {
-    generalData.potConfig[0] = GeneralSettings::POT_WITH_DETENT;
-    generalData.potConfig[1] = GeneralSettings::POT_WITH_DETENT;
+    generalData.potConfig[0] = POT_WITH_DETENT;
+    generalData.potConfig[1] = POT_WITH_DETENT;
   }
 }
