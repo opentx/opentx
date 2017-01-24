@@ -442,8 +442,11 @@ void menuModelMixAll(event_t event)
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
           gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
-
+#if LCD_W >= 212
+          displayMixLine(y, md);
+#else
           displayMixLine(y, md, (sub == cur));
+#endif
 
           if (s_copyMode) {
             if ((s_copyMode==COPY_MODE || s_copyTgtOfs == 0) && s_copySrcCh == ch && i == (s_copySrcIdx + (s_copyTgtOfs<0))) {
