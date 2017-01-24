@@ -760,7 +760,7 @@
 #define TR_SLOWUP              TR3("Zpomalení(+)", "Zpomal(\176)", "Zpomalení(\176)")
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "K"
-#define TR_GV                  "GP"
+#define TR_GV                  TR("G", "GP")
 #define TR_ACHANNEL            "A\004Kanál"
 #define TR_RANGE               INDENT"Rozsah"
 #define TR_CENTER              INDENT "Střed"

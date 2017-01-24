@@ -745,7 +745,7 @@
 #define TR_SLOWUP              "Ralenti haut"
 #define TR_MIXER               "MIXEUR"
 #define TR_CV                  "CB"
-#define TR_GV                  "VG"
+#define TR_GV                  TR("G", "VG")
 #define TR_ACHANNEL            "A"
 #define TR_RANGE               INDENT "Plage"
 #define TR_CENTER              INDENT "Centre"

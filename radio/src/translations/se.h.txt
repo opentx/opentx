@@ -756,7 +756,7 @@
 #define TR_SLOWUP              "Trög Upp"
 #define TR_MIXER               "MIXAR"
 #define TR_CV                  "KU"
-#define TR_GV                  "GV"
+#define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004kanal  "
 #define TR_RANGE               INDENT"MinMax"
 #define TR_CENTER              INDENT "Center"
