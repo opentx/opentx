@@ -733,7 +733,7 @@
 #define TR_SLOWUP                      "Slow  up"
 #define TR_MIXER                       "MIXER"
 #define TR_CV                          "CV"
-#define TR_GV                          "GV"
+#define TR_GV                          TR("G", "GV")
 #define TR_ACHANNEL                    "A\004channel"
 #define TR_RANGE                       INDENT "Range"
 #define TR_CENTER                      INDENT "Center"
