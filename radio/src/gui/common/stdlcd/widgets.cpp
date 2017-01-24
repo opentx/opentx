@@ -181,9 +181,11 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
+#if defined(CPUARM)
 void drawGVarName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
   char s[8];
   getGVarString(s, idx);
   lcdDrawText(x, y, s, flags);
 }
+#endif
