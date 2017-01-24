@@ -209,6 +209,22 @@ char * getCurveString(char * dest, int idx)
   return dest;
 }
 
+char * getGVarString(char * dest, int idx)
+{
+  char * s = dest;
+  if (idx < 0) {
+    *s++ = '-';
+    idx = -idx-1;
+  }
+
+  if (ZEXIST(g_model.gvars[idx].name))
+    zchar2str(s, g_model.gvars[idx].name, LEN_GVAR_NAME);
+  else
+    strAppendStringWithIndex(s, STR_GV, idx+1);
+
+  return dest;
+}
+
 char * getSwitchString(char * dest, swsrc_t idx)
 {
   if (idx == SWSRC_NONE) {
