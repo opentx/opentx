@@ -221,8 +221,7 @@ void SimulatorDialog::setupUi()
   }
 
   // support for <QT5.5
-  QVector<keymapHelp_t> helpItems = *radioUiWidget->getKeymapHelp();
-  foreach (keymapHelp_t item, helpItems) {
+  foreach (keymapHelp_t item, *radioUiWidget->getKeymapHelp()) {
     keymapHelp.append(item);
   }
 
