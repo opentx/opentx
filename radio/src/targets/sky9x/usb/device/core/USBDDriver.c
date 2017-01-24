@@ -514,8 +514,7 @@ void USBDDriver_Initialize(
 
     // Initialize interfaces array if not null
     if (pInterfaces != 0) {
-    
-        memset(pInterfaces, sizeof(pInterfaces), 0);
+        memset(pInterfaces, 0, sizeof(pInterfaces));
     }
 }
 
