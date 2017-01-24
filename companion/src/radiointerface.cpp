@@ -36,7 +36,7 @@
 QString getRadioInterfaceCmd()
 {
   burnConfigDialog bcd;
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (IS_STM32(board)) {
     return bcd.getDFU();
   }
@@ -54,12 +54,12 @@ QStringList getAvrdudeArgs(const QString & cmd, const QString & filename)
   burnConfigDialog bcd;
   QString programmer = bcd.getProgrammer();
   QString mcu = bcd.getMCU();
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
 
   args << "-c" << programmer << "-p";
   if (IS_2560(board))
     args << "m2560";
-  else if (board == BOARD_M128)
+  else if (board == Board::BOARD_M128)
     args << "m128";
   else
     args << mcu;
@@ -137,7 +137,7 @@ QStringList getReadEEpromCmd(const QString & filename)
 
 QStringList getWriteEEpromCmd(const QString & filename)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (IS_STM32(board)) {
     // impossible
     return QStringList();
@@ -152,14 +152,14 @@ QStringList getWriteEEpromCmd(const QString & filename)
 
 QStringList getWriteFirmwareArgs(const QString & filename)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (IS_STM32(board)) {
     return getDfuArgs("-D", filename);
   }
-  else if (board == BOARD_SKY9X) {
+  else if (board == Board::BOARD_SKY9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
-  else if (board == BOARD_9XRPRO || board == BOARD_AR9X) {
+  else if (board == Board::BOARD_9XRPRO || board == Board::BOARD_AR9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
   else {
@@ -169,14 +169,14 @@ QStringList getWriteFirmwareArgs(const QString & filename)
 
 QStringList getReadFirmwareArgs(const QString & filename)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (IS_STM32(board)) {
     return getDfuArgs("-U", filename);
   }
-  else if (board == BOARD_SKY9X) {
+  else if (board == Board::BOARD_SKY9X) {
     return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
   }
-  else if (board == BOARD_9XRPRO) {
+  else if (board == Board::BOARD_9XRPRO) {
     return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x80000 0\n");
   }
   else {
@@ -309,7 +309,7 @@ bool writeFirmware(const QString & filename, ProgressWidget * progress)
 
 bool readEeprom(const QString & filename, ProgressWidget * progress)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
 
   QFile file(filename);
   if (file.exists() && !file.remove()) {
@@ -373,7 +373,7 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
 
 bool writeEeprom(const QString & filename, ProgressWidget * progress)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
 
   if (IS_ARM(board)) {
     QString path = findMassstoragePath("EEPROM.BIN");

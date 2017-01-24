@@ -27,7 +27,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   value(value),
   displayStep(0.1)
 {
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
   bool allowGVars = IS_HORUS_OR_TARANIS(board);
   int internalStep = 1;
 

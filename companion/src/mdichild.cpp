@@ -166,7 +166,7 @@ void MdiChild::onFirmwareChanged()
   convertStorage(previous->getBoard(), firmware->getBoard());
 }
 
-void MdiChild::convertStorage(BoardEnum from, BoardEnum to)
+void MdiChild::convertStorage(Board::Type from, Board::Type to)
 {
   QMessageBox::warning(this, "Companion", tr("Models and settings will be automatically converted.\nIf that is not what you intended, please close the file\nand choose the correct radio type/profile before reopening it."), QMessageBox::Ok);
   radioData.convert(from, to);
@@ -179,7 +179,7 @@ void MdiChild::convertStorage(BoardEnum from, BoardEnum to)
 
 void MdiChild::initModelsList()
 {
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   delete modelsListModel;
   modelsListModel = new TreeModel(&radioData, this);
@@ -625,8 +625,8 @@ void MdiChild::setCurrentFile(const QString & fileName)
 
 void MdiChild::writeEeprom()  // write to Tx
 {
-  BoardEnum board = getCurrentBoard();
-  if (board == BOARD_HORUS) {
+  Board::Type board = getCurrentBoard();
+  if (board == Board::BOARD_HORUS) {
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {

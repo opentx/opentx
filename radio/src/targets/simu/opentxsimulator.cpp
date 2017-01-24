@@ -254,18 +254,18 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return QString(SIMULATOR_FLAVOUR);
     }
 
-    virtual BoardEnum type()
+    virtual Board::Type type()
     {
 #if defined(PCBHORUS)
-      return BOARD_HORUS;
+      return Board::BOARD_HORUS;
 #elif defined(PCBFLAMENCO)
-      return BOARD_FLAMENCO;
+      return Board::BOARD_FLAMENCO;
 #elif defined(PCBX7)
-      return BOARD_TARANIS_X7;
+      return Board::BOARD_TARANIS_X7;
 #elif defined(PCBTARANIS)
-      return BOARD_TARANIS_X9D;
+      return Board::BOARD_TARANIS_X9D;
 #else
-      return BOARD_STOCK;
+      return Board::BOARD_STOCK;
 #endif
     }
 };

@@ -376,7 +376,7 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase)
 
 void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   RawSwitch item;
 
   b->clear();
@@ -413,7 +413,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=getCurrentFirmware()->getCapability(MultiposPots)-1; i>=0; i--) {
-    if (generalSettings.potConfig[i] == POT_MULTIPOS_SWITCH) {
+    if (generalSettings.potConfig[i] == Board::POT_MULTIPOS_SWITCH) {
       for (int j=-getCurrentFirmware()->getCapability(MultiposPotsPositions); j<0; j++) {
         item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
@@ -454,7 +454,7 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   for (int i=0; i<getCurrentFirmware()->getCapability(MultiposPots); i++) {
-    if (generalSettings.potConfig[i] == POT_MULTIPOS_SWITCH) {
+    if (generalSettings.potConfig[i] == Board::POT_MULTIPOS_SWITCH) {
       for (int j=1; j<=getCurrentFirmware()->getCapability(MultiposPotsPositions); j++) {
         item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
@@ -546,7 +546,7 @@ void populateGVCB(QComboBox & b, int value, const ModelData & model)
 
 void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   RawSource item;
 
   b->clear();
@@ -824,7 +824,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 #endif
     Firmware * firmware = getCurrentFirmware();
     RadioData * simuData = new RadioData(radioData);
-    BoardEnum board = getCurrentBoard();
+    Board::Type board = getCurrentBoard();
     QByteArray eeprom = QByteArray();
     QString sdPath = g.profile[g.id()].sdPath();
     QString settingsPath = "";

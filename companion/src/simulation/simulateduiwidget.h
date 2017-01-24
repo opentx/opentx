@@ -84,7 +84,7 @@ class SimulatedUIWidget : public QWidget
     RadioUiAction * m_scrollDnAction;
     RadioUiAction * m_rotEncClickAction;
     RadioUiAction * m_screenshotAction;
-    BoardEnum m_board;
+    Board::Type m_board;
     unsigned int m_backLight;
     bool m_lightOn;
     int m_beepShow;

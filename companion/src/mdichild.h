@@ -59,7 +59,7 @@ class MdiChild : public QWidget
     void copyAvailable(bool val);
 
   protected:
-    void convertStorage(BoardEnum from, BoardEnum to);
+    void convertStorage(Board::Type from, Board::Type to);
     void forceNewFilename(const QString & suffix, const QString & ext);
     void closeEvent(QCloseEvent * event);
 

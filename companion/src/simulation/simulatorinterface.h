@@ -115,7 +115,7 @@ class SimulatorFactory {
 
     virtual QString name() = 0;
 
-    virtual BoardEnum type() = 0;
+    virtual Board::Type type() = 0;
 
     virtual SimulatorInterface *create() = 0;
 };

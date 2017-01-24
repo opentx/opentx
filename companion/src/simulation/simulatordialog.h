@@ -126,7 +126,7 @@ class SimulatorDialog : public QDialog
     QString sdCardPath;
     QString radioDataPath;
     QByteArray eepromData;
-    BoardEnum m_board;
+    Board::Type m_board;
     quint8 flags;
     int radioProfileId;
     int lastPhase;

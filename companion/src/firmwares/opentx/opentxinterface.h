@@ -72,9 +72,9 @@ class OpenTxEepromInterface : public EEPROMInterface
     bool saveModel(unsigned int index, ModelData & model, uint8_t version, uint32_t variant);
     
     template <class T>
-    bool saveRadioSettings(GeneralSettings & settings, BoardEnum board, uint8_t version, uint32_t variant);
+    bool saveRadioSettings(GeneralSettings & settings, Board::Type board, uint8_t version, uint32_t variant);
     
-    uint8_t getLastDataVersion(BoardEnum board);
+    uint8_t getLastDataVersion(Board::Type board);
     
     uint32_t getFourCC();
     
@@ -93,7 +93,7 @@ class OpenTxFirmware: public Firmware
       setEEpromInterface(parent->getEEpromInterface());
     }
 
-    OpenTxFirmware(const QString & id, const QString & name, const BoardEnum board):
+    OpenTxFirmware(const QString & id, const QString & name, const Board::Type board):
       Firmware(id, name, board)
     {
       addLanguage("en");

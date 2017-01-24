@@ -727,7 +727,7 @@ void MainWindow::loadBackup()
 
 void MainWindow::readEeprom()
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   QString tempFile;
   if (IS_HORUS(board))
     tempFile = generateProcessUniqueTempFileName("temp.otx");

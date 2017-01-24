@@ -40,7 +40,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
 
     getSettings();
     populateProgrammers();
-    BoardEnum board = getCurrentBoard();
+    Board::Type board = getCurrentBoard();
     if (IS_STM32(board)) {
       setWindowTitle(tr("DFU-UTIL Configuration"));
       ui->avrArgs->hide();
@@ -328,7 +328,7 @@ void burnConfigDialog::on_pushButton_4_clicked()
 
 void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (checked) {
     if (IS_STM32(board)) {
       ui->label_dfu2->show();

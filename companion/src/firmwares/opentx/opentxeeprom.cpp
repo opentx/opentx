@@ -24,6 +24,8 @@
 #include <stdlib.h>
 #include <algorithm>
 
+using namespace Board;
+
 #define IS_DBLEEPROM(board, version)          ((IS_2560(board) || board==BOARD_M128) && version >= 213)
 // Macro used for Gruvin9x board and M128 board between versions 213 and 214 (when there were stack overflows!)
 #define IS_DBLRAM(board, version)             ((IS_2560(board) && version >= 213) || (board==BOARD_M128 && version >= 213 && version <= 214))
@@ -56,7 +58,7 @@
 #define IS_AFTER_RELEASE_21_MARCH_2013(board, version) (version >= 214 || (!IS_ARM(board) && version >= 213))
 #define IS_AFTER_RELEASE_23_MARCH_2013(board, version) (version >= 214 || (board==BOARD_STOCK && version >= 213))
 
-inline int switchIndex(int i, BoardEnum board, unsigned int version)
+inline int switchIndex(int i, Board::Type board, unsigned int version)
 {
   bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
   if (!IS_HORUS_OR_TARANIS(board) && afterrelease21March2013)
@@ -68,7 +70,7 @@ inline int switchIndex(int i, BoardEnum board, unsigned int version)
 class SwitchesConversionTable: public ConversionTable {
 
   public:
-    SwitchesConversionTable(BoardEnum board, unsigned int version, bool timer=false)
+    SwitchesConversionTable(Board::Type board, unsigned int version, bool timer=false)
     {
       int val=0;
       int offset=0;
@@ -177,14 +179,14 @@ class SwitchesConversionTable: public ConversionTable {
 
     class Cache {
       public:
-        Cache(BoardEnum board, unsigned int version, unsigned long flags, SwitchesConversionTable * table):
+        Cache(Board::Type board, unsigned int version, unsigned long flags, SwitchesConversionTable * table):
           board(board),
           version(version),
           flags(flags),
           table(table)
         {
         }
-        BoardEnum board;
+        Board::Type board;
         unsigned int version;
         unsigned long flags;
         SwitchesConversionTable * table;
@@ -194,7 +196,7 @@ class SwitchesConversionTable: public ConversionTable {
 
   public:
 
-    static SwitchesConversionTable * getInstance(BoardEnum board, unsigned int version, unsigned long flags=0)
+    static SwitchesConversionTable * getInstance(Board::Type board, unsigned int version, unsigned long flags=0)
     {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
@@ -225,7 +227,7 @@ std::list<SwitchesConversionTable::Cache> SwitchesConversionTable::internalCache
 class SourcesConversionTable: public ConversionTable {
 
   public:
-    SourcesConversionTable(BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0)
+    SourcesConversionTable(Board::Type board, unsigned int version, unsigned int variant, unsigned long flags=0)
     {
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
 
@@ -363,7 +365,7 @@ class SourcesConversionTable: public ConversionTable {
 
     class Cache {
       public:
-        Cache(BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags, SourcesConversionTable * table):
+        Cache(Board::Type board, unsigned int version, unsigned int variant, unsigned long flags, SourcesConversionTable * table):
           board(board),
           version(version),
           variant(variant),
@@ -371,7 +373,7 @@ class SourcesConversionTable: public ConversionTable {
           table(table)
         {
         }
-        BoardEnum board;
+        Board::Type board;
         unsigned int version;
         unsigned int variant;
         unsigned long flags;
@@ -381,7 +383,7 @@ class SourcesConversionTable: public ConversionTable {
 
   public:
 
-    static SourcesConversionTable * getInstance(BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0)
+    static SourcesConversionTable * getInstance(Board::Type board, unsigned int version, unsigned int variant, unsigned long flags=0)
     {
       for (std::list<Cache>::iterator it=internalCache.begin(); it!=internalCache.end(); it++) {
         Cache element = *it;
@@ -414,7 +416,7 @@ void OpenTxEepromCleanup(void)
 template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
-    SwitchField(RawSwitch & sw, BoardEnum board, unsigned int version, unsigned long flags=0):
+    SwitchField(RawSwitch & sw, Board::Type board, unsigned int version, unsigned long flags=0):
       ConversionField< SignedField<N> >(_switch, SwitchesConversionTable::getInstance(board, version, flags),  QObject::tr("Switch").toLatin1(),
           QObject::tr("Switch ").toLatin1()+ sw.toString(board) +  QObject::tr(" cannot be exported on this board!").toLatin1()),
       sw(sw),
@@ -443,13 +445,13 @@ class SwitchField: public ConversionField< SignedField<N> > {
   protected:
     RawSwitch & sw;
     int _switch;
-    BoardEnum board;
+    Board::Type board;
 };
 
 class TelemetrySourcesConversionTable: public ConversionTable {
 
   public:
-    TelemetrySourcesConversionTable(BoardEnum board, unsigned int version)
+    TelemetrySourcesConversionTable(Board::Type board, unsigned int version)
     {
       int val = 0;
 
@@ -539,7 +541,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
 template <int N>
 class TelemetrySourceField: public ConversionField< UnsignedField<N> > {
   public:
-    TelemetrySourceField(RawSource & source, BoardEnum board, unsigned int version):
+    TelemetrySourceField(RawSource & source, Board::Type board, unsigned int version):
       ConversionField< UnsignedField<N> >(_source, &conversionTable, "Telemetry source"),
       conversionTable(board, version),
       source(source),
@@ -569,7 +571,7 @@ class TelemetrySourceField: public ConversionField< UnsignedField<N> > {
   protected:
     TelemetrySourcesConversionTable conversionTable;
     RawSource & source;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     unsigned int _source;
 };
@@ -577,7 +579,7 @@ class TelemetrySourceField: public ConversionField< UnsignedField<N> > {
 template <int N>
 class SourceField: public ConversionField< UnsignedField<N> > {
   public:
-    SourceField(RawSource & source, BoardEnum board, unsigned int version, unsigned int variant, unsigned long flags=0):
+    SourceField(RawSource & source, Board::Type board, unsigned int version, unsigned int variant, unsigned long flags=0):
       ConversionField< UnsignedField<N> >(_source, SourcesConversionTable::getInstance(board, version, variant, flags),
             "Source", QObject::tr("Source %1 cannot be exported on this board!").arg(source.toString())),
       source(source),
@@ -630,7 +632,7 @@ int smallGvarToC9x(int gvar)
   return gvar;
 }
 
-void splitGvarParam(const int gvar, int & _gvar, unsigned int & _gvarParam, const BoardEnum board, const int version)
+void splitGvarParam(const int gvar, int & _gvar, unsigned int & _gvarParam, const Board::Type board, const int version)
 {
   if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
     if (gvar < -10000) {
@@ -663,7 +665,7 @@ void splitGvarParam(const int gvar, int & _gvar, unsigned int & _gvarParam, cons
   }
 }
 
-void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam, const BoardEnum board, const int version)
+void concatGvarParam(int & gvar, const int _gvar, const unsigned int _gvarParam, const Board::Type board, const int version)
 {
   if (version >= 214 || (!IS_ARM(board) && version >= 213)) {
         gvar = _gvar;
@@ -731,7 +733,7 @@ void importGvarParam(int & gvar, const int _gvar, int version)
 
 class CurveReferenceField: public TransformedField {
   public:
-    CurveReferenceField(CurveReference & curve, BoardEnum board, unsigned int version):
+    CurveReferenceField(CurveReference & curve, Board::Type board, unsigned int version):
       TransformedField(internalField),
       curve(curve),
       _curve_type(0),
@@ -777,7 +779,7 @@ static int importHeliInversionWeight(int source) {
 
 class HeliField: public StructField {
   public:
-    HeliField(SwashRingData & heli, BoardEnum board, unsigned int version, unsigned int variant)
+    HeliField(SwashRingData & heli, Board::Type board, unsigned int version, unsigned int variant)
     {
       if ((IS_ARM(board) && version >= 218) || (IS_STM32(board) && version >= 217)) {
         Append(new UnsignedField<8>(heli.type));
@@ -803,7 +805,7 @@ class HeliField: public StructField {
 
 class FlightModeField: public TransformedField {
   public:
-    FlightModeField(FlightModeData & phase, int index, BoardEnum board, unsigned int version):
+    FlightModeField(FlightModeData & phase, int index, Board::Type board, unsigned int version):
       TransformedField(internalField),
       internalField("FlightMode"),
       phase(phase),
@@ -945,7 +947,7 @@ class FlightModeField: public TransformedField {
     StructField internalField;
     FlightModeData & phase;
     int index;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     int rotencCount;
     int trimBase[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
@@ -955,7 +957,7 @@ class FlightModeField: public TransformedField {
 
 class MixField: public TransformedField {
   public:
-    MixField(MixData & mix, BoardEnum board, unsigned int version, ModelData * model):
+    MixField(MixData & mix, Board::Type board, unsigned int version, ModelData * model):
       TransformedField(internalField),
       internalField("Mix"),
       mix(mix),
@@ -1233,7 +1235,7 @@ class MixField: public TransformedField {
   protected:
     StructField internalField;
     MixData & mix;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     ModelData * model;
     unsigned int _destCh;
@@ -1247,7 +1249,7 @@ class MixField: public TransformedField {
 
 class InputField: public TransformedField {
   public:
-    InputField(ExpoData & expo, BoardEnum board, unsigned int version):
+    InputField(ExpoData & expo, Board::Type board, unsigned int version):
       TransformedField(internalField),
       internalField("Input"),
       expo(expo),
@@ -1414,7 +1416,7 @@ class InputField: public TransformedField {
   protected:
     StructField internalField;
     ExpoData & expo;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     bool _curveMode;
     int  _weight;
@@ -1454,7 +1456,7 @@ class LimitField: public StructField {
       return value - shift;
     }
 
-    LimitField(LimitData & limit, BoardEnum board, unsigned int version):
+    LimitField(LimitData & limit, Board::Type board, unsigned int version):
       StructField("Limit")
     {
       if (IS_ARM(board) && version >= 218) {
@@ -1509,7 +1511,7 @@ class LimitField: public StructField {
 
 class CurvesField: public TransformedField {
   public:
-    CurvesField(CurveData * curves, BoardEnum board, unsigned int version):
+    CurvesField(CurveData * curves, Board::Type board, unsigned int version):
       TransformedField(internalField),
       internalField("Curves"),
       curves(curves),
@@ -1629,7 +1631,7 @@ class CurvesField: public TransformedField {
   protected:
     StructField internalField;
     CurveData * curves;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     int maxCurves;
     int maxPoints;
@@ -1640,7 +1642,7 @@ class CurvesField: public TransformedField {
 class LogicalSwitchesFunctionsTable: public ConversionTable {
 
   public:
-    LogicalSwitchesFunctionsTable(BoardEnum board, unsigned int version)
+    LogicalSwitchesFunctionsTable(Board::Type board, unsigned int version)
     {
       int val=0;
       bool afterrelease21March2013 = IS_AFTER_RELEASE_21_MARCH_2013(board, version);
@@ -1678,7 +1680,7 @@ class LogicalSwitchesFunctionsTable: public ConversionTable {
 class AndSwitchesConversionTable: public ConversionTable {
 
   public:
-    AndSwitchesConversionTable(BoardEnum board, unsigned int version)
+    AndSwitchesConversionTable(Board::Type board, unsigned int version)
     {
       int val=0;
       addConversion(RawSwitch(SWITCH_TYPE_NONE), val++);
@@ -1723,7 +1725,7 @@ class AndSwitchesConversionTable: public ConversionTable {
       }
     }
 
-    static ConversionTable * getInstance(BoardEnum board, unsigned int version)
+    static ConversionTable * getInstance(Board::Type board, unsigned int version)
     {
       if (IS_ARM(board) && version >= 216)
         return new SwitchesConversionTable(board, version);
@@ -1756,7 +1758,7 @@ class AndSwitchesConversionTable: public ConversionTable {
 
 class LogicalSwitchField: public TransformedField {
   public:
-    LogicalSwitchField(LogicalSwitchData & csw, BoardEnum board, unsigned int version, unsigned int variant, ModelData * model=NULL):
+    LogicalSwitchField(LogicalSwitchData & csw, Board::Type board, unsigned int version, unsigned int variant, ModelData * model=NULL):
       TransformedField(internalField),
       internalField("LogicalSwitch"),
       csw(csw),
@@ -1957,7 +1959,7 @@ class LogicalSwitchField: public TransformedField {
   protected:
     StructField internalField;
     LogicalSwitchData & csw;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     unsigned int variant;
     ModelData * model;
@@ -1973,7 +1975,7 @@ class LogicalSwitchField: public TransformedField {
 class CustomFunctionsConversionTable: public ConversionTable {
 
   public:
-    CustomFunctionsConversionTable(BoardEnum board, unsigned int version)
+    CustomFunctionsConversionTable(Board::Type board, unsigned int version)
     {
       int val=0;
 
@@ -2085,7 +2087,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
 template <int N>
 class SwitchesWarningField: public TransformedField {
   public:
-    SwitchesWarningField(uint64_t & sw, BoardEnum board, unsigned int version):
+    SwitchesWarningField(uint64_t & sw, Board::Type board, unsigned int version):
       TransformedField(internalField),
       internalField(_sw, "SwitchesWarning"),
       sw(sw),
@@ -2118,13 +2120,13 @@ class SwitchesWarningField: public TransformedField {
     BaseUnsignedField<uint64_t, N> internalField;
     uint64_t & sw;
     uint64_t _sw;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
 };
 
 class ArmCustomFunctionField: public TransformedField {
   public:
-    ArmCustomFunctionField(CustomFunctionData & fn, BoardEnum board, unsigned int version, unsigned int variant):
+    ArmCustomFunctionField(CustomFunctionData & fn, Board::Type board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
       internalField("CustomFunction"),
       fn(fn),
@@ -2352,7 +2354,7 @@ class ArmCustomFunctionField: public TransformedField {
   protected:
     StructField internalField;
     CustomFunctionData & fn;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     unsigned int variant;
     CustomFunctionsConversionTable functionsConversionTable;
@@ -2365,7 +2367,7 @@ class ArmCustomFunctionField: public TransformedField {
 
 class AvrCustomFunctionField: public TransformedField {
   public:
-    AvrCustomFunctionField(CustomFunctionData & fn, BoardEnum board, unsigned int version, unsigned int variant):
+    AvrCustomFunctionField(CustomFunctionData & fn, Board::Type board, unsigned int version, unsigned int variant):
       TransformedField(internalField),
       internalField("CustomFunction"),
       fn(fn),
@@ -2541,7 +2543,7 @@ class AvrCustomFunctionField: public TransformedField {
   protected:
     StructField internalField;
     CustomFunctionData & fn;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     unsigned int variant;
     CustomFunctionsConversionTable functionsConversionTable;
@@ -2554,7 +2556,7 @@ class AvrCustomFunctionField: public TransformedField {
 
 class FrskyScreenField: public DataField {
   public:
-    FrskyScreenField(FrSkyScreenData & screen, BoardEnum board, unsigned int version, unsigned int variant):
+    FrskyScreenField(FrSkyScreenData & screen, Board::Type board, unsigned int version, unsigned int variant):
       DataField("Frsky Screen"),
       screen(screen),
       board(board),
@@ -2670,7 +2672,7 @@ class FrskyScreenField: public DataField {
 
   protected:
     FrSkyScreenData & screen;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     StructField none;
     StructField bars;
@@ -2697,7 +2699,7 @@ class RSSIConversionTable: public ConversionTable
 class TelemetryVarioSourceConversionTable: public ConversionTable
 {
   public:
-    TelemetryVarioSourceConversionTable(BoardEnum board, unsigned int version)
+    TelemetryVarioSourceConversionTable(Board::Type board, unsigned int version)
     {
       int val = 0;
       if (!IS_TARANIS(board)) {
@@ -2716,7 +2718,7 @@ class TelemetryVarioSourceConversionTable: public ConversionTable
 class TelemetryVoltsSourceConversionTable: public ConversionTable
 {
   public:
-    TelemetryVoltsSourceConversionTable(BoardEnum board, unsigned int version)
+    TelemetryVoltsSourceConversionTable(Board::Type board, unsigned int version)
     {
       int val = 0;
       addConversion(TELEMETRY_VOLTS_SOURCE_A1, val++);
@@ -2733,7 +2735,7 @@ class TelemetryVoltsSourceConversionTable: public ConversionTable
 class ScreenTypesConversionTable: public ConversionTable
 {
   public:
-    ScreenTypesConversionTable(BoardEnum board, unsigned int version)
+    ScreenTypesConversionTable(Board::Type board, unsigned int version)
     {
       int val = 0;
       if (IS_ARM(board)) {
@@ -2747,7 +2749,7 @@ class ScreenTypesConversionTable: public ConversionTable
 class TelemetryCurrentSourceConversionTable: public ConversionTable
 {
   public:
-    TelemetryCurrentSourceConversionTable(BoardEnum board, unsigned int version)
+    TelemetryCurrentSourceConversionTable(Board::Type board, unsigned int version)
     {
       int val = 0;
       addConversion(TELEMETRY_CURRENT_SOURCE_NONE, val++);
@@ -2763,7 +2765,7 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
 
 class FrskyField: public StructField {
   public:
-    FrskyField(FrSkyData & frsky, BoardEnum board, unsigned int version, unsigned int variant):
+    FrskyField(FrSkyData & frsky, Board::Type board, unsigned int version, unsigned int variant):
       StructField("FrSky"),
       telemetryVarioSourceConversionTable(board, version),
       screenTypesConversionTable(board, version),
@@ -2893,7 +2895,7 @@ class FrskyField: public StructField {
 
 class MavlinkField: public StructField {
   public:
-    MavlinkField(MavlinkData & mavlink, BoardEnum board, unsigned int version):
+    MavlinkField(MavlinkData & mavlink, Board::Type board, unsigned int version):
       StructField("MavLink")
     {
       Append(new UnsignedField<4>(mavlink.rc_rssi_scale, "Rc_rssi_scale"));
@@ -2924,7 +2926,7 @@ class CustomScreenField: public StructField {
 
 class SensorField: public TransformedField {
   public:
-    SensorField(SensorData & sensor, BoardEnum board, unsigned int version):
+    SensorField(SensorData & sensor, Board::Type board, unsigned int version):
       TransformedField(internalField),
       internalField("Sensor"),
       sensor(sensor),
@@ -3022,7 +3024,7 @@ class SensorField: public TransformedField {
 int exportPpmDelay(int delay) { return (delay - 300) / 50; }
 int importPpmDelay(int delay) { return 300 + 50 * delay; }
 
-OpenTxModelData::OpenTxModelData(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant):
+OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant):
   TransformedField(internalField),
   internalField("ModelData"),
   modelData(modelData),
@@ -3500,7 +3502,7 @@ void OpenTxModelData::afterImport()
   }
 }
 
-OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant):
+OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant):
   TransformedField(internalField),
   internalField("General Settings"),
   generalData(generalData),

@@ -106,7 +106,7 @@ TreeModel::TreeModel(RadioData * radioData, QObject * parent):
   radioData(radioData),
   availableEEpromSize(-1)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   QVector<QVariant> labels;
   if (!IS_HORUS(board))
     labels << tr("Index");
@@ -244,7 +244,7 @@ bool TreeModel::setData(const QModelIndex & index, const QVariant & value, int r
 void TreeModel::refresh()
 {
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
-  BoardEnum board = eepromInterface->getBoard();
+  Board::Type board = eepromInterface->getBoard();
   
   if (!IS_SKY9X(board) && !IS_HORUS(board)) {
     availableEEpromSize = getEEpromSize(board) - 64; // let's consider fat

@@ -23,46 +23,64 @@
 
 // TODO create a Board class with all these functions
 
-enum BoardEnum {
-  BOARD_STOCK,
-  BOARD_M128,
-  BOARD_MEGA2560,
-  BOARD_GRUVIN9X,
-  BOARD_SKY9X,
-  BOARD_9XRPRO,
-  BOARD_AR9X,
-  BOARD_TARANIS_X7,
-  BOARD_TARANIS_X9D,
-  BOARD_TARANIS_X9DP,
-  BOARD_TARANIS_X9E,
-  BOARD_FLAMENCO,
-  BOARD_HORUS,
-  BOARD_UNKNOWN = -1
-};
+namespace Board {
 
-enum PotConfig {
-  POT_NONE,
-  POT_WITH_DETENT,
-  POT_MULTIPOS_SWITCH,
-  POT_WITHOUT_DETENT
-};
+  enum Type
+  {
+    BOARD_STOCK,
+    BOARD_M128,
+    BOARD_MEGA2560,
+    BOARD_GRUVIN9X,
+    BOARD_SKY9X,
+    BOARD_9XRPRO,
+    BOARD_AR9X,
+    BOARD_TARANIS_X7,
+    BOARD_TARANIS_X9D,
+    BOARD_TARANIS_X9DP,
+    BOARD_TARANIS_X9E,
+    BOARD_FLAMENCO,
+    BOARD_HORUS,
+    BOARD_UNKNOWN = -1
+  };
 
-enum SliderConfig {
-  SLIDER_NONE,
-  SLIDER_WITH_DETENT
-};
+  enum PotType
+  {
+    POT_NONE,
+    POT_WITH_DETENT,
+    POT_MULTIPOS_SWITCH,
+    POT_WITHOUT_DETENT
+  };
 
-enum SwitchConfig {
-  SWITCH_NOT_AVAILABLE,
-  SWITCH_TOGGLE,
-  SWITCH_2POS,
-  SWITCH_3POS
-};
+  enum SliderType
+  {
+    SLIDER_NONE,
+    SLIDER_WITH_DETENT
+  };
 
-struct SwitchInfo {
-  SwitchConfig config;
-  const char * name;
-};
+  enum SwitchType
+  {
+    SWITCH_NOT_AVAILABLE,
+    SWITCH_TOGGLE,
+    SWITCH_2POS,
+    SWITCH_3POS
+  };
+
+  struct SwitchInfo
+  {
+    SwitchType config;
+    const char * name;
+  };
+
+  struct SwitchPosition {
+    SwitchPosition(unsigned int index, unsigned int position):
+      index(index),
+      position(position)
+      {
+      }
+      unsigned int index;
+      unsigned int position;
+  };
+}
 
 // TODO remove all those constants
 #define EESIZE_STOCK                   2048
@@ -83,22 +101,22 @@ struct SwitchInfo {
 #define FSIZE_HORUS                    (2048*1024)
 #define FSIZE_MAX                      FSIZE_HORUS
 
-int getEEpromSize(BoardEnum board);
-SwitchInfo getSwitchInfo(BoardEnum board, unsigned index);
+int getEEpromSize(Board::Type board);
+Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
 
-#define IS_9X(board)                   (board==BOARD_STOCK || board==BOARD_M128)
-#define IS_STOCK(board)                (board==BOARD_STOCK)
-#define IS_2560(board)                 (board==BOARD_GRUVIN9X || board==BOARD_MEGA2560)
-#define IS_SKY9X(board)                (board==BOARD_SKY9X || board==BOARD_9XRPRO || board==BOARD_AR9X)
-#define IS_9XRPRO(board)               (board==BOARD_9XRPRO)
-#define IS_TARANIS_X7(board)           (board==BOARD_TARANIS_X7)
-#define IS_TARANIS_X9(board)           (board==BOARD_TARANIS_X9D || board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E)
-#define IS_TARANIS_PLUS(board)         (board==BOARD_TARANIS_X9DP || board==BOARD_TARANIS_X9E)
-#define IS_TARANIS_X9E(board)          (board==BOARD_TARANIS_X9E)
+#define IS_9X(board)                   (board==Board::BOARD_STOCK || board==Board::BOARD_M128)
+#define IS_STOCK(board)                (board==Board::BOARD_STOCK)
+#define IS_2560(board)                 (board==Board::BOARD_GRUVIN9X || board==Board::BOARD_MEGA2560)
+#define IS_SKY9X(board)                (board==Board::BOARD_SKY9X || board==Board::BOARD_9XRPRO || board==Board::BOARD_AR9X)
+#define IS_9XRPRO(board)               (board==Board::BOARD_9XRPRO)
+#define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
+#define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
+#define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
+#define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board))
-#define IS_HORUS(board)                (board==BOARD_HORUS)
+#define IS_HORUS(board)                (board==Board::BOARD_HORUS)
 #define IS_HORUS_OR_TARANIS(board)     (IS_HORUS(board) || IS_TARANIS(board))
-#define IS_FLAMENCO(board)             (board==BOARD_FLAMENCO)
+#define IS_FLAMENCO(board)             (board==Board::BOARD_FLAMENCO)
 #define IS_STM32(board)                (IS_TARANIS(board) || IS_HORUS(board) || IS_FLAMENCO(board))
 #define IS_ARM(board)                  (IS_STM32(board) || IS_SKY9X(board))
 #define HAS_LARGE_LCD(board)           (IS_HORUS(board) || (IS_TARANIS(board) && !IS_TARANIS_X7(board)))

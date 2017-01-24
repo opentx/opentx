@@ -35,13 +35,13 @@ class RadioKnobWidget : public RadioWidget
 
   public:
 
-    explicit RadioKnobWidget(PotConfig type = POT_WITH_DETENT, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioKnobWidget(Board::PotType type = Board::POT_WITH_DETENT, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(parent, f),
       m_potType(type)
     {
       init();
     }
-    explicit RadioKnobWidget(PotConfig type, const QString &labelText, int value = 0, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioKnobWidget(Board::PotType type, const QString & labelText, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(labelText, value, parent, f),
       m_potType(type)
     {
@@ -63,7 +63,7 @@ class RadioKnobWidget : public RadioWidget
 
   private:
 
-    PotConfig m_potType;
+    Board::PotType m_potType;
 
 
     class KnobWidget : public QDial
@@ -72,10 +72,10 @@ class RadioKnobWidget : public RadioWidget
 
       public:
 
-        explicit KnobWidget(PotConfig type, QWidget * parent = 0):
+        explicit KnobWidget(Board::PotType type, QWidget * parent = 0):
           QDial(parent),
           m_type(type),
-          m_positions(type == POT_MULTIPOS_SWITCH ? 5 : 0)
+          m_positions(type == Board::POT_MULTIPOS_SWITCH ? 5 : 0)
         {
           setToolTip(tr("Right-double-click to reset to center."));
           setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -114,7 +114,7 @@ class RadioKnobWidget : public RadioWidget
           QDial::mousePressEvent(event);
         }
 
-        PotConfig m_type;
+        Board::PotType m_type;
         quint8 m_positions;
     };
 

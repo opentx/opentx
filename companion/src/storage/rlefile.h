@@ -90,7 +90,7 @@ class RleFile
   unsigned int  m_err;       //error reasons
   uint16_t      m_size;
 
-  BoardEnum board;
+  Board::Type board;
   unsigned int version;
   uint8_t *eeprom;
   unsigned int eeprom_size;
@@ -125,9 +125,9 @@ public:
 
   RleFile();
 
-  void EeFsCreate(uint8_t *eeprom, int size, BoardEnum board, unsigned int version);
+  void EeFsCreate(uint8_t *eeprom, int size, Board::Type board, unsigned int version);
 
-  bool EeFsOpen(uint8_t *eeprom, int size, BoardEnum board);
+  bool EeFsOpen(uint8_t *eeprom, int size, Board::Type board);
 
   ///open file for reading, no close necessary
   ///for writing use writeRlc() or create()

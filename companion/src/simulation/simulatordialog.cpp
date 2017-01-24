@@ -204,15 +204,15 @@ void SimulatorDialog::setupUi()
   setWindowTitle(windowName);
 
   switch(m_board) {
-    case BOARD_TARANIS_X7 :
+    case Board::BOARD_TARANIS_X7 :
       radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
       break;
-    case BOARD_TARANIS_X9D  :
-    case BOARD_TARANIS_X9DP :
-    case BOARD_TARANIS_X9E  :
+    case Board::BOARD_TARANIS_X9D  :
+    case Board::BOARD_TARANIS_X9DP :
+    case Board::BOARD_TARANIS_X9E  :
       radioUiWidget = new SimulatedUIWidgetX9(simulator, this);
       break;
-    case BOARD_HORUS :
+    case Board::BOARD_HORUS :
       radioUiWidget = new SimulatedUIWidgetX12(simulator, this);
       break;
     default:
@@ -312,7 +312,7 @@ void SimulatorDialog::setupRadioWidgets()
 {
   int i, midpos, aIdx;
   QString wname;
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   // First clear out any existing widgets.
   if (switches.size()) {
@@ -334,17 +334,17 @@ void SimulatorDialog::setupRadioWidgets()
   // Now set up new widgets.
 
   // switches
-  SwitchInfo switchInfo;
+  Board::SwitchInfo switchInfo;
   // FIXME :  CPN_MAX_SWITCHES == 32 but GeneralSettings::switchConfig[18] !!
   for (i = 0; i < firmware->getCapability(Capability(Switches)) && i < 18 /*CPN_MAX_SWITCHES*/; ++i) {
-    if (radioSettings.switchConfig[i] == SWITCH_NONE)
+    if (radioSettings.switchConfig[i] == Board::SWITCH_NOT_AVAILABLE)
       continue;
 
     if ((wname = QString(radioSettings.switchName[i])).isEmpty()) {
       switchInfo = getSwitchInfo(board, i);
       wname = QString(switchInfo.name);
     }
-    RadioSwitchWidget * sw = new RadioSwitchWidget(SwitchConfig(radioSettings.switchConfig[i]), wname, 0, ui->radioWidgetsHT);
+    RadioSwitchWidget * sw = new RadioSwitchWidget(Board::SwitchType(radioSettings.switchConfig[i]), wname, 0, ui->radioWidgetsHT);
     sw->setIndex(i);
     ui->radioWidgetsHTLayout->addWidget(sw);
     switches.append(sw);
@@ -361,7 +361,7 @@ void SimulatorDialog::setupRadioWidgets()
     if ((wname = QString(radioSettings.potName[i])).isEmpty())
       wname = firmware->getAnalogInputName(4 + aIdx + i);
 
-    RadioKnobWidget * pot = new RadioKnobWidget(PotConfig(radioSettings.potConfig[i]), wname, 0, ui->radioWidgetsHT);
+    RadioKnobWidget * pot = new RadioKnobWidget(Board::PotType(radioSettings.potConfig[i]), wname, 0, ui->radioWidgetsHT);
     pot->setIndex(aIdx + i);
     // FIXME : total hack here -- this needs to follow the exception in radio/src/mixer.cpp:evalInputs()
     if (i == 0 && IS_TARANIS(board) && !IS_TARANIS_X7(board))

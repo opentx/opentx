@@ -38,7 +38,7 @@
 
 class OpenTxGeneralData: public TransformedField {
   public:
-    OpenTxGeneralData(GeneralSettings & generalData, BoardEnum board, unsigned int version, unsigned int variant=0);
+    OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant=0);
 
   protected:
     virtual void beforeExport();
@@ -46,7 +46,7 @@ class OpenTxGeneralData: public TransformedField {
 
     StructField internalField;
     GeneralSettings & generalData;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     int inputsCount;
     unsigned int chkSum;
@@ -56,7 +56,7 @@ class OpenTxGeneralData: public TransformedField {
 class ProtocolsConversionTable: public ConversionTable
 {
   public:
-    ProtocolsConversionTable(BoardEnum board)
+    ProtocolsConversionTable(Board::Type board)
     {
       int val = 0;
       if (IS_ARM(board)) {
@@ -105,7 +105,7 @@ class ChannelsConversionTable: public ConversionTable
 
 class OpenTxModelData: public TransformedField {
   public:
-    OpenTxModelData(ModelData & modelData, BoardEnum board, unsigned int version, unsigned int variant);
+    OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant);
 
     const char * getName() { return name; }
 
@@ -115,7 +115,7 @@ class OpenTxModelData: public TransformedField {
 
     StructField internalField;
     ModelData & modelData;
-    BoardEnum board;
+    Board::Type board;
     unsigned int version;
     unsigned int variant;
 

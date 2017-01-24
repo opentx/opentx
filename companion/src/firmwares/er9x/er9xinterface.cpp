@@ -32,7 +32,7 @@
 #define FILE_MODEL(n) (1+n)
 
 Er9xInterface::Er9xInterface():
-  EEPROMInterface(BOARD_STOCK),
+  EEPROMInterface(Board::BOARD_STOCK),
   efile(new RleFile())
 {
 }
@@ -116,13 +116,13 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != getEEpromSize(BOARD_STOCK)) {
+  if (size != getEEpromSize(Board::BOARD_STOCK)) {
     std::cout << "wrong size\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
 
-  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_STOCK)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, Board::BOARD_STOCK)) {
     std::cout << "wrong file system\n";
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();

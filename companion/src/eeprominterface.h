@@ -154,14 +154,14 @@ class EEPROMInterface
 {
   public:
 
-    EEPROMInterface(BoardEnum board):
+    EEPROMInterface(Board::Type board):
       board(board)
     {
     }
 
     virtual ~EEPROMInterface() {}
 
-    inline BoardEnum getBoard() { return board; }
+    inline Board::Type getBoard() { return board; }
 
     virtual unsigned long load(RadioData &radioData, const uint8_t * eeprom, int size) = 0;
 
@@ -175,7 +175,7 @@ class EEPROMInterface
 
   protected:
 
-    BoardEnum board;
+    Board::Type board;
 
   private:
 
@@ -254,7 +254,7 @@ struct Option {
 class Firmware {
 
   public:
-    Firmware(const QString & id, const QString & name, BoardEnum board):
+    Firmware(const QString & id, const QString & name, Board::Type board):
       id(id),
       name(name),
       board(board),
@@ -264,7 +264,7 @@ class Firmware {
     {
     }
 
-    Firmware(Firmware * base, const QString & id, const QString & name, BoardEnum board):
+    Firmware(Firmware * base, const QString & id, const QString & name, Board::Type board):
       id(id),
       name(name),
       board(board),
@@ -301,7 +301,7 @@ class Firmware {
 
     virtual QString getFirmwareUrl() = 0;
 
-    BoardEnum getBoard() const
+    Board::Type getBoard() const
     {
       return board;
     }
@@ -344,7 +344,7 @@ class Firmware {
   protected:
     QString id;
     QString name;
-    BoardEnum board;
+    Board::Type board;
     unsigned int variantBase;
     Firmware * base;
     EEPROMInterface * eepromInterface;
@@ -372,7 +372,7 @@ inline EEPROMInterface * getCurrentEEpromInterface()
   return getCurrentFirmware()->getEEpromInterface();
 }
 
-inline BoardEnum getCurrentBoard()
+inline Board::Type getCurrentBoard()
 {
   return getCurrentFirmware()->getBoard();
 }

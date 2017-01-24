@@ -23,12 +23,12 @@
 
 // TODO here we will move a lot of functions from eeprominterface.cpp when no merge risk
 
-void ModelData::convert(BoardEnum before, BoardEnum after)
+void ModelData::convert(Board::Type before, Board::Type after)
 {
   // Here we can add explicit conversions when moving from one board to another
 }
 
-void GeneralSettings::convert(BoardEnum before, BoardEnum after)
+void GeneralSettings::convert(Board::Type before, Board::Type after)
 {
   // Here we can add explicit conversions when moving from one board to another
 }
@@ -88,7 +88,7 @@ QString RadioData::getNextModelFilename()
   return filename;
 }
 
-void RadioData::convert(BoardEnum before, BoardEnum after)
+void RadioData::convert(Board::Type before, Board::Type after)
 {
   generalSettings.convert(before, after);
   for (unsigned i=0; i<models.size(); i++) {
@@ -102,7 +102,7 @@ void RadioData::convert(BoardEnum before, BoardEnum after)
     }
   }
 
-  if (after == BOARD_HORUS) {
+  if (after == Board::BOARD_HORUS) {
     fixModelFilenames();
   }
 }

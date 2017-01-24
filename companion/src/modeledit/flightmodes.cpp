@@ -87,7 +87,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   trimsValue << ui->trim1Value << ui->trim2Value << ui->trim3Value << ui->trim4Value;
   trimsSlider << ui->trim1Slider << ui->trim2Slider << ui->trim3Slider << ui->trim4Slider;
 
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   for (int i=0; i<4; i++) {
     trimsLabel[i]->setText(labels[CONVERT_MODE(i+1)-1]);
@@ -305,7 +305,7 @@ void FlightModePanel::trimUpdate(unsigned int trim)
     trimsSlider[trim]->setEnabled(false);
   }
   else {
-    BoardEnum board = firmware->getBoard();
+    Board::Type board = firmware->getBoard();
     if (IS_HORUS_OR_TARANIS(board))
       trimsUse[trim]->setCurrentIndex(1 + 2*phase.trimRef[chn] + phase.trimMode[chn] - (phase.trimRef[chn] > phaseIdx ? 1 : 0));
     else
@@ -410,7 +410,7 @@ void FlightModePanel::phaseTrimUse_currentIndexChanged(int index)
       phase.trim[chn] = 0;
     }
     else {
-      BoardEnum board = firmware->getBoard();
+      Board::Type board = firmware->getBoard();
       if (IS_HORUS_OR_TARANIS(board)) {
         phase.trimMode[chn] = data % 2;
         phase.trimRef[chn] = data / 2;

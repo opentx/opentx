@@ -49,7 +49,6 @@ enum Switches {
   SWITCH_SJ2,
   SWITCH_SK0,
   SWITCH_SK2,
-
 };
 
 enum TimerModes {
@@ -290,7 +289,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString(BoardEnum board = BOARD_UNKNOWN) const;
+    QString toString(Board::Type board = Board::BOARD_UNKNOWN) const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -1008,7 +1007,7 @@ class ModelData {
     ModelData(const ModelData & src);
     ModelData & operator = (const ModelData & src);
     
-    void convert(BoardEnum before, BoardEnum after);
+    void convert(Board::Type before, Board::Type after);
     
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
@@ -1130,7 +1129,7 @@ class GeneralSettings {
     };
 
     GeneralSettings();
-    void convert(BoardEnum before, BoardEnum after);
+    void convert(Board::Type before, Board::Type after);
 
     int getDefaultStick(unsigned int channel) const;
     RawSource getDefaultSource(unsigned int channel) const;
@@ -1224,17 +1223,6 @@ class GeneralSettings {
     typedef uint8_t ThemeOptionData[8+1];
     ThemeOptionData themeOptionValue[5];
 
-    struct SwitchInfo {
-      SwitchInfo(unsigned int index, unsigned int position):
-        index(index),
-        position(position)
-      {
-      }
-      unsigned int index;
-      unsigned int position;
-    };
-
-    static SwitchInfo switchInfoFromSwitchPositionTaranis(unsigned int index);
     bool switchPositionAllowedTaranis(int index) const;
     bool switchSourceAllowedTaranis(int index) const;
     bool isPotAvailable(int index) const;
@@ -1257,7 +1245,7 @@ class RadioData {
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
     
-    void convert(BoardEnum before, BoardEnum after);
+    void convert(Board::Type before, Board::Type after);
 
     void setCurrentModel(unsigned int index);
     void fixModelFilenames();

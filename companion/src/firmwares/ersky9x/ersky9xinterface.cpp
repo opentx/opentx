@@ -34,7 +34,7 @@
 #define FILE_TMP      (1+16)
 
 Ersky9xInterface::Ersky9xInterface():
-EEPROMInterface(BOARD_SKY9X),
+EEPROMInterface(Board::BOARD_SKY9X),
 efile(new RleFile())
 {
 }
@@ -164,7 +164,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
     return errors.to_ulong();
   }
 
-  if (!efile->EeFsOpen((uint8_t *)eeprom, size, BOARD_SKY9X)) {
+  if (!efile->EeFsOpen((uint8_t *)eeprom, size, Board::BOARD_SKY9X)) {
     std::cout << "wrong file system\n";
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();

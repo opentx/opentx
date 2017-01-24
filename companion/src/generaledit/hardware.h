@@ -36,7 +36,7 @@ class HardwarePanel : public GeneralPanel
     Q_OBJECT
 
   public:
-    HardwarePanel(QWidget *parent, GeneralSettings & generalSettings, Firmware * firmware);
+    HardwarePanel(QWidget * parent, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~HardwarePanel();
 
   private slots:
@@ -54,9 +54,9 @@ class HardwarePanel : public GeneralPanel
     void on_serialPortMode_currentIndexChanged(int index);
 
   protected:
-    void setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
-    void setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type);
-    void setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos);
+    void setupPotType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type);
+    void setupSliderType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type);
+    void setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos);
 
   private:
     Ui::Hardware *ui;

@@ -31,7 +31,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   timer(timer),
   ui(new Ui::Timer)
 {
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   ui->setupUi(this);
 
@@ -569,7 +569,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   lock = true;
 
@@ -709,11 +709,11 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   // Startup switches warnings
   for (int i=0; i<firmware->getCapability(Switches); i++) {
-    SwitchInfo switchInfo = getSwitchInfo(board, i);
+    Board::SwitchInfo switchInfo = getSwitchInfo(board, i);
     if (IS_HORUS_OR_TARANIS(board)) {
-      switchInfo.config = SwitchConfig(generalSettings.switchConfig[i]);
+      switchInfo.config = Board::SwitchType(generalSettings.switchConfig[i]);
     }
-    if (switchInfo.config == SWITCH_NOT_AVAILABLE || switchInfo.config == SWITCH_TOGGLE) {
+    if (switchInfo.config == Board::SWITCH_NOT_AVAILABLE || switchInfo.config == Board::SWITCH_TOGGLE) {
       continue;
     }
     QLabel * label = new QLabel(this);
@@ -730,7 +730,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     slider->setPageStep(1);
     slider->setTickInterval(1);
     label->setText(switchInfo.name);
-    slider->setMaximum(switchInfo.config == SWITCH_3POS ? 2 : 1);
+    slider->setMaximum(switchInfo.config == Board::SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
@@ -855,7 +855,7 @@ void SetupPanel::on_name_editingFinished()
 void SetupPanel::on_image_currentIndexChanged(int index)
 {
   if (!lock) {
-    BoardEnum board = firmware->getBoard();
+    Board::Type board = firmware->getBoard();
     strncpy(model->bitmap, ui->image->currentText().toLatin1(), 10);
     QString path = g.profile[g.id()].sdPath();
     path.append("/IMAGES/");
@@ -960,7 +960,7 @@ void SetupPanel::updateStartupSwitches()
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       value = (switchStates >> 2*index) & 0x03;
-      if (generalSettings.switchConfig[index] != SWITCH_3POS && value == 2) {
+      if (generalSettings.switchConfig[index] != Board::SWITCH_3POS && value == 2) {
         value = 1;
       }
     }
@@ -999,7 +999,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     model->switchWarningStates &= ~mask;
 
-    if (IS_HORUS_OR_TARANIS(firmware->getBoard()) && generalSettings.switchConfig[index] != SWITCH_3POS) {
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard()) && generalSettings.switchConfig[index] != Board::SWITCH_3POS) {
       if (value == 1) {
         value = 2;
       }

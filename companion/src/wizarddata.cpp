@@ -53,7 +53,7 @@ void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int wei
   mix.name[MIXDATA_NAME_LEN] = '\0';
   mix.destCh = channel;
   mix.srcRaw = RawSource(SOURCE_TYPE_MAX);
-  mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);  
+  mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);
   mix.weight = weight;
 }
 

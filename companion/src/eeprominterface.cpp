@@ -592,9 +592,9 @@ bool RawSource::isSlider() const
           index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders));
 }
 
-QString RawSwitch::toString(BoardEnum board) const
+QString RawSwitch::toString(Board::Type board) const
 {
-  if (board == BOARD_UNKNOWN) {
+  if (board == Board::BOARD_UNKNOWN) {
     board = getCurrentBoard();
   }
 
@@ -638,7 +638,7 @@ QString RawSwitch::toString(BoardEnum board) const
       case SWITCH_TYPE_SWITCH:
         if (IS_HORUS_OR_TARANIS(board)) {
           div_t qr = div(index-1, 3);
-          SwitchInfo switchInfo = getSwitchInfo(board, qr.quot);
+          Board::SwitchInfo switchInfo = getSwitchInfo(board, qr.quot);
           const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
           return QString(switchInfo.name) + QString(positions[qr.rem]);
         }
@@ -843,7 +843,7 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
 {
   int val = 0;
   Firmware * firmware = getCurrentFirmware();
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   b->addItem(QObject::tr("Timer1"), val++);
   b->addItem(QObject::tr("Timer2"), val++);
@@ -1023,39 +1023,36 @@ void LimitData::clear()
   max = +1000;
 }
 
-GeneralSettings::SwitchInfo GeneralSettings::switchInfoFromSwitchPositionTaranis(unsigned int index)
-{
-  return SwitchInfo((index-1)/3, (index-1)%3);
-}
-
 bool GeneralSettings::switchPositionAllowedTaranis(int index) const
 {
   if (index == 0)
     return true;
-  SwitchInfo info = switchInfoFromSwitchPositionTaranis(abs(index));
-  if (index < 0 && switchConfig[info.index] != SWITCH_3POS)
+
+  div_t qr = div(index-1, 3);
+
+  if (index < 0 && switchConfig[qr.quot] != Board::SWITCH_3POS)
     return false;
-  else if (info.position == 1)
-    return switchConfig[info.index] == SWITCH_3POS;
+  else if (qr.rem == 1)
+    return switchConfig[qr.quot] == Board::SWITCH_3POS;
   else
-    return switchConfig[info.index] != SWITCH_NONE;
+    return switchConfig[qr.quot] != Board::SWITCH_NOT_AVAILABLE;
 }
 
 bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 {
-  return switchConfig[index] != SWITCH_NONE;
+  return switchConfig[index] != Board::SWITCH_NOT_AVAILABLE;
 }
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
   if (index<0 || index>getCurrentFirmware()->getCapability(Pots)) return false;
-  return potConfig[index] != POT_NONE;
+  return potConfig[index] != Board::POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
   if (index<0 || index>getCurrentFirmware()->getCapability(Sliders)) return false;
-  return sliderConfig[index] != SLIDER_NONE;
+  return sliderConfig[index] != Board::SLIDER_NONE;
 }
 
 GeneralSettings::GeneralSettings()
@@ -1072,40 +1069,40 @@ GeneralSettings::GeneralSettings()
   }
 
   Firmware * firmware = getCurrentFirmware();
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   for (int i=0; i<firmware->getCapability(FactoryInstalledSwitches); i++) {
     switchConfig[i] = getSwitchInfo(board, i).config;
   }
 
   if (IS_HORUS(board)) {
-    potConfig[0] = POT_WITH_DETENT;
-    potConfig[1] = POT_MULTIPOS_SWITCH;
-    potConfig[2] = POT_WITH_DETENT;
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_MULTIPOS_SWITCH;
+    potConfig[2] = Board::POT_WITH_DETENT;
   }
   else if (IS_TARANIS_X7(board)) {
-    potConfig[0] = POT_WITHOUT_DETENT;
-    potConfig[1] = POT_WITH_DETENT;
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
   }
   else if (IS_TARANIS(board)) {
-    potConfig[0] = POT_WITH_DETENT;
-    potConfig[1] = POT_WITH_DETENT;
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
   }
   else {
-    potConfig[0] = POT_WITHOUT_DETENT;
-    potConfig[1] = POT_WITHOUT_DETENT;
-    potConfig[2] = POT_WITHOUT_DETENT;
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITHOUT_DETENT;
+    potConfig[2] = Board::POT_WITHOUT_DETENT;
   }
 
   if (IS_HORUS(board) || IS_TARANIS_X9E(board)) {
-    sliderConfig[0] = SLIDER_WITH_DETENT;
-    sliderConfig[1] = SLIDER_WITH_DETENT;
-    sliderConfig[2] = SLIDER_WITH_DETENT;
-    sliderConfig[3] = SLIDER_WITH_DETENT;
+    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[2] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[3] = Board::SLIDER_WITH_DETENT;
   }
   else if (IS_TARANIS(board) && !IS_TARANIS_X7(board)) {
-    sliderConfig[0] = SLIDER_WITH_DETENT;
-    sliderConfig[1] = SLIDER_WITH_DETENT;
+    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
   }
 
   if (IS_ARM(board)) {
@@ -1506,7 +1503,7 @@ QString removeAccents(const QString & str)
 
 void ModelData::setDefaultInputs(const GeneralSettings & settings)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (IS_ARM(board)) {
     for (int i=0; i<CPN_MAX_STICKS; i++) {
       ExpoData * expo = &expoData[i];
@@ -1521,7 +1518,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
 
 void ModelData::setDefaultMixes(const GeneralSettings & settings)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   if (IS_ARM(board)) {
     setDefaultInputs(settings);
   }
@@ -1716,32 +1713,32 @@ void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long err
   msgBox.exec();
 }
 
-QString getBoardName(BoardEnum board)
+QString getBoardName(Board::Type board)
 {
   switch (board) {
-    case BOARD_STOCK:
+    case Board::BOARD_STOCK:
       return "9X";
-    case BOARD_M128:
+    case Board::BOARD_M128:
       return "9X128";
-    case BOARD_GRUVIN9X:
+    case Board::BOARD_GRUVIN9X:
       return "Gruvin9x";
-    case BOARD_MEGA2560:
+    case Board::BOARD_MEGA2560:
       return "MEGA2560";
-    case BOARD_TARANIS_X7:
+    case Board::BOARD_TARANIS_X7:
       return "Taranis X7";
-    case BOARD_TARANIS_X9D:
+    case Board::BOARD_TARANIS_X9D:
       return "Taranis X9D";
-    case BOARD_TARANIS_X9DP:
+    case Board::BOARD_TARANIS_X9DP:
       return "Taranis X9D+";
-    case BOARD_TARANIS_X9E:
+    case Board::BOARD_TARANIS_X9E:
       return "Taranis X9E";
-    case BOARD_SKY9X:
+    case Board::BOARD_SKY9X:
       return "Sky9x";
-    case BOARD_9XRPRO:
+    case Board::BOARD_9XRPRO:
       return "9XR-PRO";
-    case BOARD_AR9X:
+    case Board::BOARD_AR9X:
       return "AR9X";
-    case BOARD_HORUS:
+    case Board::BOARD_HORUS:
       return "Horus";
     default:
       return "Unknown";
@@ -1751,24 +1748,24 @@ QString getBoardName(BoardEnum board)
 const int Firmware::getFlashSize()
 {
   switch (board) {
-    case BOARD_STOCK:
+    case Board::BOARD_STOCK:
       return FSIZE_STOCK;
-    case BOARD_M128:
+    case Board::BOARD_M128:
       return FSIZE_M128;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
+    case Board::BOARD_MEGA2560:
+    case Board::BOARD_GRUVIN9X:
       return FSIZE_GRUVIN9X;
-    case BOARD_SKY9X:
+    case Board::BOARD_SKY9X:
       return FSIZE_SKY9X;
-    case BOARD_9XRPRO:
-    case BOARD_AR9X:
+    case Board::BOARD_9XRPRO:
+    case Board::BOARD_AR9X:
       return FSIZE_9XRPRO;
-    case BOARD_TARANIS_X9D:
-    case BOARD_TARANIS_X9DP:
-    case BOARD_TARANIS_X9E:
-    case BOARD_FLAMENCO:
+    case Board::BOARD_TARANIS_X9D:
+    case Board::BOARD_TARANIS_X9DP:
+    case Board::BOARD_TARANIS_X9E:
+    case Board::BOARD_FLAMENCO:
       return FSIZE_TARANIS;
-    case BOARD_HORUS:
+    case Board::BOARD_HORUS:
       return FSIZE_HORUS;
     default:
       return 0;

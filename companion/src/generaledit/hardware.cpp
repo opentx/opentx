@@ -21,14 +21,14 @@
 #include "hardware.h"
 #include "ui_hardware.h"
 
-void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
+void HardwarePanel::setupSwitchType(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
 {
   if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Switches)) {
-    type->addItem(tr("None"), SWITCH_NONE);
-    type->addItem(tr("2 Positions Toggle"), SWITCH_TOGGLE);
-    type->addItem(tr("2 Positions"), SWITCH_2POS);
+    type->addItem(tr("None"), Board::SWITCH_NOT_AVAILABLE);
+    type->addItem(tr("2 Positions Toggle"), Board::SWITCH_TOGGLE);
+    type->addItem(tr("2 Positions"), Board::SWITCH_2POS);
     if (threePos) {
-      type->addItem(tr("3 Positions"), SWITCH_3POS);
+      type->addItem(tr("3 Positions"), Board::SWITCH_3POS);
     }
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
@@ -40,14 +40,14 @@ void HardwarePanel::setupSwitchConfig(int index, QLabel *label, AutoLineEdit *na
   }
 }
 
-void HardwarePanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+void HardwarePanel::setupPotType(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
 {
   if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Pots)) {
     label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+index).toString());
-    type->addItem(tr("None"), POT_NONE);
-    type->addItem(tr("Pot with detent"), POT_WITH_DETENT);
-    type->addItem(tr("Multipos switch"), POT_MULTIPOS_SWITCH);
-    type->addItem(tr("Pot without detent"), POT_WITHOUT_DETENT);
+    type->addItem(tr("None"), Board::POT_NONE);
+    type->addItem(tr("Pot with detent"), Board::POT_WITH_DETENT);
+    type->addItem(tr("Multipos switch"), Board::POT_MULTIPOS_SWITCH);
+    type->addItem(tr("Pot without detent"), Board::POT_WITHOUT_DETENT);
     name->setField(generalSettings.potName[index], 3, this);
     type->setField(generalSettings.potConfig[index], this);
   }
@@ -58,12 +58,12 @@ void HardwarePanel::setupPotConfig(int index, QLabel *label, AutoLineEdit *name,
   }
 }
 
-void HardwarePanel::setupSliderConfig(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+void HardwarePanel::setupSliderType(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
 {
   if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Sliders)) {
     label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+firmware->getCapability(Pots)+index).toString());
-    type->addItem(tr("None"), SLIDER_NONE);
-    type->addItem(tr("Slider with detent"), SLIDER_WITH_DETENT);
+    type->addItem(tr("None"), Board::SLIDER_NONE);
+    type->addItem(tr("Slider with detent"), Board::SLIDER_WITH_DETENT);
     name->setField(generalSettings.sliderName[index], 3, this);
     type->setField(generalSettings.sliderConfig[index], this);
   }
@@ -80,7 +80,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
 {
   ui->setupUi(this);
   
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   if (IS_STM32(board)) {
     ui->rudName->setField(generalSettings.stickName[0], 3, this);
@@ -99,34 +99,34 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->ailName->hide();
   }
 
-  setupPotConfig(0, ui->pot1Label, ui->pot1Name, ui->pot1Type);
-  setupPotConfig(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
-  setupPotConfig(2, ui->pot3Label, ui->pot3Name, ui->pot3Type);
-  setupPotConfig(3, ui->pot4Label, ui->pot4Name, ui->pot4Type);
+  setupPotType(0, ui->pot1Label, ui->pot1Name, ui->pot1Type);
+  setupPotType(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
+  setupPotType(2, ui->pot3Label, ui->pot3Name, ui->pot3Type);
+  setupPotType(3, ui->pot4Label, ui->pot4Name, ui->pot4Type);
 
-  setupSliderConfig(0, ui->lsLabel, ui->lsName, ui->lsType);
-  setupSliderConfig(1, ui->rsLabel, ui->rsName, ui->rsType);
-  setupSliderConfig(2, ui->ls2Label, ui->ls2Name, ui->ls2Type);
-  setupSliderConfig(3, ui->rs2Label, ui->rs2Name, ui->rs2Type);
+  setupSliderType(0, ui->lsLabel, ui->lsName, ui->lsType);
+  setupSliderType(1, ui->rsLabel, ui->rsName, ui->rsType);
+  setupSliderType(2, ui->ls2Label, ui->ls2Name, ui->ls2Type);
+  setupSliderType(3, ui->rs2Label, ui->rs2Name, ui->rs2Type);
 
-  setupSwitchConfig(0, ui->saLabel, ui->saName, ui->saType);
-  setupSwitchConfig(1, ui->sbLabel, ui->sbName, ui->sbType);
-  setupSwitchConfig(2, ui->scLabel, ui->scName, ui->scType);
-  setupSwitchConfig(3, ui->sdLabel, ui->sdName, ui->sdType);
-  setupSwitchConfig(4, ui->seLabel, ui->seName, ui->seType);
-  setupSwitchConfig(5, ui->sfLabel, ui->sfName, ui->sfType, false);   //switch does not support 3POS
-  setupSwitchConfig(6, ui->sgLabel, ui->sgName, ui->sgType);
-  setupSwitchConfig(7, ui->shLabel, ui->shName, ui->shType, false);   //switch does not support 3POS
-  setupSwitchConfig(8, ui->siLabel, ui->siName, ui->siType);
-  setupSwitchConfig(9, ui->sjLabel, ui->sjName, ui->sjType);
-  setupSwitchConfig(10, ui->skLabel, ui->skName, ui->skType);
-  setupSwitchConfig(11, ui->slLabel, ui->slName, ui->slType);
-  setupSwitchConfig(12, ui->smLabel, ui->smName, ui->smType);
-  setupSwitchConfig(13, ui->snLabel, ui->snName, ui->snType);
-  setupSwitchConfig(14, ui->soLabel, ui->soName, ui->soType);
-  setupSwitchConfig(15, ui->spLabel, ui->spName, ui->spType);
-  setupSwitchConfig(16, ui->sqLabel, ui->sqName, ui->sqType);
-  setupSwitchConfig(17, ui->srLabel, ui->srName, ui->srType);
+  setupSwitchType(0, ui->saLabel, ui->saName, ui->saType);
+  setupSwitchType(1, ui->sbLabel, ui->sbName, ui->sbType);
+  setupSwitchType(2, ui->scLabel, ui->scName, ui->scType);
+  setupSwitchType(3, ui->sdLabel, ui->sdName, ui->sdType);
+  setupSwitchType(4, ui->seLabel, ui->seName, ui->seType);
+  setupSwitchType(5, ui->sfLabel, ui->sfName, ui->sfType, false);   //switch does not support 3POS
+  setupSwitchType(6, ui->sgLabel, ui->sgName, ui->sgType);
+  setupSwitchType(7, ui->shLabel, ui->shName, ui->shType, false);   //switch does not support 3POS
+  setupSwitchType(8, ui->siLabel, ui->siName, ui->siType);
+  setupSwitchType(9, ui->sjLabel, ui->sjName, ui->sjType);
+  setupSwitchType(10, ui->skLabel, ui->skName, ui->skType);
+  setupSwitchType(11, ui->slLabel, ui->slName, ui->slType);
+  setupSwitchType(12, ui->smLabel, ui->smName, ui->smType);
+  setupSwitchType(13, ui->snLabel, ui->snName, ui->snType);
+  setupSwitchType(14, ui->soLabel, ui->soName, ui->soType);
+  setupSwitchType(15, ui->spLabel, ui->spName, ui->spType);
+  setupSwitchType(16, ui->sqLabel, ui->sqName, ui->sqType);
+  setupSwitchType(17, ui->srLabel, ui->srName, ui->srType);
 
   if (IS_HORUS_OR_TARANIS(board) && !IS_TARANIS_X7(board)) {
     ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);

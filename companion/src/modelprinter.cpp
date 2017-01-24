@@ -422,7 +422,7 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
   QString flightModesStr = printFlightModes(input.flightModes);
   if (!flightModesStr.isEmpty()) str += " " + flightModesStr.toHtmlEscaped();
 
-  if (input.swtch.type != SWITCH_TYPE_NONE) 
+  if (input.swtch.type != SWITCH_TYPE_NONE)
     str += " " + tr("Switch").toHtmlEscaped() + QString("(%1)").arg(input.swtch.toString().toHtmlEscaped());
 
 

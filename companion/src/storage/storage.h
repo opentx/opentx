@@ -45,7 +45,7 @@ class StorageFormat
     StorageFormat(const QString & filename, uint8_t version=0):
       filename(filename),
       version(version),
-      board(BOARD_UNKNOWN)
+      board(Board::BOARD_UNKNOWN)
     {
     }
     
@@ -62,7 +62,7 @@ class StorageFormat
 
     virtual QString name() = 0;
 
-    virtual BoardEnum getBoard() {
+    virtual Board::Type getBoard() {
       return board;
     }
 
@@ -83,7 +83,7 @@ class StorageFormat
     uint8_t version;
     QString _error;
     QString _warning;
-    BoardEnum board;
+    Board::Type board;
 };
 
 class StorageFactory

@@ -27,6 +27,8 @@
 #include <QTime>
 #include <QUrl>
 
+using namespace Board;
+
 #define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-22.open-tx.org/firmware"
 #define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/firmware"
 
@@ -195,7 +197,7 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 
 template<class T>
 bool
-OpenTxEepromInterface::saveRadioSettings(GeneralSettings &settings, BoardEnum board, uint8_t version, uint32_t variant)
+OpenTxEepromInterface::saveRadioSettings(GeneralSettings &settings, Board::Type board, uint8_t version, uint32_t variant)
 {
   T open9xSettings(settings, board, version, variant);
   // open9xSettings.Dump();
@@ -302,7 +304,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   return errors.to_ulong();
 }
 
-uint8_t OpenTxEepromInterface::getLastDataVersion(BoardEnum board)
+uint8_t OpenTxEepromInterface::getLastDataVersion(Board::Type board)
 {
   switch (board) {
     case BOARD_STOCK:
@@ -1055,7 +1057,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
     return errors.to_ulong();
   }
 
-  BoardEnum backupBoard = (BoardEnum) -1;
+  Type backupBoard = (Type) -1;
   switch (eeprom[3]) {
     case 0x33:
       backupBoard = BOARD_TARANIS_X9D;
@@ -1532,7 +1534,7 @@ OpenTxEepromInterface * loadFromByteArray(T & dest, const QByteArray & data)
 template <class T, class M>
 bool saveToByteArray(const T & dest, QByteArray & data)
 {
-  BoardEnum board = getCurrentBoard();
+  Board::Type board = getCurrentBoard();
   foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
     if (eepromInterface->getBoard() == board) {
       return eepromInterface->saveToByteArray<T, M>(dest, data);
