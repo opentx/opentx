@@ -220,7 +220,11 @@ void SimulatorDialog::setupUi()
       break;
   }
 
-  keymapHelp.append(*radioUiWidget->getKeymapHelp());
+  // support for <QT5.5
+  QVector<keymapHelp_t> helpItems = *radioUiWidget->getKeymapHelp();
+  foreach (keymapHelp_t item, helpItems) {
+    keymapHelp.append(item);
+  }
 
   ui->radioUiTab->layout()->addWidget(radioUiWidget);
   ui->tabWidget->setTabText(0, firmware->getName());
