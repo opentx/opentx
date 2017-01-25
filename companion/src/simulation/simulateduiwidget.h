@@ -31,6 +31,8 @@ class SimulatorInterface;
 class LcdWidget;
 class RadioUiAction;
 
+using namespace Simulator;
+
 /*
  * This is a base class for the main hardware-specific radio user interface, including LCD screen and navigation buttons/widgets.
  * It is responsible for hanlding all interactions with this part of the simulation (vs. common radio widgets like sticks/switches/knobs).
