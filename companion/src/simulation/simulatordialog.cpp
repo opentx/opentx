@@ -30,7 +30,7 @@
 #include "sdcard.h"
 #include "simulateduiwidget.h"
 #include "simulatorinterface.h"
-//#include "storage.h"
+#include "storage.h"
 #include "telemetrysimu.h"
 #include "trainersimu.h"
 #include "virtualjoystickwidget.h"
@@ -1015,10 +1015,12 @@ void SimulatorDialog::openTrainerSimulator()
 
 void SimulatorDialog::openJoystickDialog()
 {
+#ifdef JOYSTICKS
   joystickDialog * jd = new joystickDialog(this);
   if (jd->exec() == QDialog::Accepted)
     setupJoysticks();
   jd->deleteLater();
+#endif
 }
 
 void SimulatorDialog::openDebugOutput()
