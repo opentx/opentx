@@ -595,6 +595,27 @@ static int luaGetRAS(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function getRAS()
+
+Return the RAS value or nil if no valid hardware found
+
+@retval number representing RAS value. Value bellow 0x33 (51 decimal) are all ok, value above 0x33 indicate a hardware antenna issue.
+This is just a hardware pass/fail measure and does not represent the quality of the radio link
+
+@status current Introduced in 2.2.0
+*/
+static int luaGetRAS(lua_State * L)
+{
+  if (IS_SWR_VALUE_VALID()) { 
+    lua_pushinteger(L, telemetryData.swr.value);
+  }
+  else {
+    lua_pushnil(L);  
+  }
+  return 1;
+}
+
 
 /*luadoc
 @function getFlightMode(mode)
