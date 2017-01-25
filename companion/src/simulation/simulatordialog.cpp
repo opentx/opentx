@@ -348,6 +348,7 @@ void SimulatorDialog::start()
   else
     simulator->start(startupData, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
 
+  getValues();
   setupTimer();
   startupData.clear();  // this is safe because simulator->start() makes copy of data/discards the file name
 }

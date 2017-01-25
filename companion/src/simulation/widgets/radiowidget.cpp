@@ -181,13 +181,14 @@ void RadioWidget::setWidget(QWidget * widget)
 
 QDataStream & operator << (QDataStream &out, const RadioWidget::RadioWidgetState & o)
 {
-  out << o._version << quint8(o.type) << qint8(o.index) << qint16(o.value);
+  out << o._version << o.type << o.index << o.value << o.flags;
   return out;
 }
 
 QDataStream & operator >> (QDataStream &in, RadioWidget::RadioWidgetState & o)
 {
-  in >> o._version >> o.type >> o.index >> o.value;
+  if (o._version <= RADIO_WIDGET_STATE_VERSION)
+    in >> o._version >> o.type >> o.index >> o.value >> o.flags;
   return in;
 }
 

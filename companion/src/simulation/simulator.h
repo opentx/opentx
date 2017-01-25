@@ -76,6 +76,7 @@ struct SimulatorOptions
 
     friend QDebug operator << (QDebug d, const SimulatorOptions & o)
     {
+      QDebugStateSaver saver(d);
       d.nospace() << "SimulatorOptions: firmwareId=" << o.firmwareId << "; dataFile=" << o.dataFile << "; dataFolder=" << o.dataFolder
                   << "; sdPath=" << o.sdPath << "; startupDataType=" << o.startupDataType;
       return d;
