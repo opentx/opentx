@@ -1857,6 +1857,7 @@ unsigned int getNumSubtypes(MultiModuleRFProtocols type)
     case MM_RF_PROTO_MT99XX:
     case MM_RF_PROTO_HONTAI:
     case MM_RF_PROTO_AFHDS2A:
+    case MM_RF_PROTO_Q303:
       return 4;
 
     case MM_RF_PROTO_FLYSKY:
