@@ -21,146 +21,93 @@
 #ifndef _RADIOWIDGET_H_
 #define _RADIOWIDGET_H_
 
-#include <QWidget>
-#include <QLabel>
 #include <QGridLayout>
+#include <QDebug>
+#include <QLabel>
+#include <QWidget>
+
+#define RADIO_WIDGET_STATE_VERSION    1
 
 class RadioWidget : public QWidget
 {
   Q_OBJECT
 
   public:
-    enum RadioWidgetType { RADIO_WIDGET_NONE, RADIO_WIDGET_SWITCH, RADIO_WIDGET_KNOB, RADIO_WIDGET_FADER };
 
-    explicit RadioWidget(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
-      QWidget(parent, f),
-      m_value(0),
-      m_invertValue(false),
-      m_showLabel(false),
-      m_labelText(""),
-      m_type(RADIO_WIDGET_NONE)
-    {
-      init();
-    }
-    explicit RadioWidget(const QString &labelText, int value = 0, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
-      QWidget(parent, f),
-      m_value(value),
-      m_invertValue(false),
-      m_showLabel(true),
-      m_labelText(labelText),
-      m_type(RADIO_WIDGET_NONE)
-    {
-      init();
-    }
+    // These are saved to persistent user settings in RadioWidgetState,
+    //   so only append entires here, do not change index value if it can be avoided.
+    enum RadioWidgetType {
+      RADIO_WIDGET_NONE = 0,
+      RADIO_WIDGET_SWITCH,
+      RADIO_WIDGET_KNOB,
+      RADIO_WIDGET_FADER,
+      RADIO_WIDGET_STICK   // actually one axis of a stick
+    };
 
-    void setIndex(int index)              { m_index = index; }
-    void setInvertValue(bool invertValue) { m_invertValue = invertValue; }
+    struct RadioWidgetState {
+      public:
+        RadioWidgetState(quint8 type = 0, qint8 index = 0, qint16 value = 0, quint16 flags = 0) :
+          type(type), index(index), value(value), flags(flags),
+          _version(RADIO_WIDGET_STATE_VERSION)
+        { }
 
-    void setValue(int value)
-    {
-      if (value != m_value) {
-        m_value = value;
-        emit valueChanged(m_value);
-      }
-    }
+        quint8 type;
+        qint8 index;
+        qint16 value;
+        quint16 flags;
 
-    void setShowLabel(bool show)
-    {
-      if (show != m_showLabel) {
-        m_showLabel = show;
-        addLabel();
-      }
-    }
+        friend QDataStream & operator << (QDataStream &out, const RadioWidgetState & o);
+        friend QDataStream & operator >> (QDataStream &in, RadioWidgetState & o);
+        friend QDebug operator << (QDebug d, const RadioWidgetState & o);
 
-    void setLabelText(const QString &labelText, bool showLabel = true)
-    {
-      m_labelText = labelText;
-      m_showLabel = showLabel;
-      addLabel();
-    }
+      private:
+        quint8 _version = RADIO_WIDGET_STATE_VERSION;  // structure definition version
+    };
 
-    void changeVisibility(bool visible)
-    {
-      static QSizePolicy oldSP = sizePolicy();
-      setVisible(visible);
-      if (visible) {
-        setSizePolicy(oldSP);
-      }
-      else {
-        oldSP = sizePolicy();
-        setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-      }
-    }
+    explicit RadioWidget(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit RadioWidget(const QString &labelText, int value = 0, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
 
-    int getValue() const { return m_value * (m_invertValue ? -1 : 1); }
-    int getIndex() const { return m_index; }
-    int getType()  const { return m_type;  }
+    void setIndex(int index);
+    void setInvertValue(bool invertValue);
+    void setValue(int value);
+    void setFlags(quint16 flags);
+    void setShowLabel(bool show);
+    void setLabelText(const QString &labelText, bool showLabel = true);
+    void setStateData(const QByteArray & data);
+    void changeVisibility(bool visible);
 
+
+    int getValue() const;
+    int getIndex() const;
+    int getType()  const;
+    QByteArray getStateData() const;
+    RadioWidgetState getState() const;
 
   protected:
-    void init()
-    {
-      setIndex(0);
-      m_controlWidget = NULL;
-      m_nameLabel = NULL;
 
-      m_gridLayout= new QGridLayout(this);
-      m_gridLayout->setContentsMargins(0, 0, 0, 0);
-      m_gridLayout->setVerticalSpacing(4);
-      m_gridLayout->setHorizontalSpacing(0);
-
-      addLabel();
-    }
-
-    void addLabel()
-    {
-      if (m_nameLabel) {
-        m_gridLayout->removeWidget(m_nameLabel);
-        m_nameLabel->deleteLater();
-      }
-      if (m_showLabel && !m_labelText.isEmpty()) {
-        m_nameLabel = new QLabel(m_labelText, this);
-        m_nameLabel->setAlignment(Qt::AlignCenter);
-        m_nameLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-        m_gridLayout->addWidget(m_nameLabel, 1, 0, 1, 1, Qt::AlignTop);
-        m_gridLayout->setRowStretch(1, 0);
-      }
-    }
-
-    void setWidget(QWidget * widget = NULL)
-    {
-      if (m_controlWidget) {
-        m_gridLayout->removeWidget(m_controlWidget);
-        m_controlWidget->deleteLater();
-      }
-      m_controlWidget = widget;
-      if (widget) {
-        m_gridLayout->addWidget(widget, 0, 0, 1, 1, Qt::AlignHCenter);
-        m_gridLayout->setRowStretch(0, 1);
-      }
-    }
+    void init();
+    void addLabel();
+    void setWidget(QWidget * widget = NULL);
 
     int m_value;
     int m_index;
+    quint16 m_flags;
     bool m_invertValue;
     bool m_showLabel;
     QString m_labelText;
     RadioWidgetType m_type;
 
   private:
+
     QGridLayout * m_gridLayout;
     QWidget * m_controlWidget;
     QLabel * m_nameLabel;
 
   signals:
+
     void valueChanged(int m_value);
+    void flagsChanged(quint16 flags);
 
 };
 
 #endif // _RADIOWIDGET_H_
-
-
-
-
-
-

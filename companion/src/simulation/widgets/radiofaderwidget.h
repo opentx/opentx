@@ -30,12 +30,12 @@ class RadioFaderWidget : public RadioWidget
 
   public:
 
-    explicit RadioFaderWidget(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioFaderWidget(QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(parent, f)
     {
       init();
     }
-    explicit RadioFaderWidget(const QString &labelText, int value = 0, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioFaderWidget(const QString & labelText, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(labelText, value, parent, f)
     {
       init();

@@ -30,12 +30,13 @@
 #include "sdcard.h"
 #include "simulateduiwidget.h"
 #include "simulatorinterface.h"
-//#include "storage.h"
+#include "storage.h"
 #include "telemetrysimu.h"
 #include "trainersimu.h"
 #include "virtualjoystickwidget.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
+#include "joystickdialog.h"
 #endif
 
 #include <QDebug>
@@ -71,7 +72,9 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   lastPhase(-1),
   buttonPressed(0),
   trimPressed(TRIM_NONE),
-  eepromDataFromFile(false),
+  startupFromFile(false),
+  deleteTempRadioData(false),
+  saveTempRadioData(false),
   middleButtonPressed(false)
 {
   setWindowFlags(Qt::Window);
@@ -79,6 +82,10 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   // install simulator TRACE hook
   traceCallbackInstance = this;
   simulator->installTraceHook(traceCb);
+
+  // defaults
+  setRadioProfileId(radioProfileId);
+  setSdPath(g.profile[radioProfileId].sdPath());
 
   setupUi();
 }
@@ -98,8 +105,13 @@ SimulatorDialog::~SimulatorDialog()
 void SimulatorDialog::setRadioProfileId(int value)
 {
   radioProfileId = value;
-  simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
-  setPaths(g.profile[radioProfileId].sdPath(), radioDataPath);
+  if (simulator)
+    simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
+}
+
+void SimulatorDialog::setSdPath(const QString & sdPath)
+{
+  setPaths(sdPath, radioDataPath);
 }
 
 void SimulatorDialog::setDataPath(const QString & dataPath)
@@ -111,7 +123,8 @@ void SimulatorDialog::setPaths(const QString & sdPath, const QString & dataPath)
 {
   sdCardPath = sdPath;
   radioDataPath = dataPath;
-  simulator->setSdPath(sdPath, dataPath);
+  if (simulator)
+    simulator->setSdPath(sdPath, dataPath);
 }
 
 void SimulatorDialog::setRadioSettings(const GeneralSettings settings)
@@ -119,35 +132,66 @@ void SimulatorDialog::setRadioSettings(const GeneralSettings settings)
   radioSettings = settings;
 }
 
-void SimulatorDialog::setEepromData(const QByteArray & eeprom, bool fromFile)
+/*
+ * This function can accept no parameters, a file name (QString is a QBA), or a data array. It will attempt to load radio settings data from one of
+ *   several sources into a RadioData object, parse the data, and then pass it on as appropriate to the SimulatorInterface in start().
+ * If given no/blank <eeprom>, and setDataPath() was already called, then it will check that directory for "Horus-style" data files.
+ * If given a file name, set the <fromFile> parameter to 'true'. This will attempt to load radio settings from said file
+ *   and later start the simulator interface in start() using the same data.
+ * If <eeprom> is a byte array of data, attempts to load radio settings from there and will also start the simulator interface
+ *   with the same data when start() is called.
+ * If you already have a valid RadioData structure, call setRadioData() instead.
+ */
+void SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFile)
 {
   RadioData simuData;
   quint16 ret = 1;
   QString error;
 
-  if (eeprom.isEmpty() && !radioDataPath.isEmpty()) {
-    // FIXME : need Storage classes to return error code, not just a message.
+  // If <eeprom> is blank but we have a data path, use that for individual radio/model files.
+  if (dataSource.isEmpty() && !radioDataPath.isEmpty()) {
+    // If directory structure already exists, try to load data from there.
+    // FIXME : need Storage class to return formal error code, not just a boolean, because it would be better
+    //   to avoid hard-coding paths like "RADIO" here. E.g. did it fail due to no data at all, or corrupt data, or...?
     if (QDir(QString(radioDataPath).append("/RADIO")).exists()) {
       SdcardFormat sdcard(radioDataPath);
-      ret = sdcard.load(simuData);
-      if (!ret)
+      if (!(ret = sdcard.load(simuData)))
         error = sdcard.error();
     }
   }
+  // Supposedly we're being given a file name to use, try that out.
   else if (fromFile) {
-    // Storage store = Storage(QString(eeprom));
-    // if (!(ret = store.load(simuData))) {
-    //   error = store.error();
-    // }
-    QFile file;
-    QByteArray ba;
-    file.setFileName(QString(eeprom));
-    if (file.exists() && file.open(QIODevice::ReadOnly) && !(ba = file.readAll()).isEmpty()) {
-      ret = firmware->getEEpromInterface()->load(simuData, (uint8_t *)ba.constData(), getEEpromSize(m_board));
+    Storage store = Storage(QString(dataSource));
+    if ((ret = store.load(simuData))) {
+      if (IS_HORUS(m_board)) {
+        // save the data to a temp folder
+        if (!(ret = useTempDataPath(true, true)))  // save data back to file on simulator close
+          error = tr("Error: Could not save data to temporary directory in '%1'").arg(QDir::tempPath());
+        else
+          ret = saveRadioData(&simuData, radioDataPath, &error);
+      }
+      else if (QString(dataSource).endsWith(".otx", Qt::CaseInsensitive)) {
+        // FIXME : Right now there's no way to read data back into the .otx file after simulation finishes.
+        setRadioData(&simuData);
+        return;
+      }
+      else {
+        startupData = dataSource;  // save the file name for start()
+      }
+    }
+    else {
+      error = store.error();
     }
   }
-  else if (!eeprom.isEmpty()) {
-    ret = firmware->getEEpromInterface()->load(simuData, (uint8_t *)eeprom.constData(), getEEpromSize(m_board));
+  // Assume a byte array of radio data was passed, load it.
+  else if (!dataSource.isEmpty()) {
+    ret = firmware->getEEpromInterface()->load(simuData, (uint8_t *)dataSource.constData(), getEEpromSize(m_board));
+    startupData = dataSource;  // save the data for start()
+  }
+  // we're :-(
+  else {
+    ret = 0;
+    error = tr("Could not determine startup data source.");
   }
 
   if (!ret) {
@@ -158,8 +202,7 @@ void SimulatorDialog::setEepromData(const QByteArray & eeprom, bool fromFile)
   }
 
   radioSettings = simuData.generalSettings;
-  eepromData = eeprom;
-  eepromDataFromFile = fromFile;
+  startupFromFile = fromFile;
 }
 
 void SimulatorDialog::setRadioData(RadioData * radioData)
@@ -167,12 +210,105 @@ void SimulatorDialog::setRadioData(RadioData * radioData)
   if (radioDataPath.isEmpty()) {
     QByteArray eeprom(getEEpromSize(m_board), 0);
     if (firmware->getEEpromInterface()->save((uint8_t *)eeprom.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) > 0)
-      setEepromData(eeprom, false);
+      setStartupData(eeprom, false);
   }
   else {
-    SdcardFormat sdcard(radioDataPath);
-    sdcard.write(*radioData);
+    saveRadioData(radioData, radioDataPath);
     radioSettings = radioData->generalSettings;
+  }
+}
+
+void SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
+{
+  setSdPath(options.sdPath);
+  if (options.startupDataType == SimulatorOptions::START_WITH_FOLDER && !options.dataFolder.isEmpty()) {
+    setDataPath(options.dataFolder);
+    setStartupData();
+  }
+  else if (options.startupDataType == SimulatorOptions::START_WITH_SDPATH && !options.sdPath.isEmpty()) {
+    setDataPath(options.sdPath);
+    setStartupData();
+  }
+  else if (options.startupDataType == SimulatorOptions::START_WITH_FILE && !options.dataFile.isEmpty()) {
+    setStartupData(options.dataFile.toLocal8Bit(), true);
+  }
+
+  if (withSave)
+    g.profile[radioProfileId].simulatorOptions(options);
+}
+
+bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path, QString * error)
+{
+  QString dir = path;
+  if (dir.isEmpty())
+    dir = radioDataPath;
+  if (radioData && !dir.isEmpty()) {
+    SdcardFormat sdcard(dir);
+    bool ret = sdcard.write(*radioData);
+    if (!ret && error)
+      *error = sdcard.error();
+    return ret;
+  }
+  return false;
+}
+
+bool SimulatorDialog::useTempDataPath(bool deleteOnClose, bool saveOnClose)
+{
+  if (deleteTempRadioData)
+    deleteTempData();
+
+  QTemporaryDir tmpDir(QDir::tempPath() + "/otx-XXXXXX");
+  if (tmpDir.isValid()) {
+    setDataPath(tmpDir.path());
+    tmpDir.setAutoRemove(false);
+    deleteTempRadioData = deleteOnClose;
+    saveTempRadioData = saveOnClose;
+    qDebug() << __FILE__ << __LINE__ << "Created temporary settings directory" << radioDataPath
+             << "with delteOnClose:" << deleteOnClose << "with saveOnClose:" << saveOnClose;
+    return true;
+  }
+  else {
+    qDebug() << __FILE__ << __LINE__ << "ERROR : Failed to create temporary settings directory" << radioDataPath;
+    return false;
+  }
+}
+
+// This will save radio data from temporary folder structure back into an .otx file, eg. for Horus.
+bool SimulatorDialog::saveTempData()
+{
+  bool ret = false;
+  QString error;
+  QString file = g.profile[radioProfileId].simulatorOptions().dataFile;
+
+  if (!saveTempRadioData || radioDataPath.isEmpty() || file.isEmpty())
+    return ret;
+
+  RadioData radioData;
+  SdcardFormat sdcard(radioDataPath);
+  if (!(ret = sdcard.load(radioData))) {
+    error = sdcard.error();
+  }
+  else {
+    Storage store(file);
+    if (!(ret = store.write(radioData)))
+      error = store.error();
+    else
+      qDebug() << __FILE__ << __LINE__ << "Saved radio data to file" << file;
+  }
+
+  if (!ret)
+    QMessageBox::critical(this, tr("Data Save Error"), error);
+
+  return ret;
+}
+
+void SimulatorDialog::deleteTempData()
+{
+  if (!radioDataPath.isEmpty()) {
+    QDir tpath(radioDataPath);
+    qDebug() << __FILE__ << __LINE__ << "Deleting temporary settings directory" << tpath.absolutePath();
+    tpath.removeRecursively();
+    tpath.rmdir(radioDataPath);  // for some reason this is necessary to remove the base folder
   }
 }
 
@@ -190,6 +326,31 @@ void SimulatorDialog::traceCallback(const char * text)
     traceList.append(QString(text));
   }
   traceMutex.unlock();
+}
+
+/*
+ * Startup
+ */
+
+void SimulatorDialog::start()
+{
+  setupRadioWidgets();
+  setupJoysticks();
+  setupOutputsDisplay();
+  setupGVarsDisplay();
+  restoreRadioWidgetsState();
+  setTrims();
+
+  if (startupData.isEmpty())
+    simulator->start((const char *)0);
+  else if (startupFromFile)
+    simulator->start(startupData.constData());
+  else
+    simulator->start(startupData, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
+
+  getValues();
+  setupTimer();
+  startupData.clear();  // this is safe because simulator->start() makes copy of data/discards the file name
 }
 
 /*
@@ -220,7 +381,6 @@ void SimulatorDialog::setupUi()
       break;
   }
 
-  // support for <QT5.5
   foreach (keymapHelp_t item, *radioUiWidget->getKeymapHelp()) {
     keymapHelp.append(item);
   }
@@ -235,47 +395,6 @@ void SimulatorDialog::setupUi()
   vJoyRight = new VirtualJoystickWidget(this, 'R');
   ui->rightStickLayout->addWidget(vJoyRight);
 
-#ifdef JOYSTICKS
-  if (g.jsSupport()) {
-    int count=0;
-    for (int j=0; j<8; j++){
-      int axe = g.joystick[j].stick_axe();
-      if (axe>=0 && axe<8) {
-        jsmap[axe]=j+1;
-        jscal[axe][0] = g.joystick[j].stick_min();
-        jscal[axe][1] = g.joystick[j].stick_med();
-        jscal[axe][2] = g.joystick[j].stick_max();
-        jscal[axe][3] = g.joystick[j].stick_inv();
-        count++;
-      }
-    }
-    if (count<3) {
-      QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
-    }
-    if (g.jsCtrl()!=-1) {
-      joystick = new Joystick(this);
-      if (joystick) {
-        if (joystick->open(g.jsCtrl())) {
-          int numAxes=std::min(joystick->numAxes,8);
-          for (int j=0; j<numAxes; j++) {
-            joystick->sensitivities[j] = 0;
-            joystick->deadzones[j]=0;
-          }
-          //mode 1,3 -> THR on right
-          vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
-          vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_X, true);
-          vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
-          vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_X, true);
-          connect(joystick, SIGNAL(axisValueChanged(int, int)), this, SLOT(onjoystickAxisValueChanged(int, int)));
-        }
-        else {
-          QMessageBox::critical(this, tr("Warning"), tr("Cannot open joystick, joystick disabled"));
-        }
-      }
-    }
-  }
-#endif
-
   ui->tabWidget->setCurrentIndex(flags & SIMULATOR_FLAGS_NOTX);
 
   connect(vJoyLeft, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
@@ -287,30 +406,43 @@ void SimulatorDialog::setupUi()
   connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
 
   connect(ui->btn_help, SIGNAL(released()), this, SLOT(showHelp()));
+  connect(ui->btn_joystickDialog, SIGNAL(released()), this, SLOT(openJoystickDialog()));
   connect(ui->btn_telemSim, SIGNAL(released()), this, SLOT(openTelemetrySimulator()));
   connect(ui->btn_trainerSim, SIGNAL(released()), this, SLOT(openTrainerSimulator()));
   connect(ui->btn_debugConsole, SIGNAL(released()), this, SLOT(openDebugOutput()));
   connect(ui->btn_luaReload, SIGNAL(released()), this, SLOT(luaReload()));
   connect(ui->btn_screenshot, SIGNAL(released()), radioUiWidget, SLOT(captureScreenshot()));
 
+  // Hide some main UI buttons based on board capabilities, and add keymap help texts.
+
   keymapHelp.append(keymapHelp_t(ui->btn_help->shortcut().toString(QKeySequence::NativeText), ui->btn_help->statusTip()));
-  if (!firmware->getCapability(Capability(LuaInputsPerScript)))  // hackish! but using "LuaScripts" checks for id "lua" in fw.
-    keymapHelp.append(keymapHelp_t(ui->btn_telemSim->shortcut().toString(QKeySequence::NativeText), ui->btn_telemSim->statusTip()));
-  else
-    ui->btn_luaReload->hide();
-  keymapHelp.append(keymapHelp_t(ui->btn_trainerSim->shortcut().toString(QKeySequence::NativeText), ui->btn_trainerSim->statusTip()));
-  keymapHelp.append(keymapHelp_t(ui->btn_debugConsole->shortcut().toString(QKeySequence::NativeText), ui->btn_debugConsole->statusTip()));
+
+#ifdef JOYSTICKS
+  keymapHelp.append(keymapHelp_t(ui->btn_joystickDialog->shortcut().toString(QKeySequence::NativeText), ui->btn_joystickDialog->statusTip()));
+#else
+  ui->btn_joystickDialog->hide();
+#endif
+
   if (firmware->getCapability(Capability(SportTelemetry)))
-    keymapHelp.append(keymapHelp_t(ui->btn_luaReload->shortcut().toString(QKeySequence::NativeText), ui->btn_luaReload->statusTip()));
+    keymapHelp.append(keymapHelp_t(ui->btn_telemSim->shortcut().toString(QKeySequence::NativeText), ui->btn_luaReload->statusTip()));
   else
     ui->btn_telemSim->hide();
+
+  keymapHelp.append(keymapHelp_t(ui->btn_trainerSim->shortcut().toString(QKeySequence::NativeText), ui->btn_trainerSim->statusTip()));
+  keymapHelp.append(keymapHelp_t(ui->btn_debugConsole->shortcut().toString(QKeySequence::NativeText), ui->btn_debugConsole->statusTip()));
+
+  if (!firmware->getCapability(Capability(LuaInputsPerScript)))  // hackish! but using "LuaScripts" checks for id "lua" in fw.
+    keymapHelp.append(keymapHelp_t(ui->btn_luaReload->shortcut().toString(QKeySequence::NativeText), ui->btn_telemSim->statusTip()));
+  else
+    ui->btn_luaReload->hide();
+
   keymapHelp.append(keymapHelp_t(ui->btn_screenshot->shortcut().toString(QKeySequence::NativeText), ui->btn_screenshot->statusTip()));
 
 }
 
 void SimulatorDialog::setupRadioWidgets()
 {
-  int i, midpos, aIdx;
+  int i, midpos, aIdx, wval;
   QString wname;
   Board::Type board = firmware->getBoard();
 
@@ -335,16 +467,20 @@ void SimulatorDialog::setupRadioWidgets()
 
   // switches
   Board::SwitchInfo switchInfo;
+  Board::SwitchType swcfg;
   // FIXME :  CPN_MAX_SWITCHES == 32 but GeneralSettings::switchConfig[18] !!
   for (i = 0; i < firmware->getCapability(Capability(Switches)) && i < 18 /*CPN_MAX_SWITCHES*/; ++i) {
     if (radioSettings.switchConfig[i] == Board::SWITCH_NOT_AVAILABLE)
       continue;
 
+    swcfg = Board::SwitchType(radioSettings.switchConfig[i]);
+    wval  = (swcfg == Board::SWITCH_3POS ? -1 : 0);
+
     if ((wname = QString(radioSettings.switchName[i])).isEmpty()) {
       switchInfo = getSwitchInfo(board, i);
       wname = QString(switchInfo.name);
     }
-    RadioSwitchWidget * sw = new RadioSwitchWidget(Board::SwitchType(radioSettings.switchConfig[i]), wname, 0, ui->radioWidgetsHT);
+    RadioSwitchWidget * sw = new RadioSwitchWidget(swcfg, wname, wval, ui->radioWidgetsHT);
     sw->setIndex(i);
     ui->radioWidgetsHTLayout->addWidget(sw);
     switches.append(sw);
@@ -532,6 +668,56 @@ QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QV
     return swtch;
 }
 
+void SimulatorDialog::setupJoysticks()
+{
+#ifdef JOYSTICKS
+  static bool joysticksEnabled = false;
+  if (g.jsSupport() && g.jsCtrl() > -1) {
+    int count=0, axe;
+    for (int j=0; j < MAX_JOYSTICKS; j++){
+      axe = g.joystick[j].stick_axe();
+      if (axe >= 0 && axe < MAX_JOYSTICKS) {
+        jsmap[axe] = j + 1;
+        jscal[axe][0] = g.joystick[j].stick_min();
+        jscal[axe][1] = g.joystick[j].stick_med();
+        jscal[axe][2] = g.joystick[j].stick_max();
+        jscal[axe][3] = g.joystick[j].stick_inv();
+        count++;
+      }
+    }
+    if (count<3) {
+      QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
+      return;
+    }
+    joystick = new Joystick(this);
+    if (joystick && joystick->open(g.jsCtrl())) {
+      int numAxes = std::min(joystick->numAxes, MAX_JOYSTICKS);
+      for (int j=0; j<numAxes; j++) {
+        joystick->sensitivities[j] = 0;
+        joystick->deadzones[j] = 0;
+      }
+      //mode 1,3 -> THR on right
+      vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+      vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_X, true);
+      vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+      vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_X, true);
+      connect(joystick, SIGNAL(axisValueChanged(int, int)), this, SLOT(onjoystickAxisValueChanged(int, int)));
+      joysticksEnabled = true;
+    }
+    else {
+      QMessageBox::critical(this, tr("Warning"), tr("Cannot open joystick, joystick disabled"));
+    }
+  }
+  else if (joysticksEnabled && joystick) {
+    disconnect(joystick, 0, this, 0);
+    vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, false);
+    vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_X, false);
+    vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, false);
+    vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_X, false);
+  }
+#endif
+}
+
 void SimulatorDialog::setupTimer()
 {
   timer = new QTimer(this);
@@ -539,26 +725,44 @@ void SimulatorDialog::setupTimer()
   timer->start(10);
 }
 
-/*
- * Startup
- */
-
-void SimulatorDialog::start()
+void SimulatorDialog::restoreRadioWidgetsState()
 {
-  setupRadioWidgets();
-  setupOutputsDisplay();
-  setupGVarsDisplay();
-  setTrims();
+  RadioWidget::RadioWidgetState state;
+  QMap<int, QByteArray> switchesMap;
+  QMap<int, QByteArray> analogsMap;
+  QList<QByteArray> states = g.profile[radioProfileId].simulatorOptions().controlsState;
 
-  if (eepromData.isEmpty())
-    simulator->start((const char *)0);
-  else if (eepromDataFromFile)
-    simulator->start(eepromData.constData());
-  else
-    simulator->start(eepromData, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
+  foreach (QByteArray ba, states) {
+    QDataStream stream(ba);
+    stream >> state;
+    if (state.type == RadioWidget::RADIO_WIDGET_SWITCH)
+      switchesMap.insert(state.index, ba);
+    else
+      analogsMap.insert(state.index, ba);
+  }
 
-  setupTimer();
-  eepromData.clear();  // this is safe because simulator->start() makes copy of data/discards the file name
+  for (int i = 0; i < analogs.size(); ++i) {
+    if (analogsMap.contains(analogs[i]->getIndex()))
+      analogs[i]->setStateData(analogsMap.value(analogs[i]->getIndex()));
+  }
+
+  for (int i = 0; i < switches.size(); ++i) {
+    if (switchesMap.contains(switches[i]->getIndex()))
+      switches[i]->setStateData(switchesMap.value(switches[i]->getIndex()));
+  }
+}
+
+QList<QByteArray> SimulatorDialog::saveRadioWidgetsState()
+{
+  QList<QByteArray> states;
+
+  for (int i = 0; i < analogs.size(); ++i)
+    states.append(analogs[i]->getStateData());
+
+  for (int i = 0; i < switches.size(); ++i)
+    states.append(switches[i]->getStateData());
+
+  return states;
 }
 
 /*
@@ -687,14 +891,21 @@ void SimulatorDialog::closeEvent(QCloseEvent *)
 {
   simulator->stop();
   timer->stop();
-  g.profile[radioProfileId].simuWinGeo(saveGeometry());
+  SimulatorOptions opts = g.profile[radioProfileId].simulatorOptions();
+  opts.windowGeometry = saveGeometry();
+  opts.controlsState = saveRadioWidgetsState();
+  g.profile[radioProfileId].simulatorOptions(opts);
+  if (saveTempRadioData)
+    saveTempData();
+  if (deleteTempRadioData)
+    deleteTempData();
 }
 
 void SimulatorDialog::showEvent(QShowEvent *)
 {
   static bool firstShow = true;
   if (firstShow) {
-    restoreGeometry(g.profile[radioProfileId].simuWinGeo());
+    restoreGeometry(g.profile[radioProfileId].simulatorOptions().windowGeometry);
 
     // The stick position needs to be set after the final show event, otherwise resizes during dialog creation will screw it up.
     if (radioSettings.stickMode & 1) {
@@ -801,6 +1012,16 @@ void SimulatorDialog::openTrainerSimulator()
   else if (!TrainerSimu->isVisible()) {
     TrainerSimu->show();
   }
+}
+
+void SimulatorDialog::openJoystickDialog()
+{
+#ifdef JOYSTICKS
+  joystickDialog * jd = new joystickDialog(this);
+  if (jd->exec() == QDialog::Accepted)
+    setupJoysticks();
+  jd->deleteLater();
+#endif
 }
 
 void SimulatorDialog::openDebugOutput()

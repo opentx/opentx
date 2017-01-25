@@ -246,10 +246,26 @@
         <string>Show Help/Keymap</string>
        </property>
        <property name="text">
-        <string>Keymap</string>
+        <string>Keymap Help</string>
        </property>
        <property name="shortcut">
         <string>F1</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_joystickDialog">
+       <property name="toolTip">
+        <string>Open the Joystick Settings window (F3)</string>
+       </property>
+       <property name="statusTip">
+        <string>Telemetry Simulator</string>
+       </property>
+       <property name="text">
+        <string>Joystick Config.</string>
+       </property>
+       <property name="shortcut">
+        <string>F3</string>
        </property>
       </widget>
      </item>
@@ -262,7 +278,7 @@
         <string>Telemetry Simulator</string>
        </property>
        <property name="text">
-        <string>Telemetry Simulator</string>
+        <string>Telemetry Sim.</string>
        </property>
        <property name="shortcut">
         <string>F4</string>
@@ -278,7 +294,7 @@
         <string>Trainer Simulator</string>
        </property>
        <property name="text">
-        <string>Trainer Simulator</string>
+        <string>Trainer Sim.</string>
        </property>
        <property name="shortcut">
         <string>F5</string>
@@ -310,7 +326,7 @@
         <string>Reload Lua Scripts</string>
        </property>
        <property name="text">
-        <string>Reload Lua Scripts</string>
+        <string>Lua Reload</string>
        </property>
        <property name="shortcut">
         <string>F7</string>

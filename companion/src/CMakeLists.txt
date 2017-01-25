@@ -71,6 +71,9 @@ endif()
 
 if(WIN32)
   include_directories(SYSTEM ${WIN_INCLUDE_DIRS})
+  if(NOT WIN_USE_CONSOLE)
+    set(WIN_EXECUTABLE_TYPE WIN32)  # GUI (WinMain) app
+  endif()
   if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /LD /MP")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
@@ -246,7 +249,7 @@ add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
 add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
 
-add_executable(${COMPANION_NAME} MACOSX_BUNDLE WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC} ${companion_QM})
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
@@ -275,7 +278,7 @@ if(WIN32)
   list(APPEND simu_SRCS icon.rc)
 endif()
 
-add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RCC})
+add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
 
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
 qt5_use_modules(${SIMULATOR_NAME} Core Widgets Multimedia)

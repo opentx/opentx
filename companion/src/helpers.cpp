@@ -816,18 +816,17 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
   SimulatorInterface * simulator = getCurrentSimulator();
   if (simulator) {
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-    AllocConsole();
-    SetConsoleTitle("Companion Console");
-    freopen("conin$", "r", stdin);
-    freopen("conout$", "w", stdout);
-    freopen("conout$", "w", stderr);
+    bool freeConsoleOnClose = false;
+    if (!GetConsoleWindow()) {
+      AllocConsole();
+      SetConsoleTitle("Companion Console");
+      freeConsoleOnClose = true;
+      freopen("conin$", "r", stdin);
+      freopen("conout$", "w", stdout);
+      freopen("conout$", "w", stderr);
+    }
 #endif
-    Firmware * firmware = getCurrentFirmware();
     RadioData * simuData = new RadioData(radioData);
-    Board::Type board = getCurrentBoard();
-    QByteArray eeprom = QByteArray();
-    QString sdPath = g.profile[g.id()].sdPath();
-    QString settingsPath = "";
     unsigned int flags = 0;
 
     if (modelIdx >= 0) {
@@ -835,29 +834,21 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       simuData->setCurrentModel(modelIdx);
     }
 
-    if (IS_HORUS(board)) {
-      QTemporaryDir tmpDir(QDir::tempPath() + "/otx-XXXXXX");
-      settingsPath = tmpDir.path();
-      tmpDir.setAutoRemove(false);
-    }
-
-    qDebug() << "Starting" << firmware->getName() << "simulation with SD path" << sdPath << "and models/settings path" << settingsPath;
-
     SimulatorDialog * dialog = new SimulatorDialog(parent, simulator, flags);
-    dialog->setPaths(sdPath, settingsPath);
+    if (IS_HORUS(getCurrentBoard()) && !dialog->useTempDataPath(true)) {
+      QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error: Could not create temporary directory in '%1'").arg(QDir::tempPath()));
+      return;
+    }
     dialog->setRadioData(simuData);
+    qDebug() << __FILE__ << __LINE__ << "Starting" << getCurrentFirmware()->getName() << "simulation with SD path" << dialog->getSdPath() << "and models/settings path" << dialog->getDataPath();
     dialog->start();
     dialog->exec();
     dialog->deleteLater();
-    if (!settingsPath.isEmpty()) {
-      // TODO either delete tmp directory and its contents OR use it to get back data from the simulation
-      qDebug() << "Simulation finished, deleting temporary settings directory" << settingsPath;
-      QDir tmp(settingsPath);
-      tmp.removeRecursively();
-    }
-    delete simuData;
+    // TODO Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
+    delete simuData;  // TODO same with simuData, could read it back and update the file data
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-    FreeConsole();
+    if (freeConsoleOnClose)
+      FreeConsole();
 #endif
   }
   else {

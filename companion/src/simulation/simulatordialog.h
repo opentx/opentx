@@ -24,6 +24,7 @@
 #include "constants.h"
 #include "helpers.h"
 #include "radiodata.h"
+#include "simulator.h"
 
 #include <QDialog>
 #include <QVector>
@@ -38,8 +39,6 @@
 #define CSWITCH_OFF   "QLabel { }"
 #define CBEEP_ON      "QLabel { background-color: #FF364E }"
 #define CBEEP_OFF     "QLabel { }"
-
-typedef QPair<QString, QString> keymapHelp_t;
 
 void traceCb(const char * text);
 
@@ -66,6 +65,8 @@ namespace Ui {
   class SimulatorDialog;
 }
 
+using namespace Simulator;
+
 class SimulatorDialog : public QDialog
 {
   Q_OBJECT
@@ -75,22 +76,34 @@ class SimulatorDialog : public QDialog
     virtual ~SimulatorDialog();
 
     void setRadioProfileId(int value);
+    void setSdPath(const QString & sdPath);
     void setDataPath(const QString & dataPath);
     void setPaths(const QString & sdPath, const QString & dataPath);
     void setRadioSettings(const GeneralSettings settings);
-    void setEepromData(const QByteArray & eeprom = NULL, bool fromFile = false);
+    void setStartupData(const QByteArray & dataSource = NULL, bool fromFile = false);
     void setRadioData(RadioData * radioData);
+    void setOptions(SimulatorOptions & options, bool withSave = true);
+    bool saveRadioData(RadioData * radioData, const QString & path = "", QString * error = NULL);
+    bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
+    bool saveTempData();
+    void deleteTempData();
     void setUiAreaStyle(const QString & style);
     void traceCallback(const char * text);
     void start();
+
+    QString getSdPath()   const { return sdCardPath; }
+    QString getDataPath() const { return radioDataPath; }
 
   private:
     void setupUi();
     void setupRadioWidgets();
     void setupOutputsDisplay();
     void setupGVarsDisplay();
+    void setupJoysticks();
     QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
     void setupTimer();
+    void restoreRadioWidgetsState();
+    QList<QByteArray> saveRadioWidgetsState();
 
     void setValues();
     void getValues();
@@ -125,14 +138,16 @@ class SimulatorDialog : public QDialog
 
     QString sdCardPath;
     QString radioDataPath;
-    QByteArray eepromData;
+    QByteArray startupData;
     Board::Type m_board;
     quint8 flags;
     int radioProfileId;
     int lastPhase;
     int buttonPressed;
     int trimPressed;
-    bool eepromDataFromFile;
+    bool startupFromFile;
+    bool deleteTempRadioData;
+    bool saveTempRadioData;
     bool middleButtonPressed;
 
 #ifdef JOYSTICKS
@@ -155,6 +170,7 @@ class SimulatorDialog : public QDialog
     void centerSticks();
     void openTelemetrySimulator();
     void openTrainerSimulator();
+    void openJoystickDialog();
     void openDebugOutput();
     void updateDebugOutput();
     void luaReload();
