@@ -595,6 +595,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   return retval;
 }
 #if defined(MULTIMODULE)
+// Third row is number of subtypes -1 (max valid subtype)
 const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
   { MM_RF_PROTO_HUBSAN,     nullptr,              0,  STR_MULTI_VIDFREQ   },
@@ -618,6 +619,7 @@ const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
   { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     1,  nullptr             },
   { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
+  { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
   { MM_RF_CUSTOM_SELECTED,  nullptr,              7,  STR_MULTI_OPTION    },
 
   //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()

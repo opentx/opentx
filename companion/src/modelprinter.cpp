@@ -131,7 +131,7 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
   static const char *strings[] = {
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS",
-    "FlySky AFHDS2A", "Q2x2"
+    "FlySky AFHDS2A", "Q2x2", "Q303"
   };
   if (custom)
     return "Custom - proto " + QString::number(rfProtocol);
@@ -161,6 +161,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
   static const char *afhds2a_strings[] = {"PWM and IBUS", "PPM and IBUS", "PWM and SBUS", "PPM and SBUS"};
   static const char *q2x2_strings[] = {"Q222", "Q242", "Q282"};
   static const char *walkera_wk2x01_strings[] = {"WK2801", "WK2401", "W6_5_1", "W6_6_1", "W6_HEL", "W6_HEL_I"};
+  static const char *q303_strings[] = { "Q303", "CX35", "CX10D", "CX10WD"};
   
   if (custom)
     return CHECK_IN_ARRAY(custom_subtype_strings, subType);
@@ -204,6 +205,8 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(q2x2_strings, subType);
     case MM_RF_PROTO_WK_2X01:
       return CHECK_IN_ARRAY(walkera_wk2x01_strings, subType);
+    case MM_RF_PROTO_Q303:
+      return CHECK_IN_ARRAY(q303_strings, subType);
     default:
         return "DEFAULT";
   }

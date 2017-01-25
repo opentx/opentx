@@ -164,6 +164,9 @@
 #define LEN_SUBTYPE_WK2x01     "\006"
 #define TR_SUBTYPE_WK2x01      "WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI"
 
+#define LEN_SUBTYPE_Q303       "\006"
+#define TR_SUBTYPE_Q303        "Q303\0 ""CX35\0 ""CX10D\0""CX10WD"
+
 #define LEN_SUBTYPE_V2X2       "\006"
 #define TR_SUBTYPE_V2X2        "V2x2\0 ""JXD506"
 
