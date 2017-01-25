@@ -22,7 +22,7 @@
 #define _RADIOKNOBWIDGET_H_
 
 #include "radiowidget.h"
-#include "radiodata.h"
+#include "boards.h"
 
 #include <QDial>
 #include <QMouseEvent>
@@ -68,7 +68,7 @@ class RadioKnobWidget : public RadioWidget
 
     class KnobWidget : public QDial
     {
-        friend class RadioKnobWidget;
+      friend class RadioKnobWidget;
 
       public:
 

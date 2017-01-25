@@ -22,7 +22,7 @@
 #define _RADIOSWITCHWIDGET_H_
 
 #include "radiowidget.h"
-#include "radiodata.h"
+#include "boards.h"
 
 #include <QSlider>
 #include <QDebug>
@@ -33,15 +33,15 @@ class RadioSwitchWidget : public RadioWidget
 
   public:
 
-    explicit RadioSwitchWidget(Board::SwitchType type = Board::SWITCH_3POS, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioSwitchWidget(Board::SwitchType type = Board::SWITCH_3POS, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(parent, f),
-      switchConfig(type)
+      swType(type)
     {
       init();
     }
-    explicit RadioSwitchWidget(Board::SwitchType type, const QString &labelText, int value = 0, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
+    explicit RadioSwitchWidget(Board::SwitchType type, const QString & labelText, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
       RadioWidget(labelText, value, parent, f),
-      switchConfig(type)
+      swType(type)
     {
       init();
     }
@@ -58,7 +58,7 @@ class RadioSwitchWidget : public RadioWidget
       sl->setInvertedControls(true);
       sl->setTickPosition(QSlider::TicksBothSides);
       sl->setPageStep(1);
-      sl->setMinimum((switchConfig == Board::SWITCH_3POS ? -1 : 0));
+      sl->setMinimum((swType == Board::SWITCH_3POS ? -1 : 0));
       sl->setMaximum(1);
       sl->setTickInterval(1);
       sl->setValue(m_value);
@@ -70,7 +70,7 @@ class RadioSwitchWidget : public RadioWidget
     }
 
   private:
-    Board::SwitchType switchConfig;
+    Board::SwitchType swType;
 };
 
 
