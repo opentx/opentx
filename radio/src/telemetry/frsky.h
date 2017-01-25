@@ -139,7 +139,7 @@
 #define RBOX_STATE_LAST_ID        0x0b2f
 #define RBOX_CNSP_FIRST_ID        0x0b30
 #define RBOX_CNSP_LAST_ID         0x0b3f
-#define DIY_FIRST_ID              0x5100
+#define DIY_FIRST_ID              0x5000
 #define DIY_LAST_ID               0x52ff
 #define RSSI_ID                   0xf101
 #define ADC1_ID                   0xf102
