@@ -220,7 +220,9 @@ void MainWindow::checkForUpdates()
     // TODO why create each time a network manager?
     networkManager = new QNetworkAccessManager(this);
     connect(networkManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForCompanionUpdateFinished(QNetworkReply*)));
-    QNetworkRequest request(QUrl(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP)));
+    QUrl url(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP));
+    qDebug() << "Checking for Companion update " << url.url();
+    QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     networkManager->get(request);
   }
@@ -231,6 +233,7 @@ void MainWindow::checkForUpdates()
       networkManager = new QNetworkAccessManager(this);
       connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(checkForFirmwareUpdateFinished(QNetworkReply*)));
       QUrl url(stamp);
+      qDebug() << "Checking for firmware update " << url.url();
       QNetworkRequest request(url);
       request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
       networkManager->get(request);
@@ -493,7 +496,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 void MainWindow::startFirmwareDownload()
 {
   QString url = current_firmware_variant->getFirmwareUrl();
-  qDebug() << url;
+  qDebug() "Downloading firmware" << url;
   QString ext = url.mid(url.lastIndexOf("."));
   QString defaultFilename = g.flashDir() + "/" + current_firmware_variant->getId();
   if (g.profile[g.id()].renameFwFiles()) {
