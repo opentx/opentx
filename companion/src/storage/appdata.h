@@ -30,8 +30,13 @@
 #include <QString>
 #include <QSettings>
 
-#define COMPANY "OpenTX"
-#define PRODUCT "Companion 2.2"
+#include "simulator.h"
+
+#define COMPANY            "OpenTX"
+#define COMPANY_DOMAIN     "open-tx.org"
+#define PRODUCT            "Companion 2.2"
+#define APP_COMPANION      "OpenTX Companion"
+#define APP_SIMULATOR      "OpenTX Simulator"
 
 #define MAX_PROFILES 15
 #define MAX_JOYSTICKS 8
@@ -52,6 +57,11 @@ class CompStoreObj
 
     template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T = QString, typename GP2_T = QString>
     void getset(OBJ_T & value, const TAG_T tag, const DEF_T def, const GP1_T group1 = "", const GP2_T group2 = "" );
+
+    // this specialization is needed because QVariant::fromValue(const char *) fails
+    template <typename OBJ_T, typename TAG_T, typename GP1_T = QString, typename GP2_T = QString>
+    void getset(OBJ_T & value, const TAG_T tag, const char * def, const GP1_T group1 = "", const GP2_T group2 = "" );
+
 };
 
 class FwRevision: protected CompStoreObj
@@ -115,9 +125,6 @@ class Profile: protected CompStoreObj
     int     _channelOrder;
     int     _defaultMode;
 
-    // Simulator variables
-    QByteArray _simuWinGeo;
-
     // Firmware Variables
     QString _beeper;
     QString _countryCode;
@@ -137,6 +144,9 @@ class Profile: protected CompStoreObj
     int     _txCurrentCalibration;
     int     _txVoltageCalibration;
 
+    // Simulator variables
+    SimulatorOptions _simulatorOptions;
+
   public:
     // All the get definitions
     QString fwName() const;
@@ -151,8 +161,6 @@ class Profile: protected CompStoreObj
     bool    penableBackup() const;
     int     channelOrder() const;
     int     defaultMode() const;
-
-    QByteArray simuWinGeo() const;
 
     QString beeper() const;
     QString countryCode() const;
@@ -172,6 +180,8 @@ class Profile: protected CompStoreObj
     int     vBatMin() const;
     int     vBatMax() const;
 
+    SimulatorOptions simulatorOptions() const;
+
     // All the set definitions
     void name          (const QString);
     void fwName        (const QString);
@@ -185,8 +195,6 @@ class Profile: protected CompStoreObj
     void penableBackup (const bool);
     void channelOrder  (const int);
     void defaultMode   (const int);
-
-    void simuWinGeo    (const QByteArray);
 
     void beeper        (const QString);
     void countryCode   (const QString);
@@ -206,6 +214,8 @@ class Profile: protected CompStoreObj
     void vBatMin       (const int);
     void vBatMax       (const int);
 
+    void simulatorOptions (const SimulatorOptions &);
+
     Profile();
     Profile& operator=(const Profile&);
     void remove();
@@ -213,6 +223,7 @@ class Profile: protected CompStoreObj
     void init(int newIndex);
     void initFwVariables();
     void flush();
+    QString groupId();
 };
 
 #define BOOL_PROPERTY(name, dflt)                                   \
@@ -254,9 +265,6 @@ class AppData: protected CompStoreObj
     QString _programmer;
     QString _sambaLocation;
     QString _sambaPort;
-    QString _lastSimulator;
-    QString _simuLastEepe;
-    QString _simuLastFolder;
 
     QString _backupDir;
     QString _gePath;
@@ -308,9 +316,6 @@ class AppData: protected CompStoreObj
     QString programmer();
     QString sambaLocation();
     QString sambaPort();
-    QString lastSimulator();
-    QString simuLastEepe();
-    QString simuLastFolder();
 
     QString backupDir();
     QString gePath();
@@ -361,9 +366,6 @@ class AppData: protected CompStoreObj
     void programmer      (const QString);
     void sambaLocation   (const QString);
     void sambaPort       (const QString);
-    void lastSimulator   (const QString);
-    void simuLastEepe    (const QString);
-    void simuLastFolder  (const QString);
 
     void backupDir       (const QString);
     void gePath          (const QString);
