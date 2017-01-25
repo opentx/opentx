@@ -665,7 +665,7 @@ void menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].setMultiProtocol(checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false), 0, 63, EE_MODEL));
               else if (pdef->maxSubtype > 0)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, pdef->maxSubtype);
-
+              break;
             case 1:
               // Custom protocol, third column is subtype
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, 0, 7);
@@ -859,7 +859,7 @@ void menuModelSetup(event_t event)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
           int optionValue =  g_model.moduleData[moduleIdx].multi.optionValue;
 
-          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
+          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true);
           const mm_protocol_definition* pdef = getMultiProtocolDefinition(multi_proto);
           if (pdef->optionsstr)
             lcdDrawTextAlignedLeft(y, pdef->optionsstr);
