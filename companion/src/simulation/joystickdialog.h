@@ -22,7 +22,12 @@
 #define _JOYSTICKDIALOG_H_
 
 #include <QtWidgets>
+#include "appdata.h"
 #include "joystick.h"
+
+class QCheckBox;
+class QComboBox;
+class QSlider;
 
 namespace Ui {
     class joystickDialog;
@@ -32,25 +37,32 @@ class joystickDialog : public QDialog
 {
     Q_OBJECT
 
-public:
+  public:
     explicit joystickDialog(QWidget *parent = 0, int stick=-1);
     ~joystickDialog();
     Joystick *joystick;
 
-public slots:
-    void onjoystickAxisValueChanged(int axis, int value);
-    
-private:
+  private:
     Ui::joystickDialog *ui;
-    void joystickOpen(int stick);
-    int jscal[8][3];
+    int jscal[MAX_JOYSTICKS][3];
+    QCheckBox * invert[MAX_JOYSTICKS];
+    QComboBox * sticks[MAX_JOYSTICKS];
+    QSlider * sliders[MAX_JOYSTICKS];
     int step;
-    
-private slots:
+    int numAxes;
+    bool started;
+
+  private slots:
+    void loadJoysticks(int stick = -1);
+    void joystickOpen(int stick);
+    void joystickSetEnabled(bool enable);
+    void onjoystickAxisValueChanged(int axis, int value);
+    void loadStep();
+    void on_backButton_clicked();
     void on_nextButton_clicked();
     void on_cancelButton_clicked();
     void on_okButton_clicked();
-    
+
 };
 
 #endif // _JOYSTICKDIALOG_H_
