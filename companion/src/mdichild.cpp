@@ -507,7 +507,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
     setCurrentFile(filename);
   }
 
-  if (storage.getBoard() != getCurrentBoard()) {
+  if (!storage.isBoardCompatible(getCurrentBoard())) {
     convertStorage(storage.getBoard(), getCurrentBoard());
   }
 

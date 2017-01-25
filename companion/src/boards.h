@@ -111,6 +111,7 @@ Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
 #define IS_9XRPRO(board)               (board==Board::BOARD_9XRPRO)
 #define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
 #define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
+#define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP)
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board))

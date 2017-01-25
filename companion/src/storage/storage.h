@@ -62,8 +62,20 @@ class StorageFormat
 
     virtual QString name() = 0;
 
-    virtual Board::Type getBoard() {
+    virtual Board::Type getBoard()
+    {
       return board;
+    }
+
+    virtual bool isBoardCompatible(Board::Type board)
+    {
+      if (this->board == board)
+        return true;
+
+      if (IS_TARANIS_X9D(this->board) && IS_TARANIS_X9D(board))
+        return true;
+
+      return false;
     }
 
   protected:
