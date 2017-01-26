@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include "progresswidget.h"
 #include "progressdialog.h"
 #include "ui_progressdialog.h"
 #include "appdata.h"
@@ -70,4 +71,9 @@ void ProgressDialog::on_outputProgress_locked(bool lock)
 void ProgressDialog::shrink()
 {
   resize(0, 0);
+}
+
+bool ProgressDialog::isEmpty() const
+{
+  return ui->outputProgress->isEmpty();
 }
