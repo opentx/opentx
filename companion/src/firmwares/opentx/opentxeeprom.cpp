@@ -2061,7 +2061,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
       }
       else {
         addConversion(FuncPlaySound, val++);
-        if (!IS_TARANIS(board))
+        if (!IS_HORUS_OR_TARANIS(board))
           addConversion(FuncPlayHaptic, val++);
         addConversion(FuncReset, val++);
         addConversion(FuncVario, val++);
@@ -2174,7 +2174,7 @@ class ArmCustomFunctionField: public TransformedField {
     {
       return (fn.func == FuncPlaySound || fn.func == FuncPlayPrompt || fn.func == FuncPlayValue || fn.func == FuncPlayHaptic);
     }
-    
+
     virtual void beforeExport()
     {
       if (fn.swtch.type != SWITCH_TYPE_NONE) {
@@ -2702,14 +2702,14 @@ class TelemetryVarioSourceConversionTable: public ConversionTable
     TelemetryVarioSourceConversionTable(Board::Type board, unsigned int version)
     {
       int val = 0;
-      if (!IS_TARANIS(board)) {
+      if (!IS_HORUS_OR_TARANIS(board)) {
         addConversion(TELEMETRY_VARIO_SOURCE_ALTI, val++);
         addConversion(TELEMETRY_VARIO_SOURCE_ALTI_PLUS, val++);
       }
       addConversion(TELEMETRY_VARIO_SOURCE_VSPEED, val++);
       addConversion(TELEMETRY_VARIO_SOURCE_A1, val++);
       addConversion(TELEMETRY_VARIO_SOURCE_A2, val++);
-      if (IS_TARANIS(board)) {
+      if (IS_HORUS_OR_TARANIS(board)) {
         addConversion(TELEMETRY_VARIO_SOURCE_DTE, val++);
       }
     }
@@ -2774,7 +2774,7 @@ class FrskyField: public StructField {
     {
       rssiConversionTable[0] = RSSIConversionTable(0);
       rssiConversionTable[1] = RSSIConversionTable(1);
-      
+
       if (IS_ARM(board)) {
         if (!IS_HORUS(board)) {
           if (version >= 217) {
@@ -2806,7 +2806,7 @@ class FrskyField: public StructField {
             Append(new ConversionField<SignedField<8> >(frsky.blades, -2));
             Append(new ConversionField<UnsignedField<8> >(frsky.currentSource, &telemetryCurrentSourceConversionTable, "Current Source"));
           }
-  
+
           if (version >= 217) {
             for (int i = 0; i < 4; i++) {
               Append(new UnsignedField<2>(frsky.screens[i].type));
@@ -2825,7 +2825,7 @@ class FrskyField: public StructField {
             }
           }
         }
-        
+
         if (version >= 217) {
           Append(new UnsignedField<7>(frsky.varioSource, "Vario Source"));
           Append(new BoolField<1>(frsky.varioCenterSilent));
@@ -2918,7 +2918,7 @@ class CustomScreenField: public StructField {
       customScreen(customScreen)
     {
     }
-    
+
   protected:
     CustomScreenData & customScreen;
 };
@@ -2993,14 +2993,14 @@ class SensorField: public TransformedField {
         else if (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION || sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE)
           sensor.amps = _sources[0];
       }
-      
+
       if (version < 218) {
         if (sensor.unit > SensorData::UNIT_WATTS)
           sensor.unit++;
         if (sensor.unit > SensorData::UNIT_DEGREE)
           sensor.unit++;
       }
-        
+
       eepromImportDebug() << QString("imported %1").arg(internalField.getName());
     }
 
@@ -3129,7 +3129,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<2>(modelData.trimsDisplay));
     internalField.Append(new BoolField<1>(modelData.frsky.ignoreSensorIds));
   }
-  else if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216)) {
+  else if (IS_HORUS_OR_TARANIS(board) || (IS_ARM(board) && version >= 216)) {
     internalField.Append(new SpareBitsField<4>());
   }
   else {
@@ -3143,7 +3143,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   internalField.Append(new BoolField<1>(modelData.disableThrottleWarning));
 
-  if (IS_TARANIS(board) || (IS_ARM(board) && version >= 216))
+  if (IS_HORUS_OR_TARANIS(board) || (IS_ARM(board) && version >= 216))
     internalField.Append(new BoolField<1>(modelData.displayChecklist));
   else
     internalField.Append(new BoolField<1>(modelData.moduleData[0].ppm.pulsePol));
@@ -3190,7 +3190,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   if (!afterrelease21March2013) {
     internalField.Append(new UnsignedField<8>(modelData.moduleData[0].modelId));
   }
-  
+
   if (IS_HORUS(board))
     internalField.Append(new SwitchesWarningField<32>(modelData.switchWarningStates, board, version));
   else if (IS_TARANIS_X9E(board))
@@ -3396,7 +3396,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   if (IS_TARANIS_X9E(board)) {
     internalField.Append(new UnsignedField<8>(modelData.toplcdTimer));
   }
-  
+
   if (IS_HORUS(board)) {
     for (int i = 0; i < 5; i++) {
       internalField.Append(new CharField<610>(modelData.customScreenData[i], false, "Custom screen blob"));
@@ -3431,7 +3431,7 @@ void OpenTxModelData::beforeExport()
       subprotocols[module] = (module == 0 ? -1 : 0);
     }
   }
-  
+
   if (IS_HORUS(board)) {
     uint32_t newSwitchWarningStates = 0;
     for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
@@ -3488,7 +3488,7 @@ void OpenTxModelData::afterImport()
   if (IS_TARANIS(board) && version < 217 && modelData.moduleData[1].protocol != PULSES_OFF) {
     modelData.moduleData[1].modelId = modelData.moduleData[0].modelId;
   }
-  
+
   if (IS_HORUS(board)) {
     uint32_t newSwitchWarningStates = 0;
     for (int i = 0; i < MAX_SWITCHES(board, version); i++) {
@@ -3560,7 +3560,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   internalField.Append(new UnsignedField<8>(generalData.view, 0, MAX_VIEWS(board)-1));
-  
+
   internalField.Append(new SpareBitsField<2>()); // TODO buzzerMode?
   internalField.Append(new BoolField<1>(generalData.fai));
   internalField.Append(new SignedField<2>((int &)generalData.beeperMode));
@@ -3570,7 +3570,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
   internalField.Append(new UnsignedField<2>(generalData.stickMode));
   internalField.Append(new SignedField<5>(generalData.timezone));
-  if (version >= 217 && IS_TARANIS(board)) {
+  if (version >= 217 && IS_HORUS_OR_TARANIS(board)) {
     internalField.Append(new BoolField<1>(generalData.adjustRTC));
   }
   else {
@@ -3591,6 +3591,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   else {
     internalField.Append(new SpareBitsField<3>());
   }
+  if (version >= 216 && IS_HORUS(board))
+    internalField.Append(new SpareBitsField<3>());
   if (version >= 216 && IS_TARANIS(board))
     internalField.Append(new SignedField<3>(generalData.splashDuration));
   else if (version >= 213 || (!IS_ARM(board) && version >= 212))
@@ -3633,7 +3635,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new SignedField<8>(generalData.vBatMin));
     internalField.Append(new SignedField<8>(generalData.vBatMax));
   }
-  
+
   if (IS_ARM(board)) {
     internalField.Append(new UnsignedField<8>(generalData.backlightBright));
     if (version < 218) internalField.Append(new SignedField<8>(generalData.txCurrentCalibration));
@@ -3684,7 +3686,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         internalField.Append(new ArmCustomFunctionField(generalData.customFn[i], board, version, variant));
       }
     }
-    
+
     if (IS_STM32(board) && version >= 216) {
       if (version >= 218) {
         internalField.Append(new UnsignedField<4>(generalData.hw_uartMode));
@@ -3782,7 +3784,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new BoolField<8>(generalData.bluetoothEnable));
       internalField.Append(new ZCharField<10>(generalData.bluetoothName, "Bluetooth name"));
     }
-    
+
     if (IS_HORUS(board)) {
       internalField.Append(new CharField<8>(generalData.themeName, true, "Theme name"));
       for (int i=0; i<5; i++) {

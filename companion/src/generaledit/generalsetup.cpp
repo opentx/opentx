@@ -230,7 +230,7 @@ ui(new Ui::GeneralSetup)
     connect(tpmsld[i], SIGNAL(valueChanged(int)),this,SLOT(unlockSwitchEdited()));
   }
 
-  if (!IS_TARANIS(firmware->getBoard())) {
+  if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     ui->stickReverse1->setChecked(generalSettings.stickReverse & (1 << 0));
     ui->stickReverse2->setChecked(generalSettings.stickReverse & (1 << 1));
     ui->stickReverse3->setChecked(generalSettings.stickReverse & (1 << 2));
