@@ -1,0 +1,1 @@
+Open Iconic collection, used under MIT License.  https://github.com/iconic/open-iconic
