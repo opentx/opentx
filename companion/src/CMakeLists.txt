@@ -462,6 +462,7 @@ IF(APPLE)
       )
 
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  message("Simulator plugins are ${simulator_plugins}")
   set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
   install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
 
