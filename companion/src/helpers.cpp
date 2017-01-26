@@ -374,7 +374,7 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase)
   }
 }
 
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
+void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
 {
   Board::Type board = getCurrentBoard();
   RawSwitch item;

@@ -1028,7 +1028,7 @@ bool GeneralSettings::switchPositionAllowedTaranis(int index) const
   if (index == 0)
     return true;
 
-  div_t qr = div(index-1, 3);
+  div_t qr = div(abs(index)-1, 3);
 
   if (index < 0 && switchConfig[qr.quot] != Board::SWITCH_3POS)
     return false;
