@@ -74,23 +74,24 @@ class RadioKnobWidget : public RadioWidget
 
         explicit KnobWidget(Board::PotType type, QWidget * parent = 0):
           QDial(parent),
-          m_type(type),
-          m_positions(type == Board::POT_MULTIPOS_SWITCH ? 5 : 0)
+          m_type(type)
         {
-          setToolTip(tr("Right-double-click to reset to center."));
           setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
           setFixedSize(QSize(42, 42));
           setMinimum(-1024);
           setMaximum(1024);
           setNotchesVisible(true);
-          if (m_positions) {
+          if (type == Board::POT_MULTIPOS_SWITCH) {
+            m_stepSize = 2048 / 5;
             // this is a bit of a hack to get the notch markers to display correctly
             // the actual notches/value are constrained in setValue()
-            setSingleStep(2048 / m_positions / 10);
-            setPageStep(2048 / m_positions);
+            setSingleStep(m_stepSize / 10);
+            setPageStep(m_stepSize);
             setNotchTarget(5.7);
           }
           else {
+            m_stepSize = 1;
+            setToolTip(tr("Right-double-click to reset to center."));
             setPageStep(128);
             setNotchTarget(64);
           }
@@ -98,8 +99,8 @@ class RadioKnobWidget : public RadioWidget
 
         void setValue(int value)
         {
-          if (m_positions) {
-            value = ((int)roundf((value + 1024) / (2048.0f / m_positions)) * (2048.0f / m_positions) - 1024);
+          if (m_stepSize > 1) {
+            value = (value + 1024) / m_stepSize * m_stepSize - 1024;
           }
           QDial::setValue(value);
         }
@@ -114,8 +115,20 @@ class RadioKnobWidget : public RadioWidget
           QDial::mousePressEvent(event);
         }
 
+        void wheelEvent(QWheelEvent * event)
+        {
+          if (event->angleDelta().isNull())
+            return;
+          if (m_stepSize > 1) {
+            int numSteps = event->angleDelta().y() / 8 / 15 * m_stepSize;  // one step per 15deg
+            setValue(value() + numSteps);
+            return;
+          }
+          QDial::wheelEvent(event);
+        }
+
         Board::PotType m_type;
-        quint8 m_positions;
+        quint16 m_stepSize;
     };
 
 };
