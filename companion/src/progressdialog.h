@@ -39,6 +39,7 @@ public:
   ~ProgressDialog();
 
   ProgressWidget * progress();
+  bool isEmpty() const;
 
 private slots:
   void on_closeButton_clicked();

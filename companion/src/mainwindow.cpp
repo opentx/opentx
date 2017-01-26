@@ -754,7 +754,7 @@ bool MainWindow::readFirmwareFromRadio(const QString & filename)
 {
   ProgressDialog progressDialog(this, tr("Read Firmware from Radio"), CompanionIcon("read_flash.png"));
   bool result = readFirmware(filename, progressDialog.progress());
-  if (!result) {
+  if (!result && !progressDialog.isEmpty()) {
     progressDialog.exec();
   }
   return result;
@@ -765,7 +765,12 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
   ProgressDialog progressDialog(this, tr("Read Models and Settings from Radio"), CompanionIcon("read_eeprom.png"));
   bool result = ::readEeprom(filename, progressDialog.progress());
   if (!result) {
-    progressDialog.exec();
+    if (!progressDialog.isEmpty()) {
+      progressDialog.exec();
+    }
+  }
+  else {
+    statusBar()->showMessage(tr("Models and Settings read"), 2000);
   }
   return result;
 }

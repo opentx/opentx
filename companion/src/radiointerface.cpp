@@ -28,6 +28,7 @@
 #include "mountlist.h"
 #include "process_copy.h"
 #include "storage.h"
+#include "progresswidget.h"
 
 #if defined WIN32 || !defined __GNUC__
   #include <windows.h>
@@ -323,15 +324,18 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
+      QMessageBox::critical(progress, QObject::tr("Error"), QObject::tr("Unable to find Horus radio SD card!"));
       return false;
     }
     RadioData radioData;
     Storage inputStorage(radioPath);
     if (!inputStorage.load(radioData)) {
+      QMessageBox::critical(progress, QObject::tr("Error"), inputStorage.error());
       return false;
     }
     Storage outputStorage(filename);
     if (!outputStorage.write(radioData)) {
+      QMessageBox::critical(progress, QObject::tr("Error"), outputStorage.error());
       return false;
     }
   }
@@ -347,6 +351,8 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
         path = findMassstoragePath("ERSKY9X.BIN");
       }
       if (path.isEmpty()) {
+        RadioNotFoundDialog dialog;
+        dialog.exec();
         return false;
       }
       CopyProcess copyProcess(path, filename, progress);
@@ -360,11 +366,6 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
       if (!flashProcess.run()) {
         return false;
       }
-    }
-
-    if (IS_ARM(board)) {
-      RadioNotFoundDialog dialog;
-      dialog.exec();
     }
   }
 

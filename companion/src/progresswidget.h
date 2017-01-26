@@ -45,6 +45,7 @@ class ProgressWidget : public QWidget
     void addSeparator();
     void forceOpen();
     void stop();
+    bool isEmpty() const;
 
   signals:
     void detailsToggled();
