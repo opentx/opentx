@@ -186,7 +186,7 @@ QString MultiModelPrinter::printSetup()
     COMPARE(modelPrinter->printModule(i));
     columns.append("<br/>");
   }
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     columns.appendTitle(tr("Trainer port:"));
     COMPARE(modelPrinter->printTrainerMode());
     columns.append("<br/>");

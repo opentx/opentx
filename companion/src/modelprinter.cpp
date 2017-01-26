@@ -281,7 +281,11 @@ QString ModelPrinter::printCenterBeep()
     strl << tr("Throttle");
   if (model.beepANACenter & 0x08)
     strl << tr("Aileron");
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS(firmware->getBoard())) {
+    // TODO
+    qDebug() << "ModelPrinter::printCenterBeep() TODO";
+  }
+  else if (IS_TARANIS(firmware->getBoard())) {
     if (model.beepANACenter & 0x10)
       strl << "S1";
     if (model.beepANACenter & 0x20)
