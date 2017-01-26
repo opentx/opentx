@@ -300,8 +300,6 @@ endif()
 
 ############# Install ####################
 
-
-
 # Generate list of simulator plugins, used by all platforms
 file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
 # the current flavour is not automatically added if build in the current cmake iteration, so always
@@ -309,8 +307,6 @@ file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARE
 string(TOLOWER ${PCB} FLAVOUR)
 get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
 list(APPEND simulator_plugins "${current_plugin}")
-message("My simu plugins: ${simulator_plugins}")
-
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
