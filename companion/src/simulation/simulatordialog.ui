@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>686</width>
-    <height>557</height>
+    <width>651</width>
+    <height>528</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -232,125 +232,6 @@
      </layout>
     </widget>
    </item>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>3</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="btn_help">
-       <property name="toolTip">
-        <string>Show Help/Keymap (F1)</string>
-       </property>
-       <property name="statusTip">
-        <string>Show Help/Keymap</string>
-       </property>
-       <property name="text">
-        <string>Keymap Help</string>
-       </property>
-       <property name="shortcut">
-        <string>F1</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_joystickDialog">
-       <property name="toolTip">
-        <string>Open the Joystick Settings window (F3)</string>
-       </property>
-       <property name="statusTip">
-        <string>Joystick Configuration</string>
-       </property>
-       <property name="text">
-        <string>Joystick Config.</string>
-       </property>
-       <property name="shortcut">
-        <string>F3</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_telemSim">
-       <property name="toolTip">
-        <string>Open Telemetry Simulator window (F4)</string>
-       </property>
-       <property name="statusTip">
-        <string>Telemetry Simulator</string>
-       </property>
-       <property name="text">
-        <string>Telemetry Sim.</string>
-       </property>
-       <property name="shortcut">
-        <string>F4</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_trainerSim">
-       <property name="toolTip">
-        <string>Open Trainer Simulator window (F5)</string>
-       </property>
-       <property name="statusTip">
-        <string>Trainer Simulator</string>
-       </property>
-       <property name="text">
-        <string>Trainer Sim.</string>
-       </property>
-       <property name="shortcut">
-        <string>F5</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_debugConsole">
-       <property name="toolTip">
-        <string>Open Debug Console window (F6)</string>
-       </property>
-       <property name="statusTip">
-        <string>Debug Console</string>
-       </property>
-       <property name="text">
-        <string>Debug Console</string>
-       </property>
-       <property name="shortcut">
-        <string>F6</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_luaReload">
-       <property name="toolTip">
-        <string>Reload Lua Scripts (F7)</string>
-       </property>
-       <property name="statusTip">
-        <string>Reload Lua Scripts</string>
-       </property>
-       <property name="text">
-        <string>Lua Reload</string>
-       </property>
-       <property name="shortcut">
-        <string>F7</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btn_screenshot">
-       <property name="toolTip">
-        <string>Save a screenshot of the radio LCD screen (F8)</string>
-       </property>
-       <property name="statusTip">
-        <string>LCD Screenshot</string>
-       </property>
-       <property name="text">
-        <string>LCD Screenshot</string>
-       </property>
-       <property name="shortcut">
-        <string>F8</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="3" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="enabled">
@@ -412,6 +293,185 @@ padding: 0;</string>
        </property>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QWidget" name="buttonBox" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="buttonsLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btn_help">
+        <property name="toolTip">
+         <string>Show Help/Keymap (F1)</string>
+        </property>
+        <property name="statusTip">
+         <string>Show Help/Keymap</string>
+        </property>
+        <property name="text">
+         <string>Keymap</string>
+        </property>
+        <property name="shortcut">
+         <string>F1</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>help</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_joystickDialog">
+        <property name="toolTip">
+         <string>Open the Joystick Settings window (F3)</string>
+        </property>
+        <property name="statusTip">
+         <string>Joystick Configuration</string>
+        </property>
+        <property name="text">
+         <string>Joystick Config.</string>
+        </property>
+        <property name="shortcut">
+         <string>F3</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>joystick</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_telemSim">
+        <property name="toolTip">
+         <string>Open Telemetry Simulator window (F4)</string>
+        </property>
+        <property name="statusTip">
+         <string>Telemetry Simulator</string>
+        </property>
+        <property name="text">
+         <string>Telemetry Sim.</string>
+        </property>
+        <property name="shortcut">
+         <string>F4</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>telemetry</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_trainerSim">
+        <property name="toolTip">
+         <string>Open Trainer Simulator window (F5)</string>
+        </property>
+        <property name="statusTip">
+         <string>Trainer Simulator</string>
+        </property>
+        <property name="text">
+         <string>Trainer Sim.</string>
+        </property>
+        <property name="shortcut">
+         <string>F5</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>trainer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_debugConsole">
+        <property name="toolTip">
+         <string>Open Debug Console window (F6)</string>
+        </property>
+        <property name="statusTip">
+         <string>Debug Console</string>
+        </property>
+        <property name="text">
+         <string>Debug Console</string>
+        </property>
+        <property name="shortcut">
+         <string>F6</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>debug</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_luaReload">
+        <property name="toolTip">
+         <string>Reload Lua Scripts (F7)</string>
+        </property>
+        <property name="statusTip">
+         <string>Reload Lua Scripts</string>
+        </property>
+        <property name="text">
+         <string>Reload Lua</string>
+        </property>
+        <property name="shortcut">
+         <string>F7</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>reloadLua</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_screenshot">
+        <property name="toolTip">
+         <string>Save a screenshot of the radio LCD screen (F8)</string>
+        </property>
+        <property name="statusTip">
+         <string>LCD Screenshot</string>
+        </property>
+        <property name="text">
+         <string>Screenshot</string>
+        </property>
+        <property name="shortcut">
+         <string>F8</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>lcdScreenshot</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_reloadSimu">
+        <property name="toolTip">
+         <string>Reload all radio data (F9)</string>
+        </property>
+        <property name="statusTip">
+         <string>Reload Radio Data</string>
+        </property>
+        <property name="text">
+         <string>Reload Radio</string>
+        </property>
+        <property name="shortcut">
+         <string>F9</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>reloadradio</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
