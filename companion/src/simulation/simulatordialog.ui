@@ -259,7 +259,7 @@
         <string>Open the Joystick Settings window (F3)</string>
        </property>
        <property name="statusTip">
-        <string>Telemetry Simulator</string>
+        <string>Joystick Configuration</string>
        </property>
        <property name="text">
         <string>Joystick Config.</string>
