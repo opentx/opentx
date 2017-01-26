@@ -431,7 +431,7 @@ void SimulatorDialog::setupUi()
   keymapHelp.append(keymapHelp_t(ui->btn_trainerSim->shortcut().toString(QKeySequence::NativeText), ui->btn_trainerSim->statusTip()));
   keymapHelp.append(keymapHelp_t(ui->btn_debugConsole->shortcut().toString(QKeySequence::NativeText), ui->btn_debugConsole->statusTip()));
 
-  if (!firmware->getCapability(Capability(LuaInputsPerScript)))  // hackish! but using "LuaScripts" checks for id "lua" in fw.
+  if (firmware->getCapability(Capability(LuaInputsPerScript)))  // hackish! but using "LuaScripts" checks for id "lua" in fw.
     keymapHelp.append(keymapHelp_t(ui->btn_luaReload->shortcut().toString(QKeySequence::NativeText), ui->btn_luaReload->statusTip()));
   else
     ui->btn_luaReload->hide();
