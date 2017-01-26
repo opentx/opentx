@@ -831,36 +831,42 @@ void SimulatorDialog::setValues()
   static const int numFlightModes = firmware->getCapability(FlightModes);
   static QString phase_name;
   static TxOutputs prevOutputs;
-  static int prevPhase = -1;
-  int currentPhase;
 
   TxOutputs outputs;
   simulator->getValues(outputs);
 
-  for (int i = 0; i < channelSliders.size() && i < CPN_MAX_CHNOUT; i++) {
-    channelSliders[i]->setValue(qMin(1024, qMax(-1024, outputs.chans[i])));
-    channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
-  }
+  int currentPhase = simulator->getPhase();
 
-  for (int i = 0; i < logicalSwitchLabels.size() && i < CPN_MAX_CSW; i++) {
-    if (prevOutputs.vsw[i] != outputs.vsw[i]) {
-      // setStyleSheet() is very CPU time consuming, doing it only on the actual
-      // switch state change brings down CPU usage time (for Taranis simulation) from 40% to 7% (Linux, one core usage)
-      logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+  // Outputs tab visible?
+  if (ui->tabWidget->currentIndex() == 1) {
+    for (int i = 0; i < channelSliders.size() && i < CPN_MAX_CHNOUT; i++) {
+      channelSliders[i]->setValue(qMin(1024, qMax(-1024, outputs.chans[i])));
+      channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
+    }
+
+    for (int i = 0; i < logicalSwitchLabels.size() && i < CPN_MAX_CSW; i++) {
+      // setStyleSheet() is very CPU time consuming, do it only if the actual switch state changes
+      if (prevOutputs.vsw[i] != outputs.vsw[i]) {
+        logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+        prevOutputs.vsw[i] = outputs.vsw[i];
+      }
     }
   }
 
-  for (int gv = 0; gv < numGvars; gv++) {
-    for (int fm = 0; fm < numFlightModes; fm++) {
-      if (prevPhase != lastPhase || prevOutputs.gvars[fm][gv] != outputs.gvars[fm][gv]) {
+  // GVars tab visible?
+  if (ui->tabWidget->currentIndex() == 2) {
+    for (int gv = 0; gv < numGvars; gv++) {
+      for (int fm = 0; fm < numFlightModes; fm++) {
         // same trick for GVARS, but this has far less effect on CPU usage as setStyleSheet()
-        gvarValues[gv*numFlightModes+fm]->setText(QString((fm == lastPhase) ? "<b>%1</b>" : "%1").arg(outputs.gvars[fm][gv]));
+        if (currentPhase != lastPhase || prevOutputs.gvars[fm][gv] != outputs.gvars[fm][gv]) {
+          gvarValues[gv*numFlightModes+fm]->setText(QString((fm == lastPhase) ? "<b>%1</b>" : "%1").arg(outputs.gvars[fm][gv]));
+          prevOutputs.gvars[fm][gv] = outputs.gvars[fm][gv];
+        }
       }
     }
   }
 
   // display current flight mode in window title
-  currentPhase = simulator->getPhase();
   if (currentPhase != lastPhase) {
     lastPhase = currentPhase;
     phase_name = QString(simulator->getPhaseName(currentPhase));
@@ -869,8 +875,6 @@ void SimulatorDialog::setValues()
     setWindowTitle(windowName + QString(" - Flight Mode %1").arg(phase_name));
   }
 
-  prevOutputs = outputs;
-  prevPhase = lastPhase;
 }
 
 // "get" values from this UI and send them to the firmware simulator.
