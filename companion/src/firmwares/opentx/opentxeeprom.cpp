@@ -1363,7 +1363,7 @@ class InputField: public TransformedField {
     {
       _weight = smallGvarToEEPROM(expo.weight);
 
-      if (IS_TARANIS(board) && version >= 216) {
+      if (IS_HORUS_OR_TARANIS(board) && version >= 216) {
         _offset = smallGvarToEEPROM(expo.offset);
       }
 
