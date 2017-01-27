@@ -105,8 +105,10 @@ SimulatorDialog::~SimulatorDialog()
     vJoyLeft->deleteLater();
   if (vJoyRight)
     vJoyRight->deleteLater();
+#ifdef JOYSTICKS
   if (joystick)
     joystick->deleteLater();
+#endif
 
   firmware = NULL;  // Not sure we should delete this but at least release our pointer.
   // NOTE : <simulator> should be deleted (or not) in the parent process which gave it to us in the first place.

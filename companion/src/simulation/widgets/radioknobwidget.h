@@ -68,13 +68,10 @@ class RadioKnobWidget : public RadioWidget
 
     class KnobWidget : public QDial
     {
-      friend class RadioKnobWidget;
-
       public:
 
         explicit KnobWidget(Board::PotType type, QWidget * parent = 0):
-          QDial(parent),
-          m_type(type)
+          QDial(parent)
         {
           setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
           setFixedSize(QSize(42, 42));
@@ -107,7 +104,7 @@ class RadioKnobWidget : public RadioWidget
 
         void mousePressEvent(QMouseEvent * event)
         {
-          if (event->button() == Qt::RightButton && event->type() == QEvent::MouseButtonDblClick) {
+          if (m_stepSize == 1 && event->button() == Qt::RightButton && event->type() == QEvent::MouseButtonDblClick) {
             setValue(0);
             event->accept();
             return;
@@ -119,6 +116,7 @@ class RadioKnobWidget : public RadioWidget
         {
           if (event->angleDelta().isNull())
             return;
+
           if (m_stepSize > 1) {
             int numSteps = event->angleDelta().y() / 8 / 15 * m_stepSize;  // one step per 15deg
             setValue(value() + numSteps);
@@ -128,7 +126,6 @@ class RadioKnobWidget : public RadioWidget
           QDial::wheelEvent(event);
         }
 
-        Board::PotType m_type;
         quint16 m_stepSize;
     };
 
