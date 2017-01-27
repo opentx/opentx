@@ -36,7 +36,7 @@ class TreeItem
     explicit TreeItem(const QVector<QVariant> & itemData);
     explicit TreeItem(TreeItem * parent, int categoryIndex, int modelIndex);
     ~TreeItem();
-    
+
     TreeItem * child(int number);
     int childCount() const;
     int columnCount() const;
@@ -44,13 +44,13 @@ class TreeItem
     TreeItem * appendChild(int categoryIndex, int modelIndex);
     TreeItem * parent();
     bool removeChildren(int position, int count);
-    
+
     int childNumber() const;
     bool setData(int column, const QVariant &value);
-    
+
     int getModelIndex() const { return modelIndex; }
     int getCategoryIndex() const { return categoryIndex; }
-  
+
   private:
     QList<TreeItem*> childItems;
     QVector<QVariant> itemData;
@@ -62,42 +62,42 @@ class TreeItem
 
 class TreeModel : public QAbstractItemModel
 {
-    // Q_OBJECT
-  
+    Q_OBJECT
+
   public:
     TreeModel(RadioData * radioData, QObject *parent = 0);
-    ~TreeModel();
-    
+    virtual ~TreeModel();
+
     QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    
+
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
-    
+
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    
+
     Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
     bool setData(const QModelIndex &index, const QVariant &value,
                  int role = Qt::EditRole) Q_DECL_OVERRIDE;
-    
+
     bool removeRows(int position, int rows,
                     const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
-    
+
     void refresh();
-  
+
     int getAvailableEEpromSize() { return availableEEpromSize; }
-    
+
     int getModelIndex(const QModelIndex & index) const {
       return getItem(index)->getModelIndex();
     }
-    
+
     int getCategoryIndex(const QModelIndex & index) const {
       return getItem(index)->getCategoryIndex();
     }
-    
+
   private:
     TreeItem * getItem(const QModelIndex & index) const;
     TreeItem * rootItem;
