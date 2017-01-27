@@ -51,17 +51,17 @@ class RadioSwitchWidget : public RadioWidget
     {
       m_type = RADIO_WIDGET_SWITCH;
 
-      QSlider * sl = new QSlider();
-      sl->setOrientation(Qt::Vertical);
-      sl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-      sl->setInvertedAppearance(true);
-      sl->setInvertedControls(true);
-      sl->setTickPosition(QSlider::TicksBothSides);
-      sl->setPageStep(1);
-      sl->setMinimum((swType == Board::SWITCH_3POS ? -1 : 0));
-      sl->setMaximum(1);
-      sl->setTickInterval(1);
-      sl->setValue(m_value);
+      m_slider = new QSlider();
+      m_slider->setOrientation(Qt::Vertical);
+      m_slider->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+      m_slider->setInvertedAppearance(true);
+      m_slider->setInvertedControls(true);
+      m_slider->setTickPosition(QSlider::TicksBothSides);
+      m_slider->setPageStep(1);
+      m_slider->setMinimum((swType == Board::SWITCH_3POS ? -1 : 0));
+      m_slider->setMaximum(1);
+      m_slider->setTickInterval(1);
+      m_slider->setValue(m_value);
 
       if (swType == Board::SWITCH_TOGGLE) {
         QIcon icon;
@@ -82,22 +82,23 @@ class RadioSwitchWidget : public RadioWidget
         QVBoxLayout * cl = new QVBoxLayout(container);
         cl->setContentsMargins(0, 0, 0, 0);
         cl->setSpacing(1);
-        cl->addWidget(sl, 1, Qt::AlignHCenter);
+        cl->addWidget(m_slider, 1, Qt::AlignHCenter);
         cl->addWidget(lockBtn, 0, Qt::AlignHCenter);
 
         setWidget(container);
 
         connect(lockBtn, &QToolButton::toggled, this, &RadioSwitchWidget::setToggleLocked);
-        connect(sl, &QSlider::valueChanged, this, &RadioSwitchWidget::onValueChanged);
+        connect(m_slider, &QSlider::sliderReleased, this, &RadioSwitchWidget::onMomentaryReleased);
+        connect(m_slider, &QSlider::valueChanged, this, &RadioSwitchWidget::onMomentaryReleased);
         connect(this, &RadioWidget::flagsChanged, lockBtn, &QToolButton::setChecked);
       }
       else {
-        sl->setFixedHeight(50);
-        setWidget(sl);
+        m_slider->setFixedHeight(50);
+        setWidget(m_slider);
       }
 
-      connect(sl, &QSlider::valueChanged, this, &RadioWidget::setValue);
-      connect(this, &RadioWidget::valueChanged, sl, &QSlider::setValue);
+      connect(m_slider, &QSlider::valueChanged, this, &RadioWidget::setValue);
+      connect(this, &RadioWidget::valueChanged, m_slider, &QSlider::setValue);
 
     }
 
@@ -117,9 +118,9 @@ class RadioSwitchWidget : public RadioWidget
 
   private slots:
 
-    void onValueChanged(int value)
+    void onMomentaryReleased()
     {
-      if (swType == Board::SWITCH_TOGGLE && !m_flags)
+      if (!m_flags && !m_slider->isSliderDown())
         QTimer::singleShot(500, this, SLOT(onMomentaryTimeout()));
     }
 
@@ -131,6 +132,7 @@ class RadioSwitchWidget : public RadioWidget
 
   private:
     Board::SwitchType swType;
+    QSlider * m_slider;
 };
 
 
