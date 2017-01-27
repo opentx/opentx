@@ -3593,7 +3593,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
   if (version >= 216 && IS_HORUS(board))
     internalField.Append(new SpareBitsField<3>());
-  if (version >= 216 && IS_TARANIS(board))
+  else if (version >= 216 && IS_TARANIS(board))
     internalField.Append(new SignedField<3>(generalData.splashDuration));
   else if (version >= 213 || (!IS_ARM(board) && version >= 212))
     internalField.Append(new UnsignedField<3>(generalData.splashMode)); // TODO
