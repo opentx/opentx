@@ -844,7 +844,6 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     dialog->start();
     dialog->exec();
     dialog->deleteLater();
-    delete simulator;
     // TODO Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
     delete simuData;  // TODO same with simuData, could read it back and update the file data
 #if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
