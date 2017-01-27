@@ -115,10 +115,12 @@ class RadioSwitchWidget : public RadioWidget
       setValue(0);
     }
 
+  private slots:
+
     void onValueChanged(int value)
     {
       if (swType == Board::SWITCH_TOGGLE && !m_flags)
-        QTimer::singleShot(500, this, &RadioSwitchWidget::onMomentaryTimeout);
+        QTimer::singleShot(500, this, SLOT(onMomentaryTimeout()));
     }
 
     void onMomentaryTimeout()
