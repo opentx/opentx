@@ -122,6 +122,7 @@ class RadioKnobWidget : public RadioWidget
           if (m_stepSize > 1) {
             int numSteps = event->angleDelta().y() / 8 / 15 * m_stepSize;  // one step per 15deg
             setValue(value() + numSteps);
+            event->accept();
             return;
           }
           QDial::wheelEvent(event);

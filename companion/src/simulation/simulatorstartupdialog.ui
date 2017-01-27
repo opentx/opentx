@@ -311,8 +311,6 @@ The default is configured in the chosen Radio Profile.</string>
     </widget>
    </item>
   </layout>
-  <zorder>groupBox</zorder>
-  <zorder>buttonBox</zorder>
  </widget>
  <resources>
   <include location="../companion.qrc"/>
