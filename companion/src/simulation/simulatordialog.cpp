@@ -75,7 +75,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   startupFromFile(false),
   deleteTempRadioData(false),
   saveTempRadioData(false),
-  middleButtonPressed(false)
+  middleButtonPressed(false),
+  firstShow(true)
 {
   setWindowFlags(Qt::Window);
 
@@ -982,7 +983,6 @@ void SimulatorDialog::closeEvent(QCloseEvent *)
 
 void SimulatorDialog::showEvent(QShowEvent *)
 {
-  static bool firstShow = true;
   if (firstShow) {
     restoreGeometry(g.profile[radioProfileId].simulatorOptions().windowGeometry);
 

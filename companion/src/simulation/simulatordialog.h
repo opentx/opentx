@@ -154,6 +154,7 @@ class SimulatorDialog : public QDialog
     bool deleteTempRadioData;
     bool saveTempRadioData;
     bool middleButtonPressed;
+    bool firstShow;
 
 #ifdef JOYSTICKS
     Joystick *joystick;
