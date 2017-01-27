@@ -36,7 +36,9 @@ void GeneralSettings::convert(Board::Type before, Board::Type after)
 void RadioData::setCurrentModel(unsigned int index)
 {
   generalSettings.currModelIndex = index;
-  strcpy(generalSettings.currModelFilename, models[index].filename);
+  if (index < models.size()) {
+    strcpy(generalSettings.currModelFilename, models[index].filename);
+  }
 }
 
 void RadioData::fixModelFilename(unsigned int index)
