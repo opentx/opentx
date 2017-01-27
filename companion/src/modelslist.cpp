@@ -55,7 +55,7 @@ int TreeItem::childNumber() const
 {
   if (parentItem)
     return parentItem->childItems.indexOf(const_cast<TreeItem*>(this));
-  
+
   return 0;
 }
 
@@ -85,10 +85,10 @@ bool TreeItem::removeChildren(int position, int count)
 {
   if (position < 0 || position + count > childItems.size())
     return false;
-  
+
   for (int row = 0; row < count; ++row)
     delete childItems.takeAt(position);
-  
+
   return true;
 }
 
@@ -96,7 +96,7 @@ bool TreeItem::setData(int column, const QVariant & value)
 {
   if (column < 0 || column >= itemData.size())
     return false;
-  
+
   itemData[column] = value;
   return true;
 }
@@ -132,13 +132,13 @@ QVariant TreeModel::data(const QModelIndex & index, int role) const
 {
   if (!index.isValid())
     return QVariant();
-  
+
   if (role != Qt::DisplayRole && role != Qt::EditRole && role != Qt::FontRole) {
     return QVariant();
   }
-  
+
   TreeItem * item = getItem(index);
-  
+
   if (role == Qt::FontRole) {
     if (item->getModelIndex() == (int)radioData->generalSettings.currModelIndex) {
       QFont font;
@@ -153,7 +153,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
   if (!index.isValid())
     return 0;
-  
+
   return Qt::ItemIsEditable | QAbstractItemModel::flags(index);
 }
 
@@ -172,7 +172,7 @@ QVariant TreeModel::headerData(int section, Qt::Orientation orientation, int rol
 {
   if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     return rootItem->data(section);
-  
+
   return QVariant();
 }
 
@@ -180,7 +180,7 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex & parent) co
 {
   if (parent.isValid() && parent.column() != 0)
     return QModelIndex();
-  
+
   TreeItem * parentItem = getItem(parent);
   TreeItem * childItem = parentItem->child(row);
   if (childItem)
@@ -193,13 +193,13 @@ QModelIndex TreeModel::parent(const QModelIndex & index) const
 {
   if (!index.isValid())
     return QModelIndex();
-  
+
   TreeItem * childItem = getItem(index);
   TreeItem * parentItem = childItem->parent();
-  
+
   if (parentItem == rootItem)
     return QModelIndex();
-  
+
   return createIndex(parentItem->childNumber(), 0, parentItem);
 }
 
@@ -207,13 +207,13 @@ bool TreeModel::removeRows(int position, int rows, const QModelIndex & parent)
 {
   TreeItem * parentItem = getItem(parent);
   bool success = true;
-  
+
   if (position >= 0 && rows > 0) {
     beginRemoveRows(parent, position, position + rows - 1);
     success = parentItem->removeChildren(position, rows);
     endRemoveRows();
   }
-  
+
   return success;
 }
 
@@ -227,17 +227,17 @@ bool TreeModel::setData(const QModelIndex & index, const QVariant & value, int r
 {
   if (role != Qt::EditRole)
     return false;
-  
+
   if (!index.isValid())
     return false;
-  
+
   TreeItem * item = getItem(index);
   bool result = item->setData(index.column(), value);
-  
+
   if (result) {
     emit dataChanged(index, index);
   }
-  
+
   return result;
 }
 
@@ -245,23 +245,23 @@ void TreeModel::refresh()
 {
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
   Board::Type board = eepromInterface->getBoard();
-  
+
   if (!IS_SKY9X(board) && !IS_HORUS(board)) {
     availableEEpromSize = getEEpromSize(board) - 64; // let's consider fat
     availableEEpromSize -= 16 * ((eepromInterface->getSize(radioData->generalSettings) + 14) / 15);
   }
-  
+
   removeRows(0, rowCount());
-  
+
   TreeItem * defaultCategoryItem = NULL;
-  
+
   if (IS_HORUS(board)) {
     for (unsigned i = 0; i < radioData->categories.size(); i++) {
       TreeItem * current = rootItem->appendChild(i, -1);
       current->setData(0, QString(radioData->categories[i].name));
     }
   }
-    
+
   for (unsigned i=0; i<radioData->models.size(); i++) {
     ModelData & model = radioData->models[i];
     int currentColumn = 0;
@@ -288,7 +288,7 @@ void TreeModel::refresh()
       current = rootItem->appendChild(0, i);
       current->setData(currentColumn++, QString().sprintf("%02d", i + 1));
     }
-    
+
     if (!model.isEmpty()) {
       QString modelName;
       if (strlen(model.name) > 0)
@@ -308,7 +308,7 @@ void TreeModel::refresh()
       }
     }
   }
-  
+
   if (!IS_SKY9X(board) && !IS_HORUS(board)) {
     availableEEpromSize = (availableEEpromSize / 16) * 15;
   }

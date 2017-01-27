@@ -197,6 +197,7 @@ set(companion_MOC_HDRS
   wizarddialog.h
   modelprinter.h
   multimodelprinter.h
+  modelslist.h
   )
 
 set(companion_UIS
