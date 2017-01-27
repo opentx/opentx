@@ -213,6 +213,11 @@ ui(new Ui::GeneralSetup)
   ui->memwarnChkB->setChecked(!generalSettings.disableMemoryWarning);   //Default is zero=checked
   ui->alarmwarnChkB->setChecked(!generalSettings.disableAlarmWarning);//Default is zero=checked
 
+  if (IS_HORUS(firmware->getBoard())) {
+    ui->splashScreenChkB->hide();
+    ui->splashScreenDuration->hide();
+    ui->splashScreenLabel->hide();
+  }
   if (IS_TARANIS(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
     ui->splashScreenDuration->setCurrentIndex(3-generalSettings.splashDuration);
