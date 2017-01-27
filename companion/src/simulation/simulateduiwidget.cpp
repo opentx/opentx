@@ -83,8 +83,9 @@ QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAng
   return polygon;
 }
 
-void SimulatedUIWidget::timedUpdate(unsigned loop)
+void SimulatedUIWidget::updateUi()
 {
+  //static quint32 loop = 0;
   if (m_lcd->isVisible()) {
     bool lightEnable;
     if (m_simulator->lcdChanged(lightEnable)) {

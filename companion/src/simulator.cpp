@@ -261,6 +261,11 @@ int main(int argc, char *argv[])
     showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(simOptions.firmwareId), QMessageBox::Critical);
     return finish(2);
   }
+  SimulatorInterface * simulator = factory->create();
+  if (!simulator) {
+    showMessage(QObject::tr("ERROR: Failed to create simulator interface, possibly missing or bad library."), QMessageBox::Critical);
+    return finish(2);
+  }
 
   current_firmware_variant = getFirmware(simOptions.firmwareId);
 
@@ -268,7 +273,7 @@ int main(int argc, char *argv[])
   g.id(profileId);
   g.simuLastProfId(profileId);
 
-  SimulatorDialog * dialog = new SimulatorDialog(NULL, factory->create(), SIMULATOR_FLAGS_STANDALONE);
+  SimulatorDialog * dialog = new SimulatorDialog(NULL, simulator, SIMULATOR_FLAGS_STANDALONE);
   dialog->setRadioProfileId(profileId);
   dialog->setOptions(simOptions, true);
   dialog->start();
@@ -277,6 +282,7 @@ int main(int argc, char *argv[])
 
   g.id(oldProfId);
   dialog->deleteLater();
+  delete simulator;
 
   return finish(result);
 }

@@ -93,8 +93,24 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
 SimulatorDialog::~SimulatorDialog()
 {
   traceCallbackInstance = 0;
-  delete timer;
-  delete simulator;
+
+  if (timer) {
+    timer->stop();
+    timer->deleteLater();
+  }
+  if (radioUiWidget)
+    radioUiWidget->deleteLater();
+  if (vJoyLeft)
+    vJoyLeft->deleteLater();
+  if (vJoyRight)
+    vJoyRight->deleteLater();
+  if (joystick)
+    joystick->deleteLater();
+
+  firmware = NULL;  // Not sure we should delete this but at least release our pointer.
+  // NOTE : <simulator> should be deleted (or not) in the parent process which gave it to us in the first place.
+
+  delete ui;
 }
 
 
@@ -775,8 +791,17 @@ void SimulatorDialog::setupJoysticks()
 
 void SimulatorDialog::setupTimer()
 {
+  if (timer) {
+    timer->stop();
+    disconnect(timer, 0, this, 0);
+    disconnect(timer, 0, radioUiWidget, 0);
+    timer->deleteLater();
+    timer = NULL;
+  }
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
+  connect(timer, SIGNAL(timeout()), radioUiWidget, SLOT(updateUi()));
+
   timer->start(10);
 }
 
@@ -829,7 +854,6 @@ void SimulatorDialog::setValues()
 {
   static const int numGvars  = firmware->getCapability(Gvars);
   static const int numFlightModes = firmware->getCapability(FlightModes);
-  static QString phase_name;
   static TxOutputs prevOutputs;
 
   TxOutputs outputs;
@@ -869,7 +893,7 @@ void SimulatorDialog::setValues()
   // display current flight mode in window title
   if (currentPhase != lastPhase) {
     lastPhase = currentPhase;
-    phase_name = QString(simulator->getPhaseName(currentPhase));
+    QString phase_name = QString(simulator->getPhaseName(currentPhase));
     if (phase_name.isEmpty())
       phase_name = QString::number(currentPhase);
     setWindowTitle(windowName + QString(" - Flight Mode %1").arg(phase_name));
@@ -1011,7 +1035,7 @@ void SimulatorDialog::onTimerEvent()
     setTrims();
     centerSticks();
   }
-  radioUiWidget->timedUpdate(lcd_counter);
+
   updateDebugOutput();
 }
 
@@ -1044,6 +1068,7 @@ void SimulatorDialog::openTelemetrySimulator()
   // allow only one instance
   if (TelemetrySimu == 0) {
     TelemetrySimu = new TelemetrySimulator(this, simulator);
+    TelemetrySimu->setAttribute(Qt::WA_DeleteOnClose);
     TelemetrySimu->show();
     connect(TelemetrySimu, &TelemetrySimulator::destroyed, [this](QObject *) {
       this->TelemetrySimu = NULL;
@@ -1059,6 +1084,7 @@ void SimulatorDialog::openTrainerSimulator()
   // allow only one instance
   if (TrainerSimu == 0) {
     TrainerSimu = new TrainerSimulator(this, simulator);
+    TrainerSimu->setAttribute(Qt::WA_DeleteOnClose);
     TrainerSimu->show();
     connect(TrainerSimu, &TrainerSimulator::destroyed, [this](QObject *) {
       this->TrainerSimu = NULL;
@@ -1085,6 +1111,7 @@ void SimulatorDialog::openDebugOutput()
   if (!DebugOut) {
     DebugOut = new DebugOutput(this);
     DebugOut->traceCallback(traceBuffer);
+    DebugOut->setAttribute(Qt::WA_DeleteOnClose);
     DebugOut->show();
     connect(DebugOut, &DebugOutput::destroyed, [this](QObject *) {
       this->DebugOut = NULL;
