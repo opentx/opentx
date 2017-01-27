@@ -84,6 +84,10 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   traceCallbackInstance = this;
   simulator->installTraceHook(traceCb);
 
+#ifdef JOYSTICKS
+  joystick = NULL;
+#endif
+
   // defaults
   setRadioProfileId(radioProfileId);
   setSdPath(g.profile[radioProfileId].sdPath());
