@@ -53,14 +53,21 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
         radioData.categories.push_back(category);
         categoryIndex++;
       }
-      else if (line.operator==("EMPTYMODEL")) {
-        modelIndex++;
-      }
       else {
-        qDebug() << "Loading" << line;
+        QByteArray curline;
+        if (line.startsWith('#') {
+          modelIndex=line.mid(1,2).toInt();
+          curline = line.mid(3, line.size() - 3);
+          qDebug() << "Detected" << curline;
+        }
+        else {
+          curline = line.data();
+        }
+
+        qDebug() << "Loading" << curline;
         QByteArray modelBuffer;
-        if (!loadFile(modelBuffer, QString("MODELS/%1").arg(QString(line)))) {
-          setError(QObject::tr("Can't extract %1").arg(QString(line)));
+        if (!loadFile(modelBuffer, QString("MODELS/%1").arg(QString(curline)))) {
+          setError(QObject::tr("Can't extract %1").arg(QString(curline)));
           return false;
         }
         if ((int)radioData.models.size() <= modelIndex) {
@@ -69,8 +76,8 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
         if (!loadModelFromByteArray(radioData.models[modelIndex], modelBuffer)) {
           return false;
         }
-        strncpy(radioData.models[modelIndex].filename, line.data(), sizeof(radioData.models[modelIndex].filename));
-        if (strcmp(radioData.generalSettings.currModelFilename, line.data()) == 0) {
+        strncpy(radioData.models[modelIndex].filename, curline.data(), sizeof(radioData.models[modelIndex].filename));
+        if (strcmp(radioData.generalSettings.currModelFilename, curline.data()) == 0) {
           radioData.generalSettings.currModelIndex = modelIndex;
         }
         radioData.models[modelIndex].category = categoryIndex;
@@ -112,11 +119,13 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
         modelsList.append(QString().sprintf("[%s]\n", radioData.categories[model.category].name));
         currentCategoryIndex = categoryIndex;
       }
-      modelsList.append(QString(model.filename) + "\n");
-    }
-    else if (IS_TARANIS(getCurrentBoard()))
-    {
-      modelsList.append("EMPTYMODEL\n");
+      if (!IS_HORUS(getCurrentBoard())) {
+        modelsList.append(QString().sprintf("#%02d%s\n", i, model.filename));
+      }
+      else {
+        modelsList.append(QString(model.filename) + "\n");
+      }
+
     }
   }
 
