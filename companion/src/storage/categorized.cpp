@@ -35,13 +35,13 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
   }
 
   board = loadInterface->getBoard();
-  
+
   QByteArray modelsListBuffer;
   if (!loadFile(modelsListBuffer, "RADIO/models.txt")) {
     setError(QObject::tr("Can't extract RADIO/models.txt"));
     return false;
   }
-  
+
   QList<QByteArray> lines = modelsListBuffer.split('\n');
   int modelIndex = 0;
   int categoryIndex = -1;
@@ -52,6 +52,9 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
         CategoryData category(name.toStdString().c_str());
         radioData.categories.push_back(category);
         categoryIndex++;
+      }
+      else if (line.operator==("EMPTYMODEL")) {
+        modelIndex++;
       }
       else {
         qDebug() << "Loading" << line;
@@ -76,7 +79,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
       }
     }
   }
-  
+
   return true;
 }
 
@@ -85,17 +88,18 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
   // models.txt
   QByteArray modelsList;
   int currentCategoryIndex = -1;
-  
+
   // radio.bin
   QByteArray radioSettingsData;
   writeRadioSettingsToByteArray(radioData.generalSettings, radioSettingsData);
   if (!writeFile(radioSettingsData, "RADIO/radio.bin")) {
     return false;
   }
-  
+
   // all models
   for (unsigned int i=0; i<radioData.models.size(); i++) {
     const ModelData & model = radioData.models[i];
+
     if (!model.isEmpty()) {
       QString modelFilename = QString("MODELS/%1").arg(model.filename);
       QByteArray modelData;
@@ -110,8 +114,12 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
       }
       modelsList.append(QString(model.filename) + "\n");
     }
+    else if (IS_TARANIS(getCurrentBoard()))
+    {
+      modelsList.append("EMPTYMODEL\n");
+    }
   }
-  
+
   if (!writeFile(modelsList, "RADIO/models.txt")) {
     return false;
   }
