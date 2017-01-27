@@ -225,6 +225,7 @@ void onLogicalSwitchesMenu(const char *result)
   LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_EDIT) {
+    s_currIdx = sub;
     pushMenu(menuModelLogicalSwitchOne);
   }
 
