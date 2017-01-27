@@ -55,7 +55,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
       }
       else {
         QByteArray curline;
-        if (line.startsWith('#') {
+        if (line.startsWith('#')) {
           modelIndex=line.mid(1,2).toInt();
           curline = line.mid(3, line.size() - 3);
           qDebug() << "Detected" << curline;
