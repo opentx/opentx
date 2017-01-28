@@ -308,10 +308,10 @@ void menuModelFlightModesAll(event_t event)
     }
     else {
 #if defined(PCBX7)
-    drawSwitch(SWITCH_POS, y, p->swtch, 0);
-    for (uint8_t t=0; t<NUM_STICKS; t++) {
-      drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
-}
+      drawSwitch(SWITCH_POS, y, p->swtch, 0);
+      for (uint8_t t=0; t<NUM_STICKS; t++) {
+        drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
+      }
 #else
       drawSwitch((4+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
