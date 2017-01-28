@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -37,7 +37,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
   drawFieldLabel(x, y, STR_FLMODE);
 
   uint8_t posHorz = menuHorizontalPosition;
-  
+
   for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
     lcdDrawChar(x, y, '0'+p, ((posHorz==p) && attr) ? BLINK|INVERS : ((value & (1<<p)) ? 0 : INVERS));
     x += FW;
@@ -90,7 +90,13 @@ void menuModelPhaseOne(event_t event)
   drawFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
 
 #if defined(GVARS) && !defined(GVARS_IN_CURVES_SCREEN)
+#if defined(PCBX7)
+  #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS)
+  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+#else // PCBX7
+  #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+#endif // PCBX7
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
   check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0));
@@ -107,12 +113,13 @@ void menuModelPhaseOne(event_t event)
   int8_t editMode = s_editMode;
 
 #if defined(GVARS) && !defined(PCBSTD)
-  if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
+  if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += VERTICAL_SHIFT;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int8_t i = k + menuVerticalOffset;
-    if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH;
+
+    if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += VERTICAL_SHIFT;
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #else
   for (uint8_t i=0, k=0, y=PHASE_ONE_FIRST_LINE; i<ITEM_MODEL_PHASE_MAX; i++, k++, y+=FH) {
@@ -240,6 +247,10 @@ void menuModelPhaseOne(event_t event)
     #define TRIMS_OFS                  (-FW/2-4)
     #define ROTARY_ENC_OFS             (2)
   #endif
+#elif defined(PCBX7)
+  #define NAME_POS                     20
+  #define SWITCH_POS                   59
+  #define TRIMS_POS                    79
 #else
   #define NAME_OFS                     0
   #define SWITCH_OFS                   (FW/2)
@@ -281,16 +292,32 @@ void menuModelFlightModesAll(event_t event)
     att = (i==sub ? INVERS : 0);
     FlightModeData * p = flightModeAddress(i);
     drawFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
-
+#if defined(PCBX7)
+    lcdDrawSizedText(NAME_POS, y, p->name, sizeof(p->name), ZCHAR);
+#else
     lcdDrawSizedText(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
+#endif
     if (i == 0) {
-      lcdDrawText((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, STR_DEFAULT);
+      for (uint8_t t=0; t<NUM_STICKS; t++) {
+#if defined(PCBX7)
+        drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
+#else
+        drawShortTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
+#endif
+      }
     }
     else {
-      drawSwitch((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
+#if defined(PCBX7)
+      drawSwitch(SWITCH_POS, y, p->swtch, 0);
+      for (uint8_t t=0; t<NUM_STICKS; t++) {
+        drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
+      }
+#else
+      drawSwitch((4+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
         drawShortTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
       }
+#endif
 #if defined(CPUM2560)
       for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
         putsRotaryEncoderMode((13+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
