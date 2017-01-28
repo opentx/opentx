@@ -90,7 +90,13 @@ void menuModelPhaseOne(event_t event)
   drawFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
 
 #if defined(GVARS) && !defined(GVARS_IN_CURVES_SCREEN)
+#if defined(PCBX7)
+  #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+#else // PCBX7
+  #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH)
+  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+#endif // PCBX7
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
   check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0));
@@ -107,12 +113,13 @@ void menuModelPhaseOne(event_t event)
   int8_t editMode = s_editMode;
 
 #if defined(GVARS) && !defined(PCBSTD)
-  if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS;
+  if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += VERTICAL_SHIFT;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int8_t i = k + menuVerticalOffset;
-    if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS;
+
+    if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += VERTICAL_SHIFT;
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #else
   for (uint8_t i=0, k=0, y=PHASE_ONE_FIRST_LINE; i<ITEM_MODEL_PHASE_MAX; i++, k++, y+=FH) {
