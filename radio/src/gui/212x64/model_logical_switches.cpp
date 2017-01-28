@@ -185,7 +185,7 @@ void menuModelLogicalSwitches(event_t event)
     if (cs->duration > 0)
       lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, (horz==LS_FIELD_DURATION ? attr : 0)|PREC1|LEFT);
     else
-      lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DURATION ? attr : 0);
+      lcdDrawMMM(CSW_5TH_COLUMN, y, horz==LS_FIELD_DURATION ? attr : 0);
 
     // CSW delay
     if (cstate == LS_FAMILY_EDGE) {
@@ -198,7 +198,7 @@ void menuModelLogicalSwitches(event_t event)
       lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, (horz==LS_FIELD_DELAY ? attr : 0)|PREC1|LEFT);
     }
     else {
-      lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, horz==LS_FIELD_DELAY ? attr : 0);
+      lcdDrawMMM(CSW_6TH_COLUMN, y, horz==LS_FIELD_DELAY ? attr : 0);
     }
 
     if (attr && horz == LS_FIELD_V3 && cstate != LS_FAMILY_EDGE) {

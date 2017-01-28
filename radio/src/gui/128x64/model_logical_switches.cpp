@@ -195,7 +195,9 @@ void menuModelLogicalSwitchOne(event_t event)
       case LS_FIELD_ANDSW:
         lcdDrawTextAlignedLeft(y, STR_AND_SWITCH);
         drawSwitch(CSWONE_2ND_COLUMN, y, cs->andsw, attr);
-        if (attr) CHECK_INCDEC_MODELSWITCH(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW, isSwitchAvailableInLogicalSwitches);
+        if (attr) {
+          CHECK_INCDEC_MODELSWITCH(event, cs->andsw, -MAX_LS_ANDSW, MAX_LS_ANDSW, isSwitchAvailableInLogicalSwitches);
+        }
         break;
 
       case LS_FIELD_DURATION:
@@ -203,8 +205,10 @@ void menuModelLogicalSwitchOne(event_t event)
         if (cs->duration > 0)
           lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->duration, attr|PREC1|LEFT);
         else
-          lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
+          lcdDrawMMM(CSWONE_2ND_COLUMN, y, attr);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->duration, MAX_LS_DURATION);
+        }
         break;
 
       case LS_FIELD_DELAY:
@@ -212,8 +216,10 @@ void menuModelLogicalSwitchOne(event_t event)
         if (cs->delay > 0)
           lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->delay, attr|PREC1|LEFT);
         else
-          lcdDrawTextAtIndex(CSWONE_2ND_COLUMN, y, STR_MMMINV, 0, attr);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);
+          lcdDrawMMM(CSWONE_2ND_COLUMN, y, attr);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR_ZERO(event, cs->delay, MAX_LS_DELAY);
+        }
         break;
     }
   }

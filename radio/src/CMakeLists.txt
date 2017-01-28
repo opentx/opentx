@@ -338,11 +338,17 @@ if(GUI)
     keys.cpp
     maths.cpp
     translations.cpp
-    gui/gui_common_arm.cpp
+    gui/gui_common.cpp
     )
   foreach(FILE ${GUI_SRC})
     set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
   endforeach()
+  if(ARCH STREQUAL ARM)
+    set(SRC
+      ${SRC}
+      gui/gui_common_arm.cpp
+      )
+  endif()
 endif()
 
 foreach(FILE ${TARGET_SRC})

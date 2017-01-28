@@ -20,23 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLAMENCO)
-uint8_t switchToMix(uint8_t source)
-{
-  div_t qr = div(source-1, 3);
-  return qr.quot+MIXSRC_FIRST_SWITCH;
-}
-#else
-uint8_t switchToMix(uint8_t source)
-{
-  if (source <= 3)
-    return MIXSRC_3POS;
-  else
-    return MIXSRC_FIRST_SWITCH - 3 + source;
-}
-#endif
-
-#if defined(CPUARM)
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable)
 {
   do {
@@ -636,7 +619,13 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
   // Return the empty last protocol
   return pdef;
 }
-
 #endif
 
-#endif
+void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
+{
+  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
+  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
+    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
+  else
+    lcdDrawMMM(x, y, flags);
+}
