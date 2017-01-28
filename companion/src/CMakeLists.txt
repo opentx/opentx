@@ -301,12 +301,19 @@ endif()
 
 ############# Install ####################
 
+# Generate list of simulator plugins, used by all platforms
+file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+# the current flavour is not automatically added if build in the current cmake iteration, so always
+# add its library name to be sure
+string(TOLOWER ${PCB} FLAVOUR)
+get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
+list(APPEND simulator_plugins "${current_plugin}")
+
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   message(STATUS "install " ${CMAKE_BINARY_DIR} " to " ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
   install(FILES ${simulator_plugins} DESTINATION "${SIMULATOR_LIB_PATH}")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop DESTINATION share/applications RENAME companion${C9X_NAME_SUFFIX}.desktop)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop DESTINATION share/applications RENAME simulator${C9X_NAME_SUFFIX}.desktop)
@@ -348,7 +355,6 @@ elseif(WIN32)
     # companion & simulator binaries
     install(TARGETS ${COMPANION_NAME} DESTINATION ${INSTALL_DESTINATION})
     install(TARGETS ${SIMULATOR_NAME} DESTINATION ${INSTALL_DESTINATION})
-    file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*-simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
     install(FILES ${simulator_plugins} DESTINATION "${INSTALL_DESTINATION}")
     # supporting utilities
     set(INSTALL_TEMP_FILES avrdude.exe avrdude.conf dfu-util.exe libusb0.dll libusb-1.0.dll)
@@ -450,6 +456,8 @@ IF(APPLE)
   set(plugin_dest_dir ${COMPANION_NAME}.app/Contents/Plugins)
   set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+  set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+            
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
 
@@ -462,8 +470,7 @@ IF(APPLE)
       RUNTIME DESTINATION bin COMPONENT Runtime
       )
 
-  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-  set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+
   install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
 
   # Write qt.conf to tell qt where to find it plugins
