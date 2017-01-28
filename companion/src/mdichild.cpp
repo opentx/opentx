@@ -422,7 +422,7 @@ void MdiChild::modelAdd()
   model.category = categoryIndex;
   model.used = true;
   sprintf(model.filename, "model%lu.bin", (long unsigned)radioData.models.size()+1);
-  strcpy(model.name, tr("New model").toStdString().c_str());
+  strcpy(model.name, qPrintable(tr("New model")));
   radioData.models.push_back(model);
   radioData.setCurrentModel(radioData.models.size() - 1);
   setModified();

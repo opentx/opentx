@@ -473,7 +473,7 @@ void ModelsListWidget::duplicate()
     while (i<getCurrentFirmware()->getCapability(Models)) {
       if (radioData->models[i].isEmpty()) {
         radioData->models[i] = *model;
-        strcpy(radioData->models[i].filename, radioData->getNextModelFilename().toStdString().c_str());
+        strcpy(radioData->models[i].filename, qPrintable(radioData->getNextModelFilename()));
         ((MdiChild *)parent())->setModified();
         break;
       }

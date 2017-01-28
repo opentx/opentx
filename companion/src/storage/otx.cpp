@@ -93,7 +93,7 @@ bool OtxFormat::write(const RadioData & radioData)
 bool OtxFormat::loadFile(QByteArray & filedata, const QString & filename)
 {
   size_t size;
-  void * data = mz_zip_reader_extract_file_to_heap(&zip_archive, filename.toStdString().c_str(), &size, 0);
+  void * data = mz_zip_reader_extract_file_to_heap(&zip_archive, qPrintable(filename), &size, 0);
   if (!data) {
     return false;
   }
