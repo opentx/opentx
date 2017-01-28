@@ -68,7 +68,7 @@ make -j${JOBS} libsimulator
 cmake ${STM32_OPTIONS} -DPCB=X9E ${SRCDIR}
 make -j${JOBS} libsimulator
 
-cmake ${STM32_OPTIONS} -DPCB=HORUS ${SRCDIR}
+cmake ${STM32_OPTIONS} -DPCB=X12S ${SRCDIR}
 make -j${JOBS} libsimulator
 
 make -j${JOBS} package

@@ -165,7 +165,7 @@ fi
 if [[ " X12Sr10 X12 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Horus beta boards
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=HORUS -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X12S -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} simu
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
@@ -174,7 +174,7 @@ fi
 if [[ " X12S X12 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Horus
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=HORUS -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} simu
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
