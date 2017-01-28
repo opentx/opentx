@@ -21,6 +21,8 @@
 #include "categorized.h"
 #include "firmwares/opentx/opentxinterface.h"
 
+#define FIELD_DELIMITER "^"
+
 bool CategorizedStorageFormat::load(RadioData & radioData)
 {
   QByteArray radioSettingsBuffer;
@@ -55,9 +57,9 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
       }
       else {
         QByteArray curline;
-        if (line.startsWith('#')) {
-          modelIndex=line.mid(1,2).toInt();
-          curline = line.mid(3, line.size() - 3);
+        if (line.contains(FIELD_DELIMITER)) {
+          modelIndex=line.mid(0,line.indexOf(FIELD_DELIMITER)).toInt();
+          curline = line.mid(line.indexOf(FIELD_DELIMITER)+1);
           qDebug() << "Detected" << curline;
         }
         else {
@@ -119,11 +121,11 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
         modelsList.append(QString().sprintf("[%s]\n", radioData.categories[model.category].name));
         currentCategoryIndex = categoryIndex;
       }
-      if (!IS_HORUS(getCurrentBoard())) {
-        modelsList.append(QString().sprintf("#%02d%s\n", i, model.filename));
+      if (IS_HORUS(getCurrentBoard())) {
+        modelsList.append(QString(model.filename) + "\n");
       }
       else {
-        modelsList.append(QString(model.filename) + "\n");
+        modelsList.append(QString().sprintf("%d" FIELD_DELIMITER "%s\n", i, model.filename));
       }
 
     }
