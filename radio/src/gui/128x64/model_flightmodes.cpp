@@ -240,6 +240,10 @@ void menuModelPhaseOne(event_t event)
     #define TRIMS_OFS                  (-FW/2-4)
     #define ROTARY_ENC_OFS             (2)
   #endif
+#elif defined(PCBX7)
+  #define NAME_POS                     20
+  #define SWITCH_POS                   59
+  #define TRIMS_POS                    79
 #else
   #define NAME_OFS                     0
   #define SWITCH_OFS                   (FW/2)
@@ -281,18 +285,32 @@ void menuModelFlightModesAll(event_t event)
     att = (i==sub ? INVERS : 0);
     FlightModeData * p = flightModeAddress(i);
     drawFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
-
+#if defined(PCBX7)
+    lcdDrawSizedText(NAME_POS, y, p->name, sizeof(p->name), ZCHAR);
+#else
     lcdDrawSizedText(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
+#endif
     if (i == 0) {
       for (uint8_t t=0; t<NUM_STICKS; t++) {
+#if defined(PCBX7)
+        drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
+#else
         drawShortTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
+#endif
       }
     }
     else {
-      drawSwitch((5+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
+#if defined(PCBX7)
+    drawSwitch(SWITCH_POS, y, p->swtch, 0);
+    for (uint8_t t=0; t<NUM_STICKS; t++) {
+      drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
+}
+#else
+      drawSwitch((4+LEN_FLIGHT_MODE_NAME)*FW+SWITCH_OFS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
         drawShortTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
       }
+#endif
 #if defined(CPUM2560)
       for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
         putsRotaryEncoderMode((13+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS+ROTARY_ENC_OFS, y, i, t, 0);
