@@ -777,6 +777,11 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
 
 void MainWindow::writeBackup()
 {
+  if (IS_HORUS(getCurrentBoard())) {
+    QMessageBox::information(this, "Companion", tr("This function is not yet implemented"));
+    return;
+    // TODO implementation
+  }
   FlashEEpromDialog *cd = new FlashEEpromDialog(this);
   cd->exec();
 }
@@ -789,6 +794,11 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readBackup()
 {
+  if (IS_HORUS(getCurrentBoard())) {
+    QMessageBox::information(this, "Companion", tr("This function is not yet implemented"));
+    return;
+    // TODO implementation
+  }
   QString fileName = QFileDialog::getSaveFileName(this, tr("Save Radio Backup to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
   if (!fileName.isEmpty()) {
     if (!readEepromFromRadio(fileName))
