@@ -21,7 +21,7 @@
 #include "categorized.h"
 #include "firmwares/opentx/opentxinterface.h"
 
-#define FIELD_DELIMITER "|"
+#define FIELD_DELIMITER " "
 
 bool CategorizedStorageFormat::load(RadioData & radioData)
 {
