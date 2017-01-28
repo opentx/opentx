@@ -21,8 +21,6 @@
 #include "categorized.h"
 #include "firmwares/opentx/opentxinterface.h"
 
-#define FIELD_DELIMITER " "
-
 bool CategorizedStorageFormat::load(RadioData & radioData)
 {
   QByteArray radioSettingsBuffer;
@@ -50,7 +48,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
   foreach (const QByteArray & lineArray, lines) {
     QString line = QString(lineArray).trimmed();
     if (line.isEmpty()) continue;
-    qDebug() << "parsing line" << line;
+    // qDebug() << "parsing line" << line;
 
     if (line.startsWith('[') && line.endsWith(']')) {
       // ignore categories for boards that do not support them
