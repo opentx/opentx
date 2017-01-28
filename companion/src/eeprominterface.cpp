@@ -1076,6 +1076,10 @@ GeneralSettings::GeneralSettings()
   }
 
   if (IS_HORUS(board)) {
+    backlightOffBright = 20;
+  }
+
+  if (IS_HORUS(board)) {
     potConfig[0] = Board::POT_WITH_DETENT;
     potConfig[1] = Board::POT_MULTIPOS_SWITCH;
     potConfig[2] = Board::POT_WITH_DETENT;
