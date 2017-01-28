@@ -91,7 +91,13 @@ bool menuModelCurveOne(event_t event)
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 250, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
   if (crv.type==CURVE_TYPE_CUSTOM && menuVerticalPosition == ITEM_CURVE_COORDS1) {
-    if (menuHorizontalPosition == 0) {
+    if (crv.points <= -3) { // can't edit X values on custom curves with 2 points.
+      if (CURSOR_MOVED_RIGHT(event))
+        (menuHorizontalPosition = 0, menuVerticalPosition += 1);
+      else
+        menuVerticalPosition -= 1;
+    }
+    else if (menuHorizontalPosition == 0) {
       if (CURSOR_MOVED_RIGHT(event))
         menuHorizontalPosition = 1;
       else
