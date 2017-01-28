@@ -273,15 +273,16 @@ int main(int argc, char *argv[])
   g.id(profileId);
   g.simuLastProfId(profileId);
 
+  int result = 1;
   SimulatorDialog * dialog = new SimulatorDialog(NULL, simulator, SIMULATOR_FLAGS_STANDALONE);
   dialog->setRadioProfileId(profileId);
-  dialog->setOptions(simOptions, true);
-  dialog->start();
-  dialog->show();
-  int result = app.exec();
-
+  if ((result = (int)dialog->setOptions(simOptions, true))) {
+    dialog->start();
+    dialog->show();
+    result = app.exec();
+  }
   g.id(oldProfId);
-  dialog->deleteLater();
+  delete dialog;
   delete simulator;
 
   return finish(result);

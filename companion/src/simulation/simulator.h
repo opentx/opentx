@@ -45,7 +45,7 @@ struct SimulatorOptions
     };
 
   private:
-    quint16 _version = SIMULATOR_OPTIONS_VERSION;  // structure definition version
+    quint16 _version;  // structure definition version
 
   public:
     // v1 fields
@@ -60,7 +60,7 @@ struct SimulatorOptions
 
     friend QDataStream & operator << (QDataStream &out, const SimulatorOptions & o)
     {
-      out << o._version << o.startupDataType << o.firmwareId << o.dataFile << o.dataFolder
+      out << quint16(SIMULATOR_OPTIONS_VERSION) << o.startupDataType << o.firmwareId << o.dataFile << o.dataFolder
           << o.sdPath << o.windowGeometry << o.controlsState << o.lcdColor;
       return out;
     }

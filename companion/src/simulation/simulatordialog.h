@@ -80,9 +80,9 @@ class SimulatorDialog : public QDialog
     void setDataPath(const QString & dataPath);
     void setPaths(const QString & sdPath, const QString & dataPath);
     void setRadioSettings(const GeneralSettings settings);
-    void setStartupData(const QByteArray & dataSource = NULL, bool fromFile = false);
-    void setRadioData(RadioData * radioData);
-    void setOptions(SimulatorOptions & options, bool withSave = true);
+    bool setStartupData(const QByteArray & dataSource = NULL, bool fromFile = false);
+    bool setRadioData(RadioData * radioData);
+    bool setOptions(SimulatorOptions & options, bool withSave = true);
     bool saveRadioData(RadioData * radioData, const QString & path = "", QString * error = NULL);
     bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
     bool saveTempData();

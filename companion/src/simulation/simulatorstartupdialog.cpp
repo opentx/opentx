@@ -56,13 +56,14 @@ SimulatorStartupDialog::SimulatorStartupDialog(SimulatorOptions * options, int *
   ui->btnSelectDataFolder->setIcon(icon);
   ui->btnSelectSdPath->setIcon(icon);
 
+  loadRadioProfile(*m_profileId);
+
   QObject::connect(ui->radioProfile, SIGNAL(currentIndexChanged(int)), this, SLOT(onRadioProfileChanged(int)));
   QObject::connect(ui->radioType,  SIGNAL(currentIndexChanged(int)), this, SLOT(onRadioTypeChanged(int)));
   QObject::connect(ui->btnSelectDataFile, &QToolButton::clicked, this, &SimulatorStartupDialog::onDataFileSelect);
   QObject::connect(ui->btnSelectDataFolder, &QToolButton::clicked, this, &SimulatorStartupDialog::onDataFolderSelect);
   QObject::connect(ui->btnSelectSdPath, &QToolButton::clicked, this, &SimulatorStartupDialog::onSdPathSelect);
 
-  loadRadioProfile(*m_profileId);
 }
 
 SimulatorStartupDialog::~SimulatorStartupDialog()
@@ -98,10 +99,9 @@ QString SimulatorStartupDialog::findRadioId(const QString & str)
   QString radioId(str);
   int pos = str.indexOf("-");
   if (pos > 0) {
-    radioId = str.mid(pos+1);
-    pos = radioId.lastIndexOf("-");
+    pos = str.indexOf("-", pos + 1);
     if (pos > 0) {
-      radioId = radioId.mid(0, pos);
+      radioId = str.mid(0, pos);
     }
   }
   return radioId;
@@ -116,6 +116,9 @@ QString SimulatorStartupDialog::radioEepromFileName(const QString & firmwareId, 
     folder = g.eepromDir();
 
   QString radioId = findRadioId(firmwareId);
+  int pos = radioId.indexOf("-");
+  if (pos > 0)
+    radioId = radioId.mid(pos+1);
   if (usesCategorizedStorage(radioId))
     ext = "otx";
 
@@ -155,10 +158,8 @@ void SimulatorStartupDialog::loadRadioProfile(int id)
     return;
 
   i = ui->radioProfile->findData(id);
-  if (i > -1 && ui->radioProfile->currentIndex() != i) {
+  if (i > -1 && ui->radioProfile->currentIndex() != i)
     ui->radioProfile->setCurrentIndex(i);
-    return;
-  }
 
   *m_options = g.profile[id].simulatorOptions();
 
@@ -167,7 +168,7 @@ void SimulatorStartupDialog::loadRadioProfile(int id)
     tmpstr = g.profile[id].fwType();
   else if (getSimulatorFactory(tmpstr))
     tmpstr = getSimulatorFactory(tmpstr)->name();
-  i = ui->radioType->findText(findRadioId(tmpstr), Qt::MatchFixedString | Qt::MatchContains);
+  i = ui->radioType->findText(findRadioId(tmpstr), Qt::MatchContains);
   if (i > -1)
     ui->radioType->setCurrentIndex(i);
 

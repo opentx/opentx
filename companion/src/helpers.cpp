@@ -815,17 +815,6 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
   SimulatorInterface * simulator = getCurrentSimulator();
   if (simulator) {
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-    bool freeConsoleOnClose = false;
-    if (!GetConsoleWindow()) {
-      AllocConsole();
-      SetConsoleTitle("Companion Console");
-      freeConsoleOnClose = true;
-      freopen("conin$", "r", stdin);
-      freopen("conout$", "w", stdout);
-      freopen("conout$", "w", stderr);
-    }
-#endif
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
 
@@ -837,19 +826,17 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     SimulatorDialog * dialog = new SimulatorDialog(parent, simulator, flags);
     if (IS_HORUS(getCurrentBoard()) && !dialog->useTempDataPath(true)) {
       QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error: Could not create temporary directory in '%1'").arg(QDir::tempPath()));
+      delete dialog;
+      delete simuData;
       return;
     }
     dialog->setRadioData(simuData);
     qDebug() << __FILE__ << __LINE__ << "Starting" << getCurrentFirmware()->getName() << "simulation with SD path" << dialog->getSdPath() << "and models/settings path" << dialog->getDataPath();
     dialog->start();
     dialog->exec();
-    dialog->deleteLater();
+    delete dialog;
     // TODO Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
     delete simuData;  // TODO same with simuData, could read it back and update the file data
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-    if (freeConsoleOnClose)
-      FreeConsole();
-#endif
   }
   else {
     QMessageBox::warning(NULL,

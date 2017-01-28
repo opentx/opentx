@@ -65,12 +65,12 @@ class LcdWidget : public QWidget
       memset(previousBuf, 0, lcdSize);
     }
 
-    void setBgDefaultColor(QColor color)
+    void setBgDefaultColor(const QColor & color)
     {
       bgDefaultColor = color;
     }
 
-    void setBackgroundColor(QColor color)
+    void setBackgroundColor(const QColor & color)
     {
       bgColor = color;
     }

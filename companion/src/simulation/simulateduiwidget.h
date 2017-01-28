@@ -46,9 +46,10 @@ class SimulatedUIWidget : public QWidget
   protected:
 
     explicit SimulatedUIWidget(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
-    ~SimulatedUIWidget();
 
   public:
+
+    ~SimulatedUIWidget();
 
     RadioUiAction * addRadioUiAction(RadioUiAction * act);
     RadioUiAction * addRadioUiAction(int index = -1, int key = 0, const QString &text = "", const QString &descript = "");

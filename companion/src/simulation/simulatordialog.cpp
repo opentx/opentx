@@ -165,7 +165,7 @@ void SimulatorDialog::setRadioSettings(const GeneralSettings settings)
  *   with the same data when start() is called.
  * If you already have a valid RadioData structure, call setRadioData() instead.
  */
-void SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFile)
+bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFile)
 {
   RadioData simuData;
   quint16 ret = 1;
@@ -195,12 +195,17 @@ void SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
       }
       else if (QString(dataSource).endsWith(".otx", Qt::CaseInsensitive)) {
         // FIXME : Right now there's no way to read data back into the .otx file after simulation finishes.
-        setRadioData(&simuData);
-        return;
+        return setRadioData(&simuData);
       }
       else {
         startupData = dataSource;  // save the file name for start()
       }
+    }
+    // again there's no way to tell what the error from Storage actually was, so if the file doesn't exist we'll create a new one
+    else if (!QFile(QString(dataSource)).exists()) {
+      startupData = dataSource;
+      startupFromFile = true;
+      return true;
     }
     else {
       error = store.error();
@@ -221,43 +226,50 @@ void SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
     if (error.isEmpty())
       error = tr("Could not load data, possibly wrong format.");
     QMessageBox::critical(this, tr("Data Load Error"), error);
-    return;
+    return false;
   }
 
   radioSettings = simuData.generalSettings;
   startupFromFile = fromFile;
+
+  return true;
 }
 
-void SimulatorDialog::setRadioData(RadioData * radioData)
+bool SimulatorDialog::setRadioData(RadioData * radioData)
 {
+  bool ret = false;
   if (radioDataPath.isEmpty()) {
     QByteArray eeprom(getEEpromSize(m_board), 0);
     if (firmware->getEEpromInterface()->save((uint8_t *)eeprom.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) > 0)
-      setStartupData(eeprom, false);
+      ret = setStartupData(eeprom, false);
   }
   else {
-    saveRadioData(radioData, radioDataPath);
-    radioSettings = radioData->generalSettings;
+    if ((ret = saveRadioData(radioData, radioDataPath)))
+      radioSettings = radioData->generalSettings;
   }
+  return ret;
 }
 
-void SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
+bool SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
 {
+  bool ret = false;
   setSdPath(options.sdPath);
   if (options.startupDataType == SimulatorOptions::START_WITH_FOLDER && !options.dataFolder.isEmpty()) {
     setDataPath(options.dataFolder);
-    setStartupData();
+    ret = setStartupData();
   }
   else if (options.startupDataType == SimulatorOptions::START_WITH_SDPATH && !options.sdPath.isEmpty()) {
     setDataPath(options.sdPath);
-    setStartupData();
+    ret = setStartupData();
   }
   else if (options.startupDataType == SimulatorOptions::START_WITH_FILE && !options.dataFile.isEmpty()) {
-    setStartupData(options.dataFile.toLocal8Bit(), true);
+    ret = setStartupData(options.dataFile.toLocal8Bit(), true);
   }
 
-  if (withSave)
+  if (ret && withSave)
     g.profile[radioProfileId].simulatorOptions(options);
+
+  return ret;
 }
 
 bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path, QString * error)

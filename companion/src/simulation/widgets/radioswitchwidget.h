@@ -104,7 +104,7 @@ class RadioSwitchWidget : public RadioWidget
 
     void setToggleLocked(bool lock)
     {
-      if (m_flags != lock) {
+      if (m_flags != (quint16)lock) {
         m_flags = lock;
         setValue((int)lock);
         emit flagsChanged(m_flags);
