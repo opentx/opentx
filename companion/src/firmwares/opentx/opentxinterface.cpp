@@ -763,6 +763,8 @@ int OpenTxFirmware::getCapability(Capability capability)
       return (IS_HORUS_OR_TARANIS(board) ? true : id.contains("battgraph"));
     case DangerousFunctions:
       return id.contains("danger") ? 1 : 0;
+    case HasModelCategories:
+      return IS_HORUS(board);
     default:
       return 0;
   }

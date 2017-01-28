@@ -147,6 +147,7 @@ enum Capability {
   MixersMonitor,
   HasBatMeterRange,
   DangerousFunctions,
+  HasModelCategories
 };
 
 class SimulatorInterface;
