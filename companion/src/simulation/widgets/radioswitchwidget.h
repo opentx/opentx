@@ -25,7 +25,8 @@
 #include "boards.h"
 
 #include <QSlider>
-#include <QDebug>
+#include <QTimer>
+#include <QToolButton>
 
 class RadioSwitchWidget : public RadioWidget
 {
@@ -50,27 +51,88 @@ class RadioSwitchWidget : public RadioWidget
     {
       m_type = RADIO_WIDGET_SWITCH;
 
-      QSlider * sl = new QSlider();
-      sl->setOrientation(Qt::Vertical);
-      sl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-      sl->setFixedHeight(50);
-      sl->setInvertedAppearance(true);
-      sl->setInvertedControls(true);
-      sl->setTickPosition(QSlider::TicksBothSides);
-      sl->setPageStep(1);
-      sl->setMinimum((swType == Board::SWITCH_3POS ? -1 : 0));
-      sl->setMaximum(1);
-      sl->setTickInterval(1);
-      sl->setValue(m_value);
+      m_slider = new QSlider();
+      m_slider->setOrientation(Qt::Vertical);
+      m_slider->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
+      m_slider->setInvertedAppearance(true);
+      m_slider->setInvertedControls(true);
+      m_slider->setTickPosition(QSlider::TicksBothSides);
+      m_slider->setPageStep(1);
+      m_slider->setMinimum((swType == Board::SWITCH_3POS ? -1 : 0));
+      m_slider->setMaximum(1);
+      m_slider->setTickInterval(1);
+      m_slider->setValue(m_value);
 
-      connect(sl, &QSlider::valueChanged, this, &RadioWidget::setValue);
-      connect(this, &RadioWidget::valueChanged, sl, &QSlider::setValue);
+      if (swType == Board::SWITCH_TOGGLE) {
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/images/simulator/icons/8/lock-locked.png"), QSize(8, 8), QIcon::Normal, QIcon::On);
+        icon.addFile(QStringLiteral(":/images/simulator/icons/8/lock-unlocked.png"), QSize(8, 8), QIcon::Normal, QIcon::Off);
+        QToolButton * lockBtn = new QToolButton(this);
+        lockBtn->setIcon(icon);
+        lockBtn->setIconSize(QSize(8, 8));
+        lockBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        lockBtn->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        lockBtn->setAutoRaise(true);
+        lockBtn->setCheckable(true);
+        lockBtn->setToolTip(tr("Latch/unlatch the momentary switch."));
 
-      setWidget(sl);
+        QWidget * container = new QWidget(this);
+        container->setFixedHeight(50);
+        container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        QVBoxLayout * cl = new QVBoxLayout(container);
+        cl->setContentsMargins(0, 0, 0, 0);
+        cl->setSpacing(1);
+        cl->addWidget(m_slider, 1, Qt::AlignHCenter);
+        cl->addWidget(lockBtn, 0, Qt::AlignHCenter);
+
+        setWidget(container);
+
+        connect(lockBtn, &QToolButton::toggled, this, &RadioSwitchWidget::setToggleLocked);
+        connect(m_slider, &QSlider::sliderReleased, this, &RadioSwitchWidget::onMomentaryReleased);
+        connect(m_slider, &QSlider::valueChanged, this, &RadioSwitchWidget::onMomentaryReleased);
+        connect(this, &RadioWidget::flagsChanged, lockBtn, &QToolButton::setChecked);
+      }
+      else {
+        m_slider->setFixedHeight(50);
+        setWidget(m_slider);
+      }
+
+      connect(m_slider, &QSlider::valueChanged, this, &RadioWidget::setValue);
+      connect(this, &RadioWidget::valueChanged, m_slider, &QSlider::setValue);
+
+    }
+
+    void setToggleLocked(bool lock)
+    {
+      if (m_flags != lock) {
+        m_flags = lock;
+        setValue((int)lock);
+        emit flagsChanged(m_flags);
+      }
+    }
+
+    void resetToggle()
+    {
+      setValue(0);
+    }
+
+  private slots:
+
+    void onMomentaryReleased()
+    {
+      if (!m_flags && !m_slider->isSliderDown())
+        QTimer::singleShot(500, this, SLOT(onMomentaryTimeout()));
+    }
+
+    void onMomentaryTimeout()
+    {
+      if (!m_flags)
+        resetToggle();
     }
 
   private:
     Board::SwitchType swType;
+    QSlider * m_slider;
 };
 
 

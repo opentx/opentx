@@ -62,7 +62,7 @@ class SimulatedUIWidget : public QWidget
 
   public slots:
 
-    void timedUpdate(unsigned loop);
+    void updateUi();
     void saveScreenshot(int idx = -1);
     void captureScreenshot() { saveScreenshot(); }
     void simulatorWheelEvent(qint8 steps);

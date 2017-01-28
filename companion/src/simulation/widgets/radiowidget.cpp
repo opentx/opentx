@@ -134,7 +134,7 @@ QByteArray RadioWidget::getStateData() const
 
 RadioWidget::RadioWidgetState RadioWidget::getState() const
 {
-  return RadioWidgetState(quint8(m_type), qint8(m_index), qint16(m_value));;
+  return RadioWidgetState(quint8(m_type), qint8(m_index), qint16(m_value), quint16(m_flags));;
 }
 
 void RadioWidget::init()

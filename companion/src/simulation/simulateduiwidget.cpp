@@ -83,8 +83,9 @@ QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAng
   return polygon;
 }
 
-void SimulatedUIWidget::timedUpdate(unsigned loop)
+void SimulatedUIWidget::updateUi()
 {
+  //static quint32 loop = 0;
   if (m_lcd->isVisible()) {
     bool lightEnable;
     if (m_simulator->lcdChanged(lightEnable)) {
@@ -126,7 +127,7 @@ void SimulatedUIWidget::saveScreenshot(int idx)
       m_simuDialog->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
       return;
     }
-    fileName += QString("%1screenshot_%2.png").arg(dir.absolutePath(), QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
+    fileName += QString("%1/screenshot_%2.png").arg(dir.absolutePath(), QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
   }
   m_lcd->makeScreenshot(fileName);
 }

@@ -11,11 +11,11 @@ python:
 
 env:
   global:
-    # - QT_BASE=53
+    - QT_BASE=53
     # - QT_BASE=54
     # - QT_BASE=55
     # - QT_BASE=56
-    - QT_BASE=57
+    # - QT_BASE=57
     #- GCC_ARM=/opt/gcc-arm-none-eabi/bin
     - AVR_FLAVORS="AVR9X 9X GRUVIN9X MEGA2560"
   matrix:

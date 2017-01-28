@@ -75,13 +75,18 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   startupFromFile(false),
   deleteTempRadioData(false),
   saveTempRadioData(false),
-  middleButtonPressed(false)
+  middleButtonPressed(false),
+  firstShow(true)
 {
   setWindowFlags(Qt::Window);
 
   // install simulator TRACE hook
   traceCallbackInstance = this;
   simulator->installTraceHook(traceCb);
+
+#ifdef JOYSTICKS
+  joystick = NULL;
+#endif
 
   // defaults
   setRadioProfileId(radioProfileId);
@@ -93,8 +98,26 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
 SimulatorDialog::~SimulatorDialog()
 {
   traceCallbackInstance = 0;
-  delete timer;
-  delete simulator;
+
+  if (timer) {
+    timer->stop();
+    timer->deleteLater();
+  }
+  if (radioUiWidget)
+    radioUiWidget->deleteLater();
+  if (vJoyLeft)
+    vJoyLeft->deleteLater();
+  if (vJoyRight)
+    vJoyRight->deleteLater();
+#ifdef JOYSTICKS
+  if (joystick)
+    joystick->deleteLater();
+#endif
+
+  firmware = NULL;  // Not sure we should delete this but at least release our pointer.
+  // NOTE : <simulator> should be deleted (or not) in the parent process which gave it to us in the first place.
+
+  delete ui;
 }
 
 
@@ -280,7 +303,7 @@ bool SimulatorDialog::saveTempData()
   QString error;
   QString file = g.profile[radioProfileId].simulatorOptions().dataFile;
 
-  if (!saveTempRadioData || radioDataPath.isEmpty() || file.isEmpty())
+  if (radioDataPath.isEmpty() || file.isEmpty())
     return ret;
 
   RadioData radioData;
@@ -312,6 +335,14 @@ void SimulatorDialog::deleteTempData()
   }
 }
 
+void SimulatorDialog::saveState()
+{
+  SimulatorOptions opts = g.profile[radioProfileId].simulatorOptions();
+  opts.windowGeometry = saveGeometry();
+  opts.controlsState = saveRadioWidgetsState();
+  g.profile[radioProfileId].simulatorOptions(opts);
+}
+
 void SimulatorDialog::setUiAreaStyle(const QString & style)
 {
   ui->radioUiTab->setStyleSheet(style);
@@ -339,7 +370,6 @@ void SimulatorDialog::start()
   setupOutputsDisplay();
   setupGVarsDisplay();
   restoreRadioWidgetsState();
-  setTrims();
 
   if (startupData.isEmpty())
     simulator->start((const char *)0);
@@ -348,9 +378,23 @@ void SimulatorDialog::start()
   else
     simulator->start(startupData, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
 
+  setTrims();
   getValues();
   setupTimer();
-  startupData.clear();  // this is safe because simulator->start() makes copy of data/discards the file name
+}
+
+void SimulatorDialog::stop()
+{
+  timer->stop();
+  simulator->stop();
+}
+
+void SimulatorDialog::restart()
+{
+  stop();
+  saveState();
+  setStartupData(startupData, startupFromFile);
+  start();
 }
 
 /*
@@ -412,31 +456,28 @@ void SimulatorDialog::setupUi()
   connect(ui->btn_debugConsole, SIGNAL(released()), this, SLOT(openDebugOutput()));
   connect(ui->btn_luaReload, SIGNAL(released()), this, SLOT(luaReload()));
   connect(ui->btn_screenshot, SIGNAL(released()), radioUiWidget, SLOT(captureScreenshot()));
-
-  // Hide some main UI buttons based on board capabilities, and add keymap help texts.
-
-  keymapHelp.append(keymapHelp_t(ui->btn_help->shortcut().toString(QKeySequence::NativeText), ui->btn_help->statusTip()));
+  connect(ui->btn_reloadSimu, SIGNAL(released()), this, SLOT(restart()));
 
 #ifdef JOYSTICKS
-  keymapHelp.append(keymapHelp_t(ui->btn_joystickDialog->shortcut().toString(QKeySequence::NativeText), ui->btn_joystickDialog->statusTip()));
+  bool showJoystick = true;
 #else
-  ui->btn_joystickDialog->hide();
+  bool showJoystick = false;
 #endif
 
-  if (firmware->getCapability(Capability(SportTelemetry)))
-    keymapHelp.append(keymapHelp_t(ui->btn_telemSim->shortcut().toString(QKeySequence::NativeText), ui->btn_telemSim->statusTip()));
-  else
-    ui->btn_telemSim->hide();
-
-  keymapHelp.append(keymapHelp_t(ui->btn_trainerSim->shortcut().toString(QKeySequence::NativeText), ui->btn_trainerSim->statusTip()));
-  keymapHelp.append(keymapHelp_t(ui->btn_debugConsole->shortcut().toString(QKeySequence::NativeText), ui->btn_debugConsole->statusTip()));
-
-  if (firmware->getCapability(Capability(LuaInputsPerScript)))  // hackish! but using "LuaScripts" checks for id "lua" in fw.
-    keymapHelp.append(keymapHelp_t(ui->btn_luaReload->shortcut().toString(QKeySequence::NativeText), ui->btn_luaReload->statusTip()));
-  else
-    ui->btn_luaReload->hide();
-
-  keymapHelp.append(keymapHelp_t(ui->btn_screenshot->shortcut().toString(QKeySequence::NativeText), ui->btn_screenshot->statusTip()));
+  // Hide some main UI buttons based on board capabilities, and add keymap help texts.
+  QString role;
+  foreach (QPushButton * btn, ui->buttonBox->findChildren<QPushButton *>()) {
+    role = btn->property("role").toString();
+    if ((role == "joystick"  && !showJoystick) ||
+        (role == "telemetry" && !firmware->getCapability(Capability(SportTelemetry))) ||
+        (role == "reloadLua" && !firmware->getCapability(Capability(LuaInputsPerScript))) )
+    {
+      btn->hide();
+      continue;
+    }
+    if (!btn->shortcut().isEmpty())
+      keymapHelp.append(keymapHelp_t(btn->shortcut().toString(QKeySequence::NativeText), btn->statusTip()));
+  }
 
 }
 
@@ -452,6 +493,7 @@ void SimulatorDialog::setupRadioWidgets()
       ui->radioWidgetsHTLayout->removeWidget(w);
       w->deleteLater();
     }
+    switches.clear();
   }
   if (analogs.size()) {
     foreach (RadioWidget * w, analogs) {
@@ -461,6 +503,7 @@ void SimulatorDialog::setupRadioWidgets()
         ui->VCGridLayout->removeWidget(w);
       w->deleteLater();
     }
+    analogs.clear();
   }
 
   // Now set up new widgets.
@@ -535,7 +578,22 @@ void SimulatorDialog::setupRadioWidgets()
 void SimulatorDialog::setupOutputsDisplay()
 {
   // setup Outputs tab
-  QWidget * outputsWidget = new QWidget();
+  QWidget * outputsWidget;
+
+  // delete old widget if already exists
+  if (ui->tabWidget->count() > 1 && ui->tabWidget->widget(1)->objectName() == "RadioOutputsWidget") {
+    outputsWidget = ui->tabWidget->widget(1);
+    ui->tabWidget->removeTab(1);
+    outputsWidget->deleteLater();
+    outputsWidget = NULL;
+  }
+
+  channelValues.clear();
+  channelSliders.clear();
+  logicalSwitchLabels.clear();
+
+  outputsWidget = new QWidget();
+  outputsWidget->setObjectName("RadioOutputsWidget");
   QGridLayout * gridLayout = new QGridLayout(outputsWidget);
   gridLayout->setHorizontalSpacing(0);
   gridLayout->setVerticalSpacing(3);
@@ -609,39 +667,54 @@ void SimulatorDialog::setupOutputsDisplay()
 
 void SimulatorDialog::setupGVarsDisplay()
 {
-  int fmodes = firmware->getCapability(FlightModes);
-  int gvars = firmware->getCapability(Gvars);
-  if (gvars>0) {
-    // setup GVars tab
-    QWidget * gvarsWidget = new QWidget();
-    QGridLayout * gvarsLayout = new QGridLayout(gvarsWidget);
-    ui->tabWidget->addTab(gvarsWidget, QString(tr("GVars")));
+  // setup GVars tab
 
-    for (int fm=0; fm<fmodes; fm++) {
-      QLabel * label = new QLabel(gvarsWidget);
-      label->setText(QString("FM%1").arg(fm));
-      label->setAlignment(Qt::AlignCenter);
-      gvarsLayout->addWidget(label, 0, fm+1);
+  int gvars = firmware->getCapability(Gvars);
+  int fmodes = firmware->getCapability(FlightModes);
+
+  QWidget * gvarsWidget;
+  // delete old widget if already exists
+  if (ui->tabWidget->count() > 2 && ui->tabWidget->widget(2)->objectName() == "RadioGVOutputsWidget") {
+    gvarsWidget = ui->tabWidget->widget(2);
+    ui->tabWidget->removeTab(2);
+    gvarsWidget->deleteLater();
+    gvarsWidget = NULL;
+  }
+
+  gvarValues.clear();
+
+  if (!gvars)
+    return;
+
+  gvarsWidget = new QWidget();
+  gvarsWidget->setObjectName("RadioGVOutputsWidget");
+  QGridLayout * gvarsLayout = new QGridLayout(gvarsWidget);
+  ui->tabWidget->insertTab(2, gvarsWidget, QString(tr("GVars")));
+
+  for (int fm=0; fm<fmodes; fm++) {
+    QLabel * label = new QLabel(gvarsWidget);
+    label->setText(QString("FM%1").arg(fm));
+    label->setAlignment(Qt::AlignCenter);
+    gvarsLayout->addWidget(label, 0, fm+1);
+  }
+  for (int i=0; i<gvars; i++) {
+    QLabel * label = new QLabel(gvarsWidget);
+    label->setText(QString("GV%1").arg(i+1));
+    label->setAutoFillBackground(true);
+    if ((i % 2) ==0 ) {
+      label->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
     }
-    for (int i=0; i<gvars; i++) {
-      QLabel * label = new QLabel(gvarsWidget);
-      label->setText(QString("GV%1").arg(i+1));
-      label->setAutoFillBackground(true);
+    gvarsLayout->addWidget(label, i+1, 0);
+    for (int fm=0; fm<fmodes; fm++) {
+      QLabel * value = new QLabel(gvarsWidget);
+      value->setAutoFillBackground(true);
+      value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
       if ((i % 2) ==0 ) {
-        label->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
+        value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
       }
-      gvarsLayout->addWidget(label, i+1, 0);
-      for (int fm=0; fm<fmodes; fm++) {
-        QLabel * value = new QLabel(gvarsWidget);
-        value->setAutoFillBackground(true);
-        value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        if ((i % 2) ==0 ) {
-          value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
-        }
-        value->setText("0");
-        gvarValues << value;
-        gvarsLayout->addWidget(value, i+1, fm+1);
-      }
+      value->setText("0");
+      gvarValues << value;
+      gvarsLayout->addWidget(value, i+1, fm+1);
     }
   }
 }
@@ -689,7 +762,12 @@ void SimulatorDialog::setupJoysticks()
       QMessageBox::critical(this, tr("Warning"), tr("Joystick enabled but not configured correctly"));
       return;
     }
-    joystick = new Joystick(this);
+
+    if (!joystick)
+      joystick = new Joystick(this);
+    else
+      joystick->close();
+
     if (joystick && joystick->open(g.jsCtrl())) {
       int numAxes = std::min(joystick->numAxes, MAX_JOYSTICKS);
       for (int j=0; j<numAxes; j++) {
@@ -720,8 +798,17 @@ void SimulatorDialog::setupJoysticks()
 
 void SimulatorDialog::setupTimer()
 {
+  if (timer) {
+    timer->stop();
+    disconnect(timer, 0, this, 0);
+    disconnect(timer, 0, radioUiWidget, 0);
+    timer->deleteLater();
+    timer = NULL;
+  }
   timer = new QTimer(this);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
+  connect(timer, SIGNAL(timeout()), radioUiWidget, SLOT(updateUi()));
+
   timer->start(10);
 }
 
@@ -774,48 +861,51 @@ void SimulatorDialog::setValues()
 {
   static const int numGvars  = firmware->getCapability(Gvars);
   static const int numFlightModes = firmware->getCapability(FlightModes);
-  static QString phase_name;
   static TxOutputs prevOutputs;
-  static int prevPhase = -1;
-  int currentPhase;
 
   TxOutputs outputs;
   simulator->getValues(outputs);
 
-  for (int i = 0; i < channelSliders.size() && i < CPN_MAX_CHNOUT; i++) {
-    channelSliders[i]->setValue(qMin(1024, qMax(-1024, outputs.chans[i])));
-    channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
-  }
+  int currentPhase = simulator->getPhase();
 
-  for (int i = 0; i < logicalSwitchLabels.size() && i < CPN_MAX_CSW; i++) {
-    if (prevOutputs.vsw[i] != outputs.vsw[i]) {
-      // setStyleSheet() is very CPU time consuming, doing it only on the actual
-      // switch state change brings down CPU usage time (for Taranis simulation) from 40% to 7% (Linux, one core usage)
-      logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+  // Outputs tab visible?
+  if (ui->tabWidget->currentIndex() == 1) {
+    for (int i = 0; i < channelSliders.size() && i < CPN_MAX_CHNOUT; i++) {
+      channelSliders[i]->setValue(qMin(1024, qMax(-1024, outputs.chans[i])));
+      channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
+    }
+
+    for (int i = 0; i < logicalSwitchLabels.size() && i < CPN_MAX_CSW; i++) {
+      // setStyleSheet() is very CPU time consuming, do it only if the actual switch state changes
+      if (prevOutputs.vsw[i] != outputs.vsw[i]) {
+        logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
+        prevOutputs.vsw[i] = outputs.vsw[i];
+      }
     }
   }
 
-  for (int gv = 0; gv < numGvars; gv++) {
-    for (int fm = 0; fm < numFlightModes; fm++) {
-      if (prevPhase != lastPhase || prevOutputs.gvars[fm][gv] != outputs.gvars[fm][gv]) {
+  // GVars tab visible?
+  if (ui->tabWidget->currentIndex() == 2) {
+    for (int gv = 0; gv < numGvars; gv++) {
+      for (int fm = 0; fm < numFlightModes; fm++) {
         // same trick for GVARS, but this has far less effect on CPU usage as setStyleSheet()
-        gvarValues[gv*numFlightModes+fm]->setText(QString((fm == lastPhase) ? "<b>%1</b>" : "%1").arg(outputs.gvars[fm][gv]));
+        if (currentPhase != lastPhase || prevOutputs.gvars[fm][gv] != outputs.gvars[fm][gv]) {
+          gvarValues[gv*numFlightModes+fm]->setText(QString((fm == lastPhase) ? "<b>%1</b>" : "%1").arg(outputs.gvars[fm][gv]));
+          prevOutputs.gvars[fm][gv] = outputs.gvars[fm][gv];
+        }
       }
     }
   }
 
   // display current flight mode in window title
-  currentPhase = simulator->getPhase();
   if (currentPhase != lastPhase) {
     lastPhase = currentPhase;
-    phase_name = QString(simulator->getPhaseName(currentPhase));
+    QString phase_name = QString(simulator->getPhaseName(currentPhase));
     if (phase_name.isEmpty())
       phase_name = QString::number(currentPhase);
     setWindowTitle(windowName + QString(" - Flight Mode %1").arg(phase_name));
   }
 
-  prevOutputs = outputs;
-  prevPhase = lastPhase;
 }
 
 // "get" values from this UI and send them to the firmware simulator.
@@ -889,12 +979,8 @@ void SimulatorDialog::setTrims()
 
 void SimulatorDialog::closeEvent(QCloseEvent *)
 {
-  simulator->stop();
-  timer->stop();
-  SimulatorOptions opts = g.profile[radioProfileId].simulatorOptions();
-  opts.windowGeometry = saveGeometry();
-  opts.controlsState = saveRadioWidgetsState();
-  g.profile[radioProfileId].simulatorOptions(opts);
+  stop();
+  saveState();
   if (saveTempRadioData)
     saveTempData();
   if (deleteTempRadioData)
@@ -903,7 +989,6 @@ void SimulatorDialog::closeEvent(QCloseEvent *)
 
 void SimulatorDialog::showEvent(QShowEvent *)
 {
-  static bool firstShow = true;
   if (firstShow) {
     restoreGeometry(g.profile[radioProfileId].simulatorOptions().windowGeometry);
 
@@ -956,7 +1041,7 @@ void SimulatorDialog::onTimerEvent()
     setTrims();
     centerSticks();
   }
-  radioUiWidget->timedUpdate(lcd_counter);
+
   updateDebugOutput();
 }
 
@@ -989,6 +1074,7 @@ void SimulatorDialog::openTelemetrySimulator()
   // allow only one instance
   if (TelemetrySimu == 0) {
     TelemetrySimu = new TelemetrySimulator(this, simulator);
+    TelemetrySimu->setAttribute(Qt::WA_DeleteOnClose);
     TelemetrySimu->show();
     connect(TelemetrySimu, &TelemetrySimulator::destroyed, [this](QObject *) {
       this->TelemetrySimu = NULL;
@@ -1004,6 +1090,7 @@ void SimulatorDialog::openTrainerSimulator()
   // allow only one instance
   if (TrainerSimu == 0) {
     TrainerSimu = new TrainerSimulator(this, simulator);
+    TrainerSimu->setAttribute(Qt::WA_DeleteOnClose);
     TrainerSimu->show();
     connect(TrainerSimu, &TrainerSimulator::destroyed, [this](QObject *) {
       this->TrainerSimu = NULL;
@@ -1030,6 +1117,7 @@ void SimulatorDialog::openDebugOutput()
   if (!DebugOut) {
     DebugOut = new DebugOutput(this);
     DebugOut->traceCallback(traceBuffer);
+    DebugOut->setAttribute(Qt::WA_DeleteOnClose);
     DebugOut->show();
     connect(DebugOut, &DebugOutput::destroyed, [this](QObject *) {
       this->DebugOut = NULL;

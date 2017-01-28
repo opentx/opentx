@@ -72,9 +72,7 @@ class LcdWidget : public QWidget
 
     void setBackgroundColor(QColor color)
     {
-      _r = color.red();
-      _g = color.green();
-      _b = color.blue();
+      bgColor = color;
     }
 
     void makeScreenshot(const QString & fileName)
@@ -121,79 +119,87 @@ class LcdWidget : public QWidget
     unsigned char *previousBuf;
 
     bool lightEnable;
-    int _r, _g, _b;
+    QColor bgColor;
     QColor bgDefaultColor;
 
     inline void doPaint(QPainter & p)
     {
       QRgb rgb;
+      uint16_t z;
+
+      if (!lcdBuf)
+        return;
 
       if (lcdDepth == 16) {
-        for (int x=0; x<lcdWidth; x++) {
-          for (int y=0; y<lcdHeight; y++) {
-            uint16_t z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
-            rgb = qRgb(255*((z&0xF800)>>11)/0x1F, 255*((z&0x07E0)>>5)/0x3F, 255*(z&0x001F)/0x1F);
+        for (int x = 0; x < lcdWidth; x++) {
+          for (int y = 0; y < lcdHeight; y++) {
+            z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
+            rgb = qRgb(255 * ((z & 0xF800) >> 11) / 0x1F,
+                       255 * ((z & 0x07E0) >> 5)  / 0x3F,
+                       255 *  (z & 0x001F)        / 0x1F);
             p.setPen(rgb);
             p.drawPoint(x, y);
           }
         }
+        return;
       }
-      else if (lcdDepth == 12) {
-        for (int x=0; x<lcdWidth; x++) {
-          for (int y=0; y<lcdHeight; y++) {
-            uint16_t z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
-            rgb = qRgb(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
+      if (lcdDepth == 12) {
+        for (int x = 0; x < lcdWidth; x++) {
+          for (int y = 0; y < lcdHeight; y++) {
+            z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
+            rgb = qRgb(255 * ((z & 0xF00) >> 8) / 0x0F,
+                       255 * ((z & 0x0F0) >> 4) / 0x0F,
+                       255 *  (z & 0x00F)       / 0x0F);
             p.setPen(rgb);
             p.drawPoint(x, y);
           }
         }
+        return;
       }
-      else {
-        if (lightEnable)
-          rgb = qRgb(_r, _g, _b);
-        else
-          rgb = bgDefaultColor.rgba();
 
-        p.setBackground(QBrush(rgb));
-        p.eraseRect(0, 0, 2*lcdWidth, 2*lcdHeight);
+      QColor bg;
+      if (lightEnable)
+        bg = bgColor;
+      else
+        bg = bgDefaultColor;
 
-        if (lcdBuf) {
+      p.setBackground(QBrush(bg));
+      p.eraseRect(0, 0, 2*lcdWidth, 2*lcdHeight);
+
+      if (lcdDepth == 1) {
+        rgb = qRgb(0, 0, 0);
+        p.setPen(rgb);
+        p.setBrush(QBrush(rgb));
+      }
+
+      uint16_t idx, mask;
+      uint16_t previousDepth = 0xFF;
+
+      for (int y = 0; y < lcdHeight; y++) {
+        idx = (y * lcdDepth / 8) * lcdWidth;
+        mask = (1 << (y % 8));
+        for (int x = 0; x < lcdWidth; x++, idx++) {
           if (lcdDepth == 1) {
-            rgb = qRgb(0, 0, 0);
+            if (lcdBuf[idx] & mask)
+              p.drawRect(2 * x, 2 * y, 1, 1);
+            continue;
+          }
+          // lcdDepth == 4
+          z = (y & 1) ? (lcdBuf[idx] >> 4) : (lcdBuf[idx] & 0x0F);
+          if (!z)
+            continue;
+          if (z != previousDepth) {
+            previousDepth = z;
+            rgb = qRgb(bg.red()   - (z * bg.red()) / 15,
+                       bg.green() - (z * bg.green()) / 15,
+                       bg.blue()  - (z * bg.blue()) / 15);
             p.setPen(rgb);
             p.setBrush(QBrush(rgb));
           }
-
-          unsigned int previousDepth = 0xFF;
-
-          for (int y=0; y<lcdHeight; y++) {
-            unsigned int idx = (y*lcdDepth/8)*lcdWidth;
-            unsigned int mask = (1 << (y%8));
-            for (int x=0; x<lcdWidth; x++, idx++) {
-              if (lcdDepth == 1) {
-                if (lcdBuf[idx] & mask) {
-                  p.drawRect(2*x, 2*y, 1, 1);
-                }
-              }
-              else {
-                unsigned int z = (y & 1) ? (lcdBuf[idx] >> 4) : (lcdBuf[idx] & 0x0F);
-                if (z) {
-                  if (z != previousDepth) {
-                    previousDepth = z;
-                    if (lightEnable)
-                      rgb = qRgb(_r-(z*_r)/15, _g-(z*_g)/15, _b-(z*_b)/15);
-                    else
-                      rgb = qRgb(161-(z*161)/15, 161-(z*161)/15, 161-(z*161)/15);
-                    p.setPen(rgb);
-                    p.setBrush(QBrush(rgb));
-                  }
-                  p.drawRect(2*x, 2*y, 1, 1);
-                }
-              }
-            }
-          }
+          p.drawRect(2*x, 2*y, 1, 1);
         }
       }
+
     }
 
     void paintEvent(QPaintEvent*)

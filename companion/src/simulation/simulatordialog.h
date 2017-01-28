@@ -87,12 +87,17 @@ class SimulatorDialog : public QDialog
     bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
     bool saveTempData();
     void deleteTempData();
+    void saveState();
     void setUiAreaStyle(const QString & style);
     void traceCallback(const char * text);
-    void start();
 
     QString getSdPath()   const { return sdCardPath; }
     QString getDataPath() const { return radioDataPath; }
+
+  public slots:
+    void start();
+    void stop();
+    void restart();
 
   private:
     void setupUi();
@@ -149,6 +154,7 @@ class SimulatorDialog : public QDialog
     bool deleteTempRadioData;
     bool saveTempRadioData;
     bool middleButtonPressed;
+    bool firstShow;
 
 #ifdef JOYSTICKS
     Joystick *joystick;
