@@ -171,7 +171,9 @@ template <class T, class M>
 bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data, uint8_t version, uint32_t variant)
 {
   M manager(dest, board, version, variant);
-  manager.Import(data);
+  if (manager.Import(data) != 0) {
+    return false;
+  }
   // manager.Dump(); // Dumps the structure so that it's easy to check with firmware datastructs.h
   return true;
 }

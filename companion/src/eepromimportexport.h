@@ -68,6 +68,10 @@ class DataField {
     int Import(const QByteArray & input)
     {
       QBitArray bits = bytesToBits(input);
+      if ((unsigned int)bits.size() < size()) {
+        qDebug() << QString("Error importing %1: size to small %2/%3").arg(getName()).arg(input.size()).arg(size());
+        return -1;
+      }
       ImportBits(bits);
       return 0;
     }

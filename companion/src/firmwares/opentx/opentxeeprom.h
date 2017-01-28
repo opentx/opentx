@@ -40,6 +40,8 @@ class OpenTxGeneralData: public TransformedField {
   public:
     OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant=0);
 
+    virtual const char * getName() { return internalField.getName(); }
+
   protected:
     virtual void beforeExport();
     virtual void afterImport();
@@ -107,7 +109,7 @@ class OpenTxModelData: public TransformedField {
   public:
     OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant);
 
-    const char * getName() { return name; }
+    virtual const char * getName() { return internalField.getName(); }
 
   protected:
     virtual void beforeExport();
