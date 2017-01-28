@@ -48,7 +48,6 @@ radioData(new RadioData())
   if (backupPath.isEmpty() || !QDir(backupPath).exists()) {
     ui->backupBeforeWrite->setEnabled(false);
   }
-  updateUI();
 }
 
 FlashEEpromDialog::~FlashEEpromDialog()
@@ -56,11 +55,16 @@ FlashEEpromDialog::~FlashEEpromDialog()
   delete ui;
 }
 
+void FlashEEpromDialog::showEvent(QShowEvent *)
+{
+  updateUI();
+}
+
 void FlashEEpromDialog::updateUI()
 {
   // ui->burnButton->setEnabled(true);
   ui->eepromFilename->setText(eepromFilename);
-  if (getEEpromVersion(eepromFilename) >= 0) {
+  if (!eepromFilename.isEmpty() && getEEpromVersion(eepromFilename) >= 0) {
     ui->profileLabel->show();
     ui->patchCalibration->show();
     ui->patchHardwareSettings->show();
@@ -290,9 +294,10 @@ void FlashEEpromDialog::on_burnButton_clicked()
   }
 
   // and write...
-  writeEeprom(filename, progressDialog.progress());
-
-  progressDialog.exec();
+  bool result = writeEeprom(filename, progressDialog.progress());
+  if (!result && !progressDialog.isEmpty()) {
+    progressDialog.exec();
+  }
 }
 
 void FlashEEpromDialog::on_cancelButton_clicked()
