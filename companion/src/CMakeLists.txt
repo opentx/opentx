@@ -76,7 +76,9 @@ if(WIN32)
   endif()
   if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /LD /MP")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
+    if(NOT WIN_USE_CONSOLE)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")  # is this even needed?
+    endif()
   elseif(MINGW)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
@@ -306,6 +308,9 @@ file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARE
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
 string(TOLOWER ${PCB} FLAVOUR)
+if(POLICY CMP0026)
+  cmake_policy(SET CMP0026 OLD)  # https://cmake.org/cmake/help/v3.0/policy/CMP0026.html
+endif()
 get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
 list(APPEND simulator_plugins "${current_plugin}")
 
@@ -457,7 +462,7 @@ IF(APPLE)
   set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
   set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
-            
+
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
 
