@@ -194,7 +194,7 @@ if not os.path.isfile(path):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode == 0:
-        file(outpath, "a").write(output + error)
+        file(outpath, "a").write("\n".join(cmd) + output + error)
     else:
         file(errpath, "w").write(output + error)
         exit(COMPILATION_ERROR)
