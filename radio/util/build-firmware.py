@@ -221,7 +221,7 @@ if not os.path.isfile(path):
 
 
     # Copy binary to the binaries directory
-    shutil.copyfile(target, path)
+    shutil.move(target, path)
 
 print filename
 exit(0)
