@@ -45,7 +45,7 @@ struct SimulatorOptions
     };
 
   private:
-    quint16 _version;  // structure definition version
+    quint16 _version = SIMULATOR_OPTIONS_VERSION;  // structure definition version
 
   public:
     // v1 fields
