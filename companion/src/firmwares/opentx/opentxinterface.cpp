@@ -155,7 +155,8 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
     version = getLastDataVersion(getBoard());
   }
   QByteArray raw;
-  M manager((T&)src, board, version, 0);
+  T srcCopy(src); // work on a copy of radio data, because Export() will modify it!
+  M manager(srcCopy, board, version, 0);
   // manager.Dump();
   manager.Export(raw);
   data.resize(8);
