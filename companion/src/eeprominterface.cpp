@@ -1075,6 +1075,9 @@ GeneralSettings::GeneralSettings()
     switchConfig[i] = getSwitchInfo(board, i).config;
   }
 
+  backlightMode = 3; // keys and sticks
+  // backlightBright = 0; // 0 = 100%
+
   if (IS_HORUS(board)) {
     backlightOffBright = 20;
   }
