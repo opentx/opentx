@@ -54,6 +54,7 @@ protected:
   int getEEpromVersion(const QString &filename);
   bool patchCalibration();
   bool patchHardwareSettings();
+  virtual void showEvent(QShowEvent *);
 
 private:
   Ui::FlashEEpromDialog *ui;

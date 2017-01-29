@@ -351,7 +351,7 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
         path = findMassstoragePath("ERSKY9X.BIN");
       }
       if (path.isEmpty()) {
-        RadioNotFoundDialog dialog;
+        RadioNotFoundDialog dialog(progress);
         dialog.exec();
         return false;
       }
@@ -398,7 +398,7 @@ bool writeEeprom(const QString & filename, ProgressWidget * progress)
   }
 
   if (IS_ARM(board)) {
-    RadioNotFoundDialog dialog;
+    RadioNotFoundDialog dialog(progress);
     dialog.exec();
   }
 
