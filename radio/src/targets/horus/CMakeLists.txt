@@ -35,8 +35,16 @@ endif()
 
 if (PCB STREQUAL X10)
   add_definitions(-DPCBX10)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/audio_dac_driver.cpp
+    )
 elseif (PCB STREQUAL X12S)
   add_definitions(-DPCBX12S)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    audio_spi_driver.cpp
+    )
 endif()
 
 add_definitions(-DPCBHORUS -DPCBREV=${PCBREV} -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)

@@ -375,15 +375,21 @@
   #define AUDIO_SPI_MOSI_GPIO_PIN       GPIO_Pin_3  // PI.03
   #define AUDIO_SPI_MOSI_GPIO_PinSource GPIO_PinSource3
 #elif defined (PCBX10)
-  #define AUDIO_RCC_APB1Periph          RCC_APB1Periph_DAC1
-  #define AUDIO_RCC_AHB1Periph          RCC_AHB1Periph_GPIOA
+  #define AUDIO_RCC_APB1Periph          (RCC_APB1Periph_TIM6 | RCC_APB1Periph_DAC1)
+  #define AUDIO_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
   #define AUDIO_MUTE_GPIO               GPIOA
-  #define AUDIO_MUTE_GPIO_PIN           GPIO_Pin_7
+  #define AUDIO_MUTE_GPIO_PIN           GPIO_Pin_7  // PA.07
   #define AUDIO_OUTPUT_GPIO             GPIOA
   #define AUDIO_OUTPUT_GPIO_PIN         GPIO_Pin_4  // PA.04
   #define AUDIO_GPIO_AF                 GPIO_AF_DAC1
   #define AUDIO_GPIO_PinSource          GPIO_PinSource4
-  // TODO timer, DMA (same as Taranis?)
+  #define AUDIO_DMA_Stream              DMA1_Stream5
+  #define AUDIO_DMA_Stream_IRQn         DMA1_Stream5_IRQn
+  #define AUDIO_TIM_IRQn                TIM6_DAC_IRQn
+  #define AUDIO_TIM_IRQHandler          TIM6_DAC_IRQHandler
+  #define AUDIO_DMA_Stream_IRQHandler   DMA1_Stream5_IRQHandler
+  #define AUDIO_TIMER                   TIM6
+  #define AUDIO_DMA                     DMA1
 #endif
 
 // I2C Bus

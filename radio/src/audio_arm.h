@@ -74,7 +74,7 @@ template <unsigned int NUM_BITS> class BitField {
 
 #if defined(SIMU) && defined(SIMU_AUDIO)
   #define AUDIO_BUFFER_COUNT           (10) // simulator needs more buffers for smooth audio
-#elif defined(PCBHORUS)
+#elif defined(PCBX12S)
   #define AUDIO_BUFFER_COUNT           (2)  // smaller than Taranis since there is also a buffer on the ADC chip
 #else
   #define AUDIO_BUFFER_COUNT           (3)
@@ -101,7 +101,7 @@ enum AudioBufferState
   #define AUDIO_DATA_MIN               0
   #define AUDIO_DATA_MAX               0xffff
   #define AUDIO_BITS_PER_SAMPLE        16
-#elif defined(PCBHORUS)
+#elif defined(PCBX12S)
   typedef int16_t audio_data_t;
   #define AUDIO_DATA_SILENCE           0
   #define AUDIO_DATA_MIN               INT16_MIN

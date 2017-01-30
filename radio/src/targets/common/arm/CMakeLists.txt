@@ -111,7 +111,6 @@ set(TARGET_SRC
   keys_driver.cpp
   adc_driver.cpp
   trainer_driver.cpp
-  audio_driver.cpp
   telemetry_driver.cpp
   )
 set(FIRMWARE_SRC
