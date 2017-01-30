@@ -334,7 +334,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(E, 4, 3);
   SWITCH_KEY(F, 5, 2);
   SWITCH_KEY(G, 6, 3);
-SWITCH_KEY(H, 7, 2);
+  SWITCH_KEY(H, 7, 2);
 #else
   SWITCH_KEY(1, 0, 2);
   SWITCH_KEY(2, 1, 2);
