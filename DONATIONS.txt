@@ -1096,3 +1096,4 @@ Gerald Peklar
 Sidney Gates
 Jörg Zander
 Bryan Anderson
+Stephane Monfette
