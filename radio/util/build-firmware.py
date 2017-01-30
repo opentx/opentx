@@ -229,7 +229,7 @@ lock = filelock.FileLock(lockpath)
 try:
     with lock.acquire(timeout = 60*60):
         if not os.path.isfile(path):
-            firmware_build(path)
+            build_firmware(path)
 except filelock.Timeout:
     exit(COMPILATION_ERROR)
 
