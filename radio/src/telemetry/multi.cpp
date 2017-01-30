@@ -69,15 +69,6 @@ static void processMultiStatusPacket(const uint8_t *data)
   if (wasBinding && !multiModuleStatus.isBinding() && multiBindStatus == MULTI_BIND_INITIATED)
       multiBindStatus = MULTI_BIND_FINISHED;
 
-  // set moduleFlag to bind status
-  /*
-  if (moduleFlag[EXTERNAL_MODULE] != MODULE_RANGECHECK)
-    // Two times the same status in a row to avoid race conditions
-    if (multiModuleStatus.isBinding() == wasBinding) {
-      multiModuleStatus.isBinding() ? moduleFlag[EXTERNAL_MODULE] = MODULE_BIND : MODULE_NORMAL_MODE;
-    }
-    */
-
 }
 
 static void processMultiTelemetryPaket(const uint8_t *packet)
@@ -262,8 +253,9 @@ void processMultiTelemetryData(const uint8_t data)
       telemetryRxBufferCount = 0;
       if (data == 'P') {
         multiTelemetryBufferState = ReceivingMultiProtocol;
-      } else if (data == '5') {
-        // Protocol indented for er9x/ersky9 fixed length of packet
+      } else if (data >= 5 && data <= 10) {
+        // Protocol indented for er9x/ersky9, accept only 5-10 as packet length to have
+        // a bit of validation
         multiTelemetryBufferState = ReceivingMultiStatus;
 
       } else {
@@ -278,8 +270,9 @@ void processMultiTelemetryData(const uint8_t data)
 
     case ReceivingMultiStatus:
       // Ignore multi status
-      telemetryRxBufferCount++;
-      if (telemetryRxBufferCount==5) {
+      telemetryRxBuffer[telemetryRxBufferCount++] = data;
+      if (telemetryRxBufferCount>5) {
+        processMultiStatusPacket(telemetryRxBuffer);
         telemetryRxBufferCount=0;
         multiTelemetryBufferState = NoProtocolDetected;
       }
