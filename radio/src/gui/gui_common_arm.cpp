@@ -582,7 +582,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
   { MM_RF_PROTO_HUBSAN,     nullptr,              0,  STR_MULTI_VIDFREQ   },
-  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    3,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    5,  STR_MULTI_RFTUNE    },
   { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
   { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
   { MM_RF_PROTO_DSM2,       STR_SUBTYPE_DSM,      3,  nullptr             },

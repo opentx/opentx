@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 #include "opentx.h"
+#include "telemetry.h"
 
 MultiModuleStatus multiModuleStatus;
 uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
@@ -36,6 +37,7 @@ enum MultiBufferState : uint8_t {
   NoProtocolDetected,
   MultiFirstByteReceived,
   ReceivingMultiProtocol,
+  ReceivingMultiStatus,
   SpektrumTelemetryFallback,
   FrskyTelemetryFallbackFirstByte,
   FrskyTelemetryFallbackNextBytes,
@@ -257,9 +259,13 @@ void processMultiTelemetryData(const uint8_t data)
       break;
 
     case MultiFirstByteReceived:
+      telemetryRxBufferCount = 0;
       if (data == 'P') {
-        telemetryRxBufferCount = 0;
         multiTelemetryBufferState = ReceivingMultiProtocol;
+      } else if (data == '5') {
+        // Protocol indented for er9x/ersky9 fixed length of packet
+        multiTelemetryBufferState = ReceivingMultiStatus;
+
       } else {
         TRACE("[MP] invalid second byte 0x%02X", data);
         multiTelemetryBufferState = NoProtocolDetected;
@@ -269,6 +275,14 @@ void processMultiTelemetryData(const uint8_t data)
     case ReceivingMultiProtocol:
       processMultiTelemetryByte(data);
       break;
+
+    case ReceivingMultiStatus:
+      // Ignore multi status
+      telemetryRxBufferCount++;
+      if (telemetryRxBufferCount==5) {
+        telemetryRxBufferCount=0;
+        multiTelemetryBufferState = NoProtocolDetected;
+      }
   }
 
 }
