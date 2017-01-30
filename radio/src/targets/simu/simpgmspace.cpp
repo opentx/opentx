@@ -223,11 +223,6 @@ void simuSetTrim(uint8_t trim, bool state)
 void simuSetSwitch(uint8_t swtch, int8_t state)
 {
   // TRACE_SIMPGMSPACE("simuSetSwitch(%d, %d)", swtch, state);
-  static uint8_t laststate = 0;
-  if (swtch == 7 && laststate != state)  {
-    laststate = state;
-    TRACE("%d", state);
-  }
 
   switch (swtch) {
 #if defined(PCBFLAMENCO)
