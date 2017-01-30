@@ -136,7 +136,7 @@ Returns the last x position from previous output
 static int luaLcdGetLastPos(lua_State *L)
 {
   lua_pushinteger(L, lcdRightPos);
-  TRACE("WARNING : you are using lcd.getLastPos() which is deprecated");
+  TRACE("WARNING : lcd.getLastPos() is deprecated, please move to lcd.getLeftPos() or lcd.getRightPos()");
   return 1;
 }
 
