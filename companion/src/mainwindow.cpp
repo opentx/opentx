@@ -632,8 +632,6 @@ void MainWindow::fwPrefs()
 {
   FirmwarePreferencesDialog * dialog = new FirmwarePreferencesDialog(this);
   dialog->exec();
-  emit FirmwareChanged();
-  updateMenus();
 }
 
 void MainWindow::contributors()
