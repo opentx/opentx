@@ -96,8 +96,16 @@ extern "C" void INTERRUPT_1MS_IRQHandler()
   DEBUG_INTERRUPT(INT_1MS);
 }
 
+#if defined(SEMIHOSTING)
+extern "C" void initialise_monitor_handles();
+#endif
+
 void boardInit()
 {
+#if defined(SEMIHOSTING)
+  initialise_monitor_handles();
+#endif
+
 #if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
@@ -162,17 +170,17 @@ void boardInit()
   memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
 
   keysInit();
-  adcInit();
+  // adcInit();
   lcdInit();
   backlightInit();
 
-  audioInit();
+  // audioInit();
   init2MhzTimer();
   init1msTimer();
   usbInit();
   hapticInit();
-  bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
-  gpsInit(GPS_USART_BAUDRATE);
+  // bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+  // gpsInit(GPS_USART_BAUDRATE);
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
