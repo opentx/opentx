@@ -40,6 +40,7 @@ void lcdClear()
 }
 
 coord_t lcdRightPos;
+coord_t lcdLeftPos;
 coord_t lcdNextPos;
 
 struct PatternData
@@ -334,6 +335,11 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
   if (flags & RIGHT) {
     lcdRightPos -= width;
     lcdNextPos -= width;
+    lcdLeftPos = lcdRightPos;
+    lcdRightPos = orig_x;
+  }
+  else {
+    lcdLeftPos = orig_x;
   }
 }
 
