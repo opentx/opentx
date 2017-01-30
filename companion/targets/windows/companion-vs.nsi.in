@@ -134,7 +134,10 @@ Section "OpenTX Companion" SecDummy
 
   SetOutPath "$INSTDIR\printsupport"
   File "@QT_DLL_DIR@\..\plugins\printsupport\windowsprintersupport.dll"
-  
+
+  SetOutPath "$INSTDIR\imageformats"
+  File "@QT_DLL_DIR@\..\plugins\imageformats\qjpeg.dll"
+
   SetOutPath "$INSTDIR\mediaservice"
   File "@QT_DLL_DIR@\..\plugins\mediaservice\dsengine.dll"
 
@@ -147,7 +150,6 @@ Section "OpenTX Companion" SecDummy
   ${registerExtension} "$INSTDIR\companion.exe" ".hex" "HEX_File"
   ${registerExtension} "$INSTDIR\companion.exe" ".companion" "EEPE_File"
   ${registerExtension} "$INSTDIR\companion.exe" ".eepm" "EEPM_File"
-
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -218,12 +220,14 @@ Section "Uninstall"
   Delete "$INSTDIR\platforms\*.*"
   Delete "$INSTDIR\printsupport\*.*"
   Delete "$INSTDIR\mediaservice\*.*"
+  Delete "$INSTDIR\mediaservice\imageformats\*.*"
 
   RMDir "$INSTDIR\lang"
   RMDir "$INSTDIR\phonon_backend"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\printsupport"
   RMDir "$INSTDIR\mediaservice"
+  RMDir "$INSTDIR\imageformats"
   RMDir "$INSTDIR"
 
   ${unregisterExtension} ".bin" "BIN File"
