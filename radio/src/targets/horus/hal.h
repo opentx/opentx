@@ -404,7 +404,7 @@
   #define AUDIO_SPI_MOSI_GPIO_PIN       GPIO_Pin_3  // PI.03
   #define AUDIO_SPI_MOSI_GPIO_PinSource GPIO_PinSource3
 #elif defined (PCBX10)
-  #define AUDIO_RCC_APB1Periph          (RCC_APB1Periph_TIM6 | RCC_APB1Periph_DAC1)
+  #define AUDIO_RCC_APB1Periph          (RCC_APB1Periph_TIM6 | RCC_APB1Periph_DAC)
   #define AUDIO_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
   #define AUDIO_MUTE_GPIO               GPIOA
   #define AUDIO_MUTE_GPIO_PIN           GPIO_Pin_7  // PA.07

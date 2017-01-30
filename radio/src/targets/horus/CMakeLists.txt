@@ -35,6 +35,7 @@ endif()
 
 if (PCB STREQUAL X10)
   add_definitions(-DPCBX10)
+  add_definitions(-DSOFTWARE_VOLUME)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
@@ -102,11 +103,17 @@ set(FIRMWARE_TARGET_SRC
   sdio_sd.c
   lcd_driver.cpp
   backlight_driver.cpp
-  bluetooth_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
   startup_stm32f40_41xxx.s
   )
+if(PCB STREQUAL X12S)
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    bluetooth_driver.cpp
+    )
+  add_definitions(-DBLUETOOTH)
+endif()
 if(BLUETOOTH_CLI_PASSTHROUGH)
   add_definitions(-DBLUETOOTH_CLI_PASSTHROUGH)
   message("Horus: Bluetooth pass-trough enabled")

@@ -897,7 +897,7 @@ int cliGps(const char ** argv)
 }
 #endif
 
-#if defined(PCBX9E) || defined(PCBHORUS)
+#if defined(BLUETOOTH)
 int cliBlueTooth(const char ** argv)
 {
   int baudrate = 0;
@@ -964,7 +964,7 @@ const CliCommand cliCommands[] = {
 #if defined(INTERNAL_GPS)
   { "gps", cliGps, "<baudrate>|$<command>|trace" },
 #endif
-#if defined(PCBX9E) || defined(PCBHORUS)
+#if defined(BLUETOOTH)
   { "bt", cliBlueTooth, "<baudrate>|$<command>|read" },
 #endif
   { NULL, NULL, NULL }  /* sentinel */

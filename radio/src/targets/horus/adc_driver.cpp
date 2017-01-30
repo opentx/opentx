@@ -20,6 +20,15 @@
 
 #include "opentx.h"
 
+uint16_t adcValues[NUMBER_ANALOG] __DMA;
+
+#if defined(PCBX10)
+void adcRead()
+{
+  // TODO, perhaps share code with Taranis?
+}
+#else
+
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
 
@@ -39,8 +48,6 @@
 #define MANUAL_MODE                    0x1000 // manual mode channel 0
 
 #define SAMPTIME                       2 // sample time = 28 cycles
-
-uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 uint16_t SPIx_ReadWriteByte(uint16_t value)
 {
@@ -246,6 +253,8 @@ void adcRead()
     adcValues[MOUSE1+x] = temp[x] >> 2;
   }
 }
+
+#endif
 
 #if !defined(SIMU)
 const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
