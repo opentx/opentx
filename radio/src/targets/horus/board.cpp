@@ -140,10 +140,9 @@ void boardInit()
 
   // must be called after pwrInit() because the PCBREV GPIO is initialized there
   if (IS_HORUS_PROD())
-    RCC_APB1PeriphClockCmd(PROD_BL_RCC_APB1Periph,ENABLE);
+    RCC_APB1PeriphClockCmd(BL_RCC_APB1Periph,ENABLE);
   else
-    RCC_APB2PeriphClockCmd(BETA_BL_RCC_APB2Periph,ENABLE);
-
+    RCC_APB2PeriphClockCmd(BL_RCC_APB2Periph,ENABLE);
   delaysInit();
 
   // FrSky removed the volume chip in latest board, that's why it doesn't answer!

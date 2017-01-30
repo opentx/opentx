@@ -29,8 +29,8 @@ void backlightInit()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(GPIO, &GPIO_InitStructure);
-  GPIO_PinAFConfig(GPIO, BL_GPIO_PinSource, BL_GPIO_AF);
+  GPIO_Init(BL_GPIO, &GPIO_InitStructure);
+  GPIO_PinAFConfig(BL_GPIO, BL_GPIO_PinSource, BL_GPIO_AF);
   
   // TIMER init
   if (IS_HORUS_PROD()) {
