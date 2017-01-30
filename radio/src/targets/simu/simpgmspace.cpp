@@ -95,6 +95,18 @@ uint16_t getTmr2MHz()
 #endif
 }
 
+U64 CoGetOSTime(void)
+{
+  // one tick is 2ms
+#if defined(_MSC_VER)
+  return GetTickCount()/2;
+#else
+  struct timespec ts;
+  clock_gettime(CLOCK_MONOTONIC, &ts);
+  return ((U64)ts.tv_sec * 1000 + ts.tv_nsec / 1000000) /2;
+#endif
+}
+
 void simuInit()
 {
 #if defined(STM32)
