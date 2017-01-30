@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -130,7 +130,8 @@
 
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
-extern coord_t lcdLastPos;
+extern coord_t lcdRightPos;
+extern coord_t lcdLeftPos;
 extern coord_t lcdNextPos;
 
 #define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
@@ -272,7 +273,7 @@ inline display_t getPixel(uint8_t x, uint8_t y)
   if (x>=LCD_W || y>=LCD_H) {
     return 0;
   }
-  
+
   display_t pixel = displayBuf[(y / 8) * LCD_W + x];
   display_t mask = 1 << (y & 7);
   return ((pixel & mask) ? 0xf : 0);

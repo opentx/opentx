@@ -39,7 +39,7 @@ void lcdClear()
   memset(displayBuf, 0, DISPLAY_BUFFER_SIZE);
 }
 
-coord_t lcdLastPos;
+coord_t lcdRightPos;
 coord_t lcdNextPos;
 
 struct PatternData
@@ -325,14 +325,14 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
     s++;
   }
 
-  lcdLastPos = x;
+  lcdRightPos = x;
   lcdNextPos = x;
   if (fontsize == MIDSIZE) {
-    lcdLastPos += 1;
+    lcdRightPos += 1;
   }
 
   if (flags & RIGHT) {
-    lcdLastPos -= width;
+    lcdRightPos -= width;
     lcdNextPos -= width;
   }
 }
@@ -560,7 +560,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcdDrawChar(lcdLastPos, y, 'V', att);
+  if (~att & NO_UNIT) lcdDrawChar(lcdRightPos, y, 'V', att);
 }
 
 void putsVBat(coord_t x, coord_t y, LcdFlags att)
@@ -600,7 +600,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 #endif
     {
       drawStringWithIndex(x, y, "LUA", qr.quot+1, att);
-      lcdDrawChar(lcdLastPos, y, 'a'+qr.rem, att);
+      lcdDrawChar(lcdRightPos, y, 'a'+qr.rem, att);
     }
   }
 
@@ -636,8 +636,8 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_CH) {
     drawStringWithIndex(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcdDrawChar(lcdLastPos, y, ' ', att|SMLSIZE);
-      lcdDrawSizedText(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
+      lcdDrawChar(lcdRightPos, y, ' ', att|SMLSIZE);
+      lcdDrawSizedText(lcdRightPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
     }
   }
   else if (idx <= MIXSRC_LAST_GVAR) {
@@ -650,7 +650,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
     lcdDrawSizedText(x, y, g_model.telemetrySensors[qr.quot].label, TELEM_LABEL_LEN, ZCHAR|att);
-    if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
+    if (qr.rem) lcdDrawChar(lcdRightPos, y, qr.rem==2 ? '+' : '-', att);
   }
 }
 
@@ -719,7 +719,7 @@ void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags
   // convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    lcdDrawTextAtIndex(lcdRightPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 
@@ -727,29 +727,29 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
 {
   uint32_t absvalue = abs(value);
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
-  lcdDrawChar(lcdLastPos, y, '@', att);
+  lcdDrawChar(lcdRightPos, y, '@', att);
   att &= ~RIGHT;
   absvalue = absvalue % 1000000;
   absvalue *= 60;
   if (g_eeGeneral.gpsFormat == 0 || !seconds) {
     lcdDrawNumber(lcdNextPos, y, absvalue / 1000000, att|LEFT|LEADING0, 2); // mm before '.'
-    lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
-    lcdLastPos += 1;
+    lcdDrawSolidVerticalLine(lcdRightPos, y, 2);
+    lcdRightPos += 1;
     if (seconds) {
       absvalue %= 1000000;
       absvalue *= 60;
       absvalue /= 100000;
-      lcdDrawNumber(lcdLastPos+2, y, absvalue, att|LEFT|PREC1);
-      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
-      lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
-      lcdLastPos += 3;
+      lcdDrawNumber(lcdRightPos+2, y, absvalue, att|LEFT|PREC1);
+      lcdDrawSolidVerticalLine(lcdRightPos, y, 2);
+      lcdDrawSolidVerticalLine(lcdRightPos+2, y, 2);
+      lcdRightPos += 3;
     }
   }
   else {
     absvalue /= 10000;
-    lcdDrawNumber(lcdLastPos+FW, y, absvalue, att|LEFT|PREC2); // mm.mmm
+    lcdDrawNumber(lcdRightPos+FW, y, absvalue, att|LEFT|PREC2); // mm.mmm
   }
-  lcdDrawSizedText(lcdLastPos+1, y, direction + (value>=0 ? 0 : 1), 1);
+  lcdDrawSizedText(lcdRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
@@ -758,27 +758,27 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
     x -= 42;
     att &= ~0x0F00; // TODO constant
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
     y += FH;
     lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEFT);
     lcdDrawNumber(lcdNextPos+FW+1, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
