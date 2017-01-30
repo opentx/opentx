@@ -61,6 +61,7 @@ class RadioSwitchWidget : public RadioWidget
       m_slider->setMinimum((swType == Board::SWITCH_3POS ? -1 : 0));
       m_slider->setMaximum(1);
       m_slider->setTickInterval(1);
+      m_slider->setSingleStep(1);
       m_slider->setValue(m_value);
 
       if (swType == Board::SWITCH_TOGGLE) {
@@ -100,6 +101,12 @@ class RadioSwitchWidget : public RadioWidget
       connect(m_slider, &QSlider::valueChanged, this, &RadioWidget::setValue);
       connect(this, &RadioWidget::valueChanged, m_slider, &QSlider::setValue);
 
+    }
+
+    int getValue() const
+    {
+      int val = m_slider->value() - (swType == Board::SWITCH_3POS || m_slider->value() == 1 ? 0 : 1);
+      return val;
     }
 
     void setToggleLocked(bool lock)

@@ -77,7 +77,7 @@ class RadioWidget : public QWidget
     void changeVisibility(bool visible);
 
 
-    int getValue() const;
+    virtual int getValue() const;
     int getIndex() const;
     int getType()  const;
     QByteArray getStateData() const;
