@@ -163,7 +163,9 @@ void MdiChild::onFirmwareChanged()
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  convertStorage(previous->getBoard(), firmware->getBoard());
+  if (previous->getBoard() != firmware->getBoard()) {
+    convertStorage(previous->getBoard(), firmware->getBoard());
+  }
 }
 
 void MdiChild::convertStorage(Board::Type from, Board::Type to)
