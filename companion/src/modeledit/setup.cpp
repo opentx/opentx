@@ -340,6 +340,7 @@ void ModulePanel::update()
   // Antenna slection on Horus
   ui->label_antenna->setVisible(mask & MASK_ANTENNA);
   ui->antennaMode->setVisible(mask & MASK_ANTENNA);
+  ui->antennaMode->setCurrentIndex(module.ppm.pulsePol);
 
   // Multi settings fields
   ui->label_multiProtocol->setVisible(mask & MASK_MULTIMODULE);
