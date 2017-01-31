@@ -158,9 +158,13 @@ void setupPulsesMultimodule(uint8_t port)
     } else {
       type = 15;
       if (subtype == MM_RF_FRSKY_SUBTYPE_D16_8CH) // D16 8ch
-          subtype = 1;
+        subtype = 1;
+      else if (subtype == MM_RF_FRSKY_SUBTYPE_D16)
+        subtype = 0;  // D16
+      else if (subtype == MM_RF_FRSKY_SUBTYPE_D16_LBT)
+        subtype = 2;
       else
-          subtype = 0;  // D16
+        subtype = 3; // MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH
     }
   }
 
