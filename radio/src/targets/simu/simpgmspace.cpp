@@ -99,7 +99,7 @@ uint16_t getTmr2MHz()
 U64 CoGetOSTime(void)
 {
   auto now = std::chrono::steady_clock::now();
-  return std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+  return (U64) std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() / 2;
 }
 
 void simuInit()
