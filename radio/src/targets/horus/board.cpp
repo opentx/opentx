@@ -123,7 +123,8 @@ void boardInit()
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
-                         GPS_RCC_AHB1Periph,
+                         GPS_RCC_AHB1Periph |
+                         BL_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(INTERRUPT_1MS_RCC_APB1Periph |
@@ -135,22 +136,18 @@ void boardInit()
                          AUDIO_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
-                         GPS_RCC_APB1Periph,
+                         GPS_RCC_APB1Periph |
+                         BL_RCC_APB1Periph,
                          ENABLE);
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
-                         EXTMODULE_RCC_APB2Periph,
+                         EXTMODULE_RCC_APB2Periph |
+                         BL_RCC_APB2Periph,
                          ENABLE);
 
   pwrInit();
-
-  // must be called after pwrInit() because the PCBREV GPIO is initialized there
-  if (IS_HORUS_PROD())
-    RCC_APB1PeriphClockCmd(BL_RCC_APB1Periph,ENABLE);
-  else
-    RCC_APB2PeriphClockCmd(BL_RCC_APB2Periph,ENABLE);
   delaysInit();
 
   // FrSky removed the volume chip in latest board, that's why it doesn't answer!
@@ -178,7 +175,7 @@ void boardInit()
   init2MhzTimer();
   init1msTimer();
   usbInit();
-  hapticInit();
+//  hapticInit(); // TODO: Reenable, clashes with backlight on X10
 
 #if defined(BLUETOOTH)
   bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
@@ -190,6 +187,10 @@ void boardInit()
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
+#endif
+
+#if defined(PCBX10)
+  ledInit();
 #endif
 
   ledBlue();

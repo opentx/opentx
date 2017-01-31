@@ -24,6 +24,7 @@ void trainerSendNextFrame();
 
 void init_trainer_ppm()
 {
+#if defined(PCBX12S)
   GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_OUT_GPIO_PinSource, TRAINER_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -53,20 +54,24 @@ void init_trainer_ppm()
   NVIC_SetPriority(TRAINER_DMA_IRQn, 7);
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
+#endif
 }
 
 void stop_trainer_ppm()
 {
+#if defined(PCBX12S)
   NVIC_DisableIRQ(TRAINER_DMA_IRQn);
   NVIC_DisableIRQ(TRAINER_TIMER_IRQn);
 
   TRAINER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   TRAINER_TIMER->DIER = 0; // Stop Interrupt
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
+#endif
 }
 
 void init_trainer_capture()
 {
+#if defined(PCBX12S)
   GPIO_InitTypeDef GPIO_InitStructure;
 
   GPIO_InitStructure.GPIO_Pin = TRAINER_IN_GPIO_PIN;
@@ -88,14 +93,17 @@ void init_trainer_capture()
 
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
+#endif
 }
 
 void stop_trainer_capture()
 {
+#if defined(PCBX12S)
   NVIC_DisableIRQ(TRAINER_TIMER_IRQn); // Stop Interrupt
 
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
   TRAINER_TIMER->DIER = 0; // Stop Interrupt
+#endif
 }
 
 void trainerSendNextFrame()

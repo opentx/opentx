@@ -363,6 +363,9 @@ bool menuModelSelect(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_PGUP):
+#if defined(PCBX10)
+    case EVT_KEY_LONG(KEY_PGDN):
+#endif
       if (selectMode == MODE_SELECT_MODEL) {
         if (categoriesVerticalPosition == 0)
           categoriesVerticalPosition = modelslist.categories.size() - 1;
@@ -378,9 +381,14 @@ bool menuModelSelect(event_t event)
         modelslist.moveModel(model, previous_category, currentCategory);
         setCurrentModel(currentCategory->size()-1);
       }
+      killEvents(event);
       break;
 
+#if defined(PCBX12S)
     case EVT_KEY_FIRST(KEY_PGDN):
+#elif defined(PCBX10)
+    case EVT_KEY_BREAK(KEY_PGDN):
+#endif
       if (selectMode == MODE_SELECT_MODEL) {
         categoriesVerticalPosition += 1;
         if (categoriesVerticalPosition >= modelslist.categories.size())

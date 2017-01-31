@@ -117,6 +117,12 @@ void delay_ms(uint32_t ms);
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
 
+#if defined(PCBX10)
+  #define IS_X10()                     true
+#else
+  #define IS_X10()                     false
+#endif
+
 // CPU Unique ID
 #define LEN_CPU_UID                    (3*8+2)
 void getCPUUniqueID(char * s);
@@ -360,9 +366,13 @@ uint32_t pwrPressedDuration(void);
 #endif
 
 // Led driver
+void ledInit(void);
 void ledOff(void);
 void ledRed(void);
 void ledBlue(void);
+#if defined(PCBX10)
+  void ledGreen();
+#endif
 
 // LCD driver
 #define LCD_W                          480
@@ -398,9 +408,15 @@ void usbInit(void);
 void usbStart(void);
 void usbStop(void);
 void usbSerialPutc(uint8_t c);
-#define USB_NAME                       "FrSky Horus"
-#define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
-#define USB_PRODUCT                    'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
+#if defined(PCBX12S)
+  #define USB_NAME                     "FrSky Horus"
+  #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(PCBX10)
+  #define USB_NAME                     "FrSky HX10"
+  #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'X', '1', '0', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
+#endif
 
 #if defined(__cplusplus) && !defined(SIMU)
 }

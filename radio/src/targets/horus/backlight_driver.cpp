@@ -33,7 +33,7 @@ void backlightInit()
   GPIO_PinAFConfig(BL_GPIO, BL_GPIO_PinSource, BL_GPIO_AF);
   
   // TIMER init
-  if (IS_HORUS_PROD()) {
+  if (IS_HORUS_PROD() || IS_X10()) {
     BL_TIMER->ARR = 100;
     BL_TIMER->PSC = BL_TIMER_FREQ / 10000 - 1; // 1kHz
     BL_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2; // PWM
@@ -60,7 +60,7 @@ void backlightEnable(uint8_t dutyCycle)
     dutyCycle = 5;
   }
   
-  if (IS_HORUS_PROD()) {
+  if (IS_HORUS_PROD() || IS_X10()) {
     BL_TIMER->CCR4 = dutyCycle;
   }
   else {
