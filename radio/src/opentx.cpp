@@ -2531,7 +2531,10 @@ void opentxInit(OPENTX_INIT_ARGS)
   loadFontCache();
 #endif
 
-  if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
+  if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
+    // on Tx start turn the light on
+    backlightOn();
+  }
 
   if (!unexpectedShutdown) {
     opentxStart();

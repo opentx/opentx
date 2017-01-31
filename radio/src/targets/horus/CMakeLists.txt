@@ -19,7 +19,6 @@ set(HAPTIC YES)
 set(GUI_DIR 480x272)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
-set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
 set(LUA_EXPORT lua_export_horus)
 set(RAMBACKUP YES)
 set(LUA YES)
@@ -40,6 +39,7 @@ if (PCB STREQUAL X10)
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
     )
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x10_bitmaps)
 elseif (PCB STREQUAL X12S)
   set(FLAVOUR x12s)
   add_definitions(-DPCBX12S)
@@ -47,6 +47,7 @@ elseif (PCB STREQUAL X12S)
     ${TARGET_SRC}
     audio_spi_driver.cpp
     )
+  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x12s_bitmaps)
 endif()
 
 add_definitions(-DPCBHORUS -DPCBREV=${PCBREV} -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)

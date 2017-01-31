@@ -466,7 +466,7 @@
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOB
   #define HAPTIC_RCC_APB2Periph         RCC_APB1ENR_TIM3EN
   #define HAPTIC_GPIO                   GPIOB
-  #define HAPTIC_GPIO_PIN               GPIO_Pin_0
+  #define HAPTIC_GPIO_PIN               GPIO_Pin_0  // PB.00
   #define HAPTIC_GPIO_TIMER             TIM3
   #define HAPTIC_GPIO_AF                GPIO_AF_TIM3
   #define HAPTIC_GPIO_PinSource         GPIO_PinSource0

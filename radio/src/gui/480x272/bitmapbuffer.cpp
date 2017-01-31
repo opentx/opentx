@@ -21,6 +21,12 @@
 #include <math.h>
 #include "opentx.h"
 
+#if defined(PCBX10)
+  #define MOVE_TO_NEXT_RIGHT_PIXEL(p)  p--
+#else
+  #define MOVE_TO_NEXT_RIGHT_PIXEL(p)  p++
+#endif
+
 void BitmapBuffer::drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
   if (opacity == OPACITY_MAX) {
@@ -49,7 +55,7 @@ void BitmapBuffer::drawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t p
   if (pat == SOLID) {
     while (w--) {
       drawAlphaPixel(p, opacity, color);
-      p++;
+      MOVE_TO_NEXT_RIGHT_PIXEL(p);
     }
   }
   else {
@@ -61,7 +67,7 @@ void BitmapBuffer::drawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t p
       else {
         pat = pat >> 1;
       }
-      p++;
+      MOVE_TO_NEXT_RIGHT_PIXEL(p);
     }
   }
 }
@@ -130,7 +136,8 @@ void BitmapBuffer::invertRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFla
     for (int j=0; j<w; j++) {
       // TODO ASSERT_IN_DISPLAY(p);
       RGB_SPLIT(*p, bgRed, bgGreen, bgBlue);
-      drawPixel(p++, RGB_JOIN(0x1F + red - bgRed, 0x3F + green - bgGreen, 0x1F + blue - bgBlue));
+      drawPixel(p, RGB_JOIN(0x1F + red - bgRed, 0x3F + green - bgGreen, 0x1F + blue - bgBlue));
+      MOVE_TO_NEXT_RIGHT_PIXEL(p);
     }
   }
 }
@@ -256,7 +263,8 @@ void BitmapBuffer::drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags 
     display_t * q = mask->getPixelPtr(offset, row);
     for (coord_t col=0; col<width; col++) {
       drawAlphaPixel(p, *((uint8_t *)q), color);
-      p++; q++;
+      MOVE_TO_NEXT_RIGHT_PIXEL(p);
+      q++;
     }
   }
 }

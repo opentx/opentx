@@ -142,6 +142,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline display_t * getPixelPtr(coord_t x, coord_t y)
     {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
       return &data[y*width + x];
     }
 
@@ -180,7 +184,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
       if (w<0) { x+=w; w=-w; }
-      DMAFillRect(data, width, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+      DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 
     void drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
@@ -242,10 +246,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
           h = height - y;
         }
         if (bmp->getFormat() == BMP_ARGB4444) {
-          DMACopyAlphaBitmap(data, this->width, x, y, bmp->getData(), srcw, srcx, srcy, w, h);
+          DMACopyAlphaBitmap(data, width, height, x, y, bmp->getData(), srcw, srch, srcx, srcy, w, h);
         }
         else {
-          DMACopyBitmap(data, width, x, y, bmp->getData(), srcw, srcx, srcy, w, h);
+          DMACopyBitmap(data, width, height, x, y, bmp->getData(), srcw, srch, srcx, srcy, w, h);
         }
       }
       else {
