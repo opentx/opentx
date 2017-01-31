@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 #include "opentx.h"
+#include "telemetry.h"
 
 MultiModuleStatus multiModuleStatus;
 uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
@@ -36,6 +37,7 @@ enum MultiBufferState : uint8_t {
   NoProtocolDetected,
   MultiFirstByteReceived,
   ReceivingMultiProtocol,
+  ReceivingMultiStatus,
   SpektrumTelemetryFallback,
   FrskyTelemetryFallbackFirstByte,
   FrskyTelemetryFallbackNextBytes,
@@ -66,15 +68,6 @@ static void processMultiStatusPacket(const uint8_t *data)
 
   if (wasBinding && !multiModuleStatus.isBinding() && multiBindStatus == MULTI_BIND_INITIATED)
       multiBindStatus = MULTI_BIND_FINISHED;
-
-  // set moduleFlag to bind status
-  /*
-  if (moduleFlag[EXTERNAL_MODULE] != MODULE_RANGECHECK)
-    // Two times the same status in a row to avoid race conditions
-    if (multiModuleStatus.isBinding() == wasBinding) {
-      multiModuleStatus.isBinding() ? moduleFlag[EXTERNAL_MODULE] = MODULE_BIND : MODULE_NORMAL_MODE;
-    }
-    */
 
 }
 
@@ -257,9 +250,14 @@ void processMultiTelemetryData(const uint8_t data)
       break;
 
     case MultiFirstByteReceived:
+      telemetryRxBufferCount = 0;
       if (data == 'P') {
-        telemetryRxBufferCount = 0;
         multiTelemetryBufferState = ReceivingMultiProtocol;
+      } else if (data >= 5 && data <= 10) {
+        // Protocol indented for er9x/ersky9, accept only 5-10 as packet length to have
+        // a bit of validation
+        multiTelemetryBufferState = ReceivingMultiStatus;
+
       } else {
         TRACE("[MP] invalid second byte 0x%02X", data);
         multiTelemetryBufferState = NoProtocolDetected;
@@ -269,6 +267,15 @@ void processMultiTelemetryData(const uint8_t data)
     case ReceivingMultiProtocol:
       processMultiTelemetryByte(data);
       break;
+
+    case ReceivingMultiStatus:
+      // Ignore multi status
+      telemetryRxBuffer[telemetryRxBufferCount++] = data;
+      if (telemetryRxBufferCount>5) {
+        processMultiStatusPacket(telemetryRxBuffer);
+        telemetryRxBufferCount=0;
+        multiTelemetryBufferState = NoProtocolDetected;
+      }
   }
 
 }

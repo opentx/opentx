@@ -143,7 +143,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
   /* custom protocols */
   static const char *custom_subtype_strings[] = {"Subtype 0", "Subtype 1", "Subtype 2", "Subtype 3", "Subtype 4", "Subtype 5", "Subtype 6", "Subtype 7"};
   static const char *flysky_strings[] = {"Standard", "V9x9", "V6x6", "V912", "CX20"};
-  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch", "V8"};
+  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch", "V8", "D16 EU-LBT", "D16 EU-LBT 8ch"};
   static const char *hisky_strings[] = {"HiSky", "HK310"};
   static const char *v2x2_strings[] = {"V2x2", "JXD506"};
   static const char *dsm2_strings[] = {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
