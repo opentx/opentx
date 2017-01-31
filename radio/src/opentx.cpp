@@ -2522,7 +2522,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   setSticksGain(g_eeGeneral.sticksGain);
 #endif
 
-#if defined(BLUETOOTH)
+#if defined(PCBSKY9X) && defined(BLUETOOTH)
   btInit();
 #endif
 

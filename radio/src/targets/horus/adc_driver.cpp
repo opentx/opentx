@@ -23,6 +23,11 @@
 uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 #if defined(PCBX10)
+void adcInit()
+{
+  // TODO, perhaps share code with Taranis?
+}
+
 void adcRead()
 {
   // TODO, perhaps share code with Taranis?

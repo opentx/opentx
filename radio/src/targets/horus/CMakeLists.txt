@@ -21,7 +21,6 @@ set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} horus_bitmaps)
 set(LUA_EXPORT lua_export_horus)
-set(FLAVOUR horus)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
@@ -34,6 +33,7 @@ if(SPLASH STREQUAL OFF)
 endif()
 
 if (PCB STREQUAL X10)
+  set(FLAVOUR x10)
   add_definitions(-DPCBX10)
   add_definitions(-DSOFTWARE_VOLUME)
   set(TARGET_SRC
@@ -41,6 +41,7 @@ if (PCB STREQUAL X10)
     ../common/arm/stm32/audio_dac_driver.cpp
     )
 elseif (PCB STREQUAL X12S)
+  set(FLAVOUR x12s)
   add_definitions(-DPCBX12S)
   set(TARGET_SRC
     ${TARGET_SRC}
