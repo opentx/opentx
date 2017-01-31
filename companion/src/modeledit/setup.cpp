@@ -193,15 +193,6 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   }
   ui->label_module->setText(label);
 
-  // Antena selection for Horus
-  if (IS_HORUS(firmware->getBoard()) && moduleIdx == 0) {
-    ui->antennaMode->setCurrentIndex(module.ppm.pulsePol);
-  }
-  else {
-    ui->label_antenna->hide();
-    ui->antennaMode->hide();
-  }
-
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
@@ -260,6 +251,7 @@ ModulePanel::~ModulePanel()
 #define MASK_FAILSAFES      32
 #define MASK_OPEN_DRAIN     64
 #define MASK_MULTIMODULE    128
+#define MASK_ANTENNA        256
 
 void ModulePanel::update()
 {
@@ -277,6 +269,7 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         if (protocol==PULSES_PXX_XJT_X16) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
         if (protocol==PULSES_PXX_XJT_LR12) mask |= MASK_RX_NUMBER;
+        if (IS_HORUS(firmware->getBoard()) && moduleIdx==0) mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
       case PULSES_DSM2:
@@ -299,6 +292,7 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE;
         break;
       case PULSES_OFF:
+        break;
       default:
         break;
     }
@@ -342,6 +336,10 @@ void ModulePanel::update()
   ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
+
+  // Antenna slection on Horus
+  ui->label_antenna->setVisible(mask & MASK_ANTENNA);
+  ui->antennaMode->setVisible(mask & MASK_ANTENNA);
 
   // Multi settings fields
   ui->label_multiProtocol->setVisible(mask & MASK_MULTIMODULE);
@@ -597,8 +595,8 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
           if (!items.contains(temp) && temp.length() <= 6+4) {
             items.append(temp);
           }
-        }  
-      }     
+        }
+      }
       else {
         filters << "*.bmp";
         foreach (QString file, qd.entryList(filters, QDir::Files)) {
