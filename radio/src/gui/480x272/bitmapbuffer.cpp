@@ -264,7 +264,7 @@ void BitmapBuffer::drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags 
     for (coord_t col=0; col<width; col++) {
       drawAlphaPixel(p, *((uint8_t *)q), color);
       MOVE_TO_NEXT_RIGHT_PIXEL(p);
-      q++;
+      MOVE_TO_NEXT_RIGHT_PIXEL(q);
     }
   }
 }
@@ -497,10 +497,10 @@ BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
 {
   BitmapBuffer * bitmap = BitmapBuffer::load(filename);
   if (bitmap) {
-    display_t * p = bitmap->getData();
+    display_t * p = bitmap->getPixelPtr(0, 0);
     for (int i = bitmap->getWidth() * bitmap->getHeight(); i > 0; i--) {
       *((uint8_t *)p) = OPACITY_MAX - ((*p) >> 12);
-      p++;
+      MOVE_TO_NEXT_RIGHT_PIXEL(p);
     }
   }
   return bitmap;
@@ -632,14 +632,13 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
     return NULL;
   }
 
-  uint16_t * dest = bmp->getData();
   uint32_t rowSize;
   bool hasAlpha = false;
 
   switch (depth) {
     case 32:
       for (int i=h-1; i>=0; i--) {
-        uint8_t * dst = ((uint8_t *)dest) + i*w*2;
+        display_t * dst = bmp->getPixelPtr(0, i);
         for (unsigned int j=0; j<w; j++) {
           uint32_t pixel;
           result = f_read(&imgFile, (uint8_t *)&pixel, 4, &read);
@@ -649,23 +648,23 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
             return NULL;
           }
           if (hasAlpha) {
-            *((uint16_t *)dst) = ARGB(pixel & 0xff, (pixel >> 24) & 0xff, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
+            *dst = ARGB(pixel & 0xff, (pixel >> 24) & 0xff, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
           }
           else {
             if ((pixel & 0xff) == 0xff) {
-              *((uint16_t *)dst) = RGB(pixel >> 24, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
+              *dst = RGB(pixel >> 24, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
             }
             else {
               hasAlpha = true;
               bmp->setFormat(BMP_ARGB4444);
-              for (uint16_t * p = dest + i*w; p<dest + h*w; p++) {
-                uint16_t tmp = *p;
+              for (display_t * p = bmp->getPixelPtr(j, i); p != bmp->getPixelPtr(0, h); MOVE_TO_NEXT_RIGHT_PIXEL(p)) {
+                display_t tmp = *p;
                 *p = ((tmp >> 1) & 0x0f) + (((tmp >> 7) & 0x0f) << 4) + (((tmp >> 12) & 0x0f) << 8);
               }
-              *((uint16_t *)dst) = ARGB(pixel & 0xff, (pixel >> 24) & 0xff, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
+              *dst = ARGB(pixel & 0xff, (pixel >> 24) & 0xff, (pixel >> 16) & 0xff, (pixel >> 8) & 0xff);
             }
           }
-          dst += 2;
+          MOVE_TO_NEXT_RIGHT_PIXEL(dst);
         }
       }
       break;
@@ -682,12 +681,12 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
           delete bmp;
           return NULL;
         }
-        uint8_t * dst = ((uint8_t *)dest) + i*w*2;
+        display_t * dst = bmp->getPixelPtr(0, i);
         for (uint32_t j=0; j<w; j++) {
           uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
           uint8_t val = palette[index];
-          *((uint16_t *)dst) = RGB(val, val, val);
-          dst += 2;
+          *dst = RGB(val, val, val);
+          MOVE_TO_NEXT_RIGHT_PIXEL(dst);
         }
       }
       break;
@@ -800,22 +799,22 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
 #if 0
   DMABitmapConvert(bmp->data, img, w, h, n == 4 ? DMA2D_ARGB4444 : DMA2D_RGB565);
 #else
-  uint16_t * dest = bmp->getData();
+  display_t * dest = bmp->getPixelPtr(0, 0);
   const uint8_t * p = img;
   if (n == 4) {
-    for(int row = 0; row < h; ++row) {
-      for(int col = 0; col < w; ++col) {
+    for (int row = 0; row < h; ++row) {
+      for (int col = 0; col < w; ++col) {
         *dest = ARGB(p[3], p[0], p[1], p[2]);
-        ++dest;
+        MOVE_TO_NEXT_RIGHT_PIXEL(dest);
         p += 4;
       }
     }
   }
   else {
-    for(int row = 0; row < h; ++row) {
-      for(int col = 0; col < w; ++col) {
+    for (int row = 0; row < h; ++row) {
+      for (int col = 0; col < w; ++col) {
         *dest = RGB(p[0], p[1], p[2]);
-        ++dest;
+        MOVE_TO_NEXT_RIGHT_PIXEL(dest);
         p += 4;
       }
     }
