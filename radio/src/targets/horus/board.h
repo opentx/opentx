@@ -109,18 +109,12 @@ void delay_ms(uint32_t ms);
 
 // PCBREV driver
 #define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
-#if defined(SIMU)
+#if defined(SIMU) || defined(PCBX10)
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
 #elif PCBREV >= 13
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
 #else
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
-#endif
-
-#if defined(PCBX10)
-  #define IS_X10()                     true
-#else
-  #define IS_X10()                     false
 #endif
 
 // CPU Unique ID

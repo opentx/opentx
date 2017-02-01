@@ -33,7 +33,8 @@ void backlightInit()
   GPIO_PinAFConfig(BL_GPIO, BL_GPIO_PinSource, BL_GPIO_AF);
   
   // TIMER init
-  if (IS_HORUS_PROD() || IS_X10()) {
+#if defined(PCBX12S)
+  if (IS_HORUS_PROD()) {
     BL_TIMER->ARR = 100;
     BL_TIMER->PSC = BL_TIMER_FREQ / 10000 - 1; // 1kHz
     BL_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2; // PWM
@@ -52,6 +53,16 @@ void backlightInit()
     BL_TIMER->CR1 |= TIM_CR1_CEN; // Counter enable
     BL_TIMER->BDTR |= TIM_BDTR_MOE;
   }
+#elif defined(PCBX10)
+  BL_TIMER->ARR = 100;
+  BL_TIMER->PSC = BL_TIMER_FREQ / 10000 - 1; // 1kHz
+  BL_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE; // PWM mode 1
+  BL_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3NE;
+  BL_TIMER->CCR3 = 100;
+  BL_TIMER->EGR = TIM_EGR_UG;
+  BL_TIMER->CR1 |= TIM_CR1_CEN; // Counter enable
+  BL_TIMER->BDTR |= TIM_BDTR_MOE;
+#endif
 }
 
 void backlightEnable(uint8_t dutyCycle)
@@ -60,10 +71,14 @@ void backlightEnable(uint8_t dutyCycle)
     dutyCycle = 5;
   }
   
-  if (IS_HORUS_PROD() || IS_X10()) {
+#if defined(PCBX12S)
+  if (IS_HORUS_PROD()) {
     BL_TIMER->CCR4 = dutyCycle;
   }
   else {
     BL_TIMER->CCR1 = (100 - dutyCycle);
   }
+#elif defined(PCBX10)
+  BL_TIMER->CCR3 = (100 - dutyCycle);
+#endif
 }
