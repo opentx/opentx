@@ -321,7 +321,7 @@ ModelsListWidget::ModelsListWidget(QWidget * parent):
 {
   setColumnWidth(0, 50);
   setColumnWidth(2, 100);
-  
+
   active_highlight_color = palette().color(QPalette::Active, QPalette::Highlight);
 }
 
@@ -337,7 +337,7 @@ void ModelsListWidget::mouseMoveEvent(QMouseEvent *event)
 {
   if (!(event->buttons() & Qt::LeftButton))
     return;
-  
+
   if ((event->pos() - dragStartPosition).manhattanLength() < QApplication::startDragDistance())
     return;
 

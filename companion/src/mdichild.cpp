@@ -139,6 +139,8 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   else if (IS_HORUS(firmware->getBoard())) {
     if (modelsListModel->getCategoryIndex(modelIndex) >= 0) {
       contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
+      contextMenu.addSeparator();
+      contextMenu.addAction(CompanionIcon("rename.png"), tr("&Rename category"), this, SLOT(categoryRename()));
       contextMenu.addAction(CompanionIcon("delete.png"), tr("&Delete category"), this, SLOT(categoryDelete()));
     }
     else {
@@ -368,6 +370,19 @@ void MdiChild::categoryAdd()
   CategoryData category("New category");
   radioData.categories.push_back(category);
   setModified();
+}
+
+void MdiChild::categoryRename()
+{
+  QModelIndex modelIndex  = ui->modelsList->currentIndex();
+  int categoryIndex = modelsListModel->getCategoryIndex(modelIndex);
+  if (categoryIndex < 0 || categoryIndex >= (int)radioData.categories.size()) {
+    return;
+  }
+
+  // Not calling setModified() here because QAbstractItemView::edit will
+  // haandle it if the user actually makes a change
+  ui->modelsList->edit(modelIndex);
 }
 
 void MdiChild::categoryDelete()
