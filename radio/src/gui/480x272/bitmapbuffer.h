@@ -24,6 +24,15 @@
 #include <inttypes.h>
 #include "colors.h"
 
+#if defined(PCBX10)
+  #define MOVE_PIXEL_RIGHT(p, count)   p -= count
+#else
+  #define MOVE_PIXEL_RIGHT(p, count)   p += count
+#endif
+
+#define MOVE_TO_NEXT_RIGHT_PIXEL(p)    MOVE_PIXEL_RIGHT(p, 1)
+
+
 #define USE_STB
 
 // TODO should go to lcd.h again
@@ -68,6 +77,15 @@ class BitmapBufferBase
     inline T * getData() const
     {
       return data;
+    }
+
+    inline const display_t * getPixelPtr(coord_t x, coord_t y) const
+    {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
+      return &data[y*width + x];
     }
 
   protected:
@@ -138,6 +156,15 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         TRACE("BitmapBuffer(%p).drawPixel(): buffer overrun, data: %p, written at: %p", this, data, p);
       }
 #endif
+    }
+
+    inline const display_t * getPixelPtr(coord_t x, coord_t y) const
+    {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
+      return &data[y*width + x];
     }
 
     inline display_t * getPixelPtr(coord_t x, coord_t y)
@@ -262,10 +289,11 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
           scaledh = height - y;
 
         for (int i = 0; i < scaledh; i++) {
-          uint16_t * p = &data[(y + i) * width + x];
-          const uint16_t * qstart = &bmp->getData()[(srcy + int(i / scale)) * bmp->getWidth() + srcx];
+          display_t * p = getPixelPtr(x, y + i);
+          const display_t * qstart = bmp->getPixelPtr(srcx, srcy + int(i / scale));
           for (int j = 0; j < scaledw; j++) {
-            const uint16_t * q = qstart + int(j / scale);
+            const display_t * q = qstart;
+            MOVE_PIXEL_RIGHT(q, int(j / scale));
             if (bmp->getFormat() == BMP_ARGB4444) {
               ARGB_SPLIT(*q, a, r, g, b);
               drawAlphaPixel(p, a, RGB_JOIN(r<<1, g<<2, b<<1));
@@ -273,7 +301,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
             else {
               drawPixel(p, *q);
             }
-            p++;
+            MOVE_TO_NEXT_RIGHT_PIXEL(p);
           }
         }
       }

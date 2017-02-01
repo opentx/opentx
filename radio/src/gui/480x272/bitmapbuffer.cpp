@@ -21,12 +21,6 @@
 #include <math.h>
 #include "opentx.h"
 
-#if defined(PCBX10)
-  #define MOVE_TO_NEXT_RIGHT_PIXEL(p)  p--
-#else
-  #define MOVE_TO_NEXT_RIGHT_PIXEL(p)  p++
-#endif
-
 void BitmapBuffer::drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
   if (opacity == OPACITY_MAX) {
