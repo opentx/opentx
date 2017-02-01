@@ -38,7 +38,8 @@ env:
     # - FLAVOR=X9D
     # - FLAVOR=X9D+
     # - FLAVOR=X9E
-    - FLAVOR=X12
+    - FLAVOR=HORUS
+    # - FLAVOR=X10
     # - FLAVOR=X12Sr10
     # - FLAVOR=X12S
 

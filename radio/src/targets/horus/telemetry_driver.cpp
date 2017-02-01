@@ -20,10 +20,13 @@
 
 #include "opentx.h"
 
-DMAFifo<TELEMETRY_FIFO_SIZE> telemetryDMAFifo __DMA (TELEMETRY_DMA_Stream_RX);
 Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryNoDMAFifo;
-uint8_t telemetryFifoMode;
 uint32_t telemetryErrors = 0;
+
+#if defined(PCBX12S)
+DMAFifo<TELEMETRY_FIFO_SIZE> telemetryDMAFifo __DMA (TELEMETRY_DMA_Stream_RX);
+uint8_t telemetryFifoMode;
+#endif
 
 void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 {
@@ -72,9 +75,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
-  
+
+#if defined(PCBX12S)
   telemetryFifoMode = mode;
-  
+
   if (mode & TELEMETRY_SERIAL_WITHOUT_DMA) {
     USART_Cmd(TELEMETRY_USART, ENABLE);
     USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
@@ -110,6 +114,12 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
     USART_Cmd(TELEMETRY_USART, ENABLE);
     DMA_Cmd(TELEMETRY_DMA_Stream_RX, ENABLE);
   }
+#else
+  USART_Cmd(TELEMETRY_USART, ENABLE);
+  USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
+  NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
+  NVIC_EnableIRQ(TELEMETRY_USART_IRQn);
+#endif
 }
 
 void telemetryPortSetDirectionOutput()
@@ -207,8 +217,12 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 uint8_t telemetryGetByte(uint8_t * byte)
 {
+#if defined(PCBX12S)
   if (telemetryFifoMode & TELEMETRY_SERIAL_WITHOUT_DMA)
     return telemetryNoDMAFifo.pop(*byte);
   else
     return telemetryDMAFifo.pop(*byte);
+#else
+  return telemetryNoDMAFifo.pop(*byte);
+#endif
 }
