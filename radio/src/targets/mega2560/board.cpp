@@ -53,7 +53,7 @@ void boardInit()
   #if defined(AUDIO)
   // TIMER4 set into CTC mode, prescaler 16MHz/64=250 kHz 
   // Used for audio tone generation
-  TCCR4B  = (1<<WGM42) | (0b011 << CS40);
+  TCCR4B  = (0b10<<WGM42) | (0b011 << CS40);
   TCCR4A  = 0x00;
   #endif
   
@@ -81,7 +81,7 @@ void boardInit()
   EIFR = (3<<INTF2);
   EIMSK = (3<<INT4) | (3<<INT2); // enable the two rot. enc. ext. int. pairs.
   
-  #if defined(SDCARD) 
+  #if defined(RTCLOCK)
   i2c_init();  // hardware I2C init  
   #endif
   
