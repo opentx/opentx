@@ -276,10 +276,13 @@ int main(int argc, char *argv[])
   int result = 1;
   SimulatorDialog * dialog = new SimulatorDialog(NULL, simulator, SIMULATOR_FLAGS_STANDALONE);
   dialog->setRadioProfileId(profileId);
-  if ((result = (int)dialog->setOptions(simOptions, true))) {
+  if (dialog->setOptions(simOptions, true)) {
     dialog->start();
     dialog->show();
     result = app.exec();
+  }
+  else {
+    result = 3;
   }
   g.id(oldProfId);
   delete dialog;

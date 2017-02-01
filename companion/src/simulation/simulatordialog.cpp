@@ -202,12 +202,13 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
       }
     }
     // again there's no way to tell what the error from Storage actually was, so if the file doesn't exist we'll create a new one
-    else if (!QFile(QString(dataSource)).exists()) {
+    else if (!dataSource.isEmpty() && !QFile(QString(dataSource)).exists()) {
       startupData = dataSource;
       startupFromFile = true;
       return true;
     }
     else {
+      ret = 0;
       error = store.error();
     }
   }
@@ -264,6 +265,10 @@ bool SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
   }
   else if (options.startupDataType == SimulatorOptions::START_WITH_FILE && !options.dataFile.isEmpty()) {
     ret = setStartupData(options.dataFile.toLocal8Bit(), true);
+  }
+  else {
+    QString error = tr("Invalid startup data provided. Plese specify a proper file/path.");
+    QMessageBox::critical(this, tr("Simulator Startup Error"), error);
   }
 
   if (ret && withSave)

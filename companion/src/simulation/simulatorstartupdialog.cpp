@@ -173,8 +173,9 @@ void SimulatorStartupDialog::loadRadioProfile(int id)
     ui->radioType->setCurrentIndex(i);
 
   tmpstr = m_options->dataFile;
-  if (!tmpstr.isEmpty())
-    ui->dataFile->setText(tmpstr);
+  if (tmpstr.isEmpty())
+    tmpstr = radioEepromFileName(ui->radioType->currentText());
+  ui->dataFile->setText(tmpstr);
 
   tmpstr = m_options->dataFolder;
   if (tmpstr.isEmpty())
