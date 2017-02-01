@@ -79,6 +79,7 @@ class MdiChild : public QWidget
     void categoryDelete();
     void modelAdd();
     void modelEdit();
+    void modelDuplicate();
     void wizardEdit();
     void openModelEditWindow();
     bool loadBackup();
