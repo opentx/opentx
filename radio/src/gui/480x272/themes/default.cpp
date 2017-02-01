@@ -270,7 +270,8 @@ class DefaultTheme: public Theme
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
-      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(GET_RED(color)-69, GET_GREEN(color)-32, GET_BLUE(color)-24);
+      #define DARKER(x)     ((x * 70) / 100)
+      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
       loadIcons();
