@@ -54,7 +54,7 @@ class MdiChild : public QWidget
     int getCurrentRow() const;
     void refresh(bool expand=false);
     void keyPressEvent(QKeyEvent * event);
-  
+
   signals:
     void copyAvailable(bool val);
 
@@ -69,12 +69,13 @@ class MdiChild : public QWidget
     void on_radioSettings_clicked();
     void setDefault();
     void onFirmwareChanged();
-  
+
   public slots:
     void showModelsListContextMenu(const QPoint & pos);
     void checkAndInitModel(int row);
     void generalEdit();
     void categoryAdd();
+    void categoryRename();
     void categoryDelete();
     void modelAdd();
     void modelEdit();
@@ -84,7 +85,7 @@ class MdiChild : public QWidget
     void confirmDelete();
     void deleteSelectedModels();
     void onDataChanged(const QModelIndex & index);
-    
+
     void cut();
     void copy();
     void paste();
@@ -101,11 +102,11 @@ class MdiChild : public QWidget
     void doCopy(QByteArray * gmData);
     void doPaste(QByteArray * gmData, int index);
     void initModelsList();
-    
+
     MainWindow * parent;
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;
-    
+
     QString curFile;
 
     Firmware * firmware;
