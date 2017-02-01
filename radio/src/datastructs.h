@@ -1062,7 +1062,24 @@ static inline void check_struct()
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
 #if defined(PCBX7)
-  // TODO
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 17);
+  CHKSIZE(LimitData, 11);
+  CHKSIZE(LogicalSwitchData, 9);
+  CHKSIZE(CustomFunctionData, 11);
+  CHKSIZE(FlightModeData, 36);
+  CHKSIZE(TimerData, 11);
+  CHKSIZE(SwashRingData, 8);
+  CHKSIZE(FrSkyBarData, 6);
+  CHKSIZE(FrSkyLineData, 4);
+  CHKTYPE(union FrSkyScreenData, 24);
+  CHKSIZE(FrSkyTelemetryData, 106);
+  CHKSIZE(ModelHeader, 12);
+  CHKSIZE(CurveData, 4);
+
+  CHKSIZE(RadioData, 850);
+  CHKSIZE(ModelData, 6025);
+  
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);
@@ -1082,9 +1099,6 @@ static inline void check_struct()
 #if defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
-#elif defined(PCBX7)
-  CHKSIZE(RadioData, 839);
-  CHKSIZE(ModelData, 6504);
 #else
   CHKSIZE(RadioData, 872);
   CHKSIZE(ModelData, 6507);
