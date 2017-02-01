@@ -272,7 +272,9 @@ PACK(struct FrskyTelemetryData {
 #endif
 #endif
 
-#if defined(PCBX9DP) || defined(PCBX9E)
+#if defined(PCBX10)
+  #define IS_SWR_VALUE_VALID()         (false)
+#elif defined(PCBX9DP) || defined(PCBX9E)
   #define IS_SWR_VALUE_VALID()         (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
 #else
   #define IS_SWR_VALUE_VALID()         (true)
