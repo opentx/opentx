@@ -21,13 +21,13 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 #include "timers.h"
 
 /*luadoc
 @function model.getInfo()
 
-Get current Model information 
+Get current Model information
 
 @retval table model information:
  * `name` (string) model name

@@ -21,7 +21,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 
 /*luadoc
 @function lcd.refresh()
@@ -339,12 +339,16 @@ static int luaOpenBitmap(lua_State * L)
 
   BitmapBuffer ** ptr = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
   *ptr = BitmapBuffer::load(filename);
-  TRACE("luaOpenBitmap: %p", *ptr);
 
   if (*ptr == NULL && G(L)->gcrunning) {
     luaC_fullgc(L, 1);  /* try to free some memory... */
     *ptr = BitmapBuffer::load(filename);  /* try again */
-     TRACE("luaOpenBitmap: %p (second try)", *ptr);
+  }
+
+  if (*ptr) {
+    uint32_t size = (*ptr)->getDataSize();
+    luaExtraMemoryUsage += size;
+    TRACE("luaOpenBitmap: %p (%u)", *ptr, size);
   }
 
   luaL_getmetatable(L, LUA_BITMAPHANDLE);
@@ -389,7 +393,9 @@ static int luaGetBitmapSize(lua_State * L)
 static int luaDestroyBitmap(lua_State * L)
 {
   BitmapBuffer * ptr = checkBitmap(L, 1);
-  TRACE("luaDestroyBitmap: %p", ptr);
+  uint32_t size = ptr->getDataSize();
+  TRACE("luaDestroyBitmap: %p (%u)", ptr, size);
+  if (luaExtraMemoryUsage > size) luaExtraMemoryUsage -= size;
   delete ptr;
   return 0;
 }

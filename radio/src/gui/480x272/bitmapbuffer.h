@@ -79,6 +79,11 @@ class BitmapBufferBase
       return data;
     }
 
+    uint32_t getDataSize() const
+    {
+      return width * height * sizeof(T);
+    }
+
     inline const display_t * getPixelPtr(coord_t x, coord_t y) const
     {
 #if defined(PCBX10)

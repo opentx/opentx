@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "bin_allocator.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 #include "sdcard.h"
 
 extern "C" {
@@ -47,11 +47,14 @@ bool luaLcdAllowed;
 int instructionsPercent = 0;
 char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 struct our_longjmp * global_lj = 0;
+#if defined(COLORLCD)
+uint32_t luaExtraMemoryUsage = 0;
+#endif
 
 /* custom panic handler */
 int custom_lua_atpanic(lua_State * L)
 {
-  TRACE("PANIC: unprotected error in call to Lua API (%s)\n", lua_tostring(L, -1));
+  TRACE("PANIC: unprotected error in call to Lua API (%s)", lua_tostring(L, -1));
   if (global_lj) {
     longjmp(global_lj->b, 1);
     /* will never return */
@@ -66,7 +69,7 @@ void luaHook(lua_State * L, lua_Debug *ar)
     // From now on, as soon as a line is executed, error
     // keep erroring until you're script reaches the top
     lua_sethook(L, luaHook, LUA_MASKLINE, 0);
-    luaL_error(L, "");
+    luaL_error(L, "CPU limit");
   }
 }
 
@@ -177,23 +180,45 @@ void luaRegisterLibraries(lua_State * L)
 #endif
 }
 
-void luaDoGc(lua_State * L)
+#define GC_REPORT_TRESHOLD    (2*1024)
+
+void luaDoGc(lua_State * L, bool full)
 {
   if (L) {
     PROTECT_LUA() {
-      lua_gc(L, LUA_GCCOLLECT, 0);
-#if defined(SIMU) || defined(DEBUG)
-      static int lastgc = 0;
-      int gc = luaGetMemUsed(L);
-      if (gc != lastgc) {
-        lastgc = gc;
-        TRACE("GC Use: %dbytes", gc);
+      if (full) {
+        lua_gc(L, LUA_GCCOLLECT, 0);
       }
+      else {
+        lua_gc(L, LUA_GCSTEP, 10);
+      }
+#if defined(SIMU) || defined(DEBUG)
+      if (L == lsScripts) {
+        static uint32_t lastgcSctipts = 0;
+        uint32_t gc = luaGetMemUsed(L);
+        if (gc > (lastgcSctipts + GC_REPORT_TRESHOLD) || (gc + GC_REPORT_TRESHOLD) < lastgcSctipts) {
+          lastgcSctipts = gc;
+          TRACE("GC Use Scripts: %u bytes", gc);
+        }
+      }
+#if defined(COLORLCD)
+      if (L == lsWidgets) {
+        static uint32_t lastgcWidgets = 0;
+        uint32_t gc = luaGetMemUsed(L);
+        if (gc > (lastgcWidgets + GC_REPORT_TRESHOLD) || (gc + GC_REPORT_TRESHOLD) < lastgcWidgets) {
+          lastgcWidgets = gc;
+          TRACE("GC Use Widgets: %u bytes + Extra %u", gc, luaExtraMemoryUsage);
+        }
+      }
+#endif
 #endif
     }
     else {
       // we disable Lua for the rest of the session
-      luaDisable();
+      if (L == lsScripts) luaDisable();
+#if defined(COLORLCD)
+      if (L == lsWidgets) lsWidgets = 0;
+#endif
     }
     UNPROTECT_LUA();
   }
@@ -216,7 +241,7 @@ void luaFree(lua_State * L, ScriptInternalData & sid)
   }
   UNPROTECT_LUA();
 
-  luaDoGc(L);
+  luaDoGc(L, true);
 }
 
 #if defined(LUA_COMPILER)
@@ -494,7 +519,7 @@ static int luaLoad(lua_State * L, const char * filename, ScriptInternalData & si
     luaFree(L, sid);
   }
 
-  luaDoGc(L);
+  luaDoGc(L, true);
 
   return sid.state;
 }
@@ -922,11 +947,14 @@ bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage)
       //todo gc step between scripts
     }
   }
-  luaDoGc(lsScripts);
+  luaDoGc(lsScripts, false);
+#if defined(COLORLCD)
+  luaDoGc(lsWidgets, false);
+#endif
   return scriptWasRun;
 }
 
-int luaGetMemUsed(lua_State * L)
+uint32_t luaGetMemUsed(lua_State * L)
 {
   return L ? (lua_gc(L, LUA_GCCOUNT, 0) << 10) + lua_gc(L, LUA_GCCOUNTB, 0) : 0;
 }

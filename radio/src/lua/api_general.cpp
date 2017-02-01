@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "stamp.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 #include "telemetry/frsky.h"
 
 #if defined(PCBX12S)
