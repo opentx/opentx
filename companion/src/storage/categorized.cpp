@@ -125,9 +125,16 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
     return false;
   }
 
-  // all models
-  for (unsigned int i=0; i<radioData.models.size(); i++) {
-    const ModelData & model = radioData.models[i];
+  // Iterate through all models, writing to their .bin files. Because radioData
+  // isn't sorted w.r.t categories, we have to build up sortedModels so ww can
+  // write models.txt in the correct order. We use category index '-1' to handle
+  // all the models that have no category.
+  unsigned int numModels = radioData.models.size();
+  unsigned int numCategories = radioData.categories.size();
+  std::map<int, std::vector<int>> sortedModels;
+
+  for (unsigned int m=0; m<numModels; m++) {
+    const ModelData & model = radioData.models[m];
     if (model.isEmpty()) continue;
 
     QString modelFilename = QString("MODELS/%1").arg(model.filename);
@@ -136,20 +143,33 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
     if (!writeFile(modelData, modelFilename)) {
       return false;
     }
-    if (getCurrentFirmware()->getCapability(HasModelCategories)) {
-      int categoryIndex = model.category;
-      if (currentCategoryIndex != categoryIndex) {
-        modelsList.append(QString().sprintf("[%s]\n", radioData.categories[model.category].name));
-        currentCategoryIndex = categoryIndex;
+
+    currentCategoryIndex = getCurrentFirmware()->getCapability(HasModelCategories) ?
+                  model.category : -1;
+    sortedModels[currentCategoryIndex].push_back(m);
+  }
+
+  for (int c= -1; c < (int)numCategories; c++) {
+
+    if (c > -1 && getCurrentFirmware()->getCapability(HasModelCategories)) {
+      modelsList.append(QString().sprintf("[%s]\n", radioData.categories[c].name));
+    }
+
+    numModels = sortedModels[c].size();
+    for (unsigned int m=0; m<numModels; m++) {
+      const ModelData & model = radioData.models[sortedModels[c][m]];
+      QString line;
+      if (IS_HORUS(getCurrentBoard())) {
+        line = QString("%1\n").arg(model.filename);
       }
-    }
-    if (IS_HORUS(getCurrentBoard())) {
-      modelsList.append(QString("%1\n").arg(model.filename));
-    }
-    else {
-      // use format with model number and file name
-      // this is needed, because this kind of radios can have unused model slots
-      modelsList.append(QString("%1 %2\n").arg(i).arg(model.filename));
+      else {
+        // use format with model number and file name
+        // this is needed, because this kind of radios can have unused model slots
+        // NOTE: The model number will only be unique within a category
+        line = QString("%1\n").arg(model.filename);
+
+      }
+      modelsList.append(line);
     }
   }
 
