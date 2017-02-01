@@ -22,6 +22,7 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <string>
+#include <chrono>
 
 #if !defined _MSC_VER || defined __GNUC__
   #include <sys/time.h>
@@ -97,14 +98,8 @@ uint16_t getTmr2MHz()
 
 U64 CoGetOSTime(void)
 {
-  // one tick is 2ms
-#if defined(_MSC_VER)
-  return GetTickCount()/2;
-#else
-  struct timespec ts;
-  clock_gettime(CLOCK_MONOTONIC, &ts);
-  return ((U64)ts.tv_sec * 1000 + ts.tv_nsec / 1000000) /2;
-#endif
+  auto now = std::chrono::steady_clock::now();
+  return (U64) std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() / 2;
 }
 
 void simuInit()
