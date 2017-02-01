@@ -449,7 +449,7 @@ Draw a bitmap at (x,y)
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
-@notice Only available on Taranis
+@notice Only available on Taranis X9 series
 
 @status current Introduced in 2.0.0
 */
@@ -584,7 +584,7 @@ Draw a title bar
 @param pages (number) total number of pages. Only used as indicator on
 the right side of title bar. (i.e. idx=2, cnt=5, display `2/5`)
 
-@notice Only available on Taranis
+@notice Only available on Taranis X9 series
 
 @status current Introduced in 2.0.0
 */
@@ -624,7 +624,7 @@ Draw a combo box
  * `INVERS` combo box collapsed, text inversed
  * `0 or not present` combo box collapsed, text normal
 
-@notice Only available on Taranis
+@notice Only available on Taranis X9 series
 
 @status current Introduced in 2.0.0
 */
