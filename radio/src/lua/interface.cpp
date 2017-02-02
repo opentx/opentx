@@ -781,7 +781,7 @@ void luaDoOneRunStandalone(event_t evt)
   }
 }
 
-bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
+bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
 {
   ScriptInternalData & sid = scriptInternalData[i];
   if (sid.state != SCRIPT_OK) return false;
