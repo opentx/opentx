@@ -116,10 +116,10 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   QModelIndex modelIndex = ui->modelsList->indexAt(pos);
   QPoint globalPos = ui->modelsList->mapToGlobal(pos);
   QMenu contextMenu;
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  bool hasData = mimeData->hasFormat("application/x-companion");
   if (modelsListModel->getModelIndex(modelIndex) >= 0) {
-    const QClipboard * clipboard = QApplication::clipboard();
-    const QMimeData * mimeData = clipboard->mimeData();
-    bool hasData = mimeData->hasFormat("application/x-companion");
     contextMenu.addAction(CompanionIcon("edit.png"), tr("&Edit"), this, SLOT(modelEdit()));
     contextMenu.addAction(CompanionIcon("open.png"), tr("&Restore from backup"), this, SLOT(loadBackup()));
     contextMenu.addAction(CompanionIcon("wizard.png"), tr("&Model Wizard"), this, SLOT(wizardEdit()));
@@ -139,6 +139,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
   else if (IS_HORUS(firmware->getBoard())) {
     if (modelsListModel->getCategoryIndex(modelIndex) >= 0) {
       contextMenu.addAction(CompanionIcon("add.png"), tr("&Add model"), this, SLOT(modelAdd()));
+      contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
       contextMenu.addSeparator();
       contextMenu.addAction(CompanionIcon("rename.png"), tr("&Rename category"), this, SLOT(categoryRename()));
       contextMenu.addAction(CompanionIcon("delete.png"), tr("&Delete category"), this, SLOT(categoryDelete()));
