@@ -219,8 +219,8 @@ enum CurveType {
   #define NUM_AUX_TRIMS                2
   #define NUM_MOUSE_ANALOGS            2
 #elif defined(PCBX10)
-  #define NUM_AUX_TRIMS                0
-  #define NUM_MOUSE_ANALOGS            2
+  #define NUM_AUX_TRIMS                2
+  #define NUM_MOUSE_ANALOGS            0
 #else
   #define NUM_AUX_TRIMS                0
   #define NUM_MOUSE_ANALOGS            0
