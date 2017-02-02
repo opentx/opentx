@@ -22,9 +22,9 @@
 #include <errno.h>
 #include <stdarg.h>
 #include <string>
-#include <chrono>
 
 #if !defined _MSC_VER || defined __GNUC__
+  #include <chrono>
   #include <sys/time.h>
 #endif
 
@@ -98,8 +98,12 @@ uint16_t getTmr2MHz()
 
 U64 CoGetOSTime(void)
 {
+#if defined(_MSC_VER)
+  return GetTickCount()/2;
+#else
   auto now = std::chrono::steady_clock::now();
   return (U64) std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() / 2;
+#endif
 }
 
 void simuInit()
