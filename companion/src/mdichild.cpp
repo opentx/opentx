@@ -235,11 +235,13 @@ void MdiChild::doCopy(QByteArray * gmData)
 // gmData->append((char *) &radioData.generalSettings, sizeof(GeneralSettings));
 }
 
-void MdiChild::doPaste(QByteArray * gmData, int index)
+void MdiChild::doPaste(QByteArray * gmData, int modelIdx, int categoryIdx)
 {
   char * gData = gmData->data();
   bool modified = false;
   int size = 0;
+  bool pasteIntoCategory = modelIdx == -1;
+  int dstCategory;
 
   while (size < gmData->size()) {
     char c = *gData++;
@@ -256,21 +258,35 @@ void MdiChild::doPaste(QByteArray * gmData, int index)
       size += sizeof(GeneralSettings);
     }
     else if (c == 'M') {
-      if (firmware->getCapability(Models) == 0 || index < firmware->getCapability(Models)) {
+      if (firmware->getCapability(Models) == 0 || modelIdx < firmware->getCapability(Models)) {
         // Model data
         int ret = QMessageBox::Yes;
-        if (!radioData.models[index].isEmpty()) {
+        if (pasteIntoCategory) {
+          // We're pasting into a category, so create a stubbed out model then
+          // use the regular paste-onto-model code path
+          ModelData blank;
+          blank.used = false;
+          blank.category = categoryIdx;
+          radioData.models.push_back(blank);
+          modelIdx = radioData.models.size() - 1;
+        }
+
+        if (!radioData.models[modelIdx].isEmpty()) {
           ret = QMessageBox::question(this, "Companion", tr("You are pasting on an not empty model, are you sure?"),
                                       QMessageBox::Yes | QMessageBox::No);
         }
-        if (ret == QMessageBox::Yes) {
-          radioData.models[index] = *((ModelData *)gData);
-          strcpy(radioData.models[index].filename, radioData.getNextModelFilename().toStdString().c_str());
+         if (ret == QMessageBox::Yes) {
+          // Save and restore the category index, so a user can copy/paste
+          // across categories
+          dstCategory = radioData.models[modelIdx].category;
+          radioData.models[modelIdx] = *((ModelData *)gData);
+          radioData.models[modelIdx].category = dstCategory;
+          strcpy(radioData.models[modelIdx].filename, radioData.getNextModelFilename().toStdString().c_str());
           modified = 1;
         }
         gData += sizeof(ModelData);
         size += sizeof(ModelData);
-        index++;
+        modelIdx++;
       }
     }
     else {
@@ -289,7 +305,7 @@ void MdiChild::paste()
     const QClipboard * clipboard = QApplication::clipboard();
     const QMimeData * mimeData = clipboard->mimeData();
     QByteArray gmData = mimeData->data("application/x-companion");
-    doPaste(&gmData, getCurrentRow());
+    doPaste(&gmData, getCurrentModel(), getCurrentCategory());
   }
 }
 
@@ -447,7 +463,7 @@ void MdiChild::modelAdd()
 
 void MdiChild::modelEdit()
 {
-  int row = getCurrentRow();
+  int row = getCurrentModel();
   QApplication::setOverrideCursor(Qt::WaitCursor);
   checkAndInitModel(row);
   ModelData & model = radioData.models[row];
@@ -465,7 +481,7 @@ void MdiChild::modelEdit()
 
 void MdiChild::setDefault()
 {
-  int row = getCurrentRow();
+  int row = getCurrentModel();
   if (!radioData.models[row].isEmpty() && radioData.generalSettings.currModelIndex != (unsigned)row) {
     radioData.setCurrentModel(row);
     setModified();
@@ -474,7 +490,7 @@ void MdiChild::setDefault()
 
 void MdiChild::wizardEdit()
 {
-  int row = getCurrentRow();
+  int row = getCurrentModel();
   checkAndInitModel(row);
   WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row+1, this);
   wizard->exec();
@@ -486,7 +502,7 @@ void MdiChild::wizardEdit()
 
 void MdiChild::openModelEditWindow()
 {
-  int row = getCurrentRow();
+  int row = getCurrentModel();
   if (row >= 0) {
     ModelData & model = radioData.models[row];
     if (model.isEmpty() && g.useWizard()) {
@@ -682,7 +698,7 @@ void MdiChild::radioSimulate()
 
 void MdiChild::modelSimulate()
 {
-  startSimulation(this, radioData, getCurrentRow());
+  startSimulation(this, radioData, getCurrentModel());
 }
 
 void MdiChild::print(int model, const QString & filename)
@@ -693,8 +709,8 @@ void MdiChild::print(int model, const QString & filename)
   if (model>=0 && !filename.isEmpty()) {
     pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[model], filename);
   }
-  else if (getCurrentRow()) {
-    pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[getCurrentRow()]);
+  else if (getCurrentModel()) {
+    pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[getCurrentModel()]);
   }
 
   if (pd) {
@@ -708,9 +724,14 @@ void MdiChild::viableModelSelected(bool viable)
   emit copyAvailable(viable);
 }
 
-int MdiChild::getCurrentRow() const
+int MdiChild::getCurrentModel() const
 {
   return modelsListModel->getModelIndex(ui->modelsList->currentIndex());
+}
+
+int MdiChild::getCurrentCategory() const
+{
+  return modelsListModel->getCategoryIndex(ui->modelsList->currentIndex());
 }
 
 bool MdiChild::loadBackup()
@@ -725,7 +746,7 @@ bool MdiChild::loadBackup()
     return false;
   }
 
-  // TODO int index = getCurrentRow();
+  // TODO int index = getCurrentModel();
 
   int eeprom_size = file.size();
   if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
