@@ -343,7 +343,7 @@ elseif(WIN32)
 
   get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
   get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
-  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia)
+  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia Qt5Svg)
   set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(INSTALL_TEMP_QTDLL_SFX "d")

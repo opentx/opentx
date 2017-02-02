@@ -123,6 +123,7 @@ Section "OpenTX Companion" SecDummy
   File "@QT_DLL_DIR@\Qt5PrintSupport.dll"
   File "@QT_DLL_DIR@\Qt5Network.dll"
   File "@QT_DLL_DIR@\Qt5Multimedia.dll"
+  File "@QT_DLL_DIR@\Qt5Svg.dll"
   File "@QT_DLL_DIR@\Qt5Xml.dll"
 
   File "@SDL_DIR@\SDL.dll"
@@ -137,6 +138,7 @@ Section "OpenTX Companion" SecDummy
 
   SetOutPath "$INSTDIR\imageformats"
   File "@QT_DLL_DIR@\..\plugins\imageformats\qjpeg.dll"
+  File "@QT_DLL_DIR@\..\plugins\imageformats\qsvg.dll"
 
   SetOutPath "$INSTDIR\mediaservice"
   File "@QT_DLL_DIR@\..\plugins\mediaservice\dsengine.dll"
