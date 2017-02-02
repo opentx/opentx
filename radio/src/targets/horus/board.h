@@ -50,7 +50,13 @@ extern "C" {
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
+
+#if defined(PCBX10)
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
+#endif
+
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
+
 #if __clang__
 // Restore warnings about registers
 #pragma clang diagnostic pop
@@ -311,8 +317,12 @@ void watchdogInit(unsigned int duration);
 
 // ADC driver
 #define NUM_POTS                       3
-#define NUM_SLIDERS                    4
-#define NUM_XPOTS                      3
+#define NUM_XPOTS                      NUM_POTS
+#if defined(PCBX10)
+  #define NUM_SLIDERS                  2
+#else
+  #define NUM_SLIDERS                  4
+#endif
 enum Analogs {
   STICK1,
   STICK2,
@@ -323,17 +333,17 @@ enum Analogs {
   POT2,
   POT3,
   POT_LAST = POT3,
+  SLIDER_FIRST,
   SLIDER1,
   SLIDER2,
-  SLIDER3,
-  SLIDER4,
+  SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
   MOUSE1,
   MOUSE2,
   NUMBER_ANALOG
 };
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
-#define IS_SLIDER(x)                   ((x)>=SLIDER1 && (x)<=SLIDER4)
+#define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
 extern uint16_t adcValues[NUMBER_ANALOG];
 void adcInit(void);
 void adcRead(void);

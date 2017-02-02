@@ -1095,7 +1095,6 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 106);
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
-
 #if defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
@@ -1106,7 +1105,7 @@ static inline void check_struct()
 
 #elif defined(PCBFLAMENCO)
 
-#elif defined(PCBHORUS)
+#elif defined(PCBX12S)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 13);
@@ -1120,6 +1119,22 @@ static inline void check_struct()
   CHKSIZE(CurveData, 4);
   CHKSIZE(RadioData, 847);
   CHKSIZE(ModelData, 9380);
+  CHKSIZE(CustomScreenData, 610);
+  CHKSIZE(Topbar::PersistentData, 216);
+#elif defined(PCBX10)
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 17);
+  CHKSIZE(LimitData, 13);
+  CHKSIZE(CustomFunctionData, 9);
+  CHKSIZE(FlightModeData, 44);
+  CHKSIZE(TimerData, 16);
+  CHKSIZE(SwashRingData, 8);
+
+  CHKSIZE(FrSkyTelemetryData, 7);
+  CHKSIZE(ModelHeader, 27);
+  CHKSIZE(CurveData, 4);
+  CHKSIZE(RadioData, 829);
+  CHKSIZE(ModelData, 9378);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
 #elif defined(PCBSKY9X)

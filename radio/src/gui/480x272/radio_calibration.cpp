@@ -62,17 +62,19 @@ void drawPots()
   extern void drawMainPots();
   drawMainPots();
 
+#if defined(PCBX12S)
   // The 2 main front sliders
-  drawVerticalSlider(125, 120, 120, calibratedStick[7], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                       OPTION_SLIDER_SQUARE_BUTTON);
-  drawVerticalSlider(LCD_W-125-12, 120, 120, calibratedStick[8], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                                OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(125, 120, 120, calibratedStick[SLIDER1], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(LCD_W-125-12, 120, 120, calibratedStick[SLIDER2], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+#endif
 }
 
+#if defined(PCBX12S)
 void drawMouse()
 {
   drawStick(STICK_LEFT_X, STICKS_Y+100, calibTrackpBackground, calibratedStick[11], calibratedStick[12]);
 }
+#endif
 
 bool menuCommonCalib(event_t event)
 {
@@ -213,7 +215,10 @@ bool menuCommonCalib(event_t event)
 
   drawSticks();
   drawPots();
+
+#if defined(PCBX12S)
   drawMouse();
+#endif
 
   return true;
 }

@@ -38,6 +38,7 @@ if (PCB STREQUAL X10)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
+    ../common/arm/stm32/adc_driver.cpp
     )
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x10_bitmaps)
 elseif (PCB STREQUAL X12S)
@@ -46,6 +47,7 @@ elseif (PCB STREQUAL X12S)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
+    adc_driver.cpp
     )
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x12s_bitmaps)
 endif()

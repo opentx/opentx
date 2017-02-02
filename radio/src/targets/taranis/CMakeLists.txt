@@ -113,6 +113,7 @@ set(TARGET_SRC
   backlight_driver.cpp
   extmodule_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
+  ../common/arm/stm32/adc_driver.cpp
   )
 
 set(FIRMWARE_SRC

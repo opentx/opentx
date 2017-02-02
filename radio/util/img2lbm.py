@@ -54,7 +54,6 @@ with open(sys.argv[2], "w") as f:
         f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
         f.write("const Bitmap %s(BMP_ARGB4444, %d, %d, __%s);\n" % (constant, width, height, constant))
     elif what == "4/4/4/4-R":
-        print("R")
         constant = sys.argv[2].upper()[:-4]
         values = []
         for y in range(height):
@@ -75,7 +74,6 @@ with open(sys.argv[2], "w") as f:
         f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
         f.write("const Bitmap %s(BMP_RGB565, %d, %d, __%s);\n" % (constant, width, height, constant))
     elif what == "5/6/5-R":
-        print("R")
         constant = sys.argv[2].upper()[:-4]
         values = []
         for y in range(height):

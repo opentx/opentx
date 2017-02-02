@@ -22,18 +22,6 @@
 
 uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
-#if defined(PCBX10)
-void adcInit()
-{
-  // TODO, perhaps share code with Taranis?
-}
-
-void adcRead()
-{
-  // TODO, perhaps share code with Taranis?
-}
-#else
-
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
 
@@ -258,8 +246,6 @@ void adcRead()
     adcValues[MOUSE1+x] = temp[x] >> 2;
   }
 }
-
-#endif
 
 #if !defined(SIMU)
 const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};

@@ -114,9 +114,12 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
 
 // TODO REMOVE THE O9X FOURCC in 2.3
-#if defined(PCBHORUS)
-  #define OTX_FOURCC 0x3478746F // otx for Horus
+#if defined(PCBX12S)
+  #define OTX_FOURCC 0x3478746F // otx for X12S
   #define O9X_FOURCC 0x3178396F // we forgot it in 2.2 RC ..
+#elif defined(PCBX10)
+  #define OTX_FOURCC 0x3778746F // otx for X10
+  #define O9X_FOURCC 0x3778396F // o9x for X10
 #elif defined(PCBX9E)
   #define OTX_FOURCC 0x3578746F // otx for Taranis X9E
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X9E
