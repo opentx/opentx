@@ -776,8 +776,10 @@ PACK(struct CustomScreenData {
 // TODO other boards could have their custom screens here as well
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
+#elif defined(PCBX10)
+  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[2]);
 #elif defined(PCBFLAMENCO)
   #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #elif defined(PCBTARANIS)
@@ -905,7 +907,7 @@ PACK(struct TrainerData {
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
     NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
-    NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]); \
+    NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
     NOBACKUP(uint8_t bluetoothEnable:1); \
     NOBACKUP(uint8_t blOffBright:7); \
@@ -978,6 +980,9 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
   CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+#if defined(PCBX10)
+  CalibData calibSpares[NUM_DUMMY_ANAS];
+#endif
   NOBACKUP(uint16_t chkSum);
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -1105,7 +1110,7 @@ static inline void check_struct()
 
 #elif defined(PCBFLAMENCO)
 
-#elif defined(PCBX12S)
+#elif defined(PCBHORUS)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 13);
@@ -1119,22 +1124,6 @@ static inline void check_struct()
   CHKSIZE(CurveData, 4);
   CHKSIZE(RadioData, 847);
   CHKSIZE(ModelData, 9380);
-  CHKSIZE(CustomScreenData, 610);
-  CHKSIZE(Topbar::PersistentData, 216);
-#elif defined(PCBX10)
-  CHKSIZE(MixData, 20);
-  CHKSIZE(ExpoData, 17);
-  CHKSIZE(LimitData, 13);
-  CHKSIZE(CustomFunctionData, 9);
-  CHKSIZE(FlightModeData, 44);
-  CHKSIZE(TimerData, 16);
-  CHKSIZE(SwashRingData, 8);
-
-  CHKSIZE(FrSkyTelemetryData, 7);
-  CHKSIZE(ModelHeader, 27);
-  CHKSIZE(CurveData, 4);
-  CHKSIZE(RadioData, 829);
-  CHKSIZE(ModelData, 9378);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
 #elif defined(PCBSKY9X)

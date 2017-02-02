@@ -739,7 +739,7 @@ enum MixSources {
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
-#if defined(PCBX12S)
+#if defined(PCBHORUS)
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
   MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
@@ -747,14 +747,6 @@ enum MixSources {
   MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
   MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
   MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
-  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
-  MIXSRC_LAST_POT = MIXSRC_RS,
-#elif defined(PCBX10)
-  MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
-  MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
-  MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
-  MIXSRC_FIRST_SLIDER,
-  MIXSRC_LS = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("ls", "Left rear slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
   MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBFLAMENCO)
