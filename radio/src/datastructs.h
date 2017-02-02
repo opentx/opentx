@@ -1133,7 +1133,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 7);
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
-  CHKSIZE(RadioData, 817);
+  CHKSIZE(RadioData, 829);
   CHKSIZE(ModelData, 9378);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);

@@ -215,12 +215,9 @@ enum CurveType {
   #define NUM_ROTARY_ENCODERS          0
 #endif
 
-#if defined(PCBX12S)
+#if defined(PCBHORUS)
   #define NUM_AUX_TRIMS                2
   #define NUM_MOUSE_ANALOGS            2
-#elif defined(PCBX10)
-  #define NUM_AUX_TRIMS                2
-  #define NUM_MOUSE_ANALOGS            0
 #else
   #define NUM_AUX_TRIMS                0
   #define NUM_MOUSE_ANALOGS            0
@@ -655,7 +652,7 @@ enum SwitchSources {
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
-#if defined(PCBX12S)
+#if defined(PCBHORUS)
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
   SWSRC_TrimT6Down,
@@ -827,7 +824,7 @@ enum MixSources {
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
   MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
   MIXSRC_TrimAil,                      LUA_EXPORT("trim-ail", "Aileron trim")
-#if defined(PCBX12S)
+#if defined(PCBHORUS)
   MIXSRC_TrimT5,                       LUA_EXPORT("trim-t5", "Aux trim T5")
   MIXSRC_TrimT6,                       LUA_EXPORT("trim-t6", "Aux trim T6")
   MIXSRC_LAST_TRIM = MIXSRC_TrimT6,
