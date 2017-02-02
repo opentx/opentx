@@ -51,7 +51,8 @@ class MdiChild : public QWidget
     QString userFriendlyCurrentFile() const;
     QString currentFile() const { return curFile; }
     void viableModelSelected(bool viable);
-    int getCurrentRow() const;
+    int getCurrentModel() const;
+    int getCurrentCategory() const;
     void refresh(bool expand=false);
     void keyPressEvent(QKeyEvent * event);
 
@@ -100,7 +101,7 @@ class MdiChild : public QWidget
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
     void doCopy(QByteArray * gmData);
-    void doPaste(QByteArray * gmData, int index);
+    void doPaste(QByteArray * gmData, int modelIdx, int categoryIdx);
     void initModelsList();
 
     MainWindow * parent;
