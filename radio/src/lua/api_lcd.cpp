@@ -571,7 +571,7 @@ static int luaLcdDrawGauge(lua_State *L)
 }
 
 
-#if LCD_DEPTH > 1 && !defined(COLORLCD)
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawScreenTitle(title, page, pages)
 
@@ -584,7 +584,7 @@ Draw a title bar
 @param pages (number) total number of pages. Only used as indicator on
 the right side of title bar. (i.e. idx=2, cnt=5, display `2/5`)
 
-@notice Only available on Taranis X9 series
+@notice Only available on Taranis
 
 @status current Introduced in 2.0.0
 */
@@ -596,14 +596,16 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   int cnt = luaL_checkinteger(L, 3);
 
   if (cnt) drawScreenIndex(idx-1, cnt, 0);
+#if LCD_DEPTH > 1
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+#endif
   title(str);
 
   return 0;
 }
 #endif
 
-#if LCD_DEPTH > 1 && !defined(COLORLCD)
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawCombobox(x, y, w, list, idx [, flags])
 
@@ -624,7 +626,7 @@ Draw a combo box
  * `INVERS` combo box collapsed, text inversed
  * `0 or not present` combo box collapsed, text normal
 
-@notice Only available on Taranis X9 series
+@notice Only available on Taranis
 
 @status current Introduced in 2.0.0
 */
@@ -787,7 +789,9 @@ const luaL_Reg lcdLib[] = {
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
 #else
+  { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "getLastPos", luaLcdGetLastPos },
+  { "drawCombobox", luaLcdDrawCombobox },
 #endif
   { NULL, NULL }  /* sentinel */
 };
