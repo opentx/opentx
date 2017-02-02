@@ -1065,7 +1065,8 @@ int16_t applyLimits(uint8_t channel, int32_t value);
 
 void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
-extern int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+
+extern int16_t calibratedAnalogs[NUM_CALIBRATED_ANALOGS];
 
 #define FLASH_DURATION 20 /*200ms*/
 
@@ -1667,12 +1668,12 @@ extern Clipboard clipboard;
 #endif
 
 #if !defined(SIMU)
-extern uint16_t s_anaFilt[NUMBER_ANALOG];
+extern uint16_t s_anaFilt[NUM_ANALOGS];
 #endif
 
 #if defined(JITTER_MEASURE)
-extern JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
-extern JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
+extern JitterMeter<uint16_t> rawJitter[NUM_ANALOGS];
+extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 #if defined(PCBHORUS)
   #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
 #elif defined(PCBTARANIS)

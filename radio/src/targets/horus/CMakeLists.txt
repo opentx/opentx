@@ -1,14 +1,4 @@
-set(PCBREV "13" CACHE STRING "PCB Revision")
-set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
 option(DISK_CACHE "Enable SD card disk cache" YES)
-if(${PCBREV} GREATER 10)
-  option(INTERNAL_GPS "Internal GPS installed" YES)
-else()
-  option(INTERNAL_GPS "Internal GPS installed" NO)
-  if(NOT INTERNAL_GPS)
-    message("Horus: Internal GPS is optional, use INTERNAL_GPS=YES option to enable it")
-  endif()
-endif()
 option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
 
 set(CPU_TYPE STM32F4)
@@ -19,7 +9,6 @@ set(HAPTIC YES)
 set(GUI_DIR 480x272)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
-set(LUA_EXPORT lua_export_horus)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
@@ -41,18 +30,32 @@ if (PCB STREQUAL X10)
     ../common/arm/stm32/adc_driver.cpp
     )
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x10_bitmaps)
+  set(LUA_EXPORT lua_export_x10)
 elseif (PCB STREQUAL X12S)
   set(FLAVOUR x12s)
+  set(PCBREV "13" CACHE STRING "PCB Revision")
+  if(${PCBREV} GREATER 10)
+    option(INTERNAL_GPS "Internal GPS installed" YES)
+  else()
+    option(INTERNAL_GPS "Internal GPS installed" NO)
+    if(NOT INTERNAL_GPS)
+      message("Horus: Internal GPS is optional, use INTERNAL_GPS=YES option to enable it")
+    endif()
+  endif()
+  set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
   add_definitions(-DPCBX12S)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
     adc_driver.cpp
+    gps_driver.cpp
     )
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x12s_bitmaps)
+  set(LUA_EXPORT lua_export_x12s)
+  add_definitions(-DPCBREV=${PCBREV})
 endif()
 
-add_definitions(-DPCBHORUS -DPCBREV=${PCBREV} -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
+add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 
@@ -100,7 +103,6 @@ set(TARGET_SRC
   board.cpp
   led_driver.cpp
   extmodule_driver.cpp
-  gps_driver.cpp
   )
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}

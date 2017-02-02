@@ -304,7 +304,7 @@ void menuModelExpoOne(event_t event)
 
   drawFunction(expoFn);
 
-  int16_t x512 = calibratedStick[ed->chn];
+  int16_t x512 = calibratedAnalogs[ed->chn];
   lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto100(x512), 0);
   int16_t y512 = expoFn(x512);
   lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);

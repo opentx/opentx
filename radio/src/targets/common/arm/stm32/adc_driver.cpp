@@ -20,40 +20,36 @@
 
 #include "opentx.h"
 
-// Sample time should exceed 1uS
-#define SAMPTIME       2   // sample time = 28 cycles
-#define SAMPTIME_LONG  3   // sample time = 56 cycles
-
 #if defined(SIMU)
-  // no need
+  // non needed
 #elif defined(PCBX10)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,-1, -1,1,1,1,  -1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1, -1,1,1,1,  -1};
 #elif defined(PCBX9E) && defined(HORUS_STICKS)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
 #elif defined(PCBX9E)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
-  const uint8_t ana_mapping[NUMBER_ANALOG] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
+  const int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+  const uint8_t ana_mapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
                                                10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
                                                11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
                                                9 /*TX_VOLTAGE*/ };
 #elif defined(PCBX9DP)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
 #elif defined(PCBX7)
-  const int8_t ana_direction[NUMBER_ANALOG] = {-1,1,-1,1,  1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
 #elif defined(REV4a)
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
 #else
-  const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
 
 #if defined(PCBX9E)
-  #define NUMBER_ANALOG_ADC1      10
-  #define NUMBER_ANALOG_ADC3      (NUMBER_ANALOG - 10)
+  #define NUM_ANALOGS_ADC      10
+  #define NUM_ANALOGS_ADC_EXT  (NUM_ANALOGS - 10)
 #else
-  #define NUMBER_ANALOG_ADC1      NUMBER_ANALOG
+  #define NUM_ANALOGS_ADC      NUM_ANALOGS
 #endif
 
-uint16_t adcValues[NUMBER_ANALOG] __DMA;
+uint16_t adcValues[NUM_ANALOGS] __DMA;
 
 void adcInit()
 {
@@ -83,93 +79,93 @@ void adcInit()
   GPIO_Init(GPIOF, &GPIO_InitStructure);
 #endif
 
-  ADC1->CR1 = ADC_CR1_SCAN;
-  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC1->SQR1 = (NUMBER_ANALOG_ADC1-1) << 20; // bits 23:20 = number of conversions
+  ADC_MAIN->CR1 = ADC_CR1_SCAN;
+  ADC_MAIN->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions
 
 #if defined(PCBX10)
-  ADC1->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_EXT1<<20) + (ADC_CHANNEL_EXT2<<25); // conversions 7 and more
-  ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_EXT1<<20) + (ADC_CHANNEL_EXT2<<25); // conversions 7 and more
+  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
 #elif defined(PCBX9E)
-  ADC1->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
-  ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
+  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
 #elif defined(PCBX7)
-  ADC1->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
-  ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
+  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
 #else
-  ADC1->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
-  ADC1->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
+  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
 #endif
 
-  ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
-  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27);
+  ADC_MAIN->SMPR1 = ADC_SAMPTIME + (ADC_SAMPTIME<<3) + (ADC_SAMPTIME<<6) + (ADC_SAMPTIME<<9) + (ADC_SAMPTIME<<12) + (ADC_SAMPTIME<<15) + (ADC_SAMPTIME<<18) + (ADC_SAMPTIME<<21) + (ADC_SAMPTIME<<24);
+  ADC_MAIN->SMPR2 = ADC_SAMPTIME + (ADC_SAMPTIME<<3) + (ADC_SAMPTIME<<6) + (ADC_SAMPTIME<<9) + (ADC_SAMPTIME<<12) + (ADC_SAMPTIME<<15) + (ADC_SAMPTIME<<18) + (ADC_SAMPTIME<<21) + (ADC_SAMPTIME<<24) + (ADC_SAMPTIME<<27);
 
   ADC->CCR = 0;
 
-  ADC1_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  ADC1_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC1->DR);
-  ADC1_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues);
-  ADC1_DMA_Stream->NDTR = NUMBER_ANALOG_ADC1;
-  ADC1_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
+  ADC_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  ADC_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_MAIN->DR);
+  ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues);
+  ADC_DMA_Stream->NDTR = NUM_ANALOGS_ADC;
+  ADC_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
 #if defined(PCBX9E)
-  ADC3->CR1 = ADC_CR1_SCAN;
-  ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC3->SQR1 = (NUMBER_ANALOG_ADC3-1) << 20;   // NUMBER_ANALOG Channels
-  ADC3->SQR2 = 0;
-  ADC3->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10); // conversions 1 to 3
-  ADC3->SMPR1 = 0;
-  ADC3->SMPR2 = (SAMPTIME_LONG<<(3*ADC_CHANNEL_POT1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER1)) + (SAMPTIME_LONG<<(3*ADC_CHANNEL_SLIDER2));
+  ADC_EXT->CR1 = ADC_CR1_SCAN;
+  ADC_EXT->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC_EXT->SQR1 = (NUM_ANALOGS_ADC_EXT-1) << 20;
+  ADC_EXT->SQR2 = 0;
+  ADC_EXT->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10); // conversions 1 to 3
+  ADC_EXT->SMPR1 = 0;
+  ADC_EXT->SMPR2 = (ADC_EXT_SAMPTIME<<(3*ADC_CHANNEL_POT1)) + (ADC_EXT_SAMPTIME<<(3*ADC_CHANNEL_SLIDER1)) + (ADC_EXT_SAMPTIME<<(3*ADC_CHANNEL_SLIDER2));
 
-  ADC3_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
-  ADC3_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC3->DR);
-  ADC3_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues + NUMBER_ANALOG_ADC1);
-  ADC3_DMA_Stream->NDTR = NUMBER_ANALOG_ADC3;
-  ADC3_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
+  ADC_EXT_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  ADC_EXT_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_EXT->DR);
+  ADC_EXT_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues + NUM_ANALOGS_ADC);
+  ADC_EXT_DMA_Stream->NDTR = NUM_ANALOGS_ADC_EXT;
+  ADC_EXT_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 #endif
 }
 
 void adcSingleRead()
 {
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
-  ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
-  ADC1_DMA->HIFCR = ADC1_DMA_FLAGS; // Write ones to clear bits
-  ADC1_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
-  ADC1->CR2 |= (uint32_t) ADC_CR2_SWSTART;
+  ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  ADC_MAIN->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
+  ADC_SET_DMA_FLAGS();
+  ADC_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
+  ADC_MAIN->CR2 |= (uint32_t) ADC_CR2_SWSTART;
 
 #if defined(PCBX9E)
-  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
-  ADC3->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
-  ADC3_DMA->LIFCR = ADC3_DMA_FLAGS; // Write ones to clear bits
-  ADC3_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
-  ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+  ADC_EXT_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  ADC_EXT->SR &= ~(uint32_t) ( ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR );
+  ADC_EXT_SET_DMA_FLAGS();
+  ADC_EXT_DMA_Stream->CR |= DMA_SxCR_EN; // Enable DMA
+  ADC_EXT->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 #endif
 
 #if defined(PCBX9E)
   for (unsigned int i=0; i<10000; i++) {
-    if ((ADC1_DMA->HISR & ADC1_DMA_FLAG_TC) && (ADC3_DMA->LISR & ADC3_DMA_FLAG_TC)) {
+    if (ADC_TRANSFER_COMPLETE() && ADC_EXT_TRANSFER_COMPLETE()) {
       break;
     }
   }
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
-  ADC3_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  ADC_EXT_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #else
   for (unsigned int i = 0; i < 10000; i++) {
-    if (ADC1_DMA->HISR & ADC1_DMA_FLAG_TC) {
+    if (ADC_TRANSFER_COMPLETE()) {
       break;
     }
   }
-  ADC1_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #endif
 }
 
 void adcRead()
 {
-  uint16_t temp[NUMBER_ANALOG] = { 0 };
+  uint16_t temp[NUM_ANALOGS] = { 0 };
 
   for (int i=0; i<4; i++) {
     adcSingleRead();
-    for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+    for (uint8_t x=0; x<NUM_ANALOGS; x++) {
       uint16_t val = adcValues[x];
 #if defined(JITTER_MEASURE)
       if (JITTER_MEASURE_ACTIVE()) {
@@ -180,7 +176,7 @@ void adcRead()
     }
   }
 
-  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+  for (uint8_t x=0; x<NUM_ANALOGS; x++) {
     adcValues[x] = temp[x] >> 2;
   }
 }

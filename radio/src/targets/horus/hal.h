@@ -194,7 +194,7 @@
   #define ADC_SAMPTIME                  3
 #elif defined(PCBX10)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
-  #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC1)
+  #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC3)
   #define ADC_GPIO_PIN_STICK_LH         GPIO_Pin_0      // PC.00
   #define ADC_GPIO_PIN_STICK_LV         GPIO_Pin_1      // PC.01
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_2      // PC.02
@@ -222,10 +222,12 @@
   #define ADC_CHANNEL_POT2              ADC_Channel_1   // ADC1_IN1
   #define ADC_CHANNEL_EXT1              ADC_Channel_6   // ADC1_IN6
   #define ADC_CHANNEL_EXT2              ADC_Channel_7   // ADC1_IN7
-  #define ADC1_DMA                      DMA2
-  #define ADC1_DMA_Stream               DMA2_Stream4
-  #define ADC1_DMA_FLAGS                (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
-  #define ADC1_DMA_FLAG_TC              DMA_HISR_TCIF4
+  #define ADC_MAIN                      ADC3
+  #define ADC_SAMPTIME                  3
+  #define ADC_DMA                       DMA2
+  #define ADC_DMA_Stream                DMA2_Stream0
+  #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
+  #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
 #endif
 
 // Power

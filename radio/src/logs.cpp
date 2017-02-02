@@ -339,7 +339,7 @@ void logsWrite()
 #endif
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
-        f_printf(&g_oLogFile, "%d,", calibratedStick[i]);
+        f_printf(&g_oLogFile, "%d,", calibratedAnalogs[i]);
       }
 
 #if defined(PCBFLAMENCO)

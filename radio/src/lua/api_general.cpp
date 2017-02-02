@@ -25,8 +25,10 @@
 #include "lua/lua_api.h"
 #include "telemetry/frsky.h"
 
-#if defined(PCBHORUS)
-  #include "lua/lua_exports_horus.inc"   // this line must be after lua headers
+#if defined(PCBX12S)
+  #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
+#elif defined(PCBX10)
+  #include "lua/lua_exports_x10.inc"
 #elif defined(PCBFLAMENCO)
   #include "lua/lua_exports_flamenco.inc"
 #elif defined(PCBX9E)

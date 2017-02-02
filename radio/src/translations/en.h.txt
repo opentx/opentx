@@ -510,7 +510,7 @@
 #define TR_STICKS_VSRCRAW              "Rud\0""Ele\0""Thr\0""Ail\0"
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   #define TR_TRIMS_VSRCRAW             "\313Rud""\313Ele""\313Thr""\313Ail""\313T5\0""\313T6\0"
 #elif defined(CPUARM)
   #define TR_TRIMS_VSRCRAW             "\313Rud""\313Ele""\313Thr""\313Ail"
@@ -518,8 +518,11 @@
   #define TR_TRIMS_VSRCRAW             "TrmR""TrmE""TrmT""TrmA"
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0""\310JSx""\310JSy"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+#elif defined(PCBX10)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\311LS\0""\311RS\0""\310EX1""\310EX2"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBFLAMENCO)
   #define TR_POTS_VSRCRAW              "SD\0 ""LS\0 ""RS\0 "
@@ -545,7 +548,7 @@
   #define TR_LOGICALSW                 "L1\0""L2\0""L3\0""L4\0""L5\0""L6\0""L7\0""L8\0""L9\0""L10""L11""L12"
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   #define TR_TRIMS_SWITCHES            "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar""\3135d""\3135u""\3136d""\3136u"
 #else
   #define TR_TRIMS_SWITCHES            TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr", "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar")

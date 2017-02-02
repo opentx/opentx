@@ -215,8 +215,11 @@ enum CurveType {
   #define NUM_ROTARY_ENCODERS          0
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   #define NUM_AUX_TRIMS                2
+  #define NUM_MOUSE_ANALOGS            2
+#elif defined(PCBX10)
+  #define NUM_AUX_TRIMS                0
   #define NUM_MOUSE_ANALOGS            2
 #else
   #define NUM_AUX_TRIMS                0
@@ -652,7 +655,7 @@ enum SwitchSources {
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
   SWSRC_TrimT6Down,
@@ -739,7 +742,7 @@ enum MixSources {
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
   MIXSRC_FIRST_POT,
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
   MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
@@ -747,6 +750,14 @@ enum MixSources {
   MIXSRC_S3 = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("s3", "Slider S3")
   MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
   MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
+  MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
+  MIXSRC_LAST_POT = MIXSRC_RS,
+#elif defined(PCBX10)
+  MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
+  MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
+  MIXSRC_S2,                            LUA_EXPORT("s2", "Potentiometer S2")
+  MIXSRC_FIRST_SLIDER,
+  MIXSRC_LS = MIXSRC_FIRST_SLIDER,      LUA_EXPORT("ls", "Left rear slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
   MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBFLAMENCO)
@@ -816,7 +827,7 @@ enum MixSources {
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
   MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
   MIXSRC_TrimAil,                      LUA_EXPORT("trim-ail", "Aileron trim")
-#if defined(PCBHORUS)
+#if defined(PCBX12S)
   MIXSRC_TrimT5,                       LUA_EXPORT("trim-t5", "Aux trim T5")
   MIXSRC_TrimT6,                       LUA_EXPORT("trim-t6", "Aux trim T6")
   MIXSRC_LAST_TRIM = MIXSRC_TrimT6,
