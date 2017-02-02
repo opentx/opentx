@@ -94,7 +94,8 @@
   extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #endif
 
-extern coord_t lcdLastPos;
+extern coord_t lcdRightPos;
+extern coord_t lcdLeftPos;
 extern coord_t lcdNextPos;
 
 #define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)

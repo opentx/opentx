@@ -106,6 +106,13 @@ TEST(outdezNAtt, test_unsigned)
   lcdDrawNumber(0, 0, 65530, LEFT);
   EXPECT_TRUE(checkScreenshot("unsigned")) << "Unsigned numbers will be bad displayed";
 }
+#elif defined(CPUARM) && LCD_W <= 128
+TEST(outdezNAtt, test_unsigned)
+{
+  lcdClear();
+  lcdDrawNumber(0, 0, 65530, LEFT|UNSIGN);
+  EXPECT_TRUE(checkScreenshot("arm_unsigned")) << "Unsigned numbers will be bad displayed";
+}
 #else
 TEST(outdezNAtt, test_unsigned)
 {
