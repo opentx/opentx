@@ -125,7 +125,7 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
     return false;
   }
 
-  for (unsigned int m=0; m<numModels; m++) {
+  for (size_t m=0; m<numModels; m++) {
     const ModelData & model = radioData.models[m];
     if (model.isEmpty()) continue;
 
@@ -151,10 +151,10 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
   }
 
   if (getCurrentFirmware()->getCapability(HasModelCategories)) {
-    for (int c= 0; c<numCategories; c++) {
+    for (size_t c=0; c<numCategories; c++) {
       modelsList.append(QString().sprintf("[%s]\n", radioData.categories[c].name));
       numModels = sortedModels[c].size();
-      for (unsigned int m=0; m<numModels; m++) {
+      for (size_t m=0; m<numModels; m++) {
         modelsList.append(sortedModels[c][m]);
       }
     }
