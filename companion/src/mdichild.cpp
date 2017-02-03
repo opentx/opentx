@@ -487,7 +487,7 @@ void MdiChild::modelEdit()
 
 void MdiChild::modelDuplicate()
 {
-  int srcModelIndex = getCurrentRow();
+  int srcModelIndex = getCurrentModel();
   if (srcModelIndex < 0) {
     return;
   }
