@@ -102,7 +102,7 @@ class MdiChild : public QWidget
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
     void doCopy(QByteArray * gmData);
-    void doPaste(QByteArray * gmData, int modelIdx, int categoryIdx);
+    void doPaste(QByteArray * gmData, QModelIndex row);
     void initModelsList();
 
     MainWindow * parent;
