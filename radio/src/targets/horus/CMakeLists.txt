@@ -1,5 +1,6 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
+option(PWR_BUTTON_DISABLED "Disable the Power Button (for debugging with JTAG)" NO)
 
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
@@ -18,6 +19,10 @@ set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
 
 if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
+endif()
+
+if(PWR_BUTTON_DISABLED)
+  add_definitions(-DPWR_BUTTON_DISABLED)
 endif()
 
 if (PCB STREQUAL X10)

@@ -38,6 +38,9 @@ extern "C" {
 typedef void (*traceCallbackFunc)(const char * text);
 extern traceCallbackFunc traceCallback;
 void debugPrintf(const char * format, ...);
+#elif defined(SEMIHOSTING)
+#include <stdio.h>
+#define debugPrintf(...) printf(__VA_ARGS__)
 #elif defined(DEBUG) && defined(CLI) && defined(USB_SERIAL)
 #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CLI)
