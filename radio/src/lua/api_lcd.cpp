@@ -449,7 +449,7 @@ Draw a bitmap at (x,y)
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
-@notice Only available on Taranis X9 series
+@notice Only available on Taranis X9 series. Maximum image size if 106 x 64 pixels (width x height).
 
 @status current Introduced in 2.0.0
 */
