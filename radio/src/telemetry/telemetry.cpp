@@ -82,7 +82,7 @@ void processTelemetryData(uint8_t data)
     return;
   }
 #endif
-  processSerialData(data);
+  processTelemetryData(data);
 }
 #endif
 
@@ -115,7 +115,7 @@ void telemetryWakeup()
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
     uint8_t data;
     while (telemetrySecondPortReceive(data)) {
-      processSerialData(data);
+      processTelemetryData(data);
     }
   }
   else {

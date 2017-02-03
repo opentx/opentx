@@ -48,7 +48,7 @@ enum FrSkyDataState {
 #endif
 };
 
-NOINLINE void processSerialData(uint8_t data)
+NOINLINE void processTelemetryData(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
 
