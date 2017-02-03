@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if defined(SIMU)
-  // non needed
+  // not needed
 #elif defined(PCBX10)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1, -1,1,1,1,  -1};
 #elif defined(PCBX9E) && defined(HORUS_STICKS)
@@ -29,9 +29,9 @@
 #elif defined(PCBX9E)
   const int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
   const uint8_t ana_mapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
-                                               10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
-                                               11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
-                                               9 /*TX_VOLTAGE*/ };
+                                             10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
+                                             11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
+                                             9 /*TX_VOLTAGE*/ };
 #elif defined(PCBX9DP)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
 #elif defined(PCBX7)
@@ -102,7 +102,7 @@ void adcInit()
 
   ADC->CCR = 0;
 
-  ADC_DMA_Stream->CR = DMA_SxCR_PL | DMA_SxCR_CHSEL_1 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
+  ADC_DMA_Stream->CR = DMA_SxCR_PL | ADC_DMA_SxCR_CHSEL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   ADC_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_MAIN->DR);
   ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues);
   ADC_DMA_Stream->NDTR = NUM_ANALOGS_ADC;

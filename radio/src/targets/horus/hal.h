@@ -225,6 +225,7 @@
   #define ADC_MAIN                      ADC3
   #define ADC_SAMPTIME                  3
   #define ADC_DMA                       DMA2
+  #define ADC_DMA_SxCR_CHSEL            DMA_SxCR_CHSEL_1
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SET_DMA_FLAGS()           ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)

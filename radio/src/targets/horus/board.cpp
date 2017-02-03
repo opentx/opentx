@@ -175,7 +175,7 @@ void boardInit()
   init2MhzTimer();
   init1msTimer();
   usbInit();
-//  hapticInit(); // TODO: Reenable, clashes with backlight on X10
+  hapticInit();
 
 #if defined(BLUETOOTH)
   bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);

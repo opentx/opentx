@@ -350,6 +350,7 @@
 #define ADC_CHANNEL_STICK_RH            ADC_Channel_1  // ADC1_IN1
 #define ADC_MAIN                        ADC1
 #define ADC_DMA                         DMA2
+#define ADC_DMA_SxCR_CHSEL              0
 #define ADC_DMA_Stream                  DMA2_Stream4
 #define ADC_SET_DMA_FLAGS()             ADC_DMA->HIFCR = (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
 #define ADC_TRANSFER_COMPLETE()         (ADC_DMA->HISR & DMA_HISR_TCIF4)
