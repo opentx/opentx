@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SimulatorMainWindow</class>
+ <widget class="QMainWindow" name="SimulatorMainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>644</width>
+    <height>371</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>OpenTx Simulator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../companion.qrc">
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>644</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuReload">
+    <property name="title">
+     <string>Reload...</string>
+    </property>
+    <addaction name="actionReloadLua"/>
+    <addaction name="actionReloadRadioData"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionScreenshot"/>
+    <addaction name="actionJoystickSettings"/>
+    <addaction name="actionShowKeymap"/>
+   </widget>
+   <addaction name="menuView"/>
+   <addaction name="menuReload"/>
+   <addaction name="menuTools"/>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>Toolbar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionReloadLua"/>
+   <addaction name="actionReloadRadioData"/>
+   <addaction name="separator"/>
+   <addaction name="actionScreenshot"/>
+   <addaction name="actionJoystickSettings"/>
+   <addaction name="actionShowKeymap"/>
+  </widget>
+  <action name="actionReloadLua">
+   <property name="icon">
+    <iconset resource="../companion.qrc">
+     <normaloff>:/images/simulator/icons/svg/reload_script.svg</normaloff>:/images/simulator/icons/svg/reload_script.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Reload Lua Scripts</string>
+   </property>
+   <property name="toolTip">
+    <string>Reload the Lua environment on the simulated radio.</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
+   </property>
+  </action>
+  <action name="actionReloadRadioData">
+   <property name="icon">
+    <iconset resource="../companion.qrc">
+     <normaloff>:/images/simulator/icons/svg/restart.svg</normaloff>:/images/simulator/icons/svg/restart.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Reload Radio Data</string>
+   </property>
+   <property name="toolTip">
+    <string>Reload all radio data without restarting the simulator.</string>
+   </property>
+   <property name="shortcut">
+    <string>F9</string>
+   </property>
+  </action>
+  <action name="actionShowKeymap">
+   <property name="icon">
+    <iconset resource="../companion.qrc">
+     <normaloff>:/images/simulator/icons/svg/info.svg</normaloff>:/images/simulator/icons/svg/info.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Key Mapping</string>
+   </property>
+   <property name="toolTip">
+    <string>Show keyboard maping reference.</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionJoystickSettings">
+   <property name="icon">
+    <iconset resource="../companion.qrc">
+     <normaloff>:/images/simulator/icons/svg/joystick_settings.svg</normaloff>:/images/simulator/icons/svg/joystick_settings.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Joystick Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Open joystick configuration settings dialog.</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
+   </property>
+  </action>
+  <action name="actionScreenshot">
+   <property name="icon">
+    <iconset resource="../companion.qrc">
+     <normaloff>:/images/simulator/icons/svg/camera.svg</normaloff>:/images/simulator/icons/svg/camera.svg</iconset>
+   </property>
+   <property name="text">
+    <string>LCD Screenshot</string>
+   </property>
+   <property name="toolTip">
+    <string>Save a screenshot of the current simulated LCD screen.</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
+  </action>
+  <action name="actionToggleRadioTitle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Radio Titlebar</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The title bar on the main radio window allows you to undock it or move it around separately from the other windows. Hiding the title makes a more compact and streamlined appearance.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../companion.qrc"/>
+ </resources>
+ <connections/>
+</ui>
