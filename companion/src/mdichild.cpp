@@ -236,13 +236,14 @@ void MdiChild::doCopy(QByteArray * gmData)
 // gmData->append((char *) &radioData.generalSettings, sizeof(GeneralSettings));
 }
 
-void MdiChild::doPaste(QByteArray * gmData, int modelIdx, int categoryIdx)
+void MdiChild::doPaste(QByteArray * gmData, QModelIndex row)
 {
   char * gData = gmData->data();
   bool modified = false;
   int size = 0;
-  bool pasteIntoCategory = modelIdx == -1;
-  int dstCategory;
+  int modelIdx = modelsListModel->getModelIndex(row);
+  int categoryIdx = modelsListModel->getCategoryIndex(row);
+  int childNumber = modelsListModel->rowNumber(row);
 
   while (size < gmData->size()) {
     char c = *gData++;
@@ -262,9 +263,10 @@ void MdiChild::doPaste(QByteArray * gmData, int modelIdx, int categoryIdx)
       if (firmware->getCapability(Models) == 0 || modelIdx < firmware->getCapability(Models)) {
         // Model data
         int ret = QMessageBox::Yes;
-        if (pasteIntoCategory) {
-          // We're pasting into a category, so create a stubbed out model then
-          // use the regular paste-onto-model code path
+
+        if (modelIdx == -1) {
+          // This handles pasting onto a category label or pasting past the end
+          // of a category when pasting multiple models.
           ModelData blank;
           blank.used = false;
           blank.category = categoryIdx;
@@ -277,17 +279,18 @@ void MdiChild::doPaste(QByteArray * gmData, int modelIdx, int categoryIdx)
                                       QMessageBox::Yes | QMessageBox::No);
         }
          if (ret == QMessageBox::Yes) {
-          // Save and restore the category index, so a user can copy/paste
-          // across categories
-          dstCategory = radioData.models[modelIdx].category;
+          // Set the destination category, so a user can copy/paste across categories.
           radioData.models[modelIdx] = *((ModelData *)gData);
-          radioData.models[modelIdx].category = dstCategory;
+          radioData.models[modelIdx].category = categoryIdx;
           strcpy(radioData.models[modelIdx].filename, radioData.getNextModelFilename().toStdString().c_str());
           modified = 1;
         }
         gData += sizeof(ModelData);
         size += sizeof(ModelData);
-        modelIdx++;
+        // This gets the next row in the UI, which works for category-capable
+        // and non-category radio profiles. modelIndex will be -1, if there
+        // is no next row in the current category.
+        modelIdx = modelsListModel->getModelIndex(row.sibling(++childNumber, 0));
       }
     }
     else {
@@ -306,7 +309,7 @@ void MdiChild::paste()
     const QClipboard * clipboard = QApplication::clipboard();
     const QMimeData * mimeData = clipboard->mimeData();
     QByteArray gmData = mimeData->data("application/x-companion");
-    doPaste(&gmData, getCurrentModel(), getCurrentCategory());
+    doPaste(&gmData, ui->modelsList->currentIndex());
   }
 }
 

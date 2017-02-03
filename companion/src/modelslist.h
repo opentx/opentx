@@ -98,6 +98,9 @@ class TreeModel : public QAbstractItemModel
       return getItem(index)->getCategoryIndex();
     }
 
+    int rowNumber(const QModelIndex & index = QModelIndex()) const {
+      return getItem(index)->childNumber();
+    }
   private:
     TreeItem * getItem(const QModelIndex & index) const;
     TreeItem * rootItem;
