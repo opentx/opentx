@@ -128,7 +128,7 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"), this, SLOT(copy()), tr("Ctrl+C"));
     contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"), this, SLOT(cut()), tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
-    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(duplicate()), tr("Ctrl+U"));
+    contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(modelDuplicate()), tr("Ctrl+U"));
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setDefault()));
     contextMenu.addSeparator();
@@ -455,10 +455,15 @@ void MdiChild::modelAdd()
   ModelData model;
   model.category = categoryIndex;
   model.used = true;
-  sprintf(model.filename, "model%lu.bin", (long unsigned)radioData.models.size()+1);
+  strcpy(model.filename, radioData.getNextModelFilename().toStdString().c_str());
   strcpy(model.name, qPrintable(tr("New model")));
   radioData.models.push_back(model);
-  radioData.setCurrentModel(radioData.models.size() - 1);
+
+  // Only set the default model if we just added the first one.
+  int newModelIndex = radioData.models.size() - 1;
+  if (newModelIndex == 0) {
+    radioData.setCurrentModel(newModelIndex);
+  }
   setModified();
 }
 
@@ -478,6 +483,19 @@ void MdiChild::modelEdit()
   t->show();
   QApplication::restoreOverrideCursor();
   gStopwatch.report("ModelEdit shown");
+}
+
+void MdiChild::modelDuplicate()
+{
+  int srcModelIndex = getCurrentRow();
+  if (srcModelIndex < 0) {
+    return;
+  }
+
+  ModelData model(radioData.models[srcModelIndex]);
+  strcpy(model.filename, radioData.getNextModelFilename().toStdString().c_str());
+  radioData.models.push_back(model);
+  setModified();
 }
 
 void MdiChild::setDefault()
