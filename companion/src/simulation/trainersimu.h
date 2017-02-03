@@ -24,17 +24,17 @@
 
 #include <QShowEvent>
 #include <QCloseEvent>
-#include <QDialog>
+#include <QWidget>
 #include <QTimer>
-#include "modeledit/node.h"
 #include "simulatorinterface.h"
 
 namespace Ui {
   class TrainerSimulator;
 }
 
+class VirtualJoystickWidget;
 
-class TrainerSimulator : public QDialog
+class TrainerSimulator : public QWidget
 {
   Q_OBJECT
 
@@ -43,26 +43,20 @@ class TrainerSimulator : public QDialog
     virtual ~TrainerSimulator();
 
 
-  protected:
+  protected slots:
     virtual void showEvent(QShowEvent *event);
     virtual void closeEvent(QCloseEvent *event);
+    void centerSticks();
+    void setTrainerInputs();
+    void onTimerEvent();
 
-  private:
+  protected:
     Ui::TrainerSimulator * ui;
     QTimer * timer;
     SimulatorInterface *simulator;
 
-    QGraphicsView * leftStick, * rightStick;
-    Node *nodeLeft;
-    Node *nodeRight;
-
-    void centerSticks();
-    void setupSticks();
-    void resizeEvent(QResizeEvent *event  = 0);
-    void setTrainerInputs();
-
-  private slots:
-    void onTimerEvent();
+    VirtualJoystickWidget * vJoyLeft;
+    VirtualJoystickWidget * vJoyRight;
 
 };
 
