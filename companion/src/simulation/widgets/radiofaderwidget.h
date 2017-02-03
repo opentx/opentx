@@ -47,7 +47,7 @@ class RadioFaderWidget : public RadioWidget
 
       SliderWidget * sl = new SliderWidget(this);
       sl->setOrientation(Qt::Vertical);
-      sl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+      sl->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
       sl->setMinimumHeight(75);
       //sl->setMaximumHeight(75);
       sl->setTickPosition(QSlider::TicksBothSides);

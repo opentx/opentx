@@ -12,8 +12,26 @@
     <file>images/track.png</file>
     <file>images/track0.png</file>
     <file>images/taranison.png</file>
-    <file>images/simulator/icons/8/lock-locked.png</file>
-    <file>images/simulator/icons/8/lock-unlocked.png</file>
+    <file>images/simulator/icons/svg/camera.svg</file>
+    <file>images/simulator/icons/svg/camera-active.svg</file>
+    <file>images/simulator/icons/svg/console.svg</file>
+    <file>images/simulator/icons/svg/eraser.svg</file>
+    <file>images/simulator/icons/svg/eraser-active.svg</file>
+    <file>images/simulator/icons/svg/info.svg</file>
+    <file>images/simulator/icons/svg/info-active.svg</file>
+    <file>images/simulator/icons/svg/joystick_settings.svg</file>
+    <file>images/simulator/icons/svg/joystick_settings-active.svg</file>
+    <file>images/simulator/icons/svg/toggle_lock.svg</file>
+    <file>images/simulator/icons/svg/toggle_lock-on.svg</file>
+    <file>images/simulator/icons/svg/radio_outputs.svg</file>
+    <file>images/simulator/icons/svg/reload_script.svg</file>
+    <file>images/simulator/icons/svg/reload_script-active.svg</file>
+    <file>images/simulator/icons/svg/restart.svg</file>
+    <file>images/simulator/icons/svg/restart-active.svg</file>
+    <file>images/simulator/icons/svg/telemetry.svg</file>
+    <file>images/simulator/icons/svg/trainer.svg</file>
+    <file>images/simulator/icons/svg/word_wrap.svg</file>
+    <file>images/simulator/icons/svg/word_wrap-active.svg</file>
     <file>images/simulator/Horus/middle.png</file>
     <file>images/simulator/Horus/left.png</file>
     <file>images/simulator/Horus/right.png</file>
@@ -180,6 +198,7 @@
     <file>images/library/10702.png</file>
     <file>images/library/10801.png</file>
     <file>images/library/10802.png</file>
+    <file>themes/default/style.css</file>
     <file>themes/monochrome/16/paintbrush.png</file>
     <file>themes/monochrome/16/open.png</file>
     <file>themes/monochrome/16/edit.png</file>

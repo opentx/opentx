@@ -77,4 +77,4 @@ qt5_wrap_ui(simulation_SRCS ${simulation_UIS})
 qt5_wrap_cpp(simulation_SRCS ${simulation_HDRS})
 
 add_library(simulation ${simulation_SRCS} ${simulation_HDRS})
-qt5_use_modules(simulation Widgets Xml)
+qt5_use_modules(simulation Core Widgets Svg)

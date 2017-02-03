@@ -49,8 +49,6 @@ endif()
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
   add_definitions(-DJOYSTICKS)
-else()
-  remove_definitions(-DSIMU_AUDIO)
 endif()
 
 add_definitions(-DSIMU)
@@ -250,8 +248,6 @@ qt5_add_translation(companion_QM ${companion_TS})
 qt5_add_resources(companion_RCC ${companion_RESOURCES})
 add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
-add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
-
 add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC} ${companion_QM})
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
@@ -282,9 +278,7 @@ if(WIN32)
 endif()
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
-
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
-qt5_use_modules(${SIMULATOR_NAME} Core Widgets Multimedia)
 
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common shared storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
