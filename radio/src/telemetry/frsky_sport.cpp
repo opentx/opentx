@@ -210,7 +210,7 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
           sportProcessTelemetryPacket(id, 0, instance, servosState);
           sportProcessTelemetryPacket(id, 1, instance, rboxState);
         }
-        else if (id >= DIY_FIRST_ID && id <= DIY_LAST_ID) {
+        else if (id >= DIY_STREAM_FIRST_ID && id <= DIY_STREAM_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(SportTelemetryPacket))) {
             SportTelemetryPacket luaPacket;
