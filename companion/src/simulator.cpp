@@ -249,9 +249,6 @@ int main(int argc, char *argv[])
 
   current_firmware_variant = getFirmware(simOptions.firmwareId);
 
-  int oldProfId = g.id();
-  g.id(profileId);  // FIXME : eeprominterface uses global id() instead of sessionId
-
   g.sessionId(profileId);
   g.simuLastProfId(profileId);
 
@@ -265,7 +262,6 @@ int main(int argc, char *argv[])
   else {
     result = 3;
   }
-  g.id(oldProfId);
   delete mainWindow;
   delete simulator;
 

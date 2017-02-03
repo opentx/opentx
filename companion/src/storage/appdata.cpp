@@ -525,10 +525,15 @@ void AppData::generalEditTab  (const int         x) { store(x, _generalEditTab, 
 void AppData::iconSize        (const int         x) { store(x, _iconSize,        "icon_size"               );}
 void AppData::historySize     (const int         x) { store(x, _historySize,     "history_size"            );}
 void AppData::jsCtrl          (const int         x) { store(x, _jsCtrl,          "js_ctrl"                 );}
-void AppData::id              (const int         x) { store(x, _id,              "profileId"               );}
 void AppData::theme           (const int         x) { store(x, _theme,           "theme"                   );}
 void AppData::warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
 void AppData::simuLastProfId  (const int         x) { store(x, _simuLastProfId,  "simuLastProfId"          );}
+
+void AppData::id(const int x)
+{
+  store(x, _id, "profileId");
+  sessionId(x);
+}
 
 // currently loaded radio profile ID, NOT saved to persistent storage
 void AppData::sessionId       (const int         x) { _sessionId = x; }

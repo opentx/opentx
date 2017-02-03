@@ -823,7 +823,6 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       simuData->setCurrentModel(modelIdx);
     }
 
-    g.sessionId(g.id());
     SimulatorMainWindow * dialog = new SimulatorMainWindow(parent, simulator, flags);
     if (IS_HORUS(getCurrentBoard()) && !dialog->useTempDataPath(true)) {
       QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error: Could not create temporary directory in '%1'").arg(QDir::tempPath()));
