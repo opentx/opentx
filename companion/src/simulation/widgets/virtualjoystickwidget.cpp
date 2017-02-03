@@ -18,6 +18,9 @@
  * GNU General Public License for more details.
  */
 
+#define GBALL_SIZE  20
+#define RESX        1024
+
 #include "virtualjoystickwidget.h"
 #include "constants.h"
 #include "sliderwidget.h"
@@ -50,7 +53,9 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
 
   gv = new QGraphicsView(this);
   gv->setSizePolicy(sizePolicy);
-  gv->setMinimumSize(QSize(150, 150));
+  gv->setMinimumSize(size);
+//  gv->setMaximumSize(size + size * 3);
+//  gv->setFixedSize(prefSize);
   gv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   gv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -88,6 +93,9 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
     vTrimSlider = vTrimWidget->findChild<SliderWidget *>();
     extraSize += QSize(vTrimWidget->sizeHint().width(), hTrimWidget->sizeHint().height());
   }
+  else {
+    colvx = colvy = colvt;
+  }
 
   if (showBtns) {
     QVBoxLayout * btnbox = new QVBoxLayout();
@@ -106,8 +114,17 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   if (showValues) {
     QLayout * valX = createNodeValueLayout('X', nodeLabelX);
     QLayout * valY = createNodeValueLayout('Y', nodeLabelY);
-    layout->addLayout(valX, 2, colvx, 1, 1);
-    layout->addLayout(valY, 2, colvy, 1, 1);
+    if (!showTrims) {
+      QVBoxLayout * vertXY = new QVBoxLayout();
+      vertXY->addLayout(valX);
+      vertXY->addLayout(valY);
+      layout->addLayout(vertXY, 1, colvx, 1, 1);
+      extraSize += QSize(nodeLabelX->sizeHint().width(), 0);
+    }
+    else {
+      layout->addLayout(valX, 2, colvx, 1, 1);
+      layout->addLayout(valY, 2, colvy, 1, 1);
+    }
   }
 
   layout->addItem(new QSpacerItem(0, 0), 0, 0, 1, 5);  // r0 c0-4: top v spacer
@@ -119,7 +136,7 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   connect(node, SIGNAL(xChanged()), this, SLOT(updateNodeValueLabels()));
   connect(node, SIGNAL(yChanged()), this, SLOT(updateNodeValueLabels()));
 
-  setSize(prefSize);
+  setSize(prefSize, frameSize());
 }
 
 void VirtualJoystickWidget::setStickX(qreal x)
@@ -144,12 +161,12 @@ void VirtualJoystickWidget::centerStick()
 
 qreal VirtualJoystickWidget::getStickX()
 {
-  return node->getX();
+  return getStickPos().x();
 }
 
 qreal VirtualJoystickWidget::getStickY()
 {
-  return node->getY();
+  return getStickPos().y();
 }
 
 QPointF VirtualJoystickWidget::getStickPos()
@@ -205,7 +222,22 @@ void VirtualJoystickWidget::setStickConstraint(int which, bool active)
   }
 }
 
-void VirtualJoystickWidget::setSize(QSize size)
+void VirtualJoystickWidget::setStickColor(const QColor & color)
+{
+  node->setColor(color);
+}
+
+QSize VirtualJoystickWidget::sizeHint() const {
+  return prefSize;
+}
+
+void VirtualJoystickWidget::resizeEvent(QResizeEvent * event)
+{
+  QWidget::resizeEvent(event);
+  setSize(event->size(), event->oldSize());
+}
+
+void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
 {
   float thisAspectRatio = (float)size.width() / size.height();
   float newGvSz, spacerSz;
@@ -237,28 +269,24 @@ void VirtualJoystickWidget::setSize(QSize size)
   layout->setColumnStretch(2, newGvSz);
   layout->setRowStretch(1, newGvSz);
 
-  prefSize = QSize(newGvSz + extraSize.width(), newGvSz + extraSize.height());
+  //prefSize = QSize(newGvSz + extraSize.width(), newGvSz + extraSize.height());
   gv->resize(newGvSz, newGvSz);
   gv->updateGeometry();
-  repositionNode();
-  //qDebug() << thisAspectRatio << size << newGvSz << spacerSz << extraSize << gv->geometry() << gv->contentsRect() << gv->frameRect() << getStickPos();
-}
 
-void VirtualJoystickWidget::repositionNode()
-{
-  QRect qr = gv->contentsRect();
-  qreal w  = (qreal)qr.width()  - GBALL_SIZE;
-  qreal h  = (qreal)qr.height() - GBALL_SIZE;
-  qreal cx = (qreal)qr.width()/2;
-  qreal cy = (qreal)qr.height()/2;
+  QRectF qr = (QRectF)gv->contentsRect();
+  qreal w  = qr.width()  - GBALL_SIZE;
+  qreal h  = qr.height() - GBALL_SIZE;
+  qreal cx = qr.width() / 2;
+  qreal cy = qr.height() / 2;
+  qreal nodeX = node->getX();
+  qreal nodeY = node->getY();
+
   scene->setSceneRect(-cx,-cy,w,h);
 
-  QPointF p = node->pos();
-  p.setX(qMin(cx, qMax(p.x(), -cx)));
-  p.setY(qMin(cy, qMax(p.y(), -cy)));
-  node->setPos(p);
+  node->setX(nodeX);
+  node->setY(nodeY);
 
-  updateNodeValueLabels();
+  //qDebug() << thisAspectRatio << size << newGvSz << spacerSz << extraSize << gv->geometry() << gv->contentsRect() << gv->frameRect() << getStickPos();
 }
 
 QWidget *VirtualJoystickWidget::createTrimWidget(QChar type)
@@ -382,6 +410,7 @@ QLayout *VirtualJoystickWidget::createNodeValueLayout(QChar type, QLabel *& valL
   val->setObjectName(QString("val_%1").arg(type));
   val->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
   val->setAlignment(Qt::AlignCenter);
+  val->setMinimumWidth(val->fontMetrics().width("-100 "));
   QVBoxLayout * layout = new QVBoxLayout();
   layout->setContentsMargins(2, 2, 2, 2);
   layout->setSpacing(2);
