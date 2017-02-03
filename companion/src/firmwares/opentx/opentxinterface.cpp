@@ -495,7 +495,7 @@ int OpenTxFirmware::getCapability(Capability capability)
     case FlightModesName:
       return (IS_HORUS_OR_TARANIS(board) ? 10 : 6);
     case GvarsName:
-      return (IS_9X(board) ? 0 : 6);
+      return (IS_9X(board) ? 0 : 3);
     case GvarsInCS:
     case HasFAIMode:
       return 1;
@@ -623,9 +623,9 @@ int OpenTxFirmware::getCapability(Capability capability)
     case NumCurves:
       return (HAS_LARGE_LCD(board) ? 32 : (IS_ARM(board) ? 16 : 8));
     case HasMixerNames:
-      return (IS_ARM(board) ? (IS_HORUS_OR_TARANIS(board) ? 8 : 6) : false);
+      return (IS_ARM(board) ? (IS_TARANIS_X9(board) ? 8 : 6) : false);
     case HasExpoNames:
-      return (IS_ARM(board) ? (IS_HORUS_OR_TARANIS(board) ? 8 : 6) : false);
+      return (IS_ARM(board) ? (IS_TARANIS_X9(board) ? 8 : 6) : false);
     case HasNoExpo:
       return (IS_HORUS_OR_TARANIS(board) ? false : true);
     case ChannelsName:
