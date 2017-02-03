@@ -58,9 +58,7 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   ui->setupUi(this);
 
 #ifdef __APPLE__
-  // TODO: is this OK or even needed?
   QFont newFont("Courier", 13);
-  ui->console->setAttribute(Qt::WA_MacNormalSize);
   ui->console->setFont(newFont);
 #endif
 
@@ -134,7 +132,7 @@ void DebugOutput::saveState()
   QDataStream stream(&state, QIODevice::WriteOnly);
   stream << m_savedViewStateVersion
          << (qint16)ui->filterText->currentIndex() << (qint32)ui->console->maximumBlockCount()
-         << ui->btnFilter->isChecked() << ui->btnWordWrap->isChecked();
+         << ui->btnFilter->isChecked() << ui->actionWordWrap->isChecked();
 
   SimulatorOptions opts = g.profile[m_radioProfileId].simulatorOptions();
   opts.dbgConsoleState = state;
@@ -158,7 +156,8 @@ void DebugOutput::restoreState()
   ui->filterText->setCurrentIndex(fci);
   ui->btnFilter->setChecked(flten);
   ui->console->setMaximumBlockCount(mbc);
-  ui->btnWordWrap->setChecked(wwen);
+  ui->actionWordWrap->setChecked(wwen);
+  onFilterTextEdited();
 }
 
 void DebugOutput::traceCallback(const char * text)
@@ -255,7 +254,7 @@ void DebugOutput::on_bufferSize_editingFinished()
   ui->console->setMaximumBlockCount(ui->bufferSize->value());
 }
 
-void DebugOutput::on_actionWordWrap_triggered(bool checked)
+void DebugOutput::on_actionWordWrap_toggled(bool checked)
 {
   ui->console->setLineWrapMode(checked ? QPlainTextEdit::WidgetWidth : QPlainTextEdit::NoWrap);
 }

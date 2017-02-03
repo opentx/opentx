@@ -57,7 +57,7 @@ class DebugOutput : public QWidget
     void onFilterTextEdited();
     void onFilterTextChanged(const QString &);
     void on_bufferSize_editingFinished();
-    void on_actionWordWrap_triggered(bool checked);
+    void on_actionWordWrap_toggled(bool checked);
     void on_actionClearScr_triggered();
     void on_actionShowFilterHelp_triggered();
 
