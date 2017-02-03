@@ -52,21 +52,6 @@
 #include <unistd.h>
 #endif
 
-#ifdef __APPLE__
-#include <QProxyStyle>
-
-class MyProxyStyle : public QProxyStyle
- {
-   public:
-    void polish ( QWidget * w ) {
-      QMenu* mn = dynamic_cast<QMenu*>(w);
-      QPushButton* pb = dynamic_cast<QPushButton*>(w);
-      if(!(mn || pb) && !w->testAttribute(Qt::WA_MacNormalSize))
-          w->setAttribute(Qt::WA_MacSmallSize);
-    }
- };
-#endif
-
 using namespace Simulator;
 
 int finish(int exitCode);
@@ -127,10 +112,6 @@ int main(int argc, char *argv[])
   app.setOrganizationDomain(COMPANY_DOMAIN);
 
   g.init();
-
-#ifdef __APPLE__
-  app.setStyle(new MyProxyStyle);
-#endif
 
   QTranslator companionTranslator;
   companionTranslator.load(":/companion_" + g.locale());

@@ -52,6 +52,13 @@ namespace Simulator
           css = fh.readAll();
           fh.close();
         }
+#ifdef __APPLE__
+        fh.setFileName(QString("%1/style-osx.css").arg(basePath()));
+        if (fh.open(QFile::ReadOnly | QFile::Text)) {
+          css.append(fh.readAll());
+          fh.close();
+        }
+#endif
         return css;
       }
   };  // SimulatorStyle
