@@ -475,6 +475,7 @@ int AppData::id()                  { return _id;              }
 int AppData::theme()               { return _theme;           }
 int AppData::warningId()           { return _warningId;       }
 int AppData::simuLastProfId()      { return _simuLastProfId;  }
+int AppData::sessionId()           { return _sessionId;       }
 
 // Set declarations
 void AppData::recentFiles     (const QStringList x) { store(x, _recentFiles,     "recentFileList"          );}
@@ -524,6 +525,9 @@ void AppData::id              (const int         x) { store(x, _id,             
 void AppData::theme           (const int         x) { store(x, _theme,           "theme"                   );}
 void AppData::warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
 void AppData::simuLastProfId  (const int         x) { store(x, _simuLastProfId,  "simuLastProfId"          );}
+
+// currently loaded radio profile ID, NOT saved to persistent storage
+void AppData::sessionId       (const int         x) { _sessionId = x; }
 
 // Constructor
 AppData::AppData()
@@ -722,6 +726,7 @@ void AppData::init()
     getset( _warningId,       "warningId"               ,0  );
     getset( _simuLastProfId,  "simuLastProfId"          ,-1 );
 
+    sessionId(id());
 }
 
 QMap<int, QString> AppData::getActiveProfiles()

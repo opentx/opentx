@@ -296,6 +296,8 @@ class AppData: protected CompStoreObj
     int _theme;
     int _warningId;
     int _simuLastProfId;
+    // currently loaded radio profile ID, NOT saved to persistent storage
+    int _sessionId;
 
   public:
     // All the get definitions
@@ -347,6 +349,7 @@ class AppData: protected CompStoreObj
     int theme();
     int warningId();
     int simuLastProfId();
+    int sessionId();
 
     // All the set definitions
     void recentFiles     (const QStringList x);
@@ -398,6 +401,7 @@ class AppData: protected CompStoreObj
     void theme           (const int);
     void warningId       (const int);
     void simuLastProfId  (const int);
+    void sessionId       (const int);
 
     // Constructor
     AppData();
