@@ -29,7 +29,10 @@
 #include <QPair>
 #include <QString>
 
-#define SIMULATOR_OPTIONS_VERSION    1
+#define SIMULATOR_FLAGS_NOTX         0x01  // simulating a single model from Companion
+#define SIMULATOR_FLAGS_STANDALONE   0x02  // started from stanalone simulator
+
+#define SIMULATOR_OPTIONS_VERSION    2
 
 namespace Simulator
 {
@@ -116,11 +119,15 @@ struct SimulatorOptions
     QByteArray windowGeometry;
     QList<QByteArray> controlsState;  // saved switch/pot/stick settings
     QColor lcdColor;
+    // added in v2
+    QByteArray windowState;
+    QByteArray dbgConsoleState;
+    QByteArray radioOutputsState;
 
     friend QDataStream & operator << (QDataStream &out, const SimulatorOptions & o)
     {
       out << quint16(SIMULATOR_OPTIONS_VERSION) << o.startupDataType << o.firmwareId << o.dataFile << o.dataFolder
-          << o.sdPath << o.windowGeometry << o.controlsState << o.lcdColor;
+          << o.sdPath << o.windowGeometry << o.controlsState << o.lcdColor << o.windowState << o.dbgConsoleState << o.radioOutputsState;
       return out;
     }
 
@@ -129,6 +136,8 @@ struct SimulatorOptions
       if (o._version <= SIMULATOR_OPTIONS_VERSION) {
         in >> o._version >> o.startupDataType >> o.firmwareId >> o.dataFile >> o.dataFolder
            >> o.sdPath >> o.windowGeometry >> o.controlsState >> o.lcdColor;
+        if (o._version >= 2)
+          in >> o.windowState >> o.dbgConsoleState >> o.radioOutputsState;
       }
       return in;
     }

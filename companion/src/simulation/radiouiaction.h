@@ -127,8 +127,10 @@ class RadioUiAction : public QObject
     {
       if (toggle(active)) {
         emit triggered(m_hwIndex, active);
-        if (active)
+        if (active) {
           emit pushed(m_hwIndex);
+          emit pushed();
+        }
       }
     }
 
@@ -146,6 +148,7 @@ class RadioUiAction : public QObject
     void toggled(int index, bool active);    // on programmatic or user interaction change
     void triggered(int index, bool active);  // on user interaction change only
     void pushed(int index);                  // only emitted on user interaction && when 'active' is true
+    void pushed();
 };
 
 #endif // RADIOUIACTION_H

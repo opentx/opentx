@@ -40,7 +40,7 @@ SimulatedUIWidget::SimulatedUIWidget(SimulatorInterface * simulator, SimulatorDi
 {
   m_rotEncClickAction = addRadioUiAction(-1, 0, tr("Rotary encoder click"));
   m_screenshotAction = addRadioUiAction(-1, Qt::Key_Print, tr("Take Screenshot"));
-  connect(m_screenshotAction, &RadioUiAction::pushed, this, &SimulatedUIWidget::saveScreenshot);
+  connect(m_screenshotAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), this, &SimulatedUIWidget::captureScreenshot);
 }
 
 SimulatedUIWidget::~SimulatedUIWidget()
@@ -114,9 +114,8 @@ void SimulatedUIWidget::updateUi()
       } */
 }
 
-void SimulatedUIWidget::saveScreenshot(int idx)
+void SimulatedUIWidget::captureScreenshot()
 {
-  Q_UNUSED(idx)
   QString fileName = "";
   if (!g.snapToClpbrd()) {
     QString path = g.snapshotDir();
@@ -124,7 +123,8 @@ void SimulatedUIWidget::saveScreenshot(int idx)
       path = "./";
     QDir dir(path);
     if (!dir.exists() || !dir.isReadable()) {
-      m_simuDialog->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
+//      m_simulator->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
+      qDebug() << "SIMULATOR ERROR - Cannot open screenshot folder, check your settings.";
       return;
     }
     fileName += QString("%1/screenshot_%2.png").arg(dir.absolutePath(), QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
@@ -180,12 +180,12 @@ void SimulatedUIWidget::setLcd(LcdWidget * lcd)
 
 void SimulatedUIWidget::connectScrollActions()
 {
-  connect(m_scrollUpAction, &RadioUiAction::pushed, [this](void) {
+  connect(m_scrollUpAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
     this->simulatorWheelEvent(-1);
     m_scrollUpAction->toggle(false);
   });
 
-  connect(m_scrollDnAction, &RadioUiAction::pushed, [this](void) {
+  connect(m_scrollDnAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
     simulatorWheelEvent(1);
     m_scrollDnAction->toggle(false);
   });

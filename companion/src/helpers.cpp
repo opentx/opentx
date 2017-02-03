@@ -32,7 +32,7 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "modeledit/modeledit.h"
-#include "simulatordialog.h"
+#include "simulatormainwindow.h"
 #include "storage/sdcard.h"
 
 Stopwatch gStopwatch("global");
@@ -823,7 +823,8 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       simuData->setCurrentModel(modelIdx);
     }
 
-    SimulatorDialog * dialog = new SimulatorDialog(parent, simulator, flags);
+    g.sessionId(g.id());
+    SimulatorMainWindow * dialog = new SimulatorMainWindow(parent, simulator, flags);
     if (IS_HORUS(getCurrentBoard()) && !dialog->useTempDataPath(true)) {
       QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error: Could not create temporary directory in '%1'").arg(QDir::tempPath()));
       delete dialog;
@@ -831,12 +832,15 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
       return;
     }
     dialog->setRadioData(simuData);
-    qDebug() << __FILE__ << __LINE__ << "Starting" << getCurrentFirmware()->getName() << "simulation with SD path" << dialog->getSdPath() << "and models/settings path" << dialog->getDataPath();
+    dialog->setWindowModality(Qt::ApplicationModal);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->start();
-    dialog->exec();
-    delete dialog;
-    // TODO Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
-    delete simuData;  // TODO same with simuData, could read it back and update the file data
+    dialog->show();
+
+    QObject::connect(dialog, &SimulatorMainWindow::destroyed, [simuData] (void) {
+      // TODO simuData and Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
+      delete simuData;
+    });
   }
   else {
     QMessageBox::warning(NULL,
