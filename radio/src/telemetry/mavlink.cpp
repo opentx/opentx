@@ -48,7 +48,7 @@ Telemetry_Data_t telemetry_data;
 static void MAVLINK_parse_char(uint8_t c);
 uint8_t telemetryRxBufferCount = 0;
 
-void processSerialData(uint8_t byte) {
+void processTelemetryData(uint8_t byte) {
 	MAVLINK_parse_char(byte);
 }
 
