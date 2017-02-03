@@ -72,6 +72,12 @@ add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)
 add_custom_command(
   TARGET bootloader POST_BUILD
   COMMAND arm-none-eabi-objcopy -O binary bootloader.elf bootloader.bin
-  COMMAND python ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
 )
+if(PYTHONINTERP_FOUND)
+  add_custom_command(
+    TARGET bootloader POST_BUILD
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
+  )
+endif()
 
+PrintTargetReport("bootloader")

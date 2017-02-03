@@ -15,7 +15,14 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="ModelsListWidget" name="modelsList"/>
+    <widget class="QPushButton" name="radioSettings">
+     <property name="text">
+      <string>Radio settings</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="modelsList"/>
    </item>
    <item>
     <widget class="QPushButton" name="simulateButton">
@@ -26,13 +33,6 @@
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ModelsListWidget</class>
-   <extends>QListWidget</extends>
-   <header location="global">modelslist.h</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="companion.qrc"/>
  </resources>

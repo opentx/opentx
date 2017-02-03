@@ -24,5 +24,7 @@
 void processSpektrumTelemetryData(uint8_t data);
 void spektrumSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
-extern bool spektrumBindFinished;
+// Used directly by multi telemetry protocol
+void processSpektrumPacket(const uint8_t *packet);
+void processDSMBindPacket(const uint8_t *packet);
 #endif

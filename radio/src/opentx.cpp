@@ -246,6 +246,8 @@ void generalDefault()
   #endif
   g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
   g_eeGeneral.blOffBright = 20;
+#elif defined(PCBX7)
+  g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
@@ -1785,7 +1787,11 @@ void doMixerCalculations()
 #if defined(PXX) || defined(DSM2)
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
+#if defined(MULTIMODULE)
+      if (moduleFlag[i] != MODULE_NORMAL_MODE || (i == EXTERNAL_MODULE && multiModuleStatus.isBinding())) {
+#else
       if (moduleFlag[i] != MODULE_NORMAL_MODE) {
+#endif
         if (++countRangecheck >= 250) {
           countRangecheck = 0;
           AUDIO_PLAY(AU_SPECIAL_SOUND_CHEEP);
@@ -2433,23 +2439,46 @@ void opentxInit(OPENTX_INIT_ARGS)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
 
+#if defined(EEPROM)
+  storageReadAll();
+#endif
+
+  // Radios handle UNEXPECTED_SHUTDOWN() differently:
+  //  * radios with WDT and EEPROM and CPU controlled power use Reset status register
+  //    and eeGeneral.unexpectedShutdown
+  //  * radios with SDCARD model storage use Reset status register and special
+  //    variables in RAM. They can not use eeGeneral.unexpectedShutdown
+  //  * radios without CPU controlled power can only use Reset status register (if available)
   if (UNEXPECTED_SHUTDOWN()) {
+    TRACE("Unexpected Shutdown detected");
     unexpectedShutdown = 1;
   }
-  else {
+
 #if defined(SDCARD) && !defined(PCBMEGA2560)
+  // SDCARD related stuff, only done if not unexpectedShutdown
+  if (!unexpectedShutdown) {
     sdInit();
     logsInit();
+ }
 #endif
-  }
 
 #if defined(PCBHORUS)
-  topbar = new Topbar(&g_model.topbarData);
-  LUA_INIT_THEMES_AND_WIDGETS();
+  if (!unexpectedShutdown) {
+    // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
+    // but we only remember the pointer to in in constructor.
+    // The storageReadAll() needs topbar object, so it must be created here
+    topbar = new Topbar(&g_model.topbarData);
+    // lua widget state must also be prepared before the call to storageReadAll()
+    LUA_INIT_THEMES_AND_WIDGETS();
+  }
 #endif
 
+  // handling of storage for radios that have no EEPROM
+#if !defined(EEPROM)
 #if defined(RAMBACKUP)
-  if (UNEXPECTED_SHUTDOWN()) {
+  if (unexpectedShutdown) {
+    // SDCARD not available, try to restore last model from RAM
+    TRACE("rambackupRestore");
     rambackupRestore();
   }
   else {
@@ -2458,6 +2487,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #else
   storageReadAll();
 #endif
+#endif  // #if !defined(EEPROM)
 
 #if defined(SERIAL2)
   serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
@@ -2503,11 +2533,12 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
 
-  if (!UNEXPECTED_SHUTDOWN()) {
+  if (!unexpectedShutdown) {
     opentxStart();
   }
 
 #if defined(CPUARM) || defined(CPUM2560)
+	// TODO Horus does not need this
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
@@ -2655,7 +2686,7 @@ int main()
   drawSleepBitmap();
   opentxClose();
   boardOff(); // Only turn power off if necessary
-  wdt_disable();
+  wdt_disable();  // this function is provided by AVR Libc
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif
 

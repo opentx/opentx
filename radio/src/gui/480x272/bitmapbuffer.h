@@ -177,8 +177,9 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline void drawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
     {
-      if (h==0 || w==0) return;
+      if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
+      if (w<0) { x+=w; w=-w; }
       DMAFillRect(data, width, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 
@@ -197,7 +198,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     static BitmapBuffer * load(const char * filename);
 
     static BitmapBuffer * loadMask(const char * filename);
-    
+
     static BitmapBuffer * loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background);
 
     void drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset=0, coord_t width=0);
@@ -218,11 +219,11 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     template<class T>
     void drawBitmap(coord_t x, coord_t y, const T * bmp, coord_t srcx=0, coord_t srcy=0, coord_t w=0, coord_t h=0, float scale=0)
     {
-      if (!bmp || x >= width || y >= height)
+      if (!data || !bmp || x >= width || y >= height)
         return;
-
-      int srcw = bmp->getWidth();
-      int srch = bmp->getHeight();
+  
+      coord_t srcw = bmp->getWidth();
+      coord_t srch = bmp->getHeight();
 
       if (w == 0)
         w = srcw;
@@ -232,7 +233,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         w = srcw - srcx;
       if (srcy+h > srch)
         h = srch - srcy;
-      
+
       if (scale == 0) {
         if (x + w > width) {
           w = width - x;
@@ -280,7 +281,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       float vscale = float(h) / bitmap->getHeight();
       float hscale = float(w) / bitmap->getWidth();
       float scale = vscale < hscale ? vscale : hscale;
-      
+
       int xshift = (w - (bitmap->getWidth() * scale)) / 2;
       int yshift = (h - (bitmap->getHeight() * scale)) / 2;
       drawBitmap(x + xshift, y + yshift, bitmap, 0, 0, 0, 0, scale);

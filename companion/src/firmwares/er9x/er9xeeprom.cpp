@@ -92,11 +92,6 @@ Er9xGeneral::operator GeneralSettings ()
   result.vBatWarn = vBatWarn;
   result.txVoltageCalibration = txVoltageCalibration;
   result.trainer = trainer;
-  result.blightinv=blightinv;
-  result.stickScroll=stickScroll;
-  result.crosstrim=crosstrim;
-  result.hideNameOnSplash=hideNameOnSplash;
-  result.enablePpmsim=enablePpmsim;
 
   result.view = std::min((uint8_t)4, view);
   result.disableThrottleWarning = disableThrottleWarning;
@@ -123,9 +118,6 @@ Er9xGeneral::operator GeneralSettings ()
   result.preBeep = preBeep;
   result.flashBeep = flashBeep;
   result.splashMode = disableSplashScreen;
-  result.disablePotScroll=(disablePotScroll==1);
-  result.disableBG=(disableBG==1);
-  result.frskyinternalalarm = frskyinternalalarm;
 
   result.backlightMode = 0;
   if (lightSw == 22) {
@@ -146,7 +138,6 @@ Er9xGeneral::operator GeneralSettings ()
   result.speakerPitch = speakerPitch;
   result.hapticStrength = hapticStrength - 3;
   result.speakerMode = speakerMode;
-  result.switchWarningStates =switchWarningStates;
   return result;
 }
 

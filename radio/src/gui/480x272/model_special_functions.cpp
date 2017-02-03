@@ -333,7 +333,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT, 0, NULL, "s");
             }
             else {
-              lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
+              lcdDrawMMM(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, attr);
             }
           }
 #if defined(GVARS)

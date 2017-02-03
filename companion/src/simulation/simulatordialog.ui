@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SimulatorDialog</class>
+ <widget class="QDialog" name="SimulatorDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>651</width>
+    <height>528</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Companion Simulator</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../companion.qrc">
+    <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_6">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>5</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>5</number>
+   </property>
+   <property name="horizontalSpacing">
+    <number>0</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>3</number>
+   </property>
+   <item row="1" column="0">
+    <widget class="QFrame" name="controlFrame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>5</number>
+      </property>
+      <property name="topMargin">
+       <number>7</number>
+      </property>
+      <property name="rightMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>6</number>
+      </property>
+      <property name="horizontalSpacing">
+       <number>6</number>
+      </property>
+      <property name="verticalSpacing">
+       <number>5</number>
+      </property>
+      <item row="1" column="0">
+       <widget class="QWidget" name="leftStickWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="leftStickLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QWidget" name="rightStickWidget" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="rightStickLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QWidget" name="radioWidgetsVC" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2" stretch="4,1">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QGridLayout" name="VCGridLayout">
+           <property name="horizontalSpacing">
+            <number>16</number>
+           </property>
+           <property name="verticalSpacing">
+            <number>9</number>
+           </property>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Expanding</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QWidget" name="radioWidgetsHT" native="true">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QHBoxLayout" name="radioWidgetsHTLayout">
+         <property name="spacing">
+          <number>11</number>
+         </property>
+         <property name="leftMargin">
+          <number>6</number>
+         </property>
+         <property name="topMargin">
+          <number>6</number>
+         </property>
+         <property name="rightMargin">
+          <number>6</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>200</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QTabWidget::pane,
+QStackedWidget {
+	padding: 0px;
+	margin: 0px;
+}
+QTabWidget::tab-bar{
+	margin-bottom: 0px;
+	padding-bottom: 0px;
+}</string>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <property name="documentMode">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="radioUiTab">
+      <property name="styleSheet">
+       <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.22, y1:0, x2:0.55065, y2:0.54, stop:0 rgba(7, 7, 7, 250), stop:0.864407 rgba(66, 66, 66, 255));
+margin: 0;
+padding: 0;</string>
+      </property>
+      <attribute name="title">
+       <string>Radio Simulator</string>
+      </attribute>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QWidget" name="buttonBox" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <layout class="QHBoxLayout" name="buttonsLayout">
+      <property name="spacing">
+       <number>3</number>
+      </property>
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="btn_help">
+        <property name="toolTip">
+         <string>Show Help/Keymap (F1)</string>
+        </property>
+        <property name="statusTip">
+         <string>Show Help/Keymap</string>
+        </property>
+        <property name="text">
+         <string>Keymap</string>
+        </property>
+        <property name="shortcut">
+         <string>F1</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>help</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_joystickDialog">
+        <property name="toolTip">
+         <string>Open the Joystick Settings window (F3)</string>
+        </property>
+        <property name="statusTip">
+         <string>Joystick Configuration</string>
+        </property>
+        <property name="text">
+         <string>Joystick Config.</string>
+        </property>
+        <property name="shortcut">
+         <string>F3</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>joystick</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_telemSim">
+        <property name="toolTip">
+         <string>Open Telemetry Simulator window (F4)</string>
+        </property>
+        <property name="statusTip">
+         <string>Telemetry Simulator</string>
+        </property>
+        <property name="text">
+         <string>Telemetry Sim.</string>
+        </property>
+        <property name="shortcut">
+         <string>F4</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>telemetry</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_trainerSim">
+        <property name="toolTip">
+         <string>Open Trainer Simulator window (F5)</string>
+        </property>
+        <property name="statusTip">
+         <string>Trainer Simulator</string>
+        </property>
+        <property name="text">
+         <string>Trainer Sim.</string>
+        </property>
+        <property name="shortcut">
+         <string>F5</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>trainer</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_debugConsole">
+        <property name="toolTip">
+         <string>Open Debug Console window (F6)</string>
+        </property>
+        <property name="statusTip">
+         <string>Debug Console</string>
+        </property>
+        <property name="text">
+         <string>Debug Console</string>
+        </property>
+        <property name="shortcut">
+         <string>F6</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>debug</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_luaReload">
+        <property name="toolTip">
+         <string>Reload Lua Scripts (F7)</string>
+        </property>
+        <property name="statusTip">
+         <string>Reload Lua Scripts</string>
+        </property>
+        <property name="text">
+         <string>Reload Lua</string>
+        </property>
+        <property name="shortcut">
+         <string>F7</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>reloadLua</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_screenshot">
+        <property name="toolTip">
+         <string>Save a screenshot of the radio LCD screen (F8)</string>
+        </property>
+        <property name="statusTip">
+         <string>LCD Screenshot</string>
+        </property>
+        <property name="text">
+         <string>Screenshot</string>
+        </property>
+        <property name="shortcut">
+         <string>F8</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>lcdScreenshot</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_reloadSimu">
+        <property name="toolTip">
+         <string>Reload all radio data (F9)</string>
+        </property>
+        <property name="statusTip">
+         <string>Reload Radio Data</string>
+        </property>
+        <property name="text">
+         <string>Reload Radio</string>
+        </property>
+        <property name="shortcut">
+         <string>F9</string>
+        </property>
+        <property name="role" stdset="0">
+         <string>reloadradio</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../companion.qrc"/>
+ </resources>
+ <connections/>
+</ui>

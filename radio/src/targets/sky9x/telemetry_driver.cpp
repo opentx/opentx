@@ -166,7 +166,7 @@ uint32_t telemetryTransmitPending()
   return x ;
 }
 
-void telemetryPortInit(uint32_t baudrate, int mode)
+void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 {
 #if !defined(SIMU)
   UART2_Configure(baudrate, Master_frequency, mode);

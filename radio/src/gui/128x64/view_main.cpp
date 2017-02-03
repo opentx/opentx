@@ -21,8 +21,13 @@
 #include "opentx.h"
 
 #define BIGSIZE       DBLSIZE
-#define LBOX_CENTERX  (LCD_W/4 + 10)
-#define RBOX_CENTERX  (3*LCD_W/4 - 10)
+#if defined (PCBX7)
+  #define LBOX_CENTERX  (LCD_W/4 + 14)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 13)
+#else
+  #define LBOX_CENTERX  (LCD_W/4 + 10)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 10)
+#endif
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
 #define PHASE_X       (6*FW-1)
@@ -45,7 +50,7 @@ void drawPotsBars()
 {
   // Optimization by Mike Blandford
   for (uint8_t x=LCD_W/2 - (NUM_POTS+NUM_SLIDERS-1) * 5 / 2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=5, i++) {
-    if (IS_POT_OR_SLIDER_AVAILABLE(i)) {
+    if (IS_POT_SLIDER_AVAILABLE(i)) {
       uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
     }
@@ -513,7 +518,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
           if (i >= NUM_SWITCHES/2) {
-            x = 17*FW-1;
+            x = 16*FW+1;
             y -= 3*FH;
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
@@ -612,3 +617,14 @@ void menuMainView(event_t event)
   }
 #endif
 }
+
+#undef EVT_KEY_CONTEXT_MENU
+#undef EVT_KEY_PREVIOUS_VIEW
+#undef EVT_KEY_NEXT_VIEW
+#undef EVT_KEY_NEXT_PAGE
+#undef EVT_KEY_PREVIOUS_PAGE
+#undef EVT_KEY_MODEL_MENU
+#undef EVT_KEY_GENERAL_MENU
+#undef EVT_KEY_LAST_MENU
+#undef EVT_KEY_TELEMETRY
+#undef EVT_KEY_STATISTICS

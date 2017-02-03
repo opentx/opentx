@@ -21,8 +21,8 @@
 #ifndef _MODELSLIST_H_
 #define _MODELSLIST_H_
 
-#include <QtWidgets>
 #include "eeprominterface.h"
+#include <QtWidgets>
 
 struct CurrentSelection
 {
@@ -30,61 +30,79 @@ struct CurrentSelection
   bool selected[CPN_MAX_MODELS+1];
 };
 
-class ModelsListWidget : public QTreeWidget
+class TreeItem
+{
+  public:
+    explicit TreeItem(const QVector<QVariant> & itemData);
+    explicit TreeItem(TreeItem * parent, int categoryIndex, int modelIndex);
+    ~TreeItem();
+
+    TreeItem * child(int number);
+    int childCount() const;
+    int columnCount() const;
+    QVariant data(int column) const;
+    TreeItem * appendChild(int categoryIndex, int modelIndex);
+    TreeItem * parent();
+    bool removeChildren(int position, int count);
+
+    int childNumber() const;
+    bool setData(int column, const QVariant &value);
+
+    int getModelIndex() const { return modelIndex; }
+    int getCategoryIndex() const { return categoryIndex; }
+
+  private:
+    QList<TreeItem*> childItems;
+    QVector<QVariant> itemData;
+    TreeItem * parentItem;
+    int categoryIndex;
+    int modelIndex;
+};
+
+
+class TreeModel : public QAbstractItemModel
 {
     Q_OBJECT
 
-public:
-    ModelsListWidget(QWidget * parent = 0);
+  public:
+    TreeModel(RadioData * radioData, QObject *parent = 0);
+    virtual ~TreeModel();
 
-    bool hasSelection();
-    void keyPressEvent(QKeyEvent * event);
-    bool hasPasteData();
-    int currentRow() const;
+    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    QVariant headerData(int section, Qt::Orientation orientation,
+                        int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
-protected:
-    void dropEvent(QDropEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-#ifndef WIN32
-    void focusInEvent ( QFocusEvent * event );
-    void focusOutEvent ( QFocusEvent * event );
-#endif
-    
-public slots:
-    void refreshList();
-    void ShowContextMenu(const QPoint& pos);
-    void cut();
-    void copy();
-    void paste();
-    void print();
-    void EditModel();
-    void OpenEditWindow();
-    void LoadBackup();
-    void OpenWizard();
-    void simulate();
-    void duplicate();
-    void setdefault();
-    void deleteSelected(bool ask);
-    void confirmDelete();
-    void onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *);
+    QModelIndex index(int row, int column,
+                      const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-private:
-    void doCut(QByteArray *gmData);
-    void doPaste(QByteArray *gmData, int index);
-    void doCopy(QByteArray *gmData);
-    void saveSelection();
-    void restoreSelection();
+    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
-    RadioData *radioData;
-    QPoint dragStartPosition;
+    Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
+    bool setData(const QModelIndex &index, const QVariant &value,
+                 int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
-    CurrentSelection currentSelection;
-    QColor active_highlight_color;
-    
+    bool removeRows(int position, int rows,
+                    const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+
+    void refresh();
+
+    int getAvailableEEpromSize() { return availableEEpromSize; }
+
+    int getModelIndex(const QModelIndex & index) const {
+      return getItem(index)->getModelIndex();
+    }
+
+    int getCategoryIndex(const QModelIndex & index) const {
+      return getItem(index)->getCategoryIndex();
+    }
+
+  private:
+    TreeItem * getItem(const QModelIndex & index) const;
+    TreeItem * rootItem;
+    RadioData * radioData;
+    int availableEEpromSize;
 };
 
 #endif // _MODELSLIST_H_

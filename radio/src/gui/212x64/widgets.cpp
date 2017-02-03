@@ -159,19 +159,6 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
 }
 
 #if defined(GVARS)
-bool noZero(int val)
-{
-  return val != 0;
-}
-
-void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags)
-{
-  if (ZEXIST(g_model.gvars[index].name))
-    lcdDrawSizedText(x, y, g_model.gvars[index].name, LEN_GVAR_NAME, ZCHAR|flags);
-  else
-    drawStringWithIndex(x, y, STR_GV, index+1, flags);
-}
-
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
 {
   uint8_t prec = g_model.gvars[gvar].prec;
@@ -190,37 +177,28 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 
   if (invers && event == EVT_KEY_LONG(KEY_ENTER)) {
     s_editMode = !s_editMode;
-    if (attr & PREC1)
+    if (attr & PREC1) {
       value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode)*10 : delta);
-    else
+    }
+    else {
       value = (GV_IS_GV_VALUE(value, min, max) ? GET_GVAR(value, min, max, mixerCurrentFlightMode) : delta);
+    }
     storageDirty(EE_MODEL);
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
-    if (attr & RIGHT) {
-      x -= 3*FW;
-      attr -= RIGHT;
-    }
-
     attr &= ~PREC1;
-
-    int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
-    if (idx >= 0) ++idx;    // transform form idx=0=GV1 to idx=1=GV1 in order to handle double keys invert
+    int8_t idx = (int16_t)GV_INDEX_CALC_DELTA(value, delta);
     if (invers) {
-      CHECK_INCDEC_MODELVAR_CHECK(event, idx, -MAX_GVARS, MAX_GVARS, noZero);
-      if (idx == 0) idx = 1;    // handle reset to zero, map to GV1
+      CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS-1);
     }
     if (idx < 0) {
-      value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
-      idx = -idx;
-      lcdDrawChar(x-6, y, '-', attr);
+      value = (int16_t)GV_CALC_VALUE_IDX_NEG(idx, delta);
     }
     else {
-      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
+      value = (int16_t)GV_CALC_VALUE_IDX_POS(idx, delta);
     }
-
-    drawGVarName(x, y, idx-1, attr);
+    drawGVarName(x, y, idx, attr);
   }
   else {
     lcdDrawNumber(x, y, value, attr);

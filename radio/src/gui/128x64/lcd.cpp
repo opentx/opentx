@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -312,7 +312,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   const uint8_t orig_len = len;
   uint32_t fontsize = FONTSIZE(flags);
 #endif
-  
+
 #if defined(CPUARM) && !defined(BOOT)
   uint8_t width = 0;
   if (flags & RIGHT) {
@@ -320,7 +320,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
     x -= width;
   }
 #endif
-  
+
   bool setx = false;
   while (len--) {
     unsigned char c;
@@ -337,7 +337,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
         c = pgm_read_byte(s);
         break;
     }
-    
+
     if (setx) {
       x = c;
       setx = false;
@@ -358,7 +358,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
 #endif
       x = orig_x;
       y += FH;
-#if defined(CPUARM)      
+#if defined(CPUARM)
       if (fontsize == DBLSIZE)
         y += FH;
       else if (fontsize == MIDSIZE)
@@ -368,7 +368,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
 #endif
       if (y >= LCD_H) break;
     }
-#if defined(CPUARM)      
+#if defined(CPUARM)
     else if (c == 0x1D) {  // TAB
       x |= 0x3F;
       x += 1;
@@ -461,7 +461,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
   flags &= ~LEADING0;
-  
+
 #if defined(CPUARM)
   uint32_t fontsize = FONTSIZE(flags);
   bool dblsize = (fontsize == DBLSIZE);
@@ -719,14 +719,14 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
   // should never happen on 9X
   if (y >= LCD_H) return;
 #endif
-  
+
   if (h<0) { y+=h; h=-h; }
   if (y<0) { h+=y; y=0; }
   if (y+h > LCD_H) { h = LCD_H - y; }
-  
+
   if (pat==DOTTED && !(y%2))
     pat = ~pat;
-  
+
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
   y = (y & 0x07);
   if (y) {
@@ -822,7 +822,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
     tme = -tme;
   }
 
-  qr = div(tme, 60);
+  qr = div((int)tme, 60);
 
 #if defined(CPUARM)
   char separator = ':';
@@ -879,7 +879,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 #if defined(LUA_MODEL_SCRIPTS)
     if (qr.quot < MAX_SCRIPTS && qr.rem < scriptInputsOutputs[qr.quot].outputsCount) {
       lcdDrawChar(x+2, y+1, '1'+qr.quot, TINSIZE);
-      lcdDrawFilledRect(x, y, 7, 7);
+      lcdDrawFilledRect(x, y, 7, 7, 0);
       lcdDrawSizedText(x+8, y, scriptInputsOutputs[qr.quot].outputs[qr.rem].name, att & STREXPANDED ? 9 : 4, att);
     }
     else
@@ -1020,6 +1020,11 @@ void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags att)
 
 void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
 {
+#if defined(CPUARM)
+  char s[8];
+  getCurveString(s, idx);
+  lcdDrawText(x, y, s, att);
+#else //  CPUARM
   if (idx < 0) {
     lcdDrawChar(x-3, y, '!', att);
     idx = -idx+CURVE_BASE-1;
@@ -1028,6 +1033,7 @@ void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, idx, att);
   else
     drawStringWithIndex(x, y, STR_CV, idx-CURVE_BASE+1, att);
+#endif // CPUARM
 }
 
 void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att)
@@ -1527,7 +1533,7 @@ LCD_IMG_FUNCTION(lcd_img, const pm_uchar *, pgm_read_byte)
 void lcdMaskPoint(uint8_t * p, uint8_t mask, LcdFlags att)
 {
   ASSERT_IN_DISPLAY(p);
-  
+
   if (att & FORCE)
     *p |= mask;
   else if (att & ERASE)
@@ -1557,7 +1563,7 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
 {
   if (y >= LCD_H) return;
   if (x+w > LCD_W) { w = LCD_W - x; }
-  
+
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
   uint8_t msk = BITMASK(y%8);
   while (w--) {

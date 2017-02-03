@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -236,7 +236,7 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
   void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat=SOLID, LcdFlags att=0);
 #endif
 
-void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att=0);
+void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat=SOLID, LcdFlags att=0);
 inline void lcdDrawSolidFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, LcdFlags att=0)
 {
   lcdDrawFilledRect(x, y, w, h, SOLID, att);
@@ -272,7 +272,7 @@ inline display_t getPixel(uint8_t x, uint8_t y)
   if (x>=LCD_W || y>=LCD_H) {
     return 0;
   }
-  
+
   display_t pixel = displayBuf[(y / 8) * LCD_W + x];
   display_t mask = 1 << (y & 7);
   return ((pixel & mask) ? 0xf : 0);

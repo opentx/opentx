@@ -101,7 +101,7 @@ class WizMix
     Channel channel[WIZ_MAX_CHANNELS];
     bool options[WIZ_MAX_OPTIONS];
 
-    WizMix(const GeneralSettings & settings, const unsigned int modelId);
+    WizMix(const GeneralSettings & settings, unsigned int modelId);
     operator ModelData();
 
   private:

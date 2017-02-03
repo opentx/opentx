@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include <stdio.h>
 #include "opentx.h"
 
 void drawCurve(int x, int y, int width)
@@ -69,7 +68,7 @@ void onCurveOneMenu(const char * result)
   }
 }
 
-#define MODEL_CURVE_ONE_2ND_COLUMN        130
+#define MODEL_CURVE_ONE_2ND_COLUMN     130
 
 enum MenuModelCurveOneItems {
   ITEM_CURVE_NAME,
@@ -80,17 +79,19 @@ enum MenuModelCurveOneItems {
   ITEM_CURVE_COORDS2,
 };
 
+#define IS_COORDS1_LINE_NEEDED()       (crv.type==CURVE_TYPE_CUSTOM && crv.points > -3)
+
 bool menuModelCurveOne(event_t event)
 {
   static uint8_t pointsOfs = 0;
   CurveData & crv = g_model.curves[s_curveChan];
   int8_t * points = curveAddress(s_curveChan);
 
-  SUBMENU_WITH_OPTIONS(STR_MENUCURVE, ICON_MODEL_CURVES, crv.type==CURVE_TYPE_CUSTOM ? 6 : 5, OPTION_MENU_NO_FOOTER, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
+  SUBMENU_WITH_OPTIONS(STR_MENUCURVE, ICON_MODEL_CURVES, IS_COORDS1_LINE_NEEDED() ? 6 : 5, OPTION_MENU_NO_FOOTER, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
   drawStringWithIndex(50, 3+FH, STR_CV, s_curveChan+1, MENU_TITLE_COLOR);
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 250, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
-  if (crv.type==CURVE_TYPE_CUSTOM && menuVerticalPosition == ITEM_CURVE_COORDS1) {
+  if (IS_COORDS1_LINE_NEEDED() && menuVerticalPosition == ITEM_CURVE_COORDS1) {
     if (menuHorizontalPosition == 0) {
       if (CURSOR_MOVED_RIGHT(event))
         menuHorizontalPosition = 1;
@@ -184,13 +185,15 @@ bool menuModelCurveOne(event_t event)
     uint8_t selectionMode = 0;
     if (menuHorizontalPosition == i) {
       if (menuVerticalPosition == ITEM_CURVE_COORDS1)
-        selectionMode = (crv.type==CURVE_TYPE_CUSTOM ? 1 : 2);
+        selectionMode = (IS_COORDS1_LINE_NEEDED() ? 1 : 2);
       else if (menuVerticalPosition == ITEM_CURVE_COORDS2)
         selectionMode = 2;
     }
 
     int8_t x = -100 + 200*i/(5+crv.points-1);
-    if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) x = points[5+crv.points+i-1];
+    if (crv.type==CURVE_TYPE_CUSTOM && i>0 && i<5+crv.points-1) {
+      x = points[5+crv.points+i-1];
+    }
 
     if (i>=pointsOfs && i<pointsOfs+5) {
       lcdDrawNumber(posX, MENU_CONTENT_TOP + 5*FH-12, i+1, TEXT_DISABLE_COLOR|RIGHT);

@@ -6,30 +6,28 @@ set(SIMU_SRC
   ${SIMU_SRC}
   simpgmspace.cpp
   simueeprom.cpp
+  simufatfs.cpp
+  simudisk.cpp
   )
 
 add_definitions(-DSIMU)
-add_definitions(-DLUA_COMPILER)
 remove_definitions(-DCLI)
 
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
-  add_definitions(-DSIMU_AUDIO)
   add_definitions(-DJOYSTICKS)
+else()
+  remove_definitions(-DSIMU_AUDIO)
+endif()
+
+if(SIMU_LUA_COMPILER)
+  add_definitions(-DLUA_COMPILER)
 endif()
 
 if(Qt5Widgets_FOUND)
   set(SIMULATOR_FLAVOUR opentx-${FLAVOUR})
   set(SIMULATOR_TARGET ${SIMULATOR_FLAVOUR}-simulator)
   add_definitions(-DSIMULATOR_FLAVOUR="${SIMULATOR_FLAVOUR}")
-
-  if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -std=gnu++11")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -std=gnu++11")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -std=gnu++11")
-  endif()
-
   include_directories(${COMPANION_SRC_DIRECTORY} ${COMPANION_SRC_DIRECTORY}/simulation)
   add_library(${SIMULATOR_TARGET} SHARED ${SIMU_SRC} opentxsimulator.cpp)
   add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
@@ -38,22 +36,28 @@ if(Qt5Widgets_FOUND)
   add_custom_target(libsimulator DEPENDS ${SIMULATOR_TARGET})
 endif()
 
+if(WIN32)
+  include_directories(SYSTEM ${WIN_INCLUDE_DIRS})
+  target_link_libraries(${SIMULATOR_TARGET} PRIVATE ${WIN_LINK_LIBRARIES})
+endif(WIN32)
+
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
-  include_directories(${PROJECT_SOURCE_DIR}/winbuild C:/Programs/pthreads/Pre-built.2/include C:/Programs/msinttypes C:/Programs/dirent/include)
-  target_link_libraries(${SIMULATOR_TARGET} PRIVATE C:/Programs/pthreads/Pre-built.2/lib/pthreadVC2.lib)
 else()
-  if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-    set(COMMON_CPP_FLAGS "${COMMON_FLAGS} -std=gnu++11")
-    message("USING -std=gnu++11")
-  else()
-    set(COMMON_CPP_FLAGS ${COMMON_FLAGS})
+  if(MINGW)
+    # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
-  set(CMAKE_C_FLAGS_DEBUG  "${COMMON_FLAGS} -g -O0")
-  set(CMAKE_CXX_FLAGS_DEBUG  "${COMMON_CPP_FLAGS} -g -O0")
+  set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 endif()
 
-if((NOT WIN32) AND FOX_FOUND)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
+
+use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
+
+if(FOX_FOUND)
   if(SIMU_DISKIO)
     add_definitions(-DSIMU_DISKIO)
     set(SIMU_SRC ${SIMU_SRC} ${FATFS_DIR}/FatFs/ff.c ${FATFS_DIR}/option/ccsbcs.c)
@@ -87,3 +91,5 @@ if(APPLE)
   endforeach()
   add_custom_target(opentx-simulators-bundle DEPENDS ${SIMULATOR_BUNDLES})
 endif(APPLE)
+
+PrintTargetReport("simu/libsimulator")

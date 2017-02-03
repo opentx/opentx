@@ -66,11 +66,15 @@ class DarkblueTheme: public Theme
       BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
       if (mask) {
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-        menuIconNormal[index]->clear(HEADER_BGCOLOR);
-        menuIconNormal[index]->drawMask(0, 0, mask, HEADER_CURRENT_BGCOLOR);
+        if (menuIconNormal[index]) {
+          menuIconNormal[index]->clear(HEADER_BGCOLOR);
+          menuIconNormal[index]->drawMask(0, 0, mask, HEADER_CURRENT_BGCOLOR);
+        }
         menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-        menuIconSelected[index]->clear(HEADER_BGCOLOR);
-        menuIconSelected[index]->drawMask(0, 0, mask, MENU_TITLE_COLOR);
+        if (menuIconSelected[index]) {
+          menuIconSelected[index]->clear(HEADER_BGCOLOR);
+          menuIconSelected[index]->drawMask(0, 0, mask, MENU_TITLE_COLOR);
+        }
       }
     }
 

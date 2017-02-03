@@ -21,6 +21,7 @@
 #include "helpers.h"
 #include "modelprinter.h"
 #include <QPainter>
+#include <QFile>
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -66,7 +67,7 @@ QString addFont(const QString & input, const QString & color, const QString & si
 
 QString ModelPrinter::printEEpromSize()
 {
-  return tr("%1 bytes").arg(GetEepromInterface()->getSize(model));
+  return tr("%1 bytes").arg(getCurrentEEpromInterface()->getSize(model));
 }
 
 QString ModelPrinter::printChannelName(int idx)
@@ -129,7 +130,8 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
 {
   static const char *strings[] = {
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
-    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS","FlySky AFHDS2A"
+    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS",
+    "FlySky AFHDS2A", "Q2x2", "Q303"
   };
   if (custom)
     return "Custom - proto " + QString::number(rfProtocol);
@@ -141,20 +143,25 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
   /* custom protocols */
   static const char *custom_subtype_strings[] = {"Subtype 0", "Subtype 1", "Subtype 2", "Subtype 3", "Subtype 4", "Subtype 5", "Subtype 6", "Subtype 7"};
   static const char *flysky_strings[] = {"Standard", "V9x9", "V6x6", "V912", "CX20"};
-  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch", "V8"};
+  static const char *frsky_strings[] = {"D16", "D8", "D16 8ch", "V8", "D16 EU-LBT", "D16 EU-LBT 8ch"};
   static const char *hisky_strings[] = {"HiSky", "HK310"};
+  static const char *v2x2_strings[] = {"V2x2", "JXD506"};
   static const char *dsm2_strings[] = {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
   static const char *yd717_strings[] = {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
   static const char *symax_strings[] = {"Standard", "Syma X5C"};
   static const char *slt_strings[] = {"SLT", "Vista"};
   static const char *cx10_strings[] = {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
   static const char *cg023_strings[] = {"CG023", "YD829", "H3 3D"};
+  static const char *bayang_strings[] = {"Bayang", "H8S3D"};
   static const char *kn_strings[] = {"WLtoys", "FeiLun"};
   static const char *mt99_strings[] = {"MT99", "H7", "YZ"};
   static const char *mjxq_strings[] = {"WLH08", "X600", "X800", "H26D", "E010"};
+  static const char *fy326_strings[] = {"FY326", "FY319"};
   static const char *hontai_strings[] = {"Standard", "JJRC X1", "X5C1 Clone"};
   static const char *afhds2a_strings[] = {"PWM and IBUS", "PPM and IBUS", "PWM and SBUS", "PPM and SBUS"};
-  static const char *q2x2_strings[] = {"Q242", "Q282"};
+  static const char *q2x2_strings[] = {"Q222", "Q242", "Q282"};
+  static const char *walkera_wk2x01_strings[] = {"WK2801", "WK2401", "W6_5_1", "W6_6_1", "W6_HEL", "W6_HEL_I"};
+  static const char *q303_strings[] = { "Q303", "CX35", "CX10D", "CX10WD"};
   
   if (custom)
     return CHECK_IN_ARRAY(custom_subtype_strings, subType);
@@ -168,6 +175,8 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(hisky_strings, subType);
     case MM_RF_PROTO_DSM2:
       return CHECK_IN_ARRAY(dsm2_strings, subType);
+    case MM_RF_PROTO_V2X2:
+      return CHECK_IN_ARRAY(v2x2_strings, subType);
     case MM_RF_PROTO_YD717:
       return CHECK_IN_ARRAY(yd717_strings, subType);
     case MM_RF_PROTO_SYMAX:
@@ -178,18 +187,26 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType
       return CHECK_IN_ARRAY(cx10_strings, subType);
     case MM_RF_PROTO_CG023:
       return CHECK_IN_ARRAY(cg023_strings, subType);
+    case MM_RF_PROTO_BAYANG:
+      return CHECK_IN_ARRAY(bayang_strings, subType);
     case MM_RF_PROTO_KN:
       return CHECK_IN_ARRAY(kn_strings, subType);
     case MM_RF_PROTO_MT99XX:
       return CHECK_IN_ARRAY(mt99_strings, subType);
     case MM_RF_PROTO_MJXQ:
       return CHECK_IN_ARRAY(mjxq_strings, subType);
+    case MM_RF_PROTO_FY326:
+      return CHECK_IN_ARRAY(fy326_strings, subType);
     case MM_RF_PROTO_HONTAI:
       return CHECK_IN_ARRAY(hontai_strings, subType);
     case MM_RF_PROTO_AFHDS2A:
       return CHECK_IN_ARRAY(afhds2a_strings, subType);
     case MM_RF_PROTO_Q2X2:
       return CHECK_IN_ARRAY(q2x2_strings, subType);
+    case MM_RF_PROTO_WK_2X01:
+      return CHECK_IN_ARRAY(walkera_wk2x01_strings, subType);
+    case MM_RF_PROTO_Q303:
+      return CHECK_IN_ARRAY(q303_strings, subType);
     default:
         return "DEFAULT";
   }
@@ -264,7 +281,11 @@ QString ModelPrinter::printCenterBeep()
     strl << tr("Throttle");
   if (model.beepANACenter & 0x08)
     strl << tr("Aileron");
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS(firmware->getBoard())) {
+    // TODO
+    qDebug() << "ModelPrinter::printCenterBeep() TODO";
+  }
+  else if (IS_TARANIS(firmware->getBoard())) {
     if (model.beepANACenter & 0x10)
       strl << "S1";
     if (model.beepANACenter & 0x20)
@@ -408,7 +429,7 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
   QString flightModesStr = printFlightModes(input.flightModes);
   if (!flightModesStr.isEmpty()) str += " " + flightModesStr.toHtmlEscaped();
 
-  if (input.swtch.type != SWITCH_TYPE_NONE) 
+  if (input.swtch.type != SWITCH_TYPE_NONE)
     str += " " + tr("Switch").toHtmlEscaped() + QString("(%1)").arg(input.swtch.toString().toHtmlEscaped());
 
 

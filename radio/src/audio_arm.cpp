@@ -306,7 +306,7 @@ void getSwitchAudioFile(char * filename, swsrc_t index)
     strcpy(str, positions[swinfo.rem]);
   }
   else {
-    div_t swinfo = div(index - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    div_t swinfo = div(int(index - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);
     *str++ = 'S';
     *str++ = '1' + swinfo.quot;
     *str++ = '1' + swinfo.rem;

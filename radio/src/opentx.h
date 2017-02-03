@@ -26,6 +26,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include "definitions.h"
+#include "opentx_types.h"
 
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)
@@ -291,7 +292,7 @@
 #include "myeeprom.h"
 
 #if defined(CPUM64)
-  void memclear(void *ptr, uint8_t size);
+  void memclear(void * ptr, uint8_t size);
 #else
   #define memclear(p, s)               memset(p, 0, s)
 #endif
@@ -299,23 +300,28 @@
 void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBHORUS)
-  #define POT_CONFIG(x)             ((g_eeGeneral.potsConfig >> (2*((x)-POT1)))&0x03)
-  #define IS_POT_MULTIPOS(x)        (IS_POT(x) && POT_CONFIG(x)==POT_MULTIPOS_SWITCH)
-  #define IS_POT_WITHOUT_DETENT(x)  (IS_POT(x) && POT_CONFIG(x)==POT_WITHOUT_DETENT)
-  #define IS_SLIDER_AVAILABLE(x)    ((x) == SLIDER1 || (x) == SLIDER2 || (IS_SLIDER(x) && (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER1)))))
-  #define IS_POT_AVAILABLE(x)       (IS_POT(x) && POT_CONFIG(x)!=POT_NONE)
-  #define IS_POT_OR_SLIDER_AVAILABLE(x)   (IS_POT_AVAILABLE(x) || IS_SLIDER_AVAILABLE(x))
-  #define IS_MULTIPOS_CALIBRATED(cal)     (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
+  #define POT_CONFIG(x)                ((g_eeGeneral.potsConfig >> (2*((x)-POT1)))&0x03)
+  #define IS_POT_MULTIPOS(x)           (IS_POT(x) && POT_CONFIG(x)==POT_MULTIPOS_SWITCH)
+  #define IS_POT_WITHOUT_DETENT(x)     (IS_POT(x) && POT_CONFIG(x)==POT_WITHOUT_DETENT)
+  #define IS_SLIDER_AVAILABLE(x)       ((x) == SLIDER1 || (x) == SLIDER2 || (IS_SLIDER(x) && (g_eeGeneral.slidersConfig & (0x01 << ((x)-SLIDER1)))))
+  #define IS_POT_AVAILABLE(x)          (IS_POT(x) && POT_CONFIG(x)!=POT_NONE)
+  #define IS_POT_SLIDER_AVAILABLE(x)   (IS_POT_AVAILABLE(x) || IS_SLIDER_AVAILABLE(x))
+  #define IS_MULTIPOS_CALIBRATED(cal)  (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
+#elif defined(PCBX7)
+  #define IS_POT_MULTIPOS(x)           (false)
+  #define IS_POT_WITHOUT_DETENT(x)     (false)
+  #define IS_POT_SLIDER_AVAILABLE(x)   (true)
+  #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #elif defined(PCBFLAMENCO)
-  #define IS_POT_MULTIPOS(x)        (false)
-  #define IS_POT_WITHOUT_DETENT(x)  (false)
-  #define IS_POT_OR_SLIDER_AVAILABLE(x)   (true)
-  #define IS_MULTIPOS_CALIBRATED(cal)     (false)
+  #define IS_POT_MULTIPOS(x)           (false)
+  #define IS_POT_WITHOUT_DETENT(x)     (false)
+  #define IS_POT_SLIDER_AVAILABLE(x)   (true)
+  #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #else
-  #define IS_POT_MULTIPOS(x)        (false)
-  #define IS_POT_WITHOUT_DETENT(x)  (true)
-  #define IS_POT_OR_SLIDER_AVAILABLE(x)   (true)
-  #define IS_MULTIPOS_CALIBRATED(cal)     (false)
+  #define IS_POT_MULTIPOS(x)           (false)
+  #define IS_POT_WITHOUT_DETENT(x)     (true)
+  #define IS_POT_SLIDER_AVAILABLE(x)   (true)
+  #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #endif
 
 #if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7)
@@ -344,15 +350,9 @@ void memswap(void * a, void * b, uint8_t size);
   #include "fifo.h"
   #include "io/io_arm.h"
   // This doesn't need protection on this processor
-  typedef uint32_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   #define get_tmr10ms() g_tmr10ms
-  typedef int32_t rotenc_t;
-  typedef int32_t getvalue_t;
-  typedef uint32_t mixsrc_t;
-  typedef int32_t swsrc_t;
 #else
-  typedef uint16_t tmr10ms_t;
   extern volatile tmr10ms_t g_tmr10ms;
   extern inline uint16_t get_tmr10ms()
   {
@@ -362,10 +362,6 @@ void memswap(void * a, void * b, uint8_t size);
     sei();
     return time ;
   }
-  typedef int8_t rotenc_t;
-  typedef int16_t getvalue_t;
-  typedef uint8_t mixsrc_t;
-  typedef int8_t swsrc_t;
 #endif
 
 #if defined(NAVIGATION_STICKS)
@@ -768,10 +764,8 @@ extern uint16_t s_timeCum16ThrP;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
 #if defined(CPUARM)
-  typedef int16_t safetych_t;
   #define OVERRIDE_CHANNEL_UNDEFINED -4096
 #else
-  typedef int8_t safetych_t;
   #define OVERRIDE_CHANNEL_UNDEFINED -128
 #endif
 extern safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
@@ -1478,10 +1472,8 @@ enum BarThresholdIdx {
 };
 
 #if defined(CPUARM)
-  typedef uint16_t bar_threshold_t;
   #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = (val)
 #else
-  typedef uint8_t bar_threshold_t;
   #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = 128 + (val)
 #endif
 

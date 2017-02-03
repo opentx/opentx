@@ -187,7 +187,7 @@ static inline gtime_t ydhms_diff(long int year1, long int yday1, int hour1, int 
                                  int year0, int yday0, int hour0, int min0, int sec0)
 {
   static_assert(-1 / 2 == 0, "no C99 integer division");
-  static_assert(INT_MAX <= LONG_MAX / 2 || TIME_T_MAX <= UINT_MAX, "long int year and yday are not wide enough");
+  static_assert(INT_MAX <= LONG_MAX / 2 || TIME_T_MAX <= INT_MAX, "long int year and yday are not wide enough");
 
   /* Compute intervening leap days correctly even if year is negative.
      Take care to avoid integer overflow here.  */

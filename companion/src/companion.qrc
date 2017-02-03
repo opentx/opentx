@@ -5,6 +5,15 @@
     <file>../../CREDITS.txt</file>
     <file>../../DONATIONS.txt</file>
     <file>../releasenotes.txt</file>
+    <file>images/screenshot.png</file>
+    <file>images/splash.png</file>
+    <file>images/companion-title.png</file>
+    <file>images/maps.png</file>
+    <file>images/track.png</file>
+    <file>images/track0.png</file>
+    <file>images/taranison.png</file>
+    <file>images/simulator/icons/8/lock-locked.png</file>
+    <file>images/simulator/icons/8/lock-unlocked.png</file>
     <file>images/simulator/Horus/middle.png</file>
     <file>images/simulator/Horus/left.png</file>
     <file>images/simulator/Horus/right.png</file>
@@ -53,12 +62,6 @@
     <file>images/simulator/9X/9xcursmin.png</file>
     <file>images/simulator/9X/9xcursdown.png</file>
     <file>images/simulator/9X/9xcursphoto.png</file>
-    <file>images/screenshot.png</file>
-    <file>images/splash.png</file>
-    <file>images/companion-title.png</file>
-    <file>images/maps.png</file>
-    <file>images/track.png</file>
-    <file>images/track0.png</file>
     <file>images/simulator/Taranis/x9b0.png</file>
     <file>images/simulator/Taranis/x9l0.png</file>
     <file>images/simulator/Taranis/x9l1.png</file>
@@ -71,7 +74,15 @@
     <file>images/simulator/Taranis/x9r3.png</file>
     <file>images/simulator/Taranis/x9s0.png</file>
     <file>images/simulator/Taranis/x9t0.png</file>
-    <file>images/taranison.png</file>    
+    <file>images/simulator/X7/bottom.png</file>
+    <file>images/simulator/X7/left.png</file>
+    <file>images/simulator/X7/left_exit.png</file>
+    <file>images/simulator/X7/left_menu.png</file>
+    <file>images/simulator/X7/left_page.png</file>
+    <file>images/simulator/X7/left_scrnshot.png</file>
+    <file>images/simulator/X7/right.png</file>
+    <file>images/simulator/X7/right_ent.png</file>
+    <file>images/simulator/X7/top.png</file>
     <file>images/wizard/ailerons.png</file>
     <file>images/wizard/airbrakes.png</file>
     <file>images/wizard/elevons.png</file> 

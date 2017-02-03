@@ -308,7 +308,7 @@ DRESULT disk_ioctl (
 
 // TODO everything here should not be in the driver layer ...
 
-FATFS g_FATFS_Obj __DMA;
+FATFS g_FATFS_Obj __DMA;    // initialized in boardInit()
 #if defined(LOG_TELEMETRY)
 FIL g_telemetryFile = {};
 #endif

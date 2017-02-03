@@ -21,58 +21,10 @@
 #ifndef _WIDGET_H_
 #define _WIDGET_H_
 
-#include <inttypes.h>
-#include <string.h>
 #include <list>
+#include "zone.h"
 
 #define MAX_WIDGET_OPTIONS             5
-
-struct Zone
-{
-  uint16_t x, y, w, h;
-};
-
-#define LEN_ZONE_OPTION_STRING         8
-union ZoneOptionValue
-{
-  uint32_t unsignedValue;
-  int32_t signedValue;
-  bool boolValue;
-  char stringValue[LEN_ZONE_OPTION_STRING];
-};
-
-#if defined(_MSC_VER)
-  #define OPTION_VALUE_UNSIGNED(x)    uint32_t(x)
-  #define OPTION_VALUE_SIGNED(x)      uint32_t(x)
-  #define OPTION_VALUE_BOOL(x)        uint32_t(x)
-  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)__VA_ARGS__
-#else
-  #define OPTION_VALUE_UNSIGNED(x)    { .unsignedValue = (x) }
-  #define OPTION_VALUE_SIGNED(x)      { .signedValue = (x) }
-  #define OPTION_VALUE_BOOL(x)        { .boolValue = (x) }
-  #define OPTION_VALUE_STRING(...)    *(ZoneOptionValue *)(const char *)__VA_ARGS__
-#endif
-
-struct ZoneOption
-{
-  enum Type {
-    Integer,
-    Source,
-    Bool,
-    String,
-    File,
-    TextSize,
-    Timer,
-    Switch,
-    Color
-  };
-
-  const char * name;
-  Type type;
-  ZoneOptionValue deflt;
-  ZoneOptionValue min;
-  ZoneOptionValue max;
-};
 
 class WidgetFactory;
 class Widget

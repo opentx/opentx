@@ -143,8 +143,6 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.preBeep = preBeep;
   result.flashBeep = flashBeep;
   result.splashMode = disableSplashScreen;
-  result.disablePotScroll=(disablePotScroll==1);
-  result.disableBG=(disableBG==1);
   result.templateSetup = templateSetup;
   result.PPM_Multiplier = PPM_Multiplier;
   getEEPROMString(result.ownerName, ownerName, sizeof(ownerName));
@@ -152,7 +150,6 @@ Ersky9xGeneral::operator GeneralSettings ()
   result.speakerPitch = speakerPitch;
   result.hapticStrength = hapticStrength - 3;
   result.speakerMode = speakerMode;
-  result.switchWarningStates = switchWarningStates;
   result.speakerVolume = volume;
   result.backlightBright = bright ;
   result.txCurrentCalibration = current_calib;

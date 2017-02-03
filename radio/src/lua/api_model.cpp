@@ -732,8 +732,11 @@ Set Logical Switch parameters
 
 @param value (table) see model.getLogicalSwitch() for table format
 
-@notice If a parameter is missing from the value, then 
+@notice If a parameter is missing from the value, then
 that parameter remains unchanged.
+
+@notice To set the `and` member (which is Lua keyword)
+use the following syntax: `model.setLogicalSwitch(30, {func=4,v1=1,v2=-99, ["and"]=24})`
 
 @status current Introduced in 2.0.0
 */

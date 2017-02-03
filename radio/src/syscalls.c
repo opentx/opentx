@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -37,7 +37,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
-
+#include "debug.h"
 /*----------------------------------------------------------------------------
  *        Exported variables
  *----------------------------------------------------------------------------*/
@@ -50,104 +50,89 @@ extern int _heap_end;
 /*----------------------------------------------------------------------------
  *        Exported functions
  *----------------------------------------------------------------------------*/
-extern void _exit( int status ) ;
-extern void _kill( int pid, int sig ) ;
-extern int _getpid ( void ) ;
+// extern void _exit( int status ) ;
+// extern void _kill( int pid, int sig ) ;
+// extern int _getpid ( void ) ;
 
-unsigned char *heap = (unsigned char *)&_end;
+unsigned char * heap = (unsigned char *)&_end;
+
 extern caddr_t _sbrk(int nbytes)
 {
   if (heap + nbytes < (unsigned char *)&_heap_end) {
-    unsigned char *prev_heap = heap;
+    unsigned char * prev_heap = heap;
     heap += nbytes;
-    return (caddr_t) prev_heap;
+    return (caddr_t)prev_heap;
   }
   else {
     errno = ENOMEM;
-    return ((void*)-1);
+    return ((void *)-1);
   }
 }
 
 extern int _gettimeofday(void *p1, void *p2)
 {
-   return 0 ;
+  return 0;
 }
 
-extern int _link( char *old, char *nw )
+extern int _link(char *old, char *nw)
 {
-    return -1 ;
+  return -1;
 }
 
-extern int _unlink (const char *path)
+extern int _unlink(const char *path)
 {
-    return -1 ;
+  return -1;
 }
 
 extern int _open(const char *name, int flags, int mode)
 {
-    return -1 ;
+  return -1;
 }
 
-extern int _close( int file )
+extern int _close(int file)
 {
-    return -1 ;
+  return -1;
 }
 
-extern int _fstat( int file, struct stat *st )
+extern int _fstat(int file, struct stat * st)
 {
-    st->st_mode = S_IFCHR ;
-
-    return 0 ;
+  st->st_mode = S_IFCHR ;
+  return 0;
 }
 
-extern int _isatty( int file )
+extern int _isatty(int file)
 {
-    return 1 ;
+  return 1;
 }
 
-extern int _lseek( int file, int ptr, int dir )
+extern int _lseek(int file, int ptr, int dir)
 {
-    return 0 ;
+  return 0;
 }
 
 extern int _read(int file, char *ptr, int len)
 {
-    return 0 ;
+  return 0;
 }
 
-extern int _write( int file, char *ptr, int len )
+extern int _write(int file, char *ptr, int len)
 {
-    int iIndex ;
-    
-    
-//    for ( ; *ptr != 0 ; ptr++ )
-    for ( iIndex=0 ; iIndex < len ; iIndex++, ptr++ )
-    {
-// TODO        UART_PutChar( *ptr ) ;
-    }
-
-    return iIndex ;
+  return 0;
 }
 
-extern void _exit( int status )
+extern void _exit(int status)
 {
-#if defined(SIMU)
-    printf( "Exiting with status %d.\n", status ) ;
-#endif
-    for ( ; ; ) ;
+  TRACE("_exit(%d)", status);
+  for (;;);
 }
 
-extern void _kill( int pid, int sig )
+extern void _kill(int pid, int sig)
 {
-    return ; 
+  return ;
 }
 
-extern int _getpid ( void )
+extern int _getpid()
 {
     return -1 ;
 }
 
-//void _init (void)
-//{
-  
-//}

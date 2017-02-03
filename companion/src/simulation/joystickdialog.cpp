@@ -20,12 +20,16 @@
 
 #include "joystickdialog.h"
 #include "ui_joystickdialog.h"
-#include "appdata.h"
 
 joystickDialog::joystickDialog(QWidget *parent, int stick) :
-QDialog(parent),
-ui(new Ui::joystickDialog) {
+  QDialog(parent),
+  ui(new Ui::joystickDialog),
+  step(0),
+  numAxes(0),
+  started(false)
+{
   ui->setupUi(this);
+
   int jscaltmp[8][3] = {
     {32767, 0, -32767},
     {32767, 0, -32767},
@@ -37,137 +41,231 @@ ui(new Ui::joystickDialog) {
     {32767, 0, -32767}
   };
   memcpy(jscal, jscaltmp, sizeof (jscal));
-  ui->okButton->setDisabled(true);
-  ui->howtoLabel->setText(tr("Move sticks and pots in every direction making full movement\nPress next when finished"));
-  step = 0;
 
   foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
-    cb->setDisabled(true);
+    sticks[cb->property("channel").toUInt()] = cb;
   }
   foreach(QCheckBox *ib, findChildren<QCheckBox *>(QRegExp("ChInv_[0-9]+"))) {
-    ib->setDisabled(true);
+    invert[ib->property("channel").toUInt()] = ib;
   }
-  joystickOpen(stick);
+  foreach(QSlider *sl, findChildren<QSlider *>(QRegExp("Ch_[0-9]+"))) {
+    sliders[sl->property("channel").toUInt()] = sl;
+  }
+
+  for (int i = 0; i < MAX_JOYSTICKS; ++i) {
+    if (!g.joystick[i].existsOnDisk())
+      continue;
+
+    jscal[i][0] = g.joystick[i].stick_min();
+    jscal[i][1] = g.joystick[i].stick_med();
+    jscal[i][2] = g.joystick[i].stick_max();
+    sliders[i]->setMinimum(jscal[i][0]);
+    sliders[i]->setMaximum(jscal[i][2]);
+    invert[i]->setChecked(g.joystick[i].stick_inv());
+    sticks[i]->setCurrentIndex(g.joystick[i].stick_axe() + 1);
+  }
+
+  ui->backButton->setEnabled(false);
+
+  ui->joystickChkB->setChecked(g.jsSupport() || stick > -1);
+
+  if (stick < 0)
+    stick = g.jsCtrl();
+
+  loadJoysticks(stick);
+  loadStep();
+
   connect(joystick, SIGNAL(axisValueChanged(int, int)), this, SLOT(onjoystickAxisValueChanged(int, int)));
+  connect(ui->joystickCB, SIGNAL(currentIndexChanged(int)), this, SLOT(joystickOpen(int)));
+  connect(ui->joystickChkB, SIGNAL(toggled(bool)), this, SLOT(joystickSetEnabled(bool)));
 }
 
-joystickDialog::~joystickDialog() {
+joystickDialog::~joystickDialog()
+{
   delete ui;
 }
 
-void joystickDialog::joystickOpen(int stick) {
-  if (stick == -1) {
-    this->close();
+void joystickDialog::loadJoysticks(int stick)
+{
+  QStringList joystickNames;
+  bool found = false;
+
+  ui->joystickCB->clear();
+  joystickNames << tr("No joysticks found");
+  joystick = new Joystick(0, false, 0, 0);
+  if ( joystick ) {
+    if ( joystick->joystickNames.count() > 0 ) {
+      joystickNames = joystick->joystickNames;
+      found = true;
+    }
+    joystick->close();
+  }
+  ui->joystickCB->insertItems(0, joystickNames);
+  if (found && stick < joystickNames.size())
+    ui->joystickCB->setCurrentIndex(stick);
+  else if (!found)
+    ui->joystickCB->setCurrentIndex(0);
+
+  joystickSetEnabled(found && ui->joystickChkB->isChecked());
+}
+
+void joystickDialog::joystickOpen(int stick)
+{
+  if (stick == -1 || !ui->joystickChkB->isChecked() || !ui->joystickCB->isEnabled()) {
+    ui->calibrationWidget->setDisabled(true);
     return;
   }
+
+  ui->calibrationWidget->setEnabled(true);
+  ui->nextButton->setEnabled(true);
+
   joystick = new Joystick(this, 1, false, 0);
-  int numAxes=std::min(joystick->numAxes,8);
-  if (joystick) {
-    joystick->open(stick);
-    
+  if (joystick && joystick->open(stick)) {
+    numAxes = std::min(joystick->numAxes, MAX_JOYSTICKS);
     for (int j=0; j<numAxes; j++) {
-        joystick->sensitivities[j] = 0;
-        joystick->deadzones[j]=20;
+      joystick->sensitivities[j] = 0;
+      joystick->deadzones[j]=20;
     }
   }
   else {
     QMessageBox::critical(this, tr("Error"), tr("Cannot open joystick."));
-    this->close();
   }
 }
 
-void joystickDialog::onjoystickAxisValueChanged(int axis, int value) {
-  if (value > jscal[axis][2]) {
-    jscal[axis][2] = value;
-  }
-  if (value < jscal[axis][0]) {
-    jscal[axis][0] = value;
-  }
-  QSlider * sl[]= {ui->Ch_1, ui->Ch_2, ui->Ch_3, ui->Ch_4, ui->Ch_5, ui->Ch_6, ui->Ch_7, ui->Ch_8};
-  QCheckBox * ib[]={ui->ChInv_1, ui->ChInv_2, ui->ChInv_3, ui->ChInv_4, ui->ChInv_5, ui->ChInv_6, ui->ChInv_7, ui->ChInv_8};
-  if (ib[axis]->isChecked()) {
-    sl[axis]->setInvertedAppearance(true);
-  } else {
-    sl[axis]->setInvertedAppearance(false);
-  }
-  sl[axis]->setMinimum(jscal[axis][0]);
-  sl[axis]->setMaximum(jscal[axis][2]);    
-  sl[axis]->setValue(value);
+void joystickDialog::joystickSetEnabled(bool enable)
+{
+  ui->joystickCB->setEnabled(enable);
+  ui->calibrationWidget->setEnabled(enable);
+  ui->nextButton->setEnabled(enable && step < 4);
+  ui->backButton->setEnabled(enable && step);
+  if (enable)
+    joystickOpen(ui->joystickCB->currentIndex());
 }
 
-void joystickDialog::on_nextButton_clicked() {
-  int numAxes=std::min(joystick->numAxes,8);
+void joystickDialog::onjoystickAxisValueChanged(int axis, int value)
+{
+  if (axis >= MAX_JOYSTICKS)
+    return;
+
+  if (started) {
+    if (value > jscal[axis][2])
+      jscal[axis][2] = value;
+    else if (value < jscal[axis][0])
+      jscal[axis][0] = value;
+
+    sliders[axis]->setMinimum(jscal[axis][0]);
+    sliders[axis]->setMaximum(jscal[axis][2]);
+  }
+  sliders[axis]->setInvertedAppearance(invert[axis]->isChecked());
+  sliders[axis]->setValue(value);
+}
+
+void joystickDialog::loadStep()
+{
   switch (step) {
     case 0:
-      ui->howtoLabel->setText(tr("Place sticks and pots in middle position.\nPress next when done"));
-      step++;
+      ui->howtoLabel->setText(tr("Press the Start button to start the stick range calibration procedure.\n" \
+                                 "You may change the channel assignments or inversion at any time."));
+      ui->backButton->setDisabled(true);
       break;
     case 1:
-      for (int i=0; i<numAxes; i++) {
-        jscal[i][1]=0;
-        for (int j=0; j<100;j++) {
-          jscal[i][1]+=joystick->getAxisValue(i);
-        }
-        jscal[i][1]/=100;
-      }
-      ui->howtoLabel->setText(tr("Map joystick channels to controls using comboboxes.\nPress next when done"));
-      step++;
-      foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
-        cb->setEnabled(true);
-      }
+      started = true;
+      ui->howtoLabel->setText(tr("Move sticks and pots in every direction making full movement\nPress Next when finished"));
+      ui->nextButton->setText(tr("Next"));
+      ui->backButton->setDisabled(true);
       break;
     case 2:
-      ui->howtoLabel->setText(tr("Check inversion checkbox to get maximum at top-right position.\nPress next when done"));
-      step++;
-      foreach(QCheckBox *ib, findChildren<QCheckBox *>(QRegExp("ChInv_[0-9]+"))) {
-        ib->setEnabled(true);
-      }
+      ui->howtoLabel->setText(tr("Place sticks and pots in middle position.\nPress Next when done"));
+      ui->backButton->setEnabled(true);
+      ui->nextButton->setEnabled(true);
       break;
     case 3:
-      ui->howtoLabel->setText(tr("Press ok to save configuration\nPress cancel to abort joystick calibration"));
-      ui->okButton->setEnabled(true);
+      for (int i=0; i < numAxes; i++) {
+        jscal[i][1]=0;
+        for (int j=0; j < 100; j++) {
+          jscal[i][1] += joystick->getAxisValue(i);
+        }
+        jscal[i][1] /= 100;
+      }
+      ui->howtoLabel->setText(tr("Map joystick channels to controls using comboboxes.\nPress Next when done."));
+      ui->nextButton->setEnabled(true);
+      break;
+    case 4:
+      ui->howtoLabel->setText(tr("Check inversion checkbox to if necessary to reverse direction.\nPress Next when done."));
+      ui->nextButton->setEnabled(true);
+      break;
+    case 5:
+      ui->howtoLabel->setText(tr("Press OK to save configuration\nPress Cancel to abort joystick calibration without saving."));
+      ui->nextButton->setDisabled(true);
   }
 }
 
-void joystickDialog::on_cancelButton_clicked() {
+void joystickDialog::on_backButton_clicked()
+{
+  if (step) {
+    --step;
+    loadStep();
+  }
+}
+
+void joystickDialog::on_nextButton_clicked()
+{
+  if (step < 5){
+    ++step;
+    loadStep();
+  }
+}
+
+void joystickDialog::on_cancelButton_clicked()
+{
   joystick->close();
-  this->close();
+  this->reject();
 }
 
 void joystickDialog::on_okButton_clicked()
 {
-  int stickAssignments[MAX_JOYSTICKS] = {0};
-  foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
-    int mappedValue = cb->currentIndex() - 1;
-    // qDebug() << "cb->currentIndex()" << mappedValue;
-    if (mappedValue >= 0 && mappedValue < MAX_JOYSTICKS) {
-      stickAssignments[mappedValue]++;
-    }
+  int stick;
+
+  g.jsSupport(ui->joystickChkB->isChecked());
+  g.jsCtrl(ui->joystickCB->currentIndex());
+
+  if (!g.jsSupport() || g.jsCtrl() < 0) {
+    this->accept();
+    return;
   }
 
-  for (int i=0; i<MAX_JOYSTICKS; i++) {
-    if (stickAssignments[i] > 1) {
-      QMessageBox::critical(this, tr("Error"), tr("Duplicated stick assignment"));
+  if (started && step < 4) {
+    int resp = QMessageBox::warning(this, tr("Warning"), tr("Calibration not complete, save anyway?"),
+                                    QDialogButtonBox::Ok | QMessageBox::Default, QDialogButtonBox::Cancel | QMessageBox::Escape, QMessageBox::NoButton);
+    if (resp == QDialogButtonBox::Cancel)
+      return;
+  }
+
+  int stickAssignments[MAX_JOYSTICKS] = {0};
+
+  for (int i = 0; i < MAX_JOYSTICKS; ++i) {
+    stick = sticks[i]->currentIndex() - 1;
+    if (stick >= 0 && stick < MAX_JOYSTICKS && ++stickAssignments[stick] > 1) {
+      QMessageBox::critical(this, tr("Error"), tr("Duplicated stick assignment!"));
       return;
     }
   }
 
   joystick->close();
-  for (int i=0; i<MAX_JOYSTICKS; i++) {
+
+  for (int i = 0; i < MAX_JOYSTICKS; ++i)
     g.joystick[i].remove();
-  }
-  QCheckBox * ib[]={ui->ChInv_1, ui->ChInv_2, ui->ChInv_3, ui->ChInv_4, ui->ChInv_5, ui->ChInv_6, ui->ChInv_7, ui->ChInv_8};
-  foreach(QComboBox *cb, findChildren<QComboBox *>(QRegExp("jsmapCB_[0-9]+"))) {
-    int axe=cb->objectName().mid(cb->objectName().lastIndexOf("_")+1).toInt()-1;
-    int stick=cb->currentIndex() - 1;
-    qDebug() << "joystick mapping " << cb->objectName() <<"axe:" << axe << "stick:" << stick;
+
+  for (int i = 0; i < MAX_JOYSTICKS; ++i) {
+    stick = sticks[i]->currentIndex() - 1;
+    qDebug() << "joystick mapping " << sticks[i]->objectName() << "axe:" << i << "stick:" << stick;
     if (stick >= 0 && stick < MAX_JOYSTICKS) {
-      g.joystick[stick].stick_axe( axe );
-      g.joystick[stick].stick_max( jscal[axe][2] );
-      g.joystick[stick].stick_med( jscal[axe][1] );
-      g.joystick[stick].stick_min( jscal[axe][0] );
-      g.joystick[stick].stick_inv( ib[axe]->isChecked() ? 1 : 0 );
+      g.joystick[stick].stick_axe( i );
+      g.joystick[stick].stick_max( jscal[i][2] );
+      g.joystick[stick].stick_med( jscal[i][1] );
+      g.joystick[stick].stick_min( jscal[i][0] );
+      g.joystick[stick].stick_inv( invert[i]->isChecked() );
     }
   }
-  this->close();
+  this->accept();
 }

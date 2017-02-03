@@ -20,12 +20,12 @@
 
 #include "gtests.h"
 
-void frskyDProcessPacket(uint8_t *packet);
+void frskyDProcessPacket(const uint8_t *packet);
 
 #if defined(TELEMETRY_FRSKY_SPORT)
-bool checkSportPacket(uint8_t *packet);
-void sportProcessTelemetryPacket(uint8_t * packet);
-bool checkSportPacket(uint8_t *packet);
+bool checkSportPacket(const uint8_t *packet);
+void sportProcessTelemetryPacket(const uint8_t * packet);
+bool checkSportPacket(const uint8_t *packet);
 void frskyCalculateCellStats(void);
 void displayVoltagesScreen();
 #endif

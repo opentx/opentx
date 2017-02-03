@@ -409,7 +409,7 @@ void TelemetryCustomScreen::updateBar(int line)
   RawSource source = screen.body.bars[line].source;
   if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
-    if (!IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (!IS_ARM(getCurrentBoard())) {
       int max = round((range.max - range.min) / range.step);
       if (int(255-screen.body.bars[line].barMax) > max) {
         screen.body.bars[line].barMax = 255 - max;
@@ -426,7 +426,7 @@ void TelemetryCustomScreen::updateBar(int line)
     maxSB[line]->setMinimum(range.min);
     maxSB[line]->setMaximum(range.max);
     maxSB[line]->setSingleStep(range.step);
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (IS_ARM(getCurrentBoard())) {
       maxSB[line]->setValue(range.getValue(screen.body.bars[line].barMax));
     }
     else {
@@ -486,7 +486,7 @@ void TelemetryCustomScreen::barMinChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    if (IS_ARM(getCurrentBoard()))
       screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
     else
       screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
@@ -499,7 +499,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    if (IS_ARM(getCurrentBoard()))
       screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
     else
       screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
@@ -515,29 +515,29 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   lock(false)
 {
   ui->setupUi(this);
-  ui->id->setField(sensor.id);
-  ui->instance->setField(sensor.instance);
-  ui->ratio->setField(sensor.ratio);
-  ui->offset->setField(sensor.offset);
-  ui->autoOffset->setField(sensor.autoOffset);
-  ui->filter->setField(sensor.filter);
-  ui->logs->setField(sensor.logs);
-  ui->persistent->setField(sensor.persistent);
-  ui->onlyPositive->setField(sensor.onlyPositive);
-  ui->gpsSensor->setField(sensor.gps);
-  ui->altSensor->setField(sensor.alt);
-  ui->ampsSensor->setField(sensor.amps);
-  ui->cellsSensor->setField(sensor.source);
+  ui->id->setField(sensor.id, this);
+  ui->instance->setField(sensor.instance, this);
+  ui->ratio->setField(sensor.ratio, this);
+  ui->offset->setField(sensor.offset, this);
+  ui->autoOffset->setField(sensor.autoOffset, this);
+  ui->filter->setField(sensor.filter, this);
+  ui->logs->setField(sensor.logs, this);
+  ui->persistent->setField(sensor.persistent, this);
+  ui->onlyPositive->setField(sensor.onlyPositive, this);
+  ui->gpsSensor->setField(sensor.gps, this);
+  ui->altSensor->setField(sensor.alt, this);
+  ui->ampsSensor->setField(sensor.amps, this);
+  ui->cellsSensor->setField(sensor.source, this);
   ui->cellsIndex->addItem(tr("Lowest"), SensorData::TELEM_CELL_INDEX_LOWEST);
   for (int i=1; i<=6; i++)
     ui->cellsIndex->addItem(tr("Cell %1").arg(i), i);
   ui->cellsIndex->addItem(tr("Highest"), SensorData::TELEM_CELL_INDEX_HIGHEST);
   ui->cellsIndex->addItem(tr("Delta"), SensorData::TELEM_CELL_INDEX_DELTA);
   ui->cellsIndex->setField(sensor.index);
-  ui->source1->setField(sensor.sources[0]);
-  ui->source2->setField(sensor.sources[1]);
-  ui->source3->setField(sensor.sources[2]);
-  ui->source4->setField(sensor.sources[3]);
+  ui->source1->setField(sensor.sources[0], this);
+  ui->source2->setField(sensor.sources[1], this);
+  ui->source3->setField(sensor.sources[2], this);
+  ui->source4->setField(sensor.sources[3], this);
   update();
 }
 
@@ -787,7 +787,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::update()
 {
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     if (model->moduleData[0].protocol == PULSES_OFF && model->moduleData[1].protocol == PULSES_PPM) {
       ui->telemetryProtocol->setEnabled(true);
     }
@@ -820,12 +820,12 @@ void TelemetryPanel::setup()
     if (IS_ARM(firmware->getBoard())) {
       ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
       ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-      if (IS_9XRPRO(firmware->getBoard()) || 
+      if (IS_9XRPRO(firmware->getBoard()) ||
          (IS_TARANIS(firmware->getBoard()) && generalSettings.hw_uartMode == 2)) {
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
-      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds);
+      ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
     }
     else {
       ui->telemetryProtocolLabel->hide();
@@ -835,7 +835,7 @@ void TelemetryPanel::setup()
 
     ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
-    if (!IS_TARANIS(firmware->getBoard())) {
+    if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       ui->rssiAlarm1CB->setCurrentIndex(model->frsky.rssiAlarms[0].level);
       ui->rssiAlarm2CB->setCurrentIndex(model->frsky.rssiAlarms[1].level);
     }
@@ -890,7 +890,7 @@ void TelemetryPanel::setup()
     else {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High (not supported)"));
     }
-    
+
     ui->variousGB->hide();
     if (!IS_ARM(firmware->getBoard())) {
       if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {

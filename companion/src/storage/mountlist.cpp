@@ -227,7 +227,7 @@
 
 #ifdef MOUNTED_GETMNTINFO
 
-# if ! HAVE_STRUCT_STATFS_F_FSTYPENAME
+# if ! HAVE_STRUCT_STATFS_F_FSTYPENAME && !defined(__clang__)
 static const char *
 fstype_to_string (short int t)
 {
@@ -323,6 +323,7 @@ fstype_to_string (short int t)
 }
 # endif
 
+#if !defined(__clang__)
 static const char *
 fsp_to_string (const struct statfs *fsp)
 {
@@ -332,6 +333,7 @@ fsp_to_string (const struct statfs *fsp)
   return fstype_to_string (fsp->f_type);
 # endif
 }
+#endif
 
 #endif /* MOUNTED_GETMNTINFO */
 
@@ -917,9 +919,9 @@ read_file_system_list (bool need_fs_type)
 
   *mtail = NULL;
   return mount_list;
-
-
- free_then_fail:
+  
+#if defined(MOUNTED_GETMNTENT1) || defined(MOUNTED_GETMNTENT2) || defined(MOUNTED_GETMNT) || defined(MOUNTED_FREAD) || defined(MOUNTED_FREAD_FSTYP)
+  free_then_fail:
   {
     int saved_errno = errno;
     *mtail = NULL;
@@ -938,6 +940,7 @@ read_file_system_list (bool need_fs_type)
     errno = saved_errno;
     return NULL;
   }
+#endif
 }
 
 void free_file_system_list(struct mount_entry * mount_list)

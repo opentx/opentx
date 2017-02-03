@@ -23,6 +23,7 @@
 
 #include "eeprominterface.h"
 #include <QTextStream>
+#include <QDomDocument>
 
 class XmlInterface
 {
@@ -32,7 +33,7 @@ class XmlInterface
 
     bool load(RadioData &);
     
-    virtual bool loadxml(RadioData &radioData, QDomDocument &doc);
+    virtual bool loadxml(RadioData & radioData, QDomDocument & doc);
 
     bool save(RadioData &radioData);
 

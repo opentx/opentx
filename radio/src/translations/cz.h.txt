@@ -76,8 +76,8 @@
 #define LEN_SWTYPES            "\013"
 #define TR_SWTYPES             "Žádný\0     ""Bez aretace""2-polohový\0""3-polohový\0"
 
-#define LEN_POTTYPES           "\016"
-#define TR_POTTYPES            "Žádný\0        ""Pot s aretací\0""Vícepol. přep.""Potenciometr\0 "
+#define LEN_POTTYPES           TR("\013","\016")
+#define TR_POTTYPES            TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "Žádný\0        ""Pot s aretací\0""Vícepol. přep.""Potenciometr\0 ")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Žádný\0""Slider"
@@ -107,18 +107,18 @@
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS    "\006"
-#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""FS 2A\0""Q2x2\0 "
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 "
 
 #define TR_MULTI_CUSTOM        "Custom"
 
 #define LEN_SUBTYPE_FLYSKY     "\004"
-#define TR_SUBTYPE_FLYSKY      "Std\0"V9x9""V6x6""V912""CX20"
+#define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912""CX20"
 
 #define LEN_SUBTYPE_AFHDS2A    "\010"
 #define TR_SUBTYPE_AFHDS2A     "PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS"
 
 #define LEN_SUBTYPE_FRSKY      "\007"
-#define TR_SUBTYPE_FRSKY       "D16\0   ""D8\0    ""D16 8ch""V8\0    "
+#define TR_SUBTYPE_FRSKY       "D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch"
 
 #define LEN_SUBTYPE_HISKY      "\005"
 #define TR_SUBTYPE_HISKY       "HiSky""HK310"
@@ -144,17 +144,32 @@
 #define LEN_SUBTYPE_KN         "\006"
 #define TR_SUBTYPE_KN          "WLtoys""FeiLun"
 
-#define LEN_SUBTYPE_MT99       "\004"
-#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 ""LS\0 "
+#define LEN_SUBTYPE_MT99       "\005"
+#define TR_SUBTYPE_MT99        "MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805"
 
 #define LEN_SUBTYPE_MJXQ       "\005"
-#define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
+#define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH"
 
 #define LEN_SUBTYPE_HONTAI     "\007"
 #define TR_SUBTYPE_HONTAI      "Std\0   ""JJRC X1""X5C1cln"
 
 #define LEN_SUBTYPE_Q2X2       "\004"
-#define TR_SUBTYPE_Q2X2        "Q242""Q282"
+#define TR_SUBTYPE_Q2X2        "Q222""Q242""Q282"
+
+#define LEN_SUBTYPE_WK2x01     "\006"
+#define TR_SUBTYPE_WK2x01      "WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI"
+
+#define LEN_SUBTYPE_Q303       "\006"
+#define TR_SUBTYPE_Q303        "Q303\0 ""CX35\0 ""CX10D\0""CX10WD"
+
+#define LEN_SUBTYPE_V2X2       "\006"
+#define TR_SUBTYPE_V2X2        "V2x2\0 ""JXD506"
+
+#define LEN_SUBTYPE_BAYANG     "\006"
+#define TR_SUBTYPE_BAYANG      "Bayang""H8S3D"
+
+#define LEN_SUBTYPE_FY326      "\005"
+#define TR_SUBTYPE_FY326       "FY326""FY319"
 
 #define LEN_VTRIMINC           "\007"
 #define TR_VTRIMINC            "Expo\0  ""ExJemný""Jemný\0 ""Střední""Hrubý\0 "
@@ -639,7 +654,7 @@
 #define TR_VCELLINDEX          "Nízký\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Nejvíce""Delta\0"
 
 #define LEN_VANTENNATYPES      "\007"
-#define TR_VANTENNATYPES        "Interní""Externí"
+#define TR_VANTENNATYPES        "Interní""Ext+Int"
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
@@ -660,7 +675,11 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_EXIT                "[EXIT]"
+#if defined(PCBHORUS)
+  #define TR_EXIT              "[RTN]"
+#else
+  #define TR_EXIT              "[EXIT]"
+#endif
 
 #if defined(PCBTARANIS)
   #define TR_POPUPS            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
@@ -744,7 +763,7 @@
 #define TR_SLOWUP              TR3("Zpomalení(+)", "Zpomal(\176)", "Zpomalení(\176)")
 #define TR_MIXER               "MIXER"
 #define TR_CV                  "K"
-#define TR_GV                  "GP"
+#define TR_GV                  TR("G", "GP")
 #define TR_ACHANNEL            "A\004Kanál"
 #define TR_RANGE               INDENT"Rozsah"
 #define TR_CENTER              INDENT "Střed"
@@ -898,12 +917,20 @@
   #define TR_RECEIVER_NUM      "RX číslo"
 #endif
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
+#define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
 #define TR_MULTI_RFPOWER       INDENT "RF Power"
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
 #define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on powerup")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
+#define TR_DISABLE_INTERNAL         TR("Disable int. RF", "Disable internal RF")
+#define TR_MODULE_NO_SERIAL_MODE       TR("!serial mode", "Not in serial mode")
+#define TR_MODULE_NO_INPUT     TR("No input", "No serial input")
+#define TR_MODULE_NO_TELEMETRY TR3( "No telmetry", "No MULTI_TELEMETRY", "No telemetry (enable MULTI_TELEMETRY)")
+#define TR_MODULE_BINDING      "Binding"
+#define TR_PROTOCOL_INVALID    TR("Prot. invalid", "Protocol invalid")
+#define TR_MODULE_STATUS       TR(INDENT "Status", INDENT "Module Status")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Servo rate", INDENT "Servo update rate")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT"Limit"
@@ -938,7 +965,6 @@
 #define TR_SDCARD_ERROR        "Chyba SD karty"
 #define TR_NO_SDCARD           "Není SD karta"
 #define TR_SDCARD_FULL         "Plná SD karta"
-#define TR_SDCARD_NOWIZ        "No wizard found on SD Card"
 #define TR_INCOMPATIBLE        "Nekompatibilní"
 #define TR_WARNING             "KONTROLA"
 #define TR_EEPROMWARN          "EEPROM"
@@ -1088,8 +1114,8 @@
 #define TR_PT                  "č."
 #define TR_PTS                 " b."
 #define TR_SMOOTH              "Hladká"
-#define TR_COPY_STICKS_TO_OFS  "Kopie pák do subtrimu"
-#define TR_COPY_TRIMS_TO_OFS   "Kopíe trimů do subtrimu"
+#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim","Kopie pák do subtrimu")
+#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Kopíe trimů do subtrimu")
 #define TR_INCDEC              "Zvěšit/Zmenšit"
 #define TR_GLOBALVAR           "Glob. proměnná"
 #define TR_MIXSOURCE           "Zdroje mixeru"

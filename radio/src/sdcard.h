@@ -111,38 +111,26 @@ inline const pm_char * SDCARD_ERROR(FRESULT result)
 #endif
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
-template<class T>
-T * getFileExtension(T * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL)
-{
-  int len = size;
-  if (!size) {
-    len = strlen(filename);
-  }
-  if (!extMaxLen) {
-    extMaxLen = LEN_FILE_EXTENSION_MAX;
-  }
-  if (fnlen != NULL) {
-    *fnlen = (uint8_t)len;
-  }
-  for (int i=len-1; i >= 0 && len-i <= extMaxLen; --i) {
-    if (filename[i] == '.') {
-      if (extlen) {
-        *extlen = len-i;
-      }
-      return &filename[i];
-    }
-  }
-  if (extlen != NULL) {
-    *extlen = 0;
-  }
-  return NULL;
-}
+const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
 
-#if defined(PCBTARANIS)
-  #define O9X_FOURCC 0x3378396F // o9x for Taranis
+// TODO REMOVE THE O9X FOURCC in 2.3
+#if defined(PCBHORUS)
+  #define OTX_FOURCC 0x3478746F // otx for Horus
+  #define O9X_FOURCC 0x3178396F // we forgot it in 2.2 RC ..
+#elif defined(PCBX9E)
+  #define OTX_FOURCC 0x3578746F // otx for Taranis X9E
+  #define O9X_FOURCC 0x3378396F // o9x for Taranis X9E
+#elif defined(PCBX7)
+  #define OTX_FOURCC 0x3678746F // otx for Taranis X7
+  #define O9X_FOURCC 0x3378396F // o9x for Taranis X7
+#elif defined(PCBTARANIS)
+  #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
+  #define O9X_FOURCC 0x3378396F // o9x for Taranis X9D
 #elif defined(PCBSKY9X)
+  #define OTX_FOURCC 0x3278746F // otx for sky9x
   #define O9X_FOURCC 0x3278396F // o9x for sky9x
-#else
+#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+  #define OTX_FOURCC 0x3178746F // otx for gruvin9x/MEGA2560
   #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
 

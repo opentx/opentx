@@ -129,7 +129,6 @@ class RlcFile: public EFile
     uint8_t  m_bRlc;      // control byte for run length decoder
     uint8_t  m_zeroes;
 
-    uint8_t m_flags;
 #define WRITE_FIRST_LINK               0x01
 #define WRITE_NEXT_LINK_1              0x02
 #define WRITE_NEXT_LINK_2              0x03

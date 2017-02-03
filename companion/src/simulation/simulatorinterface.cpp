@@ -26,7 +26,7 @@
 #include <QMap>
 #include <QMessageBox>
 #include "version.h"
-#if defined WIN32 || !defined __GNUC__
+#if defined _MSC_VER || !defined __GNUC__
   #include <windows.h>
 #endif
 
@@ -59,7 +59,7 @@ void registerSimulators()
   QStringList filters;
 #if defined(__APPLE__)
   filters << "*-simulator.dylib";
-#elif (!defined __GNUC__) || (defined __CYGWIN__)
+#elif defined(WIN32) || defined(__CYGWIN__)
   filters << "*-simulator.dll";
 #else
   filters << "*-simulator.so";

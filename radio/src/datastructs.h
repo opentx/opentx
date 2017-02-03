@@ -868,7 +868,7 @@ PACK(struct TrainerData {
 });
 
 #if defined(PCBHORUS)
-  #define SPLASH_MODE
+  #define SPLASH_MODE uint8_t splashSpares:3
 #elif defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
 #elif defined(PCBTARANIS)
@@ -885,7 +885,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  countryCode); \
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
-    NOBACKUP(uint8_t  spareExtra:6); \
+    NOBACKUP(uint8_t  spareExtraArm:6); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
@@ -914,7 +914,7 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:4; \
-    uint8_t  spare:4; \
+    uint8_t  spareExtra:4; \
     uint32_t switchConfig; \
     uint8_t  potsType; /*two bits for every pot*/\
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
@@ -968,6 +968,12 @@ PACK(struct TrainerData {
   #define THEME_DATA
 #endif
 
+#if defined(BUZZER)
+  #define BUZZER_FIELD NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+#else
+  #define BUZZER_FIELD NOBACKUP(int8_t spareRadio:2);
+#endif
+
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
@@ -980,7 +986,7 @@ PACK(struct RadioData {
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
-  NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  BUZZER_FIELD
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t alarmsFlash:1);
@@ -1056,7 +1062,24 @@ static inline void check_struct()
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
 #if defined(PCBX7)
-  // TODO
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 17);
+  CHKSIZE(LimitData, 11);
+  CHKSIZE(LogicalSwitchData, 9);
+  CHKSIZE(CustomFunctionData, 11);
+  CHKSIZE(FlightModeData, 36);
+  CHKSIZE(TimerData, 11);
+  CHKSIZE(SwashRingData, 8);
+  CHKSIZE(FrSkyBarData, 6);
+  CHKSIZE(FrSkyLineData, 4);
+  CHKTYPE(union FrSkyScreenData, 24);
+  CHKSIZE(FrSkyTelemetryData, 106);
+  CHKSIZE(ModelHeader, 12);
+  CHKSIZE(CurveData, 4);
+
+  CHKSIZE(RadioData, 850);
+  CHKSIZE(ModelData, 6025);
+  
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);
@@ -1076,9 +1099,6 @@ static inline void check_struct()
 #if defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
-#elif defined(PCBX7)
-  CHKSIZE(RadioData, 839);
-  CHKSIZE(ModelData, 6504);
 #else
   CHKSIZE(RadioData, 872);
   CHKSIZE(ModelData, 6507);

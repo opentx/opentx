@@ -26,7 +26,7 @@ RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   QComboBox(parent),
   repeatParam(repeatParam)
 {
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+  unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
   int value = repeatParam/step;
 
   if (step == 1) {
@@ -53,7 +53,7 @@ void RepeatComboBox::onIndexChanged(int index)
 
 void RepeatComboBox::update()
 {
-  unsigned int step = IS_ARM(GetEepromInterface()->getBoard()) ? 1 : 10;
+  unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
   int value = repeatParam/step;
   if (step == 1) {
     value++;
@@ -395,7 +395,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (modified) cfn.param = fswtchParam[i]->value();
         fswtchParam[i]->setDecimals(0);
         fswtchParam[i]->setSingleStep(1);
-        if (IS_ARM(GetEepromInterface()->getBoard())) {
+        if (IS_ARM(getCurrentBoard())) {
           fswtchParam[i]->setMinimum(-500);
           fswtchParam[i]->setMaximum(500);
         }
@@ -515,7 +515,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
       populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
     }
-    else if (func==FuncBacklight && IS_TARANIS_PLUS(GetEepromInterface()->getBoard())) {
+    else if (func==FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
       if (modified) cfn.param = (uint8_t)fswtchBLcolor[i]->value();
       fswtchBLcolor[i]->setValue(cfn.param);
       widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
@@ -628,11 +628,12 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   for (unsigned int i=0; i<FuncCount; i++) {
     if (((i>=FuncOverrideCH1 && i<=FuncOverrideCH32) && (!model || !firmware->getCapability(SafetyChannelCustomFunction))) ||
         ((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
-        ((i==FuncPlayScript && !IS_TARANIS(firmware->getBoard()))) ||
+        ((i==FuncPlayScript && !IS_HORUS_OR_TARANIS(firmware->getBoard()))) ||
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
         ((i==FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
+        ((i==FuncScreenshot) && IS_HORUS(firmware->getBoard())) ||
         ((i>=FuncRangeCheckInternalModule && i<=FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||
         ((i>=FuncAdjustGV1 && i<=FuncAdjustGVLast) && !firmware->getCapability(Gvars))
         ) {

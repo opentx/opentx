@@ -21,6 +21,7 @@
 #include "contributorsdialog.h"
 #include "ui_htmldialog.h"
 #include "helpers.h"
+#include <QFile>
 
 ContributorsDialog::ContributorsDialog(QWidget * parent):
   QDialog(parent),

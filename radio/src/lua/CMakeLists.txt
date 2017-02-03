@@ -1,15 +1,14 @@
-if(MSVC)
-  set(INTTYPES_INCLUDE_OPTION -IC:/Programs/msinttypes)
-endif()
 
 macro(add_lua_export_target target)
-  add_custom_command(
-    OUTPUT lua_exports_${target}.inc
-    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${INTTYPES_INCLUDE_OPTION} ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.tmp
-    COMMAND grep LEXP lua_exports_${target}.tmp > lua_exports_${target}.txt
-    COMMAND rm lua_exports_${target}.tmp
-    COMMAND python ${RADIO_DIRECTORY}/util/luaexport.py ${VERSION} lua_exports_${target}.txt lua_exports_${target}.inc lua_fields_${target}.txt
-  )
+  if(PYTHONINTERP_FOUND)
+    add_custom_command(
+      OUTPUT lua_exports_${target}.inc
+      COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.tmp
+      COMMAND grep LEXP lua_exports_${target}.tmp > lua_exports_${target}.txt
+      COMMAND rm lua_exports_${target}.tmp
+      COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/luaexport.py ${VERSION} lua_exports_${target}.txt lua_exports_${target}.inc lua_fields_${target}.txt
+    )
+  endif()
   add_custom_target(lua_export_${target} DEPENDS lua_exports_${target}.inc)
 endmacro(add_lua_export_target)
 
@@ -25,6 +24,12 @@ set(LUA_INCLUDES
   -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc
   -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc
   )
+
+if(WIN32 AND WIN_INCLUDE_DIRS)
+  foreach(include ${WIN_INCLUDE_DIRS})
+    set(LUA_INCLUDES "${LUA_INCLUDES} -I${include}")
+  endforeach()
+endif()
 
 set(LUA_INCLUDES_STM32F2
   ${LUA_INCLUDES}

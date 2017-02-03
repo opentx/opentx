@@ -186,7 +186,7 @@ QString MultiModelPrinter::printSetup()
     COMPARE(modelPrinter->printModule(i));
     columns.append("<br/>");
   }
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     columns.appendTitle(tr("Trainer port:"));
     COMPARE(modelPrinter->printTrainerMode());
     columns.append("<br/>");
@@ -268,7 +268,7 @@ QString MultiModelPrinter::printFlightModes()
     columns.append("<td><b>" + tr("Fade IN") + "</b></td>");
     columns.append("<td><b>" + tr("Fade OUT") + "</b></td>");
     for (int i=0; i<4; i++) {
-      columns.append("<td><b>" + GetCurrentFirmware()->getAnalogInputName(i) + " trim</b></td>");
+      columns.append("<td><b>" + getCurrentFirmware()->getAnalogInputName(i) + " trim</b></td>");
     }
     columns.append("</tr>");
 
@@ -559,7 +559,12 @@ QString MultiModelPrinter::printTelemetry()
     columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>");
     for (int i=0; i<2; i++) {
       columns.append("<tr><td><b>" + QString(i==0 ? tr("RSSI Alarms") : "") + "</b></td><td>");
-      COMPARE(getFrSkyAlarmType(model->frsky.rssiAlarms[i].level));
+      if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
+        COMPARE(i==0 ? tr("Low Alarm") : tr("Critical Alarm"));
+      }
+      else {
+        COMPARE(getFrSkyAlarmType(model->frsky.rssiAlarms[i].level));
+      }
       columns.append("</td><td>&lt;</td><td>");
       COMPARE(QString::number(model->frsky.rssiAlarms[i].value, 10));
       columns.append("</td></tr>");
@@ -567,6 +572,6 @@ QString MultiModelPrinter::printTelemetry()
     columns.append("</table><br/>");
     str.append(columns.print());
   }
-  
+
   return str;
 }

@@ -44,20 +44,21 @@ for (int i=0; i<CPN_MAX_KEYS; i++)
 for (int i=0; i<(NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
   simuSetTrim(i, inputs.trims[i]);
 
-#if defined(PCBGRUVIN9X)
 // rotary encoders
-pind = 0;
-if (inputs.rotenc) pind |= 0x20;
+#if defined(PCBGRUVIN9X)
+  pind = 0;
+  if (inputs.rotenc)
+    pind |= 0x20;
+#elif defined(PCBSKY9X)
+  if (inputs.rotenc)
+    PIOB->PIO_PDSR &= ~0x40;
+  else
+    PIOB->PIO_PDSR |= 0x40;
+#else
+  if (inputs.rotenc)
+    simuSetKey(KEY_ENTER, true);
 #endif
-
-#if defined(PCBSKY9X)
-if (inputs.rotenc) PIOB->PIO_PDSR &= ~0x40; else PIOB->PIO_PDSR |= 0x40;
-#endif
-
-#if defined(PCBFLAMENCO) || defined(PCBX9E)
-if (inputs.rotenc) simuSetKey(KEY_ENTER, true);
-#endif
-#endif
+#endif  // SETVALUES_IMPORT
 
 #ifdef GETVALUES_IMPORT
 #undef GETVALUES_IMPORT
@@ -108,6 +109,6 @@ return main_thread_error;
 #ifdef SETTRAINER_IMPORT
 #undef SETTRAINER_IMPORT
   ppmInputValidityTimer = 100;
-  ppmInput[inputNumber] = LIMIT< ::int16_t>(-512, value, 512);
+  ppmInput[inputNumber] = qMin(qMax((int16_t)-512, value), (int16_t)512);
 #endif
 

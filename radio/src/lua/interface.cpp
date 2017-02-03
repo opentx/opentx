@@ -38,9 +38,9 @@ extern "C" {
 lua_State *lsScripts = NULL;
 uint8_t luaState = 0;
 uint8_t luaScriptsCount = 0;
-ScriptInternalData scriptInternalData[MAX_SCRIPTS] = { { SCRIPT_NOFILE, 0 } };
-ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS] = { {0} };
-ScriptInternalData standaloneScript = { SCRIPT_NOFILE, 0 };
+ScriptInternalData scriptInternalData[MAX_SCRIPTS];
+ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
+ScriptInternalData standaloneScript;
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
 bool luaLcdAllowed;
@@ -781,7 +781,7 @@ void luaDoOneRunStandalone(event_t evt)
   }
 }
 
-bool luaDoOneRunPermanentScript(uint8_t evt, int i, uint32_t scriptType)
+bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
 {
   ScriptInternalData & sid = scriptInternalData[i];
   if (sid.state != SCRIPT_OK) return false;

@@ -31,6 +31,7 @@
 #include "simulatorinterface.h"
 
 static double const SPEEDS[] = { 0.2, 0.4, 0.6, 0.8, 1, 2, 3, 4, 5 };
+template<class t> t LIMIT(t mi, t x, t ma) { return std::min(std::max(mi, x), ma); }
 
 namespace Ui {
   class TelemetrySimulator;
@@ -121,7 +122,6 @@ class TelemetrySimulator : public QDialog
       bool stepping;
       QDateTime parseTransmittterTimestamp(QString row);
       void calcLogFrequency();
-      int32_t replayRate;
     };
 
 private:
@@ -131,7 +131,7 @@ private:
     SimulatorInterface *simulator;
     void generateTelemetryFrame();
     TelemetrySimulator::LogPlaybackController *logPlayback;
-  
+
   private slots:
     void onSimulateToggled(bool isChecked);
     void onTimerEvent();
@@ -162,8 +162,6 @@ private:
       uint32_t cellData1;
       uint32_t cellData2;
       uint32_t cellData3;
-      uint32_t cellDataTime;
-      double cell[MAXCELLS];
     };
 
     class GPSEmulator
@@ -185,7 +183,6 @@ private:
       double course;
       double speedKNTS;
       double altitude; // in meters
-      uint32_t nextDataIndex;
       uint32_t encodeLatLon(double latLon, bool isLat);
       uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
     };

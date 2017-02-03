@@ -23,7 +23,7 @@
 #include "appdata.h"
 #include "ui_logsdialog.h"
 #include "helpers.h"
-#if defined WIN32 || !defined __GNUC__
+#if defined _MSC_VER || !defined __GNUC__
 #include <windows.h>
 #else
 #include <unistd.h>
@@ -507,7 +507,7 @@ QString LogsDialog::formatTimeDelta(double timeDelta)
     return QString("%1 s").arg(timeDelta, 1, 'f', 1);
   }
 
-  int seconds = (int)round(abs(timeDelta));
+  int seconds = (int)round(fabs(timeDelta));
   int hours = seconds / 3600;
   seconds %= 3600;
   int minutes = seconds / 60;

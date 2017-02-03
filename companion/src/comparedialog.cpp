@@ -24,10 +24,6 @@
 #include <QPrinter>
 #include <QPrintDialog>
 
-// #if !defined WIN32 && defined __GNUC__
-// #include <unistd.h>
-// #endif
-
 class DragDropHeader {
   public:
     DragDropHeader():

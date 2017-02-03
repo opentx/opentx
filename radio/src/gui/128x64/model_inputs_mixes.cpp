@@ -251,7 +251,7 @@ void menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_WEIGHT:
         lcdDrawTextAlignedLeft(y, STR_WEIGHT);
-        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN-4*FW, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr, 0, event);
+        ed->weight = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->weight, MIN_EXPO_WEIGHT, 100, attr, 0, event);
         break;
 
       case EXPO_FIELD_EXPO:

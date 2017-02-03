@@ -40,7 +40,7 @@ const char * writeFile(const char * filename, const uint8_t * data, uint16_t siz
     return SDCARD_ERROR(result);
   }
 
-  *(uint32_t*)&buf[0] = O9X_FOURCC;
+  *(uint32_t*)&buf[0] = OTX_FOURCC;
   buf[4] = EEPROM_VER;
   buf[5] = 'M';
   *(uint16_t*)&buf[6] = size;
@@ -93,7 +93,7 @@ const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
   }
 
   uint8_t version = (uint8_t)buf[4];
-  if (*(uint32_t*)&buf[0] != O9X_FOURCC || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
+  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
     f_close(&file);
     return STR_INCOMPATIBLE;
   }
@@ -189,7 +189,10 @@ void storageReadAll()
   }
 #endif
 
-  loadModel(g_eeGeneral.currModelFilename, false);
+  if (loadModel(g_eeGeneral.currModelFilename, false) != NULL) {
+    sdCheckAndCreateDirectory(MODELS_PATH);
+    createModel();
+  }
 }
 
 void storageCreateModelsList()

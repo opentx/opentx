@@ -302,7 +302,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 /*luadoc
 @function sportTelemetryPop()
 
-Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to the LUA telemetry receive queue.
+Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x52FF (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to the LUA telemetry receive queue.
 
 @retval SPORT paket as a quadruple:
  * sensor ID (number)
@@ -586,11 +586,11 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (IS_SWR_VALUE_VALID()) { 
+  if (IS_SWR_VALUE_VALID()) {
     lua_pushinteger(L, telemetryData.swr.value);
   }
   else {
-    lua_pushnil(L);  
+    lua_pushnil(L);
   }
   return 1;
 }
@@ -667,64 +667,35 @@ Play a numerical value (text to speech)
 
 @status current Introduced in 2.0.0
 
-@notice 2.0 Only - automatic conversion of units for distance, speed, and temperature.
 
-OpenTX 2.0:
-
-| Unit  | Sound | File (.wav) | Automatic conversion rules  |
-| --- | --- | --- | --- |
-| 0 | --- | --- (no unit played) |   |
-| 1 | Volts | 116 |   |
-| 2 | Amps  | 118 |   |
-| 3 | Meters per Second | 120 |   |
-| 4 | *missing file*  | 122 |   |
-| 5 | Kilometers per Hour / Miles per Hour  | 124 / 142 | Input value is KPH  |
-| 6 | Meters / Feet | 126 / 140 | Input value is meters |
-| 7 | Degrees | 128 | Input value is celsius, converted to Fahrenheit for Imperial  |
-| 8 | Percent | 130 |   |
-| 9 | Milliamps | 132 |   |
-| 10  | Milliamp Hours  | 134 |   |
-| 11  | Watts | 136 |   |
-| 12  | DB  | 138 |   |
-| 13  | Feet  | 140 |   |
-| 14  | Kilometers per Hour / Miles per Hour  | 124 / 142 | Input value is in Knots, converted to KPH or MPH  |
-| 15  | Hours | 144 |   |
-| 16  | Minutes | 146 |   |
-| 17  | Seconds | 148 |   |
-| 18  | RPM | 150 |   |
-| 19  | Gee | 152 |   |
-| 20  | Degrees | 128 |   |
-
-
-OpenTX 2.1:
-
-| 2.1 Unit  | Sound | Sound File (.wav) |
-| --- | --- | --- |
-| 0 | --- | --- (no unit played) |   |
-| 1 | Volts | 116 |
-| 2 | Amps  | 118 |
-| 3 | Milliamps | 120 |
-| 4 | Knots | 122 |
-| 5 | Meters per Second | 124 |
-| 6 | Feet per Second | 126 |
-| 7 | Kilometers per Hour | 128 |
-| 8 | Miles per Hour  | 130 |
-| 9 | Meters  | 132 |
-| 10  | Feet  | 134 |
-| 11  | Degrees Celsius | 136 |
-| 12  | Degrees Fahrenheit  | 138 |
-| 13  | Percent | 140 |
-| 14  | Milliamp Hours  | 142 |
-| 15  | Watts | 144 |
-| 16  | DB  | 146 |
-| 17  | RPM | 148 |
-| 18  | Gee | 150 |
-| 19  | Degrees | 152 |
-| 20  | Milliliters | 154 |
-| 21  | Fluid Ounces  | 156 |
-| 22  | Hours | 158 |
-| 23  | Minutes | 160 |
-| 24  | Seconds | 162 |
+| 2.2 Unit  | Sound        |
+| --- | ---                |
+| 0   | (no unit played)   |
+| 1   | Volts              |
+| 2   | Amps               |
+| 3   | Milliamps          |
+| 4   | Knots              |
+| 5   | Meters per Second  |
+| 6   | Feet per Second    |
+| 7   | Kilometers per Hour|
+| 8   | Miles per Hour     |
+| 9   | Meters             |
+| 10  | Feet               |
+| 11  | Degrees Celsius    |
+| 12  | Degrees Fahrenheit |
+| 13  | Percent            |
+| 14  | Milliamp Hours     |
+| 15  | Watts              |
+| 16  | DB                 |
+| 17  | RPM                |
+| 18  | Gee                |
+| 19  | Degrees            |
+| 20  | Radians            |
+| 21  | Milliliters        |
+| 22  | Fluid Ounces       |
+| 23  | Hours              |
+| 24  | Minutes            |
+| 25  | Seconds            |
 
 */
 static int luaPlayNumber(lua_State * L)
@@ -791,7 +762,7 @@ static int luaPlayTone(lua_State * L)
 }
 
 /*luadoc
-@function luaPlayHaptic(duration, pause [, flags])
+@function playHaptic(duration, pause [, flags])
 
 Generate haptic feedback
 
@@ -1017,14 +988,14 @@ static int luaDefaultStick(lua_State * L)
   return 1;
 }
 
-/* luadoc
-@function setTelemetryValue(id, subID, instance, value [, unit] [, precision [, name])
+/*luadoc
+@function setTelemetryValue(id, subID, instance, value [, unit [, precision [, name]]])
 
-@param id Id of the sensor
+@param id Id of the sensor, valid range is from 0 to 0xFFFF
 
-@param subID subID of the sensor, usually 0
+@param subID subID of the sensor, usually 0, valid range is from 0 to 7
 
-@param instance instance of the sensor (SensorID)
+@param instance instance of the sensor (SensorID), valid range is from 0 to 0xFF
 
 @param value fed to the sensor
 
@@ -1040,27 +1011,30 @@ static int luaDefaultStick(lua_State * L)
 @param precision the precision of the sensor
  * `0 or not present` no decimal precision.
  * `!= 0` value is divided by 10^precision, e.g. value=1000, prec=2 => 10.00.
- 
+
 @param name (string) Name of the sensor if it does not yet exist (4 chars).
  * `not present` Name defaults to the Id.
  * `present` Sensor takes name of the argument. Argument must have name surrounded by quotes: e.g., "Name"
- 
+
 @retval true, if the sensor was just added. In this case the value is ignored (subsequent call will set the value)
+
+@notice All three parameters `id`, `subID` and `instance` can't be zero at the same time. At least one of them
+must be different from zero.
 
 @status current Introduced in 2.2.0
 */
 static int luaSetTelemetryValue(lua_State * L)
 {
-  uint16_t id = luaL_checkinteger(L, 1);
-  uint8_t subId = luaL_checkinteger(L, 2);
-  uint8_t instance = luaL_checkinteger(L, 3);
+  uint16_t id = luaL_checkunsigned(L, 1);
+  uint8_t subId = luaL_checkunsigned(L, 2) & 0x7;
+  uint8_t instance = luaL_checkunsigned(L, 3);
   int32_t value = luaL_checkinteger(L, 4);
-  uint32_t unit = luaL_optinteger(L, 5, 0);
-  uint32_t prec = luaL_optinteger(L, 6, 0);
+  uint32_t unit = luaL_optunsigned(L, 5, 0);
+  uint32_t prec = luaL_optunsigned(L, 6, 0);
 
   char zname[4];
   const char* name = luaL_optstring(L, 7, NULL);
-  if (name != NULL) {
+  if (name != NULL && strlen(name) > 0) {
     str2zchar(zname, name, 4);
   } else {
     zname[0] = hex2zchar((id & 0xf000) >> 12);
@@ -1068,18 +1042,21 @@ static int luaSetTelemetryValue(lua_State * L)
     zname[2] = hex2zchar((id & 0x00f0) >> 4);
     zname[3] = hex2zchar((id & 0x000f) >> 0);
   }
-  
-  int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
-  if (index >= 0) {
-    TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
-    telemetrySensor.id = id;
-    telemetrySensor.subId = subId;
-    telemetrySensor.instance = instance;
-    telemetrySensor.init(zname, unit, prec);
-    lua_pushboolean(L, true);
-  } else {
-    lua_pushboolean(L, false);
+  if (id | subId | instance) {
+    int index = setTelemetryValue(TELEM_PROTO_LUA, id, subId, instance, value, unit, prec);
+    if (index >= 0) {
+      TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
+      telemetrySensor.id = id;
+      telemetrySensor.subId = subId;
+      telemetrySensor.instance = instance;
+      telemetrySensor.init(zname, unit, prec);
+      lua_pushboolean(L, true);
+    } else {
+      lua_pushboolean(L, false);
+    }
+    return 1;
   }
+  lua_pushboolean(L, false);
   return 1;
 }
 
@@ -1321,6 +1298,7 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_RTN_FIRST",  EVT_KEY_FIRST(KEY_EXIT) },
 #elif defined(PCBTARANIS)
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
+  { "EVT_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
   { "EVT_PAGE_BREAK", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_PAGE_LONG", EVT_KEY_LONG(KEY_PAGE) },
   { "EVT_PLUS_BREAK", EVT_KEY_BREAK(KEY_PLUS) },
@@ -1388,6 +1366,6 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_GPS", UNIT_GPS},
   {"UNIT_BITFIELD", UNIT_BITFIELD},
   {"UNIT_TEXT", UNIT_TEXT},
-#endif  
+#endif
   { NULL, 0 }  /* sentinel */
 };

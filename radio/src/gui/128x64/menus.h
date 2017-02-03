@@ -81,7 +81,7 @@ enum MenuRadioIndexes
   MENU_RADIO_VERSION,
   MENU_RADIO_SWITCHES_TEST,
   MENU_RADIO_ANALOGS_TEST,
-  CASE_PCBSKY9X(MENU_RADIO_HARDWARE)
+  CASE_CPUARM(MENU_RADIO_HARDWARE)
   MENU_RADIO_CALIBRATION,
   MENU_RADIO_PAGES_COUNT
 };
@@ -104,7 +104,7 @@ static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuRadioVersion,
   menuRadioDiagKeys,
   menuRadioDiagAnalogs,
-  CASE_PCBSKY9X(menuRadioHardware)
+  CASE_CPUARM(menuRadioHardware)
   menuRadioCalibration
 };
 
@@ -119,6 +119,9 @@ enum MenuModelIndexes {
   CASE_CURVES(MENU_MODEL_CURVES)
   MENU_MODEL_LOGICAL_SWITCHES,
   MENU_MODEL_SPECIAL_FUNCTIONS,
+#if defined(LUA_MODEL_SCRIPTS)
+  MENU_MODEL_CUSTOM_SCRIPTS,
+#endif
   CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
   CASE_MAVLINK(MENU_MODEL_TELEMETRY_MAVLINK)
   CASE_CPUARM(MENU_MODEL_DISPLAY)
@@ -140,6 +143,7 @@ void menuModelCurveOne(event_t event);
 void menuModelGVars(event_t event);
 void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
+void menuModelCustomScripts(event_t event);
 void menuModelTelemetryFrsky(event_t event);
 void menuModelTelemetryMavlink(event_t event);
 void menuModelDisplay(event_t event);
@@ -156,6 +160,9 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   CASE_CURVES(menuModelCurvesAll)
   menuModelLogicalSwitches,
   menuModelSpecialFunctions,
+#if defined(LUA_MODEL_SCRIPTS)
+  menuModelCustomScripts,
+#endif
   CASE_FRSKY(menuModelTelemetryFrsky)
   CASE_MAVLINK(menuModelTelemetryMavlink)
   CASE_CPUARM(menuModelDisplay)

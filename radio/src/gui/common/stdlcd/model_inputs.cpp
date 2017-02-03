@@ -158,8 +158,8 @@ void onExposMenu(const char * result)
 #define EXPO_LINE_WEIGHT_POS           8*FW+8
 #define EXPO_LINE_SRC_POS              9*FW+3
 #define EXPO_LINE_CURVE_POS            12*FW+11
-#define EXPO_LINE_TRIM_POS             19*FW-4
-#define EXPO_LINE_SWITCH_POS           20*FW-1
+#define EXPO_LINE_TRIM_POS             19*FW-2
+#define EXPO_LINE_SWITCH_POS           20*FW
 #define EXPO_LINE_SIDE_POS             25*FW
 #define EXPO_LINE_FM_POS               12*FW+11
 #define EXPO_LINE_SELECT_POS           5*FW+2
@@ -221,7 +221,7 @@ void displayExpoLine(coord_t y, ExpoData * ed)
   else if (!ed->flightModes || ((ed->curve.value || ed->swtch) && ((get_tmr10ms() / 200) & 1)))
     displayExpoInfos(y, ed);
   else
-    displayFlightModes(EXPO_LINE_INFOS_POS, y, ed->flightModes);
+    displayFlightModes(EXPO_LINE_INFOS_POS+9*FWNUM, y, ed->flightModes);
 }
 #endif
 

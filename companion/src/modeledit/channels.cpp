@@ -21,14 +21,14 @@
 #include "channels.h"
 #include "helpers.h"
 
-LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt):
+LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
   value(value),
   displayStep(0.1)
 {
-  BoardEnum board = firmware->getBoard();
-  bool allowGVars = (IS_TARANIS(board) || IS_HORUS(board));
+  Board::Type board = firmware->getBoard();
+  bool allowGVars = IS_HORUS_OR_TARANIS(board);
   int internalStep = 1;
 
   spinbox->setProperty("index", row);
@@ -45,7 +45,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
     spinbox->setSuffix("%");
   }
 
-  if (HAS_LARGE_LCD(board) || deflt == 0 /*it's the offset*/) {
+  if (IS_ARM(board) || deflt == 0 /*it's the offset*/) {
     spinbox->setDecimals(1);
   }
   else {
@@ -64,7 +64,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars, panel);
 }
 
 LimitsGroup::~LimitsGroup()
@@ -101,7 +101,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     headerLabels << tr("Name");
   }
   headerLabels << tr("Subtrim") << tr("Min") << tr("Max") << tr("Direction");
-  if (IS_TARANIS(GetEepromInterface()->getBoard()))
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard()))
     headerLabels << tr("Curve");
   if (firmware->getCapability(PPMCenter))
     headerLabels << tr("PPM Center");
@@ -133,13 +133,13 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // Channel offset
-    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0);
+    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
 
     // Channel min
-    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax()*10, 0, -1000);
+    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax()*10, 0, -1000, this);
 
     // Channel max
-    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax()*10, 1000);
+    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax()*10, 1000, this);
 
     // Channel inversion
     QComboBox * invCB = new QComboBox(this);
@@ -150,7 +150,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     tableLayout->addWidget(i, col++, invCB);
 
     // Curve
-    if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       QComboBox * curveCB = new QComboBox(this);
       curveCB->setProperty("index", i);
       int numcurves = firmware->getCapability(NumCurves);

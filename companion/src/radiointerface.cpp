@@ -24,12 +24,11 @@
 #include "process_flash.h"
 #include "radionotfound.h"
 #include "burnconfigdialog.h"
-#include "firmwareinterface.h"
 #include "helpers.h"
 #include "mountlist.h"
 #include "process_copy.h"
-#include <QFile>
-#include <QMessageBox>
+#include "storage.h"
+#include "progresswidget.h"
 
 #if defined WIN32 || !defined __GNUC__
   #include <windows.h>
@@ -38,11 +37,11 @@
 QString getRadioInterfaceCmd()
 {
   burnConfigDialog bcd;
-  EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_STM32(eepromInterface->getBoard())) {
+  Board::Type board = getCurrentBoard();
+  if (IS_STM32(board)) {
     return bcd.getDFU();
   }
-  else if (IS_SKY9X(GetEepromInterface()->getBoard())) {
+  else if (IS_SKY9X(board)) {
     return bcd.getSAMBA();
   }
   else {
@@ -50,17 +49,18 @@ QString getRadioInterfaceCmd()
   }
 }
 
-QStringList getAvrdudeArgs(const QString &cmd, const QString &filename)
+QStringList getAvrdudeArgs(const QString & cmd, const QString & filename)
 {
   QStringList args;
   burnConfigDialog bcd;
   QString programmer = bcd.getProgrammer();
-  QString mcu   = bcd.getMCU();
+  QString mcu = bcd.getMCU();
+  Board::Type board = getCurrentBoard();
 
   args << "-c" << programmer << "-p";
-  if (IS_2560(GetEepromInterface()->getBoard()))
+  if (IS_2560(board))
     args << "m2560";
-  else if (GetEepromInterface()->getBoard() == BOARD_M128)
+  else if (board == Board::BOARD_M128)
     args << "m128";
   else
     args << mcu;
@@ -86,7 +86,7 @@ QStringList getDfuArgs(const QString & cmd, const QString & filename)
   burnConfigDialog bcd;
   QString memory = "0x08000000";
   if (cmd == "-U") {
-    memory.append(QString(":%1").arg(GetCurrentFirmware()->getFlashSize()));
+    memory.append(QString(":%1").arg(getCurrentFirmware()->getFlashSize()));
   }
   args << bcd.getDFUArgs();
   if (!filename.endsWith(".dfu")) {
@@ -98,7 +98,7 @@ QStringList getDfuArgs(const QString & cmd, const QString & filename)
   return args;
 }
 
-QStringList getSambaArgs(const QString &tcl)
+QStringList getSambaArgs(const QString & tcl)
 {
   QStringList result;
 
@@ -120,10 +120,10 @@ QStringList getSambaArgs(const QString &tcl)
   return result;
 }
 
-QStringList getReadEEpromCmd(const QString &filename)
+QStringList getReadEEpromCmd(const QString & filename)
 {
   QStringList result;
-  EEPROMInterface *eepromInterface = GetEepromInterface();
+  EEPROMInterface *eepromInterface = getCurrentEEpromInterface();
   if (IS_STM32(eepromInterface->getBoard())) {
     // impossible
   }
@@ -136,14 +136,14 @@ QStringList getReadEEpromCmd(const QString &filename)
   return result;
 }
 
-QStringList getWriteEEpromCmd(const QString &filename)
+QStringList getWriteEEpromCmd(const QString & filename)
 {
-  EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_STM32(eepromInterface->getBoard())) {
+  Board::Type board = getCurrentBoard();
+  if (IS_STM32(board)) {
     // impossible
     return QStringList();
   }
-  else if (IS_SKY9X(eepromInterface->getBoard())) {
+  else if (IS_SKY9X(board)) {
     return getSambaArgs(QString("SERIALFLASH::Init 0\n") + "send_file {SerialFlash AT25} \"" + filename + "\" 0x0 0\n");
   }
   else {
@@ -151,16 +151,16 @@ QStringList getWriteEEpromCmd(const QString &filename)
   }
 }
 
-QStringList getWriteFirmwareArgs(const QString &filename)
+QStringList getWriteFirmwareArgs(const QString & filename)
 {
-  EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_STM32(eepromInterface->getBoard())) {
+  Board::Type board = getCurrentBoard();
+  if (IS_STM32(board)) {
     return getDfuArgs("-D", filename);
   }
-  else if (eepromInterface->getBoard() == BOARD_SKY9X) {
+  else if (board == Board::BOARD_SKY9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
-  else if (eepromInterface->getBoard() == BOARD_9XRPRO || eepromInterface->getBoard() == BOARD_AR9X) {
+  else if (board == Board::BOARD_9XRPRO || board == Board::BOARD_AR9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
   else {
@@ -168,16 +168,16 @@ QStringList getWriteFirmwareArgs(const QString &filename)
   }
 }
 
-QStringList getReadFirmwareArgs(const QString &filename)
+QStringList getReadFirmwareArgs(const QString & filename)
 {
-  EEPROMInterface *eepromInterface = GetEepromInterface();
-  if (IS_STM32(eepromInterface->getBoard())) {
+  Board::Type board = getCurrentBoard();
+  if (IS_STM32(board)) {
     return getDfuArgs("-U", filename);
   }
-  else if (eepromInterface->getBoard() == BOARD_SKY9X) {
+  else if (board == Board::BOARD_SKY9X) {
     return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
   }
-  else if (eepromInterface->getBoard() == BOARD_9XRPRO) {
+  else if (board == Board::BOARD_9XRPRO) {
     return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x80000 0\n");
   }
   else {
@@ -185,7 +185,7 @@ QStringList getReadFirmwareArgs(const QString &filename)
   }
 }
 
-void readAvrdudeFuses(ProgressWidget *progress)
+void readAvrdudeFuses(ProgressWidget * progress)
 {
   burnConfigDialog bcd;
   QStringList args;
@@ -194,7 +194,7 @@ void readAvrdudeFuses(ProgressWidget *progress)
   flashProcess.run();
 }
 
-void resetAvrdudeFuses(bool eepromProtect, ProgressWidget *progress)
+void resetAvrdudeFuses(bool eepromProtect, ProgressWidget * progress)
 {
   //fuses
   //avrdude -c usbasp -p m64 -U lfuse:w:<0x0E>:m
@@ -260,7 +260,7 @@ void resetAvrdudeFuses(bool eepromProtect, ProgressWidget *progress)
 }
 
 
-bool readFirmware(const QString &filename, ProgressWidget *progress)
+bool readFirmware(const QString & filename, ProgressWidget * progress)
 {
   bool result = false;
 
@@ -270,7 +270,7 @@ bool readFirmware(const QString &filename, ProgressWidget *progress)
     return false;
   }
 
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+  if (IS_ARM(getCurrentBoard())) {
     QString path = findMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {
       qDebug() << "readFirmware: reading" << path << "into" << filename;
@@ -292,9 +292,9 @@ bool readFirmware(const QString &filename, ProgressWidget *progress)
   return result;
 }
 
-bool writeFirmware(const QString &filename, ProgressWidget *progress)
+bool writeFirmware(const QString & filename, ProgressWidget * progress)
 {
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+  if (IS_ARM(getCurrentBoard())) {
     QString path = findMassstoragePath("FIRMWARE.BIN");
     if (!path.isEmpty()) {
       qDebug() << "writeFirmware: writing" << path << "from" << filename;
@@ -308,53 +308,75 @@ bool writeFirmware(const QString &filename, ProgressWidget *progress)
   return flashProcess.run();
 }
 
-
-bool readEeprom(const QString &filename, ProgressWidget *progress)
+bool readEeprom(const QString & filename, ProgressWidget * progress)
 {
-  bool result = false;
+  Board::Type board = getCurrentBoard();
 
   QFile file(filename);
   if (file.exists() && !file.remove()) {
-    QMessageBox::warning(NULL, QObject::tr("Error"), QObject::tr("Could not delete temporary file: %1").arg(filename));
+    QMessageBox::warning(NULL,
+                         QObject::tr("Error"),
+                         QObject::tr("Could not delete temporary file: %1").arg(filename));
     return false;
   }
 
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    QString path = findMassstoragePath("EEPROM.BIN");
-    if (path.isEmpty()) {
-      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
-      path = findMassstoragePath("TARANIS.BIN");
+  if (IS_HORUS(board)) {
+    QString radioPath = findMassstoragePath("RADIO", true);
+    qDebug() << "Searching for SD card, found" << radioPath;
+    if (radioPath.isEmpty()) {
+      QMessageBox::critical(progress, QObject::tr("Error"), QObject::tr("Unable to find Horus radio SD card!"));
+      return false;
     }
-    if (path.isEmpty()) {
-      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
-      path = findMassstoragePath("ERSKY9X.BIN");
+    RadioData radioData;
+    Storage inputStorage(radioPath);
+    if (!inputStorage.load(radioData)) {
+      QMessageBox::critical(progress, QObject::tr("Error"), inputStorage.error());
+      return false;
     }
-    if (!path.isEmpty()) {
+    Storage outputStorage(filename);
+    if (!outputStorage.write(radioData)) {
+      QMessageBox::critical(progress, QObject::tr("Error"), outputStorage.error());
+      return false;
+    }
+  }
+  else {
+    if (IS_ARM(board)) {
+      QString path = findMassstoragePath("EEPROM.BIN");
+      if (path.isEmpty()) {
+        // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
+        path = findMassstoragePath("TARANIS.BIN");
+      }
+      if (path.isEmpty()) {
+        // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
+        path = findMassstoragePath("ERSKY9X.BIN");
+      }
+      if (path.isEmpty()) {
+        RadioNotFoundDialog dialog(progress);
+        dialog.exec();
+        return false;
+      }
       CopyProcess copyProcess(path, filename, progress);
-      result = copyProcess.run();
+      if (!copyProcess.run()) {
+        return false;
+      }
+    }
+
+    if (!IS_STM32(board)) {
+      FlashProcess flashProcess(getRadioInterfaceCmd(), getReadEEpromCmd(filename), progress);
+      if (!flashProcess.run()) {
+        return false;
+      }
     }
   }
 
-  if (result == false && !IS_STM32(GetCurrentFirmware()->getBoard())) {
-    FlashProcess flashProcess(getRadioInterfaceCmd(), getReadEEpromCmd(filename), progress);
-    result = flashProcess.run();
-  }
-
-  if (result == false && IS_ARM(GetCurrentFirmware()->getBoard())) {
-    RadioNotFoundDialog dialog;
-    dialog.exec();
-  }
-
-  if (!QFileInfo(filename).exists()) {
-    result = false;
-  }
-
-  return result;
+  return QFileInfo(filename).exists();
 }
 
-bool writeEeprom(const QString &filename, ProgressWidget *progress)
+bool writeEeprom(const QString & filename, ProgressWidget * progress)
 {
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+  Board::Type board = getCurrentBoard();
+
+  if (IS_ARM(board)) {
     QString path = findMassstoragePath("EEPROM.BIN");
     if (path.isEmpty()) {
       // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
@@ -370,13 +392,13 @@ bool writeEeprom(const QString &filename, ProgressWidget *progress)
     }
   }
 
-  if (!IS_TARANIS(GetCurrentFirmware()->getBoard())) {
+  if (!IS_TARANIS(board)) {
     FlashProcess flashProcess(getRadioInterfaceCmd(), getWriteEEpromCmd(filename), progress);
     return flashProcess.run();
   }
 
-  if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-    RadioNotFoundDialog dialog;
+  if (IS_ARM(board)) {
+    RadioNotFoundDialog dialog(progress);
     dialog.exec();
   }
 
@@ -399,7 +421,7 @@ bool isRemovableMedia(const QString & vol)
 }
 #endif
 
-QString findMassstoragePath(const QString &filename)
+QString findMassstoragePath(const QString & filename, bool onlyPath)
 {
   QString temppath;
   QStringList drives;
@@ -425,7 +447,7 @@ QString findMassstoragePath(const QString &filename)
           eepromfile = temppath;
           eepromfile.append("/" + filename);
           if (QFile::exists(eepromfile)) {
-            return eepromfile;
+            return onlyPath ? temppath : eepromfile;
           }
         }
       }
@@ -451,7 +473,7 @@ QString findMassstoragePath(const QString &filename)
       if (QFile::exists(eepromfile)) {
 #endif
         free_file_system_list(firstEntry);
-        return eepromfile;
+        return onlyPath ? temppath : eepromfile;
       }
     }
     entry = entry->me_next;

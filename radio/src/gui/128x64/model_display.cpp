@@ -45,7 +45,7 @@ enum MenuModelDisplayItems {
 };
 
 #define DISPLAY_COL1                  (1*FW)
-#if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_CZ)
+#if defined(TRANSLATIONS_CZ)
   #define DISPLAY_COL2                (9*FW)
 #else
   #define DISPLAY_COL2                (8*FW)

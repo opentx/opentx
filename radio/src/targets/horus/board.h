@@ -280,19 +280,34 @@ uint32_t readTrims(void);
 void checkRotaryEncoder(void);
 
 // WDT driver
-#define WDTO_500MS                     500
+#define WDTO_500MS                              500
+extern uint32_t powerupReason;
+
+#define SHUTDOWN_REQUEST                        0xDEADBEEF
+#define NO_SHUTDOWN_REQUEST                     ~SHUTDOWN_REQUEST
+#define DIRTY_SHUTDOWN                          0xCAFEDEAD
+#define NORMAL_POWER_OFF                        ~DIRTY_SHUTDOWN
+
 #define wdt_disable()
 void watchdogInit(unsigned int duration);
-#if defined(WATCHDOG_DISABLED) || defined(SIMU)
+#if defined(SIMU)
+  #define WAS_RESET_BY_WATCHDOG()               (false)
+  #define WAS_RESET_BY_SOFTWARE()               (false)
+  #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (false)
   #define wdt_enable(x)
   #define wdt_reset()
 #else
-  #define wdt_enable(x)                watchdogInit(x)
-  #define wdt_reset()                  IWDG->KR = 0xAAAA
+  #if defined(WATCHDOG_DISABLED)
+    #define wdt_enable(x)
+    #define wdt_reset()
+  #else
+    #define wdt_enable(x)                       watchdogInit(x)
+    #define wdt_reset()                         IWDG->KR = 0xAAAA
+  #endif
+  #define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
+  #define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
+  #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 #endif
-#define WAS_RESET_BY_WATCHDOG()               (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF))
-#define WAS_RESET_BY_SOFTWARE()               (RCC->CSR & RCC_CSR_SFTRSTF)
-#define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 
 // ADC driver
 #define NUM_POTS                       3
@@ -337,8 +352,12 @@ void pwrOff(void);
 void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
-#define pwroffPressed()                pwrPressed()
-#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG())
+#define pwroffPressed()         pwrPressed()
+#if defined(SIMU)
+  #define UNEXPECTED_SHUTDOWN()                 (false)
+#else
+  #define UNEXPECTED_SHUTDOWN()                 (powerupReason == DIRTY_SHUTDOWN)
+#endif
 
 // Led driver
 void ledOff(void);
@@ -369,8 +388,8 @@ void backlightInit(void);
 #else
 void backlightEnable(uint8_t dutyCycle);
 #endif
-#define BACKLIGHT_ENABLE()    backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : 100-g_eeGeneral.backlightBright)
-#define BACKLIGHT_DISABLE()   backlightEnable(UNEXPECTED_SHUTDOWN() ? 100 : g_eeGeneral.blOffBright)
+#define BACKLIGHT_ENABLE()    backlightEnable(unexpectedShutdown ? 100 : 100-g_eeGeneral.backlightBright)
+#define BACKLIGHT_DISABLE()   backlightEnable(unexpectedShutdown ? 100 : g_eeGeneral.blOffBright)
 #define isBacklightEnabled()  true
 
 // USB driver
@@ -400,10 +419,11 @@ int32_t getVolume(void);
 #define VOLUME_LEVEL_DEF               12
 
 // Telemetry driver
-void telemetryPortInit(uint32_t baudrate, int mode);
+#define TELEMETRY_FIFO_SIZE            512
+void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t * buffer, uint32_t count);
-int telemetryGetByte(uint8_t * byte);
+uint8_t telemetryGetByte(uint8_t * byte);
 
 // Haptic driver
 void hapticInit(void);

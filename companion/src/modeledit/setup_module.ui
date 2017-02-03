@@ -167,6 +167,48 @@
         </property>
        </widget>
       </item>
+      <item row="5" column="2" alignment="Qt::AlignRight">
+       <widget class="QLabel" name="label_antenna">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Antenna</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="3" alignment="Qt::AlignLeft">
+       <widget class="QComboBox" name="antennaMode">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>125</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <item>
+         <property name="text">
+          <string>Internal</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ext. + Int.</string>
+         </property>
+        </item>
+       </widget>
+      </item>
       <item row="3" column="4" alignment="Qt::AlignRight">
        <widget class="QLabel" name="label_ppmDelay">
         <property name="maximumSize">

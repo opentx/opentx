@@ -37,7 +37,7 @@ void Channel::clear()
   weight2 = 0;
 }
 
-WizMix::WizMix(const GeneralSettings & settings, const unsigned int modelId):
+WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId):
   complete(false),
   modelId(modelId),
   settings(settings),
@@ -53,14 +53,14 @@ void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int wei
   mix.name[MIXDATA_NAME_LEN] = '\0';
   mix.destCh = channel;
   mix.srcRaw = RawSource(SOURCE_TYPE_MAX);
-  mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);  
+  mix.swtch  = RawSwitch(SWITCH_TYPE_SWITCH, sw);
   mix.weight = weight;
 }
 
 void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixIndex)
 {
   if (input != NO_INPUT)  {
-    bool isTaranis = IS_TARANIS(GetEepromInterface()->getBoard());
+    bool isTaranis = IS_TARANIS(getCurrentBoard());
 
     if (input >= RUDDER_INPUT && input <= AILERONS_INPUT) {
       MixData & mix = model.mixData[mixIndex++];
@@ -89,7 +89,7 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
 WizMix::operator ModelData()
 {
   int throttleChannel = -1;
-  bool isTaranis = IS_TARANIS(GetEepromInterface()->getBoard());
+  bool isTaranis = IS_TARANIS(getCurrentBoard());
 
   ModelData model;
   model.used = true;

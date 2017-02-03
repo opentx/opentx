@@ -6,11 +6,13 @@ foreach(translation ${translations})
   if(NOT(PCB STREQUAL HORUS) AND language STREQUAL "cz")
     set(language cz_reduced)
   endif()
-  add_custom_command(
-    OUTPUT ${target}
-    COMMAND python ${RADIO_DIRECTORY}/util/translate.py ${translation} ${target} ${language}
-    DEPENDS ${translation}
-  )
+  if(PYTHONINTERP_FOUND)
+    add_custom_command(
+      OUTPUT ${target}
+      COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/translate.py ${translation} ${target} ${language}
+      DEPENDS ${translation}
+      )
+  endif()
   list(APPEND translations_files ${target})
 endforeach()
 

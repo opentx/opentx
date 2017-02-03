@@ -40,7 +40,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   setWindowTitle(tr("Edit %1").arg(modelPrinter.printInputName(ed->chn)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
     gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
     gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
   }
@@ -82,7 +82,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   }
 
   if (firmware->getCapability(VirtualInputs)) {
-    ui->inputName->setMaxLength(4);
+    ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
     populateSourceCB(ui->sourceCB, ed->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | 
                                                   POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
     ui->sourceCB->removeItem(0);
@@ -127,8 +127,9 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   for (int i=0; i<9; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
-  if (firmware->getCapability(VirtualInputs))
+  if (firmware->getCapability(VirtualInputs)) {
     connect(ui->inputName, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
+  }
 
   QTimer::singleShot(0, this, SLOT(shrink()));
 }

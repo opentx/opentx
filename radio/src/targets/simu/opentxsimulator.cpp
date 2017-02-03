@@ -58,12 +58,10 @@ OpenTxSimulator::OpenTxSimulator()
 {
 }
 
-void OpenTxSimulator::setSdPath(const QString &sdPath)
+void OpenTxSimulator::setSdPath(const QString & sdPath, const QString & settingsPath)
 {
-#if defined(SDCARD)
-  strncpy(simuSdDirectory, sdPath.toLatin1().constData(), sizeof(simuSdDirectory)-1);
-  simuSdDirectory[sizeof(simuSdDirectory)-1] = '\0';
-#endif
+  simuSdDirectory = sdPath;
+  simuSettingsDirectory = settingsPath;
 }
 
 void OpenTxSimulator::setVolumeGain(int value)
@@ -106,7 +104,7 @@ void OpenTxSimulator::start(const char * filename, bool tests)
 
   StartEepromThread(filename);
   StartAudioThread(volumeGain);
-  StartSimu(tests);
+  StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
 }
 
 void OpenTxSimulator::stop()
@@ -158,6 +156,11 @@ void OpenTxSimulator::wheelEvent(int steps)
 {
 #if defined(ROTARY_ENCODER_NAVIGATION)
   ROTARY_ENCODER_NAVIGATION_VALUE += steps * ROTARY_ENCODER_GRANULARITY;
+#else
+  if (steps > 0)
+    simuSetKey(KEY_MINUS, 1);
+  else if (steps < 0)
+    simuSetKey(KEY_PLUS, 1);
 #endif
 }
 
@@ -251,18 +254,18 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return QString(SIMULATOR_FLAVOUR);
     }
 
-    virtual BoardEnum type()
+    virtual Board::Type type()
     {
 #if defined(PCBHORUS)
-      return BOARD_HORUS;
+      return Board::BOARD_HORUS;
 #elif defined(PCBFLAMENCO)
-      return BOARD_FLAMENCO;
+      return Board::BOARD_FLAMENCO;
 #elif defined(PCBX7)
-      return BOARD_TARANIS_X7;
+      return Board::BOARD_TARANIS_X7;
 #elif defined(PCBTARANIS)
-      return BOARD_TARANIS_X9D;
+      return Board::BOARD_TARANIS_X9D;
 #else
-      return BOARD_STOCK;
+      return Board::BOARD_STOCK;
 #endif
     }
 };

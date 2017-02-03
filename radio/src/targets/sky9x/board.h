@@ -55,7 +55,9 @@ enum EnumKeys
   KEY_ENTER=KEY_MENU,
   KEY_EXIT,
   KEY_DOWN,
+  KEY_MINUS = KEY_DOWN,
   KEY_UP,
+  KEY_PLUS = KEY_UP,
   KEY_RIGHT,
   KEY_LEFT,
   
@@ -374,7 +376,7 @@ void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
 void debugPutc(const char c);
 
 // Telemetry driver
-void telemetryPortInit(uint32_t baudrate, int mode);
+void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );

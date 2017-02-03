@@ -228,7 +228,12 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_SUBTYPE_HONTAI    (OFS_SUBTYPE_MJXQ + sizeof(TR_SUBTYPE_MJXQ))
   #define OFS_SUBTYPE_AFHDS2A   (OFS_SUBTYPE_HONTAI + sizeof(TR_SUBTYPE_HONTAI))
   #define OFS_SUBTYPE_Q2X2      (OFS_SUBTYPE_AFHDS2A + sizeof(TR_SUBTYPE_AFHDS2A))
-  #define OFS_VOLTSRC           (OFS_SUBTYPE_Q2X2 + sizeof(TR_SUBTYPE_Q2X2))
+  #define OFS_SUBTYPE_Q303      (OFS_SUBTYPE_Q2X2 + sizeof(TR_SUBTYPE_Q2X2))
+  #define OFS_SUBTYPE_WK2x01    (OFS_SUBTYPE_Q303 + sizeof(TR_SUBTYPE_Q303))
+  #define OFS_SUBTYPE_V2X2      (OFS_SUBTYPE_WK2x01 + sizeof(TR_SUBTYPE_WK2x01))
+  #define OFS_SUBTYPE_BAYANG    (OFS_SUBTYPE_V2X2 + sizeof(TR_SUBTYPE_V2X2))
+  #define OFS_SUBTYPE_FY326     (OFS_SUBTYPE_BAYANG + sizeof(TR_SUBTYPE_BAYANG))
+  #define OFS_VOLTSRC           (OFS_SUBTYPE_FY326 + sizeof(TR_SUBTYPE_FY326))
 #else
   #define OFS_VOLTSRC           (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
 #endif
@@ -365,6 +370,11 @@ extern const pm_char STR_OPEN9X[];
   #define STR_SUBTYPE_HONTAI    (STR_OPEN9X + OFS_SUBTYPE_HONTAI)
   #define STR_SUBTYPE_AFHDS2A   (STR_OPEN9X + OFS_SUBTYPE_AFHDS2A)
   #define STR_SUBTYPE_Q2X2      (STR_OPEN9X + OFS_SUBTYPE_Q2X2)
+  #define STR_SUBTYPE_Q303      (STR_OPEN9X + OFS_SUBTYPE_Q303)
+  #define STR_SUBTYPE_WK2x01    (STR_OPEN9X + OFS_SUBTYPE_WK2x01)
+  #define STR_SUBTYPE_V2X2      (STR_OPEN9X + OFS_SUBTYPE_V2X2)
+  #define STR_SUBTYPE_BAYANG    (STR_OPEN9X + OFS_SUBTYPE_BAYANG)
+  #define STR_SUBTYPE_FY326     (STR_OPEN9X + OFS_SUBTYPE_FY326)
 #endif
   #define STR_CURVE_TYPES       (STR_OPEN9X + OFS_CURVE_TYPES)
   #define STR_VSENSORTYPES      (STR_OPEN9X + OFS_VSENSORTYPES)
@@ -606,9 +616,17 @@ extern const pm_char STR_MULTI_OPTION[];
 extern const pm_char STR_MULTI_VIDFREQ[];
 extern const pm_char STR_MULTI_RFPOWER[];
 extern const pm_char STR_MULTI_RFTUNE[];
+extern const pm_char STR_MULTI_TELEMETRY[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
+extern const pm_char STR_DISABLE_INTERNAL[];
+extern const pm_char STR_MODULE_NO_SERIAL_MODE[];
+extern const pm_char STR_MODULE_NO_INPUT[];
+extern const pm_char STR_MODULE_NO_TELEMETRY[];
+extern const pm_char STR_MODULE_BINDING[];
+extern const pm_char STR_PROTOCOL_INVALID[];
+extern const pm_char STR_MODULE_STATUS[];
 extern const pm_char STR_MULTI_SERVOFREQ[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
@@ -710,9 +728,9 @@ extern const pm_char STR_RESET_BTN[];
   extern const pm_char STR_BACKUP_MODEL[];
   extern const pm_char STR_RESTORE_MODEL[];
   extern const pm_char STR_DELETE_ERROR[];
+  extern const pm_char STR_SDCARD_ERROR[];
   extern const pm_char STR_NO_SDCARD[];
   extern const pm_char STR_SDCARD_FULL[];
-extern const pm_char STR_SDCARD_NOWIZ[];
   extern const pm_char STR_INCOMPATIBLE[];
   extern const pm_char STR_LOGS_PATH[];
   extern const pm_char STR_LOGS_EXT[];
@@ -721,7 +739,6 @@ extern const pm_char STR_SDCARD_NOWIZ[];
   #define STR_UPDATE_LIST STR_DELAYDOWN
 #endif
 
-extern const pm_char STR_SDCARD_ERROR[];
 extern const pm_char STR_CAT_NOT_EMPTY[];
 extern const pm_char STR_WARNING[];
 extern const pm_char STR_STORAGE_WARNING[];

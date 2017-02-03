@@ -1,7 +1,10 @@
 set(LUA "NO" CACHE STRING "Lua scripts (YES/NO/NO_MODEL_SCRIPTS)")
-option(LUA_COMPILER "Pre-compile and save Lua scripts" OFF)
+set_property(CACHE LUA PROPERTY STRINGS YES NO NO_MODEL_SCRIPTS)
 set(LUA_SCRIPT_LOAD_MODE "" CACHE STRING "Script loading mode and compilation flags [btTxcd] (see loadScript() API docs). Blank for default ('bt' on radio, 'T' on SIMU/DEBUG builds)")
 set(USB "JOYSTICK" CACHE STRING "USB option (JOYSTICK/MASSSTORAGE/SERIAL)")
+set_property(CACHE USB PROPERTY STRINGS JOYSTICK MASSSTORAGE SERIAL)
+option(LUA_COMPILER "Pre-compile and save Lua scripts" OFF)
+
 set(ARCH ARM)
 set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.2.0/Libraries)
 add_definitions(-DSTM32 -DLUA_INPUTS -DVARIO -DSBUS -DCROSSFIRE)
