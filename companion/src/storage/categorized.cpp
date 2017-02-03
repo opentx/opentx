@@ -114,24 +114,16 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
 
 bool CategorizedStorageFormat::write(const RadioData & radioData)
 {
-  // models.txt
-  QByteArray modelsList;
-  int currentCategoryIndex = -1;
+  QByteArray modelsList;   // models.txt
+  QByteArray radioSettingsData; // radio.bin
+  size_t numModels = radioData.models.size();
+  size_t numCategories = radioData.categories.size();
+  std::vector<std::vector<QString>> sortedModels(numCategories);
 
-  // radio.bin
-  QByteArray radioSettingsData;
   writeRadioSettingsToByteArray(radioData.generalSettings, radioSettingsData);
   if (!writeFile(radioSettingsData, "RADIO/radio.bin")) {
     return false;
   }
-
-  // Iterate through all models, writing to their .bin files. Because radioData
-  // isn't sorted w.r.t categories, we have to build up sortedModels so ww can
-  // write models.txt in the correct order. We use category index '-1' to handle
-  // all the models that have no category.
-  unsigned int numModels = radioData.models.size();
-  unsigned int numCategories = radioData.categories.size();
-  std::map<int, std::vector<int>> sortedModels;
 
   for (unsigned int m=0; m<numModels; m++) {
     const ModelData & model = radioData.models[m];
@@ -144,32 +136,27 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
       return false;
     }
 
-    currentCategoryIndex = getCurrentFirmware()->getCapability(HasModelCategories) ?
-                  model.category : -1;
-    sortedModels[currentCategoryIndex].push_back(m);
+    // For firmware that doesn't support categories, we can just construct
+    // models.txt as we iterate thru the models vector. For firmware that does
+    // support categories, we have a bit of work to do in order to sort the
+    // models first by category index, so we use the sortedModels data
+    // structure to do that.
+    if (!getCurrentFirmware()->getCapability(HasModelCategories)) {
+      // Use format with model number and file name. This is needed because
+      // radios without category support can have unused model slots
+      modelsList.append(QString("%1 %2\n").arg(m).arg(model.filename));
+    } else {
+      sortedModels[model.category].push_back(QString("%1\n").arg(model.filename));
+    }
   }
 
-  for (int c= -1; c < (int)numCategories; c++) {
-
-    if (c > -1 && getCurrentFirmware()->getCapability(HasModelCategories)) {
+  if (getCurrentFirmware()->getCapability(HasModelCategories)) {
+    for (int c= 0; c<numCategories; c++) {
       modelsList.append(QString().sprintf("[%s]\n", radioData.categories[c].name));
-    }
-
-    numModels = sortedModels[c].size();
-    for (unsigned int m=0; m<numModels; m++) {
-      const ModelData & model = radioData.models[sortedModels[c][m]];
-      QString line;
-      if (IS_HORUS(getCurrentBoard())) {
-        line = QString("%1\n").arg(model.filename);
+      numModels = sortedModels[c].size();
+      for (unsigned int m=0; m<numModels; m++) {
+        modelsList.append(sortedModels[c][m]);
       }
-      else {
-        // use format with model number and file name
-        // this is needed, because this kind of radios can have unused model slots
-        // NOTE: The model number will only be unique within a category
-        line = QString("%1\n").arg(model.filename);
-
-      }
-      modelsList.append(line);
     }
   }
 
