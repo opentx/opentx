@@ -1,4 +1,8 @@
 
+* {
+  font-size: 11pt;
+}
+
 QToolButton {
   border: .05em solid #8f8f91;
   border-radius: .3em;

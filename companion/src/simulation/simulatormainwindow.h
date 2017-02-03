@@ -7,8 +7,6 @@
 #include <QMainWindow>
 #include <QPointer>
 
-#define SIMULATOR_WINDOW_STATE_VERSION    1
-
 class DebugOutput;
 class RadioData;
 class RadioOutputsWidget;
@@ -40,19 +38,19 @@ class SimulatorMainWindow : public QMainWindow
 
   public slots:
     void start();
-    void saveWindowState();
     void showRadioTitlebar(bool show);
+    void toggleMenuBar(bool show);
 
-  protected:
+  protected slots:
     virtual void closeEvent(QCloseEvent *);
     virtual void changeEvent(QEvent *e);
-
-  private slots:
+    void restoreUiState();
+    void saveUiState();
     void luaReload(bool);
     void openJoystickDialog(bool);
     void showHelp(bool show);
 
-  private:
+  protected:
     void createDockWidgets();
     void addTool(QDockWidget * widget, Qt::DockWidgetArea area, QIcon icon = QIcon(), QKeySequence shortcut = QKeySequence());
 
@@ -73,7 +71,9 @@ class SimulatorMainWindow : public QMainWindow
     int m_radioProfileId;
     bool m_firstShow;
     bool m_showRadioTitlebar;
+    bool m_showMenubar;
 
+    const static quint16 m_savedUiStateVersion;
 };
 
 #endif // SIMULATORMAINWINDOW_H

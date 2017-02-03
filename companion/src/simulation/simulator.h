@@ -123,13 +123,13 @@ struct SimulatorOptions
     QString dataFile;
     QString dataFolder;
     QString sdPath;
-    QByteArray windowGeometry;
+    QByteArray windowGeometry;        // SimulatorMainWindow geometry
     QList<QByteArray> controlsState;  // saved switch/pot/stick settings
     QColor lcdColor;
     // added in v2
-    QByteArray windowState;
-    QByteArray dbgConsoleState;
-    QByteArray radioOutputsState;
+    QByteArray windowState;           // SimulatorMainWindow dock/toolbar/options UI state
+    QByteArray dbgConsoleState;       // DebugOutput UI state
+    QByteArray radioOutputsState;     // RadioOutputsWidget UI state
 
     friend QDataStream & operator << (QDataStream &out, const SimulatorOptions & o)
     {

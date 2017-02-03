@@ -6,10 +6,19 @@ QMainWindow::separator,
 QSplitter::handle {
   border: .05em solid palette(dark);
 }
-QMainWindow::separator {
+
+QMainWindow::separator:horizontal {
   height: .15em;
+  margin: .2em 0em;
+  border-left: 0;
+  border-right: 0;
+}
+
+QMainWindow::separator:vertical {
   width: .15em;
-  margin: .2em;
+  margin: 0em .2em;
+  border-top: 0;
+  border-bottom: 0;
 }
 
 QSplitter[orientation="1"]::handle,
@@ -17,6 +26,8 @@ QSplitter[orientation="1"] QSplitterHandle {
   margin: 0em .15em 0em;
   max-width: .15em;
   min-width: .15em;
+  border-top: 0;
+  border-bottom: 0;
 }
 
 QSplitter[orientation="2"]::handle,
@@ -24,6 +35,8 @@ QSplitter[orientation="2"] QSplitterHandle {
   margin: .15em 0em 0em;
   max-height: .15em;
   min-height: .15em;
+  border-left: 0;
+  border-right: 0;
 }
 
 QSplitterHandle:hover {}

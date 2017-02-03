@@ -14,7 +14,7 @@
    <string>OpenTx Simulator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../companion.qrc">
+   <iconset>
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -79,7 +79,7 @@
   </widget>
   <action name="actionReloadLua">
    <property name="icon">
-    <iconset resource="../companion.qrc">
+    <iconset>
      <normaloff>:/images/simulator/icons/svg/reload_script.svg</normaloff>:/images/simulator/icons/svg/reload_script.svg</iconset>
    </property>
    <property name="text">
@@ -94,7 +94,7 @@
   </action>
   <action name="actionReloadRadioData">
    <property name="icon">
-    <iconset resource="../companion.qrc">
+    <iconset>
      <normaloff>:/images/simulator/icons/svg/restart.svg</normaloff>:/images/simulator/icons/svg/restart.svg</iconset>
    </property>
    <property name="text">
@@ -109,7 +109,7 @@
   </action>
   <action name="actionShowKeymap">
    <property name="icon">
-    <iconset resource="../companion.qrc">
+    <iconset>
      <normaloff>:/images/simulator/icons/svg/info.svg</normaloff>:/images/simulator/icons/svg/info.svg</iconset>
    </property>
    <property name="text">
@@ -124,7 +124,7 @@
   </action>
   <action name="actionJoystickSettings">
    <property name="icon">
-    <iconset resource="../companion.qrc">
+    <iconset>
      <normaloff>:/images/simulator/icons/svg/joystick_settings.svg</normaloff>:/images/simulator/icons/svg/joystick_settings.svg</iconset>
    </property>
    <property name="text">
@@ -139,7 +139,7 @@
   </action>
   <action name="actionScreenshot">
    <property name="icon">
-    <iconset resource="../companion.qrc">
+    <iconset>
      <normaloff>:/images/simulator/icons/svg/camera.svg</normaloff>:/images/simulator/icons/svg/camera.svg</iconset>
    </property>
    <property name="text">
@@ -163,9 +163,21 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The title bar on the main radio window allows you to undock it or move it around separately from the other windows. Hiding the title makes a more compact and streamlined appearance.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </action>
+  <action name="actionToggleMenuBar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Menu Bar</string>
+   </property>
+   <property name="toolTip">
+    <string>Show or hide the top menu bar.</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+M</string>
+   </property>
+  </action>
  </widget>
- <resources>
-  <include location="../companion.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

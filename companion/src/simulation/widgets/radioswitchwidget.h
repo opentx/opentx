@@ -76,7 +76,7 @@ class RadioSwitchWidget : public RadioWidget
         lockBtn->setToolTip(tr("Latch/unlatch the momentary switch."));
 
         QWidget * container = new QWidget(this);
-        container->setFixedHeight(50);
+        container->setFixedHeight(56);
         container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         QVBoxLayout * cl = new QVBoxLayout(container);
         cl->setContentsMargins(0, 0, 0, 0);
@@ -92,7 +92,7 @@ class RadioSwitchWidget : public RadioWidget
         connect(this, &RadioWidget::flagsChanged, lockBtn, &QToolButton::setChecked);
       }
       else {
-        m_slider->setFixedHeight(50);
+        m_slider->setFixedHeight(56);
         setWidget(m_slider);
       }
 

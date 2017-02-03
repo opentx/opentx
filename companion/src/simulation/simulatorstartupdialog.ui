@@ -2,9 +2,17 @@
 <ui version="4.0">
  <class>SimulatorStartupDialog</class>
  <widget class="QDialog" name="SimulatorStartupDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>217</height>
+   </rect>
+  </property>
   <property name="minimumSize">
    <size>
-    <width>597</width>
+    <width>550</width>
     <height>0</height>
    </size>
   </property>
@@ -171,7 +179,7 @@ The radio type specified in the selected profile is used by default.</string>
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="../companion.qrc">
+            <iconset>
              <normaloff>:/themes/monoblue/16/open.png</normaloff>:/themes/monoblue/16/open.png</iconset>
            </property>
            <property name="toolButtonStyle">
@@ -223,7 +231,7 @@ New folder(s) with default radio/model will be created here if necessary.</strin
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="../companion.qrc">
+            <iconset>
              <normaloff>:/themes/monoblue/16/open.png</normaloff>:/themes/monoblue/16/open.png</iconset>
            </property>
            <property name="toolButtonStyle">
@@ -275,7 +283,7 @@ The default is configured in the chosen Radio Profile.</string>
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="../companion.qrc">
+            <iconset>
              <normaloff>:/themes/monoblue/16/open.png</normaloff>:/themes/monoblue/16/open.png</iconset>
            </property>
            <property name="toolButtonStyle">
@@ -361,9 +369,7 @@ The default is configured in the chosen Radio Profile.</string>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../companion.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>buttonBox</sender>
