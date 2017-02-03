@@ -212,15 +212,15 @@ void SimulatorMainWindow::createDockWidgets()
     addTool(m_trainerDockWidget, Qt::TopDockWidgetArea, icon, QKeySequence(tr("F5")));
   }
 
-//  if (!m_consoleDockWidget) {
-//    SimulatorIcon icon("console");
-//    m_consoleDockWidget = new QDockWidget(tr("Debug Output"), this);
-//    m_consoleWidget = new DebugOutput(this, m_simulator);
-//    m_consoleWidget->setWindowIcon(icon);
-//    m_consoleDockWidget->setWidget(m_consoleWidget);
-//    m_consoleDockWidget->setObjectName("CONSOLE");
-//    addTool(m_consoleDockWidget, Qt::RightDockWidgetArea, icon, QKeySequence(tr("F6")));
-//  }
+  if (!m_consoleDockWidget) {
+    SimulatorIcon icon("console");
+    m_consoleDockWidget = new QDockWidget(tr("Debug Output"), this);
+    m_consoleWidget = new DebugOutput(this, m_simulator);
+    m_consoleWidget->setWindowIcon(icon);
+    m_consoleDockWidget->setWidget(m_consoleWidget);
+    m_consoleDockWidget->setObjectName("CONSOLE");
+    addTool(m_consoleDockWidget, Qt::RightDockWidgetArea, icon, QKeySequence(tr("F6")));
+  }
 }
 
 void SimulatorMainWindow::addTool(QDockWidget * widget, Qt::DockWidgetArea area, QIcon icon, QKeySequence shortcut)

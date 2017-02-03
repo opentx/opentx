@@ -428,7 +428,9 @@ QString Profile::groupId()
 // ** AppData class********************
 
 // Get declarations
-QStringList AppData::recentFiles() { return _recentFiles;     }
+QStringList AppData::recentFiles()    { return _recentFiles;     }
+QStringList AppData::simuDbgFilters() { return _simuDbgFilters;  }
+
 QByteArray AppData::mainWinGeo()   { return _mainWinGeo;      }
 QByteArray AppData::mainWinState() { return _mainWinState;    }
 QByteArray AppData::modelEditGeo() { return _modelEditGeo;    }
@@ -479,6 +481,8 @@ int AppData::sessionId()           { return _sessionId;       }
 
 // Set declarations
 void AppData::recentFiles     (const QStringList x) { store(x, _recentFiles,     "recentFileList"          );}
+void AppData::simuDbgFilters  (const QStringList x) { store(x, _simuDbgFilters,  "simuDbgFilters"          );}
+
 void AppData::mainWinGeo      (const QByteArray  x) { store(x, _mainWinGeo,      "mainWindowGeometry"      );}
 void AppData::mainWinState    (const QByteArray  x) { store(x, _mainWinState,    "mainWindowState"         );}
 void AppData::modelEditGeo    (const QByteArray  x) { store(x, _modelEditGeo,    "modelEditGeometry"       );}
@@ -671,6 +675,8 @@ void AppData::init()
     getset( _tempString,      "settings_version"        ,"220" ); // This is a version marker. Will be used to upgrade the settings later on.
 
     getset( _recentFiles,     "recentFileList"          ,"" );
+    getset( _simuDbgFilters,  "simuDbgFilters"          ,"" );
+
     getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
     getset( _mainWinState,    "mainWindowState"         ,"" );
     getset( _modelEditGeo,    "modelEditGeometry"       ,"" );

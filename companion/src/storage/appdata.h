@@ -250,6 +250,8 @@ class AppData: protected CompStoreObj
 
   private:
     QStringList _recentFiles;
+    QStringList _simuDbgFilters;
+
     QByteArray _mainWinGeo;
     QByteArray _mainWinState;
     QByteArray _modelEditGeo;
@@ -302,6 +304,8 @@ class AppData: protected CompStoreObj
   public:
     // All the get definitions
     QStringList recentFiles();
+    QStringList simuDbgFilters();
+
     QByteArray mainWinGeo();
     QByteArray mainWinState();
     QByteArray modelEditGeo();
@@ -353,6 +357,8 @@ class AppData: protected CompStoreObj
 
     // All the set definitions
     void recentFiles     (const QStringList x);
+    void simuDbgFilters  (const QStringList x);
+
     void mainWinGeo      (const QByteArray);
     void mainWinState    (const QByteArray);
     void modelEditGeo    (const QByteArray);
