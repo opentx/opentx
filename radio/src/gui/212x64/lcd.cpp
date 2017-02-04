@@ -726,9 +726,10 @@ void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags
 void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
 {
   uint32_t absvalue = abs(value);
+  att &= ~RIGHT;
+  if (x > 10) x-=10;
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
   lcdDrawChar(lcdLastPos, y, '@', att);
-  att &= ~RIGHT;
   absvalue = absvalue % 1000000;
   absvalue *= 60;
   if (g_eeGeneral.gpsFormat == 0 || !seconds) {
