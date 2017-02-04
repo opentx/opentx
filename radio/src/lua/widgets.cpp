@@ -82,21 +82,51 @@ ZoneOption * createOptionsArray(int reference)
             luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
             luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
             option->type = (ZoneOption::Type)lua_tointeger(lsWidgets, -1);
+            if (option->type > ZoneOption::Color) {
+              // wrong type
+              option->type = ZoneOption::Integer;
+            }
+            if (option->type == ZoneOption::Integer) {
+              // set some sensible defaults (only Integer actually uses them)
+              option->deflt.signedValue = 0;
+              option->min.signedValue = -100;
+              option->max.signedValue = 100;
+            }
             break;
           case 2:
             luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-            option->deflt.signedValue = lua_tointeger(lsWidgets, -1);
+            if (option->type == ZoneOption::Integer) {
+              luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+              option->deflt.signedValue = lua_tointeger(lsWidgets, -1);
+            }
+            else if (option->type == ZoneOption::Source ||
+                     option->type == ZoneOption::TextSize ||
+                     option->type == ZoneOption::Source ||
+                     option->type == ZoneOption::Color) {
+              luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+              option->deflt.unsignedValue = lua_tounsigned(lsWidgets, -1);
+            }
+            else if (option->type == ZoneOption::Bool) {
+              luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+              option->deflt.boolValue = (lua_tounsigned(lsWidgets, -1) != 0);
+            }
+            else if (option->type == ZoneOption::String) {
+              strncpy(option->deflt.stringValue, lua_tostring(lsWidgets, -1), sizeof(option->deflt.stringValue)-1);
+            }
             break;
           case 3:
-            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-            option->min.signedValue = lua_tointeger(lsWidgets, -1);
+            if (option->type == ZoneOption::Integer) {
+              luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+              luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+              option->min.signedValue = lua_tointeger(lsWidgets, -1);
+            }
             break;
           case 4:
-            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-            option->max.signedValue = lua_tointeger(lsWidgets, -1);
+            if (option->type == ZoneOption::Integer) {
+              luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+              luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+              option->max.signedValue = lua_tointeger(lsWidgets, -1);
+            }
             break;
         }
       }
