@@ -218,7 +218,7 @@ void processMultiTelemetryData(const uint8_t data)
       } else if (data == 0x55 || data == 0x7e) {
         multiTelemetryBufferState = guessProtocol();
         if (multiTelemetryBufferState == FrskyTelemetryFallbackFirstByte)
-          processFrskyTelemetryData(data);
+          processTelemetryData(data);
       } else {
         TRACE("[MP] invalid start byte 0x%02X", data);
       }
@@ -228,7 +228,7 @@ void processMultiTelemetryData(const uint8_t data)
       multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
 
     case FrskyTelemetryFallbackNextBytes:
-      processFrskyTelemetryData(data);
+      processTelemetryData(data);
       if (data == 0x7e)
         // might start a new packet
         multiTelemetryBufferState = FrskyTelemetryFallbackFirstByte;
