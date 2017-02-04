@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="zh_CN">
+<TS version="2.0" language="zh_CN">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -451,7 +451,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="901"/>
         <source>Use Companion nightly builds</source>
-        <translation>使用每天最新的 [nightly builds] 的 Companion 固件</translation>
+        <translation>使用每天最新的 [nightly builds] 的 Companion 软件</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="912"/>
@@ -1236,13 +1236,13 @@ Mode 4:
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Flight modes</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>飞行模式  [Modes]</translation>
+        <translation>飞行模式   [Modes]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
         <source>Input name</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>输入名称      [Input]</translation>
+        <translation>输入名称   [Input]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="52"/>
@@ -1262,7 +1262,7 @@ Mode 4:
         <location filename="../modeledit/expodialog.ui" line="98"/>
         <source>Weight</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>比例           [Weight]</translation>
+        <translation>比例       [Weight]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="262"/>
@@ -1282,7 +1282,7 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
         <location filename="../modeledit/expodialog.ui" line="277"/>
         <source>Stick Side</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>摇杆作用于   [Side]</translation>
+        <translation>摇杆作用于 [Side]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="285"/>
@@ -1306,13 +1306,13 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
         <location filename="../modeledit/expodialog.ui" line="348"/>
         <source>Scale</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>缩放               [Scale]</translation>
+        <translation>缩放       [Scale]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
         <source>Include Trim</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>微调                [Trim]</translation>
+        <translation>微调       [Trim]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
@@ -1324,13 +1324,13 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
         <location filename="../modeledit/expodialog.ui" line="368"/>
         <source>Yes</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>使用     [On]</translation>
+        <translation>使用    [On]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="376"/>
         <source>Curve</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>曲线             [Curve]</translation>
+        <translation>曲线       [Curve]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
@@ -1348,13 +1348,13 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
         <location filename="../modeledit/expodialog.ui" line="421"/>
         <source>Line name</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>此条名称        [Line]</translation>
+        <translation>此条名称   [Line]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="435"/>
         <source>Offset</source>
         <translatorcomment>Inputs对话框</translatorcomment>
-        <translation>偏移            [Offset]</translation>
+        <translation>偏移       [Offset]</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
@@ -2343,22 +2343,22 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="567"/>
         <source>Voice Language</source>
-        <translation>语音语言             [Voice Language]</translation>
+        <translation>语音语言         [Voice Language]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="577"/>
         <source>Country Code</source>
-        <translation>国家代码                 [Country Code]</translation>
+        <translation>国家代码           [Country Code]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="590"/>
         <source>Stick reverse</source>
-        <translation>反向摇杆                  [Stick Reverse]</translation>
+        <translation>反向摇杆          [Stick Reverse]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="597"/>
         <source>FAI Mode</source>
-        <translation>FAI 模式                           [FAI Mode]</translation>
+        <translation>FAI 模式               [FAI Mode]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="604"/>
@@ -2389,17 +2389,17 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="715"/>
         <source>Speaker Volume</source>
-        <translation>喇叭音量                            [Volume]</translation>
+        <translation>喇叭音量                 [Volume]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="722"/>
         <source>Backlight Switch</source>
-        <translation>背光开关                              [Switch]</translation>
+        <translation>背光开关                 [Switch]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="729"/>
         <source>Sound Mode</source>
-        <translation>声音模式                  [Sound Mode]</translation>
+        <translation>声音模式             [Sound Mode]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="738"/>
@@ -2414,7 +2414,7 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="767"/>
         <source>Speaker Pitch (spkr only)</source>
-        <translation>喇叭音调 (仅喇叭)                [Pitch]</translation>
+        <translation>喇叭音调 (仅喇叭)         [Pitch]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="786"/>
@@ -2429,7 +2429,7 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="802"/>
         <source>Backlight color</source>
-        <translation>背光颜色                                  [Color]</translation>
+        <translation>背光颜色                  [Color]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="810"/>
@@ -2480,22 +2480,22 @@ These will be relevant for all models in the same EEPROM.</source>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="967"/>
         <source>Backlight  Auto OFF after</source>
-        <translation>背光自动关闭时间         [Duration]</translation>
+        <translation>背光自动关闭时间       [Duration]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="974"/>
         <source>Backlight flash on alarm</source>
-        <translation>告警时背光闪烁                   [Alarm]</translation>
+        <translation>告警时背光闪烁            [Alarm]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="981"/>
         <source>Vario pitch at zero</source>
-        <translation>升降率为0时Vario音调        [Zero]</translation>
+        <translation>升降率为0时Vario音调       [Zero]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="995"/>
         <source>Vario repeat at zero</source>
-        <translation>升降率0时Vario重复率   [Repeat]</translation>
+        <translation>升降率0时Vario重复率     [Repeat]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1008"/>
@@ -2526,12 +2526,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1054"/>
         <source>Backlight Brightness</source>
-        <translation>背光亮度                       [Brightness]</translation>
+        <translation>背光亮度             [Brightness]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1061"/>
         <source>RotEnc Navigation</source>
-        <translation>旋转编码器导航                 [RotEnc]</translation>
+        <translation>旋转编码器导航           [RotEnc]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1072"/>
@@ -2607,7 +2607,7 @@ MODE4 模式4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1156"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
-        <translation>MODE4 模式4  ↕油门↔副翼   ↕升降↔方向</translation>
+        <translation>MODE4 模式4 ↕油门↔副翼   ↕升降↔方向</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1170"/>
@@ -2737,7 +2737,7 @@ MODE4 模式4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1300"/>
         <source>Stick Mode</source>
-        <translation>摇杆模式                              [MODE]</translation>
+        <translation>摇杆模式                [MODE]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1308"/>
@@ -2752,7 +2752,7 @@ MODE4 模式4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1327"/>
         <source>Default Channel Order</source>
-        <translation>默认通道顺序 [Default Ch Order]</translation>
+        <translation>默认通道顺序[Default Ch Order]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1334"/>
@@ -2781,57 +2781,57 @@ MODE4 模式4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1448"/>
         <source>Low Memory Warning</source>
-        <translation>内存低时开机告警[Memory Low]</translation>
+        <translation>内存低时开机告警  [Memory Low]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1467"/>
         <source>Inactivity Timer</source>
-        <translation>忘记关机定时器           [Inactivity]</translation>
+        <translation>忘记关机定时器    [Inactivity]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1486"/>
         <source>Show Splash Screen on Startup</source>
-        <translation>开机时显示开机画面 [Splash Scr]</translation>
+        <translation>显示开机画面   [Splash Screen]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1508"/>
         <source>Contrast</source>
-        <translation>显示屏对比度                [Contrast]</translation>
+        <translation>显示屏对比度        [Contrast]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1527"/>
         <source>Battery Meter Range</source>
-        <translation>遥控器电池图标范围        [Range]</translation>
+        <translation>遥控器电池图标范围     [Range]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1546"/>
         <source>Haptic Strength</source>
-        <translation>振动强度          [Haptic Strength]</translation>
+        <translation>振动强度     [Haptic Strength]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1565"/>
         <source>LCD Display Type</source>
-        <translation>LCD显示屏类型 [LCD Disp Type]</translation>
+        <translation>LCD显示屏类型  [LCD Disp Type]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1584"/>
         <source>&quot;No Sound&quot; Warning</source>
-        <translation>当静音时 开机告警    [Sound Off]</translation>
+        <translation>当静音时 开机告警  [Sound Off]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1606"/>
         <source>Battery Warning</source>
-        <translation>遥控器电量警告     [Battery Low]</translation>
+        <translation>遥控器电量警告   [Battery Low]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1625"/>
         <source>Haptic Length</source>
-        <translation>振动时长              [Haptic Length]</translation>
+        <translation>振动时长       [Haptic Length]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1638"/>
         <source>MAVLink Baud Rate</source>
-        <translation>MAVLink 波特率        [Baud Rate]</translation>
+        <translation>MAVLink 波特率     [Baud Rate]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1658"/>
@@ -3052,23 +3052,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2116"/>
         <source>Measurement Units</source>
-        <translation>单位制                                     [Units]</translation>
+        <translation>单位制                 [Units]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2148"/>
         <source>Haptic Mode</source>
         <translatorcomment>GeneralEdit</translatorcomment>
-        <translation>振动                         [Haptic Mode]</translation>
+        <translation>振动             [Haptic Mode]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2167"/>
         <source>Beeper Length</source>
-        <translation>蜂鸣时长                [Beep Length]</translation>
+        <translation>蜂鸣时长         [Beep Length]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2186"/>
         <source>Beeper Mode</source>
-        <translation>蜂鸣音                       [Beep Mode]</translation>
+        <translation>蜂鸣音             [Beep Mode]</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2211"/>
@@ -3474,27 +3474,27 @@ Are you sure ?</source>
     <message>
         <location filename="../modeledit/heli.ui" line="103"/>
         <source>Invert</source>
-        <translation>反向                    [Invert]</translation>
+        <translation>反向           [Invert]</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="123"/>
         <source>Swash Ring</source>
-        <translation>斜盘限位 [Swach RIng]</translation>
+        <translation>斜盘限位   [Swach RIng]</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="130"/>
         <source>Swash Type</source>
-        <translation>斜盘类型[Swach Type]</translation>
+        <translation>斜盘类型   [Swach Type]</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="166"/>
         <source>Lateral cyc</source>
-        <translation>横向循环螺距 [Lateral]</translation>
+        <translation>横向循环螺距  [Lateral]</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="231"/>
         <source>Collective</source>
-        <translation>总距            [Collective]</translation>
+        <translation>总距       [Collective]</translation>
     </message>
 </context>
 <context>
@@ -5004,28 +5004,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
         <source>Include Trim</source>
-        <translation>微调                     [Trim]</translation>
+        <translation>微调       [Trim]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="191"/>
         <source>Offset</source>
-        <translation>偏移                 [Offset]</translation>
+        <translation>偏移       [Offset]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="198"/>
         <source>Weight</source>
-        <translation>比例                [Weight]</translation>
+        <translation>比例       [Weight]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="362"/>
         <source>Name</source>
-        <translation>名称                  [Name]</translation>
+        <translation>名称       [Name]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="369"/>
         <source>Source</source>
         <translatorcomment>第一次出现 Mixer的主页条目概览中</translatorcomment>
-        <translation>输入源            [Source]</translation>
+        <translation>输入源     [Source]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="376"/>
@@ -5050,12 +5050,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="404"/>
         <source>Flight modes</source>
-        <translation>飞行模式        [Modes]</translation>
+        <translation>飞行模式   [Modes]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="411"/>
         <source>Switch</source>
-        <translation>开启开关         [Switch]</translation>
+        <translation>开启开关   [Switch]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
@@ -5067,8 +5067,8 @@ Setting this value will cause a beep to be emmitted when this value is active.</
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="430"/>
         <source>OFF</source>
-        <translatorcomment>MIX 混控中蜂鸣提示中的下拉列表  加后输出           ]</translatorcomment>
-        <translation>关闭         [OFF]</translation>
+        <translatorcomment>1声蜂鸣  [1]</translatorcomment>
+        <translation>关闭     [OFF]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="435"/>
@@ -5094,8 +5094,8 @@ Setting this value will cause a beep to be emmitted when this value is active.</
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="459"/>
         <source>Yes</source>
-        <translatorcomment>MixerDialog</translatorcomment>
-        <translation>使用     [On]</translation>
+        <translatorcomment>不使用 [OFF]</translatorcomment>
+        <translation>使用    [On]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="469"/>
@@ -5145,12 +5145,13 @@ This determines how mixer values are added.
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="521"/>
         <source>REPLACE</source>
-        <translation>取代前一行的输出值                        [Replace]</translation>
+        <translatorcomment>与前一行的输出值相乘后输出       [Multiply]</translatorcomment>
+        <translation>取代前一行的输出值               [Replace]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="536"/>
         <source>Curve</source>
-        <translation>曲线                   [Curve]</translation>
+        <translation>曲线       [Curve]</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="577"/>
@@ -5864,7 +5865,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/setup_module.ui" line="137"/>
         <source>Failsafe Mode</source>
-        <translation>失控保护方式       [Failsafe Mode]</translation>
+        <translation>失控保护方式 [Failsafe Mode]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="153"/>
@@ -5949,32 +5950,36 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/setup_module.ui" line="428"/>
         <source>Hold</source>
-        <translation>保持  [Hold]</translation>
+        <translatorcomment>自定义  [Custom]]]]]</translatorcomment>
+        <translation>保持          [Hold]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="433"/>
         <source>Custom</source>
-        <translation>自定义  [Custom]</translation>
+        <translatorcomment>自定义  [Custom]]]]]</translatorcomment>
+        <translation>自定义      [Custom]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="438"/>
         <source>No Pulses</source>
-        <translation>不输出脉冲  [No Pulses]</translation>
+        <translatorcomment>自定义  [Custom]]]]]</translatorcomment>
+        <translation>不输出脉冲 [No Puls]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="443"/>
         <source>Receiver</source>
-        <translation>接收机上设置  [Receiver]</translation>
+        <translatorcomment>自定义  [Custom]]]]]</translatorcomment>
+        <translation>接收机设置[Reciever]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="457"/>
         <source>Failsafe Positions</source>
-        <translation>失控保护位置  [Failsafe Positons]</translation>
+        <translation>失控保护位置 [F.s. Positons]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="473"/>
         <source>Protocol</source>
-        <translation>遥控器射频协议             [Protocol]</translation>
+        <translation>遥控器射频协议    [Protocol]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="540"/>
@@ -6917,7 +6922,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../eeprominterface.cpp" line="545"/>
         <source>MAX</source>
-        <translation>MAX  最大</translation>
+        <translation>MAX   最大</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="549"/>
@@ -7079,25 +7084,25 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../eeprominterface.cpp" line="608"/>
         <source>RudTrim Left</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>RudTrim Left    方向微调←</translation>
+        <translation>RudTrim Left  方向微调←</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="608"/>
         <source>RudTrim Right</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>RudTrim Right  方向微调→</translation>
+        <translation>RudTrim Right 方向微调→</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="609"/>
         <source>EleTrim Down</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>EleTrim Down  升降微调↓</translation>
+        <translation>EleTrim Down   升降微调↓</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="609"/>
         <source>EleTrim Up</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>EleTrim Up        升降微调↑</translation>
+        <translation>EleTrim Up     升降微调↑</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="610"/>
@@ -7109,19 +7114,19 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../eeprominterface.cpp" line="610"/>
         <source>ThrTrim Up</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>ThrTrim Up       油门微调↑</translation>
+        <translation>ThrTrim Up    油门微调↑</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="611"/>
         <source>AilTrim Left</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>AilTrim Left       副翼微调←</translation>
+        <translation>AilTrim Left   副翼微调←</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="611"/>
         <source>AilTrim Right</source>
         <translatorcomment>ThrTrim Down  油门微调↓</translatorcomment>
-        <translation>AilTrim Right    副翼微调→</translation>
+        <translation>AilTrim Right  副翼微调→</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="619"/>
@@ -7136,23 +7141,26 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../eeprominterface.cpp" line="648"/>
         <location filename="../generaledit/generalsetup.cpp" line="283"/>
         <source>ON</source>
-        <translatorcomment>计时器设置 Timer</translatorcomment>
-        <translation>ON    开启</translation>
+        <translatorcomment>OFF  关闭</translatorcomment>
+        <translation>ON   开启</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="620"/>
         <source>THs</source>
-        <translation>THs    油门激活</translation>
+        <translatorcomment>OFF  关闭</translatorcomment>
+        <translation>THs  油门激活</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="620"/>
         <source>TH%</source>
+        <translatorcomment>OFF  关闭</translatorcomment>
         <translation>TH%  油门比例</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="620"/>
         <source>THt</source>
-        <translation>THt    油门计时</translation>
+        <translatorcomment>OFF  关闭</translatorcomment>
+        <translation>THt  油门计时</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="652"/>
@@ -7199,122 +7207,122 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../eeprominterface.cpp" line="716"/>
         <source>a&gt;x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 ＞ 数值2           a&gt;x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="718"/>
         <source>a&lt;x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 ＜ 数值2           a&lt;x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="720"/>
         <source>|a|&gt;x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>|数值1| ＞ 数值2        |a|&gt;x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="722"/>
         <source>|a|&lt;x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>|数值1| ＜ 数值 2       |a|&lt;x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="724"/>
         <source>AND</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>与运算                          AND</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>与运算                   AND</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="726"/>
         <source>OR</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>或运算                          OR</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>或运算                   OR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="728"/>
         <source>XOR</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>异或运算                      XOR</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>异或运算                 XOR</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="730"/>
         <source>a=b</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 ＝ 数值2           a=b</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="732"/>
         <source>a!=b</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 !＝ 数值2          a!=b</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="734"/>
         <source>a&gt;b</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 ＞ 数值2           a&gt;b</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="736"/>
         <source>a&lt;b</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 ＜ 数值2           a&lt;b</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="738"/>
         <source>a&gt;=b</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>数值1 ≥ 数值2             a&gt;=b</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>数值1 ≥ 数值2           a&gt;=b</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="740"/>
         <source>a&lt;=b</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=xc</translatorcomment>
-        <translation>数值1 ≤ 数值2             a&lt;=b</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>数值1 ≤ 数值2           a&lt;=b</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="742"/>
         <source>d&gt;=x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>数值1变动   ≥ 数值2  d&gt;=x</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>数值1变动   ≥ 数值2     d&gt;=x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="744"/>
         <source>|d|&gt;=x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>|数值1变动| ≥ 数值2  d&gt;=x</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>|数值1变动| ≥ 数值2     d&gt;=x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="746"/>
         <source>a=x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
         <translation>数值1 ＝ 数值2           a=x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="748"/>
         <source>a~x</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>数值1  ≈  数值2           a~x</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>数值1  ≈  数值2         a~x</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="750"/>
         <source>Timer</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>定时开关                      Timer</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>定时开关                 Timer</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="752"/>
         <source>Sticky</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>粘滞键                          Sticky</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>粘滞键                   Sticky</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="754"/>
         <source>Edge</source>
-        <translatorcomment>|数值1变动| ≥ 数值2  d&gt;=x</translatorcomment>
-        <translation>边沿触发                      EDGE</translation>
+        <translatorcomment>数值1 ＝ 数值2           a=x</translatorcomment>
+        <translation>边沿触发                 EDGE</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="756"/>
@@ -7325,163 +7333,163 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../eeprominterface.cpp" line="771"/>
         <source>Override %1</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>锁定通道值 %1     [Override]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="773"/>
         <source>Trainer</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>教练开关                 [Trainer]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>教练开关            [Trainer]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="775"/>
         <source>Trainer RUD</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>教练开关 方向       [Trainer RUD]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="777"/>
         <source>Trainer ELE</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>教练开关 升降       [Trainer ELE]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="779"/>
         <source>Trainer THR</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>教练开关 油门       [Trainer THR]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="781"/>
         <source>Trainer AIL</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>教练开关 副翼       [Trainer AIL]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="783"/>
         <source>Instant Trim</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>操纵杆位变微调    [Instant Trim]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>操纵杆位变微调      [Instant Trim]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="785"/>
         <source>Play Sound</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>播放蜂鸣                 [Play Sound]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>播放蜂鸣            [Play Sound]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="787"/>
         <source>Haptic</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>振动                          [Haptic]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>振动                [Haptic]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="789"/>
         <source>Reset</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>重设                          [Reset]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>重设                [Reset]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="791"/>
         <source>Set Timer %1</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>设定计时器%1          [Set Timer]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>设定计时器%1        [Set Timer]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="793"/>
         <source>Vario</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>开启 Vario 声音     [Vario]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="795"/>
         <source>Play Track</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>播放声音文件        [Play Track]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="797"/>
         <source>Play Both</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>播放同时振动        [Play Both]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="799"/>
         <source>Play Value</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>播放数值                 [Play Value]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>播放数值            [Play Value]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="801"/>
         <source>Play Script</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>运行脚本                 [Play Script]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>运行脚本            [Play Script]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="803"/>
         <source>SD Logs</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>SD Log 记录           [SD Logs]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>SD Log 记录         [SD Logs]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="805"/>
         <source>Volume</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>音量                          [Volume]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>音量                [Volume]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="807"/>
         <source>Backlight</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>背光                          [Backlight]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>背光                [Backlight]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="809"/>
         <source>Screenshot</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>截屏                          [Screenshot]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>截屏                [Screenshot]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="811"/>
         <source>Background Music</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>背景音乐播放        [Bg Music]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="813"/>
         <source>Background Music Pause</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>背景音乐暂停        [Bg Music Pause]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="815"/>
         <source>Adjust GV%1</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
-        <translation>设定GV%1             [Adjust GV]</translation>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
+        <translation>设定GV%1            [Adjust GV]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="817"/>
         <source>SetFailsafe Int. Module</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>启动内置高频头失控保护  [SetFailsafe Int]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="819"/>
         <source>SetFailsafe Ext. Module</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>启动外置高频头失控保护  [SetFailsafe Ext]</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="821"/>
         <source>RangeCheck Int. Module</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>内置高频头拉距测试</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="823"/>
         <source>RangeCheck Ext. Module</source>
-        <translatorcomment>操纵杆位变微调    [Instant Trim]</translatorcomment>
+        <translatorcomment>操纵杆位变微调      [Instant Trim]</translatorcomment>
         <translation>外置高频头拉距测试</translation>
     </message>
     <message>
@@ -8618,12 +8626,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="105"/>
         <source>Use Trim from Flight mode %1</source>
-        <translation>使用FM%1的微调值</translation>
+        <translation>使用 FM%1 的微调值</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="107"/>
         <source>Use Trim from Flight mode %1 + Own Trim as an offset</source>
-        <translation>使用FM%1的微调值 + 单独的微调偏移值</translation>
+        <translation>使用 FM%1 的微调值 + 单独的微调偏移值</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="856"/>
@@ -9271,7 +9279,7 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
     <message>
         <location filename="../modeledit/setup.ui" line="531"/>
         <source>Trim Step</source>
-        <translation>微调步幅         [Trim Step]</translation>
+        <translation>微调步幅      [Trim Step]</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="547"/>
@@ -11911,7 +11919,7 @@ v4.1版电路板应为m2560</translation>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>
-        <translation>发射机开机画面编辑器</translation>
+        <translation>遥控器开机画面编辑器</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="209"/>
