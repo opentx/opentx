@@ -123,9 +123,15 @@ elif options[optcount] == "x9e":
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
-elif options[optcount] == "horus":
-    command_options["PCB"] = "HORUS"
-    firmware_options = options_horus
+elif options[optcount] == "x10":
+    command_options["PCB"] = "X10"
+    firmware_options = options_x10
+    maxsize = 2 * 1024 * 1024
+    board = BOARD_HORUS
+    board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "x12s":
+    command_options["PCB"] = "X12S"
+    firmware_options = options_x12s
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
