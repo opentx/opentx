@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -310,6 +310,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 {
   // Custom Screen with numbers
   uint8_t fields_count = 0;
+  lcdDrawSolidVerticalLine(63, 8, 48);
   for (uint8_t i=0; i<4; i++) {
     for (uint8_t j=0; j<NUM_LINE_ITEMS; j++) {
       source_t field = screen.lines[i].sources[j];
@@ -317,7 +318,6 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         fields_count++;
       }
       if (i==3) {
-        lcdDrawSolidVerticalLine(63, 8, 48);
         if (!TELEMETRY_STREAMING()) {
           displayRssiLine();
           return fields_count;
@@ -336,7 +336,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         else {
           drawSource(pos[j], 1+FH+2*FH*i, field, 0);
         }
-        
+
         if (field >= MIXSRC_FIRST_TELEM) {
           TelemetryItem & telemetryItem = telemetryItems[(field-MIXSRC_FIRST_TELEM)/3]; // TODO macro to convert a source to a telemetry index
           if (!telemetryItem.isAvailable()) {
@@ -457,7 +457,7 @@ bool displayTelemetryScreen()
     return false;
   }
 #endif
-  
+
 #if defined(CPUARM)
   if (TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_NONE) {
     return false;
