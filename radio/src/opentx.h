@@ -326,7 +326,7 @@ void memswap(void * a, void * b, uint8_t size);
 
 #if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7)
   #define PWR_BUTTON_DELAY
-  #define PWR_PRESS_SHUTDOWN           300 // 3s
+  #define PWR_PRESS_SHUTDOWN           100 // 1s
 #endif
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
