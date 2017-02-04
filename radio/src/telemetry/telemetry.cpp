@@ -61,7 +61,7 @@ lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 #else
 #define IS_TELEMETRY_INTERNAL_MODULE (false)
 #endif
-#if defined(CPUARM)
+
 void processTelemetryData(uint8_t data)
 {
 #if defined(CROSSFIRE)
@@ -84,7 +84,6 @@ void processTelemetryData(uint8_t data)
 #endif
   processFrskyTelemetryData(data);
 }
-#endif
 
 void telemetryWakeup()
 {
