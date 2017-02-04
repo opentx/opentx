@@ -19,13 +19,14 @@
  */
 
 #include <QApplication>
-//#include <QTranslator>
+#include <QTranslator>
+#include <QLibraryInfo>
 #include <QLocale>
 #include <QString>
 #include <QDir>
 #include <QDebug>
 #include <QTextStream>
-#include <QDialog>
+#include <QMessageBox>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
   #undef main
@@ -35,10 +36,11 @@
 #include "constants.h"
 #include "eeprominterface.h"
 #include "simulator.h"
-#include "simulatordialog.h"
+#include "simulatormainwindow.h"
 #include "simulatorstartupdialog.h"
 #include "storage.h"
 #include "qxtcommandoptions.h"
+#include "version.h"
 
 #ifdef WIN32
   #include <windows.h>
@@ -48,21 +50,6 @@
 #endif
 #if !defined(_MSC_VER) || defined(__GNUC__)
 #include <unistd.h>
-#endif
-
-#ifdef __APPLE__
-#include <QProxyStyle>
-
-class MyProxyStyle : public QProxyStyle
- {
-   public:
-    void polish ( QWidget * w ) {
-      QMenu* mn = dynamic_cast<QMenu*>(w);
-      QPushButton* pb = dynamic_cast<QPushButton*>(w);
-      if(!(mn || pb) && !w->testAttribute(Qt::WA_MacNormalSize))
-          w->setAttribute(Qt::WA_MacSmallSize);
-    }
- };
 #endif
 
 using namespace Simulator;
@@ -126,19 +113,12 @@ int main(int argc, char *argv[])
 
   g.init();
 
-#ifdef __APPLE__
-  app.setStyle(new MyProxyStyle);
-#endif
-
-  /* QTranslator companionTranslator;
-  companionTranslator.load(":/companion_" + locale);
+  QTranslator companionTranslator;
+  companionTranslator.load(":/companion_" + g.locale());
   QTranslator qtTranslator;
-  qtTranslator.load((QString)"qt_" + locale.left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  qtTranslator.load((QString)"qt_" + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   app.installTranslator(&companionTranslator);
   app.installTranslator(&qtTranslator);
-*/
-
-  // QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   uint32_t sdlFlags = 0;
@@ -269,23 +249,20 @@ int main(int argc, char *argv[])
 
   current_firmware_variant = getFirmware(simOptions.firmwareId);
 
-  int oldProfId = g.id();
-  g.id(profileId);
+  g.sessionId(profileId);
   g.simuLastProfId(profileId);
 
   int result = 1;
-  SimulatorDialog * dialog = new SimulatorDialog(NULL, simulator, SIMULATOR_FLAGS_STANDALONE);
-  dialog->setRadioProfileId(profileId);
-  if (dialog->setOptions(simOptions, true)) {
-    dialog->start();
-    dialog->show();
+  SimulatorMainWindow * mainWindow = new SimulatorMainWindow(NULL, simulator, SIMULATOR_FLAGS_STANDALONE);
+  if (mainWindow->setOptions(simOptions, true)) {
+    mainWindow->start();
+    mainWindow->show();
     result = app.exec();
   }
   else {
     result = 3;
   }
-  g.id(oldProfId);
-  delete dialog;
+  delete mainWindow;
   delete simulator;
 
   return finish(result);

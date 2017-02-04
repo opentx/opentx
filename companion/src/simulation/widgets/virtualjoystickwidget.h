@@ -33,9 +33,6 @@
 class Node;
 class SliderWidget;
 
-#define GBALL_SIZE  20
-#define RESX        1024
-
 class VirtualJoystickWidget : public QWidget
 {
   Q_OBJECT
@@ -55,7 +52,7 @@ class VirtualJoystickWidget : public QWidget
       FIX_Y
     };
 
-    explicit VirtualJoystickWidget(QWidget * parent = NULL, QChar side = 'L', bool showTrims = true, bool showBtns = true, bool showValues = true, QSize size = QSize(245, 245));
+    explicit VirtualJoystickWidget(QWidget * parent = NULL, QChar side = 'L', bool showTrims = true, bool showBtns = true, bool showValues = true, QSize size = QSize(125, 125));
 
     void setStickX(qreal x);
     void setStickY(qreal y);
@@ -70,17 +67,10 @@ class VirtualJoystickWidget : public QWidget
     int getTrimValue(int which);
 
     void setStickConstraint(int which, bool active);
+    void setStickColor(const QColor & color);
 
-    virtual QSize sizeHint() const
-    {
-      return prefSize;
-    }
-
-    virtual void resizeEvent(QResizeEvent *event)
-    {
-      QWidget::resizeEvent(event);
-      setSize(event->size());
-    }
+    virtual QSize sizeHint() const;
+    virtual void resizeEvent(QResizeEvent *event);
 
   signals:
     void trimButtonPressed(int which);
@@ -94,8 +84,7 @@ class VirtualJoystickWidget : public QWidget
     void updateNodeValueLabels();
 
   protected:
-    void setSize(QSize size);
-    void repositionNode();
+    void setSize(const QSize & size, const QSize &);
     QWidget * createTrimWidget(QChar type);
     QPushButton * createButtonWidget(int type);
     QLayout * createNodeValueLayout(QChar type, QLabel *& valLabel);

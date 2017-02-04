@@ -23,6 +23,7 @@
 
 #include "radiowidget.h"
 #include "boards.h"
+#include "simulator.h"
 
 #include <QSlider>
 #include <QTimer>
@@ -65,11 +66,8 @@ class RadioSwitchWidget : public RadioWidget
       m_slider->setValue(m_value);
 
       if (swType == Board::SWITCH_TOGGLE) {
-        QIcon icon;
-        icon.addFile(QStringLiteral(":/images/simulator/icons/8/lock-locked.png"), QSize(8, 8), QIcon::Normal, QIcon::On);
-        icon.addFile(QStringLiteral(":/images/simulator/icons/8/lock-unlocked.png"), QSize(8, 8), QIcon::Normal, QIcon::Off);
         QToolButton * lockBtn = new QToolButton(this);
-        lockBtn->setIcon(icon);
+        lockBtn->setIcon(Simulator::SimulatorIcon("toggle_lock"));
         lockBtn->setIconSize(QSize(8, 8));
         lockBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         lockBtn->setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -78,7 +76,7 @@ class RadioSwitchWidget : public RadioWidget
         lockBtn->setToolTip(tr("Latch/unlatch the momentary switch."));
 
         QWidget * container = new QWidget(this);
-        container->setFixedHeight(50);
+        container->setFixedHeight(56);
         container->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         QVBoxLayout * cl = new QVBoxLayout(container);
         cl->setContentsMargins(0, 0, 0, 0);
@@ -94,7 +92,7 @@ class RadioSwitchWidget : public RadioWidget
         connect(this, &RadioWidget::flagsChanged, lockBtn, &QToolButton::setChecked);
       }
       else {
-        m_slider->setFixedHeight(50);
+        m_slider->setFixedHeight(56);
         setWidget(m_slider);
       }
 

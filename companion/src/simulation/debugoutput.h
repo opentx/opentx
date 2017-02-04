@@ -21,30 +21,76 @@
 #ifndef _DEBUGOUTPUT_H_
 #define _DEBUGOUTPUT_H_
 
-#include <QtWidgets>
+#include "simulator.h"
 #include "simulatorinterface.h"
+
+#include <QMutex>
+#include <QTimer>
+#include <QValidator>
+#include <QWidget>
 
 namespace Ui {
   class DebugOutput;
 }
 
+class QAbstractButton;
 
-class DebugOutput : public QDialog
+using namespace Simulator;
+
+class DebugOutput : public QWidget
 {
   Q_OBJECT
 
   public:
-    explicit DebugOutput(QWidget * parent);
+    explicit DebugOutput(QWidget * parent, SimulatorInterface * simulator);
     virtual ~DebugOutput();
-    void traceCallback(const QString & text);
+    void start();
+    void stop();
+    void traceCallback(const char * text);
+
+    static QRegularExpression makeRegEx(const QString & input, bool * isExlusive = NULL);
+
+  protected slots:
+    void saveState();
+    void restoreState();
+    void processBytesReceived();
+    void onFilterTextEdited();
+    void onFilterTextChanged(const QString &);
+    void on_bufferSize_editingFinished();
+    void on_actionWordWrap_toggled(bool checked);
+    void on_actionClearScr_triggered();
+    void on_actionShowFilterHelp_triggered();
 
   protected:
-
-  private:
     Ui::DebugOutput * ui;
+    SimulatorInterface * m_simulator;
+    QTimer * m_tmrDataPrint;
+    QStringList m_dataBuffer;
+    QMutex m_mtxDataBuffer;
+    QRegularExpression m_filterRegEx;
 
-  private slots:
+    int m_radioProfileId;
+    int m_dataPrintFreq;
+    bool m_running;
+    bool m_filterExclude;
 
+    const static int m_dataBufferMaxSize;
+    const static int m_dataPrintFreqDefault;
+    const static quint16 m_savedViewStateVersion;
+};
+
+class DebugOutputFilterValidator : public QValidator
+{
+  public:
+    DebugOutputFilterValidator(QObject *parent = Q_NULLPTR) : QValidator(parent) { }
+    virtual State validate(QString & input, int &) const;
+};
+
+class DeleteComboBoxItemEventFilter : public QObject
+{
+  Q_OBJECT
+  protected:
+    bool eventFilter(QObject *obj, QEvent *event);
 };
 
 #endif // _DEBUGOUTPUT_H_

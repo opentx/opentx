@@ -18,6 +18,7 @@ RUN apt-get update && \
       qtmultimedia5-dev \
       qttools5-dev \
       qttools5-dev-tools \
+      libqt5svg5-dev \
       software-properties-common \
       wget \
       zip \

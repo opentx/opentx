@@ -250,6 +250,8 @@ class AppData: protected CompStoreObj
 
   private:
     QStringList _recentFiles;
+    QStringList _simuDbgFilters;
+
     QByteArray _mainWinGeo;
     QByteArray _mainWinState;
     QByteArray _modelEditGeo;
@@ -296,10 +298,14 @@ class AppData: protected CompStoreObj
     int _theme;
     int _warningId;
     int _simuLastProfId;
+    // currently loaded radio profile ID, NOT saved to persistent storage
+    int _sessionId;
 
   public:
     // All the get definitions
     QStringList recentFiles();
+    QStringList simuDbgFilters();
+
     QByteArray mainWinGeo();
     QByteArray mainWinState();
     QByteArray modelEditGeo();
@@ -347,9 +353,12 @@ class AppData: protected CompStoreObj
     int theme();
     int warningId();
     int simuLastProfId();
+    int sessionId();
 
     // All the set definitions
     void recentFiles     (const QStringList x);
+    void simuDbgFilters  (const QStringList x);
+
     void mainWinGeo      (const QByteArray);
     void mainWinState    (const QByteArray);
     void modelEditGeo    (const QByteArray);
@@ -398,6 +407,7 @@ class AppData: protected CompStoreObj
     void theme           (const int);
     void warningId       (const int);
     void simuLastProfId  (const int);
+    void sessionId       (const int);
 
     // Constructor
     AppData();

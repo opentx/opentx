@@ -1,0 +1,77 @@
+
+/*
+	 MainWindow separators and Splitter
+*/
+QMainWindow::separator,
+QSplitter::handle {
+  border: .05em solid palette(dark);
+}
+
+QMainWindow::separator:horizontal {
+  height: .15em;
+  margin: .2em 0em;
+  border-left: 0;
+  border-right: 0;
+}
+
+QMainWindow::separator:vertical {
+  width: .15em;
+  margin: 0em .2em;
+  border-top: 0;
+  border-bottom: 0;
+}
+
+QSplitter[orientation="1"]::handle,
+QSplitter[orientation="1"] QSplitterHandle {
+  margin: 0em .15em 0em;
+  max-width: .15em;
+  min-width: .15em;
+  border-top: 0;
+  border-bottom: 0;
+}
+
+QSplitter[orientation="2"]::handle,
+QSplitter[orientation="2"] QSplitterHandle {
+  margin: .15em 0em 0em;
+  max-height: .15em;
+  min-height: .15em;
+  border-left: 0;
+  border-right: 0;
+}
+
+QSplitterHandle:hover {}
+
+QMainWindow::separator:hover,
+QSplitter::handle:hover {
+  background-color: palette(highlight);
+}
+
+
+/*
+  Specific UI class styles
+*/
+
+/* default radio "case" background */
+SimulatorDialog > QWidget {
+	background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(242, 242, 242, 255), stop:0.757062 rgba(222, 220, 220, 255), stop:1 rgba(232, 230, 230, 255));
+}
+/* radio LCD/controls area under "case" */
+SimulatorDialog #radioUiWidget {
+  background-color: qlineargradient(spread:reflect, x1:0.22, y1:0, x2:0.55065, y2:0.54, stop:0 rgba(7, 7, 7, 250), stop:0.864407 rgba(66, 66, 66, 255));
+  margin: 0;
+  padding: 0;
+}
+
+
+/* outputs display splitter areas (channels, logical switches, global vars) */
+RadioOutputsWidget > QSplitter > QWidget {
+  border: 1px solid #a1a1a1;
+}
+/* vertical headings with the area names */
+RadioOutputsWidget QLabel[heading=true] {
+  background-color: qlineargradient(spread:reflect, x1:0.22, y1:0, x2:0.5, y2:0.55, stop:0 rgba(20, 20, 20, 250), stop:0.85 rgba(86, 86, 86, 255));
+  color: rgb(248, 248, 248);
+  border-color: rgb(180, 180, 180);
+  padding: 0.8em 0.45em;
+  font-size: 8pt;
+}

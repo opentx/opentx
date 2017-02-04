@@ -428,7 +428,9 @@ QString Profile::groupId()
 // ** AppData class********************
 
 // Get declarations
-QStringList AppData::recentFiles() { return _recentFiles;     }
+QStringList AppData::recentFiles()    { return _recentFiles;     }
+QStringList AppData::simuDbgFilters() { return _simuDbgFilters;  }
+
 QByteArray AppData::mainWinGeo()   { return _mainWinGeo;      }
 QByteArray AppData::mainWinState() { return _mainWinState;    }
 QByteArray AppData::modelEditGeo() { return _modelEditGeo;    }
@@ -475,9 +477,12 @@ int AppData::id()                  { return _id;              }
 int AppData::theme()               { return _theme;           }
 int AppData::warningId()           { return _warningId;       }
 int AppData::simuLastProfId()      { return _simuLastProfId;  }
+int AppData::sessionId()           { return _sessionId;       }
 
 // Set declarations
 void AppData::recentFiles     (const QStringList x) { store(x, _recentFiles,     "recentFileList"          );}
+void AppData::simuDbgFilters  (const QStringList x) { store(x, _simuDbgFilters,  "simuDbgFilters"          );}
+
 void AppData::mainWinGeo      (const QByteArray  x) { store(x, _mainWinGeo,      "mainWindowGeometry"      );}
 void AppData::mainWinState    (const QByteArray  x) { store(x, _mainWinState,    "mainWindowState"         );}
 void AppData::modelEditGeo    (const QByteArray  x) { store(x, _modelEditGeo,    "modelEditGeometry"       );}
@@ -520,10 +525,18 @@ void AppData::generalEditTab  (const int         x) { store(x, _generalEditTab, 
 void AppData::iconSize        (const int         x) { store(x, _iconSize,        "icon_size"               );}
 void AppData::historySize     (const int         x) { store(x, _historySize,     "history_size"            );}
 void AppData::jsCtrl          (const int         x) { store(x, _jsCtrl,          "js_ctrl"                 );}
-void AppData::id              (const int         x) { store(x, _id,              "profileId"               );}
 void AppData::theme           (const int         x) { store(x, _theme,           "theme"                   );}
 void AppData::warningId       (const int         x) { store(x, _warningId,       "warningId"               );}
 void AppData::simuLastProfId  (const int         x) { store(x, _simuLastProfId,  "simuLastProfId"          );}
+
+void AppData::id(const int x)
+{
+  store(x, _id, "profileId");
+  sessionId(x);
+}
+
+// currently loaded radio profile ID, NOT saved to persistent storage
+void AppData::sessionId       (const int         x) { _sessionId = x; }
 
 // Constructor
 AppData::AppData()
@@ -667,6 +680,8 @@ void AppData::init()
     getset( _tempString,      "settings_version"        ,"220" ); // This is a version marker. Will be used to upgrade the settings later on.
 
     getset( _recentFiles,     "recentFileList"          ,"" );
+    getset( _simuDbgFilters,  "simuDbgFilters"          ,"" );
+
     getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
     getset( _mainWinState,    "mainWindowState"         ,"" );
     getset( _modelEditGeo,    "modelEditGeometry"       ,"" );
@@ -722,6 +737,7 @@ void AppData::init()
     getset( _warningId,       "warningId"               ,0  );
     getset( _simuLastProfId,  "simuLastProfId"          ,-1 );
 
+    sessionId(id());
 }
 
 QMap<int, QString> AppData::getActiveProfiles()

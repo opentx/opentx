@@ -22,7 +22,7 @@
 #define _TELEMETRYSIMU_H_
 
 #include <QCloseEvent>
-#include <QDialog>
+#include <QWidget>
 #include <QTimer>
 #include <QDateTime>
 #include <QtCore/qmath.h>
@@ -37,102 +37,19 @@ namespace Ui {
   class TelemetrySimulator;
 }
 
-
-class TelemetrySimulator : public QDialog
+class TelemetrySimulator : public QWidget
 {
   Q_OBJECT
 
   public:
+
     explicit TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator);
     virtual ~TelemetrySimulator();
 
-  protected:
+  protected slots:
+
     virtual void closeEvent(QCloseEvent *event);
     virtual void showEvent(QShowEvent *event);
-
-  private:
-    class LogPlaybackController
-    {
-    public:
-      LogPlaybackController(Ui::TelemetrySimulator * ui);
-      bool isReady();
-      void loadLogFile();
-      void play();
-      void stop();
-      void rewind();
-      void stepForward(bool focusOnStop);
-      void stepBack();
-      void updatePositionLabel(int32_t percentage);
-      void setUiDataValues();
-      double logFrequency; // in seconds
-    private:
-      enum CONVERT_TYPE {
-        RXBT_V,
-        RSSI,
-        SWR,
-        A1,
-        A2,
-        A3,
-        A4,
-        T1_DEGC,
-        T1_DEGF,
-        T2_DEGC,
-        T2_DEGF,
-        RPM,
-        FUEL,
-        VSPD_MS,
-        VSPD_FS,
-        ALT_FEET,
-        ALT_METERS,
-        FASV,
-        FASC,
-        CELS_GRE,
-        ASPD_KTS,
-        ASPD_KMH,
-        ASPD_MPH,
-        GALT_FEET,
-        GALT_METERS,
-        GSPD_KNTS,
-        GSPD_KMH,
-        GSPD_MPH,
-        GHDG_DEG,
-        GDATE,
-        G_LATLON,
-        ACCX,
-        ACCY,
-        ACCZ,
-        FUEL_QTY,
-      };
-      QMap<QString, CONVERT_TYPE> colToFuncMap; // contains all 'known' column headings and how they are to be processed
-      Ui::TelemetrySimulator * ui;
-      struct DATA_TO_FUNC_XREF {
-        CONVERT_TYPE functionIndex;
-        int32_t dataIndex;
-      };
-      QStringList csvRecords; // contents of the log file (one string per line);
-      QStringList columnNames;
-      QList<DATA_TO_FUNC_XREF> supportedCols;
-      int32_t recordIndex;
-      double convertFeetToMeters(QString input);
-      double convertFahrenheitToCelsius(QString input);
-      QString convertGPSDate(QString input);
-      QString convertGPS(QString input);
-      void addColumnHash(QString key, CONVERT_TYPE functionIndex);
-      double convertDegMin(QString input);
-      bool stepping;
-      QDateTime parseTransmittterTimestamp(QString row);
-      void calcLogFrequency();
-    };
-
-private:
-    Ui::TelemetrySimulator * ui;
-    QTimer * timer;
-    QTimer * logTimer;
-    SimulatorInterface *simulator;
-    void generateTelemetryFrame();
-    TelemetrySimulator::LogPlaybackController *logPlayback;
-
-  private slots:
     void onSimulateToggled(bool isChecked);
     void onTimerEvent();
     void onLogTimerEvent();
@@ -145,49 +62,138 @@ private:
     void onPositionIndicatorChanged(int value);
     void onReplayRateChanged(int value);
 
+  protected:
 
-  private: // private classes follow
+    Ui::TelemetrySimulator * ui;
+    QTimer * timer;
+    QTimer * logTimer;
+    SimulatorInterface *simulator;
+    void generateTelemetryFrame();
+
+  // protected classes follow
+
+    class LogPlaybackController
+    {
+      public:
+        LogPlaybackController(Ui::TelemetrySimulator * ui);
+        bool isReady();
+        void loadLogFile();
+        void play();
+        void stop();
+        void rewind();
+        void stepForward(bool focusOnStop);
+        void stepBack();
+        void updatePositionLabel(int32_t percentage);
+        void setUiDataValues();
+        double logFrequency; // in seconds
+
+      private:
+        enum CONVERT_TYPE {
+          RXBT_V,
+          RSSI,
+          SWR,
+          A1,
+          A2,
+          A3,
+          A4,
+          T1_DEGC,
+          T1_DEGF,
+          T2_DEGC,
+          T2_DEGF,
+          RPM,
+          FUEL,
+          VSPD_MS,
+          VSPD_FS,
+          ALT_FEET,
+          ALT_METERS,
+          FASV,
+          FASC,
+          CELS_GRE,
+          ASPD_KTS,
+          ASPD_KMH,
+          ASPD_MPH,
+          GALT_FEET,
+          GALT_METERS,
+          GSPD_KNTS,
+          GSPD_KMH,
+          GSPD_MPH,
+          GHDG_DEG,
+          GDATE,
+          G_LATLON,
+          ACCX,
+          ACCY,
+          ACCZ,
+          FUEL_QTY,
+        };
+
+        struct DATA_TO_FUNC_XREF {
+          CONVERT_TYPE functionIndex;
+          int32_t dataIndex;
+        };
+
+        double convertFeetToMeters(QString input);
+        double convertFahrenheitToCelsius(QString input);
+        QString convertGPSDate(QString input);
+        QString convertGPS(QString input);
+        void addColumnHash(QString key, CONVERT_TYPE functionIndex);
+        double convertDegMin(QString input);
+        QDateTime parseTransmittterTimestamp(QString row);
+        void calcLogFrequency();
+
+        QMap<QString, CONVERT_TYPE> colToFuncMap; // contains all 'known' column headings and how they are to be processed
+        Ui::TelemetrySimulator * ui;
+        QStringList csvRecords; // contents of the log file (one string per line);
+        QStringList columnNames;
+        QList<DATA_TO_FUNC_XREF> supportedCols;
+        int32_t recordIndex;
+        bool stepping;
+    };  // LogPlaybackController
+
+    LogPlaybackController *logPlayback;
+
     class FlvssEmulator
     {
-    public:
+      public:
         uint32_t setAllCells_GetNextPair(double cellValues[6]);
         static const uint32_t MAXCELLS = 6;
-    private:
-      void encodeAllCells();
-      void splitIntoCells(double totalVolts);
-      static uint32_t encodeCellPair(uint8_t cellNum, uint8_t firstCellNo, double cell1, double cell2);
-      double cellFloats[6];
-      uint32_t nextCellNum;
-      uint32_t numCells;
-      uint32_t cellData1;
-      uint32_t cellData2;
-      uint32_t cellData3;
-    };
+
+      private:
+        void encodeAllCells();
+        void splitIntoCells(double totalVolts);
+        static uint32_t encodeCellPair(uint8_t cellNum, uint8_t firstCellNo, double cell1, double cell2);
+        double cellFloats[6];
+        uint32_t nextCellNum;
+        uint32_t numCells;
+        uint32_t cellData1;
+        uint32_t cellData2;
+        uint32_t cellData3;
+    };  // FlvssEmulator
 
     class GPSEmulator
     {
-    public:
-      GPSEmulator();
-      uint32_t getNextPacketData(uint32_t packetType);
-      void setGPSDateTime(QString dateTime);
-      void setGPSLatLon(QString latLon);
-      void setGPSCourse(double course);
-      void setGPSSpeedKMH(double speed);
-      void setGPSAltitude(double altitude);
-    private:
-      QDateTime dt;
-      bool sendLat;
-      bool sendDate;
-      double lat;
-      double lon;
-      double course;
-      double speedKNTS;
-      double altitude; // in meters
-      uint32_t encodeLatLon(double latLon, bool isLat);
-      uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
-    };
+      public:
+        GPSEmulator();
+        uint32_t getNextPacketData(uint32_t packetType);
+        void setGPSDateTime(QString dateTime);
+        void setGPSLatLon(QString latLon);
+        void setGPSCourse(double course);
+        void setGPSSpeedKMH(double speed);
+        void setGPSAltitude(double altitude);
 
-};
+      private:
+        QDateTime dt;
+        bool sendLat;
+        bool sendDate;
+        double lat;
+        double lon;
+        double course;
+        double speedKNTS;
+        double altitude; // in meters
+        uint32_t encodeLatLon(double latLon, bool isLat);
+        uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
+    };  // GPSEmulator
+
+};  // TelemetrySimulator
 
 #endif // _TELEMETRYSIMU_H_
 

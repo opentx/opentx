@@ -22,7 +22,6 @@
 #include "ui_simulatordialog.h"
 
 #include "appdata.h"
-#include "debugoutput.h"
 #include "radiofaderwidget.h"
 #include "radioknobwidget.h"
 #include "radioswitchwidget.h"
@@ -31,8 +30,6 @@
 #include "simulateduiwidget.h"
 #include "simulatorinterface.h"
 #include "storage.h"
-#include "telemetrysimu.h"
-#include "trainersimu.h"
 #include "virtualjoystickwidget.h"
 #ifdef JOYSTICKS
 #include "joystick.h"
@@ -43,18 +40,8 @@
 #include <QFile>
 #include <iostream>
 
-SimulatorDialog * traceCallbackInstance = 0;
-
-void traceCb(const char * text)
-{
-  // divert C callback into simulator instance
-  if (traceCallbackInstance) {
-    traceCallbackInstance->traceCallback(text);
-  }
-}
-
 SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags):
-  QDialog(parent),
+  QWidget(parent),
   ui(new Ui::SimulatorDialog),
   simulator(simulator),
   firmware(getCurrentFirmware()),
@@ -63,12 +50,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   radioUiWidget(NULL),
   vJoyLeft(NULL),
   vJoyRight(NULL),
-  TelemetrySimu(NULL),
-  TrainerSimu(NULL),
-  DebugOut(NULL),
   m_board(getCurrentBoard()),
   flags(flags),
-  radioProfileId(g.id()),
   lastPhase(-1),
   buttonPressed(0),
   trimPressed(TRIM_NONE),
@@ -78,40 +61,74 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   middleButtonPressed(false),
   firstShow(true)
 {
-  setWindowFlags(Qt::Window);
-
-  // install simulator TRACE hook
-  traceCallbackInstance = this;
-  simulator->installTraceHook(traceCb);
 
 #ifdef JOYSTICKS
   joystick = NULL;
 #endif
 
   // defaults
-  setRadioProfileId(radioProfileId);
+  setRadioProfileId(g.sessionId());
   setSdPath(g.profile[radioProfileId].sdPath());
 
-  setupUi();
+  ui->setupUi(this);
+
+  windowName = tr("Radio Simulator (%1)").arg(firmware->getName());
+  setWindowTitle(windowName);
+
+  switch(m_board) {
+    case Board::BOARD_TARANIS_X7 :
+      radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
+      break;
+    case Board::BOARD_TARANIS_X9D  :
+    case Board::BOARD_TARANIS_X9DP :
+    case Board::BOARD_TARANIS_X9E  :
+      radioUiWidget = new SimulatedUIWidgetX9(simulator, this);
+      break;
+    case Board::BOARD_X12S:
+    case Board::BOARD_X10:
+      radioUiWidget = new SimulatedUIWidgetX12(simulator, this);
+      break;
+    default:
+      radioUiWidget = new SimulatedUIWidget9X(simulator, this);
+      break;
+  }
+
+  foreach (keymapHelp_t item, *radioUiWidget->getKeymapHelp())
+    keymapHelp.append(item);
+
+  ui->radioUiWidget->layout()->removeItem(ui->radioUiTempSpacer);
+  ui->radioUiWidget->layout()->addWidget(radioUiWidget);
+
+  vJoyLeft = new VirtualJoystickWidget(this, 'L');
+  ui->leftStickLayout->addWidget(vJoyLeft);
+
+  vJoyRight = new VirtualJoystickWidget(this, 'R');
+  ui->rightStickLayout->addWidget(vJoyRight);
+
+  connect(vJoyLeft, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
+  connect(vJoyLeft, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
+  connect(vJoyLeft, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
+
+  connect(vJoyRight, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
+  connect(vJoyRight, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
+  connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
 }
 
 SimulatorDialog::~SimulatorDialog()
 {
-  traceCallbackInstance = 0;
+  shutdown();
 
-  if (timer) {
-    timer->stop();
+  if (timer)
     timer->deleteLater();
-  }
   if (radioUiWidget)
-    radioUiWidget->deleteLater();
+    delete radioUiWidget;
   if (vJoyLeft)
-    vJoyLeft->deleteLater();
+    delete vJoyLeft;
   if (vJoyRight)
-    vJoyRight->deleteLater();
+    delete vJoyRight;
 #ifdef JOYSTICKS
   if (joystick)
-    joystick->deleteLater();
+    delete joystick;
 #endif
 
   firmware = NULL;  // Not sure we should delete this but at least release our pointer.
@@ -124,13 +141,6 @@ SimulatorDialog::~SimulatorDialog()
 /*
  * Public slots/setters
  */
-
-void SimulatorDialog::setRadioProfileId(int value)
-{
-  radioProfileId = value;
-  if (simulator)
-    simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
-}
 
 void SimulatorDialog::setSdPath(const QString & sdPath)
 {
@@ -355,25 +365,20 @@ void SimulatorDialog::deleteTempData()
 void SimulatorDialog::saveState()
 {
   SimulatorOptions opts = g.profile[radioProfileId].simulatorOptions();
-  opts.windowGeometry = saveGeometry();
+  //opts.windowGeometry = saveGeometry();
   opts.controlsState = saveRadioWidgetsState();
   g.profile[radioProfileId].simulatorOptions(opts);
 }
 
 void SimulatorDialog::setUiAreaStyle(const QString & style)
 {
-  ui->radioUiTab->setStyleSheet(style);
+  ui->radioUiWidget->setStyleSheet(style);
 }
 
-void SimulatorDialog::traceCallback(const char * text)
+void SimulatorDialog::captureScreenshot(bool)
 {
-  // this function is called from other threads
-  traceMutex.lock();
-  // limit the size of list
-  if (traceList.size() < 1000) {
-    traceList.append(QString(text));
-  }
-  traceMutex.unlock();
+  if (radioUiWidget)
+    radioUiWidget->captureScreenshot();
 }
 
 /*
@@ -384,8 +389,6 @@ void SimulatorDialog::start()
 {
   setupRadioWidgets();
   setupJoysticks();
-  setupOutputsDisplay();
-  setupGVarsDisplay();
   restoreRadioWidgetsState();
 
   if (startupData.isEmpty())
@@ -414,94 +417,30 @@ void SimulatorDialog::restart()
   start();
 }
 
+void SimulatorDialog::shutdown()
+{
+  stop();
+  saveState();
+  if (saveTempRadioData)
+    saveTempData();
+  if (deleteTempRadioData)
+    deleteTempData();
+}
+
 /*
  * Setup
  */
 
-void SimulatorDialog::setupUi()
+void SimulatorDialog::setRadioProfileId(int value)
 {
-  ui->setupUi(this);
-
-  windowName = tr("Simulating Radio (%1)").arg(firmware->getName());
-  setWindowTitle(windowName);
-
-  switch(m_board) {
-    case Board::BOARD_TARANIS_X7:
-      radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
-      break;
-    case Board::BOARD_TARANIS_X9D:
-    case Board::BOARD_TARANIS_X9DP:
-    case Board::BOARD_TARANIS_X9E:
-      radioUiWidget = new SimulatedUIWidgetX9(simulator, this);
-      break;
-    case Board::BOARD_X12S:
-    case Board::BOARD_X10:
-      radioUiWidget = new SimulatedUIWidgetX12(simulator, this);
-      break;
-    default:
-      radioUiWidget = new SimulatedUIWidget9X(simulator, this);
-      break;
-  }
-
-  foreach (keymapHelp_t item, *radioUiWidget->getKeymapHelp()) {
-    keymapHelp.append(item);
-  }
-
-  ui->radioUiTab->layout()->addWidget(radioUiWidget);
-  ui->tabWidget->setTabText(0, firmware->getName());
-  ui->tabWidget->setFixedHeight(radioUiWidget->height() + ui->tabWidget->tabBar()->height() - 8);
-
-  vJoyLeft = new VirtualJoystickWidget(this, 'L');
-  ui->leftStickLayout->addWidget(vJoyLeft);
-
-  vJoyRight = new VirtualJoystickWidget(this, 'R');
-  ui->rightStickLayout->addWidget(vJoyRight);
-
-  ui->tabWidget->setCurrentIndex(flags & SIMULATOR_FLAGS_NOTX);
-
-  connect(vJoyLeft, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
-  connect(vJoyLeft, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
-  connect(vJoyLeft, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
-
-  connect(vJoyRight, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
-  connect(vJoyRight, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
-  connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
-
-  connect(ui->btn_help, SIGNAL(released()), this, SLOT(showHelp()));
-  connect(ui->btn_joystickDialog, SIGNAL(released()), this, SLOT(openJoystickDialog()));
-  connect(ui->btn_telemSim, SIGNAL(released()), this, SLOT(openTelemetrySimulator()));
-  connect(ui->btn_trainerSim, SIGNAL(released()), this, SLOT(openTrainerSimulator()));
-  connect(ui->btn_debugConsole, SIGNAL(released()), this, SLOT(openDebugOutput()));
-  connect(ui->btn_luaReload, SIGNAL(released()), this, SLOT(luaReload()));
-  connect(ui->btn_screenshot, SIGNAL(released()), radioUiWidget, SLOT(captureScreenshot()));
-  connect(ui->btn_reloadSimu, SIGNAL(released()), this, SLOT(restart()));
-
-#ifdef JOYSTICKS
-  bool showJoystick = true;
-#else
-  bool showJoystick = false;
-#endif
-
-  // Hide some main UI buttons based on board capabilities, and add keymap help texts.
-  QString role;
-  foreach (QPushButton * btn, ui->buttonBox->findChildren<QPushButton *>()) {
-    role = btn->property("role").toString();
-    if ((role == "joystick"  && !showJoystick) ||
-        (role == "telemetry" && !firmware->getCapability(Capability(SportTelemetry))) ||
-        (role == "reloadLua" && !firmware->getCapability(Capability(LuaInputsPerScript))) )
-    {
-      btn->hide();
-      continue;
-    }
-    if (!btn->shortcut().isEmpty())
-      keymapHelp.append(keymapHelp_t(btn->shortcut().toString(QKeySequence::NativeText), btn->statusTip()));
-  }
-
+  radioProfileId = value;
+  if (simulator)
+    simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
 }
 
 void SimulatorDialog::setupRadioWidgets()
 {
-  int i, midpos, aIdx, wval;
+  int i, midpos, aIdx;
   QString wname;
   Board::Type board = firmware->getBoard();
 
@@ -535,13 +474,12 @@ void SimulatorDialog::setupRadioWidgets()
       continue;
 
     swcfg = Board::SwitchType(radioSettings.switchConfig[i]);
-    wval  = (swcfg == Board::SWITCH_3POS ? -1 : 0);
 
     if ((wname = QString(radioSettings.switchName[i])).isEmpty()) {
       switchInfo = getSwitchInfo(board, i);
       wname = QString(switchInfo.name);
     }
-    RadioSwitchWidget * sw = new RadioSwitchWidget(swcfg, wname, wval, ui->radioWidgetsHT);
+    RadioSwitchWidget * sw = new RadioSwitchWidget(swcfg, wname, -1, ui->radioWidgetsHT);
     sw->setIndex(i);
     ui->radioWidgetsHTLayout->addWidget(sw);
     switches.append(sw);
@@ -591,172 +529,6 @@ void SimulatorDialog::setupRadioWidgets()
     ui->VCGridLayout->addWidget(sl, r, c++, 1, 1);
     analogs.append(sl);
   }
-}
-
-void SimulatorDialog::setupOutputsDisplay()
-{
-  // setup Outputs tab
-  QWidget * outputsWidget;
-
-  // delete old widget if already exists
-  if (ui->tabWidget->count() > 1 && ui->tabWidget->widget(1)->objectName() == "RadioOutputsWidget") {
-    outputsWidget = ui->tabWidget->widget(1);
-    ui->tabWidget->removeTab(1);
-    outputsWidget->deleteLater();
-    outputsWidget = NULL;
-  }
-
-  channelValues.clear();
-  channelSliders.clear();
-  logicalSwitchLabels.clear();
-
-  outputsWidget = new QWidget();
-  outputsWidget->setObjectName("RadioOutputsWidget");
-  QGridLayout * gridLayout = new QGridLayout(outputsWidget);
-  gridLayout->setHorizontalSpacing(0);
-  gridLayout->setVerticalSpacing(3);
-  gridLayout->setContentsMargins(5, 3, 5, 3);
-  // logical switches area
-  QWidget * logicalSwitches = new QWidget(outputsWidget);
-  logicalSwitches->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
-  QGridLayout * logicalSwitchesLayout = new QGridLayout(logicalSwitches);
-  logicalSwitchesLayout->setHorizontalSpacing(3);
-  logicalSwitchesLayout->setVerticalSpacing(2);
-  logicalSwitchesLayout->setContentsMargins(0, 0, 0, 0);
-  gridLayout->addWidget(logicalSwitches, 0, 0, 1, 1);
-  // channels area
-  QScrollArea * scrollArea = new QScrollArea(outputsWidget);
-  QSizePolicy sp(QSizePolicy::Expanding, QSizePolicy::Preferred);
-  sp.setHorizontalStretch(0);
-  sp.setVerticalStretch(0);
-  scrollArea->setSizePolicy(sp);
-  scrollArea->setWidgetResizable(true);
-  QWidget * channelsWidget = new QWidget();
-  QGridLayout * channelsLayout = new QGridLayout(channelsWidget);
-  channelsLayout->setHorizontalSpacing(4);
-  channelsLayout->setVerticalSpacing(3);
-  channelsLayout->setContentsMargins(0, 0, 0, 3);
-  scrollArea->setWidget(channelsWidget);
-  gridLayout->addWidget(scrollArea, 1, 0, 1, 1);
-
-  ui->tabWidget->insertTab(1, outputsWidget, QString(tr("Outputs")));
-
-  // populate outputs
-  int outputs = std::min(32, firmware->getCapability(Outputs));
-  int column = 0;
-  for (int i=0; i<outputs; i++) {
-    QLabel * label = new QLabel(outputsWidget);
-    label->setText(" " + RawSource(SOURCE_TYPE_CH, i).toString() + " ");
-    label->setAlignment(Qt::AlignCenter);
-    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    channelsLayout->addWidget(label, 0, column, 1, 1);
-
-    QSlider * slider = new QSlider(outputsWidget);
-    slider->setEnabled(false);
-    slider->setMinimum(-1024);
-    slider->setMaximum(1024);
-    slider->setPageStep(128);
-    slider->setTracking(false);
-    slider->setOrientation(Qt::Vertical);
-    slider->setInvertedAppearance(false);
-    slider->setTickPosition(QSlider::TicksRight);
-    slider->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-
-    QLabel * value = new QLabel(outputsWidget);
-    value->setMinimumSize(QSize(value->fontMetrics().size(Qt::TextSingleLine, "-100.0").width(), 0));
-    value->setAlignment(Qt::AlignCenter);
-    value->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    channelValues << value;
-    channelsLayout->addWidget(value, 1, column, 1, 1);
-
-    channelSliders << slider;
-    channelsLayout->addWidget(slider, 2, column++, 1, 1);
-    channelsLayout->setAlignment(slider, Qt::AlignHCenter);
-  }
-
-  // populate logical switches
-  int switches = firmware->getCapability(LogicalSwitches);
-  int rows = switches / (switches > 16 ? 4 : 2);
-  for (int i=0; i<switches; i++) {
-    QFrame * swtch = createLogicalSwitch(outputsWidget, i, logicalSwitchLabels);
-    logicalSwitchesLayout->addWidget(swtch, i / rows, i % rows, 1, 1);
-  }
-}
-
-void SimulatorDialog::setupGVarsDisplay()
-{
-  // setup GVars tab
-
-  int gvars = firmware->getCapability(Gvars);
-  int fmodes = firmware->getCapability(FlightModes);
-
-  QWidget * gvarsWidget;
-  // delete old widget if already exists
-  if (ui->tabWidget->count() > 2 && ui->tabWidget->widget(2)->objectName() == "RadioGVOutputsWidget") {
-    gvarsWidget = ui->tabWidget->widget(2);
-    ui->tabWidget->removeTab(2);
-    gvarsWidget->deleteLater();
-    gvarsWidget = NULL;
-  }
-
-  gvarValues.clear();
-
-  if (!gvars)
-    return;
-
-  gvarsWidget = new QWidget();
-  gvarsWidget->setObjectName("RadioGVOutputsWidget");
-  QGridLayout * gvarsLayout = new QGridLayout(gvarsWidget);
-  ui->tabWidget->insertTab(2, gvarsWidget, QString(tr("GVars")));
-
-  for (int fm=0; fm<fmodes; fm++) {
-    QLabel * label = new QLabel(gvarsWidget);
-    label->setText(QString("FM%1").arg(fm));
-    label->setAlignment(Qt::AlignCenter);
-    gvarsLayout->addWidget(label, 0, fm+1);
-  }
-  for (int i=0; i<gvars; i++) {
-    QLabel * label = new QLabel(gvarsWidget);
-    label->setText(QString("GV%1").arg(i+1));
-    label->setAutoFillBackground(true);
-    if ((i % 2) ==0 ) {
-      label->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
-    }
-    gvarsLayout->addWidget(label, i+1, 0);
-    for (int fm=0; fm<fmodes; fm++) {
-      QLabel * value = new QLabel(gvarsWidget);
-      value->setAutoFillBackground(true);
-      value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-      if ((i % 2) ==0 ) {
-        value->setStyleSheet("QLabel { background-color: rgb(220, 220, 220) }");
-      }
-      value->setText("0");
-      gvarValues << value;
-      gvarsLayout->addWidget(value, i+1, fm+1);
-    }
-  }
-}
-
-QFrame * SimulatorDialog::createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels)
-{
-    QFrame * swtch = new QFrame(parent);
-    swtch->setAutoFillBackground(true);
-    swtch->setFrameShape(QFrame::Panel);
-    swtch->setFrameShadow(QFrame::Raised);
-    swtch->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    swtch->setMaximumHeight(18);
-    QVBoxLayout * layout = new QVBoxLayout(swtch);
-    layout->setContentsMargins(2, 0, 2, 0);
-    QFont font;
-    font.setPointSize(8);
-    QLabel * label = new QLabel(swtch);
-    label->setFont(font);
-    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
-    label->setAlignment(Qt::AlignCenter);
-    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    labels << label;
-    layout->addWidget(label);
-    return swtch;
 }
 
 void SimulatorDialog::setupJoysticks()
@@ -855,6 +627,16 @@ void SimulatorDialog::restoreRadioWidgetsState()
     if (switchesMap.contains(switches[i]->getIndex()))
       switches[i]->setStateData(switchesMap.value(switches[i]->getIndex()));
   }
+
+  // Set throttle stick down and locked, side depends on mode
+  if (radioSettings.stickMode & 1) {
+    vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+    vJoyLeft->setStickY(1);
+  }
+  else {
+    vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
+    vJoyRight->setStickY(1);
+  }
 }
 
 QList<QByteArray> SimulatorDialog::saveRadioWidgetsState()
@@ -877,43 +659,7 @@ QList<QByteArray> SimulatorDialog::saveRadioWidgetsState()
 // Read various values from firmware simulator and populate values in this UI
 void SimulatorDialog::setValues()
 {
-  static const int numGvars  = firmware->getCapability(Gvars);
-  static const int numFlightModes = firmware->getCapability(FlightModes);
-  static TxOutputs prevOutputs;
-
-  TxOutputs outputs;
-  simulator->getValues(outputs);
-
   int currentPhase = simulator->getPhase();
-
-  // Outputs tab visible?
-  if (ui->tabWidget->currentIndex() == 1) {
-    for (int i = 0; i < channelSliders.size() && i < CPN_MAX_CHNOUT; i++) {
-      channelSliders[i]->setValue(qMin(1024, qMax(-1024, outputs.chans[i])));
-      channelValues[i]->setText(QString("%1").arg((qreal)outputs.chans[i]*100/1024, 0, 'f', 1));
-    }
-
-    for (int i = 0; i < logicalSwitchLabels.size() && i < CPN_MAX_CSW; i++) {
-      // setStyleSheet() is very CPU time consuming, do it only if the actual switch state changes
-      if (prevOutputs.vsw[i] != outputs.vsw[i]) {
-        logicalSwitchLabels[i]->setStyleSheet(outputs.vsw[i] ? CSWITCH_ON : CSWITCH_OFF);
-        prevOutputs.vsw[i] = outputs.vsw[i];
-      }
-    }
-  }
-
-  // GVars tab visible?
-  if (ui->tabWidget->currentIndex() == 2) {
-    for (int gv = 0; gv < numGvars; gv++) {
-      for (int fm = 0; fm < numFlightModes; fm++) {
-        // same trick for GVARS, but this has far less effect on CPU usage as setStyleSheet()
-        if (currentPhase != lastPhase || prevOutputs.gvars[fm][gv] != outputs.gvars[fm][gv]) {
-          gvarValues[gv*numFlightModes+fm]->setText(QString((fm == lastPhase) ? "<b>%1</b>" : "%1").arg(outputs.gvars[fm][gv]));
-          prevOutputs.gvars[fm][gv] = outputs.gvars[fm][gv];
-        }
-      }
-    }
-  }
 
   // display current flight mode in window title
   if (currentPhase != lastPhase) {
@@ -923,7 +669,6 @@ void SimulatorDialog::setValues()
       phase_name = QString::number(currentPhase);
     setWindowTitle(windowName + QString(" - Flight Mode %1").arg(phase_name));
   }
-
 }
 
 // "get" values from this UI and send them to the firmware simulator.
@@ -995,34 +740,16 @@ void SimulatorDialog::setTrims()
  * Event handlers/private slots
  */
 
-void SimulatorDialog::closeEvent(QCloseEvent *)
-{
-  stop();
-  saveState();
-  if (saveTempRadioData)
-    saveTempData();
-  if (deleteTempRadioData)
-    deleteTempData();
-}
+//void SimulatorDialog::showEvent(QShowEvent *)
+//{
+//  if (firstShow && isVisible()) {
+//    firstShow = false;
+//  }
+//}
 
-void SimulatorDialog::showEvent(QShowEvent *)
-{
-  if (firstShow) {
-    restoreGeometry(g.profile[radioProfileId].simulatorOptions().windowGeometry);
-
-    // The stick position needs to be set after the final show event, otherwise resizes during dialog creation will screw it up.
-    if (radioSettings.stickMode & 1) {
-      vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
-      vJoyLeft->setStickY(1);
-    }
-    else {
-      vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
-      vJoyRight->setStickY(1);
-    }
-
-    firstShow = false;
-  }
-}
+//void SimulatorDialog::closeEvent(QCloseEvent *)
+//{
+//}
 
 void SimulatorDialog::mousePressEvent(QMouseEvent *event)
 {
@@ -1059,8 +786,6 @@ void SimulatorDialog::onTimerEvent()
     setTrims();
     centerSticks();
   }
-
-  updateDebugOutput();
 }
 
 void SimulatorDialog::onTrimPressed(int which)
@@ -1087,111 +812,9 @@ void SimulatorDialog::centerSticks()
     vJoyRight->centerStick();
 }
 
-void SimulatorDialog::openTelemetrySimulator()
-{
-  // allow only one instance
-  if (TelemetrySimu == 0) {
-    TelemetrySimu = new TelemetrySimulator(this, simulator);
-    TelemetrySimu->setAttribute(Qt::WA_DeleteOnClose);
-    TelemetrySimu->show();
-    connect(TelemetrySimu, &TelemetrySimulator::destroyed, [this](QObject *) {
-      this->TelemetrySimu = NULL;
-    });
-  }
-  else if (!TelemetrySimu->isVisible()) {
-    TelemetrySimu->show();
-  }
-}
-
-void SimulatorDialog::openTrainerSimulator()
-{
-  // allow only one instance
-  if (TrainerSimu == 0) {
-    TrainerSimu = new TrainerSimulator(this, simulator);
-    TrainerSimu->setAttribute(Qt::WA_DeleteOnClose);
-    TrainerSimu->show();
-    connect(TrainerSimu, &TrainerSimulator::destroyed, [this](QObject *) {
-      this->TrainerSimu = NULL;
-    });
-  }
-  else if (!TrainerSimu->isVisible()) {
-    TrainerSimu->show();
-  }
-}
-
-void SimulatorDialog::openJoystickDialog()
-{
-#ifdef JOYSTICKS
-  joystickDialog * jd = new joystickDialog(this);
-  if (jd->exec() == QDialog::Accepted)
-    setupJoysticks();
-  jd->deleteLater();
-#endif
-}
-
-void SimulatorDialog::openDebugOutput()
-{
-  // allow only one instance, but install signal handler to catch dialog destruction just in case
-  if (!DebugOut) {
-    DebugOut = new DebugOutput(this);
-    DebugOut->traceCallback(traceBuffer);
-    DebugOut->setAttribute(Qt::WA_DeleteOnClose);
-    DebugOut->show();
-    connect(DebugOut, &DebugOutput::destroyed, [this](QObject *) {
-      this->DebugOut = NULL;
-    });
-  }
-  else if (!DebugOut->isVisible()) {
-    DebugOut->show();
-  }
-}
-
-void SimulatorDialog::updateDebugOutput()
-{
-  traceMutex.lock();
-  while (!traceList.isEmpty()) {
-    QString text = traceList.takeFirst();
-    traceBuffer.append(text);
-    // limit the size of traceBuffer
-    if (traceBuffer.size() > 10*1024) {
-      traceBuffer.remove(0, 1*1024);
-    }
-    if (DebugOut) {
-      DebugOut->traceCallback(QString(text));
-    }
-  }
-  traceMutex.unlock();
-}
-
-void SimulatorDialog::luaReload()
-{
-  // force a reload of the lua environment
-  simulator->setLuaStateReloadPermanentScripts();
-}
-
-void SimulatorDialog::showHelp()
-{
-  QString helpText = tr("Simulator Controls:");
-  helpText += "<table cellspacing=4 cellpadding=0>";
-  helpText += tr("<tr><th>Key/Mouse</td><th>Action</td></tr>");
-  QString keyTemplate = "<tr><td align='center'><pre>%1</pre></td><td align='center'>%2</td></tr>";
-  foreach (keymapHelp_t pair, keymapHelp)
-    helpText += keyTemplate.arg(pair.first, pair.second);
-  helpText += "</table>";
-
-  QMessageBox * msgBox = new QMessageBox(this);
-  msgBox->setAttribute(Qt::WA_DeleteOnClose);
-  msgBox->setWindowFlags(msgBox->windowFlags() | Qt::WindowStaysOnTopHint);
-  msgBox->setStandardButtons( QMessageBox::Ok );
-  msgBox->setWindowTitle(tr("Simulator Help"));
-  msgBox->setText(helpText);
-  msgBox->setModal(false);
-  msgBox->show();
-}
-
-#ifdef JOYSTICKS
 void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
 {
+#ifdef JOYSTICKS
   int stick;
   if (axis>=0 && axis<=8) {
     stick=jsmap[axis];
@@ -1225,5 +848,5 @@ void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
       analogs[stick-5]->setValue(stickval);
     }
   }
-}
 #endif
+}

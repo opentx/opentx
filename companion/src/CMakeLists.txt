@@ -49,8 +49,6 @@ endif()
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
   add_definitions(-DJOYSTICKS)
-else()
-  remove_definitions(-DSIMU_AUDIO)
 endif()
 
 add_definitions(-DSIMU)
@@ -250,8 +248,6 @@ qt5_add_translation(companion_QM ${companion_TS})
 qt5_add_resources(companion_RCC ${companion_RESOURCES})
 add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
-add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
-
 add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC} ${companion_QM})
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
@@ -282,9 +278,7 @@ if(WIN32)
 endif()
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
-
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
-qt5_use_modules(${SIMULATOR_NAME} Core Widgets Multimedia)
 
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common shared storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
@@ -343,7 +337,7 @@ elseif(WIN32)
 
   get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
   get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
-  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia)
+  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia Qt5Svg)
   set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(INSTALL_TEMP_QTDLL_SFX "d")

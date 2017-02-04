@@ -1120,23 +1120,23 @@ GeneralSettings::GeneralSettings()
     strcpy(bluetoothName, "Taranis");
   }
 
-  templateSetup = g.profile[g.id()].channelOrder();
-  stickMode = g.profile[g.id()].defaultMode();
+  templateSetup = g.profile[g.sessionId()].channelOrder();
+  stickMode = g.profile[g.sessionId()].defaultMode();
 
-  QString t_calib = g.profile[g.id()].stickPotCalib();
+  QString t_calib = g.profile[g.sessionId()].stickPotCalib();
   int potsnum = getCurrentFirmware()->getCapability(Pots);
   if (!t_calib.isEmpty()) {
-    QString t_trainercalib=g.profile[g.id()].trainerCalib();
-    int8_t t_txVoltageCalibration=(int8_t)g.profile[g.id()].txVoltageCalibration();
-    int8_t t_txCurrentCalibration=(int8_t)g.profile[g.id()].txCurrentCalibration();
-    int8_t t_PPM_Multiplier=(int8_t)g.profile[g.id()].ppmMultiplier();
-    uint8_t t_stickMode=(uint8_t)g.profile[g.id()].gsStickMode();
-    uint8_t t_vBatWarn=(uint8_t)g.profile[g.id()].vBatWarn();
-    QString t_DisplaySet=g.profile[g.id()].display();
-    QString t_BeeperSet=g.profile[g.id()].beeper();
-    QString t_HapticSet=g.profile[g.id()].haptic();
-    QString t_SpeakerSet=g.profile[g.id()].speaker();
-    QString t_CountrySet=g.profile[g.id()].countryCode();
+    QString t_trainercalib=g.profile[g.sessionId()].trainerCalib();
+    int8_t t_txVoltageCalibration=(int8_t)g.profile[g.sessionId()].txVoltageCalibration();
+    int8_t t_txCurrentCalibration=(int8_t)g.profile[g.sessionId()].txCurrentCalibration();
+    int8_t t_PPM_Multiplier=(int8_t)g.profile[g.sessionId()].ppmMultiplier();
+    uint8_t t_stickMode=(uint8_t)g.profile[g.sessionId()].gsStickMode();
+    uint8_t t_vBatWarn=(uint8_t)g.profile[g.sessionId()].vBatWarn();
+    QString t_DisplaySet=g.profile[g.sessionId()].display();
+    QString t_BeeperSet=g.profile[g.sessionId()].beeper();
+    QString t_HapticSet=g.profile[g.sessionId()].haptic();
+    QString t_SpeakerSet=g.profile[g.sessionId()].speaker();
+    QString t_CountrySet=g.profile[g.sessionId()].countryCode();
 
     if ((t_calib.length()==(CPN_MAX_STICKS+potsnum)*12) && (t_trainercalib.length()==16)) {
       QString Byte;

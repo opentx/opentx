@@ -26,17 +26,11 @@
 #include "radiodata.h"
 #include "simulator.h"
 
-#include <QDialog>
+#include <QWidget>
 #include <QVector>
-#include <QMutex>
-
-#define SIMULATOR_FLAGS_NOTX              0x01  // simulating a single model from Companion
-#define SIMULATOR_FLAGS_STANDALONE        0x02  // started from stanalone simulator
 
 #define FLASH_DURATION 10
 
-#define CSWITCH_ON    "QLabel { background-color: #4CC417 }"
-#define CSWITCH_OFF   "QLabel { }"
 #define CBEEP_ON      "QLabel { background-color: #FF364E }"
 #define CBEEP_OFF     "QLabel { }"
 
@@ -45,9 +39,6 @@ void traceCb(const char * text);
 class Firmware;
 class SimulatorInterface;
 class SimulatedUIWidget;
-class TelemetrySimulator;
-class TrainerSimulator;
-class DebugOutput;
 class RadioWidget;
 class RadioSwitchWidget;
 class VirtualJoystickWidget;
@@ -57,7 +48,6 @@ class Joystick;
 
 class QWidget;
 class QSlider;
-class QDial;
 class QLabel;
 class QFrame;
 
@@ -67,7 +57,7 @@ namespace Ui {
 
 using namespace Simulator;
 
-class SimulatorDialog : public QDialog
+class SimulatorDialog : public QWidget
 {
   Q_OBJECT
 
@@ -75,7 +65,6 @@ class SimulatorDialog : public QDialog
     explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags=0);
     virtual ~SimulatorDialog();
 
-    void setRadioProfileId(int value);
     void setSdPath(const QString & sdPath);
     void setDataPath(const QString & dataPath);
     void setPaths(const QString & sdPath, const QString & dataPath);
@@ -89,23 +78,22 @@ class SimulatorDialog : public QDialog
     void deleteTempData();
     void saveState();
     void setUiAreaStyle(const QString & style);
-    void traceCallback(const char * text);
+    void captureScreenshot(bool);
+    void setupJoysticks();
 
     QString getSdPath()   const { return sdCardPath; }
     QString getDataPath() const { return radioDataPath; }
+    QVector<keymapHelp_t> * getKeymapHelp() { return &keymapHelp; }
 
   public slots:
     void start();
     void stop();
     void restart();
+    void shutdown();
 
   private:
-    void setupUi();
+    void setRadioProfileId(int value);
     void setupRadioWidgets();
-    void setupOutputsDisplay();
-    void setupGVarsDisplay();
-    void setupJoysticks();
-    QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
     void setupTimer();
     void restoreRadioWidgetsState();
     QList<QByteArray> saveRadioWidgetsState();
@@ -122,24 +110,14 @@ class SimulatorDialog : public QDialog
 
     QTimer * timer;
     QString windowName;
-    QString traceBuffer;
-    QMutex traceMutex;
-    QList<QString> traceList;
     QVector<keymapHelp_t> keymapHelp;
 
     SimulatedUIWidget     * radioUiWidget;
     VirtualJoystickWidget * vJoyLeft;
     VirtualJoystickWidget * vJoyRight;
-    TelemetrySimulator    * TelemetrySimu;
-    TrainerSimulator      * TrainerSimu;
-    DebugOutput           * DebugOut;
 
     QVector<RadioSwitchWidget *> switches;
     QVector<RadioWidget       *> analogs;
-    QVector<QLabel  *> logicalSwitchLabels;
-    QVector<QSlider *> channelSliders;
-    QVector<QLabel  *> channelValues;
-    QVector<QLabel  *> gvarValues;
 
     QString sdCardPath;
     QString radioDataPath;
@@ -163,8 +141,8 @@ class SimulatorDialog : public QDialog
 #endif
 
   private slots:
-    virtual void closeEvent(QCloseEvent *);
-    virtual void showEvent(QShowEvent *);
+    //virtual void showEvent(QShowEvent *);
+    //virtual void closeEvent(QCloseEvent *);
     virtual void mousePressEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void wheelEvent(QWheelEvent *event);
@@ -174,16 +152,7 @@ class SimulatorDialog : public QDialog
     void onTrimReleased();
     void onTrimSliderMoved(int which, int value);
     void centerSticks();
-    void openTelemetrySimulator();
-    void openTrainerSimulator();
-    void openJoystickDialog();
-    void openDebugOutput();
-    void updateDebugOutput();
-    void luaReload();
-    void showHelp();
-#ifdef JOYSTICKS
     void onjoystickAxisValueChanged(int axis, int value);
-#endif
 
 };
 
