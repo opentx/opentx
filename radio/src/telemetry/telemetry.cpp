@@ -82,7 +82,7 @@ void processTelemetryData(uint8_t data)
     return;
   }
 #endif
-  processTelemetryData(data);
+  processFrskyTelemetryData(data);
 }
 #endif
 
