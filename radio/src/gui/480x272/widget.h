@@ -56,6 +56,11 @@ class Widget
 
     inline const ZoneOption * getOptions() const;
 
+    virtual const char * getErrorMessage() const
+    {
+      return NULL;
+    }
+
     inline ZoneOptionValue * getOptionValue(unsigned int index) const
     {
       return &persistentData->options[index];

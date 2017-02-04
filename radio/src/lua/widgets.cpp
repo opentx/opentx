@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "bin_allocator.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 
 #define WIDGET_SCRIPTS_MAX_INSTRUCTIONS    (10000/100)
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
@@ -42,6 +42,7 @@ void exec(int function, int nresults=0)
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, function);
     if (lua_pcall(lsWidgets, 0, nresults, 0) != 0) {
       TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
+      // TODO disable theme - revert back to default theme???
     }
   }
 }
@@ -63,46 +64,52 @@ ZoneOption * createOptionsArray(int reference)
     return NULL;
   }
 
-  lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, reference);
-  ZoneOption * option = options;
-  for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2); lua_pop(lsWidgets, 1)) {
-    luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-    luaL_checktype(lsWidgets, -1, LUA_TTABLE); // value is table
-    uint8_t field = 0;
-    for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2) && field<5; lua_pop(lsWidgets, 1), field++) {
-      switch (field) {
-        case 0:
-          luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(lsWidgets, -1, LUA_TSTRING); // value is string
-          option->name = lua_tostring(lsWidgets, -1);
-          break;
-        case 1:
-          luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-          option->type = (ZoneOption::Type)lua_tointeger(lsWidgets, -1);
-          break;
-        case 2:
-          luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-          option->deflt.signedValue = lua_tointeger(lsWidgets, -1);
-          break;
-        case 3:
-          luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-          option->min.signedValue = lua_tointeger(lsWidgets, -1);
-          break;
-        case 4:
-          luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
-          luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
-          option->max.signedValue = lua_tointeger(lsWidgets, -1);
-          break;
+  PROTECT_LUA() {
+    lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, reference);
+    ZoneOption * option = options;
+    for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2); lua_pop(lsWidgets, 1)) {
+      luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+      luaL_checktype(lsWidgets, -1, LUA_TTABLE); // value is table
+      uint8_t field = 0;
+      for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2) && field<5; lua_pop(lsWidgets, 1), field++) {
+        switch (field) {
+          case 0:
+            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(lsWidgets, -1, LUA_TSTRING); // value is string
+            option->name = lua_tostring(lsWidgets, -1);
+            break;
+          case 1:
+            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+            option->type = (ZoneOption::Type)lua_tointeger(lsWidgets, -1);
+            break;
+          case 2:
+            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+            option->deflt.signedValue = lua_tointeger(lsWidgets, -1);
+            break;
+          case 3:
+            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+            option->min.signedValue = lua_tointeger(lsWidgets, -1);
+            break;
+          case 4:
+            luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
+            luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
+            option->max.signedValue = lua_tointeger(lsWidgets, -1);
+            break;
+        }
       }
+      option++;
     }
-    option++;
+    option->name = NULL; // sentinel
   }
-
-  option->name = NULL; // sentinel
-
+  else {
+    TRACE("error in theme/widget options");
+    free(options);
+    return NULL;
+  }
+  UNPROTECT_LUA();
   return options;
 }
 
@@ -111,8 +118,8 @@ class LuaTheme: public Theme
   friend void luaLoadThemeCallback();
 
   public:
-    LuaTheme(const char * name, int options):
-      Theme(name, createOptionsArray(options)),
+    LuaTheme(const char * name, ZoneOption * options):
+      Theme(name, options),
       loadFunction(0),
       drawBackgroundFunction(0),
       drawTopbarBackgroundFunction(0),
@@ -182,11 +189,14 @@ void luaLoadThemeCallback()
   }
 
   if (name) {
-    LuaTheme * theme = new LuaTheme(name, themeOptions);
-    theme->loadFunction = loadFunction;
-    theme->drawBackgroundFunction = drawBackgroundFunction;
-    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
-    TRACE("Loaded Lua theme %s", name);
+    ZoneOption * options = createOptionsArray(themeOptions);
+    if (options) {
+      LuaTheme * theme = new LuaTheme(name, options);
+      theme->loadFunction = loadFunction;
+      theme->drawBackgroundFunction = drawBackgroundFunction;
+      theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
+      TRACE("Loaded Lua theme %s", name);
+    }
   }
 }
 
@@ -195,23 +205,30 @@ class LuaWidget: public Widget
   public:
     LuaWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData, int widgetData):
       Widget(factory, zone, persistentData),
-      widgetData(widgetData)
+      widgetData(widgetData),
+      errorMessage(0)
     {
     }
 
     virtual ~LuaWidget()
     {
       luaL_unref(lsWidgets, LUA_REGISTRYINDEX, widgetData);
+      if (errorMessage) free(errorMessage);
     }
 
-    virtual void update() const;
+    virtual void update();
 
     virtual void refresh();
 
     virtual void background();
 
+    virtual const char * getErrorMessage() const;
+
   protected:
     int widgetData;
+    char * errorMessage;
+
+    void setErrorMessage(const char * funcName);
 };
 
 void l_pushtableint(const char * key, int value)
@@ -227,8 +244,8 @@ class LuaWidgetFactory: public WidgetFactory
   friend class LuaWidget;
 
   public:
-    LuaWidgetFactory(const char * name, int widgetOptions, int createFunction):
-      WidgetFactory(name, createOptionsArray(widgetOptions)),
+    LuaWidgetFactory(const char * name, ZoneOption * widgetOptions, int createFunction):
+      WidgetFactory(name, widgetOptions),
       createFunction(createFunction),
       updateFunction(0),
       refreshFunction(0),
@@ -273,9 +290,9 @@ class LuaWidgetFactory: public WidgetFactory
     int backgroundFunction;
 };
 
-void LuaWidget::update() const
+void LuaWidget::update()
 {
-  if (lsWidgets == 0) return;
+  if (lsWidgets == 0 || errorMessage) return;
 
   luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
   LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
@@ -289,26 +306,48 @@ void LuaWidget::update() const
   }
 
   if (lua_pcall(lsWidgets, 2, 0, 0) != 0) {
-    TRACE("Error in widget %s update() function: %s", factory->getName(), lua_tostring(lsWidgets, -1));
+    setErrorMessage("update()");
   }
+}
+
+void LuaWidget::setErrorMessage(const char * funcName)
+{
+  TRACE("Error in widget %s %s function: %s", factory->getName(), funcName, lua_tostring(lsWidgets, -1));
+  TRACE("Widget disabled");
+  size_t needed = snprintf(NULL, 0, "%s: %s", funcName, lua_tostring(lsWidgets, -1)) + 1;
+  errorMessage = (char *)malloc(needed);
+  if (errorMessage) {
+    snprintf(errorMessage, needed, "%s: %s", funcName, lua_tostring(lsWidgets, -1));
+  }
+}
+
+const char * LuaWidget::getErrorMessage() const
+{
+  return errorMessage;
 }
 
 void LuaWidget::refresh()
 {
   if (lsWidgets == 0) return;
 
+  if (errorMessage) {
+    lcdSetColor(RED);
+    lcdDrawText(zone.x, zone.y, "Disabled", SMLSIZE|CUSTOM_COLOR);
+    return;
+  }
+
   luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
   LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
   lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, factory->refreshFunction);
   lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, widgetData);
   if (lua_pcall(lsWidgets, 1, 0, 0) != 0) {
-    TRACE("Error in widget %s refresh() function: %s", factory->getName(), lua_tostring(lsWidgets, -1));
+    setErrorMessage("refresh()");
   }
 }
 
 void LuaWidget::background()
 {
-  if (lsWidgets == 0) return;
+  if (lsWidgets == 0 || errorMessage) return;
 
   luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
   LuaWidgetFactory * factory = (LuaWidgetFactory *)this->factory;
@@ -316,7 +355,7 @@ void LuaWidget::background()
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, factory->backgroundFunction);
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, widgetData);
     if (lua_pcall(lsWidgets, 1, 0, 0) != 0) {
-      TRACE("Error in widget %s background() function: %s", factory->getName(), lua_tostring(lsWidgets, -1));
+      setErrorMessage("background()");
     }
   }
 }
@@ -357,11 +396,14 @@ void luaLoadWidgetCallback()
   }
 
   if (name && createFunction) {
-    LuaWidgetFactory * factory = new LuaWidgetFactory(name, widgetOptions, createFunction);
-    factory->updateFunction = updateFunction;
-    factory->refreshFunction = refreshFunction;
-    factory->backgroundFunction = backgroundFunction;
-    TRACE("Loaded Lua widget %s", name);
+    ZoneOption * options = createOptionsArray(widgetOptions);
+    if (options) {
+      LuaWidgetFactory * factory = new LuaWidgetFactory(name, options, createFunction);
+      factory->updateFunction = updateFunction;
+      factory->refreshFunction = refreshFunction;
+      factory->backgroundFunction = backgroundFunction;
+      TRACE("Loaded Lua widget %s", name);
+    }
   }
 }
 
@@ -385,8 +427,8 @@ void luaLoadFile(const char * filename, void (*callback)())
     }
   }
   else {
-    // luaDisable();
-    lsWidgets = 0;
+    // error while loading Lua widget/theme,
+    // do not disable whole Lua state, just ingnore bad widget/theme
     return;
   }
   UNPROTECT_LUA();
@@ -453,5 +495,6 @@ void luaInitThemesAndWidgets()
     TRACE("lsWidgets %p", lsWidgets);
     luaLoadFiles(THEMES_PATH, luaLoadThemeCallback);
     luaLoadFiles(WIDGETS_PATH, luaLoadWidgetCallback);
+    luaDoGc(lsWidgets, true);
   }
 }

@@ -418,9 +418,15 @@ int cliMemoryInfo(const char ** argv)
 
 #if defined(LUA)
   serialPrint("\nLua:");
-  serialPrint("\tScripts %d", luaGetMemUsed(lsScripts));
-#if defined(PCBHORUS)
-  serialPrint("\tWidgets %d", luaGetMemUsed(lsWidgets));
+  uint32_t s = luaGetMemUsed(lsScripts);
+  serialPrint("\tScripts %u", s);
+#if defined(COLORLCD)
+  uint32_t w = luaGetMemUsed(lsWidgets);
+  uint32_t e = luaExtraMemoryUsage;
+  serialPrint("\tWidgets %u", w);
+  serialPrint("\tExtra   %u", e);
+  serialPrint("------------");
+  serialPrint("\tTotal   %u", s + w + e);
 #endif
 #endif
   return 0;
