@@ -979,10 +979,7 @@ PACK(struct TrainerData {
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
-#if defined(PCBX10)
-  CalibData calibSpares[NUM_DUMMY_ANAS];
-#endif
+  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
   NOBACKUP(uint16_t chkSum);
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
