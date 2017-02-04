@@ -174,7 +174,7 @@ int getOptionsCount(const ZoneOption * options)
 }
 
 template <class T>
-bool menuSettings(const char * title, const T * object, uint32_t i_flags, event_t event)
+bool menuSettings(const char * title, T * object, uint32_t i_flags, event_t event)
 {
 
   if (object->getErrorMessage()) {
