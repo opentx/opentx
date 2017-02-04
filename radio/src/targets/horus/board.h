@@ -320,10 +320,8 @@ void watchdogInit(unsigned int duration);
 #define NUM_XPOTS                      NUM_POTS
 #if defined(PCBX10)
   #define NUM_SLIDERS                  2
-  #define NUM_DUMMY_ANAS               2
 #else
   #define NUM_SLIDERS                  4
-  #define NUM_DUMMY_ANAS               0
 #endif
 enum Analogs {
   STICK1,
