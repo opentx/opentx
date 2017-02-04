@@ -29,7 +29,6 @@
 #define MAVLINK_COMM_NUM_BUFFERS 1
 
 #include "GCS_MAVLink/include_v1.0/mavlink_types.h"
-#include "targets/common/avr/serial_driver.h"
 #include "opentx.h"
 
 extern int8_t mav_heartbeat;

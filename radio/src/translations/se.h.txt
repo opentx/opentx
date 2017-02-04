@@ -628,7 +628,7 @@
 
 #if defined(TELEMETRY_MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
-  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""58798 ""76800"
   #define LEN_MAVLINK_AC_MODES "\011"
   #define TR_MAVLINK_AC_MODES  "Stabil   ""Akrobat  ""Lås Höjd ""Automat  ""Guidad   ""Hovra    ""Flyg Hem ""Cirkla   ""Håll Pos.""Landa    ""OF Hovra ""Leksak A ""Leksak M ""OGILTIG  "
   #define LEN_MAVLINK_AP_MODES "\015"
