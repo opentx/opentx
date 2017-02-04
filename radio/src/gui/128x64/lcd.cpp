@@ -1119,6 +1119,7 @@ void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
 
 void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags att, bool seconds=true)
 {
+  att &= ~RIGHT & ~BOLD;
   uint32_t absvalue = abs(value);
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
   lcdDrawChar(lcdLastPos, y, '@', att);
@@ -1174,7 +1175,7 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)
 {
   if (flags & DBLSIZE) {
-    x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
+    x -= (g_eeGeneral.gpsFormat == 0 ? 62 : 61);
     flags &= ~0x0F00; // TODO constant
     drawGPSCoord(x, y, latitude, "NS", flags);
     drawGPSCoord(x, y+FH, longitude, "EW", flags);
