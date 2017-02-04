@@ -1745,8 +1745,10 @@ QString getBoardName(Board::Type board)
       return "9XR-PRO";
     case Board::BOARD_AR9X:
       return "AR9X";
-    case Board::BOARD_HORUS:
+    case Board::BOARD_X12S:
       return "Horus";
+    case Board::BOARD_X10:
+      return "X10";
     default:
       return "Unknown";
   }
@@ -1772,7 +1774,8 @@ const int Firmware::getFlashSize()
     case Board::BOARD_TARANIS_X9E:
     case Board::BOARD_FLAMENCO:
       return FSIZE_TARANIS;
-    case Board::BOARD_HORUS:
+    case Board::BOARD_X12S:
+    case Board::BOARD_X10:
       return FSIZE_HORUS;
     default:
       return 0;

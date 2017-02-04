@@ -86,8 +86,10 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for ar9x board / 9X";
     case BOARD_FLAMENCO:
       return "OpenTX for Flamenco experimental";
-    case BOARD_HORUS:
+    case BOARD_X12S:
       return "OpenTX for FrSky Horus";
+    case BOARD_X10:
+      return "OpenTX for FrSky X10";
     default:
       return "OpenTX for an unknown board";
   }
@@ -96,7 +98,8 @@ const char * OpenTxEepromInterface::getName()
 uint32_t OpenTxEepromInterface::getFourCC()
 {
   switch (board) {
-    case BOARD_HORUS:
+    case BOARD_X12S:
+    case BOARD_X10:
       return 0x3478746F;
     case BOARD_TARANIS_X7:
       return 0x3678746F;
@@ -1267,11 +1270,18 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky Horus board */
-  firmware = new OpenTxFirmware("opentx-horus", QObject::tr("FrSky Horus"), BOARD_HORUS);
+  firmware = new OpenTxFirmware("opentx-x12s", QObject::tr("FrSky Horus"), BOARD_X12S);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
   registerOpenTxFirmware(firmware);
+  
 
+  /* FrSky X10 board */
+/* Disabled for now
+  firmware = new OpenTxFirmware("opentx-x10", QObject::tr("FrSky X10"), BOARD_X10);
+  addOpenTxFrskyOptions(firmware);
+  registerOpenTxFirmware(firmware);
+*/
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));

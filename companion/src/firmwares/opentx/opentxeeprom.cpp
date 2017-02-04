@@ -3037,7 +3037,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   eepromImportDebug() << QString("OpenTxModelData::OpenTxModelData(name: %1, board: %2, ver: %3, var: %4)").arg(name).arg(board).arg(version).arg(variant);
 
-  if (board == BOARD_HORUS)
+  if (IS_HORUS(board))
     internalField.Append(new ZCharField<15>(modelData.name, "Model name"));
   else if (HAS_LARGE_LCD(board))
     internalField.Append(new ZCharField<12>(modelData.name, "Model name"));
