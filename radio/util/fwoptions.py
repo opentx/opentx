@@ -292,7 +292,7 @@ options_taranisx9e = {
     "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
-options_horus = {
+options_x12s = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
@@ -306,4 +306,19 @@ options_horus = {
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
+}
+
+options_x10 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "massstorage": ("USB", "MASSSTORAGE", None),
+    "cli": ("USB", "SERIAL", None),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
 }

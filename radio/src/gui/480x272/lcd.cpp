@@ -411,8 +411,13 @@ void lcdDrawBlackOverlay()
 BitmapBuffer _lcd(BMP_RGB565, LCD_W, LCD_H, displayBuf);
 BitmapBuffer * lcd = &_lcd;
 
-void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
+#if defined(PCBX10)
+  x = destw - (x + w);
+  y = desth - (y + h);
+#endif
+
   for (int i=0; i<h; i++) {
     for (int j=0; j<w; j++) {
       dest[(y+i)*destw+x+j] = color;
@@ -420,15 +425,29 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16
   }
 }
 
-void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
+void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
+#if defined(PCBX10)
+  x = destw - (x + w);
+  y = desth - (y + h);
+  srcx = srcw - (srcx + w);
+  srcy = srch - (srcy + h);
+#endif
+
   for (int i=0; i<h; i++) {
     memcpy(dest+(y+i)*destw+x, src+(srcy+i)*srcw+srcx, 2*w);
   }
 }
 
-void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
+void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
+#if defined(PCBX10)
+  x = destw - (x + w);
+  y = desth - (y + h);
+  srcx = srcw - (srcx + w);
+  srcy = srch - (srcy + h);
+#endif
+
   for (coord_t line=0; line<h; line++) {
     uint16_t * p = dest + (y+line)*destw + x;
     const uint16_t * q = src + (srcy+line)*srcw + srcx;

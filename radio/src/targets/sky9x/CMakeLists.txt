@@ -106,6 +106,7 @@ set(TARGET_SRC
   sdcard_driver.cpp
   massstorage.cpp
   serial2_driver.cpp
+  audio_driver.cpp
   )
 
 set(FIRMWARE_SRC

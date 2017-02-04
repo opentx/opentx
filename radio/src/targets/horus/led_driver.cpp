@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void ledOn()
+void ledInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = LED_GPIO_PIN;
@@ -31,6 +31,7 @@ void ledOn()
   GPIO_Init(LED_GPIO, &GPIO_InitStructure);
 }
 
+#if defined(PCBX12S)
 void ledOff()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -44,12 +45,36 @@ void ledOff()
 
 void ledRed()
 {
-  ledOn();
+  ledInit();
   GPIO_SetBits(LED_GPIO, LED_GPIO_PIN);
 }
 
 void ledBlue()
 {
-  ledOn();
+  ledInit();
   GPIO_ResetBits(LED_GPIO, LED_GPIO_PIN);
 }
+#elif defined(PCBX10)
+void ledOff()
+{
+  GPIO_ResetBits(LED_GPIO, LED_GPIO_PIN);
+}
+
+void ledRed()
+{
+  ledOff();
+  GPIO_SetBits(LED_GPIO, LED_RED_GPIO_PIN);
+}
+
+void ledGreen()
+{
+  ledOff();
+  GPIO_SetBits(LED_GPIO, LED_GREEN_GPIO_PIN);
+}
+
+void ledBlue()
+{
+  ledOff();
+  GPIO_SetBits(LED_GPIO, LED_BLUE_GPIO_PIN);
+}
+#endif

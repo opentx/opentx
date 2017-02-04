@@ -50,9 +50,9 @@ void menuRadioDiagAnalogs(event_t event)
 #endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
 #if defined(CPUARM)
-    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256, RIGHT);
+    lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256, RIGHT);
 #else
-    lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+    lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
 #endif
   }
 

@@ -103,7 +103,7 @@ void RadioData::convert(Board::Type before, Board::Type after)
     }
   }
 
-  if (after == Board::BOARD_HORUS) {
+  if (IS_HORUS(after)) {
     fixModelFilenames();
   }
 }

@@ -53,12 +53,32 @@ with open(sys.argv[2], "w") as f:
                 values.append(str(val))
         f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
         f.write("const Bitmap %s(BMP_ARGB4444, %d, %d, __%s);\n" % (constant, width, height, constant))
+    elif what == "4/4/4/4-R":
+        constant = sys.argv[2].upper()[:-4]
+        values = []
+        for y in range(height):
+            for x in range(width):
+                pixel = image.pixel(width-x-1, height-y-1)
+                val = ((Qt.qAlpha(pixel) // 16) << 12) + ((Qt.qRed(pixel) // 16) << 8) + ((Qt.qGreen(pixel) // 16) << 4) + ((Qt.qBlue(pixel) // 16) << 0)
+                values.append(str(val))
+        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
+        f.write("const Bitmap %s(BMP_ARGB4444, %d, %d, __%s);\n" % (constant, width, height, constant))
     elif what == "5/6/5":
         constant = sys.argv[2].upper()[:-4]
         values = []
         for y in range(height):
             for x in range(width):
                 pixel = image.pixel(x, y)
+                val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
+                values.append(str(val))
+        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
+        f.write("const Bitmap %s(BMP_RGB565, %d, %d, __%s);\n" % (constant, width, height, constant))
+    elif what == "5/6/5-R":
+        constant = sys.argv[2].upper()[:-4]
+        values = []
+        for y in range(height):
+            for x in range(width):
+                pixel = image.pixel(width-x-1, height-y-1)
                 val = ((Qt.qRed(pixel) >> 3) << 11) + ((Qt.qGreen(pixel) >> 2) << 5) + ((Qt.qBlue(pixel) >> 3) << 0)
                 values.append(str(val))
         f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))

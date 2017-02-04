@@ -35,13 +35,13 @@ Topbar * topbar;
 void drawMainPots()
 {
   // The 3 pots
-  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedStick[4], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawHorizontalSlider(TRIM_LH_X, POTS_LINE_Y, 160, calibratedAnalogs[CALIBRATED_POT1], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
   drawHorizontalSlider(LCD_W/2-20, POTS_LINE_Y, XPOTS_MULTIPOS_COUNT*5, 1 + (potsPos[1] & 0x0f), 1, XPOTS_MULTIPOS_COUNT + 1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
-  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedStick[6], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawHorizontalSlider(TRIM_RH_X, POTS_LINE_Y, 160, calibratedAnalogs[CALIBRATED_POT3], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
 
   // The 2 rear sliders
-  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedStick[9], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedStick[10], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(6, TRIM_V_Y, 160, calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(LCD_W-18, TRIM_V_Y, 160, calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
 }
 
 void drawTrims(uint8_t flightMode)
@@ -175,12 +175,19 @@ bool menuMainView(event_t event)
       pushMenu(menuTabScreensSetup[1]);
       return false;
 
+#if defined(PCBX12S)
     case EVT_KEY_FIRST(KEY_PGDN):
+#elif defined(PCBX10)
+    case EVT_KEY_BREAK(KEY_PGDN):
+#endif
       storageDirty(EE_GENERAL);
       g_model.view = circularIncDec(g_model.view, +1, 0, getMainViewsCount()-1);
       break;
 
     case EVT_KEY_FIRST(KEY_PGUP):
+#if defined(PCBX10)
+    case EVT_KEY_LONG(KEY_PGDN):
+#endif
       killEvents(event);
       storageDirty(EE_GENERAL);
       g_model.view = circularIncDec(g_model.view, -1, 0, getMainViewsCount()-1);

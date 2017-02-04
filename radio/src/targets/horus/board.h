@@ -50,7 +50,13 @@ extern "C" {
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_fmc.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
+
+#if defined(PCBX10)
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
+#endif
+
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/misc.h"
+
 #if __clang__
 // Restore warnings about registers
 #pragma clang diagnostic pop
@@ -109,7 +115,7 @@ void delay_ms(uint32_t ms);
 
 // PCBREV driver
 #define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
-#if defined(SIMU)
+#if defined(SIMU) || defined(PCBX10)
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
 #elif PCBREV >= 13
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
@@ -311,8 +317,12 @@ void watchdogInit(unsigned int duration);
 
 // ADC driver
 #define NUM_POTS                       3
-#define NUM_SLIDERS                    4
-#define NUM_XPOTS                      3
+#define NUM_XPOTS                      NUM_POTS
+#if defined(PCBX10)
+  #define NUM_SLIDERS                  2
+#else
+  #define NUM_SLIDERS                  4
+#endif
 enum Analogs {
   STICK1,
   STICK2,
@@ -323,18 +333,50 @@ enum Analogs {
   POT2,
   POT3,
   POT_LAST = POT3,
-  SLIDER1,
+  SLIDER_FIRST,
+  SLIDER1 = SLIDER_FIRST,
   SLIDER2,
-  SLIDER3,
-  SLIDER4,
+#if defined(PCBX12S)
+  SLIDER_FRONT_LEFT = SLIDER_FIRST,
+  SLIDER_FRONT_RIGHT,
+  SLIDER_REAR_LEFT,
+  SLIDER_REAR_RIGHT,
+#else
+  SLIDER_REAR_LEFT,
+  SLIDER_REAR_RIGHT,
+#endif
+  SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
   MOUSE1,
   MOUSE2,
-  NUMBER_ANALOG
+  NUM_ANALOGS
 };
+
+enum CalibratedAnalogs {
+  CALIBRATED_STICK1,
+  CALIBRATED_STICK2,
+  CALIBRATED_STICK3,
+  CALIBRATED_STICK4,
+  CALIBRATED_POT1,
+  CALIBRATED_POT2,
+  CALIBRATED_POT3,
+#if defined(PCBX12S)
+  CALIBRATED_SLIDER_FRONT_LEFT,
+  CALIBRATED_SLIDER_FRONT_RIGHT,
+  CALIBRATED_SLIDER_REAR_LEFT,
+  CALIBRATED_SLIDER_REAR_RIGHT,
+#else
+  CALIBRATED_SLIDER_REAR_LEFT,
+  CALIBRATED_SLIDER_REAR_RIGHT,
+#endif
+  CALIBRATED_MOUSE1,
+  CALIBRATED_MOUSE2,
+  NUM_CALIBRATED_ANALOGS
+};
+
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
-#define IS_SLIDER(x)                   ((x)>=SLIDER1 && (x)<=SLIDER4)
-extern uint16_t adcValues[NUMBER_ANALOG];
+#define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
+extern uint16_t adcValues[NUM_ANALOGS];
 void adcInit(void);
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
@@ -360,9 +402,13 @@ uint32_t pwrPressedDuration(void);
 #endif
 
 // Led driver
+void ledInit(void);
 void ledOff(void);
 void ledRed(void);
 void ledBlue(void);
+#if defined(PCBX10)
+  void ledGreen();
+#endif
 
 // LCD driver
 #define LCD_W                          480
@@ -370,9 +416,9 @@ void ledBlue(void);
 #define LCD_DEPTH                      16
 void lcdInit(void);
 void lcdRefresh(void);
-void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
-void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
-void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
+void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
+void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
+void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h);
 void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format);
 void lcdStoreBackupBuffer(void);
 int lcdRestoreBackupBuffer(void);
@@ -398,9 +444,15 @@ void usbInit(void);
 void usbStart(void);
 void usbStop(void);
 void usbSerialPutc(uint8_t c);
-#define USB_NAME                       "FrSky Horus"
-#define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
-#define USB_PRODUCT                    'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
+#if defined(PCBX12S)
+  #define USB_NAME                     "FrSky Horus"
+  #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(PCBX10)
+  #define USB_NAME                     "FrSky HX10"
+  #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'X', '1', '0', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
+#endif
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -411,7 +463,11 @@ void audioInit(void);
 void audioConsumeCurrentBuffer(void);
 #define audioDisableIrq()             // interrupts must stay enabled on Horus
 #define audioEnableIrq()              // interrupts must stay enabled on Horus
+#if defined(PCBX12S)
 #define setSampleRate(freq)
+#else
+void setSampleRate(uint32_t frequency);
+#endif
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);

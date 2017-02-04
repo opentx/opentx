@@ -681,7 +681,7 @@ void MdiChild::setCurrentFile(const QString & fileName)
 void MdiChild::writeEeprom()  // write to Tx
 {
   Board::Type board = getCurrentBoard();
-  if (board == Board::BOARD_HORUS) {
+  if (IS_HORUS(board)) {
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {

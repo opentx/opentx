@@ -147,6 +147,11 @@ bool isSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
+  
+#if defined(PCBX10)
+  if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
+    return false;
+#endif
 
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
      return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);

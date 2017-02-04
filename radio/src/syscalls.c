@@ -18,41 +18,17 @@
  * GNU General Public License for more details.
  */
 
-/**
-  * \file syscalls.c
-  *
-  * Implementation of newlib syscall.
-  *
-  */
-
-/*----------------------------------------------------------------------------
- *        Headers
- *----------------------------------------------------------------------------*/
-
-
-// #include "board.h"
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include "debug.h"
-/*----------------------------------------------------------------------------
- *        Exported variables
- *----------------------------------------------------------------------------*/
 
 #undef errno
 extern int errno;
 extern int _end;
 extern int _heap_end;
-
-/*----------------------------------------------------------------------------
- *        Exported functions
- *----------------------------------------------------------------------------*/
-// extern void _exit( int status ) ;
-// extern void _kill( int pid, int sig ) ;
-// extern int _getpid ( void ) ;
 
 unsigned char * heap = (unsigned char *)&_end;
 
@@ -69,6 +45,7 @@ extern caddr_t _sbrk(int nbytes)
   }
 }
 
+#if !defined(SEMIHOSTING)
 extern int _gettimeofday(void *p1, void *p2)
 {
   return 0;
@@ -135,4 +112,5 @@ extern int _getpid()
 {
     return -1 ;
 }
+#endif
 

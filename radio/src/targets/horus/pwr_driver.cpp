@@ -35,28 +35,34 @@ void pwrInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
 
-  GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
-
+#if defined(PCBX12S)
+  // TODO should not be here!
+  // TODO and X10 code missing
   GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
+#endif
 
   // Init Module PWR
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
   GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+
+#if !defined(PWR_BUTTON_DISABLED)
+  // Init PWR SWITCH PIN
+  GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
+  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+#endif
+
   // Init PCBREV PIN
+  // TODO to be removed on X10?
   GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
 
   // Init SD-DETECT PIN
@@ -80,6 +86,7 @@ void pwrOn()
 
 void pwrOff()
 {
+#if defined(PCBX12S)
   // Shutdown the Audio amp
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
@@ -89,6 +96,7 @@ void pwrOff()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
   GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+#endif
 
   // Shutdown the Haptic
   hapticDone();
@@ -100,7 +108,11 @@ void pwrOff()
 
 uint32_t pwrPressed()
 {
+#if defined(PWR_BUTTON_DISABLED)
+  return false;
+#else
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+#endif
 }
 
 void pwrResetHandler()

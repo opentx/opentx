@@ -72,15 +72,15 @@ const pm_uchar icons[] PROGMEM = {
 
 void doMainScreenGraphics()
 {
-  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
+  int16_t calibStickVert = calibratedAnalogs[CONVERT_MODE(1)];
   if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+  drawStick(LBOX_CENTERX, calibratedAnalogs[CONVERT_MODE(0)], calibStickVert);
 
-  calibStickVert = calibratedStick[CONVERT_MODE(2)];
+  calibStickVert = calibratedAnalogs[CONVERT_MODE(2)];
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+  drawStick(RBOX_CENTERX, calibratedAnalogs[CONVERT_MODE(3)], calibStickVert);
 }
 
 void displayTrims(uint8_t phase)
@@ -174,7 +174,7 @@ void drawSliders()
     lcdDrawSolidVerticalLine(x, y, LCD_H/2-2);
     lcdDrawSolidVerticalLine(x+1, y, LCD_H/2-2);
     y += LCD_H/2-4;
-    y -= ((calibratedStick[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
+    y -= ((calibratedAnalogs[i]+RESX)*(LCD_H/2-4)/(RESX*2));  // calculate once per loop
     lcdDrawSolidVerticalLine(x-1, y, 2);
     lcdDrawSolidVerticalLine(x+2, y, 2);
   }

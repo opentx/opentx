@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+uint16_t adcValues[NUM_ANALOGS] __DMA;
+
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
 
@@ -39,8 +41,6 @@
 #define MANUAL_MODE                    0x1000 // manual mode channel 0
 
 #define SAMPTIME                       2 // sample time = 28 cycles
-
-uint16_t adcValues[NUMBER_ANALOG] __DMA;
 
 uint16_t SPIx_ReadWriteByte(uint16_t value)
 {
@@ -115,7 +115,7 @@ void adcInit()
 
   ADC3->CR1 = ADC_CR1_SCAN;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC3->SQR1 = (2-1) << 20; // NUMBER_ANALOG Channels
+  ADC3->SQR1 = (2-1) << 20;
   ADC3->SQR2 = 0;
   ADC3->SQR3 = ADC_IN_MOUSE1 + (ADC_IN_MOUSE2<<5);
   ADC3->SMPR1 = 0;
@@ -212,7 +212,7 @@ bool adcOnChipReadFinished()
 
 void adcRead()
 {
-  uint16_t temp[NUMBER_ANALOG-MOUSE1] = { 0 };
+  uint16_t temp[NUM_ANALOGS-MOUSE1] = { 0 };
   uint8_t noInternalReads = 0;
 
   adcOnChipReadStart();
@@ -221,7 +221,7 @@ void adcRead()
   for (uint32_t index=0; index<MOUSE1; index++) {
     adcValues[index] = adcReadNextSPIChannel(index);
     if (noInternalReads < 4 && adcOnChipReadFinished()) {
-      for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
+      for (uint8_t x=0; x<NUM_ANALOGS-MOUSE1; x++) {
         uint16_t val = adcValues[MOUSE1+x];
 #if defined(JITTER_MEASURE)
         if (JITTER_MEASURE_ACTIVE()) {
@@ -242,13 +242,13 @@ void adcRead()
   }
 #endif
 
-  for (uint8_t x=0; x<NUMBER_ANALOG-MOUSE1; x++) {
+  for (uint8_t x=0; x<NUM_ANALOGS-MOUSE1; x++) {
     adcValues[MOUSE1+x] = temp[x] >> 2;
   }
 }
 
 #if !defined(SIMU)
-const int8_t ana_direction[NUMBER_ANALOG] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
+const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
 
 uint16_t getAnalogValue(uint8_t index)
 {

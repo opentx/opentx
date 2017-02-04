@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB_TYPES X9D X9D+ X9E X7 HORUS 9X 9XR 9X128 9XR128 SKY9X 9XRPRO AR9X 9X2561 GRUVIN9X MEGA2560)
+set(PCB_TYPES X7 X9D X9D+ X9E X10 X12S 9X 9XR 9X128 9XR128 9X2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X)
 set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU)
 
@@ -27,6 +27,7 @@ option(DANGEROUS_MODULE_FUNCTIONS "Dangerous module functions (RangeCheck / Bind
 option(FAI "Competition mode (no telemetry)" OFF)
 option(AUTOSOURCE "Automatic source detection in menus" ON)
 option(AUTOSWITCH "Automatic switch detection in menus" ON)
+option(SEMIHOSTING "Enable debugger semihosting" OFF)
 option(JITTER_MEASURE "Enable ADC jitter measurement" OFF)
 option(WATCHDOG_DISABLED "Disable hardware Watchdog" OFF)
 if(SDL_FOUND)
@@ -81,7 +82,7 @@ set(FATFS_SRC
   ${FATFS_DIR}/option/ccsbcs.c
 )
 
-if(PCB STREQUAL HORUS)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10)
   include(targets/horus/CMakeLists.txt)
 elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL X7)
   include(targets/taranis/CMakeLists.txt)
@@ -165,7 +166,7 @@ else()
   add_definitions(-DEEPROM -DEEPROM_RAW)
 endif()
 
-if(ARCH STREQUAL ARM AND NOT PCB STREQUAL HORUS AND NOT PCB STREQUAL FLAMENCO)
+if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL X10 AND NOT PCB STREQUAL FLAMENCO)
   set(SRC ${SRC} storage/eeprom_conversions.cpp)
 endif()
 
@@ -204,7 +205,7 @@ if(NOT LUA STREQUAL NO)
     set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
   endif()
   set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
-  if(PCB STREQUAL HORUS)
+  if(PCB STREQUAL X12S OR PCB STREQUAL X10)
     set(SRC ${SRC} lua/widgets.cpp)
   endif()
   set(LUA_SRC lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c
@@ -433,6 +434,10 @@ if(NOT MSVC)
 
     # these are in addition to CMAKE_CXX_FLAGS
     set(CMAKE_EXE_LINKER_FLAGS "-lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
+    if(SEMIHOSTING)
+      add_definitions(-DSEMIHOSTING)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=rdimon.specs")
+    endif()  
 
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7)
       add_subdirectory(targets/${TARGET_DIR}/bootloader)

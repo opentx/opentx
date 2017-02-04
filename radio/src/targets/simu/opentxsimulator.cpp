@@ -256,8 +256,10 @@ class OpenTxSimulatorFactory: public SimulatorFactory
 
     virtual Board::Type type()
     {
-#if defined(PCBHORUS)
-      return Board::BOARD_HORUS;
+#if defined(PCBX12S)
+      return Board::BOARD_X12S;
+#elif defined(PCBX10)
+      return Board::BOARD_X10;
 #elif defined(PCBFLAMENCO)
       return Board::BOARD_FLAMENCO;
 #elif defined(PCBX7)

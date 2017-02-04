@@ -12,6 +12,7 @@ if(PCB STREQUAL X9E)
   set(FLAVOUR x9e)
   add_definitions(-DSTM32F40_41xxx -DPCBX9E)
   add_definitions(-DEEPROM_VARIANT=0x8000)
+  add_definitions(-DBLUETOOTH)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     top_lcd_driver.cpp
@@ -111,6 +112,8 @@ set(TARGET_SRC
   ${LED_DRIVER}
   backlight_driver.cpp
   extmodule_driver.cpp
+  ../common/arm/stm32/audio_dac_driver.cpp
+  ../common/arm/stm32/adc_driver.cpp
   )
 
 set(FIRMWARE_SRC
