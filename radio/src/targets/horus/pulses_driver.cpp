@@ -96,6 +96,18 @@ void disable_dsm2(uint32_t port)
 }
 #endif
 
+#if defined(MULTIMODULE)
+void init_multimodule(uint32_t port)
+{
+  init_dsm2(port);
+}
+
+void disable_multimodule(uint32_t port)
+{
+  disable_dsm2(port);
+}
+#endif
+
 void init_crossfire(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {

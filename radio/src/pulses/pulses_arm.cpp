@@ -146,7 +146,7 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-        disable_dsm2(port);
+        disable_multimodule(port);
         break;
 #endif
 
@@ -241,7 +241,7 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
-        init_dsm2(port);
+        init_multimodule(port);
         break;
 #endif
 

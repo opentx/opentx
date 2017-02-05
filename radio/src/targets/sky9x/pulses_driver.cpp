@@ -222,11 +222,7 @@ void init_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     init_main_ppm(2500 * 2, 0);
-    if (s_current_protocol[EXTERNAL_MODULE] == PROTO_MULTIMODULE) {
-      init_ssc(100);
-    }
-    else {
-      init_ssc(125);
+    init_ssc(125);
     }
   }
   else {
@@ -244,6 +240,24 @@ void disable_dsm2(uint32_t port)
     // TODO
   }
 }
+
+#if defined(MULTIMODULE)
+void init_multimodule(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    init_main_ppm(3500 * 2, 0);
+    init_ssc(100);
+  }
+  else {
+    // TODO
+  }
+}
+
+void disable_multimodule(uint32_t port)
+{
+  disable_dsm2(port);
+}
+#endif
 
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
