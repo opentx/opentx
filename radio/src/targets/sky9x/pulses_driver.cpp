@@ -224,7 +224,6 @@ void init_dsm2(uint32_t port)
     init_main_ppm(2500 * 2, 0);
     init_ssc(125);
     }
-  }
   else {
     // TODO
   }
