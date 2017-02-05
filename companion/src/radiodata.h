@@ -225,6 +225,8 @@ class RawSource {
     {
     }
 
+    void convert(Board::Type before, Board::Type after);
+
     inline const int toValue() const
     {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
@@ -405,6 +407,8 @@ enum MltpxValue {
 class MixData {
   public:
     MixData() { clear(); }
+    void convert(Board::Type before, Board::Type after);
+
     unsigned int destCh;            //        1..CPN_MAX_CHNOUT
     RawSource srcRaw;
     int     weight;
@@ -1213,7 +1217,7 @@ class GeneralSettings {
     unsigned int backlightColor;
     CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
     char switchName[18][3+1];
-    unsigned int switchConfig[18];
+    unsigned int switchConfig[CPN_MAX_SWITCHES];
     char stickName[4][3+1];
     char potName[4][3+1];
     unsigned int potConfig[4];

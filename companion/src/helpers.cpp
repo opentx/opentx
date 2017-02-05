@@ -579,11 +579,11 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders); i++) {
+    for (int i=0; i<CPN_MAX_STICKS+getBoardCapability(getCurrentBoard(), Board::Pots)+getBoardCapability(getCurrentBoard(), Board::Sliders); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       // skip unavailable pots and sliders
       if (item.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) continue;
-      if (item.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-getCurrentFirmware()->getCapability(Pots))) continue;
+      if (item.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-getBoardCapability(getCurrentBoard(), Board::Pots))) continue;
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
@@ -609,7 +609,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SWITCHES) {
-    for (int i=0; i<getCurrentFirmware()->getCapability(Switches); i++) {
+    for (int i=0; i<getBoardCapability(board, Board::Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
       if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchSourceAllowedTaranis(i)) {

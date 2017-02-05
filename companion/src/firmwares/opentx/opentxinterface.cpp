@@ -436,7 +436,7 @@ Firmware * OpenTxFirmware::getFirmwareVariant(const QString &id)
   }
 }
 
-int OpenTxFirmware::getCapability(Capability capability)
+int OpenTxFirmware::getCapability(::Capability capability)
 {
   switch (capability) {
     case Models:
@@ -520,45 +520,9 @@ int OpenTxFirmware::getCapability(Capability capability)
         return 0;
     case PermTimers:
       return (IS_2560(board) || IS_ARM(board));
-    case Pots:
-      if (IS_HORUS(board))
-        return 3;
-      else if (IS_TARANIS_X7(board))
-        return 2;
-      else if (IS_TARANIS_X9E(board))
-        return 4;
-      else if (IS_TARANIS(board))
-        return 3;
-      else
-        return 3;
-    case Sliders:
-      if (IS_HORUS(board))
-        return 4;
-      else if (IS_TARANIS_X7(board))
-        return 0;
-      else if (IS_TARANIS_X9E(board))
-        return 4;
-      else if (IS_TARANIS(board))
-        return 2;
-      else
-        return 0;
-    case Switches:
-      if (IS_TARANIS_X9E(board))
-        return 18;
-      else if (IS_TARANIS_X7(board))
-        return 6;
-      else if (IS_HORUS_OR_TARANIS(board))
-        return 8;
-      else
-        return 7;
-    case FactoryInstalledSwitches:
-      if (IS_TARANIS_X9E(board))
-        return 8;
-      else
-        return getCapability(Switches);
     case SwitchesPositions:
       if (IS_HORUS_OR_TARANIS(board))
-        return getCapability(Switches) * 3;
+        return getBoardCapability(board, Board::Switches) * 3;
       else
         return 9;
     case NumTrimSwitches:

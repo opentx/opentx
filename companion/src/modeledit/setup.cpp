@@ -689,7 +689,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   // Beep Center checkboxes
   prevFocus = ui->trimsDisplay;
-  int analogs = CPN_MAX_STICKS + firmware->getCapability(Pots) + firmware->getCapability(Sliders);
+  int analogs = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders);
   for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
@@ -702,7 +702,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
       if (src.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) {
         checkbox->hide();
       }
-      else if (src.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-firmware->getCapability(Pots))) {
+      else if (src.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-getBoardCapability(board, Board::Pots))) {
         checkbox->hide();
       }
     }
@@ -711,7 +711,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   // Startup switches warnings
-  for (int i=0; i<firmware->getCapability(Switches); i++) {
+  for (int i=0; i<getBoardCapability(board, Board::Switches); i++) {
     Board::SwitchInfo switchInfo = getSwitchInfo(board, i);
     if (IS_HORUS_OR_TARANIS(board)) {
       switchInfo.config = Board::SwitchType(generalSettings.switchConfig[i]);
@@ -753,7 +753,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   // Pot warnings
   prevFocus = ui->potWarningMode;
   if (IS_HORUS_OR_TARANIS(board)) {
-    for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
+    for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i);
       cb->setText(firmware->getAnalogInputName(i+4));
@@ -766,7 +766,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
         }
       }
       else {
-        if (!generalSettings.isSliderAvailable(i-firmware->getCapability(Pots))) {
+        if (!generalSettings.isSliderAvailable(i-getBoardCapability(board, Board::Pots))) {
           cb->hide();
         }
       }
@@ -898,10 +898,11 @@ void SetupPanel::on_image_currentIndexChanged(int index)
 
 void SetupPanel::populateThrottleSourceCB()
 {
+  Board::Type board = firmware->getBoard();
   lock = true;
   ui->throttleSource->clear();
   ui->throttleSource->addItem(QObject::tr("THR"));
-  for (int i=0; i<firmware->getCapability(Pots)+firmware->getCapability(Sliders); i++) {
+  for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
     ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), i);
   }
   for (int i=0; i<firmware->getCapability(Outputs); i++) {

@@ -23,9 +23,34 @@
 
 // TODO here we will move a lot of functions from eeprominterface.cpp when no merge risk
 
+void RawSource::convert(Board::Type before, Board::Type after)
+{
+  if (type == SOURCE_TYPE_STICK && index >= 4 + getBoardCapability(before, Board::Pots)) {
+    // 1st slider alignment
+    index += getBoardCapability(after, Board::Pots) - getBoardCapability(before, Board::Pots);
+  }
+
+  if (IS_HORUS(after)) {
+    if (IS_TARANIS_X9D(before) || IS_TARANIS_X7(before)) {
+      if (type == SOURCE_TYPE_STICK && index >= 7) {
+        // LS and RS on Horus are after sliders L1 and L2
+        index += 2;
+      }
+    }
+  }
+}
+
+void MixData::convert(Board::Type before, Board::Type after)
+{
+  srcRaw.convert(before, after);
+}
+
 void ModelData::convert(Board::Type before, Board::Type after)
 {
   // Here we can add explicit conversions when moving from one board to another
+  for (int i=0; i<CPN_MAX_MIXERS; i++) {
+    mixData[i].convert(before, after);
+  }
 }
 
 void GeneralSettings::convert(Board::Type before, Board::Type after)

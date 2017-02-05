@@ -231,11 +231,13 @@ bool menuRadioSdManager(event_t _event)
           else if (!strcasecmp(ext, TEXT_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
-#if defined(LUA)
+          else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
+            POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+            POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+          }
           else if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
-#endif
         }
         if (!READ_ONLY()) {
           if (IS_FILE(line))
