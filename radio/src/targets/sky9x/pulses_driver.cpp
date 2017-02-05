@@ -161,7 +161,7 @@ void disable_ppm(uint32_t port)
 
 // Initialise the SSC to allow PXX output.
 // TD is on PA17, peripheral A
-void init_ssc()
+void init_ssc(uint8_t baudrateDiv1000)
 {
   Ssc * sscptr;
 
@@ -172,7 +172,7 @@ void init_ssc()
   sscptr = SSC;
   sscptr->SSC_THR = 0xFF;		// Make the output high.
   sscptr->SSC_TFMR = 0x00000027;         //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
-  sscptr->SSC_CMR = Master_frequency / (125000*2);               // 8uS per bit
+  sscptr->SSC_CMR = Master_frequency / (1000*baudrateDiv1000*2);
   sscptr->SSC_TCMR = 0;          //  0000 0000 0000 0000 0000 0000 0000 0000
   sscptr->SSC_CR = SSC_CR_TXEN;
 
@@ -200,7 +200,7 @@ void init_pxx(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     init_main_ppm(2500 * 2, 0);
-    init_ssc();
+    init_ssc(125);
   }
   else {
     // TODO
@@ -222,7 +222,12 @@ void init_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     init_main_ppm(2500 * 2, 0);
-    init_ssc();
+    if (s_current_protocol[EXTERNAL_MODULE] == PROTO_MULTIMODULE) {
+      init_ssc(100);
+    }
+    else {
+      init_ssc(125);
+    }
   }
   else {
     // TODO
@@ -296,6 +301,30 @@ extern "C" void PWM_IRQHandler(void)
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
         }
         break;
+
+#if defined(MULTIMODULE)
+      case PROTO_MULTIMODULE:
+        // Alternate periods of 5.5mS and 3.5 mS
+        period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
+        if (period == 3500 * 2) {
+          period = 5500 * 2;
+        }
+        else {
+          period = 3500 * 2;
+        }
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = period; // Period in half uS
+        if (period != 3500 * 2) {
+          setupPulses(EXTERNAL_MODULE);
+        }
+        else {
+          // Kick off serial output here
+          Ssc * sscptr = SSC;
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);
+          sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
+          sscptr->SSC_PTCR = SSC_PTCR_TXTEN; // Start transfers
+        }
+        break;
+#endif
 
       default:
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;
