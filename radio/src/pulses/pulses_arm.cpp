@@ -208,6 +208,9 @@ void setupPulses(uint8_t port)
 #endif
 
     case PROTO_PPM:
+#if defined(PCBSKY9X)
+    case PROTO_NONE:
+#endif
       setupPulsesPPMModule(port);
       scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].ppm.frameLength)/2);
       break;
