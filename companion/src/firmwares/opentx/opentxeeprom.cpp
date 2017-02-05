@@ -3477,7 +3477,7 @@ void OpenTxModelData::afterImport()
     else if (modelData.moduleData[module].protocol == PULSES_MULTIMODULE) {
       // Copy data from ppm struct to multi struct
       unsigned int multiByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
-      modelData.moduleData[module].multi.rfProtocol = subprotocols[module]  | ((multiByte & 0x3) << 4);
+      modelData.moduleData[module].multi.rfProtocol = (subprotocols[module] & 0x0f) | ((multiByte & 0x3) << 4);
       modelData.moduleData[module].multi.customProto = (multiByte & 0x80) == 0x80;
       modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
       modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
