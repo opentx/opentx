@@ -97,3 +97,46 @@ Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index)
 
   return {Board::SWITCH_NOT_AVAILABLE, "???"};
 }
+
+int getBoardCapability(Board::Type board, Board::Capability capability)
+{
+  switch (capability) {
+    case Pots:
+      if (IS_HORUS(board))
+        return 3;
+      else if (IS_TARANIS_X7(board))
+        return 2;
+      else if (IS_TARANIS_X9E(board))
+        return 4;
+      else if (IS_TARANIS(board))
+        return 3;
+      else
+        return 3;
+    case Sliders:
+      if (IS_HORUS(board))
+        return 4;
+      else if (IS_TARANIS_X7(board))
+        return 0;
+      else if (IS_TARANIS_X9E(board))
+        return 4;
+      else if (IS_TARANIS(board))
+        return 2;
+      else
+        return 0;
+    case FactoryInstalledSwitches:
+      if (IS_TARANIS_X9E(board))
+        return 8;
+      // no break
+    case Switches:
+      if (IS_TARANIS_X9E(board))
+        return 18;
+      else if (IS_TARANIS_X7(board))
+        return 6;
+      else if (IS_HORUS_OR_TARANIS(board))
+        return 8;
+      else
+        return 7;
+  }
+
+  return 0;
+}

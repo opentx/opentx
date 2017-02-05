@@ -582,14 +582,14 @@ bool RawSource::isPot() const
 {
   return (type == SOURCE_TYPE_STICK &&
           index >= CPN_MAX_STICKS &&
-          index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots));
+          index < CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots));
 }
 
 bool RawSource::isSlider() const
 {
   return (type == SOURCE_TYPE_STICK &&
-          index >= CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots) &&
-          index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders));
+          index >= CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) &&
+          index < CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders));
 }
 
 QString RawSwitch::toString(Board::Type board) const
@@ -1045,13 +1045,13 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
-  if (index<0 || index>getCurrentFirmware()->getCapability(Pots)) return false;
+  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Pots)) return false;
   return potConfig[index] != Board::POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
-  if (index<0 || index>getCurrentFirmware()->getCapability(Sliders)) return false;
+  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Sliders)) return false;
   return sliderConfig[index] != Board::SLIDER_NONE;
 }
 
@@ -1071,7 +1071,7 @@ GeneralSettings::GeneralSettings()
   Firmware * firmware = getCurrentFirmware();
   Board::Type board = firmware->getBoard();
 
-  for (int i=0; i<firmware->getCapability(FactoryInstalledSwitches); i++) {
+  for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
     switchConfig[i] = getSwitchInfo(board, i).config;
   }
 
@@ -1124,7 +1124,7 @@ GeneralSettings::GeneralSettings()
   stickMode = g.profile[g.sessionId()].defaultMode();
 
   QString t_calib = g.profile[g.sessionId()].stickPotCalib();
-  int potsnum = getCurrentFirmware()->getCapability(Pots);
+  int potsnum = getBoardCapability(getCurrentBoard(), Board::Pots);
   if (!t_calib.isEmpty()) {
     QString t_trainercalib=g.profile[g.sessionId()].trainerCalib();
     int8_t t_txVoltageCalibration=(int8_t)g.profile[g.sessionId()].txVoltageCalibration();

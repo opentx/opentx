@@ -127,7 +127,7 @@ bool FlashEEpromDialog::patchCalibration()
 {
   QString calib = g.profile[g.id()].stickPotCalib();
   QString trainercalib = g.profile[g.id()].trainerCalib();
-  int potsnum = getCurrentFirmware()->getCapability(Pots);
+  int potsnum = getBoardCapability(getCurrentBoard(), Board::Pots);
   int8_t txVoltageCalibration = (int8_t) g.profile[g.id()].txVoltageCalibration();
   int8_t txCurrentCalibration = (int8_t) g.profile[g.id()].txCurrentCalibration();
   int8_t PPM_Multiplier = (int8_t) g.profile[g.id()].ppmMultiplier();

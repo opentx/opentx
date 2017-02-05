@@ -468,8 +468,7 @@ void SimulatorDialog::setupRadioWidgets()
   // switches
   Board::SwitchInfo switchInfo;
   Board::SwitchType swcfg;
-  // FIXME :  CPN_MAX_SWITCHES == 32 but GeneralSettings::switchConfig[18] !!
-  for (i = 0; i < firmware->getCapability(Capability(Switches)) && i < 18 /*CPN_MAX_SWITCHES*/; ++i) {
+  for (i = 0; i < getBoardCapability(board, Board::Switches) && i < CPN_MAX_SWITCHES; ++i) {
     if (radioSettings.switchConfig[i] == Board::SWITCH_NOT_AVAILABLE)
       continue;
 
@@ -489,7 +488,7 @@ void SimulatorDialog::setupRadioWidgets()
   aIdx = 0;
 
   // pots in middle of switches
-  for (i = 0; i < firmware->getCapability(Pots) && i < CPN_MAX_POTS; ++i) {
+  for (i = 0; i < getBoardCapability(board, Board::Pots) && i < CPN_MAX_POTS; ++i) {
     if (!radioSettings.isPotAvailable(i))
       continue;
 
@@ -509,7 +508,7 @@ void SimulatorDialog::setupRadioWidgets()
 
   // faders between sticks
   int r = 0, c = 0;
-  for (i = 0; i < firmware->getCapability(Sliders) && i + aIdx < CPN_MAX_POTS; ++i) {
+  for (i = 0; i < getBoardCapability(board, Board::Sliders) && i + aIdx < CPN_MAX_POTS; ++i) {
     if (!radioSettings.isSliderAvailable(i))
       continue;
 
