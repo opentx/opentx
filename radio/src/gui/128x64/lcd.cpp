@@ -727,7 +727,7 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
   if (pat==DOTTED && !(y%2))
     pat = ~pat;
 
-  uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
+  uint8_t * p  = &displayBuf[ y / 8 * LCD_W + x ];
   y = (y & 0x07);
   if (y) {
     ASSERT_IN_DISPLAY(p);
@@ -738,13 +738,13 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
     lcdMaskPoint(p, msk & pat, att);
     p += LCD_W;
   }
-  while (h>=8) {
+  while (h >= 8) {
     ASSERT_IN_DISPLAY(p);
     lcdMaskPoint(p, pat, att);
     p += LCD_W;
     h -= 8;
   }
-  if (h>0) {
+  if (h > 0) {
     ASSERT_IN_DISPLAY(p);
     lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
   }
