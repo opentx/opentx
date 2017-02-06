@@ -43,8 +43,12 @@
 #define TRIM_LV_X     3
 #define TRIM_RV_X     (LCD_W-4)
 #define TRIM_RH_X     (LCD_W*3/4-2)
+#define TRIM_LH_NEG   (TRIM_LH_X+1*FW)
+#define TRIM_LH_POS   (TRIM_LH_X-4*FW)
+#define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
+#define TRIM_RH_POS   (TRIM_RH_X-4*FW)
 
-#define TRIM_LEN 27
+#define TRIM_LEN 23
 
 void drawPotsBars()
 {
@@ -123,7 +127,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
         }
       }
 #endif
@@ -149,7 +153,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
         }
       }
 #endif
@@ -359,7 +363,7 @@ void menuMainView(event_t event)
       killEvents(event);
       break;
 #endif
-      
+
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
@@ -372,7 +376,7 @@ void menuMainView(event_t event)
       killEvents(event);
       break;
 #endif
-  
+
 #if defined(EVT_KEY_PREVIOUS_VIEW)
       // TODO try to split those 2 cases on 9X
     case EVT_KEY_PREVIOUS_VIEW:
@@ -387,7 +391,7 @@ void menuMainView(event_t event)
       storageDirty(EE_GENERAL);
       break;
 #endif
-  
+
 #if defined(EVT_KEY_STATISTICS)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
@@ -428,7 +432,7 @@ void menuMainView(event_t event)
       }
 #endif
       break;
-      
+
 #if !defined(NAVIGATION_MENUS)
     case EVT_KEY_LONG(KEY_EXIT):
       flightReset();
