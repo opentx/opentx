@@ -541,7 +541,14 @@ void menuViewTelemetryFrsky(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
+#if defined(CPUARM)
+      killEvents(event);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      POPUP_MENU_START(onMainViewMenu);
+#else
       telemetryReset();
+#endif
       break;
   }
 
