@@ -234,8 +234,8 @@ void RadioOutputsWidget::setupGVarsDisplay()
     gvarsLayout->addWidget(label, gv+1, 0);
     for (int fm=0; fm < fmodes; fm++) {
       QLabel * value = new QLabel(gvarsWidget);
-      value->setAutoFillBackground(true);
       value->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+      value->setAutoFillBackground(true);
       value->setBackgroundRole(bgrole);
       value->setText("0");
       value->setStyleSheet("padding-right: .06em;");
@@ -272,43 +272,38 @@ void RadioOutputsWidget::setupLsDisplay()
   // populate logical switches
   int rows = switches / (switches > 16 ? 4 : 2);
   for (int i=0; i < switches; i++) {
-    QLabel * lsLbl = new QLabel;
-    logicalSwitchesLayout->addWidget(createLogicalSwitch(logicalSwitches, i, lsLbl), i / rows, i % rows, 1, 1);
-    m_logicSwitchMap.insert(i, lsLbl);
+    logicalSwitchesLayout->addWidget(createLogicalSwitch(logicalSwitches, i), i / rows, i % rows, 1, 1);
   }
 }
 
-QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo, QLabel * label)
+QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo)
 {
-  QFrame * swtch = new QFrame(parent);
+  QLabel * swtch = new QLabel(parent);
   swtch->setAutoFillBackground(true);
-  swtch->setFrameShape(QFrame::Panel);
-  swtch->setFrameShadow(QFrame::Raised);
+  swtch->setFrameStyle(QFrame::Panel | QFrame::Raised);
+  swtch->setLineWidth(2);
   swtch->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-  swtch->setMaximumHeight(18);
-  QVBoxLayout * layout = new QVBoxLayout(swtch);
-  layout->setContentsMargins(2, 0, 2, 0);
-  if (label) {
-    QFont font;
-    font.setPointSize(8);
-    label->setParent(swtch);
-    label->setFont(font);
-    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString());
-    label->setAlignment(Qt::AlignCenter);
-    label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    label->setAutoFillBackground(true);
-    layout->addWidget(label);
-  }
+  QFont font = swtch->font();
+  font.setBold(true);
+  swtch->setFont(font);
+  swtch->setMinimumWidth(swtch->fontMetrics().width("99") + 10);
+  font.setBold(false);
+  swtch->setFont(font);
+  swtch->setText(QString("%1").arg(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString().remove("L"), 2, QLatin1Char('0')));
+  swtch->setAlignment(Qt::AlignCenter);
+  m_logicSwitchMap.insert(switchNo, swtch);
   return swtch;
 }
 
 // Read various values from firmware simulator and populate values in this UI
 void RadioOutputsWidget::setValues()
 {
-  static int lastPhase = 0;
+  static int lastPhase = -1;
   static TxOutputs prevOutputs = TxOutputs();
+  static bool firstGvarsRun = true;
   int currentPhase;
   TxOutputs outputs;
+  QFont font;
 
   m_simulator->getValues(outputs);
   currentPhase = m_simulator->getPhase();
@@ -328,13 +323,17 @@ void RadioOutputsWidget::setValues()
     for (ls = m_logicSwitchMap.constBegin(); ls != m_logicSwitchMap.constEnd(); ++ls) {
       if (ls.key() >= CPN_MAX_CSW || prevOutputs.vsw[ls.key()] == outputs.vsw[ls.key()])
         continue;
-      ls.value()->setBackgroundRole(outputs.vsw[ls.key()] ? QPalette::Highlight : QPalette::Background);
+      ls.value()->setBackgroundRole(outputs.vsw[ls.key()] ? QPalette::Dark : QPalette::Background);
+      ls.value()->setForegroundRole(outputs.vsw[ls.key()] ? QPalette::BrightText : QPalette::WindowText);
+      ls.value()->setFrameShadow(outputs.vsw[ls.key()] ? QFrame::Sunken : QFrame::Raised);
+      font = ls.value()->font();
+      font.setBold(outputs.vsw[ls.key()]);
+      ls.value()->setFont(font);
       prevOutputs.vsw[ls.key()] = outputs.vsw[ls.key()];
     }
   }
 
   if (ui->globalVarsWidget->isVisible()) {
-    QFont font;
     QPalette::ColorRole bgrole;
     QHash<int, QHash<int, QLabel *> >::const_iterator gv;
     QHash<int, QLabel *>::const_iterator fm;
@@ -344,22 +343,23 @@ void RadioOutputsWidget::setValues()
       for (fm = gv.value().constBegin(); fm != gv.value().constEnd(); ++fm) {
         if (fm.key() >= CPN_MAX_FLIGHT_MODES)
           continue;
-        if (currentPhase != lastPhase || prevOutputs.gvars[fm.key()][gv.key()] != outputs.gvars[fm.key()][gv.key()]) {
-          font = fm.value()->font();
-          bgrole = ((gv.key() % 2) ? QPalette::Background : QPalette::AlternateBase);
-          if (fm.key() == lastPhase) {
-            font.setBold(true);
-            bgrole = QPalette::Highlight;
-          }
-          fm.value()->setText(QString::number(outputs.gvars[fm.key()][gv.key()]));
-          fm.value()->setFont(font);
+        if (currentPhase != lastPhase || prevOutputs.gvars[fm.key()][gv.key()] != outputs.gvars[fm.key()][gv.key()] || firstGvarsRun) {
+          if (fm.key() == currentPhase)
+            bgrole = QPalette::Dark;
+          else
+            bgrole = ((gv.key() % 2) ? QPalette::Background : QPalette::AlternateBase);
           fm.value()->setBackgroundRole(bgrole);
+          fm.value()->setForegroundRole(fm.key() == currentPhase ? QPalette::BrightText : QPalette::WindowText);
+          font = fm.value()->font();
+          font.setBold(fm.key() == currentPhase);
+          fm.value()->setFont(font);
+          fm.value()->setText(QString::number(outputs.gvars[fm.key()][gv.key()]));
           prevOutputs.gvars[fm.key()][gv.key()] = outputs.gvars[fm.key()][gv.key()];
+          firstGvarsRun = false;
         }
       }
     }
   }
 
-  if (currentPhase != lastPhase)
-    lastPhase = currentPhase;
+  lastPhase = currentPhase;
 }

@@ -67,7 +67,7 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   QStringList stockFilters;
   stockFilters << "^lua[A-Z].*";
   stockFilters << "/(error|warning|-(E|W)-)/i";
-  stockFilters << "!^(GC Use|(play|load|write|find(True)?)File|convert(To|From)Simu|\\tfound( in map)?:|eeprom |f_[a-z]+\\(|(push|(p|P)op(up)?|chain)? ?Menu( .+ display)?|RamBackup).+$";
+  stockFilters << "!^(GC Use|(play|load|write|find(True)?)File|convert(To|From)Simu|\\t(not )?found( in map)?:?|eeprom |f_[a-z]+\\(|(push|(p|P)op(up)?|chain)? ?Menu( .+ display)?|RamBackup).+$";
 
   foreach (const QString & fltr, stockFilters)
     ui->filterText->addItem(fltr, "no_delete");
@@ -267,9 +267,9 @@ void DebugOutput::on_actionClearScr_triggered()
 void DebugOutput::on_actionShowFilterHelp_triggered()
 {
   // TODO : find some place better for this.
-  QString help = \
-    "<html><head><style>kbd {background-color: ghostwhite; font-size: large; white-space: nowrap;}</style></head><body>"
-    "<p>The filter supports two syntax types: basic matching with common wildcards and well as full Perl-style (<code>pcre</code>) Regular Expressions.</p>"
+  QString help = tr( \
+    "<html><head><style>kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}</style></head><body>"
+    "<p>The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (<code>pcre</code>) Regular Expressions.</p>"
     "<p>By default a filter will only show lines which match (<b>inclusive</b>). To make an <b>exclusive</b> filter which removes matching lines, "
       "prefix the filter expression with a <kbd>!</kbd> (exclamation mark).</p>"
     "<p>To use <b>Regular Expressions</b> (RegEx), prefix the filter text with a <kbd>/</kbd> (slash) or <kbd>^</kbd> (up caret). "
@@ -280,8 +280,9 @@ void DebugOutput::on_actionShowFilterHelp_triggered()
       "<li>If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.</li>"
       "<li>A useful resource for testing REs (with a full reference) can be found at <a href=\"http://www.regexr.com/\">http://www.regexr.com/</a></li>"
     "</ul></p>"
-    "<p>To use <b>basic matching</b> just type any text. Wildcards <kbd>*</kbd> (asterisk) matches any text and <kbd>?</kbd> (question mark) matches any single character."
+    "<p>To use <b>basic matching</b> just type any text."
     "<ul>"
+      "<li>Wildcards: <kbd>*</kbd> (asterisk) matches zero or more of any character(s), and <kbd>?</kbd> (question mark) matches any single character.</li>"
       "<li>The match is always case-insensitive.</li>"
       "<li>The match always starts from the beginning of a log line. To ignore characters at the start, use a leading <kbd>*</kbd> wildcard.</li>"
       "<li>A trailing <kbd>*</kbd> is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.</li>"
@@ -291,7 +292,7 @@ void DebugOutput::on_actionShowFilterHelp_triggered()
     "<p>To <b>remove an entry</b> from the filter selector list, first choose it, and while in the line editor press <kbd>Shift-Delete</kbd> (or <kbd>Shift-Backspace</kbd>) key combination. "
       "The default filters cannot be removed. Up to 50 filters are stored.</p>"
     "</body></html>"
-  ;
+  );
   QMessageBox * msgbox = new QMessageBox(QMessageBox::NoIcon, tr("Debug Console Filter Help"), help, QMessageBox::Ok, this);
   msgbox->exec();
 }
@@ -341,7 +342,6 @@ QRegularExpression DebugOutput::makeRegEx(const QString & input, bool * isExlusi
     reFlags |= QRegularExpression::CaseInsensitiveOption;
     re.setPattern(output);
   }
-  // TODO : user option?
   re.setPatternOptions(reFlags);
   return re;
 }

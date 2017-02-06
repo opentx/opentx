@@ -57,15 +57,22 @@ class SimulatorMainWindow : public QMainWindow
     QMenu * createPopupMenu();
 
   public slots:
+    virtual void show();
     void start();
-    void showRadioTitlebar(bool show);
-    void toggleMenuBar(bool show);
+    void showMenuBar(bool show);
+    void showRadioFixedSize(Qt::Orientation orientation, bool fixed);
+    void showRadioFixedWidth(bool fixed);
+    void showRadioFixedHeight(bool fixed);
+    void showRadioDocked(bool dock);
 
   protected slots:
     virtual void closeEvent(QCloseEvent *);
     virtual void changeEvent(QEvent *e);
     void restoreUiState();
     void saveUiState();
+    void toggleMenuBar(bool show);
+    void setRadioSizePolicy(int fixType);
+    void toggleRadioDocked(bool dock);
     void luaReload(bool);
     void openJoystickDialog(bool);
     void showHelp(bool show);
@@ -89,8 +96,9 @@ class SimulatorMainWindow : public QMainWindow
 
     QVector<keymapHelp_t> m_keymapHelp;
     int m_radioProfileId;
+    int m_radioSizeConstraint;
     bool m_firstShow;
-    bool m_showRadioTitlebar;
+    bool m_showRadioDocked;
     bool m_showMenubar;
 
     const static quint16 m_savedUiStateVersion;
