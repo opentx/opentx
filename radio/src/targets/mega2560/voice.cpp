@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if defined(VOICE_WTV20)
-#include "targets/Mega2560/voice_wtv20.cpp"
+#include "targets/mega2560/voice_wtv20.cpp"
 #elif defined(VOICE_JQ6500)
-#include "targets/Mega2560/voice_jq6500.cpp"
+#include "targets/mega2560/voice_jq6500.cpp"
 #endif
