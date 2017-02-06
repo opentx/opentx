@@ -43,10 +43,10 @@
 #define TRIM_LV_X     3
 #define TRIM_RV_X     (LCD_W-4)
 #define TRIM_RH_X     (LCD_W*3/4-2)
-#define TRIM_LH_NEG   (LCD_W*1/4+10)
-#define TRIM_LH_POS   (LCD_W*1/4-20)
-#define TRIM_RH_NEG   (LCD_W*3/4+6)
-#define TRIM_RH_POS   (LCD_W*3/4-22)
+#define TRIM_LH_NEG   (TRIM_LH_X+1*FW)
+#define TRIM_LH_POS   (TRIM_LH_X-4*FW)
+#define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
+#define TRIM_RH_POS   (TRIM_RH_X-4*FW)
 
 #define TRIM_LEN 23
 
@@ -127,7 +127,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber(dir>0 ? 24 : 52, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
         }
       }
 #endif
