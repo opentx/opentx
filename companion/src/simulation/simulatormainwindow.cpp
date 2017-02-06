@@ -36,7 +36,7 @@
 
 extern AppData g;  // ensure what "g" means
 
-const quint16 SimulatorMainWindow::m_savedUiStateVersion = 1;
+const quint16 SimulatorMainWindow::m_savedUiStateVersion = 2;
 
 SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * simulator, quint8 flags, Qt::WindowFlags wflags) :
   QMainWindow(parent, wflags),
@@ -51,28 +51,21 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   m_trainerDockWidget(NULL),
   m_outputsDockWidget(NULL),
   m_radioProfileId(g.sessionId()),
+  m_radioSizeConstraint(Qt::Horizontal | Qt::Vertical),
   m_firstShow(true),
-  m_showRadioTitlebar(true),
+  m_showRadioDocked(true),
   m_showMenubar(true)
 {
   ui->setupUi(this);
-  ui->centralwidget->hide();
 
-//#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-//  setDockOptions(dockOptions() | QMainWindow::GroupedDragging);
-//#endif
-
+  setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
   setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+  setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
+  setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   m_simulatorWidget = new SimulatorDialog(this, m_simulator, flags);
 
-  m_simulatorDockWidget = new QDockWidget(m_simulatorWidget->windowTitle(), this);
-  m_simulatorDockWidget->setObjectName("RADIO_SIMULATOR");
-  m_simulatorDockWidget->setWidget(m_simulatorWidget);
-  m_simulatorDockWidget->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-  addDockWidget(Qt::BottomDockWidgetArea, m_simulatorDockWidget);
-  // setCentralWidget(m_simulatorWidget);
-
+  toggleRadioDocked(true);
   createDockWidgets();
 
   ui->actionReloadLua->setIcon(SimulatorIcon("reload_script"));
@@ -80,8 +73,10 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   ui->actionJoystickSettings->setIcon(SimulatorIcon("joystick_settings"));
   ui->actionScreenshot->setIcon(SimulatorIcon("camera"));
   ui->actionShowKeymap->setIcon(SimulatorIcon("info"));
-  ui->actionToggleRadioTitle->setIcon(ui->toolBar->toggleViewAction()->icon());
   ui->actionToggleMenuBar->setIcon(ui->toolBar->toggleViewAction()->icon());
+  ui->actionFixedRadioWidth->setIcon(ui->toolBar->toggleViewAction()->icon());
+  ui->actionFixedRadioHeight->setIcon(ui->toolBar->toggleViewAction()->icon());
+  ui->actionDockRadio->setIcon(ui->toolBar->toggleViewAction()->icon());
 
   ui->toolBar->toggleViewAction()->setShortcut(tr("Alt+T"));
   ui->toolBar->setIconSize(SimulatorIcon::toolbarIconSize(g.iconSize()));
@@ -91,10 +86,8 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   addAction(ui->toolBar->toggleViewAction());
   addAction(ui->actionToggleMenuBar);
 
-  ui->menuView->addSeparator();
-  ui->menuView->addAction(ui->toolBar->toggleViewAction());
-  ui->menuView->addAction(ui->actionToggleMenuBar);
-  ui->menuView->addAction(ui->actionToggleRadioTitle);
+  ui->menuView->insertSeparator(ui->actionToggleMenuBar);
+  ui->menuView->insertAction(ui->actionToggleMenuBar, ui->toolBar->toggleViewAction());
 
   // Hide some actions based on board capabilities.
   Firmware * firmware = getCurrentFirmware();
@@ -117,23 +110,16 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   connect(ui->actionShowKeymap, &QAction::triggered, this, &SimulatorMainWindow::showHelp);
   connect(ui->actionJoystickSettings, &QAction::triggered, this, &SimulatorMainWindow::openJoystickDialog);
   connect(ui->actionReloadLua, &QAction::triggered, this, &SimulatorMainWindow::luaReload);
-  connect(ui->actionToggleRadioTitle, &QAction::toggled, this, &SimulatorMainWindow::showRadioTitlebar);
-  connect(ui->actionToggleMenuBar, &QAction::toggled, this, &SimulatorMainWindow::toggleMenuBar);
+  connect(ui->actionToggleMenuBar, &QAction::toggled, this, &SimulatorMainWindow::showMenuBar);
+  connect(ui->actionFixedRadioWidth, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedWidth);
+  connect(ui->actionFixedRadioHeight, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedHeight);
+  connect(ui->actionDockRadio, &QAction::toggled, this, &SimulatorMainWindow::showRadioDocked);
   if (m_simulatorWidget) {
     connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorDialog::captureScreenshot);
     connect(ui->actionReloadRadioData, &QAction::triggered, m_simulatorWidget, &SimulatorDialog::restart);
   }
   if (m_outputsWidget)
     connect(ui->actionReloadRadioData, &QAction::triggered, m_outputsWidget, &RadioOutputsWidget::restart);
-
-  // this sets the radio widget to a fixed width while docked, freeform while floating
-  connect(m_simulatorDockWidget, &QDockWidget::topLevelChanged, [this](bool top) {
-    if (top)
-      m_simulatorWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    else
-      m_simulatorWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Preferred);
-  });
-
 }
 
 SimulatorMainWindow::~SimulatorMainWindow()
@@ -155,6 +141,20 @@ void SimulatorMainWindow::closeEvent(QCloseEvent *)
     delete m_outputsDockWidget;
   if (m_simulatorDockWidget)
     delete m_simulatorDockWidget;
+  else if (m_simulatorWidget)
+    delete m_simulatorWidget;
+}
+
+void SimulatorMainWindow::show()
+{
+  QMainWindow::show();
+#ifdef Q_OS_LINUX
+  // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
+  if (m_firstShow) {
+    restoreUiState();
+    m_firstShow = false;
+  }
+#endif
 }
 
 void SimulatorMainWindow::changeEvent(QEvent *e)
@@ -169,10 +169,10 @@ void SimulatorMainWindow::changeEvent(QEvent *e)
   }
 }
 
-QMenu* SimulatorMainWindow::createPopupMenu(){
+QMenu * SimulatorMainWindow::createPopupMenu(){
   QMenu * menu = QMainWindow::createPopupMenu();
-  menu->addAction(ui->actionToggleMenuBar);
-  menu->addAction(ui->actionToggleRadioTitle);
+  menu->clear();
+  menu->addActions(ui->menuView->actions());
   return menu;
 }
 
@@ -180,7 +180,8 @@ void SimulatorMainWindow::saveUiState()
 {
   QByteArray state;
   QDataStream stream(&state, QIODevice::WriteOnly);
-  stream << m_savedUiStateVersion << saveState() << m_showMenubar << m_showRadioTitlebar;
+  stream << m_savedUiStateVersion << saveState(m_savedUiStateVersion)
+         << m_showMenubar << m_showRadioDocked << m_radioSizeConstraint;
 
   SimulatorOptions opts = g.profile[m_radioProfileId].simulatorOptions();
   opts.windowState = state;
@@ -196,13 +197,17 @@ void SimulatorMainWindow::restoreUiState()
   QDataStream stream(state);
 
   stream >> ver;
-  if (ver && ver <= m_savedUiStateVersion)
-    stream >> windowState >> m_showMenubar >> m_showRadioTitlebar;
+  if (ver && ver <= m_savedUiStateVersion) {
+    stream >> windowState >> m_showMenubar >> m_showRadioDocked;
+    if (ver >= 2)
+      stream >> m_radioSizeConstraint;
+  }
 
-  restoreState(windowState);
-  restoreGeometry(g.profile[m_radioProfileId].simulatorOptions().windowGeometry);
-  showRadioTitlebar(m_showRadioTitlebar);
+  toggleRadioDocked(m_showRadioDocked);
+  setRadioSizePolicy(m_radioSizeConstraint);
   toggleMenuBar(m_showMenubar);
+  restoreGeometry(g.profile[m_radioProfileId].simulatorOptions().windowGeometry);
+  restoreState(windowState, m_savedUiStateVersion);
 }
 
 bool SimulatorMainWindow::setRadioData(RadioData * radioData)
@@ -236,17 +241,15 @@ void SimulatorMainWindow::createDockWidgets()
     SimulatorIcon icon("radio_outputs");
     m_outputsDockWidget = new QDockWidget(tr("Radio Outputs"), this);
     m_outputsWidget = new RadioOutputsWidget(m_simulator, getCurrentFirmware(), this);
-    m_outputsWidget->setWindowIcon(icon);
     m_outputsDockWidget->setWidget(m_outputsWidget);
     m_outputsDockWidget->setObjectName("OUTPUTS");
-    addTool(m_outputsDockWidget, Qt::BottomDockWidgetArea, icon, QKeySequence(tr("F2")));
+    addTool(m_outputsDockWidget, Qt::RightDockWidgetArea, icon, QKeySequence(tr("F2")));
   }
 
   if (!m_telemetryDockWidget) {
     SimulatorIcon icon("telemetry");
     m_telemetryDockWidget = new QDockWidget(tr("Telemetry Simulator"), this);
     TelemetrySimulator * telem = new TelemetrySimulator(this, m_simulator);
-    telem->setWindowIcon(icon);
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
@@ -256,7 +259,6 @@ void SimulatorMainWindow::createDockWidgets()
     SimulatorIcon icon("trainer");
     m_trainerDockWidget = new QDockWidget(tr("Trainer Simulator"), this);
     TrainerSimulator * trainer = new TrainerSimulator(this, m_simulator);
-    trainer->setWindowIcon(icon);
     m_trainerDockWidget->setWidget(trainer);
     m_trainerDockWidget->setObjectName("TRAINER_SIMULATOR");
     addTool(m_trainerDockWidget, Qt::TopDockWidgetArea, icon, QKeySequence(tr("F5")));
@@ -266,7 +268,6 @@ void SimulatorMainWindow::createDockWidgets()
     SimulatorIcon icon("console");
     m_consoleDockWidget = new QDockWidget(tr("Debug Output"), this);
     m_consoleWidget = new DebugOutput(this, m_simulator);
-    m_consoleWidget->setWindowIcon(icon);
     m_consoleDockWidget->setWidget(m_consoleWidget);
     m_consoleDockWidget->setObjectName("CONSOLE");
     addTool(m_consoleDockWidget, Qt::RightDockWidgetArea, icon, QKeySequence(tr("F6")));
@@ -278,38 +279,146 @@ void SimulatorMainWindow::addTool(QDockWidget * widget, Qt::DockWidgetArea area,
   QAction* tempAction = widget->toggleViewAction();
   tempAction->setIcon(icon);
   tempAction->setShortcut(shortcut);
-  ui->menuView->addAction(tempAction);
+  ui->menuView->insertAction(ui->actionToggleMenuBar, tempAction);
   ui->toolBar->insertAction(ui->actionReloadLua, tempAction);
-  widget->setAllowedAreas(Qt::AllDockWidgetAreas);
   widget->setWindowIcon(icon);
+  widget->widget()->setWindowIcon(icon);
   addDockWidget(area, widget);
   widget->hide();
   widget->setFloating(true);
+
+  // Upon subsequent launches of application, any previously un-shown floating widgets get
+  //   positioned at screen location (0,0 - frameGeometry.topLeft) which is awkward at best.
+  // This ensures newly shown floating widgets don't get stuck in top left corner.
+  connect(widget, &QDockWidget::visibilityChanged, [this, widget](bool visible) {
+    if (visible && widget->isFloating() && widget->geometry().topLeft() == QPoint(0,0)) {
+      // position top left corner in middle of this parent window.
+      QPoint newPos(pos() + (geometry().bottomRight() - geometry().topLeft()) / 2);
+      widget->move(newPos);
+    }
+  });
 }
 
-void SimulatorMainWindow::showRadioTitlebar(bool show)
+void SimulatorMainWindow::showMenuBar(bool show)
 {
-  m_showRadioTitlebar = show;
-  if (show) {
-    QWidget * w = m_simulatorDockWidget->titleBarWidget();
-    if (w)
-      w->deleteLater();
-    m_simulatorDockWidget->setTitleBarWidget(0);
-  }
-  else {
-    m_simulatorDockWidget->setTitleBarWidget(new QWidget());
-  }
-  if (ui->actionToggleRadioTitle->isChecked() != show)
-    ui->actionToggleRadioTitle->setChecked(show);
-
+  if (m_showMenubar != show)
+    toggleMenuBar(show);
 }
 
 void SimulatorMainWindow::toggleMenuBar(bool show)
 {
-  m_showMenubar = show;
   ui->menubar->setVisible(show);
+  m_showMenubar = show;
   if (ui->actionToggleMenuBar->isChecked() != show)
     ui->actionToggleMenuBar->setChecked(show);
+}
+
+void SimulatorMainWindow::showRadioFixedSize(Qt::Orientation orientation, bool fixed)
+{
+  int fix = m_radioSizeConstraint;
+  if (fixed)
+    fix |= orientation;
+  else
+    fix &= ~(orientation);
+
+  if (m_radioSizeConstraint != fix)
+    setRadioSizePolicy(fix);
+}
+
+void SimulatorMainWindow::showRadioFixedWidth(bool fixed)
+{
+  showRadioFixedSize(Qt::Horizontal, fixed);
+}
+
+void SimulatorMainWindow::showRadioFixedHeight(bool fixed)
+{
+  showRadioFixedSize(Qt::Vertical, fixed);
+}
+
+void SimulatorMainWindow::setRadioSizePolicy(int fixType)
+{
+  QSizePolicy sp;
+  sp.setHorizontalPolicy((fixType & Qt::Horizontal) ? QSizePolicy::Maximum : QSizePolicy::Preferred);
+  sp.setVerticalPolicy((fixType & Qt::Vertical) ? QSizePolicy::Maximum : QSizePolicy::Preferred);
+  m_simulatorWidget->setSizePolicy(sp);
+
+  m_radioSizeConstraint = fixType;
+
+  if (ui->actionFixedRadioWidth->isChecked() != (fixType & Qt::Horizontal))
+    ui->actionFixedRadioWidth->setChecked((fixType & Qt::Horizontal));
+  if (ui->actionFixedRadioHeight->isChecked() != (fixType & Qt::Vertical))
+    ui->actionFixedRadioHeight->setChecked((fixType & Qt::Vertical));
+}
+
+void SimulatorMainWindow::showRadioDocked(bool dock)
+{
+  if (m_showRadioDocked != dock)
+    toggleRadioDocked(dock);
+}
+
+void SimulatorMainWindow::toggleRadioDocked(bool dock)
+{
+  if (!m_simulatorWidget)
+    return;
+
+  if (dock) {
+    if (m_simulatorDockWidget) {
+      m_simulatorDockWidget->setWidget(0);
+      m_simulatorDockWidget->deleteLater();
+      m_simulatorDockWidget = NULL;
+    }
+
+    QWidget * w = takeCentralWidget();
+    if (w && w != m_simulatorWidget)
+      w->deleteLater();
+    setCentralWidget(m_simulatorWidget);
+    setRadioSizePolicy(m_radioSizeConstraint);
+    ui->actionFixedRadioWidth->setEnabled(true);
+    ui->actionFixedRadioHeight->setEnabled(true);
+    m_simulatorWidget->show();
+  }
+  else {
+
+    if (m_simulatorDockWidget) {
+      m_simulatorDockWidget->deleteLater();
+      m_simulatorDockWidget = NULL;
+    }
+
+    takeCentralWidget();
+    QLabel * dummy = new QLabel("");
+    dummy->setFixedSize(0, 0);
+    dummy->setEnabled(false);
+    setCentralWidget(dummy);
+
+    m_simulatorDockWidget = new QDockWidget(m_simulatorWidget->windowTitle(), this);
+    m_simulatorDockWidget->setObjectName("RADIO_SIMULATOR");
+    m_simulatorDockWidget->setWidget(m_simulatorWidget);
+    m_simulatorDockWidget->setFeatures(QDockWidget::DockWidgetFloatable);
+    m_simulatorDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
+    addDockWidget(Qt::BottomDockWidgetArea, m_simulatorDockWidget);
+    m_simulatorDockWidget->setFloating(true);
+    m_simulatorWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    ui->actionFixedRadioWidth->setDisabled(true);
+    ui->actionFixedRadioHeight->setDisabled(true);
+    restoreDockWidget(m_simulatorDockWidget);
+    if (!m_simulatorDockWidget->isVisible())
+      m_simulatorDockWidget->show();
+    if (m_simulatorDockWidget->geometry().topLeft() == QPoint(0,0) && this->isVisible()) {
+      // default position top left corner in middle of this parent window.
+      QPoint newPos(pos() + (geometry().bottomRight() - geometry().topLeft()) / 2);
+      m_simulatorDockWidget->move(newPos);
+    }
+
+    connect(m_simulatorDockWidget, &QDockWidget::topLevelChanged, [this](bool top) {
+      showRadioDocked(!top);
+    });
+  }
+
+  m_showRadioDocked = dock;
+
+  if (ui->actionDockRadio->isChecked() != dock)
+    ui->actionDockRadio->setChecked(dock);
+
 }
 
 void SimulatorMainWindow::luaReload(bool)

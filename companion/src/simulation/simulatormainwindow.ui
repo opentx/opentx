@@ -14,7 +14,7 @@
    <string>OpenTx Simulator</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="../companion.qrc">
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -23,7 +23,14 @@
   <property name="dockOptions">
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -40,6 +47,16 @@
     <property name="title">
      <string>View</string>
     </property>
+    <widget class="QMenu" name="menuRadio_Window">
+     <property name="title">
+      <string>Radio Window</string>
+     </property>
+     <addaction name="actionFixedRadioWidth"/>
+     <addaction name="actionFixedRadioHeight"/>
+     <addaction name="actionDockRadio"/>
+    </widget>
+    <addaction name="actionToggleMenuBar"/>
+    <addaction name="menuRadio_Window"/>
    </widget>
    <widget class="QMenu" name="menuReload">
     <property name="title">
@@ -79,7 +96,7 @@
   </widget>
   <action name="actionReloadLua">
    <property name="icon">
-    <iconset>
+    <iconset resource="../companion.qrc">
      <normaloff>:/images/simulator/icons/svg/reload_script.svg</normaloff>:/images/simulator/icons/svg/reload_script.svg</iconset>
    </property>
    <property name="text">
@@ -94,7 +111,7 @@
   </action>
   <action name="actionReloadRadioData">
    <property name="icon">
-    <iconset>
+    <iconset resource="../companion.qrc">
      <normaloff>:/images/simulator/icons/svg/restart.svg</normaloff>:/images/simulator/icons/svg/restart.svg</iconset>
    </property>
    <property name="text">
@@ -109,7 +126,7 @@
   </action>
   <action name="actionShowKeymap">
    <property name="icon">
-    <iconset>
+    <iconset resource="../companion.qrc">
      <normaloff>:/images/simulator/icons/svg/info.svg</normaloff>:/images/simulator/icons/svg/info.svg</iconset>
    </property>
    <property name="text">
@@ -124,7 +141,7 @@
   </action>
   <action name="actionJoystickSettings">
    <property name="icon">
-    <iconset>
+    <iconset resource="../companion.qrc">
      <normaloff>:/images/simulator/icons/svg/joystick_settings.svg</normaloff>:/images/simulator/icons/svg/joystick_settings.svg</iconset>
    </property>
    <property name="text">
@@ -139,7 +156,7 @@
   </action>
   <action name="actionScreenshot">
    <property name="icon">
-    <iconset>
+    <iconset resource="../companion.qrc">
      <normaloff>:/images/simulator/icons/svg/camera.svg</normaloff>:/images/simulator/icons/svg/camera.svg</iconset>
    </property>
    <property name="text">
@@ -152,15 +169,15 @@
     <string>F8</string>
    </property>
   </action>
-  <action name="actionToggleRadioTitle">
+  <action name="actionDockRadio">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Radio Titlebar</string>
+    <string>Dock In Main Window</string>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The title bar on the main radio window allows you to undock it or move it around separately from the other windows. Hiding the title makes a more compact and streamlined appearance.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>Show the radio in the main window or as a separate &quot;floating&quot; window.</string>
    </property>
   </action>
   <action name="actionToggleMenuBar">
@@ -177,7 +194,31 @@
     <string>Alt+M</string>
    </property>
   </action>
+  <action name="actionFixedRadioWidth">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Constrain Width</string>
+   </property>
+   <property name="toolTip">
+    <string>Set radio widget width to be a fixed size.</string>
+   </property>
+  </action>
+  <action name="actionFixedRadioHeight">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Constrain Height</string>
+   </property>
+   <property name="toolTip">
+    <string>Set radio widget height to be a fixed size.</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../companion.qrc"/>
+ </resources>
  <connections/>
 </ui>

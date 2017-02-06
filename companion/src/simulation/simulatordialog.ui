@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -20,7 +20,7 @@
    <string>Companion Simulator</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../companion.qrc">
+   <iconset>
     <normaloff>:/icon.png</normaloff>:/icon.png</iconset>
   </property>
   <property name="styleSheet">
@@ -307,8 +307,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../companion.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
