@@ -854,8 +854,8 @@ QPixmap makePixMap(const QImage & image)
   QImage result = image.scaled(firmware->getCapability(LcdWidth), firmware->getCapability(LcdHeight));
   if (firmware->getCapability(LcdDepth) == 4) {
     result = result.convertToFormat(QImage::Format_RGB32);
-    for (int i = 0; i < image.width(); ++i) {
-      for (int j = 0; j < image.height(); ++j) {
+    for (int i = 0; i < result.width(); ++i) {
+      for (int j = 0; j < result.height(); ++j) {
         QRgb col = result.pixel(i, j);
         int gray = qGray(col);
         result.setPixel(i, j, qRgb(gray, gray, gray));
