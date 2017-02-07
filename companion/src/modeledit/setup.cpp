@@ -173,6 +173,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       ui->label_trainerMode->hide();
       ui->trainerMode->hide();
     }
+    ui->formLayout_col1->setSpacing(0);
   }
   else {
     ui->label_trainerMode->hide();
@@ -201,10 +202,10 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
       ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant)i);
-      if (i == module.protocol) ui->protocol->setCurrentIndex(ui->protocol->count()-1);
+      if (i == module.protocol)
+        ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
   }
-
   for (int i=0; i<=MM_RF_PROTO_LAST; i++) {
     ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i, false), (QVariant) i);
   }
@@ -240,6 +241,11 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   disableMouseScrolling();
 
   lock = false;
+
+  // a change will not register if only one item was added
+  if (ui->protocol->count() == 1)
+    on_protocol_currentIndexChanged(ui->protocol->currentIndex());
+
 }
 
 ModulePanel::~ModulePanel()
@@ -378,7 +384,7 @@ void ModulePanel::update()
     ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
     ui->failsafeMode->setCurrentIndex(module.failsafeMode);
-    ui->failsafesFrame->setEnabled(module.failsafeMode == FAILSAFE_CUSTOM);
+    ui->failsafesGroupBox->setEnabled(module.failsafeMode == FAILSAFE_CUSTOM);
     if (firmware->getCapability(ChannelsName) > 0) {
       for(int i=0; i<maxChannels;i++) {
         QString name = QString(model->limitData[i+module.channelsStart].name).trimmed();
@@ -395,8 +401,7 @@ void ModulePanel::update()
     mask = 0;
   }
 
-  ui->failsafesLayoutLabel->setVisible(mask & MASK_FAILSAFES);
-  ui->failsafesFrame->setVisible(mask & MASK_FAILSAFES);
+  ui->failsafesGroupBox->setVisible((mask & MASK_FAILSAFES) && module.failsafeMode == FAILSAFE_CUSTOM);
 
   if (mask & MASK_CHANNELS_RANGE) {
     ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
