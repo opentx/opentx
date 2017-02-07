@@ -21,8 +21,8 @@
 #include "simulateduiwidget.h"
 #include "ui_simulateduiwidgetX12.h"
 
-SimulatedUIWidgetX12::SimulatedUIWidgetX12(SimulatorInterface *simulator, SimulatorDialog * simuDialog, QWidget * parent):
-  SimulatedUIWidget(simulator, simuDialog, parent),
+SimulatedUIWidgetX12::SimulatedUIWidgetX12(SimulatorInterface *simulator, QWidget * parent):
+  SimulatedUIWidget(simulator, parent),
   ui(new Ui::SimulatedUIWidgetX12)
 {
   RadioUiAction * act;

@@ -270,6 +270,7 @@ int main(int argc, char *argv[])
 
 int finish(int exitCode)
 {
+  qDebug() << "SIMULATOR EXIT" << exitCode;
   unregisterSimulators();
   unregisterOpenTxFirmwares();
 

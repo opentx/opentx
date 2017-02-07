@@ -45,7 +45,7 @@ class SimulatedUIWidget : public QWidget
 
   protected:
 
-    explicit SimulatedUIWidget(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    explicit SimulatedUIWidget(SimulatorInterface * simulator, QWidget * parent = NULL);
 
   public:
 
@@ -72,12 +72,13 @@ class SimulatedUIWidget : public QWidget
     void mouseReleaseEvent(QMouseEvent *event);
 
   protected:
+
     void setLcd(LcdWidget * lcd);
     void connectScrollActions();
     virtual void setLightOn(bool enable) { }
 
     SimulatorInterface * m_simulator;
-    SimulatorDialog * m_simuDialog;
+    QWidget * m_parent;
     LcdWidget * m_lcd;
     QVector<QColor> m_backlightColors;
     QVector<keymapHelp_t> m_keymapHelp;
@@ -91,6 +92,9 @@ class SimulatedUIWidget : public QWidget
     bool m_lightOn;
     int m_beepShow;
     int m_beepVal;
+
+  signals:
+    void customStyleRequest(const QString & style);
 
 };
 
@@ -109,13 +113,11 @@ class SimulatedUIWidget9X: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidget9X(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    explicit SimulatedUIWidget9X(SimulatorInterface * simulator, QWidget * parent = NULL);
     virtual ~SimulatedUIWidget9X();
 
   protected:
     void setLightOn(bool enable);
-
-  protected slots:
 
   private:
     Ui::SimulatedUIWidget9X * ui;
@@ -127,10 +129,8 @@ class SimulatedUIWidgetX7: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX7(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX7(SimulatorInterface * simulator, QWidget * parent = NULL);
     virtual ~SimulatedUIWidgetX7();
-
-  protected:
 
   private:
     Ui::SimulatedUIWidgetX7 * ui;
@@ -141,10 +141,8 @@ class SimulatedUIWidgetX9: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX9(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX9(SimulatorInterface * simulator, QWidget * parent = NULL);
     virtual ~SimulatedUIWidgetX9();
-
-  protected:
 
   private:
     Ui::SimulatedUIWidgetX9 * ui;
@@ -155,10 +153,8 @@ class SimulatedUIWidgetX9E: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX9E(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX9E(SimulatorInterface * simulator, QWidget * parent = NULL);
     virtual ~SimulatedUIWidgetX9E();
-
-  protected:
 
   private:
     Ui::SimulatedUIWidgetX9E * ui;
@@ -169,10 +165,8 @@ class SimulatedUIWidgetX12: public SimulatedUIWidget
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX12(SimulatorInterface * simulator, SimulatorDialog * simuDialog = NULL, QWidget * parent = NULL);
+    explicit SimulatedUIWidgetX12(SimulatorInterface * simulator, QWidget * parent = NULL);
     virtual ~SimulatedUIWidgetX12();
-
-  protected:
 
   private:
     Ui::SimulatedUIWidgetX12 * ui;

@@ -21,8 +21,8 @@
 #include "simulateduiwidget.h"
 #include "ui_simulateduiwidgetX9E.h"
 
-SimulatedUIWidgetX9E::SimulatedUIWidgetX9E(SimulatorInterface *simulator, SimulatorDialog * simuDialog, QWidget * parent):
-  SimulatedUIWidget(simulator, simuDialog, parent),
+SimulatedUIWidgetX9E::SimulatedUIWidgetX9E(SimulatorInterface *simulator, QWidget * parent):
+  SimulatedUIWidget(simulator, parent),
   ui(new Ui::SimulatedUIWidgetX9E)
 {
   RadioUiAction * act;
@@ -66,10 +66,19 @@ SimulatedUIWidgetX9E::SimulatedUIWidgetX9E(SimulatorInterface *simulator, Simula
 
   setLcd(ui->lcd);
 
-  m_simuDialog->setUiAreaStyle("background-color: qlineargradient(spread:pad, x1:1, y1:0.9, x2:0, y2:0, "
-                               "stop:0 rgba(255, 255, 255, 255), "
-                               "stop:0.35 rgba(250, 250, 250, 255), stop:0.5 rgba(242, 241, 241, 255), "
-                               "stop:0.61 rgba(241, 241, 241, 255), stop:1.0 rgba(251, 251, 251, 255));");
+  QString css = "#radioUiWidget {"
+                  "background-color: qlineargradient(spread:pad, x1:1, y1:0.9, x2:0, y2:0,"
+                    "stop:0 rgba(255, 255, 255, 255),"
+                    "stop:0.35 rgba(250, 250, 250, 255), stop:0.5 rgba(242, 241, 241, 255),"
+                    "stop:0.61 rgba(241, 241, 241, 255), stop:1.0 rgba(251, 251, 251, 255));"
+                "}";
+
+  QTimer * tim = new QTimer(this);
+  tim->setSingleShot(true);
+  connect(tim, &QTimer::timeout, [this, css]() {
+    emit customStyleRequest(css);
+  });
+  tim->start(100);
 }
 
 SimulatedUIWidgetX9E::~SimulatedUIWidgetX9E()

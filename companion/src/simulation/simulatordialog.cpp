@@ -103,6 +103,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   radioUiWidget->setFocusPolicy(Qt::WheelFocus);
   radioUiWidget->setFocus();
 
+  connect(radioUiWidget, &SimulatedUIWidget::customStyleRequest, this, &SimulatorDialog::setUiAreaStyle);
+
   vJoyLeft = new VirtualJoystickWidget(this, 'L');
   ui->leftStickLayout->addWidget(vJoyLeft);
 
@@ -184,6 +186,7 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
   RadioData simuData;
   quint16 ret = 1;
   QString error;
+  QString fileName(dataSource);
 
   // If <dataSource> is blank but we have a data path, use that for individual radio/model files.
   if (dataSource.isEmpty() && !radioDataPath.isEmpty()) {
@@ -192,19 +195,20 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
     //   to avoid hard-coding paths like "RADIO" here. E.g. did it fail due to no data at all, or corrupt data, or...?
     if (QDir(QString(radioDataPath).append("/RADIO")).exists()) {
       SdcardFormat sdcard(radioDataPath);
-      if (!(ret = sdcard.load(simuData)))
+      if (!(ret = sdcard.load(simuData))) {
         error = sdcard.error();
+      }
     }
   }
   // Supposedly we're being given a file name to use, try that out.
-  else if (fromFile && !dataSource.isEmpty()) {
-    Storage store = Storage(QString(dataSource));
+  else if (fromFile && !fileName.isEmpty()) {
+    Storage store = Storage(fileName);
     ret = store.load(simuData);
-    if (!ret && QFile(QString(dataSource)).exists()) {
+    if (!ret && QFile(fileName).exists()) {
       error = store.error();
     }
     else {
-      if (QString(dataSource).endsWith(".otx", Qt::CaseInsensitive)) {
+      if (fileName.endsWith(".otx", Qt::CaseInsensitive)) {
         // no radios can work with .otx files directly, so we load contents into either
         //   a temporary folder (Horus) or local data array (other radios) which we'll save back to .otx upon exit
         if ((ret = setRadioData(&simuData))) {
@@ -254,8 +258,9 @@ bool SimulatorDialog::setRadioData(RadioData * radioData)
   if (ret) {
     if (radioDataPath.isEmpty()) {
       startupData.fill(0, getEEpromSize(m_board));
-      if (firmware->getEEpromInterface()->save((uint8_t *)startupData.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) <= 0)
+      if (firmware->getEEpromInterface()->save((uint8_t *)startupData.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) <= 0) {
         ret = false;
+      }
     }
     else {
       ret = saveRadioData(radioData, radioDataPath);
@@ -271,7 +276,9 @@ bool SimulatorDialog::setRadioData(RadioData * radioData)
 bool SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
 {
   bool ret = false;
+
   setSdPath(options.sdPath);
+
   if (options.startupDataType == SimulatorOptions::START_WITH_FOLDER && !options.dataFolder.isEmpty()) {
     setDataPath(options.dataFolder);
     ret = setStartupData();
@@ -299,6 +306,7 @@ bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path,
   QString dir = path;
   if (dir.isEmpty())
     dir = radioDataPath;
+
   if (radioData && !dir.isEmpty()) {
     SdcardFormat sdcard(dir);
     bool ret = sdcard.write(*radioData);
@@ -306,6 +314,7 @@ bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path,
       *error = sdcard.error();
     return ret;
   }
+
   return false;
 }
 
@@ -359,8 +368,9 @@ bool SimulatorDialog::saveTempData()
     }
     else {
       SdcardFormat sdcard(radioDataPath);
-      if (!(ret = sdcard.load(radioData)))
+      if (!(ret = sdcard.load(radioData))) {
         error = sdcard.error();
+      }
     }
     if (ret) {
       Storage store(file);
@@ -400,7 +410,7 @@ void SimulatorDialog::saveState()
 
 void SimulatorDialog::setUiAreaStyle(const QString & style)
 {
-  ui->radioUiWidget->setStyleSheet(style);
+  setStyleSheet(style);
 }
 
 void SimulatorDialog::captureScreenshot(bool)

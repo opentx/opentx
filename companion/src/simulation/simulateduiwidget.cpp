@@ -24,10 +24,10 @@
 #include "radiouiaction.h"
 #include "simulatorinterface.h"
 
-SimulatedUIWidget::SimulatedUIWidget(SimulatorInterface * simulator, SimulatorDialog * simuDialog, QWidget * parent) :
+SimulatedUIWidget::SimulatedUIWidget(SimulatorInterface * simulator, QWidget * parent) :
   QWidget(parent),
   m_simulator(simulator),
-  m_simuDialog(simuDialog),
+  m_parent(parent),
   m_lcd(NULL),
   m_scrollUpAction(NULL),
   m_scrollDnAction(NULL),
@@ -63,12 +63,12 @@ RadioUiAction * SimulatedUIWidget::addRadioUiAction(RadioUiAction * act)
 
 RadioUiAction * SimulatedUIWidget::addRadioUiAction(int index, int key, const QString & text, const QString & descript)
 {
-  return addRadioUiAction(new RadioUiAction(index, key, m_simuDialog, text, descript));
+  return addRadioUiAction(new RadioUiAction(index, key, m_parent, text, descript));
 }
 
 RadioUiAction * SimulatedUIWidget::addRadioUiAction(int index, QList<int> keys, const QString & text, const QString & descript)
 {
-  return addRadioUiAction(new RadioUiAction(index, keys, m_simuDialog, text, descript));
+  return addRadioUiAction(new RadioUiAction(index, keys, m_parent, text, descript));
 }
 
 QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAngle, int endAngle, int step)
@@ -116,18 +116,22 @@ void SimulatedUIWidget::updateUi()
 
 void SimulatedUIWidget::captureScreenshot()
 {
-  QString fileName = "";
+  QString fileName;
   if (!g.snapToClpbrd()) {
     QString path = g.snapshotDir();
     if (path.isEmpty())
       path = "./";
     QDir dir(path);
     if (!dir.exists() || !dir.isReadable()) {
-//      m_simulator->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
+      // m_simulator->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
       qDebug() << "SIMULATOR ERROR - Cannot open screenshot folder, check your settings.";
       return;
     }
-    fileName += QString("%1/screenshot_%2.png").arg(dir.absolutePath(), QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
+    QStringList fwid = getCurrentFirmware()->getId().split("-", QString::SkipEmptyParts);
+    QString flavor = fwid.at(qMin(1, fwid.size()));
+    QString fnpfx = tr("screenshot", "Simulator LCD screenshot file name prefix");
+    fileName = "%1/%2_%3_%4.png";
+    fileName = fileName.arg(dir.absolutePath(), fnpfx, flavor, QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
   }
   m_lcd->makeScreenshot(fileName);
 }
