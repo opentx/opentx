@@ -685,7 +685,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case GlobalFunctions:
       return IS_ARM(board) ? 64 : 0;
     case VirtualInputs:
-      return IS_ARM(board) ? 64 : 0;
+      return IS_ARM(board) ? 32 : 0;
     case InputsLength:
       return HAS_LARGE_LCD(board) ? 4 : 3;
     case TrainerInputs:
