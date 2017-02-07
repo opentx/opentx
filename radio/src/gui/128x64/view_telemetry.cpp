@@ -540,8 +540,16 @@ void menuViewTelemetryFrsky(event_t event)
       incrTelemetryScreen();
       break;
 
+#if defined(CPUARM)
+    case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
+      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
+      POPUP_MENU_START(onMainViewMenu);
+#else
     case EVT_KEY_FIRST(KEY_ENTER):
       telemetryReset();
+#endif
       break;
   }
 
