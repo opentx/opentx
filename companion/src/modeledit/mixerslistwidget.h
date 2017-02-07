@@ -18,20 +18,20 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MIXERSLIST_H_
-#define _MIXERSLIST_H_
+#ifndef _MIXERSLISTWIDGET_H_
+#define _MIXERSLISTWIDGET_H_
 
 #include <QtWidgets>
 
 #define MIX_ROW_HEIGHT_INCREASE     8               //how much space is added above mixer row (for new channel), if 0 space adding is disabled
 const int  GroupHeaderRole = (Qt::UserRole+2);      //defines new user role for list items. If value is > 0, then space is added before that item
 
-class MixersList : public QListWidget
+class MixersListWidget : public QListWidget
 {
     Q_OBJECT
 
   public:
-    explicit MixersList(QWidget *parent, bool expo);
+    explicit MixersListWidget(QWidget *parent, bool expo);
     void keyPressEvent(QKeyEvent *event);
     void dropEvent(QDropEvent *event);
 
@@ -70,4 +70,4 @@ class MixersDelegate : public QStyledItemDelegate
 
 };
 
-#endif // _MIXERSLIST_H_
+#endif // _MIXERSLISTWIDGET_H_

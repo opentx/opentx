@@ -22,7 +22,7 @@
 #define _INPUTS_H_
 
 #include "modeledit.h"
-#include "mixerslist.h"
+#include "mixerslistwidget.h"
 #include "modelprinter.h"
 
 class InputsPanel : public ModelPanel
@@ -53,7 +53,7 @@ class InputsPanel : public ModelPanel
 
   private:
     bool expoInserted;
-    MixersList *ExposlistWidget;
+    MixersListWidget *ExposlistWidget;
     bool firstLine;
     int inputsCount;
     ModelPrinter modelPrinter;
