@@ -64,6 +64,7 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   m_simulatorWidget = new SimulatorDialog(this, m_simulator, flags);
+  setWindowTitle(m_simulatorWidget->windowTitle());
 
   toggleRadioDocked(true);
   createDockWidgets();
@@ -117,6 +118,7 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   if (m_simulatorWidget) {
     connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorDialog::captureScreenshot);
     connect(ui->actionReloadRadioData, &QAction::triggered, m_simulatorWidget, &SimulatorDialog::restart);
+    connect(m_simulatorWidget, &SimulatorDialog::windowTitleChanged, this, &SimulatorMainWindow::setWindowTitle);
   }
   if (m_outputsWidget)
     connect(ui->actionReloadRadioData, &QAction::triggered, m_outputsWidget, &RadioOutputsWidget::restart);
@@ -409,6 +411,7 @@ void SimulatorMainWindow::toggleRadioDocked(bool dock)
       m_simulatorDockWidget->move(newPos);
     }
 
+    connect(m_simulatorWidget, &SimulatorDialog::windowTitleChanged, m_simulatorDockWidget, &QDockWidget::setWindowTitle);
     connect(m_simulatorDockWidget, &QDockWidget::topLevelChanged, [this](bool top) {
       showRadioDocked(!top);
     });
