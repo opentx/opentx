@@ -42,7 +42,7 @@ SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, Simulato
   m_backlightColors << QColor(247,242,159);
 
   setLcd(ui->lcd);
-  connectScrollActions();
+
   // try to match the gradient on the white radio images.
   m_simuDialog->setUiAreaStyle("background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, " \
                              "stop:0 rgba(255, 255, 255, 255), " \

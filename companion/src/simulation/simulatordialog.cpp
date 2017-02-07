@@ -98,6 +98,8 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
 
   ui->radioUiWidget->layout()->removeItem(ui->radioUiTempSpacer);
   ui->radioUiWidget->layout()->addWidget(radioUiWidget);
+  radioUiWidget->setFocusPolicy(Qt::WheelFocus);
+  radioUiWidget->setFocus();
 
   vJoyLeft = new VirtualJoystickWidget(this, 'L');
   ui->leftStickLayout->addWidget(vJoyLeft);
