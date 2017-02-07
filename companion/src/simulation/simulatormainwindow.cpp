@@ -217,9 +217,9 @@ bool SimulatorMainWindow::setRadioData(RadioData * radioData)
   return m_simulatorWidget->setRadioData(radioData);
 }
 
-bool SimulatorMainWindow::useTempDataPath(bool deleteOnClose, bool saveOnClose)
+bool SimulatorMainWindow::useTempDataPath(bool deleteOnClose)
 {
-  return m_simulatorWidget->useTempDataPath(deleteOnClose, saveOnClose);
+  return m_simulatorWidget->useTempDataPath(deleteOnClose);
 }
 
 bool SimulatorMainWindow::setOptions(SimulatorOptions & options, bool withSave)

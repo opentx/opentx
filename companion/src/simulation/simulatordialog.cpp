@@ -172,10 +172,10 @@ void SimulatorDialog::setRadioSettings(const GeneralSettings settings)
 /*
  * This function can accept no parameters, a file name (QString is a QBA), or a data array. It will attempt to load radio settings data from one of
  *   several sources into a RadioData object, parse the data, and then pass it on as appropriate to the SimulatorInterface in start().
- * If given no/blank <eeprom>, and setDataPath() was already called, then it will check that directory for "Horus-style" data files.
+ * If given no/blank <dataSource>, and setDataPath() was already called, then it will check that directory for "Horus-style" data files.
  * If given a file name, set the <fromFile> parameter to 'true'. This will attempt to load radio settings from said file
  *   and later start the simulator interface in start() using the same data.
- * If <eeprom> is a byte array of data, attempts to load radio settings from there and will also start the simulator interface
+ * If <dataSource> is a byte array of data, attempts to load radio settings from there and will also start the simulator interface
  *   with the same data when start() is called.
  * If you already have a valid RadioData structure, call setRadioData() instead.
  */
@@ -185,7 +185,7 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
   quint16 ret = 1;
   QString error;
 
-  // If <eeprom> is blank but we have a data path, use that for individual radio/model files.
+  // If <dataSource> is blank but we have a data path, use that for individual radio/model files.
   if (dataSource.isEmpty() && !radioDataPath.isEmpty()) {
     // If directory structure already exists, try to load data from there.
     // FIXME : need Storage class to return formal error code, not just a boolean, because it would be better
@@ -197,33 +197,25 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
     }
   }
   // Supposedly we're being given a file name to use, try that out.
-  else if (fromFile) {
+  else if (fromFile && !dataSource.isEmpty()) {
     Storage store = Storage(QString(dataSource));
-    if ((ret = store.load(simuData))) {
-      if (IS_HORUS(m_board)) {
-        // save the data to a temp folder
-        if (!(ret = useTempDataPath(true, true)))  // save data back to file on simulator close
-          error = tr("Error: Could not save data to temporary directory in '%1'").arg(QDir::tempPath());
-        else
-          ret = saveRadioData(&simuData, radioDataPath, &error);
-      }
-      else if (QString(dataSource).endsWith(".otx", Qt::CaseInsensitive)) {
-        // FIXME : Right now there's no way to read data back into the .otx file after simulation finishes.
-        return setRadioData(&simuData);
-      }
-      else {
-        startupData = dataSource;  // save the file name for start()
-      }
-    }
-    // again there's no way to tell what the error from Storage actually was, so if the file doesn't exist we'll create a new one
-    else if (!dataSource.isEmpty() && !QFile(QString(dataSource)).exists()) {
-      startupData = dataSource;
-      startupFromFile = true;
-      return true;
+    ret = store.load(simuData);
+    if (!ret && QFile(QString(dataSource)).exists()) {
+      error = store.error();
     }
     else {
-      ret = 0;
-      error = store.error();
+      if (QString(dataSource).endsWith(".otx", Qt::CaseInsensitive)) {
+        // no radios can work with .otx files directly, so we load contents into either
+        //   a temporary folder (Horus) or local data array (other radios) which we'll save back to .otx upon exit
+        if ((ret = setRadioData(&simuData))) {
+          startupFromFile = false;
+          return true;
+        }
+      }
+      else {
+        // the binary file will be read/written directly by the fw interface, save the file name for simulator->start()
+        startupData = dataSource;
+      }
     }
   }
   // Assume a byte array of radio data was passed, load it.
@@ -252,16 +244,27 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
 
 bool SimulatorDialog::setRadioData(RadioData * radioData)
 {
-  bool ret = false;
-  if (radioDataPath.isEmpty()) {
-    QByteArray eeprom(getEEpromSize(m_board), 0);
-    if (firmware->getEEpromInterface()->save((uint8_t *)eeprom.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) > 0)
-      ret = setStartupData(eeprom, false);
+  bool ret = true;
+
+  saveTempRadioData = (flags & SIMULATOR_FLAGS_STANDALONE);
+
+  if (IS_HORUS(m_board))
+    ret = useTempDataPath(true);
+
+  if (ret) {
+    if (radioDataPath.isEmpty()) {
+      startupData.fill(0, getEEpromSize(m_board));
+      if (firmware->getEEpromInterface()->save((uint8_t *)startupData.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) <= 0)
+        ret = false;
+    }
+    else {
+      ret = saveRadioData(radioData, radioDataPath);
+    }
   }
-  else {
-    if ((ret = saveRadioData(radioData, radioDataPath)))
-      radioSettings = radioData->generalSettings;
-  }
+
+  if (ret)
+    radioSettings = radioData->generalSettings;
+
   return ret;
 }
 
@@ -306,7 +309,7 @@ bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path,
   return false;
 }
 
-bool SimulatorDialog::useTempDataPath(bool deleteOnClose, bool saveOnClose)
+bool SimulatorDialog::useTempDataPath(bool deleteOnClose)
 {
   if (deleteTempRadioData)
     deleteTempData();
@@ -316,9 +319,7 @@ bool SimulatorDialog::useTempDataPath(bool deleteOnClose, bool saveOnClose)
     setDataPath(tmpDir.path());
     tmpDir.setAutoRemove(false);
     deleteTempRadioData = deleteOnClose;
-    saveTempRadioData = saveOnClose;
-    qDebug() << __FILE__ << __LINE__ << "Created temporary settings directory" << radioDataPath
-             << "with delteOnClose:" << deleteOnClose << "with saveOnClose:" << saveOnClose;
+    qDebug() << __FILE__ << __LINE__ << "Created temporary settings directory" << radioDataPath << "with delteOnClose:" << deleteOnClose;
     return true;
   }
   else {
@@ -334,24 +335,47 @@ bool SimulatorDialog::saveTempData()
   QString error;
   QString file = g.profile[radioProfileId].simulatorOptions().dataFile;
 
-  if (radioDataPath.isEmpty() || file.isEmpty())
-    return ret;
+  if (!file.isEmpty()) {
+    RadioData radioData;
 
-  RadioData radioData;
-  SdcardFormat sdcard(radioDataPath);
-  if (!(ret = sdcard.load(radioData))) {
-    error = sdcard.error();
-  }
-  else {
-    Storage store(file);
-    if (!(ret = store.write(radioData)))
-      error = store.error();
-    else
-      qDebug() << __FILE__ << __LINE__ << "Saved radio data to file" << file;
+    if (radioDataPath.isEmpty()) {
+      if (!startupData.isEmpty()) {
+        if (!QFile(file).exists()) {
+          QFile fh(file);
+          if (!fh.open(QIODevice::WriteOnly))
+            error = tr("Error saving data: could open file for writing: '%1'").arg(file);
+          else
+            fh.close();
+        }
+
+        if (!firmware->getEEpromInterface()->load(radioData, (uint8_t *)startupData.constData(), getEEpromSize(m_board))) {
+          error = tr("Error saving data: could not get data from simulator interface.");
+        }
+        else {
+          radioData.fixModelFilenames();
+          ret = true;
+        }
+      }
+    }
+    else {
+      SdcardFormat sdcard(radioDataPath);
+      if (!(ret = sdcard.load(radioData)))
+        error = sdcard.error();
+    }
+    if (ret) {
+      Storage store(file);
+      if (!(ret = store.write(radioData)))
+        error = store.error();
+      else
+        qDebug() << __FILE__ << __LINE__ << "Saved radio data to file" << file;
+    }
   }
 
-  if (!ret)
+  if (!ret) {
+    if (error.isEmpty())
+      error = tr("An unexpected error occurred while attempting to save radio data to file '%1'.").arg(file);
     QMessageBox::critical(this, tr("Data Save Error"), error);
+  }
 
   return ret;
 }
@@ -411,6 +435,10 @@ void SimulatorDialog::stop()
 {
   timer->stop();
   simulator->stop();
+  if (saveTempRadioData) {
+    startupData.fill(0, getEEpromSize(m_board));
+    simulator->readEepromData(startupData);
+  }
 }
 
 void SimulatorDialog::restart()

@@ -52,7 +52,7 @@ class SimulatorMainWindow : public QMainWindow
     ~SimulatorMainWindow();
 
     bool setRadioData(RadioData * radioData);
-    bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
+    bool useTempDataPath(bool deleteOnClose = true);
     bool setOptions(SimulatorOptions & options, bool withSave = true);
     QMenu * createPopupMenu();
 
