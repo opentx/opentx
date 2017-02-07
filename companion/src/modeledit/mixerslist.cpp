@@ -20,7 +20,7 @@
 
 #include "mixerslist.h"
 
-MixersList::MixersList(QWidget *parent, bool expo) :
+MixersList::MixersList(QWidget * parent, bool expo) :
     QListWidget(parent),
     expo(expo)
 {
@@ -50,7 +50,7 @@ QStringList MixersList::mimeTypes () const
     return types;
 }
 
-void MixersList::dropEvent(QDropEvent *event)
+void MixersList::dropEvent(QDropEvent * event)
 {
     QList<int> list;
     foreach(QListWidgetItem *item, selectedItems()) {
@@ -62,7 +62,7 @@ void MixersList::dropEvent(QDropEvent *event)
     dropMimeData(indexAt(event->pos()).row(),event->mimeData(),event->dropAction());
 }
 
-bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction action )
+bool MixersList::dropMimeData(int index, const QMimeData * data, Qt::DropAction action )
 {
     // qDebug() << "MixersList::dropMimeData() index:" << index << "formats" << data->formats();
     QByteArray dropData = data->data(expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");

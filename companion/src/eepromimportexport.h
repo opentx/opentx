@@ -432,7 +432,7 @@ class StructField: public DataField {
       }
     }
 
-    inline void Append(DataField *field) {
+    inline void Append(DataField * field) {
       //eepromImportDebug() << QString("StructField(%1) appending field: %2").arg(name).arg(field->getName());
       fields.append(field);
     }

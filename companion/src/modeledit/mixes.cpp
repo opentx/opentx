@@ -111,7 +111,7 @@ bool MixesPanel::AddMixerLine(int dest)
   QByteArray qba(1, (quint8)dest);
   if (dest >= 0) {
     //add mix data
-    MixData *md = &model->mixData[dest];
+    MixData * md = &model->mixData[dest];
     qba.append((const char*)md, sizeof(MixData));
   }
   itm->setData(Qt::UserRole, qba);
@@ -217,10 +217,16 @@ void MixesPanel::gm_openMix(int index)
 
 int MixesPanel::getMixerIndex(unsigned int dch)
 {
-  int i = 0;
-  while ((model->mixData[i].destCh <= dch) && (model->mixData[i].destCh) && (i < firmware->getCapability(Mixes))) i++;
-  if (i == firmware->getCapability(Mixes)) return -1;
-  return i;
+  for (int i=0; i < firmware->getCapability(Mixes); i++) {
+    if (!model->mixData[i].destCh) {
+      // we reached the end of used mixes
+      return i;
+    }
+    if (model->mixData[i].destCh > dch) {
+      return i;
+    }
+  }
+  return -1;
 }
 
 void MixesPanel::mixerlistWidget_doubleClicked(QModelIndex index)
@@ -314,7 +320,7 @@ void MixesPanel::mixersCopy()
 
 void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 {
-  if(mimeData->hasFormat("application/x-companion-mix")) {
+  if (mimeData->hasFormat("application/x-companion-mix")) {
     int idx; // mixer index
     int dch;
 
@@ -349,9 +355,9 @@ void MixesPanel::pasteMixerMimeData(const QMimeData * mimeData, int destIdx)
 
 void MixesPanel::mixersPaste()
 {
-  const QClipboard *clipboard = QApplication::clipboard();
-  const QMimeData *mimeData = clipboard->mimeData();
-  QListWidgetItem *item = MixerlistWidget->currentItem();
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  QListWidgetItem * item = MixerlistWidget->currentItem();
   if (item) {
     pasteMixerMimeData(mimeData, item->data(Qt::UserRole).toByteArray().at(0));
   }
