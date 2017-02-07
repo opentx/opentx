@@ -589,14 +589,16 @@ void MainWindow::openFile()
 
 void MainWindow::save()
 {
-  if (activeMdiChild() && activeMdiChild()->save())
+  if (activeMdiChild() && activeMdiChild()->save()) {
     statusBar()->showMessage(tr("File saved"), 2000);
+  }
 }
 
 void MainWindow::saveAs()
 {
-  if (activeMdiChild() && activeMdiChild()->saveAs())
+  if (activeMdiChild() && activeMdiChild()->saveAs()) {
     statusBar()->showMessage(tr("File saved"), 2000);
+  }
 }
 
 void MainWindow::openRecentFile()

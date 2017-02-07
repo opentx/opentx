@@ -605,7 +605,7 @@ bool MdiChild::saveAs(bool isNew)
   if (isNew)
     return saveFile(fileName);
   else
-    return saveFile(fileName,true);
+    return saveFile(fileName, true);
 }
 
 bool MdiChild::saveFile(const QString & filename, bool setCurrent)
@@ -614,7 +614,6 @@ bool MdiChild::saveFile(const QString & filename, bool setCurrent)
   Storage storage(filename);
   bool result = storage.write(radioData);
   if (!result) {
-    QMessageBox::warning(this, "Companion", tr("Cannot save file"), QMessageBox::Ok);
     return false;
   }
 

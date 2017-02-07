@@ -698,8 +698,11 @@ class ConversionField: public TransformedField {
       if (table) {
         if (table->exportValue(_field, _field))
           return;
-        if (!error.isEmpty())
+        if (!error.isEmpty()) {
+          // TODO how could we avoid this global?
           EEPROMWarnings.push_back(error);
+          // TODO should we call return 0 here, we would only have one error while today we have all errors displayed in the same time
+        }
       }
 
       if (shift) {

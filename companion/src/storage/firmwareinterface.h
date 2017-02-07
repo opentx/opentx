@@ -56,7 +56,7 @@ class FirmwareInterface
     int getSplashWidth();
     uint getSplashHeight();
     QImage::Format getSplashFormat();
-    unsigned int save(QString fileName);
+    unsigned int save(const QString & fileName);
     bool isValid();
 
   private:

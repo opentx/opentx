@@ -118,8 +118,9 @@ bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEpr
   }
   
   QFile destinationFile(destinationEEprom);
-  if (!destinationFile.open(QIODevice::WriteOnly))
+  if (!destinationFile.open(QIODevice::WriteOnly)) {
     return false;
+  }
   
   int result = destinationFile.write(eeprom.constData(), size);
   destinationFile.close();

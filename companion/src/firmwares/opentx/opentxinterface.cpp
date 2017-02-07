@@ -326,6 +326,8 @@ uint8_t OpenTxEepromInterface::getLastDataVersion(Board::Type board)
 
 int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, uint8_t version, uint32_t variant)
 {
+  // TODO QMessageBox::warning should not be called here
+
   EEPROMWarnings.clear();
 
   if (version == 0) {
@@ -348,6 +350,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
 
   int result = saveRadioSettings<OpenTxGeneralData>((GeneralSettings &)radioData.generalSettings, board, version, variant);
   if (!result) {
+    QMessageBox::warning(NULL,
+                         QObject::tr("Error"),
+                         QObject::tr("Cannot write radio settings"));
     return 0;
   }
 
@@ -355,6 +360,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     if (!radioData.models[i].isEmpty()) {
       result = saveModel<OpenTxModelData>(i, (ModelData &)radioData.models[i], version, variant);
       if (!result) {
+        QMessageBox::warning(NULL,
+                             QObject::tr("Error"),
+                             QObject::tr("Cannot write model %1").arg(radioData.models[i].name));
         return 0;
       }
     }
@@ -364,16 +372,23 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     QString msg;
     int noErrorsToDisplay = std::min((int) EEPROMWarnings.size(), 10);
     for (int n = 0; n < noErrorsToDisplay; n++) {
-      msg += "-" + EEPROMWarnings.front() + "\n";
+      msg += " -" + EEPROMWarnings.front() + "\n";
       EEPROMWarnings.pop_front();
     }
     if (!EEPROMWarnings.empty()) {
-      msg = QObject::tr("(displaying only first 10 warnings)") + "\n" + msg;
+      msg += QObject::tr(" ... plus %1 errors").arg(EEPROMWarnings.size()) + "\n" + msg;
     }
     EEPROMWarnings.clear();
     QMessageBox::warning(NULL,
-                         QObject::tr("Warning"),
-                         QObject::tr("EEPROM saved with these warnings:") + "\n" + msg);
+                         QObject::tr("Error"),
+                         QObject::tr("Radio models and settings could not be stored:") + "\n" + msg);
+    return 0;
+  }
+
+  if (size == 0) {
+    QMessageBox::warning(NULL,
+                         QObject::tr("Error"),
+                         QObject::tr("Radio models and settings could not be stored (size = 0)"));
   }
 
   return size;
