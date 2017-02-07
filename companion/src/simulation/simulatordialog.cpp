@@ -81,11 +81,13 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
       break;
     case Board::BOARD_TARANIS_X9D  :
     case Board::BOARD_TARANIS_X9DP :
-    case Board::BOARD_TARANIS_X9E  :
       radioUiWidget = new SimulatedUIWidgetX9(simulator, this);
       break;
-    case Board::BOARD_X12S:
-    case Board::BOARD_X10:
+    case Board::BOARD_TARANIS_X9E :
+      radioUiWidget = new SimulatedUIWidgetX9E(simulator, this);
+      break;
+    case Board::BOARD_X12S :
+    case Board::BOARD_X10  :
       radioUiWidget = new SimulatedUIWidgetX12(simulator, this);
       break;
     default:
