@@ -46,6 +46,8 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
 
     virtual void stop();
 
+    virtual void readEepromData(QByteArray & dest);
+
     virtual bool timer10ms();
 
     virtual uint8_t * getLcd();

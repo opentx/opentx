@@ -116,6 +116,13 @@ void OpenTxSimulator::stop()
   StopEepromThread();
 }
 
+void OpenTxSimulator::readEepromData(QByteArray & dest)
+{
+#if defined(EEPROM_SIZE)
+  memcpy(dest.data(), eeprom, std::min<int>(EEPROM_SIZE, dest.size()));
+#endif
+}
+
 void OpenTxSimulator::getValues(TxOutputs &outputs)
 {
 #define GETVALUES_IMPORT

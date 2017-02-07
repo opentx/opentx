@@ -824,22 +824,23 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     }
 
     SimulatorMainWindow * dialog = new SimulatorMainWindow(parent, simulator, flags);
-    if (IS_HORUS(getCurrentBoard()) && !dialog->useTempDataPath(true)) {
-      QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error: Could not create temporary directory in '%1'").arg(QDir::tempPath()));
+    if (!dialog->setRadioData(simuData)) {
+      QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error occurred while starting simulator."));
       delete dialog;
       delete simuData;
       return;
     }
-    dialog->setRadioData(simuData);
+
     dialog->setWindowModality(Qt::ApplicationModal);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->start();
-    dialog->show();
 
     QObject::connect(dialog, &SimulatorMainWindow::destroyed, [simuData] (void) {
       // TODO simuData and Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
       delete simuData;
     });
+
+    dialog->show();
   }
   else {
     QMessageBox::warning(NULL,

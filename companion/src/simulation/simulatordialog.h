@@ -73,7 +73,7 @@ class SimulatorDialog : public QWidget
     bool setRadioData(RadioData * radioData);
     bool setOptions(SimulatorOptions & options, bool withSave = true);
     bool saveRadioData(RadioData * radioData, const QString & path = "", QString * error = NULL);
-    bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
+    bool useTempDataPath(bool deleteOnClose = true);
     bool saveTempData();
     void deleteTempData();
     void saveState();
