@@ -392,7 +392,7 @@ elseif(WIN32)
   elseif(MINGW)
     get_filename_component(MINGW_DIR ${CMAKE_CXX_COMPILER} PATH)
     if(IS_DIRECTORY ${MINGW_DIR})
-      install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${MINGW_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
+      install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${QT_DLL_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
       set(MINGW_DIR "${MINGW_DIR}/../opt/bin")
       # SSL support
       install(FILES "${MINGW_DIR}/libeay32.dll" "${MINGW_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
