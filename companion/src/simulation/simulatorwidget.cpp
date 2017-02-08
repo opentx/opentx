@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include "simulatordialog.h"
-#include "ui_simulatordialog.h"
+#include "simulatorwidget.h"
+#include "ui_simulatorwidget.h"
 
 #include "appdata.h"
 #include "radiofaderwidget.h"
@@ -40,9 +40,9 @@
 #include <QFile>
 #include <iostream>
 
-SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags):
+SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator, quint8 flags):
   QWidget(parent),
-  ui(new Ui::SimulatorDialog),
+  ui(new Ui::SimulatorWidget),
   simulator(simulator),
   firmware(getCurrentFirmware()),
   radioSettings(GeneralSettings()),
@@ -103,7 +103,7 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   radioUiWidget->setFocusPolicy(Qt::WheelFocus);
   radioUiWidget->setFocus();
 
-  connect(radioUiWidget, &SimulatedUIWidget::customStyleRequest, this, &SimulatorDialog::setUiAreaStyle);
+  connect(radioUiWidget, &SimulatedUIWidget::customStyleRequest, this, &SimulatorWidget::setUiAreaStyle);
 
   vJoyLeft = new VirtualJoystickWidget(this, 'L');
   ui->leftStickLayout->addWidget(vJoyLeft);
@@ -120,7 +120,7 @@ SimulatorDialog::SimulatorDialog(QWidget * parent, SimulatorInterface *simulator
   connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
 }
 
-SimulatorDialog::~SimulatorDialog()
+SimulatorWidget::~SimulatorWidget()
 {
   shutdown();
 
@@ -148,17 +148,17 @@ SimulatorDialog::~SimulatorDialog()
  * Public slots/setters
  */
 
-void SimulatorDialog::setSdPath(const QString & sdPath)
+void SimulatorWidget::setSdPath(const QString & sdPath)
 {
   setPaths(sdPath, radioDataPath);
 }
 
-void SimulatorDialog::setDataPath(const QString & dataPath)
+void SimulatorWidget::setDataPath(const QString & dataPath)
 {
   setPaths(sdCardPath, dataPath);
 }
 
-void SimulatorDialog::setPaths(const QString & sdPath, const QString & dataPath)
+void SimulatorWidget::setPaths(const QString & sdPath, const QString & dataPath)
 {
   sdCardPath = sdPath;
   radioDataPath = dataPath;
@@ -166,7 +166,7 @@ void SimulatorDialog::setPaths(const QString & sdPath, const QString & dataPath)
     simulator->setSdPath(sdPath, dataPath);
 }
 
-void SimulatorDialog::setRadioSettings(const GeneralSettings settings)
+void SimulatorWidget::setRadioSettings(const GeneralSettings settings)
 {
   radioSettings = settings;
 }
@@ -181,7 +181,7 @@ void SimulatorDialog::setRadioSettings(const GeneralSettings settings)
  *   with the same data when start() is called.
  * If you already have a valid RadioData structure, call setRadioData() instead.
  */
-bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFile)
+bool SimulatorWidget::setStartupData(const QByteArray & dataSource, bool fromFile)
 {
   RadioData simuData;
   quint16 ret = 1;
@@ -246,7 +246,7 @@ bool SimulatorDialog::setStartupData(const QByteArray & dataSource, bool fromFil
   return true;
 }
 
-bool SimulatorDialog::setRadioData(RadioData * radioData)
+bool SimulatorWidget::setRadioData(RadioData * radioData)
 {
   bool ret = true;
 
@@ -273,7 +273,7 @@ bool SimulatorDialog::setRadioData(RadioData * radioData)
   return ret;
 }
 
-bool SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
+bool SimulatorWidget::setOptions(SimulatorOptions & options, bool withSave)
 {
   bool ret = false;
 
@@ -301,7 +301,7 @@ bool SimulatorDialog::setOptions(SimulatorOptions & options, bool withSave)
   return ret;
 }
 
-bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path, QString * error)
+bool SimulatorWidget::saveRadioData(RadioData * radioData, const QString & path, QString * error)
 {
   QString dir = path;
   if (dir.isEmpty())
@@ -318,7 +318,7 @@ bool SimulatorDialog::saveRadioData(RadioData * radioData, const QString & path,
   return false;
 }
 
-bool SimulatorDialog::useTempDataPath(bool deleteOnClose)
+bool SimulatorWidget::useTempDataPath(bool deleteOnClose)
 {
   if (deleteTempRadioData)
     deleteTempData();
@@ -338,7 +338,7 @@ bool SimulatorDialog::useTempDataPath(bool deleteOnClose)
 }
 
 // This will save radio data from temporary folder structure back into an .otx file, eg. for Horus.
-bool SimulatorDialog::saveTempData()
+bool SimulatorWidget::saveTempData()
 {
   bool ret = false;
   QString error;
@@ -390,7 +390,7 @@ bool SimulatorDialog::saveTempData()
   return ret;
 }
 
-void SimulatorDialog::deleteTempData()
+void SimulatorWidget::deleteTempData()
 {
   if (!radioDataPath.isEmpty()) {
     QDir tpath(radioDataPath);
@@ -400,7 +400,7 @@ void SimulatorDialog::deleteTempData()
   }
 }
 
-void SimulatorDialog::saveState()
+void SimulatorWidget::saveState()
 {
   SimulatorOptions opts = g.profile[radioProfileId].simulatorOptions();
   //opts.windowGeometry = saveGeometry();
@@ -408,12 +408,12 @@ void SimulatorDialog::saveState()
   g.profile[radioProfileId].simulatorOptions(opts);
 }
 
-void SimulatorDialog::setUiAreaStyle(const QString & style)
+void SimulatorWidget::setUiAreaStyle(const QString & style)
 {
   setStyleSheet(style);
 }
 
-void SimulatorDialog::captureScreenshot(bool)
+void SimulatorWidget::captureScreenshot(bool)
 {
   if (radioUiWidget)
     radioUiWidget->captureScreenshot();
@@ -423,7 +423,7 @@ void SimulatorDialog::captureScreenshot(bool)
  * Startup
  */
 
-void SimulatorDialog::start()
+void SimulatorWidget::start()
 {
   setupRadioWidgets();
   setupJoysticks();
@@ -441,7 +441,7 @@ void SimulatorDialog::start()
   setupTimer();
 }
 
-void SimulatorDialog::stop()
+void SimulatorWidget::stop()
 {
   timer->stop();
   simulator->stop();
@@ -451,7 +451,7 @@ void SimulatorDialog::stop()
   }
 }
 
-void SimulatorDialog::restart()
+void SimulatorWidget::restart()
 {
   stop();
   saveState();
@@ -459,7 +459,7 @@ void SimulatorDialog::restart()
   start();
 }
 
-void SimulatorDialog::shutdown()
+void SimulatorWidget::shutdown()
 {
   stop();
   saveState();
@@ -473,14 +473,14 @@ void SimulatorDialog::shutdown()
  * Setup
  */
 
-void SimulatorDialog::setRadioProfileId(int value)
+void SimulatorWidget::setRadioProfileId(int value)
 {
   radioProfileId = value;
   if (simulator)
     simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
 }
 
-void SimulatorDialog::setupRadioWidgets()
+void SimulatorWidget::setupRadioWidgets()
 {
   int i, midpos, aIdx;
   QString wname;
@@ -572,7 +572,7 @@ void SimulatorDialog::setupRadioWidgets()
   }
 }
 
-void SimulatorDialog::setupJoysticks()
+void SimulatorWidget::setupJoysticks()
 {
 #ifdef JOYSTICKS
   static bool joysticksEnabled = false;
@@ -627,7 +627,7 @@ void SimulatorDialog::setupJoysticks()
 #endif
 }
 
-void SimulatorDialog::setupTimer()
+void SimulatorWidget::setupTimer()
 {
   if (timer) {
     timer->stop();
@@ -643,7 +643,7 @@ void SimulatorDialog::setupTimer()
   timer->start(10);
 }
 
-void SimulatorDialog::restoreRadioWidgetsState()
+void SimulatorWidget::restoreRadioWidgetsState()
 {
   RadioWidget::RadioWidgetState state;
   QMap<int, QByteArray> switchesMap;
@@ -680,7 +680,7 @@ void SimulatorDialog::restoreRadioWidgetsState()
   }
 }
 
-QList<QByteArray> SimulatorDialog::saveRadioWidgetsState()
+QList<QByteArray> SimulatorWidget::saveRadioWidgetsState()
 {
   QList<QByteArray> states;
 
@@ -698,7 +698,7 @@ QList<QByteArray> SimulatorDialog::saveRadioWidgetsState()
  */
 
 // Read various values from firmware simulator and populate values in this UI
-void SimulatorDialog::setValues()
+void SimulatorWidget::setValues()
 {
   int currentPhase = simulator->getPhase();
 
@@ -713,7 +713,7 @@ void SimulatorDialog::setValues()
 }
 
 // "get" values from this UI and send them to the firmware simulator.
-void SimulatorDialog::getValues()
+void SimulatorWidget::getValues()
 {
   static const int numTrims  = firmware->getCapability(NumTrimSwitches);
   int i;
@@ -747,7 +747,7 @@ void SimulatorDialog::getValues()
 }
 
 // Read stick trim values from firmware simulator and set joystick widgets as needed.
-void SimulatorDialog::setTrims()
+void SimulatorWidget::setTrims()
 {
   typedef VirtualJoystickWidget VJW;
   static Trims lastTrims;
@@ -792,25 +792,25 @@ void SimulatorDialog::setTrims()
 //{
 //}
 
-void SimulatorDialog::mousePressEvent(QMouseEvent *event)
+void SimulatorWidget::mousePressEvent(QMouseEvent *event)
 {
   if (radioUiWidget)
     radioUiWidget->mousePressEvent(event);
 }
 
-void SimulatorDialog::mouseReleaseEvent(QMouseEvent *event)
+void SimulatorWidget::mouseReleaseEvent(QMouseEvent *event)
 {
   if (radioUiWidget)
     radioUiWidget->mouseReleaseEvent(event);
 }
 
-void SimulatorDialog::wheelEvent(QWheelEvent *event)
+void SimulatorWidget::wheelEvent(QWheelEvent *event)
 {
   if (radioUiWidget)
     radioUiWidget->wheelEvent(event);
 }
 
-void SimulatorDialog::onTimerEvent()
+void SimulatorWidget::onTimerEvent()
 {
   static unsigned int lcd_counter = 0;
 
@@ -829,22 +829,22 @@ void SimulatorDialog::onTimerEvent()
   }
 }
 
-void SimulatorDialog::onTrimPressed(int which)
+void SimulatorWidget::onTrimPressed(int which)
 {
   trimPressed = which;
 }
 
-void SimulatorDialog::onTrimReleased()
+void SimulatorWidget::onTrimReleased()
 {
   trimPressed = TRIM_NONE;
 }
 
-void SimulatorDialog::onTrimSliderMoved(int which, int value)
+void SimulatorWidget::onTrimSliderMoved(int which, int value)
 {
   simulator->setTrim(which, value);
 }
 
-void SimulatorDialog::centerSticks()
+void SimulatorWidget::centerSticks()
 {
   if (vJoyLeft)
     vJoyLeft->centerStick();
@@ -853,7 +853,7 @@ void SimulatorDialog::centerSticks()
     vJoyRight->centerStick();
 }
 
-void SimulatorDialog::onjoystickAxisValueChanged(int axis, int value)
+void SimulatorWidget::onjoystickAxisValueChanged(int axis, int value)
 {
 #ifdef JOYSTICKS
   int stick;

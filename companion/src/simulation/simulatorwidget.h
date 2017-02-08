@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _SIMULATORDIALOG_H_
-#define _SIMULATORDIALOG_H_
+#ifndef _SIMULATORWIDGET_H_
+#define _SIMULATORWIDGET_H_
 
 #include "constants.h"
 #include "helpers.h"
@@ -52,18 +52,18 @@ class QLabel;
 class QFrame;
 
 namespace Ui {
-  class SimulatorDialog;
+  class SimulatorWidget;
 }
 
 using namespace Simulator;
 
-class SimulatorDialog : public QWidget
+class SimulatorWidget : public QWidget
 {
   Q_OBJECT
 
   public:
-    explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags=0);
-    virtual ~SimulatorDialog();
+    explicit SimulatorWidget(QWidget * parent, SimulatorInterface *simulator, quint8 flags=0);
+    virtual ~SimulatorWidget();
 
     void setSdPath(const QString & sdPath);
     void setDataPath(const QString & dataPath);
@@ -103,7 +103,7 @@ class SimulatorDialog : public QWidget
     void setTrims();
 
 
-    Ui::SimulatorDialog * ui;
+    Ui::SimulatorWidget * ui;
     SimulatorInterface * simulator;
     Firmware * firmware;
     GeneralSettings radioSettings;
@@ -156,4 +156,4 @@ class SimulatorDialog : public QWidget
 
 };
 
-#endif // _SIMULATORDIALOG_H_
+#endif // _SIMULATORWIDGET_H_

@@ -1,7 +1,6 @@
 set(simulation_SRCS
   debugoutput.cpp
   radiooutputswidget.cpp
-  simulatordialog.cpp
   simulateduiwidget.cpp
   simulateduiwidget9X.cpp
   simulateduiwidgetX7.cpp
@@ -11,6 +10,7 @@ set(simulation_SRCS
   simulatorinterface.cpp
   simulatormainwindow.cpp
   simulatorstartupdialog.cpp
+  simulatorwidget.cpp
   telemetrysimu.cpp
   trainersimu.cpp
   widgets/radiowidget.cpp
@@ -20,7 +20,6 @@ set(simulation_SRCS
 set(simulation_UIS
   debugoutput.ui
   radiooutputswidget.ui
-  simulatordialog.ui
   simulateduiwidget9X.ui
   simulateduiwidgetX7.ui
   simulateduiwidgetX9.ui
@@ -28,6 +27,7 @@ set(simulation_UIS
   simulateduiwidgetX12.ui
   simulatormainwindow.ui
   simulatorstartupdialog.ui
+  simulatorwidget.ui
   telemetrysimu.ui
   trainersimu.ui
 )
@@ -38,9 +38,9 @@ set(simulation_HDRS
   radiouiaction.h
   simulateduiwidget.h
   # simulator.h
-  simulatordialog.h
   simulatormainwindow.h
   simulatorstartupdialog.h
+  simulatorwidget.h
   telemetrysimu.h
   trainersimu.h
   widgets/buttonswidget.h

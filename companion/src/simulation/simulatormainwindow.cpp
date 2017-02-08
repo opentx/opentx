@@ -24,7 +24,7 @@
 #include "appdata.h"
 #include "debugoutput.h"
 #include "radiooutputswidget.h"
-#include "simulatordialog.h"
+#include "simulatorwidget.h"
 #include "simulatorinterface.h"
 #include "telemetrysimu.h"
 #include "trainersimu.h"
@@ -63,7 +63,7 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   setCorner(Qt::TopRightCorner, Qt::RightDockWidgetArea);
   setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
-  m_simulatorWidget = new SimulatorDialog(this, m_simulator, flags);
+  m_simulatorWidget = new SimulatorWidget(this, m_simulator, flags);
   setWindowTitle(m_simulatorWidget->windowTitle());
 
   toggleRadioDocked(true);
@@ -116,9 +116,9 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   connect(ui->actionFixedRadioHeight, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedHeight);
   connect(ui->actionDockRadio, &QAction::toggled, this, &SimulatorMainWindow::showRadioDocked);
   if (m_simulatorWidget) {
-    connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorDialog::captureScreenshot);
-    connect(ui->actionReloadRadioData, &QAction::triggered, m_simulatorWidget, &SimulatorDialog::restart);
-    connect(m_simulatorWidget, &SimulatorDialog::windowTitleChanged, this, &SimulatorMainWindow::setWindowTitle);
+    connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::captureScreenshot);
+    connect(ui->actionReloadRadioData, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::restart);
+    connect(m_simulatorWidget, &SimulatorWidget::windowTitleChanged, this, &SimulatorMainWindow::setWindowTitle);
   }
   if (m_outputsWidget)
     connect(ui->actionReloadRadioData, &QAction::triggered, m_outputsWidget, &RadioOutputsWidget::restart);
@@ -411,7 +411,7 @@ void SimulatorMainWindow::toggleRadioDocked(bool dock)
       m_simulatorDockWidget->move(newPos);
     }
 
-    connect(m_simulatorWidget, &SimulatorDialog::windowTitleChanged, m_simulatorDockWidget, &QDockWidget::setWindowTitle);
+    connect(m_simulatorWidget, &SimulatorWidget::windowTitleChanged, m_simulatorDockWidget, &QDockWidget::setWindowTitle);
     connect(m_simulatorDockWidget, &QDockWidget::topLevelChanged, [this](bool top) {
       showRadioDocked(!top);
     });

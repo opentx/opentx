@@ -21,8 +21,9 @@
 #ifndef SIMULATEDUIWIDGET_H
 #define SIMULATEDUIWIDGET_H
 
+#include "boards.h"
 #include "constants.h"
-#include "simulatordialog.h"
+#include "simulator.h"
 
 #include <QWidget>
 #include <QMouseEvent>

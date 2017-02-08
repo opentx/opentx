@@ -30,7 +30,7 @@
 class DebugOutput;
 class RadioData;
 class RadioOutputsWidget;
-class SimulatorDialog;
+class SimulatorWidget;
 class SimulatorInterface;
 class TrainerSimulator;
 class TelemetrySimulator;
@@ -84,7 +84,7 @@ class SimulatorMainWindow : public QMainWindow
     SimulatorInterface  * m_simulator;
 
     Ui::SimulatorMainWindow * ui;
-    SimulatorDialog * m_simulatorWidget;
+    SimulatorWidget * m_simulatorWidget;
     DebugOutput * m_consoleWidget;
     RadioOutputsWidget * m_outputsWidget;
 
