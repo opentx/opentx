@@ -1793,14 +1793,14 @@ Vous utilisez actuellement:
         <source>Your radio does not seem connected to USB or the driver is not installed!!!
 
 Please use ZADIG to properly install the driver.</source>
-        <translation>Votre radio ne semble pas êter connectée en USB, ou le pilote n&apos;est pas installé !!!
+        <translation>Votre radio ne semble pas être connectée en USB, ou le pilote n&apos;est pas installé !!!
 
 Veuillez utiliser Zadig pour installer le pilote.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="289"/>
         <source>Your radio does not seem connected to USB or the driver is not initialized!!!.</source>
-        <translation>Votre radio ne semble pas êter connectée en USB, ou le pilote n&apos;est pas initialisé !!!.</translation>
+        <translation>Votre radio ne semble pas être connectée en USB, ou le pilote n&apos;est pas initialisé !!!.</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="301"/>
@@ -3883,7 +3883,7 @@ We recommend you view the release notes using the button below to learn about an
 La version %2 est disponible.
 Voulez-vous la télécharger maintenant ?
 
-Nous recommandons de lire attentivement les notes de version à l&apos;aide du bouton ci-dessous, celles-ci peuvent contenir des infos importantes concernant les changements effectués depuis la version précéente.</translation>
+Nous recommandons de lire attentivement les notes de version à l&apos;aide du bouton ci-dessous, celles-ci peuvent contenir des infos importantes concernant les changements effectués depuis la version précédente.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="447"/>
@@ -3900,7 +3900,7 @@ We recommend you view the release notes using the button below to learn about an
 
 Voulez vous la télécharger maintenant ?
 
-Nous recommandons de lire attentivement les notes de version à l&apos;aide du bouton ci-dessous, celles-ci peuvent contenir des infos importantes concernant les changements effectués depuis la version précéente.</translation>
+Nous recommandons de lire attentivement les notes de version à l&apos;aide du bouton ci-dessous, celles-ci peuvent contenir des infos importantes concernant les changements effectués depuis la version précédente.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="658"/>
