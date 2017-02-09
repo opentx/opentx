@@ -4685,7 +4685,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="425"/>
         <source>New model</source>
-        <translation>Nouveau modèle</translation>
+        <translation type="unfinished">Nouveau modele</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="562"/>
