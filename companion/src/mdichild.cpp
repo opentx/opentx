@@ -387,7 +387,7 @@ void MdiChild::generalEdit()
 
 void MdiChild::categoryAdd()
 {
-  CategoryData category(tr("New category"));
+  CategoryData category("New category");
   radioData.categories.push_back(category);
   setModified();
 }
