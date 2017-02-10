@@ -18,9 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "mixerslist.h"
+#include "mixerslistwidget.h"
 
-MixersList::MixersList(QWidget *parent, bool expo) :
+MixersListWidget::MixersListWidget(QWidget * parent, bool expo) :
     QListWidget(parent),
     expo(expo)
 {
@@ -33,7 +33,7 @@ MixersList::MixersList(QWidget *parent, bool expo) :
     setItemDelegate(new MixersDelegate(parent));     //set custom paint handler
 }
 
-void MixersList::keyPressEvent(QKeyEvent *event)
+void MixersListWidget::keyPressEvent(QKeyEvent *event)
 {
     emit keyWasPressed(event);
 }
@@ -42,7 +42,7 @@ void MixersList::keyPressEvent(QKeyEvent *event)
 /**
     @brief Override to give us different mime type for mixers and inputs
 */
-QStringList MixersList::mimeTypes () const
+QStringList MixersListWidget::mimeTypes () const
 {
     QStringList types;
     if (expo) types << "application/x-companion-expo-item";
@@ -50,7 +50,7 @@ QStringList MixersList::mimeTypes () const
     return types;
 }
 
-void MixersList::dropEvent(QDropEvent *event)
+void MixersListWidget::dropEvent(QDropEvent * event)
 {
     QList<int> list;
     foreach(QListWidgetItem *item, selectedItems()) {
@@ -62,9 +62,9 @@ void MixersList::dropEvent(QDropEvent *event)
     dropMimeData(indexAt(event->pos()).row(),event->mimeData(),event->dropAction());
 }
 
-bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction action )
+bool MixersListWidget::dropMimeData(int index, const QMimeData * data, Qt::DropAction action )
 {
-    // qDebug() << "MixersList::dropMimeData() index:" << index << "formats" << data->formats();
+    // qDebug() << "MixersListWidget::dropMimeData() index:" << index << "formats" << data->formats();
     QByteArray dropData = data->data(expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");
     if (dropData.isNull() ) return false;
     QDataStream stream(&dropData, QIODevice::ReadOnly);
@@ -77,7 +77,7 @@ bool MixersList::dropMimeData( int index, const QMimeData * data, Qt::DropAction
         QList<QVariant> lsVars;
         lsVars = v.values();
         qba.append(lsVars.at(1).toByteArray().mid(1));
-        // qDebug() << "MixersList::dropMimeData() added" << lsVars.count() << "items, data:" << lsVars;
+        // qDebug() << "MixersListWidget::dropMimeData() added" << lsVars.count() << "items, data:" << lsVars;
     }
 
     if(qba.length()>0) {

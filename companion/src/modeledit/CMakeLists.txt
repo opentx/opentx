@@ -22,7 +22,7 @@ set(modeledit_SRCS
   logicalswitches.cpp
   customfunctions.cpp
   # templates.cpp
-  mixerslist.cpp
+  mixerslistwidget.cpp
   node.cpp
   edge.cpp
 )
@@ -35,7 +35,7 @@ set(modeledit_HDRS
   logicalswitches.h
   customfunctions.h
   # templates.h
-  mixerslist.h
+  mixerslistwidget.h
   node.h
 )
 

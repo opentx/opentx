@@ -38,6 +38,25 @@ void RawSource::convert(Board::Type before, Board::Type after)
       }
     }
   }
+
+  // SWI to SWR don't exist on !X9E board
+  if (!IS_TARANIS_X9E(after) && IS_TARANIS_X9E(before)) {
+    if (type == SOURCE_TYPE_SWITCH && index >= 8) {
+      index = index % 8;
+    }
+  }
+
+  // No SE and SG on X7 board
+  if (IS_TARANIS_X7(after)) {
+    if (IS_TARANIS_X9(before) || IS_HORUS(before)) {
+      if (type == SOURCE_TYPE_SWITCH && index >= 6) {
+        index -= 2;
+      }
+      else if (type == SOURCE_TYPE_SWITCH && index >= 4) {
+        index -= 1;
+      }
+    }
+  }
 }
 
 void MixData::convert(Board::Type before, Board::Type after)

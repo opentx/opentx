@@ -180,8 +180,6 @@ class EEPROMInterface
 
 };
 
-extern std::list<QString> EEPROMWarnings;
-
 /* EEPROM string conversion functions */
 void setEEPROMString(char *dst, const char *src, int size);
 void getEEPROMString(char *dst, const char *src, int size);

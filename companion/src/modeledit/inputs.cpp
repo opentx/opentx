@@ -33,7 +33,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
 
   QGridLayout * exposLayout = new QGridLayout(this);
 
-  ExposlistWidget = new MixersList(this, true);
+  ExposlistWidget = new MixersListWidget(this, true);
   QPushButton * qbUp = new QPushButton(this);
   QPushButton * qbDown = new QPushButton(this);
   QPushButton * qbClear = new QPushButton(this);

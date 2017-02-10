@@ -201,29 +201,6 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
   return loadFromByteArray<T, M>(dest, raw, version);
 }
 
-template<class T>
-bool
-OpenTxEepromInterface::saveRadioSettings(GeneralSettings &settings, Board::Type board, uint8_t version, uint32_t variant)
-{
-  T open9xSettings(settings, board, version, variant);
-  // open9xSettings.Dump();
-  QByteArray eeprom;
-  open9xSettings.Export(eeprom);
-  int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (const uint8_t *) eeprom.constData(), eeprom.size());
-  return (sz == eeprom.size());
-}
-
-template<class T>
-bool OpenTxEepromInterface::saveModel(unsigned int index, ModelData &model, uint8_t version, uint32_t variant)
-{
-  T open9xModel(model, board, version, variant);
-  // open9xModel.Dump();
-  QByteArray eeprom;
-  open9xModel.Export(eeprom);
-  int sz = efile->writeRlc2(FILE_MODEL(index), FILE_TYP_MODEL, (const uint8_t *) eeprom.constData(), eeprom.size());
-  return (sz == eeprom.size());
-}
-
 unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * eeprom, int size)
 {
   std::cout << "trying " << getName() << " import...";
@@ -324,9 +301,30 @@ uint8_t OpenTxEepromInterface::getLastDataVersion(Board::Type board)
   }
 }
 
+void OpenTxEepromInterface::showErrors(const QString & title, const QStringList & errors)
+{
+  QString msg;
+  if (errors.empty()) {
+    msg = QObject::tr("Unknown error");
+  }
+  else {
+    int noErrorsToDisplay = std::min((int)errors.size(), 10);
+    for (int n = 0; n < noErrorsToDisplay; n++) {
+      msg += " -" + errors.at(n) + "\n";
+    }
+    if (noErrorsToDisplay < errors.size()) {
+      msg += QObject::tr(" ... plus %1 errors").arg(errors.size() - noErrorsToDisplay) + "\n" + msg;
+    }
+  }
+
+  QMessageBox::warning(NULL,
+                       QObject::tr("Error"),
+                       title + "\n" + msg);
+}
+
 int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, uint8_t version, uint32_t variant)
 {
-  EEPROMWarnings.clear();
+  // TODO QMessageBox::warning should not be called here
 
   if (version == 0) {
     version = getLastDataVersion(board);
@@ -346,34 +344,28 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     variant |= TARANIS_X7_VARIANT;
   }
 
-  int result = saveRadioSettings<OpenTxGeneralData>((GeneralSettings &)radioData.generalSettings, board, version, variant);
-  if (!result) {
+  OpenTxGeneralData generator((GeneralSettings &)radioData.generalSettings, board, version, variant);
+  // generator.Dump();
+  QByteArray data;
+  generator.Export(data);
+  int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (const uint8_t *)data.constData(), data.size());
+  if (sz == 0 || generator.errors().count() > 0) {
+    showErrors(QObject::tr("Cannot write radio settings"), generator.errors());
     return 0;
   }
 
   for (int i = 0; i < getCurrentFirmware()->getCapability(Models); i++) {
     if (!radioData.models[i].isEmpty()) {
-      result = saveModel<OpenTxModelData>(i, (ModelData &)radioData.models[i], version, variant);
-      if (!result) {
+      OpenTxModelData generator((ModelData &)radioData.models[i], board, version, variant);
+      // generator.Dump();
+      QByteArray data;
+      generator.Export(data);
+      int sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (const uint8_t *)data.constData(), data.size());
+      if (sz == 0 || generator.errors().count() > 0) {
+        showErrors(QObject::tr("Cannot write model %1").arg(radioData.models[i].name), generator.errors());
         return 0;
       }
     }
-  }
-
-  if (!EEPROMWarnings.empty()) {
-    QString msg;
-    int noErrorsToDisplay = std::min((int) EEPROMWarnings.size(), 10);
-    for (int n = 0; n < noErrorsToDisplay; n++) {
-      msg += "-" + EEPROMWarnings.front() + "\n";
-      EEPROMWarnings.pop_front();
-    }
-    if (!EEPROMWarnings.empty()) {
-      msg = QObject::tr("(displaying only first 10 warnings)") + "\n" + msg;
-    }
-    EEPROMWarnings.clear();
-    QMessageBox::warning(NULL,
-                         QObject::tr("Warning"),
-                         QObject::tr("EEPROM saved with these warnings:") + "\n" + msg);
   }
 
   return size;

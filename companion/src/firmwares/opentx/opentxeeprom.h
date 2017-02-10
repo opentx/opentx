@@ -42,9 +42,20 @@ class OpenTxGeneralData: public TransformedField {
 
     virtual const char * getName() { return internalField.getName(); }
 
+    QStringList errors()
+    {
+      return _errors;
+    }
+
   protected:
     virtual void beforeExport();
     virtual void afterImport();
+
+    virtual void setError(const QString & error)
+    {
+      qWarning() << error;
+      _errors << error;
+    }
 
     StructField internalField;
     GeneralSettings & generalData;
@@ -52,7 +63,7 @@ class OpenTxGeneralData: public TransformedField {
     unsigned int version;
     int inputsCount;
     unsigned int chkSum;
-    // unsigned int potsType[4];
+    QStringList _errors;
 };
 
 class ProtocolsConversionTable: public ConversionTable
@@ -111,21 +122,31 @@ class OpenTxModelData: public TransformedField {
 
     virtual const char * getName() { return internalField.getName(); }
 
+    QStringList errors()
+    {
+      return _errors;
+    }
+
   protected:
     virtual void beforeExport();
     virtual void afterImport();
+
+    virtual void setError(const QString & error)
+    {
+      qWarning() << error;
+      _errors << error;
+    }
 
     StructField internalField;
     ModelData & modelData;
     Board::Type board;
     unsigned int version;
     unsigned int variant;
-
-  private:
     char name[256];
     int subprotocols[CPN_MAX_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
+    QStringList _errors;
 };
 
 void OpenTxEepromCleanup(void);

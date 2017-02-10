@@ -26,15 +26,24 @@
 
 class DataField {
   public:
-    DataField(const char *name=""):
+    DataField(DataField * parent, const char * name=""):
+      parent(parent),
       name(name)
     {
     }
-    virtual const char *getName() { return name; }
-    virtual ~DataField() { }
+
+    virtual ~DataField()
+    {
+    }
+
+    virtual const char * getName()
+    {
+      return name;
+    }
+
+    virtual unsigned int size() = 0;
     virtual void ExportBits(QBitArray & output) = 0;
     virtual void ImportBits(const QBitArray & input) = 0;
-    virtual unsigned int size() = 0;
 
     QBitArray bytesToBits(QByteArray bytes)
     {
@@ -99,13 +108,24 @@ class DataField {
     }
 
   protected:
-    const char *name;
+    virtual void setError(const QString & error)
+    {
+      if (parent) {
+        parent->setError(error);
+      }
+      else {
+        qWarning() << qPrintable(error);
+      }
+    }
+
+    DataField * parent;
+    const char * name;
 };
 
 class ProxyField: public DataField {
   public:
-    ProxyField():
-      DataField("Proxy")
+    explicit ProxyField(DataField * parent):
+      DataField(parent, "Proxy")
     {
     }
 
@@ -116,24 +136,24 @@ class ProxyField: public DataField {
 template<class container, int N>
 class BaseUnsignedField: public DataField {
   public:
-    explicit BaseUnsignedField(container & field):
-      DataField("Unsigned"),
+    BaseUnsignedField(DataField * parent, container & field):
+      DataField(parent, "Unsigned"),
       field(field),
       min(0),
       max(std::numeric_limits<container>::max())
     {
     }
 
-    BaseUnsignedField(container & field, const char * name):
-      DataField(name),
+    BaseUnsignedField(DataField * parent, container & field, const char * name):
+      DataField(parent, name),
       field(field),
       min(0),
       max(std::numeric_limits<container>::max())
     {
     }
 
-    BaseUnsignedField(container & field, container min, container max, const char * name="Unsigned"):
-      DataField(name),
+    BaseUnsignedField(DataField * parent, container & field, container min, container max, const char * name="Unsigned"):
+      DataField(parent, name),
       field(field),
       min(min),
       max(max)
@@ -182,18 +202,18 @@ template <int N>
 class UnsignedField : public BaseUnsignedField<unsigned int, N>
 {
   public:
-    explicit UnsignedField(unsigned int & field):
-      BaseUnsignedField<unsigned int, N>(field)
+    UnsignedField(DataField * parent, unsigned int & field):
+      BaseUnsignedField<unsigned int, N>(parent, field)
     {
     }
 
-    UnsignedField(unsigned int & field, const char *name):
-      BaseUnsignedField<unsigned int, N>(field, name)
+    UnsignedField(DataField * parent, unsigned int & field, const char *name):
+      BaseUnsignedField<unsigned int, N>(parent, field, name)
     {
     }
 
-    UnsignedField(unsigned int & field, unsigned int min, unsigned int max, const char *name="Unsigned"):
-      BaseUnsignedField<unsigned int, N>(field, min, max, name)
+    UnsignedField(DataField * parent, unsigned int & field, unsigned int min, unsigned int max, const char *name="Unsigned"):
+      BaseUnsignedField<unsigned int, N>(parent, field, min, max, name)
     {
     }
 };
@@ -201,8 +221,8 @@ class UnsignedField : public BaseUnsignedField<unsigned int, N>
 template<int N>
 class BoolField: public DataField {
   public:
-    explicit BoolField(bool & field):
-      DataField("Bool"),
+    explicit BoolField(DataField * parent, bool & field):
+      DataField(parent, "Bool"),
       field(field)
     {
     }
@@ -236,24 +256,24 @@ class BoolField: public DataField {
 template<int N>
 class SignedField: public DataField {
   public:
-    SignedField(int & field):
-      DataField("Signed"),
+    SignedField(DataField * parent, int & field):
+      DataField(parent, "Signed"),
       field(field),
       min(INT_MIN),
       max(INT_MAX)
     {
     }
 
-    SignedField(int & field, const char *name):
-      DataField(name),
+    SignedField(DataField * parent, int & field, const char *name):
+      DataField(parent, name),
       field(field),
       min(INT_MIN),
       max(INT_MAX)
     {
     }
 
-    SignedField(int & field, int min, int max, const char *name="Signed"):
-      DataField(name),
+    SignedField(DataField * parent, int & field, int min, int max, const char *name="Signed"):
+      DataField(parent, name),
       field(field),
       min(min),
       max(max)
@@ -305,8 +325,8 @@ class SignedField: public DataField {
 template<int N>
 class SpareBitsField: public UnsignedField<N> {
   public:
-    SpareBitsField():
-      UnsignedField<N>(spare, 0, 0, "Spare"),
+    SpareBitsField(DataField * parent):
+      UnsignedField<N>(parent, spare, 0, 0, "Spare"),
       spare(0)
     {
     }
@@ -317,8 +337,8 @@ class SpareBitsField: public UnsignedField<N> {
 template<int N>
 class CharField: public DataField {
   public:
-    CharField(char * field, bool truncate=true, const char * name="Char"):
-      DataField(name),
+    CharField(DataField * parent, char * field, bool truncate=true, const char * name="Char"):
+      DataField(parent, name),
       field(field),
       truncate(truncate)
     {
@@ -368,8 +388,8 @@ char idx2char(int8_t idx);
 template<int N>
 class ZCharField: public DataField {
   public:
-    ZCharField(char * field, const char * name = "ZChar"):
-      DataField(name),
+    ZCharField(DataField * parent, char * field, const char * name = "ZChar"):
+      DataField(parent, name),
       field(field)
     {
     }
@@ -421,18 +441,18 @@ class ZCharField: public DataField {
 
 class StructField: public DataField {
   public:
-    StructField(const char * name="Struct"):
-      DataField(name)
+    StructField(DataField * parent, const char * name="Struct"):
+      DataField(parent, name)
     {
     }
 
     ~StructField() {
-      foreach(DataField *field, fields) {
+      foreach(DataField * field, fields) {
         delete field;
       }
     }
 
-    inline void Append(DataField *field) {
+    inline void Append(DataField * field) {
       //eepromImportDebug() << QString("StructField(%1) appending field: %2").arg(name).arg(field->getName());
       fields.append(field);
     }
@@ -488,8 +508,8 @@ class StructField: public DataField {
 
 class TransformedField: public DataField {
   public:
-    TransformedField(DataField & field):
-      DataField(),
+    TransformedField(DataField * parent, DataField & field):
+      DataField(parent),
       field(field)
     {
     }
@@ -512,7 +532,7 @@ class TransformedField: public DataField {
     }
 
 
-    virtual const char *getName()
+    virtual const char * getName()
     {
       return field.getName();
     }
@@ -607,9 +627,9 @@ class ConversionTable {
 template<class T>
 class ConversionField: public TransformedField {
   public:
-    ConversionField(int & field, ConversionTable *table, const char *name, const QString & error = ""):
-      TransformedField(internalField),
-      internalField(_field, name),
+    ConversionField(DataField * parent, int & field, ConversionTable *table, const char *name, const QString & error = ""):
+      TransformedField(parent, internalField),
+      internalField(this, _field, name),
       field(field),
       _field(0),
       table(table),
@@ -623,9 +643,9 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(unsigned int & field, ConversionTable *table, const char *name, const QString & error = ""):
-      TransformedField(internalField),
-      internalField((unsigned int &)_field, name),
+    ConversionField(DataField * parent, unsigned int & field, ConversionTable *table, const char *name, const QString & error = ""):
+      TransformedField(parent, internalField),
+      internalField(this, (unsigned int &)_field, name),
       field((int &)field),
       _field(0),
       table(table),
@@ -639,9 +659,9 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(int & field, int (*exportFunc)(int), int (*importFunc)(int)):
-      TransformedField(internalField),
-      internalField(_field),
+    ConversionField(DataField * parent, int & field, int (*exportFunc)(int), int (*importFunc)(int)):
+      TransformedField(parent, internalField),
+      internalField(this, _field),
       field(field),
       _field(0),
       table(NULL),
@@ -655,9 +675,9 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(int & field, int shift, int scale=0, int min=INT_MIN, int max=INT_MAX, const char *name = "Signed shifted"):
-      TransformedField(internalField),
-      internalField(_field, name),
+    ConversionField(DataField * parent, int & field, int shift, int scale=0, int min=INT_MIN, int max=INT_MAX, const char *name = "Signed shifted"):
+      TransformedField(parent, internalField),
+      internalField(this, _field, name),
       field(field),
       _field(0),
       table(NULL),
@@ -671,9 +691,9 @@ class ConversionField: public TransformedField {
     {
     }
 
-    ConversionField(unsigned int & field, int shift, int scale=0):
-      TransformedField(internalField),
-      internalField((unsigned int &)_field),
+    ConversionField(DataField * parent, unsigned int & field, int shift, int scale=0):
+      TransformedField(parent, internalField),
+      internalField(this, (unsigned int &)_field),
       field((int &)field),
       _field(0),
       table(NULL),
@@ -696,16 +716,19 @@ class ConversionField: public TransformedField {
       }
 
       if (table) {
-        if (table->exportValue(_field, _field))
-          return;
-        if (!error.isEmpty())
-          EEPROMWarnings.push_back(error);
+        if (!table->exportValue(_field, _field)) {
+          setError(error.isEmpty() ? QObject::tr("Conversion error on field %1").arg(name) : error);
+        }
+        return;
       }
 
       if (shift) {
-        if (_field < min) _field = min + shift;
-        else if (_field > max) _field = max + shift;
-        else _field += shift;
+        if (_field < min)
+          _field = min + shift;
+        else if (_field > max)
+          _field = max + shift;
+        else
+          _field += shift;
       }
 
       if (exportFunc) {

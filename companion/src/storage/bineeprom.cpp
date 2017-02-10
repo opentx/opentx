@@ -60,6 +60,7 @@ bool BinEepromFormat::write(const RadioData & radioData)
     result = writeToFile(eeprom, eeprom_size);
   }
   else {
+    // TODO here we could call setError(eepromInterface->errors())
     setError(QObject::tr("Cannot save EEPROM"));
     result = false;
   }
