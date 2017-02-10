@@ -696,11 +696,11 @@
 #define TR_MODELNAME           "Modellname"
 #define TR_PHASENAME           "Phase-Name"
 #define TR_MIXNAME             "Mix-Name"
-#define TR_INPUTNAME           "Input-Name"
+#define TR_INPUTNAME           "Input"
 #if defined(CPUARM)
-  #define TR_EXPONAME          "Info-Name"
+  #define TR_EXPONAME          "Info"
 #else
-  #define TR_EXPONAME          "Info-Name" // Expo Name
+  #define TR_EXPONAME          "Info" // Expo Name
 #endif
 #define TR_BITMAP              "Modellfoto"
 #define TR_TIMER               TR("Timer", "Timer ")  // für Timer1 Timer2 Timer3
