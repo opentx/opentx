@@ -1846,7 +1846,7 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="126"/>
         <source>Rotary Encoder %1</source>
-        <translation>Encodeur rotatif %1</translation>
+        <translation>Sélecteur Rotatif %1</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="159"/>
@@ -2084,7 +2084,7 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="62"/>
         <source>Trainer</source>
-        <translation>Ecolage</translation>
+        <translation>Écolage</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="84"/>
@@ -2384,7 +2384,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1030"/>
         <source>RotEnc Navigation</source>
-        <translation>Nav. avec molette encodeuse</translation>
+        <translation>Navigation sélecteur rotatif</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="612"/>
@@ -3072,7 +3072,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="205"/>
         <source>SBUS Trainer</source>
-        <translation>Ecolage SBUS</translation>
+        <translation>Écolage SBUS</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="210"/>
@@ -4685,7 +4685,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="425"/>
         <source>New model</source>
-        <translation type="unfinished">Nouveau modele</translation>
+        <translation>Nouveau modele</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="562"/>
@@ -6255,52 +6255,52 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="364"/>
         <source>RotEnc A</source>
-        <translation>Enc Rot A</translation>
+        <translation>Sel.Rot. A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="364"/>
         <source>Rot Enc B</source>
-        <translation>Enc Rot B</translation>
+        <translation>Sel.Rot. B</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="364"/>
         <source>Rot Enc C</source>
-        <translation>Enc Rot C</translation>
+        <translation>Sel.Rot. C</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="364"/>
         <source>Rot Enc D</source>
-        <translation>Enc Rot D</translation>
+        <translation>Sel.Rot. D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="364"/>
         <source>Rot Enc E</source>
-        <translation>Enc Rot E</translation>
+        <translation>Sel.Rot. E</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="782"/>
         <source>Trainer</source>
-        <translation>Ecolage</translation>
+        <translation>Écolage</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="784"/>
         <source>Trainer RUD</source>
-        <translation>Ecolage Direction</translation>
+        <translation>Écolage Direction</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="786"/>
         <source>Trainer ELE</source>
-        <translation>Ecolage Profondeur</translation>
+        <translation>Écolage Profondeur</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="788"/>
         <source>Trainer THR</source>
-        <translation>Ecolage Gaz</translation>
+        <translation>Écolage Gaz</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="790"/>
         <source>Trainer AIL</source>
-        <translation>Ecolage Ailerons</translation>
+        <translation>Écolage Ailerons</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="792"/>
@@ -6967,7 +6967,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="857"/>
         <source>Rotary Encoder</source>
-        <translation>Encodeur rotatif</translation>
+        <translation>Sélecteur Rotatif</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="521"/>
@@ -7680,7 +7680,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1234"/>
         <source>Rotary Encoder use in menus navigation</source>
-        <translation>Utiliser un encodeur rotatif pour la navigation</translation>
+        <translation>Utiliser le sélecteur rotatif pour la navigation</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1290"/>
@@ -9103,7 +9103,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidget.cpp" line="41"/>
         <source>Rotary encoder click</source>
-        <translation>Clic molette encodeuse</translation>
+        <translation>Clic sélecteur rotatif</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidget.cpp" line="42"/>
@@ -9181,7 +9181,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidget9X.cpp" line="65"/>
         <source>[ UP ]/[ DN ] or Rotary Sel.</source>
-        <translation>[ HAUT ]/[ BAS ] ou mol. enc.</translation>
+        <translation>[ HAUT ]/[ BAS ] ou Sel.Rot.</translation>
     </message>
 </context>
 <context>
@@ -9254,7 +9254,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="66"/>
         <source>Rotary Selector</source>
-        <translation>Molette encodeuse</translation>
+        <translation>Sélecteur Rotatif</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="68"/>
@@ -9264,7 +9264,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="68"/>
         <source>Rotary UP</source>
-        <translation>Molette radio HAUT</translation>
+        <translation>Sélecteur HAUT</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="69"/>
@@ -9274,7 +9274,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="69"/>
         <source>Rotary DOWN</source>
-        <translation>Molette radio BAS</translation>
+        <translation>Sélecteur BAS</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="71"/>
@@ -9284,7 +9284,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX12.cpp" line="71"/>
         <source>Selector Press</source>
-        <translation>Appuyer sur molette radio</translation>
+        <translation>Appuyer Sel.Rot.</translation>
     </message>
 </context>
 <context>
@@ -9332,7 +9332,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="28"/>
         <source>Rotary Selector</source>
-        <translation>Molette encodeuse</translation>
+        <translation>Sélecteur Rotatif</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="29"/>
@@ -9342,7 +9342,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="29"/>
         <source>Rotary UP</source>
-        <translation>Molette radio HAUT</translation>
+        <translation>Sélecteur HAUT</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="30"/>
@@ -9352,7 +9352,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="30"/>
         <source>Rotary DOWN</source>
-        <translation>Molette radio BAS</translation>
+        <translation>Sélecteur BAS</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="33"/>
@@ -9362,7 +9362,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="33"/>
         <source>Selector Press</source>
-        <translation>Appuyer sur molette radio</translation>
+        <translation>Appuyer Sel.Rot.</translation>
     </message>
 </context>
 <context>
@@ -9406,7 +9406,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="51"/>
         <source>Rotary Selector</source>
-        <translation>Molette radio</translation>
+        <translation>Sélecteur Rotatif</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="52"/>
@@ -9416,7 +9416,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="52"/>
         <source>Rotary UP</source>
-        <translation>Molette radio HAUT</translation>
+        <translation>Sélecteur HAUT</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="53"/>
@@ -9426,7 +9426,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="53"/>
         <source>Rotary DOWN</source>
-        <translation>Molette radio BAS</translation>
+        <translation>Sélecteur BAS</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="57"/>
@@ -9456,7 +9456,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="67"/>
         <source>Selector Press</source>
-        <translation>Appuyer sur molette radio</translation>
+        <translation>Appuyer Sel.Rot.</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9.cpp" line="67"/>
