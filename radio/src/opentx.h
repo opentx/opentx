@@ -1368,7 +1368,11 @@ void opentxResume();
 #endif
 
 // Re-useable byte array to save having multiple buffers
-#define SD_SCREEN_FILE_LENGTH (64)
+#if LCD_W <= 212
+#define SD_SCREEN_FILE_LENGTH          32
+#else
+#define SD_SCREEN_FILE_LENGTH          64
+#endif
 union ReusableBuffer
 {
   // 275 bytes
