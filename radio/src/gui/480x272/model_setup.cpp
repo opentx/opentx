@@ -269,7 +269,7 @@ bool menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VCSWFUNC, 0, attr);
         if (attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
           s_editMode = 0;
-          if (sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap), g_model.header.bitmap, LIST_NONE_SD_FILE | LIST_SD_FILE_EXT)) {
+          if (sdListFiles(BITMAPS_PATH, BITMAPS_EXT, sizeof(g_model.header.bitmap)-LEN_BITMAPS_EXT, g_model.header.bitmap, LIST_NONE_SD_FILE | LIST_SD_FILE_EXT)) {
             POPUP_MENU_START(onModelSetupBitmapMenu);
           }
           else {
