@@ -69,7 +69,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 
 #if defined(PCBHORUS)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT
-#define BITMAPS_EXT_LEN     4
+#define LEN_BITMAPS_EXT     4
 #else
 #define BITMAPS_EXT         BMP_EXT
 #endif
