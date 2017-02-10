@@ -75,6 +75,9 @@ with open(inputFile, "r") as inp:
         line = line.strip()
         # print "line: %s"    % line
 
+        if line.find('LEXP') < 0:
+            continue
+
         parts = line.split('LEXP')
         # print parts
         if len(parts) != 2:

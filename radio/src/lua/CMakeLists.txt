@@ -1,21 +1,14 @@
 
 if(WIN32)
   set(RM del)
-  find_program(GREP grep HINTS "c:/cygwin/bin/" "c:/msys/bin/" "c:/GnuWin32/bin/" DOC "GNU grep utility (eg. c:/cygwin/bin/grep.exe).")
-  if(NOT GREP)
-    message(WARNING "GNU grep not found, Lua exports cannot be generated.")
-  endif()
 else()
   set(RM rm)
-  set(GREP grep)
 endif()
 
 macro(add_lua_export_target target)
   add_custom_command(
     OUTPUT lua_exports_${target}.inc
-    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.tmp
-    COMMAND ${GREP} LEXP lua_exports_${target}.tmp > lua_exports_${target}.txt
-    COMMAND ${RM} lua_exports_${target}.tmp
+    COMMAND ${CMAKE_C_COMPILER} -E ${ARGN} -DEXPORT ${RADIO_SRC_DIRECTORY}/dataconstants.h > lua_exports_${target}.txt
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/luaexport.py ${VERSION} lua_exports_${target}.txt lua_exports_${target}.inc lua_fields_${target}.txt
     )
   add_custom_target(lua_export_${target} DEPENDS lua_exports_${target}.inc)
@@ -52,7 +45,7 @@ set(LUA_INCLUDES_STM32F4
   -I${RADIO_SRC_DIRECTORY}/${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include
   )
 
-if(PYTHONINTERP_FOUND AND GREP)
+if(PYTHONINTERP_FOUND)
   add_lua_export_target(x7   ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX7)
   add_lua_export_target(x9d  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9D)
   add_lua_export_target(x9e  ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E  -DSTM32F40_41xxx)
