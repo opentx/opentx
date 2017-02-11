@@ -6,8 +6,6 @@ set(VERSION_REVISION "0")
 set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
-message(STATUS "OpenTX ${VERSION}")
-
 set(SDCARD_REVISION "0005")
 set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
 
@@ -37,6 +35,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
+include(Macros)
+today(DATE)
+now(TIME)
+git_id(GIT_STR)
+
+message(STATUS "OpenTX ${VERSION} @${GIT_STR}")
+
 # options shared by all targets
 option(VERBOSE_CMAKELISTS "Show extra information while processing CMakeLists.txt files." OFF)
 option(WARNINGS_AS_ERRORS "Treat any compiler warning as an error (adds -Werror flag)." OFF)
@@ -51,6 +56,7 @@ find_package(Qt5Xml)
 find_package(Qt5LinguistTools)
 find_package(Qt5PrintSupport)
 find_package(Qt5Multimedia)
+find_package(Qt5Svg)
 
 if(Qt5Widgets_FOUND)
   message(STATUS "Qt Version: ${Qt5Widgets_VERSION}")
@@ -73,7 +79,7 @@ if(Qt5Widgets_FOUND OR FOX_FOUND)
   if(SDL_FOUND)
     message(STATUS "SDL Lib: ${SDL_LIBRARY}; Headers: ${SDL_INCLUDE_DIR}; Version: ${SDL_VERSION_STRING}")
   else()
-    message(STATUS "SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
+    message(STATUS "SDL not found! Simulator audio, and joystick inputs, will not work.")
   endif()
 endif()
 
@@ -103,11 +109,6 @@ if(WIN32)
     set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_LIBRARIES OFF)
   endif()
 endif()
-
-include(Macros)
-today(DATE)
-now(TIME)
-git_id(GIT_STR)
 
 add_subdirectory(${RADIO_SRC_DIRECTORY})
 
