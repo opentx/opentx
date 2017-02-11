@@ -6,7 +6,7 @@ macro(add_bitmaps_target targetname filter width format)
     set(target ${target}.lbm)
     add_custom_command(
       OUTPUT ${target}
-      COMMAND python ${RADIO_DIRECTORY}/util/img2lbm.py ${bitmap} ${target} ${width} ${format} ${ARGN}
+      COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/img2lbm.py ${bitmap} ${target} ${width} ${format} ${ARGN}
       DEPENDS ${bitmap}
     )
     list(APPEND bitmaps_files ${target})
@@ -17,7 +17,7 @@ endmacro(add_bitmaps_target)
 macro(add_truetype_font_target radio name font size bold)
   set(target ${RADIO_SRC_DIRECTORY}/fonts/${radio}/font_${name})
   add_custom_target(ttf_${radio}_${name}
-    COMMAND ${RADIO_DIRECTORY}/util/font2png.py ${font} ${size} ${bold} ${target}
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/font2png.py ${font} ${size} ${bold} ${target}
     WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
   )
   set(ttf_${radio}_fonts_targets ${ttf_${radio}_fonts_targets} ttf_${radio}_${name})

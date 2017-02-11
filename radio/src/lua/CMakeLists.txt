@@ -1,10 +1,4 @@
 
-if(WIN32)
-  set(RM del)
-else()
-  set(RM rm)
-endif()
-
 macro(add_lua_export_target target)
   add_custom_command(
     OUTPUT lua_exports_${target}.inc

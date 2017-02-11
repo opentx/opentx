@@ -16,8 +16,6 @@ remove_definitions(-DCLI)
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
   add_definitions(-DJOYSTICKS)
-else()
-  remove_definitions(-DSIMU_AUDIO)
 endif()
 
 if(SIMU_LUA_COMPILER)
