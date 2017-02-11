@@ -468,7 +468,7 @@ static int luaLcdDrawBitmap(lua_State *L)
     unsigned int y = luaL_checkunsigned(L, 3);
     unsigned int scale = luaL_optunsigned(L, 4, 0);
     if (scale) {
-      lcd->drawBitmap(x, y, b, 0, 0, 0, 0, scale/100.0);
+      lcd->drawBitmap(x, y, b, 0, 0, 0, 0, scale/100.0f);
     }
     else {
       lcd->drawBitmap(x, y, b);
