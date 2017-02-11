@@ -399,7 +399,7 @@ void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
 #define pwroffPressed()         pwrPressed()
-#if defined(SIMU)
+#if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
   #define UNEXPECTED_SHUTDOWN()                 (powerupReason == DIRTY_SHUTDOWN)

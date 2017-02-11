@@ -349,12 +349,41 @@ void audioSendRiffHeader()
   audioSpiWriteBuffer(RiffHeader, sizeof(RiffHeader));
 }
 
+#if defined(PCBX12S)
+void audioMuteInit()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
+}
+
+void audioOn()
+{
+  GPIO_SetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+}
+
+void audioOff()
+{
+  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+}
+#endif
+
 void audioInit()
 {
   audioSpiInit();
   audioHardReset();
   audioSoftReset();
   audioSpiSetSpeed(SPI_SPEED_8);
+
+#if defined(PCBX12S)
+  audioMuteInit();
+  audioOn();
+  // TODO X10 code missing
+#endif
 
   delay_01us(10000); // 1ms
   audioSendRiffHeader();
@@ -366,8 +395,14 @@ int16_t newVolume = -1;
 
 void audioSetCurrentBuffer(const AudioBuffer * buffer)
 {
-  currentBuffer = (uint8_t *)buffer->data;
-  currentSize = buffer->size * 2;
+  if (buffer) {
+    currentBuffer = (uint8_t *)buffer->data;
+    currentSize = buffer->size * 2;
+  }
+  else {
+    currentBuffer = NULL;
+    currentSize = 0;
+  }
 }
 
 void audioConsumeCurrentBuffer()

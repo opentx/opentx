@@ -35,13 +35,6 @@ void pwrInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
 
-#if defined(PCBX12S)
-  // TODO should not be here!
-  // TODO and X10 code missing
-  GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
-  GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
-#endif
-
   // Init Module PWR
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;

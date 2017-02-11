@@ -1,6 +1,7 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
 option(PWR_BUTTON_DISABLED "Disable the Power Button (for debugging with JTAG)" NO)
+option(NO_UNEXPECTED_SHUTDOWN "Disable the Unexpected Shutdown screen (for debugging with JTAG)" NO)
 
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
@@ -23,6 +24,10 @@ endif()
 
 if(PWR_BUTTON_DISABLED)
   add_definitions(-DPWR_BUTTON_DISABLED)
+endif()
+
+if(NO_UNEXPECTED_SHUTDOWN)
+  add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
 endif()
 
 if (PCB STREQUAL X10)
