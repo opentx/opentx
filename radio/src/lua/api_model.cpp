@@ -86,6 +86,12 @@ static int luaModelSetInfo(lua_State *L)
 
 Get RF module parameters
 
+`rfProtocol` values:
+ * -1 OFF
+ * 0 D16
+ * 1 D8
+ * 2 LR12
+
 @param index (number) module index (0 for internal, 1 for external)
 
 @retval nil requested module does not exist
@@ -93,7 +99,7 @@ Get RF module parameters
 @retval table module parameters:
  * `rfProtocol` (number) protocol index
  * `modelId` (number) receiver number
- * `firstChannel` (number) start channel (0 is CH1) 
+ * `firstChannel` (number) start channel (0 is CH1)
  * `channelsCount` (number) number of channels sent to module
 
 @status current Introduced in TODO
@@ -118,7 +124,7 @@ static int luaModelGetModule(lua_State *L)
 /*luadoc
 @function model.setModule(index, value)
 
-Set RF module parameters 
+Set RF module parameters
 
 @param index (number) module index (0 for internal, 1 for external)
 
