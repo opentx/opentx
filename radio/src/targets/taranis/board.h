@@ -91,6 +91,8 @@ extern "C" {
 #define BOOTLOADER_SIZE    0x8000
 #define FIRMWARE_ADDRESS   0x08000000
 
+#define LUA_MEM_MAX        (0)    // max allowed memory usage for complete Lua  (in bytes), 0 means unlimited
+
 #if defined(PCBX9E)
   #define PERI1_FREQUENCY  42000000
   #define PERI2_FREQUENCY  84000000

@@ -255,9 +255,9 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     template<class T>
     void drawBitmap(coord_t x, coord_t y, const T * bmp, coord_t srcx=0, coord_t srcy=0, coord_t w=0, coord_t h=0, float scale=0)
     {
-      if (!data || !bmp || x >= width || y >= height)
+      if (!data || !bmp || x < 0 || x >= width || y < 0 || y >= height)
         return;
-  
+
       coord_t srcw = bmp->getWidth();
       coord_t srch = bmp->getHeight();
 

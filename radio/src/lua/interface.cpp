@@ -165,7 +165,7 @@ void luaClose(lua_State ** L)
     }
     else {
       // we can only disable Lua for the rest of the session
-      luaDisable();
+      if (*L == lsScripts) luaDisable();
     }
     UNPROTECT_LUA();
     *L = NULL;
@@ -952,6 +952,27 @@ bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage)
   luaDoGc(lsWidgets, false);
 #endif
   return scriptWasRun;
+}
+
+void checkLuaMemoryUsage()
+{
+#if (LUA_MEM_MAX > 0)
+  uint32_t totalMemUsed = luaGetMemUsed(lsScripts);
+#if defined(COLORLCD)
+  totalMemUsed += luaGetMemUsed(lsWidgets);
+  totalMemUsed += luaExtraMemoryUsage;
+#endif
+  if (totalMemUsed > LUA_MEM_MAX) {
+    TRACE("checkLuaMemoryUsage(): max limit reached (%u), killing Lua", totalMemUsed);
+    // disable Lua scripts
+    luaClose(&lsScripts);
+    luaDisable();
+#if defined(COLORLCD)
+    // disable widgets
+    luaClose(&lsWidgets);
+#endif
+  }
+#endif
 }
 
 uint32_t luaGetMemUsed(lua_State * L)
