@@ -6,8 +6,6 @@ set(VERSION_REVISION "0")
 set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
-message(STATUS "OpenTX ${VERSION}")
-
 set(SDCARD_REVISION "0005")
 set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
 
@@ -37,12 +35,19 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 
+include(Macros)
+today(DATE)
+now(TIME)
+git_id(GIT_STR)
+
+message(STATUS "OpenTX ${VERSION} @${GIT_STR}")
+
 # options shared by all targets
 option(VERBOSE_CMAKELISTS "Show extra information while processing CMakeLists.txt files." OFF)
 option(WARNINGS_AS_ERRORS "Treat any compiler warning as an error (adds -Werror flag)." OFF)
 if(WIN32)
   set(WIN_EXTRA_LIBS_PATH "C:/Programs" CACHE PATH
-    "Base path to extra libs/headers on Windows (SDL, dirent, pthreads, msinttypes folders should be in here).")
+    "Base path to extra libs/headers on Windows (SDL & pthreads folders should be in here).")
   list(APPEND CMAKE_PREFIX_PATH "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/SDL")  # hints for FindSDL
 endif()
 
@@ -51,6 +56,7 @@ find_package(Qt5Xml)
 find_package(Qt5LinguistTools)
 find_package(Qt5PrintSupport)
 find_package(Qt5Multimedia)
+find_package(Qt5Svg)
 
 if(Qt5Widgets_FOUND)
   message(STATUS "Qt Version: ${Qt5Widgets_VERSION}")
@@ -73,7 +79,7 @@ if(Qt5Widgets_FOUND OR FOX_FOUND)
   if(SDL_FOUND)
     message(STATUS "SDL Lib: ${SDL_LIBRARY}; Headers: ${SDL_INCLUDE_DIR}; Version: ${SDL_VERSION_STRING}")
   else()
-    message(STATUS "SDL not found! Joysticks support will be disabled. Simulator audio will not work.")
+    message(STATUS "SDL not found! Simulator audio, and joystick inputs, will not work.")
   endif()
 endif()
 
@@ -84,10 +90,11 @@ endif()
 
 # Windows-specific includes and libs shared by sub-projects
 if(WIN32)
-  list(APPEND WIN_INCLUDE_DIRS "${WIN_EXTRA_LIBS_PATH}/dirent/include")
+  list(APPEND WIN_INCLUDE_DIRS "${RADIO_SRC_DIRECTORY}/thirdparty/windows/dirent")
   if(MSVC)
-    set(WIN_PTHREAD_BASE_PATH "${WIN_EXTRA_LIBS_PATH}/pthreads/Pre-built.2")
-    list(APPEND WIN_INCLUDE_DIRS "${WIN_PTHREAD_BASE_PATH}/include" "${WIN_EXTRA_LIBS_PATH}/msinttypes")
+    list(APPEND WIN_INCLUDE_DIRS "${RADIO_SRC_DIRECTORY}/thirdparty/windows/msinttypes")
+    set(WIN_PTHREAD_BASE_PATH "${WIN_EXTRA_LIBS_PATH}/pthreads/Pre-built.2" CACHE PATH "Where to find pthreads include and lib folders.")
+    list(APPEND WIN_INCLUDE_DIRS "${WIN_PTHREAD_BASE_PATH}/include")
     find_file(WIN_PTHREAD_LIB pthreadVC2.lib PATHS "${WIN_PTHREAD_BASE_PATH}" PATH_SUFFIXES lib/x86 lib NO_DEFAULT_PATH)
     find_file(WIN_PTHREAD_DLL pthreadVC2.dll PATHS "${WIN_PTHREAD_BASE_PATH}" PATH_SUFFIXES lib/x86 lib dll/x86 dll NO_DEFAULT_PATH)
     if(WIN_PTHREAD_LIB)
@@ -102,11 +109,6 @@ if(WIN32)
     set(CMAKE_CXX_USE_RESPONSE_FILE_FOR_LIBRARIES OFF)
   endif()
 endif()
-
-include(Macros)
-today(DATE)
-now(TIME)
-git_id(GIT_STR)
 
 add_subdirectory(${RADIO_SRC_DIRECTORY})
 
