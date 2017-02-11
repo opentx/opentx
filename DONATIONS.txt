@@ -1120,3 +1120,4 @@ André Curci
 Lukas Fischer
 Larry Truesdale
 Bernd Koehler
+David Newton
