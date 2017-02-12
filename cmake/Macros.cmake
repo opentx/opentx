@@ -1,7 +1,7 @@
 macro(today RESULT)
   if(WIN32)
     execute_process(COMMAND "cmd" " /C date /T" OUTPUT_VARIABLE ${RESULT})
-    string(REGEX REPLACE "[^0-9]*([0-9]+)/([0-9]+)/([0-9]+).*" "\\1-\\2-\\3" ${RESULT} ${${RESULT}})
+    string(REGEX REPLACE "[^0-9]*([0-9]+)[^0-9]([0-9]+)[^0-9]([0-9]+).*" "\\1-\\2-\\3" ${RESULT} ${${RESULT}})
   elseif(UNIX)
     execute_process(COMMAND "date" "+%Y-%m-%d" OUTPUT_VARIABLE ${RESULT})
     string(REGEX REPLACE "(....)-(..)-(..).*" "\\1-\\2-\\3" ${RESULT} ${${RESULT}})
