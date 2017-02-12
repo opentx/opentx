@@ -391,6 +391,7 @@ extern "C" {
 #endif
 
 // Power driver
+#define SOFT_PWR_CTRL
 void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
@@ -398,7 +399,6 @@ void pwrOff(void);
 void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
-#define pwroffPressed()         pwrPressed()
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else

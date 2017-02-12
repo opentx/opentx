@@ -20,42 +20,12 @@
 
 #include "opentx.h"
 
-uint32_t pwroffPressed()
+uint32_t pwrPressed()
 {
 #if defined(SIMU) || defined(REVA)
-  return false;
+  return true;
 #else
-  return !(PIOC->PIO_PDSR & PIO_PC17);
-#endif
-}
-
-uint32_t pwrCheck()
-{
-#if defined(SIMU)
-  return e_power_on;
-#elif defined(REVA)
-  if (PIOC->PIO_PDSR & PIO_PC25)
-    return e_power_usb;
-  else if (PIOA->PIO_PDSR & PIO_PA8)
-    return e_power_trainer;
-  else
-    return e_power_on;
-#elif defined(REVB)
-  if (!pwroffPressed())
-    return e_power_on;
-  else if (usbPlugged())
-    return e_power_usb;
-  else if ( PIOA->PIO_PDSR & PIO_PA8 )
-    return e_power_trainer;
-  else
-    return e_power_off;
-#else
-  if (!pwroffPressed())
-    return e_power_on;
-  else if (PIOA->PIO_PDSR & PIO_PA8)
-    return e_power_trainer;
-  else
-    return e_power_off;
+  return PIOC->PIO_PDSR & PIO_PC17;
 #endif
 }
 

@@ -324,10 +324,13 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #endif
 
-#if defined(PCBFLAMENCO) || defined(PCBHORUS) || defined(PCBX9E) || defined(PCBX7)
-  #define PWR_BUTTON_DELAY
-  #define PWR_PRESS_SHUTDOWN           300 // 3s
+#if defined(PWR_BUTTON_PRESS)
+  #define pwrOffPressed()              pwrPressed()
+#else
+  #define pwrOffPressed()              (!pwrPressed())
 #endif
+
+#define PWR_PRESS_SHUTDOWN_DELAY       300 // 3s
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)

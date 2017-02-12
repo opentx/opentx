@@ -388,7 +388,7 @@ void drawShutdownAnimation(uint32_t index)
     }
     else {
       lcdRestoreBackupBuffer();
-      int quarter = index / (PWR_PRESS_SHUTDOWN / 5);
+      int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
       if (quarter >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
@@ -397,7 +397,7 @@ void drawShutdownAnimation(uint32_t index)
   }
   else {
     lcd->clear();
-    int quarter = index / (PWR_PRESS_SHUTDOWN / 5);
+    int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
     for (int i=1; i<=4; i++) {
       if (quarter >= i) {
         lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, TEXT_BGCOLOR);

@@ -33,7 +33,7 @@ void drawSleepBitmap()
   lcdRefresh();
 }
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
 const pm_uchar bmp_shutdown[] PROGMEM = {
   #include "../../bitmaps/212x64/shutdown.lbm"
 };
@@ -42,7 +42,7 @@ const pm_uchar bmp_shutdown[] PROGMEM = {
 #define SHUTDOWN_BITMAP_HEIGHT         60
 void drawShutdownAnimation(uint32_t index)
 {
-  index /= (PWR_PRESS_SHUTDOWN / 4);
+  index /= (PWR_PRESS_SHUTDOWN_DELAY / 4);
   lcdRefreshWait();
   lcdClear();
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, index * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
