@@ -45,7 +45,11 @@
 /*!< 
 Defines chip type,cortex-m3(1),cortex-m0(2)      
 */
-#define CFG_CHIP_TYPE           (1)
+#if defined(STM32F4)
+  #define CFG_CHIP_TYPE           (3)   // undocumented, this add support for hardware floating point unit (saves registers on stack)
+#else
+  #define CFG_CHIP_TYPE           (1)
+#endif
 
 /*!< 
 Defines the lowest priority that be assigned.       
