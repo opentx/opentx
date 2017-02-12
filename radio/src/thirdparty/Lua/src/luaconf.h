@@ -399,8 +399,7 @@
 */
 
 #define LUA_NUMBER_FLOAT
-#define LUA_NUMBER	float
-#define LUAI_USER_ALIGNMENT_T	union { float u; void *s; long l; }
+#define LUA_NUMBER	double
 
 /*
 @@ LUAI_UACNUMBER is the result of an 'usual argument conversion'
@@ -424,7 +423,7 @@
 /*
 @@ l_mathop allows the addition of an 'l' or 'f' to all math operations
 */
-#define l_mathop(x)		(x##f)
+#define l_mathop(x)		(x)
 
 
 /*
@@ -435,10 +434,10 @@
 ** systems, you can leave 'lua_strx2number' undefined and Lua will
 ** provide its own implementation.
 */
-#define lua_str2number(s,p)	strtof((s), (p))
+#define lua_str2number(s,p)	strtod((s), (p))
 
 #if defined(LUA_USE_STRTODHEX)
-#define lua_strx2number(s,p)	strtof((s), (p))
+#define lua_strx2number(s,p)	strtod((s), (p))
 #endif
 
 
