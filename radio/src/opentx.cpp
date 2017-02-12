@@ -903,7 +903,7 @@ bool readonlyUnlocked()
 #if defined(SPLASH)
 void doSplash()
 {
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
 #endif
 
@@ -948,7 +948,7 @@ void doSplash()
       }
 #endif
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
       uint32_t pwr_check = pwrCheck();
       if (pwr_check == e_power_off) {
         break;
@@ -1147,7 +1147,7 @@ void checkTHR()
   LED_ERROR_BEGIN();
   RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
 #endif
 
@@ -1159,7 +1159,7 @@ void checkTHR()
 
     v = calibratedAnalogs[thrchn];
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       break;
@@ -1213,7 +1213,7 @@ void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG)
 
   RAISE_ALERT(t, s, STR_PRESSANYKEY, sound);
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
 #endif
 
@@ -1229,7 +1229,7 @@ void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG)
 
     wdt_reset();
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       boardOff();
@@ -2698,8 +2698,7 @@ int main()
 #endif
 }
 
-#if defined(PWR_BUTTON_DELAY)
-
+#if defined(PWR_BUTTON_PRESS)
 uint32_t pwr_press_time = 0;
 
 uint32_t pwrPressedDuration()
@@ -2737,7 +2736,7 @@ uint32_t pwrCheck()
       if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
         BACKLIGHT_ENABLE();
       }
-      if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN) {
+      if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN_DELAY) {
 #if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
           lcdRefreshWait();
@@ -2774,5 +2773,23 @@ uint32_t pwrCheck()
   }
 
   return e_power_on;
+}
+#elif defined(CPUARM)
+uint32_t pwrCheck()
+{
+#if defined(SOFT_PWR_CTRL)
+  if (pwrPressed())
+    return e_power_on;
+#endif
+
+  if (usbPlugged())
+    return e_power_usb;
+
+#if defined(TRAINER_PWR)
+  if (TRAINER_CONNECTED())
+    return e_power_trainer;
+#endif
+
+  return e_power_off;
 }
 #endif

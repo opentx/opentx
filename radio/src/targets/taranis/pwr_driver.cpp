@@ -85,23 +85,7 @@ void pwrOff()
   // this function must not return!
 }
 
-#if defined(PWR_PRESS_BUTTON)
 uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }
-#else
-uint32_t pwroffPressed()
-{
-  return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) != Bit_RESET;
-}
-uint32_t pwrCheck()
-{
-  if (!pwroffPressed())
-    return e_power_on;
-  else if (usbPlugged())
-    return e_power_usb;
-  else
-    return e_power_off;
-}
-#endif
