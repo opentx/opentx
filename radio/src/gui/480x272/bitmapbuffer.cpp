@@ -164,7 +164,7 @@ void BitmapBuffer::drawCircle(int x0, int y0, int radius)
 }
 #endif
 
-#define PI 3.14159265
+#define PI 3.14159265f
 
 bool evalSlopes(int * slopes, int startAngle, int endAngle)
 {
@@ -176,13 +176,13 @@ bool evalSlopes(int * slopes, int startAngle, int endAngle)
     slopes[2] = -100000;
   }
   else {
-    float angle1 = float(startAngle) * PI / 180;
+    float angle1 = float(startAngle) * PI / 180.0f;
     if (startAngle >= 180) {
       slopes[1] = -100000;
-      slopes[2] = cos(angle1) * 100 / sin(angle1);
+      slopes[2] = cosf(angle1) * 100 / sinf(angle1);
     }
     else {
-      slopes[1] = cos(angle1) * 100 / sin(angle1);
+      slopes[1] = cosf(angle1) * 100 / sinf(angle1);
       slopes[2] = -100000;
     }
   }
@@ -195,10 +195,10 @@ bool evalSlopes(int * slopes, int startAngle, int endAngle)
     float angle2 = float(endAngle) * PI / 180;
     if (endAngle >= 180) {
       slopes[0] = -100000;
-      slopes[3] = -cos(angle2) * 100 / sin(angle2);
+      slopes[3] = -cosf(angle2) * 100 / sinf(angle2);
     }
     else {
-      slopes[0] = cos(angle2) * 100 / sin(angle2);
+      slopes[0] = cosf(angle2) * 100 / sinf(angle2);
       slopes[3] = -100000;
     }
   }

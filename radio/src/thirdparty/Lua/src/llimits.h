@@ -260,7 +260,7 @@ union luai_Cast { double l_d; LUA_INT32 l_p[2]; };
 #include <math.h>
 #define SUPUNSIGNED	((lua_Number)(~(lua_Unsigned)0) + 1)
 #define lua_number2unsigned(i,n)  \
-	((i)=(lua_Unsigned)((n) - floor((n)/SUPUNSIGNED)*SUPUNSIGNED))
+	((i)=(lua_Unsigned)((n) - l_mathop(floor)((n)/SUPUNSIGNED)*SUPUNSIGNED))
 #else
 #define lua_number2unsigned(i,n)	((i)=(lua_Unsigned)(n))
 #endif
