@@ -46,7 +46,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator
   simulator(simulator),
   firmware(getCurrentFirmware()),
   radioSettings(GeneralSettings()),
-  timer(NULL),
+  timer(new QTimer(this)),
   radioUiWidget(NULL),
   vJoyLeft(NULL),
   vJoyRight(NULL),
@@ -118,6 +118,10 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator
   connect(vJoyRight, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
   connect(vJoyRight, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
   connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
+
+  timer->setInterval(10);
+  connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
+  connect(timer, SIGNAL(timeout()), radioUiWidget, SLOT(updateUi()));
 }
 
 SimulatorWidget::~SimulatorWidget()
@@ -443,11 +447,14 @@ void SimulatorWidget::start()
 
 void SimulatorWidget::stop()
 {
-  timer->stop();
-  simulator->stop();
-  if (saveTempRadioData) {
-    startupData.fill(0, getEEpromSize(m_board));
-    simulator->readEepromData(startupData);
+  if (timer)
+    timer->stop();
+  if (simulator) {
+    simulator->stop();
+    if (saveTempRadioData) {
+      startupData.fill(0, getEEpromSize(m_board));
+      simulator->readEepromData(startupData);
+    }
   }
 }
 
@@ -629,18 +636,13 @@ void SimulatorWidget::setupJoysticks()
 
 void SimulatorWidget::setupTimer()
 {
-  if (timer) {
-    timer->stop();
-    disconnect(timer, 0, this, 0);
-    disconnect(timer, 0, radioUiWidget, 0);
-    timer->deleteLater();
-    timer = NULL;
-  }
-  timer = new QTimer(this);
-  connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
-  connect(timer, SIGNAL(timeout()), radioUiWidget, SLOT(updateUi()));
+  if (!timer)
+    return;
 
-  timer->start(10);
+  if (timer->isActive())
+    timer->stop();
+
+  timer->start();
 }
 
 void SimulatorWidget::restoreRadioWidgetsState()
