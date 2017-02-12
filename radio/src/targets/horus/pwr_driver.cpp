@@ -46,11 +46,9 @@ void pwrInit()
 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 
-#if !defined(PWR_BUTTON_DISABLED)
   // Init PWR SWITCH PIN
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
-#endif
 
   // Init PCBREV PIN
   // TODO to be removed on X10?
@@ -101,11 +99,7 @@ void pwrOff()
 
 uint32_t pwrPressed()
 {
-#if defined(PWR_BUTTON_DISABLED)
-  return false;
-#else
   return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
-#endif
 }
 
 void pwrResetHandler()

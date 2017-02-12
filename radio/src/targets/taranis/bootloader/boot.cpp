@@ -619,11 +619,7 @@ int main()
     }
 
     if (state != ST_FLASHING && state != ST_USB) {
-#if defined(PCBX9E) || defined(PCBX7)
-      if (pwrPressed()) {
-#else
-      if (pwrCheck() == e_power_off) {
-#endif
+      if (pwrOffPressed()) {
         lcdOff(); // this drains LCD caps
         pwrOff();
         for (;;) {

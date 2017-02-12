@@ -1583,7 +1583,7 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
 void drawShutdownAnimation(uint32_t index)
 {
   lcdClear();
-  int quarter = index / (PWR_PRESS_SHUTDOWN / 5);
+  int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
   for (int i=1; i<=4; i++) {
     if (quarter >= i) {
       lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
