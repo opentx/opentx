@@ -350,7 +350,7 @@ void audioSendRiffHeader()
 }
 
 #if defined(PCBX12S)
-void audioMuteInit()
+void audioShutdownInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = AUDIO_SHUTDOWN_GPIO_PIN;
@@ -359,32 +359,21 @@ void audioMuteInit()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(AUDIO_SHUTDOWN_GPIO, &GPIO_InitStructure);
-}
-
-void audioOn()
-{
-  GPIO_SetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
-}
-
-void audioOff()
-{
-  GPIO_ResetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN);
+  GPIO_SetBits(AUDIO_SHUTDOWN_GPIO, AUDIO_SHUTDOWN_GPIO_PIN); // we never RESET it, there is a 2s delay on STARTUP
 }
 #endif
 
 void audioInit()
 {
+#if defined(PCBX12S)
+  audioShutdownInit();
+  // TODO X10 code missing
+#endif
+
   audioSpiInit();
   audioHardReset();
   audioSoftReset();
   audioSpiSetSpeed(SPI_SPEED_8);
-
-#if defined(PCBX12S)
-  audioMuteInit();
-  audioOn();
-  // TODO X10 code missing
-#endif
-
   delay_01us(10000); // 1ms
   audioSendRiffHeader();
 }
