@@ -70,7 +70,7 @@ install:
       # - tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
       # - mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
     fi
-  - sudo apt-get install -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
+  - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
 
 script:
   - ./tools/commit-tests.sh
