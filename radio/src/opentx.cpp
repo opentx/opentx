@@ -1207,11 +1207,13 @@ void checkAlarm() // added by Gohst
   }
 }
 
-void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG)
+void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 {
   LED_ERROR_BEGIN();
 
-  RAISE_ALERT(t, s, STR_PRESSANYKEY, sound);
+  TRACE("ALERT %s: %s", title, msg);
+
+  RAISE_ALERT(title, msg, STR_PRESSANYKEY, sound);
 
 #if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
@@ -1238,7 +1240,7 @@ void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG)
       refresh = true;
     }
     else if (pwr_check == e_power_on && refresh) {
-      RAISE_ALERT(t, s, STR_PRESSANYKEY, AU_NONE);
+      RAISE_ALERT(title, msg, STR_PRESSANYKEY, AU_NONE);
       refresh = false;
     }
 #else

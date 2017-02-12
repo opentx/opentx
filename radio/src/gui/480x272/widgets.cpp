@@ -102,20 +102,20 @@ void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, u
   }
 }
 
-void drawProgressBar(const char *label)
+void drawProgressBar(const char * label, int num, int den)
 {
-  lcdDrawText(MENUS_MARGIN_LEFT, 4*FH, label);
-  lcdDrawRect(3, 6*FH+4, 204, 7);
-  lcdRefresh();
-}
-
-void updateProgressBar(int num, int den)
-{
-  if (num > 0 && den > 0) {
-    int width = (200*num)/den;
-    lcdDrawSolidFilledRect(5, 6*FH+6, width, 3, LINE_COLOR);
-    lcdRefresh();
+  lcdClear();
+  lcdSetColor(WHITE);
+  if (label) {
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, label, CUSTOM_COLOR);
   }
+  lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H-22, LCD_W-2*MENUS_MARGIN_LEFT, 15, 1, SOLID, CUSTOM_COLOR);
+  lcdSetColor(RED);
+  if (num > 0 && den > 0) {
+    int width = ((LCD_W-2*MENUS_MARGIN_LEFT-4) * num) / den;
+    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT+2, LCD_H-20, width, 11, CUSTOM_COLOR);
+  }
+  lcdRefresh();
 }
 
 void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)

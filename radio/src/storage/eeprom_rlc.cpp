@@ -932,9 +932,6 @@ void eepromBackup()
   uint8_t buffer[1024];
   FIL file;
 
-  lcdClear();
-  drawProgressBar(STR_WRITING);
-
   // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
   g_eeGeneral.unexpectedShutdown = 0;
   storageDirty(EE_GENERAL);
@@ -961,7 +958,7 @@ void eepromBackup()
     UINT count;
     eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
-    updateProgressBar(i, EEPROM_SIZE);
+    drawProgressBar(STR_WRITING, i, EEPROM_SIZE);
     SIMU_SLEEP(100/*ms*/);
   }
 

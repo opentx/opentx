@@ -446,8 +446,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();
 void doMainScreenGraphics();
 
-void drawProgressBar(const char * label);
-void updateProgressBar(int num, int den);
+void drawProgressBar(const char * label, int num, int den);
 void drawSleepBitmap();
 
 #if !defined(CPUM64)
