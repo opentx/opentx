@@ -582,7 +582,11 @@ void pwrOff()
 }
 uint32_t pwrPressed()
 {
+#if defined(PWR_BUTTON_PRESS)
   return false;
+#else
+  return true;
+#endif
 }
 #endif
 
