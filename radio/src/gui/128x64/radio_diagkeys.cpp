@@ -26,6 +26,14 @@ void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
   lcdDrawChar(x, y, t+'0', t ? INVERS : 0);
 }
 
+#if !defined(PCBTARANIS)
+void displaySwitchState(uint8_t x, uint8_t y, uint8_t sw)
+{
+  swsrc_t t = switchState(sw);
+  lcdDrawChar(x, y, (t ? '1' : '0'), t ? INVERS : 0);
+}
+#endif
+
 void menuRadioDiagKeys(event_t event)
 {
   SIMPLE_MENU(STR_MENU_RADIO_SWITCHES, menuTabGeneral, MENU_RADIO_SWITCHES_TEST, 1);
@@ -59,7 +67,7 @@ void menuRadioDiagKeys(event_t event)
     if (i != SW_ID0) {
       y = MENU_HEADER_HEIGHT +i*FH - 2*FH;
       drawSwitch(8*FW, y, i+1, 0);
-      displayKeyState(11*FW+2, y, i);
+      displaySwitchState(11*FW+2, y, i);
     }
 #endif
   }
