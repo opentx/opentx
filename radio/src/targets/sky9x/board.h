@@ -234,6 +234,7 @@ void calcConsumption();
 
 // Trainer driver
 #define SLAVE_MODE()                   (pwrCheck() == e_power_trainer)
+#define TRAINER_CONNECTED()            (PIOA->PIO_PDSR & PIO_PA8)
 void checkTrainerSettings();
 void init_trainer_capture();
 
@@ -368,10 +369,14 @@ void btPushByte(uint8_t data);
 #endif
 
 // Power driver
+#define TRAINER_PWR
+#if !defined(REVA)
+#define SOFT_PWR_CTRL
+#endif
 void pwrInit();
 void pwrOff();
 uint32_t pwrCheck();
-uint32_t pwroffPressed();
+uint32_t pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
 
 // EEPROM driver

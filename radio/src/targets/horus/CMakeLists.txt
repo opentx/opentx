@@ -1,7 +1,7 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
-option(PWR_BUTTON_DISABLED "Disable the Power Button (for debugging with JTAG)" NO)
-option(NO_UNEXPECTED_SHUTDOWN "Disable the Unexpected Shutdown screen (for debugging with JTAG)" NO)
+option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
+set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
@@ -20,14 +20,6 @@ set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
 
 if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
-endif()
-
-if(PWR_BUTTON_DISABLED)
-  add_definitions(-DPWR_BUTTON_DISABLED)
-endif()
-
-if(NO_UNEXPECTED_SHUTDOWN)
-  add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
 endif()
 
 if (PCB STREQUAL X10)
@@ -68,6 +60,11 @@ endif()
 add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
+add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+
+if(NOT UNEXPECTED_SHUTDOWN)
+  add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
+endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 

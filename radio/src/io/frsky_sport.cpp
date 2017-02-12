@@ -256,7 +256,7 @@ const char * sportUpdateUploadFile(const char *filename)
       sportUpdateState = SPORT_DATA_TRANSFER,
       sportWritePacket(packet);
       if (i==0) {
-        updateProgressBar(file.fptr, file.obj.objsize);
+        drawProgressBar(STR_WRITING, file.fptr, file.obj.objsize);
       }
     }
 
@@ -285,9 +285,6 @@ const char * sportUpdateEnd()
 void sportFlashDevice(ModuleIndex module, const char * filename)
 {
   pausePulses();
-
-  lcdClear();
-  drawProgressBar(STR_WRITING);
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();

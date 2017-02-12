@@ -33,7 +33,7 @@ void drawSleepBitmap()
   lcdRefresh();
 }
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
 const pm_uchar bmp_shutdown[] PROGMEM = {
   #include "../../bitmaps/212x64/shutdown.lbm"
 };
@@ -42,7 +42,7 @@ const pm_uchar bmp_shutdown[] PROGMEM = {
 #define SHUTDOWN_BITMAP_HEIGHT         60
 void drawShutdownAnimation(uint32_t index)
 {
-  index /= (PWR_PRESS_SHUTDOWN / 4);
+  index /= (PWR_PRESS_SHUTDOWN_DELAY / 4);
   lcdRefreshWait();
   lcdClear();
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, index * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
@@ -95,22 +95,20 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
   lcdDrawVerticalLine(x, y + yofs, yhgt, SOLID, FORCE);
 }
 
-void drawProgressBar(const char *label)
+void drawProgressBar(const char * label, int num, int den)
 {
-  lcdDrawTextAlignedLeft(4*FH, label);
+  lcdClear();
+  if (label) {
+    lcdDrawTextAlignedLeft(4*FH, label);
+  }
   lcdDrawRect(4, 6*FH+4, LCD_W-8, 7);
-  lcdRefresh();
-}
-
-void updateProgressBar(int num, int den)
-{
   if (num > 0 && den > 0) {
     int width = ((LCD_W-12)*num)/den;
     lcdDrawSolidHorizontalLine(6, 6*FH+6, width, FORCE);
     lcdDrawSolidHorizontalLine(6, 6*FH+7, width, FORCE);
     lcdDrawSolidHorizontalLine(6, 6*FH+8, width, FORCE);
-    lcdRefresh();
   }
+  lcdRefresh();
 }
 
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max)

@@ -102,20 +102,20 @@ void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, u
   }
 }
 
-void drawProgressBar(const char *label)
+void drawProgressBar(const char * label, int num, int den)
 {
-  lcdDrawText(MENUS_MARGIN_LEFT, 4*FH, label);
-  lcdDrawRect(3, 6*FH+4, 204, 7);
-  lcdRefresh();
-}
-
-void updateProgressBar(int num, int den)
-{
-  if (num > 0 && den > 0) {
-    int width = (200*num)/den;
-    lcdDrawSolidFilledRect(5, 6*FH+6, width, 3, LINE_COLOR);
-    lcdRefresh();
+  lcdClear();
+  lcdSetColor(WHITE);
+  if (label) {
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, label, CUSTOM_COLOR);
   }
+  lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H-22, LCD_W-2*MENUS_MARGIN_LEFT, 15, 1, SOLID, CUSTOM_COLOR);
+  lcdSetColor(RED);
+  if (num > 0 && den > 0) {
+    int width = ((LCD_W-2*MENUS_MARGIN_LEFT-4) * num) / den;
+    lcdDrawSolidFilledRect(MENUS_MARGIN_LEFT+2, LCD_H-20, width, 11, CUSTOM_COLOR);
+  }
+  lcdRefresh();
 }
 
 void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
@@ -388,7 +388,7 @@ void drawShutdownAnimation(uint32_t index)
     }
     else {
       lcdRestoreBackupBuffer();
-      int quarter = index / (PWR_PRESS_SHUTDOWN / 5);
+      int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
       if (quarter >= 1) lcdDrawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 2) lcdDrawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
       if (quarter >= 3) lcdDrawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, TEXT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
@@ -397,7 +397,7 @@ void drawShutdownAnimation(uint32_t index)
   }
   else {
     lcd->clear();
-    int quarter = index / (PWR_PRESS_SHUTDOWN / 5);
+    int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
     for (int i=1; i<=4; i++) {
       if (quarter >= i) {
         lcd->drawSolidFilledRect(LCD_W / 2 - 70 + 24 * i, LCD_H / 2 - 10, 20, 20, TEXT_BGCOLOR);

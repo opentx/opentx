@@ -100,7 +100,7 @@ void resetForcePowerOffRequest()
 
 bool isForcePowerOffRequested()
 {
-  if (pwroffPressed()) {
+  if (pwrOffPressed()) {
     if (timeForcePowerOffPressed == 0) {
       timeForcePowerOffPressed = get_tmr10ms();
     }
@@ -202,7 +202,7 @@ void menusTask(void * pdata)
 {
   opentxInit();
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
   while (1) {
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
