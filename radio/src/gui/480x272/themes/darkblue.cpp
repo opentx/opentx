@@ -149,7 +149,7 @@ class DarkblueTheme: public Theme
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, TEXT_BGCOLOR);
       if (modelselIconBitmap) {
         BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("modelsel/icon_default.png"));
-        modelselIconBitmap->drawBitmap(25, 8, bitmap);
+        modelselIconBitmap->drawBitmap(20, 8, bitmap);
         delete bitmap;
       }
 
