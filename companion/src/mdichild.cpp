@@ -518,6 +518,7 @@ void MdiChild::wizardEdit()
   wizard->exec();
   if (wizard->mix.complete /*TODO rather test the exec() result?*/) {
     radioData.models[row] = wizard->mix;
+    radioData.fixModelFilenames();
     setModified();
   }
 }
