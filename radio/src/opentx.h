@@ -869,6 +869,10 @@ void doLoopCommonActions();
 
 #define BITMASK(bit) (1<<(bit))
 
+#if !defined(UNUSED)
+#define UNUSED(x)	((void)(x))	/* to avoid warnings */
+#endif
+
 /// returns the number of elements of an array
 #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
 
