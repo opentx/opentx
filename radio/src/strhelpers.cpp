@@ -309,8 +309,6 @@ char * getSwitchString(char * dest, swsrc_t idx)
     zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
   }
 
-  TRACE("idx=%d LAST_TRIM=%d LAST_LS=%d ONE=%d", idx, SWSRC_LAST_TRIM, SWSRC_LAST_LOGICAL_SWITCH, SWSRC_LAST_LOGICAL_SWITCH, SWSRC_ONE);
-
   return dest;
 }
 
