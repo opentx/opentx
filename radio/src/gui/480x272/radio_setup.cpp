@@ -32,12 +32,6 @@ int8_t editSlider(coord_t x, coord_t y, event_t event, int8_t value, int8_t min,
 
 #define SLIDER_5POS(val) val = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, val, -2, +2, attr)
 
-#if defined(SPLASH) && !defined(FSPLASH)
-  #define CASE_SPLASH_PARAM(x) x,
-#else
-  #define CASE_SPLASH_PARAM(x)
-#endif
-
 enum menuRadioSetupItems {
   ITEM_SETUP_DATE,
   ITEM_SETUP_TIME,
@@ -71,7 +65,6 @@ enum menuRadioSetupItems {
   ITEM_SETUP_BRIGHTNESS,
   ITEM_SETUP_DIM_LEVEL,
   ITEM_SETUP_FLASH_BEEP,
-  // CASE_SPLASH_PARAM(ITEM_SETUP_DISABLE_SPLASH)
   CASE_GPS(ITEM_SETUP_LABEL_GPS)
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   CASE_GPS(ITEM_SETUP_ADJUST_RTC)
@@ -392,21 +385,6 @@ bool menuRadioSetup(event_t event)
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.blOffBright, attr|LEFT) ;
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 5, 100);
         break;
-
-#if 0
-      case ITEM_SETUP_DISABLE_SPLASH:
-      {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPLASHSCREEN);
-        if (SPLASH_NEEDED()) {
-          lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, SPLASH_TIMEOUT/100, attr|LEFT, 0, NULL, "s");
-        }
-        else {
-          lcdDrawMMM(RADIO_SETUP_2ND_COLUMN, y, attr);
-        }
-        if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
-        break;
-      }
-#endif
 
       case ITEM_SETUP_LABEL_GPS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_GPS);
