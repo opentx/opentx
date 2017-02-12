@@ -227,7 +227,7 @@ void menuModelLogicalSwitchOne(event_t event)
 
 void onLogicalSwitchesMenu(const char *result)
 {
-  int8_t sub = menuVerticalPosition;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
   LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_EDIT) {
