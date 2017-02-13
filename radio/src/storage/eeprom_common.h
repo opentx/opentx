@@ -37,3 +37,7 @@ void selectModel(uint8_t sub);
 #else
   #define eeLoadModelHeaders()
 #endif
+
+void storageReadRadioSettings();
+void storageReadCurrentModel();
+

@@ -2442,7 +2442,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(EEPROM)
-  storageReadAll();
+  storageReadRadioSettings();
 #endif
 
   // Radios handle UNEXPECTED_SHUTDOWN() differently:
@@ -2461,7 +2461,11 @@ void opentxInit(OPENTX_INIT_ARGS)
   if (!unexpectedShutdown) {
     sdInit();
     logsInit();
- }
+  }
+#endif
+
+#if defined(EEPROM)
+  storageReadCurrentModel();
 #endif
 
 #if defined(PCBHORUS)
