@@ -56,6 +56,7 @@ MdiChild::MdiChild(MainWindow * parent):
   initModelsList();
   connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
+  connect(ui->modelsList, SIGNAL(clicked(QModelIndex)), this, SLOT(updateMenu(QModelIndex)));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
@@ -85,6 +86,17 @@ void MdiChild::refresh(bool expand)
   }
   ui->simulateButton->setEnabled(firmware->getCapability(Simulation));
   updateTitle();
+}
+
+void MdiChild::updateMenu(QModelIndex idx)
+{
+
+  if (modelsListModel->getModelIndex(idx) >= 0) {
+    emit copyAvailable(true);
+  }
+  else if (modelsListModel->getCategoryIndex(idx) >= 0) {
+    emit copyAvailable(false);
+  }
 }
 
 void MdiChild::confirmDelete()

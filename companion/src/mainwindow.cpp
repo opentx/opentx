@@ -870,7 +870,6 @@ void MainWindow::about()
 
 void MainWindow::updateMenus()
 {
-  qDebug() << QString("UPDATING MENU");
   bool hasMdiChild = (activeMdiChild() != 0);
   bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
 

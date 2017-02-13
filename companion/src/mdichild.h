@@ -97,6 +97,7 @@ class MdiChild : public QWidget
     void print(int model=-1, const QString & filename="");
     void setModified();
     void updateTitle();
+    void updateMenu(QModelIndex);
 
   private:
     bool maybeSave();
