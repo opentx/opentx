@@ -33,6 +33,14 @@ void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * na
     }
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
+    if (IS_TARANIS_X7(board)) {
+      if (index == 4) {
+        label->setText("SF");
+      }
+      else if (index == 5) {
+        label->setText("SH");
+      }
+    }
   }
   else {
     label->hide();
