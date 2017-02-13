@@ -80,6 +80,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   telemetryFifoMode = mode;
 
   if (mode & TELEMETRY_SERIAL_WITHOUT_DMA) {
+    DMA_Cmd(TELEMETRY_DMA_Stream_RX, DISABLE);
+    USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Rx, DISABLE);
+    DMA_DeInit(TELEMETRY_DMA_Stream_RX);
+    
     USART_Cmd(TELEMETRY_USART, ENABLE);
     USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
     NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
