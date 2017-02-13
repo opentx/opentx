@@ -504,6 +504,11 @@ void audioTask(void * pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
+#if defined(PCBX12S)
+  // The audio amp needs ~2s to start
+  CoTickDelay(500); // 1s
+#endif
+
   if (!unexpectedShutdown) {
     AUDIO_HELLO();
   }
