@@ -870,6 +870,7 @@ void MainWindow::about()
 
 void MainWindow::updateMenus()
 {
+  qDebug() << QString("UPDATING MENU");
   bool hasMdiChild = (activeMdiChild() != 0);
   bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
 
@@ -888,7 +889,7 @@ void MainWindow::updateMenus()
     recentFileActs[i]->setEnabled(true);
   }
   separatorAct->setVisible(hasMdiChild);
-  simulateAct->setEnabled(hasSelection);
+  simulateAct->setEnabled(hasMdiChild);
   printAct->setEnabled(hasSelection);
   loadbackupAct->setEnabled(hasMdiChild);
   compareAct->setEnabled(activeMdiChild());
