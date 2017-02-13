@@ -410,20 +410,23 @@ void telemetryReset()
 
 #if defined(CPUARM)
 // we don't reset the telemetry here as we would also reset the consumption after model load
-void telemetryInit(uint8_t protocol) {
+void telemetryInit(uint8_t protocol)
+{
+  if (protocol == PROTOCOL_FRSKY_D) {
+    telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
+  }
+
 #if defined(MULTIMODULE)
-  if (protocol == PROTOCOL_MULTIMODULE || protocol == PROTOCOL_FLYSKY_IBUS) {
+  else if (protocol == PROTOCOL_MULTIMODULE || protocol == PROTOCOL_FLYSKY_IBUS) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
   }
   else if (protocol == PROTOCOL_SPEKTRUM) {
     // Spektrum's own small race RX (SPM4648) uses 125000 8N1, use the same since there is no real standard
     telemetryPortInit(125000, TELEMETRY_SERIAL_DEFAULT);
-  } else
-#endif
-  if (protocol == PROTOCOL_FRSKY_D) {
-    telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
+#endif
+
 #if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
@@ -434,12 +437,14 @@ void telemetryInit(uint8_t protocol) {
     telemetryPortSetDirectionOutput();
   }
 #endif
+
 #if defined(SERIAL2)
   else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     telemetryPortInit(0, TELEMETRY_SERIAL_DEFAULT);
     serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
   }
 #endif
+
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
