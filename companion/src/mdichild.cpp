@@ -56,8 +56,9 @@ MdiChild::MdiChild(MainWindow * parent):
   initModelsList();
   connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
-  connect(ui->modelsList, SIGNAL(clicked(QModelIndex)), this, SLOT(updateMenu(QModelIndex)));
+  connect(ui->modelsList, SIGNAL(pressed(QModelIndex)), this, SLOT(onItemSelected(QModelIndex)));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
+  connect(ui->modelsList, SIGNAL(activated(QModelIndex)), this, SLOT(openModelEditWindow()));
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
   ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -88,9 +89,20 @@ void MdiChild::refresh(bool expand)
   updateTitle();
 }
 
-void MdiChild::updateMenu(QModelIndex idx)
+void MdiChild::onItemSelected(QModelIndex idx)
 {
-  emit copyAvailable(modelsListModel->getModelIndex(idx) >= 0 ? true : false);
+  emit copyAvailable(isModel(idx) ? true : false);
+}
+
+bool MdiChild::isModel(QModelIndex idx)
+{
+  return (modelsListModel->getModelIndex(idx) >= 0 ? true : false);
+}
+
+bool MdiChild::isCategory(QModelIndex idx)
+{
+  if (isModel(idx)) return false;
+  else return (modelsListModel->getCategoryIndex(idx) >= 0 ? true : false);
 }
 
 void MdiChild::confirmDelete()
@@ -326,9 +338,10 @@ bool MdiChild::hasPasteData() const
   return mimeData->hasFormat("application/x-companion");
 }
 
-bool MdiChild::hasSelection() const
+bool MdiChild::hasModelSelected()
 {
-  return ui->modelsList->selectionModel()->hasSelection();
+  QModelIndex modelIndex  = ui->modelsList->currentIndex();
+  return isModel(modelIndex);
 }
 
 void MdiChild::updateTitle()

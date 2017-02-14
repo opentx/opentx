@@ -871,14 +871,14 @@ void MainWindow::about()
 void MainWindow::updateMenus()
 {
   bool hasMdiChild = (activeMdiChild() != 0);
-  bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
+  bool hasModelSelected = (activeMdiChild() && activeMdiChild()->hasModelSelected());
 
   newAct->setEnabled(true);
   openAct->setEnabled(true);
   saveAct->setEnabled(hasMdiChild);
   saveAsAct->setEnabled(hasMdiChild);
-  cutAct->setEnabled(hasSelection);
-  copyAct->setEnabled(hasSelection);
+  cutAct->setEnabled(hasModelSelected);
+  copyAct->setEnabled(hasModelSelected);
   pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
   writeEepromAct->setEnabled(hasMdiChild);
   readEepromAct->setEnabled(true);
@@ -889,7 +889,7 @@ void MainWindow::updateMenus()
   }
   separatorAct->setVisible(hasMdiChild);
   simulateAct->setEnabled(hasMdiChild);
-  printAct->setEnabled(hasSelection);
+  printAct->setEnabled(hasModelSelected);
   loadbackupAct->setEnabled(hasMdiChild);
   compareAct->setEnabled(activeMdiChild());
   updateRecentFileActions();
