@@ -121,14 +121,9 @@ void luaV_gettable (lua_State *L, const TValue *t, TValue *key, StkId val) {
     setnilvalue(val);
     if (ttisstring(key)) {
       char keyname[LUA_MAX_ROTABLE_NAME + 1];
-      lu_byte keytype;
       lua_getcstr(keyname, rawtsvalue(key), LUA_MAX_ROTABLE_NAME);
       // TRACE("luaV_gettable(key=%s)", keyname);
-      luaR_result res = luaR_findentry(rvalue(t), keyname, &keytype);
-      if (keytype == LUA_TLIGHTFUNCTION)
-        setlfvalue(val, (void*)(size_t)res)
-      else if (keytype == LUA_TNUMBER)
-        setnvalue(val, (lua_Number)res)
+      luaR_findentry(rvalue(t), keyname, val);
     }
     return;
   }
@@ -627,22 +622,15 @@ void luaV_execute (lua_State *L) {
         int b = GETARG_B(i);
         if (ttisstring(RKC(i))) {
           char keyname[LUA_MAX_ROTABLE_NAME + 1];
-          lu_byte keytype;
           lua_getcstr(keyname, rawtsvalue(RKC(i)), LUA_MAX_ROTABLE_NAME);
-          luaR_result res = luaR_findglobal(keyname, &keytype);
-          if (keytype == LUA_TROTABLE) {
-            setrvalue(ra, (void*)(size_t)res)
+          luaR_result found = luaR_findglobal(keyname, ra);
+          if (found) {
+           break;
           }
-          else if (keytype == LUA_TLIGHTFUNCTION)
-            setlfvalue(ra, (void*)(size_t)res)
-          else if (keytype == LUA_TNUMBER)
-            setnvalue(ra, (lua_Number)res)
-          else
-            Protect(luaV_gettable(L, cl->upvals[b]->v, RKC(i), ra));
         }
-        else {
-          Protect(luaV_gettable(L, cl->upvals[b]->v, RKC(i), ra));
-        }
+        //else {
+        Protect(luaV_gettable(L, cl->upvals[b]->v, RKC(i), ra));
+        //}
       }
       break;
 

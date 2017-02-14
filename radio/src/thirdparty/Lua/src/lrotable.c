@@ -10,20 +10,24 @@
 #define LUAR_FINDVALUE        1
 
 /* Utility function: find a key in a given table (of functions or constants) */
-static luaR_result luaR_findkey(const void *where, const char *key, int type, int *found) {
+static luaR_result luaR_findkey(const void * where, const char * key, int type, TValue * found) {
   const char *pname;
   const luaL_Reg *pf = (luaL_Reg*)where;
   const luaR_value_entry *pv = (luaR_value_entry*)where;
   int isfunction = type == LUAR_FINDFUNCTION;
-  *found = 0;
   if(!where)
     return 0;
   while(1) {
     if (!(pname = isfunction ? pf->name : pv->name))
       break;
     if (!strcmp(pname, key)) {
-      *found = 1;
-      return isfunction ? (luaR_result)(size_t)pf->func : (luaR_result)pv->value;
+      if (isfunction) {
+        setlfvalue(found, pf->func);
+      }
+      else {
+        setnvalue(found, pv->value);
+      }
+      return 1;
     }
     pf ++; pv ++;
   }
@@ -31,56 +35,42 @@ static luaR_result luaR_findkey(const void *where, const char *key, int type, in
 }
 
 /* Find a global "read only table" in the constant lua_rotable array */
-luaR_result luaR_findglobal(const char *name, lu_byte *ptype) {
+luaR_result luaR_findglobal(const char * name, TValue * val) {
   unsigned i;
-  *ptype = LUA_TNIL;
-  if (strlen(name) > LUA_MAX_ROTABLE_NAME)
+  if (strlen(name) > LUA_MAX_ROTABLE_NAME) {
+    TRACE("luaR_findglobal() '%s' = NAME TOO LONG", name);
     return 0;
+  }
   for (i=0; lua_rotable[i].name; i++) {
     if (!strcmp(lua_rotable[i].name, name)) {
-      *ptype = LUA_TROTABLE;
-      return i+1;
+      setrvalue(val, (void *)(size_t)(i+1));
+      TRACE("luaR_findglobal() '%s' = TABLE %d", name, i);
+      return 1;
     }
     if (!strncmp(lua_rotable[i].name, "__", 2)) {
-      luaR_result result = luaR_findentry((void *)(size_t)(i+1), name, ptype);
-      if (result != 0) {
-    	return result;
+      if (luaR_findentry((void *)(size_t)(i+1), name, val)) {
+        TRACE("luaR_findglobal() '%s' = FOUND in table '%s'", name, lua_rotable[i].name);
+        return 1;
       }
     }
   }
+  TRACE("luaR_findglobal() '%s' = NOT FOUND", name);
   return 0;
 }
 
 
-int luaR_findfunction(lua_State *L, const luaL_Reg *ptable) {
-  int found;
-  const char *key = luaL_checkstring(L, 2);
-  luaR_result res = luaR_findkey(ptable, key, LUAR_FINDFUNCTION, &found);
-  if (found)
-    lua_pushlightfunction(L, (void*)(size_t)res);
-  else
-    lua_pushnil(L);
-  return 1;
-}
-
-luaR_result luaR_findentry(void *data, const char *key, lu_byte *ptype) {
-  int found;
+luaR_result luaR_findentry(void *data, const char * key, TValue * val) {
   unsigned idx = (unsigned)(size_t)data - 1;
-  luaR_result res;
-  *ptype = LUA_TNIL;
   /* First look at the functions */
-  res = luaR_findkey(lua_rotable[idx].pfuncs, key, LUAR_FINDFUNCTION, &found);
-  if (found) {
-    *ptype = LUA_TLIGHTFUNCTION;
-    return res;
+  if (luaR_findkey(lua_rotable[idx].pfuncs, key, LUAR_FINDFUNCTION, val)) {
+    TRACE("luaR_findentry(%d, '%s') = FUNCTION %p", idx, key, lfvalue(val));
+    return 1;
   }
-  else {
+  else if (luaR_findkey(lua_rotable[idx].pvalues, key, LUAR_FINDVALUE, val)) {
     /* Then at the values */
-    res = luaR_findkey(lua_rotable[idx].pvalues, key, LUAR_FINDVALUE, &found);
-    if(found) {
-      *ptype = LUA_TNUMBER;
-      return res;
-    }
+    TRACE("luaR_findentry(%d, '%s') = NUMBER %g", idx, key, nvalue(val));
+    return 1;
   }
+  TRACE("luaR_findentry(%d, '%s') = NOT FOUND", idx, key);
   return 0;
 }
