@@ -764,11 +764,6 @@ void MdiChild::print(int model, const QString & filename)
   }
 }
 
-void MdiChild::viableModelSelected(bool viable)
-{
-  emit copyAvailable(viable);
-}
-
 int MdiChild::getCurrentModel() const
 {
   return modelsListModel->getModelIndex(ui->modelsList->currentIndex());
