@@ -1112,7 +1112,7 @@ void ConvertModel_217_to_218(ModelData & model)
   }
   for (int i=0; i<MAX_EXPOS; i++) {
 #if defined(PCBTARANIS)
-    newModel.expoData[i].srcRaw = oldModel.expoData[i].srcRaw;
+    newModel.expoData[i].srcRaw = ConvertSource_217_to_218(oldModel.expoData[i].srcRaw);
     newModel.expoData[i].scale = oldModel.expoData[i].scale;
     newModel.expoData[i].carryTrim = oldModel.expoData[i].carryTrim;
     newModel.expoData[i].curve = oldModel.expoData[i].curve;
