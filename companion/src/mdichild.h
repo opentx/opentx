@@ -50,7 +50,6 @@ class MdiChild : public QWidget
     bool hasPasteData() const;
     QString userFriendlyCurrentFile() const;
     QString currentFile() const { return curFile; }
-    void viableModelSelected(bool viable);
     int getCurrentModel() const;
     int getCurrentCategory() const;
     void refresh(bool expand=false);
