@@ -56,9 +56,9 @@ MdiChild::MdiChild(MainWindow * parent):
   initModelsList();
   connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
   connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
+  connect(ui->modelsList, SIGNAL(activated(QModelIndex)), this, SLOT(openModelEditWindow()));
   connect(ui->modelsList, SIGNAL(pressed(QModelIndex)), this, SLOT(onItemSelected(QModelIndex)));
   connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
-  connect(ui->modelsList, SIGNAL(activated(QModelIndex)), this, SLOT(openModelEditWindow()));
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
   ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -101,8 +101,12 @@ bool MdiChild::isModel(QModelIndex idx)
 
 bool MdiChild::isCategory(QModelIndex idx)
 {
-  if (isModel(idx)) return false;
-  else return (modelsListModel->getCategoryIndex(idx) >= 0 ? true : false);
+  if (isModel(idx)) {
+    return false;
+  }
+  else {
+    return (modelsListModel->getCategoryIndex(idx) >= 0);
+  }
 }
 
 void MdiChild::confirmDelete()
@@ -408,6 +412,7 @@ void MdiChild::categoryAdd()
   CategoryData category("New category");
   radioData.categories.push_back(category);
   setModified();
+  emit copyAvailable(false); // workaround : nothing is selected after model creation
 }
 
 void MdiChild::categoryRename()
@@ -486,6 +491,7 @@ void MdiChild::modelAdd()
     radioData.setCurrentModel(newModelIndex);
   }
   setModified();
+  emit copyAvailable(false); // workaround : nothing is selected after model creation
 }
 
 void MdiChild::modelEdit()
