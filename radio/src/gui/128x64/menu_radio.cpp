@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -29,14 +29,8 @@ void menuRadioSpecialFunctions(event_t event)
     menuHorizontalPosition = 0;
   }
 #endif
-  
-  MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
 
-#if defined(PCBX7)
-  if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0) {
-    menuHorizontalPosition = 0;
-  }
-#endif
+  MENU(STR_MENUSPECIALFUNCS, menuTabGeneral, MENU_RADIO_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
 
   menuSpecialFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
 

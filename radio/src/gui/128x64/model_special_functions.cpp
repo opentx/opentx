@@ -70,12 +70,73 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 }
 #endif
 
+#if defined(PCBX7)
+void onCustomFunctionsMenu(const char * result)
+{
+  int sub = menuVerticalPosition;
+  CustomFunctionData * cfn;
+  uint8_t eeFlags;
+
+  if (menuHandlers[menuLevel] == menuModelSpecialFunctions) {
+    cfn = &g_model.customFn[sub];
+    eeFlags = EE_MODEL;
+  }
+  else {
+    cfn = &g_eeGeneral.customFn[sub];
+    eeFlags = EE_GENERAL;
+  }
+
+  if (result == STR_COPY) {
+    clipboard.type = CLIPBOARD_TYPE_CUSTOM_FUNCTION;
+    clipboard.data.cfn = *cfn;
+  }
+  else if (result == STR_PASTE) {
+    *cfn = clipboard.data.cfn;
+    storageDirty(eeFlags);
+  }
+  else if (result == STR_CLEAR) {
+    memset(cfn, 0, sizeof(CustomFunctionData));
+    storageDirty(eeFlags);
+  }
+  else if (result == STR_INSERT) {
+    memmove(cfn+1, cfn, (MAX_SPECIAL_FUNCTIONS-sub-1)*sizeof(CustomFunctionData));
+    memset(cfn, 0, sizeof(CustomFunctionData));
+    storageDirty(eeFlags);
+  }
+  else if (result == STR_DELETE) {
+    memmove(cfn, cfn+1, (MAX_SPECIAL_FUNCTIONS-sub-1)*sizeof(CustomFunctionData));
+    memset(&g_model.customFn[MAX_SPECIAL_FUNCTIONS-1], 0, sizeof(CustomFunctionData));
+    storageDirty(eeFlags);
+  }
+}
+#endif // CPUARM
+
 void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 
-#if defined(CPUARM)
+#if defined(PCBX7)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
+  if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    killEvents(event);
+    CustomFunctionData *cfn = &functions[sub];
+    if (!CFN_EMPTY(cfn))
+      POPUP_MENU_ADD_ITEM(STR_COPY);
+    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
+      POPUP_MENU_ADD_ITEM(STR_PASTE);
+    if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[MAX_SPECIAL_FUNCTIONS-1]))
+      POPUP_MENU_ADD_ITEM(STR_INSERT);
+    if (!CFN_EMPTY(cfn))
+      POPUP_MENU_ADD_ITEM(STR_CLEAR);
+    for (int i=sub+1; i<MAX_SPECIAL_FUNCTIONS; i++) {
+      if (!CFN_EMPTY(&functions[i])) {
+        POPUP_MENU_ADD_ITEM(STR_DELETE);
+        break;
+      }
+    }
+    POPUP_MENU_START(onCustomFunctionsMenu);
+  }
+
 #elif !defined(CPUM64) || defined(AUTOSWITCH)
   uint8_t eeFlags = EE_MODEL;
 #endif
@@ -91,8 +152,19 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
+#if defined(CPUARM)
+          if (sub==k && menuHorizontalPosition < 1 && CFN_SWITCH(cfn) == SWSRC_NONE) {
+            drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | INVERS | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+            if (active) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+          }
+          else {
+            drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
+            if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+          }
+#else
           drawSwitch(MODEL_SPECIAL_FUNC_1ST_COLUMN, y, CFN_SWITCH(cfn), attr | ((functionsContext->activeSwitches & ((MASK_CFN_TYPE)1 << k)) ? BOLD : 0));
           if (active || AUTOSWITCH_ENTER_LONG()) CHECK_INCDEC_SWITCH(event, CFN_SWITCH(cfn), SWSRC_FIRST, SWSRC_LAST, eeFlags, isSwitchAvailableInCustomFunctions);
+#endif
 #if defined(CPUARM)
           if (func == FUNC_OVERRIDE_CHANNEL && functions != g_model.customFn) {
             func = CFN_FUNC(cfn) = func+1;
@@ -402,13 +474,8 @@ void menuModelSpecialFunctions(event_t event)
 #endif
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
 
-#if defined(PCBX7)
-  if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0) {
-    menuHorizontalPosition = 0;
-  }
-#endif
   menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
-  
+
 #if defined(PCBX7)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
