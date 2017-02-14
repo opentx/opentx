@@ -70,7 +70,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 }
 #endif
 
-#if defined(CPUARM)
+#if defined(PCBX7)
 void onCustomFunctionsMenu(const char * result)
 {
   int sub = menuVerticalPosition;
@@ -115,7 +115,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 
-#if defined(CPUARM)
+#if defined(PCBX7)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
