@@ -990,10 +990,19 @@ void menuModelSetup(event_t event)
 
 void menuModelFailsafe(event_t event)
 {
-  static bool longNames = false;
-  bool newLongNames = false;
+  static uint8_t maxNameLen = 4;
+  static int8_t lastModel = g_eeGeneral.currModel;
+  const coord_t barH = (LCD_H - FH) / 8 - 1;
+  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
+  const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
   uint8_t ch = 0;
-  uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
+  uint8_t cols = 1;
+  uint8_t colW = LCD_W;
+
+  if (lastModel != g_eeGeneral.currModel) {
+    lastModel = g_eeGeneral.currModel;
+    maxNameLen = 4;
+  }
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
@@ -1020,102 +1029,98 @@ void menuModelFailsafe(event_t event)
   }
 
   SIMPLE_SUBMENU_NOTITLE(NUM_CHANNELS(g_moduleIdx));
-
-  #define COL_W   (LCD_W/2)
-  const uint8_t SLIDER_W = 64;
+  SET_SCROLLBAR_X(0);
 
   if (NUM_CHANNELS(g_moduleIdx) > 8) {
+    cols = 2;
+    colW = LCD_W / cols - 1;
     // Column separator
-    lcdDrawSolidVerticalLine(LCD_W/2, FH, LCD_H-FH);
+    lcdDrawSolidVerticalLine(colW, FH, LCD_H - FH);
   }
 
-  lcdDrawTextAlignedCenter(0*FH, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0, FAILSAFESET);
   lcdInvertLine(0);
 
-  unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
+  coord_t x = colW;
+  for (uint8_t col = 0; col < cols; col++) {
 
-  for (uint8_t col=0; col<2; col++) {
-    coord_t x = col*COL_W+1;
-
-    // Channels
-    for (uint8_t line=0; line<8; line++) {
-      coord_t y = 9+line*7;
-      int32_t channelValue = channelOutputs[ch+channelStart];
-      int32_t failsafeValue = 0;
-      bool failsafeEditable = false;
-      uint8_t ofs = (col ? 0 : 1);
-
-      if (ch < NUM_CHANNELS(g_moduleIdx)) {
-        failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
-        failsafeEditable = true;
-      }
-
-      if (failsafeEditable) {
-        // Channel name if present, number if not
-        uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
-        if (lenLabel > 4) {
-          newLongNames = longNames = true;
-        }
-
-        if (lenLabel > 0)
-          lcdDrawSizedText(x+1-ofs, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
-        else
-          putsChn(x+1-ofs, y, ch+1, SMLSIZE);
-
-        // Value
-        LcdFlags flags = TINSIZE;
-        if (menuVerticalPosition == ch) {
-          flags |= INVERS;
-          if (s_editMode) {
-            if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-              s_editMode = 0;
-            }
-            else {
-              flags |= BLINK;
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
-            }
-          }
-        }
+    coord_t y = FH + 1;
+    for (uint8_t line = 0; line < 8; line++) {
+      const int32_t channelValue = channelOutputs[ch+channelStart];
+      int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
+      uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
+      uint8_t barW = colW - FW * maxNameLen - FWNUM * 3;  // default bar width
 
 #if defined(PPM_UNIT_PERCENT_PREC1)
-        uint8_t wbar = (longNames ? SLIDER_W-16 : SLIDER_W-6);
-#else
-        uint8_t wbar = (longNames ? SLIDER_W-10 : SLIDER_W);
+      barW -= FWNUM + 1;
 #endif
+      barW += (barW % 2);
 
-        uint8_t xValue = x+COL_W-4-wbar-ofs;
-        if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-          lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
-          failsafeValue = 0;
-        }
-        else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-          lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
-          failsafeValue = 0;
-        }
-        else {
-#if defined(PPM_UNIT_US)
-          lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
-#else
-          lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue)/10, RIGHT|flags);
-#endif
-        }
-
-        // Gauge
-        lcdDrawRect(x+COL_W-3-wbar-ofs, y, wbar+1, 6);
-        unsigned int lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-        unsigned int lenFailsafe = limit((uint8_t)1, uint8_t((abs(failsafeValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-        coord_t xChannel = (channelValue>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-lenChannel;
-        coord_t xFailsafe = (failsafeValue>0) ? x+COL_W-ofs-3-wbar/2 : x+COL_W-ofs-2-wbar/2-lenFailsafe;
-        lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
-        lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
-        lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
-        lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
+      // Channel name if present, number if not
+      if (lenLabel > 0) {
+        if (lenLabel > maxNameLen)
+          maxNameLen = lenLabel;
+        lcdDrawSizedText(x - colW, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
       }
-      ch++;
-    }
-  }
+      else {
+        putsChn(x - colW, y, ch+1, SMLSIZE);
+      }
 
-  longNames = newLongNames;
+      // Value
+      LcdFlags flags = TINSIZE;
+      if (menuVerticalPosition == ch) {
+        flags |= INVERS;
+        if (s_editMode) {
+          if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+            s_editMode = 0;
+          }
+          else {
+            flags |= BLINK;
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
+          }
+        }
+      }
+
+      const coord_t xValue = x - barW;
+      if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+        lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
+        failsafeValue = 0;
+      }
+      else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+        lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
+        failsafeValue = 0;
+      }
+      else {
+#if defined(PPM_UNIT_US)
+        lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+        lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
+#else
+        lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue)/10, RIGHT|flags);
+#endif
+      }
+
+      // Gauge
+      lcdDrawRect(x - barW, y, barW - 1, barH);
+      barW = barW / 2 - 1;
+      const coord_t lenChannel  = limit<uint8_t>(1, (abs(channelValue)  * barW + lim / 2) / lim, barW);
+      const coord_t lenFailsafe = limit<uint8_t>(1, (abs(failsafeValue) * barW + lim / 2) / lim, barW);
+      const coord_t barX = x - barW - 2;
+      const coord_t xChannel  = (channelValue >= 0) ? barX : barX - lenChannel + 1;
+      const coord_t xFailsafe = (failsafeValue > 0) ? barX : barX - lenFailsafe + 1;
+      lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
+      lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
+      lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
+      lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
+
+      if (++ch >= NUM_CHANNELS(g_moduleIdx))
+        break;
+
+      y += barH + 1;
+
+    }  // channels
+
+    x += colW + 2;
+
+  }  // columns
 }
