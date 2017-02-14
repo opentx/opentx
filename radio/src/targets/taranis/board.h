@@ -487,6 +487,15 @@ void sportSendBuffer(uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
+// Sport update driver
+#if defined(PCBX7)
+#define SPORT_UPDATE_POWER_ON()        GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN)
+#define SPORT_UPDATE_POWER_OFF()       GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN)
+#else
+#define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
+#define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
+#endif
+
 // Audio driver
 void audioInit(void) ;
 void audioEnd(void) ;

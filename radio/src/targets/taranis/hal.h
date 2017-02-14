@@ -551,6 +551,12 @@
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
 
+// SPORT update connector
+#if defined(PCBX7)
+#define SPORT_UPDATE_PWR_GPIO           GPIOB
+#define SPORT_UPDATE_PWR_GPIO_PIN       GPIO_Pin_1  // PB.01
+#endif
+
 // Heartbeat
 #define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOC
 #define HEARTBEAT_RCC_APB2Periph        RCC_APB2Periph_USART6

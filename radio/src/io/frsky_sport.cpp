@@ -182,7 +182,7 @@ const char * sportUpdatePowerOn(ModuleIndex module)
   if (module == INTERNAL_MODULE)
     INTERNAL_MODULE_ON();
   else
-    EXTERNAL_MODULE_ON();
+    SPORT_UPDATE_POWER_ON();
 #endif
 
   sportWaitState(SPORT_IDLE, 50); // Clear the fifo
@@ -305,7 +305,7 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
+  SPORT_UPDATE_POWER_OFF();
 #endif
 
   sportWaitState(SPORT_IDLE, 500); // Clear the fifo
