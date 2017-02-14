@@ -90,13 +90,7 @@ void MdiChild::refresh(bool expand)
 
 void MdiChild::updateMenu(QModelIndex idx)
 {
-
-  if (modelsListModel->getModelIndex(idx) >= 0) {
-    emit copyAvailable(true);
-  }
-  else if (modelsListModel->getCategoryIndex(idx) >= 0) {
-    emit copyAvailable(false);
-  }
+  emit copyAvailable(modelsListModel->getModelIndex(idx) >= 0 ? true : false);
 }
 
 void MdiChild::confirmDelete()
