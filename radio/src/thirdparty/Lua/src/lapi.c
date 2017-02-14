@@ -621,7 +621,7 @@ LUA_API int lua_pushthread (lua_State *L) {
 LUA_API void lua_getglobal (lua_State *L, const char *var) {
   TValue value;
   luaR_result found;
-  TRACE("lua_getglobal() '%s'", var);
+  TRACE_LUA_INTERNALS("lua_getglobal() '%s'", var);
   Table *reg = hvalue(&G(L)->l_registry);
   const TValue *gt;  /* global table */
   lua_lock(L);
