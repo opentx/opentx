@@ -148,12 +148,12 @@ inline uint8_t modelTelemetryProtocol()
   }
 #endif
      
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
+  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
   
 #if defined(MULTIMODULE)
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_MULTIMODULE;
   }
 #endif
