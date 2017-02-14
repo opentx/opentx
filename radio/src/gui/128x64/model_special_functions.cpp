@@ -473,12 +473,7 @@ void menuModelSpecialFunctions(event_t event)
   }
 #endif
   MENU(STR_MENUCUSTOMFUNC, menuTabModel, MENU_MODEL_SPECIAL_FUNCTIONS, HEADER_LINE+MAX_SPECIAL_FUNCTIONS, { HEADER_LINE_COLUMNS NAVIGATION_LINE_BY_LINE|4/*repeated*/ });
-/*
-#if defined(PCBX7)
-  if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0) {
-    menuHorizontalPosition = 0;
-  }
-#endif */
+
   menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 
 #if defined(PCBX7)
