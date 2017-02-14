@@ -48,7 +48,7 @@ void UART2_Configure(uint32_t baudrate, uint32_t masterClock, int mode)
   pUsart->US_CR = US_CR_RSTRX | US_CR_RSTTX | US_CR_RXDIS | US_CR_TXDIS;
 
   // Configure mode
-  if (mode == TELEMETRY_SERIAL_8E2)
+  if (mode & TELEMETRY_SERIAL_8E2)
     pUsart->US_MR =  0x000020C0 ;
   else
     pUsart->US_MR =  0x000008C0 ;  // NORMAL, No Parity, 8 bit
