@@ -943,7 +943,7 @@ bool menuModelFailsafe(event_t event)
       int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
 
       // Channel name if present, number if not
-      if (ZLEN(g_model.limitData[ch+channelStart].name) > 0) {
+      if (g_model.limitData[ch+channelStart].name[0] != '\0') {
         putsChn(x+MENUS_MARGIN_LEFT, y-3, ch+1, TINSIZE);
         lcdDrawSizedText(x+MENUS_MARGIN_LEFT, y+5, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR|SMLSIZE);
       }

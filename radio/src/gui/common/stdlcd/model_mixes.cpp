@@ -161,12 +161,12 @@ void onMixesMenu(const char * result)
 #define MIX_LINE_FM_POS                13*FW+3
 #define MIX_LINE_DELAY_POS             24*FW+3
 #define MIX_LINE_NAME_POS              LCD_W-LEN_EXPOMIX_NAME*FW-MENUS_SCROLLBAR_WIDTH
+#define MIX_HDR_GAUGE_POS_X            127
 
 void displayHeaderChannelName(uint8_t ch)
 {
-  uint8_t len = zlen(g_model.limitData[ch].name, sizeof(g_model.limitData[ch].name));
-  if (len) {
-    lcdDrawSizedText(80, 1, g_model.limitData[ch].name, len, ZCHAR|SMLSIZE);
+  if (g_model.limitData[ch].name[0] != '\0') {
+    lcdDrawSizedText(MIX_HDR_GAUGE_POS_X - FWNUM * 5 - 1, 1, g_model.limitData[ch].name, ZLEN(g_model.limitData[ch].name), ZCHAR|SMLSIZE|RIGHT);
   }
 }
 
@@ -393,7 +393,7 @@ void menuModelMixAll(event_t event)
   if (!s_currCh) {
     displayHeaderChannelName(index);
 #if LCD_W >= 212
-    lcdDrawNumber(127, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE|RIGHT);
+    lcdDrawNumber(MIX_HDR_GAUGE_POS_X, 2, calcRESXto1000(ex_chans[index]), PREC1|TINSIZE|RIGHT);
 #endif
   }
 
@@ -402,7 +402,7 @@ void menuModelMixAll(event_t event)
 #if LCD_W >= 212
   // Gauge
   if (!s_currCh) {
-    drawGauge(127, 1, 58, 6, ex_chans[index], 1024);
+    drawGauge(MIX_HDR_GAUGE_POS_X, 1, 58, 6, ex_chans[index], 2048);
   }
 #endif
 
