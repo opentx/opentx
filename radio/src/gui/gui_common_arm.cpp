@@ -596,9 +596,13 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 }
 #if defined(MULTIMODULE)
 // Third row is number of subtypes -1 (max valid subtype)
+#define NO_SUBTYPE  nullptr
+
+// Table is designed to be shared with companion multi.cpp
+
 const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
-  { MM_RF_PROTO_HUBSAN,     nullptr,              0,  STR_MULTI_VIDFREQ   },
+  { MM_RF_PROTO_HUBSAN,     NO_SUBTYPE,           0,  STR_MULTI_VIDFREQ   },
   { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    5,  STR_MULTI_RFTUNE    },
   { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
   { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
@@ -613,18 +617,20 @@ const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_MT99XX,     STR_SUBTYPE_MT99,     4,  nullptr             },
   { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     5,  nullptr             },
   { MM_RF_PROTO_FY326,      STR_SUBTYPE_FY326,    1,  nullptr             },
-  { MM_RF_PROTO_SFHSS,      nullptr,              0,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_SFHSS,      NO_SUBTYPE,           0,  STR_MULTI_RFTUNE    },
   { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   3,  nullptr             },
-  { MM_RF_PROTO_OLRS,       nullptr,              0,  STR_MULTI_RFPOWER   },
+  { MM_RF_PROTO_OLRS,       NO_SUBTYPE,           0,  STR_MULTI_RFPOWER   },
   { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
   { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     1,  nullptr             },
   { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
   { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
-  { MM_RF_CUSTOM_SELECTED,  nullptr,              7,  STR_MULTI_OPTION    },
+  { MM_RF_CUSTOM_SELECTED,  NO_SUBTYPE,           7,  STR_MULTI_OPTION    },
 
   //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
-  { 0xfe,                   nullptr,              0,  nullptr             }
+  { 0xfe,                   NO_SUBTYPE,           0,  nullptr             }
 };
+
+#undef NO_SUBTYPE
 
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
 {

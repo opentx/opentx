@@ -25,6 +25,7 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "modelprinter.h"
+#include "multi.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -157,6 +158,7 @@ void TimerPanel::on_name_editingFinished()
 #define MASK_OPEN_DRAIN     64
 #define MASK_MULTIMODULE    128
 #define MASK_ANTENNA        256
+#define MASK_MULTIOPTION    512
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -381,6 +383,13 @@ void ModulePanel::update()
         break;
       case PULSES_MULTIMODULE:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE;
+        max_rx_num = 15;
+        if (module.multi.rfProtocol == MM_RF_PROTO_DSM2)
+          mask |= MASK_CHANNELS_COUNT;
+        else
+          module.channelsCount = 16;
+        if (getMultiProtocolDefinition(module.multi.rfProtocol).optionsstr != nullptr)
+          mask |= MASK_MULTIOPTION;
         break;
       case PULSES_OFF:
         break;
@@ -442,6 +451,8 @@ void ModulePanel::update()
   ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
   ui->label_multiSubType->setVisible(mask & MASK_MULTIMODULE);
   ui->multiSubType->setVisible(mask & MASK_MULTIMODULE);
+  ui->label_option->setVisible(mask & MASK_MULTIOPTION);
+  ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
 
   if (mask & MASK_MULTIMODULE) {
     int numEntries = getNumSubtypes(static_cast<MultiModuleRFProtocols>(module.multi.rfProtocol));
@@ -455,6 +466,14 @@ void ModulePanel::update()
       else
         ui->multiSubType->addItem(ModelPrinter::printMultiSubType(module.multi.rfProtocol, module.multi.customProto, i), (QVariant) i);
     }
+  }
+
+  if (mask & MASK_MULTIOPTION) {
+    auto pdef = getMultiProtocolDefinition(module.multi.rfProtocol);
+    ui->optionValue->setMinimum(pdef.optionMin);
+    ui->optionValue->setMaximum(pdef.optionMax);
+    ui->optionValue->setValue(module.multi.optionValue);
+    ui->label_option->setText(pdef.optionsstr);
   }
   ui->multiSubType->setCurrentIndex(module.subType);
 
@@ -601,6 +620,12 @@ void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
     emit modified();
     lock = false;
   }
+}
+
+void ModulePanel::on_optionValue_editingFinished()
+{
+  module.multi.optionValue = ui->optionValue->value();
+  emit modified();
 }
 
 void ModulePanel::on_multiSubType_currentIndexChanged(int index)

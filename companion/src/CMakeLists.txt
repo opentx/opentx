@@ -166,6 +166,7 @@ set(companion_SRCS
   radionotfound.cpp
   wizarddata.cpp
   wizarddialog.cpp
+  multi.cpp
   )
 
 set(companion_MOC_HDRS
