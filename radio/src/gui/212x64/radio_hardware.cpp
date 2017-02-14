@@ -204,7 +204,7 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_UART3_MODE:
         g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN, y, STR_UART3MODE, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
-          serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
+          serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
         }
         break;
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:

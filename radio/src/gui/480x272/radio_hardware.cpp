@@ -181,7 +181,7 @@ bool menuRadioHardware(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UART3MODE);
         g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
         if (attr && checkIncDec_Ret) {
-          serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
+          serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
         }
         break;
 #endif
