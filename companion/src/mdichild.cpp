@@ -340,8 +340,7 @@ bool MdiChild::hasPasteData() const
 
 bool MdiChild::hasModelSelected()
 {
-  QModelIndex modelIndex  = ui->modelsList->currentIndex();
-  return isModel(modelIndex);
+  return isModel(ui->modelsList->currentIndex());
 }
 
 void MdiChild::updateTitle()
