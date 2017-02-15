@@ -492,12 +492,12 @@ if(NOT MSVC)
     include_directories(storage gui/${GUI_DIR})
 
     set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-    foreach(FILE ${SRC})
-      file(READ ${FILE} FILE_CONTENT)
-      set(ALLSRC_CONTENT "${ALLSRC_CONTENT}# 1 \"${FILE}\"\n${FILE_CONTENT}")
-    endforeach()
-
-    file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
+    add_custom_command(
+      OUTPUT ${ALLSRC}
+      COMMAND sh -c 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \"$$f\"" >> allsrc.cpp\; cat "$$f" >> ${ALLSRC}\; done'
+      WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+      DEPENDS ${SRC}
+    )
 
     add_executable(firmware ${ALLSRC})
     add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
