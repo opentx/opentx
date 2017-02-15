@@ -413,6 +413,8 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECT
 
 use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
+find_program(BASH bash HINTS "c:/cygwin/bin/" DOC "bash shell for firmware size report (eg. c:/cygwin/bin/bash.exe on Windows).")
+
 if(NOT MSVC)
   set(OPT s)
 
@@ -464,7 +466,6 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-    find_program(BASH bash HINTS "c:/cygwin/bin/" DOC "bash shell for firmware size report (eg. c:/cygwin/bin/bash.exe on Windows).")
     if (BASH)
       add_custom_target(firmware-size
         COMMAND ${BASH} -kc '${RADIO_DIRECTORY}/util/elf-size-report.sh --mcu=${CPU_TYPE_FULL} ${SIZE_TARGET_MEM_DEFINE} firmware.elf'
@@ -491,15 +492,19 @@ if(NOT MSVC)
 
     include_directories(storage gui/${GUI_DIR})
 
-    set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-    add_custom_command(
-      OUTPUT ${ALLSRC}
-      COMMAND sh -c 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \"$$f\"" >> allsrc.cpp\; cat "$$f" >> ${ALLSRC}\; done'
-      WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-      DEPENDS ${SRC}
-    )
+    if (BASH)
+      set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
+      add_custom_command(
+        OUTPUT ${ALLSRC}
+        COMMAND ${BASH} -kc 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \"$$f\"" >> allsrc.cpp\; cat "$$f" >> ${ALLSRC}\; done'
+        WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+        DEPENDS ${SRC}
+      )
+      add_executable(firmware ${ALLSRC})
+    else()
+      add_executable(firmware ${SRC})
+    endif()
 
-    add_executable(firmware ${ALLSRC})
     add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
 
     add_custom_command(
