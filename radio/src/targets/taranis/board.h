@@ -487,10 +487,29 @@ void sportSendBuffer(uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
+// PCBREV driver
+#if defined(PCBX7)
+#define IS_PCBREV_40()                 GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
+#endif
+
 // Sport update driver
-#if defined(PCBX7) && PCBREV >= 40
-#define SPORT_UPDATE_POWER_ON()        GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN)
-#define SPORT_UPDATE_POWER_OFF()       GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN)
+#if defined(PCBX7)
+inline void sportUpdatePowerOn()
+{
+  if (IS_PCBREV_40())
+    GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+  else
+    EXTERNAL_MODULE_ON();
+}
+inline void sportUpdatePowerOff()
+{
+  if (IS_PCBREV_40())
+    GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+  else
+    EXTERNAL_MODULE_OFF();
+}
+#define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
+#define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
 #else
 #define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
 #define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()

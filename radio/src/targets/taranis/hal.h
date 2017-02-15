@@ -551,10 +551,22 @@
 #define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
 #define TELEMETRY_USART_IRQn            USART2_IRQn
 
+// PCBREV
+#if defined(PCBX7)
+#define PCBREV_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
+#define PCBREV_GPIO                     GPIOA
+#define PCBREV_GPIO_PIN                 GPIO_Pin_14  // PA.14
+#else
+#define PCBREV_RCC_AHB1Periph           0
+#endif
+
 // SPORT update connector
-#if defined(PCBX7) && PCBREV >= 40
+#if defined(PCBX7)
+#define SPORT_UPDATE_RCC_AHB1Periph     RCC_AHB1Periph_GPIOB
 #define SPORT_UPDATE_PWR_GPIO           GPIOB
 #define SPORT_UPDATE_PWR_GPIO_PIN       GPIO_Pin_1  // PB.01
+#else
+#define SPORT_UPDATE_RCC_AHB1Periph     0
 #endif
 
 // Heartbeat
