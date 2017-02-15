@@ -88,7 +88,7 @@ void eeLoadModelHeaders()
 }
 #endif
 
-void storageReadAll()
+void storageReadRadioSettings()
 {
   if (!eepromOpen() || !eeLoadGeneral()) {
     storageEraseAll(true);
@@ -105,8 +105,17 @@ void storageReadAll()
     }
   }
 #endif
+}
 
+void storageReadCurrentModel()
+{
   eeLoadModel(g_eeGeneral.currModel);
+}
+
+void storageReadAll()
+{
+  storageReadRadioSettings();
+  storageReadCurrentModel();
 }
 
 void storageEraseAll(bool warn)
