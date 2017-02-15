@@ -284,14 +284,14 @@ bool menuModelMixOne(event_t event)
 #define MIX_LINE_NAME_FM_POS    390
 #define MIX_LINE_SELECT_POS     50
 #define MIX_LINE_SELECT_WIDTH   (LCD_W-MIX_LINE_SELECT_POS-15)
-#define MIX_STATUS_MARGIN_LEFT  MENUS_MARGIN_LEFT + 45
-#define MIX_STATUS_ICON_MIXER   MENUS_MARGIN_LEFT + 185
-#define MIX_STATUS_ICON_TO      MENUS_MARGIN_LEFT + 205
-#define MIX_STATUS_ICON_OUTPUT  MENUS_MARGIN_LEFT + 240
-#define MIX_STATUS_OUT_NAME     MENUS_MARGIN_LEFT + 265
-#define MIX_STATUS_OUT_BAR      MENUS_MARGIN_LEFT + 320
 #define MIX_STATUS_BAR_W        130
 #define MIX_STATUS_BAR_H        13
+#define MIX_STATUS_CHAN_BAR     MENUS_MARGIN_LEFT + 45
+#define MIX_STATUS_ICON_MIXER   MIX_STATUS_CHAN_BAR + 140
+#define MIX_STATUS_ICON_TO      MIX_STATUS_ICON_MIXER + 20
+#define MIX_STATUS_ICON_OUTPUT  MIX_STATUS_ICON_TO + 35
+#define MIX_STATUS_OUT_NAME     MIX_STATUS_ICON_OUTPUT + 25
+#define MIX_STATUS_OUT_BAR      LCD_W - MENUS_MARGIN_LEFT - MIX_STATUS_BAR_W
 
 void lineMixSurround(coord_t y, LcdFlags flags=CURVE_AXIS_COLOR)
 {
@@ -372,13 +372,16 @@ void displayMixLine(coord_t y, MixData *md)
 void displayMixStatus(uint8_t channel)
 {
   lcdDrawNumber(MENUS_MARGIN_LEFT, MENU_FOOTER_TOP, channel + 1, MENU_TITLE_COLOR, 0, "CH", NULL);
-  drawSingleMixerBar(MIX_STATUS_MARGIN_LEFT, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
+  drawSingleMixerBar(MIX_STATUS_CHAN_BAR, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 
   lcd->drawBitmap(MIX_STATUS_ICON_MIXER, MENU_FOOTER_TOP, mixerSetupMixerBitmap);
   lcd->drawBitmap(MIX_STATUS_ICON_TO, MENU_FOOTER_TOP, mixerSetupToBitmap);
   lcd->drawBitmap(MIX_STATUS_ICON_OUTPUT, MENU_FOOTER_TOP, mixerSetupOutputBitmap);
 
-  lcdDrawSizedText(MIX_STATUS_OUT_NAME, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
+  if (g_model.limitData[channel].name[0] == '\0')
+    lcdDrawNumber(MIX_STATUS_OUT_NAME, MENU_FOOTER_TOP, channel + 1, MENU_TITLE_COLOR, 0, "CH", NULL);
+  else
+    lcdDrawSizedText(MIX_STATUS_OUT_NAME, MENU_FOOTER_TOP, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), MENU_TITLE_COLOR | LEFT | ZCHAR);
   drawSingleOutputBar(MIX_STATUS_OUT_BAR, MENU_FOOTER_TOP + 4, MIX_STATUS_BAR_W, MIX_STATUS_BAR_H, channel);
 }
 

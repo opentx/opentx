@@ -30,6 +30,8 @@
 #define Y_MIXBAR                       28
 #define LEG_COLORBOX                   15
 
+#define VIEW_CHANNELS_LIMIT_PCT        (g_model.extendedLimits ? LIMIT_EXT_PERCENT : 100)
+
 bool menuChannelsMonitor(event_t event, uint8_t page);
 bool menuLogicalSwitches(event_t);
 
@@ -53,7 +55,7 @@ uint8_t lastMonitorPage = 0;
 
 uint16_t posOnBar(int16_t value_to100)
 {
-  return divRoundClosest((value_to100 + (g_model.extendedLimits ? 150 : 100)) * COLUMN_SIZE, (g_model.extendedLimits ? 150 : 100) * 2);
+  return divRoundClosest((value_to100 + VIEW_CHANNELS_LIMIT_PCT) * COLUMN_SIZE, VIEW_CHANNELS_LIMIT_PCT * 2);
 }
 
 void drawOutputBarLimits(coord_t left, coord_t right, coord_t y)
@@ -70,17 +72,19 @@ void drawOutputBarLimits(coord_t left, coord_t right, coord_t y)
 void drawSingleMixerBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
 {
   int16_t chanVal = calcRESXto100(ex_chans[channel]);
-  int16_t displayVal = chanVal;
-  chanVal = limit<int16_t>(-100, chanVal, 100);
+  const int16_t displayVal = chanVal;
+
+  // this could be handled nicer, but slower, by checking actual range for this mixer
+  chanVal = limit<int16_t>(-VIEW_CHANNELS_LIMIT_PCT, chanVal, VIEW_CHANNELS_LIMIT_PCT);
 
   lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200), h, BARGRAPH2_COLOR);
+    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2), h, BARGRAPH2_COLOR);
     lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
-    uint16_t endpoint = x + w / 2;
-    uint16_t size = divRoundClosest(-chanVal * w, 200);
+    const uint16_t endpoint = x + w / 2;
+    const uint16_t size = divRoundClosest(-chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2);
     lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH2_COLOR);
     lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
   }
@@ -93,16 +97,16 @@ void drawSingleOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t cha
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   int16_t displayVal = chanVal;
 
-  chanVal = limit<int16_t>(-100, chanVal, 100);
+  chanVal = limit<int16_t>(-VIEW_CHANNELS_LIMIT_PCT, chanVal, VIEW_CHANNELS_LIMIT_PCT);
 
   lcdDrawSolidFilledRect(x, y, w, h, BARGRAPH_BGCOLOR);
   if (chanVal > 0) {
-    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, 200), h, BARGRAPH1_COLOR);
+    lcdDrawSolidFilledRect(x + w / 2, y, divRoundClosest(chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2), h, BARGRAPH1_COLOR);
     lcdDrawNumber(x - 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   }
   else if (chanVal < 0) {
     uint16_t endpoint = x + w / 2;
-    uint16_t size = divRoundClosest(-chanVal * w, 200);
+    uint16_t size = divRoundClosest(-chanVal * w, VIEW_CHANNELS_LIMIT_PCT * 2);
     lcdDrawSolidFilledRect(endpoint - size, y, size, h, BARGRAPH1_COLOR);
     lcdDrawNumber(x + 10 + w / 2, y - 2, displayVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
   }
@@ -113,40 +117,46 @@ void drawSingleOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t cha
 void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t channel)
 {
   char chanString[] = "Ch32 ";
-  uint16_t limits = (g_model.extendedLimits ? 300 : 200);
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
+  int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
+  const uint16_t limPos = ld ? posOnBar(calcRESXto100(ld->offset)) : 0;
+  uint16_t valPos;
 
   strAppendSigned(&chanString[2], channel + 1, 2);
   lcdDrawText(x, y, chanString, SMLSIZE | TEXT_COLOR | LEFT);
 
   lcdDrawSizedText(x + 45, y, g_model.limitData[channel].name, sizeof(g_model.limitData[channel].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
-  int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
   lcdDrawNumber(x + w, y, usValue, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, STR_US);
 
   lcdDrawSolidFilledRect(x, y + Y_OUTBAR, w, h, BARGRAPH_BGCOLOR);
-  lcd->drawSolidVerticalLine(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, h, MAINVIEW_GRAPHICS_COLOR);
+  lcd->drawSolidVerticalLine(x + limPos, y + Y_OUTBAR, h, MAINVIEW_GRAPHICS_COLOR);
 
   if (chanVal > 0)
     lcdDrawNumber(x - 10 + w / 2, y + h, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
   else
     lcdDrawNumber(x + 10 + w / 2, y + h, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
 
-  chanVal = limit<int16_t>(-limits / 2, chanVal, limits / 2);
-  if (posOnBar(chanVal) > posOnBar(calcRESXto100(ld->offset))) {
-    lcdDrawSolidFilledRect(x + posOnBar(calcRESXto100(ld->offset)), y + Y_OUTBAR, posOnBar(chanVal) - posOnBar(calcRESXto100(ld->offset)), h, BARGRAPH1_COLOR);
+  chanVal = limit<int16_t>(-VIEW_CHANNELS_LIMIT_PCT, chanVal, VIEW_CHANNELS_LIMIT_PCT);
+  valPos = posOnBar(chanVal);
+
+  if (valPos > limPos) {
+    lcdDrawSolidFilledRect(x + limPos, y + Y_OUTBAR, valPos - limPos, h, BARGRAPH1_COLOR);
   }
-  else if (posOnBar(chanVal) < posOnBar(calcRESXto100(ld->offset))) {
-    uint16_t endpoint = x + posOnBar(calcRESXto100(ld->offset));
-    uint16_t size = posOnBar(calcRESXto100(ld->offset)) - posOnBar(chanVal);
+  else if (valPos < limPos) {
+    uint16_t endpoint = x + limPos;
+    uint16_t size = limPos - valPos;
     lcdDrawSolidFilledRect(endpoint - size, y + Y_OUTBAR, size, h, BARGRAPH1_COLOR);
   }
 
-  drawOutputBarLimits(x + posOnBar(-100 + ld->min / 10), x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR);
+  if (ld)
+    drawOutputBarLimits(x + posOnBar(-100 + ld->min / 10), x + posOnBar(100 + ld->max / 10), y + Y_OUTBAR);
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED) lcd->drawBitmap(x - X_OFFSET + 7, y + 7, chanMonLockedBitmap);
+  if (safetyCh[channel] != OVERRIDE_CHANNEL_UNDEFINED)
+    lcd->drawBitmap(x - X_OFFSET + 7, y + 7, chanMonLockedBitmap);
 #endif
-  if (ld->revert) lcd->drawBitmap(x - X_OFFSET + 7, y + 25, chanMonInvertedBitmap);
+  if (ld && ld->revert)
+    lcd->drawBitmap(x - X_OFFSET + 7, y + 25, chanMonInvertedBitmap);
   lcd->drawSolidVerticalLine(x + w / 2, y + Y_OUTBAR, h, TEXT_COLOR);
 }
 
@@ -167,13 +177,11 @@ bool menuChannelsMonitor(event_t event, uint8_t page)
   drawChannelsMonitorLegend(x, STR_MONITOR_MIXER_DESC, BARGRAPH2_COLOR);
 
   x = X_OFFSET;
-  for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
-    drawComboOutputBar(x, y, COLUMN_SIZE, BAR_HEIGHT, channel);
-    drawSingleMixerBar(x, y + Y_MIXBAR + 1, COLUMN_SIZE, BAR_HEIGHT, channel);
-  }
-  x = 1 + LCD_W / 2 + X_OFFSET;
-  y = Y_OFFSET;
-  for (uint8_t i = 0; i < 4; i++, channel++, y += ROW_HEIGHT) {
+  for (uint8_t i = 0; i < 8; i++, channel++, y += ROW_HEIGHT) {
+    if (i == 4) {
+      x = 1 + LCD_W / 2 + X_OFFSET;
+      y = Y_OFFSET;
+    }
     drawComboOutputBar(x, y, COLUMN_SIZE, BAR_HEIGHT, channel);
     drawSingleMixerBar(x, y + Y_MIXBAR + 1, COLUMN_SIZE, BAR_HEIGHT, channel);
   }

@@ -904,7 +904,9 @@ bool menuModelSetup(event_t event)
 bool menuModelFailsafe(event_t event)
 {
   uint8_t ch = 0;
-  uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
+  const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
+  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
+  const uint8_t SLIDER_W = 128;
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
@@ -933,82 +935,71 @@ bool menuModelFailsafe(event_t event)
   SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", ICON_STATS_ANALOGS, NUM_CHANNELS(g_moduleIdx), OPTION_MENU_NO_SCROLLBAR);
   drawStringWithIndex(50, 3+FH, "Module", g_moduleIdx+1, MENU_TITLE_COLOR);
 
-  #define COL_W   (LCD_W/2)
-  const uint8_t SLIDER_W = 128;
-
-  unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
-
   for (uint8_t col=0; col<2; col++) {
     for (uint8_t line=0; line<8; line++) {
       coord_t x = col*(LCD_W/2);
-      coord_t y = MENU_CONTENT_TOP - FH + line*(FH+4);
-      int32_t channelValue = channelOutputs[ch+channelStart];
-      int32_t failsafeValue = 0;
-      bool failsafeEditable = false;
+      const coord_t y = MENU_CONTENT_TOP - FH + line*(FH+4);
+      const int32_t channelValue = channelOutputs[ch+channelStart];
+      int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
 
-      if (ch < NUM_CHANNELS(g_moduleIdx)) {
-        failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
-        failsafeEditable = true;
+      // Channel name if present, number if not
+      if (g_model.limitData[ch+channelStart].name[0] != '\0') {
+        putsChn(x+MENUS_MARGIN_LEFT, y-3, ch+1, TINSIZE);
+        lcdDrawSizedText(x+MENUS_MARGIN_LEFT, y+5, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR|SMLSIZE);
+      }
+      else {
+        putsChn(x+MENUS_MARGIN_LEFT, y, ch+1, 0);
       }
 
-      if (failsafeEditable) {
-        // Channel name if present, number if not
-        uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
-        if (lenLabel > 0) {
-          putsChn(x+MENUS_MARGIN_LEFT, y-3, ch+1, TINSIZE);
-          lcdDrawSizedText(x+MENUS_MARGIN_LEFT, y+5, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR|SMLSIZE);
-        }
-        else {
-          putsChn(x+MENUS_MARGIN_LEFT, y, ch+1, 0);
-        }
-
-        // Value
-        LcdFlags flags = RIGHT;
-        if (menuVerticalPosition == ch) {
-          flags |= INVERS;
-          if (s_editMode) {
-            if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-              s_editMode = 0;
-            }
-            else {
-              flags |= BLINK;
-              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
-            }
+      // Value
+      LcdFlags flags = RIGHT;
+      if (menuVerticalPosition == ch) {
+        flags |= INVERS;
+        if (s_editMode) {
+          if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+            s_editMode = 0;
+          }
+          else {
+            flags |= BLINK;
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
           }
         }
-
-        x += COL_W-4-MENUS_MARGIN_LEFT-SLIDER_W;
-
-        if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-          lcdDrawText(x, y+2, "HOLD", flags|SMLSIZE);
-          failsafeValue = 0;
-        }
-        else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-          lcdDrawText(x, y+2, "NONE", flags|SMLSIZE);
-          failsafeValue = 0;
-        }
-        else {
-#if defined(PPM_UNIT_US)
-          lcdDrawNumber(x, y, PPM_CH_CENTER(ch)+failsafeValue/2, flags);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
-          lcdDrawNumber(x, y, calcRESXto1000(failsafeValue), PREC1|flags);
-#else
-          lcdDrawNumber(x, y, calcRESXto1000(failsafeValue)/10, flags);
-#endif
-        }
-
-        // Gauge
-        x += 4;
-        lcdDrawRect(x, y+3, SLIDER_W+1, 12);
-        unsigned int lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * SLIDER_W/2 + lim/2) / lim), uint8_t(SLIDER_W/2));
-        unsigned int lenFailsafe = limit((uint8_t)1, uint8_t((abs(failsafeValue) * SLIDER_W/2 + lim/2) / lim), uint8_t(SLIDER_W/2));
-        x += SLIDER_W/2;
-        coord_t xChannel = (channelValue>0) ? x : x+1-lenChannel;
-        coord_t xFailsafe = (failsafeValue>0) ? x : x+1-lenFailsafe;
-        lcdDrawSolidFilledRect(xChannel, y+4, lenChannel, 5, TEXT_COLOR);
-        lcdDrawSolidFilledRect(xFailsafe, y+9, lenFailsafe, 5, ALARM_COLOR);
       }
-      ch++;
+
+      x += (LCD_W/2)-4-MENUS_MARGIN_LEFT-SLIDER_W;
+
+      if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+        lcdDrawText(x, y+2, "HOLD", flags|SMLSIZE);
+        failsafeValue = 0;
+      }
+      else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+        lcdDrawText(x, y+2, "NONE", flags|SMLSIZE);
+        failsafeValue = 0;
+      }
+      else {
+#if defined(PPM_UNIT_US)
+        lcdDrawNumber(x, y, PPM_CH_CENTER(ch)+failsafeValue/2, flags);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+        lcdDrawNumber(x, y, calcRESXto1000(failsafeValue), PREC1|flags);
+#else
+        lcdDrawNumber(x, y, calcRESXto1000(failsafeValue)/10, flags);
+#endif
+      }
+
+      // Gauge
+      x += 4;
+      lcdDrawRect(x, y+3, SLIDER_W+1, 12);
+      const coord_t lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * SLIDER_W/2 + lim/2) / lim), uint8_t(SLIDER_W/2));
+      const coord_t lenFailsafe = limit((uint8_t)1, uint8_t((abs(failsafeValue) * SLIDER_W/2 + lim/2) / lim), uint8_t(SLIDER_W/2));
+      x += SLIDER_W/2;
+      const coord_t xChannel = (channelValue>0) ? x : x+1-lenChannel;
+      const coord_t xFailsafe = (failsafeValue>0) ? x : x+1-lenFailsafe;
+      lcdDrawSolidFilledRect(xChannel, y+4, lenChannel, 5, TEXT_COLOR);
+      lcdDrawSolidFilledRect(xFailsafe, y+9, lenFailsafe, 5, ALARM_COLOR);
+
+      if (++ch >= NUM_CHANNELS(g_moduleIdx))
+        break;
+
     }
   }
 

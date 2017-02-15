@@ -232,8 +232,8 @@ void menuModelSetup(event_t event)
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
         if (++k >= (int)DIM(mstate_tab)) {
-    	  return;
-    	}
+          return;
+        }
       }
     }
 #endif
@@ -331,7 +331,7 @@ void menuModelSetup(event_t event)
         timer->persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer->persistent, 0, 2, attr, event);
         break;
       }
-#else
+#else  // AVR
       case ITEM_MODEL_TIMER1:
       case ITEM_MODEL_TIMER2:
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
@@ -1062,7 +1062,12 @@ void menuModelSetup(event_t event)
 void menuModelFailsafe(event_t event)
 {
   uint8_t ch = 8 * (menuVerticalPosition / 8);
-  uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
+  const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
+  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
+  uint8_t wbar = LCD_W - FW * 4 - FWNUM * 4;
+#if defined(PPM_UNIT_PERCENT_PREC1)
+  wbar -= 6;
+#endif
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
@@ -1090,85 +1095,70 @@ void menuModelFailsafe(event_t event)
 
   SIMPLE_SUBMENU_NOTITLE(NUM_CHANNELS(g_moduleIdx));
 
-  const uint8_t SLIDER_W = 90;
-
-  lcdDrawTextAlignedCenter(0*FH, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0, FAILSAFESET);
   lcdInvertLine(0);
 
-  unsigned int lim = g_model.extendedLimits ? 640*2 : 512*2;
-
-  coord_t x = 1;
+  const coord_t x = 1;
 
   // Channels
   for (uint8_t line=0; line<8; line++) {
-    coord_t y = 9+line*7;
-    int32_t channelValue = channelOutputs[ch+channelStart];
-    int32_t failsafeValue = 0;
-    bool failsafeEditable = false;
+    const coord_t y = 9+line*7;
+    const int32_t channelValue = channelOutputs[ch+channelStart];
+    int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[ch];
 
-    if (ch < NUM_CHANNELS(g_moduleIdx)) {
-      failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[ch];
-      failsafeEditable = true;
-    }
+    //Channel
+    putsChn(x+1, y, ch+1, SMLSIZE);
 
-    if (failsafeEditable) {
-      //Channel
-      putsChn(x+1, y, ch+1, SMLSIZE);
-
-      // Value
-      LcdFlags flags = TINSIZE;
-      if (menuVerticalPosition == ch) {
-        flags |= INVERS;
-        if (s_editMode) {
-          if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-            s_editMode = 0;
-          }
-          else {
-            flags |= BLINK;
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[ch], -lim, +lim);
-          }
+    // Value
+    LcdFlags flags = TINSIZE;
+    if (menuVerticalPosition == ch) {
+      flags |= INVERS;
+      if (s_editMode) {
+        if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+          s_editMode = 0;
+        }
+        else {
+          flags |= BLINK;
+          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[ch], -lim, +lim);
         }
       }
-
-#if defined(PPM_UNIT_PERCENT_PREC1)
-      uint8_t wbar = SLIDER_W-6;
-#else
-      uint8_t wbar = SLIDER_W;
-#endif
-
-      uint8_t xValue = x+LCD_W-4-wbar;
-      if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-        lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
-        failsafeValue = 0;
-      }
-      else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-        lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
-        failsafeValue = 0;
-      }
-      else {
-#if defined(PPM_UNIT_US)
-        lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
-        lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
-#else
-        lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue)/10, RIGHT|flags);
-#endif
-      }
-
-      // Gauge
-#if !defined(PCBX7)  // X7 LCD doesn't like too many horizontal lines
-      lcdDrawRect(x+LCD_W-3-wbar, y, wbar+1, 6);
-#endif
-      unsigned int lenChannel = limit((uint8_t)1, uint8_t((abs(channelValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-      unsigned int lenFailsafe = limit((uint8_t)1, uint8_t((abs(failsafeValue) * wbar/2 + lim/2) / lim), uint8_t(wbar/2));
-      coord_t xChannel = (channelValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenChannel;
-      coord_t xFailsafe = (failsafeValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenFailsafe;
-      lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
-      lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
-      lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
-      lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
     }
-    ch++;
+
+    uint8_t xValue = x+LCD_W-4-wbar;
+    if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+      lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
+      failsafeValue = 0;
+    }
+    else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+      lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
+      failsafeValue = 0;
+    }
+    else {
+#if defined(PPM_UNIT_US)
+      lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
+#elif defined(PPM_UNIT_PERCENT_PREC1)
+      lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
+#else
+      lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue)/10, RIGHT|flags);
+#endif
+    }
+
+    // Gauge
+#if !defined(PCBX7)  // X7 LCD doesn't like too many horizontal lines
+    lcdDrawRect(x+LCD_W-3-wbar, y, wbar+1, 6);
+#endif
+    const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);
+    const uint8_t lenFailsafe = limit<uint8_t>(1, (abs(failsafeValue) * wbar/2 + lim/2) / lim, wbar/2);
+    const coord_t xChannel = (channelValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenChannel;
+    const coord_t xFailsafe = (failsafeValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenFailsafe;
+    lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
+    lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
+    lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
+    lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
+
+    if (++ch >= NUM_CHANNELS(g_moduleIdx))
+      break;
+
   }
 }
 #endif
