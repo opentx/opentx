@@ -984,8 +984,6 @@ static int luaModelGetOutput(lua_State *L)
     lua_pushtableinteger(L, "revert", limit->revert);
     if (limit->curve)
       lua_pushtableinteger(L, "curve", limit->curve-1);
-    else
-      lua_pushtablenil(L, "curve");
   }
   else {
     lua_pushnil(L);
@@ -1012,6 +1010,7 @@ static int luaModelSetOutput(lua_State *L)
   unsigned int idx = luaL_checkunsigned(L, 1);
   if (idx < MAX_OUTPUT_CHANNELS) {
     LimitData * limit = limitAddress(idx);
+    memclear(limit, sizeof(LimitData));
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
@@ -1039,10 +1038,7 @@ static int luaModelSetOutput(lua_State *L)
         limit->revert = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "curve")) {
-        if (lua_isnil(L, -1))
-          limit->curve = 0;
-        else
-          limit->curve = luaL_checkinteger(L, -1) + 1;
+        limit->curve = luaL_checkinteger(L, -1) + 1;
       }
     }
     storageDirty(EE_MODEL);
