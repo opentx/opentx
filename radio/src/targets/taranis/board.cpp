@@ -122,6 +122,22 @@ void sportUpdateInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(SPORT_UPDATE_PWR_GPIO, &GPIO_InitStructure);
 }
+
+void sportUpdatePowerOn()
+{
+  if (IS_PCBREV_40())
+    GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+  else
+    EXTERNAL_MODULE_ON();
+}
+
+void sportUpdatePowerOff()
+{
+  if (IS_PCBREV_40())
+    GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+  else
+    EXTERNAL_MODULE_OFF();
+}
 #endif
 
 void boardInit()

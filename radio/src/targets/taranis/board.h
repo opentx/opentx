@@ -494,20 +494,8 @@ extern uint32_t telemetryErrors;
 
 // Sport update driver
 #if defined(PCBX7)
-inline void sportUpdatePowerOn()
-{
-  if (IS_PCBREV_40())
-    GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
-  else
-    EXTERNAL_MODULE_ON();
-}
-inline void sportUpdatePowerOff()
-{
-  if (IS_PCBREV_40())
-    GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
-  else
-    EXTERNAL_MODULE_OFF();
-}
+void sportUpdatePowerOn(void);
+void sportUpdatePowerOff(void);
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
 #else
