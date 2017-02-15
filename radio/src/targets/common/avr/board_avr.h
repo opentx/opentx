@@ -18,6 +18,19 @@
  * GNU General Public License for more details.
  */
 
+#if defined(SIMU)
+extern volatile unsigned char pina, pinb, pinc, pind, pine, pinf, ping, pinh, pinj, pinl;
+#define PINA  ~pina
+#define PINB  ~pinb
+#define PINC  ~pinc
+#define PIND  ~pind
+#define PINE  ~pine
+#define PINF  ~pinf
+#define PING  ~ping
+#define PINH  ~pinh
+#define PINJ  ~pinj
+#define PINL  ~pinl
+#else
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include "pgmtypes.h"
@@ -28,6 +41,7 @@
 #include <util/delay.h>
 #define pgm_read_adr(address_short)  pgm_read_word(address_short)
 #include <avr/wdt.h>
+#endif
 
 // ADC driver
 #define NUM_POTS                       3

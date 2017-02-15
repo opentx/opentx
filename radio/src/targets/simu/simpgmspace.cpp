@@ -558,6 +558,10 @@ void lcdRefresh()
   simuLcdRefresh = true;
 }
 
+void telemetryPortInit(uint8_t baudrate)
+{
+}
+
 void telemetryPortInit()
 {
 }

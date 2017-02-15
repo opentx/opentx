@@ -117,7 +117,7 @@ static void uart_4800(void)
 #endif
 }
 
-static void uart_9600(void)
+FORCEINLINE void uart_9600(void)
 {
   #undef BAUD
   #define BAUD 9600
@@ -208,9 +208,9 @@ static void uart_76800(void)
 #endif
 }
 
+#if !defined(SIMU)
 FORCEINLINE void telemetryPortInit(uint8_t baudrate)
 {
-#if !defined(SIMU)
   RXD_DDR_N(TLM_USART) &= ~(1 << RXD_DDR_PIN_N(TLM_USART));   // set RXD pin as input
   RXD_PORT_N(TLM_USART) &= ~(1 << RXD_PORT_PIN_N(TLM_USART)); // disable pullup on RXD pin
   switch (baudrate) {
@@ -251,8 +251,8 @@ FORCEINLINE void telemetryPortInit(uint8_t baudrate)
   telemetryEnableTx(); // enable FrSky-Telemetry emission
 #endif
   telemetryEnableRx(); // enable FrSky-Telemetry reception
-#endif
 }
+#endif
 
 void telemetryTransmitBuffer()
 {
