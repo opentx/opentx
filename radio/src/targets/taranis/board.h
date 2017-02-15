@@ -488,7 +488,7 @@ uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
 // Sport update driver
-#if defined(PCBX7)
+#if defined(PCBX7) && PCBREV >= 40
 #define SPORT_UPDATE_POWER_ON()        GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN)
 #define SPORT_UPDATE_POWER_OFF()       GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN)
 #else

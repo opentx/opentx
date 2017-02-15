@@ -111,6 +111,19 @@ const pm_uchar bmp_lock[] PROGMEM = {
 };
 #endif  // defined(PCBX9E) && !defined(SIMU)
 
+#if defined(PCBX7) && PCBREV >= 40
+void sportUpdateInit()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = SPORT_UPDATE_PWR_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(SPORT_UPDATE_PWR_GPIO, &GPIO_InitStructure);
+}
+#endif
+
 void boardInit()
 {
 #if !defined(SIMU)
@@ -200,6 +213,11 @@ void boardInit()
 #else
   backlightInit();
 #endif
+
+#if defined(PCBX7) && PCBREV >= 40
+  sportUpdateInit();
+#endif
+
 #endif // !defined(SIMU)
 }
 
