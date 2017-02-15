@@ -23,53 +23,51 @@
 #if defined(ROTARY_ENCODER_NAVIGATION)
 
 #if defined(TELEMETREZ)
-uint8_t TrotCount ;             // TeZ version
-uint8_t LastTrotCount ;         // TeZ version
-uint8_t RotEncoder ;
-#define ROTENC_DOWN() (RotEncoder != 0)
+uint8_t TrotCount;             // TeZ version
+uint8_t LastTrotCount;         // TeZ version
+uint8_t RotEncoder;
 #else
-uint8_t RotPosition ;
-int8_t LastRotaryValue ;
-int8_t Rotary_diff ;
-int8_t RotaryControl ;
-uint8_t RotEncoder ;
-#define ROTENC_DOWN() (RotEncoder & 0x20)
+uint8_t RotPosition;
+int8_t LastRotaryValue;
+int8_t Rotary_diff;
+int8_t RotaryControl;
+uint8_t RotEncoder;
 #endif
 
 void rotencPoll()
 {
 #if defined(TELEMETREZ)
   if (TrotCount != LastTrotCount) {
-    rotencValue[0] = LastTrotCount = TrotCount ;
+    rotencValue[0] = LastTrotCount = TrotCount;
   }
 #else
   // Rotary Encoder polling
-  PORTA = 0 ;                     // No pullups
-  DDRA = 0x1F ;           // Top 3 bits input
+  PORTA = 0;                     // No pullups
+  DDRA = 0x1F;           // Top 3 bits input
 
-  asm(" rjmp 1f") ;
-  asm("1:") ;
+  asm(" rjmp 1f");
+  asm("1:");
 
-  uint8_t rotary ;
-  rotary = PINA ;
-  DDRA = 0xFF ;           // Back to all outputs
-  rotary &= 0xE0 ;
+  uint8_t rotary;
+  rotary = PINA;
+  DDRA = 0xFF;           // Back to all outputs
+  rotary &= 0xE0;
 
-  RotEncoder = rotary ; // just read the lcd pin
+  RotEncoder = rotary; // just read the lcd pin
 
-  rotary &= 0xDF ;
+  rotary &= 0xDF;
   if ( rotary != RotPosition ) {
-    uint8_t x ;
-    x = RotPosition & 0x40 ;
-    x <<= 1 ;
-    x ^= rotary & 0x80 ;
+    uint8_t x;
+    x = RotPosition & 0x40;
+    x <<= 1;
+    x ^= rotary & 0x80;
     if ( x ) {
-      rotencValue[0] -= 1 ;
+      rotencValue[0] -= 1;
     }
     else {
-      rotencValue[0] += 1 ;
+      rotencValue[0] += 1;
     }
-    RotPosition = rotary ;
+    RotPosition = rotary;
   }
 #endif // TELEMETREZ
 }
@@ -138,14 +136,6 @@ void boardInit()
   #endif
 #endif
 #endif // !defined(SIMU)
-}
-
-#ifndef SIMU
-FORCEINLINE
-#endif
-uint8_t keyDown()
-{
-  return ((~PINB) & 0x7E) | ROTENC_DOWN();
 }
 
 #if !defined(SIMU) && (defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED))
@@ -306,7 +296,7 @@ void readKeysAndTrims()
 
 #if defined(NAVIGATION_STICKS)
   if (~PINB & 0x7E) {
-    StickScrollTimer = STICK_SCROLL_TIMEOUT ;
+    StickScrollTimer = STICK_SCROLL_TIMEOUT;
   }
 #endif
 }

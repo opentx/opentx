@@ -183,7 +183,24 @@ bool checkSlaveMode();
 #define INP_G_RF_POW   1
 #define INP_G_RuddDR   0
 
+// Rotary Encoder driver
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  extern uint8_t RotEncoder;
+  #if defined(TELEMETREZ)
+    #define ROTENC_DOWN()              (RotEncoder != 0)
+  #else
+    #define ROTENC_DOWN()              (RotEncoder & 0x20)
+  #endif
+#else
+  #define ROTENC_DOWN()                (0)
+#endif
+
 // Keys driver
+inline uint8_t keyDown()
+{
+  return ((~PINB) & 0x7E) | ROTENC_DOWN();
+}
+
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
 enum MuxInput {
   MUX_BATT,
