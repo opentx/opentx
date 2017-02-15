@@ -350,7 +350,11 @@ void logsWrite()
           GET_2POS_STATE(SE),
           GET_3POS_STATE(SF));
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBX7)
+      f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,0x%08X%08X,",
+#else
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X,",
+#endif
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),
           GET_3POS_STATE(SC),
