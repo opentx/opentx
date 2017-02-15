@@ -534,6 +534,12 @@ if(NOT MSVC)
       DEPENDS firmware
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )
+  else()
+    add_custom_target(flash
+      COMMAND avrdude -c usbasp -p ${AVRDUDE_MCU} -U flash:w:firmware.hex:i
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
   endif()
 
   PrintTargetReport("firmware")
