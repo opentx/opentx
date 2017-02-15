@@ -38,7 +38,7 @@
 #define VBATTUNIT_X   (VBATT_X-1)
 #define VBATTUNIT_Y   (3*FH)
 #define REBOOT_X      (20*FW-3)
-#define BAR_HEIGHT    (BOX_WIDTH-1)
+#define BAR_HEIGHT    (BOX_WIDTH-1l) // don't remove the l here to force 16bits maths on 9X
 #define TRIM_LH_X     (LCD_W*1/4+2)
 #define TRIM_LV_X     3
 #define TRIM_RV_X     (LCD_W-4)
@@ -48,7 +48,7 @@
 #define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
 #define TRIM_RH_POS   (TRIM_RH_X-4*FW)
 
-#define TRIM_LEN 23
+#define TRIM_LEN      23
 
 void drawPotsBars()
 {
