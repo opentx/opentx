@@ -115,8 +115,13 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 
-#if defined(PCBX7)
+#if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
+#elif !defined(CPUM64) || defined(AUTOSWITCH)
+  uint8_t eeFlags = EE_MODEL;
+#endif
+
+#if defined(PCBX7)
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
     killEvents(event);
     CustomFunctionData *cfn = &functions[sub];
@@ -136,9 +141,6 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     }
     POPUP_MENU_START(onCustomFunctionsMenu);
   }
-
-#elif !defined(CPUM64) || defined(AUTOSWITCH)
-  uint8_t eeFlags = EE_MODEL;
 #endif
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
