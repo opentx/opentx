@@ -192,13 +192,13 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
   if (dxabs >= dyabs) {
     /* the line is more horizontal than vertical */
     for (int i=0; i<=dxabs; i++) {
+      if ((1<<(px%8)) & pat) {
+        lcdDrawPoint(px, py, att);
+      }
       y += dyabs;
       if (y>=dxabs) {
         y -= dxabs;
         py += sdy;
-      }
-      if ((1<<(px%8)) & pat) {
-        lcdDrawPoint(px, py, att);
       }
       px += sdx;
     }
@@ -206,13 +206,13 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
   else {
     /* the line is more vertical than horizontal */
     for (int i=0; i<=dyabs; i++) {
+      if ((1<<(py%8)) & pat) {
+        lcdDrawPoint(px, py, att);
+      }
       x += dxabs;
       if (x >= dyabs) {
         x -= dyabs;
         px += sdx;
-      }
-      if ((1<<(py%8)) & pat) {
-        lcdDrawPoint(px, py, att);
       }
       py += sdy;
     }

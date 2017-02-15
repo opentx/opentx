@@ -420,8 +420,6 @@ void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
 #if !defined(BOOT)
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
-  if (lcdIsPointOutside(x1, y1) || lcdIsPointOutside(x2, y2)) return;
-
   int dx = x2-x1;      /* the horizontal distance of the line */
   int dy = y2-y1;      /* the vertical distance of the line */
   int dxabs = abs(dx);

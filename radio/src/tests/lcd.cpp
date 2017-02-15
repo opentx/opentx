@@ -404,7 +404,24 @@ TEST(Lcd, lcdDrawBitmapLoadAndDisplay)
 }
 #endif
 
-#if defined(PCBTARANIS) && LCD_W >= 212
+#if defined(PCBTARANIS)
+
+void drawDiamond(int x, int y, int size)
+{
+  int x1 = x - size;
+  int x2 = x;
+  int x3 = x + size;
+
+  int y1 = y - size;
+  int y2 = y;
+  int y3 = y + size;
+
+  lcdDrawLine( x1, y2, x2, y1, SOLID, FORCE);
+  lcdDrawLine( x2, y1, x3, y2, SOLID, FORCE);
+  lcdDrawLine( x3, y2, x2, y3, SOLID, FORCE);
+  lcdDrawLine( x2, y3, x1, y2, SOLID, FORCE);
+}
+
 TEST(Lcd, lcdDrawLine)
 {
   int start, length, xOffset;
@@ -412,60 +429,53 @@ TEST(Lcd, lcdDrawLine)
 
   lcdClear();
 
-  start = 5;
+  start = 2;
   pattern = SOLID;
   length = 40;
   xOffset = 0;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
-  start = 10;
+  start = 4;
   pattern = DOTTED;
   length = 40;
   xOffset = 0;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
-  start = 55;
+  start = 56;
   pattern = SOLID;
   length = -40;
-  xOffset = 80;
+  xOffset = 65;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
-  start = 50;
+  start = 54;
   pattern = DOTTED;
   length = -40;
-  xOffset = 80;
+  xOffset = 65;
   lcdDrawLine(start+(length>0?1:-1)+xOffset, start, start+(length>0?1:-1)+xOffset+length, start, pattern, 0);
   lcdDrawLine(start+xOffset, start+(length>0?1:-1), start+xOffset, start+(length>0?1:-1)+length, pattern, 0);
 
   // 45 deg lines
-  lcdDrawLine( 35, 40, 45, 40, SOLID, FORCE );
-  lcdDrawLine( 40, 35, 40, 45, SOLID, FORCE );
+  lcdDrawLine( 25, 30, 35, 30, SOLID, FORCE );
+  lcdDrawLine( 30, 25, 30, 35, SOLID, FORCE );
 
-  lcdDrawLine( 20, 40, 40, 20, SOLID, FORCE );
-  lcdDrawLine( 40, 20, 60, 40, SOLID, FORCE );
-  lcdDrawLine( 60, 40, 40, 60, SOLID, FORCE );
-  lcdDrawLine( 40, 60, 20, 40, SOLID, FORCE );
-
-  lcdDrawLine( 31, 39, 39, 31, SOLID, FORCE );
-  lcdDrawLine( 41, 31, 49, 39, SOLID, FORCE );
-  lcdDrawLine( 49, 41, 41, 49, SOLID, FORCE );
-  lcdDrawLine( 39, 49, 31, 41, SOLID, FORCE );
+  drawDiamond(30, 30, 10);
+  drawDiamond(30, 30, 20);
 
   // slanted lines
-  lcdDrawLine( 150, 10, 190, 10, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 190, 20, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 190, 30, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 190, 40, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 190, 50, SOLID, FORCE );
+  lcdDrawLine( 60, 10, 100, 10, SOLID, FORCE );
+  lcdDrawLine( 60, 10, 100, 20, SOLID, FORCE );
+  lcdDrawLine( 60, 10, 100, 30, SOLID, FORCE );
+  lcdDrawLine( 60, 10, 100, 40, SOLID, FORCE );
+  lcdDrawLine( 60, 10, 100, 50, SOLID, FORCE );
 
-  lcdDrawLine( 150, 10, 190, 50, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 180, 50, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 170, 50, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 160, 50, SOLID, FORCE );
-  lcdDrawLine( 150, 10, 150, 50, SOLID, FORCE );
+  lcdDrawLine( 60, 10, 100, 50, SOLID, FORCE );
+  lcdDrawLine( 60, 10,  90, 50, SOLID, FORCE );
+  lcdDrawLine( 60, 10,  80, 50, SOLID, FORCE );
+  lcdDrawLine( 60, 10,  70, 50, SOLID, FORCE );
+  lcdDrawLine( 60, 10,  60, 50, SOLID, FORCE );
 
   EXPECT_TRUE(checkScreenshot("lcdDrawLine"));
 }

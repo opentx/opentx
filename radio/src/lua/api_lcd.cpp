@@ -106,6 +106,9 @@ static int luaLcdDrawLine(lua_State *L)
   int pat = luaL_checkinteger(L, 5);
   int flags = luaL_checkinteger(L, 6);
 
+  if (x1 < 0 || x1 >= LCD_W || y1 < 0 || y1 >= LCD_H || x2 < 0 || x2 >= LCD_W || y2 < 0 || y2 >= LCD_H)
+    return 0;
+
   if (pat == SOLID) {
     if (x1 == x2) {
       lcdDrawSolidVerticalLine(x1, y2 >= y1 ? y1 : y1+1, y2 >= y1 ? y2-y1+1 : y2-y1-1, flags);
