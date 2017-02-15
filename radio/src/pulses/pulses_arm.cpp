@@ -146,7 +146,7 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-        disable_dsm2(port);
+        disable_multimodule(port);
         break;
 #endif
 
@@ -208,6 +208,9 @@ void setupPulses(uint8_t port)
 #endif
 
     case PROTO_PPM:
+#if defined(PCBSKY9X)
+    case PROTO_NONE:
+#endif
       setupPulsesPPMModule(port);
       scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].ppm.frameLength)/2);
       break;
@@ -238,7 +241,7 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
-        init_dsm2(port);
+        init_multimodule(port);
         break;
 #endif
 

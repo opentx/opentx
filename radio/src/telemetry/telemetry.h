@@ -139,7 +139,7 @@ extern uint8_t telemetryProtocol;
 #define IS_FRSKY_SPORT_PROTOCOL()      (false)
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(CPUARM)
 inline uint8_t modelTelemetryProtocol()
 {
 #if defined(CROSSFIRE)
@@ -148,12 +148,12 @@ inline uint8_t modelTelemetryProtocol()
   }
 #endif
      
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
+  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
   
 #if defined(MULTIMODULE)
-  if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
+  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_MULTIMODULE;
   }
 #endif
@@ -161,9 +161,6 @@ inline uint8_t modelTelemetryProtocol()
   // default choice
   return PROTOCOL_FRSKY_SPORT;
 }
-#define MODEL_TELEMETRY_PROTOCOL()     modelTelemetryProtocol()
-#elif defined(CPUARM)
-#define MODEL_TELEMETRY_PROTOCOL()     g_model.telemetryProtocol
 #endif
 
 #if defined(CPUARM)

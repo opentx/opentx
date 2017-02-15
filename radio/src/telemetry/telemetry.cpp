@@ -74,10 +74,12 @@ void processTelemetryData(uint8_t data)
   if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
-  } else if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+  }
+  if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
     processFlySkyTelemetryData(data);
     return;
-  } else if (telemetryProtocol == PROTOCOL_MULTIMODULE) {
+  }
+  if (telemetryProtocol == PROTOCOL_MULTIMODULE) {
     processMultiTelemetryData(data);
     return;
   }
@@ -88,7 +90,7 @@ void processTelemetryData(uint8_t data)
 void telemetryWakeup()
 {
 #if defined(CPUARM)
-  uint8_t requiredTelemetryProtocol = MODEL_TELEMETRY_PROTOCOL();
+  uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
 #if defined(REVX)
   uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
   if (telemetryProtocol != requiredTelemetryProtocol || serialInversion != requiredSerialInversion) {

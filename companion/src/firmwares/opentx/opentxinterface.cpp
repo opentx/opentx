@@ -1131,9 +1131,16 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOptions(fai_options);
 }
 
+void addOpenTxArmOptions(OpenTxFirmware * firmware)
+{
+  firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
+  firmware->addOption("eu", QObject::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
+}
+
 void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
 {
   addOpenTxCommonOptions(firmware);
+  addOpenTxArmOptions(firmware);
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
@@ -1142,8 +1149,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
                           {"cli",         QObject::tr("Instead of Joystick emulation, USB connection is Command Line Interface")},
                           {NULL}};
   firmware->addOptions(usb_options);
-  firmware->addOption("eu", QObject::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
-  firmware->addOption("multimodule", QObject::tr("Support for the DIY-Multiprotocol-TX-Module"));
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)

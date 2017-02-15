@@ -55,7 +55,7 @@ void disable_pxx(uint32_t port)
     extmoduleStop();
 }
 
-#if defined(DSM2) || defined(MULTIMODULE)
+#if defined(DSM2)
 void init_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
@@ -70,6 +70,19 @@ void disable_dsm2(uint32_t port)
   }
 }
 #endif
+
+#if defined(MULTIMODULE)
+void init_multimodule(uint32_t port)
+{
+  init_dsm2(port);
+}
+
+void disable_multimodule(uint32_t port)
+{
+  disable_dsm2(port);
+}
+#endif
+
 
 void init_ppm(uint32_t port)
 {
