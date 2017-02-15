@@ -227,7 +227,7 @@
 
 #ifdef MOUNTED_GETMNTINFO
 
-# if ! HAVE_STRUCT_STATFS_F_FSTYPENAME && !defined(__clang__)
+# if ! HAVE_STRUCT_STATFS_F_FSTYPENAME && defined(MOUNTED_VMOUNT)
 static const char *
 fstype_to_string (short int t)
 {
@@ -323,7 +323,8 @@ fstype_to_string (short int t)
 }
 # endif
 
-#if !defined(__clang__)
+// Not used
+#if 0
 static const char *
 fsp_to_string (const struct statfs *fsp)
 {

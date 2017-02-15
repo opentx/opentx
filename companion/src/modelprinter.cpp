@@ -140,7 +140,7 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
     return CHECK_IN_ARRAY(strings, rfProtocol);
 }
 
-QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, int subType) {
+QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, unsigned int subType) {
   /* custom protocols */
 
   if (custom)
