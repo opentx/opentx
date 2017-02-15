@@ -162,25 +162,26 @@ void displayTrims(uint8_t phase)
   }
 }
 
-void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
+FORCEINLINE void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
 {
-  // Main timer
-  if (g_model.timers[index].mode) {
+  const TimerData & timer = g_model.timers[index];
+  if (timer.mode) {
     const TimerState & timerState = timersStates[index];
-    LcdFlags att = RIGHT | DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
+    const uint8_t negative = (timerState.val<0 ? BLINK | INVERS : 0);
+    LcdFlags att = RIGHT | DBLSIZE | negative;
     drawTimer(x, y, timerState.val, att, att);
 #if defined(CPUARM)
-    uint8_t xLabel = (timerState.val >= 0 ? x-49 : x-56);
-    uint8_t len = zlen(g_model.timers[index].name, LEN_TIMER_NAME);
+    uint8_t xLabel = (negative ? x-56 : x-49);
+    uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
     if (len > 0) {
-      lcdDrawSizedText(xLabel, y+FH, g_model.timers[index].name, len, RIGHT | ZCHAR);
+      lcdDrawSizedText(xLabel, y+FH, timer.name, len, RIGHT | ZCHAR);
     }
     else {
-      drawTimerMode(xLabel, y+FH, g_model.timers[index].mode, RIGHT);
+      drawTimerMode(xLabel, y+FH, timer.mode, RIGHT);
     }
 #else
-    uint8_t xLabel = (timerState.val >= 0 ? x-69 : x-76);
-    drawTimerMode(xLabel, y+FH, g_model.timers[index].mode);
+    uint8_t xLabel = (negative ? x-76 : x-69);
+    drawTimerMode(xLabel, y+FH, timer.mode);
 #endif
   }
 }
