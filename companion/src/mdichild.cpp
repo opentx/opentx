@@ -54,9 +54,11 @@ MdiChild::MdiChild(MainWindow * parent):
   ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
   initModelsList();
-  connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
-  connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
-  connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
+  connect(parent, &MainWindow::FirmwareChanged, this, &MdiChild::onFirmwareChanged);
+  connect(ui->modelsList, &QTreeView::doubleClicked, this, &MdiChild::openModelEditWindow);
+  connect(ui->modelsList, &QTreeView::activated, this, &MdiChild::openModelEditWindow);
+  connect(ui->modelsList, &QTreeView::pressed, this, &MdiChild::onItemSelected);
+  connect(ui->modelsList, &QTreeView::customContextMenuRequested, this, &MdiChild::showModelsListContextMenu);
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
   ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -85,6 +87,26 @@ void MdiChild::refresh(bool expand)
   }
   ui->simulateButton->setEnabled(firmware->getCapability(Simulation));
   updateTitle();
+}
+
+void MdiChild::onItemSelected(QModelIndex idx)
+{
+  emit copyAvailable(isModel(idx) ? true : false);
+}
+
+bool MdiChild::isModel(QModelIndex idx)
+{
+  return (modelsListModel->getModelIndex(idx) >= 0 ? true : false);
+}
+
+bool MdiChild::isCategory(QModelIndex idx)
+{
+  if (isModel(idx)) {
+    return false;
+  }
+  else {
+    return (modelsListModel->getCategoryIndex(idx) >= 0);
+  }
 }
 
 void MdiChild::confirmDelete()
@@ -188,7 +210,7 @@ void MdiChild::initModelsList()
 
   delete modelsListModel;
   modelsListModel = new TreeModel(&radioData, this);
-  connect(modelsListModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(onDataChanged(const QModelIndex &)));
+  connect(modelsListModel, &QAbstractItemModel::dataChanged, this, &MdiChild::onDataChanged);
   ui->modelsList->setModel(modelsListModel);
   ui->modelsList->header()->setVisible(!IS_HORUS(board));
   if (IS_HORUS(board)) {
@@ -320,9 +342,9 @@ bool MdiChild::hasPasteData() const
   return mimeData->hasFormat("application/x-companion");
 }
 
-bool MdiChild::hasSelection() const
+bool MdiChild::hasModelSelected()
 {
-  return ui->modelsList->selectionModel()->hasSelection();
+  return isModel(ui->modelsList->currentIndex());
 }
 
 void MdiChild::updateTitle()
@@ -381,7 +403,7 @@ void MdiChild::checkAndInitModel(int row)
 void MdiChild::generalEdit()
 {
   GeneralEdit * t = new GeneralEdit(this, radioData, firmware);
-  connect(t, SIGNAL(modified()), this, SLOT(setModified()));
+  connect(t, &GeneralEdit::modified, this, &MdiChild::setModified);
   t->show();
 }
 
@@ -390,6 +412,7 @@ void MdiChild::categoryAdd()
   CategoryData category("New category");
   radioData.categories.push_back(category);
   setModified();
+  emit copyAvailable(false); // workaround : nothing is selected after model creation
 }
 
 void MdiChild::categoryRename()
@@ -468,6 +491,7 @@ void MdiChild::modelAdd()
     radioData.setCurrentModel(newModelIndex);
   }
   setModified();
+  emit copyAvailable(false); // workaround : nothing is selected after model creation
 }
 
 void MdiChild::modelEdit()
@@ -481,7 +505,7 @@ void MdiChild::modelEdit()
   ModelEdit * t = new ModelEdit(this, radioData, (row), firmware);
   gStopwatch.report("ModelEdit created");
   t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + model.name);
-  connect(t, SIGNAL(modified()), this, SLOT(setModified()));
+  connect(t, &ModelEdit::modified, this, &MdiChild::setModified);
   gStopwatch.report("STARTING MODEL EDIT");
   t->show();
   QApplication::restoreOverrideCursor();
@@ -739,11 +763,6 @@ void MdiChild::print(int model, const QString & filename)
     pd->setAttribute(Qt::WA_DeleteOnClose, true);
     pd->show();
   }
-}
-
-void MdiChild::viableModelSelected(bool viable)
-{
-  emit copyAvailable(viable);
 }
 
 int MdiChild::getCurrentModel() const

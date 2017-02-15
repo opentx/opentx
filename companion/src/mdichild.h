@@ -46,11 +46,10 @@ class MdiChild : public QWidget
     bool save();
     bool saveAs(bool isNew=false);
     bool saveFile(const QString & fileName, bool setCurrent=true);
-    bool hasSelection() const;
+    bool hasModelSelected();
     bool hasPasteData() const;
     QString userFriendlyCurrentFile() const;
     QString currentFile() const { return curFile; }
-    void viableModelSelected(bool viable);
     int getCurrentModel() const;
     int getCurrentCategory() const;
     void refresh(bool expand=false);
@@ -97,6 +96,9 @@ class MdiChild : public QWidget
     void print(int model=-1, const QString & filename="");
     void setModified();
     void updateTitle();
+    void onItemSelected(QModelIndex);
+    bool isModel(QModelIndex);
+    bool isCategory(QModelIndex);
 
   private:
     bool maybeSave();
