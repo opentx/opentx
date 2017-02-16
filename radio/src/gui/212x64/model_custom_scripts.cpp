@@ -96,7 +96,8 @@ void menuModelCustomScriptOne(event_t event)
         }
       }
       else {
-        uint16_t * source = (uint16_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
+        int16_t * source = &g_model.scriptsData[s_currIdx].inputs[inputIdx];
+        static_assert(sizeof(*source) == sizeof(g_model.scriptsData[0].inputs[0]), "sizes must be same");
         drawSource(SCRIPT_ONE_2ND_COLUMN_POS, y, *source + scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr);
         if (attr) {
           CHECK_INCDEC_MODELSOURCE(event, *source, scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
