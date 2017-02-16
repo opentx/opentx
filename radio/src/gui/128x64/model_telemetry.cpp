@@ -396,7 +396,7 @@ void menuModelSensor(event_t event)
       case SENSOR_FIELD_PARAM4:
       {
         drawStringWithIndex(0, y, NO_INDENT(STR_SOURCE), k-SENSOR_FIELD_PARAM1+1);
-        source_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
+        int8_t & source = sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
         if (attr) {
           source = checkIncDec(event, source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }

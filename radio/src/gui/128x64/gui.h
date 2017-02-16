@@ -431,7 +431,7 @@ void deleteMix(uint8_t idx);
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
 
-uint8_t switchToMix(uint8_t source);
+source_t switchToMix(source_t source);
 
 void deleteExpoMix(uint8_t expo, uint8_t idx);
 
