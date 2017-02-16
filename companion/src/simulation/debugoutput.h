@@ -73,6 +73,7 @@ class DebugOutput : public QWidget
     int m_dataPrintFreq;
     bool m_running;
     bool m_filterExclude;
+    bool overflowReported;
 
     const static int m_dataBufferMaxSize;
     const static int m_dataPrintFreqDefault;

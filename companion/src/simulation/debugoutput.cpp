@@ -32,7 +32,7 @@
 extern AppData g;  // ensure what "g" means
 
 DebugOutput * traceCallbackInstance = 0;
-const int DebugOutput::m_dataBufferMaxSize = 100;        // lines of text (this is not the display buffer)
+const int DebugOutput::m_dataBufferMaxSize = 500;        // lines of text (this is not the display buffer)
 const int DebugOutput::m_dataPrintFreqDefault = 10;      // ms
 const quint16 DebugOutput::m_savedViewStateVersion = 1;
 
@@ -53,7 +53,8 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   m_radioProfileId(g.sessionId()),
   m_dataPrintFreq(m_dataPrintFreqDefault),
   m_running(false),
-  m_filterExclude(true)
+  m_filterExclude(true),
+  overflowReported(false)
 {
   ui->setupUi(this);
 
@@ -178,7 +179,10 @@ void DebugOutput::traceCallback(const char * text)
     m_dataBuffer.append(text);
   if (m_dataBuffer.size() > m_dataBufferMaxSize) {
     m_dataBuffer.removeFirst();
-    qDebug() << __FILE__ << __LINE__ << "Line buffer overflow! size >" << m_dataBufferMaxSize;
+    if (!overflowReported) {
+      overflowReported = true;
+      qDebug() << __FILE__ << __LINE__ << "Line buffer overflow! size >" << m_dataBufferMaxSize;
+    }
   }
   m_mtxDataBuffer.unlock();
 }
