@@ -564,7 +564,7 @@
 #if defined(PCBX7)
 #define SPORT_UPDATE_RCC_AHB1Periph     RCC_AHB1Periph_GPIOB
 #define SPORT_UPDATE_PWR_GPIO           GPIOB
-#define SPORT_UPDATE_PWR_GPIO_PIN       GPIO_Pin_1  // PB.01
+#define SPORT_UPDATE_PWR_GPIO_PIN       GPIO_Pin_2  // PB.02
 #else
 #define SPORT_UPDATE_RCC_AHB1Periph     0
 #endif
