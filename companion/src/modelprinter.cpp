@@ -146,9 +146,9 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, unsigned in
   if (custom)
     rfProtocol = MM_RF_CUSTOM_SELECTED;
 
-  auto pdef = multiProtocols.getProtocol(rfProtocol);
+  MultiProtocolDefinition pdef = multiProtocols.getProtocol(rfProtocol);
 
-  if (subType < pdef.subTypeStrings.size())
+  if (subType < (unsigned int) pdef.subTypeStrings.size())
     return pdef.subTypeStrings[subType];
   else
     return "???";
