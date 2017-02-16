@@ -320,6 +320,10 @@ if(TRACE_SIMPGMSPACE)
   add_definitions(-DTRACE_SIMPGMSPACE)
 endif()
 
+if(EEPROM_VARIANT_NEEDED)
+  add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
+endif()
+
 set(SRC
   ${SRC}
   opentx.cpp
