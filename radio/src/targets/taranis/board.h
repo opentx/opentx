@@ -489,7 +489,7 @@ extern uint32_t telemetryErrors;
 
 // PCBREV driver
 #if defined(PCBX7)
-#define IS_PCBREV_40()                 GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
+#define IS_PCBREV_40()                 (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_RESET)
 #endif
 
 // Sport update driver

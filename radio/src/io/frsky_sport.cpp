@@ -196,7 +196,8 @@ const char * sportUpdatePowerOn(ModuleIndex module)
     if (sportWaitState(SPORT_POWERUP_ACK, 100))
       return NULL;
   }
-  return "Module not responding";
+  
+  return TR("Not responding", "Module not responding");
 }
 
 const char * sportUpdateReqVersion()
