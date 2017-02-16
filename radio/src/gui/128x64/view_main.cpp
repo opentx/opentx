@@ -496,7 +496,7 @@ void menuMainView(event_t event)
           x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
           y0 = 38+(i%4)*5;
 
-          const uint16_t lim = (g_model.extendedLimits ? 512 * uint8_t(LIMIT_EXT_PERCENT / 100) : 512) * 2;
+          const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
           int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
 
           if (len>WBAR2)
