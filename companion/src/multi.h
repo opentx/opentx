@@ -24,6 +24,7 @@
 #include <vector>
 #include <QString>
 #include <QVector>
+#include <QStringList>
 
 #define MM_RF_CUSTOM_SELECTED 0xff
 
