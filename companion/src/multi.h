@@ -46,7 +46,7 @@ struct MultiProtocolDefinition {
                                                              optionsstr(rd.optionsstr)
 
   {
-    Q_ASSERT(rd.maxSubtype +1 == rd.protocols.length());
+    Q_ASSERT(rd.maxSubtype +1 == (unsigned int) rd.protocols.length());
   }
 };
 
