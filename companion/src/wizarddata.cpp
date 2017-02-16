@@ -59,9 +59,8 @@ void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int wei
 
 void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixIndex)
 {
-  bool isHorusOrTaranis = IS_HORUS_OR_TARANIS(getCurrentBoard());
   if (input != NO_INPUT)  {
-
+    bool isHorusOrTaranis = IS_HORUS_OR_TARANIS(getCurrentBoard());
     if (input >= RUDDER_INPUT && input <= AILERONS_INPUT) {
       MixData & mix = model.mixData[mixIndex++];
       mix.destCh = channel+1;
