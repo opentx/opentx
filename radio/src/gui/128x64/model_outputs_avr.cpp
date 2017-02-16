@@ -76,15 +76,15 @@ enum MenuModelOutputsItems {
 #endif
 
 #define LIMITS_CURVE_POS          17*FW+1
-#define LIMITS_MIN_MAX_OFFSET 1000
-#define CONVERT_US_MIN_MAX(x) ((int16_t(x)*128)/25)
-#define MIN_MAX_ATTR          attr
+#define LIMITS_MIN_MAX_OFFSET     100
+#define CONVERT_US_MIN_MAX(x)     ((int16_t(x)*128)/25)
+#define MIN_MAX_ATTR              attr
 
 #if defined(PPM_UNIT_US)
-  #define SET_MIN_MAX(x, val)   x = ((val)*250)/128
-  #define MIN_MAX_DISPLAY(x)    CONVERT_US_MIN_MAX(x)
+  #define SET_MIN_MAX(x, val)     x = ((val)*250)/128
+  #define MIN_MAX_DISPLAY(x)      CONVERT_US_MIN_MAX(x)
 #else
-  #define MIN_MAX_DISPLAY(x)    ((int8_t)(x))
+  #define MIN_MAX_DISPLAY(x)      ((int8_t)(x))
 #endif
 
 void menuModelLimits(event_t event)
