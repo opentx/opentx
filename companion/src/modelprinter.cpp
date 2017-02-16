@@ -63,7 +63,7 @@ QString addFont(const QString & input, const QString & color, const QString & si
   if (!face.isEmpty()) {
     faceStr = "face='" + face + "'";
   }
-  return "<font " + sizeStr + " " + faceStr + " " + colorStr + ">" + input + "</font>";  
+  return "<font " + sizeStr + " " + faceStr + " " + colorStr + ">" + input + "</font>";
 }
 
 QString ModelPrinter::printEEpromSize()
@@ -146,15 +146,12 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, unsigned in
   if (custom)
     rfProtocol = MM_RF_CUSTOM_SELECTED;
 
-  auto pdef = getMultiProtocolDefinition(rfProtocol);
+  auto pdef = multiProtocols.getProtocol(rfProtocol);
 
-  if (pdef.subTypeStrings.size() == 0)
-    return "DEFAULT";
+  if (subType < pdef.subTypeStrings.size())
+    return pdef.subTypeStrings[subType];
   else
-    if (subType < pdef.subTypeStrings.size())
-      return pdef.subTypeStrings[subType];
-    else
-      return "???";
+    return "???";
 }
 
 QString ModelPrinter::printModule(int idx) {
@@ -261,7 +258,7 @@ QString ModelPrinter::printTimer(int idx)
 QString ModelPrinter::printTimer(const TimerData & timer)
 {
   QStringList result;
-  if (firmware->getCapability(TimersName) && timer.name[0]) 
+  if (firmware->getCapability(TimersName) && timer.name[0])
     result += tr("Name(%1)").arg(timer.name);
   result += QString("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
   result += timer.mode.toString();
@@ -282,9 +279,9 @@ QString ModelPrinter::printTrim(int flightModeIndex, int stickIndex)
 {
   const FlightModeData & fm = model.flightModeData[flightModeIndex];
 
-  if (fm.trimMode[stickIndex] == -1) { 
+  if (fm.trimMode[stickIndex] == -1) {
     return tr("Off");
-  } 
+  }
   else {
     if (fm.trimRef[stickIndex] == flightModeIndex) {
       return QString("%1").arg(fm.trim[stickIndex]);
@@ -294,7 +291,7 @@ QString ModelPrinter::printTrim(int flightModeIndex, int stickIndex)
         return tr("FM%1").arg(fm.trimRef[stickIndex]);
       }
       else {
-        if (fm.trim[stickIndex] < 0) 
+        if (fm.trim[stickIndex] < 0)
           return tr("FM%1%2").arg(fm.trimRef[stickIndex]).arg(fm.trim[stickIndex]);
         else
           return tr("FM%1+%2").arg(fm.trimRef[stickIndex]).arg(fm.trim[stickIndex]);
@@ -386,7 +383,7 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
   if (input.offset)
     str += " " + tr("Offset(%1)").arg(getGVarString(input.offset)).toHtmlEscaped();
 
-  if (firmware->getCapability(HasExpoNames) && input.name[0]) 
+  if (firmware->getCapability(HasExpoNames) && input.name[0])
     str += QString(" [%1]").arg(input.name).toHtmlEscaped();
 
   return str;
@@ -461,7 +458,7 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
     str += " " + tr("Slow(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale).toHtmlEscaped();
   if (mix.mixWarn)
     str += " " + tr("Warn(%1)").arg(mix.mixWarn).toHtmlEscaped();
-  if (firmware->getCapability(HasMixerNames) && mix.name[0]) 
+  if (firmware->getCapability(HasMixerNames) && mix.name[0])
     str += QString(" [%1]").arg(mix.name).toHtmlEscaped();
   return str;
 }

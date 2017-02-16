@@ -802,8 +802,6 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_LAST=MM_RF_PROTO_Q303
 };
 
-unsigned int getNumSubtypes(MultiModuleRFProtocols type);
-
 enum TrainerProtocol {
   TRAINER_MASTER_JACK,
   TRAINER_SLAVE_JACK,

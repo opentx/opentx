@@ -118,7 +118,6 @@ set(common_SRCS
   boards.cpp
   eeprominterface.cpp
   radiodata.cpp
-  multi.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
   firmwares/ersky9x/ersky9xeeprom.cpp

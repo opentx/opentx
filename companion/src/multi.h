@@ -23,18 +23,47 @@
 
 #include <vector>
 #include <QString>
-
-struct mm_protocol_definition {
-  int protocol;
-  std::vector<QString> subTypeStrings;
-  unsigned int maxSubtype;
-  const QString & optionsstr;
-  int optionMin;
-  int optionMax;
-};
-
-const mm_protocol_definition getMultiProtocolDefinition (int protocol);
+#include <QVector>
 
 #define MM_RF_CUSTOM_SELECTED 0xff
+
+struct radio_mm_definition {
+  int protocol;
+  QStringList protocols;
+  unsigned int maxSubtype;
+  QString optionsstr;
+};
+
+struct MultiProtocolDefinition {
+  int protocol;
+  QStringList subTypeStrings;
+  const QString & optionsstr;
+  unsigned int numSubytes()const { return (unsigned int) subTypeStrings.length();}
+  int getOptionMin() const;
+  int getOptionMax() const;
+
+  MultiProtocolDefinition(const radio_mm_definition & rd) :  protocol(rd.protocol), subTypeStrings(rd.protocols),
+                                                             optionsstr(rd.optionsstr)
+
+  {
+    Q_ASSERT(rd.maxSubtype +1 == rd.protocols.length());
+  }
+};
+
+
+class Multiprotocols {
+  std::vector<MultiProtocolDefinition> protocols;
+
+public:
+  Multiprotocols (std::initializer_list<radio_mm_definition> l)
+  {
+    for (radio_mm_definition rd: l)
+      protocols.push_back(MultiProtocolDefinition(rd));
+  }
+
+  const MultiProtocolDefinition & getProtocol(int protocol) const;
+};
+
+extern const Multiprotocols multiProtocols;
 
 #endif //OPENTX_MULTI_H

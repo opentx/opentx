@@ -1845,12 +1845,6 @@ SimulatorInterface * getCurrentSimulator()
     return NULL;
 }
 
-unsigned int getNumSubtypes(MultiModuleRFProtocols type)
-{
-  auto multiProtocolDefinition = getMultiProtocolDefinition(type);
-  return multiProtocolDefinition.maxSubtype+1;
-}
-
 void FlightModeData::clear(const int phase)
 {
   memset(this, 0, sizeof(FlightModeData));

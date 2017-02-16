@@ -388,7 +388,7 @@ void ModulePanel::update()
           mask |= MASK_CHANNELS_COUNT;
         else
           module.channelsCount = 16;
-        if (getMultiProtocolDefinition(module.multi.rfProtocol).optionsstr != nullptr)
+        if (multiProtocols.getProtocol(module.multi.rfProtocol).optionsstr != nullptr)
           mask |= MASK_MULTIOPTION;
         break;
       case PULSES_OFF:
@@ -455,7 +455,7 @@ void ModulePanel::update()
   ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
 
   if (mask & MASK_MULTIMODULE) {
-    int numEntries = getNumSubtypes(static_cast<MultiModuleRFProtocols>(module.multi.rfProtocol));
+    int numEntries = multiProtocols.getProtocol(module.multi.rfProtocol).numSubytes();
     if (module.multi.customProto)
       numEntries=8;
     // Removes extra items
@@ -469,9 +469,9 @@ void ModulePanel::update()
   }
 
   if (mask & MASK_MULTIOPTION) {
-    auto pdef = getMultiProtocolDefinition(module.multi.rfProtocol);
-    ui->optionValue->setMinimum(pdef.optionMin);
-    ui->optionValue->setMaximum(pdef.optionMax);
+    auto pdef = multiProtocols.getProtocol(module.multi.rfProtocol);
+    ui->optionValue->setMinimum(pdef.getOptionMin());
+    ui->optionValue->setMaximum(pdef.getOptionMax());
     ui->optionValue->setValue(module.multi.optionValue);
     ui->label_option->setText(pdef.optionsstr);
   }
@@ -611,8 +611,8 @@ void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
 {
   if (!lock) {
     lock=true;
-    module.multi.rfProtocol = index;
-    unsigned int maxSubTypes = getNumSubtypes(static_cast<MultiModuleRFProtocols>(index));
+    module.multi.rfProtocol = (unsigned int) index;
+    unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubytes();
     if (module.multi.customProto)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
