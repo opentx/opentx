@@ -855,14 +855,9 @@ void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 
 void SetupPanel::on_name_editingFinished()
 {
-  if(!(ui->name->text().isEmpty())) {
-    int length = ui->name->maxLength();
-    strncpy(model->name, ui->name->text().toLatin1(), length);
-    emit modified();
-  }
-  else {
-    ui->name->setText(model->name);
-  }
+  int length = ui->name->maxLength();
+  strncpy(model->name, ui->name->text().toLatin1(), length);
+  emit modified();
 }
 
 void SetupPanel::on_image_currentIndexChanged(int index)
