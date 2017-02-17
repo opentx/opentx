@@ -958,7 +958,7 @@ void *l_alloc (void *ud, void *ptr, size_t osize, size_t nsize) {
   (void)ud; (void)osize;  /* not used */
   if (nsize == 0) {
     if (ptr) {   // avoid a bunch of NULL pointer free calls
-      // TRACE("free %p", ptr); FLUSH();
+      // TRACE_LUA_INTERNALS("free %p", ptr); FLUSH();
       free(ptr);
     }
     return NULL;

@@ -35,22 +35,22 @@ extern "C" {
 #endif
 
 #if defined(SIMU)
-typedef void (*traceCallbackFunc)(const char * text);
-extern traceCallbackFunc traceCallback;
-void debugPrintf(const char * format, ...);
+  typedef void (*traceCallbackFunc)(const char * text);
+  extern traceCallbackFunc traceCallback;
+  void debugPrintf(const char * format, ...);
 #elif defined(SEMIHOSTING)
-#include <stdio.h>
-#define debugPrintf(...) printf(__VA_ARGS__)
+  #include <stdio.h>
+  #define debugPrintf(...) printf(__VA_ARGS__)
 #elif defined(DEBUG) && defined(CLI) && defined(USB_SERIAL)
-#define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
+  #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CLI)
-uint8_t serial2TracesEnabled();
-#define debugPrintf(...) do { if (serial2TracesEnabled() && cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
+  uint8_t serial2TracesEnabled();
+  #define debugPrintf(...) do { if (serial2TracesEnabled() && cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CPUARM)
-uint8_t serial2TracesEnabled();
-#define debugPrintf(...) do { if (serial2TracesEnabled()) serialPrintf(__VA_ARGS__); } while(0)
+  uint8_t serial2TracesEnabled();
+  #define debugPrintf(...) do { if (serial2TracesEnabled()) serialPrintf(__VA_ARGS__); } while(0)
 #else
-#define debugPrintf(...)
+  #define debugPrintf(...)
 #endif
 
 #if defined(__cplusplus)
@@ -67,6 +67,12 @@ uint8_t serial2TracesEnabled();
 #define TRACE_WARNING(...)    debugPrintf("-W- " __VA_ARGS__)
 #define TRACE_WARNING_WP(...) debugPrintf(__VA_ARGS__)
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
+
+#if defined(TRACE_LUA_INTERNALS_ENABLED)
+  #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__)
+#else
+  #define TRACE_LUA_INTERNALS(...)
+#endif
 
 #if defined(DEBUG) && !defined(SIMU)
 #define TIME_MEASURE_START(id) uint16_t t0 ## id = getTmr2MHz()
