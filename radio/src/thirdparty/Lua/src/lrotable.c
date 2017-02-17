@@ -38,18 +38,19 @@ static luaR_result luaR_findkey(const void * where, const char * key, int type, 
 luaR_result luaR_findglobal(const char * name, TValue * val) {
   unsigned i;
   if (strlen(name) > LUA_MAX_ROTABLE_NAME) {
-    TRACE_LUA_INTERNALS("luaR_findglobal() '%s' = NAME TOO LONG", name);
+    TRACE_LUA_INTERNALS("luaR_findglobal('%s') = NAME TOO LONG", name);
     return 0;
   }
   for (i=0; lua_rotable[i].name; i++) {
+    void * table = (void *)(&lua_rotable[i]);
     if (!strcmp(lua_rotable[i].name, name)) {
-      setrvalue(val, (void *)(size_t)(i+1));
-      TRACE_LUA_INTERNALS("luaR_findglobal() '%s' = TABLE %d", name, i);
+      setrvalue(val, table);
+      TRACE_LUA_INTERNALS("luaR_findglobal('%s') = TABLE %p (%s)", name, table, lua_rotable[i].name);
       return 1;
     }
     if (!strncmp(lua_rotable[i].name, "__", 2)) {
-      if (luaR_findentry((void *)(size_t)(i+1), name, val)) {
-        TRACE_LUA_INTERNALS("luaR_findglobal() '%s' = FOUND in table '%s'", name, lua_rotable[i].name);
+      if (luaR_findentry(table, name, val)) {
+        TRACE_LUA_INTERNALS("luaR_findglobal('%s') = FOUND in table '%s'", name, lua_rotable[i].name);
         return 1;
       }
     }
@@ -60,17 +61,17 @@ luaR_result luaR_findglobal(const char * name, TValue * val) {
 
 
 luaR_result luaR_findentry(void *data, const char * key, TValue * val) {
-  unsigned idx = (unsigned)(size_t)data - 1;
+  luaR_table * table = (luaR_table *)data;
   /* First look at the functions */
-  if (luaR_findkey(lua_rotable[idx].pfuncs, key, LUAR_FINDFUNCTION, val)) {
-    TRACE_LUA_INTERNALS("luaR_findentry(%d, '%s') = FUNCTION %p", idx, key, lfvalue(val));
+  if (luaR_findkey(table->pfuncs, key, LUAR_FINDFUNCTION, val)) {
+    TRACE_LUA_INTERNALS("luaR_findentry(%p[%s], '%s') = FUNCTION %p", table, table->name, key, lfvalue(val));
     return 1;
   }
-  else if (luaR_findkey(lua_rotable[idx].pvalues, key, LUAR_FINDVALUE, val)) {
+  else if (luaR_findkey(table->pvalues, key, LUAR_FINDVALUE, val)) {
     /* Then at the values */
-    TRACE_LUA_INTERNALS("luaR_findentry(%d, '%s') = NUMBER %g", idx, key, nvalue(val));
+    TRACE_LUA_INTERNALS("luaR_findentry(%p[%s], '%s') = NUMBER %g", table, table->name, key, nvalue(val));
     return 1;
   }
-  TRACE_LUA_INTERNALS("luaR_findentry(%d, '%s') = NOT FOUND", idx, key);
+  TRACE_LUA_INTERNALS("luaR_findentry(%p[%s], '%s') = NOT FOUND", table, table->name, key);
   return 0;
 }
