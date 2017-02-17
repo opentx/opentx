@@ -34,6 +34,25 @@ static luaR_result luaR_findkey(const void * where, const char * key, int type, 
   return 0;
 }
 
+
+char luaR_cachedName[LUA_MAX_ROTABLE_NAME + 1] = {0};
+TValue luaR_cachedValue;
+
+static inline void luaR_saveLastFoundGlobal(const char * name, const TValue * val)
+{
+  strcpy(luaR_cachedName, name);
+  luaR_cachedValue = *val;
+}
+
+static inline luaR_result luaR_checkLastFoundGlobal(const char * name, TValue * val)
+{
+  if (!strcmp(luaR_cachedName, name)) {
+    *val = luaR_cachedValue;
+    return 1;
+  }
+  return 0;
+}
+
 /* Find a global "read only table" in the constant lua_rotable array */
 luaR_result luaR_findglobal(const char * name, TValue * val) {
   unsigned i;
@@ -41,15 +60,21 @@ luaR_result luaR_findglobal(const char * name, TValue * val) {
     TRACE_LUA_INTERNALS("luaR_findglobal('%s') = NAME TOO LONG", name);
     return 0;
   }
+  if (luaR_checkLastFoundGlobal(name, val)){
+    TRACE_LUA_INTERNALS("luaR_findglobal('%s') = CACHED", name);
+    return 1;
+  }
   for (i=0; lua_rotable[i].name; i++) {
     void * table = (void *)(&lua_rotable[i]);
     if (!strcmp(lua_rotable[i].name, name)) {
       setrvalue(val, table);
+      luaR_saveLastFoundGlobal(name, val);
       TRACE_LUA_INTERNALS("luaR_findglobal('%s') = TABLE %p (%s)", name, table, lua_rotable[i].name);
       return 1;
     }
     if (!strncmp(lua_rotable[i].name, "__", 2)) {
       if (luaR_findentry(table, name, val)) {
+        // luaR_saveLastFoundGlobal(name, val);
         TRACE_LUA_INTERNALS("luaR_findglobal('%s') = FOUND in table '%s'", name, lua_rotable[i].name);
         return 1;
       }
