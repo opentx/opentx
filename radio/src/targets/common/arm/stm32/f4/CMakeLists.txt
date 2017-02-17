@@ -1,5 +1,6 @@
 set(CPU_FAMILY STM32)
 set(MCU cortex-m4)
+set(FPU_FLAGS "-mfloat-abi=hard -mfpu=fpv4-sp-d16")
 set(STM32LIB_DIR ${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries)
 include_directories(${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/inc)
 include_directories(${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Include)
