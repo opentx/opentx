@@ -21,6 +21,7 @@
 #include "debugoutput.h"
 #include "ui_debugoutput.h"
 
+#include "appdebugmessagehandler.h"
 #include "appdata.h"
 
 #include <QMessageBox>
@@ -98,6 +99,7 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
 
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
   connect(m_tmrDataPrint, &QTimer::timeout, this, &DebugOutput::processBytesReceived);
+  connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
 
   start();
 }
@@ -232,6 +234,14 @@ void DebugOutput::processBytesReceived()
 
   if (!(cycleCount % (1000 / m_dataPrintFreqDefault * 30)))
     m_overflowReported = false;
+}
+
+void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context)
+{
+  if (level > 0) {
+    traceCallback(qPrintable(msg));
+    traceCallback("\n");
+  }
 }
 
 /*

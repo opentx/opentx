@@ -34,6 +34,7 @@ namespace Ui {
 }
 
 class QAbstractButton;
+class QMessageLogContext;
 
 using namespace Simulator;
 
@@ -54,6 +55,7 @@ class DebugOutput : public QWidget
     void saveState();
     void restoreState();
     void processBytesReceived();
+    void onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context);
     void onFilterTextEdited();
     void onFilterTextChanged(const QString &);
     void on_bufferSize_editingFinished();
