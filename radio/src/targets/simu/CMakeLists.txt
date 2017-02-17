@@ -10,7 +10,6 @@ set(SIMU_SRC
   simudisk.cpp
   )
 
-add_definitions(-DSIMU)
 remove_definitions(-DCLI)
 
 if(SDL_FOUND)
@@ -29,6 +28,7 @@ if(Qt5Widgets_FOUND)
   include_directories(${COMPANION_SRC_DIRECTORY} ${COMPANION_SRC_DIRECTORY}/simulation)
   add_library(${SIMULATOR_TARGET} SHARED ${SIMU_SRC} opentxsimulator.cpp)
   add_dependencies(${SIMULATOR_TARGET} ${FIRMWARE_DEPENDENCIES})
+  target_compile_definitions(${SIMULATOR_TARGET} PUBLIC ${APP_COMMON_DEFINES})  # set in top-level CMakeLists
   target_link_libraries(${SIMULATOR_TARGET} ${SDL_LIBRARY})
   qt5_use_modules(${SIMULATOR_TARGET} Core)
   add_custom_target(libsimulator DEPENDS ${SIMULATOR_TARGET})
@@ -57,14 +57,16 @@ use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
 if(FOX_FOUND)
   if(SIMU_DISKIO)
-    add_definitions(-DSIMU_DISKIO)
     set(SIMU_SRC ${SIMU_SRC} ${FATFS_DIR}/FatFs/ff.c ${FATFS_DIR}/option/ccsbcs.c)
   endif()
-
   add_executable(simu WIN32 ${SIMU_SRC} ${RADIO_SRC_DIRECTORY}/simu.cpp)
   add_dependencies(simu ${FIRMWARE_DEPENDENCIES})
   target_include_directories(simu PUBLIC ${FOX_INCLUDE_DIR} )
   target_link_libraries(simu ${FOX_LIBRARY} pthread ${SDL_LIBRARY})
+  target_compile_definitions(simu PUBLIC -DSIMU)
+  if(SIMU_DISKIO)
+    target_compile_definitions(simu PUBLIC -DSIMU_DISKIO)
+  endif()
 endif()
 
 if(APPLE)

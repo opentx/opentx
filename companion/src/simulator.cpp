@@ -33,6 +33,7 @@
 #endif
 
 #include "appdata.h"
+#include "appdebugmessagehandler.h"
 #include "constants.h"
 #include "eeprominterface.h"
 #include "simulator.h"
@@ -110,6 +111,8 @@ int main(int argc, char *argv[])
   app.setApplicationName(APP_SIMULATOR);
   app.setOrganizationName(COMPANY);
   app.setOrganizationDomain(COMPANY_DOMAIN);
+
+  AppDebugMessageHandler::instance()->installAppMessageHandler();
 
   g.init();
 
@@ -219,7 +222,7 @@ int main(int argc, char *argv[])
       return finish(0);
     }
   }
-  qDebug() << __FILE__ << __LINE__ << "profileId=" << profileId << simOptions;
+  qDebug() << "profileId=" << profileId << simOptions;
 
   if (profileId < 0 || simOptions.firmwareId.isEmpty() || (simOptions.dataFile.isEmpty() && simOptions.dataFolder.isEmpty())) {
     showMessage(QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\n  Profile ID: [%1]; Radio ID: [%2];\nData File: [%3]")

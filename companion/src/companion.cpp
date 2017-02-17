@@ -26,6 +26,8 @@
   #include <SDL.h>
   #undef main
 #endif
+
+#include "appdebugmessagehandler.h"
 #include "mainwindow.h"
 #include "version.h"
 #include "appdata.h"
@@ -39,7 +41,7 @@
 #endif
 
 #ifdef __APPLE__
-#include <QProxyStyle> 
+#include <QProxyStyle>
 
 class MyProxyStyle : public QProxyStyle
  {
@@ -66,6 +68,8 @@ int main(int argc, char *argv[])
   app.setOrganizationName("OpenTX");
   app.setOrganizationDomain("open-tx.org");
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
+
+  AppDebugMessageHandler::instance()->installAppMessageHandler();
 
   g.init();
 
@@ -101,7 +105,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "ERROR: couldn't initialize SDL: %s\n", SDL_GetError());
   }
 #endif
-  
+
   registerStorageFactories();
   registerOpenTxFirmwares();
   registerSimulators();
