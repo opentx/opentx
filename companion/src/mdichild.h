@@ -98,7 +98,6 @@ class MdiChild : public QWidget
     void updateTitle();
     void onItemSelected(QModelIndex);
     bool isModel(QModelIndex);
-    bool isNonEmptyModel(QModelIndex);
     bool isCategory(QModelIndex);
 
   private:
