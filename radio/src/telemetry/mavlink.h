@@ -210,13 +210,13 @@ extern Telemetry_Data_t telemetry_data;
 
 
 
-
+#if 0
 extern inline uint8_t MAVLINK_CtrlMode2Action(uint8_t mode) {
 	uint8_t action;
 	
 	return action;
 }
-#if 0
+
 extern inline uint8_t MAVLINK_Action2CtrlMode(uint8_t action) {
 	uint8_t mode = ERROR_NUM_MODES;
 	switch (action) {

@@ -553,6 +553,7 @@ static inline void MAVLINK_msg_param_set(uint8_t idx) {
 }
 #endif
 
+__attribute__((unused))
 static inline void MAVLINK_msg_request_data_stream_pack_send(uint8_t req_stream_id, uint16_t req_message_rate,
 				uint8_t start_stop) {
 	mavlink_channel_t chan = MAVLINK_COMM_0;
@@ -560,11 +561,14 @@ static inline void MAVLINK_msg_request_data_stream_pack_send(uint8_t req_stream_
 					start_stop);
 }
 
+
+__attribute__((unused))
 //! \brief old mode switch funtion
 static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 	mavlink_channel_t chan = MAVLINK_COMM_0;
 	mavlink_msg_set_mode_send(chan, mavlink_system.sysid, mode, 0);
 }
+
 
 /*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
  *	\todo Reimplemnt \link MAVLINK10mspoll
