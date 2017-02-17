@@ -755,7 +755,7 @@ void MdiChild::print(int model, const QString & filename)
   if (model>=0 && !filename.isEmpty()) {
     pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[model], filename);
   }
-  else if (getCurrentModel()) {
+  else {
     pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[getCurrentModel()]);
   }
 
