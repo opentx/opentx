@@ -101,7 +101,7 @@ void menuChannelsView(event_t event)
 #endif
 
       // Gauge
-//      uint16_t lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
+//      uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
 //#ifdef MIXERS_MONITOR
 //      if (mixersView)
 //        lim = 512 * 2 * 2;

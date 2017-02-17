@@ -259,18 +259,6 @@
   #define pgm_read_adr(x)              *(x)
   #define cli()
   #define sei()
-#else
-  #include <avr/io.h>
-  #include <avr/pgmspace.h>
-  #include "pgmtypes.h"
-
-  #include <avr/eeprom.h>
-  #include <avr/sleep.h>
-  #include <avr/interrupt.h>
-  #define F_CPU                        16000000UL  // 16 MHz
-  #include <util/delay.h>
-  #define pgm_read_adr(address_short)  pgm_read_word(address_short)
-  #include <avr/wdt.h>
 #endif
 
 #include "debug.h"

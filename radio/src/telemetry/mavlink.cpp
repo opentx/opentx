@@ -25,10 +25,6 @@
 
 #include "telemetry/mavlink.h"
 
-#if defined(SIMU)
-void telemetryPortInitFromIndex(uint8_t index) {}
-#endif
-
 // this might need to move to the flight software
 //static
 mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
@@ -78,10 +74,11 @@ void MAVLINK_reset(uint8_t warm_reset) {
 }
 
 //! \brief initalize mavlink extension
-void MAVLINK_Init(void) {
-	mav_statustext[0] = 0;
-	MAVLINK_reset(0);
-	telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
+void MAVLINK_Init(void)
+{
+  mav_statustext[0] = 0;
+  MAVLINK_reset(0);
+  telemetryPortInit(g_eeGeneral.mavbaud);
 }
 
 /*!	\brief Status log message
@@ -580,10 +577,10 @@ void telemetryWakeup() {
 	if (tmr10ms - last_time > 15) {
 		if (mav_heartbeat > -30) {
 			mav_heartbeat--;
-
+	
 			if (mav_heartbeat == -30) {
 				MAVLINK_reset(1);
-				telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
+				telemetryPortInit(g_eeGeneral.mavbaud);
 			}
 		}
 		last_time = tmr10ms;
