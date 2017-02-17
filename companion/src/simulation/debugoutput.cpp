@@ -33,7 +33,7 @@ extern AppData g;  // ensure what "g" means
 
 DebugOutput * traceCallbackInstance = 0;
 const int DebugOutput::m_dataBufferMaxSize = 500;        // lines of text (this is not the display buffer)
-const int DebugOutput::m_dataPrintFreqDefault = 10;      // ms
+const int DebugOutput::m_dataPrintFreqDefault = 8;       // ms
 const quint16 DebugOutput::m_savedViewStateVersion = 1;
 
 void traceCb(const char * text)
@@ -43,6 +43,8 @@ void traceCb(const char * text)
     traceCallbackInstance->traceCallback(text);
   }
 }
+
+// TODO: move callback & filter to own thread
 
 DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   QWidget(parent),
@@ -54,7 +56,7 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   m_dataPrintFreq(m_dataPrintFreqDefault),
   m_running(false),
   m_filterExclude(true),
-  overflowReported(false)
+  m_overflowReported(false)
 {
   ui->setupUi(this);
 
@@ -96,6 +98,8 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
 
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
   connect(m_tmrDataPrint, &QTimer::timeout, this, &DebugOutput::processBytesReceived);
+
+  start();
 }
 
 DebugOutput::~DebugOutput()
@@ -173,16 +177,18 @@ void DebugOutput::traceCallback(const char * text)
   isBlank = line.contains(blank);
 
   m_mtxDataBuffer.lock();
-  if (isBlank && m_dataBuffer.size())
+  if (isBlank && m_dataBuffer.size()) {
     m_dataBuffer[m_dataBuffer.size()-1] += line;
-  else
-    m_dataBuffer.append(text);
-  if (m_dataBuffer.size() > m_dataBufferMaxSize) {
-    m_dataBuffer.removeFirst();
-    if (!overflowReported) {
-      overflowReported = true;
-      qDebug() << __FILE__ << __LINE__ << "Line buffer overflow! size >" << m_dataBufferMaxSize;
+  }
+  else {
+    if (m_dataBuffer.size() > m_dataBufferMaxSize) {
+      m_dataBuffer.removeFirst();
+      if (!m_overflowReported) {
+        m_overflowReported = true;
+        qWarning() << "Line buffer overflow! size >" << m_dataBufferMaxSize;
+      }
     }
+    m_dataBuffer.append(text);
   }
   m_mtxDataBuffer.unlock();
 }
@@ -191,12 +197,13 @@ void DebugOutput::processBytesReceived()
 {
   QString text;
   bool fltMatch;
+  static quint32 cycleCount = 0;
   const QTextCursor savedCursor(ui->console->textCursor());
   const int sbValue = ui->console->verticalScrollBar()->value();
   const bool sbAtBottom = (sbValue == ui->console->verticalScrollBar()->maximum());
 
   m_tmrDataPrint->stop();
-  while (m_dataBuffer.size() > 1) {
+  while (m_dataBuffer.size() > 0) {
     m_mtxDataBuffer.lock();
     text = m_dataBuffer.takeFirst();
     m_mtxDataBuffer.unlock();
@@ -220,6 +227,11 @@ void DebugOutput::processBytesReceived()
     QCoreApplication::processEvents();
   }
   m_tmrDataPrint->start();
+
+  ++cycleCount;
+
+  if (!(cycleCount % (1000 / m_dataPrintFreqDefault * 30)))
+    m_overflowReported = false;
 }
 
 /*

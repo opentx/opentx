@@ -229,8 +229,6 @@ bool SimulatorMainWindow::setOptions(SimulatorOptions & options, bool withSave)
 
 void SimulatorMainWindow::start()
 {
-  if (m_consoleWidget)
-    m_consoleWidget->start();
   if (m_simulatorWidget)
     m_simulatorWidget->start();
   if (m_outputsWidget)
