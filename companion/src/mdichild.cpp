@@ -91,12 +91,23 @@ void MdiChild::refresh(bool expand)
 
 void MdiChild::onItemSelected(QModelIndex idx)
 {
-  emit copyAvailable(isModel(idx) ? true : false);
+  emit copyAvailable(isNonEmptyModel(idx));
 }
 
 bool MdiChild::isModel(QModelIndex idx)
 {
-  return (modelsListModel->getModelIndex(idx) >= 0 ? true : false);
+  return (modelsListModel->getModelIndex(idx) >= 0);
+}
+
+bool MdiChild::isNonEmptyModel(QModelIndex idx)
+{
+  if (isModel(idx)) {
+    ModelData & model = radioData.models[getCurrentModel()];
+    if(!(model.name[0]== 0)) {
+      return(true);
+    }
+  }
+  return(false);
 }
 
 bool MdiChild::isCategory(QModelIndex idx)
