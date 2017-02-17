@@ -410,12 +410,12 @@ void menuModelLogicalSwitches(event_t event)
       }
       else {
         lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
-#if defined(GVARS)
+#if defined(CPUARM) && defined(GVARS)
         if (v1_val >= MIXSRC_GVAR1) {
           v2_min = -1024; v2_max = +1024;
         }
         else
-#endif // GVARS
+#endif
         {
           v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
         }
