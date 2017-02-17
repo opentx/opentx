@@ -651,7 +651,7 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
   int remainingDuration = fragment.tone.duration - state.duration;
   if (remainingDuration > 0) {
     int points;
-    double toneIdx = state.idx;
+    float toneIdx = state.idx;
 
     if (fragment.tone.reset) {
       fragment.tone.reset = 0;
@@ -661,7 +661,7 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
 
     if (fragment.tone.freq != state.freq) {
       state.freq = fragment.tone.freq;
-      state.step = limit<double>(1, double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE, 512);
+      state.step = limit<float>(1, float(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE, 512);
       state.volume = evalVolumeRatio(fragment.tone.freq, volume);
     }
 
@@ -695,7 +695,7 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
         end -= (end % DIM(sineValues));
       else
         end = DIM(sineValues);
-      points = (double(end) - toneIdx) / state.step;
+      points = (float(end) - toneIdx) / state.step;
     }
 
     for (int i=0; i<points; i++) {

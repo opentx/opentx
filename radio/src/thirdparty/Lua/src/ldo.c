@@ -207,10 +207,10 @@ void luaD_shrinkstack (lua_State *L) {
   int goodsize = inuse + (inuse / 8) + 2*EXTRA_STACK;
   if ((L->stacksize - goodsize) < 40) {
     //skip shrink
-    // TRACE("luaD_shrinkstack(skip): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
+    // TRACE_LUA_INTERNALS("luaD_shrinkstack(skip): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
     return;
   }
-  // TRACE("luaD_shrinkstack(): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
+  // TRACE_LUA_INTERNALS("luaD_shrinkstack(): L->stacksize: %d, goodsize: %d", L->stacksize, goodsize);
   if (goodsize > LUAI_MAXSTACK) goodsize = LUAI_MAXSTACK;
   if (inuse > LUAI_MAXSTACK ||  /* handling stack overflow? */
       goodsize >= L->stacksize)  /* would grow instead of shrink? */

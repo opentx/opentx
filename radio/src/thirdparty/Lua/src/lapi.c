@@ -619,15 +619,17 @@ LUA_API int lua_pushthread (lua_State *L) {
 
 
 LUA_API void lua_getglobal (lua_State *L, const char *var) {
+  TValue value;
+  luaR_result found;
+  TRACE_LUA_INTERNALS("lua_getglobal() '%s'", var);
   Table *reg = hvalue(&G(L)->l_registry);
   const TValue *gt;  /* global table */
   lua_lock(L);
 
-  lu_byte keytype;
-  luaR_result res = luaR_findglobal(var, &keytype);
-  if (res != 0) {
+  found = luaR_findglobal(var, &value);
+  if (found && ttislightfunction(&value)) {
     setsvalue2s(L, L->top++, luaS_new(L, var));
-    setlfvalue(L->top - 1, (void*)(size_t)res)
+    setlfvalue(L->top - 1, lfvalue(&value))
   }
   else {
     gt = luaH_getint(reg, LUA_RIDX_GLOBALS);
