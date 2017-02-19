@@ -33,13 +33,6 @@
 #include "appdata.h"
 #include "storage.h"
 
-#if defined _MSC_VER || !defined __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x*1000)
-#else
-#include <unistd.h>
-#endif
-
 #ifdef __APPLE__
 #include <QProxyStyle>
 
@@ -64,12 +57,13 @@ int main(int argc, char *argv[])
 #endif
 
   QApplication app(argc, argv);
-  app.setApplicationName("OpenTX Companion");
-  app.setOrganizationName("OpenTX");
-  app.setOrganizationDomain("open-tx.org");
+  app.setApplicationName(APP_COMPANION);
+  app.setOrganizationName(COMPANY);
+  app.setOrganizationDomain(COMPANY_DOMAIN);
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
-  AppDebugMessageHandler::instance()->installAppMessageHandler();
+  if (AppDebugMessageHandler::instance())
+    AppDebugMessageHandler::instance()->installAppMessageHandler();
 
   g.init();
 
@@ -146,5 +140,6 @@ int main(int argc, char *argv[])
   SDL_Quit();
 #endif
 
+  qDebug() << "COMPANION EXIT" << result;
   return result;
 }

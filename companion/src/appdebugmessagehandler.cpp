@@ -1,3 +1,22 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 
 #include "appdebugmessagehandler.h"
 
@@ -14,7 +33,7 @@ AppDebugMessageHandler::AppDebugMessageHandler(QObject * parent) :
 AppDebugMessageHandler * AppDebugMessageHandler::instance()
 {
   static AppDebugMessageHandler * _instance = NULL;
-  if(_instance == NULL)
+  if(_instance == NULL && !qApp->closingDown())
     _instance = new AppDebugMessageHandler(qApp);  // Ensure this object is cleaned up when the QApplication exits.
   return _instance;
 }
@@ -69,7 +88,7 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
   msgPattern.append(":%{line} -%{if-category} [%{category}]%{endif} %{message}");
 
   if (type == QtFatalMsg)
-    msgPattern.append("\nBACKTRACE:\n%{backtrace depth=6 separator=\"\n\"}");
+    msgPattern.append("\nBACKTRACE:\n%{backtrace depth=12 separator=\"\n\"}");
 
   qSetMessagePattern(msgPattern);
 
@@ -104,5 +123,6 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
 // Message handler which is installed using qInstallMessageHandler. This needs to be global.
 void g_appDebugMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-  AppDebugMessageHandler::instance()->messageHandler(type, context, msg);
+  if (AppDebugMessageHandler::instance())
+    AppDebugMessageHandler::instance()->messageHandler(type, context, msg);
 }
