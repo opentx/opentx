@@ -80,7 +80,7 @@ class Channel
 {
   public:
     WizardPage page;     // Originating dialog, only of interest for producer
-    bool prebooked;     // Temporary lock variable 
+    bool prebooked;     // Temporary lock variable
     Input input1;
     Input input2;
     int weight1;
@@ -97,11 +97,12 @@ class WizMix
     char name[WIZ_MODEL_NAME_LENGTH + 1];
     unsigned int modelId;
     const GeneralSettings & settings;
+    const ModelData & originalModelData;
     Vehicle vehicle;
     Channel channel[WIZ_MAX_CHANNELS];
     bool options[WIZ_MAX_OPTIONS];
 
-    WizMix(const GeneralSettings & settings, unsigned int modelId);
+    WizMix(const GeneralSettings & settings, unsigned int modelId, const ModelData & modelData);
     operator ModelData();
 
   private:

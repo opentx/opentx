@@ -37,10 +37,11 @@ void Channel::clear()
   weight2 = 0;
 }
 
-WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId):
+WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId, const ModelData & modelData):
   complete(false),
   modelId(modelId),
   settings(settings),
+  originalModelData(modelData),
   vehicle(NOVEHICLE)
 {
   strcpy(name, "            ");
@@ -90,6 +91,8 @@ WizMix::operator ModelData()
   int throttleChannel = -1;
 
   ModelData model;
+  //ModelData model(originalModelData);
+  model.category = originalModelData.category;
   model.used = true;
   model.moduleData[0].modelId = modelId;
   model.setDefaultInputs(settings);

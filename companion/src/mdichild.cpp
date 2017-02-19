@@ -538,7 +538,7 @@ void MdiChild::wizardEdit()
 {
   int row = getCurrentModel();
   checkAndInitModel(row);
-  WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row+1, this);
+  WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row+1, radioData.models[row], this);
   wizard->exec();
   if (wizard->mix.complete /*TODO rather test the exec() result?*/) {
     radioData.models[row] = wizard->mix;
