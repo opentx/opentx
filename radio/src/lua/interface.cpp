@@ -843,9 +843,9 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
     lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.run);
     for (int j=0; j<sio->inputsCount; j++) {
       if (sio->inputs[j].type == INPUT_TYPE_SOURCE)
-        luaGetValueAndPush(lsScripts, sd.inputs[j]);
+        luaGetValueAndPush(lsScripts, sd.inputs[j].source);
       else
-        lua_pushinteger(lsScripts, sd.inputs[j] + sio->inputs[j].def);
+        lua_pushinteger(lsScripts, sd.inputs[j].value + sio->inputs[j].def);
     }
   }
   else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {
