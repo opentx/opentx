@@ -471,7 +471,8 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-    if (BASH)
+    find_program(GAWK gawk HINTS "c:/cygwin/bin/" "c:/msys/bin/" DOC "gawk for firmware size report.")  # OS X might only have "awk"
+    if (BASH AND GAWK)
       add_custom_target(firmware-size
         COMMAND ${BASH} -kc '${RADIO_DIRECTORY}/util/elf-size-report.sh --mcu=${CPU_TYPE_FULL} ${SIZE_TARGET_MEM_DEFINE} firmware.elf'
         DEPENDS firmware
@@ -498,7 +499,7 @@ if(NOT MSVC)
     include_directories(storage gui/${GUI_DIR})
 
     set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-    if (BASH)
+    if (BASH AND NOT WIN32)
       add_custom_command(
         OUTPUT ${ALLSRC}
         COMMAND ${BASH} -kc 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \"$$f\"" >> allsrc.cpp\; cat "$$f" >> ${ALLSRC}\; done'
