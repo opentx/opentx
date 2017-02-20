@@ -29,6 +29,10 @@ void menuChannelsView(event_t event)
   uint8_t wbar = (longNames ? 54 : 64);
   int16_t limits = 512 * 2;
 
+#if defined(PPM_UNIT_PERCENT_PREC1)
+  wbar -= 6;
+#endif
+
   switch(event)
   {
     case EVT_KEY_BREAK(KEY_EXIT):
@@ -87,7 +91,6 @@ void menuChannelsView(event_t event)
 #if defined(PPM_UNIT_US)
       lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, PPM_CH_CENTER(ch)+val/2, TINSIZE|RIGHT);
 #elif defined(PPM_UNIT_PERCENT_PREC1)
-      wbar -= 6;
       lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val), PREC1|TINSIZE|RIGHT);
 #else
       lcdDrawNumber(x+LCD_W/2-3-wbar-ofs, y+1, calcRESXto1000(val)/10, TINSIZE|RIGHT);
