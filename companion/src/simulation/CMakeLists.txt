@@ -1,5 +1,6 @@
 set(simulation_SRCS
   debugoutput.cpp
+  filteredtextbuffer.cpp
   radiooutputswidget.cpp
   simulateduiwidget.cpp
   simulateduiwidget9X.cpp
@@ -34,6 +35,7 @@ set(simulation_UIS
 
 set(simulation_HDRS
   debugoutput.h
+  filteredtextbuffer.h
   radiooutputswidget.h
   radiouiaction.h
   simulateduiwidget.h

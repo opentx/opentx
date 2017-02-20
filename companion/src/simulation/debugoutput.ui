@@ -304,6 +304,21 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
     <string>Clear the output window of all text.</string>
    </property>
   </action>
+  <action name="actionToggleFilter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../companion.qrc">
+     <normaloff>:/images/simulator/icons/svg/toggle_lock.svg</normaloff>:/images/simulator/icons/svg/toggle_lock.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Enable &amp;Filter</string>
+   </property>
+   <property name="toolTip">
+    <string>Turn the filter on/off.</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../companion.qrc"/>
