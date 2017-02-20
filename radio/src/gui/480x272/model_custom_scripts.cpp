@@ -96,7 +96,7 @@ bool menuModelCustomScriptOne(event_t event)
         }
       }
       else {
-        uint8_t *source = (uint8_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
+        source_t *source = (source_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
         drawSource(SCRIPT_ONE_2ND_COLUMN_POS, y, *source + scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr);
         if (attr) {
           CHECK_INCDEC_MODELSOURCE(event, *source, scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
