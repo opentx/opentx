@@ -559,7 +559,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   lcdLastPos = x;
   x -= fw;
   if (dblsize) x++;
-    for (uint8_t i=1; i<=len; i++) {
+  for (uint8_t i=1; i<=len; i++) {
     div_t qr = div((lcduint_t)val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
