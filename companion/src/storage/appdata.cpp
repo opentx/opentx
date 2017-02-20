@@ -637,33 +637,30 @@ QMap<int, QString> AppData::getActiveProfiles()
 bool AppData::importSettings(QSettings & toSettings)
 {
   QSettings * fromSettings;
-  bool c9xSettings = false;
 
   QSettings settings21("OpenTX", "Companion 2.1");
   QSettings settings20("OpenTX", "Companion 2.0");
   QSettings settings16("OpenTX", "OpenTX Companion");
   QSettings settings9x("companion9x", "companion9x");
-  if (settings21.contains("settings_version")) {
+
+  if (settings21.contains("settings_version"))
     fromSettings = &settings21;
-  }
-  else if (settings20.contains("settings_version")) {
+  else if (settings20.contains("settings_version"))
     fromSettings = &settings20;
-  }
-  else if (settings16.contains("settings_version")) {
+  else if (settings16.contains("settings_version"))
     fromSettings = &settings16;
-  }
-  else if (settings9x.contains("default_mode")) {
+  else if (settings9x.contains("default_mode"))
     fromSettings = &settings9x;
-    c9xSettings = true;
-  }
-  else {
+  else
     return false;
-  }
 
   // do not copy these settings
   QStringList excludeKeys = QStringList() << "compilation-server";
 #ifdef WIN32
+  // locations of tools which come with Companion distros
   excludeKeys << "avrdude_location" << "avrdudeLocation" << "dfu_location";
+  // install-specific keys;  "." is the "default" key which may contain install path
+  excludeKeys << "Start Menu Folder" << ".";
 #endif
 
   // import settings
@@ -674,7 +671,7 @@ bool AppData::importSettings(QSettings & toSettings)
   }
 
   // Additional adjustments for companion9x settings
-  if (c9xSettings) {
+  if (fromSettings->applicationName() == "companion9x") {
     // Store old values in new locations
     autoCheckApp(toSettings.value("startup_check_companion9x", true).toBool());
     useWizard(toSettings.value("wizardEnable", true).toBool());
