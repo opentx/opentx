@@ -29,6 +29,7 @@ void lcdClear()
 
 coord_t lcdLastPos;
 coord_t lcdNextPos;
+coord_t lcdLeftPos;
 
 #if defined(CPUARM)
 void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
@@ -388,6 +389,11 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   if (flags & RIGHT) {
     lcdLastPos -= width;
     lcdNextPos -= width;
+    lcdLeftPos = lcdLastPos;
+    lcdLastPos =  orig_x;
+  }
+  else {
+    lcdLeftPos = orig_x;
   }
 #endif
 }
@@ -458,24 +464,43 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags)
 
 void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t len)
 {
+#if defined(CPUARM)
+  char str[16+1];
+  char *s = str+16;
+  *s = '\0';
+  int idx = 0;
+  int mode = MODE(flags);
+  bool neg = false;
+  if (val < 0) {
+    val = -val;
+    neg = true;
+  }
+  do {
+    *--s = '0' + (val % 10);
+    ++idx;
+    val /= 10;
+    if (mode!=0 && idx==mode) {
+      mode = 0;
+      *--s = '.';
+      if (val==0) {
+        *--s = '0';
+      }
+    }
+  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
+  if (neg) {
+    *--s = '-';
+  }
+  flags &= ~LEADING0;
+  lcdDrawText(x, y, s, flags);
+#else // CPUARM
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
   flags &= ~LEADING0;
-
-#if defined(CPUARM)
-  uint32_t fontsize = FONTSIZE(flags);
-  bool dblsize = (fontsize == DBLSIZE);
-  bool xxlsize = (fontsize == XXLSIZE);
-  bool midsize = (fontsize == MIDSIZE);
-  bool smlsize = (fontsize == SMLSIZE);
-  bool tinsize = (fontsize == TINSIZE);
-#else
   bool dblsize = flags & DBLSIZE;
   #define xxlsize 0
   #define midsize 0
   #define smlsize 0
   #define tinsize 0
-#endif
 
   bool neg = false;
   if (flags & UNSIGN) {
@@ -534,8 +559,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   lcdLastPos = x;
   x -= fw;
   if (dblsize) x++;
-
-  for (uint8_t i=1; i<=len; i++) {
+    for (uint8_t i=1; i<=len; i++) {
     div_t qr = div((lcduint_t)val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
@@ -595,22 +619,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
     if (i==len && (flags & BOLD)) x += 1;
 #endif
   }
-
-  if (xn) {
-    if (midsize) {
-      if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-        lcdDrawSolidVerticalLine(xn, y, 12);
-        lcdDrawSolidVerticalLine(xn+1, y, 12);
-      }
-      lcdDrawSolidHorizontalLine(xn, y+9, 2);
-      lcdDrawSolidHorizontalLine(xn, y+10, 2);
-    }
-    else {
-      // TODO needed on CPUAVR? y &= ~0x07;
-      lcdDrawSolidFilledRect(xn, y+2*FH-3, ln, 2);
-    }
-  }
-  if (neg) lcdDrawChar(x, y, '-', flags);
+#endif // CPUARM
 }
 #endif
 
