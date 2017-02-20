@@ -1113,12 +1113,17 @@ void menuModelFailsafe(event_t event)
       lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
       lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
 
-      if (++ch >= NUM_CHANNELS(g_moduleIdx))
+	  ch++;
+      
+	  if (ch >= NUM_CHANNELS(g_moduleIdx))
         break;
 
       y += barH + 1;
 
     }  // channels
+
+    if (ch >= NUM_CHANNELS(g_moduleIdx))
+      break;
 
     x += colW + 2;
 
