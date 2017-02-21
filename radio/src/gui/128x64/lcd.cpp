@@ -29,9 +29,9 @@ void lcdClear()
 
 coord_t lcdLastPos;
 coord_t lcdNextPos;
+#if defined(CPUARM)
 coord_t lcdLeftPos;
 
-#if defined(CPUARM)
 void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
 {
   bool blink = false;
@@ -493,14 +493,10 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   flags &= ~LEADING0;
   lcdDrawText(x, y, s, flags);
 #else // CPUARM
+  bool dblsize = flags & DBLSIZE;
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
   flags &= ~LEADING0;
-  bool dblsize = flags & DBLSIZE;
-  #define xxlsize 0
-  #define midsize 0
-  #define smlsize 0
-  #define tinsize 0
 
   bool neg = false;
   if (flags & UNSIGN) {
@@ -529,58 +525,42 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   if (dblsize) {
     fw += FWNUM;
   }
-  else if (xxlsize) {
-    fw += 4*FWNUM-1;
-  }
-  else if (midsize) {
-    fw += FWNUM-3;
-  }
-  else if (tinsize) {
-    fw -= 1;
-  }
   else {
     if (IS_LEFT_ALIGNED(flags)) {
       if (mode > 0) {
         x += 2;
       }
     }
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
+  #if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (flags & BOLD) fw += 1;
-#endif
+  #endif
   }
 
   if (IS_LEFT_ALIGNED(flags)) {
     x += len * fw;
     if (neg) {
-      x += ((xxlsize|dblsize|midsize) ? 7 : FWNUM);
+      x += ((dblsize) ? 7 : FWNUM);
     }
   }
 
   lcdLastPos = x;
   x -= fw;
-  if (dblsize) {
-    x++;
-  }
+  if (dblsize) x++;
+
   for (uint8_t i=1; i<=len; i++) {
     div_t qr = div((lcduint_t)val, 10);
     char c = qr.rem + '0';
     LcdFlags f = flags;
     if (dblsize) {
-      if (c=='1' && i==len && xn>x+10) {
-        x+=1;
-      }
-      if ((lcduint_t)val >= 1000) {
-        x+=FWNUM; f &= ~DBLSIZE;
-      }
+      if (c=='1' && i==len && xn>x+10) { x+=1; }
+      if ((lcduint_t)val >= 1000) { x+=FWNUM; f &= ~DBLSIZE; }
     }
     lcdDrawChar(x, y, c, f);
     if (mode == i) {
       flags &= ~PREC2; // TODO not needed but removes 20bytes, could be improved for sure, check asm
       if (dblsize) {
         xn = x - 2;
-        if (c>='2' && c<='3') {
-          ln++;
-        }
+        if (c>='2' && c<='3') ln++;
         uint8_t tn = (qr.quot % 10);
         if (tn==2 || tn==4) {
           if (c=='4') {
@@ -592,45 +572,24 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
           }
         }
       }
-      else if (xxlsize) {
-        x -= 17;
-        lcdDrawChar(x+2, y, '.', f);
-      }
-      else if (midsize) {
-        x -= 3;
-        xn = x;
-      }
-      else if (smlsize) {
-        x -= 2;
-        lcdDrawPoint(x, y+5);
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x, y-1, 8);
-        }
-      }
-      else if (tinsize) {
-        x--;
-        lcdDrawPoint(x-1, y+4);
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x-1, y-1, 7);
-        }
-        x--;
-      }
       else {
         x -= 2;
         lcdDrawChar(x, y, '.', f);
       }
     }
-    if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) {
-      x-=2;
-    }
+    if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) x-=2;
     val = qr.quot;
     x -= fw;
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
-    if (i==len && (flags & BOLD)) {
-      x += 1;
-    }
-#endif
+  #if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
+    if (i==len && (flags & BOLD)) x += 1;
+  #endif
   }
+
+  if (xn) {
+      // TODO needed on CPUAVR? y &= ~0x07;
+      lcdDrawSolidFilledRect(xn, y+2*FH-3, ln, 2);
+    }
+  if (neg) lcdDrawChar(x, y, '-', flags);
 #endif // CPUARM
 }
 #endif
