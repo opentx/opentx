@@ -111,10 +111,39 @@ const pm_uchar bmp_lock[] PROGMEM = {
 };
 #endif  // defined(PCBX9E) && !defined(SIMU)
 
+#if defined(PCBX7)
+void sportUpdateInit()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = SPORT_UPDATE_PWR_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(SPORT_UPDATE_PWR_GPIO, &GPIO_InitStructure);
+}
+
+void sportUpdatePowerOn()
+{
+  if (IS_PCBREV_40())
+    GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+  else
+    EXTERNAL_MODULE_ON();
+}
+
+void sportUpdatePowerOff()
+{
+  if (IS_PCBREV_40())
+    GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+  else
+    EXTERNAL_MODULE_OFF();
+}
+#endif
+
 void boardInit()
 {
 #if !defined(SIMU)
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
 
@@ -200,6 +229,13 @@ void boardInit()
 #else
   backlightInit();
 #endif
+
+#if defined(PCBX7)
+  if (IS_PCBREV_40()) {
+    sportUpdateInit();
+  }
+#endif
+
 #endif // !defined(SIMU)
 }
 
