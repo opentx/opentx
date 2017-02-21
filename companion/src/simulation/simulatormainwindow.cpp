@@ -133,14 +133,14 @@ void SimulatorMainWindow::closeEvent(QCloseEvent *)
 {
   saveUiState();
 
-  if (m_consoleDockWidget)
-    delete m_consoleDockWidget;
   if (m_telemetryDockWidget)
     delete m_telemetryDockWidget;
   if (m_trainerDockWidget)
     delete m_trainerDockWidget;
   if (m_outputsDockWidget)
     delete m_outputsDockWidget;
+  if (m_consoleDockWidget)
+    delete m_consoleDockWidget;
   if (m_simulatorDockWidget)
     delete m_simulatorDockWidget;
   else if (m_simulatorWidget)
@@ -344,9 +344,9 @@ void SimulatorMainWindow::setRadioSizePolicy(int fixType)
 
   m_radioSizeConstraint = fixType;
 
-  if (ui->actionFixedRadioWidth->isChecked() != (fixType & Qt::Horizontal))
+  if (ui->actionFixedRadioWidth->isChecked() != bool(fixType & Qt::Horizontal))
     ui->actionFixedRadioWidth->setChecked((fixType & Qt::Horizontal));
-  if (ui->actionFixedRadioHeight->isChecked() != (fixType & Qt::Vertical))
+  if (ui->actionFixedRadioHeight->isChecked() != bool(fixType & Qt::Vertical))
     ui->actionFixedRadioHeight->setChecked((fixType & Qt::Vertical));
 }
 

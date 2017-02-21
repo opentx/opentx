@@ -29,11 +29,22 @@
 #include <QValidator>
 #include <QWidget>
 
+// NOTE : The buffer sizes need to be large enough to handle the flood of data when X12/X10 simulator starts up (almost 40K!).
+#ifndef DEBUG_OUTPUT_WIDGET_OUT_BUFF_SIZE
+  // This buffer holds received and processed data until it can be printed to our console.
+  #define DEBUG_OUTPUT_WIDGET_OUT_BUFF_SIZE    (40 * 1024)  // [bytes]
+#endif
+#ifndef DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE
+  // This buffer is active if line filter is enabled and holds received data until it can be filtered and placed in output buffer.
+  #define DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE    (30 * 1024)  // [bytes]
+#endif
+
 namespace Ui {
   class DebugOutput;
 }
 
 class QAbstractButton;
+class FilteredTextBuffer;
 
 using namespace Simulator;
 
@@ -44,18 +55,25 @@ class DebugOutput : public QWidget
   public:
     explicit DebugOutput(QWidget * parent, SimulatorInterface * simulator);
     virtual ~DebugOutput();
-    void start();
-    void stop();
-    void traceCallback(const char * text);
 
     static QRegularExpression makeRegEx(const QString & input, bool * isExlusive = NULL);
+
+    static FilteredTextBuffer * m_dataBufferDevice;
+
+  signals:
+    void filterExprChanged(const QRegularExpression & expr);
+    void filterEnabledChanged(const bool enabled);
+    void filterExclusiveChanged(const bool exlusive);
+    void filterChanged(bool enable, bool exclusive, const QRegularExpression & expr);
 
   protected slots:
     void saveState();
     void restoreState();
     void processBytesReceived();
-    void onFilterTextEdited();
+    void onDataBufferOverflow(const qint64 len);
+    void onFilterStateChanged();
     void onFilterTextChanged(const QString &);
+    void onFilterToggled(bool enable);
     void on_bufferSize_editingFinished();
     void on_actionWordWrap_toggled(bool checked);
     void on_actionClearScr_triggered();
@@ -64,19 +82,10 @@ class DebugOutput : public QWidget
   protected:
     Ui::DebugOutput * ui;
     SimulatorInterface * m_simulator;
-    QTimer * m_tmrDataPrint;
-    QStringList m_dataBuffer;
-    QMutex m_mtxDataBuffer;
-    QRegularExpression m_filterRegEx;
-
     int m_radioProfileId;
-    int m_dataPrintFreq;
-    bool m_running;
+    bool m_filterEnable;
     bool m_filterExclude;
-    bool m_overflowReported;
 
-    const static int m_dataBufferMaxSize;
-    const static int m_dataPrintFreqDefault;
     const static quint16 m_savedViewStateVersion;
 };
 
