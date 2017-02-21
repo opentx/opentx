@@ -320,6 +320,10 @@ if(TRACE_SIMPGMSPACE)
   add_definitions(-DTRACE_SIMPGMSPACE)
 endif()
 
+if(EEPROM_VARIANT_NEEDED)
+  add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
+endif()
+
 set(SRC
   ${SRC}
   opentx.cpp
@@ -413,6 +417,8 @@ set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECT
 
 use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
+find_program(BASH bash HINTS "c:/cygwin/bin/" "c:/msys/bin/" DOC "bash shell for firmware size report (eg. c:/cygwin/bin/bash.exe on Windows).")
+
 if(NOT MSVC)
   set(OPT s)
 
@@ -428,6 +434,7 @@ if(NOT MSVC)
     set(CMAKE_ASM_COMPILE_OBJECT "<CMAKE_ASM_COMPILER> -o <OBJECT> <SOURCE>")
 
     set(COMMON_FLAGS "-mcpu=${MCU} -mthumb -fomit-frame-pointer -fverbose-asm -Wa,-ahlms=firmware.lst -O${OPT} -gdwarf-2 -DHSE_VALUE=${HSE_VALUE} -fno-exceptions -fdata-sections -ffunction-sections ${WARNING_FLAGS}")
+    set(COMMON_FLAGS "${COMMON_FLAGS} ${FPU_FLAGS}")
 
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS} -Wimplicit")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
@@ -437,7 +444,7 @@ if(NOT MSVC)
     if(SEMIHOSTING)
       add_definitions(-DSEMIHOSTING)
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=rdimon.specs")
-    endif()  
+    endif()
 
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7)
       add_subdirectory(targets/${TARGET_DIR}/bootloader)
@@ -464,8 +471,8 @@ if(NOT MSVC)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-    find_program(BASH bash HINTS "c:/cygwin/bin/" DOC "bash shell for firmware size report (eg. c:/cygwin/bin/bash.exe on Windows).")
-    if (BASH)
+    find_program(GAWK gawk HINTS "c:/cygwin/bin/" "c:/msys/bin/" DOC "gawk for firmware size report.")  # OS X might only have "awk"
+    if (BASH AND GAWK)
       add_custom_target(firmware-size
         COMMAND ${BASH} -kc '${RADIO_DIRECTORY}/util/elf-size-report.sh --mcu=${CPU_TYPE_FULL} ${SIZE_TARGET_MEM_DEFINE} firmware.elf'
         DEPENDS firmware
@@ -492,14 +499,38 @@ if(NOT MSVC)
     include_directories(storage gui/${GUI_DIR})
 
     set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-    foreach(FILE ${SRC})
-      file(READ ${FILE} FILE_CONTENT)
-      set(ALLSRC_CONTENT "${ALLSRC_CONTENT}# 1 \"${FILE}\"\n${FILE_CONTENT}")
-    endforeach()
-
-    file(WRITE ${ALLSRC} "${ALLSRC_CONTENT}")
-
+    if (BASH AND NOT WIN32)
+      add_custom_command(
+        OUTPUT ${ALLSRC}
+        COMMAND ${BASH} -kc 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \"$$f\"" >> allsrc.cpp\; cat "$$f" >> ${ALLSRC}\; done'
+        WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+        DEPENDS ${SRC}
+        )
+    elseif(WIN32)
+      string(REPLACE "/" "\\" SRC_WIN "${SRC}")
+      string(REPLACE "/" "\\" ALLSRC_WIN "${ALLSRC}")
+      set(ALLSRC_BAT
+          "setlocal EnableDelayedExpansion"
+          "del \"${ALLSRC_WIN}\""
+          "for %%f in (${SRC_WIN}) do ("
+            "set p=\"%%f\""
+            "set p=!p:^\\=/! \necho \# 1 !p! >> \"${ALLSRC_WIN}\""
+            "type %%f >> \"${ALLSRC_WIN}\""
+          ")\n"
+        )
+      string(REPLACE ";" "\n" ALLSRC_BAT "${ALLSRC_BAT}")
+      file(WRITE "${ALLSRC}.bat" "${ALLSRC_BAT}")
+      add_custom_command(
+        OUTPUT ${ALLSRC}
+        COMMAND "${ALLSRC}.bat"
+        WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
+        DEPENDS ${SRC}
+        )
+    else()
+      set(ALLSRC ${SRC})
+    endif()
     add_executable(firmware ${ALLSRC})
+
     add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
 
     add_custom_command(
@@ -531,6 +562,12 @@ if(NOT MSVC)
 
     add_custom_target(jtag-flash
       COMMAND st-flash --reset write firmware.bin 0x8000000
+      DEPENDS firmware
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
+  else()
+    add_custom_target(flash
+      COMMAND avrdude -c usbasp -p ${AVRDUDE_MCU} -U flash:w:firmware.hex:i
       DEPENDS firmware
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )

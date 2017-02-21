@@ -25,10 +25,6 @@
 
 #include "telemetry/mavlink.h"
 
-#if defined(SIMU)
-void telemetryPortInitFromIndex(uint8_t index) {}
-#endif
-
 // this might need to move to the flight software
 //static
 mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
@@ -78,10 +74,11 @@ void MAVLINK_reset(uint8_t warm_reset) {
 }
 
 //! \brief initalize mavlink extension
-void MAVLINK_Init(void) {
-	mav_statustext[0] = 0;
-	MAVLINK_reset(0);
-	telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
+void MAVLINK_Init(void)
+{
+  mav_statustext[0] = 0;
+  MAVLINK_reset(0);
+  telemetryPortInit(g_eeGeneral.mavbaud);
 }
 
 /*!	\brief Status log message
@@ -553,6 +550,7 @@ static inline void MAVLINK_msg_param_set(uint8_t idx) {
 }
 #endif
 
+__attribute__((unused))
 static inline void MAVLINK_msg_request_data_stream_pack_send(uint8_t req_stream_id, uint16_t req_message_rate,
 				uint8_t start_stop) {
 	mavlink_channel_t chan = MAVLINK_COMM_0;
@@ -560,11 +558,14 @@ static inline void MAVLINK_msg_request_data_stream_pack_send(uint8_t req_stream_
 					start_stop);
 }
 
+
+__attribute__((unused))
 //! \brief old mode switch funtion
 static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 	mavlink_channel_t chan = MAVLINK_COMM_0;
 	mavlink_msg_set_mode_send(chan, mavlink_system.sysid, mode, 0);
 }
+
 
 /*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
  *	\todo Reimplemnt \link MAVLINK10mspoll
@@ -576,10 +577,10 @@ void telemetryWakeup() {
 	if (tmr10ms - last_time > 15) {
 		if (mav_heartbeat > -30) {
 			mav_heartbeat--;
-
+	
 			if (mav_heartbeat == -30) {
 				MAVLINK_reset(1);
-				telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
+				telemetryPortInit(g_eeGeneral.mavbaud);
 			}
 		}
 		last_time = tmr10ms;

@@ -907,6 +907,7 @@ bool menuModelFailsafe(event_t event)
   const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   const uint8_t SLIDER_W = 128;
+  const uint8_t cols = NUM_CHANNELS(g_moduleIdx) > 8 ? 2 : 1;
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
@@ -935,8 +936,8 @@ bool menuModelFailsafe(event_t event)
   SIMPLE_SUBMENU_WITH_OPTIONS("FAILSAFE", ICON_STATS_ANALOGS, NUM_CHANNELS(g_moduleIdx), OPTION_MENU_NO_SCROLLBAR);
   drawStringWithIndex(50, 3+FH, "Module", g_moduleIdx+1, MENU_TITLE_COLOR);
 
-  for (uint8_t col=0; col<2; col++) {
-    for (uint8_t line=0; line<8; line++) {
+  for (uint8_t col=0; col < cols; col++) {
+    for (uint8_t line=0; line < 8; line++) {
       coord_t x = col*(LCD_W/2);
       const coord_t y = MENU_CONTENT_TOP - FH + line*(FH+4);
       const int32_t channelValue = channelOutputs[ch+channelStart];

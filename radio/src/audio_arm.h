@@ -193,8 +193,8 @@ class ToneContext {
     AudioFragment fragment;
 
     struct {
-      double step;
-      double idx;
+      float step;
+      float idx;
       float  volume;
       uint16_t freq;
       uint16_t duration;

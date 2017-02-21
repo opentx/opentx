@@ -84,45 +84,57 @@ int luaGetInputs(lua_State * L, ScriptInputsOutputs & sid)
   if (!lua_istable(L, -1))
     return -1;
 
+  memclear(sid.inputs, sizeof(sid.inputs));
   sid.inputsCount = 0;
   for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
     luaL_checktype(L, -2, LUA_TNUMBER); // key is number
     luaL_checktype(L, -1, LUA_TTABLE); // value is table
     if (sid.inputsCount<MAX_SCRIPT_INPUTS) {
       uint8_t field = 0;
+      int type = 0;
+      ScriptInput * si = &sid.inputs[sid.inputsCount];
       for (lua_pushnil(L); lua_next(L, -2) && field<5; lua_pop(L, 1), field++) {
         switch (field) {
           case 0:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TSTRING); // value is string
-            sid.inputs[sid.inputsCount].name = lua_tostring(L, -1);
+            si->name = lua_tostring(L, -1);
             break;
           case 1:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-            sid.inputs[sid.inputsCount].type = lua_tointeger(L, -1);
-            if (sid.inputs[sid.inputsCount].type == 0) {
-              sid.inputs[sid.inputsCount].min = -100;
-              sid.inputs[sid.inputsCount].max = 100;
+            type = lua_tointeger(L, -1);
+            if (type >= INPUT_TYPE_FIRST && type <= INPUT_TYPE_LAST) {
+              si->type = type;
+            }
+            if (si->type == INPUT_TYPE_VALUE) {
+              si->min = -100;
+              si->max = 100;
             }
             else {
-              sid.inputs[sid.inputsCount].max = MIXSRC_LAST_TELEM;
+              si->max = MIXSRC_LAST_TELEM;
             }
             break;
           case 2:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-            sid.inputs[sid.inputsCount].min = lua_tointeger(L, -1);
+            if (si->type == INPUT_TYPE_VALUE) {
+              si->min = lua_tointeger(L, -1);
+            }
             break;
           case 3:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-            sid.inputs[sid.inputsCount].max = lua_tointeger(L, -1);
+            if (si->type == INPUT_TYPE_VALUE) {
+              si->max = lua_tointeger(L, -1);
+            }
             break;
           case 4:
             luaL_checktype(L, -2, LUA_TNUMBER); // key is number
             luaL_checktype(L, -1, LUA_TNUMBER); // value is number
-            sid.inputs[sid.inputsCount].def = lua_tointeger(L, -1);
+            if (si->type == INPUT_TYPE_VALUE) {
+              si->def = lua_tointeger(L, -1);
+            }
             break;
         }
       }
@@ -830,10 +842,10 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
 #endif
     lua_rawgeti(lsScripts, LUA_REGISTRYINDEX, sid.run);
     for (int j=0; j<sio->inputsCount; j++) {
-      if (sio->inputs[j].type == 1)
-        luaGetValueAndPush(lsScripts, (uint8_t)sd.inputs[j]);
+      if (sio->inputs[j].type == INPUT_TYPE_SOURCE)
+        luaGetValueAndPush(lsScripts, sd.inputs[j].source);
       else
-        lua_pushinteger(lsScripts, sd.inputs[j] + sio->inputs[j].def);
+        lua_pushinteger(lsScripts, sd.inputs[j].value + sio->inputs[j].def);
     }
   }
   else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {

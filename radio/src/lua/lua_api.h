@@ -69,6 +69,13 @@ void luaInitThemesAndWidgets();
 #define RUN_TELEM_FG_SCRIPT   (1 << 3)
 #define RUN_STNDAL_SCRIPT     (1 << 4)
 
+enum luaScriptInputType {
+  INPUT_TYPE_FIRST = 0,
+  INPUT_TYPE_VALUE = INPUT_TYPE_FIRST,
+  INPUT_TYPE_SOURCE,
+  INPUT_TYPE_LAST = INPUT_TYPE_SOURCE
+};
+
 struct ScriptInput {
   const char *name;
   uint8_t type;

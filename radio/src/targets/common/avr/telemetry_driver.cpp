@@ -23,7 +23,9 @@
 
 #if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
 
-enum SERIAL_BAUDS {// KEEP IN SYNC WITH GUI
+// KEEP IN SYNC WITH GUI
+enum SERIAL_BAUDS
+{
   BAUD_4800 = 0,
   BAUD_9600,
   BAUD_14400,
@@ -101,7 +103,8 @@ ISR(USART_RX_vect_N(TLM_USART))
   UCSRB_N(TLM_USART) |= (1 << RXCIE_N(TLM_USART)); // enable Interrupt
 }
 
-static void uart_4800(void) {
+static void uart_4800(void)
+{
   #undef BAUD
   #define BAUD 4800
   #include <util/setbaud.h>
@@ -114,7 +117,8 @@ static void uart_4800(void) {
 #endif
 }
 
-static void uart_9600(void) {
+FORCEINLINE void uart_9600(void)
+{
   #undef BAUD
   #define BAUD 9600
   #include <util/setbaud.h>
@@ -127,7 +131,8 @@ static void uart_9600(void) {
 #endif
 }
 
-static void uart_14400(void) {
+static void uart_14400(void)
+{
   #undef BAUD
   #define BAUD 14400
   #include <util/setbaud.h>
@@ -140,7 +145,8 @@ static void uart_14400(void) {
 #endif
 }
 
-static void uart_19200(void) {
+static void uart_19200(void)
+{
   #undef BAUD
   #define BAUD 19200
   #include <util/setbaud.h>
@@ -153,7 +159,8 @@ static void uart_19200(void) {
 #endif
 }
 
-static void uart_38400(void) {
+static void uart_38400(void)
+{
   #undef BAUD
   #define BAUD 38400
   #include <util/setbaud.h>
@@ -166,7 +173,8 @@ static void uart_38400(void) {
 #endif
 }
 
-static void uart_57600(void) {
+static void uart_57600(void)
+{
   #undef BAUD
   #define BAUD 57600
   #include <util/setbaud.h>
@@ -179,13 +187,15 @@ static void uart_57600(void) {
 #endif
 }
 
-static void uart_58798(void) {
+static void uart_58798(void)
+{
   UBRRH_N(TLM_USART) = 0;
   UBRRL_N(TLM_USART) = 0x010;
   UCSRA_N(TLM_USART) &= ~(1 << U2X_N(TLM_USART)); // disable double speed operation.
 }
 
-static void uart_76800(void) {
+static void uart_76800(void)
+{
   #undef BAUD
   #define BAUD 76800
   #include <util/setbaud.h>
@@ -198,78 +208,41 @@ static void uart_76800(void) {
 #endif
 }
 
-void telemetryPortInitFromIndex(uint8_t index) {
-  switch (index) {
-    case BAUD_4800:
-      telemetryPortInit(4800);
-      break;
-    case BAUD_9600:
-      telemetryPortInit(9600);
-      break;
-    case BAUD_14400:
-      telemetryPortInit(14400);
-      break;
-    case BAUD_19200:
-      telemetryPortInit(19200);
-      break;
-    case BAUD_38400:
-      telemetryPortInit(38400);
-      break;
-    case BAUD_57600:
-      telemetryPortInit(57600);
-      break;
-    case BAUD_58798:
-      telemetryPortInit(58798);
-      break;
-    case BAUD_76800:
-      telemetryPortInit(76800);
-      break;
-  }
-}
-
-void telemetryPortInit() {
-  telemetryPortInit(9600);
-}
-
-void telemetryPortInit(uint32_t baudrate)
-{
 #if !defined(SIMU)
+FORCEINLINE void telemetryPortInit(uint8_t baudrate)
+{
   RXD_DDR_N(TLM_USART) &= ~(1 << RXD_DDR_PIN_N(TLM_USART));   // set RXD pin as input
   RXD_PORT_N(TLM_USART) &= ~(1 << RXD_PORT_PIN_N(TLM_USART)); // disable pullup on RXD pin
   switch (baudrate) {
-  case 4800:
-    uart_4800();
-    break;
-  case 9600:
-   uart_9600();
-    break;
-  case 14400:
-    uart_14400();
-    break;
-  case 19200:
-    uart_19200();
-    break;
-  case 38400:
-    uart_38400();
-    break;
-  case 57600:
-    uart_57600();
-    break;
-  case 58798:
-    uart_58798();
-    break;
-  case 76800:
-    uart_76800();
-    break;
-  default:
-    uart_57600();
-    break;
+    case BAUD_4800:
+      uart_4800();
+      break;
+    case BAUD_9600:
+      uart_9600();
+      break;
+    case BAUD_14400:
+      uart_14400();
+      break;
+    case BAUD_19200:
+      uart_19200();
+      break;
+    case BAUD_38400:
+      uart_38400();
+      break;
+    case BAUD_58798:
+      uart_58798();
+      break;
+    case BAUD_76800:
+      uart_76800();
+      break;
+    default:
+      uart_57600();
+      break;
   }
 
   // set 8N1
   UCSRB_N(TLM_USART) = 0 | (0 << RXCIE_N(TLM_USART)) | (0 << TXCIE_N(TLM_USART)) | (0 << UDRIE_N(TLM_USART)) | (0 << RXEN_N(TLM_USART)) | (0 << TXEN_N(TLM_USART)) | (0 << UCSZ2_N(TLM_USART));
   UCSRC_N(TLM_USART) = 0 | (1 << UCSZ1_N(TLM_USART)) | (1 << UCSZ0_N(TLM_USART));
-
 
   while (UCSRA_N(TLM_USART) & (1 << RXC_N(TLM_USART))) UDR_N(TLM_USART); // flush receive buffer
 
@@ -278,12 +251,17 @@ void telemetryPortInit(uint32_t baudrate)
   telemetryEnableTx(); // enable FrSky-Telemetry emission
 #endif
   telemetryEnableRx(); // enable FrSky-Telemetry reception
-#endif
 }
+#endif
 
 void telemetryTransmitBuffer()
 {
-  UCSRB_N(TLM_USART) |= (1 << UDRIE_N(TLM_USART)); // enable  UDRE1 interrupt
+  UCSRB_N(TLM_USART) |= (1 << UDRIE_N(TLM_USART)); // enable UDRE1 interrupt
+}
+
+void telemetryPortInit()
+{
+  telemetryPortInit(BAUD_9600);
 }
 
 #endif

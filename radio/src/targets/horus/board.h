@@ -490,6 +490,10 @@ void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 
+// Sport update driver
+#define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
+#define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
+
 // Haptic driver
 void hapticInit(void);
 void hapticDone(void);

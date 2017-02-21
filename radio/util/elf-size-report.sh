@@ -63,12 +63,13 @@ for i in "$@" ; do
   esac
 done
 
-# -- prefer gawk to awk if installed
-which gawk 2>&1 > /dev/null
-if [[ $? == 0 ]]; then
-    AWKCMD="gawk -nf"
+# -- make sure gawk is installed
+: ${AWKCMD:=""}
+if gawk --version >/dev/null 2>&1; then
+  [[ "$OSTYPE" == "darwin"* ]] && AWKCMD="gawk -nf"
 else
-    AWKCMD="awk -nf"
+  echo "GAWK is required, exiting."
+  exit 1
 fi
 
 # -- defaults which may change based on MCU

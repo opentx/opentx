@@ -18,6 +18,31 @@
  * GNU General Public License for more details.
  */
 
+#if defined(SIMU)
+extern volatile unsigned char pina, pinb, pinc, pind, pine, pinf, ping, pinh, pinj, pinl;
+#define PINA  ~pina
+#define PINB  ~pinb
+#define PINC  ~pinc
+#define PIND  ~pind
+#define PINE  ~pine
+#define PINF  ~pinf
+#define PING  ~ping
+#define PINH  ~pinh
+#define PINJ  ~pinj
+#define PINL  ~pinl
+#else
+#include <avr/io.h>
+#include <avr/pgmspace.h>
+#include "pgmtypes.h"
+#include <avr/eeprom.h>
+#include <avr/sleep.h>
+#include <avr/interrupt.h>
+#define F_CPU                        16000000UL  // 16 MHz
+#include <util/delay.h>
+#define pgm_read_adr(address_short)  pgm_read_word(address_short)
+#include <avr/wdt.h>
+#endif
+
 // ADC driver
 #define NUM_POTS                       3
 #define NUM_SLIDERS                    0
@@ -220,6 +245,5 @@ uint8_t eepromIsTransferComplete();
 #define TLM_USART 0
 #endif
 void telemetryPortInit();
-void telemetryPortInit(uint32_t baudrate); 
-void telemetryPortInitFromIndex(uint8_t index); 
+void telemetryPortInit(uint8_t baudrate);
 void telemetryTransmitBuffer();

@@ -1230,8 +1230,8 @@ const luaR_value_entry opentxConstants[] = {
   { "LEFT", LEFT },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
-  { "VALUE", 0 }, // TODO reuse ZoneOption::Integer
-  { "SOURCE", 1 }, // TODO reuse ZoneOption::Source
+  { "VALUE", INPUT_TYPE_VALUE },
+  { "SOURCE", INPUT_TYPE_SOURCE },
   { "REPLACE", MLTPX_REP },
   { "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT },
   { "MIXSRC_Rud", MIXSRC_Rud },
