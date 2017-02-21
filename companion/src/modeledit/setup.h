@@ -54,25 +54,22 @@ class TimerPanel : public ModelPanel
 
 class ModulePanel : public ModelPanel
 {
-  static const int maxChannels = 16;
-
-  struct ChannelFailsafeWidgetsGroup {
-    QComboBox * combo;
-    QDoubleSpinBox * spinbox;
-    QLabel * label;
-  };
-
-    Q_OBJECT
+  Q_OBJECT
 
   public:
     ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
     virtual ~ModulePanel();
     virtual void update();
+    bool moduleHasFailsafes();
 
-  protected:
-    void updateFailsafe(int channel);
+  public slots:
+    void onExtendedLimitsToggled();
+
+  signals:
+    void channelsRangeChanged();
 
   private slots:
+    void setupFailsafes();
     void on_trainerMode_currentIndexChanged(int index);
     void on_protocol_currentIndexChanged(int index);
     void on_ppmDelay_editingFinished();
@@ -84,18 +81,32 @@ class ModulePanel : public ModelPanel
     void on_antennaMode_currentIndexChanged(int index);
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
-    void onFailsafeComboIndexChanged(int index);
-    void onFailsafeSpinChanged(double value);
     void on_multiProtocol_currentIndexChanged(int index);
     void on_multiSubType_currentIndexChanged(int index);
     void on_autoBind_stateChanged(int state);
     void on_lowPower_stateChanged(int state);
+    void setChannelFailsafeValue(const int channel, const int value, quint8 updtSb = 0);
+    void onFailsafeComboIndexChanged(int index);
+    void onFailsafeUsecChanged(int value);
+    void onFailsafePercentChanged(double value);
+    void onFailsafesDisplayValueTypeChanged(int type);
+    void updateFailsafe(int channel);
 
   private:
+    enum FailsafeValueDisplayTypes { FAILSAFE_DISPLAY_PERCENT = 1, FAILSAFE_DISPLAY_USEC = 2 };
+
+    struct ChannelFailsafeWidgetsGroup {
+        QLabel * label;
+        QComboBox * combo;
+        QSpinBox * sbUsec;
+        QDoubleSpinBox * sbPercent;
+    };
+
     ModuleData & module;
     int moduleIdx;
     Ui::Module *ui;
-    ChannelFailsafeWidgetsGroup failsafeGroups[maxChannels];
+    QMap<int, ChannelFailsafeWidgetsGroup> failsafeGroupsMap;
+    static quint8 failsafesValueDisplayType;  // FailsafeValueDisplayTypes
 };
 
 class SetupPanel : public ModelPanel

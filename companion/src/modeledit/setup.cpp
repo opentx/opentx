@@ -148,6 +148,18 @@ void TimerPanel::on_name_editingFinished()
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
+#define MASK_PROTOCOL       1
+#define MASK_CHANNELS_COUNT 2
+#define MASK_RX_NUMBER      4
+#define MASK_CHANNELS_RANGE 8
+#define MASK_PPM_FIELDS     16
+#define MASK_FAILSAFES      32
+#define MASK_OPEN_DRAIN     64
+#define MASK_MULTIMODULE    128
+#define MASK_ANTENNA        256
+
+quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
+
 ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx):
   ModelPanel(parent, model, generalSettings, firmware),
   module(module),
@@ -210,35 +222,16 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
     ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i, false), (QVariant) i);
   }
 
-  if (firmware->getCapability(HasFailsafe)) {
-    for (int i=0; i<maxChannels; i++) {
-      QLabel * label = new QLabel(this);
-      label->setText(QString::number(i+1));
-      QComboBox * combo = new QComboBox(this);
-      combo->setProperty("index", i);
-      combo->addItem(tr("Value"), 0);
-      combo->addItem(tr("Hold"), FAILSAFE_CHANNEL_HOLD);
-      combo->addItem(tr("No Pulse"), FAILSAFE_CHANNEL_NOPULSE);
-      QDoubleSpinBox * spinbox = new QDoubleSpinBox(this);
-      spinbox->setMinimumSize(QSize(20, 0));
-      spinbox->setRange(-150, 150);
-      spinbox->setSingleStep(0.1);
-      spinbox->setDecimals(1);
-      label->setProperty("index", i);
-      spinbox->setProperty("index", i);
-      ui->failsafesLayout->addWidget(label, 3*(i/8), i%8, Qt::AlignHCenter);
-      ui->failsafesLayout->addWidget(combo, 1+3*(i/8), i%8, Qt::AlignHCenter);
-      ui->failsafesLayout->addWidget(spinbox, 2+3*(i/8), i%8, Qt::AlignHCenter);
-      failsafeGroups[i].combo = combo;
-      failsafeGroups[i].spinbox = spinbox;
-      failsafeGroups[i].label = label;
-      updateFailsafe(i);
-      connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFailsafeComboIndexChanged(int)));
-      connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onFailsafeSpinChanged(double)));
-    }
-  }
+  ui->btnGrpValueType->setId(ui->optPercent, FAILSAFE_DISPLAY_PERCENT);
+  ui->btnGrpValueType->setId(ui->optUs, FAILSAFE_DISPLAY_USEC);
+  ui->btnGrpValueType->button(failsafesValueDisplayType)->setChecked(true);
+
+  setupFailsafes();
 
   disableMouseScrolling();
+
+  connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
+  connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
 
   lock = false;
 
@@ -253,15 +246,102 @@ ModulePanel::~ModulePanel()
   delete ui;
 }
 
-#define MASK_PROTOCOL       1
-#define MASK_CHANNELS_COUNT 2
-#define MASK_RX_NUMBER      4
-#define MASK_CHANNELS_RANGE 8
-#define MASK_PPM_FIELDS     16
-#define MASK_FAILSAFES      32
-#define MASK_OPEN_DRAIN     64
-#define MASK_MULTIMODULE    128
-#define MASK_ANTENNA        256
+bool ModulePanel::moduleHasFailsafes()
+{
+  return ((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 && firmware->getCapability(HasFailsafe));;
+}
+
+void ModulePanel::setupFailsafes()
+{
+  ChannelFailsafeWidgetsGroup grp;
+  const int start = module.channelsStart;
+  const int end = start + module.channelsCount;
+  const bool hasFailsafe = moduleHasFailsafes();
+
+  lock = true;
+
+  QMutableMapIterator<int, ChannelFailsafeWidgetsGroup> i(failsafeGroupsMap);
+  while (i.hasNext()) {
+    i.next();
+    grp = i.value();
+    ui->failsafesLayout->removeWidget(grp.label);
+    ui->failsafesLayout->removeWidget(grp.combo);
+    ui->failsafesLayout->removeWidget(grp.sbPercent);
+    ui->failsafesLayout->removeWidget(grp.sbUsec);
+    if (i.key() < start || i.key() >= end || !hasFailsafe) {
+      grp.label->deleteLater();
+      grp.combo->deleteLater();
+      grp.sbPercent->deleteLater();
+      grp.sbUsec->deleteLater();
+      i.remove();
+    }
+  }
+
+  if (!hasFailsafe)
+    return;
+
+  int row = 0;
+  int col = 0;
+  int channelMax = model->getChannelsMax();
+  int channelMaxUs = 512 * channelMax / 100 * 2;
+
+  for (int i = start; i < end; ++i) {
+    if (failsafeGroupsMap.contains(i)) {
+      grp = failsafeGroupsMap.value(i);
+    }
+    else {
+      QLabel * label = new QLabel(this);
+      label->setProperty("index", i);
+      label->setText(QString::number(i+1));
+
+      QComboBox * combo = new QComboBox(this);
+      combo->setProperty("index", i);
+      combo->addItem(tr("Value"), 0);
+      combo->addItem(tr("Hold"), FAILSAFE_CHANNEL_HOLD);
+      combo->addItem(tr("No Pulse"), FAILSAFE_CHANNEL_NOPULSE);
+
+      QDoubleSpinBox * sbDbl = new QDoubleSpinBox(this);
+      sbDbl->setProperty("index", i);
+      sbDbl->setMinimumSize(QSize(20, 0));
+      sbDbl->setRange(-channelMax, channelMax);
+      sbDbl->setSingleStep(0.1);
+      sbDbl->setDecimals(1);
+
+      QSpinBox * sbInt = new QSpinBox(this);
+      sbInt->setProperty("index", i);
+      sbInt->setMinimumSize(QSize(20, 0));
+      sbInt->setRange(-channelMaxUs, channelMaxUs);
+      sbInt->setSingleStep(1);
+
+      grp = ChannelFailsafeWidgetsGroup();
+      grp.combo = combo;
+      grp.sbPercent = sbDbl;
+      grp.sbUsec = sbInt;
+      grp.label = label;
+      failsafeGroupsMap.insert(i, grp);
+
+      connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onFailsafeComboIndexChanged(int)));
+      connect(sbInt, SIGNAL(valueChanged(int)), this, SLOT(onFailsafeUsecChanged(int)));
+      connect(sbDbl, SIGNAL(valueChanged(double)), this, SLOT(onFailsafePercentChanged(double)));
+    }
+
+    ui->failsafesLayout->addWidget(grp.label, row, col, Qt::AlignHCenter);
+    ui->failsafesLayout->addWidget(grp.combo, row + 1, col, Qt::AlignHCenter);
+    ui->failsafesLayout->addWidget(grp.sbPercent, row + 2, col, Qt::AlignHCenter);
+    ui->failsafesLayout->addWidget(grp.sbUsec, row + 3, col, Qt::AlignHCenter);
+    grp.sbPercent->setVisible(failsafesValueDisplayType == FAILSAFE_DISPLAY_PERCENT);
+    grp.sbUsec->setVisible(failsafesValueDisplayType == FAILSAFE_DISPLAY_USEC);
+
+    updateFailsafe(i);
+
+    if (++col > 7) {
+      row += 4;
+      col = 0;
+    }
+  }
+
+  lock = false;
+}
 
 void ModulePanel::update()
 {
@@ -277,9 +357,10 @@ void ModulePanel::update()
       case PULSES_PXX_XJT_LR12:
       case PULSES_PXX_DJT:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if (protocol==PULSES_PXX_XJT_X16) mask |= MASK_FAILSAFES | MASK_RX_NUMBER;
-        if (protocol==PULSES_PXX_XJT_LR12) mask |= MASK_RX_NUMBER;
-        if (IS_HORUS(firmware->getBoard()) && moduleIdx==0) mask |= MASK_ANTENNA;
+        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12)
+          mask |= MASK_RX_NUMBER;
+        if (IS_HORUS(firmware->getBoard()) && moduleIdx==0)
+          mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
       case PULSES_DSM2:
@@ -315,6 +396,9 @@ void ModulePanel::update()
   else if (model->trainerMode != TRAINER_MASTER_JACK) {
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
+
+  if (moduleHasFailsafes())
+    mask |= MASK_FAILSAFES;
 
   ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
@@ -380,28 +464,37 @@ void ModulePanel::update()
   ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
 
 
-  if (firmware->getCapability(HasFailsafe)) {
-    ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
-    ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
-    ui->failsafeMode->setCurrentIndex(module.failsafeMode);
-    ui->failsafesGroupBox->setEnabled(module.failsafeMode == FAILSAFE_CUSTOM);
-    if (firmware->getCapability(ChannelsName) > 0) {
-      for(int i=0; i<maxChannels;i++) {
-        QString name = QString(model->limitData[i+module.channelsStart].name).trimmed();
-        if (!name.isEmpty()) {
-          failsafeGroups[i].label->setText(name);
-        }
-        else {
-          failsafeGroups[i].label->setText(QString::number(i+1));
-        }
-      }
+  ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
+  ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
+
+  if ((mask & MASK_FAILSAFES) && module.failsafeMode == FAILSAFE_CUSTOM) {
+    if (ui->failsafesGroupBox->isHidden()) {
+      setupFailsafes();
+      ui->failsafesGroupBox->setVisible(true);
     }
   }
   else {
-    mask = 0;
+    ui->failsafesGroupBox->setVisible(false);
   }
 
-  ui->failsafesGroupBox->setVisible((mask & MASK_FAILSAFES) && module.failsafeMode == FAILSAFE_CUSTOM);
+  if (mask & MASK_FAILSAFES) {
+    ui->failsafeMode->setCurrentIndex(module.failsafeMode);
+
+    if (firmware->getCapability(ChannelsName)) {
+      int chan;
+      QString name;
+      QMapIterator<int, ChannelFailsafeWidgetsGroup> i(failsafeGroupsMap);
+      while (i.hasNext()) {
+        i.next();
+        chan = i.key();
+        name = QString(model->limitData[chan + module.channelsStart].name).trimmed();
+        if (name.isEmpty())
+          i.value().label->setText(QString::number(chan + 1));
+        else
+          i.value().label->setText(name);
+      }
+    }
+  }
 
   if (mask & MASK_CHANNELS_RANGE) {
     ui->channelsStart->setMaximum(33 - ui->channelsCount->value());
@@ -450,6 +543,7 @@ void ModulePanel::on_channelsCount_editingFinished()
   if (!lock) {
     module.channelsCount = ui->channelsCount->value();
     update();
+    emit channelsRangeChanged();
     emit modified();
   }
 }
@@ -459,6 +553,7 @@ void ModulePanel::on_channelsStart_editingFinished()
   if (!lock) {
     module.channelsStart = ui->channelsStart->value() - 1;
     update();
+    emit channelsRangeChanged();
     emit modified();
   }
 }
@@ -490,27 +585,6 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
     module.failsafeMode = value;
     update();
     emit modified();
-  }
-}
-
-void ModulePanel::onFailsafeSpinChanged(double value)
-{
-  if (!lock) {
-    int channel = sender()->property("index").toInt();
-    module.failsafeChannels[channel] = (value*1024)/100;
-    emit modified();
-  }
-}
-
-void ModulePanel::onFailsafeComboIndexChanged(int index)
-{
-  if (!lock) {
-    lock = true;
-    int channel = sender()->property("index").toInt();
-    module.failsafeChannels[channel] = ((QComboBox *)sender())->itemData(index).toInt();
-    updateFailsafe(channel);
-    emit modified();
-    lock = false;
   }
 }
 
@@ -549,26 +623,118 @@ void ModulePanel::on_lowPower_stateChanged(int state)
   module.multi.lowPowerMode = (state == Qt::Checked);
 }
 
+// updtSb (update spin box(es)): 0=none or bitmask of FailsafeValueDisplayTypes
+void ModulePanel::setChannelFailsafeValue(const int channel, const int value, quint8 updtSb)
+{
+  if (channel < 0 || channel >= CPN_MAX_CHNOUT)
+    return;
+
+  module.failsafeChannels[channel] = value;
+  double pctVal = divRoundClosest(value * 1000, 1024) / 10.0;
+  // qDebug() << value << pctVal;
+
+  if (failsafeGroupsMap.contains(channel)) {
+    const ChannelFailsafeWidgetsGroup & grp = failsafeGroupsMap.value(channel);
+    if ((updtSb & FAILSAFE_DISPLAY_PERCENT) && grp.sbPercent) {
+      grp.sbPercent->blockSignals(true);
+      grp.sbPercent->setValue(pctVal);
+      grp.sbPercent->blockSignals(false);
+    }
+    if ((updtSb & FAILSAFE_DISPLAY_USEC) && grp.sbUsec) {
+      grp.sbUsec->blockSignals(true);
+      grp.sbUsec->setValue(value);
+      grp.sbUsec->blockSignals(false);
+    }
+  }
+  if (!lock)
+    emit modified();
+}
+
+void ModulePanel::onFailsafeUsecChanged(int value)
+{
+  if (!sender())
+    return;
+
+  bool ok = false;
+  int channel = sender()->property("index").toInt(&ok);
+  if (ok)
+    setChannelFailsafeValue(channel, value, FAILSAFE_DISPLAY_PERCENT);
+}
+
+void ModulePanel::onFailsafePercentChanged(double value)
+{
+  if (!sender())
+    return;
+
+  bool ok = false;
+  int channel = sender()->property("index").toInt(&ok);
+  if (ok)
+    setChannelFailsafeValue(channel, divRoundClosest(int(value * 1024), 100), FAILSAFE_DISPLAY_USEC);
+}
+
+void ModulePanel::onFailsafeComboIndexChanged(int index)
+{
+  if (!sender())
+    return;
+
+  QComboBox * cb = qobject_cast<QComboBox *>(sender());
+
+  if (cb && !lock) {
+    lock = true;
+    bool ok = false;
+    int channel = sender()->property("index").toInt(&ok);
+    if (ok) {
+      module.failsafeChannels[channel] = cb->itemData(index).toInt();
+      updateFailsafe(channel);
+      emit modified();
+    }
+    lock = false;
+  }
+}
+
+void ModulePanel::onFailsafesDisplayValueTypeChanged(int type)
+{
+  if (failsafesValueDisplayType != type) {
+    failsafesValueDisplayType = type;
+    foreach (ChannelFailsafeWidgetsGroup grp, failsafeGroupsMap) {
+      if (grp.sbPercent)
+        grp.sbPercent->setVisible(type == FAILSAFE_DISPLAY_PERCENT);
+      if (grp.sbUsec)
+        grp.sbUsec->setVisible(type == FAILSAFE_DISPLAY_USEC);
+    }
+  }
+}
+
+void ModulePanel::onExtendedLimitsToggled()
+{
+  double channelMaxPct = double(model->getChannelsMax());
+  int channelMaxUs = 512 * channelMaxPct / 100 * 2;
+  foreach (ChannelFailsafeWidgetsGroup grp, failsafeGroupsMap) {
+    if (grp.sbPercent)
+      grp.sbPercent->setRange(-channelMaxPct, channelMaxPct);
+    if (grp.sbUsec)
+      grp.sbUsec->setRange(-channelMaxUs, channelMaxUs);
+  }
+}
+
 void ModulePanel::updateFailsafe(int channel)
 {
-  int failsafeValue = module.failsafeChannels[channel];
-  QComboBox * combo = failsafeGroups[channel].combo;
-  QDoubleSpinBox * spinbox = failsafeGroups[channel].spinbox;
-  if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-    combo->setCurrentIndex(1);
-    spinbox->setEnabled(false);
-    spinbox->setValue(0);
-  }
-  else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-    combo->setCurrentIndex(2);
-    spinbox->setEnabled(false);
-    spinbox->setValue(0);
-  }
-  else {
-    combo->setCurrentIndex(0);
-    spinbox->setEnabled(true);
-    spinbox->setValue(((double)failsafeValue*100)/1024);
-  }
+  if (channel >= CPN_MAX_CHNOUT || !failsafeGroupsMap.contains(channel))
+    return;
+
+  const int failsafeValue = module.failsafeChannels[channel];
+  const ChannelFailsafeWidgetsGroup & grp = failsafeGroupsMap.value(channel);
+  const bool valDisable = (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE);
+  const int cbIdx = (failsafeValue == FAILSAFE_CHANNEL_HOLD ? 1 : failsafeValue == FAILSAFE_CHANNEL_NOPULSE ? 2 : 0);
+
+  if (grp.combo)
+    grp.combo->setCurrentIndex(cbIdx);
+  if (grp.sbPercent)
+    grp.sbPercent->setDisabled(valDisable);
+  if (grp.sbUsec)
+    grp.sbUsec->setDisabled(valDisable);
+
+  setChannelFailsafeValue(channel, (valDisable ? 0 : failsafeValue), (FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC));
 }
 
 /******************************************************************************/
@@ -796,6 +962,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+    connect(this, &SetupPanel::extendedLimitsToggled, modules[i], &ModulePanel::onExtendedLimitsToggled);
   }
 
   if (firmware->getCapability(ModelTrainerEnable)) {
