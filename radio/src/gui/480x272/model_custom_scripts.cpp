@@ -89,17 +89,19 @@ bool menuModelCustomScriptOne(event_t event)
     else if (i <= ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL+scriptInputsOutputs[s_currIdx].inputsCount) {
       int inputIdx = i-ITEM_MODEL_CUSTOMSCRIPT_PARAMS_LABEL-1;
       lcdDrawSizedText(INDENT_WIDTH, y, scriptInputsOutputs[s_currIdx].inputs[inputIdx].name, 10, 0);
-      if (scriptInputsOutputs[s_currIdx].inputs[inputIdx].type == 0) {
-        lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx]+scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr|LEFT);
+      if (scriptInputsOutputs[s_currIdx].inputs[inputIdx].type == INPUT_TYPE_VALUE) {
+        lcdDrawNumber(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx].value+ \
+                                                    scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr|LEFT);
         if (attr) {
-          CHECK_INCDEC_MODELVAR(event, g_model.scriptsData[s_currIdx].inputs[inputIdx], scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
+          CHECK_INCDEC_MODELVAR(event, g_model.scriptsData[s_currIdx].inputs[inputIdx].value, \
+                                scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, \
+                                scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
         }
       }
       else {
-        uint8_t *source = (uint8_t *)&g_model.scriptsData[s_currIdx].inputs[inputIdx];
-        drawSource(SCRIPT_ONE_2ND_COLUMN_POS, y, *source + scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, attr);
+        drawSource(SCRIPT_ONE_2ND_COLUMN_POS, y, g_model.scriptsData[s_currIdx].inputs[inputIdx].source, attr);
         if (attr) {
-          CHECK_INCDEC_MODELSOURCE(event, *source, scriptInputsOutputs[s_currIdx].inputs[inputIdx].min-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def, scriptInputsOutputs[s_currIdx].inputs[inputIdx].max-scriptInputsOutputs[s_currIdx].inputs[inputIdx].def);
+          CHECK_INCDEC_MODELSOURCE(event, g_model.scriptsData[s_currIdx].inputs[inputIdx].source, 0, MIXSRC_LAST_TELEM);
         }
       }
     }
