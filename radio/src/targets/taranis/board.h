@@ -113,6 +113,8 @@ extern uint16_t sessionTimer;
 
 #if defined(PCBX9E)
 #define TRAINER_CONNECTED()            (true)
+#elif defined(PCBX7)
+#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
 #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
