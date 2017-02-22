@@ -52,7 +52,7 @@ void rtcGetTime(struct gtm * t)
   t->tm_hour = RTC_TimeStruct.RTC_Hours;
   t->tm_min  = RTC_TimeStruct.RTC_Minutes;
   t->tm_sec  = RTC_TimeStruct.RTC_Seconds;
-  t->tm_year = RTC_DateStruct.RTC_Year + 100;
+  t->tm_year = RTC_DateStruct.RTC_Year + 100; // STM32 year is two decimals only (so base is currently 2000), gtm is based on number of years since 1900
   t->tm_mon  = RTC_DateStruct.RTC_Month - 1;
   t->tm_mday = RTC_DateStruct.RTC_Date;
 }
