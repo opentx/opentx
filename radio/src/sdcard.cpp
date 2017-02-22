@@ -362,6 +362,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
         }
       }
     }
+    f_closedir(&dir);
   }
 
   if (popupMenuOffset > 0)

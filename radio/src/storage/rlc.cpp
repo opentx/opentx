@@ -36,7 +36,7 @@ unsigned int compress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, 
   uint8_t cnt0   = 0;
 
   for (unsigned int i=1; 1; i++) {
-    bool cur0 = (src[i] == 0);
+    bool cur0 = (i < srcsize) ? (src[i] == 0) : false;
     if (i==srcsize || cur0!=run0 || cnt==0x3f || (cnt0 && cnt==0xf)) {
       if (run0) {
         assert(cnt0==0);

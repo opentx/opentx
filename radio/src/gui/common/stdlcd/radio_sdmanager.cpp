@@ -384,6 +384,7 @@ void menuRadioSdManager(event_t _event)
           }
         }
       }
+      f_closedir(&dir);
     }
   }
 
