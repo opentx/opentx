@@ -101,7 +101,7 @@ void pushPrompt(uint16_t prompt)
   }
 }
 
-uint8_t isPlaying()
+bool isPlaying()
 {
   /* interrupts active on Output Compare A Match ? */
 #if defined(SIMU)

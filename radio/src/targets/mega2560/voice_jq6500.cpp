@@ -40,7 +40,7 @@ uint8_t JQ6500_playlist[QUEUE_LENGTH] = {0};
 volatile uint8_t JQ6500_InputIndex = 0;
 uint8_t JQ6500_PlayIndex = 0;
 
-uint8_t isPlaying()
+bool isPlaying()
 {
   /* interrupts active on Output Compare A Match ? */
 #if defined(SIMU)
