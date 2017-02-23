@@ -2653,7 +2653,7 @@ int main()
 #endif
 
 #if !defined(EEPROM)
-  if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
+  if (!SD_CARD_PRESENT() && !UNEXPECTED_SHUTDOWN()) {
     runFatalErrorScreen(STR_NO_SDCARD);
   }
 #endif
