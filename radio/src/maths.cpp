@@ -183,9 +183,9 @@ uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
   y1 *= rad;
   y2 *= rad;
 
-  float nA =   pow( sin(nDLat/2), 2 ) + cos(y1) * cos(y2) * pow( sin(nDLon/2), 2 );
-  float nC = 2 * atan2( sqrt(nA), sqrt( 1 - nA ));
-  return round(nRadius * nC);
+  float nA =   powf( sinf(nDLat/2), 2 ) + cosf(y1) * cosf(y2) * powf( sin(nDLon/2), 2 );
+  float nC = 2 * atan2f( sqrtf(nA), sqrtf( 1 - nA ));
+  return roundf(nRadius * nC);
 }
 #endif // STM32F4
 #if defined(CPUARM)
