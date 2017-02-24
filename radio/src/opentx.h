@@ -1561,6 +1561,13 @@ extern uint8_t s_frsky_view;
 
 void getGpsPilotPosition();
 void getGpsDistance();
+
+#if defined(STM32F4)
+uint32_t getCoordDistance(float, float, float, float );
+#elif defined(CPUARM)
+uint32_t getCoordDistance(int32_t, int32_t, int32_t, int32_t);
+#endif
+
 void varioWakeup();
 
 #if defined(AUDIO) && defined(BUZZER)

@@ -47,8 +47,6 @@
 
 #define FIND_FIELD_DESC  0x01
 
-extern uint32_t getDistFromEarthAxis(int32_t);
-
 /*luadoc
 @function getVersion()
 
@@ -1131,39 +1129,23 @@ Compute the distance between two GPS coordinates
 
 static int luagetCoordDistance(lua_State * L)
 {
-  uint32_t distance;
 #if defined (STM32F4)
+  uint32_t distance;
   float a_Lat = luaL_checknumber(L, 1);
   float a_Long = luaL_checknumber(L, 2);
   float b_Lat = luaL_checknumber(L, 3);
   float b_Long = luaL_checknumber(L, 4);
 
-  float nRadius = 6370997.0; // Earth’s radius in meters
-  float rad = 0.0174532925199433;
-  float nDLat = (b_Lat - a_Lat) * rad;
-  float nDLon = (b_Long - a_Long) * rad;
-  a_Lat *= rad;
-  b_Lat *= rad;
-
-  float nA =   pow( sin(nDLat/2), 2 ) + cos(a_Lat) * cos(b_Lat) * pow( sin(nDLon/2), 2 );
-  float nC = 2 * atan2( sqrt(nA), sqrt( 1 - nA ));
-  distance = nRadius * nC;
+  lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat,b_Long ));
 #else
+  uint32_t distance;
   int32_t a_Lat = luaL_checknumber(L, 1) * 1000000;
   int32_t a_Long = luaL_checknumber(L, 2) * 1000000;
   int32_t b_Lat = luaL_checknumber(L, 3)* 1000000;
   int32_t b_Long = luaL_checknumber(L, 4)* 1000000;
 
-  uint32_t angle = abs(a_Lat - b_Lat);
-  uint32_t dist = EARTH_RADIUS * angle / 1000000;
-  uint32_t result = dist*dist;
-
-  angle = abs(a_Long - b_Long);
-  dist = getDistFromEarthAxis(b_Lat) * angle / 1000000;
-  result += dist*dist;
-  distance = isqrt32(result);
+  lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat,b_Long ));
 #endif
-  lua_pushunsigned(L, distance);
   return 1;
 }
 

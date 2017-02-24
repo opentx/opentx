@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+extern uint32_t getDistFromEarthAxis(int32_t);
 
 #if !defined(CPUARM)
 // #define CORRECT_NEGATIVE_SHIFTS
@@ -120,12 +121,12 @@ uint16_t isqrt32(uint32_t n)
 /*
   Division by 10 and rounding or fixed point arithmetic values
 
-  Examples: 
+  Examples:
     value -> result
     105 ->  11
     104 ->  10
    -205 -> -21
-   -204 -> -20 
+   -204 -> -20
 */
 
 #if defined(FRSKY_HUB) && !defined(CPUARM)
@@ -170,5 +171,31 @@ void getGpsDistance()
   telemetryData.hub.gpsDistance = isqrt32(result);
   if (telemetryData.hub.gpsDistance > telemetryData.hub.maxGpsDistance)
     telemetryData.hub.maxGpsDistance = telemetryData.hub.gpsDistance;
+}
+#endif
+
+#if defined(STM32F4)
+uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
+  float nRadius = 6370997.0; // Earth’s radius in meters
+  float rad = 0.0174532925199433;
+  float nDLat = (y2 - y1) * rad;
+  float nDLon = (x2 - x1) * rad;
+  y1 *= rad;
+  y2 *= rad;
+
+  float nA =   pow( sin(nDLat/2), 2 ) + cos(y1) * cos(y2) * pow( sin(nDLon/2), 2 );
+  float nC = 2 * atan2( sqrt(nA), sqrt( 1 - nA ));
+  return round(nRadius * nC);
+}
+#elif defined(CPUARM)
+uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2){
+  uint32_t angle = abs(y1 - y2);
+  uint32_t dist = EARTH_RADIUS * angle / 1000000;
+  uint32_t result = dist*dist;
+
+  angle = abs(x1 - x2);
+  dist = getDistFromEarthAxis(y2) * angle / 1000000;
+  result += dist*dist;
+  return (isqrt32(result));
 }
 #endif
