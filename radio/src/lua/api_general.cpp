@@ -1115,6 +1115,9 @@ static int luaGetRSSI(lua_State * L)
 /*luadoc
 @function getCoordDistance(a_Lat, a_Long, b_Lat, b_Long)
 
+Compute the distance in meters between two GPS coordinates.
+Coordinates are expressed in decimal degrees (48.866667, 2.333333 for Eiffel Tower for example)
+
 @param a_Lat, a_Long first point latitude and longitude
 
 @param b_Lat, b_Long second point latitude and longitude
