@@ -187,7 +187,8 @@ uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
   float nC = 2 * atan2( sqrt(nA), sqrt( 1 - nA ));
   return round(nRadius * nC);
 }
-#elif defined(CPUARM)
+#endif // STM32F4
+#if defined(CPUARM)
 uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2){
   uint32_t angle = abs(y1 - y2);
   uint32_t dist = EARTH_RADIUS * angle / 1000000;
@@ -198,4 +199,4 @@ uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2){
   result += dist*dist;
   return (isqrt32(result));
 }
-#endif
+#endif // CPUARM

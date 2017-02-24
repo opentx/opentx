@@ -1130,22 +1130,17 @@ Compute the distance between two GPS coordinates
 static int luagetCoordDistance(lua_State * L)
 {
 #if defined (STM32F4)
-  uint32_t distance;
   float a_Lat = luaL_checknumber(L, 1);
   float a_Long = luaL_checknumber(L, 2);
   float b_Lat = luaL_checknumber(L, 3);
   float b_Long = luaL_checknumber(L, 4);
-
-  lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat,b_Long ));
 #else
-  uint32_t distance;
   int32_t a_Lat = luaL_checknumber(L, 1) * 1000000;
   int32_t a_Long = luaL_checknumber(L, 2) * 1000000;
   int32_t b_Lat = luaL_checknumber(L, 3)* 1000000;
   int32_t b_Long = luaL_checknumber(L, 4)* 1000000;
-
-  lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat,b_Long ));
 #endif
+    lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat,b_Long ));
   return 1;
 }
 

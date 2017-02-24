@@ -296,20 +296,12 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
             return;
           }
         }
-        uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
-        uint32_t dist = EARTH_RADIUS * angle / 1000000;
-        uint32_t result = dist*dist;
-
-        angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
-        dist = gpsItem.distFromEarthAxis * angle / 1000000;
-        result += dist*dist;
-
+        uint32_t result = getCoordDistance(gpsItem.gps.latitude, gpsItem.gps.longitude, gpsItem.pilotLatitude, gpsItem.pilotLongitude);
         if (altItem) {
-          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
-          result += dist*dist;
+          result += abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
         }
 
-        setValue(sensor, isqrt32(result), UNIT_METERS);
+        setValue(sensor, result, UNIT_METERS);
       }
       break;
 

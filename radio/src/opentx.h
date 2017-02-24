@@ -1564,7 +1564,8 @@ void getGpsDistance();
 
 #if defined(STM32F4)
 uint32_t getCoordDistance(float, float, float, float );
-#elif defined(CPUARM)
+#endif
+#if defined(CPUARM)
 uint32_t getCoordDistance(int32_t, int32_t, int32_t, int32_t);
 #endif
 
