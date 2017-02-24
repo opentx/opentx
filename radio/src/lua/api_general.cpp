@@ -1144,7 +1144,6 @@ static int luagetCoordDistance(lua_State * L)
   return 1;
 }
 
-
 /*luadoc
 @function loadScript(file [, mode], [,env])
 
