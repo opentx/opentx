@@ -345,6 +345,136 @@ int cliTestNew()
   return 0;
 }
 
+#if defined(COLORLCD)
+
+extern bool perMainEnabled;
+typedef void (*graphichTestFunc)(void);
+
+void testDrawSolidFilledRectangle()
+{
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, SOLID, TEXT_BGCOLOR);
+}
+
+void testDrawFilledRectangle()
+{
+  lcdDrawFilledRect(0, 0, LCD_W, LCD_H, DOTTED, TEXT_BGCOLOR);
+}
+
+void testDrawSolidFilledRoundedRectangle()
+{
+  lcdDrawFilledRect(0, 0, LCD_W/2, LCD_H/2, SOLID, ROUND|TEXT_BGCOLOR);
+}
+
+void testDrawBlackOverlay()
+{
+  lcdDrawBlackOverlay();
+}
+
+void testDrawSolidHorizontalLine1()
+{
+  lcdDrawSolidHorizontalLine(0, 0, 1, 0);
+}
+
+void testDrawSolidHorizontalLine2()
+{
+  lcdDrawSolidHorizontalLine(0, 0, LCD_W, 0);
+}
+
+void testDrawSolidVerticalLine1()
+{
+  lcdDrawSolidVerticalLine(0, 0, 1, 0);
+}
+
+void testDrawSolidVerticalLine2()
+{
+  lcdDrawSolidVerticalLine(0, 0, LCD_H, 0);
+}
+
+void testDrawDiagonalLine()
+{
+  lcdDrawLine(0,0, LCD_W, LCD_H, SOLID, TEXT_COLOR);
+}
+
+void testEmpty()
+{
+}
+
+void testDrawRect()
+{
+  lcdDrawRect(0, 0, LCD_W, LCD_H, 2, SOLID, TEXT_COLOR);
+}
+
+void testDrawText()
+{
+  lcdDrawText(0, LCD_H/2, "The quick brown fox jumps over the lazy dog", TEXT_COLOR);
+}
+
+void testClear()
+{
+  lcdClear();
+}
+
+#define GRAPHICS_TEST_RUN_STEP    10
+#define RUN_GRAPHICS_TEST(name, runtime)   runGraphicsTest(name, #name, runtime)
+
+float runGraphicsTest(graphichTestFunc func, const char * name, uint32_t runtime)
+{
+  uint32_t start = (uint32_t)CoGetOSTime();
+  uint32_t noRuns = 0;
+  while (((uint32_t)CoGetOSTime() - start) < runtime/2 ) {
+    for (int n=0; n<100; n++) {
+      func();
+    }
+    lcdRefresh();
+    noRuns += GRAPHICS_TEST_RUN_STEP;
+  }
+  uint32_t actualRuntime = (uint32_t)CoGetOSTime() - start;
+  float result = (noRuns * 500.0f) / (float)actualRuntime;     // runs/second
+  serialPrint("Test %s speed: %0.2f, (%d runs in %d ms)", name, result, noRuns, actualRuntime*2);
+  CoTickDelay(100);
+  return result;
+}
+
+int cliTestGraphics()
+{
+  serialPrint("Starting graphics performance test...");
+  CoTickDelay(100);
+
+  watchdogSuspend(6000/*60s*/);
+  if (pulsesStarted()) {
+    pausePulses();
+  }
+  pauseMixerCalculations();
+  perMainEnabled = false;
+
+  float result = 0;
+  RUN_GRAPHICS_TEST(testEmpty, 1000);
+  // result += RUN_GRAPHICS_TEST(testDrawSolidHorizontalLine1, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawSolidHorizontalLine2, 1000);
+  // result += RUN_GRAPHICS_TEST(testDrawSolidVerticalLine1, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawSolidVerticalLine2, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawDiagonalLine, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawSolidFilledRectangle, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawSolidFilledRoundedRectangle, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawRect, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawFilledRectangle, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawBlackOverlay, 1000);
+  result += RUN_GRAPHICS_TEST(testDrawText, 1000);
+  result += RUN_GRAPHICS_TEST(testClear, 1000);
+
+  serialPrint("Total speed: %0.2f", result);
+
+  perMainEnabled = true;
+  if (pulsesStarted()) {
+    resumePulses();
+  }
+  resumeMixerCalculations();
+  watchdogSuspend(0);
+
+  return 0;
+}
+#endif   // #if defined(COLORLCD)
+
 int cliTest(const char ** argv)
 {
   if (!strcmp(argv[1], "new")) {
@@ -353,6 +483,11 @@ int cliTest(const char ** argv)
   else if (!strcmp(argv[1], "std::exception")) {
     serialPrint("Not implemented");
   }
+#if defined(COLORLCD)
+  else if (!strcmp(argv[1], "graphics")) {
+    return cliTestGraphics();
+  }
+#endif
   else {
     serialPrint("%s: Invalid argument \"%s\"", argv[0], argv[1]);
   }
@@ -955,7 +1090,7 @@ const CliCommand cliCommands[] = {
   { "set", cliSet, "<what> <value>" },
   { "stackinfo", cliStackInfo, "" },
   { "meminfo", cliMemoryInfo, "" },
-  { "test", cliTest, "new | std::exception" },
+  { "test", cliTest, "new | std::exception | graphics" },
   { "trace", cliTrace, "on | off" },
 #if defined(PCBFLAMENCO)
   { "read_bq24195", cliReadBQ24195, "<register>" },
