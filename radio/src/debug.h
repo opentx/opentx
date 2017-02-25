@@ -355,6 +355,7 @@ enum DebugTimers {
   debugTimerIntPulses,
   debugTimerIntPulsesDuration,
   debugTimerPer10ms,
+  debugTimerPer10msPeriod,
   debugTimerRotEnc,
   debugTimerHaptic,
   debugTimerMixer,

@@ -235,6 +235,7 @@ const char * const debugTimerNames[DEBUG_TIMERS_COUNT] = {
    "Pulses int."   // debugTimerIntPulses,
   ,"Pulses dur."   // debugTimerIntPulsesDuration,
   ,"10ms dur.  "   // debugTimerPer10ms,
+  ,"10ms period"   // debugTimerPer10msPeriod,
   ,"Rotary enc."   // debugTimerRotEnc,
   ,"Haptic     "   // debugTimerHaptic,
   ,"Mixer calc "   // debugTimerMixer,
