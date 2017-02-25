@@ -84,7 +84,7 @@ class BitmapBufferBase
       return width * height * sizeof(T);
     }
 
-    inline const display_t * getPixelPtr(coord_t x, coord_t y) const
+    inline const display_t * getPixelPtr_internal(coord_t x, coord_t y) const
     {
 #if defined(PCBX10)
       x = width - x - 1;
@@ -110,6 +110,52 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 #if defined(DEBUG)
     bool leakReported;
 #endif
+
+    inline void drawPixel_internal(display_t * p, display_t value)
+    {
+//       if (data && (data <= p || p < data_end)) {
+//         *p = value;
+//       }
+// #if defined(DEBUG)
+//       else if (!leakReported) {
+//         leakReported = true;
+//         TRACE("BitmapBuffer(%p).drawPixel(): buffer overrun, data: %p, written at: %p", this, data, p);
+//       }
+// #endif
+        *p = value;
+    }
+
+    inline void drawPixel_internal(coord_t x, coord_t y, display_t value)
+    {
+      display_t * p = getPixelPtr_internal(x, y);
+      drawPixel_internal(p, value);
+    }
+
+
+    inline display_t * getPixelPtr_internal(coord_t x, coord_t y) const
+    {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
+      return &data[y*width + x];
+    }
+
+    void drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color);
+
+    inline void drawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
+    {
+      display_t * p = getPixelPtr_internal(x, y);
+      drawAlphaPixel(p, opacity, color);
+    }
+
+    inline void drawSolidFilledRect_internal(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
+    {
+      DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+    }
+
+    void drawHorizontalLine_internal(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att);
+    void drawVerticalLine_internal(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att);
 
   public:
 
@@ -147,53 +193,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline void clear(LcdFlags flags=0)
     {
-      drawSolidFilledRect(0, 0, width, height, flags);
+      drawSolidFilledRect_internal(0, 0, width, height, flags);
     }
 
-    inline void drawPixel(display_t * p, display_t value)
-    {
-      if (data && (data <= p || p < data_end)) {
-        *p = value;
-      }
-#if defined(DEBUG)
-      else if (!leakReported) {
-        leakReported = true;
-        TRACE("BitmapBuffer(%p).drawPixel(): buffer overrun, data: %p, written at: %p", this, data, p);
-      }
-#endif
-    }
 
-    inline const display_t * getPixelPtr(coord_t x, coord_t y) const
-    {
-#if defined(PCBX10)
-      x = width - x - 1;
-      y = height - y - 1;
-#endif
-      return &data[y*width + x];
-    }
-
-    inline display_t * getPixelPtr(coord_t x, coord_t y)
-    {
-#if defined(PCBX10)
-      x = width - x - 1;
-      y = height - y - 1;
-#endif
-      return &data[y*width + x];
-    }
-
-    inline void drawPixel(coord_t x, coord_t y, display_t value)
-    {
-      display_t * p = getPixelPtr(x, y);
-      drawPixel(p, value);
-    }
-
-    void drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color);
-
-    inline void drawAlphaPixel(coord_t x, coord_t y, uint8_t opacity, uint16_t color)
-    {
-      display_t * p = getPixelPtr(x, y);
-      drawAlphaPixel(p, opacity, color);
-    }
 
     void drawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att);
 
@@ -216,7 +219,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
       if (w<0) { x+=w; w=-w; }
-      DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+      drawSolidFilledRect_internal(x, y, w, h, flags);
     }
 
     void drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
@@ -294,8 +297,8 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
           scaledh = height - y;
 
         for (int i = 0; i < scaledh; i++) {
-          display_t * p = getPixelPtr(x, y + i);
-          const display_t * qstart = bmp->getPixelPtr(srcx, srcy + int(i / scale));
+          display_t * p = getPixelPtr_internal(x, y + i);
+          const display_t * qstart = bmp->getPixelPtr_internal(srcx, srcy + int(i / scale));
           for (int j = 0; j < scaledw; j++) {
             const display_t * q = qstart;
             MOVE_PIXEL_RIGHT(q, int(j / scale));
@@ -304,7 +307,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
               drawAlphaPixel(p, a, RGB_JOIN(r<<1, g<<2, b<<1));
             }
             else {
-              drawPixel(p, *q);
+              drawPixel_internal(p, *q);
             }
             MOVE_TO_NEXT_RIGHT_PIXEL(p);
           }

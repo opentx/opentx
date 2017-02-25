@@ -41,6 +41,8 @@
 
 #define OPACITY_MAX                    0x0F
 #define OPACITY(x)                     ((x)<<24)
+#define OPACITY_GET(x)                 ((x)>>24)
+#define IS_FULL_OPACITY(x)             (OPACITY_GET(x)==0)
 
 enum LcdColorIndex
 {

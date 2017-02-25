@@ -162,7 +162,7 @@ uint32_t GetTransSpeedValue()
     /*if (pSd->cardType >= CARD_MMC && SD_EXTCSD_HS_TIMING(pSd)) {
         pSd->transSpeed *= 2;
     }*/
-    TRACE_ERROR("-I- SD/MMC TRANS SPEED %d KBit/s\r\n", transSpeed);
+    TRACE_ERROR("-I- SD/MMC TRANS SPEED %d KBit/s", transSpeed);
     transSpeed *= 1000;
     return transSpeed;
 }
@@ -712,7 +712,7 @@ const char * sdIdentify()
         /* TODO ccs = 1;
         do { result = sdCmd1(&ccs); } while(result && cmd1Retries -- > 0);
         if (error) {
-            TRACE_ERROR("SdMmcIdentify.Cmd1: %u\n\r", error);
+            TRACE_ERROR("SdMmcIdentify.Cmd1: %u", error);
             return SDMMC_ERROR;
         }
         else if (ccs) cardType = CARD_MMCHD;
@@ -821,7 +821,7 @@ const char * sdEnum()
     error = SdMmcDesideBuswidth(pSd);
     if (!error) bwExec = 1;
     else if (error != SDMMC_ERROR_NOT_SUPPORT) {
-        TRACE_ERROR("SdmmcEnum.DesideBusWidth: %u\n\r", error);
+        TRACE_ERROR("SdmmcEnum.DesideBusWidth: %u", error);
         return SDMMC_ERROR;
     }
 
@@ -829,7 +829,7 @@ const char * sdEnum()
     error = SdMmcEnableHighSpeed(pSd);
     if (!error) hsExec = 1;
     else if (error != SDMMC_ERROR_NOT_SUPPORT) {
-        TRACE_ERROR("SdmmcEnum.EnableHS: %u\n\r", error);
+        TRACE_ERROR("SdmmcEnum.EnableHS: %u", error);
         return SDMMC_ERROR;
     }
 
@@ -1070,7 +1070,7 @@ uint32_t sd_read_block(uint32_t block_no, uint32_t *data)
       return 1;
   }
 
-  // TRACE_ERROR("ok %.2X %.4Xd\n\r", HSMCI->HSMCI_SR, HSMCI->HSMCI_RSPR[0]);
+  // TRACE_ERROR("ok %.2X %.4Xd", HSMCI->HSMCI_SR, HSMCI->HSMCI_RSPR[0]);
 
   return 0;
 }
@@ -1254,7 +1254,7 @@ DRESULT disk_write (
       if (!memcmp(dma_sd_buffer, buff, 512))
         break;
       else {
-        TRACE_ERROR("Block %d ko SR=%.2X\r\n", sector, HSMCI->HSMCI_SR);
+        TRACE_ERROR("Block %d ko SR=%.2X", sector, HSMCI->HSMCI_SR);
         // DUMP(buff, 512);
         // DUMP(copy, 512);
       }

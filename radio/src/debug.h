@@ -57,6 +57,11 @@ uint8_t serial2TracesEnabled();
 }
 #endif
 
+// two macros ensures any macro passed will
+// be expanded before being stringified
+#define STRINGIZE_DETAIL(x) #x
+#define STRINGIZE(x) STRINGIZE_DETAIL(x)
+
 #define TRACE_NOCRLF(...)     debugPrintf(__VA_ARGS__)
 #define TRACE(f_, ...)        debugPrintf((f_ "\r\n"), ##__VA_ARGS__)
 #define DUMP(data, size)      dump(data, size)
@@ -66,7 +71,7 @@ uint8_t serial2TracesEnabled();
 #define TRACE_INFO_WP(...)    debugPrintf(__VA_ARGS__)
 #define TRACE_WARNING(...)    debugPrintf("-W- " __VA_ARGS__)
 #define TRACE_WARNING_WP(...) debugPrintf(__VA_ARGS__)
-#define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
+#define TRACE_ERROR(f_, ...)  debugPrintf(("-E- (at " STRINGIZE(__FILE__) ":" STRINGIZE(__LINE__) ") " f_ "\r\n"), ##__VA_ARGS__)
 
 #if defined(DEBUG) && !defined(SIMU)
 #define TIME_MEASURE_START(id) uint16_t t0 ## id = getTmr2MHz()
