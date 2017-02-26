@@ -682,7 +682,7 @@ void RlcFile::nextRlcWriteStep()
 
     bool run0 = (m_rlc_buf[0] == 0);
 
-    for (i=1; 1; i++) { // !! laeuft ein byte zu weit !!
+    for (i=1; 1; i++) {
       bool cur0 = (i<m_rlc_len) ? (m_rlc_buf[i] == 0) : false;
       if (cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0x0f) || i==m_rlc_len) {
         if (run0) {
