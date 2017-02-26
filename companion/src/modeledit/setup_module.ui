@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>674</width>
-    <height>205</height>
+    <height>229</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -657,6 +657,10 @@
       </item>
       <item row="1" column="0" colspan="3">
        <widget class="QGroupBox" name="failsafesGroupBox">
+        <property name="styleSheet">
+         <string notr="true">QGroupBox {padding-top: -10px; margin-top: 5px;}
+QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; padding-left: 10px; padding-right: 10px; }</string>
+        </property>
         <property name="title">
          <string>Failsafe Positions</string>
         </property>
@@ -676,6 +680,60 @@
          <property name="bottomMargin">
           <number>4</number>
          </property>
+         <item alignment="Qt::AlignRight">
+          <widget class="QWidget" name="widgetValueType" native="true">
+           <property name="autoFillBackground">
+            <bool>true</bool>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="spacing">
+             <number>5</number>
+            </property>
+            <property name="leftMargin">
+             <number>12</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>12</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Show values in:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="optPercent">
+              <property name="text">
+               <string extracomment="abbreviation for percent">%</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">btnGrpValueType</string>
+              </attribute>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="optUs">
+              <property name="text">
+               <string extracomment="abbreviation for microseconds">μs</string>
+              </property>
+              <attribute name="buttonGroup">
+               <string notr="true">btnGrpValueType</string>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
          <item>
           <layout class="QGridLayout" name="failsafesLayout">
            <property name="spacing">
@@ -725,4 +783,7 @@
  </tabstops>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="btnGrpValueType"/>
+ </buttongroups>
 </ui>
