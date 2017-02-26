@@ -92,14 +92,14 @@ void menuModelPhaseOne(event_t event)
 #if defined(GVARS) && !defined(GVARS_IN_CURVES_SCREEN)
 #if defined(PCBX7)
   #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS)
-  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1, 1};
 #else // PCBX7
   #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
 #endif // PCBX7
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
-  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0));
+  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX  - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH-1) : 0));
 
   TITLE(STR_MENUFLIGHTMODE);
 
