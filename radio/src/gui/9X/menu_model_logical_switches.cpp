@@ -516,18 +516,16 @@ void menuModelLogicalSwitches(uint8_t event)
 #endif
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
-#if defined(CPUARM)
+            unsigned int save_func = cs->func;
+            memset(cs, 0, sizeof(LogicalSwitchData));
+            cs->func = save_func;
             if (new_cstate == LS_FAMILY_TIMER) {
               cs->v1 = cs->v2 = -119;
             }
-            else if (new_cstate == LS_FAMILY_EDGE) {
-              cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
+#if defined(CPUARM)
+            if (new_cstate == LS_FAMILY_EDGE) {
+              cs->v2 = -129;
             }
-            else {
-              cs->v1 = cs->v2 = 0;
-            }
-#else
-            cs->v1 = cs->v2 = (new_cstate==LS_FAMILY_TIMER ? -119/*1.0*/ : 0);
 #endif
           }
           break;
