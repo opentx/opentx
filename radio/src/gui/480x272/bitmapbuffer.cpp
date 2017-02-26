@@ -176,7 +176,7 @@ bool evalSlopes(int * slopes, int startAngle, int endAngle)
     slopes[2] = -100000;
   }
   else {
-    float angle1 = float(startAngle) * PI / 180.0f;
+    float angle1 = float(startAngle) * (PI / 180.0f);
     if (startAngle >= 180) {
       slopes[1] = -100000;
       slopes[2] = cosf(angle1) * 100 / sinf(angle1);
@@ -192,7 +192,7 @@ bool evalSlopes(int * slopes, int startAngle, int endAngle)
     slopes[3] = 100000;
   }
   else {
-    float angle2 = float(endAngle) * PI / 180;
+    float angle2 = float(endAngle)  * (PI / 180.0f);
     if (endAngle >= 180) {
       slopes[0] = -100000;
       slopes[3] = -cosf(angle2) * 100 / sinf(angle2);
@@ -701,6 +701,8 @@ BitmapBuffer * BitmapBuffer::load_bmp(const char * filename)
 #define STBI_ONLY_BMP
 #define STBI_ONLY_GIF
 #define STBI_NO_STDIO
+#define STBI_NO_HDR
+#define STBI_NO_LINEAR
 
 // #define TRACE_STB_MALLOC
 

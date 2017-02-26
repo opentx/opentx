@@ -80,7 +80,7 @@ void *luaM_realloc_ (lua_State *L, void *block, size_t osize, size_t nsize) {
   if (nsize > realosize && g->gcrunning)
     luaC_fullgc(L, 1);  /* force a GC whenever possible */
 #endif
-  // TRACE("ALLOC %d %d", (int)osize, (int)nsize);
+  // TRACE_LUA_INTERNALS("ALLOC %d %d", (int)osize, (int)nsize);
   newblock = (*g->frealloc)(g->ud, block, osize, nsize);
   if (newblock == NULL && nsize > 0) {
     api_check(L, nsize > realosize,

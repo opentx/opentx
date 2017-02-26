@@ -153,10 +153,10 @@ static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, Telem
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
   lua_createtable(L, 0, 4);
-  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude / 1000000.0);
-  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude / 1000000.0);
-  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude / 1000000.0);
-  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude / 1000000.0);
+  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude * 0.000001f); // floating point multiplication is faster than division
+  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude * 0.000001f);
+  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude * 0.000001f);
+  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude * 0.000001f);
 }
 
 static void luaPushTelemetryDateTime(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
@@ -173,7 +173,7 @@ static void luaPushCells(lua_State* L, TelemetrySensor & telemetrySensor, Teleme
     lua_createtable(L, telemetryItem.cells.count, 0);
     for (int i = 0; i < telemetryItem.cells.count; i++) {
       lua_pushnumber(L, i + 1);
-      lua_pushnumber(L, telemetryItem.cells.values[i].value / 100.0);
+      lua_pushnumber(L, telemetryItem.cells.values[i].value * 0.01f);
       lua_settable(L, -3);
     }
   }
@@ -215,7 +215,7 @@ void luaGetValueAndPush(lua_State* L, int src)
     }
   }
   else if (src == MIXSRC_TX_VOLTAGE) {
-    lua_pushnumber(L, float(value)/10.0);
+    lua_pushnumber(L, float(value) * 0.1f);
   }
   else {
     lua_pushinteger(L, value);
@@ -851,8 +851,8 @@ Returns (some of) the general radio settings
 static int luaGetGeneralSettings(lua_State * L)
 {
   lua_newtable(L);
-  lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
-  lua_pushtablenumber(L, "battMax", double(120+g_eeGeneral.vBatMax)/10);
+  lua_pushtablenumber(L, "battMin", (90+g_eeGeneral.vBatMin) * 0.1f);
+  lua_pushtablenumber(L, "battMax", (120+g_eeGeneral.vBatMax) * 0.1f);
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   lua_pushtablestring(L, "language", TRANSLATIONS);
   lua_pushtablestring(L, "voice", currentLanguagePack->id);
