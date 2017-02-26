@@ -370,6 +370,7 @@ void drawSleepBitmap()
   const BitmapBuffer * bitmap = BitmapBuffer::load(getThemePath("sleep.bmp"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->getWidth())/2, (LCD_H-bitmap->getHeight())/2, bitmap);
+    delete bitmap;
   }
   lcdRefresh();
 }

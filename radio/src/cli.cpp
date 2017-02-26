@@ -116,6 +116,7 @@ int cliLs(const char ** argv)
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       serialPrint(fno.fname);
     }
+    f_closedir(&dir);
   }
   else {
     serialPrint("%s: Invalid directory \"%s\"", argv[0], argv[1]);
