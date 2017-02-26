@@ -297,8 +297,10 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
         uint32_t result = getCoordDistance(gpsItem.gps.latitude, gpsItem.gps.longitude, gpsItem.pilotLatitude, gpsItem.pilotLongitude);
+
         if (altItem) {
-          result += abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
+          unint32_t alt = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
+          result = isqrt32(alt*alt + result*result);
         }
 
         setValue(sensor, result, UNIT_METERS);
