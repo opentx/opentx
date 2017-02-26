@@ -108,7 +108,6 @@ end
 -- Redraw the current page
 local function redrawFieldsPage(event)
   lcd.clear()
-  lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR)
   drawScreenTitle("S6R", page, #pages)
 
   if refreshIndex < #fields then
@@ -276,7 +275,6 @@ local function runCalibrationPage(event)
     refreshIndex = 0
   end
   lcd.clear()
-  lcd.drawFilledRectangle(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR)
   drawScreenTitle("S6R", page, #pages)
   if(calibrationStep < 6) then
     local position = calibrationPositions[1 + calibrationStep]

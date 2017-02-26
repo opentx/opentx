@@ -39,9 +39,11 @@ static int luaLcdRefresh(lua_State *L)
 }
 
 /*luadoc
-@function lcd.clear()
+@function lcd.clear([color])
 
 Clear the LCD screen
+
+@param color (optionnal, only on color screens)
 
 @status current Introduced in 2.0.0
 
@@ -49,10 +51,16 @@ Clear the LCD screen
 */
 static int luaLcdClear(lua_State *L)
 {
-  if (luaLcdAllowed) lcdClear();
+  if (luaLcdAllowed) {
+#if defined(COLORLCD)
+    LcdFlags color = luaL_optunsigned(L, 1, TEXT_BGCOLOR);
+    lcd->clear(color);
+#else
+    lcdClear();
+#endif
+  }
   return 0;
 }
-
 
 /*luadoc
 @function lcd.drawPoint(x, y)
