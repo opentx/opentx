@@ -35,7 +35,7 @@ namespace Ui {
 class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
-    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings, 
+    ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings,
                 Firmware * firmware, QString & inputName);
     ~ExpoDialog();
 
@@ -44,7 +44,11 @@ class ExpoDialog : public QDialog {
 
   private slots:
     void valuesChanged();
-    void shrink();    
+    void shrink();
+    void label_phases_customContextMenuRequested(const QPoint & pos);
+    void fmClearAll();
+    void fmSetAll();
+    void fmInvertAll();
 
   private:
     Ui::ExpoDialog * ui;
@@ -57,6 +61,8 @@ class ExpoDialog : public QDialog {
     GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
     ModelPrinter modelPrinter;
+    bool lock;
+    QCheckBox * cb_fp[CPN_MAX_FLIGHT_MODES];
 };
 
 #endif // _EXPODIALOG_H_

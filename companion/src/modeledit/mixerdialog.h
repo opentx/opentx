@@ -43,6 +43,10 @@ class MixerDialog : public QDialog {
   private slots:
     void valuesChanged();
     void shrink();
+    void label_phases_customContextMenuRequested(const QPoint & pos);
+    void fmClearAll();
+    void fmSetAll();
+    void fmInvertAll();
 
   private:
     Ui::MixerDialog *ui;
@@ -54,6 +58,7 @@ class MixerDialog : public QDialog {
     GVarGroup * gvWeightGroup;
     GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
+    QCheckBox * cb_fp[CPN_MAX_FLIGHT_MODES];
 };
 
 #endif // _MIXERDIALOG_H_
