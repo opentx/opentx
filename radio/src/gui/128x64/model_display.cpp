@@ -83,15 +83,15 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 #endif
 
 
-int skipHiddenLines(int noRows, const uint8_t * mstate_tab, int Row)
+int skipHiddenLines(int noRows, const uint8_t * mstate_tab, int row)
 {
   for(int i=0; i<noRows; ++i) {
-    if (mstate_tab[i] != HIDDEN_ROW) {
-      if (Row == 0) {
+    if (mstate_tab[HEADER_LINE + i] != HIDDEN_ROW) {
+      if (row == 0) {
         // TRACE("%d -> %d", Row, i);
         return i;
       }
-      --Row;
+      --row;
     }
   }
   return -1;
