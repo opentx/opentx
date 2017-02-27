@@ -41,8 +41,8 @@ void checkTrainerSignalWarning();
 // Needs to be inlined to avoid slow function calls in ISR routines
 inline void captureTrainerPulses(uint16_t capture)
 {
-  static uint16_t lastCapt=0;
-  static uint8_t channelNumber=0;
+  static uint16_t lastCapt = 0;
+  static int8_t channelNumber = -1;
 
   uint16_t val = (uint16_t)(capture - lastCapt) / 2;
   lastCapt = capture;
@@ -52,19 +52,19 @@ inline void captureTrainerPulses(uint16_t capture)
   //
   // G: Prioritize reset pulse. (Needed when less than 16 incoming pulses)
   //
-  if (val>4000 && val<19000) {
-    channelNumber = 1; // triggered
+  if (val > 4000 && val < 19000) {
+    channelNumber = 0; // triggered
   }
   else {
-    if ((channelNumber > 0) && (channelNumber <= MAX_TRAINER_CHANNELS)) {
-      if (val>800 && val<2200) {
+    if (channelNumber >= 0 && channelNumber < MAX_TRAINER_CHANNELS) {
+      if (val > 800 && val < 2200) {
         ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
-        ppmInput[channelNumber++ - 1] =
-          //+-500 != 512, but close enough.
-          (int16_t)(val - 1500)*(g_eeGeneral.PPM_Multiplier+10)/10; 
+        ppmInput[channelNumber++] =
+          // +-500 != 512, but close enough.
+          (int16_t)(val - 1500) * (g_eeGeneral.PPM_Multiplier+10) / 10;
       }
       else {
-        channelNumber = 0; // not triggered
+        channelNumber = -1; // not triggered
       }
     }
   }
