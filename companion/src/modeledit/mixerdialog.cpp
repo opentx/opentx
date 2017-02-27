@@ -239,7 +239,7 @@ void MixerDialog::fmInvertAll()
 {
   lock = true;
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
-    cb_fp[i]->setChecked(not cb_fp[i]->checkState());
+    cb_fp[i]->setChecked(!cb_fp[i]->isChecked());
   }
   lock = false;
   valuesChanged();
