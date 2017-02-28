@@ -786,13 +786,12 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
-
   if (IS_RIGHT_ALIGNED(att)) {
     att -= RIGHT;
     if (att & DBLSIZE)
       x -= 5*(2*FWNUM)-4;
     else if (att & MIDSIZE)
-      x -= 5*8-4;
+      x -= 5*8-8;
     else
       x -= 5*FWNUM+1;
   }
