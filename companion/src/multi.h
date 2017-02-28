@@ -28,6 +28,9 @@
 
 #define MM_RF_CUSTOM_SELECTED 0xff
 
+
+// This struct does not need to be globally exposed but I am not sure how to hide it since
+// MultiProtocolDefinition and Multiprotocols both need it
 struct radio_mm_definition {
   int protocol;
   QStringList protocols;
