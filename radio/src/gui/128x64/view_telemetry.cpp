@@ -324,7 +324,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
       }
       if (field) {
-        LcdFlags att = (i==3 ? RIGHT|NO_UNIT : RIGHT|DBLSIZE|NO_UNIT);
+        LcdFlags att = (i==3 ? RIGHT|NO_UNIT : RIGHT|MIDSIZE|NO_UNIT);
         coord_t pos[] = {0, 65, 130};
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
@@ -332,6 +332,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
           // we don't display GPS name, no space for it
+          att = RIGHT|DBLSIZE|NO_UNIT;  //DBLSIZE ensure the telem screen specific display for GPS is used
         }
         else {
           drawSource(pos[j], 1+FH+2*FH*i, field, 0);
