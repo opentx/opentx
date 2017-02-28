@@ -25,7 +25,7 @@
 #include "helpers.h"
 #include "appdata.h"
 #include "modelprinter.h"
-#include "multi.h"
+#include "multiprotocols.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),

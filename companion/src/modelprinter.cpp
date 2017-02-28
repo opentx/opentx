@@ -22,7 +22,7 @@
 #include "modelprinter.h"
 #include <QPainter>
 #include <QFile>
-#include "multi.h"
+#include "multiprotocols.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -146,7 +146,7 @@ QString ModelPrinter::printMultiSubType(int rfProtocol, bool custom, unsigned in
   if (custom)
     rfProtocol = MM_RF_CUSTOM_SELECTED;
 
-  MultiProtocolDefinition pdef = multiProtocols.getProtocol(rfProtocol);
+  Multiprotocols::MultiProtocolDefinition pdef = multiProtocols.getProtocol(rfProtocol);
 
   if (subType < (unsigned int) pdef.subTypeStrings.size())
     return pdef.subTypeStrings[subType];

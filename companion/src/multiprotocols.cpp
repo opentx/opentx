@@ -20,7 +20,7 @@
 
 #include <QObject>
 
-#include "multi.h"
+#include "multiprotocols.h"
 #include "radiodata.h"
 
 #define tr QObject::tr
@@ -90,7 +90,7 @@ const Multiprotocols multiProtocols {
   { 0xfe,                   NO_SUBTYPE,           0,  nullptr             }
 };
 
-int MultiProtocolDefinition::getOptionMin() const {
+int Multiprotocols::MultiProtocolDefinition::getOptionMin() const {
   if (optionsstr == STR_MULTI_RFPOWER)
     return -1;
   else if (optionsstr == STR_MULTI_SERVOFREQ)
@@ -99,7 +99,7 @@ int MultiProtocolDefinition::getOptionMin() const {
     return -128;
 }
 
-int MultiProtocolDefinition::getOptionMax() const {
+int Multiprotocols::MultiProtocolDefinition::getOptionMax() const {
   if (optionsstr == STR_MULTI_RFPOWER)
     return 7;
   else if (optionsstr == STR_MULTI_SERVOFREQ)
@@ -108,8 +108,8 @@ int MultiProtocolDefinition::getOptionMax() const {
     return 127;
 }
 
-const MultiProtocolDefinition & Multiprotocols::getProtocol(int protocol) const {
-  for (const MultiProtocolDefinition & proto: protocols)
+const Multiprotocols::MultiProtocolDefinition & Multiprotocols::getProtocol(int protocol) const {
+  for (const Multiprotocols::MultiProtocolDefinition & proto: protocols)
     if (proto.protocol == protocol)
       return proto;
 

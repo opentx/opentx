@@ -28,7 +28,7 @@
 #include "wizarddata.h"
 #include "firmwareinterface.h"
 #include "macros.h"
-#include "multi.h"
+#include "multiprotocols.h"
 #include <stdio.h>
 #include <list>
 #include <float.h>

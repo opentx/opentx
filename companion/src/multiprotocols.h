@@ -28,44 +28,46 @@
 
 #define MM_RF_CUSTOM_SELECTED 0xff
 
-
-// This struct does not need to be globally exposed but I am not sure how to hide it since
-// MultiProtocolDefinition and Multiprotocols both need it
-struct radio_mm_definition {
-  int protocol;
-  QStringList protocols;
-  unsigned int maxSubtype;
-  QString optionsstr;
-};
-
-struct MultiProtocolDefinition {
-  int protocol;
-  QStringList subTypeStrings;
-  const QString & optionsstr;
-  unsigned int numSubytes()const { return (unsigned int) subTypeStrings.length();}
-  int getOptionMin() const;
-  int getOptionMax() const;
-
-  MultiProtocolDefinition(const radio_mm_definition & rd) :  protocol(rd.protocol), subTypeStrings(rd.protocols),
-                                                             optionsstr(rd.optionsstr)
-
-  {
-    Q_ASSERT(rd.maxSubtype +1 == (unsigned int) rd.protocols.length());
-  }
-};
-
-
 class Multiprotocols {
+
+  struct radio_mm_definition {
+    int protocol;
+    QStringList protocols;
+    unsigned int maxSubtype;
+    QString optionsstr;
+  };
+
+  public:
+  struct MultiProtocolDefinition {
+    int protocol;
+    QStringList subTypeStrings;
+    const QString &optionsstr;
+
+    unsigned int numSubytes() const
+    { return (unsigned int) subTypeStrings.length(); }
+
+    int getOptionMin() const;
+
+    int getOptionMax() const;
+
+    MultiProtocolDefinition(const radio_mm_definition &rd) : protocol(rd.protocol), subTypeStrings(rd.protocols),
+                                                             optionsstr(rd.optionsstr)
+    {
+      Q_ASSERT(rd.maxSubtype + 1 == (unsigned int) rd.protocols.length());
+    }
+  };
+
+  private:
   std::vector<MultiProtocolDefinition> protocols;
 
-public:
-  Multiprotocols (std::initializer_list<radio_mm_definition> l)
+  public:
+  Multiprotocols(std::initializer_list<radio_mm_definition> l)
   {
     for (radio_mm_definition rd: l)
       protocols.push_back(MultiProtocolDefinition(rd));
   }
 
-  const MultiProtocolDefinition & getProtocol(int protocol) const;
+  const MultiProtocolDefinition &getProtocol(int protocol) const;
 };
 
 extern const Multiprotocols multiProtocols;
