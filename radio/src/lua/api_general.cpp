@@ -1111,7 +1111,7 @@ static int luaGetRSSI(lua_State * L)
 }
 
 /*luadoc
-@function getCoordDistance(a_Lat, a_Long, b_Lat, b_Long)
+@function getCoordDistance(a_Lat, a_Long, b_Lat, b_Long, [alt])
 
 Compute the distance in meters between two GPS coordinates.
 Coordinates are expressed in decimal degrees (48.866667, 2.333333 for Eiffel Tower for example)
@@ -1119,6 +1119,8 @@ Coordinates are expressed in decimal degrees (48.866667, 2.333333 for Eiffel Tow
 @param a_Lat, a_Long first point latitude and longitude
 
 @param b_Lat, b_Long second point latitude and longitude
+
+@param optional : delta altitude in meter between the coordianates
 
 Compute the distance between two GPS coordinates
 
@@ -1134,13 +1136,15 @@ static int luagetCoordDistance(lua_State * L)
   float a_Long = luaL_checknumber(L, 2);
   float b_Lat = luaL_checknumber(L, 3);
   float b_Long = luaL_checknumber(L, 4);
+  uint16_t alt = luaL_optunsigned(L, 5, 0);
 #else
   int32_t a_Lat = luaL_checknumber(L, 1) * 1000000;
   int32_t a_Long = luaL_checknumber(L, 2) * 1000000;
   int32_t b_Lat = luaL_checknumber(L, 3)* 1000000;
   int32_t b_Long = luaL_checknumber(L, 4)* 1000000;
+  uint16_t alt = luaL_optunsigned(L, 5, 0);
 #endif
-    lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat,b_Long ));
+  lua_pushunsigned(L, getCoordDistance(a_Lat, a_Long, b_Lat, b_Long, alt));
   return 1;
 }
 
