@@ -23,15 +23,6 @@
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
 
-// TODO in maths
-uint32_t getDistFromEarthAxis(int32_t latitude)
-{
-  uint32_t lat = abs(latitude) / 10000;
-  uint32_t angle2 = (lat*lat) / 10000;
-  uint32_t angle4 = angle2 * angle2;
-  return 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
-}
-
 void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
 {
   int32_t newVal = val;

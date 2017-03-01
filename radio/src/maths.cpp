@@ -174,42 +174,42 @@ void getGpsDistance()
 }
 #endif
 
-#if defined(STM32F4)
-
-inline float degToRad(float x)
+uint32_t getDistFromEarthAxis(int32_t latitude)
 {
-    return x * 0.0174532925f; // Pi / 180
+  uint32_t lat = abs(latitude) / 10000;
+  uint32_t angle2 = (lat*lat) / 10000;
+  uint32_t angle4 = angle2 * angle2;
+  return 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
 }
 
-  uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt) {
-  return(getCoordDistance( (float) y1/1000000, (float) x1/1000000, (float)y2/1000000, (float) x2/1000000, alt));
+#if defined(STM32F4)
+
+uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt) {
+  return(getCoordDistance((float)y1 * 1e-6f, (float)x1 * 1e-6f, (float)y2 * 1e-6f, (float)x2 * 1e-6f, alt));
 }
 
 uint32_t getCoordDistance(float  y1, float x1, float y2, float x2, uint16_t alt){
-  uint32_t dist =  getCoordDistance( y1, x1, y2, x2);
-  return sqrt(dist*dist+alt*alt);
+  uint64_t dist =  getCoordDistance( y1, x1, y2, x2); // 64 needed to prevent overflow on earth wide computation
+  return sqrt(uint64_t(dist*dist + alt*alt));
 }
 
 uint32_t getCoordDistance(float  lat1, float long1, float lat2, float long2){
-  //Haversine formula:	a = sin²(Δφ/2) + cos φ1 * cos φ2 * sin²(Δλ/2)
-  //for greek adverse   a = sin²(delta_phi/2) + cos phi1 * cos phi2 * sin²(delta_lambda/2)
-  //                    c = 2 * atan2( √a, √(1−a) )
-  //                    d = R * c
-  // where	φ is latitude, λ is longitude, R is earth’s radius (mean radius = 6,371km); note that angles need to be in radians to pass to trig functions!
-  float R = 6371000.0f; // Earth’s mean, radius in meters
+  #define R 6371000.0
+  #define TO_RAD 0.0174532925 // Pi / 180
 
-  float phi1 = degToRad(lat1);
-  float phi2 = degToRad(lat2);
-  float delta_phi = degToRad(lat2-lat1);
-  float delta_lambda = degToRad(long2-long1);
+  float dx, dy, dz;
+  long1 -= long2;
+  long1 *= TO_RAD, lat1 *= TO_RAD, lat2 *= TO_RAD;
 
-  float a =   sinf(delta_phi/2) * sinf(delta_phi/2) + cosf(phi1) * cosf(phi2) * sinf(delta_lambda/2) * sinf(delta_lambda/2);
-  float c = 2 * atan2f( sqrtf(a), sqrtf( 1 - a));
-  return roundf(R *c);
+  dz = sinf(lat1) - sinf(lat2);
+  dx = cosf(long1) * cosf(lat1) - cosf(lat2);
+  dy = sinf(long1) * cosf(lat1);
+  uint32_t dist = asinf(sqrtf(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
+  return isfinite(dist) ? dist : 0;
 }
  // STM32F4
 #elif defined(CPUARM)
-uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt){
+  uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt){
   uint32_t angle = abs(y1 - y2);
   uint32_t dist = EARTH_RADIUS * angle / 1000000;
   uint32_t result = dist*dist;
