@@ -175,20 +175,40 @@ void getGpsDistance()
 #endif
 
 #if defined(STM32F4)
-uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
-  float nRadius = 6370997.0; // Earth’s radius in meters
-  float rad = 0.0174532925199433;
-  float nDLat = (y2 - y1) * rad;
-  float nDLon = (x2 - x1) * rad;
-  y1 *= rad;
-  y2 *= rad;
 
-  float nA =   powf( sinf(nDLat/2), 2 ) + cosf(y1) * cosf(y2) * powf( sin(nDLon/2), 2 );
-  float nC = 2 * atan2f( sqrtf(nA), sqrtf( 1 - nA ));
-  return roundf(nRadius * nC);
+inline float degToRad(float x)
+{
+    return x * 0.0174532925f; // Pi / 180
 }
-#endif // STM32F4
-#if defined(CPUARM)
+
+uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2) {
+  return(getCoordDistance( (float) y1/1000000, (float) x1/1000000, (float)y2/1000000, (float) x2/1000000));
+}
+
+uint32_t getCoordDistance(float  y1, float x1, float y2, float x2, uint16_t alt){
+  uint32_t dist =  getCoordDistance( y1, x1, y2, x2);
+  return sqrt(dist*dist+alt*alt);
+}
+
+uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
+  //Haversine formula:	a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
+  //for greek adverse   a = sin²(delta_phi/2) + cos phi1 ⋅ cos phi2 ⋅ sin²(delta_lambda/2)
+  //                    c = 2 ⋅ atan2( √a, √(1−a) )
+  //                    d = R ⋅ c
+  // where	φ is latitude, λ is longitude, R is earth’s radius (mean radius = 6,371km); note that angles need to be in radians to pass to trig functions!
+  float R = 6371e3; // Earth’s mean, radius in meters
+
+  float phi1 = degToRad(x1);
+  float phi2 = degToRad(x2);
+  float delta_phi = degToRad(x2-x1);
+  float delta_lambda = degToRad(y2-y1);
+
+  float a =   sinf(delta_phi/2) * sinf(delta_phi/2) + cosf(phi1) * cosf(phi2) * sinf(delta_lambda/2) * sinf(delta_lambda/2);
+  float c = 2 * atan2f( sqrtf(a), sqrtf( 1 - a));
+  return roundf(R *c);
+}
+ // STM32F4
+#elif defined(CPUARM)
 uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2){
   uint32_t angle = abs(y1 - y2);
   uint32_t dist = EARTH_RADIUS * angle / 1000000;
