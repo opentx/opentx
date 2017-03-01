@@ -27,7 +27,7 @@
 
 // this might need to move to the flight software
 //static
-mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
+mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER };
 
 // Mavlink message decoded Status Text
 #define PARAM_NB_REPEAT 10
