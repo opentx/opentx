@@ -181,8 +181,8 @@ inline float degToRad(float x)
     return x * 0.0174532925f; // Pi / 180
 }
 
-uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2) {
-  return(getCoordDistance( (float) y1/1000000, (float) x1/1000000, (float)y2/1000000, (float) x2/1000000));
+  uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt) {
+  return(getCoordDistance( (float) y1/1000000, (float) x1/1000000, (float)y2/1000000, (float) x2/1000000, alt));
 }
 
 uint32_t getCoordDistance(float  y1, float x1, float y2, float x2, uint16_t alt){
@@ -190,18 +190,18 @@ uint32_t getCoordDistance(float  y1, float x1, float y2, float x2, uint16_t alt)
   return sqrt(dist*dist+alt*alt);
 }
 
-uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
-  //Haversine formula:	a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
-  //for greek adverse   a = sin²(delta_phi/2) + cos phi1 ⋅ cos phi2 ⋅ sin²(delta_lambda/2)
-  //                    c = 2 ⋅ atan2( √a, √(1−a) )
-  //                    d = R ⋅ c
+uint32_t getCoordDistance(float  lat1, float long1, float lat2, float long2){
+  //Haversine formula:	a = sin²(Δφ/2) + cos φ1 * cos φ2 * sin²(Δλ/2)
+  //for greek adverse   a = sin²(delta_phi/2) + cos phi1 * cos phi2 * sin²(delta_lambda/2)
+  //                    c = 2 * atan2( √a, √(1−a) )
+  //                    d = R * c
   // where	φ is latitude, λ is longitude, R is earth’s radius (mean radius = 6,371km); note that angles need to be in radians to pass to trig functions!
-  float R = 6371e3; // Earth’s mean, radius in meters
+  float R = 6371000.0f; // Earth’s mean, radius in meters
 
-  float phi1 = degToRad(x1);
-  float phi2 = degToRad(x2);
-  float delta_phi = degToRad(x2-x1);
-  float delta_lambda = degToRad(y2-y1);
+  float phi1 = degToRad(lat1);
+  float phi2 = degToRad(lat2);
+  float delta_phi = degToRad(lat2-lat1);
+  float delta_lambda = degToRad(long2-long1);
 
   float a =   sinf(delta_phi/2) * sinf(delta_phi/2) + cosf(phi1) * cosf(phi2) * sinf(delta_lambda/2) * sinf(delta_lambda/2);
   float c = 2 * atan2f( sqrtf(a), sqrtf( 1 - a));
@@ -209,7 +209,7 @@ uint32_t getCoordDistance(float  y1, float x1, float y2, float x2){
 }
  // STM32F4
 #elif defined(CPUARM)
-uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2){
+uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt){
   uint32_t angle = abs(y1 - y2);
   uint32_t dist = EARTH_RADIUS * angle / 1000000;
   uint32_t result = dist*dist;
@@ -217,6 +217,6 @@ uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2){
   angle = abs(x1 - x2);
   dist = getDistFromEarthAxis(y2) * angle / 1000000;
   result += dist*dist;
-  return (isqrt32(result));
+  return (isqrt32(result + alt*alt));
 }
 #endif // CPUARM

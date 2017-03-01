@@ -1563,10 +1563,11 @@ void getGpsPilotPosition();
 void getGpsDistance();
 
 #if defined(STM32F4)
-uint32_t getCoordDistance(float, float, float, float );
+uint32_t getCoordDistance(float, float, float, float);
+uint32_t getCoordDistance(float, float, float, float, uint16_t);
 #endif
 #if defined(CPUARM)
-uint32_t getCoordDistance(int32_t, int32_t, int32_t, int32_t);
+uint32_t getCoordDistance(int32_t, int32_t, int32_t, int32_t, uint16_t);
 #endif
 
 void varioWakeup();
