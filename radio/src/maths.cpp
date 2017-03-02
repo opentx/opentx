@@ -183,7 +183,6 @@ uint32_t getDistFromEarthAxis(int32_t latitude)
 }
 
 #if defined(STM32F4)
-
 uint32_t getCoordDistance(int32_t  y1, int32_t x1, int32_t y2, int32_t x2, uint16_t alt) {
   return(getCoordDistance((float)y1 * 1e-6f, (float)x1 * 1e-6f, (float)y2 * 1e-6f, (float)x2 * 1e-6f, alt));
 }
@@ -197,13 +196,14 @@ uint32_t getCoordDistance(float  lat1, float long1, float lat2, float long2){
   #define R 6371000.0
   #define TO_RAD 0.0174532925 // Pi / 180
 
-  float dx, dy, dz;
+  float dx, dy, dz, cosl1;
   long1 -= long2;
   long1 *= TO_RAD, lat1 *= TO_RAD, lat2 *= TO_RAD;
 
+  cosl1 = cosf(lat1);
   dz = sinf(lat1) - sinf(lat2);
-  dx = cosf(long1) * cosf(lat1) - cosf(lat2);
-  dy = sinf(long1) * cosf(lat1);
+  dx = cosf(long1) *  cosl1- cosf(lat2);
+  dy = sinf(long1) * cosl1;
   uint32_t dist = asinf(sqrtf(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
   return isfinite(dist) ? dist : 0;
 }
