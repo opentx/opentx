@@ -122,16 +122,16 @@ void SimulatedUIWidget::captureScreenshot()
     if (path.isEmpty())
       path = "./";
     QDir dir(path);
-    if (!dir.exists() || !dir.isReadable()) {
-      // m_simulator->traceCallback("SIMULATOR ERROR - Cannot open screenshot folder, check your settings.\n");
-      qDebug() << "SIMULATOR ERROR - Cannot open screenshot folder, check your settings.";
-      return;
+    if (dir.exists() && dir.isReadable()) {
+      QStringList fwid = getCurrentFirmware()->getId().split("-", QString::SkipEmptyParts);
+      QString flavor = fwid.at(qMin(1, fwid.size()));
+      QString fnpfx = tr("screenshot", "Simulator LCD screenshot file name prefix");
+      fileName = "%1/%2_%3_%4.png";
+      fileName = fileName.arg(dir.absolutePath(), fnpfx, flavor, QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
     }
-    QStringList fwid = getCurrentFirmware()->getId().split("-", QString::SkipEmptyParts);
-    QString flavor = fwid.at(qMin(1, fwid.size()));
-    QString fnpfx = tr("screenshot", "Simulator LCD screenshot file name prefix");
-    fileName = "%1/%2_%3_%4.png";
-    fileName = fileName.arg(dir.absolutePath(), fnpfx, flavor, QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss"));
+    else {
+      qWarning() << "SIMULATOR ERROR - Cannot open screenshot folder, check your settings.";
+    }
   }
   m_lcd->makeScreenshot(fileName);
 }

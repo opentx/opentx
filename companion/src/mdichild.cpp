@@ -33,13 +33,6 @@
 #include "storage.h"
 #include "radiointerface.h"
 
-#if defined _MSC_VER || !defined __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x*1000)
-#else
-#include <unistd.h>
-#endif
-
 MdiChild::MdiChild(MainWindow * parent):
   QWidget(),
   parent(parent),

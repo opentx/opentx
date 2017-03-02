@@ -44,6 +44,7 @@ namespace Ui {
 }
 
 class QAbstractButton;
+class QMessageLogContext;
 class FilteredTextBuffer;
 
 using namespace Simulator;
@@ -71,6 +72,7 @@ class DebugOutput : public QWidget
     void restoreState();
     void processBytesReceived();
     void onDataBufferOverflow(const qint64 len);
+    void onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context);
     void onFilterStateChanged();
     void onFilterTextChanged(const QString &);
     void onFilterToggled(bool enable);

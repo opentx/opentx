@@ -22,6 +22,7 @@
 #include "ui_simulatorwidget.h"
 
 #include "appdata.h"
+#include "appdebugmessagehandler.h"
 #include "radiofaderwidget.h"
 #include "radioknobwidget.h"
 #include "radioswitchwidget.h"
@@ -36,7 +37,6 @@
 #include "joystickdialog.h"
 #endif
 
-#include <QDebug>
 #include <QFile>
 #include <iostream>
 
@@ -332,11 +332,11 @@ bool SimulatorWidget::useTempDataPath(bool deleteOnClose)
     setDataPath(tmpDir.path());
     tmpDir.setAutoRemove(false);
     deleteTempRadioData = deleteOnClose;
-    qDebug() << __FILE__ << __LINE__ << "Created temporary settings directory" << radioDataPath << "with delteOnClose:" << deleteOnClose;
+    qDebug() << "Created temporary settings directory" << radioDataPath << "with delteOnClose:" << deleteOnClose;
     return true;
   }
   else {
-    qDebug() << __FILE__ << __LINE__ << "ERROR : Failed to create temporary settings directory" << radioDataPath;
+    qCritical() << "ERROR : Failed to create temporary settings directory" << radioDataPath;
     return false;
   }
 }
@@ -381,7 +381,7 @@ bool SimulatorWidget::saveTempData()
       if (!(ret = store.write(radioData)))
         error = store.error();
       else
-        qDebug() << __FILE__ << __LINE__ << "Saved radio data to file" << file;
+        qInfo() << "Saved radio data to file" << file;
     }
   }
 
@@ -398,7 +398,7 @@ void SimulatorWidget::deleteTempData()
 {
   if (!radioDataPath.isEmpty()) {
     QDir tpath(radioDataPath);
-    qDebug() << __FILE__ << __LINE__ << "Deleting temporary settings directory" << tpath.absolutePath();
+    qDebug() << "Deleting temporary settings directory" << tpath.absolutePath();
     tpath.removeRecursively();
     tpath.rmdir(radioDataPath);  // for some reason this is necessary to remove the base folder
   }

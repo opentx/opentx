@@ -51,8 +51,7 @@ if(SDL_FOUND)
   add_definitions(-DJOYSTICKS)
 endif()
 
-add_definitions(-DSIMU)
-add_definitions(-DQXT_STATIC)
+add_definitions(${APP_COMMON_DEFINES})  # set in top-level CMakeLists
 
 if(NOT MSVC)
   set(WARNING_FLAGS "${WARNING_FLAGS} -Wall")
@@ -115,6 +114,7 @@ add_subdirectory(thirdparty/qxtcommandoptions)
 ############# Common lib ###############
 
 set(common_SRCS
+  appdebugmessagehandler.cpp
   boards.cpp
   eeprominterface.cpp
   radiodata.cpp
@@ -126,7 +126,11 @@ set(common_SRCS
   firmwares/opentx/opentxinterface.cpp
   )
 
-qt5_wrap_cpp(common_SRCS)
+set(common_MOC_HDRS
+  appdebugmessagehandler.h
+  )
+
+qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
 
 add_library(common ${common_SRCS})
 qt5_use_modules(common Core Xml Widgets)

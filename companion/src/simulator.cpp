@@ -24,7 +24,6 @@
 #include <QLocale>
 #include <QString>
 #include <QDir>
-#include <QDebug>
 #include <QTextStream>
 #include <QMessageBox>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
@@ -33,6 +32,7 @@
 #endif
 
 #include "appdata.h"
+#include "appdebugmessagehandler.h"
 #include "constants.h"
 #include "eeprominterface.h"
 #include "simulator.h"
@@ -41,16 +41,6 @@
 #include "storage.h"
 #include "qxtcommandoptions.h"
 #include "version.h"
-
-#ifdef WIN32
-  #include <windows.h>
-  #ifdef _MSC_VER
-    #define sleep(x) Sleep(x*1000)
-  #endif
-#endif
-#if !defined(_MSC_VER) || defined(__GNUC__)
-#include <unistd.h>
-#endif
 
 using namespace Simulator;
 
@@ -96,20 +86,14 @@ int main(int argc, char *argv[])
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-  if (!GetConsoleWindow()) {
-    AllocConsole();
-    freopen("conin$", "r", stdin);
-    freopen("conout$", "w", stdout);
-    freopen("conout$", "w", stderr);
-  }
-  SetConsoleTitle(APP_SIMULATOR " Console");
-#endif
 
   QApplication app(argc, argv);
   app.setApplicationName(APP_SIMULATOR);
   app.setOrganizationName(COMPANY);
   app.setOrganizationDomain(COMPANY_DOMAIN);
+
+  if (AppDebugMessageHandler::instance())
+    AppDebugMessageHandler::instance()->installAppMessageHandler();
 
   g.init();
 
@@ -219,7 +203,7 @@ int main(int argc, char *argv[])
       return finish(0);
     }
   }
-  qDebug() << __FILE__ << __LINE__ << "profileId=" << profileId << simOptions;
+  qDebug() << "profileId=" << profileId << simOptions;
 
   if (profileId < 0 || simOptions.firmwareId.isEmpty() || (simOptions.dataFile.isEmpty() && simOptions.dataFolder.isEmpty())) {
     showMessage(QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\n  Profile ID: [%1]; Radio ID: [%2];\nData File: [%3]")
@@ -276,9 +260,6 @@ int finish(int exitCode)
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();
-#endif
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-  FreeConsole();
 #endif
 
   return exitCode;

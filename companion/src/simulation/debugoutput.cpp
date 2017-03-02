@@ -21,6 +21,7 @@
 #include "debugoutput.h"
 #include "ui_debugoutput.h"
 
+#include "appdebugmessagehandler.h"
 #include "appdata.h"
 #include "filteredtextbuffer.h"
 
@@ -100,6 +101,9 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   connect(ui->actionToggleFilter, &QAction::toggled, this, &DebugOutput::onFilterToggled);
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
 
+  if (AppDebugMessageHandler::instance())
+    connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
+
   // send firmware TRACE events to our data collector
   m_simulator->installTraceHook(firmwareTraceCb);
 }
@@ -108,6 +112,8 @@ DebugOutput::~DebugOutput()
 {
   saveState();
 
+  if (AppDebugMessageHandler::instance())
+    disconnect(AppDebugMessageHandler::instance(), 0, this, 0);
 
   if (m_dataBufferDevice) {
     disconnect(m_dataBufferDevice, 0, this, 0);
@@ -195,6 +201,14 @@ void DebugOutput::onDataBufferOverflow(const qint64 len)
   else if (!reportTimer.isValid() || reportTimer.elapsed() > 1000 * 30) {
     qWarning("Data buffer overflow by %lld bytes!", len);
     reportTimer.start();
+  }
+}
+
+void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context)
+{
+  if (level > 0) {
+    firmwareTraceCb(qPrintable(msg));
+    firmwareTraceCb("\n");
   }
 }
 
