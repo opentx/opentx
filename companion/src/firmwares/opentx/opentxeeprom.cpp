@@ -3473,6 +3473,10 @@ void OpenTxModelData::afterImport()
     }
   }
 
+  if (IS_HORUS(board)) {
+    modelData.moduleData[0].protocol = PULSES_PXX_XJT_X16;
+  }
+
   for (int module=0; module<3; module++) {
     if (modelData.moduleData[module].protocol == PULSES_PXX_XJT_X16 || modelData.moduleData[module].protocol == PULSES_LP45) {
       if (subprotocols[module] >= 0)

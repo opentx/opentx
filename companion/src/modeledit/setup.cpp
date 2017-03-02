@@ -238,9 +238,9 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   lock = false;
 
   // a change will not register if only one item was added
-  if (ui->protocol->count() == 1)
+  if (ui->protocol->count() == 1) {
     on_protocol_currentIndexChanged(ui->protocol->currentIndex());
-
+  }
 }
 
 ModulePanel::~ModulePanel()
@@ -406,8 +406,9 @@ void ModulePanel::update()
     mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
   }
 
-  if (moduleHasFailsafes())
+  if (moduleHasFailsafes()) {
     mask |= MASK_FAILSAFES;
+  }
 
   ui->label_protocol->setVisible(mask & MASK_PROTOCOL);
   ui->protocol->setVisible(mask & MASK_PROTOCOL);
