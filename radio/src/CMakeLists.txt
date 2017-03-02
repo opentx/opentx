@@ -507,7 +507,7 @@ if(NOT MSVC)
     if (BASH AND NOT WIN32)
       add_custom_command(
         OUTPUT ${ALLSRC}
-        COMMAND ${BASH} -kc 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \"$$f\"" >> allsrc.cpp\; cat "$$f" >> ${ALLSRC}\; done'
+        COMMAND ${BASH} -kc 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \\\"$$f\\\"" >> ${ALLSRC}\; cat "$$f" >> ${ALLSRC}\; done'
         WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
         DEPENDS ${SRC}
         )
