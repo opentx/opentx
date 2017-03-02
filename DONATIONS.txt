@@ -1128,3 +1128,4 @@ CY Enterprise
 William Tortorello
 André Lasseret
 Lothar Thole
+Stuart Olson
