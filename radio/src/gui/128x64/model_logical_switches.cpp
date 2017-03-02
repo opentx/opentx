@@ -445,7 +445,12 @@ void menuModelLogicalSwitches(event_t event)
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, LS_FUNC_MAX);
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
-            cs->v1 = cs->v2 = (new_cstate==LS_FAMILY_TIMER ? -119/*1.0*/ : 0);
+            unsigned int save_func = cs->func;
+            memset(cs, 0, sizeof(LogicalSwitchData));
+            cs->func = save_func;
+            if (new_cstate == LS_FAMILY_TIMER) {
+              cs->v1 = cs->v2 = -119;
+            }
           }
           break;
         }
