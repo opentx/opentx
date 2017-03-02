@@ -25,7 +25,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   ModelPanel(parent, model, generalSettings, firmware),
   selectedSwitch(0)
 {
-  Stopwatch s1("LogicalSwitchesPanel"); 
+  Stopwatch s1("LogicalSwitchesPanel");
 
   int channelsMax = model.getChannelsMax(true);
 
@@ -213,23 +213,14 @@ void LogicalSwitchesPanel::edited()
     CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
 
     if (oldFuncFamily != newFuncFamily) {
+      model->logicalSw[i].clear();
+      model->logicalSw[i].func = csw[i]->itemData(csw[i]->currentIndex()).toInt();
       if (newFuncFamily == LS_FAMILY_TIMER) {
         model->logicalSw[i].val1 = -119;
         model->logicalSw[i].val2 = -119;
       }
       else if (newFuncFamily == LS_FAMILY_EDGE) {
-        model->logicalSw[i].val1 = 0;
         model->logicalSw[i].val2 = -129;
-        model->logicalSw[i].val3 = 0;
-      }
-      else if (newFuncFamily == LS_FAMILY_STICKY) {
-        model->logicalSw[i].val1 = 0;
-        model->logicalSw[i].val2 = 0;
-        model->logicalSw[i].delay = 0;
-      }
-      else {
-        model->logicalSw[i].val1 = 0;
-        model->logicalSw[i].val2 = 0;
       }
       setSwitchWidgetVisibility(i);
     }
