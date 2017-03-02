@@ -204,14 +204,14 @@ bool menuModelLogicalSwitches(event_t event)
           cs->func = checkIncDec(event, cs->func, 0, LS_FUNC_MAX, EE_MODEL, isLogicalSwitchFunctionAvailable);
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
+            unsigned int save_func = cs->func;
+            memset(cs, 0, sizeof(LogicalSwitchData));
+            cs->func = save_func;
             if (new_cstate == LS_FAMILY_TIMER) {
               cs->v1 = cs->v2 = -119;
             }
             else if (new_cstate == LS_FAMILY_EDGE) {
-              cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
-            }
-            else {
-              cs->v1 = cs->v2 = 0;
+              cs->v2 = -129;
             }
           }
           break;
