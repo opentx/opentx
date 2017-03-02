@@ -596,9 +596,59 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 }
 #if defined(MULTIMODULE)
 // Third row is number of subtypes -1 (max valid subtype)
+#define NO_SUBTYPE  nullptr
+
+// Table is designed to be shared with companion multi.cpp
+
+// The subtype and options strings are only referenced here, so
+// define them here to avoid duplication in all language files
+// Also since these strings are ARM only and likely stay ARM only
+// we don't need the special eeprom/flash string handling, just define them as
+// local strings
+
+static const char* STR_SUBTYPE_FLYSKY   =   "\004""Std\0""V9x9""V6x6""V912""CX20";
+
+static const char* STR_SUBTYPE_AFHDS2A =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
+
+static const char* STR_SUBTYPE_FRSKY =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
+
+static const char* STR_SUBTYPE_HISKY =      "\005""HiSky""HK310";
+
+static const char* STR_SUBTYPE_DSM =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
+
+static const char* STR_SUBTYPE_YD717 =      "\007""YD717\0 ""SKYWLKR""Syma X2""XINXUN\0""NIHUI\0  ";
+
+static const char* STR_SUBTYPE_SYMAX =      "\003""Std""5c\0";
+
+static const char* STR_SUBTYPE_SLT =        "\005""SLT\0 ""Vista";
+
+static const char* STR_SUBTYPE_CX10 =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041""Q242\0  ";
+
+static const char* STR_SUBTYPE_CG023 =      "\005""CG023""YD829""H3 3d";
+
+static const char* STR_SUBTYPE_KN =         "\006""WLtoys""FeiLun";
+
+static const char* STR_SUBTYPE_MT99 =       "\005""MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805";
+
+static const char* STR_SUBTYPE_MJXQ =       "\005""WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH";
+
+static const char* STR_SUBTYPE_HONTAI=      "\007""Std\0   ""JJRC X1""X5C1cln";
+
+static const char* STR_SUBTYPE_Q2X2 =       "\004""Q222""Q242""Q282";
+
+static const char* STR_SUBTYPE_Q303 =       "\006""Q303\0 ""CX35\0 ""CX10D\0""CX10WD";
+
+static const char* STR_SUBTYPE_WK2x01 =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI";
+
+static const char* STR_SUBTYPE_V2X2 =       "\006""V2x2\0 ""JXD506";
+
+static const char* STR_SUBTYPE_BAYANG =     "\006""Bayang""H8S3D";
+
+static const char* STR_SUBTYPE_FY326 =      "\005""FY326""FY319";
+
 const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
-  { MM_RF_PROTO_HUBSAN,     nullptr,              0,  STR_MULTI_VIDFREQ   },
+  { MM_RF_PROTO_HUBSAN,     NO_SUBTYPE,           0,  STR_MULTI_VIDFREQ   },
   { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    5,  STR_MULTI_RFTUNE    },
   { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
   { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
@@ -613,18 +663,21 @@ const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_MT99XX,     STR_SUBTYPE_MT99,     4,  nullptr             },
   { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     5,  nullptr             },
   { MM_RF_PROTO_FY326,      STR_SUBTYPE_FY326,    1,  nullptr             },
-  { MM_RF_PROTO_SFHSS,      nullptr,              0,  STR_MULTI_RFTUNE    },
-  { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   3,  nullptr             },
-  { MM_RF_PROTO_OLRS,       nullptr,              0,  STR_MULTI_RFPOWER   },
+  { MM_RF_PROTO_SFHSS,      NO_SUBTYPE,           0,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   2,  nullptr             },
+  { MM_RF_PROTO_OLRS,       NO_SUBTYPE,           0,  STR_MULTI_RFPOWER   },
   { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
-  { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     1,  nullptr             },
+  { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     2,  nullptr             },
   { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
   { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
-  { MM_RF_CUSTOM_SELECTED,  nullptr,              7,  STR_MULTI_OPTION    },
+  { MM_RF_PROTO_GW08,       NO_SUBTYPE,           0,   nullptr             },
+  { MM_RF_CUSTOM_SELECTED,  NO_SUBTYPE,           7,  STR_MULTI_OPTION    },
 
   //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
-  { 0xfe,                   nullptr,              0,  nullptr             }
+  { 0xfe,                   NO_SUBTYPE,           0,  nullptr             }
 };
+
+#undef NO_SUBTYPE
 
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
 {

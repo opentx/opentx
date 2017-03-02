@@ -274,6 +274,20 @@
           </item>
          </widget>
         </item>
+        <item row="5" column="1">
+         <widget class="QSpinBox" name="optionValue">
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_option">
+          <property name="text">
+           <string>Option value</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="0" column="2">

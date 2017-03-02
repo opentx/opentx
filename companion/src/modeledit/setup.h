@@ -91,6 +91,7 @@ class ModulePanel : public ModelPanel
     void onFailsafePercentChanged(double value);
     void onFailsafesDisplayValueTypeChanged(int type);
     void updateFailsafe(int channel);
+    void on_optionValue_editingFinished();
 
   private:
     enum FailsafeValueDisplayTypes { FAILSAFE_DISPLAY_PERCENT = 1, FAILSAFE_DISPLAY_USEC = 2 };
