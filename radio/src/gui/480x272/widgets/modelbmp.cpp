@@ -26,7 +26,7 @@ class ModelBitmapWidget: public Widget
     ModelBitmapWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
       Widget(factory, zone, persistentData),
       buffer(NULL),
-      hash(255)
+      deps_hash(0)
     {
     }
 
@@ -63,23 +63,13 @@ class ModelBitmapWidget: public Widget
       }
     }
 
-    uint8_t evalHash(const void * data, uint32_t size)
-    {
-      const uint8_t * byte_data = (const uint8_t *)data;
-      uint8_t result = 0;
-      for (uint8_t i=0; i<size; i++) {
-        result ^= *byte_data++;
-      }
-      return result;
-    }
-
     virtual void refresh()
     {
-      uint8_t new_hash = evalHash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
-      new_hash ^= evalHash(g_model.header.name, sizeof(g_model.header.name));
-      new_hash ^= evalHash(g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
-      if (new_hash != hash) {
-        hash = new_hash;
+      uint32_t new_hash = hash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
+      new_hash ^= hash(g_model.header.name, sizeof(g_model.header.name));
+      new_hash ^= hash(g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
+      if (new_hash != deps_hash) {
+        deps_hash = new_hash;
         refreshBuffer();
       }
 
@@ -90,7 +80,7 @@ class ModelBitmapWidget: public Widget
 
   protected:
     BitmapBuffer * buffer;
-    uint32_t hash;
+    uint32_t deps_hash;
 };
 
 BaseWidgetFactory<ModelBitmapWidget> modelBitmapWidget("ModelBmp", NULL);

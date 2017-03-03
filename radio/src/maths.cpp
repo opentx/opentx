@@ -172,3 +172,15 @@ void getGpsDistance()
     telemetryData.hub.maxGpsDistance = telemetryData.hub.gpsDistance;
 }
 #endif
+
+#if defined(CPUARM)
+uint32_t hash(const void * ptr, uint32_t size)
+{
+  const uint8_t * data = (const uint8_t *)ptr;
+  uint32_t hash = 5381;
+  for (uint32_t i=0; i<size; i++) {
+    hash = ((hash << 5) + hash) + data[i]; /* hash * 33 + c */
+  }
+  return hash;
+}
+#endif
