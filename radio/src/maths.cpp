@@ -99,7 +99,7 @@ int8_t calcRESXto100(int16_t x)
   return (x*25) >> 8;
 }
 #endif
-
+// djb2 hash algorithm
 #if defined(HELI) || defined(FRSKY_HUB) || defined(CPUARM)
 uint16_t isqrt32(uint32_t n)
 {
@@ -174,6 +174,7 @@ void getGpsDistance()
 #endif
 
 #if defined(CPUARM)
+/*
 uint32_t hash(const void * ptr, uint32_t size)
 {
   const uint8_t * data = (const uint8_t *)ptr;
