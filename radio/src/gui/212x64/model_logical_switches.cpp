@@ -43,14 +43,14 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData * cs, uint8_t la
 {
   lcdDrawChar(x-4, y, '[');
   lcdDrawNumber(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
-  lcdDrawChar(lcdLastPos, y, ':');
+  lcdDrawChar(lcdLastRightPos, y, ':');
   if (cs->v3 < 0)
-    lcdDrawText(lcdLastPos+3, y, "<<", rattr);
+    lcdDrawText(lcdLastRightPos+3, y, "<<", rattr);
   else if (cs->v3 == 0)
-    lcdDrawText(lcdLastPos+3, y, "--", rattr);
+    lcdDrawText(lcdLastRightPos+3, y, "--", rattr);
   else
-    lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
-  lcdDrawChar(lcdLastPos, y, ']');
+    lcdDrawNumber(lcdLastRightPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcdDrawChar(lcdLastRightPos, y, ']');
 }
 
 void onLogicalSwitchesMenu(const char *result)

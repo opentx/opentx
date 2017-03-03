@@ -396,7 +396,7 @@ void menuModelMixOne(event_t event)
 {
   TITLE(STR_MIXER);
   MixData * md2 = mixAddress(s_currIdx) ;
-  putsChn(lcdLastPos+1*FW, 0, md2->destCh+1,0);
+  putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 
 #if defined(ROTARY_ENCODERS)
 #if defined(CURVES)
