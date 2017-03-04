@@ -416,7 +416,7 @@ void menuModelTelemetryFrsky(event_t event)
     if (k>=ITEM_TELEMETRY_SENSOR1 && k<ITEM_TELEMETRY_SENSOR1+MAX_TELEMETRY_SENSORS) {
       int index = k-ITEM_TELEMETRY_SENSOR1;
       lcdDrawNumber(INDENT_WIDTH, y, index+1, LEFT|attr);
-      lcdDrawChar(lcdLastPos, y, ':', attr);
+      lcdDrawChar(lcdLastRightPos, y, ':', attr);
       lcdDrawSizedText(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
         lcdDrawChar(10*FW, y, '*');
@@ -427,7 +427,7 @@ void menuModelTelemetryFrsky(event_t event)
         lcdNextPos = TELEM_COL2;
         if (isOld) lcdDrawChar(lcdNextPos, y, '[');
         drawSensorCustomValue(lcdNextPos, y, index, getValue(MIXSRC_FIRST_TELEM+3*index), LEFT);
-        if (isOld) lcdDrawChar(lcdLastPos, y, ']');
+        if (isOld) lcdDrawChar(lcdLastRightPos, y, ']');
       }
       else {
         lcdDrawText(TELEM_COL2, y, "---", 0); // TODO shortcut

@@ -496,7 +496,7 @@ void menuModelTelemetryMavlink(event_t event) {
 		case ITEM_MAVLINK_RC_RSSI_SCALE:
 			lcdDrawTextAlignedLeft(y, STR_MAVLINK_RC_RSSI_SCALE_LABEL);
 			lcdDrawNumber(VIEW_MAVLINK_2ND_COLUMN, y, (25 + g_model.mavlink.rc_rssi_scale * 5), attr|LEFT);
-			lcdDrawChar(lcdLastPos, y, '%');
+			lcdDrawChar(lcdLastRightPos, y, '%');
 			if (attr) CHECK_INCDEC_MODELVAR(event, g_model.mavlink.rc_rssi_scale, 0, 15);
 			break;
 		case ITEM_MAVLINK_PC_RSSI_EN:

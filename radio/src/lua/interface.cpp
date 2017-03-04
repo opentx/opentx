@@ -776,12 +776,12 @@ void luaDoOneRunStandalone(event_t evt)
         else if (luaDisplayStatistics) {
 #if defined(COLORLCD)
 #else
-          lcdDrawSolidHorizontalLine(0, 7*FH-1, lcdLastPos+6, ERASE);
+          lcdDrawSolidHorizontalLine(0, 7*FH-1, lcdLastRightPos+6, ERASE);
           lcdDrawText(0, 7*FH, "GV Use: ");
-          lcdDrawNumber(lcdLastPos, 7*FH, luaGetMemUsed(lsScripts), LEFT);
-          lcdDrawChar(lcdLastPos, 7*FH, 'b');
-          lcdDrawSolidHorizontalLine(0, 7*FH-2, lcdLastPos+6, FORCE);
-          lcdDrawVerticalLine(lcdLastPos+6, 7*FH-2, FH+2, SOLID, FORCE);
+          lcdDrawNumber(lcdLastRightPos, 7*FH, luaGetMemUsed(lsScripts), LEFT);
+          lcdDrawChar(lcdLastRightPos, 7*FH, 'b');
+          lcdDrawSolidHorizontalLine(0, 7*FH-2, lcdLastRightPos+6, FORCE);
+          lcdDrawVerticalLine(lcdLastRightPos+6, 7*FH-2, FH+2, SOLID, FORCE);
 #endif
         }
       }

@@ -24,7 +24,7 @@ void displayPresetChoice(event_t event)
 {
   runPopupWarning(event);
   lcdDrawNumber(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*warningInputValue/4, LEFT|INVERS);
-  lcdDrawChar(lcdLastPos, WARNING_LINE_Y, '@', INVERS);
+  lcdDrawChar(lcdLastRightPos, WARNING_LINE_Y, '@', INVERS);
 
   if (warningResult) {
     warningResult = 0;
@@ -103,7 +103,7 @@ void menuModelCurveOne(event_t event)
   attr = (menuVerticalPosition==2 ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
   lcdDrawTextAlignedLeft(5*FH+1, STR_COUNT);
   lcdDrawNumber(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
-  lcdDrawText(lcdLastPos, 6*FH+1, STR_PTS, attr);
+  lcdDrawText(lcdLastRightPos, 6*FH+1, STR_PTS, attr);
   if (attr) {
     int8_t count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {

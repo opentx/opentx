@@ -27,10 +27,11 @@ void lcdClear()
   memset(displayBuf, 0, DISPLAY_BUFFER_SIZE);
 }
 
-coord_t lcdLastPos;
+coord_t lcdLastRightPos;
 coord_t lcdNextPos;
-
 #if defined(CPUARM)
+coord_t lcdLastLeftPos;
+
 void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width, uint8_t height, LcdFlags flags)
 {
   bool blink = false;
@@ -379,15 +380,20 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
     }
     s++;
   }
-  lcdLastPos = x;
+  lcdLastRightPos = x;
   lcdNextPos = x;
 #if defined(CPUARM) && !defined(BOOT)
   if (fontsize == MIDSIZE) {
-    lcdLastPos += 1;
+    lcdLastRightPos += 1;
   }
   if (flags & RIGHT) {
-    lcdLastPos -= width;
+    lcdLastRightPos -= width;
     lcdNextPos -= width;
+    lcdLastLeftPos = lcdLastRightPos;
+    lcdLastRightPos =  orig_x;
+  }
+  else {
+    lcdLastLeftPos = orig_x;
   }
 #endif
 }
@@ -458,24 +464,39 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags)
 
 void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t len)
 {
+#if defined(CPUARM)
+  char str[16+1];
+  char *s = str+16;
+  *s = '\0';
+  int idx = 0;
+  int mode = MODE(flags);
+  bool neg = false;
+  if (val < 0) {
+    val = -val;
+    neg = true;
+  }
+  do {
+    *--s = '0' + (val % 10);
+    ++idx;
+    val /= 10;
+    if (mode!=0 && idx==mode) {
+      mode = 0;
+      *--s = '.';
+      if (val==0) {
+        *--s = '0';
+      }
+    }
+  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
+  if (neg) {
+    *--s = '-';
+  }
+  flags &= ~LEADING0;
+  lcdDrawText(x, y, s, flags);
+#else // CPUARM
+  bool dblsize = flags & DBLSIZE;
   uint8_t fw = FWNUM;
   int8_t mode = MODE(flags);
   flags &= ~LEADING0;
-
-#if defined(CPUARM)
-  uint32_t fontsize = FONTSIZE(flags);
-  bool dblsize = (fontsize == DBLSIZE);
-  bool xxlsize = (fontsize == XXLSIZE);
-  bool midsize = (fontsize == MIDSIZE);
-  bool smlsize = (fontsize == SMLSIZE);
-  bool tinsize = (fontsize == TINSIZE);
-#else
-  bool dblsize = flags & DBLSIZE;
-  #define xxlsize 0
-  #define midsize 0
-  #define smlsize 0
-  #define tinsize 0
-#endif
 
   bool neg = false;
   if (flags & UNSIGN) {
@@ -504,34 +525,25 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
   if (dblsize) {
     fw += FWNUM;
   }
-  else if (xxlsize) {
-    fw += 4*FWNUM-1;
-  }
-  else if (midsize) {
-    fw += FWNUM-3;
-  }
-  else if (tinsize) {
-    fw -= 1;
-  }
   else {
     if (IS_LEFT_ALIGNED(flags)) {
       if (mode > 0) {
         x += 2;
       }
     }
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
+  #if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (flags & BOLD) fw += 1;
-#endif
+  #endif
   }
 
   if (IS_LEFT_ALIGNED(flags)) {
     x += len * fw;
     if (neg) {
-      x += ((xxlsize|dblsize|midsize) ? 7 : FWNUM);
+      x += ((dblsize) ? 7 : FWNUM);
     }
   }
 
-  lcdLastPos = x;
+  lcdLastRightPos = x;
   x -= fw;
   if (dblsize) x++;
 
@@ -560,29 +572,6 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
           }
         }
       }
-      else if (xxlsize) {
-        x -= 17;
-        lcdDrawChar(x+2, y, '.', f);
-      }
-      else if (midsize) {
-        x -= 3;
-        xn = x;
-      }
-      else if (smlsize) {
-        x -= 2;
-        lcdDrawPoint(x, y+5);
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x, y-1, 8);
-        }
-      }
-      else if (tinsize) {
-        x--;
-        lcdDrawPoint(x-1, y+4);
-        if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-          lcdDrawSolidVerticalLine(x-1, y-1, 7);
-        }
-        x--;
-      }
       else {
         x -= 2;
         lcdDrawChar(x, y, '.', f);
@@ -591,26 +580,17 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
     if (dblsize && (lcduint_t)val >= 1000 && (lcduint_t)val < 10000) x-=2;
     val = qr.quot;
     x -= fw;
-#if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
+  #if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (i==len && (flags & BOLD)) x += 1;
-#endif
+  #endif
   }
 
   if (xn) {
-    if (midsize) {
-      if ((flags&INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-        lcdDrawSolidVerticalLine(xn, y, 12);
-        lcdDrawSolidVerticalLine(xn+1, y, 12);
-      }
-      lcdDrawSolidHorizontalLine(xn, y+9, 2);
-      lcdDrawSolidHorizontalLine(xn, y+10, 2);
-    }
-    else {
       // TODO needed on CPUAVR? y &= ~0x07;
       lcdDrawSolidFilledRect(xn, y+2*FH-3, ln, 2);
     }
-  }
   if (neg) lcdDrawChar(x, y, '-', flags);
+#endif // CPUARM
 }
 #endif
 
@@ -806,13 +786,12 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
   div_t qr;
-
   if (IS_RIGHT_ALIGNED(att)) {
     att -= RIGHT;
     if (att & DBLSIZE)
       x -= 5*(2*FWNUM)-4;
     else if (att & MIDSIZE)
-      x -= 5*8-4;
+      x -= 5*8-8;
     else
       x -= 5*FWNUM+1;
   }
@@ -835,15 +814,18 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #endif
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(CPUARM)
+  if (att & MIDSIZE) {
+    lcdLastRightPos--;
+  }
   if (separator == CHR_HOUR)
     att &= ~DBLSIZE;
 #endif
 #if defined(CPUARM) && defined(RTCLOCK)
   if (att & TIMEBLINK)
-    lcdDrawChar(lcdLastPos, y, separator, BLINK);
+    lcdDrawChar(lcdLastRightPos, y, separator, BLINK);
   else
 #endif
-  lcdDrawChar(lcdLastPos, y, separator, att&att2);
+  lcdDrawChar(lcdLastRightPos, y, separator, att&att2);
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0|LEFT) & (~RIGHT), 2);
 }
 
@@ -851,7 +833,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att)
 {
   lcdDrawNumber(x, y, (int16_t)volts, (~NO_UNIT) & (att | ((att&PREC2)==PREC2 ? 0 : PREC1)));
-  if (~att & NO_UNIT) lcdDrawChar(lcdLastPos, y, 'V', att);
+  if (~att & NO_UNIT) lcdDrawChar(lcdLastRightPos, y, 'V', att);
 }
 
 void putsVBat(coord_t x, coord_t y, LcdFlags att)
@@ -886,7 +868,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
 #endif
     {
       drawStringWithIndex(x, y, "LUA", qr.quot+1, att);
-      lcdDrawChar(lcdLastPos, y, 'a'+qr.rem, att);
+      lcdDrawChar(lcdLastRightPos, y, 'a'+qr.rem, att);
     }
   }
 #endif
@@ -924,8 +906,8 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_CH) {
     drawStringWithIndex(x, y, STR_CH, idx-MIXSRC_CH1+1, att);
     if (ZEXIST(g_model.limitData[idx-MIXSRC_CH1].name) && (att & STREXPANDED)) {
-      lcdDrawChar(lcdLastPos, y, ' ', att|SMLSIZE);
-      lcdDrawSizedText(lcdLastPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
+      lcdDrawChar(lcdLastRightPos, y, ' ', att|SMLSIZE);
+      lcdDrawSizedText(lcdLastRightPos+3, y, g_model.limitData[idx-MIXSRC_CH1].name, LEN_CHANNEL_NAME, ZCHAR|att|SMLSIZE);
     }
   }
   else if (idx <= MIXSRC_LAST_GVAR) {
@@ -938,7 +920,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
     lcdDrawSizedText(x, y, g_model.telemetrySensors[qr.quot].label, TELEM_LABEL_LEN, ZCHAR|att);
-    if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
+    if (qr.rem) lcdDrawChar(lcdLastRightPos, y, qr.rem==2 ? '+' : '-', att);
   }
 }
 #else
@@ -967,7 +949,7 @@ void drawSource(coord_t x, coord_t y, uint8_t idx, LcdFlags att)
     idx -= MIXSRC_FIRST_TELEM;
     div_t qr = div(idx, 3);
     lcdDrawSizedText(x, y, g_model.telemetrySensors[qr.quot].label, ZLEN(g_model.telemetrySensors[qr.quot].label), ZCHAR|att);
-    if (qr.rem) lcdDrawChar(lcdLastPos, y, qr.rem==2 ? '+' : '-', att);
+    if (qr.rem) lcdDrawChar(lcdLastRightPos, y, qr.rem==2 ? '+' : '-', att);
   }
 #else
   else
@@ -1113,7 +1095,7 @@ void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
   // convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    lcdDrawTextAtIndex(lcdLastRightPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 
@@ -1122,28 +1104,28 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   att &= ~RIGHT & ~BOLD;
   uint32_t absvalue = abs(value);
   lcdDrawNumber(x, y, absvalue / 1000000, att); // ddd
-  lcdDrawChar(lcdLastPos, y, '@', att);
+  lcdDrawChar(lcdLastRightPos, y, '@', att);
   absvalue = absvalue % 1000000;
   absvalue *= 60;
   if (g_eeGeneral.gpsFormat == 0 || !seconds) {
     lcdDrawNumber(lcdNextPos, y, absvalue / 1000000, att|LEFT|LEADING0, 2); // mm before '.'
-    lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
-    lcdLastPos += 1;
+    lcdDrawSolidVerticalLine(lcdLastRightPos, y, 2);
+    lcdLastRightPos += 1;
     if (seconds) {
       absvalue %= 1000000;
       absvalue *= 60;
       absvalue /= 10000;
-      lcdDrawNumber(lcdLastPos+2, y, absvalue, att|LEFT|PREC2);
-      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
-      lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
-      lcdLastPos += 3;
+      lcdDrawNumber(lcdLastRightPos+2, y, absvalue, att|LEFT|PREC2);
+      lcdDrawSolidVerticalLine(lcdLastRightPos, y, 2);
+      lcdDrawSolidVerticalLine(lcdLastRightPos+2, y, 2);
+      lcdLastRightPos += 3;
     }
   }
   else {
     absvalue /= 10000;
-    lcdDrawNumber(lcdLastPos+FW, y, absvalue, att|LEFT|PREC2); // mm.mmm
+    lcdDrawNumber(lcdLastRightPos+FW, y, absvalue, att|LEFT|PREC2); // mm.mmm
   }
-  lcdDrawSizedText(lcdLastPos+1, y, direction + (value>=0 ? 0 : 1), 1);
+  lcdDrawSizedText(lcdLastRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
@@ -1152,22 +1134,22 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
     x -= 42;
     att &= ~0x0F00; // TODO constant
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdLastPos-1, y, '-', att);
+    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
     y += FH;
     lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
   else {
     lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastPos, y, ':', att);
+    lcdDrawChar(lcdLastRightPos, y, ':', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
   }
 }
@@ -1196,7 +1178,7 @@ void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlag
   convertUnit(val, unit);
   lcdDrawNumber(x, y, val, att & (~NO_UNIT));
   if (!(att & NO_UNIT) && unit != UNIT_RAW) {
-    lcdDrawTextAtIndex(lcdLastPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
+    lcdDrawTextAtIndex(lcdLastRightPos/*+1*/, y, STR_VTELEMUNIT, unit, 0);
   }
 }
 
@@ -1339,7 +1321,7 @@ void drawTelemetryValue(coord_t x, coord_t y, uint8_t channel, lcdint_t val, uin
     case TELEM_TX_VOLTAGE-1:
       lcdDrawNumber(x, y, val, (att|PREC1) & (~NO_UNIT));
       if (!(att & NO_UNIT))
-        lcdDrawChar(lcdLastPos/*+1*/, y, 'V');
+        lcdDrawChar(lcdLastRightPos/*+1*/, y, 'V');
       break;
   }
 }

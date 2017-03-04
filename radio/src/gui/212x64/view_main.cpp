@@ -207,7 +207,7 @@ void displayTopBar()
 
   /* Tx voltage */
   putsVBat(BAR_X+2, BAR_Y+1, LEFT);
-  batt_icon_x = lcdLastPos;
+  batt_icon_x = lcdLastRightPos;
   lcdDrawRect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
 
@@ -224,7 +224,7 @@ void displayTopBar()
         TelemetryItem & voltsItem = telemetryItems[item];
         if (voltsItem.isAvailable()) {
           drawSensorCustomValue(batt_icon_x+7*FW+2, BAR_Y+1, item, voltsItem.value, LEFT);
-          altitude_icon_x = lcdLastPos+1;
+          altitude_icon_x = lcdLastRightPos+1;
         }
       }
     }
@@ -576,7 +576,7 @@ void menuMainView(event_t event)
     lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("["), BOLD);
     drawGVarValue(BITMAP_X+2*FW, BITMAP_Y+2*FH+3, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
-    lcdDrawText(lcdLastPos, BITMAP_Y+2*FH+3, PSTR("]"), BOLD);
+    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, PSTR("]"), BOLD);
   }
 #endif
 }

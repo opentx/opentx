@@ -72,24 +72,24 @@ void drawGPSCoord(uint8_t y, char direction, int16_t bp, int16_t ap)
   if (telemetryData.hub.gpsFix >= 0) {
     if (!direction) direction = '-';
     lcdDrawNumber(TELEM_2ND_COLUMN, y, bp / 100, LEFT); // ddd before '.'
-    lcdDrawChar(lcdLastPos, y, '@');
+    lcdDrawChar(lcdLastRightPos, y, '@');
     uint8_t mn = bp % 100; // TODO div_t
     if (g_eeGeneral.gpsFormat == 0) {
-      lcdDrawChar(lcdLastPos+FWNUM, y, direction);
-      lcdDrawNumber(lcdLastPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
+      lcdDrawChar(lcdLastRightPos+FWNUM, y, direction);
+      lcdDrawNumber(lcdLastRightPos+FW+FW+1, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcdDrawSolidVerticalLine(lcdLastRightPos, y, 2);
       uint16_t ss = ap * 6;
-      lcdDrawNumber(lcdLastPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
-      lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcdDrawNumber(lcdLastPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
-      lcdDrawSolidVerticalLine(lcdLastPos, y, 2);
-      lcdDrawSolidVerticalLine(lcdLastPos+2, y, 2);
+      lcdDrawNumber(lcdLastRightPos+3, y, ss / 1000, LEFT|LEADING0, 2); // ''
+      lcdDrawPoint(lcdLastRightPos, y+FH-2, 0); // small decimal point
+      lcdDrawNumber(lcdLastRightPos+2, y, ss % 1000, LEFT|LEADING0, 3); // ''
+      lcdDrawSolidVerticalLine(lcdLastRightPos, y, 2);
+      lcdDrawSolidVerticalLine(lcdLastRightPos+2, y, 2);
     }
     else {
-      lcdDrawNumber(lcdLastPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
-      lcdDrawPoint(lcdLastPos, y+FH-2, 0); // small decimal point
-      lcdDrawNumber(lcdLastPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
-      lcdDrawChar(lcdLastPos+1, y, direction);
+      lcdDrawNumber(lcdLastRightPos+FW, y, mn, LEFT|LEADING0, 2); // mm before '.'
+      lcdDrawPoint(lcdLastRightPos, y+FH-2, 0); // small decimal point
+      lcdDrawNumber(lcdLastRightPos+2, y, ap, LEFT|UNSIGN|LEADING0, 4); // after '.'
+      lcdDrawChar(lcdLastRightPos+1, y, direction);
     }
   }
   else {
@@ -324,7 +324,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
       }
       if (field) {
-        LcdFlags att = (i==3 ? RIGHT|NO_UNIT : RIGHT|DBLSIZE|NO_UNIT);
+        LcdFlags att = (i==3 ? RIGHT|NO_UNIT : RIGHT|MIDSIZE|NO_UNIT);
         coord_t pos[] = {0, 65, 130};
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
@@ -332,6 +332,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
           // we don't display GPS name, no space for it
+          att = RIGHT|DBLSIZE|NO_UNIT;  //DBLSIZE ensure the telem screen specific display for GPS is used
         }
         else {
           drawSource(pos[j], 1+FH+2*FH*i, field, 0);

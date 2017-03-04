@@ -176,7 +176,7 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
   lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VBEEPCOUNTDOWN, timer.countdownBeep, (menuHorizontalPosition==0 ? attr : 0));
   if (timer.countdownBeep != COUNTDOWN_SILENT) {
     lcdDrawNumber(MODEL_SETUP_3RD_COLUMN, y, TIMER_COUNTDOWN_START(timerIdx), (menuHorizontalPosition == 1 ? attr : 0) | LEFT);
-    lcdDrawChar(lcdLastPos, y, 's');
+    lcdDrawChar(lcdLastRightPos, y, 's');
   }
   if (attr && s_editMode>0) {
     switch (menuHorizontalPosition) {
@@ -790,14 +790,14 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
-          lcdDrawNumber(lcdLastPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
-          lcdDrawChar(lcdLastPos, y, '-');
-          lcdDrawNumber(lcdLastPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawNumber(lcdLastRightPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
+          lcdDrawChar(lcdLastRightPos, y, '-');
+          lcdDrawNumber(lcdLastRightPos + FW+1, y, moduleData.channelsStart+NUM_CHANNELS(moduleIdx), LEFT | (menuHorizontalPosition==1 ? attr : 0));
           if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16) {
             if (NUM_CHANNELS(moduleIdx) > 8)
-              lcdDrawText(lcdLastPos+5, y, "(18ms)");
+              lcdDrawText(lcdLastRightPos+5, y, "(18ms)");
             else
-              lcdDrawText(lcdLastPos+5, y, "(9ms)");
+              lcdDrawText(lcdLastRightPos+5, y, "(9ms)");
           }
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
@@ -831,9 +831,9 @@ void menuModelSetup(event_t event)
         if (IS_MODULE_PPM(moduleIdx)) {
           lcdDrawTextAlignedLeft(y, STR_PPMFRAME);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
-          lcdDrawText(lcdLastPos, y, STR_MS);
+          lcdDrawText(lcdLastRightPos, y, STR_MS);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+6*FW, y, (moduleData.ppm.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
-          lcdDrawChar(lcdLastPos, y, 'u');
+          lcdDrawChar(lcdLastRightPos, y, 'u');
           lcdDrawChar(MODEL_SETUP_2ND_COLUMN+12*FW, y, moduleData.ppm.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
 
           if (attr && s_editMode>0) {

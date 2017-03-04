@@ -136,20 +136,55 @@ static int luaLcdDrawLine(lua_State *L)
 /*luadoc
 @function lcd.getLastPos()
 
-Returns the last x position from previous output
+Returns the rightmost x position from previous output
 
 @retval number (integer) x position
 
 @notice Only available on Taranis
 
+@notice For added clarity, it is recommended to use lcd.getLastRightPos()
+
 @status current Introduced in 2.0.0
 */
+
+/*luadoc
+@function lcd.getLastRightPos()
+
+Returns the rightest x position from previous drawtext or drawNumber output
+
+@retval number (integer) x position
+
+@notice Only available on Taranis
+
+@notice This is strictly equivalent to former lcd.getLastPos()
+
+@status current Introduced in 2.2.0
+*/
+
 static int luaLcdGetLastPos(lua_State *L)
 {
-  lua_pushinteger(L, lcdLastPos);
+  lua_pushinteger(L, lcdLastRightPos);
   return 1;
 }
-#endif
+
+/*luadoc
+@function lcd.getLastLeftPos()
+
+Returns the leftmost x position from previous drawtext or drawNumber output
+
+@retval number (integer) x position
+
+@notice Only available on Taranis
+
+@status current Introduced in 2.2.0
+*/
+static int luaLcdGetLeftPos(lua_State *L)
+{
+  lua_pushinteger(L, lcdLastLeftPos);
+  return 1;
+}
+
+#endif // COLORLCD
 
 /*luadoc
 @function lcd.drawText(x, y, text [, flags])
@@ -833,12 +868,16 @@ const luaL_Reg lcdLib[] = {
   { "RGB", luaRGB },
 #elif LCD_DEPTH > 1
   { "getLastPos", luaLcdGetLastPos },
+  { "getLastRightPos", luaLcdGetLastPos },
+  { "getLastLeftPos", luaLcdGetLeftPos },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
 #else
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "getLastPos", luaLcdGetLastPos },
+  { "getLastRightPos", luaLcdGetLastPos },
+  { "getLastLeftPos", luaLcdGetLeftPos },
   { "drawCombobox", luaLcdDrawCombobox },
 #endif
   { NULL, NULL }  /* sentinel */

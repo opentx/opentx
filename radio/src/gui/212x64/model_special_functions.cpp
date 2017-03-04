@@ -326,7 +326,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
               lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT);
-              lcdDrawChar(lcdLastPos, y, 's');
+              lcdDrawChar(lcdLastRightPos, y, 's');
             }
             else {
               lcdDrawMMM(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, attr);

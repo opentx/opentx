@@ -88,7 +88,7 @@ void menuModelCurvesAll(event_t event)
       editName(4*FW, y, crv.name, sizeof(crv.name), 0, 0);
 #if LCD_W >= 212
       lcdDrawNumber(11*FW, y, 5+crv.points, LEFT);
-      lcdDrawText(lcdLastPos, y, STR_PTS, 0);
+      lcdDrawText(lcdLastRightPos, y, STR_PTS, 0);
 #endif
 #endif
     }

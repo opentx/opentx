@@ -51,7 +51,7 @@ bool menuModelCustomScriptOne(event_t event)
 {
   ScriptData &sd = g_model.scriptsData[s_currIdx];
 
-  // drawStringWithIndex(lcdLastPos+FW, 0, "LUA", s_currIdx+1, 0);
+  // drawStringWithIndex(lcdLastRightPos+FW, 0, "LUA", s_currIdx+1, 0);
 
   SUBMENU(STR_MENUCUSTOMSCRIPTS, ICON_MODEL_LUA_SCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
