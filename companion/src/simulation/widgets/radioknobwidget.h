@@ -75,11 +75,11 @@ class RadioKnobWidget : public RadioWidget
         {
           setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
           setFixedSize(QSize(42, 42));
-          setMinimum(-1024);
-          setMaximum(1024);
           setNotchesVisible(true);
           if (type == Board::POT_MULTIPOS_SWITCH) {
             m_stepSize = 2048 / 5;
+            setMinimum(0);
+            setMaximum(2048);
             // this is a bit of a hack to get the notch markers to display correctly
             // the actual notches/value are constrained in setValue()
             setSingleStep(m_stepSize / 10);
@@ -89,6 +89,8 @@ class RadioKnobWidget : public RadioWidget
           else {
             m_stepSize = 1;
             setToolTip(tr("Right-double-click to reset to center."));
+            setMinimum(-1024);
+            setMaximum(1024);
             setPageStep(128);
             setNotchTarget(64);
           }
@@ -97,7 +99,7 @@ class RadioKnobWidget : public RadioWidget
         void setValue(int value)
         {
           if (m_stepSize > 1) {
-            value = (value + 1024) / m_stepSize * m_stepSize - 1024;
+            value = value / m_stepSize * m_stepSize;
           }
           QDial::setValue(value);
         }
