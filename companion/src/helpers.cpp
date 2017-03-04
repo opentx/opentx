@@ -387,7 +387,6 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
       for (int i=-getCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
         b->addItem(item.toString(), item.toValue());
-        if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
   }
@@ -396,20 +395,17 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
     for (int i=-getCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
       item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
       b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
 
   for (int i=-getCurrentFirmware()->getCapability(RotaryEncoders); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=-8; i<0; i++) {
+  for (int i = -getBoardCapability(board, Board::NumTrimSwitches); i < 0; i++) {
     item = RawSwitch(SWITCH_TYPE_TRIM, i);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   for (int i=getCurrentFirmware()->getCapability(MultiposPots)-1; i>=0; i--) {
@@ -417,7 +413,6 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
       for (int j=-getCurrentFirmware()->getCapability(MultiposPotsPositions); j<0; j++) {
         item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
-        if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
   }
@@ -428,20 +423,17 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
       continue;
     }
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   if (context == TimersContext) {
     for (int i=0; i<5; i++) {
       item = RawSwitch(SWITCH_TYPE_TIMER_MODE, i);
       b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
   else {
     item = RawSwitch(SWITCH_TYPE_NONE);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   for (int i=1; i<=getCurrentFirmware()->getCapability(SwitchesPositions); i++) {
@@ -450,7 +442,6 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
       continue;
     }
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   for (int i=0; i<getCurrentFirmware()->getCapability(MultiposPots); i++) {
@@ -458,28 +449,24 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
       for (int j=1; j<=getCurrentFirmware()->getCapability(MultiposPotsPositions); j++) {
         item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
-        if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
   }
 
-  for (int i=1; i<=8; i++) {
+  for (int i=1; i <= getBoardCapability(board, Board::NumTrimSwitches); i++) {
     item = RawSwitch(SWITCH_TYPE_TRIM, i);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   for (int i=1; i<=getCurrentFirmware()->getCapability(RotaryEncoders); i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   if (context != GlobalFunctionsContext) {
     for (int i=1; i<=getCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
       b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
 
@@ -487,11 +474,9 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
     // ON
     item = RawSwitch(SWITCH_TYPE_ON);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
     // One
     item = RawSwitch(SWITCH_TYPE_ONE, 1);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   // FMx
@@ -500,8 +485,14 @@ void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSetti
       for (int i=1; i<=getCurrentFirmware()->getCapability(FlightModes); i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
         b->addItem(item.toString(), item.toValue());
-        if (item == value) b->setCurrentIndex(b->count()-1);
       }
+    }
+  }
+
+  for (int i=0; i < b->count(); ++i) {
+    if (RawSwitch(b->itemData(i).toInt()) == value) {
+      b->setCurrentIndex(i);
+      break;
     }
   }
 
@@ -554,8 +545,6 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
   if (flags & POPULATE_NONE) {
     item = RawSource(SOURCE_TYPE_NONE);
     b->addItem(item.toString(model), item.toValue());
-    if (item == source)
-      b->setCurrentIndex(b->count()-1);
   }
 
   if (flags & POPULATE_SCRIPT_OUTPUTS) {
@@ -563,8 +552,6 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
       for (int j=0; j<getCurrentFirmware()->getCapability(LuaOutputsPerScript); j++) {
         item = RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j);
         b->addItem(item.toString(model), item.toValue());
-        if (item == source)
-          b->setCurrentIndex(b->count()-1);
       }
     }
   }
@@ -575,14 +562,12 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
       if (model->isInputValid(i)) {
         item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
         b->addItem(item.toString(model), item.toValue());
-        if (item == source)
-          b->setCurrentIndex(b->count()-1);
       }
     }
   }
 
   if (flags & POPULATE_SOURCES) {
-    int totalSources = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders) + getBoardCapability(board, Board::Joysticks);
+    int totalSources = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders) + getBoardCapability(board, Board::MouseAnalogs);
     for (int i=0; i < totalSources; i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       // skip unavailable pots and sliders
@@ -592,31 +577,23 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
         continue;
 
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
     for (int i=0; i<getCurrentFirmware()->getCapability(RotaryEncoders); i++) {
       item = RawSource(SOURCE_TYPE_ROTARY_ENCODER, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
   }
 
   if (flags & POPULATE_TRIMS) {
-    for (int i=0; i<4; i++) {
+    for (int i=0; i < getBoardCapability(board, Board::NumTrims); i++) {
       item = RawSource(SOURCE_TYPE_TRIM, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
   }
 
   if (flags & POPULATE_SOURCES) {
     item = RawSource(SOURCE_TYPE_MAX);
     b->addItem(item.toString(model), item.toValue());
-    if (item == source)
-      b->setCurrentIndex(b->count()-1);
   }
 
   if (flags & POPULATE_SWITCHES) {
@@ -628,15 +605,11 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
         QVariant v(0);
         b->model()->setData(index, v, Qt::UserRole - 1);
       }
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
 
     for (int i=0; i<getCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       item = RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
   }
 
@@ -644,22 +617,16 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
     for (int i=0; i<CPN_MAX_CYC; i++) {
       item = RawSource(SOURCE_TYPE_CYC, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
 
     for (int i=0; i<getCurrentFirmware()->getCapability(TrainerInputs); i++) {
       item = RawSource(SOURCE_TYPE_PPM, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
 
     for (int i=0; i<getCurrentFirmware()->getCapability(Outputs); i++) {
       item = RawSource(SOURCE_TYPE_CH, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
     }
   }
 
@@ -668,8 +635,6 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
       for (int i=0; i<5; ++i) {
         item = RawSource(SOURCE_TYPE_SPECIAL, i);
         b->addItem(item.toString(model), item.toValue());
-        if (item == source)
-          b->setCurrentIndex(b->count()-1);
       }
       for (int i=0; i<CPN_MAX_SENSORS; ++i) {
         if (model && model->sensorData[i].isAvailable()) {    //this conditon must be false if we populate Global Functions where model = 0
@@ -677,8 +642,6 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
             item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i+j);
             b->addItem(item.toString(model), item.toValue());
             // qDebug() << item.toString(model) << source.toString(model);
-            if (item == source)
-              b->setCurrentIndex(b->count()-1);
           }
         }
       }
@@ -693,8 +656,6 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
           continue;
         item = RawSource(SOURCE_TYPE_TELEMETRY, i);
         b->addItem(item.toString(model), item.toValue());
-        if (item == source)
-          b->setCurrentIndex(b->count()-1);
       }
     }
   }
@@ -703,8 +664,13 @@ void populateSourceCB(QComboBox * b, const RawSource & source, const GeneralSett
     for (int i=0; i<getCurrentFirmware()->getCapability(Gvars); i++) {
       item = RawSource(SOURCE_TYPE_GVAR, i);
       b->addItem(item.toString(model), item.toValue());
-      if (item == source)
-        b->setCurrentIndex(b->count()-1);
+    }
+  }
+
+  for (int i=0; i < b->count(); ++i) {
+    if (RawSource(b->itemData(i).toInt()) == source) {
+      b->setCurrentIndex(i);
+      break;
     }
   }
 

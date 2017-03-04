@@ -517,11 +517,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return getBoardCapability(board, Board::Switches) * 3;
       else
         return 9;
-    case NumTrimSwitches:
-      if (IS_HORUS(board))
-        return 12;
-      else
-        return 8;
     case CustomFunctions:
       if (IS_ARM(board))
         return 64;

@@ -105,8 +105,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->trimCB->hide();
   }
 
-  for(int i=0; i < CPN_MAX_STICKS; i++) {
-    ui->trimCB->addItem(firmware->getAnalogInputName(i), i+1);
+  for(int i=0; i < getBoardCapability(getCurrentBoard(), Board::NumTrims); i++) {
+    ui->trimCB->addItem(RawSource(SOURCE_TYPE_TRIM, i).toString(), i+1);
   }
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 

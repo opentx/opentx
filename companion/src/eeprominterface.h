@@ -52,7 +52,6 @@ enum Capability {
   MultiLangVoice,
   ModelImage,
   SwitchesPositions,
-  NumTrimSwitches,
   CustomFunctions,
   SafetyChannelCustomFunction,
   LogicalSwitches,
@@ -277,7 +276,7 @@ class Firmware {
     {
       return base ? base : this;
     }
-    
+
     virtual Firmware * getFirmwareVariant(const QString & id) { return NULL; }
 
     unsigned int getVariantNumber();
@@ -300,12 +299,12 @@ class Firmware {
     {
       return board;
     }
-    
+
     void setEEpromInterface(EEPROMInterface * eeprom)
     {
       eepromInterface = eeprom;
     }
-    
+
     EEPROMInterface * getEEpromInterface()
     {
       return eepromInterface;
