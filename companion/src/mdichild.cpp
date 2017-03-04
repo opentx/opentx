@@ -560,6 +560,10 @@ void MdiChild::newFile()
   isUntitled = true;
   curFile = QString("document%1.otx").arg(sequenceNumber++);
   updateTitle();
+  
+  if (IS_HORUS(getCurrentBoard())) {
+    categoryAdd();
+  }    
 }
 
 bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
