@@ -99,7 +99,6 @@ void telemetryWakeup()
    if (telemetryProtocol != requiredTelemetryProtocol) {
 #endif
     telemetryInit(requiredTelemetryProtocol);
-    telemetryProtocol = requiredTelemetryProtocol;
   }
 #endif
 
@@ -414,6 +413,8 @@ void telemetryReset()
 // we don't reset the telemetry here as we would also reset the consumption after model load
 void telemetryInit(uint8_t protocol)
 {
+  telemetryProtocol = protocol;
+
   if (protocol == PROTOCOL_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }

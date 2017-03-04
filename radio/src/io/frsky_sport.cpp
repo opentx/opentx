@@ -173,10 +173,9 @@ const char * sportUpdatePowerOn(ModuleIndex module)
   uint8_t packet[8];
 
   sportUpdateState = SPORT_POWERUP_REQ;
-
   sportWaitState(SPORT_IDLE, 500); // Clear the fifo
 
-  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+  telemetryInit(PROTOCOL_FRSKY_SPORT);
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)
@@ -196,7 +195,15 @@ const char * sportUpdatePowerOn(ModuleIndex module)
     if (sportWaitState(SPORT_POWERUP_ACK, 100))
       return NULL;
   }
-  
+
+  if (telemetryProtocol != PROTOCOL_FRSKY_SPORT) {
+    return TR("Not responding", "Not S.Port 1");
+  }
+
+  if (!IS_FRSKY_SPORT_PROTOCOL()) {
+    return TR("Not responding", "Not S.Port 2");
+  }
+
   return TR("Not responding", "Module not responding");
 }
 
@@ -292,6 +299,10 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
+
+  /* wait 2s off */
+  watchdogSuspend(2000);
+  CoTickDelay(1000);
 #endif
 
   const char * result = sportUpdatePowerOn(module);
