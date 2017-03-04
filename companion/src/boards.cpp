@@ -123,6 +123,11 @@ int getBoardCapability(Board::Type board, Board::Capability capability)
         return 2;
       else
         return 0;
+    case Joysticks:
+      if (IS_HORUS(board))
+        return 2;
+      else
+        return 0;
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
