@@ -1219,6 +1219,7 @@ void addOpenTxVoiceOptions(OpenTxFirmware * firmware)
     {NULL}
   };
   firmware->addOptions(voice_options);
+}
 
 QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
 
