@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN (LCD_W-8*FW-90)
-#define EXPO_ONE_FM_WIDTH   (9*FW)
 
 int expoFn(int x)
 {

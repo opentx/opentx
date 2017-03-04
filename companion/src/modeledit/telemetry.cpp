@@ -409,7 +409,7 @@ void TelemetryCustomScreen::updateBar(int line)
   RawSource source = screen.body.bars[line].source;
   if (source.type != SOURCE_TYPE_NONE) {
     RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
-    if (!IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (!IS_ARM(getCurrentBoard())) {
       int max = round((range.max - range.min) / range.step);
       if (int(255-screen.body.bars[line].barMax) > max) {
         screen.body.bars[line].barMax = 255 - max;
@@ -426,7 +426,7 @@ void TelemetryCustomScreen::updateBar(int line)
     maxSB[line]->setMinimum(range.min);
     maxSB[line]->setMaximum(range.max);
     maxSB[line]->setSingleStep(range.step);
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (IS_ARM(getCurrentBoard())) {
       maxSB[line]->setValue(range.getValue(screen.body.bars[line].barMax));
     }
     else {
@@ -486,7 +486,7 @@ void TelemetryCustomScreen::barMinChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    if (IS_ARM(getCurrentBoard()))
       screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
     else
       screen.body.bars[line].barMin = round((value-minSB[line]->minimum()) / minSB[line]->singleStep());
@@ -499,7 +499,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 {
   if (!lock) {
     int line = sender()->property("index").toInt();
-    if (IS_ARM(GetCurrentFirmware()->getBoard()))
+    if (IS_ARM(getCurrentBoard()))
       screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
     else
       screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
@@ -787,7 +787,7 @@ TelemetryPanel::~TelemetryPanel()
 
 void TelemetryPanel::update()
 {
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     if (model->moduleData[0].protocol == PULSES_OFF && model->moduleData[1].protocol == PULSES_PPM) {
       ui->telemetryProtocol->setEnabled(true);
     }
@@ -820,7 +820,7 @@ void TelemetryPanel::setup()
     if (IS_ARM(firmware->getBoard())) {
       ui->telemetryProtocol->addItem(tr("FrSky S.PORT"), 0);
       ui->telemetryProtocol->addItem(tr("FrSky D"), 1);
-      if (IS_9XRPRO(firmware->getBoard()) || 
+      if (IS_9XRPRO(firmware->getBoard()) ||
          (IS_TARANIS(firmware->getBoard()) && generalSettings.hw_uartMode == 2)) {
         ui->telemetryProtocol->addItem(tr("FrSky D (cable)"), 2);
       }
@@ -835,7 +835,7 @@ void TelemetryPanel::setup()
 
     ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
-    if (!IS_TARANIS(firmware->getBoard())) {
+    if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       ui->rssiAlarm1CB->setCurrentIndex(model->frsky.rssiAlarms[0].level);
       ui->rssiAlarm2CB->setCurrentIndex(model->frsky.rssiAlarms[1].level);
     }
@@ -890,7 +890,7 @@ void TelemetryPanel::setup()
     else {
       ui->frskyProtoCB->addItem(tr("Winged Shadow How High (not supported)"));
     }
-    
+
     ui->variousGB->hide();
     if (!IS_ARM(firmware->getBoard())) {
       if (!(firmware->getCapability(HasFasOffset)) && !(firmware_id.contains("fasoffset"))) {

@@ -41,6 +41,12 @@
   #define __SDRAM __DMA
 #endif
 
+#if defined(PCBHORUS) && !defined(SIMU)
+  #define __NOINIT __attribute__((section(".noinit")))
+#else
+  #define __NOINIT
+#endif
+
 #if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
 typedef int32_t int24_t;
 #else

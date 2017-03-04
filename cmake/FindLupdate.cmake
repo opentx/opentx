@@ -9,8 +9,6 @@ FIND_PROGRAM( LUPDATE_EXECUTABLE
     lupdate lupdate-qt4
 )
 
-MESSAGE( STATUS ${LUPDATE_EXECUTABLE} )
-
 # if the program is found then we have it
 IF( LUPDATE_EXECUTABLE )
   SET( LUPDATE_FOUND "YES" )

@@ -41,7 +41,7 @@ uint8_t mixWarning;
   uint8_t startupWarningState;
 #endif
 
-int16_t calibratedStick[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+int16_t calibratedAnalogs[NUM_CALIBRATED_ANALOGS];
 int16_t channelOutputs[MAX_OUTPUT_CHANNELS] = {0};
 int16_t ex_chans[MAX_OUTPUT_CHANNELS] = {0}; // Outputs (before LIMITS) of the last perMain;
 
@@ -254,11 +254,11 @@ getvalue_t getValue(mixsrc_t i)
 
 #if defined(LUA_INPUTS)
   else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
-    return calibratedStick[i-MIXSRC_Rud];
+    return calibratedAnalogs[i-MIXSRC_Rud];
   }
 #else
   else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
-    return calibratedStick[i-MIXSRC_Rud];
+    return calibratedAnalogs[i-MIXSRC_Rud];
   }
 #endif
 
@@ -414,7 +414,7 @@ void evalInputs(uint8_t mode)
 #if defined(HELI) && !defined(VIRTUAL_INPUTS)
   uint16_t d = 0;
   if (g_model.swashR.value) {
-    uint32_t v = (int32_t(calibratedStick[ELE_STICK])*calibratedStick[ELE_STICK] + int32_t(calibratedStick[AIL_STICK])*calibratedStick[AIL_STICK]);
+    uint32_t v = (int32_t(calibratedAnalogs[ELE_STICK])*calibratedAnalogs[ELE_STICK] + int32_t(calibratedAnalogs[AIL_STICK])*calibratedAnalogs[AIL_STICK]);
     uint32_t q = calc100toRESX(g_model.swashR.value);
     q *= q;
     if (v > q) {
@@ -455,7 +455,7 @@ void evalInputs(uint8_t mode)
 
     BeepANACenter mask = (BeepANACenter)1 << ch;
 
-    calibratedStick[ch] = v; // for show in expo
+    calibratedAnalogs[ch] = v; // for show in expo
 
     // filtering for center beep
     uint8_t tmp = (uint16_t)abs(v) / 16;
@@ -503,7 +503,7 @@ void evalInputs(uint8_t mode)
       }
 
 #if defined(VIRTUAL_INPUTS)
-      calibratedStick[ch] = v;
+      calibratedAnalogs[ch] = v;
 #else
 #if defined(HELI)
       if (d && (ch==ELE_STICK || ch==AIL_STICK)) {
@@ -533,7 +533,7 @@ void evalInputs(uint8_t mode)
     v = v * (int32_t) RESX / (max((int16_t) 100, (v > 0 ? calib->spanPos : calib->spanNeg)));
     if (v < -RESX) v = -RESX;
     if (v >  RESX) v =  RESX;
-    calibratedStick[ch] = v;
+    calibratedAnalogs[ch] = v;
   }
 #endif
 

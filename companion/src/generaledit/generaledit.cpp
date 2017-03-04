@@ -101,8 +101,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
 {
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
   QString calib=g.profile[profile_id].stickPotCalib();
-  int potsnum=GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders);
-  int numSwPots=GetCurrentFirmware()->getCapability(Switches)+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders);
+  int potsnum=getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders);
+  int numSwPots=getCurrentFirmware()->getCapability(Switches)+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders);
   if (calib.isEmpty()) {
     return;
   }
@@ -144,7 +144,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       generalSettings.txCurrentCalibration=txCurrentCalibration;
       generalSettings.txVoltageCalibration=txVoltageCalibration;
       generalSettings.vBatWarn=vBatWarn;
-      if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+      if (getCurrentFirmware()->getCapability(HasBatMeterRange)) {
         generalSettings.vBatMin = (int8_t) g.profile[profile_id].vBatMin();
         generalSettings.vBatMax = (int8_t) g.profile[profile_id].vBatMax();
       }
@@ -162,7 +162,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         qba = controlNames.mid(3*i,3).toLatin1();
         strcpy(generalSettings.stickName[i], qba.data());
       }
-      for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {
+      for (int i=0; i<(getCurrentFirmware()->getCapability(Switches)); i++) {
         Byte=hwtypes.mid(i,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
         qba=controlNames.mid(3*(i+CPN_MAX_STICKS),3).toLatin1();
@@ -171,8 +171,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
           strcpy(generalSettings.switchName[i], qba.data());
         }
       }
-      offset = GetCurrentFirmware()->getCapability(Switches);
-      for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
+      offset = getCurrentFirmware()->getCapability(Switches);
+      for (int i=0; i<(getCurrentFirmware()->getCapability(Pots)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
         qba=controlNames.mid(3*(i+CPN_MAX_STICKS+offset),3).toLatin1();
@@ -181,8 +181,8 @@ void GeneralEdit::on_calretrieve_PB_clicked()
           strcpy(generalSettings.potName[i], qba.data());
         }
       }
-      offset += GetCurrentFirmware()->getCapability(Pots);
-      for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
+      offset += getCurrentFirmware()->getCapability(Pots);
+      for (int i=0; i<(getCurrentFirmware()->getCapability(Sliders)); i++) {
         Byte=hwtypes.mid(i+offset,1);
         byte16=(int16_t)Byte.toInt(&ok,16);
         qba=controlNames.mid(3*(i+CPN_MAX_STICKS+offset),3).toLatin1();
@@ -245,7 +245,7 @@ void GeneralEdit::on_calstore_PB_clicked()
   int profile_id=ui->profile_CB->itemData(ui->profile_CB->currentIndex()).toInt();
 
   QString name=g.profile[profile_id].name();
-  int potsnum=GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders);
+  int potsnum=getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders);
   if (name.isEmpty()) {
     ui->calstore_PB->setDisabled(true);
     return;
@@ -279,15 +279,15 @@ void GeneralEdit::on_calstore_PB_clicked()
     for (int i=0; i<CPN_MAX_STICKS; i++) {
       controlNames.append(QString("%1").arg(generalSettings.stickName[i], -3));
     }
-    for (int i=0; i<(GetCurrentFirmware()->getCapability(Switches)); i++) {
+    for (int i=0; i<(getCurrentFirmware()->getCapability(Switches)); i++) {
       hwtypes.append(QString("%1").arg((uint16_t)generalSettings.switchConfig[i], 1));
       controlNames.append(QString("%1").arg(generalSettings.switchName[i], -3));
     }
-    for (int i=0; i<(GetCurrentFirmware()->getCapability(Pots)); i++) {
+    for (int i=0; i<(getCurrentFirmware()->getCapability(Pots)); i++) {
       hwtypes.append(QString("%1").arg((uint16_t)generalSettings.potConfig[i], 1));
       controlNames.append(QString("%1").arg(generalSettings.potName[i], -3));
     }
-    for (int i=0; i<(GetCurrentFirmware()->getCapability(Sliders)); i++) {
+    for (int i=0; i<(getCurrentFirmware()->getCapability(Sliders)); i++) {
       hwtypes.append(QString("%1").arg((uint16_t)generalSettings.sliderConfig[i], 1));
       controlNames.append(QString("%1").arg(generalSettings.sliderName[i], -3));
     }
@@ -296,7 +296,7 @@ void GeneralEdit::on_calstore_PB_clicked()
     g.profile[profile_id].txVoltageCalibration( generalSettings.txVoltageCalibration );
     g.profile[profile_id].txCurrentCalibration( generalSettings.txCurrentCalibration );
     g.profile[profile_id].vBatWarn( generalSettings.vBatWarn );
-    if (GetCurrentFirmware()->getCapability(HasBatMeterRange)) {
+    if (getCurrentFirmware()->getCapability(HasBatMeterRange)) {
       g.profile[profile_id].vBatMin( generalSettings.vBatMin );
       g.profile[profile_id].vBatMax( generalSettings.vBatMax );
     }

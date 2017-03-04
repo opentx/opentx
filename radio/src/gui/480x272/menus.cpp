@@ -72,8 +72,11 @@ bool menuModelNotes(event_t event)
     strcpy(s_text_file, MODELS_PATH "/");
     char *buf = strcat_currentmodelname(&s_text_file[sizeof(MODELS_PATH)]);
     strcpy(buf, TEXT_EXT);
+    if (!isFileAvailable(s_text_file)) {
+      char *buf = strAppendFilename(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+      strcpy(buf, TEXT_EXT);
+    }
   }
-
   return menuTextView(event);
 }
 

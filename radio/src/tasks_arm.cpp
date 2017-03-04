@@ -258,7 +258,7 @@ void tasksStart()
   cliStart();
 #endif
 
-#if defined(BLUETOOTH)
+#if defined(BLUETOOTH) && defined(PCBSKY9X)
   btTaskId = CoCreateTask(btTask, NULL, 15, &bluetoothStack.stack[BLUETOOTH_STACK_SIZE-1], BLUETOOTH_STACK_SIZE);
 #endif
 

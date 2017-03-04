@@ -81,6 +81,7 @@ class ModulePanel : public ModelPanel
     void on_ppmPolarity_currentIndexChanged(int index);
     void on_ppmOutputType_currentIndexChanged(int index);
     void on_ppmFrameLength_editingFinished();
+    void on_antennaMode_currentIndexChanged(int index);
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
     void onFailsafeComboIndexChanged(int index);
@@ -107,9 +108,9 @@ class SetupPanel : public ModelPanel
 
     virtual void update();
 
-  signals: 
+  signals:
     void extendedLimitsToggled();
-    
+
   private slots:
     void on_name_editingFinished();
     void on_throttleSource_currentIndexChanged(int index);

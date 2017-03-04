@@ -352,14 +352,22 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   if (menuTab && !menuCalibrationState) {
     int cc = curr;
     switch (event) {
+#if defined(PCBX12S)
       case EVT_KEY_FIRST(KEY_PGDN):
+#elif defined(PCBX10)
+      case EVT_KEY_BREAK(KEY_PGDN):
+#endif
         if (++cc == menuTabSize)
           cc = 0;
         break;
 
       case EVT_KEY_FIRST(KEY_PGUP):
+#if defined(PCBX10)
+      case EVT_KEY_LONG(KEY_PGDN):
+#endif
         if (cc-- == 0)
           cc = menuTabSize-1;
+        killEvents(event);
         break;
     }
 

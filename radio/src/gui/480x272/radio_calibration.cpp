@@ -45,15 +45,15 @@ void drawStick(coord_t x, coord_t y, const BitmapBuffer * background, int16_t xv
 
 void drawSticks()
 {
-  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
+  int16_t calibStickVert = calibratedAnalogs[CONVERT_MODE(1)];
   if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(STICK_LEFT_X, STICKS_Y, calibStickBackground, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+  drawStick(STICK_LEFT_X, STICKS_Y, calibStickBackground, calibratedAnalogs[CONVERT_MODE(0)], calibStickVert);
 
-  calibStickVert = calibratedStick[CONVERT_MODE(2)];
+  calibStickVert = calibratedAnalogs[CONVERT_MODE(2)];
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(STICK_RIGHT_X, STICKS_Y, calibStickBackground, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+  drawStick(STICK_RIGHT_X, STICKS_Y, calibStickBackground, calibratedAnalogs[CONVERT_MODE(3)], calibStickVert);
 }
 
 void drawPots()
@@ -62,17 +62,19 @@ void drawPots()
   extern void drawMainPots();
   drawMainPots();
 
+#if defined(PCBX12S)
   // The 2 main front sliders
-  drawVerticalSlider(125, 120, 120, calibratedStick[7], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                       OPTION_SLIDER_SQUARE_BUTTON);
-  drawVerticalSlider(LCD_W-125-12, 120, 120, calibratedStick[8], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS |
-                                                                                OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(125, 120, 120, calibratedAnalogs[CALIBRATED_SLIDER_FRONT_LEFT], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+  drawVerticalSlider(LCD_W-125-12, 120, 120, calibratedAnalogs[CALIBRATED_SLIDER_FRONT_RIGHT], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+#endif
 }
 
+#if defined(PCBX12S)
 void drawMouse()
 {
-  drawStick(STICK_LEFT_X, STICKS_Y+100, calibTrackpBackground, calibratedStick[11], calibratedStick[12]);
+  drawStick(STICK_LEFT_X, STICKS_Y+100, calibTrackpBackground, calibratedAnalogs[CALIBRATED_MOUSE1], calibratedAnalogs[CALIBRATED_MOUSE2]);
 }
+#endif
 
 bool menuCommonCalib(event_t event)
 {
@@ -213,7 +215,10 @@ bool menuCommonCalib(event_t event)
 
   drawSticks();
   drawPots();
+
+#if defined(PCBX12S)
   drawMouse();
+#endif
 
   return true;
 }

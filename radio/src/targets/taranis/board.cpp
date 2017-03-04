@@ -98,7 +98,7 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 }
 #endif
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) && !defined(SIMU)
 #define PWR_PRESS_DURATION_MIN       200 // 2s
 #define PWR_PRESS_DURATION_MAX       500 // 5s
 
@@ -109,7 +109,7 @@ const pm_uchar bmp_startup[] PROGMEM = {
 const pm_uchar bmp_lock[] PROGMEM = {
   #include "lock.lbm"
 };
-#endif
+#endif  // defined(PCBX9E) && !defined(SIMU)
 
 void boardInit()
 {

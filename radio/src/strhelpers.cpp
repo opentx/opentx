@@ -169,7 +169,7 @@ char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
     *s++ = '-';
   }
   
-  qr = div(tme, 60);
+  qr = div((int)tme, 60);
   
   if (hours) {
     div_t qr2 = div(qr.quot, 60);
@@ -206,6 +206,22 @@ char * getCurveString(char * dest, int idx)
   else
     strAppendStringWithIndex(s, STR_CV, idx);
     
+  return dest;
+}
+
+char * getGVarString(char * dest, int idx)
+{
+  char * s = dest;
+  if (idx < 0) {
+    *s++ = '-';
+    idx = -idx-1;
+  }
+
+  if (ZEXIST(g_model.gvars[idx].name))
+    zchar2str(s, g_model.gvars[idx].name, LEN_GVAR_NAME);
+  else
+    strAppendStringWithIndex(s, STR_GV, idx+1);
+
   return dest;
 }
 
@@ -254,7 +270,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #endif
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
-    div_t swinfo = div(idx - SWSRC_FIRST_MULTIPOS_SWITCH, XPOTS_MULTIPOS_COUNT);
+    div_t swinfo = div(int(idx - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);
     char temp[LEN_ANA_NAME+1];
     getSourceString(temp, MIXSRC_FIRST_POT+swinfo.quot);
     temp[LEN_ANA_NAME]= '\0';

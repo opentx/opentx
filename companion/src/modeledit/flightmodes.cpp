@@ -87,14 +87,14 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   trimsValue << ui->trim1Value << ui->trim2Value << ui->trim3Value << ui->trim4Value;
   trimsSlider << ui->trim1Slider << ui->trim2Slider << ui->trim3Slider << ui->trim4Slider;
 
-  BoardEnum board = firmware->getBoard();
+  Board::Type board = firmware->getBoard();
 
   for (int i=0; i<4; i++) {
     trimsLabel[i]->setText(labels[CONVERT_MODE(i+1)-1]);
 
     QComboBox * cb = trimsUse[i];
     cb->setProperty("index", i);
-    if (IS_TARANIS(board)) {
+    if (IS_HORUS_OR_TARANIS(board)) {
       cb->addItem(QObject::tr("Trim disabled"), -1);
     }
     for (int m=0; m<modesCount; m++) {
@@ -103,7 +103,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       }
       else if (phaseIdx > 0) {
         cb->addItem(QObject::tr("Use Trim from Flight mode %1").arg(m), m*2);
-        if (IS_TARANIS(board)) {
+        if (IS_HORUS_OR_TARANIS(board)) {
           cb->addItem(QObject::tr("Use Trim from Flight mode %1 + Own Trim as an offset").arg(m), m*2+1);
         }
       }
@@ -187,7 +187,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
       
       // Popups
-      if (IS_TARANIS(board) && phaseIdx == 0) {
+      if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
         gvPopups[i]->setText(tr("Popup enabled"));
@@ -238,7 +238,7 @@ void FlightModePanel::update()
       }
       gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
       gvValues[i]->setValue(model->getGVarFieldValue(phaseIdx, i));
-      if (IS_TARANIS(GetEepromInterface()->getBoard()) && phaseIdx == 0) { 
+      if (IS_HORUS_OR_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
         gvPopups[i]->setChecked(model->gvars_popups[i]);
       }
     }
@@ -305,12 +305,12 @@ void FlightModePanel::trimUpdate(unsigned int trim)
     trimsSlider[trim]->setEnabled(false);
   }
   else {
-    BoardEnum board = firmware->getBoard();
-    if (IS_TARANIS(board))
+    Board::Type board = firmware->getBoard();
+    if (IS_HORUS_OR_TARANIS(board))
       trimsUse[trim]->setCurrentIndex(1 + 2*phase.trimRef[chn] + phase.trimMode[chn] - (phase.trimRef[chn] > phaseIdx ? 1 : 0));
     else
       trimsUse[trim]->setCurrentIndex(phase.trimRef[chn]);
-    if (phaseIdx == 0 || phase.trimRef[chn] == phaseIdx || (IS_TARANIS(board) && phase.trimMode[chn] != 0)) {
+    if (phaseIdx == 0 || phase.trimRef[chn] == phaseIdx || (IS_HORUS_OR_TARANIS(board) && phase.trimMode[chn] != 0)) {
       trimsValue[trim]->setEnabled(true);
       trimsSlider[trim]->setEnabled(true);
     }
@@ -410,8 +410,8 @@ void FlightModePanel::phaseTrimUse_currentIndexChanged(int index)
       phase.trim[chn] = 0;
     }
     else {
-      BoardEnum board = firmware->getBoard();
-      if (IS_TARANIS(board)) {
+      Board::Type board = firmware->getBoard();
+      if (IS_HORUS_OR_TARANIS(board)) {
         phase.trimMode[chn] = data % 2;
         phase.trimRef[chn] = data / 2;
       }
@@ -471,7 +471,7 @@ void FlightModePanel::fmClear()
   if (res == QMessageBox::Yes) {
     phase.clear(phaseIdx);
     if (phaseIdx == 0) {
-      if (IS_TARANIS(GetEepromInterface()->getBoard())) {
+      if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
         for (int i=0; i < gvCount; ++i) {
           memset(&model->gvars_names[i], 0, sizeof(model->gvars_names[i]));
           model->gvars_popups[i] = 0;

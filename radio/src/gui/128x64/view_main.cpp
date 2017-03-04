@@ -21,8 +21,13 @@
 #include "opentx.h"
 
 #define BIGSIZE       DBLSIZE
-#define LBOX_CENTERX  (LCD_W/4 + 10)
-#define RBOX_CENTERX  (3*LCD_W/4 - 10)
+#if defined (PCBX7)
+  #define LBOX_CENTERX  (LCD_W/4 + 14)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 13)
+#else
+  #define LBOX_CENTERX  (LCD_W/4 + 10)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 10)
+#endif
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
 #define PHASE_X       (6*FW-1)
@@ -46,7 +51,7 @@ void drawPotsBars()
   // Optimization by Mike Blandford
   for (uint8_t x=LCD_W/2 - (NUM_POTS+NUM_SLIDERS-1) * 5 / 2, i=NUM_STICKS; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; x+=5, i++) {
     if (IS_POT_SLIDER_AVAILABLE(i)) {
-      uint8_t len = ((calibratedStick[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
+      uint8_t len = ((calibratedAnalogs[i]+RESX)*BAR_HEIGHT/(RESX*2))+1l;  // calculate once per loop
       V_BAR(x, LCD_H-8, len);
     }
   }
@@ -54,15 +59,15 @@ void drawPotsBars()
 
 void doMainScreenGraphics()
 {
-  int16_t calibStickVert = calibratedStick[CONVERT_MODE(1)];
+  int16_t calibStickVert = calibratedAnalogs[CONVERT_MODE(1)];
   if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(LBOX_CENTERX, calibratedStick[CONVERT_MODE(0)], calibStickVert);
+  drawStick(LBOX_CENTERX, calibratedAnalogs[CONVERT_MODE(0)], calibStickVert);
 
-  calibStickVert = calibratedStick[CONVERT_MODE(2)];
+  calibStickVert = calibratedAnalogs[CONVERT_MODE(2)];
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
-  drawStick(RBOX_CENTERX, calibratedStick[CONVERT_MODE(3)], calibStickVert);
+  drawStick(RBOX_CENTERX, calibratedAnalogs[CONVERT_MODE(3)], calibStickVert);
 
   drawPotsBars();
 }
@@ -513,7 +518,7 @@ void menuMainView(event_t event)
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
           if (i >= NUM_SWITCHES/2) {
-            x = 17*FW-1;
+            x = 16*FW+1;
             y -= 3*FH;
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);

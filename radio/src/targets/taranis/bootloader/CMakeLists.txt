@@ -69,10 +69,15 @@ set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC
 add_executable(bootloader ${BOOTLOADER_SRC})
 add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)
 
+add_custom_command(
+  TARGET bootloader POST_BUILD
+  COMMAND arm-none-eabi-objcopy -O binary bootloader.elf bootloader.bin
+)
 if(PYTHONINTERP_FOUND)
   add_custom_command(
     TARGET bootloader POST_BUILD
-    COMMAND arm-none-eabi-objcopy -O binary bootloader.elf bootloader.bin
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/bin2lbm.py bootloader.bin bootloader.lbm
   )
 endif()
+
+PrintTargetReport("bootloader")

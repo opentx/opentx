@@ -1,6 +1,7 @@
 sudo: required
 dist: trusty
 language: python
+compiler: gcc
 
 virtualenv:
   system_site_packages: true
@@ -8,20 +9,68 @@ virtualenv:
 python:
   - 3.4
 
+env:
+  global:
+    - QT_BASE=53
+    # - QT_BASE=54
+    # - QT_BASE=55
+    # - QT_BASE=56
+    # - QT_BASE=57
+    #- GCC_ARM=/opt/gcc-arm-none-eabi/bin
+    - AVR_FLAVORS="AVR9X 9X GRUVIN9X MEGA2560"
+  matrix:
+    #
+    # ALL will build every individual board & DEFAULT, sequentially.
+    # DEFAULT is "make all" (including Companion & Simulator), with default settings
+    #
+    # - FLAVOR=ALL
+    - FLAVOR=DEFAULT
+    - FLAVOR=AVR9X
+    # - FLAVOR=9X
+    # - FLAVOR=GRUVIN9X
+    # - FLAVOR=MEGA2560
+    - FLAVOR=ARM9X
+    # - FLAVOR=AR9X
+    # - FLAVOR=SKY9X
+    # - FLAVOR=9XRPRO
+    - FLAVOR=X7
+    - FLAVOR=X9
+    # - FLAVOR=X9D
+    # - FLAVOR=X9D+
+    # - FLAVOR=X9E
+    - FLAVOR=HORUS
+    # - FLAVOR=X10
+    # - FLAVOR=X12Sr10
+    # - FLAVOR=X12S
+
 before_install:
   - sudo add-apt-repository ppa:ubuntu-sdk-team/ppa --yes
   - sudo add-apt-repository ppa:terry.guo/gcc-arm-embedded --yes
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test --yes
+  - if [ "$QT_BASE" = "53" ]; then sudo add-apt-repository ppa:beineri/opt-qt532-trusty -y; fi
+  - if [ "$QT_BASE" = "54" ]; then sudo add-apt-repository ppa:beineri/opt-qt542-trusty -y; fi
+  - if [ "$QT_BASE" = "55" ]; then sudo add-apt-repository ppa:beineri/opt-qt551-trusty -y; fi
+  - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y; fi
+  - if [ "$QT_BASE" = "57" ]; then sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y; fi
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get --yes --force-yes install qtbase5-dev qtmultimedia5-dev qttools5-dev qttools5-dev-tools python3-pyqt5 curl gcc-arm-none-eabi libfox-1.6-dev libgtest-dev
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/gcc-avr_1%253a4.8-2.1_amd64.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/libmpfr4_3.1.2-1_amd64.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/avr-libc_1%253a1.8.0-4.1_all.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/binutils-avr_2.23.1-2.1_amd64.deb
-  - wget --quiet http://firmware.ardupilot.org/Tools/Travis/libmpc3_1.0.1-1ubuntu1_amd64.deb
-  - sudo dpkg --install gcc-avr_1%3a4.8-2.1_amd64.deb avr-libc_1%3a1.8.0-4.1_all.deb libmpfr4_3.1.2-1_amd64.deb binutils-avr_2.23.1-2.1_amd64.deb libmpc3_1.0.1-1ubuntu1_amd64.deb
+  - sudo apt-get --yes --force-yes install python3-pyqt5 curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
+  - |
+    if [[ " ${AVR_FLAVORS} " =~ " ${FLAVOR} " || ${FLAVOR} == "ALL" ]]; then
+      wget --quiet https://launchpad.net/ubuntu/+source/gcc-avr/1:4.9.2+Atmel3.5.0-1/+build/8403710/+files/gcc-avr_4.9.2+Atmel3.5.0-1_amd64.deb
+      wget --quiet https://launchpad.net/ubuntu/+source/avr-libc/1:1.8.0+Atmel3.5.0-1/+build/8435473/+files/avr-libc_1.8.0+Atmel3.5.0-1_all.deb
+      wget --quiet https://launchpad.net/ubuntu/+source/binutils-avr/2.25+Atmel3.5.0-2/+build/8435474/+files/binutils-avr_2.25+Atmel3.5.0-2_amd64.deb
+      sudo dpkg --install gcc-avr_4.9.2+Atmel3.5.0-1_amd64.deb avr-libc_1.8.0+Atmel3.5.0-1_all.deb binutils-avr_2.25+Atmel3.5.0-2_amd64.deb
+    fi
+    if [[ ! " ${AVR_FLAVORS} " =~ " ${FLAVOR} " || ${FLAVOR} == "ALL" ]]; then
+      sudo apt-get --yes --force-yes install gcc-arm-none-eabi
+      # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above 
+      # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+      # - tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
+      # - mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
+    fi
+  - sudo apt-get install -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
 
 script:
   - ./tools/commit-tests.sh

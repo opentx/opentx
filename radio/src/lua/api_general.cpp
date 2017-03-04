@@ -22,11 +22,13 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "stamp.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 #include "telemetry/frsky.h"
 
-#if defined(PCBHORUS)
-  #include "lua/lua_exports_horus.inc"   // this line must be after lua headers
+#if defined(PCBX12S)
+  #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
+#elif defined(PCBX10)
+  #include "lua/lua_exports_x10.inc"
 #elif defined(PCBFLAMENCO)
   #include "lua/lua_exports_flamenco.inc"
 #elif defined(PCBX9E)
@@ -302,7 +304,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 /*luadoc
 @function sportTelemetryPop()
 
-Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to the LUA telemetry receive queue.
+Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x52FF (frame ID == 0x10), as well as packets with a frame ID equal 0x32 (regardless of the data ID) will be passed to the LUA telemetry receive queue.
 
 @retval SPORT paket as a quadruple:
  * sensor ID (number)
@@ -667,64 +669,35 @@ Play a numerical value (text to speech)
 
 @status current Introduced in 2.0.0
 
-@notice 2.0 Only - automatic conversion of units for distance, speed, and temperature.
 
-OpenTX 2.0:
-
-| Unit  | Sound | File (.wav) | Automatic conversion rules  |
-| --- | --- | --- | --- |
-| 0 | --- | --- (no unit played) |   |
-| 1 | Volts | 116 |   |
-| 2 | Amps  | 118 |   |
-| 3 | Meters per Second | 120 |   |
-| 4 | *missing file*  | 122 |   |
-| 5 | Kilometers per Hour / Miles per Hour  | 124 / 142 | Input value is KPH  |
-| 6 | Meters / Feet | 126 / 140 | Input value is meters |
-| 7 | Degrees | 128 | Input value is celsius, converted to Fahrenheit for Imperial  |
-| 8 | Percent | 130 |   |
-| 9 | Milliamps | 132 |   |
-| 10  | Milliamp Hours  | 134 |   |
-| 11  | Watts | 136 |   |
-| 12  | DB  | 138 |   |
-| 13  | Feet  | 140 |   |
-| 14  | Kilometers per Hour / Miles per Hour  | 124 / 142 | Input value is in Knots, converted to KPH or MPH  |
-| 15  | Hours | 144 |   |
-| 16  | Minutes | 146 |   |
-| 17  | Seconds | 148 |   |
-| 18  | RPM | 150 |   |
-| 19  | Gee | 152 |   |
-| 20  | Degrees | 128 |   |
-
-
-OpenTX 2.1:
-
-| 2.1 Unit  | Sound | Sound File (.wav) |
-| --- | --- | --- |
-| 0 | --- | --- (no unit played) |   |
-| 1 | Volts | 116 |
-| 2 | Amps  | 118 |
-| 3 | Milliamps | 120 |
-| 4 | Knots | 122 |
-| 5 | Meters per Second | 124 |
-| 6 | Feet per Second | 126 |
-| 7 | Kilometers per Hour | 128 |
-| 8 | Miles per Hour  | 130 |
-| 9 | Meters  | 132 |
-| 10  | Feet  | 134 |
-| 11  | Degrees Celsius | 136 |
-| 12  | Degrees Fahrenheit  | 138 |
-| 13  | Percent | 140 |
-| 14  | Milliamp Hours  | 142 |
-| 15  | Watts | 144 |
-| 16  | DB  | 146 |
-| 17  | RPM | 148 |
-| 18  | Gee | 150 |
-| 19  | Degrees | 152 |
-| 20  | Milliliters | 154 |
-| 21  | Fluid Ounces  | 156 |
-| 22  | Hours | 158 |
-| 23  | Minutes | 160 |
-| 24  | Seconds | 162 |
+| 2.2 Unit  | Sound        |
+| --- | ---                |
+| 0   | (no unit played)   |
+| 1   | Volts              |
+| 2   | Amps               |
+| 3   | Milliamps          |
+| 4   | Knots              |
+| 5   | Meters per Second  |
+| 6   | Feet per Second    |
+| 7   | Kilometers per Hour|
+| 8   | Miles per Hour     |
+| 9   | Meters             |
+| 10  | Feet               |
+| 11  | Degrees Celsius    |
+| 12  | Degrees Fahrenheit |
+| 13  | Percent            |
+| 14  | Milliamp Hours     |
+| 15  | Watts              |
+| 16  | DB                 |
+| 17  | RPM                |
+| 18  | Gee                |
+| 19  | Degrees            |
+| 20  | Radians            |
+| 21  | Milliliters        |
+| 22  | Fluid Ounces       |
+| 23  | Hours              |
+| 24  | Minutes            |
+| 25  | Seconds            |
 
 */
 static int luaPlayNumber(lua_State * L)

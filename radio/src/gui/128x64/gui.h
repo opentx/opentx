@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -304,6 +304,7 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t eve
 
 #if defined(GVARS) && defined(CPUARM)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
+void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
 #elif defined(GVARS)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
 #else
@@ -311,7 +312,7 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #endif
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
-  
+
 #if defined(GVARS)
 #define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
@@ -426,7 +427,7 @@ uint8_t getMixesCount();
 void insertMix(uint8_t idx);
 void deleteMix(uint8_t idx);
 #endif
-  
+
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
 

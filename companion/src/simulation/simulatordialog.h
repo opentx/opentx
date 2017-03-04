@@ -21,245 +21,139 @@
 #ifndef _SIMULATORDIALOG_H_
 #define _SIMULATORDIALOG_H_
 
-#include "modeledit/node.h"
-#include "telemetrysimu.h"
-#include "trainersimu.h"
-#include "debugoutput.h"
+#include "constants.h"
+#include "helpers.h"
+#include "radiodata.h"
+#include "simulator.h"
 
-#ifdef JOYSTICKS
-#include "joystick.h"
-#endif
-
-#define TMR_OFF     0
-#define TMR_RUNNING 1
-#define TMR_BEEPING 2
-#define TMR_STOPPED 3
+#include <QWidget>
+#include <QVector>
 
 #define FLASH_DURATION 10
 
-namespace Ui {
-  class SimulatorDialog9X;
-  class SimulatorDialogTaranis;
-  class SimulatorDialogFlamenco;
-  class SimulatorDialogHorus;
-}
-
-// TODO rename + move?
-class LcdWidget;
-class SliderWidget;
-class VirtualJoystickWidget;
-
-#define SIMULATOR_FLAGS_NOTX              1
-#define SIMULATOR_FLAGS_STICK_MODE_LEFT   2
-#define SIMULATOR_FLAGS_S1                4
-#define SIMULATOR_FLAGS_S2                8
-#define SIMULATOR_FLAGS_S3               16
-#define SIMULATOR_FLAGS_S4               32  // reserved for the future
-#define SIMULATOR_FLAGS_S1_MULTI         64
-#define SIMULATOR_FLAGS_S2_MULTI        128
-#define SIMULATOR_FLAGS_S3_MULTI        256
-#define SIMULATOR_FLAGS_S4_MULTI        512  // reserved for the future
-#define SIMULATOR_FLAGS_STANDALONE     1024  // started from stanalone simulator
+#define CBEEP_ON      "QLabel { background-color: #FF364E }"
+#define CBEEP_OFF     "QLabel { }"
 
 void traceCb(const char * text);
 
-class SimulatorDialog : public QDialog
+class Firmware;
+class SimulatorInterface;
+class SimulatedUIWidget;
+class RadioWidget;
+class RadioSwitchWidget;
+class VirtualJoystickWidget;
+#ifdef JOYSTICKS
+class Joystick;
+#endif
+
+class QWidget;
+class QSlider;
+class QLabel;
+class QFrame;
+
+namespace Ui {
+  class SimulatorDialog;
+}
+
+using namespace Simulator;
+
+class SimulatorDialog : public QWidget
 {
   Q_OBJECT
 
   public:
-    explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
+    explicit SimulatorDialog(QWidget * parent, SimulatorInterface *simulator, quint8 flags=0);
     virtual ~SimulatorDialog();
 
-    void start(const char * filename);
-    void start(QByteArray & eeprom);
+    void setSdPath(const QString & sdPath);
+    void setDataPath(const QString & dataPath);
+    void setPaths(const QString & sdPath, const QString & dataPath);
+    void setRadioSettings(const GeneralSettings settings);
+    bool setStartupData(const QByteArray & dataSource = NULL, bool fromFile = false);
+    bool setRadioData(RadioData * radioData);
+    bool setOptions(SimulatorOptions & options, bool withSave = true);
+    bool saveRadioData(RadioData * radioData, const QString & path = "", QString * error = NULL);
+    bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
+    bool saveTempData();
+    void deleteTempData();
+    void saveState();
+    void setUiAreaStyle(const QString & style);
+    void captureScreenshot(bool);
+    void setupJoysticks();
+
+    QString getSdPath()   const { return sdCardPath; }
+    QString getDataPath() const { return radioDataPath; }
+    QVector<keymapHelp_t> * getKeymapHelp() { return &keymapHelp; }
+
+  public slots:
+    void start();
+    void stop();
+    void restart();
+    void shutdown();
+
+  private:
     void setRadioProfileId(int value);
-    virtual void traceCallback(const char * text);
+    void setupRadioWidgets();
+    void setupTimer();
+    void restoreRadioWidgetsState();
+    QList<QByteArray> saveRadioWidgetsState();
 
-  protected:
-    template <class T> void initUi(T * ui);
-    virtual void setLightOn(bool enable) { }
-    virtual void updateBeepButton() { }
+    void setValues();
+    void getValues();
+    void setTrims();
 
-    unsigned int flags;
-    LcdWidget * lcd;
-    QVector<QDial *> pots;
-    QVector<QLabel *> potLabels;
-    QVector<QLabel *> potValues;
-    QVector<QSlider *> sliders;
-    QTabWidget * tabWidget;
-    QVector<QLabel *> logicalSwitchLabels;
-    QVector<QSlider *> channelSliders;
-    QVector<QLabel *> channelValues;
-    QVector<QLabel *> gvarValues;
 
-    void init();
-    VirtualJoystickWidget *vJoyLeft;
-    VirtualJoystickWidget *vJoyRight;
-    QTimer *timer;
+    Ui::SimulatorDialog * ui;
+    SimulatorInterface * simulator;
+    Firmware * firmware;
+    GeneralSettings radioSettings;
+
+    QTimer * timer;
     QString windowName;
-    unsigned int backLight;
-    bool lightOn;
-    int switches;
-    unsigned int numGvars;
-    unsigned int numFlightModes;
+    QVector<keymapHelp_t> keymapHelp;
+
+    SimulatedUIWidget     * radioUiWidget;
+    VirtualJoystickWidget * vJoyLeft;
+    VirtualJoystickWidget * vJoyRight;
+
+    QVector<RadioSwitchWidget *> switches;
+    QVector<RadioWidget       *> analogs;
+
+    QString sdCardPath;
+    QString radioDataPath;
+    QByteArray startupData;
+    Board::Type m_board;
+    quint8 flags;
+    int radioProfileId;
+    int lastPhase;
+    int buttonPressed;
+    int trimPressed;
+    bool startupFromFile;
+    bool deleteTempRadioData;
+    bool saveTempRadioData;
+    bool middleButtonPressed;
+    bool firstShow;
+
 #ifdef JOYSTICKS
     Joystick *joystick;
     int jscal[8][4];
     int jsmap[8];
 #endif
 
-    SimulatorInterface *simulator;
-    int radioProfileId;
-    unsigned int lastPhase;
-
-    QFrame * createLogicalSwitch(QWidget * parent, int switchNo, QVector<QLabel *> & labels);
-    void setupOutputsDisplay();
-    void setupGVarsDisplay();
-
-    void startCommon();
-    void setupTimer();
-
-    void centerSticks();
-    void setTrims();
-    void setValues();
-    virtual void getValues() = 0;
-    int getValue(qint8 i);
-    bool getSwitch(int swtch, bool nc, qint8 level=0);
-
-    int beepVal;
-
-    int lcdWidth;
-    int lcdHeight;
-    int lcdDepth;
-    TelemetrySimulator * TelemetrySimu;
-    TrainerSimulator * TrainerSimu;
-    DebugOutput * DebugOut;
-
-    QString traceBuffer;
-    QMutex traceMutex;
-    QList<QString> traceList;
-    void updateDebugOutput();
-
-    virtual void closeEvent(QCloseEvent *);
-    virtual void showEvent(QShowEvent *event);
-    virtual void mousePressEvent(QMouseEvent *);
-    virtual void mouseReleaseEvent(QMouseEvent *);
-    virtual void wheelEvent(QWheelEvent *);
-    virtual void keyPressEvent(QKeyEvent *);
-    virtual void keyReleaseEvent(QKeyEvent *);
-    static int screenshotIdx;
-    int buttonPressed;
-    int trimPressed;
-    bool middleButtonPressed;
-
   private slots:
-    void onButtonPressed(int value);
+    //virtual void showEvent(QShowEvent *);
+    //virtual void closeEvent(QCloseEvent *);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
+
     void onTimerEvent();
     void onTrimPressed(int which);
     void onTrimReleased();
     void onTrimSliderMoved(int which, int value);
-    void openTelemetrySimulator();
-    void openTrainerSimulator();
-    void openDebugOutput();
-    void onDebugOutputClose();
-    void luaReload();
-
-#ifdef JOYSTICKS
+    void centerSticks();
     void onjoystickAxisValueChanged(int axis, int value);
-#endif
- 
-};
 
-class SimulatorDialog9X: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialog9X(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
-    virtual ~SimulatorDialog9X();
-
-  protected:
-    virtual void getValues();
-    virtual void setLightOn(bool enable);
-    virtual void updateBeepButton();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  protected slots:
-    void dialChanged(int index);
-
-  private:
-    Ui::SimulatorDialog9X * ui;
-    static uint32_t switchstatus;
-    int beepShow;
-
-};
-
-class SimulatorDialogTaranis: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialogTaranis(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
-    virtual ~SimulatorDialogTaranis();
-
-  protected:
-    virtual void getValues();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialogTaranis * ui;
-    static uint32_t switchstatus;
-
-  private slots:
-    void resetSH();
-    void on_switchH_sliderReleased();
-};
-
-class SimulatorDialogFlamenco: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialogFlamenco(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
-    virtual ~SimulatorDialogFlamenco();
-
-  protected:
-    virtual void getValues();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialogFlamenco * ui;
-    static uint32_t switchstatus;
-
-  private slots:
-    void resetSH();
-    void on_switchH_sliderReleased();
-};
-
-class SimulatorDialogHorus: public SimulatorDialog
-{
-  Q_OBJECT
-
-  public:
-    explicit SimulatorDialogHorus(QWidget * parent, SimulatorInterface *simulator, unsigned int flags=0);
-    virtual ~SimulatorDialogHorus();
-
-  protected:
-    virtual void getValues();
-    void saveSwitches(void);
-    void restoreSwitches(void);
-
-  private:
-    Ui::SimulatorDialogHorus * ui;
-    static uint32_t switchstatus;
-
-  private slots:
-    void resetSH();
-    void on_switchH_sliderReleased();
 };
 
 #endif // _SIMULATORDIALOG_H_

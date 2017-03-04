@@ -44,6 +44,9 @@ extern "C" {
 extern lua_State * lsScripts;
 extern lua_State * lsWidgets;
 extern bool luaLcdAllowed;
+#if defined(COLORLCD)
+extern uint32_t luaExtraMemoryUsage;
+#endif
 
 void luaInit();
 void luaInitThemesAndWidgets();
@@ -116,8 +119,9 @@ extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
 void luaClose(lua_State ** L);
 bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage);
 void luaExec(const char * filename);
+void luaDoGc(lua_State * L, bool full);
 void luaError(lua_State * L, uint8_t error, bool acknowledge=true);
-int luaGetMemUsed(lua_State * L);
+uint32_t luaGetMemUsed(lua_State * L);
 void luaGetValueAndPush(lua_State * L, int src);
 #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
 uint8_t isTelemetryScriptAvailable(uint8_t index);

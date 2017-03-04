@@ -47,7 +47,7 @@ void drawCategory(coord_t y, const char * name, bool selected)
 {
   if (selected) {
     lcdDrawSolidFilledRect(1, y-INVERT_VERT_MARGIN, CATEGORIES_WIDTH-10, INVERT_LINE_HEIGHT+2, TEXT_INVERTED_BGCOLOR);
-    lcdDrawText(6, y, name, SMLSIZE | TEXT_COLOR | INVERS);
+    lcdDrawText(6, y, name, TEXT_COLOR | INVERS);
   }
   else {
     lcdDrawText(6, y, name, TEXT_COLOR);
@@ -107,9 +107,9 @@ void setCurrentCategory(unsigned int index)
 #define WIZARD_ICON_Y                  110
 #define WIZARD_TEXT_Y                  195
 
-uint8_t getWizardNumber()
+uint8_t getWizardCount()
 {
-  uint8_t wizNbr=0;
+  uint8_t wizCnt=0;
   DIR dir;
   static FILINFO fno;
 
@@ -121,25 +121,26 @@ uint8_t getWizardNumber()
         break;
       }
       if (fno.fattrib & AM_DIR) {
-        wizNbr++;
+        wizCnt++;
       }
     }
   }
-  return wizNbr;
+  return wizCnt;
 }
 
 bool menuModelWizard(event_t event)
 {
-  static uint8_t wizardSelected;
-  static uint8_t wizardNumber;
+  static uint8_t wizardSelected = 0;
+  static uint8_t wizardCnt = getWizardCount();
   bool executeMe = false;
   uint8_t first = 0;
   DIR dir;
   static FILINFO fno;
   char wizpath[MAX_WIZARD_NAME_LEN];
 
-  if(wizardNumber == 0) {
-    wizardNumber = getWizardNumber();
+  if (wizardCnt == 0) {
+    chainMenu(menuModelSelect);
+    return false;
   }
 
   switch(event) {
@@ -156,7 +157,7 @@ bool menuModelWizard(event_t event)
     break;
 
   case EVT_ROTARY_RIGHT:
-    if (wizardSelected < wizardNumber-1) {
+    if (wizardSelected < wizardCnt-1) {
       wizardSelected++;
     }
     if (wizardSelected > 3) {
@@ -210,10 +211,6 @@ bool menuModelWizard(event_t event)
       }
     }
     f_closedir(&dir);
-    if(wizardNumber == 0) {
-      lcdDrawText(40, LCD_H / 2, STR_SDCARD_NOWIZ);
-      return true;
-    }
   }
   return true;
 }
@@ -366,6 +363,9 @@ bool menuModelSelect(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_PGUP):
+#if defined(PCBX10)
+    case EVT_KEY_LONG(KEY_PGDN):
+#endif
       if (selectMode == MODE_SELECT_MODEL) {
         if (categoriesVerticalPosition == 0)
           categoriesVerticalPosition = modelslist.categories.size() - 1;
@@ -381,9 +381,14 @@ bool menuModelSelect(event_t event)
         modelslist.moveModel(model, previous_category, currentCategory);
         setCurrentModel(currentCategory->size()-1);
       }
+      killEvents(event);
       break;
 
+#if defined(PCBX12S)
     case EVT_KEY_FIRST(KEY_PGDN):
+#elif defined(PCBX10)
+    case EVT_KEY_BREAK(KEY_PGDN):
+#endif
       if (selectMode == MODE_SELECT_MODEL) {
         categoriesVerticalPosition += 1;
         if (categoriesVerticalPosition >= modelslist.categories.size())

@@ -301,7 +301,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               lcdDrawChar(lcdLastPos, y, 's');
             }
             else {
-              lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_MMMINV, 0, attr);
+              lcdDrawMMM(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, attr);
             }
           }
 #endif

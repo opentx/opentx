@@ -13,3 +13,4 @@ build*/
 *.old
 *.doc
 *.bak
+cmake-build-*/

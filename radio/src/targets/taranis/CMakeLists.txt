@@ -5,12 +5,14 @@ option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
 if(PCB STREQUAL X9E)
   set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")
   set(CPU_TYPE STM32F4)
+  set(CPU_TYPE_FULL STM32F407xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9e)
   set(FLAVOUR x9e)
   add_definitions(-DSTM32F40_41xxx -DPCBX9E)
-  add_definitions(-DEEPROM_VARIANT=32768)
+  add_definitions(-DEEPROM_VARIANT=0x8000)
+  add_definitions(-DBLUETOOTH)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     top_lcd_driver.cpp
@@ -28,6 +30,7 @@ if(PCB STREQUAL X9E)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X9D+)
   set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9d)
@@ -42,6 +45,7 @@ elseif(PCB STREQUAL X9D+)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   option(HAPTIC "Haptic support" OFF)
   set(LUA_EXPORT lua_export_x9d)
@@ -56,12 +60,13 @@ elseif(PCB STREQUAL X9D)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X7)
   set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x7)
   set(FLAVOUR x7)
   add_definitions(-DPCBX7 -DSOFTWARE_VOLUME)
-  add_definitions(-DEEPROM_VARIANT=0)
+  add_definitions(-DEEPROM_VARIANT=0x4000)
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     bluetooth_driver.cpp
@@ -107,6 +112,8 @@ set(TARGET_SRC
   ${LED_DRIVER}
   backlight_driver.cpp
   extmodule_driver.cpp
+  ../common/arm/stm32/audio_dac_driver.cpp
+  ../common/arm/stm32/adc_driver.cpp
   )
 
 set(FIRMWARE_SRC

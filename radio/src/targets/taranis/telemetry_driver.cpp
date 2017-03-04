@@ -23,7 +23,7 @@
 Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 uint32_t telemetryErrors = 0;
 
-void telemetryPortInit(uint32_t baudrate, int mode)
+void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 {
   if (baudrate == 0) {
     USART_DeInit(TELEMETRY_USART);
@@ -57,7 +57,7 @@ void telemetryPortInit(uint32_t baudrate, int mode)
   GPIO_ResetBits(TELEMETRY_DIR_GPIO, TELEMETRY_DIR_GPIO_PIN);
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  if (mode == TELEMETRY_SERIAL_8E2) {
+  if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     USART_InitStructure.USART_StopBits = USART_StopBits_2;
     USART_InitStructure.USART_Parity = USART_Parity_Even;
@@ -70,6 +70,7 @@ void telemetryPortInit(uint32_t baudrate, int mode)
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
+
   USART_Cmd(TELEMETRY_USART, ENABLE);
   USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
   NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
@@ -169,14 +170,14 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 }
 
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
-int telemetryGetByte(uint8_t * byte)
+uint8_t telemetryGetByte(uint8_t * byte)
 {
 #if defined(SERIAL2)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
     if (serial2Mode == UART_MODE_TELEMETRY)
       return serial2RxFifo.pop(*byte);
     else
-      return 0;
+      return false;
   }
   else {
     return telemetryFifo.pop(*byte);

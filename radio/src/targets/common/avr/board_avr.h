@@ -22,12 +22,14 @@
 #define NUM_POTS                       3
 #define NUM_SLIDERS                    0
 #define NUM_XPOTS                      0
+
 enum Analogs {
   STICK1,
   STICK2,
   STICK3,
   STICK4,
-  POT1,
+  POT_FIRST,
+  POT1 = POT_FIRST,
   POT2,
   POT3,
   POT_LAST = POT3,
@@ -41,8 +43,22 @@ enum Analogs {
   X14051,
 #endif
   TX_VOLTAGE,
-  NUMBER_ANALOG
+  NUM_ANALOGS
 };
+
+enum CalibratedAnalogs {
+  CALIBRATED_STICK1,
+  CALIBRATED_STICK2,
+  CALIBRATED_STICK3,
+  CALIBRATED_STICK4,
+  CALIBRATED_POT_FIRST,
+  CALIBRATED_POT1 = CALIBRATED_POT_FIRST,
+  CALIBRATED_POT2,
+  CALIBRATED_POT3,
+  CALIBRATED_POT_LAST = CALIBRATED_POT3,
+  NUM_CALIBRATED_ANALOGS
+};
+
 void adcInit();
 void adcPrepareBandgap();
 void getADC();
@@ -56,7 +72,9 @@ enum EnumKeys
   KEY_ENTER=KEY_MENU,
   KEY_EXIT,
   KEY_DOWN,
+  KEY_MINUS = KEY_DOWN,
   KEY_UP,
+  KEY_PLUS = KEY_UP,
   KEY_RIGHT,
   KEY_LEFT,
   
@@ -202,4 +220,6 @@ uint8_t eepromIsTransferComplete();
 #define TLM_USART 0
 #endif
 void telemetryPortInit();
+void telemetryPortInit(uint32_t baudrate); 
+void telemetryPortInitFromIndex(uint8_t index); 
 void telemetryTransmitBuffer();

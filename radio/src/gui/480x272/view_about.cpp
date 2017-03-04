@@ -48,13 +48,21 @@ bool menuAboutView(event_t event)
       screenIndex = 0;
       greyIndex = 0;
       break;
+#if defined(PCBX12S)
     case EVT_KEY_FIRST(KEY_PGDN):
+#elif defined(PCBX10)
+    case EVT_KEY_BREAK(KEY_PGDN):
+#endif
       screenIndex < ABOUT_PARENTS ? screenIndex++ : screenIndex = ABOUT_OPENTX;
       greyIndex = 0;
       break;
     case EVT_KEY_FIRST(KEY_PGUP):
+#if defined(PCBX10)
+    case EVT_KEY_LONG(KEY_PGDN):
+#endif
       screenIndex > ABOUT_OPENTX ? screenIndex-- : screenIndex = ABOUT_PARENTS;
       greyIndex = 0;
+      killEvents(event);
       break;
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);

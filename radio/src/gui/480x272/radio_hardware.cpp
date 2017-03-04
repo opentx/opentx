@@ -33,8 +33,10 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_POT3,
   ITEM_RADIO_HARDWARE_LS,
   ITEM_RADIO_HARDWARE_RS,
+#if defined(PCBX12S)
   ITEM_RADIO_HARDWARE_LS2,
   ITEM_RADIO_HARDWARE_RS2,
+#endif
   ITEM_RADIO_HARDWARE_LABEL_SWITCHES,
   ITEM_RADIO_HARDWARE_SA,
   ITEM_RADIO_HARDWARE_SB,
@@ -54,14 +56,18 @@ enum MenuRadioHardwareItems {
 };
 
 #define HW_SETTINGS_COLUMN             150
+#if defined(PCBX10)
+#define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#else
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#endif
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define BLUETOOTH_ROWS                 1,
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
 bool menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0, 0, 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -88,20 +94,15 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_STICK2:
       case ITEM_RADIO_HARDWARE_STICK3:
       case ITEM_RADIO_HARDWARE_STICK4:
-      {
-        int idx = k - ITEM_RADIO_HARDWARE_STICK1;
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
-        if (ZEXIST(g_eeGeneral.anaNames[idx]) || attr)
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, attr);
-        else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+        editStickHardwareSettings(HW_SETTINGS_COLUMN, y, k - ITEM_RADIO_HARDWARE_STICK1, event, attr);
         break;
-      }
 
       case ITEM_RADIO_HARDWARE_LS:
       case ITEM_RADIO_HARDWARE_RS:
+#if defined(PCBX12S)
       case ITEM_RADIO_HARDWARE_LS2:
       case ITEM_RADIO_HARDWARE_RS2:
+#endif
       {
         int idx = k - ITEM_RADIO_HARDWARE_LS;
         uint8_t mask = (0x01 << idx);
@@ -109,7 +110,7 @@ bool menuRadioHardware(event_t event)
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx]) || (attr && menuHorizontalPosition == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
         potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.slidersConfig &= ~mask;
@@ -132,7 +133,7 @@ bool menuRadioHardware(event_t event)
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && menuHorizontalPosition == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
         potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
@@ -157,7 +158,7 @@ bool menuRadioHardware(event_t event)
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && menuHorizontalPosition == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
         else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         config = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
           swconfig_t mask = (swconfig_t)0x03 << (2*index);

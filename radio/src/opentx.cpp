@@ -246,6 +246,8 @@ void generalDefault()
   #endif
   g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
   g_eeGeneral.blOffBright = 20;
+#elif defined(PCBX7)
+  g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
@@ -518,7 +520,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
   if (result == 0) {
     for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
-      if (abs(calibratedStick[i] - sourcesStates[i]) > 512) {
+      if (abs(calibratedAnalogs[i] - sourcesStates[i]) > 512) {
         result = MIXSRC_Rud+i;
         break;
       }
@@ -534,7 +536,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
 #if defined(VIRTUAL_INPUTS)
     memcpy(inputsStates, anas, sizeof(inputsStates));
 #endif
-    memcpy(sourcesStates, calibratedStick, sizeof(sourcesStates));
+    memcpy(sourcesStates, calibratedAnalogs, sizeof(sourcesStates));
   }
 
   s_move_last_time = get_tmr10ms();
@@ -1114,15 +1116,15 @@ void checkTHR()
   // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
 
 #if defined(MODULE_ALWAYS_SEND_PULSES)
-  int16_t v = calibratedStick[thrchn];
+  int16_t v = calibratedAnalogs[thrchn];
   if (v<=THRCHK_DEADBAND-1024 || g_model.disableThrottleWarning || pwrCheck()==e_power_off || keyDown()) {
     startupWarningState = STARTUP_WARNING_THROTTLE+1;
   }
   else {
-    calibratedStick[thrchn] = -1024;
+    calibratedAnalogs[thrchn] = -1024;
 #if !defined(VIRTUAL_INPUTS)
     if (thrchn < NUM_STICKS) {
-      rawAnas[thrchn] = anas[thrchn] = calibratedStick[thrchn];
+      rawAnas[thrchn] = anas[thrchn] = calibratedAnalogs[thrchn];
     }
 #endif
     RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
@@ -1136,7 +1138,7 @@ void checkTHR()
 
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
-  int16_t v = calibratedStick[thrchn];
+  int16_t v = calibratedAnalogs[thrchn];
   if (v <= THRCHK_DEADBAND-1024) {
     return; // prevent warning if throttle input OK
   }
@@ -1155,7 +1157,7 @@ void checkTHR()
 
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
-    v = calibratedStick[thrchn];
+    v = calibratedAnalogs[thrchn];
 
 #if defined(PWR_BUTTON_DELAY)
     uint32_t pwr_check = pwrCheck();
@@ -1369,7 +1371,7 @@ uint8_t checkTrim(event_t event)
 }
 
 #if !defined(SIMU)
-uint16_t s_anaFilt[NUMBER_ANALOG];
+uint16_t s_anaFilt[NUM_ANALOGS];
 #endif
 
 #if defined(SIMU)
@@ -1385,8 +1387,8 @@ uint16_t BandGap;
 #endif
 
 #if defined(JITTER_MEASURE)
-JitterMeter<uint16_t> rawJitter[NUMBER_ANALOG];
-JitterMeter<uint16_t> avgJitter[NUMBER_ANALOG];
+JitterMeter<uint16_t> rawJitter[NUM_ANALOGS];
+JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 tmr10ms_t jitterResetTime = 0;
 #endif
 
@@ -1438,7 +1440,7 @@ void getADC()
 #if defined(JITTER_MEASURE)
   if (JITTER_MEASURE_ACTIVE() && jitterResetTime < get_tmr10ms()) {
     // reset jitter measurement every second
-    for (uint32_t x=0; x<NUMBER_ANALOG; x++) {
+    for (uint32_t x=0; x<NUM_ANALOGS; x++) {
       rawJitter[x].reset();
       avgJitter[x].reset();
     }
@@ -1450,7 +1452,7 @@ void getADC()
   adcRead();
   DEBUG_TIMER_STOP(debugTimerAdcRead);
 
-  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+  for (uint8_t x=0; x<NUM_ANALOGS; x++) {
     uint16_t v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
 
 #if defined(VIRTUAL_INPUTS)
@@ -1704,9 +1706,9 @@ void doMixerCalculations()
     }
     else {
 #if defined(VIRTUAL_INPUTS)
-      val = RESX + calibratedStick[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
+      val = RESX + calibratedAnalogs[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
 #else
-      val = RESX + (g_model.thrTraceSrc == 0 ? rawAnas[THR_STICK] : calibratedStick[g_model.thrTraceSrc+NUM_STICKS-1]);
+      val = RESX + (g_model.thrTraceSrc == 0 ? rawAnas[THR_STICK] : calibratedAnalogs[g_model.thrTraceSrc+NUM_STICKS-1]);
 #endif
     }
 
@@ -1785,7 +1787,11 @@ void doMixerCalculations()
 #if defined(PXX) || defined(DSM2)
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
+#if defined(MULTIMODULE)
+      if (moduleFlag[i] != MODULE_NORMAL_MODE || (i == EXTERNAL_MODULE && multiModuleStatus.isBinding())) {
+#else
       if (moduleFlag[i] != MODULE_NORMAL_MODE) {
+#endif
         if (++countRangecheck >= 250) {
           countRangecheck = 0;
           AUDIO_PLAY(AU_SPECIAL_SOUND_CHEEP);
@@ -1816,7 +1822,7 @@ uint8_t calcStickScroll( uint8_t index )
   if ( ( g_eeGeneral.stickMode & 1 ) == 0 )
     index ^= 3;
 
-  value = calibratedStick[index] / 128;
+  value = calibratedAnalogs[index] / 128;
   direction = value > 0 ? 0x80 : 0;
   if (value < 0)
     value = -value;                        // (abs)
@@ -2432,29 +2438,47 @@ void opentxInit(OPENTX_INIT_ARGS)
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
-  
+
 #if defined(EEPROM)
   storageReadAll();
 #endif
 
+  // Radios handle UNEXPECTED_SHUTDOWN() differently:
+  //  * radios with WDT and EEPROM and CPU controlled power use Reset status register
+  //    and eeGeneral.unexpectedShutdown
+  //  * radios with SDCARD model storage use Reset status register and special
+  //    variables in RAM. They can not use eeGeneral.unexpectedShutdown
+  //  * radios without CPU controlled power can only use Reset status register (if available)
   if (UNEXPECTED_SHUTDOWN()) {
+    TRACE("Unexpected Shutdown detected");
     unexpectedShutdown = 1;
   }
-  else {
+
 #if defined(SDCARD) && !defined(PCBMEGA2560)
+  // SDCARD related stuff, only done if not unexpectedShutdown
+  if (!unexpectedShutdown) {
     sdInit();
     logsInit();
+ }
 #endif
-  }
 
 #if defined(PCBHORUS)
-  topbar = new Topbar(&g_model.topbarData);
-  LUA_INIT_THEMES_AND_WIDGETS();
+  if (!unexpectedShutdown) {
+    // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
+    // but we only remember the pointer to in in constructor.
+    // The storageReadAll() needs topbar object, so it must be created here
+    topbar = new Topbar(&g_model.topbarData);
+    // lua widget state must also be prepared before the call to storageReadAll()
+    LUA_INIT_THEMES_AND_WIDGETS();
+  }
 #endif
-  
+
+  // handling of storage for radios that have no EEPROM
 #if !defined(EEPROM)
 #if defined(RAMBACKUP)
-  if (UNEXPECTED_SHUTDOWN()) {
+  if (unexpectedShutdown) {
+    // SDCARD not available, try to restore last model from RAM
+    TRACE("rambackupRestore");
     rambackupRestore();
   }
   else {
@@ -2463,7 +2487,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #else
   storageReadAll();
 #endif
-#endif
+#endif  // #if !defined(EEPROM)
 
 #if defined(SERIAL2)
   serial2Init(g_eeGeneral.serial2Mode, MODEL_TELEMETRY_PROTOCOL());
@@ -2498,7 +2522,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   setSticksGain(g_eeGeneral.sticksGain);
 #endif
 
-#if defined(BLUETOOTH)
+#if defined(PCBSKY9X) && defined(BLUETOOTH)
   btInit();
 #endif
 
@@ -2507,13 +2531,17 @@ void opentxInit(OPENTX_INIT_ARGS)
   loadFontCache();
 #endif
 
-  if (g_eeGeneral.backlightMode != e_backlight_mode_off) backlightOn(); // on Tx start turn the light on
+  if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
+    // on Tx start turn the light on
+    backlightOn();
+  }
 
-  if (!UNEXPECTED_SHUTDOWN()) {
+  if (!unexpectedShutdown) {
     opentxStart();
   }
 
 #if defined(CPUARM) || defined(CPUM2560)
+	// TODO Horus does not need this
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
@@ -2661,7 +2689,7 @@ int main()
   drawSleepBitmap();
   opentxClose();
   boardOff(); // Only turn power off if necessary
-  wdt_disable();
+  wdt_disable();  // this function is provided by AVR Libc
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif
 

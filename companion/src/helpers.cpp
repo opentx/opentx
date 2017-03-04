@@ -31,10 +31,9 @@
 
 #include "appdata.h"
 #include "helpers.h"
-#include "simulatordialog.h"
-#include "simulatorinterface.h"
-#include "firmwareinterface.h"
-#include "storage/storage_sdcard.h"
+#include "modeledit/modeledit.h"
+#include "simulatormainwindow.h"
+#include "storage/sdcard.h"
 
 Stopwatch gStopwatch("global");
 
@@ -116,7 +115,7 @@ void getFileComboBoxValue(QComboBox * b, char * dest, int length)
 
 void populatePhasesCB(QComboBox *b, int value)
 {
-  for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
+  for (int i=-getCurrentFirmware()->getCapability(FlightModes); i<=getCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i < 0)
       b->addItem(QObject::tr("!Flight mode %1").arg(-i-1), i);
     else if (i > 0)
@@ -124,10 +123,10 @@ void populatePhasesCB(QComboBox *b, int value)
     else
       b->addItem(QObject::tr("----"), 0);
   }
-  b->setCurrentIndex(value + GetCurrentFirmware()->getCapability(FlightModes));
+  b->setCurrentIndex(value + getCurrentFirmware()->getCapability(FlightModes));
 }
 
-GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars):
+GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars, ModelPanel * panel):
   QObject(),
   weightGV(weightGV),
   weightSB(weightSB),
@@ -136,9 +135,10 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
   weightCB(weightCB),
   weight(weight),
   step(step),
-  lock(true)
+  lock(true),
+  panel(panel)
 {
-  if (allowGvars && GetCurrentFirmware()->getCapability(Gvars)) {
+  if (allowGvars && getCurrentFirmware()->getCapability(Gvars)) {
     populateGVCB(*weightCB, weight, model);
     connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
     connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
@@ -200,6 +200,9 @@ void GVarGroup::valuesChanged()
       weight = sb->value();
     else
       weight = round(dsb->value()/step);
+    if (panel)
+      emit panel->modified();
+
   }
 }
 
@@ -239,7 +242,7 @@ void CurveGroup::update()
   curveTypeCB->setCurrentIndex(found);
 
   if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
-    curveGVarCB->setVisible(GetCurrentFirmware()->getCapability(Gvars));
+    curveGVarCB->setVisible(getCurrentFirmware()->getCapability(Gvars));
     if (curve.value > 100 || curve.value < -100) {
       curveGVarCB->setChecked(true);
       if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
@@ -275,7 +278,7 @@ void CurveGroup::update()
         break;
       case CurveReference::CURVE_REF_CUSTOM:
       {
-        int numcurves = GetCurrentFirmware()->getCapability(NumCurves);
+        int numcurves = getCurrentFirmware()->getCapability(NumCurves);
         if (lastType != curve.type) {
           lastType = curve.type;
           curveValueCB->clear();
@@ -364,23 +367,24 @@ void CurveGroup::valuesChanged()
 void populateGvarUseCB(QComboBox *b, unsigned int phase)
 {
   b->addItem(QObject::tr("Own value"));
-  for (int i=0; i<GetCurrentFirmware()->getCapability(FlightModes); i++) {
+  for (int i=0; i<getCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i != (int)phase) {
       b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
   }
 }
 
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
+void populateSwitchCB(QComboBox * b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context)
 {
+  Board::Type board = getCurrentBoard();
   RawSwitch item;
 
   b->clear();
 
   if (context != MixesContext && context != GlobalFunctionsContext) {
     // !FMx
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-      for (int i=-GetCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
+    if (IS_ARM(board)) {
+      for (int i=-getCurrentFirmware()->getCapability(FlightModes); i<0; i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
         b->addItem(item.toString(), item.toValue());
         if (item == value) b->setCurrentIndex(b->count()-1);
@@ -389,14 +393,14 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
   }
 
   if (context != GlobalFunctionsContext) {
-    for (int i=-GetCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
+    for (int i=-getCurrentFirmware()->getCapability(LogicalSwitches); i<0; i++) {
       item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
 
-  for (int i=-GetCurrentFirmware()->getCapability(RotaryEncoders); i<0; i++) {
+  for (int i=-getCurrentFirmware()->getCapability(RotaryEncoders); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
@@ -408,19 +412,19 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=GetCurrentFirmware()->getCapability(MultiposPots)-1; i>=0; i--) {
-    if (generalSettings.potConfig[i] == GeneralSettings::POT_MULTIPOS_SWITCH) {
-      for (int j=-GetCurrentFirmware()->getCapability(MultiposPotsPositions); j<0; j++) {
-        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*GetCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
+  for (int i=getCurrentFirmware()->getCapability(MultiposPots)-1; i>=0; i--) {
+    if (generalSettings.potConfig[i] == Board::POT_MULTIPOS_SWITCH) {
+      for (int j=-getCurrentFirmware()->getCapability(MultiposPotsPositions); j<0; j++) {
+        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
         if (item == value) b->setCurrentIndex(b->count()-1);
       }
     }
   }
 
-  for (int i=-GetCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
+  for (int i=-getCurrentFirmware()->getCapability(SwitchesPositions); i<0; i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
+    if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchPositionAllowedTaranis(i)) {
       continue;
     }
     b->addItem(item.toString(), item.toValue());
@@ -440,19 +444,19 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetCurrentFirmware()->getCapability(SwitchesPositions); i++) {
+  for (int i=1; i<=getCurrentFirmware()->getCapability(SwitchesPositions); i++) {
     item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-    if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchPositionAllowedTaranis(i)){
+    if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchPositionAllowedTaranis(i)) {
       continue;
     }
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=0; i<GetCurrentFirmware()->getCapability(MultiposPots); i++) {
-    if (generalSettings.potConfig[i] == GeneralSettings::POT_MULTIPOS_SWITCH) {
-      for (int j=1; j<=GetCurrentFirmware()->getCapability(MultiposPotsPositions); j++) {
-        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*GetCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
+  for (int i=0; i<getCurrentFirmware()->getCapability(MultiposPots); i++) {
+    if (generalSettings.potConfig[i] == Board::POT_MULTIPOS_SWITCH) {
+      for (int j=1; j<=getCurrentFirmware()->getCapability(MultiposPotsPositions); j++) {
+        item = RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i*getCurrentFirmware()->getCapability(MultiposPotsPositions)+j);
         b->addItem(item.toString(), item.toValue());
         if (item == value) b->setCurrentIndex(b->count()-1);
       }
@@ -465,14 +469,14 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
-  for (int i=1; i<=GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
+  for (int i=1; i<=getCurrentFirmware()->getCapability(RotaryEncoders); i++) {
     item = RawSwitch(SWITCH_TYPE_ROTARY_ENCODER, i);
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
   }
 
   if (context != GlobalFunctionsContext) {
-    for (int i=1; i<=GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
+    for (int i=1; i<=getCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
@@ -492,8 +496,8 @@ void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettin
 
   // FMx
   if (context != MixesContext && context != GlobalFunctionsContext) {
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
-      for (int i=1; i<=GetCurrentFirmware()->getCapability(FlightModes); i++) {
+    if (IS_ARM(board)) {
+      for (int i=1; i<=getCurrentFirmware()->getCapability(FlightModes); i++) {
         item = RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i);
         b->addItem(item.toString(), item.toValue());
         if (item == value) b->setCurrentIndex(b->count()-1);
@@ -510,7 +514,7 @@ void populateGVCB(QComboBox & b, int value, const ModelData & model)
 
   b.clear();
 
-  int count = GetCurrentFirmware()->getCapability(Gvars);
+  int count = getCurrentFirmware()->getCapability(Gvars);
   for (int i=-count; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
     if (strlen(model.gvars_names[-i-1]) > 0)
@@ -542,7 +546,7 @@ void populateGVCB(QComboBox & b, int value, const ModelData & model)
 
 void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags)
 {
-  BoardEnum board = GetCurrentFirmware()->getBoard();
+  Board::Type board = getCurrentBoard();
   RawSource item;
 
   b->clear();
@@ -554,8 +558,8 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SCRIPT_OUTPUTS) {
-    for (int i=0; i<GetCurrentFirmware()->getCapability(LuaScripts); i++) {
-      for (int j=0; j<GetCurrentFirmware()->getCapability(LuaOutputsPerScript); j++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(LuaScripts); i++) {
+      for (int j=0; j<getCurrentFirmware()->getCapability(LuaOutputsPerScript); j++) {
         item = RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j);
         b->addItem(item.toString(model), item.toValue());
         if (item == source) b->setCurrentIndex(b->count()-1);
@@ -564,7 +568,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (model && (flags & POPULATE_VIRTUAL_INPUTS)) {
-    int virtualInputs = GetCurrentFirmware()->getCapability(VirtualInputs);
+    int virtualInputs = getCurrentFirmware()->getCapability(VirtualInputs);
     for (int i=0; i<virtualInputs; i++) {
       if (model->isInputValid(i)) {
         item = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i);
@@ -575,15 +579,15 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SOURCES) {
-    for (int i=0; i<CPN_MAX_STICKS+GetCurrentFirmware()->getCapability(Pots)+GetCurrentFirmware()->getCapability(Sliders); i++) {
+    for (int i=0; i<CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders); i++) {
       item = RawSource(SOURCE_TYPE_STICK, i);
       // skip unavailable pots and sliders
       if (item.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) continue;
-      if (item.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-GetCurrentFirmware()->getCapability(Pots))) continue;
+      if (item.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-getCurrentFirmware()->getCapability(Pots))) continue;
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
-    for (int i=0; i<GetCurrentFirmware()->getCapability(RotaryEncoders); i++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(RotaryEncoders); i++) {
       item = RawSource(SOURCE_TYPE_ROTARY_ENCODER, i);
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -605,10 +609,10 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_SWITCHES) {
-    for (int i=0; i<GetCurrentFirmware()->getCapability(Switches); i++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(Switches); i++) {
       item = RawSource(SOURCE_TYPE_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
-      if (IS_TARANIS(GetCurrentFirmware()->getBoard()) && !generalSettings.switchSourceAllowedTaranis(i)) {
+      if (IS_HORUS_OR_TARANIS(board) && !generalSettings.switchSourceAllowedTaranis(i)) {
         QModelIndex index = b->model()->index(b->count()-1, 0);
         QVariant v(0);
         b->model()->setData(index, v, Qt::UserRole - 1);
@@ -616,7 +620,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetCurrentFirmware()->getCapability(LogicalSwitches); i++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(LogicalSwitches); i++) {
       item = RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i);
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -630,13 +634,13 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetCurrentFirmware()->getCapability(TrainerInputs); i++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(TrainerInputs); i++) {
       item = RawSource(SOURCE_TYPE_PPM, i);
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
     }
 
-    for (int i=0; i<GetCurrentFirmware()->getCapability(Outputs); i++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(Outputs); i++) {
       item = RawSource(SOURCE_TYPE_CH, i);
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -644,7 +648,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_TELEMETRY) {
-    if (IS_ARM(GetCurrentFirmware()->getBoard())) {
+    if (IS_ARM(getCurrentBoard())) {
       for (int i=0; i<5; ++i) {
         item = RawSource(SOURCE_TYPE_SPECIAL, i);
         b->addItem(item.toString(model), item.toValue());
@@ -663,9 +667,9 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
     }
     else {
       for (int i=0; i<(flags & POPULATE_TELEMETRYEXT ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT); i++) {
-        if (i==TELEMETRY_SOURCE_TX_TIME && !GetCurrentFirmware()->getCapability(RtcTime))
+        if (i==TELEMETRY_SOURCE_TX_TIME && !getCurrentFirmware()->getCapability(RtcTime))
           continue;
-        if (i==TELEMETRY_SOURCE_SWR && !GetCurrentFirmware()->getCapability(SportTelemetry))
+        if (i==TELEMETRY_SOURCE_SWR && !getCurrentFirmware()->getCapability(SportTelemetry))
           continue;
         if (i==TELEMETRY_SOURCE_TIMER3 && !IS_ARM(board))
           continue;
@@ -677,7 +681,7 @@ void populateSourceCB(QComboBox *b, const RawSource & source, const GeneralSetti
   }
 
   if (flags & POPULATE_GVARS) {
-    for (int i=0; i<GetCurrentFirmware()->getCapability(Gvars); i++) {
+    for (int i=0; i<getCurrentFirmware()->getCapability(Gvars); i++) {
       item = RawSource(SOURCE_TYPE_GVAR, i);
       b->addItem(item.toString(model), item.toValue());
       if (item == source) b->setCurrentIndex(b->count()-1);
@@ -748,7 +752,7 @@ QString getFrSkyProtocol(int protocol)
 {
   switch(protocol) {
     case 2:
-      if ((GetCurrentFirmware()->getCapability(Telemetry) & TM_HASWSHH))
+      if ((getCurrentFirmware()->getCapability(Telemetry) & TM_HASWSHH))
         return QObject::tr("Winged Shadow How High");
       else
         return QObject::tr("Winged Shadow How High (not supported)");
@@ -809,66 +813,33 @@ CompanionIcon::CompanionIcon(const QString &baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  Firmware * firmware = GetCurrentFirmware();
-  SimulatorInterface * simulator = GetCurrentFirmwareSimulator();
+  SimulatorInterface * simulator = getCurrentSimulator();
   if (simulator) {
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-    AllocConsole();
-    SetConsoleTitle("Companion Console");
-    freopen("conin$", "r", stdin);
-    freopen("conout$", "w", stdout);
-    freopen("conout$", "w", stderr);
-#endif
     RadioData * simuData = new RadioData(radioData);
     unsigned int flags = 0;
+
     if (modelIdx >= 0) {
       flags |= SIMULATOR_FLAGS_NOTX;
       simuData->setCurrentModel(modelIdx);
     }
-    if (radioData.generalSettings.stickMode & 1) {
-      flags |= SIMULATOR_FLAGS_STICK_MODE_LEFT;
-    }
-    BoardEnum board = GetCurrentFirmware()->getBoard();
-    SimulatorDialog * dialog;
 
-    if (board == BOARD_HORUS && HORUS_READY_FOR_RELEASE()) {
-      dialog = new SimulatorDialogHorus(parent, simulator, flags);
-      GetEepromInterface()->saveFile(*simuData, g.profile[g.id()].sdPath());
-      dialog->start(NULL);
+    SimulatorMainWindow * dialog = new SimulatorMainWindow(parent, simulator, flags);
+    if (IS_HORUS(getCurrentBoard()) && !dialog->useTempDataPath(true)) {
+      QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error: Could not create temporary directory in '%1'").arg(QDir::tempPath()));
+      delete dialog;
+      delete simuData;
+      return;
     }
-    else if (board == BOARD_FLAMENCO) {
-      dialog = new SimulatorDialogFlamenco(parent, simulator, flags);
-      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
-      firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
-      dialog->start(eeprom);
-    }
-    else if (board == BOARD_TARANIS_X9D || board == BOARD_TARANIS_X9DP || board == BOARD_TARANIS_X9E) {
-      for (int i=0; i<GetCurrentFirmware()->getCapability(Pots); i++) {
-        if (radioData.generalSettings.isPotAvailable(i)) {
-          flags |= (SIMULATOR_FLAGS_S1 << i);
-          if (radioData.generalSettings.potConfig[1] == GeneralSettings::POT_MULTIPOS_SWITCH ) {
-            flags |= (SIMULATOR_FLAGS_S1_MULTI << i);
-          }
-        }
-      }
-      dialog = new SimulatorDialogTaranis(parent, simulator, flags);
-      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
-      firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData);
-      dialog->start(eeprom);
-    }
-    else {
-      dialog = new SimulatorDialog9X(parent, simulator, flags);
-      QByteArray eeprom(GetEepromInterface()->getEEpromSize(), 0);
-      firmware->saveEEPROM((uint8_t *)eeprom.data(), *simuData, 0, firmware->getCapability(SimulatorVariant));
-      dialog->start(eeprom);
-    }
+    dialog->setRadioData(simuData);
+    dialog->setWindowModality(Qt::ApplicationModal);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->start();
+    dialog->show();
 
-    dialog->exec();
-    delete dialog;
-    delete simuData;
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-    FreeConsole();
-#endif
+    QObject::connect(dialog, &SimulatorMainWindow::destroyed, [simuData] (void) {
+      // TODO simuData and Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
+      delete simuData;
+    });
   }
   else {
     QMessageBox::warning(NULL,
@@ -879,7 +850,7 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 
 QPixmap makePixMap(const QImage & image)
 {
-  Firmware * firmware = GetCurrentFirmware();
+  Firmware * firmware = getCurrentFirmware();
   QImage result = image.scaled(firmware->getCapability(LcdWidth), firmware->getCapability(LcdHeight));
   if (firmware->getCapability(LcdDepth) == 4) {
     result = result.convertToFormat(QImage::Format_RGB32);
@@ -941,10 +912,9 @@ QString index2version(int index)
   }
 }
 
-int qunlink(const QString & fileName)
+bool qunlink(const QString & fileName)
 {
-  QByteArray ba = fileName.toLatin1();
-  return unlink(ba.constData());
+  return QFile::remove(fileName);
 }
 
 QString generateProcessUniqueTempFileName(const QString & fileName)

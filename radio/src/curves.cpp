@@ -470,18 +470,23 @@ unsigned int expou(unsigned int x, unsigned int k)
 
 int expo(int x, int k)
 {
-  if (k == 0) return x;
+  if (k == 0) {
+    return x;
+  }
+  
   int y;
   bool neg = (x < 0);
 
-  if (neg) x = -x;
-  if (k<0) {
-    y = RESXu-expou(RESXu-x, -k);
+  if (neg) {
+    x = -x;
+  }
+  if (k < 0) {
+    y = RESXu - expou(RESXu-x, -k);
   }
   else {
     y = expou(x, k);
   }
-  return neg? -y : y;
+  return neg ? -y : y;
 }
 
 point_t getPoint(uint8_t i)

@@ -103,15 +103,8 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_STICK2:
       case ITEM_RADIO_HARDWARE_STICK3:
       case ITEM_RADIO_HARDWARE_STICK4:
-      {
-        int idx = (k<=ITEM_RADIO_HARDWARE_STICK4 ? k-ITEM_RADIO_HARDWARE_STICK1 : k-ITEM_RADIO_HARDWARE_LS+MIXSRC_SLIDER1-MIXSRC_Rud);
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
-        if (ZEXIST(g_eeGeneral.anaNames[idx]) || attr)
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, attr);
-        else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+        editStickHardwareSettings(HW_SETTINGS_COLUMN, y, k - ITEM_RADIO_HARDWARE_STICK1, event, attr);
         break;
-      }
 
       case ITEM_RADIO_HARDWARE_LS:
       case ITEM_RADIO_HARDWARE_RS:
@@ -121,12 +114,12 @@ void menuRadioHardware(event_t event)
 #endif
       {
         int idx = k - ITEM_RADIO_HARDWARE_LS;
-        uint8_t mask = (0x01 << idx);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+NUM_POTS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
-        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx]) || (attr && menuHorizontalPosition == 0))
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx]) || (attr && menuHorizontalPosition == 0 && s_editMode > 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+NUM_POTS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN, y, menuHorizontalPosition == 0 ? attr : 0);
+        uint8_t mask = (0x01 << idx);
         uint8_t potType = (g_eeGeneral.slidersConfig & mask) >> idx;
         potType = editChoice(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SLIDERTYPES, potType, SLIDER_NONE, SLIDER_WITH_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.slidersConfig &= ~mask;
@@ -150,10 +143,10 @@ void menuRadioHardware(event_t event)
         uint8_t shift = (2*idx);
         uint8_t mask = (0x03 << shift);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
-        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && menuHorizontalPosition == 0))
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && menuHorizontalPosition == 0 && s_editMode > 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN, y, menuHorizontalPosition == 0 ? attr : 0);
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
         potType = editChoice(HW_SETTINGS_COLUMN+5*FW, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
@@ -187,10 +180,10 @@ void menuRadioHardware(event_t event)
         int index = k-ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, menuHorizontalPosition < 0 ? attr : 0);
-        if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && menuHorizontalPosition == 0))
+        if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && menuHorizontalPosition == 0 && s_editMode > 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
         else
-          lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_MMMINV, 0, 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN, y, menuHorizontalPosition == 0 ? attr : 0);
         config = editChoice(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
           swconfig_t mask = (swconfig_t)0x03 << (2*index);

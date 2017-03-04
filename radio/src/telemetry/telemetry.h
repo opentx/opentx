@@ -66,10 +66,9 @@ extern uint8_t telemetryState;
 
 #define TELEMETRY_TIMEOUT10ms          100 // 1 second
 
-enum TelemetrySerialMode {
-  TELEMETRY_SERIAL_8N1,
-  TELEMETRY_SERIAL_8E2
-};
+#define TELEMETRY_SERIAL_DEFAULT       0
+#define TELEMETRY_SERIAL_8E2           1
+#define TELEMETRY_SERIAL_WITHOUT_DMA   2
 
 #if defined(CROSSFIRE) || defined(MULTIMODULE)
 #define TELEMETRY_RX_PACKET_SIZE       128

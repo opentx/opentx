@@ -24,6 +24,15 @@
 #include <inttypes.h>
 #include "colors.h"
 
+#if defined(PCBX10)
+  #define MOVE_PIXEL_RIGHT(p, count)   p -= count
+#else
+  #define MOVE_PIXEL_RIGHT(p, count)   p += count
+#endif
+
+#define MOVE_TO_NEXT_RIGHT_PIXEL(p)    MOVE_PIXEL_RIGHT(p, 1)
+
+
 #define USE_STB
 
 // TODO should go to lcd.h again
@@ -68,6 +77,20 @@ class BitmapBufferBase
     inline T * getData() const
     {
       return data;
+    }
+
+    uint32_t getDataSize() const
+    {
+      return width * height * sizeof(T);
+    }
+
+    inline const display_t * getPixelPtr(coord_t x, coord_t y) const
+    {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
+      return &data[y*width + x];
     }
 
   protected:
@@ -140,8 +163,21 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 #endif
     }
 
+    inline const display_t * getPixelPtr(coord_t x, coord_t y) const
+    {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
+      return &data[y*width + x];
+    }
+
     inline display_t * getPixelPtr(coord_t x, coord_t y)
     {
+#if defined(PCBX10)
+      x = width - x - 1;
+      y = height - y - 1;
+#endif
       return &data[y*width + x];
     }
 
@@ -177,9 +213,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline void drawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
     {
-      if (h==0 || w==0) return;
+      if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
-      DMAFillRect(data, width, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+      if (w<0) { x+=w; w=-w; }
+      DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 
     void drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
@@ -197,7 +234,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     static BitmapBuffer * load(const char * filename);
 
     static BitmapBuffer * loadMask(const char * filename);
-    
+
     static BitmapBuffer * loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background);
 
     void drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset=0, coord_t width=0);
@@ -218,11 +255,11 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     template<class T>
     void drawBitmap(coord_t x, coord_t y, const T * bmp, coord_t srcx=0, coord_t srcy=0, coord_t w=0, coord_t h=0, float scale=0)
     {
-      if (!bmp || x >= width || y >= height)
+      if (!data || !bmp || x >= width || y >= height)
         return;
-
-      int srcw = bmp->getWidth();
-      int srch = bmp->getHeight();
+  
+      coord_t srcw = bmp->getWidth();
+      coord_t srch = bmp->getHeight();
 
       if (w == 0)
         w = srcw;
@@ -232,7 +269,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
         w = srcw - srcx;
       if (srcy+h > srch)
         h = srch - srcy;
-      
+
       if (scale == 0) {
         if (x + w > width) {
           w = width - x;
@@ -241,10 +278,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
           h = height - y;
         }
         if (bmp->getFormat() == BMP_ARGB4444) {
-          DMACopyAlphaBitmap(data, this->width, x, y, bmp->getData(), srcw, srcx, srcy, w, h);
+          DMACopyAlphaBitmap(data, width, height, x, y, bmp->getData(), srcw, srch, srcx, srcy, w, h);
         }
         else {
-          DMACopyBitmap(data, width, x, y, bmp->getData(), srcw, srcx, srcy, w, h);
+          DMACopyBitmap(data, width, height, x, y, bmp->getData(), srcw, srch, srcx, srcy, w, h);
         }
       }
       else {
@@ -257,10 +294,11 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
           scaledh = height - y;
 
         for (int i = 0; i < scaledh; i++) {
-          uint16_t * p = &data[(y + i) * width + x];
-          const uint16_t * qstart = &bmp->getData()[(srcy + int(i / scale)) * bmp->getWidth() + srcx];
+          display_t * p = getPixelPtr(x, y + i);
+          const display_t * qstart = bmp->getPixelPtr(srcx, srcy + int(i / scale));
           for (int j = 0; j < scaledw; j++) {
-            const uint16_t * q = qstart + int(j / scale);
+            const display_t * q = qstart;
+            MOVE_PIXEL_RIGHT(q, int(j / scale));
             if (bmp->getFormat() == BMP_ARGB4444) {
               ARGB_SPLIT(*q, a, r, g, b);
               drawAlphaPixel(p, a, RGB_JOIN(r<<1, g<<2, b<<1));
@@ -268,7 +306,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
             else {
               drawPixel(p, *q);
             }
-            p++;
+            MOVE_TO_NEXT_RIGHT_PIXEL(p);
           }
         }
       }
@@ -280,7 +318,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       float vscale = float(h) / bitmap->getHeight();
       float hscale = float(w) / bitmap->getWidth();
       float scale = vscale < hscale ? vscale : hscale;
-      
+
       int xshift = (w - (bitmap->getWidth() * scale)) / 2;
       int yshift = (h - (bitmap->getHeight() * scale)) / 2;
       drawBitmap(x + xshift, y + yshift, bitmap, 0, 0, 0, 0, scale);

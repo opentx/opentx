@@ -21,7 +21,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include "opentx.h"
-#include "lua/lua_api.h"
+#include "lua_api.h"
 
 /*luadoc
 @function lcd.refresh()
@@ -339,12 +339,16 @@ static int luaOpenBitmap(lua_State * L)
 
   BitmapBuffer ** ptr = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
   *ptr = BitmapBuffer::load(filename);
-  TRACE("luaOpenBitmap: %p", *ptr);
 
   if (*ptr == NULL && G(L)->gcrunning) {
     luaC_fullgc(L, 1);  /* try to free some memory... */
     *ptr = BitmapBuffer::load(filename);  /* try again */
-     TRACE("luaOpenBitmap: %p (second try)", *ptr);
+  }
+
+  if (*ptr) {
+    uint32_t size = (*ptr)->getDataSize();
+    luaExtraMemoryUsage += size;
+    TRACE("luaOpenBitmap: %p (%u)", *ptr, size);
   }
 
   luaL_getmetatable(L, LUA_BITMAPHANDLE);
@@ -389,7 +393,9 @@ static int luaGetBitmapSize(lua_State * L)
 static int luaDestroyBitmap(lua_State * L)
 {
   BitmapBuffer * ptr = checkBitmap(L, 1);
-  TRACE("luaDestroyBitmap: %p", ptr);
+  uint32_t size = ptr->getDataSize();
+  TRACE("luaDestroyBitmap: %p (%u)", ptr, size);
+  if (luaExtraMemoryUsage > size) luaExtraMemoryUsage -= size;
   delete ptr;
   return 0;
 }
@@ -449,7 +455,7 @@ Draw a bitmap at (x,y)
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
-@notice Only available on Taranis
+@notice Only available on Taranis X9 series. Maximum image size if 106 x 64 pixels (width x height).
 
 @status current Introduced in 2.0.0
 */
@@ -571,7 +577,7 @@ static int luaLcdDrawGauge(lua_State *L)
 }
 
 
-#if LCD_DEPTH > 1 && !defined(COLORLCD)
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawScreenTitle(title, page, pages)
 
@@ -596,14 +602,16 @@ static int luaLcdDrawScreenTitle(lua_State *L)
   int cnt = luaL_checkinteger(L, 3);
 
   if (cnt) drawScreenIndex(idx-1, cnt, 0);
+#if LCD_DEPTH > 1
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
+#endif
   title(str);
 
   return 0;
 }
 #endif
 
-#if LCD_DEPTH > 1 && !defined(COLORLCD)
+#if !defined(COLORLCD)
 /*luadoc
 @function lcd.drawCombobox(x, y, w, list, idx [, flags])
 
@@ -787,7 +795,9 @@ const luaL_Reg lcdLib[] = {
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
 #else
+  { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "getLastPos", luaLcdGetLastPos },
+  { "drawCombobox", luaLcdDrawCombobox },
 #endif
   { NULL, NULL }  /* sentinel */
 };

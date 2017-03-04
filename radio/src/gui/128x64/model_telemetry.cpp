@@ -149,7 +149,11 @@ enum MenuModelTelemetryFrskyItems {
   #define USRDATA_ROWS                 0, 0, IF_FAS_OFFSET(0)
 #endif
 
-#define RSSI_ROWS                      LABEL(RSSI), 1, 1,
+#if defined(CPUARM)
+  #define RSSI_ROWS                      LABEL(RSSI), 0, 0,
+#else
+  #define RSSI_ROWS                      LABEL(RSSI), 1, 1,
+#endif
 
 #if defined(CPUARM) || defined(GAUGES)
   #define SCREEN_TYPE_ROWS             0
@@ -163,10 +167,18 @@ enum MenuModelTelemetryFrskyItems {
   #define VARIO_RANGE_ROWS             (NAVIGATION_LINE_BY_LINE | 3)
 #endif
 
+
+#if defined (PCBTARANIS)
+  #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
+#elif defined (CPUARM)
+  #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
+#endif
+
+
 #if defined(REVX)
-  #define TELEMETRY_TYPE_ROWS          0, 0,
+  #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY, TELEMETRY_TYPE_SHOW_TELEMETRY,
 #elif defined(CPUARM)
-  #define TELEMETRY_TYPE_ROWS          0,
+  #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY,
 #else
   #define TELEMETRY_TYPE_ROWS
 #endif
@@ -550,7 +562,7 @@ void menuModelTelemetryFrsky(event_t event)
           g_model.telemetryProtocol = checkIncDec(event, g_model.telemetryProtocol, PROTOCOL_TELEMETRY_FIRST, PROTOCOL_TELEMETRY_LAST, EE_MODEL, isTelemetryProtocolAvailable);
         }
         break;
-        
+
 #if defined(REVX)
       case ITEM_TELEMETRY_INVERTED_SERIAL:
         ON_OFF_MENU_ITEM(g_model.moduleData[EXTERNAL_MODULE].invertedSerial, TELEM_COL2, y, STR_INVERTED_SERIAL, attr, event);
@@ -690,11 +702,17 @@ void menuModelTelemetryFrsky(event_t event)
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
         uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
+#if defined(CPUARM)
+        lcdDrawTextAlignedLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
+        lcdDrawNumber(LCD_W, y, getRssiAlarmValue(alarm), RIGHT | attr, 3);
+        if (attr && s_editMode>0) {
+          CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
+        }
+#else // CPUARM
         lcdDrawTextAlignedLeft(y, STR_ALARM);
         lcdDrawTextAtIndex(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), menuHorizontalPosition<=0 ? attr : 0);
         lcdDrawChar(TELEM_COL2+4*FW, y, '<');
         lcdDrawNumber(TELEM_COL2+6*FW, y, getRssiAlarmValue(alarm), LEFT|(menuHorizontalPosition!=0 ? attr : 0), 3);
-
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (menuHorizontalPosition) {
             case 0:
@@ -704,7 +722,8 @@ void menuModelTelemetryFrsky(event_t event)
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
               break;
           }
-        }
+       }
+#endif // CPUARM
         break;
       }
 

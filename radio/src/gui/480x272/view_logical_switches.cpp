@@ -73,7 +73,7 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
   if (cs->duration > 0)
     lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, PREC1 | LEFT);
   else
-    lcdDrawTextAtIndex(CSW_5TH_COLUMN, y, STR_MMMINV, 0, 0);
+    lcdDrawMMM(CSW_5TH_COLUMN, y, 0);
 
   // CSW delay
   if (cstate == LS_FAMILY_EDGE) {
@@ -83,7 +83,7 @@ void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
     lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, PREC1 | LEFT);
   }
   else {
-    lcdDrawTextAtIndex(CSW_6TH_COLUMN, y, STR_MMMINV, 0, 0);
+    lcdDrawMMM(CSW_6TH_COLUMN, y, 0);
   }
 }
 

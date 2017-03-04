@@ -258,7 +258,7 @@ void menuRadioSdManager(event_t _event)
           break; // no menu for parent dir
         }
 #if defined(CPUARM)
-        char * ext = getFileExtension(line);
+        const char * ext = getFileExtension(line);
         if (ext) {
           if (!strcasecmp(ext, SOUNDS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_PLAY_FILE);
@@ -401,7 +401,7 @@ void menuRadioSdManager(event_t _event)
 #if defined(CPUARM)
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
         uint8_t extlen, efflen;
-        char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, 0, 0, NULL, &extlen);
+        const char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, 0, 0, NULL, &extlen);
         editName(lcdNextPos, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - extlen, _event, attr, 0);
         efflen = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - extlen);
         if (s_editMode == 0) {
@@ -428,7 +428,7 @@ void menuRadioSdManager(event_t _event)
   }
 
 #if LCD_DEPTH > 1
-  char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index]);
+  const char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index]);
   if (ext && isExtensionMatching(ext, BITMAPS_EXT)) {
     if (lastPos != menuVerticalPosition) {
       if (!lcdLoadBitmap(modelBitmap, reusableBuffer.sdmanager.lines[index], MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)) {

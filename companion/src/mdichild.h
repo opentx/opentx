@@ -21,76 +21,94 @@
 #ifndef _MDICHILD_H_
 #define _MDICHILD_H_
 
-#include <QtGui>
 #include "eeprominterface.h"
+#include "modelslist.h"
+#include <QtGui>
+
+class MainWindow;
 
 namespace Ui {
 class MdiChild;
 }
 
-#define ER9X_EEPROM_FILE_TYPE        "ER9X_EEPROM_FILE"
-#define EEPE_EEPROM_FILE_HEADER  "EEPE EEPROM FILE"
-#define EEPE_MODEL_FILE_HEADER   "EEPE MODEL FILE"
-
 class MdiChild : public QWidget
 {
-    friend class ModelsListWidget;
+    // friend class ModelsListWidget;
 
     Q_OBJECT
 
   public:
-    MdiChild();
+    MdiChild(MainWindow * parent);
     ~MdiChild();
 
     void newFile();
     bool loadFile(const QString & fileName, bool resetCurrentFile=true);
-    bool loadBackup();
     bool save();
     bool saveAs(bool isNew=false);
     bool saveFile(const QString & fileName, bool setCurrent=true);
-    bool hasSelection();
-    QString userFriendlyCurrentFile();
-    QString currentFile() { return curFile; }
-    bool hasPasteData();
+    bool hasSelection() const;
+    bool hasPasteData() const;
+    QString userFriendlyCurrentFile() const;
+    QString currentFile() const { return curFile; }
     void viableModelSelected(bool viable);
-    void eepromInterfaceChanged();
-    void setEEpromAvail(int eavail);
-    int getCurrentRow() const;
+    int getCurrentModel() const;
+    int getCurrentCategory() const;
+    void refresh(bool expand=false);
+    void keyPressEvent(QKeyEvent * event);
 
   signals:
     void copyAvailable(bool val);
 
   protected:
+    void convertStorage(Board::Type from, Board::Type to);
+    void forceNewFilename(const QString & suffix, const QString & ext);
     void closeEvent(QCloseEvent * event);
 
-  private slots:
+  protected slots:
     void documentWasModified();
     void on_simulateButton_clicked();
+    void on_radioSettings_clicked();
+    void setDefault();
+    void onFirmwareChanged();
 
   public slots:
+    void showModelsListContextMenu(const QPoint & pos);
     void checkAndInitModel(int row);
     void generalEdit();
+    void categoryAdd();
+    void categoryRename();
+    void categoryDelete();
+    void modelAdd();
     void modelEdit();
+    void modelDuplicate();
     void wizardEdit();
-    void openEditWindow();
-    
+    void openModelEditWindow();
+    bool loadBackup();
+    void confirmDelete();
+    void deleteSelectedModels();
+    void onDataChanged(const QModelIndex & index);
+
     void cut();
     void copy();
     void paste();
     void writeEeprom();
-    void simulate();
-    void print(int model=-1, QString filename="");
+    void modelSimulate();
+    void radioSimulate();
+    void print(int model=-1, const QString & filename="");
     void setModified();
     void updateTitle();
 
   private:
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
-    QString strippedName(const QString & fullFileName);
-    bool loadOtxFile(const QString & fileName);
+    void doCopy(QByteArray * gmData);
+    void doPaste(QByteArray * gmData, QModelIndex row);
+    void initModelsList();
 
+    MainWindow * parent;
     Ui::MdiChild * ui;
-    
+    TreeModel * modelsListModel;
+
     QString curFile;
 
     Firmware * firmware;
@@ -98,7 +116,6 @@ class MdiChild : public QWidget
 
     bool isUntitled;
     bool fileChanged;
-    int EEPromAvail;
 };
 
 #endif // _MDICHILD_H_

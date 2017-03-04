@@ -49,45 +49,46 @@ endif()
 if(SDL_FOUND)
   include_directories(${SDL_INCLUDE_DIR})
   add_definitions(-DJOYSTICKS)
-else()
-  remove_definitions(-DSIMU_AUDIO)
-endif()
-
-find_package(Lupdate)
-if(LUPDATE_FOUND)
-  message("Qt lupdate: " ${LUPDATE_EXECUTABLE})
-else()
-  message("Qt lupdate not found, 'translations' target will not be availabe.")
 endif()
 
 add_definitions(-DSIMU)
 add_definitions(-DQXT_STATIC)
 
-if (NOT MSVC AND ${CMAKE_VERSION} VERSION_LESS 3.1.0})
-  message("companion: adding -std=gnu++11")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+if(NOT MSVC)
+  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall")
+  if(WARNINGS_AS_ERRORS)
+    set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
+  endif()
+else()
+  # silence lots of warnings regarding "insecure" use of functions (sprintf, strcpy, etc)
+  set(WARNING_FLAGS "${WARNING_FLAGS} /D_CRT_SECURE_NO_WARNINGS")
+  if(WARNINGS_AS_ERRORS)
+    set(WARNING_FLAGS "${WARNING_FLAGS} /WX")
+  endif()
 endif()
 
 if(WIN32)
   include_directories(SYSTEM ${WIN_INCLUDE_DIRS})
+  if(NOT WIN_USE_CONSOLE)
+    set(WIN_EXECUTABLE_TYPE WIN32)  # GUI (WinMain) app
+  endif()
   if(MSVC)
-    set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")
-    message("companion: using MSVC with ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /LD /MP")
+    if(NOT WIN_USE_CONSOLE)
+      set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")  # is this even needed?
+    endif()
   elseif(MINGW)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields -mwindows")
-    message("companion: using MinGW with ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
 else()
   set(PTHREAD_LIBRARY pthread)
-  add_definitions(-Wall)
   link_directories(/usr/local/lib)
 endif()
 
-set(RADIO_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/radio/src)
-set(SIMU_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/companion/src/simulation)
-set(COMPANION_SRC_DIRECTORY ${PROJECT_SOURCE_DIR}/companion/src)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
+
+use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
 include_directories(
   ${CMAKE_BINARY_DIR}
@@ -101,6 +102,8 @@ include_directories(
   ${COMPANION_SRC_DIRECTORY}/storage
 )
 
+############# Supporting libraries ###############
+
 add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
@@ -109,8 +112,12 @@ add_subdirectory(storage)
 add_subdirectory(thirdparty/qcustomplot)
 add_subdirectory(thirdparty/qxtcommandoptions)
 
+############# Common lib ###############
+
 set(common_SRCS
+  boards.cpp
   eeprominterface.cpp
+  radiodata.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
   firmwares/ersky9x/ersky9xeeprom.cpp
@@ -123,6 +130,8 @@ qt5_wrap_cpp(common_SRCS)
 
 add_library(common ${common_SRCS})
 qt5_use_modules(common Core Xml Widgets)
+
+############# Companion ###############
 
 set(companion_SRCS
   helpers.cpp
@@ -181,7 +190,6 @@ set(companion_MOC_HDRS
   flashfirmwaredialog.h
   flasheepromdialog.h
   downloaddialog.h
-  modelslist.h
   mdichild.h
   mainwindow.h
   radionotfound.h
@@ -189,6 +197,7 @@ set(companion_MOC_HDRS
   wizarddialog.h
   modelprinter.h
   multimodelprinter.h
+  modelslist.h
   )
 
 set(companion_UIS
@@ -222,18 +231,15 @@ configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_B
 configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
 
 if(WIN32)
-  set(companion_SRCS ${companion_SRCS} icon.rc)
-  if(NOT MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS -mwindows)
-  endif()
+  list(APPEND companion_SRCS icon.rc)
 endif()
 
 include_directories(${CMAKE_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR})
 
-set(LANGUAGES he pl pt ru de fr es it sv cs fi nl)
+set(LANGUAGES pl de fr es it sv cs fi zh)
 foreach(language ${LANGUAGES})
-  set(companion_TS ${companion_TS} translations/companion_${language}.ts)
+  list(APPEND companion_TS translations/companion_${language}.ts)
 endforeach(language)
 
 qt5_wrap_ui(companion_SRCS ${companion_UIS})
@@ -242,48 +248,71 @@ qt5_add_translation(companion_QM ${companion_TS})
 qt5_add_resources(companion_RCC ${companion_RESOURCES})
 add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
-add_definitions(-DQT_TRANSLATIONS_DIR="${QT_TRANSLATIONS_DIR}")
-
-add_executable(${COMPANION_NAME} MACOSX_BUNDLE WIN32 ${companion_SRCS} ${companion_RCC} ${companion_QM})
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC} ${companion_QM})
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
 
 target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
-############# Standalone simu ###############
+PrintTargetReport("${COMPANION_NAME}")
+
+############# Standalone simulator ###############
 
 set(simu_SRCS
   modeledit/node.cpp
-  modeledit/edge.cpp # TODO not needed
+  modeledit/edge.cpp
+  helpers.cpp
   simulator.cpp
   )
 
 set(simu_MOC_HDRS
   modeledit/node.h
+  helpers.h
   )
 
 qt5_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
 
 if(WIN32)
-  set(simu_SRCS ${simu_SRCS} icon.rc)
+  list(APPEND simu_SRCS icon.rc)
 endif()
 
-add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE WIN32 ${simu_SRCS} ${companion_RCC})
-
+add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
 
-# TODO not the same link command than companion?
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${QT_LIBRARIES} ${QT_QTMAIN_LIBRARY} ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${OPENTX_SIMULATOR_LIBS} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common shared storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+
+############# Translations ####################
+
+find_package(Lupdate)
+if(LUPDATE_FOUND)
+  message(STATUS "Qt lupdate: " ${LUPDATE_EXECUTABLE})
+  add_custom_target(translations
+    WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
+    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
+    )
+else()
+  message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")
+endif()
 
 ############# Install ####################
+
+# Generate list of simulator plugins, used by all platforms
+file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+# the current flavour is not automatically added if build in the current cmake iteration, so always
+# add its library name to be sure
+string(TOLOWER ${PCB} FLAVOUR)
+if(POLICY CMP0026)
+  cmake_policy(SET CMP0026 OLD)  # https://cmake.org/cmake/help/v3.0/policy/CMP0026.html
+endif()
+get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
+list(APPEND simulator_plugins "${current_plugin}")
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
   message(STATUS "install " ${CMAKE_BINARY_DIR} " to " ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
   install(FILES ${simulator_plugins} DESTINATION "${SIMULATOR_LIB_PATH}")
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop DESTINATION share/applications RENAME companion${C9X_NAME_SUFFIX}.desktop)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop DESTINATION share/applications RENAME simulator${C9X_NAME_SUFFIX}.desktop)
@@ -308,7 +337,7 @@ elseif(WIN32)
 
   get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
   get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
-  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia)
+  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia Qt5Svg)
   set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(INSTALL_TEMP_QTDLL_SFX "d")
@@ -316,20 +345,16 @@ elseif(WIN32)
 
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
-    set(INSTALL_DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
     message(STATUS "Partial install to " ${INSTALL_DESTINATION})
   else()
     # Full Windows installation with all supporting files
-    set(INSTALL_DESTINATION ${CMAKE_INSTALL_PREFIX})
+    set(INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}")
     message(STATUS "Full install to " ${INSTALL_DESTINATION})
     # companion & simulator binaries
     install(TARGETS ${COMPANION_NAME} DESTINATION ${INSTALL_DESTINATION})
     install(TARGETS ${SIMULATOR_NAME} DESTINATION ${INSTALL_DESTINATION})
-    file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*-simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
     install(FILES ${simulator_plugins} DESTINATION "${INSTALL_DESTINATION}")
-    # language files
-    file(GLOB language_files "${CMAKE_BINARY_DIR}/companion/src/companion_*.qm")
-    install(FILES ${language_files} DESTINATION "${INSTALL_DESTINATION}/lang")
     # supporting utilities
     set(INSTALL_TEMP_FILES avrdude.exe avrdude.conf dfu-util.exe libusb0.dll libusb-1.0.dll)
     foreach(tmpfile ${INSTALL_TEMP_FILES})
@@ -344,30 +369,33 @@ elseif(WIN32)
   install(FILES ${QT_DLL_DIR}/../plugins/platforms/qwindows${INSTALL_TEMP_QTDLL_SFX}.dll DESTINATION ${INSTALL_DESTINATION}/platforms)
   # ICU dlls
   foreach(tmpfile ${INSTALL_TEMP_ICUDLL_FILES})
-    # Qt5.7+ doesn't use icu dlls anymore (at least with MinGW), hence optional
+    # Qt5.7+ doesn't use icu dlls anymore, hence optional
     install(FILES ${QT_DLL_DIR}/${tmpfile}.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
   endforeach()
   # SDL dll
   if(SDL_FOUND AND SDL_LIBRARY_PATH AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
     set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
     install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
-  else()
+  elseif(SDL_FOUND)
     message(WARNING "Installer: SDL.dll not found!")
   endif()
   # C++/system dlls, depends on compiler
   if(MSVC)
-    set(WIN_SYSDIR "$ENV{windir}/SysWOW64")  # This would be "system32" for a 64-bit build or on x86... but how to tell?
-    if(IS_DIRECTORY ${WIN_SYSDIR})
-      install(FILES ${WIN_SYSDIR}/msvcp140.dll ${WIN_SYSDIR}/vcruntime140.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    string(REPLACE "\\" "/" WIN_SYSDIR "$ENV{windir}")
+    set(WIN_SYSDIR "${WIN_SYSDIR}/SysWOW64")  # This would be "system32" for a 64-bit build or on x86... but how to tell?
+    if(IS_DIRECTORY "${WIN_SYSDIR}")
+      install(FILES "${WIN_SYSDIR}/msvcp140.dll" "${WIN_SYSDIR}/vcruntime140.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
     endif()
-    install(FILES "${WIN_PTHREAD_BASE_PATH}/lib/pthreadVC2.dll" DESTINATION ${INSTALL_DESTINATION})
+    if(WIN_PTHREAD_DLL)
+      install(FILES "${WIN_PTHREAD_DLL}" DESTINATION ${INSTALL_DESTINATION})
+    endif()
   elseif(MINGW)
     get_filename_component(MINGW_DIR ${CMAKE_CXX_COMPILER} PATH)
     if(IS_DIRECTORY ${MINGW_DIR})
-      install(FILES ${MINGW_DIR}/libgcc_s_dw2-1.dll ${MINGW_DIR}/libstdc++-6.dll ${MINGW_DIR}/libwinpthread-1.dll DESTINATION ${INSTALL_DESTINATION})
+      install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${MINGW_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
       set(MINGW_DIR "${MINGW_DIR}/../opt/bin")
       # SSL support
-      install(FILES ${MINGW_DIR}/libeay32.dll ${MINGW_DIR}/ssleay32.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+      install(FILES "${MINGW_DIR}/libeay32.dll" "${MINGW_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
     endif()
   endif()
 
@@ -413,17 +441,6 @@ if(WIN32)
     )
 endif()
 
-if(LUPDATE_FOUND)
-  add_custom_target(translations
-    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
-    )
-else()
-  add_custom_target(translations
-    COMMAND echo "Sorry, QT lupdate was not found."
-    )
-endif()
-
 set(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Models and settings editor for the OpenTX open source firmware")
 string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
@@ -437,8 +454,9 @@ set(CPACK_STRIP_FILES FALSE)
 IF(APPLE)
   set(plugin_dest_dir ${COMPANION_NAME}.app/Contents/Plugins)
   set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
-  set(translations_dest_dir ${COMPANION_NAME}.app/Contents/translations)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
+  set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
 
@@ -451,8 +469,7 @@ IF(APPLE)
       RUNTIME DESTINATION bin COMPONENT Runtime
       )
 
-  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-  set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+
   install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
 
   # Write qt.conf to tell qt where to find it plugins
@@ -465,13 +482,18 @@ IF(APPLE)
   # menu file
   install(DIRECTORY ${PROJECT_SOURCE_DIR}/companion/targets/mac/qt_menu.nib DESTINATION "${companion_res_dir}" COMPONENT Runtime)
 
-  # translations file
-  install(FILES ${companion_QM} DESTINATION "${translations_dest_dir}" COMPONENT Runtime)
+  # manually add the required plugins
+  foreach (plugin ${Qt5Multimedia_PLUGINS} ${Qt5PrintSupport_PLUGINS} ${Qt5Gui_PLUGINS})
+    get_target_property(QPA_PLUGIN ${plugin} LOCATION)
+    get_filename_component(QPA_PLUGIN_FILENAME ${QPA_PLUGIN} NAME)
+    # Todo is there a nicer way to get the QT Plugin directory name?!
+    get_filename_component(QPA_PLUGIN_DIRECTORY ${QPA_PLUGIN} DIRECTORY)
+    get_filename_component(QPA_PLUGIN_DIRECTORY ${QPA_PLUGIN_DIRECTORY} NAME)
 
-  # manually add the cocoa plugin
-  get_target_property(QPA_PLUGIN Qt5::QCocoaIntegrationPlugin LOCATION)
-  install(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/platforms/" COMPONENT Runtime)
-  set(bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/platforms/libqcocoa.dylib")
+    install(FILES ${QPA_PLUGIN} DESTINATION "${plugin_dest_dir}/${QPA_PLUGIN_DIRECTORY}/" COMPONENT Runtime)
+
+    list(APPEND bundle_qt_libs "\${CMAKE_INSTALL_PREFIX}/${plugin_dest_dir}/${QPA_PLUGIN_DIRECTORY}/${QPA_PLUGIN_FILENAME}")
+  endforeach()
 
   # Add icon
   set(MACOSX_BUNDLE_ICON_FILE iconmac.icns)
@@ -493,7 +515,7 @@ IF(APPLE)
 
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
-  # technically a hack (that is already is in the Bundle library ....)
+  # technically a hack (that is already is in the Bundle library ...)
   install(CODE "
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")

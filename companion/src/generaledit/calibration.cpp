@@ -44,7 +44,7 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   headerLabels << QObject::tr("Negative span") << QObject::tr("Mid value") << QObject::tr("Positive span"); 
   tableWidget->setHorizontalHeaderLabels(headerLabels);
 
-  int rows = CPN_MAX_STICKS + GetCurrentFirmware()->getCapability(Pots) + GetCurrentFirmware()->getCapability(Sliders);
+  int rows = CPN_MAX_STICKS + getCurrentFirmware()->getCapability(Pots) + getCurrentFirmware()->getCapability(Sliders);
   tableWidget->setRowCount(rows);
 
   for(int i = 0; i < rows; ++i) {

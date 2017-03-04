@@ -28,13 +28,13 @@ class HexInterface {
   public:
     HexInterface(QTextStream &stream);
 
-    int load(uint8_t *output, int maxsize);
-    bool save(uint8_t *data, const int size);
+    int load(uint8_t * output, int maxsize);
+    bool save(const uint8_t * data, const int size);
 
   protected:
 
     int getValueFromLine(const QString &line, int pos, int len=2);
-    QString iHEXLine(quint8 * data, quint32 addr, quint8 len);
+    QString iHEXLine(const quint8 * data, quint32 addr, quint8 len);
     QString iHEXExtRec(quint8 bank);
 
     QTextStream & stream;

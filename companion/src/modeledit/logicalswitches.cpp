@@ -523,8 +523,8 @@ void LogicalSwitchesPanel::csw_customContextMenuRequested(QPoint pos)
 
     QPoint globalPos = label->mapToGlobal(pos);
 
-    const QClipboard *clipboard = QApplication::clipboard();
-    const QMimeData *mimeData = clipboard->mimeData();
+    const QClipboard * clipboard = QApplication::clipboard();
+    const QMimeData * mimeData = clipboard->mimeData();
     bool hasData = mimeData->hasFormat("application/x-companion-csw");
 
     QMenu contextMenu;

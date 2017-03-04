@@ -114,7 +114,7 @@ I18N_PLAY_FUNCTION(fr, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #else
     // we assume that we are PREC1
 #endif
-    div_t qr = div(number, 10);
+    div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(FR_PROMPT_VIRGULE_BASE + qr.rem);

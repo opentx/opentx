@@ -26,9 +26,11 @@ uint32_t readKeys()
 {
   uint32_t result = 0;
 
-  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
+#if defined(PCBX12S)
+  if (~KEYS_GPIO_REG_PGUP & KEYS_GPIO_PIN_PGUP)
     result |= 1 << KEY_PGUP;
-  if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
+#endif
+  if (~KEYS_GPIO_REG_PGDN & KEYS_GPIO_PIN_PGDN)
     result |= 1 << KEY_PGDN;
   if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
     result |= 1 << KEY_ENTER;

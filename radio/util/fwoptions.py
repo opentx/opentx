@@ -192,11 +192,8 @@ options_sky9x = {
     "heli": ("HELI", "YES", "NO"),
     "templates": ("TEMPLATES", "YES", "NO"),
     "nofp": ("FLIGHT_MODES", "NO", "YES"),
-    "nocurves": ("CURVES", "NO", "YES"),
-    "ppmca": ("PPM_CENTER_ADJUSTABLE", "YES", "NO"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "gvars": ("GVARS", "YES", "NO"),
-    "symlimits": ("PPM_LIMITS_SYMETRICAL", "YES", "NO"),
     "potscroll": ("NAVIGATION", "POTS", "NO"),
     "autosource": ("AUTOSOURCE", "YES", "NO"),
     "autoswitch": ("AUTOSWITCH", "YES", "NO"),
@@ -216,11 +213,8 @@ options_ar9x = {
     "heli": ("HELI", "YES", "NO"),
     "templates": ("TEMPLATES", "YES", "NO"),
     "nofp": ("FLIGHT_MODES", "NO", "YES"),
-    "nocurves": ("CURVES", "NO", "YES"),
-    "ppmca": ("PPM_CENTER_ADJUSTABLE", "YES", "NO"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "gvars": ("GVARS", "YES", "NO"),
-    "symlimits": ("PPM_LIMITS_SYMETRICAL", "YES", "NO"),
     "potscroll": ("NAVIGATION", "POTS", "NO"),
     "autosource": ("AUTOSOURCE", "YES", "NO"),
     "autoswitch": ("AUTOSWITCH", "YES", "NO"),
@@ -241,6 +235,7 @@ options_taranis = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
     "haptic": ("HAPTIC", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
@@ -260,6 +255,7 @@ options_taranisplus = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
     "SWR": ("SWR", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
@@ -279,6 +275,7 @@ options_taranisx9e = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
     "SWR": ("SWR", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
@@ -295,10 +292,11 @@ options_taranisx9e = {
     "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
-options_horus = {
+options_x12s = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
@@ -308,4 +306,19 @@ options_horus = {
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
+}
+
+options_x10 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "massstorage": ("USB", "MASSSTORAGE", None),
+    "cli": ("USB", "SERIAL", None),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
 }

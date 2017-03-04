@@ -76,8 +76,8 @@
 #define LEN_SWTYPES      "\006"
 #define TR_SWTYPES       "None\0 ""Toggle""2POS\0 ""3POS\0"
 
-#define LEN_POTTYPES     "\017"
-#define TR_POTTYPES      "None\0          ""Pot with detent""Multipos Switch""Pot\0"
+#define LEN_POTTYPES     TR("\013","\017")
+#define TR_POTTYPES      TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ", "None\0          ""Pot with detent""Multipos Switch""Pot\0")
 
 #define LEN_SLIDERTYPES        "\006"
 #define TR_SLIDERTYPES         "Rien\0 ""Slider"
@@ -107,7 +107,7 @@
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS    "\006"
-#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""FS 2A\0""Q2x2\0 "
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 "
 
 #define TR_MULTI_CUSTOM        "Custom"
 
@@ -119,7 +119,7 @@
 #define TR_SUBTYPE_AFHDS2A     "PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS"
 
 #define LEN_SUBTYPE_FRSKY      "\007"
-#define TR_SUBTYPE_FRSKY       "D16\0   ""D8\0    ""D16 8ch""V8\0    "
+#define TR_SUBTYPE_FRSKY       "D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch"
 
 #define LEN_SUBTYPE_HISKY      "\005"
 #define TR_SUBTYPE_HISKY       "HiSky""HK310"
@@ -149,13 +149,19 @@
 #define TR_SUBTYPE_MT99        "MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805"
 
 #define LEN_SUBTYPE_MJXQ       "\005"
-#define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
+#define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH"
 
 #define LEN_SUBTYPE_HONTAI     "\007"
 #define TR_SUBTYPE_HONTAI      "Std\0   ""JJRC X1""X5C1cln"
 
 #define LEN_SUBTYPE_Q2X2       "\004"
-#define TR_SUBTYPE_Q2X2        "Q242""Q282"
+#define TR_SUBTYPE_Q2X2        "Q222""Q242""Q282"
+
+#define LEN_SUBTYPE_WK2x01     "\006"
+#define TR_SUBTYPE_WK2x01      "WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI"
+
+#define LEN_SUBTYPE_Q303       "\006"
+#define TR_SUBTYPE_Q303        "Q303\0 ""CX35\0 ""CX10D\0""CX10WD"
 
 #define LEN_SUBTYPE_V2X2       "\006"
 #define TR_SUBTYPE_V2X2        "V2x2\0 ""JXD506"
@@ -592,7 +598,7 @@
 
 #if defined(TELEMETRY_MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
-  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""76800 ""115200"
+  #define TR_MAVLINK_BAUDS     "4800  ""9600  ""14400 ""19200 ""38400 ""57600 ""58798 ""76800"
   #define LEN_MAVLINK_AC_MODES "\011"
   #define TR_MAVLINK_AC_MODES  "Stabilize""Acro     ""Alt Hold ""Auto     ""Guided   ""Loiter   ""RTL      ""Circle   ""Pos Hold ""Land     ""OF Loiter""Toy A    ""Toy M    ""INVALID  "
   #define LEN_MAVLINK_AP_MODES "\015"
@@ -612,7 +618,7 @@
 #define TR_VCELLINDEX          "Lowest\0""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Highest""Delta\0"
 
 #define LEN_VANTENNATYPES      "\010"
-#define TR_VANTENNATYPES        "Internal""External"
+#define TR_VANTENNATYPES        "Internal""Ext+Int\0"
 
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
@@ -625,7 +631,11 @@
   #define TR_ENTER             "[MENU]"
 #endif
 
-#define TR_EXIT                "[EXIT]"
+#if defined(PCBHORUS)
+  #define TR_EXIT              "[RTN]"
+#else
+  #define TR_EXIT              "[EXIT]"
+#endif
 
 #if defined(PCBTARANIS)
   #define TR_POPUPS            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
@@ -705,7 +715,7 @@
 #define TR_SLOWUP              "Lento  Up"
 #define TR_MIXER               "MIXAGENS"
 #define TR_CV                  "CV"
-#define TR_GV                  "GV"
+#define TR_GV                  TR("G", "GV")
 #define TR_ACHANNEL            "A\004Canal"
 #define TR_RANGE               INDENT"Range"
 #define TR_CENTER              INDENT "Center"
@@ -746,7 +756,7 @@
 #define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            "Time Zone"
-#define TR_ADJUST_RTC          INDENT "Adjust RTC"
+#define TR_ADJUST_RTC          TR("Adjust RTC", INDENT "Adjust RTC")
 #define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        "Ordem Canal RX"
 #define TR_STICKS              "Sticks"
@@ -851,6 +861,7 @@
 #define TR_RECEIVER            INDENT "Receiver"
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
+#define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
 #define TR_MULTI_RFPOWER       INDENT "RF Power"
 #define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option value")
@@ -897,7 +908,6 @@
 #define TR_SDCARD_ERROR        "SDCARD Erro"
 #define TR_NO_SDCARD           "Sem SDCARD"
 #define TR_SDCARD_FULL         "SD Card Full"
-#define TR_SDCARD_NOWIZ        "No wizard found on SD Card"
 #define TR_INCOMPATIBLE        "Incompativel"
 #define TR_WARNING             "AVISO"
 #define TR_EEPROMWARN          "EEPROM"
@@ -1047,8 +1057,8 @@
 #define TR_PT                  "pt"
 #define TR_PTS                 "pts"
 #define TR_SMOOTH              "Smooth"
-#define TR_COPY_STICKS_TO_OFS  "Copy Sticks To Offset"
-#define TR_COPY_TRIMS_TO_OFS   "Copy trims to subtrim"
+#define TR_COPY_STICKS_TO_OFS  TR("Cpy stick->subtrim", "Copy Sticks To Offset")
+#define TR_COPY_TRIMS_TO_OFS   TR("Cpy trim->subtrim", "Copy trims to subtrim")
 #define TR_INCDEC              "Inc/Decrement"
 #define TR_GLOBALVAR           "Global Var"
 #define TR_MIXSOURCE           "Mixer Source"

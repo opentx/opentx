@@ -140,7 +140,9 @@
 #define RBOX_CNSP_FIRST_ID        0x0b30
 #define RBOX_CNSP_LAST_ID         0x0b3f
 #define DIY_FIRST_ID              0x5000
-#define DIY_LAST_ID               0x50ff
+#define DIY_LAST_ID               0x52ff
+#define DIY_STREAM_FIRST_ID       0x5000
+#define DIY_STREAM_LAST_ID        0x50ff
 #define RSSI_ID                   0xf101
 #define ADC1_ID                   0xf102
 #define ADC2_ID                   0xf103
@@ -272,7 +274,9 @@ PACK(struct FrskyTelemetryData {
 #endif
 #endif
 
-#if defined(PCBX9DP) || defined(PCBX9E)
+#if defined(PCBX10)
+  #define IS_SWR_VALUE_VALID()         (false)
+#elif defined(PCBX9DP) || defined(PCBX9E)
   #define IS_SWR_VALUE_VALID()         (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
 #else
   #define IS_SWR_VALUE_VALID()         (true)

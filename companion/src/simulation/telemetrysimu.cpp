@@ -25,24 +25,20 @@
 #include "radio/src/telemetry/frsky.h"
 
 TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator):
-  QDialog(parent),
+  QWidget(parent),
   ui(new Ui::TelemetrySimulator),
   simulator(simulator)
 {
   ui->setupUi(this);
 
-  QPoint dialogCenter = mapToGlobal(rect().center());
-  QPoint parentWindowCenter = parent->window()->mapToGlobal(
-    parent->window()->rect().center());
-  move(parentWindowCenter - dialogCenter);
-
   timer = new QTimer(this);
+  timer->setInterval(10);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
 
   logTimer = new QTimer(this);
   connect(logTimer, SIGNAL(timeout()), this, SLOT(onLogTimerEvent()));
 
-  connect(ui->Simulate, SIGNAL(clicked(bool)), this, SLOT(onSimulateToggled(bool)));
+  connect(ui->Simulate, SIGNAL(toggled(bool)), this, SLOT(onSimulateToggled(bool)));
   connect(ui->loadLogFile, SIGNAL(released()), this, SLOT(onLoadLogFile()));
   connect(ui->play, SIGNAL(released()), this, SLOT(onPlay()));
   connect(ui->rewind, SIGNAL(clicked()), this, SLOT(onRewind()));
@@ -76,7 +72,7 @@ TelemetrySimulator::~TelemetrySimulator()
 void TelemetrySimulator::onSimulateToggled(bool isChecked)
 {
   if (isChecked) {
-    timer->start(10);
+    timer->start();
   }
   else {
     timer->stop();
@@ -197,9 +193,6 @@ void TelemetrySimulator::showEvent(QShowEvent *event)
   ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
   ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
   ui->A2_ratio->setValue(simulator->getSensorRatio(ADC2_ID) / 10.0);
-
-  ui->Simulate->setChecked(true);
-  onSimulateToggled(true); // not sure why this doesn't fire automatically
 }
 
 void setSportPacketCrc(uint8_t * packet)
@@ -216,7 +209,7 @@ void setSportPacketCrc(uint8_t * packet)
   //TRACE("crc set: %x", packet[FRSKY_SPORT_PACKET_SIZE-1]);
 }
 
-uint8_t getBit(uint8_t position, uint8_t value) 
+uint8_t getBit(uint8_t position, uint8_t value)
 {
   return (value & (uint8_t)(1 << position)) ? 1 : 0;
 }
@@ -224,7 +217,7 @@ uint8_t getBit(uint8_t position, uint8_t value)
 bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data)
 {
   if (dataId > 0x1B ) return false;
-  
+
   // generate Data ID field
   uint8_t bit5 = getBit(0, dataId) ^ getBit(1, dataId) ^ getBit(2, dataId);
   uint8_t bit6 = getBit(2, dataId) ^ getBit(3, dataId) ^ getBit(4, dataId);
@@ -483,7 +476,7 @@ uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellV
   // encode the double values into telemetry format
   encodeAllCells();
 
-  // return the value for the current pair 
+  // return the value for the current pair
   uint32_t cellData = 0;
   if (nextCellNum >= numCells) {
     nextCellNum = 0;
@@ -644,7 +637,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("AccX(g)", ACCX);
   colToFuncMap.insert("AccY(g)", ACCY);
   colToFuncMap.insert("AccZ(g)", ACCZ);
-  
+
   // ACCX Y and Z
 }
 
@@ -839,7 +832,7 @@ double TelemetrySimulator::LogPlaybackController::convertDegMin(QString input)
 
 QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
 {
-  // input format is DDmm.mmmmH DDDmm.mmmmH (longitude latitude - degrees (2 places) minutes (2 places) decimal minutes (4 places)) 
+  // input format is DDmm.mmmmH DDDmm.mmmmH (longitude latitude - degrees (2 places) minutes (2 places) decimal minutes (4 places))
   QStringList lonLat = input.simplified().split(' ');
   if (lonLat.count() < 2) {
     return ""; // invalid format

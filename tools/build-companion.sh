@@ -56,9 +56,9 @@ make -j${JOBS} libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=9XRPRO ${SRCDIR}
 make -j${JOBS} libsimulator
 
-cmake -DALLOW_NIGHTLY_BUILDS=YES -DVERSION_SUFFIX=$3 -DGVARS=NO -DHELI=YES -DPCB=X7 ${SRCDIR}
+cmake ${STM32_OPTIONS} -DPCB=X7 ${SRCDIR}
 make -j${JOBS} libsimulator
- 
+
 cmake ${STM32_OPTIONS} -DPCB=X9D ${SRCDIR}
 make -j${JOBS} libsimulator
 
@@ -68,7 +68,10 @@ make -j${JOBS} libsimulator
 cmake ${STM32_OPTIONS} -DPCB=X9E ${SRCDIR}
 make -j${JOBS} libsimulator
 
-cmake ${STM32_OPTIONS} -DPCB=HORUS ${SRCDIR}
+cmake ${STM32_OPTIONS} -DPCB=X10 ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${STM32_OPTIONS} -DPCB=X12S ${SRCDIR}
 make -j${JOBS} libsimulator
 
 make -j${JOBS} package

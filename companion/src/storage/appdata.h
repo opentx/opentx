@@ -30,8 +30,13 @@
 #include <QString>
 #include <QSettings>
 
-#define COMPANY "OpenTX"
-#define PRODUCT "Companion 2.2"
+#include "simulator.h"
+
+#define COMPANY            "OpenTX"
+#define COMPANY_DOMAIN     "open-tx.org"
+#define PRODUCT            "Companion 2.2"
+#define APP_COMPANION      "OpenTX Companion"
+#define APP_SIMULATOR      "OpenTX Simulator"
 
 #define MAX_PROFILES 15
 #define MAX_JOYSTICKS 8
@@ -39,26 +44,24 @@
 class CompStoreObj
 {
   public:
-    void clear (const QString tag1="", const QString tag2="", const QString tag3="");
-    void store(const QByteArray newArray, QByteArray &array, const QString tag, const QString group1="", const QString group2="" );
-    void store(const QStringList newSList, QStringList &stringList, const QString tag, const QString group1="", const QString group2="" );
-    void store(const QString newString, QString &string, const QString tag, const QString group1="", const QString group2="" );
-    void store(const bool newTruth, bool &truth, const QString tag, const QString group1="", const QString group2="" );
-    void store(const int newNumber, int &number, const QString tag, const QString group1="", const QString group2="" );
+    void clear (const QString & tag1 = "", const QString &tag2 = "", const QString &tag3 = "");
 
-    // Retrieval functions
-    void retrieve( QByteArray &array, const QString tag, const QString def, const QString group1="", const QString group2="" );
-    void retrieve( QStringList &stringList, const QString tag, const QString def, const QString group1="", const QString group2="" );
-    void retrieve( QString &string, const QString tag, const QString def, const QString group1="", const QString group2="" );
-    void retrieve( bool &truth, const QString tag, const bool def, const QString group1="", const QString group2="" );
-    void retrieve( int &number, const QString tag, const int def, const QString group1="", const QString group2="" );
+    // NOTE: OBJ_T can only be a standard or registered Qt type. To use custom types,
+    //   either Q_DECLARE_METATYPE() them or add additional logic in retrieve() to handle QMetaType::User.
 
-    // Retrieve and Store functions
-    void getset( QByteArray &array, const QString tag, const QString def, const QString group1="", const QString group2="" );
-    void getset( QStringList &stringList, const QString tag, const QString def, const QString group1="", const QString group2="" );
-    void getset( QString &string, const QString tag, const QString def, const QString group1="", const QString group2="" );
-    void getset( bool &truth, const QString tag, const bool def, const QString group1="", const QString group2="" );
-    void getset( int &number, const QString tag, const int def, const QString group1="", const QString group2="" );
+    template <typename OBJ_T, typename TAG_T, typename GP1_T = QString, typename GP2_T = QString>
+    void store(const OBJ_T newValue, OBJ_T & destValue, const TAG_T tag, const GP1_T group1 = "", const GP2_T group2 = "");
+
+    template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T = QString, typename GP2_T = QString>
+    void retrieve(OBJ_T & destValue, const TAG_T tag, const DEF_T def, const GP1_T group1 = "", const GP2_T group2 = "");
+
+    template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T = QString, typename GP2_T = QString>
+    void getset(OBJ_T & value, const TAG_T tag, const DEF_T def, const GP1_T group1 = "", const GP2_T group2 = "" );
+
+    // this specialization is needed because QVariant::fromValue(const char *) fails
+    template <typename OBJ_T, typename TAG_T, typename GP1_T = QString, typename GP2_T = QString>
+    void getset(OBJ_T & value, const TAG_T tag, const char * def, const GP1_T group1 = "", const GP2_T group2 = "" );
+
 };
 
 class FwRevision: protected CompStoreObj
@@ -122,9 +125,6 @@ class Profile: protected CompStoreObj
     int     _channelOrder;
     int     _defaultMode;
 
-    // Simulator variables
-    QByteArray _simuWinGeo;
-
     // Firmware Variables
     QString _beeper;
     QString _countryCode;
@@ -136,13 +136,16 @@ class Profile: protected CompStoreObj
     QString _trainerCalib;
     QString _controlTypes;
     QString _controlNames;
-    int     _txCurrentCalibration;
     int     _gsStickMode;
     int     _ppmMultiplier;
-    int     _txVoltageCalibration;
     int     _vBatWarn;
     int     _vBatMin;
     int     _vBatMax;
+    int     _txCurrentCalibration;
+    int     _txVoltageCalibration;
+
+    // Simulator variables
+    SimulatorOptions _simulatorOptions;
 
   public:
     // All the get definitions
@@ -158,8 +161,6 @@ class Profile: protected CompStoreObj
     bool    penableBackup() const;
     int     channelOrder() const;
     int     defaultMode() const;
-
-    QByteArray simuWinGeo() const;
 
     QString beeper() const;
     QString countryCode() const;
@@ -179,6 +180,8 @@ class Profile: protected CompStoreObj
     int     vBatMin() const;
     int     vBatMax() const;
 
+    SimulatorOptions simulatorOptions() const;
+
     // All the set definitions
     void name          (const QString);
     void fwName        (const QString);
@@ -192,8 +195,6 @@ class Profile: protected CompStoreObj
     void penableBackup (const bool);
     void channelOrder  (const int);
     void defaultMode   (const int);
-
-    void simuWinGeo    (const QByteArray);
 
     void beeper        (const QString);
     void countryCode   (const QString);
@@ -213,6 +214,8 @@ class Profile: protected CompStoreObj
     void vBatMin       (const int);
     void vBatMax       (const int);
 
+    void simulatorOptions (const SimulatorOptions &);
+
     Profile();
     Profile& operator=(const Profile&);
     void remove();
@@ -220,6 +223,7 @@ class Profile: protected CompStoreObj
     void init(int newIndex);
     void initFwVariables();
     void flush();
+    QString groupId();
 };
 
 #define BOOL_PROPERTY(name, dflt)                                   \
@@ -231,12 +235,12 @@ class Profile: protected CompStoreObj
 
 class AppData: protected CompStoreObj
 {
-  BOOL_PROPERTY(enableBackup, false)
-  BOOL_PROPERTY(outputDisplayDetails, false)
-  BOOL_PROPERTY(backupOnFlash, true)
+  BOOL_PROPERTY(enableBackup,               false)
+  BOOL_PROPERTY(backupOnFlash,              true)
+  BOOL_PROPERTY(outputDisplayDetails,       false)
   BOOL_PROPERTY(checkHardwareCompatibility, true)
-  BOOL_PROPERTY(useCompanionNightlyBuilds, false)
-  BOOL_PROPERTY(useFirmwareNightlyBuilds, false)
+  BOOL_PROPERTY(useCompanionNightlyBuilds,  false)
+  BOOL_PROPERTY(useFirmwareNightlyBuilds,   false)
 
   // All the global variables
   public:
@@ -246,6 +250,8 @@ class AppData: protected CompStoreObj
 
   private:
     QStringList _recentFiles;
+    QStringList _simuDbgFilters;
+
     QByteArray _mainWinGeo;
     QByteArray _mainWinState;
     QByteArray _modelEditGeo;
@@ -261,8 +267,6 @@ class AppData: protected CompStoreObj
     QString _programmer;
     QString _sambaLocation;
     QString _sambaPort;
-    QString _lastSimulator;
-    QString _simuLastEepe;
 
     QString _backupDir;
     QString _gePath;
@@ -294,10 +298,14 @@ class AppData: protected CompStoreObj
     int _theme;
     int _warningId;
     int _simuLastProfId;
+    // currently loaded radio profile ID, NOT saved to persistent storage
+    int _sessionId;
 
   public:
     // All the get definitions
     QStringList recentFiles();
+    QStringList simuDbgFilters();
+
     QByteArray mainWinGeo();
     QByteArray mainWinState();
     QByteArray modelEditGeo();
@@ -314,8 +322,6 @@ class AppData: protected CompStoreObj
     QString programmer();
     QString sambaLocation();
     QString sambaPort();
-    QString lastSimulator();
-    QString simuLastEepe();
 
     QString backupDir();
     QString gePath();
@@ -347,9 +353,12 @@ class AppData: protected CompStoreObj
     int theme();
     int warningId();
     int simuLastProfId();
+    int sessionId();
 
     // All the set definitions
     void recentFiles     (const QStringList x);
+    void simuDbgFilters  (const QStringList x);
+
     void mainWinGeo      (const QByteArray);
     void mainWinState    (const QByteArray);
     void modelEditGeo    (const QByteArray);
@@ -366,8 +375,6 @@ class AppData: protected CompStoreObj
     void programmer      (const QString);
     void sambaLocation   (const QString);
     void sambaPort       (const QString);
-    void lastSimulator   (const QString);
-    void simuLastEepe    (const QString);
 
     void backupDir       (const QString);
     void gePath          (const QString);
@@ -400,6 +407,7 @@ class AppData: protected CompStoreObj
     void theme           (const int);
     void warningId       (const int);
     void simuLastProfId  (const int);
+    void sessionId       (const int);
 
     // Constructor
     AppData();

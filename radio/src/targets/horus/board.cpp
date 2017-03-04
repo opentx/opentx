@@ -87,15 +87,6 @@ void interrupt1ms()
   DEBUG_TIMER_START(debugTimerRotEnc);
   checkRotaryEncoder();
   DEBUG_TIMER_STOP(debugTimerRotEnc);
-
-#if defined(LUA)
-  if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && outputTelemetryBufferTrigger && outputTelemetryBufferSize > 0) {
-    if (telemetryFifo.last(-2) == 0x7E && telemetryFifo.last(-1) == outputTelemetryBufferTrigger) {
-      outputTelemetryBufferTrigger = 0;
-      sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
-    }
-  }
-#endif
 }
 
 extern "C" void INTERRUPT_1MS_IRQHandler()
@@ -105,8 +96,16 @@ extern "C" void INTERRUPT_1MS_IRQHandler()
   DEBUG_INTERRUPT(INT_1MS);
 }
 
+#if defined(SEMIHOSTING)
+extern "C" void initialise_monitor_handles();
+#endif
+
 void boardInit()
 {
+#if defined(SEMIHOSTING)
+  initialise_monitor_handles();
+#endif
+
 #if !defined(SIMU)
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
@@ -124,7 +123,8 @@ void boardInit()
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
-                         GPS_RCC_AHB1Periph,
+                         GPS_RCC_AHB1Periph |
+                         BL_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(INTERRUPT_1MS_RCC_APB1Periph |
@@ -136,23 +136,18 @@ void boardInit()
                          AUDIO_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
-                         GPS_RCC_APB1Periph,
+                         GPS_RCC_APB1Periph |
+                         BL_RCC_APB1Periph,
                          ENABLE);
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
-                         EXTMODULE_RCC_APB2Periph,
+                         EXTMODULE_RCC_APB2Periph |
+                         BL_RCC_APB2Periph,
                          ENABLE);
 
   pwrInit();
-
-  // must be called after pwrInit() because the PCBREV GPIO is initialized there
-  if (IS_HORUS_PROD())
-    RCC_APB1PeriphClockCmd(PROD_BL_RCC_APB1Periph,ENABLE);
-  else
-    RCC_APB2PeriphClockCmd(BETA_BL_RCC_APB2Periph,ENABLE);
-
   delaysInit();
 
   // FrSky removed the volume chip in latest board, that's why it doesn't answer!
@@ -165,6 +160,11 @@ void boardInit()
   __enable_irq();
 
   TRACE("\nHorus board started :)");
+  TRACE("RCC->CSR = %08x", RCC->CSR);
+
+  // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access) 
+  // and this section is un-initialized
+  memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
 
   keysInit();
   adcInit();
@@ -176,11 +176,21 @@ void boardInit()
   init1msTimer();
   usbInit();
   hapticInit();
+
+#if defined(BLUETOOTH)
   bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+#endif
+
+#if defined(PCBX12S)
   gpsInit(GPS_USART_BAUDRATE);
+#endif
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
+#endif
+
+#if defined(PCBX10)
+  ledInit();
 #endif
 
   ledBlue();

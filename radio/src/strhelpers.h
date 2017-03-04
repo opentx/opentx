@@ -34,6 +34,7 @@ char * strAppendStringWithIndex(char * dest, const char * s, int idx);
 #define LEN_TIMER_STRING               10 // "-00:00:00"
 char * getTimerString(char * dest, int32_t tme, uint8_t hours=0);
 char * getCurveString(char * dest, int idx);
+char * getGVarString(char * dest, int idx);
 char * getSwitchString(char * dest, swsrc_t idx);
 char * getSourceString(char * dest, mixsrc_t idx);
 #endif

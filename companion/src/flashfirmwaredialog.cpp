@@ -21,16 +21,13 @@
 #include "flashfirmwaredialog.h"
 #include "ui_flashfirmwaredialog.h"
 #include "appdata.h"
-#include "storage_eeprom.h"
-#include "eeprominterface.h"
-#include "firmwareinterface.h"
 #include "process_flash.h"
 #include "helpers.h"
-#include "hexinterface.h"
 #include "progressdialog.h"
 #include "radiointerface.h"
 #include "progresswidget.h"
 #include "splashlibrarydialog.h"
+#include "storage.h"
 
 #if defined _MSC_VER || !defined __GNUC__
   #include <windows.h>
@@ -57,7 +54,7 @@ fwName(g.profile[g.id()].fwName())
     ui->useProfileSplash->setDisabled(true);
   }
 
-  if (IS_STM32(GetEepromInterface()->getBoard())) {
+  if (IS_STM32(getCurrentBoard())) {
     // No backup on Taranis ... could be done if in massstorage
     ui->backupEEprom->hide();
     ui->backupEEprom->setCheckState(Qt::Unchecked);
@@ -242,7 +239,7 @@ void FlashFirmwareDialog::on_burnButton_clicked()
     }
     // write the customized firmware
     QString tempFile;
-    if (getFileType(fwName) == FILE_TYPE_HEX)
+    if (getStorageType(fwName) == STORAGE_TYPE_HEX)
       tempFile = generateProcessUniqueTempFileName("flash.hex");
     else
       tempFile = generateProcessUniqueTempFileName("flash.bin");

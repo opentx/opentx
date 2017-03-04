@@ -55,7 +55,9 @@ enum EnumKeys
   KEY_ENTER=KEY_MENU,
   KEY_EXIT,
   KEY_DOWN,
+  KEY_MINUS = KEY_DOWN,
   KEY_UP,
+  KEY_PLUS = KEY_UP,
   KEY_RIGHT,
   KEY_LEFT,
   
@@ -312,7 +314,19 @@ enum Analogs {
 #if !defined(REVA)
   TX_CURRENT,
 #endif
-  NUMBER_ANALOG
+  NUM_ANALOGS
+};
+enum CalibratedAnalogs {
+  CALIBRATED_STICK1,
+  CALIBRATED_STICK2,
+  CALIBRATED_STICK3,
+  CALIBRATED_STICK4,
+  CALIBRATED_POT_FIRST,
+  CALIBRATED_POT1 = CALIBRATED_POT_FIRST,
+  CALIBRATED_POT2,
+  CALIBRATED_POT3,
+  CALIBRATED_POT_LAST = CALIBRATED_POT3,
+  NUM_CALIBRATED_ANALOGS
 };
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   false
@@ -374,7 +388,7 @@ void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
 void debugPutc(const char c);
 
 // Telemetry driver
-void telemetryPortInit(uint32_t baudrate, int mode);
+void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );

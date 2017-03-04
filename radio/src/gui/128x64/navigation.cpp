@@ -805,26 +805,26 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
   // check pot 1 - if changed -> scroll values
   static int16_t p1val;
   static int16_t p1valprev;
-  p1valdiff = (p1val-calibratedStick[6]) / SCROLL_POT1_TH;
+  p1valdiff = (p1val-calibratedAnalogs[CALIBRATED_POT1]) / SCROLL_POT1_TH;
   if (p1valdiff) {
-    p1valdiff = (p1valprev-calibratedStick[6]) / 2;
-    p1val = calibratedStick[6];
+    p1valdiff = (p1valprev-calibratedAnalogs[CALIBRATED_POT1]) / 2;
+    p1val = calibratedAnalogs[CALIBRATED_POT1];
   }
-  p1valprev = calibratedStick[6];
+  p1valprev = calibratedAnalogs[CALIBRATED_POT1];
 #endif
 
 #if defined(NAVIGATION_POT2)
   // check pot 2 - if changed -> scroll menu
   static int16_t p2valprev;
-  p2valdiff = (p2valprev-calibratedStick[4]) / SCROLL_TH;
-  if (p2valdiff) p2valprev = calibratedStick[4];
+  p2valdiff = (p2valprev-calibratedAnalogs[CALIBRATED_POT2]) / SCROLL_TH;
+  if (p2valdiff) p2valprev = calibratedAnalogs[CALIBRATED_POT2];
 #endif
 
 #if defined(NAVIGATION_POT3)
   // check pot 3 if changed -> cursor down/up
   static int16_t p3valprev;
-  int8_t scrollUD = (p3valprev-calibratedStick[5]) / SCROLL_TH;
-  if (scrollUD) p3valprev = calibratedStick[5];
+  int8_t scrollUD = (p3valprev-calibratedAnalogs[CALIBRATED_POT3]) / SCROLL_TH;
+  if (scrollUD) p3valprev = calibratedAnalogs[CALIBRATED_POT3];
 #else
   #define scrollUD 0
 #endif

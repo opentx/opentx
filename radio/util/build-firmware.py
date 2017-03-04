@@ -4,6 +4,7 @@ import os
 import sys
 import subprocess
 import shutil
+import filelock
 from fwoptions import *
 
 # Error codes
@@ -122,9 +123,15 @@ elif options[optcount] == "x9e":
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
-elif options[optcount] == "horus":
-    command_options["PCB"] = "HORUS"
-    firmware_options = options_horus
+elif options[optcount] == "x10":
+    command_options["PCB"] = "X10"
+    firmware_options = options_x10
+    maxsize = 2 * 1024 * 1024
+    board = BOARD_HORUS
+    board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "x12s":
+    command_options["PCB"] = "X12S"
+    firmware_options = options_x12s
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
@@ -175,15 +182,13 @@ if not language:
 command_options["TRANSLATIONS"] = language.upper()
 
 filename += "-" + language + ext
-srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
 path = os.path.join(directory, filename)
-outpath = path + ".out"
 errpath = path + ".err"
 
-if os.path.isfile(errpath):
-    exit(COMPILATION_ERROR)
+def build_firmware(path):
+    srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
+    outpath = path + ".out"
 
-if not os.path.isfile(path):
     # Launch CMake
     cmd = ["cmake"]
     for opt, value in command_options.items():
@@ -194,7 +199,7 @@ if not os.path.isfile(path):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode == 0:
-        file(outpath, "a").write(output + error)
+        file(outpath, "a").write("\n".join(cmd) + output + error)
     else:
         file(errpath, "w").write(output + error)
         exit(COMPILATION_ERROR)
@@ -219,9 +224,20 @@ if not os.path.isfile(path):
         if size > maxsize:
             exit(FIRMWARE_SIZE_TOO_BIG)
 
-
     # Copy binary to the binaries directory
-    shutil.copyfile(target, path)
+    shutil.move(target, path)
+
+if os.path.isfile(errpath):
+    exit(COMPILATION_ERROR)
+
+lockpath = path + ".lock"
+lock = filelock.FileLock(lockpath)
+try:
+    with lock.acquire(timeout = 60*60):
+        if not os.path.isfile(path):
+            build_firmware(path)
+except filelock.Timeout:
+    exit(COMPILATION_ERROR)
 
 print filename
 exit(0)

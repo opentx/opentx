@@ -396,7 +396,7 @@ void menuRadioSetup(event_t event)
           lcdDrawChar(lcdLastPos, y, 's');
         }
         else {
-          lcdDrawTextAtIndex(RADIO_SETUP_2ND_COLUMN, y, STR_MMMINV, 0, attr); // TODO define
+          lcdDrawMMM(RADIO_SETUP_2ND_COLUMN, y, attr);
         }
         if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
         break;

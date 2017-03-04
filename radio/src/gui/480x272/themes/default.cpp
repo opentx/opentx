@@ -74,12 +74,16 @@ class DefaultTheme: public Theme
       if (mask) {
         delete menuIconNormal[index];
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-        menuIconNormal[index]->clear(HEADER_BGCOLOR);
-        menuIconNormal[index]->drawMask(0, 0, mask, color);
+        if (menuIconNormal[index]) {
+          menuIconNormal[index]->clear(HEADER_BGCOLOR);
+          menuIconNormal[index]->drawMask(0, 0, mask, color);
+        }
         delete menuIconSelected[index];
         menuIconSelected[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
-        menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
-        menuIconSelected[index]->drawMask(0, 0, mask, color);
+        if (menuIconSelected[index]) {
+          menuIconSelected[index]->clear(HEADER_CURRENT_BGCOLOR);
+          menuIconSelected[index]->drawMask(0, 0, mask, color);
+        }
         delete mask;
       }
     }
@@ -130,19 +134,23 @@ class DefaultTheme: public Theme
       loadMenuIcon(ICON_MONITOR_CHANNELS2, "mask_monitor_channels2.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS3, "mask_monitor_channels3.png");
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
-      loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "/mask_monitor_logsw.png");
+      loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "mask_monitor_logsw.png");
 
       BitmapBuffer * background = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_bg.png"));
       BitmapBuffer * shadow = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_shadow.png"));
       BitmapBuffer * dot = BitmapBuffer::loadMask(getThemePath("mask_currentmenu_dot.png"));
 
-      if (!currentMenuBackground) currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
-      currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
-      currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
-      currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
-      currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
-      currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
-      currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
+      if (!currentMenuBackground) {
+        currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
+      }
+      if (currentMenuBackground) {
+        currentMenuBackground->drawSolidFilledRect(0, 0, currentMenuBackground->getWidth(), MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, currentMenuBackground->getWidth(), MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
+        currentMenuBackground->drawSolidFilledRect(0, MENU_TITLE_TOP, currentMenuBackground->getWidth(), currentMenuBackground->getHeight() - MENU_TITLE_TOP, TITLE_BGCOLOR);
+        currentMenuBackground->drawMask(0, 0, background, HEADER_CURRENT_BGCOLOR);
+        currentMenuBackground->drawMask(0, 0, shadow, TRIM_SHADOW_COLOR);
+        currentMenuBackground->drawMask(10, 39, dot, MENU_TITLE_COLOR);
+      }
 
       delete topleftBitmap;
       topleftBitmap = BitmapBuffer::loadMaskOnBackground("topleft.png", TITLE_BGCOLOR, HEADER_BGCOLOR);
@@ -262,7 +270,8 @@ class DefaultTheme: public Theme
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
-      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(GET_RED(color)-69, GET_GREEN(color)-32, GET_BLUE(color)-24);
+      #define DARKER(x)     ((x * 70) / 100)
+      lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
       loadIcons();

@@ -6,6 +6,8 @@ set(SIMU_SRC
   ${SIMU_SRC}
   simpgmspace.cpp
   simueeprom.cpp
+  simufatfs.cpp
+  simudisk.cpp
   )
 
 add_definitions(-DSIMU)
@@ -41,22 +43,21 @@ endif(WIN32)
 
 if(MSVC)
   set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
-  message("simu: using MSVC with ${CMAKE_CXX_FLAGS}")
 else()
-  if (${CMAKE_VERSION} VERSION_LESS 3.1.0})
-    message("simu: adding -std=gnu++11")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-  endif()
   if(MINGW)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields -mwindows")
-    message("simu: using MinGW with ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
   set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 endif()
 
-if((NOT WIN32) AND FOX_FOUND)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
+
+use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
+
+if(FOX_FOUND)
   if(SIMU_DISKIO)
     add_definitions(-DSIMU_DISKIO)
     set(SIMU_SRC ${SIMU_SRC} ${FATFS_DIR}/FatFs/ff.c ${FATFS_DIR}/option/ccsbcs.c)
@@ -90,3 +91,5 @@ if(APPLE)
   endforeach()
   add_custom_target(opentx-simulators-bundle DEPENDS ${SIMULATOR_BUNDLES})
 endif(APPLE)
+
+PrintTargetReport("simu/libsimulator")

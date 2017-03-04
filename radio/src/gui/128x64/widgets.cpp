@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -114,12 +114,8 @@ void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr)
 }
 #endif
 
-#if defined(GVARS) && defined(CPUARM)
-bool noZero(int val)
-{
-  return val != 0;
-}
 
+#if defined(GVARS) && defined(CPUARM)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event)
 {
   uint16_t delta = GV_GET_GV1_VALUE(max);
@@ -137,31 +133,18 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
   }
 
   if (GV_IS_GV_VALUE(value, min, max)) {
-    if (IS_LEFT_ALIGNED(attr)) {
-      attr -= LEFT; /* because of ZCHAR */
-    }
-    else {
-      x -= 3*FW;
-      attr -= RIGHT;
-    }
-
     attr &= ~PREC1;
-
-    int8_t idx = (int16_t) GV_INDEX_CALC_DELTA(value, delta);
-    if (idx >= 0) ++idx;    // transform form idx=0=GV1 to idx=1=GV1 in order to handle double keys invert
+    int8_t idx = (int16_t)GV_INDEX_CALC_DELTA(value, delta);
     if (invers) {
-      CHECK_INCDEC_MODELVAR_CHECK(event, idx, -MAX_GVARS, MAX_GVARS, noZero);
-      if (idx == 0) idx = 1;    // handle reset to zero, map to GV1
+      CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS-1);
     }
     if (idx < 0) {
-      value = (int16_t) GV_CALC_VALUE_IDX_NEG(idx, delta);
-      idx = -idx;
-      lcdDrawChar(x-6, y, '-', attr);
+      value = (int16_t)GV_CALC_VALUE_IDX_NEG(idx, delta);
     }
     else {
-      value = (int16_t) GV_CALC_VALUE_IDX_POS(idx-1, delta);
+      value = (int16_t)GV_CALC_VALUE_IDX_POS(idx, delta);
     }
-    drawStringWithIndex(x, y, STR_GV, idx, attr);
+    drawGVarName(x, y, idx, attr);
   }
   else {
     lcdDrawNumber(x, y, value, attr);

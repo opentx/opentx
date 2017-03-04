@@ -348,10 +348,14 @@
 #endif
 #define ADC_CHANNEL_STICK_RV            ADC_Channel_0  // ADC1_IN0
 #define ADC_CHANNEL_STICK_RH            ADC_Channel_1  // ADC1_IN1
-#define ADC1_DMA                        DMA2
-#define ADC1_DMA_Stream                 DMA2_Stream4
-#define ADC1_DMA_FLAGS                  (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
-#define ADC1_DMA_FLAG_TC                DMA_HISR_TCIF4
+#define ADC_MAIN                        ADC1
+#define ADC_DMA                         DMA2
+#define ADC_DMA_SxCR_CHSEL              0
+#define ADC_DMA_Stream                  DMA2_Stream4
+#define ADC_SET_DMA_FLAGS()             ADC_DMA->HIFCR = (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
+#define ADC_TRANSFER_COMPLETE()         (ADC_DMA->HISR & DMA_HISR_TCIF4)
+#define ADC_SAMPTIME                    2   // sample time = 28 cycles
+
 #if defined(PCBX9E)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_8  // PF.08
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00
@@ -375,10 +379,12 @@
   #define ADC_CHANNEL_SLIDER3           ADC_Channel_6  // ADC1_IN6
   #define ADC_CHANNEL_SLIDER4           ADC_Channel_9  // ADC1_IN9
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
-  #define ADC3_DMA                      DMA2
-  #define ADC3_DMA_Stream               DMA2_Stream0
-  #define ADC3_DMA_FLAGS                (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
-  #define ADC3_DMA_FLAG_TC              DMA_LISR_TCIF0
+  #define ADC_EXT                       ADC3
+  #define ADC_EXT_DMA                   DMA2
+  #define ADC_EXT_DMA_Stream            DMA2_Stream0
+  #define ADC_EXT_SET_DMA_FLAGS()       ADC_DMA->LIFCR = (DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0)
+  #define ADC_EXT_TRANSFER_COMPLETE()   (ADC_DMA->LISR & DMA_LISR_TCIF0)
+  #define ADC_EXT_SAMPTIME              3    // sample time = 56 cycles
 #elif defined(PCBX9DP)
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_6  // PA.06
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_0  // PB.00

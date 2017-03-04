@@ -132,7 +132,7 @@ void menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_CURVE:
-        editCurveRef(EXPO_ONE_2ND_COLUMN-3*FW, y, ed->curve, event, RIGHT | attr);
+        editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, s_editMode > 0 ? event : 0, RIGHT | attr);
         break;
 #endif
 
@@ -169,16 +169,16 @@ void menuModelExpoOne(event_t event)
 
   int x512 = getValue(ed->srcRaw);
   if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-    drawSensorCustomValue(LCD_W-8, 6*FH, (ed->srcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
+    drawSensorCustomValue(LCD_W-FW, 6*FH, (ed->srcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
     if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
   }
   else {
-    lcdDrawNumber(LCD_W-8, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
+    lcdDrawNumber(LCD_W-FW, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
   }
   x512 = limit(-1024, x512, 1024);
   int y512 = expoFn(x512);
   y512 = limit(-1024, y512, 1024);
-  lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
+  lcdDrawNumber(CURVE_CENTER_X-FWNUM, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
 
   x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;

@@ -21,16 +21,19 @@
 #ifndef _HELPERS_H_
 #define _HELPERS_H_
 
+#include "eeprominterface.h"
+#include "modeledit/modeledit.h"
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QTableWidget>
 #include <QGridLayout>
 #include <QDebug>
-#include "eeprominterface.h"
+#include <QTime>
+#include <QElapsedTimer>
 
 extern const QColor colors[CPN_MAX_CURVES];
 
-#define TMR_NUM_OPTION  (TMRMODE_COUNT+2*9+2*GetCurrentFirmware()->getCapability(LogicalSwitches)-1)
+#define TMR_NUM_OPTION  (TMRMODE_COUNT+2*9+2*getCurrentFirmware()->getCapability(LogicalSwitches)-1)
 
 //convert from mode 1 to mode generalSettings.stickMode
 //NOTICE!  =>  1..4 -> 1..4
@@ -66,7 +69,7 @@ class GVarGroup: public QObject {
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
+    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true, ModelPanel * panel=NULL);
 
   protected slots:
     void gvarCBChanged(int);
@@ -81,6 +84,7 @@ class GVarGroup: public QObject {
     int & weight;
     double step;
     bool lock;
+    ModelPanel * panel;
 };
 
 #define HIDE_DIFF             0x01
@@ -136,8 +140,8 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase);
 #define POPULATE_VIRTUAL_INPUTS (1<<7)
 #define POPULATE_SCRIPT_OUTPUTS (1<<8)
 
-#define GVARS_VARIANT 0x0001
-#define FRSKY_VARIANT 0x0002
+#define GVARS_VARIANT           0x0001
+#define FRSKY_VARIANT           0x0002
 
 void populateGVCB(QComboBox & b, int value, const ModelData & model);
 void populateSourceCB(QComboBox *b, const RawSource &source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags);
@@ -187,7 +191,7 @@ class QTimeS : public QTime
     int seconds() const { return hour()*3600 + minute()*60 + second(); };
 };
 
-int qunlink(const QString & fileName);
+bool qunlink(const QString & fileName);
 
 QString generateProcessUniqueTempFileName(const QString & fileName);
 bool isTempFileName(const QString & fileName);

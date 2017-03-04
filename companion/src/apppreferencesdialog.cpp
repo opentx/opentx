@@ -143,7 +143,7 @@ void AppPreferencesDialog::initSettings()
   ui->backLightColor->setCurrentIndex(g.backLight());
   ui->volumeGain->setValue(g.profile[g.id()].volumeGain() / 10.0);
 
-  if (IS_TARANIS(GetCurrentFirmware()->getBoard())) {
+  if (IS_TARANIS(getCurrentBoard())) {
     ui->backLightColor->setEnabled(false);
   }
 
@@ -230,7 +230,7 @@ void AppPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
-  Firmware * current_firmware = GetCurrentFirmware();
+  Firmware * current_firmware = getCurrentFirmware();
 
   foreach(Firmware * firmware, firmwares) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
@@ -358,7 +358,7 @@ bool AppPreferencesDialog::displayImage(const QString & fileName)
     return false;
   
   ui->imageLabel->setPixmap(makePixMap(image));
-  ui->imageLabel->setFixedSize(GetCurrentFirmware()->getCapability(LcdWidth), GetCurrentFirmware()->getCapability(LcdHeight));
+  ui->imageLabel->setFixedSize(getCurrentFirmware()->getCapability(LcdWidth), getCurrentFirmware()->getCapability(LcdHeight));
   return true;
 }
 
@@ -427,7 +427,7 @@ Firmware * AppPreferencesDialog::getFirmwareVariant()
         id += QString("-") + ui->langCombo->currentText();
       }
 
-      return GetFirmware(id);
+      return getFirmware(id);
     }
   }
 

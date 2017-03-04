@@ -40,8 +40,8 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
 
     getSettings();
     populateProgrammers();
-    EEPROMInterface *eepromInterface = GetEepromInterface();
-    if (IS_STM32(eepromInterface->getBoard())) {
+    Board::Type board = getCurrentBoard();
+    if (IS_STM32(board)) {
       setWindowTitle(tr("DFU-UTIL Configuration"));
       ui->avrArgs->hide();
       ui->avrdude_location->hide();
@@ -60,7 +60,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
       ui->samba_port->hide();      
       ui->sb_browse->hide();
     }
-    else if (IS_SKY9X(eepromInterface->getBoard())) {
+    else if (IS_SKY9X(board)) {
       setWindowTitle(tr("SAM-BA Configuration"));
       ui->avrArgs->hide();
       ui->avrdude_location->hide();
@@ -97,7 +97,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
     ui->dfuArgs->hide();
 
     QTimer::singleShot(0, this, SLOT(shrink()));
-    connect(this,SIGNAL(accepted()),this,SLOT(putSettings()));
+    connect(this, SIGNAL(accepted()), this, SLOT(putSettings()));
 }
 
 burnConfigDialog::~burnConfigDialog()
@@ -328,13 +328,13 @@ void burnConfigDialog::on_pushButton_4_clicked()
 
 void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
 {
-  EEPROMInterface *eepromInterface = GetEepromInterface();
+  Board::Type board = getCurrentBoard();
   if (checked) {
-    if (IS_STM32(eepromInterface->getBoard())) {
+    if (IS_STM32(board)) {
       ui->label_dfu2->show();
       ui->dfuArgs->show();
     }
-    else if (IS_SKY9X(eepromInterface->getBoard())) {
+    else if (IS_SKY9X(board)) {
       ui->label_sb2->show();
       ui->arm_mcu->show();
     }
@@ -347,11 +347,11 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     }
   }
   else {
-    if (IS_STM32(eepromInterface->getBoard())) {
+    if (IS_STM32(board)) {
       ui->label_dfu2->hide();
       ui->dfuArgs->hide();
     }
-    else if (IS_SKY9X(eepromInterface->getBoard())) {
+    else if (IS_SKY9X(board)) {
       ui->label_sb2->hide();
       ui->arm_mcu->hide();
     }
@@ -366,7 +366,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
 
 void burnConfigDialog::shrink()
 {
-  resize(0,0);
+  resize(0, 0);
 }
 
 

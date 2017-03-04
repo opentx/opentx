@@ -157,7 +157,7 @@ void saveModel(ModelData & m, model & xm)
   phases::phase_sequence & phases_sequence (xphases.phase());
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
     FlightModeData & p = m.flightModeData[i];
-    if (i == 0 || p.swtch.type!=SWITCH_TYPE_NONE) {
+    if (i == 0 || p.swtch.type!=Board::SWITCH_TYPE_NONE) {
       TrimType xtrim[4];
       for (int j=0; j<4; j++) {
         if (m.flightModeData[i].trimRef[j] >= 0)
@@ -195,7 +195,7 @@ bool XmlInterface::save(RadioData &radioData)
     // the models
     models xml_models;
     models::model_sequence & model_sequence (xml_models.model());
-    for (int i=0; i<CPN_MAX_MODELS; i++) {
+    for (int i=0; i<radioData.models.size(); i++) {
       ModelData & m = radioData.models[i];
       if (m.used) {
         model xm(m.name);

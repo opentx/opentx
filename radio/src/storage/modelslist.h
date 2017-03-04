@@ -50,12 +50,16 @@ class ModelCell
       const char * error = NULL;
 
       buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-      buffer->clear(TEXT_BGCOLOR);
+      if (buffer == NULL) {
+        return;
+      }
 
       if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0)
         header = g_model.header;
       else
         error = readModel(modelFilename, (uint8_t *)&header, sizeof(header));
+
+      buffer->clear(TEXT_BGCOLOR);
 
       if (error) {
         buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);

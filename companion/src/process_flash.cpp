@@ -20,11 +20,12 @@
 
 #include "process_flash.h"
 #include "progresswidget.h"
+#include "eeprominterface.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QProcess>
-#include "eeprominterface.h"
-//#include "firmwareinterface.h"
+#include <QTimer>
+#include <QEventLoop>
 
 #if defined _MSC_VER || !defined __GNUC__
 #include <Windows.h>
@@ -93,13 +94,12 @@ void FlashProcess::onStarted()
   progress->addSeparator();
 }
 
-# if !__GNUC__
+#if !__GNUC__
 bool killProcessByName(const char *szProcessToKill)
 {
   HANDLE hProcessSnap;
   HANDLE hProcess;
   PROCESSENTRY32 pe32;
-  DWORD dwPriorityClass;
 
   hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);  // Takes a snapshot of all the processes
 
@@ -129,7 +129,7 @@ bool killProcessByName(const char *szProcessToKill)
 
 void FlashProcess::onKillTimerElapsed()
 {
-# if !__GNUC__
+#if !__GNUC__
   // trick to accelerate SAM-BA startup
   killProcessByName("tasklist.exe");
 #endif
@@ -278,7 +278,7 @@ void FlashProcess::errorWizard()
       QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease check advanced burn options to set the correct cpu type.").arg(DeviceStr));
     }
     else {
-      Firmware *firmware = GetCurrentFirmware();
+      Firmware *firmware = getCurrentFirmware();
       QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio uses a %1 CPU!!!\n\nPlease select an appropriate firmware type to program it.").arg(DeviceStr)+FwStr+tr("\nYou are currently using:\n %1").arg(firmware->getName()));
     }
   }

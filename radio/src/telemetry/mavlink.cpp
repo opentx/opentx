@@ -25,17 +25,13 @@
 
 #include "telemetry/mavlink.h"
 
-//#define DUMP_RX_TX
+#if defined(SIMU)
+void telemetryPortInitFromIndex(uint8_t index) {}
+#endif
 
 // this might need to move to the flight software
 //static
 mavlink_system_t mavlink_system = { 7, MAV_COMP_ID_MISSIONPLANNER, 0, 0, 0, 0 };
-
-//static uint8_t system_id = 7;
-//static uint8_t component_id = 1;
-//static uint8_t target_system = 7;
-//static uint8_t target_component = 1;
-
 
 // Mavlink message decoded Status Text
 #define PARAM_NB_REPEAT 10
@@ -50,31 +46,11 @@ Telemetry_Data_t telemetry_data;
 
 // *****************************************************
 static void MAVLINK_parse_char(uint8_t c);
+uint8_t telemetryRxBufferCount = 0;
 
-#ifdef DUMP_RX_TX
-#define MAX_RX_BUFFER 16
-uint8_t mavlinkRxBufferCount = 0;
-uint8_t mavlinkRxBuffer[MAX_RX_BUFFER];
-uint8_t mav_dump_rx = 0;
-void MAVLINK_rxhandler(uint8_t byte) {
-	if (mav_dump_rx) {
-		if (byte == MAVLINK_STX) {
-			mavlinkRxBufferCount = 0;
-		}
-		if (mavlinkRxBufferCount < MAX_RX_BUFFER) {
-			mavlinkRxBuffer[mavlinkRxBufferCount++] = byte;
-		}
-	}
-	MAVLINK_parse_char(byte);
-
-}
-#else
-void MAVLINK_rxhandler(uint8_t byte) {
+void processTelemetryData(uint8_t byte) {
 	MAVLINK_parse_char(byte);
 }
-#endif
-
-SerialFuncP RXHandler = MAVLINK_rxhandler;
 
 /*!	\brief Reset basic Mavlink varables
  *	\todo Figure out exact function
@@ -84,10 +60,6 @@ void MAVLINK_reset(uint8_t warm_reset) {
 	if (warm_reset && telemetry_data.status) {
 		mav_statustext[0] = 0;
 	}
-#ifdef DUMP_RX_TX
-	mavlinkRxBufferCount = 0;
-	mav_dump_rx = 0;
-#endif
 
 	mavlink_status_t* p_status = mavlink_get_channel_status(MAVLINK_COMM_0);
 	p_status->current_rx_seq = 0;
@@ -109,7 +81,7 @@ void MAVLINK_reset(uint8_t warm_reset) {
 void MAVLINK_Init(void) {
 	mav_statustext[0] = 0;
 	MAVLINK_reset(0);
-	SERIAL_Init();
+	telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
 }
 
 /*!	\brief Status log message
@@ -450,7 +422,6 @@ static void MAVLINK_parse_char(uint8_t c) {
 
 #if MAVLINK_CRC_EXTRA
 	static const uint8_t mavlink_message_crcs[256] PROGMEM = MAVLINK_MESSAGE_CRCS;
-#define MAVLINK_MESSAGE_CRC(msgid) mavlink_message_crcs[msgid]
 #endif
 
 	// Initializes only once, values keep unchanged after first initialization
@@ -533,9 +504,7 @@ static void MAVLINK_parse_char(uint8_t c) {
 			if (mav_heartbeat < 0)
 				mav_heartbeat = 0;
 			p_status->current_rx_seq = p_rxmsg->seq;
-			//p_status->msg_received = 1;
 			p_status->parse_state = MAVLINK_PARSE_STATE_IDLE;
-			//memcpy(r_message, p_rxmsg, sizeof(mavlink_message_t));
 			handleMessage(p_rxmsg);
 		}
 		break;
@@ -548,21 +517,7 @@ static void MAVLINK_parse_char(uint8_t c) {
 			mavlink_start_checksum(p_rxmsg);
 		}
 		p_status->parse_error = 0;
-
 	}
-	// If a message has been sucessfully decoded, check index
-	/*
-	 if (p_status->msg_received == 1) {
-	 p_status->current_rx_seq = p_rxmsg->seq;
-	 p_status->packet_rx_success_count++;
-	 }
-	 */
-
-	//r_mavlink_status->current_rx_seq = p_status->current_rx_seq + 1;
-	//r_mavlink_status->packet_rx_success_count = p_status->packet_rx_success_count;
-	//r_mavlink_status->packet_rx_drop_count = p_status->parse_error;
-	//p_status->parse_error = 0;
-	//return p_status->msg_received;
 }
 
 #ifdef MAVLINK_PARAMS
@@ -588,7 +543,6 @@ static inline void MAVLINK_msg_param_set(uint8_t idx) {
 		}
 		*p++ = c;
 	}
-	//float param_value = ((float) telemetry_data.params[idx].pi_param[subIdx].pi_value / 100.00 + 0.005);
 	float param_value = getParam(idx)->value;
 
 	mavlink_channel_t chan = MAVLINK_COMM_0;
@@ -607,114 +561,28 @@ static inline void MAVLINK_msg_request_data_stream_pack_send(uint8_t req_stream_
 }
 
 //! \brief old mode switch funtion
-static inline void MAVLINK_msg_action_pack_send(uint8_t action) {
-//	mavlink_channel_t chan = MAVLINK_COMM_0;
-//	mavlink_msg_action_send(chan, mavlink_system.sysid, mavlink_system.compid, action);
-}
-
-//! \brief old mode switch funtion
 static inline void MAVLINK_msg_set_mode_send(uint8_t mode) {
 	mavlink_channel_t chan = MAVLINK_COMM_0;
 	mavlink_msg_set_mode_send(chan, mavlink_system.sysid, mode, 0);
 }
 
-/*!	\brief Looks like som kind of task switcher on a timer
- *	\todo Figure out where this was used for and intergrate in current
- *	implemnetation. Funcion dissabled without any side affects.
- */
-#if 0
- void MAVLINK10mspoll(uint8_t count) {
-	switch (count) {
-	case 2: // MAVLINK_MSG_ID_ACTION
-		if (watch_mav_req_id_action > 0) {
-			watch_mav_req_id_action--;
-			// Repeat  is not ack : 150ms*0x07
-			if ((watch_mav_req_id_action & 0x07) == 0) {
-				uint8_t action = MAVLINK_CtrlMode2Action(telemetry_data.req_mode);
-				MAVLINK_msg_action_pack_send(action);
-				char *ptr = mav_statustext;
-				*ptr++ = 'R';
-				*ptr++ = 'Q';
-				*ptr++ = ' ';
-				*ptr++ = action / 10 + '0';
-				*ptr++ = action % 10 + '0';
-				*ptr++ = 0;
-			}
-		}
-		if (telemetry_data.ack_result < 5) {
-			if (telemetry_data.ack_result > 0) {
-				telemetry_data.ack_result++;
-			}
-		}
-		break;
-#ifdef MAVLINK_PARAMS
-	case 4: // MAVLINK_MSG_ID_PARAM_REQUEST_LIST
-		if (watch_mav_req_params_list > 0) {
-			watch_mav_req_params_list--;
-			if (watch_mav_req_params_list == 0) {
-				mav_req_params_nb_recv = 0;
-				MAVLINK_msg_param_request_list_send();
-				watch_mav_req_params_list = 20;
-			}
-		}
-		break;
-#endif
-	case 6: // MAVLINK_MSG_ID_REQUEST_DATA_STREAM
-		if (watch_mav_req_start_data_stream > 0) {
-			watch_mav_req_start_data_stream--;
-			if (watch_mav_req_start_data_stream == 0) {
-				uint8_t req_stream_id = 2;
-				uint16_t req_message_rate = 1;
-
-				MAVLINK_msg_request_data_stream_pack_send(req_stream_id, req_message_rate, data_stream_start_stop);
-				watch_mav_req_start_data_stream = 20;
-				data_stream_start_stop = 1; // maybe start next time
-			}
-		}
-		break;
-#ifdef MAVLINK_PARAMS
-	case 8: // MAVLINK_MSG_ID_PARAM_SET
-		if (watch_mav_req_params_set > 0) {
-			watch_mav_req_params_set--;
-			if (watch_mav_req_params_set == 0) {
-				for (uint8_t idx = 0; idx < NB_PARAMS; idx++) {
-					if (getParam(idx)->repeat) {
-						getParam(idx)->repeat--;
-						MAVLINK_msg_param_set(idx);
-						watch_mav_req_params_set = 3; // 300ms
-						return;
-					}
-				}
-			}
-		}
-		break;
-#endif
-	default:
-		return;
-	}
-}
-#endif
 /*!	\brief Telemetry monitoring, calls \link MAVLINK10mspoll.
  *	\todo Reimplemnt \link MAVLINK10mspoll
  *
  */
 void telemetryWakeup() {
 	uint16_t tmr10ms = get_tmr10ms();
-	uint8_t count = tmr10ms & 0x0f; // 15*10ms
-	if (!count) {
+	static uint16_t last_time = 0;
+	if (tmr10ms - last_time > 15) {
 		if (mav_heartbeat > -30) {
-			// TODO mavlink_system.sysid = g_eeGeneral.mavTargetSystem;
 			mav_heartbeat--;
 
 			if (mav_heartbeat == -30) {
 				MAVLINK_reset(1);
-				SERIAL_Init();
+				telemetryPortInitFromIndex(g_eeGeneral.mavbaud);
 			}
-//			SERIAL_startTX();
 		}
-	}
-	if (mav_heartbeat_recv && !IS_TX_BUSY) {
-//		MAVLINK10mspoll(count);
+		last_time = tmr10ms;
 	}
 }
 

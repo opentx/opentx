@@ -56,7 +56,7 @@ class AppPreferencesDialog : public QDialog
     bool displayImage(const QString & fileName);
 
   protected slots:
-    void shrink();  
+    void shrink();
     void baseFirmwareChanged();
     void firmwareOptionChanged(bool state);
 
@@ -67,7 +67,7 @@ class AppPreferencesDialog : public QDialog
     void on_backupPathButton_clicked();
     void on_ProfilebackupPathButton_clicked();
     void on_ge_pathButton_clicked();
-    
+
     void on_sdPathButton_clicked();
     void on_removeProfileButton_clicked();
     void on_SplashSelect_clicked();

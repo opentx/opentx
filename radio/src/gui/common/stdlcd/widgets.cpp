@@ -24,7 +24,7 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx,
 {
   if (flags & RIGHT) {
     lcdDrawNumber(x, y, idx, flags);
-    lcdDrawText(x-FW, y, str, flags & ~LEADING0);
+    lcdDrawText(x-FWNUM, y, str, flags & ~LEADING0);
   }
   else {
     lcdDrawText(x, y, str, flags & ~LEADING0);
@@ -180,3 +180,12 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
   weight.word = GVAR_MENU_ITEM(x, y, weight.word, GV_RANGELARGE_WEIGHT_NEG, GV_RANGELARGE_WEIGHT, attr, 0, event);
   MD_UNION_TO_WEIGHT(weight, md);
 }
+
+#if defined(CPUARM)
+void drawGVarName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
+{
+  char s[8];
+  getGVarString(s, idx);
+  lcdDrawText(x, y, s, flags);
+}
+#endif

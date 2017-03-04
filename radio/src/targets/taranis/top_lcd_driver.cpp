@@ -262,7 +262,7 @@ void setTopFirstTimer(int32_t value)
     }
   }
 
-  div_t qr = div(value, 60);
+  div_t qr = div((int)value, 60);
   uint32_t r = qr.rem;
   qr = div(qr.quot, 10);
   

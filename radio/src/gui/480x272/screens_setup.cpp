@@ -176,6 +176,23 @@ int getOptionsCount(const ZoneOption * options)
 template <class T>
 bool menuSettings(const char * title, const T * object, uint32_t i_flags, event_t event)
 {
+
+  if (object->getErrorMessage()) {
+    // display error instead of widget settings
+    // TODO nicer display (proper word-wrap)
+    SIMPLE_SUBMENU("Widget Error", ICON_MODEL_LUA_SCRIPTS, 1);
+    int len = strlen(object->getErrorMessage());
+    int y = 3*FH;
+    const char * p = object->getErrorMessage();
+    while (len > 0) {
+      lcdDrawSizedText(MENUS_MARGIN_LEFT, y, p, 30);
+      p += 30;
+      y += FH;
+      len -= 30;
+    }
+    return true;
+  }
+
   const ZoneOption * options = object->getOptions();
   linesCount = getOptionsCount(options);
   uint8_t mstate_tab[MAX_WIDGET_OPTIONS];

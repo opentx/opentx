@@ -20,10 +20,10 @@
 
 #include "opentx.h"
 
-uint16_t adcValues[NUMBER_ANALOG];
+uint16_t adcValues[NUM_ANALOGS];
 
 #if defined(FRSKY_STICKS)
-const char ana_direction[NUMBER_ANALOG] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
+const char ana_direction[NUM_ANALOGS] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
 #endif
 
 
@@ -72,7 +72,7 @@ void adcSingleRead()
   for (uint8_t i=0; i<4; i++)
   padc = ADC;
   y = padc->ADC_ISR; // Clear EOC flags
-  for (y = NUMBER_ANALOG+1; --y > 0;) {
+  for (y = NUM_ANALOGS+1; --y > 0;) {
     padc->ADC_CR = 2; // Start conversion
     x = 0;
     while ((padc->ADC_ISR & 0x01000000) == 0) {
@@ -105,7 +105,7 @@ void adcSingleRead()
   // adc direction correct
 #if defined(FRSKY_STICKS)
   uint32_t i ;
-  for (i=0; i<NUMBER_ANALOG; i++) {
+  for (i=0; i<NUM_ANALOGS; i++) {
     if (ana_direction[i]) {
       adcValues[i] = 4096-adcValues[i];
     }
@@ -115,11 +115,11 @@ void adcSingleRead()
 
 void adcRead()
 {
-  uint16_t temp[NUMBER_ANALOG] = { 0 };
+  uint16_t temp[NUM_ANALOGS] = { 0 };
 
   for (int i=0; i<4; i++) {
     adcSingleRead();
-    for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+    for (uint8_t x=0; x<NUM_ANALOGS; x++) {
       uint16_t val = adcValues[x];
 #if defined(JITTER_MEASURE)
       if (JITTER_MEASURE_ACTIVE()) {
@@ -130,7 +130,7 @@ void adcRead()
     }
   }
 
-  for (uint8_t x=0; x<NUMBER_ANALOG; x++) {
+  for (uint8_t x=0; x<NUM_ANALOGS; x++) {
     adcValues[x] = temp[x] >> 2;
   }
 }

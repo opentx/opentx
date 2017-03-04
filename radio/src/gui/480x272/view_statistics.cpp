@@ -139,6 +139,16 @@ bool menuStatsDebug(event_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua interval");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, 10*maxLuaInterval, LEFT, 0, NULL, "ms");
   ++line;
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
+  lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH+1, "[S]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaGetMemUsed(lsScripts), LEFT);
+  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+line*FH+1, "[W]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaGetMemUsed(lsWidgets), LEFT);
+  lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+line*FH+1, "[B]", HEADER_COLOR|SMLSIZE);
+  lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaExtraMemoryUsage, LEFT);
+  ++line;
+
 #endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
@@ -150,7 +160,7 @@ bool menuStatsAnalogs(event_t event)
 {
   MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 0, { 0 });
 
-  for (uint8_t i=0; i<NUMBER_ANALOG; i++) {
+  for (uint8_t i=0; i<NUM_ANALOGS; i++) {
     coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
     coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
     lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, NULL, ":");
@@ -158,12 +168,12 @@ bool menuStatsAnalogs(event_t event)
 #if defined(JITTER_MEASURE)
     lcdDrawNumber(x+100, y, rawJitter[i].get());
     lcdDrawNumber(x+140, y, avgJitter[i].get());
-    lcdDrawNumber(x+180, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*250/256, PREC1);
+    lcdDrawNumber(x+180, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*250/256, PREC1);
 #else
     if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedStick[CONVERT_MODE(i)]*25/256);
+      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
     else if (i >= MOUSE1)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedStick[NUM_STICKS+NUM_POTS+NUM_SLIDERS+i-MOUSE1]*25/256);
+      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CALIBRATED_MOUSE1+i-MOUSE1]*25/256);
 #endif
   }
 

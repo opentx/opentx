@@ -20,23 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLAMENCO)
-uint8_t switchToMix(uint8_t source)
-{
-  div_t qr = div(source-1, 3);
-  return qr.quot+MIXSRC_FIRST_SWITCH;
-}
-#else
-uint8_t switchToMix(uint8_t source)
-{
-  if (source <= 3)
-    return MIXSRC_3POS;
-  else
-    return MIXSRC_FIRST_SWITCH - 3 + source;
-}
-#endif
-
-#if defined(CPUARM)
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable)
 {
   do {
@@ -164,6 +147,11 @@ bool isSourceAvailable(int source)
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
+  
+#if defined(PCBX10)
+  if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
+    return false;
+#endif
 
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
      return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
@@ -278,16 +266,16 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   bool negative = false;
 
   if (swtch < 0) {
-    negative = true;
     if (swtch == -SWSRC_ON || swtch == -SWSRC_ONE) {
       return false;
     }
+    negative = true;
     swtch = -swtch;
   }
 
 #if defined(PCBSKY9X)
   if (swtch >= SWSRC_FIRST_SWITCH && swtch <= SWSRC_LAST_SWITCH) {
-    negative = negative;
+    (void)negative;
     return true;
   }
 #else
@@ -375,7 +363,7 @@ bool isSwitchAvailableInMixes(int swtch)
 }
 
 #if defined(COLORLCD)
-bool isSwitchWarningStateAvailable(int state)
+bool isSwitch2POSWarningStateAvailable(int state)
 {
   return (state != 2); // two pos switch - middle state not available
 }
@@ -527,7 +515,7 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 #endif
-  
+
   if (protocol== PROTOCOL_PULSES_CROSSFIRE) {
     return false;
   }
@@ -537,7 +525,7 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 #endif
-  
+
 #if defined(PCBHORUS)
   if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
     return false;
@@ -568,7 +556,19 @@ bool modelHasNotes()
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
   char *buf = strcat_currentmodelname(&filename[sizeof(MODELS_PATH)]);
   strcpy(buf, TEXT_EXT);
-  return isFileAvailable(filename);
+  if (isFileAvailable(filename)) {
+    return true;
+  }
+
+#if !defined(EEPROM)
+  buf = strAppendFilename(&filename[sizeof(MODELS_PATH)], g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME);
+  strcpy(buf, TEXT_EXT);
+  if (isFileAvailable(filename)) {
+    return true;
+  }
+#endif
+
+  return false;
 }
 
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
@@ -583,10 +583,11 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   return retval;
 }
 #if defined(MULTIMODULE)
+// Third row is number of subtypes -1 (max valid subtype)
 const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
   { MM_RF_PROTO_HUBSAN,     nullptr,              0,  STR_MULTI_VIDFREQ   },
-  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    3,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    5,  STR_MULTI_RFTUNE    },
   { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
   { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
   { MM_RF_PROTO_DSM2,       STR_SUBTYPE_DSM,      3,  nullptr             },
@@ -596,15 +597,17 @@ const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_SLT,        STR_SUBTYPE_SLT,      1,  nullptr             },
   { MM_RF_PROTO_CX10,       STR_SUBTYPE_CX10,     7,  nullptr             },
   { MM_RF_PROTO_CG023,      STR_SUBTYPE_CG023,    2,  nullptr             },
-  { MM_RF_PROTO_BAYANG,     STR_SUBTYPE_BAYANG,   1,  nullptr             },
+  { MM_RF_PROTO_BAYANG,     STR_SUBTYPE_BAYANG,   1,  STR_MULTI_TELEMETRY },
   { MM_RF_PROTO_MT99XX,     STR_SUBTYPE_MT99,     4,  nullptr             },
-  { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     4,  nullptr             },
+  { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     5,  nullptr             },
   { MM_RF_PROTO_FY326,      STR_SUBTYPE_FY326,    1,  nullptr             },
   { MM_RF_PROTO_SFHSS,      nullptr,              0,  STR_MULTI_RFTUNE    },
   { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   3,  nullptr             },
   { MM_RF_PROTO_OLRS,       nullptr,              0,  STR_MULTI_RFPOWER   },
   { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
   { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     1,  nullptr             },
+  { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
+  { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
   { MM_RF_CUSTOM_SELECTED,  nullptr,              7,  STR_MULTI_OPTION    },
 
   //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
@@ -621,7 +624,13 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
   // Return the empty last protocol
   return pdef;
 }
-
 #endif
 
-#endif
+void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
+{
+  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
+  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
+    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
+  else
+    lcdDrawMMM(x, y, flags);
+}
