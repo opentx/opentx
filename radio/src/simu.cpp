@@ -117,8 +117,17 @@ Open9xSim::Open9xSim(FXApp* a):
 
   for(int i=0; i<NUM_POTS+NUM_SLIDERS; i++){
     knobs[i]= new FXKnob(hf11,NULL,0,KNOB_TICKS|LAYOUT_LEFT);
-    knobs[i]->setRange(-1024, 1024);
     knobs[i]->setValue(0);
+
+#if defined(PCBHORUS)
+    if (i == 1) {  // 6-pos switch
+      knobs[i]->setRange(0, 2048);
+      knobs[i]->setIncrement(2048 / 5);
+      knobs[i]->setTickDelta(2048 / 5);
+      continue;
+    }
+#endif
+    knobs[i]->setRange(-1024, 1024);
   }
 
   bmf = new FXImageFrame(this,bmp);
