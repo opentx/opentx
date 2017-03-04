@@ -28,46 +28,52 @@
 
 #define MM_RF_CUSTOM_SELECTED 0xff
 
-class Multiprotocols {
-
-  struct radio_mm_definition {
-    int protocol;
-    QStringList protocols;
-    unsigned int maxSubtype;
-    QString optionsstr;
-  };
-
+class Multiprotocols
+{
   public:
-  struct MultiProtocolDefinition {
-    int protocol;
-    QStringList subTypeStrings;
-    const QString &optionsstr;
 
-    unsigned int numSubytes() const
-    { return (unsigned int) subTypeStrings.length(); }
+    struct radio_mm_definition {
+      int protocol;
+      QStringList protocols;
+      unsigned int maxSubtype;
+      QString optionsstr;
+    };
 
-    int getOptionMin() const;
+    struct MultiProtocolDefinition {
+      const int protocol;
+      const QStringList subTypeStrings;
+      const QString optionsstr;
 
-    int getOptionMax() const;
+      unsigned int numSubytes() const
+      {
+        return (unsigned int) subTypeStrings.length();
+      }
 
-    MultiProtocolDefinition(const radio_mm_definition &rd) : protocol(rd.protocol), subTypeStrings(rd.protocols),
-                                                             optionsstr(rd.optionsstr)
+      int getOptionMin() const;
+
+      int getOptionMax() const;
+
+      MultiProtocolDefinition(const radio_mm_definition &rd) :
+        protocol(rd.protocol),
+        subTypeStrings(rd.protocols),
+        optionsstr(rd.optionsstr)
+      {
+        Q_ASSERT(rd.maxSubtype + 1 == (unsigned int) rd.protocols.length());
+      }
+    };
+
+    Multiprotocols(std::initializer_list<radio_mm_definition> l)
     {
-      Q_ASSERT(rd.maxSubtype + 1 == (unsigned int) rd.protocols.length());
+      for (radio_mm_definition rd: l)
+        protocols.push_back(MultiProtocolDefinition(rd));
     }
-  };
+
+    const MultiProtocolDefinition &getProtocol(int protocol) const;
 
   private:
-  std::vector<MultiProtocolDefinition> protocols;
 
-  public:
-  Multiprotocols(std::initializer_list<radio_mm_definition> l)
-  {
-    for (radio_mm_definition rd: l)
-      protocols.push_back(MultiProtocolDefinition(rd));
-  }
+    std::vector<MultiProtocolDefinition> protocols;
 
-  const MultiProtocolDefinition &getProtocol(int protocol) const;
 };
 
 extern const Multiprotocols multiProtocols;
