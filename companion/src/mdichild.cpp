@@ -472,16 +472,16 @@ void MdiChild::modelAdd()
   }
 
   ModelData model;
-  model.category = categoryIndex;
-  model.used = true;
-  strcpy(model.filename, radioData.getNextModelFilename().toStdString().c_str());
-  strcpy(model.name, qPrintable(tr("New model")));
   radioData.models.push_back(model);
+  int row = radioData.models.size() - 1;
+  checkAndInitModel(row);
+  radioData.models[row].category = categoryIndex;
+  strcpy(radioData.models[row].filename, radioData.getNextModelFilename().toStdString().c_str());
+  strcpy(radioData.models[row].name, qPrintable(tr("New model")));
 
   // Only set the default model if we just added the first one.
-  int newModelIndex = radioData.models.size() - 1;
-  if (newModelIndex == 0) {
-    radioData.setCurrentModel(newModelIndex);
+  if (row == 0) {
+    radioData.setCurrentModel(row);
   }
   setModified();
   emit copyAvailable(false); // workaround : nothing is selected after model creation
