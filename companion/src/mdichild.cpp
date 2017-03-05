@@ -144,6 +144,19 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"), this, SLOT(cut()), tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
     contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(modelDuplicate()), tr("Ctrl+U"));
+    if (radioData.categories.size() > 1) {
+      QMenu * catsMenu = contextMenu.addMenu(CompanionIcon("arrow-right.png"), tr("Move to Category"));
+      for (unsigned i=0; i < radioData.categories.size(); ++i) {
+        QAction * act = catsMenu->addAction(QString(radioData.categories[i].name), this, SLOT(onModelMoveToCategory()));
+        act->setProperty("categoryId", i);
+        if ((int)i < modelsListModel->getCategoryIndex(modelIndex))
+          act->setIcon(CompanionIcon("moveup.png"));
+        else if ((int)i > modelsListModel->getCategoryIndex(modelIndex))
+          act->setIcon(CompanionIcon("movedown.png"));
+        else
+          act->setEnabled(false);
+      }
+    }
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setDefault()));
     contextMenu.addSeparator();
@@ -516,6 +529,30 @@ void MdiChild::modelDuplicate()
   strcpy(model.filename, radioData.getNextModelFilename().toStdString().c_str());
   radioData.models.push_back(model);
   setModified();
+}
+
+void MdiChild::modelChangeCategory(int toCategoryId)
+{
+  int row = getCurrentModel();
+  if (row < 0 || row >= (int)radioData.models.size() || toCategoryId < 0) {
+    return;
+  }
+  if (radioData.models[row].category != toCategoryId) {
+    radioData.models[row].category = toCategoryId;
+    setModified();
+  }
+}
+
+void MdiChild::onModelMoveToCategory()
+{
+  if (!sender()) {
+    return;
+  }
+  bool ok = false;
+  int toCatId = sender()->property("categoryId").toInt(&ok);
+  if (ok && toCatId >= 0) {
+    modelChangeCategory(toCatId);
+  }
 }
 
 void MdiChild::setDefault()
