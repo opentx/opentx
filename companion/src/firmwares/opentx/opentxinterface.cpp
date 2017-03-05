@@ -1267,6 +1267,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
+  addOpenTxArmOptions(firmware);
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1418,6 +1419,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
 //  firmware->addOption("rtc", QObject::tr("Optional RTC added"));
 //  firmware->addOption("volume", QObject::tr("i2c volume control added"));
+  addOpenTxArmOptions(firmware);
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1436,6 +1438,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nobold", QObject::tr("Don't use bold font for highlighting active items"));
   firmware->addOption("bluetooth", QObject::tr("Bluetooth interface"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
+  addOpenTxArmOptions(firmware);
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
