@@ -85,8 +85,11 @@ namespace Board {
   enum Capability {
     Pots,
     Sliders,
+    MouseAnalogs,
     Switches,
-    FactoryInstalledSwitches
+    FactoryInstalledSwitches,
+    NumTrims,
+    NumTrimSwitches
   };
 }
 

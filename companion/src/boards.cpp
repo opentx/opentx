@@ -52,45 +52,51 @@ int getEEpromSize(Board::Type board)
 Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index)
 {
   if (IS_TARANIS_X7(board)) {
-    const Board::SwitchInfo switches[] = {{Board::SWITCH_3POS,   "SA"},
-                                          {Board::SWITCH_3POS,   "SB"},
-                                          {Board::SWITCH_3POS,   "SC"},
-                                          {Board::SWITCH_3POS,   "SD"},
-                                          {Board::SWITCH_2POS,   "SF"},
-                                          {Board::SWITCH_TOGGLE, "SH"}};
+    const Board::SwitchInfo switches[] = {
+      {Board::SWITCH_3POS,   "SA"},
+      {Board::SWITCH_3POS,   "SB"},
+      {Board::SWITCH_3POS,   "SC"},
+      {Board::SWITCH_3POS,   "SD"},
+      {Board::SWITCH_2POS,   "SF"},
+      {Board::SWITCH_TOGGLE, "SH"}
+    };
     if (index < DIM(switches))
       return switches[index];
   }
   else if (IS_HORUS_OR_TARANIS(board)) {
-    const Board::SwitchInfo switches[] = {{Board::SWITCH_3POS,   "SA"},
-                                          {Board::SWITCH_3POS,   "SB"},
-                                          {Board::SWITCH_3POS,   "SC"},
-                                          {Board::SWITCH_3POS,   "SD"},
-                                          {Board::SWITCH_3POS,   "SE"},
-                                          {Board::SWITCH_2POS,   "SF"},
-                                          {Board::SWITCH_3POS,   "SG"},
-                                          {Board::SWITCH_TOGGLE, "SH"},
-                                          {Board::SWITCH_3POS,   "SI"},
-                                          {Board::SWITCH_3POS,   "SJ"},
-                                          {Board::SWITCH_3POS,   "SK"},
-                                          {Board::SWITCH_3POS,   "SL"},
-                                          {Board::SWITCH_3POS,   "SM"},
-                                          {Board::SWITCH_3POS,   "SN"},
-                                          {Board::SWITCH_3POS,   "SO"},
-                                          {Board::SWITCH_3POS,   "SP"},
-                                          {Board::SWITCH_3POS,   "SQ"},
-                                          {Board::SWITCH_3POS,   "SR"}};
+    const Board::SwitchInfo switches[] = {
+      {Board::SWITCH_3POS,   "SA"},
+      {Board::SWITCH_3POS,   "SB"},
+      {Board::SWITCH_3POS,   "SC"},
+      {Board::SWITCH_3POS,   "SD"},
+      {Board::SWITCH_3POS,   "SE"},
+      {Board::SWITCH_2POS,   "SF"},
+      {Board::SWITCH_3POS,   "SG"},
+      {Board::SWITCH_TOGGLE, "SH"},
+      {Board::SWITCH_3POS,   "SI"},
+      {Board::SWITCH_3POS,   "SJ"},
+      {Board::SWITCH_3POS,   "SK"},
+      {Board::SWITCH_3POS,   "SL"},
+      {Board::SWITCH_3POS,   "SM"},
+      {Board::SWITCH_3POS,   "SN"},
+      {Board::SWITCH_3POS,   "SO"},
+      {Board::SWITCH_3POS,   "SP"},
+      {Board::SWITCH_3POS,   "SQ"},
+      {Board::SWITCH_3POS,   "SR"}
+    };
     if (index < DIM(switches))
       return switches[index];
   }
   else {
-    const Board::SwitchInfo switches[] = {{Board::SWITCH_2POS,   "THR"},
-                                          {Board::SWITCH_2POS,   "RUD"},
-                                          {Board::SWITCH_2POS,   "ELE"},
-                                          {Board::SWITCH_3POS,   "3POS"},
-                                          {Board::SWITCH_2POS,   "AIL"},
-                                          {Board::SWITCH_2POS,   "GEA"},
-                                          {Board::SWITCH_TOGGLE, "TRN"}};
+    const Board::SwitchInfo switches[] = {
+      {Board::SWITCH_2POS,   "THR"},
+      {Board::SWITCH_2POS,   "RUD"},
+      {Board::SWITCH_2POS,   "ELE"},
+      {Board::SWITCH_3POS,   "3POS"},
+      {Board::SWITCH_2POS,   "AIL"},
+      {Board::SWITCH_2POS,   "GEA"},
+      {Board::SWITCH_TOGGLE, "TRN"}
+    };
     if (index < DIM(switches))
       return switches[index];
   }
@@ -123,6 +129,11 @@ int getBoardCapability(Board::Type board, Board::Capability capability)
         return 2;
       else
         return 0;
+    case MouseAnalogs:
+      if (IS_HORUS(board))
+        return 2;
+      else
+        return 0;
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
@@ -136,6 +147,13 @@ int getBoardCapability(Board::Type board, Board::Capability capability)
         return 8;
       else
         return 7;
+    case NumTrims:
+      if (IS_HORUS(board))
+        return 6;
+      else
+        return 4;
+    case NumTrimSwitches:
+      return getBoardCapability(board, NumTrims) * 2;
   }
 
   return 0;

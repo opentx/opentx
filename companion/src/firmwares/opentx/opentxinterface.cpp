@@ -517,11 +517,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return getBoardCapability(board, Board::Switches) * 3;
       else
         return 9;
-    case NumTrimSwitches:
-      if (IS_HORUS(board))
-        return 12;
-      else
-        return 8;
     case CustomFunctions:
       if (IS_ARM(board))
         return 64;
@@ -735,48 +730,60 @@ int OpenTxFirmware::getCapability(::Capability capability)
 QString OpenTxFirmware::getAnalogInputName(unsigned int index)
 {
   if (index < 4) {
-    const QString sticks[] = { QObject::tr("Rud"),
-                               QObject::tr("Ele"),
-                               QObject::tr("Thr"),
-                               QObject::tr("Ail") };
+    const QString sticks[] = {
+      QObject::tr("Rud"),
+      QObject::tr("Ele"),
+      QObject::tr("Thr"),
+      QObject::tr("Ail")
+    };
     return sticks[index];
   }
 
   index -= 4;
 
   if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
-    const QString pots[]  = { QObject::tr("P1"),
-                              QObject::tr("P2"),
-                              QObject::tr("P3") };
+    const QString pots[] = {
+      QObject::tr("P1"),
+      QObject::tr("P2"),
+      QObject::tr("P3")
+    };
     return CHECK_IN_ARRAY(pots, index);
   }
   else if (IS_TARANIS_X9E(board)) {
-    const QString pots[] = { QObject::tr("F1"),
-                             QObject::tr("F2"),
-                             QObject::tr("F3"),
-                             QObject::tr("F4"),
-                             QObject::tr("S1"),
-                             QObject::tr("S2"),
-                             QObject::tr("LS"),
-                             QObject::tr("RS") };
+    const QString pots[] = {
+      QObject::tr("F1"),
+      QObject::tr("F2"),
+      QObject::tr("F3"),
+      QObject::tr("F4"),
+      QObject::tr("S1"),
+      QObject::tr("S2"),
+      QObject::tr("LS"),
+      QObject::tr("RS")
+    };
     return CHECK_IN_ARRAY(pots, index);
   }
   else if (IS_TARANIS(board)) {
-    const QString pots[] = {QObject::tr("S1"),
-                            QObject::tr("S2"),
-                            QObject::tr("S3"),
-                            QObject::tr("LS"),
-                            QObject::tr("RS")};
+    const QString pots[] = {
+      QObject::tr("S1"),
+      QObject::tr("S2"),
+      QObject::tr("S3"),
+      QObject::tr("LS"),
+      QObject::tr("RS")
+    };
     return CHECK_IN_ARRAY(pots, index);
   }
   else if (IS_HORUS(board)) {
-    const QString pots[] = {QObject::tr("S1"),
-                            QObject::tr("6P"),
-                            QObject::tr("S2"),
-                            QObject::tr("L1"),
-                            QObject::tr("L2"),
-                            QObject::tr("LS"),
-                            QObject::tr("RS")};
+    const QString pots[] = {
+      QObject::tr("S1"),
+      QObject::tr("6P"),
+      QObject::tr("S2"),
+      QObject::tr("L1"),
+      QObject::tr("L2"),
+      QObject::tr("LS"),
+      QObject::tr("RS"),
+      QObject::tr("JSx"),
+      QObject::tr("JSy")
+    };
     return CHECK_IN_ARRAY(pots, index);
   }
   else {
@@ -1238,7 +1245,7 @@ void registerOpenTxFirmwares()
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("pcbdev", QObject::tr("Use ONLY with first DEV pcb version"));
   registerOpenTxFirmware(firmware);
-  
+
 
   /* FrSky X10 board */
 /* Disabled for now

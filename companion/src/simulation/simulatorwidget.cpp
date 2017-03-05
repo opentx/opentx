@@ -717,7 +717,7 @@ void SimulatorWidget::setValues()
 // "get" values from this UI and send them to the firmware simulator.
 void SimulatorWidget::getValues()
 {
-  static const int numTrims  = firmware->getCapability(NumTrimSwitches);
+  static const int numTrims  = getBoardCapability(m_board, Board::NumTrimSwitches);
   int i;
 
   TxInputs inp;

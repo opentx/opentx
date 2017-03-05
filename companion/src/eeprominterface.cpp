@@ -503,7 +503,7 @@ QString RotaryEncoderString(int index)
 QString RawSource::toString(const ModelData * model) const
 {
   static const QString trims[] = {
-    QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
+    QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
   };
 
   static const QString special[] = {
@@ -617,7 +617,9 @@ QString RawSwitch::toString(Board::Type board) const
     QObject::tr("RudTrim Left"), QObject::tr("RudTrim Right"),
     QObject::tr("EleTrim Down"), QObject::tr("EleTrim Up"),
     QObject::tr("ThrTrim Down"), QObject::tr("ThrTrim Up"),
-    QObject::tr("AilTrim Left"), QObject::tr("AilTrim Right")
+    QObject::tr("AilTrim Left"), QObject::tr("AilTrim Right"),
+    QObject::tr("Trim 5 Down"), QObject::tr("Trim 5 Up"),
+    QObject::tr("Trim 6 Down"), QObject::tr("Trim 6 Up")
   };
 
   static const QString rotaryEncoders[] = {
