@@ -557,7 +557,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case VoicesAsNumbers:
       return (IS_ARM(board) ? 0 : 1);
     case VoicesMaxLength:
-      return (IS_ARM(board) ? (IS_TARANIS(board) ? 8 : 6) : 0);
+      return (IS_ARM(board) ? (IS_TARANIS_X9(board) ? 8 : 6) : 0);
     case MultiLangVoice:
       return (IS_ARM(board) ? 1 : 0);
     case SoundPitch:
