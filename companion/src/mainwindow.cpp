@@ -543,6 +543,10 @@ void MainWindow::newFile()
 {
   MdiChild * child = createMdiChild();
   child->newFile();
+    
+  if (IS_HORUS(getCurrentBoard())) {
+    child->categoryAdd();
+  }    
   child->show();
 }
 
