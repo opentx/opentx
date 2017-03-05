@@ -1,0 +1,36 @@
+opentx-companion22 (2.2.0~N363~trusty) trusty; urgency=low
+
+  * New release 2.2.0~N363
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Sun, 05 Mar 2017 09:55:02 +0100
+
+opentx-companion22 (2.2.0~N362~trusty) trusty; urgency=low
+
+  * New release 2.2.0~N362 RC10
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Sun, 29 Jan 2017 10:51:59 +0100
+
+opentx-companion22 (2.2.0~N361.2~trusty) trusty; urgency=low
+
+  * Added Taranis X7 simulator
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Sat, 28 Jan 2017 17:57:36 +0100
+
+opentx-companion22 (2.2.0~N361.1~trusty) trusty; urgency=low
+
+  * Debian package fixes
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 26 Jan 2017 20:25:25 +0100
+
+opentx-companion22 (2.2.0~N361~update1~trusty) trusty; urgency=low
+
+  * Enabled Companion and Firmware nightly builds (ALLOW_NIGHTLY_BUILDS=YES)
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 26 Jan 2017 18:46:52 +0100
+
+opentx-companion22 (2.2.0~N361~trusty) trusty; urgency=low
+
+  * New release 2.2.0~N361
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Wed, 25 Jan 2017 20:37:30 +0100
+

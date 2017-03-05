@@ -32,30 +32,25 @@
 
 QMap<QString, SimulatorFactory *> registered_simulators;
 
-void registerSimulatorFactory(SimulatorFactory *factory)
-{
-  qDebug() << "registering" << factory->name() << "simulator";
-  registered_simulators[factory->name()] = factory;
-}
-
-void registerSimulator(const QString &filename)
+void registerSimulator(const QString & filename)
 {
   QLibrary lib(filename);
   typedef SimulatorFactory * (*RegisterSimulator)();
-  RegisterSimulator registerSimulator = (RegisterSimulator)lib.resolve("registerSimu");
-  if (registerSimulator) {
-    SimulatorFactory * factory = registerSimulator();
-    registerSimulatorFactory(factory);
+  qDebug() << "trying to register simulator in " << filename;
+  RegisterSimulator registerFunc = (RegisterSimulator)lib.resolve("registerSimu");
+  if (registerFunc) {
+    SimulatorFactory * factory = registerFunc();
+    registered_simulators[factory->name()] = factory;
+    qDebug() << "Registered" << factory->name() << "simulator";
   }
   else {
     qWarning() << "Library error" << filename << lib.errorString();
   }
 }
 
-void registerSimulators()
+int registerSimulators(const QDir & dir)
 {
-  bool simulatorsFound = false;
-  QDir dir(".");
+  int noSimulatorsFound = 0;
   QStringList filters;
 #if defined(__APPLE__)
   filters << "*-simulator.dylib";
@@ -65,28 +60,34 @@ void registerSimulators()
   filters << "*-simulator.so";
 #endif
 
+  qDebug() << "Searching for simulators in" << dir.path();
   foreach(QString filename, dir.entryList(filters, QDir::Files)) {
-    registerSimulator(filename.prepend("./"));
-    simulatorsFound = true;
+    QString libraryFilename = dir.path() + "/" + filename;
+    registerSimulator(libraryFilename);
+    noSimulatorsFound++;
+  }
+  return noSimulatorsFound;
+}
+
+void registerSimulators()
+{
+  QDir dir(".");
+  if (registerSimulators(dir)) {
+    return;
   }
 
-  if (!simulatorsFound) {
 #if defined(__APPLE__)
-    dir = QLibraryInfo::location(QLibraryInfo::PrefixPath) + "/Resources";
-#elif (!defined __GNUC__) 
-    char name[MAX_PATH];
-    GetModuleFileName(NULL, name, MAX_PATH);
-    QString path(name);
-    path.truncate(path.lastIndexOf('\\'));
-    dir.setPath(path);
+  dir = QLibraryInfo::location(QLibraryInfo::PrefixPath) + "/Resources";
+#elif (!defined __GNUC__)
+  char name[MAX_PATH];
+  GetModuleFileName(NULL, name, MAX_PATH);
+  QString path(name);
+  path.truncate(path.lastIndexOf('\\'));
+  dir.setPath(path);
 #else
-    dir = SIMULATOR_LIB_SEARCH_PATH;
+  dir = SIMULATOR_LIB_SEARCH_PATH;
 #endif
-    foreach(QString filename, dir.entryList(filters, QDir::Files)) {
-      registerSimulator(filename.prepend(dir.path() + "/"));
-      simulatorsFound = true;
-    }
-  }
+  registerSimulators(dir);
 }
 
 SimulatorFactory * getSimulatorFactory(const QString & name)
