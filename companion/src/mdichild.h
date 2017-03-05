@@ -66,6 +66,7 @@ class MdiChild : public QWidget
   protected slots:
     void documentWasModified();
     void on_simulateButton_clicked();
+    void onModelMoveToCategory();
     void on_radioSettings_clicked();
     void setDefault();
     void onFirmwareChanged();
@@ -80,6 +81,7 @@ class MdiChild : public QWidget
     void modelAdd();
     void modelEdit();
     void modelDuplicate();
+    void modelChangeCategory(int toCategoryId);
     void wizardEdit();
     void openModelEditWindow();
     bool loadBackup();
