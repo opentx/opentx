@@ -5,3 +5,4 @@
 /doc/
 build*/
 cmake-build-*/
+/debian/
