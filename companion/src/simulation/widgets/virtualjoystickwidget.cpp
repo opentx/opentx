@@ -22,17 +22,19 @@
 #define RESX        1024
 
 #include "virtualjoystickwidget.h"
+
+#include "boards.h"
 #include "constants.h"
-#include "sliderwidget.h"
 #include "modeledit/node.h"
 #include "helpers.h"
+#include "radiotrimwidget.h"
 
 VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool showTrims, bool showBtns, bool showValues, QSize size) :
   QWidget(parent),
   stickSide(side),
   prefSize(size),
-  hTrimSlider(NULL),
-  vTrimSlider(NULL),
+  hTrimWidget(NULL),
+  vTrimWidget(NULL),
   btnHoldX(NULL),
   btnHoldY(NULL),
   btnFixX(NULL),
@@ -54,8 +56,6 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   gv = new QGraphicsView(this);
   gv->setSizePolicy(sizePolicy);
   gv->setMinimumSize(size);
-//  gv->setMaximumSize(size + size * 3);
-//  gv->setFixedSize(prefSize);
   gv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   gv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -83,14 +83,12 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   }
 
   if (showTrims) {
-    QWidget * hTrimWidget = createTrimWidget('H');
-    QWidget * vTrimWidget = createTrimWidget('V');
+    hTrimWidget = createTrimWidget('H');
+    vTrimWidget = createTrimWidget('V');
 
     layout->addWidget(vTrimWidget, 1, colvt, 1, 1);
     layout->addWidget(hTrimWidget, 2, 2, 1, 1);
 
-    hTrimSlider = hTrimWidget->findChild<SliderWidget *>();
-    vTrimSlider = vTrimWidget->findChild<SliderWidget *>();
     extraSize += QSize(vTrimWidget->sizeHint().width(), hTrimWidget->sizeHint().height());
   }
   else {
@@ -131,7 +129,7 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   layout->addItem(new QSpacerItem(0, 0), 1, 0, 2, 1);  // r1-2 c0: left h spacer
   layout->addWidget(gv, 1, 2, 1, 1);                   // r1 c2: stick widget
   layout->addItem(new QSpacerItem(0, 0), 1, 4, 2, 1);  // r1-2 c4: right h spacer
-  layout->addItem(new QSpacerItem(0, 0), 3, 0, 1, 5);  // r3 c0-4: bot v spacer
+  layout->addItem(new QSpacerItem(0, 0), 3, 0, 1, 5);  // r4 c0-4: bot v spacer
 
   connect(node, SIGNAL(xChanged()), this, SLOT(updateNodeValueLabels()));
   connect(node, SIGNAL(yChanged()), this, SLOT(updateNodeValueLabels()));
@@ -176,25 +174,25 @@ QPointF VirtualJoystickWidget::getStickPos()
 
 void VirtualJoystickWidget::setTrimValue(int which, int value)
 {
-  SliderWidget * slider = getTrimSlider(which);
-  if (slider) {
-    slider->setValue(value);
+  RadioTrimWidget * trim = getTrimWidget(which);
+  if (trim) {
+    trim->setValue(value);
   }
 }
 
 void VirtualJoystickWidget::setTrimRange(int which, int min, int max)
 {
-  SliderWidget * slider = getTrimSlider(which);
-  if (slider) {
-    slider->setRange(min, max);
+  RadioTrimWidget * trim = getTrimWidget(which);
+  if (trim) {
+    trim->setTrimRange(min, max);
   }
 }
 
 int VirtualJoystickWidget::getTrimValue(int which)
 {
-  SliderWidget * slider = getTrimSlider(which);
-  if (slider) {
-    return slider->value();
+  RadioTrimWidget * trim = getTrimWidget(which);
+  if (trim) {
+    return trim->getValue();
   }
   return 0;
 }
@@ -289,69 +287,15 @@ void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
   //qDebug() << thisAspectRatio << size << newGvSz << spacerSz << extraSize << gv->geometry() << gv->contentsRect() << gv->frameRect() << getStickPos();
 }
 
-QWidget *VirtualJoystickWidget::createTrimWidget(QChar type)
+RadioTrimWidget * VirtualJoystickWidget::createTrimWidget(QChar type)
 {
-  QSizePolicy sp;
-  QString btnAlabel, btnBlabel;
 
-  QString btnAname = QString("%1TrimBtnA_%2").arg(type.toLower()).arg(stickSide);
-  QString btnBname = QString("%1TrimBtnB_%2").arg(type.toLower()).arg(stickSide);
-  QString sliderName = QString("%1TrimAdj_%2").arg(type.toLower()).arg(stickSide);
+  RadioTrimWidget * trimWidget = new RadioTrimWidget(type == 'H' ? Qt::Horizontal : Qt::Vertical);
+  trimWidget->setIndices(getTrimSliderType(type), getTrimButtonType(type, 0), getTrimButtonType(type, 1));
 
-  QWidget * trimWidget = new QWidget(this);
-  QBoxLayout * trimLayout = new QVBoxLayout(trimWidget);
-  SliderWidget * trimSlider = new SliderWidget(trimWidget);
-  QPushButton * trimBtnA = new QPushButton(trimWidget);
-  QPushButton * trimBtnB = new QPushButton(trimWidget);
-
-  if (type == 'H') {
-    sp = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    trimLayout->setDirection(QBoxLayout::LeftToRight);
-    trimSlider->setFixedHeight(23);
-    trimSlider->setOrientation(Qt::Horizontal);
-    trimBtnA->setText(ARROW_LEFT);
-    trimBtnB->setText(ARROW_RIGHT);
-  }
-  else {
-    sp = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    trimLayout->setDirection(QBoxLayout::TopToBottom);
-    trimSlider->setFixedWidth(23);
-    trimSlider->setOrientation(Qt::Vertical);
-    trimBtnA->setText(ARROW_UP);
-    trimBtnB->setText(ARROW_DOWN);
-  }
-
-  trimWidget->setSizePolicy(sp);
-
-  trimSlider->setObjectName(sliderName);
-  trimSlider->setProperty("trimType", getTrimSliderType(type));
-  trimSlider->setSizePolicy(sp);
-  trimSlider->setMinimum(-125);
-  trimSlider->setMaximum(125);
-
-  trimBtnA->setObjectName(btnAname);
-  trimBtnA->setProperty("btnType", getTrimButtonType(type, 0));
-  trimBtnA->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-  trimBtnA->setMaximumSize(QSize(23, 23));
-  trimBtnA->setAutoDefault(false);
-
-  trimBtnB->setObjectName(btnBname);
-  trimBtnB->setProperty("btnType", getTrimButtonType(type, 1));
-  trimBtnB->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-  trimBtnB->setMaximumSize(QSize(23, 23));
-  trimBtnB->setAutoDefault(false);
-
-  trimLayout->setSpacing(6);
-  trimLayout->setContentsMargins(8, 9, 8, 9);
-  trimLayout->addWidget(trimBtnA);
-  trimLayout->addWidget(trimSlider);
-  trimLayout->addWidget(trimBtnB);
-
-  connect(trimBtnA, SIGNAL(pressed()), SLOT(onTrimPressed()));
-  connect(trimBtnB, SIGNAL(pressed()), SLOT(onTrimPressed()));
-  connect(trimBtnA, SIGNAL(released()), SIGNAL(trimButtonReleased()));
-  connect(trimBtnB, SIGNAL(released()), SIGNAL(trimButtonReleased()));
-  connect(trimSlider, SIGNAL(valueChanged(int)), SLOT(onSliderChange(int)));
+  connect(trimWidget, &RadioTrimWidget::trimButtonPressed, this, &VirtualJoystickWidget::trimButtonPressed);
+  connect(trimWidget, &RadioTrimWidget::trimButtonReleased, this, &VirtualJoystickWidget::trimButtonReleased);
+  connect(trimWidget, &RadioTrimWidget::trimSliderMoved, this, &VirtualJoystickWidget::trimSliderMoved);
 
   return trimWidget;
 }
@@ -423,76 +367,63 @@ QLayout *VirtualJoystickWidget::createNodeValueLayout(QChar type, QLabel *& valL
 
 int VirtualJoystickWidget::getTrimSliderType(QChar type)
 {
+  using namespace Board;
+
   if (stickSide == 'L') {
     if (type == 'H')
-      return TRIM_AXIS_L_X;
+      return TRIM_AXIS_LH;
     else
-      return TRIM_AXIS_L_Y;
+      return TRIM_AXIS_LV;
   }
   else {
     if (type == 'H')
-      return TRIM_AXIS_R_X;
+      return TRIM_AXIS_RH;
     else
-      return TRIM_AXIS_R_Y;
+      return TRIM_AXIS_RV;
   }
 }
 
 int VirtualJoystickWidget::getTrimButtonType(QChar type, int pos)
 {
+  using namespace Board;
+
   if (stickSide == 'L') {
     if (type == 'H') {
       if (pos == 0)
-        return TRIM_LH_L;
+        return TRIM_SW_LH_DEC;
       else
-        return TRIM_LH_R;
+        return TRIM_SW_LH_INC;
     }
     else {
       if (pos == 0)
-        return TRIM_LV_UP;
+        return TRIM_SW_LV_DEC;
       else
-        return TRIM_LV_DN;
+        return TRIM_SW_LV_INC;
     }
   }
   // right side
   else {
     if (type == 'H') {
       if (pos == 0)
-        return TRIM_RH_L;
+        return TRIM_SW_RH_DEC;
       else
-        return TRIM_RH_R;
+        return TRIM_SW_RH_INC;
     }
     else {
       if (pos == 0)
-        return TRIM_RV_UP;
+        return TRIM_SW_RV_DEC;
       else
-        return TRIM_RV_DN;
+        return TRIM_SW_RV_INC;
     }
   }
 }
 
-SliderWidget *VirtualJoystickWidget::getTrimSlider(int which)
+RadioTrimWidget * VirtualJoystickWidget::getTrimWidget(int which)
 {
-  if (which == TRIM_AXIS_L_X || which == TRIM_AXIS_R_X)
-    return hTrimSlider;
+  if (which == Board::TRIM_AXIS_LH || which == Board::TRIM_AXIS_RH)
+    return hTrimWidget;
   else
-    return vTrimSlider;
-}
-
-void VirtualJoystickWidget::onTrimPressed()
-{
-  if (!sender() || !sender()->property("btnType").isValid())
-    return;
-
-  emit trimButtonPressed(sender()->property("btnType").toInt());
-}
-
-void VirtualJoystickWidget::onSliderChange(int value)
-{
-  if (!sender() || !sender()->property("trimType").isValid())
-    return;
-
-  emit trimSliderMoved(sender()->property("trimType").toInt(), value);
-  updateNodeValueLabels();
+    return vTrimWidget;
 }
 
 void VirtualJoystickWidget::onButtonChange(bool checked)

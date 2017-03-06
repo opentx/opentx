@@ -66,6 +66,42 @@ namespace Board {
     SWITCH_3POS
   };
 
+  enum TrimAxes {
+    TRIM_AXIS_LH = 0,
+    TRIM_AXIS_LV,
+    TRIM_AXIS_RV,
+    TRIM_AXIS_RH,
+    TRIM_AXIS_T5,
+    TRIM_AXIS_T6,
+  };
+
+  enum TrimSwitchIndex
+  {
+    TRIM_SW_LH_DEC,
+    TRIM_SW_LH_INC,
+    TRIM_SW_LV_DEC,
+    TRIM_SW_LV_INC,
+    TRIM_SW_RV_DEC,
+    TRIM_SW_RV_INC,
+    TRIM_SW_RH_DEC,
+    TRIM_SW_RH_INC,
+    TRIM_SW_T5_DEC,
+    TRIM_SW_T5_INC,
+    TRIM_SW_T6_DEC,
+    TRIM_SW_T6_INC,
+    TRIM_SW_ENUM_END
+  };
+
+  enum Capability {
+    Pots,
+    Sliders,
+    MouseAnalogs,
+    Switches,
+    FactoryInstalledSwitches,
+    NumTrims,
+    NumTrimSwitches
+  };
+
   struct SwitchInfo
   {
     SwitchType config;
@@ -82,15 +118,6 @@ namespace Board {
       unsigned int position;
   };
 
-  enum Capability {
-    Pots,
-    Sliders,
-    MouseAnalogs,
-    Switches,
-    FactoryInstalledSwitches,
-    NumTrims,
-    NumTrimSwitches
-  };
 }
 
 // TODO remove all those constants

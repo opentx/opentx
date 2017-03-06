@@ -42,6 +42,7 @@ class SliderWidget : public QSlider
      {
        if (event->button() == Qt::RightButton && event->type() == QEvent::MouseButtonDblClick) {
          setValue(0);
+         emit sliderMoved(0);
          event->accept();
        }
        QSlider::mousePressEvent(event);

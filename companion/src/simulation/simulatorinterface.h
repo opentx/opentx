@@ -57,7 +57,7 @@ class TxOutputs
 
 struct Trims
 {
-  int values[CPN_MAX_STICKS]; /* lh lv rv rh */
+  int values[CPN_MAX_STICKS + CPN_MAX_AUX_TRIMS]; /* lh lv rv rh t5 t6 */
   bool extended;
 };
 

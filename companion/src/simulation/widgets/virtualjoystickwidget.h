@@ -31,20 +31,13 @@
 #include <QLabel>
 
 class Node;
-class SliderWidget;
+class RadioTrimWidget;
 
 class VirtualJoystickWidget : public QWidget
 {
   Q_OBJECT
 
   public:
-    enum TrimAxes {
-      TRIM_AXIS_L_X = 0,
-      TRIM_AXIS_L_Y,
-      TRIM_AXIS_R_Y,
-      TRIM_AXIS_R_X,
-    };
-
     enum ConstraintTypes {
       HOLD_X = 0,
       HOLD_Y,
@@ -73,24 +66,22 @@ class VirtualJoystickWidget : public QWidget
     virtual void resizeEvent(QResizeEvent *event);
 
   signals:
-    void trimButtonPressed(int which);
-    void trimButtonReleased();
-    void trimSliderMoved(int which, int value);
+    void trimButtonPressed(int index);
+    void trimButtonReleased(int index);
+    void trimSliderMoved(int index, int value);
 
   protected slots:
-    void onTrimPressed();
-    void onSliderChange(int value);
     void onButtonChange(bool checked);
     void updateNodeValueLabels();
 
   protected:
     void setSize(const QSize & size, const QSize &);
-    QWidget * createTrimWidget(QChar type);
+    RadioTrimWidget * createTrimWidget(QChar type);
     QPushButton * createButtonWidget(int type);
     QLayout * createNodeValueLayout(QChar type, QLabel *& valLabel);
     int getTrimSliderType(QChar type);
     int getTrimButtonType(QChar type, int pos);
-    SliderWidget * getTrimSlider(int which);
+    RadioTrimWidget * getTrimWidget(int which);
 
     QChar stickSide;
     QSize prefSize;
@@ -98,7 +89,8 @@ class VirtualJoystickWidget : public QWidget
     QGraphicsView * gv;
     QGraphicsScene * scene;
     Node * node;
-    SliderWidget * hTrimSlider, * vTrimSlider;
+    RadioTrimWidget * hTrimWidget;
+    RadioTrimWidget * vTrimWidget;
     QPushButton * btnHoldX, * btnHoldY;
     QPushButton * btnFixX, * btnFixY;
     QLabel * nodeLabelX, * nodeLabelY;

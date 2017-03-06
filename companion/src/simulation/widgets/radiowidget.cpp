@@ -58,7 +58,7 @@ void RadioWidget::setValue(int value)
 {
   if (value != m_value) {
     m_value = value;
-    emit valueChanged(m_value);
+    emit valueChanged(value);
   }
 }
 
@@ -166,7 +166,7 @@ void RadioWidget::addLabel()
   }
 }
 
-void RadioWidget::setWidget(QWidget * widget)
+void RadioWidget::setWidget(QWidget * widget, Qt::Alignment align)
 {
   if (m_controlWidget) {
     m_gridLayout->removeWidget(m_controlWidget);
@@ -174,7 +174,7 @@ void RadioWidget::setWidget(QWidget * widget)
   }
   m_controlWidget = widget;
   if (widget) {
-    m_gridLayout->addWidget(widget, 0, 0, 1, 1, Qt::AlignHCenter);
+    m_gridLayout->addWidget(widget, 0, 0, 1, 1, align);
     m_gridLayout->setRowStretch(0, 1);
   }
 }

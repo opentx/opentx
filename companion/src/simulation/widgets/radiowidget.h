@@ -41,6 +41,7 @@ class RadioWidget : public QWidget
       RADIO_WIDGET_SWITCH,
       RADIO_WIDGET_KNOB,
       RADIO_WIDGET_FADER,
+      RADIO_WIDGET_TRIM,
       RADIO_WIDGET_STICK   // actually one axis of a stick
     };
 
@@ -76,7 +77,6 @@ class RadioWidget : public QWidget
     void setStateData(const QByteArray & data);
     void changeVisibility(bool visible);
 
-
     virtual int getValue() const;
     int getIndex() const;
     int getType()  const;
@@ -87,7 +87,7 @@ class RadioWidget : public QWidget
 
     void init();
     void addLabel();
-    void setWidget(QWidget * widget = NULL);
+    void setWidget(QWidget * widget = NULL, Qt::Alignment align = Qt::AlignHCenter);
 
     int m_value;
     int m_index;
@@ -105,7 +105,7 @@ class RadioWidget : public QWidget
 
   signals:
 
-    void valueChanged(int m_value);
+    void valueChanged(int value);
     void flagsChanged(quint16 flags);
 
 };
