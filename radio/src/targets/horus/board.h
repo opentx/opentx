@@ -448,14 +448,14 @@ void backlightEnable(uint8_t dutyCycle);
 #define isBacklightEnabled()  true
 
 // USB driver
-int usbPlugged(void);
-void usbInit(void);
-void usbStart(void);
-void usbStop(void);
-uint8_t usbStarted(void);
+int usbPlugged();
+void usbInit();
+void usbStart();
+void usbStop();
+uint8_t usbStarted();
 void usbSerialPutc(uint8_t c);
 #if defined(USB_JOYSTICK) && !defined(SIMU)
-void usbJoystickUpdate(void);
+void usbJoystickUpdate();
 #endif
 #if defined(PCBX12S)
   #define USB_NAME                     "FrSky Horus"

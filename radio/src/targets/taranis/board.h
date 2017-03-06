@@ -454,14 +454,14 @@ uint8_t isBacklightEnabled(void);
 #endif
 
 // USB driver
-int usbPlugged(void);
-void usbInit(void);
-void usbStart(void);
-void usbStop(void);
-uint8_t usbStarted(void);
+int usbPlugged();
+void usbInit();
+void usbStart();
+void usbStop();
+uint8_t usbStarted();
 void usbSerialPutc(uint8_t c);
 #if defined(USB_JOYSTICK) && !defined(SIMU)
-  void usbJoystickUpdate(void);
+  void usbJoystickUpdate();
 #endif
 #define USB_NAME                       "FrSky Taranis"
 #define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */

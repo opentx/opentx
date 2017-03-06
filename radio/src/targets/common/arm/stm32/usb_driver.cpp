@@ -32,7 +32,7 @@ extern "C" {
 
 static bool usbDriverStarted = false;
 
-int usbPlugged(void)
+int usbPlugged()
 {
   // debounce
   static uint8_t debounced_state = 0;
@@ -55,20 +55,20 @@ int usbPlugged(void)
 
 USB_OTG_CORE_HANDLE USB_OTG_dev;
 
-extern "C" void OTG_FS_IRQHandler(void)
+extern "C" void OTG_FS_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_OTG_FS);
   USBD_OTG_ISR_Handler(&USB_OTG_dev);
 }
 
-void usbInit(void)
+void usbInit()
 {
   // Initialize hardware
   USB_OTG_BSP_Init(&USB_OTG_dev);
   usbDriverStarted = false;
 }
 
-void usbStart(void)
+void usbStart()
 {
 #if defined(USB_JOYSTICK)
   // initialize USB as HID device
@@ -83,13 +83,13 @@ void usbStart(void)
   usbDriverStarted = true;
 }
 
-void usbStop(void)
+void usbStop()
 {
   usbDriverStarted = false;
   USBD_DeInit(&USB_OTG_dev);
 }
 
-uint8_t usbStarted(void)
+uint8_t usbStarted()
 {
   return usbDriverStarted;
 }
@@ -102,7 +102,7 @@ uint8_t usbStarted(void)
   USB endpoint description can be found in
   file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
 */
-void usbJoystickUpdate(void)
+void usbJoystickUpdate()
 {
   static uint8_t HID_Buffer[HID_IN_PACKET];
 
