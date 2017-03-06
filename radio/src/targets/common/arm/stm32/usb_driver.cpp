@@ -19,12 +19,12 @@
  */
 
 #if defined(__cplusplus)
-  extern "C" {
+extern "C" {
 #endif
-  #include "usb_dcd_int.h"
-  #include "usb_bsp.h"
+#include "usb_dcd_int.h"
+#include "usb_bsp.h"
 #if defined(__cplusplus)
-  }
+}
 #endif
 
 #include "opentx.h"
@@ -93,8 +93,8 @@ uint8_t usbStarted(void)
 {
   return usbDriverStarted;
 }
-#if defined(USB_JOYSTICK)
 
+#if defined(USB_JOYSTICK)
 /*
   Prepare and send new USB data packet
 
