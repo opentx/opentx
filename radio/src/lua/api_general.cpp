@@ -153,10 +153,10 @@ static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, Telem
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
   lua_createtable(L, 0, 4);
-  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude * 0.000001f); // floating point multiplication is faster than division
-  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude * 0.000001f);
-  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude * 0.000001f);
-  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude * 0.000001f);
+  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude * 0.000001); // floating point multiplication is faster than division
+  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude * 0.000001);
+  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude * 0.000001);
+  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude * 0.000001);
 }
 
 static void luaPushTelemetryDateTime(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
