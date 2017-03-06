@@ -425,6 +425,9 @@ static const uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length)
   * @param  pdev: device instance
   * @param  epnum: endpoint index
   * @retval status
+
+    This function is called when buffer has been sent over the USB.
+    The TX buffer is now empty and can be filled with new data.
   */
 static uint8_t  USBD_HID_DataIn (void  *pdev, 
                               uint8_t epnum)
