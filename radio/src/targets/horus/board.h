@@ -452,7 +452,11 @@ int usbPlugged(void);
 void usbInit(void);
 void usbStart(void);
 void usbStop(void);
+uint8_t usbStarted(void);
 void usbSerialPutc(uint8_t c);
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+void usbJoystickUpdate(void);
+#endif
 #if defined(PCBX12S)
   #define USB_NAME                     "FrSky Horus"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
@@ -531,10 +535,6 @@ void bluetoothWriteString(const char * str);
 int bluetoothRead(void * buffer, int len);
 void bluetoothWakeup(void);
 void bluetoothDone(void);
-
-#if defined(USB_JOYSTICK) && !defined(SIMU)
-void usbJoystickUpdate(void);
-#endif
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);

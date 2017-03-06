@@ -27,30 +27,19 @@ uint8_t mainRequestFlags = 0;
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  static bool usbStarted = false;
-
-  if (!usbStarted && usbPlugged()) {
-    usbStarted = true;
+  if (!usbStarted() && usbPlugged()) {
     usbStart();
 #if defined(USB_MASS_STORAGE)
     opentxClose(false);
     usbPluggedIn();
 #endif
   }
-  if (usbStarted && !usbPlugged()) {
-    usbStarted = false;
+  if (usbStarted() && !usbPlugged()) {
     usbStop();
 #if defined(USB_MASS_STORAGE) && !defined(EEPROM)
     opentxResume();
 #endif
   }
-
-#if defined(USB_JOYSTICK)
-  if (usbStarted ) {
-    usbJoystickUpdate();
-  }
-#endif
-
 #endif // defined(STM32) && !defined(SIMU)
 }
 
