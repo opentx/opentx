@@ -81,7 +81,9 @@ void interrupt5ms()
 
   if (++pre_scale >= 2) {
     pre_scale = 0 ;
+    DEBUG_TIMER_START(debugTimerPer10ms);
     per10ms();
+    DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)

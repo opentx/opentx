@@ -217,6 +217,7 @@ void menusTask(void * pdata)
 #endif
     uint32_t start = (uint32_t)CoGetOSTime();
     DEBUG_TIMER_START(debugTimerPerMain);
+    DEBUG_TIMER_SAMPLE(debugTimerPerMainPeriod);
     perMain();
     DEBUG_TIMER_STOP(debugTimerPerMain);
     // TODO remove completely massstorage from sky9x firmware
