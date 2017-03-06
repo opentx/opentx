@@ -143,7 +143,7 @@ void mixerTask(void * pdata)
 
     uint32_t now = CoGetOSTime();
     bool run = false;
-#if defined(USB_JOYSTICK)
+#if defined(USB_JOYSTICK) && !defined(SIMU)
     if ((now - lastRunTime) >= (usbStarted() ? 5 : 10)) {     // run at least every 20ms (every 10ms if USB is active)
 #else
     if ((now - lastRunTime) >= 10) {     // run at least every 20ms
