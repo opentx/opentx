@@ -101,8 +101,13 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   connect(ui->actionToggleFilter, &QAction::toggled, this, &DebugOutput::onFilterToggled);
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
 
-  if (AppDebugMessageHandler::instance())
+  if (AppDebugMessageHandler::instance()) {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 3, 0))  // https://bugreports.qt.io/browse/QTBUG-36119
+    connect(AppDebugMessageHandler::instance(), SIGNAL(messageOutput(quint8,QString,QMessageLogContext)), this, SLOT(onAppDebugMessage(quint8,QString,QMessageLogContext)));
+#else
     connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
+#endif
+  }
 
   // send firmware TRACE events to our data collector
   m_simulator->installTraceHook(firmwareTraceCb);

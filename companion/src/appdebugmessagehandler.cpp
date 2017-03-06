@@ -33,8 +33,10 @@ AppDebugMessageHandler::AppDebugMessageHandler(QObject * parent) :
 AppDebugMessageHandler * AppDebugMessageHandler::instance()
 {
   static AppDebugMessageHandler * _instance = NULL;
+#if APP_DBG_HANDLER_ENABLE
   if(_instance == NULL && !qApp->closingDown())
     _instance = new AppDebugMessageHandler(qApp);  // Ensure this object is cleaned up when the QApplication exits.
+#endif
   return _instance;
 }
 
@@ -55,9 +57,7 @@ void AppDebugMessageHandler::setShowFunctionDeclarations(bool showFunctionDeclar
 
 void AppDebugMessageHandler::installAppMessageHandler()
 {
-#if APP_DBG_HANDLER_ENABLE
   m_defaultHandler = qInstallMessageHandler(g_appDebugMessageHandler);
-#endif
 }
 
 void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogContext & context, const QString & msg)
@@ -72,6 +72,12 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
 
   if (lvl < m_appDebugOutputLevel && type != QtFatalMsg)
     return;
+
+#if defined(Q_OS_LINUX) && (QT_VERSION < QT_VERSION_CHECK(5, 3, 0))
+  // Filter out lots of QPainter warnings from undocked QDockWidgets... hackish but effective (only workaround found so far)
+  if (lvl == 2 && QString(context.function).contains("QPainter::"))
+    return;
+#endif
 
   QString msgPattern = QString("[%1] ").arg(symbols[type]);
 
@@ -101,7 +107,7 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
     msgPattern.replace("%{message}", msg);
     if (!m_showFunctionDeclarations) {
       QString func = context.function;
-      msgPattern.replace(QString("%{function}"), func.replace(m_functionFilter, "\\1)"));
+      msgPattern.replace("%{function}", func.replace(m_functionFilter, "\\1)"));
     }
 #endif
 
