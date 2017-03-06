@@ -175,7 +175,7 @@ void mixerTask(void * pdata)
       CoLeaveMutexSection(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
 
-#if defined(USB_JOYSTICK)
+#if defined(USB_JOYSTICK) && !defined(SIMU)
       usbJoystickUpdate();
 #endif
 
