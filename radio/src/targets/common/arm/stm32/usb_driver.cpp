@@ -18,12 +18,21 @@
  * GNU General Public License for more details.
  */
 
-#include "board.h"
+#if defined(__cplusplus)
+extern "C" {
+#endif
 #include "usb_dcd_int.h"
 #include "usb_bsp.h"
+#if defined(__cplusplus)
+}
+#endif
+
+#include "opentx.h"
 #include "debug.h"
 
-int usbPlugged(void)
+static bool usbDriverStarted = false;
+
+int usbPlugged()
 {
   // debounce
   static uint8_t debounced_state = 0;
@@ -46,19 +55,20 @@ int usbPlugged(void)
 
 USB_OTG_CORE_HANDLE USB_OTG_dev;
 
-void OTG_FS_IRQHandler(void)
+extern "C" void OTG_FS_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_OTG_FS);
   USBD_OTG_ISR_Handler(&USB_OTG_dev);
 }
 
-void usbInit(void)
+void usbInit()
 {
   // Initialize hardware
   USB_OTG_BSP_Init(&USB_OTG_dev);
+  usbDriverStarted = false;
 }
 
-void usbStart(void)
+void usbStart()
 {
 #if defined(USB_JOYSTICK)
   // initialize USB as HID device
@@ -70,9 +80,60 @@ void usbStart(void)
   // initialize USB as MSC device
   USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
 #endif
+  usbDriverStarted = true;
 }
 
-void usbStop(void)
+void usbStop()
 {
+  usbDriverStarted = false;
   USBD_DeInit(&USB_OTG_dev);
 }
+
+uint8_t usbStarted()
+{
+  return usbDriverStarted;
+}
+
+#if defined(USB_JOYSTICK)
+/*
+  Prepare and send new USB data packet
+
+  The format of HID_Buffer is defined by
+  USB endpoint description can be found in
+  file usb_hid_joystick.c, variable HID_JOYSTICK_ReportDesc
+*/
+void usbJoystickUpdate()
+{
+  static uint8_t HID_Buffer[HID_IN_PACKET];
+
+  // test to se if TX buffer is free
+  if (USBD_HID_SendReport(&USB_OTG_dev, 0, 0) == USBD_OK) {
+    //buttons
+    HID_Buffer[0] = 0;
+    HID_Buffer[1] = 0;
+    HID_Buffer[2] = 0;
+    for (int i = 0; i < 8; ++i) {
+      if ( channelOutputs[i+8] > 0 ) {
+        HID_Buffer[0] |= (1 << i);
+      }
+      if ( channelOutputs[i+16] > 0 ) {
+        HID_Buffer[1] |= (1 << i);
+      }
+      if ( channelOutputs[i+24] > 0 ) {
+        HID_Buffer[2] |= (1 << i);
+      }
+    }
+
+    //analog values
+    //uint8_t * p = HID_Buffer + 1;
+    for (int i = 0; i < 8; ++i) {
+      int16_t value = channelOutputs[i] / 8;
+      if ( value > 127 ) value = 127;
+      else if ( value < -127 ) value = -127;
+      HID_Buffer[i+3] = static_cast<int8_t>(value);
+    }
+    USBD_HID_SendReport(&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
+  }
+}
+
+#endif // #defined(USB_JOYSTICK)

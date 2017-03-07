@@ -454,11 +454,15 @@ uint8_t isBacklightEnabled(void);
 #endif
 
 // USB driver
-int usbPlugged(void);
-void usbInit(void);
-void usbStart(void);
-void usbStop(void);
+int usbPlugged();
+void usbInit();
+void usbStart();
+void usbStop();
+uint8_t usbStarted();
 void usbSerialPutc(uint8_t c);
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+  void usbJoystickUpdate();
+#endif
 #define USB_NAME                       "FrSky Taranis"
 #define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
 #define USB_PRODUCT                    'T', 'a', 'r', 'a', 'n', 'i', 's', ' '  /* 8 Bytes */
@@ -611,10 +615,6 @@ void setTopBatteryValue(uint32_t volts);
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
-
-#if defined(USB_JOYSTICK) && !defined(SIMU)
-void usbJoystickUpdate(void);
-#endif
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);

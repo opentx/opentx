@@ -385,25 +385,24 @@ static uint8_t  USBD_HID_Setup (void  *pdev,
 
 
 /**
-  * @brief  USBD_HID_SendReport 
-  *         Send HID Report
+  * @brief  USBD_HID_SendReport
+  *         Send HID Report if TX buffer is free and USB device is configured.
   * @param  pdev: device instance
-  * @param  buff: pointer to report
+  * @param  buff: pointer to report, if this parameter is NULL then function just test if new buffer can be sent
   * @retval status
   */
-uint8_t USBD_HID_SendReport     (USB_OTG_CORE_HANDLE  *pdev, 
-                                 uint8_t *report,
-                                 uint16_t len)
+uint8_t USBD_HID_SendReport(USB_OTG_CORE_HANDLE  *pdev, uint8_t * report, uint16_t len)
 {
-  if (pdev->dev.device_status == USB_OTG_CONFIGURED )
-  {
-    if ( ReportSent )
-    {
-      ReportSent = 0;
-      DCD_EP_Tx (pdev, HID_IN_EP, report, len);
+  if (pdev->dev.device_status == USB_OTG_CONFIGURED) {
+    if (ReportSent) {
+      if (report) {
+        ReportSent = 0;
+        DCD_EP_Tx (pdev, HID_IN_EP, report, len);
+      }
+      return USBD_OK;
     }
   }
-  return USBD_OK;
+  return USBD_FAIL;
 }
 
 /**
@@ -425,6 +424,9 @@ static const uint8_t  *USBD_HID_GetCfgDesc (uint8_t speed, uint16_t *length)
   * @param  pdev: device instance
   * @param  epnum: endpoint index
   * @retval status
+
+    This function is called when buffer has been sent over the USB.
+    The TX buffer is now empty and can be filled with new data.
   */
 static uint8_t  USBD_HID_DataIn (void  *pdev, 
                               uint8_t epnum)

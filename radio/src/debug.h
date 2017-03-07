@@ -366,6 +366,7 @@ enum DebugTimers {
   debugTimerMixer,
   debugTimerTelemetryWakeup,
   debugTimerPerMain,
+  debugTimerPerMainPeriod,
   debugTimerPerMain1,
   debugTimerGuiMain,
   debugTimerLuaBg,

@@ -240,6 +240,7 @@ const char * const debugTimerNames[DEBUG_TIMERS_COUNT] = {
   ,"Mixer calc "   // debugTimerMixer,
   ,"Tel. wakeup"   // debugTimerTelemetryWakeup,
   ,"perMain dur"   // debugTimerPerMain,
+  ," period    "   // debugTimerPerMainPeriod,
   ," perMain s1"   // debugTimerPerMain1,
   ," guiMain   "   // debugTimerGuiMain,
   ,"  LUA bg   "   // debugTimerLuaBg,
