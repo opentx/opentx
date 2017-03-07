@@ -42,11 +42,9 @@ void menuChannelsView(event_t event)
     case EVT_KEY_FIRST(KEY_LEFT):
       secondPage = !secondPage;
       break;
-#ifdef MIXERS_MONITOR
     case EVT_KEY_FIRST(KEY_ENTER):
       mixersView = !mixersView;
       break;
-#endif
   }
 
   if (secondPage)

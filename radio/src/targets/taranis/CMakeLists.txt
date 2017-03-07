@@ -1,7 +1,6 @@
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
-option(MIXERS_MONITOR "Enable Mixers Monitor screen (not available on X7 yet)" OFF)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -140,10 +139,6 @@ endif()
 
 if(TARANIS_INTERNAL_PPM)
   add_definitions(-DTARANIS_INTERNAL_PPM)
-endif()
-
-if(MIXERS_MONITOR AND NOT PCB STREQUAL X7)
-  add_definitions(-DMIXERS_MONITOR)
 endif()
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
