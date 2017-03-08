@@ -473,7 +473,7 @@ void menuModelSetup(event_t event)
                 g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
                 storageDirty(EE_MODEL);
 #else
-                if (menuHorizontalPosition < NUM_SWITCHES-1) {
+                if (menuHorizontalPosition < NUM_SWITCHES) {
 #if defined(PCBX7)
                   g_model.switchWarningEnable ^= (1 << (menuHorizontalPosition-1));
 #else
@@ -602,9 +602,6 @@ void menuModelSetup(event_t event)
               x = lcdNextPos+3;
             }
           }
-        }
-        if (attr && menuHorizontalPosition < 0) {
-          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
         }
         break;
 #endif // PCBX7
