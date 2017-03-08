@@ -244,7 +244,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
     if (source && barMax > barMin) {
       uint8_t y = barHeight+6+i*(barHeight+6);
 #if defined(CPUARM)
-      drawSource(0, y+barHeight-5, source, 0);
+      drawSource(0, y+barHeight/2-3, source, SMLSIZE);
 #else
       lcdDrawTextAtIndex(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
 #endif
