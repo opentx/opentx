@@ -148,6 +148,7 @@ enum MenuModelSetupItems {
 
   #define CURSOR_ON_CELL                 (true)
   #define MODEL_SETUP_MAX_LINES          (HEADER_LINE+ITEM_MODEL_SETUP_MAX)
+  #define POT_WARN_ITEMS()               ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS+NUM_SLIDERS : (uint8_t)0)
   #define TIMER_ROWS                     2, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
 #if defined(PCBSKY9X) && !defined(REVA)
   #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
@@ -158,7 +159,6 @@ enum MenuModelSetupItems {
 #if defined(PCBX7)
   #define TRAINER_CHANNELS_ROWS()        IF_TRAINER_ON(1)
   #define TRAINER_MODULE_ROWS            LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)
-  #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|(NUM_POTS+NUM_SLIDERS) : 0)
 #else
   #define TRAINER_MODULE_ROWS
 #endif
@@ -473,10 +473,11 @@ void menuModelSetup(event_t event)
                 g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
                 storageDirty(EE_MODEL);
 #else
-                if (menuHorizontalPosition < NUM_SWITCHES) {
 #if defined(PCBX7)
+                if (menuHorizontalPosition < NUM_SWITCHES) {
                   g_model.switchWarningEnable ^= (1 << (menuHorizontalPosition-1));
 #else
+                if (menuHorizontalPosition < NUM_SWITCHES-1) {
                   g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
 #endif
                   storageDirty(EE_MODEL);
