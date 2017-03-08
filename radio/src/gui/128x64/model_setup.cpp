@@ -471,7 +471,11 @@ void menuModelSetup(event_t event)
                 storageDirty(EE_MODEL);
 #else
                 if (menuHorizontalPosition < NUM_SWITCHES-1) {
+#if defined(PCBX7)
                   g_model.switchWarningEnable ^= (1 << menuHorizontalPosition-1);
+#else
+                  g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
+#endif
                   storageDirty(EE_MODEL);
                 }
 #endif
@@ -504,7 +508,6 @@ void menuModelSetup(event_t event)
             }
           }
         }
-        TRACE("Vert:%d Horz:%d", menuVerticalPosition, menuHorizontalPosition);
         LcdFlags line = attr;
 #if defined(PCBX7)
         int current = 0;
