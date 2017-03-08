@@ -53,6 +53,9 @@ enum MenuModelSetupItems {
   CASE_CPUARM(ITEM_MODEL_CHECKLIST_DISPLAY)
   ITEM_MODEL_THROTTLE_WARNING,
   ITEM_MODEL_SWITCHES_WARNING,
+#if defined(PCBX7)
+  ITEM_MODEL_POTS_WARNING,
+#endif
   ITEM_MODEL_BEEP_CENTER,
   CASE_CPUARM(ITEM_MODEL_USE_GLOBAL_FUNCTIONS)
 #if defined(PCBX7)
@@ -145,7 +148,6 @@ enum MenuModelSetupItems {
 
   #define CURSOR_ON_CELL                 (true)
   #define MODEL_SETUP_MAX_LINES          (HEADER_LINE+ITEM_MODEL_SETUP_MAX)
-  #define POT_WARN_ITEMS()               ((g_model.nPotsToWarn >> 6) ? (uint8_t)NUM_POTS+NUM_SLIDERS : (uint8_t)0)
   #define TIMER_ROWS                     2, 0, CASE_PERSISTENT_TIMERS(0) 0, 0
 #if defined(PCBSKY9X) && !defined(REVA)
   #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
@@ -156,6 +158,7 @@ enum MenuModelSetupItems {
 #if defined(PCBX7)
   #define TRAINER_CHANNELS_ROWS()        IF_TRAINER_ON(1)
   #define TRAINER_MODULE_ROWS            LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)
+  #define POT_WARN_ITEMS()                uint8_t(g_model.potsWarnMode ? NAVIGATION_LINE_BY_LINE|(NUM_POTS+NUM_SLIDERS) : 0)
 #else
   #define TRAINER_MODULE_ROWS
 #endif
@@ -171,7 +174,7 @@ enum MenuModelSetupItems {
 void menuModelSetup(event_t event)
 {
 #if defined(PCBX7)
-  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
+  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1,  NUM_POTS, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(InternalModule),
   INTERNAL_MODULE_MODE_ROWS,
   INTERNAL_MODULE_CHANNELS_ROWS,
@@ -472,7 +475,7 @@ void menuModelSetup(event_t event)
 #else
                 if (menuHorizontalPosition < NUM_SWITCHES-1) {
 #if defined(PCBX7)
-                  g_model.switchWarningEnable ^= (1 << menuHorizontalPosition-1);
+                  g_model.switchWarningEnable ^= (1 << (menuHorizontalPosition-1));
 #else
                   g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
 #endif
@@ -554,6 +557,57 @@ void menuModelSetup(event_t event)
 #endif // PCBX7
         break;
       }
+#if defined(PCBX7)
+      case ITEM_MODEL_POTS_WARNING:
+        lcdDrawTextAlignedLeft(y, STR_POTWARNING);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
+        if (attr && (menuHorizontalPosition == 0)) {
+          CHECK_INCDEC_MODELVAR(event, g_model.potsWarnMode, POTS_WARN_OFF, POTS_WARN_AUTO);
+          storageDirty(EE_MODEL);
+        }
+
+        if (attr) {
+          if (menuHorizontalPosition > 0) s_editMode = 0;
+          if (!READ_ONLY() && menuHorizontalPosition > 0) {
+            switch (event) {
+              case EVT_KEY_LONG(KEY_ENTER):
+                killEvents(event);
+                if (g_model.potsWarnMode == POTS_WARN_MANUAL) {
+                  SAVE_POT_POSITION(menuHorizontalPosition-1);
+                  AUDIO_WARNING1();
+                  storageDirty(EE_MODEL);
+                }
+                break;
+              case EVT_KEY_BREAK(KEY_ENTER):
+                g_model.potsWarnEnabled ^= (1 << (menuHorizontalPosition-1));
+                storageDirty(EE_MODEL);
+                break;
+            }
+          }
+        }
+        if (g_model.potsWarnMode) {
+          coord_t x = MODEL_SETUP_2ND_COLUMN+28;
+          for (int i=0; i<NUM_POTS+NUM_SLIDERS; ++i) {
+            if (i<NUM_XPOTS && !IS_POT_SLIDER_AVAILABLE(POT1+i)) {
+              if (attr && (menuHorizontalPosition==i+1)) REPEAT_LAST_CURSOR_MOVE();
+            }
+            else {
+              LcdFlags flags = ((menuHorizontalPosition==i+1) && attr) ? BLINK : 0;
+              if ((!attr || menuHorizontalPosition >= 0) && !(g_model.potsWarnEnabled & (1 << i))) {
+                flags |= INVERS;
+              }
+
+              // TODO add a new function
+              lcdDrawSizedText(x, y, STR_VSRCRAW+2+STR_VSRCRAW[0]*(NUM_STICKS+1+i), STR_VSRCRAW[0]-1, flags & ~ZCHAR);
+              x = lcdNextPos+3;
+            }
+          }
+        }
+        if (attr && menuHorizontalPosition < 0) {
+          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH+1, FH+1);
+        }
+        break;
+#endif // PCBX7
 
       case ITEM_MODEL_BEEP_CENTER:
         lcdDrawTextAlignedLeft(y, STR_BEEPCTR);
