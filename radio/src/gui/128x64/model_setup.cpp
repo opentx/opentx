@@ -471,7 +471,7 @@ void menuModelSetup(event_t event)
                 storageDirty(EE_MODEL);
 #else
                 if (menuHorizontalPosition < NUM_SWITCHES-1) {
-                  g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
+                  g_model.switchWarningEnable ^= (1 << menuHorizontalPosition-1);
                   storageDirty(EE_MODEL);
                 }
 #endif
