@@ -41,7 +41,7 @@ void displayRssiLine()
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcdDrawNumber(LCD_W/2 -2, STATUS_BAR_Y, rssi, LEADING0 | RIGHT | SMLSIZE, 2);
     lcdDrawText(lcdLastLeftPos,STATUS_BAR_Y, "RSSI : ", RIGHT | SMLSIZE);
-    lcdDrawRect(LCD_W/2 + 2, 57, 38, 7);
+    lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
 #else
