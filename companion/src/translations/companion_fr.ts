@@ -1108,17 +1108,17 @@ Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
         <source>Show information about using the filter.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Affiche les informations concernant l&apos;usage du filtre.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
         <source>Word &amp;Wrap</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Renvoi &amp;$Ligne</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
         <source>Toggle word wrapping on/off.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Retour automatique à la ligne on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
@@ -1128,17 +1128,17 @@ Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
         <source>Clear the output window of all text.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Effacer tout le texte dans la fenêtre de sortie.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
         <source>Enable &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Activer &amp;Filtre</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
         <source>Turn the filter on/off.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Basculer le filtre on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.cpp" line="281"/>
@@ -1148,7 +1148,7 @@ Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le
     <message>
         <location filename="../simulation/debugoutput.cpp" line="307"/>
         <source>Debug Console Filter Help</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aide Console Filtre Débogage</translation>
     </message>
 </context>
 <context>
