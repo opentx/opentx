@@ -187,7 +187,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
       
       // Popups
-      if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
+      if (IS_TARANIS(board) && phaseIdx == 0) {
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
         gvPopups[i]->setText(tr("Popup enabled"));
@@ -238,7 +238,7 @@ void FlightModePanel::update()
       }
       gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
       gvValues[i]->setValue(model->getGVarFieldValue(phaseIdx, i));
-      if (IS_HORUS_OR_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
+      if (IS_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
         gvPopups[i]->setChecked(model->gvars_popups[i]);
       }
     }
