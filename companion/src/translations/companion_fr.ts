@@ -1076,79 +1076,79 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Activer ou désactiver le filtre. Si le bouton ne reste pas actif, c&apos;est qu&apos;il y a probablement une erreur dans la &lt;i&gt;Regular Expression&lt;/i&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Activer ou désactiver le filtre. Si le bouton ne reste pas actif, c&apos;est qu&apos;il y a probablement une erreur dans la &lt;i&gt;Regular Expression&lt;/i&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
         <source>Filter:</source>
-        <translation type="unfinished">Filtre:</translation>
+        <translation>Filtre:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Entrer le filtre ici. Cliquer sur le bouton d&apos;aide/info pour plus de détails sur l&apos;utilisation du filtre. &lt;/p&gt;&lt;p&gt;
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Entrer le filtre ici. Cliquer sur le bouton d&apos;aide/info pour plus de détails sur l&apos;utilisation du filtre. &lt;/p&gt;&lt;p&gt;
 Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le d&apos;abord, puis faite le raccourci clavier &lt;code&gt;Shift-Supprimer&lt;/code&gt; (ou &lt;code&gt;Shift-Retour Arrière&lt;/code&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
         <source>Buffer:</source>
-        <translation type="unfinished">Tampon:</translation>
+        <translation>Tampon:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
         <source>Number of lines to keep in display.</source>
-        <translation type="unfinished">Nombre de lignes du tampon.</translation>
+        <translation>Nombre de lignes du tampon.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
         <source>Filter &amp;Help</source>
-        <translation type="unfinished">Filtre &amp;Aide</translation>
+        <translation>Filtre &amp;Aide</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
         <source>Show information about using the filter.</source>
-        <translation type="unfinished">Affiche les informations concernant l&apos;usage du filtre.</translation>
+        <translation>Affiche les informations concernant l&apos;usage du filtre.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
         <source>Word &amp;Wrap</source>
-        <translation type="unfinished">Renvoi &amp;$Ligne</translation>
+        <translation>Renvoi &amp;Ligne</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
         <source>Toggle word wrapping on/off.</source>
-        <translation type="unfinished">Retour automatique à la ligne on/off.</translation>
+        <translation>Retour automatique à la ligne on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Effacer</translation>
+        <translation>&amp;Effacer</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
         <source>Clear the output window of all text.</source>
-        <translation type="unfinished">Effacer tout le texte dans la fenêtre de sortie.</translation>
+        <translation>Effacer tout le texte dans la fenêtre de sortie.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
         <source>Enable &amp;Filter</source>
-        <translation type="unfinished">Activer &amp;Filtre</translation>
+        <translation>Activer &amp;Filtre</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
         <source>Turn the filter on/off.</source>
-        <translation type="unfinished">Basculer le filtre on/off.</translation>
+        <translation>Basculer le filtre on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.cpp" line="281"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (&lt;code&gt;pcre&lt;/code&gt;) Regular Expressions.&lt;/p&gt;&lt;p&gt;By default a filter will only show lines which match (&lt;b&gt;inclusive&lt;/b&gt;). To make an &lt;b&gt;exclusive&lt;/b&gt; filter which removes matching lines, prefix the filter expression with a &lt;kbd&gt;!&lt;/kbd&gt; (exclamation mark).&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;Regular Expressions&lt;/b&gt; (RegEx), prefix the filter text with a &lt;kbd&gt;/&lt;/kbd&gt; (slash) or &lt;kbd&gt;^&lt;/kbd&gt; (up caret). &lt;ul&gt;&lt;li&gt;Put the &lt;kbd&gt;/&lt;/kbd&gt; or &lt;kbd&gt;^&lt;/kbd&gt; after the exclusive &lt;kbd&gt;!&lt;/kbd&gt; indicator if you&apos;re using one.&lt;/li&gt;&lt;li&gt;By default the match is case-sensitive. To make it insensitive, add the typical &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) operator at the end of your RegEx.&lt;/li&gt;&lt;li&gt;If you use a caret (^) to denote a RegEx, it will become part of the Reg. Ex. (that is, matches from start of line).&lt;/li&gt;&lt;li&gt;If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.&lt;/li&gt;&lt;li&gt;A useful resource for testing REs (with a full reference) can be found at &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;basic matching&lt;/b&gt; just type any text.&lt;ul&gt;&lt;li&gt;Wildcards: &lt;kbd&gt;*&lt;/kbd&gt; (asterisk) matches zero or more of any character(s), and &lt;kbd&gt;?&lt;/kbd&gt; (question mark) matches any single character.&lt;/li&gt;&lt;li&gt;The match is always case-insensitive.&lt;/li&gt;&lt;li&gt;The match always starts from the beginning of a log line. To ignore characters at the start, use a leading &lt;kbd&gt;*&lt;/kbd&gt; wildcard.&lt;/li&gt;&lt;li&gt;A trailing &lt;kbd&gt;*&lt;/kbd&gt; is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.&lt;/li&gt;&lt;li&gt;You can match literal wildcard characters by prefixing them with a &lt;kbd&gt;\&lt;/kbd&gt; (backslash) character (eg. &quot;foo\*bar&quot; matches &quot;foo*bar&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;After &lt;b&gt;editing text&lt;/b&gt;, press ENTER or TAB key (or click anywhere outside the box) to update the filter.&lt;/p&gt;&lt;p&gt;To &lt;b&gt;remove an entry&lt;/b&gt; from the filter selector list, first choose it, and while in the line editor press &lt;kbd&gt;Shift-Delete&lt;/kbd&gt; (or &lt;kbd&gt;Shift-Backspace&lt;/kbd&gt;) key combination. The default filters cannot be removed. Up to 50 filters are stored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Le filtre supporte deux types de syntaxes: la recherche simple utilisant les métacaractères ou la recherche avancée utilisant les expressions régulières (&lt;code&gt;RegEx&lt;/code&gt;) de type Perl.&lt;/p&gt;&lt;p&gt;Par défaut, un filtre ne montre que les lignes qui correspondent (&lt;b&gt;inclusif&lt;/b&gt;). Pour faire un filtre &lt;b&gt;exclusif&lt;/b&gt; qui supprime les lignes de correspondance, préfixez l&apos;expression du filtre avec un &lt;kbd&gt;!&lt;/kbd&gt; (point d&apos;exclamation).&lt;/p&gt;&lt;p&gt;Pour utiliser les &lt;b&gt;Expressions Régulières&lt;/b&gt; (RegEx), préfixez le texte du filtre avec un &lt;kbd&gt;/&lt;/kbd&gt; (slash) ou &lt;kbd&gt;^&lt;/kbd&gt; (accent circonflexe).&lt;ul&gt;&lt;li&gt;Il faut mettre le &lt;kbd&gt;!&lt;/kbd&gt; &lt;u&gt;avant&lt;/u&gt; le &lt;kbd&gt;/&lt;/kbd&gt; ou &lt;kbd&gt;^&lt;/kbd&gt; dans le cas d&apos;un filtre exclusif.&lt;/li&gt;&lt;li&gt;Par défaut, la correspondance est sensible à la casse (ex: a &amp;ne; A). Pour la rendre insensible (ex: a = A), ajoutez l&apos;opérateur typique &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) à la fin de votre RegEx.&lt;/li&gt;&lt;li&gt;Si vous utilisez un &lt;kbd&gt;^&lt;/kbd&gt; pour désigner un RegEx, il deviendra une partie de la RegEx (&lt;kbd&gt;^&lt;/kbd&gt; est le caractère de début de chaîne).&lt;/li&gt;&lt;li&gt;Si la RegEx n&apos;est pas valide, le champ d&apos;édition du filtre affichera une bordure rouge et vous ne pourrez pas activer le filtre.&lt;/li&gt;&lt;li&gt;Une ressource utile pour tester les RegExs (avec une référence complète) peut être trouvée sur le site &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt; (tutoriel en français: &lt;a href=&quot;http://perl.mines-albi.fr/DocFr/perlretut.html&quot;&gt;Expressions rationnelles/régulières en Perl&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Pour utiliser la &lt;b&gt;recherche simple&lt;/b&gt;, tapez simplement le texte recherché.&lt;ul&gt;&lt;li&gt;Métacaractères: le quantificateur &lt;kbd&gt;*&lt;/kbd&gt; (astérisque) correspond à 0 ou plusieurs répétitions du(des) caractère(s), et le quantificateur &lt;kbd&gt;?&lt;/kbd&gt; (point d&apos;interrogation) correspond à 1 répétition du caractère.&lt;/li&gt;&lt;li&gt;La correspondance est toujours sensible à la casse.&lt;/li&gt;&lt;li&gt;La correspondance commence toujours au début du tampon. Pour ignorer les caractères au début, utilisez le métacaractère &lt;kbd&gt;*&lt;/kbd&gt;.&lt;/li&gt;&lt;li&gt;Un métacaractère &lt;kbd&gt;*&lt;/kbd&gt; est implicitement ajouté à la fin (ainsi, toutes les correspondances valides soient bien affichées jusqu&apos;à la fin du tampon). Si vous voulez éviter ce métacaractère implicite, il faut utiliser une RegEx.&lt;/li&gt;&lt;li&gt;Pour rechercher un caractère qui est lui-même un métacaractère, il faut préfixer avec un &lt;kbd&gt;\&lt;/kbd&gt; (backslash) (ex: &quot;&lt;i&gt;foo\*bar&lt;/i&gt;&quot; correspond à &quot;&lt;i&gt;foo*bar&lt;/i&gt;&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Quand l&apos;&lt;b&gt;édition&lt;/b&gt; est terminée, appuyez sur la touche ENTRER ou TAB (ou cliquez n&apos;importe où à l&apos;extérieur du champ du filtre) afin de mettre à jour le filtre.&lt;/p&gt;&lt;p&gt;Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le d&apos;abord, puis faite le raccourci clavier &lt;kbd&gt;Shift-Supprimer&lt;/kbd&gt; (ou &lt;kbd&gt;Shift-Retour Arrière&lt;/kbd&gt;). Les filtres par défaut ne peuvent pas être effacés. Jusqu&apos;à 50 filtres peuvent être mémorisés.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.cpp" line="307"/>
         <source>Debug Console Filter Help</source>
-        <translation type="unfinished">Aide Console Filtre Débogage</translation>
+        <translation>Aide sur les filtres pour la console de débogage</translation>
     </message>
 </context>
 <context>
@@ -1377,22 +1377,22 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="75"/>
         <source>Click to access popup menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour accéder au menu contextuel</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="213"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="214"/>
         <source>Set All</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="215"/>
         <source>Invert All</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverser Tout</translation>
     </message>
 </context>
 <context>
@@ -2167,7 +2167,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generaledit.ui" line="20"/>
         <source>Radio settings</source>
-        <translation type="unfinished">Réglage Radio</translation>
+        <translation>Réglages Radio</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="105"/>
@@ -2959,7 +2959,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../generaledit/generalsetup.ui" line="2078"/>
         <location filename="../generaledit/generalsetup.ui" line="2274"/>
         <source>X-Short</source>
-        <translation>X-court</translation>
+        <translation>Très court</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2083"/>
@@ -2971,7 +2971,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../generaledit/generalsetup.ui" line="2088"/>
         <location filename="../generaledit/generalsetup.ui" line="2284"/>
         <source>Normal</source>
-        <translation>Normales</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2093"/>
@@ -3692,7 +3692,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../logsdialog.ui" line="14"/>
         <source>Companion Log Viewer</source>
-        <translation>Visualiseur de logs de Companion</translation>
+        <translation>Visualiseur de Log</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="216"/>
@@ -3702,7 +3702,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../logsdialog.ui" line="230"/>
         <source>Open LogFile</source>
-        <translation>Ouvrir fichier de log</translation>
+        <translation>Ouvrir fichier de Log</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="136"/>
@@ -4389,7 +4389,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
         <location filename="../mainwindow.cpp" line="779"/>
         <location filename="../mainwindow.cpp" line="796"/>
         <source>This function is not yet implemented</source>
-        <translation type="unfinished"></translation>
+        <translation>Cette fonction n&apos;est pas implémentée pour l&apos;instant</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="800"/>
@@ -4580,7 +4580,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1017"/>
         <source>View Log File...</source>
-        <translation>Ouvrir un log...</translation>
+        <translation>Ouvrir un Log...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1017"/>
@@ -4902,7 +4902,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="148"/>
         <source>Move to Category</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer dans la catégorie</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="161"/>
@@ -4937,7 +4937,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="172"/>
         <source>&amp;Rename category</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Renommer catégorie</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="173"/>
@@ -5211,22 +5211,22 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="90"/>
         <source>Click to access popup menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour accéder au menu contextuel</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="212"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="213"/>
         <source>Set All</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="214"/>
         <source>Invert All</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverser Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
@@ -5494,7 +5494,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="162"/>
         <source>%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)</source>
-        <translation>%1, Voies(%2-%3), Impulsion(%4usec), Polarité(%5)</translation>
+        <translation>%1, Voies(%2-%3), Impulsion(%4µs), Polarité(%5)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="164"/>
@@ -5829,7 +5829,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="133"/>
         <source>CH </source>
-        <translation></translation>
+        <translation>VOIE </translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="217"/>
@@ -5849,12 +5849,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="287"/>
         <source>Option value</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="437"/>
         <source> us</source>
-        <translation></translation>
+        <translation> µs</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="645"/>
@@ -5884,19 +5884,19 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="721"/>
         <source>Show values in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher les valeurs en:</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="728"/>
         <source>%</source>
         <extracomment>abbreviation for percent</extracomment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="741"/>
         <source>μs</source>
         <extracomment>abbreviation for microseconds</extracomment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="478"/>
@@ -6681,22 +6681,22 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="621"/>
         <source>Trim 5 Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim 5 Bas</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="621"/>
         <source>Trim 5 Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim 5 Haut</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="622"/>
         <source>Trim 6 Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim 6 Bas</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="622"/>
         <source>Trim 6 Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim 6 Haut</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="662"/>
@@ -7202,7 +7202,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../helpers.cpp" line="814"/>
         <source>Error occurred while starting simulator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Une erreur s&apos;est produite lors du démarrage du simulateur.</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="154"/>
@@ -7673,12 +7673,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="506"/>
         <source>Trm5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="506"/>
         <source>Trm6</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="510"/>
@@ -7903,32 +7903,32 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="308"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur inconnue</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="316"/>
         <source> ... plus %1 errors</source>
-        <translation type="unfinished"></translation>
+        <translation>... plus %1 erreurs</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="353"/>
         <source>Cannot write radio settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire les paramètres de la radio</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="365"/>
         <source>Cannot write model %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire le modèle %1</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="784"/>
         <source>JSx</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="785"/>
         <source>JSy</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1176"/>
@@ -8024,7 +8024,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1133"/>
         <source>Channel values displayed in us</source>
-        <translation>Positions de voies affichées en us</translation>
+        <translation>Positions de voies affichées en µs</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1266"/>
@@ -8670,7 +8670,7 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Negative span</source>
-        <translation>Amp. négative</translation>
+        <translation>Amp. Négative</translation>
     </message>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
@@ -8680,7 +8680,7 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../generaledit/calibration.cpp" line="44"/>
         <source>Positive span</source>
-        <translation>Amp.positive</translation>
+        <translation>Amp. Positive</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="280"/>
@@ -8784,7 +8784,7 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
     <message>
         <location filename="../simulator.cpp" line="230"/>
         <source>ERROR: Failed to create simulator interface, possibly missing or bad library.</source>
-        <translation type="unfinished"></translation>
+        <translation>ERREUR: Impossible de créer l&apos;interface du simulateur, bibliothèque éventuellement manquante ou mauvaise.</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="42"/>
@@ -8898,7 +8898,7 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
     <message>
         <location filename="../eepromimportexport.h" line="720"/>
         <source>Conversion error on field %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur de conversion du champ %1</translation>
     </message>
 </context>
 <context>
@@ -9096,27 +9096,27 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="68"/>
         <source>View:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue:</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="75"/>
         <source>Logical Switches</source>
-        <translation type="unfinished">Inters logiques</translation>
+        <translation>Inters Logiques</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="94"/>
         <source>Global Variables</source>
-        <translation type="unfinished">Variables globales</translation>
+        <translation>Variables Globales</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="113"/>
         <source>Channel Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorties Voies</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="191"/>
@@ -9125,7 +9125,8 @@ o
 g
 i
 c</source>
-        <translation type="unfinished"></translation>
+        <translation>I
+L</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="268"/>
@@ -9135,7 +9136,8 @@ o
 b
 a
 l</source>
-        <translation type="unfinished"></translation>
+        <translation>V
+G</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="343"/>
@@ -9147,7 +9149,10 @@ n
 e
 l
 s</source>
-        <translation type="unfinished"></translation>
+        <translation>V
+O
+I
+E</translation>
     </message>
 </context>
 <context>
@@ -9155,7 +9160,7 @@ s</source>
     <message>
         <location filename="../simulation/widgets/radioswitchwidget.h" line="76"/>
         <source>Latch/unlatch the momentary switch.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verrouiller/déverrouiller l&apos;inter momentané.</translation>
     </message>
 </context>
 <context>
@@ -9393,7 +9398,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../simulation/simulateduiwidget.cpp" line="128"/>
         <source>screenshot</source>
         <comment>Simulator LCD screenshot file name prefix</comment>
-        <translation type="unfinished"></translation>
+        <translation>capture</translation>
     </message>
 </context>
 <context>
@@ -9461,7 +9466,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidget9X.cpp" line="65"/>
         <source>WHEEL/PAD SCRL</source>
-        <translation>SOURIS/PAD-DEFIL</translation>
+        <translation>SOURIS/PAD DEFIL</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidget9X.cpp" line="65"/>
@@ -9612,7 +9617,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="28"/>
         <source>WHEEL/PAD SCRL</source>
-        <translation>SOURIS/PAS DEFIL</translation>
+        <translation>SOURIS/PAD DEFIL</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX7.cpp" line="28"/>
@@ -9728,72 +9733,72 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="38"/>
         <source>PG-UP</source>
-        <translation type="unfinished">PG-HAUT</translation>
+        <translation>PG-HAUT</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="38"/>
         <source>[ MENU ]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="43"/>
         <source>PG-DN</source>
-        <translation type="unfinished"></translation>
+        <translation>PG-BAS</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="43"/>
         <source>[ PAGE ]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="48"/>
         <source>DEL/BKSP/ESC</source>
-        <translation type="unfinished">EFF/RETOUR/ESC</translation>
+        <translation>EFF/RETOUR/ESC</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="48"/>
         <source>[ EXIT ]</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="51"/>
         <source>WHEEL/PAD SCRL</source>
-        <translation type="unfinished"></translation>
+        <translation>SOURIS/PAD DEFIL</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="51"/>
         <source>Rotary Selector</source>
-        <translation type="unfinished">Sélecteur Rotatif</translation>
+        <translation>Sélecteur Rotatif</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="52"/>
         <source>-/UP</source>
-        <translation type="unfinished">-/HAUT</translation>
+        <translation>-/HAUT</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="52"/>
         <source>Rotary UP</source>
-        <translation type="unfinished">Sélecteur HAUT</translation>
+        <translation>Sélecteur HAUT</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="53"/>
         <source>+/DN</source>
-        <translation type="unfinished">+/BAS</translation>
+        <translation>+/BAS</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="53"/>
         <source>Rotary DOWN</source>
-        <translation type="unfinished">Sélecteur BAS</translation>
+        <translation>Sélecteur BAS</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="56"/>
         <source>ENTER/MOUSE-MID</source>
-        <translation type="unfinished">ENTRER/CLIC-MILIEU</translation>
+        <translation>ENTRER/CLIC-MILIEU</translation>
     </message>
     <message>
         <location filename="../simulation/simulateduiwidgetX9E.cpp" line="56"/>
         <source>Selector Press</source>
-        <translation type="unfinished">Appuyer Sel.Rot.</translation>
+        <translation>Appuyer Sel.Rot.</translation>
     </message>
 </context>
 <context>
@@ -9801,77 +9806,77 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="14"/>
         <source>OpenTx Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulateur OpenTX</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="48"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vue</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="52"/>
         <source>Radio Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Fenêtre Radio</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="63"/>
         <source>Reload...</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="70"/>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Outils</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="82"/>
         <source>Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="103"/>
         <source>Reload Lua Scripts</source>
-        <translation type="unfinished">Recharger le script Lua</translation>
+        <translation>Recharger le script Lua</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="106"/>
         <source>Reload the Lua environment on the simulated radio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger l&apos;environnement Lua dans le simulateur.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="109"/>
         <source>F7</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="118"/>
         <source>Reload Radio Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger les données radio</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="121"/>
         <source>Reload all radio data without restarting the simulator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger les données radio sans redémarrer le simulateur.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="124"/>
         <source>F9</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="133"/>
         <source>Key Mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourci clavier</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="136"/>
         <source>Show keyboard maping reference.</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiche les raccourcis clavier.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="139"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="148"/>
@@ -9896,7 +9901,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="166"/>
         <source>Save a screenshot of the current simulated LCD screen.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Enregistrez une capture de l&apos;écran LCD actuellement simulé.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="169"/>
@@ -9911,7 +9916,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="180"/>
         <source>Show the radio in the main window or as a separate &quot;floating&quot; window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher la radio dans la fenêtre principale ou comme une fenêtre &quot;flottante&quot; séparée.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="188"/>
@@ -9921,7 +9926,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="191"/>
         <source>Show or hide the top menu bar.</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher ou masquer la barre de menu principale.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="194"/>
@@ -9936,7 +9941,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="205"/>
         <source>Set radio widget width to be a fixed size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Défini la largeur du widget radio comme étant une taille fixe.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="213"/>
@@ -9946,7 +9951,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="216"/>
         <source>Set radio widget height to be a fixed size.</source>
-        <translation type="unfinished"></translation>
+        <translation>Défini la hauteur du widget radio comme étant une taille fixe.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="82"/>
@@ -9966,7 +9971,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="251"/>
         <source>Telemetry Simulator</source>
-        <translation type="unfinished">Simulateur de télémesure</translation>
+        <translation>Simulateur de télémesure</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="255"/>
@@ -9976,7 +9981,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="260"/>
         <source>Trainer Simulator</source>
-        <translation type="unfinished">Simulateur d&apos;écolage</translation>
+        <translation>Simulateur d&apos;écolage</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="264"/>
@@ -9996,7 +10001,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="444"/>
         <source>Simulator Controls:</source>
-        <translation type="unfinished">Contrôles du simulateur:</translation>
+        <translation>Contrôles du simulateur:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="446"/>
@@ -10006,7 +10011,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="456"/>
         <source>Simulator Help</source>
-        <translation type="unfinished">Aide du simulateur</translation>
+        <translation>Aide du simulateur</translation>
     </message>
 </context>
 <context>
@@ -11105,7 +11110,7 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="98"/>
         <source>Replay rate</source>
-        <translation type="unfinished"></translation>
+        <translation>Vitesse</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="171"/>
@@ -11135,12 +11140,12 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="353"/>
         <source>1/5x</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="369"/>
         <source>5x</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="381"/>
@@ -11280,13 +11285,14 @@ Horodatage</translation>
         <location filename="../simulation/telemetrysimu.ui" line="2144"/>
         <source>Lat,Lon
 (dec.deg.)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2265"/>
         <source>dd-MM-yyyy
 hh:mm:ss</source>
-        <translation type="unfinished"></translation>
+        <translation>jj-MM-aaaa
+hh:mm:ss</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2888"/>
