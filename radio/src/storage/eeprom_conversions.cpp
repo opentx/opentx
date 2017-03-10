@@ -1262,6 +1262,11 @@ bool eeConvert()
 
   ALERT(STR_STORAGE_WARNING, msg, AU_BAD_RADIODATA);
 
+// Only do a backup if supported and if it is getting a unique filename
+#if defined(EEPROM_RLC) && defined(RTCLOCK)
+  eepromBackup();
+#endif
+
   RAISE_ALERT(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE);
 
   // General Settings conversion
