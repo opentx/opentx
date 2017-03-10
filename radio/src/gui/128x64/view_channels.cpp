@@ -48,7 +48,12 @@ void menuChannelsView(event_t event)
   else
     ch = 0;
 
-  lcdDrawTextAlignedCenter(0, mixersView ? MIXERS_MONITOR : CHANNELS_MONITOR);
+  if (mixersView) {
+    lcdDrawTextAlignedCenter(0, MIXERS_MONITOR);
+  }
+  else {
+    lcdDrawTextAlignedCenter(0, CHANNELS_MONITOR);
+  }
 
   lcdInvertLine(0);
 
