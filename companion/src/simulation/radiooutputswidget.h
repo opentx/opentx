@@ -75,6 +75,7 @@ class RadioOutputsWidget : public QWidget
 
     int m_radioProfileId;
     int m_dataUpdateFreq;
+    int m_lastFlightPhase;
     bool m_started;
 
     const static int m_dataUpdateFreqDefault;

@@ -39,6 +39,7 @@ RadioOutputsWidget::RadioOutputsWidget(SimulatorInterface * simulator, Firmware 
   m_firmware(firmware),
   m_tmrUpdateData(new QTimer),
   m_radioProfileId(g.sessionId()),
+  m_lastFlightPhase(-1),
   m_started(false),
   ui(new Ui::RadioOutputsWidget)
 {
@@ -89,6 +90,7 @@ void RadioOutputsWidget::start()
   setupChannelsDisplay();
   setupGVarsDisplay();
   setupLsDisplay();
+  m_lastFlightPhase = -1;
   m_tmrUpdateData->start();
   m_started = true;
 }
@@ -298,9 +300,7 @@ QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo
 // Read various values from firmware simulator and populate values in this UI
 void RadioOutputsWidget::setValues()
 {
-  static int lastPhase = -1;
   static TxOutputs prevOutputs = TxOutputs();
-  static bool firstGvarsRun = true;
   int currentPhase;
   TxOutputs outputs;
   QFont font;
@@ -321,7 +321,7 @@ void RadioOutputsWidget::setValues()
   if (ui->logicalSwitchesWidget->isVisible()) {
     QHash<int, QLabel* >::const_iterator ls;
     for (ls = m_logicSwitchMap.constBegin(); ls != m_logicSwitchMap.constEnd(); ++ls) {
-      if (ls.key() >= CPN_MAX_CSW || prevOutputs.vsw[ls.key()] == outputs.vsw[ls.key()])
+      if (ls.key() >= CPN_MAX_CSW || (prevOutputs.vsw[ls.key()] == outputs.vsw[ls.key()] && m_lastFlightPhase > -1))
         continue;
       ls.value()->setBackgroundRole(outputs.vsw[ls.key()] ? QPalette::Dark : QPalette::Background);
       ls.value()->setForegroundRole(outputs.vsw[ls.key()] ? QPalette::BrightText : QPalette::WindowText);
@@ -343,7 +343,7 @@ void RadioOutputsWidget::setValues()
       for (fm = gv.value().constBegin(); fm != gv.value().constEnd(); ++fm) {
         if (fm.key() >= CPN_MAX_FLIGHT_MODES)
           continue;
-        if (currentPhase != lastPhase || prevOutputs.gvars[fm.key()][gv.key()] != outputs.gvars[fm.key()][gv.key()] || firstGvarsRun) {
+        if (currentPhase != m_lastFlightPhase || prevOutputs.gvars[fm.key()][gv.key()] != outputs.gvars[fm.key()][gv.key()]) {
           if (fm.key() == currentPhase)
             bgrole = QPalette::Dark;
           else
@@ -355,11 +355,10 @@ void RadioOutputsWidget::setValues()
           fm.value()->setFont(font);
           fm.value()->setText(QString::number(outputs.gvars[fm.key()][gv.key()]));
           prevOutputs.gvars[fm.key()][gv.key()] = outputs.gvars[fm.key()][gv.key()];
-          firstGvarsRun = false;
         }
       }
     }
   }
 
-  lastPhase = currentPhase;
+  m_lastFlightPhase = currentPhase;
 }
