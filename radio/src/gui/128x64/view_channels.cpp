@@ -25,9 +25,8 @@ void menuChannelsView(event_t event)
   static bool longNames = false;
   bool newLongNames = false;
   static bool secondPage = false;
-#ifdef MIXERS_MONITOR
   static bool mixersView = false;
-#endif
+
   uint8_t ch;
 
   switch(event)
@@ -39,11 +38,9 @@ void menuChannelsView(event_t event)
     case EVT_KEY_FIRST(KEY_LEFT):
       secondPage = !secondPage;
       break;
-#ifdef MIXERS_MONITOR
     case EVT_KEY_FIRST(KEY_ENTER):
       mixersView = !mixersView;
       break;
-#endif
   }
 
   if (secondPage)
@@ -51,12 +48,12 @@ void menuChannelsView(event_t event)
   else
     ch = 0;
 
-#ifdef MIXERS_MONITOR
-  if (mixersView)
-  lcdDrawTextAlignedCenter(0*FH, MIXERS_MONITOR);
-  else
-#endif
-  lcdDrawTextAlignedCenter(0*FH, CHANNELS_MONITOR);
+  if (mixersView) {
+    lcdDrawTextAlignedCenter(0, MIXERS_MONITOR);
+  }
+  else {
+    lcdDrawTextAlignedCenter(0, CHANNELS_MONITOR);
+  }
 
   lcdInvertLine(0);
 
@@ -70,11 +67,7 @@ void menuChannelsView(event_t event)
     // Channels
     for (uint8_t line=0; line<8; line++) {
       uint8_t y = 9+line*7;
-#ifdef MIXERS_MONITOR
       int32_t val = (mixersView) ? ex_chans[ch] : channelOutputs[ch];
-#else
-      int32_t val = channelOutputs[ch];
-#endif
       uint8_t ofs = (col ? 0 : 1);
 
       // Channel name if present, number if not

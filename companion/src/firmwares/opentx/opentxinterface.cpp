@@ -714,8 +714,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case HasInputDiff:
     case HasMixerExpo:
       return (IS_HORUS_OR_TARANIS(board) ? true : false);
-    case MixersMonitor:
-      return id.contains("mixersmon") ? 1 : 0;
     case HasBatMeterRange:
       return (IS_HORUS_OR_TARANIS(board) ? true : id.contains("battgraph"));
     case DangerousFunctions:
@@ -1161,7 +1159,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
   addOpenTxFrskyOptions(firmware);
-  firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
   firmware->addOption("sqt5font", QObject::tr("Use alternative SQT5 font"));
 }
@@ -1486,7 +1483,6 @@ void registerOpenTxFirmwares()
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("symlimits", QObject::tr("Symetrical Limits"));
-  firmware->addOption("mixersmon", QObject::tr("Adds mixers output view to the CHANNELS MONITOR screen, pressing [ENT] switches between the views"));
   firmware->addOption("autosource", QObject::tr("In model setup menus automatically set source by moving the control"));
   firmware->addOption("autoswitch", QObject::tr("In model setup menus automatically set switch by moving the control"));
   firmware->addOption("dblkeys", QObject::tr("Enable resetting values by pressing up and down at the same time"));

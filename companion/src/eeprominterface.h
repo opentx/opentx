@@ -139,7 +139,6 @@ enum Capability {
   MavlinkTelemetry,
   HasInputDiff,
   HasMixerExpo,
-  MixersMonitor,
   HasBatMeterRange,
   DangerousFunctions,
   HasModelCategories
