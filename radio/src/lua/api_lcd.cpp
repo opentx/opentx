@@ -107,23 +107,23 @@ whole line will not be drawn (starting from OpenTX 2.1.5)
 static int luaLcdDrawLine(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
-  int x1 = luaL_checkinteger(L, 1);
-  int y1 = luaL_checkinteger(L, 2);
-  int x2 = luaL_checkinteger(L, 3);
-  int y2 = luaL_checkinteger(L, 4);
-  int pat = luaL_checkinteger(L, 5);
-  int flags = luaL_checkinteger(L, 6);
+  coord_t x1 = luaL_checkunsigned(L, 1);
+  coord_t y1 = luaL_checkunsigned(L, 2);
+  coord_t x2 = luaL_checkunsigned(L, 3);
+  coord_t y2 = luaL_checkunsigned(L, 4);
+  uint8_t pat = luaL_checkunsigned(L, 5);
+  LcdFlags flags = luaL_checkunsigned(L, 6);
 
-  if (x1 < 0 || x1 >= LCD_W || y1 < 0 || y1 >= LCD_H || x2 < 0 || x2 >= LCD_W || y2 < 0 || y2 >= LCD_H)
+  if (x1 > LCD_W || y1 > LCD_H || x2 > LCD_W || y2 > LCD_H)
     return 0;
 
   if (pat == SOLID) {
     if (x1 == x2) {
-      lcdDrawSolidVerticalLine(x1, y2 >= y1 ? y1 : y1+1, y2 >= y1 ? y2-y1+1 : y2-y1-1, flags);
+      lcdDrawSolidVerticalLine(x1, y1<y2 ? y1 : y2,  y1<y2 ? y2-y1 : y1 - y2, flags);
       return 0;
     }
     else if (y1 == y2) {
-      lcdDrawSolidHorizontalLine(x2 >= x1 ? x1 : x1+1, y1, x2 >= x1 ? x2-x1+1 : x2-x1-1, flags);
+      lcdDrawSolidHorizontalLine(x1<x2 ? x1:x2, y1, x1<x2 ? x2-x1 : x1-x2, flags);
       return 0;
     }
   }
