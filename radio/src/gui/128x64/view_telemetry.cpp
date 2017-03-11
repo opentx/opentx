@@ -37,17 +37,25 @@ void displayRssiLine()
   if (TELEMETRY_STREAMING()) {
     lcdDrawSolidHorizontalLine(0, 55, 128, 0); // separator
     uint8_t rssi;
-#if !defined(CPUARM)
+#if defined(CPUARM)
+    rssi = min((uint8_t)99, TELEMETRY_RSSI());
+    lcdDrawNumber(LCD_W/2 -2, STATUS_BAR_Y, rssi, LEADING0 | RIGHT | SMLSIZE, 2);
+    lcdDrawText(lcdLastLeftPos,STATUS_BAR_Y, "RSSI : ", RIGHT | SMLSIZE);
+    lcdDrawRect(65, 57, 38, 7);
+    uint8_t v = 4*rssi/11;
+    lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+#else
     rssi = min((uint8_t)99, telemetryData.rssi[1].value);
     lcdDrawTextAlignedLeft(STATUS_BAR_Y, STR_TX); lcdDrawNumber(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(BAR_LEFT+1, 57, 38, 7);
     lcdDrawFilledRect(BAR_LEFT+1, 58, 4*rssi/11, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
-#endif
+
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcdDrawText(104, STATUS_BAR_Y, STR_RX); lcdDrawNumber(105+4*FW, STATUS_BAR_Y, rssi, LEADING0, 2);
     lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
     lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+#endif
   }
   else {
     lcdDrawText(7*FW, STATUS_BAR_Y, STR_NODATA, BLINK);
@@ -236,7 +244,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
     if (source && barMax > barMin) {
       uint8_t y = barHeight+6+i*(barHeight+6);
 #if defined(CPUARM)
-      drawSource(0, y+barHeight-5, source, 0);
+      drawSource(0, y+barHeight/2-3, source, SMLSIZE);
 #else
       lcdDrawTextAtIndex(0, y+barHeight-5, STR_VTELEMCHNS, source, 0);
 #endif
