@@ -101,7 +101,7 @@ U64 CoGetOSTime(void)
 #if defined(_MSC_VER)
   static bool startup = true;
   static LARGE_INTEGER frequency;
-  static LARGE_INTEGER lastTick;
+  static LARGE_INTEGER firstTick;
   LARGE_INTEGER newTick;
   double elapsedTime;
 
@@ -109,14 +109,13 @@ U64 CoGetOSTime(void)
     // get ticks per second
     QueryPerformanceFrequency(&frequency);
     // init timer
-    QueryPerformanceCounter(&lastTick);
+    QueryPerformanceCounter(&firstTick);
     startup = false;
   }
   // read the timer
   QueryPerformanceCounter(&newTick);
   // compute the elapsed time in ms
-  elapsedTime = (newTick.QuadPart - lastTick.QuadPart) * 1000.0 / frequency.QuadPart;
-  lastTick = newTick;
+  elapsedTime = (newTick.QuadPart - firstTick.QuadPart) * 1000.0 / frequency.QuadPart;
 
   return U64(elapsedTime * 0.5);  // return 2ms resolution to match CoOS settings
   //return GetTickCount64() / 2;  // only 10-16ms typical resolution
