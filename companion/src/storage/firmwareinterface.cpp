@@ -126,6 +126,8 @@ QString FirmwareInterface::getFlavour() const
     return "opentx-x9d+";
   else if (flavour == "opentx-taranis")
     return "opentx-x9d";
+  else if (flavour == "opentx-horus")
+    return "opentx-x12s";
   else
     return flavour;
 }
