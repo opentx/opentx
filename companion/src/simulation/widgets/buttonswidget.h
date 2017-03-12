@@ -39,7 +39,7 @@ class Area : public QObject
       action(action)
     {
       if (action)
-        connect(action, &RadioUiAction::triggered, this, &Area::onActionTriggered);
+        connect(action, &RadioUiAction::toggled, this, &Area::onActionToggled);
     }
 
     bool contains(int x, int y)
@@ -47,7 +47,7 @@ class Area : public QObject
       return polygon.containsPoint(QPoint(x, y), Qt::OddEvenFill);
     }
 
-    void onActionTriggered(int, bool active)
+    void onActionToggled(int, bool active)
     {
       if (active)
         emit imageChanged(imgFile);
@@ -108,20 +108,24 @@ class ButtonsWidget : public QWidget
 
     void onMouseButtonEvent(bool press, QMouseEvent * event)
     {
-      bool anyTriggered = false;
-      int x = event->x();
-      int y = event->y();
+      if (!(event->button() & (Qt::LeftButton | Qt::MidButton))) {
+        event->ignore();
+        return;
+      }
 
       foreach(Area * area, areas) {
-        if (event->button() == Qt::LeftButton && area->contains(x, y)) {
-          if (area->action)
-            area->action->trigger(press);
-          anyTriggered = true;
-          break;
+        if (!area->action)
+          continue;
+        if (area->contains(event->x(), event->y())) {
+          area->action->trigger(press);
+          event->accept();
+          return;
+        }
+        else if (area->action->isActive()) {
+          area->action->trigger(false);
         }
       }
-      if (!anyTriggered)
-        setBitmap("");
+      event->ignore();
     }
 
     virtual void mousePressEvent(QMouseEvent * event)
@@ -129,10 +133,6 @@ class ButtonsWidget : public QWidget
       onMouseButtonEvent(true, event);
     }
     virtual void mouseReleaseEvent(QMouseEvent * event)
-    {
-      onMouseButtonEvent(false, event);
-    }
-    virtual void mouseLeaveEvent(QMouseEvent * event)
     {
       onMouseButtonEvent(false, event);
     }
