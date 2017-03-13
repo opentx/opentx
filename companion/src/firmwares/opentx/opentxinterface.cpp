@@ -860,6 +860,8 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_DSM2:
           case PULSES_DSMX:
             return 1;
+          case PULSES_MULTIMODULE:
+            return id.contains("multimodule") ? 1 : 0;
           default:
             return 0;
         }
