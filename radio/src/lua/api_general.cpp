@@ -688,16 +688,17 @@ Play a numerical value (text to speech)
 | 13  | Percent            |
 | 14  | Milliamp Hours     |
 | 15  | Watts              |
-| 16  | DB                 |
-| 17  | RPM                |
-| 18  | Gee                |
-| 19  | Degrees            |
-| 20  | Radians            |
-| 21  | Milliliters        |
-| 22  | Fluid Ounces       |
-| 23  | Hours              |
-| 24  | Minutes            |
-| 25  | Seconds            |
+| 16  | Milliwatts         |
+| 17  | DB                 |
+| 18  | RPM                |
+| 19  | Gee                |
+| 20  | Degrees            |
+| 21  | Radians            |
+| 22  | Milliliters        |
+| 23  | Fluid Ounces       |
+| 24  | Hours              |
+| 25  | Minutes            |
+| 26  | Seconds            |
 
 */
 static int luaPlayNumber(lua_State * L)
