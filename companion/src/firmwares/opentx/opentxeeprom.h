@@ -40,7 +40,7 @@ class OpenTxGeneralData: public TransformedField {
   public:
     OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant=0);
 
-    virtual const char * getName() { return internalField.getName(); }
+    virtual const QString & getName() { return internalField.getName(); }
 
     QStringList errors()
     {
@@ -120,7 +120,7 @@ class OpenTxModelData: public TransformedField {
   public:
     OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant);
 
-    virtual const char * getName() { return internalField.getName(); }
+    virtual const QString & getName() { return internalField.getName(); }
 
     QStringList errors()
     {

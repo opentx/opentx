@@ -36,7 +36,7 @@ class DataField {
     {
     }
 
-    virtual const char * getName()
+    virtual const QString & getName()
     {
       return name;
     }
@@ -93,9 +93,9 @@ class DataField {
       int result = (offset+bits.count()) % 8;
       for (int i=0; i<level; i++) printf("  ");
       if (bits.count() % 8 == 0)
-        printf("%s (%dbytes) ", getName(), bytes.count());
+        printf("%s (%dbytes) ", getName().toLatin1().constData(), bytes.count());
       else
-        printf("%s (%dbits) ", getName(), bits.count());
+        printf("%s (%dbits) ", getName().toLatin1().constData(), bits.count());
       for (int i=0; i<bytes.count(); i++) {
         unsigned char c = bytes[i];
         if ((i==0 && offset) || (i==bytes.count()-1 && result!=0))
@@ -119,7 +119,7 @@ class DataField {
     }
 
     DataField * parent;
-    const char * name;
+    QString name;
 };
 
 class ProxyField: public DataField {
@@ -495,7 +495,7 @@ class StructField: public DataField {
     virtual int Dump(int level=0, int offset=0)
     {
       for (int i=0; i<level; i++) printf("  ");
-      printf("%s (%d bytes)\n", getName(), size()/8);
+      printf("%s (%d bytes)\n", getName().toLatin1().constData(), size()/8);
       foreach(DataField *field, fields) {
         offset = field->Dump(level+1, offset);
       }
@@ -532,7 +532,7 @@ class TransformedField: public DataField {
     }
 
 
-    virtual const char * getName()
+    virtual const QString & getName()
     {
       return field.getName();
     }
