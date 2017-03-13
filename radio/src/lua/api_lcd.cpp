@@ -43,9 +43,9 @@ static int luaLcdRefresh(lua_State *L)
 
 Clear the LCD screen
 
-@param color (optionnal, only on color screens)
+@param color (optional, only on color screens)
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, `color` parameter introduced in 2.2.0 RC12
 
 @notice This function only works in stand-alone and telemetry scripts.
 */
