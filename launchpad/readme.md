@@ -13,12 +13,44 @@ There are several step to release a new version of Companion on Launchpad:
 
 The steps above should be repeated for every Ubuntu release. The example below will work with Ubuntu `trusty`
 
+## Prerequisites
+
+ * you must have launchpad.net account and be a member of the team
+ * create and configure your GPG signing key
+
+## Prepare your GPG key
+
+Create GPG key using **name** and **email* that will later appear in the changelog. This will be the key
+that will be used to sign the package before uploading it to Launchpad.
+```
+gpg --gen-key
+```
+
+Upload your GPG key (public part) to the Ubuntu key-server. First get the KEY ID (8 characters) of your key:
+```
+gpg --list-keys
+```
+
+Then upload it (replace <KEY ID> with your key ID):
+```
+gpg --send-keys --keyserver keyserver.ubuntu.com <KEY ID>
+```
+
+## Create a Launchpad account
+ * Go to https://launchpad.net/ and sign-in or register.
+ * Associate your GPG key with your launchpad account. You will need your keys fingerprint (<fingerprint looks like E448 37D6 EF6E F13C 30C0  415C E7A0 818F 4864 9459>), get it with:
+```
+gpg --fingerprint
+```
+ * Join OpenTX team on launchpad (one of admins will add you to the team).
+
+
 ## Step 1: update the Debian changelog
 
 You can edit changelog manually, but it is simpler to use a script that creates a generic entry in the changelog. You can always edit it later if needed.
 
 The script is `update-changelog.sh` and it takes 4 parameters:
- * email address in the form of `name <email@address>`, since it contains a space it must be enclosed in quotation marks
+ * email address in the form of `name <email@address>`, since it contains a space it must be enclosed in quotation marks. The email addres must be the same as the one in your GPG key!
  * Ubuntu release (directory name)
  * OpenTX version
  * OpenTX sub-version (Nxxx for nightly builds)
