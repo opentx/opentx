@@ -125,6 +125,7 @@ uint8_t getWizardCount()
       }
     }
   }
+  f_closedir(&dir);
   return wizCnt;
 }
 
@@ -192,7 +193,8 @@ bool menuModelWizard(event_t event)
           strcpy(&wizpath[sizeof(WIZARD_PATH)], fno.fname);
           strcpy(&wizpath[sizeof(WIZARD_PATH) + strlen(fno.fname)], "/icon.png");
           lcdDrawText(x + 10, WIZARD_TEXT_Y, fno.fname);
-          lcd->drawBitmap(x, WIZARD_ICON_Y, BitmapBuffer::load(wizpath));
+          BitmapBuffer * background = BitmapBuffer::load(wizpath);
+          lcd->drawBitmap(x, WIZARD_ICON_Y, background);
           if(wizidx == wizardSelected ) {
             if (wizardSelected < 5) {
               lcdDrawRect(x, WIZARD_ICON_Y, 85, 130, 2, SOLID, MAINVIEW_GRAPHICS_COLOR_INDEX);
@@ -207,6 +209,7 @@ bool menuModelWizard(event_t event)
               }
             }
           }
+          delete background;
         }
       }
     }
