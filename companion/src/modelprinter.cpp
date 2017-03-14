@@ -700,8 +700,9 @@ QString ModelPrinter::createCurveImage(int idx, QTextDocument * document)
 {
   CurveImage image;
   image.drawCurve(model.curves[idx], colors[idx]);
-  QString filename = QString("curve-%1-%2.png").arg((uint64_t)this).arg(idx);
-  if (document) document->addResource(QTextDocument::ImageResource, QUrl(filename), image.get());
+  QString filename = QString("mydata://curve-%1-%2.png").arg((uint64_t)this).arg(idx);
+  if (document)
+    document->addResource(QTextDocument::ImageResource, QUrl(filename), image.get());
   // qDebug() << "ModelPrinter::createCurveImage()" << idx << filename;
-  return ":" + filename;
+  return filename;
 }
