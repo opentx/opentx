@@ -288,6 +288,8 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */
+      if (fno.fattrib & AM_HID) continue;            /* Skip hidden files */
+      if (fno.fattrib & AM_SYS) continue;            /* Skip system files */
 
       fnExt = getFileExtension(fno.fname, 0, 0, &fnLen, &extLen);
       fnLen -= extLen;
