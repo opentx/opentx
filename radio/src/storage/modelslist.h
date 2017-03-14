@@ -36,6 +36,13 @@ class ModelCell
       strncpy(this->modelFilename, name, sizeof(this->modelFilename));
     }
 
+    ~ModelCell()
+    {
+      if (buffer) {
+        delete buffer;
+      }
+    }
+
     const BitmapBuffer * getBuffer()
     {
       if (!buffer) {
@@ -99,6 +106,14 @@ class ModelsCategory: public std::list<ModelCell *>
     {
       strncpy(this->name, name, sizeof(this->name));
     }
+
+    ~ModelsCategory()
+    {
+      for (std::list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
+        delete *it;
+      }
+    }
+
 
     ModelCell * addModel(const char * name)
     {
