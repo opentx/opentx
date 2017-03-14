@@ -285,9 +285,9 @@ void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int m
     drawHorizontalTrimPosition(x, y - 1, val);
   }
   else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
-    drawTrimSquare(x, y - 1);
+    drawTrimSquare(x+2, y - 1);
     char text[] = { (char)('0' + val), '\0' };
-    lcdDrawText(x + 5, y - 1, text, SMLSIZE | CENTERED | TEXT_INVERTED_COLOR);
+    lcdDrawText(x + 7, y - 1, text, SMLSIZE | CENTERED | TEXT_INVERTED_COLOR);
   }
   else if (options & OPTION_SLIDER_SQUARE_BUTTON) {
     drawTrimSquare(x, y - 1);
