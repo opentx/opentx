@@ -125,6 +125,7 @@ uint8_t getWizardCount()
       }
     }
   }
+  f_closedir(&dir);
   return wizCnt;
 }
 
