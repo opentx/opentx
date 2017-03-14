@@ -97,12 +97,13 @@ bool isTelemetryFieldAvailable(int index)
 
 bool isTelemetryFieldComparisonAvailable(int index)
 {
+  if (!isTelemetryFieldAvailable(index))
+    return false;
+    
   TelemetrySensor & sensor = g_model.telemetrySensors[index];
-  if (sensor.type == TELEM_TYPE_CALCULATED)
-    return true;
   if (sensor.unit >= UNIT_DATETIME)
     return false;
-  return (sensor.id != 0);
+  return true;
 }
 
 bool isChannelUsed(int channel)
