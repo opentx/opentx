@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -124,7 +124,7 @@ void menuRadioSetup(event_t event)
   struct gtm t;
   gettime(&t);
 
-  if ((menuVerticalPosition==ITEM_SETUP_DATE+1 || menuVerticalPosition==ITEM_SETUP_TIME+1) &&
+  if ((menuVerticalPosition==ITEM_SETUP_DATE+HEADER_LINE || menuVerticalPosition==ITEM_SETUP_TIME+HEADER_LINE) &&
       (s_editMode>0) &&
       (event==EVT_KEY_FIRST(KEY_ENTER) || event==EVT_KEY_FIRST(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event))) {
     // set the date and time into RTC chip
@@ -479,8 +479,8 @@ void menuRadioSetup(event_t event)
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.timezone, attr|LEFT);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
         break;
-        
-#if defined(CPUARM)      
+
+#if defined(CPUARM)
       case ITEM_SETUP_ADJUST_RTC:
         g_eeGeneral.adjustRTC = editCheckBox(g_eeGeneral.adjustRTC, RADIO_SETUP_2ND_COLUMN, y, STR_ADJUST_RTC, attr, event);
         break;
