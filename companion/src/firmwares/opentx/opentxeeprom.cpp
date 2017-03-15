@@ -3731,8 +3731,9 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         else
           internalField.Append(new SpareBitsField<2>(this));
       }
-      if (!IS_HORUS(board))
+      if (!IS_HORUS(board)) {
         internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
+      }
     }
 
     if (IS_TARANIS_X9E(board))
@@ -3767,9 +3768,6 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
           internalField.Append(new UnsignedField<2>(this, generalData.switchConfig[i]));
         else
           internalField.Append(new SpareBitsField<2>(this));
-      }
-      if (IS_TARANIS_X9E(board)) {
-        internalField.Append(new SpareBitsField<64-2*18>(this));
       }
       for (int i=0; i<MAX_SWITCHES(board, version); ++i) {
         internalField.Append(new ZCharField<3>(this, generalData.switchName[i], "Switch name"));
