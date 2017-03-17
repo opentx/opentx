@@ -6,8 +6,9 @@
 #include "lua.h"
 #include "llimits.h"
 #include "lauxlib.h"
+#include "lobject.h"
 
-typedef lua_Number luaR_result;
+typedef uint8_t luaR_result;
 
 // A number entry in the read only table
 typedef struct
@@ -30,8 +31,7 @@ typedef struct
 
 extern const luaR_table lua_rotable[];
 
-luaR_result luaR_findglobal(const char *key, lu_byte *ptype);
-int luaR_findfunction(lua_State *L, const luaL_Reg *ptable);
-luaR_result luaR_findentry(void *data, const char *key, lu_byte *ptype);
+luaR_result luaR_findglobal(const char * name, TValue * val);
+luaR_result luaR_findentry(void * data, const char * key, TValue * val);
 
 #endif

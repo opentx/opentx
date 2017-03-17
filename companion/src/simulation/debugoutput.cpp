@@ -21,26 +21,28 @@
 #include "debugoutput.h"
 #include "ui_debugoutput.h"
 
+#include "appdebugmessagehandler.h"
 #include "appdata.h"
+#include "filteredtextbuffer.h"
 
+#include <QElapsedTimer>
 #include <QMessageBox>
+#include <QRegularExpression>
 #include <QScrollBar>
+#include <QThread>
 #include <QDebug>
 
 #define DEBUG_OUTPUT_STATE_VERSION    1
 
 extern AppData g;  // ensure what "g" means
 
-DebugOutput * traceCallbackInstance = 0;
-const int DebugOutput::m_dataBufferMaxSize = 100;        // lines of text (this is not the display buffer)
-const int DebugOutput::m_dataPrintFreqDefault = 10;      // ms
+FilteredTextBuffer * DebugOutput::m_dataBufferDevice = Q_NULLPTR;
 const quint16 DebugOutput::m_savedViewStateVersion = 1;
 
-void traceCb(const char * text)
+void firmwareTraceCb(const char * text)
 {
-  // divert C callback into simulator instance
-  if (traceCallbackInstance) {
-    traceCallbackInstance->traceCallback(text);
+  if (DebugOutput::m_dataBufferDevice) {
+    DebugOutput::m_dataBufferDevice->write(text);
   }
 }
 
@@ -48,26 +50,22 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   QWidget(parent),
   ui(new Ui::DebugOutput),
   m_simulator(simulator),
-  m_tmrDataPrint(new QTimer()),
-  m_dataBuffer(QByteArray()),
   m_radioProfileId(g.sessionId()),
-  m_dataPrintFreq(m_dataPrintFreqDefault),
-  m_running(false),
-  m_filterExclude(true)
+  m_filterEnable(false),
+  m_filterExclude(false)
 {
   ui->setupUi(this);
 
 #ifdef __APPLE__
-  QFont newFont("Courier", 13);
-  ui->console->setFont(newFont);
+  ui->console->setFont(QFont("Courier", 13));
 #endif
 
   // TODO : allow selecting multiple filters, but needs to be efficient at output stage
 
   QStringList stockFilters;
-  stockFilters << "^lua[A-Z].*";
+  stockFilters << "/^(lua[A-Z]|script).*/i";
   stockFilters << "/(error|warning|-(E|W)-)/i";
-  stockFilters << "!^(GC Use|(play|load|write|find(True)?)File|convert(To|From)Simu|\\tfound( in map)?:|eeprom |f_[a-z]+\\(|(push|(p|P)op(up)?|chain)? ?Menu( .+ display)?|RamBackup).+$";
+  stockFilters << "!^(GC Use|(play|load|write|find(True)?)File|convert(To|From)Simu|\\t(not found|found( in map|\\:))|eeprom |f_[a-z]+\\(|(push|(p|P)op(up)?|chain)? ?Menu( .+ display)?|RamBackup).*$";
 
   foreach (const QString & fltr, stockFilters)
     ui->filterText->addItem(fltr, "no_delete");
@@ -79,44 +77,57 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   ui->actionWordWrap->setIcon(SimulatorIcon("word_wrap"));
   ui->actionClearScr->setIcon(SimulatorIcon("eraser"));
 
+  ui->btnFilter->setDefaultAction(ui->actionToggleFilter);
   ui->btnShowFilterHelp->setDefaultAction(ui->actionShowFilterHelp);
   ui->btnWordWrap->setDefaultAction(ui->actionWordWrap);
   ui->btnClearScr->setDefaultAction(ui->actionClearScr);
+
+  m_dataBufferDevice = new FilteredTextBuffer();
+  m_dataBufferDevice->setDataBufferMaxSize(DEBUG_OUTPUT_WIDGET_OUT_BUFF_SIZE);
+  m_dataBufferDevice->setInputBufferMaxSize(DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE);
+  m_dataBufferDevice->open(QIODevice::ReadWrite | QIODevice::Text);
+
+	connect(m_dataBufferDevice, &FilteredTextBuffer::readyRead, this, &DebugOutput::processBytesReceived);
+  connect(m_dataBufferDevice, &FilteredTextBuffer::bufferOverflow, this, &DebugOutput::onDataBufferOverflow);
+  connect(this, &DebugOutput::filterChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilter);
+  connect(this, &DebugOutput::filterEnabledChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilterEnabled);
+  connect(this, &DebugOutput::filterExprChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilterExpr);
+  connect(this, &DebugOutput::filterExclusiveChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilterExclusive);
 
   restoreState();
 
   ui->bufferSize->setValue(ui->console->maximumBlockCount());
 
-  // install simulator TRACE hook
-  traceCallbackInstance = this;
-  m_simulator->installTraceHook(traceCb);
-
-  m_tmrDataPrint->setInterval(m_dataPrintFreq);
-
+  connect(ui->actionToggleFilter, &QAction::toggled, this, &DebugOutput::onFilterToggled);
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
-  connect(m_tmrDataPrint, &QTimer::timeout, this, &DebugOutput::processBytesReceived);
+
+  if (AppDebugMessageHandler::instance()) {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 3, 0))  // https://bugreports.qt.io/browse/QTBUG-36119
+    connect(AppDebugMessageHandler::instance(), SIGNAL(messageOutput(quint8,QString,QMessageLogContext)), this, SLOT(onAppDebugMessage(quint8,QString,QMessageLogContext)));
+#else
+    connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
+#endif
+  }
+
+  // send firmware TRACE events to our data collector
+  m_simulator->installTraceHook(firmwareTraceCb);
 }
 
 DebugOutput::~DebugOutput()
 {
-  traceCallbackInstance = 0;
-  stop();
   saveState();
-  if (m_tmrDataPrint)
-    delete m_tmrDataPrint;
+
+  if (AppDebugMessageHandler::instance())
+    disconnect(AppDebugMessageHandler::instance(), 0, this, 0);
+
+  if (m_dataBufferDevice) {
+    disconnect(m_dataBufferDevice, 0, this, 0);
+    disconnect(this, 0, m_dataBufferDevice, 0);
+    m_dataBufferDevice->deleteLater();
+    m_dataBufferDevice = Q_NULLPTR;
+  }
+
   delete ui;
-}
-
-void DebugOutput::start()
-{
-  m_tmrDataPrint->start();
-  m_running = true;
-}
-
-void DebugOutput::stop()
-{
-  m_tmrDataPrint->stop();
-  m_running = false;
 }
 
 void DebugOutput::saveState()
@@ -132,7 +143,7 @@ void DebugOutput::saveState()
   QDataStream stream(&state, QIODevice::WriteOnly);
   stream << m_savedViewStateVersion
          << (qint16)ui->filterText->currentIndex() << (qint32)ui->console->maximumBlockCount()
-         << ui->btnFilter->isChecked() << ui->actionWordWrap->isChecked();
+         << m_filterEnable << ui->actionWordWrap->isChecked();
 
   SimulatorOptions opts = g.profile[m_radioProfileId].simulatorOptions();
   opts.dbgConsoleState = state;
@@ -154,55 +165,23 @@ void DebugOutput::restoreState()
 
   ui->filterText->insertItems(0, g.simuDbgFilters());
   ui->filterText->setCurrentIndex(fci);
-  ui->btnFilter->setChecked(flten);
   ui->console->setMaximumBlockCount(mbc);
   ui->actionWordWrap->setChecked(wwen);
-  onFilterTextEdited();
-}
 
-void DebugOutput::traceCallback(const char * text)
-{
-  const static QRegExp blank("^[\\r\\n]+$");
-  bool isBlank;
-
-  if (!m_running)
-    return;
-
-  QString line(text);
-  isBlank = line.contains(blank);
-
-  m_mtxDataBuffer.lock();
-  if (isBlank && m_dataBuffer.size())
-    m_dataBuffer[m_dataBuffer.size()-1] += line;
-  else
-    m_dataBuffer.append(text);
-  if (m_dataBuffer.size() > m_dataBufferMaxSize) {
-    m_dataBuffer.removeFirst();
-    qDebug() << __FILE__ << __LINE__ << "Line buffer overflow! size >" << m_dataBufferMaxSize;
-  }
-  m_mtxDataBuffer.unlock();
+  onFilterToggled(flten);
 }
 
 void DebugOutput::processBytesReceived()
 {
-  QString text;
-  bool fltMatch;
   const QTextCursor savedCursor(ui->console->textCursor());
   const int sbValue = ui->console->verticalScrollBar()->value();
   const bool sbAtBottom = (sbValue == ui->console->verticalScrollBar()->maximum());
+  qint64 len;
 
-  m_tmrDataPrint->stop();
-  while (m_dataBuffer.size() > 1) {
-    m_mtxDataBuffer.lock();
-    text = m_dataBuffer.takeFirst();
-    m_mtxDataBuffer.unlock();
-    // filter
-    if (ui->btnFilter->isChecked()) {
-      fltMatch = text.contains(m_filterRegEx);
-      if ((m_filterExclude && fltMatch) || (!m_filterExclude && !fltMatch)) {
-        continue;
-      }
-    }
+  while ((len = m_dataBufferDevice->bytesAvailable()) > 0) {
+    QString text(m_dataBufferDevice->read(qMin(len, qint64(512))));
+    if (text.isEmpty())
+      break;
     ui->console->moveCursor(QTextCursor::End);
     ui->console->textCursor().insertText(text);
     if (sbAtBottom) {
@@ -215,38 +194,70 @@ void DebugOutput::processBytesReceived()
     }
     QCoreApplication::processEvents();
   }
-  m_tmrDataPrint->start();
+}
+
+void DebugOutput::onDataBufferOverflow(const qint64 len)
+{
+  static QElapsedTimer reportTimer;
+
+  if (len <= 0) {
+    reportTimer.invalidate();
+  }
+  else if (!reportTimer.isValid() || reportTimer.elapsed() > 1000 * 30) {
+    qWarning("Data buffer overflow by %lld bytes!", len);
+    reportTimer.start();
+  }
+}
+
+void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context)
+{
+  if (level > 0) {
+    firmwareTraceCb(qPrintable(msg));
+    firmwareTraceCb("\n");
+  }
 }
 
 /*
  * UI handlers
  */
 
-void DebugOutput::onFilterTextEdited()
+void DebugOutput::onFilterStateChanged()
 {
   const QString fText = ui->filterText->currentText();
   if (fText.isEmpty()) {
-    ui->btnFilter->setChecked(false);
-    m_filterRegEx = QRegularExpression();
+    onFilterToggled(false);
     return;
   }
 
-  m_filterRegEx = makeRegEx(fText, &m_filterExclude);
+  QRegularExpression filterRegEx = makeRegEx(fText, &m_filterExclude);
 
-  if (m_filterRegEx.isValid()) {
-    //ui->btnFilter->setChecked(true);
+  if (!m_filterEnable || filterRegEx.isValid())
     ui->filterText->setStyleSheet("");
-  }
-  else {
-    ui->btnFilter->setChecked(false);
-    m_filterRegEx = QRegularExpression();
+  else if (m_filterEnable)
     ui->filterText->setStyleSheet("background-color: rgba(255, 205, 185, 200);");
-  }
+
+  if (filterRegEx.isValid())
+    emit filterChanged(m_filterEnable, m_filterExclude, filterRegEx);
+  else
+    onFilterToggled(false);
 }
 
 void DebugOutput::onFilterTextChanged(const QString &)
 {
-  onFilterTextEdited();
+  onFilterStateChanged();
+}
+
+void DebugOutput::onFilterToggled(bool enable)
+{
+  if (enable != m_filterEnable) {
+    m_filterEnable = enable;
+    if (ui->actionToggleFilter->isChecked() != enable)
+      ui->actionToggleFilter->setChecked(enable);
+    if (enable)
+      onFilterStateChanged();
+    else
+      emit filterEnabledChanged(false);
+  }
 }
 
 void DebugOutput::on_bufferSize_editingFinished()
@@ -267,9 +278,9 @@ void DebugOutput::on_actionClearScr_triggered()
 void DebugOutput::on_actionShowFilterHelp_triggered()
 {
   // TODO : find some place better for this.
-  QString help = \
-    "<html><head><style>kbd {background-color: ghostwhite; font-size: large; white-space: nowrap;}</style></head><body>"
-    "<p>The filter supports two syntax types: basic matching with common wildcards and well as full Perl-style (<code>pcre</code>) Regular Expressions.</p>"
+  QString help = tr( \
+    "<html><head><style>kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}</style></head><body>"
+    "<p>The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (<code>pcre</code>) Regular Expressions.</p>"
     "<p>By default a filter will only show lines which match (<b>inclusive</b>). To make an <b>exclusive</b> filter which removes matching lines, "
       "prefix the filter expression with a <kbd>!</kbd> (exclamation mark).</p>"
     "<p>To use <b>Regular Expressions</b> (RegEx), prefix the filter text with a <kbd>/</kbd> (slash) or <kbd>^</kbd> (up caret). "
@@ -280,8 +291,9 @@ void DebugOutput::on_actionShowFilterHelp_triggered()
       "<li>If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.</li>"
       "<li>A useful resource for testing REs (with a full reference) can be found at <a href=\"http://www.regexr.com/\">http://www.regexr.com/</a></li>"
     "</ul></p>"
-    "<p>To use <b>basic matching</b> just type any text. Wildcards <kbd>*</kbd> (asterisk) matches any text and <kbd>?</kbd> (question mark) matches any single character."
+    "<p>To use <b>basic matching</b> just type any text."
     "<ul>"
+      "<li>Wildcards: <kbd>*</kbd> (asterisk) matches zero or more of any character(s), and <kbd>?</kbd> (question mark) matches any single character.</li>"
       "<li>The match is always case-insensitive.</li>"
       "<li>The match always starts from the beginning of a log line. To ignore characters at the start, use a leading <kbd>*</kbd> wildcard.</li>"
       "<li>A trailing <kbd>*</kbd> is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.</li>"
@@ -291,7 +303,7 @@ void DebugOutput::on_actionShowFilterHelp_triggered()
     "<p>To <b>remove an entry</b> from the filter selector list, first choose it, and while in the line editor press <kbd>Shift-Delete</kbd> (or <kbd>Shift-Backspace</kbd>) key combination. "
       "The default filters cannot be removed. Up to 50 filters are stored.</p>"
     "</body></html>"
-  ;
+  );
   QMessageBox * msgbox = new QMessageBox(QMessageBox::NoIcon, tr("Debug Console Filter Help"), help, QMessageBox::Ok, this);
   msgbox->exec();
 }
@@ -341,7 +353,6 @@ QRegularExpression DebugOutput::makeRegEx(const QString & input, bool * isExlusi
     reFlags |= QRegularExpression::CaseInsensitiveOption;
     re.setPattern(output);
   }
-  // TODO : user option?
   re.setPatternOptions(reFlags);
   return re;
 }

@@ -215,8 +215,6 @@ void AppPreferencesDialog::initSettings()
   ui->profileNameLE->setText(g.profile[g.id()].name());
   ui->SplashFileName->setText(g.profile[g.id()].splashFile());
 
-  displayImage( g.profile[g.id()].splashFile() );
-
   QString hwSettings;
   if (g.profile[g.id()].stickPotCalib() == "" ) {
     hwSettings = tr("EMPTY: No radio settings stored in profile");
@@ -231,6 +229,22 @@ void AppPreferencesDialog::initSettings()
   ui->lblGeneralSettings->setText(hwSettings);
 
   Firmware * current_firmware = getCurrentFirmware();
+  
+  if (!IS_HORUS(current_firmware->getBoard())) {
+    displayImage(g.profile[g.id()].splashFile());
+  }
+  // TODO: Remove once splash replacement supported on Horus
+  // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
+  else {
+    ui->imageLabel->hide();
+    ui->splashLabel->hide();
+    ui->SplashFileName->hide();
+    ui->SplashSelect->hide();
+    ui->SplashSelect->setEnabled(false);
+    ui->clearImageButton->hide();
+    ui->clearImageButton->setEnabled(false);
+    ui->splashSeparator->hide();
+  }
 
   foreach(Firmware * firmware, firmwares) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());

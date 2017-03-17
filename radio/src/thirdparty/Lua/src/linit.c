@@ -43,14 +43,14 @@ static const luaL_Reg loadedlibs[] = {
 /* The read-only tables are defined here */
 const luaR_table lua_rotable[] =
 {
-  {LUA_MATHLIBNAME, mathlib, mathlib_vals},
-  {LUA_BITLIBNAME, bitlib, NULL},
-  {LUA_IOLIBNAME, iolib, NULL},
-  {LUA_STRLIBNAME, strlib, NULL},
+  {"__opentx", opentxLib, opentxConstants},
   {"lcd", lcdLib, NULL},
   {"model", modelLib, NULL},
   {"__baselib", baselib, NULL},
-  {"__opentx", opentxLib, opentxConstants},
+  {LUA_IOLIBNAME, iolib, NULL},
+  {LUA_STRLIBNAME, strlib, NULL},
+  {LUA_MATHLIBNAME, mathlib, mathlib_vals},
+  {LUA_BITLIBNAME, bitlib, NULL},
   {NULL, NULL, NULL}
 };
 

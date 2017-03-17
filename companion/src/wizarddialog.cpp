@@ -22,9 +22,9 @@
 #include "wizarddata.h"
 #include "helpers.h"
 
-WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, QWidget *parent):
+WizardDialog::WizardDialog(const GeneralSettings & settings, unsigned int modelId, const ModelData & modelData, QWidget *parent):
   QWizard(parent),
-  mix(settings, modelId),
+  mix(settings, modelId, modelData),
   settings(settings)
 {
   setWindowIcon(CompanionIcon("wizard.png"));

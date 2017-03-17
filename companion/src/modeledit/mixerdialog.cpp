@@ -32,109 +32,115 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
   md(mixdata),
   lock(false)
 {
-    ui->setupUi(this);
-    QRegExp rx(CHAR_FOR_NAMES_REGEX);
-    QLabel * lb_fp[] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
-    QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+  ui->setupUi(this);
+  QRegExp rx(CHAR_FOR_NAMES_REGEX);
+  QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
+  QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
+  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    cb_fp[i] = tmp[i];
+  }
 
-    this->setWindowTitle(tr("DEST -> CH%1").arg(md->destCh));
+  this->setWindowTitle(tr("DEST -> CH%1").arg(md->destCh));
 
-    populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | 
-                                                                        POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
-    ui->sourceCB->removeItem(0);
+  populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS |
+                                                                      POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  ui->sourceCB->removeItem(0);
 
-    int limit = firmware->getCapability(OffsetWeight);
+  int limit = firmware->getCapability(OffsetWeight);
 
-    gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, model, 100, -limit, limit);
-    gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, model, 0, -limit, limit);
-    curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, 
-                                md->curve, model, firmware->getCapability(HasMixerExpo) ? 0 : HIDE_EXPO);
+  gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, model, 100, -limit, limit);
+  gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, model, 0, -limit, limit);
+  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB,
+                              md->curve, model, firmware->getCapability(HasMixerExpo) ? 0 : HIDE_EXPO);
 
-    ui->MixDR_CB->setChecked(md->noExpo == 0);
+  ui->MixDR_CB->setChecked(md->noExpo == 0);
 
-    if (!firmware->getCapability(HasNoExpo)) {
-      ui->MixDR_CB->hide();
-      ui->label_MixDR->hide();
+  if (!firmware->getCapability(HasNoExpo)) {
+    ui->MixDR_CB->hide();
+    ui->label_MixDR->hide();
+  }
+
+  if (!firmware->getCapability(VirtualInputs)) {
+    for(int i=0; i < CPN_MAX_STICKS; i++) {
+      ui->trimCB->addItem(firmware->getAnalogInputName(i));
     }
+  }
 
-    if (!firmware->getCapability(VirtualInputs)) {
-      for(int i=0; i < CPN_MAX_STICKS; i++) {
-        ui->trimCB->addItem(firmware->getAnalogInputName(i));
+  ui->trimCB->setCurrentIndex(1 - md->carryTrim);
+
+  int namelength = firmware->getCapability(HasMixerNames);
+  if (!namelength) {
+    ui->label_name->hide();
+    ui->mixerName->hide();
+  }
+  else {
+    ui->mixerName->setMaxLength(namelength);
+  }
+  ui->mixerName->setValidator(new QRegExpValidator(rx, this));
+  ui->mixerName->setText(md->name);
+
+  if (!firmware->getCapability(FlightModes)) {
+    ui->label_phases->hide();
+    for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+      lb_fp[i]->hide();
+      cb_fp[i]->hide();
+    }
+  }
+  else {
+    ui->label_phases->setToolTip(tr("Click to access popup menu"));
+    ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
+    int mask = 1;
+    for (int i=0; i<CPN_MAX_FLIGHT_MODES ; i++) {
+      if ((md->flightModes & mask) == 0) {
+        cb_fp[i]->setChecked(true);
       }
+      mask <<= 1;
     }
+    for (int i=firmware->getCapability(FlightModes); i<CPN_MAX_FLIGHT_MODES; i++) {
+      lb_fp[i]->hide();
+      cb_fp[i]->hide();
+    }
+  }
 
-    ui->trimCB->setCurrentIndex(1 - md->carryTrim);
+  populateSwitchCB(ui->switchesCB, md->swtch, generalSettings, MixesContext);
+  ui->warningCB->setCurrentIndex(md->mixWarn);
+  ui->mltpxCB->setCurrentIndex(md->mltpx);
+  int scale=firmware->getCapability(SlowScale);
+  float range=firmware->getCapability(SlowRange);
+  ui->slowDownSB->setMaximum(range/scale);
+  ui->slowDownSB->setSingleStep(1.0/scale);
+  ui->slowDownSB->setDecimals((scale==1 ? 0 :1));
+  ui->slowDownSB->setValue((float)md->speedDown/scale);
+  ui->slowUpSB->setMaximum(range/scale);
+  ui->slowUpSB->setSingleStep(1.0/scale);
+  ui->slowUpSB->setDecimals((scale==1 ? 0 :1));
+  ui->slowUpSB->setValue((float)md->speedUp/scale);
+  ui->delayDownSB->setMaximum(range/scale);
+  ui->delayDownSB->setSingleStep(1.0/scale);
+  ui->delayDownSB->setDecimals((scale==1 ? 0 :1));
+  ui->delayDownSB->setValue((float)md->delayDown/scale);
+  ui->delayUpSB->setMaximum(range/scale);
+  ui->delayUpSB->setSingleStep(1.0/scale);
+  ui->delayUpSB->setDecimals((scale==1 ? 0 :1));
+  ui->delayUpSB->setValue((float)md->delayUp/scale);
+  QTimer::singleShot(0, this, SLOT(shrink()));
 
-    int namelength = firmware->getCapability(HasMixerNames);
-    if (!namelength) {
-      ui->label_name->hide();
-      ui->mixerName->hide();
-    }
-    else {
-      ui->mixerName->setMaxLength(namelength);
-    }
-    ui->mixerName->setValidator(new QRegExpValidator(rx, this));
-    ui->mixerName->setText(md->name);
-
-    if (!firmware->getCapability(FlightModes)) {
-      ui->label_phases->hide();
-      for (int i=0; i<9; i++) {
-        lb_fp[i]->hide();
-        cb_fp[i]->hide();
-      }
-    }
-    else {
-      int mask = 1;
-      for (int i=0; i<9 ; i++) {
-        if ((md->flightModes & mask) == 0) {
-          cb_fp[i]->setChecked(true);
-        }
-        mask <<= 1;
-      }
-      for (int i=firmware->getCapability(FlightModes); i<9; i++) {
-        lb_fp[i]->hide();
-        cb_fp[i]->hide();
-      }
-    }
-
-    populateSwitchCB(ui->switchesCB, md->swtch, generalSettings, MixesContext);
-    ui->warningCB->setCurrentIndex(md->mixWarn);
-    ui->mltpxCB->setCurrentIndex(md->mltpx);
-    int scale=firmware->getCapability(SlowScale);  
-    float range=firmware->getCapability(SlowRange);  
-    ui->slowDownSB->setMaximum(range/scale);
-    ui->slowDownSB->setSingleStep(1.0/scale);
-    ui->slowDownSB->setDecimals((scale==1 ? 0 :1));
-    ui->slowDownSB->setValue((float)md->speedDown/scale);
-    ui->slowUpSB->setMaximum(range/scale);
-    ui->slowUpSB->setSingleStep(1.0/scale);
-    ui->slowUpSB->setDecimals((scale==1 ? 0 :1));
-    ui->slowUpSB->setValue((float)md->speedUp/scale);
-    ui->delayDownSB->setMaximum(range/scale);
-    ui->delayDownSB->setSingleStep(1.0/scale);
-    ui->delayDownSB->setDecimals((scale==1 ? 0 :1));
-    ui->delayDownSB->setValue((float)md->delayDown/scale);
-    ui->delayUpSB->setMaximum(range/scale);
-    ui->delayUpSB->setSingleStep(1.0/scale);
-    ui->delayUpSB->setDecimals((scale==1 ? 0 :1));
-    ui->delayUpSB->setValue((float)md->delayUp/scale);
-    QTimer::singleShot(0, this, SLOT(shrink()));
-
-    valuesChanged();
-    connect(ui->mixerName,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->trimCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->MixDR_CB,SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
-    connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->warningCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->mltpxCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
-    connect(ui->delayDownSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->delayUpSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->slowDownSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    connect(ui->slowUpSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
-    for (int i=0; i<9; i++) {
-      connect(cb_fp[i],SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
-    }
+  valuesChanged();
+  connect(ui->mixerName,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
+  connect(ui->sourceCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+  connect(ui->trimCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+  connect(ui->MixDR_CB,SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
+  connect(ui->switchesCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+  connect(ui->warningCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+  connect(ui->mltpxCB,SIGNAL(currentIndexChanged(int)),this,SLOT(valuesChanged()));
+  connect(ui->delayDownSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
+  connect(ui->delayUpSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
+  connect(ui->slowDownSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
+  connect(ui->slowUpSB,SIGNAL(editingFinished()),this,SLOT(valuesChanged()));
+  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    connect(cb_fp[i],SIGNAL(toggled(bool)),this,SLOT(valuesChanged()));
+  }
 }
 
 MixerDialog::~MixerDialog()
@@ -162,7 +168,6 @@ void MixerDialog::valuesChanged()
 {
   if (!lock) {
     lock = true;
-    QCheckBox * cb_fp[] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
     md->srcRaw  = RawSource(ui->sourceCB->itemData(ui->sourceCB->currentIndex()).toInt());
     if (firmware->getCapability(HasNoExpo)) {
       bool drVisible = (md->srcRaw.type == SOURCE_TYPE_STICK && md->srcRaw.index < CPN_MAX_STICKS);
@@ -182,7 +187,7 @@ void MixerDialog::valuesChanged()
     strcpy(md->name, ui->mixerName->text().toLatin1());
 
     md->flightModes = 0;
-    for (int i=8; i>=0 ; i--) {
+    for (int i=CPN_MAX_FLIGHT_MODES-1; i>=0 ; i--) {
       if (!cb_fp[i]->checkState()) {
         md->flightModes++;
       }
@@ -197,4 +202,45 @@ void MixerDialog::valuesChanged()
 void MixerDialog::shrink()
 {
   resize(0, 0);
+}
+
+void MixerDialog::label_phases_customContextMenuRequested(const QPoint & pos)
+{
+  QLabel *label = (QLabel *)sender();
+  QPoint globalPos = label->mapToGlobal(pos);
+  QMenu contextMenu;
+  contextMenu.addAction(tr("Clear All"), this, SLOT(fmClearAll()));
+  contextMenu.addAction(tr("Set All"), this, SLOT(fmSetAll()));
+  contextMenu.addAction(tr("Invert All"), this, SLOT(fmInvertAll()));
+  contextMenu.exec(globalPos);
+}
+
+void MixerDialog::fmClearAll()
+{
+  lock = true;
+  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    cb_fp[i]->setChecked(false);
+  }
+  lock = false;
+  valuesChanged();
+}
+
+void MixerDialog::fmSetAll()
+{
+  lock = true;
+  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    cb_fp[i]->setChecked(true);
+  }
+  lock = false;
+  valuesChanged();
+}
+
+void MixerDialog::fmInvertAll()
+{
+  lock = true;
+  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    cb_fp[i]->setChecked(!cb_fp[i]->isChecked());
+  }
+  lock = false;
+  valuesChanged();
 }

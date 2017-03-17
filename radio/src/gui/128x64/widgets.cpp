@@ -232,22 +232,20 @@ void drawStatusLine()
 }
 #endif
 
-void drawProgressBar(const char * label)
+void drawProgressBar(const char * label, int num, int den)
 {
-  lcdDrawTextAlignedLeft(4*FH, label);
+  lcdClear();
+  if (label) {
+    lcdDrawTextAlignedLeft(4*FH, label);
+  }
   lcdDrawRect(4, 6*FH+4, LCD_W-8, 7);
-  lcdRefresh();
-}
-
-void updateProgressBar(int num, int den)
-{
   if (num > 0 && den > 0) {
     int width = ((LCD_W-12)*num)/den;
     lcdDrawSolidHorizontalLine(6, 6*FH+6, width, FORCE);
     lcdDrawSolidHorizontalLine(6, 6*FH+7, width, FORCE);
     lcdDrawSolidHorizontalLine(6, 6*FH+8, width, FORCE);
-    lcdRefresh();
   }
+  lcdRefresh();
 }
 
 #if defined(CPUARM) || defined(CPUM2560)

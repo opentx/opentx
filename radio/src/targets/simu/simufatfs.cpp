@@ -424,7 +424,7 @@ FRESULT f_readdir (DIR * rep, FILINFO * fil)
   }
 #endif
 
-  memset(fil->fname, 0, SD_SCREEN_FILE_LENGTH);
+  memset(fil->fname, 0, _MAX_LFN);
   strcpy(fil->fname, ent->d_name);
   // TRACE_SIMPGMSPACE("f_readdir(): %s", fil->fname);
   return FR_OK;

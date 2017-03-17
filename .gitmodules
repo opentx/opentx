@@ -1,0 +1,3 @@
+[submodule "radio/src/thirdparty/GCS_MAVLink/include_v1.0"]
+	path = radio/src/thirdparty/GCS_MAVLink/include_v1.0
+	url = https://github.com/mavlink/c_library_v1.git

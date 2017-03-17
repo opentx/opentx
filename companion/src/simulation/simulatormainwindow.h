@@ -30,7 +30,7 @@
 class DebugOutput;
 class RadioData;
 class RadioOutputsWidget;
-class SimulatorDialog;
+class SimulatorWidget;
 class SimulatorInterface;
 class TrainerSimulator;
 class TelemetrySimulator;
@@ -52,20 +52,27 @@ class SimulatorMainWindow : public QMainWindow
     ~SimulatorMainWindow();
 
     bool setRadioData(RadioData * radioData);
-    bool useTempDataPath(bool deleteOnClose = true, bool saveOnClose = false);
+    bool useTempDataPath(bool deleteOnClose = true);
     bool setOptions(SimulatorOptions & options, bool withSave = true);
     QMenu * createPopupMenu();
 
   public slots:
+    virtual void show();
     void start();
-    void showRadioTitlebar(bool show);
-    void toggleMenuBar(bool show);
+    void showMenuBar(bool show);
+    void showRadioFixedSize(Qt::Orientation orientation, bool fixed);
+    void showRadioFixedWidth(bool fixed);
+    void showRadioFixedHeight(bool fixed);
+    void showRadioDocked(bool dock);
 
   protected slots:
     virtual void closeEvent(QCloseEvent *);
     virtual void changeEvent(QEvent *e);
     void restoreUiState();
     void saveUiState();
+    void toggleMenuBar(bool show);
+    void setRadioSizePolicy(int fixType);
+    void toggleRadioDocked(bool dock);
     void luaReload(bool);
     void openJoystickDialog(bool);
     void showHelp(bool show);
@@ -77,7 +84,7 @@ class SimulatorMainWindow : public QMainWindow
     SimulatorInterface  * m_simulator;
 
     Ui::SimulatorMainWindow * ui;
-    SimulatorDialog * m_simulatorWidget;
+    SimulatorWidget * m_simulatorWidget;
     DebugOutput * m_consoleWidget;
     RadioOutputsWidget * m_outputsWidget;
 
@@ -89,8 +96,9 @@ class SimulatorMainWindow : public QMainWindow
 
     QVector<keymapHelp_t> m_keymapHelp;
     int m_radioProfileId;
+    int m_radioSizeConstraint;
     bool m_firstShow;
-    bool m_showRadioTitlebar;
+    bool m_showRadioDocked;
     bool m_showMenubar;
 
     const static quint16 m_savedUiStateVersion;

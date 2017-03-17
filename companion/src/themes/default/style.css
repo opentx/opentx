@@ -52,11 +52,11 @@ QSplitter::handle:hover {
 */
 
 /* default radio "case" background */
-SimulatorDialog > QWidget {
+SimulatorWidget > QWidget {
 	background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(242, 242, 242, 255), stop:0.757062 rgba(222, 220, 220, 255), stop:1 rgba(232, 230, 230, 255));
 }
 /* radio LCD/controls area under "case" */
-SimulatorDialog #radioUiWidget {
+SimulatorWidget #radioUiWidget {
   background-color: qlineargradient(spread:reflect, x1:0.22, y1:0, x2:0.55065, y2:0.54, stop:0 rgba(7, 7, 7, 250), stop:0.864407 rgba(66, 66, 66, 255));
   margin: 0;
   padding: 0;

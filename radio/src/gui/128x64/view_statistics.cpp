@@ -171,16 +171,16 @@ void menuStatisticsDebug(event_t event)
 #if defined(CPUARM)
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_MIXMAX, "ms");
 #endif
 
 #if defined(CPUARM)
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+2, menusStack.available(), UNSIGN|LEFT|TINSIZE);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_RTOS, "/");
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS+2, audioStack.available(), UNSIGN|LEFT|TINSIZE);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_RTOS, "/");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS+2, mixerStack.available(), UNSIGN|LEFT|TINSIZE);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_RTOS, "/");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS+2, audioStack.available(), UNSIGN|LEFT|TINSIZE);
 #endif
 
 #if !defined(CPUARM)

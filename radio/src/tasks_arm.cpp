@@ -100,7 +100,7 @@ void resetForcePowerOffRequest()
 
 bool isForcePowerOffRequested()
 {
-  if (pwroffPressed()) {
+  if (pwrOffPressed()) {
     if (timeForcePowerOffPressed == 0) {
       timeForcePowerOffPressed = get_tmr10ms();
     }
@@ -143,7 +143,11 @@ void mixerTask(void * pdata)
 
     uint32_t now = CoGetOSTime();
     bool run = false;
-    if ((now - lastRunTime) > 10) {     // run at least every 20ms
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+    if ((now - lastRunTime) >= (usbStarted() ? 5 : 10)) {     // run at least every 20ms (every 10ms if USB is active)
+#else
+    if ((now - lastRunTime) >= 10) {     // run at least every 20ms
+#endif
       run = true;
     }
     else if (now == nextMixerTime[0]) {
@@ -170,6 +174,10 @@ void mixerTask(void * pdata)
       DEBUG_TIMER_SAMPLE(debugTimerMixerIterval);
       CoLeaveMutexSection(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
+
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+      usbJoystickUpdate();
+#endif
 
 #if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
@@ -202,7 +210,7 @@ void menusTask(void * pdata)
 {
   opentxInit();
 
-#if defined(PWR_BUTTON_DELAY)
+#if defined(PWR_BUTTON_PRESS)
   while (1) {
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
@@ -217,6 +225,7 @@ void menusTask(void * pdata)
 #endif
     uint32_t start = (uint32_t)CoGetOSTime();
     DEBUG_TIMER_START(debugTimerPerMain);
+    DEBUG_TIMER_SAMPLE(debugTimerPerMainPeriod);
     perMain();
     DEBUG_TIMER_STOP(debugTimerPerMain);
     // TODO remove completely massstorage from sky9x firmware

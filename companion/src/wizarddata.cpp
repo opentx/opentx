@@ -33,14 +33,15 @@ void Channel::clear()
   prebooked = false;
   input1 = NO_INPUT;
   input2 = NO_INPUT;
-  weight1 = 0;  
+  weight1 = 0;
   weight2 = 0;
 }
 
-WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId):
+WizMix::WizMix(const GeneralSettings & settings, unsigned int modelId, const ModelData & modelData):
   complete(false),
   modelId(modelId),
   settings(settings),
+  originalModelData(modelData),
   vehicle(NOVEHICLE)
 {
   strcpy(name, "            ");
@@ -60,12 +61,11 @@ void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int wei
 void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixIndex)
 {
   if (input != NO_INPUT)  {
-    bool isTaranis = IS_TARANIS(getCurrentBoard());
-
+    bool isHorusOrTaranis = IS_HORUS_OR_TARANIS(getCurrentBoard());
     if (input >= RUDDER_INPUT && input <= AILERONS_INPUT) {
       MixData & mix = model.mixData[mixIndex++];
       mix.destCh = channel+1;
-      if (isTaranis){
+      if (isHorusOrTaranis){
         int channel = settings.getDefaultChannel(input-1);
         mix.srcRaw = RawSource(SOURCE_TYPE_VIRTUAL_INPUT, channel);
       }
@@ -75,13 +75,13 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
     }
     else if (input==FLAPS_INPUT){
       // There ought to be some kind of constants for switches somewhere...
-      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA0 :-SWITCH_ELE ,  weight); //Taranis SA-UP, 9X ELE-UP
-      maxMixSwitch((char *)"Flaps Dn", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SA2 : SWITCH_ELE , -weight); //Taranis SA-DOWN, 9X ELE-DOWN
+      maxMixSwitch((char *)"Flaps Up",   model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SA0 :-SWITCH_ELE ,  weight); //Taranis-Horus SA-UP, 9X ELE-UP
+      maxMixSwitch((char *)"Flaps Dn", model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SA2 : SWITCH_ELE , -weight); //Taranis-Horus SA-DOWN, 9X ELE-DOWN
 
     }
-    else if (input==AIRBRAKES_INPUT){ 
-      maxMixSwitch((char *)"AirbkOff", model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE0 :-SWITCH_RUD , -weight); //Taranis SE-UP, 9X RUD-UP
-      maxMixSwitch((char *)"AirbkOn",  model.mixData[mixIndex++], channel+1, isTaranis ? SWITCH_SE2 : SWITCH_RUD , weight); //Tatanis SE-DOWN, 9X RUD-DOWN
+    else if (input==AIRBRAKES_INPUT){
+      maxMixSwitch((char *)"AirbkOff", model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SE0 :-SWITCH_RUD , -weight); //Taranis-Horus SE-UP, 9X RUD-UP
+      maxMixSwitch((char *)"AirbkOn",  model.mixData[mixIndex++], channel+1, isHorusOrTaranis ? SWITCH_SE2 : SWITCH_RUD , weight); //Tatanis-Horus SE-DOWN, 9X RUD-DOWN
     }
   }
 }
@@ -89,9 +89,10 @@ void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int 
 WizMix::operator ModelData()
 {
   int throttleChannel = -1;
-  bool isTaranis = IS_TARANIS(getCurrentBoard());
 
   ModelData model;
+  //ModelData model(originalModelData);
+  model.category = originalModelData.category;
   model.used = true;
   model.moduleData[0].modelId = modelId;
   model.setDefaultInputs(settings);
@@ -105,7 +106,7 @@ WizMix::operator ModelData()
   model.name[WIZ_MODEL_NAME_LENGTH] = 0;
 
   // Add the channel mixes
-  for (int i=0; i<WIZ_MAX_CHANNELS; i++ ) 
+  for (int i=0; i<WIZ_MAX_CHANNELS; i++ )
   {
     Channel ch = channel[i];
     if (ch.input1 == THROTTLE_INPUT || ch.input2 == THROTTLE_INPUT)
@@ -118,7 +119,7 @@ WizMix::operator ModelData()
   // Add the Throttle Cut option
   if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
     model.customFn[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
-    model.customFn[switchIndex].swtch.index = isTaranis ? SWITCH_SF0 : SWITCH_THR;
+    model.customFn[switchIndex].swtch.index = IS_HORUS_OR_TARANIS(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
     model.customFn[switchIndex].enabled = 1;
     model.customFn[switchIndex].func = (AssignFunc)throttleChannel;
     model.customFn[switchIndex].param = -100;
@@ -140,5 +141,3 @@ WizMix::operator ModelData()
 
   return model;
 }
-
-

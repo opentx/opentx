@@ -45,7 +45,7 @@ class Widget
     {
     }
 
-    virtual void update() const
+    virtual void update()
     {
     }
 

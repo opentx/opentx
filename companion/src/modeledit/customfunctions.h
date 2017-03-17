@@ -23,7 +23,7 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QtMultimedia>
+#include <QMediaPlayer>
 
 class RepeatComboBox: public QComboBox
 {

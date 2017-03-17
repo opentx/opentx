@@ -152,40 +152,40 @@ void menuStatisticsDebug(event_t event)
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_FREE_RAM, "b");
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_FREE_RAM, "b");
 
 #if defined(LUA)
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
-  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
 #endif
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_MIXMAX, "ms");
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
 #if !defined(SIMU) && defined(USB_SERIAL)
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_USB, "Usb");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_out, LEFT);
-  lcdDrawText(lcdLastPos, MENU_DEBUG_Y_USB, " ");
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_USB, " ");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_USB, " ");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_out, LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_USB, " ");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
 #endif
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
   lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
-  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
-  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
-  lcdDrawText(lcdLastPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcdDrawNumber(lcdLastPos, MENU_DEBUG_Y_RTOS, stackAvailable(), LEFT);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, stackAvailable(), LEFT);
 
   lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();

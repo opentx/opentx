@@ -67,12 +67,8 @@ class OpenTxEepromInterface : public EEPROMInterface
     bool loadRadioSettingsFromRLE(GeneralSettings & settings, RleFile * rleFile, uint8_t version);
     
     bool loadModelFromRLE(ModelData & model, RleFile * rleFile, unsigned int index, uint8_t version, uint32_t variant);
-    
-    template <class T>
-    bool saveModel(unsigned int index, ModelData & model, uint8_t version, uint32_t variant);
-    
-    template <class T>
-    bool saveRadioSettings(GeneralSettings & settings, Board::Type board, uint8_t version, uint32_t variant);
+
+    void showErrors(const QString & title, const QStringList & errors);
     
     uint8_t getLastDataVersion(Board::Type board);
     

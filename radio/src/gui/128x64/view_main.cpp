@@ -38,13 +38,17 @@
 #define VBATTUNIT_X   (VBATT_X-1)
 #define VBATTUNIT_Y   (3*FH)
 #define REBOOT_X      (20*FW-3)
-#define BAR_HEIGHT    (BOX_WIDTH-1)
+#define BAR_HEIGHT    (BOX_WIDTH-1l) // don't remove the l here to force 16bits maths on 9X
 #define TRIM_LH_X     (LCD_W*1/4+2)
 #define TRIM_LV_X     3
 #define TRIM_RV_X     (LCD_W-4)
 #define TRIM_RH_X     (LCD_W*3/4-2)
+#define TRIM_LH_NEG   (TRIM_LH_X+1*FW)
+#define TRIM_LH_POS   (TRIM_LH_X-4*FW)
+#define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
+#define TRIM_RH_POS   (TRIM_RH_X-4*FW)
 
-#define TRIM_LEN 27
+#define TRIM_LEN      23
 
 void drawPotsBars()
 {
@@ -123,7 +127,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber(dir>0 ? 22 : 54, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
         }
       }
 #endif
@@ -149,7 +153,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(dir>0 ? -11 : 20), ym-2, -abs(dir/5), TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
         }
       }
 #endif
@@ -158,25 +162,26 @@ void displayTrims(uint8_t phase)
   }
 }
 
-void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
+FORCEINLINE void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
 {
-  // Main timer
-  if (g_model.timers[index].mode) {
+  const TimerData & timer = g_model.timers[index];
+  if (timer.mode) {
     const TimerState & timerState = timersStates[index];
-    LcdFlags att = RIGHT | DBLSIZE | (timerState.val<0 ? BLINK|INVERS : 0);
+    const uint8_t negative = (timerState.val<0 ? BLINK | INVERS : 0);
+    LcdFlags att = RIGHT | DBLSIZE | negative;
     drawTimer(x, y, timerState.val, att, att);
 #if defined(CPUARM)
-    uint8_t xLabel = (timerState.val >= 0 ? x-49 : x-56);
-    uint8_t len = zlen(g_model.timers[index].name, LEN_TIMER_NAME);
+    uint8_t xLabel = (negative ? x-56 : x-49);
+    uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
     if (len > 0) {
-      lcdDrawSizedText(xLabel, y+FH, g_model.timers[index].name, len, RIGHT | ZCHAR);
+      lcdDrawSizedText(xLabel, y+FH, timer.name, len, RIGHT | ZCHAR);
     }
     else {
-      drawTimerMode(xLabel, y+FH, g_model.timers[index].mode, RIGHT);
+      drawTimerMode(xLabel, y+FH, timer.mode, RIGHT);
     }
 #else
-    uint8_t xLabel = (timerState.val >= 0 ? x-69 : x-76);
-    drawTimerMode(xLabel, y+FH, g_model.timers[index].mode);
+    uint8_t xLabel = (negative ? x-76 : x-69);
+    drawTimerMode(xLabel, y+FH, timer.mode);
 #endif
   }
 }
@@ -359,7 +364,7 @@ void menuMainView(event_t event)
       killEvents(event);
       break;
 #endif
-      
+
     CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
@@ -372,7 +377,7 @@ void menuMainView(event_t event)
       killEvents(event);
       break;
 #endif
-  
+
 #if defined(EVT_KEY_PREVIOUS_VIEW)
       // TODO try to split those 2 cases on 9X
     case EVT_KEY_PREVIOUS_VIEW:
@@ -387,7 +392,7 @@ void menuMainView(event_t event)
       storageDirty(EE_GENERAL);
       break;
 #endif
-  
+
 #if defined(EVT_KEY_STATISTICS)
     case EVT_KEY_STATISTICS:
       chainMenu(menuStatisticsView);
@@ -428,7 +433,7 @@ void menuMainView(event_t event)
       }
 #endif
       break;
-      
+
 #if !defined(NAVIGATION_MENUS)
     case EVT_KEY_LONG(KEY_EXIT):
       flightReset();
@@ -491,10 +496,11 @@ void menuMainView(event_t event)
           x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
           y0 = 38+(i%4)*5;
 
-          uint16_t lim = g_model.extendedLimits ? 640*2 : 512*2;
+          const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
           int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
 
-          if (len>WBAR2) len = WBAR2; // prevent bars from going over the end - comment for debugging
+          if (len>WBAR2)
+            len = WBAR2; // prevent bars from going over the end - comment for debugging
           lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
           lcdDrawSolidVerticalLine(x0, y0-2,5 );
           if (val > 0)

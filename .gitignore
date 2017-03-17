@@ -2,15 +2,7 @@
 /.*project
 /.settings
 /.autotools
-radio/src/bootloader/.dep/
-radio/src/bootloader/bootloader_ramBoot*
-*.lbm
-*.o
-*.stamp
-radio/src/lua/lua_fields_*.txt
-radio/src/lua/lua_exports_*.txt
+/doc/
 build*/
-*.old
-*.doc
-*.bak
 cmake-build-*/
+/debian/

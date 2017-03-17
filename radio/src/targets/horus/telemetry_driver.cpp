@@ -78,6 +78,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 
 #if defined(PCBX12S)
   telemetryFifoMode = mode;
+  
+  DMA_Cmd(TELEMETRY_DMA_Stream_RX, DISABLE);
+  USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Rx, DISABLE);
+  DMA_DeInit(TELEMETRY_DMA_Stream_RX);
 
   if (mode & TELEMETRY_SERIAL_WITHOUT_DMA) {
     USART_Cmd(TELEMETRY_USART, ENABLE);

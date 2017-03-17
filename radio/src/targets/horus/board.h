@@ -62,7 +62,7 @@ extern "C" {
 #pragma clang diagnostic pop
 #endif
 
-    
+
 #if !defined(SIMU)
 #include "usbd_cdc_core.h"
 #include "usbd_msc_core.h"
@@ -82,6 +82,10 @@ extern "C" {
 #define FLASHSIZE                      0x80000
 #define BOOTLOADER_SIZE                0x8000
 #define FIRMWARE_ADDRESS               0x08000000
+
+#define MB                             *1024*1024
+#define LUA_MEM_EXTRA_MAX              (2 MB)    // max allowed memory usage for Lua bitmaps (in bytes)
+#define LUA_MEM_MAX                    (6 MB)    // max allowed memory usage for complete Lua  (in bytes), 0 means unlimited
 
 // HSI is at 168Mhz (over-drive is not enabled!)
 #define PERI1_FREQUENCY                42000000
@@ -188,6 +192,11 @@ void init_dsm2(uint32_t module_index);
 void disable_dsm2(uint32_t module_index);
 void init_crossfire(uint32_t module_index);
 void disable_crossfire(uint32_t module_index);
+
+#if defined(MULTIMODULE)
+void init_multimodule(uint32_t module_index);
+void disable_multimodule(uint32_t module_index);
+#endif
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -387,6 +396,7 @@ extern "C" {
 #endif
 
 // Power driver
+#define SOFT_PWR_CTRL
 void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
@@ -394,8 +404,7 @@ void pwrOff(void);
 void pwrResetHandler(void);
 uint32_t pwrPressed(void);
 uint32_t pwrPressedDuration(void);
-#define pwroffPressed()         pwrPressed()
-#if defined(SIMU)
+#if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
   #define UNEXPECTED_SHUTDOWN()                 (powerupReason == DIRTY_SHUTDOWN)
@@ -439,11 +448,15 @@ void backlightEnable(uint8_t dutyCycle);
 #define isBacklightEnabled()  true
 
 // USB driver
-int usbPlugged(void);
-void usbInit(void);
-void usbStart(void);
-void usbStop(void);
+int usbPlugged();
+void usbInit();
+void usbStart();
+void usbStop();
+uint8_t usbStarted();
 void usbSerialPutc(uint8_t c);
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+void usbJoystickUpdate();
+#endif
 #if defined(PCBX12S)
   #define USB_NAME                     "FrSky Horus"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
@@ -480,6 +493,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
+
+// Sport update driver
+#define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
+#define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
 
 // Haptic driver
 void hapticInit(void);
@@ -518,10 +535,6 @@ void bluetoothWriteString(const char * str);
 int bluetoothRead(void * buffer, int len);
 void bluetoothWakeup(void);
 void bluetoothDone(void);
-
-#if defined(USB_JOYSTICK) && !defined(SIMU)
-void usbJoystickUpdate(void);
-#endif
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);

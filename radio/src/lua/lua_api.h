@@ -69,6 +69,13 @@ void luaInitThemesAndWidgets();
 #define RUN_TELEM_FG_SCRIPT   (1 << 3)
 #define RUN_STNDAL_SCRIPT     (1 << 4)
 
+enum luaScriptInputType {
+  INPUT_TYPE_FIRST = 0,
+  INPUT_TYPE_VALUE = INPUT_TYPE_FIRST,
+  INPUT_TYPE_SOURCE,
+  INPUT_TYPE_LAST = INPUT_TYPE_SOURCE
+};
+
 struct ScriptInput {
   const char *name;
   uint8_t type;
@@ -118,6 +125,7 @@ extern ScriptInternalData scriptInternalData[MAX_SCRIPTS];
 extern ScriptInputsOutputs scriptInputsOutputs[MAX_SCRIPTS];
 void luaClose(lua_State ** L);
 bool luaTask(event_t evt, uint8_t scriptType, bool allowLcdUsage);
+void checkLuaMemoryUsage();
 void luaExec(const char * filename);
 void luaDoGc(lua_State * L, bool full);
 void luaError(lua_State * L, uint8_t error, bool acknowledge=true);

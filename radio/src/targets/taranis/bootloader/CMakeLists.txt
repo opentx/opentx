@@ -55,7 +55,7 @@ set(BOOTLOADER_SRC
   ../../common/arm/stm32/delays.cpp
   ../../common/arm/stm32/usbd_desc.c
   ../../common/arm/stm32/usb_bsp.c
-  ../../common/arm/stm32/usb_driver.c
+  ../../common/arm/stm32/usb_driver.cpp
   ../pwr_driver.cpp
   init.c
   boot.cpp

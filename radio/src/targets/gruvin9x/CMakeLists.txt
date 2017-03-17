@@ -1,5 +1,6 @@
 set(ARCH AVR)
 set(MCU atmega2560)
+set(AVRDUDE_MCU m2560)
 string(TOLOWER ${PCB} FLAVOUR)
 set(EEPROM EEPROM_RLC)
 add_definitions(-DEEPROM_VARIANT=0)

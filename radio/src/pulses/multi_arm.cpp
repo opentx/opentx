@@ -46,7 +46,7 @@ static void sendByteMulti(uint8_t b)
     parity = parity ^ (b & 1);
     b >>= 1;
   }
-  putDsm2SerialBit(parity);      // Even Parity bit
+  putDsm2SerialBit(!parity);     // Even Parity bit
 
   putDsm2SerialBit(1);           // Stop bit
   putDsm2SerialBit(1);           // Stop bit

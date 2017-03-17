@@ -116,6 +116,7 @@ int cliLs(const char ** argv)
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       serialPrint(fno.fname);
     }
+    f_closedir(&dir);
   }
   else {
     serialPrint("%s: Invalid directory \"%s\"", argv[0], argv[1]);
@@ -812,7 +813,7 @@ int cliDisplay(const char ** argv)
   else if (!strcmp(argv[1], "dc")) {
     DiskCacheStats stats = diskCache.getStats();
     uint32_t hitRate = diskCache.getHitRate();
-    serialPrint("Disk Cache stats: w:%u r: %u, h: %u(%0.1f%%), m: %u", stats.noWrites, (stats.noHits + stats.noMisses), stats.noHits, hitRate/10.0, stats.noMisses);
+    serialPrint("Disk Cache stats: w:%u r: %u, h: %u(%0.1f%%), m: %u", stats.noWrites, (stats.noHits + stats.noMisses), stats.noHits, hitRate*0.1f, stats.noMisses);
   }
 #endif
   else if (toLongLongInt(argv, 1, &address) > 0) {

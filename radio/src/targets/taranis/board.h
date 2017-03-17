@@ -91,6 +91,8 @@ extern "C" {
 #define BOOTLOADER_SIZE    0x8000
 #define FIRMWARE_ADDRESS   0x08000000
 
+#define LUA_MEM_MAX        (0)    // max allowed memory usage for complete Lua  (in bytes), 0 means unlimited
+
 #if defined(PCBX9E)
   #define PERI1_FREQUENCY  42000000
   #define PERI2_FREQUENCY  84000000
@@ -111,6 +113,8 @@ extern uint16_t sessionTimer;
 
 #if defined(PCBX9E)
 #define TRAINER_CONNECTED()            (true)
+#elif defined(PCBX7)
+#define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
 #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
@@ -187,6 +191,11 @@ void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
 void init_crossfire( uint32_t module_index );
 void disable_crossfire( uint32_t module_index );
+
+#if defined(MULTIMODULE)
+void init_multimodule(uint32_t module_index);
+void disable_multimodule(uint32_t module_index);
+#endif
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -415,16 +424,14 @@ extern "C" {
 #endif
 
 // Power driver
+#define SOFT_PWR_CTRL
 void pwrInit(void);
 uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
-#if defined(PWR_PRESS_BUTTON)
 uint32_t pwrPressed(void);
+#if defined(PWR_PRESS_BUTTON)
 uint32_t pwrPressedDuration(void);
-#define pwroffPressed() pwrPressed()
-#else
-uint32_t pwroffPressed(void);
 #endif
 
 #if defined(SIMU)
@@ -447,11 +454,15 @@ uint8_t isBacklightEnabled(void);
 #endif
 
 // USB driver
-int usbPlugged(void);
-void usbInit(void);
-void usbStart(void);
-void usbStop(void);
+int usbPlugged();
+void usbInit();
+void usbStart();
+void usbStop();
+uint8_t usbStarted();
 void usbSerialPutc(uint8_t c);
+#if defined(USB_JOYSTICK) && !defined(SIMU)
+  void usbJoystickUpdate();
+#endif
 #define USB_NAME                       "FrSky Taranis"
 #define USB_MANUFACTURER               'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
 #define USB_PRODUCT                    'T', 'a', 'r', 'a', 'n', 'i', 's', ' '  /* 8 Bytes */
@@ -481,6 +492,22 @@ void telemetryPortSetDirectionOutput(void);
 void sportSendBuffer(uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
+
+// PCBREV driver
+#if defined(PCBX7)
+#define IS_PCBREV_40()                 (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
+#endif
+
+// Sport update driver
+#if defined(PCBX7)
+void sportUpdatePowerOn(void);
+void sportUpdatePowerOff(void);
+#define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
+#define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
+#else
+#define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
+#define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
+#endif
 
 // Audio driver
 void audioInit(void) ;
@@ -588,10 +615,6 @@ void setTopBatteryValue(uint32_t volts);
 #endif
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
-
-#if defined(USB_JOYSTICK) && !defined(SIMU)
-void usbJoystickUpdate(void);
-#endif
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);

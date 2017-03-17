@@ -23,9 +23,53 @@
 
 // TODO here we will move a lot of functions from eeprominterface.cpp when no merge risk
 
+void RawSource::convert(Board::Type before, Board::Type after)
+{
+  if (type == SOURCE_TYPE_STICK && index >= 4 + getBoardCapability(before, Board::Pots)) {
+    // 1st slider alignment
+    index += getBoardCapability(after, Board::Pots) - getBoardCapability(before, Board::Pots);
+  }
+
+  if (IS_HORUS(after)) {
+    if (IS_TARANIS_X9D(before) || IS_TARANIS_X7(before)) {
+      if (type == SOURCE_TYPE_STICK && index >= 7) {
+        // LS and RS on Horus are after sliders L1 and L2
+        index += 2;
+      }
+    }
+  }
+
+  // SWI to SWR don't exist on !X9E board
+  if (!IS_TARANIS_X9E(after) && IS_TARANIS_X9E(before)) {
+    if (type == SOURCE_TYPE_SWITCH && index >= 8) {
+      index = index % 8;
+    }
+  }
+
+  // No SE and SG on X7 board
+  if (IS_TARANIS_X7(after)) {
+    if (IS_TARANIS_X9(before) || IS_HORUS(before)) {
+      if (type == SOURCE_TYPE_SWITCH && index >= 6) {
+        index -= 2;
+      }
+      else if (type == SOURCE_TYPE_SWITCH && index >= 4) {
+        index -= 1;
+      }
+    }
+  }
+}
+
+void MixData::convert(Board::Type before, Board::Type after)
+{
+  srcRaw.convert(before, after);
+}
+
 void ModelData::convert(Board::Type before, Board::Type after)
 {
   // Here we can add explicit conversions when moving from one board to another
+  for (int i=0; i<CPN_MAX_MIXERS; i++) {
+    mixData[i].convert(before, after);
+  }
 }
 
 void GeneralSettings::convert(Board::Type before, Board::Type after)

@@ -51,12 +51,7 @@ enum Capability {
   VoicesMaxLength,
   MultiLangVoice,
   ModelImage,
-  Pots,
-  Sliders,
-  Switches,
-  FactoryInstalledSwitches,
   SwitchesPositions,
-  NumTrimSwitches,
   CustomFunctions,
   SafetyChannelCustomFunction,
   LogicalSwitches,
@@ -144,7 +139,6 @@ enum Capability {
   MavlinkTelemetry,
   HasInputDiff,
   HasMixerExpo,
-  MixersMonitor,
   HasBatMeterRange,
   DangerousFunctions,
   HasModelCategories
@@ -183,8 +177,6 @@ class EEPROMInterface
     EEPROMInterface();
 
 };
-
-extern std::list<QString> EEPROMWarnings;
 
 /* EEPROM string conversion functions */
 void setEEPROMString(char *dst, const char *src, int size);
@@ -283,7 +275,7 @@ class Firmware {
     {
       return base ? base : this;
     }
-    
+
     virtual Firmware * getFirmwareVariant(const QString & id) { return NULL; }
 
     unsigned int getVariantNumber();
@@ -306,12 +298,12 @@ class Firmware {
     {
       return board;
     }
-    
+
     void setEEpromInterface(EEPROMInterface * eeprom)
     {
       eepromInterface = eeprom;
     }
-    
+
     EEPROMInterface * getEEpromInterface()
     {
       return eepromInterface;

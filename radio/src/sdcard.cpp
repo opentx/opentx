@@ -231,7 +231,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 #if defined(CPUARM)
   popupMenuOffsetType = MENU_OFFSET_EXTERNAL;
 #endif
-  
+
 #if defined(CPUARM)
   static uint8_t s_last_flags;
 
@@ -288,21 +288,22 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       if (fno.fattrib & AM_DIR) continue;            /* Skip subfolders */
+      if (fno.fattrib & AM_HID) continue;            /* Skip hidden files */
+      if (fno.fattrib & AM_SYS) continue;            /* Skip system files */
 
       fnExt = getFileExtension(fno.fname, 0, 0, &fnLen, &extLen);
       fnLen -= extLen;
 
 //      TRACE_DEBUG("listSdFiles(%s, %s, %u, %s, %u): fn='%s'; fnExt='%s'; match=%d\n",
 //           path, extension, maxlen, (selection ? selection : "nul"), flags, fno.fname, (fnExt ? fnExt : "nul"), (fnExt && isExtensionMatching(fnExt, extension)));
-
       // file validation checks
       if (!fnLen || fnLen > maxlen || (                                              // wrong size
             fnExt && extension && (                                                  // extension-based checks follow...
               !isExtensionMatching(fnExt, extension) || (                            // wrong extension
                 !(flags & LIST_SD_FILE_EXT) &&                                       // only if we want unique file names...
-                strcmp(fnExt, getFileExtension(extension)) &&                        // possible duplicate file name...
+                strcasecmp(fnExt, getFileExtension(extension)) &&                    // possible duplicate file name...
                 isFilePatternAvailable(path, fno.fname, extension, true, tmpExt) &&  // find the first file from extensions list...
-                strncmp(fnExt, tmpExt, LEN_FILE_EXTENSION_MAX)                       // found file doesn't match, this is a duplicate
+                strncasecmp(fnExt, tmpExt, LEN_FILE_EXTENSION_MAX)                   // found file doesn't match, this is a duplicate
               )
             )
           ))
@@ -363,6 +364,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
         }
       }
     }
+    f_closedir(&dir);
   }
 
   if (popupMenuOffset > 0)
@@ -384,7 +386,7 @@ bool isCwdAtRoot()
 }
 
 /*
-  Wrapper around the f_readdir() function which 
+  Wrapper around the f_readdir() function which
   also returns ".." entry for sub-dirs. (FatFS 0.12 does
   not return ".", ".." dirs anymore)
 */

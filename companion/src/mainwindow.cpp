@@ -61,12 +61,6 @@
   #define COMPANION_INSTALLER             "companion-windows-%1.exe"
 #endif
 
-#if defined _MSC_VER || !defined __GNUC__
-  #include <windows.h>
-  #define sleep(x) Sleep(x*1000)
-#else
-  #include <unistd.h>
-#endif
 #ifdef WIN32
   #define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/companion/windows"
 #else
@@ -549,6 +543,10 @@ void MainWindow::newFile()
 {
   MdiChild * child = createMdiChild();
   child->newFile();
+    
+  if (IS_HORUS(getCurrentBoard())) {
+    child->categoryAdd();
+  }    
   child->show();
 }
 
@@ -589,14 +587,16 @@ void MainWindow::openFile()
 
 void MainWindow::save()
 {
-  if (activeMdiChild() && activeMdiChild()->save())
+  if (activeMdiChild() && activeMdiChild()->save()) {
     statusBar()->showMessage(tr("File saved"), 2000);
+  }
 }
 
 void MainWindow::saveAs()
 {
-  if (activeMdiChild() && activeMdiChild()->saveAs())
+  if (activeMdiChild() && activeMdiChild()->saveAs()) {
     statusBar()->showMessage(tr("File saved"), 2000);
+  }
 }
 
 void MainWindow::openRecentFile()
@@ -869,14 +869,14 @@ void MainWindow::about()
 void MainWindow::updateMenus()
 {
   bool hasMdiChild = (activeMdiChild() != 0);
-  bool hasSelection = (activeMdiChild() && activeMdiChild()->hasSelection());
+  bool hasModelSelected = (activeMdiChild() && activeMdiChild()->hasModelSelected());
 
   newAct->setEnabled(true);
   openAct->setEnabled(true);
   saveAct->setEnabled(hasMdiChild);
   saveAsAct->setEnabled(hasMdiChild);
-  cutAct->setEnabled(hasSelection);
-  copyAct->setEnabled(hasSelection);
+  cutAct->setEnabled(hasModelSelected);
+  copyAct->setEnabled(hasModelSelected);
   pasteAct->setEnabled(hasMdiChild ? activeMdiChild()->hasPasteData() : false);
   writeEepromAct->setEnabled(hasMdiChild);
   readEepromAct->setEnabled(true);
@@ -886,8 +886,8 @@ void MainWindow::updateMenus()
     recentFileActs[i]->setEnabled(true);
   }
   separatorAct->setVisible(hasMdiChild);
-  simulateAct->setEnabled(hasSelection);
-  printAct->setEnabled(hasSelection);
+  simulateAct->setEnabled(hasMdiChild);
+  printAct->setEnabled(hasModelSelected);
   loadbackupAct->setEnabled(hasMdiChild);
   compareAct->setEnabled(activeMdiChild());
   updateRecentFileActions();

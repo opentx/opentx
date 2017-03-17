@@ -241,10 +241,14 @@ char * getSwitchString(char * dest, swsrc_t idx)
   }
   
 #if defined(PCBSKY9X)
+  #define IDX_TRIMS_IN_STR_VSWITCHES   (1+SWSRC_LAST_SWITCH)
+  #define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES+SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM+2)
   if (idx <= SWSRC_LAST_SWITCH) {
     getStringAtIndex(s, STR_VSWITCHES, idx);
   }
 #else
+  #define IDX_TRIMS_IN_STR_VSWITCHES   (1)
+  #define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES+SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM+1)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
@@ -267,7 +271,8 @@ char * getSwitchString(char * dest, swsrc_t idx)
     *s++ = "\300-\301"[swinfo.rem];
     *s = '\0';
   }
-#endif
+#endif // PCBSKY9X
+
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(int(idx - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);
@@ -277,14 +282,22 @@ char * getSwitchString(char * dest, swsrc_t idx)
     strAppendStringWithIndex(s, temp, swinfo.rem+1);
   }
 #endif
-  else if (idx <= SWSRC_LAST_TRIM) {
-    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_FIRST_TRIM+1);
+
+#if defined(PCBSKY9X)
+  else if (idx <= SWSRC_REa) {
+    getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
   }
+#else
+  else if (idx <= SWSRC_LAST_TRIM) {
+    getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
+  }
+#endif
+
   else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
     strAppendStringWithIndex(s, "L", idx-SWSRC_FIRST_LOGICAL_SWITCH+1);
   }
   else if (idx <= SWSRC_ONE) {
-    getStringAtIndex(s, STR_VSWITCHES, idx-SWSRC_ON+2+(SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM));
+    getStringAtIndex(s, STR_VSWITCHES, IDX_ON_IN_STR_VSWITCHES + idx - SWSRC_ON);
   }
   else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
     strAppendStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);
@@ -295,7 +308,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
   else {
     zchar2str(s, g_model.telemetrySensors[idx-SWSRC_FIRST_SENSOR].label, TELEM_LABEL_LEN);
   }
-  
+
   return dest;
 }
 

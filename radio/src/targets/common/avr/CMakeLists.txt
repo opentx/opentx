@@ -5,7 +5,7 @@ option(BOLD "Bold font" ON)
 option(BATTGRAPH "Battery graph" OFF)
 option(HAPTIC "Haptic support" OFF)
 
-set(TELEMETRY_TYPES NONE/MAVLINK/ARDUPILOT/FRSKY/FRSKY_SPORT/TELEMETREZ/NMEA)
+set(TELEMETRY_TYPES NONE MAVLINK ARDUPILOT FRSKY FRSKY_SPORT TELEMETREZ NMEA)
 set(TELEMETRY "NONE" CACHE STRING "Telemetry Type (${TELEMETRY_TYPES})")
 set_property(CACHE TELEMETRY PROPERTY STRINGS ${TELEMETRY_TYPES})
 
@@ -86,6 +86,17 @@ elseif(TELEMETRY STREQUAL JETI)
 elseif(TELEMETRY STREQUAL MAVLINK)
   add_definitions(-DTELEMETRY_MAVLINK)
   include_directories(${THIRDPARTY_DIR} gui/${GUI_DIR} targets/common/avr)
+  if(NOT EXISTS ${THIRDPARTY_DIR}/GCS_MAVLink/include_v1.0/mavlink_types.h)
+      message(WARNING "Warning: ${THIRDPARTY_DIR}/GCS_MAVLink/include_v1.0 is empty, trying to clone submodules")
+      execute_process(COMMAND git submodule update --init
+                              RESULT_VARIABLE GIT_SUBMODULE_RESULT
+                              WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+      if(NOT ${GIT_SUBMODULE_RESULT} EQUAL 0)
+          message(FATAL_ERROR "Error: Cannot clone submodule at ${THIRDPARTY_DIR}/GCS_MAVLink/include_v1.0
+If you downloaded this project as a ZIP file, please instead run 
+'git clone --recursive https://github.com/opentx/opentx.git'")
+      endif()
+  endif()
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
     targets/common/avr/telemetry_driver.cpp
@@ -132,7 +143,3 @@ if(TELEMETRY STREQUAL FRSKY OR TELEMETRY STREQUAL FRSKY_SPORT OR TELEMETRY STREQ
   math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${FRSKY_VARIANT})
 endif()
 add_definitions(-DTIMERS=2)
-if(EEPROM_VARIANT_NEEDED)
-  add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
-endif()
-

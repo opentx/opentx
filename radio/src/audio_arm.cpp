@@ -504,6 +504,11 @@ void audioTask(void * pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
+#if defined(PCBX12S)
+  // The audio amp needs ~2s to start
+  CoTickDelay(500); // 1s
+#endif
+
   if (!unexpectedShutdown) {
     AUDIO_HELLO();
   }
@@ -646,7 +651,7 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
   int remainingDuration = fragment.tone.duration - state.duration;
   if (remainingDuration > 0) {
     int points;
-    double toneIdx = state.idx;
+    float toneIdx = state.idx;
 
     if (fragment.tone.reset) {
       fragment.tone.reset = 0;
@@ -656,8 +661,8 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
 
     if (fragment.tone.freq != state.freq) {
       state.freq = fragment.tone.freq;
-      state.step = limit<double>(1, double(DIM(sineValues)*fragment.tone.freq) / AUDIO_SAMPLE_RATE, 512);
-      state.volume = evalVolumeRatio(fragment.tone.freq, volume);
+      state.step = limit<float>(1, float(fragment.tone.freq) * (float(DIM(sineValues))/float(AUDIO_SAMPLE_RATE)), 512);
+      state.volume = 1.0f / evalVolumeRatio(fragment.tone.freq, volume);
     }
 
     if (fragment.tone.freqIncr) {
@@ -690,11 +695,11 @@ int ToneContext::mixBuffer(AudioBuffer * buffer, int volume, unsigned int fade)
         end -= (end % DIM(sineValues));
       else
         end = DIM(sineValues);
-      points = (double(end) - toneIdx) / state.step;
+      points = (float(end) - toneIdx) / state.step;
     }
 
     for (int i=0; i<points; i++) {
-      int16_t sample = sineValues[int(toneIdx)] / state.volume;
+      int16_t sample = sineValues[int(toneIdx)] * state.volume;
       mixSample(&buffer->data[i], sample, fade);
       toneIdx += state.step;
       if ((unsigned int)toneIdx >= DIM(sineValues))

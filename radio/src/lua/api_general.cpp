@@ -153,10 +153,10 @@ static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, Telem
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
   lua_createtable(L, 0, 4);
-  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude / 1000000.0);
-  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude / 1000000.0);
-  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude / 1000000.0);
-  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude / 1000000.0);
+  lua_pushtablenumber(L, "lat", telemetryItem.gps.latitude * 0.000001); // floating point multiplication is faster than division
+  lua_pushtablenumber(L, "pilot-lat", telemetryItem.pilotLatitude * 0.000001);
+  lua_pushtablenumber(L, "lon", telemetryItem.gps.longitude * 0.000001);
+  lua_pushtablenumber(L, "pilot-lon", telemetryItem.pilotLongitude * 0.000001);
 }
 
 static void luaPushTelemetryDateTime(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
@@ -173,7 +173,7 @@ static void luaPushCells(lua_State* L, TelemetrySensor & telemetrySensor, Teleme
     lua_createtable(L, telemetryItem.cells.count, 0);
     for (int i = 0; i < telemetryItem.cells.count; i++) {
       lua_pushnumber(L, i + 1);
-      lua_pushnumber(L, telemetryItem.cells.values[i].value / 100.0);
+      lua_pushnumber(L, telemetryItem.cells.values[i].value * 0.01f);
       lua_settable(L, -3);
     }
   }
@@ -215,7 +215,7 @@ void luaGetValueAndPush(lua_State* L, int src)
     }
   }
   else if (src == MIXSRC_TX_VOLTAGE) {
-    lua_pushnumber(L, float(value)/10.0);
+    lua_pushnumber(L, float(value) * 0.1f);
   }
   else {
     lua_pushinteger(L, value);
@@ -688,16 +688,17 @@ Play a numerical value (text to speech)
 | 13  | Percent            |
 | 14  | Milliamp Hours     |
 | 15  | Watts              |
-| 16  | DB                 |
-| 17  | RPM                |
-| 18  | Gee                |
-| 19  | Degrees            |
-| 20  | Radians            |
-| 21  | Milliliters        |
-| 22  | Fluid Ounces       |
-| 23  | Hours              |
-| 24  | Minutes            |
-| 25  | Seconds            |
+| 16  | Milliwatts         |
+| 17  | DB                 |
+| 18  | RPM                |
+| 19  | Gee                |
+| 20  | Degrees            |
+| 21  | Radians            |
+| 22  | Milliliters        |
+| 23  | Fluid Ounces       |
+| 24  | Hours              |
+| 25  | Minutes            |
+| 26  | Seconds            |
 
 */
 static int luaPlayNumber(lua_State * L)
@@ -851,8 +852,8 @@ Returns (some of) the general radio settings
 static int luaGetGeneralSettings(lua_State * L)
 {
   lua_newtable(L);
-  lua_pushtablenumber(L, "battMin", double(90+g_eeGeneral.vBatMin)/10);
-  lua_pushtablenumber(L, "battMax", double(120+g_eeGeneral.vBatMax)/10);
+  lua_pushtablenumber(L, "battMin", (90+g_eeGeneral.vBatMin) * 0.1f);
+  lua_pushtablenumber(L, "battMax", (120+g_eeGeneral.vBatMax) * 0.1f);
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   lua_pushtablestring(L, "language", TRANSLATIONS);
   lua_pushtablestring(L, "voice", currentLanguagePack->id);
@@ -1113,47 +1114,54 @@ static int luaGetRSSI(lua_State * L)
 /*luadoc
 @function loadScript(file [, mode], [,env])
 
-Load a Lua script file. This is similar to Lua's own loadfile() API method,  but it uses
-OpenTx's optional pre-compilation feature to (possibly) save memory and time during load.
+Load a Lua script file. This is similar to Lua's own [loadfile()](https://www.lua.org/manual/5.2/manual.html#pdf-loadfile) 
+API method,  but it uses OpenTx's optional pre-compilation feature to save memory and time during load.
 
-@param file (string) Full path and file name of script. The file extension is optional and ignored (see "mode" param to control
+Return values are same as from Lua API loadfile() method: If the script was loaded w/out errors
+then the loaded script (or "chunk") is returned as a function. Otherwise, returns nil plus the error message.
+
+@param file (string) Full path and file name of script. The file extension is optional and ignored (see `mode` param to control
   which extension will be used). However, if an extension is specified, it should be ".lua" (or ".luac"), otherwise it is treated
   as part of the file name and the .lua/.luac will be appended to that.
 
-@param mode (string) (optional) Controls whether to force loading the text (.lua) or binary (.luac, that is, a pre-compiled file)
+@param mode (string) (optional) Controls whether to force loading the text (.lua) or pre-compiled binary (.luac)
   version of the script. By default OTx will load the newest version and compile a new binary if necessary (overwriting any
-  existing .luac version of the same script, and stripping some debug info like line numbers). You can use this to bypass the automatic
-  script version check and set specific compilation options in OpenTx.
-    Possible values are:
-      "b" only binary.
-      "t" only text.
-      "T" (default on simulator) prefer text but load binary if that is the only version available.
-      "bt" (default on radio) either binary or text, whichever is newer (binary preferred when timestamps are equal).
-      Add "x" to avoid automatic compilation of source file to .luac version.
-        Eg: "tx", "bx", or "btx".
-      Add "c" to force compilation of source file to .luac version (even if existing version is newer than source file).
-        Eg: "tc" or "btc" (forces "t", overrides "x").
-      Add "d" to keep extra debug info in the compiled binary.
-        Eg: "td", "btd", or "tcd" (no effect with just "b" or with "x").
+  existing .luac version of the same script, and stripping some debug info like line numbers).  
+  You can use `mode` to control the loading behavior more specifically. Possible values are:
+   * `b` only binary.
+   * `t` only text.
+   * `T` (default on simulator) prefer text but load binary if that is the only version available.
+   * `bt` (default on radio) either binary or text, whichever is newer (binary preferred when timestamps are equal).
+   * Add `x` to avoid automatic compilation of source file to .luac version.  
+       Eg: "tx", "bx", or "btx".
+   * Add `c` to force compilation of source file to .luac version (even if existing version is newer than source file).  
+       Eg: "tc" or "btc" (forces "t", overrides "x").
+   * Add `d` to keep extra debug info in the compiled binary.  
+       Eg: "td", "btd", or "tcd" (no effect with just "b" or with "x").
 
-  Note that you will get an error if you specify "b" or "t" and that specific version of the file does not exist (eg. no .luac file when "b" is used).
-  Also note that mode is NOT passed on to Lua's loader function, so unlike with loadfile() the actual file content is not checked (as if no mode or "bt" were passed to loadfile()).
+@notice 
+  Note that you will get an error if you specify `mode` as "b" or "t" and that specific version of the file does not exist (eg. no .luac file when "b" is used).
+  Also note that `mode` is NOT passed on to Lua's loader function, so unlike with loadfile() the actual file content is not checked (as if no mode or "bt" were passed to loadfile()).
 
 @param env (integer) See documentation for Lua function loadfile().
 
-@returns Same as from Lua API loadfile() method.
-  If the script was loaded w/out errors then the loaded script (or "chunk") is returned as a function;
-  Otherwise, returns nil plus the error message
+@retval function The loaded script, or `nil` if there was an error (e.g. file not found or syntax error).
 
-@usage
+@retval string Error message(s), if any. Blank if no error occurred.
+
+@status current Introduced in 2.2.0
+
+### Example
+
+```lua
   fun, err = loadScript("/SCRIPTS/FUNCTIONS/print.lua")
   if (fun ~= nil) then
      fun("Hello from loadScript()")
   else
      print(err)
   end
+```
 
-@status current Introduced in 2.2.0
 */
 static int luaLoadScript(lua_State * L)
 {
@@ -1230,8 +1238,8 @@ const luaR_value_entry opentxConstants[] = {
   { "LEFT", LEFT },
   { "PREC1", PREC1 },
   { "PREC2", PREC2 },
-  { "VALUE", 0 }, // TODO reuse ZoneOption::Integer
-  { "SOURCE", 1 }, // TODO reuse ZoneOption::Source
+  { "VALUE", INPUT_TYPE_VALUE },
+  { "SOURCE", INPUT_TYPE_SOURCE },
   { "REPLACE", MLTPX_REP },
   { "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT },
   { "MIXSRC_Rud", MIXSRC_Rud },

@@ -173,16 +173,15 @@ const char * sportUpdatePowerOn(ModuleIndex module)
   uint8_t packet[8];
 
   sportUpdateState = SPORT_POWERUP_REQ;
-
   sportWaitState(SPORT_IDLE, 500); // Clear the fifo
 
-  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+  telemetryInit(PROTOCOL_FRSKY_SPORT);
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)
     INTERNAL_MODULE_ON();
   else
-    EXTERNAL_MODULE_ON();
+    SPORT_UPDATE_POWER_ON();
 #endif
 
   sportWaitState(SPORT_IDLE, 50); // Clear the fifo
@@ -196,7 +195,16 @@ const char * sportUpdatePowerOn(ModuleIndex module)
     if (sportWaitState(SPORT_POWERUP_ACK, 100))
       return NULL;
   }
-  return "Module not responding";
+
+  if (telemetryProtocol != PROTOCOL_FRSKY_SPORT) {
+    return TR("Not responding", "Not S.Port 1");
+  }
+
+  if (!IS_FRSKY_SPORT_PROTOCOL()) {
+    return TR("Not responding", "Not S.Port 2");
+  }
+
+  return TR("Not responding", "Module not responding");
 }
 
 const char * sportUpdateReqVersion()
@@ -256,7 +264,7 @@ const char * sportUpdateUploadFile(const char *filename)
       sportUpdateState = SPORT_DATA_TRANSFER,
       sportWritePacket(packet);
       if (i==0) {
-        updateProgressBar(file.fptr, file.obj.objsize);
+        drawProgressBar(STR_WRITING, file.fptr, file.obj.objsize);
       }
     }
 
@@ -286,14 +294,15 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
 {
   pausePulses();
 
-  lcdClear();
-  drawProgressBar(STR_WRITING);
-
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
+
+  /* wait 2s off */
+  watchdogSuspend(2000);
+  CoTickDelay(1000);
 #endif
 
   const char * result = sportUpdatePowerOn(module);
@@ -308,7 +317,7 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
-  EXTERNAL_MODULE_OFF();
+  SPORT_UPDATE_POWER_OFF();
 #endif
 
   sportWaitState(SPORT_IDLE, 500); // Clear the fifo

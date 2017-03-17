@@ -21,17 +21,14 @@
 #include "simulateduiwidget.h"
 #include "ui_simulateduiwidgetX9.h"
 
-SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, SimulatorDialog * simuDialog, QWidget * parent):
-  SimulatedUIWidget(simulator, simuDialog, parent),
+SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, QWidget * parent):
+  SimulatedUIWidget(simulator, parent),
   ui(new Ui::SimulatedUIWidgetX9)
 {
   RadioUiAction * act;
   QPolygon polygon;
 
   ui->setupUi(this);
-
-  //getCurrentFirmware()->getCapability(Capability(RotaryEncoders));  // not working for X9E ?
-  bool rotaryOnly = IS_TARANIS_X9E(m_board);
 
   // add actions in order of appearance on the help menu
 
@@ -47,16 +44,8 @@ SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, Simulato
   polygon.setPoints(6, 24, 154, 32, 144, 46, 146, 57, 156, 46, 167, 29, 166);
   ui->leftbuttons->addArea(polygon, "Taranis/x9l3.png", act);
 
-  if (rotaryOnly) {
-    m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("Rotary Selector")));
-    m_scrollUpAction = addRadioUiAction(-1, QList<int>() << Qt::Key_Minus << Qt::Key_Equal << Qt::Key_Up, tr("-/UP"), tr("Rotary UP"));
-    m_scrollDnAction = addRadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Down, tr("+/DN"), tr("Rotary DOWN"));
-    connectScrollActions();
-  }
-  else {
-    m_scrollUpAction = addRadioUiAction(4, QList<int>() << Qt::Key_Plus << Qt::Key_Equal << Qt::Key_Up, tr("+/UP"), tr("[ + ]"));
-    m_scrollDnAction = addRadioUiAction(5, QList<int>() << Qt::Key_Minus << Qt::Key_Down, tr("-/DN"), tr("[ - ]"));
-  }
+  m_scrollUpAction = addRadioUiAction(4, QList<int>() << Qt::Key_Plus << Qt::Key_Equal << Qt::Key_Up, tr("+/UP"), tr("[ + ]"));
+  m_scrollDnAction = addRadioUiAction(5, QList<int>() << Qt::Key_Minus << Qt::Key_Down, tr("-/DN"), tr("[ - ]"));
 
   polygon.setPoints(6, 64, 60, 71, 50, 90, 50, 100, 60, 90, 73, 72, 73);
   ui->rightbuttons->addArea(polygon, "Taranis/x9r1.png", m_scrollUpAction);
@@ -64,14 +53,13 @@ SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, Simulato
   polygon.setPoints(6, 63, 109, 73, 100, 88, 100, 98, 109, 88, 119, 72, 119);
   ui->rightbuttons->addArea(polygon, "Taranis/x9r2.png", m_scrollDnAction);
 
-  act = addRadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, tr("ENTER/MOUSE-MID"), (rotaryOnly ? tr("Selector Press") : tr("[ ENT ]")));
+  act = addRadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, tr("ENTER/MOUSE-MID"), tr("[ ENT ]"));
   polygon.setPoints(6, 63, 155, 72, 146, 90, 146, 98, 155, 88, 166, 72, 166);
   ui->rightbuttons->addArea(polygon, "Taranis/x9r3.png", act);
 
   ui->leftbuttons->addArea(90, 177, 118, 197, "Taranis/x9l4.png", m_screenshotAction);
 
-  if (!rotaryOnly)
-    m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("[ + ]/[ - ]")));
+  m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("[ + ]/[ - ]")));
 
   m_backlightColors << QColor(47, 123, 227);  // Taranis Blue
   m_backlightColors << QColor(166,247,159);

@@ -34,21 +34,21 @@ void menuRadioSdManagerInfo(event_t event)
 
   lcdDrawTextAlignedLeft(3*FH, STR_SD_SIZE);
   lcdDrawNumber(10*FW, 3*FH, sdGetSize(), LEFT);
-  lcdDrawChar(lcdLastPos, 3*FH, 'M');
+  lcdDrawChar(lcdLastRightPos, 3*FH, 'M');
 
   lcdDrawTextAlignedLeft(4*FH, STR_SD_SECTORS);
 #if defined(SD_GET_FREE_BLOCKNR)
   lcdDrawNumber(10*FW, 4*FH,  SD_GET_FREE_BLOCKNR()/1000, LEFT);
-  lcdDrawChar(lcdLastPos, 4*FH, '/');
-  lcdDrawNumber(lcdLastPos+FW, 4*FH, sdGetNoSectors()/1000, LEFT);
+  lcdDrawChar(lcdLastRightPos, 4*FH, '/');
+  lcdDrawNumber(lcdLastRightPos+FW, 4*FH, sdGetNoSectors()/1000, LEFT);
 #else
   lcdDrawNumber(10*FW, 4*FH, sdGetNoSectors()/1000, LEFT);
 #endif
-  lcdDrawChar(lcdLastPos, 4*FH, 'k');
+  lcdDrawChar(lcdLastRightPos, 4*FH, 'k');
 
   lcdDrawTextAlignedLeft(5*FH, STR_SD_SPEED);
   lcdDrawNumber(10*FW, 5*FH, SD_GET_SPEED()/1000, LEFT);
-  lcdDrawText(lcdLastPos, 5*FH, "kb/s");
+  lcdDrawText(lcdLastRightPos, 5*FH, "kb/s");
 }
 
 inline bool isFilenameGreater(bool isfile, const char * fn, const char * line)
@@ -384,6 +384,7 @@ void menuRadioSdManager(event_t _event)
           }
         }
       }
+      f_closedir(&dir);
     }
   }
 

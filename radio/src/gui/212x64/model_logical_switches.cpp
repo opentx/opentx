@@ -43,14 +43,14 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData * cs, uint8_t la
 {
   lcdDrawChar(x-4, y, '[');
   lcdDrawNumber(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
-  lcdDrawChar(lcdLastPos, y, ':');
+  lcdDrawChar(lcdLastRightPos, y, ':');
   if (cs->v3 < 0)
-    lcdDrawText(lcdLastPos+3, y, "<<", rattr);
+    lcdDrawText(lcdLastRightPos+3, y, "<<", rattr);
   else if (cs->v3 == 0)
-    lcdDrawText(lcdLastPos+3, y, "--", rattr);
+    lcdDrawText(lcdLastRightPos+3, y, "--", rattr);
   else
-    lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
-  lcdDrawChar(lcdLastPos, y, ']');
+    lcdDrawNumber(lcdLastRightPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcdDrawChar(lcdLastRightPos, y, ']');
 }
 
 void onLogicalSwitchesMenu(const char *result)
@@ -212,14 +212,14 @@ void menuModelLogicalSwitches(event_t event)
           cs->func = checkIncDec(event, cs->func, 0, LS_FUNC_MAX, EE_MODEL, isLogicalSwitchFunctionAvailable);
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
+            unsigned int save_func = cs->func;
+            memset(cs, 0, sizeof(LogicalSwitchData));
+            cs->func = save_func;
             if (new_cstate == LS_FAMILY_TIMER) {
               cs->v1 = cs->v2 = -119;
             }
             else if (new_cstate == LS_FAMILY_EDGE) {
-              cs->v1 = 0; cs->v2 = -129; cs->v3 = 0;
-            }
-            else {
-              cs->v1 = cs->v2 = 0;
+              cs->v2 = -129;
             }
           }
           break;

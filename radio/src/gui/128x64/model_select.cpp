@@ -326,13 +326,13 @@ void menuModelSelect(event_t event)
 #if defined(EEPROM_RLC) && defined(CPUARM)
   lcdDrawText(9*FW-(LEN_FREE-4)*FW-4, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
-  lcdDrawNumber(lcdLastPos+3, 0, reusableBuffer.modelsel.eepromfree, LEFT);
+  lcdDrawNumber(lcdLastRightPos+3, 0, reusableBuffer.modelsel.eepromfree, LEFT);
 #elif defined(EEPROM_RLC)
   lcdDrawText(9*FW-(LEN_FREE-4)*FW, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
   lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, RIGHT);
 #endif
-  
+
 #if defined(PCBX7)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
 #elif defined(ROTARY_ENCODER_NAVIGATION)

@@ -33,13 +33,6 @@
 #include "storage.h"
 #include "radiointerface.h"
 
-#if defined _MSC_VER || !defined __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x*1000)
-#else
-#include <unistd.h>
-#endif
-
 MdiChild::MdiChild(MainWindow * parent):
   QWidget(),
   parent(parent),
@@ -54,9 +47,11 @@ MdiChild::MdiChild(MainWindow * parent):
   ui->simulateButton->setIcon(CompanionIcon("simulate.png"));
   setAttribute(Qt::WA_DeleteOnClose);
   initModelsList();
-  connect(parent, SIGNAL(FirmwareChanged()), this, SLOT(onFirmwareChanged()));
-  connect(ui->modelsList, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openModelEditWindow()));
-  connect(ui->modelsList, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(showModelsListContextMenu(const QPoint &)));
+  connect(parent, &MainWindow::FirmwareChanged, this, &MdiChild::onFirmwareChanged);
+  connect(ui->modelsList, &QTreeView::doubleClicked, this, &MdiChild::openModelEditWindow);
+  connect(ui->modelsList, &QTreeView::activated, this, &MdiChild::openModelEditWindow);
+  connect(ui->modelsList, &QTreeView::pressed, this, &MdiChild::onItemSelected);
+  connect(ui->modelsList, &QTreeView::customContextMenuRequested, this, &MdiChild::showModelsListContextMenu);
   // connect(ui->modelsList, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)), this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
   ui->modelsList->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -85,6 +80,26 @@ void MdiChild::refresh(bool expand)
   }
   ui->simulateButton->setEnabled(firmware->getCapability(Simulation));
   updateTitle();
+}
+
+void MdiChild::onItemSelected(QModelIndex idx)
+{
+  emit copyAvailable(isModel(idx) ? true : false);
+}
+
+bool MdiChild::isModel(QModelIndex idx)
+{
+  return (modelsListModel->getModelIndex(idx) >= 0 ? true : false);
+}
+
+bool MdiChild::isCategory(QModelIndex idx)
+{
+  if (isModel(idx)) {
+    return false;
+  }
+  else {
+    return (modelsListModel->getCategoryIndex(idx) >= 0);
+  }
 }
 
 void MdiChild::confirmDelete()
@@ -129,6 +144,19 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
     contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"), this, SLOT(cut()), tr("Ctrl+X"));
     contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"), this, SLOT(paste()), tr("Ctrl+V"))->setEnabled(hasData);
     contextMenu.addAction(CompanionIcon("duplicate.png"), tr("D&uplicate"), this, SLOT(modelDuplicate()), tr("Ctrl+U"));
+    if (radioData.categories.size() > 1) {
+      QMenu * catsMenu = contextMenu.addMenu(CompanionIcon("arrow-right.png"), tr("Move to Category"));
+      for (unsigned i=0; i < radioData.categories.size(); ++i) {
+        QAction * act = catsMenu->addAction(QString(radioData.categories[i].name), this, SLOT(onModelMoveToCategory()));
+        act->setProperty("categoryId", i);
+        if ((int)i < modelsListModel->getCategoryIndex(modelIndex))
+          act->setIcon(CompanionIcon("moveup.png"));
+        else if ((int)i > modelsListModel->getCategoryIndex(modelIndex))
+          act->setIcon(CompanionIcon("movedown.png"));
+        else
+          act->setEnabled(false);
+      }
+    }
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("currentmodel.png"), tr("&Use as default"), this, SLOT(setDefault()));
     contextMenu.addSeparator();
@@ -188,7 +216,7 @@ void MdiChild::initModelsList()
 
   delete modelsListModel;
   modelsListModel = new TreeModel(&radioData, this);
-  connect(modelsListModel, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)), this, SLOT(onDataChanged(const QModelIndex &)));
+  connect(modelsListModel, &QAbstractItemModel::dataChanged, this, &MdiChild::onDataChanged);
   ui->modelsList->setModel(modelsListModel);
   ui->modelsList->header()->setVisible(!IS_HORUS(board));
   if (IS_HORUS(board)) {
@@ -320,9 +348,9 @@ bool MdiChild::hasPasteData() const
   return mimeData->hasFormat("application/x-companion");
 }
 
-bool MdiChild::hasSelection() const
+bool MdiChild::hasModelSelected()
 {
-  return ui->modelsList->selectionModel()->hasSelection();
+  return isModel(ui->modelsList->currentIndex());
 }
 
 void MdiChild::updateTitle()
@@ -381,7 +409,7 @@ void MdiChild::checkAndInitModel(int row)
 void MdiChild::generalEdit()
 {
   GeneralEdit * t = new GeneralEdit(this, radioData, firmware);
-  connect(t, SIGNAL(modified()), this, SLOT(setModified()));
+  connect(t, &GeneralEdit::modified, this, &MdiChild::setModified);
   t->show();
 }
 
@@ -390,6 +418,7 @@ void MdiChild::categoryAdd()
   CategoryData category("New category");
   radioData.categories.push_back(category);
   setModified();
+  emit copyAvailable(false); // workaround : nothing is selected after model creation
 }
 
 void MdiChild::categoryRename()
@@ -456,18 +485,19 @@ void MdiChild::modelAdd()
   }
 
   ModelData model;
-  model.category = categoryIndex;
-  model.used = true;
-  strcpy(model.filename, radioData.getNextModelFilename().toStdString().c_str());
-  strcpy(model.name, qPrintable(tr("New model")));
   radioData.models.push_back(model);
+  int row = radioData.models.size() - 1;
+  checkAndInitModel(row);
+  radioData.models[row].category = categoryIndex;
+  strcpy(radioData.models[row].filename, radioData.getNextModelFilename().toStdString().c_str());
+  strcpy(radioData.models[row].name, qPrintable(tr("New model")));
 
   // Only set the default model if we just added the first one.
-  int newModelIndex = radioData.models.size() - 1;
-  if (newModelIndex == 0) {
-    radioData.setCurrentModel(newModelIndex);
+  if (row == 0) {
+    radioData.setCurrentModel(row);
   }
   setModified();
+  emit copyAvailable(false); // workaround : nothing is selected after model creation
 }
 
 void MdiChild::modelEdit()
@@ -481,7 +511,7 @@ void MdiChild::modelEdit()
   ModelEdit * t = new ModelEdit(this, radioData, (row), firmware);
   gStopwatch.report("ModelEdit created");
   t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + model.name);
-  connect(t, SIGNAL(modified()), this, SLOT(setModified()));
+  connect(t, &ModelEdit::modified, this, &MdiChild::setModified);
   gStopwatch.report("STARTING MODEL EDIT");
   t->show();
   QApplication::restoreOverrideCursor();
@@ -501,6 +531,30 @@ void MdiChild::modelDuplicate()
   setModified();
 }
 
+void MdiChild::modelChangeCategory(int toCategoryId)
+{
+  int row = getCurrentModel();
+  if (row < 0 || row >= (int)radioData.models.size() || toCategoryId < 0) {
+    return;
+  }
+  if (radioData.models[row].category != toCategoryId) {
+    radioData.models[row].category = toCategoryId;
+    setModified();
+  }
+}
+
+void MdiChild::onModelMoveToCategory()
+{
+  if (!sender()) {
+    return;
+  }
+  bool ok = false;
+  int toCatId = sender()->property("categoryId").toInt(&ok);
+  if (ok && toCatId >= 0) {
+    modelChangeCategory(toCatId);
+  }
+}
+
 void MdiChild::setDefault()
 {
   int row = getCurrentModel();
@@ -514,10 +568,11 @@ void MdiChild::wizardEdit()
 {
   int row = getCurrentModel();
   checkAndInitModel(row);
-  WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row+1, this);
+  WizardDialog * wizard = new WizardDialog(radioData.generalSettings, row+1, radioData.models[row], this);
   wizard->exec();
   if (wizard->mix.complete /*TODO rather test the exec() result?*/) {
     radioData.models[row] = wizard->mix;
+    radioData.fixModelFilenames();
     setModified();
   }
 }
@@ -605,7 +660,7 @@ bool MdiChild::saveAs(bool isNew)
   if (isNew)
     return saveFile(fileName);
   else
-    return saveFile(fileName,true);
+    return saveFile(fileName, true);
 }
 
 bool MdiChild::saveFile(const QString & filename, bool setCurrent)
@@ -614,7 +669,6 @@ bool MdiChild::saveFile(const QString & filename, bool setCurrent)
   Storage storage(filename);
   bool result = storage.write(radioData);
   if (!result) {
-    QMessageBox::warning(this, "Companion", tr("Cannot save file"), QMessageBox::Ok);
     return false;
   }
 
@@ -731,7 +785,7 @@ void MdiChild::print(int model, const QString & filename)
   if (model>=0 && !filename.isEmpty()) {
     pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[model], filename);
   }
-  else if (getCurrentModel()) {
+  else {
     pd = new PrintDialog(this, firmware, radioData.generalSettings, radioData.models[getCurrentModel()]);
   }
 
@@ -739,11 +793,6 @@ void MdiChild::print(int model, const QString & filename)
     pd->setAttribute(Qt::WA_DeleteOnClose, true);
     pd->show();
   }
-}
-
-void MdiChild::viableModelSelected(bool viable)
-{
-  emit copyAvailable(viable);
 }
 
 int MdiChild::getCurrentModel() const

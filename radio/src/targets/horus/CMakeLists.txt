@@ -1,6 +1,7 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
-option(PWR_BUTTON_DISABLED "Disable the Power Button (for debugging with JTAG)" NO)
+option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
+set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
@@ -19,10 +20,6 @@ set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
 
 if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
-endif()
-
-if(PWR_BUTTON_DISABLED)
-  add_definitions(-DPWR_BUTTON_DISABLED)
 endif()
 
 if (PCB STREQUAL X10)
@@ -63,6 +60,11 @@ endif()
 add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
+add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+
+if(NOT UNEXPECTED_SHUTDOWN)
+  add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
+endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
@@ -136,8 +138,11 @@ set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
   )
-add_custom_target(datacopy
-  WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-  COMMAND python ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DCPUARM -DBACKUP > storage/datacopy.cpp
-  DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
-)
+
+if(PYTHONINTERP_FOUND)
+  add_custom_target(datacopy
+    WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DCPUARM -DCOLORLCD -DCPUARM -DBACKUP > storage/datacopy.cpp
+    DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
+  )
+endif()

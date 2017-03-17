@@ -558,6 +558,10 @@ void lcdRefresh()
   simuLcdRefresh = true;
 }
 
+void telemetryPortInit(uint8_t baudrate)
+{
+}
+
 void telemetryPortInit()
 {
 }
@@ -576,14 +580,18 @@ int lcdRestoreBackupBuffer()
 }
 #endif
 
-uint32_t pwroffPressed() { return false; }
-
-#if defined(CPUARM) && !defined(PWR_BUTTON_DELAY)
-uint32_t pwrCheck() { return true; }
-#endif
-
 #if defined(CPUARM)
-void pwrOff() { }
+void pwrOff()
+{
+}
+uint32_t pwrPressed()
+{
+#if defined(PWR_BUTTON_PRESS)
+  return false;
+#else
+  return true;
+#endif
+}
 #endif
 
 #if defined(STM32)
@@ -607,7 +615,7 @@ void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef * RTC_DateStruct)
   time_t tme;
   time(&tme);
   struct tm * timeinfo = localtime(&tme);
-  RTC_DateStruct->RTC_Year = timeinfo->tm_year - TM_YEAR_BASE;
+  RTC_DateStruct->RTC_Year = timeinfo->tm_year - 100; // STM32 year is two decimals only (so base is currently 2000), tm is based on number of years since 1900
   RTC_DateStruct->RTC_Month = timeinfo->tm_mon + 1;
   RTC_DateStruct->RTC_Date = timeinfo->tm_mday;
 }

@@ -27,30 +27,19 @@ uint8_t mainRequestFlags = 0;
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  static bool usbStarted = false;
-
-  if (!usbStarted && usbPlugged()) {
-    usbStarted = true;
+  if (!usbStarted() && usbPlugged()) {
     usbStart();
 #if defined(USB_MASS_STORAGE)
     opentxClose(false);
     usbPluggedIn();
 #endif
   }
-  if (usbStarted && !usbPlugged()) {
-    usbStarted = false;
+  if (usbStarted() && !usbPlugged()) {
     usbStop();
 #if defined(USB_MASS_STORAGE) && !defined(EEPROM)
     opentxResume();
 #endif
   }
-
-#if defined(USB_JOYSTICK)
-  if (usbStarted ) {
-    usbJoystickUpdate();
-  }
-#endif
-
 #endif // defined(STM32) && !defined(SIMU)
 }
 
@@ -138,6 +127,9 @@ void periodicTick_1s()
 void periodicTick_10s()
 {
   checkBatteryAlarms();
+#if defined(LUA)
+  checkLuaMemoryUsage();
+#endif
 }
 
 void periodicTick()
@@ -424,7 +416,7 @@ void perMain()
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
-  if (!SD_CARD_PRESENT()) {
+  if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

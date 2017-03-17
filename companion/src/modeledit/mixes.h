@@ -22,7 +22,7 @@
 #define _MIXES_H_
 
 #include "modeledit.h"
-#include "mixerslist.h"
+#include "mixerslistwidget.h"
 #include "mixerdialog.h"
 #include "modelprinter.h"
 
@@ -59,10 +59,9 @@ class MixesPanel : public ModelPanel
     void pasteMixerMimeData(const QMimeData * mimeData, int destIdx);
 
   private:
-    MixersList *MixerlistWidget;
+    MixersListWidget * mixersListWidget;
     bool mixInserted;
     unsigned int highlightedSource;
-    bool firstLine;
     ModelPrinter modelPrinter;
 
     int getMixerIndex(unsigned int dch);

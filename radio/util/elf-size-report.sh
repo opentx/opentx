@@ -63,6 +63,15 @@ for i in "$@" ; do
   esac
 done
 
+# -- make sure gawk is installed
+: ${AWKCMD:=""}
+if gawk --version >/dev/null 2>&1; then
+  [[ "$OSTYPE" == "darwin"* ]] && AWKCMD="gawk -nf"
+else
+  echo "GAWK is required, exiting."
+  exit 1
+fi
+
 # -- defaults which may change based on MCU
 default_flash_addr=0x08000000
 default_flash_sz=1024  # KB
@@ -154,7 +163,7 @@ for elf in "$@"; do
   fi
   #${SIZE} -A -x ${elf}
   escelf="${elf//\\//}"
-  output=`${SIZE} -A -x ${elf} | "${base_dir}/elf-size-report.awk" \
+  output=`${SIZE} -A -x ${elf} | ${AWKCMD} "${base_dir}/elf-size-report.awk" \
       -v mcu="${MCU}" \
       -v elf="${escelf}" \
       -v skip_data=${skip_data} \
@@ -170,6 +179,6 @@ for elf in "$@"; do
 done
 # -- if more than one elf file was given, also run a comparison report
 if (( file_cnt > 1 && compare )) ; then
-  echo "$all_output" | "${base_dir}/elf-size-compare.awk"
+  echo "$all_output" | ${AWKCMD} "${base_dir}/elf-size-compare.awk"
 fi
 

@@ -40,11 +40,22 @@ class OpenTxGeneralData: public TransformedField {
   public:
     OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant=0);
 
-    virtual const char * getName() { return internalField.getName(); }
+    virtual const QString & getName() { return internalField.getName(); }
+
+    QStringList errors()
+    {
+      return _errors;
+    }
 
   protected:
     virtual void beforeExport();
     virtual void afterImport();
+
+    virtual void setError(const QString & error)
+    {
+      qWarning() << error;
+      _errors << error;
+    }
 
     StructField internalField;
     GeneralSettings & generalData;
@@ -52,7 +63,7 @@ class OpenTxGeneralData: public TransformedField {
     unsigned int version;
     int inputsCount;
     unsigned int chkSum;
-    // unsigned int potsType[4];
+    QStringList _errors;
 };
 
 class ProtocolsConversionTable: public ConversionTable
@@ -88,7 +99,7 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PULSES_DSMX, val++);
       }
       if (IS_HORUS_OR_TARANIS(board)) {
-    	  addConversion(PULSES_CROSSFIRE, val++);
+        addConversion(PULSES_CROSSFIRE, val++);
         addConversion(PULSES_MULTIMODULE, val++);
       }
     }
@@ -109,23 +120,33 @@ class OpenTxModelData: public TransformedField {
   public:
     OpenTxModelData(ModelData & modelData, Board::Type board, unsigned int version, unsigned int variant);
 
-    virtual const char * getName() { return internalField.getName(); }
+    virtual const QString & getName() { return internalField.getName(); }
+
+    QStringList errors()
+    {
+      return _errors;
+    }
 
   protected:
     virtual void beforeExport();
     virtual void afterImport();
+
+    virtual void setError(const QString & error)
+    {
+      qWarning() << error;
+      _errors << error;
+    }
 
     StructField internalField;
     ModelData & modelData;
     Board::Type board;
     unsigned int version;
     unsigned int variant;
-
-  private:
     char name[256];
     int subprotocols[CPN_MAX_MODULES+1/*trainer*/];
     ProtocolsConversionTable protocolsConversionTable;
     ChannelsConversionTable channelsConversionTable;
+    QStringList _errors;
 };
 
 void OpenTxEepromCleanup(void);

@@ -25,7 +25,7 @@ void menuRadioTrainer(event_t event)
   uint8_t y;
   bool slave = SLAVE_MODE();
 
-  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? HEADER_LINE : HEADER_LINE+6), {HEADER_LINE_COLUMNS 2, 2, 2, 2, 0/*, 0*/});
+  MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? HEADER_LINE : HEADER_LINE+6), { HEADER_LINE_COLUMNS 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
     lcdDrawText(7*FW, 4*FH, STR_SLAVE);
@@ -38,8 +38,8 @@ void menuRadioTrainer(event_t event)
 
     y = MENU_HEADER_HEIGHT + 1 + FH;
 
-    for (uint8_t i=0; i<NUM_STICKS; i++) {
-      uint8_t chan = channel_order(i+1);
+    for (uint8_t i=HEADER_LINE; i<HEADER_LINE+NUM_STICKS; i++) {
+      uint8_t chan = channel_order(i+1-HEADER_LINE);
       volatile TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
       drawSource(0, y, MIXSRC_Rud-1+chan, (menuVerticalPosition==i && CURSOR_ON_LINE()) ? INVERS : 0);

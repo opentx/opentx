@@ -28,14 +28,13 @@
 #include "wizarddata.h"
 #include "firmwareinterface.h"
 #include "macros.h"
+#include "multiprotocols.h"
 #include <stdio.h>
 #include <list>
 #include <float.h>
 #include <QtWidgets>
 #include <stdlib.h>
 #include <bitset>
-
-std::list<QString> EEPROMWarnings;
 
 const uint8_t chout_ar[] = { // First number is 0..23 -> template setup,  Second is relevant channel out
   1,2,3,4 , 1,2,4,3 , 1,3,2,4 , 1,3,4,2 , 1,4,2,3 , 1,4,3,2,
@@ -504,7 +503,7 @@ QString RotaryEncoderString(int index)
 QString RawSource::toString(const ModelData * model) const
 {
   static const QString trims[] = {
-    QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA")
+    QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
   };
 
   static const QString special[] = {
@@ -582,14 +581,14 @@ bool RawSource::isPot() const
 {
   return (type == SOURCE_TYPE_STICK &&
           index >= CPN_MAX_STICKS &&
-          index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots));
+          index < CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots));
 }
 
 bool RawSource::isSlider() const
 {
   return (type == SOURCE_TYPE_STICK &&
-          index >= CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots) &&
-          index < CPN_MAX_STICKS+getCurrentFirmware()->getCapability(Pots)+getCurrentFirmware()->getCapability(Sliders));
+          index >= CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) &&
+          index < CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders));
 }
 
 QString RawSwitch::toString(Board::Type board) const
@@ -618,7 +617,9 @@ QString RawSwitch::toString(Board::Type board) const
     QObject::tr("RudTrim Left"), QObject::tr("RudTrim Right"),
     QObject::tr("EleTrim Down"), QObject::tr("EleTrim Up"),
     QObject::tr("ThrTrim Down"), QObject::tr("ThrTrim Up"),
-    QObject::tr("AilTrim Left"), QObject::tr("AilTrim Right")
+    QObject::tr("AilTrim Left"), QObject::tr("AilTrim Right"),
+    QObject::tr("Trim 5 Down"), QObject::tr("Trim 5 Up"),
+    QObject::tr("Trim 6 Down"), QObject::tr("Trim 6 Up")
   };
 
   static const QString rotaryEncoders[] = {
@@ -1045,13 +1046,13 @@ bool GeneralSettings::switchSourceAllowedTaranis(int index) const
 
 bool GeneralSettings::isPotAvailable(int index) const
 {
-  if (index<0 || index>getCurrentFirmware()->getCapability(Pots)) return false;
+  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Pots)) return false;
   return potConfig[index] != Board::POT_NONE;
 }
 
 bool GeneralSettings::isSliderAvailable(int index) const
 {
-  if (index<0 || index>getCurrentFirmware()->getCapability(Sliders)) return false;
+  if (index<0 || index>getBoardCapability(getCurrentBoard(), Board::Sliders)) return false;
   return sliderConfig[index] != Board::SLIDER_NONE;
 }
 
@@ -1071,7 +1072,7 @@ GeneralSettings::GeneralSettings()
   Firmware * firmware = getCurrentFirmware();
   Board::Type board = firmware->getBoard();
 
-  for (int i=0; i<firmware->getCapability(FactoryInstalledSwitches); i++) {
+  for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
     switchConfig[i] = getSwitchInfo(board, i).config;
   }
 
@@ -1124,7 +1125,7 @@ GeneralSettings::GeneralSettings()
   stickMode = g.profile[g.sessionId()].defaultMode();
 
   QString t_calib = g.profile[g.sessionId()].stickPotCalib();
-  int potsnum = getCurrentFirmware()->getCapability(Pots);
+  int potsnum = getBoardCapability(getCurrentBoard(), Board::Pots);
   if (!t_calib.isEmpty()) {
     QString t_trainercalib=g.profile[g.sessionId()].trainerCalib();
     int8_t t_txVoltageCalibration=(int8_t)g.profile[g.sessionId()].txVoltageCalibration();
@@ -1844,46 +1845,6 @@ SimulatorInterface * getCurrentSimulator()
     return factory->create();
   else
     return NULL;
-}
-
-unsigned int getNumSubtypes(MultiModuleRFProtocols type)
-{
-  switch (type) {
-    case MM_RF_PROTO_HISKY:
-    case MM_RF_PROTO_SYMAX:
-    case MM_RF_PROTO_KN:
-    case MM_RF_PROTO_SLT:
-    case MM_RF_PROTO_FY326:
-    case MM_RF_PROTO_BAYANG:
-    case MM_RF_PROTO_V2X2:
-      return 2;
-
-    case MM_RF_PROTO_Q2X2:
-    case MM_RF_PROTO_CG023:
-      return 3;
-
-    case MM_RF_PROTO_DSM2:
-    case MM_RF_PROTO_MT99XX:
-    case MM_RF_PROTO_HONTAI:
-    case MM_RF_PROTO_AFHDS2A:
-    case MM_RF_PROTO_Q303:
-      return 4;
-
-    case MM_RF_PROTO_FLYSKY:
-    case MM_RF_PROTO_MJXQ:
-    case MM_RF_PROTO_YD717:
-      return 5;
-
-    case MM_RF_PROTO_FRSKY:
-    case MM_RF_PROTO_WK_2X01:
-      return 6;
-
-    case MM_RF_PROTO_CX10:
-      return 8;
-    default:
-      return 1;
-  }
-
 }
 
 void FlightModeData::clear(const int phase)

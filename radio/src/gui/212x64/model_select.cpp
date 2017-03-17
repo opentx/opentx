@@ -231,7 +231,7 @@ void menuModelSelect(event_t event)
 
   lcdDrawNumber(19*FW, 0, EeFsGetFree(), RIGHT);
   lcdDrawText(19*FW + 3, 0, STR_BYTES);
-  lcdDrawText(lcdLastPos + 3, 0, STR_FREE);
+  lcdDrawText(lcdLastRightPos + 3, 0, STR_FREE);
 
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);

@@ -4,16 +4,16 @@ local dirty = true
 -- Model types
 local modelType = 0
 local MODELTYPE_PLANE = 0
-local MODELTYPE_HELI = 1
-local MODELTYPE_DELTA = 2
-local MODELTYPE_QUAD = 3
+--local MODELTYPE_HELI = 1
+local MODELTYPE_DELTA = 1
+local MODELTYPE_QUAD = 2
 
 -- Common functions
 local function fieldIncDec(event, value, max)
-  if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT then
+  if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT or event == EVT_PLUS_REPT then
     value = (value + max)
     dirty = true
-  elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT then
+  elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT or event == EVT_MINUS_REPT then
     value = (value + max + 2)
     dirty = true
   end
@@ -32,9 +32,9 @@ local function drawModelChoiceMenu()
   lcd.drawScreenTitle("", 0, 0)
   -- lcd.drawText(58, 13, "Select model type", 0)
   lcd.drawPixmap( 16, 17, "plane.bmp")
-  lcd.drawPixmap( 63, 17, "heli.bmp")
-  lcd.drawPixmap(110, 17, "delta.bmp")
-  lcd.drawPixmap(157, 17, "quadri.bmp")
+  --lcd.drawPixmap( 63, 17, "heli.bmp")
+  lcd.drawPixmap(63, 17, "delta.bmp")
+  lcd.drawPixmap(110, 17, "quadri.bmp")
   modelTypeSurround(modelType)
 end
 
@@ -54,7 +54,7 @@ local function modelTypeMenu(event)
     end
     dirty = true
   else
-    modelType = fieldIncDec(event, modelType, 3)
+    modelType = fieldIncDec(event, modelType, 2)
   end
   return 0
 end
@@ -68,7 +68,6 @@ local function run(event)
   if event == EVT_EXIT_BREAK then
     return 2
   end
-
   return modelTypeMenu(event)
 end
 

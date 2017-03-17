@@ -26,20 +26,15 @@
   #include <SDL.h>
   #undef main
 #endif
+
+#include "appdebugmessagehandler.h"
 #include "mainwindow.h"
 #include "version.h"
 #include "appdata.h"
 #include "storage.h"
 
-#if defined _MSC_VER || !defined __GNUC__
-#include <windows.h>
-#define sleep(x) Sleep(x*1000)
-#else
-#include <unistd.h>
-#endif
-
 #ifdef __APPLE__
-#include <QProxyStyle> 
+#include <QProxyStyle>
 
 class MyProxyStyle : public QProxyStyle
  {
@@ -62,10 +57,13 @@ int main(int argc, char *argv[])
 #endif
 
   QApplication app(argc, argv);
-  app.setApplicationName("OpenTX Companion");
-  app.setOrganizationName("OpenTX");
-  app.setOrganizationDomain("open-tx.org");
+  app.setApplicationName(APP_COMPANION);
+  app.setOrganizationName(COMPANY);
+  app.setOrganizationDomain(COMPANY_DOMAIN);
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
+
+  if (AppDebugMessageHandler::instance())
+    AppDebugMessageHandler::instance()->installAppMessageHandler();
 
   g.init();
 
@@ -101,7 +99,7 @@ int main(int argc, char *argv[])
     fprintf(stderr, "ERROR: couldn't initialize SDL: %s\n", SDL_GetError());
   }
 #endif
-  
+
   registerStorageFactories();
   registerOpenTxFirmwares();
   registerSimulators();
@@ -142,5 +140,6 @@ int main(int argc, char *argv[])
   SDL_Quit();
 #endif
 
+  qDebug() << "COMPANION EXIT" << result;
   return result;
 }

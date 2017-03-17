@@ -1,0 +1,119 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <QObject>
+
+#include "multiprotocols.h"
+#include "radiodata.h"
+
+#define tr QObject::tr
+
+static const QStringList STR_SUBTYPE_CUSTOM  ({tr("Subtype 0"), tr("Subtype 1"), tr("Subtype 2"), tr("Subtype 3"),
+                                                tr("Subtype 4"), tr("Subtype 5"), tr("Subtype 6"), tr("Subtype 7")});
+static const QStringList STR_SUBTYPE_FLYSKY  {"Standard", "V9x9", "V6x6", "V912", "CX20"};
+static const QStringList STR_SUBTYPE_FRSKY   {"D16", "D8", "D16 8ch", "V8", "D16 EU-LBT", "D16 EU-LBT 8ch"};
+static const QStringList STR_SUBTYPE_HISKY   {"HiSky", "HK310"};
+static const QStringList STR_SUBTYPE_V2X2    {"V2x2", "JXD506"};
+static const QStringList STR_SUBTYPE_DSM     {"DSM2 22ms", "DSM2 11ms", "DSMX 22ms", "DSMX 11ms"};
+static const QStringList STR_SUBTYPE_YD717   {"YD717", "Skywalker", "Syma X2", "XINXUN", "NIHUI"};
+static const QStringList STR_SUBTYPE_SYMAX   {"Standard", "Syma X5C"};
+static const QStringList STR_SUBTYPE_SLT     {"SLT", "Vista"};
+static const QStringList STR_SUBTYPE_CX10    {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
+static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H3 3D"};
+static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D"};
+static const QStringList STR_SUBTYPE_KN      {"WLtoys", "FeiLun"};
+static const QStringList STR_SUBTYPE_MT99    {"MT99", "H7", "YZ", "LS", "FY805"};
+static const QStringList STR_SUBTYPE_MJXQ    {"WLH08", "X600", "X800", "H26D", "E010", "H26WH"};
+static const QStringList STR_SUBTYPE_FY326   {"FY326", "FY319"};
+static const QStringList STR_SUBTYPE_HONTAI  {"Standard", "JJRC X1", "X5C1 Clone"};
+static const QStringList STR_SUBTYPE_AFHDS2A {"PWM and IBUS", "PPM and IBUS", "PWM and SBUS", "PPM and SBUS"};
+static const QStringList STR_SUBTYPE_Q2X2    {"Q222", "Q242", "Q282"};
+static const QStringList STR_SUBTYPE_WK2x01  {"WK2801", "WK2401", "W6_5_1", "W6_6_1", "W6_HEL", "W6_HEL_I"};
+static const QStringList STR_SUBTYPE_Q303    {"Q303", "CX35", "CX10D", "CX10WD"};
+static const QStringList NO_SUBTYPE          {tr("DEFAULT")};
+
+static const QString STR_MULTI_VIDFREQ =      tr("Video TX frequency");
+static const QString STR_MULTI_RFTUNE =     tr("C2500 frequency fine tune");
+static const QString STR_MULTI_TELEMETRY = tr("Telemetry");
+static const QString STR_MULTI_RFPOWER = tr("Radio output power");
+static const QString STR_MULTI_SERVOFREQ = tr("Servo output frequency");
+static const QString STR_MULTI_OPTION= tr("Option value");
+
+
+// Table is designed to be shared with gui_common_arm.cpp
+
+const Multiprotocols multiProtocols {
+  { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
+  { MM_RF_PROTO_HUBSAN,     NO_SUBTYPE,           0,  STR_MULTI_VIDFREQ   },
+  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    5,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
+  { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
+  { MM_RF_PROTO_DSM2,       STR_SUBTYPE_DSM,      3,  nullptr             },
+  { MM_RF_PROTO_YD717,      STR_SUBTYPE_YD717,    4,  nullptr             },
+  { MM_RF_PROTO_KN,         STR_SUBTYPE_KN,       1,  nullptr             },
+  { MM_RF_PROTO_SYMAX,      STR_SUBTYPE_SYMAX,    1,  nullptr             },
+  { MM_RF_PROTO_SLT,        STR_SUBTYPE_SLT,      1,  nullptr             },
+  { MM_RF_PROTO_CX10,       STR_SUBTYPE_CX10,     7,  nullptr             },
+  { MM_RF_PROTO_CG023,      STR_SUBTYPE_CG023,    2,  nullptr             },
+  { MM_RF_PROTO_BAYANG,     STR_SUBTYPE_BAYANG,   1,  STR_MULTI_TELEMETRY },
+  { MM_RF_PROTO_MT99XX,     STR_SUBTYPE_MT99,     4,  nullptr             },
+  { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     5,  nullptr             },
+  { MM_RF_PROTO_FY326,      STR_SUBTYPE_FY326,    1,  nullptr             },
+  { MM_RF_PROTO_SFHSS,      NO_SUBTYPE,           0,  STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   2,  nullptr             },
+  { MM_RF_PROTO_OLRS,       NO_SUBTYPE,           0,  STR_MULTI_RFPOWER   },
+  { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
+  { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     2,  nullptr             },
+  { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
+  { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
+  { MM_RF_PROTO_GW08,       NO_SUBTYPE,           0,   nullptr             },
+  { MM_RF_CUSTOM_SELECTED,  STR_SUBTYPE_CUSTOM,   7,  STR_MULTI_OPTION    },
+
+  //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
+  { 0xfe,                   NO_SUBTYPE,           0,  nullptr             }
+};
+
+int Multiprotocols::MultiProtocolDefinition::getOptionMin() const {
+  if (optionsstr == STR_MULTI_RFPOWER)
+    return -1;
+  else if (optionsstr == STR_MULTI_SERVOFREQ)
+    return 0;
+  else
+    return -128;
+}
+
+int Multiprotocols::MultiProtocolDefinition::getOptionMax() const {
+  if (optionsstr == STR_MULTI_RFPOWER)
+    return 7;
+  else if (optionsstr == STR_MULTI_SERVOFREQ)
+    return 70;
+  else
+    return 127;
+}
+
+const Multiprotocols::MultiProtocolDefinition & Multiprotocols::getProtocol(int protocol) const {
+  for (const Multiprotocols::MultiProtocolDefinition & proto: protocols)
+    if (proto.protocol == protocol)
+      return proto;
+
+  // Protocol not found, return the default (last) proto
+  Q_ASSERT(protocols.rbegin()->protocol == 0xfe);
+  return *protocols.rbegin();
+}

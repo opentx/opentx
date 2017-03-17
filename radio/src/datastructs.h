@@ -453,10 +453,15 @@ PACK(struct SwashRingData {
 #endif
 
 #if MAX_SCRIPTS > 0
+union ScriptDataInput {
+  int16_t value;
+  source_t source;
+};
+
 PACK(struct ScriptData {
-  char    file[LEN_SCRIPT_FILENAME];
-  char    name[LEN_SCRIPT_NAME];
-  int16_t  inputs[MAX_SCRIPT_INPUTS];
+  char            file[LEN_SCRIPT_FILENAME];
+  char            name[LEN_SCRIPT_NAME];
+  ScriptDataInput inputs[MAX_SCRIPT_INPUTS];
 });
 #endif
 

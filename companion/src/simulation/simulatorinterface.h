@@ -62,7 +62,7 @@ class SimulatorInterface
 
     virtual ~SimulatorInterface() {}
 
-    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") { };
+    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") { }
 
     virtual void setVolumeGain(int value) { }
 
@@ -71,6 +71,8 @@ class SimulatorInterface
     virtual void start(const char * filename, bool tests=true) = 0;
 
     virtual void stop() = 0;
+
+    virtual void readEepromData(QByteArray & dest) = 0;
 
     virtual bool timer10ms() = 0;
 

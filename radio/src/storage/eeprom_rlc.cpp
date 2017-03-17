@@ -519,7 +519,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
     len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
   }
 
-#if defined(RTCLOCK) && LCD_W >= 212
+#if defined(RTCLOCK)
   char * tmp = strAppendDate(&buf[len]);
   len = tmp - buf;
 #endif
@@ -678,44 +678,43 @@ void RlcFile::nextRlcWriteStep()
     return;
   }
 
-  bool run0 = (m_rlc_buf[0] == 0);
+  if (m_rlc_len>0) {
 
-  if (m_rlc_len==0) goto close;
+    bool run0 = (m_rlc_buf[0] == 0);
 
-  for (i=1; 1; i++) { // !! laeuft ein byte zu weit !!
-    bool cur0 = m_rlc_buf[i] == 0;
-    if (cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0x0f) || i==m_rlc_len) {
-      if (run0) {
-        assert(cnt0==0);
-        if (cnt<8 && i!=m_rlc_len)
-          cnt0 = cnt; //aufbew fuer spaeter
+    for (i=1; 1; i++) {
+      bool cur0 = (i<m_rlc_len) ? (m_rlc_buf[i] == 0) : false;
+      if (cur0 != run0 || cnt==0x3f || (cnt0 && cnt==0x0f) || i==m_rlc_len) {
+        if (run0) {
+          assert(cnt0==0);
+          if (cnt<8 && i!=m_rlc_len)
+            cnt0 = cnt; //aufbew fuer spaeter
+          else {
+            m_rlc_buf+=cnt;
+            m_rlc_len-=cnt;
+            write1(cnt|0x40);
+            return;
+          }
+        }
         else {
-          m_rlc_buf+=cnt;
-          m_rlc_len-=cnt;
-          write1(cnt|0x40);
+          m_rlc_buf+=cnt0;
+          m_rlc_len-=cnt0+cnt;
+          m_cur_rlc_len=cnt;
+          if(cnt0){
+            write1(0x80 | (cnt0<<4) | cnt);
+          }
+          else{
+            write1(cnt);
+          }
           return;
         }
+        cnt=0;
+        if (i==m_rlc_len) break;
+        run0 = cur0;
       }
-      else {
-        m_rlc_buf+=cnt0;
-        m_rlc_len-=cnt0+cnt;
-        m_cur_rlc_len=cnt;
-        if(cnt0){
-          write1(0x80 | (cnt0<<4) | cnt);
-        }
-        else{
-          write1(cnt);
-        }
-        return;
-      }
-      cnt=0;
-      if (i==m_rlc_len) break;
-      run0 = cur0;
+      cnt++;
     }
-    cnt++;
   }
-
-  close:
 
   switch(m_write_step) {
     case WRITE_START_STEP: {
@@ -932,9 +931,6 @@ void eepromBackup()
   uint8_t buffer[1024];
   FIL file;
 
-  lcdClear();
-  drawProgressBar(STR_WRITING);
-
   // reset unexpectedShutdown to prevent warning when user restores EEPROM backup
   g_eeGeneral.unexpectedShutdown = 0;
   storageDirty(EE_GENERAL);
@@ -961,7 +957,7 @@ void eepromBackup()
     UINT count;
     eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
-    updateProgressBar(i, EEPROM_SIZE);
+    drawProgressBar(STR_WRITING, i, EEPROM_SIZE);
     SIMU_SLEEP(100/*ms*/);
   }
 

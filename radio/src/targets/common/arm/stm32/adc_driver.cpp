@@ -24,10 +24,12 @@
   // not needed
 #elif defined(PCBX10)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1, -1,1,1,1,  -1};
-#elif defined(PCBX9E) && defined(HORUS_STICKS)
-  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
 #elif defined(PCBX9E)
+#if defined(HORUS_STICKS)
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+#else
   const int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+#endif
   const uint8_t ana_mapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
                                              10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
                                              11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,

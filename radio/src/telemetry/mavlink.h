@@ -210,13 +210,13 @@ extern Telemetry_Data_t telemetry_data;
 
 
 
-
+#if 0
 extern inline uint8_t MAVLINK_CtrlMode2Action(uint8_t mode) {
 	uint8_t action;
 	
 	return action;
 }
-#if 0
+
 extern inline uint8_t MAVLINK_Action2CtrlMode(uint8_t action) {
 	uint8_t mode = ERROR_NUM_MODES;
 	switch (action) {
@@ -319,6 +319,8 @@ inline uint8_t getPrecisMavlinParamsValue(uint8_t idx) {
 
 void lcd_outdezFloat(uint8_t x, uint8_t y, float val, uint8_t precis, uint8_t mode);
 #endif
+
+void telemetryPortInit(uint8_t baudrate);
 
 #endif // _MAVLINK_H_
 

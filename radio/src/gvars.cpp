@@ -74,7 +74,7 @@ int16_t getGVarValue(int8_t gv, int8_t fm)
 int32_t getGVarValuePrec1(int8_t gv, int8_t fm)
 {
   int8_t mul;
-  uint8_t prec = g_model.gvars[gv].prec;
+  uint8_t prec = g_model.gvars[abs(gv)].prec;
   if (prec == 0)
     mul = 10;
   else

@@ -414,6 +414,10 @@ class AppData: protected CompStoreObj
     void init();
 
     QMap<int, QString> getActiveProfiles();
+
+  protected:
+    bool importSettings(QSettings & toSettings);
+
 };
 
 extern AppData g;

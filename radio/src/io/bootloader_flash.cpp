@@ -41,9 +41,6 @@ void bootloaderFlash(const char * filename)
   uint8_t buffer[1024];
   UINT count;
 
-  lcdClear();
-  drawProgressBar(STR_WRITING);
-
   static uint8_t unlocked = 0;
   if (!unlocked) {
     unlocked = 1;
@@ -63,7 +60,7 @@ void bootloaderFlash(const char * filename)
     for (int j=0; j<1024; j+=FLASH_PAGESIZE) {
       flashWrite(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
     }
-    updateProgressBar(i, BOOTLOADER_SIZE);
+    drawProgressBar(STR_WRITING, i, BOOTLOADER_SIZE);
     SIMU_SLEEP(30/*ms*/);
   }
 

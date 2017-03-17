@@ -25,9 +25,9 @@ class ModelBitmapWidget: public Widget
   public:
     ModelBitmapWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
       Widget(factory, zone, persistentData),
-      buffer(NULL)
+      buffer(NULL),
+      deps_hash(0)
     {
-      memset(bitmapFilename, 255, sizeof(bitmapFilename));
     }
 
     virtual ~ModelBitmapWidget()
@@ -65,11 +65,12 @@ class ModelBitmapWidget: public Widget
 
     virtual void refresh()
     {
-      if (memcmp(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap)) != 0 ||
-          memcmp(modelName, g_model.header.name, sizeof(g_model.header.name)) != 0) {
+      uint32_t new_hash = hash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
+      new_hash ^= hash(g_model.header.name, sizeof(g_model.header.name));
+      new_hash ^= hash(g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
+      if (new_hash != deps_hash) {
+        deps_hash = new_hash;
         refreshBuffer();
-        memcpy(bitmapFilename, g_model.header.bitmap, sizeof(g_model.header.bitmap));
-        memcpy(modelName, g_model.header.name, sizeof(g_model.header.name));
       }
 
       if (buffer) {
@@ -78,9 +79,8 @@ class ModelBitmapWidget: public Widget
     }
 
   protected:
-    char bitmapFilename[sizeof(g_model.header.bitmap)];
-    char modelName[sizeof(g_model.header.name)];
     BitmapBuffer * buffer;
+    uint32_t deps_hash;
 };
 
 BaseWidgetFactory<ModelBitmapWidget> modelBitmapWidget("ModelBmp", NULL);

@@ -3,6 +3,7 @@ option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
 
 if(PCB STREQUAL X9E)
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")
   set(CPU_TYPE STM32F4)
   set(CPU_TYPE_FULL STM32F407xE)  # for size report
@@ -13,6 +14,7 @@ if(PCB STREQUAL X9E)
   add_definitions(-DSTM32F40_41xxx -DPCBX9E)
   add_definitions(-DEEPROM_VARIANT=0x8000)
   add_definitions(-DBLUETOOTH)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     top_lcd_driver.cpp
@@ -59,6 +61,7 @@ elseif(PCB STREQUAL X9D)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X7)
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
@@ -67,6 +70,7 @@ elseif(PCB STREQUAL X7)
   set(FLAVOUR x7)
   add_definitions(-DPCBX7 -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0x4000)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     bluetooth_driver.cpp
@@ -135,10 +139,6 @@ endif()
 
 if(TARANIS_INTERNAL_PPM)
   add_definitions(-DTARANIS_INTERNAL_PPM)
-endif()
-
-if(MIXERS_MONITOR)
-  add_definitions(-DMIXERS_MONITOR)
 endif()
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})

@@ -86,6 +86,12 @@ static int luaModelSetInfo(lua_State *L)
 
 Get RF module parameters
 
+`rfProtocol` values:
+ * -1 OFF
+ * 0 D16
+ * 1 D8
+ * 2 LR12
+
 @param index (number) module index (0 for internal, 1 for external)
 
 @retval nil requested module does not exist
@@ -93,7 +99,7 @@ Get RF module parameters
 @retval table module parameters:
  * `rfProtocol` (number) protocol index
  * `modelId` (number) receiver number
- * `firstChannel` (number) start channel (0 is CH1) 
+ * `firstChannel` (number) start channel (0 is CH1)
  * `channelsCount` (number) number of channels sent to module
 
 @status current Introduced in TODO
@@ -118,7 +124,7 @@ static int luaModelGetModule(lua_State *L)
 /*luadoc
 @function model.setModule(index, value)
 
-Set RF module parameters 
+Set RF module parameters
 
 @param index (number) module index (0 for internal, 1 for external)
 
@@ -978,8 +984,6 @@ static int luaModelGetOutput(lua_State *L)
     lua_pushtableinteger(L, "revert", limit->revert);
     if (limit->curve)
       lua_pushtableinteger(L, "curve", limit->curve-1);
-    else
-      lua_pushtablenil(L, "curve");
   }
   else {
     lua_pushnil(L);
@@ -1006,6 +1010,7 @@ static int luaModelSetOutput(lua_State *L)
   unsigned int idx = luaL_checkunsigned(L, 1);
   if (idx < MAX_OUTPUT_CHANNELS) {
     LimitData * limit = limitAddress(idx);
+    memclear(limit, sizeof(LimitData));
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
       luaL_checktype(L, -2, LUA_TSTRING); // key is string
@@ -1033,10 +1038,7 @@ static int luaModelSetOutput(lua_State *L)
         limit->revert = luaL_checkinteger(L, -1);
       }
       else if (!strcmp(key, "curve")) {
-        if (lua_isnil(L, -1))
-          limit->curve = 0;
-        else
-          limit->curve = luaL_checkinteger(L, -1) + 1;
+        limit->curve = luaL_checkinteger(L, -1) + 1;
       }
     }
     storageDirty(EE_MODEL);

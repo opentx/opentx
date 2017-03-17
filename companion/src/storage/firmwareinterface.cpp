@@ -126,6 +126,8 @@ QString FirmwareInterface::getFlavour() const
     return "opentx-x9d+";
   else if (flavour == "opentx-taranis")
     return "opentx-x9d";
+  else if (flavour == "opentx-horus")
+    return "opentx-x12s";
   else
     return flavour;
 }
@@ -330,16 +332,16 @@ bool FirmwareInterface::isValid()
   return isValidFlag;
 }
 
-unsigned int FirmwareInterface::save(QString fileName)
+unsigned int FirmwareInterface::save(const QString & filename)
 {
   uint8_t * binflash  = (uint8_t*)malloc(FSIZE_MAX);
   if (binflash == NULL) {
     return -1;
   }
   memcpy(binflash, flash.constData(), flashSize);
-  QFile file(fileName);
+  QFile file(filename);
 
-  int fileType = getStorageType(fileName);
+  int fileType = getStorageType(filename);
 
   if (fileType == STORAGE_TYPE_HEX) {
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) { //reading HEX TEXT file

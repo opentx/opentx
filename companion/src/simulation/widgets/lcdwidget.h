@@ -26,8 +26,9 @@
 #include <QPainter>
 #include <QClipboard>
 #include <QDir>
-#include <QDebug>
+
 #include "appdata.h"
+#include "appdebugmessagehandler.h"
 
 class LcdWidget : public QWidget
 {
@@ -90,12 +91,12 @@ class LcdWidget : public QWidget
       QPainter p(&buffer);
       doPaint(p);
       if (fileName.isEmpty()) {
-        qDebug() << "Screenshot saved to clipboard";
         QApplication::clipboard()->setPixmap( buffer );
+        qInfo() << "Screenshot saved to clipboard";
       }
       else {
-        qDebug() << "Screenshot" << fileName;
         buffer.toImage().save(fileName);
+        qInfo() << "Screenshot saved to:" << fileName;
       }
     }
 

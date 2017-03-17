@@ -110,7 +110,7 @@ void menuModelCurveOne(event_t event)
   lcdDrawTextAlignedLeft(7*FH, STR_TYPE);
   uint8_t attr = (s_editMode <= 0 ? INVERS : 0);
   lcdDrawNumber(5*FW-2, 7*FH, crv.points, LEFT|attr);
-  lcdDrawText(lcdLastPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
+  lcdDrawText(lcdLastRightPos, 7*FH, crv.custom ? PSTR("pt'") : PSTR("pt"), attr);
 
   drawCurve();
 

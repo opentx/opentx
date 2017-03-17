@@ -39,20 +39,28 @@ static int luaLcdRefresh(lua_State *L)
 }
 
 /*luadoc
-@function lcd.clear()
+@function lcd.clear([color])
 
 Clear the LCD screen
 
-@status current Introduced in 2.0.0
+@param color (optional, only on color screens)
+
+@status current Introduced in 2.0.0, `color` parameter introduced in 2.2.0 RC12
 
 @notice This function only works in stand-alone and telemetry scripts.
 */
 static int luaLcdClear(lua_State *L)
 {
-  if (luaLcdAllowed) lcdClear();
+  if (luaLcdAllowed) {
+#if defined(COLORLCD)
+    LcdFlags color = luaL_optunsigned(L, 1, TEXT_BGCOLOR);
+    lcd->clear(color);
+#else
+    lcdClear();
+#endif
+  }
   return 0;
 }
-
 
 /*luadoc
 @function lcd.drawPoint(x, y)
@@ -99,20 +107,23 @@ whole line will not be drawn (starting from OpenTX 2.1.5)
 static int luaLcdDrawLine(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
-  int x1 = luaL_checkinteger(L, 1);
-  int y1 = luaL_checkinteger(L, 2);
-  int x2 = luaL_checkinteger(L, 3);
-  int y2 = luaL_checkinteger(L, 4);
-  int pat = luaL_checkinteger(L, 5);
-  int flags = luaL_checkinteger(L, 6);
+  coord_t x1 = luaL_checkunsigned(L, 1);
+  coord_t y1 = luaL_checkunsigned(L, 2);
+  coord_t x2 = luaL_checkunsigned(L, 3);
+  coord_t y2 = luaL_checkunsigned(L, 4);
+  uint8_t pat = luaL_checkunsigned(L, 5);
+  LcdFlags flags = luaL_checkunsigned(L, 6);
+
+  if (x1 > LCD_W || y1 > LCD_H || x2 > LCD_W || y2 > LCD_H)
+    return 0;
 
   if (pat == SOLID) {
     if (x1 == x2) {
-      lcdDrawSolidVerticalLine(x1, y2 >= y1 ? y1 : y1+1, y2 >= y1 ? y2-y1+1 : y2-y1-1, flags);
+      lcdDrawSolidVerticalLine(x1, y1<y2 ? y1 : y2,  y1<y2 ? (y2-y1)+1 : (y1-y2)+1, flags);
       return 0;
     }
     else if (y1 == y2) {
-      lcdDrawSolidHorizontalLine(x2 >= x1 ? x1 : x1+1, y1, x2 >= x1 ? x2-x1+1 : x2-x1-1, flags);
+      lcdDrawSolidHorizontalLine(x1<x2 ? x1 : x2, y1, x1<x2 ? (x2-x1)+1 : (x1-x2)+1, flags);
       return 0;
     }
   }
@@ -125,20 +136,55 @@ static int luaLcdDrawLine(lua_State *L)
 /*luadoc
 @function lcd.getLastPos()
 
-Returns the last x position from previous output
+Returns the rightmost x position from previous output
 
 @retval number (integer) x position
 
 @notice Only available on Taranis
 
+@notice For added clarity, it is recommended to use lcd.getLastRightPos()
+
 @status current Introduced in 2.0.0
 */
+
+/*luadoc
+@function lcd.getLastRightPos()
+
+Returns the rightest x position from previous drawtext or drawNumber output
+
+@retval number (integer) x position
+
+@notice Only available on Taranis
+
+@notice This is strictly equivalent to former lcd.getLastPos()
+
+@status current Introduced in 2.2.0
+*/
+
 static int luaLcdGetLastPos(lua_State *L)
 {
-  lua_pushinteger(L, lcdLastPos);
+  lua_pushinteger(L, lcdLastRightPos);
   return 1;
 }
-#endif
+
+/*luadoc
+@function lcd.getLastLeftPos()
+
+Returns the leftmost x position from previous drawtext or drawNumber output
+
+@retval number (integer) x position
+
+@notice Only available on Taranis
+
+@status current Introduced in 2.2.0
+*/
+static int luaLcdGetLeftPos(lua_State *L)
+{
+  lua_pushinteger(L, lcdLastLeftPos);
+  return 1;
+}
+
+#endif // COLORLCD
 
 /*luadoc
 @function lcd.drawText(x, y, text [, flags])
@@ -325,9 +371,18 @@ static int luaLcdDrawSource(lua_State *L)
 /*luadoc
 @function Bitmap.open(name)
 
-Loads a bitmap in memory, for later use with lcd.drawBitmap()
+Loads a bitmap in memory, for later use with lcd.drawBitmap(). Bitmaps should be loaded only
+once, returned object should be stored and used for drawing. If loading fails for whatever
+reason the resulting bitmap object will have width and height set to zero.
+
+Bitmap loading can fail if:
+ * File is not found or contains invalid image
+ * System is low on memory
+ * Combined memory usage of all Lua script bitmaps exceeds certain value
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
+
+@retval bitmap (object) a bitmap object that can be used with other bitmap functions
 
 @notice Only available on Horus
 
@@ -337,18 +392,25 @@ static int luaOpenBitmap(lua_State * L)
 {
   const char * filename = luaL_checkstring(L, 1);
 
-  BitmapBuffer ** ptr = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
-  *ptr = BitmapBuffer::load(filename);
+  BitmapBuffer ** b = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
 
-  if (*ptr == NULL && G(L)->gcrunning) {
-    luaC_fullgc(L, 1);  /* try to free some memory... */
-    *ptr = BitmapBuffer::load(filename);  /* try again */
+  if (luaExtraMemoryUsage > LUA_MEM_EXTRA_MAX) {
+    // already allocated more than max allowed, fail
+    TRACE("luaOpenBitmap: Error, using too much memory %u/%u", luaExtraMemoryUsage, LUA_MEM_EXTRA_MAX);
+    *b = 0;
+  }
+  else {
+    *b = BitmapBuffer::load(filename);
+    if (*b == NULL && G(L)->gcrunning) {
+      luaC_fullgc(L, 1);  /* try to free some memory... */
+      *b = BitmapBuffer::load(filename);  /* try again */
+    }
   }
 
-  if (*ptr) {
-    uint32_t size = (*ptr)->getDataSize();
+  if (*b) {
+    uint32_t size = (*b)->getDataSize();
     luaExtraMemoryUsage += size;
-    TRACE("luaOpenBitmap: %p (%u)", *ptr, size);
+    TRACE("luaOpenBitmap: %p (%u)", *b, size);
   }
 
   luaL_getmetatable(L, LUA_BITMAPHANDLE);
@@ -364,13 +426,16 @@ static BitmapBuffer * checkBitmap(lua_State * L, int index)
   return *b;
 }
 
-
 /*luadoc
 @function Bitmap.getSize(name)
 
-Return width, heigh of a bitmap in memory
+Return width, height of a bitmap object
 
-@param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
+@param bitmap (pointer) point to a bitmap previously opened with Bitmap.open()
+
+@retval multiple returns 2 values:
+ * (number) width in pixels
+ * (number) height in pixels
 
 @notice Only available on Horus
 
@@ -378,7 +443,7 @@ Return width, heigh of a bitmap in memory
 */
 static int luaGetBitmapSize(lua_State * L)
 {
-  BitmapBuffer * b = checkBitmap(L, 1);
+  const BitmapBuffer * b = checkBitmap(L, 1);
   if (b) {
     lua_pushinteger(L, b->getWidth());
     lua_pushinteger(L, b->getHeight());
@@ -392,11 +457,18 @@ static int luaGetBitmapSize(lua_State * L)
 
 static int luaDestroyBitmap(lua_State * L)
 {
-  BitmapBuffer * ptr = checkBitmap(L, 1);
-  uint32_t size = ptr->getDataSize();
-  TRACE("luaDestroyBitmap: %p (%u)", ptr, size);
-  if (luaExtraMemoryUsage > size) luaExtraMemoryUsage -= size;
-  delete ptr;
+  BitmapBuffer * b = checkBitmap(L, 1);
+  if (b) {
+    uint32_t size = b->getDataSize();
+    TRACE("luaDestroyBitmap: %p (%u)", b, size);
+    if (luaExtraMemoryUsage >= size) {
+      luaExtraMemoryUsage -= size;
+    }
+    else {
+      luaExtraMemoryUsage = 0;
+    }
+    delete b;
+  }
   return 0;
 }
 
@@ -421,11 +493,12 @@ void registerBitmapClass(lua_State * L)
 
 Displays a bitmap at (x,y)
 
-@param bitmap (pointer) point to a bitmap previously opened with Bipmap.open()
+@param bitmap (pointer) point to a bitmap previously opened with Bitmap.open()
 
 @param x,y (positive numbers) starting coordinates
 
-@param scale (positive numbers) scale in %, 50 divides size by two, 100 is unchanged, 200 doubles size
+@param scale (positive numbers) scale in %, 50 divides size by two, 100 is unchanged, 200 doubles size.
+Omitting scale draws image in 1:1 scale and is faster than specifying 100 for scale.
 
 @notice Only available on Horus
 
@@ -434,15 +507,19 @@ Displays a bitmap at (x,y)
 static int luaLcdDrawBitmap(lua_State *L)
 {
   if (!luaLcdAllowed) return 0;
-  const BitmapBuffer * bitmap = checkBitmap(L, 1);
-  int x = luaL_checkinteger(L, 2);
-  int y = luaL_checkinteger(L, 3);
-  unsigned scale = luaL_optunsigned(L, 4, 0);
+  const BitmapBuffer * b = checkBitmap(L, 1);
 
-  if (bitmap) {
-    lcd->drawBitmap(x, y, bitmap, 0, 0, 0, 0, (float) scale/100);
+  if (b) {
+    unsigned int x = luaL_checkunsigned(L, 2);
+    unsigned int y = luaL_checkunsigned(L, 3);
+    unsigned int scale = luaL_optunsigned(L, 4, 0);
+    if (scale) {
+      lcd->drawBitmap(x, y, b, 0, 0, 0, 0, scale/100.0f);
+    }
+    else {
+      lcd->drawBitmap(x, y, b);
+    }
   }
-
   return 0;
 }
 #elif LCD_DEPTH > 1
@@ -791,12 +868,16 @@ const luaL_Reg lcdLib[] = {
   { "RGB", luaRGB },
 #elif LCD_DEPTH > 1
   { "getLastPos", luaLcdGetLastPos },
+  { "getLastRightPos", luaLcdGetLastPos },
+  { "getLastLeftPos", luaLcdGetLeftPos },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
 #else
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "getLastPos", luaLcdGetLastPos },
+  { "getLastRightPos", luaLcdGetLastPos },
+  { "getLastLeftPos", luaLcdGetLeftPos },
   { "drawCombobox", luaLcdDrawCombobox },
 #endif
   { NULL, NULL }  /* sentinel */

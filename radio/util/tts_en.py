@@ -48,7 +48,7 @@ for i, s in enumerate(["point zero", "point one", "point two", "point three",
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 167 + i)))
 for s, f, a in [(u"trim center", "midtrim", 495),
                 (u"maximum trim reached", "maxtrim", NO_ALTERNATE),
-                (u"minium trim reached", "mintrim", NO_ALTERNATE),
+                (u"minimum trim reached", "mintrim", NO_ALTERNATE),
                 (u"timer 1 elapsed", "timovr1", NO_ALTERNATE),
                 (u"timer 2 elapsed", "timovr2", NO_ALTERNATE),
                 (u"timer 3 elapsed", "timovr3", NO_ALTERNATE),

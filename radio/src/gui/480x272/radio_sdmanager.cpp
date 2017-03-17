@@ -132,10 +132,6 @@ void onSdManagerMenu(const char * result)
     getSelectionFullPath(lfn);
     pushMenuTextView(lfn);
   }
-  else if (result == STR_FLASH_INTERNAL_MODULE) {
-    getSelectionFullPath(lfn);
-    sportFlashDevice(INTERNAL_MODULE, lfn);
-  }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
     sportFlashDevice(EXTERNAL_MODULE, lfn);
@@ -231,11 +227,12 @@ bool menuRadioSdManager(event_t _event)
           else if (!strcasecmp(ext, TEXT_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_VIEW_TEXT);
           }
-#if defined(LUA)
+          else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
+            POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+          }
           else if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
-#endif
         }
         if (!READ_ONLY()) {
           if (IS_FILE(line))
@@ -326,6 +323,7 @@ bool menuRadioSdManager(event_t _event)
           }
         }
       }
+      f_closedir(&dir);
     }
   }
 

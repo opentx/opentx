@@ -21,9 +21,10 @@
 #include "hardware.h"
 #include "ui_hardware.h"
 
-void HardwarePanel::setupSwitchType(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type, bool threePos = true)
+void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos = true)
 {
-  if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Switches)) {
+  Board::Type board = getCurrentBoard();
+  if (IS_STM32(board) && index < getBoardCapability(board, Board::Switches)) {
     type->addItem(tr("None"), Board::SWITCH_NOT_AVAILABLE);
     type->addItem(tr("2 Positions Toggle"), Board::SWITCH_TOGGLE);
     type->addItem(tr("2 Positions"), Board::SWITCH_2POS);
@@ -32,6 +33,14 @@ void HardwarePanel::setupSwitchType(int index, QLabel *label, AutoLineEdit *name
     }
     name->setField(generalSettings.switchName[index], 3, this);
     type->setField(generalSettings.switchConfig[index], this);
+    if (IS_TARANIS_X7(board)) {
+      if (index == 4) {
+        label->setText("SF");
+      }
+      else if (index == 5) {
+        label->setText("SH");
+      }
+    }
   }
   else {
     label->hide();
@@ -40,9 +49,11 @@ void HardwarePanel::setupSwitchType(int index, QLabel *label, AutoLineEdit *name
   }
 }
 
-void HardwarePanel::setupPotType(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
+void HardwarePanel::setupPotType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type)
 {
-  if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Pots)) {
+  Board::Type board = firmware->getBoard();
+
+  if (IS_STM32(board) && index < getBoardCapability(board, Board::Pots)) {
     label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+index).toString());
     type->addItem(tr("None"), Board::POT_NONE);
     type->addItem(tr("Pot with detent"), Board::POT_WITH_DETENT);
@@ -60,8 +71,10 @@ void HardwarePanel::setupPotType(int index, QLabel *label, AutoLineEdit *name, A
 
 void HardwarePanel::setupSliderType(int index, QLabel *label, AutoLineEdit *name, AutoComboBox *type)
 {
-  if (IS_STM32(firmware->getBoard()) && index < firmware->getCapability(Sliders)) {
-    label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+firmware->getCapability(Pots)+index).toString());
+  Board::Type board = firmware->getBoard();
+
+  if (IS_STM32(board) && index < getBoardCapability(board, Board::Sliders)) {
+    label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+getBoardCapability(board, Board::Pots)+index).toString());
     type->addItem(tr("None"), Board::SLIDER_NONE);
     type->addItem(tr("Slider with detent"), Board::SLIDER_WITH_DETENT);
     name->setField(generalSettings.sliderName[index], 3, this);

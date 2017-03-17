@@ -63,7 +63,7 @@ class RadioOutputsWidget : public QWidget
     void setupChannelsDisplay();
     void setupLsDisplay();
     void setupGVarsDisplay();
-    QWidget * createLogicalSwitch(QWidget * parent, int switchNo, QLabel * label);
+    QWidget * createLogicalSwitch(QWidget * parent, int switchNo);
 
     SimulatorInterface * m_simulator;
     Firmware * m_firmware;
@@ -75,6 +75,7 @@ class RadioOutputsWidget : public QWidget
 
     int m_radioProfileId;
     int m_dataUpdateFreq;
+    int m_lastFlightPhase;
     bool m_started;
 
     const static int m_dataUpdateFreqDefault;

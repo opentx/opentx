@@ -30,7 +30,7 @@ class WizardDialog : public QWizard
 
   public:
     WizMix mix;
-    WizardDialog(const GeneralSettings & settings, const unsigned int modelId, QWidget *parent = 0);
+    WizardDialog(const GeneralSettings & settings, const unsigned int modelId, const ModelData & modelData, QWidget *parent = 0);
     const GeneralSettings & settings;
 
   private slots:

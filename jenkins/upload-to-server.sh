@@ -4,7 +4,7 @@ set -e
 set -x
 
 # in this file define ssh options (like private key)
-source ./settings.sh
+source ~/.opentx-jenkins-settings
 
 function upload() {
   # $1 is release directory name

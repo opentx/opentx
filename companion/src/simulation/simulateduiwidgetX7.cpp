@@ -1,8 +1,8 @@
 #include "simulateduiwidget.h"
 #include "ui_simulateduiwidgetX7.h"
 
-SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, SimulatorDialog * simuDialog, QWidget * parent):
-  SimulatedUIWidget(simulator, simuDialog, parent),
+SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, QWidget * parent):
+  SimulatedUIWidget(simulator, parent),
   ui(new Ui::SimulatedUIWidgetX7)
 {
   RadioUiAction * act;
@@ -42,12 +42,20 @@ SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, Simulato
   m_backlightColors << QColor(247,242,159);
 
   setLcd(ui->lcd);
-  connectScrollActions();
-  // try to match the gradient on the white radio images.
-  m_simuDialog->setUiAreaStyle("background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, " \
-                             "stop:0 rgba(255, 255, 255, 255), " \
-                             "stop:0.757062 rgba(241, 238, 238, 255), " \
-                             "stop:1 rgba(247, 245, 245, 255));");
+
+  QString css = "#radioUiWidget {"
+                  "background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1,"
+                    "stop:0 rgba(255, 255, 255, 255),"
+                    "stop:0.757062 rgba(241, 238, 238, 255),"
+                    "stop:1 rgba(247, 245, 245, 255));"
+                "}";
+
+  QTimer * tim = new QTimer(this);
+  tim->setSingleShot(true);
+  connect(tim, &QTimer::timeout, [this, css]() {
+    emit customStyleRequest(css);
+  });
+  tim->start(100);
 }
 
 SimulatedUIWidgetX7::~SimulatedUIWidgetX7()

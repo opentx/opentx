@@ -82,6 +82,24 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
 }
 #endif
 
+
+int skipHiddenLines(int noRows, const uint8_t * mstate_tab, int row)
+{
+  for(int i=0; i<noRows; ++i) {
+    if (mstate_tab[HEADER_LINE + i] != HIDDEN_ROW) {
+      if (row == 0) {
+        // TRACE("%d -> %d", Row, i);
+        return i;
+      }
+      --row;
+    }
+  }
+  return -1;
+}
+
+// #define SKIP_HIDDEN_MENU_ROWS(row)    row = skipHiddenLines((int)DIM(mstate_tab), mstate_tab, row); if (row < 0) return;
+#define SKIP_HIDDEN_MENU_ROWS(row)    if ((row = skipHiddenLines((int)DIM(mstate_tab), mstate_tab, row)) < 0) return;
+
 void menuModelDisplay(event_t event)
 {
   MENU(STR_MENU_DISPLAY, menuTabModel, MENU_MODEL_DISPLAY, HEADER_LINE + ITEM_DISPLAY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
@@ -91,11 +109,7 @@ void menuModelDisplay(event_t event)
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
-    for (int j=0; j<=k; j++) {
-      if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
-        k++;
-      }
-    }
+    SKIP_HIDDEN_MENU_ROWS(k);
 
     LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);

@@ -43,14 +43,14 @@ void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData *cs, uint8_t lat
 {
   lcdDrawChar(x-4, y, '[');
   lcdDrawNumber(x, y, lswTimerValue(cs->v2), LEFT|PREC1|lattr);
-  lcdDrawChar(lcdLastPos, y, ':');
+  lcdDrawChar(lcdLastRightPos, y, ':');
   if (cs->v3 < 0)
-    lcdDrawText(lcdLastPos+3, y, "<<", rattr);
+    lcdDrawText(lcdLastRightPos+3, y, "<<", rattr);
   else if (cs->v3 == 0)
-    lcdDrawText(lcdLastPos+3, y, "--", rattr);
+    lcdDrawText(lcdLastRightPos+3, y, "--", rattr);
   else
-    lcdDrawNumber(lcdLastPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
-  lcdDrawChar(lcdLastPos, y, ']');
+    lcdDrawNumber(lcdLastRightPos+3, y, lswTimerValue(cs->v2+cs->v3), LEFT|PREC1|rattr);
+  lcdDrawChar(lcdLastRightPos, y, ']');
 }
 
 #define CSWONE_2ND_COLUMN (11*FW)
@@ -115,7 +115,7 @@ void menuModelLogicalSwitchOne(event_t event)
           v1_max = 122;
         }
         else {
-          v1_val = (uint8_t)cs->v1;
+          v1_val = cs->v1;
           drawSource(CSWONE_2ND_COLUMN, y, v1_val, attr);
           INCDEC_SET_FLAG(EE_MODEL | INCDEC_SOURCE);
           INCDEC_ENABLE_CHECK(isSourceAvailable);
@@ -227,7 +227,7 @@ void menuModelLogicalSwitchOne(event_t event)
 
 void onLogicalSwitchesMenu(const char *result)
 {
-  int8_t sub = menuVerticalPosition;
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
   LogicalSwitchData * cs = lswAddress(sub);
 
   if (result == STR_EDIT) {
@@ -306,7 +306,7 @@ void menuModelLogicalSwitches(event_t event)
         lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT|PREC1);
       }
       else {
-        uint8_t v1 = cs->v1;
+        source_t v1 = cs->v1;
         drawSource(CSW_2ND_COLUMN, y, v1, 0);
         if (v1 >= MIXSRC_FIRST_TELEM) {
           drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
@@ -410,12 +410,12 @@ void menuModelLogicalSwitches(event_t event)
       }
       else {
         lcdDrawNumber(CSW_3RD_COLUMN, y, cs->v2, LEFT|attr2);
-#if defined(GVARS)
+#if defined(CPUARM) && defined(GVARS)
         if (v1_val >= MIXSRC_GVAR1) {
           v2_min = -1024; v2_max = +1024;
         }
         else
-#endif // GVARS
+#endif
         {
           v2_min = -LIMIT_EXT_PERCENT; v2_max = +LIMIT_EXT_PERCENT;
         }
@@ -445,7 +445,17 @@ void menuModelLogicalSwitches(event_t event)
           CHECK_INCDEC_MODELVAR_ZERO(event, cs->func, LS_FUNC_MAX);
           uint8_t new_cstate = lswFamily(cs->func);
           if (cstate != new_cstate) {
-            cs->v1 = cs->v2 = (new_cstate==LS_FAMILY_TIMER ? -119/*1.0*/ : 0);
+#if defined(CPUARM)
+            unsigned int save_func = cs->func;
+            memset(cs, 0, sizeof(LogicalSwitchData));
+            cs->func = save_func;
+#else
+            cs->v1 = cs->v2 = 0;
+            cs->andsw = 0;
+#endif
+            if (new_cstate == LS_FAMILY_TIMER) {
+              cs->v1 = cs->v2 = -119; // 1.0
+            }
           }
           break;
         }

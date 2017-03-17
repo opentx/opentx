@@ -84,7 +84,7 @@ bool isTrimModeAvailable(int mode)
   return (mode < 0 || (mode%2) == 0 || (mode/2) != s_currIdx);
 }
 
-void menuModelPhaseOne(event_t event)
+void menuModelFlightModeOne(event_t event)
 {
   FlightModeData * fm = flightModeAddress(s_currIdx);
   drawFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
@@ -92,14 +92,14 @@ void menuModelPhaseOne(event_t event)
 #if defined(GVARS) && !defined(GVARS_IN_CURVES_SCREEN)
 #if defined(PCBX7)
   #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS)
-  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
+  static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1, 1};
 #else // PCBX7
   #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
 #endif // PCBX7
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
-  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - 1 - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH) : 0));
+  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - HEADER_LINE - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH-1) : 0));
 
   TITLE(STR_MENUFLIGHTMODE);
 
@@ -140,7 +140,7 @@ void menuModelPhaseOne(event_t event)
 #if defined(CPUARM)
         for (uint8_t t = 0; t < NUM_STICKS; t++) {
           drawTrimMode(MIXES_2ND_COLUMN + (t*2*FW), y, s_currIdx, t, menuHorizontalPosition == t ? attr : 0);
-          if (s_editMode && attr && menuHorizontalPosition == t) {
+          if (s_editMode >= 0 && attr && menuHorizontalPosition == t) {
             trim_t & v = fm->trim[t];
             v.mode = checkIncDec(event, v.mode==TRIM_MODE_NONE ? -1 : v.mode, -1, k==0 ? 0 : 2*MAX_FLIGHT_MODES-1, EE_MODEL, isTrimModeAvailable);
           }
@@ -276,7 +276,7 @@ void menuModelFlightModesAll(event_t event)
 #endif
       if (sub >= 0 && sub < MAX_FLIGHT_MODES) {
         s_currIdx = sub;
-        pushMenu(menuModelPhaseOne);
+        pushMenu(menuModelFlightModeOne);
       }
       break;
   }

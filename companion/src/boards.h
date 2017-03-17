@@ -81,6 +81,16 @@ namespace Board {
       unsigned int index;
       unsigned int position;
   };
+
+  enum Capability {
+    Pots,
+    Sliders,
+    MouseAnalogs,
+    Switches,
+    FactoryInstalledSwitches,
+    NumTrims,
+    NumTrimSwitches
+  };
 }
 
 // TODO remove all those constants
@@ -104,6 +114,8 @@ namespace Board {
 
 int getEEpromSize(Board::Type board);
 Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
+
+int getBoardCapability(Board::Type board, Board::Capability capability);
 
 #define IS_9X(board)                   (board==Board::BOARD_STOCK || board==Board::BOARD_M128)
 #define IS_STOCK(board)                (board==Board::BOARD_STOCK)
