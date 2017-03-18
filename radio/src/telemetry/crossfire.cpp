@@ -115,8 +115,8 @@ template<int N>
 bool getCrossfireTelemetryValue(uint8_t index, int32_t & value)
 {
   bool result = false;
-  value = 0;
   uint8_t * byte = &telemetryRxBuffer[index];
+  value = (*byte & 0x80) ? -1 : 0;
   for (uint8_t i=0; i<N; i++) {
     value <<= 8;
     if (*byte != 0xff) {
