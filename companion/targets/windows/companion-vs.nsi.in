@@ -147,11 +147,9 @@ Section "OpenTX Companion" SecDummy
   ;Store installation folder
   WriteRegStr HKCU "Software\OpenTX\Companion @VERSION_FAMILY@" "" $INSTDIR
 
-  ;Associate with extentions ,bin and .hex
-  ${registerExtension} "$INSTDIR\companion.exe" ".bin" "BIN_File"
-  ${registerExtension} "$INSTDIR\companion.exe" ".hex" "HEX_File"
-  ${registerExtension} "$INSTDIR\companion.exe" ".companion" "EEPE_File"
-  ${registerExtension} "$INSTDIR\companion.exe" ".eepm" "EEPM_File"
+  ;Associate with extentions .otx, .bin (TODO: remove .bin)
+  ${registerExtension} "$INSTDIR\companion.exe" ".bin" "BIN File"
+  ${registerExtension} "$INSTDIR\companion.exe" ".otx" "OpenTX Settings File"
 
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
@@ -235,7 +233,7 @@ Section "Uninstall"
   ${unregisterExtension} ".bin" "BIN File"
   ${unregisterExtension} ".hex" "HEX File"
   ${unregisterExtension} ".eepm" "EEPE File"
-  ${unregisterExtension} ".otx" "OpenTX Archive"
+  ${unregisterExtension} ".otx" "OpenTX Settings File"
 
   !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
 
