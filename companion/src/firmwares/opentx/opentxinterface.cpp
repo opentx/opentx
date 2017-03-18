@@ -1178,6 +1178,16 @@ void addOpenTxLcdOptions(OpenTxFirmware * firmware)
   firmware->addOptions(lcd_options);
 }
 
+void addOpenTxVoiceOptions(OpenTxFirmware * firmware)
+{
+  Option voice_options[] = {
+    {"WTV20",     	QObject::tr("WTV20 voice module")},
+    {"JQ6500", 		QObject::tr("JQ6500 voice module")},
+    {NULL}
+  };
+  firmware->addOptions(voice_options);
+}
+
 QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
 
 void registerOpenTxFirmware(OpenTxFirmware * firmware)
@@ -1480,7 +1490,8 @@ void registerOpenTxFirmwares()
   firmware->addOption("nocurves", QObject::tr("Disable curves menus"));
   firmware->addOption("sdcard", QObject::tr("Support for SD memory card"));
   firmware->addOption("audio", QObject::tr("Support for radio modified with regular speaker"));
-  firmware->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
+  //firmware->addOption("voice", QObject::tr("Used if you have modified your radio with voice mode"));
+  addOpenTxVoiceOptions(firmware);
   firmware->addOption("haptic", QObject::tr("Used if you have modified your radio with haptic mode"));
   firmware->addOption("ppmca", QObject::tr("PPM center adjustment in limits"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);

@@ -283,7 +283,7 @@ void audioTimerCountdown(uint8_t timer, int value)
     // pass
   }
 
-#if defined(CPUM2560)
+#if defined(CPUM2560) && (defined(VOICE_WTV20) || defined(VOICE_JQ6500))
   else if (g_model.timers[timer].countdownBeep == COUNTDOWN_VOICE) {
     if (value >= 0 && value <= TIMER_COUNTDOWN_START(timer)) {
       playNumber(value, 0, 0);

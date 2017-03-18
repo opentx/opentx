@@ -23,7 +23,7 @@
 #define PROMPT_SYSTEM_BASE      480 
 
 extern void pushPrompt(uint16_t prompt);
-extern uint8_t isPlaying();
+extern bool isPlaying();
 
 #define I18N_PLAY_FUNCTION(lng, x, ...) void x(__VA_ARGS__)
 #define PLAY_FUNCTION(x, ...)           void x(__VA_ARGS__)

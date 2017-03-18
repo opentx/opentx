@@ -531,6 +531,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags flags, uint8_t l
         x += 2;
       }
     }
+
   #if defined(BOLD_FONT) && !defined(CPUM64) || defined(TELEMETRY_NONE)
     if (flags & BOLD) fw += 1;
   #endif

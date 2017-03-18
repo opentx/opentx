@@ -23,9 +23,6 @@
 
 #include "../common/avr/board_avr.h"
 
-//Mods for futur use ? Beta tester love it
-//#define ROTENC_DIV2 // rotenc resolution/2
-
 // Board driver
 void boardInit(void);
 #define boardOff()  pwrOff()
@@ -104,22 +101,22 @@ void sdPoll10ms(void);
 #define INP_L_Trainer             7
 
 // Servitudes driver
-#define INP_E_PPM_IN              7    //not used (reserved)
-#define INP_B_WTV_BUSY            7    //WTV20SD, not used (reserved)
+#define INP_E_PPM_IN              7    //directly used
+#define INP_B_VoiceBuzy           7    //directly used
 #define OUT_B_PPM                 6
 #define OUT_B_SIM_CTL             5
-#define OUT_B_BUZZER              4
+#define I_O_B_UNUSED              4    //unused, was Buzzer
 #define INP_D_I2C_SCL             1
 #define INP_D_I2C_SDA             0
-#define OUT_E_WTV_DATA            3    //WTV20SD
+#define OUT_E_VoiceData           3
 #define INP_E_TELEM_RX            1
 #define OUT_E_TELEM_TX            0
-#define OUT_G_WTV_CLK             5    //WTV20SD
+#define OUT_G_VoiceClock          5
 #define INP_H_RF_Activated        6
-#define INP_H_DSC_Activated       5    //not used, reserved for pwrCheck()
-#define INP_H_Hold_Power          4    //not used, reserved for pwrCheck()
-#define OUT_H_Speaker             3
-#define OUT_H_WTV_RESET           1    //WTV20SD
+#define INP_H_DSC_Activated       5    //pwrCheck(), directly used
+#define INP_H_Hold_Power          4    //pwrCheck(), directly used
+#define OUT_H_SpeakerBuzzer       3
+#define OUT_H_VoiceReset          1
 #define OUT_H_HAPTIC              0
 
 // Rotary encoders driver
@@ -132,13 +129,14 @@ void sdPoll10ms(void);
 #define REA_DOWN()                (~PINJ & (1<<INP_J_ROT_ENC_1_PUSH))
 #define REB_DOWN()                (~PINJ & (1<<INP_J_ROT_ENC_2_PUSH))
 #define ROTENC_DOWN()             (REA_DOWN() || REB_DOWN())
+#define ROTENC_DIV2                 // rotary encoders resolution/2
 
 // LCD driver
 #define PORTA_LCD_DAT            PORTA
 #define PORTC_LCD_CTRL           PORTC
-#if defined(LCD_KS108)				// (For KS108 LCd only) MEGA R/W pin always at 0 state in Opentx then
-#define OUT_C_LCD_CS2            6	// Use this pin to control second KS108
-#else								// And connect LCD R/W pin to ground via a 1k resistor
+#if defined(LCD_KS108)              // (For KS108 LCD only) MEGA R/W pin always at 0 state in Opentx then
+#define OUT_C_LCD_CS2            6  // use this pin to control second KS108 (CS2)
+#else                               // and connect KS108 R/W pin to ground via a 1k resistor
 #define OUT_C_LCD_RnW            6
 #endif
 #define OUT_C_LCD_E              7
@@ -167,8 +165,8 @@ void pwrOff();
 #define hapticOff()               PORTH &= ~(1 << OUT_H_HAPTIC)
 
 // Buzzer driver
-#define buzzerOn()                PORTB |=  (1 << OUT_B_BUZZER)
-#define buzzerOff()               PORTB &= ~(1 << OUT_B_BUZZER)
+#define buzzerOn()                PORTH |=  (1 << OUT_H_SpeakerBuzzer)
+#define buzzerOff()               PORTH &= ~(1 << OUT_H_SpeakerBuzzer)
 
 // Speaker driver
 #if defined(AUDIO)
@@ -176,16 +174,23 @@ void pwrOff();
 #define speakerOff()              TCCR4A &= ~(1 << COM4A0)
 #endif
 
-// Voice driver
-#if defined(VOICE)
-#define WTV20SD_Clock_on              PORTG |=  (1<<OUT_G_WTV_CLK)
-#define WTV20SD_Clock_off             PORTG &= ~(1<<OUT_G_WTV_CLK)
-#define WTV20SD_Data_on               PORTE |=  (1<<OUT_E_WTV_DATA)
-#define WTV20SD_Data_off              PORTE &= ~(1<<OUT_E_WTV_DATA)
-#define WTV20SD_Reset_on              PORTH |=  (1<<OUT_H_WTV_RESET)
-#define WTV20SD_Reset_off             PORTH &= ~(1<<OUT_H_WTV_RESET)
-#define	WTV20SD_BUSY                  (PINB & 0x80)
-#define	WTV20SD_CLK                   (PING & 0x20)
+// Voice driver (WTV20)
+#if defined(VOICE_WTV20)
+#define WTV20_Data_on             PORTE |=  (1<<OUT_E_VoiceData)
+#define WTV20_Data_off            PORTE &= ~(1<<OUT_E_VoiceData)
+#define WTV20_BUSY                (PINB & (1<<INP_B_VoiceBuzy))
+#define WTV20_Clock_on            PORTG |=  (1<<OUT_G_VoiceClock)
+#define WTV20_Clock_off           PORTG &= ~(1<<OUT_G_VoiceClock)
+#define WTV20_CLK                 (PING & (1<<OUT_G_VoiceClock))
+#define WTV20_Reset_on            PORTH |=  (1<<OUT_H_VoiceReset)
+#define WTV20_Reset_off           PORTH &= ~(1<<OUT_H_VoiceReset)
+#endif
+
+// Voice driver (JQ6500)
+#if defined(VOICE_JQ6500)
+#define JQ6500_Serial_on          PORTE |=  (1<<OUT_E_VoiceData)
+#define JQ6500_Serial_off         PORTE &= ~(1<<OUT_E_VoiceData)
+#define JQ6500_BUSY               (PINB & (1<<INP_B_VoiceBuzy))
 #endif
 
 #endif // _BOARD_MEGA2560_H_

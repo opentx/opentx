@@ -29,14 +29,14 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:MEGA2560-cache
+LIBS:MEGA2560
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title "OpenTX board based on Arduino MEGA2560"
-Date "27 feb 2016"
+Date "6 jan 2017"
 Rev "0"
 Comp "Copyright F. Aguerre"
 Comment1 ""
@@ -246,7 +246,7 @@ L SPEAKER .
 U 1 1 54994432
 P 10600 6200
 F 0 "." H 10500 6450 70  0000 C CNN
-F 1 "BUZZER" H 10500 5950 40  0000 C CNN
+F 1 "BUZZER or SPEAKER" H 10700 5800 40  0000 C CNN
 F 2 "" H 10600 6200 60  0001 C CNN
 F 3 "" H 10600 6200 60  0001 C CNN
 	1    10600 6200
@@ -886,7 +886,7 @@ Key_►
 Text Label 6600 6150 2    42   ~ 0
 Key_▼
 Text Label 2000 3700 3    42   ~ 0
-Somo_Busy
+Voice_Busy
 $Comp
 L R R1
 U 1 1 54988260
@@ -1248,7 +1248,7 @@ port H 4 (1)
 Text GLabel 2750 4600 1    42   Output ~ 0
 port H 3 (0)
 Text Label 2750 3700 3    42   ~ 0
-Speaker
+Buzzer
 Text Label 3150 3700 3    42   ~ 0
 Rot_1_A
 Text GLabel 3150 4600 1    42   Input ~ 0
@@ -1272,7 +1272,7 @@ port B 5 (1)
 Text GLabel 2300 4600 1    42   Output ~ 0
 port B 4 (0)
 Text Label 2300 3700 3    42   ~ 0
-Buzzer
+-----
 Text Label 2100 3700 3    42   ~ 0
 PPM_OUT
 Text GLabel 2100 4600 1    42   Output ~ 0
@@ -41010,14 +41010,14 @@ F 3 "" H 10450 3850 60  0001 C CNN
 	1    10450 3850
 	-1   0    0    -1  
 $EndComp
-Text Label 2250 3300 2    42   ~ 0
+Text Label 2300 3150 2    42   ~ 0
 M2560 output
-Text GLabel 1050 3300 2    42   Output ~ 0
+Text GLabel 1100 3150 2    42   Output ~ 0
 port pin (init. state) 
-Text Notes 1250 3200 0    60   ~ 0
+Text Notes 1300 3050 0    60   ~ 0
 Pinout caption :
 Text Label 5750 2400 2    42   ~ 0
-Gain = 1 + R2/R6
+Gain = 1 + R2/(R6/2)
 $Bitmap
 Pos 4600 4650
 Scale 1.000000
@@ -41629,9 +41629,9 @@ Wire Wire Line
 Wire Wire Line
 	10450 4100 10450 4200
 Wire Wire Line
-	1800 3300 2250 3300
+	1850 3150 2300 3150
 Wire Wire Line
-	950  3300 1050 3300
+	1000 3150 1100 3150
 Wire Wire Line
 	4450 4300 4450 6450
 Wire Wire Line
@@ -41696,15 +41696,15 @@ F 3 "" H 1750 7050 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 Text Notes 4850 6650 0    42   ~ 0
-LCD supported : ST7565P, ST7565R, ERC12864FSF, ST7920\nProtocol = 6800, 8 bits parallel mode\n\nLCD pinout labels (may differ, depending of brand) :\nRD = Read or Enable on ST7920\nWR = Write or Write(0)/Read(1) on ST7920\nA0 = R/S (register select) or D/I (data/instruction select)\nRST = RES (reset)\nCS = Chip Select (not used on ST7920)
-Text Label 2250 3400 2    42   ~ 0
+LCD supported : ST7565P, ST7565R, ERC12864FSF, ST7920, KS108\nProtocol = 6800, 8 bits parallel mode\n\nLCD pinout labels (may differ, default = ST7565P) :\nRD = (Read) or (ST7920 : Enable)\nWR = (Write) or (ST7920 : Write(0)/Read(1)) or (KS108 : CS2)\nA0 = (R/S register select) or (D/I data/instruction select)\nRST = (RES reset)\nCS = (Chip Select) or (ST7920 : not used) or (KS108 : CS1)
+Text Label 2300 3250 2    42   ~ 0
 M2560 input
-Text GLabel 1050 3400 2    42   Input ~ 0
+Text GLabel 1100 3250 2    42   Input ~ 0
 port pin (init. state) 
 Wire Wire Line
-	1800 3400 2250 3400
+	1850 3250 2300 3250
 Wire Wire Line
-	950  3400 1050 3400
+	1000 3250 1100 3250
 Text Notes 4850 7350 0    42   ~ 0
 NOTA : all features are optional.\nM2560 can properly work without PPM / power management,\nswitch deboucing, stick voltage protection or  rotary encoder.\nMinimum requirement is just LCD and navigation keys. Some\nswitches could be usefull, especially for flight conditions, but\nnot fundamental.
 $Comp
@@ -41938,17 +41938,19 @@ Wire Wire Line
 Wire Wire Line
 	2000 4600 2000 4750
 Text Label 2850 3700 3    42   ~ 0
-Somo_Data
+Voice_Data
 Wire Wire Line
 	2850 4150 2850 3700
 Text Label 2950 3700 3    42   ~ 0
-Somo_Clock
+Voice_Clock
 Wire Wire Line
 	2950 4150 2950 3700
 Text Label 3750 3700 3    42   ~ 0
-Somo_Reset
+Voice_Reset
 Wire Wire Line
 	3750 4150 3750 3700
 Text Notes 10400 1300 0    60   ~ 0
 R6 is optional
+Text Notes 1000 3500 0    42   ~ 0
+Voice module supported :\nWTV20, pins = data, busy, clock, reset\nJQ6500, pins = data (serial), busy
 $EndSCHEMATC
