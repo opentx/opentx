@@ -98,7 +98,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
     return crossfireSensors[UNKNOWN_INDEX];
 }
 
-void processCrossfireTelemetryValue(uint8_t index, uint32_t value)
+void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
   const CrossfireSensor & sensor = crossfireSensors[index];
   setTelemetryValue(TELEM_PROTO_CROSSFIRE, sensor.id, 0, sensor.subId, value, sensor.unit, sensor.precision);
@@ -112,7 +112,7 @@ bool checkCrossfireTelemetryFrameCRC()
 }
 
 template<int N>
-bool getCrossfireTelemetryValue(uint8_t index, uint32_t & value)
+bool getCrossfireTelemetryValue(uint8_t index, int32_t & value)
 {
   bool result = false;
   value = 0;
@@ -135,7 +135,7 @@ void processCrossfireTelemetryFrame()
   }
 
   uint8_t id = telemetryRxBuffer[2];
-  uint32_t value;
+  int32_t value;
   switch(id) {
     case GPS_ID:
       if (getCrossfireTelemetryValue<4>(3, value))
@@ -157,8 +157,8 @@ void processCrossfireTelemetryFrame()
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
           if (i == TX_POWER_INDEX) {
-            static const uint32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000 };
-            value = (value < DIM(power_values) ? power_values[value] : 0);
+            static const int32_t power_values[] = { 0, 10, 25, 100, 500, 1000, 2000 };
+            value = ((unsigned)value < DIM(power_values) ? power_values[value] : 0);
           }
           processCrossfireTelemetryValue(i, value);
           if (i == RX_QUALITY_INDEX) {
