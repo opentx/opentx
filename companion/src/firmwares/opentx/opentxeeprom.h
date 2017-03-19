@@ -102,6 +102,10 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PULSES_CROSSFIRE, val++);
         addConversion(PULSES_MULTIMODULE, val++);
       }
+      else if (IS_ARM(board)) {
+        val++;
+        addConversion(PULSES_MULTIMODULE, val++);
+      }
     }
 };
 
