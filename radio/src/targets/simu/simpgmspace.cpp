@@ -96,10 +96,29 @@ uint16_t getTmr2MHz()
 #endif
 }
 
+// return 2ms resolution to match CoOS settings
 U64 CoGetOSTime(void)
 {
 #if defined(_MSC_VER)
-  return GetTickCount()/2;
+  static double freqScale = 0.0;
+  static LARGE_INTEGER firstTick;
+  LARGE_INTEGER newTick;
+
+  if (!freqScale) {
+    LARGE_INTEGER frequency;
+    // get ticks per second
+    QueryPerformanceFrequency(&frequency);
+    // 2ms resolution
+    freqScale = 500.0 / frequency.QuadPart;
+    // init timer
+    QueryPerformanceCounter(&firstTick);
+    TRACE_SIMPGMSPACE("CoGetOSTime() init: first tick = %llu @ %llu Hz", firstTick.QuadPart, frequency.QuadPart);
+  }
+  // read the timer
+  QueryPerformanceCounter(&newTick);
+  // compute the elapsed time
+  return U64((newTick.QuadPart - firstTick.QuadPart) * freqScale);
+  //return GetTickCount64() / 2;  // only 10-16ms typical resolution
 #else
   auto now = std::chrono::steady_clock::now();
   return (U64) std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() / 2;
