@@ -205,7 +205,8 @@ options_sky9x = {
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
-    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES")
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
 options_ar9x = {
@@ -227,6 +228,7 @@ options_ar9x = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     # "rtc": ("RTCLOCK", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
 options_taranis = {
