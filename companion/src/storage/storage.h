@@ -48,7 +48,7 @@ class StorageFormat
       board(Board::BOARD_UNKNOWN)
     {
     }
-    
+    virtual ~StorageFormat() { }
     virtual bool load(RadioData & radioData) = 0;
     virtual bool write(const RadioData & radioData) = 0;
 
@@ -104,6 +104,7 @@ class StorageFactory
     StorageFactory()
     {
     }
+    virtual ~StorageFactory() {}
     virtual QString name() = 0;
     virtual bool probe(const QString & filename) = 0;
     virtual StorageFormat * instance(const QString & filename) = 0;
@@ -145,7 +146,7 @@ class Storage : public StorageFormat
     {
     }
     
-    virtual QString name() { return "storage"; };
+    virtual QString name() { return "storage"; }
     
     void setError(const QString & error)
     {
@@ -162,6 +163,7 @@ class Storage : public StorageFormat
 };
 
 void registerStorageFactories();
+void unregisterStorageFactories();
 
 #if 0
 unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);

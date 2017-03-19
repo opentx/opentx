@@ -28,6 +28,7 @@
 #endif
 
 #include "appdebugmessagehandler.h"
+#include "customdebug.h"
 #include "mainwindow.h"
 #include "version.h"
 #include "appdata.h"
@@ -64,6 +65,8 @@ int main(int argc, char *argv[])
 
   if (AppDebugMessageHandler::instance())
     AppDebugMessageHandler::instance()->installAppMessageHandler();
+
+  CustomDebug::setFilterRules();
 
   g.init();
 
@@ -134,7 +137,7 @@ int main(int argc, char *argv[])
 
   unregisterSimulators();
   unregisterOpenTxFirmwares();
-  unregisterEEpromInterfaces();
+  unregisterStorageFactories();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();

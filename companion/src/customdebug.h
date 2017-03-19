@@ -21,15 +21,15 @@
 #ifndef _CUSTOMDEBUG_H_
 #define _CUSTOMDEBUG_H_
 
-#include <QDebug>
+#include <QLoggingCategory>
 
 // Controls the generation of debug output for EEPROM import
-#if defined(DEBUG_STORAGE_IMPORT)
-  inline QDebug eepromImportDebug() { return QDebug(QtDebugMsg); }
-#else
-  #undef eepromImportDebug
-  inline QNoDebug eepromImportDebug() { return QNoDebug(); }
-#endif
+Q_DECLARE_LOGGING_CATEGORY(eepromImport)
 
+class CustomDebug
+{
+  public:
+    static void setFilterRules();
+};
 
 #endif // _CUSTOMDEBUG_H_

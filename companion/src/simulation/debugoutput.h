@@ -101,6 +101,8 @@ class DebugOutputFilterValidator : public QValidator
 class DeleteComboBoxItemEventFilter : public QObject
 {
   Q_OBJECT
+  public:
+    DeleteComboBoxItemEventFilter(QObject *parent = Q_NULLPTR) : QObject(parent) { }
   protected:
     bool eventFilter(QObject *obj, QEvent *event);
 };

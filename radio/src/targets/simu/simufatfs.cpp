@@ -97,8 +97,8 @@ void simuFatfsSetPaths(const char * sdPath, const char * settingsPath)
   if (settingsPath) {
     simuSettingsDirectory = removeTrailingPathDelimiter(fixPathDelimiters(settingsPath));
   }
-  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSdDirectory: \"\"", simuSdDirectory.c_str());
-  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSettingsDirectory: \"\"", simuSettingsDirectory.c_str());
+  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSdDirectory: \"%s\"", simuSdDirectory.c_str());
+  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSettingsDirectory: \"%s\"", simuSettingsDirectory.c_str());
 }
 
 bool startsWith(const char *path, const char * start)

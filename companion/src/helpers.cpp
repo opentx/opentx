@@ -31,9 +31,11 @@
 
 #include "appdata.h"
 #include "helpers.h"
-#include "modeledit/modeledit.h"
 #include "simulatormainwindow.h"
 #include "storage/sdcard.h"
+
+#include <QLabel>
+#include <QMessageBox>
 
 Stopwatch gStopwatch("global");
 
@@ -126,7 +128,11 @@ void populatePhasesCB(QComboBox *b, int value)
   b->setCurrentIndex(value + getCurrentFirmware()->getCapability(FlightModes));
 }
 
-GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars, ModelPanel * panel):
+/*
+ * GVarGroup
+*/
+
+GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars):
   QObject(),
   weightGV(weightGV),
   weightSB(weightSB),
@@ -135,8 +141,7 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
   weightCB(weightCB),
   weight(weight),
   step(step),
-  lock(true),
-  panel(panel)
+  lock(true)
 {
   if (allowGvars && getCurrentFirmware()->getCapability(Gvars)) {
     populateGVCB(*weightCB, weight, model);
@@ -200,11 +205,14 @@ void GVarGroup::valuesChanged()
       weight = sb->value();
     else
       weight = round(dsb->value()/step);
-    if (panel)
-      emit panel->modified();
 
+    emit valueChanged();
   }
 }
+
+/*
+ * CurveGroup
+*/
 
 CurveGroup::CurveGroup(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QComboBox * curveValueCB, QSpinBox * curveValueSB, CurveReference & curve, const ModelData & model, unsigned int flags):
   QObject(),
@@ -363,6 +371,10 @@ void CurveGroup::valuesChanged()
     update();
   }
 }
+
+/*
+ * Helpers
+*/
 
 void populateGvarUseCB(QComboBox *b, unsigned int phase)
 {

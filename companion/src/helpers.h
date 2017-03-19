@@ -22,7 +22,6 @@
 #define _HELPERS_H_
 
 #include "eeprominterface.h"
-#include "modeledit/modeledit.h"
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QTableWidget>
@@ -69,7 +68,10 @@ class GVarGroup: public QObject {
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true, ModelPanel * panel=NULL);
+    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
+
+  signals:
+    void valueChanged();
 
   protected slots:
     void gvarCBChanged(int);
@@ -84,7 +86,6 @@ class GVarGroup: public QObject {
     int & weight;
     double step;
     bool lock;
-    ModelPanel * panel;
 };
 
 #define HIDE_DIFF             0x01
@@ -156,26 +157,6 @@ QString getFrSkyMeasure(int units);
 QString getFrSkySrc(int index);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
-
-template <class T>
-QVector<T> findWidgets(QObject * object, const QString & name)
-{
-  QVector<T> result;
-  QRegExp rx(name.arg("([0-9]+)"));
-  QList<T> children = object->findChildren<T>();
-  foreach(T child, children) {
-    int pos = rx.indexIn(child->objectName());
-    if (pos >= 0) {
-      QStringList list = rx.capturedTexts();
-      int index = list[1].toInt();
-      if (result.size() <= index) {
-        result.resize(index+1);
-      }
-      result[index] = child;
-    }
-  }
-  return result;
-}
 
 // Format a pixmap to fit on the current firmware
 QPixmap makePixMap(const QImage & image);
@@ -249,13 +230,13 @@ public:
 
   void resizeColumnsToContents();
   void setColumnWidth(int col, int width);
-  void pushRowsUp(int row); 
+  void pushRowsUp(int row);
 
 private:
 #if defined(TABLE_LAYOUT)
-  QTableWidget * tableWidget; 
+  QTableWidget * tableWidget;
 #else
-  QGridLayout * gridWidget; 
+  QGridLayout * gridWidget;
 #endif
 };
 

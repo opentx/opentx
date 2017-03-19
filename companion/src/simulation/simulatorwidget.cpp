@@ -38,6 +38,7 @@
 #endif
 
 #include <QFile>
+#include <QMessageBox>
 #include <iostream>
 
 SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator, quint8 flags):

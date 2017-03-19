@@ -71,7 +71,7 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
     ui->filterText->addItem(fltr, "no_delete");
 
   ui->filterText->setValidator(new DebugOutputFilterValidator(ui->filterText));
-  ui->filterText->installEventFilter(new DeleteComboBoxItemEventFilter());
+  ui->filterText->installEventFilter(new DeleteComboBoxItemEventFilter(this));
 
   ui->actionShowFilterHelp->setIcon(SimulatorIcon("info"));
   ui->actionWordWrap->setIcon(SimulatorIcon("word_wrap"));
@@ -115,6 +115,7 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
 
 DebugOutput::~DebugOutput()
 {
+  m_simulator->installTraceHook(NULL);
   saveState();
 
   if (AppDebugMessageHandler::instance())
@@ -178,10 +179,12 @@ void DebugOutput::processBytesReceived()
   const bool sbAtBottom = (sbValue == ui->console->verticalScrollBar()->maximum());
   qint64 len;
 
-  while ((len = m_dataBufferDevice->bytesAvailable()) > 0) {
-    QString text(m_dataBufferDevice->read(qMin(len, qint64(512))));
-    if (text.isEmpty())
+  while (m_dataBufferDevice && (len = m_dataBufferDevice->bytesAvailable()) > 0) {
+    QByteArray ba(qMin(len, qint64(512)), 0);
+    int ret = m_dataBufferDevice->read(ba.data(), ba.size());
+    if (ret <= 0)
       break;
+    QString text(ba);
     ui->console->moveCursor(QTextCursor::End);
     ui->console->textCursor().insertText(text);
     if (sbAtBottom) {

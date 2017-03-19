@@ -26,6 +26,7 @@
 #include "radiodata.h"
 #include "simulator.h"
 
+#include <QTimer>
 #include <QWidget>
 #include <QVector>
 

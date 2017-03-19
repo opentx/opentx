@@ -23,7 +23,7 @@
 #include <stdarg.h>
 #include <string>
 
-#if !defined _MSC_VER || defined __GNUC__
+#if !defined (_MSC_VER) || defined (__GNUC__)
   #include <chrono>
   #include <sys/time.h>
 #endif
@@ -116,6 +116,13 @@ void simuInit()
     simuSetSwitch(i, 0);
     simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
   }
+  for (int i=0; i<(NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
+    simuSetTrim(i, false);
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  for (uint8_t i=0; i<DIM(rotencValue); i++)
+    rotencValue[i] = 0;
+#endif
 }
 
 #define NEG_CASE(sw_or_key, pin, mask) \
@@ -197,9 +204,9 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_UP, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
     KEY_CASE(KEY_DOWN, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
 #endif
-#if defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X)
+#if defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X) && defined(ROTARY_ENCODERS)
     KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
-#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
+#elif (defined(PCBGRUVIN9X) || defined(PCBMEGA2560)) && (defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION))
     KEY_CASE(BTN_REa, pind, 0x20)
 #elif defined(PCB9X) && defined(ROTARY_ENCODER_NAVIGATION)
     KEY_CASE(BTN_REa, RotEncoder, 0x20)
@@ -318,6 +325,9 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 
 void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
 {
+  if (main_thread_running)
+    return;
+
   s_current_protocol[0] = 255;
   menuLevel = 0;
 
@@ -361,6 +371,9 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
 
 void StopSimu()
 {
+  if (!main_thread_running)
+    return;
+
   main_thread_running = 0;
 
 #if defined(CPUARM)
@@ -506,6 +519,7 @@ void StartAudioThread(int volumeGain)
   simuAudio.leftoverLen = 0;
   simuAudio.threadRunning = true;
   simuAudio.volumeGain = volumeGain;
+  TRACE_SIMPGMSPACE("StartAudioThread(%d)", volumeGain);
   setScaledVolume(VOLUME_LEVEL_DEF);
 
   pthread_attr_t attr;
@@ -550,12 +564,17 @@ void lcdOff()
 
 void lcdRefresh()
 {
+  static bool lightEnabled = (bool)isBacklightEnabled();
+
 #if defined(PCBFLAMENCO)
   TW8823_SendScreen();
 #endif
 
-  memcpy(simuLcdBuf, displayBuf, sizeof(simuLcdBuf));
-  simuLcdRefresh = true;
+  if ((bool(isBacklightEnabled()) != lightEnabled) || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE)) {
+    memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE);
+    lightEnabled = (bool)isBacklightEnabled();
+    simuLcdRefresh = true;
+  }
 }
 
 void telemetryPortInit(uint8_t baudrate)

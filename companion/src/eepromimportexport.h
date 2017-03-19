@@ -181,7 +181,7 @@ class BaseUnsignedField: public DataField {
         if (input[i])
           field |= ((container)1<<i);
       }
-      eepromImportDebug() << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
+      qCDebug(eepromImport) << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }
 
     virtual unsigned int size()
@@ -238,7 +238,7 @@ class BoolField: public DataField {
     virtual void ImportBits(const QBitArray & input)
     {
       field = input[0] ? true : false;
-      eepromImportDebug() << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
+      qCDebug(eepromImport) << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }
 
     virtual unsigned int size()
@@ -308,7 +308,7 @@ class SignedField: public DataField {
       }
 
       field = (int)value;
-      eepromImportDebug() << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
+      qCDebug(eepromImport) << QString("\timported %1<%2>: 0x%3(%4)").arg(name).arg(N).arg(field, 0, 16).arg(field);
     }
 
     virtual unsigned int size()
@@ -369,7 +369,7 @@ class CharField: public DataField {
         }
         field[i] = idx;
       }
-      eepromImportDebug() << QString("\timported %1<%2>: '%3'").arg(name).arg(N).arg(field);
+      qCDebug(eepromImport) << QString("\timported %1<%2>: '%3'").arg(name).arg(N).arg(field);
     }
 
     virtual unsigned int size()
@@ -427,7 +427,7 @@ class ZCharField: public DataField {
         else
           break;
       }
-      eepromImportDebug() << QString("\timported %1<%2>: '%3'").arg(name).arg(N).arg(field);
+      qCDebug(eepromImport) << QString("\timported %1<%2>: '%3'").arg(name).arg(N).arg(field);
     }
 
     virtual unsigned int size()
@@ -453,7 +453,7 @@ class StructField: public DataField {
     }
 
     inline void Append(DataField * field) {
-      //eepromImportDebug() << QString("StructField(%1) appending field: %2").arg(name).arg(field->getName());
+      //qCDebug(eepromImport) << QString("StructField(%1) appending field: %2").arg(name).arg(field->getName());
       fields.append(field);
     }
 
@@ -471,7 +471,7 @@ class StructField: public DataField {
 
     virtual void ImportBits(const QBitArray & input)
     {
-      eepromImportDebug() << QString("\timporting %1[%2]:").arg(name).arg(fields.size());
+      qCDebug(eepromImport) << QString("\timporting %1[%2]:").arg(name).arg(fields.size());
       int offset = 0;
       foreach(DataField *field, fields) {
         unsigned int size = field->size();
@@ -526,7 +526,7 @@ class TransformedField: public DataField {
 
     virtual void ImportBits(const QBitArray & input)
     {
-      eepromImportDebug() << QString("\timporting TransformedField %1:").arg(field.getName());
+      qCDebug(eepromImport) << QString("\timporting TransformedField %1:").arg(field.getName());
       field.ImportBits(input);
       afterImport();
     }
@@ -564,7 +564,7 @@ class ConversionTable {
       after = 0;
 
       for (std::list<ConversionTuple>::iterator it=exportTable.begin(); it!=exportTable.end(); it++) {
-        ConversionTuple tuple = *it;
+        ConversionTuple & tuple = *it;
         if (before == tuple.a) {
           after = tuple.b;
           return true;
@@ -579,7 +579,7 @@ class ConversionTable {
       after = 0;
 
       for (std::list<ConversionTuple>::iterator it=importTable.begin(); it!=importTable.end(); it++) {
-        ConversionTuple tuple = *it;
+        ConversionTuple & tuple = *it;
         if (before == tuple.b) {
           after = tuple.a;
           return true;
@@ -756,7 +756,7 @@ class ConversionField: public TransformedField {
       if (scale) {
         field *= scale;
       }
-      eepromImportDebug() << QString("\timported ConversionField<%1>:").arg(internalField.getName()) << QString(" before: %1, after: %2").arg(_field).arg(field);
+      qCDebug(eepromImport) << QString("\timported ConversionField<%1>:").arg(internalField.getName()) << QString(" before: %1, after: %2").arg(_field).arg(field);
     }
 
   protected:

@@ -124,7 +124,9 @@ add_subdirectory(thirdparty/qxtcommandoptions)
 set(common_SRCS
   appdebugmessagehandler.cpp
   boards.cpp
+  customdebug.cpp
   eeprominterface.cpp
+  helpers.cpp
   radiodata.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
@@ -132,21 +134,25 @@ set(common_SRCS
   firmwares/ersky9x/ersky9xinterface.cpp
   firmwares/opentx/opentxeeprom.cpp
   firmwares/opentx/opentxinterface.cpp
+  modeledit/node.cpp  # used in simulator
+  modeledit/edge.cpp  # used by node
   )
 
 set(common_MOC_HDRS
   appdebugmessagehandler.h
+  helpers.h
+  modeledit/node.h
   )
 
 qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
 
 add_library(common ${common_SRCS})
 qt5_use_modules(common Core Xml Widgets)
+target_link_libraries(common simulation)
 
 ############# Companion ###############
 
 set(companion_SRCS
-  helpers.cpp
   helpers_html.cpp
   mdichild.cpp
   modelslist.cpp
@@ -206,7 +212,6 @@ set(companion_MOC_HDRS
   mdichild.h
   mainwindow.h
   radionotfound.h
-  helpers.h
   wizarddialog.h
   modelprinter.h
   multimodelprinter.h
@@ -259,9 +264,9 @@ qt5_wrap_ui(companion_SRCS ${companion_UIS})
 qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 qt5_add_translation(companion_QM ${companion_TS})
 qt5_add_resources(companion_RCC ${companion_RESOURCES})
-add_custom_target(gen_qrc DEPENDS ${companion_RCC})
+add_custom_target(gen_qrc DEPENDS ${companion_RCC} ${companion_QM})
 
-add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC} ${companion_QM})
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC})
 
 add_dependencies(${COMPANION_NAME} gen_qrc)
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
@@ -272,19 +277,7 @@ PrintTargetReport("${COMPANION_NAME}")
 
 ############# Standalone simulator ###############
 
-set(simu_SRCS
-  modeledit/node.cpp
-  modeledit/edge.cpp
-  helpers.cpp
-  simulator.cpp
-  )
-
-set(simu_MOC_HDRS
-  modeledit/node.h
-  helpers.h
-  )
-
-qt5_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
+set(simu_SRCS simulator.cpp )
 
 if(WIN32)
   list(APPEND simu_SRCS icon.rc)
@@ -293,7 +286,7 @@ endif()
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
 add_dependencies(${SIMULATOR_NAME} gen_qrc)
 
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common shared storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Translations ####################
 

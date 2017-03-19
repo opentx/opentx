@@ -40,19 +40,6 @@ uint8_t getStickMode()
   return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
 }
 
-#if defined(PCBTARANIS)
-void resetTrims()
-{
-  TRIMS_GPIO_REG_RVD |= TRIMS_GPIO_PIN_RVD;
-  TRIMS_GPIO_REG_RVU |= TRIMS_GPIO_PIN_RVU;
-  TRIMS_GPIO_REG_RHL |= TRIMS_GPIO_PIN_RHL;
-  TRIMS_GPIO_REG_RHR |= TRIMS_GPIO_PIN_RHR;
-  TRIMS_GPIO_REG_LVD |= TRIMS_GPIO_PIN_LVD;
-  TRIMS_GPIO_REG_LVU |= TRIMS_GPIO_PIN_LVU;
-  TRIMS_GPIO_REG_LHL |= TRIMS_GPIO_PIN_LHL;
-  TRIMS_GPIO_REG_LHR |= TRIMS_GPIO_PIN_LHR;
-}
-#endif
 
 OpenTxSimulator::OpenTxSimulator()
 {
@@ -96,11 +83,8 @@ void OpenTxSimulator::start(QByteArray & ee, bool tests)
 
 void OpenTxSimulator::start(const char * filename, bool tests)
 {
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  for (uint8_t i=0; i<DIM(rotencValue); i++) {
-    rotencValue[i] = 0;
-  }
-#endif
+  if (main_thread_running)
+    return;
 
   StartEepromThread(filename);
   StartAudioThread(volumeGain);
@@ -109,6 +93,9 @@ void OpenTxSimulator::start(const char * filename, bool tests)
 
 void OpenTxSimulator::stop()
 {
+  if (!main_thread_running)
+    return;
+
   StopSimu();
 #if defined(CPUARM)
   StopAudioThread();
