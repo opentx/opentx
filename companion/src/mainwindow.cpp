@@ -359,6 +359,7 @@ void MainWindow::firmwareDownloadAccepted()
         break;
     }
     file.close();
+    file.remove();
     QMessageBox::critical(this, tr("Error"), errormsg);
     return;
   }
