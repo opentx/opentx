@@ -100,6 +100,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator
     keymapHelp.append(item);
 
   ui->radioUiWidget->layout()->removeItem(ui->radioUiTempSpacer);
+  delete ui->radioUiTempSpacer;
   ui->radioUiWidget->layout()->addWidget(radioUiWidget);
   radioUiWidget->setFocusPolicy(Qt::WheelFocus);
   radioUiWidget->setFocus();
