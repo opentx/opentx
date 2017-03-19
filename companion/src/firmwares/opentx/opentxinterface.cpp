@@ -1265,7 +1265,6 @@ void registerOpenTxFirmwares()
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
-  firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1414,7 +1413,6 @@ void registerOpenTxFirmwares()
   /* ar9x board */
   firmware = new OpenTxFirmware("opentx-ar9x", QObject::tr("9X with AR9X board"), BOARD_AR9X);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
-  firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
@@ -1435,7 +1433,6 @@ void registerOpenTxFirmwares()
   /* Sky9x board */
   firmware = new OpenTxFirmware("opentx-sky9x", QObject::tr("9X with Sky9x board"), BOARD_SKY9X);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
-  firmware->addOption("templates", QObject::tr("Enable TEMPLATES menu"));
   firmware->addOption("nofp", QObject::tr("No flight modes"));
   firmware->addOption("gvars", QObject::tr("Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QObject::tr("Pots use in menus navigation"));
