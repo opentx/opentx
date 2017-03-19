@@ -190,7 +190,6 @@ options_mega2560.update(tts_avr)
 
 options_sky9x = {
     "heli": ("HELI", "YES", "NO"),
-    "templates": ("TEMPLATES", "YES", "NO"),
     "nofp": ("FLIGHT_MODES", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "gvars": ("GVARS", "YES", "NO"),
@@ -211,7 +210,6 @@ options_sky9x = {
 
 options_ar9x = {
     "heli": ("HELI", "YES", "NO"),
-    "templates": ("TEMPLATES", "YES", "NO"),
     "nofp": ("FLIGHT_MODES", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "gvars": ("GVARS", "YES", "NO"),
