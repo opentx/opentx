@@ -8,9 +8,9 @@ output=/var/www/html/2.2/nightly
 
 # Handle opentx.sdcard.version
 sdcard_version="2.2V"$(grep 'set(SDCARD_REVISION' ${workdir}/code/CMakeLists.txt | grep -o '".*"' | sed 's/"//g')
-echo $sdcard_version > ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version
-echo $sdcard_version > ${workdir}/code/radio/sdcard/taranis-x9/opentx.sdcard.version
-echo $sdcard_version > ${workdir}/code/radio/sdcard/taranis-x7/opentx.sdcard.version
+echo ${sdcard_version} > ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version
+echo ${sdcard_version} > ${workdir}/code/radio/sdcard/taranis-x9/opentx.sdcard.version
+echo ${sdcard_version} > ${workdir}/code/radio/sdcard/taranis-x7/opentx.sdcard.version
 
 if cmp --silent ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}/opentx.sdcard.version
 then
@@ -40,8 +40,8 @@ else
   mkdir ${workdir}/sdcard/taranis-x7/SOUNDS
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x9/
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x7/
-  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-$sdcard_version.zip *
-  cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/sdcard-taranis-x9-$sdcard_version.zip *
-  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-taranis-x7-$sdcard_version.zip *
+  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-${sdcard_version}.zip *
+  cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/sdcard-taranis-x9-${sdcard_version}.zip *
+  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip *
   rm -Rf ${workdir}/sdcard
 fi
