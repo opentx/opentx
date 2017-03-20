@@ -12,8 +12,3 @@ def filename(idx, alternate=0):
   elif board in ('sky9x', 'taranis'):
     result = idx + ext
   return result
-
-
-    
-    
-
