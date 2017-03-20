@@ -68,6 +68,18 @@ uint8_t getZoneOptionColumns(const ZoneOption * option)
   }
 }
 
+uint8_t editColorPart(coord_t x, coord_t y, event_t event, uint8_t part, uint8_t value, LcdFlags attr, uint32_t i_flags) 
+{
+  const char * STR_COLOR_PARTS = "\002" "R:" "G:" "B:";
+  uint8_t PART_BITS[] = { 5, 6, 5 };
+  lcdDrawTextAtIndex(x, y, STR_COLOR_PARTS, part, (attr && menuHorizontalPosition < 0) ? TEXT_INVERTED_COLOR : TEXT_COLOR);
+  lcdDrawNumber(x + 20, y, value << (8-PART_BITS[part]), LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == part)) ? attr : TEXT_COLOR));
+  if (attr && menuHorizontalPosition == part) {
+    value = checkIncDec(event, value, 0, (1 << PART_BITS[part])-1, i_flags);
+  }   
+  return value;
+}   
+
 bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, event_t event)
 {
   lcdDrawText(MENUS_MARGIN_LEFT, y, option->name);
@@ -136,21 +148,10 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN-1, y+1, 42, 17, TEXT_COLOR);
     lcdDrawSolidFilledRect(SCREENS_SETUP_2ND_COLUMN, y+2, 40, 15, CUSTOM_COLOR);
 
-    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 50, y, "R:", menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_COLOR);
-    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 70, y, r << 3, LEFT|TEXT_COLOR|((attr && menuHorizontalPosition <= 0) ? attr : 0));
-    if (attr && menuHorizontalPosition == 0) {
-      r = checkIncDec(event, r, 0, (1<<5)-1, i_flags);
-    }
-    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 110, y, "G:", menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_COLOR);
-    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 130, y, g << 2, LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == 1)) ? attr : 0));
-    if (attr && menuHorizontalPosition == 1) {
-      g = checkIncDec(event, g, 0, (1<<6)-1, i_flags);
-    }
-    lcdDrawText(SCREENS_SETUP_2ND_COLUMN + 170, y, "B:", menuHorizontalPosition < 0 ? TEXT_INVERTED_COLOR : TEXT_COLOR);
-    lcdDrawNumber(SCREENS_SETUP_2ND_COLUMN + 190, y, b << 3, LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == 2)) ? attr : 0));
-    if (attr && menuHorizontalPosition == 2) {
-      b = checkIncDec(event, b, 0, (1<<5)-1, i_flags);
-    }
+    r = editColorPart(SCREENS_SETUP_2ND_COLUMN + 50, y, event, 0, r, attr, i_flags);
+    g = editColorPart(SCREENS_SETUP_2ND_COLUMN + 110, y, event, 1, g, attr, i_flags);
+    b = editColorPart(SCREENS_SETUP_2ND_COLUMN + 170, y, event, 2, b, attr, i_flags);
+
     if (attr && checkIncDec_Ret) {
       value->unsignedValue = RGB_JOIN(r, g, b);
     }
