@@ -45,7 +45,7 @@ class FirmwarePreferencesDialog : public QDialog
 
   private slots:
     void on_fw_dnld_clicked();
-    void on_voice_dnld_clicked();
+    void on_sd_dnld_clicked();
     void on_checkFWUpdates_clicked();
 };
 
