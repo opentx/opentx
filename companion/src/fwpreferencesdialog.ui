@@ -90,7 +90,7 @@
    <item row="5" column="3">
     <widget class="QPushButton" name="fw_dnld">
      <property name="text">
-      <string>Download FW</string>
+      <string>Download firmware</string>
      </property>
     </widget>
    </item>
