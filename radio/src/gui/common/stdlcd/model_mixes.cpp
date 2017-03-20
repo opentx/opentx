@@ -441,7 +441,14 @@ void menuModelMixAll(event_t event)
 
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
+          if (mixCnt == 0 && md->mltpx == 1) {
+            lcdDrawNumber(MIX_LINE_WEIGHT_POS, y, 0, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
+            lcdDrawText(lcdLastLeftPos - 1, y, "!", RIGHT | attr | (isMixActive(i) ? BOLD : 0));
+          }
+          else {
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
+          }
+
 #if LCD_W >= 212
           displayMixLine(y, md);
 #else
