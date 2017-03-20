@@ -40,8 +40,8 @@ else
   mkdir ${workdir}/sdcard/taranis-x7/SOUNDS
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x9/
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x7/
-  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-$sdcard_version.zip *
-  cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/sdcard-taranis-x9-$sdcard_version.zip *
-  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-taranis-x7-$sdcard_version.zip *
+  cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/x12/sdcard-horus-$sdcard_version.zip *
+  cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/x9/sdcard-taranis-x9-$sdcard_version.zip *
+  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/x7/sdcard-taranis-x7-$sdcard_version.zip *
   rm -Rf ${workdir}/sdcard
 fi
