@@ -47,9 +47,10 @@ void exec(int function, int nresults=0)
   }
 }
 
-ZoneOption * createOptionsArray(int reference)
+ZoneOption * createOptionsArray(int reference, uint8_t maxOptions)
 {
   if (reference == 0) {
+    // TRACE("createOptionsArray() no options");
     return NULL;
   }
 
@@ -57,6 +58,12 @@ ZoneOption * createOptionsArray(int reference)
   lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, reference);
   for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2); lua_pop(lsWidgets, 1)) {
     count++;
+  }
+
+  // TRACE("we have %d options", count);
+  if (count > maxOptions) {
+    count = maxOptions;
+    // TRACE("limited to %d options", count);
   }
 
   ZoneOption * options = (ZoneOption *)malloc(sizeof(ZoneOption) * (count+1));
@@ -67,7 +74,8 @@ ZoneOption * createOptionsArray(int reference)
   PROTECT_LUA() {
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, reference);
     ZoneOption * option = options;
-    for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2); lua_pop(lsWidgets, 1)) {
+    for (lua_pushnil(lsWidgets); lua_next(lsWidgets, -2), count-- > 0; lua_pop(lsWidgets, 1)) {
+      // TRACE("parsing option %d", count);
       luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
       luaL_checktype(lsWidgets, -1, LUA_TTABLE); // value is table
       uint8_t field = 0;
@@ -77,11 +85,13 @@ ZoneOption * createOptionsArray(int reference)
             luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
             luaL_checktype(lsWidgets, -1, LUA_TSTRING); // value is string
             option->name = lua_tostring(lsWidgets, -1);
+            // TRACE("name = %s", option->name);
             break;
           case 1:
             luaL_checktype(lsWidgets, -2, LUA_TNUMBER); // key is number
             luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
             option->type = (ZoneOption::Type)lua_tointeger(lsWidgets, -1);
+            // TRACE("type = %d", option->type);
             if (option->type > ZoneOption::Color) {
               // wrong type
               option->type = ZoneOption::Integer;
@@ -98,6 +108,7 @@ ZoneOption * createOptionsArray(int reference)
             if (option->type == ZoneOption::Integer) {
               luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
               option->deflt.signedValue = lua_tointeger(lsWidgets, -1);
+              // TRACE("default signed = %d", option->deflt.signedValue);
             }
             else if (option->type == ZoneOption::Source ||
                      option->type == ZoneOption::TextSize ||
@@ -105,13 +116,16 @@ ZoneOption * createOptionsArray(int reference)
                      option->type == ZoneOption::Color) {
               luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
               option->deflt.unsignedValue = lua_tounsigned(lsWidgets, -1);
+              // TRACE("default unsigned = %u", option->deflt.unsignedValue);
             }
             else if (option->type == ZoneOption::Bool) {
               luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
               option->deflt.boolValue = (lua_tounsigned(lsWidgets, -1) != 0);
+              // TRACE("default bool = %d", (int)(option->deflt.boolValue));
             }
             else if (option->type == ZoneOption::String) {
-              strncpy(option->deflt.stringValue, lua_tostring(lsWidgets, -1), sizeof(option->deflt.stringValue)-1);
+              str2zchar(option->deflt.stringValue, lua_tostring(lsWidgets, -1), sizeof(option->deflt.stringValue));  // stringValue is ZCHAR
+              // TRACE("default string = %s", lua_tostring(lsWidgets, -1));
             }
             break;
           case 3:
@@ -219,7 +233,7 @@ void luaLoadThemeCallback()
   }
 
   if (name) {
-    ZoneOption * options = createOptionsArray(themeOptions);
+    ZoneOption * options = createOptionsArray(themeOptions, MAX_THEME_OPTIONS);
     if (options) {
       LuaTheme * theme = new LuaTheme(name, options);
       theme->loadFunction = loadFunction;
@@ -426,7 +440,7 @@ void luaLoadWidgetCallback()
   }
 
   if (name && createFunction) {
-    ZoneOption * options = createOptionsArray(widgetOptions);
+    ZoneOption * options = createOptionsArray(widgetOptions, MAX_WIDGET_OPTIONS);
     if (options) {
       LuaWidgetFactory * factory = new LuaWidgetFactory(name, options, createFunction);
       factory->updateFunction = updateFunction;

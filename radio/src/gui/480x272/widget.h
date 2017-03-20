@@ -106,6 +106,7 @@ class WidgetFactory
       if (options) {
         int i = 0;
         for (const ZoneOption * option = options; option->name; option++) {
+          TRACE("WidgetFactory::initPersistentData() setting option '%s'", option->name);
           // TODO compiler bug? The CPU freezes ... persistentData->options[i++] = option->deflt;
           memcpy(&persistentData->options[i++], &option->deflt, sizeof(ZoneOptionValue));
         }
