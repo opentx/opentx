@@ -27,7 +27,8 @@ docker exec companion rm -rf build
 docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/ ${suffix}
 docker stop companion
 docker rm companion
-cp -f  binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
+cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
+cp -f binaries/radio/src/lua/lua_fields_*.txt ${output}/firmware
 
 # Request companion compilation on Windows
 cd ${output}/companion/windows
