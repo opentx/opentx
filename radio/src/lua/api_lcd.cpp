@@ -422,7 +422,6 @@ static int luaOpenBitmap(lua_State * L)
 static BitmapBuffer * checkBitmap(lua_State * L, int index)
 {
   BitmapBuffer ** b = (BitmapBuffer **)luaL_checkudata(L, index, LUA_BITMAPHANDLE);
-  if (!*b) luaL_error(L, "null Image");
   return *b;
 }
 
