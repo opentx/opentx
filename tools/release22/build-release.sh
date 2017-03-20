@@ -34,13 +34,13 @@ cp -f binaries/radio/src/lua/lua_fields_*.txt ${output}/firmware
 cd ${output}/companion/windows
 wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch
 wget -O companion-windows-${version}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}.exe
-chmod -Rf g+w companion-windows-${version.exe
+chmod -f g+w companion-windows-${version.exe
 
 # Request companion compilation on Mac OS X
 cd ${output}/companion/macosx
 wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}
 wget -O opentx-companion-${version}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}.dmg
-chmod -Rf g+w opentx-companion-${version}.dmg
+chmod -f g+w opentx-companion-${version}.dmg
 
 # Update stamps
 cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
