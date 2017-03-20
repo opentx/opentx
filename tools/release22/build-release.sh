@@ -12,7 +12,7 @@ cd ${workdir}
 
 # Create on-demand build environment
 cp code/radio/util/Dockerfile .
-docker build -t new-${docker} --build-arg OPENTX_VERSION_SUFFIX=${suffix} .
+docker build -t new-${docker} .
 docker rmi -f ${docker} || true
 docker tag new-${docker} ${docker}
 docker rmi -f new-${docker}
