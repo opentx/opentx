@@ -92,8 +92,8 @@ TEST(Lcd_480x272, vline)
 TEST(Lcd_480x272, primitives)
 {
   lcd->clear(TEXT_BGCOLOR);
-  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", CURVE_AXIS_COLOR);
-  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR);
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", CURVE_AXIS_COLOR|NO_FONTCACHE);
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|NO_FONTCACHE);
 
   lcdDrawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR);
   lcdDrawFilledRect(50, 30, 30, 30, DOTTED, TEXT_COLOR);
@@ -119,8 +119,8 @@ TEST(Lcd_480x272, primitives)
 TEST(Lcd_480x272, transparency)
 {
   lcd->clear(TEXT_BGCOLOR);
-  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4));
-  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12));
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4)|NO_FONTCACHE);
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12)|NO_FONTCACHE);
 
   lcdDrawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR|OPACITY(8));
   lcdDrawFilledRect(50, 30, 30, 30, DOTTED, TEXT_COLOR|OPACITY(10));
