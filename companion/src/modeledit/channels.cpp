@@ -64,7 +64,8 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars, panel);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars);
+  QObject::connect(gvarGroup, &GVarGroup::valueChanged, panel, &ModelPanel::modified);
 }
 
 LimitsGroup::~LimitsGroup()
@@ -227,7 +228,7 @@ void Channels::refreshExtendedLimits()
     group->updateMinMax(10*channelMax);
   }
 
-  emit modified(); 
+  emit modified();
 }
 
 void Channels::invEdited()

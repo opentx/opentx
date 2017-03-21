@@ -49,9 +49,9 @@ class TelemetrySimulator : public QWidget
   protected slots:
 
     virtual void closeEvent(QCloseEvent *event);
-    virtual void showEvent(QShowEvent *event);
+    void setupDataFields();
     void onSimulateToggled(bool isChecked);
-    void onTimerEvent();
+    void generateTelemetryFrame();
     void onLogTimerEvent();
     void onLoadLogFile();
     void onPlay();
@@ -65,10 +65,9 @@ class TelemetrySimulator : public QWidget
   protected:
 
     Ui::TelemetrySimulator * ui;
-    QTimer * timer;
-    QTimer * logTimer;
+    QTimer timer;
+    QTimer logTimer;
     SimulatorInterface *simulator;
-    void generateTelemetryFrame();
 
   // protected classes follow
 

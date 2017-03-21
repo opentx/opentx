@@ -34,6 +34,7 @@
 #include "appdata.h"
 #include "appdebugmessagehandler.h"
 #include "constants.h"
+#include "customdebug.h"
 #include "eeprominterface.h"
 #include "simulator.h"
 #include "simulatormainwindow.h"
@@ -94,6 +95,8 @@ int main(int argc, char *argv[])
 
   if (AppDebugMessageHandler::instance())
     AppDebugMessageHandler::instance()->installAppMessageHandler();
+
+  CustomDebug::setFilterRules();
 
   g.init();
 
@@ -257,6 +260,7 @@ int finish(int exitCode)
   qDebug() << "SIMULATOR EXIT" << exitCode;
   unregisterSimulators();
   unregisterOpenTxFirmwares();
+  unregisterStorageFactories();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();

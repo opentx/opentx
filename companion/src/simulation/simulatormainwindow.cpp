@@ -33,6 +33,8 @@
 #endif
 
 #include <QDebug>
+#include <QLabel>
+#include <QMessageBox>
 
 extern AppData g;  // ensure what "g" means
 

@@ -24,6 +24,8 @@
 #include "helpers.h"
 #include "storage.h"
 
+#include <QFile>
+
 #define FW_MARK     "FW"
 #define VERS_MARK   "VERS"
 #define DATE_MARK   "DATE"

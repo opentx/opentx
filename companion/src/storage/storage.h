@@ -48,14 +48,14 @@ class StorageFormat
       board(Board::BOARD_UNKNOWN)
     {
     }
-    
+    virtual ~StorageFormat() {}
     virtual bool load(RadioData & radioData) = 0;
     virtual bool write(const RadioData & radioData) = 0;
 
     QString error() {
       return _error;
     }
-    
+
     QString warning() {
       return _warning;
     }
@@ -84,13 +84,13 @@ class StorageFormat
       qDebug() << qPrintable(QString("[%1] error: %2").arg(name()).arg(error));
       _error = error;
     }
-    
+
     void setWarning(const QString & warning)
     {
       qDebug() << qPrintable(QString("[%1] warning: %2").arg(name()).arg(warning));
       _warning = warning;
     }
-    
+
     QString filename;
     uint8_t version;
     QString _error;
@@ -104,6 +104,7 @@ class StorageFactory
     StorageFactory()
     {
     }
+    virtual ~StorageFactory() {}
     virtual QString name() = 0;
     virtual bool probe(const QString & filename) = 0;
     virtual StorageFormat * instance(const QString & filename) = 0;
@@ -118,22 +119,22 @@ class DefaultStorageFactory : public StorageFactory
       _name(name)
     {
     }
-    
+
     virtual QString name()
     {
       return _name;
     }
-    
+
     virtual bool probe(const QString & filename)
     {
       return filename.toLower().endsWith("." + _name);
     }
-    
+
     virtual StorageFormat * instance(const QString & filename)
     {
       return new T(filename);
     }
-    
+
     QString _name;
 };
 
@@ -144,24 +145,25 @@ class Storage : public StorageFormat
       StorageFormat(filename)
     {
     }
-    
-    virtual QString name() { return "storage"; };
-    
+
+    virtual QString name() { return "storage"; }
+
     void setError(const QString & error)
     {
       _error = error;
     }
-    
+
     void setWarning(const QString & warning)
     {
       _warning = warning;
     }
-    
+
     virtual bool load(RadioData & radioData);
     virtual bool write(const RadioData & radioData);
 };
 
 void registerStorageFactories();
+void unregisterStorageFactories();
 
 #if 0
 unsigned long LoadBackup(RadioData &radioData, uint8_t *eeprom, int esize, int index);

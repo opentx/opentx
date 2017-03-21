@@ -29,14 +29,15 @@
 #include <QValidator>
 #include <QWidget>
 
-// NOTE : The buffer sizes need to be large enough to handle the flood of data when X12/X10 simulator starts up (almost 40K!).
+// NOTE : The buffer sizes need to be large enough to handle the flood of data when X12/X10 simulator starts up with TRACE_SIMPGMSPACE=1 (> 40K!).
+// These are maximum sizes, not necessarily allocated sizes.
 #ifndef DEBUG_OUTPUT_WIDGET_OUT_BUFF_SIZE
   // This buffer holds received and processed data until it can be printed to our console.
-  #define DEBUG_OUTPUT_WIDGET_OUT_BUFF_SIZE    (40 * 1024)  // [bytes]
+  #define DEBUG_OUTPUT_WIDGET_OUT_BUFF_SIZE    (50 * 1024)  // [bytes]
 #endif
 #ifndef DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE
   // This buffer is active if line filter is enabled and holds received data until it can be filtered and placed in output buffer.
-  #define DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE    (30 * 1024)  // [bytes]
+  #define DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE    (50 * 1024)  // [bytes]
 #endif
 
 namespace Ui {
@@ -101,6 +102,8 @@ class DebugOutputFilterValidator : public QValidator
 class DeleteComboBoxItemEventFilter : public QObject
 {
   Q_OBJECT
+  public:
+    DeleteComboBoxItemEventFilter(QObject *parent = Q_NULLPTR) : QObject(parent) { }
   protected:
     bool eventFilter(QObject *obj, QEvent *event);
 };

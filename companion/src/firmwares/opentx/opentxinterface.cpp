@@ -1514,6 +1514,7 @@ void unregisterOpenTxFirmwares()
   foreach (Firmware * f, firmwares) {
     delete f;
   }
+  unregisterEEpromInterfaces();
 }
 
 template <class T, class M>
