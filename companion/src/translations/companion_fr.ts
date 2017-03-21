@@ -587,7 +587,7 @@ Peut être différente de la langue du firmware</translation>
         <location filename="../apppreferencesdialog.ui" line="1020"/>
         <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="874"/>
         <source>Joystick</source>
-        <translation>Joystick</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="928"/>
@@ -627,7 +627,7 @@ Peut être différente de la langue du firmware</translation>
         <location filename="../apppreferencesdialog.cpp" line="174"/>
         <location filename="../apppreferencesdialog.cpp" line="314"/>
         <source>No joysticks found</source>
-        <translation>Aucun joystick trouvé</translation>
+        <translation>Aucun Joystick trouvé</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="220"/>
@@ -8473,12 +8473,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1184"/>
         <source>WTV20 voice module</source>
-        <translation type="unfinished"></translation>
+        <translation>Module voix WTV20</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1185"/>
         <source>JQ6500 voice module</source>
-        <translation type="unfinished"></translation>
+        <translation>Module voix JQ6500</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
@@ -8611,12 +8611,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
         <source>Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)</source>
-        <translation>Le port USB connecte les disques virtuels au lieu du joystick (comme dans le bootloader)</translation>
+        <translation>Le port USB connecte les disques virtuels au lieu du Joystick (comme dans le bootloader)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1156"/>
         <source>Instead of Joystick emulation, USB connection is Command Line Interface</source>
-        <translation>Le port USB est utilisé pour un port série avec interface par ligne de commande au lieu du joystick</translation>
+        <translation>Le port USB est utilisé pour un port série avec interface par ligne de commande au lieu du Joystick</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
@@ -9608,7 +9608,7 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
     <message>
         <location filename="../simulation/widgets/radioknobwidget.h" line="91"/>
         <source>Right-double-click to reset to center.</source>
-        <translation>Double-clic pour recentrer.</translation>
+        <translation>Double-clic droit pour recentrer.</translation>
     </message>
 </context>
 <context>
@@ -10397,208 +10397,208 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="267"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Simulateur Companion</translation>
+        <translation>Simulateur Companion</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="268"/>
         <source>Radio Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulateur radio</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="270"/>
         <source>Show Help/Keymap (F1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher Aide/Raccourci (F1)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="273"/>
         <source>Show Help/Keymap</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher Aide/Raccourci</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="275"/>
         <source>Keymap</source>
-        <translation type="unfinished"></translation>
+        <translation>Raccourci</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="276"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="277"/>
         <source>help</source>
-        <translation type="unfinished"></translation>
+        <translation>aide</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="279"/>
         <source>Open the Joystick Settings window (F3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir la boite de dialogue de la configuration du Joystick (F3)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="282"/>
         <source>Joystick Configuration</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuration du Joystick</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="284"/>
         <source>Joystick Config.</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuration Joy.</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="285"/>
         <source>F3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="286"/>
         <source>joystick</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="288"/>
         <source>Open Telemetry Simulator window (F4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir la boite de dialogue de la télémétrie (F4)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="291"/>
         <source>Telemetry Simulator</source>
-        <translation type="unfinished">Simulateur de télémesure</translation>
+        <translation>Simulateur de télémesure</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="293"/>
         <source>Telemetry Sim.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulateur Telem.</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="294"/>
         <source>F4</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="295"/>
         <source>telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>télémétrie</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="297"/>
         <source>Open Trainer Simulator window (F5)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir le simulateur d&apos;écolage (F5)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="300"/>
         <source>Trainer Simulator</source>
-        <translation type="unfinished">Simulateur d&apos;écolage</translation>
+        <translation>Simulateur d&apos;écolage</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="302"/>
         <source>Trainer Sim.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simulateur Écol.</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="303"/>
         <source>F5</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="304"/>
         <source>trainer</source>
-        <translation type="unfinished"></translation>
+        <translation>écolage</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="306"/>
         <source>Open Debug Console window (F6)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir la console de débogage (F6)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="309"/>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="311"/>
         <source>Debug Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Console de débogage</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="312"/>
         <source>F6</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="313"/>
         <source>debug</source>
-        <translation type="unfinished"></translation>
+        <translation>débogage</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="315"/>
         <source>Reload Lua Scripts (F7)</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger le script Lua (F7)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="318"/>
         <source>Reload Lua Scripts</source>
-        <translation type="unfinished">Recharger le script Lua</translation>
+        <translation>Recharger le script Lua</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="320"/>
         <source>Reload Lua</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger Lua</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="321"/>
         <source>F7</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="322"/>
         <source>reloadLua</source>
-        <translation type="unfinished"></translation>
+        <translation>rechargeLua</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="324"/>
         <source>Save a screenshot of the radio LCD screen (F8)</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrez une capture de l&apos;écran LCD de la radio (F8)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="327"/>
         <source>LCD Screenshot</source>
-        <translation type="unfinished">Capture LCD</translation>
+        <translation>Capture LCD</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="329"/>
         <source>Screenshot</source>
-        <translation type="unfinished">Capture d&apos;écran</translation>
+        <translation>Capture d&apos;écran</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="330"/>
         <source>F8</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="331"/>
         <source>lcdScreenshot</source>
-        <translation type="unfinished"></translation>
+        <translation>captureLcd</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="333"/>
         <source>Reload all radio data (F9)</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger les données radio (F9)</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="336"/>
         <source>Reload Radio Data</source>
-        <translation type="unfinished">Recharger les données radio</translation>
+        <translation>Recharger les données radio</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="338"/>
         <source>Reload Radio</source>
-        <translation type="unfinished"></translation>
+        <translation>Recharger la radio</translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="339"/>
         <source>F9</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="340"/>
         <source>reloadradio</source>
-        <translation type="unfinished"></translation>
+        <translation>rechargerRadio</translation>
     </message>
 </context>
 <context>
@@ -10713,14 +10713,14 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <source>Joystick Settings</source>
-        <translation>Paramètres joystick</translation>
+        <translation>Paramètres Joystick</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="151"/>
         <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="162"/>
         <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="162"/>
         <source>Open joystick configuration settings dialog.</source>
-        <translation>Ouvrir la boite de dialogue de la configuration du joystick.</translation>
+        <translation>Ouvrir la boite de dialogue de la configuration du Joystick.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="154"/>
@@ -11118,7 +11118,7 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="624"/>
         <source>Cannot open joystick, joystick disabled</source>
-        <translation>Impossible d&apos;accéder au joystick, joystick désactivé</translation>
+        <translation>Impossible d&apos;accéder au Joystick, Joystick désactivé</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="820"/>
@@ -14227,7 +14227,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="94"/>
         <source>No joysticks found</source>
-        <translation>Aucun joystick trouvé</translation>
+        <translation>Aucun Joystick trouvé</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="131"/>
@@ -14238,7 +14238,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="131"/>
         <source>Cannot open joystick.</source>
-        <translation>Impossible d&apos;accéder au joystick.</translation>
+        <translation>Impossible d&apos;accéder au Joystick.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="167"/>
@@ -14265,7 +14265,7 @@ Cliquer sur Suivant lorsque vous êtes prêts</translation>
         <location filename="../simulation/joystickdialog.cpp" line="190"/>
         <source>Map joystick channels to controls using comboboxes.
 Press Next when done.</source>
-        <translation>Assigner les voies du Joytick en utilisant les boutons.
+        <translation>Assigner les voies du Joystick en utilisant les boutons.
 Cliquer sur Suivant lorsque vous êtes prêts.</translation>
     </message>
     <message>
