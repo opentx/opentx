@@ -128,25 +128,25 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
 
 SimulatorMainWindow::~SimulatorMainWindow()
 {
-  delete ui;
-}
-
-void SimulatorMainWindow::closeEvent(QCloseEvent *)
-{
-  saveUiState();
-
   if (m_telemetryDockWidget)
     delete m_telemetryDockWidget;
   if (m_trainerDockWidget)
     delete m_trainerDockWidget;
   if (m_outputsDockWidget)
     delete m_outputsDockWidget;
-  if (m_consoleDockWidget)
-    delete m_consoleDockWidget;
   if (m_simulatorDockWidget)
     delete m_simulatorDockWidget;
   else if (m_simulatorWidget)
     delete m_simulatorWidget;
+  if (m_consoleDockWidget)
+    delete m_consoleDockWidget;
+
+  delete ui;
+}
+
+void SimulatorMainWindow::closeEvent(QCloseEvent *)
+{
+  saveUiState();
 }
 
 void SimulatorMainWindow::show()
@@ -173,7 +173,8 @@ void SimulatorMainWindow::changeEvent(QEvent *e)
   }
 }
 
-QMenu * SimulatorMainWindow::createPopupMenu(){
+QMenu * SimulatorMainWindow::createPopupMenu()
+{
   QMenu * menu = QMainWindow::createPopupMenu();
   menu->clear();
   menu->addActions(ui->menuView->actions());
