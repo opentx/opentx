@@ -28,8 +28,6 @@ namespace Ui {
 class SimulatorStartupDialog;
 }
 
-using namespace Simulator;
-
 class SimulatorStartupDialog : public QDialog
 {
     Q_OBJECT

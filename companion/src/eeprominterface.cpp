@@ -1837,16 +1837,6 @@ void Firmware::addOptions(Option options[])
   this->opts.push_back(opts);
 }
 
-SimulatorInterface * getCurrentSimulator()
-{
-  QString firmwareId = getCurrentFirmware()->getId();
-  SimulatorFactory * factory = getSimulatorFactory(firmwareId);
-  if (factory)
-    return factory->create();
-  else
-    return NULL;
-}
-
 void FlightModeData::clear(const int phase)
 {
   memset(this, 0, sizeof(FlightModeData));

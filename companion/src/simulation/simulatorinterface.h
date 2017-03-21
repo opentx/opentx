@@ -23,11 +23,16 @@
 
 #include "boards.h"
 #include "constants.h"
+
+#include <algorithm>
 #include <inttypes.h>
+
+#include <QObject>
 #include <QString>
 #include <QByteArray>
+#include <QDir>
+#include <QLibrary>
 #include <QMap>
-#include <algorithm>
 
 struct TxInputs
 {
@@ -122,9 +127,21 @@ class SimulatorFactory {
     virtual SimulatorInterface *create() = 0;
 };
 
-void registerSimulators();
-void unregisterSimulators();
-SimulatorFactory *getSimulatorFactory(const QString &name);
-extern QMap<QString, SimulatorFactory *> registered_simulators;
+class SimulatorLoader
+{
+  public:
+    static void registerSimulators();
+    static void unregisterSimulators();
+    static QStringList getAvailableSimulators();
+    static QString findSimulatorByFirmwareName(const QString & name);
+    static SimulatorInterface * loadSimulator(const QString & name);
+    static bool unloadSimulator(const QString & name);
+
+  protected:
+    typedef SimulatorFactory * (*RegisterSimulator)();
+
+    static int registerSimulators(const QDir & dir);
+    static QMap<QString, QLibrary *> registeredSimulators;
+};
 
 #endif // _SIMULATORINTERFACE_H_

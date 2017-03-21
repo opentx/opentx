@@ -23,13 +23,14 @@
 
 #include "appdata.h"
 #include "constants.h"
-#include "eeprominterface.h"
+#include "simulatorinterface.h"
 #include "helpers.h"
 
 #include <QFileDialog>
 
+using namespace Simulator;
+
 extern AppData g;
-extern QMap<QString, SimulatorFactory *> registered_simulators;
 
 SimulatorStartupDialog::SimulatorStartupDialog(SimulatorOptions * options, int * profId, QWidget *parent) :
   QDialog(parent),
@@ -45,7 +46,7 @@ SimulatorStartupDialog::SimulatorStartupDialog(SimulatorOptions * options, int *
     ui->radioProfile->addItem(pi.value(), pi.key());
   }
 
-  ui->radioType->addItems(registered_simulators.keys());
+  ui->radioType->addItems(SimulatorLoader::getAvailableSimulators());
 
   ui->optGrp_dataSource->setId(ui->optFile, SimulatorOptions::START_WITH_FILE);
   ui->optGrp_dataSource->setId(ui->optFolder, SimulatorOptions::START_WITH_FOLDER);
@@ -151,7 +152,7 @@ void SimulatorStartupDialog::updateContainerTypes(void)
 
 void SimulatorStartupDialog::loadRadioProfile(int id)
 {
-  QString tmpstr;
+  QString tmpstr, tmpstr2;
   int i;
 
   if (id < 0 || !g.getActiveProfiles().contains(id))
@@ -166,8 +167,8 @@ void SimulatorStartupDialog::loadRadioProfile(int id)
   tmpstr = m_options->firmwareId;
   if (tmpstr.isEmpty() && !g.profile[id].fwType().isEmpty())
     tmpstr = g.profile[id].fwType();
-  else if (getSimulatorFactory(tmpstr))
-    tmpstr = getSimulatorFactory(tmpstr)->name();
+  else if (!(tmpstr2 = SimulatorLoader::findSimulatorByFirmwareName(m_options->firmwareId)).isEmpty())
+    tmpstr = tmpstr2;
   i = ui->radioType->findText(findRadioId(tmpstr), Qt::MatchContains);
   if (i > -1)
     ui->radioType->setCurrentIndex(i);

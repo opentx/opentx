@@ -24,7 +24,10 @@
 #include <QLoggingCategory>
 
 // Controls the generation of debug output for EEPROM import
-Q_DECLARE_LOGGING_CATEGORY(eepromImport)
+Q_DECLARE_LOGGING_CATEGORY(eepromImport)  // "eeprom.import"
+
+// Controls the generation of debug output of SimulatorLoader class
+Q_DECLARE_LOGGING_CATEGORY(simulatorInterfaceLoader)  // "simulator.interface.loader"
 
 class CustomDebug
 {

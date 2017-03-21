@@ -40,9 +40,8 @@ extern AppData g;  // ensure what "g" means
 
 const quint16 SimulatorMainWindow::m_savedUiStateVersion = 2;
 
-SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * simulator, quint8 flags, Qt::WindowFlags wflags) :
+SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwareId, quint8 flags, Qt::WindowFlags wflags) :
   QMainWindow(parent, wflags),
-  m_simulator(simulator),
   ui(new Ui::SimulatorMainWindow),
   m_simulatorWidget(NULL),
   m_consoleWidget(NULL),
@@ -52,12 +51,24 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
   m_telemetryDockWidget(NULL),
   m_trainerDockWidget(NULL),
   m_outputsDockWidget(NULL),
+  m_simulatorId(firmwareId),
+  m_exitStatusCode(0),
   m_radioProfileId(g.sessionId()),
   m_radioSizeConstraint(Qt::Horizontal | Qt::Vertical),
   m_firstShow(true),
   m_showRadioDocked(true),
   m_showMenubar(true)
 {
+  if (m_simulatorId.isEmpty()) {
+    m_simulatorId = SimulatorLoader::findSimulatorByFirmwareName(getCurrentFirmware()->getId());
+  }
+  m_simulator = SimulatorLoader::loadSimulator(m_simulatorId);
+  if (!m_simulator) {
+    m_exitStatusMsg = tr("ERROR: Failed to create simulator interface, possibly missing or bad library.");
+    m_exitStatusCode = -1;
+    return;
+  }
+
   ui->setupUi(this);
 
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
@@ -128,25 +139,30 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, SimulatorInterface * s
 
 SimulatorMainWindow::~SimulatorMainWindow()
 {
-  delete ui;
-}
-
-void SimulatorMainWindow::closeEvent(QCloseEvent *)
-{
-  saveUiState();
-
   if (m_telemetryDockWidget)
     delete m_telemetryDockWidget;
   if (m_trainerDockWidget)
     delete m_trainerDockWidget;
   if (m_outputsDockWidget)
     delete m_outputsDockWidget;
-  if (m_consoleDockWidget)
-    delete m_consoleDockWidget;
   if (m_simulatorDockWidget)
     delete m_simulatorDockWidget;
   else if (m_simulatorWidget)
     delete m_simulatorWidget;
+  if (m_consoleDockWidget)
+    delete m_consoleDockWidget;
+
+  delete ui;
+
+  if (m_simulator)
+    delete m_simulator;
+
+  SimulatorLoader::unloadSimulator(m_simulatorId);
+}
+
+void SimulatorMainWindow::closeEvent(QCloseEvent *)
+{
+  saveUiState();
 }
 
 void SimulatorMainWindow::show()
@@ -173,7 +189,8 @@ void SimulatorMainWindow::changeEvent(QEvent *e)
   }
 }
 
-QMenu * SimulatorMainWindow::createPopupMenu(){
+QMenu * SimulatorMainWindow::createPopupMenu()
+{
   QMenu * menu = QMainWindow::createPopupMenu();
   menu->clear();
   menu->addActions(ui->menuView->actions());
@@ -212,6 +229,13 @@ void SimulatorMainWindow::restoreUiState()
   toggleMenuBar(m_showMenubar);
   restoreGeometry(g.profile[m_radioProfileId].simulatorOptions().windowGeometry);
   restoreState(windowState, m_savedUiStateVersion);
+}
+
+int SimulatorMainWindow::getExitStatus(QString * msg)
+{
+  if (msg)
+    *msg = m_exitStatusMsg;
+  return m_exitStatusCode;
 }
 
 bool SimulatorMainWindow::setRadioData(RadioData * radioData)

@@ -25,9 +25,6 @@
 #elif defined __GNUC__
   #include <unistd.h>
 #endif
-#if defined(WIN32) && defined(WIN_USE_CONSOLE_STDIO)
-  #include "windows.h"
-#endif
 
 #include "appdata.h"
 #include "helpers.h"
@@ -811,39 +808,45 @@ CompanionIcon::CompanionIcon(const QString &baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  SimulatorInterface * simulator = getCurrentSimulator();
-  if (simulator) {
-    RadioData * simuData = new RadioData(radioData);
-    unsigned int flags = 0;
+  QString fwId = SimulatorLoader::findSimulatorByFirmwareName(getCurrentFirmware()->getId());
+  if (fwId.isEmpty()) {
+    QMessageBox::warning(NULL,
+                         QObject::tr("Warning"),
+                         QObject::tr("Simulator for this firmware is not yet available"));
+    return;
+  }
 
-    if (modelIdx >= 0) {
-      flags |= SIMULATOR_FLAGS_NOTX;
-      simuData->setCurrentModel(modelIdx);
-    }
+  RadioData * simuData = new RadioData(radioData);
+  unsigned int flags = 0;
 
-    SimulatorMainWindow * dialog = new SimulatorMainWindow(parent, simulator, flags);
-    if (!dialog->setRadioData(simuData)) {
-      QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error occurred while starting simulator."));
-      delete dialog;
-      delete simuData;
-      return;
-    }
+  if (modelIdx >= 0) {
+    flags |= SIMULATOR_FLAGS_NOTX;
+    simuData->setCurrentModel(modelIdx);
+  }
 
-    dialog->setWindowModality(Qt::ApplicationModal);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
+  SimulatorMainWindow * dialog = new SimulatorMainWindow(parent, fwId, flags);
+  dialog->setWindowModality(Qt::ApplicationModal);
+  dialog->setAttribute(Qt::WA_DeleteOnClose);
+
+  QObject::connect(dialog, &SimulatorMainWindow::destroyed, [simuData] (void) {
+    // TODO simuData and Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
+    delete simuData;
+  });
+
+  QString resultMsg;
+  if (dialog->getExitStatus(&resultMsg)) {
+    if (resultMsg.isEmpty())
+      resultMsg = QObject::tr("Uknown error during Simulator startup.");
+    QMessageBox::critical(NULL, QObject::tr("Simulator Error"), resultMsg);
+    dialog->deleteLater();
+  }
+   else if (dialog->setRadioData(simuData)) {
     dialog->start();
-
-    QObject::connect(dialog, &SimulatorMainWindow::destroyed, [simuData] (void) {
-      // TODO simuData and Horus tmp directory is deleted on simulator close OR we could use it to get back data from the simulation
-      delete simuData;
-    });
-
     dialog->show();
   }
   else {
-    QMessageBox::warning(NULL,
-      QObject::tr("Warning"),
-      QObject::tr("Simulator for this firmware is not yet available"));
+    QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error occurred while starting simulator."));
+    dialog->deleteLater();
   }
 }
 
