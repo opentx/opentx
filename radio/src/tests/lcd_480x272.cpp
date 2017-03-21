@@ -92,8 +92,8 @@ TEST(Lcd_480x272, vline)
 TEST(Lcd_480x272, primitives)
 {
   lcd->clear(TEXT_BGCOLOR);
-  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", CURVE_AXIS_COLOR);
-  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR);
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", CURVE_AXIS_COLOR|NO_FONTCACHE);
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|NO_FONTCACHE);
 
   lcdDrawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR);
   lcdDrawFilledRect(50, 30, 30, 30, DOTTED, TEXT_COLOR);
@@ -115,5 +115,60 @@ TEST(Lcd_480x272, primitives)
 
   EXPECT_TRUE(checkScreenshot_480x272("primitives"));
 }
+
+TEST(Lcd_480x272, transparency)
+{
+  lcd->clear(TEXT_BGCOLOR);
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4)|NO_FONTCACHE);
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12)|NO_FONTCACHE);
+
+  lcdDrawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR|OPACITY(8));
+  lcdDrawFilledRect(50, 30, 30, 30, DOTTED, TEXT_COLOR|OPACITY(10));
+  lcdDrawFilledRect(90, 30, 30, 30, SOLID, ROUND|TITLE_BGCOLOR|OPACITY(12));
+  lcdDrawRect(130, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR|OPACITY(8));
+  lcdDrawRect(170, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR|OPACITY(8));
+  lcdDrawRect(210, 30, 30, 30, 5, SOLID, TITLE_BGCOLOR|OPACITY(8));
+
+  lcdDrawVerticalLine(10, 70, 100, SOLID, TITLE_BGCOLOR|OPACITY(2));
+  lcdDrawVerticalLine(15, 70,  90, SOLID, TITLE_BGCOLOR|OPACITY(6));
+  lcdDrawVerticalLine(20, 70,  80, SOLID, TITLE_BGCOLOR|OPACITY(10));
+  lcdDrawVerticalLine(25, 70,  70, SOLID, TITLE_BGCOLOR|OPACITY(OPACITY_MAX));
+
+  lcdDrawHorizontalLine(30, 70, 100, SOLID, TEXT_COLOR|OPACITY(2));
+  lcdDrawHorizontalLine(30, 75,  90, SOLID, TEXT_COLOR|OPACITY(6));
+  lcdDrawHorizontalLine(30, 80,  80, SOLID, TEXT_COLOR|OPACITY(10));
+  lcdDrawHorizontalLine(30, 85,  70, SOLID, TEXT_COLOR|OPACITY(OPACITY_MAX));
+
+
+  for(int n=0; n<10; n++) {
+    int x = 120 + n * 20;
+    int y = 80 + n * 10;
+    int color = COLOR(n/2 + 5);
+    int size = 100;
+    lcdDrawFilledRect(x, y, size, size, SOLID, color|OPACITY(8));
+
+  }
+
+  EXPECT_TRUE(checkScreenshot_480x272("transparency"));
+}
+
+TEST(Lcd_480x272, fonts)
+{
+  loadFontCache();
+  lcd->clear(TEXT_BGCOLOR);
+
+  lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4));
+  lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12));
+
+  lcdDrawText(10, 200, "The quick", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
+  lcdDrawText(30, 200, "The quick brown fox", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
+  // lcdDrawText(50, 200, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
+
+  lcdDrawText(8, 208, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(4));
+  lcdDrawText(5, 205, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(12));
+
+  EXPECT_TRUE(checkScreenshot_480x272("fonts"));
+}
+
 
 #endif
