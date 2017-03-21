@@ -8428,7 +8428,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1154"/>
         <source>Enable Lua compiler</source>
-        <translation>Active le compilateur LUA</translation>
+        <translation>Active le compilateur Lua</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
