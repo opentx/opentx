@@ -25,7 +25,6 @@
 
 #include <QDockWidget>
 #include <QMainWindow>
-#include <QPointer>
 
 class DebugOutput;
 class RadioData;
@@ -48,13 +47,14 @@ class SimulatorMainWindow : public QMainWindow
     Q_OBJECT
 
   public:
-    explicit SimulatorMainWindow(QWidget * parent, SimulatorInterface * simulator, quint8 flags=0, Qt::WindowFlags wflags = Qt::WindowFlags());
+    explicit SimulatorMainWindow(QWidget * parent, const QString & firmwareId = "", quint8 flags=0, Qt::WindowFlags wflags = Qt::WindowFlags());
     ~SimulatorMainWindow();
 
+    int getExitStatus(QString * msg = Q_NULLPTR);
     bool setRadioData(RadioData * radioData);
     bool useTempDataPath(bool deleteOnClose = true);
     bool setOptions(SimulatorOptions & options, bool withSave = true);
-    QMenu * createPopupMenu();
+    virtual QMenu * createPopupMenu();
 
   public slots:
     virtual void show();
@@ -95,6 +95,9 @@ class SimulatorMainWindow : public QMainWindow
     QDockWidget * m_outputsDockWidget;
 
     QVector<keymapHelp_t> m_keymapHelp;
+    QString m_simulatorId;
+    QString m_exitStatusMsg;
+    int m_exitStatusCode;
     int m_radioProfileId;
     int m_radioSizeConstraint;
     bool m_firstShow;

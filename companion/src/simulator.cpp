@@ -19,13 +19,13 @@
  */
 
 #include <QApplication>
-#include <QTranslator>
+#include <QDir>
 #include <QLibraryInfo>
 #include <QLocale>
-#include <QString>
-#include <QDir>
-#include <QTextStream>
 #include <QMessageBox>
+#include <QString>
+#include <QTextStream>
+#include <QTranslator>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
   #undef main
@@ -99,6 +99,8 @@ int main(int argc, char *argv[])
   CustomDebug::setFilterRules();
 
   g.init();
+
+  QString resultMsg;
 
   QTranslator companionTranslator;
   companionTranslator.load(":/companion_" + g.locale());
@@ -223,41 +225,37 @@ int main(int argc, char *argv[])
     return finish(2);
   }
 
-  SimulatorFactory * factory = getSimulatorFactory(simOptions.firmwareId);
-  if (!factory) {
-    showMessage(QObject::tr("ERROR: Simulator %1 not found").arg(simOptions.firmwareId), QMessageBox::Critical);
-    return finish(2);
-  }
-  SimulatorInterface * simulator = factory->create();
-  if (!simulator) {
-    showMessage(QObject::tr("ERROR: Failed to create simulator interface, possibly missing or bad library."), QMessageBox::Critical);
-    return finish(2);
-  }
-
   current_firmware_variant = getFirmware(simOptions.firmwareId);
 
   g.sessionId(profileId);
   g.simuLastProfId(profileId);
 
-  int result = 1;
-  SimulatorMainWindow * mainWindow = new SimulatorMainWindow(NULL, simulator, SIMULATOR_FLAGS_STANDALONE);
-  if (mainWindow->setOptions(simOptions, true)) {
+  int result = 0;
+  SimulatorMainWindow * mainWindow = new SimulatorMainWindow(NULL, simOptions.firmwareId, SIMULATOR_FLAGS_STANDALONE);
+  if ((result = mainWindow->getExitStatus(&resultMsg))) {
+    if (resultMsg.isEmpty())
+      resultMsg = QObject::tr("Uknown error during Simulator startup.");
+    showMessage(resultMsg, QMessageBox::Critical);
+  }
+  else if (mainWindow->setOptions(simOptions, true)) {
     mainWindow->start();
     mainWindow->show();
     result = app.exec();
+    if (!result) {
+      if ((result = mainWindow->getExitStatus(&resultMsg)) && !resultMsg.isEmpty())
+        qWarning() << "Exit message from SimulatorMainWindow:" << resultMsg;
+    }
   }
   else {
     result = 3;
   }
-  delete mainWindow;
-  delete simulator;
 
+  delete mainWindow;
   return finish(result);
 }
 
 int finish(int exitCode)
 {
-  qDebug() << "SIMULATOR EXIT" << exitCode;
   unregisterSimulators();
   unregisterOpenTxFirmwares();
   unregisterStorageFactories();
@@ -266,5 +264,6 @@ int finish(int exitCode)
   SDL_Quit();
 #endif
 
+  qDebug() << "SIMULATOR EXIT" << exitCode;
   return exitCode;
 }
