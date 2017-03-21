@@ -206,6 +206,10 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t delay)
 
 #define MENU_TASK_PERIOD_TICKS      25    // 50ms
 
+#if defined(COLORLCD) && defined(CLI)
+bool perMainEnabled = true;
+#endif
+
 void menusTask(void * pdata)
 {
   opentxInit();
@@ -225,8 +229,13 @@ void menusTask(void * pdata)
 #endif
     uint32_t start = (uint32_t)CoGetOSTime();
     DEBUG_TIMER_START(debugTimerPerMain);
-    DEBUG_TIMER_SAMPLE(debugTimerPerMainPeriod);
+#if defined(COLORLCD) && defined(CLI)
+    if (perMainEnabled) {
+      perMain();
+    }
+#else
     perMain();
+#endif
     DEBUG_TIMER_STOP(debugTimerPerMain);
     // TODO remove completely massstorage from sky9x firmware
     uint32_t runtime = ((uint32_t)CoGetOSTime() - start);
