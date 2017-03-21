@@ -197,7 +197,7 @@ void menuModelLimitsOne(event_t event)
 
 void onLimitsMenu(const char *result)
 {
-  s_currIdx = menuVerticalPosition;
+  s_currIdx = menuVerticalPosition - HEADER_LINE;
 
   if (result == STR_RESET) {
     LimitData *ld = limitAddress(s_currIdx);
