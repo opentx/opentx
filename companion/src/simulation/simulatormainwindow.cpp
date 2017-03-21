@@ -60,13 +60,9 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
   m_showMenubar(true)
 {
   if (m_simulatorId.isEmpty()) {
-    m_simulator = getCurrentSimulator();
-  } 
-  else {
-    SimulatorFactory * factory = getSimulatorFactory(m_simulatorId);
-    if (factory)
-      m_simulator = factory->create();
+    m_simulatorId = SimulatorLoader::findSimulatorByFirmwareName(getCurrentFirmware()->getId());
   }
+  m_simulator = SimulatorLoader::loadSimulator(m_simulatorId);
   if (!m_simulator) {
     m_exitStatusMsg = tr("ERROR: Failed to create simulator interface, possibly missing or bad library.");
     m_exitStatusCode = -1;
@@ -160,7 +156,8 @@ SimulatorMainWindow::~SimulatorMainWindow()
 
   if (m_simulator)
     delete m_simulator;
- 
+
+  SimulatorLoader::unloadSimulator(m_simulatorId);
 }
 
 void SimulatorMainWindow::closeEvent(QCloseEvent *)

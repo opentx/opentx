@@ -21,6 +21,7 @@
 #ifndef _EEPROMINTERFACE_H_
 #define _EEPROMINTERFACE_H_
 
+#include "macros.h"
 #include "radiodata.h"
 #include "../../radio/src/definitions.h"
 #include "simulatorinterface.h"
@@ -195,14 +196,8 @@ inline int applyStickMode(int stick, unsigned int mode)
     return stick;
   }
 
-  const unsigned int stickModes[]= {
-      1, 2, 3, 4,
-      1, 3, 2, 4,
-      4, 2, 3, 1,
-      4, 3, 2, 1 };
-
   if (stick >= 1 && stick <= 4)
-    return stickModes[(mode-1)*4 + stick - 1];
+    return modn12x3[mode-1][stick-1];
   else
     return stick;
 }
@@ -358,8 +353,6 @@ inline Firmware * getCurrentFirmware()
   return current_firmware_variant;
 }
 
-SimulatorInterface * getCurrentSimulator();
-
 inline EEPROMInterface * getCurrentEEpromInterface()
 {
   return getCurrentFirmware()->getEEpromInterface();
@@ -375,7 +368,7 @@ inline int divRoundClosest(const int n, const int d)
   return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
-#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")
+#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < DIM(T) ? T[(unsigned int)index] : "???")
 
 extern QList<EEPROMInterface *> eepromInterfaces;
 

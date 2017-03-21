@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
   registerStorageFactories();
   registerOpenTxFirmwares();
-  registerSimulators();
+  SimulatorLoader::registerSimulators();
 
   if (g.profile[g.id()].fwType().isEmpty()){
     g.profile[g.id()].fwType(default_firmware_variant->getId());
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
   delete splash;
   delete mainWin;
 
-  unregisterSimulators();
+  SimulatorLoader::unregisterSimulators();
   unregisterOpenTxFirmwares();
   unregisterStorageFactories();
 

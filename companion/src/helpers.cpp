@@ -808,15 +808,13 @@ CompanionIcon::CompanionIcon(const QString &baseimage)
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
 {
-  QString fwId = getCurrentFirmware()->getId();
-  SimulatorFactory * factory = getSimulatorFactory(fwId);
-  if (!factory) {
+  QString fwId = SimulatorLoader::findSimulatorByFirmwareName(getCurrentFirmware()->getId());
+  if (fwId.isEmpty()) {
     QMessageBox::warning(NULL,
                          QObject::tr("Warning"),
                          QObject::tr("Simulator for this firmware is not yet available"));
     return;
   }
-  delete factory;
 
   RadioData * simuData = new RadioData(radioData);
   unsigned int flags = 0;

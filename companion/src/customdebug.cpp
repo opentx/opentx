@@ -22,15 +22,19 @@
 
 Q_LOGGING_CATEGORY(eepromImport, "eeprom.import")
 
+Q_LOGGING_CATEGORY(simulatorInterfaceLoader, "simulator.interface.loader")
+
 void CustomDebug::setFilterRules()
 {
   QString rules;
   rules.append("eeprom.import=");
 #if defined(DEBUG_STORAGE_IMPORT)
-  rules.append("true");
+  rules.append("true\n");
 #else
-  rules.append("false");
+  rules.append("false\n");
 #endif
+
+  rules.append("simulator.interface.*=true\n");
 
   QLoggingCategory::setFilterRules(rules);
 }

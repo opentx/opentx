@@ -66,18 +66,9 @@ void sharedHelpText(QTextStream &stream)
   }
   // list all available radios
   stream << endl << QObject::tr("Available radios:") << endl;
-  foreach(QString name, registered_simulators.keys()) {
+  foreach(QString name, SimulatorLoader::getAvailableSimulators()) {
     stream << "\t" << name << endl;
   }
-}
-
-QString findFirmwareId(int profileId)
-{
-  SimulatorFactory * sf = getSimulatorFactory(g.profile[profileId].fwType());
-  if (sf)
-    return sf->name();
-  else
-    return QString();
 }
 
 int main(int argc, char *argv[])
@@ -129,9 +120,9 @@ int main(int argc, char *argv[])
 
   registerStorageFactories();
   registerOpenTxFirmwares();
-  registerSimulators();
+  SimulatorLoader::registerSimulators();
 
-  if (!registered_simulators.size()) {
+  if (!SimulatorLoader::getAvailableSimulators().size()) {
     showMessage(QObject::tr("ERROR: No simulator libraries available."), QMessageBox::Critical);
     return finish(3);
   }
@@ -144,20 +135,19 @@ int main(int argc, char *argv[])
   cliOptions.alias("help", "h");
   cliOptions.parse(QCoreApplication::arguments());
   if (cliOptions.count("help") || cliOptions.showUnrecognizedWarning()) {
-    QString msg;
-    QTextStream stream(&msg);
+    QTextStream stream(&resultMsg);
     stream << QObject::tr("Usage: simulator [OPTION]... [EEPROM.BIN FILE OR DATA FOLDER] ") << endl << endl;
     stream << QObject::tr("Options:") << endl;
     cliOptions.showUsage(false, stream);
     sharedHelpText(stream);
     // display
-    showMessage(msg, QMessageBox::Information);
+    showMessage(resultMsg, QMessageBox::Information);
     return finish(1);
   }
 
   // TODO : defaults should be set in Profile::init()
   if (simOptions.firmwareId.isEmpty())
-    simOptions.firmwareId = findFirmwareId(profileId);
+    simOptions.firmwareId = SimulatorLoader::findSimulatorByFirmwareName(g.profile[profileId].fwType());
   if (simOptions.dataFolder.isEmpty())
     simOptions.dataFolder = g.eepromDir();
   if (simOptions.sdPath.isEmpty())
@@ -211,17 +201,16 @@ int main(int argc, char *argv[])
   qDebug() << "profileId=" << profileId << simOptions;
 
   if (profileId < 0 || simOptions.firmwareId.isEmpty() || (simOptions.dataFile.isEmpty() && simOptions.dataFolder.isEmpty())) {
-    showMessage(QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\n  Profile ID: [%1]; Radio ID: [%2];\nData File: [%3]")
-                .arg(profileId).arg(simOptions.firmwareId, simOptions.dataFile), QMessageBox::Critical);
+    resultMsg = QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\n  Profile ID: [%1]; Radio ID: [%2];\nData File: [%3]");
+    showMessage(resultMsg.arg(profileId).arg(simOptions.firmwareId, simOptions.dataFile), QMessageBox::Critical);
     return finish(1);
   }
-  if (!g.getActiveProfiles().contains(profileId) || !registered_simulators.keys().contains(simOptions.firmwareId)) {
-    QString msg;
-    QTextStream stream(&msg);
+  if (!g.getActiveProfiles().contains(profileId) || !SimulatorLoader::getAvailableSimulators().contains(simOptions.firmwareId)) {
+    QTextStream stream(&resultMsg);
     stream << QObject::tr("ERROR: Radio profile or simulator firmware not found.\nProfile ID: [%1]; Radio ID: [%2]")
                     .arg(profileId).arg(simOptions.firmwareId);
     sharedHelpText(stream);
-    showMessage(msg, QMessageBox::Critical);
+    showMessage(resultMsg, QMessageBox::Critical);
     return finish(2);
   }
 
@@ -256,7 +245,7 @@ int main(int argc, char *argv[])
 
 int finish(int exitCode)
 {
-  unregisterSimulators();
+  SimulatorLoader::unregisterSimulators();
   unregisterOpenTxFirmwares();
   unregisterStorageFactories();
 
