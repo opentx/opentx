@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>473</width>
-    <height>335</height>
+    <width>554</width>
+    <height>351</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -90,51 +90,6 @@
           <property name="channel" stdset="0">
            <number>1</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="0" column="0">
@@ -155,51 +110,6 @@
           <property name="channel" stdset="0">
            <number>2</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="1" column="1">
@@ -241,51 +151,6 @@
           <property name="channel" stdset="0">
            <number>0</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="3" column="0">
@@ -348,51 +213,6 @@
           <property name="channel" stdset="0">
            <number>4</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="3" column="1">
@@ -434,51 +254,6 @@
           <property name="channel" stdset="0">
            <number>3</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="5" column="1">
@@ -520,51 +295,6 @@
           <property name="channel" stdset="0">
            <number>5</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="4" column="0">
@@ -620,51 +350,6 @@
           <property name="channel" stdset="0">
            <number>6</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="7" column="0">
@@ -713,51 +398,6 @@
           <property name="channel" stdset="0">
            <number>7</number>
           </property>
-          <item>
-           <property name="text">
-            <string>Not  Assigned</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Right Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Vertical</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Left Horizontal</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P1</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P2</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>P3/LS</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>RS</string>
-           </property>
-          </item>
          </widget>
         </item>
         <item row="0" column="1">
