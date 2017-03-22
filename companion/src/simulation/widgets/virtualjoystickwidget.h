@@ -27,7 +27,7 @@
 #include <QGridLayout>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QPushButton>
+#include <QToolButton>
 #include <QLabel>
 
 class Node;
@@ -77,7 +77,7 @@ class VirtualJoystickWidget : public QWidget
   protected:
     void setSize(const QSize & size, const QSize &);
     RadioTrimWidget * createTrimWidget(QChar type);
-    QPushButton * createButtonWidget(int type);
+    QToolButton * createButtonWidget(int type);
     QLayout * createNodeValueLayout(QChar type, QLabel *& valLabel);
     int getTrimSliderType(QChar type);
     int getTrimButtonType(QChar type, int pos);
@@ -91,8 +91,8 @@ class VirtualJoystickWidget : public QWidget
     Node * node;
     RadioTrimWidget * hTrimWidget;
     RadioTrimWidget * vTrimWidget;
-    QPushButton * btnHoldX, * btnHoldY;
-    QPushButton * btnFixX, * btnFixY;
+    QToolButton * btnHoldX, * btnHoldY;
+    QToolButton * btnFixX, * btnFixY;
     QLabel * nodeLabelX, * nodeLabelY;
     QSize extraSize;
     float ar;  // aspect ratio

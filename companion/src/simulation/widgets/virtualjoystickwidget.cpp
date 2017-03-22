@@ -18,8 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#define GBALL_SIZE  20
-#define RESX        1024
+#define GBALL_SIZE       25
+#define GBALL_SIZE_MN    20
+#define GBALL_SIZE_MX    35
 
 #include "virtualjoystickwidget.h"
 
@@ -28,6 +29,7 @@
 #include "modeledit/node.h"
 #include "helpers.h"
 #include "radiotrimwidget.h"
+#include "simulator.h"
 
 VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool showTrims, bool showBtns, bool showValues, QSize size) :
   QWidget(parent),
@@ -131,8 +133,8 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   layout->addItem(new QSpacerItem(0, 0), 1, 4, 2, 1);  // r1-2 c4: right h spacer
   layout->addItem(new QSpacerItem(0, 0), 3, 0, 1, 5);  // r4 c0-4: bot v spacer
 
-  connect(node, SIGNAL(xChanged()), this, SLOT(updateNodeValueLabels()));
-  connect(node, SIGNAL(yChanged()), this, SLOT(updateNodeValueLabels()));
+  connect(node, &Node::xChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
+  connect(node, &Node::yChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
 
   setSize(prefSize, frameSize());
 }
@@ -267,13 +269,15 @@ void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
   layout->setColumnStretch(2, newGvSz);
   layout->setRowStretch(1, newGvSz);
 
-  //prefSize = QSize(newGvSz + extraSize.width(), newGvSz + extraSize.height());
   gv->resize(newGvSz, newGvSz);
   gv->updateGeometry();
 
+  int ballSize = (newGvSz * GBALL_SIZE * 0.005f);
+  ballSize = qMin(GBALL_SIZE_MX, qMax(ballSize, GBALL_SIZE_MN));
+
   QRectF qr = (QRectF)gv->contentsRect();
-  qreal w  = qr.width()  - GBALL_SIZE;
-  qreal h  = qr.height() - GBALL_SIZE;
+  qreal w  = qr.width()  - ballSize;
+  qreal h  = qr.height() - ballSize;
   qreal cx = qr.width() / 2;
   qreal cy = qr.height() / 2;
   qreal nodeX = node->getX();
@@ -281,6 +285,7 @@ void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
 
   scene->setSceneRect(-cx,-cy,w,h);
 
+  node->setBallSize(ballSize);
   node->setX(nodeX);
   node->setY(nodeY);
 
@@ -289,7 +294,6 @@ void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
 
 RadioTrimWidget * VirtualJoystickWidget::createTrimWidget(QChar type)
 {
-
   RadioTrimWidget * trimWidget = new RadioTrimWidget(type == 'H' ? Qt::Horizontal : Qt::Vertical);
   trimWidget->setIndices(getTrimSliderType(type), getTrimButtonType(type, 0), getTrimButtonType(type, 1));
 
@@ -300,47 +304,45 @@ RadioTrimWidget * VirtualJoystickWidget::createTrimWidget(QChar type)
   return trimWidget;
 }
 
-QPushButton * VirtualJoystickWidget::createButtonWidget(int type)
+QToolButton * VirtualJoystickWidget::createButtonWidget(int type)
 {
-  QString btnRole, btnLabel;
+  QString btnLabel, tooltip;
+  QIcon icon;
   switch (type) {
     case HOLD_Y:
-      btnLabel = tr("Hold Y");
+      btnLabel = tr("Hld Y");
+      tooltip = tr("Hold Vertical stick position.");
+      icon = Simulator::SimulatorIcon("hold_y");
       break;
     case FIX_Y:
       btnLabel = tr("Fix Y");
+      tooltip = tr("Prevent Vertical movement of stick.");
+      icon = Simulator::SimulatorIcon("fixed_y");
       break;
     case FIX_X:
       btnLabel = tr("Fix X");
+      tooltip = tr("Prevent Horizontal movement of stick.");
+      icon = Simulator::SimulatorIcon("fixed_x");
       break;
     case HOLD_X:
-    default:
-      btnLabel = tr("Hold X");
+      btnLabel = tr("Hld X");
+      tooltip = tr("Hold Horizontal stick position.");
+      icon = Simulator::SimulatorIcon("hold_x");
       break;
+    default:
+      return NULL;
   }
-  QPushButton * btn = new QPushButton(this);
-  btn->setObjectName(QString("%1_%2").arg(btnLabel.replace(" ", "_")).arg(stickSide));
+  QToolButton * btn = new QToolButton(this);
   btn->setProperty("btnType", type);
+  btn->setIcon(icon);
+  btn->setIconSize(QSize(20, 20));
+  btn->setToolButtonStyle(Qt::ToolButtonIconOnly);
   btn->setText(btnLabel);
-  QFont font;
-  font.setPointSize(8);
-  btn->setFont(font);
-  btn->setStyleSheet(QLatin1String( \
-                       "QPushButton {"
-                       "     background-color: #EEEEEE;"
-                       "     border-style: outset;"
-                       "     border-width: 1px;"
-                       "     border-radius: 4px;"
-                       "     border-color: black;"
-                       "     padding: 2px;"
-                       "}"
-                       "QPushButton:checked {\n"
-                       "     background-color: #4CC417;\n"
-                       "     border-style: inset;\n"
-                       "}" ));
+  btn->setToolTip(tooltip);
   btn->setCheckable(true);
+  btn->setAutoRaise(true);
 
-  connect(btn, SIGNAL(toggled(bool)), SLOT(onButtonChange(bool)));
+  connect(btn, &QToolButton::toggled, this, &VirtualJoystickWidget::onButtonChange);
 
   return btn;
 }

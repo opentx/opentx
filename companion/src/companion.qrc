@@ -17,6 +17,14 @@
     <file>images/simulator/icons/svg/console.svg</file>
     <file>images/simulator/icons/svg/eraser.svg</file>
     <file>images/simulator/icons/svg/eraser-active.svg</file>
+    <file>images/simulator/icons/svg/fixed_x.svg</file>
+    <file>images/simulator/icons/svg/fixed_x-on.svg</file>
+    <file>images/simulator/icons/svg/fixed_y.svg</file>
+    <file>images/simulator/icons/svg/fixed_y-on.svg</file>
+    <file>images/simulator/icons/svg/hold_x.svg</file>
+    <file>images/simulator/icons/svg/hold_x-on.svg</file>
+    <file>images/simulator/icons/svg/hold_y.svg</file>
+    <file>images/simulator/icons/svg/hold_y-on.svg</file>
     <file>images/simulator/icons/svg/info.svg</file>
     <file>images/simulator/icons/svg/info-active.svg</file>
     <file>images/simulator/icons/svg/joystick_settings.svg</file>
