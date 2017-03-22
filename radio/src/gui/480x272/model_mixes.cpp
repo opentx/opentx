@@ -556,7 +556,7 @@ bool menuModelMixAll(event_t event)
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw);
 
           if (mixCnt == 0 && md->mltpx == 1)
-            lcdDrawNumber(MIX_LINE_WEIGHT_POS, y, 0, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0, "!", "%");
+            lcdDrawText(MIX_LINE_WEIGHT_POS, y, "MULT!", RIGHT | attr | (isMixActive(i) ? BOLD : 0));
           else
             gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), event);
 
