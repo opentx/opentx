@@ -30,6 +30,7 @@
 #include <QToolButton>
 #include <QLabel>
 
+class CustomGraphicsScene;
 class Node;
 class RadioTrimWidget;
 
@@ -73,6 +74,7 @@ class VirtualJoystickWidget : public QWidget
   protected slots:
     void onButtonChange(bool checked);
     void updateNodeValueLabels();
+    void onGsMouseEvent(QGraphicsSceneMouseEvent * event);
 
   protected:
     void setSize(const QSize & size, const QSize &);
@@ -87,7 +89,7 @@ class VirtualJoystickWidget : public QWidget
     QSize prefSize;
     QGridLayout * layout;
     QGraphicsView * gv;
-    QGraphicsScene * scene;
+    CustomGraphicsScene * scene;
     Node * node;
     RadioTrimWidget * hTrimWidget;
     RadioTrimWidget * vTrimWidget;
@@ -96,7 +98,29 @@ class VirtualJoystickWidget : public QWidget
     QLabel * nodeLabelX, * nodeLabelY;
     QSize extraSize;
     float ar;  // aspect ratio
+    bool m_stickPressed;
+};
 
+
+/*
+ * Custom GraphicsScene for mouse handling
+*/
+class CustomGraphicsScene : public QGraphicsScene
+{
+  Q_OBJECT
+
+  public:
+    CustomGraphicsScene(QObject *parent = Q_NULLPTR) :
+      QGraphicsScene(parent)
+    {}
+
+  signals:
+    void mouseEvent(QGraphicsSceneMouseEvent * event);
+
+  protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 };
 
 #endif // VIRTUALJOYSTICKWIDGET_H

@@ -42,7 +42,8 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   btnFixX(NULL),
   btnFixY(NULL),
   nodeLabelX(NULL),
-  nodeLabelY(NULL)
+  nodeLabelY(NULL),
+  m_stickPressed(false)
 {
   ar = (float)size.width() / size.height();
   extraSize = QSize(0, 0);
@@ -60,8 +61,9 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   gv->setMinimumSize(size);
   gv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   gv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  gv->setRenderHints(QPainter::Antialiasing);
 
-  scene = new QGraphicsScene(gv);
+  scene = new CustomGraphicsScene(gv);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   gv->setScene(scene);
 
@@ -135,6 +137,8 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
 
   connect(node, &Node::xChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
   connect(node, &Node::yChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
+
+  connect(scene, &CustomGraphicsScene::mouseEvent, this, &VirtualJoystickWidget::onGsMouseEvent);
 
   setSize(prefSize, frameSize());
 }
@@ -455,4 +459,58 @@ void VirtualJoystickWidget::updateNodeValueLabels()
     nodeLabelX->setText(QString("%1").arg((qreal)node->getX() *  100 + getTrimValue(0) / 5, 2, 'f', 0));
   if (nodeLabelY)
     nodeLabelY->setText(QString("%1").arg((qreal)node->getY() * -100 + getTrimValue(1) / 5, 2, 'f', 0));
+}
+
+void VirtualJoystickWidget::onGsMouseEvent(QGraphicsSceneMouseEvent * event)
+{
+  if (!node)
+    return;
+
+  //qDebug() << event->type() << event->scenePos() << event->buttons() << event->isAccepted() << m_stickPressed;
+  if (event->type() == QEvent::GraphicsSceneMouseRelease && m_stickPressed) {
+    node->setPressed(false);
+    m_stickPressed = false;
+    return;
+  }
+
+  if (!(event->buttons() & Qt::LeftButton))
+    return;
+
+  if (event->type() == QEvent::GraphicsSceneMousePress) {
+    node->setPressed(true);
+    m_stickPressed = true;
+  }
+  else if (!m_stickPressed || event->type() != QEvent::GraphicsSceneMouseMove) {
+    return;
+  }
+  node->setPos(event->scenePos());
+}
+
+
+/*
+ *  CustomGraphicsScene
+*/
+
+void CustomGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+  QGraphicsScene::mousePressEvent(event);
+  if (!event->isAccepted()) {
+    event->accept();
+    emit mouseEvent(event);
+  }
+}
+
+void CustomGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+  QGraphicsScene::mouseReleaseEvent(event);
+  emit mouseEvent(event);
+}
+
+void CustomGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+  QGraphicsScene::mouseMoveEvent(event);
+  if (!event->isAccepted() && (event->buttons() & Qt::LeftButton)) {
+    event->accept();
+    emit mouseEvent(event);
+  }
 }
