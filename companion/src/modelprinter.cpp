@@ -430,7 +430,7 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   str += "&nbsp;" + source;
 
   if (mix.mltpx == MLTPX_MUL && !showMultiplex)
-    str += " " + tr("MULT!").toHtmlEscaped();
+    str += " " + QString("MULT!").toHtmlEscaped();
   else
     str += " " + tr("Weight(%1)").arg(getGVarString(mix.weight, true)).toHtmlEscaped();
 
