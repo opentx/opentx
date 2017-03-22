@@ -137,8 +137,6 @@ class SimulatorWidget : public QWidget
 
 #ifdef JOYSTICKS
     Joystick *joystick;
-    int jscal[8][4];
-    int jsmap[8];
 #endif
 
   private slots:
