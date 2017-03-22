@@ -100,6 +100,7 @@ use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 include_directories(
   ${CMAKE_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}
   ${COMPANION_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/shared
   ${SIMU_SRC_DIRECTORY}
@@ -108,6 +109,11 @@ include_directories(
   ${COMPANION_SRC_DIRECTORY}/thirdparty/miniz
   ${COMPANION_SRC_DIRECTORY}/storage
 )
+
+configure_file(${COMPANION_SRC_DIRECTORY}/version.h.in ${CMAKE_BINARY_DIR}/version.h @ONLY)
+configure_file(${COMPANION_SRC_DIRECTORY}/translations.qrc.in ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc @ONLY)
+configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
+configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
 
 ############# Supporting libraries ###############
 
@@ -144,11 +150,25 @@ set(common_MOC_HDRS
   modeledit/node.h
   )
 
-qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
+set(common_RESOURCES
+  companion.qrc
+  ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
+  )
 
-add_library(common ${common_SRCS})
+set(LANGUAGES pl de fr es it sv cs fi zh)
+foreach(language ${LANGUAGES})
+  list(APPEND common_TS translations/companion_${language}.ts)
+endforeach(language)
+
+qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
+qt5_add_translation(common_QM ${common_TS})
+qt5_add_resources(common_RCC ${common_RESOURCES})
+add_custom_target(gen_qrc DEPENDS ${common_RCC} ${common_QM})
+
+add_library(common ${common_SRCS} ${common_RCC})
 qt5_use_modules(common Core Xml Widgets)
-target_link_libraries(common simulation)
+target_link_libraries(common PRIVATE simulation)
+add_dependencies(common gen_qrc)
 
 ############# Companion ###############
 
@@ -238,39 +258,15 @@ set(companion_UIS
   radionotfound.ui
   )
 
-set(companion_RESOURCES
-  companion.qrc
-  ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
-  )
-
-configure_file(${COMPANION_SRC_DIRECTORY}/version.h.in ${CMAKE_BINARY_DIR}/version.h @ONLY)
-configure_file(${COMPANION_SRC_DIRECTORY}/translations.qrc.in ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc @ONLY)
-configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
-configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
-
 if(WIN32)
   list(APPEND companion_SRCS icon.rc)
 endif()
 
-include_directories(${CMAKE_BINARY_DIR})
-include_directories(${CMAKE_SOURCE_DIR})
-
-set(LANGUAGES pl de fr es it sv cs fi zh)
-foreach(language ${LANGUAGES})
-  list(APPEND companion_TS translations/companion_${language}.ts)
-endforeach(language)
-
 qt5_wrap_ui(companion_SRCS ${companion_UIS})
 qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
-qt5_add_translation(companion_QM ${companion_TS})
-qt5_add_resources(companion_RCC ${companion_RESOURCES})
-add_custom_target(gen_qrc DEPENDS ${companion_RCC} ${companion_QM})
 
-add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC})
-
-add_dependencies(${COMPANION_NAME} gen_qrc)
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS})
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
-
 target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 PrintTargetReport("${COMPANION_NAME}")
@@ -283,9 +279,7 @@ if(WIN32)
   list(APPEND simu_SRCS icon.rc)
 endif()
 
-add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
-add_dependencies(${SIMULATOR_NAME} gen_qrc)
-
+add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS})
 target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Translations ####################
@@ -295,7 +289,7 @@ if(LUPDATE_FOUND)
   message(STATUS "Qt lupdate: " ${LUPDATE_EXECUTABLE})
   add_custom_target(translations
     WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
-    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
+    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${common_TS}
     )
 else()
   message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")

@@ -51,17 +51,17 @@ class MyProxyStyle : public QProxyStyle
 
 int main(int argc, char *argv[])
 {
-  Q_INIT_RESOURCE(companion);
-
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
-
   QApplication app(argc, argv);
   app.setApplicationName(APP_COMPANION);
   app.setOrganizationName(COMPANY);
   app.setOrganizationDomain(COMPANY_DOMAIN);
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+  app.setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
+  Q_INIT_RESOURCE(companion);
+  Q_INIT_RESOURCE(translations);
 
   if (AppDebugMessageHandler::instance())
     AppDebugMessageHandler::instance()->installAppMessageHandler();
@@ -84,7 +84,12 @@ int main(int argc, char *argv[])
   QTranslator companionTranslator;
   companionTranslator.load(":/companion_" + g.locale());
   QTranslator qtTranslator;
-  qtTranslator.load((QString)"qt_" + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 3, 0))
+  QString qtfile = "qtbase_";
+#else
+  QString qtfile = "qt_";
+#endif
+  qtTranslator.load(qtfile + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
   app.installTranslator(&companionTranslator);
   app.installTranslator(&qtTranslator);
 
