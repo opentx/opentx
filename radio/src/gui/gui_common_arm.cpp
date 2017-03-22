@@ -625,7 +625,7 @@ const pm_char STR_SUBTYPE_SLT[] PROGMEM =        "\005""SLT\0 ""Vista";
 
 const pm_char STR_SUBTYPE_CX10[] PROGMEM =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041""Q242\0  ";
 
-const pm_char STR_SUBTYPE_CG023[] PROGMEM =      "\005""CG023""YD829""H3 3d";
+const pm_char STR_SUBTYPE_CG023[] PROGMEM =      "\005""CG023""YD829""H8 3d";
 
 const pm_char STR_SUBTYPE_KN[] PROGMEM =         "\006""WLtoys""FeiLun";
 

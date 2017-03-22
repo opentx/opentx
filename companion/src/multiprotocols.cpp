@@ -36,7 +36,7 @@ static const QStringList STR_SUBTYPE_YD717   {"YD717", "Skywalker", "Syma X2", "
 static const QStringList STR_SUBTYPE_SYMAX   {"Standard", "Syma X5C"};
 static const QStringList STR_SUBTYPE_SLT     {"SLT", "Vista"};
 static const QStringList STR_SUBTYPE_CX10    {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
-static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H3 3D"};
+static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H8 3D"};
 static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D"};
 static const QStringList STR_SUBTYPE_KN      {"WLtoys", "FeiLun"};
 static const QStringList STR_SUBTYPE_MT99    {"MT99", "H7", "YZ", "LS", "FY805"};
