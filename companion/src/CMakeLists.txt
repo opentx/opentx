@@ -162,10 +162,10 @@ endforeach(language)
 
 qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
 qt5_add_translation(common_QM ${common_TS})
-qt5_add_resources(companion_RCC ${common_RESOURCES})  # for some reason *must* be "companion_RCC" otherwise get link error.
-add_custom_target(gen_qrc DEPENDS ${companion_RCC} ${common_QM})
+qt5_add_resources(common_RCC ${common_RESOURCES})
+add_custom_target(gen_qrc DEPENDS ${common_RCC} ${common_QM})
 
-add_library(common ${common_SRCS} ${companion_RCC})
+add_library(common ${common_SRCS} ${common_RCC})
 qt5_use_modules(common Core Xml Widgets)
 target_link_libraries(common PRIVATE simulation)
 add_dependencies(common gen_qrc)
