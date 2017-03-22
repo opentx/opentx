@@ -207,6 +207,7 @@ void onLimitsMenu(const char *result)
     ld->ppmCenter = 0;
     ld->revert = false;
     ld->curve = 0;
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_COPY_STICKS_TO_OFS) {
     copySticksToOffset(s_currIdx);
@@ -229,13 +230,6 @@ void menuModelLimits(event_t event)
   }
 
   SIMPLE_MENU(STR_MENULIMITS, menuTabModel, MENU_MODEL_OUTPUTS, HEADER_LINE+MAX_OUTPUT_CHANNELS+1);
-
-  if (warningResult) {
-    warningResult = 0;
-    LimitData * ld = limitAddress(sub);
-    ld->revert = !ld->revert;
-    storageDirty(EE_MODEL);
-  }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
