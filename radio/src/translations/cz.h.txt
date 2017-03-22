@@ -882,7 +882,7 @@
 #define TR_DELETE_MODEL        "Smaž model"
 #define TR_RESTORE_MODEL       "Obnov model z SD"
 #define TR_DELETE_ERROR        "Nelze odstranit"
-#define TR_CAT_NOT_EMPTY       "Categorie není prázdná"
+#define TR_CAT_NOT_EMPTY       "Kategorie není prázdná"
 #define TR_SDCARD_ERROR        "Chyba SD karty"
 #define TR_NO_SDCARD           "Není SD karta"
 #define TR_SDCARD_FULL         "Plná SD karta"
