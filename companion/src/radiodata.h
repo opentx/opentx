@@ -69,20 +69,6 @@ enum FailsafeModes {
   FAILSAFE_LAST = FAILSAFE_RECEIVER
 };
 
-#define TRIM_LH_L  0
-#define TRIM_LH_R  1
-#define TRIM_LV_DN 2
-#define TRIM_LV_UP 3
-#define TRIM_RV_DN 4
-#define TRIM_RV_UP 5
-#define TRIM_RH_L  6
-#define TRIM_RH_R  7
-#define TRIM_T5_DN 8
-#define TRIM_T5_UP 9
-#define TRIM_T6_DN 10
-#define TRIM_T6_UP 11
-#define TRIM_NONE  12
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 
@@ -1010,9 +996,9 @@ class ModelData {
     ModelData();
     ModelData(const ModelData & src);
     ModelData & operator = (const ModelData & src);
-    
+
     void convert(Board::Type before, Board::Type after);
-    
+
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
 
@@ -1248,7 +1234,7 @@ class RadioData {
     GeneralSettings generalSettings;
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
-    
+
     void convert(Board::Type before, Board::Type after);
 
     void setCurrentModel(unsigned int index);

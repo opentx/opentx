@@ -18,27 +18,32 @@
  * GNU General Public License for more details.
  */
 
-#define GBALL_SIZE  20
-#define RESX        1024
+#define GBALL_SIZE       25
+#define GBALL_SIZE_MN    20
+#define GBALL_SIZE_MX    35
 
 #include "virtualjoystickwidget.h"
+
+#include "boards.h"
 #include "constants.h"
-#include "sliderwidget.h"
 #include "modeledit/node.h"
 #include "helpers.h"
+#include "radiotrimwidget.h"
+#include "simulator.h"
 
 VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool showTrims, bool showBtns, bool showValues, QSize size) :
   QWidget(parent),
   stickSide(side),
   prefSize(size),
-  hTrimSlider(NULL),
-  vTrimSlider(NULL),
+  hTrimWidget(NULL),
+  vTrimWidget(NULL),
   btnHoldX(NULL),
   btnHoldY(NULL),
   btnFixX(NULL),
   btnFixY(NULL),
   nodeLabelX(NULL),
-  nodeLabelY(NULL)
+  nodeLabelY(NULL),
+  m_stickPressed(false)
 {
   ar = (float)size.width() / size.height();
   extraSize = QSize(0, 0);
@@ -54,12 +59,11 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   gv = new QGraphicsView(this);
   gv->setSizePolicy(sizePolicy);
   gv->setMinimumSize(size);
-//  gv->setMaximumSize(size + size * 3);
-//  gv->setFixedSize(prefSize);
   gv->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   gv->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  gv->setRenderHints(QPainter::Antialiasing);
 
-  scene = new QGraphicsScene(gv);
+  scene = new CustomGraphicsScene(gv);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
   gv->setScene(scene);
 
@@ -83,14 +87,12 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   }
 
   if (showTrims) {
-    QWidget * hTrimWidget = createTrimWidget('H');
-    QWidget * vTrimWidget = createTrimWidget('V');
+    hTrimWidget = createTrimWidget('H');
+    vTrimWidget = createTrimWidget('V');
 
     layout->addWidget(vTrimWidget, 1, colvt, 1, 1);
     layout->addWidget(hTrimWidget, 2, 2, 1, 1);
 
-    hTrimSlider = hTrimWidget->findChild<SliderWidget *>();
-    vTrimSlider = vTrimWidget->findChild<SliderWidget *>();
     extraSize += QSize(vTrimWidget->sizeHint().width(), hTrimWidget->sizeHint().height());
   }
   else {
@@ -131,10 +133,12 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   layout->addItem(new QSpacerItem(0, 0), 1, 0, 2, 1);  // r1-2 c0: left h spacer
   layout->addWidget(gv, 1, 2, 1, 1);                   // r1 c2: stick widget
   layout->addItem(new QSpacerItem(0, 0), 1, 4, 2, 1);  // r1-2 c4: right h spacer
-  layout->addItem(new QSpacerItem(0, 0), 3, 0, 1, 5);  // r3 c0-4: bot v spacer
+  layout->addItem(new QSpacerItem(0, 0), 3, 0, 1, 5);  // r4 c0-4: bot v spacer
 
-  connect(node, SIGNAL(xChanged()), this, SLOT(updateNodeValueLabels()));
-  connect(node, SIGNAL(yChanged()), this, SLOT(updateNodeValueLabels()));
+  connect(node, &Node::xChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
+  connect(node, &Node::yChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
+
+  connect(scene, &CustomGraphicsScene::mouseEvent, this, &VirtualJoystickWidget::onGsMouseEvent);
 
   setSize(prefSize, frameSize());
 }
@@ -176,25 +180,25 @@ QPointF VirtualJoystickWidget::getStickPos()
 
 void VirtualJoystickWidget::setTrimValue(int which, int value)
 {
-  SliderWidget * slider = getTrimSlider(which);
-  if (slider) {
-    slider->setValue(value);
+  RadioTrimWidget * trim = getTrimWidget(which);
+  if (trim) {
+    trim->setValue(value);
   }
 }
 
 void VirtualJoystickWidget::setTrimRange(int which, int min, int max)
 {
-  SliderWidget * slider = getTrimSlider(which);
-  if (slider) {
-    slider->setRange(min, max);
+  RadioTrimWidget * trim = getTrimWidget(which);
+  if (trim) {
+    trim->setTrimRange(min, max);
   }
 }
 
 int VirtualJoystickWidget::getTrimValue(int which)
 {
-  SliderWidget * slider = getTrimSlider(which);
-  if (slider) {
-    return slider->value();
+  RadioTrimWidget * trim = getTrimWidget(which);
+  if (trim) {
+    return trim->getValue();
   }
   return 0;
 }
@@ -269,13 +273,15 @@ void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
   layout->setColumnStretch(2, newGvSz);
   layout->setRowStretch(1, newGvSz);
 
-  //prefSize = QSize(newGvSz + extraSize.width(), newGvSz + extraSize.height());
   gv->resize(newGvSz, newGvSz);
   gv->updateGeometry();
 
+  int ballSize = (newGvSz * GBALL_SIZE * 0.005f);
+  ballSize = qMin(GBALL_SIZE_MX, qMax(ballSize, GBALL_SIZE_MN));
+
   QRectF qr = (QRectF)gv->contentsRect();
-  qreal w  = qr.width()  - GBALL_SIZE;
-  qreal h  = qr.height() - GBALL_SIZE;
+  qreal w  = qr.width()  - ballSize;
+  qreal h  = qr.height() - ballSize;
   qreal cx = qr.width() / 2;
   qreal cy = qr.height() / 2;
   qreal nodeX = node->getX();
@@ -283,120 +289,64 @@ void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
 
   scene->setSceneRect(-cx,-cy,w,h);
 
+  node->setBallSize(ballSize);
   node->setX(nodeX);
   node->setY(nodeY);
 
   //qDebug() << thisAspectRatio << size << newGvSz << spacerSz << extraSize << gv->geometry() << gv->contentsRect() << gv->frameRect() << getStickPos();
 }
 
-QWidget *VirtualJoystickWidget::createTrimWidget(QChar type)
+RadioTrimWidget * VirtualJoystickWidget::createTrimWidget(QChar type)
 {
-  QSizePolicy sp;
-  QString btnAlabel, btnBlabel;
+  RadioTrimWidget * trimWidget = new RadioTrimWidget(type == 'H' ? Qt::Horizontal : Qt::Vertical);
+  trimWidget->setIndices(getTrimSliderType(type), getTrimButtonType(type, 0), getTrimButtonType(type, 1));
 
-  QString btnAname = QString("%1TrimBtnA_%2").arg(type.toLower()).arg(stickSide);
-  QString btnBname = QString("%1TrimBtnB_%2").arg(type.toLower()).arg(stickSide);
-  QString sliderName = QString("%1TrimAdj_%2").arg(type.toLower()).arg(stickSide);
-
-  QWidget * trimWidget = new QWidget(this);
-  QBoxLayout * trimLayout = new QVBoxLayout(trimWidget);
-  SliderWidget * trimSlider = new SliderWidget(trimWidget);
-  QPushButton * trimBtnA = new QPushButton(trimWidget);
-  QPushButton * trimBtnB = new QPushButton(trimWidget);
-
-  if (type == 'H') {
-    sp = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    trimLayout->setDirection(QBoxLayout::LeftToRight);
-    trimSlider->setFixedHeight(23);
-    trimSlider->setOrientation(Qt::Horizontal);
-    trimBtnA->setText(ARROW_LEFT);
-    trimBtnB->setText(ARROW_RIGHT);
-  }
-  else {
-    sp = QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-    trimLayout->setDirection(QBoxLayout::TopToBottom);
-    trimSlider->setFixedWidth(23);
-    trimSlider->setOrientation(Qt::Vertical);
-    trimBtnA->setText(ARROW_UP);
-    trimBtnB->setText(ARROW_DOWN);
-  }
-
-  trimWidget->setSizePolicy(sp);
-
-  trimSlider->setObjectName(sliderName);
-  trimSlider->setProperty("trimType", getTrimSliderType(type));
-  trimSlider->setSizePolicy(sp);
-  trimSlider->setMinimum(-125);
-  trimSlider->setMaximum(125);
-
-  trimBtnA->setObjectName(btnAname);
-  trimBtnA->setProperty("btnType", getTrimButtonType(type, 0));
-  trimBtnA->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-  trimBtnA->setMaximumSize(QSize(23, 23));
-  trimBtnA->setAutoDefault(false);
-
-  trimBtnB->setObjectName(btnBname);
-  trimBtnB->setProperty("btnType", getTrimButtonType(type, 1));
-  trimBtnB->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-  trimBtnB->setMaximumSize(QSize(23, 23));
-  trimBtnB->setAutoDefault(false);
-
-  trimLayout->setSpacing(6);
-  trimLayout->setContentsMargins(8, 9, 8, 9);
-  trimLayout->addWidget(trimBtnA);
-  trimLayout->addWidget(trimSlider);
-  trimLayout->addWidget(trimBtnB);
-
-  connect(trimBtnA, SIGNAL(pressed()), SLOT(onTrimPressed()));
-  connect(trimBtnB, SIGNAL(pressed()), SLOT(onTrimPressed()));
-  connect(trimBtnA, SIGNAL(released()), SIGNAL(trimButtonReleased()));
-  connect(trimBtnB, SIGNAL(released()), SIGNAL(trimButtonReleased()));
-  connect(trimSlider, SIGNAL(valueChanged(int)), SLOT(onSliderChange(int)));
+  connect(trimWidget, &RadioTrimWidget::trimButtonPressed, this, &VirtualJoystickWidget::trimButtonPressed);
+  connect(trimWidget, &RadioTrimWidget::trimButtonReleased, this, &VirtualJoystickWidget::trimButtonReleased);
+  connect(trimWidget, &RadioTrimWidget::trimSliderMoved, this, &VirtualJoystickWidget::trimSliderMoved);
 
   return trimWidget;
 }
 
-QPushButton * VirtualJoystickWidget::createButtonWidget(int type)
+QToolButton * VirtualJoystickWidget::createButtonWidget(int type)
 {
-  QString btnRole, btnLabel;
+  QString btnLabel, tooltip;
+  QIcon icon;
   switch (type) {
     case HOLD_Y:
-      btnLabel = tr("Hold Y");
+      btnLabel = tr("Hld Y");
+      tooltip = tr("Hold Vertical stick position.");
+      icon = Simulator::SimulatorIcon("hold_y");
       break;
     case FIX_Y:
       btnLabel = tr("Fix Y");
+      tooltip = tr("Prevent Vertical movement of stick.");
+      icon = Simulator::SimulatorIcon("fixed_y");
       break;
     case FIX_X:
       btnLabel = tr("Fix X");
+      tooltip = tr("Prevent Horizontal movement of stick.");
+      icon = Simulator::SimulatorIcon("fixed_x");
       break;
     case HOLD_X:
-    default:
-      btnLabel = tr("Hold X");
+      btnLabel = tr("Hld X");
+      tooltip = tr("Hold Horizontal stick position.");
+      icon = Simulator::SimulatorIcon("hold_x");
       break;
+    default:
+      return NULL;
   }
-  QPushButton * btn = new QPushButton(this);
-  btn->setObjectName(QString("%1_%2").arg(btnLabel.replace(" ", "_")).arg(stickSide));
+  QToolButton * btn = new QToolButton(this);
   btn->setProperty("btnType", type);
+  btn->setIcon(icon);
+  btn->setIconSize(QSize(20, 20));
+  btn->setToolButtonStyle(Qt::ToolButtonIconOnly);
   btn->setText(btnLabel);
-  QFont font;
-  font.setPointSize(8);
-  btn->setFont(font);
-  btn->setStyleSheet(QLatin1String( \
-                       "QPushButton {"
-                       "     background-color: #EEEEEE;"
-                       "     border-style: outset;"
-                       "     border-width: 1px;"
-                       "     border-radius: 4px;"
-                       "     border-color: black;"
-                       "     padding: 2px;"
-                       "}"
-                       "QPushButton:checked {\n"
-                       "     background-color: #4CC417;\n"
-                       "     border-style: inset;\n"
-                       "}" ));
+  btn->setToolTip(tooltip);
   btn->setCheckable(true);
+  btn->setAutoRaise(true);
 
-  connect(btn, SIGNAL(toggled(bool)), SLOT(onButtonChange(bool)));
+  connect(btn, &QToolButton::toggled, this, &VirtualJoystickWidget::onButtonChange);
 
   return btn;
 }
@@ -423,76 +373,63 @@ QLayout *VirtualJoystickWidget::createNodeValueLayout(QChar type, QLabel *& valL
 
 int VirtualJoystickWidget::getTrimSliderType(QChar type)
 {
+  using namespace Board;
+
   if (stickSide == 'L') {
     if (type == 'H')
-      return TRIM_AXIS_L_X;
+      return TRIM_AXIS_LH;
     else
-      return TRIM_AXIS_L_Y;
+      return TRIM_AXIS_LV;
   }
   else {
     if (type == 'H')
-      return TRIM_AXIS_R_X;
+      return TRIM_AXIS_RH;
     else
-      return TRIM_AXIS_R_Y;
+      return TRIM_AXIS_RV;
   }
 }
 
 int VirtualJoystickWidget::getTrimButtonType(QChar type, int pos)
 {
+  using namespace Board;
+
   if (stickSide == 'L') {
     if (type == 'H') {
       if (pos == 0)
-        return TRIM_LH_L;
+        return TRIM_SW_LH_DEC;
       else
-        return TRIM_LH_R;
+        return TRIM_SW_LH_INC;
     }
     else {
       if (pos == 0)
-        return TRIM_LV_UP;
+        return TRIM_SW_LV_DEC;
       else
-        return TRIM_LV_DN;
+        return TRIM_SW_LV_INC;
     }
   }
   // right side
   else {
     if (type == 'H') {
       if (pos == 0)
-        return TRIM_RH_L;
+        return TRIM_SW_RH_DEC;
       else
-        return TRIM_RH_R;
+        return TRIM_SW_RH_INC;
     }
     else {
       if (pos == 0)
-        return TRIM_RV_UP;
+        return TRIM_SW_RV_DEC;
       else
-        return TRIM_RV_DN;
+        return TRIM_SW_RV_INC;
     }
   }
 }
 
-SliderWidget *VirtualJoystickWidget::getTrimSlider(int which)
+RadioTrimWidget * VirtualJoystickWidget::getTrimWidget(int which)
 {
-  if (which == TRIM_AXIS_L_X || which == TRIM_AXIS_R_X)
-    return hTrimSlider;
+  if (which == Board::TRIM_AXIS_LH || which == Board::TRIM_AXIS_RH)
+    return hTrimWidget;
   else
-    return vTrimSlider;
-}
-
-void VirtualJoystickWidget::onTrimPressed()
-{
-  if (!sender() || !sender()->property("btnType").isValid())
-    return;
-
-  emit trimButtonPressed(sender()->property("btnType").toInt());
-}
-
-void VirtualJoystickWidget::onSliderChange(int value)
-{
-  if (!sender() || !sender()->property("trimType").isValid())
-    return;
-
-  emit trimSliderMoved(sender()->property("trimType").toInt(), value);
-  updateNodeValueLabels();
+    return vTrimWidget;
 }
 
 void VirtualJoystickWidget::onButtonChange(bool checked)
@@ -522,4 +459,58 @@ void VirtualJoystickWidget::updateNodeValueLabels()
     nodeLabelX->setText(QString("%1").arg((qreal)node->getX() *  100 + getTrimValue(0) / 5, 2, 'f', 0));
   if (nodeLabelY)
     nodeLabelY->setText(QString("%1").arg((qreal)node->getY() * -100 + getTrimValue(1) / 5, 2, 'f', 0));
+}
+
+void VirtualJoystickWidget::onGsMouseEvent(QGraphicsSceneMouseEvent * event)
+{
+  if (!node)
+    return;
+
+  //qDebug() << event->type() << event->scenePos() << event->buttons() << event->isAccepted() << m_stickPressed;
+  if (event->type() == QEvent::GraphicsSceneMouseRelease && m_stickPressed) {
+    node->setPressed(false);
+    m_stickPressed = false;
+    return;
+  }
+
+  if (!(event->buttons() & Qt::LeftButton))
+    return;
+
+  if (event->type() == QEvent::GraphicsSceneMousePress) {
+    node->setPressed(true);
+    m_stickPressed = true;
+  }
+  else if (!m_stickPressed || event->type() != QEvent::GraphicsSceneMouseMove) {
+    return;
+  }
+  node->setPos(event->scenePos());
+}
+
+
+/*
+ *  CustomGraphicsScene
+*/
+
+void CustomGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent * event)
+{
+  QGraphicsScene::mousePressEvent(event);
+  if (!event->isAccepted()) {
+    event->accept();
+    emit mouseEvent(event);
+  }
+}
+
+void CustomGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+  QGraphicsScene::mouseReleaseEvent(event);
+  emit mouseEvent(event);
+}
+
+void CustomGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+{
+  QGraphicsScene::mouseMoveEvent(event);
+  if (!event->isAccepted() && (event->buttons() & Qt::LeftButton)) {
+    event->accept();
+    emit mouseEvent(event);
+  }
 }

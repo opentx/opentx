@@ -27,24 +27,18 @@
 #include <QGridLayout>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QPushButton>
+#include <QToolButton>
 #include <QLabel>
 
+class CustomGraphicsScene;
 class Node;
-class SliderWidget;
+class RadioTrimWidget;
 
 class VirtualJoystickWidget : public QWidget
 {
   Q_OBJECT
 
   public:
-    enum TrimAxes {
-      TRIM_AXIS_L_X = 0,
-      TRIM_AXIS_L_Y,
-      TRIM_AXIS_R_Y,
-      TRIM_AXIS_R_X,
-    };
-
     enum ConstraintTypes {
       HOLD_X = 0,
       HOLD_Y,
@@ -73,38 +67,60 @@ class VirtualJoystickWidget : public QWidget
     virtual void resizeEvent(QResizeEvent *event);
 
   signals:
-    void trimButtonPressed(int which);
-    void trimButtonReleased();
-    void trimSliderMoved(int which, int value);
+    void trimButtonPressed(int index);
+    void trimButtonReleased(int index);
+    void trimSliderMoved(int index, int value);
 
   protected slots:
-    void onTrimPressed();
-    void onSliderChange(int value);
     void onButtonChange(bool checked);
     void updateNodeValueLabels();
+    void onGsMouseEvent(QGraphicsSceneMouseEvent * event);
 
   protected:
     void setSize(const QSize & size, const QSize &);
-    QWidget * createTrimWidget(QChar type);
-    QPushButton * createButtonWidget(int type);
+    RadioTrimWidget * createTrimWidget(QChar type);
+    QToolButton * createButtonWidget(int type);
     QLayout * createNodeValueLayout(QChar type, QLabel *& valLabel);
     int getTrimSliderType(QChar type);
     int getTrimButtonType(QChar type, int pos);
-    SliderWidget * getTrimSlider(int which);
+    RadioTrimWidget * getTrimWidget(int which);
 
     QChar stickSide;
     QSize prefSize;
     QGridLayout * layout;
     QGraphicsView * gv;
-    QGraphicsScene * scene;
+    CustomGraphicsScene * scene;
     Node * node;
-    SliderWidget * hTrimSlider, * vTrimSlider;
-    QPushButton * btnHoldX, * btnHoldY;
-    QPushButton * btnFixX, * btnFixY;
+    RadioTrimWidget * hTrimWidget;
+    RadioTrimWidget * vTrimWidget;
+    QToolButton * btnHoldX, * btnHoldY;
+    QToolButton * btnFixX, * btnFixY;
     QLabel * nodeLabelX, * nodeLabelY;
     QSize extraSize;
     float ar;  // aspect ratio
+    bool m_stickPressed;
+};
 
+
+/*
+ * Custom GraphicsScene for mouse handling
+*/
+class CustomGraphicsScene : public QGraphicsScene
+{
+  Q_OBJECT
+
+  public:
+    CustomGraphicsScene(QObject *parent = Q_NULLPTR) :
+      QGraphicsScene(parent)
+    {}
+
+  signals:
+    void mouseEvent(QGraphicsSceneMouseEvent * event);
+
+  protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 };
 
 #endif // VIRTUALJOYSTICKWIDGET_H

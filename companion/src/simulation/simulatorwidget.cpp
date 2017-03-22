@@ -55,7 +55,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator
   flags(flags),
   lastPhase(-1),
   buttonPressed(0),
-  trimPressed(TRIM_NONE),
+  trimPressed(255),
   startupFromFile(false),
   deleteTempRadioData(false),
   saveTempRadioData(false),
@@ -113,13 +113,13 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator
   vJoyRight = new VirtualJoystickWidget(this, 'R');
   ui->rightStickLayout->addWidget(vJoyRight);
 
-  connect(vJoyLeft, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
-  connect(vJoyLeft, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
-  connect(vJoyLeft, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
+  connect(vJoyLeft, &VirtualJoystickWidget::trimButtonPressed, this, &SimulatorWidget::onTrimPressed);
+  connect(vJoyLeft, &VirtualJoystickWidget::trimButtonReleased, this, &SimulatorWidget::onTrimReleased);
+  connect(vJoyLeft, &VirtualJoystickWidget::trimSliderMoved, this, &SimulatorWidget::onTrimSliderMoved);
 
-  connect(vJoyRight, SIGNAL(trimButtonPressed(int)), this, SLOT(onTrimPressed(int)));
-  connect(vJoyRight, SIGNAL(trimButtonReleased()), this, SLOT(onTrimReleased()));
-  connect(vJoyRight, SIGNAL(trimSliderMoved(int,int)), this, SLOT(onTrimSliderMoved(int,int)));
+  connect(vJoyRight, &VirtualJoystickWidget::trimButtonPressed, this, &SimulatorWidget::onTrimPressed);
+  connect(vJoyRight, &VirtualJoystickWidget::trimButtonReleased, this, &SimulatorWidget::onTrimReleased);
+  connect(vJoyRight, &VirtualJoystickWidget::trimSliderMoved, this, &SimulatorWidget::onTrimSliderMoved);
 
   timer->setInterval(10);
   connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
@@ -739,19 +739,19 @@ void SimulatorWidget::getValues()
 // Read stick trim values from firmware simulator and set joystick widgets as needed.
 void SimulatorWidget::setTrims()
 {
-  typedef VirtualJoystickWidget VJW;
+  using namespace Board;
   static Trims lastTrims;
   Trims trims;
   simulator->getTrims(trims);
 
-  if (trims.values[VJW::TRIM_AXIS_L_X] != lastTrims.values[VJW::TRIM_AXIS_L_X])
-    vJoyLeft->setTrimValue(VJW::TRIM_AXIS_L_X, trims.values[VJW::TRIM_AXIS_L_X]);
-  if (trims.values[VJW::TRIM_AXIS_L_Y] != lastTrims.values[VJW::TRIM_AXIS_L_Y])
-    vJoyLeft->setTrimValue(VJW::TRIM_AXIS_L_Y, trims.values[VJW::TRIM_AXIS_L_Y]);
-  if (trims.values[VJW::TRIM_AXIS_R_Y] != lastTrims.values[VJW::TRIM_AXIS_R_Y])
-    vJoyRight->setTrimValue(VJW::TRIM_AXIS_R_Y, trims.values[VJW::TRIM_AXIS_R_Y]);
-  if (trims.values[VJW::TRIM_AXIS_R_X] != lastTrims.values[VJW::TRIM_AXIS_R_X])
-    vJoyRight->setTrimValue(VJW::TRIM_AXIS_R_X, trims.values[VJW::TRIM_AXIS_R_X]);
+  if (trims.values[TRIM_AXIS_LH] != lastTrims.values[TRIM_AXIS_LH])
+    vJoyLeft->setTrimValue(TRIM_AXIS_LH, trims.values[TRIM_AXIS_LH]);
+  if (trims.values[TRIM_AXIS_LV] != lastTrims.values[TRIM_AXIS_LV])
+    vJoyLeft->setTrimValue(TRIM_AXIS_LV, trims.values[TRIM_AXIS_LV]);
+  if (trims.values[TRIM_AXIS_RV] != lastTrims.values[TRIM_AXIS_RV])
+    vJoyRight->setTrimValue(TRIM_AXIS_RV, trims.values[TRIM_AXIS_RV]);
+  if (trims.values[TRIM_AXIS_RH] != lastTrims.values[TRIM_AXIS_RH])
+    vJoyRight->setTrimValue(TRIM_AXIS_RH, trims.values[TRIM_AXIS_RH]);
 
   if (trims.extended != lastTrims.extended) {
     int trimMin = -125, trimMax = +125;
@@ -759,10 +759,10 @@ void SimulatorWidget::setTrims()
       trimMin = -500;
       trimMax = +500;
     }
-    vJoyLeft->setTrimRange(VJW::TRIM_AXIS_L_X, trimMin, trimMax);
-    vJoyLeft->setTrimRange(VJW::TRIM_AXIS_L_Y, trimMin, trimMax);
-    vJoyRight->setTrimRange(VJW::TRIM_AXIS_R_Y, trimMin, trimMax);
-    vJoyRight->setTrimRange(VJW::TRIM_AXIS_R_X, trimMin, trimMax);
+    vJoyLeft->setTrimRange(TRIM_AXIS_LH, trimMin, trimMax);
+    vJoyLeft->setTrimRange(TRIM_AXIS_LV, trimMin, trimMax);
+    vJoyRight->setTrimRange(TRIM_AXIS_RV, trimMin, trimMax);
+    vJoyRight->setTrimRange(TRIM_AXIS_RH, trimMin, trimMax);
   }
   lastTrims = trims;
 }
@@ -770,17 +770,6 @@ void SimulatorWidget::setTrims()
 /*
  * Event handlers/private slots
  */
-
-//void SimulatorDialog::showEvent(QShowEvent *)
-//{
-//  if (firstShow && isVisible()) {
-//    firstShow = false;
-//  }
-//}
-
-//void SimulatorDialog::closeEvent(QCloseEvent *)
-//{
-//}
 
 void SimulatorWidget::mousePressEvent(QMouseEvent *event)
 {
@@ -819,19 +808,19 @@ void SimulatorWidget::onTimerEvent()
   }
 }
 
-void SimulatorWidget::onTrimPressed(int which)
+void SimulatorWidget::onTrimPressed(int index)
 {
-  trimPressed = which;
+  trimPressed = index;
 }
 
-void SimulatorWidget::onTrimReleased()
+void SimulatorWidget::onTrimReleased(int)
 {
-  trimPressed = TRIM_NONE;
+  trimPressed = 255;
 }
 
-void SimulatorWidget::onTrimSliderMoved(int which, int value)
+void SimulatorWidget::onTrimSliderMoved(int index, int value)
 {
-  simulator->setTrim(which, value);
+  simulator->setTrim(index, value);
 }
 
 void SimulatorWidget::centerSticks()
