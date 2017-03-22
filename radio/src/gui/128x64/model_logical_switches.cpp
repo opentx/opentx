@@ -166,7 +166,11 @@ void menuModelLogicalSwitchOne(event_t event)
             else if (cs->func == LS_FUNC_ADIFFEGREATER)
               v2_min = 0;
             else
+#if defined(CPUARM)
+              v2_min = -v2_max;
+#else
               v2_min = minTelemValue(v1_val - MIXSRC_FIRST_TELEM + 1);
+#endif
             INCDEC_SET_FLAG(EE_MODEL | INCDEC_REP10 | NO_INCDEC_MARKS);
             if (cs->v2 < v2_min || cs->v2 > v2_max) {
               cs->v2 = 0;
