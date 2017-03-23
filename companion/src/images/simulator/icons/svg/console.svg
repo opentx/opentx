@@ -1,44 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="64"
-   height="64"
-   viewBox="0 0 64.000001 64.000001"
-   id="svg5332"
    version="1.1"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="console.svg">
+   id="svg5332"
+   viewBox="0 0 64.000001 64.000001"
+   height="64"
+   width="64">
   <defs
      id="defs5334" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="52.284516"
-     inkscape:cy="39.770511"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     borderlayer="true"
-     units="px"
-     width="64px"
-     inkscape:window-width="1280"
-     inkscape:window-height="1000"
-     inkscape:window-x="1280"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1" />
   <metadata
      id="metadata5337">
     <rdf:RDF>
@@ -52,30 +25,25 @@
     </rdf:RDF>
   </metadata>
   <g
-     inkscape:label="Vrstva 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(0,-988.36216)">
+     transform="translate(0,-988.36216)"
+     id="layer1">
     <g
-       transform="translate(0,-2.2617187e-5)"
-       id="g5962">
+       id="g5962"
+       transform="translate(0,-2.2617187e-5)">
       <circle
-         r="28.820312"
-         id="path7511-3-8-6-2-5-2-6"
-         style="fill:none;stroke:#000000;stroke-width:4.359375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         cy="1020.3622"
          cx="32"
-         cy="1020.3622" />
+         style="fill:none;stroke:#000000;stroke-width:4.359375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path7511-3-8-6-2-5-2-6"
+         r="28.820312" />
       <path
-         style="fill:none;stroke:#000000;stroke-width:4.54343081;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 15.97574,1019.3204 9.126336,8.3942 -8.936893,7.6254"
          id="path5361-4"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ccc" />
+         d="m 15.97574,1019.3204 9.126336,8.3942 -8.936893,7.6254"
+         style="fill:none;stroke:#000000;stroke-width:4.54343081;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
       <path
-         style="fill:none;stroke:#000000;stroke-width:4.54343081;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         d="m 30.356373,1035.2409 13.806832,0"
          id="path5363-3"
-         inkscape:connector-curvature="0" />
+         d="m 30.356373,1035.2409 13.806832,0"
+         style="fill:none;stroke:#000000;stroke-width:4.54343081;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     </g>
   </g>
 </svg>

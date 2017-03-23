@@ -24,14 +24,14 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1280"
+     inkscape:window-width="1215"
      inkscape:window-height="1000"
      id="namedview8"
      showgrid="false"
      inkscape:zoom="2.6074563"
      inkscape:cx="94.851293"
      inkscape:cy="-2.6463556"
-     inkscape:window-x="1280"
+     inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg3254" />
@@ -49,19 +49,6 @@
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <g
-     id="layer1"
-     transform="translate(87.322034,-0.81355932)">
-    <g
-       transform="matrix(1.2799322,0,0,1.3520619,50.823596,-1446.5167)"
-       id="g3219"
-       style="display:inline">
-      <path
-         d="m -31.495574,1077.0304 0,4.1237 34.8489745,0 0,-4.1237 z m 0,8.2474 0,4.1237 21.7806103,0 0,-4.1237 z m 0,12.3711 0,4.1237 34.8489745,0 0,-4.1237 z m 0,8.2474 0,4.1237 26.1367347,0 0,-4.1237 z"
-         id="path3386"
-         inkscape:connector-curvature="0" />
-    </g>
-  </g>
   <path
      style="fill:#000000;fill-opacity:1"
      d="m 6.6852387,56.408075 0,-2.638845 9.3616333,0 9.361634,0 0,2.638845 0,2.638852 -9.361634,0 -9.3616333,0 0,-2.638852 z"
