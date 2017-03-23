@@ -850,7 +850,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         if (!(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUAL_INPUTS)
           if (md->carryTrim == 0) {
-            v += getSourceTrimValue(md->srcRaw, v);
+            trim = getSourceTrimValue(md->srcRaw, v);
           }
 #else
           int8_t mix_trim = md->carryTrim;
@@ -903,13 +903,14 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #if defined(CPUARM)
       if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
         dv = applyCurve(dv, md->curve);
+        dtrim = applyCurve(dtrim, md->curve);
+        dv += dtrim;
       }
 #else
       if (md->curveMode == MODE_DIFFERENTIAL) {
 		    // stick and trim are computed separatly
         // curveParam recalculated to a 256 basis which ease the calculation later a lot
         int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));  
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
         if (curveParam > 0 && dv < 0) {
           dv = (dv * (256 - curveParam)) >> 8;
         }
