@@ -11,7 +11,6 @@ version=2.2.0
 # Incrementnightly index
 index=`cat index.txt`
 index=`expr $index + 1`
-echo $index > index.txt
 suffix="N$index"
 
 cd ${workdir}
@@ -55,12 +54,15 @@ if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ];
 fi
 
 # Update stamps
-cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
+cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
 rm -f ${output}/companion/windows/companion-windows.stamp
 echo "#define VERSION  "'"2.2.0'$suffix'"' >> ${output}/companion/windows/companion-windows.stamp
 cp -f ${output}/companion/windows/companion-windows.stamp ${output}/companion/linux/companion-windows.stamp
 cp -f ${output}/companion/windows/companion-windows.stamp ${output}/companion/linux/companion-macosx.stamp
 
 # Clean binaries It will be hosting built on demand firmware
-rm -rf $workdir/binaries/*
-rm -rf $workdir/binaries/.lock
+rm -rf ${workdir}/binaries/*
+rm -rf ${workdir}/binaries/.lock
+
+# Released is considered as valid if we get to that point
+echo $index > ${workdir}/index.txt
