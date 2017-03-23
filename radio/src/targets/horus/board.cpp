@@ -206,8 +206,9 @@ void boardOff()
   while (pwrPressed()) {
     wdt_reset();
   }
-
+#if !defined(SIMU)
   SysTick->CTRL = 0; // turn off systick
+#endif
   pwrOff();
 }
 
